@@ -1,0 +1,3587 @@
+{
+  "schemaVersion": "drx-master-ema-sheet-chunk-v1",
+  "generatedAt": "2026-08-30T09:13:52.009Z",
+  "startRow": 0,
+  "rows": [
+    {
+      "variantGroupId": "GRP-acetylsalicylicacidascorbicacid-400mg+240mg-effervescenttablet",
+      "sourceVariantId": "VAR-acetylsalicylicacidascorbicacid-400mg+240mg-effervescenttablet",
+      "sourceDedupeKey": "acetylsalicylicacidascorbicacid|400mg+240mg|effervescenttablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-aciclovir-400mg-tablet",
+      "sourceVariantId": "VAR-aciclovir-400mg-tablet",
+      "sourceDedupeKey": "aciclovir|400mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-aciclovir-5pct-applicator",
+      "sourceVariantId": "VAR-aciclovir-5%-applicator",
+      "sourceDedupeKey": "aciclovir|5%|applicator",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-aciclovirmicronised-30mg/g-eyeointment",
+      "sourceVariantId": "VAR-aciclovirmicronised-3%-eyeointment",
+      "sourceDedupeKey": "aciclovirmicronised|3%|eyeointment",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-adapalene-1mg/g-cream",
+      "sourceVariantId": "VAR-adapalene-1mg/g-cream",
+      "sourceDedupeKey": "adapalene|1mg/g|cream",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-aescinessentialphospholipidsheparinsodium-(10mg+10mg+100iu)/g-gel",
+      "sourceVariantId": "VAR-aescinessentialphospholipidsheparinsodium-(10mg+10mg+100iu)/g-gel",
+      "sourceDedupeKey": "aescinessentialphospholipidsheparinsodium|(10mg+10mg+100iu)/g|gel",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-albendazole-200mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-albendazole-200mg-filmcoatedtablet",
+      "sourceDedupeKey": "albendazole|200mg|filmcoatedtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-alclometasonedipropionate-0.5mg/g-cream",
+      "sourceVariantId": "VAR-alclometasonedipropionate-0.5mg/1g-cream",
+      "sourceDedupeKey": "alclometasonedipropionate|0.5mg/1g|cream",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-alclometasonedipropionate-0.5mg/g-ointment",
+      "sourceVariantId": "VAR-alclometasonedipropionate-0.5mg/1g-ointment",
+      "sourceDedupeKey": "alclometasonedipropionate|0.5mg/1g|ointment",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-alectinibhcl-150mg-capsulehard",
+      "sourceVariantId": "VAR-alectinibhcl-150mg-capsulehard",
+      "sourceDedupeKey": "alectinibhcl|150mg|capsulehard",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-alendronatesodiumtrihydratecholecalciferolvitamind3-70mg+5600iu-tablet",
+      "sourceVariantId": "VAR-alendronatesodiumtrihydratecholecalciferolvitamind3-70mg+5600iu-tablet",
+      "sourceDedupeKey": "alendronatesodiumtrihydratecholecalciferolvitamind3|70mg+5600iu|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/001180",
+        "medicineName": "Vantavo (previously Alendronate sodium and colecalciferol, MSD)",
+        "activeSubstance": "alendronic acid;colecalciferol",
+        "atcCode": "M05BB03",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/vantavo",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/vantavo-epar-product-information_en.pdf",
+        "documentName": "Vantavo : EPAR - Product Information",
+        "documentUpdated": "2026-02-12T17:01:00Z",
+        "medicineScore": 9,
+        "activeEvidence": false,
+        "strengthEvidence": false,
+        "formEvidence": true,
+        "section2Sha256": "4eb926b19efe3e732a4b50cf0be6de3d2e5d7986dc0a87492cd267c55073970d",
+        "section41Sha256": "f57d6f77d9a6d9206c9faf21704ffafc8c9450a47d470826535b51b27122f56c",
+        "section42Sha256": "89398ec655cf38831652456afcefa1eec8f2768f46fd5bff30a308b36f252368",
+        "section2Characters": 574,
+        "section41Characters": 166,
+        "section42Characters": 3231
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-alfuzosinhydrochloride-10mg-tablet",
+      "sourceVariantId": "VAR-alfuzosinhydrochloride-10mg-tablet",
+      "sourceDedupeKey": "alfuzosinhydrochloride|10mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-alteplase-50mg-powderandsolventforsolutionforinjectioninfusion",
+      "sourceVariantId": "VAR-alteplase-50mg-powderandsolventforsolutionforinjectioninfusion",
+      "sourceDedupeKey": "alteplase|50mg|powderandsolventforsolutionforinjectioninfusion",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-alverinecitratesimethicone-60mg/300mg-capsulesoft",
+      "sourceVariantId": "VAR-alverinecitratesimethicone-60mg/300mg-capsulesoft",
+      "sourceDedupeKey": "alverinecitratesimethicone|60mg/300mg|capsulesoft",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-aminoacids-50mg/ml-solutionforinfusion",
+      "sourceVariantId": "VAR-aminoacids-5%-solutionforinfusion",
+      "sourceDedupeKey": "aminoacids|5%|solutionforinfusion",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-aminophyllinedihydrate-250mg/10ml-solutionforinjection",
+      "sourceVariantId": "VAR-aminophyllinedihydrate-250mg/10ml-solutionforinjection",
+      "sourceDedupeKey": "aminophyllinedihydrate|250mg/10ml|solutionforinjection",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-amitriptylinehydrochlorideperphenazine-25mg+4mg-coatedtablet",
+      "sourceVariantId": "VAR-amitriptylinehydrochlorideperphenazine-25mg+4mg-coatedtablet",
+      "sourceDedupeKey": "amitriptylinehydrochlorideperphenazine|25mg+4mg|coatedtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-amorolfinehydrochloride-50mg/ml-medicatednaillaquer",
+      "sourceVariantId": "VAR-amorolfinehydrochloride-50mg/ml-medicatednaillaquer",
+      "sourceDedupeKey": "amorolfinehydrochloride|50mg/ml|medicatednaillaquer",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-amoxicillin-200mg+28mg-powderfororalsuspension",
+      "sourceVariantId": "VAR-amoxicillin-200mg+28mg-powderfororalsuspension",
+      "sourceDedupeKey": "amoxicillin|200mg+28mg|powderfororalsuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-amoxicillin-250mg/5ml-powderfororalsolution",
+      "sourceVariantId": "VAR-amoxicillin-250mg/5ml-powderfororalsolution",
+      "sourceDedupeKey": "amoxicillin|250mg/5ml|powderfororalsolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-amoxicillin-500mg+125mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-amoxicillin-500mg+125mg-filmcoatedtablet",
+      "sourceDedupeKey": "amoxicillin|500mg+125mg|filmcoatedtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-amoxicillinandclavulanatepotassium-400mg/57mg/5ml-powderfororalsuspension",
+      "sourceVariantId": "VAR-amoxicillinandclavulanatepotassium-400mg/57mg/5ml-powderfororalsuspension",
+      "sourceDedupeKey": "amoxicillinandclavulanatepotassium|400mg/57mg/5ml|powderfororalsuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-amoxicillinassodiumsalt-1g/vial-powderforsolutionforinjection",
+      "sourceVariantId": "VAR-amoxicillinassodiumsalt-1g/vial-powderforsolutionforinjection",
+      "sourceDedupeKey": "amoxicillinassodiumsalt|1g/vial|powderforsolutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-amoxicillinclavulanicacid-200mg/28mg-powderfororalsuspension",
+      "sourceVariantId": "VAR-amoxicillinclavulanicacid-200mg/28mg-powderfororalsuspension",
+      "sourceDedupeKey": "amoxicillinclavulanicacid|200mg/28mg|powderfororalsuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-amoxicillinclavulanicacid-400mg/57mg-powderfororalsuspension",
+      "sourceVariantId": "VAR-amoxicillinclavulanicacid-400mg/57mg-powderfororalsuspension",
+      "sourceDedupeKey": "amoxicillinclavulanicacid|400mg/57mg|powderfororalsuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-amoxicillinetrihydratepotency861gmgpotassiumclavunatesyloidal1fpblend11potency4175gmgwith5overdose-(400mg+57mg)/5ml-powderfororalsuspension",
+      "sourceVariantId": "VAR-amoxicillinetrihydratepotency861gmgpotassiumclavunatesyloidal1fpblend11potency4175gmgwith5overdose-(400mg+57mg)/5ml-powderfororalsuspension",
+      "sourceDedupeKey": "amoxicillinetrihydratepotency861gmgpotassiumclavunatesyloidal1fpblend11potency4175gmgwith5overdose|(400mg+57mg)/5ml|powderfororalsuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-amoxicillinintheformofamoxicillintrihydrateclavulanicacidintheformofpotassiumclavulanatedilutedwithsilicondioxide11-(400mg+57mg)/5ml-powderfororalsuspension",
+      "sourceVariantId": "VAR-amoxicillinintheformofamoxicillintrihydrateclavulanicacidintheformofpotassiumclavulanatedilutedwithsilicondioxide11-(400mg+57mg)/5ml-powderfororalsuspension",
+      "sourceDedupeKey": "amoxicillinintheformofamoxicillintrihydrateclavulanicacidintheformofpotassiumclavulanatedilutedwithsilicondioxide11|(400mg+57mg)/5ml|powderfororalsuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-amoxicillintrihydrateclavulanicacid-(400mg+57mg)/5ml-powderfororalsuspension",
+      "sourceVariantId": "VAR-amoxicillintrihydrateclavulanicacid-(400mg+57mg)/5ml-powderfororalsuspension",
+      "sourceDedupeKey": "amoxicillintrihydrateclavulanicacid|(400mg+57mg)/5ml|powderfororalsuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-amoxicillintrihydrateequivalenttoamoxicillin-(400mg+57mg)/5ml-powderfororalsuspension",
+      "sourceVariantId": "VAR-amoxicillintrihydrateequivalenttoamoxicillin-(400mg+57mg)/5ml-powderfororalsuspension",
+      "sourceDedupeKey": "amoxicillintrihydrateequivalenttoamoxicillin|(400mg+57mg)/5ml|powderfororalsuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-amoxicillintrihydratepotassiumclavulanatediluted-400mg/57mg/5ml-powderfororalsuspension",
+      "sourceVariantId": "VAR-amoxicillintrihydratepotassiumclavulanatediluted-400mg/57mg/5ml-powderfororalsuspension",
+      "sourceDedupeKey": "amoxicillintrihydratepotassiumclavulanatediluted|400mg/57mg/5ml|powderfororalsuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-amoxycillintrihydratepotassiumclavulanate-600mg+42.9mg-powderfororalsuspension",
+      "sourceVariantId": "VAR-amoxycillintrihydratepotassiumclavulanate-600mg+42.9mg-powderfororalsuspension",
+      "sourceDedupeKey": "amoxycillintrihydratepotassiumclavulanate|600mg+42.9mg|powderfororalsuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ampicillin-250mg/5ml-powderfororalsuspension",
+      "sourceVariantId": "VAR-ampicillin-250mg/5ml-powderfororalsuspension",
+      "sourceDedupeKey": "ampicillin|250mg/5ml|powderfororalsuspension",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ampicillin-500mg-capsulehard",
+      "sourceVariantId": "VAR-ampicillin-500mg-capsulehard",
+      "sourceDedupeKey": "ampicillin|500mg|capsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ampicillinasampicillinsodium-1000mg-powderforsolutionforinjection",
+      "sourceVariantId": "VAR-ampicillinasampicillinsodium-1000mg-powderforsolutionforinjection",
+      "sourceDedupeKey": "ampicillinasampicillinsodium|1000mg|powderforsolutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ampicillinasampicillinsodium-500mg-powderforsolutionforinjection",
+      "sourceVariantId": "VAR-ampicillinasampicillinsodium-500mg-powderforsolutionforinjection",
+      "sourceDedupeKey": "ampicillinasampicillinsodium|500mg|powderforsolutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-anamirtacocculusd4coniummaculatumd3ambragrisead6petroleumrectificatumd8-210mg+30mg+30mg+30mg-tablet",
+      "sourceVariantId": "VAR-anamirtacocculusd4coniummaculatumd3ambragrisead6petroleumrectificatumd8-210mg+30mg+30mg+30mg-tablet",
+      "sourceDedupeKey": "anamirtacocculusd4coniummaculatumd3ambragrisead6petroleumrectificatumd8|210mg+30mg+30mg+30mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-arnicamontanad2calendulaofficinalisd2hamamelisvirginianad1achilleamillefoliumd3atropabelladonnad2aconitumnapellusd2mercuriussolubilishahnemannid6heparsulfurisd6matricariarecutitad3symphytumofficinaled6bellisperennisd2echinacead2echinaceapurpuread2hypericumperforatumd2-2.2mg+2.2mg+0.22mg+2.2mg+2.2mg+1.32mg+1.1mg+2.2mg+2.2mg+2.2mg+1.1mg+0.55mg+0.55mg+0.66mg-solutionforinjection",
+      "sourceVariantId": "VAR-arnicamontanad2calendulaofficinalisd2hamamelisvirginianad1achilleamillefoliumd3atropabelladonnad2aconitumnapellusd2mercuriussolubilishahnemannid6heparsulfurisd6matricariarecutitad3symphytumofficinaled6bellisperennisd2echinacead2echinaceapurpuread2hypericumperforatumd2-2.2mg+2.2mg+0.22mg+2.2mg+2.2mg+1.32mg+1.1mg+2.2mg+2.2mg+2.2mg+1.1mg+0.55mg+0.55mg+0.66mg-solutionforinjection",
+      "sourceDedupeKey": "arnicamontanad2calendulaofficinalisd2hamamelisvirginianad1achilleamillefoliumd3atropabelladonnad2aconitumnapellusd2mercuriussolubilishahnemannid6heparsulfurisd6matricariarecutitad3symphytumofficinaled6bellisperennisd2echinacead2echinaceapurpuread2hypericumperforatumd2|2.2mg+2.2mg+0.22mg+2.2mg+2.2mg+1.32mg+1.1mg+2.2mg+2.2mg+2.2mg+1.1mg+0.55mg+0.55mg+0.66mg|solutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-arnicamontanad2calendulaofficinalisd2hamamelisvirginianad2achilleamillefoliumd3atropabelladonnad4aconitumnapellusd3mercuriussolubilishahnemannid8heparsulfurisd8matricariarecutitad3symphytumofficinaled8bellisperennisd2echinacead2echinaceapurpuread2hypericumperforatumd2-15mg+15mg+15mg+15mg+75mg+30mg+30mg+30mg+24mg+24mg+6mg+6mg+6mg+3mg-tablet",
+      "sourceVariantId": "VAR-arnicamontanad2calendulaofficinalisd2hamamelisvirginianad2achilleamillefoliumd3atropabelladonnad4aconitumnapellusd3mercuriussolubilishahnemannid8heparsulfurisd8matricariarecutitad3symphytumofficinaled8bellisperennisd2echinacead2echinaceapurpuread2hypericumperforatumd2-15mg+15mg+15mg+15mg+75mg+30mg+30mg+30mg+24mg+24mg+6mg+6mg+6mg+3mg-tablet",
+      "sourceDedupeKey": "arnicamontanad2calendulaofficinalisd2hamamelisvirginianad2achilleamillefoliumd3atropabelladonnad4aconitumnapellusd3mercuriussolubilishahnemannid8heparsulfurisd8matricariarecutitad3symphytumofficinaled8bellisperennisd2echinacead2echinaceapurpuread2hypericumperforatumd2|15mg+15mg+15mg+15mg+75mg+30mg+30mg+30mg+24mg+24mg+6mg+6mg+6mg+3mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-arnicamontanad3calendulaofficinalistmhamamelisvirginianatmechinacead2echinaceapurpureatmmatricariarecutitatmsymphytumofficinaled8bellisperennistmhypericumperforatumd6achilleamillefoliumtmaconitumnapellusd1atropabelladonnad1mercuriussolubilishahnemannid6heparsulfurisd6-1.5g+0.45g+0.45g+0.15g+0.15g+0.15g+0.1g+0.1g+0.09g+0.09g+0.05g+0.05g+0.04g+0.025g-cream",
+      "sourceVariantId": "VAR-arnicamontanad3calendulaofficinalistmhamamelisvirginianatmechinacead2echinaceapurpureatmmatricariarecutitatmsymphytumofficinaled8bellisperennistmhypericumperforatumd6achilleamillefoliumtmaconitumnapellusd1atropabelladonnad1mercuriussolubilishahnemannid6heparsulfurisd6-1.5g+0.45g+0.45g+0.15g+0.15g+0.15g+0.1g+0.1g+0.09g+0.09g+0.05g+0.05g+0.04g+0.025g-cream",
+      "sourceDedupeKey": "arnicamontanad3calendulaofficinalistmhamamelisvirginianatmechinacead2echinaceapurpureatmmatricariarecutitatmsymphytumofficinaled8bellisperennistmhypericumperforatumd6achilleamillefoliumtmaconitumnapellusd1atropabelladonnad1mercuriussolubilishahnemannid6heparsulfurisd6|1.5g+0.45g+0.45g+0.15g+0.15g+0.15g+0.1g+0.1g+0.09g+0.09g+0.05g+0.05g+0.04g+0.025g|cream",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-asafoetidad8hydrargyrumoxydatumrubrumd10kalmialatifoliad8-(22mg+22mg+22mg)/2.2ml-solutionforinjection",
+      "sourceVariantId": "VAR-asafoetidad8hydrargyrumoxydatumrubrumd10kalmialatifoliad8-(22mg+22mg+22mg)/2.2ml-solutionforinjection",
+      "sourceDedupeKey": "asafoetidad8hydrargyrumoxydatumrubrumd10kalmialatifoliad8|(22mg+22mg+22mg)/2.2ml|solutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ascorbicacid-100mg/ml-solutionforinjection",
+      "sourceVariantId": "VAR-ascorbicacid-100mg/1ml-solutionforinjection",
+      "sourceDedupeKey": "ascorbicacid|100mg/1ml|solutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ascorbicacid-500mg/5ml-solutionforinjection",
+      "sourceVariantId": "VAR-ascorbicacid-500mg/5ml-solutionforinjection",
+      "sourceDedupeKey": "ascorbicacid|500mg/5ml|solutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-atezolizumab-1875mg/15ml-solutionforinjection",
+      "sourceVariantId": "VAR-atezolizumab-1875mg/15ml-solutionforinjection",
+      "sourceDedupeKey": "atezolizumab|1875mg/15ml|solutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/004143",
+        "medicineName": "Tecentriq",
+        "activeSubstance": "atezolizumab",
+        "atcCode": "L01XC32",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/tecentriq",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/tecentriq-epar-product-information_en.pdf",
+        "documentName": "Tecentriq : EPAR - Product information",
+        "documentUpdated": "2026-07-21T14:01:00Z",
+        "medicineScore": 10,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "3e805e8b93464928e3d14867f6eda2f25892095fb3b7451c7ebee554322ce461",
+        "section41Sha256": "74e9b44daaed2126f31c74fbf8de4ec9cfd9d6a39b08927858a76e6ee932c60a",
+        "section42Sha256": "6c54e81b033f1c343e81321ddc600ffd962e772791438bbb9097cf44422cf363",
+        "section2Characters": 340,
+        "section41Characters": 2816,
+        "section42Characters": 13612
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-atorvastatinasatorvastatincalciumtrihydrateacidacetylsalicylicramipril-100mg+20mg+10mg-capsulehard",
+      "sourceVariantId": "VAR-atorvastatinasatorvastatincalciumtrihydrateacidacetylsalicylicramipril-100mg+20mg+10mg-capsulehard",
+      "sourceDedupeKey": "atorvastatinasatorvastatincalciumtrihydrateacidacetylsalicylicramipril|100mg+20mg+10mg|capsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-atorvastatinasatorvastatincalciumtrihydrateacidacetylsalicylicramipril-100mg+20mg+2.5mg-capsulehard",
+      "sourceVariantId": "VAR-atorvastatinasatorvastatincalciumtrihydrateacidacetylsalicylicramipril-100mg+20mg+2.5mg-capsulehard",
+      "sourceDedupeKey": "atorvastatinasatorvastatincalciumtrihydrateacidacetylsalicylicramipril|100mg+20mg+2.5mg|capsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-atorvastatinasatorvastatincalciumtrihydrateacidacetylsalicylicramipril-100mg+20mg+5mg-capsulehard",
+      "sourceVariantId": "VAR-atorvastatinasatorvastatincalciumtrihydrateacidacetylsalicylicramipril-100mg+20mg+5mg-capsulehard",
+      "sourceDedupeKey": "atorvastatinasatorvastatincalciumtrihydrateacidacetylsalicylicramipril|100mg+20mg+5mg|capsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-atracuriumbesylate-10mg/ml-solutionforinjection",
+      "sourceVariantId": "VAR-atracuriumbesylate-10mg/1ml-solutionforinjection",
+      "sourceDedupeKey": "atracuriumbesylate|10mg/1ml|solutionforinjection",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-atropabelladonnad2calciumcarbonicumhahnemannid8matricariarecutitad1plantagomajord3pulsatillapratensisd2-(1.1mg+4.4mg+1.1mg+1.1mg+2.2mg)/1.1g-suppository",
+      "sourceVariantId": "VAR-atropabelladonnad2calciumcarbonicumhahnemannid8matricariarecutitad1plantagomajord3pulsatillapratensisd2-(1.1mg+4.4mg+1.1mg+1.1mg+2.2mg)/1.1g-suppository",
+      "sourceDedupeKey": "atropabelladonnad2calciumcarbonicumhahnemannid8matricariarecutitad1plantagomajord3pulsatillapratensisd2|(1.1mg+4.4mg+1.1mg+1.1mg+2.2mg)/1.1g|suppository",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-azithromycin-100mg/5ml-granulesfororalsuspension",
+      "sourceVariantId": "VAR-azithromycin-100mg/5ml-granulesfororalsuspension",
+      "sourceDedupeKey": "azithromycin|100mg/5ml|granulesfororalsuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-azithromycindihydrateequivalentto250mgazithrumycinwith3overdosepotency949ymmg-250mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-azithromycindihydrateequivalentto250mgazithrumycinwith3overdosepotency949ymmg-250mg-filmcoatedtablet",
+      "sourceDedupeKey": "azithromycindihydrateequivalentto250mgazithrumycinwith3overdosepotency949ymmg|250mg|filmcoatedtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-beclometasonedipropionate-0.8mg/2ml-nebulisersuspension",
+      "sourceVariantId": "VAR-beclometasonedipropionate-0.8mg/2ml-nebulisersuspension",
+      "sourceDedupeKey": "beclometasonedipropionate|0.8mg/2ml|nebulisersuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/004257",
+        "medicineName": "Trimbow",
+        "activeSubstance": "beclometasone dipropionate;formoterol fumarate dihydrate;glycopyrronium bromide",
+        "atcCode": "R03AL09",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/trimbow",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/trimbow-epar-product-information_en.pdf",
+        "documentName": "Trimbow : EPAR - Product information",
+        "documentUpdated": "2026-07-02T14:32:00Z",
+        "medicineScore": 6,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": true,
+        "section2Sha256": "c0b7bb43072ecec249dfc9709f512ddefb35579333412b37f8b8033bea9eb38c",
+        "section41Sha256": "f6b1b54d0b8372fc9a74e1aa934feccd18c030368bb0bd9886f9a6c879b85e18",
+        "section42Sha256": "81a69dd42d99770756b0eecc779fe59c699c6b8d7a010e527993b7e0372cf400",
+        "section2Characters": 592,
+        "section41Characters": 652,
+        "section42Characters": 7157
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-beclometasonedipropionate-100mcg-nasalspraysuspension",
+      "sourceVariantId": "VAR-beclometasonedipropionate-100mcg-nasalspraysuspension",
+      "sourceDedupeKey": "beclometasonedipropionate|100mcg|nasalspraysuspension",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/004257",
+        "medicineName": "Trimbow",
+        "activeSubstance": "beclometasone dipropionate;formoterol fumarate dihydrate;glycopyrronium bromide",
+        "atcCode": "R03AL09",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/trimbow",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/trimbow-epar-product-information_en.pdf",
+        "documentName": "Trimbow : EPAR - Product information",
+        "documentUpdated": "2026-07-02T14:32:00Z",
+        "medicineScore": 6,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "c0b7bb43072ecec249dfc9709f512ddefb35579333412b37f8b8033bea9eb38c",
+        "section41Sha256": "f6b1b54d0b8372fc9a74e1aa934feccd18c030368bb0bd9886f9a6c879b85e18",
+        "section42Sha256": "81a69dd42d99770756b0eecc779fe59c699c6b8d7a010e527993b7e0372cf400",
+        "section2Characters": 592,
+        "section41Characters": 652,
+        "section42Characters": 7157
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-beclometasonedipropionate-250mcg-pressurisedinhalationsolution",
+      "sourceVariantId": "VAR-beclometasonedipropionate-250mcg-pressurisedinhalationsolution",
+      "sourceDedupeKey": "beclometasonedipropionate|250mcg|pressurisedinhalationsolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/004257",
+        "medicineName": "Trimbow",
+        "activeSubstance": "beclometasone dipropionate;formoterol fumarate dihydrate;glycopyrronium bromide",
+        "atcCode": "R03AL09",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/trimbow",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/trimbow-epar-product-information_en.pdf",
+        "documentName": "Trimbow : EPAR - Product information",
+        "documentUpdated": "2026-07-02T14:32:00Z",
+        "medicineScore": 6,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": true,
+        "section2Sha256": "c0b7bb43072ecec249dfc9709f512ddefb35579333412b37f8b8033bea9eb38c",
+        "section41Sha256": "f6b1b54d0b8372fc9a74e1aa934feccd18c030368bb0bd9886f9a6c879b85e18",
+        "section42Sha256": "81a69dd42d99770756b0eecc779fe59c699c6b8d7a010e527993b7e0372cf400",
+        "section2Characters": 592,
+        "section41Characters": 652,
+        "section42Characters": 7157
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-beclometasonedipropionate-5mg-prolongedreleasetablet",
+      "sourceVariantId": "VAR-beclometasonedipropionate-5mg-prolongedreleasetablet",
+      "sourceDedupeKey": "beclometasonedipropionate|5mg|prolongedreleasetablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/004257",
+        "medicineName": "Trimbow",
+        "activeSubstance": "beclometasone dipropionate;formoterol fumarate dihydrate;glycopyrronium bromide",
+        "atcCode": "R03AL09",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/trimbow",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/trimbow-epar-product-information_en.pdf",
+        "documentName": "Trimbow : EPAR - Product information",
+        "documentUpdated": "2026-07-02T14:32:00Z",
+        "medicineScore": 6,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "c0b7bb43072ecec249dfc9709f512ddefb35579333412b37f8b8033bea9eb38c",
+        "section41Sha256": "f6b1b54d0b8372fc9a74e1aa934feccd18c030368bb0bd9886f9a6c879b85e18",
+        "section42Sha256": "81a69dd42d99770756b0eecc779fe59c699c6b8d7a010e527993b7e0372cf400",
+        "section2Characters": 592,
+        "section41Characters": 652,
+        "section42Characters": 7157
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-benzalkoniumchloride-1mg-lozenge",
+      "sourceVariantId": "VAR-benzalkoniumchloride-1mg-lozenge",
+      "sourceDedupeKey": "benzalkoniumchloride|1mg|lozenge",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-benzydaminehcl-0.15pct-gargle",
+      "sourceVariantId": "VAR-benzydaminehcl-0.15%-gargle",
+      "sourceDedupeKey": "benzydaminehcl|0.15%|gargle",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-benzydaminehcl-3mg/ml-oromucosalspray",
+      "sourceVariantId": "VAR-benzydaminehcl-0.30%-oromucosalspray",
+      "sourceDedupeKey": "benzydaminehcl|0.30%|oromucosalspray",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-benzydaminehclbenzydaminehcl-0.045g/30ml-oromucosalspray",
+      "sourceVariantId": "VAR-benzydaminehclbenzydaminehcl-0.045g/30ml-oromucosalspray",
+      "sourceDedupeKey": "benzydaminehclbenzydaminehcl|0.045g/30ml|oromucosalspray",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-benzydaminehydrochloride-(1.5mg+5mg)/1ml-oromucosalspray",
+      "sourceVariantId": "VAR-benzydaminehydrochloride-(1.5mg+5mg)/1ml-oromucosalspray",
+      "sourceDedupeKey": "benzydaminehydrochloride|(1.5mg+5mg)/1ml|oromucosalspray",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-benzydaminehydrochloride-1.5mg/ml-oralsolution",
+      "sourceVariantId": "VAR-benzydaminehydrochloride-0.0015-oralsolution",
+      "sourceDedupeKey": "benzydaminehydrochloride|0.0015|oralsolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-benzydaminehydrochloride-3mg/ml-oralsolution",
+      "sourceVariantId": "VAR-benzydaminehydrochloride-0.30%-oralsolution",
+      "sourceDedupeKey": "benzydaminehydrochloride|0.30%|oralsolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-benzydaminehydrochloridecetylpyridiniumchloride-3mg+1mg-lozenge",
+      "sourceVariantId": "VAR-benzydaminehydrochloridecetylpyridiniumchloride-3mg+1mg-lozenge",
+      "sourceDedupeKey": "benzydaminehydrochloridecetylpyridiniumchloride|3mg+1mg|lozenge",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-benzydaminehydrochloridecetylpyridiniumchloride1asmonohydrate-3mg/1mg-lozenge",
+      "sourceVariantId": "VAR-benzydaminehydrochloridecetylpyridiniumchloride1asmonohydrate-3mg/1mg-lozenge",
+      "sourceDedupeKey": "benzydaminehydrochloridecetylpyridiniumchloride1asmonohydrate|3mg/1mg|lozenge",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-benzydaminehydrochloridecetylpyridiniumchlorideasmonohydrate-3mg+1mg-lozenge",
+      "sourceVariantId": "VAR-benzydaminehydrochloridecetylpyridiniumchlorideasmonohydrate-3mg+1mg-lozenge",
+      "sourceDedupeKey": "benzydaminehydrochloridecetylpyridiniumchlorideasmonohydrate|3mg+1mg|lozenge",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-benzylpenicillinaspotassiumsalt-1000000iu-powderforsolutionforinjection",
+      "sourceVariantId": "VAR-benzylpenicillinaspotassiumsalt-1000000iu-powderforsolutionforinjection",
+      "sourceDedupeKey": "benzylpenicillinaspotassiumsalt|1000000iu|powderforsolutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-betamethasonedipropionategentamicinedulphate-(0.5mg+1mg)/1g-ointment",
+      "sourceVariantId": "VAR-betamethasonedipropionategentamicinedulphate-(0.5mg+1mg)/1g-ointment",
+      "sourceDedupeKey": "betamethasonedipropionategentamicinedulphate|(0.5mg+1mg)/1g|ointment",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-betamethasonedipropionategentamicinsulfate-0.05%+0.1%-ointment",
+      "sourceVariantId": "VAR-betamethasonedipropionategentamicinsulfate-0.05%+0.1%-ointment",
+      "sourceDedupeKey": "betamethasonedipropionategentamicinsulfate|0.05%+0.1%|ointment",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-betamethasonedipropionategentamicinsulfateclotrimazole-(0.5mg+1mg+10mg)/1g-cream",
+      "sourceVariantId": "VAR-betamethasonedipropionategentamicinsulfateclotrimazole-(0.5mg+1mg+10mg)/1g-cream",
+      "sourceDedupeKey": "betamethasonedipropionategentamicinsulfateclotrimazole|(0.5mg+1mg+10mg)/1g|cream",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-betamethasonedipropionategentamicinsulfatesalicylicacid-0.05%+0.1%+3%-ointment",
+      "sourceVariantId": "VAR-betamethasonedipropionategentamicinsulfatesalicylicacid-0.05%+0.1%+3%-ointment",
+      "sourceDedupeKey": "betamethasonedipropionategentamicinsulfatesalicylicacid|0.05%+0.1%+3%|ointment",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-betamethasonedipropionatesalicylicacid-(0.5mg+20mg)/1g-cutaneousliquid",
+      "sourceVariantId": "VAR-betamethasonedipropionatesalicylicacid-(0.5mg+20mg)/1g-cutaneousliquid",
+      "sourceDedupeKey": "betamethasonedipropionatesalicylicacid|(0.5mg+20mg)/1g|cutaneousliquid",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-betamethasonesodiumphosphategentamicinsulfate-(1mg+3mg)/1ml-eareyedropssolution",
+      "sourceVariantId": "VAR-betamethasonesodiumphosphategentamicinsulfate-(1mg+3mg)/1ml-eareyedropssolution",
+      "sourceDedupeKey": "betamethasonesodiumphosphategentamicinsulfate|(1mg+3mg)/1ml|eareyedropssolution",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-betamethasonevalerateequivbetamethasonegentamicinsulfate-(1mg+1mg)/1g-cream",
+      "sourceVariantId": "VAR-betamethasonevalerateequivbetamethasonegentamicinsulfate-(1mg+1mg)/1g-cream",
+      "sourceDedupeKey": "betamethasonevalerateequivbetamethasonegentamicinsulfate|(1mg+1mg)/1g|cream",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-betamethasonevalerateequivbetamethasonegentamicinsulfate-(1mg+1mg)/1g-ointment",
+      "sourceVariantId": "VAR-betamethasonevalerateequivbetamethasonegentamicinsulfate-(1mg+1mg)/1g-ointment",
+      "sourceDedupeKey": "betamethasonevalerateequivbetamethasonegentamicinsulfate|(1mg+1mg)/1g|ointment",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-betamthasonediporpionatesalycilicacidbetamethasonedipropionate-(0.5mg+30mg)/1g-ointment",
+      "sourceVariantId": "VAR-betamthasonediporpionatesalycilicacidbetamethasonedipropionate-(0.5mg+30mg)/1g-ointment",
+      "sourceDedupeKey": "betamthasonediporpionatesalycilicacidbetamethasonedipropionate|(0.5mg+30mg)/1g|ointment",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-bethametasonedipropionatesalycilicacid-(0.5mg+20mg)/1g-cutaneousliquid",
+      "sourceVariantId": "VAR-bethametasonedipropionatesalycilicacid-(0.5mg+20mg)/1g-cutaneousliquid",
+      "sourceDedupeKey": "bethametasonedipropionatesalycilicacid|(0.5mg+20mg)/1g|cutaneousliquid",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-bevacizumab-100mg/4ml-concentrateforsolutionforinfusion",
+      "sourceVariantId": "VAR-bevacizumab-100mg/4ml-concentrateforsolutionforinfusion",
+      "sourceDedupeKey": "bevacizumab|100mg/4ml|concentrateforsolutionforinfusion",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/004697",
+        "medicineName": "Zirabev",
+        "activeSubstance": "bevacizumab",
+        "atcCode": "L01XC07",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/zirabev",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/zirabev-epar-product-information_en.pdf",
+        "documentName": "Zirabev : EPAR - Product Information",
+        "documentUpdated": "2026-03-25T10:53:00Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "06d9f3f2bee4d466052baac0b403a31a79998286879a56e204b40d96d173c52c",
+        "section41Sha256": "1d3ecc134be05383cb4464397aa1a661e908430a31144b19eb292827b5ce2584",
+        "section42Sha256": "a727ccc5fa25eec46f6d2c8ae3d12f7f62a6313824eb32f54e639ca3d223492c",
+        "section2Characters": 560,
+        "section41Characters": 2971,
+        "section42Characters": 6278
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-bevacizumab-25mg/ml(400mg/16ml)-concentrateforsolutionforinjection",
+      "sourceVariantId": "VAR-bevacizumab-25mg/ml(400mg/16ml)-concentrateforsolutionforinjection",
+      "sourceDedupeKey": "bevacizumab|25mg/ml(400mg/16ml)|concentrateforsolutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/005327",
+        "medicineName": "Abevmy",
+        "activeSubstance": "bevacizumab",
+        "atcCode": "L01FG01",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/abevmy",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/abevmy-epar-product-information_en.pdf",
+        "documentName": "Abevmy : EPAR - Product Information",
+        "documentUpdated": "2026-07-07T13:00:00Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": false,
+        "section2Sha256": "29dd8bb81091e586a2cdd0e33851f3fcf1234d5ca22b8cb69cd931eb7b3260f0",
+        "section41Sha256": "09d08fb44b7f23e6aa901cdc2946e3af280458799d62e10626252efd2c90fea3",
+        "section42Sha256": "de6c7b827bd48f1e49549dbb867adcf67f35c0650236a0e145a12f2c01eb0ff7",
+        "section2Characters": 633,
+        "section41Characters": 2971,
+        "section42Characters": 6127
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-bevacizumab-400mg/16ml-concentrateforsolutionforinfusion",
+      "sourceVariantId": "VAR-bevacizumab-400mg/16ml-concentrateforsolutionforinfusion",
+      "sourceDedupeKey": "bevacizumab|400mg/16ml|concentrateforsolutionforinfusion",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/004697",
+        "medicineName": "Zirabev",
+        "activeSubstance": "bevacizumab",
+        "atcCode": "L01XC07",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/zirabev",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/zirabev-epar-product-information_en.pdf",
+        "documentName": "Zirabev : EPAR - Product Information",
+        "documentUpdated": "2026-03-25T10:53:00Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "06d9f3f2bee4d466052baac0b403a31a79998286879a56e204b40d96d173c52c",
+        "section41Sha256": "1d3ecc134be05383cb4464397aa1a661e908430a31144b19eb292827b5ce2584",
+        "section42Sha256": "a727ccc5fa25eec46f6d2c8ae3d12f7f62a6313824eb32f54e639ca3d223492c",
+        "section2Characters": 560,
+        "section41Characters": 2971,
+        "section42Characters": 6278
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-biperidenhydrochloride-2mg-tablet",
+      "sourceVariantId": "VAR-biperidenhydrochloride-2mg-tablet",
+      "sourceDedupeKey": "biperidenhydrochloride|2mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-bortezomibasmannitolboronicester-3.5mg-powderforsolutionforinjection",
+      "sourceVariantId": "VAR-bortezomibasmannitolboronicester-3.5mg-powderforsolutionforinjection",
+      "sourceDedupeKey": "bortezomibasmannitolboronicester|3.5mg|powderforsolutionforinjection",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/003984",
+        "medicineName": "Bortezomib Accord",
+        "activeSubstance": "bortezomib",
+        "atcCode": "L01XX32",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/bortezomib-accord",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/bortezomib-accord-epar-product-information_en.pdf",
+        "documentName": "Bortezomib Accord : EPAR - Product Information",
+        "documentUpdated": "2026-03-25T15:00:00Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "cf3d6894109be9fcff10d3ea4a52d87d0c466b7d930bbb674713f65201e09098",
+        "section41Sha256": "37674cf3be1113ca80cbdf2149bb95f003ef4ad91bc6f31e9be11def3c7396e8",
+        "section42Sha256": "5edb8ab5c07396a323d197c9b10212f39fa6e32ab760d1f2312bdf9ad8830141",
+        "section2Characters": 373,
+        "section41Characters": 28,
+        "section42Characters": 32
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-bromazepam-1.5mg-tablet",
+      "sourceVariantId": "VAR-bromazepam-1.5mg-tablet",
+      "sourceDedupeKey": "bromazepam|1.5mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-bromazepam-3mg-tablet",
+      "sourceVariantId": "VAR-bromazepam-3mg-tablet",
+      "sourceDedupeKey": "bromazepam|3mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-bromazepam-6mg-tablet",
+      "sourceVariantId": "VAR-bromazepam-6mg-tablet",
+      "sourceDedupeKey": "bromazepam|6mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-bromhexinehcl-2mg/ml-oralsolution",
+      "sourceVariantId": "VAR-bromhexinehcl-2mg/1ml-oralsolution",
+      "sourceDedupeKey": "bromhexinehcl|2mg/1ml|oralsolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-bromhexinehcl-4mg/5ml-syrup",
+      "sourceVariantId": "VAR-bromhexinehcl-4mg/5ml-syrup",
+      "sourceDedupeKey": "bromhexinehcl|4mg/5ml|syrup",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-budesonide-100mcg/1dose-nasalspraysuspension",
+      "sourceVariantId": "VAR-budesonide-100mcg/1dose-nasalspraysuspension",
+      "sourceDedupeKey": "budesonide|100mcg/1dose|nasalspraysuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/004655",
+        "medicineName": "Jorveza",
+        "activeSubstance": "Budesonide",
+        "atcCode": "A07EA06",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/jorveza",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/jorveza-epar-product-information_en.pdf",
+        "documentName": "Jorveza : EPAR - Product Information",
+        "documentUpdated": "2026-04-15T09:00:00Z",
+        "medicineScore": 10,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "660ec65e94befc007dd7f2af1228e04e78d6469d574a8fa288476e8c934e896f",
+        "section41Sha256": "89ffe47295b1ce1d3f96225c593150a8b30c9bef9672115085783bc4b6c8e0df",
+        "section42Sha256": "db4f4c1b68c30da3e5fa3b91ca098c0ce5a408b52b4368330c338d329354595c",
+        "section2Characters": 411,
+        "section41Characters": 112,
+        "section42Characters": 3206
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-buprenorphine-2mg-sublingualtablet",
+      "sourceVariantId": "VAR-buprenorphine-2mg-sublingualtablet",
+      "sourceDedupeKey": "buprenorphine|2mg|sublingualtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/006188",
+        "medicineName": "Buprenorphine Neuraxpharm",
+        "activeSubstance": "buprenorphine hydrochloride",
+        "atcCode": "N07BC01",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/buprenorphine-neuraxpharm",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/buprenorphine-neuraxpharm-epar-product-information_en.pdf",
+        "documentName": "Buprenorphine Neuraxpharm : EPAR - Product information",
+        "documentUpdated": "2025-05-16T13:35:00Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "ca7fdacd573035c7a94dc33389cea2efe41faa15a2c823d39b727e825261ed27",
+        "section41Sha256": "2464fa803ba91a0038ccc7392a66d45e2209a6da673be1bc9f4eba82e2a35596",
+        "section42Sha256": "9df2dad242cd0fb05f510b488a6e1873e47cd81a4e0980e73675a7ad2fb83f20",
+        "section2Characters": 529,
+        "section41Characters": 284,
+        "section42Characters": 9581
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-buprenorphine-8mg-sublingualtablet",
+      "sourceVariantId": "VAR-buprenorphine-8mg-sublingualtablet",
+      "sourceDedupeKey": "buprenorphine|8mg|sublingualtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/006188",
+        "medicineName": "Buprenorphine Neuraxpharm",
+        "activeSubstance": "buprenorphine hydrochloride",
+        "atcCode": "N07BC01",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/buprenorphine-neuraxpharm",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/buprenorphine-neuraxpharm-epar-product-information_en.pdf",
+        "documentName": "Buprenorphine Neuraxpharm : EPAR - Product information",
+        "documentUpdated": "2025-05-16T13:35:00Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "ca7fdacd573035c7a94dc33389cea2efe41faa15a2c823d39b727e825261ed27",
+        "section41Sha256": "2464fa803ba91a0038ccc7392a66d45e2209a6da673be1bc9f4eba82e2a35596",
+        "section42Sha256": "9df2dad242cd0fb05f510b488a6e1873e47cd81a4e0980e73675a7ad2fb83f20",
+        "section2Characters": 529,
+        "section41Characters": 284,
+        "section42Characters": 9581
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-butamiratecitrate-4mg/5ml-syrup",
+      "sourceVariantId": "VAR-butamiratecitrate-4mg/5ml-syrup",
+      "sourceDedupeKey": "butamiratecitrate|4mg/5ml|syrup",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-butamiratecitrate-7.5mg/5ml-syrup",
+      "sourceVariantId": "VAR-butamiratecitrate-7.5mg/5ml-syrup",
+      "sourceDedupeKey": "butamiratecitrate|7.5mg/5ml|syrup",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-calciumcarbonatecholecalciferol-1.000mg/22microgram-effervescenttablet",
+      "sourceVariantId": "VAR-calciumcarbonatecholecalciferol-1,000mg/22microgram-effervescenttablet",
+      "sourceDedupeKey": "calciumcarbonatecholecalciferol|1,000mg/22microgram|effervescenttablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-calciumcarbonatecholecalciferol-500mg+400iu-chewabletablet",
+      "sourceVariantId": "VAR-calciumcarbonatecholecalciferol-500mg+400iu-chewabletablet",
+      "sourceDedupeKey": "calciumcarbonatecholecalciferol|500mg+400iu|chewabletablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-calciumgluconate-1000mg/10ml-solutionforinfusion",
+      "sourceVariantId": "VAR-calciumgluconate-1000mg/10ml-solutionforinfusion",
+      "sourceDedupeKey": "calciumgluconate|1000mg/10ml|solutionforinfusion",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-calciumgluconate1h2o-100mg/ml-solutionforinjection",
+      "sourceVariantId": "VAR-calciumgluconate1h2o-100mg/ml-solutionforinjection",
+      "sourceDedupeKey": "calciumgluconate1h2o|100mg/ml|solutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-calciumgluconatxh2ocalciumdsacharatx4h20-100mg/ml-solutionforinjectioninfusion",
+      "sourceVariantId": "VAR-calciumgluconatxh2ocalciumdsacharatx4h20-10%-solutionforinjectioninfusion",
+      "sourceDedupeKey": "calciumgluconatxh2ocalciumdsacharatx4h20|10%|solutionforinjectioninfusion",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-camphorracemicmethylsalycilatebenzylnicotinatementholracemic-(20mg+10mg+10mg+10mg)/1g-cream",
+      "sourceVariantId": "VAR-camphorracemicmethylsalycilatebenzylnicotinatementholracemic-(20mg+10mg+10mg+10mg)/1g-cream",
+      "sourceDedupeKey": "camphorracemicmethylsalycilatebenzylnicotinatementholracemic|(20mg+10mg+10mg+10mg)/1g|cream",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-candesartancilexetilamlodipinebesilate-16mg+10mg-capsulehard",
+      "sourceVariantId": "VAR-candesartancilexetilamlodipinebesilate-16mg+10mg-capsulehard",
+      "sourceDedupeKey": "candesartancilexetilamlodipinebesilate|16mg+10mg|capsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-candesartancilexetilamlodipinebesilate-16mg+5mg-capsulehard",
+      "sourceVariantId": "VAR-candesartancilexetilamlodipinebesilate-16mg+5mg-capsulehard",
+      "sourceDedupeKey": "candesartancilexetilamlodipinebesilate|16mg+5mg|capsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-candesartancilexetilamlodipinebesilate-8mg+5mg-capsulehard",
+      "sourceVariantId": "VAR-candesartancilexetilamlodipinebesilate-8mg+5mg-capsulehard",
+      "sourceDedupeKey": "candesartancilexetilamlodipinebesilate|8mg+5mg|capsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-carbocisteine-1.5g-granulesfororalsuspension",
+      "sourceVariantId": "VAR-carbocisteine-1.5g-granulesfororalsuspension",
+      "sourceDedupeKey": "carbocisteine|1.5g|granulesfororalsuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-carbocisteine-125mg/5ml-syrup",
+      "sourceVariantId": "VAR-carbocisteine-125mg/5ml-syrup",
+      "sourceDedupeKey": "carbocisteine|125mg/5ml|syrup",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-carbocisteine-250mg/5ml-syrup",
+      "sourceVariantId": "VAR-carbocisteine-250mg/5ml-syrup",
+      "sourceDedupeKey": "carbocisteine|250mg/5ml|syrup",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-carbocisteinemicronized-375mg-capsulehard",
+      "sourceVariantId": "VAR-carbocisteinemicronized-375mg-capsulehard",
+      "sourceDedupeKey": "carbocisteinemicronized|375mg|capsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-carbocysteinelysinesalt-90mg/ml-syrup",
+      "sourceVariantId": "VAR-carbocysteinelysinesalt-90mg/1ml-syrup",
+      "sourceDedupeKey": "carbocysteinelysinesalt|90mg/1ml|syrup",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-carvedilol-12.5mg-tablet",
+      "sourceVariantId": "VAR-carvedilol-12.5mg-tablet",
+      "sourceDedupeKey": "carvedilol|12.5mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cefaclormonohydrate-250mg/5ml-granulesfororalsuspension",
+      "sourceVariantId": "VAR-cefaclormonohydrate-250mg/5ml-granulesfororalsuspension",
+      "sourceDedupeKey": "cefaclormonohydrate|250mg/5ml|granulesfororalsuspension",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cefaclormonohydrate-500mg-capsulehard",
+      "sourceVariantId": "VAR-cefaclormonohydrate-500mg-capsulehard",
+      "sourceDedupeKey": "cefaclormonohydrate|500mg|capsulehard",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cefaclormonohydrate-750mg-modifiedreleasetablet",
+      "sourceVariantId": "VAR-cefaclormonohydrate-750mg-modifiedreleasetablet",
+      "sourceDedupeKey": "cefaclormonohydrate|750mg|modifiedreleasetablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cefaclormonohydrateeqvtocefaclor250mg-250mg/5ml-granulesfororalsuspension",
+      "sourceVariantId": "VAR-cefaclormonohydrateeqvtocefaclor250mg-250mg/5ml-granulesfororalsuspension",
+      "sourceDedupeKey": "cefaclormonohydrateeqvtocefaclor250mg|250mg/5ml|granulesfororalsuspension",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cefalexinmonohydrate-250mg/5ml-powderfororalsuspension",
+      "sourceVariantId": "VAR-cefalexinmonohydrate-250mg/5ml-powderfororalsuspension",
+      "sourceDedupeKey": "cefalexinmonohydrate|250mg/5ml|powderfororalsuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cefalexinmonohydrate-500mg-capsulehard",
+      "sourceVariantId": "VAR-cefalexinmonohydrate-500mg-capsulehard",
+      "sourceDedupeKey": "cefalexinmonohydrate|500mg|capsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cefcalormonohydrateeqtocefaclo125mg-125mg/5ml-granulesfororalsuspension",
+      "sourceVariantId": "VAR-cefcalormonohydrateeqtocefaclo125mg-125mg/5ml-granulesfororalsuspension",
+      "sourceDedupeKey": "cefcalormonohydrateeqtocefaclo125mg|125mg/5ml|granulesfororalsuspension",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cefdinir-300mg-capsulehard",
+      "sourceVariantId": "VAR-cefdinir-300mg-capsulehard",
+      "sourceDedupeKey": "cefdinir|300mg|capsulehard",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cefiximetrihydrateequivalenttocefixime-100mg/5ml-powderfororalsolution",
+      "sourceVariantId": "VAR-cefiximetrihydrateequivalenttocefixime-100mg/5ml-powderfororalsolution",
+      "sourceDedupeKey": "cefiximetrihydrateequivalenttocefixime|100mg/5ml|powderfororalsolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cefpodoximeproxetil-200mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-cefpodoximeproxetil-200mg-filmcoatedtablet",
+      "sourceDedupeKey": "cefpodoximeproxetil|200mg|filmcoatedtablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cefpodoximeproxetilequivalenttocefpodoxime-100mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-cefpodoximeproxetilequivalenttocefpodoxime-100mg-filmcoatedtablet",
+      "sourceDedupeKey": "cefpodoximeproxetilequivalenttocefpodoxime|100mg|filmcoatedtablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cefpodoximeproxetilmicronizedequivalenttocefpodoximecefpodoximeproxetilmicronizedequivalenttocefpodoxime-40mg/5ml-powderfororalsuspension",
+      "sourceVariantId": "VAR-cefpodoximeproxetilmicronizedequivalenttocefpodoximecefpodoximeproxetilmicronizedequivalenttocefpodoxime-40mg/5ml-powderfororalsuspension",
+      "sourceDedupeKey": "cefpodoximeproxetilmicronizedequivalenttocefpodoximecefpodoximeproxetilmicronizedequivalenttocefpodoxime|40mg/5ml|powderfororalsuspension",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ceftriaxone-0.5g-powderforsolutionforinjection",
+      "sourceVariantId": "VAR-ceftriaxone-0.5g-powderforsolutionforinjection",
+      "sourceDedupeKey": "ceftriaxone|0.5g|powderforsolutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ceftriaxone-1g/3.5ml-powderandsolventforsolutionforinjection",
+      "sourceVariantId": "VAR-ceftriaxone-1g/3.5ml-powderandsolventforsolutionforinjection",
+      "sourceDedupeKey": "ceftriaxone|1g/3.5ml|powderandsolventforsolutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ceftriaxonesodium-1g/3.5ml-powderandsolventforsolutionforinjection",
+      "sourceVariantId": "VAR-ceftriaxonesodium-1g/3.5ml-powderandsolventforsolutionforinjection",
+      "sourceDedupeKey": "ceftriaxonesodium|1g/3.5ml|powderandsolventforsolutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ceftriaxonesodiumlidocaine-1g/3.5ml-powderandsolventforsolutionforinjection",
+      "sourceVariantId": "VAR-ceftriaxonesodiumlidocaine-1g/3.5ml-powderandsolventforsolutionforinjection",
+      "sourceDedupeKey": "ceftriaxonesodiumlidocaine|1g/3.5ml|powderandsolventforsolutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cefuroximeaxetilamorphouscoatedwithstearicacid-125mg/5ml-granulesfororalsuspension",
+      "sourceVariantId": "VAR-cefuroximeaxetilamorphouscoatedwithstearicacid-125mg/5ml-granulesfororalsuspension",
+      "sourceDedupeKey": "cefuroximeaxetilamorphouscoatedwithstearicacid|125mg/5ml|granulesfororalsuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cetirizinedihydrochloride-1mg/ml-syrup",
+      "sourceVariantId": "VAR-cetirizinedihydrochloride-1mg/1ml-syrup",
+      "sourceDedupeKey": "cetirizinedihydrochloride|1mg/1ml|syrup",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cetuximabchimericantibody-5mg/ml-concentrateforsolutionforinfusion",
+      "sourceVariantId": "VAR-cetuximabchimericantibody-5mg/1ml-concentrateforsolutionforinfusion",
+      "sourceDedupeKey": "cetuximabchimericantibody|5mg/1ml|concentrateforsolutionforinfusion",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/000558",
+        "medicineName": "Erbitux",
+        "activeSubstance": "cetuximab",
+        "atcCode": "L01FE01",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/erbitux",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/erbitux-epar-product-information_en.pdf",
+        "documentName": "Erbitux : EPAR - Product Information",
+        "documentUpdated": "2026-07-15T11:55:00Z",
+        "medicineScore": 7,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "fde5a316db40ca271869df2d7c990865ceaf9de7e08cdef06322039822474a79",
+        "section41Sha256": "496b0a91aa06401d37fbef6b3722a9b637b73db45437931196140cc7bcb99227",
+        "section42Sha256": "3490238378193c7e0d4577bf6d31f10555cad1ba312858ee81118569fadeb448",
+        "section2Characters": 325,
+        "section41Characters": 1025,
+        "section42Characters": 13629
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-chamomiletincture1445lidocainehydrochloride1h2olauromacrogol400-150.0mg/g.3.4mg/g.3.2mg/g-oromucosalgel",
+      "sourceVariantId": "VAR-chamomiletincture1445lidocainehydrochloride1h2olauromacrogol400-150.0mg/g,3.4mg/g,3.2mg/g-oromucosalgel",
+      "sourceDedupeKey": "chamomiletincture1445lidocainehydrochloride1h2olauromacrogol400|150.0mg/g,3.4mg/g,3.2mg/g|oromucosalgel",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-chloramphenicol-10mg/g-eyeointment",
+      "sourceVariantId": "VAR-chloramphenicol-1%-eyeointment",
+      "sourceDedupeKey": "chloramphenicol|1%|eyeointment",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-chloramphenicol-10mg/g-eyeointment",
+      "sourceVariantId": "VAR-chloramphenicol-10mg/g-eyeointment",
+      "sourceDedupeKey": "chloramphenicol|10mg/g|eyeointment",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-chloramphenicol-50mg/g-ointment",
+      "sourceVariantId": "VAR-chloramphenicol-5%-ointment",
+      "sourceDedupeKey": "chloramphenicol|5%|ointment",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-chloramphenicol-50mg/g-ointment",
+      "sourceVariantId": "VAR-chloramphenicol-50mg/1g-ointment",
+      "sourceDedupeKey": "chloramphenicol|50mg/1g|ointment",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-chloramphenicolmicronised-10mg/g-eyeointment",
+      "sourceVariantId": "VAR-chloramphenicolmicronised-1%-eyeointment",
+      "sourceDedupeKey": "chloramphenicolmicronised|1%|eyeointment",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-chlorhexidinedihydrochloridebenzocaine-5mg/1.5mg-compressedlozenge",
+      "sourceVariantId": "VAR-chlorhexidinedihydrochloridebenzocaine-5mg/1.5mg-compressedlozenge",
+      "sourceDedupeKey": "chlorhexidinedihydrochloridebenzocaine|5mg/1.5mg|compressedlozenge",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-chlorhexidinegluconate012benzydaminehydrochloride015-0.12%+0.15%-mouthwash",
+      "sourceVariantId": "VAR-chlorhexidinegluconate012benzydaminehydrochloride015-0.12%+0.15%-mouthwash",
+      "sourceDedupeKey": "chlorhexidinegluconate012benzydaminehydrochloride015|0.12%+0.15%|mouthwash",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-chlorhexidinegluconatebenzydaminehydrochloride-0.12%+0.15%-oromucosalspray",
+      "sourceVariantId": "VAR-chlorhexidinegluconatebenzydaminehydrochloride-0.12%+0.15%-oromucosalspray",
+      "sourceDedupeKey": "chlorhexidinegluconatebenzydaminehydrochloride|0.12%+0.15%|oromucosalspray",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-chloropyraminehydrochloride-20mg/ml-solutionforinjection",
+      "sourceVariantId": "VAR-chloropyraminehydrochloride-20mg/ml-solutionforinjection",
+      "sourceDedupeKey": "chloropyraminehydrochloride|20mg/ml|solutionforinjection",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-chlorphenaminemaleate-2mg/5ml-syrup",
+      "sourceVariantId": "VAR-chlorphenaminemaleate-2mg/5ml-syrup",
+      "sourceDedupeKey": "chlorphenaminemaleate|2mg/5ml|syrup",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-chlorphenaminemaleate-4mg/tab-tablet",
+      "sourceVariantId": "VAR-chlorphenaminemaleate-4mg/tab-tablet",
+      "sourceDedupeKey": "chlorphenaminemaleate|4mg/tab|tablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cholecalciferolvitamind3-300000iu/ml-solutionforinjection",
+      "sourceVariantId": "VAR-cholecalciferolvitamind3-300000iu/ml-solutionforinjection",
+      "sourceDedupeKey": "cholecalciferolvitamind3|300000iu/ml|solutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cholecalciferolvitamind3-50000iu/15ml-oraldrops",
+      "sourceVariantId": "VAR-cholecalciferolvitamind3-50000iu/15ml-oraldrops",
+      "sourceDedupeKey": "cholecalciferolvitamind3|50000iu/15ml|oraldrops",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cholinealphoscerate-400mg-capsule",
+      "sourceVariantId": "VAR-cholinealphoscerate-400mg-capsule",
+      "sourceDedupeKey": "cholinealphoscerate|400mg|capsule",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cinnarizinedimenhydrinate-20mg+40mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-cinnarizinedimenhydrinate-20mg+40mg-filmcoatedtablet",
+      "sourceDedupeKey": "cinnarizinedimenhydrinate|20mg+40mg|filmcoatedtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ciprofloxacin-100mg/10ml-concentrateforsolutionforinfusion",
+      "sourceVariantId": "VAR-ciprofloxacin-100mg/10ml-concentrateforsolutionforinfusion",
+      "sourceDedupeKey": "ciprofloxacin|100mg/10ml|concentrateforsolutionforinfusion",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ciprofloxacin-3mg/ml-eareyedropssolution",
+      "sourceVariantId": "VAR-ciprofloxacin-3mg/1ml-eareyedropssolution",
+      "sourceDedupeKey": "ciprofloxacin|3mg/1ml|eareyedropssolution",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ciprofloxacinhcl-3mg/ml-eareyedropssolution",
+      "sourceVariantId": "VAR-ciprofloxacinhcl-3mg/1ml-eareyedropssolution",
+      "sourceDedupeKey": "ciprofloxacinhcl|3mg/1ml|eareyedropssolution",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ciprofloxacinhclmonohydrate-3mg/ml-eareyedropssolution",
+      "sourceVariantId": "VAR-ciprofloxacinhclmonohydrate-3mg/1ml-eareyedropssolution",
+      "sourceDedupeKey": "ciprofloxacinhclmonohydrate|3mg/1ml|eareyedropssolution",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-citalopram-40mg/ml-oraldropssolution",
+      "sourceVariantId": "VAR-citalopram-40mg/1ml-oraldropssolution",
+      "sourceDedupeKey": "citalopram|40mg/1ml|oraldropssolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-clindamycinhydrochloride-10mg/g-cutaneoussolution",
+      "sourceVariantId": "VAR-clindamycinhydrochloride-0.01-cutaneoussolution",
+      "sourceDedupeKey": "clindamycinhydrochloride|0.01|cutaneoussolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-clindamycinhydrochloride-10mg/g-gel",
+      "sourceVariantId": "VAR-clindamycinhydrochloride-0.01-gel",
+      "sourceDedupeKey": "clindamycinhydrochloride|0.01|gel",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-clindamycinphospate-10mg/g-cutaneoussolution",
+      "sourceVariantId": "VAR-clindamycinphospate-1%-cutaneoussolution",
+      "sourceDedupeKey": "clindamycinphospate|1%|cutaneoussolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-clopidogrel-75mg-coatedtablet",
+      "sourceVariantId": "VAR-clopidogrel-75mg-coatedtablet",
+      "sourceDedupeKey": "clopidogrel|75mg|coatedtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/000975",
+        "medicineName": "Clopidogrel Zentiva (previously Clopidogrel Winthrop)",
+        "activeSubstance": "clopidogrel",
+        "atcCode": "B01AC04",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/clopidogrel-zentiva",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/clopidogrel-zentiva-epar-product-information_en.pdf",
+        "documentName": "Clopidogrel Zentiva: EPAR - Product information",
+        "documentUpdated": "2026-08-03T16:45:00Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "4ff97d97efc4464141c67a84f7b5b174dff8e4c375a2b94a35d021200e160e5e",
+        "section41Sha256": "2f58d7af27c6ae53d1364b34b6e8a618898538f2719419decfdc2d1f818ce1f1",
+        "section42Sha256": "bcd35f4fd8b7b4d229be4f706b3d45e3a62b02808de310671407a76c89fc216d",
+        "section2Characters": 247,
+        "section41Characters": 1729,
+        "section42Characters": 1942
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-clotrimazol-10mg/g-cutaneouspaste",
+      "sourceVariantId": "VAR-clotrimazol-10mg/g-cutaneouspaste",
+      "sourceDedupeKey": "clotrimazol|10mg/g|cutaneouspaste",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-clotrimazole-200mg-pessary",
+      "sourceVariantId": "VAR-clotrimazole-200mg-pessary",
+      "sourceDedupeKey": "clotrimazole|200mg|pessary",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-clotrimazolemicronised-200mg-vaginaltablet",
+      "sourceVariantId": "VAR-clotrimazolemicronised-200mg-vaginaltablet",
+      "sourceDedupeKey": "clotrimazolemicronised|200mg|vaginaltablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-clotrimazoleprednisoloneacetatehexamidinediisetionate-10mg/g-2.5mg/g-5mg/g-cream",
+      "sourceVariantId": "VAR-clotrimazoleprednisoloneacetatehexamidinediisetionate-10mg/g-2,5mg/g-5mg/g-cream",
+      "sourceDedupeKey": "clotrimazoleprednisoloneacetatehexamidinediisetionate|10mg/g-2,5mg/g-5mg/g|cream",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-coatedclarithromycin-250mg/5ml-granulesfororalsuspension",
+      "sourceVariantId": "VAR-coatedclarithromycin-250mg/5ml-granulesfororalsuspension",
+      "sourceDedupeKey": "coatedclarithromycin|250mg/5ml|granulesfororalsuspension",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cobimetinibhemifumarate-20mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-cobimetinibhemifumarate-20mg-filmcoatedtablet",
+      "sourceDedupeKey": "cobimetinibhemifumarate|20mg|filmcoatedtablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/003960",
+        "medicineName": "Cotellic",
+        "activeSubstance": "cobimetinib hemifumarate",
+        "atcCode": "L01XE38",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/cotellic",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/cotellic-epar-product-information_en.pdf",
+        "documentName": "Cotellic : EPAR - Product information",
+        "documentUpdated": "2025-06-24T11:11:11Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "07b52cea49d9482464356dc6a747a3149c4ae9066c955f845daed23a6c4a7ee6",
+        "section41Sha256": "a159bfce58181d0a5b2d9f3d883d932d926562eb5cee518a392113dd8b238441",
+        "section42Sha256": "1b46e47d2e2ececd4e612b59ead1a79cdd7755e7558c56d500017a81b9d2169a",
+        "section2Characters": 231,
+        "section41Characters": 192,
+        "section42Characters": 13901
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-codeinephosphateephedrinehydrochloride-(7.5mg+5mg)/5ml-syrup",
+      "sourceVariantId": "VAR-codeinephosphateephedrinehydrochloride-(7.5mg+5mg)/5ml-syrup",
+      "sourceDedupeKey": "codeinephosphateephedrinehydrochloride|(7.5mg+5mg)/5ml|syrup",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-colecalciferol-14400iu/1ml-oraldropssolution",
+      "sourceVariantId": "VAR-colecalciferol-14400iu/1ml-oraldropssolution",
+      "sourceDedupeKey": "colecalciferol|14400iu/1ml|oraldropssolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/001180",
+        "medicineName": "Vantavo (previously Alendronate sodium and colecalciferol, MSD)",
+        "activeSubstance": "alendronic acid;colecalciferol",
+        "atcCode": "M05BB03",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/vantavo",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/vantavo-epar-product-information_en.pdf",
+        "documentName": "Vantavo : EPAR - Product Information",
+        "documentUpdated": "2026-02-12T17:01:00Z",
+        "medicineScore": 6,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "4eb926b19efe3e732a4b50cf0be6de3d2e5d7986dc0a87492cd267c55073970d",
+        "section41Sha256": "f57d6f77d9a6d9206c9faf21704ffafc8c9450a47d470826535b51b27122f56c",
+        "section42Sha256": "89398ec655cf38831652456afcefa1eec8f2768f46fd5bff30a308b36f252368",
+        "section2Characters": 574,
+        "section41Characters": 166,
+        "section42Characters": 3231
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-colistimethatesodium-1millioni.e-powderforsolutionforinjection",
+      "sourceVariantId": "VAR-colistimethatesodium-1millioni.e-powderforsolutionforinjection",
+      "sourceDedupeKey": "colistimethatesodium|1millioni.e|powderforsolutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/001225",
+        "medicineName": "Colobreathe",
+        "activeSubstance": "Colistimethate sodium",
+        "atcCode": "J01XB01",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/colobreathe",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/colobreathe-epar-product-information_en.pdf",
+        "documentName": "Colobreathe : EPAR - Product Information",
+        "documentUpdated": "2025-06-20T16:55:00Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "662b5036cbaec0e98664a41be8d5ee6109b416a21147bb01f85d7b8df633f556",
+        "section41Sha256": "969fb6ce45f6d8dace4509b3e0d07ab348084118676eb0b48cae1f31937e5f4a",
+        "section42Sha256": "112fee9b9cf0e5da81630cf0e81b18e75515e7a651c428d887e991eba7009e1c",
+        "section2Characters": 100,
+        "section41Characters": 295,
+        "section42Characters": 1229
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-colistimethatesodiumusp-1000000iu/1ml-powderforsolutionforinjection",
+      "sourceVariantId": "VAR-colistimethatesodiumusp-1000000iu/1ml-powderforsolutionforinjection",
+      "sourceDedupeKey": "colistimethatesodiumusp|1000000iu/1ml|powderforsolutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/001225",
+        "medicineName": "Colobreathe",
+        "activeSubstance": "Colistimethate sodium",
+        "atcCode": "J01XB01",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/colobreathe",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/colobreathe-epar-product-information_en.pdf",
+        "documentName": "Colobreathe : EPAR - Product Information",
+        "documentUpdated": "2025-06-20T16:55:00Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "662b5036cbaec0e98664a41be8d5ee6109b416a21147bb01f85d7b8df633f556",
+        "section41Sha256": "969fb6ce45f6d8dace4509b3e0d07ab348084118676eb0b48cae1f31937e5f4a",
+        "section42Sha256": "112fee9b9cf0e5da81630cf0e81b18e75515e7a651c428d887e991eba7009e1c",
+        "section2Characters": 100,
+        "section41Characters": 295,
+        "section42Characters": 1229
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cyanocobalamine-500mcg/1ml-solutionforinjection",
+      "sourceVariantId": "VAR-cyanocobalamine-500mcg/1ml-solutionforinjection",
+      "sourceDedupeKey": "cyanocobalamine|500mcg/1ml|solutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cyanocobalaminepyridoxinehydrochloridethiaminemononitrate-0.3mg+100mg+200mg-coatedtablet",
+      "sourceVariantId": "VAR-cyanocobalaminepyridoxinehydrochloridethiaminemononitrate-0.3mg+100mg+200mg-coatedtablet",
+      "sourceDedupeKey": "cyanocobalaminepyridoxinehydrochloridethiaminemononitrate|0.3mg+100mg+200mg|coatedtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-cyclosporine-0.5mg/ml-eardropsemulsion",
+      "sourceVariantId": "VAR-cyclosporine-0.05%-eardropsemulsion",
+      "sourceDedupeKey": "cyclosporine|0.05%|eardropsemulsion",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/002066",
+        "medicineName": "Ikervis",
+        "activeSubstance": "ciclosporin",
+        "atcCode": "S01XA18",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/ikervis",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/ikervis-epar-product-information_en.pdf",
+        "documentName": "Ikervis : EPAR - Product Information",
+        "documentUpdated": "2026-06-23T14:00:00Z",
+        "medicineScore": 9,
+        "activeEvidence": false,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "e50ca010c7056728fed6e5238c2cd2decd7acef5caebbfcb2b5992902ce49bcd",
+        "section41Sha256": "0e8c32d970953760d470e99fdef9958957eb4165ad26d229ead3aa69bd67da6b",
+        "section42Sha256": "0a85946db8a82593690bfe23d95cf786f043fa37d8f8dd7404a819d04b0da037",
+        "section2Characters": 205,
+        "section41Characters": 151,
+        "section42Characters": 1818
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dapagliflozin-5mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-dapagliflozin-5mg-filmcoatedtablet",
+      "sourceDedupeKey": "dapagliflozin|5mg|filmcoatedtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/006006",
+        "medicineName": "Dapagliflozin Viatris",
+        "activeSubstance": "dapagliflozin",
+        "atcCode": "A10BK01",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/dapagliflozin-viatris",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/dapagliflozin-viatris-epar-product-information_en.pdf",
+        "documentName": "Dapagliflozin Viatris : EPAR - Product Information",
+        "documentUpdated": "2026-05-07T10:54:00Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "690bb4179b752d804f06adb8e14631e0b174130feab8a3f0dff27243442cb475",
+        "section41Sha256": "d0828ba5ce52f9e42568d68a8c4576a69656f389a840c13f5fec31acbbf00b2a",
+        "section42Sha256": "6b82c4bced20d15b12340a8e7b1f9a86f24f1c8133863c3d13be23bf0884738a",
+        "section2Characters": 408,
+        "section41Characters": 793,
+        "section42Characters": 12546
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dasatinib-100mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-dasatinib-100mg-filmcoatedtablet",
+      "sourceDedupeKey": "dasatinib|100mg|filmcoatedtablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/000709",
+        "medicineName": "Sprycel",
+        "activeSubstance": "dasatinib",
+        "atcCode": "L01EA02",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/sprycel",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/sprycel-epar-product-information_en.pdf",
+        "documentName": "Sprycel : EPAR - Product Information",
+        "documentUpdated": "2026-02-25T12:05:00Z",
+        "medicineScore": 10,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "b2a58db207e80870cf18d8749566cbd0c7be680efa7e1325e7748680c842774d",
+        "section41Sha256": "bd1c045634e47c4eec177e2a86f0b657bf3d62245afc6ad62fc9a1b7d1edd67f",
+        "section42Sha256": "a9e046a361cdceaabe0d099ce966344ca160799b87399ffce981b7f872a71c0a",
+        "section2Characters": 1226,
+        "section41Characters": 661,
+        "section42Characters": 15257
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dasatinib-140mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-dasatinib-140mg-filmcoatedtablet",
+      "sourceDedupeKey": "dasatinib|140mg|filmcoatedtablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/000709",
+        "medicineName": "Sprycel",
+        "activeSubstance": "dasatinib",
+        "atcCode": "L01EA02",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/sprycel",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/sprycel-epar-product-information_en.pdf",
+        "documentName": "Sprycel : EPAR - Product Information",
+        "documentUpdated": "2026-02-25T12:05:00Z",
+        "medicineScore": 10,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "b2a58db207e80870cf18d8749566cbd0c7be680efa7e1325e7748680c842774d",
+        "section41Sha256": "bd1c045634e47c4eec177e2a86f0b657bf3d62245afc6ad62fc9a1b7d1edd67f",
+        "section42Sha256": "a9e046a361cdceaabe0d099ce966344ca160799b87399ffce981b7f872a71c0a",
+        "section2Characters": 1226,
+        "section41Characters": 661,
+        "section42Characters": 15257
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dasatinib-20mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-dasatinib-20mg-filmcoatedtablet",
+      "sourceDedupeKey": "dasatinib|20mg|filmcoatedtablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/000709",
+        "medicineName": "Sprycel",
+        "activeSubstance": "dasatinib",
+        "atcCode": "L01EA02",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/sprycel",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/sprycel-epar-product-information_en.pdf",
+        "documentName": "Sprycel : EPAR - Product Information",
+        "documentUpdated": "2026-02-25T12:05:00Z",
+        "medicineScore": 10,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "b2a58db207e80870cf18d8749566cbd0c7be680efa7e1325e7748680c842774d",
+        "section41Sha256": "bd1c045634e47c4eec177e2a86f0b657bf3d62245afc6ad62fc9a1b7d1edd67f",
+        "section42Sha256": "a9e046a361cdceaabe0d099ce966344ca160799b87399ffce981b7f872a71c0a",
+        "section2Characters": 1226,
+        "section41Characters": 661,
+        "section42Characters": 15257
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-deferasirox-180mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-deferasirox-180mg-filmcoatedtablet",
+      "sourceDedupeKey": "deferasirox|180mg|filmcoatedtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/005014",
+        "medicineName": "Deferasirox Mylan",
+        "activeSubstance": "deferasirox",
+        "atcCode": "V03AC03",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/deferasirox-mylan",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/procedural-steps-after/deferasirox-mylan-epar-product-information-tracked-changes_en.docx",
+        "documentName": "Deferasirox Mylan : EPAR - Product information - tracked changes",
+        "documentUpdated": "2026-06-12T12:00:00Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": null,
+        "section41Sha256": null,
+        "section42Sha256": null,
+        "section2Characters": 0,
+        "section41Characters": 0,
+        "section42Characters": 0
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-deferasirox-250mg-dispersibletablet",
+      "sourceVariantId": "VAR-deferasirox-250mg-dispersibletablet",
+      "sourceDedupeKey": "deferasirox|250mg|dispersibletablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/005014",
+        "medicineName": "Deferasirox Mylan",
+        "activeSubstance": "deferasirox",
+        "atcCode": "V03AC03",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/deferasirox-mylan",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/procedural-steps-after/deferasirox-mylan-epar-product-information-tracked-changes_en.docx",
+        "documentName": "Deferasirox Mylan : EPAR - Product information - tracked changes",
+        "documentUpdated": "2026-06-12T12:00:00Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": null,
+        "section41Sha256": null,
+        "section42Sha256": null,
+        "section2Characters": 0,
+        "section41Characters": 0,
+        "section42Characters": 0
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-deferasirox-500mg-dispersibletablet",
+      "sourceVariantId": "VAR-deferasirox-500mg-dispersibletablet",
+      "sourceDedupeKey": "deferasirox|500mg|dispersibletablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/005014",
+        "medicineName": "Deferasirox Mylan",
+        "activeSubstance": "deferasirox",
+        "atcCode": "V03AC03",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/deferasirox-mylan",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/procedural-steps-after/deferasirox-mylan-epar-product-information-tracked-changes_en.docx",
+        "documentName": "Deferasirox Mylan : EPAR - Product information - tracked changes",
+        "documentUpdated": "2026-06-12T12:00:00Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": null,
+        "section41Sha256": null,
+        "section42Sha256": null,
+        "section2Characters": 0,
+        "section41Characters": 0,
+        "section42Characters": 0
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-desloratadine-2.5mg/5ml-syrup",
+      "sourceVariantId": "VAR-desloratadine-2.5mg/5ml-syrup",
+      "sourceDedupeKey": "desloratadine|2.5mg/5ml|syrup",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/002419",
+        "medicineName": "Desloratadine Teva",
+        "activeSubstance": "desloratadine",
+        "atcCode": "R06AX27",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/desloratadine-teva",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/desloratadine-teva-epar-product-information_en.pdf",
+        "documentName": "Desloratadine Teva : EPAR - Product information",
+        "documentUpdated": "2026-07-24T02:00:00Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "625a9d39d14e89224f52ca8287af5cfd7b392b03f31e9bd6890666ccbc16d456",
+        "section41Sha256": "d20eaff93173fd68f79f059ac6054e6bab38a70fc2ddb009b2ddf95795d99f2a",
+        "section42Sha256": "cd61f5b07b8f111e051dcbf13cf49637d4165e8bfd36eb5bc984119f62bfb8e2",
+        "section2Characters": 206,
+        "section41Characters": 193,
+        "section42Characters": 1045
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-desloratadineepmicronized-2.5mg/5ml-syrup",
+      "sourceVariantId": "VAR-desloratadineepmicronized-2.5mg/5ml-syrup",
+      "sourceDedupeKey": "desloratadineepmicronized|2.5mg/5ml|syrup",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/002419",
+        "medicineName": "Desloratadine Teva",
+        "activeSubstance": "desloratadine",
+        "atcCode": "R06AX27",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/desloratadine-teva",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/desloratadine-teva-epar-product-information_en.pdf",
+        "documentName": "Desloratadine Teva : EPAR - Product information",
+        "documentUpdated": "2026-07-24T02:00:00Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "625a9d39d14e89224f52ca8287af5cfd7b392b03f31e9bd6890666ccbc16d456",
+        "section41Sha256": "d20eaff93173fd68f79f059ac6054e6bab38a70fc2ddb009b2ddf95795d99f2a",
+        "section42Sha256": "cd61f5b07b8f111e051dcbf13cf49637d4165e8bfd36eb5bc984119f62bfb8e2",
+        "section2Characters": 206,
+        "section41Characters": 193,
+        "section42Characters": 1045
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dexamethasone-0.5mg-tablet",
+      "sourceVariantId": "VAR-dexamethasone-0.5mg-tablet",
+      "sourceDedupeKey": "dexamethasone|0.5mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/002418",
+        "medicineName": "Neofordex",
+        "activeSubstance": "dexamethasone",
+        "atcCode": "H02AB02",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/neofordex-0",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/neofordex-epar-product-information_en.pdf",
+        "documentName": "Neofordex : EPAR - Product Information",
+        "documentUpdated": "2026-08-26T16:00:00Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": true,
+        "section2Sha256": "a131307feb28ff38fbba29c9a42c9b3a78f8a6d496cb058325574944516af3a5",
+        "section41Sha256": "b59907f21f44e8b3c61e0e866bdd23b4b3c70b3a066931e9e69c464eb223c782",
+        "section42Sha256": "5842248b74b701459a54341e7b9f583f9f7817c2e79236bdab0eb5f9d7e4cb46",
+        "section2Characters": 195,
+        "section41Characters": 128,
+        "section42Characters": 2128
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dexamethasonesodiumphopshateneomycinsulfate-0.1%+0.35%-eareyedropssolution",
+      "sourceVariantId": "VAR-dexamethasonesodiumphopshateneomycinsulfate-0.1%+0.35%-eareyedropssolution",
+      "sourceDedupeKey": "dexamethasonesodiumphopshateneomycinsulfate|0.1%+0.35%|eareyedropssolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/001140",
+        "medicineName": "Ozurdex",
+        "activeSubstance": "dexamethasone",
+        "atcCode": "S01BA01",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/ozurdex",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/ozurdex-epar-product-information_en.pdf",
+        "documentName": "Ozurdex : EPAR - Product Information",
+        "documentUpdated": "2026-05-29T16:00:00Z",
+        "medicineScore": 6,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "627fb44bb1d97f50ab44e3a03abf72ba6a0d0cd15ee9dc3d210983d8eea0002f",
+        "section41Sha256": "79a62952a5bb2b8caeb1cf7fb0b7072e7e6f6fe1b21bcd7285c82b60839a445a",
+        "section42Sha256": "56aa184cee0c458b7bd370e2be2d693609bd27fff4a7d04b6c95cfeabe695739",
+        "section2Characters": 104,
+        "section41Characters": 460,
+        "section42Characters": 3172
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dexamethasonesodiumphosphate-2mg/ml-oraldrops",
+      "sourceVariantId": "VAR-dexamethasonesodiumphosphate-2mg/1ml-oraldrops",
+      "sourceDedupeKey": "dexamethasonesodiumphosphate|2mg/1ml|oraldrops",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/002418",
+        "medicineName": "Neofordex",
+        "activeSubstance": "dexamethasone",
+        "atcCode": "H02AB02",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/neofordex-0",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/neofordex-epar-product-information_en.pdf",
+        "documentName": "Neofordex : EPAR - Product Information",
+        "documentUpdated": "2026-08-26T16:00:00Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "a131307feb28ff38fbba29c9a42c9b3a78f8a6d496cb058325574944516af3a5",
+        "section41Sha256": "b59907f21f44e8b3c61e0e866bdd23b4b3c70b3a066931e9e69c464eb223c782",
+        "section42Sha256": "5842248b74b701459a54341e7b9f583f9f7817c2e79236bdab0eb5f9d7e4cb46",
+        "section2Characters": 195,
+        "section41Characters": 128,
+        "section42Characters": 2128
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dexamethasonesodiumphosphateequivalenttodexamethasonephospate-4mg/ml-solutionforinjection",
+      "sourceVariantId": "VAR-dexamethasonesodiumphosphateequivalenttodexamethasonephospate-4mg/1ml-solutionforinjection",
+      "sourceDedupeKey": "dexamethasonesodiumphosphateequivalenttodexamethasonephospate|4mg/1ml|solutionforinjection",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/001140",
+        "medicineName": "Ozurdex",
+        "activeSubstance": "dexamethasone",
+        "atcCode": "S01BA01",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/ozurdex",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/ozurdex-epar-product-information_en.pdf",
+        "documentName": "Ozurdex : EPAR - Product Information",
+        "documentUpdated": "2026-05-29T16:00:00Z",
+        "medicineScore": 7,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "627fb44bb1d97f50ab44e3a03abf72ba6a0d0cd15ee9dc3d210983d8eea0002f",
+        "section41Sha256": "79a62952a5bb2b8caeb1cf7fb0b7072e7e6f6fe1b21bcd7285c82b60839a445a",
+        "section42Sha256": "56aa184cee0c458b7bd370e2be2d693609bd27fff4a7d04b6c95cfeabe695739",
+        "section2Characters": 104,
+        "section41Characters": 460,
+        "section42Characters": 3172
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dexamethasonesodiumphosphateneomycinsulphate-(1mg+3.5mg)/1ml-eareyedropssolution",
+      "sourceVariantId": "VAR-dexamethasonesodiumphosphateneomycinsulphate-(1mg+3.5mg)/1ml-eareyedropssolution",
+      "sourceDedupeKey": "dexamethasonesodiumphosphateneomycinsulphate|(1mg+3.5mg)/1ml|eareyedropssolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/001140",
+        "medicineName": "Ozurdex",
+        "activeSubstance": "dexamethasone",
+        "atcCode": "S01BA01",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/ozurdex",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/ozurdex-epar-product-information_en.pdf",
+        "documentName": "Ozurdex : EPAR - Product Information",
+        "documentUpdated": "2026-05-29T16:00:00Z",
+        "medicineScore": 6,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "627fb44bb1d97f50ab44e3a03abf72ba6a0d0cd15ee9dc3d210983d8eea0002f",
+        "section41Sha256": "79a62952a5bb2b8caeb1cf7fb0b7072e7e6f6fe1b21bcd7285c82b60839a445a",
+        "section42Sha256": "56aa184cee0c458b7bd370e2be2d693609bd27fff4a7d04b6c95cfeabe695739",
+        "section2Characters": 104,
+        "section41Characters": 460,
+        "section42Characters": 3172
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dexketoprofentrometamol-12.5mg/g-gel",
+      "sourceVariantId": "VAR-dexketoprofentrometamol-1.25%-gel",
+      "sourceDedupeKey": "dexketoprofentrometamol|1.25%|gel",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dexmedetomidinehydrochloride-100mcg/ml-concentrateforsolutionforinjection",
+      "sourceVariantId": "VAR-dexmedetomidinehydrochloride-100mcg/ml-concentrateforsolutionforinjection",
+      "sourceDedupeKey": "dexmedetomidinehydrochloride|100mcg/ml|concentrateforsolutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/002268",
+        "medicineName": "Dexdor",
+        "activeSubstance": "Dexmedetomidine hydrochloride",
+        "atcCode": "N05CM18",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/dexdor",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information-tracked-changes/dexdor-epar-product-information-tracked-changes_en.docx",
+        "documentName": "Dexdor : EPAR – Product information – tracked changes",
+        "documentUpdated": "2026-01-28T12:46:59Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": null,
+        "section41Sha256": null,
+        "section42Sha256": null,
+        "section2Characters": 0,
+        "section41Characters": 0,
+        "section42Characters": 0
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dexpanthenol-50mg/g-cream",
+      "sourceVariantId": "VAR-dexpanthenol-5%-cream",
+      "sourceDedupeKey": "dexpanthenol|5%|cream",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dexpanthenol-50mg/g-cutaneoussolution",
+      "sourceVariantId": "VAR-dexpanthenol-5%-cutaneoussolution",
+      "sourceDedupeKey": "dexpanthenol|5%|cutaneoussolution",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dextran70hydroxypropylmethylcellulose-0.1%+0.3%-eyedropssolution",
+      "sourceVariantId": "VAR-dextran70hydroxypropylmethylcellulose-0.1%+0.3%-eyedropssolution",
+      "sourceDedupeKey": "dextran70hydroxypropylmethylcellulose|0.1%+0.3%|eyedropssolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dextran70hypromellose-(1mg+3mg)/1ml-eyedropssolution",
+      "sourceVariantId": "VAR-dextran70hypromellose-(1mg+3mg)/1ml-eyedropssolution",
+      "sourceDedupeKey": "dextran70hypromellose|(1mg+3mg)/1ml|eyedropssolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dextran70hypromellose-0.1%+0.3%-eyedropssolution",
+      "sourceVariantId": "VAR-dextran70hypromellose-0.1%+0.3%-eyedropssolution",
+      "sourceDedupeKey": "dextran70hypromellose|0.1%+0.3%|eyedropssolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dextromethorphanhydrobromide-27mg/15ml-syrup",
+      "sourceVariantId": "VAR-dextromethorphanhydrobromide-27mg/15ml-syrup",
+      "sourceDedupeKey": "dextromethorphanhydrobromide|27mg/15ml|syrup",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacdiethylamine-(10mg/1g).1%-gel",
+      "sourceVariantId": "VAR-diclofenacdiethylamine-(10mg/1g),1%-gel",
+      "sourceDedupeKey": "diclofenacdiethylamine|(10mg/1g),1%|gel",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacdiethylamine-10mg/ml-gel",
+      "sourceVariantId": "VAR-diclofenacdiethylamine-10mg/ml-gel",
+      "sourceDedupeKey": "diclofenacdiethylamine|10mg/ml|gel",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacdiethylamine-20mg/g-gel",
+      "sourceVariantId": "VAR-diclofenacdiethylamine-20mg/g-gel",
+      "sourceDedupeKey": "diclofenacdiethylamine|20mg/g|gel",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacdiethylammonium-10mg/g-gel",
+      "sourceVariantId": "VAR-diclofenacdiethylammonium-1%-gel",
+      "sourceDedupeKey": "diclofenacdiethylammonium|1%|gel",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacpotasicco-50mg/ml-oralsolution",
+      "sourceVariantId": "VAR-diclofenacpotasicco-50mg/ml-oralsolution",
+      "sourceDedupeKey": "diclofenacpotasicco|50mg/ml|oralsolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacpotassium-50mg-powderfororalsolution",
+      "sourceVariantId": "VAR-diclofenacpotassium-50mg-powderfororalsolution",
+      "sourceDedupeKey": "diclofenacpotassium|50mg|powderfororalsolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacsodium-10mg/g-gel",
+      "sourceVariantId": "VAR-diclofenacsodium-0.01-gel",
+      "sourceDedupeKey": "diclofenacsodium|0.01|gel",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacsodium-100g-suppository",
+      "sourceVariantId": "VAR-diclofenacsodium-100g-suppository",
+      "sourceDedupeKey": "diclofenacsodium|100g|suppository",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacsodium-100mg-modifiedreleasefilmcoatedtablet",
+      "sourceVariantId": "VAR-diclofenacsodium-100mg-modifiedreleasefilmcoatedtablet",
+      "sourceDedupeKey": "diclofenacsodium|100mg|modifiedreleasefilmcoatedtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacsodium-12.5mg-suppository",
+      "sourceVariantId": "VAR-diclofenacsodium-12.5mg-suppository",
+      "sourceDedupeKey": "diclofenacsodium|12.5mg|suppository",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacsodium-25mg-suppository",
+      "sourceVariantId": "VAR-diclofenacsodium-25mg-suppository",
+      "sourceDedupeKey": "diclofenacsodium|25mg|suppository",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacsodium-50mg-suppository",
+      "sourceVariantId": "VAR-diclofenacsodium-50mg-suppository",
+      "sourceDedupeKey": "diclofenacsodium|50mg|suppository",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacsodium-75mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-diclofenacsodium-75mg-filmcoatedtablet",
+      "sourceDedupeKey": "diclofenacsodium|75mg|filmcoatedtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacsodium-75mg-gastroresistantcapsulehard",
+      "sourceVariantId": "VAR-diclofenacsodium-75mg-gastroresistantcapsulehard",
+      "sourceDedupeKey": "diclofenacsodium|75mg|gastroresistantcapsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacsodium-75mg-modifiedreleasecapsulehard",
+      "sourceVariantId": "VAR-diclofenacsodium-75mg-modifiedreleasecapsulehard",
+      "sourceDedupeKey": "diclofenacsodium|75mg|modifiedreleasecapsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacsodium-75mg-modifiedreleasetablet",
+      "sourceVariantId": "VAR-diclofenacsodium-75mg-modifiedreleasetablet",
+      "sourceDedupeKey": "diclofenacsodium|75mg|modifiedreleasetablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacsodiumthiaminehydrochloridepyridoxinehydrochloridecyanocobalamin-50mg+50mg+50mg+0.25mg-capsule",
+      "sourceVariantId": "VAR-diclofenacsodiumthiaminehydrochloridepyridoxinehydrochloridecyanocobalamin-50mg+50mg+50mg+0.25mg-capsule",
+      "sourceDedupeKey": "diclofenacsodiumthiaminehydrochloridepyridoxinehydrochloridecyanocobalamin|50mg+50mg+50mg+0.25mg|capsule",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacspdium-25mg-suppository",
+      "sourceVariantId": "VAR-diclofenacspdium-25mg-suppository",
+      "sourceDedupeKey": "diclofenacspdium|25mg|suppository",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diclofenacspdium-50mg-suppository",
+      "sourceVariantId": "VAR-diclofenacspdium-50mg-suppository",
+      "sourceDedupeKey": "diclofenacspdium|50mg|suppository",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diltiazemhydrochloride-60mg-prolongedreleasetablet",
+      "sourceVariantId": "VAR-diltiazemhydrochloride-60mg-prolongedreleasetablet",
+      "sourceDedupeKey": "diltiazemhydrochloride|60mg|prolongedreleasetablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diltiazemhydrochloride-90mg-prolongedreleasetablet",
+      "sourceVariantId": "VAR-diltiazemhydrochloride-90mg-prolongedreleasetablet",
+      "sourceDedupeKey": "diltiazemhydrochloride|90mg|prolongedreleasetablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dimenhydrinate-50mg-suppository",
+      "sourceVariantId": "VAR-dimenhydrinate-50mg-suppository",
+      "sourceDedupeKey": "dimenhydrinate|50mg|suppository",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dinoprostone-1mg-endocervicalgel",
+      "sourceVariantId": "VAR-dinoprostone-1mg-endocervicalgel",
+      "sourceDedupeKey": "dinoprostone|1mg|endocervicalgel",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diosmin-600mg-coatedtablet",
+      "sourceVariantId": "VAR-diosmin-600mg-coatedtablet",
+      "sourceDedupeKey": "diosmin|600mg|coatedtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-diphenhydraminehydrochloridelidocainehydrochlorideintheformoflidocainehydrochloridemonohydrate-(20mg+10mg)/1g-gel",
+      "sourceVariantId": "VAR-diphenhydraminehydrochloridelidocainehydrochlorideintheformoflidocainehydrochloridemonohydrate-(20mg+10mg)/1g-gel",
+      "sourceDedupeKey": "diphenhydraminehydrochloridelidocainehydrochlorideintheformoflidocainehydrochloridemonohydrate|(20mg+10mg)/1g|gel",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dorzolamidehydrochlorideequivalenttodorzolamidetimololmaleateequivalenttotimolol-0.5%+2%-eyedropssolution",
+      "sourceVariantId": "VAR-dorzolamidehydrochlorideequivalenttodorzolamidetimololmaleateequivalenttotimolol-0.5%+2%-eyedropssolution",
+      "sourceDedupeKey": "dorzolamidehydrochlorideequivalenttodorzolamidetimololmaleateequivalenttotimolol|0.5%+2%|eyedropssolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/000960",
+        "medicineName": "Azarga",
+        "activeSubstance": "brinzolamide;timolol maleate",
+        "atcCode": "S01ED51",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/azarga",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/azarga-epar-product-information_en.pdf",
+        "documentName": "Azarga : EPAR - Product Information",
+        "documentUpdated": "2026-02-06T11:25:00Z",
+        "medicineScore": 11,
+        "activeEvidence": false,
+        "strengthEvidence": false,
+        "formEvidence": true,
+        "section2Sha256": "21fcb529f0f8e76d9fb0ac99afbd373028733f549f28c31b859ba4c9b820ae12",
+        "section41Sha256": "3a73bba9fd8ff482ebb3261580171560639a5902ef6b1731aaa57ba6fc11c7b5",
+        "section42Sha256": "e27e164430601e01f4b085e54e4a668af228bc1be5bd78c9056dfbfe8d1f9461",
+        "section2Characters": 229,
+        "section41Characters": 180,
+        "section42Characters": 2220
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-dorzolamidehydrochloridetimololmaleate-(20mg+5mg)/1ml-eyedropssolution",
+      "sourceVariantId": "VAR-dorzolamidehydrochloridetimololmaleate-(20mg+5mg)/1ml-eyedropssolution",
+      "sourceDedupeKey": "dorzolamidehydrochloridetimololmaleate|(20mg+5mg)/1ml|eyedropssolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/000960",
+        "medicineName": "Azarga",
+        "activeSubstance": "brinzolamide;timolol maleate",
+        "atcCode": "S01ED51",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/azarga",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/azarga-epar-product-information_en.pdf",
+        "documentName": "Azarga : EPAR - Product Information",
+        "documentUpdated": "2026-02-06T11:25:00Z",
+        "medicineScore": 11,
+        "activeEvidence": false,
+        "strengthEvidence": false,
+        "formEvidence": true,
+        "section2Sha256": "21fcb529f0f8e76d9fb0ac99afbd373028733f549f28c31b859ba4c9b820ae12",
+        "section41Sha256": "3a73bba9fd8ff482ebb3261580171560639a5902ef6b1731aaa57ba6fc11c7b5",
+        "section42Sha256": "e27e164430601e01f4b085e54e4a668af228bc1be5bd78c9056dfbfe8d1f9461",
+        "section2Characters": 229,
+        "section41Characters": 180,
+        "section42Characters": 2220
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-doxofylline-20mg/ml-syrup",
+      "sourceVariantId": "VAR-doxofylline-20mg/1ml-syrup",
+      "sourceDedupeKey": "doxofylline|20mg/1ml|syrup",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-doxofylline-400mg-tablet",
+      "sourceVariantId": "VAR-doxofylline-400mg-tablet",
+      "sourceDedupeKey": "doxofylline|400mg|tablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-doxophylline-200mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-doxophylline-200mg-filmcoatedtablet",
+      "sourceDedupeKey": "doxophylline|200mg|filmcoatedtablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-doxophylline-400mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-doxophylline-400mg-filmcoatedtablet",
+      "sourceDedupeKey": "doxophylline|400mg|filmcoatedtablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-doxorubicinhydrochloride-2mg/ml-solutionforinjectioninfusion",
+      "sourceVariantId": "VAR-doxorubicinhydrochloride-2mg/ml-solutionforinjectioninfusion",
+      "sourceDedupeKey": "doxorubicinhydrochloride|2mg/ml|solutionforinjectioninfusion",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/005330",
+        "medicineName": "Celdoxome pegylated liposomal",
+        "activeSubstance": "doxorubicin hydrochloride",
+        "atcCode": "L01DB01",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/celdoxome-pegylated-liposomal",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/celdoxome-pegylated-liposomal-epar-product-information_en.pdf",
+        "documentName": "Celdoxome pegylated liposomal : EPAR - Product Information",
+        "documentUpdated": "2025-11-27T17:20:00Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": false,
+        "section2Sha256": "033b01d456c5c3cf06177973a8a457998464c5cc65af021a3a76feaf26dc5289",
+        "section41Sha256": "bd8622987d19fe70f18ad0651c52acb4a126eeedf7bc970c7d3db0f7b2bc6d7e",
+        "section42Sha256": null,
+        "section2Characters": 734,
+        "section41Characters": 6427,
+        "section42Characters": 0
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-doxylaminesuccinatepyridoxinehcl-10mg/10mg-modifiedreleasetablet",
+      "sourceVariantId": "VAR-doxylaminesuccinatepyridoxinehcl-10mg/10mg-modifiedreleasetablet",
+      "sourceDedupeKey": "doxylaminesuccinatepyridoxinehcl|10mg/10mg|modifiedreleasetablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-econazolenitrate-10mg/g-cream",
+      "sourceVariantId": "VAR-econazolenitrate-1%-cream",
+      "sourceDedupeKey": "econazolenitrate|1%|cream",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-electrolytes-9mg/ml-solutionforinfusion",
+      "sourceVariantId": "VAR-electrolytes-0.009-solutionforinfusion",
+      "sourceDedupeKey": "electrolytes|0.009|solutionforinfusion",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-empagliflozin-10mg-tablet",
+      "sourceVariantId": "VAR-empagliflozin-10mg-tablet",
+      "sourceDedupeKey": "empagliflozin|10mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/002677",
+        "medicineName": "Jardiance",
+        "activeSubstance": "empagliflozin",
+        "atcCode": "A10BK03",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/jardiance",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/jardiance-epar-product-information_en.pdf",
+        "documentName": "Jardiance : EPAR - Product Information",
+        "documentUpdated": "2026-03-24T16:16:00Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "d90d72aabb97be2758c43a8aa12430a7823e11c63934d300790d6f5272272a1a",
+        "section41Sha256": "dcaac571dab3e293348918dc1e98e53df55838a40b1c6f40bdc645c7d8abe743",
+        "section42Sha256": "053caf601c503949ffcf365be9d2604f6301975f756e05a61e0d7fd38c89267f",
+        "section2Characters": 435,
+        "section41Characters": 747,
+        "section42Characters": 3565
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-empagliflozin-25mg-tablet",
+      "sourceVariantId": "VAR-empagliflozin-25mg-tablet",
+      "sourceDedupeKey": "empagliflozin|25mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/002677",
+        "medicineName": "Jardiance",
+        "activeSubstance": "empagliflozin",
+        "atcCode": "A10BK03",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/jardiance",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/jardiance-epar-product-information_en.pdf",
+        "documentName": "Jardiance : EPAR - Product Information",
+        "documentUpdated": "2026-03-24T16:16:00Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "d90d72aabb97be2758c43a8aa12430a7823e11c63934d300790d6f5272272a1a",
+        "section41Sha256": "dcaac571dab3e293348918dc1e98e53df55838a40b1c6f40bdc645c7d8abe743",
+        "section42Sha256": "053caf601c503949ffcf365be9d2604f6301975f756e05a61e0d7fd38c89267f",
+        "section2Characters": 435,
+        "section41Characters": 747,
+        "section42Characters": 3565
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-enalaprilhydrochlorothiazide-10mg+12.5mg-tablet",
+      "sourceVariantId": "VAR-enalaprilhydrochlorothiazide-10mg+12.5mg-tablet",
+      "sourceDedupeKey": "enalaprilhydrochlorothiazide|10mg+12.5mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-enalaprilhydrochlorothiazide-10mg+25mg-tablet",
+      "sourceVariantId": "VAR-enalaprilhydrochlorothiazide-10mg+25mg-tablet",
+      "sourceDedupeKey": "enalaprilhydrochlorothiazide|10mg+25mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/005731",
+        "medicineName": "Aqumeldi",
+        "activeSubstance": "Enalapril (maleate)",
+        "atcCode": "C09AA02",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/aqumeldi",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/aqumeldi-epar-product-information_en.pdf",
+        "documentName": "Aqumeldi : EPAR - Product information",
+        "documentUpdated": "2025-10-21T09:08:00Z",
+        "medicineScore": 10,
+        "activeEvidence": false,
+        "strengthEvidence": false,
+        "formEvidence": true,
+        "section2Sha256": "3b70771d63e2d168322f2ed97f90a05aa39b36d5b7f28adacc1478927a4bff0e",
+        "section41Sha256": "470beca9aca529139efca7b8e0f8a2e0c1160c71fdeea219a8e5fa8ef64dff22",
+        "section42Sha256": "9b1ea7129ae26ccde225932de677712c5ce4028005f3c8417a05b4cf0890b6c0",
+        "section2Characters": 259,
+        "section41Characters": 102,
+        "section42Characters": 4018
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-epirubicinhydrochloride-2mg/ml-concentrateforsolutionforinfusion",
+      "sourceVariantId": "VAR-epirubicinhydrochloride-2mg/ml-concentrateforsolutionforinfusion",
+      "sourceDedupeKey": "epirubicinhydrochloride|2mg/ml|concentrateforsolutionforinfusion",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-erythromycin-250mg-capsule",
+      "sourceVariantId": "VAR-erythromycin-250mg-capsule",
+      "sourceDedupeKey": "erythromycin|250mg|capsule",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-erythromycin-30mg/g-gel",
+      "sourceVariantId": "VAR-erythromycin-3%-gel",
+      "sourceDedupeKey": "erythromycin|3%|gel",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-erythromycin-40mg/g-gel",
+      "sourceVariantId": "VAR-erythromycin-4%-gel",
+      "sourceDedupeKey": "erythromycin|4%|gel",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-escitalopram-10mg/ml-oraldropssolution",
+      "sourceVariantId": "VAR-escitalopram-10mg/1ml-oraldropssolution",
+      "sourceDedupeKey": "escitalopram|10mg/1ml|oraldropssolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-escitalopram-5mg-tablet",
+      "sourceVariantId": "VAR-escitalopram-5mg-tablet",
+      "sourceDedupeKey": "escitalopram|5mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-escitalopramoxalate-10mg-tablet",
+      "sourceVariantId": "VAR-escitalopramoxalate-10mg-tablet",
+      "sourceDedupeKey": "escitalopramoxalate|10mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-esomeprazol-40mg-capsulehard",
+      "sourceVariantId": "VAR-esomeprazol-40mg-capsulehard",
+      "sourceDedupeKey": "esomeprazol|40mg|capsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/002618",
+        "medicineName": "Nexium Control",
+        "activeSubstance": "esomeprazole",
+        "atcCode": "A02BC05",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/nexium-control",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information-tracked-changes/nexium-control-epar-product-information-tracked-changes_en.docx",
+        "documentName": "Nexium Control : EPAR – Product information – tracked changes",
+        "documentUpdated": "2026-06-03T12:20:53Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": null,
+        "section41Sha256": null,
+        "section42Sha256": null,
+        "section2Characters": 0,
+        "section41Characters": 0,
+        "section42Characters": 0
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-esomeprazole-20mg-prolongedreleasecapsulehard",
+      "sourceVariantId": "VAR-esomeprazole-20mg-prolongedreleasecapsulehard",
+      "sourceDedupeKey": "esomeprazole|20mg|prolongedreleasecapsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/002618",
+        "medicineName": "Nexium Control",
+        "activeSubstance": "esomeprazole",
+        "atcCode": "A02BC05",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/nexium-control",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information-tracked-changes/nexium-control-epar-product-information-tracked-changes_en.docx",
+        "documentName": "Nexium Control : EPAR – Product information – tracked changes",
+        "documentUpdated": "2026-06-03T12:20:53Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": null,
+        "section41Sha256": null,
+        "section42Sha256": null,
+        "section2Characters": 0,
+        "section41Characters": 0,
+        "section42Characters": 0
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-esomeprazoleasmagnesiumtrihydrate-20mg-capsulehard",
+      "sourceVariantId": "VAR-esomeprazoleasmagnesiumtrihydrate-20mg-capsulehard",
+      "sourceDedupeKey": "esomeprazoleasmagnesiumtrihydrate|20mg|capsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/002618",
+        "medicineName": "Nexium Control",
+        "activeSubstance": "esomeprazole",
+        "atcCode": "A02BC05",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/nexium-control",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information-tracked-changes/nexium-control-epar-product-information-tracked-changes_en.docx",
+        "documentName": "Nexium Control : EPAR – Product information – tracked changes",
+        "documentUpdated": "2026-06-03T12:20:53Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": null,
+        "section41Sha256": null,
+        "section42Sha256": null,
+        "section2Characters": 0,
+        "section41Characters": 0,
+        "section42Characters": 0
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-esomeprazolesodium-40mg-powderforsolutionforinjectionorinfusion",
+      "sourceVariantId": "VAR-esomeprazolesodium-40mg-powderforsolutionforinjectionorinfusion",
+      "sourceDedupeKey": "esomeprazolesodium|40mg|powderforsolutionforinjectionorinfusion",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/002618",
+        "medicineName": "Nexium Control",
+        "activeSubstance": "esomeprazole",
+        "atcCode": "A02BC05",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/nexium-control",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information-tracked-changes/nexium-control-epar-product-information-tracked-changes_en.docx",
+        "documentName": "Nexium Control : EPAR – Product information – tracked changes",
+        "documentUpdated": "2026-06-03T12:20:53Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": null,
+        "section41Sha256": null,
+        "section42Sha256": null,
+        "section2Characters": 0,
+        "section41Characters": 0,
+        "section42Characters": 0
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-esomeprazolesodium-40mg/vial-powderforsolutionforinjectionorinfusion",
+      "sourceVariantId": "VAR-esomeprazolesodium-40mg/vial-powderforsolutionforinjectionorinfusion",
+      "sourceDedupeKey": "esomeprazolesodium|40mg/vial|powderforsolutionforinjectionorinfusion",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/002618",
+        "medicineName": "Nexium Control",
+        "activeSubstance": "esomeprazole",
+        "atcCode": "A02BC05",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/nexium-control",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information-tracked-changes/nexium-control-epar-product-information-tracked-changes_en.docx",
+        "documentName": "Nexium Control : EPAR – Product information – tracked changes",
+        "documentUpdated": "2026-06-03T12:20:53Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": null,
+        "section41Sha256": null,
+        "section42Sha256": null,
+        "section2Characters": 0,
+        "section41Characters": 0,
+        "section42Characters": 0
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-etodolac-400mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-etodolac-400mg-filmcoatedtablet",
+      "sourceDedupeKey": "etodolac|400mg|filmcoatedtablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-etodolac-600mg-prolongedreleasetablet",
+      "sourceVariantId": "VAR-etodolac-600mg-prolongedreleasetablet",
+      "sourceDedupeKey": "etodolac|600mg|prolongedreleasetablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-etoricoxib-90mg-tablet",
+      "sourceVariantId": "VAR-etoricoxib-90mg-tablet",
+      "sourceDedupeKey": "etoricoxib|90mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-famotidinecalciumcarbonatemagnesiumhydroxide-10mg/800mg/165mg-chewabletablet",
+      "sourceVariantId": "VAR-famotidinecalciumcarbonatemagnesiumhydroxide-10mg/800mg/165mg-chewabletablet",
+      "sourceDedupeKey": "famotidinecalciumcarbonatemagnesiumhydroxide|10mg/800mg/165mg|chewabletablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-famotidinemagnesiumhydroxidecalciumcarbonate-10mg+165mg+800mg-chewabletablet",
+      "sourceVariantId": "VAR-famotidinemagnesiumhydroxidecalciumcarbonate-10mg+165mg+800mg-chewabletablet",
+      "sourceDedupeKey": "famotidinemagnesiumhydroxidecalciumcarbonate|10mg+165mg+800mg|chewabletablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ferricsodiumgluconate-62.5mg/8ml-syrup",
+      "sourceVariantId": "VAR-ferricsodiumgluconate-62.5mg/8ml-syrup",
+      "sourceDedupeKey": "ferricsodiumgluconate|62.5mg/8ml|syrup",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-flecainideacetate-50mg-tablet",
+      "sourceVariantId": "VAR-flecainideacetate-50mg-tablet",
+      "sourceDedupeKey": "flecainideacetate|50mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fludrocortisoneacetatepolymixinbsulphatelidocainehydrochloride-(1mg+1.3mg+50mg)/1ml-eardropssolution",
+      "sourceVariantId": "VAR-fludrocortisoneacetatepolymixinbsulphatelidocainehydrochloride-(1mg+1.3mg+50mg)/1ml-eardropssolution",
+      "sourceDedupeKey": "fludrocortisoneacetatepolymixinbsulphatelidocainehydrochloride|(1mg+1.3mg+50mg)/1ml|eardropssolution",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fluocinoloneacetonide-0.25mg/g-ointment",
+      "sourceVariantId": "VAR-fluocinoloneacetonide-0.25mg/1g-ointment",
+      "sourceDedupeKey": "fluocinoloneacetonide|0.25mg/1g|ointment",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fluocinoloneacetonideneomycinintheformofneomycinsulphate-(0.25mg+3.3mg)/1g-ointment",
+      "sourceVariantId": "VAR-fluocinoloneacetonideneomycinintheformofneomycinsulphate-(0.25mg+3.3mg)/1g-ointment",
+      "sourceDedupeKey": "fluocinoloneacetonideneomycinintheformofneomycinsulphate|(0.25mg+3.3mg)/1g|ointment",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fluocinoloneacetonideneomycinsulfate-(0.25mg+5mg)/1g-ointment",
+      "sourceVariantId": "VAR-fluocinoloneacetonideneomycinsulfate-(0.25mg+5mg)/1g-ointment",
+      "sourceDedupeKey": "fluocinoloneacetonideneomycinsulfate|(0.25mg+5mg)/1g|ointment",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fluocinoloneacetonideneomycinsulphate-0.25mg+5mg/1g-ointment",
+      "sourceVariantId": "VAR-fluocinoloneacetonideneomycinsulphate-0.25mg+5mg/1g-ointment",
+      "sourceDedupeKey": "fluocinoloneacetonideneomycinsulphate|0.25mg+5mg/1g|ointment",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fluoxetinehydrochloride-20mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-fluoxetinehydrochloride-20mg-filmcoatedtablet",
+      "sourceDedupeKey": "fluoxetinehydrochloride|20mg|filmcoatedtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fluoxetinehydrochloridecorrto200mgfluoxetine-20mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-fluoxetinehydrochloridecorrto200mgfluoxetine-20mg-filmcoatedtablet",
+      "sourceDedupeKey": "fluoxetinehydrochloridecorrto200mgfluoxetine|20mg|filmcoatedtablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fluphenazinedecanoate-25mg/ml-solutionforinjection",
+      "sourceVariantId": "VAR-fluphenazinedecanoate-25mg/1ml-solutionforinjection",
+      "sourceDedupeKey": "fluphenazinedecanoate|25mg/1ml|solutionforinjection",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fluphenazinedihydrochloride-1mg-coatedtablet",
+      "sourceVariantId": "VAR-fluphenazinedihydrochloride-1mg-coatedtablet",
+      "sourceDedupeKey": "fluphenazinedihydrochloride|1mg|coatedtablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-flurbiprofen-2.5mg/ml-oromucosalspray",
+      "sourceVariantId": "VAR-flurbiprofen-0.25%-oromucosalspray",
+      "sourceDedupeKey": "flurbiprofen|0.25%|oromucosalspray",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-flurbiprofen-100mg-filmcoatedtablet",
+      "sourceVariantId": "VAR-flurbiprofen-100mg-filmcoatedtablet",
+      "sourceDedupeKey": "flurbiprofen|100mg|filmcoatedtablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-flurbiprofensodium-0.3mg/ml-eyedropssolution",
+      "sourceVariantId": "VAR-flurbiprofensodium-0.03%-eyedropssolution",
+      "sourceDedupeKey": "flurbiprofensodium|0.03%|eyedropssolution",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fluticasonepropionateformoterolfumaratedihydrate-12mcg+250mcg-capsulehard",
+      "sourceVariantId": "VAR-fluticasonepropionateformoterolfumaratedihydrate-12mcg+250mcg-capsulehard",
+      "sourceDedupeKey": "fluticasonepropionateformoterolfumaratedihydrate|12mcg+250mcg|capsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fluticasonepropionateformoterolfumaratedihydrate-12mcg+500mcg-capsulehard",
+      "sourceVariantId": "VAR-fluticasonepropionateformoterolfumaratedihydrate-12mcg+500mcg-capsulehard",
+      "sourceDedupeKey": "fluticasonepropionateformoterolfumaratedihydrate|12mcg+500mcg|capsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fluticasonepropionatesalmeterol-50mcg+100mcg-inhalationpowderhardcapsule",
+      "sourceVariantId": "VAR-fluticasonepropionatesalmeterol-50mcg+100mcg-inhalationpowderhardcapsule",
+      "sourceDedupeKey": "fluticasonepropionatesalmeterol|50mcg+100mcg|inhalationpowderhardcapsule",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/004881",
+        "medicineName": "Seffalair Spiromax",
+        "activeSubstance": "fluticasone propionate;salmeterol xinafoate",
+        "atcCode": "R03AK06",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/seffalair-spiromax",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information-tracked-changes/seffalair-spiromax-epar-product-information-tracked-changes_en.docx",
+        "documentName": "Seffalair Spiromax : EPAR – Product information - tracked changes",
+        "documentUpdated": "2025-12-16T12:58:12Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": null,
+        "section41Sha256": null,
+        "section42Sha256": null,
+        "section2Characters": 0,
+        "section41Characters": 0,
+        "section42Characters": 0
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fluticasonepropionatesalmeterol-50mcg+250mcg-inhalationpowderhardcapsule",
+      "sourceVariantId": "VAR-fluticasonepropionatesalmeterol-50mcg+250mcg-inhalationpowderhardcapsule",
+      "sourceDedupeKey": "fluticasonepropionatesalmeterol|50mcg+250mcg|inhalationpowderhardcapsule",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/004881",
+        "medicineName": "Seffalair Spiromax",
+        "activeSubstance": "fluticasone propionate;salmeterol xinafoate",
+        "atcCode": "R03AK06",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/seffalair-spiromax",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information-tracked-changes/seffalair-spiromax-epar-product-information-tracked-changes_en.docx",
+        "documentName": "Seffalair Spiromax : EPAR – Product information - tracked changes",
+        "documentUpdated": "2025-12-16T12:58:12Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": null,
+        "section41Sha256": null,
+        "section42Sha256": null,
+        "section2Characters": 0,
+        "section41Characters": 0,
+        "section42Characters": 0
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fluticasonepropionatesalmeterol-50mcg+500mcg-inhalationpowderhardcapsule",
+      "sourceVariantId": "VAR-fluticasonepropionatesalmeterol-50mcg+500mcg-inhalationpowderhardcapsule",
+      "sourceDedupeKey": "fluticasonepropionatesalmeterol|50mcg+500mcg|inhalationpowderhardcapsule",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/004881",
+        "medicineName": "Seffalair Spiromax",
+        "activeSubstance": "fluticasone propionate;salmeterol xinafoate",
+        "atcCode": "R03AK06",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/seffalair-spiromax",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information-tracked-changes/seffalair-spiromax-epar-product-information-tracked-changes_en.docx",
+        "documentName": "Seffalair Spiromax : EPAR – Product information - tracked changes",
+        "documentUpdated": "2025-12-16T12:58:12Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": null,
+        "section41Sha256": null,
+        "section42Sha256": null,
+        "section2Characters": 0,
+        "section41Characters": 0,
+        "section42Characters": 0
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-follitropinalfarhfsh-150iu/0.25ml-solutionforinjection",
+      "sourceVariantId": "VAR-follitropinalfarhfsh-150iu/0.25ml-solutionforinjection",
+      "sourceDedupeKey": "follitropinalfarhfsh|150iu/0.25ml|solutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/002615",
+        "medicineName": "Bemfola",
+        "activeSubstance": "follitropin alfa",
+        "atcCode": "G03GA05",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/bemfola",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/bemfola-epar-product-information_en.pdf",
+        "documentName": "Bemfola : EPAR - Product Information",
+        "documentUpdated": "2026-03-25T10:20:00Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "565eb957197ff79a605c9baa67d17d12e1343bed41890f04b3b2e327c010e83c",
+        "section41Sha256": "975f43213119e082889116e1fda4fd9b5c925dc64255366c4b6581eee7e0b473",
+        "section42Sha256": "7408a81dc6bf6ae3629b9919f4c62e280ee7151107bb706a56e7ce5ea9b52f24",
+        "section2Characters": 1602,
+        "section41Characters": 776,
+        "section42Characters": 4406
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-follitropinalfarhfsh-225iu/0.375ml-solutionforinjection",
+      "sourceVariantId": "VAR-follitropinalfarhfsh-225iu/0.375ml-solutionforinjection",
+      "sourceDedupeKey": "follitropinalfarhfsh|225iu/0.375ml|solutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/002615",
+        "medicineName": "Bemfola",
+        "activeSubstance": "follitropin alfa",
+        "atcCode": "G03GA05",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/bemfola",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/bemfola-epar-product-information_en.pdf",
+        "documentName": "Bemfola : EPAR - Product Information",
+        "documentUpdated": "2026-03-25T10:20:00Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "565eb957197ff79a605c9baa67d17d12e1343bed41890f04b3b2e327c010e83c",
+        "section41Sha256": "975f43213119e082889116e1fda4fd9b5c925dc64255366c4b6581eee7e0b473",
+        "section42Sha256": "7408a81dc6bf6ae3629b9919f4c62e280ee7151107bb706a56e7ce5ea9b52f24",
+        "section2Characters": 1602,
+        "section41Characters": 776,
+        "section42Characters": 4406
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-follitropinalfarhfsh-300iu/0.50ml-solutionforinjection",
+      "sourceVariantId": "VAR-follitropinalfarhfsh-300iu/0.50ml-solutionforinjection",
+      "sourceDedupeKey": "follitropinalfarhfsh|300iu/0.50ml|solutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/002615",
+        "medicineName": "Bemfola",
+        "activeSubstance": "follitropin alfa",
+        "atcCode": "G03GA05",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/bemfola",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/bemfola-epar-product-information_en.pdf",
+        "documentName": "Bemfola : EPAR - Product Information",
+        "documentUpdated": "2026-03-25T10:20:00Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "565eb957197ff79a605c9baa67d17d12e1343bed41890f04b3b2e327c010e83c",
+        "section41Sha256": "975f43213119e082889116e1fda4fd9b5c925dc64255366c4b6581eee7e0b473",
+        "section42Sha256": "7408a81dc6bf6ae3629b9919f4c62e280ee7151107bb706a56e7ce5ea9b52f24",
+        "section2Characters": 1602,
+        "section41Characters": 776,
+        "section42Characters": 4406
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-follitropinalfarhfsh-450iu/0.75ml-solutionforinjection",
+      "sourceVariantId": "VAR-follitropinalfarhfsh-450iu/0.75ml-solutionforinjection",
+      "sourceDedupeKey": "follitropinalfarhfsh|450iu/0.75ml|solutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/002615",
+        "medicineName": "Bemfola",
+        "activeSubstance": "follitropin alfa",
+        "atcCode": "G03GA05",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/bemfola",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/bemfola-epar-product-information_en.pdf",
+        "documentName": "Bemfola : EPAR - Product Information",
+        "documentUpdated": "2026-03-25T10:20:00Z",
+        "medicineScore": 14,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "565eb957197ff79a605c9baa67d17d12e1343bed41890f04b3b2e327c010e83c",
+        "section41Sha256": "975f43213119e082889116e1fda4fd9b5c925dc64255366c4b6581eee7e0b473",
+        "section42Sha256": "7408a81dc6bf6ae3629b9919f4c62e280ee7151107bb706a56e7ce5ea9b52f24",
+        "section2Characters": 1602,
+        "section41Characters": 776,
+        "section42Characters": 4406
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-formoterolfumaratedihydratebeclometasonedipropionate-6mcg/100mcg-pressurisedinhalationsolution",
+      "sourceVariantId": "VAR-formoterolfumaratedihydratebeclometasonedipropionate-6mcg/100mcg-pressurisedinhalationsolution",
+      "sourceDedupeKey": "formoterolfumaratedihydratebeclometasonedipropionate|6mcg/100mcg|pressurisedinhalationsolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-formoterolfumaratedihydratefluticasonepropionate-12mcg+100mcg-capsulehard",
+      "sourceVariantId": "VAR-formoterolfumaratedihydratefluticasonepropionate-12mcg+100mcg-capsulehard",
+      "sourceDedupeKey": "formoterolfumaratedihydratefluticasonepropionate|12mcg+100mcg|capsulehard",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-formoterolfumaratedihydratemicronizedbudesonide-12mcg+200mcg-inhalationpowderhardcapsule",
+      "sourceVariantId": "VAR-formoterolfumaratedihydratemicronizedbudesonide-12mcg+200mcg-inhalationpowderhardcapsule",
+      "sourceDedupeKey": "formoterolfumaratedihydratemicronizedbudesonide|12mcg+200mcg|inhalationpowderhardcapsule",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/004882",
+        "medicineName": "GoResp Digihaler (previously Budesonide/Formoterol Teva Pharma B.V.)",
+        "activeSubstance": "Budesonide;formoterol fumarate dihydrate",
+        "atcCode": "R03AK07",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/goresp-digihaler",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/goresp-digihaler-epar-product-information_en.pdf",
+        "documentName": "GoResp Digihaler : EPAR - Product Information",
+        "documentUpdated": "2025-02-18T10:44:00Z",
+        "medicineScore": 13,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "1a488922cbc9fa6a4fd768d3e544e3fc4467ac1ccfb6bd9aa3d55bba50948edd",
+        "section41Sha256": "80746137b5383f30533c46b7f79fc89b559a10df8d29569f190d9414850ad149",
+        "section42Sha256": null,
+        "section2Characters": 99,
+        "section41Characters": 1851,
+        "section42Characters": 0
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-formoterolfumaratedihydratemicronizedbudesonide-12mcg+400mcg-inhalationpowderhardcapsule",
+      "sourceVariantId": "VAR-formoterolfumaratedihydratemicronizedbudesonide-12mcg+400mcg-inhalationpowderhardcapsule",
+      "sourceDedupeKey": "formoterolfumaratedihydratemicronizedbudesonide|12mcg+400mcg|inhalationpowderhardcapsule",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/004882",
+        "medicineName": "GoResp Digihaler (previously Budesonide/Formoterol Teva Pharma B.V.)",
+        "activeSubstance": "Budesonide;formoterol fumarate dihydrate",
+        "atcCode": "R03AK07",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/goresp-digihaler",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/goresp-digihaler-epar-product-information_en.pdf",
+        "documentName": "GoResp Digihaler : EPAR - Product Information",
+        "documentUpdated": "2025-02-18T10:44:00Z",
+        "medicineScore": 13,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "1a488922cbc9fa6a4fd768d3e544e3fc4467ac1ccfb6bd9aa3d55bba50948edd",
+        "section41Sha256": "80746137b5383f30533c46b7f79fc89b559a10df8d29569f190d9414850ad149",
+        "section42Sha256": null,
+        "section2Characters": 99,
+        "section41Characters": 1851,
+        "section42Characters": 0
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fosfomycintrometamol-3g-granules",
+      "sourceVariantId": "VAR-fosfomycintrometamol-3g-granules",
+      "sourceDedupeKey": "fosfomycintrometamol|3g|granules",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-furazidin-50mg-tablet",
+      "sourceVariantId": "VAR-furazidin-50mg-tablet",
+      "sourceDedupeKey": "furazidin|50mg|tablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-furazidinumfuraginum-10mg/ml-oralsuspension",
+      "sourceVariantId": "VAR-furazidinumfuraginum-10mg/1ml-oralsuspension",
+      "sourceDedupeKey": "furazidinumfuraginum|10mg/1ml|oralsuspension",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fusidicacidashemihydratehydrocortisoneacetate-(20mg+10mg)/15g-cream",
+      "sourceVariantId": "VAR-fusidicacidashemihydratehydrocortisoneacetate-(20mg+10mg)/15g-cream",
+      "sourceDedupeKey": "fusidicacidashemihydratehydrocortisoneacetate|(20mg+10mg)/15g|cream",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/004416",
+        "medicineName": "Alkindi",
+        "activeSubstance": "hydrocortisone",
+        "atcCode": "H02AB09",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/alkindi",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/alkindi-epar-product-information_en.pdf",
+        "documentName": "Alkindi : EPAR - Product Information",
+        "documentUpdated": "2026-07-02T17:40:00Z",
+        "medicineScore": 6,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "d5ace1ca52527ac0af74d4ba7c13ceab720e6ab52c59fb4ea75d1a35c1ad07da",
+        "section41Sha256": "2f0c8bf0ee717249efca9b12624d59ff302b10a86288af31a2be38c84503336a",
+        "section42Sha256": "b9e854c4d2a9dc400bca3196e3bfc11c7b0e96550b1bd4cccfa8f89aa00bc59f",
+        "section2Characters": 417,
+        "section41Characters": 113,
+        "section42Characters": 5348
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fusidicacidbetamethasonevalerate-2.0%+0.1%-cream",
+      "sourceVariantId": "VAR-fusidicacidbetamethasonevalerate-2.0%+0.1%-cream",
+      "sourceDedupeKey": "fusidicacidbetamethasonevalerate|2.0%+0.1%|cream",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-fusidicacidhemihydrate-1%(10.18mg/g)-eyedropssolution",
+      "sourceVariantId": "VAR-fusidicacidhemihydrate-1%(10.18mg/g)-eyedropssolution",
+      "sourceDedupeKey": "fusidicacidhemihydrate|1%(10.18mg/g)|eyedropssolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gabapentin-100mg-capsule",
+      "sourceVariantId": "VAR-gabapentin-100mg-capsule",
+      "sourceDedupeKey": "gabapentin|100mg|capsule",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gabapentin-300mg-capsule",
+      "sourceVariantId": "VAR-gabapentin-300mg-capsule",
+      "sourceDedupeKey": "gabapentin|300mg|capsule",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gabapentin-300mg-capsulehard",
+      "sourceVariantId": "VAR-gabapentin-300mg-capsulehard",
+      "sourceDedupeKey": "gabapentin|300mg|capsulehard",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gabapentin-400mg-capsulehard",
+      "sourceVariantId": "VAR-gabapentin-400mg-capsulehard",
+      "sourceDedupeKey": "gabapentin|400mg|capsulehard",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gadobutrol-1mmol/1ml-solutionforinjection",
+      "sourceVariantId": "VAR-gadobutrol-1mmol/1ml-solutionforinjection",
+      "sourceDedupeKey": "gadobutrol|1mmol/1ml|solutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gadopentetatedimeglumine-469.01mg/ml(20ml:9.38g)-solutionforinjection",
+      "sourceVariantId": "VAR-gadopentetatedimeglumine-469.01mg/ml(20ml:9.38g)-solutionforinjection",
+      "sourceDedupeKey": "gadopentetatedimeglumine|469.01mg/ml(20ml:9.38g)|solutionforinjection",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gadotericacid-0.5mmol/1ml-solutionforinjection",
+      "sourceVariantId": "VAR-gadotericacid-0.5mmol/1ml-solutionforinjection",
+      "sourceDedupeKey": "gadotericacid|0.5mmol/1ml|solutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gemcitabinhydrochlorid-38mg/ml-concentrateforsolutionforinfusion",
+      "sourceVariantId": "VAR-gemcitabinhydrochlorid-38mg/ml-concentrateforsolutionforinfusion",
+      "sourceDedupeKey": "gemcitabinhydrochlorid|38mg/ml|concentrateforsolutionforinfusion",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gentamicin-1mg/g-cream",
+      "sourceVariantId": "VAR-gentamicin-1mg/g-cream",
+      "sourceDedupeKey": "gentamicin|1mg/g|cream",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gentamicinesulphatebethamethasonedipropionate-(0.5mg+1mg)/1g-cream",
+      "sourceVariantId": "VAR-gentamicinesulphatebethamethasonedipropionate-(0.5mg+1mg)/1g-cream",
+      "sourceDedupeKey": "gentamicinesulphatebethamethasonedipropionate|(0.5mg+1mg)/1g|cream",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gentamicinintheformofgentamicinsulphate-1mg/g-ointment",
+      "sourceVariantId": "VAR-gentamicinintheformofgentamicinsulphate-0.1%-ointment",
+      "sourceDedupeKey": "gentamicinintheformofgentamicinsulphate|0.1%|ointment",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gentamicinintheformofgentamicinsulphate-120mg/2ml-solutionforinjection",
+      "sourceVariantId": "VAR-gentamicinintheformofgentamicinsulphate-120mg/2ml-solutionforinjection",
+      "sourceDedupeKey": "gentamicinintheformofgentamicinsulphate|120mg/2ml|solutionforinjection",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gentamicinsulfate-1mg/g-ointment",
+      "sourceVariantId": "VAR-gentamicinsulfate-0.1%-ointment",
+      "sourceDedupeKey": "gentamicinsulfate|0.1%|ointment",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gentamicinsulfate-3mg/ml-eyedropssolution",
+      "sourceVariantId": "VAR-gentamicinsulfate-3mg/1ml-eyedropssolution",
+      "sourceDedupeKey": "gentamicinsulfate|3mg/1ml|eyedropssolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gentamicinsulfatebetamethasonedipropionate-(0.5mg+1mg)/1g-ointment",
+      "sourceVariantId": "VAR-gentamicinsulfatebetamethasonedipropionate-(0.5mg+1mg)/1g-ointment",
+      "sourceDedupeKey": "gentamicinsulfatebetamethasonedipropionate|(0.5mg+1mg)/1g|ointment",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gentamicinsulfatebetamethasonevalerate-0.1%+0.1%-cream",
+      "sourceVariantId": "VAR-gentamicinsulfatebetamethasonevalerate-0.1%+0.1%-cream",
+      "sourceDedupeKey": "gentamicinsulfatebetamethasonevalerate|0.1%+0.1%|cream",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gentamicinsulphate-1mg/g-ointment",
+      "sourceVariantId": "VAR-gentamicinsulphate-1mg/1g-ointment",
+      "sourceDedupeKey": "gentamicinsulphate|1mg/1g|ointment",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gentamicinsulphatedexamethasonesodiumphosphate-(1mg+5mg)/1ml-eyedropssolution",
+      "sourceVariantId": "VAR-gentamicinsulphatedexamethasonesodiumphosphate-(1mg+5mg)/1ml-eyedropssolution",
+      "sourceDedupeKey": "gentamicinsulphatedexamethasonesodiumphosphate|(1mg+5mg)/1ml|eyedropssolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EMA_PI_REVIEW",
+        "emaProductNumber": "EMEA/H/C/001140",
+        "medicineName": "Ozurdex",
+        "activeSubstance": "dexamethasone",
+        "atcCode": "S01BA01",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/ozurdex",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/ozurdex-epar-product-information_en.pdf",
+        "documentName": "Ozurdex : EPAR - Product Information",
+        "documentUpdated": "2026-05-29T16:00:00Z",
+        "medicineScore": 6,
+        "activeEvidence": true,
+        "strengthEvidence": false,
+        "formEvidence": false,
+        "section2Sha256": "627fb44bb1d97f50ab44e3a03abf72ba6a0d0cd15ee9dc3d210983d8eea0002f",
+        "section41Sha256": "79a62952a5bb2b8caeb1cf7fb0b7072e7e6f6fe1b21bcd7285c82b60839a445a",
+        "section42Sha256": "56aa184cee0c458b7bd370e2be2d693609bd27fff4a7d04b6c95cfeabe695739",
+        "section2Characters": 104,
+        "section41Characters": 460,
+        "section42Characters": 3172
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gentamycinassulphate-3mg/ml-eyedropssolution",
+      "sourceVariantId": "VAR-gentamycinassulphate-3mg/1ml-eyedropssolution",
+      "sourceDedupeKey": "gentamycinassulphate|3mg/1ml|eyedropssolution",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-ginkgobilobaefoliiextractumsiccum-40mg-capsule",
+      "sourceVariantId": "VAR-ginkgobilobaefoliiextractumsiccum-40mg-capsule",
+      "sourceDedupeKey": "ginkgobilobaefoliiextractumsiccum|40mg|capsule",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-glibenclamide-5mg-tablet",
+      "sourceVariantId": "VAR-glibenclamide-5mg-tablet",
+      "sourceDedupeKey": "glibenclamide|5mg|tablet",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/004379",
+        "medicineName": "Amglidia",
+        "activeSubstance": "glibenclamide",
+        "atcCode": "A10BB01",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/amglidia",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/amglidia-epar-product-information_en.pdf",
+        "documentName": "Amglidia : EPAR - Product Information",
+        "documentUpdated": "2023-12-06T13:39:00Z",
+        "medicineScore": 17,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "0edda22da20f07119f2cf2c98a861f5e5b637a1ed46bad57d55f61ee24942300",
+        "section41Sha256": "dd73745e0031112242dd0ad1441478bb4edbe568f0b6747594f027f54cfea00f",
+        "section42Sha256": "e530c0fa5d19183e588c03a4f35d93933ae955a3a142a9ddc7f16187a7f3cb82",
+        "section2Characters": 291,
+        "section41Characters": 334,
+        "section42Characters": 6247
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-gliclazide-60mg-modifiedreleasetablet",
+      "sourceVariantId": "VAR-gliclazide-60mg-modifiedreleasetablet",
+      "sourceDedupeKey": "gliclazide|60mg|modifiedreleasetablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-glimepiride-3mg-tablet",
+      "sourceVariantId": "VAR-glimepiride-3mg-tablet",
+      "sourceDedupeKey": "glimepiride|3mg|tablet",
+      "priorReviewState": "REVIEW",
+      "bestSource": {
+        "matchStatus": "EXACT_EMA_PI",
+        "emaProductNumber": "EMEA/H/C/000680",
+        "medicineName": "Tandemact",
+        "activeSubstance": "pioglitazone;glimepiride",
+        "atcCode": "A10BD06",
+        "medicineUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/tandemact",
+        "documentUrl": "https://www.ema.europa.eu/en/documents/product-information/tandemact-epar-product-information_en.pdf",
+        "documentName": "Tandemact : EPAR - Product Information",
+        "documentUpdated": "2023-09-13T13:32:00Z",
+        "medicineScore": 6,
+        "activeEvidence": true,
+        "strengthEvidence": true,
+        "formEvidence": true,
+        "section2Sha256": "1b049c09feeae0252d6c01eeaa4d065fcb0be87894be4adf1a66493025b743bf",
+        "section41Sha256": "b9cf59c06be78616790d8224164f70029818fbdf1da2b447496e50432b3def40",
+        "section42Sha256": "e7519ba44ef978b3c35f40bcdb966f58be5144fa0b13939ab3d4e0c24f303b71",
+        "section2Characters": 503,
+        "section41Characters": 680,
+        "section42Characters": 3853
+      },
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-glucose-10%(500ml:50g)-solutionforinfusion",
+      "sourceVariantId": "VAR-glucose-10%(500ml:50g)-solutionforinfusion",
+      "sourceDedupeKey": "glucose|10%(500ml:50g)|solutionforinfusion",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-glucose-5%(500ml:25g)-solutionforinfusion",
+      "sourceVariantId": "VAR-glucose-5%(500ml:25g)-solutionforinfusion",
+      "sourceDedupeKey": "glucose|5%(500ml:25g)|solutionforinfusion",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-glucosemonhydrate-50mg/ml-solutionforinfusion",
+      "sourceVariantId": "VAR-glucosemonhydrate-50mg/1ml-solutionforinfusion",
+      "sourceDedupeKey": "glucosemonhydrate|50mg/1ml|solutionforinfusion",
+      "priorReviewState": "NO_MATCH",
+      "bestSource": null,
+      "publicationAllowed": false
+    },
+    {
+      "variantGroupId": "GRP-glucosemonohydratealaninearginineasparticacidglutamicacidglycinehistidineisoleucineleucinelysinehydrochloridemethioninephenylalanineprolineserinethreoninetryptophantyrosinevalinecalciumchloridedihydrateglycerolmonodisodiumphosphatemagnesiumsulfateheptahydratepottasiumchloridesodiumacetatetrihydraterefinedsoyabeanoil-(74.2g+3.33g+2.33g+0.71g+1.16g+1.66g+1.41g+1.16g+1.66g+2.33g+1.16g+1.66g+1.41g+0.92g+1.16g+0.4g+0.05g+1.5g+0.2g+1.04g+0.67g+1.25g+1.71g+35.4g)/1000ml-emulsionforinfusion",
+      "sourceVariantId": "VAR-glucosemonohydratealaninearginineasparticacidglutamicacidglycinehistidineisoleucineleucinelysinehydrochloridemethioninephenylalanineprolineserinethreoninetryptophantyrosinevalinecalciumchloridedihydrateglycerolmonodisodiumphosphatemagnesiumsulfateheptahydratepottasiumchloridesodiumacetatetrihydraterefinedsoyabeanoil-(74.2g+3.33g+2.33g+0.71g+1.16g+1.66g+1.41g+1.16g+1.66g+2.33g+1.16g+1.66g+1.41g+0.92g+1.16g+0.4g+0.05g+1.5g+0.2g+1.04g+0.67g+1.25g+1.71g+35.4g)/1000ml-emulsionforinfusion",
+      "sourceDedupeKey": "glucosemonohydratealaninearginineasparticacidglutamicacidglycinehistidineisoleucineleucinelysinehydrochloridemethioninephenylalanineprolineserinethreoninetryptophantyrosinevalinecalciumchloridedihydrateglycerolmonodisodiumphosphatemagnesiumsulfateheptahydratepottasiumchloridesodiumacetatetrihydraterefinedsoyabeanoil|(74.2g+3.33g+2.33g+0.71g+1.16g+1.66g+1.41g+1.16g+1.66g+2.33g+1.16g+1.66g+1.41g+0.92g+1.16g+0.4g+0.05g+1.5g+0.2g+1.04g+0.67g+1.25g+1.71g+35.4g)/1000ml|emulsionforinfusion",
+      "priorReviewState": "REVIEW",
+      "bestSource": null,
+      "publicationAllowed": false
+    }
+  ]
+}
