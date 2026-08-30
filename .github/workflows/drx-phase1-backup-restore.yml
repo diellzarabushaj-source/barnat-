@@ -57,6 +57,11 @@ jobs:
       DB_PASSWORD_9: ${{ secrets.POSTGRES_DB_PASSWORD }}
       DB_PASSWORD_10: ${{ secrets.DATABASE_DB_PASSWORD }}
 
+      ACCESS_TOKEN_1: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      ACCESS_TOKEN_2: ${{ secrets.MEDINDEX_SUPABASE_ACCESS_TOKEN }}
+      ACCESS_TOKEN_3: ${{ secrets.SUPABASE_TOKEN }}
+      ACCESS_TOKEN_4: ${{ secrets.SUPABASE_CLI_TOKEN }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -108,12 +113,39 @@ jobs:
             } >> "$GITHUB_ENV"
             echo "::add-mask::$resolved_url"
             echo "available=true" >> "$GITHUB_OUTPUT"
+            echo "mode=db_url" >> "$GITHUB_OUTPUT"
             echo "source=$resolved_source" >> "$GITHUB_OUTPUT"
             echo "::notice::Database credential alias resolved successfully."
           else
-            echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "source=none" >> "$GITHUB_OUTPUT"
-            echo "::notice::No supported database URL/password secret alias was found; backup/restore gate remains fail-closed."
+            resolved_token=""
+            resolved_token_source=""
+            for n in {1..4}; do
+              key="ACCESS_TOKEN_${n}"
+              value="${!key:-}"
+              if [ -n "$value" ]; then
+                resolved_token="$value"
+                resolved_token_source="$key"
+                break
+              fi
+            done
+
+            if [ -n "$resolved_token" ]; then
+              {
+                echo 'SUPABASE_ACCESS_TOKEN<<DRXEOF'
+                echo "$resolved_token"
+                echo 'DRXEOF'
+              } >> "$GITHUB_ENV"
+              echo "::add-mask::$resolved_token"
+              echo "available=true" >> "$GITHUB_OUTPUT"
+              echo "mode=linked" >> "$GITHUB_OUTPUT"
+              echo "source=$resolved_token_source" >> "$GITHUB_OUTPUT"
+              echo "::notice::Supabase management access token resolved; linked passwordless dump will be attempted."
+            else
+              echo "available=false" >> "$GITHUB_OUTPUT"
+              echo "mode=none" >> "$GITHUB_OUTPUT"
+              echo "source=none" >> "$GITHUB_OUTPUT"
+              echo "::notice::No PostgreSQL URL/database-password or Supabase management access-token secret was found; backup/restore gate remains fail-closed."
+            fi
           fi
 
       - name: Write blocked evidence
@@ -145,12 +177,24 @@ jobs:
           BACKUP_DIR="$RUNNER_TEMP/drx-phase1-backup"
           mkdir -p "$BACKUP_DIR"
 
-          supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/roles.sql" --role-only
-          supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/schema.sql"
-          supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/data.sql" --use-copy --data-only \
-            -x "storage.buckets_vectors" -x "storage.vector_indexes"
-          supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/history_schema.sql" --schema supabase_migrations
-          supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/history_data.sql" --use-copy --data-only --schema supabase_migrations
+          if [ "${{ steps.credential.outputs.mode }}" = "linked" ]; then
+            supabase init
+            supabase link --project-ref "$SUPABASE_PROJECT_REF"
+
+            supabase db dump --linked -f "$BACKUP_DIR/roles.sql" --role-only
+            supabase db dump --linked -f "$BACKUP_DIR/schema.sql"
+            supabase db dump --linked -f "$BACKUP_DIR/data.sql" --use-copy --data-only \
+              -x "storage.buckets_vectors" -x "storage.vector_indexes"
+            supabase db dump --linked -f "$BACKUP_DIR/history_schema.sql" --schema supabase_migrations
+            supabase db dump --linked -f "$BACKUP_DIR/history_data.sql" --use-copy --data-only --schema supabase_migrations
+          else
+            supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/roles.sql" --role-only
+            supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/schema.sql"
+            supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/data.sql" --use-copy --data-only \
+              -x "storage.buckets_vectors" -x "storage.vector_indexes"
+            supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/history_schema.sql" --schema supabase_migrations
+            supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/history_data.sql" --use-copy --data-only --schema supabase_migrations
+          fi
 
           test -s "$BACKUP_DIR/roles.sql"
           test -s "$BACKUP_DIR/schema.sql"
