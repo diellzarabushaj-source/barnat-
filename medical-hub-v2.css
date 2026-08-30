@@ -853,3 +853,58 @@ body{overflow-x:hidden}
   color:#7d8b9b;
   font-size:8.7px;
 }
+
+
+/* Medical Hub navigation v3 — chapter -> lesson hierarchy + backend search */
+.hub-command{
+  grid-template-columns:minmax(300px,1.1fr) minmax(210px,.72fr) minmax(340px,1.18fr);
+  align-items:end;
+}
+.hub-field select{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.hub-field select optgroup{
+  color:#526579;
+  font-weight:600;
+}
+.hub-field select option{
+  color:#263d54;
+  font-weight:400;
+}
+.hub-search.is-searching input{
+  padding-right:78px;
+}
+.hub-search.is-searching::after{
+  content:"";
+  position:absolute;
+  right:12px;
+  top:50%;
+  width:13px;
+  height:13px;
+  margin-top:-7px;
+  border:2px solid #e3e8ee;
+  border-top-color:#635bff;
+  border-radius:50%;
+  animation:hub-search-spin .7s linear infinite;
+}
+.hub-search.is-searching kbd,
+.hub-search.is-searching .hub-search-clear{
+  display:none;
+}
+@keyframes hub-search-spin{to{transform:rotate(360deg)}}
+.hub-chapter select{
+  font-weight:500;
+}
+.hub-topic select{
+  font-weight:400;
+}
+@media(max-width:1023px){
+  .hub-command{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr)}
+  .hub-search{grid-column:1/-1}
+}
+@media(max-width:760px){
+  .hub-command{grid-template-columns:1fr}
+  .hub-search,.hub-chapter,.hub-topic{grid-column:auto}
+}
