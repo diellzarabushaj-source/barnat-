@@ -35,3 +35,13 @@ Phase 8 implementation can be healthy while its exit gate is still closed.
 Do not proceed to Phase 9 until `drx_phase8_status_v1()` reports
 `exit_gate_pass=true`. Review-only product-source candidates and exact URL-only
 legacy evidence are not sufficient for publication or cutover.
+
+
+## Exact-market-product gate
+
+Reference SmPC matches must remain `REFERENCE_SUBSTANCE_LABEL`. A binding can become
+`VERIFIED` only after exact product evidence exists for the same source raw hash/URL
+and the binding scope is explicitly `EXACT_MARKET_PRODUCT`.
+
+Do not bypass `drx_product_source_binding_verification_guard` or
+`drx_exact_product_evidence_guard` during rollback.

@@ -65,6 +65,12 @@ const statusHardening = fs.readFileSync(
 const fkIndexes = fs.readFileSync(
   'supabase/migrations/20260830165536_drx_phase8e_cover_drx_foreign_keys.sql','utf8'
 );
+const exactProductGate = fs.readFileSync(
+  'supabase/migrations/20260830170022_drx_phase8f_exact_market_product_review_gate.sql','utf8'
+);
+const exactProductStatus = fs.readFileSync(
+  'supabase/migrations/20260830170127_drx_phase8g_exact_product_status_contract.sql','utf8'
+);
 const handler = fs.readFileSync('lib/dose-product-fast-path-handler.js','utf8');
 const workflow = fs.readFileSync('.github/workflows/drx-phase8-shadow-gate.yml','utf8');
 const rollback = fs.readFileSync('docs/DRX-PHASE8-ROLLBACK.md','utf8');
@@ -100,6 +106,20 @@ assert.match(fkIndexes,/drx_clinical_indication_claim_source_doc_idx/);
 assert.match(fkIndexes,/drx_dose_product_source_binding_variant_idx/);
 assert.match(fkIndexes,/drx_identity_canonical_terms_concept_idx/);
 assert.match(fkIndexes,/drx_variant_clinical_route_idx/);
+
+assert.match(exactProductGate,/binding_scope/);
+assert.match(exactProductGate,/EXACT_MARKET_PRODUCT/);
+assert.match(exactProductGate,/product_source_exact_evidence_v1/);
+assert.match(exactProductGate,/drx_product_source_binding_verification_guard/);
+assert.match(exactProductGate,/no exact-market-product verified source binding/i);
+assert.match(exactProductGate,/product_source_review_packet_v1/);
+assert.match(exactProductGate,/automatic_verification_allowed/);
+
+assert.match(exactProductStatus,/reference_label_can_verify_market_product',false/);
+assert.match(exactProductStatus,/exact_product_guard_triggers/);
+assert.match(exactProductStatus,/invalid_verified_product_source_bindings/);
+assert.match(exactProductStatus,/exact_market_product_evidence_rows/);
+assert.match(exactProductStatus,/gate_pass',g\.exit_gate_pass/);
 
 assert.match(handler,/runtime:'v2-shadow'/);
 assert.match(handler,/X-DRx-Dose-Shadow/);

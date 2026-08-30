@@ -29,6 +29,12 @@ async function main() {
   assert.ok(status.strongest_review_candidates > 0);
   assert.equal(status.automatic_candidate_insert_enabled,false);
   assert.equal(status.automatic_product_source_verification_enabled,false);
+  assert.equal(status.reference_label_bindings,status.review_product_source_bindings);
+  assert.equal(status.exact_market_product_bindings,0);
+  assert.equal(status.exact_market_product_evidence_rows,0);
+  assert.equal(status.invalid_verified_product_source_bindings,0);
+  assert.equal(status.exact_product_guard_triggers,2);
+  assert.equal(status.reference_label_can_verify_market_product,false);
   assert.equal(status.exit_gate_pass,false);
   assert.equal(status.gate_pass,false);
   assert.ok(status.review_product_source_bindings > 0);
