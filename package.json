@@ -172,7 +172,9 @@
     "test:drx-phase5-variants": "node tests/drx-phase5-clinical-variants-test.js",
     "audit:drx-phase5-live": "node scripts/drx-phase5-status.js",
     "test:drx-phase6-clinical": "node tests/drx-phase6-clinical-provenance-test.js",
-    "audit:drx-phase6-live": "node scripts/drx-phase6-status.js"
+    "audit:drx-phase6-live": "node scripts/drx-phase6-status.js",
+    "test:drx-phase7-dose": "node tests/drx-phase7-dosing-gate-test.js",
+    "audit:drx-phase7-live": "node scripts/drx-phase7-status.js"
   },
   "dependencies": {
     "@vercel/blob": "^2.3.0",
