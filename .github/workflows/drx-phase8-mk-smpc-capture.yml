@@ -1,0 +1,39 @@
+name: DRx Phase 8 exact MK SmPC capture
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/capture-drx-phase8-mk-smpc.js"
+      - "tests/drx-phase8-mk-smpc-capture-test.js"
+      - ".github/workflows/drx-phase8-mk-smpc-capture.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: drx-phase8-mk-smpc-capture
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Static MK SmPC capture contract
+        run: node tests/drx-phase8-mk-smpc-capture-test.js
+      - name: Capture exact product SmPC PDFs
+        run: node scripts/capture-drx-phase8-mk-smpc.js
+      - name: Upload immutable MK SmPC archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-phase8-mk-smpc-archive
+          path: artifacts/drx-phase8-mk-smpc
+          if-no-files-found: error
+          retention-days: 90
