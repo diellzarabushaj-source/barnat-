@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const INDEX_QUERY = `*[_type == "learningTopic" && reviewStatus != "archived"]{
+  const INDEX_QUERY = `*[_type == "learningTopic" && reviewStatus != "archived" && contentKind != "section"]{
     _id,question,title,"slug":slug.current,keywords,icdCodes,procedureCodes,summary,
     contentKind,chapterNumber,lessonNumber,reviewStatus,reviewedBy,lastReviewedAt,version,
     "stepCount":count(steps),"prescriptionCount":count(prescriptions),"protocolCount":count(relatedProtocols),
@@ -17,7 +17,7 @@
     sources[]{_key,title,organization,url,publishedAt,note},
     redFlags,whenToRefer,reviewStatus,reviewedBy,lastReviewedAt,version,
     relatedProtocols[]->{_id,title,"slug":slug.current,summary,reviewStatus},
-    relatedTopics[]->{_id,question,title,"slug":slug.current,summary,icdCodes,procedureCodes,reviewStatus,version}
+    relatedTopics[]->{_id,question,title,"slug":slug.current,summary,icdCodes,procedureCodes,contentKind,sectionNumber,steps[]{_key,title,action,why,setting,priority,note},prescriptions[]{_key,medicine,genericName,form,strength,dose,route,frequency,duration,quantity,instructions,patientGroup,clinicalNote},figures[]{_key,title,caption,alt,url,sourceUrl,credit,kind,order},redFlags,whenToRefer,sources[]{_key,title,organization,url,publishedAt,note},reviewStatus,version}
   }`;
 
   const state = {
@@ -376,6 +376,7 @@
   function sectionEntries(item) {
     const entries = [];
     if (item.redFlags?.length) entries.push({ id:'hub-red-flags', label:'Red flags' });
+    if (item.relatedTopics?.length) entries.push({ id:'hub-internal-sections', label:'Seksionet e mësimit' });
     if (item.steps?.length) entries.push({ id:'hub-content', label:lessonBodyLabel(item) });
     if (item.figures?.length) entries.push({ id:'hub-figures', label:'Figura dhe ilustrime' });
     if (item.prescriptions?.length) entries.push({ id:'hub-prescriptions', label:'Receta' });
@@ -499,6 +500,46 @@
     bindDetailNavigation(detail);
   }
 
+  function nestedSectionMarkup(section, index) {
+    const title = clean(section?.title || section?.question || `Seksioni ${index + 1}`).replace(/^\d+(?:\.\d+)?\s*[—-]\s*/, '');
+    const review = reviewMeta(section?.reviewStatus);
+    const procedures = procedureEntries(section);
+    return `
+      <details class="ck-internal-section" ${index === 0 ? 'open' : ''}>
+        <summary>
+          <span class="ck-internal-section-no">${String(index + 1).padStart(2, '0')}</span>
+          <span class="ck-internal-section-title">
+            <strong>${esc(title)}</strong>
+            <small>${esc(section?.summary || 'Seksion i brendshëm i këtij mësimi.')}</small>
+          </span>
+          <span class="ck-internal-section-meta">
+            ${(section.icdCodes || []).map(icdChip).join('')}
+            ${procedures.map(procedureChip).join('')}
+            <span class="ck-mini-status ${review.className}"><i></i>${esc(review.label)}</span>
+          </span>
+        </summary>
+        <div class="ck-internal-section-body">
+          ${section.redFlags?.length ? `
+            <div class="ck-internal-alert">
+              <strong>Red flags</strong>
+              ${bulletMarkup(section.redFlags)}
+            </div>
+          ` : ''}
+          ${section.steps?.length ? `<div class="ck-steps">${section.steps.map(stepMarkup).join('')}</div>` : ''}
+          ${section.figures?.length ? `
+            <div class="ck-figure-grid">${section.figures.slice().sort((a,b)=>(a.order||0)-(b.order||0)).map(figureMarkup).join('')}</div>
+          ` : ''}
+          ${section.prescriptions?.length ? `
+            <div class="ck-rx-section ck-rx-section-nested">
+              <div class="ck-section-heading"><span>Rx</span><h3>Receta / skema e përshkrimit</h3></div>
+              <div class="ck-rx-grid">${section.prescriptions.map(rxMarkup).join('')}</div>
+            </div>
+          ` : ''}
+          ${section.whenToRefer ? `<div class="ck-internal-referral"><strong>Kur të referohet</strong><p>${esc(section.whenToRefer)}</p></div>` : ''}
+        </div>
+      </details>`;
+  }
+
   function renderLessonDetail(item) {
     const detail = $('#learningDetail');
     if (!detail) return;
@@ -546,6 +587,19 @@
         ` : ''}
 
         <div class="ck-sections">
+          ${item.relatedTopics?.length ? `
+            <section class="ck-section" id="hub-internal-sections">
+              <div class="ck-section-heading"><span>Struktura</span><h3>Seksionet e mësimit</h3></div>
+              <div class="ck-internal-sections">
+                ${item.relatedTopics
+                  .slice()
+                  .sort((a,b)=>(a.sectionNumber||0)-(b.sectionNumber||0))
+                  .map(nestedSectionMarkup)
+                  .join('')}
+              </div>
+            </section>
+          ` : ''}
+
           ${item.redFlags?.length ? `
             <section class="ck-section ck-referral" id="hub-red-flags">
               <div class="ck-section-heading"><span>Urgjencë</span><h3>Red flags — ndalo dhe vlerëso urgjent</h3></div>
