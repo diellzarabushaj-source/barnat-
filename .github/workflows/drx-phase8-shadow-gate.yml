@@ -1,0 +1,42 @@
+name: DRx Phase 8 shadow gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "supabase/migrations/20260830163000_drx_phase8_shadow_read_model_parity_core.sql"
+      - "lib/dose-v3-shadow.js"
+      - "lib/dose-product-fast-path-handler.js"
+      - "tests/drx-phase8-shadow-runtime-test.js"
+      - "scripts/drx-phase8-status.js"
+      - "docs/DRX-PHASE8-ROLLBACK.md"
+      - ".github/workflows/drx-phase8-shadow-gate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      MEDINDEX_SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Static Phase 8 shadow contract
+        run: node tests/drx-phase8-shadow-runtime-test.js
+      - name: Live Phase 8 gate
+        run: node scripts/drx-phase8-status.js
+      - name: Upload Phase 8 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-phase8-status-evidence
+          path: drx-phase8-status-evidence.json
+          if-no-files-found: error
+          retention-days: 30
