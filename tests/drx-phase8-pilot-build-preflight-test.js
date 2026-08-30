@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const sql = fs.readFileSync(
-  'supabase/migrations/20260830200303_drx_phase8p_pilot_build_preflight.sql',
+  'supabase/migrations/20260830201012_drx_phase8p_pilot_build_preflight.sql',
   'utf8'
 );
 
