@@ -85,6 +85,13 @@ async function waitForServer(){
   throw new Error('Phase 9 smoke server did not start.');
 }
 async function installRoutes(page,library){
+  await page.route('**/api/profile-photo**',async route=>{
+    const method=route.request().method();
+    if(method==='GET' || method==='HEAD'){
+      return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true,exists:false,url:null})});
+    }
+    return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true,exists:false,url:null})});
+  });
   await page.route('**/api/dosage/search**',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(searchPayload)}));
   await page.route('**/api/dosage/product/**',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(productPayload)}));
   await page.route('**/api/dosage/calculate',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(calculationPayload)}));
