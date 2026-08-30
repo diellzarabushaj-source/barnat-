@@ -14,8 +14,12 @@ on:
       - "tests/drx-dose-source-policy-test.js"
       - "supabase/migrations/20260830192720_drx_phase8m_clinical_reference_pipeline.sql"
       - "supabase/migrations/20260830192855_drx_phase8n_exact_product_identity_review.sql"
+      - "supabase/migrations/20260830195641_drx_phase8o_clinical_review_control.sql"
       - "supabase/drx-phase8m-clinical-reference-rollback.sql"
       - "supabase/drx-phase8n-exact-product-review-rollback.sql"
+      - "supabase/drx-phase8o-clinical-review-control-rollback.sql"
+      - "scripts/drx-phase8-clinical-review-status.js"
+      - "tests/drx-phase8-clinical-review-control-test.js"
       - ".github/workflows/drx-phase8-pilot-clinical-reference.yml"
 
 permissions:
@@ -43,6 +47,7 @@ jobs:
           node tests/drx-dose-source-policy-test.js
           node tests/drx-dose-source-archive-test.js
           node tests/drx-phase8-pilot-clinical-reference-test.js
+          node tests/drx-phase8-clinical-review-control-test.js
 
       - name: Fetch, hash and parse two authoritative SmPC references
         run: node scripts/build-drx-phase8-pilot-clinical-extraction.js
@@ -80,11 +85,16 @@ jobs:
       - name: Ingest provenance and register review-only references
         run: node scripts/ingest-drx-phase8-pilot-clinical-sources.js
 
+      - name: Verify live review-control packet
+        run: node scripts/drx-phase8-clinical-review-status.js
+
       - name: Upload ingest evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: drx-phase8-pilot-clinical-reference-ingest-evidence
-          path: artifacts/drx-phase8-pilot-clinical/ingest-evidence.json
+          path: |
+            artifacts/drx-phase8-pilot-clinical/ingest-evidence.json
+            drx-phase8-clinical-review-control-evidence.json
           if-no-files-found: warn
           retention-days: 90

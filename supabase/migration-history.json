@@ -469,6 +469,10 @@
     {
       "name": "drx_phase8n_exact_product_identity_review",
       "version": "20260830192855"
+    },
+    {
+      "name": "drx_phase8o_clinical_review_control",
+      "version": "20260830195641"
     }
   ]
 }
