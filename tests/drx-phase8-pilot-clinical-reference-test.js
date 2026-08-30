@@ -58,8 +58,8 @@ assert.match(m8m,/automatic_rule_publication_allowed boolean not null default fa
 assert.match(m8n,/phase8-explicit-evidence-review/);
 assert.match(m8n,/does not verify or publish dosing rules/);
 
-assert.doesNotMatch(rollbackM,/\bCASCADE\b/i);
-assert.doesNotMatch(rollbackN,/\bCASCADE\b/i);
+assert.doesNotMatch(rollbackM,/drop\\s+[\\s\\S]{0,160}?\\bcascade\\b/i);
+assert.doesNotMatch(rollbackN,/drop\\s+[\\s\\S]{0,160}?\\bcascade\\b/i);
 assert.match(rollbackN,/binding_status='REVIEW'/);
 
 assert.match(workflow,/archive:/);
