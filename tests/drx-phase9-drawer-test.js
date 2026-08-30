@@ -23,7 +23,7 @@ assert.match(js,/data-product-tab/);
 assert.match(js,/ArrowRight/);
 assert.match(js,/ArrowLeft/);
 assert.match(js,/aria-labelledby/);
-assert.match(js,/textNameAsIdentityForbidden|ID-të kanonike/);
+assert.match(js,/override-i i pilotit nuk përdoret si ID/i);
 assert.doesNotMatch(js,/eval\(/);
 
 assert.match(css,/\.phase9-tabs/);
