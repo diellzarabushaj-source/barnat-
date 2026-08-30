@@ -840,11 +840,11 @@
     if (detailCache.has(id)) return detailCache.get(id);
     if (detailRequests.has(id)) return detailRequests.get(id);
 
-    const request = window.MedIndexSanity
-      .query(DETAIL_QUERY, { id }, { timeout:12000, cache:'no-cache' })
-      .then(item => {
+    const request = hubApi({ id }, { timeout:12000 })
+      .then(payload => {
+        const item = payload?.item || null;
         if (item) detailCache.set(id, item);
-        return item || null;
+        return item;
       })
       .finally(() => detailRequests.delete(id));
 
@@ -872,7 +872,7 @@
       <div class="ck-empty ck-loading">
         <span class="ck-loading-spinner" aria-hidden="true"></span>
         <strong>${esc(indexItem?.title || 'Po ngarkohet tema…')}</strong>
-        <span>Po merret vetëm përmbajtja e kësaj teme nga Sanity.</span>
+        <span>Po merret përmbajtja e kësaj teme nga backend-i i Medical Hub / Sanity.</span>
       </div>`;
 
     try {
@@ -903,13 +903,36 @@
     const select = $('#learningTopic');
     if (!select) return;
 
-    select.innerHTML = state.filtered.map(item => {
-      const prefix = isChapter(item) ? 'Kapitulli · ' : 'Mësimi · ';
-      return `<option value="${esc(item._id)}">${prefix}${esc(codedTitle(item))}</option>`;
-    }).join('') || '<option value="">Asnjë mësim</option>';
+    const term = clean(state.term);
+    const chapter = state.items.find(item => isChapter(item) && chapterKey(item) === state.category);
+    let options = '';
 
+    if (!term && chapter) {
+      const lessons = state.items
+        .filter(item => !isChapter(item) && chapterKey(item) === state.category)
+        .sort((a,b) => topicOrder(a) - topicOrder(b));
+      options = `<option value="${esc(chapter._id)}">Përmbledhja e kapitullit · ${esc(codedTitle(chapter))}</option>`
+        + lessons.map(item => `<option value="${esc(item._id)}">${esc(codedTitle(item))}</option>`).join('');
+    } else {
+      const grouped = new Map();
+      state.filtered.forEach(item => {
+        const key = chapterKey(item) || '00';
+        if (!grouped.has(key)) grouped.set(key, []);
+        grouped.get(key).push(item);
+      });
+      options = Array.from(grouped.entries()).map(([key, items]) => {
+        const chapterItem = state.items.find(item => isChapter(item) && chapterKey(item) === key);
+        const label = chapterItem ? codedTitle(chapterItem) : `Kapitulli ${key}`;
+        return `<optgroup label="${esc(label)}">${items.map(item => {
+          const prefix = isChapter(item) ? 'Përmbledhja · ' : '';
+          return `<option value="${esc(item._id)}">${prefix}${esc(codedTitle(item))}</option>`;
+        }).join('')}</optgroup>`;
+      }).join('');
+    }
+
+    select.innerHTML = options || '<option value="">Asnjë mësim</option>';
     select.value = state.selectedId;
-    select.disabled = state.filtered.length === 0;
+    select.disabled = !options;
   }
 
   function renderReaderNavigation() {
