@@ -7,6 +7,7 @@ on:
       - main
     paths:
       - "supabase/migrations/20260830163000_drx_phase8_shadow_read_model_parity_core.sql"
+      - "supabase/migrations/20260830163913_drx_phase8b_review_candidates_exit_gate_hardening.sql"
       - "lib/dose-v3-shadow.js"
       - "lib/dose-product-fast-path-handler.js"
       - "tests/drx-phase8-shadow-runtime-test.js"

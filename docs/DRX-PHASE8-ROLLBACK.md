@@ -27,3 +27,11 @@ the V3 shadow read model exposes unverified rows, or parity logic is incorrect.
 - Keep V2 fallback until the explicit later cutover phase.
 
 Rollback is a feature-flag switch, not destructive cleanup.
+
+
+## Strict exit gate
+
+Phase 8 implementation can be healthy while its exit gate is still closed.
+Do not proceed to Phase 9 until `drx_phase8_status_v1()` reports
+`exit_gate_pass=true`. Review-only product-source candidates and exact URL-only
+legacy evidence are not sufficient for publication or cutover.

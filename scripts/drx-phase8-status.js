@@ -22,7 +22,12 @@ async function main() {
   assert.equal(status.v2_runtime_preserved,true);
   assert.equal(status.v3_cutover_enabled,false);
   assert.equal(status.publication_allowed,false);
-  assert.equal(status.gate_pass,true);
+  assert.equal(status.implementation_gate_pass,true);
+  assert.equal(status.exit_gate_pass,false);
+  assert.equal(status.gate_pass,false);
+  assert.ok(status.review_product_source_bindings > 0);
+  assert.equal(status.verified_product_source_bindings,0);
+  assert.equal(status.legacy_exact_url_and_section_hash,0);
 
   const search = await rpc('drx_dose_search_v3_shadow_v1',{ p_query:'aa',p_limit:5 });
   assert.ok(Array.isArray(search));

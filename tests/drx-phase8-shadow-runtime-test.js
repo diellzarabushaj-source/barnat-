@@ -53,6 +53,9 @@ assert.deepEqual(
 const migration = fs.readFileSync(
   'supabase/migrations/20260830163000_drx_phase8_shadow_read_model_parity_core.sql','utf8'
 );
+const hardening = fs.readFileSync(
+  'supabase/migrations/20260830163913_drx_phase8b_review_candidates_exit_gate_hardening.sql','utf8'
+);
 const handler = fs.readFileSync('lib/dose-product-fast-path-handler.js','utf8');
 const workflow = fs.readFileSync('.github/workflows/drx-phase8-shadow-gate.yml','utf8');
 const rollback = fs.readFileSync('docs/DRX-PHASE8-ROLLBACK.md','utf8');
@@ -64,6 +67,12 @@ assert.match(migration,/drx_record_dose_shadow_comparison_v1/);
 assert.match(migration,/clinical payload content is not persisted/i);
 assert.match(migration,/v3_cutover_enabled',false/);
 assert.match(migration,/publication_allowed',false/);
+assert.match(hardening,/AUTO_CANDIDATE_EXACT_SOURCE_IDENTITY; NOT_VERIFIED/);
+assert.match(hardening,/legacy_evidence_alignment_v1/);
+assert.match(hardening,/automatic_verification_allowed/);
+assert.match(hardening,/implementation_gate_pass/);
+assert.match(hardening,/exit_gate_pass/);
+assert.match(hardening,/gate_pass',g\.exit_gate_pass/);
 assert.doesNotMatch(migration,/grant execute on function public\.drx_phase8_status_v1\(\) to authenticated/i);
 
 assert.match(handler,/runtime:'v2-shadow'/);
