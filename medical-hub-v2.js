@@ -436,28 +436,47 @@
       </article>`;
   }
 
-  function rxMarkup(rx) {
-    const rows = [
-      ['Substanca', rx.genericName],
-      ['Forma', rx.form],
-      ['Fortësia', rx.strength],
-      ['Doza', rx.dose],
-      ['Rruga', rx.route],
-      ['Shpeshtësia', rx.frequency],
-      ['Kohëzgjatja', rx.duration],
-      ['Sasia', rx.quantity],
-      ['Pacienti', rx.patientGroup],
-    ].filter(([, value]) => value);
+  function activeSubstanceName(rx) {
+    return clean(rx?.genericName || rx?.medicine || 'Substancë aktive');
+  }
+
+  function rxLineMarkup(rx, index) {
+    const details = [
+      rx.strength ? `Fortësia: ${rx.strength}` : '',
+      rx.dose ? `Doza: ${rx.dose}` : '',
+      rx.route ? `Rruga: ${rx.route}` : '',
+      rx.frequency ? `Shpeshtësia: ${rx.frequency}` : '',
+      rx.duration ? `Kohëzgjatja: ${rx.duration}` : '',
+      rx.quantity ? `Sasia: ${rx.quantity}` : '',
+    ].filter(Boolean);
 
     return `
-      <article class="ck-rx-card">
-        <div class="ck-rx-title">
-          <span>Rx</span>
-          <strong>${esc(rx.medicine || 'Recetë')}</strong>
+      <div class="ck-rx-line">
+        <span class="ck-rx-line-no">${index + 1}</span>
+        <div class="ck-rx-line-copy">
+          <strong>${esc(activeSubstanceName(rx))}</strong>
+          ${details.length ? `<div class="ck-rx-line-details">${details.map(value => `<span>${esc(value)}</span>`).join('')}</div>` : ''}
+          ${rx.instructions ? `<p>${esc(rx.instructions)}</p>` : ''}
+          ${rx.clinicalNote ? `<small>${esc(rx.clinicalNote)}</small>` : ''}
         </div>
-        <dl>${rows.map(([label, value]) => `<dt>${esc(label)}</dt><dd>${esc(value)}</dd>`).join('')}</dl>
-        ${rx.instructions ? `<p class="ck-summary">${esc(rx.instructions)}</p>` : ''}
-        ${rx.clinicalNote ? `<small>${esc(rx.clinicalNote)}</small>` : ''}
+      </div>`;
+  }
+
+  function rxGroupMarkup(prescriptions) {
+    const items = (prescriptions || []).filter(Boolean);
+    if (!items.length) return '';
+    return `
+      <article class="ck-rx-sheet">
+        <div class="ck-rx-sheet-head">
+          <span>Rx</span>
+          <div>
+            <strong>Skema e përshkrimit</strong>
+            <small>Vetëm substancat aktive — pa emra tregtarë.</small>
+          </div>
+        </div>
+        <div class="ck-rx-lines">
+          ${items.map(rxLineMarkup).join('')}
+        </div>
       </article>`;
   }
 
@@ -632,7 +651,7 @@
           ${section.prescriptions?.length ? `
             <div class="ck-rx-section ck-rx-section-nested">
               <div class="ck-section-heading"><span>Rx</span><h3>Receta / skema e përshkrimit</h3></div>
-              <div class="ck-rx-grid">${section.prescriptions.map(rxMarkup).join('')}</div>
+              ${rxGroupMarkup(section.prescriptions)}
             </div>
           ` : ''}
           ${section.whenToRefer ? `<div class="ck-internal-referral"><strong>Kur të referohet</strong><p>${esc(section.whenToRefer)}</p></div>` : ''}
@@ -739,8 +758,8 @@
           ${item.prescriptions?.length ? `
             <section class="ck-section ck-rx-section" id="hub-prescriptions">
               <div class="ck-section-heading"><span>Rx</span><h3>Receta / skema e përshkrimit</h3></div>
-              <p class="ck-section-note">Receta paraqitet në një box të veçantë, e ndarë nga shpjegimi klinik dhe hapat e mësimit.</p>
-              <div class="ck-rx-grid">${item.prescriptions.map(rxMarkup).join('')}</div>
+              <p class="ck-section-note">Receta paraqitet si një skemë e vetme; çdo substancë aktive ruhet si rresht i veçantë, sipas rendit të burimit.</p>
+              ${rxGroupMarkup(item.prescriptions)}
             </section>
           ` : ''}
 
