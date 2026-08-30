@@ -10,6 +10,7 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const html = read('medical-hub.html');
 const js = read('medical-hub-v2.js');
 const css = read('medical-hub-v2.css');
+const api = read('api/medical-hub.js');
 
 assert.match(html, /data-drx-app="medical-hub-v2"/);
 const cssAssetVersion = html.match(/medical-hub-v2\.css\?v=(\d+)/)?.[1] || '';
@@ -23,16 +24,16 @@ assert.match(html, /id="learningSearch"/);
 assert.match(html, /id="learningSearchClear"/);
 assert.match(html, /id="learningCategory"/);
 assert.match(html, /id="learningTopic"/);
+assert.match(html, /Mësimi \/ nënkapitulli/);
 assert.match(html, /id="learningResultStatus"/);
 assert.match(html, /id="previousTopicButton"/);
 assert.match(html, /id="nextTopicButton"/);
 assert.match(html, /id="learningTopicPosition"/);
 assert.doesNotMatch(html, /tailadmin-|auth-client|clinical-knowledge\.css|medical-hub\.css/);
 
-assert.match(js, /const INDEX_QUERY/);
-assert.match(js, /const DETAIL_QUERY/);
-assert.match(js, /_type == "learningTopic"/);
-assert.match(js, /reviewStatus != "archived"/);
+assert.match(js, /const HUB_API = '\/api\/medical-hub'/);
+assert.match(js, /hubApi\(\{ mode:'index' \}/);
+assert.match(js, /mode:'search'/);
 assert.match(js, /const detailCache = new Map\(\)/);
 assert.match(js, /const detailRequests = new Map\(\)/);
 assert.match(js, /const searchIndex = new Map\(\)/);
@@ -49,24 +50,51 @@ assert.match(js, /data-hub-section/);
 assert.match(js, /data-topic-jump/);
 assert.match(js, /sidebar-taxonomy-v3/);
 assert.match(js, /ensureAuth\(\)/);
-assert.match(js, /ensureSanity\(\)/);
+assert.match(js, /Sanity · Backend/);
+assert.doesNotMatch(js, /window\.MedIndexSanity/);
+assert.doesNotMatch(js, /ensureSanity\(/);
+assert.doesNotThrow(() => new Function(js));
 
-const indexQuery = js.match(/const INDEX_QUERY = \`([\s\S]*?)\`;/)?.[1] || '';
-assert.ok(indexQuery, 'Medical Hub index query must be extractable');
-assert.doesNotMatch(indexQuery, /steps\[\]|prescriptions\[\]|redFlags|whenToRefer|relatedProtocols\[\]->/, 'Medical Hub index query must stay lightweight');
+assert.match(api, /const INDEX_QUERY = `/);
+assert.match(api, /const DETAIL_QUERY = `/);
+assert.match(api, /const SEARCH_INDEX_QUERY = `/);
+assert.match(api, /_type == "learningTopic"/);
+assert.match(api, /reviewStatus != "archived"/);
+assert.match(api, /perspective', 'published'/);
+assert.match(api, /mode === 'search'/);
+assert.match(api, /authorized\(req\)/);
+assert.match(api, /source:'sanity-published-index'/);
+assert.match(api, /source:'sanity-published-search'/);
 
-const detailQuery = js.match(/const DETAIL_QUERY = \`([\s\S]*?)\`;/)?.[1] || '';
+const indexQuery = api.match(/const INDEX_QUERY = `([\s\S]*?)`;/)?.[1] || '';
+assert.ok(indexQuery, 'Medical Hub backend index query must be extractable');
+assert.doesNotMatch(
+  indexQuery,
+  /steps\[\]|prescriptions\[\]|redFlags|whenToRefer|relatedProtocols\[\]->/,
+  'Medical Hub backend index query must stay lightweight'
+);
+
+const detailQuery = api.match(/const DETAIL_QUERY = `([\s\S]*?)`;/)?.[1] || '';
 assert.match(detailQuery, /steps\[\]/);
 assert.match(detailQuery, /prescriptions\[\]/);
 assert.match(detailQuery, /redFlags/);
 assert.match(detailQuery, /whenToRefer/);
 assert.match(detailQuery, /relatedProtocols\[\]->/);
-assert.doesNotThrow(() => new Function(js));
+
+const searchQuery = api.match(/const SEARCH_INDEX_QUERY = `([\s\S]*?)`;/)?.[1] || '';
+assert.match(searchQuery, /steps\[\]/);
+assert.match(searchQuery, /prescriptions\[\]/);
+assert.match(searchQuery, /figures\[\]/);
+assert.match(searchQuery, /sources\[\]/);
+assert.match(searchQuery, /nested/);
+assert.doesNotThrow(() => new Function(api));
 
 assert.match(css, /Medical Hub reader v2 — canonical clinical document/);
+assert.match(css, /Medical Hub navigation v3/);
 assert.match(css, /\.hub-command-footer/);
 assert.match(css, /\.hub-topic-nav/);
 assert.match(css, /\.hub-search-clear/);
+assert.match(css, /\.hub-search\.is-searching/);
 assert.match(css, /\.ck-review-badge/);
 assert.match(css, /\.ck-quick-summary/);
 assert.match(css, /\.ck-section-index/);
@@ -78,4 +106,4 @@ assert.match(css, /\.ck-loading-spinner/);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /prefers-reduced-motion:reduce/);
 
-console.log('Medical Hub v2 scalable Stripe clinical reader contract passed.');
+console.log('Medical Hub backend-first chapter/lesson reader contract passed.');
