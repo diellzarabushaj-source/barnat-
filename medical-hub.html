@@ -8,7 +8,7 @@
   <title>DRx | Medical Hub</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/medical-hub-v2.css?v=2">
+  <link rel="stylesheet" href="/medical-hub-v2.css?v=3">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4">
 </head>
 <body>
@@ -91,7 +91,7 @@
           <div>
             <p class="eyebrow">Clinical knowledge</p>
             <h1>Medical Hub</h1>
-            <p class="page-subtitle">Gjej temën klinike, hap trajtimin dhe lexo vetëm hapat, red flags dhe recetat që të duhen.</p>
+            <p class="page-subtitle">Lëviz kapitull pas kapitulli, hap mësimet dhe gjej shpejt ICD‑10, procedurat, figurat, hapat klinikë dhe recetat relevante.</p>
           </div>
           <span class="hub-count" id="learningStatus">Duke ngarkuar temat…</span>
         </header>
@@ -100,19 +100,19 @@
           <div class="hub-search" id="learningSearchField">
             <label class="sr-only" for="learningSearch">Kërko temën klinike</label>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.7"/><path d="m16 16 4.2 4.2"/></svg>
-            <input id="learningSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko diagnozë, trajtim, ICD…" aria-label="Kërko në Medical Hub">
+            <input id="learningSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko kapitull, mësim, ICD, procedurë…" aria-label="Kërko në Medical Hub">
             <kbd>⌘ K</kbd>
             <button class="hub-search-clear" id="learningSearchClear" type="button" aria-label="Pastro kërkimin">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>
             </button>
           </div>
           <label class="hub-field">
-            <span>Kategoria</span>
-            <select id="learningCategory" aria-label="Kategoria"><option value="">Të gjitha kategoritë</option></select>
+            <span>Kapitulli</span>
+            <select id="learningCategory" aria-label="Kapitulli"><option value="">Të gjithë kapitujt</option></select>
           </label>
           <label class="hub-field hub-topic">
-            <span>Tema</span>
-            <select id="learningTopic" aria-label="Zgjidh temën"><option>Duke ngarkuar…</option></select>
+            <span>Kapitulli / mësimi</span>
+            <select id="learningTopic" aria-label="Zgjidh kapitullin ose mësimin"><option>Duke ngarkuar…</option></select>
           </label>
           <div class="hub-command-footer">
             <span class="hub-result-status" id="learningResultStatus" role="status" aria-live="polite">Duke ngarkuar temat…</span>
@@ -130,6 +130,6 @@
       </div>
     </main>
   </div>
-  <script src="/medical-hub-v2.js?v=2" defer></script>
+  <script src="/medical-hub-v2.js?v=3" defer></script>
 </body>
 </html>
