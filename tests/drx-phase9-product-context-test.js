@@ -28,8 +28,8 @@ assert.match(handler,/clinicalVariantId/);
 assert.match(handler,/phase9Context/);
 
 assert.match(ui,/personalEntityKey/);
-assert.match(ui,/product\.clinicalVariantId/);
-assert.match(ui,/product\.substanceConceptId/);
+assert.match(ui,/product\?\.clinicalVariantId/);
+assert.match(ui,/product\?\.substanceConceptId/);
 assert.match(ui,/Produkte me të njëjtën përbërje/);
 assert.match(ui,/Burimi i dozimit/);
 assert.match(ui,/Burimi i produktit \/ identitetit/);
