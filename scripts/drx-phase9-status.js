@@ -15,9 +15,12 @@ async function rpc(name,body={}) {
 
 async function main() {
   const status=await rpc('drx_phase9_status_v1');
-  assert.equal(status.statusVersion,'drx-phase9-status-v2');
+  assert.equal(status.statusVersion,'drx-phase9-status-v3');
   assert.equal(status.phase,9);
   assert.equal(status.phase8Closed,true);
+  assert.equal(status.phase8EvidenceId,'phase8-exit-bc124406');
+  assert.equal(status.phase8WorkflowRunId,33337806358);
+  assert.equal(status.phase8ArtifactId,9739582132);
   assert.equal(status.backendFoundationGatePass,true);
   assert.equal(status.v2FallbackRequired,true);
   assert.equal(status.v2RuntimePreserved,true);

@@ -11,6 +11,9 @@ on:
       - "supabase/migrations/20260830221548_drx_phase9e_frontend_foundation_status.sql"
       - "supabase/migrations/20260830223039_drx_phase9f_status_single_phase8_evaluation.sql"
       - "supabase/migrations/20260830224240_drx_phase9g_technical_qa_exit_evidence.sql"
+      - "supabase/migrations/20260830225726_drx_phase9h_materialized_phase8_exit_evidence.sql"
+      - "supabase/drx-phase9h-materialized-phase8-exit-evidence-rollback.sql"
+      - "tests/drx-phase9-materialized-exit-test.js"
       - "supabase/drx-phase9g-technical-qa-exit-evidence-rollback.sql"
       - "tests/drx-phase9-exit-evidence-test.js"
       - "supabase/drx-phase9f-status-single-phase8-evaluation-rollback.sql"
@@ -72,6 +75,8 @@ jobs:
         run: node tests/drx-phase9-status-test.js
       - name: Phase 9 final exit evidence
         run: node tests/drx-phase9-exit-evidence-test.js
+      - name: Phase 9 materialized Phase 8 exit
+        run: node tests/drx-phase9-materialized-exit-test.js
       - name: Phase 9 prescription context
         run: node tests/drx-phase9-prescription-context-test.js
       - name: Live Phase 9 foundation gate
