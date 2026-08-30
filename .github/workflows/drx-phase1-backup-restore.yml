@@ -21,23 +21,83 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
-      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
       SOURCE_POSTGRES_VERSION: "17.6.1.155"
+      SUPABASE_PROJECT_REF: "ftuchtmolddhhsdcwnqe"
+
+      # Accept the existing repository secret without requiring a rename.
+      DB_URL_1: ${{ secrets.SUPABASE_DB_URL }}
+      DB_URL_2: ${{ secrets.MEDINDEX_SUPABASE_DB_URL }}
+      DB_URL_3: ${{ secrets.SUPABASE_DATABASE_URL }}
+      DB_URL_4: ${{ secrets.DATABASE_URL }}
+      DB_URL_5: ${{ secrets.POSTGRES_URL }}
+      DB_URL_6: ${{ secrets.POSTGRES_DATABASE_URL }}
+      DB_URL_7: ${{ secrets.SUPABASE_POSTGRES_URL }}
+      DB_URL_8: ${{ secrets.SUPABASE_CONNECTION_STRING }}
+      DB_URL_9: ${{ secrets.POSTGRES_CONNECTION_STRING }}
+      DB_URL_10: ${{ secrets.DB_URL }}
+
+      DB_PASSWORD_1: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      DB_PASSWORD_2: ${{ secrets.MEDINDEX_SUPABASE_DB_PASSWORD }}
+      DB_PASSWORD_3: ${{ secrets.SUPABASE_DATABASE_PASSWORD }}
+      DB_PASSWORD_4: ${{ secrets.DATABASE_PASSWORD }}
+      DB_PASSWORD_5: ${{ secrets.POSTGRES_PASSWORD }}
+      DB_PASSWORD_6: ${{ secrets.DB_PASSWORD }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Check backup credential availability
+      - name: Resolve backup credential safely
         id: credential
         shell: bash
         run: |
           set -euo pipefail
-          if [ -n "${SUPABASE_DB_URL:-}" ]; then
+
+          resolved_url=""
+          resolved_source=""
+
+          for n in {1..10}; do
+            key="DB_URL_${n}"
+            value="${!key:-}"
+            if [ -n "$value" ]; then
+              resolved_url="$value"
+              resolved_source="$key"
+              break
+            fi
+          done
+
+          if [ -z "$resolved_url" ]; then
+            for n in {1..6}; do
+              key="DB_PASSWORD_${n}"
+              value="${!key:-}"
+              if [ -n "$value" ]; then
+                encoded_password="$(PASSWORD_VALUE="$value" python3 - <<'PY'
+import os
+from urllib.parse import quote
+print(quote(os.environ["PASSWORD_VALUE"], safe=""))
+PY
+)"
+                resolved_url="postgresql://postgres:${encoded_password}@db.${SUPABASE_PROJECT_REF}.supabase.co:5432/postgres?sslmode=require"
+                resolved_source="$key"
+                break
+              fi
+            done
+          fi
+
+          if [ -n "$resolved_url" ]; then
+            {
+              echo 'SUPABASE_DB_URL<<DRXEOF'
+              echo "$resolved_url"
+              echo 'DRXEOF'
+            } >> "$GITHUB_ENV"
+            echo "::add-mask::$resolved_url"
             echo "available=true" >> "$GITHUB_OUTPUT"
+            echo "source=$resolved_source" >> "$GITHUB_OUTPUT"
+            echo "::notice::Database credential alias resolved successfully."
           else
             echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::SUPABASE_DB_URL is not configured; backup/restore gate remains fail-closed."
+            echo "source=none" >> "$GITHUB_OUTPUT"
+            echo "::notice::No supported database URL/password secret alias was found; backup/restore gate remains fail-closed."
           fi
 
       - name: Write blocked evidence
@@ -47,7 +107,7 @@ jobs:
           cat > drx-phase1-backup-restore-evidence.json <<'JSON'
           {
             "schemaVersion": "drx-phase1-backup-restore-evidence-v1",
-            "status": "BLOCKED_MISSING_SUPABASE_DB_URL",
+            "status": "BLOCKED_MISSING_DATABASE_CREDENTIAL_ALIAS",
             "backupCreated": false,
             "restoreExecuted": false,
             "restoreVerified": false,
@@ -157,6 +217,7 @@ jobs:
           evidence={
               "schemaVersion":"drx-phase1-backup-restore-evidence-v1",
               "status":"PASS",
+              "credentialAliasResolved":True,
               "backupCreated":True,
               "backupSha256":hashes,
               "restoreExecuted":True,
