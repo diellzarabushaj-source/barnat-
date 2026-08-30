@@ -16,14 +16,16 @@ on:
       - "supabase/migrations/20260830171643_drx_phase8h_published_v2_exact_source_discovery.sql"
       - "supabase/migrations/20260830171727_drx_phase8i_pilot_comparator_status_contract.sql"
       - "supabase/migrations/20260830201012_drx_phase8p_pilot_build_preflight.sql"
-      - "supabase/migrations/20260830201638_drx_phase8q_search_index_hardening.sql"\n      - "supabase/migrations/20260830202332_drx_phase8r_server_performance_probe.sql"
+      - "supabase/migrations/20260830201638_drx_phase8q_search_index_hardening.sql"
+      - "supabase/migrations/20260830202332_drx_phase8r_server_performance_probe.sql"
       - "lib/dose-v3-shadow.js"
       - "lib/dose-product-fast-path-handler.js"
       - "tests/drx-phase8-shadow-runtime-test.js"
       - "tests/drx-phase8-pilot-build-preflight-test.js"
+      - "tests/drx-phase8-performance-probe-test.js"
+      - "tests/drx-phase8-exit-audit-test.js"
       - "scripts/drx-phase8-status.js"
       - "scripts/drx-phase8-exit-audit.js"
-      - "tests/drx-phase8-exit-audit-test.js"\n      - "tests/drx-phase8-performance-probe-test.js"
       - "docs/DRX-PHASE8-ROLLBACK.md"
       - ".github/workflows/drx-phase8-shadow-gate.yml"
 
@@ -46,6 +48,8 @@ jobs:
         run: node tests/drx-phase8-shadow-runtime-test.js
       - name: Static Phase 8 pilot preflight contract
         run: node tests/drx-phase8-pilot-build-preflight-test.js
+      - name: Static Phase 8 performance probe contract
+        run: node tests/drx-phase8-performance-probe-test.js
       - name: Static Phase 8 exit audit contract
         run: node tests/drx-phase8-exit-audit-test.js
       - name: Live Phase 8 gate
