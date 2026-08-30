@@ -815,3 +815,41 @@ body{overflow-x:hidden}
   white-space:normal;
   line-height:1.65;
 }
+
+
+/* High-resolution clinical figures */
+.ck-figure-media{
+  position:relative;
+  display:block;
+  min-height:150px;
+  background:#fbfcfd;
+  overflow:hidden;
+  text-decoration:none;
+}
+.ck-figure-media img{
+  width:100%;
+  max-height:560px;
+  object-fit:contain;
+  background:#fff;
+  transition:transform .18s ease;
+}
+.ck-figure-media:hover img{transform:scale(1.01)}
+.ck-figure-zoom{
+  position:absolute;
+  right:10px;
+  top:10px;
+  width:26px;
+  height:26px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(52,71,92,.12);
+  border-radius:7px;
+  background:rgba(255,255,255,.92);
+  color:#52657a;
+  font-size:12px;
+  box-shadow:0 2px 8px rgba(16,24,40,.08);
+}
+.ck-figure figcaption>span{
+  color:#7d8b9b;
+  font-size:8.7px;
+}
