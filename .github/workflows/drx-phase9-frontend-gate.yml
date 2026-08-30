@@ -9,6 +9,8 @@ on:
       - "supabase/migrations/20260830220141_drx_phase9a_personal_entity_storage.sql"
       - "supabase/migrations/20260830220957_drx_phase9d_product_context.sql"
       - "supabase/migrations/20260830221548_drx_phase9e_frontend_foundation_status.sql"
+      - "supabase/migrations/20260830223039_drx_phase9f_status_single_phase8_evaluation.sql"
+      - "supabase/drx-phase9f-status-single-phase8-evaluation-rollback.sql"
       - "supabase/drx-phase9a-personal-entity-storage-rollback.sql"
       - "supabase/drx-phase9d-product-context-rollback.sql"
       - "supabase/drx-phase9e-frontend-foundation-status-rollback.sql"
