@@ -358,6 +358,46 @@
       </figure>`;
   }
 
+  function hasSourceRx(item) {
+    return (item?.steps || []).some(step => normalize(step?.priority) === 'rx-source');
+  }
+
+  function sourceRxStepMarkup(step, index) {
+    const lines = String(step?.action || '')
+      .split(/\r?\n/)
+      .map(line => line.trim())
+      .filter(Boolean);
+
+    return `
+      <div class="ck-book-rx-group">
+        <span class="ck-book-rx-number">${index + 1}.</span>
+        <div class="ck-book-rx-copy">
+          <strong>${richText(step?.title || '')}</strong>
+          <div class="ck-book-rx-lines">
+            ${lines.map(line => {
+              const isOr = /^(OR|OSE)\b/i.test(line);
+              return `<div class="ck-book-rx-line ${isOr ? 'is-or' : ''}">${richText(line)}</div>`;
+            }).join('')}
+          </div>
+          ${step?.note ? `<small class="ck-book-rx-note">${richText(step.note)}</small>` : ''}
+        </div>
+      </div>`;
+  }
+
+  function sourceRxMarkup(item) {
+    const steps = (item?.steps || []).filter(step => normalize(step?.priority) === 'rx-source');
+    return `
+      <article class="ck-book-rx">
+        <div class="ck-book-rx-head">
+          <span>Rx</span>
+          <strong>TRAJTIM KONSERVATIV</strong>
+        </div>
+        <div class="ck-book-rx-body">
+          ${steps.map(sourceRxStepMarkup).join('')}
+        </div>
+      </article>`;
+  }
+
   function lessonBodyLabel(item) {
     const title = normalize(item?.title);
     if (/trajtim|menaxhim/.test(title)) return 'Trajtimi hap pas hapi';
@@ -484,9 +524,9 @@
     const entries = [];
     if (item.redFlags?.length && !isSingleLessonChapter(item)) entries.push({ id:'hub-red-flags', label:'Red flags' });
     if (item.relatedTopics?.length) entries.push({ id:'hub-internal-sections', label:'Seksionet e mësimit' });
-    if (item.steps?.length) entries.push({ id:'hub-content', label:isSingleLessonChapter(item) ? `${item.steps.length} seksione` : lessonBodyLabel(item) });
+    if (item.steps?.length) entries.push({ id:'hub-content', label:hasSourceRx(item) ? 'Trajtimi konservativ' : (isSingleLessonChapter(item) ? `${item.steps.length} seksione` : lessonBodyLabel(item)) });
     if (item.figures?.length) entries.push({ id:'hub-figures', label:'Figura dhe ilustrime' });
-    if (item.prescriptions?.length) entries.push({ id:'hub-prescriptions', label:'Receta' });
+    if (item.prescriptions?.length && !hasSourceRx(item)) entries.push({ id:'hub-prescriptions', label:'Receta' });
     if (item.whenToRefer) entries.push({ id:'hub-referral', label:'Referimi' });
     if (item.relatedProtocols?.length) entries.push({ id:'hub-protocols', label:'Protokolle të lidhura' });
     if (item.sources?.length) entries.push({ id:'hub-sources', label:'Burimet' });
@@ -729,15 +769,15 @@
           ${item.steps?.length ? `
             <section class="ck-section" id="hub-content">
               <div class="ck-section-heading">
-                <span>Përmbajtje</span>
-                <h3>${esc(isSingleLessonChapter(item) ? `${item.steps.length} seksionet e mësimit` : lessonBodyLabel(item))}</h3>
+                <span>${hasSourceRx(item) ? 'Rx' : 'Përmbajtje'}</span>
+                <h3>${esc(hasSourceRx(item) ? 'Trajtimi konservativ' : (isSingleLessonChapter(item) ? `${item.steps.length} seksionet e mësimit` : lessonBodyLabel(item)))}</h3>
               </div>
-              ${isSingleLessonChapter(item) ? `
+              ${hasSourceRx(item) ? sourceRxMarkup(item) : (isSingleLessonChapter(item) ? `
                 <div class="ck-master-section-index">
                   ${item.steps.map((step,index)=>`<button type="button" data-master-section="${index}"><span>${String(index+1).padStart(2,'0')}</span><strong>${esc(clean(step.title).replace(/^\d+\.\s*/,''))}</strong></button>`).join('')}
                 </div>
                 <div class="ck-master-sections">${item.steps.map(singleLessonSectionMarkup).join('')}</div>
-              ` : `<div class="ck-steps">${item.steps.map(stepMarkup).join('')}</div>`}
+              ` : `<div class="ck-steps">${item.steps.map(stepMarkup).join('')}</div>`)}
             </section>
           ` : ''}
 
@@ -755,7 +795,7 @@
             </section>
           ` : ''}
 
-          ${item.prescriptions?.length ? `
+          ${item.prescriptions?.length && !hasSourceRx(item) ? `
             <section class="ck-section ck-rx-section" id="hub-prescriptions">
               <div class="ck-section-heading"><span>Rx</span><h3>Receta / skema e përshkrimit</h3></div>
               <p class="ck-section-note">Receta paraqitet si një skemë e vetme; çdo substancë aktive ruhet si rresht i veçantë, sipas rendit të burimit.</p>
