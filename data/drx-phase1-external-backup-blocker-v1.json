@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "drx-phase1-external-backup-blocker-v1",
+  "observedAt": "2026-08-30T13:22:00Z",
+  "supabaseProjectRef": "ftuchtmolddhhsdcwnqe",
+  "organizationPlan": "free",
+  "strictPhase1ExitGate": false,
+  "publicationAllowed": false,
+  "verifiedRepositorySecretState": {
+    "configuredAlias": "SUPABASE_URL",
+    "configuredAliasKind": "https_rest_api_url_not_postgresql",
+    "compatiblePostgresUrlFound": false,
+    "compatibleDatabasePasswordFound": false,
+    "compatibleSupabaseAccessTokenFound": false
+  },
+  "workflowRuns": [
+    {
+      "runId": 33313843645,
+      "result": "blocked",
+      "finding": "DB_URL_12 present but not PostgreSQL URL",
+      "aliasMap": "DB_URL_12=SUPABASE_URL"
+    },
+    {
+      "runId": 33313948836,
+      "result": "blocked",
+      "finding": "no PostgreSQL URL/database-password or Supabase management access-token secret found"
+    }
+  ],
+  "completedFallbackEvidence": {
+    "googleSnapshotSha256": "PASS_4_OF_4",
+    "transactionalRestoreDrill": "PASS_11_OF_11_COUNT_AND_SHA256",
+    "migrations": "84_84_exact_parity",
+    "rpcRoleTests": "PASS_ANON_AND_AUTHENTICATED_FAIL_CLOSED",
+    "clientWriteGrantLeaks": 0
+  },
+  "remainingRequirement": {
+    "type": "external_logical_backup_and_disposable_restore",
+    "officialSupabaseCliRequirement": "PostgreSQL connection string/database password, or a working linked passwordless CLI management-token flow",
+    "missingCredential": "PostgreSQL database connection credential",
+    "note": "SUPABASE_URL and service-role/API keys are not database passwords and are not interchangeable with a PostgreSQL connection string."
+  }
+}
