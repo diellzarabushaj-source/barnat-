@@ -126,7 +126,20 @@ async function inspectViewport(browser,entry){
   await page.locator('[data-drug-id="'+DRUG_ID+'"]').waitFor({state:'visible'});
   await page.locator('[data-drug-id="'+DRUG_ID+'"]').click();
 
-  const tabs=page.locator('[role="tab"]');
+  const tabs=page.locator('#dosageProductBody [role="tab"]');
+  try{
+    await tabs.first().waitFor({state:'visible',timeout:10000});
+  }catch(error){
+    const diagnostic=await page.evaluate(()=>({
+      href:location.href,
+      status:document.querySelector('#dosageStatus')?.textContent || '',
+      productText:document.querySelector('#dosageProductBody')?.textContent || '',
+      productHidden:document.querySelector('#dosageProductBody')?.hidden ?? null,
+      resultCount:document.querySelectorAll('[data-drug-id]').length,
+      tabCount:document.querySelectorAll('#dosageProductBody [role="tab"]').length,
+    }));
+    throw new Error(entry.name+': product drawer did not render: '+JSON.stringify({diagnostic,errors})+'; '+error.message);
+  }
   assert.equal(await tabs.count(),7,entry.name+': must render 7 clinical tabs');
   assert.deepEqual((await tabs.allTextContents()).map(v=>v.trim()),['Përmbledhje','Përdorimi','Dozimi','Siguria','Produktet','Shënime','Burime'],entry.name+': tab order changed');
   assert.equal(await page.locator('.phase9-flow-step').count(),8,entry.name+': clinical flow must have 8 steps');
