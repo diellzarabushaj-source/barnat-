@@ -28,6 +28,9 @@ on:
       - "supabase/migrations/20260830213647_drx_phase8zc_cover_pilot_foreign_keys.sql"
       - "supabase/migrations/20260830213708_drx_phase8zd_cover_pilot_release_fk.sql"
       - "supabase/migrations/20260830214025_drx_phase8ze_restore_fast_path_service_grant.sql"
+      - "supabase/migrations/20260830215626_drx_phase8zf_fast_path_security_definer.sql"
+      - "supabase/drx-phase8zf-fast-path-security-definer-rollback.sql"
+      - "tests/drx-phase8-fast-path-security-test.js"
       - "supabase/drx-phase8ze-restore-fast-path-service-grant-rollback.sql"
       - "supabase/drx-phase8z-pilot-publication-scaffolding-rollback.sql"
       - "supabase/drx-phase8za-reviewed-v3-pilot-materialization-rollback.sql"
@@ -86,6 +89,8 @@ jobs:
         run: node tests/drx-phase8-live-migration-reconciliation-test.js
       - name: Static Phase 8 reviewed pilot exit contract
         run: node tests/drx-phase8-reviewed-pilot-exit-test.js
+      - name: Static Phase 8 fast-path security contract
+        run: node tests/drx-phase8-fast-path-security-test.js
       - name: Static Phase 8 performance probe contract
         run: node tests/drx-phase8-performance-probe-test.js
       - name: Static Phase 8 exit audit contract

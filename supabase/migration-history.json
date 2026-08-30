@@ -545,6 +545,10 @@
     {
       "name": "drx_phase8ze_restore_fast_path_service_grant",
       "version": "20260830214025"
+    },
+    {
+      "name": "drx_phase8zf_fast_path_security_definer",
+      "version": "20260830215626"
     }
   ]
 }
