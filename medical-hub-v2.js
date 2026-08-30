@@ -250,10 +250,11 @@
 
   function applyFilterState() {
     const term = normalize(state.term);
-    state.filtered = state.items.filter(item => {
+    const source = term && Array.isArray(state.backendResults) ? state.backendResults : state.items;
+    state.filtered = source.filter(item => {
       const chapter = chapterKey(item);
-      return (!term || itemSearchText(item).includes(term))
-        && (!state.category || chapter === state.category);
+      const localTermMatch = !term || Array.isArray(state.backendResults) || itemSearchText(item).includes(term);
+      return localTermMatch && (!state.category || chapter === state.category);
     }).sort((a, b) => topicOrder(a) - topicOrder(b) || clean(a.title).localeCompare(clean(b.title), 'sq'));
 
     if (!state.filtered.some(item => item._id === state.selectedId)) {
@@ -265,7 +266,9 @@
   function syncUrl() {
     try {
       const url = new URL(window.location.href);
-      const item = currentItem();
+      const item = currentItem() || state.filtered.find(candidate => candidate._id === state.selectedId);
+      if (state.category) url.searchParams.set('chapter', state.category);
+      else url.searchParams.delete('chapter');
       if (item?.slug) url.searchParams.set('topic', item.slug);
       else url.searchParams.delete('topic');
       history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
@@ -276,8 +279,14 @@
     try {
       const url = new URL(window.location.href);
       const slug = url.searchParams.get('topic') || '';
+      const chapter = url.searchParams.get('chapter') || '';
       const item = state.items.find(candidate => candidate.slug === slug);
-      if (item) state.selectedId = item._id;
+      if (item) {
+        state.selectedId = item._id;
+        state.category = chapterKey(item);
+        return;
+      }
+      if (/^\d{1,2}$/.test(chapter)) state.category = String(Number(chapter)).padStart(2, '0');
     } catch {}
   }
 
