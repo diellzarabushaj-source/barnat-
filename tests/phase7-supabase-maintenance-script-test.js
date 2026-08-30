@@ -10,8 +10,17 @@ const normalize = source => source
   .replace(/\n\/\/ Canonical Supabase maintenance script\. Legacy Neon-named file is retained for compatibility\.\n\n/, '\n')
   .trim();
 
+const registryLegacy = read('scripts/sync-neon-from-sheets.js');
+const registryCanonical = read('scripts/sync-supabase-from-sheets.js');
+
+assert.match(registryLegacy, /require\(['"]\.\/sync-supabase-from-sheets\.js['"]\)/);
+assert.doesNotMatch(registryLegacy, /neon-data-api/);
+assert.match(registryCanonical, /medindex-data-api/);
+assert.match(registryCanonical, /archiveRegistrySource/);
+assert.match(registryCanonical, /drx_registry_begin_import_v1/);
+assert.match(registryCanonical, /drx_registry_apply_corrections_v1/);
+
 const pairs = [
-  ['scripts/sync-neon-from-sheets.js', 'scripts/sync-supabase-from-sheets.js'],
   ['scripts/sync-neon-structured-dosage.js', 'scripts/sync-supabase-structured-dosage.js'],
   ['scripts/publish-neon-registry.js', 'scripts/publish-supabase-registry.js'],
   ['scripts/sync-icd-hierarchy-to-neon.js', 'scripts/sync-icd-hierarchy-to-supabase.js'],
