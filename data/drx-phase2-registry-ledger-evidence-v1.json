@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "drx-phase2-registry-ledger-evidence-v1",
+  "status": "PASS",
+  "completedAt": "2026-08-30T14:58:04Z",
+  "strictExitGate": true,
+  "migrationParity": {
+    "liveMigrations": 90,
+    "repositoryMigrations": 90,
+    "status": "PASS_90_OF_90",
+    "latestVersion": "20260830145540",
+    "latestName": "drx_phase2_remove_redundant_registry_batch"
+  },
+  "sourceBatches": {
+    "officialRegistry": {
+      "batchKind": "REGISTRY_RAW",
+      "batchId": "e413e842-e706-49a3-9140-3b1f0f4c1896",
+      "sourceRef": "gdrive:1SY2rb2Eqo3fVkRhgQ8ltJHCRrWyAUDvd",
+      "sourceSha256": "a1085166eeeb2fe180a1a6e5a3aa0c6da1116083c4c0215198d5edfadb684ea9",
+      "sourceRows": 4006,
+      "preservedRows": 4006,
+      "status": "FINALIZED"
+    },
+    "legacyEditorial": {
+      "batchKind": "LEGACY_EDITORIAL",
+      "batchId": "715fe8a5-95e1-4b19-9e2a-f012f9426ed6",
+      "sourceRows": 9,
+      "preservedRows": 9,
+      "status": "FINALIZED"
+    },
+    "corrections": {
+      "batchKind": "CORRECTION_SHEET",
+      "batchId": "27af9558-fb63-4e53-a0ff-c74cb31996ac",
+      "sourceRef": "gsheet:1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo#KORRIGJIMET_E_REGJISTRIT",
+      "sourceSha256": "933512d7d08fcd66c049e0af7d49b093f28ffc4b61f7f7e30e01cb4b53889c82",
+      "sourceRows": 107,
+      "preservedRows": 107,
+      "status": "FINALIZED"
+    }
+  },
+  "ledger": {
+    "rawRegistryRows": 4015,
+    "correctionSourceRows": 107,
+    "corrections": 107,
+    "verifiedCorrections": 107,
+    "correctionsWithEvidence": 107,
+    "correctionDistinctIds": 107,
+    "correctionDistinctSourceRows": 107,
+    "correctionNullTargets": 0,
+    "correctionMissingEvidence": 0
+  },
+  "anomalies": {
+    "open": 7,
+    "byCode": {
+      "MISSING_PDID": 2,
+      "MISSING_REGISTRY_NUMBER": 2,
+      "DUPLICATE_PDID": 3
+    },
+    "policy": "Preserve and surface source anomalies; do not silently normalize or invent identifiers."
+  },
+  "reconstruction": {
+    "rows": 4015,
+    "diffs": 0,
+    "status": "PASS"
+  },
+  "generatedProjections": {
+    "rows": 4015,
+    "diffs": 0,
+    "breakdown": {
+      "active_substance_key": 0,
+      "global_search_text": 0,
+      "registry_search_text": 0
+    },
+    "status": "PASS"
+  },
+  "security": {
+    "rawSchemaClientTablePrivileges": 0,
+    "clientRpcExecuteGrants": 0,
+    "immutableTriggers": {
+      "registry_rows_v1": 1,
+      "registry_correction_source_rows_v1": 1,
+      "registry_corrections_v1": 1
+    },
+    "status": "PASS"
+  },
+  "workflowEvidence": {
+    "workflow": ".github/workflows/drx-phase2-bootstrap.yml",
+    "runId": 33317705260,
+    "rerunJobId": 99275631357,
+    "conclusion": "success",
+    "artifactId": 9734127614,
+    "artifactDigest": "sha256:c7435a02fd2c933da19db4d426dc09337567e1f4b6d5ac6cbe0c2b95b31f9e4b"
+  },
+  "publicationAllowed": false,
+  "nextPhaseAllowed": 3,
+  "notes": [
+    "The official registry XLSX contains 4,006 source rows; the remaining 9 public.drugs rows are explicitly separated as legacy/editorial rather than misrepresented as official registry source rows.",
+    "A transient duplicate REGISTRY_RAW batch created by concurrent bootstrap activity was removed only after proving it had 0 correction references and that the canonical 4,006-row batch was complete.",
+    "Publication remains fail-closed. Phase 2 completion authorizes Phase 3 work, not production publication."
+  ]
+}
