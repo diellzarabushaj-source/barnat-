@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1850" viewBox="0 0 1500 1850">
+<defs>
+<style>.h{font:700 28px Arial,sans-serif;fill:#111}.b{font:700 17px Arial,sans-serif;fill:#111}.s{font:16px Arial,sans-serif;fill:#111}.sm{font:14px Arial,sans-serif;fill:#111}.q{fill:#f3eaf7;stroke:#9b72aa;stroke-width:1.5}.a{fill:#e5f1e8;stroke:#699377;stroke-width:1.5}.ln{stroke:#222;stroke-width:2.5;fill:none}</style>
+</defs>
+<rect width="1500" height="1850" fill="white"/>
+<text x="750" y="52" class="h" text-anchor="middle">Menaxhimi i INR-së së zgjatur nga warfarina</text>
+<rect x="90" y="140" width="360" height="120" rx="7" class="q"/><text x="270" y="180" class="b" text-anchor="middle">INR i rritur me gjakderdhje</text><text x="270" y="205" class="b" text-anchor="middle">serioze ose kërcënuese</text><text x="270" y="230" class="b" text-anchor="middle">për jetën</text>
+<line x1="450" y1="200" x2="570" y2="200" class="ln"/><text x="505" y="185" class="b">PO</text>
+<rect x="570" y="95" width="820" height="360" rx="7" class="a"/>
+<text x="590" y="130" class="s">• Vitaminë K1 5–10 mg IV shumë ngadalë.</text>
+<text x="590" y="165" class="s">• PCC me 4 faktorë: 50 njësi/kg (maks. 5000) nëse INR &gt;6;</text>
+<text x="610" y="190" class="s">35 njësi/kg (maks. 3500) nëse INR 4–6; 25 njësi/kg</text>
+<text x="610" y="215" class="s">(maks. 2500) nëse INR &lt;4.</text>
+<text x="590" y="250" class="s">• Alternativë: PCC me 3 faktorë 50 njësi/kg IV, FFP</text>
+<text x="610" y="275" class="s">10–15 mL/kg IV, ose rFVIIa 80 µg/kg IV ngadalë.</text>
+<text x="590" y="310" class="s">• Mund të nevojiten doza shtesë të PCC, FFP ose rFVIIa</text>
+<text x="610" y="335" class="s">sipas shkallës së koagulopatisë.</text>
+<line x1="270" y1="260" x2="270" y2="400" class="ln"/><text x="285" y="335" class="b">JO</text>
+<rect x="90" y="400" width="360" height="110" rx="7" class="q"/><text x="270" y="442" class="b" text-anchor="middle">Pa gjakderdhje të rëndësishme</text><text x="270" y="470" class="b" text-anchor="middle">dhe INR &gt;10.0</text>
+<line x1="450" y1="455" x2="570" y2="455" class="ln"/><text x="505" y="440" class="b">PO</text>
+<rect x="570" y="470" width="820" height="225" rx="7" class="a"/>
+<text x="590" y="505" class="s">• Ndalo 1 ose 2 dozat e ardhshme.</text><text x="590" y="540" class="s">• Jep vitaminë K 2.0–2.5 mg PO.</text><text x="590" y="575" class="s">• Monitorim më i shpeshtë dhe më shumë vitaminë K sipas nevojës†.</text><text x="590" y="610" class="s">• Rifillo dozën e rregulluar kur INR të jetë terapeutik.</text>
+<line x1="270" y1="510" x2="270" y2="660" class="ln"/><text x="285" y="590" class="b">JO</text>
+<rect x="90" y="660" width="360" height="110" rx="7" class="q"/><text x="270" y="702" class="b" text-anchor="middle">Pa gjakderdhje të rëndësishme</text><text x="270" y="730" class="b" text-anchor="middle">dhe INR 4.5–10.0</text>
+<line x1="450" y1="715" x2="570" y2="715" class="ln"/><text x="505" y="700" class="b">PO</text>
+<rect x="570" y="730" width="820" height="225" rx="7" class="a"/>
+<text x="590" y="765" class="s">• Ndalo 1 ose 2 dozat e ardhshme.</text><text x="590" y="800" class="s">• Në rrezik të lartë për gjakderdhje*, konsidero vitaminë K 1–2 mg PO.</text><text x="590" y="835" class="s">• Monitorim më i shpeshtë.</text><text x="590" y="870" class="s">• Rifillo dozën e rregulluar kur INR të jetë terapeutik.</text>
+<line x1="270" y1="770" x2="270" y2="920" class="ln"/><text x="285" y="850" class="b">JO</text>
+<rect x="90" y="920" width="360" height="110" rx="7" class="q"/><text x="270" y="962" class="b" text-anchor="middle">Pa gjakderdhje të rëndësishme</text><text x="270" y="990" class="b" text-anchor="middle">dhe INR 3.0–4.5</text>
+<line x1="450" y1="975" x2="570" y2="975" class="ln"/><text x="505" y="960" class="b">PO</text>
+<rect x="570" y="990" width="820" height="190" rx="7" class="a"/>
+<text x="590" y="1025" class="s">• Ule dozën ose lëre një dozë te pacientët me rrezik të lartë</text><text x="610" y="1050" class="s">për gjakderdhje*.</text><text x="590" y="1085" class="s">• Monitorim më i shpeshtë.</text><text x="590" y="1120" class="s">• Rifillo dozën e rregulluar kur INR të jetë terapeutik.</text>
+<text x="90" y="1310" class="sm">* Rrezik i lartë për gjakderdhje: mosha &gt;75 vjeç, përdorim i antiagregantëve, polifarmaci,</text>
+<text x="90" y="1334" class="sm">sëmundje hepatike ose renale, alkoolizëm, kirurgji e fundit ose traumë.</text>
+<text x="90" y="1380" class="sm">† Burimi thotë se nuk ka mjete të validuara për parashikimin e gjakderdhjes së madhe afatshkurtër</text>
+<text x="90" y="1404" class="sm">në mbi-antikoagulim të rëndë; vendimi për shtrim/vëzhgim mbështetet në gjykimin klinik.</text>
+<text x="90" y="1460" class="sm">FFP = plazmë e freskët e ngrirë · PCC = koncentrat i kompleksit protrombinik</text>
+<text x="90" y="1484" class="sm">rFVIIa = faktor VII i aktivizuar rekombinant · INR = raporti ndërkombëtar i normalizuar</text>
+<text x="750" y="1600" class="sm" text-anchor="middle">Figura e rikrijuar në shqip sipas Figurës 138-1 të Tintinalli, botimi 8.</text>
+</svg>
