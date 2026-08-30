@@ -331,6 +331,56 @@
     return `<ul class="ck-bullets">${(items || []).map(item => `<li>${esc(item)}</li>`).join('')}</ul>`;
   }
 
+  function isSingleLessonChapter(item) {
+    return /mësim(?:i)? i vetëm|1 mësim/i.test(clean(item?.question))
+      || ((Number(item?.chapterNumber) === 1 || Number(item?.chapterNumber) === 2) && (item?.steps?.length || 0) > 10);
+  }
+
+  function splitSectionAction(action) {
+    const value = clean(action);
+    if (!value) return { lead:'', bullets:[] };
+    const parts = value.split(' — ');
+    if (parts.length === 1) return { lead:value, bullets:[] };
+    const lead = parts.shift();
+    const rest = parts.join(' — ');
+    return { lead, bullets:rest.split(' • ').map(clean).filter(Boolean) };
+  }
+
+  function singleLessonSectionMarkup(step, index) {
+    const parsed = splitSectionAction(step?.action);
+    const title = clean(step?.title || `Seksioni ${index + 1}`);
+    const codeMatch = title.match(/ICD[-‑–— ]?10\s*([A-Z]\d{2}(?:\.\d+)?)|ICD[-‑–— ]?10\s*([A-Z]\d{2})/i);
+    const code = codeMatch ? (codeMatch[1] || codeMatch[2]) : '';
+    return `
+      <details class="ck-master-section" ${index === 0 ? 'open' : ''}>
+        <summary>
+          <span class="ck-master-section-no">${String(index + 1).padStart(2, '0')}</span>
+          <span class="ck-master-section-heading">
+            <strong>${esc(title.replace(/^\d+\.\s*/, ''))}</strong>
+            ${parsed.lead ? `<small>${esc(parsed.lead)}</small>` : ''}
+          </span>
+          <span class="ck-master-section-side">
+            ${code ? icdChip(code) : ''}
+            <span class="ck-master-chevron" aria-hidden="true">⌄</span>
+          </span>
+        </summary>
+        <div class="ck-master-section-body">
+          ${parsed.bullets.length ? `
+            <ul class="ck-master-bullets">
+              ${parsed.bullets.map(item => {
+                const cut = item.indexOf(':');
+                if (cut > 0 && cut < 90) {
+                  return `<li><strong>${esc(item.slice(0,cut))}</strong><span>${esc(item.slice(cut+1).trim())}</span></li>`;
+                }
+                return `<li><span>${esc(item)}</span></li>`;
+              }).join('')}
+            </ul>
+          ` : (parsed.lead ? '' : `<p>${esc(step?.action || '')}</p>`)}
+          ${step?.why ? `<div class="ck-step-why"><span>Pse</span><p>${esc(step.why)}</p></div>` : ''}
+        </div>
+      </details>`;
+  }
+
   function stepMarkup(step, index) {
     const meta = [step.priority, step.setting].filter(Boolean);
     return `
@@ -375,9 +425,9 @@
 
   function sectionEntries(item) {
     const entries = [];
-    if (item.redFlags?.length) entries.push({ id:'hub-red-flags', label:'Red flags' });
+    if (item.redFlags?.length && !isSingleLessonChapter(item)) entries.push({ id:'hub-red-flags', label:'Red flags' });
     if (item.relatedTopics?.length) entries.push({ id:'hub-internal-sections', label:'Seksionet e mësimit' });
-    if (item.steps?.length) entries.push({ id:'hub-content', label:lessonBodyLabel(item) });
+    if (item.steps?.length) entries.push({ id:'hub-content', label:isSingleLessonChapter(item) ? `${item.steps.length} seksione` : lessonBodyLabel(item) });
     if (item.figures?.length) entries.push({ id:'hub-figures', label:'Figura dhe ilustrime' });
     if (item.prescriptions?.length) entries.push({ id:'hub-prescriptions', label:'Receta' });
     if (item.whenToRefer) entries.push({ id:'hub-referral', label:'Referimi' });
@@ -399,6 +449,19 @@
     detail.querySelectorAll('[data-hub-section]').forEach(button => {
       button.addEventListener('click', () => {
         document.getElementById(button.dataset.hubSection)?.scrollIntoView({
+          block:'start',
+          behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        });
+      });
+    });
+
+    detail.querySelectorAll('[data-master-section]').forEach(button => {
+      button.addEventListener('click', () => {
+        const sections = detail.querySelectorAll('.ck-master-section');
+        const target = sections[Number(button.dataset.masterSection)];
+        if (!target) return;
+        target.open = true;
+        target.scrollIntoView({
           block:'start',
           behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
         });
@@ -600,7 +663,7 @@
             </section>
           ` : ''}
 
-          ${item.redFlags?.length ? `
+          ${item.redFlags?.length && !isSingleLessonChapter(item) ? `
             <section class="ck-section ck-referral" id="hub-red-flags">
               <div class="ck-section-heading"><span>Urgjencë</span><h3>Red flags — ndalo dhe vlerëso urgjent</h3></div>
               ${bulletMarkup(item.redFlags)}
@@ -609,8 +672,23 @@
 
           ${item.steps?.length ? `
             <section class="ck-section" id="hub-content">
-              <div class="ck-section-heading"><span>Përmbajtje</span><h3>${esc(lessonBodyLabel(item))}</h3></div>
-              <div class="ck-steps">${item.steps.map(stepMarkup).join('')}</div>
+              <div class="ck-section-heading">
+                <span>Përmbajtje</span>
+                <h3>${esc(isSingleLessonChapter(item) ? `${item.steps.length} seksionet e mësimit` : lessonBodyLabel(item))}</h3>
+              </div>
+              ${isSingleLessonChapter(item) ? `
+                <div class="ck-master-section-index">
+                  ${item.steps.map((step,index)=>`<button type="button" data-master-section="${index}"><span>${String(index+1).padStart(2,'0')}</span><strong>${esc(clean(step.title).replace(/^\d+\.\s*/,''))}</strong></button>`).join('')}
+                </div>
+                <div class="ck-master-sections">${item.steps.map(singleLessonSectionMarkup).join('')}</div>
+              ` : `<div class="ck-steps">${item.steps.map(stepMarkup).join('')}</div>`}
+            </section>
+          ` : ''}
+
+          ${item.redFlags?.length && isSingleLessonChapter(item) ? `
+            <section class="ck-section ck-referral" id="hub-red-flags">
+              <div class="ck-section-heading"><span>Urgjencë</span><h3>Shenjat alarmuese në shembullin klinik</h3></div>
+              ${bulletMarkup(item.redFlags)}
             </section>
           ` : ''}
 
