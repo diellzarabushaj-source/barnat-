@@ -24,7 +24,7 @@ function hostname(url){const m=String(url||'').match(/^https?:\/\/([^/]+)/i);ret
 function sourceTier(url){
   const d=hostname(url);
   if(d==='cima.aemps.es') return 100;
-  if(d==='www.medicines.org.uk'||d==='medicines.org.uk') return 95;
+  if(d==='www.medicines.org.uk'||d==='medicines.org.uk') return -1000;
   if(d.endsWith('ema.europa.eu')) return 90;
   if(d==='dailymed.nlm.nih.gov') return 70;
   if(d==='lekovi.zdravstvo.gov.mk') return 65;
@@ -33,7 +33,7 @@ function sourceTier(url){
 }
 function exactEligible(url){
   const d=hostname(url);
-  return d==='cima.aemps.es'||d==='www.medicines.org.uk'||d==='medicines.org.uk';
+  return d==='cima.aemps.es';
 }
 function isHtmlContentType(v){return /text\/html|application\/xhtml/i.test(String(v||''));}
 function titleFromHtml(html){const m=String(html||'').match(/<title[^>]*>([\s\S]*?)<\/title>/i);return m?htmlToText(m[1]).trim():'';}
@@ -143,7 +143,12 @@ async function fetchHtml(url){
   return {ok:false,status:null,url,error:String(last?.message||last||'fetch_failed')};
 }
 function candidateUrls(row){
-  const urls=[...(row.sourceUrls||[])].filter(u=>/^https?:\/\//i.test(String(u||'')));
+  const urls=[...(row.sourceUrls||[])].filter(u=>{
+    if(!/^https?:\/\//i.test(String(u||''))) return false;
+    const d=hostname(u);
+    if(d==='www.medicines.org.uk'||d==='medicines.org.uk') return false;
+    return true;
+  });
   const uniq=[...new Set(urls)];
   return uniq.sort((a,b)=>sourceTier(b)-sourceTier(a)).slice(0,4);
 }
@@ -207,7 +212,7 @@ async function main(){
     };
   });
   const counts={}; for(const r of rows){const k=r.bestSource?.matchStatus||'NO_USABLE_SOURCE';counts[k]=(counts[k]||0)+1;}
-  const out={schemaVersion:'drx-master-secondary-source-enrichment-v1',generatedAt:new Date().toISOString(),inputRows:input.length,targetRows:targets.length,counts,policy:{autoPublication:false,exactDomains:['cima.aemps.es','medicines.org.uk'],requiresSections:['2','4.1','4.2'],crossStrengthBinding:false,saltsAutoCollapsed:false},rows};
+  const out={schemaVersion:'drx-master-secondary-source-enrichment-v1',generatedAt:new Date().toISOString(),inputRows:input.length,targetRows:targets.length,counts,policy:{autoPublication:false,exactDomains:['cima.aemps.es'],requiresSections:['2','4.1','4.2'],crossStrengthBinding:false,saltsAutoCollapsed:false},rows};
   fs.writeFileSync(OUT,JSON.stringify(out,null,2)+'\n');
   const size=350;
   for(let start=0;start<rows.length;start+=size){
