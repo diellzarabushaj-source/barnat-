@@ -1,18 +1,23 @@
 (() => {
   'use strict';
 
-  const INDEX_QUERY = `*[_type == "learningTopic" && reviewStatus != "archived"] | order(title asc){
-    _id,question,title,"slug":slug.current,keywords,icdCodes,summary,
-    reviewStatus,reviewedBy,lastReviewedAt,version,
-    "stepCount":count(steps),"prescriptionCount":count(prescriptions),"protocolCount":count(relatedProtocols)
+  const INDEX_QUERY = `*[_type == "learningTopic" && reviewStatus != "archived"]{
+    _id,question,title,"slug":slug.current,keywords,icdCodes,procedureCodes,summary,
+    contentKind,chapterNumber,lessonNumber,reviewStatus,reviewedBy,lastReviewedAt,version,
+    "stepCount":count(steps),"prescriptionCount":count(prescriptions),"protocolCount":count(relatedProtocols),
+    "childCount":count(relatedTopics)
   }`;
 
   const DETAIL_QUERY = `*[_type == "learningTopic" && _id == $id][0]{
-    _id,question,title,"slug":slug.current,keywords,icdCodes,summary,
+    _id,question,title,"slug":slug.current,keywords,icdCodes,procedureCodes,summary,
+    contentKind,chapterNumber,lessonNumber,
     steps[]{_key,title,action,why,setting,priority,note},
     prescriptions[]{_key,medicine,genericName,form,strength,dose,route,frequency,duration,quantity,instructions,patientGroup,clinicalNote},
+    figures[]{_key,title,caption,alt,url,sourceUrl,credit,kind,order},
+    sources[]{_key,title,organization,url,publishedAt,note},
     redFlags,whenToRefer,reviewStatus,reviewedBy,lastReviewedAt,version,
-    relatedProtocols[]->{_id,title,"slug":slug.current,summary,reviewStatus}
+    relatedProtocols[]->{_id,title,"slug":slug.current,summary,reviewStatus},
+    relatedTopics[]->{_id,question,title,"slug":slug.current,summary,icdCodes,procedureCodes,reviewStatus,version}
   }`;
 
   const state = {
@@ -168,15 +173,52 @@
     return state.items.find(item => item._id === state.selectedId) || null;
   }
 
+  function chapterNumberFromId(id) {
+    const match = String(id || '').match(/^medicalhub-dod-ch(\d{2})(?:-sub(\d+))?$/);
+    return match ? Number(match[1]) : null;
+  }
+
+  function lessonNumberFromId(id) {
+    const match = String(id || '').match(/^medicalhub-dod-ch\d{2}-sub(\d+)$/);
+    return match ? Number(match[1]) : null;
+  }
+
+  function chapterKey(item) {
+    const number = Number(item?.chapterNumber) || chapterNumberFromId(item?._id);
+    return number ? String(number).padStart(2, '0') : '';
+  }
+
+  function isChapter(item) {
+    return item?.contentKind === 'chapter'
+      || /^medicalhub-dod-ch\d{2}$/.test(String(item?._id || ''));
+  }
+
+  function topicOrder(item) {
+    const chapter = chapterNumberFromId(item?._id) || Number(item?.chapterNumber) || 999;
+    const lesson = lessonNumberFromId(item?._id);
+    return chapter * 1000 + (lesson == null ? 0 : lesson);
+  }
+
+  function procedureEntries(item) {
+    return (item?.procedureCodes || []).map(entry => {
+      if (typeof entry === 'string') return { code:entry, system:'Procedurë' };
+      return entry || {};
+    }).filter(entry => entry.code);
+  }
+
   function itemSearchText(item) {
     if (!item?._id) return '';
     if (searchIndex.has(item._id)) return searchIndex.get(item._id);
+    const procedureText = procedureEntries(item)
+      .flatMap(entry => [entry.code, entry.system, entry.label])
+      .filter(Boolean);
     const value = normalize([
       item.question,
       item.title,
       item.summary,
       ...(item.keywords || []),
       ...(item.icdCodes || []),
+      ...procedureText,
     ].join(' '));
     searchIndex.set(item._id, value);
     return value;
@@ -185,13 +227,14 @@
   function applyFilterState() {
     const term = normalize(state.term);
     state.filtered = state.items.filter(item => {
-      const inferredCategory = item.icdCodes?.[0]?.charAt(0) || '';
+      const chapter = chapterKey(item);
       return (!term || itemSearchText(item).includes(term))
-        && (!state.category || inferredCategory === state.category);
-    });
+        && (!state.category || chapter === state.category);
+    }).sort((a, b) => topicOrder(a) - topicOrder(b) || clean(a.title).localeCompare(clean(b.title), 'sq'));
 
     if (!state.filtered.some(item => item._id === state.selectedId)) {
-      state.selectedId = state.filtered[0]?._id || '';
+      const preferred = state.filtered.find(isChapter) || state.filtered[0];
+      state.selectedId = preferred?._id || '';
     }
   }
 
@@ -224,6 +267,48 @@
 
   function chip(label, className = '') {
     return `<span class="ck-chip ${className}">${esc(label)}</span>`;
+  }
+
+  function icdChip(code) {
+    const value = clean(code);
+    if (!value) return '';
+    return `<a class="ck-chip ck-code-chip" href="/icd.html#${encodeURIComponent(value)}" title="Hap ${esc(value)} në ICD-10">ICD‑10 ${esc(value)}</a>`;
+  }
+
+  function procedureChip(entry) {
+    const code = clean(entry?.code);
+    if (!code) return '';
+    const system = clean(entry?.system || 'Procedurë');
+    const label = clean(entry?.label);
+    const title = [system, label].filter(Boolean).join(' — ');
+    return `<span class="ck-chip ck-procedure-chip" title="${esc(title)}">${esc(system)} ${esc(code)}</span>`;
+  }
+
+  function figureMarkup(figure, index) {
+    const url = clean(figure?.url);
+    if (!url) return '';
+    const alt = clean(figure?.alt || figure?.title || `Figura ${index + 1}`);
+    const caption = clean(figure?.caption || figure?.title);
+    const sourceUrl = clean(figure?.sourceUrl);
+    const credit = clean(figure?.credit);
+    return `
+      <figure class="ck-figure">
+        <img src="${esc(url)}" alt="${esc(alt)}" loading="lazy" decoding="async">
+        ${caption || credit || sourceUrl ? `
+          <figcaption>
+            ${caption ? `<strong>${esc(caption)}</strong>` : ''}
+            ${credit ? `<span>${esc(credit)}</span>` : ''}
+            ${sourceUrl ? `<a href="${esc(sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi ↗</a>` : ''}
+          </figcaption>
+        ` : ''}
+      </figure>`;
+  }
+
+  function lessonBodyLabel(item) {
+    const title = normalize(item?.title);
+    if (/trajtim|menaxhim/.test(title)) return 'Trajtimi hap pas hapi';
+    if (/procedur|kanulim|venepunksion|intubim|kateteriz|punksion|paracentez|toracentez|transfuzion|injeksion|aspirim|artrocentez/.test(title)) return 'Procedura hap pas hapi';
+    return 'Pikat dhe hapat kryesorë';
   }
 
   function bulletMarkup(items) {
@@ -275,10 +360,12 @@
   function sectionEntries(item) {
     const entries = [];
     if (item.redFlags?.length) entries.push({ id:'hub-red-flags', label:'Red flags' });
-    entries.push({ id:'hub-treatment', label:'Trajtimi hap pas hapi' });
+    if (item.steps?.length) entries.push({ id:'hub-content', label:lessonBodyLabel(item) });
+    if (item.figures?.length) entries.push({ id:'hub-figures', label:'Figura dhe ilustrime' });
     if (item.prescriptions?.length) entries.push({ id:'hub-prescriptions', label:'Shembuj recetash' });
     if (item.whenToRefer) entries.push({ id:'hub-referral', label:'Referimi' });
     if (item.relatedProtocols?.length) entries.push({ id:'hub-protocols', label:'Protokolle të lidhura' });
+    if (item.sources?.length) entries.push({ id:'hub-sources', label:'Burimet' });
     return entries;
   }
 
@@ -291,21 +378,48 @@
     });
   }
 
-  function renderTopicDetail(item) {
+  function bindDetailNavigation(detail) {
+    detail.querySelectorAll('[data-hub-section]').forEach(button => {
+      button.addEventListener('click', () => {
+        document.getElementById(button.dataset.hubSection)?.scrollIntoView({
+          block:'start',
+          behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        });
+      });
+    });
+
+    detail.querySelectorAll('[data-topic-jump]').forEach(button => {
+      button.addEventListener('click', () => {
+        const id = button.dataset.topicJump;
+        if (!state.filtered.some(item => item._id === id)) {
+          const target = state.items.find(item => item._id === id);
+          if (target) {
+            state.category = chapterKey(target);
+            const category = $('#learningCategory');
+            if (category) category.value = state.category;
+            applyFilterState();
+          }
+        }
+        selectTopic(id, { scroll:true });
+      });
+    });
+  }
+
+  function renderChapterDetail(item) {
     const detail = $('#learningDetail');
     if (!detail) return;
     const review = reviewMeta(item.reviewStatus);
-    const sections = sectionEntries(item);
-    const currentIndex = state.filtered.findIndex(candidate => candidate._id === item._id);
-    const previous = currentIndex > 0 ? state.filtered[currentIndex - 1] : null;
-    const next = currentIndex >= 0 && currentIndex < state.filtered.length - 1 ? state.filtered[currentIndex + 1] : null;
+    const children = (item.relatedTopics || []).slice().sort((a, b) => topicOrder(a) - topicOrder(b));
+    const icdLessons = children.filter(child => child.icdCodes?.length).length;
+    const procedureLessons = children.filter(child => procedureEntries(child).length).length;
+    const populated = children.filter(child => clean(child.summary)).length;
 
     detail.innerHTML = `
-      <div class="ck-document-inner">
+      <div class="ck-document-inner ck-chapter-document">
         <header class="ck-detail-head">
           <div class="ck-detail-title-row">
             <div>
-              <p class="ck-kicker">${esc(item.question || 'Temë klinike')}</p>
+              <p class="ck-kicker">${esc(item.question || 'Kapitull')}</p>
               <h2>${esc(item.title)}</h2>
             </div>
             <span class="ck-review-badge ${review.className}">
@@ -314,7 +428,70 @@
             </span>
           </div>
           <div class="ck-meta">
-            ${(item.icdCodes || []).map(code => chip(code)).join('')}
+            ${chip(`${children.length} nënkapituj`)}
+            ${icdLessons ? chip(`${icdLessons} me ICD‑10`, 'is-code-count') : ''}
+            ${procedureLessons ? chip(`${procedureLessons} procedura`, 'is-procedure-count') : ''}
+            ${item.version ? chip(`v${item.version}`) : ''}
+          </div>
+          ${item.summary ? `<div class="ck-quick-summary"><span>Përmbledhja e kapitullit</span><p>${esc(item.summary)}</p></div>` : ''}
+        </header>
+
+        <section class="ck-section ck-chapter-section">
+          <div class="ck-section-heading"><span>Indeks</span><h3>Nënkapitujt e këtij kapitulli</h3></div>
+          <div class="ck-chapter-progress">
+            <span><strong>${populated}</strong> / ${children.length} me përmbajtje të plotësuar</span>
+            <span>${icdLessons} të lidhur me ICD‑10</span>
+          </div>
+          <div class="ck-chapter-lessons">
+            ${children.map((child, index) => {
+              const childReview = reviewMeta(child.reviewStatus);
+              return `
+                <button type="button" class="ck-chapter-lesson" data-topic-jump="${esc(child._id)}">
+                  <span class="ck-chapter-lesson-no">${String(index + 1).padStart(2, '0')}</span>
+                  <span class="ck-chapter-lesson-copy">
+                    <strong>${esc(child.title)}</strong>
+                    ${child.summary ? `<small>${esc(child.summary)}</small>` : '<small>Përmbajtja do të plotësohet nga burimi.</small>'}
+                    <span class="ck-chapter-lesson-meta">
+                      ${(child.icdCodes || []).map(icdChip).join('')}
+                      ${procedureEntries(child).map(procedureChip).join('')}
+                      <span class="ck-mini-status ${childReview.className}"><i></i>${esc(childReview.label)}</span>
+                    </span>
+                  </span>
+                  <span class="ck-chapter-lesson-arrow" aria-hidden="true">→</span>
+                </button>`;
+            }).join('') || '<p class="ck-status">Nuk ka nënkapituj të lidhur.</p>'}
+          </div>
+        </section>
+      </div>`;
+    bindDetailNavigation(detail);
+  }
+
+  function renderLessonDetail(item) {
+    const detail = $('#learningDetail');
+    if (!detail) return;
+    const review = reviewMeta(item.reviewStatus);
+    const sections = sectionEntries(item);
+    const currentIndex = state.filtered.findIndex(candidate => candidate._id === item._id);
+    const previous = currentIndex > 0 ? state.filtered[currentIndex - 1] : null;
+    const next = currentIndex >= 0 && currentIndex < state.filtered.length - 1 ? state.filtered[currentIndex + 1] : null;
+    const procedures = procedureEntries(item);
+
+    detail.innerHTML = `
+      <div class="ck-document-inner">
+        <header class="ck-detail-head">
+          <div class="ck-detail-title-row">
+            <div>
+              <p class="ck-kicker">${esc(item.question || 'Mësim klinik')}</p>
+              <h2>${esc(item.title)}</h2>
+            </div>
+            <span class="ck-review-badge ${review.className}">
+              <span class="ck-review-dot" aria-hidden="true"></span>
+              <strong>${esc(review.label)}</strong>
+            </span>
+          </div>
+          <div class="ck-meta">
+            ${(item.icdCodes || []).map(icdChip).join('')}
+            ${procedures.map(procedureChip).join('')}
             ${item.version ? chip(`v${item.version}`) : ''}
             ${item.reviewedBy ? chip(item.reviewedBy) : ''}
           </div>
@@ -322,8 +499,8 @@
         </header>
 
         ${sections.length > 1 ? `
-          <nav class="ck-section-index" aria-label="Përmbajtja e kësaj teme">
-            <div class="ck-section-index-head"><span>Në këtë temë</span><small>${sections.length} pjesë</small></div>
+          <nav class="ck-section-index" aria-label="Përmbajtja e këtij mësimi">
+            <div class="ck-section-index-head"><span>Në këtë mësim</span><small>${sections.length} pjesë</small></div>
             <div class="ck-section-index-list">
               ${sections.map((section, index) => `
                 <button type="button" data-hub-section="${section.id}">
@@ -343,12 +520,19 @@
             </section>
           ` : ''}
 
-          <section class="ck-section" id="hub-treatment">
-            <div class="ck-section-heading"><span>Plan</span><h3>Trajtimi hap pas hapi</h3></div>
-            <div class="ck-steps">
-              ${(item.steps || []).map(stepMarkup).join('') || '<p class="ck-status">Ende pa hapa.</p>'}
-            </div>
-          </section>
+          ${item.steps?.length ? `
+            <section class="ck-section" id="hub-content">
+              <div class="ck-section-heading"><span>Përmbajtje</span><h3>${esc(lessonBodyLabel(item))}</h3></div>
+              <div class="ck-steps">${item.steps.map(stepMarkup).join('')}</div>
+            </section>
+          ` : ''}
+
+          ${item.figures?.length ? `
+            <section class="ck-section" id="hub-figures">
+              <div class="ck-section-heading"><span>Figura</span><h3>Figura dhe ilustrime</h3></div>
+              <div class="ck-figure-grid">${item.figures.slice().sort((a,b)=>(a.order||0)-(b.order||0)).map(figureMarkup).join('')}</div>
+            </section>
+          ` : ''}
 
           ${item.prescriptions?.length ? `
             <section class="ck-section" id="hub-prescriptions">
@@ -378,6 +562,24 @@
               </div>
             </section>
           ` : ''}
+
+          ${item.sources?.length ? `
+            <section class="ck-section" id="hub-sources">
+              <div class="ck-section-heading"><span>Burime</span><h3>Burimet dhe referencat</h3></div>
+              <div class="ck-source-list">
+                ${item.sources.map(source => `
+                  <article class="ck-source-card">
+                    <div>
+                      <strong>${esc(source.title || source.organization || 'Burim')}</strong>
+                      ${source.organization ? `<span>${esc(source.organization)}</span>` : ''}
+                    </div>
+                    ${source.note ? `<p>${esc(source.note)}</p>` : ''}
+                    ${source.url ? `<a href="${esc(source.url)}" target="_blank" rel="noopener noreferrer">Hap burimin ↗</a>` : ''}
+                  </article>
+                `).join('')}
+              </div>
+            </section>
+          ` : ''}
         </div>
 
         ${item.lastReviewedAt ? `
@@ -387,16 +589,16 @@
         ` : ''}
 
         ${previous || next ? `
-          <nav class="ck-document-pagination" aria-label="Navigimi mes temave">
+          <nav class="ck-document-pagination" aria-label="Navigimi mes mësimeve">
             ${previous ? `
               <button type="button" class="ck-document-page" data-topic-jump="${esc(previous._id)}">
-                <span>← Tema e kaluar</span>
+                <span>← Mësimi i kaluar</span>
                 <strong>${esc(previous.title)}</strong>
               </button>
             ` : '<span></span>'}
             ${next ? `
               <button type="button" class="ck-document-page ck-document-page-next" data-topic-jump="${esc(next._id)}">
-                <span>Tema tjetër →</span>
+                <span>Mësimi tjetër →</span>
                 <strong>${esc(next.title)}</strong>
               </button>
             ` : '<span></span>'}
@@ -404,20 +606,12 @@
         ` : ''}
       </div>`;
 
-    detail.querySelectorAll('[data-hub-section]').forEach(button => {
-      button.addEventListener('click', () => {
-        document.getElementById(button.dataset.hubSection)?.scrollIntoView({
-          block:'start',
-          behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-        });
-      });
-    });
+    bindDetailNavigation(detail);
+  }
 
-    detail.querySelectorAll('[data-topic-jump]').forEach(button => {
-      button.addEventListener('click', () => {
-        selectTopic(button.dataset.topicJump, { scroll:true });
-      });
-    });
+  function renderTopicDetail(item) {
+    if (isChapter(item)) renderChapterDetail(item);
+    else renderLessonDetail(item);
   }
 
   function renderEmptyState() {
@@ -505,9 +699,14 @@
     if (!select) return;
 
     select.innerHTML = state.filtered.map(item => {
-      const code = item.icdCodes?.length ? ` · ${esc(item.icdCodes.join(' · '))}` : '';
-      return `<option value="${esc(item._id)}">${esc(item.question || item.title)}${code}</option>`;
-    }).join('') || '<option value="">Asnjë temë</option>';
+      const codes = [
+        ...(item.icdCodes || []).map(code => `ICD ${code}`),
+        ...procedureEntries(item).map(entry => `${entry.system || 'Procedurë'} ${entry.code}`),
+      ];
+      const code = codes.length ? ` · ${esc(codes.join(' · '))}` : '';
+      const prefix = isChapter(item) ? 'Kapitulli · ' : 'Mësimi · ';
+      return `<option value="${esc(item._id)}">${prefix}${esc(item.title || item.question)}${code}</option>`;
+    }).join('') || '<option value="">Asnjë mësim</option>';
 
     select.value = state.selectedId;
     select.disabled = state.filtered.length === 0;
@@ -521,13 +720,17 @@
     const previous = $('#previousTopicButton');
     const next = $('#nextTopicButton');
     const term = clean(state.term);
+    const chapterCount = state.items.filter(isChapter).length;
+    const lessonCount = state.items.length - chapterCount;
 
     searchField?.classList.toggle('has-value', Boolean(term));
 
     if (result) {
-      if (term) result.textContent = `${state.filtered.length} tema për “${term}”`;
-      else if (state.category) result.textContent = `${state.filtered.length} tema në ICD ${state.category}`;
-      else result.textContent = `${state.items.length} tema klinike`;
+      if (term) result.textContent = `${state.filtered.length} rezultate për “${term}”`;
+      else if (state.category) {
+        const chapter = state.items.find(item => isChapter(item) && chapterKey(item) === state.category);
+        result.textContent = chapter ? `${state.filtered.length - 1} mësime në ${chapter.question}` : `${state.filtered.length} rezultate`;
+      } else result.textContent = `${chapterCount} kapituj · ${lessonCount} mësime`;
     }
 
     if (position) position.textContent = index >= 0 ? `${index + 1} / ${state.filtered.length}` : `0 / ${state.filtered.length}`;
@@ -535,7 +738,7 @@
     if (next) next.disabled = index < 0 || index >= state.filtered.length - 1;
 
     const headingStatus = $('#learningStatus');
-    if (headingStatus) headingStatus.textContent = `${state.items.length} tema`;
+    if (headingStatus) headingStatus.textContent = `${chapterCount} kapituj · ${lessonCount} mësime`;
   }
 
   function selectTopic(id, { scroll = false } = {}) {
@@ -606,17 +809,15 @@
 
       state.items = await window.MedIndexSanity.query(INDEX_QUERY);
       if (!Array.isArray(state.items)) state.items = [];
+      state.items.sort((a, b) => topicOrder(a) - topicOrder(b) || clean(a.title).localeCompare(clean(b.title), 'sq'));
 
-      const groups = [...new Set(
-        state.items.map(item => item.icdCodes?.[0]?.charAt(0)).filter(Boolean)
-      )].sort();
-
+      const chapters = state.items.filter(isChapter);
       $('#learningCategory')?.insertAdjacentHTML(
         'beforeend',
-        groups.map(group => `<option value="${esc(group)}">ICD ${esc(group)}</option>`).join('')
+        chapters.map(chapter => `<option value="${chapterKey(chapter)}">${esc(chapter.question || chapter.title)} — ${esc(chapter.title.replace(/^\\d+\\s*[—-]\\s*/, ''))}</option>`).join('')
       );
 
-      state.selectedId = state.items[0]?._id || '';
+      state.selectedId = chapters[0]?._id || state.items[0]?._id || '';
       restoreUrl();
       applyFilterState();
 
