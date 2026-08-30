@@ -20,3 +20,13 @@ assert.doesNotMatch(sql,/\b(insert|update|delete)\s+(into\s+|from\s+)?(?:public\
 assert.doesNotMatch(sql,/evidence_review_status\s*=\s*'VERIFIED'/i);
 
 console.log('DRx Phase 8 pilot build preflight contract: PASS');
+
+const statusScript = fs.readFileSync('scripts/drx-phase8-status.js','utf8');
+assert.match(statusScript,/drx_phase8_pilot_build_preflight_v1/);
+assert.match(statusScript,/if \(preflight\.clinicalReviewsVerified < preflight\.requiredPilotCount\)/);
+assert.match(statusScript,/if \(preflight\.preflightPass\)/);
+assert.match(statusScript,/if \(status\.exit_gate_pass\)/);
+assert.match(statusScript,/p_limit:50/);
+assert.doesNotMatch(statusScript,/assert\.equal\(status\.exit_gate_pass,false\);\s*assert\.equal\(status\.gate_pass,false\);\s*assert\.ok\(status\.review_product_source_bindings/s);
+
+console.log('DRx Phase 8 stage-aware status contract: PASS');
