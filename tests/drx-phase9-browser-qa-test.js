@@ -171,7 +171,12 @@ async function inspectViewport(browser,entry){
   await page.locator('#patientAgeMonths').fill('8');
   await page.locator('#patientAgeUnit').selectOption({label:'vjet'});
   await page.locator('#pediatricCalculate').click();
-  await page.locator('.phase9-prescription-preview').waitFor({state:'visible'});
+  const prescriptionPreview=page.locator('.phase9-prescription-preview');
+  await prescriptionPreview.waitFor({state:'visible'});
+  if(!(await prescriptionPreview.getAttribute('open'))){
+    await prescriptionPreview.locator('summary').click();
+  }
+  await page.locator('.phase9-prescription-text').waitFor({state:'visible'});
   const rx=await page.locator('.phase9-prescription-text').innerText();
   for(const fragment of ['Rx — DRx','PARACETAMOL PHASE 9','Indikacioni:','Doza:','Frekuenca:','Rruga:','Burimi i dozimit:','Konteksti V3:']){
     assert.ok(rx.includes(fragment),entry.name+': missing '+fragment);
