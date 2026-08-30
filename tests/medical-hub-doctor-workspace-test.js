@@ -12,8 +12,8 @@ const js = read('medical-hub-v2.js');
 const css = read('medical-hub-v2.css');
 
 assert.match(html, /data-drx-app="medical-hub-v2"/);
-assert.match(html, /medical-hub-v2\.css\?v=2/);
-assert.match(html, /medical-hub-v2\.js\?v=2/);
+assert.match(html, /medical-hub-v2\.css\?v=5/);
+assert.match(html, /medical-hub-v2\.js\?v=5/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/);
 assert.match(html, /drx-unified-sidebar/);
 assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);

@@ -25,6 +25,10 @@ async function main() {
   const status = JSON.parse(body);
 
   assert.equal(status.current_source_documents, status.source_keys);
+  assert.equal(status.clinical_source_keys, status.source_keys);
+  assert.equal(status.all_snapshot_source_keys, status.source_keys + status.exact_market_registry_source_keys);
+  assert.equal(status.exact_market_registry_source_keys, 2);
+  assert.equal(status.exact_market_registry_evidence_is_clinical_smpc, false);
   assert.equal(status.full_safety_documents, status.source_keys);
   assert.equal(status.indication_source_claims, status.source_keys);
   assert.equal(status.classified_market_products, status.market_products);

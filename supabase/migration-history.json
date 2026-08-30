@@ -457,6 +457,10 @@
     {
       "name": "drx_phase8k_exact_source_capture_status_gate",
       "version": "20260830175458"
+    },
+    {
+      "name": "drx_phase8l_scope_phase6_sources_after_exact_capture",
+      "version": "20260830180217"
     }
   ]
 }

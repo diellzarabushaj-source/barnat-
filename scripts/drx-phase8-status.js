@@ -6,7 +6,7 @@ const { supabaseRequest } = require('../lib/medindex-data-api.js');
 
 async function rpc(name,body={}) {
   const { data } = await supabaseRequest('rpc/' + name,{
-    method:'POST',body,timeoutMs:5000,label:'DRx Phase 8 ' + name
+    method:'POST',body,timeoutMs:20000,label:'DRx Phase 8 ' + name
   },{ privileged:true });
   return data;
 }

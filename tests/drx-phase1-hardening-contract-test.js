@@ -31,11 +31,15 @@ assert.match(workflow,/node --check api\/dosage\.js/);
 assert.match(releaseTest,/r\.releaseReady,r\.blockers\.length===0/);
 assert.doesNotMatch(releaseTest,/assert\.equal\(r\.releaseReady,false\)/);
 
-assert.equal(history.migrations.length,84);
-assert.deepEqual(history.migrations.at(-1),{
-  version:'20260830123219',
-  name:'drx_phase1_rpc_metadata_and_stage_hardening'
-});
+assert.equal(baseline.supabase.postPhase1.migrationCount,84);
+assert.ok(history.migrations.length >= baseline.supabase.postPhase1.migrationCount);
+assert.deepEqual(
+  history.migrations.at(baseline.supabase.postPhase1.migrationCount - 1),
+  {
+    version:'20260830123219',
+    name:'drx_phase1_rpc_metadata_and_stage_hardening'
+  }
+);
 assert.equal(baseline.supabase.postPhase1.sourceSnapshots,100);
 assert.equal(baseline.supabase.postPhase1.sourceSections,575);
 assert.equal(baseline.supabase.postPhase1.clientWriteGrantLeaks,0);

@@ -11,6 +11,7 @@ on:
       - "supabase/migrations/20260830161329_drx_phase6c_indication_safety_gate.sql"
       - "supabase/migrations/20260830162151_drx_phase6d_boundary_aware_source_identity_candidates.sql"
       - "supabase/migrations/20260830164615_drx_phase6e_same_hash_source_identity_resolution.sql"
+      - "supabase/migrations/20260830180217_drx_phase8l_scope_phase6_sources_after_exact_capture.sql"
       - "tests/drx-phase6-clinical-provenance-test.js"
       - "scripts/drx-phase6-status.js"
       - "docs/DRX-PHASE6-ROLLBACK.md"

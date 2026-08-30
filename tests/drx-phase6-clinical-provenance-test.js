@@ -18,6 +18,9 @@ const d = fs.readFileSync(
 const e = fs.readFileSync(
   'supabase/migrations/20260830164615_drx_phase6e_same_hash_source_identity_resolution.sql','utf8'
 );
+const sourceScope = fs.readFileSync(
+  'supabase/migrations/20260830180217_drx_phase8l_scope_phase6_sources_after_exact_capture.sql','utf8'
+);
 const workflow = fs.readFileSync(
   '.github/workflows/drx-phase6-clinical-gate.yml','utf8'
 );
@@ -63,6 +66,11 @@ assert.match(e,/SAME_SECTION42_HASH_PRIOR_CANONICAL_KEY/);
 assert.match(e,/current_section_4_2_sha256=prior_section_4_2_sha256/);
 assert.match(e,/pc\.concept_id=any\(c\.candidate_concept_ids\)/);
 assert.match(e,/publication_eligible=false/);
+
+assert.match(sourceScope,/clinical_source_keys/);
+assert.match(sourceScope,/all_snapshot_source_keys/);
+assert.match(sourceScope,/exact_market_registry_source_keys/);
+assert.match(sourceScope,/exact_market_registry_evidence_is_clinical_smpc',false/);
 
 assert.match(workflow,/SUPABASE_SECRET_KEY/);
 assert.match(workflow,/drx-phase6-status-evidence/);
