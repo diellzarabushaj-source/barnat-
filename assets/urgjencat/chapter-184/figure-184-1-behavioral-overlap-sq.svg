@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 760" role="img" aria-labelledby="t d">
+<title id="t">Sëmundjet e shpeshta mjekësore, psikiatrike dhe nga substancat në urgjencë</title>
+<desc id="d">Diagram në shqip që tregon mbivendosjen e sëmundjeve psikiatrike, mjekësore dhe intoksikimit ose tërheqjes nga substancat.</desc>
+<rect width="900" height="760" fill="white"/>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#222"/></marker></defs>
+<ellipse cx="450" cy="110" rx="190" ry="88" fill="#f1e3f3" stroke="#a66bad" stroke-width="2"/>
+<text x="450" y="82" text-anchor="middle" font-family="Arial" font-size="24">Skizofrenia</text>
+<text x="450" y="112" text-anchor="middle" font-family="Arial" font-size="24">Çrregullimi bipolar</text>
+<text x="450" y="142" text-anchor="middle" font-family="Arial" font-size="24">Depresioni</text>
+<line x1="450" y1="198" x2="450" y2="248" stroke="#222" stroke-width="2" marker-end="url(#a)"/>
+<circle cx="440" cy="350" r="105" fill="#e5e7f4" stroke="#355ca8" stroke-width="2"/>
+<circle cx="440" cy="505" r="105" fill="#f9e0d0" stroke="#db7955" stroke-width="2"/>
+<circle cx="585" cy="430" r="105" fill="#fffbe0" stroke="#d6b900" stroke-width="2"/>
+<text x="440" y="355" text-anchor="middle" font-family="Arial" font-size="25">Psikiatrike</text>
+<text x="440" y="510" text-anchor="middle" font-family="Arial" font-size="25">Mjekësore</text>
+<text x="585" y="420" text-anchor="middle" font-family="Arial" font-size="22">Intoksikim /</text>
+<text x="585" y="448" text-anchor="middle" font-family="Arial" font-size="22">tërheqje nga substancat</text>
+<ellipse cx="440" cy="680" rx="210" ry="72" fill="#e2f2e5" stroke="#4a9a68" stroke-width="2"/>
+<text x="440" y="640" text-anchor="middle" font-family="Arial" font-size="22">Deliriumi · Demenca · Hipertiroidizmi</text>
+<text x="440" y="672" text-anchor="middle" font-family="Arial" font-size="22">Trauma e kokës</text>
+<text x="440" y="704" text-anchor="middle" font-family="Arial" font-size="22">Epilepsia e lobit temporal</text>
+<line x1="440" y1="605" x2="440" y2="560" stroke="#222" stroke-width="2" marker-end="url(#a)"/>
+</svg>

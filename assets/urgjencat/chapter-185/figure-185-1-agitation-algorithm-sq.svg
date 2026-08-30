@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1100" role="img" aria-labelledby="t d">
+<title id="t">Algoritmi i menaxhimit të agjitacionit në urgjencë</title>
+<desc id="d">Algoritëm i përkthyer në shqip nga Figura 185-1, me degë për delirium, intoksikim, psikozë dhe agjitacion të padiferencuar.</desc>
+<rect width="1500" height="1100" fill="white"/>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#333"/></marker></defs>
+<style>.h{font:700 25px Arial}.b{font:20px Arial}.s{font:17px Arial}.box{stroke-width:2}.line{stroke:#333;stroke-width:2;fill:none;marker-end:url(#a)}</style>
+<text x="45" y="45" class="h">Protokolli për trajtimin e agjitacionit</text>
+<rect x="610" y="55" width="280" height="72" rx="8" fill="#fde6ef" stroke="#d65a8b" class="box"/>
+<text x="750" y="85" text-anchor="middle" class="b">Pas ndërhyrjeve fillestare,</text><text x="750" y="110" text-anchor="middle" class="b">nevojitet medikament</text>
+<path d="M750 127 V175 H190 V220" class="line"/><path d="M750 175 H560 V220" class="line"/><path d="M750 175 H930 V220" class="line"/><path d="M750 175 H1280 V220" class="line"/>
+<!-- headers -->
+<rect x="60" y="220" width="260" height="80" fill="#dfe1f7" stroke="#5f63a8" class="box"/><text x="190" y="250" text-anchor="middle" class="b">Agjitacion i lidhur</text><text x="190" y="276" text-anchor="middle" class="b">me delirium</text>
+<rect x="430" y="220" width="260" height="80" fill="#dfe1f7" stroke="#5f63a8" class="box"/><text x="560" y="250" text-anchor="middle" class="b">Agjitacion nga</text><text x="560" y="276" text-anchor="middle" class="b">intoksikimi</text>
+<rect x="790" y="220" width="280" height="80" fill="#dfe1f7" stroke="#5f63a8" class="box"/><text x="930" y="245" text-anchor="middle" class="b">Agjitacion me psikozë</text><text x="930" y="271" text-anchor="middle" class="b">te pacient me çrregullim</text><text x="930" y="294" text-anchor="middle" class="s">psikiatrik të njohur</text>
+<rect x="1150" y="220" width="270" height="80" fill="#dfe1f7" stroke="#5f63a8" class="box"/><text x="1285" y="245" text-anchor="middle" class="b">Agjitacion i padiferencuar</text><text x="1285" y="271" text-anchor="middle" class="b">ose paraqitje komplekse</text>
+<!-- delirium subbranches -->
+<path d="M190 300 V340 H120 V370" class="line"/><path d="M190 340 H265 V370" class="line"/>
+<rect x="45" y="370" width="155" height="80" fill="#e0f1fb" stroke="#4f9ccb" class="box"/><text x="122" y="397" text-anchor="middle" class="s">Tërheqje ETOH/BZN</text><text x="122" y="420" text-anchor="middle" class="s">nuk dyshohet</text>
+<rect x="210" y="370" width="155" height="80" fill="#e0f1fb" stroke="#4f9ccb" class="box"/><text x="287" y="397" text-anchor="middle" class="s">Tërheqje ETOH/BZN</text><text x="287" y="420" text-anchor="middle" class="s">dyshohet</text>
+<rect x="35" y="485" width="190" height="445" fill="#fff0e8" stroke="#e18760" class="box"/>
+<text x="50" y="515" class="s">Identifiko/korrigjo shkakun mjekësor.</text><text x="50" y="542" class="s">Shmang benzodiazepinat.</text>
+<text x="50" y="580" class="s" font-weight="bold">1. PO antipsikotik gj. II</text><text x="50" y="605" class="s">risperidone 2 mg</text><text x="50" y="630" class="s">olanzapine 5–10 mg</text>
+<text x="50" y="670" class="s" font-weight="bold">2. PO antipsikotik gj. I</text><text x="50" y="695" class="s">haloperidol (dozë e ulët)</text>
+<text x="50" y="735" class="s" font-weight="bold">3. IM antipsikotik gj. II</text><text x="50" y="760" class="s">olanzapine 10 mg</text><text x="50" y="785" class="s">ziprasidone 10–20 mg</text>
+<text x="50" y="825" class="s" font-weight="bold">4. IM/IV antipsikotik gj. I</text><text x="50" y="850" class="s">haloperidol dozë e ulët, me kujdes</text>
+<text x="50" y="885" class="s">Burimi: &gt;3 mg/ditë te deliriumi</text><text x="50" y="908" class="s">rrit rrezikun për EPS.</text>
+<path d="M122 450 V485" class="line"/>
+<rect x="235" y="485" width="190" height="260" fill="#fff0e8" stroke="#e18760" class="box"/>
+<text x="250" y="520" class="s" font-weight="bold">1. PO benzodiazepinë</text><text x="250" y="547" class="s">lorazepam 1–2 mg</text><text x="250" y="572" class="s">chlordiazepoxide 50 mg</text><text x="250" y="597" class="s">diazepam 5–10 mg</text>
+<text x="250" y="640" class="s" font-weight="bold">2. Parenteral</text><text x="250" y="665" class="s">lorazepam 1–2 mg IM/IV</text>
+<path d="M287 450 V485" class="line"/>
+<!-- intoxication -->
+<path d="M560 300 V340 H500 V370" class="line"/><path d="M560 340 H620 V370" class="line"/>
+<rect x="440" y="370" width="125" height="80" fill="#e0f1fb" stroke="#4f9ccb" class="box"/><text x="502" y="400" text-anchor="middle" class="s">Stimulant</text><text x="502" y="423" text-anchor="middle" class="s">SNQ</text>
+<rect x="575" y="370" width="145" height="80" fill="#e0f1fb" stroke="#4f9ccb" class="box"/><text x="647" y="397" text-anchor="middle" class="s">Depresant SNQ</text><text x="647" y="420" text-anchor="middle" class="s">p.sh. alkool</text>
+<path d="M502 450 V485 H330" class="line"/>
+<rect x="450" y="485" width="250" height="260" fill="#fff0e8" stroke="#e18760" class="box"/>
+<text x="465" y="515" class="s">Shmang BZN nëse është e mundur.</text><text x="465" y="555" class="s" font-weight="bold">1. PO antipsikotik gj. I</text><text x="465" y="580" class="s">haloperidol 2–10 mg</text><text x="465" y="620" class="s" font-weight="bold">2. Parenteral gj. I</text><text x="465" y="645" class="s">haloperidol 2–10 mg IM</text>
+<path d="M647 450 V485" class="line"/>
+<!-- psychosis -->
+<rect x="775" y="370" width="310" height="415" fill="#fff0e8" stroke="#e18760" class="box"/>
+<text x="790" y="410" class="s" font-weight="bold">1. PO antipsikotik gj. II</text><text x="790" y="435" class="s">risperidone 2 mg; olanzapine 5–10 mg</text>
+<text x="790" y="480" class="s" font-weight="bold">2. PO antipsikotik gj. I</text><text x="790" y="505" class="s">haloperidol 2–10 mg + BZN</text>
+<text x="790" y="550" class="s" font-weight="bold">3. Parenteral gj. II</text><text x="790" y="575" class="s">olanzapine 10 mg IM</text><text x="790" y="600" class="s">ziprasidone 10–20 mg IM</text>
+<text x="790" y="645" class="s" font-weight="bold">4. Parenteral gj. I</text><text x="790" y="670" class="s">haloperidol 2–10 mg IM + BZN</text>
+<text x="790" y="720" class="s">Nëse antipsikotiku vetëm s'mjafton:</text><text x="790" y="745" class="s">shto lorazepam 1–2 mg PO/parenteral.</text>
+<path d="M930 300 V370" class="line"/>
+<!-- undifferentiated -->
+<rect x="1140" y="370" width="290" height="240" fill="#fff0e8" stroke="#e18760" class="box"/>
+<text x="1155" y="410" class="s" font-weight="bold">Pa psikozë të dukshme</text><text x="1155" y="438" class="s">Trajto si agjitacion nga tërheqja.</text>
+<text x="1155" y="490" class="s" font-weight="bold">Psikozë e dukshme</text><text x="1155" y="518" class="s">Trajto si çrregullim psikiatrik</text><text x="1155" y="543" class="s">primar.</text>
+<path d="M1285 300 V370" class="line"/>
+<text x="750" y="1045" text-anchor="middle" class="s">ETOH = alkool · BZN = benzodiazepinë · SNQ = sistemi nervor qendror · EPS = efekte ekstrapiramidale</text>
+</svg>
