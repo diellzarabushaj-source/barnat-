@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T22:34:03.000Z",
+  "updatedAt": "2026-08-30T12:58:00.000Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": false,
@@ -674,7 +674,7 @@
     "phase": 32,
     "activeCriticalPhase": 15,
     "repositoryImplementationThroughPhase": 32,
-    "objective": "Phase 14 is live and hardened. Continue Batch 1/2 provenance section persistence, normalization, binding, legacy comparison and clinical review while publication remains fail-closed.",
+    "objective": "Strict DRx V3 10-phase plan: Phase 1 baseline/security hardening implemented live; publication remains fail-closed and no clinical backfill/cutover is allowed.",
     "pilot": "batch2-25",
     "repositoryBatch1Substances": 10,
     "repositoryBatch2Substances": 25,
@@ -706,7 +706,6 @@
     "releaseGateImplemented": true,
     "releaseReady": false,
     "releaseBlockers": [
-      "batch2_source_sections_not_persisted",
       "batch2_normalization_not_ready",
       "exact_product_binding_not_live",
       "legacy_comparison_not_live",
@@ -745,7 +744,7 @@
     "first100EffectiveSourceDiscoveryEligible": 87,
     "first100SourceLookupRemaining": 0,
     "supabaseDataPlaneDown": false,
-    "archiveBlockedByNetworkPolicy": true,
+    "archiveBlockedByNetworkPolicy": false,
     "archiveCiEvidence": {
       "workflow": ".github/workflows/drx-batch2-source-archive.yml",
       "runId": 33251672706,
@@ -778,15 +777,15 @@
     "archiveCiSectionHashVerifiedCount": 25,
     "renalAdjustmentLiveVerified": 0,
     "hepaticAdjustmentLiveVerified": 0,
-    "supabaseLiveVerifiedAt": "2026-08-29T14:55:00.000Z",
+    "supabaseLiveVerifiedAt": "2026-08-30T12:36:00.000Z",
     "liveRlsCoverage": "63/63",
     "liveSecurityAdvisorErrors": 0,
     "migrationDrift": {
-      "liveCount": 78,
-      "repositoryCount": 78,
+      "liveCount": 84,
+      "repositoryCount": 84,
       "missingLive": [],
       "resolved": true,
-      "resolvedAt": "2026-08-29T13:01:04.000Z",
+      "resolvedAt": "2026-08-30T12:36:00.000Z",
       "cause": "in_flight_when_disk_filled",
       "mustReapplyBeforeV3": false,
       "defectFound": "The migration was not merely interrupted. Its refresh function declared a plpgsql variable named started_at, which collides with sync_runs.started_at in the ORDER BY of the recent-runs subquery. Since the migration ends by calling that function, it would have failed on every apply regardless of disk space. Renamed the variable to fn_started_at.",
@@ -801,6 +800,11 @@
         "leakedClientGrants": 0,
         "securityAdvisorErrors": 0,
         "note": "Row counts identical to the pre-apply baseline; RLS stayed at 100% coverage. One INFO advisor (rls_enabled_no_policy) is intentional: the snapshot table is server-only, so no policy means deny-all for clients while service_role bypasses RLS."
+      },
+      "phase1Reconciliation": {
+        "prePhase1RepoVersion": "20260829222500",
+        "prePhase1LiveVersion": "20260829222409",
+        "exactParityAfterPhase1": "84/84"
       }
     },
     "v3AppliedAt": "2026-08-29T13:18:00.000Z",
@@ -808,7 +812,7 @@
       "migrationName": "drx_dose_v3_additive_shadow_schema",
       "tables": 12,
       "rlsEnabledTables": 12,
-      "policies": 6,
+      "policies": 8,
       "triggers": 4,
       "privateGuardFunctions": 4,
       "fastPathRpc": 1,
@@ -832,25 +836,56 @@
         "dosageRegimens": 8104
       },
       "contentAfterApply": {
-        "snapshots": 25,
-        "sections": 0,
+        "snapshots": 100,
+        "sections": 575,
         "products": 0,
         "rules": 0,
         "publishedRules": 0
       },
-      "liveMigrationCount": 80,
-      "repositoryMigrationCount": 80,
-      "latestMigration": "20260829145424_drx_v3_cover_foreign_keys",
-      "performanceAdvisorForeignKeyFindingsClosed": 7
+      "liveMigrationCount": 84,
+      "repositoryMigrationCount": 84,
+      "latestMigration": "20260830123219_drx_phase1_rpc_metadata_and_stage_hardening",
+      "performanceAdvisorForeignKeyFindingsClosed": 7,
+      "rpcSecurity": "SECURITY_INVOKER_METADATA_ONLY",
+      "rpcRoleTests": {
+        "anon": "PASS_NULL_FAIL_CLOSED",
+        "authenticated": "PASS_NULL_FAIL_CLOSED"
+      },
+      "sectionTextClientReadable": false,
+      "extractedJsonClientReadable": false,
+      "drxStageRls": false,
+      "drxStageClientSchemaUsage": false,
+      "drxStageClientTableGrants": 0
     },
     "archiveAttestationPresent": true,
     "archiveAttestationPath": "data/drx-batch2-archive-attestation-v1.json",
     "archiveAttestationContract": "CI-only: scripts/build-drx-batch2-archive-attestation.js refuses to write outside GitHub Actions, and a local dry run marks itself non-authoritative so the gate rejects it. The attestation carries source identity, raw sha256 and section 4.1/4.2 sha256 only - never document text.",
     "archiveAttestationRunId": 33278751413,
-    "archiveAttestationRowsDigest": "b3a5920ea1e1890c0926ccf43fcf82ecee3a12968d31c1d834cc68319f48df56"
+    "archiveAttestationRowsDigest": "b3a5920ea1e1890c0926ccf43fcf82ecee3a12968d31c1d834cc68319f48df56",
+    "phase1StrictPlan": {
+      "status": "IMPLEMENTED_LIVE_VERIFIED_BACKUP_RESTORE_GATE_PENDING",
+      "phaseStartMainSha": "95fabc131ebef30b7a7714e9e9c1642cb5e5ce6c",
+      "liveMigrations": 84,
+      "repoMigrationsTarget": 84,
+      "sourceSnapshots": 100,
+      "sourceSections": 575,
+      "products": 0,
+      "rules": 0,
+      "bindings": 0,
+      "publishedRules": 0,
+      "rpcPermissionConflictResolved": true,
+      "clientWriteGrantLeaks": 0,
+      "publicationAllowed": false,
+      "drxStageDecision": "KEEP_RLS_OFF_INTERNAL_SCHEMA; revoke client schema usage/object/default privileges",
+      "backupRestoreTest": "WORKFLOW_CONFIGURED_PENDING_RUN",
+      "googleCryptographicHash": "COMPLETE_4_OF_4_SHA256",
+      "googleSnapshotGate": "PASS",
+      "backupRestoreWorkflow": ".github/workflows/drx-phase1-backup-restore.yml",
+      "backupPayloadPolicy": "RUNNER_EPHEMERAL_ONLY_NO_DATABASE_PAYLOAD_UPLOADED"
+    }
   },
   "sourceNetworkBlocker": {
-    "active": true,
+    "active": false,
     "system": "Session egress network policy (agent proxy)",
     "symptom": "2026-08-29T12:19Z: CONNECT to the regulatory SmPC hosts is refused with HTTP 403 (policy denial) by the egress gateway, so no real archive artifact can be fetched in this environment.",
     "deniedHosts": [
@@ -860,12 +895,11 @@
       "ftuchtmolddhhsdcwnqe.supabase.co:443"
     ],
     "allowedReference": "api.github.com returns HTTP 200 through the same proxy, so this is per-host policy rather than a broken proxy.",
-    "blocks": [
-      "batch2_source_sections_not_persisted",
-      "batch2_normalization_not_ready"
-    ],
+    "blocks": [],
     "rule": "Do not fabricate archive artifacts or section text. GitHub Actions verified 25/25 raw and section hashes and 25 provenance snapshots are live; normalization/import stay blocked until exact SmPC sections are persisted and hash-matched.",
     "operatorCheck": "Allow the EMA/eMC/AEMPS hosts in the environment network policy (or run the archive workflow from an environment that already permits them), then rerun the archive workflow and verifier.",
-    "ciExemption": "GitHub Actions run 33251672706 fetched and hash-verified 25/25 sources. The 25 source snapshots are now materialized in V3; workspace egress remains denied and release is blocked on section persistence rather than source-fetch completeness."
+    "ciExemption": "GitHub Actions run 33251672706 fetched and hash-verified 25/25 sources. The 25 source snapshots are now materialized in V3; workspace egress remains denied and release is blocked on section persistence rather than source-fetch completeness.",
+    "resolvedAt": "2026-08-30T12:36:00.000Z",
+    "resolution": "Live V3 now contains 100 provenance snapshots and 575 sections; source-section persistence is no longer a release blocker."
   }
 }

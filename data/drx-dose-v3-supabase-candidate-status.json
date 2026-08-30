@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-v3-supabase-candidate-status-v1",
-  "updatedAt": "2026-08-29T14:55:00.000Z",
+  "updatedAt": "2026-08-30T12:36:00.000Z",
   "projectId": "ftuchtmolddhhsdcwnqe",
   "projectHealth": "ACTIVE_HEALTHY",
   "postgresVersion": "17.6.1.155",
@@ -8,19 +8,19 @@
   "applied": true,
   "reasonNotApplied": null,
   "databaseGatewayEvidence": {
-    "observedAt": "2026-08-29T14:55:00.000Z",
+    "observedAt": "2026-08-30T12:36:00.000Z",
     "projectHealth": "ACTIVE_HEALTHY",
     "postgresLogErrorAt": "2026-08-29T00:56:31.371Z",
     "postgresLogError": "could not write to file base/pgsql_tmp/pgsql_tmp997809.0: No space left on device",
     "laterMigrationStatementObservedAt": "2026-08-29T01:19:24.217Z",
-    "listMigrations": "SUCCESS_80_MIGRATIONS",
+    "listMigrations": "SUCCESS_84_MIGRATIONS",
     "ddlAttemptedByThisRun": true,
     "migrationAppliedByThisRun": true,
     "sqlProbe": "SUCCESS_SELECT_1",
     "latestReadablePostgresLogAt": "2026-08-29T01:23:42.811Z",
     "latestReadablePostgresLogSummary": "historical checkpoint evidence retained; SQL/MCP gateway is now live and verified",
     "retryStoppedAfterReadOnlyFailures": false,
-    "latestMigration": "20260829145424_drx_v3_cover_foreign_keys"
+    "latestMigration": "20260830123219_drx_phase1_rpc_metadata_and_stage_hardening"
   },
   "legacyTablesModified": false,
   "tableCount": 12,
@@ -37,8 +37,6 @@
       "dose_rule_products_v3"
     ],
     "serviceOnlyTables": [
-      "dose_source_snapshots_v3",
-      "dose_source_sections_v3",
       "dose_indication_terms_v3",
       "dose_legacy_comparisons_v3",
       "dose_publication_events_v3"
@@ -70,7 +68,18 @@
     "runtimeAdjustmentProvenanceRevalidation": true,
     "adjustmentRequiredPublicationGate": true,
     "adjustmentRequiredRuntimeGate": true,
-    "adjustmentRlsProvenanceRevalidation": true
+    "adjustmentRlsProvenanceRevalidation": true,
+    "metadataProjectionOnlyTables": [
+      "dose_source_snapshots_v3",
+      "dose_source_sections_v3"
+    ],
+    "sectionTextClientReadable": false,
+    "extractedJsonClientReadable": false,
+    "rpcRoleTests": {
+      "anon": "PASS_NULL_FAIL_CLOSED",
+      "authenticated": "PASS_NULL_FAIL_CLOSED",
+      "preFix": "42501_PERMISSION_DENIED_ON_dose_source_snapshots_v3"
+    }
   },
   "applyGate": [
     "Supabase changelog/docs reviewed for relevant breaking changes",
@@ -107,7 +116,7 @@
   "publicationAllowed": false,
   "selfContainedV3ProductShell": true,
   "v2ProductShellDependency": false,
-  "candidateGitBlobSha": "c9e61d3dc0c802d120ccda4d9afe060ffea2a461",
+  "candidateGitBlobSha": "273fa8dd2d664491a34d9b9c51abee3c0f19486e",
   "repositoryStaticAudit": {
     "candidateSelfContained": true,
     "additiveOnly": true,
@@ -130,7 +139,10 @@
     "runtimeAdjustmentProvenanceRevalidation": true,
     "adjustmentRequiredPublicationGate": true,
     "adjustmentRequiredRuntimeGate": true,
-    "adjustmentRlsProvenanceRevalidation": true
+    "adjustmentRlsProvenanceRevalidation": true,
+    "metadataOnlyProvenanceProjection": true,
+    "sectionTextClientReadable": false,
+    "extractedJsonClientReadable": false
   },
   "rollback": {
     "prepared": true,
@@ -181,26 +193,28 @@
     ]
   },
   "liveVerification": {
-    "verifiedAt": "2026-08-29T14:55:00.000Z",
-    "migrationCount": 80,
-    "latestMigration": "20260829145424_drx_v3_cover_foreign_keys",
+    "verifiedAt": "2026-08-30T12:36:00.000Z",
+    "migrationCount": 84,
+    "latestMigration": "20260830123219_drx_phase1_rpc_metadata_and_stage_hardening",
     "v3SchemaMigration": "20260829131545_drx_dose_v3_additive_shadow_schema",
     "publicTables": 63,
     "rlsEnabledTables": 63,
     "v3Tables": 12,
     "v3RlsEnabledTables": 12,
-    "v3Policies": 6,
+    "v3Policies": 8,
     "v3Triggers": 4,
     "clientWriteGrants": 0,
     "securityAdvisorErrors": 0,
-    "sourceSnapshots": 25,
-    "sourceSections": 0,
+    "sourceSnapshots": 100,
+    "sourceSections": 575,
     "products": 0,
     "rules": 0,
     "publishedRules": 0,
     "fastPathUnknownProductReturnsNull": true,
     "foreignKeyAdvisorFindingsClosed": 7,
-    "publicationAllowed": false
+    "publicationAllowed": false,
+    "sectionTextClientReadable": false,
+    "extractedJsonClientReadable": false
   },
   "preflightDefectFixed": {
     "fixedAt": "2026-08-29T13:10:00.000Z",

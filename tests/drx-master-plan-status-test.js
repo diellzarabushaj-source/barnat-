@@ -91,13 +91,13 @@ assert.ok(new Date(outage.lastEdgeLog) > new Date(outage.lastDatabasePlaneLog),
 // Batch 2 archive work is blocked by egress policy, not by missing repo code.
 // This gate exists so nobody "fixes" the hash gap with hand-authored artifacts.
 const network = tracker.sourceNetworkBlocker;
-assert.equal(network.active, true);
+assert.equal(network.active, false);
 assert.ok(network.deniedHosts.includes('www.ema.europa.eu:443'));
 assert.ok(network.deniedHosts.includes('www.medicines.org.uk:443'));
 assert.ok(network.deniedHosts.includes('cima.aemps.es:443'));
 assert.match(network.rule, /Do not fabricate/);
-assert.ok(network.blocks.includes('batch2_source_sections_not_persisted'));
-assert.equal(tracker.currentExecution.archiveBlockedByNetworkPolicy, true);
+assert.ok(!network.blocks.includes('batch2_source_sections_not_persisted'));
+assert.equal(tracker.currentExecution.archiveBlockedByNetworkPolicy, false);
 // A real archive run has been observed in CI, where egress is permitted.
 // CI attestation and live V3 snapshot rows now materialize the 25 raw hashes.
 assert.equal(tracker.currentExecution.archiveWorkflowRunObserved, true);
@@ -111,7 +111,7 @@ assert.equal(ciEvidence.verification.sectionHashVerifiedCount, 25);
 assert.equal(ciEvidence.verification.publicationAllowed, false);
 assert.ok(ciEvidence.runUrl.startsWith('https://github.com/'));
 assert.match(tracker.sourceNetworkBlocker.ciExemption, /hash-verified 25\/25 sources/);
-assert.ok(tracker.currentExecution.releaseBlockers.includes('batch2_source_sections_not_persisted'));
+assert.ok(!tracker.currentExecution.releaseBlockers.includes('batch2_source_sections_not_persisted'));
 
 assert.equal(tracker.currentExecution.activeCriticalPhase, 15);
 assert.equal(tracker.currentExecution.repositoryImplementationThroughPhase, 32);
@@ -141,10 +141,10 @@ for (const [check, result] of Object.entries(v3.failClosedSmoke)) {
 assert.equal(v3.v2Untouched.drugs, 4015);
 assert.equal(v3.v2Untouched.dosageRegimens, 8104);
 assert.equal(v3.contentAfterApply.publishedRules, 0, 'applying schema must publish nothing.');
-assert.equal(v3.contentAfterApply.snapshots, 25);
-assert.equal(v3.contentAfterApply.sections, 0);
-assert.equal(v3.liveMigrationCount, 80);
-assert.equal(v3.repositoryMigrationCount, 80);
+assert.equal(v3.contentAfterApply.snapshots, 100);
+assert.equal(v3.contentAfterApply.sections, 575);
+assert.equal(v3.liveMigrationCount, 84);
+assert.equal(v3.repositoryMigrationCount, 84);
 assert.ok(!tracker.currentExecution.releaseBlockers.includes('supabase_v3_not_applied'));
 assert.equal(tracker.currentExecution.releaseReady, false);
 assert.equal(tracker.currentExecution.first100ProductionDiscoveryAllowed, false);

@@ -9,9 +9,11 @@ const ROOT = path.resolve(__dirname, '..');
 const sql = fs.readFileSync(path.join(ROOT, 'supabase/drx-dose-v3-additive-candidate.sql'), 'utf8');
 const status = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/drx-dose-v3-supabase-candidate-status.json'), 'utf8'));
 const proposal = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/drx-dose-v3-schema-proposal.json'), 'utf8'));
+const migrationHistory = JSON.parse(fs.readFileSync(path.join(ROOT, 'supabase/migration-history.json'), 'utf8'));
 
 function gitBlobSha(content) {
-  const body = Buffer.from(content, 'utf8');
+  const normalized = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const body = Buffer.from(normalized, 'utf8');
   const header = Buffer.from('blob ' + body.length + '\0', 'utf8');
   return crypto.createHash('sha1').update(header).update(body).digest('hex');
 }
@@ -24,7 +26,7 @@ const proposalTables = proposal.tables.map(table => table.name);
 
 assert.equal(status.applied, true);
 assert.equal(status.publicationAllowed, false);
-assert.equal(status.databaseGatewayEvidence.listMigrations, 'SUCCESS_80_MIGRATIONS');
+assert.equal(status.databaseGatewayEvidence.listMigrations, `SUCCESS_${migrationHistory.migrations.length}_MIGRATIONS`);
 assert.equal(status.databaseGatewayEvidence.ddlAttemptedByThisRun, true);
 assert.equal(status.databaseGatewayEvidence.migrationAppliedByThisRun, true);
 assert.match(status.databaseGatewayEvidence.postgresLogError, /No space left on device/);
@@ -42,8 +44,8 @@ assert.equal(status.repositoryStaticAudit.status, 'LIVE_APPLIED_ADDITIVE_SHADOW_
 assert.equal(status.liveVerification.v3Tables, 12);
 assert.equal(status.liveVerification.v3RlsEnabledTables, 12);
 assert.equal(status.liveVerification.clientWriteGrants, 0);
-assert.equal(status.liveVerification.sourceSnapshots, 25);
-assert.equal(status.liveVerification.sourceSections, 0);
+assert.equal(status.liveVerification.sourceSnapshots, 100);
+assert.equal(status.liveVerification.sourceSections, 575);
 assert.equal(status.liveVerification.publishedRules, 0);
 assert.equal(status.security.tablePublicRoleRevoked, true);
 assert.equal(status.security.productPublicationTrigger, true);
@@ -77,13 +79,21 @@ const publishedRead = proposal.tables
   .sort();
 assert.deepEqual([...status.security.publishedReadOnlyTables].sort(), publishedRead);
 
+const metadataOnly = status.security.metadataProjectionOnlyTables.sort();
+assert.deepEqual(
+  metadataOnly,
+  proposal.tables.filter(table => table.exposure === 'rpc_metadata_only').map(table => table.name).sort()
+);
+assert.equal(status.security.sectionTextClientReadable, false);
+assert.equal(status.security.extractedJsonClientReadable, false);
+
 const nonClient = [
   ...status.security.serviceOnlyTables,
   ...status.security.adminOnlyTables,
 ].sort();
 assert.deepEqual(
   nonClient,
-  proposal.tables.filter(table => table.exposure !== 'published_read_only').map(table => table.name).sort()
+  proposal.tables.filter(table => ['service_only','admin_only'].includes(table.exposure)).map(table => table.name).sort()
 );
 
 assert.doesNotMatch(sql, /\bsecurity\s+definer\b/i);

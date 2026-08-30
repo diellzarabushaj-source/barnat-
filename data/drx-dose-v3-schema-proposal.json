@@ -26,7 +26,7 @@
       "primaryKey": [
         "snapshot_id"
       ],
-      "exposure": "service_only",
+      "exposure": "rpc_metadata_only",
       "rls": true,
       "columns": {
         "snapshot_id": "sha256 text",
@@ -40,7 +40,26 @@
         "fetched_at": "timestamptz",
         "raw_sha256": "sha256 text unique",
         "archive_locator": "text"
-      }
+      },
+      "clientProjection": [
+        "snapshot_id",
+        "source_key",
+        "source_tier",
+        "document_version",
+        "document_date"
+      ],
+      "clientExcludedColumns": [
+        "source_url",
+        "final_url",
+        "authority",
+        "fetched_at",
+        "raw_sha256",
+        "etag",
+        "last_modified",
+        "parser_version",
+        "archive_locator",
+        "created_at"
+      ]
     },
     {
       "name": "dose_source_sections_v3",
@@ -52,7 +71,7 @@
       "foreignKeys": {
         "snapshot_id": "dose_source_snapshots_v3.snapshot_id"
       },
-      "exposure": "service_only",
+      "exposure": "rpc_metadata_only",
       "rls": true,
       "columns": {
         "snapshot_id": "text",
@@ -62,7 +81,17 @@
         "extracted_json": "jsonb",
         "parser_version": "text",
         "extraction_status": "text"
-      }
+      },
+      "clientProjection": [
+        "snapshot_id",
+        "section_code",
+        "section_sha256",
+        "extraction_status"
+      ],
+      "clientExcludedColumns": [
+        "section_text",
+        "extracted_json"
+      ]
     },
     {
       "name": "dose_indication_concepts_v3",

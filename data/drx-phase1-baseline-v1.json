@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "drx-phase1-baseline-v1",
+  "capturedAt": "2026-08-30T12:36:00.000Z",
+  "phaseStartMainSha": "95fabc131ebef30b7a7714e9e9c1642cb5e5ce6c",
+  "supabase": {
+    "projectRef": "ftuchtmolddhhsdcwnqe",
+    "projectHealth": "ACTIVE_HEALTHY",
+    "prePhase1": {
+      "liveMigrationCount": 83,
+      "repositoryMigrationCount": 83,
+      "versionDrift": {
+        "repository": "20260829222500_drx_v3_snapshot_insert_grant",
+        "live": "20260829222409_drx_v3_snapshot_insert_grant"
+      },
+      "sourceSnapshots": 100,
+      "sourceSections": 575,
+      "products": 0,
+      "rules": 0,
+      "bindings": 0,
+      "publishedRules": 0,
+      "rpcRoleProbe": {
+        "anon": "42501 permission denied for table dose_source_snapshots_v3",
+        "authenticated": "42501 permission denied for table dose_source_snapshots_v3"
+      },
+      "drxStage": {
+        "rlsEnabled": false,
+        "clientSchemaUsage": false,
+        "clientTableGrants": 0
+      }
+    },
+    "postPhase1": {
+      "migrationCount": 84,
+      "latestMigration": "20260830123219_drx_phase1_rpc_metadata_and_stage_hardening",
+      "v3Policies": 8,
+      "sourceSnapshots": 100,
+      "sourceSections": 575,
+      "products": 0,
+      "rules": 0,
+      "bindings": 0,
+      "publishedRules": 0,
+      "rpcRoleProbe": {
+        "anon": "NULL fail-closed",
+        "authenticated": "NULL fail-closed"
+      },
+      "sectionTextClientReadable": false,
+      "extractedJsonClientReadable": false,
+      "clientWriteGrantLeaks": 0,
+      "drxStage": {
+        "rlsEnabled": false,
+        "clientSchemaUsage": false,
+        "clientTableGrants": 0
+      }
+    },
+    "dataFingerprintsSha256": {
+      "drugs": {
+        "rows": 4015,
+        "sha256": "625baf7c9ae708a43ce535176ec69a38eb0c12e621643f55caa590e571d50549"
+      },
+      "dosageRegimens": {
+        "rows": 8104,
+        "sha256": "a24cf213c000f3a67088bab605f87922814c492de7bcaf2d041a2e84f919b319"
+      },
+      "stageProductRegistry": {
+        "rows": 4015,
+        "sha256": "7f1993fc5e739cd2a438d93ac8f646ec828e3ace3ad8fe9c9c0a38a0303419ec"
+      },
+      "stageVariantMaster": {
+        "rows": 2674,
+        "sha256": "6a54828c415b2de387d281f36f89c2e1672911c697c90f14140dd418e66363c7"
+      },
+      "stageSubstanceMaster": {
+        "rows": 1351,
+        "sha256": "8a34a8891798689f9d282109eefdbca442e7ce935e25f670db3e547a7cd79031"
+      }
+    },
+    "catalogPostPhase1": {
+      "counts": {
+        "columns": 1948,
+        "indexes": 198,
+        "policies": 74,
+        "triggers": 31,
+        "functions": 35,
+        "constraints": 389,
+        "tableGrants": 1890
+      },
+      "sha256": {
+        "columns": "2374642018cb89b5d0fc3326e11706bb6872c3b0fad4d7b6feda7b34c1737497",
+        "indexes": "70aaaf735f5a0379109ae90dda87a5fd5e69d7277bdcbcdf6f30d0d5952771d7",
+        "policies": "47427c93b2f00f84ed808fae61d9c680a4c55b35eb3c5af4bef08f5565f32042",
+        "triggers": "36231cf6df9496c19b0d3458c5649767e18a611c78e5087da6ea5779d0b20bd3",
+        "functions": "c5876018ebd002873c596607df66cadc008aed1b5228a548948df1bd151a703f",
+        "constraints": "a98563ebb468a21d16a0c3d51f5216b61edbea3e7d024572eaa5fba668f601b1",
+        "tableGrants": "7c552fd7892458e5a80098195c7b95bfa3d479da5b4478341576670e37a54574"
+      }
+    },
+    "securityAdvisors": {
+      "phase1P0P1Findings": 0,
+      "documentedExistingFindings": [
+        "INFO rls_enabled_no_policy on intentionally deny-all server-only tables",
+        "WARN auth_leaked_password_protection is disabled; global Auth setting is outside this DRx migration and remains documented for operator action"
+      ]
+    }
+  },
+  "googleSourceSnapshots": [
+    {
+      "title": "Regjistri-i-Barnave-me-Klase-dhe-Perdorime.xlsx",
+      "fileId": "1SY2rb2Eqo3fVkRhgQ8ltJHCRrWyAUDvd",
+      "revisionId": "0B5mtWRs7hlvBcTc0OENXb1d4dXJuYzA3bDZrbHBHOC9hbnhJPQ",
+      "modifiedAt": "2026-08-13T18:14:11.273Z",
+      "sizeBytes": 708528,
+      "sha256": "a1085166eeeb2fe180a1a6e5a3aa0c6da1116083c4c0215198d5edfadb684ea9",
+      "hashKind": "sha256_raw_xlsx_bytes",
+      "snapshotBytes": 708528
+    },
+    {
+      "title": "MedIndex — Dozologjia, Format dhe Auto-fill",
+      "fileId": "1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo",
+      "revisionId": "75937",
+      "modifiedAt": "2026-08-30T12:26:04.698Z",
+      "exportedXlsxSizeBytes": 6154545,
+      "sha256": "f150aaf69e2335b3285a0be22699a3bafd4f04e8e7bb59892b940fb659be5c9f",
+      "hashKind": "sha256_exported_xlsx_bytes",
+      "snapshotBytes": 6166411
+    },
+    {
+      "title": "ICD-10 – Kodet kryesore për Mjekësi Familjare dhe Urgjencë",
+      "fileId": "19ncbnrTJ_w-WQ0msWO9_dUoxjmicSUAz6Nt4sh20gFw",
+      "revisionId": "1",
+      "modifiedAt": "2026-07-23T17:41:08.572Z",
+      "sha256": "504ed07bb5d8c12add5955d8ee731c8301cf013a20977fe621111fe92d792253",
+      "hashKind": "sha256_exported_xlsx_bytes",
+      "snapshotBytes": 226079
+    },
+    {
+      "title": "Analizat laboratorike – emërtimet dhe interpretimi",
+      "fileId": "1sGEWsDYnVE1VThLUpfSs2Q0UIjXZZRzxXTHXDvn7p8I",
+      "revisionId": "9",
+      "modifiedAt": "2026-07-23T16:09:05.203Z",
+      "sha256": "0e3dedb5b0ac80875916e13be90a8f01be117b93876b61f1e6593370f863f1e2",
+      "hashKind": "sha256_exported_xlsx_bytes",
+      "snapshotBytes": 23114
+    }
+  ],
+  "backupAndRestore": {
+    "logicalFingerprintCaptured": true,
+    "migrationHistoryCaptured": true,
+    "sourceRevisionSnapshotsCaptured": true,
+    "fullPhysicalDataBackupExported": false,
+    "restoreTestExecuted": false,
+    "gateStatus": "WORKFLOW_CONFIGURED_PENDING_RUN",
+    "reason": "Workflow creates roles/schema/data/migration-history dumps in runner temp, restores application schema/data into a disposable local Supabase target, verifies critical row counts, uploads evidence JSON only, and discards database payload.",
+    "workflow": ".github/workflows/drx-phase1-backup-restore.yml",
+    "workflowConfigured": true,
+    "restoreTarget": "disposable local Supabase on GitHub Actions runner",
+    "databasePayloadUploaded": false
+  },
+  "publicationAllowed": false,
+  "googleSnapshotGate": {
+    "status": "PASS",
+    "capturedAt": "2026-08-30T12:57:00.000Z",
+    "algorithm": "SHA-256",
+    "note": "Hashes identify the exact raw XLSX or exported XLSX bytes captured at the recorded Drive revision/current snapshot. Native Google Sheets export bytes are snapshot artifacts, not a canonical serialization guarantee."
+  }
+}

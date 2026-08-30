@@ -9,11 +9,15 @@ on:
       - "dose-core.js"
       - "lib/dose-*.js"
       - "registry-dose-calculator.js"
+      - "api/*dosage*.js"
+      - "api/**/*dosage*.js"
       - "data/drx-*.json"
       - "scripts/audit-drx-*.js"
       - "scripts/build-drx-*.js"
       - "scripts/sql/drx-*.sql"
       - "supabase/drx-dose-v3-additive-candidate.sql"
+      - "supabase/*.sql"
+      - "supabase/**/*.sql"
       - "tests/drx-*.js"
       - "package.json"
       - ".github/workflows/drx-safety-gate.yml"
@@ -22,11 +26,15 @@ on:
       - "dose-core.js"
       - "lib/dose-*.js"
       - "registry-dose-calculator.js"
+      - "api/*dosage*.js"
+      - "api/**/*dosage*.js"
       - "data/drx-*.json"
       - "scripts/audit-drx-*.js"
       - "scripts/build-drx-*.js"
       - "scripts/sql/drx-*.sql"
       - "supabase/drx-dose-v3-additive-candidate.sql"
+      - "supabase/*.sql"
+      - "supabase/**/*.sql"
       - "tests/drx-*.js"
       - "package.json"
 
@@ -61,6 +69,8 @@ jobs:
         run: |
           node --check dose-core.js
           node --check registry-dose-calculator.js
+          node --check api/dosage.js
+          node --check api/prescription-dosage-context.js
           node --check lib/dose-adjustment-engine.js
           node --check lib/dose-publication-gate.js
           node --check lib/dose-v3-product-reader.js

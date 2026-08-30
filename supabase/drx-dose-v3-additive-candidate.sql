@@ -997,6 +997,46 @@ grant select on table public.dose_renal_adjustments_v3 to anon, authenticated;
 grant select on table public.dose_hepatic_adjustments_v3 to anon, authenticated;
 grant select on table public.dose_rule_products_v3 to anon, authenticated;
 
+-- Metadata-only provenance projection required by the SECURITY INVOKER RPC.
+-- Raw SmPC text and extracted JSON are deliberately not granted.
+grant select (
+  snapshot_id,
+  source_key,
+  source_tier,
+  document_version,
+  document_date
+) on public.dose_source_snapshots_v3 to anon, authenticated;
+
+grant select (
+  snapshot_id,
+  section_code,
+  section_sha256,
+  extraction_status
+) on public.dose_source_sections_v3 to anon, authenticated;
+
+drop policy if exists dose_source_snapshots_v3_rpc_metadata_read
+  on public.dose_source_snapshots_v3;
+create policy dose_source_snapshots_v3_rpc_metadata_read
+  on public.dose_source_snapshots_v3
+  for select to anon, authenticated
+  using (source_tier in ('EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM'));
+
+drop policy if exists dose_source_sections_v3_rpc_metadata_read
+  on public.dose_source_sections_v3;
+create policy dose_source_sections_v3_rpc_metadata_read
+  on public.dose_source_sections_v3
+  for select to anon, authenticated
+  using (
+    section_code = '4.2'
+    and extraction_status = 'extracted'
+    and exists (
+      select 1
+      from public.dose_source_snapshots_v3 s
+      where s.snapshot_id = dose_source_sections_v3.snapshot_id
+        and s.source_tier in ('EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM')
+    )
+  );
+
 drop policy if exists dose_indication_concepts_v3_published_read
   on public.dose_indication_concepts_v3;
 create policy dose_indication_concepts_v3_published_read

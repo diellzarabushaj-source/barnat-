@@ -331,8 +331,12 @@
       "name": "drx_v3_allow_composition_section"
     },
     {
-      "version": "20260829222500",
+      "version": "20260829222409",
       "name": "drx_v3_snapshot_insert_grant"
+    },
+    {
+      "version": "20260830123219",
+      "name": "drx_phase1_rpc_metadata_and_stage_hardening"
     }
   ]
 }

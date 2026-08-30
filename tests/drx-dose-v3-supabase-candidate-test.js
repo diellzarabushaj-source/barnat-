@@ -71,6 +71,14 @@ assert.match(sql,/grant select on table public\.dose_rule_products_v3 to anon, a
 assert.doesNotMatch(sql,/grant\s+(?:insert|update|delete|truncate|references|trigger|all(?:\s+privileges)?)\b[\s\S]*?\bto\s+(?:anon|authenticated)\b/i);
 assert.doesNotMatch(sql,/create\s+policy[\s\S]*?for\s+(?:insert|update|delete|all)\s+to\s+(?:anon|authenticated)\b/i);
 
+// SECURITY INVOKER RPC gets metadata-only provenance access; raw SmPC content stays denied.
+assert.match(sql,/grant select \(\s*snapshot_id,\s*source_key,\s*source_tier,\s*document_version,\s*document_date\s*\) on public\.dose_source_snapshots_v3 to anon, authenticated/s);
+assert.match(sql,/grant select \(\s*snapshot_id,\s*section_code,\s*section_sha256,\s*extraction_status\s*\) on public\.dose_source_sections_v3 to anon, authenticated/s);
+assert.match(sql,/create policy dose_source_snapshots_v3_rpc_metadata_read/);
+assert.match(sql,/create policy dose_source_sections_v3_rpc_metadata_read/);
+assert.doesNotMatch(sql,/grant select \([^)]*section_text[^)]*\) on public\.dose_source_sections_v3/i);
+assert.doesNotMatch(sql,/grant select \([^)]*extracted_json[^)]*\) on public\.dose_source_sections_v3/i);
+
 // Published provenance must be mutation-locked.
 assert.match(sql,/create or replace function private\.drx_lock_source_snapshot_v3\(\)/);
 assert.match(sql,/create or replace function private\.drx_lock_source_section_v3\(\)/);

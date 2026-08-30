@@ -1,0 +1,178 @@
+name: DRx Phase 1 Backup Restore Gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/drx-phase1-backup-restore.yml"
+      - "data/drx-phase1-baseline-v1.json"
+      - "tests/drx-phase1-backup-workflow-test.js"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: drx-phase1-backup-restore-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backup-restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      SOURCE_POSTGRES_VERSION: "17.6.1.155"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check backup credential availability
+        id: credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "${SUPABASE_DB_URL:-}" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::SUPABASE_DB_URL is not configured; backup/restore gate remains fail-closed."
+          fi
+
+      - name: Write blocked evidence
+        if: steps.credential.outputs.available != 'true'
+        shell: bash
+        run: |
+          cat > drx-phase1-backup-restore-evidence.json <<'JSON'
+          {
+            "schemaVersion": "drx-phase1-backup-restore-evidence-v1",
+            "status": "BLOCKED_MISSING_SUPABASE_DB_URL",
+            "backupCreated": false,
+            "restoreExecuted": false,
+            "restoreVerified": false,
+            "publicationAllowed": false
+          }
+          JSON
+
+      - name: Setup Supabase CLI
+        if: steps.credential.outputs.available == 'true'
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.116.0
+
+      - name: Create logical backup set
+        if: steps.credential.outputs.available == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          BACKUP_DIR="$RUNNER_TEMP/drx-phase1-backup"
+          mkdir -p "$BACKUP_DIR"
+
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/roles.sql" --role-only
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/schema.sql"
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/data.sql" --use-copy --data-only \
+            -x "storage.buckets_vectors" -x "storage.vector_indexes"
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/history_schema.sql" --schema supabase_migrations
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/history_data.sql" --use-copy --data-only --schema supabase_migrations
+
+          test -s "$BACKUP_DIR/roles.sql"
+          test -s "$BACKUP_DIR/schema.sql"
+          test -s "$BACKUP_DIR/data.sql"
+          test -s "$BACKUP_DIR/history_schema.sql"
+          test -s "$BACKUP_DIR/history_data.sql"
+
+          sha256sum "$BACKUP_DIR"/*.sql > "$BACKUP_DIR/sha256.txt"
+
+      - name: Restore into disposable local Supabase
+        if: steps.credential.outputs.available == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          BACKUP_DIR="$RUNNER_TEMP/drx-phase1-backup"
+          RESTORE_DIR="$RUNNER_TEMP/drx-phase1-restore"
+          mkdir -p "$RESTORE_DIR"
+          cd "$RESTORE_DIR"
+
+          supabase init
+          mkdir -p supabase/.temp
+          printf '%s\n' "$SOURCE_POSTGRES_VERSION" > supabase/.temp/postgres-version
+          supabase start
+
+          DB_URL='postgresql://postgres:postgres@127.0.0.1:54322/postgres'
+
+          # Platform roles are provisioned by the local Supabase stack. The
+          # role dump remains part of the backup set and is hashed, while
+          # application schema/data are replayed into this isolated target.
+          psql "$DB_URL" --set ON_ERROR_STOP=1 --file "$BACKUP_DIR/schema.sql"
+          psql "$DB_URL" --set ON_ERROR_STOP=1 \
+            --command 'SET session_replication_role = replica' \
+            --file "$BACKUP_DIR/data.sql"
+
+          psql "$DB_URL" --set ON_ERROR_STOP=1 --tuples-only --no-align <<'SQL' > "$RUNNER_TEMP/drx-restore-counts.txt"
+          select 'drugs=' || count(*) from public.drugs;
+          select 'dosage_regimens=' || count(*) from public.dosage_regimens;
+          select 'stage_product_registry=' || count(*) from drx_stage.product_registry_v1;
+          select 'stage_variant_master=' || count(*) from drx_stage.variant_master_v1;
+          select 'stage_substance_master=' || count(*) from drx_stage.substance_master_v1;
+          select 'source_snapshots=' || count(*) from public.dose_source_snapshots_v3;
+          select 'source_sections=' || count(*) from public.dose_source_sections_v3;
+          select 'v3_products=' || count(*) from public.dose_products_v3;
+          select 'v3_rules=' || count(*) from public.dose_rules_v3;
+          select 'v3_bindings=' || count(*) from public.dose_rule_products_v3;
+          select 'published_rules=' || count(*) from public.dose_rules_v3 where editorial_status='published';
+          SQL
+
+          grep -qx 'drugs=4015' "$RUNNER_TEMP/drx-restore-counts.txt"
+          grep -qx 'dosage_regimens=8104' "$RUNNER_TEMP/drx-restore-counts.txt"
+          grep -qx 'stage_product_registry=4015' "$RUNNER_TEMP/drx-restore-counts.txt"
+          grep -qx 'stage_variant_master=2674' "$RUNNER_TEMP/drx-restore-counts.txt"
+          grep -qx 'stage_substance_master=1351' "$RUNNER_TEMP/drx-restore-counts.txt"
+          grep -qx 'source_snapshots=100' "$RUNNER_TEMP/drx-restore-counts.txt"
+          grep -qx 'source_sections=575' "$RUNNER_TEMP/drx-restore-counts.txt"
+          grep -qx 'v3_products=0' "$RUNNER_TEMP/drx-restore-counts.txt"
+          grep -qx 'v3_rules=0' "$RUNNER_TEMP/drx-restore-counts.txt"
+          grep -qx 'v3_bindings=0' "$RUNNER_TEMP/drx-restore-counts.txt"
+          grep -qx 'published_rules=0' "$RUNNER_TEMP/drx-restore-counts.txt"
+
+          supabase stop --no-backup
+
+      - name: Write successful evidence
+        if: steps.credential.outputs.available == 'true' && success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          BACKUP_DIR="$RUNNER_TEMP/drx-phase1-backup"
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          hashes={}
+          for line in Path(__import__('os').environ['RUNNER_TEMP'] + '/drx-phase1-backup/sha256.txt').read_text().splitlines():
+              digest, filename=line.split(None,1)
+              hashes[Path(filename).name]=digest
+          counts={}
+          for line in Path(__import__('os').environ['RUNNER_TEMP'] + '/drx-restore-counts.txt').read_text().splitlines():
+              k,v=line.split('=',1)
+              counts[k]=int(v)
+          evidence={
+              "schemaVersion":"drx-phase1-backup-restore-evidence-v1",
+              "status":"PASS",
+              "backupCreated":True,
+              "backupSha256":hashes,
+              "restoreExecuted":True,
+              "restoreVerified":True,
+              "restoredCounts":counts,
+              "backupRetention":"runner_ephemeral_only_no_database_payload_uploaded",
+              "publicationAllowed":False
+          }
+          Path('drx-phase1-backup-restore-evidence.json').write_text(json.dumps(evidence,indent=2)+"\n")
+          PY
+
+      - name: Upload evidence only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-phase1-backup-restore-evidence
+          path: drx-phase1-backup-restore-evidence.json
+          if-no-files-found: error
+          retention-days: 30

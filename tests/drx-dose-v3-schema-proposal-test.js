@@ -48,7 +48,9 @@ for (const column of [
   assert.ok(Object.hasOwn(rules, column), 'dose_rules_v3 missing ' + column);
 }
 
-assert.equal(byName.get('dose_source_snapshots_v3').exposure, 'service_only');
+assert.equal(byName.get('dose_source_snapshots_v3').exposure, 'rpc_metadata_only');
+assert.equal(byName.get('dose_source_sections_v3').exposure, 'rpc_metadata_only');
+assert.deepEqual(byName.get('dose_source_sections_v3').clientExcludedColumns, ['section_text','extracted_json']);
 assert.equal(byName.get('dose_review_queue_v3').exposure, 'admin_only');
 assert.equal(byName.get('dose_products_v3').exposure, 'published_read_only');
 assert.equal(schema.compatibility.v3RuntimeIndependentOfDoseProductsV2, true);

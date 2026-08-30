@@ -1,0 +1,35 @@
+'use strict';
+
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const ROOT=path.resolve(__dirname,'..');
+const workflow=fs.readFileSync(path.join(ROOT,'.github/workflows/drx-phase1-backup-restore.yml'),'utf8');
+const baseline=require('../data/drx-phase1-baseline-v1.json');
+
+assert.match(workflow,/secrets\.SUPABASE_DB_URL/);
+assert.match(workflow,/supabase\/setup-cli@v1/);
+assert.match(workflow,/version: 2\.116\.0/);
+assert.match(workflow,/supabase db dump --db-url "\$SUPABASE_DB_URL"/);
+assert.match(workflow,/--role-only/);
+assert.match(workflow,/--use-copy --data-only/);
+assert.match(workflow,/--schema supabase_migrations/);
+assert.match(workflow,/supabase start/);
+assert.match(workflow,/postgresql:\/\/postgres:postgres@127\.0\.0\.1:54322\/postgres/);
+assert.match(workflow,/drugs=4015/);
+assert.match(workflow,/dosage_regimens=8104/);
+assert.match(workflow,/source_snapshots=100/);
+assert.match(workflow,/source_sections=575/);
+assert.match(workflow,/runner_ephemeral_only_no_database_payload_uploaded/);
+assert.doesNotMatch(workflow,/path:\s*[|>]?[\s\S]{0,120}(roles\.sql|schema\.sql|data\.sql)/);
+
+const sources=baseline.googleSourceSnapshots;
+assert.equal(sources.length,4);
+for(const source of sources){
+  assert.match(source.sha256,/^[0-9a-f]{64}$/);
+  assert.ok(source.hashKind);
+}
+assert.equal(baseline.googleSnapshotGate.status,'PASS');
+assert.equal(baseline.publicationAllowed,false);
+
+console.log('DRx Phase 1 backup/restore workflow and Google snapshot hash contract passed.');
