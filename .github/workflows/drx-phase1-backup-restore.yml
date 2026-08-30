@@ -24,39 +24,6 @@ jobs:
       SOURCE_POSTGRES_VERSION: "17.6.1.155"
       SUPABASE_PROJECT_REF: "ftuchtmolddhhsdcwnqe"
 
-      # Accept the existing repository secret without requiring a rename.
-      DB_URL_1: ${{ secrets.SUPABASE_DB_URL }}
-      DB_URL_2: ${{ secrets.MEDINDEX_SUPABASE_DB_URL }}
-      DB_URL_3: ${{ secrets.SUPABASE_DATABASE_URL }}
-      DB_URL_4: ${{ secrets.DATABASE_URL }}
-      DB_URL_5: ${{ secrets.POSTGRES_URL }}
-      DB_URL_6: ${{ secrets.POSTGRES_DATABASE_URL }}
-      DB_URL_7: ${{ secrets.SUPABASE_POSTGRES_URL }}
-      DB_URL_8: ${{ secrets.SUPABASE_CONNECTION_STRING }}
-      DB_URL_9: ${{ secrets.POSTGRES_CONNECTION_STRING }}
-      DB_URL_10: ${{ secrets.DB_URL }}
-      DB_URL_11: ${{ secrets.MEDINDEX_SUPABASE_URL }}
-      DB_URL_12: ${{ secrets.SUPABASE_URL }}
-      DB_URL_13: ${{ secrets.SUPABASE_DIRECT_URL }}
-      DB_URL_14: ${{ secrets.SUPABASE_POOLER_URL }}
-      DB_URL_15: ${{ secrets.SUPABASE_POOLER_CONNECTION_STRING }}
-      DB_URL_16: ${{ secrets.SUPABASE_DATABASE_CONNECTION_STRING }}
-      DB_URL_17: ${{ secrets.DATABASE_CONNECTION_STRING }}
-      DB_URL_18: ${{ secrets.POSTGRES_URL_NON_POOLING }}
-      DB_URL_19: ${{ secrets.POSTGRES_PRISMA_URL }}
-      DB_URL_20: ${{ secrets.POSTGRES_CONNECTION_URL }}
-
-      DB_PASSWORD_1: ${{ secrets.SUPABASE_DB_PASSWORD }}
-      DB_PASSWORD_2: ${{ secrets.MEDINDEX_SUPABASE_DB_PASSWORD }}
-      DB_PASSWORD_3: ${{ secrets.SUPABASE_DATABASE_PASSWORD }}
-      DB_PASSWORD_4: ${{ secrets.DATABASE_PASSWORD }}
-      DB_PASSWORD_5: ${{ secrets.POSTGRES_PASSWORD }}
-      DB_PASSWORD_6: ${{ secrets.DB_PASSWORD }}
-      DB_PASSWORD_7: ${{ secrets.SUPABASE_PASSWORD }}
-      DB_PASSWORD_8: ${{ secrets.MEDINDEX_SUPABASE_PASSWORD }}
-      DB_PASSWORD_9: ${{ secrets.POSTGRES_DB_PASSWORD }}
-      DB_PASSWORD_10: ${{ secrets.DATABASE_DB_PASSWORD }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -64,57 +31,85 @@ jobs:
       - name: Resolve backup credential safely
         id: credential
         shell: bash
+        env:
+          ALL_REPO_SECRETS: ${{ toJSON(secrets) }}
         run: |
           set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from urllib.parse import quote
 
-          resolved_url=""
-          resolved_source=""
+          secrets = json.loads(os.environ.get("ALL_REPO_SECRETS") or "{}")
+          project_ref = os.environ["SUPABASE_PROJECT_REF"]
 
-          for n in {1..20}; do
-            key="DB_URL_${n}"
-            value="${!key:-}"
-            case "$value" in
-              postgres://*|postgresql://*)
-                resolved_url="$value"
-                resolved_source="$key"
-                break
-                ;;
-              "")
-                ;;
-              *)
-                echo "::notice::A configured URL alias was ignored because it is not a PostgreSQL connection URL."
-                ;;
-            esac
-          done
+          resolved_url = None
+          resolved_name = None
+          resolved_kind = None
 
-          if [ -z "$resolved_url" ]; then
-            for n in {1..10}; do
-              key="DB_PASSWORD_${n}"
-              value="${!key:-}"
-              if [ -n "$value" ]; then
-                encoded_password="$(PASSWORD_VALUE="$value" python3 -c 'import os,urllib.parse; print(urllib.parse.quote(os.environ["PASSWORD_VALUE"], safe=""))')"
-                resolved_url="postgresql://postgres:${encoded_password}@db.${SUPABASE_PROJECT_REF}.supabase.co:5432/postgres?sslmode=require"
-                resolved_source="$key"
-                break
-              fi
-            done
-          fi
+          # Best case: any repository secret already contains a PostgreSQL URL.
+          for name, value in secrets.items():
+              if isinstance(value, str) and value.startswith(("postgres://", "postgresql://")):
+                  resolved_url = value
+                  resolved_name = name
+                  resolved_kind = "postgres_url"
+                  break
 
-          if [ -n "$resolved_url" ]; then
-            {
-              echo 'SUPABASE_DB_URL<<DRXEOF'
-              echo "$resolved_url"
-              echo 'DRXEOF'
-            } >> "$GITHUB_ENV"
-            echo "::add-mask::$resolved_url"
-            echo "available=true" >> "$GITHUB_OUTPUT"
-            echo "source=$resolved_source" >> "$GITHUB_OUTPUT"
-            echo "::notice::Database credential alias resolved successfully."
-          else
-            echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "source=none" >> "$GITHUB_OUTPUT"
-            echo "::notice::No supported database URL/password secret alias was found; backup/restore gate remains fail-closed."
-          fi
+          # Fallback: only accept a raw password when the secret name clearly
+          # identifies it as a database/Postgres/Supabase password. Never treat
+          # API secret/service-role keys as database passwords.
+          if not resolved_url:
+              for name, value in secrets.items():
+                  upper = name.upper()
+                  password_named = "PASSWORD" in upper
+                  db_named = (
+                      "SUPABASE" in upper
+                      or "POSTGRES" in upper
+                      or "DATABASE" in upper
+                      or upper.startswith("DB_")
+                      or upper.endswith("_DB")
+                  )
+                  forbidden = (
+                      "SERVICE_ROLE" in upper
+                      or "SECRET_KEY" in upper
+                      or "PUBLISHABLE" in upper
+                      or "ANON" in upper
+                      or "API_KEY" in upper
+                  )
+                  if value and password_named and db_named and not forbidden:
+                      encoded = quote(str(value), safe="")
+                      resolved_url = (
+                          f"postgresql://postgres:{encoded}@db.{project_ref}.supabase.co:5432/"
+                          "postgres?sslmode=require"
+                      )
+                      resolved_name = name
+                      resolved_kind = "database_password"
+                      break
+
+          output = Path(os.environ["GITHUB_OUTPUT"])
+          if resolved_url:
+              with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as fh:
+                  fh.write("SUPABASE_DB_URL<<DRXEOF\n")
+                  fh.write(resolved_url + "\n")
+                  fh.write("DRXEOF\n")
+              print(f"::add-mask::{resolved_url}")
+              with output.open("a", encoding="utf-8") as fh:
+                  fh.write("available=true\n")
+                  fh.write(f"kind={resolved_kind}\n")
+              print("::notice::A compatible database credential was resolved from existing repository secrets.")
+          else:
+              with output.open("a", encoding="utf-8") as fh:
+                  fh.write("available=false\n")
+                  fh.write("kind=none\n")
+              candidate_names = sorted(
+                  name for name in secrets
+                  if any(token in name.upper() for token in ("SUPABASE","POSTGRES","DATABASE","DB"))
+              )
+              print("::notice::No compatible PostgreSQL URL/database-password secret was found.")
+              if candidate_names:
+                  print("::notice::Related secret names present: " + ", ".join(candidate_names))
+          PY
 
       - name: Write blocked evidence
         if: steps.credential.outputs.available != 'true'
