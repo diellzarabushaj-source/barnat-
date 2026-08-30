@@ -35,6 +35,13 @@ async function main() {
   assert.equal(status.invalid_verified_product_source_bindings,0);
   assert.equal(status.exact_product_guard_triggers,2);
   assert.equal(status.reference_label_can_verify_market_product,false);
+  assert.equal(status.published_v2_comparator_products,2);
+  assert.equal(status.exact_source_discovery_candidates,2);
+  assert.equal(status.exact_source_snapshot_ready,0);
+  assert.equal(status.pilot_source_snapshot_missing,2);
+  assert.equal(status.pilot_ready_for_v3_build,0);
+  assert.equal(status.pilot_preparation_gate_pass,false);
+  assert.equal(status.automatic_exact_source_promotion_enabled,false);
   assert.equal(status.exit_gate_pass,false);
   assert.equal(status.gate_pass,false);
   assert.ok(status.review_product_source_bindings > 0);

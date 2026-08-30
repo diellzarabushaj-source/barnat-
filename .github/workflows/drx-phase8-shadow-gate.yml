@@ -13,6 +13,8 @@ on:
       - "supabase/migrations/20260830165536_drx_phase8e_cover_drx_foreign_keys.sql"
       - "supabase/migrations/20260830170022_drx_phase8f_exact_market_product_review_gate.sql"
       - "supabase/migrations/20260830170127_drx_phase8g_exact_product_status_contract.sql"
+      - "supabase/migrations/20260830171643_drx_phase8h_published_v2_exact_source_discovery.sql"
+      - "supabase/migrations/20260830171727_drx_phase8i_pilot_comparator_status_contract.sql"
       - "lib/dose-v3-shadow.js"
       - "lib/dose-product-fast-path-handler.js"
       - "tests/drx-phase8-shadow-runtime-test.js"
