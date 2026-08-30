@@ -108,7 +108,7 @@ function productDocs(docs,med){
    const dp=String(field(d,'ema_product_number')||'').trim(),mn=String(field(d,'medicine_name')||'').toLowerCase(),type=String(field(d,'type')||'').toLowerCase(),dn=String(field(d,'name')||'').toLowerCase();
    const same=(pn&&dp===pn)||(!pn&&name&&mn===name);const prod=type.includes('product information')||dn.includes('product information')||dn.includes('annex i');
    return same&&prod&&cleanUrl(field(d,'document_url'));
- }).sort((a,b)=>String(field(b,'last_updated_date')).localeCompare(String(field(a,'last_updated_date')));
+ }).sort((a,b)=>String(field(b,'last_updated_date')).localeCompare(String(field(a,'last_updated_date'))));
 }
 async function mapLimit(items,limit,fn){const out=new Array(items.length);let i=0;const ws=Array.from({length:Math.min(limit,items.length)},async()=>{while(true){const n=i++;if(n>=items.length)return;out[n]=await fn(items[n],n);}});await Promise.all(ws);return out;}
 async function main(){
