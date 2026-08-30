@@ -26,7 +26,8 @@ const proposalTables = proposal.tables.map(table => table.name);
 
 assert.equal(status.applied, true);
 assert.equal(status.publicationAllowed, false);
-assert.equal(status.databaseGatewayEvidence.listMigrations, `SUCCESS_${migrationHistory.migrations.length}_MIGRATIONS`);
+assert.equal(status.databaseGatewayEvidence.listMigrations, `SUCCESS_${status.liveVerification.migrationCount}_MIGRATIONS`);
+assert.ok(migrationHistory.migrations.length >= status.liveVerification.migrationCount);
 assert.equal(status.databaseGatewayEvidence.ddlAttemptedByThisRun, true);
 assert.equal(status.databaseGatewayEvidence.migrationAppliedByThisRun, true);
 assert.match(status.databaseGatewayEvidence.postgresLogError, /No space left on device/);

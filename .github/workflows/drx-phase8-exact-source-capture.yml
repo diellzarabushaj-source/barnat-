@@ -7,6 +7,7 @@ on:
       - main
     paths:
       - "supabase/migrations/20260830174925_drx_phase8j_exact_source_capture_pipeline.sql"
+      - "supabase/migrations/20260830175458_drx_phase8k_exact_source_capture_status_gate.sql"
       - "scripts/drx-phase8-exact-source-capture.js"
       - "tests/drx-phase8-exact-source-capture-test.js"
       - ".github/workflows/drx-phase8-exact-source-capture.yml"
