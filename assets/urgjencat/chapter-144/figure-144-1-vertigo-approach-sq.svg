@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="2200" viewBox="0 0 1900 2200"><defs><marker id="m" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#333"/></marker>
+<style>.h{font:700 28px Arial,sans-serif;fill:#111}.b{font:700 17px Arial,sans-serif;fill:#111}.s{font:15px Arial,sans-serif;fill:#111}.sm{font:13px Arial,sans-serif;fill:#111}.q{fill:#fff0e8;stroke:#d58c6c;stroke-width:1.5}.a{fill:#edf6ef;stroke:#6f9b78;stroke-width:1.5}.c{fill:#eef2fb;stroke:#7186aa;stroke-width:1.5}.ln{stroke:#333;stroke-width:2;fill:none;marker-end:url(#m)}</style></defs><rect width="1900" height="2200" fill="white"/>
+<text x="950" y="45" class="h" text-anchor="middle">Qasja ndaj pacientit me vertigo</text>
+<rect x="80" y="100" width="320" height="80" rx="7" class="q"/><text x="240" y="128" class="b" text-anchor="middle">Humbje e vetëdijes?</text>
+<text x="455" y="135" class="b">PO</text><path d="M400 140 L520 140" class="ln"/>
+<rect x="520" y="85" width="620" height="155" rx="7" class="a"/><text x="534" y="112" class="s">•</text><text x="552" y="112" class="s">Hetim për sinkopë, konvulsione ose proces intrakranial.</text><text x="534" y="136" class="s">•</text><text x="552" y="136" class="s">ECG, imazheri neurodiagnostike dhe elektrolite.</text><text x="534" y="160" class="s">•</text><text x="552" y="160" class="s">Konsidero shtrim.</text>
+<text x="230" y="220" class="b">JO</text><path d="M230 180 L230 280" class="ln"/>
+<rect x="80" y="280" width="320" height="70" rx="7" class="q"/><text x="240" y="308" class="b" text-anchor="middle">Vertigo e vërtetë?</text>
+<text x="455" y="315" class="b">JO</text><path d="M400 315 L520 315" class="ln"/>
+<rect x="520" y="280" width="360" height="75" rx="7" class="q"/><text x="700" y="308" class="b" text-anchor="middle">Marramendje e papërcaktuar</text>
+<path d="M700 355 L520 455" class="ln"/><path d="M700 355 L890 455" class="ln"/>
+<text x="520" y="430" class="b">I moshuar</text><text x="890" y="430" class="b">I ri</text>
+<rect x="350" y="455" width="420" height="165" rx="7" class="a"/><text x="364" y="482" class="s">•</text><text x="382" y="482" class="s">Konsidero çrregullim ekuilibri të moshës.</text><text x="364" y="506" class="s">•</text><text x="382" y="506" class="s">Mat presionin ortostatik, elektrolitet,</text><text x="382" y="524" class="s">hemogramin, testin e tavolinës së pjerrët,</text><text x="382" y="542" class="s">ECG.</text><text x="364" y="566" class="s">•</text><text x="382" y="566" class="s">Konsidero referim te kardiologu.</text>
+<rect x="805" y="455" width="380" height="125" rx="7" class="a"/><text x="819" y="482" class="s">•</text><text x="837" y="482" class="s">Mat presionin ortostatik, elektrolitet etj.</text><text x="819" y="506" class="s">•</text><text x="837" y="506" class="s">Konsidero marramendje me origjinë</text><text x="837" y="524" class="s">psikiatrike.</text>
+<text x="230" y="405" class="b">PO</text><path d="M230 350 L230 690" class="ln"/>
+<rect x="80" y="690" width="320" height="95" rx="7" class="q"/><text x="240" y="718" class="b" text-anchor="middle">Simptoma dhe shenja të</text><text x="240" y="738" class="s" text-anchor="middle">sistemit nervor qendror?</text>
+<text x="455" y="735" class="b">PO</text><path d="M400 735 L520 735" class="ln"/>
+<rect x="520" y="690" width="360" height="85" rx="7" class="q"/><text x="700" y="718" class="b" text-anchor="middle">Kohëzgjatja e simptomave /</text><text x="700" y="738" class="s" text-anchor="middle">shenjave</text>
+<path d="M700 775 L560 875" class="ln"/><path d="M700 775 L865 875" class="ln"/>
+<text x="500" y="850" class="b">E shkurtër (5–10 min)</text><text x="875" y="850" class="b">E vazhdueshme</text>
+<rect x="420" y="875" width="280" height="70" rx="7" class="q"/><text x="560" y="903" class="b" text-anchor="middle">Atak ishemik kalimtar</text>
+<rect x="340" y="965" width="450" height="145" rx="7" class="a"/><text x="354" y="992" class="s">•</text><text x="372" y="992" class="s">Kontrollo për zhurma karotide.</text><text x="354" y="1016" class="s">•</text><text x="372" y="1016" class="s">Konsidero ekokardiogramë.</text><text x="354" y="1040" class="s">•</text><text x="372" y="1040" class="s">Konsidero terapi antiagregante ose antikoaguluese.</text>
+<rect x="800" y="875" width="340" height="70" rx="7" class="q"/><text x="970" y="903" class="b" text-anchor="middle">Vertigo qendrore / sklerozë</text><text x="970" y="923" class="s" text-anchor="middle">multiple</text>
+<rect x="800" y="965" width="460" height="125" rx="7" class="a"/><text x="814" y="992" class="s">•</text><text x="832" y="992" class="s">Konsidero CT, MRI ose angiografi MR.</text><text x="814" y="1016" class="s">•</text><text x="832" y="1016" class="s">Konsidero shtrim dhe konsultë neurologjike ose</text><text x="832" y="1034" class="s">neurokirurgjikale.</text>
+<text x="230" y="845" class="b">JO</text><path d="M230 785 L230 1160" class="ln"/>
+<rect x="80" y="1160" width="320" height="95" rx="7" class="q"/><text x="240" y="1188" class="b" text-anchor="middle">Vertigo e nxitur nga lëvizje</text><text x="240" y="1208" class="s" text-anchor="middle">të papritura të kokës?</text>
+<text x="455" y="1205" class="b">PO</text><path d="M400 1205 L520 1205" class="ln"/>
+<rect x="520" y="1165" width="300" height="70" rx="7" class="q"/><text x="670" y="1193" class="b" text-anchor="middle">Konsidero BPPV</text>
+<rect x="500" y="1255" width="520" height="145" rx="7" class="a"/><text x="514" y="1282" class="s">•</text><text x="532" y="1282" class="s">Konfirmo me testin pozicional Dix–Hallpike.</text><text x="514" y="1306" class="s">•</text><text x="532" y="1306" class="s">Konsidero manovrën e modifikuar Epley.</text><text x="514" y="1330" class="s">•</text><text x="532" y="1330" class="s">Antiemetikë ose barna kundër vertigos.</text>
+<text x="230" y="1285" class="b">JO</text><path d="M230 1255 L230 1460" class="ln"/>
+<rect x="80" y="1460" width="320" height="70" rx="7" class="q"/><text x="240" y="1488" class="b" text-anchor="middle">Humbje dëgjimi?</text>
+<text x="455" y="1495" class="b">PO</text><path d="M400 1495 L520 1495" class="ln"/>
+<rect x="520" y="1460" width="250" height="70" rx="7" class="q"/><text x="645" y="1488" class="b" text-anchor="middle">Tinitus?</text>
+<text x="820" y="1495" class="b">PO</text><path d="M770 1495 L900 1495" class="ln"/>
+<rect x="900" y="1460" width="330" height="80" rx="7" class="q"/><text x="1065" y="1488" class="b" text-anchor="middle">Infeksion i fundit i rrugëve</text><text x="1065" y="1508" class="s" text-anchor="middle">të sipërme ose otit media?</text>
+<text x="1285" y="1495" class="b">PO</text><path d="M1230 1495 L1360 1495" class="ln"/>
+<rect x="1360" y="1450" width="400" height="95" rx="7" class="q"/><text x="1560" y="1478" class="b" text-anchor="middle">Konsidero labirintit bakterial</text>
+<rect x="1370" y="1560" width="390" height="125" rx="7" class="a"/><text x="1384" y="1587" class="s">•</text><text x="1402" y="1587" class="s">CT ose MRI.</text><text x="1384" y="1611" class="s">•</text><text x="1402" y="1611" class="s">Antibiotikë.</text><text x="1384" y="1635" class="s">•</text><text x="1402" y="1635" class="s">Konsultë ORL.</text>
+<text x="1020" y="1580" class="b">JO</text><path d="M1050 1540 L1050 1700" class="ln"/>
+<rect x="875" y="1700" width="350" height="75" rx="7" class="q"/><text x="1050" y="1728" class="b" text-anchor="middle">Konsidero sëmundjen Ménière</text>
+<rect x="830" y="1790" width="450" height="155" rx="7" class="a"/><text x="844" y="1817" class="s">•</text><text x="862" y="1817" class="s">Antihistaminikë/antiemetikë dhe diuretikë.</text><text x="844" y="1841" class="s">•</text><text x="862" y="1841" class="s">Dietë me &lt;1 g kripë të shtuar në ditë.</text><text x="844" y="1865" class="s">•</text><text x="862" y="1865" class="s">Referim ORL.</text>
+<text x="645" y="1580" class="b">JO</text><path d="M645 1530 L645 1700" class="ln"/>
+<rect x="470" y="1700" width="350" height="75" rx="7" class="q"/><text x="645" y="1728" class="b" text-anchor="middle">Konsidero neuromë akustike</text>
+<rect x="445" y="1790" width="400" height="120" rx="7" class="a"/><text x="459" y="1817" class="s">•</text><text x="477" y="1817" class="s">CT ose MRI.</text><text x="459" y="1841" class="s">•</text><text x="477" y="1841" class="s">Referim te neurokirurgu ose ORL.</text>
+<text x="230" y="1575" class="b">JO</text><path d="M230 1530 L230 1700" class="ln"/>
+<rect x="65" y="1700" width="340" height="95" rx="7" class="q"/><text x="235" y="1728" class="b" text-anchor="middle">Gjendje të tjera, p.sh. neurit</text><text x="235" y="1748" class="s" text-anchor="middle">vestibular</text>
+<rect x="70" y="1810" width="330" height="115" rx="7" class="a"/><text x="84" y="1837" class="s">•</text><text x="102" y="1837" class="s">Antihistaminikë / antiemetikë.</text><text x="84" y="1861" class="s">•</text><text x="102" y="1861" class="s">Sigurim dhe këshillim.</text>
+<text x="950" y="2070" class="sm" text-anchor="middle">BPPV = vertigo pozicionale paroksizmale beninje · CNS = sistemi nervor qendror · ORL = vesh, hundë dhe fyt</text>
+<text x="950" y="2095" class="sm" text-anchor="middle">Figura e rikrijuar në shqip sipas Figurës 144-1 të Tintinalli, botimi 8.</text></svg>
