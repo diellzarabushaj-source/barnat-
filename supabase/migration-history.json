@@ -565,6 +565,10 @@
     {
       "name": "drx_phase9f_status_single_phase8_evaluation",
       "version": "20260830223039"
+    },
+    {
+      "name": "drx_phase9g_technical_qa_exit_evidence",
+      "version": "20260830224240"
     }
   ]
 }

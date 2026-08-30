@@ -15,7 +15,7 @@ async function rpc(name,body={}) {
 
 async function main() {
   const status=await rpc('drx_phase9_status_v1');
-  assert.equal(status.statusVersion,'drx-phase9-status-v1');
+  assert.equal(status.statusVersion,'drx-phase9-status-v2');
   assert.equal(status.phase,9);
   assert.equal(status.phase8Closed,true);
   assert.equal(status.backendFoundationGatePass,true);
@@ -33,7 +33,14 @@ async function main() {
   assert.equal(status.contextAnonExecute,false);
   assert.equal(status.contextAuthenticatedExecute,false);
   assert.equal(status.frontendQaRequired,true);
-  assert.equal(status.finalExitPass,false);
+  assert.equal(status.frontendQaPassed,true);
+  assert.equal(status.technicalQaEvidencePass,true);
+  assert.equal(status.technicalQaEvidenceId,'phase9-qa-8ecaa228');
+  assert.equal(status.phase9WorkflowRunId,33339677881);
+  assert.equal(status.phase9ArtifactId,9740145041);
+  assert.equal(status.clinicalAttestationUsed,false);
+  assert.equal(status.finalExitPass,true);
+  assert.equal(status.phase10Allowed,true);
 
   const pilots=[
     'c8cd0467-da73-479c-b8e8-b785af833f59',
