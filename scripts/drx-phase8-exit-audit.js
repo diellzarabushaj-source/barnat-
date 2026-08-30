@@ -19,9 +19,9 @@ async function rpc(name,body={}) {
 }
 
 async function timed(fn) {
-  const started = performance.now();
-  const value = await fn();
-  return { value, ms:performance.now()-started };
+  const started=performance.now();
+  const value=await fn();
+  return {value,ms:performance.now()-started};
 }
 
 function p95(samples) {
@@ -33,12 +33,25 @@ function p95(samples) {
 async function main() {
   const status=await rpc('drx_phase8_status_v1');
   const preflight=await rpc('drx_phase8_pilot_build_preflight_v1');
+  const serverProbe=await rpc('drx_phase8_performance_probe_v1',{
+    p_samples:SAMPLE_COUNT,p_warm_samples:WARM_COUNT
+  });
 
+  assert.equal(serverProbe.probeVersion,'drx-phase8-performance-probe-v1');
+  assert.equal(serverProbe.measurementScope,'database-server-execution');
+  assert.equal(serverProbe.networkLatencyExcluded,true);
+  assert.equal(serverProbe.thresholds.searchP95MaxMs,SEARCH_P95_MAX_MS);
+  assert.equal(serverProbe.thresholds.productDetailP95MaxMs,PRODUCT_DETAIL_P95_MAX_MS);
+  assert.equal(serverProbe.thresholds.searchPageLimit,SEARCH_PAGE_LIMIT);
+  assert.equal(serverProbe.searchPass,true);
+
+  // Round-trip telemetry is intentionally observational. GitHub-runner region
+  // and WAN transit must not be confused with database query execution p95.
   for(let i=0;i<WARM_COUNT;i++) {
     await rpc('drx_dose_search_v3_shadow_v1',{p_query:'pa',p_limit:SEARCH_PAGE_LIMIT});
   }
 
-  const searchSamples=[];
+  const searchRoundTripSamples=[];
   let maxSearchResults=0;
   for(let i=0;i<SAMPLE_COUNT;i++) {
     const sample=await timed(()=>rpc('drx_dose_search_v3_shadow_v1',{
@@ -48,11 +61,11 @@ async function main() {
     assert.ok(Array.isArray(sample.value));
     assert.ok(sample.value.length<=SEARCH_PAGE_LIMIT);
     maxSearchResults=Math.max(maxSearchResults,sample.value.length);
-    searchSamples.push(sample.ms);
+    searchRoundTripSamples.push(sample.ms);
   }
 
-  const detailSamples=[];
-  let detailPayloads=0;
+  const detailRoundTripSamples=[];
+  let detailRoundTripPayloads=0;
   if(preflight.preflightPass) {
     const pilots=Array.isArray(preflight.pilots)?preflight.pilots:[];
     assert.equal(pilots.length,2);
@@ -66,32 +79,23 @@ async function main() {
         const sample=await timed(()=>rpc('medindex_dose_product_fast_path_v3',{
           p_product_key:null,p_drug_id:pilot.drugId
         }));
-        if(sample.value) detailPayloads+=1;
-        detailSamples.push(sample.ms);
+        if(sample.value) detailRoundTripPayloads+=1;
+        detailRoundTripSamples.push(sample.ms);
       }
     }
   }
 
-  const searchP95=p95(searchSamples);
-  const productDetailP95=p95(detailSamples);
-  const performanceGatePass=preflight.preflightPass
-    ? searchP95!==null
-      && productDetailP95!==null
-      && searchP95<=SEARCH_P95_MAX_MS
-      && productDetailP95<=PRODUCT_DETAIL_P95_MAX_MS
-      && detailPayloads===2*SAMPLE_COUNT
-    : false;
-
   if(status.exit_gate_pass) {
     assert.equal(preflight.preflightPass,true);
-    assert.ok(searchP95<=SEARCH_P95_MAX_MS);
-    assert.ok(productDetailP95<=PRODUCT_DETAIL_P95_MAX_MS);
-    assert.equal(detailPayloads,2*SAMPLE_COUNT);
-    assert.equal(performanceGatePass,true);
+    assert.equal(serverProbe.stage.preflightPass,true);
+    assert.ok(serverProbe.searchServerP95Ms<=SEARCH_P95_MAX_MS);
+    assert.ok(serverProbe.productDetailServerP95Ms<=PRODUCT_DETAIL_P95_MAX_MS);
+    assert.equal(serverProbe.detailPayloadCalls,2*SAMPLE_COUNT);
+    assert.equal(serverProbe.finalPerformancePass,true);
   }
 
   const evidence={
-    evidenceVersion:'drx-phase8-exit-audit-v1',
+    evidenceVersion:'drx-phase8-exit-audit-v2',
     generatedAt:new Date().toISOString(),
     thresholds:{
       searchP95MaxMs:SEARCH_P95_MAX_MS,
@@ -104,13 +108,14 @@ async function main() {
       pilotsPublishedInV3:preflight.pilotsPublishedInV3,
       exitGatePass:status.exit_gate_pass
     },
-    performance:{
-      searchP95Ms:searchP95,
-      productDetailP95Ms:productDetailP95,
+    serverPerformance:serverProbe,
+    roundTripTelemetry:{
+      measurementScope:'github-runner-to-supabase-round-trip',
+      gateMetric:false,
+      searchP95Ms:p95(searchRoundTripSamples),
+      productDetailP95Ms:p95(detailRoundTripSamples),
       maxSearchResults,
-      detailPayloads,
-      performanceGatePass,
-      finalPerformanceMeasured:preflight.preflightPass
+      detailPayloads:detailRoundTripPayloads
     }
   };
   fs.writeFileSync('drx-phase8-exit-audit-evidence.json',JSON.stringify(evidence,null,2)+'\n');

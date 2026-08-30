@@ -485,6 +485,10 @@
     {
       "name": "drx_phase8q_search_index_hardening",
       "version": "20260830201638"
+    },
+    {
+      "name": "drx_phase8r_server_performance_probe",
+      "version": "20260830202332"
     }
   ]
 }
