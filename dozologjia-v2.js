@@ -626,17 +626,49 @@
     return window.DRxPhase9Personal || null;
   }
 
+  function personalEntityKey(type,product=state.product) {
+    if(type==='product') return text(product?.drugId);
+    if(type==='substance') return text(product?.substanceConceptId);
+    if(type==='variant') return text(product?.clinicalVariantId);
+    return '';
+  }
+
+  function personalEntityLabel(type,product=state.product) {
+    if(type==='product') return product?.name || 'Produkti';
+    if(type==='substance') return product?.substanceCanonicalName || product?.substance || 'Substanca';
+    if(type==='variant') return [
+      product?.strength,
+      product?.form,
+      product?.phase9Context?.releaseKey,
+      product?.phase9Context?.routeKey,
+    ].filter(Boolean).join(' · ') || 'Varianti klinik';
+    return type;
+  }
+
+  function availablePersonalEntities(product=state.product) {
+    return ['product','substance','variant']
+      .map(type=>({type,key:personalEntityKey(type,product),label:personalEntityLabel(type,product)}))
+      .filter(item=>item.key);
+  }
+
   function populationLabel(product) {
+    const explicit=text(product?.populationKey).toUpperCase();
+    const labels={
+      PEDIATRIC_ONLY:'Vetëm pediatrik',
+      ADULT_ONLY:'Vetëm të rritur',
+      ADULT_AND_PEDIATRIC:'Pediatrik + të rritur',
+      PEDIATRIC_AND_ADULT:'Pediatrik + të rritur',
+    };
+    if (labels[explicit]) return labels[explicit];
     const raw=text(product?.useStatus);
     if (!raw) return 'Popullata: sipas burimit';
     const key=raw.toLowerCase().replace(/[\s-]+/g,'_');
-    const labels={
+    return {
       pediatric_only:'Vetëm pediatrik',
       adult_only:'Vetëm të rritur',
       pediatric_and_adult:'Pediatrik + të rritur',
       adult_and_pediatric:'Pediatrik + të rritur',
-    };
-    return labels[key] || raw;
+    }[key] || raw;
   }
 
   function phase9Badge(label,tone='') {
@@ -649,10 +681,16 @@
     const list=element('ol','phase9-clinical-flow');
     list.setAttribute('aria-label','Rrjedha klinike Phase 9');
     const indication=text(product?.calculationRegimen?.indication || product?.regimen?.indication);
+    const variantReady=Boolean(product?.clinicalVariantId);
+    const variantDetail=variantReady
+      ? `Variant kanonik · ${text(product.clinicalVariantId).slice(0,8)}…`
+      : product?.variantStatus==='REVIEWED_PILOT_OVERRIDE_NO_CANONICAL_VARIANT_ID'
+        ? 'Pilot i review-uar; pa ID kanonik varianti'
+        : 'Variant i pazgjidhur';
     const steps=[
-      ['Substanca',Boolean(product?.substance),product?.substance || 'Mungon'],
-      ['Varianti',false,'V2 fallback — ID kanonik i variantit nuk ekspozohet ende'],
-      ['Popullata',Boolean(product?.useStatus),populationLabel(product)],
+      ['Substanca',Boolean(product?.substanceConceptId),product?.substanceCanonicalName || product?.substance || 'Mungon ID kanonik'],
+      ['Varianti',variantReady,variantDetail],
+      ['Popullata',Boolean(product?.populationKey || product?.useStatus),populationLabel(product)],
       ['Indikacioni',Boolean(indication),indication || 'Kërkohet lidhje klinike'],
       ['Inputet',Boolean(product?.calculable),product?.calculable ? 'Vetëm fushat e kërkuara' : 'Bllokuar nga porta klinike'],
       ['Doza',state.calculation?.outcome==='CALCULATED',state.calculation?.outcome==='CALCULATED' ? 'Llogaritur server-side' : 'Pas inputeve'],
@@ -779,53 +817,87 @@
 
   function buildProductsPanel(product) {
     const panel=tabPanel('products');
-    panel.append(element('p','phase9-tab-kicker','Produkti i zgjedhur · V2 fallback mbetet aktiv gjatë Fazës 9.'));
+    panel.append(element('p','phase9-tab-kicker',
+      product?.phase9Context?.v3Published
+        ? 'Kontekst kanonik + produkt V3 i publikuar; runtime V2 fallback mbetet aktiv.'
+        : 'Kontekst kanonik i produktit; runtime V2 fallback mbetet aktiv.'));
     const facts=element('div','dosage-product-facts');
     facts.append(
       productFact('Produkti',product.name || '—'),
-      productFact('Substanca',product.substance || '—'),
+      productFact('Substanca',product.substanceCanonicalName || product.substance || '—'),
       productFact('Fortësia',product.strength || '—'),
       productFact('Forma',product.form || '—'),
+      productFact('Popullata',populationLabel(product)),
       productFact('ATC',product.atcCode || '—'),
-      productFact('Regjistri',product.registryNumber ? `#${product.registryNumber}` : '—'),
-      productFact('PDID',product.pdid || '—'),
-      productFact('Identiteti',product.drugId || '—'),
+      productFact('Produkte me të njëjtën përbërje',Number.isInteger(product.productCount) ? String(product.productCount) : '—'),
+      productFact('Varianti',product.clinicalVariantId ? 'Kanonik' : (product.variantStatus || '—')),
     );
     panel.append(facts);
-    const note=element('p','phase9-inline-note',
-      'Substance/variant favorites aktivizohen vetëm kur API ekspozon ID-të kanonike; emri tekstual nuk përdoret si identitet.');
-    panel.append(note);
+
+    const personal=phase9Personal();
+    const actions=element('div','phase9-entity-actions');
+    for(const entity of availablePersonalEntities(product)){
+      const button=element('button','phase9-entity-favorite',`☆ ${entity.type==='substance' ? 'Substanca' : entity.type==='variant' ? 'Varianti' : 'Produkti'}`);
+      button.type='button';
+      button.dataset.action='toggle-phase9-favorite';
+      button.dataset.entityType=entity.type;
+      try{
+        if(personal?.isFavorite(entity.type,entity.key)){
+          button.textContent=`★ ${entity.type==='substance' ? 'Substanca' : entity.type==='variant' ? 'Varianti' : 'Produkti'}`;
+          button.classList.add('is-active');
+          button.setAttribute('aria-pressed','true');
+        }else button.setAttribute('aria-pressed','false');
+      }catch{ button.setAttribute('aria-pressed','false'); }
+      actions.append(button);
+    }
+    if(actions.childElementCount) panel.append(actions);
+
+    if(!product.clinicalVariantId){
+      panel.append(element('p','phase9-inline-note',
+        'Favoriti/shënimi i variantit mbetet i çaktivizuar derisa ekziston një clinical_variant_id kanonik; override-i i pilotit nuk përdoret si ID.'));
+    }
     return panel;
   }
 
   function buildNotesPanel(product) {
     const panel=tabPanel('notes');
-    const key=productEntityKey(product);
     const personal=phase9Personal();
-    panel.append(element('p','phase9-tab-kicker','Shënim personal · owner-only · nuk hyn në llogaritjen klinike.'));
-    if(!key){
-      panel.append(element('p','phase9-empty-tab','Produkti nuk ka identitet të qëndrueshëm për shënim.'));
+    panel.append(element('p','phase9-tab-kicker','Shënime personale · owner-only · nuk ndikojnë llogaritjen klinike.'));
+
+    const entities=availablePersonalEntities(product);
+    if(!entities.length){
+      panel.append(element('p','phase9-empty-tab','Nuk ka identitet të qëndrueshëm për shënim.'));
       return panel;
     }
-    const label=element('label','phase9-note-field');
-    label.append(element('span',null,'Shënimi yt'));
-    const area=element('textarea','phase9-note-editor');
-    area.dataset.phase9Note='product';
-    area.maxLength=2000;
-    area.rows=5;
-    area.placeholder='Shkruaj shënim personal për këtë produkt…';
-    try{ area.value=personal?.note('product',key) || ''; }catch{ area.value=''; }
-    label.append(area);
-    panel.append(label);
-    const actions=element('div','phase9-note-actions');
-    const save=element('button','phase9-save-note','Ruaj shënimin');
-    save.type='button';
-    save.dataset.action='save-product-note';
-    const remove=element('button','phase9-delete-note','Fshi');
-    remove.type='button';
-    remove.dataset.action='delete-product-note';
-    actions.append(save,remove);
-    panel.append(actions);
+
+    for(const entity of entities){
+      const card=element('section','phase9-note-entity-card');
+      card.append(element('strong','phase9-note-entity-title',
+        entity.type==='substance' ? 'Substanca / përbërja' : entity.type==='variant' ? 'Varianti' : 'Produkti'));
+      card.append(element('small','phase9-note-entity-label',entity.label));
+
+      const area=element('textarea','phase9-note-editor');
+      area.dataset.phase9NoteEntity=entity.type;
+      area.maxLength=2000;
+      area.rows=4;
+      area.placeholder='Shkruaj shënim personal…';
+      try{ area.value=personal?.note(entity.type,entity.key) || ''; }catch{ area.value=''; }
+      card.append(area);
+
+      const actions=element('div','phase9-note-actions');
+      const save=element('button','phase9-save-note','Ruaj');
+      save.type='button';
+      save.dataset.action='save-phase9-note';
+      save.dataset.entityType=entity.type;
+      const remove=element('button','phase9-delete-note','Fshi');
+      remove.type='button';
+      remove.dataset.action='delete-phase9-note';
+      remove.dataset.entityType=entity.type;
+      actions.append(save,remove);
+      card.append(actions);
+      panel.append(card);
+    }
+
     panel.append(element('small','phase9-personal-hint',
       personal?.state?.().loaded ? 'Sinkronizuar me llogarinë aktive.' : 'Sinkronizimi aktivizohet pas verifikimit të sesionit.'));
     return panel;
@@ -833,32 +905,49 @@
 
   function buildSourcesPanel(product) {
     const panel=tabPanel('sources');
-    panel.append(element('p','phase9-tab-kicker','Provenanca shfaqet; versioni dokumentar nuk inferohet nga klienti.'));
-    panel.append(sourceBlock(product.source));
-    const facts=element('div','dosage-product-facts');
-    facts.append(
+    panel.append(element('p','phase9-tab-kicker',
+      'Burimi i dozimit dhe burimi i identitetit të produktit mbahen të ndarë.'));
+
+    const doseTitle=element('h3','phase9-source-subtitle','Burimi i dozimit');
+    panel.append(doseTitle,sourceBlock(product.source));
+    const doseFacts=element('div','dosage-product-facts');
+    doseFacts.append(
       productFact('Seksioni',product.source?.section || '—'),
       productFact('Statusi',product.source?.verificationStatus || '—'),
       productFact('Verifikuar',formatDate(product.source?.verifiedAt) || '—'),
-      productFact('Versioni',product.source?.documentVersion || 'Nuk ekspozohet nga V2 fallback'),
     );
-    panel.append(facts);
+    panel.append(doseFacts);
+
+    const identitySource=product.phase9Context?.source;
+    panel.append(element('h3','phase9-source-subtitle','Burimi i produktit / identitetit'));
+    const identityFacts=element('div','dosage-product-facts');
+    identityFacts.append(
+      productFact('Tier',identitySource?.sourceTier || '—'),
+      productFact('Source key',identitySource?.sourceKey || '—'),
+      productFact('Versioni',identitySource?.documentVersion || 'Nuk disponohet'),
+      productFact('Data',identitySource?.documentDate || '—'),
+      productFact('V3',product.phase9Context?.v3Published ? `Published · v${product.phase9Context.v3VersionNo || 1}` : 'Jo i publikuar në V3'),
+    );
+    panel.append(identityFacts);
     return panel;
   }
 
-  async function toggleProductFavorite(button) {
+  async function togglePhase9Favorite(button) {
     const product=state.product;
-    const key=productEntityKey(product);
+    const type=text(button?.dataset?.entityType);
+    const key=personalEntityKey(type,product);
     const personal=phase9Personal();
     if(!product || !key || !personal) return;
     button.disabled=true;
     try{
       if(!personal.state().loaded) await personal.load();
-      await personal.toggleFavorite('product',key,{
-        label:product.name || '',
+      await personal.toggleFavorite(type,key,{
+        label:personalEntityLabel(type,product),
+        drugId:product.drugId || null,
         registryNumber:product.registryNumber || null,
       });
       renderProduct();
+      setProductTab('products');
       setStatus('Favoriti personal u sinkronizua.','success');
     }catch(error){
       button.disabled=false;
@@ -866,16 +955,16 @@
     }
   }
 
-  async function saveProductNote({remove=false}={}) {
+  async function savePhase9Note(type,{remove=false}={}) {
     const product=state.product;
-    const key=productEntityKey(product);
+    const key=personalEntityKey(type,product);
     const personal=phase9Personal();
     if(!product || !key || !personal) return;
-    const area=elements.productBody.querySelector('[data-phase9-note="product"]');
+    const area=elements.productBody.querySelector(`[data-phase9-note-entity="${type}"]`);
     try{
       if(!personal.state().loaded) await personal.load();
-      if(remove) await personal.deleteNote('product',key);
-      else await personal.saveNote('product',key,area?.value || '');
+      if(remove) await personal.deleteNote(type,key);
+      else await personal.saveNote(type,key,area?.value || '');
       renderProduct();
       setProductTab('notes');
       setStatus(remove ? 'Shënimi personal u fshi.' : 'Shënimi personal u ruajt.','success');
@@ -914,7 +1003,8 @@
     const actions=element('div','phase9-product-actions');
     const favorite=element('button','phase9-favorite-button','☆ Favorit');
     favorite.type='button';
-    favorite.dataset.action='toggle-product-favorite';
+    favorite.dataset.action='toggle-phase9-favorite';
+    favorite.dataset.entityType='product';
     try{
       const active=phase9Personal()?.isFavorite('product',productEntityKey(product));
       if(active){
@@ -1419,17 +1509,19 @@
         setProductTab(tab.dataset.productTab);
         return;
       }
-      const favorite=event.target.closest('[data-action="toggle-product-favorite"]');
+      const favorite=event.target.closest('[data-action="toggle-phase9-favorite"]');
       if(favorite){
-        void toggleProductFavorite(favorite);
+        void togglePhase9Favorite(favorite);
         return;
       }
-      if(event.target.closest('[data-action="save-product-note"]')){
-        void saveProductNote();
+      const saveNote=event.target.closest('[data-action="save-phase9-note"]');
+      if(saveNote){
+        void savePhase9Note(saveNote.dataset.entityType);
         return;
       }
-      if(event.target.closest('[data-action="delete-product-note"]')){
-        void saveProductNote({remove:true});
+      const deleteNote=event.target.closest('[data-action="delete-phase9-note"]');
+      if(deleteNote){
+        void savePhase9Note(deleteNote.dataset.entityType,{remove:true});
         return;
       }
       if (event.target.closest('[data-action="close-product"]')) {

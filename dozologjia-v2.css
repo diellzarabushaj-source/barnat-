@@ -534,3 +534,12 @@ input{caret-color:#533afd}
 .phase9-personal-hint{display:block;margin-top:8px;color:#82919c;font-size:10px}
 @media(max-width:900px){.phase9-clinical-flow{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.phase9-product-header{flex-direction:column}.phase9-product-actions{width:100%;justify-content:flex-start}.phase9-clinical-flow{grid-template-columns:1fr 1fr;padding:8px}.phase9-flow-step{padding:5px}.phase9-tabs{margin-inline:-8px;padding-inline:8px}}
+
+.phase9-entity-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.phase9-entity-favorite{border:1px solid #d7e1e8;background:#fff;border-radius:9px;padding:8px 11px;color:#294052;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.phase9-entity-favorite.is-active{background:#fff9e8;border-color:#f0d889;color:#7c5d00}
+.phase9-note-entity-card{padding:12px 0;border-bottom:1px solid #e8eef2}
+.phase9-note-entity-card:last-of-type{border-bottom:0}
+.phase9-note-entity-title{display:block;color:#2d4656;font-size:12px}
+.phase9-note-entity-label{display:block;margin:3px 0 9px;color:#7a8b98;font-size:10px;overflow-wrap:anywhere}
+.phase9-source-subtitle{margin:14px 0 8px;color:#334e5e;font-size:12px}
