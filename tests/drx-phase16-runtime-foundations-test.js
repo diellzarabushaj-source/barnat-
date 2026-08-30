@@ -25,7 +25,6 @@ const required = [
   ['data/drx-api-fast-path-contract-v1.json', 'drx-api-fast-path-contract-v1'],
   ['data/drx-dose-core-contract-v1.json', 'drx-dose-core-contract-v1'],
   ['data/drx-dose-cache-policy-v1.json', 'drx-dose-cache-policy-v1'],
-  ['data/drx-frontend-flow-contract-v1.json', 'drx-frontend-flow-contract-v1'],
   ['data/drx-qa-coverage-contract-v1.json', 'drx-qa-coverage-contract-v1']
 ];
 
@@ -34,6 +33,30 @@ for (const [rel, schemaVersion] of required) {
   assert.equal(obj.schemaVersion, schemaVersion, rel);
   assert.equal(typeof obj.status, 'string', rel + ': status missing');
   assert.ok(obj.status.length > 0, rel + ': status empty');
+}
+
+const frontendFlow = read('data/drx-frontend-flow-contract-v1.json');
+assert.ok(
+  ['drx-frontend-flow-contract-v1','drx-frontend-flow-contract-v2'].includes(frontendFlow.schemaVersion),
+  'frontend flow schema must be a supported additive version'
+);
+assert.equal(typeof frontendFlow.status,'string');
+assert.ok(frontendFlow.status.length > 0);
+assert.deepEqual(
+  frontendFlow.flow,
+  ['substance','variant','population','indication','patient_inputs','dose','product','prescription']
+);
+if(frontendFlow.schemaVersion === 'drx-frontend-flow-contract-v2'){
+  assert.equal(frontendFlow.phase,9);
+  assert.deepEqual(frontendFlow.drawerTabs,[
+    'Përmbledhje','Përdorimi','Dozimi','Siguria','Produktet','Shënime','Burime'
+  ]);
+  assert.equal(frontendFlow.runtime?.clinicalCalculation,'server_side_only');
+  assert.equal(frontendFlow.runtime?.v2FallbackActive,true);
+  assert.equal(frontendFlow.runtime?.v3StrictCutover,false);
+  assert.equal(frontendFlow.runtime?.browserClinicalMathForbidden,true);
+  assert.equal(frontendFlow.personalEntities?.ownerOnly,true);
+  assert.equal(frontendFlow.personalEntities?.canonicalIdentityRequired,true);
 }
 
 const publication = read('data/drx-publication-gate-v3-policy.json');
