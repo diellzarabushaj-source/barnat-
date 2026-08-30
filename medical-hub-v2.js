@@ -281,6 +281,24 @@
     return { className:'', label:value || 'Pa status' };
   }
 
+  function richText(value) {
+    let html = esc(clean(value));
+    html = html
+      .replace(/\*\*(.+?)\*\*/g, '<strong class="ck-inline-bold">$1</strong>')
+      .replace(/==(.+?)==/g, '<mark class="ck-inline-mark">$1</mark>')
+      .replace(/\n/g, '<br>');
+    return html;
+  }
+
+  function stepStyleClass(step) {
+    const token = normalize(step?.priority || '');
+    if (token === 'highlight') return 'is-source-highlight';
+    if (token === 'note') return 'is-source-note';
+    if (token === 'table') return 'is-source-table';
+    if (token === 'warning') return 'is-source-warning';
+    return '';
+  }
+
   function chip(label, className = '') {
     return `<span class="ck-chip ${className}">${esc(label)}</span>`;
   }
@@ -382,18 +400,19 @@
   }
 
   function stepMarkup(step, index) {
-    const meta = [step.priority, step.setting].filter(Boolean);
+    const styleClass = stepStyleClass(step);
+    const meta = [step.setting].filter(Boolean);
     return `
-      <article class="ck-step">
+      <article class="ck-step ${styleClass}">
         <span class="ck-step-number">${String(index + 1).padStart(2, '0')}</span>
         <div class="ck-step-copy">
           <div class="ck-step-title">
-            <strong>${esc(step.title || 'Hapi')}</strong>
+            <strong>${richText(step.title || 'Hapi')}</strong>
             ${meta.length ? `<small>${esc(meta.join(' · '))}</small>` : ''}
           </div>
-          <p>${esc(step.action || '')}</p>
-          ${step.why ? `<div class="ck-step-why"><span>Pse</span><p>${esc(step.why)}</p></div>` : ''}
-          ${step.note ? `<small class="ck-step-note">${esc(step.note)}</small>` : ''}
+          <p>${richText(step.action || '')}</p>
+          ${step.why ? `<div class="ck-step-why"><span>Pse</span><p>${richText(step.why)}</p></div>` : ''}
+          ${step.note ? `<small class="ck-step-note">${richText(step.note)}</small>` : ''}
         </div>
       </article>`;
   }
