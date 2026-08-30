@@ -56,7 +56,14 @@ assert.match(m8m,/drx_phase8_register_clinical_reference_v1/);
 assert.match(m8m,/CLINICAL_REFERENCE_SNAPSHOT_MISSING/);
 assert.match(m8m,/automatic_rule_publication_allowed boolean not null default false/);
 assert.match(m8n,/phase8-explicit-evidence-review/);
-assert.match(m8n,/does not verify or publish dosing rules/);
+assert.match(m8n,/binding_status='VERIFIED'/);
+assert.match(m8n,/product identity only; it does not verify or publish dosing rules/i);
+assert.doesNotMatch(
+  m8n,
+  /update\s+drx_dose\.phase8_pilot_clinical_references_v1[\s\S]{0,1200}?evidence_review_status\s*=\s*'VERIFIED'/i,
+  'Exact market-product identity review must not auto-verify the clinical reference.'
+);
+assert.match(m8m,/evidence_review_status='READY_FOR_REVIEW'/);
 
 assert.doesNotMatch(rollbackM,/drop\\s+[\\s\\S]{0,160}?\\bcascade\\b/i);
 assert.doesNotMatch(rollbackN,/drop\\s+[\\s\\S]{0,160}?\\bcascade\\b/i);
