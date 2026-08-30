@@ -201,9 +201,25 @@
 
   function procedureEntries(item) {
     return (item?.procedureCodes || []).map(entry => {
-      if (typeof entry === 'string') return { code:entry, system:'Procedurë' };
-      return entry || {};
+      if (typeof entry === 'string') return { code:entry, system:'ICHI' };
+      return { system:'ICHI', ...(entry || {}) };
     }).filter(entry => entry.code);
+  }
+
+  function codeSuffix(item) {
+    const parts = [];
+    const icd = (item?.icdCodes || []).filter(Boolean);
+    const procedures = procedureEntries(item);
+    if (icd.length) parts.push(`ICD‑10 ${icd.join(' · ')}`);
+    if (procedures.length) {
+      const grouped = procedures.map(entry => `${entry.system || 'ICHI'} ${entry.code}`);
+      parts.push(grouped.join(' · '));
+    }
+    return parts.length ? ` · ${parts.join(' · ')}` : '';
+  }
+
+  function codedTitle(item) {
+    return `${clean(item?.title || item?.question || '')}${codeSuffix(item)}`;
   }
 
   function itemSearchText(item) {
@@ -420,7 +436,7 @@
           <div class="ck-detail-title-row">
             <div>
               <p class="ck-kicker">${esc(item.question || 'Kapitull')}</p>
-              <h2>${esc(item.title)}</h2>
+              <h2>${esc(codedTitle(item))}</h2>
             </div>
             <span class="ck-review-badge ${review.className}">
               <span class="ck-review-dot" aria-hidden="true"></span>
@@ -466,7 +482,7 @@
                 <button type="button" class="ck-chapter-lesson" data-topic-jump="${esc(child._id)}">
                   <span class="ck-chapter-lesson-no">${String(index + 1).padStart(2, '0')}</span>
                   <span class="ck-chapter-lesson-copy">
-                    <strong>${esc(child.title)}</strong>
+                    <strong>${esc(codedTitle(child))}</strong>
                     ${child.summary ? `<small>${esc(child.summary)}</small>` : '<small>Përmbajtja do të plotësohet nga burimi.</small>'}
                     <span class="ck-chapter-lesson-meta">
                       ${(child.icdCodes || []).map(icdChip).join('')}
@@ -499,7 +515,7 @@
           <div class="ck-detail-title-row">
             <div>
               <p class="ck-kicker">${esc(item.question || 'Mësim klinik')}</p>
-              <h2>${esc(item.title)}</h2>
+              <h2>${esc(codedTitle(item))}</h2>
             </div>
             <span class="ck-review-badge ${review.className}">
               <span class="ck-review-dot" aria-hidden="true"></span>
@@ -610,13 +626,13 @@
             ${previous ? `
               <button type="button" class="ck-document-page" data-topic-jump="${esc(previous._id)}">
                 <span>← Mësimi i kaluar</span>
-                <strong>${esc(previous.title)}</strong>
+                <strong>${esc(codedTitle(previous))}</strong>
               </button>
             ` : '<span></span>'}
             ${next ? `
               <button type="button" class="ck-document-page ck-document-page-next" data-topic-jump="${esc(next._id)}">
                 <span>Mësimi tjetër →</span>
-                <strong>${esc(next.title)}</strong>
+                <strong>${esc(codedTitle(next))}</strong>
               </button>
             ` : '<span></span>'}
           </nav>
@@ -716,13 +732,8 @@
     if (!select) return;
 
     select.innerHTML = state.filtered.map(item => {
-      const codes = [
-        ...(item.icdCodes || []).map(code => `ICD ${code}`),
-        ...procedureEntries(item).map(entry => `${entry.system || 'Procedurë'} ${entry.code}`),
-      ];
-      const code = codes.length ? ` · ${esc(codes.join(' · '))}` : '';
       const prefix = isChapter(item) ? 'Kapitulli · ' : 'Mësimi · ';
-      return `<option value="${esc(item._id)}">${prefix}${esc(item.title || item.question)}${code}</option>`;
+      return `<option value="${esc(item._id)}">${prefix}${esc(codedTitle(item))}</option>`;
     }).join('') || '<option value="">Asnjë mësim</option>';
 
     select.value = state.selectedId;
