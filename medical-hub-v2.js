@@ -1037,12 +1037,18 @@
     state.searchSequence += 1;
     const sequence = state.searchSequence;
     window.clearTimeout(searchTimer);
+    searchTimer = 0;
+    state.backendResults = null;
+    state.searching = Boolean(clean(state.term));
+
+    // Show immediate matches from the lightweight backend index while deep search runs.
+    applyFilters();
+    if (!state.searching) return;
+
     searchTimer = window.setTimeout(() => {
       searchTimer = 0;
       void runBackendSearch(sequence);
     }, 180);
-    $('#learningSearchField')?.classList.toggle('has-value', Boolean(clean(state.term)));
-    renderReaderNavigation();
   }
 
   function clearSearch({ focus = true } = {}) {
@@ -1066,12 +1072,12 @@
     state.backendResults = null;
     state.searching = false;
     const firstChapter = state.items.find(isChapter) || null;
-    state.category = firstChapter ? chapterKey(firstChapter) : '';
+    state.category = '';
     state.selectedId = firstChapter?._id || state.items[0]?._id || '';
     const input = $('#learningSearch');
     const category = $('#learningCategory');
     if (input) input.value = '';
-    if (category) category.value = state.category;
+    if (category) category.value = '';
     applyFilters();
     input?.focus();
   }
@@ -1119,6 +1125,10 @@
         state.searchSequence += 1;
         const sequence = state.searchSequence;
         window.clearTimeout(searchTimer);
+        searchTimer = 0;
+        state.backendResults = null;
+        state.searching = true;
+        applyFilters();
         searchTimer = window.setTimeout(() => {
           searchTimer = 0;
           void runBackendSearch(sequence);
