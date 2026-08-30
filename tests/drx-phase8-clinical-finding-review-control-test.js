@@ -27,6 +27,18 @@ assert.match(sql,/revoke all on function public\.drx_phase8_review_clinical_find
 assert.match(sql,/grant execute on function public\.drx_phase8_review_clinical_finding_v1\(jsonb\)\s+to service_role/i);
 assert.doesNotMatch(sql,/update\s+public\.dose_rules_v2/i);
 assert.doesNotMatch(sql,/update\s+public\.dose_rules_v3/i);
+const indexSql=fs.readFileSync(
+  'supabase/migrations/20260830205514_drx_phase8v_clinical_finding_snapshot_index.sql',
+  'utf8'
+);
+const indexRollback=fs.readFileSync(
+  'supabase/drx-phase8v-clinical-finding-snapshot-index-rollback.sql',
+  'utf8'
+);
+
+assert.match(indexSql,/drx_phase8_clinical_finding_snapshot_idx/);
+assert.match(indexSql,/source_snapshot_id/);
+assert.doesNotMatch(indexRollback,/\bcascade\b/i);
 assert.doesNotMatch(rollback,/\bcascade\b/i);
 assert.match(rollback,/rollback blocked: clinical finding review decisions exist/i);
 
