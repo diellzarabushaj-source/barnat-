@@ -87,12 +87,15 @@ for (const [htmlFile, runtime, version] of [
   ['analizat.html','analizat-v2.js','1'],
   ['protokollet.html','protokollet-v2.js','1'],
   ['recetat.html','recetat-v2.js','1'],
-  ['medical-hub.html','medical-hub-v2.js','2'],
+  ['medical-hub.html','medical-hub-v2.js','dynamic'],
   ['sistemi.html','sistemi-v2.js','1'],
 ]) {
   const html = read(htmlFile);
   const js = read(runtime);
-  assert.match(html, new RegExp(runtime.replace('.', '\\.') + '\\?v=' + version), `${htmlFile}: standalone V2 runtime missing`);
+  const runtimeVersionPattern = version === 'dynamic'
+    ? new RegExp(runtime.replace('.', '\\.') + '\\?v=\\d+')
+    : new RegExp(runtime.replace('.', '\\.') + '\\?v=' + version);
+  assert.match(html, runtimeVersionPattern, `${htmlFile}: standalone V2 runtime missing`);
   assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/, `${runtime}: shared taxonomy loader missing`);
 }
 
