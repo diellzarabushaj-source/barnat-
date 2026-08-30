@@ -1217,20 +1217,49 @@
 
   function buildCopyText(calculation) {
     if (!calculation || calculation.outcome !== 'CALCULATED') return '';
-    const unit = calculation.doseUnit || '';
-    const dose = calculation.isRate
-      ? amountText(calculation.ratePerHour, `${unit}/orë`)
-      : amountText(calculation.perDose, unit);
-    const lines = [
-      calculation.drug?.name,
+    const product=state.product || {};
+    const unit=calculation.doseUnit || '';
+    const dose=calculation.isRate
+      ? amountText(calculation.ratePerHour,`${unit}/orë`)
+      : amountText(calculation.perDose,unit);
+    const schedule=calculation.isRate
+      ? 'infuzion i vazhdueshëm'
+      : calculation.dosesPerDay
+        ? `${formatNumber(calculation.dosesPerDay)} herë/ditë`
+        : productSchedule(product) || 'sipas regjimit';
+    const doseSource=calculation.source || product.source || {};
+    const identitySource=product.phase9Context?.source || {};
+    const productLine=[
+      product.name || calculation.drug?.name,
+      product.strength,
+      product.form,
+    ].filter(Boolean).join(' · ');
+
+    return [
+      'Rx — DRx',
+      productLine,
       calculation.indication ? `Indikacioni: ${calculation.indication}` : '',
       dose ? `Doza: ${dose}` : '',
-      calculation.measure?.min ? `Vëllimi: ${amountText({ min:calculation.measure.min.amount, max:calculation.measure.max?.amount }, calculation.measure.min.unit)}` : '',
-      calculation.dosesPerDay ? `Frekuenca: ${formatNumber(calculation.dosesPerDay)} herë/ditë` : '',
-      calculation.daily?.min !== null && calculation.daily?.min !== undefined ? `Totali ditor: ${amountText(calculation.daily, unit)}` : '',
+      calculation.measure?.min
+        ? `Sasia për administrim: ${amountText({min:calculation.measure.min.amount,max:calculation.measure.max?.amount},calculation.measure.min.unit)}`
+        : '',
+      `Frekuenca: ${schedule}`,
       calculation.route ? `Rruga: ${calculation.route}` : '',
-    ].filter(Boolean);
-    return lines.join('\n');
+      calculation.daily?.min !== null && calculation.daily?.min !== undefined
+        ? `Totali ditor: ${amountText(calculation.daily,unit)}`
+        : '',
+      doseSource.section ? `Burimi i dozimit: §${doseSource.section}` : '',
+      doseSource.url ? `URL burimi: ${doseSource.url}` : '',
+      identitySource.documentVersion
+        ? `Versioni i burimit të produktit: ${identitySource.documentVersion}`
+        : '',
+      identitySource.documentDate
+        ? `Data e burimit të produktit: ${identitySource.documentDate}`
+        : '',
+      product.phase9Context?.v3Published
+        ? `Konteksti V3: ${product.phase9Context.v3ProductKey || 'published'} · v${product.phase9Context.v3VersionNo || 1}`
+        : 'Runtime: V2 fallback',
+    ].filter(Boolean).join('\n');
   }
 
   function renderOutcomeBlock(calculation) {
@@ -1310,9 +1339,20 @@
     }
 
     block.append(sourceBlock(calculation.source));
+
+    state.lastCopyText=buildCopyText(calculation);
+    if(state.lastCopyText){
+      const rx=element('details','phase9-prescription-preview');
+      const summary=element('summary',null,'Receta / skema e përshkrimit');
+      const pre=element('pre','phase9-prescription-text');
+      pre.textContent=state.lastCopyText;
+      rx.append(summary,pre);
+      block.append(rx);
+    }
+
     elements.calculationBody.append(block);
-    state.lastCopyText = buildCopyText(calculation);
-    elements.copy.hidden = !state.lastCopyText;
+    elements.copy.hidden=!state.lastCopyText;
+    if(!elements.copy.hidden) elements.copy.textContent='Kopjo për recetë';
     setStatus('Doza u llogarit nga serveri për regjimin e lidhur.', 'success');
   }
 

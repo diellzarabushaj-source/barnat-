@@ -557,6 +557,10 @@
     {
       "name": "drx_phase9d_product_context",
       "version": "20260830220957"
+    },
+    {
+      "name": "drx_phase9e_frontend_foundation_status",
+      "version": "20260830221548"
     }
   ]
 }
