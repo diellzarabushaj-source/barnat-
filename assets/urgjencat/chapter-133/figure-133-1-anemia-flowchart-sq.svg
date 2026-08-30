@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1450" viewBox="0 0 1900 1450"><defs><marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#333"/></marker>
+<style>.h{font:700 28px Arial,sans-serif;fill:#111}.t{font:700 18px Arial,sans-serif;fill:#111}.s{font:16px Arial,sans-serif;fill:#111}.sm{font:14px Arial,sans-serif;fill:#111}.node{stroke:#555;stroke-width:1.4}.ln{stroke:#222;stroke-width:2;fill:none;marker-end:url(#m)}</style></defs><rect width="1900" height="1450" fill="white"/>
+<text x="950" y="45" class="h" text-anchor="middle">Diagrami i vlerësimit të anemisë</text>
+<rect x="865" y="80" width="170" height="56" rx="6" class="node" fill="#f2eaf6"/><text x="950" y="114" class="t" text-anchor="middle">Anemia</text>
+<path d="M950 136 L950 190" class="ln"/>
+<path d="M950 190 L360 190 L360 245" class="ln"/><path d="M950 190 L950 245" class="ln"/><path d="M950 190 L1540 190 L1540 245" class="ln"/>
+<rect x="275" y="245" width="170" height="50" rx="6" class="node" fill="#f2eaf6"/><text x="360" y="276" class="t" text-anchor="middle">MCV i ulët</text>
+<rect x="865" y="245" width="170" height="50" rx="6" class="node" fill="#f2eaf6"/><text x="950" y="276" class="t" text-anchor="middle">MCV normal</text>
+<rect x="1455" y="245" width="170" height="50" rx="6" class="node" fill="#f2eaf6"/><text x="1540" y="276" class="t" text-anchor="middle">MCV i rritur</text>
+<!-- low MCV -->
+<path d="M360 295 L220 345" class="ln"/><path d="M360 295 L500 345" class="ln"/>
+<rect x="135" y="345" width="170" height="48" rx="6" class="node" fill="#fbe6dc"/><text x="220" y="375" class="t" text-anchor="middle">RDW i rritur</text>
+<rect x="415" y="345" width="170" height="48" rx="6" class="node" fill="#fbe6dc"/><text x="500" y="375" class="t" text-anchor="middle">RDW normal</text>
+<path d="M220 393 L120 455" class="ln"/><path d="M220 393 L320 455" class="ln"/>
+<rect x="45" y="455" width="150" height="58" rx="5" class="node" fill="#e8f6ee"/><text x="57" y="481" class="s">Ferritinë e ulët</text>
+<rect x="245" y="455" width="180" height="58" rx="5" class="node" fill="#e8f6ee"/><text x="257" y="481" class="s">Ferritinë e ulët</text><text x="257" y="501" class="s">ose normale</text>
+<path d="M120 513 L120 575" class="ln"/><path d="M335 513 L335 575" class="ln"/>
+<rect x="40" y="575" width="160" height="56" rx="5" class="node" fill="#e8f6ee"/><text x="52" y="601" class="s">Mungesë hekuri</text>
+<rect x="245" y="575" width="185" height="82" rx="5" class="node" fill="#e8f6ee"/><text x="257" y="601" class="s">• Mungesë hekuri</text><text x="257" y="621" class="s">• Sëmundje kronike</text>
+<path d="M500 393 L450 455" class="ln"/><path d="M500 393 L650 455" class="ln"/>
+<rect x="370" y="455" width="170" height="58" rx="5" class="node" fill="#e8f6ee"/><text x="382" y="481" class="s">Ferritinë normale</text>
+<rect x="580" y="455" width="180" height="58" rx="5" class="node" fill="#e8f6ee"/><text x="592" y="481" class="s">RBC normal</text><text x="592" y="501" class="s">ose i rritur</text>
+<path d="M455 513 L455 575" class="ln"/><path d="M670 513 L670 575" class="ln"/>
+<rect x="355" y="575" width="200" height="120" rx="5" class="node" fill="#e8f6ee"/><text x="367" y="601" class="s">• Sëmundje kronike</text><text x="367" y="621" class="s">• Insuficiencë renale kronike</text><text x="367" y="641" class="s">• Anemi sideroblastike</text><text x="367" y="661" class="s">• Mungesë hekuri</text>
+<rect x="590" y="575" width="160" height="56" rx="5" class="node" fill="#e8f6ee"/><text x="602" y="601" class="s">Talasemi</text>
+<!-- normal MCV -->
+<path d="M950 295 L950 600" stroke="#222" stroke-width="2"/>
+<path d="M950 600 L820 650" class="ln"/><path d="M950 600 L1080 650" class="ln"/>
+<rect x="730" y="650" width="180" height="55" rx="6" class="node" fill="#fbe6dc"/><text x="820" y="683.5" class="t" text-anchor="middle">Retikulocite normale</text>
+<rect x="990" y="650" width="180" height="55" rx="6" class="node" fill="#fbe6dc"/><text x="1080" y="683.5" class="t" text-anchor="middle">Retikulocite të rritura</text>
+<path d="M820 705 L750 765" class="ln"/><path d="M820 705 L890 765" class="ln"/>
+<rect x="680" y="765" width="150" height="55" rx="5" class="node" fill="#e8f6ee"/><text x="692" y="791" class="s">RDW normal</text>
+<rect x="845" y="765" width="150" height="55" rx="5" class="node" fill="#e8f6ee"/><text x="857" y="791" class="s">RDW i rritur</text>
+<path d="M755 820 L755 885" class="ln"/><path d="M920 820 L920 885" class="ln"/>
+<rect x="650" y="885" width="220" height="82" rx="5" class="node" fill="#e8f6ee"/><text x="662" y="911" class="s">• Anemi e sëmundjes kronike</text><text x="662" y="931" class="s">• Anemi nga insuficienca renale</text>
+<rect x="845" y="885" width="180" height="82" rx="5" class="node" fill="#e8f6ee"/><text x="857" y="911" class="s">• Mungesë hekuri,</text><text x="857" y="931" class="s">  B12 ose folati</text>
+<path d="M1080 705 L1035 765" class="ln"/><path d="M1080 705 L1190 765" class="ln"/>
+<rect x="970" y="765" width="170" height="55" rx="5" class="node" fill="#e8f6ee"/><text x="982" y="791" class="s">Coombs pozitiv</text>
+<rect x="1160" y="765" width="180" height="55" rx="5" class="node" fill="#e8f6ee"/><text x="1172" y="791" class="s">Coombs negativ</text>
+<path d="M1055 820 L1055 885" class="ln"/><path d="M1250 820 L1250 885" class="ln"/>
+<rect x="970" y="885" width="170" height="56" rx="5" class="node" fill="#e8f6ee"/><text x="982" y="911" class="s">Shkaqe autoimune</text>
+<rect x="1150" y="885" width="260" height="122" rx="5" class="node" fill="#e8f6ee"/><text x="1162" y="911" class="s">• Mungesë G6PD</text><text x="1162" y="931" class="s">• Hemoglobinopati</text><text x="1162" y="951" class="s">• Membranopati eritrocitare</text><text x="1162" y="971" class="s">• Hemolizë mikroangiopatike</text>
+<!-- elevated MCV -->
+<path d="M1540 295 L1440 345" class="ln"/><path d="M1540 295 L1650 345" class="ln"/>
+<rect x="1355" y="345" width="170" height="48" rx="6" class="node" fill="#fbe6dc"/><text x="1440" y="375" class="t" text-anchor="middle">RDW i rritur</text>
+<rect x="1565" y="345" width="170" height="48" rx="6" class="node" fill="#fbe6dc"/><text x="1650" y="375" class="t" text-anchor="middle">RDW normal</text>
+<path d="M1440 393 L1440 455" class="ln"/><path d="M1650 393 L1650 455" class="ln"/>
+<rect x="1350" y="455" width="180" height="82" rx="5" class="node" fill="#e8f6ee"/><text x="1362" y="481" class="s">• Mungesë e B12</text><text x="1362" y="501" class="s">• Mungesë folati</text>
+<rect x="1540" y="455" width="250" height="145" rx="5" class="node" fill="#e8f6ee"/><text x="1552" y="481" class="s">• Abuzim me alkool</text><text x="1552" y="501" class="s">• Sëmundje hepatike</text><text x="1552" y="521" class="s">• Kimioterapi</text><text x="1552" y="541" class="s">• Anemi aplastike</text><text x="1552" y="561" class="s">• Anemi sideroblastike</text><text x="1552" y="581" class="s">• Vlerë e rreme laboratorike</text>
+<text x="170" y="1110" class="sm">MCV = vëllimi mesatar korpuskular</text>
+<text x="170" y="1135" class="sm">RDW = gjerësia e shpërndarjes së eritrociteve</text>
+<text x="170" y="1160" class="sm">RBC = numri i eritrociteve</text>
+<text x="170" y="1185" class="sm">G6PD = glukozë-6-fosfat dehidrogjenazë</text>
+<text x="170" y="1210" class="sm">CRF = insuficiencë renale kronike</text>
+<text x="950" y="1370" class="sm" text-anchor="middle">Figura e rikrijuar në shqip sipas Figurës 133-1 të Tintinalli, botimi 8.</text>
+</svg>
