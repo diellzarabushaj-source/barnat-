@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500"><style>
+text{font-family:Arial,sans-serif;fill:#111}.h{font-size:28px;font-weight:700}.s{font-size:20px}.sm{font-size:17px}.box{fill:#f8f2ee;stroke:#555;stroke-width:2}.b2{fill:#eef5ff;stroke:#4e6682;stroke-width:2}.b3{fill:#f3eef8;stroke:#7b5c93;stroke-width:2}.a{stroke:#222;stroke-width:3;fill:none;marker-end:url(#m)}.lab{font-size:19px;font-weight:700}</style><rect width="1200" height="1500" fill="white"/>
+<text x="600" y="55" text-anchor="middle" class="h">Rregulli i nëntësheve për vlerësimin e përqindjes së djegies</text>
+<circle cx="480" cy="190" r="55" fill="#ead2bf" stroke="#555" stroke-width="2"/>
+<rect x="420" y="245" width="120" height="300" rx="50" fill="#e7d5c5" stroke="#555" stroke-width="2"/>
+<rect x="325" y="260" width="80" height="300" rx="35" fill="#d9c4d6" stroke="#555" stroke-width="2"/>
+<rect x="555" y="260" width="80" height="300" rx="35" fill="#d9c4d6" stroke="#555" stroke-width="2"/>
+<rect x="420" y="545" width="55" height="430" rx="25" fill="#e6a99e" stroke="#555" stroke-width="2"/>
+<rect x="485" y="545" width="55" height="430" rx="25" fill="#e6a99e" stroke="#555" stroke-width="2"/>
+<circle cx="480" cy="540" r="28" fill="#ead2bf" stroke="#555" stroke-width="2"/>
+<line x1="535" y1="190" x2="760" y2="190" stroke="#222" stroke-width="2"/><text x="780" y="198" class="lab">Koka dhe qafa: 9%</text>
+<line x1="540" y1="330" x2="760" y2="300" stroke="#222" stroke-width="2"/><text x="780" y="305" class="lab">Trungu përpara: 18%</text>
+<line x1="540" y1="370" x2="760" y2="380" stroke="#222" stroke-width="2"/><text x="780" y="385" class="lab">Trungu prapa: 18%</text>
+<line x1="635" y1="410" x2="760" y2="470" stroke="#222" stroke-width="2"/><text x="780" y="477" class="lab">Secili krah: 9%</text>
+<line x1="510" y1="540" x2="760" y2="560" stroke="#222" stroke-width="2"/><text x="780" y="567" class="lab">Perineumi: 1%</text>
+<line x1="540" y1="740" x2="760" y2="720" stroke="#222" stroke-width="2"/><text x="780" y="727" class="lab">Secila këmbë: 18%</text>
+<text x="600" y="1120" text-anchor="middle" class="s">Për djegie të vogla, pjesa e pasme e dorës së pacientit ≈ 1% e sipërfaqes trupore.</text>
+</svg>
