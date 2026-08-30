@@ -50,7 +50,18 @@ async function fetchWorkbook(url, label) {
     if (!buffer.length || buffer.length > MAX_WORKBOOK_BYTES) {
       throw new Error(`${label}: madhësi e pavlefshme (${buffer.length} bytes)`);
     }
-    return XLSX.read(buffer, { type:'buffer', cellDates:true });
+    const workbook = XLSX.read(buffer, { type:'buffer', cellDates:true });
+    Object.defineProperty(workbook, '__medindexSourceMeta', {
+      enumerable:false,
+      configurable:false,
+      writable:false,
+      value:{
+        sha256:crypto.createHash('sha256').update(buffer).digest('hex'),
+        lastModified:response.headers.get('last-modified') || null,
+        byteLength:buffer.length,
+      },
+    });
+    return workbook;
   } finally {
     clearTimeout(timer);
   }
@@ -60,6 +71,84 @@ function sheetRows(workbook, sheetName, range = undefined) {
   const sheet = workbook.Sheets[sheetName];
   if (!sheet) throw new Error(`Mungon sheet-i ${sheetName}.`);
   return XLSX.utils.sheet_to_json(sheet, { defval:'', raw:false, ...(range === undefined ? {} : { range }) });
+}
+
+const REGISTRY_SOURCE_REF = 'gdrive:1SY2rb2Eqo3fVkRhgQ8ltJHCRrWyAUDvd';
+
+function registryRawRows(workbook) {
+  const sheet = workbook.Sheets.Sheet1;
+  if (!sheet) throw new Error('Mungon Sheet1 në regjistrin zyrtar.');
+  const matrix = XLSX.utils.sheet_to_json(sheet, { header:1, defval:'', raw:false });
+  const headers = (matrix[0] || []).map(clean);
+  const rows = [];
+  for (let index = 1; index < matrix.length; index += 1) {
+    const values = matrix[index] || [];
+    const registryNumber = clean(values[0]);
+    if (!/^\d+$/.test(registryNumber)) continue;
+    const rawPayload = {};
+    headers.forEach((header, column) => {
+      if (!header) return;
+      const value = clean(values[column]);
+      rawPayload[header] = value || null;
+    });
+    rows.push({
+      source_row_number:index + 1,
+      raw_payload:rawPayload,
+    });
+  }
+  return rows;
+}
+
+async function rpc(name, body = {}) {
+  const { data } = await neonRequest(`rpc/${name}`, {
+    method:'POST',
+    body,
+    prefer:'return=representation',
+  });
+  return data;
+}
+
+async function archiveRegistrySource(workbook) {
+  const source = workbook.__medindexSourceMeta || {};
+  if (!/^[0-9a-f]{64}$/.test(String(source.sha256 || ''))) {
+    throw new Error('DRx Phase 2 raw ledger requires the exact registry XLSX SHA-256.');
+  }
+  const rows = registryRawRows(workbook);
+  if (!rows.length) throw new Error('DRx Phase 2 raw ledger received zero registry rows.');
+
+  const batchId = await rpc('drx_registry_begin_import_v1', {
+    p_batch_kind:'REGISTRY_RAW',
+    p_source_type:'google_drive_xlsx',
+    p_source_ref:REGISTRY_SOURCE_REF,
+    p_source_revision:source.lastModified,
+    p_source_sha256:source.sha256,
+    p_source_row_count:rows.length,
+    p_metadata:{
+      file_id:'1SY2rb2Eqo3fVkRhgQ8ltJHCRrWyAUDvd',
+      file_name:'Regjistri-i-Barnave-me-Klase-dhe-Perdorime.xlsx',
+      official_registry:true,
+      byte_length:source.byteLength || null,
+      ingestion:'sync-supabase-from-sheets',
+    },
+  });
+  if (!batchId) throw new Error('DRx Phase 2 raw ledger did not return a batch id.');
+
+  for (let index = 0; index < rows.length; index += 250) {
+    await rpc('drx_registry_append_rows_v1', {
+      p_batch_id:batchId,
+      p_rows:rows.slice(index, index + 250),
+    });
+  }
+  const finalized = await rpc('drx_registry_finalize_import_v1', { p_batch_id:batchId });
+  if (Number(finalized?.preserved_row_count) !== rows.length || finalized?.status !== 'FINALIZED') {
+    throw new Error(`DRx Phase 2 raw ledger finalize mismatch: ${JSON.stringify(finalized)}`);
+  }
+  return finalized;
+}
+
+async function applyRegistryCorrectionLedger() {
+  const result = await rpc('drx_registry_apply_corrections_v1', {});
+  return result || { updated_drugs:0 };
 }
 
 function keyFrom(row, columns) {
@@ -470,6 +559,8 @@ async function sync() {
 
     const drugs = registryRecords(registryBook);
     mergeTotals(totals, 'drugs', await upsertRows('drugs', drugs, 'registry_number'));
+    totals.byScope.registryRawLedger = await archiveRegistrySource(registryBook);
+    totals.byScope.registryCorrectionLedger = await applyRegistryCorrectionLedger();
 
     const databaseDrugs = await fetchAll('drugs', 'id,registry_number');
     const drugIds = new Map(databaseDrugs.map(item => [Number(item.registry_number), item.id]));

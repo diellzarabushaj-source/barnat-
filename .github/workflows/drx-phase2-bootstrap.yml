@@ -1,0 +1,56 @@
+name: DRx Phase 2 bootstrap ledger
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/drx-phase2-bootstrap.js"
+      - "scripts/sync-supabase-from-sheets.js"
+      - "tests/drx-phase2-registry-ledger-test.js"
+      - ".github/workflows/drx-phase2-bootstrap.yml"
+      - "supabase/migrations/20260830142544_drx_phase2_immutable_registry_ledger.sql"
+      - "supabase/migrations/20260830143037_drx_phase2_correction_matching_guard.sql"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: drx-phase2-bootstrap-ledger
+  cancel-in-progress: false
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install production dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          pnpm install --frozen-lockfile --prod
+
+      - name: Phase 2 contract test
+        run: node tests/drx-phase2-registry-ledger-test.js
+
+      - name: Bootstrap immutable registry and correction ledgers
+        run: node scripts/drx-phase2-bootstrap.js
+
+      - name: Upload Phase 2 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-phase2-bootstrap-evidence
+          path: drx-phase2-bootstrap-evidence.json
+          if-no-files-found: error
+          retention-days: 30
