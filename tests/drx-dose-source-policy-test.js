@@ -171,6 +171,19 @@ assert.equal(invima.accepted, true);
 assert.equal(invima.publicationEligible, false);
 assert.equal(Policy.publicationDecision(invima).allowed, false);
 
+const northMacedonia = Policy.rankCandidate({
+  url:'https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/52577',
+  documentType:'PRODUCT_REGISTER',
+  documentDate:'2013-09-12',
+  productSpecific:true,
+  productMatch:true,
+  hasDoseSection:true,
+});
+assert.equal(northMacedonia.tier.key, 'NON_EU_REGULATOR');
+assert.equal(northMacedonia.accepted, true);
+assert.equal(northMacedonia.publicationEligible, false);
+assert.equal(Policy.publicationDecision(northMacedonia).allowed, false);
+
 const mediately = Policy.rankCandidate({
   url:'https://mediately.co/drugs/example',
   documentType:'DRUG_MONOGRAPH',

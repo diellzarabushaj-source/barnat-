@@ -461,6 +461,14 @@
     {
       "name": "drx_phase8l_scope_phase6_sources_after_exact_capture",
       "version": "20260830180217"
+    },
+    {
+      "name": "drx_phase8m_clinical_reference_pipeline",
+      "version": "20260830192720"
+    },
+    {
+      "name": "drx_phase8n_exact_product_identity_review",
+      "version": "20260830192855"
     }
   ]
 }

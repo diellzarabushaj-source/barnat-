@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-source-policy-v1",
-  "updatedAt": "2026-08-29",
+  "updatedAt": "2026-08-30",
   "principles": {
     "authoritativeFirst": true,
     "productSpecificPreferred": true,
@@ -133,7 +133,8 @@
       "domains": [
         "invima.gov.co",
         "www.invima.gov.co",
-        "webservice.invima.gov.co"
+        "webservice.invima.gov.co",
+        "lekovi.zdravstvo.gov.mk"
       ],
       "acceptedDocumentTypes": [
         "PRODUCT_REGISTER",

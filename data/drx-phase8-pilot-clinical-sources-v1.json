@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "drx-phase8-pilot-clinical-sources-v1",
+  "updatedAt": "2026-08-30",
+  "purpose": "Clinical-reference SmPC evidence for two Phase 8 pilots. Exact market-product identity remains pinned to the separate immutable MK registry captures.",
+  "publicationAllowed": false,
+  "automaticVerificationAllowed": false,
+  "sources": [
+    {
+      "drugId": "c8cd0467-da73-479c-b8e8-b785af833f59",
+      "v2ProductKey": "PROD-COALMACIN-400-57-5ML-PDID149",
+      "exactMarketSnapshotId": "3b87fa53635898f326aa1feeb65196c125a3e3a250062bfd43fec4e89e93f54e",
+      "clinicalSourceKey": "emc-10038-phase8-clinical-ref",
+      "url": "https://www.medicines.org.uk/emc/product/10038/smpc",
+      "expectedTier": "EMC",
+      "referenceRole": "CLINICAL_REFERENCE_ONLY",
+      "productNameTokens": [
+        "Augmentin Duo",
+        "400/57",
+        "oral suspension"
+      ],
+      "compositionTokens": [
+        "400 mg",
+        "57 mg",
+        "amoxicillin",
+        "clavulanic acid"
+      ],
+      "clinicalTokens": [
+        "25 mg/3.6 mg/kg/day",
+        "45 mg/6.4 mg/kg/day",
+        "two divided doses",
+        "renal impairment"
+      ]
+    },
+    {
+      "drugId": "84a1cf4a-6568-41d7-8d13-0f2b7715acae",
+      "v2ProductKey": "PROD-PARACETAMOL-ALKALOID-500-PDID1457",
+      "exactMarketSnapshotId": "c3ead98126480c75deee7c70f84a3f67252a08223d833b34782b783b3c58eabd",
+      "clinicalSourceKey": "emc-13495-phase8-clinical-ref",
+      "url": "https://www.medicines.org.uk/emc/product/13495/smpc",
+      "expectedTier": "EMC",
+      "referenceRole": "CLINICAL_REFERENCE_ONLY",
+      "productNameTokens": [
+        "Paracetamol",
+        "500mg"
+      ],
+      "compositionTokens": [
+        "500 mg",
+        "paracetamol"
+      ],
+      "clinicalTokens": [
+        "6-8 years",
+        "10-12 years",
+        "every 4-6 hours",
+        "maximum of 4 doses"
+      ]
+    }
+  ]
+}

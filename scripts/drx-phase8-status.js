@@ -52,10 +52,10 @@ async function main() {
   assert.equal(captureStatus.exact_source_discovery_candidates,2);
   assert.equal(captureStatus.exact_source_snapshot_ready,2);
   assert.equal(captureStatus.exact_source_capture_rows,2);
-  assert.equal(captureStatus.exact_source_review_bindings,2);
-  assert.equal(captureStatus.exact_source_verified_bindings,0);
+  assert.equal(captureStatus.exact_source_review_bindings,0);
+  assert.equal(captureStatus.exact_source_verified_bindings,2);
   assert.equal(captureStatus.exact_source_rejected_bindings,0);
-  assert.equal(captureStatus.pilot_review_pending,2);
+  assert.equal(captureStatus.pilot_review_pending,0);
   assert.equal(captureStatus.pilot_ready_for_v3_build,0);
   assert.equal(captureStatus.pilot_source_snapshot_missing,0);
   assert.equal(captureStatus.invalid_ingested_discovery_rows,0);

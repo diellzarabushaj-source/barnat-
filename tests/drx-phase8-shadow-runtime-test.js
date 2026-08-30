@@ -86,6 +86,15 @@ const captureWorkflow = fs.readFileSync(
 const captureStatusGate = fs.readFileSync(
   'supabase/migrations/20260830175458_drx_phase8k_exact_source_capture_status_gate.sql','utf8'
 );
+const clinicalReference = fs.readFileSync(
+  'supabase/migrations/20260830192720_drx_phase8m_clinical_reference_pipeline.sql','utf8'
+);
+const exactIdentityReview = fs.readFileSync(
+  'supabase/migrations/20260830192855_drx_phase8n_exact_product_identity_review.sql','utf8'
+);
+const clinicalReferenceWorkflow = fs.readFileSync(
+  '.github/workflows/drx-phase8-pilot-clinical-reference.yml','utf8'
+);
 const handler = fs.readFileSync('lib/dose-product-fast-path-handler.js','utf8');
 const workflow = fs.readFileSync('.github/workflows/drx-phase8-shadow-gate.yml','utf8');
 const rollback = fs.readFileSync('docs/DRX-PHASE8-ROLLBACK.md','utf8');
@@ -161,6 +170,15 @@ assert.match(captureStatusGate,/source_capture_gate_pass/);
 assert.match(captureStatusGate,/human_review_required',true/);
 assert.match(captureStatusGate,/automatic_verification_enabled',false/);
 assert.match(captureStatusGate,/publication_allowed',false/);
+
+assert.match(clinicalReference,/phase8_pilot_clinical_references_v1/);
+assert.match(clinicalReference,/CLINICAL_REFERENCE_ONLY/);
+assert.match(clinicalReference,/CLINICAL_REFERENCE_SNAPSHOT_MISSING/);
+assert.match(clinicalReference,/drx_phase8_register_clinical_reference_v1/);
+assert.match(clinicalReference,/automatic_rule_publication_allowed boolean not null default false/);
+assert.match(exactIdentityReview,/phase8-explicit-evidence-review/);
+assert.match(exactIdentityReview,/does not verify or publish dosing rules/);
+assert.match(clinicalReferenceWorkflow,/needs: archive/);
 
 assert.match(handler,/runtime:'v2-shadow'/);
 assert.match(handler,/X-DRx-Dose-Shadow/);

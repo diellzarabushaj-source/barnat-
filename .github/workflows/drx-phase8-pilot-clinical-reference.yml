@@ -1,0 +1,90 @@
+name: DRx Phase 8 pilot clinical reference
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "data/drx-phase8-pilot-clinical-sources-v1.json"
+      - "data/drx-dose-source-policy-v1.json"
+      - "scripts/build-drx-phase8-pilot-clinical-extraction.js"
+      - "scripts/ingest-drx-phase8-pilot-clinical-sources.js"
+      - "tests/drx-phase8-pilot-clinical-reference-test.js"
+      - "tests/drx-dose-source-policy-test.js"
+      - "supabase/migrations/20260830192720_drx_phase8m_clinical_reference_pipeline.sql"
+      - "supabase/migrations/20260830192855_drx_phase8n_exact_product_identity_review.sql"
+      - "supabase/drx-phase8m-clinical-reference-rollback.sql"
+      - "supabase/drx-phase8n-exact-product-review-rollback.sql"
+      - ".github/workflows/drx-phase8-pilot-clinical-reference.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: drx-phase8-pilot-clinical-reference
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Static Phase 8 clinical-reference contract
+        run: |
+          node tests/drx-dose-source-policy-test.js
+          node tests/drx-dose-source-archive-test.js
+          node tests/drx-phase8-pilot-clinical-reference-test.js
+
+      - name: Fetch, hash and parse two authoritative SmPC references
+        run: node scripts/build-drx-phase8-pilot-clinical-extraction.js
+
+      - name: Upload immutable clinical-reference archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-phase8-pilot-clinical-reference-archive
+          path: artifacts/drx-phase8-pilot-clinical
+          if-no-files-found: error
+          retention-days: 90
+
+  ingest:
+    needs: archive
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      MEDINDEX_SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Download immutable clinical-reference archive
+        uses: actions/download-artifact@v4
+        with:
+          name: drx-phase8-pilot-clinical-reference-archive
+          path: artifacts/drx-phase8-pilot-clinical
+
+      - name: Ingest provenance and register review-only references
+        run: node scripts/ingest-drx-phase8-pilot-clinical-sources.js
+
+      - name: Upload ingest evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-phase8-pilot-clinical-reference-ingest-evidence
+          path: artifacts/drx-phase8-pilot-clinical/ingest-evidence.json
+          if-no-files-found: warn
+          retention-days: 90
