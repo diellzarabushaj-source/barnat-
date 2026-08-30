@@ -13,6 +13,7 @@ const gateway=read('lib/medindex-data-api.js');
 const client=read('phase9-personal-entities-client.js');
 const phase9Migration=read('supabase/migrations/20260830220141_drx_phase9a_personal_entity_storage.sql');
 const nativeMigration=read('supabase/migrations/20260827111357_native_user_notes_and_profile_avatars.sql');
+const statusMigration=read('supabase/migrations/20260830221548_drx_phase9e_frontend_foundation_status.sql');
 
 cp.execFileSync(process.execPath,['--check',path.join(ROOT,'phase9-personal-entities-client.js')],{stdio:'pipe'});
 cp.execFileSync(process.execPath,['--check',path.join(ROOT,'lib/user-library.js')],{stdio:'pipe'});
@@ -49,10 +50,14 @@ assert.match(phase9Migration,/user_id=\(select auth\.uid\(\)\)/);
 assert.match(phase9Migration,/private\.is_active_user\(\)/);
 assert.match(phase9Migration,/entity_type in \('drug','substance','variant','product'\)/);
 
-// Native notes retain RLS protection while Phase 9 adds polymorphic identity.
-assert.match(nativeMigration,/ENABLE ROW LEVEL SECURITY/i);
-assert.match(nativeMigration,/FORCE ROW LEVEL SECURITY/i);
+// Native notes keep their original persistence constraints while Phase 9 adds
+// polymorphic identity. Live owner-policy count is asserted by the Phase 9
+// status gate instead of pretending RLS was introduced by this native-note file.
+assert.match(nativeMigration,/char_length\(content\) <= 2000/i);
 assert.match(phase9Migration,/user_notes_user_entity_unique_idx/);
+assert.match(statusMigration,/note_owner_policy_count/);
+assert.match(statusMigration,/noteOwnerPolicyCount/);
+assert.match(statusMigration,/m\.note_owner_policy_count>=4/);
 assert.match(phase9Migration,/entity_type='drug' and drug_id is not null and entity_key=drug_id::text/i);
 assert.match(phase9Migration,/entity_type in \('substance','variant','product'\) and drug_id is null/i);
 
