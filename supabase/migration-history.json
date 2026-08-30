@@ -581,6 +581,10 @@
     {
       "name": "drx_phase10b_controlled_traffic_plumbing",
       "version": "20260830231042"
+    },
+    {
+      "name": "drx_phase10c_golden_and_parity_evidence",
+      "version": "20260830231548"
     }
   ]
 }

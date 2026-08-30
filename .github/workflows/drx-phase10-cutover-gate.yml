@@ -8,6 +8,9 @@ on:
     paths:
       - "supabase/migrations/20260830230458_drx_phase10a_cutover_control_and_legacy_write_audit.sql"
       - "supabase/migrations/20260830231042_drx_phase10b_controlled_traffic_plumbing.sql"
+      - "supabase/migrations/20260830231548_drx_phase10c_golden_and_parity_evidence.sql"
+      - "supabase/drx-phase10c-golden-and-parity-evidence-rollback.sql"
+      - "tests/drx-phase10-golden-parity-evidence-test.js"
       - "supabase/drx-phase10b-controlled-traffic-plumbing-rollback.sql"
       - "lib/dose-v3-cutover-control.js"
       - "tests/drx-phase10-controlled-traffic-test.js"
@@ -39,6 +42,8 @@ jobs:
         run: node tests/drx-phase10-cutover-control-test.js
       - name: Phase 10B controlled traffic plumbing
         run: node tests/drx-phase10-controlled-traffic-test.js
+      - name: Phase 10C golden and parity evidence
+        run: node tests/drx-phase10-golden-parity-evidence-test.js
       - name: Phase 10 legacy runtime consumer audit
         run: node scripts/drx-phase10-consumer-audit.js
       - name: P0 database integrity
