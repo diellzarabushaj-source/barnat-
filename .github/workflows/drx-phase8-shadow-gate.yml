@@ -10,6 +10,7 @@ on:
       - "supabase/migrations/20260830163913_drx_phase8b_review_candidates_exit_gate_hardening.sql"
       - "supabase/migrations/20260830165007_drx_phase8c_product_source_review_evidence.sql"
       - "supabase/migrations/20260830165050_drx_phase8d_review_evidence_status_hardening.sql"
+      - "supabase/migrations/20260830165536_drx_phase8e_cover_drx_foreign_keys.sql"
       - "lib/dose-v3-shadow.js"
       - "lib/dose-product-fast-path-handler.js"
       - "tests/drx-phase8-shadow-runtime-test.js"

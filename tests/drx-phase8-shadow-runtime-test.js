@@ -62,6 +62,9 @@ const reviewEvidence = fs.readFileSync(
 const statusHardening = fs.readFileSync(
   'supabase/migrations/20260830165050_drx_phase8d_review_evidence_status_hardening.sql','utf8'
 );
+const fkIndexes = fs.readFileSync(
+  'supabase/migrations/20260830165536_drx_phase8e_cover_drx_foreign_keys.sql','utf8'
+);
 const handler = fs.readFileSync('lib/dose-product-fast-path-handler.js','utf8');
 const workflow = fs.readFileSync('.github/workflows/drx-phase8-shadow-gate.yml','utf8');
 const rollback = fs.readFileSync('docs/DRX-PHASE8-ROLLBACK.md','utf8');
@@ -92,6 +95,11 @@ assert.match(statusHardening,/unresolved_source_identities/);
 assert.match(statusHardening,/strongest_review_candidates/);
 assert.match(statusHardening,/automatic_candidate_insert_enabled',false/);
 assert.match(statusHardening,/gate_pass',g\.exit_gate_pass/);
+
+assert.match(fkIndexes,/drx_clinical_indication_claim_source_doc_idx/);
+assert.match(fkIndexes,/drx_dose_product_source_binding_variant_idx/);
+assert.match(fkIndexes,/drx_identity_canonical_terms_concept_idx/);
+assert.match(fkIndexes,/drx_variant_clinical_route_idx/);
 
 assert.match(handler,/runtime:'v2-shadow'/);
 assert.match(handler,/X-DRx-Dose-Shadow/);
