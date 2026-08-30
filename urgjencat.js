@@ -371,6 +371,10 @@
     const subtopics = [...(lesson.subtopics || [])].sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
     const abbreviations = [...(lesson.abbreviations || [])].sort((a, b) => (Number(a.footnoteNumber) || 999) - (Number(b.footnoteNumber) || 999));
     const figures = [...(lesson.figures || [])];
+    const linkedFigureNumbers = new Set(
+      sections.flatMap(item => item.figureNumbers || []).map(value => String(value))
+    );
+    const unlinkedFigures = figures.filter(figure => !linkedFigureNumbers.has(String(figure.figureNumber)));
     const review = reviewMeta(lesson.reviewStatus);
 
     root.innerHTML = `
@@ -426,11 +430,11 @@
             `
             : `<div class="ec-quick-summary"><span>Përmbajtja</span><p>Ky mësim është krijuar në strukturën e re. Përmbajtja klinike do të plotësohet nga kapitulli përkatës i Tintinalli-t.</p></div>`}
 
-        ${figures.length && !sections.length ? `
+        ${unlinkedFigures.length ? `
           <section class="ec-footnotes ec-lesson-figures">
             <h3>Figurat e kapitullit</h3>
             <div class="ec-figure-overview">
-              ${figures.map(figureMarkup).join('')}
+              ${unlinkedFigures.map(figureMarkup).join('')}
             </div>
           </section>
         ` : ''}
