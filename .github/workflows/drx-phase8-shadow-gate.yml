@@ -15,9 +15,11 @@ on:
       - "supabase/migrations/20260830170127_drx_phase8g_exact_product_status_contract.sql"
       - "supabase/migrations/20260830171643_drx_phase8h_published_v2_exact_source_discovery.sql"
       - "supabase/migrations/20260830171727_drx_phase8i_pilot_comparator_status_contract.sql"
+      - "supabase/migrations/20260830200303_drx_phase8p_pilot_build_preflight.sql"
       - "lib/dose-v3-shadow.js"
       - "lib/dose-product-fast-path-handler.js"
       - "tests/drx-phase8-shadow-runtime-test.js"
+      - "tests/drx-phase8-pilot-build-preflight-test.js"
       - "scripts/drx-phase8-status.js"
       - "docs/DRX-PHASE8-ROLLBACK.md"
       - ".github/workflows/drx-phase8-shadow-gate.yml"
@@ -39,6 +41,8 @@ jobs:
           node-version: "24"
       - name: Static Phase 8 shadow contract
         run: node tests/drx-phase8-shadow-runtime-test.js
+      - name: Static Phase 8 pilot preflight contract
+        run: node tests/drx-phase8-pilot-build-preflight-test.js
       - name: Live Phase 8 gate
         run: node scripts/drx-phase8-status.js
       - name: Upload Phase 8 evidence
