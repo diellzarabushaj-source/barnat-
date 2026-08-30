@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1800" viewBox="0 0 1800 1800"><defs><marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#333"/></marker>
+<style>.h{font:700 30px Arial,sans-serif;fill:#111}.b{font:700 18px Arial,sans-serif;fill:#111}.s{font:16px Arial,sans-serif;fill:#111}.sm{font:14px Arial,sans-serif;fill:#111}.bx{stroke:#555;stroke-width:1.6}.ln{stroke:#222;stroke-width:2.5;fill:none;marker-end:url(#m)}.t{font:700 18px Arial,sans-serif;fill:#111}</style></defs><rect width="1800" height="1800" fill="white"/>
+<text x="900" y="50" class="h" text-anchor="middle">Protokolli për menaxhimin e gjendjes hiperglikemike hiperosmolare (HHS)</text>
+<rect x="640" y="90" width="520" height="70" rx="10" class="bx" fill="#fff1e8"/>
+  
+  <text x="654" y="118" class="s" text-anchor="start">Trajtimi i gjendjes hiperglikemike</text><text x="654" y="139" class="s" text-anchor="start">hiperosmolare</text>
+<path d="M900 160 L900 220" class="ln"/><path d="M900 190 L360 190 L360 250" class="ln"/><path d="M900 190 L1440 190 L1440 250" class="ln"/>
+<rect x="160" y="250" width="430" height="62" rx="10" class="bx" fill="#e8f6ea"/>
+  
+  <text x="174" y="278" class="s" text-anchor="start">Lëngje IV</text>
+<rect x="685" y="250" width="430" height="62" rx="10" class="bx" fill="#fff1e8"/>
+  
+  <text x="699" y="278" class="s" text-anchor="start">Insulinë</text>
+<rect x="1210" y="250" width="430" height="62" rx="10" class="bx" fill="#f3eafa"/>
+  
+  <text x="1224" y="278" class="s" text-anchor="start">Kalium</text>
+<path d="M375 312 L375 375" class="ln"/><rect x="155" y="375" width="440" height="80" rx="10" class="bx" fill="#e8f6ea"/>
+  
+  <text x="169" y="403" class="s" text-anchor="start">Jep NaCl 0.9% 1.0 L/orë.</text>
+<path d="M375 455 L375 520" class="ln"/><rect x="140" y="520" width="470" height="105" rx="10" class="bx" fill="#e8f6ea"/>
+  
+  <text x="154" y="548" class="s" text-anchor="start">Vlerëso Na+ të korrigjuar në serum dhe</text><text x="154" y="569" class="s" text-anchor="start">gjendjen e hidratimit.</text>
+<path d="M375 625 L245 690" class="ln"/><path d="M375 625 L505 690" class="ln"/>
+<rect x="70" y="690" width="340" height="90" rx="10" class="bx" fill="#e8f6ea"/>
+  
+  <text x="84" y="718" class="s" text-anchor="start">Na+ serik i lartë ose normal</text>
+<rect x="440" y="690" width="340" height="90" rx="10" class="bx" fill="#e8f6ea"/>
+  
+  <text x="454" y="718" class="s" text-anchor="start">Na+ serik i ulët</text>
+<path d="M240 780 L240 850" class="ln"/><path d="M610 780 L610 850" class="ln"/>
+<rect x="70" y="850" width="340" height="100" rx="10" class="bx" fill="#e8f6ea"/>
+  
+  <text x="84" y="878" class="s" text-anchor="start">NaCl 0.45% me 4–14 mL/kg/orë.</text>
+<rect x="440" y="850" width="340" height="100" rx="10" class="bx" fill="#e8f6ea"/>
+  
+  <text x="454" y="878" class="s" text-anchor="start">NaCl 0.9% me 4–14 mL/kg/orë.</text>
+
+<path d="M900 312 L900 375" class="ln"/><rect x="690" y="375" width="420" height="95" rx="10" class="bx" fill="#fff1e8"/>
+  
+  <text x="704" y="403" class="s" text-anchor="start">Infuzion IV insulinë 0.1–0.14 U/kg/orë.</text>
+<path d="M900 470 L900 540" class="ln"/><rect x="650" y="540" width="500" height="255" rx="10" class="bx" fill="#fff1e8"/>
+  
+  <text x="664" y="568" class="s" text-anchor="start">Syno ulje të glukozës rreth 50 mg/dL/orë (2.8</text><text x="664" y="589" class="s" text-anchor="start">mmol/L/orë). Nëse bie &gt;70 mg/dL/orë, ul insulinën në</text><text x="664" y="610" class="s" text-anchor="start">0.05 U/kg/orë. Nëse bie &lt;50 mg/dL/orë, rrite</text><text x="664" y="631" class="s" text-anchor="start">insulinën në 0.14–0.20 U/kg/orë.</text>
+<path d="M900 795 L900 865" class="ln"/><rect x="650" y="865" width="500" height="95" rx="10" class="bx" fill="#fff1e8"/>
+  
+  <text x="664" y="893" class="s" text-anchor="start">Kur glukoza serike ≤300 mg/dL (≤16.6 mmol/L).</text>
+<path d="M900 960 L900 1030" class="ln"/><rect x="625" y="1030" width="550" height="225" rx="10" class="bx" fill="#fff1e8"/>
+  
+  <text x="639" y="1058" class="s" text-anchor="start">Kalo në dekstrozë 5% me NaCl 0.45% dhe ule insulinën në</text><text x="639" y="1079" class="s" text-anchor="start">0.05 U/kg/orë për të mbajtur glukozën 200–250 mg/dL</text><text x="639" y="1100" class="s" text-anchor="start">derisa osmolariteti plazmatik të jetë ≤315 mOsm/kg.</text>
+<path d="M900 1255 L900 1325" class="ln"/><rect x="625" y="1325" width="550" height="190" rx="10" class="bx" fill="#fff1e8"/>
+  
+  <text x="639" y="1353" class="s" text-anchor="start">Kontrollo elektrolitet, BUN, kreatininën dhe glukozën</text><text x="639" y="1374" class="s" text-anchor="start">çdo 2 h derisa të stabilizohet. Pas zgjidhjes së HHS,</text><text x="639" y="1395" class="s" text-anchor="start">jep insulinë nënlëkurore sipas nevojës.</text>
+
+<path d="M1440 312 L1440 375" class="ln"/><rect x="1200" y="375" width="480" height="125" rx="10" class="bx" fill="#f3eafa"/>
+  
+  <text x="1214" y="403" class="s" text-anchor="start">Nëse K+ &lt;3.3 mEq/L, jep 40 mEq K+ derisa K+ të</text><text x="1214" y="424" class="s" text-anchor="start">jetë ≥3.3 mEq/L.</text>
+<path d="M1440 500 L1440 590" class="ln"/><rect x="1200" y="590" width="480" height="125" rx="10" class="bx" fill="#f3eafa"/>
+  
+  <text x="1214" y="618" class="s" text-anchor="start">Nëse K+ ≥5.0 mEq/L, mos jep K+, por kontrollo</text><text x="1214" y="639" class="s" text-anchor="start">kaliumin çdo 1–2 h.</text>
+<path d="M1440 715 L1440 805" class="ln"/><rect x="1200" y="805" width="480" height="150" rx="10" class="bx" fill="#f3eafa"/>
+  
+  <text x="1214" y="833" class="s" text-anchor="start">Nëse K+ ≥3.3 por &lt;5.0 mEq/L, jep K+ për të mbajtur</text><text x="1214" y="854" class="s" text-anchor="start">K+ serik 4–5 mEq/L.*</text>
+<text x="900" y="1600" class="sm" text-anchor="middle">* Përqendrimet e K+ ≥20 mEq/L duhet të jepen përmes linjës qendrore sipas burimit.</text>
+<text x="900" y="1630" class="sm" text-anchor="middle">HHS = gjendje hiperglikemike hiperosmolare · NaCl 0.9% = solucion fiziologjik · NaCl 0.45% = gjysmë-fiziologjik</text>
+<text x="900" y="1680" class="sm" text-anchor="middle">Figura e rikrijuar në shqip sipas Fig. 129-2 të Tintinalli, botimi 8.</text>
+</svg>
