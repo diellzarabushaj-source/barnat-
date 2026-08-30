@@ -74,3 +74,5 @@ assert.match(rollback, /V2/i);
 assert.match(rollback, /do not drop/i);
 
 console.log('DRx Phase 3 normalization contract: PASS');
+
+// CI trigger: Phase 3 atomic migration commit is live on main.
