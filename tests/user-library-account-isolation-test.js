@@ -24,7 +24,9 @@ assert.match(backend,/authUidFromRequest/);
 assert.match(backend,/user_id=eq\.\$\{encodeURIComponent\(userId\)\}/);
 assert.match(backend,/fetchRows\('user_favorites'/);
 assert.match(backend,/fetchRows\('user_notes'/);
-assert.match(backend,/user_id:user\.id/);
+assert.match(backend,/const storageUid = UserIdentity\.storageUidFromUser\(user\)/);
+assert.match(backend,/user_id:storageUid/);
+assert.match(backend,/user_id:authUid/);
 
 // Favorites/notes are private server relations and therefore use the server
 // credential path rather than a public browser table read.
