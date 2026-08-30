@@ -1,24 +1,7 @@
 (() => {
   'use strict';
 
-  const INDEX_QUERY = `*[_type == "learningTopic" && reviewStatus != "archived" && contentKind != "section"]{
-    _id,question,title,"slug":slug.current,keywords,icdCodes,procedureCodes,summary,
-    contentKind,chapterNumber,lessonNumber,reviewStatus,reviewedBy,lastReviewedAt,version,
-    "stepCount":count(steps),"prescriptionCount":count(prescriptions),"protocolCount":count(relatedProtocols),
-    "childCount":count(relatedTopics)
-  }`;
-
-  const DETAIL_QUERY = `*[_type == "learningTopic" && _id == $id][0]{
-    _id,question,title,"slug":slug.current,keywords,icdCodes,procedureCodes,summary,
-    contentKind,chapterNumber,lessonNumber,
-    steps[]{_key,title,action,why,setting,priority,note},
-    prescriptions[]{_key,medicine,genericName,form,strength,dose,route,frequency,duration,quantity,instructions,patientGroup,clinicalNote},
-    figures[]{_key,title,caption,alt,url,sourceUrl,credit,kind,order},
-    sources[]{_key,title,organization,url,publishedAt,note},
-    redFlags,whenToRefer,reviewStatus,reviewedBy,lastReviewedAt,version,
-    relatedProtocols[]->{_id,title,"slug":slug.current,summary,reviewStatus},
-    relatedTopics[]->{_id,question,title,"slug":slug.current,summary,icdCodes,procedureCodes,contentKind,sectionNumber,steps[]{_key,title,action,why,setting,priority,note},prescriptions[]{_key,medicine,genericName,form,strength,dose,route,frequency,duration,quantity,instructions,patientGroup,clinicalNote},figures[]{_key,title,caption,alt,url,sourceUrl,credit,kind,order},redFlags,whenToRefer,sources[]{_key,title,organization,url,publishedAt,note},reviewStatus,version}
-  }`;
+  const HUB_API = '/api/medical-hub';
 
   const state = {
     items: [],
@@ -26,6 +9,9 @@
     selectedId: '',
     term: '',
     category: '',
+    backendResults: null,
+    searching: false,
+    searchSequence: 0,
   };
 
   const detailCache = new Map();
@@ -116,11 +102,33 @@
     void loadRuntime('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v3', 'data-drx-sidebar-taxonomy');
   }
 
-  async function ensureSanity() {
-    if (window.MedIndexSanity) return window.MedIndexSanity;
-    await loadRuntime('/sanity-clinical-client.js?v=20260805-1', 'data-drx-sanity-runtime');
-    if (!window.MedIndexSanity) throw new Error('Sanity nuk u inicializua.');
-    return window.MedIndexSanity;
+  async function hubApi(params = {}, { timeout = 12000 } = {}) {
+    const url = new URL(HUB_API, location.origin);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== '' && value != null) url.searchParams.set(key, String(value));
+    });
+
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), timeout);
+    try {
+      const response = await fetch(url.pathname + url.search, {
+        credentials:'same-origin',
+        headers:{ Accept:'application/json' },
+        cache:'no-store',
+        signal:controller.signal,
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (response.status === 401 || response.status === 403) {
+        redirectToLogin();
+        throw new Error('Sesioni nuk është aktiv.');
+      }
+      if (!response.ok || payload.ok !== true) {
+        throw new Error(payload.error || `Medical Hub API ${response.status}`);
+      }
+      return payload;
+    } finally {
+      window.clearTimeout(timer);
+    }
   }
 
   function openSidebar() {
