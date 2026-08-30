@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1100" viewBox="0 0 1200 1100">
+<style>
+ text{font-family:Arial,Helvetica,sans-serif;fill:#111;font-size:26px}
+ .s{font-size:22px}.box{fill:#eef7ef;stroke:#4b8f62;stroke-width:2}.decision{fill:#f7f0fb;stroke:#9b6daf;stroke-width:2}
+ .action{fill:#fff0e8;stroke:#d77b4a;stroke-width:2}.line{stroke:#111;stroke-width:3;fill:none;marker-end:url(#a)}
+</style>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#111"/></marker></defs>
+
+<rect class="box" x="440" y="30" width="320" height="90" rx="8"/>
+<text x="600" y="68" text-anchor="middle"><tspan x="600">Traumë penetruese</tspan><tspan x="600" dy="32">e ekstremitetit</tspan></text>
+
+<rect class="decision" x="300" y="165" width="600" height="70" rx="8"/>
+<text x="600" y="208" text-anchor="middle">Historia mjekësore dhe ekzaminimi fizik</text>
+
+<rect class="box" x="75" y="330" width="240" height="70" rx="8"/>
+<text x="195" y="374" text-anchor="middle">Shenja të forta</text>
+
+<rect class="box" x="455" y="330" width="240" height="70" rx="8"/>
+<text x="575" y="374" text-anchor="middle">Shenja të buta</text>
+
+<rect class="box" x="835" y="300" width="285" height="130" rx="8"/>
+<text x="978" y="340" text-anchor="middle" class="s"><tspan x="978">Pa shenja të</tspan><tspan x="978" dy="28">dëmtimit vaskular</tspan><tspan x="978" dy="28">(pa shenja të forta</tspan><tspan x="978" dy="28">ose të buta)</tspan></text>
+
+<rect class="box" x="910" y="485" width="135" height="65" rx="8"/>
+<text x="978" y="527" text-anchor="middle">ABI</text>
+
+<rect class="box" x="805" y="635" width="125" height="65" rx="8"/><text x="868" y="677" text-anchor="middle">&lt;0.9</text>
+<rect class="box" x="1010" y="635" width="125" height="65" rx="8"/><text x="1073" y="677" text-anchor="middle">&gt;0.9</text>
+
+<rect class="decision" x="455" y="635" width="250" height="65" rx="8"/>
+<text x="580" y="677" text-anchor="middle">Angio-CT</text>
+
+<rect class="action" x="35" y="790" width="280" height="125" rx="8"/>
+<text x="175" y="830" text-anchor="middle" class="s"><tspan x="175">Konsultë e menjëhershme</tspan><tspan x="175" dy="29">me kirurgun</tspan><tspan x="175" dy="29">vaskular</tspan></text>
+
+<rect class="box" x="375" y="790" width="220" height="115" rx="8"/>
+<text x="485" y="830" text-anchor="middle" class="s"><tspan x="485">Pozitive</tspan><tspan x="485" dy="29">(okluzion ose</tspan><tspan x="485" dy="29">ekstravazim)</tspan></text>
+
+<rect class="box" x="630" y="790" width="270" height="145" rx="8"/>
+<text x="765" y="830" text-anchor="middle" class="s"><tspan x="765">Negative ose minimale</tspan><tspan x="765" dy="29">(pa dëmtim arterial</tspan><tspan x="765" dy="29">okluziv)</tspan></text>
+
+<rect class="action" x="995" y="790" width="170" height="75" rx="8"/>
+<text x="1080" y="837" text-anchor="middle">Observim</text>
+
+<rect class="action" x="680" y="985" width="170" height="65" rx="8"/>
+<text x="765" y="1027" text-anchor="middle">Observim</text>
+
+<path class="line" d="M600 120 L600 165"/>
+<path class="line" d="M600 235 L600 285 L195 285 L195 330"/>
+<path class="line" d="M600 235 L600 330"/>
+<path class="line" d="M600 235 L600 285 L978 285 L978 300"/>
+<path class="line" d="M195 400 L195 790"/>
+<path class="line" d="M575 400 L575 635"/>
+<path class="line" d="M978 430 L978 485"/>
+<path class="line" d="M978 550 L978 590 L868 590 L868 635"/>
+<path class="line" d="M978 550 L978 590 L1073 590 L1073 635"/>
+<path class="line" d="M805 668 L705 668"/>
+<path class="line" d="M1073 700 L1073 790"/>
+<path class="line" d="M580 700 L580 745 L485 745 L485 790"/>
+<path class="line" d="M580 700 L580 745 L765 745 L765 790"/>
+<path class="line" d="M375 848 L315 848"/>
+<path class="line" d="M765 935 L765 985"/>
+</svg>
