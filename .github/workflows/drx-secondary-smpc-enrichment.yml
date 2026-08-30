@@ -1,0 +1,61 @@
+name: DRx Secondary SmPC Enrichment
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'data/drx-master-source-seed-chunk-*.json'
+      - 'scripts/enrich-drx-master-secondary-sources.js'
+      - '.github/workflows/drx-secondary-smpc-enrichment.yml'
+
+concurrency:
+  group: drx-secondary-smpc-enrichment
+  cancel-in-progress: true
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate script syntax
+        run: node --check scripts/enrich-drx-master-secondary-sources.js
+      - name: Enrich from official sources
+        run: node scripts/enrich-drx-master-secondary-sources.js
+      - name: Verify fail-closed output
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const x=JSON.parse(fs.readFileSync('data/drx-master-secondary-source-enrichment-v1.json','utf8'));
+          if(x.schemaVersion!=='drx-master-secondary-source-enrichment-v1') throw new Error('wrong schema');
+          if(x.policy?.autoPublication!==false) throw new Error('must remain fail-closed');
+          if(x.policy?.crossStrengthBinding!==false) throw new Error('cross-strength binding disabled');
+          if(x.policy?.saltsAutoCollapsed!==false) throw new Error('salt auto collapse disabled');
+          const exact=x.rows.filter(r=>r.bestSource?.matchStatus==='EXACT_SECONDARY_SMPC');
+          const bad=exact.filter(r=>!r.bestSource?.section2Sha256||!r.bestSource?.section41Sha256||!r.bestSource?.section42Sha256||!r.bestSource?.strengthEvidence||!r.bestSource?.formEvidence);
+          if(bad.length) throw new Error('exact secondary matches missing required evidence: '+bad.length);
+          console.log(JSON.stringify({rows:x.rows.length,counts:x.counts,exact:exact.length},null,2));
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: drx-secondary-smpc-enrichment
+          path: |
+            data/drx-master-secondary-source-enrichment-v1.json
+            data/drx-master-secondary-sheet-chunk-*.json
+          retention-days: 30
+      - name: Commit compact enrichment
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/drx-master-secondary-source-enrichment-v1.json data/drx-master-secondary-sheet-chunk-*.json
+          if git diff --cached --quiet; then
+            echo "No enrichment changes."
+            exit 0
+          fi
+          git commit -m "chore(drx): materialize secondary SmPC enrichment"
+          git push origin HEAD:main
