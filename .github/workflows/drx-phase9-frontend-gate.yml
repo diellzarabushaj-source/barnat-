@@ -11,6 +11,8 @@ on:
       - "tests/drx-phase9-personal-entity-storage-test.js"
       - "lib/user-library.js"
       - "user-library-client.js"
+      - "phase9-personal-entities-client.js"
+      - "tests/drx-phase9-personal-entity-sync-test.js"
       - "dozologjia.html"
       - "dozologjia-v2.js"
       - "dozologjia-v2.css"
@@ -31,6 +33,8 @@ jobs:
           node-version: "24"
       - name: Phase 9 personal entity storage
         run: node tests/drx-phase9-personal-entity-storage-test.js
+      - name: Phase 9 personal entity sync
+        run: node tests/drx-phase9-personal-entity-sync-test.js
       - name: Existing native note contract
         run: node tests/user-notes-native-storage-test.js
       - name: Existing account isolation contract
