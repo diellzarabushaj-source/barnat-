@@ -1,0 +1,7 @@
+-- Migration-history parity marker.
+-- The live project received an idempotent re-application of
+-- 20260830142544_drx_phase2_immutable_registry_ledger.sql during concurrent
+-- Phase 2 bootstrap work. The complete schema/data definition is intentionally
+-- kept in the earlier migration; repeating it here would add no state and would
+-- make maintenance harder. This version is retained so repository migration
+-- history remains aligned with the live Supabase migration ledger.
