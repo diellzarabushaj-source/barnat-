@@ -587,3 +587,20 @@ body{overflow-x:hidden}
   .ck-source-card{grid-template-columns:1fr}
   .ck-source-card>a{grid-column:1;grid-row:auto}
 }
+
+
+/* Chapter focus cards */
+.ck-chapter-overview{padding-top:24px}
+.ck-chapter-focus-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.ck-chapter-focus-card{
+  display:grid;grid-template-columns:32px minmax(0,1fr);gap:10px;
+  padding:12px 13px;border:1px solid #e2e7ed;border-radius:9px;background:#fff;
+}
+.ck-chapter-focus-card>span{
+  width:28px;height:24px;display:grid;place-items:center;border:1px solid #dddafe;
+  border-radius:6px;background:#f7f6ff;color:#635bff;font:600 8.5px/1 Inter;
+}
+.ck-chapter-focus-card>div{min-width:0;display:grid;gap:5px}
+.ck-chapter-focus-card strong{color:#263d54;font-size:11px;font-weight:550;line-height:1.35}
+.ck-chapter-focus-card p{margin:0;color:#66788d;font-size:9.8px;line-height:1.5}
+@media(max-width:760px){.ck-chapter-focus-grid{grid-template-columns:1fr}}
