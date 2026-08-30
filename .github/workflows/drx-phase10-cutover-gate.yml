@@ -1,0 +1,56 @@
+name: DRx Phase 10 cutover gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "supabase/migrations/20260830230458_drx_phase10a_cutover_control_and_legacy_write_audit.sql"
+      - "supabase/drx-phase10a-cutover-control-and-legacy-write-audit-rollback.sql"
+      - "scripts/drx-phase10-status.js"
+      - "scripts/drx-phase10-consumer-audit.js"
+      - "tests/drx-phase10-cutover-control-test.js"
+      - "lib/dose-v3-runtime-gate.js"
+      - "lib/dose-product-fast-path-handler.js"
+      - "api/dosage.js"
+      - ".github/workflows/drx-phase10-cutover-gate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  phase10:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MEDINDEX_SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Phase 10A static cutover contract
+        run: node tests/drx-phase10-cutover-control-test.js
+      - name: Phase 10 legacy runtime consumer audit
+        run: node scripts/drx-phase10-consumer-audit.js
+      - name: P0 database integrity
+        run: node tests/p0-database-integrity-test.js
+      - name: Public security contract
+        run: node tests/phase1-public-security-contract-test.js
+      - name: API security deep audit
+        run: node tests/api-security-deep-audit-test.js
+      - name: Golden clinical cases
+        run: node tests/drx-dose-golden-cases-test.js
+      - name: Live Phase 10 status
+        run: node scripts/drx-phase10-status.js
+      - name: Upload Phase 10A evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-phase10a-evidence
+          path: |
+            drx-phase10-status-evidence.json
+            drx-phase10-consumer-audit.json
+          if-no-files-found: error
+          retention-days: 30
