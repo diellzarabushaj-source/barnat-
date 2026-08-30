@@ -35,23 +35,23 @@
       "drugId": "84a1cf4a-6568-41d7-8d13-0f2b7715acae",
       "v2ProductKey": "PROD-PARACETAMOL-ALKALOID-500-PDID1457",
       "exactMarketSnapshotId": "c3ead98126480c75deee7c70f84a3f67252a08223d833b34782b783b3c58eabd",
-      "clinicalSourceKey": "emc-13495-phase8-clinical-ref",
-      "url": "https://www.medicines.org.uk/emc/product/13495/smpc",
+      "clinicalSourceKey": "emc-13494-phase8-clinical-ref",
+      "url": "https://www.medicines.org.uk/emc/product/13494/smpc",
       "expectedTier": "EMC",
       "referenceRole": "CLINICAL_REFERENCE_ONLY",
       "productNameTokens": [
         "Paracetamol",
-        "500mg"
+        "500 mg"
       ],
       "compositionTokens": [
         "500 mg",
         "paracetamol"
       ],
       "clinicalTokens": [
-        "6-8 years",
-        "10-12 years",
-        "every 4-6 hours",
-        "maximum of 4 doses"
+        "16 years and over",
+        "10 - 15 years",
+        "Not suitable for children under 10",
+        "Not more than 4 doses"
       ]
     }
   ]

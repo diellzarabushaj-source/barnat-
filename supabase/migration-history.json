@@ -497,6 +497,10 @@
     {
       "name": "drx_phase8t_clinical_finding_review_control",
       "version": "20260830204847"
+    },
+    {
+      "name": "drx_phase8u_paracetamol_clinical_reference_alignment",
+      "version": "20260830205203"
     }
   ]
 }
