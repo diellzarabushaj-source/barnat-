@@ -59,7 +59,7 @@ async function main() {
   assert.equal(captureStatus.automatic_verification_enabled,false);
   assert.equal(captureStatus.publication_allowed,false);
 
-  assert.equal(preflight.preflightVersion,'drx-phase8-pilot-build-preflight-v1');
+  assert.equal(preflight.preflightVersion,'drx-phase8-pilot-build-preflight-v2');\n  assert.ok(Number.isInteger(preflight.unresolvedClinicalFindings));\n  assert.ok(preflight.unresolvedClinicalFindings >= 0);
   assert.equal(preflight.requiredPilotCount,2);
   assert.equal(preflight.pilotCount,2);
   assert.equal(preflight.humanClinicalReviewRequired,true);
@@ -67,7 +67,7 @@ async function main() {
   assert.equal(preflight.automaticPublicationEnabled,false);
 
   // Before both explicit clinical reviews, V3 publication must remain impossible.
-  if (preflight.clinicalReviewsVerified < preflight.requiredPilotCount) {
+  if (preflight.clinicalReviewsVerified < preflight.requiredPilotCount || preflight.unresolvedClinicalFindings > 0) {
     assert.equal(preflight.pilotsReadyForV3Build,0);
     assert.equal(preflight.pilotsPublishedInV3,0);
     assert.equal(status.v3_published_products,0);

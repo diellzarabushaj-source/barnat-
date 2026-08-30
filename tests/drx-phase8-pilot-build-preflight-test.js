@@ -21,6 +21,21 @@ assert.doesNotMatch(sql,/evidence_review_status\s*=\s*'VERIFIED'/i);
 
 console.log('DRx Phase 8 pilot build preflight contract: PASS');
 
+const findingsSql = fs.readFileSync(
+  'supabase/migrations/20260830204339_drx_phase8s_exact_smpc_findings.sql','utf8'
+);
+const findingsRollback = fs.readFileSync('supabase/drx-phase8s-exact-smpc-findings-rollback.sql','utf8');
+assert.match(findingsSql,/phase8_clinical_rule_findings_v1/);
+assert.match(findingsSql,/EXACT_SMPC_RULE_REVIEW_PENDING/);
+assert.match(findingsSql,/drx-phase8-pilot-build-preflight-v2/);
+assert.match(findingsSql,/automatic_resolution_allowed boolean not null default false/);
+assert.match(findingsSql,/drx_phase8_clinical_correction_packet_v1/);
+assert.match(findingsSql,/phase9StartAllowed',false/);
+assert.match(findingsSql,/revoke all on function public\\.drx_phase8_clinical_correction_packet_v1\\(\\)/i);
+assert.match(findingsSql,/grant execute on function public\\.drx_phase8_clinical_correction_packet_v1\\(\\)\\s+to service_role/i);
+assert.doesNotMatch(findingsRollback,/\\bcascade\\b/i);
+assert.match(findingsRollback,/reviewed clinical findings exist/);
+
 const statusScript = fs.readFileSync('scripts/drx-phase8-status.js','utf8');
 assert.match(statusScript,/drx_phase8_pilot_build_preflight_v1/);
 assert.match(statusScript,/if \(preflight\.clinicalReviewsVerified < preflight\.requiredPilotCount\)/);
