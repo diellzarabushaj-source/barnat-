@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1100" viewBox="0 0 1200 1100">
+<rect width="1200" height="1100" fill="white"/>
+<style>
+.t{font-family:Arial,sans-serif;fill:#111}.h{font-size:34px;font-weight:700}.s{font-size:20px}.o{fill:#f6d6c7;stroke:#df8b66;stroke-width:4}.z{fill:none;stroke:#666;stroke-width:2;stroke-dasharray:5 5}
+</style>
+<text class="t h" x="40" y="58">Dermatomet për ekzaminimin sensor</text>
+<text class="t s" x="40" y="90">Rikrijim skematik i Figurës 161-2.</text>
+<circle class="o" cx="600" cy="205" r="55"/>
+<path class="o" d="M560 255 L495 300 L365 315 L245 300 L105 330 L95 360 L260 355 L390 370 L470 390 L450 560 L300 585 L180 620 L80 635 L90 675 L220 660 L390 650 L505 625 L600 650 L695 625 L810 650 L980 660 L1110 675 L1120 635 L1020 620 L900 585 L750 560 L730 390 L810 370 L940 355 L1105 360 L1095 330 L955 300 L835 315 L705 300 L640 255 Z"/>
+<circle class="o" cx="600" cy="725" r="55"/>
+<path class="o" d="M560 775 L495 820 L365 835 L245 820 L105 850 L95 880 L260 875 L390 890 L470 910 L450 1000 L300 1015 L180 1040 L80 1050 L90 1080 L220 1070 L390 1060 L505 1040 L600 1060 L695 1040 L810 1060 L980 1070 L1110 1080 L1120 1050 L1020 1040 L900 1015 L750 1000 L730 910 L810 890 L940 875 L1105 880 L1095 850 L955 820 L835 835 L705 820 L640 775 Z"/>
+<path class="z" d="M545 235 H655"/><path class="z" d="M520 275 H680"/><path class="z" d="M470 320 H730"/><path class="z" d="M470 360 H730"/>
+<path class="z" d="M470 410 H730"/><path class="z" d="M465 445 H735"/><path class="z" d="M460 480 H740"/><path class="z" d="M455 515 H745"/>
+<path class="z" d="M455 550 H745"/><path class="z" d="M420 600 H780"/><path class="z" d="M360 635 H840"/>
+<text class="t s" x="585" y="205">C2</text><text class="t s" x="585" y="255">C3</text><text class="t s" x="580" y="310">C4</text>
+<text class="t s" x="410" y="340">C5</text><text class="t s" x="300" y="350">C6</text><text class="t s" x="180" y="355">C7</text><text class="t s" x="245" y="375">C8</text>
+<text class="t s" x="570" y="350">T2</text><text class="t s" x="570" y="400">T3</text><text class="t s" x="570" y="435">T4</text><text class="t s" x="570" y="470">T5</text>
+<text class="t s" x="570" y="505">T6</text><text class="t s" x="570" y="540">T7</text><text class="t s" x="570" y="575">T8</text><text class="t s" x="570" y="610">T10</text>
+<text class="t s" x="570" y="645">T12</text><text class="t s" x="360" y="635">L2</text><text class="t s" x="820" y="635">L2</text>
+<text class="t s" x="250" y="655">L5</text><text class="t s" x="930" y="655">L5</text><text class="t s" x="140" y="670">S1</text><text class="t s" x="1040" y="670">S1</text>
+<text class="t s" x="570" y="680">S3–S5</text>
+<text class="t s" x="590" y="725">C2</text><text class="t s" x="585" y="780">C3</text><text class="t s" x="500" y="835">C4</text><text class="t s" x="680" y="835">C4</text>
+<text class="t s" x="410" y="860">C5</text><text class="t s" x="300" y="870">C6</text><text class="t s" x="180" y="875">C7</text><text class="t s" x="245" y="895">C8</text>
+<text class="t s" x="570" y="855">T2</text><text class="t s" x="570" y="895">T3</text><text class="t s" x="570" y="930">T4</text><text class="t s" x="570" y="965">T6</text><text class="t s" x="570" y="1000">T10–T12</text>
+<text class="t s" x="350" y="1020">L2–L4</text><text class="t s" x="810" y="1020">L2–L4</text><text class="t s" x="140" y="1060">S1</text><text class="t s" x="1040" y="1060">S1</text>
+</svg>
