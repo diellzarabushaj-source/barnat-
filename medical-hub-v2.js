@@ -378,7 +378,7 @@
     if (item.redFlags?.length) entries.push({ id:'hub-red-flags', label:'Red flags' });
     if (item.steps?.length) entries.push({ id:'hub-content', label:lessonBodyLabel(item) });
     if (item.figures?.length) entries.push({ id:'hub-figures', label:'Figura dhe ilustrime' });
-    if (item.prescriptions?.length) entries.push({ id:'hub-prescriptions', label:'Shembuj recetash' });
+    if (item.prescriptions?.length) entries.push({ id:'hub-prescriptions', label:'Receta' });
     if (item.whenToRefer) entries.push({ id:'hub-referral', label:'Referimi' });
     if (item.relatedProtocols?.length) entries.push({ id:'hub-protocols', label:'Protokolle të lidhura' });
     if (item.sources?.length) entries.push({ id:'hub-sources', label:'Burimet' });
@@ -568,8 +568,9 @@
           ` : ''}
 
           ${item.prescriptions?.length ? `
-            <section class="ck-section" id="hub-prescriptions">
-              <div class="ck-section-heading"><span>Rx</span><h3>Shembuj recetash</h3></div>
+            <section class="ck-section ck-rx-section" id="hub-prescriptions">
+              <div class="ck-section-heading"><span>Rx</span><h3>Receta / skema e përshkrimit</h3></div>
+              <p class="ck-section-note">Receta paraqitet në një box të veçantë, e ndarë nga shpjegimi klinik dhe hapat e mësimit.</p>
               <div class="ck-rx-grid">${item.prescriptions.map(rxMarkup).join('')}</div>
             </section>
           ` : ''}
