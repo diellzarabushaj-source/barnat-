@@ -66,13 +66,14 @@ for (const [htmlFile, cssFile, jsFile, markerName] of [
   const js = read(jsFile);
   const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)].map(match => match[1]);
   const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map(match => match[1]);
+  const pageRuntimes = scripts.filter(src => !/phase9-personal-entities-client\.js/.test(src));
   assert.match(html, new RegExp(`data-drx-app="${markerName}"`));
   assert.equal(styles.length, 2, `${htmlFile}: standalone V2 must load page CSS plus shared Stripe shell CSS`);
   assert.match(html, /drx-unified-sidebar/, `${htmlFile}: unified sidebar marker missing`);
-  assert.equal(scripts.length, 1, `${htmlFile}: standalone V2 must own one runtime`);
+  assert.equal(pageRuntimes.length, 1, `${htmlFile}: standalone V2 must own one page runtime`);
   assert.ok(styles[0].includes(cssFile), `${htmlFile}: unexpected page stylesheet owner`);
   assert.ok(/drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/.test(styles[1]), `${htmlFile}: shared Stripe shell must load last`);
-  assert.ok(scripts[0].includes(jsFile), `${htmlFile}: unexpected runtime owner`);
+  assert.ok(pageRuntimes[0].includes(jsFile), `${htmlFile}: unexpected runtime owner`);
   assert.doesNotMatch(html, /tailadmin-|auth-client|emergency-curriculum|clinical-knowledge\.css|medical-hub\.css/);
   assert.ok(css.length > 500, `${cssFile}: standalone page stylesheet is unexpectedly empty`);
   assert.doesNotMatch(css, /https?:\/\//, `${cssFile}: page stylesheet must not depend on remote style assets`);
