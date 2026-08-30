@@ -390,8 +390,8 @@
     const codeMatch = title.match(/ICD[-‑–— ]?10\s*([A-Z]\d{2}(?:\.\d+)?)|ICD[-‑–— ]?10\s*([A-Z]\d{2})/i);
     const code = codeMatch ? (codeMatch[1] || codeMatch[2]) : '';
     return `
-      <details class="ck-master-section" ${index === 0 ? 'open' : ''}>
-        <summary>
+      <section class="ck-master-section" id="hub-master-${index + 1}">
+        <div class="ck-master-section-head">
           <span class="ck-master-section-no">${String(index + 1).padStart(2, '0')}</span>
           <span class="ck-master-section-heading">
             <strong>${esc(title.replace(/^\d+\.\s*/, ''))}</strong>
@@ -399,9 +399,8 @@
           </span>
           <span class="ck-master-section-side">
             ${code ? icdChip(code) : ''}
-            <span class="ck-master-chevron" aria-hidden="true">⌄</span>
           </span>
-        </summary>
+        </div>
         <div class="ck-master-section-body">
           ${parsed.bullets.length ? `
             <ul class="ck-master-bullets">
@@ -416,7 +415,7 @@
           ` : (parsed.lead ? '' : `<p>${esc(step?.action || '')}</p>`)}
           ${step?.why ? `<div class="ck-step-why"><span>Pse</span><p>${esc(step.why)}</p></div>` : ''}
         </div>
-      </details>`;
+      </section>`;
   }
 
   function stepMarkup(step, index) {
@@ -499,7 +498,6 @@
         const sections = detail.querySelectorAll('.ck-master-section');
         const target = sections[Number(button.dataset.masterSection)];
         if (!target) return;
-        target.open = true;
         target.scrollIntoView({
           block:'start',
           behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
@@ -607,8 +605,8 @@
     const review = reviewMeta(section?.reviewStatus);
     const procedures = procedureEntries(section);
     return `
-      <details class="ck-internal-section" ${index === 0 ? 'open' : ''}>
-        <summary>
+      <section class="ck-internal-section" id="hub-internal-${index + 1}">
+        <div class="ck-internal-section-head">
           <span class="ck-internal-section-no">${String(index + 1).padStart(2, '0')}</span>
           <span class="ck-internal-section-title">
             <strong>${esc(title)}</strong>
@@ -619,7 +617,7 @@
             ${procedures.map(procedureChip).join('')}
             <span class="ck-mini-status ${review.className}"><i></i>${esc(review.label)}</span>
           </span>
-        </summary>
+        </div>
         <div class="ck-internal-section-body">
           ${section.redFlags?.length ? `
             <div class="ck-internal-alert">
@@ -639,7 +637,7 @@
           ` : ''}
           ${section.whenToRefer ? `<div class="ck-internal-referral"><strong>Kur të referohet</strong><p>${esc(section.whenToRefer)}</p></div>` : ''}
         </div>
-      </details>`;
+      </section>`;
   }
 
   function renderLessonDetail(item) {
