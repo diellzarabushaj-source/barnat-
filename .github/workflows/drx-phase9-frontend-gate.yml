@@ -1,0 +1,37 @@
+name: DRx Phase 9 frontend gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "supabase/migrations/20260830220141_drx_phase9a_personal_entity_storage.sql"
+      - "supabase/drx-phase9a-personal-entity-storage-rollback.sql"
+      - "tests/drx-phase9-personal-entity-storage-test.js"
+      - "lib/user-library.js"
+      - "user-library-client.js"
+      - "dozologjia.html"
+      - "dozologjia-v2.js"
+      - "dozologjia-v2.css"
+      - "data/drx-frontend-flow-contract-v1.json"
+      - ".github/workflows/drx-phase9-frontend-gate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  phase9:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Phase 9 personal entity storage
+        run: node tests/drx-phase9-personal-entity-storage-test.js
+      - name: Existing native note contract
+        run: node tests/user-notes-native-storage-test.js
+      - name: Existing account isolation contract
+        run: node tests/user-library-account-isolation-test.js

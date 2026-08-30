@@ -549,6 +549,10 @@
     {
       "name": "drx_phase8zf_fast_path_security_definer",
       "version": "20260830215626"
+    },
+    {
+      "name": "drx_phase9a_personal_entity_storage",
+      "version": "20260830220141"
     }
   ]
 }
