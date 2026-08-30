@@ -19,13 +19,16 @@ on:
       - "supabase/migrations/20260830201638_drx_phase8q_search_index_hardening.sql"
       - "supabase/migrations/20260830202332_drx_phase8r_server_performance_probe.sql"
       - "supabase/migrations/20260830204339_drx_phase8s_exact_smpc_findings.sql"
+      - "supabase/migrations/20260830204847_drx_phase8t_clinical_finding_review_control.sql"
       - "supabase/drx-phase8s-exact-smpc-findings-rollback.sql"
+      - "supabase/drx-phase8t-clinical-finding-review-control-rollback.sql"
       - "lib/dose-v3-shadow.js"
       - "lib/dose-product-fast-path-handler.js"
       - "tests/drx-phase8-shadow-runtime-test.js"
       - "tests/drx-phase8-pilot-build-preflight-test.js"
       - "tests/drx-phase8-performance-probe-test.js"
       - "tests/drx-phase8-exit-audit-test.js"
+      - "tests/drx-phase8-clinical-finding-review-control-test.js"
       - "scripts/drx-phase8-status.js"
       - "scripts/drx-phase8-exit-audit.js"
       - "docs/DRX-PHASE8-ROLLBACK.md"
@@ -50,6 +53,8 @@ jobs:
         run: node tests/drx-phase8-shadow-runtime-test.js
       - name: Static Phase 8 pilot preflight contract
         run: node tests/drx-phase8-pilot-build-preflight-test.js
+      - name: Static Phase 8 clinical finding review control
+        run: node tests/drx-phase8-clinical-finding-review-control-test.js
       - name: Static Phase 8 performance probe contract
         run: node tests/drx-phase8-performance-probe-test.js
       - name: Static Phase 8 exit audit contract
