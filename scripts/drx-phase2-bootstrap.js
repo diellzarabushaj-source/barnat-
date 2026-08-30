@@ -145,13 +145,24 @@ async function main() {
   });
   if (!registryBatchId) throw new Error('Official registry batch id is missing.');
 
-  for (let index = 0; index < rawRows.length; index += CHUNK) {
-    await rpc('drx_registry_append_rows_v1', {
-      p_batch_id:registryBatchId,
-      p_rows:rawRows.slice(index, index + CHUNK),
-    });
+  let registryFinalize = null;
+  try {
+    registryFinalize = await rpc('drx_registry_finalize_import_v1', { p_batch_id:registryBatchId });
+  } catch (error) {
+    if (!/row count mismatch/i.test(String(error?.message || error))) throw error;
   }
-  const registryFinalize = await rpc('drx_registry_finalize_import_v1', { p_batch_id:registryBatchId });
+
+  if (registryFinalize?.status !== 'FINALIZED'
+      || Number(registryFinalize?.preserved_row_count) !== EXPECTED_REGISTRY_ROWS) {
+    for (let index = 0; index < rawRows.length; index += CHUNK) {
+      await rpc('drx_registry_append_rows_v1', {
+        p_batch_id:registryBatchId,
+        p_rows:rawRows.slice(index, index + CHUNK),
+      });
+    }
+    registryFinalize = await rpc('drx_registry_finalize_import_v1', { p_batch_id:registryBatchId });
+  }
+
   if (registryFinalize?.status !== 'FINALIZED'
       || Number(registryFinalize?.preserved_row_count) !== EXPECTED_REGISTRY_ROWS) {
     throw new Error(`Registry finalize gate failed: ${JSON.stringify(registryFinalize)}`);

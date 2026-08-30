@@ -133,13 +133,23 @@ async function archiveRegistrySource(workbook) {
   });
   if (!batchId) throw new Error('DRx Phase 2 raw ledger did not return a batch id.');
 
-  for (let index = 0; index < rows.length; index += 250) {
-    await rpc('drx_registry_append_rows_v1', {
-      p_batch_id:batchId,
-      p_rows:rows.slice(index, index + 250),
-    });
+  let finalized = null;
+  try {
+    finalized = await rpc('drx_registry_finalize_import_v1', { p_batch_id:batchId });
+  } catch (error) {
+    if (!/row count mismatch/i.test(String(error?.message || error))) throw error;
   }
-  const finalized = await rpc('drx_registry_finalize_import_v1', { p_batch_id:batchId });
+
+  if (Number(finalized?.preserved_row_count) !== rows.length || finalized?.status !== 'FINALIZED') {
+    for (let index = 0; index < rows.length; index += 250) {
+      await rpc('drx_registry_append_rows_v1', {
+        p_batch_id:batchId,
+        p_rows:rows.slice(index, index + 250),
+      });
+    }
+    finalized = await rpc('drx_registry_finalize_import_v1', { p_batch_id:batchId });
+  }
+
   if (Number(finalized?.preserved_row_count) !== rows.length || finalized?.status !== 'FINALIZED') {
     throw new Error(`DRx Phase 2 raw ledger finalize mismatch: ${JSON.stringify(finalized)}`);
   }
