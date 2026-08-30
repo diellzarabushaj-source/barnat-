@@ -14,16 +14,22 @@ for(const label of ['Përmbledhje','Përdorimi','Dozimi','Siguria','Produktet','
 assert.match(js,/PRODUCT_TABS/);
 assert.match(js,/phase9Flow/);
 assert.match(js,/V2 fallback/);
-assert.match(js,/Nuk ekspozohet nga V2 fallback/);
+assert.match(js,/Burimi i dozimit/);
+assert.match(js,/Burimi i produktit \/ identitetit/);
 assert.match(js,/DRxPhase9Personal/);
-assert.match(js,/toggleFavorite\('product'/);
-assert.match(js,/saveNote\('product'/);
+assert.match(js,/toggleFavorite\(type,key/);
+assert.match(js,/saveNote\(type,key/);
+assert.match(js,/data-product-tab/);
+assert.match(js,/ArrowRight/);
+assert.match(js,/ArrowLeft/);
+assert.match(js,/aria-labelledby/);
 assert.match(js,/textNameAsIdentityForbidden|ID-të kanonike/);
 assert.doesNotMatch(js,/eval\(/);
 
 assert.match(css,/\.phase9-tabs/);
 assert.match(css,/\.phase9-clinical-flow/);
 assert.match(css,/@media\(max-width:520px\)/);
+assert.match(css,/@media\(max-width:760px\)[\s\S]*\.phase9-tab-button[\s\S]*min-height:44px/);
 
 assert.deepEqual(flow.flow,[
   'substance','variant','population','indication','patient_inputs','dose','product','prescription'

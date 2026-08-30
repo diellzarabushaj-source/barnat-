@@ -24,6 +24,9 @@ on:
       - "tests/drx-phase9-personal-entity-storage-test.js"
       - "tests/drx-phase9-personal-entity-sync-test.js"
       - "tests/drx-phase9-drawer-test.js"
+      - "tests/dozologjia-v2-workspace-test.js"
+      - "tests/drx-phase9-browser-qa-test.js"
+      - "pediatric-calculator-client.js"
       - "tests/drx-phase9-product-context-test.js"
       - "tests/drx-phase9-status-test.js"
       - "tests/drx-phase9-prescription-context-test.js"
@@ -37,7 +40,7 @@ permissions:
 jobs:
   phase9:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     env:
       MEDINDEX_SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co
       SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
@@ -56,6 +59,8 @@ jobs:
         run: node tests/user-library-account-isolation-test.js
       - name: Phase 9 clinical drawer
         run: node tests/drx-phase9-drawer-test.js
+      - name: Phase 9 workspace regression
+        run: node tests/dozologjia-v2-workspace-test.js
       - name: Phase 9 canonical product context
         run: node tests/drx-phase9-product-context-test.js
       - name: Phase 9 foundation status contract
@@ -64,10 +69,20 @@ jobs:
         run: node tests/drx-phase9-prescription-context-test.js
       - name: Live Phase 9 foundation gate
         run: node scripts/drx-phase9-status.js
+      - name: Install Phase 9 browser QA
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm exec playwright install --with-deps chromium
+      - name: Phase 9 browser QA — 390, 768, 1440
+        run: node tests/drx-phase9-browser-qa-test.js
       - name: Upload Phase 9 evidence
         uses: actions/upload-artifact@v4
         with:
           name: drx-phase9-foundation-evidence
-          path: drx-phase9-foundation-evidence.json
+          path: |
+            drx-phase9-foundation-evidence.json
+            drx-phase9-browser-evidence.json
+            drx-phase9-browser-*.png
           if-no-files-found: error
           retention-days: 30

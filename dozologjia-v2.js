@@ -727,6 +727,7 @@
     panel.dataset.productPanel=key;
     panel.id=`phase9-panel-${key}`;
     panel.setAttribute('role','tabpanel');
+    panel.setAttribute('aria-labelledby',`phase9-tab-${key}`);
     return panel;
   }
 
@@ -1029,6 +1030,7 @@
       const button=element('button','phase9-tab-button',label);
       button.type='button';
       button.dataset.productTab=key;
+      button.id=`phase9-tab-${key}`;
       button.setAttribute('role','tab');
       button.setAttribute('aria-controls',`phase9-panel-${key}`);
       tabs.append(button);
@@ -1543,7 +1545,25 @@
       }
     });
 
-    elements.productBody.addEventListener('click', event => {
+    elements.productBody.addEventListener('keydown',event=>{
+      const tab=event.target.closest?.('[data-product-tab]');
+      if(!tab) return;
+      const tabs=[...elements.productBody.querySelectorAll('[data-product-tab]')];
+      const index=tabs.indexOf(tab);
+      if(index<0) return;
+      let next=index;
+      if(event.key==='ArrowRight') next=(index+1)%tabs.length;
+      else if(event.key==='ArrowLeft') next=(index-1+tabs.length)%tabs.length;
+      else if(event.key==='Home') next=0;
+      else if(event.key==='End') next=tabs.length-1;
+      else return;
+      event.preventDefault();
+      const target=tabs[next];
+      setProductTab(target.dataset.productTab);
+      target.focus();
+    });
+
+        elements.productBody.addEventListener('click', event => {
       const tab=event.target.closest('[data-product-tab]');
       if(tab){
         setProductTab(tab.dataset.productTab);

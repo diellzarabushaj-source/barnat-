@@ -543,3 +543,13 @@ input{caret-color:#533afd}
 .phase9-note-entity-title{display:block;color:#2d4656;font-size:12px}
 .phase9-note-entity-label{display:block;margin:3px 0 9px;color:#7a8b98;font-size:10px;overflow-wrap:anywhere}
 .phase9-source-subtitle{margin:14px 0 8px;color:#334e5e;font-size:12px}
+
+@media(max-width:760px){
+  .phase9-tab-button,
+  .phase9-favorite-button,
+  .phase9-entity-favorite,
+  .phase9-save-note,
+  .phase9-delete-note{
+    min-height:44px;
+  }
+}

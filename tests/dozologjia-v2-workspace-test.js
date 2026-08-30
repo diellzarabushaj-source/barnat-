@@ -36,8 +36,12 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
   .map(match => match[1]);
 
 assert.deepEqual(styles, ['/dozologjia-v2.css?v=3','/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4']);
-assert.deepEqual(scripts, ['/dozologjia-v2.js?v=3']);
+assert.deepEqual(scripts, [
+  '/phase9-personal-entities-client.js?v=phase9b',
+  '/dozologjia-v2.js?v=3',
+]);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|dozologjia\.js|dozologjia-deep-audit\.js|style-loader|pediatric-calculator\.css|pediatric-calculator-client\.js/);
+assert.match(html, /phase9-personal-entities-client\.js\?v=phase9b/);
 
 assert.match(css, /Dozologjia V3 — Stripe clinical workbench/);
 assert.match(css, /#1c1e54/);
