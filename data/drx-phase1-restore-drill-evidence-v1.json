@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "drx-phase1-restore-drill-evidence-v1",
+  "observedAt": "2026-08-30T13:05:00.000Z",
+  "publicationAllowed": false,
+  "googleSnapshotGate": {
+    "status": "PASS",
+    "algorithm": "SHA-256",
+    "sources": [
+      {
+        "fileId": "1SY2rb2Eqo3fVkRhgQ8ltJHCRrWyAUDvd",
+        "sha256": "a1085166eeeb2fe180a1a6e5a3aa0c6da1116083c4c0215198d5edfadb684ea9",
+        "bytes": 708528,
+        "hashKind": "sha256_raw_xlsx_bytes"
+      },
+      {
+        "fileId": "1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo",
+        "sha256": "f150aaf69e2335b3285a0be22699a3bafd4f04e8e7bb59892b940fb659be5c9f",
+        "bytes": 6166411,
+        "hashKind": "sha256_exported_xlsx_bytes"
+      },
+      {
+        "fileId": "19ncbnrTJ_w-WQ0msWO9_dUoxjmicSUAz6Nt4sh20gFw",
+        "sha256": "504ed07bb5d8c12add5955d8ee731c8301cf013a20977fe621111fe92d792253",
+        "bytes": 226079,
+        "hashKind": "sha256_exported_xlsx_bytes"
+      },
+      {
+        "fileId": "1sGEWsDYnVE1VThLUpfSs2Q0UIjXZZRzxXTHXDvn7p8I",
+        "sha256": "0e3dedb5b0ac80875916e13be90a8f01be117b93876b61f1e6593370f863f1e2",
+        "bytes": 23114,
+        "hashKind": "sha256_exported_xlsx_bytes"
+      }
+    ]
+  },
+  "transactionalRestoreDrill": {
+    "status": "PASS",
+    "isolation": "single transaction; CTAS temp tables; final ROLLBACK",
+    "allCountMatch": true,
+    "allHashMatch": true,
+    "datasets": [
+      {
+        "dataset": "drugs",
+        "rows": 4015,
+        "sha256": "625baf7c9ae708a43ce535176ec69a38eb0c12e621643f55caa590e571d50549"
+      },
+      {
+        "dataset": "dosage_regimens",
+        "rows": 8104,
+        "sha256": "a24cf213c000f3a67088bab605f87922814c492de7bcaf2d041a2e84f919b319"
+      },
+      {
+        "dataset": "stage_product_registry",
+        "rows": 4015,
+        "sha256": "7f1993fc5e739cd2a438d93ac8f646ec828e3ace3ad8fe9c9c0a38a0303419ec"
+      },
+      {
+        "dataset": "stage_variant_master",
+        "rows": 2674,
+        "sha256": "6a54828c415b2de387d281f36f89c2e1672911c697c90f14140dd418e66363c7"
+      },
+      {
+        "dataset": "stage_substance_master",
+        "rows": 1351,
+        "sha256": "8a34a8891798689f9d282109eefdbca442e7ce935e25f670db3e547a7cd79031"
+      },
+      {
+        "dataset": "dose_source_snapshots_v3",
+        "rows": 100,
+        "sha256": "f6d0d1b220347cb7a382ad5f67492d84d894e0c1d3827bf4e086c993f142fdec"
+      },
+      {
+        "dataset": "dose_source_sections_v3",
+        "rows": 575,
+        "sha256": "6f4fbb06eb48f815a967eebfaa00601f123bcfdbcf1b6a987148cb2edd79cdf1"
+      },
+      {
+        "dataset": "dose_products_v3",
+        "rows": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "dataset": "dose_rules_v3",
+        "rows": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "dataset": "dose_rule_products_v3",
+        "rows": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "dataset": "migration_history",
+        "rows": 84,
+        "sha256": "7d1c463bb1c813e7b5188648fd1f30a298dd32a099e2734b459da7a96f333190"
+      }
+    ]
+  },
+  "externalLogicalBackupRestore": {
+    "workflow": ".github/workflows/drx-phase1-backup-restore.yml",
+    "runId": 33313085026,
+    "workflowConclusion": "success",
+    "credentialPreflight": "BLOCKED_MISSING_SUPABASE_DB_URL",
+    "dumpExecuted": false,
+    "disposableRestoreExecuted": false,
+    "requiredSecret": "SUPABASE_DB_URL",
+    "databasePayloadPolicy": "runner_ephemeral_only_no_database_payload_uploaded"
+  },
+  "strictPhase1ExitGate": false,
+  "remainingBlocker": "Configure SUPABASE_DB_URL in GitHub Actions secrets, then rerun DRx Phase 1 Backup Restore Gate."
+}
