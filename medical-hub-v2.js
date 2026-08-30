@@ -947,13 +947,16 @@
     const lessonCount = state.items.length - chapterCount;
 
     searchField?.classList.toggle('has-value', Boolean(term));
+    searchField?.classList.toggle('is-searching', state.searching);
 
     if (result) {
-      if (term) result.textContent = `${state.filtered.length} rezultate për “${term}”`;
+      if (state.searching) result.textContent = `Duke kërkuar në backend për “${term}”…`;
+      else if (term) result.textContent = `${state.filtered.length} rezultate për “${term}” · Sanity backend`;
       else if (state.category) {
         const chapter = state.items.find(item => isChapter(item) && chapterKey(item) === state.category);
-        result.textContent = chapter ? `${state.filtered.length - 1} mësime në ${chapter.question}` : `${state.filtered.length} rezultate`;
-      } else result.textContent = `${chapterCount} kapituj · ${lessonCount} mësime`;
+        const lessonTotal = state.items.filter(item => !isChapter(item) && chapterKey(item) === state.category).length;
+        result.textContent = chapter ? `${lessonTotal} mësime në ${chapter.question || chapter.title}` : `${state.filtered.length} rezultate`;
+      } else result.textContent = `${chapterCount} kapituj · ${lessonCount} mësime · Sanity backend`;
     }
 
     if (position) position.textContent = index >= 0 ? `${index + 1} / ${state.filtered.length}` : `0 / ${state.filtered.length}`;
@@ -965,8 +968,19 @@
   }
 
   function selectTopic(id, { scroll = false } = {}) {
-    if (!id || !state.filtered.some(item => item._id === id)) return;
+    if (!id) return;
+    const item = state.items.find(candidate => candidate._id === id)
+      || state.filtered.find(candidate => candidate._id === id);
+    if (!item) return;
+
     state.selectedId = id;
+    const key = chapterKey(item);
+    if (key) {
+      state.category = key;
+      const category = $('#learningCategory');
+      if (category) category.value = key;
+    }
+    applyFilterState();
     renderList();
     renderReaderNavigation();
     syncUrl();
@@ -988,14 +1002,47 @@
     void renderSelectedDetail();
   }
 
+  async function runBackendSearch(sequence) {
+    const term = clean(state.term);
+    if (!term) {
+      state.backendResults = null;
+      state.searching = false;
+      applyFilters();
+      return;
+    }
+
+    state.searching = true;
+    renderReaderNavigation();
+    try {
+      const payload = await hubApi({
+        mode:'search',
+        q:term,
+        chapter:state.category ? Number(state.category) : '',
+      }, { timeout:12000 });
+      if (sequence !== state.searchSequence) return;
+      state.backendResults = Array.isArray(payload.items) ? payload.items : [];
+    } catch (error) {
+      if (sequence !== state.searchSequence) return;
+      console.error('[Medical Hub search]', error);
+      state.backendResults = null;
+    } finally {
+      if (sequence !== state.searchSequence) return;
+      state.searching = false;
+      applyFilters();
+    }
+  }
+
   function scheduleSearch(value) {
     state.term = value || '';
+    state.searchSequence += 1;
+    const sequence = state.searchSequence;
     window.clearTimeout(searchTimer);
     searchTimer = window.setTimeout(() => {
       searchTimer = 0;
-      applyFilters();
-    }, 90);
+      void runBackendSearch(sequence);
+    }, 180);
     $('#learningSearchField')?.classList.toggle('has-value', Boolean(clean(state.term)));
+    renderReaderNavigation();
   }
 
   function clearSearch({ focus = true } = {}) {
