@@ -604,3 +604,49 @@ body{overflow-x:hidden}
 .ck-chapter-focus-card strong{color:#263d54;font-size:11px;font-weight:550;line-height:1.35}
 .ck-chapter-focus-card p{margin:0;color:#66788d;font-size:9.8px;line-height:1.5}
 @media(max-width:760px){.ck-chapter-focus-grid{grid-template-columns:1fr}}
+
+
+/* Dedicated prescription block */
+.ck-rx-section{
+  position:relative;
+  padding-top:22px;
+  border-top:1px solid #e6ece9;
+}
+.ck-rx-section::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:22px;
+  bottom:0;
+  width:3px;
+  border-radius:3px;
+  background:#0e7c66;
+}
+.ck-rx-section>.ck-section-heading,
+.ck-rx-section>.ck-section-note,
+.ck-rx-section>.ck-rx-grid{
+  margin-left:14px;
+}
+.ck-section-note{
+  margin:0 0 10px;
+  color:#7c8b9b;
+  font-size:9.5px;
+  line-height:1.45;
+}
+.ck-rx-card{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(180deg,#fbfdfc 0%,#f7fbf9 100%);
+  border-color:#d7e7e1;
+  box-shadow:0 1px 2px rgba(14,124,102,.04);
+}
+.ck-rx-card::after{
+  content:'RECETË';
+  position:absolute;
+  right:10px;
+  top:10px;
+  color:#a3b8b0;
+  font-size:7.5px;
+  font-weight:700;
+  letter-spacing:.12em;
+}
