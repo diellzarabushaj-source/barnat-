@@ -95,6 +95,9 @@ const exactIdentityReview = fs.readFileSync(
 const clinicalReferenceWorkflow = fs.readFileSync(
   '.github/workflows/drx-phase8-pilot-clinical-reference.yml','utf8'
 );
+const searchHardening = fs.readFileSync(
+  'supabase/migrations/20260830201638_drx_phase8q_search_index_hardening.sql','utf8'
+);
 const handler = fs.readFileSync('lib/dose-product-fast-path-handler.js','utf8');
 const workflow = fs.readFileSync('.github/workflows/drx-phase8-shadow-gate.yml','utf8');
 const rollback = fs.readFileSync('docs/DRX-PHASE8-ROLLBACK.md','utf8');
@@ -179,6 +182,12 @@ assert.match(clinicalReference,/automatic_rule_publication_allowed boolean not n
 assert.match(exactIdentityReview,/phase8-explicit-evidence-review/);
 assert.match(exactIdentityReview,/does not verify or publish dosing rules/);
 assert.match(clinicalReferenceWorkflow,/needs: archive/);
+
+assert.match(searchHardening,/dose_products_v3_published_trade_trgm_idx/);
+assert.match(searchHardening,/dose_products_v3_published_substance_trgm_idx/);
+assert.match(searchHardening,/least\(coalesce\(p_limit,20\),50\)/);
+assert.match(searchHardening,/revoke all on function public\.drx_dose_search_v3_shadow_v1\(text,integer\)/i);
+assert.match(searchHardening,/grant execute on function public\.drx_dose_search_v3_shadow_v1\(text,integer\)\s+to service_role/i);
 
 assert.match(handler,/runtime:'v2-shadow'/);
 assert.match(handler,/X-DRx-Dose-Shadow/);
