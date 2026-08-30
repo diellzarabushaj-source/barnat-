@@ -13,7 +13,7 @@ on:
       - "scripts/drx-phase9-status.js"
       - "tests/drx-phase9-status-test.js"
       - "tests/drx-phase9-prescription-context-test.js"
-      - "tests/user-notes-native-storage-test.js"
+      - "tests/user-notes-native-storage-test.js"\n      - "tests/user-library-account-isolation-test.js"
       - "supabase/drx-phase9d-product-context-rollback.sql"
       - "tests/drx-phase9-product-context-test.js"
       - "lib/pediatric-dosage-handler-core.js"
