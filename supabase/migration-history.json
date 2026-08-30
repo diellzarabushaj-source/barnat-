@@ -337,6 +337,14 @@
     {
       "version": "20260830123219",
       "name": "drx_phase1_rpc_metadata_and_stage_hardening"
+    },
+    {
+      "version": "20260830142544",
+      "name": "drx_phase2_immutable_registry_ledger"
+    },
+    {
+      "version": "20260830143037",
+      "name": "drx_phase2_correction_matching_guard"
     }
   ]
 }
