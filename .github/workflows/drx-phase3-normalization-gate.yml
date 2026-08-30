@@ -1,0 +1,49 @@
+name: DRx Phase 3 normalization gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "supabase/migrations/20260830151016_drx_phase3_normalization_core.sql"
+      - "supabase/migrations/20260830152739_drx_phase3_normalization_gate_hardening.sql"
+      - "tests/drx-phase3-normalization-gate-test.js"
+      - "scripts/drx-phase3-status.js"
+      - "docs/DRX-PHASE3-ROLLBACK.md"
+      - ".github/workflows/drx-phase3-normalization-gate.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: drx-phase3-normalization-gate
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      MEDINDEX_SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co
+      SUPABASE_SECRET_KEY: \${{ secrets.SUPABASE_SECRET_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Static Phase 3 contract
+        run: node tests/drx-phase3-normalization-gate-test.js
+
+      - name: Live Phase 3 gate
+        run: node scripts/drx-phase3-status.js
+
+      - name: Upload Phase 3 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-phase3-status-evidence
+          path: drx-phase3-status-evidence.json
+          if-no-files-found: error
+          retention-days: 30
