@@ -3,7 +3,7 @@
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
-const { htmlToText } = require('../lib/smpc-parser.js');
+const { htmlToText, extractCompositionSection, extractClinicalSections } = require('../lib/smpc-parser.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const INPUT = path.join(ROOT, 'data', 'drx-master-registry-combos-v1.json');
@@ -56,7 +56,44 @@ function strengthSignature(s){
   const re=/(\d+(?:\.\d+)?)\s*(%|microgram(?:os?)?|mcg|ug|μg|µg|mg|g|ml|iu|u\.i\.)/g;
   let m;
   while((m=re.exec(text))) out.push(String(Number(m[1]))+unitNorm(m[2]));
-  return out.join('|');
+  return [...new Set(out)].join('|');
+}
+function compactStrength(s){
+  return stripDiacritics(s).toLowerCase().replace(/,/g,'.').replace(/microgram(?:os?)?|mcg|μg|µg/g,'ug').replace(/\s+/g,'').replace(/[^a-z0-9%+/.()-]+/g,'');
+}
+function concentrationKey(s,form){
+  const text=stripDiacritics(s).toLowerCase().replace(/,/g,'.').replace(/\s+/g,'');
+  if(/[+;]/.test(text)) return null;
+  const f=stripDiacritics(form).toLowerCase();
+  const semi=/cream|crema|gel|ointment|pomada|unguent|paste|cutane|dermal/.test(f);
+  const liquid=/solution|solucion|spray|drops|gotas|infusion|perfusion|injection|inyect|syrup|jarabe|suspension|emulsion|oral/.test(f);
+  let m; const fmt=n=>Number(n.toFixed(8)).toString();
+  if((m=text.match(/^(\d+(?:\.\d+)?)%$/))){
+    const p=Number(m[1]); if(semi)return fmt(p*10)+'mg/g'; if(liquid)return fmt(p*10)+'mg/ml'; return null;
+  }
+  if((m=text.match(/^(\d+(?:\.\d+)?)mg\/(\d+(?:\.\d+)?)ml$/))) return fmt(Number(m[1])/Number(m[2]))+'mg/ml';
+  if((m=text.match(/^(\d+(?:\.\d+)?)mg\/ml$/))) return fmt(Number(m[1]))+'mg/ml';
+  if((m=text.match(/^(\d+(?:\.\d+)?)g\/(\d+(?:\.\d+)?)l$/))) return fmt((Number(m[1])*1000)/(Number(m[2])*1000))+'mg/ml';
+  if((m=text.match(/^(\d+(?:\.\d+)?)g\/l$/))) return fmt(Number(m[1]))+'mg/ml';
+  if((m=text.match(/^(\d+(?:\.\d+)?)mg\/(\d+(?:\.\d+)?)g$/))) return fmt(Number(m[1])/Number(m[2]))+'mg/g';
+  if((m=text.match(/^(\d+(?:\.\d+)?)mg\/g$/))) return fmt(Number(m[1]))+'mg/g';
+  if((m=text.match(/^(\d+(?:\.\d+)?)ug\/(\d+(?:\.\d+)?)ml$/))) return fmt(Number(m[1])/Number(m[2]))+'ug/ml';
+  if((m=text.match(/^(\d+(?:\.\d+)?)ug\/ml$/))) return fmt(Number(m[1]))+'ug/ml';
+  return null;
+}
+function strengthEquivalent(targetStrength,targetForm,candidate){
+  const candidateText=[candidate?.dosis||'',candidate?.nombre||''].filter(Boolean).join(' ');
+  const tCompact=compactStrength(targetStrength);
+  const cCompact=compactStrength(candidateText);
+  if(tCompact && cCompact.includes(tCompact)) return true;
+  const tSig=strengthSignature(targetStrength);
+  const cSig=strengthSignature(candidateText);
+  if(tSig && cSig && tSig===cSig) return true;
+  const tConc=concentrationKey(targetStrength,targetForm);
+  const cConc=concentrationKey(candidate?.dosis||'',candidate?.formaFarmaceutica?.nombre||candidate?.formaFarmaceuticaSimplificada?.nombre||targetForm);
+  if(tConc && cConc && tConc===cConc) return true;
+  const nameConc=concentrationKey((String(candidate?.nombre||'').match(/\d+(?:[.,]\d+)?\s*(?:mg|microgramos?|mcg|ug|g)\s*\/\s*\d*(?:[.,]\d+)?\s*(?:ml|g|l)/i)||[])[0]||'',candidate?.formaFarmaceutica?.nombre||targetForm);
+  return Boolean(tConc && nameConc && tConc===nameConc);
 }
 function formFamily(value){
   const s=stripDiacritics(value).toLowerCase();
@@ -188,8 +225,8 @@ function extractAtcCodes(c){
 }
 function scoreCandidate(target,c,options={}){
   const tSig=strengthSignature(target.strength);
-  const cSig=strengthSignature(c?.dosis||'');
-  const strengthExact=Boolean(tSig && cSig && tSig===cSig);
+  const cSig=strengthSignature([c?.dosis||'',c?.nombre||''].join(' '));
+  const strengthExact=strengthEquivalent(target.strength,target.pharmaceuticalForm,c);
   const f=formCompatible(target.pharmaceuticalForm,c?.formaFarmaceutica?.nombre||c?.formaFarmaceuticaSimplificada?.nombre||'');
   const atc=firstAtc(target.atcCode);
   const candidateAtcs=extractAtcCodes(c);
@@ -231,6 +268,27 @@ async function getSections(nregistro){
     byCode[code]=htmlToText(s?.contenido||'');
   }
   return byCode;
+}
+async function getSectionsFromHtml(url){
+  if(!url) return {};
+  let last=null;
+  for(let attempt=1;attempt<=3;attempt++){
+    try{
+      const res=await fetch(url,{redirect:'follow',headers:{Accept:'text/html','User-Agent':USER_AGENT}});
+      if(res.status===429||res.status>=500){last=new Error('HTTP '+res.status);await sleep(350*attempt);continue;}
+      if(!res.ok) return {};
+      const html=await res.text();
+      const text=htmlToText(html);
+      const comp=extractCompositionSection(text);
+      const clinical=extractClinicalSections(text);
+      return {
+        '2':comp?.text||'',
+        '4.1':clinical.sections?.['4.1']?.text||'',
+        '4.2':clinical.sections?.['4.2']?.text||''
+      };
+    }catch(err){last=err;await sleep(250*attempt);}
+  }
+  return {};
 }
 function techDoc(med){
   return (med?.docs||[]).find(d=>Number(d?.tipo)===1) || null;
@@ -281,6 +339,13 @@ async function main(){
     const finalMeta=best ? scoreCandidate(target,detail||best.candidate,{atcQueryMatched:searchMode==='ATC' && Boolean(atc)}) : null;
     status=finalMeta?matchStatus(finalMeta):'NO_MATCH';
     const doc=techDoc(detail||best?.candidate||{});
+    if(doc?.urlHtml && (!sections?.['2'] || !sections?.['4.1'] || !sections?.['4.2'])){
+      try{
+        const recovered=await getSectionsFromHtml(String(doc.urlHtml));
+        sections={...(sections||{})};
+        for(const code of ['2','4.1','4.2']) if(!sections[code] && recovered[code]) sections[code]=recovered[code];
+      }catch{}
+    }
     const s2=sections?.['2']||'';
     const s41=sections?.['4.1']||'';
     const s42=sections?.['4.2']||'';
