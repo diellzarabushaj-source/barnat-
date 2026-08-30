@@ -1582,3 +1582,33 @@ body{overflow-x:hidden}
   .ck-book-rx-group{grid-template-columns:24px minmax(0,1fr);padding:14px}
   .ck-book-rx-line{font-size:14.5px}
 }
+
+
+/* Screenshot fixes v11 — readable clinical cards + working figure area */
+.ck-step.is-source-table .ck-step-copy>p{
+  font-family:inherit;
+  white-space:normal;
+  letter-spacing:normal;
+}
+.ck-step.is-source-table .ck-step-title strong{
+  font-family:inherit;
+}
+.ck-figure-media{
+  min-height:220px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.ck-figure-media img{
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:560px;
+  object-fit:contain;
+}
+.ck-figure{
+  min-width:0;
+}
+.ck-figure-grid{
+  align-items:start;
+}
