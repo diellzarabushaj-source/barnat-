@@ -166,7 +166,9 @@
     "test:drx-release-suite-coverage": "node tests/drx-release-suite-coverage-test.js",
     "test:drx-legacy-consumers": "node tests/drx-legacy-consumer-audit-test.js",
     "audit:drx-legacy-consumers": "node scripts/audit-drx-legacy-consumers.js",
-    "test:drx-phase2-registry-ledger": "node tests/drx-phase2-registry-ledger-test.js"
+    "test:drx-phase2-registry-ledger": "node tests/drx-phase2-registry-ledger-test.js",
+    "test:drx-phase4-identity": "node tests/drx-phase4-identity-namespace-test.js",
+    "audit:drx-phase4-live": "node scripts/drx-phase4-status.js"
   },
   "dependencies": {
     "@vercel/blob": "^2.3.0",
