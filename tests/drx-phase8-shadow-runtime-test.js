@@ -56,6 +56,12 @@ const migration = fs.readFileSync(
 const hardening = fs.readFileSync(
   'supabase/migrations/20260830163913_drx_phase8b_review_candidates_exit_gate_hardening.sql','utf8'
 );
+const reviewEvidence = fs.readFileSync(
+  'supabase/migrations/20260830165007_drx_phase8c_product_source_review_evidence.sql','utf8'
+);
+const statusHardening = fs.readFileSync(
+  'supabase/migrations/20260830165050_drx_phase8d_review_evidence_status_hardening.sql','utf8'
+);
 const handler = fs.readFileSync('lib/dose-product-fast-path-handler.js','utf8');
 const workflow = fs.readFileSync('.github/workflows/drx-phase8-shadow-gate.yml','utf8');
 const rollback = fs.readFileSync('docs/DRX-PHASE8-ROLLBACK.md','utf8');
@@ -74,6 +80,18 @@ assert.match(hardening,/implementation_gate_pass/);
 assert.match(hardening,/exit_gate_pass/);
 assert.match(hardening,/gate_pass',g\.exit_gate_pass/);
 assert.doesNotMatch(migration,/grant execute on function public\.drx_phase8_status_v1\(\) to authenticated/i);
+
+assert.match(reviewEvidence,/product_source_review_evidence_v1/);
+assert.match(reviewEvidence,/v3_product_candidates_v1/);
+assert.match(reviewEvidence,/automatic_verification_allowed/);
+assert.match(reviewEvidence,/automatic_insert_allowed/);
+assert.match(reviewEvidence,/SUBSTANCE_STRENGTH_ROUTE_FORM/);
+
+assert.match(statusHardening,/unique_source_identities/);
+assert.match(statusHardening,/unresolved_source_identities/);
+assert.match(statusHardening,/strongest_review_candidates/);
+assert.match(statusHardening,/automatic_candidate_insert_enabled',false/);
+assert.match(statusHardening,/gate_pass',g\.exit_gate_pass/);
 
 assert.match(handler,/runtime:'v2-shadow'/);
 assert.match(handler,/X-DRx-Dose-Shadow/);

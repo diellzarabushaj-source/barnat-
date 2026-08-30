@@ -1,0 +1,141 @@
+-- DRx Phase 8D: expose review evidence quality in the strict Phase 8 status.
+-- Exit gate remains closed until actual verified/published V3 shadow parity exists.
+
+create or replace function public.drx_phase8_status_v1()
+returns jsonb
+language sql
+security definer
+set search_path=pg_catalog,public,drx_runtime,drx_dose,drx_clinical,drx_raw
+as $$
+with metrics as (
+  select
+    (select count(*) from drx_runtime.published_product_read_model_v1) v3_read_model_products,
+    (select count(*) from public.dose_products_v3 where editorial_status='published') v3_published_products,
+    (select count(*) from public.dose_rules_v3 where editorial_status='published') v3_published_rules,
+
+    (select count(*) from drx_runtime.shadow_comparisons_v1) shadow_comparisons,
+    (select count(*) from drx_runtime.shadow_comparisons_v1 where comparison_status='MATCH') shadow_matches,
+    (select count(*) from drx_runtime.shadow_comparisons_v1 where comparison_status='DIFF') shadow_diffs,
+    (select count(*) from drx_runtime.shadow_comparisons_v1 where comparison_status='V2_ONLY') shadow_v2_only,
+    (select count(*) from drx_runtime.shadow_comparisons_v1 where comparison_status='V3_ONLY') shadow_v3_only,
+    (select count(*) from drx_runtime.shadow_comparisons_v1 where comparison_status='BOTH_MISSING') shadow_both_missing,
+    (select count(*) from drx_runtime.shadow_comparisons_v1 where comparison_status='V3_ERROR') shadow_v3_errors,
+    (select count(*) from drx_runtime.shadow_comparisons_v1 where comparison_status='SKIPPED') shadow_skipped,
+
+    (select count(*) from drx_clinical.source_identity_candidates_v1
+      where resolution_status='UNIQUE_CANDIDATE') unique_source_identities,
+    (select count(*) from drx_clinical.source_identity_candidates_v1
+      where resolution_status<>'UNIQUE_CANDIDATE') unresolved_source_identities,
+
+    (select count(*) from drx_dose.product_source_bindings_v1 where binding_status='REVIEW') review_product_source_bindings,
+    (select count(*) from drx_dose.product_source_bindings_v1 where binding_status='VERIFIED') verified_product_source_bindings,
+
+    (select count(*) from drx_dose.v3_product_candidates_v1) v3_product_candidates,
+    (select count(*) from drx_dose.v3_product_candidates_v1
+      where evidence_tier='SUBSTANCE_STRENGTH_ROUTE_FORM') strongest_review_candidates,
+    (select count(*) from drx_dose.v3_product_candidates_v1
+      where strength_literal_match) strength_literal_candidates,
+    (select count(*) from drx_dose.v3_product_candidates_v1
+      where route_literal_match) route_literal_candidates,
+    (select count(*) from drx_dose.v3_product_candidates_v1
+      where form_literal_match) form_literal_candidates,
+
+    (select count(*) from drx_runtime.legacy_evidence_alignment_v1
+      where alignment_status='EXACT_URL_ONLY') legacy_exact_url_only,
+    (select count(*) from drx_runtime.legacy_evidence_alignment_v1
+      where alignment_status='EXACT_URL_AND_SECTION_HASH') legacy_exact_url_and_section_hash,
+    (select count(*) from drx_runtime.legacy_evidence_alignment_v1
+      where alignment_status='EXACT_SECTION_HASH_ONLY') legacy_exact_section_hash_only,
+
+    (select count(*) from drx_raw.registry_reconstruction_diff_v1 where differs) reconstruction_true_diffs,
+    (select count(*) from drx_raw.registry_generated_projection_diff_v1
+      where active_substance_key_differs
+         or global_search_text_differs
+         or registry_search_text_differs) generated_true_diffs,
+
+    (select count(*) from pg_proc p
+      join pg_namespace n on n.oid=p.pronamespace
+      where n.nspname='public'
+        and p.proname in (
+          'drx_dose_search_v3_shadow_v1',
+          'drx_record_dose_shadow_comparison_v1',
+          'drx_phase8_status_v1'
+        )) phase8_functions
+),
+gates as (
+  select
+    m.*,
+    (
+      m.phase8_functions=3
+      and m.unresolved_source_identities=0
+      and m.v3_product_candidates=m.review_product_source_bindings
+      and m.review_product_source_bindings>0
+      and m.reconstruction_true_diffs=0
+      and m.generated_true_diffs=0
+    ) implementation_gate_pass,
+    (
+      m.v3_published_products>0
+      and m.v3_published_rules>0
+      and m.shadow_comparisons>0
+      and m.shadow_matches=m.shadow_comparisons
+      and m.shadow_diffs=0
+      and m.shadow_v2_only=0
+      and m.shadow_v3_only=0
+      and m.shadow_both_missing=0
+      and m.shadow_v3_errors=0
+      and m.shadow_skipped=0
+      and m.reconstruction_true_diffs=0
+      and m.generated_true_diffs=0
+    ) exit_gate_pass
+  from metrics m
+)
+select jsonb_build_object(
+  'v3_read_model_products',g.v3_read_model_products,
+  'v3_published_products',g.v3_published_products,
+  'v3_published_rules',g.v3_published_rules,
+
+  'shadow_comparisons',g.shadow_comparisons,
+  'shadow_matches',g.shadow_matches,
+  'shadow_diffs',g.shadow_diffs,
+  'shadow_v2_only',g.shadow_v2_only,
+  'shadow_v3_only',g.shadow_v3_only,
+  'shadow_both_missing',g.shadow_both_missing,
+  'shadow_v3_errors',g.shadow_v3_errors,
+  'shadow_skipped',g.shadow_skipped,
+
+  'unique_source_identities',g.unique_source_identities,
+  'unresolved_source_identities',g.unresolved_source_identities,
+
+  'review_product_source_bindings',g.review_product_source_bindings,
+  'verified_product_source_bindings',g.verified_product_source_bindings,
+  'v3_product_candidates',g.v3_product_candidates,
+  'strongest_review_candidates',g.strongest_review_candidates,
+  'strength_literal_candidates',g.strength_literal_candidates,
+  'route_literal_candidates',g.route_literal_candidates,
+  'form_literal_candidates',g.form_literal_candidates,
+
+  'legacy_exact_url_only',g.legacy_exact_url_only,
+  'legacy_exact_url_and_section_hash',g.legacy_exact_url_and_section_hash,
+  'legacy_exact_section_hash_only',g.legacy_exact_section_hash_only,
+
+  'phase8_functions',g.phase8_functions,
+  'reconstruction_true_diffs',g.reconstruction_true_diffs,
+  'generated_true_diffs',g.generated_true_diffs,
+
+  'shadow_only',true,
+  'v2_runtime_preserved',true,
+  'v3_cutover_enabled',false,
+  'automatic_candidate_insert_enabled',false,
+  'automatic_product_source_verification_enabled',false,
+  'automatic_legacy_verification_enabled',false,
+  'publication_allowed',false,
+
+  'implementation_gate_pass',g.implementation_gate_pass,
+  'exit_gate_pass',g.exit_gate_pass,
+  'gate_pass',g.exit_gate_pass
+)
+from gates g;
+$$;
+
+revoke all on function public.drx_phase8_status_v1() from public,anon,authenticated;
+grant execute on function public.drx_phase8_status_v1() to service_role;

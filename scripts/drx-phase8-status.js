@@ -23,6 +23,12 @@ async function main() {
   assert.equal(status.v3_cutover_enabled,false);
   assert.equal(status.publication_allowed,false);
   assert.equal(status.implementation_gate_pass,true);
+  assert.equal(status.unique_source_identities,25);
+  assert.equal(status.unresolved_source_identities,0);
+  assert.equal(status.v3_product_candidates,status.review_product_source_bindings);
+  assert.ok(status.strongest_review_candidates > 0);
+  assert.equal(status.automatic_candidate_insert_enabled,false);
+  assert.equal(status.automatic_product_source_verification_enabled,false);
   assert.equal(status.exit_gate_pass,false);
   assert.equal(status.gate_pass,false);
   assert.ok(status.review_product_source_bindings > 0);

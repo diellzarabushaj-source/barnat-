@@ -15,6 +15,9 @@ const c = fs.readFileSync(
 const d = fs.readFileSync(
   'supabase/migrations/20260830162151_drx_phase6d_boundary_aware_source_identity_candidates.sql','utf8'
 );
+const e = fs.readFileSync(
+  'supabase/migrations/20260830164615_drx_phase6e_same_hash_source_identity_resolution.sql','utf8'
+);
 const workflow = fs.readFileSync(
   '.github/workflows/drx-phase6-clinical-gate.yml','utf8'
 );
@@ -55,6 +58,11 @@ assert.match(d,/boundary-aware/i);
 assert.match(d,/SECTION2_BOUNDARY_AWARE_PREFERRED_CANONICAL_TERM_MATCH/);
 assert.match(d,/\(\^\|\[\^\[:alnum:\]\]\)/);
 assert.match(d,/variant_binding_allowed/);
+
+assert.match(e,/SAME_SECTION42_HASH_PRIOR_CANONICAL_KEY/);
+assert.match(e,/current_section_4_2_sha256=prior_section_4_2_sha256/);
+assert.match(e,/pc\.concept_id=any\(c\.candidate_concept_ids\)/);
+assert.match(e,/publication_eligible=false/);
 
 assert.match(workflow,/SUPABASE_SECRET_KEY/);
 assert.match(workflow,/drx-phase6-status-evidence/);
