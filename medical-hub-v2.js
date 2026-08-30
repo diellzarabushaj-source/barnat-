@@ -436,6 +436,23 @@
           ${item.summary ? `<div class="ck-quick-summary"><span>Përmbledhja e kapitullit</span><p>${esc(item.summary)}</p></div>` : ''}
         </header>
 
+        ${item.steps?.length ? `
+          <section class="ck-section ck-chapter-overview">
+            <div class="ck-section-heading"><span>Fokus</span><h3>Çfarë përfshin ky kapitull</h3></div>
+            <div class="ck-chapter-focus-grid">
+              ${item.steps.map((step, index) => `
+                <article class="ck-chapter-focus-card">
+                  <span>${String(index + 1).padStart(2, '0')}</span>
+                  <div>
+                    <strong>${esc(step.title || 'Pjesa')}</strong>
+                    <p>${esc(step.action || '')}</p>
+                  </div>
+                </article>
+              `).join('')}
+            </div>
+          </section>
+        ` : ''}
+
         <section class="ck-section ck-chapter-section">
           <div class="ck-section-heading"><span>Indeks</span><h3>Nënkapitujt e këtij kapitulli</h3></div>
           <div class="ck-chapter-progress">
