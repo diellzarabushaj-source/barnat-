@@ -1345,3 +1345,127 @@ body{overflow-x:hidden}
   .ck-chapter-lesson-copy>strong{font-size:15px}
   .ck-chapter-lesson-copy>small{font-size:13.5px}
 }
+
+
+/* Prescription sheet v2 — one Rx box per source regimen, active substances only */
+.ck-rx-sheet{
+  overflow:hidden;
+  border:1px solid #cfe5df;
+  border-left:4px solid #0e8a70;
+  border-radius:13px;
+  background:#fcfffe;
+}
+.ck-rx-sheet-head{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:16px 18px;
+  border-bottom:1px solid #deece8;
+  background:#f7fcfa;
+}
+.ck-rx-sheet-head>span{
+  min-width:40px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:7px;
+  background:#e5f7f1;
+  color:#08745f;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.03em;
+}
+.ck-rx-sheet-head>div{
+  display:grid;
+  gap:2px;
+}
+.ck-rx-sheet-head strong{
+  color:#0d4f45;
+  font-size:17px;
+  line-height:1.35;
+  font-weight:650;
+}
+.ck-rx-sheet-head small{
+  color:#6e827d;
+  font-size:12.5px;
+  line-height:1.45;
+}
+.ck-rx-lines{
+  display:grid;
+}
+.ck-rx-line{
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr);
+  gap:12px;
+  padding:16px 18px;
+}
+.ck-rx-line + .ck-rx-line{
+  border-top:1px solid #e3efeb;
+}
+.ck-rx-line-no{
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:999px;
+  background:#edf8f4;
+  color:#0e8069;
+  font-size:11px;
+  font-weight:700;
+}
+.ck-rx-line-copy{
+  min-width:0;
+  display:grid;
+  gap:8px;
+}
+.ck-rx-line-copy>strong{
+  color:#08715f;
+  font-size:16px;
+  line-height:1.4;
+  font-weight:650;
+}
+.ck-rx-line-details{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px 8px;
+}
+.ck-rx-line-details>span{
+  display:inline-flex;
+  align-items:center;
+  min-height:26px;
+  padding:4px 8px;
+  border:1px solid #dbe9e5;
+  border-radius:7px;
+  background:#fff;
+  color:#425c56;
+  font-size:12.5px;
+  line-height:1.35;
+}
+.ck-rx-line-copy>p{
+  margin:0;
+  color:#49615c;
+  font-size:13.5px;
+  line-height:1.6;
+}
+.ck-rx-line-copy>small{
+  display:block;
+  color:#748883;
+  font-size:12.5px;
+  line-height:1.55;
+}
+.ck-rx-section .ck-section-note{
+  margin-bottom:12px;
+}
+.ck-rx-section-nested .ck-rx-sheet{
+  margin-top:4px;
+}
+.ck-rx-grid{
+  display:block;
+}
+
+@media(max-width:760px){
+  .ck-rx-sheet-head{padding:14px}
+  .ck-rx-line{grid-template-columns:30px minmax(0,1fr);gap:10px;padding:14px}
+  .ck-rx-line-copy>strong{font-size:15.5px}
+  .ck-rx-line-details>span{font-size:12px}
+}
