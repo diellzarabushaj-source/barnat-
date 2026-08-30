@@ -1,0 +1,55 @@
+name: DRx Phase 8 exact source capture
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "supabase/migrations/20260830174925_drx_phase8j_exact_source_capture_pipeline.sql"
+      - "scripts/drx-phase8-exact-source-capture.js"
+      - "tests/drx-phase8-exact-source-capture-test.js"
+      - ".github/workflows/drx-phase8-exact-source-capture.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: drx-phase8-exact-source-capture
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MEDINDEX_SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+      DRX_CAPTURE_ARCHIVE_DIR: drx-phase8-exact-source-archive
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Static exact-source capture contract
+        run: node tests/drx-phase8-exact-source-capture-test.js
+
+      - name: Capture official registry bytes
+        run: node scripts/drx-phase8-exact-source-capture.js
+
+      - name: Verify Phase 8 status after capture
+        run: node scripts/drx-phase8-status.js
+
+      - name: Upload immutable source archive
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-phase8-exact-source-archive
+          path: |
+            drx-phase8-exact-source-archive/
+            drx-phase8-exact-source-capture-evidence.json
+            drx-phase8-status-evidence.json
+          if-no-files-found: warn
+          retention-days: 90

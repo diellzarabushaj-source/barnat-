@@ -77,6 +77,12 @@ const pilotDiscovery = fs.readFileSync(
 const pilotStatus = fs.readFileSync(
   'supabase/migrations/20260830171727_drx_phase8i_pilot_comparator_status_contract.sql','utf8'
 );
+const exactCapture = fs.readFileSync(
+  'supabase/migrations/20260830174925_drx_phase8j_exact_source_capture_pipeline.sql','utf8'
+);
+const captureWorkflow = fs.readFileSync(
+  '.github/workflows/drx-phase8-exact-source-capture.yml','utf8'
+);
 const handler = fs.readFileSync('lib/dose-product-fast-path-handler.js','utf8');
 const workflow = fs.readFileSync('.github/workflows/drx-phase8-shadow-gate.yml','utf8');
 const rollback = fs.readFileSync('docs/DRX-PHASE8-ROLLBACK.md','utf8');
@@ -138,6 +144,14 @@ assert.match(pilotStatus,/exact_source_discovery_candidates/);
 assert.match(pilotStatus,/pilot_source_snapshot_missing/);
 assert.match(pilotStatus,/pilot_ready_for_v3_build/);
 assert.match(pilotStatus,/automatic_exact_source_promotion_enabled',false/);
+
+assert.match(exactCapture,/exact_market_product_source_captures_v1/);
+assert.match(exactCapture,/exact_market_product_source_bindings_v1/);
+assert.match(exactCapture,/drx_phase8_ingest_exact_source_v1/);
+assert.match(exactCapture,/NON_EU_REGULATOR/);
+assert.match(exactCapture,/automatic_verification_allowed=false/);
+assert.match(captureWorkflow,/SUPABASE_SECRET_KEY/);
+assert.doesNotMatch(captureWorkflow,/SUPABASE_DB_URL/);
 
 assert.match(handler,/runtime:'v2-shadow'/);
 assert.match(handler,/X-DRx-Dose-Shadow/);
