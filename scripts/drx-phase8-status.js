@@ -59,15 +59,21 @@ async function main() {
   assert.equal(captureStatus.automatic_verification_enabled,false);
   assert.equal(captureStatus.publication_allowed,false);
 
-  assert.equal(preflight.preflightVersion,'drx-phase8-pilot-build-preflight-v2');\n  assert.ok(Number.isInteger(preflight.unresolvedClinicalFindings));\n  assert.ok(preflight.unresolvedClinicalFindings >= 0);
+  assert.equal(preflight.preflightVersion,'drx-phase8-pilot-build-preflight-v2');
   assert.equal(preflight.requiredPilotCount,2);
   assert.equal(preflight.pilotCount,2);
   assert.equal(preflight.humanClinicalReviewRequired,true);
   assert.equal(preflight.automaticClinicalReviewEnabled,false);
   assert.equal(preflight.automaticPublicationEnabled,false);
+  assert.ok(Number.isInteger(preflight.unresolvedClinicalFindings));
+  assert.ok(preflight.unresolvedClinicalFindings >= 0);
 
-  // Before both explicit clinical reviews, V3 publication must remain impossible.
-  if (preflight.clinicalReviewsVerified < preflight.requiredPilotCount || preflight.unresolvedClinicalFindings > 0) {
+  // Before explicit clinical review and exact-SmPC findings resolution,
+  // V3 publication must remain impossible.
+  if (
+    preflight.clinicalReviewsVerified < preflight.requiredPilotCount
+    || preflight.unresolvedClinicalFindings > 0
+  ) {
     assert.equal(preflight.pilotsReadyForV3Build,0);
     assert.equal(preflight.pilotsPublishedInV3,0);
     assert.equal(status.v3_published_products,0);
@@ -79,6 +85,7 @@ async function main() {
   // Once preflight passes, both reviewed pilots must be fully represented in V3.
   if (preflight.preflightPass) {
     assert.equal(preflight.clinicalReviewsVerified,2);
+    assert.equal(preflight.unresolvedClinicalFindings,0);
     assert.equal(preflight.pilotsReadyForV3Build,2);
     assert.equal(preflight.pilotsPublishedInV3,2);
     assert.ok(status.v3_published_products >= 2);
@@ -107,7 +114,7 @@ async function main() {
   assert.ok(search.length <= 50);
 
   const evidence = {
-    evidence_version:'drx-phase8-status-evidence-v2',
+    evidence_version:'drx-phase8-status-evidence-v3',
     generated_at:new Date().toISOString(),
     source:'public.drx_phase8_status_v1',
     status,
