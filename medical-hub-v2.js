@@ -431,7 +431,7 @@
             ${chip(`${children.length} nënkapituj`)}
             ${icdLessons ? chip(`${icdLessons} me ICD‑10`, 'is-code-count') : ''}
             ${procedureLessons ? chip(`${procedureLessons} procedura`, 'is-procedure-count') : ''}
-            ${item.version ? chip(`v${item.version}`) : ''}
+            ${item.version ? chip(item.version) : ''}
           </div>
           ${item.summary ? `<div class="ck-quick-summary"><span>Përmbledhja e kapitullit</span><p>${esc(item.summary)}</p></div>` : ''}
         </header>
@@ -492,7 +492,7 @@
           <div class="ck-meta">
             ${(item.icdCodes || []).map(icdChip).join('')}
             ${procedures.map(procedureChip).join('')}
-            ${item.version ? chip(`v${item.version}`) : ''}
+            ${item.version ? chip(item.version) : ''}
             ${item.reviewedBy ? chip(item.reviewedBy) : ''}
           </div>
           ${item.summary ? `<div class="ck-quick-summary"><span>Në 20 sekonda</span><p>${esc(item.summary)}</p></div>` : ''}
@@ -814,7 +814,7 @@
       const chapters = state.items.filter(isChapter);
       $('#learningCategory')?.insertAdjacentHTML(
         'beforeend',
-        chapters.map(chapter => `<option value="${chapterKey(chapter)}">${esc(chapter.question || chapter.title)} — ${esc(chapter.title.replace(/^\\d+\\s*[—-]\\s*/, ''))}</option>`).join('')
+        chapters.map(chapter => `<option value="${chapterKey(chapter)}">${esc(chapter.question || chapter.title)} — ${esc(chapter.title.replace(/^\d+\s*[—-]\s*/, ''))}</option>`).join('')
       );
 
       state.selectedId = chapters[0]?._id || state.items[0]?._id || '';
