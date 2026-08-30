@@ -1048,7 +1048,10 @@
   function clearSearch({ focus = true } = {}) {
     window.clearTimeout(searchTimer);
     searchTimer = 0;
+    state.searchSequence += 1;
     state.term = '';
+    state.backendResults = null;
+    state.searching = false;
     const input = $('#learningSearch');
     if (input) input.value = '';
     applyFilters();
@@ -1058,12 +1061,17 @@
   function clearFilters() {
     window.clearTimeout(searchTimer);
     searchTimer = 0;
+    state.searchSequence += 1;
     state.term = '';
-    state.category = '';
+    state.backendResults = null;
+    state.searching = false;
+    const firstChapter = state.items.find(isChapter) || null;
+    state.category = firstChapter ? chapterKey(firstChapter) : '';
+    state.selectedId = firstChapter?._id || state.items[0]?._id || '';
     const input = $('#learningSearch');
     const category = $('#learningCategory');
     if (input) input.value = '';
-    if (category) category.value = '';
+    if (category) category.value = state.category;
     applyFilters();
     input?.focus();
   }
@@ -1075,33 +1083,52 @@
     try {
       const authPayload = await ensureAuth();
       await syncProfileChrome(authPayload);
-      await ensureSanity();
 
-      state.items = await window.MedIndexSanity.query(INDEX_QUERY);
-      if (!Array.isArray(state.items)) state.items = [];
+      const indexPayload = await hubApi({ mode:'index' }, { timeout:15000 });
+      state.items = Array.isArray(indexPayload.items) ? indexPayload.items : [];
       state.items.sort((a, b) => topicOrder(a) - topicOrder(b) || clean(a.title).localeCompare(clean(b.title), 'sq'));
 
       const chapters = state.items.filter(isChapter);
-      $('#learningCategory')?.insertAdjacentHTML(
-        'beforeend',
-        chapters.map(chapter => `<option value="${chapterKey(chapter)}">${esc(chapter.question || chapter.title)} — ${esc(chapter.title.replace(/^\d+\s*[—-]\s*/, ''))}</option>`).join('')
-      );
+      const category = $('#learningCategory');
+      if (category) {
+        category.innerHTML = '<option value="">Të gjithë kapitujt</option>'
+          + chapters.map(chapter => {
+            const number = chapterKey(chapter);
+            const title = clean(chapter.title).replace(/^\d+\s*[—-]\s*/, '');
+            return `<option value="${number}">Kapitulli ${Number(number)} — ${esc(title)}</option>`;
+          }).join('');
+      }
 
       state.selectedId = chapters[0]?._id || state.items[0]?._id || '';
+      state.category = chapters[0] ? chapterKey(chapters[0]) : '';
       restoreUrl();
+      if (category) category.value = state.category;
       applyFilterState();
 
       $('#learningSearch')?.addEventListener('input', event => scheduleSearch(event.target.value));
       $('#learningSearchClear')?.addEventListener('click', () => clearSearch());
-      $('#learningCategory')?.addEventListener('change', event => {
+      category?.addEventListener('change', event => {
         state.category = event.target.value || '';
-        applyFilters();
+        const chapter = state.items.find(item => isChapter(item) && chapterKey(item) === state.category);
+        if (!clean(state.term)) {
+          state.backendResults = null;
+          if (chapter) state.selectedId = chapter._id;
+          applyFilters();
+          return;
+        }
+        state.searchSequence += 1;
+        const sequence = state.searchSequence;
+        window.clearTimeout(searchTimer);
+        searchTimer = window.setTimeout(() => {
+          searchTimer = 0;
+          void runBackendSearch(sequence);
+        }, 80);
       });
       $('#learningTopic')?.addEventListener('change', event => selectTopic(event.target.value));
       $('#previousTopicButton')?.addEventListener('click', () => selectAdjacentTopic(-1));
       $('#nextTopicButton')?.addEventListener('click', () => selectAdjacentTopic(1));
 
-      if ($('#syncText')) $('#syncText').textContent = 'Sanity';
+      if ($('#syncText')) $('#syncText').textContent = 'Sanity · Backend';
 
       renderList();
       renderReaderNavigation();
@@ -1111,13 +1138,13 @@
     } catch (error) {
       console.error('[Medical Hub v2]', error);
       if ($('#learningStatus')) $('#learningStatus').textContent = 'Temat nuk u ngarkuan.';
-      if ($('#learningResultStatus')) $('#learningResultStatus').textContent = 'Gabim në ngarkim';
+      if ($('#learningResultStatus')) $('#learningResultStatus').textContent = 'Gabim në lidhjen me backend.';
       if ($('#learningTopic')) $('#learningTopic').innerHTML = '<option>Gabim në ngarkim</option>';
       if ($('#learningDetail')) {
         $('#learningDetail').innerHTML = `
           <div class="ck-empty">
             <strong>Medical Hub nuk u ngarkua.</strong>
-            <span>Provo përsëri pa humbur sesionin.</span>
+            <span>Backend-i ose Sanity nuk u përgjigj. Provo përsëri pa humbur sesionin.</span>
             <button class="ck-retry" type="button" data-hub-retry>Provo përsëri</button>
           </div>`;
         $('#learningDetail').querySelector('[data-hub-retry]')?.addEventListener('click', () => window.location.reload());
