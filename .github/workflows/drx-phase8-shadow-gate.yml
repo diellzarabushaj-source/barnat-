@@ -22,6 +22,17 @@ on:
       - "supabase/migrations/20260830204847_drx_phase8t_clinical_finding_review_control.sql"
       - "supabase/migrations/20260830205514_drx_phase8v_clinical_finding_snapshot_index.sql"
       - "supabase/migrations/20260830210058_drx_phase8w_pilot_clinical_provenance_bridge.sql"
+      - "supabase/migrations/20260830213146_drx_phase8z_pilot_publication_scaffolding.sql"
+      - "supabase/migrations/20260830213349_drx_phase8za_reviewed_v3_pilot_materialization.sql"
+      - "supabase/migrations/20260830213550_drx_phase8zb_reviewed_shadow_exit_gate.sql"
+      - "supabase/migrations/20260830213647_drx_phase8zc_cover_pilot_foreign_keys.sql"
+      - "supabase/migrations/20260830213708_drx_phase8zd_cover_pilot_release_fk.sql"
+      - "supabase/drx-phase8z-pilot-publication-scaffolding-rollback.sql"
+      - "supabase/drx-phase8za-reviewed-v3-pilot-materialization-rollback.sql"
+      - "supabase/drx-phase8zb-reviewed-shadow-exit-gate-rollback.sql"
+      - "supabase/drx-phase8zc-cover-pilot-foreign-keys-rollback.sql"
+      - "supabase/drx-phase8zd-cover-pilot-release-fk-rollback.sql"
+      - "tests/drx-phase8-reviewed-pilot-exit-test.js"
       - "supabase/migrations/20260830210940_drx_phase8x_clinical_reference_finality_guard.sql"
       - "supabase/migrations/20260830211016_drx_phase8y_clinical_provenance_refresh.sql"
       - "supabase/migrations/20260830211052_drx_phase8x_provenance_scope_repair.sql"
@@ -71,6 +82,8 @@ jobs:
         run: node tests/drx-phase8-pilot-clinical-provenance-bridge-test.js
       - name: Static Phase 8 live migration reconciliation
         run: node tests/drx-phase8-live-migration-reconciliation-test.js
+      - name: Static Phase 8 reviewed pilot exit contract
+        run: node tests/drx-phase8-reviewed-pilot-exit-test.js
       - name: Static Phase 8 performance probe contract
         run: node tests/drx-phase8-performance-probe-test.js
       - name: Static Phase 8 exit audit contract

@@ -521,6 +521,26 @@
     {
       "version": "20260830211052",
       "name": "drx_phase8x_provenance_scope_repair"
+    },
+    {
+      "name": "drx_phase8z_pilot_publication_scaffolding",
+      "version": "20260830213146"
+    },
+    {
+      "name": "drx_phase8za_reviewed_v3_pilot_materialization",
+      "version": "20260830213349"
+    },
+    {
+      "name": "drx_phase8zb_reviewed_shadow_exit_gate",
+      "version": "20260830213550"
+    },
+    {
+      "name": "drx_phase8zc_cover_pilot_foreign_keys",
+      "version": "20260830213647"
+    },
+    {
+      "name": "drx_phase8zd_cover_pilot_release_fk",
+      "version": "20260830213708"
     }
   ]
 }
