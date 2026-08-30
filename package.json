@@ -168,7 +168,9 @@
     "audit:drx-legacy-consumers": "node scripts/audit-drx-legacy-consumers.js",
     "test:drx-phase2-registry-ledger": "node tests/drx-phase2-registry-ledger-test.js",
     "test:drx-phase4-identity": "node tests/drx-phase4-identity-namespace-test.js",
-    "audit:drx-phase4-live": "node scripts/drx-phase4-status.js"
+    "audit:drx-phase4-live": "node scripts/drx-phase4-status.js",
+    "test:drx-phase5-variants": "node tests/drx-phase5-clinical-variants-test.js",
+    "audit:drx-phase5-live": "node scripts/drx-phase5-status.js"
   },
   "dependencies": {
     "@vercel/blob": "^2.3.0",
