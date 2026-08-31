@@ -113,7 +113,7 @@ a{color:inherit}
 .search-box input:hover{border-color:#bcc7d3}
 .search-box kbd{position:absolute;right:8px;top:50%;transform:translateY(-50%);padding:4px 7px;border:1px solid var(--line);border-bottom-color:#c4ccd6;border-radius:5px;background:#f8fafc;color:var(--muted);font:500 10px/1 Inter}
 .toolbar-actions{display:flex;align-items:center;gap:7px;margin-left:auto}
-.count-chip{display:inline-grid;min-width:18px;height:18px;place-items:center;padding:0 5px;border-radius:999px;background:var(--accent);color:#fff;font-size:9px}
+.count-chip{display:inline-grid;min-width:20px;height:20px;place-items:center;padding:0 5px;border-radius:999px;background:var(--accent);color:#fff;font-size:11px}
 .compact-select{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:11px}
 .compact-select select{height:35px;padding:0 25px 0 9px;border:1px solid var(--line-strong);border-radius:7px;background:#fff;color:#34475c;font-size:11.5px}
 
@@ -329,7 +329,7 @@ a{color:inherit}
   :root{--sidebar:0px}
   .sidebar{width:238px;transform:translateX(-102%);box-shadow:var(--shadow-lg);transition:transform .2s ease}
   .sidebar.is-open{transform:translateX(0)}
-  .sidebar-close,.menu-button{display:grid}
+  .icon-button.sidebar-close,.icon-button.menu-button{display:grid}
   .sidebar-backdrop{position:fixed;inset:0;z-index:45;background:rgba(10,37,64,.2)}
   .main-shell{margin-left:0}
   .topbar{padding:0 14px}
@@ -355,11 +355,11 @@ a{color:inherit}
   .page-heading h1{font-size:24px}
   .page-subtitle{max-width:34ch;font-size:11.5px}
   .heading-actions{margin-top:12px}
-  .heading-actions .button{flex:1}
+  .heading-actions .button{min-height:40px;flex:1}
   .metrics-row{margin-bottom:10px;border-radius:9px}
   .metric-card{padding:10px 11px}
   .metric-card strong{font-size:16px}
-  .metric-card small{font-size:10.5px}
+  .metric-card small{font-size:11px}
 
   .data-card{border-radius:10px}
   .data-card-head{padding:9px}
@@ -433,6 +433,7 @@ a{color:inherit}
   .drawer-body{padding:0 14px 18px}
   .drawer-foot{padding:10px 14px calc(10px + env(safe-area-inset-bottom))}
   .drawer-foot .button{min-height:44px;flex:1}
+  #emptyClearButton{min-height:40px}
   .detail-hero{margin:0 -14px 2px;padding:17px 14px 15px}
   .detail-grid{grid-template-columns:1fr}
   .detail-grid dt{padding-bottom:3px;border-bottom:0}
@@ -446,9 +447,9 @@ a{color:inherit}
   .form-category-icon svg{width:23px;height:23px}
   .form-category-copy strong{font-size:11.5px}
   .form-picker-all-copy small{display:none}
-  .form-option-short{font-size:9px}
+  .form-option-short{font-size:11px}
   .metrics-row{grid-template-columns:1fr 1fr}
-  .metric-card span{font-size:10.5px}
+  .metric-card span{font-size:11px}
   .metric-card small{display:none}
   .heading-actions{display:grid;grid-template-columns:1fr 1fr}
   .registry-table tbody tr{grid-template-columns:1fr}
@@ -536,8 +537,8 @@ a{color:inherit}
 .avatar-button.drx-user-avatar{border:0;padding:0}
 @media(max-width:760px){
   .drx-profile-copy{display:none}
-  .drx-profile-chip{width:38px;height:38px;padding:1px;border:0;background:transparent}
-  .drx-profile-chip .drx-user-avatar{width:36px;height:36px}
+  .drx-profile-chip{width:40px;height:40px;padding:1px;border:0;background:transparent}
+  .drx-profile-chip .drx-user-avatar{width:38px;height:38px}
 }
 
 
