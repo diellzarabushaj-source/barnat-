@@ -22,7 +22,7 @@ const serviceWorker = read('sw.js');
 assert.match(html, /data-drx-app="analizat-v2"/);
 assert.match(html, /class="drx-unified-sidebar"/);
 assert.match(html, /analizat-v2\.css\?v=1/);
-assert.match(html, /analizat-v2\.js\?v=1/);
+assert.match(html, /analizat-v2\.js\?v=2/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/);
 assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
 assert.match(html, /id="labDiseaseTrigger"/);
@@ -48,7 +48,7 @@ assert.equal(styles.length, 2, 'Analizat V2 must load only page CSS + canonical 
 assert.ok(styles[0].includes('analizat-v2.css?v=1'));
 assert.ok(styles[1].includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6'));
 assert.equal(scripts.length, 1, 'Analizat V2 must own one page runtime');
-assert.ok(scripts[0].includes('analizat-v2.js?v=1'));
+assert.ok(scripts[0].includes('analizat-v2.js?v=2'));
 assert.doesNotMatch(html, /tailadmin-|analizat-polish|medical-hub\.css|lab-sheet-data|auth-client\.js|clean-medindex-ui|clinical-density|app-polish|performance\.css/);
 assert.doesNotMatch(html, /<\/div>\s*<\/div>\s*<\/main>/, 'Analizat V2 main wrapper must stay balanced');
 
