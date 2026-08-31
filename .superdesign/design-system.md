@@ -9,12 +9,13 @@
 > - Top bar: **58px**.
 > - Content: max **1360px**, desktop padding **32px 36px 64px**.
 > - Sidebar item: **40px** desktop / **44px** touch, 6px radius, Inter 14px / 300.
-> - Page title: 32px / 300 / 1.1; mobile 26px.
+> - Page title: 32px / 300 / 1.1; mobile 25px.
 > - Controls: 40px dense desktop / minimum 44px touch.
 > - Dark-shell brand asset: `/brand/drx-horizontal-on-dark.svg`.
 > - Teal is reserved for clinical semantics inside page content (verified/safe/clinical state); it is **not** a second shell accent.
 > - No page may introduce a second sidebar, second topbar, or competing dashboard stylesheet after `drx-dashboard-stripe.css`.
 > - Standalone V2 pages keep page-specific workspace CSS but share the same shell contract through `html.drx-unified-sidebar`.
+> - **Urgjencat is the canonical content-density reference** for standalone clinical workspaces: Inter 14/300 body, 32/300 page title, 14/300 subtitle, 11.5px dense controls, white canvas, hairline borders, 12px document radius, 28px document title, 18px section heading, and 13–13.5px long-form clinical copy. Protokollet and future readers must use the same scale unless a clinical-data constraint requires a documented exception.
 > - TailAdmin pages keep their functional compatibility layers but `drx-dashboard-stripe.css` must remain the final static stylesheet.
 >
 > This contract is guarded by automated dashboard-shell tests. When the Stripe reference and older TailAdmin notes disagree, **this override and `design-md/stripe/DESIGN.md` win**.
