@@ -17,10 +17,18 @@ assert.match(workflow,/--use-copy --data-only/);
 assert.match(workflow,/--schema supabase_migrations/);
 assert.match(workflow,/supabase start/);
 assert.match(workflow,/postgresql:\/\/postgres:postgres@127\.0\.0\.1:54322\/postgres/);
-assert.match(workflow,/drugs=4015/);
-assert.match(workflow,/dosage_regimens=8104/);
-assert.match(workflow,/source_snapshots=100/);
-assert.match(workflow,/source_sections=575/);
+assert.match(workflow,/Capture source restore manifest/);
+assert.match(workflow,/drugs_count=/);
+assert.match(workflow,/dosage_regimens_count=/);
+assert.match(workflow,/source_snapshots_count=/);
+assert.match(workflow,/source_sections_count=/);
+assert.match(workflow,/v3_products_count=/);
+assert.match(workflow,/v3_rules_count=/);
+assert.match(workflow,/v3_bindings_count=/);
+assert.match(workflow,/fingerprint=/);
+assert.match(workflow,/diff -u "\$RUNNER_TEMP\/drx-source-manifest\.txt" "\$RUNNER_TEMP\/drx-restore-manifest\.txt"/);
+assert.match(workflow,/Require independent source manifest/);
+assert.doesNotMatch(workflow,/grep -qx 'v3_products=0'/);
 assert.match(workflow,/runner_ephemeral_only_no_database_payload_uploaded/);
 assert.doesNotMatch(workflow,/path:\s*[|>]?[\s\S]{0,120}(roles\.sql|schema\.sql|data\.sql)/);
 
@@ -38,10 +46,19 @@ assert.equal(baseline.phase1ExitGate.status,'PASS');
 assert.equal(evidence.status,'PASS');
 assert.equal(evidence.backupCreated,true);
 assert.equal(evidence.restoreVerified,true);
-assert.equal(evidence.restoredCounts.drugs,4015);
-assert.equal(evidence.restoredCounts.dosage_regimens,8104);
-assert.equal(evidence.restoredCounts.source_snapshots,100);
-assert.equal(evidence.restoredCounts.source_sections,575);
+if(evidence.schemaVersion==='drx-phase1-backup-restore-evidence-v2'){
+  assert.equal(evidence.sourceRestoreParity,true);
+  assert.deepEqual(evidence.sourceManifest,evidence.restoredManifest);
+  assert.ok(Number.isInteger(evidence.restoredManifest.drugs_count));
+  assert.ok(Number.isInteger(evidence.restoredManifest.dosage_regimens_count));
+  assert.ok(Number.isInteger(evidence.restoredManifest.source_snapshots_count));
+  assert.ok(Number.isInteger(evidence.restoredManifest.source_sections_count));
+} else {
+  assert.equal(evidence.restoredCounts.drugs,4015);
+  assert.equal(evidence.restoredCounts.dosage_regimens,8104);
+  assert.equal(evidence.restoredCounts.source_snapshots,100);
+  assert.equal(evidence.restoredCounts.source_sections,575);
+}
 assert.equal(evidence.publicationAllowed,false);
 
 console.log('DRx Phase 1 backup/restore workflow and Google snapshot hash contract passed.');
