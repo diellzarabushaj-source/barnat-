@@ -8,9 +8,9 @@
   <title>DRx | Regjistri i barnave</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/registry-v2.css?v=registry-dose-v6">
+  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-20260831-clinical-columns-v1">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4">
-  <script src="/registry-v2.js?v=registry-dose-v6" defer></script>
+  <script src="/registry-v2.js?v=registry-v2-20260831-clinical-columns-v1" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -172,7 +172,7 @@
               </div>
             </div>
             <label>Rendit sipas
-              <select id="sortSelect"><option value="registry">Nr. regjistri</option><option value="name">Emri</option><option value="substance">Substanca</option><option value="atc">ATC</option><option value="strength">Fortësia</option><option value="form">Forma</option><option value="status">Statusi</option><option value="price">Çmimi</option></select>
+              <select id="sortSelect"><option value="registry">Nr. regjistri</option><option value="name">Emri</option><option value="substance">Substanca</option><option value="atc">ATC</option><option value="strength">Fortësia</option><option value="form">Forma</option><option value="class">Grupi / Klasa</option><option value="use">Përdorimi</option><option value="population">Popullata</option><option value="status">Statusi</option><option value="price">Çmimi</option></select>
             </label>
             <label>Drejtimi
               <select id="directionSelect"><option value="asc">A → Z</option><option value="desc">Z → A</option></select>
@@ -196,6 +196,9 @@
                   <th data-col="substance"><button class="sort-head" data-sort="substance" type="button">Substanca aktive</button></th>
                   <th data-col="strength"><button class="sort-head" data-sort="strength" type="button">Fortësia</button></th>
                   <th data-col="form"><button class="sort-head" data-sort="form" type="button">Forma</button></th>
+                  <th data-col="drugClass"><button class="sort-head" data-sort="class" type="button">Grupi / Klasa</button></th>
+                  <th data-col="use"><button class="sort-head" data-sort="use" type="button">Për çka përdoret</button></th>
+                  <th data-col="population"><button class="sort-head" data-sort="population" type="button">Popullata</button></th>
                   <th data-col="atc"><button class="sort-head" data-sort="atc" type="button">ATC</button></th>
                   <th data-col="adultDose">Doza e të rriturit</th>
                   <th data-col="pediatricDose">Doza pediatrike</th>
