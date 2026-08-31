@@ -1,6 +1,10 @@
 DRx Phase 11 production rebuild trigger
-Migration parity: 238/238
+Migration parity: 251/251
 Vercel serverless budget: 12/12
 Consolidated routes: /api/icd + /api/phase11-review -> /api/clinical-editor
-Latest migration: 20260831171501_drx_phase11cc_gated_draft_product_shell_materializer
+Latest migration: 20260831190001_drx_phase11cp_controlled_percent_bypass_guard
+Phase 11 release/shadow gate: PASS
+MedIndex complete test suite: PASS
+Physician/Admin/Mobile browser gates: PASS
 Safety mode: fail-closed
+Runtime cutover: CONTROLLED 5%, V2 rollback; increases >5% require Phase 11 readiness
