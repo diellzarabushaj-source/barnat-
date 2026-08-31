@@ -50,7 +50,7 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 .icd-path-label{flex:none;color:var(--muted);font-size:11px;font-weight:400}
 .icd-path-items{min-width:0;display:flex;align-items:center;gap:5px;overflow-x:auto;scrollbar-width:none}
 .icd-path-items::-webkit-scrollbar{display:none}
-.icd-path-node{min-width:0;display:flex;align-items:center;gap:6px;padding:5px 8px;border:0;border-radius:7px;background:transparent;color:#536579;cursor:pointer;white-space:nowrap}
+.icd-path-node{min-width:0;min-height:28px;display:flex;align-items:center;gap:6px;padding:5px 8px;border:0;border-radius:7px;background:transparent;color:#536579;cursor:pointer;white-space:nowrap}
 .icd-path-node:hover{background:#fff}
 .icd-path-node.is-current{background:var(--stripe-soft);color:var(--stripe)}
 .icd-path-node strong{font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
