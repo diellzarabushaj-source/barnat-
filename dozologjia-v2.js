@@ -1115,7 +1115,10 @@
 
   function clearFieldErrors() {
     elements.patientPanel.querySelectorAll('[data-field-error]').forEach(node => { node.textContent = ''; });
-    for (const input of [elements.weight, elements.age, elements.height]) input?.removeAttribute('aria-invalid');
+    for (const input of [
+      elements.indication,elements.weight,elements.age,elements.height,elements.crcl,elements.egfr,
+      elements.dialysis,elements.childPugh,elements.hepaticImpairment,
+    ]) input?.removeAttribute('aria-invalid');
   }
 
   function disablePatientPanel(message) {
@@ -1165,6 +1168,11 @@
     const options = calculationOptions(product);
     const current = text(product?.calculationRegimen?.selectionId);
     select.textContent = '';
+    if (!options.length) {
+      select.disabled = true;
+      select.value = '';
+      return;
+    }
     if (options.length > 1) {
       const placeholder = element('option',null,'Zgjidh indikacionin');
       placeholder.value = '';
