@@ -34,18 +34,18 @@ assert.equal(safe.strictArmed,false);
 assert.equal(safe.stateAvailable,false);
 
 const controlled=Cutover._test.normalizeState({
-  stateVersion:'drx-phase10-cutover-state-v1',
+  stateVersion:'drx-phase10-cutover-state-v2',
   mode:'CONTROLLED',controlledPercent:5,strictArmed:false,controlVersion:7,
-  rollbackTarget:'V2',strictActivationSupported:false,
+  trafficBucketVersion:2,rollbackTarget:'V2',strictActivationSupported:false,
 });
 assert.equal(controlled.stateAvailable,true);
 assert.equal(controlled.mode,'CONTROLLED');
 assert.equal(controlled.controlledPercent,5);
 
 const strict=Cutover._test.normalizeState({
-  stateVersion:'drx-phase10-cutover-state-v1',
+  stateVersion:'drx-phase10-cutover-state-v2',
   mode:'STRICT',controlledPercent:0,strictArmed:true,controlVersion:8,
-  rollbackTarget:'V2',strictActivationSupported:true,
+  trafficBucketVersion:2,rollbackTarget:'V2',strictActivationSupported:true,
 });
 assert.equal(strict.mode,'SHADOW');
 assert.equal(strict.stateAvailable,false);
@@ -57,8 +57,25 @@ assert.equal(bucket1,bucket2);
 assert.ok(bucket1>=0 && bucket1<=99);
 const decision=Cutover.decision(controlled,selector);
 assert.equal(decision.trafficBucket,bucket1);
+assert.equal(decision.trafficBucketVersion,2);
 assert.equal(decision.selectedForV3,bucket1<5);
+
+const stableAcrossControlVersions=Cutover._test.trafficBucket(
+  {...controlled,controlVersion:99},
+  selector
+);
+assert.equal(stableAcrossControlVersions,bucket1,
+  'controlled cohort must not reshuffle when controlVersion changes');
+assert.equal(Cutover._test.TRAFFIC_BUCKET_VERSION,2);
 assert.equal(Cutover.decision(safe,selector).selectedForV3,false);
+
+const legacyControlled=Cutover._test.normalizeState({
+  stateVersion:'drx-phase10-cutover-state-v1',
+  mode:'CONTROLLED',controlledPercent:5,strictArmed:false,controlVersion:7,
+  rollbackTarget:'V2',strictActivationSupported:false,
+});
+assert.equal(legacyControlled.stateAvailable,false);
+assert.equal(legacyControlled.fallbackReason,'legacy_state_not_allowed_for_controlled');
 
 assert.match(handler,/Cutover\.getState\(\)/);
 assert.match(handler,/Cutover\.decision\(state,selector\)/);

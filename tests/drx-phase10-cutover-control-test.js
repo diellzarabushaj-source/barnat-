@@ -52,7 +52,7 @@ assert.match(rollback,/later Phase 10 migration history exists/);
 assert.match(rollback,/Phase 10 operational evidence exists/);
 assert.doesNotMatch(rollback,/\bcascade\b/i);
 
-assert.match(statusScript,/mode,'SHADOW'/);
+assert.match(statusScript,/\['SHADOW','CONTROLLED'\]/);
 assert.match(statusScript,/strictModeLocked,true/);
 assert.match(statusScript,/finalGatePass,false/);
 assert.match(statusScript,/destructiveCleanupAllowed,false/);

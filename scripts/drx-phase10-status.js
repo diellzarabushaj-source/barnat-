@@ -19,15 +19,16 @@ async function main(){
   assert.equal(status.phase,10);
   assert.equal(status.phase9Closed,true);
   assert.equal(status.phase10AllowedByPhase9,true);
-  assert.equal(status.mode,'SHADOW');
-  assert.equal(status.controlledTrafficPercent,0);
+  assert.ok(['SHADOW','CONTROLLED'].includes(status.mode),'Phase 10 runtime must stay in SHADOW or CONTROLLED before strict cutover');
+  if(status.mode==='SHADOW') assert.equal(status.controlledTrafficPercent,0);
+  if(status.mode==='CONTROLLED') assert.ok([1,5,10].includes(status.controlledTrafficPercent));
   assert.equal(status.strictArmed,false);
   assert.equal(status.strictModeLocked,true);
   assert.equal(status.rollbackTarget,'V2');
   assert.equal(status.v2FallbackRequired,true);
   assert.equal(status.v3StrictActive,false);
   assert.equal(status.minimumSoakDays,14);
-  assert.equal(status.soak14DaysPass,false);
+  assert.equal(typeof status.soak14DaysPass,'boolean');
   assert.equal(status.finalGatePass,false);
   assert.equal(status.destructiveCleanupAllowed,false);
 

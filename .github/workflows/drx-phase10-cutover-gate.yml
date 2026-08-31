@@ -13,6 +13,9 @@ on:
       - "supabase/migrations/20260831050214_drx_phase10d_reconcile_parallel_control_plane.sql"
       - "supabase/migrations/20260831050641_drx_phase10e_security_and_legacy_write_evidence.sql"
       - "supabase/migrations/20260831051258_drx_phase10f_controlled_rollback_drill.sql"
+      - "supabase/migrations/20260831051755_drx_phase10g_stable_traffic_bucket.sql"
+      - "supabase/drx-phase10g-stable-traffic-bucket-rollback.sql"
+      - "tests/drx-phase10-stable-traffic-bucket-test.js"
       - "supabase/drx-phase10f-controlled-rollback-drill-rollback.sql"
       - "tests/drx-phase10-rollback-drill-test.js"
       - "supabase/drx-phase10e-security-and-legacy-write-evidence-rollback.sql"
@@ -61,6 +64,8 @@ jobs:
         run: node tests/drx-phase10-security-write-evidence-test.js
       - name: Phase 10F rollback drill evidence
         run: node tests/drx-phase10-rollback-drill-test.js
+      - name: Phase 10G stable traffic bucket
+        run: node tests/drx-phase10-stable-traffic-bucket-test.js
       - name: Phase 10 legacy runtime consumer audit
         run: node scripts/drx-phase10-consumer-audit.js
       - name: P0 database integrity
