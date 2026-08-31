@@ -221,9 +221,10 @@ async function handler(req, res) {
   const startedAt = Date.now();
   try {
     const query = requestQuery(req);
+    const route = clean(query._route).toLowerCase();
     const view = clean(query.view).toLowerCase();
 
-    if (view === 'icd') {
+    if (route === 'icd') {
       const advanced = clean(query.advanced) === '1';
       return await (advanced ? icdAdvancedHandler : icdBaseHandler)(req, res);
     }
