@@ -20,7 +20,7 @@ const cssAssetVersion = html.match(/medical-hub-v2\.css\?v=(\d+)/)?.[1] || '';
 const jsAssetVersion = html.match(/medical-hub-v2\.js\?v=(\d+)/)?.[1] || '';
 assert.match(cssAssetVersion,/^\d+$/);
 assert.equal(jsAssetVersion,cssAssetVersion,'Medical Hub CSS/JS cache versions must stay in sync');
-assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/);
+assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v5/);
 assert.match(html, /drx-unified-sidebar/);
 assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
 assert.match(html, /id="learningSearch"/);

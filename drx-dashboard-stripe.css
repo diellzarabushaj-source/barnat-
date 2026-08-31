@@ -1801,3 +1801,493 @@ html.drx-unified-sidebar :is(input,select,textarea):focus-visible{
   .medindex-tailadmin .atc-group-link::before,
   .medindex-tailadmin .atc-sub-link::before{transition:none}
 }
+
+
+/* DRx canonical sidebar shell v5 — single structural owner
+   Every standalone authenticated surface must render the same sidebar geometry,
+   typography, icon sizing, account footer and responsive drawer behavior.
+   Page-specific CSS may style only workspace content; this final block wins. */
+html.drx-unified-sidebar{
+  --drx-shell-sidebar-width:238px;
+  --drx-shell-topbar-height:58px;
+  --drx-shell-sidebar-pad-x:14px;
+  --drx-shell-sidebar-pad-top:18px;
+  --drx-shell-sidebar-pad-bottom:14px;
+  --drx-shell-nav-item-height:40px;
+  --drx-shell-nav-radius:8px;
+  --drx-shell-nav-icon:22px;
+  --drx-shell-nav-icon-glyph:18px;
+}
+html.drx-unified-sidebar,
+html.drx-unified-sidebar body{
+  min-height:100%!important;
+  margin:0!important;
+  background:var(--drx-shell-canvas,#fff)!important;
+}
+html.drx-unified-sidebar body{
+  min-height:100vh!important;
+  overflow-x:hidden!important;
+}
+html.drx-unified-sidebar [hidden]{display:none!important}
+html.drx-unified-sidebar .sr-only{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  clip-path:inset(50%)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
+html.drx-unified-sidebar .app-shell{
+  min-height:100vh!important;
+  background:var(--drx-shell-canvas,#fff)!important;
+}
+html.drx-unified-sidebar .sidebar{
+  box-sizing:border-box!important;
+  position:fixed!important;
+  inset:0 auto 0 0!important;
+  z-index:50!important;
+  width:var(--drx-shell-sidebar-width)!important;
+  min-width:var(--drx-shell-sidebar-width)!important;
+  height:100vh!important;
+  height:100dvh!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  padding:var(--drx-shell-sidebar-pad-top) var(--drx-shell-sidebar-pad-x) var(--drx-shell-sidebar-pad-bottom)!important;
+  border:0!important;
+  background:var(--drx-nav,#1c1e54)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+html.drx-unified-sidebar .sidebar-head{
+  box-sizing:border-box!important;
+  flex:0 0 auto!important;
+  min-height:54px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  padding:0 10px 12px!important;
+  border:0!important;
+  background:transparent!important;
+}
+html.drx-unified-sidebar .sidebar .brand{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  color:#fff!important;
+  text-decoration:none!important;
+}
+html.drx-unified-sidebar .sidebar .brand img{
+  display:block!important;
+  width:112px!important;
+  height:33px!important;
+  max-width:112px!important;
+  max-height:33px!important;
+  object-fit:contain!important;
+  object-position:left center!important;
+}
+html.drx-unified-sidebar .nav-stack{
+  box-sizing:border-box!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
+  width:100%!important;
+  display:block!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  padding:10px 0 18px!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:rgba(255,255,255,.18) transparent!important;
+}
+html.drx-unified-sidebar .nav-label{
+  display:block!important;
+  margin:14px 0 4px!important;
+  padding:0 11px!important;
+  color:var(--drx-nav-label,rgba(255,255,255,.46))!important;
+  font-size:10px!important;
+  font-weight:400!important;
+  line-height:1.4!important;
+  letter-spacing:.04em!important;
+  text-transform:uppercase!important;
+}
+html.drx-unified-sidebar .nav-label:first-child{margin-top:0!important}
+html.drx-unified-sidebar .nav-label-spaced{margin-top:18px!important}
+html.drx-unified-sidebar .nav-item{
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:var(--drx-shell-nav-item-height)!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:0 10px!important;
+  border:0!important;
+  border-radius:var(--drx-shell-nav-radius)!important;
+  background:transparent!important;
+  color:var(--drx-nav-text,rgba(255,255,255,.68))!important;
+  text-decoration:none!important;
+  text-align:left!important;
+  font-size:14px!important;
+  font-weight:300!important;
+  line-height:1.2!important;
+  letter-spacing:0!important;
+  box-shadow:none!important;
+}
+html.drx-unified-sidebar .nav-item>span:not(.nav-icon):not(.nav-summary-chevron){
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+html.drx-unified-sidebar .nav-item:hover{
+  background:var(--drx-nav-hover,rgba(255,255,255,.075))!important;
+  color:#fff!important;
+}
+html.drx-unified-sidebar .nav-item:is(.is-active,[aria-current="page"]){
+  background:var(--drx-nav-active,rgba(83,58,253,.20))!important;
+  color:#fff!important;
+  font-weight:300!important;
+}
+html.drx-unified-sidebar .nav-icon{
+  box-sizing:border-box!important;
+  width:var(--drx-shell-nav-icon)!important;
+  height:var(--drx-shell-nav-icon)!important;
+  min-width:var(--drx-shell-nav-icon)!important;
+  flex:0 0 var(--drx-shell-nav-icon)!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:currentColor!important;
+  opacity:.82!important;
+}
+html.drx-unified-sidebar .nav-icon .icon,
+html.drx-unified-sidebar .nav-item .nav-icon svg{
+  display:block!important;
+  width:var(--drx-shell-nav-icon-glyph)!important;
+  height:var(--drx-shell-nav-icon-glyph)!important;
+  max-width:var(--drx-shell-nav-icon-glyph)!important;
+  max-height:var(--drx-shell-nav-icon-glyph)!important;
+  flex:none!important;
+}
+html.drx-unified-sidebar .nav-item:is(:hover,.is-active,[aria-current="page"]) .nav-icon{
+  color:#fff!important;
+  opacity:1!important;
+}
+html.drx-unified-sidebar .nav-group{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+}
+html.drx-unified-sidebar .nav-summary{
+  list-style:none!important;
+  cursor:pointer!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+html.drx-unified-sidebar .nav-summary::-webkit-details-marker{display:none!important}
+html.drx-unified-sidebar .nav-summary>span:nth-child(2){flex:1 1 auto!important;min-width:0!important}
+html.drx-unified-sidebar .nav-summary-chevron{
+  width:18px!important;
+  height:18px!important;
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 18px!important;
+  opacity:.5!important;
+  transition:transform .18s ease,opacity .15s ease!important;
+}
+html.drx-unified-sidebar .nav-summary-chevron .icon,
+html.drx-unified-sidebar .nav-summary-chevron svg{
+  width:15px!important;
+  height:15px!important;
+}
+html.drx-unified-sidebar .nav-group[open]>.nav-summary{
+  color:#fff!important;
+}
+html.drx-unified-sidebar .nav-group[open]>.nav-summary .nav-summary-chevron{
+  transform:rotate(180deg)!important;
+  opacity:.9!important;
+}
+html.drx-unified-sidebar .sidebar-foot{
+  box-sizing:border-box!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  display:grid!important;
+  gap:6px!important;
+  margin-top:auto!important;
+  padding:12px 0 0!important;
+  border-top:1px solid rgba(255,255,255,.12)!important;
+  background:transparent!important;
+}
+html.drx-unified-sidebar .sidebar-foot .drx-user-card{
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-height:58px!important;
+  display:grid!important;
+  grid-template-columns:40px minmax(0,1fr) 18px!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:8px 9px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:rgba(255,255,255,.055)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  text-align:left!important;
+}
+html.drx-unified-sidebar .sidebar-foot .drx-user-card:hover{
+  background:rgba(255,255,255,.085)!important;
+}
+html.drx-unified-sidebar .sidebar-foot .drx-user-avatar{
+  box-sizing:border-box!important;
+  width:40px!important;
+  height:40px!important;
+  min-width:40px!important;
+  flex:0 0 40px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:0!important;
+  border-radius:50%!important;
+  background-color:rgba(255,255,255,.15)!important;
+  color:#fff!important;
+  font-size:11px!important;
+  font-weight:650!important;
+}
+html.drx-unified-sidebar .sidebar-foot .drx-user-copy{
+  min-width:0!important;
+  display:grid!important;
+  line-height:1.15!important;
+}
+html.drx-unified-sidebar .sidebar-foot .drx-user-copy strong{
+  overflow:hidden!important;
+  color:#fff!important;
+  font-size:12.5px!important;
+  font-weight:500!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+html.drx-unified-sidebar .sidebar-foot .drx-user-copy small{
+  overflow:hidden!important;
+  margin-top:4px!important;
+  color:rgba(255,255,255,.56)!important;
+  font-size:10.5px!important;
+  font-weight:300!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+html.drx-unified-sidebar .sidebar-foot .drx-user-arrow{
+  width:18px!important;
+  height:18px!important;
+  display:grid!important;
+  place-items:center!important;
+  color:rgba(255,255,255,.58)!important;
+}
+html.drx-unified-sidebar .sidebar-foot .drx-user-arrow .icon,
+html.drx-unified-sidebar .sidebar-foot .drx-user-arrow svg{
+  width:15px!important;
+  height:15px!important;
+}
+html.drx-unified-sidebar .sidebar-foot .logout-button{
+  width:100%!important;
+  min-height:40px!important;
+  color:var(--drx-nav-text,rgba(255,255,255,.68))!important;
+}
+html.drx-unified-sidebar .main-shell{
+  box-sizing:border-box!important;
+  min-width:0!important;
+  min-height:100vh!important;
+  margin-left:var(--drx-shell-sidebar-width)!important;
+  background:var(--drx-shell-canvas,#fff)!important;
+}
+html.drx-unified-sidebar .topbar{
+  box-sizing:border-box!important;
+  position:sticky!important;
+  top:0!important;
+  z-index:35!important;
+  width:100%!important;
+  height:var(--drx-shell-topbar-height)!important;
+  min-height:var(--drx-shell-topbar-height)!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  padding:0 28px!important;
+  border-bottom:1px solid var(--drx-shell-line,#e3e8ee)!important;
+  background:rgba(255,255,255,.97)!important;
+  box-shadow:none!important;
+}
+html.drx-unified-sidebar .breadcrumbs{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  overflow:hidden!important;
+  color:var(--drx-shell-muted,#64748d)!important;
+  font-size:12px!important;
+  white-space:nowrap!important;
+}
+html.drx-unified-sidebar .breadcrumbs strong{
+  overflow:hidden!important;
+  color:#394b5f!important;
+  font-weight:400!important;
+  text-overflow:ellipsis!important;
+}
+html.drx-unified-sidebar .crumb-sep{color:#c3cbd4!important}
+html.drx-unified-sidebar .topbar-actions{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:9px!important;
+  margin-left:auto!important;
+}
+html.drx-unified-sidebar .sync-pill{
+  box-sizing:border-box!important;
+  min-height:28px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  padding:4px 10px!important;
+  border:1px solid var(--drx-shell-line,#e3e8ee)!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  color:var(--drx-shell-muted,#64748d)!important;
+  font-size:11px!important;
+  white-space:nowrap!important;
+}
+html.drx-unified-sidebar .sync-dot{
+  width:6px!important;
+  height:6px!important;
+  flex:0 0 6px!important;
+  border-radius:50%!important;
+  background:#20b486!important;
+}
+html.drx-unified-sidebar .drx-profile-chip{
+  box-sizing:border-box!important;
+  height:46px!important;
+  min-height:46px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:4px 11px 4px 5px!important;
+  border:1px solid var(--drx-shell-line,#e3e8ee)!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  color:var(--drx-shell-ink,#0d253d)!important;
+  box-shadow:none!important;
+}
+html.drx-unified-sidebar .drx-profile-chip .drx-user-avatar{
+  box-sizing:border-box!important;
+  width:36px!important;
+  height:36px!important;
+  min-width:36px!important;
+  flex:0 0 36px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:50%!important;
+}
+html.drx-unified-sidebar .drx-profile-copy{
+  min-width:0!important;
+  display:grid!important;
+  line-height:1.15!important;
+}
+html.drx-unified-sidebar .drx-profile-copy strong{
+  overflow:hidden!important;
+  color:var(--drx-shell-ink,#0d253d)!important;
+  font-size:12.5px!important;
+  font-weight:500!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+html.drx-unified-sidebar .drx-profile-copy small{
+  overflow:hidden!important;
+  max-width:190px!important;
+  margin-top:4px!important;
+  color:#66788d!important;
+  font-size:10.5px!important;
+  font-weight:300!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+html.drx-unified-sidebar .icon-button{
+  box-sizing:border-box!important;
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  min-height:34px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  border:1px solid var(--drx-shell-line,#e3e8ee)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#5a6b80!important;
+}
+html.drx-unified-sidebar .icon-button .icon,
+html.drx-unified-sidebar .icon-button svg{
+  display:block!important;
+  width:17px!important;
+  height:17px!important;
+  max-width:17px!important;
+  max-height:17px!important;
+}
+html.drx-unified-sidebar .icon-button.menu-button,
+html.drx-unified-sidebar .icon-button.sidebar-close{
+  display:none!important;
+}
+html.drx-unified-sidebar .sidebar-backdrop[hidden]{display:none!important}
+
+@media(max-width:1023px){
+  html.drx-unified-sidebar .sidebar{
+    width:min(86vw,300px)!important;
+    min-width:0!important;
+    transform:translateX(-102%)!important;
+    box-shadow:0 24px 64px rgba(10,37,64,.16),0 8px 24px rgba(10,37,64,.08)!important;
+    transition:transform .2s ease!important;
+  }
+  html.drx-unified-sidebar .sidebar.is-open{transform:translateX(0)!important}
+  html.drx-unified-sidebar .main-shell{margin-left:0!important}
+  html.drx-unified-sidebar .icon-button.menu-button,
+  html.drx-unified-sidebar .icon-button.sidebar-close{display:grid!important}
+  html.drx-unified-sidebar .sidebar-backdrop{
+    position:fixed!important;
+    inset:0!important;
+    z-index:45!important;
+    background:rgba(10,37,64,.24)!important;
+  }
+  html.drx-unified-sidebar .topbar{padding-inline:14px!important}
+}
+@media(max-width:760px){
+  html.drx-unified-sidebar{--drx-shell-topbar-height:50px}
+  html.drx-unified-sidebar .nav-item,
+  html.drx-unified-sidebar .nav-summary{min-height:44px!important}
+  html.drx-unified-sidebar .sidebar-foot .logout-button{min-height:44px!important}
+  html.drx-unified-sidebar .breadcrumbs,
+  html.drx-unified-sidebar .sync-pill{display:none!important}
+  html.drx-unified-sidebar .drx-profile-copy{display:none!important}
+  html.drx-unified-sidebar .drx-profile-chip{
+    width:38px!important;
+    height:38px!important;
+    min-width:38px!important;
+    min-height:38px!important;
+    padding:1px!important;
+    border:0!important;
+    background:transparent!important;
+  }
+  html.drx-unified-sidebar .drx-profile-chip .drx-user-avatar{
+    width:36px!important;
+    height:36px!important;
+    min-width:36px!important;
+    flex-basis:36px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  html.drx-unified-sidebar .sidebar,
+  html.drx-unified-sidebar .nav-item,
+  html.drx-unified-sidebar .nav-summary-chevron{
+    transition:none!important;
+  }
+}
