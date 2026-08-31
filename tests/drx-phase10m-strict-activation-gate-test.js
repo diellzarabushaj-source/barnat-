@@ -4,6 +4,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const Cutover=require('../lib/dose-v3-cutover-control.js');
 
+// This contract intentionally re-runs after migration-history synchronization.
 const migration=fs.readFileSync(
   'supabase/migrations/20260831062943_drx_phase10m_strict_activation_gate.sql','utf8'
 );
