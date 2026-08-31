@@ -5,7 +5,7 @@ const fs=require('node:fs');
 const Cutover=require('../lib/dose-v3-cutover-control.js');
 
 const migration=fs.readFileSync(
-  'supabase/migrations/20260831063100_drx_phase10m_strict_activation_gate.sql','utf8'
+  'supabase/migrations/20260831062943_drx_phase10m_strict_activation_gate.sql','utf8'
 );
 const rollback=fs.readFileSync(
   'supabase/drx-phase10m-strict-activation-gate-rollback.sql','utf8'
