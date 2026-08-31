@@ -17,6 +17,9 @@ on:
       - "supabase/migrations/20260831052414_drx_phase10h_controlled_soak_start.sql"
       - "supabase/migrations/20260831052948_drx_phase10i_soak_observability.sql"
       - "supabase/migrations/20260831053832_drx_phase10j_pediatric_v3_calculator_metadata.sql"
+      - "supabase/migrations/20260831060712_drx_phase10k_restore_test_evidence.sql"
+      - "data/drx-phase10k-restore-test-evidence-v1.json"
+      - "tests/drx-phase10k-restore-test-evidence-test.js"
       - "supabase/drx-phase10h-controlled-soak-start-rollback.sql"
       - "supabase/drx-phase10i-soak-observability-rollback.sql"
       - "supabase/drx-phase10j-pediatric-v3-calculator-metadata-rollback.sql"
@@ -102,6 +105,8 @@ jobs:
         run: node tests/drx-phase10-pediatric-v3-calculator-test.js
       - name: Phase 10J pediatric V3 metadata RPC security
         run: node tests/drx-phase10-pediatric-v3-metadata-rpc-test.js
+      - name: Phase 10K current restore test evidence
+        run: node tests/drx-phase10k-restore-test-evidence-test.js
       - name: Live Phase 10 controlled canary
         run: node scripts/drx-phase10-controlled-canary.js
       - name: Live Phase 10 pediatric V3 calculator

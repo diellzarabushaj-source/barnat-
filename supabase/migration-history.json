@@ -617,6 +617,10 @@
     {
       "name": "drx_phase10j_pediatric_v3_calculator_metadata",
       "version": "20260831053832"
+    },
+    {
+      "version": "20260831060712",
+      "name": "drx_phase10k_restore_test_evidence"
     }
   ]
 }
