@@ -1005,6 +1005,10 @@
     {
       "name": "drx_phase11cp_controlled_percent_bypass_guard",
       "version": "20260831190001"
+    },
+    {
+      "version": "20260831191319",
+      "name": "drx_phase11cq_evidence_integrity_precheck"
     }
   ]
 }
