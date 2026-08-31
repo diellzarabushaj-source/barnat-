@@ -5,15 +5,18 @@ const { execFileSync } = require('node:child_process');
 
 const root = path.join(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
-const apiFiles = ['api/registry.js', 'api/dosage.js', 'api/icd.js', 'api/drug-search.js'];
+const apiFiles = ['api/registry.js', 'api/dosage.js', 'api/clinical-editor.js', 'api/drug-search.js'];
 const dosageRouter = read('api/dosage.js');
 const dosageCore = read('lib/dosage-handler.js');
 const dosageCalculator = read('lib/dose-calculator-handler.js');
 const dosage = `${dosageRouter}\n${dosageCore}\n${dosageCalculator}`;
+const clinicalEditor = read('api/clinical-editor.js');
+const icdBase = read('lib/icd-api-base.js');
+const vercel = JSON.parse(read('vercel.json'));
 const sources = {
   'api/registry.js':read('api/registry.js'),
   'api/dosage.js':dosage,
-  'api/icd.js':read('api/icd.js'),
+  'api/icd (clinical-editor rewrite)':`${clinicalEditor}\n${icdBase}`,
   'api/drug-search.js':read('api/drug-search.js'),
 };
 
@@ -58,7 +61,17 @@ const publicDosageError = dosageHandler._test.publicLoadError(new Error('private
 assert.equal(publicDosageError.code, 'DOSAGE_UNAVAILABLE');
 assert.doesNotMatch(JSON.stringify(publicDosageError), /private upstream detail/);
 
-const icd = read('lib/icd-api-base.js');
+const rewrites = new Map((vercel.rewrites || []).map(row => [row.source, row.destination]));
+assert.equal(
+  rewrites.get('/api/icd'),
+  '/api/clinical-editor?icdApi=1',
+  'ICD endpoint must stay routed through the consolidated clinical-editor function'
+);
+assert.match(clinicalEditor, /queryFlag\(req, 'icdApi'\)/);
+assert.match(clinicalEditor, /authorizedIcd/);
+assert.match(clinicalEditor, /verifySessionToken/);
+
+const icd = icdBase;
 assert.match(icd, /MAX_CSV_BYTES/);
 assert.match(icd, /pendingLoad/);
 assert.match(icd, /Buffer\.byteLength/);
