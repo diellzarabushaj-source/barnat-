@@ -438,13 +438,13 @@ body.ec-modal-open{overflow:hidden}
   .command-field>span{font-size:10.5px}
   .command-field>span small{font-size:9.5px}
   .command-field select,.command-search input{height:44px;font-size:16px}
-  .command-search-clear{right:7px;width:30px;height:30px}
+  .command-search-clear{right:5px;width:44px;height:44px}
   .emergency-command-footer{
     grid-column:auto;display:grid;grid-template-columns:1fr;gap:7px;padding-top:8px;
   }
   .emergency-result-status{white-space:normal;line-height:1.35}
   .emergency-lesson-nav{width:100%;display:grid;grid-template-columns:1fr auto 1fr}
-  .emergency-lesson-nav>button{min-height:38px}
+  .emergency-lesson-nav>button{min-height:44px}
   #emergencyLessonPosition{min-width:58px}
   .emergency-document{scroll-margin-top:12px}
 }
