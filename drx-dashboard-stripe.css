@@ -1582,12 +1582,17 @@ html.drx-unified-sidebar .sidebar .brand img{
 }
 html.medindex-tailadmin .mi-topbar,
 html.drx-unified-sidebar .topbar{
+  box-sizing:border-box!important;
   height:var(--drx-shell-topbar-height)!important;
   min-height:var(--drx-shell-topbar-height)!important;
   padding:0 28px!important;
   border-bottom:1px solid var(--drx-shell-line)!important;
   background:rgba(255,255,255,.97)!important;
   box-shadow:none!important;
+}
+html.drx-unified-sidebar .drx-profile-chip{
+  box-sizing:border-box!important;
+  min-height:38px!important;
 }
 html.medindex-tailadmin .mi-content-container,
 html.drx-unified-sidebar .page-wrap{
