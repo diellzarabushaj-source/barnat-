@@ -947,6 +947,10 @@
     {
       "version": "20260831171019",
       "name": "drx_phase11cb_product_identity_capture_workbench_v4"
+    },
+    {
+      "version": "20260831171501",
+      "name": "drx_phase11cc_gated_draft_product_shell_materializer"
     }
   ]
 }
