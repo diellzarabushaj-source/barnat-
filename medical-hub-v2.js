@@ -445,6 +445,70 @@
       </article>`;
   }
 
+  function hasContentOrder(item) {
+    return Array.isArray(item?.contentOrder) && item.contentOrder.some(block => {
+      const kind = normalize(block?.kind);
+      return ['step','figure','sourcerx','source-rx','rx','prescriptions','heading','paragraph','warning','redflags'].includes(kind);
+    });
+  }
+
+  function contentOrderBlockMarkup(item, block, index) {
+    const kind = normalize(block?.kind);
+    const refKey = clean(block?.refKey);
+
+    if (kind === 'step') {
+      const stepIndex = (item.steps || []).findIndex(step => clean(step?._key) === refKey);
+      const step = stepIndex >= 0 ? item.steps[stepIndex] : null;
+      return step ? stepMarkup(step, stepIndex) : '';
+    }
+
+    if (kind === 'figure') {
+      const figureIndex = (item.figures || []).findIndex(figure => clean(figure?._key) === refKey);
+      const figure = figureIndex >= 0 ? item.figures[figureIndex] : null;
+      return figure ? `<div class="ck-ordered-figure">${figureMarkup(figure, figureIndex)}</div>` : '';
+    }
+
+    if (kind === 'sourcerx' || kind === 'source-rx') {
+      return sourceRxMarkup(item);
+    }
+
+    if (kind === 'rx' || kind === 'prescriptions') {
+      return rxGroupMarkup(item.prescriptions || []);
+    }
+
+    if (kind === 'heading') {
+      const title = clean(block?.title || block?.text);
+      return title ? `<div class="ck-source-heading"><h3>${esc(title)}</h3></div>` : '';
+    }
+
+    if (kind === 'paragraph') {
+      const text = clean(block?.text);
+      return text ? `<p class="ck-summary ck-source-paragraph">${richText(text)}</p>` : '';
+    }
+
+    if (kind === 'warning') {
+      const title = clean(block?.title || 'Kujdes');
+      const text = clean(block?.text);
+      return `<div class="ck-source-warning"><strong>${esc(title)}</strong>${text ? `<p>${richText(text)}</p>` : ''}</div>`;
+    }
+
+    if (kind === 'redflags') {
+      return item.redFlags?.length
+        ? `<div class="ck-source-warning ck-source-danger"><strong>Red flags</strong>${bulletMarkup(item.redFlags)}</div>`
+        : '';
+    }
+
+    return '';
+  }
+
+  function orderedClinicalContentMarkup(item) {
+    const html = (item.contentOrder || [])
+      .map((block, index) => contentOrderBlockMarkup(item, block, index))
+      .filter(Boolean)
+      .join('');
+    return html ? `<div class="ck-ordered-content">${html}</div>` : '';
+  }
+
   function lessonBodyLabel(item) {
     const title = normalize(item?.title);
     if (/trajtim|menaxhim/.test(title)) return 'Trajtimi hap pas hapi';
@@ -611,11 +675,13 @@
 
   function sectionEntries(item) {
     const entries = [];
+    const ordered = hasContentOrder(item);
     if (item.redFlags?.length && !isSingleLessonChapter(item)) entries.push({ id:'hub-red-flags', label:'Red flags' });
     if (item.relatedTopics?.length) entries.push({ id:'hub-internal-sections', label:'Seksionet e mësimit' });
-    if (item.steps?.length) entries.push({ id:'hub-content', label:hasSourceRx(item) ? 'Trajtimi konservativ' : (isSingleLessonChapter(item) ? `${item.steps.length} seksione` : lessonBodyLabel(item)) });
-    if (item.figures?.length) entries.push({ id:'hub-figures', label:'Figura dhe ilustrime' });
-    if (item.prescriptions?.length && !hasSourceRx(item)) entries.push({ id:'hub-prescriptions', label:'Receta' });
+    if (ordered) entries.push({ id:'hub-content', label:'Përmbajtja' });
+    else if (item.steps?.length) entries.push({ id:'hub-content', label:hasSourceRx(item) ? clean(item.sourceRxTitle || 'Receta') : (isSingleLessonChapter(item) ? `${item.steps.length} seksione` : lessonBodyLabel(item)) });
+    if (!ordered && item.figures?.length) entries.push({ id:'hub-figures', label:'Figura dhe ilustrime' });
+    if (!ordered && item.prescriptions?.length && !hasSourceRx(item)) entries.push({ id:'hub-prescriptions', label:'Receta' });
     if (item.whenToRefer) entries.push({ id:'hub-referral', label:'Referimi' });
     if (item.relatedProtocols?.length) entries.push({ id:'hub-protocols', label:'Protokolle të lidhura' });
     if (item.sources?.length) entries.push({ id:'hub-sources', label:'Burimet' });
@@ -870,18 +936,20 @@
             </section>
           ` : ''}
 
-          ${item.steps?.length ? `
+          ${hasContentOrder(item) || item.steps?.length ? `
             <section class="ck-section" id="hub-content">
               <div class="ck-section-heading">
-                <span>${hasSourceRx(item) ? 'Rx' : 'Përmbajtje'}</span>
-                <h3>${esc(hasSourceRx(item) ? 'Trajtimi konservativ' : (isSingleLessonChapter(item) ? `${item.steps.length} seksionet e mësimit` : lessonBodyLabel(item)))}</h3>
+                <span>${hasContentOrder(item) ? 'Burimi' : (hasSourceRx(item) ? 'Rx' : 'Përmbajtje')}</span>
+                <h3>${esc(hasContentOrder(item) ? 'Përmbajtja sipas rendit të burimit' : (hasSourceRx(item) ? clean(item.sourceRxTitle || 'Receta / skema e përshkrimit') : (isSingleLessonChapter(item) ? `${item.steps.length} seksionet e mësimit` : lessonBodyLabel(item))))}</h3>
               </div>
-              ${hasSourceRx(item) ? sourceRxMarkup(item) : (isSingleLessonChapter(item) ? `
-                <div class="ck-master-section-index">
-                  ${item.steps.map((step,index)=>`<button type="button" data-master-section="${index}"><span>${String(index+1).padStart(2,'0')}</span><strong>${esc(clean(step.title).replace(/^\d+\.\s*/,''))}</strong></button>`).join('')}
-                </div>
-                <div class="ck-master-sections">${item.steps.map(singleLessonSectionMarkup).join('')}</div>
-              ` : `<div class="ck-steps">${item.steps.map(stepMarkup).join('')}</div>`)}
+              ${hasContentOrder(item)
+                ? orderedClinicalContentMarkup(item)
+                : (hasSourceRx(item) ? sourceRxMarkup(item) : (isSingleLessonChapter(item) ? `
+                    <div class="ck-master-section-index">
+                      ${item.steps.map((step,index)=>`<button type="button" data-master-section="${index}"><span>${String(index+1).padStart(2,'0')}</span><strong>${esc(clean(step.title).replace(/^\d+\.\s*/,''))}</strong></button>`).join('')}
+                    </div>
+                    <div class="ck-master-sections">${item.steps.map(singleLessonSectionMarkup).join('')}</div>
+                  ` : `<div class="ck-steps">${item.steps.map(stepMarkup).join('')}</div>`))}
             </section>
           ` : ''}
 
@@ -892,14 +960,14 @@
             </section>
           ` : ''}
 
-          ${item.figures?.length ? `
+          ${item.figures?.length && !hasContentOrder(item) ? `
             <section class="ck-section" id="hub-figures">
               <div class="ck-section-heading"><span>Figura</span><h3>Figura dhe ilustrime</h3></div>
               <div class="ck-figure-grid">${item.figures.slice().sort((a,b)=>(a.order||0)-(b.order||0)).map(figureMarkup).join('')}</div>
             </section>
           ` : ''}
 
-          ${item.prescriptions?.length && !hasSourceRx(item) ? `
+          ${item.prescriptions?.length && !hasSourceRx(item) && !hasContentOrder(item) ? `
             <section class="ck-section ck-rx-section" id="hub-prescriptions">
               <div class="ck-section-heading"><span>Rx</span><h3>Receta / skema e përshkrimit</h3></div>
               ${rxGroupMarkup(item.prescriptions)}
