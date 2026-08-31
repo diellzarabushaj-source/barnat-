@@ -1,0 +1,1 @@
+Temporary audit trigger for the current main HEAD while Vercel Hobby builds are rate-limited.
