@@ -967,6 +967,10 @@
     {
       "version": "20260831174523",
       "name": "drx_phase11cg_prepared_rule_workbench_v6"
+    },
+    {
+      "version": "20260831174721",
+      "name": "drx_phase11ch_verified_rule_binding_cycle_fix"
     }
   ]
 }
