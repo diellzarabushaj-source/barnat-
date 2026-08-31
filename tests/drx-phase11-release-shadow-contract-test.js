@@ -13,6 +13,7 @@ const cn = read('supabase/migrations/20260831184114_drx_phase11cn_legacy_parity_
 const co = read('supabase/migrations/20260831184612_drx_phase11co_shadow_evidence_and_cutover_guard.sql');
 const cp = read('supabase/migrations/20260831190001_drx_phase11cp_controlled_percent_bypass_guard.sql');
 const cq = read('supabase/migrations/20260831191319_drx_phase11cq_evidence_integrity_precheck.sql');
+const cr = read('supabase/migrations/20260831191800_drx_phase11cr_safety_integrity_precheck.sql');
 const backend = read('lib/phase11-review.js');
 const html = read('admin.html');
 const ui = read('admin-phase11-review.js');
@@ -70,7 +71,17 @@ assert.match(cq, /false::boolean as auto_promote_allowed/);
 assert.match(cq, /revoke all on drx_dose\.phase11_evidence_integrity_precheck_v1/);
 assert.doesNotMatch(cq, /update\s+drx_dose\.source_regimen_supporting_evidence_v1/i);
 
-for (const sql of [ck,cn,co,cp,cq]) {
+assert.match(cr, /phase11_safety_integrity_precheck_v1/);
+assert.match(cr, /phase11_safety_integrity_summary_v1/);
+assert.match(cr, /DIRECT_REGIMEN_SCOPE_DRIFT/);
+assert.match(cr, /SAME_SOURCE_SCOPE_DRIFT/);
+assert.match(cr, /AUTO_APPLY_MUST_BE_FALSE/);
+assert.match(cr, /false::boolean as auto_approve_allowed/);
+assert.match(cr, /false::boolean as auto_apply_allowed/);
+assert.match(cr, /revoke all on drx_dose\.phase11_safety_integrity_precheck_v1/);
+assert.doesNotMatch(cr, /update\s+drx_dose\.source_(?:adjustment|restriction)_candidates_v1/i);
+
+for (const sql of [ck,cn,co,cp,cq,cr]) {
   assert.doesNotMatch(sql, /auto_publish_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_cutover_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_strict_activation_allowed(?:_v2)?\s*=\s*true/i);
@@ -104,6 +115,7 @@ for (const expected of [
   ['20260831184612','drx_phase11co_shadow_evidence_and_cutover_guard'],
   ['20260831190001','drx_phase11cp_controlled_percent_bypass_guard'],
   ['20260831191319','drx_phase11cq_evidence_integrity_precheck'],
+  ['20260831191800','drx_phase11cr_safety_integrity_precheck'],
 ]) {
   assert.ok(
     migrations.some(row => String(row.version) === expected[0] && row.name === expected[1]),
