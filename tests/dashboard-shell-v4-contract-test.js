@@ -54,7 +54,7 @@ for (const file of allPages) {
     .map(match => match[1]);
 
   assert.equal(stripeLinks.length, 1, `${file}: exactly one canonical dashboard shell stylesheet is required`);
-  assert.match(stripeLinks[0], /drx-dashboard-stripe-v6/, `${file}: shell cache version must be v5`);
+  assert.match(stripeLinks[0], /drx-dashboard-stripe-v6/, `${file}: shell cache version must be v6`);
   assert.match(html, /<meta name="theme-color" content="#1c1e54">/, `${file}: browser chrome must match the navy shell`);
 }
 
@@ -98,4 +98,4 @@ for (const file of tailadmin) {
   assert.ok(styles.at(-1)?.includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6'), `${file}: canonical shell must be the final static stylesheet`);
 }
 
-console.log('Dashboard shell v5: canonical sidebar geometry and one visual authority passed.');
+console.log('Dashboard shell v6: canonical sidebar, typography and one visual authority passed.');
