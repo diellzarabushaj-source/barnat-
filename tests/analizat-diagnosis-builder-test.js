@@ -54,7 +54,7 @@ assert.doesNotMatch(html, /<\/div>\s*<\/div>\s*<\/main>/, 'Analizat V2 main wrap
 
 assert.match(js, /fetch\('\/api\/icd\?dataset=labs'/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/);
+assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/);
 assert.match(js, /const TIER_ORDER = Object\.freeze\(\{ core:0, recommended:1, conditional:2, manual:3 \}\)/);
 assert.match(js, /const map = new Map\(\)/);
 assert.match(js, /map\.has\(test\.id\)/);
@@ -73,7 +73,7 @@ assert.match(js, /Panel orientues klinik/);
 assert.doesNotThrow(() => new Function(js));
 
 assert.match(css, /Analizat V2 — diagnosis-driven order builder/);
-assert.match(css, /Visual geometry, colors, spacing and responsive shell authority live in drx-dashboard-stripe\.css v4/);
+assert.match(css, /Visual geometry, colors, spacing and responsive shell authority live in drx-dashboard-stripe\.css v6/);
 assert.doesNotMatch(css, /\.sidebar\{[^}]*background:#1c1e54/);
 assert.doesNotMatch(css, /\.topbar\{[^}]*background:/);
 assert.match(css, /\.lab-disease-popover/);
