@@ -1,0 +1,252 @@
+name: DRx Phase 10M Strict Runtime Patch
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/drx-phase10m-strict-runtime-patch.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply exact fail-closed patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('lib/pediatric-dosage-handler-core.js')
+          s=p.read_text()
+
+          old="""async function calculatorCutover(rawSelector) {
+            const selector = drugSelector(rawSelector);
+            if (!selector || selector.column !== 'id') {
+              return { runtimeSelector:null, decision:null };
+            }
+            const runtimeSelector = { column:'drug_id', value:selector.value };
+            const state = await Cutover.getState();
+            return { runtimeSelector, decision:Cutover.decision(state, runtimeSelector) };
+          }
+          """
+          new="""async function calculatorCutover(rawSelector) {
+            const selector = drugSelector(rawSelector);
+            const state = await Cutover.getState();
+
+            if (!selector) {
+              const runtimeSelector = { column:'invalid_selector', value:clean(rawSelector) || 'missing' };
+              const decision = Cutover.decision(state, runtimeSelector);
+              return decision.strict ? { runtimeSelector, decision } : { runtimeSelector:null, decision:null };
+            }
+
+            if (selector.column !== 'id') {
+              const runtimeSelector = { column:'registry_number', value:selector.value };
+              const decision = Cutover.decision(state, runtimeSelector);
+              return decision.strict ? { runtimeSelector, decision } : { runtimeSelector:null, decision:null };
+            }
+
+            const runtimeSelector = { column:'drug_id', value:selector.value };
+            return { runtimeSelector, decision:Cutover.decision(state, runtimeSelector) };
+          }
+          """
+          if s.count(old)!=1:
+              raise SystemExit(f'calculatorCutover exact block count={s.count(old)}; refusing patch')
+          s=s.replace(old,new)
+
+          anchor="""function mergeCanonicalContext(product, context) {
+          """
+          helper="""function strictRuntimeUnavailable(scope) {
+            return {
+              error:`V3 strict ${scope} nuk është i disponueshëm; V2 fallback është i ndaluar në STRICT.`,
+              status:503,
+              code:'V3_STRICT_UNAVAILABLE',
+            };
+          }
+
+          function mergeCanonicalContext(product, context) {
+          """
+          if s.count(anchor)!=1:
+              raise SystemExit(f'mergeCanonicalContext anchor count={s.count(anchor)}; refusing patch')
+          s=s.replace(anchor,helper)
+
+          old="""async function loadProduct(rawSelector) {
+            const { decision } = await calculatorCutover(rawSelector);
+            if (decision?.selectedForV3) {
+              try {
+                const v3 = await V3Calculator.buildProduct(rawSelector);
+                if (v3) {
+                  let context = null;
+                  try { context = await loadPhase9Context(v3.drugId); }
+                  catch (error) { console.error('V3 canonical product context read failed:', error.message); }
+                  const product = mergeCanonicalContext(v3, context);
+                  product.cutover = {
+                    mode:decision.mode,
+                    controlVersion:decision.controlVersion,
+                    trafficBucketVersion:decision.trafficBucketVersion,
+                    trafficBucket:decision.trafficBucket,
+                    selectedForV3:true,
+                  };
+                  return { row:null, product };
+                }
+              } catch (error) {
+                console.error('V3 pediatric product consumer failed; using verified V2 fallback:', error.message);
+              }
+            }
+
+            const legacy = await loadLegacyProduct(rawSelector);
+            if (!legacy.error && legacy.product) {
+              legacy.product.runtime = decision?.mode === 'CONTROLLED' ? 'v2-controlled' : 'v2';
+              legacy.product.runtimeLabel = decision?.selectedForV3 ? 'V2 fallback' : 'V2 fallback';
+              legacy.product.cutover = decision ? {
+                mode:decision.mode,
+                controlVersion:decision.controlVersion,
+                trafficBucketVersion:decision.trafficBucketVersion,
+                trafficBucket:decision.trafficBucket,
+                selectedForV3:false,
+              } : null;
+            }
+            return legacy;
+          }
+          """
+          new="""async function loadProduct(rawSelector) {
+            const { decision } = await calculatorCutover(rawSelector);
+            if (decision?.selectedForV3) {
+              try {
+                const v3 = await V3Calculator.buildProduct(rawSelector);
+                if (v3) {
+                  let context = null;
+                  try { context = await loadPhase9Context(v3.drugId); }
+                  catch (error) { console.error('V3 canonical product context read failed:', error.message); }
+                  const product = mergeCanonicalContext(v3, context);
+                  product.cutover = {
+                    mode:decision.mode,
+                    controlVersion:decision.controlVersion,
+                    trafficBucketVersion:decision.trafficBucketVersion,
+                    trafficBucket:decision.trafficBucket,
+                    selectedForV3:true,
+                  };
+                  return { row:null, product };
+                }
+                if (decision.strict) return strictRuntimeUnavailable('product lookup');
+                console.error('V3 pediatric product payload unavailable; using verified V2 fallback.');
+              } catch (error) {
+                if (decision.strict) {
+                  console.error('V3 pediatric product consumer failed in STRICT; V2 fallback blocked:', error.message);
+                  return strictRuntimeUnavailable('product lookup');
+                }
+                console.error('V3 pediatric product consumer failed; using verified V2 fallback:', error.message);
+              }
+            }
+
+            const legacy = await loadLegacyProduct(rawSelector);
+            if (!legacy.error && legacy.product) {
+              legacy.product.runtime = decision?.mode === 'CONTROLLED' ? 'v2-controlled' : 'v2';
+              legacy.product.runtimeLabel = decision?.selectedForV3 ? 'V2 fallback' : 'V2 fallback';
+              legacy.product.cutover = decision ? {
+                mode:decision.mode,
+                controlVersion:decision.controlVersion,
+                trafficBucketVersion:decision.trafficBucketVersion,
+                trafficBucket:decision.trafficBucket,
+                selectedForV3:false,
+              } : null;
+            }
+            return legacy;
+          }
+          """
+          if s.count(old)!=1:
+              raise SystemExit(f'loadProduct exact block count={s.count(old)}; refusing patch')
+          s=s.replace(old,new)
+
+          old="""async function calculateDose(body) {
+            const startedAt=Date.now();
+            const rawSelector = body?.drugId ?? body?.registryNumber;
+            const { runtimeSelector, decision } = await calculatorCutover(rawSelector);
+
+            if (decision?.selectedForV3) {
+              try {
+                const v3 = await V3Calculator.calculate(body && typeof body === 'object' ? body : {});
+                if (!v3.error || v3.status !== 404) {
+                  recordCalculatorRuntime(runtimeSelector,decision,'v3',v3,startedAt,{v3Available:true,fallbackUsed:false});
+                  return v3;
+                }
+                console.error('V3 calculator payload unavailable; using V2 fallback.');
+              } catch (error) {
+                console.error('V3 pediatric calculation failed before result; using V2 fallback:', error.message);
+              }
+
+              const fallback=await calculateLegacyDose(body);
+              recordCalculatorRuntime(runtimeSelector,decision,'v2-fallback',fallback,startedAt,{v3Available:false,fallbackUsed:true});
+              return fallback;
+            }
+
+            const legacy=await calculateLegacyDose(body);
+            recordCalculatorRuntime(runtimeSelector,decision,'v2',legacy,startedAt,{v3Available:null,fallbackUsed:false});
+            return legacy;
+          }
+          """
+          new="""async function calculateDose(body) {
+            const startedAt=Date.now();
+            const rawSelector = body?.drugId ?? body?.registryNumber;
+            const { runtimeSelector, decision } = await calculatorCutover(rawSelector);
+
+            if (decision?.selectedForV3) {
+              try {
+                const v3 = await V3Calculator.calculate(body && typeof body === 'object' ? body : {});
+                if (!v3.error || v3.status !== 404) {
+                  recordCalculatorRuntime(runtimeSelector,decision,'v3',v3,startedAt,{v3Available:true,fallbackUsed:false});
+                  return v3;
+                }
+                if (decision.strict) {
+                  const blocked=strictRuntimeUnavailable('calculator');
+                  recordCalculatorRuntime(runtimeSelector,decision,'v3',blocked,startedAt,{v3Available:false,fallbackUsed:false});
+                  return blocked;
+                }
+                console.error('V3 calculator payload unavailable; using V2 fallback.');
+              } catch (error) {
+                if (decision.strict) {
+                  console.error('V3 pediatric calculation failed in STRICT; V2 fallback blocked:', error.message);
+                  const blocked=strictRuntimeUnavailable('calculator');
+                  recordCalculatorRuntime(runtimeSelector,decision,'v3',blocked,startedAt,{v3Available:false,fallbackUsed:false});
+                  return blocked;
+                }
+                console.error('V3 pediatric calculation failed before result; using V2 fallback:', error.message);
+              }
+
+              const fallback=await calculateLegacyDose(body);
+              recordCalculatorRuntime(runtimeSelector,decision,'v2-fallback',fallback,startedAt,{v3Available:false,fallbackUsed:true});
+              return fallback;
+            }
+
+            const legacy=await calculateLegacyDose(body);
+            recordCalculatorRuntime(runtimeSelector,decision,'v2',legacy,startedAt,{v3Available:null,fallbackUsed:false});
+            return legacy;
+          }
+          """
+          if s.count(old)!=1:
+              raise SystemExit(f'calculateDose exact block count={s.count(old)}; refusing patch')
+          s=s.replace(old,new)
+
+          p.write_text(s)
+          PY
+
+          node --check lib/pediatric-dosage-handler-core.js
+          git diff --check
+
+      - name: Commit hardened runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lib/pediatric-dosage-handler-core.js
+          git commit -m "Fail-close pediatric V3 runtime in strict mode"
+          git push origin HEAD:main
