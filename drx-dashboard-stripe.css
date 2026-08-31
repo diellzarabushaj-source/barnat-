@@ -1596,6 +1596,7 @@ html.drx-unified-sidebar .drx-profile-chip{
 }
 html.medindex-tailadmin .mi-content-container,
 html.drx-unified-sidebar .page-wrap{
+  box-sizing:border-box!important;
   width:100%!important;
   max-width:var(--drx-shell-content-max)!important;
   margin-inline:auto!important;
