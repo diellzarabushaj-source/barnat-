@@ -15,7 +15,7 @@ assert.match(html, /data-drx-app="sistemi-v2"/);
 assert.match(html, /class="drx-unified-sidebar"/);
 assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
 assert.match(html, /sistemi-v2\.css\?v=1/);
-assert.match(html, /sistemi-v2\.js\?v=1/);
+assert.match(html, /sistemi-v2\.js\?v=2/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/);
 
 const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)]
@@ -24,7 +24,7 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
   .map(match => match[1]);
 
 assert.deepEqual(styles, ['/sistemi-v2.css?v=1','/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6']);
-assert.deepEqual(scripts, ['/sistemi-v2.js?v=1']);
+assert.deepEqual(scripts, ['/sistemi-v2.js?v=2']);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|system-health\.js|media-library\.js|admin-entry\.js/);
 
 ['systemHealth','systemOverallState','systemRefresh','systemDrugCount','systemDosageCount','systemIcdCount','systemLabCount',
