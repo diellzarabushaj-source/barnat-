@@ -1,0 +1,46 @@
+name: Targeted V2 UI audit
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  targeted-v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Validate targeted specs
+        run: |
+          node --check tests/urgjencat-v2-browser.spec.js
+          node --check tests/csp-browser-audit.spec.js
+          node --check tests/registry-v2-browser.spec.js
+          node --check tests/tailwind-site-browser.spec.js
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Run targeted V2 browser acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/clinical-smoke-server.js > /tmp/targeted-v2-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; cat /tmp/targeted-v2-server.log' EXIT
+          for attempt in {1..40}; do
+            curl -fsS http://127.0.0.1:4173/index.html >/dev/null && break
+            sleep 0.25
+          done
+          curl -fsS http://127.0.0.1:4173/index.html >/dev/null
+          pnpm exec playwright test             tests/urgjencat-v2-browser.spec.js             tests/csp-browser-audit.spec.js             tests/registry-v2-browser.spec.js             tests/tailwind-site-browser.spec.js             --reporter=line --workers=1 --retries=1
