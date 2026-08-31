@@ -23,6 +23,8 @@ const cx = read('supabase/migrations/20260831195625_drx_phase11cx_evidence_batch
 const cy = read('supabase/migrations/20260831201723_drx_phase11cy_safety_source_review_batches.sql');
 const cz = read('supabase/migrations/20260831202550_drx_phase11cz_indication_source_review_batches.sql');
 const da = read('supabase/migrations/20260831203102_drx_phase11da_step_source_batches_and_closure_cockpit.sql');
+const db = read('supabase/migrations/20260831203715_drx_phase11db_lean_indication_packet_v3.sql');
+const dc = read('supabase/migrations/20260831204023_drx_phase11dc_harden_indication_packet_v3_invoker.sql');
 const backend = read('lib/phase11-review.js');
 const html = read('admin.html');
 const ui = read('admin-phase11-review.js');
@@ -171,7 +173,16 @@ assert.match(da, /false::boolean as automatic_closure_allowed/);
 assert.match(da, /automaticClosureAllowed',false/);
 assert.doesNotMatch(da, /update\s+drx_dose\.source_regimen_step_(?:presentation_requirements|administration)_v1/i);
 
-for (const sql of [ck,cn,co,cp,cq,cr,cs,ct,cu,cv,cw,cx,cy,cz,da]) {
+assert.match(db, /drx_phase11_indication_review_packet_v3/);
+assert.match(db, /security invoker/i);
+assert.match(db, /packetVersion',3/);
+assert.match(db, /- 'items'/);
+assert.match(dc, /drx_phase11_indication_review_packet_v3/);
+assert.match(dc, /security invoker/i);
+assert.match(dc, /grant execute on function public\.drx_phase11_indication_review_packet_v3/);
+assert.match(backend, /drx_phase11_indication_review_packet_v3/);
+
+for (const sql of [ck,cn,co,cp,cq,cr,cs,ct,cu,cv,cw,cx,cy,cz,da,db,dc]) {
   assert.doesNotMatch(sql, /auto_publish_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_cutover_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_strict_activation_allowed(?:_v2)?\s*=\s*true/i);
@@ -234,6 +245,8 @@ for (const expected of [
   ['20260831201723','drx_phase11cy_safety_source_review_batches'],
   ['20260831202550','drx_phase11cz_indication_source_review_batches'],
   ['20260831203102','drx_phase11da_step_source_batches_and_closure_cockpit'],
+  ['20260831203715','drx_phase11db_lean_indication_packet_v3'],
+  ['20260831204023','drx_phase11dc_harden_indication_packet_v3_invoker'],
 ]) {
   assert.ok(
     migrations.some(row => String(row.version) === expected[0] && row.name === expected[1]),
