@@ -815,6 +815,86 @@
     {
       "version": "20260831115635",
       "name": "drx_phase11au_desloratadine_oral_solution_age_bands"
+    },
+    {
+      "version": "20260831120101",
+      "name": "drx_phase11av_legacy_text_reuse_proposal_staging"
+    },
+    {
+      "version": "20260831120242",
+      "name": "drx_phase11aw_ceftriaxone_disodium_active_moiety"
+    },
+    {
+      "version": "20260831132518",
+      "name": "drx_phase11ax_completion_gates_and_review_batches"
+    },
+    {
+      "version": "20260831132652",
+      "name": "drx_phase11ay_combination_aware_review_batches"
+    },
+    {
+      "version": "20260831144807",
+      "name": "drx_phase11az_rule_materialization_preview"
+    },
+    {
+      "version": "20260831145147",
+      "name": "drx_phase11ba_rule_schema_sequence_condition_age_days"
+    },
+    {
+      "version": "20260831145321",
+      "name": "drx_phase11bb_safety_targeting_and_promotion_gate_v3"
+    },
+    {
+      "version": "20260831145634",
+      "name": "drx_phase11bc_source_regimen_prn_semantics"
+    },
+    {
+      "version": "20260831145755",
+      "name": "drx_phase11bd_gated_draft_rule_materializer"
+    },
+    {
+      "version": "20260831145832",
+      "name": "drx_phase11be_coamox_pediatric_component_rule_normalization"
+    },
+    {
+      "version": "20260831150244",
+      "name": "drx_phase11bf_v3_rpc_extended_regimen_fields"
+    },
+    {
+      "version": "20260831152824",
+      "name": "drx_phase11bg_canonical_rule_targets_and_numeric_strength"
+    },
+    {
+      "version": "20260831152852",
+      "name": "drx_phase11bh_source_regimen_product_inheritance_preview"
+    },
+    {
+      "version": "20260831152943",
+      "name": "drx_phase11bi_gated_rule_target_stager"
+    },
+    {
+      "version": "20260831153017",
+      "name": "drx_phase11bj_product_shell_queue_and_candidate_binder"
+    },
+    {
+      "version": "20260831153315",
+      "name": "drx_phase11bk_split_calculator_text_only_completion"
+    },
+    {
+      "version": "20260831153909",
+      "name": "drx_phase11bl_identity_disposition_and_batch_review"
+    },
+    {
+      "version": "20260831154148",
+      "name": "drx_phase11bm_completion_v3_and_review_workbench"
+    },
+    {
+      "version": "20260831154455",
+      "name": "drx_phase11bn_exact_source_safety_scope"
+    },
+    {
+      "version": "20260831160114",
+      "name": "drx_phase11bo_safety_invariants_and_cutover_guard"
     }
   ]
 }
