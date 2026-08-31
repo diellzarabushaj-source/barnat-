@@ -1,0 +1,1 @@
+Temporary CI trigger after syncing migration-history.json with live Supabase Phase 11 history.
