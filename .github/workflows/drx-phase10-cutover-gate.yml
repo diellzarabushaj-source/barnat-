@@ -52,6 +52,8 @@ on:
       - "scripts/drx-phase10-controlled-canary.js"
       - "tests/drx-phase10-controlled-canary-test.js"
       - "scripts/drx-phase10-consumer-audit.js"
+      - "scripts/drx-phase10-legacy-retirement-preflight.js"
+      - "tests/drx-phase10-legacy-retirement-preflight-test.js"
       - "tests/drx-phase10-cutover-control-test.js"
       - "lib/dose-v3-runtime-gate.js"
       - "lib/dose-product-fast-path-handler.js"
@@ -91,6 +93,8 @@ jobs:
         run: node tests/drx-phase10-controlled-soak-start-test.js
       - name: Phase 10 legacy runtime consumer audit
         run: node scripts/drx-phase10-consumer-audit.js
+      - name: Phase 10L legacy retirement preflight contract
+        run: node tests/drx-phase10-legacy-retirement-preflight-test.js
       - name: P0 database integrity
         run: node tests/p0-database-integrity-test.js
       - name: Public security contract
@@ -111,6 +115,8 @@ jobs:
         run: node scripts/drx-phase10-controlled-canary.js
       - name: Live Phase 10 pediatric V3 calculator
         run: node scripts/drx-phase10-pediatric-v3-live.js
+      - name: Live Phase 10 legacy retirement preflight
+        run: node scripts/drx-phase10-legacy-retirement-preflight.js
       - name: Live Phase 10 status
         run: node scripts/drx-phase10-status.js
       - name: Upload Phase 10A evidence
@@ -120,6 +126,7 @@ jobs:
           path: |
             drx-phase10-status-evidence.json
             drx-phase10-consumer-audit.json
+            drx-phase10-legacy-retirement-preflight.json
             drx-phase10-controlled-canary-evidence.json
             drx-phase10-pediatric-v3-live-evidence.json
           if-no-files-found: error
