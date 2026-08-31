@@ -767,6 +767,14 @@
     {
       "version": "20260831110241",
       "name": "drx_phase11ai_amoxicillin_reusable_multi_indication_regimens"
+    },
+    {
+      "version": "20260831110704",
+      "name": "drx_phase11aj_pantoprazole_20_40_emc_capture"
+    },
+    {
+      "version": "20260831110839",
+      "name": "drx_phase11ak_pantoprazole_moiety_and_oral_regimens"
     }
   ]
 }
