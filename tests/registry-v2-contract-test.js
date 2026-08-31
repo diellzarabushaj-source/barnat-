@@ -36,6 +36,8 @@ assert.match(css, /\.detail-drawer/);
 assert.match(css, /\.form-picker-panel/);
 assert.match(css, /\.form-category/);
 assert.match(css, /\.form-option/);
+assert.match(css, /is-pediatric-only/);
+assert.match(css, /population-badge/);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.doesNotMatch(css, /!important/);
 
@@ -49,6 +51,11 @@ assert.match(js, /escapeHtml/);
 assert.match(js, /FORM_GROUPS/);
 assert.match(js, /formExact/);
 assert.match(js, /formCategory/);
+assert.match(js, /approvedPopulation/);
+assert.match(js, /Grupi \/ Klasa/);
+assert.match(js, /Për çka përdoret/);
+assert.match(js, /Popullata/);
+assert.match(js, /Vetëm pediatrik/);
 assert.doesNotThrow(() => new Function(js));
 
 const page = drugSearch.buildPageRequest({
@@ -74,7 +81,11 @@ assert.match(page.path, /editorial_status=eq\.published/);
 assert.match(page.path, /limit=50/);
 assert.match(page.path, /offset=50/);
 assert.match(page.path, /registry_search_text=ilike/);
+assert.match(decodeURIComponent(page.path), /approved_population/);
 assert.match(decodeURIComponent(page.path), /atc_code=ilike\.N02\*/);
+
+const mapped = drugSearch.listRow({ id:'11111111-1111-4111-8111-111111111111', approved_population:'Pediatric only' });
+assert.equal(mapped.approvedPopulation, 'Pediatric only');
 
 const capped = drugSearch.buildPageRequest({ pageSize:'500' });
 assert.equal(capped.pageSize, drugSearch.REGISTRY_MAX_PAGE_SIZE);
