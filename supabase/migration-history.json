@@ -609,6 +609,14 @@
     {
       "name": "drx_phase10h_controlled_soak_start",
       "version": "20260831052414"
+    },
+    {
+      "name": "drx_phase10i_soak_observability",
+      "version": "20260831052948"
+    },
+    {
+      "name": "drx_phase10j_pediatric_v3_calculator_metadata",
+      "version": "20260831053832"
     }
   ]
 }
