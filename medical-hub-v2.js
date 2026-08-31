@@ -181,6 +181,12 @@
     return state.items.find(item => item._id === state.selectedId) || null;
   }
 
+  function readerNavigationItems() {
+    if (clean(state.term)) return state.filtered.slice();
+    if (state.category) return state.filtered.filter(item => !isChapter(item));
+    return state.filtered.slice();
+  }
+
   function chapterNumberFromId(id) {
     const match = String(id || '').match(/^medicalhub-dod-ch(\d{2})(?:-sub(\d+))?$/);
     return match ? Number(match[1]) : null;
@@ -769,9 +775,10 @@
     if (!detail) return;
     const review = reviewMeta(item.reviewStatus);
     const sections = sectionEntries(item);
-    const currentIndex = state.filtered.findIndex(candidate => candidate._id === item._id);
-    const previous = currentIndex > 0 ? state.filtered[currentIndex - 1] : null;
-    const next = currentIndex >= 0 && currentIndex < state.filtered.length - 1 ? state.filtered[currentIndex + 1] : null;
+    const navigationItems = readerNavigationItems();
+    const currentIndex = navigationItems.findIndex(candidate => candidate._id === item._id);
+    const previous = currentIndex > 0 ? navigationItems[currentIndex - 1] : null;
+    const next = currentIndex >= 0 && currentIndex < navigationItems.length - 1 ? navigationItems[currentIndex + 1] : null;
     const procedures = procedureEntries(item);
 
     detail.innerHTML = `
@@ -1061,7 +1068,8 @@
   }
 
   function renderReaderNavigation() {
-    const index = state.filtered.findIndex(item => item._id === state.selectedId);
+    const navigationItems = readerNavigationItems();
+    const index = navigationItems.findIndex(item => item._id === state.selectedId);
     const searchField = $('#learningSearchField');
     const result = $('#learningResultStatus');
     const position = $('#learningTopicPosition');
@@ -1084,9 +1092,12 @@
       } else result.textContent = `${chapterCount} kapituj · ${lessonCount} mësime · Sanity backend`;
     }
 
-    if (position) position.textContent = index >= 0 ? `${index + 1} / ${state.filtered.length}` : `0 / ${state.filtered.length}`;
+    if (position) {
+      if (isChapter(currentItem())) position.textContent = 'Përmbledhje';
+      else position.textContent = index >= 0 ? `${index + 1} / ${navigationItems.length}` : `0 / ${navigationItems.length}`;
+    }
     if (previous) previous.disabled = index <= 0;
-    if (next) next.disabled = index < 0 || index >= state.filtered.length - 1;
+    if (next) next.disabled = index < 0 || index >= navigationItems.length - 1;
 
     const headingStatus = $('#learningStatus');
     if (headingStatus) headingStatus.textContent = `${chapterCount} kapituj · ${lessonCount} mësime`;
@@ -1114,8 +1125,9 @@
   }
 
   function selectAdjacentTopic(delta) {
-    const index = state.filtered.findIndex(item => item._id === state.selectedId);
-    const item = state.filtered[index + delta];
+    const items = readerNavigationItems();
+    const index = items.findIndex(item => item._id === state.selectedId);
+    const item = items[index + delta];
     if (item) selectTopic(item._id, { scroll:true });
   }
 
