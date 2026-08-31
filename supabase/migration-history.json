@@ -1001,6 +1001,10 @@
     {
       "name": "drx_phase11co_shadow_evidence_and_cutover_guard",
       "version": "20260831184612"
+    },
+    {
+      "version": "20260831190001",
+      "name": "drx_phase11cp_controlled_percent_bypass_guard"
     }
   ]
 }
