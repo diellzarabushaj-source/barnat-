@@ -585,6 +585,14 @@
     {
       "name": "drx_phase10c_golden_and_parity_evidence",
       "version": "20260830231548"
+    },
+    {
+      "version": "20260831045759",
+      "name": "drx_phase10a_cutover_control_plane"
+    },
+    {
+      "version": "20260831050214",
+      "name": "drx_phase10d_reconcile_parallel_control_plane"
     }
   ]
 }
