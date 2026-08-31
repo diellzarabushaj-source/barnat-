@@ -1228,3 +1228,62 @@
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important}
 }
+
+
+/* Source-order lesson flow -------------------------------------------------- */
+.ck-ordered-content{
+  display:grid;
+  gap:16px;
+}
+.ck-ordered-content>.ck-step{
+  border-top:1px solid #edf0f4;
+}
+.ck-ordered-content>.ck-step:first-child{
+  border-top:0;
+}
+.ck-ordered-figure{
+  margin:4px 0;
+}
+.ck-ordered-figure .ck-figure{
+  max-width:760px;
+  margin:0 auto;
+}
+.ck-source-heading{
+  padding-top:8px;
+}
+.ck-source-heading h3{
+  margin:0;
+  color:var(--hub-ink);
+  font-size:18px;
+  font-weight:450;
+  line-height:1.3;
+}
+.ck-source-paragraph{
+  margin:0;
+}
+.ck-source-warning{
+  padding:12px 13px;
+  border:1px solid #f3ddb0;
+  border-left:3px solid #d99a16;
+  border-radius:8px;
+  background:#fffaf0;
+}
+.ck-source-warning>strong{
+  color:#775d20;
+  font-size:12px;
+  font-weight:650;
+}
+.ck-source-warning>p{
+  margin:5px 0 0;
+  color:#5d5747;
+  font-size:13.5px;
+  line-height:1.6;
+}
+.ck-source-danger{
+  border-color:#f0d3cf;
+  border-left-color:#c43d33;
+  background:#fff8f7;
+}
+.ck-source-danger>strong{
+  color:#9b3028;
+}
