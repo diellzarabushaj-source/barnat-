@@ -979,6 +979,10 @@
     {
       "version": "20260831174933",
       "name": "drx_phase11cj_end_to_end_review_workbench_v7"
+    },
+    {
+      "version": "20260831180622",
+      "name": "drx_phase11ck_adjustment_projection_and_publication_guard"
     }
   ]
 }
