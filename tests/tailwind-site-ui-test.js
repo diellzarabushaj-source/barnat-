@@ -72,7 +72,7 @@ const appPages = [
 for (const [file, appId] of appPages) {
   const html = read(file);
   assert.match(html, new RegExp(`data-drx-app="${appId}"`), `${file} is missing its V2 app marker`);
-  assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/, `${file} does not load the Stripe v4 authority`);
+  assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/, `${file} does not load the Stripe v6 authority`);
   assert.doesNotMatch(html, /tailadmin-professional\.css|tailadmin-shell\.js|medindex-tailadmin/,
     `${file} must stay on its standalone V2 shell instead of reintroducing TailAdmin legacy layers`);
   const stripeIndex = html.indexOf('drx-dashboard-stripe.css');
