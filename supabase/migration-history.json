@@ -629,6 +629,26 @@
     {
       "name": "drx_phase10m_strict_activation_gate",
       "version": "20260831062943"
+    },
+    {
+      "name": "drx_phase11_substance_centric_dosing_pipeline",
+      "version": "20260831073232"
+    },
+    {
+      "name": "drx_phase11b_pilot_targets_and_promotion_queue",
+      "version": "20260831073535"
+    },
+    {
+      "name": "drx_phase11c_fill_workflow_and_draft_promotion",
+      "version": "20260831074212"
+    },
+    {
+      "name": "drx_phase11d_restriction_classifier_hardening",
+      "version": "20260831093924"
+    },
+    {
+      "name": "drx_phase11e_priority_work_queues",
+      "version": "20260831094035"
     }
   ]
 }
