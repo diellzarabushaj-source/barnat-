@@ -388,6 +388,8 @@
       const blocked=Array.isArray(data.technicalBlocked)?data.technicalBlocked:[];
       const human=Array.isArray(data.humanBlockerCounts)?data.humanBlockerCounts:[];
       const ready=Array.isArray(data.readyForAttestation)?data.readyForAttestation:[];
+      const evidenceSummary=data.evidenceBatchSummary||{};
+      const evidenceBatches=Array.isArray(data.evidenceSourceBatches)?data.evidenceSourceBatches:[];
       box.className='mi-table-wrap';
       box.innerHTML=`
         <div class="mi-mini-stats">
@@ -403,6 +405,22 @@
         <div class="mi-editor-section-title"><div><span>Human-review blockers</span><small>Numër regimen-esh që presin reviewer decision; nuk janë technical failures.</small></div></div>
         <table class="mi-table"><thead><tr><th>Review gate</th><th>Regimens</th></tr></thead><tbody>
           ${human.length?human.map(row=>`<tr><td>${esc(row.blocker||'—')}</td><td><strong>${esc(row.regimenCount??0)}</strong></td></tr>`).join(''):'<tr><td colspan="2" class="is-empty">Upstream human review është komplet.</td></tr>'}
+        </tbody></table>
+        <div class="mi-editor-section-title"><div><span>Evidence source batches</span><small>92 evidence rows janë grupuar vetëm sipas exact snapshot + §4.2 hash; vendimet mbeten human-only.</small></div></div>
+        <div class="mi-mini-stats">
+          <div><span>Exact source batches</span><strong>${esc(evidenceSummary.source_batches??evidenceBatches.length)}</strong></div>
+          <div><span>Evidence rows</span><strong>${esc(evidenceSummary.evidence_rows??0)}</strong></div>
+          <div><span>Integrity ready</span><strong>${esc(evidenceSummary.integrity_ready_batches??0)}</strong></div>
+          <div><span>Human review pending</span><strong>${esc(evidenceSummary.human_review_pending_batches??0)}</strong></div>
+        </div>
+        <table class="mi-table"><thead><tr><th>Exact source</th><th>Version</th><th>Regimens</th><th>Evidence</th><th>Pending</th></tr></thead><tbody>
+          ${evidenceBatches.length?evidenceBatches.map(row=>`<tr>
+            <td><strong>${esc(row.authority||row.sourceTier||'SOURCE')}</strong><small>§${esc(row.sectionCode||'4.2')} · ${row.sourceUrl?`<a href="${esc(row.sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi ↗</a>`:''}</small></td>
+            <td>${esc(row.documentVersion||row.documentDate||'—')}</td>
+            <td><strong>${esc(row.regimenCount??0)}</strong></td>
+            <td>${esc(row.evidenceRows??0)}<small>P ${esc(row.primaryRows??0)} · S ${esc(row.supportingRows??0)} · C ${esc(row.concordantRows??0)}</small></td>
+            <td><span class="mi-badge is-in_review">${esc(row.pendingRows??0)}</span></td>
+          </tr>`).join(''):'<tr><td colspan="5" class="is-empty">Nuk ka evidence source batches.</td></tr>'}
         </tbody></table>`;
     }catch(error){
       box.className='mi-empty-state';

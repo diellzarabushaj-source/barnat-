@@ -18,6 +18,7 @@ const cs = read('supabase/migrations/20260831193039_drx_phase11cs_indication_icd
 const ct = read('supabase/migrations/20260831194123_drx_phase11ct_step_requirement_integrity_prechecks.sql');
 const cu = read('supabase/migrations/20260831194503_drx_phase11cu_clinical_review_preflight.sql');
 const cv = read('supabase/migrations/20260831194750_drx_phase11cv_clinical_preflight_workbench.sql');
+const cw = read('supabase/migrations/20260831195207_drx_phase11cw_evidence_source_review_batches.sql');
 const backend = read('lib/phase11-review.js');
 const html = read('admin.html');
 const ui = read('admin-phase11-review.js');
@@ -121,7 +122,15 @@ assert.match(cv, /autoApproveAllowed',false/);
 assert.match(cv, /revoke all on function public\.drx_phase11_clinical_preflight_workbench_v1/);
 assert.match(cv, /grant execute on function public\.drx_phase11_clinical_preflight_workbench_v1/);
 
-for (const sql of [ck,cn,co,cp,cq,cr,cs,ct,cu,cv]) {
+assert.match(cw, /phase11_evidence_source_review_batches_v1/);
+assert.match(cw, /phase11_evidence_source_review_batch_summary_v1/);
+assert.match(cw, /source_batch_key/);
+assert.match(cw, /evidenceSourceBatches/);
+assert.match(cw, /autoVerifyEvidenceAllowed',false/);
+assert.match(cw, /false::boolean as auto_verify_allowed/);
+assert.doesNotMatch(cw, /update\s+drx_dose\.source_regimen_supporting_evidence_v1/i);
+
+for (const sql of [ck,cn,co,cp,cq,cr,cs,ct,cu,cv,cw]) {
   assert.doesNotMatch(sql, /auto_publish_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_cutover_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_strict_activation_allowed(?:_v2)?\s*=\s*true/i);
@@ -145,6 +154,8 @@ assert.match(html, /id="p11LoadPreflight"/);
 assert.match(ui, /publication=1/);
 assert.match(ui, /shadow=1/);
 assert.match(ui, /preflight=1/);
+assert.match(ui, /evidenceSourceBatches/);
+assert.match(ui, /Exact source batches/);
 assert.match(ui, /data-p11-legacy-review/);
 assert.match(ui, /data-p11-rule-release/);
 assert.match(ui, /data-p11-shadow-review/);
@@ -164,6 +175,7 @@ for (const expected of [
   ['20260831194123','drx_phase11ct_step_requirement_integrity_prechecks'],
   ['20260831194503','drx_phase11cu_clinical_review_preflight'],
   ['20260831194750','drx_phase11cv_clinical_preflight_workbench'],
+  ['20260831195207','drx_phase11cw_evidence_source_review_batches'],
 ]) {
   assert.ok(
     migrations.some(row => String(row.version) === expected[0] && row.name === expected[1]),
