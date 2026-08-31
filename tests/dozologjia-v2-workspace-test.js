@@ -19,7 +19,7 @@ assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
 assert.match(html, /class="nav-item is-active" href="\/dozologjia\.html" aria-current="page"/);
 assert.match(html, /dozologjia-v2\.css\?v=\d+/);
 assert.match(html, /dozologjia-v2\.js\?v=\d+/);
-assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v5/);
+assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/);
 
 [
   'dosageContent','dosageSearch','dosageSearchClear','dosageFormFilter','dosageCount','dosageStatus','dosageList',
@@ -37,7 +37,7 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
 
 assert.equal(styles.length, 2, 'Dozologjia must keep exactly two stylesheet owners');
 assert.equal(scripts.length, 2, 'Dozologjia must keep exactly two script owners');
-assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v5');
+assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6');
 assert.equal(scripts[0], '/phase9-personal-entities-client.js?v=phase9b');
 
 const dosageCssVersion = styles[0]?.match(/^\/dozologjia-v2\.css\?v=(\d+)$/)?.[1] || '';

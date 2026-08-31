@@ -106,7 +106,7 @@ for (const [htmlFile, runtime, version] of [
 for (const file of ['index.html','klasifikimi.html','icd.html','dozologjia.html','urgjencat.html','analizat.html','protokollet.html','recetat.html','medical-hub.html','sistemi.html']) {
   const html = read(file);
   assert.match(html, /drx-unified-sidebar/, `${file}: unified standalone sidebar marker missing`);
-  assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v5/, `${file}: shared Stripe sidebar authority missing`);
+  assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/, `${file}: shared Stripe sidebar authority missing`);
 }
 
 assert.match(stripe, /Shared taxonomy sidebar — ATC and ICD use one identical navy language/);
