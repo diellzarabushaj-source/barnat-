@@ -330,7 +330,7 @@
   function loadSharedSidebarTaxonomy() {
     if (document.querySelector('script[data-drx-sidebar-taxonomy]')) return;
     const script = document.createElement('script');
-    script.src = '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v3';
+    script.src = '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v4';
     script.defer = true;
     script.dataset.drxSidebarTaxonomy = '1';
     document.head.appendChild(script);
