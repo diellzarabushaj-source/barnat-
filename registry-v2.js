@@ -49,6 +49,9 @@
     { id:'substance', label:'Substanca aktive', hint:'Përbërësi aktiv' },
     { id:'strength', label:'Fortësia', hint:'Doza / përqendrimi' },
     { id:'form', label:'Forma', hint:'Forma farmaceutike' },
+    { id:'drugClass', label:'Grupi / Klasa', hint:'Grupi farmakologjik / terapeutik' },
+    { id:'use', label:'Për çka përdoret', hint:'Indikacionet / përdorimi' },
+    { id:'population', label:'Popullata', hint:'Adult / pediatrik' },
     { id:'atc', label:'ATC', hint:'Kodi ATC' },
     { id:'adultDose', label:'Doza e të rriturit', hint:'Dozologjia e të rriturit' },
     { id:'pediatricDose', label:'Doza pediatrike', hint:'Dozologjia pediatrike' },
@@ -58,6 +61,9 @@
   const DEFAULT_VISIBLE_COLUMNS = Object.freeze(COLUMN_DEFS.map(item => item.id));
   const PREFERENCES_API = '/api/auth?scope=ui-preferences';
   const COLUMN_CACHE_PREFIX = 'drx_registry_columns_v2:';
+  const COLUMN_SCHEMA_VERSION = 'registry-columns-v3-clinical';
+  const COLUMN_SCHEMA_PREFIX = 'drx_registry_column_schema:';
+  const CLINICAL_COLUMN_IDS = Object.freeze(['drugClass', 'use', 'population']);
 
   const state = {
     page: 1,
@@ -118,6 +124,34 @@
     return state.preferenceOwner ? `${COLUMN_CACHE_PREFIX}${state.preferenceOwner}` : '';
   }
 
+  function columnSchemaKey() {
+    return state.preferenceOwner ? `${COLUMN_SCHEMA_PREFIX}${state.preferenceOwner}` : '';
+  }
+
+  function needsClinicalColumnMigration() {
+    const key = columnSchemaKey();
+    if (!key) return false;
+    try { return localStorage.getItem(key) !== COLUMN_SCHEMA_VERSION; }
+    catch { return true; }
+  }
+
+  function ensureClinicalColumns(value) {
+    const normalized = normalizeColumns(value);
+    if (!needsClinicalColumnMigration()) return normalized;
+    const next = [...normalized];
+    for (const id of CLINICAL_COLUMN_IDS) {
+      if (!next.includes(id)) next.push(id);
+    }
+    return normalizeColumns(next);
+  }
+
+  function markClinicalColumnMigration() {
+    const key = columnSchemaKey();
+    if (!key) return;
+    try { localStorage.setItem(key, COLUMN_SCHEMA_VERSION); }
+    catch {}
+  }
+
   function readCachedColumns() {
     const key = columnCacheKey();
     if (!key) return null;
@@ -174,7 +208,8 @@
 
     const widths = {
       registry:68, name:225, substance:190, strength:105, form:145,
-      atc:90, adultDose:190, pediatricDose:190, status:105, price:92,
+      drugClass:180, use:220, population:150, atc:90,
+      adultDose:190, pediatricDose:190, status:105, price:92,
     };
     const visibleWidth = COLUMN_DEFS.reduce((sum, item) => {
       return state.visibleColumns.has(item.id) ? sum + (widths[item.id] || 100) : sum;
@@ -200,10 +235,11 @@
         body:JSON.stringify({ registryColumns:[...state.visibleColumns] }),
         headers:{ 'Content-Type':'application/json' },
       }, 6000);
-      const normalized = normalizeColumns(payload.registryColumns);
+      const normalized = ensureClinicalColumns(payload.registryColumns);
       state.visibleColumns = new Set(normalized);
       cacheColumns();
       applyColumnVisibility();
+      markClinicalColumnMigration();
       setColumnSaveStatus('Ruajtur në profil', 'success');
     } catch (error) {
       console.warn('Column preferences save failed:', error);
@@ -221,16 +257,18 @@
   async function loadColumnPreferences(authPayload) {
     state.preferenceOwner = clean(authPayload?.authUser?.id || authPayload?.user?.email || '').toLowerCase();
     const cached = readCachedColumns();
-    if (cached) state.visibleColumns = new Set(cached);
+    if (cached) state.visibleColumns = new Set(ensureClinicalColumns(cached));
     applyColumnVisibility();
     setColumnSaveStatus(cached ? 'Preferenca lokale u ngarkua' : 'Duke sinkronizuar…');
     try {
       const { payload } = await fetchJson(PREFERENCES_API, {}, 6000);
       state.preferenceOwner = clean(payload.userId || state.preferenceOwner).toLowerCase();
-      state.visibleColumns = new Set(normalizeColumns(payload.registryColumns));
+      const migrate = needsClinicalColumnMigration();
+      state.visibleColumns = new Set(ensureClinicalColumns(payload.registryColumns));
       cacheColumns();
       applyColumnVisibility();
-      setColumnSaveStatus('Sinkronizuar me profilin', 'success');
+      if (migrate) await persistColumnPreferences();
+      else setColumnSaveStatus('Sinkronizuar me profilin', 'success');
     } catch (error) {
       console.warn('Column preferences load failed:', error);
       setColumnSaveStatus(cached ? 'Nga kjo pajisje' : 'Standardi DRx', cached ? 'local' : '');
@@ -365,6 +403,9 @@
         <td data-col="substance"><span class="skeleton md"></span></td>
         <td data-col="strength"><span class="skeleton sm"></span></td>
         <td data-col="form"><span class="skeleton md"></span></td>
+        <td data-col="drugClass"><span class="skeleton md"></span></td>
+        <td data-col="use"><span class="skeleton lg"></span></td>
+        <td data-col="population"><span class="skeleton md"></span></td>
         <td data-col="atc"><span class="skeleton sm"></span></td>
         <td data-col="adultDose"><span class="skeleton lg"></span></td>
         <td data-col="pediatricDose"><span class="skeleton lg"></span></td>
@@ -463,6 +504,31 @@
     requestAnimationFrame(syncAllDoseToggles);
   }
 
+  function populationMeta(value) {
+    const raw = clean(value);
+    const normalized = raw.toLowerCase().replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
+    if (normalized === 'pediatric only' || normalized === 'paediatric only') {
+      return { key:'pediatric-only', label:'Vetëm pediatrik' };
+    }
+    if (normalized === 'adult only') {
+      return { key:'adult-only', label:'Vetëm të rritur' };
+    }
+    if (
+      normalized === 'pediatric and adult both'
+      || normalized === 'paediatric and adult both'
+      || normalized === 'adult and pediatric'
+      || normalized === 'adult and paediatric'
+    ) {
+      return { key:'adult-pediatric', label:'Të rritur + pediatrik' };
+    }
+    return { key:'unknown', label:raw || '—' };
+  }
+
+  function populationBadge(value) {
+    const population = populationMeta(value);
+    return `<span class="population-badge is-${population.key}">${escapeHtml(population.label)}</span>`;
+  }
+
   function statusBadge(value) {
     const label = clean(value) || '—';
     const normalized = label.toLowerCase();
@@ -486,13 +552,18 @@
       const key = rowKey(row);
       const selected = state.selected.has(key);
       const number = clean(row.registryNumber);
-      return `<tr data-row-id="${escapeHtml(key)}" class="${selected ? 'is-selected' : ''}" tabindex="0" aria-selected="${selected ? 'true' : 'false'}">
+      const population = populationMeta(row.approvedPopulation);
+      const rowClasses = [selected ? 'is-selected' : '', population.key === 'pediatric-only' ? 'is-pediatric-only' : ''].filter(Boolean).join(' ');
+      return `<tr data-row-id="${escapeHtml(key)}" data-population="${escapeHtml(population.key)}" class="${rowClasses}" tabindex="0" aria-selected="${selected ? 'true' : 'false'}">
         <td><input class="row-check" type="checkbox" data-select-row="${escapeHtml(key)}" aria-label="Zgjidh ${escapeHtml(row.tradeName)}" ${selected ? 'checked' : ''}></td>
         <td data-col="registry"><span class="price">${escapeHtml(number || '—')}</span></td>
         <td data-col="name"><span class="drug-name">${escapeHtml(row.tradeName || 'Pa emër')}</span><span class="drug-meta">${escapeHtml(row.pdid || row.productStatus || '')}</span></td>
         <td data-col="substance"><span class="cell-clamp">${escapeHtml(row.activeSubstance || '—')}</span></td>
         <td data-col="strength">${escapeHtml(row.strength || '—')}</td>
         <td data-col="form"><span class="cell-clamp">${escapeHtml(row.form || '—')}</span></td>
+        <td data-col="drugClass"><span class="cell-clamp">${escapeHtml(row.drugClass || '—')}</span></td>
+        <td data-col="use"><span class="cell-clamp">${escapeHtml(row.use || '—')}</span></td>
+        <td data-col="population">${populationBadge(row.approvedPopulation)}</td>
         <td data-col="atc">${row.atc ? `<span class="atc-chip">${escapeHtml(row.atc)}</span>` : '—'}</td>
         <td data-col="adultDose" data-dose-adult="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></td>
         <td data-col="pediatricDose" data-dose-pediatric="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></td>
@@ -735,7 +806,7 @@
     const sources = Array.isArray(card.sources) ? card.sources : [];
     const info = [
       ['Nr. regjistri', detail.registryNumber], ['PDID', detail.pdid], ['ATC', detail.atc], ['Klasa', detail.drugClass],
-      ['Forma', detail.form], ['Paketimi', detail.packaging], ['Prodhuesi', detail.manufacturer], ['MAH', detail.marketingAuthorizationHolder],
+      ['Popullata', populationMeta(detail.approvedPopulation).label], ['Forma', detail.form], ['Paketimi', detail.packaging], ['Prodhuesi', detail.manufacturer], ['MAH', detail.marketingAuthorizationHolder],
       ['Certifikata', detail.maCertificate], ['Vlefshmëria', detail.validity], ['Çmimi me pakicë', euros(detail.retailPrice)],
     ].filter(([,value]) => clean(value) && value !== '—');
     const clinicalBlocks = [
