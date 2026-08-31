@@ -40,6 +40,8 @@
     const completion=data?.completion||{};
     const runtime=data?.runtime||{};
     const counts=data?.counts||{};
+    const identityCoverage=data?.identitySuggestionCoverage||{};
+    const icdQuality=data?.icdSuggestionQuality||{};
     const identity=Array.isArray(data?.identityBatches)?data.identityBatches:[];
     const clinical=Array.isArray(data?.clinicalBatches)?data.clinicalBatches:[];
     const shells=Array.isArray(data?.productShells)?data.productShells:[];
@@ -49,9 +51,9 @@
     if($('p11Promotion'))$('p11Promotion').textContent=completion.promotion_blockers??'—';
     if($('p11Runtime'))$('p11Runtime').textContent=runtime.ready_for_controlled_cutover?'READY':'BLOCKED';
 
-    if($('p11IdentityBatches'))$('p11IdentityBatches').textContent=counts.identityBatches??identity.length;
+    if($('p11IdentityBatches'))$('p11IdentityBatches').textContent=`${counts.identityBatches??identity.length} · ${identityCoverage.batches_with_suggestions??0} me sugj.`;
     if($('p11ClinicalBatches'))$('p11ClinicalBatches').textContent=counts.clinicalBatches??clinical.length;
-    if($('p11DraftIndications'))$('p11DraftIndications').textContent=Math.max(0,Number(counts.indications||0)-Number(counts.publishedIndications||0));
+    if($('p11DraftIndications'))$('p11DraftIndications').textContent=`${Math.max(0,Number(counts.indications||0)-Number(counts.publishedIndications||0))} · ${icdQuality.manual_search_required??0} manual`;
     if($('p11ProductShells'))$('p11ProductShells').textContent=`${counts.publishedProductShells||0}/${counts.productShellItems||shells.length}`;
 
     if($('p11IdentityCount'))$('p11IdentityCount').textContent=`${identity.length} batches · ${counts.identityProducts||0} produkte`;
@@ -196,13 +198,14 @@
       const response=await json(`${API}?indications=1`);
       const data=response.payload||{};
       const summary=data.summary||{};
+      const quality=data.quality||{};
       const items=Array.isArray(data.items)?data.items:[];
       box.className='mi-table-wrap';
-      box.innerHTML=`<div class="mi-mini-stats"><div><span>Gjithsej</span><strong>${esc(summary.total||0)}</strong></div><div><span>Published</span><strong>${esc(summary.published||0)}</strong></div><div><span>Draft</span><strong>${esc(summary.draft||0)}</strong></div><div><span>ICD verified</span><strong>${esc(summary.icdVerified||0)}</strong></div></div>
-      <table class="mi-table"><thead><tr><th>Indikacioni</th><th>Best ICD match</th><th>Score</th><th>Statusi</th></tr></thead><tbody>
+      box.innerHTML=`<div class="mi-mini-stats"><div><span>Gjithsej</span><strong>${esc(summary.total||0)}</strong></div><div><span>High/medium</span><strong>${esc((quality.high_quality||0)+(quality.medium_quality||0))}</strong></div><div><span>Manual search</span><strong>${esc(quality.manual_search_required||0)}</strong></div><div><span>ICD verified</span><strong>${esc(summary.icdVerified||0)}</strong></div></div>
+      <table class="mi-table"><thead><tr><th>Indikacioni</th><th>Best ICD match</th><th>Score</th><th>Quality</th></tr></thead><tbody>
       ${items.slice(0,100).map(item=>{
         const first=Array.isArray(item.candidates)?item.candidates[0]:null;
-        return `<tr><td><strong>${esc(item.canonicalName||'—')}</strong><small>${esc(item.indicationKey||'')}</small></td><td>${esc(first?.code||'—')}<small>${esc(first?.titleEn||'')}</small></td><td>${esc(item.bestMatchScore??'—')}</td><td><span class="mi-badge is-in_review">${esc(item.editorialStatus||'draft')}</span></td></tr>`;
+        return `<tr><td><strong>${esc(item.canonicalName||'—')}</strong><small>${esc(item.indicationKey||'')}</small></td><td>${esc(first?.code||'—')}<small>${esc(first?.titleEn||'')}</small></td><td>${esc(item.bestMatchScore??'—')}</td><td><span class="mi-badge is-in_review">${esc(item.suggestionQuality||'NO_CANDIDATE')}</span><small>${item.manualSearchRequired?'Manual search':''}</small></td></tr>`;
       }).join('')}
       </tbody></table>`;
     }catch(error){
