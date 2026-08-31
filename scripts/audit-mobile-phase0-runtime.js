@@ -187,7 +187,20 @@ async function runBrowserProbe() {
 
     await installDelayedDrugSearchRoute(page);
     await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded', timeout:30000 });
-    await page.waitForFunction(() => (window.__MEDINDEX_PHASE0_PROBE?.authReady || []).length > 0, null, { timeout:10000 });
+    // WebKit's waitForFunction polling path may rely on string evaluation, which
+    // our production CSP correctly rejects because script-src does not allow
+    // unsafe-eval. Poll from Node with page.evaluate instead; this tests the
+    // same browser state without weakening CSP or changing application code.
+    const authReadyDeadline = Date.now() + 10000;
+    let authReadyObserved = false;
+    while (Date.now() < authReadyDeadline) {
+      authReadyObserved = await page.evaluate(
+        () => (window.__MEDINDEX_PHASE0_PROBE?.authReady || []).length > 0
+      );
+      if (authReadyObserved) break;
+      await page.waitForTimeout(50);
+    }
+    assert.equal(authReadyObserved, true, 'Timed out waiting for medindex:auth-ready.');
     await page.locator('html[data-registry-mobile-lite]').waitFor({ state:'attached', timeout:5000 });
 
     // Delay the bounded phone list well past the removed 5 s takeover window.
