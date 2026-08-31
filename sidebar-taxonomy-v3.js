@@ -7,6 +7,7 @@
   const ICD_CACHE_TTL = 10 * 60 * 1000;
   const ICD_API = '/api/icd?view=nav';
   const ATC_DATA_SRC = '/classification-data.js?v=atc-catalog-v2';
+  const CANONICAL_WORKER_URL = '/sw.js?v=drx-workspace-v7';
 
   const clean = value => String(value ?? '').trim();
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
@@ -332,7 +333,29 @@
     }
   }
 
+  function ensureCanonicalWorker() {
+    if (!('serviceWorker' in navigator)) return;
+    const register = async () => {
+      try {
+        const registration = await navigator.serviceWorker.register(CANONICAL_WORKER_URL, {
+          scope:'/',
+          updateViaCache:'none',
+        });
+        registration.update?.().catch(() => null);
+        document.documentElement.dataset.drxWorker = 'canonical';
+      } catch {
+        document.documentElement.dataset.drxWorker = 'unavailable';
+      }
+    };
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => void register(), { timeout:1800 });
+    } else {
+      setTimeout(() => void register(), 700);
+    }
+  }
+
   function init() {
+    ensureCanonicalWorker();
     const nav = document.querySelector('.sidebar .nav-stack');
     if (!nav || nav.dataset.sharedTaxonomy === '1') return;
     nav.dataset.sharedTaxonomy = '1';
@@ -355,7 +378,7 @@
 
     if (icdDetails) void loadIcd(icdDetails);
     window.DRxSidebarTaxonomy = Object.freeze({ syncAtc:() => syncAtc(nav), enhanceAtc:() => enhanceAtc(nav) });
-    document.documentElement.dataset.drxSidebarStructure = 'taxonomy-v3';
+    document.documentElement.dataset.drxSidebarStructure = 'taxonomy-v4';
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
