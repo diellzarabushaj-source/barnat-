@@ -11,6 +11,7 @@ function read(relative) {
 const ck = read('supabase/migrations/20260831180622_drx_phase11ck_adjustment_projection_and_publication_guard.sql');
 const cn = read('supabase/migrations/20260831184114_drx_phase11cn_legacy_parity_and_release_gate.sql');
 const co = read('supabase/migrations/20260831184612_drx_phase11co_shadow_evidence_and_cutover_guard.sql');
+const cp = read('supabase/migrations/20260831190001_drx_phase11cp_controlled_percent_bypass_guard.sql');
 const backend = read('lib/phase11-review.js');
 const html = read('admin.html');
 const ui = read('admin-phase11-review.js');
@@ -51,7 +52,16 @@ assert.match(co, /phase10_phase11_cutover_guard/);
 assert.match(co, /revoke all .* from public,anon,authenticated/is);
 assert.match(co, /grant execute .* to service_role/is);
 
-for (const sql of [ck,cn,co]) {
+assert.match(cp, /new\.mode='CONTROLLED'/);
+assert.match(cp, /new\.controlled_percent>5/);
+assert.match(cp, /new\.controlled_percent>old\.controlled_percent/);
+assert.match(cp, /old\.mode='SHADOW'/);
+assert.match(cp, /new\.mode='STRICT'/);
+assert.match(cp, /ready_for_controlled_cutover_v2/);
+assert.match(cp, /cutover_blockers_v2/);
+assert.match(cp, /revoke all on function drx_dose\.guard_phase10_phase11_cutover_v1\(\)/);
+
+for (const sql of [ck,cn,co,cp]) {
   assert.doesNotMatch(sql, /auto_publish_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_cutover_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_strict_activation_allowed(?:_v2)?\s*=\s*true/i);
@@ -83,6 +93,7 @@ for (const expected of [
   ['20260831180622','drx_phase11ck_adjustment_projection_and_publication_guard'],
   ['20260831184114','drx_phase11cn_legacy_parity_and_release_gate'],
   ['20260831184612','drx_phase11co_shadow_evidence_and_cutover_guard'],
+  ['20260831190001','drx_phase11cp_controlled_percent_bypass_guard'],
 ]) {
   assert.ok(
     migrations.some(row => String(row.version) === expected[0] && row.name === expected[1]),
