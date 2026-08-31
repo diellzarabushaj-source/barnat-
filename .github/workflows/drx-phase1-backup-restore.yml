@@ -205,6 +205,45 @@ jobs:
 
           sha256sum "$BACKUP_DIR"/*.sql > "$BACKUP_DIR/sha256.txt"
 
+      - name: Capture source restore manifest
+        if: steps.credential.outputs.available == 'true' && steps.credential.outputs.mode == 'db_url'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          psql "$SUPABASE_DB_URL" --set ON_ERROR_STOP=1 --tuples-only --no-align <<'SQL' > "$RUNNER_TEMP/drx-source-manifest.txt"
+          select 'drugs_count=' || count(*) from public.drugs;
+          select 'drugs_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.drugs t;
+          select 'dosage_regimens_count=' || count(*) from public.dosage_regimens;
+          select 'dosage_regimens_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.dosage_regimens t;
+          select 'stage_product_registry_count=' || count(*) from drx_stage.product_registry_v1;
+          select 'stage_product_registry_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from drx_stage.product_registry_v1 t;
+          select 'stage_variant_master_count=' || count(*) from drx_stage.variant_master_v1;
+          select 'stage_variant_master_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from drx_stage.variant_master_v1 t;
+          select 'stage_substance_master_count=' || count(*) from drx_stage.substance_master_v1;
+          select 'stage_substance_master_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from drx_stage.substance_master_v1 t;
+          select 'source_snapshots_count=' || count(*) from public.dose_source_snapshots_v3;
+          select 'source_snapshots_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.dose_source_snapshots_v3 t;
+          select 'source_sections_count=' || count(*) from public.dose_source_sections_v3;
+          select 'source_sections_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.dose_source_sections_v3 t;
+          select 'v3_products_count=' || count(*) from public.dose_products_v3;
+          select 'v3_products_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.dose_products_v3 t;
+          select 'v3_rules_count=' || count(*) from public.dose_rules_v3;
+          select 'v3_rules_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.dose_rules_v3 t;
+          select 'v3_bindings_count=' || count(*) from public.dose_rule_products_v3;
+          select 'v3_bindings_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.dose_rule_products_v3 t;
+          select 'published_rules_count=' || count(*) from public.dose_rules_v3 where editorial_status='published';
+          SQL
+
+          test -s "$RUNNER_TEMP/drx-source-manifest.txt"
+
+      - name: Require independent source manifest
+        if: steps.credential.outputs.available == 'true' && steps.credential.outputs.mode != 'db_url'
+        shell: bash
+        run: |
+          echo "::error::Phase 10 restore evidence requires an independently queried production manifest; linked-only backup mode is intentionally fail-closed."
+          exit 1
+
       - name: Restore into disposable local Supabase
         if: steps.credential.outputs.available == 'true'
         shell: bash
@@ -230,31 +269,32 @@ jobs:
             --command 'SET session_replication_role = replica' \
             --file "$BACKUP_DIR/data.sql"
 
-          psql "$DB_URL" --set ON_ERROR_STOP=1 --tuples-only --no-align <<'SQL' > "$RUNNER_TEMP/drx-restore-counts.txt"
-          select 'drugs=' || count(*) from public.drugs;
-          select 'dosage_regimens=' || count(*) from public.dosage_regimens;
-          select 'stage_product_registry=' || count(*) from drx_stage.product_registry_v1;
-          select 'stage_variant_master=' || count(*) from drx_stage.variant_master_v1;
-          select 'stage_substance_master=' || count(*) from drx_stage.substance_master_v1;
-          select 'source_snapshots=' || count(*) from public.dose_source_snapshots_v3;
-          select 'source_sections=' || count(*) from public.dose_source_sections_v3;
-          select 'v3_products=' || count(*) from public.dose_products_v3;
-          select 'v3_rules=' || count(*) from public.dose_rules_v3;
-          select 'v3_bindings=' || count(*) from public.dose_rule_products_v3;
-          select 'published_rules=' || count(*) from public.dose_rules_v3 where editorial_status='published';
+          psql "$DB_URL" --set ON_ERROR_STOP=1 --tuples-only --no-align <<'SQL' > "$RUNNER_TEMP/drx-restore-manifest.txt"
+          select 'drugs_count=' || count(*) from public.drugs;
+          select 'drugs_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.drugs t;
+          select 'dosage_regimens_count=' || count(*) from public.dosage_regimens;
+          select 'dosage_regimens_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.dosage_regimens t;
+          select 'stage_product_registry_count=' || count(*) from drx_stage.product_registry_v1;
+          select 'stage_product_registry_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from drx_stage.product_registry_v1 t;
+          select 'stage_variant_master_count=' || count(*) from drx_stage.variant_master_v1;
+          select 'stage_variant_master_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from drx_stage.variant_master_v1 t;
+          select 'stage_substance_master_count=' || count(*) from drx_stage.substance_master_v1;
+          select 'stage_substance_master_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from drx_stage.substance_master_v1 t;
+          select 'source_snapshots_count=' || count(*) from public.dose_source_snapshots_v3;
+          select 'source_snapshots_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.dose_source_snapshots_v3 t;
+          select 'source_sections_count=' || count(*) from public.dose_source_sections_v3;
+          select 'source_sections_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.dose_source_sections_v3 t;
+          select 'v3_products_count=' || count(*) from public.dose_products_v3;
+          select 'v3_products_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.dose_products_v3 t;
+          select 'v3_rules_count=' || count(*) from public.dose_rules_v3;
+          select 'v3_rules_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.dose_rules_v3 t;
+          select 'v3_bindings_count=' || count(*) from public.dose_rule_products_v3;
+          select 'v3_bindings_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.dose_rule_products_v3 t;
+          select 'published_rules_count=' || count(*) from public.dose_rules_v3 where editorial_status='published';
           SQL
 
-          grep -qx 'drugs=4015' "$RUNNER_TEMP/drx-restore-counts.txt"
-          grep -qx 'dosage_regimens=8104' "$RUNNER_TEMP/drx-restore-counts.txt"
-          grep -qx 'stage_product_registry=4015' "$RUNNER_TEMP/drx-restore-counts.txt"
-          grep -qx 'stage_variant_master=2674' "$RUNNER_TEMP/drx-restore-counts.txt"
-          grep -qx 'stage_substance_master=1351' "$RUNNER_TEMP/drx-restore-counts.txt"
-          grep -qx 'source_snapshots=100' "$RUNNER_TEMP/drx-restore-counts.txt"
-          grep -qx 'source_sections=575' "$RUNNER_TEMP/drx-restore-counts.txt"
-          grep -qx 'v3_products=0' "$RUNNER_TEMP/drx-restore-counts.txt"
-          grep -qx 'v3_rules=0' "$RUNNER_TEMP/drx-restore-counts.txt"
-          grep -qx 'v3_bindings=0' "$RUNNER_TEMP/drx-restore-counts.txt"
-          grep -qx 'published_rules=0' "$RUNNER_TEMP/drx-restore-counts.txt"
+          test -s "$RUNNER_TEMP/drx-restore-manifest.txt"
+          diff -u "$RUNNER_TEMP/drx-source-manifest.txt" "$RUNNER_TEMP/drx-restore-manifest.txt"
 
           supabase stop --no-backup
 
@@ -286,24 +326,37 @@ jobs:
           for line in Path(__import__('os').environ['RUNNER_TEMP'] + '/drx-phase1-backup/sha256.txt').read_text().splitlines():
               digest, filename=line.split(None,1)
               hashes[Path(filename).name]=digest
-          counts={}
-          for line in Path(__import__('os').environ['RUNNER_TEMP'] + '/drx-restore-counts.txt').read_text().splitlines():
-              k,v=line.split('=',1)
-              counts[k]=int(v)
+          def manifest(path):
+              out={}
+              for line in Path(path).read_text().splitlines():
+                  key,value=line.split('=',1)
+                  out[key]=int(value) if key.endswith('_count') else value
+              return out
+          source_manifest=manifest(__import__('os').environ['RUNNER_TEMP'] + '/drx-source-manifest.txt')
+          restored_manifest=manifest(__import__('os').environ['RUNNER_TEMP'] + '/drx-restore-manifest.txt')
           evidence={
-              "schemaVersion":"drx-phase1-backup-restore-evidence-v1",
+              "schemaVersion":"drx-phase1-backup-restore-evidence-v2",
               "status":"PASS",
               "credentialAliasResolved":True,
+              "credentialMode":"db_url",
               "backupCreated":True,
               "backupSha256":hashes,
               "restoreExecuted":True,
               "restoreVerified":True,
-              "restoredCounts":counts,
+              "sourceRestoreParity":source_manifest==restored_manifest,
+              "sourceManifest":source_manifest,
+              "restoredManifest":restored_manifest,
               "backupRetention":"runner_ephemeral_only_no_database_payload_uploaded",
               "publicationAllowed":False
           }
           Path('drx-phase1-backup-restore-evidence.json').write_text(json.dumps(evidence,indent=2)+"\n")
           PY
+
+      - name: Show restore evidence summary
+        if: steps.credential.outputs.available == 'true' && success()
+        shell: bash
+        run: |
+          cat drx-phase1-backup-restore-evidence.json
 
       - name: Upload evidence only
         if: always()
