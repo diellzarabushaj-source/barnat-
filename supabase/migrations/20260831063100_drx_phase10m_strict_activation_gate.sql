@@ -8,6 +8,7 @@ declare
   v_expected integer;
   v_reason text;
   v_status jsonb;
+  v_runtime_ready boolean := false;
   v_current drx_runtime.phase10_cutover_control_v1%rowtype;
   v_from_version integer;
 begin
@@ -48,6 +49,17 @@ begin
   end if;
 
   v_status := public.drx_phase10_status_v1();
+
+  select coalesce(e.passed,false)
+  into v_runtime_ready
+  from drx_runtime.phase10_gate_evidence_v1 e
+  where e.gate_key='STRICT_RUNTIME_FAIL_CLOSED'
+  order by e.recorded_at desc,e.evidence_id desc
+  limit 1;
+
+  if coalesce(v_runtime_ready,false) is not true then
+    raise exception 'Strict activation blocked: fail-closed strict runtime evidence is missing';
+  end if;
 
   if coalesce((v_status->>'phase9Closed')::boolean,false) is not true
      or coalesce((v_status->>'phase10AllowedByPhase9')::boolean,false) is not true
