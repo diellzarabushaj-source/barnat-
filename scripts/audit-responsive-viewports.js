@@ -123,7 +123,16 @@ function startServer() {
  * kanë rëndësi për një përdorues, dhe do ta ndotnin numërimin. */
 function collect() {
   const de = document.documentElement;
-  const visible = el => el.offsetParent !== null && el.getBoundingClientRect().width > 0;
+  const visible = el => {
+    if (el.offsetParent === null) return false;
+    const rect = el.getBoundingClientRect();
+    return rect.width > 0
+      && rect.height > 0
+      && rect.right > 0
+      && rect.bottom > 0
+      && rect.left < innerWidth
+      && rect.top < innerHeight;
+  };
   const nodes = [...document.querySelectorAll('body *')].filter(visible);
 
   const tinyText = [];
