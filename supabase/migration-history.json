@@ -511,16 +511,16 @@
       "version": "20260830210058"
     },
     {
-      "version": "20260830210940",
-      "name": "drx_phase8x_clinical_reference_finality_guard"
+      "name": "drx_phase8x_clinical_reference_finality_guard",
+      "version": "20260830210940"
     },
     {
-      "version": "20260830211016",
-      "name": "drx_phase8y_clinical_provenance_refresh"
+      "name": "drx_phase8y_clinical_provenance_refresh",
+      "version": "20260830211016"
     },
     {
-      "version": "20260830211052",
-      "name": "drx_phase8x_provenance_scope_repair"
+      "name": "drx_phase8x_provenance_scope_repair",
+      "version": "20260830211052"
     },
     {
       "name": "drx_phase8z_pilot_publication_scaffolding",
@@ -587,20 +587,20 @@
       "version": "20260830231548"
     },
     {
-      "version": "20260831045759",
-      "name": "drx_phase10a_cutover_control_plane"
+      "name": "drx_phase10a_cutover_control_plane",
+      "version": "20260831045759"
     },
     {
-      "version": "20260831050214",
-      "name": "drx_phase10d_reconcile_parallel_control_plane"
+      "name": "drx_phase10d_reconcile_parallel_control_plane",
+      "version": "20260831050214"
     },
     {
-      "version": "20260831050641",
-      "name": "drx_phase10e_security_and_legacy_write_evidence"
+      "name": "drx_phase10e_security_and_legacy_write_evidence",
+      "version": "20260831050641"
     },
     {
-      "version": "20260831051258",
-      "name": "drx_phase10f_controlled_rollback_drill"
+      "name": "drx_phase10f_controlled_rollback_drill",
+      "version": "20260831051258"
     },
     {
       "name": "drx_phase10g_stable_traffic_bucket",
@@ -619,12 +619,16 @@
       "version": "20260831053832"
     },
     {
-      "version": "20260831060712",
-      "name": "drx_phase10k_restore_test_evidence"
+      "name": "drx_phase10k_restore_test_evidence",
+      "version": "20260831060712"
     },
     {
-      "version": "20260831061925",
-      "name": "drx_phase10l_legacy_retirement_preflight_rpc"
+      "name": "drx_phase10l_legacy_retirement_preflight_rpc",
+      "version": "20260831061925"
+    },
+    {
+      "name": "drx_phase10m_strict_activation_gate",
+      "version": "20260831062943"
     }
   ]
 }
