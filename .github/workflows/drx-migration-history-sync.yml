@@ -20,6 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
+      SUPABASE_PROJECT_REF: "ftuchtmolddhhsdcwnqe"
+      SUPABASE_POOLER_REGION: "eu-west-2"
       DB_URL_1: ${{ secrets.SUPABASE_DB_URL }}
       DB_URL_2: ${{ secrets.MEDINDEX_SUPABASE_DB_URL }}
       DB_URL_3: ${{ secrets.SUPABASE_DATABASE_URL }}
@@ -40,6 +42,16 @@ jobs:
       DB_URL_18: ${{ secrets.POSTGRES_URL_NON_POOLING }}
       DB_URL_19: ${{ secrets.POSTGRES_PRISMA_URL }}
       DB_URL_20: ${{ secrets.POSTGRES_CONNECTION_URL }}
+      DB_PASSWORD_1: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      DB_PASSWORD_2: ${{ secrets.MEDINDEX_SUPABASE_DB_PASSWORD }}
+      DB_PASSWORD_3: ${{ secrets.SUPABASE_DATABASE_PASSWORD }}
+      DB_PASSWORD_4: ${{ secrets.DATABASE_PASSWORD }}
+      DB_PASSWORD_5: ${{ secrets.POSTGRES_PASSWORD }}
+      DB_PASSWORD_6: ${{ secrets.DB_PASSWORD }}
+      DB_PASSWORD_7: ${{ secrets.SUPABASE_PASSWORD }}
+      DB_PASSWORD_8: ${{ secrets.MEDINDEX_SUPABASE_PASSWORD }}
+      DB_PASSWORD_9: ${{ secrets.POSTGRES_DB_PASSWORD }}
+      DB_PASSWORD_10: ${{ secrets.DATABASE_DB_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v4
@@ -59,10 +71,24 @@ jobs:
               *) ;;
             esac
           done
+
           if [ -z "$resolved" ]; then
-            echo "::error::No PostgreSQL connection URL alias is configured; migration history sync is fail-closed."
+            for n in {1..10}; do
+              key="DB_PASSWORD_${n}"
+              value="${!key:-}"
+              if [ -n "$value" ]; then
+                encoded="$(PASSWORD_VALUE="$value" python3 -c 'import os,urllib.parse; print(urllib.parse.quote(os.environ["PASSWORD_VALUE"], safe=""))')"
+                resolved="postgresql://postgres.${SUPABASE_PROJECT_REF}:${encoded}@aws-0-${SUPABASE_POOLER_REGION}.pooler.supabase.com:5432/postgres?sslmode=require"
+                break
+              fi
+            done
+          fi
+
+          if [ -z "$resolved" ]; then
+            echo "::error::No PostgreSQL URL or database-password alias is configured; migration history sync is fail-closed."
             exit 1
           fi
+
           echo "::add-mask::$resolved"
           {
             echo 'SUPABASE_DB_URL<<DRXEOF'
