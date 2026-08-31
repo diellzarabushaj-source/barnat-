@@ -24,6 +24,7 @@ const cb = read('supabase/migrations/20260831171019_drx_phase11cb_product_identi
 const cc = read('supabase/migrations/20260831171501_drx_phase11cc_gated_draft_product_shell_materializer.sql');
 const cd = read('supabase/migrations/20260831173642_drx_phase11cd_safe_postreview_preparation_v2.sql');
 const ce = read('supabase/migrations/20260831173815_drx_phase11ce_postreview_workbench_v5.sql');
+const cf = read('supabase/migrations/20260831174238_drx_phase11cf_prepared_rule_validation_and_review.sql');
 const backend = read('lib/phase11-review.js');
 const api = read('api/clinical-editor.js');
 const vercel = read('vercel.json');
@@ -130,6 +131,18 @@ assert.match(ce, /postReviewPreparation/);
 assert.match(ce, /productShellDraft/);
 assert.match(ce, /product_shell_draft_readiness_v1/);
 
+assert.match(cf, /phase11_prepared_rule_review_queue_v1/);
+assert.match(cf, /source_regimen_applicable_safety_v2/);
+assert.match(cf, /drx_phase11_validate_prepared_rule_v1/);
+assert.match(cf, /drx_phase11_review_rule_target_v1/);
+assert.match(cf, /RULE_TARGET_REVIEW_ATTESTED/);
+assert.match(cf, /drx_phase11_verify_prepared_rule_v1/);
+assert.match(cf, /PREPARED_RULE_REVIEW_ATTESTED/);
+assert.match(cf, /ready_for_structural_validation/);
+assert.match(cf, /ready_for_rule_review/);
+assert.match(cf, /auto_verify_allowed/);
+assert.match(cf, /auto_publish_allowed/);
+
 assert.match(backend, /AdminAccess\.requireAdminSession/);
 assert.match(backend, /\['GET','POST'\]\.includes\(req\.method\)/);
 assert.match(backend, /reviewer = clean\(admin\?\.email\)/);
@@ -190,7 +203,7 @@ assert.match(ui, /data-p11-postreview/);
 assert.doesNotMatch(ui, /method\s*:\s*['"]PUT['"]/i);
 assert.doesNotMatch(ui, /method\s*:\s*['"]PATCH['"]/i);
 
-for (const sql of [bp,bq,br,bs,bt,bu,bv,bw,bx,by,bz,ca,cb,cc,cd,ce]) {
+for (const sql of [bp,bq,br,bs,bt,bu,bv,bw,bx,by,bz,ca,cb,cc,cd,ce,cf]) {
   assert.doesNotMatch(sql, /auto_publish_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_apply_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_resolve_allowed\s*=\s*true/i);
