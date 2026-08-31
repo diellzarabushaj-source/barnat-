@@ -79,10 +79,10 @@ assert.match(search, /registryHandler\.authorized/);
 assert.match(search, /qualityStatus/);
 assert.match(search, /icdBaseHandler/);
 assert.match(search, /icdAdvancedHandler/);
-assert.match(search, /view === 'icd'/);
+assert.match(search, /route === 'icd'/);
 const vercel = JSON.parse(read('vercel.json'));
 assert.ok(
-  vercel.rewrites.some(item => item.source === '/api/icd' && item.destination === '/api/drug-search?view=icd'),
+  vercel.rewrites.some(item => item.source === '/api/icd' && item.destination === '/api/drug-search?_route=icd'),
   'ICD compatibility rewrite must target the consolidated drug-search function'
 );
 
