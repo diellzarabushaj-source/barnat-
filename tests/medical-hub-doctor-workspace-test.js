@@ -89,9 +89,9 @@ assert.match(api, /authorized\(req\)/);
 assert.match(api, /source:'sanity-published-index'/);
 assert.match(api, /source:'sanity-published-search'/);
 assert.match(api, /medicalHubImageHandler/);
-assert.match(api, /requestedMode === 'image'/);
+assert.match(api, /requestedRoute === 'image'/);
 assert.ok(
-  vercel.rewrites.some(item => item.source === '/api/medical-hub-image' && item.destination === '/api/medical-hub?mode=image'),
+  vercel.rewrites.some(item => item.source === '/api/medical-hub-image' && item.destination === '/api/medical-hub?_route=image'),
   'Medical Hub image compatibility rewrite is missing'
 );
 
