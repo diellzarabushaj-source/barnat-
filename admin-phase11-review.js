@@ -957,14 +957,8 @@
       });
       state.loaded=false;
       await loadWorkbench(true);
-      const preflightBatch=button.dataset.p11PreflightBatch;
-      if(preflightBatch){
-        await loadPreflight();
-        openEvidenceBatch(preflightBatch);
-      }else{
-        const batchKey=button.dataset.p11Batch||state.currentClinicalKey;
-        if(batchKey)await openClinical(batchKey);
-      }
+      const batchKey=button.dataset.p11Batch||state.currentClinicalKey;
+      if(batchKey)await openClinical(batchKey);
     }catch(error){ alert(error.message); }
     finally{ button.disabled=false; }
   }
@@ -1011,8 +1005,14 @@
       await postAction(body);
       state.loaded=false;
       await loadWorkbench(true);
-      const batchKey=button.dataset.p11Batch||state.currentClinicalKey;
-      if(batchKey)await openClinical(batchKey);
+      const preflightBatch=button.dataset.p11PreflightBatch;
+      if(preflightBatch){
+        await loadPreflight();
+        openEvidenceBatch(preflightBatch);
+      }else{
+        const batchKey=button.dataset.p11Batch||state.currentClinicalKey;
+        if(batchKey)await openClinical(batchKey);
+      }
     }catch(error){
       alert(error.message);
     }finally{button.disabled=false;}
