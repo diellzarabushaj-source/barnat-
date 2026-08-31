@@ -13,6 +13,7 @@ const css = read('medical-hub-v2.css');
 const api = read('api/medical-hub.js');
 const imageApi = read('api/medical-hub-image.js');
 const imageProxy = require('../api/medical-hub-image.js');
+const icdRuntime = read('icd-v2.js');
 
 assert.match(html, /data-drx-app="medical-hub-v2"/);
 const cssAssetVersion = html.match(/medical-hub-v2\.css\?v=(\d+)/)?.[1] || '';
@@ -71,6 +72,10 @@ assert.match(js, /Sanity · Backend/);
 assert.doesNotMatch(js, /window\.MedIndexSanity/);
 assert.doesNotMatch(js, /ensureSanity\(/);
 assert.doesNotThrow(() => new Function(js));
+assert.match(icdRuntime, /async function openHashCode\(code\)/);
+assert.match(icdRuntime, /const opened = hash \? await openHashCode\(hash\) : false/);
+assert.match(icdRuntime, /kodi i zgjedhur/);
+assert.doesNotThrow(() => new Function(icdRuntime));
 
 assert.match(api, /const INDEX_QUERY = `/);
 assert.match(api, /const DETAIL_QUERY = `/);
