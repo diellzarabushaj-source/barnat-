@@ -16,14 +16,14 @@ assert.match(html, /class="drx-unified-sidebar"/);
 assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
 assert.match(html, /sistemi-v2\.css\?v=1/);
 assert.match(html, /sistemi-v2\.js\?v=1/);
-assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v5/);
+assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/);
 
 const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)]
   .map(match => match[1]);
 const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)]
   .map(match => match[1]);
 
-assert.deepEqual(styles, ['/sistemi-v2.css?v=1','/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v5']);
+assert.deepEqual(styles, ['/sistemi-v2.css?v=1','/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6']);
 assert.deepEqual(scripts, ['/sistemi-v2.js?v=1']);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|system-health\.js|media-library\.js|admin-entry\.js/);
 
