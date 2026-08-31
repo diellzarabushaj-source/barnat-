@@ -31,6 +31,12 @@ on:
       - "supabase/drx-phase10b-controlled-traffic-plumbing-rollback.sql"
       - "lib/dose-v3-cutover-control.js"
       - "tests/drx-phase10-controlled-traffic-test.js"
+      - "lib/pediatric-v3-runtime.js"
+      - "lib/pediatric-dosage-handler-core.js"
+      - "dozologjia.html"
+      - "dozologjia-v2.js"
+      - "tests/drx-phase10-pediatric-v3-calculator-test.js"
+      - "scripts/drx-phase10-pediatric-v3-live.js"
       - "supabase/drx-phase10a-cutover-control-and-legacy-write-audit-rollback.sql"
       - "scripts/drx-phase10-status.js"
       - "scripts/drx-phase10-controlled-canary.js"
@@ -85,8 +91,12 @@ jobs:
         run: node tests/drx-dose-golden-cases-test.js
       - name: Phase 10 controlled canary contract
         run: node tests/drx-phase10-controlled-canary-test.js
+      - name: Phase 10 pediatric V3 calculator contract
+        run: node tests/drx-phase10-pediatric-v3-calculator-test.js
       - name: Live Phase 10 controlled canary
         run: node scripts/drx-phase10-controlled-canary.js
+      - name: Live Phase 10 pediatric V3 calculator
+        run: node scripts/drx-phase10-pediatric-v3-live.js
       - name: Live Phase 10 status
         run: node scripts/drx-phase10-status.js
       - name: Upload Phase 10A evidence
@@ -97,5 +107,6 @@ jobs:
             drx-phase10-status-evidence.json
             drx-phase10-consumer-audit.json
             drx-phase10-controlled-canary-evidence.json
+            drx-phase10-pediatric-v3-live-evidence.json
           if-no-files-found: error
           retention-days: 30
