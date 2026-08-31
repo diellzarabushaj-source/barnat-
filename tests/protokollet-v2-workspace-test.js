@@ -63,7 +63,7 @@ assert.match(css, /prefers-reduced-motion:reduce/);
 
 assert.match(js, /Protokollet V2 — consolidated runtime/);
 assert.match(js, /window\.DRxProtocolShell/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/);
+assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/);
 assert.match(js, /medindex-brand-runtime\.js\?v=drx-brand-v5/);
 assert.match(js, /async function ensureAuth\(\)/);
 assert.match(js, /credentials:'same-origin'/);
