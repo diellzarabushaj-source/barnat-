@@ -432,11 +432,12 @@
 
   function sourceRxMarkup(item) {
     const steps = (item?.steps || []).filter(step => normalize(step?.priority) === 'rx-source');
+    const title = clean(item?.sourceRxTitle || 'RECETA / SKEMA E PËRSHKRIMIT');
     return `
       <article class="ck-book-rx">
         <div class="ck-book-rx-head">
           <span>Rx</span>
-          <strong>TRAJTIM KONSERVATIV</strong>
+          <strong>${esc(title)}</strong>
         </div>
         <div class="ck-book-rx-body">
           ${steps.map(sourceRxStepMarkup).join('')}
