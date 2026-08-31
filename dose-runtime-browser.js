@@ -263,12 +263,16 @@
 
   function clearAdjustmentFlag(rule, domain) {
     const next = { ...rule };
+    const removeKey = domain === 'renal' ? 'renal_function' : 'hepatic_function';
     if (domain === 'renal') {
       next.renalAdjustmentRequired = false;
       next.renal_adjustment_required = false;
     } else {
       next.hepaticAdjustmentRequired = false;
       next.hepatic_adjustment_required = false;
+    }
+    for (const key of ['requiredInputs','required_inputs']) {
+      if (Array.isArray(next[key])) next[key] = next[key].filter(item => clean(item) !== removeKey);
     }
     return next;
   }
