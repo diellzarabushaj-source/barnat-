@@ -1,0 +1,1 @@
+Temporary CI trigger for final full-gate verification at stable 224/224/224 parity after Dozologjia contract and Medical Hub search-control fixes.
