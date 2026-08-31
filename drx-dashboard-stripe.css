@@ -2291,3 +2291,101 @@ html.drx-unified-sidebar .sidebar-backdrop[hidden]{display:none!important}
     transition:none!important;
   }
 }
+
+
+/* DRx clinical workspace system v6 — Urgjencat reference
+   Common authenticated pages share one type scale and one control rhythm.
+   Page-specific CSS may own clinical content, but not redefine the global
+   page heading, subtitle, breadcrumb or base form typography. */
+html.drx-unified-sidebar{
+  --drx-type-body:14px;
+  --drx-type-body-weight:300;
+  --drx-type-body-line:1.45;
+  --drx-type-page-title:32px;
+  --drx-type-page-title-weight:300;
+  --drx-type-page-title-line:1.1;
+  --drx-type-page-title-track:-.64px;
+  --drx-type-subtitle:14px;
+  --drx-type-subtitle-line:1.55;
+  --drx-type-kicker:11px;
+  --drx-type-crumb:12px;
+  --drx-type-control:11.5px;
+  --drx-type-control-weight:400;
+  --drx-type-meta:10.5px;
+}
+html.drx-unified-sidebar body{
+  color:var(--drx-shell-ink,#0d253d)!important;
+  font-family:Inter,"SF Pro Display",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  font-size:var(--drx-type-body)!important;
+  font-weight:var(--drx-type-body-weight)!important;
+  line-height:var(--drx-type-body-line)!important;
+  font-feature-settings:"ss01"!important;
+  -webkit-font-smoothing:antialiased!important;
+  text-rendering:optimizeLegibility!important;
+}
+html.drx-unified-sidebar .page-heading{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:28px!important;
+  margin-bottom:28px!important;
+}
+html.drx-unified-sidebar .page-heading .eyebrow,
+html.drx-unified-sidebar .eyebrow{
+  margin:0 0 6px!important;
+  color:var(--drx-shell-muted,#64748d)!important;
+  font-size:var(--drx-type-kicker)!important;
+  font-weight:400!important;
+  line-height:1.35!important;
+  letter-spacing:.1px!important;
+  text-transform:uppercase!important;
+}
+html.drx-unified-sidebar .page-heading h1{
+  margin:0!important;
+  color:var(--drx-shell-ink,#0d253d)!important;
+  font-size:var(--drx-type-page-title)!important;
+  font-weight:var(--drx-type-page-title-weight)!important;
+  line-height:var(--drx-type-page-title-line)!important;
+  letter-spacing:var(--drx-type-page-title-track)!important;
+}
+html.drx-unified-sidebar .page-subtitle{
+  max-width:780px!important;
+  margin:7px 0 0!important;
+  color:var(--drx-shell-muted,#64748d)!important;
+  font-size:var(--drx-type-subtitle)!important;
+  font-weight:300!important;
+  line-height:var(--drx-type-subtitle-line)!important;
+}
+html.drx-unified-sidebar .breadcrumbs{
+  color:var(--drx-shell-muted,#64748d)!important;
+  font-size:var(--drx-type-crumb)!important;
+  font-weight:300!important;
+}
+html.drx-unified-sidebar .breadcrumbs strong{
+  color:#394b5f!important;
+  font-weight:400!important;
+}
+html.drx-unified-sidebar .sync-pill{
+  color:var(--drx-shell-muted,#64748d)!important;
+  font-size:11px!important;
+  font-weight:300!important;
+}
+html.drx-unified-sidebar :is(input,select,textarea,button){
+  font-family:inherit!important;
+}
+html.drx-unified-sidebar :is(input,select,textarea):focus-visible{
+  outline:0!important;
+  border-color:var(--drx-shell-accent,#533afd)!important;
+  box-shadow:0 0 0 3px rgba(83,58,253,.12)!important;
+}
+@media(max-width:760px){
+  html.drx-unified-sidebar{
+    --drx-type-page-title:25px;
+    --drx-type-page-title-track:-.25px;
+    --drx-type-subtitle:12px;
+  }
+  html.drx-unified-sidebar .page-heading{
+    display:block!important;
+    margin-bottom:14px!important;
+  }
+}
