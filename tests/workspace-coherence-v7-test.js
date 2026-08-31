@@ -69,12 +69,26 @@ assert.match(stripe, /DRx clinical workspace system v6 — Urgjencat reference/)
 assert.match(stripe, /--drx-type-page-title:32px/);
 assert.match(stripe, /--drx-type-subtitle:14px/);
 
+const canonicalWorkspaceAssets = [
+  '/registry-v2.css','/registry-v2-dose-calculator.css','/classification-v2.css','/icd-v2.css',
+  '/dozologjia-v2.css','/protokollet-v2.css','/urgjencat-v2.css','/recetat-v2.css',
+  '/analizat-v2.css','/medical-hub-v2.css','/sistemi-v2.css','/drx-dashboard-stripe.css',
+  '/dose-core.js','/dose-runtime-browser.js','/registry-v2.js','/registry-v2-dose-calculator.js',
+  '/classification-data.js','/classification-v2.js','/icd-v2.js','/phase9-personal-entities-client.js',
+  '/dozologjia-v2.js','/protokollet-v2.js','/urgjencat-v2.js','/recetat-v2.js',
+  '/analizat-v2.js','/medical-hub-v2.js','/sistemi-v2.js','/sidebar-taxonomy-v3.js',
+  '/medindex-brand-runtime.js','/sanity-clinical-client.js',
+];
+
 const worker = read('sw.js');
 assert.match(worker, /workspace-cache-cutover-v7/);
 assert.match(worker, /VERSION = 'workspace-coherence-v7'/);
 assert.match(worker, /CACHE_EPOCH = '20260901-shell-v6-sidebar-v4'/);
 for (const [htmlFile] of workspaces) {
   assert.ok(worker.includes(`'/${htmlFile}'`), `sw.js: ${htmlFile} is missing from the clinical shell`);
+}
+for (const asset of canonicalWorkspaceAssets) {
+  assert.ok(worker.includes(`'${asset}'`) || worker.includes(`"${asset}"`), `sw.js: ${asset} is missing from the canonical workspace shell`);
 }
 
 const builder = read('scripts/build-static-runtime.js');
