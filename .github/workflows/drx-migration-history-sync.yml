@@ -140,7 +140,7 @@ jobs:
 
           const local=fs.readdirSync('supabase/migrations')
             .map(file=>{
-              const m=file.match(/^(\\d{14})_(.+)\\.sql$/);
+              const m=file.match(/^(\d{14})_(.+)\.sql$/);
               return m?{version:m[1],name:m[2],file}:null;
             })
             .filter(Boolean)
