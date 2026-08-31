@@ -42,7 +42,8 @@ assert.match(source,/status\.restoreTestEvidencePass===true/);
 assert.match(source,/status\.effectiveParityCurrent===true/);
 assert.match(source,/status\.legacyWritesZeroEvidencePass===true/);
 assert.match(source,/status\.soak14DaysPass===true/);
-assert.match(source,/status\.finalGatePass===true/);
+assert.doesNotMatch(source,/status\.finalGatePass===true/,
+  'retirement cannot depend on finalGatePass because finalGatePass requires LEGACY_CONSUMERS_ZERO');
 assert.match(source,/status\.mode==='STRICT'/);
 assert.match(source,/status\.strictArmed===true/);
 assert.match(source,/retirementAllowedNow/);
