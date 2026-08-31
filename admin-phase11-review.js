@@ -6,7 +6,7 @@
   const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[c]));
-  const state={loaded:false,loading:false,payload:null,currentClinicalKey:'',preflight:null};
+  const state={loaded:false,loading:false,payload:null,currentClinicalKey:'',preflight:null,indications:null};
 
   async function request(url,options={}){
     const response=await fetch(url,{
@@ -541,6 +541,46 @@
     }
   }
 
+
+  function openIndicationSourceBatch(sourceBatchKey){
+    const batches=Array.isArray(state.indications?.sourceBatches)?state.indications.sourceBatches:[];
+    const batch=batches.find(row=>row.sourceBatchKey===sourceBatchKey);
+    if(!batch)return;
+    const indications=Array.isArray(batch.indications)?batch.indications:[];
+    const sourceLink=batch.sourceUrl?`<a href="${esc(batch.sourceUrl)}" target="_blank" rel="noopener noreferrer">Hap exact SmPC §4.1 ↗</a>`:'Burimi nuk ka URL.';
+    openDialog(
+      `Indications · ${batch.authority||batch.sourceTier||'Source'}`,
+      `<div class="mi-editor-section-title"><div><span>${esc(batch.authority||batch.sourceTier||'Source')}</span><small>${esc(batch.documentVersion||batch.documentDate||'—')} · ${sourceLink}</small></div></div>
+       <div class="mi-mini-stats">
+         <div><span>Indications</span><strong>${esc(batch.indicationCount??indications.length)}</strong></div>
+         <div><span>Regimens</span><strong>${esc(batch.regimenCount??0)}</strong></div>
+         <div><span>Manual ICD search</span><strong>${esc(batch.manualSearchIndications??0)}</strong></div>
+         <div><span>Technical blocked</span><strong>${esc(batch.integrityBlockedIndications??0)}</strong></div>
+       </div>
+       <table class="mi-table"><thead><tr><th>Indication</th><th>ICD suggestion</th><th>Statusi</th><th>Blockers</th><th>Vendimi</th></tr></thead><tbody>
+       ${indications.length?indications.map(row=>{
+         const first=Array.isArray(row.candidates)?row.candidates[0]:null;
+         const verified=row.editorialStatus==='published'&&row.icdVerificationStatus==='verified';
+         const status=`${row.editorialStatus||'—'} / ${row.icdVerificationStatus||'—'}`;
+         const action=verified
+           ?'<span class="mi-badge is-verified">VERIFIED</span>'
+           :`<button type="button" class="mi-row-btn"
+                data-p11-indication-id="${esc(row.indicationId)}"
+                data-p11-indication-name="${esc(row.canonicalName||'')}"
+                data-p11-default-icd="${esc(first?.code||'')}"
+                data-p11-indication-source-batch="${esc(batch.sourceBatchKey)}">Review</button>`;
+         return `<tr>
+           <td><strong>${esc(row.canonicalName||'—')}</strong><small>${esc(row.indicationKey||'')} · ${esc(row.regimenCount??0)} regimen</small></td>
+           <td>${esc(first?.code||'—')}<small>${esc(first?.titleEn||'')} ${row.manualSearchRequired?'· manual search':''}</small></td>
+           <td><span class="mi-badge ${verified?'is-verified':'is-in_review'}">${esc(status)}</span></td>
+           <td>${esc(compactList(row.technicalBlockers,3))}</td>
+           <td>${action}</td>
+         </tr>`;
+       }).join(''):'<tr><td colspan="5" class="is-empty">Nuk ka indications në këtë source batch.</td></tr>'}
+       </tbody></table>`
+    );
+  }
+
   async function loadIndications(){
     const box=$('p11IndicationSummary');
     const button=$('p11LoadIndications');
@@ -551,17 +591,57 @@
     try{
       const response=await getJson(`${API}?indications=1`);
       const data=response.payload||{};
+      state.indications=data;
       const summary=data.summary||{};
       const quality=data.quality||{};
-      const items=Array.isArray(data.items)?data.items:[];
+      const batchSummary=data.sourceBatchSummary||{};
+      const sourceBatches=Array.isArray(data.sourceBatches)?data.sourceBatches:[];
+      const unusedSummary=data.unusedSummary||{};
+      const unusedItems=Array.isArray(data.unusedItems)?data.unusedItems:[];
       box.className='mi-table-wrap';
-      box.innerHTML=`<div class="mi-mini-stats"><div><span>Gjithsej</span><strong>${esc(summary.total||0)}</strong></div><div><span>High/medium</span><strong>${esc((quality.high_quality||0)+(quality.medium_quality||0))}</strong></div><div><span>Manual search</span><strong>${esc(quality.manual_search_required||0)}</strong></div><div><span>ICD verified</span><strong>${esc(summary.icdVerified||0)}</strong></div></div>
-      <table class="mi-table"><thead><tr><th>Indikacioni</th><th>Best ICD match</th><th>Score</th><th>Quality</th><th></th></tr></thead><tbody>
-      ${items.slice(0,100).map(item=>{
-        const first=Array.isArray(item.candidates)?item.candidates[0]:null;
-        return `<tr><td><strong>${esc(item.canonicalName||'—')}</strong><small>${esc(item.indicationKey||'')}</small></td><td>${esc(first?.code||'—')}<small>${esc(first?.titleEn||'')}</small></td><td>${esc(item.bestMatchScore??'—')}</td><td><span class="mi-badge is-in_review">${esc(item.suggestionQuality||'NO_CANDIDATE')}</span><small>${item.manualSearchRequired?'Manual search':''}</small></td><td><button type="button" class="mi-row-btn" data-p11-indication-id="${esc(item.indicationId)}" data-p11-indication-name="${esc(item.canonicalName||'')}" data-p11-default-icd="${esc(first?.code||'')}">Review</button></td></tr>`;
-      }).join('')}
-      </tbody></table>`;
+      box.innerHTML=`
+        <div class="mi-mini-stats">
+          <div><span>Gjithsej</span><strong>${esc(summary.total||0)}</strong></div>
+          <div><span>Active indications</span><strong>${esc(batchSummary.active_indications??0)}</strong></div>
+          <div><span>Exact §4.1 batches</span><strong>${esc(batchSummary.source_batches??sourceBatches.length)}</strong></div>
+          <div><span>Unused concepts</span><strong>${esc(unusedSummary.total??unusedItems.length)}</strong></div>
+        </div>
+        <div class="mi-editor-section-title"><div><span>Active indication source batches</span><small>I njëjti current SmPC snapshot si regimen-i, por section 4.1 për indication semantics. Publish mbetet individual.</small></div></div>
+        <table class="mi-table"><thead><tr><th>Exact §4.1 source</th><th>Version</th><th>Indications</th><th>Regimens</th><th>Manual</th><th>Pending</th><th></th></tr></thead><tbody>
+          ${sourceBatches.length?sourceBatches.map(row=>`<tr>
+            <td><strong>${esc(row.authority||row.sourceTier||'SOURCE')}</strong><small>${row.sourceUrl?`<a href="${esc(row.sourceUrl)}" target="_blank" rel="noopener noreferrer">SmPC §4.1 ↗</a>`:''}</small></td>
+            <td>${esc(row.documentVersion||row.documentDate||'—')}</td>
+            <td><strong>${esc(row.indicationCount??0)}</strong><small>${esc(row.integrityBlockedIndications??0)} technical blocked</small></td>
+            <td>${esc(row.regimenCount??0)}</td>
+            <td>${esc(row.manualSearchIndications??0)}</td>
+            <td><span class="mi-badge is-in_review">${esc(row.pendingIndications??0)}</span></td>
+            <td><button type="button" class="mi-row-btn" data-p11-indication-batch-open="${esc(row.sourceBatchKey)}">Review source</button></td>
+          </tr>`).join(''):'<tr><td colspan="7" class="is-empty">Nuk ka active indication source batches.</td></tr>'}
+        </tbody></table>
+
+        <div class="mi-editor-section-title"><div><span>Unused indication concepts</span><small>Nuk lidhen me 69 source regimen-et aktuale; mbahen veç që të mos përzihen me active dosing review.</small></div></div>
+        <div class="mi-mini-stats">
+          <div><span>Unused</span><strong>${esc(unusedSummary.total??unusedItems.length)}</strong></div>
+          <div><span>Manual search</span><strong>${esc(unusedSummary.manualSearchRequired??0)}</strong></div>
+          <div><span>Technical blocked</span><strong>${esc(unusedSummary.integrityBlocked??0)}</strong></div>
+          <div><span>High / medium</span><strong>${esc((quality.high_quality||0)+(quality.medium_quality||0))}</strong></div>
+        </div>
+        <table class="mi-table"><thead><tr><th>Indication</th><th>Best ICD</th><th>Quality</th><th>Blockers</th><th></th></tr></thead><tbody>
+          ${unusedItems.length?unusedItems.map(item=>{
+            const first=Array.isArray(item.candidates)?item.candidates[0]:null;
+            const verified=item.editorialStatus==='published'&&item.icdVerificationStatus==='verified';
+            const action=verified
+              ?'<span class="mi-badge is-verified">VERIFIED</span>'
+              :`<button type="button" class="mi-row-btn" data-p11-indication-id="${esc(item.indicationId)}" data-p11-indication-name="${esc(item.canonicalName||'')}" data-p11-default-icd="${esc(first?.code||'')}">Review</button>`;
+            return `<tr>
+              <td><strong>${esc(item.canonicalName||'—')}</strong><small>${esc(item.indicationKey||'')} · ${esc(item.editorialStatus||'—')}</small></td>
+              <td>${esc(first?.code||'—')}<small>${esc(first?.titleEn||'')}</small></td>
+              <td><span class="mi-badge is-in_review">${esc(item.suggestionQuality||'NO_CANDIDATE')}</span><small>${item.manualSearchRequired?'Manual search':''}</small></td>
+              <td>${esc(compactList(item.technicalBlockers,3))}</td>
+              <td>${action}</td>
+            </tr>`;
+          }).join(''):'<tr><td colspan="5" class="is-empty">Nuk ka unused indication concepts.</td></tr>'}
+        </tbody></table>`;
     }catch(error){
       box.className='mi-empty-state';
       box.textContent=error.message;
@@ -569,7 +649,6 @@
       if(button)button.disabled=false;
     }
   }
-
 
   async function loadAdjustments(){
     const box=$('p11AdjustmentSummary');
@@ -1109,6 +1188,8 @@
       state.loaded=false;
       await loadWorkbench(true);
       await loadIndications();
+      const sourceBatch=button.dataset.p11IndicationSourceBatch;
+      if(sourceBatch)openIndicationSourceBatch(sourceBatch);
     }catch(error){
       alert(error.message);
     }finally{button.disabled=false;}
@@ -1144,6 +1225,9 @@
 
     const postReview=event.target.closest('[data-p11-postreview]');
     if(postReview)void handlePostReview(postReview);
+
+    const indicationBatch=event.target.closest('[data-p11-indication-batch-open]');
+    if(indicationBatch)openIndicationSourceBatch(indicationBatch.dataset.p11IndicationBatchOpen);
 
     const indication=event.target.closest('[data-p11-indication-id]');
     if(indication)void handleIndicationReview(indication);
