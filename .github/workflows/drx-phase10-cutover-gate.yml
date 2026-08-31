@@ -11,6 +11,9 @@ on:
       - "supabase/migrations/20260830231548_drx_phase10c_golden_and_parity_evidence.sql"
       - "supabase/migrations/20260831045759_drx_phase10a_cutover_control_plane.sql"
       - "supabase/migrations/20260831050214_drx_phase10d_reconcile_parallel_control_plane.sql"
+      - "supabase/migrations/20260831050641_drx_phase10e_security_and_legacy_write_evidence.sql"
+      - "supabase/drx-phase10e-security-and-legacy-write-evidence-rollback.sql"
+      - "tests/drx-phase10-security-write-evidence-test.js"
       - "supabase/drx-phase10a-parallel-cutover-control-plane-rollback.sql"
       - "supabase/drx-phase10d-reconcile-parallel-control-plane-rollback.sql"
       - "tests/drx-phase10-control-plane-reconciliation-test.js"
@@ -51,6 +54,8 @@ jobs:
         run: node tests/drx-phase10-golden-parity-evidence-test.js
       - name: Phase 10D control-plane reconciliation
         run: node tests/drx-phase10-control-plane-reconciliation-test.js
+      - name: Phase 10E security and legacy-write evidence
+        run: node tests/drx-phase10-security-write-evidence-test.js
       - name: Phase 10 legacy runtime consumer audit
         run: node scripts/drx-phase10-consumer-audit.js
       - name: P0 database integrity
