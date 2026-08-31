@@ -22,6 +22,7 @@ const cw = read('supabase/migrations/20260831195207_drx_phase11cw_evidence_sourc
 const cx = read('supabase/migrations/20260831195625_drx_phase11cx_evidence_batch_drilldown.sql');
 const cy = read('supabase/migrations/20260831201723_drx_phase11cy_safety_source_review_batches.sql');
 const cz = read('supabase/migrations/20260831202550_drx_phase11cz_indication_source_review_batches.sql');
+const da = read('supabase/migrations/20260831203102_drx_phase11da_step_source_batches_and_closure_cockpit.sql');
 const backend = read('lib/phase11-review.js');
 const html = read('admin.html');
 const ui = read('admin-phase11-review.js');
@@ -160,7 +161,17 @@ assert.match(cz, /autoPublishAllowed',false/);
 assert.match(cz, /set search_path=''/);
 assert.doesNotMatch(cz, /update\s+public\.dose_indication_concepts_v3/i);
 
-for (const sql of [ck,cn,co,cp,cq,cr,cs,ct,cu,cv,cw,cx,cy,cz]) {
+assert.match(da, /phase11_step_source_review_batches_v1/);
+assert.match(da, /phase11_step_source_review_batch_summary_v1/);
+assert.match(da, /phase11_human_review_closure_summary_v1/);
+assert.match(da, /suggested_next_queue/);
+assert.match(da, /closureSummary/);
+assert.match(da, /stepSourceBatches/);
+assert.match(da, /false::boolean as automatic_closure_allowed/);
+assert.match(da, /automaticClosureAllowed',false/);
+assert.doesNotMatch(da, /update\s+drx_dose\.source_regimen_step_(?:presentation_requirements|administration)_v1/i);
+
+for (const sql of [ck,cn,co,cp,cq,cr,cs,ct,cu,cv,cw,cx,cy,cz,da]) {
   assert.doesNotMatch(sql, /auto_publish_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_cutover_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_strict_activation_allowed(?:_v2)?\s*=\s*true/i);
@@ -195,6 +206,10 @@ assert.match(ui, /safetySourceBatches/);
 assert.match(ui, /function openIndicationSourceBatch/);
 assert.match(ui, /data-p11-indication-batch-open/);
 assert.match(ui, /Active indication source batches/);
+assert.match(ui, /function openStepBatch/);
+assert.match(ui, /data-p11-step-batch-open/);
+assert.match(ui, /Human review closure/);
+assert.match(ui, /Presentation &amp; administration source batches/);
 assert.match(ui, /data-p11-legacy-review/);
 assert.match(ui, /data-p11-rule-release/);
 assert.match(ui, /data-p11-shadow-review/);
@@ -218,6 +233,7 @@ for (const expected of [
   ['20260831195625','drx_phase11cx_evidence_batch_drilldown'],
   ['20260831201723','drx_phase11cy_safety_source_review_batches'],
   ['20260831202550','drx_phase11cz_indication_source_review_batches'],
+  ['20260831203102','drx_phase11da_step_source_batches_and_closure_cockpit'],
 ]) {
   assert.ok(
     migrations.some(row => String(row.version) === expected[0] && row.name === expected[1]),

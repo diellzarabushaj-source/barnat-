@@ -464,6 +464,60 @@
     );
   }
 
+
+  function openStepBatch(sourceBatchKey){
+    const batches=Array.isArray(state.preflight?.stepSourceBatches)?state.preflight.stepSourceBatches:[];
+    const batch=batches.find(row=>row.sourceBatchKey===sourceBatchKey);
+    if(!batch)return;
+    const items=Array.isArray(batch.items)?batch.items:[];
+    const sourceLink=batch.sourceUrl?`<a href="${esc(batch.sourceUrl)}" target="_blank" rel="noopener noreferrer">Hap exact SmPC §4.2 ↗</a>`:'Burimi nuk ka URL.';
+    openDialog(
+      `Presentation / administration · ${batch.authority||batch.sourceTier||'Source'}`,
+      `<div class="mi-editor-section-title"><div><span>${esc(batch.authority||batch.sourceTier||'Source')}</span><small>${esc(batch.documentVersion||batch.documentDate||'—')} · ${sourceLink}</small></div></div>
+       <div class="mi-mini-stats">
+         <div><span>Items</span><strong>${esc(batch.itemCount??items.length)}</strong></div>
+         <div><span>Presentation</span><strong>${esc(batch.presentationRows??0)}</strong></div>
+         <div><span>Administration</span><strong>${esc(batch.administrationRows??0)}</strong></div>
+         <div><span>Pending</span><strong>${esc(batch.pendingRows??0)}</strong></div>
+       </div>
+       <table class="mi-table"><thead><tr><th>Regimen / step</th><th>Type</th><th>Requirement</th><th>Statusi</th><th>Vendimi</th></tr></thead><tbody>
+       ${items.length?items.map(row=>{
+         const status=String(row.reviewStatus||'PENDING').toUpperCase();
+         const kind=String(row.itemType||'').toUpperCase();
+         const details=row.details||{};
+         const requirement=kind==='PRESENTATION'
+           ?`${details.presentationPolicy||'—'} · ${details.requiredStrengthValue??''} ${details.requiredStrengthUnit||''} · ${details.requiredFormFamily||''} · ${details.requiredRouteKey||''}`
+           :`${details.foodRequirement||'—'} · ${details.timingRequirement||''} ${details.administrationNote||''}`;
+         const action=(status==='PENDING'||status==='IN_REVIEW')
+           ?`<span style="display:flex;gap:6px;flex-wrap:wrap">
+              <button type="button" class="mi-row-btn"
+                data-p11-review-kind="${kind==='PRESENTATION'?'presentation-review':'administration-review'}"
+                data-p11-decision="VERIFIED"
+                data-p11-regimen="${esc(row.regimenKey)}"
+                data-p11-branch="${esc(row.branchNo)}"
+                data-p11-step="${esc(row.stepNo)}"
+                data-p11-step-batch="${esc(batch.sourceBatchKey)}">Verify</button>
+              <button type="button" class="mi-row-btn"
+                data-p11-review-kind="${kind==='PRESENTATION'?'presentation-review':'administration-review'}"
+                data-p11-decision="REJECTED"
+                data-p11-regimen="${esc(row.regimenKey)}"
+                data-p11-branch="${esc(row.branchNo)}"
+                data-p11-step="${esc(row.stepNo)}"
+                data-p11-step-batch="${esc(batch.sourceBatchKey)}">Reject</button>
+            </span>`
+           :`<span class="mi-badge ${status==='VERIFIED'?'is-verified':'is-in_review'}">${esc(status)}</span>`;
+         return `<tr>
+           <td><strong>${esc(row.regimenKey||'—')}</strong><small>B${esc(row.branchNo??'—')} / S${esc(row.stepNo??'—')}</small></td>
+           <td>${esc(kind||'—')}</td>
+           <td>${esc(requirement)}<small>${esc(compactList(row.technicalBlockers,3))}</small></td>
+           <td>${esc(status)}</td>
+           <td>${action}</td>
+         </tr>`;
+       }).join(''):'<tr><td colspan="5" class="is-empty">Nuk ka presentation/administration items.</td></tr>'}
+       </tbody></table>`
+    );
+  }
+
   async function loadPreflight(){
     const box=$('p11PreflightSummary');
     const button=$('p11LoadPreflight');
@@ -476,6 +530,7 @@
       const data=response.payload||{};
       state.preflight=data;
       const summary=data.summary||{};
+      const closure=data.closureSummary||{};
       const blocked=Array.isArray(data.technicalBlocked)?data.technicalBlocked:[];
       const human=Array.isArray(data.humanBlockerCounts)?data.humanBlockerCounts:[];
       const ready=Array.isArray(data.readyForAttestation)?data.readyForAttestation:[];
@@ -483,6 +538,8 @@
       const evidenceBatches=Array.isArray(data.evidenceSourceBatches)?data.evidenceSourceBatches:[];
       const safetySummary=data.safetyBatchSummary||{};
       const safetyBatches=Array.isArray(data.safetySourceBatches)?data.safetySourceBatches:[];
+      const stepSummary=data.stepBatchSummary||{};
+      const stepBatches=Array.isArray(data.stepSourceBatches)?data.stepSourceBatches:[];
       box.className='mi-table-wrap';
       box.innerHTML=`
         <div class="mi-mini-stats">
@@ -490,6 +547,15 @@
           <div><span>Technical ready</span><strong>${esc(summary.technical_integrity_ready??0)}</strong></div>
           <div><span>Technical blocked</span><strong>${esc(summary.technical_integrity_blocked??0)}</strong></div>
           <div><span>Final attestation ready</span><strong>${esc(summary.ready_for_human_clinical_attestation??ready.length)}</strong></div>
+        </div>
+        <div class="mi-editor-section-title"><div><span>Human review closure</span><small>Suggested next është vetëm rend pune; asnjë hap nuk ekzekutohet automatikisht.</small></div></div>
+        <div class="mi-mini-stats">
+          <div><span>Suggested next</span><strong>${esc(closure.suggested_next_queue||'—')}</strong></div>
+          <div><span>Evidence</span><strong>${esc(closure.evidence_pending_batches??0)}/${esc(closure.evidence_source_batches??0)} pending</strong></div>
+          <div><span>Indication / ICD</span><strong>${esc(closure.indication_pending_batches??0)} + ${esc(closure.unused_indications??0)} unused</strong></div>
+          <div><span>Safety</span><strong>${esc(closure.safety_pending_batches??0)}/${esc(closure.safety_source_batches??0)} pending</strong></div>
+          <div><span>Presentation / admin</span><strong>${esc(closure.step_pending_batches??0)}/${esc(closure.step_source_batches??0)} pending</strong></div>
+          <div><span>Final attestation ready</span><strong>${esc(closure.ready_for_human_clinical_attestation??0)}</strong></div>
         </div>
         <div class="mi-editor-section-title"><div><span>Technical blockers</span><small>Duhet të zgjidhen para clinical attestation.</small></div></div>
         <table class="mi-table"><thead><tr><th>Regimen</th><th>Indication</th><th>Blockers</th></tr></thead><tbody>
@@ -532,6 +598,24 @@
             <td><span class="mi-badge is-in_review">${esc(row.pendingCandidates??0)}</span></td>
             <td><button type="button" class="mi-row-btn" data-p11-safety-batch="${esc(row.sourceBatchKey)}">Review source</button></td>
           </tr>`).join(''):'<tr><td colspan="6" class="is-empty">Nuk ka safety source batches.</td></tr>'}
+        </tbody></table>
+        <div class="mi-editor-section-title"><div><span>Presentation &amp; administration source batches</span><small>21 rows janë grupuar në exact §4.2 sources; çdo row verifikohet/refuzohet individualisht.</small></div></div>
+        <div class="mi-mini-stats">
+          <div><span>Exact source batches</span><strong>${esc(stepSummary.source_batches??stepBatches.length)}</strong></div>
+          <div><span>Rows</span><strong>${esc(stepSummary.item_rows??0)}</strong></div>
+          <div><span>Presentation</span><strong>${esc(stepSummary.presentation_rows??0)}</strong></div>
+          <div><span>Administration</span><strong>${esc(stepSummary.administration_rows??0)}</strong></div>
+          <div><span>Pending</span><strong>${esc(stepSummary.pending_rows??0)}</strong></div>
+        </div>
+        <table class="mi-table"><thead><tr><th>Exact source</th><th>Version</th><th>Items</th><th>P / A</th><th>Pending</th><th></th></tr></thead><tbody>
+          ${stepBatches.length?stepBatches.map(row=>`<tr>
+            <td><strong>${esc(row.authority||row.sourceTier||'SOURCE')}</strong><small>§4.2 · ${row.sourceUrl?`<a href="${esc(row.sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi ↗</a>`:''}</small></td>
+            <td>${esc(row.documentVersion||row.documentDate||'—')}</td>
+            <td><strong>${esc(row.itemCount??0)}</strong></td>
+            <td>${esc(row.presentationRows??0)} / ${esc(row.administrationRows??0)}</td>
+            <td><span class="mi-badge is-in_review">${esc(row.pendingRows??0)}</span></td>
+            <td><button type="button" class="mi-row-btn" data-p11-step-batch-open="${esc(row.sourceBatchKey)}">Review source</button></td>
+          </tr>`).join(''):'<tr><td colspan="6" class="is-empty">Nuk ka presentation/admin source batches.</td></tr>'}
         </tbody></table>`;
     }catch(error){
       box.className='mi-empty-state';
@@ -1152,12 +1236,16 @@
       await loadWorkbench(true);
       const preflightBatch=button.dataset.p11PreflightBatch;
       const safetyBatch=button.dataset.p11SafetyBatch;
+      const stepBatch=button.dataset.p11StepBatch;
       if(preflightBatch){
         await loadPreflight();
         openEvidenceBatch(preflightBatch);
       }else if(safetyBatch){
         await loadPreflight();
         openSafetyBatch(safetyBatch);
+      }else if(stepBatch){
+        await loadPreflight();
+        openStepBatch(stepBatch);
       }else{
         const batchKey=button.dataset.p11Batch||state.currentClinicalKey;
         if(batchKey)await openClinical(batchKey);
@@ -1213,6 +1301,9 @@
 
     const safetyBatch=event.target.closest('[data-p11-safety-batch]');
     if(safetyBatch)openSafetyBatch(safetyBatch.dataset.p11SafetyBatch);
+
+    const stepBatch=event.target.closest('[data-p11-step-batch-open]');
+    if(stepBatch)openStepBatch(stepBatch.dataset.p11StepBatchOpen);
 
     const review=event.target.closest('[data-p11-review-kind]');
     if(review)void handleReviewButton(review);

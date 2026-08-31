@@ -20,6 +20,7 @@ on:
       - "supabase/migrations/20260831195625_drx_phase11cx_evidence_batch_drilldown.sql"
       - "supabase/migrations/20260831201723_drx_phase11cy_safety_source_review_batches.sql"
       - "supabase/migrations/20260831202550_drx_phase11cz_indication_source_review_batches.sql"
+      - "supabase/migrations/20260831203102_drx_phase11da_step_source_batches_and_closure_cockpit.sql"
       - "supabase/migration-history.json"
       - "lib/phase11-review.js"
       - "lib/dose-adjustment-engine.js"
@@ -81,6 +82,7 @@ jobs:
             ['20260831195625','drx_phase11cx_evidence_batch_drilldown'],
             ['20260831201723','drx_phase11cy_safety_source_review_batches'],
             ['20260831202550','drx_phase11cz_indication_source_review_batches'],
+            ['20260831203102','drx_phase11da_step_source_batches_and_closure_cockpit'],
           ]){
             if(!rows.some(x=>String(x.version)===version&&x.name===name)){
               throw new Error(`missing migration ${version}:${name}`);
