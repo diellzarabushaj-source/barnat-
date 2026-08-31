@@ -1,0 +1,128 @@
+name: DRx Supabase Migration History Sync
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "supabase/migrations/**"
+      - ".github/workflows/drx-migration-history-sync.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: drx-migration-history-sync-main
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DB_URL_1: ${{ secrets.SUPABASE_DB_URL }}
+      DB_URL_2: ${{ secrets.MEDINDEX_SUPABASE_DB_URL }}
+      DB_URL_3: ${{ secrets.SUPABASE_DATABASE_URL }}
+      DB_URL_4: ${{ secrets.DATABASE_URL }}
+      DB_URL_5: ${{ secrets.POSTGRES_URL }}
+      DB_URL_6: ${{ secrets.POSTGRES_DATABASE_URL }}
+      DB_URL_7: ${{ secrets.SUPABASE_POSTGRES_URL }}
+      DB_URL_8: ${{ secrets.SUPABASE_CONNECTION_STRING }}
+      DB_URL_9: ${{ secrets.POSTGRES_CONNECTION_STRING }}
+      DB_URL_10: ${{ secrets.DB_URL }}
+      DB_URL_11: ${{ secrets.MEDINDEX_SUPABASE_URL }}
+      DB_URL_12: ${{ secrets.SUPABASE_URL }}
+      DB_URL_13: ${{ secrets.SUPABASE_DIRECT_URL }}
+      DB_URL_14: ${{ secrets.SUPABASE_POOLER_URL }}
+      DB_URL_15: ${{ secrets.SUPABASE_POOLER_CONNECTION_STRING }}
+      DB_URL_16: ${{ secrets.SUPABASE_DATABASE_CONNECTION_STRING }}
+      DB_URL_17: ${{ secrets.DATABASE_CONNECTION_STRING }}
+      DB_URL_18: ${{ secrets.POSTGRES_URL_NON_POOLING }}
+      DB_URL_19: ${{ secrets.POSTGRES_PRISMA_URL }}
+      DB_URL_20: ${{ secrets.POSTGRES_CONNECTION_URL }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve PostgreSQL URL
+        shell: bash
+        run: |
+          set -euo pipefail
+          resolved=""
+          for n in {1..20}; do
+            key="DB_URL_${n}"
+            value="${!key:-}"
+            case "$value" in
+              postgres://*|postgresql://*) resolved="$value"; break ;;
+              *) ;;
+            esac
+          done
+          if [ -z "$resolved" ]; then
+            echo "::error::No PostgreSQL connection URL alias is configured; migration history sync is fail-closed."
+            exit 1
+          fi
+          echo "::add-mask::$resolved"
+          {
+            echo 'SUPABASE_DB_URL<<DRXEOF'
+            echo "$resolved"
+            echo 'DRXEOF'
+          } >> "$GITHUB_ENV"
+
+      - name: Regenerate authoritative migration history
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, subprocess
+          sql="select version,name from supabase_migrations.schema_migrations order by version"
+          out=subprocess.check_output(
+              ['psql',os.environ['SUPABASE_DB_URL'],'--no-align','--tuples-only','--field-separator=\t','-c',sql],
+              text=True,
+          )
+          rows=[]
+          for line in out.splitlines():
+              if not line.strip():
+                  continue
+              version,name=line.split('\t',1)
+              rows.append({'name':name,'version':version})
+          if not rows:
+              raise SystemExit('Live Supabase migration history is empty; refusing to overwrite repository evidence.')
+          payload={
+              'project_ref':'ftuchtmolddhhsdcwnqe',
+              'source':'supabase_migrations.schema_migrations',
+              'migrations':rows,
+          }
+          with open('supabase/migration-history.json','w',encoding='utf-8') as f:
+              json.dump(payload,f,indent=2,ensure_ascii=False)
+              f.write('\n')
+          print(f'Generated {len(rows)} authoritative migration records; latest={rows[-1]["version"]}:{rows[-1]["name"]}')
+          PY
+
+      - name: Validate Phase 10M parity before commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs=require('node:fs');
+          const h=JSON.parse(fs.readFileSync('supabase/migration-history.json','utf8'));
+          const latest=h.migrations.at(-1);
+          if(latest?.version!=='20260831062943' || latest?.name!=='drx_phase10m_strict_activation_gate'){
+            throw new Error('Live migration history does not end at the expected Phase 10M migration.');
+          }
+          NODE
+
+      - name: Commit history when changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- supabase/migration-history.json; then
+            echo "Migration history already synchronized."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add supabase/migration-history.json
+          git commit -m "Sync Supabase migration history through Phase 10M"
+          git push origin HEAD:main
