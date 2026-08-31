@@ -911,6 +911,14 @@
     {
       "version": "20260831162947",
       "name": "drx_phase11bs_icd_quality_gate_and_workbench_v2"
+    },
+    {
+      "version": "20260831164041",
+      "name": "drx_phase11bt_review_provenance_and_item_actions"
+    },
+    {
+      "version": "20260831164124",
+      "name": "drx_phase11bu_indication_and_regimen_review_gates"
     }
   ]
 }
