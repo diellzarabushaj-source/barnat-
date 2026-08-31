@@ -11,6 +11,8 @@ const html = read('medical-hub.html');
 const js = read('medical-hub-v2.js');
 const css = read('medical-hub-v2.css');
 const api = read('api/medical-hub.js');
+const imageApi = read('api/medical-hub-image.js');
+const imageProxy = require('../api/medical-hub-image.js');
 
 assert.match(html, /data-drx-app="medical-hub-v2"/);
 const cssAssetVersion = html.match(/medical-hub-v2\.css\?v=(\d+)/)?.[1] || '';
@@ -51,6 +53,8 @@ assert.match(js, /function preferredChapterItem\(key\)/);
 assert.match(js, /function readerNavigationItems\(\)/);
 assert.match(js, /lessons\.length === 1/);
 assert.match(js, /function bindFigureFallbacks\(detail\)/);
+assert.match(js, /function figureDisplayUrl\(rawUrl\)/);
+assert.match(js, /\/api\/medical-hub-image\?url=/);
 assert.match(js, /ck-book-rx-alternative/);
 assert.match(js, /function prescriptionFormLabel\(form\)/);
 assert.match(js, /data-hub-section/);
@@ -95,6 +99,17 @@ assert.match(searchQuery, /figures\[\]/);
 assert.match(searchQuery, /sources\[\]/);
 assert.match(searchQuery, /nested/);
 assert.doesNotThrow(() => new Function(api));
+
+assert.match(imageApi, /ALLOWED_HOSTS/);
+assert.match(imageApi, /upload\.wikimedia\.org/);
+assert.match(imageApi, /commons\.wikimedia\.org/);
+assert.match(imageApi, /authorized\(req\)/);
+assert.match(imageApi, /MAX_IMAGE_BYTES/);
+assert.match(imageApi, /type\.startsWith\('image\/'\)/);
+assert.equal(imageProxy._test.safeImageUrl('https://upload.wikimedia.org/example.png')?.hostname, 'upload.wikimedia.org');
+assert.equal(imageProxy._test.safeImageUrl('https://commons.wikimedia.org/wiki/Special:Redirect/file/Test.jpg')?.hostname, 'commons.wikimedia.org');
+assert.equal(imageProxy._test.safeImageUrl('http://upload.wikimedia.org/example.png'), null);
+assert.equal(imageProxy._test.safeImageUrl('https://example.com/example.png'), null);
 
 assert.match(css, /Medical Hub final reader v12 — canonical DRx clinical workspace/);
 assert.doesNotMatch(css, /Medical Hub reader v4|Medical Hub navigation v3|Screenshot fixes v11/);
