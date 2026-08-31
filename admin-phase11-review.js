@@ -6,7 +6,7 @@
   const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[c]));
-  const state={loaded:false,loading:false,payload:null,currentClinicalKey:''};
+  const state={loaded:false,loading:false,payload:null,currentClinicalKey:'',preflight:null};
 
   async function request(url,options={}){
     const response=await fetch(url,{
@@ -374,6 +374,49 @@
   }
 
 
+
+  function openEvidenceBatch(sourceBatchKey){
+    const batches=Array.isArray(state.preflight?.evidenceSourceBatches)?state.preflight.evidenceSourceBatches:[];
+    const batch=batches.find(row=>row.sourceBatchKey===sourceBatchKey);
+    if(!batch)return;
+    const regimens=Array.isArray(batch.regimens)?batch.regimens:[];
+    const sourceLink=batch.sourceUrl?`<a href="${esc(batch.sourceUrl)}" target="_blank" rel="noopener noreferrer">Hap exact SmPC §${esc(batch.sectionCode||'4.2')} ↗</a>`:'Burimi nuk ka URL.';
+    openDialog(
+      `Evidence · ${batch.authority||batch.sourceTier||'Source'}`,
+      `<div class="mi-editor-section-title"><div><span>${esc(batch.authority||batch.sourceTier||'Source')}</span><small>${esc(batch.documentVersion||batch.documentDate||'—')} · ${sourceLink}</small></div></div>
+       <div class="mi-mini-stats">
+         <div><span>Regimens</span><strong>${esc(batch.regimenCount??regimens.length)}</strong></div>
+         <div><span>Pending</span><strong>${esc(batch.pendingRows??0)}</strong></div>
+         <div><span>Verified</span><strong>${esc(batch.verifiedRows??0)}</strong></div>
+         <div><span>Integrity blocked</span><strong>${esc(batch.integrityBlockedRows??0)}</strong></div>
+       </div>
+       <table class="mi-table"><thead><tr><th>Regimen</th><th>Role</th><th>Statusi</th><th>Vendimi</th></tr></thead><tbody>
+       ${regimens.length?regimens.map(row=>{
+         const status=String(row.reviewStatus||'PENDING').toUpperCase();
+         const action=(status==='PENDING'||status==='IN_REVIEW')
+           ?`<span style="display:flex;gap:6px;flex-wrap:wrap">
+              <button type="button" class="mi-row-btn"
+                data-p11-review-kind="evidence-review"
+                data-p11-decision="VERIFIED"
+                data-p11-regimen="${esc(row.regimenKey)}"
+                data-p11-snapshot="${esc(batch.sourceSnapshotId)}"
+                data-p11-sha="${esc(batch.sourceSectionSha256)}"
+                data-p11-preflight-batch="${esc(batch.sourceBatchKey)}">Verify</button>
+              <button type="button" class="mi-row-btn"
+                data-p11-review-kind="evidence-review"
+                data-p11-decision="REJECTED"
+                data-p11-regimen="${esc(row.regimenKey)}"
+                data-p11-snapshot="${esc(batch.sourceSnapshotId)}"
+                data-p11-sha="${esc(batch.sourceSectionSha256)}"
+                data-p11-preflight-batch="${esc(batch.sourceBatchKey)}">Reject</button>
+            </span>`
+           :`<span class="mi-badge ${status==='VERIFIED'?'is-verified':'is-in_review'}">${esc(status)}</span>`;
+         return `<tr><td><strong>${esc(row.regimenKey||'—')}</strong></td><td>${esc(row.evidenceRole||'—')}</td><td>${esc(status)}</td><td>${action}</td></tr>`;
+       }).join(''):'<tr><td colspan="4" class="is-empty">Nuk ka regimen evidence rows.</td></tr>'}
+       </tbody></table>`
+    );
+  }
+
   async function loadPreflight(){
     const box=$('p11PreflightSummary');
     const button=$('p11LoadPreflight');
@@ -384,6 +427,7 @@
     try{
       const response=await getJson(`${API}?preflight=1`);
       const data=response.payload||{};
+      state.preflight=data;
       const summary=data.summary||{};
       const blocked=Array.isArray(data.technicalBlocked)?data.technicalBlocked:[];
       const human=Array.isArray(data.humanBlockerCounts)?data.humanBlockerCounts:[];
@@ -413,14 +457,15 @@
           <div><span>Integrity ready</span><strong>${esc(evidenceSummary.integrity_ready_batches??0)}</strong></div>
           <div><span>Human review pending</span><strong>${esc(evidenceSummary.human_review_pending_batches??0)}</strong></div>
         </div>
-        <table class="mi-table"><thead><tr><th>Exact source</th><th>Version</th><th>Regimens</th><th>Evidence</th><th>Pending</th></tr></thead><tbody>
+        <table class="mi-table"><thead><tr><th>Exact source</th><th>Version</th><th>Regimens</th><th>Evidence</th><th>Pending</th><th></th></tr></thead><tbody>
           ${evidenceBatches.length?evidenceBatches.map(row=>`<tr>
             <td><strong>${esc(row.authority||row.sourceTier||'SOURCE')}</strong><small>§${esc(row.sectionCode||'4.2')} · ${row.sourceUrl?`<a href="${esc(row.sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi ↗</a>`:''}</small></td>
             <td>${esc(row.documentVersion||row.documentDate||'—')}</td>
             <td><strong>${esc(row.regimenCount??0)}</strong></td>
             <td>${esc(row.evidenceRows??0)}<small>P ${esc(row.primaryRows??0)} · S ${esc(row.supportingRows??0)} · C ${esc(row.concordantRows??0)}</small></td>
             <td><span class="mi-badge is-in_review">${esc(row.pendingRows??0)}</span></td>
-          </tr>`).join(''):'<tr><td colspan="5" class="is-empty">Nuk ka evidence source batches.</td></tr>'}
+            <td><button type="button" class="mi-row-btn" data-p11-evidence-batch="${esc(row.sourceBatchKey)}">Review source</button></td>
+          </tr>`).join(''):'<tr><td colspan="6" class="is-empty">Nuk ka evidence source batches.</td></tr>'}
         </tbody></table>`;
     }catch(error){
       box.className='mi-empty-state';
@@ -912,8 +957,14 @@
       });
       state.loaded=false;
       await loadWorkbench(true);
-      const batchKey=button.dataset.p11Batch||state.currentClinicalKey;
-      if(batchKey)await openClinical(batchKey);
+      const preflightBatch=button.dataset.p11PreflightBatch;
+      if(preflightBatch){
+        await loadPreflight();
+        openEvidenceBatch(preflightBatch);
+      }else{
+        const batchKey=button.dataset.p11Batch||state.currentClinicalKey;
+        if(batchKey)await openClinical(batchKey);
+      }
     }catch(error){ alert(error.message); }
     finally{ button.disabled=false; }
   }
@@ -1005,6 +1056,9 @@
 
     const identityApply=event.target.closest('[data-p11-identity-apply]');
     if(identityApply)void handleIdentityApply(identityApply);
+
+    const evidenceBatch=event.target.closest('[data-p11-evidence-batch]');
+    if(evidenceBatch)openEvidenceBatch(evidenceBatch.dataset.p11EvidenceBatch);
 
     const review=event.target.closest('[data-p11-review-kind]');
     if(review)void handleReviewButton(review);

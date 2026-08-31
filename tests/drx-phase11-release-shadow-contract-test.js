@@ -19,6 +19,7 @@ const ct = read('supabase/migrations/20260831194123_drx_phase11ct_step_requireme
 const cu = read('supabase/migrations/20260831194503_drx_phase11cu_clinical_review_preflight.sql');
 const cv = read('supabase/migrations/20260831194750_drx_phase11cv_clinical_preflight_workbench.sql');
 const cw = read('supabase/migrations/20260831195207_drx_phase11cw_evidence_source_review_batches.sql');
+const cx = read('supabase/migrations/20260831195625_drx_phase11cx_evidence_batch_drilldown.sql');
 const backend = read('lib/phase11-review.js');
 const html = read('admin.html');
 const ui = read('admin-phase11-review.js');
@@ -130,7 +131,13 @@ assert.match(cw, /autoVerifyEvidenceAllowed',false/);
 assert.match(cw, /false::boolean as auto_verify_allowed/);
 assert.doesNotMatch(cw, /update\s+drx_dose\.source_regimen_supporting_evidence_v1/i);
 
-for (const sql of [ck,cn,co,cp,cq,cr,cs,ct,cu,cv,cw]) {
+assert.match(cx, /sourceSnapshotId/);
+assert.match(cx, /sourceSectionSha256/);
+assert.match(cx, /evidenceSourceBatches/);
+assert.match(cx, /autoVerifyEvidenceAllowed',false/);
+assert.doesNotMatch(cx, /update\s+drx_dose\.source_regimen_supporting_evidence_v1/i);
+
+for (const sql of [ck,cn,co,cp,cq,cr,cs,ct,cu,cv,cw,cx]) {
   assert.doesNotMatch(sql, /auto_publish_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_cutover_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_strict_activation_allowed(?:_v2)?\s*=\s*true/i);
@@ -156,6 +163,9 @@ assert.match(ui, /shadow=1/);
 assert.match(ui, /preflight=1/);
 assert.match(ui, /evidenceSourceBatches/);
 assert.match(ui, /Exact source batches/);
+assert.match(ui, /data-p11-evidence-batch/);
+assert.match(ui, /data-p11-preflight-batch/);
+assert.match(ui, /function openEvidenceBatch/);
 assert.match(ui, /data-p11-legacy-review/);
 assert.match(ui, /data-p11-rule-release/);
 assert.match(ui, /data-p11-shadow-review/);
@@ -176,6 +186,7 @@ for (const expected of [
   ['20260831194503','drx_phase11cu_clinical_review_preflight'],
   ['20260831194750','drx_phase11cv_clinical_preflight_workbench'],
   ['20260831195207','drx_phase11cw_evidence_source_review_batches'],
+  ['20260831195625','drx_phase11cx_evidence_batch_drilldown'],
 ]) {
   assert.ok(
     migrations.some(row => String(row.version) === expected[0] && row.name === expected[1]),
