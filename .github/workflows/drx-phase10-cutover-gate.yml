@@ -35,6 +35,7 @@ on:
       - "lib/pediatric-dosage-handler-core.js"
       - "dozologjia.html"
       - "dozologjia-v2.js"
+      - "pediatric-calculator-client.js"
       - "tests/drx-phase10-pediatric-v3-calculator-test.js"
       - "scripts/drx-phase10-pediatric-v3-live.js"
       - "supabase/drx-phase10a-cutover-control-and-legacy-write-audit-rollback.sql"
