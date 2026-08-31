@@ -1605,7 +1605,7 @@ html.drx-unified-sidebar .nav-item{
   gap:10px!important;
   padding-inline:10px!important;
   border:0!important;
-  border-radius:6px!important;
+  border-radius:8px!important;
   background:transparent!important;
   color:var(--drx-nav-text)!important;
   font-size:14px!important;
@@ -1698,7 +1698,7 @@ html.drx-unified-sidebar :is(input,select,textarea):focus-visible{
 .drx-unified-sidebar .atc-group-link,
 .medindex-tailadmin .atc-group-link{
   position:relative;display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:9px;
-  min-height:31px;padding:4px 8px;border-radius:6px;color:rgba(255,255,255,.62);text-decoration:none;
+  min-height:31px;padding:4px 8px;border-radius:8px;color:rgba(255,255,255,.62);text-decoration:none;
   cursor:pointer;list-style:none;transition:background .13s,color .13s;
 }
 .drx-unified-sidebar .atc-group-link::-webkit-details-marker,
@@ -1720,7 +1720,7 @@ html.drx-unified-sidebar :is(input,select,textarea):focus-visible{
 .medindex-tailadmin .atc-group-link:focus-visible{outline:0;box-shadow:0 0 0 2px rgba(162,155,255,.65)}
 .drx-unified-sidebar .atc-group-code,
 .medindex-tailadmin .atc-group-code{
-  display:grid;height:19px;place-items:center;border-radius:5px;background:rgba(255,255,255,.09);
+  display:grid;height:19px;place-items:center;border-radius:8px;background:rgba(255,255,255,.09);
   color:rgba(255,255,255,.78);font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 .drx-unified-sidebar .atc-group-name,
@@ -1742,7 +1742,7 @@ html.drx-unified-sidebar :is(input,select,textarea):focus-visible{
 .drx-unified-sidebar .atc-sub-link,
 .medindex-tailadmin .atc-sub-link{
   position:relative;display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:8px;
-  min-height:27px;padding:3px 7px;border-radius:6px;color:rgba(255,255,255,.55);text-decoration:none;
+  min-height:27px;padding:3px 7px;border-radius:8px;color:rgba(255,255,255,.55);text-decoration:none;
   transition:background .13s,color .13s;
 }
 .drx-unified-sidebar .atc-sub-link::before,
