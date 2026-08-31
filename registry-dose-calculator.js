@@ -562,12 +562,12 @@
     const minimum = fmt(rule.doseMinValue);
     const maximum = fmt(rule.doseMaxValue);
     const value = minimum === maximum ? minimum : `${minimum}–${maximum}`;
-    if (rule.calculationMethod === 'dose_per_kg_per_dose') return `${value} ${computed.doseUnit || rule.doseUnit}/kg/dozë`;
-    if (rule.calculationMethod === 'dose_per_kg_per_day') return `${value} ${computed.doseUnit || rule.doseUnit}/kg/ditë`;
-    if (rule.calculationMethod === 'dose_per_m2_per_dose') return `${value} ${computed.doseUnit || rule.doseUnit}/m²/dozë`;
-    if (rule.calculationMethod === 'dose_per_m2_per_day') return `${value} ${computed.doseUnit || rule.doseUnit}/m²/ditë`;
+    if (rule.calculationMethod === 'dose_per_kg_per_dose') return `${value} ${rule.doseUnit}/kg/dozë`;
+    if (rule.calculationMethod === 'dose_per_kg_per_day') return `${value} ${rule.doseUnit}/kg/ditë`;
+    if (rule.calculationMethod === 'dose_per_m2_per_dose') return `${value} ${rule.doseUnit}/m²/dozë`;
+    if (rule.calculationMethod === 'dose_per_m2_per_day') return `${value} ${rule.doseUnit}/m²/ditë`;
     const basis = rule.doseBasis === 'per_day' ? '/ditë' : rule.doseBasis === 'per_dose' ? '/dozë' : '';
-    return `${value} ${computed.doseUnit || rule.doseUnit}${basis}`;
+    return `${value} ${rule.doseUnit}${basis}`;
   }
 
   function frequencyText(rule) {
