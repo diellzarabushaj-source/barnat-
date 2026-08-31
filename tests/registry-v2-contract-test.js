@@ -9,11 +9,24 @@ const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'registry-v2.css'), 'utf8');
 const js = fs.readFileSync(path.join(root, 'registry-v2.js'), 'utf8');
+const doseCss = fs.readFileSync(path.join(root, 'registry-v2-dose-calculator.css'), 'utf8');
+const doseJs = fs.readFileSync(path.join(root, 'registry-v2-dose-calculator.js'), 'utf8');
+const doseRuntime = fs.readFileSync(path.join(root, 'dose-runtime-browser.js'), 'utf8');
 
 assert.match(html, /data-drx-app="registry-v2"/);
 assert.match(html, /\/registry-v2\.css\?v=[^"\s]+/);
 assert.match(html, /\/registry-v2\.js\?v=[^"\s]+/);
+assert.match(html, /\/registry-v2-dose-calculator\.css\?v=[^"\s]+/);
+assert.match(html, /\/dose-core\.js\?v=drx-dose-core-v1/);
+assert.match(html, /\/dose-runtime-browser\.js\?v=drx-dose-runtime-browser-v1/);
+assert.match(html, /\/registry-v2-dose-calculator\.js\?v=[^"\s]+/);
 assert.match(html, /\/drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/);
+
+const corePos=html.indexOf('/dose-core.js');
+const runtimePos=html.indexOf('/dose-runtime-browser.js');
+const registryPos=html.indexOf('/registry-v2.js');
+const calculatorPos=html.indexOf('/registry-v2-dose-calculator.js');
+assert.ok(corePos>=0 && runtimePos>corePos && registryPos>runtimePos && calculatorPos>registryPos);
 assert.doesNotMatch(html, /registry-mobile-|registry-ux-phase|registry-unified-table|registry-table-tools|tailadmin-/);
 
 [
@@ -56,7 +69,28 @@ assert.match(js, /Grupi \/ Klasa/);
 assert.match(js, /Për çka përdoret/);
 assert.match(js, /Popullata/);
 assert.match(js, /Vetëm pediatrik/);
+assert.match(js, /data-dose-calculator-open/);
+assert.match(js, /data-registry-number/);
 assert.doesNotThrow(() => new Function(js));
+
+assert.match(doseCss, /\.drx-dose-modal/);
+assert.match(doseCss, /\.drx-dose-open/);
+assert.match(doseCss, /@media\(max-width:760px\)/);
+assert.doesNotMatch(doseCss, /!important/);
+
+assert.match(doseJs, /view=product-rules&registryNumber=/);
+assert.match(doseJs, /DRxDoseRuntime/);
+assert.match(doseJs, /Runtime\(\)\.requiredMeasureTypes|Runtime\(\)\?\.requiredMeasureTypes/);
+assert.match(doseJs, /data-dose-crcl/);
+assert.match(doseJs, /data-dose-egfr/);
+assert.match(doseJs, /data-dose-treatment-day/);
+assert.match(doseJs, /data-dose-variant/);
+assert.match(doseJs, /data-dose-hepatic/);
+assert.match(doseJs, /no-store/);
+assert.match(doseJs, /fail-closed|failClosed/i);
+assert.doesNotMatch(doseJs, /compatibility-catalog|offline-cache/);
+assert.doesNotThrow(() => new Function(doseJs));
+assert.doesNotThrow(() => new Function(doseRuntime));
 
 const page = drugSearch.buildPageRequest({
   page:'2',
