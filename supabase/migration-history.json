@@ -1013,6 +1013,10 @@
     {
       "name": "drx_phase11cr_safety_integrity_precheck",
       "version": "20260831191800"
+    },
+    {
+      "version": "20260831193039",
+      "name": "drx_phase11cs_indication_icd_integrity_and_publication_guard"
     }
   ]
 }
