@@ -54,4 +54,23 @@ assert.match(phase11b, /create or replace view drx_dose\.phase11_review_queue_v1
 assert.match(phase11b, /legacyRegimensExcludedBecauseProductNotPublished/);
 assert.match(phase11b, /runtimeServeEnabled',false/);
 
+assert.match(phase11c, /create table if not exists drx_dose\\.candidate_review_events_v1/);
+assert.match(phase11c, /DRX_PHASE11_REVIEW_EVENT_IMMUTABLE/);
+assert.match(phase11c, /create or replace view drx_dose\\.source_ingestion_queue_v1/);
+assert.match(phase11c, /section_code='4\\.2'/);
+assert.match(phase11c, /create or replace view drx_dose\\.indication_normalization_queue_v1/);
+assert.match(phase11c, /create or replace view drx_dose\\.rule_candidate_context_conflicts_v1/);
+assert.match(phase11c, /COMBINATION_DOSE_BASIS_COMPONENT/);
+assert.match(phase11c, /SCHEDULE_STRUCTURE/);
+assert.match(phase11c, /CONTEXT_CONFLICT/);
+assert.match(phase11c, /EXACT_SOURCE_SECTION_4_2/);
+assert.match(phase11c, /create or replace view drx_dose\\.product_calculator_coverage_v1/);
+assert.match(phase11c, /CANDIDATE_REVIEW/);
+assert.match(phase11c, /create or replace function public\\.drx_phase11_review_candidate_v1/);
+assert.match(phase11c, /create or replace function public\\.drx_phase11_promote_candidate_to_draft_v1/);
+assert.match(phase11c, /'draft',1/);
+assert.match(phase11c, /'MANUAL_REVIEW','DRAFT'/);
+assert.match(phase11c, /'autoPublished',false/);
+assert.match(phase11c, /'runtimeServed',false/);
+
 console.log('DRx Phase 11 substance-centric dosing contract passed.');
