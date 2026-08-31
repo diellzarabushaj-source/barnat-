@@ -80,7 +80,18 @@ const handler=fs.readFileSync('lib/pediatric-dosage-handler-core.js','utf8');
 assert.match(handler,/V3Calculator\.buildProduct/);
 assert.match(handler,/V3Calculator\.calculate/);
 assert.match(handler,/Cutover\.decision/);
-assert.match(handler,/if \(v3\.status !== 404\) return v3/);
+assert.match(
+  handler,
+  /if \(!v3\.error \|\| v3\.status !== 404\) \{[\s\S]*?recordCalculatorRuntime\([\s\S]*?'v3'[\s\S]*?return v3;/,
+  'valid V3 results and fail-closed V3 clinical outcomes must return without silent V2 substitution'
+);
+assert.match(
+  handler,
+  /const fallback=await calculateLegacyDose\(body\);[\s\S]*?recordCalculatorRuntime\([\s\S]*?'v2-fallback'[\s\S]*?fallbackUsed:true[\s\S]*?return fallback;/,
+  'V2 fallback must be explicit, observable, and limited to unavailable/pre-result V3 failures'
+);
+assert.match(handler,/function calculatorTelemetryOutcome\(/);
+assert.match(handler,/Cutover\.recordEvent\(/);
 
 const html=fs.readFileSync('dozologjia.html','utf8');
 for(const id of ['patientIndication','patientCrCl','patientEgfr','patientDialysisStatus','patientChildPugh','patientHepaticImpairment']){
