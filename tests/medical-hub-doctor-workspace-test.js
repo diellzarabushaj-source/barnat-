@@ -48,6 +48,7 @@ assert.match(js, /function syncUrl\(\)/);
 assert.match(js, /function restoreUrl\(\)/);
 assert.match(js, /function chapterLessons\(key\)/);
 assert.match(js, /function preferredChapterItem\(key\)/);
+assert.match(js, /function readerNavigationItems\(\)/);
 assert.match(js, /lessons\.length === 1/);
 assert.match(js, /function bindFigureFallbacks\(detail\)/);
 assert.match(js, /ck-book-rx-alternative/);
