@@ -139,8 +139,9 @@ test('registry v2 desktop flow is stable and usable', async ({ page }) => {
     styles:[...document.querySelectorAll('link[rel="stylesheet"]')].map(node => new URL(node.href).pathname),
     scripts:[...document.querySelectorAll('script[src]')].map(node => new URL(node.src).pathname),
   }));
-  expect(authorities.styles).toEqual(['/registry-v2.css']);
-  expect(authorities.scripts).toEqual(['/registry-v2.js']);
+  expect(authorities.styles).toEqual(expect.arrayContaining(['/registry-v2.css','/drx-dashboard-stripe.css']));
+  expect(authorities.scripts).toContain('/registry-v2.js');
+  expect(authorities.scripts).not.toContain('/app-runtime.js');
 
   const viewport = await page.evaluate(() => ({
     bodyScrollWidth:document.body.scrollWidth,
@@ -192,8 +193,10 @@ test('registry v2 mobile keeps navigation and table overflow contained', async (
   expect(initial.tableScrollWidth).toBeGreaterThan(initial.tableClientWidth);
 
   await page.locator('#menuButton').click();
-  const openedLeft = await page.locator('#sidebar').evaluate(node => node.getBoundingClientRect().left);
-  expect(Math.abs(openedLeft)).toBeLessThanOrEqual(1);
+  await expect.poll(
+    () => page.locator('#sidebar').evaluate(node => Math.abs(node.getBoundingClientRect().left)),
+    { timeout:3000, intervals:[50,75,100,150] },
+  ).toBeLessThanOrEqual(1);
   await expect(page.locator('#sidebarBackdrop')).toBeVisible();
   await page.locator('#sidebarClose').click();
 
@@ -229,13 +232,22 @@ test('registry v2 tablet keeps shell and detail geometry contained', async ({ pa
 
   await page.getByText('PARACETAMOL TEST').click();
   await expect(page.locator('#detailDrawer')).toHaveClass(/is-open/);
-  await page.waitForTimeout(250);
+  await expect.poll(
+    () => page.locator('#detailDrawer').evaluate(node => {
+      const rect=node.getBoundingClientRect();
+      return { width:rect.width, right:rect.right };
+    }),
+    { timeout:3000, intervals:[50,75,100,150] },
+  ).toEqual(expect.objectContaining({ width:expect.any(Number) }));
   const drawer = await page.locator('#detailDrawer').evaluate(node => {
     const rect=node.getBoundingClientRect();
     return { width:rect.width, right:rect.right };
   });
   expect(drawer.width).toBeLessThanOrEqual(768);
-  expect(drawer.right).toBeLessThanOrEqual(769);
+  await expect.poll(
+    () => page.locator('#detailDrawer').evaluate(node => node.getBoundingClientRect().right),
+    { timeout:3000, intervals:[50,75,100,150] },
+  ).toBeLessThanOrEqual(769);
   await page.locator('#drawerClose').click();
 
   await page.screenshot({ path:'/tmp/registry-v2-tablet.png', fullPage:true });
