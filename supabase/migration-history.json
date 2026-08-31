@@ -1,1004 +1,1006 @@
 {
+  "project_ref": "ftuchtmolddhhsdcwnqe",
+  "source": "supabase_migrations.schema_migrations",
   "migrations": [
     {
-      "version": "20260819122922",
-      "name": "test_neon_migration_bridge"
+      "name": "test_neon_migration_bridge",
+      "version": "20260819122922"
     },
     {
-      "version": "20260819123034",
-      "name": "import_neon_medical_content_bridge"
+      "name": "import_neon_medical_content_bridge",
+      "version": "20260819123034"
     },
     {
-      "version": "20260819123059",
-      "name": "test_local_table_from_neon_foreign"
+      "name": "test_local_table_from_neon_foreign",
+      "version": "20260819123059"
     },
     {
-      "version": "20260819123129",
-      "name": "create_medical_content_tables_from_neon"
+      "name": "create_medical_content_tables_from_neon",
+      "version": "20260819123129"
     },
     {
-      "version": "20260819123429",
-      "name": "restore_medindex_constraints"
+      "name": "restore_medindex_constraints",
+      "version": "20260819123429"
     },
     {
-      "version": "20260819123453",
-      "name": "restore_medindex_indexes"
+      "name": "restore_medindex_indexes",
+      "version": "20260819123453"
     },
     {
-      "version": "20260819123616",
-      "name": "add_neon_view_definition_bridge"
+      "name": "add_neon_view_definition_bridge",
+      "version": "20260819123616"
     },
     {
-      "version": "20260819123640",
-      "name": "restore_medindex_views_from_neon"
+      "name": "restore_medindex_views_from_neon",
+      "version": "20260819123640"
     },
     {
-      "version": "20260819123827",
-      "name": "restore_medindex_functions_and_triggers"
+      "name": "restore_medindex_functions_and_triggers",
+      "version": "20260819123827"
     },
     {
-      "version": "20260819123844",
-      "name": "secure_medical_content_rls"
+      "name": "secure_medical_content_rls",
+      "version": "20260819123844"
     },
     {
-      "version": "20260819124037",
-      "name": "harden_functions_and_add_fk_indexes"
+      "name": "harden_functions_and_add_fk_indexes",
+      "version": "20260819124037"
     },
     {
-      "version": "20260819124113",
-      "name": "cleanup_neon_migration_bridge"
+      "name": "cleanup_neon_migration_bridge",
+      "version": "20260819124113"
     },
     {
-      "version": "20260819125926",
-      "name": "create_private_write_sync_schema"
+      "name": "create_private_write_sync_schema",
+      "version": "20260819125926"
     },
     {
-      "version": "20260819130038",
-      "name": "prepare_phase3_neon_bridge"
+      "name": "prepare_phase3_neon_bridge",
+      "version": "20260819130038"
     },
     {
-      "version": "20260819135003",
-      "name": "phase3_defer_owner_foreign_keys"
+      "name": "phase3_defer_owner_foreign_keys",
+      "version": "20260819135003"
     },
     {
-      "version": "20260819150331",
-      "name": "phase4_auth_roles_rls_foundation"
+      "name": "phase4_auth_roles_rls_foundation",
+      "version": "20260819150331"
     },
     {
-      "version": "20260819160916",
-      "name": "phase4_add_legacy_user_mapping"
+      "name": "phase4_add_legacy_user_mapping",
+      "version": "20260819160916"
     },
     {
-      "version": "20260819165505",
-      "name": "phase4_trusted_legacy_owner_claim"
+      "name": "phase4_trusted_legacy_owner_claim",
+      "version": "20260819165505"
     },
     {
-      "version": "20260819173053",
-      "name": "phase4_safe_owner_claim_mapping_only"
+      "name": "phase4_safe_owner_claim_mapping_only",
+      "version": "20260819173053"
     },
     {
-      "version": "20260820053342",
-      "name": "phase6_multiuser_approval_and_user_drugs"
+      "name": "phase6_multiuser_approval_and_user_drugs",
+      "version": "20260820053342"
     },
     {
-      "version": "20260820081645",
-      "name": "professional_verification_hardening"
+      "name": "professional_verification_hardening",
+      "version": "20260820081645"
     },
     {
-      "version": "20260820081750",
-      "name": "server_only_rls_and_verification_index"
+      "name": "server_only_rls_and_verification_index",
+      "version": "20260820081750"
     },
     {
-      "version": "20260820082755",
-      "name": "active_profiles_require_verified_document"
+      "name": "active_profiles_require_verified_document",
+      "version": "20260820082755"
     },
     {
-      "version": "20260820103539",
-      "name": "professional_title_and_document_kind"
+      "name": "professional_title_and_document_kind",
+      "version": "20260820103539"
     },
     {
-      "version": "20260820110739",
-      "name": "restrict_admin_role_to_owner_email"
+      "name": "restrict_admin_role_to_owner_email",
+      "version": "20260820110739"
     },
     {
-      "version": "20260821141518",
-      "name": "optimize_drug_registry_search_and_sort"
+      "name": "optimize_drug_registry_search_and_sort",
+      "version": "20260821141518"
     },
     {
-      "version": "20260821142422",
-      "name": "optimize_drug_registry_advanced_filters"
+      "name": "optimize_drug_registry_advanced_filters",
+      "version": "20260821142422"
     },
     {
-      "version": "20260821143031",
-      "name": "optimize_drug_global_search_candidates"
+      "name": "optimize_drug_global_search_candidates",
+      "version": "20260821143031"
     },
     {
-      "version": "20260825222814",
-      "name": "add_published_drugs_pdid_lookup_index"
+      "name": "add_published_drugs_pdid_lookup_index",
+      "version": "20260825222814"
     },
     {
-      "version": "20260827094126",
-      "name": "substance_canonical_key_and_aliases"
+      "name": "substance_canonical_key_and_aliases",
+      "version": "20260827094126"
     },
     {
-      "version": "20260827094417",
-      "name": "seed_substance_aliases_reviewed"
+      "name": "seed_substance_aliases_reviewed",
+      "version": "20260827094417"
     },
     {
-      "version": "20260827095121",
-      "name": "seed_substance_merge_rejections"
+      "name": "seed_substance_merge_rejections",
+      "version": "20260827095121"
     },
     {
-      "version": "20260827095326",
-      "name": "substance_aliases_round_two"
+      "name": "substance_aliases_round_two",
+      "version": "20260827095326"
     },
     {
-      "version": "20260827100011",
-      "name": "substance_canonical_views"
+      "name": "substance_canonical_views",
+      "version": "20260827100011"
     },
     {
-      "version": "20260827111357",
-      "name": "native_user_notes_and_profile_avatars"
+      "name": "native_user_notes_and_profile_avatars",
+      "version": "20260827111357"
     },
     {
-      "version": "20260827122525",
-      "name": "substance_canonicalization_governance"
+      "name": "substance_canonicalization_governance",
+      "version": "20260827122525"
     },
     {
-      "version": "20260827123032",
-      "name": "substance_canonicalization_final_review"
+      "name": "substance_canonicalization_final_review",
+      "version": "20260827123032"
     },
     {
-      "version": "20260827124402",
-      "name": "p0_integrity_pipeline_coverage"
+      "name": "p0_integrity_pipeline_coverage",
+      "version": "20260827124402"
     },
     {
-      "version": "20260827130837",
-      "name": "p1_clinical_substance_identity_foundation"
+      "name": "p1_clinical_substance_identity_foundation",
+      "version": "20260827130837"
     },
     {
-      "version": "20260827131825",
-      "name": "p1_component_aliases_and_refresh"
+      "name": "p1_component_aliases_and_refresh",
+      "version": "20260827131825"
     },
     {
-      "version": "20260827132647",
-      "name": "p1_safe_and_connector_resolution"
+      "name": "p1_safe_and_connector_resolution",
+      "version": "20260827132647"
     },
     {
-      "version": "20260827133439",
-      "name": "p1_official_component_promotions"
+      "name": "p1_official_component_promotions",
+      "version": "20260827133439"
     },
     {
-      "version": "20260827133920",
-      "name": "p1_official_component_batch_two"
+      "name": "p1_official_component_batch_two",
+      "version": "20260827133920"
     },
     {
-      "version": "20260827135130",
-      "name": "p1_official_components_and_amino_acids"
+      "name": "p1_official_components_and_amino_acids",
+      "version": "20260827135130"
     },
     {
-      "version": "20260827135634",
-      "name": "p1_exact_forms_and_electrolytes"
+      "name": "p1_exact_forms_and_electrolytes",
+      "version": "20260827135634"
     },
     {
-      "version": "20260827140113",
-      "name": "p1_long_tail_verified_components"
+      "name": "p1_long_tail_verified_components",
+      "version": "20260827140113"
     },
     {
-      "version": "20260827140805",
-      "name": "p1_verified_synonyms_and_precise_forms"
+      "name": "p1_verified_synonyms_and_precise_forms",
+      "version": "20260827140805"
     },
     {
-      "version": "20260827141131",
-      "name": "p1_verified_long_tail_batch_three"
+      "name": "p1_verified_long_tail_batch_three",
+      "version": "20260827141131"
     },
     {
-      "version": "20260827141454",
-      "name": "p1_official_long_tail_batch_four"
+      "name": "p1_official_long_tail_batch_four",
+      "version": "20260827141454"
     },
     {
-      "version": "20260827141828",
-      "name": "p1_verified_typo_and_precise_salt_batch"
+      "name": "p1_verified_typo_and_precise_salt_batch",
+      "version": "20260827141828"
     },
     {
-      "version": "20260827142058",
-      "name": "p1_verified_exact_identity_batch_five"
+      "name": "p1_verified_exact_identity_batch_five",
+      "version": "20260827142058"
     },
     {
-      "version": "20260827142405",
-      "name": "p1_verified_exact_compounds_batch_six"
+      "name": "p1_verified_exact_compounds_batch_six",
+      "version": "20260827142405"
     },
     {
-      "version": "20260827142650",
-      "name": "p1_precise_chlorhexidine_and_penicillin"
+      "name": "p1_precise_chlorhexidine_and_penicillin",
+      "version": "20260827142650"
     },
     {
-      "version": "20260827143750",
-      "name": "p1_security_and_verified_tail"
+      "name": "p1_security_and_verified_tail",
+      "version": "20260827143750"
     },
     {
-      "version": "20260827144343",
-      "name": "p1_explicit_expression_normalization"
+      "name": "p1_explicit_expression_normalization",
+      "version": "20260827144343"
     },
     {
-      "version": "20260827144718",
-      "name": "p1_deterministic_alias_cleanup"
+      "name": "p1_deterministic_alias_cleanup",
+      "version": "20260827144718"
     },
     {
-      "version": "20260827145654",
-      "name": "p1_duplicate_component_identity_collapse"
+      "name": "p1_duplicate_component_identity_collapse",
+      "version": "20260827145654"
     },
     {
-      "version": "20260827145710",
-      "name": "p1_base_ingredient_identities"
+      "name": "p1_base_ingredient_identities",
+      "version": "20260827145710"
     },
     {
-      "version": "20260827155937",
-      "name": "p1_reviewed_equivalence_expressions"
+      "name": "p1_reviewed_equivalence_expressions",
+      "version": "20260827155937"
     },
     {
-      "version": "20260827163438",
-      "name": "p1_long_tail_component_identities"
+      "name": "p1_long_tail_component_identities",
+      "version": "20260827163438"
     },
     {
-      "version": "20260827164722",
-      "name": "p1_make_equivalence_guard_live"
+      "name": "p1_make_equivalence_guard_live",
+      "version": "20260827164722"
     },
     {
-      "version": "20260827221057",
-      "name": "p1_exit_integrity_and_privileges"
+      "name": "p1_exit_integrity_and_privileges",
+      "version": "20260827221057"
     },
     {
-      "version": "20260827221219",
-      "name": "p1_exit_revoke_inert_view_write_grants"
+      "name": "p1_exit_revoke_inert_view_write_grants",
+      "version": "20260827221219"
     },
     {
-      "version": "20260828000815",
-      "name": "p1_exit_runtime_hardening"
+      "name": "p1_exit_runtime_hardening",
+      "version": "20260828000815"
     },
     {
-      "version": "20260828214754",
-      "name": "add_lab_indication_order_builder"
+      "name": "add_lab_indication_order_builder",
+      "version": "20260828214754"
     },
     {
-      "version": "20260828215737",
-      "name": "correct_liver_panel_alp_mapping"
+      "name": "correct_liver_panel_alp_mapping",
+      "version": "20260828215737"
     },
     {
-      "version": "20260828221042",
-      "name": "harden_lab_indication_integrity"
+      "name": "harden_lab_indication_integrity",
+      "version": "20260828221042"
     },
     {
-      "version": "20260828222548",
-      "name": "add_prescription_chapters_and_folder_metadata"
+      "name": "add_prescription_chapters_and_folder_metadata",
+      "version": "20260828222548"
     },
     {
-      "version": "20260829002018",
-      "name": "harden_dose_rule_publication_gate"
+      "name": "harden_dose_rule_publication_gate",
+      "version": "20260829002018"
     },
     {
-      "version": "20260829002859",
-      "name": "phase1_public_read_hardening"
+      "name": "phase1_public_read_hardening",
+      "version": "20260829002859"
     },
     {
-      "version": "20260829003649",
-      "name": "phase1_publication_and_default_grant_hardening"
+      "name": "phase1_publication_and_default_grant_hardening",
+      "version": "20260829003649"
     },
     {
-      "version": "20260829003744",
-      "name": "phase1_default_maintain_hardening"
+      "name": "phase1_default_maintain_hardening",
+      "version": "20260829003744"
     },
     {
-      "version": "20260829005849",
-      "name": "phase2_shallow_registry_read_model"
+      "name": "phase2_shallow_registry_read_model",
+      "version": "20260829005849"
     },
     {
-      "version": "20260829010508",
-      "name": "phase3_ranked_registry_search_v2"
+      "name": "phase3_ranked_registry_search_v2",
+      "version": "20260829010508"
     },
     {
-      "version": "20260829011139",
-      "name": "phase4_incremental_ingredient_refresh"
+      "name": "phase4_incremental_ingredient_refresh",
+      "version": "20260829011139"
     },
     {
-      "version": "20260829011529",
-      "name": "phase4_targeted_incremental_resolver"
+      "name": "phase4_targeted_incremental_resolver",
+      "version": "20260829011529"
     },
     {
-      "version": "20260829011924",
-      "name": "phase4_resolution_review_reason_guard"
+      "name": "phase4_resolution_review_reason_guard",
+      "version": "20260829011924"
     },
     {
-      "version": "20260829012500",
-      "name": "phase5_system_health_snapshot"
+      "name": "phase5_system_health_snapshot",
+      "version": "20260829012500"
     },
     {
-      "version": "20260829131545",
-      "name": "drx_dose_v3_additive_shadow_schema"
+      "name": "drx_dose_v3_additive_shadow_schema",
+      "version": "20260829131545"
     },
     {
-      "version": "20260829145424",
-      "name": "drx_v3_cover_foreign_keys"
+      "name": "drx_v3_cover_foreign_keys",
+      "version": "20260829145424"
     },
     {
-      "version": "20260829151516",
-      "name": "drx_v3_service_ingestion_grants"
+      "name": "drx_v3_service_ingestion_grants",
+      "version": "20260829151516"
     },
     {
-      "version": "20260829213000",
-      "name": "drx_v3_allow_composition_section"
+      "name": "drx_v3_allow_composition_section",
+      "version": "20260829213000"
     },
     {
-      "version": "20260829222409",
-      "name": "drx_v3_snapshot_insert_grant"
+      "name": "drx_v3_snapshot_insert_grant",
+      "version": "20260829222409"
     },
     {
-      "version": "20260830123219",
-      "name": "drx_phase1_rpc_metadata_and_stage_hardening"
+      "name": "drx_phase1_rpc_metadata_and_stage_hardening",
+      "version": "20260830123219"
     },
     {
-      "version": "20260830142544",
-      "name": "drx_phase2_immutable_registry_ledger"
+      "name": "drx_phase2_immutable_registry_ledger",
+      "version": "20260830142544"
     },
     {
-      "version": "20260830143037",
-      "name": "drx_phase2_correction_matching_guard"
+      "name": "drx_phase2_correction_matching_guard",
+      "version": "20260830143037"
     },
     {
-      "version": "20260830144344",
-      "name": "drx_phase2_chunked_correction_ingestion"
+      "name": "drx_phase2_chunked_correction_ingestion",
+      "version": "20260830144344"
     },
     {
-      "version": "20260830144659",
-      "name": "drx_phase2_immutable_registry_ledger"
+      "name": "drx_phase2_immutable_registry_ledger",
+      "version": "20260830144659"
     },
     {
-      "version": "20260830144950",
-      "name": "drx_phase2_generated_projection_parity"
+      "name": "drx_phase2_generated_projection_parity",
+      "version": "20260830144950"
     },
     {
-      "version": "20260830145540",
-      "name": "drx_phase2_remove_redundant_registry_batch"
+      "name": "drx_phase2_remove_redundant_registry_batch",
+      "version": "20260830145540"
     },
     {
-      "version": "20260830151016",
-      "name": "drx_phase3_normalization_core"
+      "name": "drx_phase3_normalization_core",
+      "version": "20260830151016"
     },
     {
-      "version": "20260830152739",
-      "name": "drx_phase3_normalization_gate_hardening"
+      "name": "drx_phase3_normalization_gate_hardening",
+      "version": "20260830152739"
     },
     {
-      "version": "20260830154341",
-      "name": "drx_phase4_identity_namespace_core"
+      "name": "drx_phase4_identity_namespace_core",
+      "version": "20260830154341"
     },
     {
-      "version": "20260830154611",
-      "name": "drx_phase4_preferred_identity_term_hardening"
+      "name": "drx_phase4_preferred_identity_term_hardening",
+      "version": "20260830154611"
     },
     {
-      "version": "20260830155021",
-      "name": "drx_phase4_component_identity_closure"
+      "name": "drx_phase4_component_identity_closure",
+      "version": "20260830155021"
     },
     {
-      "version": "20260830155203",
-      "name": "drx_phase4_component_provenance_hardening"
+      "name": "drx_phase4_component_provenance_hardening",
+      "version": "20260830155203"
     },
     {
-      "version": "20260830160106",
-      "name": "drx_phase5_clinical_variants_market_products"
+      "name": "drx_phase5_clinical_variants_market_products",
+      "version": "20260830160106"
     },
     {
-      "version": "20260830161215",
-      "name": "drx_phase6a_regulatory_provenance_core"
+      "name": "drx_phase6a_regulatory_provenance_core",
+      "version": "20260830161215"
     },
     {
-      "version": "20260830161241",
-      "name": "drx_phase6b_atc_variant_classification"
+      "name": "drx_phase6b_atc_variant_classification",
+      "version": "20260830161241"
     },
     {
-      "version": "20260830161329",
-      "name": "drx_phase6c_indication_safety_gate"
+      "name": "drx_phase6c_indication_safety_gate",
+      "version": "20260830161329"
     },
     {
-      "version": "20260830162033",
-      "name": "drx_phase7a_dosing_evidence_publication_guards"
+      "name": "drx_phase7a_dosing_evidence_publication_guards",
+      "version": "20260830162033"
     },
     {
-      "version": "20260830162151",
-      "name": "drx_phase6d_boundary_aware_source_identity_candidates"
+      "name": "drx_phase6d_boundary_aware_source_identity_candidates",
+      "version": "20260830162151"
     },
     {
-      "version": "20260830163000",
-      "name": "drx_phase8_shadow_read_model_parity_core"
+      "name": "drx_phase8_shadow_read_model_parity_core",
+      "version": "20260830163000"
     },
     {
-      "version": "20260830163913",
-      "name": "drx_phase8b_review_candidates_exit_gate_hardening"
+      "name": "drx_phase8b_review_candidates_exit_gate_hardening",
+      "version": "20260830163913"
     },
     {
-      "version": "20260830164615",
-      "name": "drx_phase6e_same_hash_source_identity_resolution"
+      "name": "drx_phase6e_same_hash_source_identity_resolution",
+      "version": "20260830164615"
     },
     {
-      "version": "20260830165007",
-      "name": "drx_phase8c_product_source_review_evidence"
+      "name": "drx_phase8c_product_source_review_evidence",
+      "version": "20260830165007"
     },
     {
-      "version": "20260830165050",
-      "name": "drx_phase8d_review_evidence_status_hardening"
+      "name": "drx_phase8d_review_evidence_status_hardening",
+      "version": "20260830165050"
     },
     {
-      "version": "20260830165536",
-      "name": "drx_phase8e_cover_drx_foreign_keys"
+      "name": "drx_phase8e_cover_drx_foreign_keys",
+      "version": "20260830165536"
     },
     {
-      "version": "20260830170022",
-      "name": "drx_phase8f_exact_market_product_review_gate"
+      "name": "drx_phase8f_exact_market_product_review_gate",
+      "version": "20260830170022"
     },
     {
-      "version": "20260830170127",
-      "name": "drx_phase8g_exact_product_status_contract"
+      "name": "drx_phase8g_exact_product_status_contract",
+      "version": "20260830170127"
     },
     {
-      "version": "20260830171643",
-      "name": "drx_phase8h_published_v2_exact_source_discovery"
+      "name": "drx_phase8h_published_v2_exact_source_discovery",
+      "version": "20260830171643"
     },
     {
-      "version": "20260830171727",
-      "name": "drx_phase8i_pilot_comparator_status_contract"
+      "name": "drx_phase8i_pilot_comparator_status_contract",
+      "version": "20260830171727"
     },
     {
-      "version": "20260830174925",
-      "name": "drx_phase8j_exact_source_capture_pipeline"
+      "name": "drx_phase8j_exact_source_capture_pipeline",
+      "version": "20260830174925"
     },
     {
-      "version": "20260830175458",
-      "name": "drx_phase8k_exact_source_capture_status_gate"
+      "name": "drx_phase8k_exact_source_capture_status_gate",
+      "version": "20260830175458"
     },
     {
-      "version": "20260830180217",
-      "name": "drx_phase8l_scope_phase6_sources_after_exact_capture"
+      "name": "drx_phase8l_scope_phase6_sources_after_exact_capture",
+      "version": "20260830180217"
     },
     {
-      "version": "20260830192720",
-      "name": "drx_phase8m_clinical_reference_pipeline"
+      "name": "drx_phase8m_clinical_reference_pipeline",
+      "version": "20260830192720"
     },
     {
-      "version": "20260830192855",
-      "name": "drx_phase8n_exact_product_identity_review"
+      "name": "drx_phase8n_exact_product_identity_review",
+      "version": "20260830192855"
     },
     {
-      "version": "20260830195641",
-      "name": "drx_phase8o_clinical_review_control"
+      "name": "drx_phase8o_clinical_review_control",
+      "version": "20260830195641"
     },
     {
-      "version": "20260830195959",
-      "name": "drx_phase8p_clinical_reference_fk_index"
+      "name": "drx_phase8p_clinical_reference_fk_index",
+      "version": "20260830195959"
     },
     {
-      "version": "20260830201012",
-      "name": "drx_phase8p_pilot_build_preflight"
+      "name": "drx_phase8p_pilot_build_preflight",
+      "version": "20260830201012"
     },
     {
-      "version": "20260830201638",
-      "name": "drx_phase8q_search_index_hardening"
+      "name": "drx_phase8q_search_index_hardening",
+      "version": "20260830201638"
     },
     {
-      "version": "20260830202332",
-      "name": "drx_phase8r_server_performance_probe"
+      "name": "drx_phase8r_server_performance_probe",
+      "version": "20260830202332"
     },
     {
-      "version": "20260830204339",
-      "name": "drx_phase8s_exact_smpc_findings"
+      "name": "drx_phase8s_exact_smpc_findings",
+      "version": "20260830204339"
     },
     {
-      "version": "20260830204847",
-      "name": "drx_phase8t_clinical_finding_review_control"
+      "name": "drx_phase8t_clinical_finding_review_control",
+      "version": "20260830204847"
     },
     {
-      "version": "20260830205203",
-      "name": "drx_phase8u_paracetamol_clinical_reference_alignment"
+      "name": "drx_phase8u_paracetamol_clinical_reference_alignment",
+      "version": "20260830205203"
     },
     {
-      "version": "20260830205514",
-      "name": "drx_phase8v_clinical_finding_snapshot_index"
+      "name": "drx_phase8v_clinical_finding_snapshot_index",
+      "version": "20260830205514"
     },
     {
-      "version": "20260830210058",
-      "name": "drx_phase8w_pilot_clinical_provenance_bridge"
+      "name": "drx_phase8w_pilot_clinical_provenance_bridge",
+      "version": "20260830210058"
     },
     {
-      "version": "20260830210940",
-      "name": "drx_phase8x_clinical_reference_finality_guard"
+      "name": "drx_phase8x_clinical_reference_finality_guard",
+      "version": "20260830210940"
     },
     {
-      "version": "20260830211016",
-      "name": "drx_phase8y_clinical_provenance_refresh"
+      "name": "drx_phase8y_clinical_provenance_refresh",
+      "version": "20260830211016"
     },
     {
-      "version": "20260830211052",
-      "name": "drx_phase8x_provenance_scope_repair"
+      "name": "drx_phase8x_provenance_scope_repair",
+      "version": "20260830211052"
     },
     {
-      "version": "20260830213146",
-      "name": "drx_phase8z_pilot_publication_scaffolding"
+      "name": "drx_phase8z_pilot_publication_scaffolding",
+      "version": "20260830213146"
     },
     {
-      "version": "20260830213349",
-      "name": "drx_phase8za_reviewed_v3_pilot_materialization"
+      "name": "drx_phase8za_reviewed_v3_pilot_materialization",
+      "version": "20260830213349"
     },
     {
-      "version": "20260830213550",
-      "name": "drx_phase8zb_reviewed_shadow_exit_gate"
+      "name": "drx_phase8zb_reviewed_shadow_exit_gate",
+      "version": "20260830213550"
     },
     {
-      "version": "20260830213647",
-      "name": "drx_phase8zc_cover_pilot_foreign_keys"
+      "name": "drx_phase8zc_cover_pilot_foreign_keys",
+      "version": "20260830213647"
     },
     {
-      "version": "20260830213708",
-      "name": "drx_phase8zd_cover_pilot_release_fk"
+      "name": "drx_phase8zd_cover_pilot_release_fk",
+      "version": "20260830213708"
     },
     {
-      "version": "20260830214025",
-      "name": "drx_phase8ze_restore_fast_path_service_grant"
+      "name": "drx_phase8ze_restore_fast_path_service_grant",
+      "version": "20260830214025"
     },
     {
-      "version": "20260830215626",
-      "name": "drx_phase8zf_fast_path_security_definer"
+      "name": "drx_phase8zf_fast_path_security_definer",
+      "version": "20260830215626"
     },
     {
-      "version": "20260830220141",
-      "name": "drx_phase9a_personal_entity_storage"
+      "name": "drx_phase9a_personal_entity_storage",
+      "version": "20260830220141"
     },
     {
-      "version": "20260830220957",
-      "name": "drx_phase9d_product_context"
+      "name": "drx_phase9d_product_context",
+      "version": "20260830220957"
     },
     {
-      "version": "20260830221548",
-      "name": "drx_phase9e_frontend_foundation_status"
+      "name": "drx_phase9e_frontend_foundation_status",
+      "version": "20260830221548"
     },
     {
-      "version": "20260830223039",
-      "name": "drx_phase9f_status_single_phase8_evaluation"
+      "name": "drx_phase9f_status_single_phase8_evaluation",
+      "version": "20260830223039"
     },
     {
-      "version": "20260830224240",
-      "name": "drx_phase9g_technical_qa_exit_evidence"
+      "name": "drx_phase9g_technical_qa_exit_evidence",
+      "version": "20260830224240"
     },
     {
-      "version": "20260830225726",
-      "name": "drx_phase9h_materialized_phase8_exit_evidence"
+      "name": "drx_phase9h_materialized_phase8_exit_evidence",
+      "version": "20260830225726"
     },
     {
-      "version": "20260830230458",
-      "name": "drx_phase10a_cutover_control_and_legacy_write_audit"
+      "name": "drx_phase10a_cutover_control_and_legacy_write_audit",
+      "version": "20260830230458"
     },
     {
-      "version": "20260830231042",
-      "name": "drx_phase10b_controlled_traffic_plumbing"
+      "name": "drx_phase10b_controlled_traffic_plumbing",
+      "version": "20260830231042"
     },
     {
-      "version": "20260830231548",
-      "name": "drx_phase10c_golden_and_parity_evidence"
+      "name": "drx_phase10c_golden_and_parity_evidence",
+      "version": "20260830231548"
     },
     {
-      "version": "20260831045759",
-      "name": "drx_phase10a_cutover_control_plane"
+      "name": "drx_phase10a_cutover_control_plane",
+      "version": "20260831045759"
     },
     {
-      "version": "20260831050214",
-      "name": "drx_phase10d_reconcile_parallel_control_plane"
+      "name": "drx_phase10d_reconcile_parallel_control_plane",
+      "version": "20260831050214"
     },
     {
-      "version": "20260831050641",
-      "name": "drx_phase10e_security_and_legacy_write_evidence"
+      "name": "drx_phase10e_security_and_legacy_write_evidence",
+      "version": "20260831050641"
     },
     {
-      "version": "20260831051258",
-      "name": "drx_phase10f_controlled_rollback_drill"
+      "name": "drx_phase10f_controlled_rollback_drill",
+      "version": "20260831051258"
     },
     {
-      "version": "20260831051755",
-      "name": "drx_phase10g_stable_traffic_bucket"
+      "name": "drx_phase10g_stable_traffic_bucket",
+      "version": "20260831051755"
     },
     {
-      "version": "20260831052414",
-      "name": "drx_phase10h_controlled_soak_start"
+      "name": "drx_phase10h_controlled_soak_start",
+      "version": "20260831052414"
     },
     {
-      "version": "20260831052948",
-      "name": "drx_phase10i_soak_observability"
+      "name": "drx_phase10i_soak_observability",
+      "version": "20260831052948"
     },
     {
-      "version": "20260831053832",
-      "name": "drx_phase10j_pediatric_v3_calculator_metadata"
+      "name": "drx_phase10j_pediatric_v3_calculator_metadata",
+      "version": "20260831053832"
     },
     {
-      "version": "20260831060712",
-      "name": "drx_phase10k_restore_test_evidence"
+      "name": "drx_phase10k_restore_test_evidence",
+      "version": "20260831060712"
     },
     {
-      "version": "20260831061925",
-      "name": "drx_phase10l_legacy_retirement_preflight_rpc"
+      "name": "drx_phase10l_legacy_retirement_preflight_rpc",
+      "version": "20260831061925"
     },
     {
-      "version": "20260831062943",
-      "name": "drx_phase10m_strict_activation_gate"
+      "name": "drx_phase10m_strict_activation_gate",
+      "version": "20260831062943"
     },
     {
-      "version": "20260831073232",
-      "name": "drx_phase11_substance_centric_dosing_pipeline"
+      "name": "drx_phase11_substance_centric_dosing_pipeline",
+      "version": "20260831073232"
     },
     {
-      "version": "20260831073535",
-      "name": "drx_phase11b_pilot_targets_and_promotion_queue"
+      "name": "drx_phase11b_pilot_targets_and_promotion_queue",
+      "version": "20260831073535"
     },
     {
-      "version": "20260831074212",
-      "name": "drx_phase11c_fill_workflow_and_draft_promotion"
+      "name": "drx_phase11c_fill_workflow_and_draft_promotion",
+      "version": "20260831074212"
     },
     {
-      "version": "20260831093924",
-      "name": "drx_phase11d_restriction_classifier_hardening"
+      "name": "drx_phase11d_restriction_classifier_hardening",
+      "version": "20260831093924"
     },
     {
-      "version": "20260831094035",
-      "name": "drx_phase11e_priority_work_queues"
+      "name": "drx_phase11e_priority_work_queues",
+      "version": "20260831094035"
     },
     {
-      "version": "20260831094554",
-      "name": "drx_phase11f_emc_10877_source_capture"
+      "name": "drx_phase11f_emc_10877_source_capture",
+      "version": "20260831094554"
     },
     {
-      "version": "20260831094752",
-      "name": "drx_phase11g_parser_fixed_measure_expansion"
+      "name": "drx_phase11g_parser_fixed_measure_expansion",
+      "version": "20260831094752"
     },
     {
-      "version": "20260831094913",
-      "name": "drx_phase11h_indication_staging_and_gate_hardening"
+      "name": "drx_phase11h_indication_staging_and_gate_hardening",
+      "version": "20260831094913"
     },
     {
-      "version": "20260831095113",
-      "name": "drx_phase11i_source_classification_and_replacement_queue"
+      "name": "drx_phase11i_source_classification_and_replacement_queue",
+      "version": "20260831095113"
     },
     {
-      "version": "20260831095519",
-      "name": "drx_phase11j_evidence_backed_dose_moiety_layer"
+      "name": "drx_phase11j_evidence_backed_dose_moiety_layer",
+      "version": "20260831095519"
     },
     {
-      "version": "20260831095553",
-      "name": "drx_phase11k_null_safe_source_queue_filter"
+      "name": "drx_phase11k_null_safe_source_queue_filter",
+      "version": "20260831095553"
     },
     {
-      "version": "20260831095946",
-      "name": "drx_phase11l_source_index_classification"
+      "name": "drx_phase11l_source_index_classification",
+      "version": "20260831095946"
     },
     {
-      "version": "20260831100100",
-      "name": "drx_phase11m_emc_102127_ceftriaxone_capture"
+      "name": "drx_phase11m_emc_102127_ceftriaxone_capture",
+      "version": "20260831100100"
     },
     {
-      "version": "20260831100501",
-      "name": "drx_phase11n_exact_source_overrides_hemomycin"
+      "name": "drx_phase11n_exact_source_overrides_hemomycin",
+      "version": "20260831100501"
     },
     {
-      "version": "20260831100532",
-      "name": "drx_phase11o_restore_extended_status"
+      "name": "drx_phase11o_restore_extended_status",
+      "version": "20260831100532"
     },
     {
-      "version": "20260831100734",
-      "name": "drx_phase11p_emc_14722_desloratadine_capture"
+      "name": "drx_phase11p_emc_14722_desloratadine_capture",
+      "version": "20260831100734"
     },
     {
-      "version": "20260831101757",
-      "name": "drx_phase11q_rivaroxaban_10_15_20_emc_capture"
+      "name": "drx_phase11q_rivaroxaban_10_15_20_emc_capture",
+      "version": "20260831101757"
     },
     {
-      "version": "20260831102104",
-      "name": "drx_phase11r_source_first_complex_regimen_staging"
+      "name": "drx_phase11r_source_first_complex_regimen_staging",
+      "version": "20260831102104"
     },
     {
-      "version": "20260831102222",
-      "name": "drx_phase11s_simple_regimen_and_source_restriction_staging"
+      "name": "drx_phase11s_simple_regimen_and_source_restriction_staging",
+      "version": "20260831102222"
     },
     {
-      "version": "20260831102305",
-      "name": "drx_phase11t_source_backed_draft_indications"
+      "name": "drx_phase11t_source_backed_draft_indications",
+      "version": "20260831102305"
     },
     {
-      "version": "20260831102424",
-      "name": "drx_phase11u_source_adjustment_staging"
+      "name": "drx_phase11u_source_adjustment_staging",
+      "version": "20260831102424"
     },
     {
-      "version": "20260831102613",
-      "name": "drx_phase11v_fill_once_target_context_architecture"
+      "name": "drx_phase11v_fill_once_target_context_architecture",
+      "version": "20260831102613"
     },
     {
-      "version": "20260831102817",
-      "name": "drx_phase11w_generalize_safety_targets_to_combinations"
+      "name": "drx_phase11w_generalize_safety_targets_to_combinations",
+      "version": "20260831102817"
     },
     {
-      "version": "20260831102921",
-      "name": "drx_phase11x_strength_aware_coamoxiclav_combo_staging"
+      "name": "drx_phase11x_strength_aware_coamoxiclav_combo_staging",
+      "version": "20260831102921"
     },
     {
-      "version": "20260831103205",
-      "name": "drx_phase11y_unresolved_target_disposition_and_coverage"
+      "name": "drx_phase11y_unresolved_target_disposition_and_coverage",
+      "version": "20260831103205"
     },
     {
-      "version": "20260831103630",
-      "name": "drx_phase11z_identity_repair_proposal_staging"
+      "name": "drx_phase11z_identity_repair_proposal_staging",
+      "version": "20260831103630"
     },
     {
-      "version": "20260831103731",
-      "name": "drx_phase11aa_stage_to_public_identity_link_staging"
+      "name": "drx_phase11aa_stage_to_public_identity_link_staging",
+      "version": "20260831103731"
     },
     {
-      "version": "20260831103906",
-      "name": "drx_phase11ab_fill_once_workboard_and_status"
+      "name": "drx_phase11ab_fill_once_workboard_and_status",
+      "version": "20260831103906"
     },
     {
-      "version": "20260831104100",
-      "name": "drx_phase11ac_ceftriaxone_source_regimens"
+      "name": "drx_phase11ac_ceftriaxone_source_regimens",
+      "version": "20260831104100"
     },
     {
-      "version": "20260831105123",
-      "name": "drx_phase11ad_ibuprofen_emc_product_scope_capture"
+      "name": "drx_phase11ad_ibuprofen_emc_product_scope_capture",
+      "version": "20260831105123"
     },
     {
-      "version": "20260831105331",
-      "name": "drx_phase11ae_ibuprofen_scoped_regimens_and_applicability"
+      "name": "drx_phase11ae_ibuprofen_scoped_regimens_and_applicability",
+      "version": "20260831105331"
     },
     {
-      "version": "20260831105545",
-      "name": "drx_phase11af_azithromycin_reusable_regimens"
+      "name": "drx_phase11af_azithromycin_reusable_regimens",
+      "version": "20260831105545"
     },
     {
-      "version": "20260831105930",
-      "name": "drx_phase11ag_diclofenac_route_form_regimens"
+      "name": "drx_phase11ag_diclofenac_route_form_regimens",
+      "version": "20260831105930"
     },
     {
-      "version": "20260831110121",
-      "name": "drx_phase11ah_amoxicillin_concordant_sources"
+      "name": "drx_phase11ah_amoxicillin_concordant_sources",
+      "version": "20260831110121"
     },
     {
-      "version": "20260831110241",
-      "name": "drx_phase11ai_amoxicillin_reusable_multi_indication_regimens"
+      "name": "drx_phase11ai_amoxicillin_reusable_multi_indication_regimens",
+      "version": "20260831110241"
     },
     {
-      "version": "20260831110704",
-      "name": "drx_phase11aj_pantoprazole_20_40_emc_capture"
+      "name": "drx_phase11aj_pantoprazole_20_40_emc_capture",
+      "version": "20260831110704"
     },
     {
-      "version": "20260831110839",
-      "name": "drx_phase11ak_pantoprazole_moiety_and_oral_regimens"
+      "name": "drx_phase11ak_pantoprazole_moiety_and_oral_regimens",
+      "version": "20260831110839"
     },
     {
-      "version": "20260831111414",
-      "name": "drx_phase11al_rule_product_inheritance_review_layer"
+      "name": "drx_phase11al_rule_product_inheritance_review_layer",
+      "version": "20260831111414"
     },
     {
-      "version": "20260831114151",
-      "name": "drx_phase11am_rivaroxaban_step_presentation_and_safety"
+      "name": "drx_phase11am_rivaroxaban_step_presentation_and_safety",
+      "version": "20260831114151"
     },
     {
-      "version": "20260831114311",
-      "name": "drx_phase11an_deduplicate_source_safety_candidates"
+      "name": "drx_phase11an_deduplicate_source_safety_candidates",
+      "version": "20260831114311"
     },
     {
-      "version": "20260831114412",
-      "name": "drx_phase11ao_scope_aware_duplicate_detection"
+      "name": "drx_phase11ao_scope_aware_duplicate_detection",
+      "version": "20260831114412"
     },
     {
-      "version": "20260831114635",
-      "name": "drx_phase11ap_clinical_review_packet_and_promotion_gate_v2"
+      "name": "drx_phase11ap_clinical_review_packet_and_promotion_gate_v2",
+      "version": "20260831114635"
     },
     {
-      "version": "20260831114715",
-      "name": "drx_phase11aq_primary_evidence_backfill_and_review_priority"
+      "name": "drx_phase11aq_primary_evidence_backfill_and_review_priority",
+      "version": "20260831114715"
     },
     {
-      "version": "20260831115011",
-      "name": "drx_phase11ar_indication_icd_candidate_review_staging"
+      "name": "drx_phase11ar_indication_icd_candidate_review_staging",
+      "version": "20260831115011"
     },
     {
-      "version": "20260831115113",
-      "name": "drx_phase11as_extended_operational_status"
+      "name": "drx_phase11as_extended_operational_status",
+      "version": "20260831115113"
     },
     {
-      "version": "20260831115350",
-      "name": "drx_phase11at_desloratadine_oral_solution_capture"
+      "name": "drx_phase11at_desloratadine_oral_solution_capture",
+      "version": "20260831115350"
     },
     {
-      "version": "20260831115635",
-      "name": "drx_phase11au_desloratadine_oral_solution_age_bands"
+      "name": "drx_phase11au_desloratadine_oral_solution_age_bands",
+      "version": "20260831115635"
     },
     {
-      "version": "20260831120101",
-      "name": "drx_phase11av_legacy_text_reuse_proposal_staging"
+      "name": "drx_phase11av_legacy_text_reuse_proposal_staging",
+      "version": "20260831120101"
     },
     {
-      "version": "20260831120242",
-      "name": "drx_phase11aw_ceftriaxone_disodium_active_moiety"
+      "name": "drx_phase11aw_ceftriaxone_disodium_active_moiety",
+      "version": "20260831120242"
     },
     {
-      "version": "20260831132518",
-      "name": "drx_phase11ax_completion_gates_and_review_batches"
+      "name": "drx_phase11ax_completion_gates_and_review_batches",
+      "version": "20260831132518"
     },
     {
-      "version": "20260831132652",
-      "name": "drx_phase11ay_combination_aware_review_batches"
+      "name": "drx_phase11ay_combination_aware_review_batches",
+      "version": "20260831132652"
     },
     {
-      "version": "20260831144807",
-      "name": "drx_phase11az_rule_materialization_preview"
+      "name": "drx_phase11az_rule_materialization_preview",
+      "version": "20260831144807"
     },
     {
-      "version": "20260831145147",
-      "name": "drx_phase11ba_rule_schema_sequence_condition_age_days"
+      "name": "drx_phase11ba_rule_schema_sequence_condition_age_days",
+      "version": "20260831145147"
     },
     {
-      "version": "20260831145321",
-      "name": "drx_phase11bb_safety_targeting_and_promotion_gate_v3"
+      "name": "drx_phase11bb_safety_targeting_and_promotion_gate_v3",
+      "version": "20260831145321"
     },
     {
-      "version": "20260831145634",
-      "name": "drx_phase11bc_source_regimen_prn_semantics"
+      "name": "drx_phase11bc_source_regimen_prn_semantics",
+      "version": "20260831145634"
     },
     {
-      "version": "20260831145755",
-      "name": "drx_phase11bd_gated_draft_rule_materializer"
+      "name": "drx_phase11bd_gated_draft_rule_materializer",
+      "version": "20260831145755"
     },
     {
-      "version": "20260831145832",
-      "name": "drx_phase11be_coamox_pediatric_component_rule_normalization"
+      "name": "drx_phase11be_coamox_pediatric_component_rule_normalization",
+      "version": "20260831145832"
     },
     {
-      "version": "20260831150244",
-      "name": "drx_phase11bf_v3_rpc_extended_regimen_fields"
+      "name": "drx_phase11bf_v3_rpc_extended_regimen_fields",
+      "version": "20260831150244"
     },
     {
-      "version": "20260831152824",
-      "name": "drx_phase11bg_canonical_rule_targets_and_numeric_strength"
+      "name": "drx_phase11bg_canonical_rule_targets_and_numeric_strength",
+      "version": "20260831152824"
     },
     {
-      "version": "20260831152852",
-      "name": "drx_phase11bh_source_regimen_product_inheritance_preview"
+      "name": "drx_phase11bh_source_regimen_product_inheritance_preview",
+      "version": "20260831152852"
     },
     {
-      "version": "20260831152943",
-      "name": "drx_phase11bi_gated_rule_target_stager"
+      "name": "drx_phase11bi_gated_rule_target_stager",
+      "version": "20260831152943"
     },
     {
-      "version": "20260831153017",
-      "name": "drx_phase11bj_product_shell_queue_and_candidate_binder"
+      "name": "drx_phase11bj_product_shell_queue_and_candidate_binder",
+      "version": "20260831153017"
     },
     {
-      "version": "20260831153315",
-      "name": "drx_phase11bk_split_calculator_text_only_completion"
+      "name": "drx_phase11bk_split_calculator_text_only_completion",
+      "version": "20260831153315"
     },
     {
-      "version": "20260831153909",
-      "name": "drx_phase11bl_identity_disposition_and_batch_review"
+      "name": "drx_phase11bl_identity_disposition_and_batch_review",
+      "version": "20260831153909"
     },
     {
-      "version": "20260831154148",
-      "name": "drx_phase11bm_completion_v3_and_review_workbench"
+      "name": "drx_phase11bm_completion_v3_and_review_workbench",
+      "version": "20260831154148"
     },
     {
-      "version": "20260831154455",
-      "name": "drx_phase11bn_exact_source_safety_scope"
+      "name": "drx_phase11bn_exact_source_safety_scope",
+      "version": "20260831154455"
     },
     {
-      "version": "20260831160114",
-      "name": "drx_phase11bo_safety_invariants_and_cutover_guard"
+      "name": "drx_phase11bo_safety_invariants_and_cutover_guard",
+      "version": "20260831160114"
     },
     {
-      "version": "20260831162108",
-      "name": "drx_phase11bp_admin_review_read_model"
+      "name": "drx_phase11bp_admin_review_read_model",
+      "version": "20260831162108"
     },
     {
-      "version": "20260831162250",
-      "name": "drx_phase11bq_detailed_review_packets"
+      "name": "drx_phase11bq_detailed_review_packets",
+      "version": "20260831162250"
     },
     {
-      "version": "20260831162751",
-      "name": "drx_phase11br_identity_candidate_suggestions"
+      "name": "drx_phase11br_identity_candidate_suggestions",
+      "version": "20260831162751"
     },
     {
-      "version": "20260831162947",
-      "name": "drx_phase11bs_icd_quality_gate_and_workbench_v2"
+      "name": "drx_phase11bs_icd_quality_gate_and_workbench_v2",
+      "version": "20260831162947"
     },
     {
-      "version": "20260831164041",
-      "name": "drx_phase11bt_review_provenance_and_item_actions"
+      "name": "drx_phase11bt_review_provenance_and_item_actions",
+      "version": "20260831164041"
     },
     {
-      "version": "20260831164124",
-      "name": "drx_phase11bu_indication_and_regimen_review_gates"
+      "name": "drx_phase11bu_indication_and_regimen_review_gates",
+      "version": "20260831164124"
     },
     {
-      "version": "20260831164500",
-      "name": "drx_phase11bv_clinical_approval_readiness_gate"
+      "name": "drx_phase11bv_clinical_approval_readiness_gate",
+      "version": "20260831164500"
     },
     {
-      "version": "20260831165237",
-      "name": "drx_phase11bw_review_action_ready_clinical_packet"
+      "name": "drx_phase11bw_review_action_ready_clinical_packet",
+      "version": "20260831165237"
     },
     {
-      "version": "20260831165355",
-      "name": "drx_phase11bx_source_scoped_safety_review_packet"
+      "name": "drx_phase11bx_source_scoped_safety_review_packet",
+      "version": "20260831165355"
     },
     {
-      "version": "20260831170423",
-      "name": "drx_phase11by_official_product_source_discovery"
+      "name": "drx_phase11by_official_product_source_discovery",
+      "version": "20260831170423"
     },
     {
-      "version": "20260831170534",
-      "name": "drx_phase11bz_source_aware_review_workbench_v3"
+      "name": "drx_phase11bz_source_aware_review_workbench_v3",
+      "version": "20260831170534"
     },
     {
-      "version": "20260831170726",
-      "name": "drx_phase11ca_product_identity_capture_review"
+      "name": "drx_phase11ca_product_identity_capture_review",
+      "version": "20260831170726"
     },
     {
-      "version": "20260831171019",
-      "name": "drx_phase11cb_product_identity_capture_workbench_v4"
+      "name": "drx_phase11cb_product_identity_capture_workbench_v4",
+      "version": "20260831171019"
     },
     {
-      "version": "20260831171501",
-      "name": "drx_phase11cc_gated_draft_product_shell_materializer"
+      "name": "drx_phase11cc_gated_draft_product_shell_materializer",
+      "version": "20260831171501"
     },
     {
-      "version": "20260831173642",
-      "name": "drx_phase11cd_safe_postreview_preparation_v2"
+      "name": "drx_phase11cd_safe_postreview_preparation_v2",
+      "version": "20260831173642"
     },
     {
-      "version": "20260831173815",
-      "name": "drx_phase11ce_postreview_workbench_v5"
+      "name": "drx_phase11ce_postreview_workbench_v5",
+      "version": "20260831173815"
     },
     {
-      "version": "20260831174238",
-      "name": "drx_phase11cf_prepared_rule_validation_and_review"
+      "name": "drx_phase11cf_prepared_rule_validation_and_review",
+      "version": "20260831174238"
     },
     {
-      "version": "20260831174523",
-      "name": "drx_phase11cg_prepared_rule_workbench_v6"
+      "name": "drx_phase11cg_prepared_rule_workbench_v6",
+      "version": "20260831174523"
     },
     {
-      "version": "20260831174721",
-      "name": "drx_phase11ch_verified_rule_binding_cycle_fix"
+      "name": "drx_phase11ch_verified_rule_binding_cycle_fix",
+      "version": "20260831174721"
     },
     {
-      "version": "20260831174845",
-      "name": "drx_phase11ci_exact_source_product_shell_verification"
+      "name": "drx_phase11ci_exact_source_product_shell_verification",
+      "version": "20260831174845"
     },
     {
-      "version": "20260831174933",
-      "name": "drx_phase11cj_end_to_end_review_workbench_v7"
+      "name": "drx_phase11cj_end_to_end_review_workbench_v7",
+      "version": "20260831174933"
     },
     {
-      "version": "20260831180622",
-      "name": "drx_phase11ck_adjustment_projection_and_publication_guard"
+      "name": "drx_phase11ck_adjustment_projection_and_publication_guard",
+      "version": "20260831180622"
     },
     {
-      "version": "20260831181135",
-      "name": "drx_phase11cl_adjustment_workbench_v8"
+      "name": "drx_phase11cl_adjustment_workbench_v8",
+      "version": "20260831181135"
     },
     {
-      "version": "20260831181656",
-      "name": "drx_phase11cm_adjustment_lazy_workbench"
+      "name": "drx_phase11cm_adjustment_lazy_workbench",
+      "version": "20260831181656"
     },
     {
-      "version": "20260831184114",
-      "name": "drx_phase11cn_legacy_parity_and_release_gate"
+      "name": "drx_phase11cn_legacy_parity_and_release_gate",
+      "version": "20260831184114"
     },
     {
-      "version": "20260831184612",
-      "name": "drx_phase11co_shadow_evidence_and_cutover_guard"
+      "name": "drx_phase11co_shadow_evidence_and_cutover_guard",
+      "version": "20260831184612"
     }
   ]
 }
