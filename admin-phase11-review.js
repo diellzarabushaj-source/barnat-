@@ -48,6 +48,9 @@
     const identity=Array.isArray(data?.identityBatches)?data.identityBatches:[];
     const clinical=Array.isArray(data?.clinicalBatches)?data.clinicalBatches:[];
     const shells=Array.isArray(data?.productShells)?data.productShells:[];
+    const prepared=Array.isArray(data?.preparedRules)?data.preparedRules:[];
+    const productVerification=Array.isArray(data?.productShellVerification)?data.productShellVerification:[];
+    const bindings=Array.isArray(data?.bindings)?data.bindings:[];
 
     if($('p11Foundation'))$('p11Foundation').textContent=completion.foundation_blockers??'—';
     if($('p11Clinical'))$('p11Clinical').textContent=completion.clinical_review_blockers??'—';
@@ -62,6 +65,9 @@
     if($('p11IdentityCount'))$('p11IdentityCount').textContent=`${identity.length} batches · ${counts.identityProducts||0} produkte`;
     if($('p11ClinicalCount'))$('p11ClinicalCount').textContent=`${clinical.length} batches · ${postReview.prepared_drafts_to_review||0} draft review`;
     if($('p11ShellCount'))$('p11ShellCount').textContent=`${shells.length} produkte`;
+    if($('p11PreparedCount'))$('p11PreparedCount').textContent=`${prepared.length} rules`;
+    if($('p11ProductVerificationCount'))$('p11ProductVerificationCount').textContent=`${productVerification.length} shells`;
+    if($('p11BindingCount'))$('p11BindingCount').textContent=`${bindings.length} bindings`;
 
     const identityRows=$('p11IdentityRows');
     if(identityRows){
@@ -113,6 +119,82 @@
           </td>
         </tr>`).join('')
         :'<tr><td colspan="4" class="is-empty">Nuk ka product-shell blockers.</td></tr>';
+    }
+
+    const preparedRows=$('p11PreparedRows');
+    if(preparedRows){
+      preparedRows.innerHTML=prepared.length?prepared.map(row=>{
+        const targets=Array.isArray(row.targets)?row.targets:[];
+        const pendingTarget=targets.find(t=>t.bindingStatus!=='VERIFIED'&&t.bindingStatus!=='RETIRED');
+        const targetStatus=targets.length?compactList(targets.map(t=>t.bindingStatus),3):'MISSING';
+        const blockers=Array.isArray(row.validationBlockers)?row.validationBlockers:[];
+        let action='<span class="mi-badge is-in_review">BLOCKED</span>';
+        if(row.editorialStatus==='draft'&&row.readyForStructuralValidation&&row.safetyValidationStatus!=='passed'){
+          action=`<button type="button" class="mi-row-btn" data-p11-prepared-validate="${esc(row.ruleId)}">Validate</button>`;
+        }else if(row.editorialStatus==='draft'&&row.safetyValidationStatus==='passed'&&pendingTarget){
+          action=`<span style="display:flex;gap:6px;flex-wrap:wrap">
+            <button type="button" class="mi-row-btn" data-p11-target-review="${esc(pendingTarget.ruleTargetId)}" data-p11-decision="VERIFIED">Verify target</button>
+            <button type="button" class="mi-row-btn" data-p11-target-review="${esc(pendingTarget.ruleTargetId)}" data-p11-decision="REJECTED">Reject target</button>
+          </span>`;
+        }else if(row.editorialStatus==='draft'&&row.readyForRuleReview){
+          action=`<button type="button" class="mi-row-btn" data-p11-prepared-review="${esc(row.ruleId)}">Verify rule</button>`;
+        }else if(row.editorialStatus==='verified'){
+          action=`<button type="button" class="mi-row-btn" data-p11-stage-bindings="${esc(row.ruleId)}">Stage bindings</button>`;
+        }else if(row.editorialStatus==='published'){
+          action='<span class="mi-badge is-verified">PUBLISHED</span>';
+        }
+        return `
+          <tr>
+            <td><strong>${esc(row.ruleKey||'—')}</strong><small>${esc(row.editorialStatus||'—')}</small></td>
+            <td>${esc(row.regimenKey||'—')}<small>B${esc(row.branchNo??'—')} / S${esc(row.stepNo??'—')}</small></td>
+            <td><span class="mi-badge ${row.safetyValidationStatus==='passed'?'is-verified':'is-in_review'}">${esc(row.safetyValidationStatus||'pending')}</span><small>${esc(compactList(blockers,3))}</small></td>
+            <td><span class="mi-badge is-in_review">${esc(targetStatus)}</span></td>
+            <td>${action}</td>
+          </tr>`;
+      }).join(''):'<tr><td colspan="5" class="is-empty">Nuk ka prepared Phase 11 rules.</td></tr>';
+    }
+
+    const productVerificationRows=$('p11ProductVerificationRows');
+    if(productVerificationRows){
+      productVerificationRows.innerHTML=productVerification.length?productVerification.map(row=>{
+        const sources=Array.isArray(row.eligibleSources)?row.eligibleSources:[];
+        const sourceSelect=sources.length?`
+          <select class="mi-search" style="min-width:180px" data-p11-shell-source="${esc(row.productId)}">
+            ${sources.map(source=>`<option value="${esc(source.snapshotId)}">${esc(source.sourcePath||source.sourceKey||'SOURCE')} · ${esc(source.documentVersion||source.documentDate||'')}</option>`).join('')}
+          </select>`:'—';
+        const action=row.editorialStatus==='draft'&&sources.length
+          ?`<button type="button" class="mi-row-btn" data-p11-shell-verify="${esc(row.productId)}" data-p11-product-name="${esc(row.tradeName||'')}">Verify shell</button>`
+          :`<span class="mi-badge is-in_review">${esc(row.nextAction||row.editorialStatus||'—')}</span>`;
+        return `
+          <tr>
+            <td>${esc(row.registryNumber||'—')}</td>
+            <td><strong>${esc(row.tradeName||'—')}</strong><small>${esc(row.form||'')} · ${esc(row.route||'')}</small></td>
+            <td><span class="mi-badge ${row.editorialStatus==='verified'||row.editorialStatus==='published'?'is-verified':'is-in_review'}">${esc(row.editorialStatus||'—')}</span></td>
+            <td>${sourceSelect}</td>
+            <td>${action}</td>
+          </tr>`;
+      }).join(''):'<tr><td colspan="5" class="is-empty">Nuk ka product shells në verification queue.</td></tr>';
+    }
+
+    const bindingRows=$('p11BindingRows');
+    if(bindingRows){
+      bindingRows.innerHTML=bindings.length?bindings.map(row=>{
+        let action=`<span class="mi-badge is-in_review">${esc(row.nextAction||row.bindingStatus||'—')}</span>`;
+        if(row.bindingStatus==='candidate'){
+          action=`<span style="display:flex;gap:6px;flex-wrap:wrap">
+            <button type="button" class="mi-row-btn" data-p11-binding-review="${esc(row.bindingId)}" data-p11-decision="verified">Verify</button>
+            <button type="button" class="mi-row-btn" data-p11-binding-review="${esc(row.bindingId)}" data-p11-decision="rejected">Reject</button>
+          </span>`;
+        }
+        return `
+          <tr>
+            <td><strong>${esc(row.ruleKey||'—')}</strong><small>${esc(row.regimenKey||'')}</small></td>
+            <td><strong>${esc(row.tradeName||'—')}</strong><small>${esc(row.registryNumber||'')} · ${esc(row.form||'')}</small></td>
+            <td>${esc(row.matchMethod||'—')}<small>${row.canonicalMatchCurrent?'canonical current':'STALE/MISMATCH'} · conversion ${row.conversionEnabled?'ON':'OFF'}</small></td>
+            <td><span class="mi-badge ${row.bindingStatus==='verified'?'is-verified':'is-in_review'}">${esc(row.bindingStatus||'—')}</span></td>
+            <td>${action}</td>
+          </tr>`;
+      }).join(''):'<tr><td colspan="5" class="is-empty">Nuk ka rule-product bindings.</td></tr>';
     }
   }
 
@@ -320,6 +402,173 @@
     }
   }
 
+
+  async function loadAdjustments(){
+    const box=$('p11AdjustmentSummary');
+    const button=$('p11LoadAdjustments');
+    if(!box)return;
+    box.className='mi-empty-state';
+    box.textContent='Duke ngarkuar…';
+    if(button)button.disabled=true;
+    try{
+      const response=await getJson(`${API}?adjustments=1`);
+      const data=response.payload||{};
+      const summary=data.summary||{};
+      const rows=Array.isArray(data.rows)?data.rows:[];
+      box.className='mi-table-wrap';
+      box.innerHTML=`
+        <div class="mi-mini-stats">
+          <div><span>Source candidates</span><strong>${esc(summary.sourceCandidates??0)}</strong></div>
+          <div><span>Approved</span><strong>${esc(summary.approvedSourceCandidates??0)}</strong></div>
+          <div><span>Ready</span><strong>${esc(summary.readyToMaterialize??0)}</strong></div>
+          <div><span>Normalization review</span><strong>${esc(summary.measureNormalizationReview??0)}</strong></div>
+        </div>
+        <table class="mi-table"><thead><tr><th>Regimen / rule</th><th>Adjustment</th><th>Mapping</th><th>Blockers</th><th>Veprimi</th></tr></thead><tbody>
+          ${rows.length?rows.map(row=>`
+            <tr>
+              <td><strong>${esc(row.regimenKey||'—')}</strong><small>${esc(row.ruleKey||'V3 rule not prepared')}</small></td>
+              <td>${esc(row.domain||'—')} · ${esc(row.sourceActionType||'—')}<small>${esc(row.adjustmentKey||'')}</small></td>
+              <td>${esc(row.sourceMeasureType||'—')} → ${esc(row.mappedMeasureType||'REVIEW')}<small>${esc(row.mappedDoseAction||'')}</small></td>
+              <td>${esc(compactList(row.blockers,4))}</td>
+              <td>${row.readyToMaterialize?`<button type="button" class="mi-row-btn" data-p11-adjustment-materialize="${esc(row.adjustmentKey)}" data-p11-rule-id="${esc(row.ruleId)}">Materialize</button>`:'<span class="mi-badge is-in_review">BLOCKED</span>'}</td>
+            </tr>`).join(''):'<tr><td colspan="5" class="is-empty">Asnjë adjustment i aprovuar / prepared nuk është gati për projection.</td></tr>'}
+        </tbody></table>`;
+    }catch(error){
+      box.className='mi-empty-state';
+      box.textContent=error.message;
+    }finally{
+      if(button)button.disabled=false;
+    }
+  }
+
+  async function handlePreparedValidate(button){
+    if(!confirm('Ekzekuto structural validation për këtë DRAFT rule? Kjo vetëm vendos validation status; nuk e verifikon ose publikon rule-in.'))return;
+    button.disabled=true;
+    try{
+      await postAction({
+        action:'prepared-rule-validate',
+        ruleId:button.dataset.p11PreparedValidate,
+        attestation:'V3_STRUCTURAL_VALIDATION_ATTESTED',
+      });
+      state.loaded=false;
+      await loadWorkbench(true);
+    }catch(error){alert(error.message);}
+    finally{button.disabled=false;}
+  }
+
+  async function handleTargetReview(button){
+    const decision=button.dataset.p11Decision;
+    const note=prompt('Review note është i detyrueshëm për rule target:','')||'';
+    if(!note.trim())return alert('Review note është i detyrueshëm.');
+    if(!confirm(`Konfirmon vendimin ${decision} për canonical rule target?`))return;
+    button.disabled=true;
+    try{
+      await postAction({
+        action:'rule-target-review',
+        ruleTargetId:button.dataset.p11TargetReview,
+        decision,
+        reviewNote:note.trim(),
+        attestation:'RULE_TARGET_REVIEW_ATTESTED',
+      });
+      state.loaded=false;
+      await loadWorkbench(true);
+    }catch(error){alert(error.message);}
+    finally{button.disabled=false;}
+  }
+
+  async function handlePreparedRuleReview(button){
+    const note=prompt('Review note është i detyrueshëm. Konfirmo që DRAFT rule përputhet me regimen-in e aprovuar:','')||'';
+    if(!note.trim())return alert('Review note është i detyrueshëm.');
+    if(!confirm('Verifiko këtë prepared rule? Kjo nuk e publikon dhe nuk krijon binding automatik.'))return;
+    button.disabled=true;
+    try{
+      await postAction({
+        action:'prepared-rule-review',
+        ruleId:button.dataset.p11PreparedReview,
+        reviewNote:note.trim(),
+        attestation:'PREPARED_RULE_REVIEW_ATTESTED',
+      });
+      state.loaded=false;
+      await loadWorkbench(true);
+    }catch(error){alert(error.message);}
+    finally{button.disabled=false;}
+  }
+
+  async function handleStageBindings(button){
+    if(!confirm('Stage vetëm canonical candidate product bindings për këtë VERIFIED rule? Conversion dhe publication mbeten OFF.'))return;
+    button.disabled=true;
+    try{
+      await postAction({
+        action:'stage-rule-bindings',
+        ruleId:button.dataset.p11StageBindings,
+        attestation:'RULE_BINDING_STAGING_ATTESTED',
+      });
+      state.loaded=false;
+      await loadWorkbench(true);
+    }catch(error){alert(error.message);}
+    finally{button.disabled=false;}
+  }
+
+  async function handleBindingReview(button){
+    const decision=button.dataset.p11Decision;
+    const note=prompt('Review note është i detyrueshëm për product binding:','')||'';
+    if(!note.trim())return alert('Review note është i detyrueshëm.');
+    if(!confirm(`Konfirmon binding decision: ${decision.toUpperCase()}?`))return;
+    button.disabled=true;
+    try{
+      await postAction({
+        action:'rule-product-binding-review',
+        bindingId:button.dataset.p11BindingReview,
+        decision,
+        reviewNote:note.trim(),
+        attestation:'RULE_PRODUCT_BINDING_REVIEW_ATTESTED',
+      });
+      state.loaded=false;
+      await loadWorkbench(true);
+    }catch(error){alert(error.message);}
+    finally{button.disabled=false;}
+  }
+
+  async function handleProductShellVerify(button){
+    const productId=button.dataset.p11ShellVerify;
+    const select=document.querySelector(`[data-p11-shell-source="${CSS.escape(productId)}"]`);
+    const snapshotId=select?.value||'';
+    if(!snapshotId)return alert('Zgjidh exact-market source.');
+    const note=prompt('Review note është i detyrueshëm. Përshkruaj exact-market source verification:','')||'';
+    if(!note.trim())return alert('Review note është i detyrueshëm.');
+    if(!confirm(`Verifiko V3 product shell për "${button.dataset.p11ProductName||'produktin'}" me source-in e zgjedhur?`))return;
+    button.disabled=true;
+    try{
+      await postAction({
+        action:'product-shell-review',
+        productId,
+        snapshotId,
+        reviewNote:note.trim(),
+        attestation:'PRODUCT_SHELL_REVIEW_ATTESTED',
+      });
+      state.loaded=false;
+      await loadWorkbench(true);
+    }catch(error){alert(error.message);}
+    finally{button.disabled=false;}
+  }
+
+  async function handleAdjustmentMaterialize(button){
+    if(!confirm('Materializo adjustment-in e aprovuar në V3 për këtë VERIFIED rule? Kjo nuk e aplikon te pacienti dhe nuk publikon rule-in.'))return;
+    button.disabled=true;
+    try{
+      await postAction({
+        action:'materialize-adjustment',
+        ruleId:button.dataset.p11RuleId,
+        adjustmentKey:button.dataset.p11AdjustmentMaterialize,
+        attestation:'V3_ADJUSTMENT_MATERIALIZATION_ATTESTED',
+      });
+      await loadAdjustments();
+      state.loaded=false;
+      await loadWorkbench(true);
+    }catch(error){alert(error.message);}
+    finally{button.disabled=false;}
+  }
+
   async function handleIdentityApply(button){
     const body=$('phase11DetailBody');
     const conceptIds=[...body.querySelectorAll('[data-p11-concept]:checked')].map(node=>node.value);
@@ -510,8 +759,30 @@
 
     const indication=event.target.closest('[data-p11-indication-id]');
     if(indication)void handleIndicationReview(indication);
+
+    const preparedValidate=event.target.closest('[data-p11-prepared-validate]');
+    if(preparedValidate)void handlePreparedValidate(preparedValidate);
+
+    const targetReview=event.target.closest('[data-p11-target-review]');
+    if(targetReview)void handleTargetReview(targetReview);
+
+    const preparedReview=event.target.closest('[data-p11-prepared-review]');
+    if(preparedReview)void handlePreparedRuleReview(preparedReview);
+
+    const stageBindings=event.target.closest('[data-p11-stage-bindings]');
+    if(stageBindings)void handleStageBindings(stageBindings);
+
+    const bindingReview=event.target.closest('[data-p11-binding-review]');
+    if(bindingReview)void handleBindingReview(bindingReview);
+
+    const shellVerify=event.target.closest('[data-p11-shell-verify]');
+    if(shellVerify)void handleProductShellVerify(shellVerify);
+
+    const adjustment=event.target.closest('[data-p11-adjustment-materialize]');
+    if(adjustment)void handleAdjustmentMaterialize(adjustment);
   });
 
   $('phase11Refresh')?.addEventListener('click',()=>void loadWorkbench(true));
   $('p11LoadIndications')?.addEventListener('click',()=>void loadIndications());
+  $('p11LoadAdjustments')?.addEventListener('click',()=>void loadAdjustments());
 })();
