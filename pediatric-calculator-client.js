@@ -71,10 +71,16 @@
     elements.hint = $('#pediatricInputsHint');
     elements.patientState = $('#dosagePatientState');
     elements.patientActionHint = $('#dosagePatientActionHint');
+    elements.indication = $('#patientIndication');
     elements.weight = $('#patientWeightKg');
     elements.age = $('#patientAgeMonths');
     elements.ageUnit = $('#patientAgeUnit');
     elements.height = $('#patientHeightCm');
+    elements.crcl = $('#patientCrCl');
+    elements.egfr = $('#patientEgfr');
+    elements.dialysis = $('#patientDialysisStatus');
+    elements.childPugh = $('#patientChildPugh');
+    elements.hepaticImpairment = $('#patientHepaticImpairment');
     elements.calculate = $('#pediatricCalculate');
     elements.calculationPanel = $('#dosageCalculationPanel');
     elements.calculationBody = $('#dosageCalculationBody');
@@ -694,9 +700,11 @@
   function buildProductsPanel(product) {
     const panel=tabPanel('products');
     panel.append(element('p','phase9-tab-kicker',
-      product?.phase9Context?.v3Published
-        ? 'Kontekst kanonik + produkt V3 i publikuar; runtime V2 fallback mbetet aktiv.'
-        : 'Kontekst kanonik i produktit; runtime V2 fallback mbetet aktiv.'));
+      product?.runtime === 'v3'
+        ? 'Kontekst kanonik + produkt V3 i publikuar; kalkulatori po përdor runtime V3.'
+        : product?.phase9Context?.v3Published
+          ? 'Kontekst kanonik + produkt V3 i publikuar; ky request po përdor fallback V2 të kontrolluar.'
+          : 'Kontekst kanonik i produktit; runtime V2 fallback mbetet aktiv.'));
     const facts=element('div','dosage-product-facts');
     facts.append(
       productFact('Produkti',product.name || '—'),
@@ -866,7 +874,7 @@
     const titleRow=element('div','pediatric-product-title-row');
     titleRow.append(element('h2','pediatric-product-name',product.name || '(pa emër)'),readinessBadge(effectiveReadiness(product)));
     titleRow.append(phase9Badge(populationLabel(product),'population'));
-    titleRow.append(phase9Badge('V2 fallback','runtime'));
+    titleRow.append(phase9Badge(product.runtime === 'v3' ? 'V3 live' : (product.runtimeLabel || 'V2 fallback'),'runtime'));
     identity.append(titleRow);
     identity.append(element('p','pediatric-product-meta',
       [product.substance,product.strength,product.form].filter(Boolean).join(' · ')));
@@ -926,11 +934,15 @@
     setProductTab(state.productTab);
 
     if(product.calculable){
-      applyPatientFields(product.requires);
+      configureIndication(product);
+      applyPatientFields(activeRequires());
       const indication=product.calculationRegimen?.indication;
-      elements.hint.textContent=indication
-        ? `Regjimi është lidhur me “${indication}”. Plotëso vetëm fushat e kërkuara.`
-        : 'Plotëso vetëm fushat që kërkon formula e verifikuar.';
+      const choices=calculationOptions(product);
+      elements.hint.textContent=choices.length>1 && !selectedCalculationOption(product)
+        ? 'Zgjidh indikacionin e verifikuar; pastaj shfaqen vetëm inputet që kërkon ai regjim.'
+        : indication
+          ? `Regjimi është lidhur me “${indication}”. Plotëso vetëm fushat e kërkuara.`
+          : 'Plotëso vetëm fushat që kërkon formula e verifikuar.';
       setStatus('Bari u hap. Plotëso parametrat e pacientit.','success');
     }else{
       disablePatientPanel('Ky regjim nuk kalon portat për llogaritje automatike.');
@@ -978,7 +990,10 @@
 
   function clearFieldErrors() {
     elements.patientPanel.querySelectorAll('[data-field-error]').forEach(node => { node.textContent = ''; });
-    for (const input of [elements.weight, elements.age, elements.height]) input?.removeAttribute('aria-invalid');
+    for (const input of [
+      elements.indication,elements.weight,elements.age,elements.height,elements.crcl,elements.egfr,
+      elements.dialysis,elements.childPugh,elements.hepaticImpairment,
+    ]) input?.removeAttribute('aria-invalid');
   }
 
   function disablePatientPanel(message) {
@@ -996,12 +1011,95 @@
     elements.hint.textContent = message || 'Zgjidh një bar të llogaritshëm për të aktivizuar fushat.';
   }
 
+  function calculationOptions(product = state.product) {
+    return Array.isArray(product?.calculationOptions) ? product.calculationOptions : [];
+  }
+
+  function selectedCalculationOption(product = state.product) {
+    const options = calculationOptions(product);
+    if (!options.length) return null;
+    const selected = text(elements.indication?.value || product?.calculationRegimen?.selectionId);
+    return options.find(option => text(option.selectionId) === selected)
+      || (options.length === 1 ? options[0] : null);
+  }
+
+  function applyCalculationOption(option) {
+    if (!state.product) return;
+    if (!option) {
+      state.product.calculationRegimen = { valid:false,selectionId:'',indication:'',route:'',requires:null };
+      state.product.regimen = {};
+      state.product.requires = { weight:false,height:false,age:false,advancedInputs:[] };
+      return;
+    }
+    state.product.calculationRegimen = { ...option,valid:true };
+    state.product.regimen = { ...(option.regimen || {}) };
+    state.product.requires = option.requires || { weight:false,height:false,age:false,advancedInputs:[] };
+    if (option.source?.url) state.product.source = option.source;
+  }
+
+  function configureIndication(product = state.product) {
+    const select = elements.indication;
+    if (!select) return;
+    const options = calculationOptions(product);
+    const current = text(product?.calculationRegimen?.selectionId);
+    select.textContent = '';
+    if (!options.length) {
+      select.disabled = true;
+      select.value = '';
+      return;
+    }
+    if (options.length > 1) {
+      const placeholder = element('option',null,'Zgjidh indikacionin');
+      placeholder.value = '';
+      select.append(placeholder);
+    }
+    for (const option of options) {
+      const node = element('option',null,option.indication || option.indicationKey || 'Indikacion i verifikuar');
+      node.value = option.selectionId;
+      select.append(node);
+    }
+    if (options.length === 1) {
+      select.value = options[0].selectionId;
+      select.disabled = true;
+      applyCalculationOption(options[0]);
+    } else {
+      select.disabled = false;
+      select.value = options.some(option => option.selectionId === current) ? current : '';
+      applyCalculationOption(selectedCalculationOption(product));
+    }
+  }
+
+  function activeRequires() {
+    return selectedCalculationOption()?.requires || state.product?.requires || {};
+  }
+
+  function advancedFieldFlags(requires = {}) {
+    const values = new Set(Array.isArray(requires.advancedInputs) ? requires.advancedInputs : []);
+    return {
+      crcl:values.has('CrCl_mL_min'),
+      egfr:values.has('eGFR_mL_min_1_73m2'),
+      dialysis:values.has('dialysis_status'),
+      'child-pugh':values.has('Child_Pugh_class'),
+      'hepatic-impairment':values.has('hepatic_impairment_textual'),
+    };
+  }
+
   function applyPatientFields(requires) {
+    const options = calculationOptions();
+    const needsIndication = options.length > 1;
+    const hasSelection = !needsIndication || Boolean(selectedCalculationOption());
+    const advanced = advancedFieldFlags(requires);
     const wanted = {
-      weight:Boolean(requires?.weight),
-      age:Boolean(requires?.age),
-      'age-unit':Boolean(requires?.age),
-      height:Boolean(requires?.height),
+      indication:needsIndication,
+      weight:hasSelection && Boolean(requires?.weight),
+      age:hasSelection && Boolean(requires?.age),
+      'age-unit':hasSelection && Boolean(requires?.age),
+      height:hasSelection && Boolean(requires?.height),
+      crcl:hasSelection && advanced.crcl,
+      egfr:hasSelection && advanced.egfr,
+      dialysis:hasSelection && advanced.dialysis,
+      'child-pugh':hasSelection && advanced['child-pugh'],
+      'hepatic-impairment':hasSelection && advanced['hepatic-impairment'],
     };
     elements.patientPanel.classList.remove('is-disabled');
     for (const [field, visible] of Object.entries(wanted)) {
@@ -1012,14 +1110,25 @@
       if (input) input.disabled = !visible;
     }
     elements.calculate.hidden = false;
-    elements.patientState.textContent = 'Plotëso fushat';
+    elements.patientState.textContent = hasSelection ? 'Plotëso fushat' : 'Zgjidh indikacionin';
     elements.patientState.className = 'dosage-step-state is-ready';
     validatePatientFields();
   }
 
   function fieldError(name, message) {
     const node = elements.patientPanel.querySelector(`[data-field-error="${name}"]`);
-    const input = name === 'weight' ? elements.weight : name === 'age' ? elements.age : elements.height;
+    const inputs = {
+      indication:elements.indication,
+      weight:elements.weight,
+      age:elements.age,
+      height:elements.height,
+      crcl:elements.crcl,
+      egfr:elements.egfr,
+      dialysis:elements.dialysis,
+      'child-pugh':elements.childPugh,
+      'hepatic-impairment':elements.hepaticImpairment,
+    };
+    const input = inputs[name];
     if (node) node.textContent = message || '';
     if (input) {
       if (message) input.setAttribute('aria-invalid', 'true');
@@ -1028,8 +1137,15 @@
   }
 
   function validatePatientFields({ showErrors = false } = {}) {
-    const requires = state.product?.requires || {};
+    const requires = activeRequires();
+    const options = calculationOptions();
     let valid = Boolean(state.product?.calculable);
+
+    if (options.length > 1) {
+      const error = selectedCalculationOption() ? '' : 'Zgjidh indikacionin.';
+      if (showErrors || elements.indication?.value) fieldError('indication',error); else fieldError('indication','');
+      if (error) valid = false;
+    } else fieldError('indication','');
 
     if (requires.weight) {
       const value = Number(elements.weight.value);
@@ -1056,14 +1172,37 @@
       if (error) valid = false;
     } else fieldError('height', '');
 
+    const advanced = advancedFieldFlags(requires);
+    const numericAdvanced = [
+      ['crcl',elements.crcl,advanced.crcl,'Shkruaj CrCl.'],
+      ['egfr',elements.egfr,advanced.egfr,'Shkruaj eGFR.'],
+    ];
+    for (const [name,input,required,message] of numericAdvanced) {
+      if (!required) { fieldError(name,''); continue; }
+      const value = Number(input?.value);
+      const error = !Number.isFinite(value) || value < 0 ? message : '';
+      if (showErrors || input?.value) fieldError(name,error); else fieldError(name,'');
+      if (error) valid = false;
+    }
+
+    for (const [name,input,required,message] of [
+      ['dialysis',elements.dialysis,advanced.dialysis,'Zgjidh statusin e dializës.'],
+      ['child-pugh',elements.childPugh,advanced['child-pugh'],'Zgjidh klasën Child–Pugh.'],
+      ['hepatic-impairment',elements.hepaticImpairment,advanced['hepatic-impairment'],'Zgjidh statusin hepatik sipas burimit.'],
+    ]) {
+      if (!required) { fieldError(name,''); continue; }
+      const error = text(input?.value) ? '' : message;
+      if (showErrors || input?.value) fieldError(name,error); else fieldError(name,'');
+      if (error) valid = false;
+    }
+
     elements.calculate.disabled = !valid || state.pendingCalculation;
-    elements.patientState.textContent = valid ? 'Gati' : 'Plotëso fushat';
+    elements.patientState.textContent = valid ? 'Gati' : (options.length > 1 && !selectedCalculationOption() ? 'Zgjidh indikacionin' : 'Plotëso fushat');
     elements.patientState.className = valid ? 'dosage-step-state is-valid' : 'dosage-step-state is-ready';
     return valid;
   }
-
   function patientPayload() {
-    const requires = state.product?.requires || {};
+    const requires = activeRequires();
     const weight = Number(elements.weight?.value);
     const height = Number(elements.height?.value);
     const age = Number(elements.age?.value);
@@ -1073,11 +1212,19 @@
     if (requires.age && Number.isFinite(age) && age >= 0) {
       payload.age = { value:age, unit:elements.ageUnit?.value || 'muaj' };
     }
-    const selectionId = state.product?.calculationRegimen?.selectionId;
+    const selectionId = selectedCalculationOption()?.selectionId || state.product?.calculationRegimen?.selectionId;
     if (selectionId) payload.regimenId = selectionId;
+
+    const advanced = advancedFieldFlags(requires);
+    if (advanced.crcl && elements.crcl?.value !== '') payload.crClMlMin = Number(elements.crcl.value);
+    if (advanced.egfr && elements.egfr?.value !== '') payload.eGfrMlMin173m2 = Number(elements.egfr.value);
+    if (advanced.dialysis && elements.dialysis?.value) payload.dialysisStatus = elements.dialysis.value;
+    if (advanced['child-pugh'] && elements.childPugh?.value) payload.childPughClass = elements.childPugh.value;
+    if (advanced['hepatic-impairment'] && elements.hepaticImpairment?.value) {
+      payload.hepaticImpairment = elements.hepaticImpairment.value;
+    }
     return payload;
   }
-
   function amountText(range, unit) {
     if (!range || range.min === null || range.min === undefined) return '';
     const suffix = unit ? ` ${unit}` : '';
@@ -1133,9 +1280,11 @@
       identitySource.documentDate
         ? `Data e burimit të produktit: ${identitySource.documentDate}`
         : '',
-      product.phase9Context?.v3Published
-        ? `Konteksti V3: ${product.phase9Context.v3ProductKey || 'published'} · v${product.phase9Context.v3VersionNo || 1}`
-        : 'Runtime: V2 fallback',
+      product.runtime === 'v3'
+        ? `Runtime: V3 · ${product.phase9Context?.v3ProductKey || 'published'} · v${product.phase9Context?.v3VersionNo || 1}`
+        : product.phase9Context?.v3Published
+          ? `Konteksti V3 i publikuar; request-i aktual: ${product.runtimeLabel || 'V2 fallback'}`
+          : 'Runtime: V2 fallback',
     ].filter(Boolean).join('\n');
   }
 
@@ -1195,7 +1344,7 @@
     const facts = element('div', 'dosage-calculation-facts');
     facts.append(
       calculationFact('Rruga', calculation.route || '—'),
-      calculationFact('Frekuenca', calculation.dosesPerDay ? `${formatNumber(calculation.dosesPerDay)}×/ditë` : 'Sipas regjimit'),
+      calculationFact('Frekuenca', calculation.scheduleText || (calculation.dosesPerDay ? `${formatNumber(calculation.dosesPerDay)}×/ditë` : 'Sipas regjimit')),
       calculationFact('Totali ditor', calculation.daily?.min !== null && calculation.daily?.min !== undefined
         ? amountText(calculation.daily, unit) : '—'),
     );
@@ -1468,16 +1617,23 @@
       }
     });
 
-    for (const input of [elements.weight, elements.age, elements.height]) {
+    elements.indication?.addEventListener('change', () => {
+      applyCalculationOption(selectedCalculationOption());
+      invalidateCalculation();
+      renderProduct();
+    });
+    for (const input of [elements.weight, elements.age, elements.height, elements.crcl, elements.egfr]) {
       input?.addEventListener('input', () => {
         invalidateCalculation();
         validatePatientFields();
       });
     }
-    elements.ageUnit?.addEventListener('change', () => {
-      invalidateCalculation();
-      validatePatientFields();
-    });
+    for (const input of [elements.ageUnit, elements.dialysis, elements.childPugh, elements.hepaticImpairment]) {
+      input?.addEventListener('change', () => {
+        invalidateCalculation();
+        validatePatientFields();
+      });
+    }
 
     elements.calculate?.addEventListener('click', calculateDose);
     elements.patientPanel?.addEventListener('keydown', event => {
