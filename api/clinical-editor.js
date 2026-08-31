@@ -5,6 +5,9 @@ const { get } = require('@vercel/blob');
 const ClinicalEditor = require('../lib/clinical-editor.js');
 const PopulationVerification = require('../lib/population-verification.js');
 const MediaLibrary = require('../lib/media-library.js');
+const Phase11Review = require('../lib/phase11-review.js');
+const IcdBase = require('../lib/icd-api-base.js');
+const IcdAdvanced = require('../lib/icd-advanced-handler.js');
 
 const OFFICIAL_BRAND = Object.freeze({
   markOnLight:{ pathname:'medindex/brand/v1/medindex-mark-on-light.webp', contentType:'image/webp' },
@@ -74,6 +77,22 @@ function queryFlag(req, name) {
   } catch {
     return false;
   }
+}
+
+async function authorizedIcd(req) {
+  const auth = await import('../lib/auth.mjs');
+  return auth.verifySessionToken(auth.sessionFromRequest(req));
+}
+
+async function icdApi(req, res) {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Vary', 'Cookie');
+  if (!(await authorizedIcd(req))) {
+    res.setHeader('Cache-Control', 'private, no-store, max-age=0');
+    return res.status(401).json({ error:'Kërkohet autentikim.', ok:false, data:null });
+  }
+  const advanced = String(req.query?.advanced || '') === '1';
+  return advanced ? IcdAdvanced(req, res) : IcdBase(req, res);
 }
 
 async function officialBrand(req, res) {
@@ -180,6 +199,8 @@ async function publicBlog(req, res) {
 }
 
 module.exports = async function handler(req, res) {
+  if (queryFlag(req, 'phase11Review')) return Phase11Review.handle(req, res);
+  if (queryFlag(req, 'icdApi')) return icdApi(req, res);
   if (queryFlag(req, 'rowActionsRelease')) return rowActionsRelease(req, res);
   if (queryFlag(req, 'officialBrand')) return officialBrand(req, res);
   if (queryFlag(req, 'blog')) return publicBlog(req, res);
@@ -188,4 +209,4 @@ module.exports = async function handler(req, res) {
   return ClinicalEditor.handle(req, res);
 };
 
-module.exports._test = { OFFICIAL_BRAND, queryValue, queryFlag, rowActionsRelease };
+module.exports._test = { OFFICIAL_BRAND, queryValue, queryFlag, rowActionsRelease, authorizedIcd, icdApi };
