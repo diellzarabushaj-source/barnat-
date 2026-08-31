@@ -108,7 +108,7 @@ async function openEmergency(page) {
   page.on('pageerror', error => pageErrors.push(String(error)));
   await installFrozenSanityFixture(page);
   await page.goto('http://127.0.0.1:4173/urgjencat.html', {waitUntil:'domcontentloaded'});
-  await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
+  await expect(page.locator('#appShell')).toHaveAttribute('aria-busy', 'false', { timeout:10000 });
   await expect(page.locator('#emergencyDetail .ck-sl-experience')).toBeVisible({timeout:10000});
   await page.evaluate(() => document.fonts.ready);
   return pageErrors;
