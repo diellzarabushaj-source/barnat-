@@ -17,6 +17,7 @@ const cr = read('supabase/migrations/20260831191800_drx_phase11cr_safety_integri
 const cs = read('supabase/migrations/20260831193039_drx_phase11cs_indication_icd_integrity_and_publication_guard.sql');
 const ct = read('supabase/migrations/20260831194123_drx_phase11ct_step_requirement_integrity_prechecks.sql');
 const cu = read('supabase/migrations/20260831194503_drx_phase11cu_clinical_review_preflight.sql');
+const cv = read('supabase/migrations/20260831194750_drx_phase11cv_clinical_preflight_workbench.sql');
 const backend = read('lib/phase11-review.js');
 const html = read('admin.html');
 const ui = read('admin-phase11-review.js');
@@ -112,7 +113,15 @@ assert.match(cu, /ready_for_human_clinical_attestation/);
 assert.match(cu, /false::boolean as auto_approve_allowed/);
 assert.doesNotMatch(cu, /update\s+drx_dose\.source_regimen_candidates_v1/i);
 
-for (const sql of [ck,cn,co,cp,cq,cr,cs,ct,cu]) {
+assert.match(cv, /drx_phase11_clinical_preflight_workbench_v1/);
+assert.match(cv, /technicalBlocked/);
+assert.match(cv, /humanBlockerCounts/);
+assert.match(cv, /readyForAttestation/);
+assert.match(cv, /autoApproveAllowed',false/);
+assert.match(cv, /revoke all on function public\.drx_phase11_clinical_preflight_workbench_v1/);
+assert.match(cv, /grant execute on function public\.drx_phase11_clinical_preflight_workbench_v1/);
+
+for (const sql of [ck,cn,co,cp,cq,cr,cs,ct,cu,cv]) {
   assert.doesNotMatch(sql, /auto_publish_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_cutover_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_strict_activation_allowed(?:_v2)?\s*=\s*true/i);
@@ -127,11 +136,15 @@ assert.match(backend, /publish-rule-release/);
 assert.match(backend, /PHASE11_RULE_RELEASE_ATTESTED/);
 assert.match(backend, /publication === '1'/);
 assert.match(backend, /shadow === '1'/);
+assert.match(backend, /preflight === '1'/);
+assert.match(backend, /drx_phase11_clinical_preflight_workbench_v1/);
 
 assert.match(html, /id="p11LoadPublication"/);
 assert.match(html, /id="p11LoadShadow"/);
+assert.match(html, /id="p11LoadPreflight"/);
 assert.match(ui, /publication=1/);
 assert.match(ui, /shadow=1/);
+assert.match(ui, /preflight=1/);
 assert.match(ui, /data-p11-legacy-review/);
 assert.match(ui, /data-p11-rule-release/);
 assert.match(ui, /data-p11-shadow-review/);
@@ -150,6 +163,7 @@ for (const expected of [
   ['20260831193039','drx_phase11cs_indication_icd_integrity_and_publication_guard'],
   ['20260831194123','drx_phase11ct_step_requirement_integrity_prechecks'],
   ['20260831194503','drx_phase11cu_clinical_review_preflight'],
+  ['20260831194750','drx_phase11cv_clinical_preflight_workbench'],
 ]) {
   assert.ok(
     migrations.some(row => String(row.version) === expected[0] && row.name === expected[1]),

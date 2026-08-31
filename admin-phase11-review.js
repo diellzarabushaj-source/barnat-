@@ -373,6 +373,45 @@
     }
   }
 
+
+  async function loadPreflight(){
+    const box=$('p11PreflightSummary');
+    const button=$('p11LoadPreflight');
+    if(!box)return;
+    box.className='mi-empty-state';
+    box.textContent='Duke ngarkuar…';
+    if(button)button.disabled=true;
+    try{
+      const response=await getJson(`${API}?preflight=1`);
+      const data=response.payload||{};
+      const summary=data.summary||{};
+      const blocked=Array.isArray(data.technicalBlocked)?data.technicalBlocked:[];
+      const human=Array.isArray(data.humanBlockerCounts)?data.humanBlockerCounts:[];
+      const ready=Array.isArray(data.readyForAttestation)?data.readyForAttestation:[];
+      box.className='mi-table-wrap';
+      box.innerHTML=`
+        <div class="mi-mini-stats">
+          <div><span>Regimens</span><strong>${esc(summary.regimen_total??0)}</strong></div>
+          <div><span>Technical ready</span><strong>${esc(summary.technical_integrity_ready??0)}</strong></div>
+          <div><span>Technical blocked</span><strong>${esc(summary.technical_integrity_blocked??0)}</strong></div>
+          <div><span>Final attestation ready</span><strong>${esc(summary.ready_for_human_clinical_attestation??ready.length)}</strong></div>
+        </div>
+        <div class="mi-editor-section-title"><div><span>Technical blockers</span><small>Duhet të zgjidhen para clinical attestation.</small></div></div>
+        <table class="mi-table"><thead><tr><th>Regimen</th><th>Indication</th><th>Blockers</th></tr></thead><tbody>
+          ${blocked.length?blocked.map(row=>`<tr><td><strong>${esc(row.regimenKey||'—')}</strong></td><td>${esc(row.indicationId||'—')}</td><td><span class="mi-badge is-in_review">${esc(compactList(row.blockers,4))}</span></td></tr>`).join(''):'<tr><td colspan="3" class="is-empty">Nuk ka technical integrity blockers.</td></tr>'}
+        </tbody></table>
+        <div class="mi-editor-section-title"><div><span>Human-review blockers</span><small>Numër regimen-esh që presin reviewer decision; nuk janë technical failures.</small></div></div>
+        <table class="mi-table"><thead><tr><th>Review gate</th><th>Regimens</th></tr></thead><tbody>
+          ${human.length?human.map(row=>`<tr><td>${esc(row.blocker||'—')}</td><td><strong>${esc(row.regimenCount??0)}</strong></td></tr>`).join(''):'<tr><td colspan="2" class="is-empty">Upstream human review është komplet.</td></tr>'}
+        </tbody></table>`;
+    }catch(error){
+      box.className='mi-empty-state';
+      box.textContent=error.message;
+    }finally{
+      if(button)button.disabled=false;
+    }
+  }
+
   async function loadIndications(){
     const box=$('p11IndicationSummary');
     const button=$('p11LoadIndications');
@@ -996,6 +1035,7 @@
   });
 
   $('phase11Refresh')?.addEventListener('click',()=>void loadWorkbench(true));
+  $('p11LoadPreflight')?.addEventListener('click',()=>void loadPreflight());
   $('p11LoadIndications')?.addEventListener('click',()=>void loadIndications());
   $('p11LoadAdjustments')?.addEventListener('click',()=>void loadAdjustments());
   $('p11LoadPublication')?.addEventListener('click',()=>void loadPublication());
