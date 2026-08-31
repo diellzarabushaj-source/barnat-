@@ -549,10 +549,21 @@
   function rxSignature(rx) {
     const instruction = clean(rx?.instructions);
     const extraInstruction = instruction && !/^(OR|OSE)$/i.test(instruction) ? instruction : '';
+    const strength = clean(rx?.strength);
+    const dose = clean(rx?.dose);
+    const frequency = clean(rx?.frequency);
+    const duration = clean(rx?.duration);
     const parts = [];
-    if (rx?.dose) parts.push(clean(rx.dose));
-    if (rx?.frequency) parts.push(clean(rx.frequency));
-    if (rx?.duration) parts.push(`për ${clean(rx.duration)}`);
+
+    if (dose && normalize(dose) !== normalize(strength)) parts.push(dose);
+    if (frequency) parts.push(frequency);
+
+    const durationAlreadyExpressed = duration && (
+      normalize(frequency).includes(normalize(duration))
+      || (/^\d+\s*(doza|dose|doses)$/i.test(duration) && /përsërit|perserit|repeat/i.test(frequency))
+    );
+    if (duration && !durationAlreadyExpressed) parts.push(`për ${duration}`);
+
     if (rx?.route && normalize(rx.route) !== 'po') parts.push(clean(rx.route));
     if (extraInstruction) parts.push(extraInstruction);
     return parts.join(' · ');
@@ -590,7 +601,6 @@
           <span>Rx</span>
           <div>
             <strong>Receta / skema e përshkrimit</strong>
-            <small>Shfaqen vetëm substancat aktive; alternativat OR ruhen sipas burimit.</small>
           </div>
         </div>
         <div class="ck-rx-lines">
