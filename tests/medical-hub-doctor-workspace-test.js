@@ -57,6 +57,9 @@ assert.match(js, /function figureDisplayUrl\(rawUrl\)/);
 assert.match(js, /\/api\/medical-hub-image\?url=/);
 assert.match(js, /ck-book-rx-alternative/);
 assert.match(js, /function prescriptionFormLabel\(form\)/);
+assert.match(js, /function hasContentOrder\(item\)/);
+assert.match(js, /function orderedClinicalContentMarkup\(item\)/);
+assert.match(js, /contentOrder/);
 assert.match(js, /data-hub-section/);
 assert.match(js, /data-topic-jump/);
 assert.match(js, /sidebar-taxonomy-v3/);
@@ -86,6 +89,7 @@ assert.doesNotMatch(
 );
 
 const detailQuery = api.match(/const DETAIL_QUERY = `([\s\S]*?)`;/)?.[1] || '';
+assert.match(detailQuery, /contentOrder\[\]/);
 assert.match(detailQuery, /steps\[\]/);
 assert.match(detailQuery, /prescriptions\[\]/);
 assert.match(detailQuery, /redFlags/);
@@ -125,6 +129,7 @@ assert.match(css, /\.ck-rx-title/);
 assert.match(css, /\.ck-rx-drug-line/);
 assert.match(css, /\.ck-book-rx-alternative/);
 assert.match(css, /\.ck-figure-fallback/);
+assert.match(css, /\.ck-ordered-content/);
 assert.match(css, /\.ck-protocol-list/);
 assert.match(css, /\.ck-document-pagination/);
 assert.match(css, /\.ck-loading-spinner/);
