@@ -43,6 +43,8 @@
     const identityCoverage=data?.identitySuggestionCoverage||{};
     const icdQuality=data?.icdSuggestionQuality||{};
     const sourceDiscovery=data?.productSourceDiscovery||{};
+    const shellDraft=data?.productShellDraft||{};
+    const postReview=data?.postReviewPreparation||{};
     const identity=Array.isArray(data?.identityBatches)?data.identityBatches:[];
     const clinical=Array.isArray(data?.clinicalBatches)?data.clinicalBatches:[];
     const shells=Array.isArray(data?.productShells)?data.productShells:[];
@@ -55,10 +57,10 @@
     if($('p11IdentityBatches'))$('p11IdentityBatches').textContent=`${counts.identityBatches??identity.length} · ${identityCoverage.batches_with_suggestions??0} me sugj.`;
     if($('p11ClinicalBatches'))$('p11ClinicalBatches').textContent=counts.clinicalBatches??clinical.length;
     if($('p11DraftIndications'))$('p11DraftIndications').textContent=`${Math.max(0,Number(counts.indications||0)-Number(counts.publishedIndications||0))} · ${icdQuality.manual_search_required??0} manual`;
-    if($('p11ProductShells'))$('p11ProductShells').textContent=`${sourceDiscovery.published_shells||counts.publishedProductShells||0}/${sourceDiscovery.product_shell_candidates||counts.productShellItems||shells.length} · ${sourceDiscovery.exact_source_discoveries||0} exact`;
+    if($('p11ProductShells'))$('p11ProductShells').textContent=`${shellDraft.published_shells||sourceDiscovery.published_shells||0}/${shellDraft.product_shell_candidates||sourceDiscovery.product_shell_candidates||shells.length} · ${shellDraft.identity_capture_review||0} source review`;
 
     if($('p11IdentityCount'))$('p11IdentityCount').textContent=`${identity.length} batches · ${counts.identityProducts||0} produkte`;
-    if($('p11ClinicalCount'))$('p11ClinicalCount').textContent=`${clinical.length} batches`;
+    if($('p11ClinicalCount'))$('p11ClinicalCount').textContent=`${clinical.length} batches · ${postReview.prepared_drafts_to_review||0} draft review`;
     if($('p11ShellCount'))$('p11ShellCount').textContent=`${shells.length} produkte`;
 
     const identityRows=$('p11IdentityRows');
@@ -97,7 +99,18 @@
             ${row.sourceUrl?`<small><a href="${esc(row.sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi zyrtar ↗</a></small>`:''}
           </td>
           <td>${esc(row.form||'—')}</td>
-          <td><span class="mi-badge is-in_review">${esc(row.nextAction||'REVIEW')}</span></td>
+          <td>
+            <span class="mi-badge is-in_review">${esc(row.nextAction||'REVIEW')}</span>
+            ${row.captureStatus==='STAGED'&&row.captureId?`
+              <button type="button" class="mi-row-btn"
+                data-p11-product-capture-review="${esc(row.captureId)}"
+                data-p11-product-name="${esc(row.tradeName||'')}"
+                data-p11-source-url="${esc(row.sourceUrl||'')}">Review source</button>`:''}
+            ${row.captureStatus==='VERIFIED'&&!row.productId&&row.captureId?`
+              <button type="button" class="mi-row-btn"
+                data-p11-product-shell-materialize="${esc(row.captureId)}"
+                data-p11-product-name="${esc(row.tradeName||'')}">Krijo DRAFT shell</button>`:''}
+          </td>
         </tr>`).join('')
         :'<tr><td colspan="4" class="is-empty">Nuk ka product-shell blockers.</td></tr>';
     }
@@ -217,6 +230,14 @@
       </div>`).join('');
 
     const canApprove=approval.ready_for_clinical_approval===true;
+    const promotion=regimen.promotionGate||{};
+    const approved=regimen.reviewStatus==='APPROVED';
+    const canPrepareCalculator=approved
+      && promotion.intended_runtime_mode==='CALCULATOR_TARGET'
+      && promotion.calculator_promotion_ready===true;
+    const canFinalizeTextOnly=approved
+      && promotion.intended_runtime_mode==='REVIEWED_TEXT_ONLY_TARGET'
+      && promotion.text_only_review_ready===true;
     return `
       <article class="mi-notification-card" style="display:block">
         <span class="mi-notification-head"><strong>${esc(regimen.regimenKey||'Regimen')}</strong><small>${esc(regimen.reviewStatus||'PENDING')}</small></span>
@@ -241,6 +262,14 @@
           <button type="button" class="mi-btn-secondary" data-p11-review-kind="regimen-review" data-p11-decision="REJECTED"
             data-p11-regimen="${esc(regimen.regimenKey)}" data-p11-batch="${esc(batchKey)}">Refuzo regimen-in</button>
         </span>
+        ${canPrepareCalculator?`
+          <div class="mi-editor-section-title"><div><span>Post-review preparation</span><small>Vetëm DRAFT; nuk publikohet.</small></div></div>
+          <button type="button" class="mi-btn-primary" data-p11-postreview="prepare"
+            data-p11-regimen="${esc(regimen.regimenKey)}" data-p11-batch="${esc(batchKey)}">Përgatit V3 DRAFT rules</button>`:''}
+        ${canFinalizeTextOnly?`
+          <div class="mi-editor-section-title"><div><span>Text-only finalization</span><small>Nuk krijohen calculator rules.</small></div></div>
+          <button type="button" class="mi-btn-primary" data-p11-postreview="finalize-text"
+            data-p11-regimen="${esc(regimen.regimenKey)}" data-p11-batch="${esc(batchKey)}">Finalizo si TEXT ONLY</button>`:''}
       </article>`;
   }
 
@@ -315,6 +344,68 @@
     }catch(error){
       alert(error.message);
     }finally{button.disabled=false;}
+  }
+
+  async function handleProductCaptureReview(button){
+    const name=button.dataset.p11ProductName||'produkti';
+    const url=button.dataset.p11SourceUrl||'';
+    if(!confirm(`Konfirmon se e ke hapur dhe verifikuar burimin zyrtar për "${name}"?\n${url}`))return;
+    const note=prompt('Review note është i detyrueshëm. Përshkruaj çfarë verifikove:','')||'';
+    if(!note.trim())return alert('Review note është i detyrueshëm.');
+    button.disabled=true;
+    try{
+      await postAction({
+        action:'product-identity-capture-review',
+        captureId:button.dataset.p11ProductCaptureReview,
+        decision:'VERIFIED',
+        reviewNote:note.trim(),
+        attestation:'PRODUCT_IDENTITY_SOURCE_REVIEW_ATTESTED',
+      });
+      state.loaded=false;
+      await loadWorkbench(true);
+    }catch(error){ alert(error.message); }
+    finally{ button.disabled=false; }
+  }
+
+  async function handleProductShellMaterialize(button){
+    const name=button.dataset.p11ProductName||'produkti';
+    if(!confirm(`Krijo DRAFT V3 product shell për "${name}"? Kjo nuk publikon dozë, conversion ose binding.`))return;
+    button.disabled=true;
+    try{
+      await postAction({
+        action:'product-shell-materialize',
+        captureId:button.dataset.p11ProductShellMaterialize,
+        attestation:'PRODUCT_SHELL_DRAFT_PREP_ATTESTED',
+      });
+      state.loaded=false;
+      await loadWorkbench(true);
+    }catch(error){ alert(error.message); }
+    finally{ button.disabled=false; }
+  }
+
+  async function handlePostReview(button){
+    const kind=button.dataset.p11Postreview;
+    const regimenKey=button.dataset.p11Regimen;
+    const isText=kind==='finalize-text';
+    if(!confirm(isText
+      ? `Finalizo ${regimenKey} si TEXT ONLY pa calculator rules?`
+      : `Përgatit DRAFT V3 rules/targets për ${regimenKey}? Asgjë nuk publikohet.`
+    ))return;
+    const note=isText?(prompt('Finalization note (opsionale):','')||''):'';
+    button.disabled=true;
+    try{
+      await postAction({
+        action:isText?'finalize-text-only-regimen':'prepare-reviewed-regimen',
+        regimenKey,
+        reviewNote:note,
+        attestation:isText?'TEXT_ONLY_FINALIZATION_ATTESTED':'V3_DRAFT_PREPARATION_ATTESTED',
+      });
+      state.loaded=false;
+      await loadWorkbench(true);
+      const batchKey=button.dataset.p11Batch||state.currentClinicalKey;
+      if(batchKey)await openClinical(batchKey);
+    }catch(error){ alert(error.message); }
+    finally{ button.disabled=false; }
   }
 
   function attestationFor(kind,decision){
@@ -407,6 +498,15 @@
 
     const review=event.target.closest('[data-p11-review-kind]');
     if(review)void handleReviewButton(review);
+
+    const productCapture=event.target.closest('[data-p11-product-capture-review]');
+    if(productCapture)void handleProductCaptureReview(productCapture);
+
+    const shellMaterialize=event.target.closest('[data-p11-product-shell-materialize]');
+    if(shellMaterialize)void handleProductShellMaterialize(shellMaterialize);
+
+    const postReview=event.target.closest('[data-p11-postreview]');
+    if(postReview)void handlePostReview(postReview);
 
     const indication=event.target.closest('[data-p11-indication-id]');
     if(indication)void handleIndicationReview(indication);
