@@ -1408,9 +1408,9 @@
         ? `Data e burimit të produktit: ${identitySource.documentDate}`
         : '',
       product.runtime === 'v3'
-        ? `Runtime: V3 · ${product.phase9Context?.v3ProductKey || 'published'} · v${product.phase9Context?.v3VersionNo || 1}`
+        ? `Konteksti V3: ${product.phase9Context?.v3ProductKey || 'published'} · v${product.phase9Context?.v3VersionNo || 1} · Runtime: V3`
         : product.phase9Context?.v3Published
-          ? `Konteksti V3 i publikuar; request-i aktual: ${product.runtimeLabel || 'V2 fallback'}`
+          ? `Konteksti V3: ${product.phase9Context?.v3ProductKey || 'published'} · request-i aktual: ${product.runtimeLabel || 'V2 fallback'}`
           : 'Runtime: V2 fallback',
     ].filter(Boolean).join('\n');
   }
