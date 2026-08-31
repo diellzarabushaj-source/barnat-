@@ -10,8 +10,9 @@ const rows = [
     tradeName:'PARACETAMOL TEST',
     activeSubstance:'Paracetamol',
     atc:'N02BE01',
-    drugClass:'Analgesic',
-    use:'dhimbje temperaturë',
+    drugClass:'Analgesik / antipiretik',
+    use:'Dhimbje dhe temperaturë',
+    approvedPopulation:'Pediatric only',
     strength:'500 mg',
     form:'Tabletë',
     prescriptionNotation:'Tab. Paracetamol 500 mg',
@@ -25,8 +26,9 @@ const rows = [
     tradeName:'AMOXICILLIN TEST',
     activeSubstance:'Amoxicillin',
     atc:'J01CA04',
-    drugClass:'Antibiotic',
-    use:'infeksion bakterial',
+    drugClass:'Antibiotik beta-laktam',
+    use:'Infeksione bakteriale',
+    approvedPopulation:'Pediatric and adult both',
     strength:'500 mg',
     form:'Kapsulë',
     prescriptionNotation:'Caps. Amoxicillin 500 mg',
@@ -126,6 +128,12 @@ test('registry v2 desktop flow is stable and usable', async ({ page }) => {
   await expect(page.getByText('PARACETAMOL TEST')).toBeVisible();
   await expect(page.getByText('AMOXICILLIN TEST')).toBeVisible();
   await expect(page.getByText('15 mg/kg për dozë')).toBeVisible();
+  await expect(page.getByText('Analgesik / antipiretik')).toBeVisible();
+  await expect(page.getByText('Dhimbje dhe temperaturë')).toBeVisible();
+  await expect(page.getByText('Vetëm pediatrik')).toBeVisible();
+  await expect(page.getByText('Të rritur + pediatrik')).toBeVisible();
+  await expect(page.locator('tr.is-pediatric-only')).toHaveCount(1);
+  await expect(page.locator('tr[data-population="pediatric-only"]')).toContainText('PARACETAMOL TEST');
 
   const authorities = await page.evaluate(() => ({
     styles:[...document.querySelectorAll('link[rel="stylesheet"]')].map(node => new URL(node.href).pathname),
