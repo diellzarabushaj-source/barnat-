@@ -1,8 +1,9 @@
 /* MedIndex physician-first offline service worker */
+/* workspace-cache-cutover-v7: purge pre-v6 shell caches after canonical sidebar migration. */
 'use strict';
 
-const VERSION = 'production-audit-v2';
-const CACHE_EPOCH = 'clinical-knowledge-20260829-sidebar-atc-v4';
+const VERSION = 'workspace-coherence-v7';
+const CACHE_EPOCH = '20260901-shell-v6-sidebar-v4';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
 const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
