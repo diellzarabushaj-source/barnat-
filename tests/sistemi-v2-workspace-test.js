@@ -40,7 +40,7 @@ assert.match(css, /@media\(max-width:760px\)/);
 
 assert.match(js, /Sistemi V2 — consolidated operational runtime/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/);
+assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/);
 assert.match(js, /async function ensureAuth\(\)/);
 assert.match(js, /\/api\/neon-status/);
 assert.match(js, /const ENDPOINT = '\/api\/media'/);
