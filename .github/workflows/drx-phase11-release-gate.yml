@@ -9,6 +9,7 @@ on:
       - "supabase/migrations/20260831180622_drx_phase11ck_adjustment_projection_and_publication_guard.sql"
       - "supabase/migrations/20260831184114_drx_phase11cn_legacy_parity_and_release_gate.sql"
       - "supabase/migrations/20260831184612_drx_phase11co_shadow_evidence_and_cutover_guard.sql"
+      - "supabase/migrations/20260831190001_drx_phase11cp_controlled_percent_bypass_guard.sql"
       - "supabase/migration-history.json"
       - "lib/phase11-review.js"
       - "lib/dose-adjustment-engine.js"
@@ -59,6 +60,7 @@ jobs:
             ['20260831180622','drx_phase11ck_adjustment_projection_and_publication_guard'],
             ['20260831184114','drx_phase11cn_legacy_parity_and_release_gate'],
             ['20260831184612','drx_phase11co_shadow_evidence_and_cutover_guard'],
+            ['20260831190001','drx_phase11cp_controlled_percent_bypass_guard'],
           ]){
             if(!rows.some(x=>String(x.version)===version&&x.name===name)){
               throw new Error(`missing migration ${version}:${name}`);
