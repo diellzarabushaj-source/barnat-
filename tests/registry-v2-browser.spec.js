@@ -127,7 +127,7 @@ test('registry v2 desktop flow is stable and usable', async ({ page }) => {
   await page.goto('http://127.0.0.1:4173/index.html');
   await expect(page.getByText('PARACETAMOL TEST')).toBeVisible();
   await expect(page.getByText('AMOXICILLIN TEST')).toBeVisible();
-  await expect(page.getByText('15 mg/kg për dozë')).toBeVisible();
+  await expect(page.locator('[data-dose-pediatric]').first()).toContainText('15 mg/kg për dozë');
   await expect(page.getByText('Analgesik / antipiretik')).toBeVisible();
   await expect(page.getByText('Dhimbje dhe temperaturë')).toBeVisible();
   await expect(page.getByText('Vetëm pediatrik')).toBeVisible();
@@ -229,6 +229,7 @@ test('registry v2 tablet keeps shell and detail geometry contained', async ({ pa
 
   await page.getByText('PARACETAMOL TEST').click();
   await expect(page.locator('#detailDrawer')).toHaveClass(/is-open/);
+  await page.waitForTimeout(250);
   const drawer = await page.locator('#detailDrawer').evaluate(node => {
     const rect=node.getBoundingClientRect();
     return { width:rect.width, right:rect.right };
