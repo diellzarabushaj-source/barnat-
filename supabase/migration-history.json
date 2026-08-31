@@ -971,6 +971,10 @@
     {
       "version": "20260831174721",
       "name": "drx_phase11ch_verified_rule_binding_cycle_fix"
+    },
+    {
+      "version": "20260831174845",
+      "name": "drx_phase11ci_exact_source_product_shell_verification"
     }
   ]
 }
