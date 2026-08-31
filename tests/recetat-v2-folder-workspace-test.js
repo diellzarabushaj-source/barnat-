@@ -55,7 +55,7 @@ assert.match(css, /prefers-reduced-motion:reduce/);
 
 assert.match(js, /Recetat V2 — consolidated runtime with chapter folders/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/);
+assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/);
 assert.match(js, /async function ensureAuth\(\)/);
 assert.match(js, /function chapterCatalog\(\)/);
 assert.match(js, /function classifyChapter\(/);
