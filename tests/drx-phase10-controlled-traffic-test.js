@@ -45,10 +45,19 @@ assert.equal(controlled.controlledPercent,5);
 const strict=Cutover._test.normalizeState({
   stateVersion:'drx-phase10-cutover-state-v2',
   mode:'STRICT',controlledPercent:0,strictArmed:true,controlVersion:8,
-  trafficBucketVersion:2,rollbackTarget:'V2',strictActivationSupported:true,
+  trafficBucketVersion:2,rollbackTarget:'V2',strictActivationSupported:false,
 });
-assert.equal(strict.mode,'SHADOW');
-assert.equal(strict.stateAvailable,false);
+assert.equal(strict.mode,'STRICT');
+assert.equal(strict.stateAvailable,true);
+assert.equal(strict.strictArmed,true);
+
+const invalidStrict=Cutover._test.normalizeState({
+  stateVersion:'drx-phase10-cutover-state-v2',
+  mode:'STRICT',controlledPercent:0,strictArmed:false,controlVersion:8,
+  trafficBucketVersion:2,rollbackTarget:'V2',strictActivationSupported:false,
+});
+assert.equal(invalidStrict.mode,'SHADOW');
+assert.equal(invalidStrict.stateAvailable,false);
 
 const selector={column:'drug_id',value:'11111111-1111-4111-8111-111111111111'};
 const bucket1=Cutover._test.trafficBucket(controlled,selector);
@@ -59,6 +68,11 @@ const decision=Cutover.decision(controlled,selector);
 assert.equal(decision.trafficBucket,bucket1);
 assert.equal(decision.trafficBucketVersion,2);
 assert.equal(decision.selectedForV3,bucket1<5);
+
+const strictDecision=Cutover.decision(strict,selector);
+assert.equal(strictDecision.strict,true);
+assert.equal(strictDecision.selectedForV3,true);
+assert.equal(strictDecision.serveV3,true);
 
 const stableAcrossControlVersions=Cutover._test.trafficBucket(
   {...controlled,controlVersion:99},
