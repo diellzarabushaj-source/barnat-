@@ -6,7 +6,7 @@
     "lhr1"
   ],
   "functions": {
-    "api/icd.js": {
+    "api/clinical-editor.js": {
       "includeFiles": "data/icd-hierarchy-snapshot.json.gz"
     }
   },
@@ -37,6 +37,14 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/api/phase11-review",
+      "destination": "/api/clinical-editor?phase11Review=1"
+    },
+    {
+      "source": "/api/icd",
+      "destination": "/api/clinical-editor?icdApi=1"
+    },
     {
       "source": "/data/registry-data.js",
       "destination": "/api/registry"
