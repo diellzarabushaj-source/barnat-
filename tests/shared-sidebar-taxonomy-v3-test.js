@@ -87,12 +87,12 @@ for (const [file, runtime] of [
 }
 for (const [htmlFile, runtime, version] of [
   ['dozologjia.html','dozologjia-v2.js','dynamic-v4+'],
-  ['urgjencat.html','urgjencat-v2.js','10'],
-  ['analizat.html','analizat-v2.js','1'],
-  ['protokollet.html','protokollet-v2.js','1'],
-  ['recetat.html','recetat-v2.js','1'],
+  ['urgjencat.html','urgjencat-v2.js','11'],
+  ['analizat.html','analizat-v2.js','2'],
+  ['protokollet.html','protokollet-v2.js','2'],
+  ['recetat.html','recetat-v2.js','2'],
   ['medical-hub.html','medical-hub-v2.js','dynamic'],
-  ['sistemi.html','sistemi-v2.js','1'],
+  ['sistemi.html','sistemi-v2.js','2'],
 ]) {
   const html = read(htmlFile);
   const js = read(runtime);
