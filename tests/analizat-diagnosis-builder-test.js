@@ -22,8 +22,8 @@ const serviceWorker = read('sw.js');
 assert.match(html, /data-drx-app="analizat-v2"/);
 assert.match(html, /class="drx-unified-sidebar"/);
 assert.match(html, /analizat-v2\.css\?v=1/);
-assert.match(html, /analizat-v2\.js\?v=1/);
-assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/);
+assert.match(html, /analizat-v2\.js\?v=2/);
+assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/);
 assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
 assert.match(html, /id="labDiseaseTrigger"/);
 assert.match(html, /id="labDiseasePopover"/);
@@ -46,15 +46,15 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
 
 assert.equal(styles.length, 2, 'Analizat V2 must load only page CSS + canonical Stripe shell');
 assert.ok(styles[0].includes('analizat-v2.css?v=1'));
-assert.ok(styles[1].includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4'));
+assert.ok(styles[1].includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6'));
 assert.equal(scripts.length, 1, 'Analizat V2 must own one page runtime');
-assert.ok(scripts[0].includes('analizat-v2.js?v=1'));
+assert.ok(scripts[0].includes('analizat-v2.js?v=2'));
 assert.doesNotMatch(html, /tailadmin-|analizat-polish|medical-hub\.css|lab-sheet-data|auth-client\.js|clean-medindex-ui|clinical-density|app-polish|performance\.css/);
 assert.doesNotMatch(html, /<\/div>\s*<\/div>\s*<\/main>/, 'Analizat V2 main wrapper must stay balanced');
 
 assert.match(js, /fetch\('\/api\/icd\?dataset=labs'/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/);
+assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/);
 assert.match(js, /const TIER_ORDER = Object\.freeze\(\{ core:0, recommended:1, conditional:2, manual:3 \}\)/);
 assert.match(js, /const map = new Map\(\)/);
 assert.match(js, /map\.has\(test\.id\)/);
@@ -73,7 +73,7 @@ assert.match(js, /Panel orientues klinik/);
 assert.doesNotThrow(() => new Function(js));
 
 assert.match(css, /Analizat V2 — diagnosis-driven order builder/);
-assert.match(css, /Visual geometry, colors, spacing and responsive shell authority live in drx-dashboard-stripe\.css v4/);
+assert.match(css, /Visual geometry, colors, spacing and responsive shell authority live in drx-dashboard-stripe\.css v6/);
 assert.doesNotMatch(css, /\.sidebar\{[^}]*background:#1c1e54/);
 assert.doesNotMatch(css, /\.topbar\{[^}]*background:/);
 assert.match(css, /\.lab-disease-popover/);

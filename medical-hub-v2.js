@@ -99,7 +99,7 @@
   }
 
   function loadSharedSidebarTaxonomy() {
-    void loadRuntime('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v3', 'data-drx-sidebar-taxonomy');
+    void loadRuntime('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v4', 'data-drx-sidebar-taxonomy');
   }
 
   async function hubApi(params = {}, { timeout = 12000 } = {}) {

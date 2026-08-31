@@ -67,7 +67,7 @@ assert.doesNotMatch(css, /linear-gradient|radial-gradient/, 'Clinical workbench 
 
 assert.match(js, /Dozologjia V3 — one runtime/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/);
+assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/);
 assert.match(js, /async function ensureAuth\(\)/);
 assert.match(js, /\/api\/dosage\/search\?q=/);
 assert.match(js, /\/api\/dosage\/product\//);

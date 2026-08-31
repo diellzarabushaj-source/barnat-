@@ -23,7 +23,7 @@ assert.match(html, /class="drx-unified-sidebar"/);
 assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
 assert.match(html, /class="nav-item is-active" href="\/recetat\.html" aria-current="page"/);
 assert.match(html, /recetat-v2\.css\?v=1/);
-assert.match(html, /recetat-v2\.js\?v=1/);
+assert.match(html, /recetat-v2\.js\?v=2/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/);
 
 [
@@ -41,7 +41,7 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
 assert.equal(styles.length, 2, 'Recetat V2 must load only page CSS + shared Stripe shell');
 assert.equal(styles[0], '/recetat-v2.css?v=1');
 assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6');
-assert.deepEqual(scripts, ['/recetat-v2.js?v=1']);
+assert.deepEqual(scripts, ['/recetat-v2.js?v=2']);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|recetat\.css|recetat-audit\.css|recetat-style-loader\.js|recetat\.js/);
 
 assert.match(css, /Recetat V2 — consolidated prescription workspace/);
@@ -55,7 +55,7 @@ assert.match(css, /prefers-reduced-motion:reduce/);
 
 assert.match(js, /Recetat V2 — consolidated runtime with chapter folders/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/);
+assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/);
 assert.match(js, /async function ensureAuth\(\)/);
 assert.match(js, /function chapterCatalog\(\)/);
 assert.match(js, /function classifyChapter\(/);

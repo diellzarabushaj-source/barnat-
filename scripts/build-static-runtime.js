@@ -21,11 +21,16 @@ const clinicalPages = [
   '/index.html',
   '/klasifikimi.html',
   '/icd.html',
-  '/analizat.html',
   '/dozologjia.html',
   '/protokollet.html',
+  '/urgjencat.html',
   '/recetat.html',
+  '/analizat.html',
+  '/medical-hub.html',
+  '/sistemi.html',
 ];
+// Keep offline discovery aligned with the canonical authenticated surface:
+ // all ten authenticated standalone workspaces must be discoverable together.
 const generatedStaticSources = new Map([
   ['/offline-runtime-performance.js', 'offline-runtime.js'],
   ['/app-runtime-performance.js', 'app-runtime-performance.js'],

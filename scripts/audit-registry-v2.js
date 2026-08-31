@@ -49,11 +49,15 @@ assert(/src="\/registry-v2\.js\?v=[^"]+"/.test(html), 'Registry v2 runtime is no
 const stylesheetLinks = [...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"/g)].map(match => match[1]);
 const scriptSources = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map(match => match[1]);
 
-assert(stylesheetLinks.length === 2, `Registry v2 must load page CSS plus the shared Stripe shell; found ${stylesheetLinks.length}.`);
-assert(scriptSources.length === 1, `Registry v2 must load exactly one script; found ${scriptSources.length}.`);
+assert(stylesheetLinks.length === 3, `Registry v2 must load registry CSS, dose-calculator CSS and the shared Stripe shell; found ${stylesheetLinks.length}.`);
+assert(scriptSources.length === 4, `Registry v2 must load dose core/runtime, registry runtime and calculator runtime; found ${scriptSources.length}.`);
 assert(stylesheetLinks[0].startsWith('/registry-v2.css'), 'Unexpected registry page stylesheet authority.');
-assert(stylesheetLinks[1] === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4', 'Shared Stripe shell must load last.');
-assert(scriptSources[0].startsWith('/registry-v2.js'), 'Unexpected registry script authority.');
+assert(stylesheetLinks[1].startsWith('/registry-v2-dose-calculator.css'), 'Dose calculator stylesheet must remain second.');
+assert(stylesheetLinks[2] === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6', 'Shared Stripe shell v6 must load last.');
+assert(scriptSources[0].startsWith('/dose-core.js'), 'Dose core must load first.');
+assert(scriptSources[1].startsWith('/dose-runtime-browser.js'), 'Dose browser runtime must load after dose core.');
+assert(scriptSources[2].startsWith('/registry-v2.js'), 'Registry runtime must load after dose runtime.');
+assert(scriptSources[3].startsWith('/registry-v2-dose-calculator.js'), 'Dose calculator runtime must load last.');
 
 for (const asset of legacyAssets) {
   assert(!html.includes(asset), `Legacy registry asset is still loaded by index.html: ${asset}`);
@@ -104,6 +108,7 @@ console.log(JSON.stringify({
   architecture:'registry-v2',
   stylesheets:stylesheetLinks,
   scripts:scriptSources,
+  shellVersion:'drx-dashboard-stripe-v6',
   tableHeaderCount,
   legacyAssetsLoaded:0,
 }, null, 2));

@@ -1,8 +1,9 @@
 /* MedIndex physician-first offline service worker */
+/* workspace-cache-cutover-v7: purge pre-v6 shell caches after canonical sidebar migration. */
 'use strict';
 
-const VERSION = 'production-audit-v2';
-const CACHE_EPOCH = 'clinical-knowledge-20260829-sidebar-atc-v4';
+const VERSION = 'workspace-coherence-v7';
+const CACHE_EPOCH = '20260901-shell-v6-sidebar-v4';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
 const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
@@ -20,6 +21,10 @@ const APP_SHELL = [
   '/login-v2.html', '/login-v2.css', '/login-v2.js', '/login-v2-canvas.js', '/login.html',
   '/manifest.webmanifest', '/medindex-icon.svg',
   '/brand/drx-horizontal-on-dark.svg', '/brand/drx-mark-on-light.svg', '/fonts/inter-latin-variable-normal.woff2',
+  // Canonical standalone V2 shell assets — keep parity with the ten authenticated workspaces.
+  '/registry-v2.css', '/registry-v2-dose-calculator.css', '/classification-v2.css', '/icd-v2.css', '/medical-hub-v2.css',
+  '/dose-core.js', '/dose-runtime-browser.js', '/registry-v2.js', '/registry-v2-dose-calculator.js',
+  '/classification-v2.js', '/icd-v2.js', '/phase9-personal-entities-client.js', '/medical-hub-v2.js',
   '/styles.css', '/ui-controls.css', '/loader.css', '/app-polish.css',
   '/performance.css', '/clean-medindex-ui.css', '/tailadmin-medindex.css',
   '/tailadmin-professional.css', '/registry-table-tools.css', '/medical-hub.css', '/clinical-knowledge.css', '/clinical-density.css',
