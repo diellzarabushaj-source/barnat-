@@ -11,14 +11,14 @@ const MAX_QUERY = 120;
 
 const INDEX_QUERY = `*[_type == "learningTopic" && reviewStatus != "archived" && contentKind != "section"] | order(chapterNumber asc, lessonNumber asc) {
   _id, question, title, "slug": slug.current, keywords, icdCodes, procedureCodes, summary,
-  contentKind, chapterNumber, lessonNumber, reviewStatus, reviewedBy, lastReviewedAt, version,
+  contentKind, chapterNumber, lessonNumber, reviewStatus, reviewedBy, lastReviewedAt, version, sourceRxTitle,
   "stepCount": count(steps), "prescriptionCount": count(prescriptions),
   "protocolCount": count(relatedProtocols), "childCount": count(relatedTopics)
 }`;
 
 const DETAIL_QUERY = `*[_type == "learningTopic" && _id == $id && reviewStatus != "archived"][0] {
   _id, question, title, "slug": slug.current, keywords, icdCodes, procedureCodes, summary,
-  contentKind, chapterNumber, lessonNumber,
+  contentKind, chapterNumber, lessonNumber, sourceRxTitle,
   steps[]{_key,title,action,why,setting,priority,note},
   prescriptions[]{_key,medicine,genericName,form,strength,dose,route,frequency,duration,quantity,instructions,patientGroup,clinicalNote},
   figures[]{_key,title,caption,alt,url,sourceUrl,credit,kind,order},
@@ -130,6 +130,7 @@ function searchDocument(item) {
     question:item.question,
     title:item.title,
     summary:item.summary,
+    sourceRxTitle:item.sourceRxTitle,
     keywords:item.keywords,
     icdCodes:item.icdCodes,
     procedureCodes:item.procedureCodes,
