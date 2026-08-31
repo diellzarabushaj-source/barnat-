@@ -56,10 +56,11 @@ test('all clinical pages run without CSP violations or blocked runtime assets', 
   }
 
   await page.goto(`${BASE}/klasifikimi.html#N02`, { waitUntil:'domcontentloaded' });
-  await page.waitForURL(url => url.pathname === '/index.html' && url.searchParams.get('atc') === 'N02', { timeout:10000 });
-  await expect(page.locator('html')).toHaveAttribute('data-drx-app', 'registry-v2');
-  await expect(page.locator('#pageTitle')).toHaveText('Barnat');
-  await expect(page.locator('#searchInput')).toBeVisible();
+  await expect(page.locator('#appShell')).toHaveAttribute('aria-busy', 'false', { timeout:10000 });
+  await expect(page.locator('html')).toHaveAttribute('data-drx-app', 'classification-v2');
+  await expect(page.locator('#pageTitle')).toHaveText('Klasifikimi ATC');
+  await expect(page.locator('#atcSearch')).toBeVisible();
+  await expect(page.locator('#atcPathRegistry')).toHaveAttribute('href', /\/index\.html\?atc=N02/);
 
   expect(failures, failures.join('\n')).toEqual([]);
 });
