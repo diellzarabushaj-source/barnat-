@@ -1,4 +1,4 @@
 Redeploy trigger for current main build.
-Date: 2026-08-22
-Source main: 3a1a4bf358414eefc0d82c36814065a288757608
-Reason: republish the landing page CursorGrid update from main — white base background, navy 70px grid across #rrjedha, #themeluesja and #plani, plus the interactive navy CursorGrid layer and dark navy workflow cards.
+Date: 2026-08-31
+Source main: 17afde7c86f431a5e2adf691c3e2e9f30e539272
+Reason: republish the Phase 10 pediatric V3 calculator rollout after migration parity, secure metadata RPC, explicit renal/hepatic fail-closed safety reasons, telemetry, and green Phase 10 + complete test suite.
