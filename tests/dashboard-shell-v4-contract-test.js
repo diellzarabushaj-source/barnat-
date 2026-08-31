@@ -16,6 +16,10 @@ const tailadmin = [];
 const allPages = [...standalone, ...tailadmin];
 
 assert.match(stripe, /DRx canonical sidebar shell v5/);
+assert.match(stripe, /DRx clinical workspace system v6 — Urgjencat reference/);
+assert.match(stripe, /--drx-type-page-title:32px/);
+assert.match(stripe, /--drx-type-subtitle:14px/);
+assert.match(stripe, /html\.drx-unified-sidebar \.page-heading h1\{[\s\S]*font-size:var\(--drx-type-page-title\)!important/);
 assert.match(stripe, /--drx-nav:#1c1e54/);
 assert.match(stripe, /--drx-nav-active:rgba\(83,58,253,\.20\)/);
 assert.match(stripe, /--drx-shell-accent:#533afd/);
@@ -50,7 +54,7 @@ for (const file of allPages) {
     .map(match => match[1]);
 
   assert.equal(stripeLinks.length, 1, `${file}: exactly one canonical dashboard shell stylesheet is required`);
-  assert.match(stripeLinks[0], /drx-dashboard-stripe-v5/, `${file}: shell cache version must be v5`);
+  assert.match(stripeLinks[0], /drx-dashboard-stripe-v6/, `${file}: shell cache version must be v5`);
   assert.match(html, /<meta name="theme-color" content="#1c1e54">/, `${file}: browser chrome must match the navy shell`);
 }
 
@@ -81,7 +85,7 @@ for (const file of standalone) {
 
   const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)]
     .map(match => match[1]);
-  assert.ok(styles.at(-1)?.includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v5'), `${file}: shell CSS must load last`);
+  assert.ok(styles.at(-1)?.includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6'), `${file}: shell CSS must load last`);
 }
 
 for (const file of tailadmin) {
@@ -91,7 +95,7 @@ for (const file of tailadmin) {
 
   const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)]
     .map(match => match[1]);
-  assert.ok(styles.at(-1)?.includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v5'), `${file}: canonical shell must be the final static stylesheet`);
+  assert.ok(styles.at(-1)?.includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6'), `${file}: canonical shell must be the final static stylesheet`);
 }
 
 console.log('Dashboard shell v5: canonical sidebar geometry and one visual authority passed.');
