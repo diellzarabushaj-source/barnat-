@@ -240,8 +240,8 @@ for (const viewport of viewports) {
       await auditClinicalViewport(page, `${file} / ${viewport.name}`, { requireControls:true });
 
       if (file === 'icd.html') {
-        await expect(page.locator('#icdTree')).toBeVisible();
-        await expect(page.locator('.icd-path-node.is-current').first()).toBeVisible();
+        await expect(page.locator('#icdSearch')).toBeVisible();
+        await expect(page.locator('#chapterList')).toBeVisible();
       }
     }
 
