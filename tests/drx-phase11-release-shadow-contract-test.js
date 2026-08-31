@@ -16,6 +16,7 @@ const cq = read('supabase/migrations/20260831191319_drx_phase11cq_evidence_integ
 const cr = read('supabase/migrations/20260831191800_drx_phase11cr_safety_integrity_precheck.sql');
 const cs = read('supabase/migrations/20260831193039_drx_phase11cs_indication_icd_integrity_and_publication_guard.sql');
 const ct = read('supabase/migrations/20260831194123_drx_phase11ct_step_requirement_integrity_prechecks.sql');
+const cu = read('supabase/migrations/20260831194503_drx_phase11cu_clinical_review_preflight.sql');
 const backend = read('lib/phase11-review.js');
 const html = read('admin.html');
 const ui = read('admin-phase11-review.js');
@@ -103,7 +104,15 @@ assert.match(ct, /false::boolean as auto_verify_allowed/);
 assert.match(ct, /false::boolean as auto_bind_or_apply_allowed/);
 assert.doesNotMatch(ct, /set\s+review_status='VERIFIED'/i);
 
-for (const sql of [ck,cn,co,cp,cq,cr,cs,ct]) {
+assert.match(cu, /phase11_clinical_review_preflight_v1/);
+assert.match(cu, /phase11_clinical_review_preflight_summary_v1/);
+assert.match(cu, /technical_integrity_blockers/);
+assert.match(cu, /upstream_human_review_blockers/);
+assert.match(cu, /ready_for_human_clinical_attestation/);
+assert.match(cu, /false::boolean as auto_approve_allowed/);
+assert.doesNotMatch(cu, /update\s+drx_dose\.source_regimen_candidates_v1/i);
+
+for (const sql of [ck,cn,co,cp,cq,cr,cs,ct,cu]) {
   assert.doesNotMatch(sql, /auto_publish_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_cutover_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_strict_activation_allowed(?:_v2)?\s*=\s*true/i);
@@ -140,6 +149,7 @@ for (const expected of [
   ['20260831191800','drx_phase11cr_safety_integrity_precheck'],
   ['20260831193039','drx_phase11cs_indication_icd_integrity_and_publication_guard'],
   ['20260831194123','drx_phase11ct_step_requirement_integrity_prechecks'],
+  ['20260831194503','drx_phase11cu_clinical_review_preflight'],
 ]) {
   assert.ok(
     migrations.some(row => String(row.version) === expected[0] && row.name === expected[1]),
