@@ -568,6 +568,83 @@
     finally{button.disabled=false;}
   }
 
+  async function loadShadow(){
+    const box=$('p11ShadowSummary');
+    const button=$('p11LoadShadow');
+    if(!box)return;
+    box.className='mi-empty-state';
+    box.textContent='Duke ngarkuar…';
+    if(button)button.disabled=true;
+    try{
+      const response=await getJson(`${API}?shadow=1`);
+      const data=response.payload||{};
+      const summary=data.summary||{};
+      const readiness=data.readiness||{};
+      const rows=Array.isArray(data.rows)?data.rows:[];
+      const blockers=Array.isArray(readiness.cutover_blockers_v2)?readiness.cutover_blockers_v2:[];
+      box.className='mi-table-wrap';
+      box.innerHTML=`
+        <div class="mi-mini-stats">
+          <div><span>Published products</span><strong>${esc(summary.published_products??0)}</strong></div>
+          <div><span>Compared</span><strong>${esc(summary.compared_products??0)}</strong></div>
+          <div><span>Shadow PASS</span><strong>${esc(summary.shadow_gate_pass_products??0)}</strong></div>
+          <div><span>Cutover v2</span><strong>${readiness.ready_for_controlled_cutover_v2?'READY':'BLOCKED'}</strong></div>
+        </div>
+        <div class="mi-empty-state" style="text-align:left;margin:12px 0">
+          Runtime: ${esc(readiness.current_runtime_mode||'—')} ${esc(readiness.controlled_percent??0)}% ·
+          Blockers: ${esc(compactList(blockers,8))}
+        </div>
+        <table class="mi-table"><thead><tr><th>Produkti</th><th>Shadow</th><th>Rules</th><th>Statusi</th><th>Veprimi</th></tr></thead><tbody>
+          ${rows.length?rows.map(row=>{
+            let action=`<span class="mi-badge ${row.shadowGatePass?'is-verified':'is-in_review'}">${esc(row.nextAction||'BLOCKED')}</span>`;
+            if(!row.shadowGatePass&&row.comparisonStatus==='DIFF'){
+              action=`<span style="display:flex;gap:6px;flex-wrap:wrap">
+                <button type="button" class="mi-row-btn" data-p11-shadow-review="EXPLAINED_BY_REVIEWED_V3_CHANGE" data-p11-product-id="${esc(row.productId)}" data-p11-comparison-id="${esc(row.comparisonId)}">Accept reviewed diff</button>
+                <button type="button" class="mi-row-btn" data-p11-shadow-review="REJECTED" data-p11-product-id="${esc(row.productId)}" data-p11-comparison-id="${esc(row.comparisonId)}">Reject</button>
+              </span>`;
+            }else if(!row.shadowGatePass&&row.comparisonStatus==='V3_ONLY'){
+              action=`<span style="display:flex;gap:6px;flex-wrap:wrap">
+                <button type="button" class="mi-row-btn" data-p11-shadow-review="EXPECTED_V3_ONLY" data-p11-product-id="${esc(row.productId)}" data-p11-comparison-id="${esc(row.comparisonId)}">Confirm V3-only</button>
+                <button type="button" class="mi-row-btn" data-p11-shadow-review="REJECTED" data-p11-product-id="${esc(row.productId)}" data-p11-comparison-id="${esc(row.comparisonId)}">Reject</button>
+              </span>`;
+            }
+            return `<tr>
+              <td><strong>${esc(row.tradeName||'—')}</strong><small>${esc(row.registryNumber||'')} · ${esc(row.productKey||'')}</small></td>
+              <td>${esc(row.comparisonStatus||'MISSING')}<small>${esc(compactList(row.diffCodes,4))}</small></td>
+              <td>V2 ${esc(row.v2RuleCount??'—')} / V3 ${esc(row.v3RuleCount??'—')}</td>
+              <td><span class="mi-badge ${row.shadowGatePass?'is-verified':'is-in_review'}">${row.shadowGatePass?'PASS':esc(row.reviewDecision||row.nextAction||'PENDING')}</span></td>
+              <td>${action}</td>
+            </tr>`;
+          }).join(''):'<tr><td colspan="5" class="is-empty">Nuk ka Phase 11 products të publikuara; shadow queue është bosh.</td></tr>'}
+        </tbody></table>`;
+    }catch(error){
+      box.className='mi-empty-state';
+      box.textContent=error.message;
+    }finally{
+      if(button)button.disabled=false;
+    }
+  }
+
+  async function handleShadowReview(button){
+    const decision=button.dataset.p11ShadowReview;
+    const note=prompt('Review note është i detyrueshëm. Shëno pse shadow diff/V3-only është i shpjeguar ose pse refuzohet:','')||'';
+    if(!note.trim())return alert('Review note është i detyrueshëm.');
+    if(!confirm(`Konfirmon shadow decision: ${decision.replaceAll('_',' ')}?`))return;
+    button.disabled=true;
+    try{
+      await postAction({
+        action:'shadow-diff-review',
+        productId:button.dataset.p11ProductId,
+        comparisonId:button.dataset.p11ComparisonId,
+        decision,
+        reviewNote:note.trim(),
+        attestation:'PHASE11_SHADOW_DIFF_REVIEW_ATTESTED',
+      });
+      await loadShadow();
+    }catch(error){alert(error.message);}
+    finally{button.disabled=false;}
+  }
+
   async function handlePreparedValidate(button){
     if(!confirm('Ekzekuto structural validation për këtë DRAFT rule? Kjo vetëm vendos validation status; nuk e verifikon ose publikon rule-in.'))return;
     button.disabled=true;
@@ -913,10 +990,14 @@
 
     const ruleRelease=event.target.closest('[data-p11-rule-release]');
     if(ruleRelease)void handleRuleRelease(ruleRelease);
+
+    const shadowReview=event.target.closest('[data-p11-shadow-review]');
+    if(shadowReview)void handleShadowReview(shadowReview);
   });
 
   $('phase11Refresh')?.addEventListener('click',()=>void loadWorkbench(true));
   $('p11LoadIndications')?.addEventListener('click',()=>void loadIndications());
   $('p11LoadAdjustments')?.addEventListener('click',()=>void loadAdjustments());
   $('p11LoadPublication')?.addEventListener('click',()=>void loadPublication());
+  $('p11LoadShadow')?.addEventListener('click',()=>void loadShadow());
 })();
