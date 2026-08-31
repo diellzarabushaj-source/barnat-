@@ -19,17 +19,17 @@ let atcCountsCache = null;
 let atcCountsRevisionCheckedAt = 0;
 
 const LIST_SELECT = [
-  'id','registry_number','pdid','trade_name','active_substance','atc_code','drug_class','use_text',
+  'id','registry_number','pdid','trade_name','active_substance','atc_code','drug_class','use_text','approved_population',
   'strength','pharmaceutical_form','product_status','retail_price','editorial_status'
 ].join(',');
 
 const DETAIL_SELECT = [
-  'id','registry_number','pdid','protocol_no','trade_name','active_substance','atc_code','drug_class','use_text',
+  'id','registry_number','pdid','protocol_no','trade_name','active_substance','atc_code','drug_class','use_text','approved_population',
   'strength','pharmaceutical_form','packaging','marketing_authorization_holder','manufacturer','ma_certificate',
   'product_status','wholesale_price','wholesale_with_margin','vat_text','retail_price','validity_text','updated_at','source_payload'
 ].join(',');
 
-const SORTS = Object.freeze({ registry:'registry_number', name:'trade_name', substance:'active_substance', atc:'atc_code', strength:'strength', form:'pharmaceutical_form', status:'product_status', price:'retail_price' });
+const SORTS = Object.freeze({ registry:'registry_number', name:'trade_name', substance:'active_substance', class:'drug_class', use:'use_text', population:'approved_population', atc:'atc_code', strength:'strength', form:'pharmaceutical_form', status:'product_status', price:'retail_price' });
 
 const FORM_CATEGORIES = Object.freeze({
   'Tableta & pilula':['Chewable tablet','Coated tablet','Compressed lozenge','Dispersible tablet','Effervescent tablet','Film coated tablet','Gastro-resistant coated tablet','Gastro-resistant tablet','Lozenge','Modified-release film-coated tablet','Modified-release tablet','Orodispersible tablet','Pastille','Prolonged-release tablet','Soluble tablet','Sublingual tablet','Tablet'],
@@ -188,9 +188,9 @@ async function neonAtcCounts() {
   return supabaseAtcCounts();
 }
 
-function listRow(row) { return { id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName:clean(row.trade_name), activeSubstance:clean(row.active_substance), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), strength:clean(row.strength), form:clean(row.pharmaceutical_form), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, qualityStatus:clean(row.editorial_status || row.product_status) }; }
+function listRow(row) { return { id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName:clean(row.trade_name), activeSubstance:clean(row.active_substance), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), approvedPopulation:clean(row.approved_population), strength:clean(row.strength), form:clean(row.pharmaceutical_form), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, qualityStatus:clean(row.editorial_status || row.product_status) }; }
 function detailRow(row) { const source=row?.source_payload && typeof row.source_payload==='object' ? row.source_payload : {}; return { ...listRow(row), protocolNo:clean(row.protocol_no), packaging:clean(row.packaging), marketingAuthorizationHolder:clean(row.marketing_authorization_holder), manufacturer:clean(row.manufacturer), maCertificate:clean(row.ma_certificate), wholesalePrice:row.wholesale_price ?? null, wholesaleWithMargin:row.wholesale_with_margin ?? null, vat:clean(row.vat_text), validity:clean(row.validity_text), prescriptionNotation:clean(source['Si të shënohet në recetë']), updatedAt:row.updated_at || null }; }
-function searchRow(row) { const substance=clean(row.active_substance), tradeName=clean(row.trade_name), strength=clean(row.strength); return { key:[clean(row.pdid),tradeName,strength].join('|'), id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName, substance, activeSubstance:substance, strength, form:clean(row.pharmaceutical_form), packaging:clean(row.packaging), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, packagingSummary:clean(row.packaging), prescriptionLine:'', dispense:'', qualityStatus:clean(row.editorial_status || row.product_status), matchRank:Number.isFinite(Number(row.match_rank)) ? Number(row.match_rank) : null, matchReason:clean(row.match_reason) }; }
+function searchRow(row) { const substance=clean(row.active_substance), tradeName=clean(row.trade_name), strength=clean(row.strength); return { key:[clean(row.pdid),tradeName,strength].join('|'), id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName, substance, activeSubstance:substance, strength, form:clean(row.pharmaceutical_form), packaging:clean(row.packaging), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), approvedPopulation:clean(row.approved_population), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, packagingSummary:clean(row.packaging), prescriptionLine:'', dispense:'', qualityStatus:clean(row.editorial_status || row.product_status), matchRank:Number.isFinite(Number(row.match_rank)) ? Number(row.match_rank) : null, matchReason:clean(row.match_reason) }; }
 
 function buildPageRequest(query={}) {
   const page=integerInRange(query.page,1,1,100000), pageSize=integerInRange(query.pageSize,REGISTRY_DEFAULT_PAGE_SIZE,1,REGISTRY_MAX_PAGE_SIZE);
