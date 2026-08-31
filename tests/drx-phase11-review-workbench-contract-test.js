@@ -15,6 +15,8 @@ const bs = read('supabase/migrations/20260831162947_drx_phase11bs_icd_quality_ga
 const bt = read('supabase/migrations/20260831164041_drx_phase11bt_review_provenance_and_item_actions.sql');
 const bu = read('supabase/migrations/20260831164124_drx_phase11bu_indication_and_regimen_review_gates.sql');
 const bv = read('supabase/migrations/20260831164500_drx_phase11bv_clinical_approval_readiness_gate.sql');
+const bw = read('supabase/migrations/20260831165237_drx_phase11bw_review_action_ready_clinical_packet.sql');
+const bx = read('supabase/migrations/20260831165355_drx_phase11bx_source_scoped_safety_review_packet.sql');
 const backend = read('lib/phase11-review.js');
 const api = read('api/phase11-review.js');
 const html = read('admin.html');
@@ -71,9 +73,26 @@ assert.match(bv, /SAFETY_REVIEW_INCOMPLETE/);
 assert.match(bv, /PRIMARY_INDICATION_NOT_PUBLISHED_ICD_VERIFIED/);
 assert.match(bv, /auto_approve_allowed/);
 
+assert.match(bw, /drx_phase11_clinical_batch_packet_v2/);
+assert.match(bw, /clinicalApprovalGate/);
+assert.match(bw, /reviewEvents/);
+
+assert.match(bx, /drx_phase11_clinical_batch_packet_v3/);
+assert.match(bx, /source_regimen_applicable_safety_v2/);
+assert.match(bx, /applicabilityScope/);
+assert.match(bx, /primaryIndication/);
+
 assert.match(backend, /AdminAccess\.requireAdminSession/);
 assert.match(backend, /\['GET','POST'\]\.includes\(req\.method\)/);
 assert.match(backend, /reviewer = clean\(admin\?\.email\)/);
+assert.match(backend, /drx_phase11_clinical_batch_packet_v3/);
+assert.match(backend, /identity-batch-apply/);
+assert.match(backend, /evidence-review/);
+assert.match(backend, /presentation-review/);
+assert.match(backend, /administration-review/);
+assert.match(backend, /safety-review/);
+assert.match(backend, /indication-publish/);
+assert.match(backend, /regimen-review/);
 assert.match(backend, /IDENTITY_REVIEW_ATTESTED/);
 assert.match(backend, /SOURCE_REVIEW_ATTESTED/);
 assert.match(backend, /SAFETY_REVIEW_ATTESTED/);
@@ -93,11 +112,17 @@ assert.match(ui, /identitySignature=/);
 assert.match(ui, /clinicalBatchKey=/);
 assert.match(ui, /indications=1/);
 assert.match(ui, /Canonical suggestions/);
-assert.doesNotMatch(ui, /method\s*:\s*['"]POST['"]/i);
+assert.match(ui, /method:'POST'/);
+assert.match(ui, /IDENTITY_REVIEW_ATTESTED/);
+assert.match(ui, /SOURCE_REVIEW_ATTESTED/);
+assert.match(ui, /SAFETY_REVIEW_ATTESTED/);
+assert.match(ui, /ICD_AND_INDICATION_REVIEW_ATTESTED/);
+assert.match(ui, /CLINICAL_REGIMEN_REVIEW_ATTESTED/);
+assert.match(ui, /ready_for_clinical_approval/);
 assert.doesNotMatch(ui, /method\s*:\s*['"]PUT['"]/i);
 assert.doesNotMatch(ui, /method\s*:\s*['"]PATCH['"]/i);
 
-for (const sql of [bp,bq,br,bs,bt,bu,bv]) {
+for (const sql of [bp,bq,br,bs,bt,bu,bv,bw,bx]) {
   assert.doesNotMatch(sql, /auto_publish_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_apply_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_resolve_allowed\s*=\s*true/i);
