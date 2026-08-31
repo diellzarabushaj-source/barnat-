@@ -2861,3 +2861,621 @@ body{background:#f7f8fb;color:var(--clinical-text)}
 @media(prefers-reduced-motion:reduce){
   .clinical-row{transition:none}
 }
+
+
+/* Protocol visual parity v3 — Urgjencat reference
+   Protokollet now uses the same Inter type scale, white clinical canvas,
+   compact command surface and document-reading rhythm as Urgjencat. */
+.protocol-page{
+  --protocol-doc-ink:#0d253d;
+  --protocol-doc-copy:#42566b;
+  --protocol-doc-muted:#66788d;
+  --protocol-doc-muted-2:#8795a7;
+  --protocol-doc-line:#e3e8ee;
+  --protocol-doc-soft:#f6f9fc;
+  --protocol-doc-accent:#635bff;
+  min-height:calc(100vh - 58px);
+}
+html.drx-unified-sidebar body{background:#fff!important}
+.protocol-page-heading{align-items:flex-start!important}
+.protocol-source-badge{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:0;
+  padding:7px 10px;
+  border:1px solid var(--protocol-doc-line);
+  border-radius:9px;
+  background:#fff;
+  box-shadow:none;
+}
+.protocol-source-badge-mark{
+  width:30px;
+  height:30px;
+  border-radius:7px;
+  background:#f0efff;
+  color:#635bff;
+  font-size:9px;
+  font-weight:600;
+}
+.protocol-source-badge strong{
+  color:#42566b;
+  font-size:10.5px;
+  font-weight:500;
+}
+.protocol-source-badge small{
+  color:#8795a7;
+  font-size:9.5px;
+  font-weight:300;
+}
+
+/* Summary strip uses the same restrained numeric language as Urgjencat. */
+.protocol-metrics{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  margin-bottom:16px;
+  border:1px solid var(--protocol-doc-line);
+  border-radius:10px;
+  background:#fff;
+  overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,55,112,.035);
+}
+.protocol-metric{
+  min-width:0;
+  padding:12px 14px;
+  border-right:1px solid var(--protocol-doc-line);
+}
+.protocol-metric:last-child{border-right:0}
+.protocol-metric span,
+.protocol-metric small{
+  display:block;
+  color:var(--protocol-doc-muted-2);
+}
+.protocol-metric span{
+  font-size:9.5px;
+  font-weight:400;
+}
+.protocol-metric strong{
+  display:block;
+  margin:5px 0 3px;
+  color:var(--protocol-doc-ink);
+  font-size:18px;
+  font-weight:450;
+  line-height:1.05;
+  font-variant-numeric:tabular-nums;
+}
+.protocol-metric small{
+  font-size:9px;
+  font-weight:300;
+}
+
+/* Command surface mirrors the Urgjencat chapter/search command card. */
+.protocol-toolbar-card{
+  position:sticky;
+  top:70px;
+  z-index:20;
+  margin-bottom:16px;
+  padding:10px;
+  border:1px solid var(--protocol-doc-line);
+  border-radius:10px;
+  background:rgba(255,255,255,.97);
+  box-shadow:0 1px 3px rgba(0,55,112,.045);
+  backdrop-filter:blur(12px);
+}
+.protocol-toolbar-heading{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:9px;
+  padding:0 2px;
+}
+.protocol-toolbar-heading strong{
+  display:block;
+  margin:0 0 3px;
+  color:#263d54;
+  font-size:13px;
+  font-weight:500;
+  line-height:1.35;
+}
+.protocol-toolbar-heading p{
+  margin:0;
+  color:#66788d;
+  font-size:10.5px;
+  font-weight:300;
+  line-height:1.5;
+}
+.protocol-toolbar-shortcut{color:#8795a7}
+.protocol-toolbar-shortcut kbd{
+  min-width:21px;
+  height:21px;
+  border-color:var(--protocol-doc-line);
+  border-radius:5px;
+  background:#f8fafc;
+  color:#8795a7;
+  font:500 9px/1 Inter,system-ui,sans-serif;
+}
+.clinical-toolbar{
+  position:static;
+  display:grid;
+  grid-template-columns:minmax(300px,2.2fr) repeat(3,minmax(145px,1fr));
+  gap:8px;
+  margin:0;
+  padding:0;
+  border:0;
+  background:transparent;
+  box-shadow:none;
+  backdrop-filter:none;
+}
+.protocol-filter-field{
+  display:grid;
+  gap:4px;
+  min-width:0;
+}
+.protocol-filter-field>span{
+  padding:0 2px;
+  color:#66788d;
+  font-size:10px;
+  font-weight:400;
+  line-height:1.2;
+  letter-spacing:0;
+  text-transform:none;
+}
+.protocol-search-field{position:relative;display:block;min-width:0;align-self:end}
+.protocol-search-field svg{
+  position:absolute;
+  left:11px;
+  top:50%;
+  width:15px;
+  height:15px;
+  transform:translateY(-50%);
+  color:#8795a7;
+  pointer-events:none;
+}
+.clinical-toolbar .protocol-search-field input,
+.clinical-toolbar .protocol-filter-field select{
+  width:100%;
+  height:40px;
+  border:1px solid var(--protocol-doc-line);
+  border-radius:8px;
+  background:#fff;
+  color:#34475c;
+  font-size:11.5px;
+  font-weight:400;
+  box-shadow:none;
+}
+.clinical-toolbar .protocol-search-field input{padding:0 11px 0 35px}
+.clinical-toolbar .protocol-filter-field select{padding:0 30px 0 10px}
+.clinical-toolbar :is(input,select):hover{border-color:#b7c2cf}
+.clinical-toolbar :is(input,select):focus-visible{
+  outline:0;
+  border-color:#635bff;
+  box-shadow:0 0 0 3px rgba(99,91,255,.10);
+}
+
+/* Directory keeps Urgjencat' compact, readable hierarchy. */
+.protocol-list-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:14px;
+  margin:4px 0 9px;
+  padding:0 2px;
+}
+.protocol-list-head strong{
+  color:#263d54;
+  font-size:13px;
+  font-weight:500;
+}
+.protocol-list-head .clinical-status{
+  min-height:0;
+  margin:3px 0 0;
+  color:#8795a7;
+  font-size:9.5px;
+  font-weight:300;
+}
+.protocol-list-count{
+  min-height:27px;
+  padding:0 9px;
+  border-color:var(--protocol-doc-line);
+  background:#fff;
+  color:#8795a7;
+  font-size:9.5px;
+}
+.protocol-list-count span{color:#42566b;font-weight:500}
+.clinical-list{gap:7px}
+.clinical-row{
+  grid-template-columns:38px minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+  padding:11px 12px;
+  border:1px solid var(--protocol-doc-line);
+  border-radius:9px;
+  background:#fff;
+  box-shadow:none;
+}
+.clinical-row:hover{border-color:#d9d6ff;background:#fdfcff}
+.protocol-row-number{
+  width:34px;
+  height:34px;
+  border:1px solid #e5e8ec;
+  border-radius:7px;
+  background:#f8fafc;
+  color:#8795a7;
+  font-size:9.5px;
+  font-weight:600;
+}
+.clinical-row h2{
+  margin:0;
+  color:#263d54;
+  font-size:13px;
+  font-weight:500;
+  line-height:1.35;
+  letter-spacing:-.05px;
+}
+.clinical-row p{
+  margin:5px 0 0;
+  color:#66788d;
+  font-size:10.5px;
+  font-weight:300;
+  line-height:1.5;
+}
+.clinical-row-meta{gap:4px;margin-top:6px}
+.clinical-chip{
+  min-height:21px;
+  padding:2px 7px;
+  border:1px solid #e6e8ec;
+  border-radius:999px;
+  background:#f8fafc;
+  color:#66788d;
+  font-size:8.5px;
+  font-weight:500;
+}
+.clinical-actions{gap:6px;max-width:250px}
+.clinical-actions :is(button,a),
+.protocol-reader-actions a,
+.protocol-source-button,
+.protocol-reader-back{
+  min-height:34px;
+  padding:0 10px;
+  border-radius:7px;
+  font-size:10px;
+  font-weight:500;
+}
+
+/* Reader = the same white clinical document language as Urgjencat. */
+.protocol-reader{min-width:0}
+.protocol-reader-frame{
+  max-width:100%;
+  opacity:1;
+  transform:none;
+}
+.protocol-reader-back{
+  margin:0 0 10px;
+  border-color:var(--protocol-doc-line);
+  background:#fff;
+  color:#42566b;
+}
+.protocol-reader-header{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:20px;
+  align-items:start;
+  padding:24px 28px 20px;
+  border:1px solid var(--protocol-doc-line);
+  border-radius:12px 12px 0 0;
+  background:#fff;
+  box-shadow:none;
+}
+.protocol-reader-header h1{
+  max-width:850px;
+  margin:5px 0 7px;
+  color:var(--protocol-doc-ink);
+  font-size:28px;
+  font-weight:350;
+  line-height:1.15;
+  letter-spacing:-.45px;
+}
+.protocol-reader-header p{
+  max-width:760px;
+  margin:0;
+  color:var(--protocol-doc-muted-2);
+  font-size:11.5px;
+  font-weight:300;
+  line-height:1.45;
+}
+.protocol-reader-integrity{
+  margin:0;
+  padding:10px 28px;
+  border:1px solid var(--protocol-doc-line);
+  border-top:0;
+  border-radius:0;
+  background:#faf9ff;
+  color:#526579;
+  font-size:10.5px;
+  font-weight:300;
+  line-height:1.5;
+}
+.protocol-reader-integrity strong{
+  color:#4c43b8;
+  font-size:10.5px;
+  font-weight:600;
+}
+.protocol-reader-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(230px,275px);
+  gap:0;
+  align-items:start;
+  border:1px solid var(--protocol-doc-line);
+  border-top:0;
+  border-radius:0 0 12px 12px;
+  background:#fff;
+  overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,55,112,.04);
+}
+.protocol-reader-main,
+.protocol-source-only,
+.protocol-source-panel{
+  border:0;
+  border-radius:0;
+  background:#fff;
+  box-shadow:none;
+}
+.protocol-reader-main{
+  min-width:0;
+  padding:30px 36px 48px;
+}
+.protocol-reader-section-head{
+  margin-bottom:18px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--protocol-doc-line);
+}
+.protocol-reader-section-head h2{
+  margin:0 0 5px;
+  color:var(--protocol-doc-ink);
+  font-size:18px;
+  font-weight:450;
+  line-height:1.3;
+  letter-spacing:-.15px;
+}
+.protocol-reader-section-head p{
+  margin:0;
+  color:var(--protocol-doc-muted);
+  font-size:11.5px;
+  font-weight:300;
+  line-height:1.5;
+}
+.protocol-sections{
+  display:grid;
+  gap:0;
+}
+.protocol-section{
+  padding:24px 0;
+  border:0;
+  border-top:1px solid #edf0f4;
+  border-radius:0;
+  background:#fff;
+  scroll-margin-top:138px;
+}
+.protocol-section:first-child{border-top:0}
+.protocol-section-label{
+  display:inline-flex;
+  margin:0 0 7px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:#635bff;
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+}
+.protocol-section h3{
+  margin:0 0 9px;
+  color:var(--protocol-doc-ink);
+  font-size:18px;
+  font-weight:450;
+  line-height:1.3;
+  letter-spacing:-.15px;
+}
+.protocol-section-body{
+  margin:0;
+  color:var(--protocol-doc-copy);
+  font-size:13.5px;
+  font-weight:300;
+  line-height:1.72;
+  white-space:pre-line;
+}
+.protocol-citations{gap:6px;margin-top:12px}
+.protocol-citation{
+  min-height:28px;
+  padding:4px 8px;
+  border:1px solid #d9d6ff;
+  border-radius:7px;
+  background:#faf9ff;
+  color:#4c43b8;
+  font-size:9px;
+  font-weight:500;
+}
+.protocol-reader-sidebar{
+  position:sticky;
+  top:70px;
+  border-left:1px solid var(--protocol-doc-line);
+  background:#fbfcfe;
+}
+.protocol-source-panel{
+  padding:14px;
+  border-bottom:1px solid var(--protocol-doc-line);
+  background:#fbfcfe;
+}
+.protocol-source-panel:last-child{border-bottom:0}
+.protocol-source-panel h2{
+  margin:0 0 7px;
+  color:#42566b;
+  font-size:11px;
+  font-weight:550;
+}
+.protocol-source-panel p{
+  margin:0 0 9px;
+  color:#8795a7;
+  font-size:9.5px;
+  line-height:1.5;
+}
+.protocol-source-facts dt{
+  color:#8795a7;
+  font-size:8px;
+  font-weight:600;
+}
+.protocol-source-facts dd{
+  color:#526579;
+  font-size:9.5px;
+  font-weight:450;
+  line-height:1.4;
+}
+.protocol-contents a{
+  padding:6px 7px;
+  border-radius:6px;
+  color:#66788d;
+  font-size:9px;
+  line-height:1.35;
+}
+
+/* Interactive primary-care protocol views use the same reading scale. */
+.protocol-primary-care{
+  color:var(--protocol-doc-copy);
+  font-size:13px;
+  font-weight:300;
+  line-height:1.65;
+}
+.protocol-primary-care .pc-hero{
+  padding-bottom:18px;
+  border-bottom:1px solid var(--protocol-doc-line);
+}
+.protocol-primary-care .pc-hero h2{
+  margin:4px 0 7px;
+  color:var(--protocol-doc-ink);
+  font-size:24px;
+  font-weight:350!important;
+  line-height:1.18;
+  letter-spacing:-.35px;
+}
+.protocol-primary-care .pc-hero p{
+  color:var(--protocol-doc-muted);
+  font-size:13px;
+  font-weight:300;
+  line-height:1.6;
+}
+.protocol-primary-care :is(.pc-kicker,.pc-hero-meta>span:first-child,.pc-section-head>span,.pc-lab-label){
+  color:#635bff;
+  font-size:9px!important;
+  font-weight:600!important;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+}
+.protocol-primary-care :is(.pc-section-head h2,.pc-diagnosis h2){
+  color:var(--protocol-doc-ink);
+  font-size:18px!important;
+  font-weight:450!important;
+  line-height:1.3!important;
+  letter-spacing:-.15px;
+}
+.protocol-primary-care :is(
+  .pc-section-head p,.pc-step p,.pc-step-body p,.pc-treatment-card p,
+  .pc-rx-line p,.pc-rx-specialist p,.pc-safety-note p,.pc-referral-box li,
+  .pc-follow-grid p,.pc-lab-card li,.pc-context-alert span,.p3-detail-grid p,
+  .p3-detail-grid ol
+){
+  color:var(--protocol-doc-copy);
+  font-size:13px!important;
+  font-weight:300!important;
+  line-height:1.62!important;
+}
+.protocol-primary-care :is(.pc-treatment-card h3,.p3-syndrome-detail>header h3,.pc-today-card h3){
+  color:#263d54;
+  font-size:13px!important;
+  font-weight:500!important;
+  line-height:1.35!important;
+}
+.protocol-primary-care :is(.pc-step-title,.pc-rx-line strong,.pc-rx-specialist strong,.pc-rx-checks strong){
+  font-size:11.5px!important;
+  font-weight:500!important;
+}
+.protocol-primary-care :is(button,input,select,textarea,.pc-copy-button,.pc-text-button,.pc-rx-seed){
+  font-family:inherit!important;
+}
+.protocol-primary-care :is(button,.pc-copy-button,.pc-text-button,.pc-rx-seed){
+  min-height:36px;
+  font-size:10.5px!important;
+  font-weight:500!important;
+}
+.protocol-primary-care :is(input,select,textarea){
+  font-size:13px!important;
+  font-weight:300!important;
+  line-height:1.45!important;
+}
+.protocol-primary-care :is(.pc-panel,.pc-step,.pc-check,.pc-rx-card,.pc-rx-editor,.pc-treatment-card,.pc-lab-card){
+  border-radius:9px!important;
+  box-shadow:none!important;
+}
+
+/* Footer and notices stay secondary, never smaller than the Urgjencat meta scale. */
+.clinical-note,
+.protocol-page-footer{
+  font-size:10.5px;
+  font-weight:300;
+  line-height:1.5;
+}
+.protocol-page-footer{
+  margin-top:20px;
+  padding-top:13px;
+  border-top:1px solid var(--protocol-doc-line);
+  color:#8795a7;
+}
+
+@media(max-width:1100px){
+  .clinical-toolbar{grid-template-columns:minmax(240px,1.7fr) repeat(3,minmax(125px,1fr))}
+}
+@media(max-width:900px){
+  .protocol-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .protocol-metric:nth-child(2){border-right:0}
+  .protocol-metric:nth-child(-n+2){border-bottom:1px solid var(--protocol-doc-line)}
+  .clinical-toolbar{grid-template-columns:1fr 1fr}
+  .protocol-search-field{grid-column:1/-1}
+  .protocol-reader-layout{grid-template-columns:1fr}
+  .protocol-reader-sidebar{
+    position:static;
+    border-left:0;
+    border-top:1px solid var(--protocol-doc-line);
+  }
+}
+@media(max-width:760px){
+  .protocol-source-badge{width:100%;margin-top:12px}
+  .protocol-toolbar-card{position:static;padding:8px}
+  .protocol-toolbar-heading{display:block}
+  .protocol-toolbar-shortcut{display:none}
+  .clinical-toolbar{grid-template-columns:1fr}
+  .protocol-search-field{grid-column:auto}
+  .clinical-toolbar .protocol-search-field input,
+  .clinical-toolbar .protocol-filter-field select{
+    height:44px;
+    font-size:16px;
+  }
+  .protocol-metrics{grid-template-columns:1fr 1fr}
+  .protocol-metric{padding:11px}
+  .clinical-row{grid-template-columns:34px minmax(0,1fr);align-items:start}
+  .clinical-actions{grid-column:2;justify-content:flex-start;max-width:none}
+  .protocol-reader-header{grid-template-columns:1fr;padding:20px 16px 16px}
+  .protocol-reader-header h1{font-size:23px}
+  .protocol-reader-main{padding:24px 16px 36px}
+  .protocol-section{padding:20px 0;scroll-margin-top:12px}
+  .protocol-section h3{font-size:17px}
+  .protocol-section-body{font-size:13px;line-height:1.68}
+  .protocol-primary-care .pc-hero h2{font-size:22px}
+  .protocol-primary-care :is(.pc-section-head h2,.pc-diagnosis h2){font-size:17px!important}
+}
+@media(max-width:520px){
+  .protocol-metrics{grid-template-columns:1fr}
+  .protocol-metric{border-right:0;border-bottom:1px solid var(--protocol-doc-line)}
+  .protocol-metric:last-child{border-bottom:0}
+}
