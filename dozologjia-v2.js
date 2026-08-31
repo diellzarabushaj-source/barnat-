@@ -1337,8 +1337,10 @@
     if (requires.age && Number.isFinite(age) && age >= 0) {
       payload.age = { value:age, unit:elements.ageUnit?.value || 'muaj' };
     }
-    const selectionId = selectedCalculationOption()?.selectionId || state.product?.calculationRegimen?.selectionId;
+    const selectionId = state.product?.calculationRegimen?.selectionId;
+    const selectedV3Id = selectedCalculationOption()?.selectionId || selectionId;
     if (selectionId) payload.regimenId = selectionId;
+    if (selectedV3Id) payload.regimenId = selectedV3Id;
 
     const advanced = advancedFieldFlags(requires);
     if (advanced.crcl && elements.crcl?.value !== '') payload.crClMlMin = Number(elements.crcl.value);
