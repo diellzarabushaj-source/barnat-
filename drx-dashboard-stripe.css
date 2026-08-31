@@ -1594,6 +1594,18 @@ html.drx-unified-sidebar .drx-profile-chip{
   box-sizing:border-box!important;
   min-height:38px!important;
 }
+html.drx-unified-sidebar .icon-button{
+  box-sizing:border-box!important;
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  min-height:34px!important;
+  display:grid;
+  place-items:center;
+}
+html.drx-unified-sidebar .nav-icon{
+  border-radius:8px!important;
+}
 html.medindex-tailadmin .mi-content-container,
 html.drx-unified-sidebar .page-wrap{
   box-sizing:border-box!important;
