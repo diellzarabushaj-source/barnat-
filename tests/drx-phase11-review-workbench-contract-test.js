@@ -22,6 +22,8 @@ const bz = read('supabase/migrations/20260831170534_drx_phase11bz_source_aware_r
 const ca = read('supabase/migrations/20260831170726_drx_phase11ca_product_identity_capture_review.sql');
 const cb = read('supabase/migrations/20260831171019_drx_phase11cb_product_identity_capture_workbench_v4.sql');
 const cc = read('supabase/migrations/20260831171501_drx_phase11cc_gated_draft_product_shell_materializer.sql');
+const cd = read('supabase/migrations/20260831173642_drx_phase11cd_safe_postreview_preparation_v2.sql');
+const ce = read('supabase/migrations/20260831173815_drx_phase11ce_postreview_workbench_v5.sql');
 const backend = read('lib/phase11-review.js');
 const api = read('api/clinical-editor.js');
 const vercel = read('vercel.json');
@@ -111,6 +113,23 @@ assert.match(cc, /conversionEnabled',false/);
 assert.match(cc, /ruleBindingsCreated',false/);
 assert.match(cc, /autoPublished',false/);
 
+assert.match(cd, /drx_phase11_materialize_approved_regimen_to_draft_v2/);
+assert.match(cd, /source_regimen_promotion_gate_v6/);
+assert.match(cd, /source_regimen_applicable_safety_v2/);
+assert.doesNotMatch(cd, /source_regimen_applicable_safety_v1/);
+assert.match(cd, /pr\.review_status='VERIFIED'/);
+assert.match(cd, /review_status='APPROVED'/);
+assert.match(cd, /drx_phase11_stage_rule_targets_for_regimen_v2/);
+assert.match(cd, /drx_phase11_prepare_reviewed_regimen_v2/);
+assert.match(cd, /drx_phase11_finalize_reviewed_text_only_regimen_v1/);
+assert.match(cd, /calculator_rules_created=false/);
+assert.match(cd, /phase11_postreview_preparation_queue_v1/);
+
+assert.match(ce, /drx_phase11_review_workbench_v5/);
+assert.match(ce, /postReviewPreparation/);
+assert.match(ce, /productShellDraft/);
+assert.match(ce, /product_shell_draft_readiness_v1/);
+
 assert.match(backend, /AdminAccess\.requireAdminSession/);
 assert.match(backend, /\['GET','POST'\]\.includes\(req\.method\)/);
 assert.match(backend, /reviewer = clean\(admin\?\.email\)/);
@@ -122,6 +141,13 @@ assert.match(backend, /administration-review/);
 assert.match(backend, /safety-review/);
 assert.match(backend, /indication-publish/);
 assert.match(backend, /regimen-review/);
+assert.match(backend, /product-shell-materialize/);
+assert.match(backend, /prepare-reviewed-regimen/);
+assert.match(backend, /finalize-text-only-regimen/);
+assert.match(backend, /PRODUCT_SHELL_DRAFT_PREP_ATTESTED/);
+assert.match(backend, /V3_DRAFT_PREPARATION_ATTESTED/);
+assert.match(backend, /TEXT_ONLY_FINALIZATION_ATTESTED/);
+assert.match(backend, /drx_phase11_review_workbench_v5/);
 assert.match(backend, /IDENTITY_REVIEW_ATTESTED/);
 assert.match(backend, /SOURCE_REVIEW_ATTESTED/);
 assert.match(backend, /SAFETY_REVIEW_ATTESTED/);
@@ -154,10 +180,17 @@ assert.match(ui, /SAFETY_REVIEW_ATTESTED/);
 assert.match(ui, /ICD_AND_INDICATION_REVIEW_ATTESTED/);
 assert.match(ui, /CLINICAL_REGIMEN_REVIEW_ATTESTED/);
 assert.match(ui, /ready_for_clinical_approval/);
+assert.match(ui, /PRODUCT_IDENTITY_SOURCE_REVIEW_ATTESTED/);
+assert.match(ui, /PRODUCT_SHELL_DRAFT_PREP_ATTESTED/);
+assert.match(ui, /V3_DRAFT_PREPARATION_ATTESTED/);
+assert.match(ui, /TEXT_ONLY_FINALIZATION_ATTESTED/);
+assert.match(ui, /data-p11-product-capture-review/);
+assert.match(ui, /data-p11-product-shell-materialize/);
+assert.match(ui, /data-p11-postreview/);
 assert.doesNotMatch(ui, /method\s*:\s*['"]PUT['"]/i);
 assert.doesNotMatch(ui, /method\s*:\s*['"]PATCH['"]/i);
 
-for (const sql of [bp,bq,br,bs,bt,bu,bv,bw,bx,by,bz,ca,cb,cc]) {
+for (const sql of [bp,bq,br,bs,bt,bu,bv,bw,bx,by,bz,ca,cb,cc,cd,ce]) {
   assert.doesNotMatch(sql, /auto_publish_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_apply_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_resolve_allowed\s*=\s*true/i);
