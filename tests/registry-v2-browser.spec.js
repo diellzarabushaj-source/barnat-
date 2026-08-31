@@ -166,8 +166,9 @@ test('registry v2 desktop flow is stable and usable', async ({ page }) => {
   await expect(page.locator('#selectedCount')).toHaveText('1');
 
   await page.locator('#searchInput').fill('amox');
-  await expect(page.getByText('AMOXICILLIN TEST')).toBeVisible();
-  await expect(page.getByText('PARACETAMOL TEST')).toHaveCount(0);
+  await expect(page.locator('#registryRows')).toContainText('AMOXICILLIN TEST');
+  await expect(page.locator('#registryRows')).not.toContainText('PARACETAMOL TEST');
+  await expect(page.locator('#registryRows tr[data-row-id]')).toHaveCount(1);
 
   await page.screenshot({ path:'/tmp/registry-v2-desktop.png', fullPage:true });
 });
