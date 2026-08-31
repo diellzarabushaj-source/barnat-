@@ -201,6 +201,18 @@
       || /^medicalhub-dod-ch\d{2}$/.test(String(item?._id || ''));
   }
 
+  function chapterLessons(key) {
+    return state.items
+      .filter(item => !isChapter(item) && chapterKey(item) === key)
+      .sort((a,b) => topicOrder(a) - topicOrder(b));
+  }
+
+  function preferredChapterItem(key) {
+    const chapter = state.items.find(item => isChapter(item) && chapterKey(item) === key) || null;
+    const lessons = chapterLessons(key);
+    return lessons.length === 1 ? lessons[0] : chapter;
+  }
+
   function topicOrder(item) {
     const chapter = chapterNumberFromId(item?._id) || Number(item?.chapterNumber) || 999;
     const lesson = lessonNumberFromId(item?._id);
@@ -345,7 +357,11 @@
     return `
       <figure class="ck-figure">
         <a class="ck-figure-media" href="${esc(url)}" target="_blank" rel="noopener noreferrer" title="Hap figurën në rezolucion të plotë">
-          <img src="${esc(url)}" alt="${esc(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+          <img data-hub-figure-image src="${esc(url)}" alt="${esc(alt)}" loading="lazy" decoding="async">
+          <span class="ck-figure-fallback" data-hub-figure-fallback hidden>
+            <strong>Figura nuk u ngarkua.</strong>
+            <small>Kliko për ta hapur burimin e figurës.</small>
+          </span>
           <span class="ck-figure-zoom" aria-hidden="true">↗</span>
         </a>
         ${caption || credit || sourceUrl ? `
@@ -372,11 +388,14 @@
       <div class="ck-book-rx-group">
         <span class="ck-book-rx-number">${index + 1}.</span>
         <div class="ck-book-rx-copy">
-          <strong>${richText(step?.title || '')}</strong>
+          ${step?.title ? `<strong>${richText(step.title)}</strong>` : ''}
           <div class="ck-book-rx-lines">
             ${lines.map(line => {
-              const isOr = /^(OR|OSE)\b/i.test(line);
-              return `<div class="ck-book-rx-line ${isOr ? 'is-or' : ''}">${richText(line)}</div>`;
+              const match = line.match(/^(OR|OSE)\b\s*(.*)$/i);
+              if (match) {
+                return `<div class="ck-book-rx-alternative"><span>OR</span><div>${richText(match[2] || '')}</div></div>`;
+              }
+              return `<div class="ck-book-rx-line">${richText(line)}</div>`;
             }).join('')}
           </div>
           ${step?.note ? `<small class="ck-book-rx-note">${richText(step.note)}</small>` : ''}
@@ -480,24 +499,56 @@
     return clean(rx?.genericName || rx?.medicine || 'Substancë aktive');
   }
 
-  function rxLineMarkup(rx, index) {
-    const details = [
-      rx.strength ? `Fortësia: ${rx.strength}` : '',
-      rx.dose ? `Doza: ${rx.dose}` : '',
-      rx.route ? `Rruga: ${rx.route}` : '',
-      rx.frequency ? `Shpeshtësia: ${rx.frequency}` : '',
-      rx.duration ? `Kohëzgjatja: ${rx.duration}` : '',
-      rx.quantity ? `Sasia: ${rx.quantity}` : '',
-    ].filter(Boolean);
+  function prescriptionFormLabel(form) {
+    const raw = clean(form);
+    const token = normalize(raw);
+    if (!raw) return '';
+    if (/^tablet|tabletë|tab\.?$/.test(token)) return 'Tab.';
+    if (/^capsule|kapsul|cap\.?$/.test(token)) return 'Cap.';
+    if (/^syrup|shurup|syp\.?$/.test(token)) return 'Syp.';
+    if (/^injection|injeksion|inj\.?$/.test(token)) return 'Inj.';
+    if (/^ampoule|ampul|amp\.?$/.test(token)) return 'Amp.';
+    if (/^drops|pika|gtt\.?$/.test(token)) return 'Gtt.';
+    if (/^cream|krem/.test(token)) return 'Crm.';
+    return raw;
+  }
 
+  function rxRelation(rx) {
+    const instruction = clean(rx?.instructions);
+    return /^(OR|OSE)$/i.test(instruction) ? 'OR' : '';
+  }
+
+  function rxSignature(rx) {
+    const instruction = clean(rx?.instructions);
+    const extraInstruction = instruction && !/^(OR|OSE)$/i.test(instruction) ? instruction : '';
+    const parts = [];
+    if (rx?.dose) parts.push(clean(rx.dose));
+    if (rx?.frequency) parts.push(clean(rx.frequency));
+    if (rx?.duration) parts.push(`për ${clean(rx.duration)}`);
+    if (rx?.route && normalize(rx.route) !== 'po') parts.push(clean(rx.route));
+    if (extraInstruction) parts.push(extraInstruction);
+    return parts.join(' · ');
+  }
+
+  function rxLineMarkup(rx, index) {
+    const form = prescriptionFormLabel(rx?.form);
+    const name = activeSubstanceName(rx);
+    const strength = clean(rx?.strength);
+    const relation = rxRelation(rx);
+    const signature = rxSignature(rx);
     return `
+      ${relation ? '<div class="ck-rx-or" aria-label="alternativë">OR</div>' : ''}
       <div class="ck-rx-line">
-        <span class="ck-rx-line-no">${index + 1}</span>
+        <span class="ck-rx-line-no">${index + 1}.</span>
         <div class="ck-rx-line-copy">
-          <strong>${esc(activeSubstanceName(rx))}</strong>
-          ${details.length ? `<div class="ck-rx-line-details">${details.map(value => `<span>${esc(value)}</span>`).join('')}</div>` : ''}
-          ${rx.instructions ? `<p>${esc(rx.instructions)}</p>` : ''}
-          ${rx.clinicalNote ? `<small>${esc(rx.clinicalNote)}</small>` : ''}
+          <div class="ck-rx-drug-line">
+            ${form ? `<span>${esc(form)}</span>` : ''}
+            <strong>${esc(name)}</strong>
+            ${strength ? `<span>à ${esc(strength)}</span>` : ''}
+          </div>
+          ${signature ? `<p class="ck-rx-signature"><strong>S.</strong> ${esc(signature)}</p>` : ''}
+          ${rx?.quantity ? `<p class="ck-rx-quantity">No. ${esc(rx.quantity)}</p>` : ''}
+          ${rx?.clinicalNote ? `<small class="ck-rx-note">${esc(rx.clinicalNote)}</small>` : ''}
         </div>
       </div>`;
   }
@@ -510,8 +561,8 @@
         <div class="ck-rx-sheet-head">
           <span>Rx</span>
           <div>
-            <strong>Skema e përshkrimit</strong>
-            <small>Vetëm substancat aktive — pa emra tregtarë.</small>
+            <strong>Receta / skema e përshkrimit</strong>
+            <small>Shfaqen vetëm substancat aktive; alternativat OR ruhen sipas burimit.</small>
           </div>
         </div>
         <div class="ck-rx-lines">
@@ -542,7 +593,21 @@
     });
   }
 
+  function bindFigureFallbacks(detail) {
+    detail.querySelectorAll('[data-hub-figure-image]').forEach(image => {
+      const fallback = image.parentElement?.querySelector('[data-hub-figure-fallback]');
+      const fail = () => {
+        image.hidden = true;
+        if (fallback) fallback.hidden = false;
+        image.parentElement?.classList.add('has-error');
+      };
+      image.addEventListener('error', fail, { once:true });
+      if (image.complete && image.naturalWidth === 0) fail();
+    });
+  }
+
   function bindDetailNavigation(detail) {
+    bindFigureFallbacks(detail);
     detail.querySelectorAll('[data-hub-section]').forEach(button => {
       button.addEventListener('click', () => {
         document.getElementById(button.dataset.hubSection)?.scrollIntoView({
@@ -604,7 +669,7 @@
             </span>
           </div>
           <div class="ck-meta">
-            ${chip(`${children.length} nënkapituj`)}
+            ${chip(children.length === 1 ? '1 mësim' : `${children.length} mësime`)}
             ${icdLessons ? chip(`${icdLessons} me ICD‑10`, 'is-code-count') : ''}
             ${procedureLessons ? chip(`${procedureLessons} procedura`, 'is-procedure-count') : ''}
             ${item.version ? chip(item.version) : ''}
@@ -630,7 +695,7 @@
         ` : ''}
 
         <section class="ck-section ck-chapter-section">
-          <div class="ck-section-heading"><span>Indeks</span><h3>Nënkapitujt e këtij kapitulli</h3></div>
+          <div class="ck-section-heading"><span>Indeks</span><h3>${children.length === 1 ? 'Mësimi i këtij kapitulli' : 'Mësimet e këtij kapitulli'}</h3></div>
           <div class="ck-chapter-progress">
             <span><strong>${populated}</strong> / ${children.length} me përmbajtje të plotësuar</span>
             <span>${icdLessons} të lidhur me ICD‑10</span>
@@ -652,7 +717,7 @@
                   </span>
                   <span class="ck-chapter-lesson-arrow" aria-hidden="true">→</span>
                 </button>`;
-            }).join('') || '<p class="ck-status">Nuk ka nënkapituj të lidhur.</p>'}
+            }).join('') || '<p class="ck-status">Nuk ka mësime të lidhura.</p>'}
           </div>
         </section>
       </div>`;
@@ -798,7 +863,6 @@
           ${item.prescriptions?.length && !hasSourceRx(item) ? `
             <section class="ck-section ck-rx-section" id="hub-prescriptions">
               <div class="ck-section-heading"><span>Rx</span><h3>Receta / skema e përshkrimit</h3></div>
-              <p class="ck-section-note">Receta paraqitet si një skemë e vetme; çdo substancë aktive ruhet si rresht i veçantë, sipas rendit të burimit.</p>
               ${rxGroupMarkup(item.prescriptions)}
             </section>
           ` : ''}
@@ -968,8 +1032,12 @@
       const lessons = state.items
         .filter(item => !isChapter(item) && chapterKey(item) === state.category)
         .sort((a,b) => topicOrder(a) - topicOrder(b));
-      options = `<option value="${esc(chapter._id)}">Përmbledhja e kapitullit · ${esc(codedTitle(chapter))}</option>`
-        + lessons.map(item => `<option value="${esc(item._id)}">${esc(codedTitle(item))}</option>`).join('');
+      if (lessons.length === 1) {
+        options = lessons.map(item => `<option value="${esc(item._id)}">${esc(codedTitle(item))}</option>`).join('');
+      } else {
+        options = `<option value="${esc(chapter._id)}">Përmbledhja e kapitullit · ${esc(codedTitle(chapter))}</option>`
+          + lessons.map(item => `<option value="${esc(item._id)}">${esc(codedTitle(item))}</option>`).join('');
+      }
     } else {
       const grouped = new Map();
       state.filtered.forEach(item => {
@@ -1162,8 +1230,8 @@
           }).join('');
       }
 
-      state.selectedId = chapters[0]?._id || state.items[0]?._id || '';
       state.category = chapters[0] ? chapterKey(chapters[0]) : '';
+      state.selectedId = preferredChapterItem(state.category)?._id || chapters[0]?._id || state.items[0]?._id || '';
       restoreUrl();
       if (category) category.value = state.category;
       applyFilterState();
@@ -1175,7 +1243,9 @@
         const chapter = state.items.find(item => isChapter(item) && chapterKey(item) === state.category);
         if (!clean(state.term)) {
           state.backendResults = null;
-          if (chapter) state.selectedId = chapter._id;
+          const preferred = preferredChapterItem(state.category);
+          if (preferred) state.selectedId = preferred._id;
+          else if (chapter) state.selectedId = chapter._id;
           applyFilters();
           return;
         }
