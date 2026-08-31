@@ -1,0 +1,2 @@
+-- DRx Phase 11DB: lean source-first indication packet v3.
+-- Migration applied live in Supabase. Repository copy follows the reviewed migration lineage.
