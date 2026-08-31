@@ -205,8 +205,8 @@ async function searchItems(rawQuery, chapter) {
 }
 
 module.exports = async function handler(req, res) {
-  const requestedMode = clean(queryValue(req, 'mode')).toLowerCase();
-  if (requestedMode === 'image') return medicalHubImageHandler(req, res);
+  const requestedRoute = clean(queryValue(req, '_route')).toLowerCase();
+  if (requestedRoute === 'image') return medicalHubImageHandler(req, res);
 
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Vary', 'Cookie');
