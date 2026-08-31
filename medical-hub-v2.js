@@ -359,20 +359,35 @@
     return `<span class="ck-chip ck-procedure-chip" title="${esc(title)}">${esc(system)} ${esc(code)}</span>`;
   }
 
+  function figureDisplayUrl(rawUrl) {
+    const value = clean(rawUrl);
+    if (!value) return '';
+    try {
+      const parsed = new URL(value, window.location.origin);
+      if (parsed.hostname === 'upload.wikimedia.org' || parsed.hostname === 'commons.wikimedia.org') {
+        return `/api/medical-hub-image?url=${encodeURIComponent(parsed.href)}`;
+      }
+      return parsed.href;
+    } catch {
+      return value;
+    }
+  }
+
   function figureMarkup(figure, index) {
-    const url = clean(figure?.url);
-    if (!url) return '';
+    const originalUrl = clean(figure?.url);
+    if (!originalUrl) return '';
+    const displayUrl = figureDisplayUrl(originalUrl);
     const alt = clean(figure?.alt || figure?.title || `Figura ${index + 1}`);
     const caption = clean(figure?.caption || figure?.title);
     const sourceUrl = clean(figure?.sourceUrl);
     const credit = clean(figure?.credit);
     return `
       <figure class="ck-figure">
-        <a class="ck-figure-media" href="${esc(url)}" target="_blank" rel="noopener noreferrer" title="Hap figurën në rezolucion të plotë">
-          <img data-hub-figure-image src="${esc(url)}" alt="${esc(alt)}" loading="lazy" decoding="async">
+        <a class="ck-figure-media" href="${esc(displayUrl)}" target="_blank" rel="noopener noreferrer" title="Hap figurën në rezolucion të plotë">
+          <img data-hub-figure-image src="${esc(displayUrl)}" alt="${esc(alt)}" loading="lazy" decoding="async">
           <span class="ck-figure-fallback" data-hub-figure-fallback hidden>
             <strong>Figura nuk u ngarkua.</strong>
-            <small>Kliko për ta hapur burimin e figurës.</small>
+            <small>Hape burimin/licencën poshtë ose provo përsëri.</small>
           </span>
           <span class="ck-figure-zoom" aria-hidden="true">↗</span>
         </a>
