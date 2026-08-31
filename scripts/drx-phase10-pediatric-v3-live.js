@@ -106,6 +106,24 @@ async function main(){
   assert.equal(coSafety.error,undefined);
   assert.equal(coSafety.calculation.outcome,'NOT_CALCULABLE',
     'specialist-review hepatic adjustment must remain fail-closed');
+  assert.ok((coSafety.calculation.reasons || []).includes('specialist_review'),
+    'verified hepatic specialist_review must be the explicit blocking reason');
+  assert.ok(!(coSafety.calculation.reasons || []).includes('invalid_adjustment_rows'),
+    'verified V3 adjustment provenance must validate before clinical blocking');
+
+  const coAvoid=await V3.calculate({
+    drugId:COALMACIN,
+    regimenId:coLower.selectionId,
+    age:{value:5,unit:'vjet'},
+    weightKg:20,
+    crClMlMin:20,
+    hepaticImpairment:'hepatic impairment',
+  });
+  assert.equal(coAvoid.calculation.outcome,'NOT_CALCULABLE');
+  assert.ok((coAvoid.calculation.reasons || []).includes('avoid'),
+    'verified renal avoid rule must block calculation');
+  assert.ok((coAvoid.calculation.reasons || []).includes('specialist_review'),
+    'concurrent hepatic specialist review must remain visible');
 
   const evidence={
     evidenceVersion:'drx-phase10-pediatric-v3-live-v1',
@@ -132,6 +150,8 @@ async function main(){
       advancedInputs:co.calculationOptions.map(option=>option.requires.advancedInputs),
       hepaticSafetyOutcome:coSafety.calculation.outcome,
       hepaticSafetyReasons:coSafety.calculation.reasons || [],
+      renalAvoidOutcome:coAvoid.calculation.outcome,
+      renalAvoidReasons:coAvoid.calculation.reasons || [],
     },
   };
   fs.writeFileSync('drx-phase10-pediatric-v3-live-evidence.json',JSON.stringify(evidence,null,2)+'\n');
