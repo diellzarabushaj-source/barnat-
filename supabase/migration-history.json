@@ -991,6 +991,10 @@
     {
       "version": "20260831181656",
       "name": "drx_phase11cm_adjustment_lazy_workbench"
+    },
+    {
+      "version": "20260831184114",
+      "name": "drx_phase11cn_legacy_parity_and_release_gate"
     }
   ]
 }
