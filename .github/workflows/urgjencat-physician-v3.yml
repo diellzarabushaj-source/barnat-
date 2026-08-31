@@ -1,117 +1,35 @@
-name: Urgjencat Physician UX v21
+name: Urgjencat V2 physician contract
 
 on:
   pull_request:
     paths:
       - 'urgjencat.html'
-      - 'emergency-doctor-ux-v2.js'
-      - 'emergency-doctor-keyboard-v2.js'
-      - 'emergency-doctor-ux-v3.js'
-      - 'emergency-doctor-ux-v3.css'
-      - 'emergency-summary-learn.js'
-      - 'emergency-learning-v4.js'
-      - 'emergency-learning-v4.css'
-      - 'emergency-learning-flow-v7.js'
-      - 'emergency-learning-flow-v7.css'
-      - 'emergency-trainers-v5.js'
-      - 'emergency-trainers-v5.css'
-      - 'emergency-readiness-v6.js'
-      - 'emergency-readiness-v6.css'
-      - 'emergency-search-core-v8.js'
-      - 'emergency-smart-search-v8.js'
-      - 'emergency-smart-search-v8.css'
-      - 'emergency-search-personalization-v11.css'
-      - 'emergency-action-search-core-v12.js'
-      - 'emergency-action-search-v12.js'
-      - 'emergency-action-search-v12.css'
-      - 'emergency-action-deeplink-core-v13.js'
-      - 'emergency-action-deeplink-v13.js'
-      - 'emergency-action-deeplink-v13.css'
-      - 'emergency-verification-queue-core-v14.js'
-      - 'emergency-verification-queue-v14.js'
-      - 'emergency-verification-queue-v14.css'
-      - 'emergency-consistency-core-v15.js'
-      - 'emergency-consistency-v15.js'
-      - 'emergency-consistency-v15.css'
-      - 'emergency-review-loader-v16.js'
-      - 'emergency-evidence-core-v16.js'
-      - 'emergency-evidence-v16.js'
-      - 'emergency-evidence-v16.css'
-      - 'emergency-symptom-chips-v9.js'
-      - 'emergency-symptom-chips-v9.css'
-      - 'emergency-memory-v21.js'
-      - 'emergency-memory-v21.css'
-      - 'tailadmin-professional.css'
-      - 'tests/urgjencat-doctor-v3-test.js'
-      - 'tests/urgjencat-learning-flow-v7-test.js'
-      - 'tests/urgjencat-symptom-chips-v9-test.js'
-      - 'tests/emergency-search-quality-v10-test.js'
-      - 'tests/emergency-search-quality-v11-test.js'
-      - 'tests/emergency-action-search-v12-test.js'
-      - 'tests/emergency-action-deeplink-v13-test.js'
-      - 'tests/emergency-verification-queue-v14-test.js'
-      - 'tests/emergency-consistency-v15-test.js'
-      - 'tests/emergency-evidence-v16-test.js'
-      - 'tests/emergency-memory-v21-test.js'
+      - 'urgjencat-v2.js'
+      - 'urgjencat-v2.css'
+      - 'drx-dashboard-stripe.css'
+      - 'sidebar-taxonomy-v3.js'
+      - 'sanity-clinical-client.js'
+      - 'tests/urgjencat-doctor-workspace-test.js'
       - '.github/workflows/urgjencat-physician-v3.yml'
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - 'urgjencat.html'
-      - 'emergency-doctor-ux-v3.js'
-      - 'emergency-doctor-ux-v3.css'
-      - 'emergency-learning-v4.js'
-      - 'emergency-learning-v4.css'
-      - 'emergency-learning-flow-v7.js'
-      - 'emergency-learning-flow-v7.css'
-      - 'emergency-trainers-v5.js'
-      - 'emergency-trainers-v5.css'
-      - 'emergency-readiness-v6.js'
-      - 'emergency-readiness-v6.css'
-      - 'emergency-search-core-v8.js'
-      - 'emergency-smart-search-v8.js'
-      - 'emergency-smart-search-v8.css'
-      - 'emergency-search-personalization-v11.css'
-      - 'emergency-action-search-core-v12.js'
-      - 'emergency-action-search-v12.js'
-      - 'emergency-action-search-v12.css'
-      - 'emergency-action-deeplink-core-v13.js'
-      - 'emergency-action-deeplink-v13.js'
-      - 'emergency-action-deeplink-v13.css'
-      - 'emergency-verification-queue-core-v14.js'
-      - 'emergency-verification-queue-v14.js'
-      - 'emergency-verification-queue-v14.css'
-      - 'emergency-consistency-core-v15.js'
-      - 'emergency-consistency-v15.js'
-      - 'emergency-consistency-v15.css'
-      - 'emergency-review-loader-v16.js'
-      - 'emergency-evidence-core-v16.js'
-      - 'emergency-evidence-v16.js'
-      - 'emergency-evidence-v16.css'
-      - 'emergency-symptom-chips-v9.js'
-      - 'emergency-symptom-chips-v9.css'
-      - 'emergency-memory-v21.js'
-      - 'emergency-memory-v21.css'
-      - 'tailadmin-professional.css'
-      - 'tests/urgjencat-doctor-v3-test.js'
-      - 'tests/urgjencat-learning-flow-v7-test.js'
-      - 'tests/urgjencat-symptom-chips-v9-test.js'
-      - 'tests/emergency-search-quality-v10-test.js'
-      - 'tests/emergency-search-quality-v11-test.js'
-      - 'tests/emergency-action-search-v12-test.js'
-      - 'tests/emergency-action-deeplink-v13-test.js'
-      - 'tests/emergency-verification-queue-v14-test.js'
-      - 'tests/emergency-consistency-v15-test.js'
-      - 'tests/emergency-evidence-v16-test.js'
-      - 'tests/emergency-memory-v21-test.js'
+      - 'urgjencat-v2.js'
+      - 'urgjencat-v2.css'
+      - 'drx-dashboard-stripe.css'
+      - 'sidebar-taxonomy-v3.js'
+      - 'sanity-clinical-client.js'
+      - 'tests/urgjencat-doctor-workspace-test.js'
+      - '.github/workflows/urgjencat-physician-v3.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
   contract:
-    name: Physician UX v21 contract
+    name: Urgjencat V2 workspace contract
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -119,25 +37,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Run Urgjencat regression contract
-        run: node tests/urgjencat-doctor-v3-test.js
-      - name: Run guided learning flow v7 contract
-        run: node tests/urgjencat-learning-flow-v7-test.js
-      - name: Run multi-symptom chips v9 contract
-        run: node tests/urgjencat-symptom-chips-v9-test.js
-      - name: Run search quality v10 benchmark
-        run: node tests/emergency-search-quality-v10-test.js
-      - name: Run physician search quality v11 benchmark
-        run: node tests/emergency-search-quality-v11-test.js
-      - name: Run governed action search v12 contract
-        run: node tests/emergency-action-search-v12-test.js
-      - name: Run governance-aware deep-link readiness v13 contract
-        run: node tests/emergency-action-deeplink-v13-test.js
-      - name: Run clinical verification queue v14 contract
-        run: node tests/emergency-verification-queue-v14-test.js
-      - name: Run deterministic consistency guard v15 contract
-        run: node tests/emergency-consistency-v15-test.js
-      - name: Run evidence traceability and lazy review v16 contract
-        run: node tests/emergency-evidence-v16-test.js
-      - name: Run evidence-informed memory loop v21 contract
-        run: node tests/emergency-memory-v21-test.js
+      - name: Check current runtime syntax
+        run: node --check urgjencat-v2.js && node --check sidebar-taxonomy-v3.js
+      - name: Run current physician workspace contract
+        run: node tests/urgjencat-doctor-workspace-test.js
