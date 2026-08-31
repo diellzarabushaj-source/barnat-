@@ -42,6 +42,7 @@
     const counts=data?.counts||{};
     const identityCoverage=data?.identitySuggestionCoverage||{};
     const icdQuality=data?.icdSuggestionQuality||{};
+    const sourceDiscovery=data?.productSourceDiscovery||{};
     const identity=Array.isArray(data?.identityBatches)?data.identityBatches:[];
     const clinical=Array.isArray(data?.clinicalBatches)?data.clinicalBatches:[];
     const shells=Array.isArray(data?.productShells)?data.productShells:[];
@@ -54,7 +55,7 @@
     if($('p11IdentityBatches'))$('p11IdentityBatches').textContent=`${counts.identityBatches??identity.length} · ${identityCoverage.batches_with_suggestions??0} me sugj.`;
     if($('p11ClinicalBatches'))$('p11ClinicalBatches').textContent=counts.clinicalBatches??clinical.length;
     if($('p11DraftIndications'))$('p11DraftIndications').textContent=`${Math.max(0,Number(counts.indications||0)-Number(counts.publishedIndications||0))} · ${icdQuality.manual_search_required??0} manual`;
-    if($('p11ProductShells'))$('p11ProductShells').textContent=`${counts.publishedProductShells||0}/${counts.productShellItems||shells.length}`;
+    if($('p11ProductShells'))$('p11ProductShells').textContent=`${sourceDiscovery.published_shells||counts.publishedProductShells||0}/${sourceDiscovery.product_shell_candidates||counts.productShellItems||shells.length} · ${sourceDiscovery.exact_source_discoveries||0} exact`;
 
     if($('p11IdentityCount'))$('p11IdentityCount').textContent=`${identity.length} batches · ${counts.identityProducts||0} produkte`;
     if($('p11ClinicalCount'))$('p11ClinicalCount').textContent=`${clinical.length} batches`;
@@ -90,7 +91,11 @@
       shellRows.innerHTML=shells.length?shells.map(row=>`
         <tr>
           <td>${esc(row.registryNumber??'—')}</td>
-          <td><strong>${esc(row.tradeName||'—')}</strong><small>${esc(row.exactMarketSourceKey||'Pa exact-market source')}</small></td>
+          <td>
+            <strong>${esc(row.tradeName||'—')}</strong>
+            <small>${esc(row.identityMatchStatus||'NO_DISCOVERY')} · ${esc(row.sourceTier||'—')} · ${esc(row.externalRegistryId||'—')}</small>
+            ${row.sourceUrl?`<small><a href="${esc(row.sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi zyrtar ↗</a></small>`:''}
+          </td>
           <td>${esc(row.form||'—')}</td>
           <td><span class="mi-badge is-in_review">${esc(row.nextAction||'REVIEW')}</span></td>
         </tr>`).join('')
