@@ -13,6 +13,11 @@ const phase11b = fs.readFileSync(
   'utf8',
 );
 
+const phase11c = fs.readFileSync(
+  path.join(__dirname, '..', 'supabase', 'migrations', '20260831074212_drx_phase11c_fill_workflow_and_draft_promotion.sql'),
+  'utf8',
+);
+
 assert.match(phase11, /create table if not exists drx_dose\.rule_targets_v1/);
 assert.match(phase11, /target_kind in \('SUBSTANCE','INGREDIENT_SET'\)/);
 assert.match(phase11, /dose_basis_component_concept_id/);
@@ -54,20 +59,20 @@ assert.match(phase11b, /create or replace view drx_dose\.phase11_review_queue_v1
 assert.match(phase11b, /legacyRegimensExcludedBecauseProductNotPublished/);
 assert.match(phase11b, /runtimeServeEnabled',false/);
 
-assert.match(phase11c, /create table if not exists drx_dose\\.candidate_review_events_v1/);
+assert.match(phase11c, /create table if not exists drx_dose\.candidate_review_events_v1/);
 assert.match(phase11c, /DRX_PHASE11_REVIEW_EVENT_IMMUTABLE/);
-assert.match(phase11c, /create or replace view drx_dose\\.source_ingestion_queue_v1/);
-assert.match(phase11c, /section_code='4\\.2'/);
-assert.match(phase11c, /create or replace view drx_dose\\.indication_normalization_queue_v1/);
-assert.match(phase11c, /create or replace view drx_dose\\.rule_candidate_context_conflicts_v1/);
+assert.match(phase11c, /create or replace view drx_dose\.source_ingestion_queue_v1/);
+assert.match(phase11c, /section_code='4\.2'/);
+assert.match(phase11c, /create or replace view drx_dose\.indication_normalization_queue_v1/);
+assert.match(phase11c, /create or replace view drx_dose\.rule_candidate_context_conflicts_v1/);
 assert.match(phase11c, /COMBINATION_DOSE_BASIS_COMPONENT/);
 assert.match(phase11c, /SCHEDULE_STRUCTURE/);
 assert.match(phase11c, /CONTEXT_CONFLICT/);
 assert.match(phase11c, /EXACT_SOURCE_SECTION_4_2/);
-assert.match(phase11c, /create or replace view drx_dose\\.product_calculator_coverage_v1/);
+assert.match(phase11c, /create or replace view drx_dose\.product_calculator_coverage_v1/);
 assert.match(phase11c, /CANDIDATE_REVIEW/);
-assert.match(phase11c, /create or replace function public\\.drx_phase11_review_candidate_v1/);
-assert.match(phase11c, /create or replace function public\\.drx_phase11_promote_candidate_to_draft_v1/);
+assert.match(phase11c, /create or replace function public\.drx_phase11_review_candidate_v1/);
+assert.match(phase11c, /create or replace function public\.drx_phase11_promote_candidate_to_draft_v1/);
 assert.match(phase11c, /'draft',1/);
 assert.match(phase11c, /'MANUAL_REVIEW','DRAFT'/);
 assert.match(phase11c, /'autoPublished',false/);
