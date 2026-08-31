@@ -67,10 +67,12 @@ async function main(){
     && status.effectiveParityCurrent===true
     && status.legacyWritesZeroEvidencePass===true;
 
+  // Retirement happens only after strict activation. It must NOT depend on
+  // finalGatePass because finalGatePass itself requires LEGACY_CONSUMERS_ZERO;
+  // that dependency would make the cutover mathematically impossible.
   const retirementAllowedNow=
     retirementPrepared
     && status.soak14DaysPass===true
-    && status.finalGatePass===true
     && status.mode==='STRICT'
     && status.strictArmed===true;
 
@@ -80,8 +82,8 @@ async function main(){
     retirementPrepared,
     retirementAllowedNow,
     reason:retirementAllowedNow
-      ? 'All final cutover gates allow V2 consumer retirement.'
-      : 'Retirement is prepared but remains locked until the 14-day soak and final strict cutover gates pass.',
+      ? 'Strict V3 runtime is armed after the required soak; audited V2 consumer retirement may proceed.'
+      : 'Retirement is prepared but remains locked until the 14-day soak passes and strict V3 runtime is armed.',
     currentPhase10:status,
     coverage:{
       ...coverage,
