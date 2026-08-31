@@ -1,0 +1,1 @@
+Temporary audit trigger for validating current main test gates without consuming a Vercel build.
