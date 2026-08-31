@@ -14,6 +14,7 @@ const br = read('supabase/migrations/20260831162751_drx_phase11br_identity_candi
 const bs = read('supabase/migrations/20260831162947_drx_phase11bs_icd_quality_gate_and_workbench_v2.sql');
 const bt = read('supabase/migrations/20260831164041_drx_phase11bt_review_provenance_and_item_actions.sql');
 const bu = read('supabase/migrations/20260831164124_drx_phase11bu_indication_and_regimen_review_gates.sql');
+const bv = read('supabase/migrations/20260831164500_drx_phase11bv_clinical_approval_readiness_gate.sql');
 const backend = read('lib/phase11-review.js');
 const api = read('api/phase11-review.js');
 const html = read('admin.html');
@@ -60,6 +61,16 @@ assert.match(bu, /PRIMARY_EVIDENCE_NOT_VERIFIED/);
 assert.match(bu, /SAFETY_REVIEW_INCOMPLETE/);
 assert.match(bu, /PRIMARY_INDICATION_NOT_PUBLISHED_ICD_VERIFIED/);
 
+assert.match(bv, /source_regimen_clinical_approval_gate_v1/);
+assert.match(bv, /source_regimen_clinical_approval_summary_v1/);
+assert.match(bv, /ready_for_clinical_approval/);
+assert.match(bv, /EVIDENCE_REVIEW_INCOMPLETE/);
+assert.match(bv, /PRESENTATION_REVIEW_INCOMPLETE/);
+assert.match(bv, /ADMINISTRATION_REVIEW_INCOMPLETE/);
+assert.match(bv, /SAFETY_REVIEW_INCOMPLETE/);
+assert.match(bv, /PRIMARY_INDICATION_NOT_PUBLISHED_ICD_VERIFIED/);
+assert.match(bv, /auto_approve_allowed/);
+
 assert.match(backend, /AdminAccess\.requireAdminSession/);
 assert.match(backend, /\['GET','POST'\]\.includes\(req\.method\)/);
 assert.match(backend, /reviewer = clean\(admin\?\.email\)/);
@@ -86,7 +97,7 @@ assert.doesNotMatch(ui, /method\s*:\s*['"]POST['"]/i);
 assert.doesNotMatch(ui, /method\s*:\s*['"]PUT['"]/i);
 assert.doesNotMatch(ui, /method\s*:\s*['"]PATCH['"]/i);
 
-for (const sql of [bp,bq,br,bs,bt,bu]) {
+for (const sql of [bp,bq,br,bs,bt,bu,bv]) {
   assert.doesNotMatch(sql, /auto_publish_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_apply_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_resolve_allowed\s*=\s*true/i);
