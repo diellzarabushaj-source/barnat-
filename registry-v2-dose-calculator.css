@@ -1,0 +1,45 @@
+.registry-row-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;white-space:nowrap}
+.drx-dose-open{min-height:34px;padding:0 10px;border:1px solid rgba(28,30,84,.18);border-radius:9px;background:#fff;color:#1c1e54;font:inherit;font-size:.72rem;font-weight:800;cursor:pointer;transition:background .15s ease,border-color .15s ease,transform .15s ease}
+.drx-dose-open:hover{background:#f4f5ff;border-color:rgba(28,30,84,.32)}
+.drx-dose-open:active{transform:translateY(1px)}
+.drx-dose-modal[hidden]{display:none!important}
+.drx-dose-modal{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:18px}
+.drx-dose-backdrop{position:absolute;inset:0;background:rgba(10,14,30,.56);backdrop-filter:blur(5px)}
+.drx-dose-dialog{position:relative;width:min(760px,100%);max-height:min(90vh,900px);overflow:auto;border:1px solid rgba(255,255,255,.6);border-radius:22px;background:#fff;box-shadow:0 30px 90px rgba(13,20,50,.28);padding:0}
+.drx-dose-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:20px 22px 14px;border-bottom:1px solid #e9ebf2}
+.drx-dose-eyebrow{display:block;margin-bottom:4px;color:#70758a;font-size:.68rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+.drx-dose-head h2{margin:0;color:#171a40;font-size:1.15rem;line-height:1.2}
+.drx-dose-close{width:38px;height:38px;border:0;border-radius:10px;background:#f4f5f9;color:#495066;font-size:1.45rem;cursor:pointer}
+.drx-dose-product{padding:14px 22px 4px}
+.drx-dose-product strong{display:block;color:#171a40;font-size:1rem}
+.drx-dose-product small{display:block;margin-top:3px;color:#7a8090;font-size:.75rem}
+.drx-dose-runtime-row{display:flex;gap:7px;flex-wrap:wrap;padding:8px 22px 2px}
+.drx-dose-chip{display:inline-flex;align-items:center;min-height:25px;padding:0 8px;border-radius:999px;background:#f1f3f8;color:#5d6374;font-size:.66rem;font-weight:800}
+.drx-dose-chip.is-v3{background:#eaf7ef;color:#17643b}
+.drx-dose-chip.is-fallback{background:#fff4e5;color:#995b05}
+.drx-dose-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px 22px}
+.drx-dose-field{display:grid;gap:6px}
+.drx-dose-field[hidden]{display:none!important}
+.drx-dose-field>span:first-child{color:#33394d;font-size:.72rem;font-weight:800}
+.drx-dose-field input,.drx-dose-field select{width:100%;min-height:44px;border:1px solid #d8dce7;border-radius:10px;background:#fff;color:#171a40;padding:0 11px;font:inherit;font-size:.85rem;outline:none}
+.drx-dose-field input:focus,.drx-dose-field select:focus{border-color:#666bd8;box-shadow:0 0 0 3px rgba(102,107,216,.12)}
+.drx-dose-input-pair{display:grid;grid-template-columns:minmax(0,1fr) 105px;gap:7px}
+.drx-dose-help{color:#7a8090;font-size:.66rem;line-height:1.35}
+.drx-dose-note{margin:0 22px 14px;padding:10px 12px;border-radius:10px;background:#f7f8fb;color:#6d7386;font-size:.72rem;line-height:1.45}
+.drx-dose-result{margin:0 22px 22px;padding:16px;border:1px solid #dfe4ec;border-radius:14px;background:#fafbfd}
+.drx-dose-result[hidden]{display:none!important}
+.drx-dose-result.is-error{border-color:#f2c5c5;background:#fff7f7}
+.drx-dose-result.is-info{border-color:#d6dff3;background:#f7f9ff}
+.drx-dose-result h3{margin:0 0 7px;color:#20243d;font-size:.82rem}
+.drx-dose-result-text{margin:0;color:#20243d;font-size:.94rem;font-weight:760;line-height:1.5}
+.drx-dose-details{display:grid;gap:7px;margin-top:13px;padding-top:12px;border-top:1px solid #e2e5ec}
+.drx-dose-detail{display:grid;grid-template-columns:145px minmax(0,1fr);gap:10px;font-size:.72rem;line-height:1.4}
+.drx-dose-detail strong{color:#5f6578}
+.drx-dose-detail span{color:#20243d;overflow-wrap:anywhere}
+.drx-dose-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.drx-dose-actions button{min-height:38px;border:1px solid #d1d6e1;border-radius:9px;background:#fff;color:#33394d;padding:0 12px;font:inherit;font-size:.72rem;font-weight:800;cursor:pointer}
+.drx-dose-actions button:first-child{border-color:#1c1e54;background:#1c1e54;color:#fff}
+body.drx-dose-modal-open{overflow:hidden}
+@media(max-width:760px){.drx-dose-modal{padding:0}.drx-dose-dialog{width:100%;height:100%;max-height:none;border-radius:0}.drx-dose-form{grid-template-columns:1fr}.drx-dose-detail{grid-template-columns:1fr;gap:2px}.registry-row-actions{gap:4px}.drx-dose-open{padding:0 8px}}
+@media(prefers-reduced-motion:reduce){.drx-dose-open{transition:none}}
+@media(forced-colors:active){.drx-dose-open,.drx-dose-dialog,.drx-dose-field input,.drx-dose-field select,.drx-dose-result{border:1px solid CanvasText}}
