@@ -63,8 +63,7 @@ jobs:
           done
           : > /tmp/physician-flow.log
           pnpm exec playwright test \
-            tests/urgjencat-summary-learn-browser.spec.js \
-            tests/urgjencat-physician-v17-browser.spec.js \
+            tests/urgjencat-v2-browser.spec.js \
             tests/csp-browser-audit.spec.js \
             tests/login-plan-card-browser.spec.js \
             tests/registry-v2-browser.spec.js \
