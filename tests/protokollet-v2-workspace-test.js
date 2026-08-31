@@ -18,7 +18,7 @@ assert.match(html, /class="drx-unified-sidebar"/);
 assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
 assert.match(html, /protokollet-v2\.css\?v=1/);
 assert.match(html, /protokollet-v2\.js\?v=1/);
-assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v5/);
+assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/);
 assert.match(html, /id="protocolDirectory"/);
 assert.match(html, /id="protocolReader"/);
 assert.match(html, /id="protocolSearch"/);
@@ -37,14 +37,20 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
   .map(match => match[1]);
 
 assert.equal(styles.length, 2, 'Protokollet V2 must load only page CSS + canonical Stripe shell');
-assert.ok(styles[0].includes('protokollet-v2.css?v=1'));
-assert.ok(styles[1].includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v5'));
+assert.ok(styles[0].includes('protokollet-v2.css?v=2'));
+assert.ok(styles[1].includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6'));
 assert.equal(scripts.length, 1, 'Protokollet V2 must own one bundled runtime');
 assert.ok(scripts[0].includes('protokollet-v2.js?v=1'));
 
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|medical-hub\.css|clinical-reference\.css|protocol-reader\.css|protocol-interactive\.css|protocol-workspace\.css|protokollet\.js/);
 
 assert.match(css, /Protokollet V2 — consolidated clinical protocol workspace/);
+assert.match(css, /Protocol visual parity v3 — Urgjencat reference/);
+assert.match(css, /\.protocol-reader-header h1\{[\s\S]*font-size:28px[\s\S]*font-weight:350/);
+assert.match(css, /\.protocol-section h3\{[\s\S]*font-size:18px[\s\S]*font-weight:450/);
+assert.match(css, /\.protocol-section-body\{[\s\S]*font-size:13\.5px[\s\S]*line-height:1\.72/);
+assert.match(css, /\.protocol-toolbar-card\{[\s\S]*position:sticky[\s\S]*top:70px/);
+assert.match(css, /\.protocol-primary-care[\s\S]*font-size:13px/);
 assert.match(css, /Protokollet V2 — unified Stripe clinical library/);
 assert.match(css, /\.protocol-metrics/);
 assert.match(css, /\.protocol-toolbar-card/);
