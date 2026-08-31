@@ -120,4 +120,47 @@ assert.equal(missingReviewer.valid,false);
 assert.ok(missingReviewer.errors.includes('verified_by_missing'));
 assert.ok(missingReviewer.errors.includes('verified_at_missing'));
 
+const capSelection = Adjust.selectAdjustment([
+  {
+    measure_type:'CrCl_mL_min',
+    max_value:10,
+    dose_action:'max_daily_cap',
+    max_daily_dose_mg:2000,
+    source_key:'emc-cap',
+    source_section:'4.2',
+    source_section_sha256:sectionHash,
+    source_snapshot_id:hash,
+    source_evidence_hash:hash,
+    review_status:'verified',
+    verified_by:'drx-reviewer',
+    verified_at:verifiedAt,
+  },
+], {crClMlMin:8});
+assert.equal(capSelection.status,'matched');
+assert.equal(capSelection.reason,'max_daily_cap');
+
+const capped = Adjust.applyAdjustment({ maxDailyDoseMg:4000 }, capSelection);
+assert.equal(capped.status,'applied');
+assert.equal(capped.rule.maxDailyDoseMg,2000);
+
+const alreadySafer = Adjust.applyAdjustment({ maxDailyDoseMg:1000 }, capSelection);
+assert.equal(alreadySafer.rule.maxDailyDoseMg,1000);
+
+const badCap = Adjust.validateAdjustmentRow({
+  measure_type:'CrCl_mL_min',
+  max_value:10,
+  dose_action:'max_daily_cap',
+  max_daily_dose_mg:0,
+  source_key:'emc-cap',
+  source_section:'4.2',
+  source_section_sha256:sectionHash,
+  source_snapshot_id:hash,
+  source_evidence_hash:hash,
+  review_status:'verified',
+  verified_by:'drx-reviewer',
+  verified_at:verifiedAt,
+});
+assert.equal(badCap.valid,false);
+assert.ok(badCap.errors.includes('max_daily_cap_missing_or_invalid'));
+
 console.log('DRx renal/hepatic adjustment engine contracts passed.');
