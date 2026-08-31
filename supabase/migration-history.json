@@ -775,6 +775,30 @@
     {
       "version": "20260831110839",
       "name": "drx_phase11ak_pantoprazole_moiety_and_oral_regimens"
+    },
+    {
+      "version": "20260831111414",
+      "name": "drx_phase11al_rule_product_inheritance_review_layer"
+    },
+    {
+      "version": "20260831114151",
+      "name": "drx_phase11am_rivaroxaban_step_presentation_and_safety"
+    },
+    {
+      "version": "20260831114311",
+      "name": "drx_phase11an_deduplicate_source_safety_candidates"
+    },
+    {
+      "version": "20260831114412",
+      "name": "drx_phase11ao_scope_aware_duplicate_detection"
+    },
+    {
+      "version": "20260831114635",
+      "name": "drx_phase11ap_clinical_review_packet_and_promotion_gate_v2"
+    },
+    {
+      "version": "20260831114715",
+      "name": "drx_phase11aq_primary_evidence_backfill_and_review_priority"
     }
   ]
 }
