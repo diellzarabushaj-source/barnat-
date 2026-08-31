@@ -1,7 +1,6 @@
--- The rollback drill is append-only evidence and the canonical cutover
--- event history must not be erased or rewound.
+-- Phase 10F is immutable operational evidence.
 do $$
 begin
-  raise exception 'Rollback blocked: Phase 10F rollback-drill evidence and cutover history are immutable.';
+  raise exception 'Rollback blocked: Phase 10F rollback-drill evidence and cutover events are append-only.';
 end
 $$;
