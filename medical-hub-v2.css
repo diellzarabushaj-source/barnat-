@@ -127,10 +127,10 @@
 
 .hub-search-clear{
   position:absolute;
-  right:7px;
+  right:5px;
   top:50%;
-  width:27px;
-  height:27px;
+  width:34px;
+  height:34px;
   display:grid;
   place-items:center;
   transform:translateY(-50%);
