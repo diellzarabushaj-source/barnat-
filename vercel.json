@@ -38,6 +38,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/medical-hub-image",
+      "destination": "/api/medical-hub?_route=image"
+    },
+    {
       "source": "/api/phase11-review",
       "destination": "/api/clinical-editor?phase11Review=1"
     },
