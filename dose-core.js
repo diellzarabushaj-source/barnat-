@@ -61,10 +61,20 @@
 
     const minAge = finite(valueOf(rule, 'minAgeMonths', 'min_age_months'));
     const maxAge = finite(valueOf(rule, 'maxAgeMonths', 'max_age_months'));
+    const minAgeDays = finite(valueOf(rule, 'minAgeDays', 'min_age_days'));
+    const maxAgeDays = finite(valueOf(rule, 'maxAgeDays', 'max_age_days'));
     const patientGroup = clean(valueOf(rule, 'patientGroup', 'patient_group'));
+    const hasAgeDays = minAgeDays !== null || maxAgeDays !== null;
     if (method === 'age_band_fixed'
-        || ['adult_only','pediatric_only'].includes(patientGroup)
-        || minAge !== null || maxAge !== null) inputs.add('age_months');
+        || minAge !== null || maxAge !== null
+        || (['adult_only','pediatric_only'].includes(patientGroup) && !hasAgeDays)) inputs.add('age_months');
+    if (hasAgeDays) inputs.add('age_days');
+
+    const startDay = finite(valueOf(rule, 'startDay', 'start_day'));
+    const endDay = finite(valueOf(rule, 'endDay', 'end_day'));
+    if (startDay !== null || endDay !== null) inputs.add('treatment_day');
+
+    if (bool(valueOf(rule, 'conditionReviewRequired', 'condition_review_required'))) inputs.add('clinical_variant');
 
     const minWeight = finite(valueOf(rule, 'minWeightKg', 'min_weight_kg'));
     const maxWeight = finite(valueOf(rule, 'maxWeightKg', 'max_weight_kg'));
@@ -92,6 +102,15 @@
       const n = finite(patient?.ageMonths ?? patient?.age_months);
       return n !== null && n >= 0 ? n : null;
     }
+    if (key === 'age_days') {
+      const n = finite(patient?.ageDays ?? patient?.age_days);
+      return n !== null && n >= 0 ? n : null;
+    }
+    if (key === 'treatment_day') {
+      const n = finite(patient?.treatmentDay ?? patient?.treatment_day);
+      return n !== null && n >= 1 ? n : null;
+    }
+    if (key === 'clinical_variant') return clean(patient?.clinicalVariant ?? patient?.clinical_variant) || null;
     if (key === 'renal_function') return clean(patient?.renalFunction ?? patient?.renal_function);
     if (key === 'hepatic_function') return clean(patient?.hepaticFunction ?? patient?.hepatic_function);
     if (key === 'cardiac_status') return clean(patient?.cardiacStatus ?? patient?.cardiac_status);
@@ -117,19 +136,39 @@
     if (state.missing.length) return { eligible:false, outcome:OUTCOME.NEEDS_INPUT, ...state };
 
     const age = patientValue(patient, 'age_months');
+    const ageDays = patientValue(patient, 'age_days');
+    const treatmentDay = patientValue(patient, 'treatment_day');
+    const clinicalVariant = patientValue(patient, 'clinical_variant');
     const weight = patientValue(patient, 'weight_kg');
     const minAge = finite(valueOf(rule, 'minAgeMonths', 'min_age_months'));
     const maxAge = finite(valueOf(rule, 'maxAgeMonths', 'max_age_months'));
+    const minAgeDays = finite(valueOf(rule, 'minAgeDays', 'min_age_days'));
+    const maxAgeDays = finite(valueOf(rule, 'maxAgeDays', 'max_age_days'));
+    const minTreatmentDay = finite(valueOf(rule, 'startDay', 'start_day'));
+    const maxTreatmentDay = finite(valueOf(rule, 'endDay', 'end_day'));
     const minWeight = finite(valueOf(rule, 'minWeightKg', 'min_weight_kg'));
     const maxWeight = finite(valueOf(rule, 'maxWeightKg', 'max_weight_kg'));
+    const conditionReviewRequired = bool(valueOf(rule, 'conditionReviewRequired', 'condition_review_required'));
+    const regimenOptionKey = clean(valueOf(rule, 'regimenOptionKey', 'regimen_option_key'));
 
-    if (!inRange(age, minAge, maxAge) || !inRange(weight, minWeight, maxWeight)) {
+    const variantMismatch = conditionReviewRequired
+      && regimenOptionKey
+      && clinicalVariant !== regimenOptionKey;
+
+    if (!inRange(age, minAge, maxAge)
+        || !inRange(ageDays, minAgeDays, maxAgeDays)
+        || !inRange(treatmentDay, minTreatmentDay, maxTreatmentDay)
+        || !inRange(weight, minWeight, maxWeight)
+        || variantMismatch) {
       return {
         eligible:false,
         outcome:OUTCOME.OUT_OF_RANGE,
         required:state.required,
         missing:[],
         ageMonths:age,
+        ageDays,
+        treatmentDay,
+        clinicalVariant,
         weightKg:weight,
       };
     }
@@ -213,6 +252,9 @@
         weightKg:patientValue(patient, 'weight_kg'),
         heightCm:patientValue(patient, 'height_cm'),
         ageMonths:patientValue(patient, 'age_months'),
+        ageDays:patientValue(patient, 'age_days'),
+        treatmentDay:patientValue(patient, 'treatment_day'),
+        clinicalVariant:patientValue(patient, 'clinical_variant'),
       },
     };
   }
