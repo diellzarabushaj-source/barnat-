@@ -132,10 +132,13 @@
       const data=response.payload||{};
       const batch=data.batch||{};
       const products=Array.isArray(data.products)?data.products:[];
+      const suggestions=Array.isArray(data.suggestions)?data.suggestions:[];
       openDialog(
         batch.normalized_composition||'Identity review',
         `<div class="mi-editor-section-title"><div><span>Kompozimi</span><small>${esc(batch.product_count||products.length)} produkte · read-only</small></div></div>
          <div class="mi-empty-state" style="text-align:left">${esc(batch.normalized_composition||'—')}</div>
+         <div class="mi-editor-section-title"><div><span>Canonical suggestions</span><small>${suggestions.length} kandidatë · nuk aplikohen automatikisht</small></div></div>
+         <div class="mi-notification-list">${suggestions.length?suggestions.map(x=>`<div class="mi-notification-card" style="display:block"><span class="mi-notification-head"><strong>${esc(x.canonicalName||'—')}</strong><small>${esc(x.termType||'')}</small></span><span class="mi-notification-text">Matched: ${esc(x.matchedTerm||'—')} · confidence ${esc(x.confidence??'—')}</span></div>`).join(''):'<div class="mi-empty-state">Nuk u gjetën canonical term suggestions; kërkohet manual discovery.</div>'}</div>
          <div class="mi-table-wrap"><table class="mi-table"><thead><tr><th>Nr.</th><th>Bari</th><th>Fortësia</th><th>Forma</th></tr></thead><tbody>
          ${products.map(p=>`<tr><td>${esc(p.registryNumber??'—')}</td><td><strong>${esc(p.tradeName||'—')}</strong><small>${esc(p.activeSubstance||'')}</small></td><td>${esc(p.strength||'—')}</td><td>${esc(p.form||'—')}</td></tr>`).join('')}
          </tbody></table></div>`
