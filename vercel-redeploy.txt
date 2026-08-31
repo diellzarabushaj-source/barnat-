@@ -1,3 +1,4 @@
-Registry clinical columns + pediatric-only pink rows deploy trigger
-Git head before trigger: d3b2fc15ae5ddf97cfc6a644d3c159a73f303f7d
-Date: 2026-08-31
+DRx Phase 11 deployment trigger
+Migration parity: 231/231
+Review workbench + explicit review gates synced
+Timestamp marker: 2026-08-31-phase11-bv
