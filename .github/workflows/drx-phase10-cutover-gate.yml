@@ -19,7 +19,9 @@ on:
       - "supabase/migrations/20260831053832_drx_phase10j_pediatric_v3_calculator_metadata.sql"
       - "supabase/migrations/20260831060712_drx_phase10k_restore_test_evidence.sql"
       - "supabase/migrations/20260831061925_drx_phase10l_legacy_retirement_preflight_rpc.sql"
+      - "supabase/migrations/20260831062943_drx_phase10m_strict_activation_gate.sql"
       - "supabase/drx-phase10l-legacy-retirement-preflight-rpc-rollback.sql"
+      - "supabase/drx-phase10m-strict-activation-gate-rollback.sql"
       - "data/drx-phase10k-restore-test-evidence-v1.json"
       - "tests/drx-phase10k-restore-test-evidence-test.js"
       - "supabase/drx-phase10h-controlled-soak-start-rollback.sql"
@@ -42,6 +44,7 @@ on:
       - "supabase/drx-phase10b-controlled-traffic-plumbing-rollback.sql"
       - "lib/dose-v3-cutover-control.js"
       - "tests/drx-phase10-controlled-traffic-test.js"
+      - "tests/drx-phase10m-strict-activation-gate-test.js"
       - "lib/pediatric-v3-runtime.js"
       - "lib/pediatric-dosage-handler-core.js"
       - "dozologjia.html"
@@ -97,6 +100,8 @@ jobs:
         run: node scripts/drx-phase10-consumer-audit.js
       - name: Phase 10L legacy retirement preflight contract
         run: node tests/drx-phase10-legacy-retirement-preflight-test.js
+      - name: Phase 10M strict activation gate
+        run: node tests/drx-phase10m-strict-activation-gate-test.js
       - name: P0 database integrity
         run: node tests/p0-database-integrity-test.js
       - name: Public security contract
