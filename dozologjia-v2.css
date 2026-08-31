@@ -71,6 +71,8 @@ a{color:inherit}
 .sidebar-close{display:none}.nav-stack{overflow:auto}
 .nav-item{width:100%;display:flex;align-items:center;text-decoration:none;text-align:left;cursor:pointer}
 .nav-icon{display:grid;place-items:center;flex:none}.nav-icon .icon,.icon{display:block;width:18px;height:18px;flex:none}
+.icon-button{display:grid;width:34px;height:34px;place-items:center;padding:0;border:1px solid var(--dosage-line);border-radius:8px;background:#fff;color:#5a6b80;cursor:pointer}
+.icon-button.menu-button,.icon-button.sidebar-close{display:none}
 .nav-summary{list-style:none}.nav-summary::-webkit-details-marker{display:none}
 .nav-summary>span:nth-child(2){flex:1;min-width:0}
 .nav-summary-chevron{display:grid;place-items:center;flex:none;transition:transform .16s ease}
@@ -448,7 +450,7 @@ input{caret-color:#533afd}
 @media(max-width:1023px){
   .sidebar{width:min(300px,86vw);transform:translateX(-102%);transition:transform .2s ease}
   .sidebar.is-open{transform:translateX(0)}
-  .sidebar-close,.menu-button{display:grid}
+  .icon-button.sidebar-close,.icon-button.menu-button{display:grid}
   .main-shell{margin-left:0}
   .dosage-console{grid-template-columns:1fr}
   .dosage-catalog{position:static;max-height:none}
@@ -458,6 +460,7 @@ input{caret-color:#533afd}
 }
 @media(max-width:760px){
   .topbar{height:50px}.breadcrumbs,.sync-pill{display:none}
+  .icon-button.menu-button,.icon-button.sidebar-close{width:44px;height:44px}
   .drx-profile-copy{display:none}.drx-profile-chip{width:38px;height:38px;padding:1px;border:0;background:transparent}
   .page-wrap{padding:16px 10px 28px}
   .dosage-heading{display:block;margin-bottom:12px}
