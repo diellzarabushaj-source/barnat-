@@ -1,4 +1,5 @@
-DRx Phase 11 deployment trigger
-Migration parity: 231/231
-Review workbench + explicit review gates synced
-Timestamp marker: 2026-08-31-phase11-bv
+DRx Phase 11 production rebuild trigger
+Migration parity: 238/238
+Latest migration: 20260831171501_drx_phase11cc_gated_draft_product_shell_materializer
+Review workbench: v4
+Safety mode: fail-closed
