@@ -1,0 +1,67 @@
+name: DRx Phase 11 release gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "supabase/migrations/20260831180622_drx_phase11ck_adjustment_projection_and_publication_guard.sql"
+      - "supabase/migrations/20260831184114_drx_phase11cn_legacy_parity_and_release_gate.sql"
+      - "supabase/migrations/20260831184612_drx_phase11co_shadow_evidence_and_cutover_guard.sql"
+      - "supabase/migration-history.json"
+      - "lib/phase11-review.js"
+      - "lib/dose-adjustment-engine.js"
+      - "admin.html"
+      - "admin-phase11-review.js"
+      - "tests/drx-phase11-finalization-contract-test.js"
+      - "tests/drx-phase11-review-workbench-contract-test.js"
+      - "tests/drx-phase11-release-shadow-contract-test.js"
+      - "tests/drx-dose-adjustment-engine-test.js"
+      - "tests/vercel-hobby-function-budget-test.js"
+      - ".github/workflows/drx-phase11-release-gate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  phase11:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Phase 11 finalization contracts
+        run: node tests/drx-phase11-finalization-contract-test.js
+
+      - name: Phase 11 review workbench contracts
+        run: node tests/drx-phase11-review-workbench-contract-test.js
+
+      - name: Phase 11 release and shadow contracts
+        run: node tests/drx-phase11-release-shadow-contract-test.js
+
+      - name: Adjustment runtime contracts
+        run: node tests/drx-dose-adjustment-engine-test.js
+
+      - name: Vercel Hobby function budget
+        run: node tests/vercel-hobby-function-budget-test.js
+
+      - name: Migration history contains Phase 11 release chain
+        run: |
+          node - <<'NODE'
+          const fs=require('node:fs');
+          const h=JSON.parse(fs.readFileSync('supabase/migration-history.json','utf8'));
+          const rows=Array.isArray(h.migrations)?h.migrations:[];
+          for(const [version,name] of [
+            ['20260831180622','drx_phase11ck_adjustment_projection_and_publication_guard'],
+            ['20260831184114','drx_phase11cn_legacy_parity_and_release_gate'],
+            ['20260831184612','drx_phase11co_shadow_evidence_and_cutover_guard'],
+          ]){
+            if(!rows.some(x=>String(x.version)===version&&x.name===name)){
+              throw new Error(`missing migration ${version}:${name}`);
+            }
+          }
+          NODE
