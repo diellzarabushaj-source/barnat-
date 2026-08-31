@@ -569,7 +569,7 @@
         <td data-col="pediatricDose" data-dose-pediatric="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></td>
         <td data-col="status">${statusBadge(row.productStatus)}</td>
         <td data-col="price"><span class="price">${euros(row.retailPrice)}</span></td>
-        <td><button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">${CHEVRON_RIGHT}</button></td>
+        <td><div class="registry-row-actions"><button class="drx-dose-open" type="button" data-dose-calculator-open data-registry-number="${escapeHtml(number)}" aria-label="Kalkulo dozën për ${escapeHtml(row.tradeName)}">Kalkulo</button><button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">${CHEVRON_RIGHT}</button></div></td>
       </tr>`;
     }).join('');
     applyColumnVisibility();
