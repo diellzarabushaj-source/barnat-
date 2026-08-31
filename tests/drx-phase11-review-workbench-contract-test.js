@@ -23,7 +23,8 @@ const ca = read('supabase/migrations/20260831170726_drx_phase11ca_product_identi
 const cb = read('supabase/migrations/20260831171019_drx_phase11cb_product_identity_capture_workbench_v4.sql');
 const cc = read('supabase/migrations/20260831171501_drx_phase11cc_gated_draft_product_shell_materializer.sql');
 const backend = read('lib/phase11-review.js');
-const api = read('api/phase11-review.js');
+const api = read('api/clinical-editor.js');
+const vercel = read('vercel.json');
 const html = read('admin.html');
 const ui = read('admin-phase11-review.js');
 const dashboard = read('admin-dashboard.js');
@@ -128,6 +129,12 @@ assert.match(backend, /ICD_AND_INDICATION_REVIEW_ATTESTED/);
 assert.match(backend, /CLINICAL_REGIMEN_REVIEW_ATTESTED/);
 assert.match(backend, /drx_phase11_identity_batch_packet_v2/);
 assert.match(api, /Phase11Review\.handle/);
+assert.match(api, /queryFlag\(req, 'phase11Review'\)/);
+assert.match(api, /queryFlag\(req, 'icdApi'\)/);
+assert.match(vercel, /\"source\": \"\/api\/phase11-review\"/);
+assert.match(vercel, /\"destination\": \"\/api\/clinical-editor\?phase11Review=1\"/);
+assert.match(vercel, /\"source\": \"\/api\/icd\"/);
+assert.match(vercel, /\"destination\": \"\/api\/clinical-editor\?icdApi=1\"/);
 
 assert.match(html, /data-view="phase11"/);
 assert.match(html, /data-panel="phase11"/);
