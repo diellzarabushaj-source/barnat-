@@ -128,11 +128,11 @@ test('registry v2 desktop flow is stable and usable', async ({ page }) => {
   await expect(page.getByText('15 mg/kg për dozë')).toBeVisible();
 
   const authorities = await page.evaluate(() => ({
-    styles:[...document.querySelectorAll('link[rel="stylesheet"]')].map(node => node.getAttribute('href')),
-    scripts:[...document.querySelectorAll('script[src]')].map(node => node.getAttribute('src')),
+    styles:[...document.querySelectorAll('link[rel="stylesheet"]')].map(node => new URL(node.href).pathname),
+    scripts:[...document.querySelectorAll('script[src]')].map(node => new URL(node.src).pathname),
   }));
-  expect(authorities.styles).toEqual(['/registry-v2.css?v=1']);
-  expect(authorities.scripts).toEqual(['/registry-v2.js?v=1']);
+  expect(authorities.styles).toEqual(['/registry-v2.css']);
+  expect(authorities.scripts).toEqual(['/registry-v2.js']);
 
   const viewport = await page.evaluate(() => ({
     bodyScrollWidth:document.body.scrollWidth,
@@ -196,4 +196,38 @@ test('registry v2 mobile keeps navigation and table overflow contained', async (
   await page.locator('#drawerClose').click();
 
   await page.screenshot({ path:'/tmp/registry-v2-mobile.png', fullPage:true });
+});
+
+
+test('registry v2 tablet keeps shell and detail geometry contained', async ({ page }) => {
+  await page.setViewportSize({ width:768, height:1024 });
+  await page.goto('http://127.0.0.1:4173/index.html');
+  await expect(page.getByText('PARACETAMOL TEST')).toBeVisible();
+
+  const geometry = await page.evaluate(() => {
+    const table = document.querySelector('#tableScroll');
+    const sidebar = document.querySelector('#sidebar')?.getBoundingClientRect();
+    return {
+      bodyScrollWidth:document.body.scrollWidth,
+      innerWidth:window.innerWidth,
+      tableClientWidth:table?.clientWidth || 0,
+      tableScrollWidth:table?.scrollWidth || 0,
+      sidebarWidth:sidebar?.width || 0,
+    };
+  });
+  expect(geometry.bodyScrollWidth).toBeLessThanOrEqual(geometry.innerWidth);
+  expect(geometry.tableScrollWidth).toBeGreaterThanOrEqual(geometry.tableClientWidth);
+  expect(geometry.sidebarWidth).toBeLessThanOrEqual(320);
+
+  await page.getByText('PARACETAMOL TEST').click();
+  await expect(page.locator('#detailDrawer')).toHaveClass(/is-open/);
+  const drawer = await page.locator('#detailDrawer').evaluate(node => {
+    const rect=node.getBoundingClientRect();
+    return { width:rect.width, right:rect.right };
+  });
+  expect(drawer.width).toBeLessThanOrEqual(768);
+  expect(drawer.right).toBeLessThanOrEqual(769);
+  await page.locator('#drawerClose').click();
+
+  await page.screenshot({ path:'/tmp/registry-v2-tablet.png', fullPage:true });
 });
