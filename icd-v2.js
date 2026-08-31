@@ -373,8 +373,8 @@
 
   async function openNode(code) {
     const node = state.rows.find(row => clean(row.code) === clean(code));
-    if (!node) return;
-    if (!Number(node.childCount || 0)) { showToast(`${clean(node.code)} është niveli i fundit.`); return; }
+    if (!node) return false;
+
     if (state.searching) {
       // Nga kërkimi hyjmë te dega e vërtetë, jo te një listë e sheshtë.
       clearSearch();
@@ -385,9 +385,39 @@
     } else {
       state.path.push(node);
     }
+
     writeHash(clean(node.code));
+    state.reveal = true;
+
+    if (!Number(node.childCount || 0)) {
+      state.rows = [];
+      state.loading = false;
+      setStatus(`${clean(node.code)} · kodi i zgjedhur`);
+      render();
+      revealNodePanel();
+      return true;
+    }
+
     render();
     await loadChildren(clean(node.code));
+    return true;
+  }
+
+  async function openHashCode(code) {
+    const value = clean(code).toUpperCase();
+    if (!value) return false;
+
+    const chapter = state.chapters.find(item => clean(item.code).toUpperCase() === value);
+    if (chapter) {
+      selectChapter(clean(chapter.code));
+      return true;
+    }
+
+    await runSearch(value);
+    const exact = state.rows.find(row => clean(row.code).toUpperCase() === value);
+    if (exact) return openNode(clean(exact.code));
+
+    return false;
   }
 
   function goToPathIndex(index) {
@@ -479,8 +509,7 @@
     window.addEventListener('hashchange', () => {
       const code = readHash();
       if (!code) return;
-      const chapter = state.chapters.find(c => clean(c.code) === code);
-      if (chapter) selectChapter(code);
+      void openHashCode(code);
     });
   }
 
@@ -495,9 +524,8 @@
       await loadNav();
       render();
       const hash = readHash();
-      const chapter = state.chapters.find(c => clean(c.code) === hash);
-      if (chapter) selectChapter(clean(chapter.code));
-      else if (state.chapters.length) selectChapter(clean(state.chapters[0].code));
+      const opened = hash ? await openHashCode(hash) : false;
+      if (!opened && state.chapters.length) selectChapter(clean(state.chapters[0].code));
     } catch (error) {
       setStatus(error?.message || 'ICD-10 nuk u ngarkua.', 'error');
       el.sourceStatus.textContent = 'I palidhur';
