@@ -14,6 +14,7 @@ const co = read('supabase/migrations/20260831184612_drx_phase11co_shadow_evidenc
 const cp = read('supabase/migrations/20260831190001_drx_phase11cp_controlled_percent_bypass_guard.sql');
 const cq = read('supabase/migrations/20260831191319_drx_phase11cq_evidence_integrity_precheck.sql');
 const cr = read('supabase/migrations/20260831191800_drx_phase11cr_safety_integrity_precheck.sql');
+const cs = read('supabase/migrations/20260831193039_drx_phase11cs_indication_icd_integrity_and_publication_guard.sql');
 const backend = read('lib/phase11-review.js');
 const html = read('admin.html');
 const ui = read('admin-phase11-review.js');
@@ -81,7 +82,18 @@ assert.match(cr, /false::boolean as auto_apply_allowed/);
 assert.match(cr, /revoke all on drx_dose\.phase11_safety_integrity_precheck_v1/);
 assert.doesNotMatch(cr, /update\s+drx_dose\.source_(?:adjustment|restriction)_candidates_v1/i);
 
-for (const sql of [ck,cn,co,cp,cq,cr]) {
+assert.match(cs, /guard_indication_publication_integrity_v1/);
+assert.match(cs, /dose_indication_concepts_v3_publication_integrity_guard/);
+assert.match(cs, /Verified indication requires at least one ICD-10 code/);
+assert.match(cs, /Published indication requires verified ICD codes and named review provenance/);
+assert.match(cs, /phase11_indication_icd_integrity_precheck_v1/);
+assert.match(cs, /phase11_indication_icd_integrity_summary_v1/);
+assert.match(cs, /REGIMEN_USES_PUBLISHED_UNVERIFIED/);
+assert.match(cs, /false::boolean as auto_verify_allowed/);
+assert.match(cs, /false::boolean as auto_publish_allowed/);
+assert.doesNotMatch(cs, /set\s+icd_verification_status='verified'/i);
+
+for (const sql of [ck,cn,co,cp,cq,cr,cs]) {
   assert.doesNotMatch(sql, /auto_publish_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_cutover_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_strict_activation_allowed(?:_v2)?\s*=\s*true/i);
@@ -116,6 +128,7 @@ for (const expected of [
   ['20260831190001','drx_phase11cp_controlled_percent_bypass_guard'],
   ['20260831191319','drx_phase11cq_evidence_integrity_precheck'],
   ['20260831191800','drx_phase11cr_safety_integrity_precheck'],
+  ['20260831193039','drx_phase11cs_indication_icd_integrity_and_publication_guard'],
 ]) {
   assert.ok(
     migrations.some(row => String(row.version) === expected[0] && row.name === expected[1]),
