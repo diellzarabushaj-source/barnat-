@@ -919,6 +919,10 @@
     {
       "version": "20260831164124",
       "name": "drx_phase11bu_indication_and_regimen_review_gates"
+    },
+    {
+      "version": "20260831164500",
+      "name": "drx_phase11bv_clinical_approval_readiness_gate"
     }
   ]
 }
