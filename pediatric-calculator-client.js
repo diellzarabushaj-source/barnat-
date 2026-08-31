@@ -76,6 +76,8 @@
     elements.age = $('#patientAgeMonths');
     elements.ageUnit = $('#patientAgeUnit');
     elements.height = $('#patientHeightCm');
+    elements.treatmentDay = $('#patientTreatmentDay');
+    elements.clinicalVariant = $('#patientClinicalVariant');
     elements.crcl = $('#patientCrCl');
     elements.egfr = $('#patientEgfr');
     elements.dialysis = $('#patientDialysisStatus');
@@ -991,8 +993,8 @@
   function clearFieldErrors() {
     elements.patientPanel.querySelectorAll('[data-field-error]').forEach(node => { node.textContent = ''; });
     for (const input of [
-      elements.indication,elements.weight,elements.age,elements.height,elements.crcl,elements.egfr,
-      elements.dialysis,elements.childPugh,elements.hepaticImpairment,
+      elements.indication,elements.weight,elements.age,elements.height,elements.treatmentDay,elements.clinicalVariant,
+      elements.crcl,elements.egfr,elements.dialysis,elements.childPugh,elements.hepaticImpairment,
     ]) input?.removeAttribute('aria-invalid');
   }
 
@@ -1023,17 +1025,36 @@
       || (options.length === 1 ? options[0] : null);
   }
 
+  function configureClinicalVariant(option) {
+    const select = elements.clinicalVariant;
+    if (!select) return;
+    const variants = Array.isArray(option?.clinicalVariants) ? option.clinicalVariants : [];
+    const current = text(select.value);
+    select.textContent = '';
+    const placeholder = element('option', null, variants.length ? 'Zgjidh variantin klinik' : 'Nuk kërkohet variant');
+    placeholder.value = '';
+    select.append(placeholder);
+    for (const variant of variants) {
+      const node = element('option', null, variant.label || variant.key || 'Variant klinik');
+      node.value = text(variant.key);
+      select.append(node);
+    }
+    select.value = variants.some(variant => text(variant.key) === current) ? current : '';
+  }
+
   function applyCalculationOption(option) {
     if (!state.product) return;
     if (!option) {
       state.product.calculationRegimen = { valid:false,selectionId:'',indication:'',route:'',requires:null };
       state.product.regimen = {};
-      state.product.requires = { weight:false,height:false,age:false,advancedInputs:[] };
+      state.product.requires = { weight:false,height:false,age:false,ageDays:false,treatmentDay:false,clinicalVariant:false,advancedInputs:[] };
+      configureClinicalVariant(null);
       return;
     }
     state.product.calculationRegimen = { ...option,valid:true };
     state.product.regimen = { ...(option.regimen || {}) };
-    state.product.requires = option.requires || { weight:false,height:false,age:false,advancedInputs:[] };
+    state.product.requires = option.requires || { weight:false,height:false,age:false,ageDays:false,treatmentDay:false,clinicalVariant:false,advancedInputs:[] };
+    configureClinicalVariant(option);
     if (option.source?.url) state.product.source = option.source;
   }
 
@@ -1095,6 +1116,8 @@
       age:hasSelection && Boolean(requires?.age),
       'age-unit':hasSelection && Boolean(requires?.age),
       height:hasSelection && Boolean(requires?.height),
+      'treatment-day':hasSelection && Boolean(requires?.treatmentDay),
+      'clinical-variant':hasSelection && Boolean(requires?.clinicalVariant),
       crcl:hasSelection && advanced.crcl,
       egfr:hasSelection && advanced.egfr,
       dialysis:hasSelection && advanced.dialysis,
@@ -1122,6 +1145,8 @@
       weight:elements.weight,
       age:elements.age,
       height:elements.height,
+      'treatment-day':elements.treatmentDay,
+      'clinical-variant':elements.clinicalVariant,
       crcl:elements.crcl,
       egfr:elements.egfr,
       dialysis:elements.dialysis,
@@ -1158,10 +1183,30 @@
 
     if (requires.age) {
       const value = Number(elements.age.value);
-      const error = !Number.isFinite(value) || value < 0 ? 'Shkruaj moshën.' : '';
+      const unit = text(elements.ageUnit?.value).toLowerCase();
+      let error = !Number.isFinite(value) || value < 0 ? 'Shkruaj moshën.' : '';
+      if (!error && requires.ageDays && !['ditë','dite','day','days','javë','jave','week','weeks'].includes(unit)) {
+        error = 'Për këtë regjim shëno moshën në ditë ose javë.';
+      }
       if (showErrors || elements.age.value) fieldError('age', error); else fieldError('age', '');
       if (error) valid = false;
     } else fieldError('age', '');
+
+    if (requires.treatmentDay) {
+      const value = Number(elements.treatmentDay?.value);
+      const range = selectedCalculationOption()?.treatmentDayRange || null;
+      let error = !Number.isInteger(value) || value < 1 ? 'Shkruaj ditën e trajtimit.' : '';
+      if (!error && range?.min != null && value < Number(range.min)) error = `Minimumi për këtë regjim është dita ${range.min}.`;
+      if (!error && range?.max != null && value > Number(range.max)) error = `Maksimumi për këtë regjim është dita ${range.max}.`;
+      if (showErrors || elements.treatmentDay?.value) fieldError('treatment-day', error); else fieldError('treatment-day', '');
+      if (error) valid = false;
+    } else fieldError('treatment-day', '');
+
+    if (requires.clinicalVariant) {
+      const error = text(elements.clinicalVariant?.value) ? '' : 'Zgjidh variantin klinik.';
+      if (showErrors || elements.clinicalVariant?.value) fieldError('clinical-variant', error); else fieldError('clinical-variant', '');
+      if (error) valid = false;
+    } else fieldError('clinical-variant', '');
 
     if (requires.height) {
       const value = Number(elements.height.value);
@@ -1206,11 +1251,18 @@
     const weight = Number(elements.weight?.value);
     const height = Number(elements.height?.value);
     const age = Number(elements.age?.value);
+    const treatmentDay = Number(elements.treatmentDay?.value);
     const payload = { drugId:state.product?.drugId };
     if (requires.weight && Number.isFinite(weight) && weight > 0) payload.weightKg = weight;
     if (requires.height && Number.isFinite(height) && height > 0) payload.heightCm = height;
     if (requires.age && Number.isFinite(age) && age >= 0) {
       payload.age = { value:age, unit:elements.ageUnit?.value || 'muaj' };
+    }
+    if (requires.treatmentDay && Number.isInteger(treatmentDay) && treatmentDay >= 1) {
+      payload.treatmentDay = treatmentDay;
+    }
+    if (requires.clinicalVariant && elements.clinicalVariant?.value) {
+      payload.clinicalVariant = elements.clinicalVariant.value;
     }
     const selectionId = state.product?.calculationRegimen?.selectionId;
     const selectedV3Id = selectedCalculationOption()?.selectionId || selectionId;
@@ -1624,13 +1676,13 @@
       invalidateCalculation();
       renderProduct();
     });
-    for (const input of [elements.weight, elements.age, elements.height, elements.crcl, elements.egfr]) {
+    for (const input of [elements.weight, elements.age, elements.height, elements.treatmentDay, elements.crcl, elements.egfr]) {
       input?.addEventListener('input', () => {
         invalidateCalculation();
         validatePatientFields();
       });
     }
-    for (const input of [elements.ageUnit, elements.dialysis, elements.childPugh, elements.hepaticImpairment]) {
+    for (const input of [elements.ageUnit, elements.clinicalVariant, elements.dialysis, elements.childPugh, elements.hepaticImpairment]) {
       input?.addEventListener('change', () => {
         invalidateCalculation();
         validatePatientFields();
