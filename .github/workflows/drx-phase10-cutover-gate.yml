@@ -18,6 +18,8 @@ on:
       - "supabase/migrations/20260831052948_drx_phase10i_soak_observability.sql"
       - "supabase/migrations/20260831053832_drx_phase10j_pediatric_v3_calculator_metadata.sql"
       - "supabase/migrations/20260831060712_drx_phase10k_restore_test_evidence.sql"
+      - "supabase/migrations/20260831061925_drx_phase10l_legacy_retirement_preflight_rpc.sql"
+      - "supabase/drx-phase10l-legacy-retirement-preflight-rpc-rollback.sql"
       - "data/drx-phase10k-restore-test-evidence-v1.json"
       - "tests/drx-phase10k-restore-test-evidence-test.js"
       - "supabase/drx-phase10h-controlled-soak-start-rollback.sql"

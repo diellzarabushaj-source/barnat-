@@ -621,6 +621,10 @@
     {
       "version": "20260831060712",
       "name": "drx_phase10k_restore_test_evidence"
+    },
+    {
+      "version": "20260831061925",
+      "name": "drx_phase10l_legacy_retirement_preflight_rpc"
     }
   ]
 }
