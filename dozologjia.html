@@ -159,6 +159,13 @@
               </header>
 
               <div class="dosage-patient-fields">
+                <label data-patient-field="indication" hidden>
+                  <span>Indikacioni</span>
+                  <select id="patientIndication" aria-label="Zgjidh indikacionin e verifikuar">
+                    <option value="">Zgjidh indikacionin</option>
+                  </select>
+                  <small class="dosage-field-error" data-field-error="indication"></small>
+                </label>
                 <label data-patient-field="weight" hidden>
                   <span>Pesha <small>kg</small></span>
                   <input id="patientWeightKg" type="number" min="0.1" max="300" step="0.1" inputmode="decimal" placeholder="18.0" autocomplete="off">
@@ -182,6 +189,44 @@
                   <span>Gjatësia <small>cm</small></span>
                   <input id="patientHeightCm" type="number" min="20" max="250" step="0.5" inputmode="decimal" placeholder="130" autocomplete="off">
                   <small class="dosage-field-error" data-field-error="height"></small>
+                </label>
+                <label data-patient-field="crcl" hidden>
+                  <span>CrCl <small>mL/min</small></span>
+                  <input id="patientCrCl" type="number" min="0" max="250" step="1" inputmode="decimal" placeholder="90" autocomplete="off">
+                  <small class="dosage-field-error" data-field-error="crcl"></small>
+                </label>
+                <label data-patient-field="egfr" hidden>
+                  <span>eGFR <small>mL/min/1.73m²</small></span>
+                  <input id="patientEgfr" type="number" min="0" max="250" step="1" inputmode="decimal" placeholder="90" autocomplete="off">
+                  <small class="dosage-field-error" data-field-error="egfr"></small>
+                </label>
+                <label data-patient-field="dialysis" hidden>
+                  <span>Dializa</span>
+                  <select id="patientDialysisStatus">
+                    <option value="">Zgjidh statusin</option>
+                    <option value="not_on_dialysis">Jo në dializë</option>
+                    <option value="hemodialysis">Hemodializë</option>
+                    <option value="peritoneal_dialysis">Dializë peritoneale</option>
+                  </select>
+                  <small class="dosage-field-error" data-field-error="dialysis"></small>
+                </label>
+                <label data-patient-field="child-pugh" hidden>
+                  <span>Child–Pugh</span>
+                  <select id="patientChildPugh">
+                    <option value="">Zgjidh klasën</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                  </select>
+                  <small class="dosage-field-error" data-field-error="child-pugh"></small>
+                </label>
+                <label data-patient-field="hepatic-impairment" hidden>
+                  <span>Dëmtim hepatik</span>
+                  <select id="patientHepaticImpairment">
+                    <option value="">Zgjidh sipas burimit</option>
+                    <option value="hepatic impairment">Dëmtim hepatik i pranishëm</option>
+                  </select>
+                  <small class="dosage-field-error" data-field-error="hepatic-impairment"></small>
                 </label>
               </div>
 
