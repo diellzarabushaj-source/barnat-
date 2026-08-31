@@ -15,7 +15,7 @@ const standalone = ['index.html','klasifikimi.html','icd.html','dozologjia.html'
 const tailadmin = [];
 const allPages = [...standalone, ...tailadmin];
 
-assert.match(stripe, /DRx canonical dashboard shell v4/);
+assert.match(stripe, /DRx canonical sidebar shell v5/);
 assert.match(stripe, /--drx-nav:#1c1e54/);
 assert.match(stripe, /--drx-nav-active:rgba\(83,58,253,\.20\)/);
 assert.match(stripe, /--drx-shell-accent:#533afd/);
@@ -23,6 +23,15 @@ assert.match(stripe, /--drx-shell-sidebar-width:238px/);
 assert.match(stripe, /--drx-shell-topbar-height:58px/);
 assert.match(stripe, /--drx-shell-content-max:1360px/);
 assert.match(stripe, /--drx-shell-page-x:36px/);
+assert.match(stripe, /DRx canonical sidebar shell v5/);
+assert.match(stripe, /html\.drx-unified-sidebar \.sidebar\{[\s\S]*position:fixed!important[\s\S]*display:flex!important[\s\S]*flex-direction:column!important/);
+assert.match(stripe, /html\.drx-unified-sidebar \.nav-stack\{[\s\S]*flex:1 1 auto!important[\s\S]*overflow-y:auto!important/);
+assert.match(stripe, /html\.drx-unified-sidebar \.nav-item\{[\s\S]*display:flex!important[\s\S]*text-decoration:none!important/);
+assert.match(stripe, /html\.drx-unified-sidebar \.nav-icon \.icon,[\s\S]*width:var\(--drx-shell-nav-icon-glyph\)!important/);
+assert.match(stripe, /html\.drx-unified-sidebar \.sidebar-foot\{[\s\S]*flex:0 0 auto!important/);
+assert.match(stripe, /html\.drx-unified-sidebar \.main-shell\{[\s\S]*margin-left:var\(--drx-shell-sidebar-width\)!important/);
+assert.match(stripe, /html\.drx-unified-sidebar \.icon-button\.menu-button,[\s\S]*display:none!important/);
+assert.match(stripe, /@media\(max-width:1023px\)[\s\S]*html\.drx-unified-sidebar \.sidebar\.is-open\{transform:translateX\(0\)!important\}/);
 assert.match(stripe, /html\.medindex-tailadmin \.mi-sidebar,[\s\S]*html\.drx-unified-sidebar \.sidebar/);
 assert.match(stripe, /html\.medindex-tailadmin \.mi-topbar,[\s\S]*html\.drx-unified-sidebar \.topbar/);
 assert.match(stripe, /html\.medindex-tailadmin \.mi-content-container,[\s\S]*html\.drx-unified-sidebar \.page-wrap/);
@@ -41,7 +50,7 @@ for (const file of allPages) {
     .map(match => match[1]);
 
   assert.equal(stripeLinks.length, 1, `${file}: exactly one canonical dashboard shell stylesheet is required`);
-  assert.match(stripeLinks[0], /drx-dashboard-stripe-v4/, `${file}: shell cache version must be v4`);
+  assert.match(stripeLinks[0], /drx-dashboard-stripe-v5/, `${file}: shell cache version must be v5`);
   assert.match(html, /<meta name="theme-color" content="#1c1e54">/, `${file}: browser chrome must match the navy shell`);
 }
 
@@ -72,7 +81,7 @@ for (const file of standalone) {
 
   const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)]
     .map(match => match[1]);
-  assert.ok(styles.at(-1)?.includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4'), `${file}: shell CSS must load last`);
+  assert.ok(styles.at(-1)?.includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v5'), `${file}: shell CSS must load last`);
 }
 
 for (const file of tailadmin) {
@@ -82,7 +91,7 @@ for (const file of tailadmin) {
 
   const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)]
     .map(match => match[1]);
-  assert.ok(styles.at(-1)?.includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4'), `${file}: canonical shell must be the final static stylesheet`);
+  assert.ok(styles.at(-1)?.includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v5'), `${file}: canonical shell must be the final static stylesheet`);
 }
 
-console.log('Dashboard shell v4: one sidebar, one topbar, one Stripe visual authority passed.');
+console.log('Dashboard shell v5: canonical sidebar geometry and one visual authority passed.');
