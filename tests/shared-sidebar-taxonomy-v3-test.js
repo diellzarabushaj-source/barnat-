@@ -82,7 +82,7 @@ for (const [file, runtime] of [
   assert.match(html, new RegExp(runtime.replace('.', '\\.') + '\\?v=[^"\\s]+'), `${file}: V2 runtime cache-bust missing`);
 }
 for (const [htmlFile, runtime, version] of [
-  ['dozologjia.html','dozologjia-v2.js','3'],
+  ['dozologjia.html','dozologjia-v2.js','dynamic-v4+'],
   ['urgjencat.html','urgjencat-v2.js','10'],
   ['analizat.html','analizat-v2.js','1'],
   ['protokollet.html','protokollet-v2.js','1'],
@@ -92,10 +92,14 @@ for (const [htmlFile, runtime, version] of [
 ]) {
   const html = read(htmlFile);
   const js = read(runtime);
-  const runtimeVersionPattern = version === 'dynamic'
+  const runtimeVersionPattern = version === 'dynamic' || version === 'dynamic-v4+'
     ? new RegExp(runtime.replace('.', '\\.') + '\\?v=\\d+')
     : new RegExp(runtime.replace('.', '\\.') + '\\?v=' + version);
   assert.match(html, runtimeVersionPattern, `${htmlFile}: standalone V2 runtime missing`);
+  if (version === 'dynamic-v4+') {
+    const match = html.match(new RegExp(runtime.replace('.', '\\.') + '\\?v=(\\d+)'));
+    assert.ok(match && Number(match[1]) >= 4, `${htmlFile}: runtime version must not regress below v4`);
+  }
   assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/, `${runtime}: shared taxonomy loader missing`);
 }
 
