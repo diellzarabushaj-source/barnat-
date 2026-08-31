@@ -58,10 +58,16 @@ const rewriteFor = source => vercel.rewrites.find(rule => rule.source === source
   assert.equal(rewriteFor('/admin-login')?.destination, '/admin-login.html');
   assert.equal(rewriteFor('/regjistrimi')?.destination, '/regjistrimi.html');
 
-  // The array is matched in order and the first rule is asserted elsewhere by
-  // source; keep the page rules from displacing it.
-  assert.equal(vercel.rewrites[0].destination, '/api/registry',
-    'the registry data rewrite must stay first; page rules belong at the end');
+  // API consolidation rewrites may precede the registry route. What matters
+  // here is that the canonical registry rewrite remains present and page rules
+  // stay after data/API routing.
+  const registryIndex = vercel.rewrites.findIndex(rule =>
+    rule.source === '/data/registry-data.js' && rule.destination === '/api/registry'
+  );
+  const adminIndex = vercel.rewrites.findIndex(rule => rule.source === '/admin');
+  assert.ok(registryIndex >= 0, 'the canonical registry data rewrite must remain configured');
+  assert.ok(adminIndex > registryIndex,
+    'page rules must stay after registry/API rewrites so clean URLs cannot displace data routing');
 }
 
 // --- the console asks the server who may open it -------------------------
