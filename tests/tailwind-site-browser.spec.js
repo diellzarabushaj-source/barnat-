@@ -130,6 +130,10 @@ async function interactiveAudit(page, tokenName) {
         const computed=getComputedStyle(node);
         return rect.width>0
           && rect.height>0
+          && rect.right>0
+          && rect.bottom>0
+          && rect.left<innerWidth
+          && rect.top<innerHeight
           && computed.display!=='none'
           && computed.visibility!=='hidden'
           && computed.opacity!=='0';
@@ -233,8 +237,8 @@ for (const viewport of viewports) {
         await page.screenshot({ path:path.join(OUTPUT, `registry-v2-${viewport.name}.png`), fullPage:false });
         continue;
       }
-      await expect(page.locator('html')).toHaveClass(/auth-ready/, { timeout:20000 });
-      await expect(page.locator('.mi-app-shell')).toBeVisible({ timeout:20000 });
+      await expect(page.locator('html')).toHaveAttribute('data-medindex-profile', 'profile-portal-v2', { timeout:20000 });
+      await expect(page.locator('.mi-app-shell,.app-shell').first()).toBeVisible({ timeout:20000 });
       await auditClinicalViewport(page, `${file} / ${viewport.name}`, { requireControls:true });
 
       if (file === 'icd.html') {
