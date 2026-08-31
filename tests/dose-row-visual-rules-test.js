@@ -45,7 +45,7 @@ assert.match(js, /Më pak/);
 
 assert.match(css, /--clinical:#0f766e/);
 assert.match(css, /--pediatric:#2563eb/);
-assert.match(css, /\.registry-table td:nth-child\(9\) \.route-chip/);
+assert.match(css, /\.registry-table td\[data-col="pediatricDose"\] \.route-chip/);
 assert.match(css, /\.dose-toggle/);
 assert.match(css, /\.dose-cell\.is-expanded \.dose-text/);
 assert.match(css, /content:"Doza e të rriturit"/);
