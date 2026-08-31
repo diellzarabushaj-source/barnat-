@@ -287,7 +287,7 @@
     }
   }
 
-  function syncUrl() {
+  function syncUrl({ push = false } = {}) {
     try {
       const url = new URL(window.location.href);
       const item = currentItem() || state.filtered.find(candidate => candidate._id === state.selectedId);
@@ -295,7 +295,10 @@
       else url.searchParams.delete('chapter');
       if (item?.slug) url.searchParams.set('topic', item.slug);
       else url.searchParams.delete('topic');
-      history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+      const next = `${url.pathname}${url.search}${url.hash}`;
+      const current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+      if (next === current) return;
+      history[push ? 'pushState' : 'replaceState']({ medicalHub:true }, '', next);
     } catch {}
   }
 
@@ -308,10 +311,27 @@
       if (item) {
         state.selectedId = item._id;
         state.category = chapterKey(item);
-        return;
+        return true;
       }
-      if (/^\d{1,2}$/.test(chapter)) state.category = String(Number(chapter)).padStart(2, '0');
+      if (/^\d{1,2}$/.test(chapter)) {
+        state.category = String(Number(chapter)).padStart(2, '0');
+        const preferred = preferredChapterItem(state.category);
+        if (preferred) state.selectedId = preferred._id;
+        return true;
+      }
     } catch {}
+    return false;
+  }
+
+  function restoreHistoryState() {
+    if (!state.items.length) return;
+    restoreUrl();
+    const category = $('#learningCategory');
+    if (category) category.value = state.category;
+    applyFilterState();
+    renderList();
+    renderReaderNavigation();
+    void renderSelectedDetail();
   }
 
   function reviewMeta(status) {
@@ -1219,7 +1239,7 @@
     applyFilterState();
     renderList();
     renderReaderNavigation();
-    syncUrl();
+    syncUrl({ push:true });
     void renderSelectedDetail();
     if (scroll) requestAnimationFrame(scrollReaderToTop);
   }
@@ -1231,11 +1251,11 @@
     if (item) selectTopic(item._id, { scroll:true });
   }
 
-  function applyFilters() {
+  function applyFilters({ push = false } = {}) {
     applyFilterState();
     renderList();
     renderReaderNavigation();
-    syncUrl();
+    syncUrl({ push });
     void renderSelectedDetail();
   }
 
@@ -1358,7 +1378,7 @@
           const preferred = preferredChapterItem(state.category);
           if (preferred) state.selectedId = preferred._id;
           else if (chapter) state.selectedId = chapter._id;
-          applyFilters();
+          applyFilters({ push:true });
           return;
         }
         state.searchSequence += 1;
@@ -1376,6 +1396,7 @@
       $('#learningTopic')?.addEventListener('change', event => selectTopic(event.target.value));
       $('#previousTopicButton')?.addEventListener('click', () => selectAdjacentTopic(-1));
       $('#nextTopicButton')?.addEventListener('click', () => selectAdjacentTopic(1));
+      window.addEventListener('popstate', restoreHistoryState);
 
       if ($('#syncText')) $('#syncText').textContent = 'Sanity · Backend';
 
