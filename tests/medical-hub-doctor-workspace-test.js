@@ -123,7 +123,16 @@ assert.equal(imageProxy._test.safeImageUrl('https://commons.wikimedia.org/wiki/S
 assert.equal(imageProxy._test.safeImageUrl('http://upload.wikimedia.org/example.png'), null);
 assert.equal(imageProxy._test.safeImageUrl('https://example.com/example.png'), null);
 
-assert.match(css, /Medical Hub final reader v12 — canonical DRx clinical workspace/);
+assert.match(css, /Medical Hub final reader v13 — canonical DRx clinical workspace/);
+assert.match(css, /\.sr-only\s*\{[\s\S]*?clip:rect\(0,0,0,0\)/);
+assert.match(css, /\.app-shell\s*\{\s*min-height:100vh/);
+assert.match(css, /\.sidebar\s*\{[\s\S]*?position:fixed[\s\S]*?display:flex/);
+assert.match(css, /\.nav-item\s*\{[\s\S]*?display:flex[\s\S]*?text-decoration:none/);
+assert.match(css, /\.nav-icon \.icon\s*\{\s*width:18px;\s*height:18px/);
+assert.match(css, /\.main-shell\s*\{\s*min-width:0;\s*margin-left:var\(--sidebar\)/);
+assert.match(css, /\.topbar\s*\{[\s\S]*?position:sticky[\s\S]*?display:flex/);
+assert.match(css, /\.icon\s*\{\s*display:block;\s*width:18px;\s*height:18px/);
+assert.match(css, /@media\(max-width:1023px\)[\s\S]*?\.sidebar\.is-open\s*\{\s*transform:translateX\(0\)/);
 assert.doesNotMatch(css, /Medical Hub reader v4|Medical Hub navigation v3|Screenshot fixes v11/);
 assert.match(css, /\.hub-command-footer/);
 assert.match(css, /\.hub-topic-nav/);
