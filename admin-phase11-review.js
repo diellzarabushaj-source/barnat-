@@ -441,6 +441,133 @@
     }
   }
 
+  async function loadPublication(){
+    const box=$('p11PublicationSummary');
+    const button=$('p11LoadPublication');
+    if(!box)return;
+    box.className='mi-empty-state';
+    box.textContent='Duke ngarkuar…';
+    if(button)button.disabled=true;
+    try{
+      const response=await getJson(`${API}?publication=1`);
+      const data=response.payload||{};
+      const legacySummary=data.legacySummary||{};
+      const publicationSummary=data.publicationSummary||{};
+      const legacy=Array.isArray(data.legacy)?data.legacy:[];
+      const publication=Array.isArray(data.publication)?data.publication:[];
+
+      box.className='mi-table-wrap';
+      box.innerHTML=`
+        <div class="mi-mini-stats">
+          <div><span>Legacy bindings</span><strong>${esc(legacySummary.bindings??0)}</strong></div>
+          <div><span>Review complete</span><strong>${esc(legacySummary.reviewComplete??0)}</strong></div>
+          <div><span>Release ready</span><strong>${esc(publicationSummary.ready??0)}</strong></div>
+          <div><span>Published</span><strong>${esc(publicationSummary.published??0)}</strong></div>
+        </div>
+        <div class="mi-editor-section-title"><div><span>Legacy comparison queue</span><small>Exact / correction / new-rule disposition është human-only.</small></div></div>
+        <table class="mi-table"><thead><tr><th>Rule / product</th><th>Legacy candidate</th><th>Diff</th><th>Statusi</th><th>Veprimi</th></tr></thead><tbody>
+          ${legacy.length?legacy.map(row=>{
+            const conflicts=Array.isArray(row.conflicts)?row.conflicts:[];
+            const missing=Array.isArray(row.missingFields)?row.missingFields:[];
+            const candidateKeys=Array.isArray(row.candidateRuleKeys)?row.candidateRuleKeys:[];
+            let candidate='—';
+            if(row.candidateCount===1)candidate=esc(row.onlyLegacyRuleKey||candidateKeys[0]||'—');
+            else if(row.candidateCount>1)candidate=esc(compactList(candidateKeys,3));
+            else candidate='NEW RULE';
+
+            let action=`<span class="mi-badge is-in_review">${esc(row.nextAction||'REVIEW')}</span>`;
+            if(!row.legacyGatePass&&row.candidateCount===0){
+              action=`<span style="display:flex;gap:6px;flex-wrap:wrap">
+                <button type="button" class="mi-row-btn" data-p11-legacy-review="NEW_RULE_CONFIRMED" data-p11-rule-id="${esc(row.ruleId)}" data-p11-product-id="${esc(row.productId)}">Confirm new</button>
+                <button type="button" class="mi-row-btn" data-p11-legacy-review="REJECTED" data-p11-rule-id="${esc(row.ruleId)}" data-p11-product-id="${esc(row.productId)}">Reject</button>
+              </span>`;
+            }else if(!row.legacyGatePass&&row.candidateCount===1&&row.candidateStatus==='exact'){
+              action=`<span style="display:flex;gap:6px;flex-wrap:wrap">
+                <button type="button" class="mi-row-btn" data-p11-legacy-review="EXACT_CONFIRMED" data-p11-rule-id="${esc(row.ruleId)}" data-p11-product-id="${esc(row.productId)}" data-p11-legacy-key="${esc(row.onlyLegacyRuleKey||'')}">Confirm exact</button>
+                <button type="button" class="mi-row-btn" data-p11-legacy-review="REJECTED" data-p11-rule-id="${esc(row.ruleId)}" data-p11-product-id="${esc(row.productId)}" data-p11-legacy-key="${esc(row.onlyLegacyRuleKey||'')}">Reject</button>
+              </span>`;
+            }else if(!row.legacyGatePass&&row.candidateCount===1){
+              action=`<span style="display:flex;gap:6px;flex-wrap:wrap">
+                <button type="button" class="mi-row-btn" data-p11-legacy-review="SOURCE_CORRECTION_CONFIRMED" data-p11-rule-id="${esc(row.ruleId)}" data-p11-product-id="${esc(row.productId)}" data-p11-legacy-key="${esc(row.onlyLegacyRuleKey||'')}">Confirm source correction</button>
+                <button type="button" class="mi-row-btn" data-p11-legacy-review="REJECTED" data-p11-rule-id="${esc(row.ruleId)}" data-p11-product-id="${esc(row.productId)}" data-p11-legacy-key="${esc(row.onlyLegacyRuleKey||'')}">Reject</button>
+              </span>`;
+            }else if(!row.legacyGatePass&&row.candidateCount>1){
+              action='<span class="mi-badge is-in_review">AMBIGUOUS — manual candidate detail required</span>';
+            }
+            return `<tr>
+              <td><strong>${esc(row.ruleKey||'—')}</strong><small>${esc(row.tradeName||'—')} · ${esc(row.registryNumber||'')}</small></td>
+              <td>${candidate}<small>${esc(row.candidateStatus||row.nextAction||'')}</small></td>
+              <td>${esc(conflicts.length?`${conflicts.length} conflicts`:(missing.length?`${missing.length} missing`:'none'))}<small>${esc(compactList(missing,3))}</small></td>
+              <td><span class="mi-badge ${row.legacyGatePass?'is-verified':'is-in_review'}">${row.legacyGatePass?'PASS':esc(row.reviewDecision||row.nextAction||'PENDING')}</span></td>
+              <td>${action}</td>
+            </tr>`;
+          }).join(''):'<tr><td colspan="5" class="is-empty">Nuk ka VERIFIED Phase 11 bindings për legacy comparison.</td></tr>'}
+        </tbody></table>
+
+        <div class="mi-editor-section-title"><div><span>Publication readiness</span><small>Release publikon rule + verified bound products në një transaction.</small></div></div>
+        <table class="mi-table"><thead><tr><th>Rule</th><th>Bindings</th><th>Legacy</th><th>Blockers</th><th>Veprimi</th></tr></thead><tbody>
+          ${publication.length?publication.map(row=>`<tr>
+            <td><strong>${esc(row.ruleKey||'—')}</strong><small>${esc(row.regimenKey||'')}</small></td>
+            <td>${esc(row.verifiedBindings??0)}</td>
+            <td>${esc(row.legacyReadyBindings??0)}/${esc(row.verifiedBindings??0)}</td>
+            <td>${esc(compactList(row.blockers,4))}</td>
+            <td>${row.readyForRelease
+              ?`<button type="button" class="mi-btn-primary" data-p11-rule-release="${esc(row.ruleId)}">Publish release</button>`
+              :`<span class="mi-badge ${row.editorialStatus==='published'?'is-verified':'is-in_review'}">${esc(row.nextAction||'BLOCKED')}</span>`}
+            </td>
+          </tr>`).join(''):'<tr><td colspan="5" class="is-empty">Nuk ka Phase 11 prepared rules në publication queue.</td></tr>'}
+        </tbody></table>`;
+    }catch(error){
+      box.className='mi-empty-state';
+      box.textContent=error.message;
+    }finally{
+      if(button)button.disabled=false;
+    }
+  }
+
+  async function handleLegacyReview(button){
+    const decision=button.dataset.p11LegacyReview;
+    const note=prompt('Review note është i detyrueshëm. Shëno bazën e vendimit V2↔V3:','')||'';
+    if(!note.trim())return alert('Review note është i detyrueshëm.');
+    const label=decision.replaceAll('_',' ');
+    if(!confirm(`Konfirmon legacy disposition: ${label}?`))return;
+    button.disabled=true;
+    try{
+      await postAction({
+        action:'legacy-comparison-review',
+        ruleId:button.dataset.p11RuleId,
+        productId:button.dataset.p11ProductId,
+        legacyRuleKey:button.dataset.p11LegacyKey||'',
+        decision,
+        reviewNote:note.trim(),
+        attestation:'LEGACY_COMPARISON_REVIEW_ATTESTED',
+      });
+      await loadPublication();
+      state.loaded=false;
+      await loadWorkbench(true);
+    }catch(error){alert(error.message);}
+    finally{button.disabled=false;}
+  }
+
+  async function handleRuleRelease(button){
+    const note=prompt('Final release note është i detyrueshëm. Përshkruaj çfarë ke verifikuar para publication:','')||'';
+    if(!note.trim())return alert('Final release note është i detyrueshëm.');
+    if(!confirm('Publiko këtë VERIFIED Phase 11 rule dhe produktet e lidhura? Ky është publication real; rollback mbetet përmes V2 control plane.'))return;
+    button.disabled=true;
+    try{
+      await postAction({
+        action:'publish-rule-release',
+        ruleId:button.dataset.p11RuleRelease,
+        reviewNote:note.trim(),
+        attestation:'PHASE11_RULE_RELEASE_ATTESTED',
+      });
+      await loadPublication();
+      state.loaded=false;
+      await loadWorkbench(true);
+    }catch(error){alert(error.message);}
+    finally{button.disabled=false;}
+  }
+
   async function handlePreparedValidate(button){
     if(!confirm('Ekzekuto structural validation për këtë DRAFT rule? Kjo vetëm vendos validation status; nuk e verifikon ose publikon rule-in.'))return;
     button.disabled=true;
@@ -780,9 +907,16 @@
 
     const adjustment=event.target.closest('[data-p11-adjustment-materialize]');
     if(adjustment)void handleAdjustmentMaterialize(adjustment);
+
+    const legacyReview=event.target.closest('[data-p11-legacy-review]');
+    if(legacyReview)void handleLegacyReview(legacyReview);
+
+    const ruleRelease=event.target.closest('[data-p11-rule-release]');
+    if(ruleRelease)void handleRuleRelease(ruleRelease);
   });
 
   $('phase11Refresh')?.addEventListener('click',()=>void loadWorkbench(true));
   $('p11LoadIndications')?.addEventListener('click',()=>void loadIndications());
   $('p11LoadAdjustments')?.addEventListener('click',()=>void loadAdjustments());
+  $('p11LoadPublication')?.addEventListener('click',()=>void loadPublication());
 })();
