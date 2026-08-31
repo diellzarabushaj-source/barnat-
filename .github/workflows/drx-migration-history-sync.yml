@@ -173,8 +173,27 @@ jobs:
             echo "Migration history already synchronized."
             exit 0
           fi
+
+          git fetch origin main
+
+          upstream_copy="$(mktemp)"
+          if git show origin/main:supabase/migration-history.json > "$upstream_copy" 2>/dev/null \
+             && cmp -s supabase/migration-history.json "$upstream_copy"; then
+            echo "Origin main already contains the authoritative migration history."
+            exit 0
+          fi
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add supabase/migration-history.json
           git commit -m "Sync Supabase migration history"
+
+          git pull --rebase origin main
+
+          git fetch origin main
+          if [ "$(git rev-list --count origin/main..HEAD)" -eq 0 ]; then
+            echo "Migration history was synchronized by a concurrent main update."
+            exit 0
+          fi
+
           git push origin HEAD:main
