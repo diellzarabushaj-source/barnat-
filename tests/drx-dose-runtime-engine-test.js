@@ -62,6 +62,18 @@ assert.equal(unchanged.outcome,Core.OUTCOME.CALCULATED);
 assert.equal(unchanged.perDose.min,100);
 assert.equal(unchanged.appliedAdjustments[0].action,'no_adjustment');
 
+const genericRenalInputRule={
+  ...renalRule,
+  requiredInputs:['age_months','renal_function'],
+};
+const structuredRenalResolved=Runtime.calculate(genericRenalInputRule,{ageMonths:300,crClMlMin:80});
+assert.equal(structuredRenalResolved.outcome,Core.OUTCOME.CALCULATED);
+assert.equal(structuredRenalResolved.perDose.min,100);
+assert.doesNotMatch(
+  JSON.stringify(structuredRenalResolved.adjustedRule.requiredInputs || []),
+  /renal_function/
+);
+
 const noRange=Runtime.calculate(renalRule,{ageMonths:300,crClMlMin:250});
 assert.equal(noRange.outcome,Core.OUTCOME.MANUAL_REVIEW);
 assert.ok(noRange.reasons.includes('no_exact_adjustment_match'));
@@ -134,5 +146,26 @@ const invalidAdjustment={
 const invalid=Runtime.calculate(invalidAdjustment,{ageMonths:300,crClMlMin:20});
 assert.equal(invalid.outcome,Core.OUTCOME.MANUAL_REVIEW);
 assert.ok(invalid.reasons.includes('invalid_adjustment_rows'));
+
+const cappedRule={
+  ...baseRule,
+  doseMinValue:600,
+  doseMaxValue:600,
+  frequencyMode:'times_per_day',
+  timesPerDay:2,
+  renalAdjustmentRequired:true,
+  renalAdjustments:[{
+    ...verified,
+    measureType:'CrCl_mL_min',
+    minValue:0,
+    maxValue:200,
+    doseAction:'max_daily_cap',
+    maxDailyDoseMg:1000,
+  }],
+};
+const capped=Runtime.calculate(cappedRule,{ageMonths:300,crClMlMin:80});
+assert.equal(capped.outcome,Core.OUTCOME.CALCULATED);
+assert.equal(capped.adjustedRule.maxDailyDoseMg,1000);
+assert.equal(capped.perDose.max,500);
 
 console.log('DRx adjustment-aware dose runtime engine contract passed.');
