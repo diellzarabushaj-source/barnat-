@@ -26,7 +26,7 @@ a{color:inherit}
 .lab-order-page{transition:opacity .14s}
 
 /* Standalone shell structure only.
-   Visual geometry, colors, spacing and responsive shell authority live in drx-dashboard-stripe.css v4. */
+   Visual geometry, colors, spacing and responsive shell authority live in drx-dashboard-stripe.css v6. */
 .sidebar{position:fixed;inset:0 auto 0 0;z-index:50;display:flex;flex-direction:column}
 .sidebar-head{display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;align-items:center;min-width:0}
