@@ -15,6 +15,7 @@ const cp = read('supabase/migrations/20260831190001_drx_phase11cp_controlled_per
 const cq = read('supabase/migrations/20260831191319_drx_phase11cq_evidence_integrity_precheck.sql');
 const cr = read('supabase/migrations/20260831191800_drx_phase11cr_safety_integrity_precheck.sql');
 const cs = read('supabase/migrations/20260831193039_drx_phase11cs_indication_icd_integrity_and_publication_guard.sql');
+const ct = read('supabase/migrations/20260831194123_drx_phase11ct_step_requirement_integrity_prechecks.sql');
 const backend = read('lib/phase11-review.js');
 const html = read('admin.html');
 const ui = read('admin-phase11-review.js');
@@ -93,7 +94,16 @@ assert.match(cs, /false::boolean as auto_verify_allowed/);
 assert.match(cs, /false::boolean as auto_publish_allowed/);
 assert.doesNotMatch(cs, /set\s+icd_verification_status='verified'/i);
 
-for (const sql of [ck,cn,co,cp,cq,cr,cs]) {
+assert.match(ct, /phase11_presentation_integrity_precheck_v1/);
+assert.match(ct, /phase11_administration_integrity_precheck_v1/);
+assert.match(ct, /phase11_step_requirement_integrity_summary_v1/);
+assert.match(ct, /SOURCE_NOT_PRIMARY_OR_SUPPORTING/);
+assert.match(ct, /SOURCE_SECTION_NOT_4_2/);
+assert.match(ct, /false::boolean as auto_verify_allowed/);
+assert.match(ct, /false::boolean as auto_bind_or_apply_allowed/);
+assert.doesNotMatch(ct, /set\s+review_status='VERIFIED'/i);
+
+for (const sql of [ck,cn,co,cp,cq,cr,cs,ct]) {
   assert.doesNotMatch(sql, /auto_publish_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_cutover_allowed\s*=\s*true/i);
   assert.doesNotMatch(sql, /auto_strict_activation_allowed(?:_v2)?\s*=\s*true/i);
@@ -129,6 +139,7 @@ for (const expected of [
   ['20260831191319','drx_phase11cq_evidence_integrity_precheck'],
   ['20260831191800','drx_phase11cr_safety_integrity_precheck'],
   ['20260831193039','drx_phase11cs_indication_icd_integrity_and_publication_guard'],
+  ['20260831194123','drx_phase11ct_step_requirement_integrity_prechecks'],
 ]) {
   assert.ok(
     migrations.some(row => String(row.version) === expected[0] && row.name === expected[1]),
