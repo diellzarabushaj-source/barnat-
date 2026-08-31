@@ -1057,6 +1057,10 @@
     {
       "name": "drx_phase11dc_harden_indication_packet_v3_invoker",
       "version": "20260831204023"
+    },
+    {
+      "name": "drx_phase11dd_v3_calculator_rpc_payload_hardening",
+      "version": "20260831210023"
     }
   ]
 }
