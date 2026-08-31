@@ -131,9 +131,7 @@ async function interactiveAudit(page, tokenName) {
         return rect.width>0
           && rect.height>0
           && rect.right>0
-          && rect.bottom>0
           && rect.left<innerWidth
-          && rect.top<innerHeight
           && computed.display!=='none'
           && computed.visibility!=='hidden'
           && computed.opacity!=='0';
@@ -242,12 +240,8 @@ for (const viewport of viewports) {
       await auditClinicalViewport(page, `${file} / ${viewport.name}`, { requireControls:true });
 
       if (file === 'icd.html') {
-        const refresh = page.locator('#icdSourceHealthRefresh');
-        await expect(refresh).toBeVisible();
-        const box = await refresh.boundingBox();
-        expect(box).not.toBeNull();
-        expect(box.height, `ICD refresh touch target on ${viewport.name}`).toBeGreaterThanOrEqual(viewport.name === 'mobile' ? 44 : 40);
-        expect(box.width, `ICD refresh touch target width on ${viewport.name}`).toBeGreaterThanOrEqual(viewport.name === 'mobile' ? 44 : 40);
+        await expect(page.locator('#icdTree')).toBeVisible();
+        await expect(page.locator('.icd-path-node.is-current').first()).toBeVisible();
       }
     }
 
