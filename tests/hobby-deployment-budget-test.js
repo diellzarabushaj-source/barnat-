@@ -31,11 +31,11 @@ assert.ok(fs.existsSync(path.join(root, 'lib/medical-hub-image-handler.js')), 'M
 
 const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
 assert.ok(
-  vercel.rewrites.some(item => item.source === '/api/icd' && item.destination === '/api/drug-search?view=icd'),
+  vercel.rewrites.some(item => item.source === '/api/icd' && item.destination === '/api/drug-search?_route=icd'),
   'ICD compatibility rewrite is missing'
 );
 assert.ok(
-  vercel.rewrites.some(item => item.source === '/api/medical-hub-image' && item.destination === '/api/medical-hub?mode=image'),
+  vercel.rewrites.some(item => item.source === '/api/medical-hub-image' && item.destination === '/api/medical-hub?_route=image'),
   'Medical Hub image compatibility rewrite is missing'
 );
 assert.equal(
