@@ -1,0 +1,1 @@
+Temporary CI trigger for frontend/browser verification after Registry touch-target and V2 audit-readiness fixes.
