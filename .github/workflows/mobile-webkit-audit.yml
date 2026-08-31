@@ -39,15 +39,11 @@ jobs:
       - name: Build audited runtime once
         run: pnpm run build:runtime
 
-      - name: Verify mobile and tablet audit syntax
+      - name: Verify Registry V2 WebKit audit syntax
         run: |
-          node --check scripts/audit-mobile-phase0-runtime.js
-          node --check scripts/audit-mobile-card-geometry.js
-          node --check scripts/audit-mobile-detail-phase3.js
-          node --check scripts/audit-mobile-shell-state.js
-          node --check scripts/run-mobile-shell-webkit-audit.js
-          node --check scripts/audit-mobile-network-phase5.js
-          node --check scripts/audit-tablet-registry-geometry.js
+          node --check tests/clinical-smoke-server.js
+          node --check tests/registry-v2-browser.spec.js
+          node --check playwright.registry-v2.config.js
 
       - name: Install Playwright WebKit
         shell: bash
@@ -56,18 +52,28 @@ jobs:
           pnpm exec playwright install --with-deps webkit > /tmp/playwright-webkit-install.log 2>&1 || { tail -200 /tmp/playwright-webkit-install.log; exit 1; }
           echo "Playwright WebKit installed."
 
-      - name: Run phone and tablet ownership, geometry, detail, shell and network gates
+      - name: Run current Registry V2 phone, tablet and desktop WebKit gates
         shell: bash
         run: |
           set -euo pipefail
           : > /tmp/mobile-webkit-audit.log
-          : > /tmp/tablet-webkit-audit.log
-          PHASE0_SKIP_BUILD=1 pnpm run audit:mobile-runtime 2>&1 | tee -a /tmp/mobile-webkit-audit.log
-          MOBILE_GEOMETRY_SKIP_BUILD=1 pnpm run audit:mobile-geometry 2>&1 | tee -a /tmp/mobile-webkit-audit.log
-          MOBILE_DETAIL_SKIP_BUILD=1 node scripts/audit-mobile-detail-phase3.js 2>&1 | tee -a /tmp/mobile-webkit-audit.log
-          MOBILE_SHELL_SKIP_BUILD=1 node scripts/run-mobile-shell-webkit-audit.js 2>&1 | tee -a /tmp/mobile-webkit-audit.log
-          MOBILE_NETWORK_SKIP_BUILD=1 node scripts/audit-mobile-network-phase5.js 2>&1 | tee -a /tmp/mobile-webkit-audit.log
-          TABLET_GEOMETRY_SKIP_BUILD=1 node scripts/audit-tablet-registry-geometry.js 2>&1 | tee -a /tmp/tablet-webkit-audit.log
+          PORT=4173 node tests/clinical-smoke-server.js > /tmp/registry-v2-webkit-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 50); do
+            if curl --fail --silent http://127.0.0.1:4173/index.html >/dev/null; then
+              break
+            fi
+            if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+              cat /tmp/registry-v2-webkit-server.log
+              exit 1
+            fi
+            sleep 0.2
+          done
+          curl --fail --silent http://127.0.0.1:4173/index.html >/dev/null
+          pnpm exec playwright test tests/registry-v2-browser.spec.js \
+            --config=playwright.registry-v2.config.js \
+            --project=webkit 2>&1 | tee -a /tmp/mobile-webkit-audit.log
 
       - name: Upload WebKit diagnostics
         if: always()
@@ -76,7 +82,7 @@ jobs:
           name: mobile-tablet-webkit-diagnostics
           path: |
             /tmp/mobile-webkit-audit.log
-            /tmp/tablet-webkit-audit.log
+            /tmp/registry-v2-webkit-server.log
             /tmp/playwright-webkit-install.log
             test-results
             playwright-report
