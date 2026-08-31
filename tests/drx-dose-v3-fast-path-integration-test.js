@@ -34,6 +34,44 @@ assert.equal(Reader._test.sourceValid({
   source_evidence_hash:'a'.repeat(64),
   source_document_date:'2026-08-27'
 }),false);
+
+const verifiedAdjustment={
+  source_snapshot_id:'a'.repeat(64),
+  source_section:'4.2',
+  source_section_sha256:'b'.repeat(64),
+  source_evidence_hash:'a'.repeat(64),
+  source_document_date:'2026-08-27',
+  review_status:'verified',
+  verified_by:'reviewer',
+  verified_at:'2026-08-31T20:00:00Z',
+  dose_action:'no_adjustment',
+};
+assert.equal(Reader._test.adjustmentRowValid(verifiedAdjustment),true);
+assert.equal(Reader._test.adjustmentRowValid({...verifiedAdjustment,verified_by:''}),false);
+assert.equal(Reader._test.adjustmentRowValid({...verifiedAdjustment,dose_action:'max_daily_cap',max_daily_dose_mg:null}),false);
+assert.equal(Reader._test.adjustmentRowValid({...verifiedAdjustment,dose_action:'max_daily_cap',max_daily_dose_mg:1000}),true);
+
+const verifiedBinding={
+  binding_status:'verified',
+  verified_by:'reviewer',
+  verified_at:'2026-08-31T20:00:00Z',
+};
+assert.equal(Reader._test.bindingValid(verifiedBinding),true);
+assert.equal(Reader._test.bindingValid({...verifiedBinding,verified_at:null}),false);
+
+assert.equal(Gate._test.adjustmentValid({
+  source:{snapshotId:'a'.repeat(64),section:'4.2',sectionSha256:'b'.repeat(64),evidenceHash:'a'.repeat(64),documentDate:'2026-08-27',official:true},
+  reviewStatus:'verified',
+  verifiedBy:'reviewer',
+  verifiedAt:'2026-08-31T20:00:00Z',
+  doseAction:'no_adjustment',
+}),true);
+assert.equal(Gate._test.conversionValid({
+  enabled:true,status:'automatic',bindingStatus:'verified',verifiedBy:'reviewer',verifiedAt:'2026-08-31T20:00:00Z',
+}),true);
+assert.equal(Gate._test.conversionValid({
+  enabled:true,status:'verified',bindingStatus:'verified',verifiedBy:'reviewer',verifiedAt:'2026-08-31T20:00:00Z',
+}),false);
 assert.equal(
   [
     {
