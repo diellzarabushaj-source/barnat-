@@ -245,7 +245,13 @@
   }
 
   function codedTitle(item) {
-    return `${clean(item?.title || item?.question || '')}${codeSuffix(item)}`;
+    let title = clean(item?.title || item?.question || '');
+    const icdCodes = (item?.icdCodes || []).filter(Boolean);
+    for (const code of icdCodes) {
+      const suffix = ` · ICD-10 ${code}`;
+      if (title.toUpperCase().endsWith(suffix.toUpperCase())) title = title.slice(0, -suffix.length).trim();
+    }
+    return title + codeSuffix(item);
   }
 
   function itemSearchText(item) {
