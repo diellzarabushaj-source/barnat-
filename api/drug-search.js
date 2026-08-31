@@ -3,6 +3,8 @@
 const { supabaseRequest, exactCount } = require('../lib/supabase-data-api.js');
 const registryHandler = require('./registry.js');
 const RegistryRevision = require('../lib/registry-revision.js');
+const icdBaseHandler = require('../lib/icd-api-base.js');
+const icdAdvancedHandler = require('../lib/icd-advanced-handler.js');
 
 const REGISTRY_DEFAULT_PAGE_SIZE = 25;
 const REGISTRY_MAX_PAGE_SIZE = 50;
@@ -218,6 +220,15 @@ async function sendSearch(req,res,startedAt) { const request=buildSearchPath(req
 async function handler(req, res) {
   const startedAt = Date.now();
   try {
+    const query = requestQuery(req);
+    const route = clean(query._route).toLowerCase();
+    const view = clean(query.view).toLowerCase();
+
+    if (route === 'icd') {
+      const advanced = clean(query.advanced) === '1';
+      return await (advanced ? icdAdvancedHandler : icdBaseHandler)(req, res);
+    }
+
     if (!['GET','HEAD'].includes(req.method)) {
       res.setHeader('Allow', 'GET, HEAD');
       return res.status(405).json({ error:'Method Not Allowed' });
@@ -227,7 +238,6 @@ async function handler(req, res) {
       return res.status(401).json({ error:'Sesioni nuk është aktiv.' });
     }
 
-    const view = clean(requestQuery(req).view).toLowerCase();
     if (view === 'atc-counts') {
       try {
         const summary = await neonAtcCounts();
@@ -244,7 +254,7 @@ async function handler(req, res) {
       }
     }
 
-    const rawQuery = clean(requestQuery(req).q);
+    const rawQuery = clean(query.q);
     if (view === 'registry-page') return await sendPage(req, res, startedAt);
     if (view === 'registry-detail') return await sendDetail(req, res, startedAt);
     return await sendSearch({ ...req, query:{ ...(req.query || {}), q:rawQuery } }, res, startedAt);

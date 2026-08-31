@@ -6,7 +6,7 @@
     "lhr1"
   ],
   "functions": {
-    "api/icd.js": {
+    "api/drug-search.js": {
       "includeFiles": "data/icd-hierarchy-snapshot.json.gz"
     }
   },
@@ -37,6 +37,14 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/api/medical-hub-image",
+      "destination": "/api/medical-hub?_route=image"
+    },
+    {
+      "source": "/api/icd",
+      "destination": "/api/drug-search?_route=icd"
+    },
     {
       "source": "/data/registry-data.js",
       "destination": "/api/registry"

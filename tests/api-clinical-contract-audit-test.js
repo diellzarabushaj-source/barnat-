@@ -5,7 +5,7 @@ const { execFileSync } = require('node:child_process');
 
 const root = path.join(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
-const apiFiles = ['api/registry.js', 'api/dosage.js', 'api/icd.js', 'api/drug-search.js'];
+const apiFiles = ['api/registry.js', 'api/dosage.js', 'api/drug-search.js'];
 const dosageRouter = read('api/dosage.js');
 const dosageCore = read('lib/dosage-handler.js');
 const dosageCalculator = read('lib/dose-calculator-handler.js');
@@ -13,11 +13,10 @@ const dosage = `${dosageRouter}\n${dosageCore}\n${dosageCalculator}`;
 const sources = {
   'api/registry.js':read('api/registry.js'),
   'api/dosage.js':dosage,
-  'api/icd.js':read('api/icd.js'),
   'api/drug-search.js':read('api/drug-search.js'),
 };
 
-for (const file of [...apiFiles, 'lib/dosage-handler.js', 'lib/dose-calculator-handler.js']) {
+for (const file of [...apiFiles, 'lib/dosage-handler.js', 'lib/dose-calculator-handler.js', 'lib/icd-api-base.js', 'lib/icd-advanced-handler.js']) {
   execFileSync(process.execPath, ['--check', path.join(root, file)], { stdio:'pipe' });
 }
 for (const [file, source] of Object.entries(sources)) {
@@ -59,12 +58,18 @@ assert.equal(publicDosageError.code, 'DOSAGE_UNAVAILABLE');
 assert.doesNotMatch(JSON.stringify(publicDosageError), /private upstream detail/);
 
 const icd = read('lib/icd-api-base.js');
+const icdAdvanced = read('lib/icd-advanced-handler.js');
 assert.match(icd, /MAX_CSV_BYTES/);
 assert.match(icd, /pendingLoad/);
 assert.match(icd, /Buffer\.byteLength/);
 assert.match(icd, /httpsUrl\(row\['Burimi WHO'\]\)/);
 assert.match(icd, /Server-Timing/);
 assert.match(icd, /ok:false, data:null/);
+for (const source of [icd, icdAdvanced]) {
+  assert.match(source, /authorized\(req\)|verifySessionToken/, 'ICD delegated handler authentication guard missing');
+  assert.match(source, /X-Content-Type-Options/, 'ICD delegated handler nosniff missing');
+  assert.match(source, /Cache-Control/, 'ICD delegated handler cache policy missing');
+}
 
 const search = read('api/drug-search.js');
 assert.match(search, /MAX_QUERY/);
@@ -72,6 +77,14 @@ assert.match(search, /MAX_RESULTS/);
 assert.match(search, /slice\(0, MAX_QUERY\)/);
 assert.match(search, /registryHandler\.authorized/);
 assert.match(search, /qualityStatus/);
+assert.match(search, /icdBaseHandler/);
+assert.match(search, /icdAdvancedHandler/);
+assert.match(search, /route === 'icd'/);
+const vercel = JSON.parse(read('vercel.json'));
+assert.ok(
+  vercel.rewrites.some(item => item.source === '/api/icd' && item.destination === '/api/drug-search?_route=icd'),
+  'ICD compatibility rewrite must target the consolidated drug-search function'
+);
 
 const registry = read('api/registry.js');
 assert.match(registry, /MAX_WORKBOOK_BYTES/);
