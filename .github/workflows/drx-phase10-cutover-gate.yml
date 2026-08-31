@@ -45,6 +45,7 @@ on:
       - "lib/dose-v3-cutover-control.js"
       - "tests/drx-phase10-controlled-traffic-test.js"
       - "tests/drx-phase10m-strict-activation-gate-test.js"
+      - "tests/drx-phase10m-strict-runtime-fail-closed-test.js"
       - "lib/pediatric-v3-runtime.js"
       - "lib/pediatric-dosage-handler-core.js"
       - "dozologjia.html"
@@ -102,6 +103,8 @@ jobs:
         run: node tests/drx-phase10-legacy-retirement-preflight-test.js
       - name: Phase 10M strict activation gate
         run: node tests/drx-phase10m-strict-activation-gate-test.js
+      - name: Phase 10M strict runtime no-fallback proof
+        run: node tests/drx-phase10m-strict-runtime-fail-closed-test.js
       - name: P0 database integrity
         run: node tests/p0-database-integrity-test.js
       - name: Public security contract
