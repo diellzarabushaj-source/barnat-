@@ -47,25 +47,19 @@ test('all clinical pages run without CSP violations or blocked runtime assets', 
     expect(csp, `${path}: inline script attributes are not blocked`).toContain("script-src-attr 'none'");
     expect(csp, `${path}: unsafe script policy returned`).not.toMatch(/script-src[^;]*(?:unsafe-inline|unsafe-eval)/);
 
-    await expect.poll(
-      () => page.evaluate(() => document.documentElement.classList.contains('auth-ready')),
-      { timeout:10000, message:`${path}: auth-ready was not reached` }
-    ).toBe(true);
+    await expect(page.locator('#appShell')).toHaveAttribute('aria-busy', 'false', { timeout:10000 });
     if (path === '/index.html') {
-      await expect.poll(
-        () => page.evaluate(() => Boolean(window.MEDINDEX_REGISTRY_UI_READY && typeof window.MEDINDEX_REGISTRY_UI_READY.then === 'function')),
-        { timeout:10000, message:'registry UI promise was not exposed' }
-      ).toBe(true);
-      await page.evaluate(() => window.MEDINDEX_REGISTRY_UI_READY);
-      await expect(page.locator('#countBadge')).not.toHaveText(/Gabim|Duke u ngarkuar/i);
+      await expect(page.locator('html')).toHaveAttribute('data-drx-app', 'registry-v2');
+      await expect(page.locator('#registryRows')).toBeAttached();
     }
     await page.waitForTimeout(180);
   }
 
   await page.goto(`${BASE}/klasifikimi.html#N02`, { waitUntil:'domcontentloaded' });
   await page.waitForURL(url => url.pathname === '/index.html' && url.searchParams.get('atc') === 'N02', { timeout:10000 });
-  await expect(page.locator('.mi-page-heading h1')).toHaveText('Barnat');
-  await expect(page.locator('#cardGrid, #atcSearch, .atc-card')).toHaveCount(0);
+  await expect(page.locator('html')).toHaveAttribute('data-drx-app', 'registry-v2');
+  await expect(page.locator('#pageTitle')).toHaveText('Barnat');
+  await expect(page.locator('#searchInput')).toBeVisible();
 
   expect(failures, failures.join('\n')).toEqual([]);
 });
