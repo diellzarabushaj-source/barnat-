@@ -126,17 +126,43 @@ jobs:
           print(f'Generated {len(rows)} authoritative migration records; latest={rows[-1]["version"]}:{rows[-1]["name"]}')
           PY
 
-      - name: Validate Phase 10M parity before commit
+      - name: Validate live/local migration parity
         shell: bash
         run: |
           set -euo pipefail
           node - <<'NODE'
           const fs=require('node:fs');
+          const path=require('node:path');
+
           const h=JSON.parse(fs.readFileSync('supabase/migration-history.json','utf8'));
-          const latest=h.migrations.at(-1);
-          if(latest?.version!=='20260831062943' || latest?.name!=='drx_phase10m_strict_activation_gate'){
-            throw new Error('Live migration history does not end at the expected Phase 10M migration.');
+          const live=Array.isArray(h.migrations)?h.migrations:[];
+          if(!live.length) throw new Error('Live migration history is empty.');
+
+          const local=fs.readdirSync('supabase/migrations')
+            .map(file=>{
+              const m=file.match(/^(\\d{14})_(.+)\\.sql$/);
+              return m?{version:m[1],name:m[2],file}:null;
+            })
+            .filter(Boolean)
+            .sort((a,b)=>a.version.localeCompare(b.version)||a.name.localeCompare(b.name));
+
+          if(!local.length) throw new Error('No local Supabase migrations found.');
+
+          const liveKeys=new Set(live.map(x=>`${String(x.version)}|${x.name}`));
+          const missing=local.filter(x=>!liveKeys.has(`${x.version}|${x.name}`));
+          if(missing.length){
+            throw new Error('Local migrations missing from live history: '+missing.slice(0,10).map(x=>x.file).join(', '));
           }
+
+          const latestLive=live.at(-1);
+          const latestLocal=local.at(-1);
+          if(String(latestLive.version)!==latestLocal.version || latestLive.name!==latestLocal.name){
+            throw new Error(
+              `Migration head mismatch: live=${latestLive.version}:${latestLive.name} local=${latestLocal.version}:${latestLocal.name}`
+            );
+          }
+
+          console.log(`Migration parity OK: ${local.length} local migrations represented; head=${latestLocal.version}:${latestLocal.name}`);
           NODE
 
       - name: Commit history when changed
@@ -150,5 +176,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add supabase/migration-history.json
-          git commit -m "Sync Supabase migration history through Phase 10M"
+          git commit -m "Sync Supabase migration history"
           git push origin HEAD:main
