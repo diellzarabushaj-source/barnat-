@@ -995,6 +995,10 @@
     {
       "version": "20260831184114",
       "name": "drx_phase11cn_legacy_parity_and_release_gate"
+    },
+    {
+      "version": "20260831184612",
+      "name": "drx_phase11co_shadow_evidence_and_cutover_guard"
     }
   ]
 }
