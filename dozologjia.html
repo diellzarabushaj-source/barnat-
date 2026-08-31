@@ -9,10 +9,10 @@
   <title>DRx | Dozologjia pediatrike</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/dozologjia-v2.css?v=3">
+  <link rel="stylesheet" href="/dozologjia-v2.css?v=4">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4">
   <script src="/phase9-personal-entities-client.js?v=phase9b" defer></script>
-  <script src="/dozologjia-v2.js?v=3" defer></script>
+  <script src="/dozologjia-v2.js?v=4" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#dosageContent">Kalo te kalkulatori pediatrik</a>
@@ -184,6 +184,18 @@
                     <option value="muaj" selected>muaj</option>
                     <option value="vjet">vjet</option>
                   </select>
+                </label>
+                <label data-patient-field="treatment-day" hidden>
+                  <span>Dita e trajtimit</span>
+                  <input id="patientTreatmentDay" type="number" min="1" max="3650" step="1" inputmode="numeric" placeholder="1" autocomplete="off">
+                  <small class="dosage-field-error" data-field-error="treatment-day"></small>
+                </label>
+                <label data-patient-field="clinical-variant" hidden>
+                  <span>Varianti klinik</span>
+                  <select id="patientClinicalVariant" aria-label="Zgjidh variantin klinik të verifikuar">
+                    <option value="">Zgjidh variantin</option>
+                  </select>
+                  <small class="dosage-field-error" data-field-error="clinical-variant"></small>
                 </label>
                 <label data-patient-field="height" hidden>
                   <span>Gjatësia <small>cm</small></span>
