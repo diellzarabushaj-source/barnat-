@@ -17,8 +17,8 @@ assert.match(html, /data-drx-app="dozologjia-v2"/);
 assert.match(html, /class="drx-unified-sidebar"/);
 assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
 assert.match(html, /class="nav-item is-active" href="\/dozologjia\.html" aria-current="page"/);
-assert.match(html, /dozologjia-v2\.css\?v=3/);
-assert.match(html, /dozologjia-v2\.js\?v=3/);
+assert.match(html, /dozologjia-v2\.css\?v=\d+/);
+assert.match(html, /dozologjia-v2\.js\?v=\d+/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/);
 
 [
@@ -35,11 +35,17 @@ const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>
 const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)]
   .map(match => match[1]);
 
-assert.deepEqual(styles, ['/dozologjia-v2.css?v=3','/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4']);
-assert.deepEqual(scripts, [
-  '/phase9-personal-entities-client.js?v=phase9b',
-  '/dozologjia-v2.js?v=3',
-]);
+assert.equal(styles.length, 2, 'Dozologjia must keep exactly two stylesheet owners');
+assert.equal(scripts.length, 2, 'Dozologjia must keep exactly two script owners');
+assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4');
+assert.equal(scripts[0], '/phase9-personal-entities-client.js?v=phase9b');
+
+const dosageCssVersion = styles[0]?.match(/^\/dozologjia-v2\.css\?v=(\d+)$/)?.[1] || '';
+const dosageJsVersion = scripts[1]?.match(/^\/dozologjia-v2\.js\?v=(\d+)$/)?.[1] || '';
+assert.ok(dosageCssVersion, 'Dozologjia stylesheet must use a numeric cache version');
+assert.ok(dosageJsVersion, 'Dozologjia runtime must use a numeric cache version');
+assert.equal(dosageCssVersion, dosageJsVersion, 'Dozologjia CSS and JS cache versions must stay synchronized');
+assert.ok(Number(dosageCssVersion) >= 4, 'Dozologjia asset version must not regress below v4');
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|dozologjia\.js|dozologjia-deep-audit\.js|style-loader|pediatric-calculator\.css|pediatric-calculator-client\.js/);
 assert.match(html, /phase9-personal-entities-client\.js\?v=phase9b/);
 
