@@ -1053,6 +1053,10 @@
     {
       "name": "drx_phase11db_lean_indication_packet_v3",
       "version": "20260831203715"
+    },
+    {
+      "name": "drx_phase11dc_harden_indication_packet_v3_invoker",
+      "version": "20260831204023"
     }
   ]
 }
