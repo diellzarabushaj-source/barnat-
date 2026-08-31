@@ -47,7 +47,7 @@ assert.match(js, /function selectAdjacentTopic\(delta\)/);
 assert.match(js, /function scheduleSearch\(value\)/);
 assert.match(js, /function clearSearch\(/);
 assert.match(js, /function clearFilters\(/);
-assert.match(js, /function syncUrl\(\)/);
+assert.match(js, /function syncUrl\(\{ push = false \} = \{\}\)/);
 assert.match(js, /function restoreUrl\(\)/);
 assert.match(js, /function restoreHistoryState\(\)/);
 assert.match(js, /pushState/);
