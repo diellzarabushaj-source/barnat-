@@ -417,6 +417,53 @@
     );
   }
 
+
+  function openSafetyBatch(sourceBatchKey){
+    const batches=Array.isArray(state.preflight?.safetySourceBatches)?state.preflight.safetySourceBatches:[];
+    const batch=batches.find(row=>row.sourceBatchKey===sourceBatchKey);
+    if(!batch)return;
+    const candidates=Array.isArray(batch.candidates)?batch.candidates:[];
+    const sourceLink=batch.sourceUrl?`<a href="${esc(batch.sourceUrl)}" target="_blank" rel="noopener noreferrer">Hap exact SmPC §${esc(batch.sectionCode||'4.2')} ↗</a>`:'Burimi nuk ka URL.';
+    openDialog(
+      `Safety · ${batch.authority||batch.sourceTier||'Source'}`,
+      `<div class="mi-editor-section-title"><div><span>${esc(batch.authority||batch.sourceTier||'Source')}</span><small>${esc(batch.documentVersion||batch.documentDate||'—')} · ${sourceLink}</small></div></div>
+       <div class="mi-mini-stats">
+         <div><span>Candidates</span><strong>${esc(batch.candidateCount??candidates.length)}</strong></div>
+         <div><span>Pending</span><strong>${esc(batch.pendingCandidates??0)}</strong></div>
+         <div><span>Applicability rows</span><strong>${esc(batch.applicabilityRows??0)}</strong></div>
+         <div><span>Integrity blocked</span><strong>${esc(batch.integrityBlockedCandidates??0)}</strong></div>
+       </div>
+       <table class="mi-table"><thead><tr><th>Candidate</th><th>Clinical rule</th><th>Scope</th><th>Statusi</th><th>Vendimi</th></tr></thead><tbody>
+       ${candidates.length?candidates.map(row=>{
+         const status=String(row.reviewStatus||'PENDING').toUpperCase();
+         const action=(status==='PENDING'||status==='IN_REVIEW')
+           ?`<span style="display:flex;gap:6px;flex-wrap:wrap">
+              <button type="button" class="mi-row-btn"
+                data-p11-review-kind="safety-review"
+                data-p11-decision="APPROVED"
+                data-p11-candidate-type="${esc(row.candidateType)}"
+                data-p11-candidate-key="${esc(row.candidateKey)}"
+                data-p11-safety-batch="${esc(batch.sourceBatchKey)}">Verify</button>
+              <button type="button" class="mi-row-btn"
+                data-p11-review-kind="safety-review"
+                data-p11-decision="REJECTED"
+                data-p11-candidate-type="${esc(row.candidateType)}"
+                data-p11-candidate-key="${esc(row.candidateKey)}"
+                data-p11-safety-batch="${esc(batch.sourceBatchKey)}">Reject</button>
+            </span>`
+           :`<span class="mi-badge ${status==='APPROVED'||status==='PROMOTED'?'is-verified':'is-in_review'}">${esc(status)}</span>`;
+         return `<tr>
+           <td><strong>${esc(row.candidateType||'SAFETY')}</strong><small>${esc(row.candidateKey||'')}</small></td>
+           <td>${esc(row.domainOrType||'—')}<small>${esc(row.clinicalText||'')}</small></td>
+           <td>${esc(row.regimenCount??0)} regimens<small>${esc(compactList(row.applicabilityScopes,2))}</small></td>
+           <td>${esc(status)}</td>
+           <td>${action}</td>
+         </tr>`;
+       }).join(''):'<tr><td colspan="5" class="is-empty">Nuk ka safety candidates.</td></tr>'}
+       </tbody></table>`
+    );
+  }
+
   async function loadPreflight(){
     const box=$('p11PreflightSummary');
     const button=$('p11LoadPreflight');
@@ -434,6 +481,8 @@
       const ready=Array.isArray(data.readyForAttestation)?data.readyForAttestation:[];
       const evidenceSummary=data.evidenceBatchSummary||{};
       const evidenceBatches=Array.isArray(data.evidenceSourceBatches)?data.evidenceSourceBatches:[];
+      const safetySummary=data.safetyBatchSummary||{};
+      const safetyBatches=Array.isArray(data.safetySourceBatches)?data.safetySourceBatches:[];
       box.className='mi-table-wrap';
       box.innerHTML=`
         <div class="mi-mini-stats">
@@ -466,6 +515,23 @@
             <td><span class="mi-badge is-in_review">${esc(row.pendingRows??0)}</span></td>
             <td><button type="button" class="mi-row-btn" data-p11-evidence-batch="${esc(row.sourceBatchKey)}">Review source</button></td>
           </tr>`).join(''):'<tr><td colspan="6" class="is-empty">Nuk ka evidence source batches.</td></tr>'}
+        </tbody></table>
+        <div class="mi-editor-section-title"><div><span>Safety source batches</span><small>25 applicable candidates janë grupuar sipas exact source; çdo candidate aprovohet/refuzohet individualisht.</small></div></div>
+        <div class="mi-mini-stats">
+          <div><span>Exact source batches</span><strong>${esc(safetySummary.source_batches??safetyBatches.length)}</strong></div>
+          <div><span>Candidates</span><strong>${esc(safetySummary.applicable_candidates??0)}</strong></div>
+          <div><span>Applicability rows</span><strong>${esc(safetySummary.applicability_rows??0)}</strong></div>
+          <div><span>Pending</span><strong>${esc(safetySummary.pending_candidates??0)}</strong></div>
+        </div>
+        <table class="mi-table"><thead><tr><th>Exact source</th><th>Version</th><th>Candidates</th><th>A / R</th><th>Pending</th><th></th></tr></thead><tbody>
+          ${safetyBatches.length?safetyBatches.map(row=>`<tr>
+            <td><strong>${esc(row.authority||row.sourceTier||'SOURCE')}</strong><small>§${esc(row.sectionCode||'4.2')} · ${row.sourceUrl?`<a href="${esc(row.sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi ↗</a>`:''}</small></td>
+            <td>${esc(row.documentVersion||row.documentDate||'—')}</td>
+            <td><strong>${esc(row.candidateCount??0)}</strong><small>${esc(row.applicabilityRows??0)} applicability rows</small></td>
+            <td>${esc(row.adjustmentCount??0)} / ${esc(row.restrictionCount??0)}</td>
+            <td><span class="mi-badge is-in_review">${esc(row.pendingCandidates??0)}</span></td>
+            <td><button type="button" class="mi-row-btn" data-p11-safety-batch="${esc(row.sourceBatchKey)}">Review source</button></td>
+          </tr>`).join(''):'<tr><td colspan="6" class="is-empty">Nuk ka safety source batches.</td></tr>'}
         </tbody></table>`;
     }catch(error){
       box.className='mi-empty-state';
@@ -1006,9 +1072,13 @@
       state.loaded=false;
       await loadWorkbench(true);
       const preflightBatch=button.dataset.p11PreflightBatch;
+      const safetyBatch=button.dataset.p11SafetyBatch;
       if(preflightBatch){
         await loadPreflight();
         openEvidenceBatch(preflightBatch);
+      }else if(safetyBatch){
+        await loadPreflight();
+        openSafetyBatch(safetyBatch);
       }else{
         const batchKey=button.dataset.p11Batch||state.currentClinicalKey;
         if(batchKey)await openClinical(batchKey);
@@ -1059,6 +1129,9 @@
 
     const evidenceBatch=event.target.closest('[data-p11-evidence-batch]');
     if(evidenceBatch)openEvidenceBatch(evidenceBatch.dataset.p11EvidenceBatch);
+
+    const safetyBatch=event.target.closest('[data-p11-safety-batch]');
+    if(safetyBatch)openSafetyBatch(safetyBatch.dataset.p11SafetyBatch);
 
     const review=event.target.closest('[data-p11-review-kind]');
     if(review)void handleReviewButton(review);
