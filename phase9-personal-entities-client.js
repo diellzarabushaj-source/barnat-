@@ -2,7 +2,7 @@
   'use strict';
 
   const API='/api/user-library';
-  const TYPES=new Set(['substance','variant','product']);
+  const TYPES=new Set(['drug','substance','variant','product']);
   const MAX_NOTE=2000;
   const state={
     loaded:false,
