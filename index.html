@@ -8,12 +8,12 @@
   <title>DRx | Regjistri i barnave</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-20260901-personal-library-v2">
+  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-20260901-personal-library-v3">
   <link rel="stylesheet" href="/registry-v2-dose-calculator.css?v=registry-v2-dose-calculator-v1">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6">
   <script src="/dose-core.js?v=drx-dose-core-v1" defer></script>
   <script src="/dose-runtime-browser.js?v=drx-dose-runtime-browser-v1" defer></script>
-  <script src="/registry-v2.js?v=registry-v2-20260901-personal-library-v2" defer></script>
+  <script src="/registry-v2.js?v=registry-v2-20260901-personal-library-v3" defer></script>
   <script src="/registry-v2-dose-calculator.js?v=registry-v2-dose-calculator-v1" defer></script>
 </head>
 <body>
@@ -120,13 +120,25 @@
           </div>
           <div class="personal-toolbar">
             <div class="personal-tabs" role="tablist" aria-label="Biblioteka personale">
-              <button class="personal-tab" id="personalFavoritesTab" type="button" role="tab" data-personal-tab="favorites" aria-selected="true">Favoritët <span id="personalFavoritesCount">0</span></button>
-              <button class="personal-tab" id="personalNotesTab" type="button" role="tab" data-personal-tab="notes" aria-selected="false">Shënimet <span id="personalNotesCount">0</span></button>
+              <button class="personal-tab" id="personalFavoritesTab" type="button" role="tab" data-personal-tab="favorites" aria-controls="personalList" aria-selected="true">Favoritët <span id="personalFavoritesCount">0</span></button>
+              <button class="personal-tab" id="personalNotesTab" type="button" role="tab" data-personal-tab="notes" aria-controls="personalList" aria-selected="false">Shënimet <span id="personalNotesCount">0</span></button>
             </div>
-            <label class="personal-search">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
-              <input id="personalSearchInput" type="search" autocomplete="off" placeholder="Kërko në punën time…" aria-label="Kërko në favoritët dhe shënimet">
-            </label>
+            <div class="personal-toolbar-actions">
+              <label class="personal-sort">
+                <span class="sr-only">Rendit punën time</span>
+                <select id="personalSortSelect" aria-label="Rendit punën time">
+                  <option value="recent" selected>Më të fundit</option>
+                  <option value="name">Sipas emrit</option>
+                </select>
+              </label>
+              <label class="personal-search">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
+                <input id="personalSearchInput" type="search" autocomplete="off" placeholder="Kërko në punën time…" aria-label="Kërko në favoritët dhe shënimet">
+              </label>
+              <button class="button button-secondary personal-refresh" id="personalRefreshButton" type="button" aria-label="Rifresko punën time" title="Rifresko nga Supabase">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6v5h-5"/><path d="M4 18v-5h5"/><path d="M18.4 9A7 7 0 0 0 6.2 6.7L4 11M20 13l-2.2 4.3A7 7 0 0 1 5.6 15"/></svg>
+              </button>
+            </div>
           </div>
           <div class="personal-summary">
             <span id="personalCountText">Duke sinkronizuar…</span>
