@@ -110,7 +110,7 @@
     pageSizeSelect: $('pageSizeSelect'), resultSummary: $('resultSummary'), requestTiming: $('requestTiming'), registryRows: $('registryRows'), registryTable: $('registryTable'), tableScroll: $('tableScroll'),
     emptyState: $('emptyState'), emptyClearButton: $('emptyClearButton'), selectPageCheckbox: $('selectPageCheckbox'), paginationSummary: $('paginationSummary'), pageIndicator: $('pageIndicator'), prevPageButton: $('prevPageButton'), nextPageButton: $('nextPageButton'),
     drawerBackdrop: $('drawerBackdrop'), detailDrawer: $('detailDrawer'), drawerClose: $('drawerClose'), drawerCloseButton: $('drawerCloseButton'), drawerTitle: $('drawerTitle'), drawerBody: $('drawerBody'), drawerPrescriptionButton: $('drawerPrescriptionButton'),
-    pageTitle: $('pageTitle'), pageEyebrow: $('pageEyebrow'), pageSubtitle: $('pageSubtitle'), headingActions: $('headingActions'),
+    pageTitle: $('pageTitle'), pageEyebrow: $('pageEyebrow'), pageSubtitle: $('pageSubtitle'), breadcrumbCurrent: $('breadcrumbCurrent'), headingActions: $('headingActions'),
     personalWorkspace: $('personalWorkspace'), personalTitle: $('personalTitle'), personalSubtitle: $('personalSubtitle'), personalList: $('personalList'), personalEmpty: $('personalEmpty'),
     personalEmptyTitle: $('personalEmptyTitle'), personalEmptyText: $('personalEmptyText'), personalSearchInput: $('personalSearchInput'), personalSortSelect: $('personalSortSelect'), personalRefreshButton: $('personalRefreshButton'), personalCountText: $('personalCountText'), personalStatus: $('personalStatus'),
     personalFavoritesTab: $('personalFavoritesTab'), personalNotesTab: $('personalNotesTab'), personalFavoritesCount: $('personalFavoritesCount'), personalNotesCount: $('personalNotesCount'),
@@ -366,7 +366,7 @@
     }
     await new Promise(resolve => {
       const script = document.createElement('script');
-      script.src = '/phase9-personal-entities-client.js?v=drx-phase9-personal-v1';
+      script.src = '/phase9-personal-entities-client.js?v=drx-phase9-personal-v2';
       script.defer = true;
       script.dataset.drxPersonalLibrary = '1';
       script.addEventListener('load', resolve, { once:true });
@@ -736,6 +736,7 @@
     if (el.personalWorkspace) el.personalWorkspace.hidden = !personal;
     if (el.pageEyebrow) el.pageEyebrow.textContent = personal ? 'Puna ime' : 'Regjistri klinik';
     if (el.pageTitle) el.pageTitle.textContent = state.view === 'favorites' ? 'Favoritët' : state.view === 'notes' ? 'Shënimet' : 'Barnat';
+    if (el.breadcrumbCurrent) el.breadcrumbCurrent.textContent = state.view === 'favorites' ? 'Favoritët' : state.view === 'notes' ? 'Shënimet' : 'Barnat';
     if (el.pageSubtitle) el.pageSubtitle.textContent = state.view === 'favorites'
       ? 'Qasje e shpejtë te barnat që i ke ruajtur.'
       : state.view === 'notes'
