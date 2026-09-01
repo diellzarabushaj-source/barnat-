@@ -16,7 +16,13 @@ begin
       foreign key (drug_id) references public.drugs(id) on delete restrict;
   end if;
 end
-$$;
+$;
+
+-- Phase 9A originally required product notes to keep drug_id NULL.
+-- Relax that legacy coherence guard before backfilling the canonical FK;
+-- a stricter FK-backed coherence constraint is installed below.
+alter table public.user_notes
+  drop constraint if exists user_notes_entity_coherence_check;
 
 -- Canonicalize all UUID-backed product favorites already stored.
 update public.user_favorites uf
