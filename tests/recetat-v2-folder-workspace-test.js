@@ -22,8 +22,8 @@ assert.match(html, /data-drx-app="recetat-v2"/);
 assert.match(html, /class="drx-unified-sidebar"/);
 assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
 assert.match(html, /class="nav-item is-active" href="\/recetat\.html" aria-current="page"/);
-assert.match(html, /recetat-v2\.css\?v=1/);
-assert.match(html, /recetat-v2\.js\?v=2/);
+assert.match(html, /recetat-v2\.css\?v=3/);
+assert.match(html, /recetat-v2\.js\?v=3/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/);
 
 [
@@ -39,13 +39,17 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
   .map(match => match[1]);
 
 assert.equal(styles.length, 2, 'Recetat V2 must load only page CSS + shared Stripe shell');
-assert.equal(styles[0], '/recetat-v2.css?v=1');
+assert.equal(styles[0], '/recetat-v2.css?v=3');
 assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6');
-assert.deepEqual(scripts, ['/recetat-v2.js?v=2']);
+assert.deepEqual(scripts, ['/recetat-v2.js?v=3']);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|recetat\.css|recetat-audit\.css|recetat-style-loader\.js|recetat\.js/);
 
 assert.match(css, /Recetat V2 — consolidated prescription workspace/);
 assert.match(css, /Recetat V2 — Stripe prescription workspace/);
+assert.match(css, /Recetat V2 — clinical workspace polish v3/);
+assert.match(css, /\.rx-preview-card\{position:sticky;top:72px\}/);
+assert.match(css, /\.rx-category-button\.is-active,\.rx-pediatric-toggle\.is-active/);
+assert.match(css, /\.rx-route-segments button\.is-selected\{background:#5b48e8/);
 assert.match(css, /\.rx-library-layout/);
 assert.match(css, /\.rx-folder-panel/);
 assert.match(css, /\.rx-folder-item\.is-active/);
@@ -55,6 +59,10 @@ assert.match(css, /prefers-reduced-motion:reduce/);
 
 assert.match(js, /Recetat V2 — consolidated runtime with chapter folders/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
+assert.match(js, /Konteksti klinik/);
+assert.match(js, /Rruga e administrimit/);
+assert.match(js, /Sinkronizuar/);
+assert.match(js, /Lokale/);
 assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/);
 assert.match(js, /async function ensureAuth\(\)/);
 assert.match(js, /function chapterCatalog\(\)/);

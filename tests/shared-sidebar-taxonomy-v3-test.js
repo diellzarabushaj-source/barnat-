@@ -93,7 +93,7 @@ for (const [htmlFile, runtime, version] of [
   ['urgjencat.html','urgjencat-v2.js','11'],
   ['analizat.html','analizat-v2.js','2'],
   ['protokollet.html','protokollet-v2.js','2'],
-  ['recetat.html','recetat-v2.js','2'],
+  ['recetat.html','recetat-v2.js','dynamic'],
   ['medical-hub.html','medical-hub-v2.js','dynamic'],
   ['sistemi.html','sistemi-v2.js','2'],
 ]) {

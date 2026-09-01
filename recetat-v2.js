@@ -2622,7 +2622,7 @@
     commandBar.insertAdjacentHTML('afterend', `
       <section class="rx-clinical-context" id="rxClinicalContext" aria-labelledby="rxClinicalContextTitle">
         <div class="rx-context-heading">
-          <div><span class="rx-context-kicker">Rruga e barit</span><strong id="rxClinicalContextTitle">Zgjidh kategorinë e administrimit</strong></div>
+          <div><span class="rx-context-kicker">Konteksti klinik</span><strong id="rxClinicalContextTitle">Rruga e administrimit</strong></div>
           <span class="rx-context-readiness" id="rxContextReadiness">Gati</span>
         </div>
         <div class="rx-category-grid" role="radiogroup" aria-label="Kategoria e administrimit">
@@ -2642,12 +2642,12 @@
             </fieldset>
             <div class="rx-context-guidance">
               <span class="rx-context-guidance-icon">${SVG.info}</span>
-              <span>Kategoria merret nga prezantimi i barit. Doza automatike përdoret vetëm kur formula, indikacioni, grupmosha dhe rruga janë të verifikuara.</span>
+              <span>Rruga filtrohet sipas prezantimit të barit. Doza automatike përdoret vetëm kur të dhënat e nevojshme janë të verifikuara.</span>
             </div>
           </div>
           <button type="button" class="rx-pediatric-toggle" id="rxPediatricToggle" aria-pressed="false">
             <span class="rx-context-icon">${SVG.child}</span>
-            <span><strong>Për fëmijë</strong><small>Aktivizon kalkulatorin sipas formulës së barit</small></span>
+            <span><strong>Pediatrike</strong><small>Aktivizo moshën dhe peshën për dozimin pediatrik</small></span>
             <span class="rx-context-state" aria-hidden="true"></span>
           </button>
         </div>
@@ -2729,7 +2729,7 @@
       pediatricButton.setAttribute('aria-pressed', String(context.pediatric));
       pediatricButton.querySelector('small').textContent = context.pediatric
         ? (context.ageValue && context.weightKg ? `${ageLabel(context)} · ${context.weightKg} kg` : 'Plotëso moshën dhe peshën')
-        : 'Aktivizon kalkulatorin sipas formulës së barit';
+        : 'Aktivizo moshën dhe peshën për dozimin pediatrik';
       pediatricButton.querySelector('.rx-context-state').textContent = context.pediatric ? '✓' : '';
     }
     const pediatricFields = state.document.getElementById('rxPediatricFields');
@@ -5851,19 +5851,19 @@
     syncChapterSuggestion({ force:true });
     updateActionState();
     const synced = window.MedIndexUserLibrary?.diagnostics?.();
-    if ($('#rxLibraryState')) $('#rxLibraryState').textContent = synced && !synced.dirty ? 'Synced' : 'Local';
+    if ($('#rxLibraryState')) $('#rxLibraryState').textContent = synced && !synced.dirty ? 'Sinkronizuar' : 'Lokale';
     if ($('#syncText')) $('#syncText').textContent = 'Supabase';
     if ($('#sourceStatus')) $('#sourceStatus').textContent = 'Recetat personale · Supabase';
     $('#appShell')?.setAttribute('aria-busy', 'false');
     $('#rxComposer')?.focus({ preventScroll:true });
     window.addEventListener('medindex:library-ready', () => { populateChapterSelect(); renderSaved(); });
     window.addEventListener('medindex:library-synced', () => {
-      if ($('#rxLibraryState')) $('#rxLibraryState').textContent = 'Synced';
+      if ($('#rxLibraryState')) $('#rxLibraryState').textContent = 'Sinkronizuar';
       populateChapterSelect();
       renderSaved();
     });
     window.addEventListener('medindex:library-pending', () => {
-      if ($('#rxLibraryState')) $('#rxLibraryState').textContent = 'Local';
+      if ($('#rxLibraryState')) $('#rxLibraryState').textContent = 'Lokale';
     });
   }
 
