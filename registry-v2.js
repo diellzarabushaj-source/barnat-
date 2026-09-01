@@ -1449,10 +1449,45 @@
         ${dose.maximum ? `<small>Maksimumi: ${escapeHtml(dose.maximum)}</small>` : ''}
       </article>`;
 
-    const databaseFields = sourceFields.length
+    const canonicalDataFields = [
+      ['ID databaze', detail.id],
+      ['Nr. regjistri', detail.registryNumber],
+      ['PDID', detail.pdid],
+      ['Nr. protokolli', detail.protocolNo],
+      ['Emri tregtar', detail.tradeName],
+      ['Substanca aktive', detail.activeSubstance],
+      ['Fortësia', detail.strength],
+      ['Forma farmaceutike', detail.form],
+      ['Paketimi', detail.packaging],
+      ['ATC', detail.atc],
+      ['Klasa', detail.drugClass],
+      ['Përdorimi', detail.use],
+      ['Popullata e aprovuar', detail.approvedPopulation],
+      ['Statusi i produktit', detail.productStatus],
+      ['Statusi editorial / cilësia', detail.qualityStatus],
+      ['MAH', detail.marketingAuthorizationHolder],
+      ['Prodhuesi', detail.manufacturer],
+      ['Certifikata', detail.maCertificate],
+      ['Vlefshmëria', detail.validity],
+      ['Çmimi me shumicë', euros(detail.wholesalePrice)],
+      ['Çmimi me shumicë + marzh', euros(detail.wholesaleWithMargin)],
+      ['TVSH', detail.vat],
+      ['Çmimi me pakicë', euros(detail.retailPrice)],
+      ['Si të shënohet në recetë', detail.prescriptionNotation],
+      ['Përditësuar', detail.updatedAt],
+    ].filter(([,value]) => clean(value) && value !== '—').map(([label,value]) => ({ label, value:clean(value) }));
+
+    const seenDatabaseLabels = new Set();
+    const databaseRows = [...canonicalDataFields, ...sourceFields].filter(item => {
+      const key = clean(item.label).toLocaleLowerCase('sq');
+      if (!key || seenDatabaseLabels.has(key)) return false;
+      seenDatabaseLabels.add(key);
+      return true;
+    });
+    const databaseFields = databaseRows.length
       ? `<section class="detail-section detail-source-data">
-          <div class="detail-section-head"><h4>Të dhënat e plota nga databaza</h4><span>${sourceFields.length} fusha</span></div>
-          <dl class="detail-grid detail-grid-all">${sourceFields.map(item => `<dt>${escapeHtml(item.label)}</dt><dd>${escapeHtml(item.value)}</dd>`).join('')}</dl>
+          <div class="detail-section-head"><h4>Të dhënat e plota nga databaza</h4><span>${databaseRows.length} fusha</span></div>
+          <dl class="detail-grid detail-grid-all">${databaseRows.map(item => `<dt>${escapeHtml(item.label)}</dt><dd>${escapeHtml(item.value)}</dd>`).join('')}</dl>
         </section>`
       : '';
 
