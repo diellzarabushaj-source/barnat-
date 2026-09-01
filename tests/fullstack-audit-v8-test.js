@@ -51,8 +51,12 @@ for (const [name, source] of workflows) {
 const apiFunctions = fs.readdirSync(path.join(ROOT, 'api'))
   .filter(name => name.endsWith('.js'))
   .sort();
-assert.ok(apiFunctions.length <= 11, `Vercel function reserve lost: ${apiFunctions.length}/12 functions`);
+const middlewareEntries = ['middleware.ts','middleware.js','middleware.mjs'].filter(exists);
+const runtimeFunctionCount = apiFunctions.length + middlewareEntries.length;
+assert.ok(runtimeFunctionCount <= 11, `Vercel function reserve lost: ${runtimeFunctionCount}/12 runtime functions`);
 assert.ok(!apiFunctions.includes('medical-hub-image.js'), 'Medical Hub image proxy must share the medical-hub function');
+assert.ok(!apiFunctions.includes('prescription-dosage-context.js'), 'Prescription context must share the dosage gateway');
+assert.ok(exists('lib/prescription-dosage-context-handler.js'), 'Shared prescription context handler is missing');
 assert.ok(exists('lib/medical-hub-image-handler.js'), 'Medical Hub shared image handler is missing');
 
 const brandSeed = read('scripts/seed-horizontal-brand-assets.js');
@@ -75,6 +79,7 @@ assert.match(packageJson.scripts?.['test:deploy'] || '', /drx-dose-runtime-engin
 assert.match(packageJson.scripts?.['test:deploy'] || '', /drx-dose-v3-rpc-reader-test\.js/);
 const rewrites = new Map((vercel.rewrites || []).map(row => [row.source, row.destination]));
 assert.equal(rewrites.get('/api/medical-hub-image'), '/api/medical-hub?_route=image');
+assert.equal(rewrites.get('/api/prescription-dosage-context'), '/api/dosage?view=prescription-context');
 assert.equal(rewrites.get('/api/icd'), '/api/clinical-editor?icdApi=1');
 
 for (const file of ['lib/medindex-data-api.js','lib/supabase-data-api.js']) {
@@ -110,4 +115,4 @@ const doseVisual = read('tests/dose-row-visual-rules-test.js');
 assert.match(doseVisual, /td\\\[data-col="pediatricDose"\\\] \\.route-chip/);
 assert.doesNotMatch(doseVisual, /td\.nth-child\\\(9\\\) \\.route-chip/);
 
-console.log(`Full-stack audit v8 passed: ${pages.length} workspaces, ${apiFunctions.length}/12 Vercel functions, current workflows, fail-closed Supabase guards and migration parity artifacts.`);
+console.log(`Full-stack audit v8 passed: ${pages.length} workspaces, ${runtimeFunctionCount}/12 Vercel runtime functions, current workflows, fail-closed Supabase guards and migration parity artifacts.`);

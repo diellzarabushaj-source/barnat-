@@ -54,6 +54,10 @@
       "destination": "/api/registry"
     },
     {
+      "source": "/api/prescription-dosage-context",
+      "destination": "/api/dosage?view=prescription-context"
+    },
+    {
       "source": "/api/dose-calculator",
       "destination": "/api/dosage?view=calculator"
     },
