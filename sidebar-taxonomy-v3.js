@@ -8,6 +8,9 @@
   const ICD_API = '/api/icd?view=nav';
   const ATC_DATA_SRC = '/classification-data.js?v=atc-catalog-v2';
   const CANONICAL_WORKER_URL = '/sw.js?v=drx-workspace-v7';
+  const PERSONAL_SUMMARY_API = '/api/user-library?view=summary';
+  const PERSONAL_COUNT_CACHE_KEY = 'drx_personal_sidebar_counts_v1';
+  const PERSONAL_COUNT_TTL = 30 * 1000;
 
   const clean = value => String(value ?? '').trim();
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
@@ -89,7 +92,7 @@
     const atc = nav.querySelector('#atcNavGroup');
     const icd = nav.querySelector('#icdNavGroup') || find('/icd.html');
     const clinical = [find('/index.html'), atc, icd, find('/dozologjia.html'), find('/protokollet.html'), find('/urgjencat.html')].filter(Boolean);
-    const work = [find('/recetat.html'), find('/analizat.html'), find('/medical-hub.html')].filter(Boolean);
+    const work = [find('/index.html#favorites'), find('/index.html#notes'), find('/recetat.html'), find('/analizat.html'), find('/medical-hub.html')].filter(Boolean);
 
     if (labelClinical) {
       let cursor = labelClinical;
@@ -98,6 +101,60 @@
     if (labelWork) {
       let cursor = labelWork;
       for (const node of work) { cursor.after(node); cursor = node; }
+    }
+  }
+
+  function readPersonalCountCache() {
+    try {
+      const cached = JSON.parse(sessionStorage.getItem(PERSONAL_COUNT_CACHE_KEY) || 'null');
+      if (!cached?.savedAt || !cached?.counts) return null;
+      if (Date.now() - cached.savedAt > PERSONAL_COUNT_TTL) return null;
+      return cached.counts;
+    } catch { return null; }
+  }
+
+  function writePersonalCountCache(counts) {
+    try { sessionStorage.setItem(PERSONAL_COUNT_CACHE_KEY, JSON.stringify({ savedAt:Date.now(), counts })); }
+    catch {}
+  }
+
+  function applyPersonalCounts(nav, counts = {}) {
+    const pairs = [
+      ['favorites', Number(counts.favorites) || 0],
+      ['notes', Number(counts.notes) || 0],
+    ];
+    pairs.forEach(([view, count]) => {
+      const link = nav.querySelector(`[data-personal-nav="${view}"]`);
+      const badge = link?.querySelector('.nav-count');
+      if (!badge) return;
+      badge.textContent = String(Math.max(0, count));
+      badge.hidden = count <= 0;
+      badge.setAttribute('aria-label', `${Math.max(0, count)} ${view === 'favorites' ? 'favoritë' : 'shënime'}`);
+    });
+  }
+
+  async function syncPersonalCounts(nav, { force = false } = {}) {
+    if (!nav) return;
+    const cached = readPersonalCountCache();
+    if (cached && !force) applyPersonalCounts(nav, cached);
+    try {
+      const response = await fetch(PERSONAL_SUMMARY_API, {
+        credentials:'same-origin',
+        cache:'no-store',
+        headers:{ Accept:'application/json' },
+      });
+      if (response.status === 401 || response.status === 403) return;
+      if (!response.ok) throw new Error(`Personal summary ${response.status}`);
+      const payload = await response.json();
+      const counts = {
+        favorites:Math.max(0, Number(payload?.counts?.favorites) || 0),
+        notes:Math.max(0, Number(payload?.counts?.notes) || 0),
+      };
+      applyPersonalCounts(nav, counts);
+      writePersonalCountCache(counts);
+      window.dispatchEvent(new CustomEvent('drx:personal-summary',{ detail:counts }));
+    } catch (error) {
+      if (!cached) console.warn('Personal sidebar counts unavailable:', error);
     }
   }
 
@@ -363,6 +420,7 @@
     const icdDetails = replaceIcdLink(nav);
     canonicalize(nav);
     restoreScroll(nav);
+    void syncPersonalCounts(nav);
     void enhanceAtc(nav);
 
     nav.addEventListener('scroll', () => saveScroll(nav), { passive:true });
@@ -370,6 +428,8 @@
       if (event.target.closest('a')) saveScroll(nav);
     });
     window.addEventListener('pagehide', () => saveScroll(nav), { passive:true });
+    window.addEventListener('drx:phase9-personal-ready', () => void syncPersonalCounts(nav, { force:true }));
+    window.addEventListener('drx:phase9-personal-changed', () => void syncPersonalCounts(nav, { force:true }));
     window.addEventListener('hashchange', () => {
       syncAtc(nav);
       const cached = readIcdCache();
@@ -377,7 +437,7 @@
     });
 
     if (icdDetails) void loadIcd(icdDetails);
-    window.DRxSidebarTaxonomy = Object.freeze({ syncAtc:() => syncAtc(nav), enhanceAtc:() => enhanceAtc(nav) });
+    window.DRxSidebarTaxonomy = Object.freeze({ syncAtc:() => syncAtc(nav), enhanceAtc:() => enhanceAtc(nav), syncPersonalCounts:() => syncPersonalCounts(nav, { force:true }) });
     document.documentElement.dataset.drxSidebarStructure = 'taxonomy-v4';
   }
 
