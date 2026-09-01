@@ -10,9 +10,9 @@
   <title>DRx | Recetat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/recetat-v2.css?v=3">
+  <link rel="stylesheet" href="/recetat-v2.css?v=4">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6">
-  <script src="/recetat-v2.js?v=3" defer></script>
+  <script src="/recetat-v2.js?v=4" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#rxWorkspace">Kalo te krijimi i recetës</a>
@@ -116,7 +116,7 @@
         <section class="rx-dashboard" aria-label="Krijuesi i recetës">
           <article class="rx-compose-card">
             <header class="rx-card-head">
-              <div><span class="rx-step">01</span><div><h2>Shkruaje recetën</h2><p>Identiteti i barit dhe diagnoza përdoren për klasifikim dhe kontroll klinik.</p></div></div>
+              <div><span class="rx-step">01</span><div><h2>Ndërto recetën</h2><p>Barna të verifikuara, udhëzim i strukturuar dhe kontroll para ruajtjes.</p></div></div>
               <span class="rx-draft-label" id="rxDraftLabel">Draft i ri</span>
             </header>
 
@@ -133,24 +133,43 @@
               </label>
             </div>
 
-            <div class="rx-command-bar" aria-label="Fusha të shpejta">
-              <button type="button" data-rx-command="form" aria-controls="rxFormPopover" aria-expanded="false">@forma <small>opsionale</small></button>
-              <button type="button" data-rx-command="drug" aria-controls="rxDrugPopover" aria-expanded="false">@bari</button>
-              <button type="button" data-rx-command="dose">@doza</button>
-              <button type="button" data-rx-command="quantity">@sasia</button>
-              <button type="button" data-rx-command="other">@tjetër</button>
-              <button type="button" data-rx-command="signature" aria-haspopup="dialog" aria-expanded="false">@signatura</button>
-            </div>
+            <section class="rx-order-builder" id="rxOrderBuilder" aria-labelledby="rxOrderBuilderTitle">
+              <header class="rx-order-builder-head">
+                <div>
+                  <h3 id="rxOrderBuilderTitle">Barnat e recetës</h3>
+                  <p>Zgjidh barin nga regjistri dhe plotëso udhëzimin e dozimit. Asnjë dozë nuk aplikohet pa veprimin tënd.</p>
+                </div>
+                <button class="rx-secondary rx-add-drug" id="rxAddDrugButton" type="button" aria-controls="rxDrugPopover" aria-expanded="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                  Shto bar
+                </button>
+              </header>
+              <div class="rx-selected rx-order-list" id="rxSelectedDrugs" aria-live="polite" aria-label="Barnat e zgjedhura">
+                <div class="rx-order-empty"><strong>Ende nuk ka barna</strong><span>Shto barin e parë nga regjistri i verifikuar.</span></div>
+              </div>
+            </section>
 
-            <div class="rx-editor-wrap">
-              <textarea id="rxComposer" rows="12" spellcheck="false" aria-label="Përmbajtja e recetës" placeholder="Rp:
+            <details class="rx-free-text-panel" id="rxFreeTextPanel">
+              <summary>
+                <span><strong>Tekst i lirë / import manual</strong><small>Përdore vetëm kur receta nuk ndërtohet nga fushat e strukturuara.</small></span>
+                <span aria-hidden="true">⌄</span>
+              </summary>
+              <div class="rx-command-bar" aria-label="Fusha të shpejta">
+                <button type="button" data-rx-command="form" aria-controls="rxFormPopover" aria-expanded="false">@forma <small>opsionale</small></button>
+                <button type="button" data-rx-command="drug" aria-controls="rxDrugPopover" aria-expanded="false">@bari</button>
+                <button type="button" data-rx-command="dose">@doza</button>
+                <button type="button" data-rx-command="quantity">@sasia</button>
+                <button type="button" data-rx-command="other">@tjetër</button>
+                <button type="button" data-rx-command="signature" aria-haspopup="dialog" aria-expanded="false">@signatura</button>
+              </div>
+              <div class="rx-editor-wrap">
+                <textarea id="rxComposer" rows="10" spellcheck="false" aria-label="Përmbajtja e recetës" placeholder="Rp:
 Tab. Amoxicillin / Clavulanic acid 875 mg / 125 mg
 Sasia: Scat. No I
 S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textarea>
-              <span class="rx-editor-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> formato lokalisht</span>
-            </div>
-
-            <div class="rx-selected" id="rxSelectedDrugs" hidden aria-label="Barnat e zgjedhura"></div>
+                <span class="rx-editor-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> formato lokalisht</span>
+              </div>
+            </details>
 
             <div class="rx-popover" id="rxFormPopover" role="dialog" aria-label="Zgjidh formën farmaceutike" hidden>
               <strong>Zgjidh formën</strong>
@@ -187,7 +206,8 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
             </div>
 
             <label class="rx-generated-review" id="rxGeneratedReview" hidden><input type="checkbox"><span>Kam kontrolluar klinikisht çdo Signaturë të propozuar nga AI.</span></label>
-            <label class="rx-generated-review" id="rxDosageReview" hidden><input type="checkbox"><span>Kam verifikuar dozën, rrugën, shpeshtësinë, kohëzgjatjen dhe kufijtë e skemës së auto-plotësuar.</span></label>
+            <label class="rx-generated-review" id="rxDosageReview" hidden><input type="checkbox"><span>Kam verifikuar dozën, rrugën, shpeshtësinë, kohëzgjatjen dhe kufijtë e skemës së aplikuar.</span></label>
+            <label class="rx-generated-review rx-final-review" id="rxClinicalReview" hidden><input type="checkbox"><span>Kam kontrolluar recetën përfundimtare: barin, dozën, rrugën, shpeshtësinë, sasinë dhe udhëzimet.</span></label>
 
             <div class="rx-preview-actions">
               <button class="rx-primary" id="rxSave" type="button" disabled>Ruaje në dosje</button>
@@ -235,8 +255,8 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
 
   <div class="rx-dialog-overlay" id="rxDosageChooser" hidden aria-hidden="true">
     <section class="rx-dialog" role="dialog" aria-modal="true" aria-labelledby="rxDosageChooserTitle">
-      <h2 id="rxDosageChooserTitle">Zgjidh indikacionin</h2>
-      <p>U gjetën disa skema me të njëjtën ATC, substancë, formë dhe fortësi. Doza nuk aplikohet pa zgjedhjen tënde.</p>
+      <h2 id="rxDosageChooserTitle">Verifiko skemën</h2>
+      <p id="rxDosageChooserCopy">Skema e verifikuar nuk aplikohet automatikisht. Zgjidhe dhe konfirmoje vetëm nëse i përshtatet pacientit dhe indikacionit.</p>
       <label><span>Skema e verifikuar</span><select id="rxDosageChoice"></select></label>
       <div><button class="rx-secondary" id="rxDosageCancel" type="button">Pa dozë</button><button class="rx-primary" id="rxDosageApply" type="button">Apliko skemën</button></div>
     </section>
