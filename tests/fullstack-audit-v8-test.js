@@ -66,8 +66,8 @@ assert.match(brandSeed, /Blob mirror disabled; local \/brand assets are authorit
 const vercel = JSON.parse(read('vercel.json'));
 assert.deepEqual(
   vercel.git?.deploymentEnabled,
-  {'*':false,main:true},
-  'Vercel previews must stay disabled on Hobby so CI commits do not exhaust the deployment quota'
+  {'**':false,main:true},
+  'Vercel previews must stay disabled for slash-named feature branches so CI commits do not exhaust the Hobby deployment quota'
 );
 const packageJson = JSON.parse(read('package.json'));
 assert.match(packageJson.scripts?.build || '', /pnpm run test:deploy/, 'Vercel build must use the focused deploy gate');
