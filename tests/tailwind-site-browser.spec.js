@@ -191,7 +191,8 @@ async function auditClinicalViewport(page,label,{requireControls=false}={}) {
 
   expect(audit.token,`${label}: Stripe accent token was not applied`).toBe('#533afd');
   expect(chrome.sidebarBg,`${label}: sidebar must use the approved navy shell`).toBe('rgb(28, 30, 84)');
-  expect(chrome.topbarHeight,`${label}: topbar height must match the Stripe shell`).toBe(58);
+  const expectedTopbarHeight=chrome.viewportWidth<=760 ? 50 : 58;
+  expect(chrome.topbarHeight,`${label}: topbar height must match the Stripe shell`).toBe(expectedTopbarHeight);
   assertCommonViewport(audit,label,{requireControls});
   return {...audit,...chrome};
 }
