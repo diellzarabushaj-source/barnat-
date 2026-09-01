@@ -469,6 +469,18 @@
     finally { deleteButton?.removeAttribute('aria-busy'); if (deleteButton) deleteButton.disabled = false; }
   }
 
+  function favoriteRecordForProductKey(key, snapshot = personalSnapshot()) {
+    const productKey = clean(key);
+    if (!productKey) return null;
+    return (Array.isArray(snapshot.favorites) ? snapshot.favorites : []).find(item => {
+      const entityType = clean(item?.entityType);
+      const entityKey = clean(item?.entityKey);
+      const payload = item?.payload && typeof item.payload === 'object' ? item.payload : {};
+      if (entityType === 'product' && entityKey === productKey) return true;
+      return entityType === 'drug' && clean(payload.drugId) === productKey;
+    }) || null;
+  }
+
   async function toggleFavoriteRow(row, button) {
     const api = await loadPersonalLibrary();
     const key = personalEntityKey(row);
@@ -476,17 +488,23 @@
     button?.setAttribute('aria-busy','true');
     try {
       await api.load().catch(() => null);
-      const next = await api.toggleFavorite('product', key, {
-        drugId:clean(row.id),
-        tradeName:clean(row.tradeName),
-        label:clean(row.tradeName),
-        registryNumber:clean(row.registryNumber),
-        pdid:clean(row.pdid),
-        activeSubstance:clean(row.activeSubstance),
-        strength:clean(row.strength),
-        form:clean(row.form),
-        atc:clean(row.atc),
-      });
+      const existing = favoriteRecordForProductKey(key);
+      let next = false;
+      if (existing) {
+        await api.setFavorite(existing.entityType, existing.entityKey, false);
+      } else {
+        next = await api.setFavorite('product', key, true, {
+          drugId:clean(row.id),
+          tradeName:clean(row.tradeName),
+          label:clean(row.tradeName),
+          registryNumber:clean(row.registryNumber),
+          pdid:clean(row.pdid),
+          activeSubstance:clean(row.activeSubstance),
+          strength:clean(row.strength),
+          form:clean(row.form),
+          atc:clean(row.atc),
+        });
+      }
       showToast(next ? 'Bari u shënua si favorit.' : 'Bari u hoq nga favoritët.');
       if (button) {
         button.classList.toggle('is-favorite', next);
@@ -504,22 +522,35 @@
 
   function isFavoriteProductKey(key) {
     if (!key || !window.DRxPhase9Personal) return false;
-    try { return window.DRxPhase9Personal.isFavorite('product', key); }
+    try { return Boolean(favoriteRecordForProductKey(key)); }
     catch { return false; }
   }
 
   function personalItems(snapshot, view) {
     const source = view === 'notes' ? snapshot.notes : snapshot.favorites;
-    return (Array.isArray(source) ? source : []).filter(item => item?.entityType === 'product' && clean(item.entityKey));
+    return (Array.isArray(source) ? source : []).filter(item => {
+      const entityType = clean(item?.entityType);
+      if (!clean(item?.entityKey)) return false;
+      return view === 'notes' ? entityType === 'product' : (entityType === 'product' || entityType === 'drug');
+    });
   }
 
   function personalMeta(item, snapshot) {
     const key = clean(item?.entityKey);
-    const favorite = (snapshot.favorites || []).find(row => row.entityType === 'product' && clean(row.entityKey) === key);
-    const payload = item?.payload && typeof item.payload === 'object' ? item.payload : favorite?.payload && typeof favorite.payload === 'object' ? favorite.payload : {};
-    const resolved = state.personalResolved.get(key) || {};
+    const itemPayload = item?.payload && typeof item.payload === 'object' ? item.payload : {};
+    const productId = clean(itemPayload.drugId || (item?.entityType === 'product' ? key : ''));
+    const favorite = (snapshot.favorites || []).find(row => {
+      const payload = row?.payload && typeof row.payload === 'object' ? row.payload : {};
+      return (row.entityType === 'product' && clean(row.entityKey) === (productId || key))
+        || (row.entityType === 'drug' && clean(payload.drugId) === (productId || key));
+    });
+    const favoritePayload = favorite?.payload && typeof favorite.payload === 'object' ? favorite.payload : {};
+    const payload = Object.keys(itemPayload).length ? itemPayload : favoritePayload;
+    const resolved = state.personalResolved.get(productId) || state.personalResolved.get(key) || {};
     return {
       id:key,
+      sourceType:clean(item?.entityType) || 'product',
+      productId:clean(resolved.id || productId),
       tradeName:clean(resolved.tradeName || payload.tradeName || payload.label || payload.name || payload.drugName),
       registryNumber:clean(resolved.registryNumber || payload.registryNumber || payload.registry_number),
       pdid:clean(resolved.pdid || payload.pdid),
@@ -555,11 +586,13 @@
   }
 
   async function hydratePersonalRows(snapshot, items) {
-    const ids = [...new Set(items.map(item => clean(item.entityKey)).filter(key =>
+    const ids = [...new Set(items.map(item => {
+      const meta = personalMeta(item, snapshot);
+      return !meta.tradeName ? meta.productId : '';
+    }).filter(key =>
       /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(key)
       && !state.personalResolved.has(key)
       && !state.personalMisses.has(key)
-      && !personalMeta(item, snapshot).tradeName
     ))];
     if (!ids.length) return;
     for (let index = 0; index < ids.length; index += 40) {
@@ -699,10 +732,10 @@
             ${note ? `<p class="personal-note-copy">${escapeHtml(note)}</p>` : ''}
           </div>
           <div class="personal-item-actions">
-            <button class="button button-secondary" type="button" data-personal-open="${escapeHtml(meta.id)}"${unresolved ? ' aria-label="Hap të dhënat e barit"' : ''}>Hap barin</button>
+            <button class="button button-secondary" type="button" data-personal-open="${escapeHtml(meta.productId || meta.id)}"${unresolved ? ' aria-label="Hap të dhënat e barit"' : ''}>Hap barin</button>
             ${view === 'notes'
               ? `<button class="button button-ghost" type="button" data-personal-edit-note="${escapeHtml(meta.id)}">Ndrysho</button><button class="button button-ghost" type="button" data-personal-delete-note="${escapeHtml(meta.id)}">Fshi</button>`
-              : `<button class="button button-ghost" type="button" data-personal-unfavorite="${escapeHtml(meta.id)}">Hiq</button>`}
+              : `<button class="button button-ghost" type="button" data-personal-type="${escapeHtml(meta.sourceType)}" data-personal-unfavorite="${escapeHtml(meta.id)}">Hiq</button>`}
           </div>
         </article>`;
       }).join('');
@@ -1409,7 +1442,11 @@
       if (open) { void openPersonalDrug(open.dataset.personalOpen); return; }
       const unfavorite = event.target.closest('[data-personal-unfavorite]');
       if (unfavorite) {
-        void loadPersonalLibrary().then(api => api?.setFavorite?.('product', unfavorite.dataset.personalUnfavorite, false)).then(() => showToast('Bari u hoq nga favoritët.')).catch(error => showToast(error?.message || 'Favoriti nuk u hoq.'));
+        const type = unfavorite.dataset.personalType === 'drug' ? 'drug' : 'product';
+        void loadPersonalLibrary()
+          .then(api => api?.setFavorite?.(type, unfavorite.dataset.personalUnfavorite, false))
+          .then(() => showToast('Bari u hoq nga favoritët.'))
+          .catch(error => showToast(error?.message || 'Favoriti nuk u hoq.'));
         return;
       }
       const edit = event.target.closest('[data-personal-edit-note]');
