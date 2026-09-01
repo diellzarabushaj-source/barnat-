@@ -30,6 +30,13 @@ const goodRule={
   hepaticAdjustmentRequired:false,
   renalAdjustments:[{source:{...source,sectionSha256:'d'.repeat(64)}}],
   hepaticAdjustments:[],
+  conversion:{
+    bindingStatus:'verified',
+    verifiedBy:'reviewer',
+    verifiedAt:'2026-08-29T12:00:00Z',
+    enabled:false,
+    status:'not_allowed',
+  },
   source
 };
 assert.equal(Gate._test.ruleValid(goodRule),true);
