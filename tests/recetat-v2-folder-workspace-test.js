@@ -22,8 +22,8 @@ assert.match(html, /data-drx-app="recetat-v2"/);
 assert.match(html, /class="drx-unified-sidebar"/);
 assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
 assert.match(html, /class="nav-item is-active" href="\/recetat\.html" aria-current="page"/);
-assert.match(html, /recetat-v2\.css\?v=4/);
-assert.match(html, /recetat-v2\.js\?v=4/);
+assert.match(html, /recetat-v2\.css\?v=5/);
+assert.match(html, /recetat-v2\.js\?v=5/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/);
 
 [
@@ -40,15 +40,18 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
   .map(match => match[1]);
 
 assert.equal(styles.length, 2, 'Recetat V2 must load only page CSS + shared Stripe shell');
-assert.equal(styles[0], '/recetat-v2.css?v=4');
+assert.equal(styles[0], '/recetat-v2.css?v=5');
 assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6');
-assert.deepEqual(scripts, ['/recetat-v2.js?v=4']);
+assert.deepEqual(scripts, ['/recetat-v2.js?v=5']);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|recetat\.css|recetat-audit\.css|recetat-style-loader\.js|recetat\.js/);
 
 assert.match(css, /Recetat V2 — consolidated prescription workspace/);
 assert.match(css, /Recetat V2 — Stripe prescription workspace/);
 assert.match(css, /Recetat V2 — clinical workspace polish v3/);
 assert.match(css, /Recetat V2 — electronic prescription workflow v4/);
+assert.match(css, /Recetat V2 — clinical drug search v5/);
+assert.match(css, /\.rx-drug-search-summary/);
+assert.match(css, /\.rx-drug-result\.is-fuzzy/);
 assert.match(css, /\.rx-order-card/);
 assert.match(css, /\.rx-free-text-panel/);
 assert.match(css, /\.rx-preview-card\{position:sticky;top:72px\}/);
@@ -68,6 +71,12 @@ assert.match(js, /Rruga e administrimit/);
 assert.match(js, /Sinkronizuar/);
 assert.match(js, /Lokale/);
 assert.match(js, /function structuredOrdersReady\(\)/);
+assert.match(js, /function searchReasonLabel\(/);
+assert.match(js, /function renderDrugSearchResults\(/);
+assert.match(js, /searchCache: new Map\(\)/);
+assert.match(js, /limit=50/);
+assert.match(js, /Nr\. \$\{drug\.registryNumber\}/);
+assert.match(js, /PDID \$\{drug\.pdid\}/);
 assert.match(js, /clinicalReviewConfirmed/);
 assert.match(js, /function updateOrderField\(/);
 assert.match(js, /Asnjë skemë nuk aplikohet pa konfirmimin tënd/);
