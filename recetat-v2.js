@@ -5124,8 +5124,10 @@
   function orderIssues(drug) {
     const issues = [];
     if (!text(drug.route)) issues.push('rruga');
-    if (!text(drug.signatura) && !(text(drug.doseInstruction) && text(drug.frequency))) issues.push('doza/shpeshtësia');
+    if (!text(drug.doseInstruction)) issues.push('doza');
+    if (!text(drug.frequency)) issues.push('shpeshtësia');
     if (!text(drug.dispense)) issues.push('sasia');
+    if (!text(drug.signatura) && !(text(drug.doseInstruction) && text(drug.frequency))) issues.push('Signatura');
     return issues;
   }
 
@@ -5234,7 +5236,12 @@
     state.pendingDosageChoice = { drug, matches:rows, options };
     state.chooserReturnFocus = document.activeElement;
     const select = $('#rxDosageChoice');
-    select.innerHTML = rows.map(item => `<option value="${esc(item.regimenId)}">${esc(item.indication || 'Pa indikacion të shënuar')} · ${esc(item.frequency || 'shpeshtësia e pashënuar')} · ${esc(item.duration || 'kohëzgjatja e pashënuar')}</option>`).join('');
+    const optionsHtml = rows.map(item => `<option value="${esc(item.regimenId)}">${esc(item.indication || 'Pa indikacion të shënuar')} · ${esc(item.frequency || 'shpeshtësia e pashënuar')} · ${esc(item.duration || 'kohëzgjatja e pashënuar')}</option>`).join('');
+    select.innerHTML = rows.length > 1
+      ? `<option value="">Zgjidh indikacionin / skemën…</option>${optionsHtml}`
+      : optionsHtml;
+    const applyButton = $('#rxDosageApply');
+    if (applyButton) applyButton.disabled = rows.length > 1;
     const copy = $('#rxDosageChooserCopy');
     if (copy) copy.textContent = rows.length === 1
       ? 'U gjet një skemë e verifikuar. Nuk aplikohet automatikisht; kontrolloje dhe konfirmoje vetëm nëse i përshtatet pacientit dhe indikacionit.'
@@ -5250,6 +5257,11 @@
     const pending = state.pendingDosageChoice;
     if (pending) {
       const selected = pending.matches.find(item => item.regimenId === $('#rxDosageChoice')?.value);
+      if (apply && !selected) {
+        setStatus('Zgjidh indikacionin / skemën para aplikimit.', 'error');
+        $('#rxDosageChoice')?.focus();
+        return;
+      }
       const contextApi = window.MedIndexPrescriptionContext;
       const transferred = apply && selected
         ? (contextApi?.transferForContext
@@ -5340,11 +5352,11 @@
           <button type="button" class="rx-order-remove" data-remove-drug="${esc(drug.key)}" aria-label="Hiqe ${esc(drug.substance)}">Hiq</button>
         </header>
         <div class="rx-order-grid">
-          <label><span>Rruga <b aria-hidden="true">*</b></span><select data-order-field="route">${routeOptions}</select></label>
-          <label><span>Doza për marrje</span><input data-order-field="doseInstruction" value="${esc(drug.doseInstruction)}" placeholder="p.sh. 1 tabletë"></label>
-          <label><span>Shpeshtësia</span><input data-order-field="frequency" value="${esc(drug.frequency)}" placeholder="p.sh. çdo 12 orë"></label>
+          <label><span>Rruga <b aria-hidden="true">*</b></span><select data-order-field="route" required aria-required="true">${routeOptions}</select></label>
+          <label><span>Doza për marrje <b aria-hidden="true">*</b></span><input data-order-field="doseInstruction" required aria-required="true" value="${esc(drug.doseInstruction)}" placeholder="p.sh. 1 tabletë"></label>
+          <label><span>Shpeshtësia <b aria-hidden="true">*</b></span><input data-order-field="frequency" required aria-required="true" value="${esc(drug.frequency)}" placeholder="p.sh. çdo 12 orë"></label>
           <label><span>Kohëzgjatja</span><input data-order-field="duration" value="${esc(drug.duration)}" placeholder="p.sh. 7 ditë"></label>
-          <label><span>Sasia për dispensim <b aria-hidden="true">*</b></span><input data-order-field="dispense" value="${esc(drug.dispense)}" placeholder="p.sh. Scat. No I"></label>
+          <label><span>Sasia për dispensim <b aria-hidden="true">*</b></span><input data-order-field="dispense" required aria-required="true" value="${esc(drug.dispense)}" placeholder="p.sh. Scat. No I"></label>
           <label><span>Udhëzim shtesë</span><input data-order-field="additionalInstructions" value="${esc(drug.additionalInstructions)}" placeholder="p.sh. pas ushqimit"></label>
           <label class="rx-order-signature"><span>Signatura <b aria-hidden="true">*</b></span><textarea rows="2" data-order-field="signatura" placeholder="Udhëzimi për pacientin">${esc(drug.signatura || structuredSignature(drug))}</textarea></label>
         </div>
@@ -6168,6 +6180,10 @@
     });
 
     syncAiAvailability();
+    $('#rxDosageChoice')?.addEventListener('change', event => {
+      const apply = $('#rxDosageApply');
+      if (apply) apply.disabled = !event.target.value;
+    });
     $('#rxDosageApply')?.addEventListener('click', () => closeDosageChooser({ apply:true }));
     $('#rxDosageCancel')?.addEventListener('click', () => closeDosageChooser({ apply:false }));
     $('#rxDosageChooser')?.addEventListener('click', event => { if (event.target.id === 'rxDosageChooser') closeDosageChooser({ apply:false }); });
