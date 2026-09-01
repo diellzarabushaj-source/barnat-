@@ -68,7 +68,9 @@ const { pathToFileURL } = require('node:url');
   assert.match(apiAuth, /nonce:sha256Hex\(suppliedCsrf\)/, 'Server-side Google nonce verification must use SHA-256');
   assert.match(apiAuth, /LEGACY_OWNER_MAPPING_MISSING/, 'Owner login must fail closed without the trusted legacy mapping');
   assert.match(apiAuth, /LEGACY_OWNER_MAPPING_MISMATCH/, 'Owner login must fail closed on a mapping mismatch');
-  assert.match(apiAuth, /legacyUserId \|\| canonicalIdentity\.id/, 'Storage identity bridge is missing');
+  assert.match(apiAuth, /UserIdentity\.canonicalIdentity\(canonicalIdentity\)/, 'Canonical storage identity resolution is missing');
+  assert.match(apiAuth, /id:identity\.storageUid/, 'Resolved storage UUID is not used for the application user');
+  assert.match(apiAuth, /legacyUserId = identity\.legacyStorageUid/, 'Trusted legacy storage bridge is not retained');
   assert.match(apiAuth, /provider = 'supabase-google'/, 'Google sessions must be marked as Supabase-authenticated');
 
   assert.match(loginClient, /crypto\.subtle\.digest\('SHA-256'/, 'Browser must hash the raw nonce before Google Sign-In');
