@@ -24,8 +24,8 @@ assert.match(library, /function personalProductPayload\(/);
 assert.match(library, /function personalProductMetadataByIds\(/);
 assert.match(library, /function mergePersonalProductMetadata\(/);
 assert.match(library, /Personal library product metadata/);
-assert.match(library, /is_published', 'eq\.true'/);
-assert.match(library, /editorial_status', 'eq\.published'/);
+assert.match(library, /is_published'\s*,\s*'eq\.true'/);
+assert.match(library, /editorial_status'\s*,\s*'eq\.published'/);
 
 const canonical = libraryModule._test.personalProductPayload({
   id:'a29ce6e1-7581-4e9e-bc6e-db29e0ac451d',
