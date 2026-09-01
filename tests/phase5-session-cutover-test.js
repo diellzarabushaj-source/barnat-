@@ -68,7 +68,9 @@ const { pathToFileURL } = require('node:url');
   assert.match(apiAuth, /nonce:sha256Hex\(suppliedCsrf\)/, 'Server-side Google nonce verification must use SHA-256');
   assert.match(apiAuth, /LEGACY_OWNER_MAPPING_MISSING/, 'Owner login must fail closed without the trusted legacy mapping');
   assert.match(apiAuth, /LEGACY_OWNER_MAPPING_MISMATCH/, 'Owner login must fail closed on a mapping mismatch');
-  assert.match(apiAuth, /legacyUserId \|\| canonicalIdentity\.id/, 'Storage identity bridge is missing');
+  assert.match(apiAuth, /UserIdentity\.canonicalIdentity\(canonicalIdentity\)/, 'Canonical storage identity resolution is missing');
+  assert.match(apiAuth, /id:identity\.storageUid/, 'Resolved storage UUID is not used for the application user');
+  assert.match(apiAuth, /legacyUserId = identity\.legacyStorageUid/, 'Trusted legacy storage bridge is not retained');
   assert.match(apiAuth, /provider = 'supabase-google'/, 'Google sessions must be marked as Supabase-authenticated');
 
   assert.match(loginClient, /crypto\.subtle\.digest\('SHA-256'/, 'Browser must hash the raw nonce before Google Sign-In');
@@ -83,7 +85,7 @@ const { pathToFileURL } = require('node:url');
   assert.match(supabaseAuth, /legacy_user_id/, 'Trusted profile lookup must expose legacy_user_id server-side');
   assert.match(supabaseAuth, /legacyUserId:String\(profile\.legacy_user_id/, 'Legacy mapping must be normalized explicitly');
 
-  assert.match(library, /prescriptionContext\(user\.id, item\.clientId\)/, 'Prescription encryption must still use storage/AAD uid in Phase 5');
+  assert.match(library, /prescriptionContext\(storageUid, item\.clientId\)/, 'Prescription encryption must still use the resolved storage/AAD uid in Phase 5');
   assert.doesNotMatch(library, /prescriptionContext\(authUid[,)]/, 'Phase 5 must not silently re-key prescription AAD to the Auth UUID');
   assert.match(library, /user_id:authUid/, 'Auth UUID may be used only for auth-bound native user_notes persistence');
 

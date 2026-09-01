@@ -779,3 +779,104 @@ body[data-registry-view="notes"] #headingActions{display:none}
   .personal-item-title strong{font-size:12.5px;white-space:normal}
   .personal-note-copy{font-size:11.5px}
 }
+
+
+/* Personal workspace v3 polish */
+.personal-toolbar{
+  grid-template-columns:auto minmax(0,1fr);
+}
+.personal-toolbar-actions{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+}
+.personal-sort select{
+  height:38px;
+  min-width:128px;
+  padding:0 28px 0 10px;
+  border:1px solid #d8e0e9;
+  border-radius:9px;
+  background:#fff;
+  color:#415269;
+  font:inherit;
+  font-size:11.5px;
+  outline:none;
+}
+.personal-sort select:focus,
+.personal-sort select:hover{
+  border-color:#b7b1ff;
+}
+.personal-toolbar-actions .personal-search{
+  width:min(360px,100%);
+  flex:1 1 260px;
+}
+.personal-refresh{
+  width:38px;
+  min-width:38px;
+  height:38px;
+  padding:0;
+  display:inline-grid;
+  place-items:center;
+}
+.personal-refresh .icon{width:16px;height:16px}
+.personal-refresh[aria-busy="true"] .icon{animation:personal-spin .8s linear infinite}
+@keyframes personal-spin{to{transform:rotate(360deg)}}
+.personal-item-time{
+  color:#98a4b3;
+  font-size:9.75px;
+  line-height:1.4;
+}
+.personal-load-error{
+  display:grid;
+  justify-items:center;
+  gap:8px;
+  padding:34px 20px 38px;
+  text-align:center;
+}
+.personal-load-error strong{color:#2f3f52;font-size:13px}
+.personal-load-error p{
+  max-width:480px;
+  margin:0;
+  color:#7a8796;
+  font-size:11.5px;
+  line-height:1.5;
+}
+#personalStatus[data-state="error"]{color:#a34b4b}
+#personalStatus[data-state="loading"]{color:#7a8796}
+.registry-note-field-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.registry-note-field-head>span:first-child{
+  font-size:12px;
+  font-weight:650;
+  color:#344054;
+}
+.registry-note-count{
+  color:#8a98a8;
+  font-size:10.5px;
+  font-variant-numeric:tabular-nums;
+}
+.registry-note-count.is-near-limit{color:#a95d2d}
+.registry-note-actions [aria-busy="true"]{opacity:.6;cursor:wait}
+
+@media(max-width:760px){
+  .personal-toolbar-actions{
+    width:100%;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 44px;
+    gap:8px;
+  }
+  .personal-sort{grid-column:1/-1}
+  .personal-sort select{width:100%;height:42px;font-size:16px}
+  .personal-toolbar-actions .personal-search{width:100%;max-width:none}
+  .personal-refresh{width:44px;height:44px}
+  .personal-load-error{padding:28px 16px 32px}
+}
+@media(prefers-reduced-motion:reduce){
+  .personal-refresh[aria-busy="true"] .icon{animation:none}
+}

@@ -93,6 +93,7 @@
     noteRow: null,
     view: 'registry',
     personalQuery: '',
+    personalSort: 'recent',
     personalResolved: new Map(),
     personalMisses: new Set(),
   };
@@ -111,7 +112,7 @@
     drawerBackdrop: $('drawerBackdrop'), detailDrawer: $('detailDrawer'), drawerClose: $('drawerClose'), drawerCloseButton: $('drawerCloseButton'), drawerTitle: $('drawerTitle'), drawerBody: $('drawerBody'), drawerPrescriptionButton: $('drawerPrescriptionButton'),
     pageTitle: $('pageTitle'), pageEyebrow: $('pageEyebrow'), pageSubtitle: $('pageSubtitle'), headingActions: $('headingActions'),
     personalWorkspace: $('personalWorkspace'), personalTitle: $('personalTitle'), personalSubtitle: $('personalSubtitle'), personalList: $('personalList'), personalEmpty: $('personalEmpty'),
-    personalEmptyTitle: $('personalEmptyTitle'), personalEmptyText: $('personalEmptyText'), personalSearchInput: $('personalSearchInput'), personalCountText: $('personalCountText'), personalStatus: $('personalStatus'),
+    personalEmptyTitle: $('personalEmptyTitle'), personalEmptyText: $('personalEmptyText'), personalSearchInput: $('personalSearchInput'), personalSortSelect: $('personalSortSelect'), personalRefreshButton: $('personalRefreshButton'), personalCountText: $('personalCountText'), personalStatus: $('personalStatus'),
     personalFavoritesTab: $('personalFavoritesTab'), personalNotesTab: $('personalNotesTab'), personalFavoritesCount: $('personalFavoritesCount'), personalNotesCount: $('personalNotesCount'),
     favoriteNavCount: $('favoriteNavCount'), noteNavCount: $('noteNavCount'), personalBackToRegistry: $('personalBackToRegistry'),
     toast: $('toast'),
@@ -384,6 +385,15 @@
     });
   }
 
+  function updateNoteCounter(root = document.getElementById('registryNoteDialog')) {
+    const textarea = root?.querySelector('#registryNoteText');
+    const counter = root?.querySelector('#registryNoteCount');
+    if (!textarea || !counter) return;
+    const length = String(textarea.value || '').length;
+    counter.textContent = `${length} / 2000`;
+    counter.classList.toggle('is-near-limit', length >= 1800);
+  }
+
   function ensureNoteDialog() {
     let root = document.getElementById('registryNoteDialog');
     if (root) return root;
@@ -391,12 +401,17 @@
     root.id = 'registryNoteDialog';
     root.className = 'registry-note-overlay';
     root.hidden = true;
-    root.innerHTML = '<section class="registry-note-dialog" role="dialog" aria-modal="true" aria-labelledby="registryNoteTitle"><div class="registry-note-head"><div><p class="eyebrow">Shënim personal</p><h2 id="registryNoteTitle">Shënim për barin</h2></div><button class="registry-note-close" type="button" data-note-close aria-label="Mbyll shënimin">×</button></div><label class="registry-note-field"><span>Shënimi</span><textarea id="registryNoteText" maxlength="2000" rows="8" placeholder="Shkruaj shënimin tënd…"></textarea></label><div class="registry-note-actions"><button class="button button-ghost" type="button" data-note-delete>Fshi shënimin</button><div><button class="button button-secondary" type="button" data-note-close>Anulo</button><button class="button button-primary" type="button" data-note-save>Ruaj</button></div></div></section>';
+    root.innerHTML = '<section class="registry-note-dialog" role="dialog" aria-modal="true" aria-labelledby="registryNoteTitle"><div class="registry-note-head"><div><p class="eyebrow">Shënim personal</p><h2 id="registryNoteTitle">Shënim për barin</h2></div><button class="registry-note-close" type="button" data-note-close aria-label="Mbyll shënimin">×</button></div><label class="registry-note-field"><span class="registry-note-field-head"><span>Shënimi</span><span class="registry-note-count" id="registryNoteCount">0 / 2000</span></span><textarea id="registryNoteText" maxlength="2000" rows="8" placeholder="Shkruaj shënimin tënd…"></textarea></label><div class="registry-note-actions"><button class="button button-ghost" type="button" data-note-delete>Fshi shënimin</button><div><button class="button button-secondary" type="button" data-note-close>Anulo</button><button class="button button-primary" type="button" data-note-save>Ruaj</button></div></div></section>';
     document.body.appendChild(root);
     root.addEventListener('click', async event => {
       if (event.target === root || event.target.closest('[data-note-close]')) { closeNoteDialog(); return; }
       if (event.target.closest('[data-note-save]')) { await saveCurrentNote(); return; }
       if (event.target.closest('[data-note-delete]')) { await deleteCurrentNote(); }
+    });
+    root.querySelector('#registryNoteText')?.addEventListener('input', () => updateNoteCounter(root));
+    root.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { event.preventDefault(); closeNoteDialog(); return; }
+      if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) { event.preventDefault(); void saveCurrentNote(); }
     });
     return root;
   }
@@ -409,7 +424,11 @@
     const root = ensureNoteDialog();
     const key = personalEntityKey(row);
     root.querySelector('#registryNoteTitle').textContent = row.tradeName || 'Shënim për barin';
-    root.querySelector('#registryNoteText').value = key ? api.note('product', key) : '';
+    const existing = key ? api.note('product', key) : '';
+    root.querySelector('#registryNoteText').value = existing;
+    const deleteButton = root.querySelector('[data-note-delete]');
+    if (deleteButton) deleteButton.hidden = !existing.trim();
+    updateNoteCounter(root);
     root.hidden = false;
     document.body.classList.add('registry-note-open');
     setTimeout(() => root.querySelector('#registryNoteText')?.focus(), 0);
@@ -429,8 +448,12 @@
     const key = personalEntityKey(row);
     const value = document.getElementById('registryNoteText')?.value || '';
     if (!api || !key) return showToast('Shënimi nuk mund të ruhet.');
+    const saveButton = document.querySelector('#registryNoteDialog [data-note-save]');
+    saveButton?.setAttribute('aria-busy','true');
+    if (saveButton) saveButton.disabled = true;
     try { await api.saveNote('product', key, value); showToast(value.trim() ? 'Shënimi u ruajt.' : 'Shënimi u fshi.'); closeNoteDialog(); }
     catch (error) { showToast(error?.message || 'Shënimi nuk u ruajt.'); }
+    finally { saveButton?.removeAttribute('aria-busy'); if (saveButton) saveButton.disabled = false; }
   }
 
   async function deleteCurrentNote() {
@@ -438,8 +461,12 @@
     const api = await loadPersonalLibrary();
     const key = personalEntityKey(row);
     if (!api || !key) return showToast('Shënimi nuk mund të fshihet.');
+    const deleteButton = document.querySelector('#registryNoteDialog [data-note-delete]');
+    deleteButton?.setAttribute('aria-busy','true');
+    if (deleteButton) deleteButton.disabled = true;
     try { await api.deleteNote('product', key); showToast('Shënimi u fshi.'); closeNoteDialog(); }
     catch (error) { showToast(error?.message || 'Shënimi nuk u fshi.'); }
+    finally { deleteButton?.removeAttribute('aria-busy'); if (deleteButton) deleteButton.disabled = false; }
   }
 
   async function toggleFavoriteRow(row, button) {
@@ -551,6 +578,55 @@
     ].filter(Boolean).join(' '));
   }
 
+  function personalUpdatedAt(item) {
+    const value = clean(item?.serverUpdatedAt || item?.clientUpdatedAt);
+    const time = Date.parse(value);
+    return Number.isFinite(time) ? time : 0;
+  }
+
+  function personalTimeLabel(item, view) {
+    const time = personalUpdatedAt(item);
+    if (!time) return '';
+    const date = new Date(time);
+    const now = new Date();
+    const sameDay = date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth() && date.getDate() === now.getDate();
+    const formatted = new Intl.DateTimeFormat('sq-AL', sameDay
+      ? { hour:'2-digit', minute:'2-digit' }
+      : { day:'2-digit', month:'short', year:date.getFullYear() === now.getFullYear() ? undefined : 'numeric' }
+    ).format(date);
+    return `${view === 'notes' ? 'Përditësuar' : 'Ruajtur'} ${sameDay ? 'sot ' : ''}${formatted}`;
+  }
+
+  function comparePersonalRows(left, right) {
+    const leftName = left.meta.tradeName || left.meta.registryNumber || left.meta.id;
+    const rightName = right.meta.tradeName || right.meta.registryNumber || right.meta.id;
+    if (state.personalSort === 'name') return leftName.localeCompare(rightName, 'sq');
+    const recent = personalUpdatedAt(right.item) - personalUpdatedAt(left.item);
+    return recent || leftName.localeCompare(rightName, 'sq');
+  }
+
+  async function refreshPersonalLibrary({ announce = true } = {}) {
+    const api = await loadPersonalLibrary();
+    if (!api) return showToast('Biblioteka personale nuk u ngarkua.');
+    el.personalRefreshButton?.setAttribute('aria-busy','true');
+    if (el.personalRefreshButton) el.personalRefreshButton.disabled = true;
+    if (el.personalStatus) {
+      el.personalStatus.dataset.state = 'loading';
+      el.personalStatus.textContent = 'Supabase · duke rifreskuar';
+    }
+    try {
+      await api.load({ force:true });
+      syncPersonalUi();
+      if (announce) showToast('Favoritët dhe shënimet u rifreskuan.');
+    } catch (error) {
+      renderPersonalWorkspace({ hydrate:false });
+      if (announce) showToast(error?.message || 'Sinkronizimi dështoi.');
+    } finally {
+      el.personalRefreshButton?.removeAttribute('aria-busy');
+      if (el.personalRefreshButton) el.personalRefreshButton.disabled = false;
+    }
+  }
+
   function renderPersonalWorkspace({ hydrate = true } = {}) {
     if (!el.personalWorkspace || state.view === 'registry') return;
     const snapshot = personalSnapshot();
@@ -566,10 +642,14 @@
     el.personalNotesTab.setAttribute('aria-selected', view === 'notes' ? 'true' : 'false');
 
     if (!snapshot.loaded) {
-      el.personalList.innerHTML = '<div class="drawer-loading">Duke sinkronizuar bibliotekën personale…</div>';
+      const error = clean(snapshot.error);
       el.personalEmpty.hidden = true;
-      el.personalCountText.textContent = 'Duke sinkronizuar…';
-      el.personalStatus.textContent = 'Supabase · duke u lidhur';
+      el.personalCountText.textContent = error ? 'Sinkronizimi nuk u krye' : 'Duke sinkronizuar…';
+      el.personalStatus.dataset.state = error ? 'error' : 'loading';
+      el.personalStatus.textContent = error ? 'Supabase · sinkronizimi dështoi' : 'Supabase · duke u lidhur';
+      el.personalList.innerHTML = error
+        ? `<div class="personal-load-error"><strong>Biblioteka personale nuk u ngarkua</strong><p>${escapeHtml(error)}</p><button class="button button-secondary" type="button" data-personal-retry>Provo përsëri</button></div>`
+        : '<div class="drawer-loading">Duke sinkronizuar bibliotekën personale…</div>';
       return;
     }
 
@@ -577,9 +657,10 @@
     const query = normalizeFormText(state.personalQuery);
     const rows = all.map(item => ({ item, meta:personalMeta(item, snapshot) }))
       .filter(({ item, meta }) => !query || personalSearchText(item, meta, view).includes(query))
-      .sort((left, right) => (left.meta.tradeName || left.meta.registryNumber || left.meta.id).localeCompare(right.meta.tradeName || right.meta.registryNumber || right.meta.id, 'sq'));
+      .sort(comparePersonalRows);
 
     el.personalCountText.textContent = query ? `${rows.length} nga ${all.length} rezultate` : `${all.length} ${view === 'notes' ? 'shënime' : 'favoritë'}`;
+    el.personalStatus.dataset.state = 'ready';
     el.personalStatus.textContent = 'Supabase · sinkronizuar me llogarinë tënde';
     el.personalEmpty.hidden = rows.length > 0;
     if (!rows.length) {
@@ -596,11 +677,13 @@
         const secondary = [meta.activeSubstance, meta.strength, meta.form].filter(Boolean).join(' · ');
         const registry = meta.registryNumber ? `Nr. regjistri ${meta.registryNumber}` : '';
         const note = view === 'notes' ? String(item.content || '').slice(0, 2000) : '';
+        const timeLabel = personalTimeLabel(item, view);
         return `<article class="personal-item" data-personal-key="${escapeHtml(meta.id)}">
           <span class="personal-item-icon" aria-hidden="true">${view === 'notes' ? NOTE_ICON : STAR_ICON}</span>
           <div class="personal-item-copy">
             <div class="personal-item-title"><strong>${escapeHtml(name)}</strong><span class="personal-kind">${view === 'notes' ? 'Shënim' : 'Favorit'}</span></div>
             ${secondary ? `<span class="personal-item-meta">${escapeHtml(secondary)}${registry ? ` · ${escapeHtml(registry)}` : ''}</span>` : registry ? `<span class="personal-item-meta">${escapeHtml(registry)}</span>` : ''}
+            ${timeLabel ? `<span class="personal-item-time">${escapeHtml(timeLabel)}</span>` : ''}
             ${note ? `<p class="personal-note-copy">${escapeHtml(note)}</p>` : ''}
           </div>
           <div class="personal-item-actions">
@@ -1299,10 +1382,13 @@
     window.addEventListener('drx:phase9-personal-ready', syncPersonalUi);
     window.addEventListener('drx:phase9-personal-changed', syncPersonalUi);
     el.personalSearchInput?.addEventListener('input', () => { state.personalQuery = clean(el.personalSearchInput.value); renderPersonalWorkspace(); });
+    el.personalSortSelect?.addEventListener('change', () => { state.personalSort = el.personalSortSelect.value === 'name' ? 'name' : 'recent'; renderPersonalWorkspace({ hydrate:false }); });
+    el.personalRefreshButton?.addEventListener('click', () => void refreshPersonalLibrary());
     el.personalFavoritesTab?.addEventListener('click', () => navigatePersonal('favorites'));
     el.personalNotesTab?.addEventListener('click', () => navigatePersonal('notes'));
     el.personalBackToRegistry?.addEventListener('click', () => navigatePersonal('registry'));
     el.personalList?.addEventListener('click', event => {
+      if (event.target.closest('[data-personal-retry]')) { void refreshPersonalLibrary(); return; }
       const open = event.target.closest('[data-personal-open]');
       if (open) { void openPersonalDrug(open.dataset.personalOpen); return; }
       const unfavorite = event.target.closest('[data-personal-unfavorite]');

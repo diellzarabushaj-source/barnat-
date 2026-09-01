@@ -2389,3 +2389,29 @@ html.drx-unified-sidebar :is(input,select,textarea):focus-visible{
     margin-bottom:14px!important;
   }
 }
+
+
+/* Personal sidebar counters */
+.nav-count{
+  min-width:22px;
+  height:20px;
+  display:inline-grid;
+  place-items:center;
+  margin-left:auto;
+  padding:0 6px;
+  border-radius:999px;
+  background:rgba(255,255,255,.11);
+  color:rgba(255,255,255,.78);
+  font-size:10px;
+  font-weight:600;
+  line-height:1;
+  font-variant-numeric:tabular-nums;
+}
+.nav-item.is-active .nav-count,
+.nav-item[aria-current="page"] .nav-count{
+  background:rgba(162,155,255,.28);
+  color:#fff;
+}
+@media(max-width:760px){
+  .nav-count{min-width:24px;height:22px}
+}
