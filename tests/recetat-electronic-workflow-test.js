@@ -12,7 +12,7 @@ const css = read('recetat-v2.css');
 const js = read('recetat-v2.js');
 const gemini = read('lib/gemini-prescription.js');
 
-for (const id of ['rxOrderBuilder','rxAddDrugButton','rxSelectedDrugs','rxFreeTextPanel','rxClinicalReview','rxDosageChooser']) {
+for (const id of ['rxOrderBuilder','rxAddDrugButton','rxSelectedDrugs','rxFreeTextPanel','rxClinicalReview','rxDosageChooser','rxDosageManual','rxDosageCancel']) {
   assert.match(html, new RegExp(`id="${id}"`), `Missing structured eRx node #${id}`);
 }
 assert.match(html, /Barnat e recetës/);
@@ -37,6 +37,11 @@ assert.match(js, /state\.clinicalReviewConfirmed/);
 assert.match(js, /openDosageChooser\(drug, \[decision\.regimen\], options\)/, 'A single exact regimen must still require explicit clinician confirmation');
 assert.doesNotMatch(js, /Skema e vetme me përputhje të saktë u auto-plotësua/);
 assert.match(js, /Asnjë skemë nuk aplikohet pa konfirmimin tënd/);
+assert.match(js, /closeDosageChooser\(\{ mode:'apply' \}\)/);
+assert.match(js, /closeDosageChooser\(\{ mode:'manual' \}\)/);
+assert.match(js, /closeDosageChooser\(\{ mode:'cancel' \}\)/);
+assert.match(js, /if \(!text\(drug\.signatura\)\) issues\.push\('Signatura'\)/);
+assert.match(js, /const structuredClinical = state\.composerOrigin === 'structured' \? selectedDrug : null/);
 assert.match(js, /getContext\?\.\(\)/);
 assert.match(js, /#rxSelectedDrugs \.rx-order-card/);
 assert.match(js, /getElementById\('rxOrderBuilder'\)/);
