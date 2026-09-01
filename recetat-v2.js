@@ -1687,8 +1687,17 @@
     Unguentum: 'Ung.', Krem: 'Ung.', Solucion: 'Sol.', Sirup: 'Sir.',
     Supozitor: 'Sup.', Pika: 'Gtt.', Inhalacion: 'Inh.', Spray: 'Inh.', Flakon: 'Fl.',
   };
+  const EXACT_FORM_PREFIXES = Object.freeze({
+    'capsule, soft': 'Caps. soft.',
+    'chewable tablet': 'Tab. përtyp.',
+  });
+  const RX_PREFIX_PATTERN = /^(?:Tab\.\s*përtyp\.|Caps\.\s*soft\.|Tab\.|Caps\.|Amp\.|Inf\.|Ung\.|Cr\.|Sol\.|Sir\.|Susp\.|Sup\.|Supp\.|Ov\.|Gtt\.|Spr\.|Inh\.|Inj\.|Pulv\.|Gran\.|Past\.|Gel\.|Fl\.|Vial\.|Garz\.|Gas\s+med\.|Prep\.)\s*/i;
 
   const text = value => String(value ?? '').trim();
+  const formKey = value => text(value)
+    .replace(/[()]/g, '')
+    .replace(/\s+/g, ' ')
+    .toLocaleLowerCase('sq');
 
   function formLabel(value) {
     const raw = text(value).replace(/[().]/g, '').toLocaleLowerCase('sq');
@@ -1700,13 +1709,17 @@
   }
 
   function normalizeDrug(item) {
+    const tradeName = text(item?.tradeName || item?.trade_name || item?.['Emri tregtar']);
+    const substance = text(item?.substance || item?.activeSubstance || item?.active_substance || item?.['Substanca aktive']);
+    const strength = text(item?.strength || item?.dose || item?.['Fortësia']);
+    const form = text(item?.form || item?.pharmaceuticalForm || item?.pharmaceutical_form || item?.['Forma farmaceutike'] || item?.['Forma']);
     return {
-      key: text(item?.key || item?.drugKey || `${item?.pdid || ''}|${item?.tradeName || ''}|${item?.strength || ''}`),
-      tradeName: text(item?.tradeName),
-      substance: text(item?.substance),
-      strength: text(item?.strength || item?.dose),
-      form: text(item?.form),
-      atc: text(item?.atc),
+      key: text(item?.key || item?.drugKey || `${item?.pdid || item?.PDID || ''}|${tradeName}|${strength}`),
+      tradeName,
+      substance,
+      strength,
+      form,
+      atc: text(item?.atc || item?.atcCode || item?.atc_code || item?.['ATC Code']),
       pdid: text(item?.pdid),
       regimenId: text(item?.regimenId),
       dosageStatus: text(item?.dosageStatus),
@@ -1725,7 +1738,18 @@
   }
 
   function prefixForForm(value) {
+    const exact = EXACT_FORM_PREFIXES[formKey(value)];
+    if (exact) return exact;
     return FORM_PREFIXES[formLabel(value)] || '';
+  }
+
+  function ensurePrescriptionPrefix(rawLine, form) {
+    let line = text(rawLine).replace(/^Rp\s*:\s*/i, '');
+    if (!line) return '';
+    const prefix = prefixForForm(form);
+    if (!prefix) return line;
+    line = text(line.replace(RX_PREFIX_PATTERN, ''));
+    return `${prefix} ${line}`.trim();
   }
 
   function selectedDrugLine(item) {
@@ -1990,6 +2014,7 @@
   return {
     formLabel,
     prefixForForm,
+    ensurePrescriptionPrefix,
     normalizeDrug,
     selectedDrugLine,
     parseMedicationLine,
@@ -2580,7 +2605,12 @@
     };
     core.selectedDrugLine = item => {
       const drug = core.normalizeDrug(item);
-      return drug.prescriptionLine || originalSelectedDrugLine(drug);
+      if (drug.prescriptionLine) {
+        return typeof core.ensurePrescriptionPrefix === 'function'
+          ? core.ensurePrescriptionPrefix(drug.prescriptionLine, drug.form)
+          : drug.prescriptionLine;
+      }
+      return originalSelectedDrugLine(drug);
     };
     core.__registryNotationReady = true;
   }
@@ -5124,7 +5154,7 @@
     if (!holder) return;
     holder.hidden = !state.selectedDrugs.length;
     holder.innerHTML = state.selectedDrugs.length
-      ? `<span class="rx-selected-label">Nga regjistri:</span>${state.selectedDrugs.map(drug => `<span class="rx-drug-chip"><span>${esc(drug.substance)}${drug.strength ? ` · ${esc(drug.strength)}` : ''}${drug.form ? ` · ${esc(Core.formLabel(drug.form))}` : ''}${drug.dosageStatus ? ` · ${esc(drug.dosageStatus === 'auto-filled' ? 'Auto-plotësuar' : drug.dosageStatus === 'requires-review' ? 'Kërkon rishikim' : drug.dosageStatus === 'edited' ? 'Edituar' : 'Dozë manuale')}` : ''}</span><button type="button" data-remove-drug="${esc(drug.key)}" aria-label="Hiqe ${esc(drug.substance)}">×</button></span>`).join('')}`
+      ? `<span class="rx-selected-label">Nga regjistri:</span>${state.selectedDrugs.map(drug => `<span class="rx-drug-chip"><span>${Core.prefixForForm(drug.form) ? `${esc(Core.prefixForForm(drug.form))} ` : ''}${esc(drug.substance)}${drug.strength ? ` · ${esc(drug.strength)}` : ''}${drug.form ? ` · ${esc(Core.formLabel(drug.form))}` : ''}${drug.dosageStatus ? ` · ${esc(drug.dosageStatus === 'auto-filled' ? 'Auto-plotësuar' : drug.dosageStatus === 'requires-review' ? 'Kërkon rishikim' : drug.dosageStatus === 'edited' ? 'Edituar' : 'Dozë manuale')}` : ''}</span><button type="button" data-remove-drug="${esc(drug.key)}" aria-label="Hiqe ${esc(drug.substance)}">×</button></span>`).join('')}`
       : '';
   }
 
@@ -5695,7 +5725,7 @@
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(payload.error || 'Kërkimi dështoi.');
       holder.innerHTML = payload.results?.length
-        ? payload.results.map(drug => `<button class="rx-drug-result" type="button" data-drug-result="${esc(encodeURIComponent(JSON.stringify(drug)))}"><span><strong>${esc(drug.substance || drug.tradeName)}</strong><small>${esc([drug.tradeName, drug.strength, Core.formLabel(drug.form)].filter(Boolean).join(' · '))}</small></span><span>+</span></button>`).join('')
+        ? payload.results.map(drug => `<button class="rx-drug-result" type="button" data-drug-result="${esc(encodeURIComponent(JSON.stringify(drug)))}"><span><strong>${esc([Core.prefixForForm(drug.form), drug.substance || drug.tradeName].filter(Boolean).join(' '))}</strong><small>${esc([drug.tradeName, drug.strength, Core.formLabel(drug.form)].filter(Boolean).join(' · '))}</small></span><span>+</span></button>`).join('')
         : '<p>Nuk u gjet asnjë bar.</p>';
     } catch (error) {
       if (error.name !== 'AbortError') holder.innerHTML = `<p>${esc(error.message)}</p>`;

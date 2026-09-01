@@ -71,6 +71,10 @@ assert.match(js, /medindex:prescriptions-changed/);
 assert.match(js, /prescriptionChapters:\(\)/);
 assert.match(js, /fetch\('\/api\/gemini-prescription'/);
 assert.match(js, /fetch\('\/api\/dosage'/);
+assert.match(js, /function ensurePrescriptionPrefix\(/, 'Recetat V2 must canonicalize dosage-form prefixes');
+assert.match(js, /EXACT_FORM_PREFIXES/, 'Recetat V2 must carry verified exact-form abbreviations');
+assert.match(js, /pharmaceutical_form/, 'Recetat V2 must normalize API pharmaceutical-form aliases');
+assert.match(js, /core\.ensurePrescriptionPrefix\(drug\.prescriptionLine, drug\.form\)/, 'registry prescription lines must be repaired from pharmaceutical form before rendering');
 assert.doesNotThrow(() => new Function(js));
 
 assert.match(library, /chapter_key/);

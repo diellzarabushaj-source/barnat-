@@ -264,7 +264,12 @@
     };
     core.selectedDrugLine = item => {
       const drug = core.normalizeDrug(item);
-      return drug.prescriptionLine || originalSelectedDrugLine(drug);
+      if (drug.prescriptionLine) {
+        return typeof core.ensurePrescriptionPrefix === 'function'
+          ? core.ensurePrescriptionPrefix(drug.prescriptionLine, drug.form)
+          : drug.prescriptionLine;
+      }
+      return originalSelectedDrugLine(drug);
     };
     core.__registryNotationReady = true;
   }

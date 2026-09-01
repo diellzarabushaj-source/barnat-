@@ -23,8 +23,17 @@
     Unguentum: 'Ung.', Krem: 'Ung.', Solucion: 'Sol.', Sirup: 'Sir.',
     Supozitor: 'Sup.', Pika: 'Gtt.', Inhalacion: 'Inh.', Spray: 'Inh.', Flakon: 'Fl.',
   };
+  const EXACT_FORM_PREFIXES = Object.freeze({
+    'capsule, soft': 'Caps. soft.',
+    'chewable tablet': 'Tab. përtyp.',
+  });
+  const RX_PREFIX_PATTERN = /^(?:Tab\.\s*përtyp\.|Caps\.\s*soft\.|Tab\.|Caps\.|Amp\.|Inf\.|Ung\.|Cr\.|Sol\.|Sir\.|Susp\.|Sup\.|Supp\.|Ov\.|Gtt\.|Spr\.|Inh\.|Inj\.|Pulv\.|Gran\.|Past\.|Gel\.|Fl\.|Vial\.|Garz\.|Gas\s+med\.|Prep\.)\s*/i;
 
   const text = value => String(value ?? '').trim();
+  const formKey = value => text(value)
+    .replace(/[()]/g, '')
+    .replace(/\s+/g, ' ')
+    .toLocaleLowerCase('sq');
 
   function formLabel(value) {
     const raw = text(value).replace(/[().]/g, '').toLocaleLowerCase('sq');
@@ -36,13 +45,17 @@
   }
 
   function normalizeDrug(item) {
+    const tradeName = text(item?.tradeName || item?.trade_name || item?.['Emri tregtar']);
+    const substance = text(item?.substance || item?.activeSubstance || item?.active_substance || item?.['Substanca aktive']);
+    const strength = text(item?.strength || item?.dose || item?.['Fortësia']);
+    const form = text(item?.form || item?.pharmaceuticalForm || item?.pharmaceutical_form || item?.['Forma farmaceutike'] || item?.['Forma']);
     return {
-      key: text(item?.key || item?.drugKey || `${item?.pdid || ''}|${item?.tradeName || ''}|${item?.strength || ''}`),
-      tradeName: text(item?.tradeName),
-      substance: text(item?.substance),
-      strength: text(item?.strength || item?.dose),
-      form: text(item?.form),
-      atc: text(item?.atc),
+      key: text(item?.key || item?.drugKey || `${item?.pdid || item?.PDID || ''}|${tradeName}|${strength}`),
+      tradeName,
+      substance,
+      strength,
+      form,
+      atc: text(item?.atc || item?.atcCode || item?.atc_code || item?.['ATC Code']),
       pdid: text(item?.pdid),
       regimenId: text(item?.regimenId),
       dosageStatus: text(item?.dosageStatus),
@@ -61,7 +74,18 @@
   }
 
   function prefixForForm(value) {
+    const exact = EXACT_FORM_PREFIXES[formKey(value)];
+    if (exact) return exact;
     return FORM_PREFIXES[formLabel(value)] || '';
+  }
+
+  function ensurePrescriptionPrefix(rawLine, form) {
+    let line = text(rawLine).replace(/^Rp\s*:\s*/i, '');
+    if (!line) return '';
+    const prefix = prefixForForm(form);
+    if (!prefix) return line;
+    line = text(line.replace(RX_PREFIX_PATTERN, ''));
+    return `${prefix} ${line}`.trim();
   }
 
   function selectedDrugLine(item) {
@@ -326,6 +350,7 @@
   return {
     formLabel,
     prefixForForm,
+    ensurePrescriptionPrefix,
     normalizeDrug,
     selectedDrugLine,
     parseMedicationLine,

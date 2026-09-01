@@ -181,7 +181,7 @@
     if (!holder) return;
     holder.hidden = !state.selectedDrugs.length;
     holder.innerHTML = state.selectedDrugs.length
-      ? `<span class="rx-selected-label">Nga regjistri:</span>${state.selectedDrugs.map(drug => `<span class="rx-drug-chip"><span>${esc(drug.substance)}${drug.strength ? ` · ${esc(drug.strength)}` : ''}${drug.form ? ` · ${esc(Core.formLabel(drug.form))}` : ''}${drug.dosageStatus ? ` · ${esc(drug.dosageStatus === 'auto-filled' ? 'Auto-plotësuar' : drug.dosageStatus === 'requires-review' ? 'Kërkon rishikim' : drug.dosageStatus === 'edited' ? 'Edituar' : 'Dozë manuale')}` : ''}</span><button type="button" data-remove-drug="${esc(drug.key)}" aria-label="Hiqe ${esc(drug.substance)}">×</button></span>`).join('')}`
+      ? `<span class="rx-selected-label">Nga regjistri:</span>${state.selectedDrugs.map(drug => `<span class="rx-drug-chip"><span>${Core.prefixForForm(drug.form) ? `${esc(Core.prefixForForm(drug.form))} ` : ''}${esc(drug.substance)}${drug.strength ? ` · ${esc(drug.strength)}` : ''}${drug.form ? ` · ${esc(Core.formLabel(drug.form))}` : ''}${drug.dosageStatus ? ` · ${esc(drug.dosageStatus === 'auto-filled' ? 'Auto-plotësuar' : drug.dosageStatus === 'requires-review' ? 'Kërkon rishikim' : drug.dosageStatus === 'edited' ? 'Edituar' : 'Dozë manuale')}` : ''}</span><button type="button" data-remove-drug="${esc(drug.key)}" aria-label="Hiqe ${esc(drug.substance)}">×</button></span>`).join('')}`
       : '';
   }
 
@@ -695,7 +695,7 @@
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(payload.error || 'Kërkimi dështoi.');
       holder.innerHTML = payload.results?.length
-        ? payload.results.map(drug => `<button class="rx-drug-result" type="button" data-drug-result="${esc(encodeURIComponent(JSON.stringify(drug)))}"><span><strong>${esc(drug.substance || drug.tradeName)}</strong><small>${esc([drug.tradeName, drug.strength, Core.formLabel(drug.form)].filter(Boolean).join(' · '))}</small></span><span>+</span></button>`).join('')
+        ? payload.results.map(drug => `<button class="rx-drug-result" type="button" data-drug-result="${esc(encodeURIComponent(JSON.stringify(drug)))}"><span><strong>${esc([Core.prefixForForm(drug.form), drug.substance || drug.tradeName].filter(Boolean).join(' '))}</strong><small>${esc([drug.tradeName, drug.strength, Core.formLabel(drug.form)].filter(Boolean).join(' · '))}</small></span><span>+</span></button>`).join('')
         : '<p>Nuk u gjet asnjë bar.</p>';
     } catch (error) {
       if (error.name !== 'AbortError') holder.innerHTML = `<p>${esc(error.message)}</p>`;
