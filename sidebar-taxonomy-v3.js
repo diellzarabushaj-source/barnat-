@@ -89,7 +89,7 @@
     const atc = nav.querySelector('#atcNavGroup');
     const icd = nav.querySelector('#icdNavGroup') || find('/icd.html');
     const clinical = [find('/index.html'), atc, icd, find('/dozologjia.html'), find('/protokollet.html'), find('/urgjencat.html')].filter(Boolean);
-    const work = [find('/recetat.html'), find('/analizat.html'), find('/medical-hub.html')].filter(Boolean);
+    const work = [find('/index.html#favorites'), find('/index.html#notes'), find('/recetat.html'), find('/analizat.html'), find('/medical-hub.html')].filter(Boolean);
 
     if (labelClinical) {
       let cursor = labelClinical;
