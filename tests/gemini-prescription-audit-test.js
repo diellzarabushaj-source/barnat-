@@ -135,8 +135,12 @@ assert.equal(infusionTargets[0].allowProposal, false, 'Shared parenteral instruc
 assert.equal(T.sanitizeSignature('S (Signatura): Nga 1 tabletë çdo 8 orë.'), 'Nga 1 tabletë çdo 8 orë.');
 assert.equal(T.sanitizeSignature('Rp: Paracetamol 500 mg'), '');
 assert.deepEqual(T.numericTokens('1 tabletë çdo 8 orë për 3 ditë'), ['1','8','3']);
-assert.equal(T.signatureRespectsClinicianOrder('Merret 1 tabletë çdo 8 orë për 3 ditë.', structuredTargets[0]), true);
-assert.equal(T.signatureRespectsClinicianOrder('Merret 2 tableta çdo 8 orë për 3 ditë.', structuredTargets[0]), false);
+assert.equal(T.signatureRespectsClinicianOrder('Merret 1 tabletë çdo 8 orë për 3 ditë, pas ushqimit.', structuredTargets[0]), true);
+assert.equal(T.signatureRespectsClinicianOrder('Merret 2 tableta çdo 8 orë për 3 ditë, pas ushqimit.', structuredTargets[0]), false);
+assert.equal(T.signatureRespectsClinicianOrder('Administrohet 1 tabletë intravenoz çdo 8 orë për 3 ditë, pas ushqimit.', structuredTargets[0]), false, 'A conflicting administration route must be rejected');
+assert.equal(T.signatureRespectsClinicianOrder('Merret 1 tabletë tri herë në ditë për 3 ditë, pas ushqimit.', structuredTargets[0]), false, 'Gemini must not reinterpret frequency wording');
+assert.equal(T.signatureHasConflictingRoute('Administrohet intravenoz.', 'PO'), true);
+assert.equal(T.signatureHasConflictingRoute('Merret nga goja.', 'PO'), false);
 
 const extracted = T.extractInteractionText({
   steps:[{ type:'model_output', content:[{ type:'text', text:'{"suggestions":[],"globalWarnings":[]}' }] }],
