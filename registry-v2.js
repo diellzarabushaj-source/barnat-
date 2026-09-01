@@ -1288,7 +1288,38 @@
         fetchJson(`/api/dosage?view=card&id=${encodeURIComponent(row.id)}`).catch(() => ({ payload:{ ok:false } })),
       ]);
       const detail = detailResult.payload.row || row;
-      const card = cardResult.payload || {};
+      let card = cardResult.payload || {};
+
+      const hasAdult = clean(card?.adult?.dose ?? card?.adult?.doseText ?? card?.adult?.dose_text);
+      const hasPediatric = clean(card?.pediatric?.dose ?? card?.pediatric?.doseText ?? card?.pediatric?.dose_text);
+      if ((!hasAdult || !hasPediatric) && /^\d{1,6}$/.test(clean(detail.registryNumber))) {
+        const batch = await fetchJson(
+          `/api/dosage?view=cards&nrs=${encodeURIComponent(clean(detail.registryNumber))}`,
+          {},
+          6500
+        ).catch(() => ({ payload:{ cards:[] } }));
+        const fallback = Array.isArray(batch.payload?.cards)
+          ? batch.payload.cards.find(item => clean(item.registryNumber) === clean(detail.registryNumber))
+          : null;
+        if (fallback) {
+          card = {
+            ...card,
+            adult:hasAdult ? card.adult : {
+              dose:fallback.adultDose,
+              route:fallback.adultRoute,
+            },
+            pediatric:hasPediatric ? card.pediatric : {
+              dose:fallback.pediatricDose,
+              route:fallback.pediatricRoute,
+            },
+            sources:[
+              ...(Array.isArray(card.sources) ? card.sources : []),
+              ...(Array.isArray(fallback.sourceUrls) ? fallback.sourceUrls : []),
+            ],
+          };
+        }
+      }
+
       el.drawerBody.innerHTML = detailMarkup(detail, card);
     } catch (error) {
       el.drawerBody.innerHTML = `<div class="drawer-loading">${escapeHtml(error?.message || 'Detajet nuk u ngarkuan.')}</div>`;
@@ -1302,7 +1333,8 @@
     const explicitDose = clean(entry.dose ?? entry.doseText ?? entry.dose_text);
     const doseMg = clean(entry.doseMg ?? entry.dose_mg);
     const practicalUnit = clean(entry.practicalUnit ?? entry.practical_unit);
-    const frequency = clean(entry.frequency ?? entry.schedule);
+    const frequency = clean(entry.frequency ?? entry.frequencyText ?? entry.frequency_text ?? entry.schedule);
+    const duration = clean(entry.duration ?? entry.durationText ?? entry.duration_text);
     const doseParts = [];
     if (explicitDose) doseParts.push(explicitDose);
     else if (doseMg) doseParts.push(/\bmg\b/i.test(doseMg) ? doseMg : `${doseMg} mg`);
@@ -1312,8 +1344,11 @@
     if (frequency && !doseParts.some(part => part.toLowerCase().includes(frequency.toLowerCase()))) {
       doseParts.push(frequency);
     }
+    if (duration && !doseParts.some(part => part.toLowerCase().includes(duration.toLowerCase()))) {
+      doseParts.push(duration);
+    }
 
-    const explicitMaximum = clean(entry.maximum ?? entry.max24h ?? entry.max_24h);
+    const explicitMaximum = clean(entry.maximum ?? entry.maximumText ?? entry.maximum_text ?? entry.max24h ?? entry.max_24h);
     const max24hMg = clean(entry.max24hMg ?? entry.max_24h_mg);
     return {
       dose:doseParts.join(' · '),
@@ -1322,11 +1357,67 @@
     };
   }
 
+  function sourceFieldMap(detail) {
+    const fields = Array.isArray(detail?.sourceFields) ? detail.sourceFields : [];
+    return new Map(fields.map(item => [clean(item?.label).toLocaleLowerCase('sq'), clean(item?.value)]).filter(([label,value]) => label && value));
+  }
+
+  function sourceValue(detail, ...labels) {
+    const map = sourceFieldMap(detail);
+    for (const label of labels) {
+      const value = map.get(clean(label).toLocaleLowerCase('sq'));
+      if (value) return value;
+    }
+    return '';
+  }
+
+  function sourceDose(detail, population) {
+    if (population === 'pediatric') {
+      return {
+        dose:sourceValue(
+          detail,
+          'Doza e plotë — Fëmijë',
+          'Doza pediatrike — përmbledhje',
+          'Doza — Fëmijë',
+          'Doza pediatrike'
+        ),
+        route:sourceValue(detail, 'Rruga — Fëmijë', 'Rruga pediatrike'),
+        maximum:sourceValue(detail, 'Maks. në 24h — vlerë'),
+      };
+    }
+    return {
+      dose:sourceValue(
+        detail,
+        'Doza e plotë — Të rritur',
+        'Doza — Të rritur',
+        'Doza të rritur',
+        'Doza e të rriturve'
+      ),
+      route:sourceValue(detail, 'Rruga — Të rritur', 'Rruga e të rriturve'),
+      maximum:sourceValue(detail, 'Maks. në 24h — vlerë'),
+    };
+  }
+
+  function mergedDose(primary, fallback) {
+    return {
+      dose:clean(primary?.dose) || clean(fallback?.dose),
+      route:clean(primary?.route) || clean(fallback?.route),
+      maximum:clean(primary?.maximum) || clean(fallback?.maximum),
+    };
+  }
+
   function detailMarkup(detail, card) {
     const profile = card.profile || {};
-    const sources = Array.isArray(card.sources) ? card.sources : [];
-    const adult = normalizeDetailDose(card.adult);
-    const pediatric = normalizeDetailDose(card.pediatric);
+    const sourceFields = Array.isArray(detail.sourceFields)
+      ? detail.sourceFields.filter(item => clean(item?.label) && clean(item?.value))
+      : [];
+    const sourceUrls = sourceFields.map(item => clean(item?.value)).filter(value => /^https:\/\//i.test(value));
+    const sources = [...new Set([
+      ...(Array.isArray(card.sources) ? card.sources : []),
+      ...sourceUrls,
+    ].map(clean).filter(Boolean))];
+    const adult = mergedDose(normalizeDetailDose(card.adult), sourceDose(detail, 'adult'));
+    const pediatric = mergedDose(normalizeDetailDose(card.pediatric), sourceDose(detail, 'pediatric'));
     const info = [
       ['Nr. regjistri', detail.registryNumber], ['PDID', detail.pdid], ['ATC', detail.atc], ['Klasa', detail.drugClass],
       ['Popullata', populationMeta(detail.approvedPopulation).label], ['Forma', detail.form], ['Paketimi', detail.packaging], ['Prodhuesi', detail.manufacturer], ['MAH', detail.marketingAuthorizationHolder],
@@ -1337,15 +1428,31 @@
       ['Interaksionet', profile.interactions], ['Shtatzënia & gjidhënia', profile.pregnancyLactation], ['Rregullimi renal', profile.renalAdjustment], ['Rregullimi hepatik', profile.hepaticAdjustment],
       ['Monitorimi', profile.monitoring], ['Administrimi', profile.administrationNotes],
     ].filter(([,value]) => clean(value));
+
+    const doseCard = (label, dose) => `
+      <article class="dose-card">
+        <div class="dose-card-head"><strong>${escapeHtml(label)}</strong>${dose.route ? `<span class="route-chip">${escapeHtml(dose.route)}</span>` : ''}</div>
+        <p>${escapeHtml(dose.dose || 'Pa dozë të publikuar.')}</p>
+        ${dose.maximum ? `<small>Maksimumi: ${escapeHtml(dose.maximum)}</small>` : ''}
+      </article>`;
+
+    const databaseFields = sourceFields.length
+      ? `<section class="detail-section detail-source-data">
+          <div class="detail-section-head"><h4>Të dhënat e plota nga databaza</h4><span>${sourceFields.length} fusha</span></div>
+          <dl class="detail-grid detail-grid-all">${sourceFields.map(item => `<dt>${escapeHtml(item.label)}</dt><dd>${escapeHtml(item.value)}</dd>`).join('')}</dl>
+        </section>`
+      : '';
+
     return `
       <section class="detail-hero"><h3>${escapeHtml(detail.tradeName || 'Pa emër')}</h3><p>${escapeHtml(detail.activeSubstance || '—')} · ${escapeHtml(detail.strength || '—')}</p><div class="detail-badges">${detail.atc ? `<span class="atc-chip">${escapeHtml(detail.atc)}</span>` : ''}${statusBadge(detail.productStatus)}</div></section>
       <section class="detail-section"><h4>Identiteti</h4><dl class="detail-grid">${info.map(([label,value]) => `<dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd>`).join('')}</dl></section>
       <section class="detail-section"><h4>Dozologjia</h4>
-        <article class="dose-card"><div class="dose-card-head"><strong>Të rritur</strong>${adult.route ? `<span class="route-chip">${escapeHtml(adult.route)}</span>` : ''}</div><p>${escapeHtml(adult.dose || 'Pa dozë të publikuar.')}</p>${adult.maximum ? `<small>Maksimumi: ${escapeHtml(adult.maximum)}</small>` : ''}</article>
-        <article class="dose-card"><div class="dose-card-head"><strong>Pediatrike</strong>${pediatric.route ? `<span class="route-chip">${escapeHtml(pediatric.route)}</span>` : ''}</div><p>${escapeHtml(pediatric.dose || 'Pa dozë të publikuar.')}</p>${pediatric.maximum ? `<small>Maksimumi: ${escapeHtml(pediatric.maximum)}</small>` : ''}</article>
+        ${doseCard('Të rritur', adult)}
+        ${doseCard('Pediatrike', pediatric)}
       </section>
       ${detail.use ? `<section class="detail-section"><h4>Përdorimi</h4><p class="clinical-copy">${escapeHtml(detail.use)}</p></section>` : ''}
       ${clinicalBlocks.map(([title,value]) => `<section class="detail-section"><h4>${escapeHtml(title)}</h4><p class="clinical-copy">${escapeHtml(value)}</p></section>`).join('')}
+      ${databaseFields}
       ${sources.length ? `<section class="detail-section"><h4>Burimet</h4>${sources.map(url => `<a class="source-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(url)}</a>`).join('')}</section>` : ''}`;
   }
 
