@@ -5546,24 +5546,23 @@
   async function generateWithGemini() {
     if (!navigator.onLine) {
       formatLocally();
-      setStatus('Je offline. Receta u formatua lokalisht; sugjerimet me AI kërkojnë internet.', 'success');
+      setStatus('Je offline. Receta u formatua lokalisht; formulimi me Gemini kërkon internet.', 'success');
       return;
     }
+    if (!text($('#rxComposer')?.value) && state.selectedDrugs.length) syncComposerFromOrders({ force:true });
     const input = text($('#rxComposer')?.value);
     const diagnosis = text($('#rxDiagnosis')?.value);
     if (!input && !state.selectedDrugs.length) {
-      setStatus('Shkruaje recetën ose zgjidh së paku një bar.', 'error');
-      $('#rxComposer')?.focus();
+      setStatus('Shto së paku një bar ose hape tekstin manual.', 'error');
+      $('#rxAddDrugButton')?.focus();
       return;
     }
 
     const button = $('#rxGenerate');
     button.dataset.busy = 'true';
     button.disabled = true;
-    button.querySelector('span:last-child').textContent = 'Duke përgatitur…';
-    setStatus(diagnosis
-      ? 'Gemini po e strukturon recetën dhe po propozon vetëm Signaturat që mungojnë.'
-      : 'Gemini po e strukturon recetën. Pa diagnozë, Signaturat që mungojnë lihen bosh.');
+    button.querySelector('span:last-child').textContent = 'Duke formuluar…';
+    setStatus('Gemini po formulon vetëm Signaturat nga doza, rruga, shpeshtësia dhe kohëzgjatja që ke plotësuar. Nuk vendos dozë ose rrugë të re.');
 
     try {
       const response = await fetch('/api/gemini-prescription', {
@@ -5574,25 +5573,29 @@
           input,
           diagnosis,
           selectedDrugs:state.selectedDrugs,
-          generateMissingSignatures:Boolean(diagnosis),
+          generateMissingSignatures:true,
         }),
       });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw Object.assign(new Error(payload.error || 'Gemini nuk e përpunoi recetën.'), { code:payload.code });
       const normalized = Core.normalizeResult(payload.data);
       if (!normalized) throw new Error('Gemini ktheu një strukturë të pavlefshme.');
-      showResult(normalized, 'gemini');
-      setStatus(hasGeneratedSignature(normalized)
-        ? `Receta u përgatit me ${payload.model || 'Gemini'}. Konfirmo kontrollin klinik para ruajtjes, kopjimit ose printimit.`
-        : `Receta u strukturua me ${payload.model || 'Gemini'} pa ndryshuar Signaturat manuale.`, 'success');
+      showResult(normalized, payload.aiUsed ? 'gemini' : 'local');
+      if (payload.generatedCount > 0) {
+        setStatus(`Gemini formuloi ${payload.generatedCount} Signaturë${payload.generatedCount === 1 ? '' : 'a'} pa ndryshuar fushat klinike. Kontrolloji para përdorimit.`, 'success');
+      } else if (payload.unresolvedCount > 0) {
+        setStatus('Gemini nuk plotësoi Signaturën sepse mungojnë të dhëna klinike të strukturuara. Plotëso dozën, rrugën dhe shpeshtësinë manualisht.', 'error');
+      } else {
+        setStatus('Receta u strukturua pa ndryshuar udhëzimet klinike.', 'success');
+      }
     } catch (error) {
       const fallback = localParse(input);
       if (fallback) showResult(fallback, 'local');
       const messages = {
-        GEMINI_NOT_CONFIGURED:'Gemini nuk ka API key të konfiguruar në Vercel. U përdor formatimi lokal.',
+        GEMINI_NOT_CONFIGURED:'Gemini nuk është konfiguruar në server. U përdor formatimi lokal.',
         GEMINI_RATE_LIMIT:'Gemini ka arritur limitin e përkohshëm. U përdor formatimi lokal.',
-        GEMINI_AUTH:'Gemini API key nuk u pranua. Kontrollo GEMINI_API_KEY në Vercel.',
-        GEMINI_MODEL:'Modeli Gemini i konfiguruar nuk u gjet.',
+        GEMINI_AUTH:'Autentikimi i Gemini dështoi. U përdor formatimi lokal.',
+        GEMINI_MODEL:'Modeli Gemini i konfiguruar nuk është i disponueshëm. U përdor formatimi lokal.',
         GEMINI_TIMEOUT:'Gemini zgjati më shumë se kufiri. U përdor formatimi lokal.',
       };
       setStatus(messages[error.code] || `${error.message} U përdor formatimi lokal.`, 'error');
@@ -5620,10 +5623,12 @@
     const offline = !navigator.onLine;
     button.disabled = offline;
     button.setAttribute('aria-disabled', String(offline));
-    button.title = offline ? 'Sugjerimet me AI kërkojnë lidhje me internet' : 'Opsionale: sugjero vetëm fushat që mungojnë';
+    button.title = offline
+      ? 'Formulimi me Gemini kërkon lidhje me internet'
+      : 'Gemini formulon vetëm Signaturën nga fushat klinike që ke plotësuar';
     button.querySelector('span:last-child').textContent = offline
-      ? 'AI nuk është në dispozicion offline'
-      : 'Sugjero me AI · kërkon internet';
+      ? 'Gemini nuk është në dispozicion offline'
+      : 'Formulo Signaturën me Gemini · online';
   }
 
   function resultFromProtocol(protocol) {
@@ -5999,50 +6004,103 @@
 
   function bindEvents() {
     document.querySelectorAll('[data-rx-command]').forEach(button => button.addEventListener('click', () => command(button.dataset.rxCommand)));
+
+    const openDrugPicker = () => {
+      const node = $('#rxDrugPopover');
+      closePopovers('rxDrugPopover');
+      if (!node) return;
+      node.hidden = !node.hidden;
+      $('#rxAddDrugButton')?.setAttribute('aria-expanded', String(!node.hidden));
+      if (!node.hidden) setTimeout(() => $('#rxDrugSearch')?.focus(), 0);
+    };
+    $('#rxAddDrugButton')?.addEventListener('click', openDrugPicker);
+
     $('#rxFormPopover')?.addEventListener('click', event => {
       const button = event.target.closest('[data-form-value]');
       if (!button) return;
       insertAtCursor(`(${Core.formLabel(button.dataset.formValue)}) `);
       closePopovers();
     });
+
     $('#rxDrugSearch')?.addEventListener('input', event => {
       clearTimeout(state.searchTimer);
       state.searchTimer = setTimeout(() => searchDrugs(event.target.value), 170);
     });
+
     $('#rxDrugResults')?.addEventListener('click', event => {
       const button = event.target.closest('[data-drug-result]');
       if (!button) return;
       try { addDrugWithDosage(JSON.parse(decodeURIComponent(button.dataset.drugResult))); } catch {}
       closePopovers();
+      $('#rxAddDrugButton')?.setAttribute('aria-expanded', 'false');
     });
+
     $('#rxSelectedDrugs')?.addEventListener('click', event => {
-      const button = event.target.closest('[data-remove-drug]');
-      if (button) removeSelectedDrug(button.dataset.removeDrug);
+      const remove = event.target.closest('[data-remove-drug]');
+      if (remove) {
+        removeSelectedDrug(remove.dataset.removeDrug);
+        return;
+      }
+      const sync = event.target.closest('[data-sync-orders-to-text]');
+      if (sync) {
+        syncComposerFromOrders({ force:true });
+        if ($('#rxFreeTextPanel')) $('#rxFreeTextPanel').open = true;
+        setStatus('Teksti u përditësua nga fushat e strukturuara.', 'success');
+        $('#rxComposer')?.focus();
+      }
     });
+
+    $('#rxSelectedDrugs')?.addEventListener('input', event => {
+      const field = event.target.closest('[data-order-field]');
+      const card = event.target.closest('[data-order-key]');
+      if (!field || !card || field.tagName === 'SELECT') return;
+      updateOrderField(card.dataset.orderKey, field.dataset.orderField, field.value);
+    });
+    $('#rxSelectedDrugs')?.addEventListener('change', event => {
+      const field = event.target.closest('[data-order-field]');
+      const card = event.target.closest('[data-order-key]');
+      if (!field || !card) return;
+      updateOrderField(card.dataset.orderKey, field.dataset.orderField, field.value);
+    });
+
     $('#rxComposer')?.addEventListener('input', event => {
-      if (event.isTrusted && dosageReviewRequired()) {
-        state.dosageEdited = true;
-        state.dosageReviewConfirmed = false;
-        state.selectedDrugs = state.selectedDrugs.map(drug => ['auto-filled', 'requires-review'].includes(drug.dosageStatus) ? { ...drug, dosageStatus:'edited' } : drug);
-        renderSelectedDrugs();
+      if (event.isTrusted) {
+        state.composerOrigin = 'manual';
+        state.clinicalReviewConfirmed = false;
+        if (dosageReviewRequired()) {
+          state.dosageEdited = true;
+          state.dosageReviewConfirmed = false;
+          state.selectedDrugs = state.selectedDrugs.map(drug =>
+            ['auto-filled', 'requires-review'].includes(drug.dosageStatus)
+              ? { ...drug, dosageStatus:'edited' }
+              : drug
+          );
+        }
       }
       scheduleLocalPreview();
     }, { passive:true });
+
     $('#rxComposer')?.addEventListener('keydown', event => {
       if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
         event.preventDefault();
         formatLocally();
       }
     });
+
     $('#rxDiagnosis')?.addEventListener('input', () => {
+      state.clinicalReviewConfirmed = false;
       scheduleLocalPreview();
       syncChapterSuggestion();
     }, { passive:true });
+
     $('#rxChapterSelect')?.addEventListener('change', event => {
       state.chapterManuallySelected = true;
+      state.clinicalReviewConfirmed = false;
       const chapter = chapterByKey(event.target.value);
       if ($('#rxChapterSuggestion')) $('#rxChapterSuggestion').textContent = `zgjedhur manualisht · ${chapter.title}`;
+      updateActionState();
     });
+
     $('#rxGenerate')?.addEventListener('click', generateWithGemini);
     $('#rxFormatLocal')?.addEventListener('click', formatLocally);
     window.addEventListener('online', syncAiAvailability);
@@ -6052,16 +6110,34 @@
     $('#rxSave')?.addEventListener('click', saveCurrent);
     $('#rxCopy')?.addEventListener('click', copyCurrent);
     $('#rxPrint')?.addEventListener('click', printCurrent);
+
     $('#rxGeneratedReview input')?.addEventListener('change', event => {
       state.generatedReviewConfirmed = Boolean(event.target.checked);
+      state.clinicalReviewConfirmed = false;
       updateActionState();
-      setStatus(state.generatedReviewConfirmed ? 'Kontrolli klinik u konfirmua.' : 'Konfirmimi u hoq.', state.generatedReviewConfirmed ? 'success' : '');
+      setStatus(state.generatedReviewConfirmed ? 'Formulimi i Gemini u kontrollua.' : 'Konfirmimi i formulimit u hoq.', state.generatedReviewConfirmed ? 'success' : '');
     });
+
     $('#rxDosageReview input')?.addEventListener('change', event => {
       state.dosageReviewConfirmed = Boolean(event.target.checked);
+      state.clinicalReviewConfirmed = false;
       updateActionState();
-      setStatus(state.dosageReviewConfirmed ? 'Kontrolli klinik i dozologjisë u konfirmua.' : 'Konfirmimi i dozologjisë u hoq.', state.dosageReviewConfirmed ? 'success' : '');
+      setStatus(state.dosageReviewConfirmed ? 'Skema e dozologjisë u kontrollua.' : 'Konfirmimi i dozologjisë u hoq.', state.dosageReviewConfirmed ? 'success' : '');
     });
+
+    $('#rxClinicalReview input')?.addEventListener('change', event => {
+      if (!structuredOrdersReady()) {
+        event.target.checked = false;
+        state.clinicalReviewConfirmed = false;
+        updateActionState();
+        setStatus('Plotëso fushat e detyrueshme të barnave para kontrollit përfundimtar.', 'error');
+        return;
+      }
+      state.clinicalReviewConfirmed = Boolean(event.target.checked);
+      updateActionState();
+      setStatus(state.clinicalReviewConfirmed ? 'Receta përfundimtare u konfirmua për këtë version.' : 'Kontrolli përfundimtar u hoq.', state.clinicalReviewConfirmed ? 'success' : '');
+    });
+
     syncAiAvailability();
     $('#rxDosageApply')?.addEventListener('click', () => closeDosageChooser({ apply:true }));
     $('#rxDosageCancel')?.addEventListener('click', () => closeDosageChooser({ apply:false }));
@@ -6069,6 +6145,7 @@
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && !$('#rxDosageChooser')?.hidden) closeDosageChooser({ apply:false });
     });
+
     $('#rxSavedSearch')?.addEventListener('input', renderSaved, { passive:true });
     $('#rxSavedList')?.addEventListener('click', event => {
       const open = event.target.closest('[data-open-saved]');
@@ -6088,8 +6165,12 @@
       state.activeChapter = button.dataset.rxChapter || 'all';
       renderSaved();
     });
+
     document.addEventListener('click', event => {
-      if (!event.target.closest('.rx-command-bar,.rx-popover')) closePopovers();
+      if (!event.target.closest('.rx-command-bar,.rx-popover,#rxAddDrugButton')) {
+        closePopovers();
+        $('#rxAddDrugButton')?.setAttribute('aria-expanded', 'false');
+      }
     });
   }
 
@@ -6120,7 +6201,7 @@
     if ($('#syncText')) $('#syncText').textContent = 'Supabase';
     if ($('#sourceStatus')) $('#sourceStatus').textContent = 'Recetat personale · Supabase';
     $('#appShell')?.setAttribute('aria-busy', 'false');
-    $('#rxComposer')?.focus({ preventScroll:true });
+    $('#rxAddDrugButton')?.focus({ preventScroll:true });
     window.addEventListener('medindex:library-ready', () => { populateChapterSelect(); renderSaved(); });
     window.addEventListener('medindex:library-synced', () => {
       if ($('#rxLibraryState')) $('#rxLibraryState').textContent = 'Sinkronizuar';
