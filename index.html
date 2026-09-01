@@ -8,12 +8,12 @@
   <title>DRx | Regjistri i barnave</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-20260901-row-actions-v1">
+  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-20260901-personal-library-v2">
   <link rel="stylesheet" href="/registry-v2-dose-calculator.css?v=registry-v2-dose-calculator-v1">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6">
   <script src="/dose-core.js?v=drx-dose-core-v1" defer></script>
   <script src="/dose-runtime-browser.js?v=drx-dose-runtime-browser-v1" defer></script>
-  <script src="/registry-v2.js?v=registry-v2-20260901-row-actions-v1" defer></script>
+  <script src="/registry-v2.js?v=registry-v2-20260901-personal-library-v2" defer></script>
   <script src="/registry-v2-dose-calculator.js?v=registry-v2-dose-calculator-v1" defer></script>
 </head>
 <body>
@@ -61,6 +61,8 @@
         <a class="nav-item" href="/urgjencat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.6 2.9 20a1 1 0 0 0 .87 1.5h16.46A1 1 0 0 0 21.1 20L12 4.6Z"/><path d="M12 10v4.4"/><path d="M12 18h.01"/></svg></span><span>Urgjencat</span></a>
 
         <p class="nav-label nav-label-spaced">Puna ime</p>
+        <a class="nav-item" href="/index.html#favorites" data-personal-nav="favorites"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg></span><span>Favoritët</span><span class="nav-count" id="favoriteNavCount" hidden>0</span></a>
+        <a class="nav-item" href="/index.html#notes" data-personal-nav="notes"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><span>Shënimet</span><span class="nav-count" id="noteNavCount" hidden>0</span></a>
         <a class="nav-item" href="/recetat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4.5 4.5V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/><path d="M8.5 12.5h7M8.5 16h4.5"/></svg></span><span>Recetat</span></a>
         <a class="nav-item" href="/analizat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3v6.2L4.8 17.6A2.4 2.4 0 0 0 6.9 21h10.2a2.4 2.4 0 0 0 2.1-3.4L14.5 9.2V3"/><path d="M8.5 3h7"/><path d="M7.3 14.5h9.4"/></svg></span><span>Analizat</span></a>
         <a class="nav-item" href="/medical-hub.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 8.4v7.2M8.4 12h7.2"/></svg></span><span>Medical Hub</span></a>
@@ -97,15 +99,47 @@
       <section class="page-wrap" aria-labelledby="pageTitle">
         <div class="page-heading">
           <div>
-            <p class="eyebrow">Regjistri klinik</p>
+            <p class="eyebrow" id="pageEyebrow">Regjistri klinik</p>
             <h1 id="pageTitle">Barnat</h1>
-            <p class="page-subtitle">Kërko, filtro dhe hap detajet klinike pa u larguar nga tabela.</p>
+            <p class="page-subtitle" id="pageSubtitle">Kërko, filtro dhe hap detajet klinike pa u larguar nga tabela.</p>
           </div>
-          <div class="heading-actions">
+          <div class="heading-actions" id="headingActions">
             <button class="button button-secondary" id="refreshButton" type="button">Rifresko</button>
             <button class="button button-primary" id="openPrescriptionButton" type="button" disabled>Hap recetën <span id="selectedCount">0</span></button>
           </div>
         </div>
+
+        <section class="personal-workspace" id="personalWorkspace" aria-labelledby="personalTitle" hidden>
+          <div class="personal-workspace-head">
+            <div>
+              <p class="eyebrow">Puna ime</p>
+              <h2 id="personalTitle">Favoritët</h2>
+              <p id="personalSubtitle">Barnat që i ke ruajtur për qasje të shpejtë.</p>
+            </div>
+            <span class="personal-sync" title="Të dhënat ruhen në llogarinë tënde"><span class="sync-dot"></span><span>Supabase</span></span>
+          </div>
+          <div class="personal-toolbar">
+            <div class="personal-tabs" role="tablist" aria-label="Biblioteka personale">
+              <button class="personal-tab" id="personalFavoritesTab" type="button" role="tab" data-personal-tab="favorites" aria-selected="true">Favoritët <span id="personalFavoritesCount">0</span></button>
+              <button class="personal-tab" id="personalNotesTab" type="button" role="tab" data-personal-tab="notes" aria-selected="false">Shënimet <span id="personalNotesCount">0</span></button>
+            </div>
+            <label class="personal-search">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
+              <input id="personalSearchInput" type="search" autocomplete="off" placeholder="Kërko në punën time…" aria-label="Kërko në favoritët dhe shënimet">
+            </label>
+          </div>
+          <div class="personal-summary">
+            <span id="personalCountText">Duke sinkronizuar…</span>
+            <span id="personalStatus" role="status" aria-live="polite">Supabase · i sigurt për llogarinë tënde</span>
+          </div>
+          <div class="personal-list" id="personalList"></div>
+          <div class="personal-empty" id="personalEmpty" hidden>
+            <div class="empty-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg></div>
+            <h3 id="personalEmptyTitle">Ende nuk ke favoritë</h3>
+            <p id="personalEmptyText">Te një bar, hap menynë me tri pika dhe zgjidh “Shëno si favorit”.</p>
+            <button class="button button-secondary" id="personalBackToRegistry" type="button">Kthehu te barnat</button>
+          </div>
+        </section>
 
         <div class="metrics-row" aria-label="Përmbledhje e regjistrit">
           <article class="metric-card"><span>Rezultate</span><strong id="metricTotal">—</strong><small id="metricScope">Në regjistrin aktiv</small></article>
