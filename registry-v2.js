@@ -1303,8 +1303,8 @@
       const detail = detailResult.payload.row || row;
       let card = cardResult.payload || {};
 
-      const hasAdult = clean(card?.adult?.dose ?? card?.adult?.doseText ?? card?.adult?.dose_text);
-      const hasPediatric = clean(card?.pediatric?.dose ?? card?.pediatric?.doseText ?? card?.pediatric?.dose_text);
+      const hasAdult = clean(normalizeDetailDose(card?.adult).dose);
+      const hasPediatric = clean(normalizeDetailDose(card?.pediatric).dose);
       if ((!hasAdult || !hasPediatric) && /^\d{1,6}$/.test(clean(detail.registryNumber))) {
         const batch = await fetchJson(
           `/api/dosage?view=cards&nrs=${encodeURIComponent(clean(detail.registryNumber))}`,
