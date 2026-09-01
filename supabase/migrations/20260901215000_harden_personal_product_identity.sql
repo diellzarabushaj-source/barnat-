@@ -86,12 +86,9 @@ where un.entity_type='product'
 
 create or replace function private.harden_user_favorite_drug_identity()
 returns trigger
-language plpgsql
-security definer
-set search_path=public,private,pg_temp
-as $$
+as $function$
 declare
-  v_drug public.drugs%rowtype;
+  v_drug record;
   v_pdid text;
   v_trade text;
   v_strength text;
@@ -178,8 +175,11 @@ begin
 
   new.drug_id:=null;
   return new;
-end
-$$;
+end;
+$function$
+language plpgsql
+security definer
+set search_path = public, private, pg_temp;
 
 drop trigger if exists trg_harden_user_favorite_drug_identity on public.user_favorites;
 create trigger trg_harden_user_favorite_drug_identity
@@ -189,12 +189,9 @@ for each row execute function private.harden_user_favorite_drug_identity();
 
 create or replace function private.harden_user_note_drug_identity()
 returns trigger
-language plpgsql
-security definer
-set search_path=public,private,pg_temp
-as $$
+as $function$
 declare
-  v_drug public.drugs%rowtype;
+  v_drug record;
 begin
   if new.entity_type='product' then
     if new.entity_key !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$' then
@@ -222,8 +219,11 @@ begin
     new.drug_id:=null;
   end if;
   return new;
-end
-$$;
+end;
+$function$
+language plpgsql
+security definer
+set search_path = public, private, pg_temp;
 
 drop trigger if exists trg_harden_user_note_drug_identity on public.user_notes;
 create trigger trg_harden_user_note_drug_identity
