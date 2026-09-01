@@ -61,6 +61,7 @@
         entityType:row.entityType,
         entityKey,
         content,
+        payload:row.payload && typeof row.payload === 'object' ? row.payload : {},
         clientUpdatedAt:text(row.clientUpdatedAt),
         serverUpdatedAt:text(row.serverUpdatedAt),
       });
