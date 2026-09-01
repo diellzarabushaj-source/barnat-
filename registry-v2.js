@@ -476,7 +476,17 @@
     button?.setAttribute('aria-busy','true');
     try {
       await api.load().catch(() => null);
-      const next = await api.toggleFavorite('product', key, { tradeName:clean(row.tradeName), registryNumber:clean(row.registryNumber), activeSubstance:clean(row.activeSubstance), strength:clean(row.strength), form:clean(row.form) });
+      const next = await api.toggleFavorite('product', key, {
+        drugId:clean(row.id),
+        tradeName:clean(row.tradeName),
+        label:clean(row.tradeName),
+        registryNumber:clean(row.registryNumber),
+        pdid:clean(row.pdid),
+        activeSubstance:clean(row.activeSubstance),
+        strength:clean(row.strength),
+        form:clean(row.form),
+        atc:clean(row.atc),
+      });
       showToast(next ? 'Bari u shënua si favorit.' : 'Bari u hoq nga favoritët.');
       if (button) {
         button.classList.toggle('is-favorite', next);
@@ -510,12 +520,13 @@
     const resolved = state.personalResolved.get(key) || {};
     return {
       id:key,
-      tradeName:clean(resolved.tradeName || payload.tradeName),
-      registryNumber:clean(resolved.registryNumber || payload.registryNumber),
-      activeSubstance:clean(resolved.activeSubstance || payload.activeSubstance),
+      tradeName:clean(resolved.tradeName || payload.tradeName || payload.label || payload.name || payload.drugName),
+      registryNumber:clean(resolved.registryNumber || payload.registryNumber || payload.registry_number),
+      pdid:clean(resolved.pdid || payload.pdid),
+      activeSubstance:clean(resolved.activeSubstance || payload.activeSubstance || payload.substance),
       strength:clean(resolved.strength || payload.strength),
-      form:clean(resolved.form || payload.form),
-      atc:clean(resolved.atc || payload.atc),
+      form:clean(resolved.form || payload.form || payload.pharmaceuticalForm),
+      atc:clean(resolved.atc || payload.atc || payload.atcCode),
     };
   }
 
@@ -673,8 +684,9 @@
           : 'Te një bar, hap menynë me tri pika dhe zgjidh “Shëno si favorit”.';
     } else {
       el.personalList.innerHTML = rows.map(({ item, meta }) => {
-        const name = meta.tradeName || (meta.registryNumber ? `Bari nr. ${meta.registryNumber}` : 'Bar i ruajtur');
-        const secondary = [meta.activeSubstance, meta.strength, meta.form].filter(Boolean).join(' · ');
+        const unresolved = !meta.tradeName && !meta.activeSubstance;
+        const name = meta.tradeName || meta.activeSubstance || (meta.registryNumber ? `Bar i regjistrit nr. ${meta.registryNumber}` : 'Duke ngarkuar të dhënat e barit…');
+        const secondary = [meta.activeSubstance && meta.activeSubstance !== name ? meta.activeSubstance : '', meta.strength, meta.form].filter(Boolean).join(' · ');
         const registry = meta.registryNumber ? `Nr. regjistri ${meta.registryNumber}` : '';
         const note = view === 'notes' ? String(item.content || '').slice(0, 2000) : '';
         const timeLabel = personalTimeLabel(item, view);
@@ -687,7 +699,7 @@
             ${note ? `<p class="personal-note-copy">${escapeHtml(note)}</p>` : ''}
           </div>
           <div class="personal-item-actions">
-            <button class="button button-secondary" type="button" data-personal-open="${escapeHtml(meta.id)}">Hap barin</button>
+            <button class="button button-secondary" type="button" data-personal-open="${escapeHtml(meta.id)}"${unresolved ? ' aria-label="Hap të dhënat e barit"' : ''}>Hap barin</button>
             ${view === 'notes'
               ? `<button class="button button-ghost" type="button" data-personal-edit-note="${escapeHtml(meta.id)}">Ndrysho</button><button class="button button-ghost" type="button" data-personal-delete-note="${escapeHtml(meta.id)}">Fshi</button>`
               : `<button class="button button-ghost" type="button" data-personal-unfavorite="${escapeHtml(meta.id)}">Hiq</button>`}
@@ -758,7 +770,10 @@
 
   async function openPersonalDrug(key) {
     const row = await personalRow(clean(key));
-    if (!row) return showToast('Bari nuk u gjet më në regjistrin aktiv.');
+    if (!row) {
+      showToast('Të dhënat e këtij bari nuk u gjetën në regjistrin aktiv.');
+      return;
+    }
     showDetail(row);
   }
 
