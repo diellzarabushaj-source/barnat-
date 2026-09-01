@@ -7,6 +7,7 @@ const nodePath = require('node:path');
 const ROOT = nodePath.resolve(__dirname, '..');
 const read = file => fs.readFileSync(nodePath.join(ROOT, file), 'utf8');
 const manifest = JSON.parse(read('brand/drx-assets.json'));
+const middleware = read('middleware.ts');
 
 assert.equal(manifest.brand, 'DRx');
 assert.deepEqual(Object.keys(manifest.assets).sort(), [
@@ -25,6 +26,7 @@ for (const [key, route] of Object.entries(expected)) {
   const absolute = nodePath.join(ROOT, route.replace(/^\//, ''));
   assert.ok(fs.existsSync(absolute), `${key}: canonical asset missing`);
   assert.match(fs.readFileSync(absolute, 'utf8'), /<svg\b/, `${key}: canonical asset must remain vector`);
+  assert.ok(middleware.includes(`'${route}'`), `${key}: canonical asset must bypass auth middleware`);
 }
 
 for (const file of ['index.html','klasifikimi.html','icd.html','dozologjia.html','urgjencat.html','analizat.html','protokollet.html','recetat.html','medical-hub.html','sistemi.html']) {
@@ -48,6 +50,10 @@ assert.match(shell, /\/brand\/drx-horizontal-on-dark\.svg/);
 assert.match(shell, /\/brand\/drx-mark-on-light\.svg/);
 
 const runtime = read('medindex-brand-runtime.js');
+assert.match(runtime, /const VERSION = 'drx-brand-v6'/);
+assert.match(runtime, /function sidebarPicture/);
+assert.match(runtime, /kind === 'full' \? ASSETS\.horizontalOnDark : ASSETS\.markOnDark/);
+assert.match(runtime, /sidebar\.innerHTML = `\$\{sidebarPicture\('full','medindex-brand-full'\)\}\$\{sidebarPicture\('icon','medindex-brand-icon'\)\}`/);
 assert.match(runtime, /horizontalOnLight/);
 assert.match(runtime, /horizontalOnDark/);
 assert.match(runtime, /markOnLight/);

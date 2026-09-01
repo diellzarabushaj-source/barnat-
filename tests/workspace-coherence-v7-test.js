@@ -9,6 +9,7 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const SHELL_VERSION = 'drx-dashboard-stripe-v6';
 const SIDEBAR_RUNTIME_VERSION = 'sidebar-taxonomy-v4';
+const BRAND_RUNTIME_VERSION = 'drx-brand-v6';
 
 const workspaces = [
   ['index.html', 'registry-v2.js'],
@@ -54,6 +55,7 @@ for (const [htmlFile, jsFile] of workspaces) {
   assert.equal(styles.at(-1), `/drx-dashboard-stripe.css?v=${SHELL_VERSION}`, `${htmlFile}: shared shell must load last`);
   assert.equal(normalizedSidebar(html), canonicalSidebar, `${htmlFile}: sidebar drifted from the canonical Registry sidebar`);
   assert.match(js, new RegExp(`sidebar-taxonomy-v3\\.js\\?v=${SIDEBAR_RUNTIME_VERSION}`), `${jsFile}: shared sidebar runtime version drift`);
+  assert.match(js, new RegExp(`medindex-brand-runtime\\.js\\?v=${BRAND_RUNTIME_VERSION}`), `${jsFile}: shared brand runtime version drift`);
   assert.doesNotThrow(() => new Function(js), `${jsFile}: syntax error`);
 }
 

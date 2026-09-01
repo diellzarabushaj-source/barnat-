@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'drx-brand-v5';
+  const VERSION = 'drx-brand-v6';
   const PROFILE_VERSION = 'profile-portal-v2';
   // Legacy per-device photos are retained only as a one-time migration source.
   // The canonical photo lives behind the authenticated same-origin profile API.
@@ -203,13 +203,18 @@
     return `<span class="medindex-brand-picture ${className}" aria-hidden="true"><img class="medindex-brand-light" src="${light}" alt="" decoding="async" draggable="false"><img class="medindex-brand-dark" src="${dark}" alt="" decoding="async" draggable="false"></span>`;
   }
 
+  function sidebarPicture(kind, className) {
+    const src = kind === 'full' ? ASSETS.horizontalOnDark : ASSETS.markOnDark;
+    return `<span class="medindex-brand-picture ${className}" aria-hidden="true"><img class="medindex-sidebar-brand" src="${src}" alt="" decoding="async" draggable="false"></span>`;
+  }
+
   function enhanceBrands() {
     const sidebar = document.querySelector('.mi-sidebar .mi-brand, .sidebar .brand');
     const mobile = document.querySelector('.mi-mobile-brand');
     if (sidebar && sidebar.dataset.medindexBrand !== VERSION) {
       sidebar.dataset.medindexBrand = VERSION;
       sidebar.setAttribute('aria-label', 'DRx by Dr. Diellza Rabushaj');
-      sidebar.innerHTML = `${picture('full','medindex-brand-full')}${picture('icon','medindex-brand-icon')}`;
+      sidebar.innerHTML = `${sidebarPicture('full','medindex-brand-full')}${sidebarPicture('icon','medindex-brand-icon')}`;
     }
     if (mobile && mobile.dataset.medindexBrand !== VERSION) {
       mobile.dataset.medindexBrand = VERSION;
