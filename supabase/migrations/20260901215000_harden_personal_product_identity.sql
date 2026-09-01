@@ -16,7 +16,7 @@ begin
       foreign key (drug_id) references public.drugs(id) on delete restrict;
   end if;
 end;
-$;
+$$;
 
 -- Phase 9A originally required product notes to keep drug_id NULL.
 -- Relax that legacy coherence guard before backfilling the canonical FK;
@@ -295,4 +295,4 @@ begin
     raise exception 'Product notes remain unresolved after hardening';
   end if;
 end;
-$;
+$$;
