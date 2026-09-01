@@ -5127,7 +5127,7 @@
     if (!text(drug.doseInstruction)) issues.push('doza');
     if (!text(drug.frequency)) issues.push('shpeshtësia');
     if (!text(drug.dispense)) issues.push('sasia');
-    if (!text(drug.signatura) && !(text(drug.doseInstruction) && text(drug.frequency))) issues.push('Signatura');
+    if (!text(drug.signatura)) issues.push('Signatura');
     return issues;
   }
 
@@ -5253,25 +5253,26 @@
     select.focus();
   }
 
-  function closeDosageChooser({ apply = false } = {}) {
+  function closeDosageChooser({ mode = 'cancel' } = {}) {
     const pending = state.pendingDosageChoice;
-    if (pending) {
+    if (pending && mode !== 'cancel') {
       const selected = pending.matches.find(item => item.regimenId === $('#rxDosageChoice')?.value);
-      if (apply && !selected) {
+      if (mode === 'apply' && !selected) {
         setStatus('Zgjidh indikacionin / skemën para aplikimit.', 'error');
         $('#rxDosageChoice')?.focus();
         return;
       }
       const contextApi = window.MedIndexPrescriptionContext;
-      const transferred = apply && selected
+      const transferred = mode === 'apply' && selected
         ? (contextApi?.transferForContext
           ? contextApi.transferForContext(Dosage, pending.drug, selected, contextApi.getContext?.())
           : Dosage.prescriptionTransfer(pending.drug, selected, 'adult'))
         : { ...pending.drug, dosageStatus:'manual' };
       addSelectedDrug(transferred, pending.options);
-      setStatus(apply
+      setStatus(mode === 'apply'
         ? 'Skema e zgjedhur u aplikua pas konfirmimit. Verifikoje klinikisht para ruajtjes.'
-        : 'Skema nuk u aplikua; bari u shtua me dozë manuale.', apply ? 'success' : '');
+        : 'Bari u shtua pa skemë dozimi. Plotëso dozën, rrugën, shpeshtësinë dhe sasinë manualisht.',
+      mode === 'apply' ? 'success' : '');
     }
     state.pendingDosageChoice = null;
     const overlay = $('#rxDosageChooser');
@@ -5755,6 +5756,7 @@
         fold(drug.substance) === fold(item.name)
         && (!drug.strength || !item.dose || fold(drug.strength) === fold(item.dose))
       );
+      const structuredClinical = state.composerOrigin === 'structured' ? selectedDrug : null;
       return {
         drugKey:selectedDrug?.key || `manual_${sectionIndex}_${itemIndex}_${item.name}`,
         tradeName:selectedDrug?.tradeName || '',
@@ -5762,14 +5764,14 @@
         strength:selectedDrug?.strength || item.dose,
         form:selectedDrug?.form || item.form,
         prefix:selectedDrug?.form || item.form,
-        dose:selectedDrug?.doseInstruction || item.dose,
-        doseInstruction:selectedDrug?.doseInstruction || '',
-        quantity:selectedDrug?.dispense || item.dispenseQuantity || item.quantity,
-        route:selectedDrug?.route || section.route,
-        frequency:selectedDrug?.frequency || '',
-        duration:selectedDrug?.duration || '',
-        instructions:selectedDrug?.signatura || item.individualSignature || section.sharedSignature,
-        additionalInstructions:selectedDrug?.additionalInstructions || '',
+        dose:structuredClinical?.doseInstruction || item.dose,
+        doseInstruction:structuredClinical?.doseInstruction || '',
+        quantity:structuredClinical?.dispense || item.dispenseQuantity || item.quantity,
+        route:structuredClinical?.route || section.route,
+        frequency:structuredClinical?.frequency || '',
+        duration:structuredClinical?.duration || '',
+        instructions:structuredClinical?.signatura || item.individualSignature || section.sharedSignature,
+        additionalInstructions:structuredClinical?.additionalInstructions || '',
         clinicalNotes:item.other,
         administrationGroupId:section.medications.length > 1 ? `section_${sectionIndex}` : '',
         administrationGroupType:section.type,
@@ -6184,11 +6186,12 @@
       const apply = $('#rxDosageApply');
       if (apply) apply.disabled = !event.target.value;
     });
-    $('#rxDosageApply')?.addEventListener('click', () => closeDosageChooser({ apply:true }));
-    $('#rxDosageCancel')?.addEventListener('click', () => closeDosageChooser({ apply:false }));
-    $('#rxDosageChooser')?.addEventListener('click', event => { if (event.target.id === 'rxDosageChooser') closeDosageChooser({ apply:false }); });
+    $('#rxDosageApply')?.addEventListener('click', () => closeDosageChooser({ mode:'apply' }));
+    $('#rxDosageManual')?.addEventListener('click', () => closeDosageChooser({ mode:'manual' }));
+    $('#rxDosageCancel')?.addEventListener('click', () => closeDosageChooser({ mode:'cancel' }));
+    $('#rxDosageChooser')?.addEventListener('click', event => { if (event.target.id === 'rxDosageChooser') closeDosageChooser({ mode:'cancel' }); });
     document.addEventListener('keydown', event => {
-      if (event.key === 'Escape' && !$('#rxDosageChooser')?.hidden) closeDosageChooser({ apply:false });
+      if (event.key === 'Escape' && !$('#rxDosageChooser')?.hidden) closeDosageChooser({ mode:'cancel' });
     });
 
     $('#rxSavedSearch')?.addEventListener('input', renderSaved, { passive:true });
