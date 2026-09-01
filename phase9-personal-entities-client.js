@@ -173,7 +173,7 @@
     saveNote,
     deleteNote,
     entityTypes:Object.freeze([...TYPES]),
-    version:'drx-phase9-personal-v1',
+    version:'drx-phase9-personal-v2',
   });
 
   const start=()=>void load().catch(()=>{});
