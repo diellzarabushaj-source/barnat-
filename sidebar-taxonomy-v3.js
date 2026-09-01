@@ -136,7 +136,10 @@
   async function syncPersonalCounts(nav, { force = false } = {}) {
     if (!nav) return;
     const cached = readPersonalCountCache();
-    if (cached && !force) applyPersonalCounts(nav, cached);
+    if (cached && !force) {
+      applyPersonalCounts(nav, cached);
+      return;
+    }
     try {
       const response = await fetch(PERSONAL_SUMMARY_API, {
         credentials:'same-origin',
@@ -429,7 +432,7 @@
     });
     window.addEventListener('pagehide', () => saveScroll(nav), { passive:true });
     window.addEventListener('drx:phase9-personal-ready', () => void syncPersonalCounts(nav, { force:true }));
-    window.addEventListener('drx:phase9-personal-changed', () => void syncPersonalCounts(nav, { force:true }));
+    window.addEventListener('drx:phase9-personal-changed', () => void syncPersonalCounts(nav));
     window.addEventListener('hashchange', () => {
       syncAtc(nav);
       const cached = readIcdCache();
