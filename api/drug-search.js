@@ -191,7 +191,33 @@ async function neonAtcCounts() {
 }
 
 function listRow(row) { return { id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName:clean(row.trade_name), activeSubstance:clean(row.active_substance), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), approvedPopulation:clean(row.approved_population), strength:clean(row.strength), form:clean(row.pharmaceutical_form), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, qualityStatus:clean(row.editorial_status || row.product_status) }; }
-function detailRow(row) { const source=row?.source_payload && typeof row.source_payload==='object' ? row.source_payload : {}; return { ...listRow(row), protocolNo:clean(row.protocol_no), packaging:clean(row.packaging), marketingAuthorizationHolder:clean(row.marketing_authorization_holder), manufacturer:clean(row.manufacturer), maCertificate:clean(row.ma_certificate), wholesalePrice:row.wholesale_price ?? null, wholesaleWithMargin:row.wholesale_with_margin ?? null, vat:clean(row.vat_text), validity:clean(row.validity_text), prescriptionNotation:clean(source['Si të shënohet në recetë']), updatedAt:row.updated_at || null }; }
+function sourceFields(value) {
+  const source=value && typeof value==='object' && !Array.isArray(value) ? value : {};
+  return Object.entries(source).flatMap(([label,raw]) => {
+    const key=clean(label);
+    if(!key || raw===null || raw===undefined) return [];
+    const entry=typeof raw==='object' ? clean(JSON.stringify(raw)) : clean(raw);
+    return entry ? [{ label:key, value:entry }] : [];
+  });
+}
+function detailRow(row) {
+  const source=row?.source_payload && typeof row.source_payload==='object' ? row.source_payload : {};
+  return {
+    ...listRow(row),
+    protocolNo:clean(row.protocol_no),
+    packaging:clean(row.packaging),
+    marketingAuthorizationHolder:clean(row.marketing_authorization_holder),
+    manufacturer:clean(row.manufacturer),
+    maCertificate:clean(row.ma_certificate),
+    wholesalePrice:row.wholesale_price ?? null,
+    wholesaleWithMargin:row.wholesale_with_margin ?? null,
+    vat:clean(row.vat_text),
+    validity:clean(row.validity_text),
+    prescriptionNotation:clean(source['Si të shënohet në recetë']),
+    sourceFields:sourceFields(source),
+    updatedAt:row.updated_at || null,
+  };
+}
 function searchRow(row) { const substance=clean(row.active_substance), tradeName=clean(row.trade_name), strength=clean(row.strength); return { key:[clean(row.pdid),tradeName,strength].join('|'), id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName, substance, activeSubstance:substance, strength, form:clean(row.pharmaceutical_form), packaging:clean(row.packaging), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), approvedPopulation:clean(row.approved_population), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, packagingSummary:clean(row.packaging), prescriptionLine:'', dispense:'', qualityStatus:clean(row.editorial_status || row.product_status), matchRank:Number.isFinite(Number(row.match_rank)) ? Number(row.match_rank) : null, matchReason:clean(row.match_reason) }; }
 
 function buildPageRequest(query={}) {
@@ -216,7 +242,7 @@ function buildPersonalLookupPath(query={}) { const ids=safeUuidList(query.ids); 
 
 async function sendPage(req,res,startedAt) { const request=buildPageRequest(requestQuery(req)); const {data,response}=await supabaseRequest(request.path,{timeoutMs:6500,label:'Supabase registry page',...(request.includeTotal?{prefer:'count=exact'}:{})}); const rows=Array.isArray(data)?data.map(listRow):[]; const total=request.includeTotal?exactCount(response):null; const totalPages=Number.isFinite(total)?Math.max(1,Math.ceil(total/request.pageSize)):null; setHeaders(res,startedAt,'supabase-registry-page'); if(req.method==='HEAD')return res.status(200).end(); return res.status(200).json({ok:true,rows,pagination:{page:request.page,pageSize:request.pageSize,total,totalPages,hasPrevious:request.page>1,hasNext:Number.isFinite(total)?request.page*request.pageSize<total:rows.length===request.pageSize},query:{q:request.q,status:request.status,atc:request.atc,form:request.form,formExact:request.formExact,formCategory:request.formCategory,sort:request.sort,direction:request.direction,includeTotal:request.includeTotal},meta:{source:'supabase'}}); }
 async function sendDetail(req,res,startedAt) { const path=buildDetailPath(requestQuery(req)); if(!path)return res.status(400).json({error:'ID e barit është e pavlefshme.'}); const {data}=await supabaseRequest(path,{timeoutMs:5000,label:'Supabase registry detail'}); const row=Array.isArray(data)&&data.length?detailRow(data[0]):null; setHeaders(res,startedAt,'supabase-registry-detail'); if(req.method==='HEAD')return res.status(row?200:404).end(); return row?res.status(200).json({ok:true,row,meta:{source:'supabase'}}):res.status(404).json({error:'Bari nuk u gjet.'}); }
-async function sendSearch(req,res,startedAt) { const request=buildSearchPath(requestQuery(req).q); setHeaders(res,startedAt,'supabase-drug-search-v2'); if(!request)return req.method==='HEAD'?res.status(200).end():res.status(200).json({ok:true,query:'',results:[],meta:{source:'supabase',searchVersion:'v2'}}); const {data}=await supabaseRequest(request.path,{method:request.method,body:request.body,timeoutMs:5000,label:'Supabase ranked drug search'}); const results=Array.isArray(data)?data.map(searchRow):[]; if(req.method==='HEAD')return res.status(200).end(); return res.status(200).json({ok:true,query:request.q,results,meta:{source:'supabase',searchVersion:'v2'}}); }
+async function sendSearch(req,res,startedAt) { const request=buildSearchPath(requestQuery(req).q); setHeaders(res,startedAt,'supabase-drug-search-v2'); if(!request)return req.method==='HEAD'?res.status(200).end():res.status(200).json({ok:true,query:'',results:[],meta:{source:'supabase',searchVersion:'v3'}}); const {data}=await supabaseRequest(request.path,{method:request.method,body:request.body,timeoutMs:5000,label:'Supabase ranked drug search'}); const results=Array.isArray(data)?data.map(searchRow):[]; if(req.method==='HEAD')return res.status(200).end(); return res.status(200).json({ok:true,query:request.q,results,meta:{source:'supabase',searchVersion:'v3'}}); }
 async function sendPersonalLookup(req,res,startedAt) { const request=buildPersonalLookupPath(requestQuery(req)); setHeaders(res,startedAt,'supabase-personal-drug-lookup'); if(!request.ids.length) return req.method==='HEAD'?res.status(200).end():res.status(200).json({ok:true,rows:[],meta:{source:'supabase',lookup:'personal'}}); const {data}=await supabaseRequest(request.path,{timeoutMs:5000,label:'Supabase personal drug lookup'}); const rows=Array.isArray(data)?data.map(listRow):[]; if(req.method==='HEAD')return res.status(200).end(); return res.status(200).json({ok:true,rows,meta:{source:'supabase',lookup:'personal'}}); }
 
 async function handler(req, res) {
@@ -270,6 +296,7 @@ handler.safeUuidList=safeUuidList;
 handler.listRow=listRow;
 handler.detailRow=detailRow;
 handler.searchRow=searchRow;
+handler.sourceFields=sourceFields;
 handler.REGISTRY_DEFAULT_PAGE_SIZE=REGISTRY_DEFAULT_PAGE_SIZE;
 handler.REGISTRY_MAX_PAGE_SIZE=REGISTRY_MAX_PAGE_SIZE;
 handler.atcCategoryCode = atcCategoryCode;
