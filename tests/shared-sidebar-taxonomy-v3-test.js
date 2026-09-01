@@ -40,6 +40,9 @@ assert.match(shared, /CANONICAL_WORKER_URL = '\/sw\.js\?v=drx-workspace-v7'/);
 assert.match(shared, /navigator\.serviceWorker\.register\(CANONICAL_WORKER_URL/);
 assert.match(shared, /updateViaCache:'none'/);
 assert.match(shared, /dataset\.drxSidebarStructure = 'taxonomy-v4'/);
+assert.match(shared, /PERSONAL_SUMMARY_API = '\/api\/user-library\?view=summary'/);
+assert.match(shared, /syncPersonalCounts\(nav/);
+assert.match(shared, /find\('\/index\.html#favorites'\), find\('\/index\.html#notes'\), find\('\/recetat\.html'\)/);
 
 assert.match(icdSidebar, /\/api\/icd\?view=nav/);
 assert.match(icdSidebar, /mi-atc-menu mi-icd-menu-shared/);
@@ -111,12 +114,15 @@ for (const file of ['index.html','klasifikimi.html','icd.html','dozologjia.html'
   const html = read(file);
   assert.match(html, /drx-unified-sidebar/, `${file}: unified standalone sidebar marker missing`);
   assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/, `${file}: shared Stripe sidebar authority missing`);
+  assert.match(html, /href="\/index\.html#favorites"[^>]*data-personal-nav="favorites"/, `${file}: Favorites navigation missing`);
+  assert.match(html, /href="\/index\.html#notes"[^>]*data-personal-nav="notes"/, `${file}: Notes navigation missing`);
 }
 
 assert.match(stripe, /Shared taxonomy sidebar — ATC and ICD use one identical navy language/);
 assert.match(stripe, /#appMenu :is\(\.mi-atc-root-panel,\.mi-atc-submenu\)/);
 assert.match(stripe, /Canonical sidebar taxonomy depth — ATC groups\/subgroups/);
 assert.match(stripe, /\.drx-unified-sidebar \.atc-sub-link/);
+assert.match(stripe, /\.nav-count/);
 
 
 const classificationHtml = read('klasifikimi.html');
