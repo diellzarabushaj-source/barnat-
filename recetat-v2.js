@@ -1421,6 +1421,7 @@
       dosageStatus:requiresReview ? 'requires-review' : 'auto-filled',
       dosagePopulation:population,
       indication:text(regimen.indication),
+      doseInstruction:signatureAmount(regimen, population, calculation),
       route:text(regimen.route || base.route),
       administrationCategory:text(regimen.administrationCategory || base.administrationCategory),
       frequency:text(regimen.frequency),
@@ -2617,9 +2618,9 @@
 
   function createUi() {
     if (state.document.getElementById('rxClinicalContext')) return;
-    const commandBar = state.document.querySelector('.rx-command-bar');
-    if (!commandBar) return;
-    commandBar.insertAdjacentHTML('afterend', `
+    const anchor = state.document.getElementById('rxOrderBuilder') || state.document.querySelector('.rx-command-bar');
+    if (!anchor) return;
+    anchor.insertAdjacentHTML(anchor.id === 'rxOrderBuilder' ? 'beforebegin' : 'afterend', `
       <section class="rx-clinical-context" id="rxClinicalContext" aria-labelledby="rxClinicalContextTitle">
         <div class="rx-context-heading">
           <div><span class="rx-context-kicker">Konteksti klinik</span><strong id="rxClinicalContextTitle">Rruga e administrimit</strong></div>
@@ -2827,11 +2828,14 @@
     return getContext();
   }
   function hasDraft() {
-    return Boolean(text(state.document.getElementById('rxComposer')?.value) || state.document.querySelector('#rxSelectedDrugs .rx-drug-chip'));
+    return Boolean(text(state.document.getElementById('rxComposer')?.value) || state.document.querySelector('#rxSelectedDrugs .rx-order-card'));
   }
-  function changeContext(next, focusId = '') {
-    if (hasDraft()) {
-      setStatus('Për siguri, hap “Recetë e re” para se të ndryshosh kategorinë, rrugën ose grupmoshën.', 'error');
+  function hasStructuredOrders() {
+    return Boolean(state.document.querySelector('#rxSelectedDrugs .rx-order-card'));
+  }
+  function changeContext(next, focusId = '', { allowWithOrders = false } = {}) {
+    if (hasStructuredOrders() && !allowWithOrders) {
+      setStatus('Për siguri, grupmosha nuk ndryshohet pasi janë shtuar barna. Hap “Recetë e re” për një kontekst tjetër pacienti.', 'error');
       return false;
     }
     save(next);
@@ -2952,10 +2956,6 @@
   function bindRouteButtons(holder = state.document.getElementById('rxRouteSegments')) {
     holder?.querySelectorAll('[data-context-route]').forEach(button => {
       button.addEventListener('click', () => {
-        if (hasDraft()) {
-          setStatus('Për siguri, hap “Recetë e re” para se të ndryshosh rrugën.', 'error');
-          return;
-        }
         save({ ...getContext(), route:button.dataset.contextRoute });
       });
       button.addEventListener('keydown', event => {
@@ -2975,7 +2975,7 @@
       button.addEventListener('click', () => {
         const category = button.dataset.contextCategory;
         const defaultRoute = CATEGORIES[category]?.defaultRoute || '';
-        changeContext({ ...getContext(), administrationCategory:category, route:defaultRoute }, 'rxRouteSegments');
+        changeContext({ ...getContext(), administrationCategory:category, route:defaultRoute }, 'rxRouteSegments', { allowWithOrders:true });
       });
     });
     state.document.getElementById('rxPediatricToggle')?.addEventListener('click', () => {
@@ -3000,7 +3000,7 @@
       const inferred = drugAdministration(drug || {});
       let active = getContext();
 
-      if (inferred.category && !hasDraft()) {
+      if (inferred.category) {
         const nextRoute = inferred.routes.length === 1
           ? inferred.routes[0]
           : inferred.routes.includes(active.route) && active.administrationCategory === inferred.category ? active.route : '';
@@ -3082,7 +3082,7 @@
   const CONTEXT_CONTROL = '[data-context-category],[data-context-route],#rxPediatricToggle';
 
   function hasSelectedDrug(documentRef) {
-    return Boolean(documentRef?.querySelector?.('#rxSelectedDrugs .rx-drug-chip'));
+    return Boolean(documentRef?.querySelector?.('#rxSelectedDrugs .rx-order-card'));
   }
 
   function shouldTemporarilyReleaseComposer(documentRef, target) {
@@ -5208,7 +5208,7 @@
     if (drug.regimenId || !Dosage) return addSelectedDrug(drug, options);
     const payload = await dosagePayload();
     const contextApi = window.MedIndexPrescriptionContext;
-    const context = contextApi?.get?.() || null;
+    const context = contextApi?.getContext?.() || null;
     const decision = contextApi?.decideForContext
       ? contextApi.decideForContext(Dosage, drug, payload.adult || [], context)
       : Dosage.decideMatch(drug, payload.adult || [], { population:'adult' });
@@ -5253,7 +5253,7 @@
       const contextApi = window.MedIndexPrescriptionContext;
       const transferred = apply && selected
         ? (contextApi?.transferForContext
-          ? contextApi.transferForContext(Dosage, pending.drug, selected, contextApi.get?.())
+          ? contextApi.transferForContext(Dosage, pending.drug, selected, contextApi.getContext?.())
           : Dosage.prescriptionTransfer(pending.drug, selected, 'adult'))
         : { ...pending.drug, dosageStatus:'manual' };
       addSelectedDrug(transferred, pending.options);
