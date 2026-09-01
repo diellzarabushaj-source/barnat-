@@ -10,10 +10,9 @@ const functions = fs.readdirSync(apiDir)
   .filter(name => name.endsWith('.js'))
   .sort();
 
-assert.equal(
-  functions.length,
-  11,
-  `Vercel Hobby permits at most 12 Serverless Functions; found ${functions.length}: ${functions.join(', ')}`
+assert.ok(
+  functions.length <= 11,
+  `Keep at least one Vercel Hobby function slot reserved; found ${functions.length}: ${functions.join(', ')}`
 );
 
 assert(!functions.includes('icd.js'));
@@ -33,4 +32,4 @@ assert.equal(
   'data/icd-hierarchy-snapshot.json.gz'
 );
 
-console.log('Vercel Hobby function-budget contract passed: 11/12 functions with one slot reserved.');
+console.log(`Vercel Hobby function-budget contract passed: ${functions.length}/12 functions; at least one slot reserved.`);
