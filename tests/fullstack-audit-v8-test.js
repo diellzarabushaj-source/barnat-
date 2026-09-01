@@ -60,6 +60,7 @@ const packageJson = JSON.parse(read('package.json'));
 assert.match(packageJson.scripts?.build || '', /pnpm run test:deploy/, 'Vercel build must use the focused deploy gate');
 assert.doesNotMatch(packageJson.scripts?.build || '', /\bpnpm\s+test\b/, 'Vercel build must not rerun the exhaustive CI suite');
 assert.match(packageJson.scripts?.['test:deploy'] || '', /fullstack-audit-v8-test\.js/);
+assert.match(packageJson.scripts?.['test:deploy'] || '', /drx-dose-core-test\.js/);
 assert.match(packageJson.scripts?.['test:deploy'] || '', /drx-dose-runtime-engine-test\.js/);
 assert.match(packageJson.scripts?.['test:deploy'] || '', /drx-dose-v3-rpc-reader-test\.js/);
 const rewrites = new Map((vercel.rewrites || []).map(row => [row.source, row.destination]));

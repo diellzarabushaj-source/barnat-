@@ -180,7 +180,7 @@
     "test:drx-phase11-finalization": "node tests/drx-phase11-finalization-contract-test.js && node tests/drx-v3-extended-regimen-runtime-contract-test.js",
     "test:drx-phase11-review-workbench": "node tests/drx-phase11-review-workbench-contract-test.js",
     "test:drx-phase11-release-shadow": "node tests/drx-phase11-release-shadow-contract-test.js",
-    "test:deploy": "node tests/registry-v2-contract-test.js && node tests/fullstack-audit-v8-test.js && node tests/vercel-hobby-function-budget-test.js && node tests/api-security-deep-audit-test.js && node tests/supabase-privileged-key-guard-test.js && node tests/p0-database-integrity-test.js && node tests/drx-dose-runtime-engine-test.js && node tests/drx-dose-v3-runtime-gate-test.js && node tests/drx-dose-v3-rpc-reader-test.js && node tests/drx-dose-golden-cases-test.js && node tests/medical-hub-doctor-workspace-test.js"
+    "test:deploy": "node tests/registry-v2-contract-test.js && node tests/fullstack-audit-v8-test.js && node tests/vercel-hobby-function-budget-test.js && node tests/api-security-deep-audit-test.js && node tests/supabase-privileged-key-guard-test.js && node tests/p0-database-integrity-test.js && node tests/drx-dose-core-test.js && node tests/drx-dose-runtime-engine-test.js && node tests/drx-dose-v3-runtime-gate-test.js && node tests/drx-dose-v3-rpc-reader-test.js && node tests/drx-dose-golden-cases-test.js && node tests/medical-hub-doctor-workspace-test.js"
   },
   "dependencies": {
     "@vercel/blob": "^2.3.0",
