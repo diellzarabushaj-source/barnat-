@@ -133,6 +133,22 @@
     });
   }
 
+  function countsFromPersonalSnapshot(snapshot = {}) {
+    const favorites = Array.isArray(snapshot.favorites)
+      ? snapshot.favorites.filter(item => item?.entityType === 'product' && clean(item?.entityKey)).length
+      : 0;
+    const notes = Array.isArray(snapshot.notes)
+      ? snapshot.notes.filter(item => item?.entityType === 'product' && clean(item?.entityKey)).length
+      : 0;
+    return { favorites, notes };
+  }
+
+  function adoptPersonalSnapshotCounts(nav, snapshot) {
+    const counts = countsFromPersonalSnapshot(snapshot);
+    applyPersonalCounts(nav, counts);
+    writePersonalCountCache(counts);
+  }
+
   async function syncPersonalCounts(nav, { force = false } = {}) {
     if (!nav) return;
     const cached = readPersonalCountCache();
@@ -431,7 +447,7 @@
       if (event.target.closest('a')) saveScroll(nav);
     });
     window.addEventListener('pagehide', () => saveScroll(nav), { passive:true });
-    window.addEventListener('drx:phase9-personal-ready', () => void syncPersonalCounts(nav, { force:true }));
+    window.addEventListener('drx:phase9-personal-ready', event => adoptPersonalSnapshotCounts(nav, event.detail || {}));
     window.addEventListener('drx:phase9-personal-changed', () => void syncPersonalCounts(nav));
     window.addEventListener('hashchange', () => {
       syncAtc(nav);
