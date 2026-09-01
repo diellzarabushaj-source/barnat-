@@ -14,6 +14,34 @@ assert.equal(paracetamol.line, 'Tab. Paracetamol 500 mg');
 assert.equal(paracetamol.packaging, '1 kuti = 20 tableta (2 blistera × 10)');
 assert.equal(paracetamol.dispense, 'Scat. No I (Një kuti = 20 tableta (2 blistera × 10))');
 
+const albanianTablet = Notation.build({
+  'Substanca aktive':'Paracetamol',
+  'Fortësia':'500 mg',
+  'Forma farmaceutike':'Tabletë',
+});
+assert.equal(albanianTablet.line, 'Tab. Paracetamol 500 mg');
+
+const albanianCapsule = Notation.build({
+  'Substanca aktive':'Omeprazole',
+  'Fortësia':'20 mg',
+  'Forma farmaceutike':'Kapsulë',
+});
+assert.equal(albanianCapsule.line, 'Caps. Omeprazole 20 mg');
+
+const albanianAmpoule = Notation.build({
+  'Substanca aktive':'Diclofenac sodium',
+  'Fortësia':'75 mg/3 mL',
+  'Forma farmaceutike':'Ampulë',
+});
+assert.equal(albanianAmpoule.line, 'Amp. Diclofenac sodium 75 mg/3 mL');
+
+const unknownForm = Notation.build({
+  'Substanca aktive':'Test substance',
+  'Fortësia':'10 mg',
+  'Forma farmaceutike':'Unmapped special form',
+});
+assert.equal(unknownForm.line, 'Test substance 10 mg', 'unknown pharmaceutical forms must fail closed without inventing Prep.');
+
 const capsule = Notation.build({
   'Substanca aktive':'Omeprazole',
   'Fortësia':'20 mg',

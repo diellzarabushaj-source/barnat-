@@ -66,6 +66,11 @@ assert.equal(Core.selectedDrugLine({
   form:'Tablet',
 }), '', 'the final prescription must never fall back to the trade name');
 assert.equal(Core.prefixForForm('unknown form'), '', 'unknown forms must not be guessed');
+assert.equal(Core.prefixForForm('Tabletë'), 'Tab.', 'normalized Albanian tablet label must resolve to Tab.');
+assert.equal(Core.prefixForForm('Kapsulë'), 'Caps.', 'normalized Albanian capsule label must resolve to Caps.');
+assert.equal(Core.prefixForForm('Ampulë'), 'Amp.', 'normalized Albanian ampoule label must resolve to Amp.');
+assert.equal(Core.prefixForForm('Krem'), 'Cr.', 'cream must use Cr. consistently');
+assert.equal(Core.prefixForForm('Spray'), 'Spr.', 'spray must use Spr. consistently');
 assert.equal(Core.prefixForForm('Capsule, soft'), 'Caps. soft.', 'soft capsules must use the verified soft-capsule prefix');
 assert.equal(Core.prefixForForm('Chewable tablet'), 'Tab. përtyp.', 'chewable tablets must use the verified chewable-tablet prefix');
 assert.equal(Core.ensurePrescriptionPrefix('Paracetamol 500 mg', 'Tablet'), 'Tab. Paracetamol 500 mg', 'existing source lines without a prefix must be repaired from the pharmaceutical form');
@@ -81,6 +86,11 @@ assert.equal(Core.selectedDrugLine({
   strength:'20 mg',
   pharmaceutical_form:'Capsule, hard',
 }), 'Caps. Omeprazole 20 mg (Kapsula)', 'snake_case API fields must preserve capsule notation');
+assert.equal(Core.selectedDrugLine({
+  substance:'Omeprazole',
+  strength:'20 mg',
+  form:'Kapsulë',
+}), 'Caps. Omeprazole 20 mg (Kapsula)', 'already-normalized Albanian capsule forms must never lose Caps.');
 assert.equal(Core.selectedDrugLine({
   activeSubstance:'Diclofenac sodium',
   strength:'75 mg/3 mL',

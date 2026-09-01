@@ -6,22 +6,35 @@
   'use strict';
 
   const FORM_LABELS = {
-    tab: 'Tableta', tablet: 'Tableta', tableta: 'Tableta',
-    caps: 'Kapsula', capsule: 'Kapsula', kapsula: 'Kapsula',
-    amp: 'Ampulë', ampoule: 'Ampulë', ampula: 'Ampulë', inj: 'Ampulë', injection: 'Ampulë',
-    inf: 'Infuzion', infusion: 'Infuzion', infuzion: 'Infuzion',
-    ung: 'Unguentum', ointment: 'Unguentum', unguentum: 'Unguentum', cream: 'Krem', krem: 'Krem',
-    sol: 'Solucion', solution: 'Solucion', solucion: 'Solucion',
-    sir: 'Sirup', syrup: 'Sirup', sirup: 'Sirup',
-    sup: 'Supozitor', suppository: 'Supozitor', supozitor: 'Supozitor',
-    gtt: 'Pika', drops: 'Pika', pika: 'Pika',
-    inh: 'Inhalacion', inhalation: 'Inhalacion', inhalacion: 'Inhalacion', spray: 'Spray',
-    fl: 'Flakon', vial: 'Flakon', flakon: 'Flakon'
+    tab:'Tableta', tablet:'Tableta', tableta:'Tableta', 'tabletë':'Tableta',
+    caps:'Kapsula', capsule:'Kapsula', capsules:'Kapsula', kapsula:'Kapsula', 'kapsulë':'Kapsula',
+    amp:'Ampulë', ampoule:'Ampulë', ampoules:'Ampulë', ampula:'Ampulë', 'ampulë':'Ampulë',
+    inj:'Ampulë', injection:'Ampulë', injectable:'Ampulë',
+    inf:'Infuzion', infusion:'Infuzion', infuzion:'Infuzion',
+    ung:'Unguentum', ointment:'Unguentum', unguentum:'Unguentum',
+    cream:'Krem', krem:'Krem',
+    gel:'Gel',
+    sol:'Solucion', solution:'Solucion', solucion:'Solucion',
+    suspension:'Suspension', susp:'Suspension',
+    sir:'Sirup', syrup:'Sirup', sirup:'Sirup',
+    sup:'Supozitor', supp:'Supozitor', suppository:'Supozitor', supozitor:'Supozitor',
+    ov:'Ovul', ovule:'Ovul', pessary:'Ovul', vaginal:'Ovul',
+    gtt:'Pika', drops:'Pika', pika:'Pika',
+    spray:'Spray',
+    inh:'Inhalacion', inhalation:'Inhalacion', inhalacion:'Inhalacion',
+    powder:'Pluhur', pulv:'Pluhur',
+    granule:'Granula', granules:'Granula',
+    lozenge:'Pastilë', pastille:'Pastilë',
+    fl:'Flakon', vial:'Flakon', flakon:'Flakon',
+    dressing:'Garzë', gauze:'Garzë',
+    'medicinal gas':'Gaz medicinal',
   };
   const FORM_PREFIXES = {
-    Tableta: 'Tab.', Kapsula: 'Caps.', Ampulë: 'Amp.', Infuzion: 'Inf.',
-    Unguentum: 'Ung.', Krem: 'Ung.', Solucion: 'Sol.', Sirup: 'Sir.',
-    Supozitor: 'Sup.', Pika: 'Gtt.', Inhalacion: 'Inh.', Spray: 'Inh.', Flakon: 'Fl.',
+    Tableta:'Tab.', Kapsula:'Caps.', Ampulë:'Amp.', Infuzion:'Inf.',
+    Unguentum:'Ung.', Krem:'Cr.', Gel:'Gel.', Solucion:'Sol.', Suspension:'Susp.',
+    Sirup:'Sir.', Supozitor:'Sup.', Ovul:'Ov.', Pika:'Gtt.', Spray:'Spr.',
+    Inhalacion:'Inh.', Pluhur:'Pulv.', Granula:'Gran.', Pastilë:'Past.',
+    Flakon:'Fl.', Garzë:'Garz.', 'Gaz medicinal':'Gas med.',
   };
   const EXACT_FORM_PREFIXES = Object.freeze({
     'capsule, soft': 'Caps. soft.',
@@ -74,9 +87,43 @@
   }
 
   function prefixForForm(value) {
-    const exact = EXACT_FORM_PREFIXES[formKey(value)];
+    const raw = text(value);
+    if (!raw) return '';
+    const exact = EXACT_FORM_PREFIXES[formKey(raw)];
     if (exact) return exact;
-    return FORM_PREFIXES[formLabel(value)] || '';
+
+    // Already-normalized labels (e.g. "Kapsula"/"Ampulë") must resolve too.
+    if (FORM_PREFIXES[raw]) return FORM_PREFIXES[raw];
+
+    const label = formLabel(raw);
+    if (FORM_PREFIXES[label]) return FORM_PREFIXES[label];
+
+    // Fail closed: only known pharmaceutical-form wording may emit a prefix.
+    const normalized = formKey(raw);
+    const ordered = [
+      [/(?:vaginal\s+tablet|pessary|ovul)/, 'Ov.'],
+      [/(?:lozenge|pastill)/, 'Past.'],
+      [/(?:infusion|infuz)/, 'Inf.'],
+      [/(?:injection|injectable|ampou?le|ampul)/, 'Amp.'],
+      [/(?:capsule|kapsul)/, 'Caps.'],
+      [/(?:tablet|tabletë|tableta)/, 'Tab.'],
+      [/(?:suppository|supoz)/, 'Sup.'],
+      [/(?:ointment|unguent)/, 'Ung.'],
+      [/(?:cream|krem)/, 'Cr.'],
+      [/(?:gel)/, 'Gel.'],
+      [/(?:oral\s+suspension|suspension)/, 'Susp.'],
+      [/(?:oral\s+solution|solution|solucion)/, 'Sol.'],
+      [/(?:syrup|sirup)/, 'Sir.'],
+      [/(?:drops|pika)/, 'Gtt.'],
+      [/(?:spray)/, 'Spr.'],
+      [/(?:inhalation|inhalacion)/, 'Inh.'],
+      [/(?:powder|pluhur)/, 'Pulv.'],
+      [/(?:granule|granula)/, 'Gran.'],
+      [/(?:vial|flakon)/, 'Fl.'],
+      [/(?:dressing|gauze|garz)/, 'Garz.'],
+      [/(?:medicinal\s+gas|gaz\s+medicinal)/, 'Gas med.'],
+    ];
+    return ordered.find(([pattern]) => pattern.test(normalized))?.[1] || '';
   }
 
   function ensurePrescriptionPrefix(rawLine, form) {

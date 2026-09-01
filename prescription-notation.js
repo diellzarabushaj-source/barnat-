@@ -28,38 +28,40 @@ function normalizeStrength(value) {
 function effectiveKind(row) {
   const form = lower(row['Forma farmaceutike'] || row.form);
   const trade = lower(row['Emri tregtar'] || row.tradeName);
-  if (/infusion|infusionslösung|infundibile/.test(trade)) return 'infusion';
-  if (/infus/.test(form) && !/inject/.test(form)) return 'infusion';
-  if (/inject|ampoule/.test(form)) return 'injection';
-  if (/tablet|lozenge/.test(form)) return 'tablet';
-  if (/capsule/.test(form)) return 'capsule';
+  if (/infusion|infusionslösung|infundibile|infuz/.test(trade)) return 'infusion';
+  if (/infus|infuz/.test(form) && !/inject/.test(form)) return 'infusion';
+  if (/inject|ampou?le|ampul/.test(form)) return 'injection';
+  if (/tablet|tabletë|tableta|lozenge/.test(form)) return 'tablet';
+  if (/capsule|kapsul/.test(form)) return 'capsule';
   return 'other';
 }
 
 function prefixFor(row) {
   const form = lower(row['Forma farmaceutike'] || row.form);
   const kind = effectiveKind(row);
+  if (!form) return '';
+  if (/vaginal tablet|pessary|ovul/.test(form)) return 'Ov.';
+  if (/lozenge|pastill/.test(form)) return 'Past.';
   if (kind === 'infusion') return 'Inf.';
   if (kind === 'injection') return 'Amp.';
-  if (/vaginal tablet|pessary/.test(form)) return 'Ov.';
-  if (/lozenge/.test(form)) return 'Past.';
-  if (/tablet/.test(form)) return 'Tab.';
-  if (/capsule/.test(form)) return 'Caps.';
-  if (/suppository/.test(form)) return 'Supp.';
-  if (/ointment/.test(form)) return 'Ung.';
-  if (/cream/.test(form)) return 'Cr.';
-  if (/syrup/.test(form)) return 'Sir.';
-  if (/oral suspension/.test(form)) return 'Susp.';
-  if (/oral solution/.test(form)) return 'Sol.';
-  if (/powder/.test(form)) return 'Pulv.';
-  if (/granule/.test(form)) return 'Gran.';
-  if (/drops/.test(form)) return 'Gtt.';
+  if (/tablet|tabletë|tableta/.test(form)) return 'Tab.';
+  if (/capsule|kapsul/.test(form)) return 'Caps.';
+  if (/suppository|supoz/.test(form)) return 'Sup.';
+  if (/ointment|unguent/.test(form)) return 'Ung.';
+  if (/cream|krem/.test(form)) return 'Cr.';
+  if (/oral suspension|suspension/.test(form)) return 'Susp.';
+  if (/oral solution|solution|solucion/.test(form)) return 'Sol.';
+  if (/syrup|sirup/.test(form)) return 'Sir.';
+  if (/drops|pika/.test(form)) return 'Gtt.';
   if (/spray/.test(form)) return 'Spr.';
-  if (/inhalation/.test(form)) return 'Inh.';
+  if (/inhalation|inhalacion/.test(form)) return 'Inh.';
+  if (/powder|pluhur/.test(form)) return 'Pulv.';
+  if (/granule|granula/.test(form)) return 'Gran.';
   if (/gel/.test(form)) return 'Gel.';
-  if (/dressing/.test(form)) return 'Garz.';
-  if (/medicinal gas/.test(form)) return 'Gas med.';
-  return 'Prep.';
+  if (/dressing|gauze|garz/.test(form)) return 'Garz.';
+  if (/medicinal gas|gaz medicinal/.test(form)) return 'Gas med.';
+  if (/vial|flakon/.test(form)) return 'Fl.';
+  return '';
 }
 
 function explicitRoute(row) {
@@ -213,7 +215,9 @@ function build(row) {
   const substance = clean(row['Substanca aktive'] || row.substance);
   const strength = normalizeStrength(row['Fortësia'] || row.strength);
   const route = explicitRoute(row);
-  const line = `${prefixFor(row)} ${[substance, strength].filter(Boolean).join(' ')}${route ? ` (${route})` : ''}`.trim();
+  const prefix = prefixFor(row);
+  const identity = [substance, strength].filter(Boolean).join(' ');
+  const line = [prefix, identity].filter(Boolean).join(' ') + (route ? ` (${route})` : '');
   const packaging = packagingSummary(row);
   return {
     line,
