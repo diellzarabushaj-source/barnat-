@@ -1068,6 +1068,8 @@
     el.registryRows.addEventListener('click', event => {
       const doseToggle = event.target.closest('[data-dose-toggle]');
       if (doseToggle) { event.stopPropagation(); toggleDose(doseToggle); return; }
+      const calculatorAction = event.target.closest('[data-dose-calculator-open]');
+      if (calculatorAction) { closeRowMenus(); return; }
       const favorite = event.target.closest('[data-row-favorite]');
       if (favorite) { event.stopPropagation(); closeRowMenus(); void toggleFavoriteRow(findRow(favorite.dataset.rowFavorite), favorite); return; }
       const note = event.target.closest('[data-row-note]');
