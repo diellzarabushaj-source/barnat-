@@ -85,7 +85,7 @@ const { pathToFileURL } = require('node:url');
   assert.match(supabaseAuth, /legacy_user_id/, 'Trusted profile lookup must expose legacy_user_id server-side');
   assert.match(supabaseAuth, /legacyUserId:String\(profile\.legacy_user_id/, 'Legacy mapping must be normalized explicitly');
 
-  assert.match(library, /prescriptionContext\(user\.id, item\.clientId\)/, 'Prescription encryption must still use storage/AAD uid in Phase 5');
+  assert.match(library, /prescriptionContext\(storageUid, item\.clientId\)/, 'Prescription encryption must still use the resolved storage/AAD uid in Phase 5');
   assert.doesNotMatch(library, /prescriptionContext\(authUid[,)]/, 'Phase 5 must not silently re-key prescription AAD to the Auth UUID');
   assert.match(library, /user_id:authUid/, 'Auth UUID may be used only for auth-bound native user_notes persistence');
 
