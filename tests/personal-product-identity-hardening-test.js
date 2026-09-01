@@ -10,7 +10,7 @@ const library = require('../lib/user-library.js');
 
 const server = read('lib/user-library.js');
 const ui = read('registry-v2.js');
-const migration = read('supabase/migrations/20260901215000_harden_personal_product_identity.sql');
+const migration = read('supabase/migrations/20260901215509_harden_personal_product_identity.sql');
 
 const PRODUCT_ID = 'a29ce6e1-7581-4e9e-bc6e-db29e0ac451d';
 
