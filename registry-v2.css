@@ -909,3 +909,66 @@ body[data-registry-view="notes"] .personal-toolbar{
 @media(max-width:760px){
   .personal-item-title strong{max-width:calc(100vw - 110px)}
 }
+
+
+/* Registry V2 — dosage detail fidelity v5 */
+.dose-card.has-dose{
+  border-color:#d8e3f0;
+  background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);
+}
+.dose-card.is-empty{
+  border-style:dashed;
+  background:#fbfcfd;
+}
+.dose-card.is-empty p{color:#7c8999}
+.dose-regimen-list{
+  display:grid;
+  gap:7px;
+  margin-top:10px;
+  padding-top:9px;
+  border-top:1px solid #edf0f3;
+}
+.dose-regimen-list>div{
+  display:grid;
+  gap:3px;
+  padding:8px 9px;
+  border:1px solid #e5e9ef;
+  border-radius:7px;
+  background:#fafbfc;
+}
+.dose-regimen-list>div>span{
+  width:max-content;
+  max-width:100%;
+  padding:2px 6px;
+  border-radius:999px;
+  background:#f1f0ff;
+  color:#5549c7;
+  font-size:8.5px;
+  font-weight:680;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.dose-regimen-list p{
+  margin:0;
+  color:#34475c;
+  font-size:10.5px;
+  line-height:1.52;
+  white-space:pre-wrap;
+}
+.dose-regimen-list small{margin:0;color:#6b7888}
+.detail-source-data .detail-section-head{
+  position:sticky;
+  top:-1px;
+  z-index:2;
+  padding:7px 0;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(8px);
+}
+.detail-grid-all dt{color:#66778a}
+.detail-grid-all dd{color:#2f4155}
+@media(max-width:760px){
+  .dose-regimen-list>div{padding:9px}
+  .dose-regimen-list p{font-size:11px}
+  .detail-source-data .detail-section-head{position:static}
+}

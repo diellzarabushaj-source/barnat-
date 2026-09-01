@@ -28,7 +28,16 @@ const LIST_SELECT = [
 const DETAIL_SELECT = [
   'id','registry_number','pdid','protocol_no','trade_name','active_substance','atc_code','drug_class','use_text','approved_population',
   'strength','pharmaceutical_form','packaging','marketing_authorization_holder','manufacturer','ma_certificate',
-  'product_status','wholesale_price','wholesale_with_margin','vat_text','retail_price','validity_text','updated_at','source_payload'
+  'product_status','wholesale_price','wholesale_with_margin','vat_text','retail_price','validity_text','updated_at',
+  'audit_date','audit_note','pediatric_dose_summary','pediatric_indication','pediatric_use_status',
+  'pediatric_min_age_value','pediatric_min_age_unit','pediatric_max_age_value','pediatric_max_age_unit',
+  'pediatric_min_weight_kg','pediatric_max_weight_kg','pediatric_dose_min','pediatric_dose_max','pediatric_dose_unit',
+  'pediatric_dose_basis','pediatric_doses_per_day','pediatric_interval_hours','pediatric_max_single_value',
+  'pediatric_max_single_unit','pediatric_max_daily_value','pediatric_max_daily_unit','pediatric_route',
+  'pediatric_restriction','pediatric_concentration_value','pediatric_concentration_unit',
+  'pediatric_concentration_per_value','pediatric_concentration_per_unit','pediatric_source_url',
+  'pediatric_source_section','pediatric_verification_status','pediatric_verified_at','pediatric_primary_regimen_id',
+  'pediatric_max_doses_per_day','pediatric_min_interval_hours','source_payload'
 ].join(',');
 
 const SORTS = Object.freeze({ registry:'registry_number', name:'trade_name', substance:'active_substance', class:'drug_class', use:'use_text', population:'approved_population', atc:'atc_code', strength:'strength', form:'pharmaceutical_form', status:'product_status', price:'retail_price' });
@@ -214,6 +223,40 @@ function detailRow(row) {
     wholesaleWithMargin:row.wholesale_with_margin ?? null,
     vat:clean(row.vat_text),
     validity:clean(row.validity_text),
+    auditDate:row.audit_date || null,
+    auditNote:clean(row.audit_note),
+    pediatricDoseSummary:clean(row.pediatric_dose_summary),
+    pediatricIndication:clean(row.pediatric_indication),
+    pediatricUseStatus:clean(row.pediatric_use_status),
+    pediatricMinAgeValue:row.pediatric_min_age_value ?? null,
+    pediatricMinAgeUnit:clean(row.pediatric_min_age_unit),
+    pediatricMaxAgeValue:row.pediatric_max_age_value ?? null,
+    pediatricMaxAgeUnit:clean(row.pediatric_max_age_unit),
+    pediatricMinWeightKg:row.pediatric_min_weight_kg ?? null,
+    pediatricMaxWeightKg:row.pediatric_max_weight_kg ?? null,
+    pediatricDoseMin:row.pediatric_dose_min ?? null,
+    pediatricDoseMax:row.pediatric_dose_max ?? null,
+    pediatricDoseUnit:clean(row.pediatric_dose_unit),
+    pediatricDoseBasis:clean(row.pediatric_dose_basis),
+    pediatricDosesPerDay:row.pediatric_doses_per_day ?? null,
+    pediatricIntervalHours:row.pediatric_interval_hours ?? null,
+    pediatricMaxSingleValue:row.pediatric_max_single_value ?? null,
+    pediatricMaxSingleUnit:clean(row.pediatric_max_single_unit),
+    pediatricMaxDailyValue:row.pediatric_max_daily_value ?? null,
+    pediatricMaxDailyUnit:clean(row.pediatric_max_daily_unit),
+    pediatricRoute:clean(row.pediatric_route),
+    pediatricRestriction:clean(row.pediatric_restriction),
+    pediatricConcentrationValue:row.pediatric_concentration_value ?? null,
+    pediatricConcentrationUnit:clean(row.pediatric_concentration_unit),
+    pediatricConcentrationPerValue:row.pediatric_concentration_per_value ?? null,
+    pediatricConcentrationPerUnit:clean(row.pediatric_concentration_per_unit),
+    pediatricSourceUrl:clean(row.pediatric_source_url),
+    pediatricSourceSection:clean(row.pediatric_source_section),
+    pediatricVerificationStatus:clean(row.pediatric_verification_status),
+    pediatricVerifiedAt:row.pediatric_verified_at || null,
+    pediatricPrimaryRegimenId:clean(row.pediatric_primary_regimen_id),
+    pediatricMaxDosesPerDay:row.pediatric_max_doses_per_day ?? null,
+    pediatricMinIntervalHours:row.pediatric_min_interval_hours ?? null,
     prescriptionNotation:clean(source['Si të shënohet në recetë']),
     sourceFields:sourceFields(source),
     updatedAt:row.updated_at || null,
@@ -251,24 +294,24 @@ async function sendDetail(req,res,startedAt) { const path=buildDetailPath(reques
 async function sendSearch(req,res,startedAt) {
   const query=requestQuery(req);
   const request=buildSearchPath(query.q,query.limit);
-  setHeaders(res,startedAt,'supabase-drug-search-v3');
+  setHeaders(res,startedAt,'supabase-drug-search-v4');
   if(!request) return req.method==='HEAD'
     ? res.status(200).end()
-    : res.status(200).json({ok:true,query:'',results:[],meta:{source:'supabase',searchVersion:'v3'}});
-  const {data}=await supabaseRequest(request.path,{method:request.method,body:request.body,timeoutMs:5000,label:'Supabase ranked drug search v3'});
+    : res.status(200).json({ok:true,query:'',results:[],meta:{source:'supabase',searchVersion:'v4'}});
+  const {data}=await supabaseRequest(request.path,{method:request.method,body:request.body,timeoutMs:5000,label:'Supabase ranked drug search v4'});
   const results=Array.isArray(data)?data.map(searchRow):[];
   if(req.method==='HEAD')return res.status(200).end();
-  return res.status(200).json({ok:true,query:request.q,results,meta:{source:'supabase',searchVersion:'v3',limit:request.limit}});
+  return res.status(200).json({ok:true,query:request.q,results,meta:{source:'supabase',searchVersion:'v4',limit:request.limit}});
 }
 async function sendRankedRegistrySearch(req,res,startedAt) {
   const query=requestQuery(req);
   const pageSize=integerInRange(query.pageSize,REGISTRY_DEFAULT_PAGE_SIZE,1,REGISTRY_MAX_PAGE_SIZE);
   const request=buildSearchPath(query.q,pageSize);
-  setHeaders(res,startedAt,'supabase-ranked-registry-search-v3');
+  setHeaders(res,startedAt,'supabase-ranked-registry-search-v4');
   if(!request) return req.method==='HEAD'
     ? res.status(200).end()
-    : res.status(200).json({ok:true,rows:[],pagination:{page:1,pageSize,total:0,totalPages:1,hasPrevious:false,hasNext:false},query:{q:''},meta:{source:'supabase',searchVersion:'v3',ranked:true}});
-  const {data}=await supabaseRequest(request.path,{method:request.method,body:request.body,timeoutMs:5000,label:'Supabase ranked registry search v3'});
+    : res.status(200).json({ok:true,rows:[],pagination:{page:1,pageSize,total:0,totalPages:1,hasPrevious:false,hasNext:false},query:{q:''},meta:{source:'supabase',searchVersion:'v4',ranked:true}});
+  const {data}=await supabaseRequest(request.path,{method:request.method,body:request.body,timeoutMs:5000,label:'Supabase ranked registry search v4'});
   const rows=Array.isArray(data)?data.map(searchRow):[];
   if(req.method==='HEAD')return res.status(200).end();
   return res.status(200).json({
@@ -276,7 +319,7 @@ async function sendRankedRegistrySearch(req,res,startedAt) {
     rows,
     pagination:{page:1,pageSize,total:rows.length,totalPages:1,hasPrevious:false,hasNext:false},
     query:{q:request.q},
-    meta:{source:'supabase',searchVersion:'v3',ranked:true,limit:request.limit},
+    meta:{source:'supabase',searchVersion:'v4',ranked:true,limit:request.limit},
   });
 }
 async function sendPersonalLookup(req,res,startedAt) { const request=buildPersonalLookupPath(requestQuery(req)); setHeaders(res,startedAt,'supabase-personal-drug-lookup'); if(!request.ids.length) return req.method==='HEAD'?res.status(200).end():res.status(200).json({ok:true,rows:[],meta:{source:'supabase',lookup:'personal'}}); const {data}=await supabaseRequest(request.path,{timeoutMs:5000,label:'Supabase personal drug lookup'}); const rows=Array.isArray(data)?data.map(listRow):[]; if(req.method==='HEAD')return res.status(200).end(); return res.status(200).json({ok:true,rows,meta:{source:'supabase',lookup:'personal'}}); }

@@ -66,6 +66,10 @@ assert.match(js, /view:'registry-page'/);
 assert.match(js, /\/api\/dosage\?view=cards/);
 assert.match(js, /view=registry-detail/);
 assert.match(js, /\/api\/dosage\?view=card/);
+assert.match(js, /card\.adultRegimens/);
+assert.match(js, /card\.pediatricRegimens/);
+assert.match(js, /Të dhënat nga sheet \/ databaza/);
+assert.match(js, /pediatricDoseSummary/);
 assert.match(js, /AbortController/);
 assert.match(js, /requestId/);
 assert.match(js, /escapeHtml/);
@@ -113,6 +117,8 @@ assert.match(js, /meta\.productId \|\| meta\.id/);
 assert.match(css, /\.personal-toolbar-actions/);
 assert.match(css, /\.personal-item-time/);
 assert.match(css, /\.registry-note-count/);
+assert.match(css, /Registry V2 — dosage detail fidelity v5/);
+assert.match(css, /\.dose-regimen-list/);
 assert.match(css, /Personal identity hydration v4/);
 assert.match(css, /body\[data-registry-view="favorites"\] \.personal-workspace-head/);
 assert.match(html, /id="personalWorkspace" aria-labelledby="pageTitle" aria-describedby="pageSubtitle"/);
@@ -176,6 +182,18 @@ assert.match(personalLookup.path, /editorial_status=eq\.published/);
 
 const mapped = drugSearch.listRow({ id:'11111111-1111-4111-8111-111111111111', approved_population:'Pediatric only' });
 assert.equal(mapped.approvedPopulation, 'Pediatric only');
+
+const detailMapped = drugSearch.detailRow({
+  id:'11111111-1111-4111-8111-111111111111',
+  pediatric_dose_summary:'2–6 vjeç: 2 mL 3 herë/ditë',
+  pediatric_route:'PO',
+  pediatric_verification_status:'verified',
+  source_payload:{ 'Baza e dozës':'dozë fikse' },
+});
+assert.equal(detailMapped.pediatricDoseSummary,'2–6 vjeç: 2 mL 3 herë/ditë');
+assert.equal(detailMapped.pediatricRoute,'PO');
+assert.equal(detailMapped.pediatricVerificationStatus,'verified');
+assert.ok(detailMapped.sourceFields.some(item => item.label === 'Baza e dozës' && item.value === 'dozë fikse'));
 
 const capped = drugSearch.buildPageRequest({ pageSize:'500' });
 assert.equal(capped.pageSize, drugSearch.REGISTRY_MAX_PAGE_SIZE);
