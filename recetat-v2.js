@@ -4878,7 +4878,9 @@
     renderTimer: 0,
     generatedReviewConfirmed: false,
     dosageReviewConfirmed: false,
+    clinicalReviewConfirmed: false,
     dosageEdited: false,
+    composerOrigin: 'structured',
     dosagePayload: null,
     dosagePromise: null,
     pendingDosageChoice: null,
@@ -5053,7 +5055,108 @@
   }
 
   function normalizeDrug(item) {
-    return Core.normalizeDrug(item);
+    const base = Core.normalizeDrug(item);
+    const Administration = window.MedIndexAdministrationRoutes;
+    const inferred = Administration?.inferAdministration?.(item) || {};
+    const allowedRoutes = Array.isArray(item?.allowedRoutes)
+      ? item.allowedRoutes.map(value => text(value).toUpperCase()).filter(Boolean)
+      : Array.isArray(item?.__allowedRoutes)
+        ? item.__allowedRoutes.map(value => text(value).toUpperCase()).filter(Boolean)
+        : Administration?.routeTokens?.(item?.route || inferred.routes?.join(' ') || '') || [];
+    const route = text(item?.route || base.route || inferred.route).toUpperCase();
+    return {
+      ...base,
+      packaging:text(item?.packaging || item?.packageSize),
+      packagingSummary:text(item?.packagingSummary),
+      prescriptionLine:text(item?.prescriptionLine),
+      prescriptionNotation:text(item?.prescriptionNotation),
+      sheetPrescriptionNotation:text(item?.sheetPrescriptionNotation),
+      administrationCategory:text(item?.administrationCategory || inferred.category),
+      allowedRoutes:[...new Set([...allowedRoutes, route].filter(Boolean))],
+      route,
+      doseInstruction:text(item?.doseInstruction || item?.dose_instruction),
+      frequency:text(item?.frequency || base.frequency),
+      duration:text(item?.duration || base.duration),
+      dispense:text(item?.dispense || base.dispense),
+      signatura:text(item?.signatura || base.signatura),
+      additionalInstructions:text(item?.additionalInstructions || item?.additional_instructions),
+      signaturaManual:Boolean(item?.signaturaManual),
+    };
+  }
+
+  function routeOptionsForDrug(drug) {
+    const Administration = window.MedIndexAdministrationRoutes;
+    const allowed = Array.isArray(drug.allowedRoutes) ? drug.allowedRoutes : [];
+    const routes = [...new Set([...allowed, text(drug.route).toUpperCase()].filter(Boolean))];
+    const source = routes.length ? routes : Object.keys(Administration?.ROUTE_LABELS || {
+      PO:'orale', SL:'sublinguale', BUCCAL:'bukale', PR:'rektale', IV:'intravenoze', IM:'intramuskulare',
+      SC:'subkutane', ID:'intradermale', TOP:'dermatologjike', OPH:'oftalmike', OTIC:'otike',
+      NASAL:'nazale', TD:'transdermale', INH:'inhalatore', MDI:'MDI', DPI:'DPI', NEB:'nebulizator',
+    });
+    return source.map(route => ({ route, label:Administration?.routeLabel?.(route) || route }));
+  }
+
+  function structuredSignature(drug) {
+    if (drug.signaturaManual && text(drug.signatura)) return text(drug.signatura);
+    const dose = text(drug.doseInstruction);
+    const frequency = text(drug.frequency);
+    if (!dose || !frequency) return text(drug.signatura);
+    const Administration = window.MedIndexAdministrationRoutes;
+    const route = text(drug.route).toUpperCase();
+    const category = Administration?.categoryForRoute?.(route) || text(drug.administrationCategory);
+    const verb = category === 'PARENTERAL'
+      ? 'Administrohet'
+      : category === 'TOPICAL_LOCAL'
+        ? 'Aplikohet'
+        : category === 'INHALATION'
+          ? 'Inhalohet'
+          : 'Merret';
+    const routePhrase = route ? Administration?.routePhrase?.(route) || route : '';
+    const durationRaw = text(drug.duration);
+    const duration = durationRaw
+      ? (/^(?:për|per|deri|gjatë|gjate|sipas)\b/i.test(durationRaw) ? durationRaw : `për ${durationRaw}`)
+      : '';
+    const extra = text(drug.additionalInstructions);
+    const sentence = [`${verb} ${dose}`, routePhrase, frequency, duration].filter(Boolean).join(' ');
+    return [sentence, extra].filter(Boolean).join(', ').replace(/\s+/g, ' ').replace(/[.]+$/, '') + '.';
+  }
+
+  function orderIssues(drug) {
+    const issues = [];
+    if (!text(drug.route)) issues.push('rruga');
+    if (!text(drug.signatura) && !(text(drug.doseInstruction) && text(drug.frequency))) issues.push('doza/shpeshtësia');
+    if (!text(drug.dispense)) issues.push('sasia');
+    return issues;
+  }
+
+  function structuredOrderIssues() {
+    return state.selectedDrugs.flatMap((drug, index) => {
+      const issues = orderIssues(drug);
+      return issues.length ? [{ key:drug.key, index, drug, issues }] : [];
+    });
+  }
+
+  function structuredOrdersReady() {
+    return !state.selectedDrugs.length || structuredOrderIssues().length === 0;
+  }
+
+  function transferText(drug) {
+    const normalized = normalizeDrug(drug);
+    const signature = structuredSignature(normalized);
+    const lines = [Core.selectedDrugLine(normalized)].filter(Boolean);
+    if (normalized.dispense) lines.push(`Sasia: ${normalized.dispense}`);
+    if (signature) lines.push(`S (Signatura): ${signature}`);
+    return lines.join('\n');
+  }
+
+  function syncComposerFromOrders({ force = false } = {}) {
+    const composer = $('#rxComposer');
+    if (!composer || !state.selectedDrugs.length) return false;
+    if (!force && state.composerOrigin === 'manual') return false;
+    composer.value = state.selectedDrugs.map(drug => transferText(drug)).filter(Boolean).join('\n\n');
+    state.composerOrigin = 'structured';
+    scheduleLocalPreview();
+    return true;
   }
 
   function addSelectedDrug(raw, { insert = true } = {}) {
@@ -5063,17 +5166,25 @@
       return;
     }
     const key = drug.key || `${drug.substance}|${drug.tradeName}|${drug.strength}`;
-    if (!state.selectedDrugs.some(item => item.key === key)) state.selectedDrugs.push({ ...drug, key });
+    const prepared = {
+      ...drug,
+      key,
+      signatura:structuredSignature(drug),
+    };
+    const existingIndex = state.selectedDrugs.findIndex(item => item.key === key);
+    if (existingIndex >= 0) state.selectedDrugs[existingIndex] = { ...state.selectedDrugs[existingIndex], ...prepared };
+    else state.selectedDrugs.push(prepared);
+    state.clinicalReviewConfirmed = false;
     renderSelectedDrugs();
     syncChapterSuggestion();
-    if (insert) insertAtCursor(`${transferText(drug)}\n\n`);
-  }
-
-  function transferText(drug) {
-    const lines = [Core.selectedDrugLine(drug)].filter(Boolean);
-    if (drug.dispense) lines.push(`Sasia: ${drug.dispense}`);
-    if (drug.signatura) lines.push(`S (Signatura): ${drug.signatura}`);
-    return lines.join('\n');
+    if (insert) {
+      const composer = $('#rxComposer');
+      if (!text(composer?.value) || state.composerOrigin === 'structured') {
+        syncComposerFromOrders({ force:true });
+      } else {
+        setStatus('Bari u shtua te fushat e strukturuara. Teksti manual nuk u mbishkrua; përdor “Përditëso tekstin” kur të jesh gati.');
+      }
+    }
   }
 
   async function dosagePayload() {
@@ -5096,10 +5207,15 @@
     const drug = normalizeDrug(raw);
     if (drug.regimenId || !Dosage) return addSelectedDrug(drug, options);
     const payload = await dosagePayload();
-    const decision = Dosage.decideMatch(drug, payload.adult || [], { population:'adult' });
+    const contextApi = window.MedIndexPrescriptionContext;
+    const context = contextApi?.get?.() || null;
+    const decision = contextApi?.decideForContext
+      ? contextApi.decideForContext(Dosage, drug, payload.adult || [], context)
+      : Dosage.decideMatch(drug, payload.adult || [], { population:'adult' });
+
     if (decision.status === 'auto') {
-      addSelectedDrug(Dosage.prescriptionTransfer(drug, decision.regimen, 'adult'), options);
-      setStatus('Skema e vetme me përputhje të saktë u auto-plotësua. Verifikoje klinikisht.', 'success');
+      openDosageChooser(drug, [decision.regimen], options);
+      setStatus('U gjet 1 skemë e verifikuar. Ajo nuk u aplikua; kontrolloje dhe konfirmoje.');
       return;
     }
     if (decision.status === 'choose-indication') {
@@ -5107,14 +5223,22 @@
       return;
     }
     addSelectedDrug({ ...drug, dosageStatus:'manual' }, options);
-    if (options.insert !== false) setStatus('Nuk u gjet përputhje e saktë. U plotësua vetëm identiteti dhe parashtesa; doza mbetet manuale.');
+    if (options.insert !== false) {
+      setStatus('U shtua vetëm identiteti i barit. Doza dhe udhëzimi mbeten për plotësim nga preskribuesi.');
+    }
   }
 
   function openDosageChooser(drug, matches, options) {
-    state.pendingDosageChoice = { drug, matches, options };
+    const rows = Array.isArray(matches) ? matches.filter(Boolean) : [];
+    if (!rows.length) return addSelectedDrug({ ...drug, dosageStatus:'manual' }, options);
+    state.pendingDosageChoice = { drug, matches:rows, options };
     state.chooserReturnFocus = document.activeElement;
     const select = $('#rxDosageChoice');
-    select.innerHTML = matches.map(item => `<option value="${esc(item.regimenId)}">${esc(item.indication)} · ${esc(item.frequency)} · ${esc(item.duration)}</option>`).join('');
+    select.innerHTML = rows.map(item => `<option value="${esc(item.regimenId)}">${esc(item.indication || 'Pa indikacion të shënuar')} · ${esc(item.frequency || 'shpeshtësia e pashënuar')} · ${esc(item.duration || 'kohëzgjatja e pashënuar')}</option>`).join('');
+    const copy = $('#rxDosageChooserCopy');
+    if (copy) copy.textContent = rows.length === 1
+      ? 'U gjet një skemë e verifikuar. Nuk aplikohet automatikisht; kontrolloje dhe konfirmoje vetëm nëse i përshtatet pacientit dhe indikacionit.'
+      : `U gjetën ${rows.length} skema të verifikuara. Zgjidh indikacionin e saktë; asnjë dozë nuk aplikohet pa konfirmimin tënd.`;
     const overlay = $('#rxDosageChooser');
     overlay.hidden = false;
     overlay.setAttribute('aria-hidden', 'false');
@@ -5126,13 +5250,16 @@
     const pending = state.pendingDosageChoice;
     if (pending) {
       const selected = pending.matches.find(item => item.regimenId === $('#rxDosageChoice')?.value);
-      const value = apply && selected
-        ? Dosage.prescriptionTransfer(pending.drug, selected, 'adult')
+      const contextApi = window.MedIndexPrescriptionContext;
+      const transferred = apply && selected
+        ? (contextApi?.transferForContext
+          ? contextApi.transferForContext(Dosage, pending.drug, selected, contextApi.get?.())
+          : Dosage.prescriptionTransfer(pending.drug, selected, 'adult'))
         : { ...pending.drug, dosageStatus:'manual' };
-      addSelectedDrug(value, pending.options);
+      addSelectedDrug(transferred, pending.options);
       setStatus(apply
-        ? 'Skema e zgjedhur u auto-plotësua. Verifikoje klinikisht.'
-        : 'Doza mbeti manuale; u vendos vetëm identiteti i barit.', apply ? 'success' : '');
+        ? 'Skema e zgjedhur u aplikua pas konfirmimit. Verifikoje klinikisht para ruajtjes.'
+        : 'Skema nuk u aplikua; bari u shtua me dozë manuale.', apply ? 'success' : '');
     }
     state.pendingDosageChoice = null;
     const overlay = $('#rxDosageChooser');
@@ -5145,17 +5272,94 @@
 
   function removeSelectedDrug(key) {
     state.selectedDrugs = state.selectedDrugs.filter(item => item.key !== key);
+    state.clinicalReviewConfirmed = false;
     renderSelectedDrugs();
     syncChapterSuggestion();
+    if (state.composerOrigin === 'structured') {
+      const composer = $('#rxComposer');
+      if (composer) composer.value = state.selectedDrugs.map(drug => transferText(drug)).filter(Boolean).join('\n\n');
+      scheduleLocalPreview();
+    }
+  }
+
+  function updateOrderField(key, field, value) {
+    const index = state.selectedDrugs.findIndex(item => item.key === key);
+    if (index < 0) return;
+    const current = { ...state.selectedDrugs[index] };
+    current[field] = value;
+    if (field === 'signatura') current.signaturaManual = true;
+    if (['doseInstruction','route','frequency','duration','dispense','additionalInstructions'].includes(field)) {
+      if (current.regimenId && ['auto-filled','requires-review'].includes(current.dosageStatus)) current.dosageStatus = 'edited';
+      if (!current.signaturaManual) current.signatura = structuredSignature(current);
+      state.dosageReviewConfirmed = false;
+    }
+    state.clinicalReviewConfirmed = false;
+    state.selectedDrugs[index] = current;
+
+    const card = document.querySelector(`[data-order-key="${CSS.escape(key)}"]`);
+    if (card) {
+      const issues = orderIssues(current);
+      const badge = card.querySelector('[data-order-status]');
+      if (badge) {
+        badge.textContent = issues.length ? `Plotëso: ${issues.join(', ')}` : 'Gati për kontroll';
+        badge.className = `rx-order-status ${issues.length ? 'is-incomplete' : 'is-ready'}`;
+      }
+      if (!current.signaturaManual && field !== 'signatura') {
+        const signature = card.querySelector('[data-order-field="signatura"]');
+        if (signature) signature.value = current.signatura || '';
+      }
+    }
+    syncComposerFromOrders();
+    updateActionState();
   }
 
   function renderSelectedDrugs() {
     const holder = $('#rxSelectedDrugs');
     if (!holder) return;
-    holder.hidden = !state.selectedDrugs.length;
-    holder.innerHTML = state.selectedDrugs.length
-      ? `<span class="rx-selected-label">Nga regjistri:</span>${state.selectedDrugs.map(drug => `<span class="rx-drug-chip"><span>${Core.prefixForForm(drug.form) ? `${esc(Core.prefixForForm(drug.form))} ` : ''}${esc(drug.substance)}${drug.strength ? ` · ${esc(drug.strength)}` : ''}${drug.form ? ` · ${esc(Core.formLabel(drug.form))}` : ''}${drug.dosageStatus ? ` · ${esc(drug.dosageStatus === 'auto-filled' ? 'Auto-plotësuar' : drug.dosageStatus === 'requires-review' ? 'Kërkon rishikim' : drug.dosageStatus === 'edited' ? 'Edituar' : 'Dozë manuale')}` : ''}</span><button type="button" data-remove-drug="${esc(drug.key)}" aria-label="Hiqe ${esc(drug.substance)}">×</button></span>`).join('')}`
-      : '';
+    if (!state.selectedDrugs.length) {
+      holder.innerHTML = '<div class="rx-order-empty"><strong>Ende nuk ka barna</strong><span>Shto barin e parë nga regjistri i verifikuar.</span></div>';
+      updateActionState();
+      return;
+    }
+
+    const orderCards = state.selectedDrugs.map((drug, index) => {
+      const issues = orderIssues(drug);
+      const routes = routeOptionsForDrug(drug);
+      const routeOptions = ['<option value="">Zgjidh rrugën</option>', ...routes.map(item => `<option value="${esc(item.route)}"${item.route === drug.route ? ' selected' : ''}>${esc(item.route)} · ${esc(item.label)}</option>`)].join('');
+      const doseBadge = drug.regimenId
+        ? '<span class="rx-order-source">Skemë e verifikuar</span>'
+        : '<span class="rx-order-source is-manual">Dozë manuale</span>';
+      return `<article class="rx-order-card" data-order-key="${esc(drug.key)}">
+        <header>
+          <div class="rx-order-index">${index + 1}</div>
+          <div class="rx-order-identity">
+            <strong>${esc([Core.prefixForForm(drug.form), drug.substance, drug.strength].filter(Boolean).join(' '))}</strong>
+            <span>${esc([drug.tradeName, drug.form ? Core.formLabel(drug.form) : '', drug.atc ? `ATC ${drug.atc}` : ''].filter(Boolean).join(' · '))}</span>
+          </div>
+          ${doseBadge}
+          <button type="button" class="rx-order-remove" data-remove-drug="${esc(drug.key)}" aria-label="Hiqe ${esc(drug.substance)}">Hiq</button>
+        </header>
+        <div class="rx-order-grid">
+          <label><span>Rruga <b aria-hidden="true">*</b></span><select data-order-field="route">${routeOptions}</select></label>
+          <label><span>Doza për marrje</span><input data-order-field="doseInstruction" value="${esc(drug.doseInstruction)}" placeholder="p.sh. 1 tabletë"></label>
+          <label><span>Shpeshtësia</span><input data-order-field="frequency" value="${esc(drug.frequency)}" placeholder="p.sh. çdo 12 orë"></label>
+          <label><span>Kohëzgjatja</span><input data-order-field="duration" value="${esc(drug.duration)}" placeholder="p.sh. 7 ditë"></label>
+          <label><span>Sasia për dispensim <b aria-hidden="true">*</b></span><input data-order-field="dispense" value="${esc(drug.dispense)}" placeholder="p.sh. Scat. No I"></label>
+          <label><span>Udhëzim shtesë</span><input data-order-field="additionalInstructions" value="${esc(drug.additionalInstructions)}" placeholder="p.sh. pas ushqimit"></label>
+          <label class="rx-order-signature"><span>Signatura <b aria-hidden="true">*</b></span><textarea rows="2" data-order-field="signatura" placeholder="Udhëzimi për pacientin">${esc(drug.signatura || structuredSignature(drug))}</textarea></label>
+        </div>
+        <footer>
+          <span class="rx-order-status ${issues.length ? 'is-incomplete' : 'is-ready'}" data-order-status>${issues.length ? `Plotëso: ${esc(issues.join(', '))}` : 'Gati për kontroll'}</span>
+          ${drug.sourceUrl ? `<a href="${esc(drug.sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi i dozologjisë</a>` : ''}
+        </footer>
+      </article>`;
+    }).join('');
+
+    holder.innerHTML = `<div class="rx-order-toolbar">
+      <span><strong>${state.selectedDrugs.length}</strong> ${state.selectedDrugs.length === 1 ? 'bar' : 'barna'} në recetë</span>
+      <button type="button" class="rx-text-button" data-sync-orders-to-text>Përditëso tekstin</button>
+    </div>${orderCards}`;
+    updateActionState();
   }
 
   function loadSelection() {
