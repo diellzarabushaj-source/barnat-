@@ -9,6 +9,7 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const api = read('api/drug-search.js');
 const registry = read('registry-v2.js');
+const recetat = read('recetat-v2.js');
 const cardHandler = read('lib/dosage-card-handler.js');
 const migration = read('supabase/migrations/20260901230042_expand_ranked_drug_search_limit_to_50.sql');
 
@@ -36,8 +37,14 @@ assert.match(registry, /databaseRows\.map/);
 
 assert.match(cardHandler, /Promise\.allSettled/);
 assert.match(cardHandler, /profileAvailable/);
+assert.match(recetat, /\/api\/drug-search\?q=\$\{encodeURIComponent\(value\)\}&limit=30/);
+assert.match(recetat, /drug\.matchRank/);
+assert.match(recetat, /Përputhje e saktë/);
+assert.match(recetat, /event\.key !== 'ArrowDown'/);
+assert.match(recetat, /\['ArrowDown','ArrowUp'\]/);
 assert.doesNotThrow(() => new Function(registry));
 assert.doesNotThrow(() => new Function(api));
 assert.doesNotThrow(() => new Function(cardHandler));
+assert.doesNotThrow(() => new Function(recetat));
 
 console.log('Registry search v3 + dosage detail resilience contract passed.');
