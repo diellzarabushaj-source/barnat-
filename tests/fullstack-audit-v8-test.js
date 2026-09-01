@@ -56,6 +56,11 @@ assert.ok(!apiFunctions.includes('medical-hub-image.js'), 'Medical Hub image pro
 assert.ok(exists('lib/medical-hub-image-handler.js'), 'Medical Hub shared image handler is missing');
 
 const vercel = JSON.parse(read('vercel.json'));
+assert.deepEqual(
+  vercel.git?.deploymentEnabled,
+  {'*':false,main:true},
+  'Vercel previews must stay disabled on Hobby so CI commits do not exhaust the deployment quota'
+);
 const packageJson = JSON.parse(read('package.json'));
 assert.match(packageJson.scripts?.build || '', /pnpm run test:deploy/, 'Vercel build must use the focused deploy gate');
 assert.doesNotMatch(packageJson.scripts?.build || '', /\bpnpm\s+test\b/, 'Vercel build must not rerun the exhaustive CI suite');
