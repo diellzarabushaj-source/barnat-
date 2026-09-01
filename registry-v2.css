@@ -673,3 +673,109 @@ body.registry-note-open{overflow:hidden}
   .registry-note-actions{align-items:stretch;flex-direction:column-reverse}
   .registry-note-actions>div{display:grid;grid-template-columns:1fr 1fr}
 }
+
+
+/* Personal workspace v2 — account-scoped Favorites + Notes, backed by Supabase. */
+.nav-count{
+  min-width:22px;height:20px;display:inline-grid;place-items:center;margin-left:auto;padding:0 6px;border-radius:999px;
+  background:rgba(255,255,255,.11);color:rgba(255,255,255,.78);font-size:10px;font-weight:600;line-height:1
+}
+.nav-item.is-active .nav-count{background:rgba(162,155,255,.28);color:#fff}
+body[data-registry-view="favorites"] .metrics-row,
+body[data-registry-view="favorites"] .data-card,
+body[data-registry-view="notes"] .metrics-row,
+body[data-registry-view="notes"] .data-card{display:none}
+body[data-registry-view="favorites"] #headingActions,
+body[data-registry-view="notes"] #headingActions{display:none}
+
+.personal-workspace{
+  margin-bottom:18px;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#fff;
+  box-shadow:var(--shadow-xs)
+}
+.personal-workspace[hidden]{display:none}
+.personal-workspace-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:20px 22px 17px;border-bottom:1px solid #edf1f5
+}
+.personal-workspace-head .eyebrow{margin:0 0 5px}
+.personal-workspace-head h2{margin:0;color:var(--ink);font-size:22px;line-height:1.2;letter-spacing:-.02em}
+.personal-workspace-head p:last-child{margin:7px 0 0;color:var(--muted);font-size:12.5px;line-height:1.5}
+.personal-sync{
+  min-height:32px;display:inline-flex;align-items:center;gap:8px;flex:0 0 auto;padding:0 10px;border:1px solid #dfe7e4;border-radius:999px;
+  background:#fbfdfc;color:#4b655e;font-size:10.5px;font-weight:500
+}
+.personal-toolbar{
+  display:grid;grid-template-columns:auto minmax(220px,360px);align-items:center;justify-content:space-between;gap:16px;padding:13px 16px;border-bottom:1px solid #edf1f5;background:#fbfcfe
+}
+.personal-tabs{display:flex;align-items:center;gap:5px;padding:3px;border:1px solid #e1e6ed;border-radius:10px;background:#fff}
+.personal-tab{
+  min-height:34px;display:inline-flex;align-items:center;gap:7px;padding:0 11px;border:0;border-radius:7px;background:transparent;color:#64748b;
+  font:inherit;font-size:11.5px;font-weight:500;cursor:pointer
+}
+.personal-tab:hover{background:#f6f8fb;color:#253b53}
+.personal-tab[aria-selected="true"]{background:#f0efff;color:#4035c7;box-shadow:inset 0 0 0 1px #d7d3ff}
+.personal-tab span{
+  min-width:18px;height:18px;display:inline-grid;place-items:center;padding:0 5px;border-radius:999px;background:#eef1f5;color:#66788d;font-size:9.5px
+}
+.personal-tab[aria-selected="true"] span{background:#dedaff;color:#4035c7}
+.personal-search{position:relative;display:block;min-width:0}
+.personal-search svg{
+  position:absolute;left:11px;top:50%;width:15px;height:15px;transform:translateY(-50%);fill:none;stroke:#8a98a8;stroke-width:1.8;stroke-linecap:round
+}
+.personal-search input{
+  width:100%;height:38px;padding:0 12px 0 34px;border:1px solid #d8e0e9;border-radius:9px;background:#fff;color:var(--ink);
+  font:inherit;font-size:12px;outline:none
+}
+.personal-search input:focus{border-color:#8a83ff;box-shadow:0 0 0 3px rgba(99,91,255,.1)}
+.personal-summary{
+  min-height:38px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 17px;border-bottom:1px solid #edf1f5;color:#76869a;font-size:10.5px
+}
+#personalStatus{color:#668077}
+.personal-list{display:grid;gap:0}
+.personal-item{
+  display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:start;gap:13px;padding:16px 17px;border-bottom:1px solid #edf1f5;background:#fff
+}
+.personal-item:last-child{border-bottom:0}
+.personal-item:hover{background:#fcfdff}
+.personal-item-icon{
+  width:38px;height:38px;display:grid;place-items:center;border:1px solid #e3e7ff;border-radius:10px;background:#f7f6ff;color:#5b50d6
+}
+.personal-item-icon .icon{width:18px;height:18px}
+.personal-item-copy{min-width:0;display:grid;gap:4px}
+.personal-item-title{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.personal-item-title strong{overflow:hidden;color:#172b42;font-size:13px;font-weight:600;text-overflow:ellipsis;white-space:nowrap}
+.personal-kind{
+  display:inline-flex;align-items:center;min-height:19px;padding:0 6px;border-radius:999px;background:#f1f4f7;color:#66788d;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.03em
+}
+.personal-item-meta{color:#7a8a9c;font-size:10.5px;line-height:1.45}
+.personal-note-copy{
+  margin:3px 0 0;padding:9px 10px;border-left:2px solid #b7b1ff;border-radius:0 8px 8px 0;background:#faf9ff;color:#415269;font-size:12px;line-height:1.52;
+  white-space:pre-wrap;overflow-wrap:anywhere
+}
+.personal-item-actions{display:flex;align-items:center;gap:7px;padding-top:1px}
+.personal-item-actions .button{min-height:32px;padding:0 10px;border-radius:8px;font-size:10.5px}
+.personal-empty{display:grid;justify-items:center;gap:8px;padding:44px 20px 48px;text-align:center}
+.personal-empty[hidden]{display:none}
+.personal-empty .empty-icon{margin-bottom:3px}
+.personal-empty h3{margin:0;color:var(--ink);font-size:15px}
+.personal-empty p{max-width:460px;margin:0 0 7px;color:var(--muted);font-size:11.5px;line-height:1.55}
+.registry-more-menu button.is-favorite{color:#4d42cc}
+.registry-more-menu button.is-favorite .icon{fill:currentColor}
+
+@media(max-width:760px){
+  .nav-count{min-width:24px;height:22px}
+  .personal-workspace{margin:0 9px 12px;border-radius:12px}
+  .personal-workspace-head{padding:16px 14px 14px}
+  .personal-workspace-head h2{font-size:19px}
+  .personal-sync{min-height:30px;padding:0 8px}
+  .personal-toolbar{grid-template-columns:1fr;gap:9px;padding:10px}
+  .personal-tabs{width:100%}
+  .personal-tab{flex:1;justify-content:center;min-height:38px}
+  .personal-search input{height:44px;font-size:16px}
+  .personal-summary{padding:8px 12px;align-items:flex-start;flex-direction:column;gap:3px}
+  .personal-item{grid-template-columns:38px minmax(0,1fr);gap:11px;padding:14px 12px}
+  .personal-item-icon{width:36px;height:36px}
+  .personal-item-actions{grid-column:1/-1;width:100%;display:grid;grid-template-columns:1fr 1fr;padding-top:3px}
+  .personal-item-actions .button{min-height:40px}
+  .personal-item-title strong{font-size:12.5px;white-space:normal}
+  .personal-note-copy{font-size:11.5px}
+}

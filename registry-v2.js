@@ -91,6 +91,10 @@
     preferenceSaveTimer: 0,
     openRowMenuKey: '',
     noteRow: null,
+    view: 'registry',
+    personalQuery: '',
+    personalResolved: new Map(),
+    personalMisses: new Set(),
   };
 
   const $ = id => document.getElementById(id);
@@ -105,6 +109,11 @@
     pageSizeSelect: $('pageSizeSelect'), resultSummary: $('resultSummary'), requestTiming: $('requestTiming'), registryRows: $('registryRows'), registryTable: $('registryTable'), tableScroll: $('tableScroll'),
     emptyState: $('emptyState'), emptyClearButton: $('emptyClearButton'), selectPageCheckbox: $('selectPageCheckbox'), paginationSummary: $('paginationSummary'), pageIndicator: $('pageIndicator'), prevPageButton: $('prevPageButton'), nextPageButton: $('nextPageButton'),
     drawerBackdrop: $('drawerBackdrop'), detailDrawer: $('detailDrawer'), drawerClose: $('drawerClose'), drawerCloseButton: $('drawerCloseButton'), drawerTitle: $('drawerTitle'), drawerBody: $('drawerBody'), drawerPrescriptionButton: $('drawerPrescriptionButton'),
+    pageTitle: $('pageTitle'), pageEyebrow: $('pageEyebrow'), pageSubtitle: $('pageSubtitle'), headingActions: $('headingActions'),
+    personalWorkspace: $('personalWorkspace'), personalTitle: $('personalTitle'), personalSubtitle: $('personalSubtitle'), personalList: $('personalList'), personalEmpty: $('personalEmpty'),
+    personalEmptyTitle: $('personalEmptyTitle'), personalEmptyText: $('personalEmptyText'), personalSearchInput: $('personalSearchInput'), personalCountText: $('personalCountText'), personalStatus: $('personalStatus'),
+    personalFavoritesTab: $('personalFavoritesTab'), personalNotesTab: $('personalNotesTab'), personalFavoritesCount: $('personalFavoritesCount'), personalNotesCount: $('personalNotesCount'),
+    favoriteNavCount: $('favoriteNavCount'), noteNavCount: $('noteNavCount'), personalBackToRegistry: $('personalBackToRegistry'),
     toast: $('toast'),
   };
 
@@ -442,9 +451,247 @@
       await api.load().catch(() => null);
       const next = await api.toggleFavorite('product', key, { tradeName:clean(row.tradeName), registryNumber:clean(row.registryNumber), activeSubstance:clean(row.activeSubstance), strength:clean(row.strength), form:clean(row.form) });
       showToast(next ? 'Bari u shënua si favorit.' : 'Bari u hoq nga favoritët.');
-      if (button) button.querySelector('[data-favorite-label]').textContent = next ? 'Hiq nga favoritët' : 'Shëno si favorit';
+      if (button) {
+        button.classList.toggle('is-favorite', next);
+        button.querySelector('[data-favorite-label]').textContent = next ? 'Hiq nga favoritët' : 'Shëno si favorit';
+      }
+      syncPersonalUi();
     } catch (error) { showToast(error?.message || 'Favoriti nuk u ruajt.'); }
     finally { button?.removeAttribute('aria-busy'); }
+  }
+
+  function personalSnapshot() {
+    try { return window.DRxPhase9Personal?.state?.() || { loaded:false, favorites:[], notes:[] }; }
+    catch { return { loaded:false, favorites:[], notes:[] }; }
+  }
+
+  function isFavoriteProductKey(key) {
+    if (!key || !window.DRxPhase9Personal) return false;
+    try { return window.DRxPhase9Personal.isFavorite('product', key); }
+    catch { return false; }
+  }
+
+  function personalItems(snapshot, view) {
+    const source = view === 'notes' ? snapshot.notes : snapshot.favorites;
+    return (Array.isArray(source) ? source : []).filter(item => item?.entityType === 'product' && clean(item.entityKey));
+  }
+
+  function personalMeta(item, snapshot) {
+    const key = clean(item?.entityKey);
+    const favorite = (snapshot.favorites || []).find(row => row.entityType === 'product' && clean(row.entityKey) === key);
+    const payload = item?.payload && typeof item.payload === 'object' ? item.payload : favorite?.payload && typeof favorite.payload === 'object' ? favorite.payload : {};
+    const resolved = state.personalResolved.get(key) || {};
+    return {
+      id:key,
+      tradeName:clean(resolved.tradeName || payload.tradeName),
+      registryNumber:clean(resolved.registryNumber || payload.registryNumber),
+      activeSubstance:clean(resolved.activeSubstance || payload.activeSubstance),
+      strength:clean(resolved.strength || payload.strength),
+      form:clean(resolved.form || payload.form),
+      atc:clean(resolved.atc || payload.atc),
+    };
+  }
+
+  function setCountBadge(node, count) {
+    if (!node) return;
+    node.textContent = String(count);
+    node.hidden = count <= 0;
+  }
+
+  function updatePersonalCounts(snapshot = personalSnapshot()) {
+    const favoriteCount = personalItems(snapshot, 'favorites').length;
+    const noteCount = personalItems(snapshot, 'notes').length;
+    if (el.personalFavoritesCount) el.personalFavoritesCount.textContent = String(favoriteCount);
+    if (el.personalNotesCount) el.personalNotesCount.textContent = String(noteCount);
+    setCountBadge(el.favoriteNavCount, favoriteCount);
+    setCountBadge(el.noteNavCount, noteCount);
+  }
+
+  function syncRowFavoriteLabels() {
+    document.querySelectorAll('[data-row-favorite]').forEach(button => {
+      const favorite = isFavoriteProductKey(button.dataset.rowFavorite);
+      button.classList.toggle('is-favorite', favorite);
+      const label = button.querySelector('[data-favorite-label]');
+      if (label) label.textContent = favorite ? 'Hiq nga favoritët' : 'Shëno si favorit';
+    });
+  }
+
+  async function hydratePersonalRows(snapshot, items) {
+    const ids = [...new Set(items.map(item => clean(item.entityKey)).filter(key =>
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(key)
+      && !state.personalResolved.has(key)
+      && !state.personalMisses.has(key)
+      && !personalMeta(item, snapshot).tradeName
+    ))];
+    if (!ids.length) return;
+    for (let index = 0; index < ids.length; index += 40) {
+      const batch = ids.slice(index, index + 40);
+      try {
+        const { payload } = await fetchJson(`/api/drug-search?view=registry-personal&ids=${encodeURIComponent(batch.join(','))}`, {}, 6000);
+        const found = new Set();
+        for (const row of Array.isArray(payload.rows) ? payload.rows : []) {
+          const key = clean(row.id);
+          if (!key) continue;
+          found.add(key);
+          state.personalResolved.set(key, row);
+        }
+        batch.forEach(key => { if (!found.has(key)) state.personalMisses.add(key); });
+      } catch (error) {
+        console.warn('Personal registry metadata unavailable:', error);
+        return;
+      }
+    }
+    if (state.view === 'favorites' || state.view === 'notes') renderPersonalWorkspace({ hydrate:false });
+  }
+
+  function personalSearchText(item, meta, view) {
+    return normalizeFormText([
+      meta.tradeName, meta.registryNumber, meta.activeSubstance, meta.strength, meta.form, meta.atc,
+      view === 'notes' ? item.content : ''
+    ].filter(Boolean).join(' '));
+  }
+
+  function renderPersonalWorkspace({ hydrate = true } = {}) {
+    if (!el.personalWorkspace || state.view === 'registry') return;
+    const snapshot = personalSnapshot();
+    updatePersonalCounts(snapshot);
+    const view = state.view === 'notes' ? 'notes' : 'favorites';
+    const title = view === 'notes' ? 'Shënimet' : 'Favoritët';
+    const subtitle = view === 'notes'
+      ? 'Shënimet e tua personale për barnat, të ruajtura vetëm në llogarinë tënde.'
+      : 'Barnat që i ke ruajtur për qasje të shpejtë.';
+    el.personalTitle.textContent = title;
+    el.personalSubtitle.textContent = subtitle;
+    el.personalFavoritesTab.setAttribute('aria-selected', view === 'favorites' ? 'true' : 'false');
+    el.personalNotesTab.setAttribute('aria-selected', view === 'notes' ? 'true' : 'false');
+
+    if (!snapshot.loaded) {
+      el.personalList.innerHTML = '<div class="drawer-loading">Duke sinkronizuar bibliotekën personale…</div>';
+      el.personalEmpty.hidden = true;
+      el.personalCountText.textContent = 'Duke sinkronizuar…';
+      el.personalStatus.textContent = 'Supabase · duke u lidhur';
+      return;
+    }
+
+    const all = personalItems(snapshot, view);
+    const query = normalizeFormText(state.personalQuery);
+    const rows = all.map(item => ({ item, meta:personalMeta(item, snapshot) }))
+      .filter(({ item, meta }) => !query || personalSearchText(item, meta, view).includes(query))
+      .sort((left, right) => (left.meta.tradeName || left.meta.registryNumber || left.meta.id).localeCompare(right.meta.tradeName || right.meta.registryNumber || right.meta.id, 'sq'));
+
+    el.personalCountText.textContent = query ? `${rows.length} nga ${all.length} rezultate` : `${all.length} ${view === 'notes' ? 'shënime' : 'favoritë'}`;
+    el.personalStatus.textContent = 'Supabase · sinkronizuar me llogarinë tënde';
+    el.personalEmpty.hidden = rows.length > 0;
+    if (!rows.length) {
+      el.personalList.innerHTML = '';
+      el.personalEmptyTitle.textContent = query ? 'Nuk u gjet asgjë' : (view === 'notes' ? 'Ende nuk ke shënime' : 'Ende nuk ke favoritë');
+      el.personalEmptyText.textContent = query
+        ? 'Provo një emër bari, substancë ose tekst tjetër.'
+        : view === 'notes'
+          ? 'Te një bar, hap menynë me tri pika dhe zgjidh “Shkruaj shënim”.'
+          : 'Te një bar, hap menynë me tri pika dhe zgjidh “Shëno si favorit”.';
+    } else {
+      el.personalList.innerHTML = rows.map(({ item, meta }) => {
+        const name = meta.tradeName || (meta.registryNumber ? `Bari nr. ${meta.registryNumber}` : 'Bar i ruajtur');
+        const secondary = [meta.activeSubstance, meta.strength, meta.form].filter(Boolean).join(' · ');
+        const registry = meta.registryNumber ? `Nr. regjistri ${meta.registryNumber}` : '';
+        const note = view === 'notes' ? String(item.content || '').slice(0, 2000) : '';
+        return `<article class="personal-item" data-personal-key="${escapeHtml(meta.id)}">
+          <span class="personal-item-icon" aria-hidden="true">${view === 'notes' ? NOTE_ICON : STAR_ICON}</span>
+          <div class="personal-item-copy">
+            <div class="personal-item-title"><strong>${escapeHtml(name)}</strong><span class="personal-kind">${view === 'notes' ? 'Shënim' : 'Favorit'}</span></div>
+            ${secondary ? `<span class="personal-item-meta">${escapeHtml(secondary)}${registry ? ` · ${escapeHtml(registry)}` : ''}</span>` : registry ? `<span class="personal-item-meta">${escapeHtml(registry)}</span>` : ''}
+            ${note ? `<p class="personal-note-copy">${escapeHtml(note)}</p>` : ''}
+          </div>
+          <div class="personal-item-actions">
+            <button class="button button-secondary" type="button" data-personal-open="${escapeHtml(meta.id)}">Hap barin</button>
+            ${view === 'notes'
+              ? `<button class="button button-ghost" type="button" data-personal-edit-note="${escapeHtml(meta.id)}">Ndrysho</button><button class="button button-ghost" type="button" data-personal-delete-note="${escapeHtml(meta.id)}">Fshi</button>`
+              : `<button class="button button-ghost" type="button" data-personal-unfavorite="${escapeHtml(meta.id)}">Hiq</button>`}
+          </div>
+        </article>`;
+      }).join('');
+    }
+    if (hydrate) void hydratePersonalRows(snapshot, all);
+  }
+
+  function syncPersonalNav() {
+    const personal = state.view === 'favorites' || state.view === 'notes';
+    document.querySelectorAll('[data-personal-nav]').forEach(link => {
+      const active = link.dataset.personalNav === state.view;
+      link.classList.toggle('is-active', active);
+      if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
+    });
+    const registryLink = document.querySelector('.nav-item[href="/index.html"]');
+    if (registryLink) {
+      registryLink.classList.toggle('is-active', !personal);
+      if (!personal) registryLink.setAttribute('aria-current', 'page'); else registryLink.removeAttribute('aria-current');
+    }
+  }
+
+  function viewFromLocation() {
+    const hash = clean(decodeURIComponent(location.hash.slice(1))).toLowerCase();
+    return hash === 'favorites' || hash === 'notes' ? hash : 'registry';
+  }
+
+  function applyRegistryView() {
+    state.view = viewFromLocation();
+    const personal = state.view !== 'registry';
+    document.body.dataset.registryView = state.view;
+    if (el.personalWorkspace) el.personalWorkspace.hidden = !personal;
+    if (el.pageEyebrow) el.pageEyebrow.textContent = personal ? 'Puna ime' : 'Regjistri klinik';
+    if (el.pageTitle) el.pageTitle.textContent = state.view === 'favorites' ? 'Favoritët' : state.view === 'notes' ? 'Shënimet' : 'Barnat';
+    if (el.pageSubtitle) el.pageSubtitle.textContent = state.view === 'favorites'
+      ? 'Qasje e shpejtë te barnat që i ke ruajtur.'
+      : state.view === 'notes'
+        ? 'Të gjitha shënimet e tua personale për barnat në një vend.'
+        : 'Kërko, filtro dhe hap detajet klinike pa u larguar nga tabela.';
+    syncPersonalNav();
+    updatePersonalCounts();
+    if (personal) renderPersonalWorkspace();
+  }
+
+  function navigatePersonal(view) {
+    if (view !== 'favorites' && view !== 'notes') {
+      history.pushState(history.state, '', location.pathname + location.search);
+      applyRegistryView();
+      return;
+    }
+    if (location.hash === `#${view}`) applyRegistryView();
+    else location.hash = view;
+  }
+
+  async function personalRow(key) {
+    const current = findRow(key) || state.personalResolved.get(key);
+    if (current) return current;
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(key)) return null;
+    try {
+      const { payload } = await fetchJson(`/api/drug-search?view=registry-detail&id=${encodeURIComponent(key)}`, {}, 6000);
+      const row = payload.row || null;
+      if (row?.id) state.personalResolved.set(clean(row.id), row);
+      return row;
+    } catch { return null; }
+  }
+
+  async function openPersonalDrug(key) {
+    const row = await personalRow(clean(key));
+    if (!row) return showToast('Bari nuk u gjet më në regjistrin aktiv.');
+    showDetail(row);
+  }
+
+  async function editPersonalNote(key) {
+    const row = await personalRow(clean(key));
+    const snapshot = personalSnapshot();
+    const item = personalItems(snapshot, 'notes').find(note => clean(note.entityKey) === clean(key));
+    if (!item) return;
+    await openNoteDialog(row || { id:clean(key), tradeName:personalMeta(item, snapshot).tradeName || 'Shënim për barin' });
+  }
+
+  function syncPersonalUi() {
+    const snapshot = personalSnapshot();
+    updatePersonalCounts(snapshot);
+    syncRowFavoriteLabels();
+    if (state.view === 'favorites' || state.view === 'notes') renderPersonalWorkspace();
   }
   function debounceSearch() {
     clearTimeout(state.searchTimer);
@@ -664,6 +911,7 @@
       const number = clean(row.registryNumber);
       const population = populationMeta(row.approvedPopulation);
       const rowClasses = [selected ? 'is-selected' : '', population.key === 'pediatric-only' ? 'is-pediatric-only' : ''].filter(Boolean).join(' ');
+      const favorite = isFavoriteProductKey(key);
       return `<tr data-row-id="${escapeHtml(key)}" data-population="${escapeHtml(population.key)}" class="${rowClasses}" tabindex="0" aria-selected="${selected ? 'true' : 'false'}">
         <td><input class="row-check" type="checkbox" data-select-row="${escapeHtml(key)}" aria-label="Zgjidh ${escapeHtml(row.tradeName)}" ${selected ? 'checked' : ''}></td>
         <td data-col="registry"><span class="price">${escapeHtml(number || '—')}</span></td>
@@ -679,7 +927,7 @@
         <td data-col="pediatricDose" data-dose-pediatric="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></td>
         <td data-col="status">${statusBadge(row.productStatus)}</td>
         <td data-col="price"><span class="price">${euros(row.retailPrice)}</span></td>
-        <td class="registry-actions-cell"><div class="registry-row-actions"><details class="registry-more" data-row-menu-key="${escapeHtml(key)}"><summary class="registry-more-trigger" aria-label="Veprime për ${escapeHtml(row.tradeName)}">${MORE_VERTICAL}</summary><div class="registry-more-menu" role="menu"><button type="button" role="menuitem" data-dose-calculator-open data-registry-number="${escapeHtml(number)}">${CALC_ICON}<span>Kalkulo</span></button><button type="button" role="menuitem" data-row-favorite="${escapeHtml(key)}">${STAR_ICON}<span data-favorite-label>Shëno si favorit</span></button><button type="button" role="menuitem" data-row-note="${escapeHtml(key)}">${NOTE_ICON}<span>Shkruaj shënim</span></button></div></details><button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">${CHEVRON_RIGHT}</button></div></td>
+        <td class="registry-actions-cell"><div class="registry-row-actions"><details class="registry-more" data-row-menu-key="${escapeHtml(key)}"><summary class="registry-more-trigger" aria-label="Veprime për ${escapeHtml(row.tradeName)}">${MORE_VERTICAL}</summary><div class="registry-more-menu" role="menu"><button type="button" role="menuitem" data-dose-calculator-open data-registry-number="${escapeHtml(number)}">${CALC_ICON}<span>Kalkulo</span></button><button type="button" role="menuitem" data-row-favorite="${escapeHtml(key)}" class="${favorite ? 'is-favorite' : ''}">${STAR_ICON}<span data-favorite-label>${favorite ? 'Hiq nga favoritët' : 'Shëno si favorit'}</span></button><button type="button" role="menuitem" data-row-note="${escapeHtml(key)}">${NOTE_ICON}<span>Shkruaj shënim</span></button></div></details><button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">${CHEVRON_RIGHT}</button></div></td>
       </tr>`;
     }).join('');
     applyColumnVisibility();
@@ -1047,6 +1295,28 @@
       if (!el.columnPicker.contains(event.target)) closeColumnPicker();
       if (!event.target.closest('.registry-more')) closeRowMenus();
     });
+    window.addEventListener('hashchange', applyRegistryView);
+    window.addEventListener('drx:phase9-personal-ready', syncPersonalUi);
+    window.addEventListener('drx:phase9-personal-changed', syncPersonalUi);
+    el.personalSearchInput?.addEventListener('input', () => { state.personalQuery = clean(el.personalSearchInput.value); renderPersonalWorkspace(); });
+    el.personalFavoritesTab?.addEventListener('click', () => navigatePersonal('favorites'));
+    el.personalNotesTab?.addEventListener('click', () => navigatePersonal('notes'));
+    el.personalBackToRegistry?.addEventListener('click', () => navigatePersonal('registry'));
+    el.personalList?.addEventListener('click', event => {
+      const open = event.target.closest('[data-personal-open]');
+      if (open) { void openPersonalDrug(open.dataset.personalOpen); return; }
+      const unfavorite = event.target.closest('[data-personal-unfavorite]');
+      if (unfavorite) {
+        void loadPersonalLibrary().then(api => api?.setFavorite?.('product', unfavorite.dataset.personalUnfavorite, false)).then(() => showToast('Bari u hoq nga favoritët.')).catch(error => showToast(error?.message || 'Favoriti nuk u hoq.'));
+        return;
+      }
+      const edit = event.target.closest('[data-personal-edit-note]');
+      if (edit) { void editPersonalNote(edit.dataset.personalEditNote); return; }
+      const removeNote = event.target.closest('[data-personal-delete-note]');
+      if (removeNote) {
+        void loadPersonalLibrary().then(api => api?.deleteNote?.('product', removeNote.dataset.personalDeleteNote)).then(() => showToast('Shënimi u fshi.')).catch(error => showToast(error?.message || 'Shënimi nuk u fshi.'));
+      }
+    });
     el.registryRows.addEventListener('toggle', event => {
       const details = event.target.closest?.('.registry-more');
       if (details?.open) closeRowMenus(details.dataset.rowMenuKey);
@@ -1103,13 +1373,16 @@
     const incomingAtc = clean(new URLSearchParams(location.search).get('atc')).toUpperCase().replace(/\s+/g, '');
     state.atc = /^(?:[A-Z]|[A-Z]\d{2}(?:[A-Z]{1,2})?)$/.test(incomingAtc) ? incomingAtc : '';
     bindEvents();
+    applyRegistryView();
     renderFormPicker();
     syncFormPickerTrigger();
     updateSelectedCount();
     try {
       const authPayload = await ensureAuth();
       await syncProfileChrome(authPayload);
-      void loadPersonalLibrary().then(api => api?.load?.()).catch(() => null);
+      void loadPersonalLibrary().then(api => api?.load?.()).then(syncPersonalUi).catch(() => {
+        if (el.personalStatus) el.personalStatus.textContent = 'Supabase · sinkronizimi dështoi';
+      });
       await loadColumnPreferences(authPayload);
       el.appShell.setAttribute('aria-busy', 'false');
       await loadPage();

@@ -42,6 +42,11 @@ assert.doesNotMatch(html, /registry-mobile-|registry-ux-phase|registry-unified-t
   'nextPageButton',
   'detailDrawer',
   'drawerBody',
+  'personalWorkspace',
+  'personalList',
+  'personalSearchInput',
+  'favoriteNavCount',
+  'noteNavCount',
 ].forEach(id => assert.match(html, new RegExp(`id="${id}"`)));
 
 assert.match(css, /--accent:#635bff/);
@@ -81,6 +86,15 @@ assert.match(js, /deleteNote\('product'/);
 assert.match(css, /\.registry-more-trigger/);
 assert.match(css, /\.registry-more-menu/);
 assert.match(css, /\.registry-note-dialog/);
+assert.match(css, /\.personal-workspace/);
+assert.match(css, /\.personal-item/);
+assert.match(css, /\.personal-tab/);
+assert.match(js, /view=registry-personal/);
+assert.match(js, /renderPersonalWorkspace/);
+assert.match(js, /hydratePersonalRows/);
+assert.match(js, /data-personal-unfavorite/);
+assert.match(js, /data-personal-edit-note/);
+assert.match(js, /data-personal-delete-note/);
 assert.doesNotThrow(() => new Function(js));
 
 assert.match(doseCss, /\.drx-dose-modal/);
@@ -127,6 +141,17 @@ assert.match(page.path, /offset=50/);
 assert.match(page.path, /registry_search_text=ilike/);
 assert.match(decodeURIComponent(page.path), /approved_population/);
 assert.match(decodeURIComponent(page.path), /atc_code=ilike\.N02\*/);
+
+const personalLookup = drugSearch.buildPersonalLookupPath({
+  ids:'11111111-1111-4111-8111-111111111111,not-a-uuid,22222222-2222-4222-8222-222222222222'
+});
+assert.deepEqual(personalLookup.ids, [
+  '11111111-1111-4111-8111-111111111111',
+  '22222222-2222-4222-8222-222222222222',
+]);
+assert.match(decodeURIComponent(personalLookup.path), /id=in\.\(11111111-1111-4111-8111-111111111111,22222222-2222-4222-8222-222222222222\)/);
+assert.match(personalLookup.path, /is_published=eq\.true/);
+assert.match(personalLookup.path, /editorial_status=eq\.published/);
 
 const mapped = drugSearch.listRow({ id:'11111111-1111-4111-8111-111111111111', approved_population:'Pediatric only' });
 assert.equal(mapped.approvedPopulation, 'Pediatric only');
