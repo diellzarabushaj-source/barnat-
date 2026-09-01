@@ -71,6 +71,16 @@ assert.match(js, /Popullata/);
 assert.match(js, /Vetëm pediatrik/);
 assert.match(js, /data-dose-calculator-open/);
 assert.match(js, /data-registry-number/);
+assert.match(js, /data-row-favorite/);
+assert.match(js, /data-row-note/);
+assert.match(js, /loadPersonalLibrary/);
+assert.match(js, /DRxPhase9Personal/);
+assert.match(js, /toggleFavorite\('product'/);
+assert.match(js, /saveNote\('product'/);
+assert.match(js, /deleteNote\('product'/);
+assert.match(css, /\.registry-more-trigger/);
+assert.match(css, /\.registry-more-menu/);
+assert.match(css, /\.registry-note-dialog/);
 assert.doesNotThrow(() => new Function(js));
 
 assert.match(doseCss, /\.drx-dose-modal/);
