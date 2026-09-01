@@ -10,9 +10,9 @@
   <title>DRx | Recetat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/recetat-v2.css?v=1">
+  <link rel="stylesheet" href="/recetat-v2.css?v=3">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6">
-  <script src="/recetat-v2.js?v=2" defer></script>
+  <script src="/recetat-v2.js?v=3" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#rxWorkspace">Kalo te krijimi i recetës</a>
@@ -96,9 +96,9 @@
       <div class="page-wrap rx-page" id="rxWorkspace">
         <header class="page-heading rx-page-heading">
           <div>
-            <p class="eyebrow">Prescription workspace</p>
+            <p class="eyebrow">PUNA KLINIKE</p>
             <h1>Recetat</h1>
-            <p class="page-subtitle">Krijo recetën, kontrollo dozologjinë dhe ruaje automatikisht në dosjen klinike përkatëse. Përmbajtja ruhet e enkriptuar në bibliotekën personale.</p>
+            <p class="page-subtitle">Krijo recetën, verifiko dozën dhe rrugën e administrimit, pastaj ruaje në dosjen klinike përkatëse. Përmbajtja ruhet e enkriptuar në bibliotekën personale.</p>
           </div>
           <button class="rx-new-top" id="rxNew" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -110,7 +110,7 @@
           <article><span>Receta</span><strong id="rxSavedCount">0</strong><small>Në bibliotekën personale</small></article>
           <article><span>Dosje aktive</span><strong id="rxFolderCount">—</strong><small>Kapituj klinikë</small></article>
           <article><span>Në dosjen aktuale</span><strong id="rxActiveChapterCount">0</strong><small id="rxActiveChapterMetric">Të gjitha recetat</small></article>
-          <article><span>Sinkronizimi</span><strong class="rx-sync-metric" id="rxLibraryState">Local</strong><small>Supabase + offline copy</small></article>
+          <article><span>Sinkronizimi</span><strong class="rx-sync-metric" id="rxLibraryState">Local</strong><small>Supabase + kopje lokale</small></article>
         </section>
 
         <section class="rx-dashboard" aria-label="Krijuesi i recetës">
