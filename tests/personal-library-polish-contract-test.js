@@ -24,6 +24,9 @@ assert.match(sidebar, /PERSONAL_SUMMARY_API = '\/api\/user-library\?view=summary
 assert.match(sidebar, /PERSONAL_COUNT_CACHE_KEY/);
 assert.match(sidebar, /applyPersonalCounts\(/);
 assert.match(sidebar, /syncPersonalCounts\(/);
+assert.match(sidebar, /if \(cached && !force\)[\s\S]{0,180}return;/);
+assert.match(sidebar, /countsFromPersonalSnapshot/);
+assert.match(sidebar, /adoptPersonalSnapshotCounts/);
 assert.match(sidebar, /drx:phase9-personal-changed/);
 assert.match(sidebar, /find\('\/index\.html#favorites'\), find\('\/index\.html#notes'\), find\('\/recetat\.html'\)/);
 
