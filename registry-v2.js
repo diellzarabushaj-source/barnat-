@@ -718,8 +718,10 @@
     } else {
       el.personalList.innerHTML = rows.map(({ item, meta }) => {
         const unresolved = !meta.tradeName && !meta.activeSubstance;
-        const name = meta.tradeName || meta.activeSubstance || (meta.registryNumber ? `Bar i regjistrit nr. ${meta.registryNumber}` : 'Duke ngarkuar të dhënat e barit…');
-        const secondary = [meta.activeSubstance && meta.activeSubstance !== name ? meta.activeSubstance : '', meta.strength, meta.form].filter(Boolean).join(' · ');
+        const name = unresolved ? 'Identiteti i barit nuk u verifikua' : (meta.tradeName || meta.activeSubstance);
+        const secondary = unresolved
+          ? 'Rifresko bibliotekën personale para se të vazhdosh.'
+          : [meta.activeSubstance && meta.activeSubstance !== name ? meta.activeSubstance : '', meta.strength, meta.form].filter(Boolean).join(' · ');
         const registry = meta.registryNumber ? `Nr. regjistri ${meta.registryNumber}` : '';
         const note = view === 'notes' ? String(item.content || '').slice(0, 2000) : '';
         const timeLabel = personalTimeLabel(item, view);
@@ -732,7 +734,9 @@
             ${note ? `<p class="personal-note-copy">${escapeHtml(note)}</p>` : ''}
           </div>
           <div class="personal-item-actions">
-            <button class="button button-secondary" type="button" data-personal-open="${escapeHtml(meta.productId || meta.id)}"${unresolved ? ' aria-label="Hap të dhënat e barit"' : ''}>Hap barin</button>
+            ${unresolved
+              ? '<button class="button button-secondary" type="button" data-personal-retry>Rifresko</button>'
+              : `<button class="button button-secondary" type="button" data-personal-open="${escapeHtml(meta.productId || meta.id)}">Hap barin</button>`}
             ${view === 'notes'
               ? `<button class="button button-ghost" type="button" data-personal-edit-note="${escapeHtml(meta.id)}">Ndrysho</button><button class="button button-ghost" type="button" data-personal-delete-note="${escapeHtml(meta.id)}">Fshi</button>`
               : `<button class="button button-ghost" type="button" data-personal-type="${escapeHtml(meta.sourceType)}" data-personal-unfavorite="${escapeHtml(meta.id)}">Hiq</button>`}
