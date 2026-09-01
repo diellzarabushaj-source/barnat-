@@ -378,5 +378,6 @@
       "**": false,
       "main": true
     }
-  }
+  },
+  "ignoreCommand": "node scripts/vercel-ignore-build.js"
 }
