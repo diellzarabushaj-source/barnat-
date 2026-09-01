@@ -880,3 +880,26 @@ body[data-registry-view="notes"] #headingActions{display:none}
 @media(prefers-reduced-motion:reduce){
   .personal-refresh[aria-busy="true"] .icon{animation:none}
 }
+
+
+/* Personal identity hydration v4 */
+body[data-registry-view="favorites"] .personal-workspace-head,
+body[data-registry-view="notes"] .personal-workspace-head{
+  display:none;
+}
+body[data-registry-view="favorites"] .personal-toolbar,
+body[data-registry-view="notes"] .personal-toolbar{
+  border-radius:14px 14px 0 0;
+}
+.personal-item-title strong{
+  max-width:min(720px,72vw);
+}
+.personal-item-meta{
+  display:block;
+}
+.personal-item[data-personal-key] .personal-item-copy{
+  align-content:start;
+}
+@media(max-width:760px){
+  .personal-item-title strong{max-width:calc(100vw - 110px)}
+}
