@@ -15,7 +15,7 @@ begin
       add constraint user_favorites_drug_id_fkey
       foreign key (drug_id) references public.drugs(id) on delete restrict;
   end if;
-end
+end;
 $;
 
 -- Phase 9A originally required product notes to keep drug_id NULL.
@@ -294,5 +294,5 @@ begin
   ) then
     raise exception 'Product notes remain unresolved after hardening';
   end if;
-end
-$$;
+end;
+$;
