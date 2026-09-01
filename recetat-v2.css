@@ -645,6 +645,31 @@ html.medindex-tailadmin[data-mi-page="recetat"] .rx-drug-result > span:last-chil
   font-weight:800;
 }
 
+html.medindex-tailadmin[data-mi-page="recetat"] .rx-drug-result-action {
+  display:grid;
+  justify-items:end;
+  gap:2px;
+  min-width:28px;
+}
+
+html.medindex-tailadmin[data-mi-page="recetat"] .rx-drug-result-action small {
+  margin:0;
+  white-space:nowrap;
+  color:var(--rx-teal);
+  font-size:9px;
+  font-weight:650;
+}
+
+html.medindex-tailadmin[data-mi-page="recetat"] .rx-drug-result-action b {
+  font-size:17px;
+  line-height:1;
+}
+
+html.medindex-tailadmin[data-mi-page="recetat"] .rx-drug-result.is-exact {
+  border-color:color-mix(in srgb, var(--rx-teal) 28%, var(--rx-line));
+  background:color-mix(in srgb, var(--rx-teal) 5%, var(--rx-paper));
+}
+
 html.medindex-tailadmin[data-mi-page="recetat"] :is(.rx-compose-actions,.rx-preview-actions) {
   display:flex !important;
   align-items:center;
