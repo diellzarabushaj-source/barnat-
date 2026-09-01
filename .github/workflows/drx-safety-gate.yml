@@ -70,7 +70,7 @@ jobs:
           node --check dose-core.js
           node --check registry-dose-calculator.js
           node --check api/dosage.js
-          node --check api/prescription-dosage-context.js
+          node --check lib/prescription-dosage-context-handler.js
           node --check lib/dose-adjustment-engine.js
           node --check lib/dose-publication-gate.js
           node --check lib/dose-v3-product-reader.js
