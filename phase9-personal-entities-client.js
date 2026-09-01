@@ -45,7 +45,11 @@
       const entityKey=text(row?.entityKey);
       if(!entityKey) continue;
       state.favorites.set(id(row.entityType,entityKey),{
-        entityType:row.entityType,entityKey,payload:row.payload || {},
+        entityType:row.entityType,
+        entityKey,
+        payload:row.payload || {},
+        clientUpdatedAt:text(row.clientUpdatedAt),
+        serverUpdatedAt:text(row.serverUpdatedAt),
       });
     }
     for(const row of snapshot?.entityNotes || []) {
@@ -54,7 +58,11 @@
       const content=String(row?.content ?? '').slice(0,MAX_NOTE);
       if(!entityKey || !content.trim()) continue;
       state.notes.set(id(row.entityType,entityKey),{
-        entityType:row.entityType,entityKey,content,
+        entityType:row.entityType,
+        entityKey,
+        content,
+        clientUpdatedAt:text(row.clientUpdatedAt),
+        serverUpdatedAt:text(row.serverUpdatedAt),
       });
     }
     state.user=snapshot?.user || null;
