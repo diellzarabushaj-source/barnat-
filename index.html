@@ -8,12 +8,12 @@
   <title>DRx | Regjistri i barnave</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-20260901-personal-library-v3">
+  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-20260901-personal-identity-v4">
   <link rel="stylesheet" href="/registry-v2-dose-calculator.css?v=registry-v2-dose-calculator-v1">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6">
   <script src="/dose-core.js?v=drx-dose-core-v1" defer></script>
   <script src="/dose-runtime-browser.js?v=drx-dose-runtime-browser-v1" defer></script>
-  <script src="/registry-v2.js?v=registry-v2-20260901-personal-library-v3" defer></script>
+  <script src="/registry-v2.js?v=registry-v2-20260901-personal-identity-v4" defer></script>
   <script src="/registry-v2-dose-calculator.js?v=registry-v2-dose-calculator-v1" defer></script>
 </head>
 <body>
@@ -85,7 +85,7 @@
       <header class="topbar">
         <button class="icon-button menu-button" id="menuButton" type="button" aria-label="Hap menynë"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
         <div class="breadcrumbs" aria-label="Pozicioni aktual">
-          <span>DRx</span><span class="crumb-sep">/</span><strong>Barnat</strong>
+          <span>DRx</span><span class="crumb-sep">/</span><strong id="breadcrumbCurrent">Barnat</strong>
         </div>
         <div class="topbar-actions">
           <span class="sync-pill"><span class="sync-dot"></span><span id="syncText">Supabase</span></span>
@@ -109,7 +109,7 @@
           </div>
         </div>
 
-        <section class="personal-workspace" id="personalWorkspace" aria-labelledby="personalTitle" hidden>
+        <section class="personal-workspace" id="personalWorkspace" aria-labelledby="pageTitle" aria-describedby="pageSubtitle" hidden>
           <div class="personal-workspace-head">
             <div>
               <p class="eyebrow">Puna ime</p>
