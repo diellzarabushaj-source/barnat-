@@ -32,7 +32,7 @@ assert.match(api, /path:'rpc\/medindex_search_drugs_v2'/);
 assert.match(api, /method:'POST'/);
 assert.match(api, /body:\{\s*p_query:q,\s*p_limit:(?:SEARCH_LIMIT|boundedLimit)\s*\}/);
 assert.doesNotMatch(api, /privileged\s*:\s*true/);
-assert.match(api, /searchVersion:'v(?:2|3)'/);
+assert.match(api, /searchVersion:'v(?:2|3|4)'/);
 assert.match(api, /matchRank:Number\.isFinite/);
 assert.match(api, /matchReason:clean\(row\.match_reason\)/);
 
