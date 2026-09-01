@@ -875,8 +875,14 @@
   }
 
   function queryUrl() {
+    const rankedSearch = Boolean(state.q && !state.atc && !state.formValue);
     const params = new URLSearchParams({
-      view:'registry-page', page:String(state.page), pageSize:String(state.pageSize), includeTotal:'true', sort:state.sort, direction:state.direction,
+      view:rankedSearch ? 'registry-search' : 'registry-page',
+      page:String(rankedSearch ? 1 : state.page),
+      pageSize:String(state.pageSize),
+      includeTotal:'true',
+      sort:state.sort,
+      direction:state.direction,
     });
     if (state.q) params.set('q', state.q);
     if (state.atc) params.set('atc', state.atc);
