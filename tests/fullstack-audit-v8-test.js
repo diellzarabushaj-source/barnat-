@@ -56,6 +56,12 @@ assert.ok(!apiFunctions.includes('medical-hub-image.js'), 'Medical Hub image pro
 assert.ok(exists('lib/medical-hub-image-handler.js'), 'Medical Hub shared image handler is missing');
 
 const vercel = JSON.parse(read('vercel.json'));
+const packageJson = JSON.parse(read('package.json'));
+assert.match(packageJson.scripts?.build || '', /pnpm run test:deploy/, 'Vercel build must use the focused deploy gate');
+assert.doesNotMatch(packageJson.scripts?.build || '', /\bpnpm\s+test\b/, 'Vercel build must not rerun the exhaustive CI suite');
+assert.match(packageJson.scripts?.['test:deploy'] || '', /fullstack-audit-v8-test\.js/);
+assert.match(packageJson.scripts?.['test:deploy'] || '', /drx-dose-runtime-engine-test\.js/);
+assert.match(packageJson.scripts?.['test:deploy'] || '', /drx-dose-v3-rpc-reader-test\.js/);
 const rewrites = new Map((vercel.rewrites || []).map(row => [row.source, row.destination]));
 assert.equal(rewrites.get('/api/medical-hub-image'), '/api/medical-hub?_route=image');
 assert.equal(rewrites.get('/api/icd'), '/api/clinical-editor?icdApi=1');

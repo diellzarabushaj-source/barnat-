@@ -32,7 +32,7 @@
     "sync:protocols": "node scripts/sync-protocols.js",
     "sync:supabase": "node scripts/sync-supabase-from-sheets.js && node scripts/sync-supabase-structured-dosage.js && node scripts/publish-supabase-registry.js",
     "sync:all": "pnpm run sync:protocols && pnpm run sync:supabase",
-    "build": "pnpm test && node scripts/export-pediatric-master-static.js",
+    "build": "pnpm run build:runtime && pnpm run test:deploy && node scripts/export-pediatric-master-static.js",
     "test:p0-integrity": "node tests/p0-database-integrity-test.js",
     "test:p1": "node tests/p0-database-integrity-test.js && node tests/phase1-public-security-contract-test.js && node tests/p1-clinical-identity-test.js && node tests/p1-component-refresh-test.js && node tests/p1-safe-and-connector-test.js && node tests/p1-official-component-promotions-test.js && node tests/p1-official-component-batch-two-test.js && node tests/p1-official-components-amino-acids-test.js && node tests/p1-exact-forms-electrolytes-test.js && node tests/p1-long-tail-verified-components-test.js && node tests/p1-verified-synonyms-precise-forms-test.js && node tests/p1-verified-long-tail-batch-three-test.js && node tests/p1-official-long-tail-batch-four-test.js && node tests/p1-verified-typo-precise-salt-test.js && node tests/p1-verified-exact-identity-five-test.js && node tests/p1-verified-exact-compounds-six-test.js && node tests/p1-precise-chlorhexidine-penicillin-test.js && node tests/p1-security-verified-tail-test.js && node tests/p1-explicit-expression-normalization-test.js && node tests/p1-deterministic-alias-cleanup-test.js && node tests/p1-duplicate-component-collapse-test.js && node tests/p1-base-ingredient-identities-test.js && node tests/p1-reviewed-equivalence-test.js && node tests/p1-long-tail-component-identities-test.js && node tests/p1-equivalence-guard-live-test.js && node tests/p1-exit-integrity-test.js && node tests/p1-exit-runtime-hardening-test.js && node tests/phase4-incremental-ingredient-refresh-test.js",
     "test:p1-clinical-identity": "node tests/p1-clinical-identity-test.js",
@@ -179,7 +179,8 @@
     "audit:drx-phase8-live": "node scripts/drx-phase8-status.js",
     "test:drx-phase11-finalization": "node tests/drx-phase11-finalization-contract-test.js && node tests/drx-v3-extended-regimen-runtime-contract-test.js",
     "test:drx-phase11-review-workbench": "node tests/drx-phase11-review-workbench-contract-test.js",
-    "test:drx-phase11-release-shadow": "node tests/drx-phase11-release-shadow-contract-test.js"
+    "test:drx-phase11-release-shadow": "node tests/drx-phase11-release-shadow-contract-test.js",
+    "test:deploy": "node tests/registry-v2-contract-test.js && node tests/fullstack-audit-v8-test.js && node tests/vercel-hobby-function-budget-test.js && node tests/api-security-deep-audit-test.js && node tests/supabase-privileged-key-guard-test.js && node tests/p0-database-integrity-test.js && node tests/drx-dose-runtime-engine-test.js && node tests/drx-dose-v3-runtime-gate-test.js && node tests/drx-dose-v3-rpc-reader-test.js && node tests/drx-dose-golden-cases-test.js && node tests/medical-hub-doctor-workspace-test.js"
   },
   "dependencies": {
     "@vercel/blob": "^2.3.0",

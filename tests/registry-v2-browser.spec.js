@@ -2,6 +2,8 @@
 
 const { test, expect } = require('@playwright/test');
 
+test.use({ serviceWorkers:'block' });
+
 const rows = [
   {
     id:'11111111-1111-4111-8111-111111111111',
@@ -107,9 +109,8 @@ async function installApiMocks(page) {
         contentType:'application/json',
         body:JSON.stringify({
           ok:true,
-          adult:{ dose:'500 mg çdo 8 orë sipas nevojës', route:'PO', maximum:'3 g/ditë' },
-          pediatric:{ dose:'15 mg/kg për dozë', route:'PO', maximum:'60 mg/kg/ditë' },
-          profile:{ verificationStatus:'verified', summary:'Profil klinik testues', indications:'Dhimbje dhe temperaturë', warnings:'Kontrollo dozën totale ditore.' },
+          adult:[{ doseMg:'500', practicalUnit:'1 tabletë', route:'Orale', frequency:'çdo 8 orë sipas nevojës', max24hMg:3000 }],
+          pediatric:[{ dose:'15 mg/kg për dozë', route:'Orale', maximum:'60 mg/kg/ditë' }],
           sources:['https://example.test/source'],
         }),
       });
@@ -157,7 +158,8 @@ test('registry v2 desktop flow is stable and usable', async ({ page }) => {
 
   await page.getByText('PARACETAMOL TEST').click();
   await expect(page.locator('#detailDrawer')).toHaveClass(/is-open/);
-  await expect(page.getByText('Profil klinik testues')).toBeVisible();
+  await expect(page.locator('#drawerBody')).toContainText('500 mg');
+  await expect(page.locator('#drawerBody')).toContainText('1 tabletë');
   await page.locator('#drawerClose').click();
   await expect(page.locator('#detailDrawer')).not.toHaveClass(/is-open/);
 

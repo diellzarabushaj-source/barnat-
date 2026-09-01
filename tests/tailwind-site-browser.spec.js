@@ -186,6 +186,7 @@ async function auditClinicalViewport(page,label,{requireControls=false}={}) {
     return {
       sidebarBg:sidebar ? getComputedStyle(sidebar).backgroundColor : '',
       topbarHeight:topbar ? Math.round(topbar.getBoundingClientRect().height) : 0,
+      viewportWidth:innerWidth,
     };
   });
 

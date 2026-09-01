@@ -358,15 +358,18 @@
     if (calculatedUnit === 'mg' || mgUnit(doseUnit)) {
       capped = applyMgCaps(perDose, daily, rule);
       const maxDaily = positive(valueOf(rule, 'maxDailyDoseMg', 'max_daily_dose_mg'));
-      const maxDoses = sched.maxDoses24h;
-      if (capped.perDose && maxDaily !== null && maxDoses !== null && maxDoses > 0) {
-        const safePerDoseCap = maxDaily / maxDoses;
+      const scheduledDoseCount = sched.timesPerDay ?? sched.maxDoses24h;
+      if (capped.perDose && maxDaily !== null && scheduledDoseCount !== null && scheduledDoseCount > 0) {
+        const safePerDoseCap = maxDaily / scheduledDoseCount;
         if (capped.perDose.max > safePerDoseCap) {
           capped.perDose = {
             min:Math.min(capped.perDose.min, safePerDoseCap),
             max:Math.min(capped.perDose.max, safePerDoseCap),
           };
-          capped.cappedBy = [...new Set([...capped.cappedBy, 'max_daily_dose_mg_via_max_doses_24h'])];
+          const capReason = sched.timesPerDay
+            ? 'max_daily_dose_mg_via_times_per_day'
+            : 'max_daily_dose_mg_via_max_doses_24h';
+          capped.cappedBy = [...new Set([...capped.cappedBy, capReason])];
         }
       }
     }
