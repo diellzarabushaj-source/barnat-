@@ -76,8 +76,18 @@ assert.ok(migrations.some(row =>
   row.version === '20260901000156'
   && row.name === 'fail_closed_unverified_published_indications'
 ));
+assert.ok(migrations.some(row =>
+  row.version === '20260901000724'
+  && row.name === 'rollback_phase10_to_shadow_after_indication_gate'
+));
 assert.ok(exists('supabase/migrations/20260831235911_harden_function_search_paths_and_validate_profile_specialty.sql'));
 assert.ok(exists('supabase/migrations/20260901000156_fail_closed_unverified_published_indications.sql'));
+assert.ok(exists('supabase/migrations/20260901000724_rollback_phase10_to_shadow_after_indication_gate.sql'));
+
+const canary = read('scripts/drx-phase10-controlled-canary.js');
+assert.match(canary, /CONTROLLED_NOT_ACTIVE/);
+const pediatricLive = read('scripts/drx-phase10-pediatric-v3-live.js');
+assert.match(pediatricLive, /V3_PUBLICATION_NOT_ACTIVE/);
 
 const doseVisual = read('tests/dose-row-visual-rules-test.js');
 assert.match(doseVisual, /td\\\[data-col="pediatricDose"\\\] \\.route-chip/);
