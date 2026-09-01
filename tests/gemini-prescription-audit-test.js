@@ -92,7 +92,7 @@ const numericChange = T.mergeSuggestions(structuredBaseline, structuredTargets, 
   globalWarnings:[],
 });
 assert.equal(numericChange.generatedCount, 0, 'Gemini output that changes numeric clinical values must be rejected');
-assert.ok(numericChange.result.missing.some(item => /ndryshoi ose shtoi vlera numerike/i.test(item)));
+assert.ok(numericChange.result.missing.some(item => /ndryshoi ose riinterpretoi fushat klinike/i.test(item)));
 
 const incompleteDrug = T.normalizeDrug({
   substance:'Ibuprofen', strength:'400 mg', form:'Tablet', route:'PO',
