@@ -1,0 +1,86 @@
+'use strict';
+
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const ROOT = path.resolve(__dirname, '..');
+const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
+const exists = file => fs.existsSync(path.join(ROOT, file));
+
+const pages = [
+  'index.html','klasifikimi.html','icd.html','dozologjia.html','protokollet.html',
+  'urgjencat.html','recetat.html','analizat.html','medical-hub.html','sistemi.html',
+];
+
+for (const page of pages) {
+  const html = read(page);
+  const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)]
+    .map(match => match[1]);
+  assert.equal(
+    styles.at(-1),
+    '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6',
+    `${page}: canonical shell v6 must remain the final stylesheet`
+  );
+}
+
+const dosageHtml = read('dozologjia.html');
+const dosageCssVersion = dosageHtml.match(/dozologjia-v2\.css\?v=(\d+)/)?.[1];
+const dosageJsVersion = dosageHtml.match(/dozologjia-v2\.js\?v=(\d+)/)?.[1];
+assert.ok(dosageCssVersion && dosageJsVersion, 'Dozologjia cache revisions are missing');
+assert.equal(dosageCssVersion, dosageJsVersion, 'Dozologjia CSS/JS cache revisions must stay coherent');
+
+const workflowDir = path.join(ROOT, '.github', 'workflows');
+const workflows = fs.readdirSync(workflowDir)
+  .filter(name => /\.ya?ml$/i.test(name))
+  .map(name => [name, fs.readFileSync(path.join(workflowDir, name), 'utf8')]);
+const retiredWorkflowMarkers = [
+  'drx-dashboard-stripe-v4',
+  'drx-dashboard-stripe-v5',
+  'sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v3',
+  'urgjencat-doctor-v3-test.js',
+  'emergency-shift-v18',
+  'urgjencat-physician-v17-browser.spec.js',
+];
+for (const [name, source] of workflows) {
+  for (const marker of retiredWorkflowMarkers) {
+    assert.ok(!source.includes(marker), `${name}: retired workflow marker returned: ${marker}`);
+  }
+}
+
+const apiFunctions = fs.readdirSync(path.join(ROOT, 'api'))
+  .filter(name => name.endsWith('.js'))
+  .sort();
+assert.ok(apiFunctions.length <= 11, `Vercel function reserve lost: ${apiFunctions.length}/12 functions`);
+assert.ok(!apiFunctions.includes('medical-hub-image.js'), 'Medical Hub image proxy must share the medical-hub function');
+assert.ok(exists('lib/medical-hub-image-handler.js'), 'Medical Hub shared image handler is missing');
+
+const vercel = JSON.parse(read('vercel.json'));
+const rewrites = new Map((vercel.rewrites || []).map(row => [row.source, row.destination]));
+assert.equal(rewrites.get('/api/medical-hub-image'), '/api/medical-hub?_route=image');
+assert.equal(rewrites.get('/api/icd'), '/api/clinical-editor?icdApi=1');
+
+for (const file of ['lib/medindex-data-api.js','lib/supabase-data-api.js']) {
+  const source = read(file);
+  assert.match(source, /function isPrivilegedSupabaseKey/);
+  assert.match(source, /SUPABASE_PRIVILEGED_KEY_INVALID/);
+  assert.match(source, /never the publishable key/);
+}
+
+const migrations = JSON.parse(read('supabase/migration-history.json')).migrations || [];
+assert.ok(migrations.some(row =>
+  row.version === '20260831235911'
+  && row.name === 'harden_function_search_paths_and_validate_profile_specialty'
+));
+assert.ok(migrations.some(row =>
+  row.version === '20260901000156'
+  && row.name === 'fail_closed_unverified_published_indications'
+));
+assert.ok(exists('supabase/migrations/20260831235911_harden_function_search_paths_and_validate_profile_specialty.sql'));
+assert.ok(exists('supabase/migrations/20260901000156_fail_closed_unverified_published_indications.sql'));
+
+const doseVisual = read('tests/dose-row-visual-rules-test.js');
+assert.match(doseVisual, /td\\\[data-col="pediatricDose"\\\] \\.route-chip/);
+assert.doesNotMatch(doseVisual, /td\.nth-child\\\(9\\\) \\.route-chip/);
+
+console.log(`Full-stack audit v8 passed: ${pages.length} workspaces, ${apiFunctions.length}/12 Vercel functions, current workflows, fail-closed Supabase guards and migration parity artifacts.`);
