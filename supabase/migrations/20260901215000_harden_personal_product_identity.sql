@@ -131,7 +131,7 @@ begin
       v_trade:=split_part(new.entity_key,'|',2);
       v_strength:=split_part(new.entity_key,'|',3);
 
-      select count(*), min(d.id) into v_matches,new.drug_id
+      select count(*), (array_agg(d.id order by d.id))[1] into v_matches,new.drug_id
       from public.drugs d
       where d.pdid=v_pdid
         and lower(trim(d.trade_name))=lower(trim(v_trade))
