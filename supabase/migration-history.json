@@ -1063,16 +1063,16 @@
       "version": "20260831210023"
     },
     {
-      "version": "20260831235911",
-      "name": "harden_function_search_paths_and_validate_profile_specialty"
+      "name": "harden_function_search_paths_and_validate_profile_specialty",
+      "version": "20260831235911"
     },
     {
-      "version": "20260901000156",
-      "name": "fail_closed_unverified_published_indications"
+      "name": "fail_closed_unverified_published_indications",
+      "version": "20260901000156"
     },
     {
-      "version": "20260901000724",
-      "name": "rollback_phase10_to_shadow_after_indication_gate"
+      "name": "rollback_phase10_to_shadow_after_indication_gate",
+      "version": "20260901000724"
     }
   ]
 }
