@@ -5543,6 +5543,34 @@
     }, 220);
   }
 
+  function applyGeminiSignaturesToOrders(result) {
+    if (!result || !state.selectedDrugs.length) return;
+    const generated = [];
+    result.sections.forEach(section => {
+      section.medications.forEach(item => {
+        if (!item.signatureGenerated || !text(item.individualSignature)) return;
+        generated.push(item);
+      });
+    });
+    if (!generated.length) return;
+
+    state.selectedDrugs = state.selectedDrugs.map(drug => {
+      if (drug.signaturaManual) return drug;
+      const match = generated.find(item =>
+        fold(item.name) === fold(drug.substance)
+        && (!drug.strength || !item.dose || fold(item.dose) === fold(drug.strength))
+      );
+      return match ? { ...drug, signatura:text(match.individualSignature), aiSignatureGenerated:true } : drug;
+    });
+
+    const composer = $('#rxComposer');
+    if (composer) {
+      composer.value = state.selectedDrugs.map(drug => transferText(drug)).filter(Boolean).join('\n\n');
+      state.composerOrigin = 'structured';
+    }
+    renderSelectedDrugs();
+  }
+
   async function generateWithGemini() {
     if (!navigator.onLine) {
       formatLocally();
@@ -5581,6 +5609,7 @@
       const normalized = Core.normalizeResult(payload.data);
       if (!normalized) throw new Error('Gemini ktheu një strukturë të pavlefshme.');
       showResult(normalized, payload.aiUsed ? 'gemini' : 'local');
+      if (payload.generatedCount > 0) applyGeminiSignaturesToOrders(normalized);
       if (payload.generatedCount > 0) {
         setStatus(`Gemini formuloi ${payload.generatedCount} Signaturë${payload.generatedCount === 1 ? '' : 'a'} pa ndryshuar fushat klinike. Kontrolloji para përdorimit.`, 'success');
       } else if (payload.unresolvedCount > 0) {
