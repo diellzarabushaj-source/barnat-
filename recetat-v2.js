@@ -2643,7 +2643,7 @@
             </fieldset>
             <div class="rx-context-guidance">
               <span class="rx-context-guidance-icon">${SVG.info}</span>
-              <span>Rruga filtrohet sipas prezantimit të barit. Doza automatike përdoret vetëm kur të dhënat e nevojshme janë të verifikuara.</span>
+              <span>Ky kontekst përdoret për filtrimin e skemave të barit që po shton. Asnjë skemë nuk aplikohet pa konfirmimin tënd.</span>
             </div>
           </div>
           <button type="button" class="rx-pediatric-toggle" id="rxPediatricToggle" aria-pressed="false">
