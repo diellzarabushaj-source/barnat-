@@ -196,7 +196,7 @@ jobs:
           ! grep -q 'installClinicalUi' app-stability.js
           ! grep -q 'clinical-ui.css' app-stability.js
 
-      - name: Verify Gemini 3.6 clinical guardrails
+      - name: Verify Gemini 3.7 wording-only guardrails
         shell: bash
         run: |
           set -euo pipefail
@@ -205,8 +205,8 @@ jobs:
           test -f api/gemini-prescription-secure.js
           test ! -e api/gemini-prescription.js
           grep -q "require('../lib/gemini-prescription.js')" api/gemini-prescription-secure.js
-          grep -q "DEFAULT_MODEL = 'gemini-3.6-flash'" lib/gemini-prescription.js
-          grep -q "DEFAULT_FALLBACK_MODEL = 'gemini-3.5-flash'" lib/gemini-prescription.js
+          grep -q "DEFAULT_MODEL = 'gemini-3.7-flash'" lib/gemini-prescription.js
+          grep -q "DEFAULT_FALLBACK_MODEL = 'gemini-3.6-flash'" lib/gemini-prescription.js
           grep -q 'GEMINI_API_KEY' lib/gemini-prescription.js
           grep -q 'GOOGLE_API_KEY' lib/gemini-prescription.js
           grep -q 'v1/interactions' lib/gemini-prescription.js
