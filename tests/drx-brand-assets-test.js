@@ -50,6 +50,10 @@ assert.match(shell, /\/brand\/drx-horizontal-on-dark\.svg/);
 assert.match(shell, /\/brand\/drx-mark-on-light\.svg/);
 
 const runtime = read('medindex-brand-runtime.js');
+assert.match(runtime, /const VERSION = 'drx-brand-v6'/);
+assert.match(runtime, /function sidebarPicture/);
+assert.match(runtime, /kind === 'full' \? ASSETS\.horizontalOnDark : ASSETS\.markOnDark/);
+assert.match(runtime, /sidebar\.innerHTML = `\$\{sidebarPicture\('full','medindex-brand-full'\)\}\$\{sidebarPicture\('icon','medindex-brand-icon'\)\}`/);
 assert.match(runtime, /horizontalOnLight/);
 assert.match(runtime, /horizontalOnDark/);
 assert.match(runtime, /markOnLight/);
