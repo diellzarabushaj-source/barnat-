@@ -1561,6 +1561,9 @@ body{background:var(--rx-bg);color:var(--rx-ink)}
 .rx-input-combo input,.rx-input-combo select{min-height:37px;font-size:10.5px}
 .rx-context-summary{min-height:39px;padding:7px 9px;border-radius:9px;font-size:9px}
 .rx-context-summary:not(.is-incomplete){border-color:#d9d5ff;background:#f7f5ff;color:#5144cf}
+.rx-category-button:focus-visible,.rx-pediatric-toggle:focus-visible,.rx-route-segments button:focus-visible{
+  outline:0;box-shadow:var(--rx-focus)
+}
 
 .rx-editor-wrap{margin:10px 16px 0}
 .rx-editor-wrap textarea{
@@ -1610,7 +1613,10 @@ body{background:var(--rx-bg);color:var(--rx-ink)}
   .rx-metrics article:nth-child(2){border-right:0}
   .rx-metrics article:nth-child(-n+2){border-bottom:1px solid var(--rx-line)}
   .rx-context-row{grid-template-columns:1fr;padding-inline:12px}
+  .rx-diagnosis input,.rx-chapter-field select{height:44px}
   .rx-command-bar{padding-inline:12px}
+  .rx-command-bar button{min-height:44px}
+  .rx-primary,.rx-secondary,.rx-ghost,.rx-text-button{min-height:44px}
   .rx-clinical-context{margin-inline:12px;padding:10px}
   .rx-category-grid{grid-template-columns:1fr 1fr}
   .rx-category-button{min-height:54px}
