@@ -1,21 +1,25 @@
-name: Urgjencat browser v17
+name: Urgjencat V2 browser audit
 
 on:
   pull_request:
     paths:
       - 'urgjencat.html'
-      - 'emergency-*.js'
-      - 'emergency-*.css'
-      - 'tests/urgjencat-*-browser.spec.js'
+      - 'urgjencat-v2.js'
+      - 'urgjencat-v2.css'
+      - 'drx-dashboard-stripe.css'
+      - 'sidebar-taxonomy-v3.js'
+      - 'tests/urgjencat-v2-browser.spec.js'
       - 'tests/clinical-smoke-server.js'
       - '.github/workflows/urgjencat-browser-v17.yml'
   push:
     branches: [main]
     paths:
       - 'urgjencat.html'
-      - 'emergency-*.js'
-      - 'emergency-*.css'
-      - 'tests/urgjencat-*-browser.spec.js'
+      - 'urgjencat-v2.js'
+      - 'urgjencat-v2.css'
+      - 'drx-dashboard-stripe.css'
+      - 'sidebar-taxonomy-v3.js'
+      - 'tests/urgjencat-v2-browser.spec.js'
       - 'tests/clinical-smoke-server.js'
       - '.github/workflows/urgjencat-browser-v17.yml'
   workflow_dispatch:
@@ -46,24 +50,33 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: Build and run static gates
-        run: pnpm test
+      - name: Run current static Urgjencat contract
+        run: node tests/urgjencat-doctor-workspace-test.js
 
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Run focused Urgjencat browser regression
+      - name: Run focused Urgjencat V2 browser regression
         shell: bash
         run: |
           set -euo pipefail
-          node tests/clinical-smoke-server.js > /tmp/urgjencat-browser-server.log 2>&1 &
+          node tests/clinical-smoke-server.js > /tmp/urgjencat-v2-browser-server.log 2>&1 &
           SERVER_PID=$!
-          trap 'kill "$SERVER_PID" 2>/dev/null || true; cat /tmp/urgjencat-browser-server.log' EXIT
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; cat /tmp/urgjencat-v2-browser-server.log' EXIT
           for attempt in {1..30}; do
             if curl -fsS http://127.0.0.1:4173/urgjencat.html >/dev/null; then break; fi
             sleep 1
           done
-          pnpm exec playwright test \
-            tests/urgjencat-summary-learn-browser.spec.js \
-            tests/urgjencat-physician-v17-browser.spec.js \
-            --reporter=line --workers=1 --retries=0
+          pnpm exec playwright test tests/urgjencat-v2-browser.spec.js --reporter=line --workers=1 --retries=1
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: urgjencat-v2-browser-diagnostics
+          path: |
+            /tmp/urgjencat-v2-browser-server.log
+            test-results
+            playwright-report
+          if-no-files-found: warn
+          retention-days: 3

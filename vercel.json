@@ -38,6 +38,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/medical-hub-image",
+      "destination": "/api/medical-hub?_route=image"
+    },
+    {
       "source": "/api/phase11-review",
       "destination": "/api/clinical-editor?phase11Review=1"
     },
@@ -48,6 +52,10 @@
     {
       "source": "/data/registry-data.js",
       "destination": "/api/registry"
+    },
+    {
+      "source": "/api/prescription-dosage-context",
+      "destination": "/api/dosage?view=prescription-context"
     },
     {
       "source": "/api/dose-calculator",
@@ -364,5 +372,11 @@
         }
       ]
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "**": false,
+      "main": true
+    }
+  }
 }

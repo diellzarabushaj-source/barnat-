@@ -43,12 +43,13 @@
         "outcome": "range",
         "perDose": {
           "min": 250,
-          "max": 400
+          "max": 300
         },
         "daily": {
           "min": 1000,
           "max": 1200
-        }
+        },
+        "safetyInvariant": "perDose.max * timesPerDay <= maxDailyDoseMg"
       }
     },
     {

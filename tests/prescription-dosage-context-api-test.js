@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const Api = require('../api/prescription-dosage-context.js');
+const Api = require('../lib/prescription-dosage-context-handler.js');
 
 const T = Api._test;
 

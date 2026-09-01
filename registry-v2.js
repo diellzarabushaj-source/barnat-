@@ -801,9 +801,38 @@
     }
   }
 
+  function normalizeDetailDose(value) {
+    const entry = Array.isArray(value) ? value[0] : value;
+    if (!entry || typeof entry !== 'object') return { dose:'', route:'', maximum:'' };
+
+    const explicitDose = clean(entry.dose ?? entry.doseText ?? entry.dose_text);
+    const doseMg = clean(entry.doseMg ?? entry.dose_mg);
+    const practicalUnit = clean(entry.practicalUnit ?? entry.practical_unit);
+    const frequency = clean(entry.frequency ?? entry.schedule);
+    const doseParts = [];
+    if (explicitDose) doseParts.push(explicitDose);
+    else if (doseMg) doseParts.push(/\bmg\b/i.test(doseMg) ? doseMg : `${doseMg} mg`);
+    if (practicalUnit && !doseParts.some(part => part.toLowerCase().includes(practicalUnit.toLowerCase()))) {
+      doseParts.push(practicalUnit);
+    }
+    if (frequency && !doseParts.some(part => part.toLowerCase().includes(frequency.toLowerCase()))) {
+      doseParts.push(frequency);
+    }
+
+    const explicitMaximum = clean(entry.maximum ?? entry.max24h ?? entry.max_24h);
+    const max24hMg = clean(entry.max24hMg ?? entry.max_24h_mg);
+    return {
+      dose:doseParts.join(' · '),
+      route:clean(entry.route),
+      maximum:explicitMaximum || (max24hMg ? (/\bmg\b/i.test(max24hMg) ? `${max24hMg}/24 h` : `${max24hMg} mg/24 h`) : ''),
+    };
+  }
+
   function detailMarkup(detail, card) {
     const profile = card.profile || {};
     const sources = Array.isArray(card.sources) ? card.sources : [];
+    const adult = normalizeDetailDose(card.adult);
+    const pediatric = normalizeDetailDose(card.pediatric);
     const info = [
       ['Nr. regjistri', detail.registryNumber], ['PDID', detail.pdid], ['ATC', detail.atc], ['Klasa', detail.drugClass],
       ['Popullata', populationMeta(detail.approvedPopulation).label], ['Forma', detail.form], ['Paketimi', detail.packaging], ['Prodhuesi', detail.manufacturer], ['MAH', detail.marketingAuthorizationHolder],
@@ -818,8 +847,8 @@
       <section class="detail-hero"><h3>${escapeHtml(detail.tradeName || 'Pa emër')}</h3><p>${escapeHtml(detail.activeSubstance || '—')} · ${escapeHtml(detail.strength || '—')}</p><div class="detail-badges">${detail.atc ? `<span class="atc-chip">${escapeHtml(detail.atc)}</span>` : ''}${statusBadge(detail.productStatus)}</div></section>
       <section class="detail-section"><h4>Identiteti</h4><dl class="detail-grid">${info.map(([label,value]) => `<dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd>`).join('')}</dl></section>
       <section class="detail-section"><h4>Dozologjia</h4>
-        <article class="dose-card"><div class="dose-card-head"><strong>Të rritur</strong>${card.adult?.route ? `<span class="route-chip">${escapeHtml(card.adult.route)}</span>` : ''}</div><p>${escapeHtml(card.adult?.dose || 'Pa dozë të publikuar.')}</p>${card.adult?.maximum ? `<small>Maksimumi: ${escapeHtml(card.adult.maximum)}</small>` : ''}</article>
-        <article class="dose-card"><div class="dose-card-head"><strong>Pediatrike</strong>${card.pediatric?.route ? `<span class="route-chip">${escapeHtml(card.pediatric.route)}</span>` : ''}</div><p>${escapeHtml(card.pediatric?.dose || 'Pa dozë të publikuar.')}</p>${card.pediatric?.maximum ? `<small>Maksimumi: ${escapeHtml(card.pediatric.maximum)}</small>` : ''}</article>
+        <article class="dose-card"><div class="dose-card-head"><strong>Të rritur</strong>${adult.route ? `<span class="route-chip">${escapeHtml(adult.route)}</span>` : ''}</div><p>${escapeHtml(adult.dose || 'Pa dozë të publikuar.')}</p>${adult.maximum ? `<small>Maksimumi: ${escapeHtml(adult.maximum)}</small>` : ''}</article>
+        <article class="dose-card"><div class="dose-card-head"><strong>Pediatrike</strong>${pediatric.route ? `<span class="route-chip">${escapeHtml(pediatric.route)}</span>` : ''}</div><p>${escapeHtml(pediatric.dose || 'Pa dozë të publikuar.')}</p>${pediatric.maximum ? `<small>Maksimumi: ${escapeHtml(pediatric.maximum)}</small>` : ''}</article>
       </section>
       ${detail.use ? `<section class="detail-section"><h4>Përdorimi</h4><p class="clinical-copy">${escapeHtml(detail.use)}</p></section>` : ''}
       ${clinicalBlocks.map(([title,value]) => `<section class="detail-section"><h4>${escapeHtml(title)}</h4><p class="clinical-copy">${escapeHtml(value)}</p></section>`).join('')}

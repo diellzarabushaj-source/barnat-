@@ -167,7 +167,7 @@ async function main() {
 
   try {
     for (const name of PAGES) {
-      const context = await browser.newContext({ viewport:{ width:1440, height:900 } });
+      const context = await browser.newContext({ viewport:{ width:1440, height:900 }, serviceWorkers:'block' });
       const page = await context.newPage();
       let colors = [];
       try {

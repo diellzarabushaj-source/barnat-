@@ -11,8 +11,8 @@ const html = read('medical-hub.html');
 const js = read('medical-hub-v2.js');
 const css = read('medical-hub-v2.css');
 const api = read('api/medical-hub.js');
-const imageApi = read('api/medical-hub-image.js');
-const imageProxy = require('../api/medical-hub-image.js');
+const imageApi = read('lib/medical-hub-image-handler.js');
+const imageProxy = require('../lib/medical-hub-image-handler.js');
 const icdRuntime = read('icd-v2.js');
 
 assert.match(html, /data-drx-app="medical-hub-v2"/);
@@ -87,6 +87,13 @@ assert.match(api, /mode === 'search'/);
 assert.match(api, /authorized\(req\)/);
 assert.match(api, /source:'sanity-published-index'/);
 assert.match(api, /source:'sanity-published-search'/);
+assert.match(api, /medicalHubImageHandler/);
+assert.match(api, /requestedRoute === 'image'/);
+const vercel = JSON.parse(read('vercel.json'));
+assert.ok(
+  vercel.rewrites.some(item => item.source === '/api/medical-hub-image' && item.destination === '/api/medical-hub?_route=image'),
+  'Medical Hub image compatibility rewrite is missing'
+);
 
 const indexQuery = api.match(/const INDEX_QUERY = `([\s\S]*?)`;/)?.[1] || '';
 assert.ok(indexQuery, 'Medical Hub backend index query must be extractable');

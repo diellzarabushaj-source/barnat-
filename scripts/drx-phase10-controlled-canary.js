@@ -13,10 +13,34 @@ async function main(){
   const state=await Cutover.getState({force:true});
   assert.equal(state.stateAvailable,true);
   assert.equal(state.stateVersion,'drx-phase10-cutover-state-v2');
+  assert.equal(state.trafficBucketVersion,2);
+
+  if(state.mode==='SHADOW'){
+    assert.equal(state.controlledPercent,0);
+    assert.equal(state.strictArmed,false);
+    const evidence={
+      evidenceVersion:'drx-phase10-controlled-canary-v2',
+      generatedAt:new Date().toISOString(),
+      applicable:false,
+      reason:'CONTROLLED_NOT_ACTIVE',
+      control:{
+        stateVersion:state.stateVersion,
+        mode:state.mode,
+        controlledPercent:state.controlledPercent,
+        controlVersion:state.controlVersion,
+        trafficBucketVersion:state.trafficBucketVersion,
+        strictArmed:state.strictArmed,
+      },
+      runtime:{served:'v2-safety-path',v3Available:false,fallbackUsed:false},
+      pass:true,
+    };
+    fs.writeFileSync('drx-phase10-controlled-canary-evidence.json',JSON.stringify(evidence,null,2)+'\n');
+    console.log(JSON.stringify(evidence,null,2));
+    return;
+  }
   assert.equal(state.mode,'CONTROLLED');
   assert.equal(state.controlledPercent,5);
   assert.equal(state.strictArmed,false);
-  assert.equal(state.trafficBucketVersion,2);
 
   const selector={column:'drug_id',value:PARACETAMOL_DRUG_ID};
   const decision=Cutover.decision(state,selector);

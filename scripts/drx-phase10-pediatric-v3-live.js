@@ -16,6 +16,27 @@ async function main(){
   assert.equal(state.trafficBucketVersion,2);
   assert.ok(['SHADOW','CONTROLLED'].includes(state.mode));
 
+  if(state.mode==='SHADOW'){
+    assert.equal(state.controlledPercent,0);
+    const evidence={
+      evidenceVersion:'drx-phase10-pediatric-v3-live-v2',
+      generatedAt:new Date().toISOString(),
+      applicable:false,
+      reason:'V3_PUBLICATION_NOT_ACTIVE',
+      cutover:{
+        stateVersion:state.stateVersion,
+        mode:state.mode,
+        controlledPercent:state.controlledPercent,
+        controlVersion:state.controlVersion,
+        trafficBucketVersion:state.trafficBucketVersion,
+      },
+      pass:true,
+    };
+    fs.writeFileSync('drx-phase10-pediatric-v3-live-evidence.json',JSON.stringify(evidence,null,2)+'\n');
+    console.log(JSON.stringify(evidence,null,2));
+    return;
+  }
+
   const decision=Cutover.decision(state,{column:'drug_id',value:PARACETAMOL});
   assert.equal(decision.trafficBucket,2,'stable Phase 10G cohort changed for the Paracetamol canary');
   if(state.mode==='CONTROLLED' && state.controlledPercent>=5){

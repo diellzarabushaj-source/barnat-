@@ -54,10 +54,12 @@ const kg = Core.calculate({
   maxDailyDoseMg:1200,
 }, { weightKg:50 });
 assert.equal(kg.outcome, Core.OUTCOME.RANGE);
-assert.deepEqual(kg.perDose, { min:250, max:400 });
+assert.deepEqual(kg.perDose, { min:250, max:300 });
 assert.deepEqual(kg.daily, { min:1000, max:1200 });
 assert.ok(kg.cappedBy.includes('max_single_dose_mg'));
 assert.ok(kg.cappedBy.includes('max_daily_dose_mg'));
+assert.ok(kg.cappedBy.includes('max_daily_dose_mg_via_times_per_day'));
+assert.ok(kg.perDose.max * 4 <= 1200);
 
 const daily = Core.calculate({
   ruleKey:'kgday',

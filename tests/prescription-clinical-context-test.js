@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const Administration = require('../administration-routes.js');
 const Context = require('../prescription-registry-bridge.js');
 const InteractionFix = require('../prescription-interaction-fix.js');
-const ContextApi = require('../api/prescription-dosage-context.js');
+const ContextApi = require('../lib/prescription-dosage-context-handler.js');
 const Engine = require('../dosage-engine.js');
 
 assert.equal(Administration.inferAdministration({ form:'Film-coated tablet' }).category, 'ENTERAL');

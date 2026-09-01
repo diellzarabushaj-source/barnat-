@@ -1061,6 +1061,18 @@
     {
       "name": "drx_phase11dd_v3_calculator_rpc_payload_hardening",
       "version": "20260831210023"
+    },
+    {
+      "version": "20260831235911",
+      "name": "harden_function_search_paths_and_validate_profile_specialty"
+    },
+    {
+      "version": "20260901000156",
+      "name": "fail_closed_unverified_published_indications"
+    },
+    {
+      "version": "20260901000724",
+      "name": "rollback_phase10_to_shadow_after_indication_gate"
     }
   ]
 }

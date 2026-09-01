@@ -15,6 +15,15 @@ for (const testCase of data.cases) {
     assert.equal(result.outcome, testCase.expected.outcome, testCase.id);
     if (Object.hasOwn(testCase.expected, 'perDose')) assert.deepEqual(result.perDose, testCase.expected.perDose, testCase.id);
     if (Object.hasOwn(testCase.expected, 'daily')) assert.deepEqual(result.daily, testCase.expected.daily, testCase.id);
+    if (testCase.expected.safetyInvariant === 'perDose.max * timesPerDay <= maxDailyDoseMg') {
+      assert.ok(
+        result.perDose
+          && Number(testCase.rule.timesPerDay) > 0
+          && Number(testCase.rule.maxDailyDoseMg) > 0
+          && result.perDose.max * Number(testCase.rule.timesPerDay) <= Number(testCase.rule.maxDailyDoseMg),
+        testCase.id + ':daily-cap-consistency'
+      );
+    }
     if (testCase.expected.bsaMin !== undefined) {
       assert.ok(result.bsaM2 > testCase.expected.bsaMin && result.bsaM2 < testCase.expected.bsaMax, testCase.id);
     }

@@ -1,5 +1,7 @@
 'use strict';
 
+const medicalHubImageHandler = require('../lib/medical-hub-image-handler.js');
+
 const PROJECT_ID = '4wdtp8cz';
 const DATASET = 'production';
 const API_VERSION = '2026-08-30';
@@ -203,6 +205,9 @@ async function searchItems(rawQuery, chapter) {
 }
 
 module.exports = async function handler(req, res) {
+  const requestedRoute = clean(queryValue(req, '_route')).toLowerCase();
+  if (requestedRoute === 'image') return medicalHubImageHandler(req, res);
+
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Vary', 'Cookie');
   res.setHeader('Content-Type', 'application/json; charset=utf-8');

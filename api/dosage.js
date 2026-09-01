@@ -5,6 +5,7 @@ const doseCalculatorHandler = require('../lib/dose-calculator-handler.js');
 const doseSafetyHandler = require('../lib/dose-safety-handler.js');
 const doseProductFastPathHandler = require('../lib/dose-product-fast-path-handler.js');
 const dosageCardHandler = require('../lib/dosage-card-handler.js');
+const prescriptionDosageContextHandler = require('../lib/prescription-dosage-context-handler.js');
 const approvedPopulationHandler = require('../lib/approved-population-handler.js');
 const pediatricDosageHandler = require('../lib/pediatric-dosage-handler.js');
 
@@ -37,13 +38,17 @@ function isCardsRequest(req) {
   return requestView(req) === 'cards';
 }
 
+function isPrescriptionContextRequest(req) {
+  return requestView(req) === 'prescription-context';
+}
+
 function isApprovedPopulationRequest(req) {
   return requestView(req) === 'approved-population';
 }
 
-/* `/api/dosage/search` dhe `/api/dosage/product/:drugId` janë rishkrime te
-   `vercel.json` mbi këtë funksion — jo funksione të veta. Buxheti i Hobby-t
-   është 12 dhe janë zënë 11. */
+/* Rrugët e dozologjisë, përfshirë prescription context, janë rishkrime te
+   `vercel.json` mbi këtë gateway — jo funksione të veta. Kjo mban një
+   slot real rezervë edhe pasi llogaritet middleware-i i Vercel. */
 function isPediatricRequest(req) {
   const view = requestView(req);
   return view === pediatricDosageHandler.SEARCH_VIEW
@@ -56,6 +61,7 @@ async function handler(req, res) {
   if (isSafetyRequest(req)) return doseSafetyHandler(req, res);
   if (isProductFastPathRequest(req)) return doseProductFastPathHandler(req, res);
   if (isCardRequest(req) || isCardsRequest(req)) return dosageCardHandler(req, res);
+  if (isPrescriptionContextRequest(req)) return prescriptionDosageContextHandler(req, res);
   if (isApprovedPopulationRequest(req)) return approvedPopulationHandler(req, res);
   if (isPediatricRequest(req)) return pediatricDosageHandler(req, res);
   return dosageHandler(req, res);
@@ -76,6 +82,7 @@ handler.isSafetyRequest = isSafetyRequest;
 handler.isProductFastPathRequest = isProductFastPathRequest;
 handler.isCardRequest = isCardRequest;
 handler.isCardsRequest = isCardsRequest;
+handler.isPrescriptionContextRequest = isPrescriptionContextRequest;
 handler.isApprovedPopulationRequest = isApprovedPopulationRequest;
 handler.isPediatricRequest = isPediatricRequest;
 handler.pediatricSearchDrugs = pediatricDosageHandler.searchDrugs;

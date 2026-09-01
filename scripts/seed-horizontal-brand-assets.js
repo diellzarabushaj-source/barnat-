@@ -2,9 +2,11 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { put } = require('@vercel/blob');
-
 const ROOT = path.resolve(__dirname, '..');
+function enabledFlag(value) {
+  return ['1','TRUE','YES','ON'].includes(String(value || '').trim().toUpperCase());
+}
+
 const ASSETS = Object.freeze([
   {
     key:'horizontalOnLight',
@@ -41,10 +43,16 @@ async function main() {
     console.log(`MEDINDEX_HORIZONTAL_BRAND ${asset.key} materialized ${buffer.length}B`);
   }
 
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    console.log('MEDINDEX_HORIZONTAL_BRAND Blob upload skipped: BLOB_READ_WRITE_TOKEN is unavailable.');
+  if (!enabledFlag(process.env.MEDINDEX_BLOB_MIRROR_ENABLED)) {
+    console.log('MEDINDEX_HORIZONTAL_BRAND Blob mirror disabled; local /brand assets are authoritative.');
     return;
   }
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    console.log('MEDINDEX_HORIZONTAL_BRAND Blob mirror requested but BLOB_READ_WRITE_TOKEN is unavailable.');
+    return;
+  }
+
+  const { put } = require('@vercel/blob');
 
   // The pages serve the files materialized above, straight from /brand/. The
   // Blob copy is a mirror, so the store being unreachable — suspended, out of
