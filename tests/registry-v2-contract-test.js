@@ -43,6 +43,7 @@ assert.doesNotMatch(html, /registry-mobile-|registry-ux-phase|registry-unified-t
   'detailDrawer',
   'drawerBody',
   'personalWorkspace',
+  'breadcrumbCurrent',
   'personalList',
   'personalSearchInput',
   'personalSortSelect',
@@ -82,7 +83,8 @@ assert.match(js, /data-row-favorite/);
 assert.match(js, /data-row-note/);
 assert.match(js, /loadPersonalLibrary/);
 assert.match(js, /DRxPhase9Personal/);
-assert.match(js, /toggleFavorite\('product'/);
+assert.match(js, /favoriteRecordForProductKey/);
+assert.match(js, /api\.setFavorite\(existing\.entityType, existing\.entityKey, false\)/);
 assert.match(js, /saveNote\('product'/);
 assert.match(js, /deleteNote\('product'/);
 assert.match(css, /\.registry-more-trigger/);
@@ -102,9 +104,18 @@ assert.match(js, /refreshPersonalLibrary/);
 assert.match(js, /personalTimeLabel/);
 assert.match(js, /registryNoteCount/);
 assert.match(js, /data-personal-retry/);
+assert.match(js, /payload\.tradeName \|\| payload\.label \|\| payload\.name \|\| payload\.drugName/);
+assert.match(js, /breadcrumbCurrent/);
+assert.match(js, /drx-phase9-personal-v2/);
+assert.match(js, /entityType === 'product' \|\| entityType === 'drug'/);
+assert.match(js, /data-personal-type/);
+assert.match(js, /meta\.productId \|\| meta\.id/);
 assert.match(css, /\.personal-toolbar-actions/);
 assert.match(css, /\.personal-item-time/);
 assert.match(css, /\.registry-note-count/);
+assert.match(css, /Personal identity hydration v4/);
+assert.match(css, /body\[data-registry-view="favorites"\] \.personal-workspace-head/);
+assert.match(html, /id="personalWorkspace" aria-labelledby="pageTitle" aria-describedby="pageSubtitle"/);
 assert.doesNotThrow(() => new Function(js));
 
 assert.match(doseCss, /\.drx-dose-modal/);

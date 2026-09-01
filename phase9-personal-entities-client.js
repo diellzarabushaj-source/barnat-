@@ -2,7 +2,7 @@
   'use strict';
 
   const API='/api/user-library';
-  const TYPES=new Set(['substance','variant','product']);
+  const TYPES=new Set(['drug','substance','variant','product']);
   const MAX_NOTE=2000;
   const state={
     loaded:false,
@@ -61,6 +61,7 @@
         entityType:row.entityType,
         entityKey,
         content,
+        payload:row.payload && typeof row.payload === 'object' ? row.payload : {},
         clientUpdatedAt:text(row.clientUpdatedAt),
         serverUpdatedAt:text(row.serverUpdatedAt),
       });
@@ -172,7 +173,7 @@
     saveNote,
     deleteNote,
     entityTypes:Object.freeze([...TYPES]),
-    version:'drx-phase9-personal-v1',
+    version:'drx-phase9-personal-v2',
   });
 
   const start=()=>void load().catch(()=>{});
