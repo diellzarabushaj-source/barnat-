@@ -6030,7 +6030,7 @@
     state.searchController = new AbortController();
     holder.innerHTML = '<p>Duke kërkuar…</p>';
     try {
-      const response = await fetch(`/api/drug-search?q=${encodeURIComponent(value)}`, {
+      const response = await fetch(`/api/drug-search?q=${encodeURIComponent(value)}&limit=30`, {
         credentials:'same-origin',
         signal:state.searchController.signal,
         headers:{ Accept:'application/json' },
@@ -6038,8 +6038,24 @@
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(payload.error || 'Kërkimi dështoi.');
       holder.innerHTML = payload.results?.length
-        ? payload.results.map(drug => `<button class="rx-drug-result" type="button" data-drug-result="${esc(encodeURIComponent(JSON.stringify(drug)))}"><span><strong>${esc([Core.prefixForForm(drug.form), drug.substance || drug.tradeName].filter(Boolean).join(' '))}</strong><small>${esc([drug.tradeName, drug.strength, Core.formLabel(drug.form)].filter(Boolean).join(' · '))}</small></span><span>+</span></button>`).join('')
-        : '<p>Nuk u gjet asnjë bar.</p>';
+        ? payload.results.map((drug, index) => {
+          const exact = Number.isFinite(Number(drug.matchRank)) && Number(drug.matchRank) <= 13;
+          const identity = [drug.substance || drug.activeSubstance || drug.tradeName, drug.strength].filter(Boolean).join(' ');
+          const metadata = [
+            drug.tradeName && fold(drug.tradeName) !== fold(drug.substance || drug.activeSubstance) ? drug.tradeName : '',
+            Core.formLabel(drug.form),
+            drug.packaging,
+            drug.atc ? `ATC ${drug.atc}` : '',
+          ].filter(Boolean).join(' · ');
+          return `<button class="rx-drug-result${exact ? ' is-exact' : ''}" type="button" data-drug-result="${esc(encodeURIComponent(JSON.stringify(drug)))}" data-search-index="${index}">
+            <span>
+              <strong>${esc([Core.prefixForForm(drug.form), identity].filter(Boolean).join(' '))}</strong>
+              <small>${esc(metadata)}</small>
+            </span>
+            <span class="rx-drug-result-action">${exact ? '<small>Përputhje e saktë</small>' : ''}<b aria-hidden="true">+</b></span>
+          </button>`;
+        }).join('')
+        : '<p>Nuk u gjet asnjë bar. Provo emrin tregtar, substancën aktive, ATC, PDID ose nr. e regjistrit.</p>';
     } catch (error) {
       if (error.name !== 'AbortError') holder.innerHTML = `<p>${esc(error.message)}</p>`;
     }
@@ -6068,6 +6084,25 @@
     $('#rxDrugSearch')?.addEventListener('input', event => {
       clearTimeout(state.searchTimer);
       state.searchTimer = setTimeout(() => searchDrugs(event.target.value), 170);
+    });
+    $('#rxDrugSearch')?.addEventListener('keydown', event => {
+      if (event.key !== 'ArrowDown') return;
+      const first = $('#rxDrugResults')?.querySelector('[data-drug-result]');
+      if (!first) return;
+      event.preventDefault();
+      first.focus();
+    });
+    $('#rxDrugResults')?.addEventListener('keydown', event => {
+      const current = event.target.closest('[data-drug-result]');
+      if (!current || !['ArrowDown','ArrowUp'].includes(event.key)) return;
+      const buttons = [...$('#rxDrugResults').querySelectorAll('[data-drug-result]')];
+      const index = buttons.indexOf(current);
+      if (index < 0) return;
+      event.preventDefault();
+      const next = event.key === 'ArrowDown'
+        ? buttons[Math.min(buttons.length - 1, index + 1)]
+        : (index === 0 ? $('#rxDrugSearch') : buttons[index - 1]);
+      next?.focus();
     });
 
     $('#rxDrugResults')?.addEventListener('click', event => {
