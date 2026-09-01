@@ -31,7 +31,8 @@ assert.match(registry, /view=cards&nrs=/);
 assert.match(registry, /Të dhënat e plota nga databaza/);
 assert.match(registry, /sourceDose\(detail, 'pediatric'\)/);
 assert.match(registry, /sourceDose\(detail, 'adult'\)/);
-assert.match(registry, /sourceFields\.map/);
+assert.match(registry, /canonicalDataFields/);
+assert.match(registry, /databaseRows\.map/);
 
 assert.match(cardHandler, /Promise\.allSettled/);
 assert.match(cardHandler, /profileAvailable/);
