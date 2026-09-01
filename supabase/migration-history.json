@@ -1069,6 +1069,10 @@
     {
       "version": "20260901000156",
       "name": "fail_closed_unverified_published_indications"
+    },
+    {
+      "version": "20260901000724",
+      "name": "rollback_phase10_to_shadow_after_indication_gate"
     }
   ]
 }
