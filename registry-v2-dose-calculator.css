@@ -2,7 +2,7 @@
 .drx-dose-open{min-height:34px;padding:0 10px;border:1px solid rgba(28,30,84,.18);border-radius:9px;background:#fff;color:#1c1e54;font:inherit;font-size:.72rem;font-weight:800;cursor:pointer;transition:background .15s ease,border-color .15s ease,transform .15s ease}
 .drx-dose-open:hover{background:#f4f5ff;border-color:rgba(28,30,84,.32)}
 .drx-dose-open:active{transform:translateY(1px)}
-.drx-dose-modal[hidden]{display:none!important}
+.drx-dose-modal[hidden]{display:none}
 .drx-dose-modal{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:18px}
 .drx-dose-backdrop{position:absolute;inset:0;background:rgba(10,14,30,.56);backdrop-filter:blur(5px)}
 .drx-dose-dialog{position:relative;width:min(760px,100%);max-height:min(90vh,900px);overflow:auto;border:1px solid rgba(255,255,255,.6);border-radius:22px;background:#fff;box-shadow:0 30px 90px rgba(13,20,50,.28);padding:0}
@@ -19,7 +19,7 @@
 .drx-dose-chip.is-fallback{background:#fff4e5;color:#995b05}
 .drx-dose-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px 22px}
 .drx-dose-field{display:grid;gap:6px}
-.drx-dose-field[hidden]{display:none!important}
+.drx-dose-field[hidden]{display:none}
 .drx-dose-field>span:first-child{color:#33394d;font-size:.72rem;font-weight:800}
 .drx-dose-field input,.drx-dose-field select{width:100%;min-height:44px;border:1px solid #d8dce7;border-radius:10px;background:#fff;color:#171a40;padding:0 11px;font:inherit;font-size:.85rem;outline:none}
 .drx-dose-field input:focus,.drx-dose-field select:focus{border-color:#666bd8;box-shadow:0 0 0 3px rgba(102,107,216,.12)}
@@ -27,7 +27,7 @@
 .drx-dose-help{color:#7a8090;font-size:.66rem;line-height:1.35}
 .drx-dose-note{margin:0 22px 14px;padding:10px 12px;border-radius:10px;background:#f7f8fb;color:#6d7386;font-size:.72rem;line-height:1.45}
 .drx-dose-result{margin:0 22px 22px;padding:16px;border:1px solid #dfe4ec;border-radius:14px;background:#fafbfd}
-.drx-dose-result[hidden]{display:none!important}
+.drx-dose-result[hidden]{display:none}
 .drx-dose-result.is-error{border-color:#f2c5c5;background:#fff7f7}
 .drx-dose-result.is-info{border-color:#d6dff3;background:#f7f9ff}
 .drx-dose-result h3{margin:0 0 7px;color:#20243d;font-size:.82rem}
