@@ -68,7 +68,7 @@ async function installApiMocks(page) {
         body:JSON.stringify({ ok:true, row:{ ...row, packaging:'20 tableta', manufacturer:'Test Pharma', marketingAuthorizationHolder:'Test MAH', validity:'2026' } }),
       });
     }
-    if (view === 'registry-page') {
+    if (view === 'registry-page' || view === 'registry-search') {
       const result = filteredRows(url);
       return route.fulfill({
         status:200,

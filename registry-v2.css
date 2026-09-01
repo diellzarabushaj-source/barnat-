@@ -301,6 +301,12 @@ a{color:inherit}
 .detail-section{padding:16px 0;border-bottom:1px solid #edf0f3}
 .detail-section:last-child{border-bottom:0}
 .detail-section h4{margin:0 0 10px;color:#627286;font-size:9.5px;font-weight:760;letter-spacing:.08em;text-transform:uppercase}
+.detail-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.detail-section-head h4{margin:0}
+.detail-section-head span{color:#8a97a7;font-size:9.5px;font-variant-numeric:tabular-nums}
+.detail-source-data{padding-bottom:20px}
+.detail-grid-all dt,.detail-grid-all dd{line-height:1.45;white-space:pre-wrap}
+.detail-grid-all dd{word-break:break-word}
 .detail-grid{display:grid;grid-template-columns:minmax(120px,.7fr) minmax(0,1.3fr);gap:0;margin:0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .detail-grid dt,.detail-grid dd{margin:0;padding:8px 10px;border-bottom:1px solid #edf0f3;font-size:10.5px}
 .detail-grid dt{background:#fafbfc;color:#7c8999;font-weight:600}

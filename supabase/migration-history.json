@@ -1077,6 +1077,18 @@
     {
       "name": "harden_personal_product_identity",
       "version": "20260901215509"
+    },
+    {
+      "version": "20260901225520",
+      "name": "improve_ranked_drug_search_tokenized_v3"
+    },
+    {
+      "version": "20260901225750",
+      "name": "rank_identity_fields_ahead_of_global_drug_search"
+    },
+    {
+      "version": "20260901230042",
+      "name": "expand_ranked_drug_search_limit_to_50"
     }
   ]
 }
