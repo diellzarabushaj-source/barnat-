@@ -1073,6 +1073,10 @@
     {
       "name": "rollback_phase10_to_shadow_after_indication_gate",
       "version": "20260901000724"
+    },
+    {
+      "name": "harden_personal_product_identity",
+      "version": "20260901215509"
     }
   ]
 }
