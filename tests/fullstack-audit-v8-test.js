@@ -55,6 +55,10 @@ assert.ok(apiFunctions.length <= 11, `Vercel function reserve lost: ${apiFunctio
 assert.ok(!apiFunctions.includes('medical-hub-image.js'), 'Medical Hub image proxy must share the medical-hub function');
 assert.ok(exists('lib/medical-hub-image-handler.js'), 'Medical Hub shared image handler is missing');
 
+const brandSeed = read('scripts/seed-horizontal-brand-assets.js');
+assert.match(brandSeed, /MEDINDEX_BLOB_MIRROR_ENABLED/);
+assert.match(brandSeed, /Blob mirror disabled; local \/brand assets are authoritative/);
+
 const vercel = JSON.parse(read('vercel.json'));
 assert.deepEqual(
   vercel.git?.deploymentEnabled,
