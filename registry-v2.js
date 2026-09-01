@@ -28,6 +28,10 @@
      24×24, pa mbushje, vijë 1.7 me `currentColor`. Shenja tipografike `›` që
      rrinte këtu merrte formën e vet nga fonti, jo nga sistemi. */
   const CHEVRON_RIGHT = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg>';
+  const MORE_VERTICAL = '<svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg>';
+  const STAR_ICON = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg>';
+  const NOTE_ICON = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>';
+  const CALC_ICON = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2"/></svg>';
 
   const FORM_ICONS = {
     all:'<rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/>',
@@ -85,6 +89,8 @@
     preferenceOwner: '',
     visibleColumns: new Set(DEFAULT_VISIBLE_COLUMNS),
     preferenceSaveTimer: 0,
+    openRowMenuKey: '',
+    noteRow: null,
   };
 
   const $ = id => document.getElementById(id);
@@ -336,6 +342,110 @@
     document.head.appendChild(script);
   }
 
+  async function loadPersonalLibrary() {
+    if (window.DRxPhase9Personal) return window.DRxPhase9Personal;
+    const existing = document.querySelector('script[data-drx-personal-library]');
+    if (existing) {
+      await new Promise(resolve => {
+        if (window.DRxPhase9Personal) return resolve();
+        existing.addEventListener('load', resolve, { once:true });
+        existing.addEventListener('error', resolve, { once:true });
+        setTimeout(resolve, 1800);
+      });
+      return window.DRxPhase9Personal || null;
+    }
+    await new Promise(resolve => {
+      const script = document.createElement('script');
+      script.src = '/phase9-personal-entities-client.js?v=drx-phase9-personal-v1';
+      script.defer = true;
+      script.dataset.drxPersonalLibrary = '1';
+      script.addEventListener('load', resolve, { once:true });
+      script.addEventListener('error', resolve, { once:true });
+      document.head.appendChild(script);
+    });
+    return window.DRxPhase9Personal || null;
+  }
+
+  const personalEntityKey = row => clean(row?.id || row?.registryNumber || row?.pdid);
+
+  function closeRowMenus(exceptKey = '') {
+    state.openRowMenuKey = exceptKey;
+    document.querySelectorAll('.registry-more[open]').forEach(details => {
+      if (!exceptKey || details.dataset.rowMenuKey !== exceptKey) details.removeAttribute('open');
+    });
+  }
+
+  function ensureNoteDialog() {
+    let root = document.getElementById('registryNoteDialog');
+    if (root) return root;
+    root = document.createElement('div');
+    root.id = 'registryNoteDialog';
+    root.className = 'registry-note-overlay';
+    root.hidden = true;
+    root.innerHTML = '<section class="registry-note-dialog" role="dialog" aria-modal="true" aria-labelledby="registryNoteTitle"><div class="registry-note-head"><div><p class="eyebrow">Shënim personal</p><h2 id="registryNoteTitle">Shënim për barin</h2></div><button class="registry-note-close" type="button" data-note-close aria-label="Mbyll shënimin">×</button></div><label class="registry-note-field"><span>Shënimi</span><textarea id="registryNoteText" maxlength="2000" rows="8" placeholder="Shkruaj shënimin tënd…"></textarea></label><div class="registry-note-actions"><button class="button button-ghost" type="button" data-note-delete>Fshi shënimin</button><div><button class="button button-secondary" type="button" data-note-close>Anulo</button><button class="button button-primary" type="button" data-note-save>Ruaj</button></div></div></section>';
+    document.body.appendChild(root);
+    root.addEventListener('click', async event => {
+      if (event.target === root || event.target.closest('[data-note-close]')) { closeNoteDialog(); return; }
+      if (event.target.closest('[data-note-save]')) { await saveCurrentNote(); return; }
+      if (event.target.closest('[data-note-delete]')) { await deleteCurrentNote(); }
+    });
+    return root;
+  }
+
+  async function openNoteDialog(row) {
+    const api = await loadPersonalLibrary();
+    if (!api) { showToast('Shënimet nuk u ngarkuan. Provo përsëri.'); return; }
+    await api.load().catch(() => null);
+    state.noteRow = row;
+    const root = ensureNoteDialog();
+    const key = personalEntityKey(row);
+    root.querySelector('#registryNoteTitle').textContent = row.tradeName || 'Shënim për barin';
+    root.querySelector('#registryNoteText').value = key ? api.note('product', key) : '';
+    root.hidden = false;
+    document.body.classList.add('registry-note-open');
+    setTimeout(() => root.querySelector('#registryNoteText')?.focus(), 0);
+  }
+
+  function closeNoteDialog() {
+    const root = document.getElementById('registryNoteDialog');
+    if (root) root.hidden = true;
+    document.body.classList.remove('registry-note-open');
+    state.noteRow = null;
+  }
+
+  async function saveCurrentNote() {
+    const row = state.noteRow;
+    if (!row) return;
+    const api = await loadPersonalLibrary();
+    const key = personalEntityKey(row);
+    const value = document.getElementById('registryNoteText')?.value || '';
+    if (!api || !key) return showToast('Shënimi nuk mund të ruhet.');
+    try { await api.saveNote('product', key, value); showToast(value.trim() ? 'Shënimi u ruajt.' : 'Shënimi u fshi.'); closeNoteDialog(); }
+    catch (error) { showToast(error?.message || 'Shënimi nuk u ruajt.'); }
+  }
+
+  async function deleteCurrentNote() {
+    const row = state.noteRow;
+    const api = await loadPersonalLibrary();
+    const key = personalEntityKey(row);
+    if (!api || !key) return showToast('Shënimi nuk mund të fshihet.');
+    try { await api.deleteNote('product', key); showToast('Shënimi u fshi.'); closeNoteDialog(); }
+    catch (error) { showToast(error?.message || 'Shënimi nuk u fshi.'); }
+  }
+
+  async function toggleFavoriteRow(row, button) {
+    const api = await loadPersonalLibrary();
+    const key = personalEntityKey(row);
+    if (!api || !key) return showToast('Favoriti nuk mund të ruhet.');
+    button?.setAttribute('aria-busy','true');
+    try {
+      await api.load().catch(() => null);
+      const next = await api.toggleFavorite('product', key, { tradeName:clean(row.tradeName), registryNumber:clean(row.registryNumber), activeSubstance:clean(row.activeSubstance), strength:clean(row.strength), form:clean(row.form) });
+      showToast(next ? 'Bari u shënua si favorit.' : 'Bari u hoq nga favoritët.');
+      if (button) button.querySelector('[data-favorite-label]').textContent = next ? 'Hiq nga favoritët' : 'Shëno si favorit';
+    } catch (error) { showToast(error?.message || 'Favoriti nuk u ruajt.'); }
+    finally { button?.removeAttribute('aria-busy'); }
+  }
   function debounceSearch() {
     clearTimeout(state.searchTimer);
     state.searchTimer = setTimeout(() => {
@@ -569,7 +679,7 @@
         <td data-col="pediatricDose" data-dose-pediatric="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></td>
         <td data-col="status">${statusBadge(row.productStatus)}</td>
         <td data-col="price"><span class="price">${euros(row.retailPrice)}</span></td>
-        <td><div class="registry-row-actions"><button class="drx-dose-open" type="button" data-dose-calculator-open data-registry-number="${escapeHtml(number)}" aria-label="Kalkulo dozën për ${escapeHtml(row.tradeName)}">Kalkulo</button><button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">${CHEVRON_RIGHT}</button></div></td>
+        <td class="registry-actions-cell"><div class="registry-row-actions"><details class="registry-more" data-row-menu-key="${escapeHtml(key)}"><summary class="registry-more-trigger" aria-label="Veprime për ${escapeHtml(row.tradeName)}">${MORE_VERTICAL}</summary><div class="registry-more-menu" role="menu"><button type="button" role="menuitem" data-dose-calculator-open data-registry-number="${escapeHtml(number)}">${CALC_ICON}<span>Kalkulo</span></button><button type="button" role="menuitem" data-row-favorite="${escapeHtml(key)}">${STAR_ICON}<span data-favorite-label>Shëno si favorit</span></button><button type="button" role="menuitem" data-row-note="${escapeHtml(key)}">${NOTE_ICON}<span>Shkruaj shënim</span></button></div></details><button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">${CHEVRON_RIGHT}</button></div></td>
       </tr>`;
     }).join('');
     applyColumnVisibility();
@@ -882,7 +992,7 @@
     el.searchInput.addEventListener('keydown', event => { if (event.key === 'Escape' && el.searchInput.value) { el.searchInput.value = ''; state.q = ''; state.page = 1; loadPage(); } });
     window.addEventListener('keydown', event => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); el.searchInput.focus(); el.searchInput.select(); }
-      if (event.key === 'Escape') { closeDrawer(); closeSidebar(); closeFormPicker(); closeColumnPicker(); }
+      if (event.key === 'Escape') { closeDrawer(); closeSidebar(); closeFormPicker(); closeColumnPicker(); closeRowMenus(); closeNoteDialog(); }
     });
     el.filterToggle.addEventListener('click', () => {
       const open = el.filterPanel.hidden;
@@ -935,7 +1045,12 @@
     document.addEventListener('click', event => {
       if (!el.formPicker.contains(event.target)) closeFormPicker();
       if (!el.columnPicker.contains(event.target)) closeColumnPicker();
+      if (!event.target.closest('.registry-more')) closeRowMenus();
     });
+    el.registryRows.addEventListener('toggle', event => {
+      const details = event.target.closest?.('.registry-more');
+      if (details?.open) closeRowMenus(details.dataset.rowMenuKey);
+    }, true);
     let doseResizeTimer = 0;
     window.addEventListener('resize', () => {
       clearTimeout(doseResizeTimer);
@@ -953,6 +1068,11 @@
     el.registryRows.addEventListener('click', event => {
       const doseToggle = event.target.closest('[data-dose-toggle]');
       if (doseToggle) { event.stopPropagation(); toggleDose(doseToggle); return; }
+      const favorite = event.target.closest('[data-row-favorite]');
+      if (favorite) { event.stopPropagation(); closeRowMenus(); void toggleFavoriteRow(findRow(favorite.dataset.rowFavorite), favorite); return; }
+      const note = event.target.closest('[data-row-note]');
+      if (note) { event.stopPropagation(); closeRowMenus(); void openNoteDialog(findRow(note.dataset.rowNote)); return; }
+      if (event.target.closest('.registry-more')) { event.stopPropagation(); return; }
       const checkbox = event.target.closest('[data-select-row]');
       if (checkbox) { event.stopPropagation(); const row = findRow(checkbox.dataset.selectRow); toggleSelection(row, checkbox.checked); return; }
       const button = event.target.closest('[data-open-row]');
@@ -987,6 +1107,7 @@
     try {
       const authPayload = await ensureAuth();
       await syncProfileChrome(authPayload);
+      void loadPersonalLibrary().then(api => api?.load?.()).catch(() => null);
       await loadColumnPreferences(authPayload);
       el.appShell.setAttribute('aria-busy', 'false');
       await loadPage();
