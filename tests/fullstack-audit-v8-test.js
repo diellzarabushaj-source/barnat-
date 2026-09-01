@@ -66,6 +66,7 @@ assert.match(packageJson.scripts?.build || '', /pnpm run test:deploy/, 'Vercel b
 assert.doesNotMatch(packageJson.scripts?.build || '', /\bpnpm\s+test\b/, 'Vercel build must not rerun the exhaustive CI suite');
 assert.match(packageJson.scripts?.['test:deploy'] || '', /fullstack-audit-v8-test\.js/);
 assert.match(packageJson.scripts?.['test:deploy'] || '', /drx-dose-core-test\.js/);
+assert.match(packageJson.scripts?.['test:deploy'] || '', /vercel-runtime-resilience-test\.js/);
 assert.match(packageJson.scripts?.['test:deploy'] || '', /drx-dose-runtime-engine-test\.js/);
 assert.match(packageJson.scripts?.['test:deploy'] || '', /drx-dose-v3-rpc-reader-test\.js/);
 const rewrites = new Map((vercel.rewrites || []).map(row => [row.source, row.destination]));
