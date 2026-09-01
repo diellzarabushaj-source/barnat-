@@ -135,7 +135,7 @@
 
   function countsFromPersonalSnapshot(snapshot = {}) {
     const favorites = Array.isArray(snapshot.favorites)
-      ? snapshot.favorites.filter(item => item?.entityType === 'product' && clean(item?.entityKey)).length
+      ? snapshot.favorites.filter(item => ['product','drug'].includes(clean(item?.entityType)) && clean(item?.entityKey)).length
       : 0;
     const notes = Array.isArray(snapshot.notes)
       ? snapshot.notes.filter(item => item?.entityType === 'product' && clean(item?.entityKey)).length
