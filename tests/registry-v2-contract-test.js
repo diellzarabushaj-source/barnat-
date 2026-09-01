@@ -45,6 +45,8 @@ assert.doesNotMatch(html, /registry-mobile-|registry-ux-phase|registry-unified-t
   'personalWorkspace',
   'personalList',
   'personalSearchInput',
+  'personalSortSelect',
+  'personalRefreshButton',
   'favoriteNavCount',
   'noteNavCount',
 ].forEach(id => assert.match(html, new RegExp(`id="${id}"`)));
@@ -95,6 +97,14 @@ assert.match(js, /hydratePersonalRows/);
 assert.match(js, /data-personal-unfavorite/);
 assert.match(js, /data-personal-edit-note/);
 assert.match(js, /data-personal-delete-note/);
+assert.match(js, /personalSort/);
+assert.match(js, /refreshPersonalLibrary/);
+assert.match(js, /personalTimeLabel/);
+assert.match(js, /registryNoteCount/);
+assert.match(js, /data-personal-retry/);
+assert.match(css, /\.personal-toolbar-actions/);
+assert.match(css, /\.personal-item-time/);
+assert.match(css, /\.registry-note-count/);
 assert.doesNotThrow(() => new Function(js));
 
 assert.match(doseCss, /\.drx-dose-modal/);
