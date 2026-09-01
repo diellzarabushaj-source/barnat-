@@ -876,9 +876,16 @@
 
   function queryUrl() {
     const rankedSearch = Boolean(state.q && !state.atc && !state.formValue);
-    const params = new URLSearchParams({
-      view:rankedSearch ? 'registry-search' : 'registry-page',
-      page:String(rankedSearch ? 1 : state.page),
+    const params = new URLSearchParams(rankedSearch ? {
+      view:'registry-search',
+      page:'1',
+      pageSize:String(state.pageSize),
+      includeTotal:'true',
+      sort:state.sort,
+      direction:state.direction,
+    } : {
+      view:'registry-page',
+      page:String(state.page),
       pageSize:String(state.pageSize),
       includeTotal:'true',
       sort:state.sort,
