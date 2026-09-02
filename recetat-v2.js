@@ -917,14 +917,14 @@
   const CATEGORIES = Object.freeze({
     ENTERAL:Object.freeze({ key:'ENTERAL', label:'Enterale', description:'Përmes traktit gastrointestinal ose mukozës orale', routes:Object.freeze(['PO', 'SL', 'BUCCAL', 'PR']), defaultRoute:'PO' }),
     PARENTERAL:Object.freeze({ key:'PARENTERAL', label:'Parenterale', description:'Injeksion ose infuzion', routes:Object.freeze(['IV', 'IM', 'SC', 'ID']), defaultRoute:'' }),
-    TOPICAL_LOCAL:Object.freeze({ key:'TOPICAL_LOCAL', label:'Topike / lokale', description:'Lëkurë, sy, vesh, hundë ose transdermale', routes:Object.freeze(['TOP', 'OPH', 'OTIC', 'NASAL', 'TD']), defaultRoute:'' }),
+    TOPICAL_LOCAL:Object.freeze({ key:'TOPICAL_LOCAL', label:'Topike / lokale', description:'Lëkurë, sy, vesh, hundë, vaginale ose transdermale', routes:Object.freeze(['TOP', 'OPH', 'OTIC', 'NASAL', 'VAG', 'TD']), defaultRoute:'' }),
     INHALATION:Object.freeze({ key:'INHALATION', label:'Inhalatore', description:'Përmes rrugëve të frymëmarrjes', routes:Object.freeze(['INH', 'MDI', 'DPI', 'NEB']), defaultRoute:'' }),
   });
   const CATEGORY_ORDER = Object.freeze(['ENTERAL', 'PARENTERAL', 'TOPICAL_LOCAL', 'INHALATION']);
   const ROUTE_LABELS = Object.freeze({
     PO:'orale', SL:'sublinguale', BUCCAL:'bukale', PR:'rektale',
     IV:'intravenoze', IM:'intramuskulare', SC:'subkutane', ID:'intradermale',
-    TOP:'dermatologjike', OPH:'oftalmike', OTIC:'otike', NASAL:'nazale', TD:'transdermale',
+    TOP:'dermatologjike', OPH:'oftalmike', OTIC:'otike', NASAL:'nazale', VAG:'vaginale', TD:'transdermale',
     INH:'inhalatore', MDI:'MDI', DPI:'DPI', NEB:'nebulizator',
   });
   const ROUTE_CODES = Object.freeze(Object.keys(ROUTE_LABELS));
@@ -961,6 +961,7 @@
     if (/oftalm|ophthalm|okular|ocular|eye\s*drops?|pika\s*(per|për)?\s*sy/.test(source)) add('OPH');
     if (/otik|otic|ear\s*drops?|pika\s*(per|për)?\s*vesh/.test(source)) add('OTIC');
     if (/nazal|nasal|intranas/.test(source)) add('NASAL');
+    if (/vaginal|intravag|ovul|pessar/.test(source)) add('VAG');
     if (/transderm|patch|flaster|ngjites/.test(source)) add('TD');
     const isSpecialDermalRoute = /intraderm|transderm/.test(source);
     if (!isSpecialDermalRoute && /topik|topical|kutan|cutaneous|dermal|lekure/.test(source)) add('TOP');
@@ -1006,6 +1007,7 @@
     if (/ophthalm|oftalm|ocular|okular|eye\s*(drop|ointment|gel)/.test(form)) return { category:'TOPICAL_LOCAL', routes:['OPH'], confidence:'form' };
     if (/otic|ear\s*drops?/.test(form)) return { category:'TOPICAL_LOCAL', routes:['OTIC'], confidence:'form' };
     if (/nasal|intranas/.test(form)) return { category:'TOPICAL_LOCAL', routes:['NASAL'], confidence:'form' };
+    if (/vaginal|intravag|ovul|pessar/.test(form)) return { category:'TOPICAL_LOCAL', routes:['VAG'], confidence:'form' };
     if (/transderm|patch|flaster/.test(form)) return { category:'TOPICAL_LOCAL', routes:['TD'], confidence:'form' };
     if (/cream|krem|ointment|pomad|unguent|gel|lotion|locion|cutaneous|kutan|dermal|skin/.test(form)) return { category:'TOPICAL_LOCAL', routes:['TOP'], confidence:'form' };
     if (/injection|injeks|infusion|infuz|parenter|vial|flakon|ampou|ampul|lyophilis/.test(form)) {
@@ -1022,17 +1024,35 @@
     const routeCategories = [...new Set(explicitRoutes.map(categoryForRoute).filter(Boolean))];
     const form = value.form || value.pharmaceuticalForm || value.pharmaceutical_form || value['Forma farmaceutike'] || value['Forma'];
     const byForm = formInference(form);
+
     let category = explicitCategory;
     let confidence = explicitCategory ? 'explicit-category' : 'unknown';
-    if (!category && routeCategories.length === 1) { category = routeCategories[0]; confidence = 'explicit-route'; }
-    if (!category && byForm.category) { category = byForm.category; confidence = byForm.confidence; }
-    const routes = [...new Set([
-      ...explicitRoutes.filter(route => !category || categoryForRoute(route) === category),
-      ...byForm.routes.filter(route => !category || categoryForRoute(route) === category),
-    ])];
+    if (!category && routeCategories.length === 1) {
+      category = routeCategories[0];
+      confidence = 'explicit-route';
+    }
+    if (!category && byForm.category) {
+      category = byForm.category;
+      confidence = byForm.confidence;
+    }
+
+    // Rrugët e deklaruara në databazë / SmPC janë autoritative.
+    // Forma farmaceutike përdoret vetëm si fallback kur rruga nuk është deklaruar.
+    const explicitForCategory = explicitRoutes.filter(route => !category || categoryForRoute(route) === category);
+    const inferredForCategory = byForm.routes.filter(route => !category || categoryForRoute(route) === category);
+    const routes = [...new Set(explicitForCategory.length ? explicitForCategory : inferredForCategory)];
+    if (explicitForCategory.length) confidence = 'explicit-route';
+
     const route = routes.length === 1 ? routes[0] : '';
-    return { category, routes, route, ambiguous:routes.length > 1 || !category, confidence,
-      categoryLabel:CATEGORIES[category]?.label || 'E papërcaktuar', routeLabel:ROUTE_LABELS[route] || '' };
+    return {
+      category,
+      routes,
+      route,
+      ambiguous:routes.length !== 1 || !category,
+      confidence,
+      categoryLabel:CATEGORIES[category]?.label || 'E papërcaktuar',
+      routeLabel:ROUTE_LABELS[route] || '',
+    };
   }
 
   function categoryLabel(value) { return CATEGORIES[normalizeCategory(value)]?.label || ''; }
@@ -1042,7 +1062,7 @@
     const phrases = {
       PO:'nga goja', SL:'nën gjuhë', BUCCAL:'në mukozën bukale', PR:'rektalisht',
       IV:'intravenoz', IM:'intramuskularisht', SC:'nënlëkurë', ID:'intradermalisht',
-      TOP:'në lëkurë', OPH:'në sy', OTIC:'në vesh', NASAL:'në hundë', TD:'transdermalisht',
+      TOP:'në lëkurë', OPH:'në sy', OTIC:'në vesh', NASAL:'në hundë', VAG:'vaginalisht', TD:'transdermalisht',
       INH:'me inhalim', MDI:'me inhalator MDI', DPI:'me inhalator DPI', NEB:'me nebulizator',
     };
     return phrases[route] || text(value);
@@ -1716,6 +1736,8 @@
     const form = text(item?.form || item?.pharmaceuticalForm || item?.pharmaceutical_form || item?.['Forma farmaceutike'] || item?.['Forma']);
     return {
       key: text(item?.key || item?.drugKey || `${item?.pdid || item?.PDID || ''}|${tradeName}|${strength}`),
+      id: text(item?.id || item?.drugId),
+      drugId: text(item?.drugId || item?.id),
       tradeName,
       substance,
       strength,
@@ -2358,8 +2380,8 @@
   }
   if (!Administration) throw new Error('MedIndexAdministrationRoutes mungon.');
 
-  const KEY = 'medindex_rx_clinical_context_v3';
-  const LEGACY_KEYS = ['medindex_rx_clinical_context_v2', 'medindex_rx_clinical_context_v1'];
+  const KEY = 'medindex_rx_clinical_context_v4';
+  const LEGACY_KEYS = ['medindex_rx_clinical_context_v3', 'medindex_rx_clinical_context_v2', 'medindex_rx_clinical_context_v1'];
   const SAVED_KEY = 'regjistriBarnave_protokollet_v1';
   const { CATEGORIES, CATEGORY_ORDER, ROUTE_LABELS } = Administration;
   const SVG = Object.freeze({
@@ -2376,6 +2398,7 @@
   const state = {
     document:null, root:null, context:null, ready:false, nativeFetch:null,
     payloadView:null, payloadContextKey:'', refreshPromise:null, refreshTimer:0, previewObserver:null,
+    productConstraint:null, drugPayloadCache:new Map(), drugPayloadPromises:new Map(),
   };
   const text = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const numberValue = value => {
@@ -2384,15 +2407,14 @@
   };
 
   function baseContext() {
-    return { administrationCategory:'ENTERAL', route:'PO', pediatric:false, ageValue:'', ageUnit:'years', weightKg:'' };
+    return { administrationCategory:'', route:'', pediatric:false, ageValue:'', ageUnit:'years', weightKg:'' };
   }
 
   function normalizeContext(value = {}) {
     const legacyCategory = value.parenteral === true ? 'PARENTERAL' : '';
-    const category = Administration.normalizeCategory(value.administrationCategory || value.category || legacyCategory) || 'ENTERAL';
+    const category = Administration.normalizeCategory(value.administrationCategory || value.category || legacyCategory);
     let route = Administration.normalizeRoute(value.route);
-    if (!Administration.routeBelongsToCategory(route, category)) route = '';
-    if (!route && category === 'ENTERAL') route = 'PO';
+    if (!category || !Administration.routeBelongsToCategory(route, category)) route = '';
     return {
       administrationCategory:category,
       route,
@@ -2538,7 +2560,7 @@
     return [context.pediatric ? 'pediatric' : 'adult', context.administrationCategory, context.route,
       context.pediatric ? patient.ageMonths : '', context.pediatric ? patient.weightKg : ''].join('|');
   }
-  function contextEndpoint(value = getContext()) {
+  function contextEndpoint(value = getContext(), drugId = '') {
     const context = normalizeContext(value);
     const patient = patientFromContext(context);
     const query = new URLSearchParams({
@@ -2547,6 +2569,7 @@
       route:context.route,
       parenteral:String(context.administrationCategory === 'PARENTERAL'),
     });
+    if (text(drugId)) query.set('id', text(drugId));
     if (context.pediatric) {
       query.set('ageMonths', String(patient.ageMonths));
       query.set('weightKg', String(patient.weightKg));
@@ -2574,8 +2597,10 @@
   }
   function contextSummary(value = getContext()) {
     const context = normalizeContext(value);
-    const parts = [Administration.categoryLabel(context.administrationCategory) || context.administrationCategory];
+    const parts = [];
+    if (context.administrationCategory) parts.push(Administration.categoryLabel(context.administrationCategory) || context.administrationCategory);
     if (context.route) parts.push(`${context.route} · ${Administration.routeLabel(context.route)}`);
+    if (!context.administrationCategory && !context.route) parts.push('Rruga zgjidhet nga bari');
     parts.push(context.pediatric ? 'Fëmijë' : 'Të rritur');
     if (context.pediatric && context.ageValue) parts.push(ageLabel(context));
     if (context.pediatric && context.weightKg) parts.push(`${context.weightKg} kg`);
@@ -2592,6 +2617,11 @@
       const administration = Administration.inferAdministration(item);
       return {
         ...normalized,
+        id:text(item?.id || item?.drugId),
+        drugId:text(item?.drugId || item?.id),
+        registryNumber:text(item?.registryNumber || item?.registry_number),
+        approvedPopulation:text(item?.approvedPopulation || item?.approved_population),
+        productStatus:text(item?.productStatus || item?.product_status),
         packaging:text(item?.packaging || item?.packageSize),
         packagingSummary:text(item?.packagingSummary),
         prescriptionLine:text(item?.prescriptionLine),
@@ -2623,8 +2653,8 @@
     anchor.insertAdjacentHTML(anchor.id === 'rxOrderBuilder' ? 'beforebegin' : 'afterend', `
       <section class="rx-clinical-context" id="rxClinicalContext" aria-labelledby="rxClinicalContextTitle">
         <div class="rx-context-heading">
-          <div><span class="rx-context-kicker">Konteksti klinik</span><strong id="rxClinicalContextTitle">Rruga e administrimit</strong></div>
-          <span class="rx-context-readiness" id="rxContextReadiness">Gati</span>
+          <div><span class="rx-context-kicker">Konteksti klinik</span><strong id="rxClinicalContextTitle">Rruga e administrimit</strong><small class="rx-context-source" id="rxContextSource">Zgjidhet automatikisht pasi zgjedh barin</small></div>
+          <span class="rx-context-readiness is-neutral" id="rxContextReadiness">Auto nga bari</span>
         </div>
         <div class="rx-category-grid" role="radiogroup" aria-label="Kategoria e administrimit">
           ${CATEGORY_ORDER.map(category => `
@@ -2643,7 +2673,7 @@
             </fieldset>
             <div class="rx-context-guidance">
               <span class="rx-context-guidance-icon">${SVG.info}</span>
-              <span>Ky kontekst përdoret për filtrimin e skemave të barit që po shton. Asnjë skemë nuk aplikohet pa konfirmimin tënd.</span>
+              <span>DRx lexon kategorinë dhe rrugët e lejuara nga kartela e produktit. Ti zgjedh rrugën vetëm kur preparati ka më shumë se një rrugë të vlefshme; doza nuk aplikohet pa konfirmimin tënd.</span>
             </div>
           </div>
           <button type="button" class="rx-pediatric-toggle" id="rxPediatricToggle" aria-pressed="false">
@@ -2670,14 +2700,23 @@
   function renderRoutes(context, validation) {
     const holder = state.document.getElementById('rxRouteSegments');
     if (!holder) return;
-    const routes = Administration.routesForCategory(context.administrationCategory);
-    const signature = `${context.administrationCategory}:${routes.join(',')}`;
+    const constraint = state.productConstraint;
+    const baseRoutes = context.administrationCategory ? Administration.routesForCategory(context.administrationCategory) : [];
+    const constrainedRoutes = constraint?.category === context.administrationCategory && Array.isArray(constraint.routes)
+      ? constraint.routes.filter(route => Administration.routeBelongsToCategory(route, context.administrationCategory))
+      : [];
+    const routes = constrainedRoutes.length ? constrainedRoutes : baseRoutes;
+    const signature = `${context.administrationCategory || 'none'}:${constraint?.key || ''}:${routes.join(',')}`;
     if (holder.dataset.signature !== signature) {
       holder.dataset.signature = signature;
-      holder.innerHTML = routes.map(route => `<button type="button" role="radio" aria-checked="false" data-context-route="${route}"><strong>${route}</strong><small>${ROUTE_LABELS[route]}</small></button>`).join('');
+      holder.innerHTML = routes.length
+        ? routes.map(route => `<button type="button" role="radio" aria-checked="false" data-context-route="${route}"><strong>${route}</strong><small>${ROUTE_LABELS[route] || route}</small></button>`).join('')
+        : '<span class="rx-route-placeholder">Zgjidhet automatikisht pasi të zgjedhësh barin.</span>';
       bindRouteButtons(holder);
     }
-    holder.classList.toggle('has-error', validation.missing.includes('route') || validation.invalid.includes('route'));
+    const showRouteError = Boolean(context.administrationCategory)
+      && (validation.missing.includes('route') || validation.invalid.includes('route'));
+    holder.classList.toggle('has-error', showRouteError);
     holder.querySelectorAll('[data-context-route]').forEach((button, index) => {
       const selected = button.dataset.contextRoute === context.route;
       button.classList.toggle('is-selected', selected);
@@ -2696,8 +2735,9 @@
     if (!show) { existing?.remove(); return; }
     const validation = validateContext(context);
     const rows = [
-      ['Kategoria', Administration.categoryLabel(context.administrationCategory)],
-      ['Rruga', context.route ? `${context.route} · ${Administration.routeLabel(context.route)}` : 'E papërcaktuar'],
+      ['Kategoria', Administration.categoryLabel(context.administrationCategory) || 'Zgjidhet nga bari'],
+      ['Rruga', context.route ? `${context.route} · ${Administration.routeLabel(context.route)}` : 'Zgjidhet nga bari'],
+      state.productConstraint?.label ? ['Produkti', state.productConstraint.label] : null,
       ['Popullata', context.pediatric ? 'Fëmijë' : 'Të rritur'],
       context.pediatric ? ['Mosha', ageLabel(context) || 'E paplotësuar'] : null,
       context.pediatric ? ['Pesha', context.weightKg ? `${context.weightKg} kg` : 'E paplotësuar'] : null,
@@ -2719,8 +2759,13 @@
     const validation = validateContext(context);
     state.document.querySelectorAll('[data-context-category]').forEach(button => {
       const selected = button.dataset.contextCategory === context.administrationCategory;
+      const locked = Boolean(state.productConstraint?.category);
       button.classList.toggle('is-active', selected);
+      button.classList.toggle('is-locked', locked);
+      button.disabled = locked;
       button.setAttribute('aria-checked', String(selected));
+      button.setAttribute('aria-disabled', String(locked));
+      button.title = locked ? 'Kategoria u mor automatikisht nga produkti i zgjedhur.' : '';
       button.querySelector('.rx-context-state').textContent = selected ? '✓' : '';
     });
     renderRoutes(context, validation);
@@ -2750,9 +2795,16 @@
     }
     if (weightInput && weightInput.value !== context.weightKg) weightInput.value = context.weightKg;
     const readiness = state.document.getElementById('rxContextReadiness');
+    const neutral = !context.administrationCategory && !context.route;
     if (readiness) {
-      readiness.textContent = validation.valid ? 'Gati' : 'Plotëso të dhënat';
-      readiness.className = `rx-context-readiness ${validation.valid ? 'is-ready' : 'is-incomplete'}`;
+      readiness.textContent = neutral ? 'Auto nga bari' : validation.valid ? 'Gati' : 'Kërkon zgjedhje';
+      readiness.className = `rx-context-readiness ${neutral ? 'is-neutral' : validation.valid ? 'is-ready' : 'is-incomplete'}`;
+    }
+    const source = state.document.getElementById('rxContextSource');
+    if (source) {
+      source.textContent = state.productConstraint?.label
+        ? `Nga produkti: ${state.productConstraint.label}`
+        : 'Zgjidhet automatikisht pasi zgjedh barin';
     }
     const summary = state.document.querySelector('[data-context-summary]');
     if (summary) summary.textContent = contextSummary(context);
@@ -2808,6 +2860,36 @@
     if (announce) setStatus('Skemat u përshtatën me kategorinë, rrugën dhe popullatën.', 'success');
     return state.payloadView;
   }
+  async function loadForDrug(drugId, { announce = false } = {}) {
+    const id = text(drugId);
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) {
+      throw new Error('ID e barit është e pavlefshme.');
+    }
+    const context = getContext();
+    const validation = validateContext(context);
+    if (!validation.valid) throw new Error(validationMessage(validation) || 'Konteksti klinik nuk është i plotë.');
+    const key = `${id}|${contextKey(context)}`;
+    if (state.drugPayloadCache.has(key)) return state.drugPayloadCache.get(key);
+    if (state.drugPayloadPromises.has(key)) return state.drugPayloadPromises.get(key);
+    const fetcher = state.nativeFetch || state.root?.fetch?.bind(state.root);
+    if (!fetcher) throw new Error('Lidhja me dozologjinë nuk është gati.');
+    const request = fetcher(contextEndpoint(context, id), {
+      credentials:'same-origin', cache:'no-store', headers:{ Accept:'application/json' },
+    }).then(async response => {
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || `Dozologjia ${response.status}`);
+      const view = decorateDosagePayload(payload);
+      state.drugPayloadCache.set(key, view);
+      if (state.drugPayloadCache.size > 80) state.drugPayloadCache.delete(state.drugPayloadCache.keys().next().value);
+      return view;
+    }).finally(() => state.drugPayloadPromises.delete(key));
+    state.drugPayloadPromises.set(key, request);
+    if (announce) setStatus('Po ngarkohet dozologjia e verifikuar për këtë produkt…');
+    const result = await request;
+    if (announce) setStatus('Dozologjia e produktit u filtrua sipas rrugës dhe grupmoshës.', 'success');
+    return result;
+  }
+
   function schedulePayloadRefresh() {
     clearTimeout(state.refreshTimer);
     state.refreshTimer = setTimeout(() => { if (validateContext(getContext()).valid) refreshPayloadForContext().catch(() => {}); }, 280);
@@ -2823,7 +2905,9 @@
   }
   const setContext = (value, options = {}) => save(value, options);
   function resetContext({ refresh = true } = {}) {
-    state.context = baseContext(); persist(); render();
+    state.context = baseContext();
+    state.productConstraint = null;
+    persist(); render();
     if (refresh) refreshPayloadForContext().catch(() => {});
     return getContext();
   }
@@ -2851,6 +2935,29 @@
       route:[drug.route, drug.prescriptionLine, drug.prescriptionNotation].filter(Boolean).join(' '),
     });
   }
+  function setProductConstraint(drug = null) {
+    if (!drug) {
+      state.productConstraint = null;
+      render();
+      return null;
+    }
+    const administration = drugAdministration(drug);
+    if (!administration.category) {
+      state.productConstraint = null;
+      render();
+      return null;
+    }
+    const label = [text(drug.tradeName || drug.substance || drug.activeSubstance), text(drug.strength)].filter(Boolean).join(' ');
+    const key = [text(drug.id || drug.drugId || drug.pdid), administration.category, ...(administration.routes || [])].join('|');
+    state.productConstraint = {
+      key, label:label || 'Produkti i zgjedhur', category:administration.category,
+      routes:Array.isArray(administration.routes) ? [...administration.routes] : [],
+      confidence:administration.confidence || '',
+    };
+    render();
+    return { ...state.productConstraint };
+  }
+
   function explicitParenteralRoutes(drug = {}) {
     const administration = drugAdministration(drug);
     return administration.category === 'PARENTERAL' ? administration.routes : [];
@@ -2973,6 +3080,7 @@
   function bind() {
     state.document.querySelectorAll('[data-context-category]').forEach(button => {
       button.addEventListener('click', () => {
+        if (button.disabled) return;
         const category = button.dataset.contextCategory;
         const defaultRoute = CATEGORIES[category]?.defaultRoute || '';
         changeContext({ ...getContext(), administrationCategory:category, route:defaultRoute }, 'rxRouteSegments', { allowWithOrders:true });
@@ -2998,44 +3106,13 @@
       let drug = null;
       try { drug = JSON.parse(decodeURIComponent(button.dataset.drugResult || '')); } catch {}
       const inferred = drugAdministration(drug || {});
-      let active = getContext();
-
-      if (inferred.category) {
-        const nextRoute = inferred.routes.length === 1
-          ? inferred.routes[0]
-          : inferred.routes.includes(active.route) && active.administrationCategory === inferred.category ? active.route : '';
-        if (active.administrationCategory !== inferred.category || active.route !== nextRoute) {
-          save({ ...active, administrationCategory:inferred.category, route:nextRoute }, { refresh:false });
-          active = getContext();
-          setStatus(inferred.routes.length === 1
-            ? `${Administration.categoryLabel(inferred.category)} · ${nextRoute} u identifikua nga prezantimi i barit.`
-            : `${Administration.categoryLabel(inferred.category)} u identifikua; zgjidh rrugën ${inferred.routes.join(', ')}.`,
-          inferred.routes.length === 1 ? 'success' : '');
-        }
-      }
-
-      const validation = validateContext(active);
-      const routePending = !validation.valid
-        && validation.invalid.length === 0
-        && validation.missing.length > 0
-        && validation.missing.every(item => item === 'route');
-      if (!validation.valid && !routePending) {
-        event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
-        setStatus(validationMessage(validation), 'error'); focusFirstProblem(validation); return;
-      }
-      const compatibility = compatibleDrug(drug, active);
-      const multiRoutePending = !compatibility.valid
-        && inferred.routes.length > 1
-        && !active.route;
-      if (!compatibility.valid && !routePending && !multiRoutePending) {
-        event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
-        setStatus(compatibility.message, 'error'); return;
-      }
-      if (routePending || multiRoutePending) return;
-      const currentKey = contextKey();
-      if (state.payloadView && (state.payloadContextKey !== currentKey || state.refreshPromise)) {
-        event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
-        refreshPayloadForContext({ announce:true }).then(() => button.isConnected && button.click()).catch(() => {});
+      if (!inferred.category) return;
+      const active = getContext();
+      const nextRoute = inferred.routes.length === 1
+        ? inferred.routes[0]
+        : (active.administrationCategory === inferred.category && inferred.routes.includes(active.route) ? active.route : '');
+      if (active.administrationCategory !== inferred.category || active.route !== nextRoute) {
+        save({ ...active, administrationCategory:inferred.category, route:nextRoute }, { refresh:false });
       }
     }, true);
 
@@ -3065,7 +3142,8 @@
     normalizeContext, patientFromContext, validateContext, population, regimenAdministration, isParenteral,
     filterRegimens, decorateDosagePayload, decideForContext, transferForContext, drugAdministration,
     compatibleDrug, explicitParenteralRoutes, inferContextFromProtocol, contextSummary, contextKey,
-    getContext, setContext, resetContext, refreshForContext:refreshPayloadForContext, init,
+    getContext, setContext, resetContext, refreshForContext:refreshPayloadForContext,
+    contextEndpoint, loadForDrug, setProductConstraint, clearProductConstraint:() => setProductConstraint(null), init,
   };
 });
 
@@ -4893,8 +4971,6 @@
     clinicalReviewConfirmed: false,
     dosageEdited: false,
     composerOrigin: 'structured',
-    dosagePayload: null,
-    dosagePromise: null,
     pendingDosageChoice: null,
     chooserReturnFocus: null,
     activeChapter: 'all',
@@ -5078,6 +5154,11 @@
     const route = text(item?.route || base.route || inferred.route).toUpperCase();
     return {
       ...base,
+      id:text(item?.id || item?.drugId),
+      drugId:text(item?.drugId || item?.id),
+      registryNumber:text(item?.registryNumber || item?.registry_number),
+      approvedPopulation:text(item?.approvedPopulation || item?.approved_population),
+      productStatus:text(item?.productStatus || item?.product_status),
       packaging:text(item?.packaging || item?.packageSize),
       packagingSummary:text(item?.packagingSummary),
       prescriptionLine:text(item?.prescriptionLine),
@@ -5103,7 +5184,7 @@
     const source = routes.length ? routes : Object.keys(Administration?.ROUTE_LABELS || {
       PO:'orale', SL:'sublinguale', BUCCAL:'bukale', PR:'rektale', IV:'intravenoze', IM:'intramuskulare',
       SC:'subkutane', ID:'intradermale', TOP:'dermatologjike', OPH:'oftalmike', OTIC:'otike',
-      NASAL:'nazale', TD:'transdermale', INH:'inhalatore', MDI:'MDI', DPI:'DPI', NEB:'nebulizator',
+      NASAL:'nazale', VAG:'vaginale', TD:'transdermale', INH:'inhalatore', MDI:'MDI', DPI:'DPI', NEB:'nebulizator',
     });
     return source.map(route => ({ route, label:Administration?.routeLabel?.(route) || route }));
   }
@@ -5120,7 +5201,7 @@
     const id = text(source.id);
     if (!id) return source;
     if (state.registryDetailCache.has(id)) {
-      return { ...state.registryDetailCache.get(id), ...source };
+      return { ...source, ...state.registryDetailCache.get(id) };
     }
     try {
       const response = await fetch(`/api/drug-search?view=registry-detail&id=${encodeURIComponent(id)}`, {
@@ -5161,11 +5242,23 @@
     }
   }
 
-  function populationModeForDrug(drug, currentPediatric) {
+  function approvedPopulationKind(drug) {
     const value = fold(drug?.approvedPopulation);
-    if (/adult\s*only|vetem\s+(?:per\s+)?te\s+rritur|vetëm\s+(?:për\s+)?të\s+rritur/.test(value)) return false;
-    if (/p(?:a?e)?diatric\s*only|vetem\s+(?:per\s+)?femij|vetëm\s+(?:për\s+)?fëmij/.test(value)) return true;
-    return Boolean(currentPediatric);
+    if (!value) return 'unknown';
+    if (/adult\s*only|vetem\s+(?:per\s+)?te\s+rritur|vetëm\s+(?:për\s+)?të\s+rritur/.test(value)) return 'adult-only';
+    if (/pediatr(?:ic|ik)?\s*only|vetem\s+(?:per\s+)?femij|vetëm\s+(?:për\s+)?fëmij/.test(value)) return 'pediatric-only';
+    return 'mixed-or-unspecified';
+  }
+
+  function populationCompatibilityForDrug(drug, context) {
+    const kind = approvedPopulationKind(drug);
+    if (kind === 'adult-only' && context?.pediatric) {
+      return { valid:false, kind, message:'Ky preparat është i aprovuar vetëm për të rritur. Zgjidh një preparat pediatrik ose hap recetë për të rritur.' };
+    }
+    if (kind === 'pediatric-only' && !context?.pediatric) {
+      return { valid:false, kind, message:'Ky preparat është vetëm pediatrik. Aktivizo “Pediatrike” dhe plotëso moshën e peshën para se ta shtosh.' };
+    }
+    return { valid:true, kind, message:'' };
   }
 
   function syncClinicalContextForDrug(drug) {
@@ -5175,33 +5268,20 @@
     const administration = contextApi?.drugAdministration?.(drug)
       || Administration?.inferAdministration?.(drug)
       || { category:'', routes:[], route:'' };
+    contextApi?.setProductConstraint?.(drug);
     if (!current || !administration.category) {
       return { administration, context:current || null, routeResolved:Boolean(administration.route) };
     }
-
     const allowed = Array.isArray(administration.routes) ? administration.routes : [];
     const currentRouteAllowed = current.administrationCategory === administration.category
-      && current.route
-      && (!allowed.length || allowed.includes(current.route));
+      && current.route && (!allowed.length || allowed.includes(current.route));
     const route = allowed.length === 1
       ? allowed[0]
       : (currentRouteAllowed ? current.route : text(administration.route).toUpperCase());
-    const next = {
-      ...current,
-      administrationCategory:administration.category,
-      route,
-      pediatric:populationModeForDrug(drug, current.pediatric),
-    };
-    const changed = next.administrationCategory !== current.administrationCategory
-      || next.route !== current.route
-      || next.pediatric !== current.pediatric;
+    const next = { ...current, administrationCategory:administration.category, route };
+    const changed = next.administrationCategory !== current.administrationCategory || next.route !== current.route;
     if (changed) contextApi?.setContext?.(next, { refresh:false });
-    return {
-      administration,
-      context:contextApi?.getContext?.() || next,
-      routeResolved:Boolean(route),
-      changed,
-    };
+    return { administration, context:contextApi?.getContext?.() || next, routeResolved:Boolean(route), changed };
   }
 
   function structuredSignature(drug) {
@@ -5297,35 +5377,34 @@
     }
   }
 
-  async function dosagePayload() {
-    if (state.dosagePayload) return state.dosagePayload;
-    if (!state.dosagePromise) {
-      state.dosagePromise = fetch('/api/dosage', { credentials:'same-origin', headers:{ Accept:'application/json' } })
-        .then(async response => {
-          const payload = await response.json();
-          if (!response.ok) throw new Error(payload.error || `Dozologjia ${response.status}`);
-          state.dosagePayload = payload;
-          return payload;
-        })
-        .catch(() => ({ adult:[], pediatric:[] }))
-        .finally(() => { state.dosagePromise = null; });
-    }
-    return state.dosagePromise;
-  }
-
   async function addDrugWithDosage(raw, options = {}) {
     const hydrated = options.skipRegistryHydration ? raw : await hydrateRegistryDrug(raw);
     const drug = normalizeDrug(hydrated);
     const contextApi = window.MedIndexPrescriptionContext;
     const synced = syncClinicalContextForDrug(drug);
-
-    if (synced.administration?.category && !synced.routeResolved) {
+    const activeContext = contextApi?.getContext?.() || synced.context || {};
+    const populationCheck = populationCompatibilityForDrug(drug, activeContext);
+    if (!populationCheck.valid) {
+      state.pendingRouteDrug = null;
+      setStatus(populationCheck.message, 'error');
+      return { status:'population-mismatch' };
+    }
+    if (!synced.administration?.category) {
+      contextApi?.clearProductConstraint?.();
+      state.pendingRouteDrug = { raw:hydrated, options:{ ...options, skipRegistryHydration:true }, manualAdministration:true };
+      setStatus('Rruga nuk u identifikua në mënyrë të sigurt nga kartela e produktit. Zgjidh kategorinë dhe rrugën; pastaj DRx vazhdon me dozologjinë.', 'error');
+      setTimeout(() => {
+        document.getElementById('rxClinicalContext')?.scrollIntoView?.({ block:'center', behavior:'smooth' });
+        document.querySelector('[data-context-category]')?.focus?.({ preventScroll:true });
+      }, 0);
+      return { status:'needs-administration' };
+    }
+    if (!synced.routeResolved) {
       state.pendingRouteDrug = { raw:hydrated, options:{ ...options, skipRegistryHydration:true } };
       const routes = Array.isArray(synced.administration.routes) ? synced.administration.routes : [];
       setStatus(routes.length
-        ? `Ky prezantim lejon ${routes.join(' / ')}. Zgjidh rrugën; bari vazhdon automatikisht pas zgjedhjes.`
-        : 'Rruga e këtij prezantimi nuk është unike. Zgjidh rrugën e saktë para vazhdimit.',
-      'error');
+        ? `Ky preparat lejon ${routes.join(' / ')}. Zgjidh rrugën e saktë; vazhdimi bëhet automatikisht.`
+        : `${window.MedIndexAdministrationRoutes?.categoryLabel?.(synced.administration.category) || synced.administration.category} u identifikua. Zgjidh rrugën e saktë për këtë preparat.`, 'error');
       setTimeout(() => {
         const holder = document.getElementById('rxRouteSegments');
         holder?.scrollIntoView?.({ block:'center', behavior:'smooth' });
@@ -5333,35 +5412,42 @@
       }, 0);
       return { status:'needs-route' };
     }
-
     state.pendingRouteDrug = null;
-    if (synced.routeResolved && synced.administration?.category) {
-      const route = synced.context?.route || synced.administration.route;
-      setStatus(`Rruga u zgjodh automatikisht: ${window.MedIndexAdministrationRoutes?.categoryLabel?.(synced.administration.category) || synced.administration.category} · ${route}.`, 'success');
-    }
+    const route = synced.context?.route || contextApi?.getContext?.()?.route || synced.administration.route;
+    setStatus(`Rruga u zgjodh automatikisht nga produkti: ${window.MedIndexAdministrationRoutes?.categoryLabel?.(synced.administration.category) || synced.administration.category} · ${route}.`, 'success');
     if (drug.regimenId || !Dosage) return addSelectedDrug(drug, options);
-    if (contextApi?.refreshForContext) {
-      try { await contextApi.refreshForContext({ announce:false }); } catch {}
+    const drugId = text(drug.id || drug.drugId);
+    if (!drugId || !contextApi?.loadForDrug) {
+      addSelectedDrug({ ...drug, dosageStatus:'manual' }, options);
+      setStatus('Produkti u shtua me rrugën e saktë, por nuk ka identifikues për dozologji të targetuar. Doza mbetet manuale.', 'error');
+      return { status:'manual' };
     }
-    const payload = await dosagePayload();
-    const context = contextApi?.getContext?.() || null;
+    let payload;
+    try {
+      payload = await contextApi.loadForDrug(drugId);
+    } catch (error) {
+      addSelectedDrug({ ...drug, dosageStatus:'manual' }, options);
+      setStatus(`${error?.message || 'Dozologjia nuk u ngarkua.'} Identiteti dhe rruga u ruajtën; doza mbetet manuale.`, 'error');
+      return { status:'manual-unavailable' };
+    }
+    const context = contextApi.getContext?.() || null;
     const decision = contextApi?.decideForContext
       ? contextApi.decideForContext(Dosage, drug, payload.adult || [], context)
-      : Dosage.decideMatch(drug, payload.adult || [], { population:'adult' });
-
+      : Dosage.decideMatch(drug, payload.adult || [], { population:context?.pediatric ? 'pediatric' : 'adult' });
     if (decision.status === 'auto') {
       openDosageChooser(drug, [decision.regimen], options);
-      setStatus('U gjet 1 skemë e verifikuar. Ajo nuk u aplikua; kontrolloje dhe konfirmoje.');
-      return;
+      setStatus('U gjet 1 skemë e verifikuar për këtë produkt dhe rrugë. Kontrolloje dhe konfirmoje.');
+      return { status:'confirm-regimen' };
     }
     if (decision.status === 'choose-indication') {
       openDosageChooser(drug, decision.matches, options);
-      return;
+      return { status:'choose-indication' };
     }
     addSelectedDrug({ ...drug, dosageStatus:'manual' }, options);
     if (options.insert !== false) {
-      setStatus('U shtua vetëm identiteti i barit. Doza dhe udhëzimi mbeten për plotësim nga preskribuesi.');
+      setStatus('Nuk u gjet skemë e verifikuar për kombinimin produkt + popullatë + rrugë. Identiteti dhe rruga u plotësuan; doza mbetet manuale.');
     }
+    return { status:'manual' };
   }
 
   function openDosageChooser(drug, matches, options) {
@@ -6259,8 +6345,11 @@
         || {};
       if (administration.category && context?.administrationCategory !== administration.category) return;
       if (Array.isArray(administration.routes) && administration.routes.length && !administration.routes.includes(context?.route)) return;
+      const raw = !administration.category && pending.manualAdministration
+        ? { ...pending.raw, administrationCategory:context.administrationCategory, allowedRoutes:[context.route], route:context.route }
+        : pending.raw;
       state.pendingRouteDrug = null;
-      void addDrugWithDosage(pending.raw, { ...pending.options, skipRegistryHydration:true })
+      void addDrugWithDosage(raw, { ...pending.options, skipRegistryHydration:true })
         .catch(() => setStatus('Bari nuk u shtua. Provo përsëri.', 'error'));
     });
 
