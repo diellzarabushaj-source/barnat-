@@ -1,6 +1,13 @@
 (() => {
   'use strict';
 
+  const RUNTIME_VERSION = 'sidebar-taxonomy-v5';
+  if (window.__DRX_SIDEBAR_TAXONOMY_RUNTIME__ === RUNTIME_VERSION) {
+    window.DRxSidebarCollapse?.sync?.();
+    return;
+  }
+  window.__DRX_SIDEBAR_TAXONOMY_RUNTIME__ = RUNTIME_VERSION;
+
   const ICD_STORAGE_KEY = 'drx_icd_sidebar_open_v1';
   const SCROLL_KEY = 'drx_sidebar_scroll_v2';
   const ICD_CACHE_KEY = 'drx_icd_sidebar_nav_v1';
@@ -658,6 +665,7 @@
 
     if (icdDetails) void loadIcd(icdDetails);
     window.DRxSidebarTaxonomy = Object.freeze({
+      version:RUNTIME_VERSION,
       syncAtc:() => syncAtc(nav),
       enhanceAtc:() => enhanceAtc(nav),
       syncPersonalCounts:() => syncPersonalCounts(nav, { force:true }),
