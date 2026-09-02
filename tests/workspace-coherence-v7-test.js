@@ -7,8 +7,8 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
-const SHELL_VERSION = 'drx-dashboard-stripe-v6';
-const SIDEBAR_RUNTIME_VERSION = 'sidebar-taxonomy-v4';
+const SHELL_VERSION = 'drx-dashboard-stripe-v8';
+const SIDEBAR_RUNTIME_VERSION = 'sidebar-taxonomy-v5';
 const BRAND_RUNTIME_VERSION = 'drx-brand-v6';
 
 const workspaces = [
@@ -60,16 +60,18 @@ for (const [htmlFile, jsFile] of workspaces) {
 }
 
 const shared = read('sidebar-taxonomy-v3.js');
-assert.match(shared, /CANONICAL_WORKER_URL = '\/sw\.js\?v=drx-workspace-v7'/);
+assert.match(shared, /CANONICAL_WORKER_URL = '\/sw\.js\?v=drx-workspace-v8'/);
 assert.match(shared, /navigator\.serviceWorker\.register\(CANONICAL_WORKER_URL/);
 assert.match(shared, /updateViaCache:'none'/);
-assert.match(shared, /dataset\.drxSidebarStructure = 'taxonomy-v4'/);
+assert.match(shared, /dataset\.drxSidebarStructure = 'taxonomy-v5'/);
 
 const stripe = read('drx-dashboard-stripe.css');
 assert.match(stripe, /DRx canonical sidebar shell v5/);
 assert.match(stripe, /DRx clinical workspace system v6 — Urgjencat reference/);
 assert.match(stripe, /--drx-type-page-title:32px/);
 assert.match(stripe, /--drx-type-subtitle:14px/);
+assert.match(stripe, /DRx canonical collapsible sidebar v8/);
+assert.match(stripe, /--drx-shell-sidebar-collapsed-width:76px/);
 
 const canonicalWorkspaceAssets = [
   '/registry-v2.css','/registry-v2-dose-calculator.css','/classification-v2.css','/icd-v2.css',
@@ -83,9 +85,9 @@ const canonicalWorkspaceAssets = [
 ];
 
 const worker = read('sw.js');
-assert.match(worker, /workspace-cache-cutover-v7/);
-assert.match(worker, /VERSION = 'workspace-coherence-v7'/);
-assert.match(worker, /CACHE_EPOCH = '20260901-shell-v6-sidebar-v4'/);
+assert.match(worker, /workspace-cache-cutover-v8/);
+assert.match(worker, /VERSION = 'workspace-coherence-v8'/);
+assert.match(worker, /CACHE_EPOCH = '20260902-shell-v8-sidebar-v5-recetat-v16'/);
 for (const [htmlFile] of workspaces) {
   assert.ok(worker.includes(`'/${htmlFile}'`), `sw.js: ${htmlFile} is missing from the clinical shell`);
 }
@@ -102,6 +104,6 @@ const design = read('.superdesign/design-system.md');
 assert.match(design, /Urgjencat is the canonical content-density reference/);
 
 const pkg = JSON.parse(read('package.json'));
-assert.match(pkg.scripts.test, /workspace-coherence-v7-test\.js/);
+assert.match(pkg.scripts.test, /workspace-coherence-v8-test\.js/);
 
-console.log('Workspace coherence v7: 10/10 pages share one shell, one sidebar runtime, one typography contract and one canonical worker cutover.');
+console.log('Workspace coherence v8: 10/10 pages share shell v8, sidebar v5, one typography contract and a fresh worker cache epoch.');
