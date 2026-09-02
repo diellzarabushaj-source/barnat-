@@ -41,7 +41,7 @@ assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8');
 assert.equal(scripts[0], '/phase9-personal-entities-client.js?v=phase9b');
 
 const dosageCssVersion = styles[0]?.match(/^\/dozologjia-v2\.css\?v=(\d+)$/)?.[1] || '';
-assert.equal(scripts[1], '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5');
+assert.equal(scripts[1], '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v6');
 const dosageJsVersion = scripts[2]?.match(/^\/dozologjia-v2\.js\?v=(\d+)$/)?.[1] || '';
 assert.ok(dosageCssVersion, 'Dozologjia stylesheet must use a numeric cache version');
 assert.ok(dosageJsVersion, 'Dozologjia runtime must use a numeric cache version');
@@ -68,7 +68,7 @@ assert.doesNotMatch(css, /linear-gradient|radial-gradient/, 'Clinical workbench 
 
 assert.match(js, /Dozologjia V3 — one runtime/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/);
+assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v6/);
 assert.match(js, /async function ensureAuth\(\)/);
 assert.match(js, /\/api\/dosage\/search\?q=/);
 assert.match(js, /\/api\/dosage\/product\//);
