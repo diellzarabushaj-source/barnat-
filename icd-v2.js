@@ -60,12 +60,15 @@
   }
 
   function loadSharedSidebarTaxonomy() {
-    if (document.querySelector('script[data-drx-sidebar-taxonomy]')) return;
+    if (window.DRxSidebarTaxonomy || window.DRxSidebarCollapse) return Promise.resolve();
+    const existing = document.querySelector('script[src^="/sidebar-taxonomy-v3.js"], script[data-drx-sidebar-taxonomy]');
+    if (existing) return Promise.resolve();
     const script = document.createElement('script');
-    script.src = '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v4';
+    script.src = '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5';
     script.defer = true;
     script.dataset.drxSidebarTaxonomy = '1';
     document.head.appendChild(script);
+    return Promise.resolve();
   }
 
   function bindElements() {
