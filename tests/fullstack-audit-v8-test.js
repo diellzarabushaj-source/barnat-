@@ -19,8 +19,8 @@ for (const page of pages) {
     .map(match => match[1]);
   assert.equal(
     styles.at(-1),
-    '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6',
-    `${page}: canonical shell v6 must remain the final stylesheet`
+    '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v7',
+    `${page}: canonical shell v7 must remain the final stylesheet`
   );
 }
 
