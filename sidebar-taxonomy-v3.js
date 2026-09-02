@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const RUNTIME_VERSION = 'sidebar-taxonomy-v5';
+  const RUNTIME_VERSION = 'sidebar-taxonomy-v6';
   if (window.__DRX_SIDEBAR_TAXONOMY_RUNTIME__ === RUNTIME_VERSION) {
     window.DRxSidebarCollapse?.sync?.();
     return;
