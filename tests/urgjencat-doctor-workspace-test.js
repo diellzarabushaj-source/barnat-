@@ -24,7 +24,7 @@ assert.match(html, /id="emergencyResultStatus"/);
 assert.match(html, /id="previousLessonButton"/);
 assert.match(html, /id="nextLessonButton"/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/);
-assert.match(html, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/);
+assert.match(html, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v6/);
 assert.doesNotMatch(html, /tailadmin-|auth-client|emergency-curriculum|medical-hub\.css/);
 
 assert.match(js, /_type == "emergencySection"/);
@@ -60,7 +60,7 @@ assert.match(js, /function reviewMeta\(status\)/);
 assert.match(js, /Material burimor/);
 assert.match(js, /ensureAuth\(\)/);
 assert.match(js, /ensureSanity\(\)/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/);
+assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v6/);
 assert.match(js, /medindex-brand-runtime\.js/);
 assert.match(js, /MedIndexProfile/);
 assert.match(js, /medindex:auth-ready/);
