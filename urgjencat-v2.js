@@ -281,7 +281,7 @@
     if (window.DRxSidebarTaxonomy || window.DRxSidebarCollapse) return Promise.resolve();
     const existing = document.querySelector('script[src^="/sidebar-taxonomy-v3.js"], script[data-drx-sidebar-taxonomy]');
     if (existing) return Promise.resolve();
-    return loadRuntime('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5', 'data-drx-sidebar-taxonomy');
+    return loadRuntime('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v6', 'data-drx-sidebar-taxonomy');
   }
 
   async function ensureSanity() {
