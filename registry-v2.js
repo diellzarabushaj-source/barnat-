@@ -1432,7 +1432,7 @@
     const adult = mergedDose(normalizeDetailDose(card.adult), sourceDose(detail, 'adult'));
     const pediatric = mergedDose(normalizeDetailDose(card.pediatric), sourceDose(detail, 'pediatric'));
     const info = [
-      ['Nr. regjistri', detail.registryNumber], ['PDID', detail.pdid], ['ATC', detail.atc], ['Klasa', detail.drugClass],
+      ['Nr. regjistri', detail.registryNumber], ['PDID', detail.pdid], ['ATC', detail.atc],
       ['Popullata', populationMeta(detail.approvedPopulation).label], ['Forma', detail.form], ['Paketimi', detail.packaging], ['Prodhuesi', detail.manufacturer], ['MAH', detail.marketingAuthorizationHolder],
       ['Certifikata', detail.maCertificate], ['Vlefshmëria', detail.validity], ['Çmimi me pakicë', euros(detail.retailPrice)],
     ].filter(([,value]) => clean(value) && value !== '—');
@@ -1448,94 +1448,24 @@
         .filter(item => clean(item.dose))
         .filter((item,index,list) => list.findIndex(other => clean(other.dose) === clean(item.dose) && clean(other.route) === clean(item.route)) === index)
         .filter(item => clean(item.dose) !== clean(dose.dose) || clean(item.route) !== clean(dose.route));
-      const rawAvailable = sourceFields.some(item => /doz|regimen|rrug|interval|mosh|pesh|koncentrim|max/i.test(clean(item.label)));
       return `
       <article class="dose-card ${dose.dose ? 'has-dose' : 'is-empty'}">
         <div class="dose-card-head"><strong>${escapeHtml(label)}</strong>${dose.route ? `<span class="route-chip">${escapeHtml(dose.route)}</span>` : ''}</div>
-        <p>${escapeHtml(dose.dose || (rawAvailable ? 'Të dhënat e dozës janë në seksionin “Të dhënat nga sheet”.' : 'Nuk ka dozë të regjistruar për këtë popullatë.'))}</p>
+        <p>${escapeHtml(dose.dose || 'Doza e strukturuar nuk është e disponueshme për këtë popullatë.')}</p>
         ${dose.maximum ? `<small>Maksimumi: ${escapeHtml(dose.maximum)}</small>` : ''}
         ${extra.length ? `<div class="dose-regimen-list">${extra.map(item => `<div><span>${item.route ? escapeHtml(item.route) : 'Skemë tjetër'}</span><p>${escapeHtml(item.dose)}</p>${item.maximum ? `<small>Maksimumi: ${escapeHtml(item.maximum)}</small>` : ''}</div>`).join('')}</div>` : ''}
       </article>`;
     };
 
-    const canonicalDataFields = [
-      ['ID databaze', detail.id],
-      ['Nr. regjistri', detail.registryNumber],
-      ['PDID', detail.pdid],
-      ['Nr. protokolli', detail.protocolNo],
-      ['Emri tregtar', detail.tradeName],
-      ['Substanca aktive', detail.activeSubstance],
-      ['Fortësia', detail.strength],
-      ['Forma farmaceutike', detail.form],
-      ['Paketimi', detail.packaging],
-      ['ATC', detail.atc],
-      ['Klasa', detail.drugClass],
-      ['Përdorimi', detail.use],
-      ['Popullata e aprovuar', detail.approvedPopulation],
-      ['Statusi i produktit', detail.productStatus],
-      ['Statusi editorial / cilësia', detail.qualityStatus],
-      ['MAH', detail.marketingAuthorizationHolder],
-      ['Prodhuesi', detail.manufacturer],
-      ['Certifikata', detail.maCertificate],
-      ['Vlefshmëria', detail.validity],
-      ['Çmimi me shumicë', euros(detail.wholesalePrice)],
-      ['Çmimi me shumicë + marzh', euros(detail.wholesaleWithMargin)],
-      ['TVSH', detail.vat],
-      ['Çmimi me pakicë', euros(detail.retailPrice)],
-      ['Si të shënohet në recetë', detail.prescriptionNotation],
-      ['Audit data', detail.auditDate],
-      ['Audit shënim', detail.auditNote],
-      ['Doza pediatrike — përmbledhje', detail.pediatricDoseSummary],
-      ['Indikacioni pediatrik', detail.pediatricIndication],
-      ['Statusi i përdorimit pediatrik', detail.pediatricUseStatus],
-      ['Mosha minimale pediatrike', [detail.pediatricMinAgeValue, detail.pediatricMinAgeUnit].filter(v => clean(v)).join(' ')],
-      ['Mosha maksimale pediatrike', [detail.pediatricMaxAgeValue, detail.pediatricMaxAgeUnit].filter(v => clean(v)).join(' ')],
-      ['Pesha minimale pediatrike (kg)', detail.pediatricMinWeightKg],
-      ['Pesha maksimale pediatrike (kg)', detail.pediatricMaxWeightKg],
-      ['Doza pediatrike — min', [detail.pediatricDoseMin, detail.pediatricDoseUnit].filter(v => clean(v)).join(' ')],
-      ['Doza pediatrike — max', [detail.pediatricDoseMax, detail.pediatricDoseUnit].filter(v => clean(v)).join(' ')],
-      ['Baza e dozës pediatrike', detail.pediatricDoseBasis],
-      ['Nr. dozave / ditë', detail.pediatricDosesPerDay],
-      ['Intervali pediatrik (orë)', detail.pediatricIntervalHours],
-      ['Maks. për dozë pediatrike', [detail.pediatricMaxSingleValue, detail.pediatricMaxSingleUnit].filter(v => clean(v)).join(' ')],
-      ['Maks. në 24h pediatrik', [detail.pediatricMaxDailyValue, detail.pediatricMaxDailyUnit].filter(v => clean(v)).join(' ')],
-      ['Rruga pediatrike', detail.pediatricRoute],
-      ['Kufizim pediatrik', detail.pediatricRestriction],
-      ['Koncentrimi pediatrik', [detail.pediatricConcentrationValue, detail.pediatricConcentrationUnit].filter(v => clean(v)).join(' ')],
-      ['Koncentrimi për', [detail.pediatricConcentrationPerValue, detail.pediatricConcentrationPerUnit].filter(v => clean(v)).join(' ')],
-      ['Burimi pediatrik', detail.pediatricSourceUrl],
-      ['Seksioni i burimit pediatrik', detail.pediatricSourceSection],
-      ['Statusi i verifikimit pediatrik', detail.pediatricVerificationStatus],
-      ['Verifikuar pediatrikisht më', detail.pediatricVerifiedAt],
-      ['Regimen ID kryesor pediatrik', detail.pediatricPrimaryRegimenId],
-      ['Maks. doza / ditë pediatrike', detail.pediatricMaxDosesPerDay],
-      ['Min. intervali pediatrik (orë)', detail.pediatricMinIntervalHours],
-      ['Përditësuar', detail.updatedAt],
-    ].filter(([,value]) => clean(value) && value !== '—').map(([label,value]) => ({ label, value:clean(value) }));
-
-    const seenDatabaseLabels = new Set();
-    const databaseRows = [...canonicalDataFields, ...sourceFields].filter(item => {
-      const key = clean(item.label).toLocaleLowerCase('sq');
-      if (!key || seenDatabaseLabels.has(key)) return false;
-      seenDatabaseLabels.add(key);
-      return true;
-    });
-    const databaseFields = databaseRows.length
-      ? `<section class="detail-section detail-source-data">
-          <div class="detail-section-head"><h4>Të dhënat nga sheet / databaza</h4><span>${databaseRows.length} fusha</span></div>
-          <dl class="detail-grid detail-grid-all">${databaseRows.map(item => `<dt>${escapeHtml(item.label)}</dt><dd>${escapeHtml(item.value)}</dd>`).join('')}</dl>
-        </section>`
-      : '';
-
     return `
       <section class="detail-hero"><h3>${escapeHtml(detail.tradeName || 'Pa emër')}</h3><p>${escapeHtml(detail.activeSubstance || '—')} · ${escapeHtml(detail.strength || '—')}</p><div class="detail-badges">${detail.atc ? `<span class="atc-chip">${escapeHtml(detail.atc)}</span>` : ''}${statusBadge(detail.productStatus)}</div></section>
       <section class="detail-section"><h4>Identiteti</h4><dl class="detail-grid">${info.map(([label,value]) => `<dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd>`).join('')}</dl></section>
-      <section class="detail-section"><div class="detail-section-head"><h4>Dozologjia</h4><span>${Number(card?.meta?.regimenRows || 0)} skema në databazë</span></div>
+      ${detail.drugClass ? `<section class="detail-section"><h4>Klasa / Çka është</h4><p class="clinical-copy">${escapeHtml(detail.drugClass)}</p></section>` : ''}
+      ${detail.use ? `<section class="detail-section"><h4>Për çka përdoret</h4><p class="clinical-copy">${escapeHtml(detail.use)}</p></section>` : ''}
+      <section class="detail-section"><div class="detail-section-head"><h4>Dozologjia</h4><span>${Number(card?.meta?.regimenRows || 0)} skema</span></div>
         ${doseCard('Të rritur', adult, card.adultRegimens)}
         ${doseCard('Pediatrike', pediatric, card.pediatricRegimens)}
       </section>
-      ${databaseFields}
-      ${detail.use ? `<section class="detail-section"><h4>Përdorimi</h4><p class="clinical-copy">${escapeHtml(detail.use)}</p></section>` : ''}
       ${clinicalBlocks.map(([title,value]) => `<section class="detail-section"><h4>${escapeHtml(title)}</h4><p class="clinical-copy">${escapeHtml(value)}</p></section>`).join('')}
       ${sources.length ? `<section class="detail-section"><h4>Burimet</h4>${sources.map(url => `<a class="source-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(url)}</a>`).join('')}</section>` : ''}`;
   }
