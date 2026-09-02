@@ -10,9 +10,9 @@
   <title>DRx | Recetat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/recetat-v2.css?v=9">
+  <link rel="stylesheet" href="/recetat-v2.css?v=10">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6">
-  <script src="/recetat-v2.js?v=9" defer></script>
+  <script src="/recetat-v2.js?v=10" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#rxWorkspace">Kalo te krijimi i recetës</a>
@@ -20,8 +20,12 @@
     <aside class="sidebar" id="sidebar" aria-label="Navigimi kryesor">
       <div class="sidebar-head">
         <a class="brand" href="/index.html" aria-label="DRx — Regjistri">
-          <img src="/brand/drx-horizontal-on-dark.svg" alt="DRx" width="112" height="33">
+          <img class="brand-full" src="/brand/drx-horizontal-on-dark.svg" alt="DRx" width="112" height="33">
+          <img class="brand-mark" src="/brand/drx-mark-on-dark.svg" alt="" width="30" height="30" aria-hidden="true">
         </a>
+        <button class="sidebar-collapse" id="sidebarCollapse" type="button" aria-controls="sidebar" aria-expanded="true" aria-pressed="false" aria-label="Minimizo menynë" title="Minimizo menynë">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.5 6-6 6 6 6"/></svg>
+        </button>
         <button class="icon-button sidebar-close" id="sidebarClose" type="button" aria-label="Mbyll menynë">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.4 6.4 17.6 17.6M17.6 6.4 6.4 17.6"/></svg>
         </button>
