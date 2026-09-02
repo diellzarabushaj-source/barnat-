@@ -40,7 +40,7 @@ assert.equal(styles.length, 2, 'Protokollet V2 must load only page CSS + canonic
 assert.ok(styles[0].includes('protokollet-v2.css?v=2'));
 assert.ok(styles[1].includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8'));
 assert.equal(scripts.length, 2, 'Protokollet V2 must load shared sidebar + one bundled runtime');
-assert.ok(scripts[0].includes('sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5'));
+assert.ok(scripts[0].includes('sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v6'));
 assert.ok(scripts[1].includes('protokollet-v2.js?v=2'));
 
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|medical-hub\.css|clinical-reference\.css|protocol-reader\.css|protocol-interactive\.css|protocol-workspace\.css|protokollet\.js/);
@@ -64,7 +64,7 @@ assert.match(css, /prefers-reduced-motion:reduce/);
 
 assert.match(js, /Protokollet V2 — consolidated runtime/);
 assert.match(js, /window\.DRxProtocolShell/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/);
+assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v6/);
 assert.match(js, /medindex-brand-runtime\.js\?v=drx-brand-v6/);
 assert.match(js, /async function ensureAuth\(\)/);
 assert.match(js, /credentials:'same-origin'/);
