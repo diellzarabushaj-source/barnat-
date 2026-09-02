@@ -8,9 +8,13 @@ assert.equal(adult.valid, true);
 assert.equal(adult.population, 'adult');
 assert.equal(adult.category, 'ENTERAL');
 
-const legacyAdult = T.parseContext({ population:'adult', parenteral:'false' });
-assert.equal(legacyAdult.valid, true);
-assert.equal(legacyAdult.route, 'PO');
+const neutralAdult = T.parseContext({ population:'adult', parenteral:'false' });
+assert.equal(neutralAdult.valid, false);
+assert.equal(neutralAdult.category, '');
+assert.equal(neutralAdult.route, '');
+
+const requestId = T.requestDrugId({ query:{ id:'123e4567-e89b-42d3-a456-426614174000' } });
+assert.equal(requestId, '123e4567-e89b-42d3-a456-426614174000');
 
 const missingParenteralRoute = T.parseContext({ population:'adult', category:'PARENTERAL' });
 assert.equal(missingParenteralRoute.valid, false);
