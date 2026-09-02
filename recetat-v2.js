@@ -52,7 +52,7 @@
   }
 
   function loadSharedSidebarTaxonomy() {
-    return loadRuntime('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v4','data-drx-sidebar-taxonomy');
+    return loadRuntime('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5','data-drx-sidebar-taxonomy');
   }
 
   const SIDEBAR_COLLAPSE_KEY = 'drx_sidebar_collapsed_v2';
