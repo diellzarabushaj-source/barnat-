@@ -13,11 +13,15 @@ assert.equal(Administration.inferAdministration({ form:'Eye drops, solution' }).
 assert.equal(Administration.inferAdministration({ form:'Metered dose inhaler' }).route, 'MDI');
 assert.equal(Administration.normalizeRoute('intradermal'), 'ID');
 assert.deepEqual(Administration.routeTokens('IV ose IM'), ['IV', 'IM']);
+assert.equal(Administration.inferAdministration({ form:'Vaginal capsule' }).route, 'VAG');
+assert.deepEqual(Administration.inferAdministration({ form:'Tablet', allowedRoutes:['PR'] }).routes, ['PR']);
+assert.equal(Administration.inferAdministration({ form:'Injection', administrationCategory:'PARENTERAL' }).ambiguous, true);
 
 const defaultContext = Context.normalizeContext({});
-assert.equal(defaultContext.administrationCategory, 'ENTERAL');
-assert.equal(defaultContext.route, 'PO');
-assert.equal(Context.validateContext(defaultContext).valid, true);
+assert.equal(defaultContext.administrationCategory, '');
+assert.equal(defaultContext.route, '');
+assert.equal(Context.validateContext(defaultContext).valid, false);
+assert.deepEqual(Context.validateContext(defaultContext).missing, ['category', 'route']);
 
 const incompleteParenteral = Context.validateContext({ administrationCategory:'PARENTERAL', route:'' });
 assert.equal(incompleteParenteral.valid, false);
