@@ -2417,7 +2417,7 @@ html.drx-unified-sidebar :is(input,select,textarea):focus-visible{
 }
 
 
-/* DRx canonical collapsible sidebar v7
+/* DRx canonical collapsible sidebar v8
    This file loads AFTER page CSS, so the shared shell must own the final
    collapsed geometry. Without this block the canonical 238px rules win. */
 html.drx-unified-sidebar{
@@ -2450,7 +2450,7 @@ html.drx-unified-sidebar .sidebar-collapse:focus-visible{
 }
 html.drx-unified-sidebar .brand-mark{display:none!important}
 
-@media(min-width:1025px){
+@media(min-width:1024px){
   html.drx-unified-sidebar .sidebar,
   html.drx-unified-sidebar .main-shell{
     transition:
@@ -2563,7 +2563,7 @@ html.drx-unified-sidebar .brand-mark{display:none!important}
     margin:0!important;
   }
 }
-@media(max-width:1024px){
+@media(max-width:1023px){
   html.drx-unified-sidebar .sidebar-collapse{display:none!important}
   html.drx-unified-sidebar .brand-mark{display:none!important}
 }
