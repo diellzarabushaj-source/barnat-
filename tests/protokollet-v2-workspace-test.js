@@ -18,7 +18,7 @@ assert.match(html, /class="drx-unified-sidebar"/);
 assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
 assert.match(html, /protokollet-v2\.css\?v=2/);
 assert.match(html, /protokollet-v2\.js\?v=2/);
-assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/);
+assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/);
 assert.match(html, /id="protocolDirectory"/);
 assert.match(html, /id="protocolReader"/);
 assert.match(html, /id="protocolSearch"/);
@@ -38,9 +38,10 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
 
 assert.equal(styles.length, 2, 'Protokollet V2 must load only page CSS + canonical Stripe shell');
 assert.ok(styles[0].includes('protokollet-v2.css?v=2'));
-assert.ok(styles[1].includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6'));
-assert.equal(scripts.length, 1, 'Protokollet V2 must own one bundled runtime');
-assert.ok(scripts[0].includes('protokollet-v2.js?v=2'));
+assert.ok(styles[1].includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8'));
+assert.equal(scripts.length, 2, 'Protokollet V2 must load shared sidebar + one bundled runtime');
+assert.ok(scripts[0].includes('sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5'));
+assert.ok(scripts[1].includes('protokollet-v2.js?v=2'));
 
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|medical-hub\.css|clinical-reference\.css|protocol-reader\.css|protocol-interactive\.css|protocol-workspace\.css|protokollet\.js/);
 
@@ -63,7 +64,7 @@ assert.match(css, /prefers-reduced-motion:reduce/);
 
 assert.match(js, /Protokollet V2 — consolidated runtime/);
 assert.match(js, /window\.DRxProtocolShell/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/);
+assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/);
 assert.match(js, /medindex-brand-runtime\.js\?v=drx-brand-v6/);
 assert.match(js, /async function ensureAuth\(\)/);
 assert.match(js, /credentials:'same-origin'/);
