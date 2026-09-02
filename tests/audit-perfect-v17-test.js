@@ -45,19 +45,19 @@ for (const [htmlFile, jsFile] of workspaces) {
   const js = read(jsFile);
   const styles = stylesOf(html);
 
-  assert.match(html, /\/sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/, `${htmlFile}: direct sidebar v5 runtime missing`);
+  assert.match(html, /\/sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v6/, `${htmlFile}: direct sidebar v5 runtime missing`);
   assert.equal(styles.at(-1), '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8', `${htmlFile}: shell v8 must load last`);
   assert.equal(normalizedSidebar(html), canonicalSidebar, `${htmlFile}: static sidebar markup drift`);
 
   assert.match(js, /function loadSharedSidebarTaxonomy\(\)/, `${jsFile}: sidebar loader missing`);
-  assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/, `${jsFile}: loader version drift`);
+  assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v6/, `${jsFile}: loader version drift`);
   assert.match(js, /window\.DRxSidebarTaxonomy \|\| window\.DRxSidebarCollapse/, `${jsFile}: direct-script short circuit missing`);
   assert.doesNotMatch(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/, `${jsFile}: stale sidebar v4 loader returned`);
   assert.doesNotThrow(() => new Function(js), `${jsFile}: syntax error`);
 }
 
 const shared = read('sidebar-taxonomy-v3.js');
-assert.match(shared, /RUNTIME_VERSION = 'sidebar-taxonomy-v5'/);
+assert.match(shared, /RUNTIME_VERSION = 'sidebar-taxonomy-v6'/);
 assert.match(shared, /__DRX_SIDEBAR_TAXONOMY_RUNTIME__/);
 assert.match(shared, /SIDEBAR_DESKTOP_QUERY = '\(min-width:1024px\)'/);
 assert.match(shared, /SIDEBAR_COLLAPSE_KEY = 'drx_sidebar_collapsed_v2'/);
@@ -71,16 +71,16 @@ assert.match(stripe, /drx-sidebar-collapsed \.main-shell/);
 
 const prescriptions = read('recetat.html');
 const prescriptionCss = read('recetat-v2.css');
-assert.match(prescriptions, /data-ui-revision="recetat-v16"/);
-assert.match(prescriptions, /recetat-v2\.css\?v=16/);
-assert.match(prescriptions, /recetat-v2\.js\?v=16/);
+assert.match(prescriptions, /data-ui-revision="recetat-v17"/);
+assert.match(prescriptions, /recetat-v2\.css\?v=17/);
+assert.match(prescriptions, /recetat-v2\.js\?v=17/);
 assert.doesNotMatch(prescriptions, /id="sidebarCollapse"|class="brand-mark"/, 'Recetat must not own sidebar collapse markup');
 assert.match(prescriptionCss, /Recetat V2 — final UI coherence pass v16/);
 assert.doesNotMatch(prescriptionCss, /Recetat V2 — persistent desktop mini-sidebar v10/);
 
 const worker = read('sw.js');
 assert.match(worker, /VERSION = 'workspace-coherence-v8'/);
-assert.match(worker, /CACHE_EPOCH = '20260902-shell-v8-sidebar-v5-recetat-v16'/);
+assert.match(worker, /CACHE_EPOCH = '20260902-shell-v8-sidebar-v6-recetat-v17'/);
 assert.match(worker, /function isTargetedDosageRequest\(url\)/);
 assert.match(worker, /const REQUIRED_PRIVATE_PATHS = \['\/api\/registry', '\/data\/protocols\.json'\]/);
 const targeted = worker.indexOf('if (isTargetedDosageRequest(url))');
