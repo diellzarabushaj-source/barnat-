@@ -2415,3 +2415,162 @@ html.drx-unified-sidebar :is(input,select,textarea):focus-visible{
 @media(max-width:760px){
   .nav-count{min-width:24px;height:22px}
 }
+
+
+/* DRx canonical collapsible sidebar v7
+   This file loads AFTER page CSS, so the shared shell must own the final
+   collapsed geometry. Without this block the canonical 238px rules win. */
+html.drx-unified-sidebar{
+  --drx-shell-sidebar-collapsed-width:76px;
+}
+html.drx-unified-sidebar .sidebar-collapse{
+  box-sizing:border-box!important;
+  width:30px!important;
+  height:30px!important;
+  min-width:30px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+  border-radius:8px!important;
+  background:rgba(255,255,255,.055)!important;
+  color:rgba(255,255,255,.72)!important;
+  box-shadow:none!important;
+  cursor:pointer!important;
+}
+html.drx-unified-sidebar .sidebar-collapse:hover{
+  border-color:rgba(255,255,255,.22)!important;
+  background:rgba(255,255,255,.105)!important;
+  color:#fff!important;
+}
+html.drx-unified-sidebar .sidebar-collapse:focus-visible{
+  outline:0!important;
+  border-color:rgba(162,155,255,.8)!important;
+  box-shadow:0 0 0 3px rgba(162,155,255,.18)!important;
+}
+html.drx-unified-sidebar .brand-mark{display:none!important}
+
+@media(min-width:1025px){
+  html.drx-unified-sidebar .sidebar,
+  html.drx-unified-sidebar .main-shell{
+    transition:
+      width .18s cubic-bezier(.2,.8,.2,1),
+      min-width .18s cubic-bezier(.2,.8,.2,1),
+      margin-left .18s cubic-bezier(.2,.8,.2,1),
+      padding .18s cubic-bezier(.2,.8,.2,1)!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar{
+    width:var(--drx-shell-sidebar-collapsed-width)!important;
+    min-width:var(--drx-shell-sidebar-collapsed-width)!important;
+    padding:18px 10px 14px!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .main-shell{
+    margin-left:var(--drx-shell-sidebar-collapsed-width)!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-head{
+    min-height:54px!important;
+    justify-content:center!important;
+    gap:6px!important;
+    padding:0 0 12px!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar .brand{
+    width:30px!important;
+    min-width:30px!important;
+    display:grid!important;
+    place-items:center!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar .brand-full{
+    display:none!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar .brand-mark{
+    display:block!important;
+    width:30px!important;
+    height:30px!important;
+    max-width:30px!important;
+    max-height:30px!important;
+    object-fit:contain!important;
+    object-position:center!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-collapse .icon{
+    transform:rotate(180deg)!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-label{
+    display:none!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-item,
+  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-summary{
+    width:44px!important;
+    min-width:44px!important;
+    min-height:42px!important;
+    justify-content:center!important;
+    gap:0!important;
+    margin-inline:auto!important;
+    padding:0!important;
+    border-radius:9px!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-item .nav-icon{
+    width:24px!important;
+    height:24px!important;
+    min-width:24px!important;
+    flex:0 0 24px!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-item > span:not(.nav-icon):not(.nav-count),
+  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-summary-chevron{
+    position:absolute!important;
+    width:1px!important;
+    height:1px!important;
+    padding:0!important;
+    margin:-1px!important;
+    overflow:hidden!important;
+    clip:rect(0,0,0,0)!important;
+    clip-path:inset(50%)!important;
+    white-space:nowrap!important;
+    border:0!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-count{
+    display:none!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-group > :not(.nav-summary){
+    display:none!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-foot{
+    gap:8px!important;
+    padding-top:12px!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-foot .drx-user-card,
+  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-foot .logout-button{
+    width:44px!important;
+    min-width:44px!important;
+    min-height:42px!important;
+    margin-inline:auto!important;
+    padding:0!important;
+    justify-content:center!important;
+    border-radius:9px!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-foot .drx-user-card{
+    min-height:44px!important;
+    grid-template-columns:1fr!important;
+    place-items:center!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-foot .drx-user-copy,
+  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-foot .drx-user-arrow{
+    display:none!important;
+  }
+  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-foot .drx-user-avatar{
+    width:34px!important;
+    height:34px!important;
+    min-width:34px!important;
+    margin:0!important;
+  }
+}
+@media(max-width:1024px){
+  html.drx-unified-sidebar .sidebar-collapse{display:none!important}
+  html.drx-unified-sidebar .brand-mark{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+  html.drx-unified-sidebar .sidebar,
+  html.drx-unified-sidebar .main-shell,
+  html.drx-unified-sidebar .sidebar-collapse .icon{
+    transition:none!important;
+  }
+}
