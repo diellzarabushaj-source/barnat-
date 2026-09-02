@@ -58,7 +58,7 @@ const PRIVATE_DATA_PATHS = new Set([
 ]);
 const QUERY_DATA_PATHS = new Set(['/api/drug-search', '/api/icd']);
 const SAFE_AUTO_REFRESH_PATHS = new Set(['/icd.html', '/analizat.html']);
-const REQUIRED_PRIVATE_PATHS = ['/api/registry', '/api/dosage', '/data/protocols.json'];
+const REQUIRED_PRIVATE_PATHS = ['/api/registry', '/data/protocols.json'];
 
 function sameOrigin(url) {
   return url.origin === self.location.origin;
@@ -98,6 +98,12 @@ function queryKey(url) {
   normalized.hash = '';
   normalized.searchParams.sort();
   return requestFor(normalized.href, { headers:{ Accept:'application/json' } });
+}
+
+/* phase9-targeted-private-cache-v1
+   Targeted dosage requests must never share the full /api/dosage cache key. */
+function isTargetedDosageRequest(url) {
+  return url.pathname === '/api/dosage' && url.searchParams.has('view');
 }
 
 function cloneWithHeader(response, name, value) {
@@ -148,7 +154,6 @@ async function privateCacheStatus() {
   const cache = await caches.open(PRIVATE_CACHE);
   const checks = await Promise.all([
     cache.match(normalizedPrivateKey(new URL('/api/registry', self.location.origin))),
-    cache.match(normalizedPrivateKey(new URL('/api/dosage', self.location.origin))),
     cache.match(manifestKey(), { ignoreSearch:true }),
   ]);
   const cached = checks.filter(Boolean).length;
@@ -425,6 +430,7 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
 
   if (url.pathname === '/api/protocol-document') return event.respondWith(protocolDocumentResponse(event));
+  if (isTargetedDosageRequest(url)) return event.respondWith(queryDataResponse(event, url));
   if (PRIVATE_DATA_PATHS.has(url.pathname)) return event.respondWith(privateDataResponse(event, url));
   if (QUERY_DATA_PATHS.has(url.pathname)) return event.respondWith(queryDataResponse(event, url));
   if (url.pathname === '/data/protocols.json') return event.respondWith(manifestResponse(event));
