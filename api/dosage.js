@@ -5,6 +5,7 @@ const doseCalculatorHandler = require('../lib/dose-calculator-handler.js');
 const doseSafetyHandler = require('../lib/dose-safety-handler.js');
 const doseProductFastPathHandler = require('../lib/dose-product-fast-path-handler.js');
 const dosageCardHandler = require('../lib/dosage-card-handler.js');
+const prescriptionDosageHandler = require('../lib/prescription-dosage-handler.js');
 const prescriptionDosageContextHandler = require('../lib/prescription-dosage-context-handler.js');
 const approvedPopulationHandler = require('../lib/approved-population-handler.js');
 const pediatricDosageHandler = require('../lib/pediatric-dosage-handler.js');
@@ -38,6 +39,10 @@ function isCardsRequest(req) {
   return requestView(req) === 'cards';
 }
 
+function isPrescriptionRequest(req) {
+  return requestView(req) === 'prescription';
+}
+
 function isPrescriptionContextRequest(req) {
   return requestView(req) === 'prescription-context';
 }
@@ -61,6 +66,7 @@ async function handler(req, res) {
   if (isSafetyRequest(req)) return doseSafetyHandler(req, res);
   if (isProductFastPathRequest(req)) return doseProductFastPathHandler(req, res);
   if (isCardRequest(req) || isCardsRequest(req)) return dosageCardHandler(req, res);
+  if (isPrescriptionRequest(req)) return prescriptionDosageHandler(req, res);
   if (isPrescriptionContextRequest(req)) return prescriptionDosageContextHandler(req, res);
   if (isApprovedPopulationRequest(req)) return approvedPopulationHandler(req, res);
   if (isPediatricRequest(req)) return pediatricDosageHandler(req, res);
@@ -82,6 +88,7 @@ handler.isSafetyRequest = isSafetyRequest;
 handler.isProductFastPathRequest = isProductFastPathRequest;
 handler.isCardRequest = isCardRequest;
 handler.isCardsRequest = isCardsRequest;
+handler.isPrescriptionRequest = isPrescriptionRequest;
 handler.isPrescriptionContextRequest = isPrescriptionContextRequest;
 handler.isApprovedPopulationRequest = isApprovedPopulationRequest;
 handler.isPediatricRequest = isPediatricRequest;
