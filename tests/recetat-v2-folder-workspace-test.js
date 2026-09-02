@@ -56,6 +56,8 @@ assert.match(css, /font-size:32px/);
 assert.match(css, /\.rx-order-builder-head h3\{color:#0a2540;font-size:14px/);
 assert.match(css, /#rxDrugSearch\{/);
 assert.match(css, /\.rx-drug-result-main strong\{color:#0a2540;font-size:13px/);
+assert.match(css, /Recetat V2 — embedded TailAdmin specificity bridge v8/);
+assert.match(css, /html\.medindex-tailadmin\[data-mi-page="recetat"\] \.rx-card-head h2/);
 assert.match(css, /\.rx-drug-search-summary/);
 assert.match(css, /\.rx-drug-result\.is-fuzzy/);
 assert.match(css, /\.rx-order-card/);
