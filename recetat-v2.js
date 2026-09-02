@@ -3015,15 +3015,23 @@
       }
 
       const validation = validateContext(active);
-      if (!validation.valid) {
+      const routePending = !validation.valid
+        && validation.invalid.length === 0
+        && validation.missing.length > 0
+        && validation.missing.every(item => item === 'route');
+      if (!validation.valid && !routePending) {
         event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
         setStatus(validationMessage(validation), 'error'); focusFirstProblem(validation); return;
       }
       const compatibility = compatibleDrug(drug, active);
-      if (!compatibility.valid) {
+      const multiRoutePending = !compatibility.valid
+        && inferred.routes.length > 1
+        && !active.route;
+      if (!compatibility.valid && !routePending && !multiRoutePending) {
         event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
         setStatus(compatibility.message, 'error'); return;
       }
+      if (routePending || multiRoutePending) return;
       const currentKey = contextKey();
       if (state.payloadView && (state.payloadContextKey !== currentKey || state.refreshPromise)) {
         event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
@@ -3057,7 +3065,7 @@
     normalizeContext, patientFromContext, validateContext, population, regimenAdministration, isParenteral,
     filterRegimens, decorateDosagePayload, decideForContext, transferForContext, drugAdministration,
     compatibleDrug, explicitParenteralRoutes, inferContextFromProtocol, contextSummary, contextKey,
-    getContext, setContext, resetContext, init,
+    getContext, setContext, resetContext, refreshForContext:refreshPayloadForContext, init,
   };
 });
 
@@ -4877,6 +4885,8 @@
     searchController: null,
     searchSequence: 0,
     searchCache: new Map(),
+    registryDetailCache: new Map(),
+    pendingRouteDrug: null,
     renderTimer: 0,
     generatedReviewConfirmed: false,
     dosageReviewConfirmed: false,
@@ -5098,6 +5108,102 @@
     return source.map(route => ({ route, label:Administration?.routeLabel?.(route) || route }));
   }
 
+  function registrySourceValue(detail, ...labels) {
+    const wanted = new Set(labels.map(label => fold(label)));
+    const fields = Array.isArray(detail?.sourceFields) ? detail.sourceFields : [];
+    const match = fields.find(item => wanted.has(fold(item?.label)));
+    return text(match?.value);
+  }
+
+  async function hydrateRegistryDrug(raw) {
+    const source = raw && typeof raw === 'object' ? raw : {};
+    const id = text(source.id);
+    if (!id) return source;
+    if (state.registryDetailCache.has(id)) {
+      return { ...state.registryDetailCache.get(id), ...source };
+    }
+    try {
+      const response = await fetch(`/api/drug-search?view=registry-detail&id=${encodeURIComponent(id)}`, {
+        credentials:'same-origin',
+        cache:'no-store',
+        headers:{ Accept:'application/json' },
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !payload?.row) return source;
+      const detail = payload.row;
+      const Administration = window.MedIndexAdministrationRoutes;
+      const sourceCategory = registrySourceValue(detail, 'Kategoria e administrimit', 'Kategoria');
+      const sourceRoutes = registrySourceValue(detail, 'Rrugët e lejuara', 'Rruget e lejuara', 'Rruga e lejuar');
+      const allowedRoutes = Administration?.routeTokens?.(sourceRoutes) || [];
+      const inferred = Administration?.inferAdministration?.({
+        administrationCategory:sourceCategory,
+        allowedRoutes,
+        form:detail.form || source.form,
+      }) || {};
+      const hydrated = {
+        ...detail,
+        ...source,
+        packaging:text(source.packaging || detail.packaging),
+        approvedPopulation:text(source.approvedPopulation || detail.approvedPopulation),
+        prescriptionNotation:text(source.prescriptionNotation || detail.prescriptionNotation),
+        administrationCategory:text(source.administrationCategory || sourceCategory || inferred.category),
+        allowedRoutes:Array.isArray(source.allowedRoutes) && source.allowedRoutes.length
+          ? source.allowedRoutes
+          : (allowedRoutes.length ? allowedRoutes : inferred.routes || []),
+        route:text(source.route || (allowedRoutes.length === 1 ? allowedRoutes[0] : inferred.route)).toUpperCase(),
+        sourceFields:Array.isArray(detail.sourceFields) ? detail.sourceFields : [],
+      };
+      state.registryDetailCache.set(id, hydrated);
+      if (state.registryDetailCache.size > 80) state.registryDetailCache.delete(state.registryDetailCache.keys().next().value);
+      return hydrated;
+    } catch {
+      return source;
+    }
+  }
+
+  function populationModeForDrug(drug, currentPediatric) {
+    const value = fold(drug?.approvedPopulation);
+    if (/adult\s*only|vetem\s+(?:per\s+)?te\s+rritur|vetëm\s+(?:për\s+)?të\s+rritur/.test(value)) return false;
+    if (/p(?:a?e)?diatric\s*only|vetem\s+(?:per\s+)?femij|vetëm\s+(?:për\s+)?fëmij/.test(value)) return true;
+    return Boolean(currentPediatric);
+  }
+
+  function syncClinicalContextForDrug(drug) {
+    const contextApi = window.MedIndexPrescriptionContext;
+    const Administration = window.MedIndexAdministrationRoutes;
+    const current = contextApi?.getContext?.();
+    const administration = contextApi?.drugAdministration?.(drug)
+      || Administration?.inferAdministration?.(drug)
+      || { category:'', routes:[], route:'' };
+    if (!current || !administration.category) {
+      return { administration, context:current || null, routeResolved:Boolean(administration.route) };
+    }
+
+    const allowed = Array.isArray(administration.routes) ? administration.routes : [];
+    const currentRouteAllowed = current.administrationCategory === administration.category
+      && current.route
+      && (!allowed.length || allowed.includes(current.route));
+    const route = allowed.length === 1
+      ? allowed[0]
+      : (currentRouteAllowed ? current.route : text(administration.route).toUpperCase());
+    const next = {
+      ...current,
+      administrationCategory:administration.category,
+      route,
+      pediatric:populationModeForDrug(drug, current.pediatric),
+    };
+    const changed = next.administrationCategory !== current.administrationCategory
+      || next.route !== current.route
+      || next.pediatric !== current.pediatric;
+    if (changed) contextApi?.setContext?.(next, { refresh:false });
+    return {
+      administration,
+      context:contextApi?.getContext?.() || next,
+      routeResolved:Boolean(route),
+      changed,
+    };
+  }
+
   function structuredSignature(drug) {
     if (drug.signaturaManual && text(drug.signatura)) return text(drug.signatura);
     const dose = text(drug.doseInstruction);
@@ -5208,10 +5314,36 @@
   }
 
   async function addDrugWithDosage(raw, options = {}) {
-    const drug = normalizeDrug(raw);
-    if (drug.regimenId || !Dosage) return addSelectedDrug(drug, options);
-    const payload = await dosagePayload();
+    const hydrated = options.skipRegistryHydration ? raw : await hydrateRegistryDrug(raw);
+    const drug = normalizeDrug(hydrated);
     const contextApi = window.MedIndexPrescriptionContext;
+    const synced = syncClinicalContextForDrug(drug);
+
+    if (synced.administration?.category && !synced.routeResolved) {
+      state.pendingRouteDrug = { raw:hydrated, options:{ ...options, skipRegistryHydration:true } };
+      const routes = Array.isArray(synced.administration.routes) ? synced.administration.routes : [];
+      setStatus(routes.length
+        ? `Ky prezantim lejon ${routes.join(' / ')}. Zgjidh rrugën; bari vazhdon automatikisht pas zgjedhjes.`
+        : 'Rruga e këtij prezantimi nuk është unike. Zgjidh rrugën e saktë para vazhdimit.',
+      'error');
+      setTimeout(() => {
+        const holder = document.getElementById('rxRouteSegments');
+        holder?.scrollIntoView?.({ block:'center', behavior:'smooth' });
+        holder?.querySelector?.('button')?.focus?.({ preventScroll:true });
+      }, 0);
+      return { status:'needs-route' };
+    }
+
+    state.pendingRouteDrug = null;
+    if (synced.routeResolved && synced.administration?.category) {
+      const route = synced.context?.route || synced.administration.route;
+      setStatus(`Rruga u zgjodh automatikisht: ${window.MedIndexAdministrationRoutes?.categoryLabel?.(synced.administration.category) || synced.administration.category} · ${route}.`, 'success');
+    }
+    if (drug.regimenId || !Dosage) return addSelectedDrug(drug, options);
+    if (contextApi?.refreshForContext) {
+      try { await contextApi.refreshForContext({ announce:false }); } catch {}
+    }
+    const payload = await dosagePayload();
     const context = contextApi?.getContext?.() || null;
     const decision = contextApi?.decideForContext
       ? contextApi.decideForContext(Dosage, drug, payload.adult || [], context)
@@ -6118,6 +6250,20 @@
   }
 
   function bindEvents() {
+    window.addEventListener('medindex:prescription-context-change', event => {
+      const pending = state.pendingRouteDrug;
+      if (!pending || !event.detail?.valid) return;
+      const context = event.detail.context || window.MedIndexPrescriptionContext?.getContext?.();
+      const administration = window.MedIndexPrescriptionContext?.drugAdministration?.(pending.raw)
+        || window.MedIndexAdministrationRoutes?.inferAdministration?.(pending.raw)
+        || {};
+      if (administration.category && context?.administrationCategory !== administration.category) return;
+      if (Array.isArray(administration.routes) && administration.routes.length && !administration.routes.includes(context?.route)) return;
+      state.pendingRouteDrug = null;
+      void addDrugWithDosage(pending.raw, { ...pending.options, skipRegistryHydration:true })
+        .catch(() => setStatus('Bari nuk u shtua. Provo përsëri.', 'error'));
+    });
+
     document.querySelectorAll('[data-rx-command]').forEach(button => button.addEventListener('click', () => command(button.dataset.rxCommand)));
 
     const openDrugPicker = () => {
@@ -6174,7 +6320,12 @@
       }
       const button = event.target.closest('[data-drug-result]');
       if (!button) return;
-      try { addDrugWithDosage(JSON.parse(decodeURIComponent(button.dataset.drugResult))); } catch {}
+      try {
+        const drug = JSON.parse(decodeURIComponent(button.dataset.drugResult));
+        void addDrugWithDosage(drug).catch(() => setStatus('Bari nuk u shtua. Provo përsëri.', 'error'));
+      } catch {
+        setStatus('Të dhënat e barit nuk u lexuan.', 'error');
+      }
       closePopovers();
       $('#rxAddDrugButton')?.setAttribute('aria-expanded', 'false');
     });

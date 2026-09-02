@@ -45,6 +45,13 @@ assert.match(js, /const structuredClinical = state\.composerOrigin === 'structur
 assert.match(js, /getContext\?\.\(\)/);
 assert.match(js, /#rxSelectedDrugs \.rx-order-card/);
 assert.match(js, /getElementById\('rxOrderBuilder'\)/);
+assert.match(js, /function hydrateRegistryDrug\(/);
+assert.match(js, /view=registry-detail&id=/);
+assert.match(js, /Rrugët e lejuara/);
+assert.match(js, /function syncClinicalContextForDrug\(/);
+assert.match(js, /Rruga u zgjodh automatikisht/);
+assert.match(js, /pendingRouteDrug/);
+assert.match(js, /refreshForContext:refreshPayloadForContext/);
 assert.doesNotThrow(() => new Function(js));
 
 assert.match(gemini, /DEFAULT_MODEL = 'gemini-3\.7-flash'/);
