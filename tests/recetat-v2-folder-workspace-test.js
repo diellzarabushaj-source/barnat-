@@ -21,9 +21,12 @@ const worker = read('sw.js');
 assert.match(html, /data-drx-app="recetat-v2"/);
 assert.match(html, /class="drx-unified-sidebar"/);
 assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
+assert.match(html, /\/brand\/drx-mark-on-dark\.svg/);
+assert.match(html, /id="sidebarCollapse"/);
+assert.match(html, /aria-label="Minimizo menynë"/);
 assert.match(html, /class="nav-item is-active" href="\/recetat\.html" aria-current="page"/);
-assert.match(html, /recetat-v2\.css\?v=9/);
-assert.match(html, /recetat-v2\.js\?v=9/);
+assert.match(html, /recetat-v2\.css\?v=10/);
+assert.match(html, /recetat-v2\.js\?v=10/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/);
 
 [
@@ -40,9 +43,9 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
   .map(match => match[1]);
 
 assert.equal(styles.length, 2, 'Recetat V2 must load only page CSS + shared Stripe shell');
-assert.equal(styles[0], '/recetat-v2.css?v=9');
+assert.equal(styles[0], '/recetat-v2.css?v=10');
 assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6');
-assert.deepEqual(scripts, ['/recetat-v2.js?v=9']);
+assert.deepEqual(scripts, ['/recetat-v2.js?v=10']);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|recetat\.css|recetat-audit\.css|recetat-style-loader\.js|recetat\.js/);
 
 assert.match(css, /Recetat V2 — consolidated prescription workspace/);
@@ -71,9 +74,22 @@ assert.match(css, /\.rx-folder-item\.is-active/);
 assert.match(css, /\.rx-saved-chapter/);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /prefers-reduced-motion:reduce/);
+assert.match(css, /Recetat V2 — persistent desktop mini-sidebar v10/);
+assert.match(css, /--drx-shell-sidebar-collapsed-width:76px/);
+assert.match(css, /drx-sidebar-collapsed \.sidebar/);
+assert.match(css, /drx-sidebar-collapsed \.main-shell/);
+assert.match(css, /drx-sidebar-collapsed \.nav-item/);
 
 assert.match(js, /Recetat V2 — consolidated runtime with chapter folders/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
+assert.match(js, /SIDEBAR_COLLAPSE_KEY = 'drx_sidebar_collapsed_v1'/);
+assert.match(js, /window\.matchMedia\('\(min-width:1025px\)'\)/);
+assert.match(js, /function setSidebarCollapsed\(/);
+assert.match(js, /function toggleSidebarCollapsed\(/);
+assert.match(js, /localStorage\.setItem\(SIDEBAR_COLLAPSE_KEY/);
+assert.match(js, /aria-pressed/);
+assert.match(js, /drx:sidebar-collapse/);
+assert.match(js, /sidebarWasOpen/);
 assert.match(js, /Konteksti klinik/);
 assert.match(js, /Rruga e administrimit/);
 assert.match(js, /Sinkronizuar/);
