@@ -22,11 +22,11 @@ const worker = read('sw.js');
 assert.match(html, /data-drx-app="recetat-v2"/);
 assert.match(html, /class="drx-unified-sidebar"/);
 assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
-assert.match(html, /\/sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/);
+assert.match(html, /\/sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v6/);
 assert.doesNotMatch(html, /id="sidebarCollapse"|class="brand-mark"/, 'Recetat static sidebar must stay canonical; shared sidebar runtime owns collapse UI');
 assert.match(html, /class="nav-item is-active" href="\/recetat\.html" aria-current="page"/);
-assert.match(html, /recetat-v2\.css\?v=16/);
-assert.match(html, /recetat-v2\.js\?v=16/);
+assert.match(html, /recetat-v2\.css\?v=17/);
+assert.match(html, /recetat-v2\.js\?v=17/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/);
 
 [
@@ -43,9 +43,9 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
   .map(match => match[1]);
 
 assert.equal(styles.length, 2, 'Recetat V2 must load only page CSS + shared Stripe shell');
-assert.equal(styles[0], '/recetat-v2.css?v=16');
+assert.equal(styles[0], '/recetat-v2.css?v=17');
 assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8');
-assert.deepEqual(scripts, ['/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5','/recetat-v2.js?v=16']);
+assert.deepEqual(scripts, ['/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v6','/recetat-v2.js?v=17']);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|recetat\.css|recetat-audit\.css|recetat-style-loader\.js|recetat\.js/);
 
 assert.match(css, /Recetat V2 — consolidated prescription workspace/);
@@ -117,7 +117,7 @@ assert.match(js, /PDID \$\{drug\.pdid\}/);
 assert.match(js, /clinicalReviewConfirmed/);
 assert.match(js, /function updateOrderField\(/);
 assert.match(js, /Asnjë skemë nuk aplikohet pa konfirmimin tënd/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/);
+assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v6/);
 assert.match(js, /async function ensureAuth\(\)/);
 assert.match(js, /function chapterCatalog\(\)/);
 assert.match(js, /function classifyChapter\(/);
