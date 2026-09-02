@@ -16,8 +16,8 @@
   }
   if (!Administration) throw new Error('MedIndexAdministrationRoutes mungon.');
 
-  const KEY = 'medindex_rx_clinical_context_v3';
-  const LEGACY_KEYS = ['medindex_rx_clinical_context_v2', 'medindex_rx_clinical_context_v1'];
+  const KEY = 'medindex_rx_clinical_context_v4';
+  const LEGACY_KEYS = ['medindex_rx_clinical_context_v3', 'medindex_rx_clinical_context_v2', 'medindex_rx_clinical_context_v1'];
   const SAVED_KEY = 'regjistriBarnave_protokollet_v1';
   const { CATEGORIES, CATEGORY_ORDER, ROUTE_LABELS } = Administration;
   const SVG = Object.freeze({
@@ -34,6 +34,7 @@
   const state = {
     document:null, root:null, context:null, ready:false, nativeFetch:null,
     payloadView:null, payloadContextKey:'', refreshPromise:null, refreshTimer:0, previewObserver:null,
+    productConstraint:null, drugPayloadCache:new Map(), drugPayloadPromises:new Map(),
   };
   const text = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const numberValue = value => {
@@ -42,15 +43,14 @@
   };
 
   function baseContext() {
-    return { administrationCategory:'ENTERAL', route:'PO', pediatric:false, ageValue:'', ageUnit:'years', weightKg:'' };
+    return { administrationCategory:'', route:'', pediatric:false, ageValue:'', ageUnit:'years', weightKg:'' };
   }
 
   function normalizeContext(value = {}) {
     const legacyCategory = value.parenteral === true ? 'PARENTERAL' : '';
-    const category = Administration.normalizeCategory(value.administrationCategory || value.category || legacyCategory) || 'ENTERAL';
+    const category = Administration.normalizeCategory(value.administrationCategory || value.category || legacyCategory);
     let route = Administration.normalizeRoute(value.route);
-    if (!Administration.routeBelongsToCategory(route, category)) route = '';
-    if (!route && category === 'ENTERAL') route = 'PO';
+    if (!category || !Administration.routeBelongsToCategory(route, category)) route = '';
     return {
       administrationCategory:category,
       route,
@@ -196,7 +196,7 @@
     return [context.pediatric ? 'pediatric' : 'adult', context.administrationCategory, context.route,
       context.pediatric ? patient.ageMonths : '', context.pediatric ? patient.weightKg : ''].join('|');
   }
-  function contextEndpoint(value = getContext()) {
+  function contextEndpoint(value = getContext(), drugId = '') {
     const context = normalizeContext(value);
     const patient = patientFromContext(context);
     const query = new URLSearchParams({
@@ -205,6 +205,7 @@
       route:context.route,
       parenteral:String(context.administrationCategory === 'PARENTERAL'),
     });
+    if (text(drugId)) query.set('id', text(drugId));
     if (context.pediatric) {
       query.set('ageMonths', String(patient.ageMonths));
       query.set('weightKg', String(patient.weightKg));
@@ -232,8 +233,10 @@
   }
   function contextSummary(value = getContext()) {
     const context = normalizeContext(value);
-    const parts = [Administration.categoryLabel(context.administrationCategory) || context.administrationCategory];
+    const parts = [];
+    if (context.administrationCategory) parts.push(Administration.categoryLabel(context.administrationCategory) || context.administrationCategory);
     if (context.route) parts.push(`${context.route} · ${Administration.routeLabel(context.route)}`);
+    if (!context.administrationCategory && !context.route) parts.push('Rruga zgjidhet nga bari');
     parts.push(context.pediatric ? 'Fëmijë' : 'Të rritur');
     if (context.pediatric && context.ageValue) parts.push(ageLabel(context));
     if (context.pediatric && context.weightKg) parts.push(`${context.weightKg} kg`);
@@ -250,6 +253,11 @@
       const administration = Administration.inferAdministration(item);
       return {
         ...normalized,
+        id:text(item?.id || item?.drugId),
+        drugId:text(item?.drugId || item?.id),
+        registryNumber:text(item?.registryNumber || item?.registry_number),
+        approvedPopulation:text(item?.approvedPopulation || item?.approved_population),
+        productStatus:text(item?.productStatus || item?.product_status),
         packaging:text(item?.packaging || item?.packageSize),
         packagingSummary:text(item?.packagingSummary),
         prescriptionLine:text(item?.prescriptionLine),
@@ -276,13 +284,13 @@
 
   function createUi() {
     if (state.document.getElementById('rxClinicalContext')) return;
-    const commandBar = state.document.querySelector('.rx-command-bar');
-    if (!commandBar) return;
-    commandBar.insertAdjacentHTML('afterend', `
+    const anchor = state.document.getElementById('rxOrderBuilder') || state.document.querySelector('.rx-command-bar');
+    if (!anchor) return;
+    anchor.insertAdjacentHTML(anchor.id === 'rxOrderBuilder' ? 'beforebegin' : 'afterend', `
       <section class="rx-clinical-context" id="rxClinicalContext" aria-labelledby="rxClinicalContextTitle">
         <div class="rx-context-heading">
-          <div><span class="rx-context-kicker">Rruga e barit</span><strong id="rxClinicalContextTitle">Zgjidh kategorinë e administrimit</strong></div>
-          <span class="rx-context-readiness" id="rxContextReadiness">Gati</span>
+          <div><span class="rx-context-kicker">Konteksti klinik</span><strong id="rxClinicalContextTitle">Rruga e administrimit</strong><small class="rx-context-source" id="rxContextSource">Zgjidhet automatikisht pasi zgjedh barin</small></div>
+          <span class="rx-context-readiness is-neutral" id="rxContextReadiness">Auto nga bari</span>
         </div>
         <div class="rx-category-grid" role="radiogroup" aria-label="Kategoria e administrimit">
           ${CATEGORY_ORDER.map(category => `
@@ -301,12 +309,12 @@
             </fieldset>
             <div class="rx-context-guidance">
               <span class="rx-context-guidance-icon">${SVG.info}</span>
-              <span>Kategoria merret nga prezantimi i barit. Doza automatike përdoret vetëm kur formula, indikacioni, grupmosha dhe rruga janë të verifikuara.</span>
+              <span>DRx lexon kategorinë dhe rrugët e lejuara nga kartela e produktit. Ti zgjedh rrugën vetëm kur preparati ka më shumë se një rrugë të vlefshme; doza nuk aplikohet pa konfirmimin tënd.</span>
             </div>
           </div>
           <button type="button" class="rx-pediatric-toggle" id="rxPediatricToggle" aria-pressed="false">
             <span class="rx-context-icon">${SVG.child}</span>
-            <span><strong>Për fëmijë</strong><small>Aktivizon kalkulatorin sipas formulës së barit</small></span>
+            <span><strong>Pediatrike</strong><small>Aktivizo moshën dhe peshën për dozimin pediatrik</small></span>
             <span class="rx-context-state" aria-hidden="true"></span>
           </button>
         </div>
@@ -328,14 +336,23 @@
   function renderRoutes(context, validation) {
     const holder = state.document.getElementById('rxRouteSegments');
     if (!holder) return;
-    const routes = Administration.routesForCategory(context.administrationCategory);
-    const signature = `${context.administrationCategory}:${routes.join(',')}`;
+    const constraint = state.productConstraint;
+    const baseRoutes = context.administrationCategory ? Administration.routesForCategory(context.administrationCategory) : [];
+    const constrainedRoutes = constraint?.category === context.administrationCategory && Array.isArray(constraint.routes)
+      ? constraint.routes.filter(route => Administration.routeBelongsToCategory(route, context.administrationCategory))
+      : [];
+    const routes = constrainedRoutes.length ? constrainedRoutes : baseRoutes;
+    const signature = `${context.administrationCategory || 'none'}:${constraint?.key || ''}:${routes.join(',')}`;
     if (holder.dataset.signature !== signature) {
       holder.dataset.signature = signature;
-      holder.innerHTML = routes.map(route => `<button type="button" role="radio" aria-checked="false" data-context-route="${route}"><strong>${route}</strong><small>${ROUTE_LABELS[route]}</small></button>`).join('');
+      holder.innerHTML = routes.length
+        ? routes.map(route => `<button type="button" role="radio" aria-checked="false" data-context-route="${route}"><strong>${route}</strong><small>${ROUTE_LABELS[route] || route}</small></button>`).join('')
+        : '<span class="rx-route-placeholder">Zgjidhet automatikisht pasi të zgjedhësh barin.</span>';
       bindRouteButtons(holder);
     }
-    holder.classList.toggle('has-error', validation.missing.includes('route') || validation.invalid.includes('route'));
+    const showRouteError = Boolean(context.administrationCategory)
+      && (validation.missing.includes('route') || validation.invalid.includes('route'));
+    holder.classList.toggle('has-error', showRouteError);
     holder.querySelectorAll('[data-context-route]').forEach((button, index) => {
       const selected = button.dataset.contextRoute === context.route;
       button.classList.toggle('is-selected', selected);
@@ -354,8 +371,9 @@
     if (!show) { existing?.remove(); return; }
     const validation = validateContext(context);
     const rows = [
-      ['Kategoria', Administration.categoryLabel(context.administrationCategory)],
-      ['Rruga', context.route ? `${context.route} · ${Administration.routeLabel(context.route)}` : 'E papërcaktuar'],
+      ['Kategoria', Administration.categoryLabel(context.administrationCategory) || 'Zgjidhet nga bari'],
+      ['Rruga', context.route ? `${context.route} · ${Administration.routeLabel(context.route)}` : 'Zgjidhet nga bari'],
+      state.productConstraint?.label ? ['Produkti', state.productConstraint.label] : null,
       ['Popullata', context.pediatric ? 'Fëmijë' : 'Të rritur'],
       context.pediatric ? ['Mosha', ageLabel(context) || 'E paplotësuar'] : null,
       context.pediatric ? ['Pesha', context.weightKg ? `${context.weightKg} kg` : 'E paplotësuar'] : null,
@@ -377,8 +395,13 @@
     const validation = validateContext(context);
     state.document.querySelectorAll('[data-context-category]').forEach(button => {
       const selected = button.dataset.contextCategory === context.administrationCategory;
+      const locked = Boolean(state.productConstraint?.category);
       button.classList.toggle('is-active', selected);
+      button.classList.toggle('is-locked', locked);
+      button.disabled = locked;
       button.setAttribute('aria-checked', String(selected));
+      button.setAttribute('aria-disabled', String(locked));
+      button.title = locked ? 'Kategoria u mor automatikisht nga produkti i zgjedhur.' : '';
       button.querySelector('.rx-context-state').textContent = selected ? '✓' : '';
     });
     renderRoutes(context, validation);
@@ -388,7 +411,7 @@
       pediatricButton.setAttribute('aria-pressed', String(context.pediatric));
       pediatricButton.querySelector('small').textContent = context.pediatric
         ? (context.ageValue && context.weightKg ? `${ageLabel(context)} · ${context.weightKg} kg` : 'Plotëso moshën dhe peshën')
-        : 'Aktivizon kalkulatorin sipas formulës së barit';
+        : 'Aktivizo moshën dhe peshën për dozimin pediatrik';
       pediatricButton.querySelector('.rx-context-state').textContent = context.pediatric ? '✓' : '';
     }
     const pediatricFields = state.document.getElementById('rxPediatricFields');
@@ -408,9 +431,16 @@
     }
     if (weightInput && weightInput.value !== context.weightKg) weightInput.value = context.weightKg;
     const readiness = state.document.getElementById('rxContextReadiness');
+    const neutral = !context.administrationCategory && !context.route;
     if (readiness) {
-      readiness.textContent = validation.valid ? 'Gati' : 'Plotëso të dhënat';
-      readiness.className = `rx-context-readiness ${validation.valid ? 'is-ready' : 'is-incomplete'}`;
+      readiness.textContent = neutral ? 'Auto nga bari' : validation.valid ? 'Gati' : 'Kërkon zgjedhje';
+      readiness.className = `rx-context-readiness ${neutral ? 'is-neutral' : validation.valid ? 'is-ready' : 'is-incomplete'}`;
+    }
+    const source = state.document.getElementById('rxContextSource');
+    if (source) {
+      source.textContent = state.productConstraint?.label
+        ? `Nga produkti: ${state.productConstraint.label}`
+        : 'Zgjidhet automatikisht pasi zgjedh barin';
     }
     const summary = state.document.querySelector('[data-context-summary]');
     if (summary) summary.textContent = contextSummary(context);
@@ -466,6 +496,36 @@
     if (announce) setStatus('Skemat u përshtatën me kategorinë, rrugën dhe popullatën.', 'success');
     return state.payloadView;
   }
+  async function loadForDrug(drugId, { announce = false } = {}) {
+    const id = text(drugId);
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) {
+      throw new Error('ID e barit është e pavlefshme.');
+    }
+    const context = getContext();
+    const validation = validateContext(context);
+    if (!validation.valid) throw new Error(validationMessage(validation) || 'Konteksti klinik nuk është i plotë.');
+    const key = `${id}|${contextKey(context)}`;
+    if (state.drugPayloadCache.has(key)) return state.drugPayloadCache.get(key);
+    if (state.drugPayloadPromises.has(key)) return state.drugPayloadPromises.get(key);
+    const fetcher = state.nativeFetch || state.root?.fetch?.bind(state.root);
+    if (!fetcher) throw new Error('Lidhja me dozologjinë nuk është gati.');
+    const request = fetcher(contextEndpoint(context, id), {
+      credentials:'same-origin', cache:'no-store', headers:{ Accept:'application/json' },
+    }).then(async response => {
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || `Dozologjia ${response.status}`);
+      const view = decorateDosagePayload(payload);
+      state.drugPayloadCache.set(key, view);
+      if (state.drugPayloadCache.size > 80) state.drugPayloadCache.delete(state.drugPayloadCache.keys().next().value);
+      return view;
+    }).finally(() => state.drugPayloadPromises.delete(key));
+    state.drugPayloadPromises.set(key, request);
+    if (announce) setStatus('Po ngarkohet dozologjia e verifikuar për këtë produkt…');
+    const result = await request;
+    if (announce) setStatus('Dozologjia e produktit u filtrua sipas rrugës dhe grupmoshës.', 'success');
+    return result;
+  }
+
   function schedulePayloadRefresh() {
     clearTimeout(state.refreshTimer);
     state.refreshTimer = setTimeout(() => { if (validateContext(getContext()).valid) refreshPayloadForContext().catch(() => {}); }, 280);
@@ -481,16 +541,21 @@
   }
   const setContext = (value, options = {}) => save(value, options);
   function resetContext({ refresh = true } = {}) {
-    state.context = baseContext(); persist(); render();
+    state.context = baseContext();
+    state.productConstraint = null;
+    persist(); render();
     if (refresh) refreshPayloadForContext().catch(() => {});
     return getContext();
   }
   function hasDraft() {
-    return Boolean(text(state.document.getElementById('rxComposer')?.value) || state.document.querySelector('#rxSelectedDrugs .rx-drug-chip'));
+    return Boolean(text(state.document.getElementById('rxComposer')?.value) || state.document.querySelector('#rxSelectedDrugs .rx-order-card'));
   }
-  function changeContext(next, focusId = '') {
-    if (hasDraft()) {
-      setStatus('Për siguri, hap “Recetë e re” para se të ndryshosh kategorinë, rrugën ose grupmoshën.', 'error');
+  function hasStructuredOrders() {
+    return Boolean(state.document.querySelector('#rxSelectedDrugs .rx-order-card'));
+  }
+  function changeContext(next, focusId = '', { allowWithOrders = false } = {}) {
+    if (hasStructuredOrders() && !allowWithOrders) {
+      setStatus('Për siguri, grupmosha nuk ndryshohet pasi janë shtuar barna. Hap “Recetë e re” për një kontekst tjetër pacienti.', 'error');
       return false;
     }
     save(next);
@@ -506,6 +571,29 @@
       route:[drug.route, drug.prescriptionLine, drug.prescriptionNotation].filter(Boolean).join(' '),
     });
   }
+  function setProductConstraint(drug = null) {
+    if (!drug) {
+      state.productConstraint = null;
+      render();
+      return null;
+    }
+    const administration = drugAdministration(drug);
+    if (!administration.category) {
+      state.productConstraint = null;
+      render();
+      return null;
+    }
+    const label = [text(drug.tradeName || drug.substance || drug.activeSubstance), text(drug.strength)].filter(Boolean).join(' ');
+    const key = [text(drug.id || drug.drugId || drug.pdid), administration.category, ...(administration.routes || [])].join('|');
+    state.productConstraint = {
+      key, label:label || 'Produkti i zgjedhur', category:administration.category,
+      routes:Array.isArray(administration.routes) ? [...administration.routes] : [],
+      confidence:administration.confidence || '',
+    };
+    render();
+    return { ...state.productConstraint };
+  }
+
   function explicitParenteralRoutes(drug = {}) {
     const administration = drugAdministration(drug);
     return administration.category === 'PARENTERAL' ? administration.routes : [];
@@ -611,10 +699,6 @@
   function bindRouteButtons(holder = state.document.getElementById('rxRouteSegments')) {
     holder?.querySelectorAll('[data-context-route]').forEach(button => {
       button.addEventListener('click', () => {
-        if (hasDraft()) {
-          setStatus('Për siguri, hap “Recetë e re” para se të ndryshosh rrugën.', 'error');
-          return;
-        }
         save({ ...getContext(), route:button.dataset.contextRoute });
       });
       button.addEventListener('keydown', event => {
@@ -632,9 +716,10 @@
   function bind() {
     state.document.querySelectorAll('[data-context-category]').forEach(button => {
       button.addEventListener('click', () => {
+        if (button.disabled) return;
         const category = button.dataset.contextCategory;
         const defaultRoute = CATEGORIES[category]?.defaultRoute || '';
-        changeContext({ ...getContext(), administrationCategory:category, route:defaultRoute }, 'rxRouteSegments');
+        changeContext({ ...getContext(), administrationCategory:category, route:defaultRoute }, 'rxRouteSegments', { allowWithOrders:true });
       });
     });
     state.document.getElementById('rxPediatricToggle')?.addEventListener('click', () => {
@@ -657,36 +742,13 @@
       let drug = null;
       try { drug = JSON.parse(decodeURIComponent(button.dataset.drugResult || '')); } catch {}
       const inferred = drugAdministration(drug || {});
-      let active = getContext();
-
-      if (inferred.category && !hasDraft()) {
-        const nextRoute = inferred.routes.length === 1
-          ? inferred.routes[0]
-          : inferred.routes.includes(active.route) && active.administrationCategory === inferred.category ? active.route : '';
-        if (active.administrationCategory !== inferred.category || active.route !== nextRoute) {
-          save({ ...active, administrationCategory:inferred.category, route:nextRoute }, { refresh:false });
-          active = getContext();
-          setStatus(inferred.routes.length === 1
-            ? `${Administration.categoryLabel(inferred.category)} · ${nextRoute} u identifikua nga prezantimi i barit.`
-            : `${Administration.categoryLabel(inferred.category)} u identifikua; zgjidh rrugën ${inferred.routes.join(', ')}.`,
-          inferred.routes.length === 1 ? 'success' : '');
-        }
-      }
-
-      const validation = validateContext(active);
-      if (!validation.valid) {
-        event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
-        setStatus(validationMessage(validation), 'error'); focusFirstProblem(validation); return;
-      }
-      const compatibility = compatibleDrug(drug, active);
-      if (!compatibility.valid) {
-        event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
-        setStatus(compatibility.message, 'error'); return;
-      }
-      const currentKey = contextKey();
-      if (state.payloadView && (state.payloadContextKey !== currentKey || state.refreshPromise)) {
-        event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
-        refreshPayloadForContext({ announce:true }).then(() => button.isConnected && button.click()).catch(() => {});
+      if (!inferred.category) return;
+      const active = getContext();
+      const nextRoute = inferred.routes.length === 1
+        ? inferred.routes[0]
+        : (active.administrationCategory === inferred.category && inferred.routes.includes(active.route) ? active.route : '');
+      if (active.administrationCategory !== inferred.category || active.route !== nextRoute) {
+        save({ ...active, administrationCategory:inferred.category, route:nextRoute }, { refresh:false });
       }
     }, true);
 
@@ -716,6 +778,7 @@
     normalizeContext, patientFromContext, validateContext, population, regimenAdministration, isParenteral,
     filterRegimens, decorateDosagePayload, decideForContext, transferForContext, drugAdministration,
     compatibleDrug, explicitParenteralRoutes, inferContextFromProtocol, contextSummary, contextKey,
-    getContext, setContext, resetContext, init,
+    getContext, setContext, resetContext, refreshForContext:refreshPayloadForContext,
+    contextEndpoint, loadForDrug, setProductConstraint, clearProductConstraint:() => setProductConstraint(null), init,
   };
 });
