@@ -55,8 +55,8 @@
     return loadRuntime('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v4','data-drx-sidebar-taxonomy');
   }
 
-  const SIDEBAR_COLLAPSE_KEY = 'drx_sidebar_collapsed_v1';
-  const desktopSidebarQuery = window.matchMedia('(min-width:1025px)');
+  const SIDEBAR_COLLAPSE_KEY = 'drx_sidebar_collapsed_v2';
+  const desktopSidebarQuery = window.matchMedia('(min-width:1024px)');
 
   function storedSidebarCollapsed() {
     try { return localStorage.getItem(SIDEBAR_COLLAPSE_KEY) === '1'; }
@@ -192,21 +192,26 @@
   let bound=false;
   function init() {
     if(bound) return; bound=true;
-    syncSidebarViewport();
-    bindCollapsedGroupExpansion();
     void loadSharedSidebarTaxonomy().then(() => {
-      syncCollapsedTooltips(sidebarCollapsed());
+      window.DRxSidebarCollapse?.sync?.();
+      window.DRxSidebarCollapse?.refreshLabels?.();
+    }).catch(() => {
+      // Fail-safe only: the shared sidebar runtime is the canonical owner.
+      syncSidebarViewport();
       bindCollapsedGroupExpansion();
-    }).catch(() => null);
-    $('#sidebarCollapse')?.addEventListener('click',toggleSidebarCollapsed);
+      const toggle = $('#sidebarCollapse');
+      if (toggle && toggle.dataset.sidebarCollapseOwner !== 'local-fallback') {
+        toggle.dataset.sidebarCollapseOwner = 'local-fallback';
+        toggle.addEventListener('click',toggleSidebarCollapsed);
+      }
+      const onViewportChange = () => syncSidebarViewport();
+      if (desktopSidebarQuery.addEventListener) desktopSidebarQuery.addEventListener('change', onViewportChange);
+      else desktopSidebarQuery.addListener?.(onViewportChange);
+    });
     $('#menuButton')?.addEventListener('click',openSidebar);
     $('#sidebarClose')?.addEventListener('click',closeSidebar);
     $('#sidebarBackdrop')?.addEventListener('click',closeSidebar);
     $('#logoutButton')?.addEventListener('click',logout);
-
-    const onViewportChange = () => syncSidebarViewport();
-    if (desktopSidebarQuery.addEventListener) desktopSidebarQuery.addEventListener('change', onViewportChange);
-    else desktopSidebarQuery.addListener?.(onViewportChange);
 
     window.addEventListener('keydown', event => {
       if(event.key==='Escape') closeSidebar();
