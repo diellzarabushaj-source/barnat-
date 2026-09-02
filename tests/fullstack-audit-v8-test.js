@@ -73,9 +73,12 @@ assert.deepEqual(
 assert.equal(
   vercel.ignoreCommand,
   'node scripts/vercel-ignore-build.js',
-  'Vercel must skip metadata-only main commits instead of burning production build quota'
+  'Vercel must use the fail-safe explicit ignored-build gate'
 );
 assert.ok(exists('scripts/vercel-ignore-build.js'), 'Vercel ignored-build gate is missing');
+const ignoreGate = read('scripts/vercel-ignore-build.js');
+assert.match(ignoreGate, /function hasExplicitSkip\(/);
+assert.match(ignoreGate, /metadata-only HEAD is not implicitly safe to skip/);
 
 const packageJson = JSON.parse(read('package.json'));
 assert.match(packageJson.scripts?.build || '', /pnpm run test:deploy/, 'Vercel build must use the focused deploy gate');
