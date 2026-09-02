@@ -27,8 +27,8 @@ assert.match(html, /id="sidebarCollapse"/);
 assert.match(html, /\/sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/);
 assert.match(html, /aria-label="Minimizo menynë"/);
 assert.match(html, /class="nav-item is-active" href="\/recetat\.html" aria-current="page"/);
-assert.match(html, /recetat-v2\.css\?v=14/);
-assert.match(html, /recetat-v2\.js\?v=14/);
+assert.match(html, /recetat-v2\.css\?v=15/);
+assert.match(html, /recetat-v2\.js\?v=15/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/);
 
 [
@@ -45,9 +45,9 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
   .map(match => match[1]);
 
 assert.equal(styles.length, 2, 'Recetat V2 must load only page CSS + shared Stripe shell');
-assert.equal(styles[0], '/recetat-v2.css?v=14');
+assert.equal(styles[0], '/recetat-v2.css?v=15');
 assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8');
-assert.deepEqual(scripts, ['/recetat-v2.js?v=14']);
+assert.deepEqual(scripts, ['/recetat-v2.js?v=15']);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|recetat\.css|recetat-audit\.css|recetat-style-loader\.js|recetat\.js/);
 
 assert.match(css, /Recetat V2 — consolidated prescription workspace/);
@@ -56,6 +56,13 @@ assert.match(css, /Recetat V2 — clinical workspace polish v3/);
 assert.match(css, /Recetat V2 — electronic prescription workflow v4/);
 assert.match(css, /Recetat V2 — clinical drug search v5/);
 assert.match(css, /Recetat V2 — Stripe-inspired visual system & typography v8/);
+assert.match(css, /Recetat V2 — premium Stripe-inspired clinical workspace v15/);
+assert.match(css, /--rx15-accent:#635bff/);
+assert.match(css, /grid-template-columns:minmax\(0,1\.2fr\) minmax\(390px,\.8fr\)/);
+assert.match(css, /position:sticky!important/);
+assert.match(css, /font-size:32px!important/);
+assert.match(css, /\.rx-saved-card-head h3/);
+assert.match(css, /\.rx-dialog h2/);
 assert.match(css, /--accent:#635bff/);
 assert.match(css, /font-size:32px/);
 assert.match(css, /\.rx-order-builder-head h3\{color:#0a2540;font-size:14px/);
