@@ -1180,6 +1180,136 @@ html.medindex-tailadmin[data-mi-page="recetat"] .rx-dialog > div { display:flex;
 }
 
 
+/* Recetat V2 — clinical context precision polish v9 */
+.rx-clinical-context{
+  position:relative;
+  overflow:hidden;
+  border-color:#e4e7ed;
+  border-radius:12px;
+  background:linear-gradient(180deg,#fcfbff 0%,#fff 56%);
+  box-shadow:inset 3px 0 0 #635bff,0 1px 2px rgba(10,37,64,.025);
+}
+.rx-clinical-context::after{
+  content:"";
+  position:absolute;
+  inset:0 0 auto 3px;
+  height:1px;
+  background:linear-gradient(90deg,rgba(99,91,255,.34),rgba(99,91,255,0));
+  pointer-events:none;
+}
+.rx-context-heading{gap:12px}
+.rx-context-heading>div{min-width:0}
+.rx-context-kicker{color:#635bff;font-size:9.5px;font-weight:750;letter-spacing:.075em}
+.rx-context-heading strong{color:#0a2540;font-size:13.5px;font-weight:650;letter-spacing:-.015em}
+.rx-context-source{max-width:620px;color:#697386;font-size:10px;line-height:1.45}
+.rx-context-readiness{min-height:25px;padding:0 8px;border:1px solid transparent;font-size:9.5px;font-weight:650}
+.rx-context-readiness.is-neutral{border-color:#ddd9ff;background:#f5f3ff;color:#5145cd}
+.rx-context-readiness.is-ready{border-color:#cdebdc;background:#effaf5;color:#087443}
+.rx-context-readiness.is-incomplete{border-color:#f0dcc2;background:#fff8ef;color:#95500b}
+
+.rx-category-grid{gap:7px}
+.rx-category-button,.rx-pediatric-toggle{
+  border-color:#e4e8ee;
+  border-radius:9px;
+  background:#fff;
+  box-shadow:0 1px 1px rgba(10,37,64,.018);
+  transition:border-color .12s ease,background .12s ease,box-shadow .12s ease,transform .12s ease;
+}
+.rx-category-button{min-height:66px;grid-template-columns:32px minmax(0,1fr) 18px;gap:8px;padding:9px 10px}
+.rx-category-button:hover,.rx-pediatric-toggle:hover{border-color:#c8c3ff;background:#faf9ff;box-shadow:0 3px 10px rgba(10,37,64,.035)}
+.rx-category-button.is-active,.rx-pediatric-toggle.is-active{
+  border-color:#aaa4ff;
+  background:linear-gradient(180deg,#f8f7ff,#fff);
+  box-shadow:0 0 0 2px rgba(99,91,255,.055),0 4px 12px rgba(10,37,64,.035);
+}
+.rx-category-button:disabled{opacity:.56}
+.rx-category-button.is-active:disabled{opacity:1}
+.rx-context-icon{width:32px;height:32px;border-radius:8px;background:#f1efff;color:#635bff}
+.rx-category-button strong,.rx-pediatric-toggle strong{color:#243b53;font-size:12px;font-weight:650}
+.rx-category-button small,.rx-pediatric-toggle small{color:#748095;font-size:9.5px;line-height:1.4}
+.rx-category-button.is-active small,.rx-pediatric-toggle.is-active small{color:#655e9e;font-weight:500}
+.rx-context-state{width:18px;height:18px;font-size:9px}
+.rx-category-button.is-active .rx-context-state,.rx-pediatric-toggle.is-active .rx-context-state{background:#635bff;color:#fff}
+
+.rx-context-lower{gap:8px}
+.rx-context-panel{
+  gap:8px;
+  padding:10px;
+  border-color:#e5e9ef;
+  border-radius:9px;
+  background:#f8fafc;
+}
+.rx-context-field>label,.rx-context-field>legend{margin-bottom:6px;color:#425466;font-size:10.5px;font-weight:650}
+.rx-route-segments{min-height:41px;border-color:#dfe5ec;border-radius:8px;background:#fff}
+.rx-route-segments button{min-height:41px;padding:6px 8px;color:#697386}
+.rx-route-segments button strong{font-size:11.5px;font-weight:650}
+.rx-route-segments button small{font-size:9px}
+.rx-route-segments button:hover{background:#f7f5ff;color:#5145cd}
+.rx-route-segments button.is-selected{background:#635bff;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.rx-route-segments.has-error{border-color:#d68c3a;box-shadow:0 0 0 2px rgba(214,140,58,.09)}
+.rx-route-placeholder{min-height:41px;color:#8792a2;font-size:10px}
+
+.rx-context-guidance{
+  min-height:40px;
+  grid-template-columns:18px minmax(0,1fr);
+  gap:8px;
+  padding:8px 9px;
+  border-color:#e5e9ef;
+  border-radius:8px;
+  background:#fff;
+  color:#697386;
+  font-size:9.75px;
+  line-height:1.48;
+}
+.rx-context-guidance-icon{color:#635bff}
+.rx-pediatric-toggle{min-height:66px;grid-template-columns:36px minmax(0,1fr) 18px;gap:8px;padding:9px 10px}
+.rx-pediatric-toggle .rx-context-icon{width:36px;height:36px}
+.rx-input-combo{min-height:41px;border-color:#dfe5ec;border-radius:8px;background:#fff}
+.rx-input-combo input,.rx-input-combo select{min-height:39px;color:#0a2540;font-size:12.5px;font-weight:400}
+.rx-input-suffix{min-width:42px;color:#697386;font-size:10.5px;font-weight:650}
+.rx-context-summary{
+  min-height:41px;
+  padding:8px 9px;
+  border-radius:8px;
+  font-size:10px;
+  line-height:1.42;
+}
+.rx-context-summary:not(.is-incomplete){border-color:#ddd9ff;background:#f8f7ff;color:#5145cd}
+.rx-context-summary.is-incomplete{border-color:#f0dcc2;background:#fff8ef;color:#95500b}
+.rx-category-button:focus-visible,.rx-pediatric-toggle:focus-visible,.rx-route-segments button:focus-visible,
+.rx-context-field input:focus-visible,.rx-context-field select:focus-visible{
+  outline:0;
+  box-shadow:0 0 0 3px rgba(99,91,255,.14);
+}
+.rx-preview-context{
+  gap:11px;
+  margin-bottom:12px;
+  padding:12px;
+  border-color:#e0ddff;
+  border-radius:10px;
+  background:#faf9ff;
+}
+.rx-preview-context header{grid-template-columns:28px minmax(0,1fr);gap:8px}
+.rx-preview-context header>span{width:28px;height:28px;border-radius:8px;background:#efedff;color:#635bff}
+.rx-preview-context header strong{color:#0a2540;font-size:11.5px;font-weight:650}
+.rx-preview-context header small{color:#697386;font-size:9.75px}
+.rx-preview-context dt{color:#8792a2;font-size:9.5px}
+.rx-preview-context dd{color:#425466;font-size:10px;font-weight:650}
+.rx-preview-context.is-incomplete{border-color:#f0dcc2;background:#fffaf3}
+.rx-preview-context.is-incomplete header>span{background:#fff0dc;color:#9a5b13}
+
+@media(max-width:760px){
+  .rx-clinical-context{padding:10px;border-radius:11px}
+  .rx-context-heading{align-items:flex-start}
+  .rx-context-heading strong{font-size:13px}
+  .rx-context-source{font-size:9.75px}
+  .rx-category-button,.rx-pediatric-toggle{min-height:60px}
+  .rx-category-button small{display:none}
+  .rx-route-segments button{min-height:44px}
+  .rx-input-combo input,.rx-input-combo select{font-size:16px}
+}
+
+
 .rx-protocol-import{
   display:grid;
   grid-template-columns:minmax(0,1fr) auto;
@@ -2494,179 +2624,6 @@ html.medindex-tailadmin[data-mi-page="recetat"] .rx-drug-result-action b{
 }
 
 
-/* Recetat V2 — persistent desktop mini-sidebar v10 */
-html.drx-unified-sidebar{
-  --drx-shell-sidebar-collapsed-width:76px;
-}
-html.drx-unified-sidebar .brand-mark{display:none!important}
-html.drx-unified-sidebar .sidebar-collapse{
-  box-sizing:border-box;
-  width:30px;
-  height:30px;
-  min-width:30px;
-  display:grid;
-  place-items:center;
-  padding:0;
-  border:1px solid rgba(255,255,255,.13);
-  border-radius:8px;
-  background:rgba(255,255,255,.055);
-  color:rgba(255,255,255,.72);
-  box-shadow:none;
-  cursor:pointer;
-  transition:background .14s ease,color .14s ease,border-color .14s ease,transform .18s ease;
-}
-html.drx-unified-sidebar .sidebar-collapse:hover{
-  border-color:rgba(255,255,255,.22);
-  background:rgba(255,255,255,.105);
-  color:#fff;
-}
-html.drx-unified-sidebar .sidebar-collapse:focus-visible{
-  outline:0;
-  border-color:rgba(162,155,255,.8);
-  box-shadow:0 0 0 3px rgba(162,155,255,.18);
-}
-html.drx-unified-sidebar .sidebar-collapse .icon{
-  width:16px;
-  height:16px;
-  transition:transform .18s cubic-bezier(.2,.8,.2,1);
-}
-
-@media(min-width:1025px){
-  html.drx-unified-sidebar .sidebar,
-  html.drx-unified-sidebar .main-shell{
-    transition:
-      width .18s cubic-bezier(.2,.8,.2,1),
-      min-width .18s cubic-bezier(.2,.8,.2,1),
-      margin-left .18s cubic-bezier(.2,.8,.2,1),
-      padding .18s cubic-bezier(.2,.8,.2,1)!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar{
-    width:var(--drx-shell-sidebar-collapsed-width)!important;
-    min-width:var(--drx-shell-sidebar-collapsed-width)!important;
-    padding:18px 10px 14px!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .main-shell{
-    margin-left:var(--drx-shell-sidebar-collapsed-width)!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-head{
-    min-height:54px!important;
-    gap:6px!important;
-    justify-content:center!important;
-    padding:0 0 12px!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar .brand{
-    width:30px!important;
-    min-width:30px!important;
-    display:grid!important;
-    place-items:center!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar .brand-full{display:none!important}
-  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar .brand-mark{
-    width:30px!important;
-    height:30px!important;
-    display:block!important;
-    object-fit:contain!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-collapse .icon{
-    transform:rotate(180deg);
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-stack{
-    padding:10px 0 18px!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-label{
-    display:none!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-item,
-  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-summary{
-    width:44px!important;
-    min-width:44px!important;
-    min-height:42px!important;
-    justify-content:center!important;
-    gap:0!important;
-    margin-inline:auto!important;
-    padding:0!important;
-    border-radius:9px!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-item .nav-icon{
-    width:24px!important;
-    height:24px!important;
-    flex:0 0 24px!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-item .nav-icon .icon{
-    width:18px!important;
-    height:18px!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-item > span:not(.nav-icon):not(.nav-count),
-  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-summary-chevron{
-    position:absolute!important;
-    width:1px!important;
-    height:1px!important;
-    padding:0!important;
-    margin:-1px!important;
-    overflow:hidden!important;
-    clip:rect(0,0,0,0)!important;
-    clip-path:inset(50%)!important;
-    white-space:nowrap!important;
-    border:0!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-count{
-    display:none!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-group{
-    width:100%!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .nav-group > :not(.nav-summary){
-    display:none!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-foot{
-    gap:8px!important;
-    padding-top:12px!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-foot .drx-user-card{
-    width:44px!important;
-    min-width:44px!important;
-    min-height:44px!important;
-    grid-template-columns:1fr!important;
-    place-items:center!important;
-    gap:0!important;
-    margin-inline:auto!important;
-    padding:0!important;
-    border-radius:10px!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-foot .drx-user-copy,
-  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-foot .drx-user-arrow{
-    display:none!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-foot .drx-user-avatar{
-    width:34px!important;
-    height:34px!important;
-    min-width:34px!important;
-    margin:0!important;
-  }
-  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-foot .logout-button{
-    width:44px!important;
-    min-width:44px!important;
-    min-height:42px!important;
-    margin-inline:auto!important;
-    padding:0!important;
-    justify-content:center!important;
-    border-radius:9px!important;
-  }
-}
-@media(max-width:1024px){
-  html.drx-unified-sidebar .sidebar-collapse{display:none!important}
-  html.drx-unified-sidebar .brand-mark{display:none!important}
-}
-@media(prefers-reduced-motion:reduce){
-  html.drx-unified-sidebar .sidebar-collapse,
-  html.drx-unified-sidebar .sidebar-collapse .icon,
-  html.drx-unified-sidebar .sidebar,
-  html.drx-unified-sidebar .main-shell{
-    transition:none!important;
-  }
-}
-
-
 /* Recetat V2 — premium Stripe-inspired clinical workspace v15
    Uses the repo's local Inter asset + existing TailAdmin shell; no runtime UI dependency. */
 html.drx-unified-sidebar[data-drx-app="recetat-v2"]{
@@ -3658,4 +3615,216 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] button:not(:disabled){cursor
     animation-duration:.01ms!important;
     animation-iteration-count:1!important;
   }
+}
+
+
+/* Recetat V2 — final UI coherence pass v16 */
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .topbar{
+  min-height:58px!important;
+  border-bottom-color:#edf0f4!important;
+  background:rgba(255,255,255,.86)!important;
+  backdrop-filter:blur(14px) saturate(135%)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .breadcrumbs{
+  color:#8792a2!important;
+  font-size:11px!important;
+  font-weight:500!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .breadcrumbs strong{
+  color:#425466!important;
+  font-weight:650!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .sync-pill{
+  min-height:28px!important;
+  padding:0 9px!important;
+  border:1px solid #e4e8ee!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  color:#697386!important;
+  font-size:9.5px!important;
+  font-weight:600!important;
+  box-shadow:0 1px 2px rgba(10,37,64,.02)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .drx-profile-chip{
+  border-color:#e4e8ee!important;
+  background:#fff!important;
+  box-shadow:0 1px 2px rgba(10,37,64,.025)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .drx-profile-copy strong{
+  color:#425466!important;
+  font-size:10.5px!important;
+  font-weight:650!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .drx-profile-copy small{
+  color:#8792a2!important;
+  font-size:9px!important;
+}
+
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-clinical-context{
+  margin:12px 18px 0!important;
+  padding:11px!important;
+  border-color:#e4e7ed!important;
+  background:linear-gradient(180deg,#fcfbff 0,#fff 60%)!important;
+  box-shadow:inset 3px 0 0 #635bff,0 1px 2px rgba(10,37,64,.025)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-context-kicker{color:#635bff!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-context-heading strong{color:#0a2540!important;font-weight:650!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-context-source{color:#697386!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-category-button,
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-pediatric-toggle{
+  border-color:#e4e8ee!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  box-shadow:0 1px 1px rgba(10,37,64,.018)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-category-button:hover,
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-pediatric-toggle:hover{
+  border-color:#c8c3ff!important;
+  background:#faf9ff!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-category-button.is-active,
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-pediatric-toggle.is-active{
+  border-color:#aaa4ff!important;
+  background:linear-gradient(180deg,#f8f7ff,#fff)!important;
+  box-shadow:0 0 0 2px rgba(99,91,255,.055)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-context-icon{
+  background:#f1efff!important;
+  color:#635bff!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-category-button.is-active .rx-context-state,
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-pediatric-toggle.is-active .rx-context-state{
+  background:#635bff!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-route-segments button.is-selected{
+  background:#635bff!important;
+  color:#fff!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-context-guidance-icon{color:#635bff!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-context-summary:not(.is-incomplete){
+  border-color:#ddd9ff!important;
+  background:#f8f7ff!important;
+  color:#5145cd!important;
+}
+
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] :is(.rx-icd-context,.rx-icd-recent,.rx-protocol-import,.rx-document-diagnoses){
+  border:1px solid #e2dfff!important;
+  border-radius:9px!important;
+  background:#faf9ff!important;
+  color:#5145cd!important;
+  box-shadow:none!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-icd-code,
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-icd-actions .is-primary{
+  border-color:#635bff!important;
+  background:#635bff!important;
+  color:#fff!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-review{
+  border:1px solid #e5e9ef!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-review.is-ready::before{background:#635bff!important}
+
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-free-text-panel>summary{
+  cursor:pointer!important;
+  user-select:none!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-free-text-panel>summary>span:last-child{
+  color:#8792a2!important;
+  transition:transform .14s ease,color .14s ease!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-free-text-panel[open]>summary>span:last-child{
+  color:#635bff!important;
+  transform:rotate(180deg)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-drug-search-loading{
+  position:relative!important;
+  overflow:hidden!important;
+  min-height:92px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px dashed #e0e5ec!important;
+  border-radius:9px!important;
+  background:#fbfcfe!important;
+  color:#697386!important;
+  font-size:10.5px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-drug-search-loading::after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  background:linear-gradient(105deg,transparent 35%,rgba(99,91,255,.055) 50%,transparent 65%)!important;
+  transform:translateX(-100%)!important;
+  animation:rx15-shimmer 1.35s ease-in-out infinite!important;
+}
+@keyframes rx15-shimmer{to{transform:translateX(100%)}}
+
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-dialog-overlay{
+  padding:max(18px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-dialog{
+  max-height:min(720px,calc(100dvh - 36px))!important;
+  overflow:auto!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-dialog>div:last-child{
+  gap:7px!important;
+  margin-top:16px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-toast{
+  bottom:max(20px,env(safe-area-inset-bottom))!important;
+  right:max(20px,env(safe-area-inset-right))!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-saved-actions button.danger{
+  color:#b42318!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-saved-actions button.danger:hover{
+  border-color:#f0c7c3!important;
+  background:#fff6f5!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] :is(.rx-order-card,.rx-saved-card,.rx-drug-result){
+  will-change:transform;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] :is(.rx-order-card,.rx-saved-card,.rx-drug-result):focus-within{
+  border-color:#aaa4ff!important;
+  box-shadow:0 0 0 3px rgba(99,91,255,.08)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-library-count{
+  border-color:#e4e8ee!important;
+  background:#fff!important;
+  color:#697386!important;
+  font-weight:550!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-library-count b{
+  color:#425466!important;
+  font-weight:700!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-page-footer{
+  border-top-color:#edf0f3!important;
+}
+
+@media(max-width:760px){
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .topbar{min-height:56px!important}
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-clinical-context{margin-inline:13px!important}
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-drug-popover{
+    inset:max(60px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom))!important;
+    max-height:none!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-dialog{
+    width:100%!important;
+    max-height:calc(100dvh - 24px)!important;
+    padding:17px!important;
+    border-radius:13px!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-toast{
+    left:10px!important;
+    right:10px!important;
+    bottom:max(10px,env(safe-area-inset-bottom))!important;
+    max-width:none!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-drug-search-loading::after{animation:none!important}
 }
