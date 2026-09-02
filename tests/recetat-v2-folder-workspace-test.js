@@ -9,6 +9,7 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const html = read('recetat.html');
 const css = read('recetat-v2.css');
+const stripe = read('drx-dashboard-stripe.css');
 const js = read('recetat-v2.js');
 const library = read('lib/user-library.js');
 const libraryClient = read('user-library-client.js');
@@ -25,9 +26,9 @@ assert.match(html, /\/brand\/drx-mark-on-dark\.svg/);
 assert.match(html, /id="sidebarCollapse"/);
 assert.match(html, /aria-label="Minimizo menynë"/);
 assert.match(html, /class="nav-item is-active" href="\/recetat\.html" aria-current="page"/);
-assert.match(html, /recetat-v2\.css\?v=11/);
-assert.match(html, /recetat-v2\.js\?v=11/);
-assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/);
+assert.match(html, /recetat-v2\.css\?v=12/);
+assert.match(html, /recetat-v2\.js\?v=12/);
+assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v7/);
 
 [
   'rxSavedCount','rxFolderCount','rxActiveChapterCount','rxLibraryState',
@@ -43,9 +44,9 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
   .map(match => match[1]);
 
 assert.equal(styles.length, 2, 'Recetat V2 must load only page CSS + shared Stripe shell');
-assert.equal(styles[0], '/recetat-v2.css?v=11');
-assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6');
-assert.deepEqual(scripts, ['/recetat-v2.js?v=11']);
+assert.equal(styles[0], '/recetat-v2.css?v=12');
+assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v7');
+assert.deepEqual(scripts, ['/recetat-v2.js?v=12']);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|recetat\.css|recetat-audit\.css|recetat-style-loader\.js|recetat\.js/);
 
 assert.match(css, /Recetat V2 — consolidated prescription workspace/);
@@ -75,6 +76,10 @@ assert.match(css, /\.rx-saved-chapter/);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /prefers-reduced-motion:reduce/);
 assert.match(css, /Recetat V2 — persistent desktop mini-sidebar v10/);
+assert.match(stripe, /DRx canonical collapsible sidebar v7/);
+assert.match(stripe, /drx-sidebar-collapsed \.sidebar/);
+assert.match(stripe, /drx-sidebar-collapsed \.main-shell/);
+assert.match(stripe, /--drx-shell-sidebar-collapsed-width:76px/);
 assert.match(css, /--drx-shell-sidebar-collapsed-width:76px/);
 assert.match(css, /drx-sidebar-collapsed \.sidebar/);
 assert.match(css, /drx-sidebar-collapsed \.main-shell/);
