@@ -3,7 +3,7 @@
 'use strict';
 
 const VERSION = 'workspace-coherence-v8';
-const CACHE_EPOCH = '20260902-shell-v8-sidebar-v5-recetat-v16';
+const CACHE_EPOCH = '20260902-shell-v8-sidebar-v6-recetat-v17';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
 const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
