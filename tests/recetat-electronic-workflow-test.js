@@ -52,6 +52,15 @@ assert.match(js, /function syncClinicalContextForDrug\(/);
 assert.match(js, /Rruga u zgjodh automatikisht/);
 assert.match(js, /pendingRouteDrug/);
 assert.match(js, /refreshForContext:refreshPayloadForContext/);
+assert.match(js, /loadForDrug/);
+assert.match(js, /setProductConstraint/);
+assert.match(js, /Auto nga bari/);
+assert.match(js, /Rruga zgjidhet nga bari/);
+assert.match(js, /populationCompatibilityForDrug/);
+assert.match(js, /adult-only/);
+assert.match(js, /pediatric-only/);
+assert.match(js, /Rruga u zgjodh automatikisht nga produkti/);
+assert.doesNotMatch(js, /fetch\('\/api\/dosage'\s*,/, 'Recetat V2 must not fetch the full dosage dataset on the normal path');
 assert.doesNotThrow(() => new Function(js));
 
 assert.match(gemini, /DEFAULT_MODEL = 'gemini-3\.7-flash'/);
