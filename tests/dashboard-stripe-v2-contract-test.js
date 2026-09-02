@@ -28,7 +28,7 @@ for (const file of pages) {
 
   const base = styles.findIndex(href => /tailadmin-medindex\.css/.test(href));
   const professional = styles.findIndex(href => /tailadmin-professional\.css/.test(href));
-  const stripeIndex = styles.findIndex(href => /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/.test(href));
+  const stripeIndex = styles.findIndex(href => /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/.test(href));
 
   assert.ok(base >= 0, `${file}: TailAdmin base CSS is missing`);
   assert.ok(professional > base, `${file}: professional compatibility CSS must follow base`);
@@ -45,7 +45,7 @@ const icdCss = read('icd-v2.css');
 assert.match(icdHtml, /data-drx-app="icd-v2"/);
 assert.match(icdHtml, /<meta name="theme-color" content="#1c1e54">/);
 assert.match(icdHtml, /icd-v2\.css\?v=[^"'\s>]+/);
-assert.match(icdHtml, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/);
+assert.match(icdHtml, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/);
 assert.match(icdHtml, /drx-unified-sidebar/);
 assert.match(icdHtml, /icd-v2\.js\?v=[^"'\s>]+/);
 assert.doesNotMatch(icdHtml, /tailadmin-medindex\.css|tailadmin-professional\.css|tailadmin-shell\.js/);
@@ -66,13 +66,14 @@ for (const [htmlFile, cssFile, jsFile, markerName] of [
   const js = read(jsFile);
   const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)].map(match => match[1]);
   const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map(match => match[1]);
-  const pageRuntimes = scripts.filter(src => !/phase9-personal-entities-client\.js/.test(src));
+  const pageRuntimes = scripts.filter(src => !/phase9-personal-entities-client\.js|sidebar-taxonomy-v3\.js/.test(src));
   assert.match(html, new RegExp(`data-drx-app="${markerName}"`));
   assert.equal(styles.length, 2, `${htmlFile}: standalone V2 must load page CSS plus shared Stripe shell CSS`);
   assert.match(html, /drx-unified-sidebar/, `${htmlFile}: unified sidebar marker missing`);
+  assert.match(html, /\/sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/, `${htmlFile}: shared sidebar runtime missing`);
   assert.equal(pageRuntimes.length, 1, `${htmlFile}: standalone V2 must own one page runtime`);
   assert.ok(styles[0].includes(cssFile), `${htmlFile}: unexpected page stylesheet owner`);
-  assert.ok(/drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/.test(styles[1]), `${htmlFile}: shared Stripe shell must load last`);
+  assert.ok(/drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/.test(styles[1]), `${htmlFile}: shared Stripe shell must load last`);
   assert.ok(pageRuntimes[0].includes(jsFile), `${htmlFile}: unexpected runtime owner`);
   assert.doesNotMatch(html, /tailadmin-|auth-client|emergency-curriculum|clinical-knowledge\.css|medical-hub\.css/);
   assert.ok(css.length > 500, `${cssFile}: standalone page stylesheet is unexpectedly empty`);
