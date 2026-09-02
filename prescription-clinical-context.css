@@ -114,3 +114,133 @@
   .rx-route-segments button{min-height:44px}
   .rx-input-combo input,.rx-input-combo select{font-size:16px}
 }
+
+
+/* Recetat V2 — clinical context precision polish v9 */
+.rx-clinical-context{
+  position:relative;
+  overflow:hidden;
+  border-color:#e4e7ed;
+  border-radius:12px;
+  background:linear-gradient(180deg,#fcfbff 0%,#fff 56%);
+  box-shadow:inset 3px 0 0 #635bff,0 1px 2px rgba(10,37,64,.025);
+}
+.rx-clinical-context::after{
+  content:"";
+  position:absolute;
+  inset:0 0 auto 3px;
+  height:1px;
+  background:linear-gradient(90deg,rgba(99,91,255,.34),rgba(99,91,255,0));
+  pointer-events:none;
+}
+.rx-context-heading{gap:12px}
+.rx-context-heading>div{min-width:0}
+.rx-context-kicker{color:#635bff;font-size:9.5px;font-weight:750;letter-spacing:.075em}
+.rx-context-heading strong{color:#0a2540;font-size:13.5px;font-weight:650;letter-spacing:-.015em}
+.rx-context-source{max-width:620px;color:#697386;font-size:10px;line-height:1.45}
+.rx-context-readiness{min-height:25px;padding:0 8px;border:1px solid transparent;font-size:9.5px;font-weight:650}
+.rx-context-readiness.is-neutral{border-color:#ddd9ff;background:#f5f3ff;color:#5145cd}
+.rx-context-readiness.is-ready{border-color:#cdebdc;background:#effaf5;color:#087443}
+.rx-context-readiness.is-incomplete{border-color:#f0dcc2;background:#fff8ef;color:#95500b}
+
+.rx-category-grid{gap:7px}
+.rx-category-button,.rx-pediatric-toggle{
+  border-color:#e4e8ee;
+  border-radius:9px;
+  background:#fff;
+  box-shadow:0 1px 1px rgba(10,37,64,.018);
+  transition:border-color .12s ease,background .12s ease,box-shadow .12s ease,transform .12s ease;
+}
+.rx-category-button{min-height:66px;grid-template-columns:32px minmax(0,1fr) 18px;gap:8px;padding:9px 10px}
+.rx-category-button:hover,.rx-pediatric-toggle:hover{border-color:#c8c3ff;background:#faf9ff;box-shadow:0 3px 10px rgba(10,37,64,.035)}
+.rx-category-button.is-active,.rx-pediatric-toggle.is-active{
+  border-color:#aaa4ff;
+  background:linear-gradient(180deg,#f8f7ff,#fff);
+  box-shadow:0 0 0 2px rgba(99,91,255,.055),0 4px 12px rgba(10,37,64,.035);
+}
+.rx-category-button:disabled{opacity:.56}
+.rx-category-button.is-active:disabled{opacity:1}
+.rx-context-icon{width:32px;height:32px;border-radius:8px;background:#f1efff;color:#635bff}
+.rx-category-button strong,.rx-pediatric-toggle strong{color:#243b53;font-size:12px;font-weight:650}
+.rx-category-button small,.rx-pediatric-toggle small{color:#748095;font-size:9.5px;line-height:1.4}
+.rx-category-button.is-active small,.rx-pediatric-toggle.is-active small{color:#655e9e;font-weight:500}
+.rx-context-state{width:18px;height:18px;font-size:9px}
+.rx-category-button.is-active .rx-context-state,.rx-pediatric-toggle.is-active .rx-context-state{background:#635bff;color:#fff}
+
+.rx-context-lower{gap:8px}
+.rx-context-panel{
+  gap:8px;
+  padding:10px;
+  border-color:#e5e9ef;
+  border-radius:9px;
+  background:#f8fafc;
+}
+.rx-context-field>label,.rx-context-field>legend{margin-bottom:6px;color:#425466;font-size:10.5px;font-weight:650}
+.rx-route-segments{min-height:41px;border-color:#dfe5ec;border-radius:8px;background:#fff}
+.rx-route-segments button{min-height:41px;padding:6px 8px;color:#697386}
+.rx-route-segments button strong{font-size:11.5px;font-weight:650}
+.rx-route-segments button small{font-size:9px}
+.rx-route-segments button:hover{background:#f7f5ff;color:#5145cd}
+.rx-route-segments button.is-selected{background:#635bff;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.rx-route-segments.has-error{border-color:#d68c3a;box-shadow:0 0 0 2px rgba(214,140,58,.09)}
+.rx-route-placeholder{min-height:41px;color:#8792a2;font-size:10px}
+
+.rx-context-guidance{
+  min-height:40px;
+  grid-template-columns:18px minmax(0,1fr);
+  gap:8px;
+  padding:8px 9px;
+  border-color:#e5e9ef;
+  border-radius:8px;
+  background:#fff;
+  color:#697386;
+  font-size:9.75px;
+  line-height:1.48;
+}
+.rx-context-guidance-icon{color:#635bff}
+.rx-pediatric-toggle{min-height:66px;grid-template-columns:36px minmax(0,1fr) 18px;gap:8px;padding:9px 10px}
+.rx-pediatric-toggle .rx-context-icon{width:36px;height:36px}
+.rx-input-combo{min-height:41px;border-color:#dfe5ec;border-radius:8px;background:#fff}
+.rx-input-combo input,.rx-input-combo select{min-height:39px;color:#0a2540;font-size:12.5px;font-weight:400}
+.rx-input-suffix{min-width:42px;color:#697386;font-size:10.5px;font-weight:650}
+.rx-context-summary{
+  min-height:41px;
+  padding:8px 9px;
+  border-radius:8px;
+  font-size:10px;
+  line-height:1.42;
+}
+.rx-context-summary:not(.is-incomplete){border-color:#ddd9ff;background:#f8f7ff;color:#5145cd}
+.rx-context-summary.is-incomplete{border-color:#f0dcc2;background:#fff8ef;color:#95500b}
+.rx-category-button:focus-visible,.rx-pediatric-toggle:focus-visible,.rx-route-segments button:focus-visible,
+.rx-context-field input:focus-visible,.rx-context-field select:focus-visible{
+  outline:0;
+  box-shadow:0 0 0 3px rgba(99,91,255,.14);
+}
+.rx-preview-context{
+  gap:11px;
+  margin-bottom:12px;
+  padding:12px;
+  border-color:#e0ddff;
+  border-radius:10px;
+  background:#faf9ff;
+}
+.rx-preview-context header{grid-template-columns:28px minmax(0,1fr);gap:8px}
+.rx-preview-context header>span{width:28px;height:28px;border-radius:8px;background:#efedff;color:#635bff}
+.rx-preview-context header strong{color:#0a2540;font-size:11.5px;font-weight:650}
+.rx-preview-context header small{color:#697386;font-size:9.75px}
+.rx-preview-context dt{color:#8792a2;font-size:9.5px}
+.rx-preview-context dd{color:#425466;font-size:10px;font-weight:650}
+.rx-preview-context.is-incomplete{border-color:#f0dcc2;background:#fffaf3}
+.rx-preview-context.is-incomplete header>span{background:#fff0dc;color:#9a5b13}
+
+@media(max-width:760px){
+  .rx-clinical-context{padding:10px;border-radius:11px}
+  .rx-context-heading{align-items:flex-start}
+  .rx-context-heading strong{font-size:13px}
+  .rx-context-source{font-size:9.75px}
+  .rx-category-button,.rx-pediatric-toggle{min-height:60px}
+  .rx-category-button small{display:none}
+  .rx-route-segments button{min-height:44px}
+  .rx-input-combo input,.rx-input-combo select{font-size:16px}
+}
