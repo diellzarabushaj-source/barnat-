@@ -64,6 +64,8 @@
     const form = text(item?.form || item?.pharmaceuticalForm || item?.pharmaceutical_form || item?.['Forma farmaceutike'] || item?.['Forma']);
     return {
       key: text(item?.key || item?.drugKey || `${item?.pdid || item?.PDID || ''}|${tradeName}|${strength}`),
+      id: text(item?.id || item?.drugId),
+      drugId: text(item?.drugId || item?.id),
       tradeName,
       substance,
       strength,
