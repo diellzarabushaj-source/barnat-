@@ -36,7 +36,7 @@ assert.match(shared, /class="atc-sub-list"/);
 assert.match(shared, /class="atc-sub-link"/);
 assert.match(shared, /other\.open = false/);
 assert.match(shared, /window\.DRxSidebarTaxonomy/);
-assert.match(shared, /RUNTIME_VERSION = 'sidebar-taxonomy-v5'/);
+assert.match(shared, /RUNTIME_VERSION = 'sidebar-taxonomy-v6'/);
 assert.match(shared, /__DRX_SIDEBAR_TAXONOMY_RUNTIME__/);
 assert.match(shared, /SIDEBAR_COLLAPSE_KEY = 'drx_sidebar_collapsed_v2'/);
 assert.match(shared, /SIDEBAR_DESKTOP_QUERY = '\(min-width:1024px\)'/);
@@ -85,7 +85,7 @@ assert.match(shellCore, />PUNA IME<\/p>/);
 for (const file of ['registry-v2.js','classification-v2.js','icd-v2.js','dozologjia-v2.js','urgjencat-v2.js','analizat-v2.js','protokollet-v2.js','recetat-v2.js','medical-hub-v2.js','sistemi-v2.js']) {
   const source = read(file);
   assert.match(source, /function loadSharedSidebarTaxonomy\(\)/, `${file}: shared sidebar loader missing`);
-  assert.match(source, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/, `${file}: shared sidebar runtime missing`);
+  assert.match(source, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v6/, `${file}: shared sidebar runtime missing`);
 }
 
 for (const [file, runtime] of [
@@ -115,13 +115,13 @@ for (const [htmlFile, runtime, version] of [
     const match = html.match(new RegExp(runtime.replace('.', '\\.') + '\\?v=(\\d+)'));
     assert.ok(match && Number(match[1]) >= 4, `${htmlFile}: runtime version must not regress below v4`);
   }
-  assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/, `${runtime}: shared taxonomy loader missing`);
+  assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v6/, `${runtime}: shared taxonomy loader missing`);
 }
 
 for (const file of ['index.html','klasifikimi.html','icd.html','dozologjia.html','urgjencat.html','analizat.html','protokollet.html','recetat.html','medical-hub.html','sistemi.html']) {
   const html = read(file);
   assert.match(html, /drx-unified-sidebar/, `${file}: unified standalone sidebar marker missing`);
-  assert.match(html, /\/sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/, `${file}: direct shared sidebar runtime missing`);
+  assert.match(html, /\/sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v6/, `${file}: direct shared sidebar runtime missing`);
   assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/, `${file}: shared Stripe sidebar authority missing`);
   assert.match(html, /href="\/index\.html#favorites"[^>]*data-personal-nav="favorites"/, `${file}: Favorites navigation missing`);
   assert.match(html, /href="\/index\.html#notes"[^>]*data-personal-nav="notes"/, `${file}: Notes navigation missing`);
