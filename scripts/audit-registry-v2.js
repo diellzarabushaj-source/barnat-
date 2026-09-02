@@ -53,7 +53,7 @@ assert(stylesheetLinks.length === 3, `Registry v2 must load registry CSS, dose-c
 assert(scriptSources.length === 4, `Registry v2 must load dose core/runtime, registry runtime and calculator runtime; found ${scriptSources.length}.`);
 assert(stylesheetLinks[0].startsWith('/registry-v2.css'), 'Unexpected registry page stylesheet authority.');
 assert(stylesheetLinks[1].startsWith('/registry-v2-dose-calculator.css'), 'Dose calculator stylesheet must remain second.');
-assert(stylesheetLinks[2] === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6', 'Shared Stripe shell v6 must load last.');
+assert(stylesheetLinks[2] === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v7', 'Shared Stripe shell v7 must load last.');
 assert(scriptSources[0].startsWith('/dose-core.js'), 'Dose core must load first.');
 assert(scriptSources[1].startsWith('/dose-runtime-browser.js'), 'Dose browser runtime must load after dose core.');
 assert(scriptSources[2].startsWith('/registry-v2.js'), 'Registry runtime must load after dose runtime.');
@@ -108,7 +108,7 @@ console.log(JSON.stringify({
   architecture:'registry-v2',
   stylesheets:stylesheetLinks,
   scripts:scriptSources,
-  shellVersion:'drx-dashboard-stripe-v6',
+  shellVersion:'drx-dashboard-stripe-v7',
   tableHeaderCount,
   legacyAssetsLoaded:0,
 }, null, 2));
