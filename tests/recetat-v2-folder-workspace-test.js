@@ -25,8 +25,8 @@ assert.match(html, /\/brand\/drx-mark-on-dark\.svg/);
 assert.match(html, /id="sidebarCollapse"/);
 assert.match(html, /aria-label="Minimizo menynë"/);
 assert.match(html, /class="nav-item is-active" href="\/recetat\.html" aria-current="page"/);
-assert.match(html, /recetat-v2\.css\?v=10/);
-assert.match(html, /recetat-v2\.js\?v=10/);
+assert.match(html, /recetat-v2\.css\?v=11/);
+assert.match(html, /recetat-v2\.js\?v=11/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/);
 
 [
@@ -43,9 +43,9 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
   .map(match => match[1]);
 
 assert.equal(styles.length, 2, 'Recetat V2 must load only page CSS + shared Stripe shell');
-assert.equal(styles[0], '/recetat-v2.css?v=10');
+assert.equal(styles[0], '/recetat-v2.css?v=11');
 assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6');
-assert.deepEqual(scripts, ['/recetat-v2.js?v=10']);
+assert.deepEqual(scripts, ['/recetat-v2.js?v=11']);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|recetat\.css|recetat-audit\.css|recetat-style-loader\.js|recetat\.js/);
 
 assert.match(css, /Recetat V2 — consolidated prescription workspace/);
