@@ -14,7 +14,7 @@
   const ICD_CACHE_TTL = 10 * 60 * 1000;
   const ICD_API = '/api/icd?view=nav';
   const ATC_DATA_SRC = '/classification-data.js?v=atc-catalog-v2';
-  const CANONICAL_WORKER_URL = '/sw.js?v=drx-workspace-v7';
+  const CANONICAL_WORKER_URL = '/sw.js?v=drx-workspace-v8';
   const PERSONAL_SUMMARY_API = '/api/user-library?view=summary';
   const PERSONAL_COUNT_CACHE_KEY = 'drx_personal_sidebar_counts_v1';
   const PERSONAL_COUNT_TTL = 30 * 1000;
