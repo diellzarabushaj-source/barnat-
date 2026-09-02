@@ -26,3 +26,91 @@
 @media(max-width:720px){.rx-clinical-context{padding:11px;border-radius:14px}.rx-category-grid{grid-template-columns:1fr 1fr;gap:8px}.rx-category-button{min-height:76px;grid-template-columns:32px minmax(0,1fr) 18px;padding:9px}.rx-context-icon{width:32px;height:32px}.rx-context-lower{grid-template-columns:1fr}.rx-pediatric-fields{grid-template-columns:1fr}.rx-context-summary{grid-column:auto}.rx-route-segments{grid-template-columns:repeat(2,minmax(0,1fr))}.rx-route-segments button:nth-child(2n){border-right:0}.rx-route-segments button{border-bottom:1px solid var(--med-border,#d7e1e5)}.rx-route-segments button:nth-last-child(-n+2){border-bottom:0}.rx-preview-context dl>div{grid-template-columns:82px minmax(0,1fr)}}
 @media(max-width:440px){.rx-category-grid{grid-template-columns:1fr}.rx-category-button{min-height:66px}.rx-route-segments{grid-template-columns:1fr}.rx-route-segments button{border-right:0;border-bottom:1px solid var(--med-border,#d7e1e5)}.rx-route-segments button:last-child{border-bottom:0}}
 @media print{.rx-clinical-context{display:none!important}.rx-preview-context{break-inside:avoid;border-color:#d6dadd;background:#fff}}
+
+/* Recetat V2 — Stripe-inspired clinical context typography v8 */
+.rx-clinical-context{
+  border-color:#e6e9ef;
+  border-radius:12px;
+  background:linear-gradient(180deg,#fbfaff 0%,#fff 62%);
+  box-shadow:inset 3px 0 0 rgba(99,91,255,.72);
+}
+.rx-context-heading{align-items:center}
+.rx-context-heading>div{gap:2px}
+.rx-context-kicker{color:#635bff;font-size:10px;font-weight:700;letter-spacing:.06em}
+.rx-context-heading strong{color:#0a2540;font-size:14px;font-weight:600;letter-spacing:-.012em}
+.rx-context-source{color:#697386;font-size:11px;font-weight:400;line-height:1.4}
+.rx-context-readiness{min-height:26px;padding:0 9px;font-size:10.5px;font-weight:600}
+.rx-context-readiness.is-neutral{background:#f1efff;color:#5145cd}
+.rx-context-readiness.is-ready{background:#ecfdf3;color:#087443}
+.rx-context-readiness.is-incomplete{background:#fff7ed;color:#9a4b08}
+.rx-category-grid{gap:8px}
+.rx-category-button{
+  min-height:70px;
+  grid-template-columns:34px minmax(0,1fr) 18px;
+  gap:9px;
+  padding:10px 11px;
+  border-color:#e6e9ef;
+  border-radius:10px;
+}
+.rx-category-button:hover,.rx-pediatric-toggle:hover{border-color:#c9c5ff;background:#faf9ff}
+.rx-category-button.is-active,.rx-pediatric-toggle.is-active{
+  border-color:#a9a4ff;
+  background:#f7f5ff;
+  box-shadow:0 0 0 2px rgba(99,91,255,.07);
+}
+.rx-context-icon{width:34px;height:34px;border-radius:9px;background:#f1efff;color:#635bff}
+.rx-category-button strong,.rx-pediatric-toggle strong{font-size:12.5px;font-weight:600;line-height:1.25}
+.rx-category-button small,.rx-pediatric-toggle small{
+  color:#697386;
+  font-size:10.5px;
+  font-weight:400;
+  line-height:1.35;
+}
+.rx-category-button.is-active small,.rx-pediatric-toggle.is-active small{color:#5b55a9;font-weight:500}
+.rx-context-state{width:18px;height:18px;font-size:10px}
+.rx-category-button.is-active .rx-context-state,.rx-pediatric-toggle.is-active .rx-context-state{background:#635bff}
+.rx-context-lower{gap:9px}
+.rx-context-panel{gap:9px;padding:10px;border-color:#e6e9ef;border-radius:10px;background:#f8fafc}
+.rx-context-field>label,.rx-context-field>legend{margin-bottom:6px;color:#425466;font-size:11.5px;font-weight:600}
+.rx-route-segments{min-height:42px;border-color:#e0e6ed;border-radius:9px}
+.rx-route-segments button{min-height:42px;padding:7px 8px}
+.rx-route-segments button strong{font-size:12px;font-weight:600}
+.rx-route-segments button small{font-size:9.5px;font-weight:400}
+.rx-route-segments button:hover{background:#f7f5ff;color:#5145cd}
+.rx-route-segments button.is-selected{background:#635bff;color:#fff}
+.rx-route-placeholder{min-height:42px;color:#697386;font-size:11px}
+.rx-context-guidance{
+  grid-template-columns:18px minmax(0,1fr);
+  gap:8px;
+  padding:8px 9px;
+  border-color:#e6e9ef;
+  border-radius:9px;
+  background:#fff;
+  color:#697386;
+  font-size:10.5px;
+  font-weight:400;
+  line-height:1.45;
+}
+.rx-context-guidance-icon{color:#635bff}
+.rx-pediatric-toggle{
+  min-height:70px;
+  grid-template-columns:38px minmax(0,1fr) 18px;
+  gap:9px;
+  padding:10px 11px;
+  border-color:#e6e9ef;
+  border-radius:10px;
+}
+.rx-pediatric-toggle .rx-context-icon{width:38px;height:38px}
+.rx-input-combo{min-height:42px;border-color:#dfe5ec;border-radius:9px}
+.rx-input-combo input,.rx-input-combo select{min-height:40px;color:#0a2540;font-size:13px;font-weight:400}
+.rx-context-summary{min-height:42px;padding:8px 10px;border-radius:9px;font-size:11px;font-weight:400}
+.rx-context-summary:not(.is-incomplete){border-color:#ddd9ff;background:#f8f7ff;color:#5145cd}
+@media(max-width:760px){
+  .rx-context-heading{align-items:flex-start}
+  .rx-context-heading strong{font-size:13.5px}
+  .rx-context-source{font-size:10.5px}
+  .rx-category-button,.rx-pediatric-toggle{min-height:62px}
+  .rx-category-button small{display:none}
+  .rx-route-segments button{min-height:44px}
+  .rx-input-combo input,.rx-input-combo select{font-size:16px}
+}
