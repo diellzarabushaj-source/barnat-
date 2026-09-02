@@ -8,7 +8,7 @@ const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const SHELL_VERSION = 'drx-dashboard-stripe-v8';
-const SIDEBAR_RUNTIME_VERSION = 'sidebar-taxonomy-v5';
+const SIDEBAR_RUNTIME_VERSION = 'sidebar-taxonomy-v6';
 const BRAND_RUNTIME_VERSION = 'drx-brand-v6';
 
 const workspaces = [
@@ -87,7 +87,7 @@ const canonicalWorkspaceAssets = [
 const worker = read('sw.js');
 assert.match(worker, /workspace-cache-cutover-v8/);
 assert.match(worker, /VERSION = 'workspace-coherence-v8'/);
-assert.match(worker, /CACHE_EPOCH = '20260902-shell-v8-sidebar-v5-recetat-v16'/);
+assert.match(worker, /CACHE_EPOCH = '20260902-shell-v8-sidebar-v6-recetat-v17'/);
 for (const [htmlFile] of workspaces) {
   assert.ok(worker.includes(`'/${htmlFile}'`), `sw.js: ${htmlFile} is missing from the clinical shell`);
 }
