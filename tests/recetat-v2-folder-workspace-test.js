@@ -45,9 +45,9 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
   .map(match => match[1]);
 
 assert.equal(styles.length, 2, 'Recetat V2 must load only page CSS + shared Stripe shell');
-assert.equal(styles[0], '/recetat-v2.css?v=18');
+assert.equal(styles[0], '/recetat-v2.css?v=19');
 assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8');
-assert.deepEqual(scripts, ['/recetat-v2.js?v=18']);
+assert.deepEqual(scripts, ['/recetat-v2.js?v=19']);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|recetat\.css|recetat-audit\.css|recetat-style-loader\.js|recetat\.js/);
 
 assert.match(css, /Recetat V2 — consolidated prescription workspace/);
