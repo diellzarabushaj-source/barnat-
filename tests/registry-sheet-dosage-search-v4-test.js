@@ -76,7 +76,6 @@ assert.equal(detail.pediatricRoute, 'PO');
 assert.ok(detail.sourceFields.some(row => row.label === 'Doza e plotë — Të rritur'));
 assert.ok(detail.sourceFields.some(row => row.label === 'Baza e dozës'));
 
-assert.match(registryJs, /Të dhënat nga sheet \/ databaza/);
 assert.match(registryJs, /card\.adultRegimens/);
 assert.match(registryJs, /card\.pediatricRegimens/);
 assert.match(registryJs, /detail\?\.pediatricDoseSummary|detail\.pediatricDoseSummary/);

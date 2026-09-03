@@ -7,7 +7,7 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
-const SHELL_VERSION = 'drx-dashboard-stripe-v6';
+const SHELL_VERSION = 'drx-dashboard-stripe-v8';
 const SIDEBAR_RUNTIME_VERSION = 'sidebar-taxonomy-v4';
 const BRAND_RUNTIME_VERSION = 'drx-brand-v6';
 

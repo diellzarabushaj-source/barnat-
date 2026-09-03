@@ -113,7 +113,7 @@ for (const [htmlFile, runtime, version] of [
 for (const file of ['index.html','klasifikimi.html','icd.html','dozologjia.html','urgjencat.html','analizat.html','protokollet.html','recetat.html','medical-hub.html','sistemi.html']) {
   const html = read(file);
   assert.match(html, /drx-unified-sidebar/, `${file}: unified standalone sidebar marker missing`);
-  assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/, `${file}: shared Stripe sidebar authority missing`);
+  assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/, `${file}: shared Stripe sidebar authority missing`);
   assert.match(html, /href="\/index\.html#favorites"[^>]*data-personal-nav="favorites"/, `${file}: Favorites navigation missing`);
   assert.match(html, /href="\/index\.html#notes"[^>]*data-personal-nav="notes"/, `${file}: Notes navigation missing`);
 }
