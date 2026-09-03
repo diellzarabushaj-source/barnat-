@@ -14,15 +14,20 @@ const api = read('api/medical-hub.js');
 
 assert.match(html, /id="rxPrescriptionLibrary"/);
 assert.match(html, /id="rxSourceChapterSelect"/);
+assert.match(html, /id="rxSourceLessonSelect"/);
 assert.match(html, /id="rxSourceGuideList"/);
 assert.match(html, /id="rxSourceGuideNav"/);
 assert.match(html, /id="rxSourceSearch"/);
 assert.match(html, /DHE[\s\S]*OSE[\s\S]*NËSE/);
-assert.match(html, /recetat-v2\.css\?v=19/);
-assert.match(html, /recetat-v2\.js\?v=19/);
+assert.match(html, /recetat-v2\.css\?v=20/);
+assert.match(html, /recetat-v2\.js\?v=20/);
 
 assert.match(api, /PRESCRIPTION_CHAPTER_QUERY/);
 assert.match(api, /PRESCRIPTION_GUIDE_QUERY/);
+assert.match(api, /PRESCRIPTION_SEARCH_INDEX_QUERY/);
+assert.match(api, /requestedRoute === 'prescription-search'/);
+assert.match(api, /function fuzzyTokenScore\(/);
+assert.match(api, /function scorePrescriptionSearch\(/);
 assert.match(api, /requestedRoute === 'prescription-library'/);
 assert.match(api, /logicBlocks\[\]\{[\s\S]*?_key[\s\S]*?items\[\]\{/);
 assert.match(api, /source:'sanity-prescription-guides'/);
@@ -34,6 +39,10 @@ assert.match(js, /block\.smartLabel = `\$\{alternativeBase\}\$\{block\.smartSuff
 assert.match(js, /Zgjidh preparatin/);
 assert.match(js, /Rrjedha klinike/);
 assert.match(js, /function filteredItems\(\)/);
+assert.match(js, /function lessonLabel\(/);
+assert.match(js, /function runSmartSearch\(/);
+assert.match(js, /function openSearchResult\(/);
+assert.match(js, /SEARCH_API = '\/api\/medical-hub\?_route=prescription-search'/);
 assert.match(js, /data-rx-source-select/);
 assert.match(js, /reviewStatus === 'source-imported'/);
 assert.match(js, /data-rx-source-use/);
@@ -52,10 +61,13 @@ assert.doesNotMatch(draftFunction, /printCurrent\s*\(/, 'Source guide must never
 assert.match(css, /\.rx-source-library/);
 assert.match(css, /Recetat V18 — smart clinical pathway UI/);
 assert.match(css, /Recetat V19 — Stripe-style clinical master-detail workspace/);
+assert.match(css, /Recetat V20 — lessons \+ global smart search refinement/);
+assert.match(css, /\.rx-source-lesson-picker/);
+assert.match(css, /\.rx-source-search-scope/);
 assert.match(css, /\.rx-source-step-rail/);
 assert.match(css, /\.rx-source-flow-title/);
 assert.match(css, /\.rx-source-connector\.is-or/);
 assert.match(css, /\.rx-source-connector\.is-conditional/);
 assert.match(css, /@media\(max-width:760px\)/);
 
-console.log('Recetat source-guides contract passed: Sanity-backed chapter UI, explicit DHE/OSE/NËSE logic and draft-only handoff.');
+console.log('Recetat source-guides contract passed: chapters + lessons + global typo-tolerant search + draft-only handoff.');
