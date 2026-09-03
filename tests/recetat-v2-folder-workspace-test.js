@@ -90,15 +90,12 @@ assert.match(css, /\.rx-folder-item\.is-active/);
 assert.match(css, /\.rx-saved-chapter/);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /prefers-reduced-motion:reduce/);
-assert.match(css, /Recetat V2 — persistent desktop mini-sidebar v10/);
 assert.match(stripe, /DRx canonical collapsible sidebar v8/);
 assert.match(stripe, /drx-sidebar-collapsed \.sidebar/);
 assert.match(stripe, /drx-sidebar-collapsed \.main-shell/);
 assert.match(stripe, /--drx-shell-sidebar-collapsed-width:76px/);
-assert.match(css, /--drx-shell-sidebar-collapsed-width:76px/);
-assert.match(css, /drx-sidebar-collapsed \.sidebar/);
-assert.match(css, /drx-sidebar-collapsed \.main-shell/);
-assert.match(css, /drx-sidebar-collapsed \.nav-item/);
+assert.doesNotMatch(css, /--drx-shell-sidebar-collapsed-width:76px|drx-sidebar-collapsed \.(?:sidebar|main-shell|nav-item)/,
+  'Recetat page CSS must not duplicate shared collapse authority');
 
 assert.match(js, /Recetat V2 — consolidated runtime with chapter folders/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
