@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v19">
+<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v20">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -10,10 +10,10 @@
   <title>DRx | Recetat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/recetat-v2.css?v=19">
+  <link rel="stylesheet" href="/recetat-v2.css?v=20">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8">
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5" defer></script>
-<script src="/recetat-v2.js?v=19" defer></script>
+<script src="/recetat-v2.js?v=20" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#rxWorkspace">Kalo te krijimi i recetës</a>
@@ -143,25 +143,34 @@
                 <strong id="rxSourceTotal">—</strong>
                 <span>skema në burim</span>
               </div>
-              <label class="rx-source-chapter-picker">
-                <span>Kapitulli</span>
-                <select id="rxSourceChapterSelect" aria-label="Zgjidh kapitullin e recetave">
-                  <option value="">Duke ngarkuar…</option>
-                </select>
-              </label>
+              <div class="rx-source-pickers">
+                <label class="rx-source-chapter-picker">
+                  <span>Kapitulli</span>
+                  <select id="rxSourceChapterSelect" aria-label="Zgjidh kapitullin e recetave">
+                    <option value="">Duke ngarkuar…</option>
+                  </select>
+                </label>
+                <label class="rx-source-lesson-picker">
+                  <span>Mësimi</span>
+                  <select id="rxSourceLessonSelect" aria-label="Zgjidh mësimin ose skemën">
+                    <option value="">Zgjidh kapitullin…</option>
+                  </select>
+                </label>
+              </div>
             </div>
           </header>
 
           <div class="rx-source-commandbar">
             <label class="rx-source-search">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
-              <input id="rxSourceSearch" type="search" autocomplete="off" placeholder="Kërko diagnozën, sëmundjen ose substancën…" aria-label="Kërko skemat e kapitullit">
+              <input id="rxSourceSearch" type="search" autocomplete="off" placeholder="Kërko në 571 skema: diagnozë, bar, dozë, kusht…" aria-label="Kërko inteligjent në të gjitha skemat">
               <kbd aria-hidden="true">/</kbd>
             </label>
             <button class="rx-source-clear-search" id="rxSourceClearSearch" type="button" hidden>Pastro</button>
+            <span class="rx-source-search-scope" id="rxSourceSearchScope">Kërkim global · typo-tolerant</span>
             <div class="rx-source-result-meta" aria-live="polite">
               <strong id="rxSourceResultCount">—</strong>
-              <span>skema në kapitull</span>
+              <span id="rxSourceResultLabel">skema në kapitull</span>
             </div>
           </div>
 
@@ -178,8 +187,8 @@
           <div class="rx-source-browser">
             <aside class="rx-source-index" aria-label="Skemat e kapitullit">
               <div class="rx-source-index-head">
-                <span>Skemat e kapitullit</span>
-                <small id="rxSourceIndexHint">Zgjidh një skemë për ta hapur</small>
+                <span>Mësimet / skemat</span>
+                <small id="rxSourceIndexHint">Zgjidh një mësim për ta hapur</small>
               </div>
               <div class="rx-source-guide-nav" id="rxSourceGuideNav" role="listbox" aria-label="Lista e skemave"></div>
             </aside>
@@ -187,8 +196,8 @@
             <div class="rx-source-detail">
               <div class="rx-source-detail-toolbar">
                 <div>
-                  <span>Skema aktive</span>
-                  <strong id="rxSourceActiveTitle">Zgjidh një skemë</strong>
+                  <span>Mësimi aktiv</span>
+                  <strong id="rxSourceActiveTitle">Zgjidh një mësim</strong>
                 </div>
                 <small>Burimi shfaqet i ndarë në hapa, alternativa dhe kushte.</small>
               </div>
