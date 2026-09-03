@@ -15,6 +15,8 @@ const api = read('api/medical-hub.js');
 assert.match(html, /id="rxPrescriptionLibrary"/);
 assert.match(html, /id="rxSourceChapterSelect"/);
 assert.match(html, /id="rxSourceGuideList"/);
+assert.match(html, /id="rxSourceGuideNav"/);
+assert.match(html, /id="rxSourceSearch"/);
 assert.match(html, /DHE[\s\S]*OSE[\s\S]*NËSE/);
 assert.match(html, /recetat-v2\.css\?v=18/);
 assert.match(html, /recetat-v2\.js\?v=18/);
@@ -31,6 +33,8 @@ assert.match(js, /previous\.smartSuffix = 'A'/);
 assert.match(js, /block\.smartLabel = `\$\{alternativeBase\}\$\{block\.smartSuffix\}`/);
 assert.match(js, /Zgjidh preparatin/);
 assert.match(js, /Rrjedha klinike/);
+assert.match(js, /function filteredItems\(\)/);
+assert.match(js, /data-rx-source-select/);
 assert.match(js, /reviewStatus === 'source-imported'/);
 assert.match(js, /data-rx-source-use/);
 assert.match(js, /data-rx-source-drug/);
@@ -47,6 +51,7 @@ assert.doesNotMatch(draftFunction, /printCurrent\s*\(/, 'Source guide must never
 
 assert.match(css, /\.rx-source-library/);
 assert.match(css, /Recetat V18 — smart clinical pathway UI/);
+assert.match(css, /Recetat V19 — Stripe-style clinical master-detail workspace/);
 assert.match(css, /\.rx-source-step-rail/);
 assert.match(css, /\.rx-source-flow-title/);
 assert.match(css, /\.rx-source-connector\.is-or/);
