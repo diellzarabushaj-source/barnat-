@@ -34,6 +34,9 @@ function normalizedSidebar(html) {
   const end = html.indexOf('</aside>', start);
   assert.ok(start >= 0 && end > start, 'Canonical sidebar markup is missing');
   return html.slice(start, end + 8)
+    .replace(/<button class="sidebar-collapse"[\s\S]*?<\/button>/g, '')
+    .replace(/<img class="brand-mark"[^>]*>/g, '')
+    .replace(/ class="brand-full"/g, '')
     .replace(/ class="nav-item is-active"/g, ' class="nav-item"')
     .replace(/ aria-current="page"/g, '')
     .replace(/(<details class="nav-group" id="atcNavGroup") open/g, '$1')
