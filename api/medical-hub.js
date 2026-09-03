@@ -76,8 +76,11 @@ function prescriptionChapters(rows) {
   (Array.isArray(rows) ? rows : []).forEach(row => {
     const number = Number(row?.chapterNumber);
     const title = clean(row?.chapterTitle);
-    if (!Number.isInteger(number) || number < 1 || !title || seen.has(number)) return;
-    seen.set(number, { number, title });
+    if (!Number.isInteger(number) || number < 1 || !title) return;
+    const current = seen.get(number) || { number, title, count:0 };
+    current.count += 1;
+    if (!current.title && title) current.title = title;
+    seen.set(number, current);
   });
   return [...seen.values()].sort((a,b) => a.number - b.number);
 }
