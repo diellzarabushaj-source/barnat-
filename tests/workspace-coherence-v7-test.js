@@ -65,7 +65,7 @@ const shared = read('sidebar-taxonomy-v3.js');
 assert.match(shared, /CANONICAL_WORKER_URL = '\/sw\.js\?v=drx-workspace-v7'/);
 assert.match(shared, /navigator\.serviceWorker\.register\(CANONICAL_WORKER_URL/);
 assert.match(shared, /updateViaCache:'none'/);
-assert.match(shared, /dataset\.drxSidebarStructure = 'taxonomy-v4'/);
+assert.match(shared, /dataset\.drxSidebarStructure = 'taxonomy-v5'/);
 
 const stripe = read('drx-dashboard-stripe.css');
 assert.match(stripe, /DRx canonical sidebar shell v5/);
