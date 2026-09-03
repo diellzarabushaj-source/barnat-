@@ -8,20 +8,19 @@ const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const SHELL_VERSION = 'drx-dashboard-stripe-v8';
-const SIDEBAR_RUNTIME_VERSION = 'sidebar-taxonomy-v4';
 const BRAND_RUNTIME_VERSION = 'drx-brand-v6';
 
 const workspaces = [
-  ['index.html', 'registry-v2.js'],
-  ['klasifikimi.html', 'classification-v2.js'],
-  ['icd.html', 'icd-v2.js'],
-  ['dozologjia.html', 'dozologjia-v2.js'],
-  ['protokollet.html', 'protokollet-v2.js'],
-  ['urgjencat.html', 'urgjencat-v2.js'],
-  ['recetat.html', 'recetat-v2.js'],
-  ['analizat.html', 'analizat-v2.js'],
-  ['medical-hub.html', 'medical-hub-v2.js'],
-  ['sistemi.html', 'sistemi-v2.js'],
+  ['index.html', 'registry-v2.js', 'sidebar-taxonomy-v4'],
+  ['klasifikimi.html', 'classification-v2.js', 'sidebar-taxonomy-v4'],
+  ['icd.html', 'icd-v2.js', 'sidebar-taxonomy-v4'],
+  ['dozologjia.html', 'dozologjia-v2.js', 'sidebar-taxonomy-v4'],
+  ['protokollet.html', 'protokollet-v2.js', 'sidebar-taxonomy-v4'],
+  ['urgjencat.html', 'urgjencat-v2.js', 'sidebar-taxonomy-v4'],
+  ['recetat.html', 'recetat-v2.js', 'sidebar-taxonomy-v5'],
+  ['analizat.html', 'analizat-v2.js', 'sidebar-taxonomy-v4'],
+  ['medical-hub.html', 'medical-hub-v2.js', 'sidebar-taxonomy-v4'],
+  ['sistemi.html', 'sistemi-v2.js', 'sidebar-taxonomy-v4'],
 ];
 
 function stylesOf(html) {
@@ -47,7 +46,7 @@ function normalizedSidebar(html) {
 
 const canonicalSidebar = normalizedSidebar(read('index.html'));
 
-for (const [htmlFile, jsFile] of workspaces) {
+for (const [htmlFile, jsFile, sidebarRuntimeVersion] of workspaces) {
   const html = read(htmlFile);
   const js = read(jsFile);
   const styles = stylesOf(html);
@@ -57,7 +56,7 @@ for (const [htmlFile, jsFile] of workspaces) {
   assert.equal(shellStyles.length, 1, `${htmlFile}: exactly one canonical shell stylesheet is required`);
   assert.equal(styles.at(-1), `/drx-dashboard-stripe.css?v=${SHELL_VERSION}`, `${htmlFile}: shared shell must load last`);
   assert.equal(normalizedSidebar(html), canonicalSidebar, `${htmlFile}: sidebar drifted from the canonical Registry sidebar`);
-  assert.match(js, new RegExp(`sidebar-taxonomy-v3\\.js\\?v=${SIDEBAR_RUNTIME_VERSION}`), `${jsFile}: shared sidebar runtime version drift`);
+  assert.match(js, new RegExp(`sidebar-taxonomy-v3\\.js\\?v=${sidebarRuntimeVersion}`), `${jsFile}: shared sidebar runtime version drift`);
   assert.match(js, new RegExp(`medindex-brand-runtime\\.js\\?v=${BRAND_RUNTIME_VERSION}`), `${jsFile}: shared brand runtime version drift`);
   assert.doesNotThrow(() => new Function(js), `${jsFile}: syntax error`);
 }
@@ -107,4 +106,4 @@ assert.match(design, /Urgjencat is the canonical content-density reference/);
 const pkg = JSON.parse(read('package.json'));
 assert.match(pkg.scripts.test, /workspace-coherence-v7-test\.js/);
 
-console.log('Workspace coherence v7: 10/10 pages share one shell, one sidebar runtime, one typography contract and one canonical worker cutover.');
+console.log('Workspace coherence v7: 10/10 pages share one shell, strict sidebar runtime versions, one typography contract and one canonical worker cutover.');
