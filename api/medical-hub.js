@@ -55,8 +55,9 @@ const SEARCH_INDEX_QUERY = `*[_type == "learningTopic" && reviewStatus != "archi
   }
 }`;
 
-const PRESCRIPTION_CHAPTER_QUERY = `*[_type == "prescriptionGuide" && reviewStatus != "archived"] | order(chapterNumber asc, orderInChapter asc) {
-  chapterNumber, chapterTitle
+const PRESCRIPTION_CHAPTER_QUERY = `*[_type == "prescriptionChapter" && reviewStatus != "archived"] | order(chapterNumber asc) {
+  chapterNumber, title, hasPrescriptions, sourceNote, reviewStatus, version,
+  "count": count(*[_type == "prescriptionGuide" && reviewStatus != "archived" && chapterNumber == ^.chapterNumber])
 }`;
 
 const PRESCRIPTION_GUIDE_QUERY = `*[_type == "prescriptionGuide" && reviewStatus != "archived" && chapterNumber == $chapter] | order(orderInChapter asc, title asc) {
@@ -75,12 +76,17 @@ function prescriptionChapters(rows) {
   const seen = new Map();
   (Array.isArray(rows) ? rows : []).forEach(row => {
     const number = Number(row?.chapterNumber);
-    const title = clean(row?.chapterTitle);
-    if (!Number.isInteger(number) || number < 1 || !title) return;
-    const current = seen.get(number) || { number, title, count:0 };
-    current.count += 1;
-    if (!current.title && title) current.title = title;
-    seen.set(number, current);
+    const title = clean(row?.title || row?.chapterTitle);
+    if (!Number.isInteger(number) || number < 1 || !title || seen.has(number)) return;
+    seen.set(number, {
+      number,
+      title,
+      count:Math.max(0, Number(row?.count || 0)),
+      hasPrescriptions:Boolean(row?.hasPrescriptions),
+      sourceNote:clean(row?.sourceNote),
+      reviewStatus:clean(row?.reviewStatus),
+      version:clean(row?.version),
+    });
   });
   return [...seen.values()].sort((a,b) => a.number - b.number);
 }
@@ -260,14 +266,16 @@ module.exports = async function handler(req, res) {
       const requestedChapter = /^\d{1,2}$/.test(rawChapter) ? Number(rawChapter) : 0;
       const selectedChapter = requestedChapter && chapters.some(item => item.number === requestedChapter)
         ? requestedChapter
-        : (chapters[0]?.number || 0);
-      const items = selectedChapter
+        : (chapters.find(item => item.hasPrescriptions && item.count > 0)?.number || chapters[0]?.number || 0);
+      const chapterMeta = chapters.find(item => item.number === selectedChapter) || null;
+      const items = selectedChapter && chapterMeta?.hasPrescriptions
         ? await querySanity(PRESCRIPTION_GUIDE_QUERY, { chapter:selectedChapter })
         : [];
       return res.status(200).json({
         ok:true,
         chapters,
         chapter:selectedChapter,
+        chapterMeta,
         items:Array.isArray(items) ? items : [],
         count:Array.isArray(items) ? items.length : 0,
         source:'sanity-prescription-guides',
@@ -323,4 +331,5 @@ module.exports._test = {
   searchDocument,
   scoreDocument,
   publicItem,
+  prescriptionChapters,
 };
