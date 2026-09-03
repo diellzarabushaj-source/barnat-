@@ -1,4 +1,4 @@
-/* Recetat V19 — Stripe-style master-detail prescription workspace · production-ready. */
+/* Recetat V20 — chapters + lessons + global typo-tolerant smart search. */
 
 (() => {
   'use strict';
@@ -6784,6 +6784,7 @@
   'use strict';
 
   const API = '/api/medical-hub?_route=prescription-library';
+  const SEARCH_API = '/api/medical-hub?_route=prescription-search';
   const RELATION_LABELS = Object.freeze({ and:'DHE', or:'OSE', plus:'PLUS', conditional:'NËSE' });
   const KIND_LABELS = Object.freeze({
     'active-substance':'Substancë aktive',
@@ -6798,9 +6799,14 @@
     chapters:[],
     items:[],
     query:'',
+    searchResults:[],
+    searching:false,
     activeGuideId:'',
     controller:null,
+    searchController:null,
     requestId:0,
+    searchRequestId:0,
+    searchTimer:0,
   };
   const $ = selector => document.querySelector(selector);
   const text = value => String(value ?? '').replace(/\s+/g, ' ').trim();
@@ -6818,6 +6824,18 @@
     node.textContent = message;
     node.className = `rx-source-status${type ? ` is-${type}` : ''}`;
     node.hidden = !message;
+  }
+
+  function currentChapterMeta() {
+    return state.chapters.find(entry => Number(entry?.number) === Number(state.chapter)) || null;
+  }
+
+  function lessonNumber(guide) {
+    return Math.max(1, Number(guide?.lessonNumber || guide?.orderInChapter || 1));
+  }
+
+  function lessonLabel(guide) {
+    return `Mësimi ${lessonNumber(guide)}`;
   }
 
   function relationLabel(block) {
@@ -6933,15 +6951,19 @@
 
   function filteredItems() {
     const query = normalize(state.query);
-    if (!query) return state.items;
-    const tokens = query.split(/\s+/).filter(Boolean);
-    return state.items.filter(guide => {
-      const haystack = guideSearchText(guide);
-      return tokens.every(token => haystack.includes(token));
-    });
+    if (!query || query.length >= 2) return state.items;
+    return state.items.filter(guide => guideSearchText(guide).includes(query));
   }
 
-  function ensureActiveGuide(items = filteredItems()) {
+  function isGlobalSearchActive() {
+    return normalize(state.query).length >= 2;
+  }
+
+  function activeGuide() {
+    return state.items.find(item => String(item?._id) === String(state.activeGuideId)) || null;
+  }
+
+  function ensureActiveGuide(items = state.items) {
     if (!items.length) {
       state.activeGuideId = '';
       return null;
@@ -7029,7 +7051,7 @@
       <header class="rx-source-guide-head">
         <div class="rx-source-guide-heading">
           <div class="rx-source-guide-kicker">
-            <span>Kapitulli ${esc(guide?.chapterNumber || '')}</span>
+            <span>Kapitulli ${esc(guide?.chapterNumber || '')} · ${esc(lessonLabel(guide))}</span>
             <span class="rx-source-import-badge">${imported ? 'Burim i importuar' : esc(guide?.reviewStatus || 'Burim')}</span>
           </div>
           <h3>${esc(guide?.title || guide?.sourceHeading || 'Skemë Rx')}</h3>
@@ -7058,41 +7080,89 @@
     </article>`;
   }
 
-  function renderNav(items, active) {
+  function renderNav(entries, active) {
     const nav = $('#rxSourceGuideNav');
     if (!nav) return;
-    if (!items.length) {
-      nav.innerHTML = `<div class="rx-source-index-empty"><strong>Asnjë rezultat</strong><span>Ndrysho kërkimin ose kapitullin.</span></div>`;
+    if (!entries.length) {
+      nav.innerHTML = `<div class="rx-source-index-empty"><strong>Asnjë rezultat</strong><span>${isGlobalSearchActive() ? 'Provo një term tjetër; search-i toleron edhe typo të vogla.' : 'Ky kapitull nuk ka mësime Rx në burim.'}</span></div>`;
       return;
     }
-    nav.innerHTML = items.map((guide,index) => {
-      const stats = guideStats(guide);
-      const selected = String(guide?._id) === String(active?._id);
-      return `<button class="rx-source-nav-item${selected ? ' is-active' : ''}" type="button" role="option" aria-selected="${selected}" data-rx-source-select="${esc(guide?._id)}">
-        <span class="rx-source-nav-index">${String(index + 1).padStart(2,'0')}</span>
-        <span class="rx-source-nav-copy"><strong>${esc(guide?.title || guide?.sourceHeading || 'Skemë Rx')}</strong><small>${stats.activeCount ? `${stats.activeCount} barna · ` : ''}${stats.items.length} hapa${stats.alternativeCount ? ` · ${stats.alternativeCount} alt.` : ''}</small></span>
+
+    const global = isGlobalSearchActive();
+    nav.innerHTML = entries.map((entry,index) => {
+      const selected = String(entry?._id) === String(active?._id);
+      if (global) {
+        return `<button class="rx-source-nav-item is-search-result${selected ? ' is-active' : ''}" type="button" role="option" aria-selected="${selected}" data-rx-source-search-result="${esc(entry?._id)}">
+          <span class="rx-source-nav-index">${String(index + 1).padStart(2,'0')}</span>
+          <span class="rx-source-nav-copy"><strong>${esc(entry?.title || 'Skemë Rx')}</strong><small>Kapitulli ${esc(entry?.chapterNumber)} · Mësimi ${esc(entry?.lessonNumber || entry?.orderInChapter || 1)}</small></span>
+          <span class="rx-source-nav-arrow" aria-hidden="true">›</span>
+        </button>`;
+      }
+
+      const stats = guideStats(entry);
+      return `<button class="rx-source-nav-item${selected ? ' is-active' : ''}" type="button" role="option" aria-selected="${selected}" data-rx-source-select="${esc(entry?._id)}">
+        <span class="rx-source-nav-index">${String(lessonNumber(entry)).padStart(2,'0')}</span>
+        <span class="rx-source-nav-copy"><strong>${esc(entry?.title || entry?.sourceHeading || 'Skemë Rx')}</strong><small>${lessonLabel(entry)} · ${stats.activeCount ? `${stats.activeCount} barna · ` : ''}${stats.items.length} hapa${stats.alternativeCount ? ` · ${stats.alternativeCount} alt.` : ''}</small></span>
         <span class="rx-source-nav-arrow" aria-hidden="true">›</span>
       </button>`;
     }).join('');
   }
 
+  function renderEmptyDetail(message, detail = '') {
+    const list = $('#rxSourceGuideList');
+    if (!list) return;
+    list.innerHTML = `<div class="rx-source-empty"><strong>${esc(message)}</strong>${detail ? `<span>${esc(detail)}</span>` : ''}</div>`;
+  }
+
   function render() {
     const list = $('#rxSourceGuideList');
     if (!list) return;
-    const items = filteredItems();
-    const active = ensureActiveGuide(items);
+
+    const global = isGlobalSearchActive();
+    const entries = global ? state.searchResults : filteredItems();
+    const current = activeGuide();
     const count = $('#rxSourceResultCount');
-    if (count) count.textContent = state.query ? `${items.length}/${state.items.length}` : String(state.items.length);
+    const label = $('#rxSourceResultLabel');
     const hint = $('#rxSourceIndexHint');
-    if (hint) hint.textContent = state.query ? `Rezultate për “${state.query}”` : `${state.items.length} skema të publikuara`;
     const activeTitle = $('#rxSourceActiveTitle');
-    if (activeTitle) activeTitle.textContent = active?.title || active?.sourceHeading || 'Zgjidh një skemë';
     const clear = $('#rxSourceClearSearch');
+
+    if (count) count.textContent = state.searching ? '…' : String(entries.length);
+    if (label) label.textContent = global ? 'rezultate në të gjitha kapitujt' : 'mësime në kapitull';
+    if (hint) hint.textContent = global
+      ? (state.searching ? 'Duke kërkuar në të gjithë burimin…' : `${entries.length} rezultate globale`)
+      : `${state.items.length} mësime të publikuara`;
+    if (activeTitle) activeTitle.textContent = current?.title || (global ? 'Zgjidh një rezultat' : 'Zgjidh një mësim');
     if (clear) clear.hidden = !state.query;
 
-    renderNav(items, active);
+    renderNav(entries, current);
+
+    if (global) {
+      if (state.searching) {
+        renderEmptyDetail('Po kërkoj në të gjithë burimin…', 'Diagnoza, substanca, doza, rruga, S. dhe kushtet po analizohen.');
+        return;
+      }
+      if (!entries.length) {
+        renderEmptyDetail('Nuk u gjet asnjë mësim.', 'Provo emrin e diagnozës, një substancë aktive ose një term më të shkurtër.');
+        return;
+      }
+      if (!current || !entries.some(entry => String(entry?._id) === String(current?._id))) {
+        renderEmptyDetail('Zgjidh një rezultat nga lista.', 'Search-i është global; klikimi e hap automatikisht kapitullin dhe mësimin e duhur.');
+        return;
+      }
+      list.innerHTML = renderGuide(current);
+      return;
+    }
+
+    if (!state.items.length) {
+      const chapter = currentChapterMeta();
+      renderEmptyDetail('Ky kapitull nuk ka Rx në dokumentin burimor.', chapter?.sourceNote || 'Nuk ka mësime/skema të publikuara për këtë kapitull.');
+      return;
+    }
+
+    const active = ensureActiveGuide(filteredItems());
     if (!active) {
-      list.innerHTML = `<div class="rx-source-empty"><strong>${state.query ? 'Nuk u gjet asnjë skemë.' : 'Nuk ka skema të publikuara në këtë kapitull.'}</strong><span>${state.query ? 'Provo me emrin e diagnozës ose substancës aktive.' : 'Përmbajtja shfaqet vetëm pasi importohet nga burimi në Sanity.'}</span></div>`;
+      renderEmptyDetail('Nuk u gjet asnjë mësim.', 'Provo një term tjetër.');
       return;
     }
     list.innerHTML = renderGuide(active);
@@ -7103,7 +7173,7 @@
     if (!select) return;
     select.innerHTML = state.chapters.map(chapter => {
       const count = Number(chapter?.count || 0);
-      return `<option value="${chapter.number}">Kapitulli ${chapter.number} — ${esc(chapter.title)}${count ? ` · ${count} Rx` : ''}</option>`;
+      return `<option value="${chapter.number}">Kapitulli ${chapter.number} — ${esc(chapter.title)} · ${count} mësime</option>`;
     }).join('');
     if (state.chapter) select.value = String(state.chapter);
     select.disabled = state.chapters.length < 2;
@@ -7111,11 +7181,31 @@
     const total = state.chapters.reduce((sum, chapter) => sum + Math.max(0, Number(chapter?.count || 0)), 0);
     const totalNode = $('#rxSourceTotal');
     if (totalNode) totalNode.textContent = total ? String(total) : `${state.chapters.length} kap.`;
+    const scope = $('#rxSourceSearchScope');
+    if (scope) scope.textContent = `Kërkim global · ${total || '—'} skema · typo-tolerant`;
+  }
+
+  function syncLessonPicker() {
+    const select = $('#rxSourceLessonSelect');
+    if (!select) return;
+    if (!state.items.length) {
+      select.innerHTML = '<option value="">Nuk ka mësime Rx në këtë kapitull</option>';
+      select.disabled = true;
+      return;
+    }
+    select.disabled = false;
+    select.innerHTML = state.items.map(guide =>
+      `<option value="${esc(guide?._id)}">${esc(lessonLabel(guide))} — ${esc(guide?.title || guide?.sourceHeading || 'Skemë Rx')}</option>`
+    ).join('');
+    if (state.activeGuideId && state.items.some(item => String(item?._id) === String(state.activeGuideId))) {
+      select.value = String(state.activeGuideId);
+    }
   }
 
   function selectGuide(id, { focusDetail = false } = {}) {
     if (!state.items.some(item => String(item?._id) === String(id))) return false;
     state.activeGuideId = String(id);
+    syncLessonPicker();
     render();
     if (focusDetail) {
       $('#rxSourceGuideList')?.scrollIntoView({ behavior:'smooth', block:'nearest' });
@@ -7123,16 +7213,90 @@
     return true;
   }
 
+  async function openSearchResult(id) {
+    const result = state.searchResults.find(item => String(item?._id) === String(id));
+    if (!result) return false;
+    const targetChapter = Number(result?.chapterNumber);
+    if (!Number.isInteger(targetChapter) || targetChapter < 1) return false;
+
+    if (targetChapter !== state.chapter || !state.items.some(item => String(item?._id) === String(id))) {
+      await load(targetChapter, { activeId:id, preserveSearch:true });
+    } else {
+      selectGuide(id, { focusDetail:true });
+    }
+    state.activeGuideId = String(id);
+    syncChapterPicker();
+    syncLessonPicker();
+    render();
+    $('#rxSourceGuideList')?.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    return true;
+  }
+
+  function cancelSearchRequest() {
+    clearTimeout(state.searchTimer);
+    state.searchController?.abort();
+    state.searchController = null;
+    state.searching = false;
+  }
+
+  async function runSmartSearch(query) {
+    const normalized = normalize(query);
+    if (normalized.length < 2 || normalize(state.query) !== normalized) return;
+    const requestId = ++state.searchRequestId;
+    state.searchController?.abort();
+    state.searchController = new AbortController();
+    state.searching = true;
+    render();
+    sourceStatus('Duke kërkuar inteligjent në të gjitha kapitujt…');
+
+    try {
+      const response = await fetch(`${SEARCH_API}&q=${encodeURIComponent(query)}&limit=60`, {
+        credentials:'same-origin',
+        cache:'no-store',
+        signal:state.searchController.signal,
+        headers:{ Accept:'application/json' },
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (requestId !== state.searchRequestId || normalize(state.query) !== normalized) return;
+      if (response.status === 401 || response.status === 403) return;
+      if (!response.ok || payload?.ok !== true) throw new Error(payload?.error || 'Kërkimi nuk u krye.');
+      state.searchResults = Array.isArray(payload.results) ? payload.results : [];
+      state.searching = false;
+      sourceStatus(`${state.searchResults.length} rezultate · kërkim global me tolerancë ndaj typo-ve`, 'success');
+      render();
+    } catch(error) {
+      if (error?.name === 'AbortError') return;
+      if (requestId !== state.searchRequestId) return;
+      state.searching = false;
+      state.searchResults = [];
+      sourceStatus('Kërkimi inteligjent nuk u krye. Provo përsëri.', 'error');
+      render();
+    }
+  }
+
   function setSearch(value) {
     state.query = text(value);
+    const normalized = normalize(state.query);
+    clearTimeout(state.searchTimer);
+    if (normalized.length < 2) {
+      cancelSearchRequest();
+      state.searchResults = [];
+      sourceStatus(state.items.length ? `${state.items.length} mësime · Kapitulli ${state.chapter}` : '', 'success');
+      render();
+      return;
+    }
+    state.searchTimer = window.setTimeout(() => {
+      void runSmartSearch(state.query);
+    }, 180);
     render();
   }
 
-  async function load(chapter = 0) {
+  async function load(chapter = 0, options = {}) {
+    const { activeId = '', preserveSearch = false } = options || {};
     const requestId = ++state.requestId;
     state.controller?.abort();
     state.controller = new AbortController();
-    sourceStatus('Duke ngarkuar skemat nga Sanity…');
+    sourceStatus('Duke ngarkuar kapitullin dhe mësimet…');
     const url = chapter ? `${API}&chapter=${encodeURIComponent(chapter)}` : API;
     try {
       const response = await fetch(url, {
@@ -7148,14 +7312,28 @@
       state.chapters = Array.isArray(payload.chapters) ? payload.chapters : [];
       state.chapter = Number(payload.chapter) || Number(state.chapters[0]?.number) || 0;
       state.items = Array.isArray(payload.items) ? payload.items : [];
-      state.activeGuideId = String(state.items[0]?._id || '');
+      state.activeGuideId = String(activeId || state.items[0]?._id || '');
+      if (!preserveSearch) {
+        state.query = '';
+        state.searchResults = [];
+        const search = $('#rxSourceSearch');
+        if (search) search.value = '';
+      }
       syncChapterPicker();
+      syncLessonPicker();
       render();
-      sourceStatus(state.items.length ? `${state.items.length} skema Rx · Kapitulli ${state.chapter}` : '', 'success');
+      const chapterMeta = currentChapterMeta();
+      sourceStatus(
+        state.items.length
+          ? `${state.items.length} mësime · Kapitulli ${state.chapter}`
+          : (chapterMeta?.sourceNote || `Kapitulli ${state.chapter} nuk ka Rx në burim.`),
+        state.items.length ? 'success' : ''
+      );
     } catch(error) {
       if (error?.name === 'AbortError') return;
       state.items = [];
       state.activeGuideId = '';
+      syncLessonPicker();
       render();
       sourceStatus('Recetat nga burimi nuk mund të ngarkohen për momentin. Provo përsëri.', 'error');
     }
@@ -7186,7 +7364,7 @@
   function moveNavFocus(direction) {
     const nav = $('#rxSourceGuideNav');
     if (!nav) return;
-    const buttons = [...nav.querySelectorAll('[data-rx-source-select]')];
+    const buttons = [...nav.querySelectorAll('[data-rx-source-select],[data-rx-source-search-result]')];
     if (!buttons.length) return;
     const current = Math.max(0, buttons.indexOf(document.activeElement));
     const next = (current + direction + buttons.length) % buttons.length;
@@ -7197,10 +7375,17 @@
     $('#rxSourceChapterSelect')?.addEventListener('change', event => {
       const chapter = Number(event.target.value);
       if (!Number.isInteger(chapter) || chapter < 1) return;
+      cancelSearchRequest();
       state.query = '';
+      state.searchResults = [];
       const search = $('#rxSourceSearch');
       if (search) search.value = '';
       void load(chapter);
+    });
+
+    $('#rxSourceLessonSelect')?.addEventListener('change', event => {
+      const id = text(event.target.value);
+      if (id) selectGuide(id, { focusDetail:true });
     });
 
     $('#rxSourceSearch')?.addEventListener('input', event => setSearch(event.target.value), { passive:true });
@@ -7212,9 +7397,15 @@
     });
 
     $('#rxSourceGuideNav')?.addEventListener('click', event => {
+      const searchResult = event.target.closest('[data-rx-source-search-result]');
+      if (searchResult) {
+        void openSearchResult(searchResult.dataset.rxSourceSearchResult);
+        return;
+      }
       const button = event.target.closest('[data-rx-source-select]');
       if (button) selectGuide(button.dataset.rxSourceSelect);
     });
+
     $('#rxSourceGuideNav')?.addEventListener('keydown', event => {
       if (event.key === 'ArrowDown') {
         event.preventDefault();
@@ -7222,9 +7413,9 @@
       } else if (event.key === 'ArrowUp') {
         event.preventDefault();
         moveNavFocus(-1);
-      } else if ((event.key === 'Enter' || event.key === ' ') && event.target.closest('[data-rx-source-select]')) {
+      } else if ((event.key === 'Enter' || event.key === ' ') && event.target.closest('[data-rx-source-select],[data-rx-source-search-result]')) {
         event.preventDefault();
-        event.target.closest('[data-rx-source-select]').click();
+        event.target.closest('[data-rx-source-select],[data-rx-source-search-result]').click();
       }
     });
 
@@ -7266,6 +7457,8 @@
     smartNumberedBlocks,
     filteredItems,
     selectGuide,
+    openSearchResult,
+    runSmartSearch,
   });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
   else init();
