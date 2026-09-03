@@ -12,6 +12,7 @@ const server = read('lib/user-library.js');
 const resolver = read('lib/personal-registry-supabase.js');
 const gateway = read('lib/medindex-data-api.js');
 const migration = read('supabase/migrations/20260827111357_native_user_notes_and_profile_avatars.sql');
+const polymorphicMigration = read('supabase/migrations/20260903075506_fix_user_notes_polymorphic_uniqueness.sql');
 
 assert.equal(library._test.noteRegistryNumber('drug-note:registry:2508'), 2508);
 assert.equal(library._test.noteRegistryNumber('drug-note:fallback:x'), null);
@@ -28,5 +29,12 @@ assert.match(resolver, /user_notes\?\$\{params\.toString\(\)\}/);
 assert.match(migration, /legacy_user_id = uf\.user_id/);
 assert.match(migration, /add column if not exists deleted_at timestamptz/i);
 assert.match(migration, /char_length\(content\) <= 2000/i);
+
+assert.match(polymorphicMigration, /drop constraint if exists user_notes_user_id_drug_id_key/i);
+assert.equal(
+  server.split('noteMap.get(`drug|\${drugId}`)').length - 1,
+  2,
+  'Active notes and tombstones must use the same canonical noteMap key',
+);
 
 console.log('Native user_notes persistence contract passed (Supabase runtime).');
