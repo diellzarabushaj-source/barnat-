@@ -1,4 +1,4 @@
-/* Recetat V18 — consolidated runtime with smart numbered clinical pathways. */
+/* Recetat V19 — Stripe-style master-detail prescription workspace. */
 
 (() => {
   'use strict';
@@ -6793,9 +6793,21 @@
     procedure:'Procedurë',
     'source-note':'Shënim burimor',
   });
-  const state = { chapter:0, chapters:[], items:[], controller:null, requestId:0 };
+  const state = {
+    chapter:0,
+    chapters:[],
+    items:[],
+    query:'',
+    activeGuideId:'',
+    controller:null,
+    requestId:0,
+  };
   const $ = selector => document.querySelector(selector);
   const text = value => String(value ?? '').replace(/\s+/g, ' ').trim();
+  const normalize = value => text(value)
+    .toLocaleLowerCase('sq')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
   const esc = value => String(value ?? '').replace(/[&<>"']/g, character => ({
     '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;',
   }[character]));
@@ -6886,6 +6898,60 @@
     });
   }
 
+  function guideBlocks(guide) {
+    return smartNumberedBlocks(guide?.logicBlocks);
+  }
+
+  function guideStats(guide) {
+    const blocks = guideBlocks(guide);
+    const items = blocks.flatMap(block => block.smartItems || []);
+    return {
+      blocks,
+      items,
+      activeCount:items.filter(item => item?.kind === 'active-substance').length,
+      supportCount:items.filter(item => item?.kind !== 'active-substance').length,
+      alternativeCount:blocks.filter(block => block?.relation === 'or' || block?.selection === 'choose-one').length,
+      conditionalCount:blocks.filter(block => block?.relation === 'conditional').length,
+    };
+  }
+
+  function guideSearchText(guide) {
+    const blocks = Array.isArray(guide?.logicBlocks) ? guide.logicBlocks : [];
+    const values = [
+      guide?.title,
+      guide?.sourceHeading,
+      ...(Array.isArray(guide?.keywords) ? guide.keywords : []),
+    ];
+    blocks.forEach(block => {
+      values.push(block?.condition, block?.sourceConnectorLabel, block?.note);
+      (Array.isArray(block?.items) ? block.items : []).forEach(item => {
+        values.push(item?.title, item?.genericName, item?.form, item?.strength, item?.dose, item?.route, item?.frequency, item?.duration, item?.sig, item?.note);
+      });
+    });
+    return normalize(values.filter(Boolean).join(' '));
+  }
+
+  function filteredItems() {
+    const query = normalize(state.query);
+    if (!query) return state.items;
+    const tokens = query.split(/\s+/).filter(Boolean);
+    return state.items.filter(guide => {
+      const haystack = guideSearchText(guide);
+      return tokens.every(token => haystack.includes(token));
+    });
+  }
+
+  function ensureActiveGuide(items = filteredItems()) {
+    if (!items.length) {
+      state.activeGuideId = '';
+      return null;
+    }
+    const current = items.find(item => String(item?._id) === String(state.activeGuideId));
+    if (current) return current;
+    state.activeGuideId = String(items[0]?._id || '');
+    return items[0] || null;
+  }
+
   function renderConnector(block) {
     const label = relationLabel(block);
     if (!label || block?.relation === 'start') return '';
@@ -6951,34 +7017,33 @@
   }
 
   function renderGuide(guide) {
-    const blocks = smartNumberedBlocks(guide?.logicBlocks);
-    const items = blocks.flatMap(block => block.smartItems || []);
-    const activeCount = items.filter(item => item?.kind === 'active-substance').length;
-    const supportCount = Math.max(0, items.length - activeCount);
-    const alternativeCount = blocks.filter(block => block?.relation === 'or' || block?.selection === 'choose-one').length;
-    const conditionalCount = blocks.filter(block => block?.relation === 'conditional').length;
-    const pages = Number(guide?.sourcePageStart) === Number(guide?.sourcePageEnd)
-      ? `Faqe ${guide?.sourcePageStart || '—'}`
-      : `Faqe ${guide?.sourcePageStart || '—'}–${guide?.sourcePageEnd || '—'}`;
+    const { blocks, items, activeCount, supportCount, alternativeCount, conditionalCount } = guideStats(guide);
+    const startPage = Number(guide?.sourcePageStart);
+    const endPage = Number(guide?.sourcePageEnd);
+    const pages = Number.isFinite(startPage) && startPage > 0
+      ? (Number.isFinite(endPage) && endPage > 0 && endPage !== startPage ? `Faqe ${startPage}–${endPage}` : `Faqe ${startPage}`)
+      : '';
+    const imported = guide?.reviewStatus === 'source-imported';
 
     return `<article class="rx-source-guide" data-source-guide-id="${esc(guide?._id)}">
       <header class="rx-source-guide-head">
         <div class="rx-source-guide-heading">
           <div class="rx-source-guide-kicker">
             <span>Kapitulli ${esc(guide?.chapterNumber || '')}</span>
-            <span class="rx-source-import-badge">Burimi 1:1</span>
+            <span class="rx-source-import-badge">${imported ? 'Burim i importuar' : esc(guide?.reviewStatus || 'Burim')}</span>
           </div>
           <h3>${esc(guide?.title || guide?.sourceHeading || 'Skemë Rx')}</h3>
           <div class="rx-source-guide-stats" aria-label="Përmbledhja e skemës">
             <span><b>${items.length}</b> hapa</span>
             <span><b>${activeCount}</b> barna</span>
+            ${supportCount ? `<span><b>${supportCount}</b> hapa tjerë</span>` : ''}
             ${alternativeCount ? `<span><b>${alternativeCount}</b> alternativa</span>` : ''}
             ${conditionalCount ? `<span><b>${conditionalCount}</b> kushte</span>` : ''}
-            <span>${esc(pages)}</span>
+            ${pages ? `<span>${esc(pages)}</span>` : ''}
           </div>
         </div>
         <button class="rx-source-use" type="button" data-rx-source-use="${esc(guide?._id)}">
-          <span>Përdor këtë skemë</span><b aria-hidden="true">→</b>
+          <span>Përdor këtë skemë si draft</span><b aria-hidden="true">→</b>
         </button>
       </header>
       <div class="rx-source-flow" aria-label="Rrjedha e recetës">
@@ -6987,37 +7052,87 @@
       </div>
       <footer class="rx-source-guide-foot">
         <span><b>Burimi</b> ${esc(guide?.sourceDocument || 'Doctor on Duty')}</span>
-        <span><b>Statusi</b> ${guide?.reviewStatus === 'source-imported' ? 'importuar nga burimi' : esc(guide?.reviewStatus || '—')}</span>
+        <span><b>Statusi</b> ${imported ? 'source-imported · kërkon kontroll klinik' : esc(guide?.reviewStatus || '—')}</span>
         <span><b>Versioni</b> ${esc(guide?.version || '—')}</span>
       </footer>
     </article>`;
   }
 
+  function renderNav(items, active) {
+    const nav = $('#rxSourceGuideNav');
+    if (!nav) return;
+    if (!items.length) {
+      nav.innerHTML = `<div class="rx-source-index-empty"><strong>Asnjë rezultat</strong><span>Ndrysho kërkimin ose kapitullin.</span></div>`;
+      return;
+    }
+    nav.innerHTML = items.map((guide,index) => {
+      const stats = guideStats(guide);
+      const selected = String(guide?._id) === String(active?._id);
+      return `<button class="rx-source-nav-item${selected ? ' is-active' : ''}" type="button" role="option" aria-selected="${selected}" data-rx-source-select="${esc(guide?._id)}">
+        <span class="rx-source-nav-index">${String(index + 1).padStart(2,'0')}</span>
+        <span class="rx-source-nav-copy"><strong>${esc(guide?.title || guide?.sourceHeading || 'Skemë Rx')}</strong><small>${stats.activeCount ? `${stats.activeCount} barna · ` : ''}${stats.items.length} hapa${stats.alternativeCount ? ` · ${stats.alternativeCount} alt.` : ''}</small></span>
+        <span class="rx-source-nav-arrow" aria-hidden="true">›</span>
+      </button>`;
+    }).join('');
+  }
+
   function render() {
     const list = $('#rxSourceGuideList');
     if (!list) return;
-    if (!state.items.length) {
-      list.innerHTML = '<div class="rx-source-empty"><strong>Nuk ka skema të publikuara në këtë kapitull.</strong><span>Përmbajtja shfaqet vetëm pasi importohet nga burimi në Sanity.</span></div>';
+    const items = filteredItems();
+    const active = ensureActiveGuide(items);
+    const count = $('#rxSourceResultCount');
+    if (count) count.textContent = state.query ? `${items.length}/${state.items.length}` : String(state.items.length);
+    const hint = $('#rxSourceIndexHint');
+    if (hint) hint.textContent = state.query ? `Rezultate për “${state.query}”` : `${state.items.length} skema të publikuara`;
+    const activeTitle = $('#rxSourceActiveTitle');
+    if (activeTitle) activeTitle.textContent = active?.title || active?.sourceHeading || 'Zgjidh një skemë';
+    const clear = $('#rxSourceClearSearch');
+    if (clear) clear.hidden = !state.query;
+
+    renderNav(items, active);
+    if (!active) {
+      list.innerHTML = `<div class="rx-source-empty"><strong>${state.query ? 'Nuk u gjet asnjë skemë.' : 'Nuk ka skema të publikuara në këtë kapitull.'}</strong><span>${state.query ? 'Provo me emrin e diagnozës ose substancës aktive.' : 'Përmbajtja shfaqet vetëm pasi importohet nga burimi në Sanity.'}</span></div>`;
       return;
     }
-    list.innerHTML = state.items.map(renderGuide).join('');
+    list.innerHTML = renderGuide(active);
   }
 
   function syncChapterPicker() {
     const select = $('#rxSourceChapterSelect');
     if (!select) return;
-    select.innerHTML = state.chapters.map(chapter =>
-      `<option value="${chapter.number}">Kapitulli ${chapter.number} — ${esc(chapter.title)}</option>`
-    ).join('');
+    select.innerHTML = state.chapters.map(chapter => {
+      const count = Number(chapter?.count || 0);
+      return `<option value="${chapter.number}">Kapitulli ${chapter.number} — ${esc(chapter.title)}${count ? ` · ${count} Rx` : ''}</option>`;
+    }).join('');
     if (state.chapter) select.value = String(state.chapter);
     select.disabled = state.chapters.length < 2;
+
+    const total = state.chapters.reduce((sum, chapter) => sum + Math.max(0, Number(chapter?.count || 0)), 0);
+    const totalNode = $('#rxSourceTotal');
+    if (totalNode) totalNode.textContent = total ? String(total) : `${state.chapters.length} kap.`;
+  }
+
+  function selectGuide(id, { focusDetail = false } = {}) {
+    if (!state.items.some(item => String(item?._id) === String(id))) return false;
+    state.activeGuideId = String(id);
+    render();
+    if (focusDetail) {
+      $('#rxSourceGuideList')?.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }
+    return true;
+  }
+
+  function setSearch(value) {
+    state.query = text(value);
+    render();
   }
 
   async function load(chapter = 0) {
     const requestId = ++state.requestId;
     state.controller?.abort();
     state.controller = new AbortController();
-    sourceStatus('Duke ngarkuar recetat nga Sanity…');
+    sourceStatus('Duke ngarkuar skemat nga Sanity…');
     const url = chapter ? `${API}&chapter=${encodeURIComponent(chapter)}` : API;
     try {
       const response = await fetch(url, {
@@ -7033,12 +7148,14 @@
       state.chapters = Array.isArray(payload.chapters) ? payload.chapters : [];
       state.chapter = Number(payload.chapter) || Number(state.chapters[0]?.number) || 0;
       state.items = Array.isArray(payload.items) ? payload.items : [];
+      state.activeGuideId = String(state.items[0]?._id || '');
       syncChapterPicker();
       render();
-      sourceStatus(state.items.length ? `${state.items.length} skemë Rx · Kapitulli ${state.chapter}` : '', 'success');
+      sourceStatus(state.items.length ? `${state.items.length} skema Rx · Kapitulli ${state.chapter}` : '', 'success');
     } catch(error) {
       if (error?.name === 'AbortError') return;
       state.items = [];
+      state.activeGuideId = '';
       render();
       sourceStatus('Recetat nga burimi nuk mund të ngarkohen për momentin. Provo përsëri.', 'error');
     }
@@ -7052,7 +7169,7 @@
       sourceText:sourceDraftText(guide),
     });
     if (result?.ok) {
-      $('#rxFreeTextPanel')?.scrollIntoView({ behavior:'smooth', block:'center' });
+      $('#rxComposerWorkspace')?.scrollIntoView({ behavior:'smooth', block:'start' });
     }
   }
 
@@ -7063,13 +7180,54 @@
     add.click();
     input.value = query;
     input.dispatchEvent(new Event('input', { bubbles:true }));
+    $('#rxComposerWorkspace')?.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  function moveNavFocus(direction) {
+    const nav = $('#rxSourceGuideNav');
+    if (!nav) return;
+    const buttons = [...nav.querySelectorAll('[data-rx-source-select]')];
+    if (!buttons.length) return;
+    const current = Math.max(0, buttons.indexOf(document.activeElement));
+    const next = (current + direction + buttons.length) % buttons.length;
+    buttons[next]?.focus({ preventScroll:false });
   }
 
   function bind() {
     $('#rxSourceChapterSelect')?.addEventListener('change', event => {
       const chapter = Number(event.target.value);
-      if (Number.isInteger(chapter) && chapter > 0) void load(chapter);
+      if (!Number.isInteger(chapter) || chapter < 1) return;
+      state.query = '';
+      const search = $('#rxSourceSearch');
+      if (search) search.value = '';
+      void load(chapter);
     });
+
+    $('#rxSourceSearch')?.addEventListener('input', event => setSearch(event.target.value), { passive:true });
+    $('#rxSourceClearSearch')?.addEventListener('click', () => {
+      const search = $('#rxSourceSearch');
+      if (search) search.value = '';
+      setSearch('');
+      search?.focus();
+    });
+
+    $('#rxSourceGuideNav')?.addEventListener('click', event => {
+      const button = event.target.closest('[data-rx-source-select]');
+      if (button) selectGuide(button.dataset.rxSourceSelect);
+    });
+    $('#rxSourceGuideNav')?.addEventListener('keydown', event => {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        moveNavFocus(1);
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        moveNavFocus(-1);
+      } else if ((event.key === 'Enter' || event.key === ' ') && event.target.closest('[data-rx-source-select]')) {
+        event.preventDefault();
+        event.target.closest('[data-rx-source-select]').click();
+      }
+    });
+
     $('#rxSourceGuideList')?.addEventListener('click', event => {
       const use = event.target.closest('[data-rx-source-use]');
       if (use) {
@@ -7080,6 +7238,20 @@
       const drug = event.target.closest('[data-rx-source-drug]');
       if (drug) searchActiveSubstance(drug.dataset.rxSourceDrug);
     });
+
+    document.addEventListener('keydown', event => {
+      const target = event.target;
+      const typing = target?.matches?.('input,textarea,select,[contenteditable="true"]');
+      if (event.key === '/' && !typing && !event.metaKey && !event.ctrlKey && !event.altKey) {
+        event.preventDefault();
+        $('#rxSourceSearch')?.focus();
+      }
+      if (event.key === 'Escape' && target === $('#rxSourceSearch') && state.query) {
+        const search = $('#rxSourceSearch');
+        if (search) search.value = '';
+        setSearch('');
+      }
+    });
   }
 
   function init() {
@@ -7088,11 +7260,17 @@
     void load();
   }
 
-  window.MedIndexPrescriptionSourceGuides = Object.freeze({ load, sourceDraftText, smartNumberedBlocks });
+  window.MedIndexPrescriptionSourceGuides = Object.freeze({
+    load,
+    sourceDraftText,
+    smartNumberedBlocks,
+    filteredItems,
+    selectGuide,
+  });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
   else init();
-})();
 
+})();
 
 (() => {
   'use strict';
