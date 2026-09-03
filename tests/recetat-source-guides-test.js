@@ -26,6 +26,11 @@ assert.match(api, /logicBlocks\[\]\{[\s\S]*?_key[\s\S]*?items\[\]\{/);
 assert.match(api, /source:'sanity-prescription-guides'/);
 
 assert.match(js, /RELATION_LABELS = Object\.freeze\(\{ and:'DHE', or:'OSE', plus:'PLUS', conditional:'NËSE' \}\)/);
+assert.match(js, /function smartNumberedBlocks\(input\)/);
+assert.match(js, /previous\.smartSuffix = 'A'/);
+assert.match(js, /block\.smartLabel = `\$\{alternativeBase\}\$\{block\.smartSuffix\}`/);
+assert.match(js, /Zgjidh preparatin/);
+assert.match(js, /Rrjedha klinike/);
 assert.match(js, /reviewStatus === 'source-imported'/);
 assert.match(js, /data-rx-source-use/);
 assert.match(js, /data-rx-source-drug/);
@@ -41,6 +46,9 @@ assert.doesNotMatch(draftFunction, /copyCurrent\s*\(/, 'Source guide must never 
 assert.doesNotMatch(draftFunction, /printCurrent\s*\(/, 'Source guide must never auto-print a prescription');
 
 assert.match(css, /\.rx-source-library/);
+assert.match(css, /Recetat V18 — smart clinical pathway UI/);
+assert.match(css, /\.rx-source-step-rail/);
+assert.match(css, /\.rx-source-flow-title/);
 assert.match(css, /\.rx-source-connector\.is-or/);
 assert.match(css, /\.rx-source-connector\.is-conditional/);
 assert.match(css, /@media\(max-width:760px\)/);

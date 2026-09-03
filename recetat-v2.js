@@ -6825,33 +6825,107 @@
     ].filter(Boolean);
   }
 
+  function alphaLabel(index) {
+    let value = Number(index) + 1;
+    let output = '';
+    while (value > 0) {
+      value -= 1;
+      output = String.fromCharCode(65 + (value % 26)) + output;
+      value = Math.floor(value / 26);
+    }
+    return output || 'A';
+  }
+
+  function smartNumberedBlocks(input) {
+    const blocks = [...(Array.isArray(input) ? input : [])]
+      .sort((a,b) => Number(a?.order || 0) - Number(b?.order || 0))
+      .map(block => ({ ...block }));
+    let nextBase = 1;
+    let alternativeBase = 0;
+    let alternativeIndex = 0;
+
+    blocks.forEach((block, index) => {
+      if (index === 0 || block?.relation !== 'or') {
+        alternativeBase = nextBase++;
+        alternativeIndex = 0;
+        block.smartBase = alternativeBase;
+        block.smartSuffix = '';
+        block.smartLabel = String(alternativeBase);
+        return;
+      }
+
+      const previous = blocks[index - 1];
+      alternativeBase = Number(previous?.smartBase || Math.max(1, nextBase - 1));
+      if (!previous.smartSuffix) {
+        previous.smartSuffix = 'A';
+        previous.smartLabel = `${alternativeBase}A`;
+        alternativeIndex = 1;
+      } else {
+        alternativeIndex = Math.max(1, alternativeIndex);
+      }
+      block.smartBase = alternativeBase;
+      block.smartSuffix = alphaLabel(alternativeIndex++);
+      block.smartLabel = `${alternativeBase}${block.smartSuffix}`;
+    });
+
+    return blocks.map(block => {
+      const items = [...(Array.isArray(block?.items) ? block.items : [])]
+        .sort((a,b) => Number(a?.order || 0) - Number(b?.order || 0));
+      return {
+        ...block,
+        smartItems:items.map((item,index) => {
+          let smartLabel = block.smartLabel;
+          if (items.length > 1) {
+            smartLabel = block.selection === 'choose-one'
+              ? (block.smartSuffix ? `${block.smartLabel}.${index + 1}` : `${block.smartLabel}${alphaLabel(index)}`)
+              : `${block.smartLabel}.${index + 1}`;
+          }
+          return { ...item, smartLabel };
+        }),
+      };
+    });
+  }
+
   function renderConnector(block) {
     const label = relationLabel(block);
     if (!label || block?.relation === 'start') return '';
     const condition = text(block?.condition);
-    const selection = block?.selection === 'choose-one' ? ' · Zgjidh 1' : '';
+    const selection = block?.selection === 'choose-one' ? 'Zgjidh vetëm 1' : '';
+    const helper = block?.relation === 'and'
+      ? 'vazhdo'
+      : block?.relation === 'or'
+        ? 'alternativë'
+        : block?.relation === 'plus'
+          ? 'shto'
+          : 'vetëm nëse';
     return `<div class="rx-source-connector is-${esc(block?.relation || 'and')}" role="separator" aria-label="${esc(label)}">
-      <span></span><b>${esc(label)}${esc(selection)}</b><span></span>
-      ${condition ? `<p>${esc(condition)}</p>` : ''}
+      <span class="rx-source-connector-line"></span>
+      <div class="rx-source-connector-pill"><b>${esc(label)}</b><small>${esc(selection || helper)}</small></div>
+      <span class="rx-source-connector-line"></span>
+      ${condition ? `<p><strong>Kushti:</strong> ${esc(condition)}</p>` : ''}
     </div>`;
   }
 
-  function renderItem(item) {
+  function renderItem(item, block) {
     const meta = itemMeta(item);
     const active = item?.kind === 'active-substance';
     const query = [text(item?.genericName || item?.title), text(item?.strength)].filter(Boolean).join(' ');
-    return `<article class="rx-source-item${active ? ' is-active-substance' : ''}">
-      <div class="rx-source-item-number" aria-hidden="true">${esc(item?.sourceNumber || item?.order || '')}</div>
+    const typeLabel = active ? 'BAR' : item?.kind === 'oxygen' ? 'O₂' : 'HAP';
+    return `<article class="rx-source-item${active ? ' is-active-substance' : ''}${block?.relation === 'conditional' ? ' is-conditional' : ''}">
+      <div class="rx-source-step-rail" aria-label="Hapi ${esc(item.smartLabel)}">
+        <span class="rx-source-item-number">${esc(item.smartLabel)}</span>
+        <small>${esc(typeLabel)}</small>
+      </div>
       <div class="rx-source-item-body">
         <div class="rx-source-item-title">
           <div>
             <span class="rx-source-kind">${esc(KIND_LABELS[item?.kind] || 'Element i skemës')}</span>
             <h4>${esc(itemTitle(item))}</h4>
           </div>
-          ${active && query ? `<button class="rx-source-find-drug" type="button" data-rx-source-drug="${esc(query)}">Kërko substancën</button>` : ''}
+          ${active && query ? `<button class="rx-source-find-drug" type="button" data-rx-source-drug="${esc(query)}"><span>Zgjidh preparatin</span><b aria-hidden="true">→</b></button>` : ''}
         </div>
         ${meta.length ? `<div class="rx-source-meta">${meta.map(value => `<span>${esc(value)}</span>`).join('')}</div>` : ''}
-        ${text(item?.sig) ? `<p class="rx-source-sig"><b>S.</b> ${esc(item.sig)}</p>` : ''}
+        ${text(item?.sig) ? `<div class="rx-source-sig"><span>S.</span><p>${esc(item.sig)}</p></div>` : ''}
         ${text(item?.note) ? `<p class="rx-source-note">${esc(item.note)}</p>` : ''}
       </div>
     </article>`;
@@ -6877,34 +6951,44 @@
   }
 
   function renderGuide(guide) {
-    const blocks = [...(Array.isArray(guide?.logicBlocks) ? guide.logicBlocks : [])]
-      .sort((a,b) => Number(a?.order || 0) - Number(b?.order || 0));
-    const items = blocks.flatMap(block => Array.isArray(block?.items) ? block.items : []);
+    const blocks = smartNumberedBlocks(guide?.logicBlocks);
+    const items = blocks.flatMap(block => block.smartItems || []);
     const activeCount = items.filter(item => item?.kind === 'active-substance').length;
     const supportCount = Math.max(0, items.length - activeCount);
+    const alternativeCount = blocks.filter(block => block?.relation === 'or' || block?.selection === 'choose-one').length;
+    const conditionalCount = blocks.filter(block => block?.relation === 'conditional').length;
     const pages = Number(guide?.sourcePageStart) === Number(guide?.sourcePageEnd)
       ? `Faqe ${guide?.sourcePageStart || '—'}`
       : `Faqe ${guide?.sourcePageStart || '—'}–${guide?.sourcePageEnd || '—'}`;
 
     return `<article class="rx-source-guide" data-source-guide-id="${esc(guide?._id)}">
       <header class="rx-source-guide-head">
-        <div>
+        <div class="rx-source-guide-heading">
           <div class="rx-source-guide-kicker">
             <span>Kapitulli ${esc(guide?.chapterNumber || '')}</span>
-            <span class="rx-source-import-badge">Importuar 1:1 nga burimi</span>
+            <span class="rx-source-import-badge">Burimi 1:1</span>
           </div>
           <h3>${esc(guide?.title || guide?.sourceHeading || 'Skemë Rx')}</h3>
-          <p>${activeCount} substancë aktive · ${supportCount} masa/elemente mbështetëse · ${esc(pages)}</p>
+          <div class="rx-source-guide-stats" aria-label="Përmbledhja e skemës">
+            <span><b>${items.length}</b> hapa</span>
+            <span><b>${activeCount}</b> barna</span>
+            ${alternativeCount ? `<span><b>${alternativeCount}</b> alternativa</span>` : ''}
+            ${conditionalCount ? `<span><b>${conditionalCount}</b> kushte</span>` : ''}
+            <span>${esc(pages)}</span>
+          </div>
         </div>
-        <button class="rx-source-use" type="button" data-rx-source-use="${esc(guide?._id)}">Përdor si bazë</button>
+        <button class="rx-source-use" type="button" data-rx-source-use="${esc(guide?._id)}">
+          <span>Përdor këtë skemë</span><b aria-hidden="true">→</b>
+        </button>
       </header>
-      <div class="rx-source-flow">
-        ${blocks.map((block,index) => `${index ? renderConnector(block) : ''}<div class="rx-source-block${block?.selection === 'choose-one' ? ' is-choice' : ''}">${(block?.items || []).map(renderItem).join('')}</div>`).join('')}
+      <div class="rx-source-flow" aria-label="Rrjedha e recetës">
+        <div class="rx-source-flow-title"><span>Rrjedha klinike</span><small>Lexo nga lart poshtë · numrat tregojnë rendin</small></div>
+        ${blocks.map((block,index) => `${index ? renderConnector(block) : ''}<div class="rx-source-block${block?.selection === 'choose-one' ? ' is-choice' : ''}" data-smart-step="${esc(block.smartLabel)}">${(block.smartItems || []).map(item => renderItem(item, block)).join('')}</div>`).join('')}
       </div>
       <footer class="rx-source-guide-foot">
-        <span>Burimi: ${esc(guide?.sourceDocument || 'Doctor on Duty')}</span>
-        <span>Status: ${guide?.reviewStatus === 'source-imported' ? 'importuar nga burimi' : esc(guide?.reviewStatus || '—')}</span>
-        <span>Versioni: ${esc(guide?.version || '—')}</span>
+        <span><b>Burimi</b> ${esc(guide?.sourceDocument || 'Doctor on Duty')}</span>
+        <span><b>Statusi</b> ${guide?.reviewStatus === 'source-imported' ? 'importuar nga burimi' : esc(guide?.reviewStatus || '—')}</span>
+        <span><b>Versioni</b> ${esc(guide?.version || '—')}</span>
       </footer>
     </article>`;
   }
@@ -7004,7 +7088,7 @@
     void load();
   }
 
-  window.MedIndexPrescriptionSourceGuides = Object.freeze({ load, sourceDraftText });
+  window.MedIndexPrescriptionSourceGuides = Object.freeze({ load, sourceDraftText, smartNumberedBlocks });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
   else init();
 })();

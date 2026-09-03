@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v17">
+<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v18">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -10,10 +10,10 @@
   <title>DRx | Recetat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/recetat-v2.css?v=17">
+  <link rel="stylesheet" href="/recetat-v2.css?v=18">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8">
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5" defer></script>
-<script src="/recetat-v2.js?v=17" defer></script>
+<script src="/recetat-v2.js?v=18" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#rxWorkspace">Kalo te krijimi i recetës</a>
@@ -103,7 +103,7 @@
           <div>
             <p class="eyebrow">PUNA KLINIKE</p>
             <h1>Recetat</h1>
-            <p class="page-subtitle">Krijo recetën, verifiko dozën dhe rrugën e administrimit, pastaj ruaje në dosjen klinike përkatëse. Përmbajtja ruhet e enkriptuar në bibliotekën personale.</p>
+            <p class="page-subtitle">Nis nga një skemë klinike e strukturuar ose ndërto recetën manualisht. Hapat, barnat, alternativat dhe kushtet shfaqen në rend të qartë para se receta të ruhet.</p>
           </div>
           <button class="rx-new-top" id="rxNew" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -133,9 +133,10 @@
             </label>
           </header>
           <div class="rx-source-legend" aria-label="Si lexohet skema">
-            <span><b>DHE</b> përdoren bashkë</span>
-            <span><b>OSE</b> zgjidhet një alternativë</span>
-            <span><b>NËSE</b> vlen vetëm kur plotësohet kushti</span>
+            <span class="rx-legend-number"><b>1</b><em>→</em><b>2</b><em>→</em><b>3</b> hapa në rend</span>
+            <span><b>DHE</b> vazhdo me hapin tjetër</span>
+            <span><b>2A / 2B</b> alternativa kur ka OSE</span>
+            <span><b>NËSE</b> hap kushtor</span>
           </div>
           <div class="rx-source-status" id="rxSourceGuideStatus" role="status" aria-live="polite">Duke ngarkuar Kapitullin 1…</div>
           <div class="rx-source-guide-list" id="rxSourceGuideList" aria-live="polite"></div>

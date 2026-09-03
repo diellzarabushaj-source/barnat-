@@ -4066,3 +4066,472 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-page-footer{
 @media(prefers-reduced-motion:reduce){
   .rx-source-use,.rx-source-find-drug{scroll-behavior:auto}
 }
+
+
+/* Recetat V18 — smart clinical pathway UI. */
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-library{
+  margin:0 0 22px!important;
+  padding:0!important;
+  border:1px solid #e6e9ef!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-shadow:0 1px 2px rgba(16,24,40,.03),0 10px 32px rgba(16,24,40,.025)!important;
+  overflow:hidden!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-library-head{
+  padding:22px 22px 18px!important;
+  border-bottom:1px solid #edf0f4!important;
+  background:linear-gradient(180deg,#fff 0%,#fcfcfe 100%)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-eyebrow{
+  margin-bottom:7px!important;
+  color:#635bff!important;
+  font-size:9.5px!important;
+  font-weight:700!important;
+  letter-spacing:.09em!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-library-head h2{
+  font-size:22px!important;
+  font-weight:580!important;
+  letter-spacing:-.035em!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-library-head p{
+  max-width:720px!important;
+  color:#697386!important;
+  font-size:12.5px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-chapter-picker{
+  min-width:min(330px,32vw)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-chapter-picker select{
+  min-height:44px!important;
+  border-color:#dfe3e8!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  font-weight:520!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-legend{
+  margin:0!important;
+  padding:10px 22px!important;
+  gap:9px 16px!important;
+  border:0!important;
+  border-bottom:1px solid #edf0f4!important;
+  border-radius:0!important;
+  background:#fafbfc!important;
+  color:#697386!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-legend span{
+  min-height:26px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-legend b{
+  display:inline-grid!important;
+  min-width:24px!important;
+  min-height:22px!important;
+  place-items:center!important;
+  padding:0 5px!important;
+  border:1px solid #dfe3e8!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  color:#343a46!important;
+  font-size:10px!important;
+  font-style:normal!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-legend-number{
+  gap:4px!important;
+  color:#343a46!important;
+  font-weight:570!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-legend-number em{
+  color:#98a2b3!important;
+  font-style:normal!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-status{
+  margin:0!important;
+  padding:9px 22px 0!important;
+  font-size:10.5px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-list{
+  margin:0!important;
+  padding:12px 14px 14px!important;
+  gap:12px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide{
+  border:1px solid #e4e7ec!important;
+  border-radius:13px!important;
+  box-shadow:none!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-head{
+  padding:18px 18px 16px!important;
+  border-bottom:1px solid #edf0f3!important;
+  background:#fff!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-heading{
+  min-width:0!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-kicker{
+  margin-bottom:7px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-kicker>span:first-child{
+  color:#635bff!important;
+  font-weight:700!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-import-badge{
+  border-color:#e3e0ff!important;
+  background:#f7f6ff!important;
+  color:#564ed8!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-head h3{
+  max-width:760px!important;
+  font-size:17px!important;
+  font-weight:600!important;
+  letter-spacing:-.02em!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-stats{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+  margin-top:10px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-stats span{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  min-height:25px!important;
+  padding:0 8px!important;
+  border:1px solid #e5e8ec!important;
+  border-radius:999px!important;
+  background:#fafbfc!important;
+  color:#697386!important;
+  font-size:10px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-stats b{
+  color:#344054!important;
+  font-weight:750!important;
+  font-variant-numeric:tabular-nums!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-use{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:10px!important;
+  min-height:42px!important;
+  padding:0 14px!important;
+  border-color:#635bff!important;
+  border-radius:9px!important;
+  background:#635bff!important;
+  font-size:11px!important;
+  font-weight:620!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-use b{
+  font-size:16px!important;
+  font-weight:450!important;
+  transition:transform .14s ease!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-use:hover b{
+  transform:translateX(2px)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-flow{
+  padding:16px 18px 18px!important;
+  background:#fbfcfe!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-flow-title{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  margin:0 0 12px!important;
+  padding:0 1px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-flow-title span{
+  color:#344054!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  letter-spacing:.02em!important;
+  text-transform:uppercase!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-flow-title small{
+  color:#98a2b3!important;
+  font-size:10px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-block{
+  position:relative!important;
+  display:grid!important;
+  gap:9px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-block.is-choice{
+  padding:10px!important;
+  border:1px dashed #c8c4ff!important;
+  border-radius:12px!important;
+  background:#faf9ff!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item{
+  position:relative!important;
+  grid-template-columns:54px minmax(0,1fr)!important;
+  gap:13px!important;
+  min-height:92px!important;
+  padding:14px 15px 14px 12px!important;
+  border:1px solid #e5e8ec!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-shadow:0 1px 2px rgba(16,24,40,.025)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item::before{
+  content:""!important;
+  position:absolute!important;
+  left:38px!important;
+  top:72px!important;
+  bottom:-22px!important;
+  width:1px!important;
+  background:#e1e5ea!important;
+  pointer-events:none!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-block:last-of-type .rx-source-item:last-child::before{
+  display:none!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item.is-active-substance{
+  border-color:#d9d6ff!important;
+  background:linear-gradient(90deg,#f9f8ff 0,#fff 170px)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item.is-conditional{
+  border-color:#eed7ac!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-step-rail{
+  position:relative!important;
+  z-index:2!important;
+  display:grid!important;
+  justify-items:center!important;
+  align-content:start!important;
+  gap:5px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item-number{
+  display:grid!important;
+  width:44px!important;
+  height:44px!important;
+  place-items:center!important;
+  padding:0!important;
+  border:1px solid #dfe3e8!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  color:#344054!important;
+  box-shadow:0 1px 2px rgba(16,24,40,.04)!important;
+  font-size:13px!important;
+  font-weight:760!important;
+  font-variant-numeric:tabular-nums!important;
+  letter-spacing:-.02em!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-step-rail small{
+  color:#98a2b3!important;
+  font-size:8px!important;
+  font-weight:750!important;
+  letter-spacing:.08em!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item.is-active-substance .rx-source-item-number{
+  border-color:#beb9ff!important;
+  background:#635bff!important;
+  color:#fff!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item.is-active-substance .rx-source-step-rail small{
+  color:#635bff!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item-title{
+  align-items:center!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-kind{
+  margin-bottom:4px!important;
+  color:#98a2b3!important;
+  font-size:8.5px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item.is-active-substance .rx-source-kind{
+  color:#635bff!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item h4{
+  font-size:14px!important;
+  font-weight:620!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-find-drug{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  min-height:34px!important;
+  padding:0 10px!important;
+  border-color:#d9d6ff!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#564ed8!important;
+  font-weight:620!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-find-drug b{
+  font-size:14px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-meta{
+  gap:5px!important;
+  margin-top:8px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-meta span{
+  min-height:22px!important;
+  border-color:#e7e9ed!important;
+  background:#f8f9fb!important;
+  color:#697386!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-sig{
+  display:grid!important;
+  grid-template-columns:26px minmax(0,1fr)!important;
+  gap:6px!important;
+  align-items:start!important;
+  margin:9px 0 0!important;
+  padding:9px 10px!important;
+  border:1px solid #eceef2!important;
+  border-radius:8px!important;
+  background:#fafbfc!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-sig>span{
+  color:#344054!important;
+  font-size:10px!important;
+  font-weight:760!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-sig>p{
+  margin:0!important;
+  color:#475467!important;
+  font-size:11.5px!important;
+  line-height:1.5!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-connector{
+  grid-template-columns:minmax(20px,1fr) auto minmax(20px,1fr)!important;
+  gap:8px!important;
+  margin:7px 7px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-connector-line{
+  height:1px!important;
+  background:#e2e6eb!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-connector-pill{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  min-height:28px!important;
+  padding:0 9px!important;
+  border:1px solid #dfe3e8!important;
+  border-radius:999px!important;
+  background:#fff!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-connector-pill b{
+  color:#344054!important;
+  font-size:9px!important;
+  font-weight:800!important;
+  letter-spacing:.08em!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-connector-pill small{
+  color:#98a2b3!important;
+  font-size:9px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-connector.is-or .rx-source-connector-pill{
+  border-color:#cbc7ff!important;
+  background:#f6f5ff!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-connector.is-or .rx-source-connector-pill b{
+  color:#564ed8!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-connector.is-conditional .rx-source-connector-pill{
+  border-color:#e9ca8d!important;
+  background:#fff9ed!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-connector.is-conditional .rx-source-connector-pill b{
+  color:#9a6700!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-connector p{
+  grid-column:1/-1!important;
+  margin:1px 0 2px!important;
+  padding:8px 10px!important;
+  border-left:3px solid #d9b35d!important;
+  border-radius:0 7px 7px 0!important;
+  background:#fffbf3!important;
+  color:#694d15!important;
+  text-align:left!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-connector p strong{
+  font-weight:750!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-foot{
+  padding:10px 18px!important;
+  border-top:1px solid #edf0f3!important;
+  background:#fff!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-foot span{
+  display:inline-flex!important;
+  gap:4px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-foot b{
+  color:#697386!important;
+  font-weight:650!important;
+}
+
+@media(max-width:760px){
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-library{
+    margin-inline:0!important;
+    border-radius:12px!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-library-head{
+    padding:16px!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-chapter-picker{
+    min-width:0!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-legend{
+    padding:10px 16px!important;
+    grid-template-columns:1fr!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-status{
+    padding-inline:16px!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-list{
+    padding:10px!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-head{
+    padding:15px!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-stats{
+    gap:5px!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-use{
+    width:100%!important;
+    min-height:44px!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-flow{
+    padding:13px 11px 14px!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-flow-title{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+    gap:3px!important;
+    padding-inline:3px!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item{
+    grid-template-columns:46px minmax(0,1fr)!important;
+    gap:9px!important;
+    padding:12px 10px 12px 8px!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item::before{
+    left:29px!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item-number{
+    width:38px!important;
+    height:38px!important;
+    border-radius:10px!important;
+    font-size:11.5px!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item-title{
+    align-items:stretch!important;
+    display:grid!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-find-drug{
+    width:100%!important;
+    justify-content:space-between!important;
+    min-height:38px!important;
+  }
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-sig{
+    grid-template-columns:22px minmax(0,1fr)!important;
+  }
+}
