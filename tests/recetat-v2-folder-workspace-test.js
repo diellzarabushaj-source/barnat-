@@ -97,16 +97,20 @@ assert.match(stripe, /--drx-shell-sidebar-collapsed-width:76px/);
 assert.doesNotMatch(css, /--drx-shell-sidebar-collapsed-width:76px|drx-sidebar-collapsed \.(?:sidebar|main-shell|nav-item)/,
   'Recetat page CSS must not duplicate shared collapse authority');
 
-assert.match(js, /Recetat V2 — consolidated runtime with chapter folders/);
+assert.match(js, /Recetat V20 — chapters \+ lessons \+ global typo-tolerant smart search/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
-assert.match(js, /SIDEBAR_COLLAPSE_KEY = 'drx_sidebar_collapsed_v1'/);
-assert.match(js, /window\.matchMedia\('\(min-width:1025px\)'\)/);
+assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/);
+assert.match(js, /SIDEBAR_COLLAPSE_KEY = 'drx_sidebar_collapsed_v2'/);
+assert.match(js, /window\.matchMedia\('\(min-width:1024px\)'\)/);
 assert.match(js, /function setSidebarCollapsed\(/);
 assert.match(js, /function toggleSidebarCollapsed\(/);
 assert.match(js, /localStorage\.setItem\(SIDEBAR_COLLAPSE_KEY/);
 assert.match(js, /aria-pressed/);
 assert.match(js, /drx:sidebar-collapse/);
 assert.match(js, /sidebarWasOpen/);
+assert.match(js, /window\.DRxSidebarCollapse\?\.sync\?\.\(\)/);
+assert.match(js, /shared sidebar runtime is the canonical owner/);
+assert.match(js, /sidebarCollapseOwner !== 'local-fallback'/);
 assert.match(js, /Konteksti klinik/);
 assert.match(js, /Rruga e administrimit/);
 assert.match(js, /Sinkronizuar/);
@@ -121,7 +125,6 @@ assert.match(js, /PDID \$\{drug\.pdid\}/);
 assert.match(js, /clinicalReviewConfirmed/);
 assert.match(js, /function updateOrderField\(/);
 assert.match(js, /Asnjë skemë nuk aplikohet pa konfirmimin tënd/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/);
 assert.match(js, /async function ensureAuth\(\)/);
 assert.match(js, /function chapterCatalog\(\)/);
 assert.match(js, /function classifyChapter\(/);
@@ -174,4 +177,4 @@ assert.match(worker, /\/recetat-v2\.css/);
 assert.match(worker, /\/recetat-v2\.js/);
 assert.doesNotMatch(worker, /['"]\/recetat\.js['"]/);
 
-console.log('Recetat V2 folder-based Stripe workspace and Supabase chapter sync contract passed.');
+console.log('Recetat V20 folder-based Stripe workspace, shared sidebar ownership and Supabase chapter sync contract passed.');
