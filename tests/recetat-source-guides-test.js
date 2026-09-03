@@ -18,8 +18,8 @@ assert.match(html, /id="rxSourceGuideList"/);
 assert.match(html, /id="rxSourceGuideNav"/);
 assert.match(html, /id="rxSourceSearch"/);
 assert.match(html, /DHE[\s\S]*OSE[\s\S]*NËSE/);
-assert.match(html, /recetat-v2\.css\?v=18/);
-assert.match(html, /recetat-v2\.js\?v=18/);
+assert.match(html, /recetat-v2\.css\?v=19/);
+assert.match(html, /recetat-v2\.js\?v=19/);
 
 assert.match(api, /PRESCRIPTION_CHAPTER_QUERY/);
 assert.match(api, /PRESCRIPTION_GUIDE_QUERY/);
