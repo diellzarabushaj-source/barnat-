@@ -1,4 +1,4 @@
-/* Recetat V19 — Stripe-style master-detail prescription workspace · production. */
+/* Recetat V19 — Stripe-style master-detail prescription workspace · production-ready. */
 
 (() => {
   'use strict';
