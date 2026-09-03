@@ -3659,7 +3659,9 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] button:not(:disabled){cursor
 
 /* Recetat V2 — final UI coherence pass v16 */
 html.drx-unified-sidebar[data-drx-app="recetat-v2"] .topbar{
-  min-height:58px!important;
+  /* Height is the shell's: --drx-shell-topbar-height, 58px on desktop and
+     50px below 760px. Restating 58px here overrode the mobile value and made
+     Recetat the one clinical page whose topbar did not match the others. */
   border-bottom-color:#edf0f4!important;
   background:rgba(255,255,255,.86)!important;
   backdrop-filter:blur(14px) saturate(135%)!important;
@@ -3845,7 +3847,9 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-page-footer{
 }
 
 @media(max-width:760px){
-  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .topbar{min-height:56px!important}
+  /* The shell drops --drx-shell-topbar-height to 50px below 760px for every
+     clinical page. Recetat forced 56px here, which is the only reason its
+     mobile topbar differed from the rest of the site; the shell owns this. */
   html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-clinical-context{margin-inline:13px!important}
   html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-drug-popover{
     inset:max(60px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom))!important;
