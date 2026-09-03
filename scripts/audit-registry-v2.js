@@ -57,7 +57,7 @@ assert(stylesheetLinks[1].startsWith('/registry-v2-dose-calculator.css'), 'Dose 
 assert(stylesheetLinks[2] === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8', 'Shared Stripe shell v8 must load last.');
 assert(scriptSources[0].startsWith('/dose-core.js'), 'Dose core must load first.');
 assert(scriptSources[1].startsWith('/dose-runtime-browser.js'), 'Dose browser runtime must load after dose core.');
-assert(scriptSources[2].startsWith('/sidebar-taxonomy-v3.js'), 'Shared sidebar taxonomy must load before the registry runtime.');
+assert(scriptSources[2] === '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5', 'Shared sidebar taxonomy v5 must load before the registry runtime.');
 assert(scriptSources[3].startsWith('/registry-v2.js'), 'Registry runtime must load after shared sidebar taxonomy.');
 assert(scriptSources[4].startsWith('/registry-v2-dose-calculator.js'), 'Dose calculator runtime must load last.');
 
