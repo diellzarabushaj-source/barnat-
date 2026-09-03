@@ -1,4 +1,4 @@
-/* Recetat V2 — consolidated runtime with chapter folders. */
+/* Recetat V18 — consolidated runtime with smart numbered clinical pathways. */
 
 (() => {
   'use strict';
