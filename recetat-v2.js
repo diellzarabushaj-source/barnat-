@@ -6702,6 +6702,40 @@
     });
   }
 
+  function beginSourceGuideDraft(payload = {}) {
+    const composer = $('#rxComposer');
+    const diagnosis = $('#rxDiagnosis');
+    if (!composer || !diagnosis) return { ok:false, reason:'workspace-missing' };
+    const occupied = Boolean(text(composer.value) || text(diagnosis.value) || state.selectedDrugs.length);
+    if (occupied) {
+      setStatus('Drafti aktual ka përmbajtje. Ruaje ose përdor “Recetë e re” para se të hapësh një skemë nga burimi.', 'error');
+      return { ok:false, reason:'draft-not-empty' };
+    }
+
+    state.editingId = '';
+    state.selectedDrugs = [];
+    state.generatedReviewConfirmed = false;
+    state.dosageReviewConfirmed = false;
+    state.clinicalReviewConfirmed = false;
+    state.dosageEdited = false;
+    state.composerOrigin = 'manual';
+    diagnosis.value = text(payload.diagnosis);
+    composer.value = String(payload.sourceText || '').trim();
+    if ($('#rxFreeTextPanel')) $('#rxFreeTextPanel').open = true;
+    if ($('#rxDraftLabel')) $('#rxDraftLabel').textContent = 'Draft nga burimi';
+    renderSelectedDrugs();
+    state.chapterManuallySelected = false;
+    syncChapterSuggestion({ force:true });
+    scheduleLocalPreview();
+    updateActionState();
+    setStatus('Skema nga Doctor on Duty u vendos vetëm si draft. Kontrolloje klinikisht para ruajtjes, kopjimit ose printimit.', 'success');
+    composer.focus({ preventScroll:true });
+    composer.scrollIntoView({ behavior:'smooth', block:'center' });
+    return { ok:true };
+  }
+
+  window.MedIndexRecetaWorkspace = Object.freeze({ beginSourceGuideDraft });
+
   async function init() {
     window.DRxRxShell?.init();
     try {
@@ -6741,6 +6775,236 @@
     });
   }
 
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
+  else init();
+})();
+
+
+(() => {
+  'use strict';
+
+  const API = '/api/medical-hub?_route=prescription-library';
+  const RELATION_LABELS = Object.freeze({ and:'DHE', or:'OSE', plus:'PLUS', conditional:'NËSE' });
+  const KIND_LABELS = Object.freeze({
+    'active-substance':'Substancë aktive',
+    'supportive-care':'Mbështetëse',
+    oxygen:'Oksigjen',
+    'blood-product':'Produkt gjaku',
+    procedure:'Procedurë',
+    'source-note':'Shënim burimor',
+  });
+  const state = { chapter:0, chapters:[], items:[], controller:null, requestId:0 };
+  const $ = selector => document.querySelector(selector);
+  const text = value => String(value ?? '').replace(/\s+/g, ' ').trim();
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, character => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;',
+  }[character]));
+
+  function sourceStatus(message = '', type = '') {
+    const node = $('#rxSourceGuideStatus');
+    if (!node) return;
+    node.textContent = message;
+    node.className = `rx-source-status${type ? ` is-${type}` : ''}`;
+    node.hidden = !message;
+  }
+
+  function relationLabel(block) {
+    return text(block?.sourceConnectorLabel) || RELATION_LABELS[block?.relation] || '';
+  }
+
+  function itemTitle(item) {
+    if (item?.kind !== 'active-substance') return text(item?.title);
+    return [text(item?.form), text(item?.genericName || item?.title), text(item?.strength)].filter(Boolean).join(' ');
+  }
+
+  function itemMeta(item) {
+    return [
+      item?.route === 'PO' ? 'Nga goja' : text(item?.route),
+      text(item?.frequency),
+      text(item?.duration),
+    ].filter(Boolean);
+  }
+
+  function renderConnector(block) {
+    const label = relationLabel(block);
+    if (!label || block?.relation === 'start') return '';
+    const condition = text(block?.condition);
+    const selection = block?.selection === 'choose-one' ? ' · Zgjidh 1' : '';
+    return `<div class="rx-source-connector is-${esc(block?.relation || 'and')}" role="separator" aria-label="${esc(label)}">
+      <span></span><b>${esc(label)}${esc(selection)}</b><span></span>
+      ${condition ? `<p>${esc(condition)}</p>` : ''}
+    </div>`;
+  }
+
+  function renderItem(item) {
+    const meta = itemMeta(item);
+    const active = item?.kind === 'active-substance';
+    const query = [text(item?.genericName || item?.title), text(item?.strength)].filter(Boolean).join(' ');
+    return `<article class="rx-source-item${active ? ' is-active-substance' : ''}">
+      <div class="rx-source-item-number" aria-hidden="true">${esc(item?.sourceNumber || item?.order || '')}</div>
+      <div class="rx-source-item-body">
+        <div class="rx-source-item-title">
+          <div>
+            <span class="rx-source-kind">${esc(KIND_LABELS[item?.kind] || 'Element i skemës')}</span>
+            <h4>${esc(itemTitle(item))}</h4>
+          </div>
+          ${active && query ? `<button class="rx-source-find-drug" type="button" data-rx-source-drug="${esc(query)}">Kërko substancën</button>` : ''}
+        </div>
+        ${meta.length ? `<div class="rx-source-meta">${meta.map(value => `<span>${esc(value)}</span>`).join('')}</div>` : ''}
+        ${text(item?.sig) ? `<p class="rx-source-sig"><b>S.</b> ${esc(item.sig)}</p>` : ''}
+        ${text(item?.note) ? `<p class="rx-source-note">${esc(item.note)}</p>` : ''}
+      </div>
+    </article>`;
+  }
+
+  function sourceDraftText(guide) {
+    const lines = ['Rp:'];
+    const blocks = [...(Array.isArray(guide?.logicBlocks) ? guide.logicBlocks : [])]
+      .sort((a,b) => Number(a?.order || 0) - Number(b?.order || 0));
+    blocks.forEach((block, blockIndex) => {
+      const connector = relationLabel(block);
+      if (blockIndex > 0 && connector) lines.push('', connector);
+      if (text(block?.condition)) lines.push(text(block.condition));
+      const items = [...(Array.isArray(block?.items) ? block.items : [])]
+        .sort((a,b) => Number(a?.order || 0) - Number(b?.order || 0));
+      items.forEach(item => {
+        const number = item?.sourceNumber || item?.order || '';
+        lines.push(`${number ? `${number}. ` : ''}${itemTitle(item)}`.trim());
+        if (text(item?.sig)) lines.push(`S. ${text(item.sig)}`);
+      });
+    });
+    return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  }
+
+  function renderGuide(guide) {
+    const blocks = [...(Array.isArray(guide?.logicBlocks) ? guide.logicBlocks : [])]
+      .sort((a,b) => Number(a?.order || 0) - Number(b?.order || 0));
+    const items = blocks.flatMap(block => Array.isArray(block?.items) ? block.items : []);
+    const activeCount = items.filter(item => item?.kind === 'active-substance').length;
+    const supportCount = Math.max(0, items.length - activeCount);
+    const pages = Number(guide?.sourcePageStart) === Number(guide?.sourcePageEnd)
+      ? `Faqe ${guide?.sourcePageStart || '—'}`
+      : `Faqe ${guide?.sourcePageStart || '—'}–${guide?.sourcePageEnd || '—'}`;
+
+    return `<article class="rx-source-guide" data-source-guide-id="${esc(guide?._id)}">
+      <header class="rx-source-guide-head">
+        <div>
+          <div class="rx-source-guide-kicker">
+            <span>Kapitulli ${esc(guide?.chapterNumber || '')}</span>
+            <span class="rx-source-import-badge">Importuar 1:1 nga burimi</span>
+          </div>
+          <h3>${esc(guide?.title || guide?.sourceHeading || 'Skemë Rx')}</h3>
+          <p>${activeCount} substancë aktive · ${supportCount} masa/elemente mbështetëse · ${esc(pages)}</p>
+        </div>
+        <button class="rx-source-use" type="button" data-rx-source-use="${esc(guide?._id)}">Përdor si bazë</button>
+      </header>
+      <div class="rx-source-flow">
+        ${blocks.map((block,index) => `${index ? renderConnector(block) : ''}<div class="rx-source-block${block?.selection === 'choose-one' ? ' is-choice' : ''}">${(block?.items || []).map(renderItem).join('')}</div>`).join('')}
+      </div>
+      <footer class="rx-source-guide-foot">
+        <span>Burimi: ${esc(guide?.sourceDocument || 'Doctor on Duty')}</span>
+        <span>Status: ${guide?.reviewStatus === 'source-imported' ? 'importuar nga burimi' : esc(guide?.reviewStatus || '—')}</span>
+        <span>Versioni: ${esc(guide?.version || '—')}</span>
+      </footer>
+    </article>`;
+  }
+
+  function render() {
+    const list = $('#rxSourceGuideList');
+    if (!list) return;
+    if (!state.items.length) {
+      list.innerHTML = '<div class="rx-source-empty"><strong>Nuk ka skema të publikuara në këtë kapitull.</strong><span>Përmbajtja shfaqet vetëm pasi importohet nga burimi në Sanity.</span></div>';
+      return;
+    }
+    list.innerHTML = state.items.map(renderGuide).join('');
+  }
+
+  function syncChapterPicker() {
+    const select = $('#rxSourceChapterSelect');
+    if (!select) return;
+    select.innerHTML = state.chapters.map(chapter =>
+      `<option value="${chapter.number}">Kapitulli ${chapter.number} — ${esc(chapter.title)}</option>`
+    ).join('');
+    if (state.chapter) select.value = String(state.chapter);
+    select.disabled = state.chapters.length < 2;
+  }
+
+  async function load(chapter = 0) {
+    const requestId = ++state.requestId;
+    state.controller?.abort();
+    state.controller = new AbortController();
+    sourceStatus('Duke ngarkuar recetat nga Sanity…');
+    const url = chapter ? `${API}&chapter=${encodeURIComponent(chapter)}` : API;
+    try {
+      const response = await fetch(url, {
+        credentials:'same-origin',
+        cache:'no-store',
+        signal:state.controller.signal,
+        headers:{ Accept:'application/json' },
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (requestId !== state.requestId) return;
+      if (response.status === 401 || response.status === 403) return;
+      if (!response.ok || payload?.ok !== true) throw new Error(payload?.error || 'Burimi nuk u ngarkua.');
+      state.chapters = Array.isArray(payload.chapters) ? payload.chapters : [];
+      state.chapter = Number(payload.chapter) || Number(state.chapters[0]?.number) || 0;
+      state.items = Array.isArray(payload.items) ? payload.items : [];
+      syncChapterPicker();
+      render();
+      sourceStatus(state.items.length ? `${state.items.length} skemë Rx · Kapitulli ${state.chapter}` : '', 'success');
+    } catch(error) {
+      if (error?.name === 'AbortError') return;
+      state.items = [];
+      render();
+      sourceStatus('Recetat nga burimi nuk mund të ngarkohen për momentin. Provo përsëri.', 'error');
+    }
+  }
+
+  function beginGuide(guide) {
+    const workspace = window.MedIndexRecetaWorkspace;
+    if (!workspace?.beginSourceGuideDraft) return;
+    const result = workspace.beginSourceGuideDraft({
+      diagnosis:text(guide?.title),
+      sourceText:sourceDraftText(guide),
+    });
+    if (result?.ok) {
+      $('#rxFreeTextPanel')?.scrollIntoView({ behavior:'smooth', block:'center' });
+    }
+  }
+
+  function searchActiveSubstance(query) {
+    const add = $('#rxAddDrugButton');
+    const input = $('#rxDrugSearch');
+    if (!add || !input || !query) return;
+    add.click();
+    input.value = query;
+    input.dispatchEvent(new Event('input', { bubbles:true }));
+  }
+
+  function bind() {
+    $('#rxSourceChapterSelect')?.addEventListener('change', event => {
+      const chapter = Number(event.target.value);
+      if (Number.isInteger(chapter) && chapter > 0) void load(chapter);
+    });
+    $('#rxSourceGuideList')?.addEventListener('click', event => {
+      const use = event.target.closest('[data-rx-source-use]');
+      if (use) {
+        const guide = state.items.find(item => String(item?._id) === String(use.dataset.rxSourceUse));
+        if (guide) beginGuide(guide);
+        return;
+      }
+      const drug = event.target.closest('[data-rx-source-drug]');
+      if (drug) searchActiveSubstance(drug.dataset.rxSourceDrug);
+    });
+  }
+
+  function init() {
+    if (!$('#rxPrescriptionLibrary')) return;
+    bind();
+    void load();
+  }
+
+  window.MedIndexPrescriptionSourceGuides = Object.freeze({ load, sourceDraftText });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
   else init();
 })();

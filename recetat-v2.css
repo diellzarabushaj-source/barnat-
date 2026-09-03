@@ -26,7 +26,7 @@ a{color:inherit}
 .lab-order-page{transition:opacity .14s}
 
 /* Standalone shell structure only.
-   Visual geometry, colors, spacing and responsive shell authority live in drx-dashboard-stripe.css v6. */
+   Visual geometry, colors, spacing and responsive shell authority live in drx-dashboard-stripe.css v8. */
 .sidebar{position:fixed;inset:0 auto 0 0;z-index:50;display:flex;flex-direction:column}
 .sidebar-head{display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;align-items:center;min-width:0}
@@ -3827,4 +3827,242 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-page-footer{
 }
 @media(prefers-reduced-motion:reduce){
   html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-drug-search-loading::after{animation:none!important}
+}
+
+
+/* Recetat V17 — Doctor on Duty source-faithful prescription guides. */
+.rx-source-library{
+  margin:0 0 20px;
+  padding:20px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:var(--surface);
+  box-shadow:var(--shadow-xs);
+}
+.rx-source-library-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:24px;
+}
+.rx-source-library-head>div{min-width:0}
+.rx-source-eyebrow{
+  margin:0 0 6px;
+  color:var(--clinical);
+  font-size:10px;
+  font-weight:650;
+  letter-spacing:.08em;
+}
+.rx-source-library-head h2{
+  margin:0;
+  color:var(--ink);
+  font-size:20px;
+  font-weight:520;
+  letter-spacing:-.02em;
+}
+.rx-source-library-head p{
+  max-width:780px;
+  margin:7px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.55;
+}
+.rx-source-library-head p strong{color:var(--ink);font-weight:650}
+.rx-source-chapter-picker{display:grid;min-width:300px;gap:6px}
+.rx-source-chapter-picker>span{
+  color:var(--muted);
+  font-size:11px;
+  font-weight:600;
+}
+.rx-source-chapter-picker select{
+  width:100%;
+  min-height:42px;
+  padding:0 36px 0 12px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:var(--surface);
+  color:var(--ink);
+  outline:0;
+}
+.rx-source-chapter-picker select:focus{border-color:var(--clinical);box-shadow:0 0 0 3px rgba(14,124,102,.12)}
+.rx-source-chapter-picker select:disabled{opacity:.72;cursor:default}
+.rx-source-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 18px;
+  margin:16px 0 0;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:var(--soft);
+  color:var(--muted);
+  font-size:11px;
+}
+.rx-source-legend span{display:inline-flex;align-items:center;gap:5px}
+.rx-source-legend b{color:var(--ink);font-weight:700}
+.rx-source-status{margin:12px 0 0;color:var(--muted);font-size:12px}
+.rx-source-status.is-success{color:var(--clinical)}
+.rx-source-status.is-error{color:var(--danger)}
+.rx-source-guide-list{display:grid;gap:14px;margin-top:12px}
+.rx-source-guide{
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--surface);
+}
+.rx-source-guide-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+  padding:16px 17px;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,var(--surface),var(--soft));
+}
+.rx-source-guide-head>div{min-width:0}
+.rx-source-guide-kicker{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;color:var(--muted);font-size:10px;font-weight:650;text-transform:uppercase;letter-spacing:.05em}
+.rx-source-import-badge{
+  display:inline-flex;
+  align-items:center;
+  min-height:22px;
+  padding:0 8px;
+  border:1px solid var(--line-strong);
+  border-radius:999px;
+  background:var(--surface);
+  color:var(--ink-2);
+  font-size:9px;
+  letter-spacing:.02em;
+}
+.rx-source-guide-head h3{margin:0;color:var(--ink);font-size:16px;font-weight:560;line-height:1.35;letter-spacing:-.012em}
+.rx-source-guide-head p{margin:6px 0 0;color:var(--muted);font-size:11px}
+.rx-source-use,.rx-source-find-drug{
+  min-height:38px;
+  border:1px solid var(--accent);
+  border-radius:8px;
+  background:var(--accent);
+  color:#fff;
+  font-size:11px;
+  font-weight:600;
+  cursor:pointer;
+}
+.rx-source-use{flex:none;padding:0 13px}
+.rx-source-use:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+.rx-source-flow{padding:16px 17px}
+.rx-source-block{display:grid;gap:10px}
+.rx-source-block.is-choice{
+  padding:10px;
+  border:1px dashed var(--line-strong);
+  border-radius:10px;
+  background:var(--soft);
+}
+.rx-source-item{
+  display:grid;
+  grid-template-columns:32px minmax(0,1fr);
+  gap:11px;
+  padding:13px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--surface);
+}
+.rx-source-item.is-active-substance{border-color:var(--accent-line);background:linear-gradient(90deg,var(--accent-soft),var(--surface) 28%)}
+.rx-source-item-number{
+  display:grid;
+  width:32px;
+  height:32px;
+  place-items:center;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--soft);
+  color:var(--ink);
+  font-size:12px;
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+.rx-source-item.is-active-substance .rx-source-item-number{border-color:var(--accent-line);background:var(--surface);color:var(--accent)}
+.rx-source-item-body{min-width:0}
+.rx-source-item-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.rx-source-item-title>div{min-width:0}
+.rx-source-kind{display:block;margin-bottom:3px;color:var(--muted);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.rx-source-item.is-active-substance .rx-source-kind{color:var(--accent)}
+.rx-source-item h4{margin:0;color:var(--ink);font-size:14px;font-weight:620;line-height:1.35}
+.rx-source-find-drug{
+  min-height:32px;
+  padding:0 10px;
+  border-color:var(--line-strong);
+  background:var(--surface);
+  color:var(--ink-2);
+  white-space:nowrap;
+}
+.rx-source-find-drug:hover{border-color:var(--accent);color:var(--accent);background:var(--surface)}
+.rx-source-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.rx-source-meta span{
+  display:inline-flex;
+  align-items:center;
+  min-height:23px;
+  padding:0 7px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:var(--soft);
+  color:var(--muted);
+  font-size:10px;
+}
+.rx-source-sig{margin:8px 0 0;color:var(--ink-2);font-size:12px;line-height:1.5}
+.rx-source-sig b{color:var(--ink);font-weight:700}
+.rx-source-note{margin:7px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
+.rx-source-connector{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(16px,1fr) auto minmax(16px,1fr);
+  align-items:center;
+  gap:9px;
+  margin:10px 0;
+  text-align:center;
+}
+.rx-source-connector>span{height:1px;background:var(--line)}
+.rx-source-connector>b{
+  display:inline-flex;
+  align-items:center;
+  min-height:26px;
+  padding:0 10px;
+  border:1px solid var(--line-strong);
+  border-radius:999px;
+  background:var(--surface);
+  color:var(--ink);
+  font-size:10px;
+  font-weight:750;
+  letter-spacing:.06em;
+}
+.rx-source-connector.is-or>b{border-color:var(--accent-line);background:var(--accent-soft);color:var(--accent)}
+.rx-source-connector.is-conditional>b{border-color:#f1d7a8;background:var(--warning-soft);color:var(--warning)}
+.rx-source-connector p{grid-column:1/-1;margin:0;color:var(--ink-2);font-size:11px;line-height:1.45}
+.rx-source-guide-foot{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px 16px;
+  padding:10px 17px;
+  border-top:1px solid var(--line);
+  background:var(--soft);
+  color:var(--muted);
+  font-size:10px;
+}
+.rx-source-empty{display:grid;gap:4px;padding:18px;border:1px dashed var(--line-strong);border-radius:10px;background:var(--soft)}
+.rx-source-empty strong{font-size:12px;color:var(--ink)}
+.rx-source-empty span{font-size:11px;color:var(--muted)}
+
+@media(max-width:760px){
+  .rx-source-library{padding:14px;margin-bottom:14px;border-radius:11px}
+  .rx-source-library-head{display:grid;gap:14px}
+  .rx-source-chapter-picker{min-width:0;width:100%}
+  .rx-source-legend{display:grid;gap:7px}
+  .rx-source-guide-head{display:grid;gap:12px;padding:14px}
+  .rx-source-use{width:100%;min-height:44px}
+  .rx-source-flow{padding:13px}
+  .rx-source-item{grid-template-columns:28px minmax(0,1fr);gap:9px;padding:11px}
+  .rx-source-item-number{width:28px;height:28px}
+  .rx-source-item-title{display:grid;gap:9px}
+  .rx-source-find-drug{width:100%;min-height:40px}
+  .rx-source-guide-foot{display:grid;gap:4px;padding:10px 13px}
+}
+@media(prefers-reduced-motion:reduce){
+  .rx-source-use,.rx-source-find-drug{scroll-behavior:auto}
 }

@@ -55,6 +55,33 @@ const SEARCH_INDEX_QUERY = `*[_type == "learningTopic" && reviewStatus != "archi
   }
 }`;
 
+const PRESCRIPTION_CHAPTER_QUERY = `*[_type == "prescriptionGuide" && reviewStatus != "archived"] | order(chapterNumber asc, orderInChapter asc) {
+  chapterNumber, chapterTitle
+}`;
+
+const PRESCRIPTION_GUIDE_QUERY = `*[_type == "prescriptionGuide" && reviewStatus != "archived" && chapterNumber == $chapter] | order(orderInChapter asc, title asc) {
+  _id, title, "slug": slug.current, externalId, chapterNumber, chapterTitle, orderInChapter, keywords,
+  logicBlocks[]{
+    _key, order, relation, sourceConnectorLabel, condition, selection, note,
+    items[]{
+      _key, order, sourceNumber, kind, title, genericName, form, strength, dose, route,
+      frequency, duration, sig, note
+    }
+  },
+  sourceDocument, sourceHeading, sourcePageStart, sourcePageEnd, reviewStatus, version
+}`;
+
+function prescriptionChapters(rows) {
+  const seen = new Map();
+  (Array.isArray(rows) ? rows : []).forEach(row => {
+    const number = Number(row?.chapterNumber);
+    const title = clean(row?.chapterTitle);
+    if (!Number.isInteger(number) || number < 1 || !title || seen.has(number)) return;
+    seen.set(number, { number, title });
+  });
+  return [...seen.values()].sort((a,b) => a.number - b.number);
+}
+
 let indexCache = { expiresAt:0, items:[] };
 let searchCache = { expiresAt:0, items:[] };
 
@@ -223,6 +250,27 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    if (requestedRoute === 'prescription-library') {
+      const chapterRows = await querySanity(PRESCRIPTION_CHAPTER_QUERY);
+      const chapters = prescriptionChapters(chapterRows);
+      const rawChapter = clean(queryValue(req, 'chapter'));
+      const requestedChapter = /^\d{1,2}$/.test(rawChapter) ? Number(rawChapter) : 0;
+      const selectedChapter = requestedChapter && chapters.some(item => item.number === requestedChapter)
+        ? requestedChapter
+        : (chapters[0]?.number || 0);
+      const items = selectedChapter
+        ? await querySanity(PRESCRIPTION_GUIDE_QUERY, { chapter:selectedChapter })
+        : [];
+      return res.status(200).json({
+        ok:true,
+        chapters,
+        chapter:selectedChapter,
+        items:Array.isArray(items) ? items : [],
+        count:Array.isArray(items) ? items.length : 0,
+        source:'sanity-prescription-guides',
+      });
+    }
+
     const id = clean(queryValue(req, 'id'));
     const mode = clean(queryValue(req, 'mode')).toLowerCase() || 'index';
 

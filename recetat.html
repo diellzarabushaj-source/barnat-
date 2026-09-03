@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v16">
+<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v17">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -10,10 +10,10 @@
   <title>DRx | Recetat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/recetat-v2.css?v=16">
+  <link rel="stylesheet" href="/recetat-v2.css?v=17">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8">
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5" defer></script>
-<script src="/recetat-v2.js?v=16" defer></script>
+<script src="/recetat-v2.js?v=17" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#rxWorkspace">Kalo te krijimi i recetës</a>
@@ -116,6 +116,29 @@
           <article><span>Dosje aktive</span><strong id="rxFolderCount">—</strong><small>Kapituj klinikë</small></article>
           <article><span>Në dosjen aktuale</span><strong id="rxActiveChapterCount">0</strong><small id="rxActiveChapterMetric">Të gjitha recetat</small></article>
           <article><span>Sinkronizimi</span><strong class="rx-sync-metric" id="rxLibraryState">Local</strong><small>Supabase + kopje lokale</small></article>
+        </section>
+
+        <section class="rx-source-library" id="rxPrescriptionLibrary" aria-labelledby="rxSourceLibraryTitle">
+          <header class="rx-source-library-head">
+            <div>
+              <p class="rx-source-eyebrow">DOCTOR ON DUTY · BURIM I STRUKTURUAR</p>
+              <h2 id="rxSourceLibraryTitle">Receta sipas kapitujve</h2>
+              <p>Skemat ruhen sipas rendit të burimit. <strong>DHE</strong>, <strong>OSE</strong>, <strong>PLUS</strong> dhe <strong>NËSE</strong> paraqiten si vendime të dallueshme — jo si tekst i fshehur brenda paragrafit.</p>
+            </div>
+            <label class="rx-source-chapter-picker">
+              <span>Kapitulli</span>
+              <select id="rxSourceChapterSelect" aria-label="Zgjidh kapitullin e recetave">
+                <option value="">Duke ngarkuar…</option>
+              </select>
+            </label>
+          </header>
+          <div class="rx-source-legend" aria-label="Si lexohet skema">
+            <span><b>DHE</b> përdoren bashkë</span>
+            <span><b>OSE</b> zgjidhet një alternativë</span>
+            <span><b>NËSE</b> vlen vetëm kur plotësohet kushti</span>
+          </div>
+          <div class="rx-source-status" id="rxSourceGuideStatus" role="status" aria-live="polite">Duke ngarkuar Kapitullin 1…</div>
+          <div class="rx-source-guide-list" id="rxSourceGuideList" aria-live="polite"></div>
         </section>
 
         <section class="rx-dashboard" aria-label="Krijuesi i recetës">
