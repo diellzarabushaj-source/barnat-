@@ -100,7 +100,7 @@ jobs:
           grep -q 'data-drx-app="recetat-v2"' recetat.html
           grep -q 'recetat-v2.css?v=' recetat.html
           grep -q 'recetat-v2.js?v=' recetat.html
-          grep -q 'drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6' recetat.html
+          grep -q 'drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8' recetat.html
           ! grep -q 'tailadmin-professional.css' recetat.html
           ! grep -q 'tailadmin-shell.js' recetat.html
           ! grep -q 'recetat.css' recetat.html
@@ -111,7 +111,7 @@ jobs:
           ! grep -q 'src="/recetat.js' recetat.html
 
           grep -q '/api/gemini-prescription' recetat-v2.js
-          grep -q '/api/dosage' recetat-v2.js
+          grep -q '/api/medical-hub?_route=prescription-' recetat-v2.js
           grep -q 'prescriptionChapters' recetat-v2.js
           grep -q 'medindex:prescriptions-changed' recetat-v2.js
           grep -q 'dispenseQuantity' prescription-format-core.js
@@ -152,7 +152,7 @@ jobs:
             grep -q "data-drx-app=\"$marker\"" "$page"
             grep -q "$css?v=" "$page"
             grep -q "$runtime?v=" "$page"
-            grep -q 'drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6' "$page"
+            grep -q 'drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8' "$page"
             grep -q 'drx-unified-sidebar' "$page"
             ! grep -q 'tailadmin-professional.css' "$page"
             ! grep -q 'tailadmin-shell.js' "$page"
