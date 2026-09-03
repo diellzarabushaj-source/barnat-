@@ -39,7 +39,7 @@ assert.match(shared, /window\.DRxSidebarTaxonomy/);
 assert.match(shared, /CANONICAL_WORKER_URL = '\/sw\.js\?v=drx-workspace-v7'/);
 assert.match(shared, /navigator\.serviceWorker\.register\(CANONICAL_WORKER_URL/);
 assert.match(shared, /updateViaCache:'none'/);
-assert.match(shared, /dataset\.drxSidebarStructure = 'taxonomy-v4'/);
+assert.match(shared, /dataset\.drxSidebarStructure = 'taxonomy-v5'/);
 assert.match(shared, /PERSONAL_SUMMARY_API = '\/api\/user-library\?view=summary'/);
 assert.match(shared, /syncPersonalCounts\(nav/);
 assert.match(shared, /find\('\/index\.html#favorites'\), find\('\/index\.html#notes'\), find\('\/recetat\.html'\)/);
