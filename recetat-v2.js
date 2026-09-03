@@ -1,4 +1,4 @@
-/* Recetat V20 — chapters + lessons + global typo-tolerant smart search. */
+/* Recetat V20 — chapters + lessons + global typo-tolerant smart search · production. */
 
 (() => {
   'use strict';
@@ -7323,12 +7323,16 @@
       syncLessonPicker();
       render();
       const chapterMeta = currentChapterMeta();
-      sourceStatus(
-        state.items.length
-          ? `${state.items.length} mësime · Kapitulli ${state.chapter}`
-          : (chapterMeta?.sourceNote || `Kapitulli ${state.chapter} nuk ka Rx në burim.`),
-        state.items.length ? 'success' : ''
-      );
+      if (preserveSearch && isGlobalSearchActive()) {
+        sourceStatus(`${state.searchResults.length} rezultate · Kapitulli ${state.chapter} · ${lessonLabel(activeGuide() || { orderInChapter:1 })}`, 'success');
+      } else {
+        sourceStatus(
+          state.items.length
+            ? `${state.items.length} mësime · Kapitulli ${state.chapter}`
+            : (chapterMeta?.sourceNote || `Kapitulli ${state.chapter} nuk ka Rx në burim.`),
+          state.items.length ? 'success' : ''
+        );
+      }
     } catch(error) {
       if (error?.name === 'AbortError') return;
       state.items = [];
