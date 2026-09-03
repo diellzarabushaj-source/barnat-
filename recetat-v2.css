@@ -5776,3 +5776,201 @@ html[data-ui-revision="recetat-v20"] .rx-source-index-head span::before{
     text-overflow:ellipsis;
   }
 }
+
+/* ==========================================================================
+   Recetat — Stripe typography authority
+   Reference: design-md/stripe/DESIGN.md; use the bundled, licensed Inter font.
+   The workspace ID intentionally outranks the legacy v15–v20 selector bridges.
+   Keep desktop and responsive rules together; shared navigation and print/PDF
+   typography stay owned by their existing styles. No clinical text is changed.
+   ========================================================================== */
+@media screen {
+  #rxWorkspace {
+    --rx-ui-ink:#0d253d;
+    --rx-ui-secondary:#34475c;
+    --rx-ui-muted:#607088;
+    --rx-ui-line:#e3e8ee;
+    --rx-ui-soft:#f6f9fc;
+    --rx-ui-accent:#533afd;
+    --rx-ui-meta:11px;
+    --rx-ui-control:14px;
+    --rx-ui-body:14px;
+    padding:28px 28px 56px!important;
+    font-family:Inter,"SF Pro Display",system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-feature-settings:"ss01";
+    font-optical-sizing:auto;
+  }
+
+  #rxWorkspace .rx-page-heading {align-items:flex-start!important;gap:24px!important;margin-bottom:24px!important}
+  #rxWorkspace .rx-page-heading h1 {
+    color:var(--rx-ui-ink)!important;
+    font-size:var(--drx-type-page-title,32px)!important;
+    font-weight:var(--drx-type-page-title-weight,300)!important;
+    letter-spacing:var(--drx-type-page-title-track,-.64px)!important;
+    line-height:var(--drx-type-page-title-line,1.1)!important;
+  }
+  #rxWorkspace .rx-page-heading .eyebrow {color:var(--rx-ui-muted)!important;font-size:11px!important;font-weight:400!important;letter-spacing:.06em!important}
+  #rxWorkspace .rx-page-heading .page-subtitle {max-width:780px!important;font-size:14px!important;font-weight:300!important;line-height:1.6!important}
+  #rxWorkspace :is(.rx-new-top,.rx-source-use) {min-height:40px!important;padding:10px 16px!important;border-radius:999px!important;background:var(--rx-ui-accent)!important;font-size:14px!important;font-weight:400!important;line-height:1.4!important;white-space:normal!important}
+  #rxWorkspace :is(.rx-new-top,.rx-source-use):hover {background:#4434d4!important;transform:none!important}
+
+  /* Quiet workflow and summary: labels readable, figures aligned. */
+  #rxWorkspace .rx19-workflow {padding:14px 16px;gap:12px;background:#fff;border-color:var(--rx-ui-line)}
+  #rxWorkspace .rx19-workflow>span>em {font-size:13px;font-weight:400}
+  #rxWorkspace .rx19-workflow>span>small {font-size:var(--rx-ui-meta);color:var(--rx-ui-muted);line-height:1.5}
+  #rxWorkspace .rx19-workflow>span>b {width:28px;height:28px;font-size:12px;font-weight:400}
+  #rxWorkspace .rx-metrics article {padding:14px 16px!important}
+  #rxWorkspace .rx-metrics article>span {font-size:12px!important;font-weight:400!important;color:var(--rx-ui-muted)!important}
+  #rxWorkspace .rx-metrics article>strong {font-size:24px!important;font-weight:300!important;letter-spacing:-.48px!important;color:var(--rx-ui-ink)!important}
+  #rxWorkspace .rx-metrics article>small {font-size:var(--rx-ui-meta)!important;color:var(--rx-ui-muted)!important;line-height:1.5!important}
+  #rxWorkspace :is(.rx-metrics article>strong,.rx-source-total strong,.rx-source-nav-index,.rx-source-item-number,.rx-source-guide-stats b,.rx-source-result-meta strong) {font-variant-numeric:tabular-nums!important;font-feature-settings:"ss01","tnum"!important}
+
+  /* Give the chapter/lesson controls their own row, never squeeze the title. */
+  #rxWorkspace .rx19-source-library {border:1px solid var(--rx-ui-line)!important;border-radius:12px!important;box-shadow:0 1px 3px rgba(0,55,112,.04)!important}
+  #rxWorkspace .rx-source-library-head {display:grid!important;grid-template-columns:minmax(0,1fr);gap:20px!important;padding:24px!important;background:#fff!important}
+  #rxWorkspace .rx-source-heading-copy {max-width:860px}
+  #rxWorkspace .rx-source-eyebrow {color:var(--rx-ui-muted)!important;font-size:11px!important;font-weight:400!important;letter-spacing:.06em!important;line-height:1.5!important}
+  #rxWorkspace .rx-source-live-pill {height:auto;min-height:24px;font-size:11px;font-weight:400}
+  #rxWorkspace .rx-source-library-head h2 {margin:10px 0 8px!important;font-size:24px!important;font-weight:300!important;line-height:1.3!important;letter-spacing:-.48px!important;color:var(--rx-ui-ink)!important}
+  #rxWorkspace .rx-source-library-head p:not(.rx-source-eyebrow) {font-size:14px!important;font-weight:300!important;line-height:1.6!important;color:var(--rx-ui-muted)!important}
+  #rxWorkspace .rx-source-head-actions {display:grid;grid-template-columns:88px minmax(0,1fr);gap:20px;min-width:0;width:100%;align-items:end}
+  #rxWorkspace .rx-source-total {min-width:0;padding:0 16px 2px 0;gap:4px}
+  #rxWorkspace .rx-source-total strong {font-size:28px;font-weight:300;letter-spacing:-.56px;color:var(--rx-ui-ink)}
+  #rxWorkspace .rx-source-total span {font-size:11px;color:var(--rx-ui-muted);line-height:1.4}
+  #rxWorkspace .rx-source-pickers {width:100%;min-width:0;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:16px}
+  #rxWorkspace :is(.rx-source-chapter-picker,.rx-source-lesson-picker) {min-width:0!important;width:100%!important;gap:6px!important}
+  #rxWorkspace :is(.rx-source-chapter-picker,.rx-source-lesson-picker)>span {font-size:12px!important;font-weight:400!important;color:var(--rx-ui-secondary)!important}
+  #rxWorkspace :is(.rx-source-chapter-picker,.rx-source-lesson-picker) select {height:42px!important;max-width:100%;min-width:0;padding:0 32px 0 12px!important;border:1px solid #cfd8e3!important;border-radius:6px!important;font-size:var(--rx-ui-control)!important;font-weight:400!important;color:var(--rx-ui-ink)!important;text-overflow:ellipsis}
+  #rxWorkspace .rx-source-lesson-picker select:disabled {color:var(--rx-ui-muted)!important}
+
+  #rxWorkspace .rx-source-commandbar {padding:14px 16px;gap:12px;flex-wrap:wrap}
+  #rxWorkspace .rx-source-search {flex:1 1 300px}
+  #rxWorkspace .rx-source-search input {height:44px!important;font-size:14px!important;font-weight:400!important;border-radius:6px!important}
+  #rxWorkspace .rx-source-search input::placeholder {color:var(--rx-ui-muted)!important;opacity:1}
+  #rxWorkspace .rx-source-search kbd {font-weight:400;font-size:11px}
+  #rxWorkspace .rx-source-clear-search {min-height:40px;font-size:13px;font-weight:400}
+  #rxWorkspace .rx-source-search-scope {font-size:11px;font-weight:400;min-height:28px}
+  #rxWorkspace .rx-source-result-meta strong {font-size:14px;font-weight:500}
+  #rxWorkspace .rx-source-result-meta span {font-size:11px;color:var(--rx-ui-muted)}
+  #rxWorkspace .rx-source-legend {padding:10px 16px!important;gap:8px!important;background:var(--rx-ui-soft)!important}
+  #rxWorkspace .rx-source-legend>span {min-height:28px!important;padding:3px 9px!important;font-size:11px!important;font-weight:400!important;line-height:1.7!important;color:var(--rx-ui-secondary)!important}
+  #rxWorkspace .rx-source-legend b {font-weight:500!important}
+  #rxWorkspace .rx-source-legend .rx-source-safety-chip {color:#9a6700!important}
+  #rxWorkspace .rx-source-status {padding:9px 16px!important;font-size:12px!important;font-weight:400!important;line-height:1.5!important}
+
+  /* Full clinical titles wrap; do not alter case, abbreviations or dosage text. */
+  #rxWorkspace .rx-source-browser {grid-template-columns:300px minmax(0,1fr)}
+  #rxWorkspace .rx-source-index-head {height:auto;min-height:48px;padding:10px 14px;flex-wrap:wrap;gap:4px 10px}
+  #rxWorkspace .rx-source-index-head span {font-size:12px;font-weight:500;letter-spacing:0}
+  #rxWorkspace .rx-source-index-head small {max-width:none;font-size:11px;color:var(--rx-ui-muted);white-space:normal}
+  #rxWorkspace .rx-source-guide-nav {max-height:760px;padding:8px}
+  #rxWorkspace .rx-source-nav-item {grid-template-columns:30px minmax(0,1fr) 14px;min-height:72px;padding:12px 8px;gap:10px;border-radius:6px}
+  #rxWorkspace .rx-source-nav-index {font-size:11px;font-weight:400;color:var(--rx-ui-muted)}
+  #rxWorkspace .rx-source-nav-copy {gap:6px}
+  #rxWorkspace .rx-source-nav-copy strong {overflow:visible;font-size:13px;font-weight:400;line-height:1.5;white-space:normal;overflow-wrap:anywhere;color:var(--rx-ui-ink)}
+  #rxWorkspace .rx-source-nav-copy small {font-size:11px;font-weight:400;color:var(--rx-ui-muted);line-height:1.45;white-space:normal}
+  #rxWorkspace .rx-source-nav-item.is-active .rx-source-nav-copy strong {color:#4434d4;font-weight:500}
+  #rxWorkspace .rx-source-detail-toolbar {min-height:48px;padding:10px 20px;gap:12px;flex-wrap:wrap}
+  #rxWorkspace .rx-source-detail-toolbar>div {flex-wrap:wrap;gap:4px 8px}
+  #rxWorkspace .rx-source-detail-toolbar span {font-size:11px;color:var(--rx-ui-muted)}
+  #rxWorkspace .rx-source-detail-toolbar strong {max-width:100%;font-size:12px;font-weight:400;line-height:1.5;white-space:normal;overflow-wrap:anywhere}
+  #rxWorkspace .rx-source-detail-toolbar>small {font-size:11px;white-space:normal;color:var(--rx-ui-muted)}
+  #rxWorkspace .rx-source-guide {margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+  #rxWorkspace .rx-source-guide-head {padding:24px!important;gap:16px!important;flex-wrap:wrap;background:#fff!important}
+  #rxWorkspace .rx-source-guide-heading {flex:1 1 280px;min-width:0!important}
+  #rxWorkspace .rx-source-guide-kicker {flex-wrap:wrap;gap:8px!important;margin-bottom:10px!important}
+  #rxWorkspace .rx-source-guide-kicker>span:first-child {font-size:11px!important;font-weight:400!important;color:var(--rx-ui-muted)!important;line-height:1.5!important}
+  #rxWorkspace .rx-source-import-badge {min-height:24px!important;padding:3px 8px!important;font-size:10px!important;font-weight:400!important;line-height:1.6!important}
+  #rxWorkspace .rx-source-guide-head h3 {max-width:100%!important;font-size:20px!important;font-weight:400!important;line-height:1.4!important;letter-spacing:-.2px!important;color:var(--rx-ui-ink)!important;white-space:normal!important;overflow-wrap:anywhere}
+  #rxWorkspace .rx-source-guide-stats {margin-top:12px!important;gap:6px!important}
+  #rxWorkspace .rx-source-guide-stats>span {min-height:26px!important;padding:3px 8px!important;font-size:11px!important;font-weight:400!important;line-height:1.6!important;color:var(--rx-ui-muted)!important}
+  #rxWorkspace .rx-source-guide-stats b {font-weight:500!important}
+  #rxWorkspace .rx-source-use {flex:0 1 auto}
+
+  /* Clinical content stays stronger than decorative headings for safe reading. */
+  #rxWorkspace .rx-source-flow {padding:20px 24px 24px!important;background:var(--rx-ui-soft)!important}
+  #rxWorkspace .rx-source-flow-title {align-items:baseline!important;flex-wrap:wrap;gap:6px 12px!important;margin-bottom:16px!important}
+  #rxWorkspace .rx-source-flow-title span {font-size:12px!important;font-weight:500!important;color:var(--rx-ui-secondary)!important}
+  #rxWorkspace .rx-source-flow-title small {font-size:11px!important;color:var(--rx-ui-muted)!important;line-height:1.5!important}
+  #rxWorkspace .rx-source-item {grid-template-columns:52px minmax(0,1fr)!important;gap:0!important;padding:0!important;border-radius:8px!important;border-color:var(--rx-ui-line)!important;box-shadow:0 1px 2px rgba(0,55,112,.03)!important}
+  #rxWorkspace .rx-source-item.is-active-substance {border-color:#d9d6ff!important}
+  #rxWorkspace .rx-source-item.is-conditional {border-color:#fedf89!important}
+  #rxWorkspace .rx-source-step-rail {padding:16px 6px!important;gap:6px!important}
+  #rxWorkspace .rx-source-item-number {width:32px!important;height:32px!important;font-size:13px!important;font-weight:500!important;border-radius:6px!important}
+  #rxWorkspace .rx-source-step-rail small {font-size:10px!important;font-weight:400!important;color:var(--rx-ui-muted)!important}
+  #rxWorkspace .rx-source-item-body {padding:16px!important}
+  #rxWorkspace .rx-source-kind {margin-bottom:5px!important;font-size:11px!important;font-weight:400!important;line-height:1.4!important;letter-spacing:.03em!important;color:var(--rx-ui-muted)!important}
+  #rxWorkspace .rx-source-item-title {display:flex!important;flex-wrap:wrap;gap:12px!important}
+  #rxWorkspace .rx-source-item-title>div {min-width:0;flex:1 1 200px}
+  #rxWorkspace .rx-source-item-title h4 {font-size:16px!important;font-weight:500!important;line-height:1.5!important;letter-spacing:-.1px!important;color:var(--rx-ui-ink)!important;overflow-wrap:anywhere}
+  #rxWorkspace .rx-source-find-drug {min-height:40px!important;padding:8px 12px!important;border-radius:6px!important;font-size:13px!important;font-weight:400!important;line-height:1.4!important;white-space:normal!important}
+  #rxWorkspace .rx-source-meta span {min-height:26px!important;padding:3px 8px!important;font-size:12px!important;font-weight:400!important;line-height:1.6!important;color:var(--rx-ui-secondary)!important}
+  #rxWorkspace .rx-source-sig {grid-template-columns:24px minmax(0,1fr)!important;margin-top:12px!important;padding:10px 12px!important;gap:8px!important;background:#f8fafc!important;border-color:var(--rx-ui-line)!important;border-radius:6px!important}
+  #rxWorkspace .rx-source-sig>span {font-size:13px!important;font-weight:500!important;line-height:1.6!important;color:var(--rx-ui-secondary)!important}
+  #rxWorkspace .rx-source-sig p {font-size:var(--rx-ui-body)!important;font-weight:400!important;line-height:1.65!important;color:var(--rx-ui-secondary)!important;overflow-wrap:anywhere}
+  #rxWorkspace .rx-source-note {font-size:13px!important;font-weight:400!important;line-height:1.6!important;color:var(--rx-ui-muted)!important;overflow-wrap:anywhere}
+  #rxWorkspace .rx-source-connector {margin:12px 0!important}
+  #rxWorkspace .rx-source-connector-pill {min-height:28px!important;padding:4px 10px!important;flex-wrap:wrap}
+  #rxWorkspace .rx-source-connector-pill b {font-size:11px!important;font-weight:500!important}
+  #rxWorkspace .rx-source-connector-pill small {font-size:11px!important;font-weight:400!important;color:var(--rx-ui-muted)!important}
+  #rxWorkspace .rx-source-connector>p {font-size:13px!important;font-weight:400!important;line-height:1.6!important}
+  #rxWorkspace .rx-source-guide-foot {padding:14px 24px!important;font-size:11px!important;line-height:1.6!important;color:var(--rx-ui-muted)!important}
+  #rxWorkspace .rx-source-guide-foot b {font-weight:500!important}
+  #rxWorkspace :is(.rx-source-empty,.rx-source-index-empty) strong {font-size:15px!important;font-weight:400!important;line-height:1.5!important}
+  #rxWorkspace :is(.rx-source-empty,.rx-source-index-empty) span {font-size:13px!important;color:var(--rx-ui-muted)!important;line-height:1.6!important}
+
+  /* Carry the same scale into the existing composer, without changing its UI. */
+  #rxWorkspace .rx-card-head h2 {font-size:20px!important;font-weight:300!important;letter-spacing:-.2px!important;line-height:1.4!important;color:var(--rx-ui-ink)!important}
+  #rxWorkspace .rx-card-head p {font-size:12px!important;line-height:1.6!important;color:var(--rx-ui-muted)!important}
+  #rxWorkspace .rx-card-head .rx-step {font-size:12px!important;font-weight:400!important}
+  #rxWorkspace :is(.rx-compose-card,.rx-library) :is(input,select,textarea) {font-size:14px!important;font-weight:400!important;line-height:1.5!important}
+  #rxWorkspace :is(.rx-context-label,.rx-field>span,.rx-field>label,.rx-order-builder-head span) {font-size:12px!important;font-weight:400!important;color:var(--rx-ui-muted)!important}
+  #rxWorkspace :is(.rx-context-title,.rx-order-builder-head h3,.rx-free-text-head h3,.rx-selected-head h3) {font-size:14px!important;font-weight:500!important;line-height:1.5!important}
+  #rxWorkspace :is(.rx-source-nav-item,.rx-source-use,.rx-source-find-drug,.rx-new-top,.rx-source-clear-search):focus-visible {outline:2px solid var(--rx-ui-accent)!important;outline-offset:2px!important;box-shadow:0 0 0 4px rgba(83,58,253,.12)!important}
+
+  @media(max-width:1180px) {
+    #rxWorkspace {padding:24px 20px 48px!important}
+    #rxWorkspace .rx-source-browser {grid-template-columns:260px minmax(0,1fr)}
+    #rxWorkspace .rx-source-guide-head {padding:20px!important}
+    #rxWorkspace .rx-source-flow {padding:16px 20px 20px!important}
+  }
+  @media(max-width:900px) {
+    #rxWorkspace .rx-source-browser {grid-template-columns:minmax(0,1fr)}
+    #rxWorkspace .rx-source-guide-nav {grid-auto-columns:minmax(250px,72vw);max-height:none}
+    #rxWorkspace .rx-source-detail-toolbar {display:none}
+  }
+  @media(max-width:760px) {
+    #rxWorkspace {--drx-type-page-title:26px;--drx-type-page-title-track:-.26px;padding:20px 12px 40px!important}
+    #rxWorkspace .rx-page-heading {display:flex!important;flex-direction:column!important;gap:16px!important;margin-bottom:20px!important}
+    #rxWorkspace .rx-page-heading .page-subtitle {font-size:14px!important}
+    #rxWorkspace :is(.rx-new-top,.rx-source-use,.rx-source-find-drug,.rx-source-clear-search) {min-height:44px!important}
+    #rxWorkspace .rx19-workflow {padding:12px;gap:8px}
+    #rxWorkspace .rx-metrics article {padding:12px!important}
+    #rxWorkspace .rx-metrics article>strong {font-size:22px!important}
+    #rxWorkspace .rx-source-library-head {padding:20px 16px!important;gap:16px!important}
+    #rxWorkspace .rx-source-library-head h2 {font-size:22px!important;letter-spacing:-.22px!important}
+    #rxWorkspace .rx-source-head-actions {grid-template-columns:minmax(0,1fr);gap:0}
+    #rxWorkspace .rx-source-pickers {grid-template-columns:minmax(0,1fr);gap:12px}
+    #rxWorkspace :is(.rx-source-chapter-picker,.rx-source-lesson-picker) select {height:44px!important;font-size:16px!important}
+    #rxWorkspace .rx-source-commandbar {padding:12px;gap:10px;grid-template-columns:minmax(0,1fr) auto}
+    #rxWorkspace .rx-source-search input {font-size:16px!important}
+    #rxWorkspace .rx-source-search-scope {white-space:normal;font-size:11px}
+    #rxWorkspace .rx-source-result-meta {flex-wrap:wrap;gap:4px;min-width:0}
+    #rxWorkspace .rx-source-result-meta span {white-space:normal}
+    #rxWorkspace .rx-source-legend {padding:10px 12px!important}
+    #rxWorkspace .rx-source-guide-nav {grid-auto-columns:minmax(235px,82vw)}
+    #rxWorkspace .rx-source-guide-head {padding:20px 16px!important;gap:16px!important}
+    #rxWorkspace .rx-source-guide-heading {flex-basis:auto;width:100%}
+    #rxWorkspace .rx-source-guide-head h3 {font-size:18px!important}
+    #rxWorkspace .rx-source-flow {padding:16px 12px 20px!important}
+    #rxWorkspace .rx-source-item {grid-template-columns:42px minmax(0,1fr)!important}
+    #rxWorkspace .rx-source-step-rail {padding:14px 4px!important}
+    #rxWorkspace .rx-source-item-number {width:30px!important;height:30px!important;font-size:12px!important}
+    #rxWorkspace .rx-source-item-body {padding:14px 12px!important}
+    #rxWorkspace .rx-source-item-title>div {flex-basis:auto;width:100%}
+    #rxWorkspace .rx-source-item-title h4 {font-size:15px!important}
+    #rxWorkspace .rx-source-sig {grid-template-columns:20px minmax(0,1fr)!important;padding:10px!important;gap:4px!important}
+    #rxWorkspace .rx-source-guide-foot {padding:12px 16px!important}
+    #rxWorkspace :is(.rx-compose-card,.rx-library) :is(input,select,textarea) {font-size:16px!important}
+  }
+}
