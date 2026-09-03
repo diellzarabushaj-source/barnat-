@@ -72,6 +72,158 @@ const PRESCRIPTION_GUIDE_QUERY = `*[_type == "prescriptionGuide" && reviewStatus
   sourceDocument, sourceHeading, sourcePageStart, sourcePageEnd, reviewStatus, version
 }`;
 
+const PRESCRIPTION_SEARCH_INDEX_QUERY = `*[_type == "prescriptionGuide" && reviewStatus != "archived"] | order(chapterNumber asc, orderInChapter asc) {
+  _id, title, chapterNumber, chapterTitle, orderInChapter, keywords, sourceHeading,
+  logicBlocks[]{
+    relation, sourceConnectorLabel, condition, note,
+    items[]{kind,title,genericName,form,strength,dose,route,frequency,duration,sig,note}
+  }
+}`;
+
+let prescriptionSearchCache = { expiresAt:0, docs:[] };
+
+function prescriptionSearchDocument(item) {
+  const title = normalize([item?.title, item?.sourceHeading].filter(Boolean).join(' '));
+  const chapter = normalize(item?.chapterTitle);
+  const keywords = normalize(flattenStrings(item?.keywords).join(' '));
+  const substances = normalize(flattenStrings((item?.logicBlocks || []).flatMap(block =>
+    (block?.items || []).flatMap(entry => [entry?.genericName, entry?.title, entry?.form, entry?.strength])
+  )).join(' '));
+  const clinical = normalize(flattenStrings((item?.logicBlocks || []).flatMap(block => [
+    block?.condition, block?.sourceConnectorLabel, block?.note,
+    ...(block?.items || []).flatMap(entry => [
+      entry?.dose, entry?.route, entry?.frequency, entry?.duration, entry?.sig, entry?.note,
+    ]),
+  ])).join(' '));
+  return {
+    item:{
+      _id:item?._id,
+      title:clean(item?.title || item?.sourceHeading),
+      chapterNumber:Number(item?.chapterNumber) || 0,
+      chapterTitle:clean(item?.chapterTitle),
+      orderInChapter:Number(item?.orderInChapter) || 0,
+    },
+    title,
+    chapter,
+    keywords,
+    substances,
+    clinical,
+    haystack:normalize([title, chapter, keywords, substances, clinical].join(' ')),
+  };
+}
+
+async function getPrescriptionSearchIndex() {
+  if (prescriptionSearchCache.expiresAt > Date.now() && prescriptionSearchCache.docs.length) {
+    return prescriptionSearchCache.docs;
+  }
+  const items = await querySanity(PRESCRIPTION_SEARCH_INDEX_QUERY);
+  const docs = (Array.isArray(items) ? items : []).map(prescriptionSearchDocument);
+  prescriptionSearchCache = {
+    expiresAt:Date.now() + SEARCH_CACHE_MS,
+    docs,
+  };
+  return docs;
+}
+
+function editDistanceWithin(left, right, maxDistance = 2) {
+  if (left === right) return 0;
+  if (!left || !right) return Math.max(left.length, right.length);
+  if (Math.abs(left.length - right.length) > maxDistance) return maxDistance + 1;
+  let previous = Array.from({ length:right.length + 1 }, (_, index) => index);
+  for (let i = 1; i <= left.length; i += 1) {
+    const current = [i];
+    let rowMin = current[0];
+    for (let j = 1; j <= right.length; j += 1) {
+      const cost = left[i - 1] === right[j - 1] ? 0 : 1;
+      current[j] = Math.min(
+        previous[j] + 1,
+        current[j - 1] + 1,
+        previous[j - 1] + cost,
+      );
+      rowMin = Math.min(rowMin, current[j]);
+    }
+    if (rowMin > maxDistance) return maxDistance + 1;
+    previous = current;
+  }
+  return previous[right.length];
+}
+
+function fuzzyTokenScore(token, textValue) {
+  if (!token || !textValue) return 0;
+  if (textValue === token) return 120;
+  if (textValue.startsWith(token)) return 90;
+  if (textValue.includes(token)) return 72;
+
+  const words = textValue.split(/\s+/).filter(Boolean);
+  let best = 0;
+  const maxDistance = token.length >= 8 ? 2 : token.length >= 5 ? 1 : 0;
+  if (!maxDistance) return 0;
+
+  for (const word of words) {
+    if (word === token) return 120;
+    if (word.startsWith(token) || token.startsWith(word)) best = Math.max(best, 82);
+    if (Math.abs(word.length - token.length) > maxDistance) continue;
+    const distance = editDistanceWithin(token, word, maxDistance);
+    if (distance <= maxDistance) {
+      best = Math.max(best, distance === 1 ? 68 : 52);
+    }
+  }
+  return best;
+}
+
+function scorePrescriptionSearch(doc, term, tokens) {
+  let score = 0;
+  if (doc.title === term) score += 1200;
+  else if (doc.title.startsWith(term)) score += 900;
+  else if (doc.title.includes(term)) score += 720;
+  if (doc.substances === term) score += 780;
+  else if (doc.substances.includes(term)) score += 520;
+  if (doc.keywords.includes(term)) score += 420;
+  if (doc.chapter.includes(term)) score += 200;
+  if (doc.clinical.includes(term)) score += 140;
+
+  let matched = 0;
+  for (const token of tokens) {
+    const weighted = Math.max(
+      fuzzyTokenScore(token, doc.title) * 4,
+      fuzzyTokenScore(token, doc.substances) * 3.4,
+      fuzzyTokenScore(token, doc.keywords) * 2.5,
+      fuzzyTokenScore(token, doc.chapter) * 1.7,
+      fuzzyTokenScore(token, doc.clinical),
+    );
+    if (weighted > 0) {
+      matched += 1;
+      score += weighted;
+    }
+  }
+  if (matched === tokens.length) score += 240;
+  else if (matched === 0) return 0;
+  else score -= (tokens.length - matched) * 100;
+  return score;
+}
+
+async function searchPrescriptionGuides(rawQuery, limit = 40) {
+  const term = normalize(rawQuery).slice(0, MAX_QUERY);
+  if (!term || term.length < 2) return [];
+  const tokens = term.split(/\s+/).filter(Boolean).slice(0, 8);
+  const docs = await getPrescriptionSearchIndex();
+
+  return docs
+    .map(doc => ({ doc, score:scorePrescriptionSearch(doc, term, tokens) }))
+    .filter(entry => entry.score > 0)
+    .sort((a,b) => b.score - a.score
+      || a.doc.item.chapterNumber - b.doc.item.chapterNumber
+      || a.doc.item.orderInChapter - b.doc.item.orderInChapter)
+    .slice(0, Math.min(Math.max(1, Number(limit) || 40), 80))
+    .map(entry => ({
+      ...entry.doc.item,
+      score:Math.round(entry.score),
+      lessonNumber:entry.doc.item.orderInChapter,
+      label:`Kapitulli ${entry.doc.item.chapterNumber} · Mësimi ${entry.doc.item.orderInChapter}`,
+    }));
+}
+
+
 function prescriptionChapters(rows) {
   const seen = new Map();
   (Array.isArray(rows) ? rows : []).forEach(row => {
@@ -259,6 +411,21 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    if (requestedRoute === 'prescription-search') {
+      const q = clean(queryValue(req, 'q')).slice(0, MAX_QUERY);
+      if (q.length < 2) {
+        return res.status(200).json({ ok:true, query:q, results:[], count:0, source:'sanity-prescription-smart-search' });
+      }
+      const results = await searchPrescriptionGuides(q, queryValue(req, 'limit'));
+      return res.status(200).json({
+        ok:true,
+        query:q,
+        results,
+        count:results.length,
+        source:'sanity-prescription-smart-search',
+      });
+    }
+
     if (requestedRoute === 'prescription-library') {
       const chapterRows = await querySanity(PRESCRIPTION_CHAPTER_QUERY);
       const chapters = prescriptionChapters(chapterRows);
