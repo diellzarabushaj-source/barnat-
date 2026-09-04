@@ -67,11 +67,20 @@ assert.match(css, /safe-area-inset-bottom/);
 assert.match(css, /--rx15-accent:#635bff/);
 assert.match(css, /grid-template-columns:minmax\(0,1\.2fr\) minmax\(390px,\.8fr\)/);
 assert.match(css, /position:sticky!important/);
-assert.match(css, /font-size:32px!important/);
+// Recetat used to restate the page title at 600 / -.045em, so it read heavier
+// and tighter than every other page. The title, like the body type, now comes
+// from the shared shell — the same source Barnat and Dozologjia read — and
+// this page must not override it again.
+assert.match(stripe, /--drx-type-page-title:32px/);
+assert.match(stripe, /--drx-type-page-title-weight:300/);
+assert.doesNotMatch(css, /\.rx-page-heading h1\{[^}]*font-(?:size|weight)/,
+  'Recetat must not restate the shell page-title type');
+assert.doesNotMatch(css, /\[data-drx-app="recetat-v2"\] body\{[^}]*font-(?:size|weight|family)/,
+  'Recetat must not restate the shell body type');
 assert.match(css, /\.rx-saved-card-head h3/);
 assert.match(css, /\.rx-dialog h2/);
 assert.match(css, /--accent:#635bff/);
-assert.match(css, /font-size:32px/);
+assert.match(stripe, /--drx-type-page-title:25px/);  // the shell's mobile step
 assert.match(css, /\.rx-order-builder-head h3\{color:#0a2540;font-size:14px/);
 assert.match(css, /#rxDrugSearch\{/);
 assert.match(css, /html\.drx-unified-sidebar\[data-drx-app="recetat-v2"\] \.rx-drug-result-main strong\{[\s\S]*color:var\(--rx15-ink\)!important;[\s\S]*font-size:13px!important;[\s\S]*font-weight:600!important/);
