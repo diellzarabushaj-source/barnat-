@@ -128,6 +128,25 @@
           <article><span>Sinkronizimi</span><strong class="rx-sync-metric" id="rxLibraryState">Local</strong><small>Supabase + kopje lokale</small></article>
         </section>
 
+        <nav class="rx-tabs" id="rxTabs" role="tablist" aria-label="Seksionet e recetave">
+          <button class="rx-tab is-active" type="button" role="tab" id="rxTabBtnSource" data-rx-tab="source" aria-controls="rxTabSource" aria-selected="true" tabindex="0">
+            <span class="rx-tab-name">Doctor on Duty</span>
+            <span class="rx-tab-note">Skema klinike të publikuara</span>
+            <span class="rx-tab-count" id="rxTabSourceCount" hidden>0</span>
+          </button>
+          <button class="rx-tab" type="button" role="tab" id="rxTabBtnCompose" data-rx-tab="compose" aria-controls="rxTabCompose" aria-selected="false" tabindex="-1">
+            <span class="rx-tab-name">Ndërto recetën</span>
+            <span class="rx-tab-note">Barna, dozë dhe kontroll</span>
+            <span class="rx-tab-count rx-tab-state" id="rxTabComposeState" hidden>Draft</span>
+          </button>
+          <button class="rx-tab" type="button" role="tab" id="rxTabBtnLibrary" data-rx-tab="library" aria-controls="rxTabLibrary" aria-selected="false" tabindex="-1">
+            <span class="rx-tab-name">Recetat e mia</span>
+            <span class="rx-tab-note">Biblioteka personale</span>
+            <span class="rx-tab-count" id="rxTabLibraryCount" hidden>0</span>
+          </button>
+        </nav>
+
+        <div class="rx-tabpanel" id="rxTabSource" role="tabpanel" aria-labelledby="rxTabBtnSource" tabindex="0">
         <section class="rx-source-library rx19-source-library" id="rxPrescriptionLibrary" aria-labelledby="rxSourceLibraryTitle">
           <header class="rx-source-library-head">
             <div class="rx-source-heading-copy">
@@ -205,7 +224,9 @@
             </div>
           </div>
         </section>
+        </div>
 
+        <div class="rx-tabpanel" id="rxTabCompose" role="tabpanel" aria-labelledby="rxTabBtnCompose" tabindex="0" hidden>
         <section class="rx-dashboard" id="rxComposerWorkspace" aria-label="Krijuesi i recetës">
           <article class="rx-compose-card">
             <header class="rx-card-head">
@@ -314,7 +335,9 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
           <span aria-hidden="true">!</span>
           <div><strong>Kontroll klinik i detyrueshëm.</strong><p>Kategoria e dosjes është organizim i bibliotekës, jo vendim klinik. Doza, rruga dhe Signatura duhet të verifikohen për pacientin konkret.</p></div>
         </aside>
+        </div>
 
+        <div class="rx-tabpanel" id="rxTabLibrary" role="tabpanel" aria-labelledby="rxTabBtnLibrary" tabindex="0" hidden>
         <section class="rx-library" aria-labelledby="rxSavedTitle">
           <header class="rx-library-head">
             <div><p class="eyebrow">Biblioteka personale</p><h2 id="rxSavedTitle">Dosjet e recetave</h2><p>Recetat organizohen sipas kapitullit klinik dhe sinkronizohen me bibliotekën tënde personale.</p></div>
@@ -340,6 +363,7 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
             </div>
           </div>
         </section>
+        </div>
 
         <footer class="rx-page-footer">DRx · Recetat personale ruhen lokalisht për shpejtësi dhe sinkronizohen të enkriptuara me Supabase.</footer>
       </div>

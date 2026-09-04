@@ -6209,3 +6209,132 @@ html[data-ui-revision="recetat-v20"] :is(.rx-metrics article>strong,.rx-source-t
 .rx-source-result-meta strong,.rx-library-count b,.rx-folder-item>b,.rx19-workflow>span>b){
   font-variant-numeric:tabular-nums;
 }
+
+
+/* ==========================================================================
+   Recetat V22 — three tabs instead of one long scroll
+
+   Doctor on Duty, the composer and the personal library were stacked on one
+   page, so reaching the saved prescriptions meant scrolling past a full
+   master-detail browser and a two-column composer. They are three separate
+   jobs; they get three tabs.
+   ========================================================================== */
+
+html[data-ui-revision="recetat-v20"] .rx-tabs{
+  display:inline-flex;
+  gap:4px;
+  width:auto;
+  max-width:100%;
+  margin:0 0 18px;
+  padding:5px;
+  border:1px solid var(--rx19-line,#e4e7ec);
+  border-radius:14px;
+  background:#fff;
+  box-shadow:var(--rx19-shadow,0 1px 2px rgba(16,24,40,.04));
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+html[data-ui-revision="recetat-v20"] .rx-tabs::-webkit-scrollbar{display:none}
+
+html[data-ui-revision="recetat-v20"] .rx-tab{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:"name count" "note count";
+  align-items:center;
+  gap:0 10px;
+  flex:0 0 auto;
+  padding:10px 16px;
+  border:1px solid transparent;
+  border-radius:10px;
+  background:transparent;
+  color:var(--muted,#697386);
+  cursor:pointer;
+  text-align:left;
+  transition:background .14s ease,color .14s ease,border-color .14s ease;
+}
+html[data-ui-revision="recetat-v20"] .rx-tab:hover{
+  background:var(--soft,#f6f9fc);
+  color:var(--ink-2,#3c4257);
+}
+html[data-ui-revision="recetat-v20"] .rx-tab.is-active{
+  border-color:var(--accent-line,#d9d6ff);
+  background:var(--accent-soft,#f0efff);
+  color:var(--accent,#635bff);
+}
+html[data-ui-revision="recetat-v20"] .rx-tab:focus-visible{
+  outline:2px solid var(--accent,#635bff);
+  outline-offset:2px;
+}
+
+html[data-ui-revision="recetat-v20"] .rx-tab-name{
+  grid-area:name;
+  font-size:var(--fs-body,14px);
+  font-weight:var(--fw-semibold,600);
+  letter-spacing:var(--ls-body,-.006em);
+  line-height:1.35;
+  white-space:nowrap;
+}
+html[data-ui-revision="recetat-v20"] .rx-tab-note{
+  grid-area:note;
+  color:var(--muted-2,#8792a2);
+  font-size:var(--fs-caption,12px);
+  font-weight:var(--fw-regular,400);
+  line-height:1.35;
+  white-space:nowrap;
+}
+html[data-ui-revision="recetat-v20"] .rx-tab.is-active .rx-tab-note{color:var(--accent,#635bff);opacity:.72}
+
+html[data-ui-revision="recetat-v20"] .rx-tab-count{
+  grid-area:count;
+  display:inline-grid;
+  place-items:center;
+  min-width:24px;
+  height:22px;
+  padding:0 7px;
+  border:1px solid var(--line,#e3e8ee);
+  border-radius:999px;
+  background:var(--soft,#f6f9fc);
+  color:var(--ink-2,#3c4257);
+  font-size:var(--fs-micro,11px);
+  font-weight:var(--fw-semibold,600);
+  font-variant-numeric:tabular-nums;
+}
+html[data-ui-revision="recetat-v20"] .rx-tab.is-active .rx-tab-count{
+  border-color:var(--accent-line,#d9d6ff);
+  background:#fff;
+  color:var(--accent,#635bff);
+}
+html[data-ui-revision="recetat-v20"] .rx-tab-state{
+  min-width:0;
+  border-color:#fedf89;
+  background:#fffaeb;
+  color:#b54708;
+}
+html[data-ui-revision="recetat-v20"] .rx-tab.is-active .rx-tab-state{
+  border-color:#fedf89;
+  background:#fffaeb;
+  color:#b54708;
+}
+
+/* The panel owns no chrome of its own — each section already carries its card. */
+html[data-ui-revision="recetat-v20"] .rx-tabpanel[hidden]{display:none!important}
+html[data-ui-revision="recetat-v20"] .rx-tabpanel:focus{outline:none}
+
+/* The composer and its safety note travel together in the same panel. */
+html[data-ui-revision="recetat-v20"] #rxTabCompose .rx-safety{margin-bottom:0!important}
+
+@media(max-width:760px){
+  html[data-ui-revision="recetat-v20"] .rx-tabs{
+    margin-inline:0;
+    border-radius:12px;
+  }
+  html[data-ui-revision="recetat-v20"] .rx-tab{
+    flex:0 0 auto;
+    padding:9px 12px;
+  }
+  html[data-ui-revision="recetat-v20"] .rx-tab-note{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-ui-revision="recetat-v20"] .rx-tab{transition:none}
+}
