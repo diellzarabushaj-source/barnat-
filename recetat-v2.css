@@ -115,7 +115,6 @@ a{color:inherit}
 .sidebar-backdrop{position:fixed;inset:0;z-index:45;background:rgba(10,20,45,.35);backdrop-filter:blur(2px)}
 
 
-
 /* DRx — sistemi klinik i përbashkët.
 
    `clinical-knowledge.css` e përcaktoi këtë fjalor për Urgjencat dhe Medical
@@ -1474,7 +1473,6 @@ html[data-theme="dark"] .icd-add-secondary-diagnosis{border-color:#175cd3!import
 @media(forced-colors:active){.rx-icd-problem-list,.rx-icd-problem-item,.rx-icd-problem-head button,.rx-icd-problem-actions button,.rx-icd-problem-actions a,.rx-icd-recent-secondary,.icd-add-secondary-diagnosis{border:1px solid CanvasText}}
 
 
-
 /* Recetat V2 — Stripe prescription workspace */
 :root{
   --rx-shell-navy:#1c1e54;
@@ -2554,7 +2552,6 @@ button{font-weight:600}
 @media(prefers-reduced-motion:reduce){
   .rx-new-top{transition:none}
 }
-
 
 
 /* Recetat V2 — embedded TailAdmin specificity bridge v8
@@ -3890,20 +3887,6 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-page-footer{
 }
 .rx-source-chapter-picker select:focus{border-color:var(--clinical);box-shadow:0 0 0 3px rgba(14,124,102,.12)}
 .rx-source-chapter-picker select:disabled{opacity:.72;cursor:default}
-.rx-source-legend{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px 18px;
-  margin:16px 0 0;
-  padding:10px 12px;
-  border:1px solid var(--line);
-  border-radius:9px;
-  background:var(--soft);
-  color:var(--muted);
-  font-size:13px;
-}
-.rx-source-legend span{display:inline-flex;align-items:center;gap:5px}
-.rx-source-legend b{color:var(--ink);font-weight:700}
 .rx-source-status{margin:12px 0 0;color:var(--muted);font-size:13px}
 .rx-source-status.is-success{color:var(--clinical)}
 .rx-source-status.is-error{color:var(--danger)}
@@ -4057,7 +4040,6 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-page-footer{
   .rx-source-library{padding:14px;margin-bottom:14px;border-radius:11px}
   .rx-source-library-head{display:grid;gap:14px}
   .rx-source-chapter-picker{min-width:0;width:100%}
-  .rx-source-legend{display:grid;gap:7px}
   .rx-source-guide-head{display:grid;gap:12px;padding:14px}
   .rx-source-use{width:100%;min-height:44px}
   .rx-source-flow{padding:13px}
@@ -4113,41 +4095,6 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-chapter-picker se
   border-radius:10px!important;
   background:#fff!important;
   font-weight:500!important;
-}
-html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-legend{
-  margin:0!important;
-  padding:10px 22px!important;
-  gap:9px 16px!important;
-  border:0!important;
-  border-bottom:1px solid #edf0f4!important;
-  border-radius:0!important;
-  background:#fafbfc!important;
-  color:#697386!important;
-}
-html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-legend span{
-  min-height:26px!important;
-}
-html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-legend b{
-  display:inline-grid!important;
-  min-width:24px!important;
-  min-height:22px!important;
-  place-items:center!important;
-  padding:0 5px!important;
-  border:1px solid #dfe3e8!important;
-  border-radius:6px!important;
-  background:#fff!important;
-  color:#343a46!important;
-  font-size:12px!important;
-  font-style:normal!important;
-}
-html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-legend-number{
-  gap:4px!important;
-  color:#343a46!important;
-  font-weight:500!important;
-}
-html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-legend-number em{
-  color:#98a2b3!important;
-  font-style:normal!important;
 }
 html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-status{
   margin:0!important;
@@ -4481,10 +4428,6 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-foot b{
   }
   html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-chapter-picker{
     min-width:0!important;
-  }
-  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-legend{
-    padding:10px 16px!important;
-    grid-template-columns:1fr!important;
   }
   html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-status{
     padding-inline:16px!important;
@@ -4923,36 +4866,6 @@ html[data-ui-revision="recetat-v20"] .rx-source-result-meta strong{
 html[data-ui-revision="recetat-v20"] .rx-source-result-meta span{
   color:#98a2b3;
   font-size:12px;
-}
-
-html[data-ui-revision="recetat-v20"] .rx-source-legend{
-  display:flex!important;
-  align-items:center!important;
-  gap:7px!important;
-  flex-wrap:wrap!important;
-  margin:0!important;
-  padding:9px 14px!important;
-  border:0!important;
-  border-bottom:1px solid var(--rx19-line-soft)!important;
-  background:#fafbff!important;
-}
-html[data-ui-revision="recetat-v20"] .rx-source-legend>span{
-  min-height:25px!important;
-  padding:0 8px!important;
-  border:1px solid #eaecf0!important;
-  border-radius:999px!important;
-  background:#fff!important;
-  color:#667085!important;
-  font-size:11px!important;
-  line-height:23px!important;
-}
-html[data-ui-revision="recetat-v20"] .rx-source-legend b{color:#475467!important}
-html[data-ui-revision="recetat-v20"] .rx-source-safety-chip{
-  margin-left:auto!important;
-  border-color:#fedf89!important;
-  background:#fffaeb!important;
-  color:#b54708!important;
-  font-weight:600!important;
 }
 html[data-ui-revision="recetat-v20"] .rx-source-status{
   margin:0!important;
@@ -5609,8 +5522,6 @@ html[data-ui-revision="recetat-v20"] :is(.rx-source-nav-item,.rx-source-use,.rx-
   html[data-ui-revision="recetat-v20"] .rx-source-commandbar{align-items:stretch;flex-wrap:wrap;padding:10px}
   html[data-ui-revision="recetat-v20"] .rx-source-search{flex:1 0 100%}
   html[data-ui-revision="recetat-v20"] .rx-source-result-meta{margin-left:auto}
-  html[data-ui-revision="recetat-v20"] .rx-source-legend{overflow-x:auto!important;flex-wrap:nowrap!important;padding:8px 10px!important;scrollbar-width:none}
-  html[data-ui-revision="recetat-v20"] .rx-source-safety-chip{margin-left:0!important}
   html[data-ui-revision="recetat-v20"] .rx-source-guide-nav{grid-auto-columns:minmax(235px,86vw)}
   html[data-ui-revision="recetat-v20"] .rx-source-guide-head{flex-direction:column!important;gap:13px!important;padding:16px 13px 13px!important}
   html[data-ui-revision="recetat-v20"] .rx-source-guide-head h3{font-size:15px!important}
@@ -6024,13 +5935,6 @@ html[data-ui-revision="recetat-v20"] .rx-source-detail-toolbar strong{
   html[data-ui-revision="recetat-v20"] .rx-source-live-pill{
     white-space:nowrap;
   }
-  html[data-ui-revision="recetat-v20"] .rx-source-legend>span{
-    flex:0 0 auto!important;
-    white-space:nowrap!important;
-  }
-  html[data-ui-revision="recetat-v20"] .rx-source-safety-chip{
-    margin-left:0!important;
-  }
   html[data-ui-revision="recetat-v20"] .rx19-workflow>span>em,
   html[data-ui-revision="recetat-v20"] .rx19-workflow>span>small{
     white-space:nowrap;
@@ -6323,24 +6227,6 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-card-head h2{
   letter-spacing:var(--ls-heading,-.018em);
 }
 
-/* --- Notation key: a hairline row, not five bordered chips --- */
-html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-legend{
-  gap:6px 14px!important;
-  padding:9px 20px!important;
-  background:var(--soft,#f6f9fc);
-}
-html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-legend>span{
-  border:0;
-  padding:0;
-  background:none;
-  color:var(--muted,#697386);
-  font-size:var(--fs-micro,11px);
-}
-html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-legend>span>b{
-  color:var(--ink-2,#3c4257);
-  font-weight:var(--fw-semibold,600);
-}
-
 @media(max-width:760px){
   html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-library-head,
   html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-commandbar{padding-inline:14px}
@@ -6351,12 +6237,8 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-legend>span>b{
     justify-content:flex-start!important;
   }
   html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-result-meta{height:auto}
-  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-legend{padding-inline:14px}
   html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-tab{padding:8px 7px;gap:5px}
   html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-tab-count{min-width:18px;height:17px;padding:0 5px}
-  /* The notation key ran 808px wide inside a 328px strip, so four of its five
-     entries were unreachable. It wraps on a phone. */
-  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-legend{flex-wrap:wrap!important}
   /* The design system's touch minimum is 44px; this control shipped at 40. */
   html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-new-top{
     height:44px!important;
@@ -6436,4 +6318,79 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-use:hover>b{
 @media(prefers-reduced-motion:reduce){
   html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-use>b{transition:none!important}
   html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-use:hover>b{transform:none!important}
+}
+
+
+/* ==========================================================================
+   Recetat V25 — the step sequence reads as a sequence
+
+   Every step marker was the same indigo, so a nine-step scheme gave the eye
+   no purchase: 1, 2A, 2B and 2C looked alike and the reader counted digits to
+   find their place. The marker now carries two things at once — kind, as
+   before (filled = a drug, outlined = a plain step), and position, as depth.
+
+   A depth ramp rather than a set of hues: the design system rations colour and
+   rules out categorical rainbows, and white-on-light would fail AA at the pale
+   end. Four stops cycle, so adjacent steps always differ while a long scheme
+   still reads as rhythm. The number stays the authority; the tint is a cue.
+   ========================================================================== */
+
+/* Every stop clears WCAG AA (4.5:1) in all three roles it is used in: white
+   on the tint, the tint on white, and the tint on its own soft ground — that
+   last one is where the 11px BAR/HAP label sits, and it is what ruled out
+   starting the ramp at the brand accent #635bff (4.14:1 there). Neighbouring
+   stops sit at least 1.34:1 apart so the step change is legible, not subtle. */
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item{
+  --rx-step:#5b52f7;
+  --rx-step-soft:#f0efff;
+  --rx-step-line:#d5d1fb;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item[data-rx-step="2"]{
+  --rx-step:#4a3fd6;
+  --rx-step-soft:#edebfd;
+  --rx-step-line:#cbc5f4;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item[data-rx-step="3"]{
+  --rx-step:#3a2fa8;
+  --rx-step-soft:#eae8f7;
+  --rx-step-line:#c0b9e6;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item[data-rx-step="4"]{
+  --rx-step:#2a2278;
+  --rx-step-soft:#e8e6f2;
+  --rx-step-line:#b6aed8;
+}
+
+/* A plain step: the tint stays in the outline and the numeral. */
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item-number{
+  border-color:var(--rx-step-line)!important;
+  color:var(--rx-step)!important;
+  transition:transform .18s cubic-bezier(.32,.72,0,1),box-shadow .18s cubic-bezier(.32,.72,0,1)!important;
+}
+/* A drug: the marker fills, because that is the row that carries a dose. */
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item.is-active-substance .rx-source-item-number{
+  border-color:var(--rx-step)!important;
+  background:var(--rx-step)!important;
+  color:#fff!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item.is-active-substance .rx-source-step-rail{
+  border-right-color:var(--rx-step-line)!important;
+  background:var(--rx-step-soft)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item.is-active-substance .rx-source-step-rail small{
+  color:var(--rx-step)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item.is-active-substance .rx-source-kind{
+  color:var(--rx-step)!important;
+}
+
+/* Hovering a row lifts its marker a hair, so the pointer has something to
+   land on in a long scheme. */
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item:hover .rx-source-item-number{
+  transform:translateY(-1px)!important;
+  box-shadow:0 2px 6px color-mix(in srgb,var(--rx-step) 24%,transparent)!important;
+}
+@media(prefers-reduced-motion:reduce){
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item-number{transition:none!important}
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item:hover .rx-source-item-number{transform:none!important}
 }
