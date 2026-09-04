@@ -101,9 +101,8 @@
       <div class="page-wrap rx-page" id="rxWorkspace">
         <header class="page-heading rx-page-heading">
           <div>
-            <p class="eyebrow">PUNA KLINIKE</p>
             <h1>Recetat</h1>
-            <p class="page-subtitle">Nis nga një skemë klinike e strukturuar ose ndërto recetën manualisht. Hapat, barnat, alternativat dhe kushtet shfaqen në rend të qartë para se receta të ruhet.</p>
+            <p class="page-subtitle">Nis nga një skemë klinike e strukturuar, ose ndërto recetën vetë.</p>
           </div>
           <button class="rx-new-top" id="rxNew" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -111,37 +110,16 @@
           </button>
         </header>
 
-        <nav class="rx19-workflow" aria-label="Rrjedha e punës së recetës">
-          <span class="is-current"><b>1</b><em>Zgjidh skemën</em><small>Kapitull + mësim</small></span>
-          <i aria-hidden="true"></i>
-          <span><b>2</b><em>Përshtate</em><small>Barna + dozë + rrugë</small></span>
-          <i aria-hidden="true"></i>
-          <span><b>3</b><em>Kontrollo</em><small>Parapamje + verifikim</small></span>
-          <i aria-hidden="true"></i>
-          <span><b>4</b><em>Ruaje</em><small>Vetëm pas konfirmimit</small></span>
-        </nav>
-
-        <section class="rx-metrics" aria-label="Përmbledhja e recetave">
-          <article><span>Receta</span><strong id="rxSavedCount">0</strong><small>Në bibliotekën personale</small></article>
-          <article><span>Dosje aktive</span><strong id="rxFolderCount">—</strong><small>Kapituj klinikë</small></article>
-          <article><span>Në dosjen aktuale</span><strong id="rxActiveChapterCount">0</strong><small id="rxActiveChapterMetric">Të gjitha recetat</small></article>
-          <article><span>Sinkronizimi</span><strong class="rx-sync-metric" id="rxLibraryState">Local</strong><small>Supabase + kopje lokale</small></article>
-        </section>
-
         <nav class="rx-tabs" id="rxTabs" role="tablist" aria-label="Seksionet e recetave">
           <button class="rx-tab is-active" type="button" role="tab" id="rxTabBtnSource" data-rx-tab="source" aria-controls="rxTabSource" aria-selected="true" tabindex="0">
             <span class="rx-tab-name">Doctor on Duty</span>
-            <span class="rx-tab-note">Skema klinike të publikuara</span>
-            <span class="rx-tab-count" id="rxTabSourceCount" hidden>0</span>
           </button>
           <button class="rx-tab" type="button" role="tab" id="rxTabBtnCompose" data-rx-tab="compose" aria-controls="rxTabCompose" aria-selected="false" tabindex="-1">
             <span class="rx-tab-name">Ndërto recetën</span>
-            <span class="rx-tab-note">Barna, dozë dhe kontroll</span>
-            <span class="rx-tab-count rx-tab-state" id="rxTabComposeState" hidden>Draft</span>
+            <span class="rx-tab-count" id="rxTabComposeState" hidden>0</span>
           </button>
           <button class="rx-tab" type="button" role="tab" id="rxTabBtnLibrary" data-rx-tab="library" aria-controls="rxTabLibrary" aria-selected="false" tabindex="-1">
             <span class="rx-tab-name">Recetat e mia</span>
-            <span class="rx-tab-note">Biblioteka personale</span>
             <span class="rx-tab-count" id="rxTabLibraryCount" hidden>0</span>
           </button>
         </nav>
@@ -150,43 +128,37 @@
         <section class="rx-source-library rx19-source-library" id="rxPrescriptionLibrary" aria-labelledby="rxSourceLibraryTitle">
           <header class="rx-source-library-head">
             <div class="rx-source-heading-copy">
-              <div class="rx-source-title-row">
-                <p class="rx-source-eyebrow">DOCTOR ON DUTY · BURIM I STRUKTURUAR</p>
-                <span class="rx-source-live-pill"><i aria-hidden="true"></i> Sanity · published</span>
-              </div>
-              <h2 id="rxSourceLibraryTitle">Gjej skemën klinike, pastaj përshtate për pacientin</h2>
-              <p>Zgjidh kapitullin dhe mësimin, ose kërko globalisht diagnozën/barin, pastaj lexo rrjedhën klinike para se ta kalosh si draft në recetë. Burimi nuk aplikohet automatikisht.</p>
+              <h2 id="rxSourceLibraryTitle">Skemat klinike</h2>
+              <p>Burimi nuk aplikohet automatikisht — lexoje, pastaj kaloje si draft.</p>
             </div>
             <div class="rx-source-head-actions">
-              <div class="rx-source-total" aria-label="Përmbledhja e burimit">
+              <div class="rx-source-total" aria-label="Skema në burim">
                 <strong id="rxSourceTotal">—</strong>
-                <span>skema në burim</span>
+                <span>skema</span>
               </div>
-              <div class="rx-source-pickers">
-                <label class="rx-source-chapter-picker">
-                  <span>Kapitulli</span>
-                  <select id="rxSourceChapterSelect" aria-label="Zgjidh kapitullin e recetave">
-                    <option value="">Duke ngarkuar…</option>
-                  </select>
-                </label>
-                <label class="rx-source-lesson-picker">
-                  <span>Mësimi</span>
-                  <select id="rxSourceLessonSelect" aria-label="Zgjidh mësimin ose skemën">
-                    <option value="">Zgjidh kapitullin…</option>
-                  </select>
-                </label>
-              </div>
+              <span class="rx-source-live-pill"><i aria-hidden="true"></i> Sanity · published</span>
             </div>
           </header>
 
           <div class="rx-source-commandbar">
+            <label class="rx-source-chapter-picker">
+              <span>Kapitulli</span>
+              <select id="rxSourceChapterSelect" aria-label="Zgjidh kapitullin e recetave">
+                <option value="">Duke ngarkuar…</option>
+              </select>
+            </label>
+            <label class="rx-source-lesson-picker">
+              <span>Mësimi</span>
+              <select id="rxSourceLessonSelect" aria-label="Zgjidh mësimin ose skemën">
+                <option value="">Zgjidh kapitullin…</option>
+              </select>
+            </label>
             <label class="rx-source-search">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
-              <input id="rxSourceSearch" type="search" autocomplete="off" placeholder="Kërko kudo: diagnozë, bar, dozë, kusht…" aria-label="Kërko inteligjent në të gjitha skemat">
+              <input id="rxSourceSearch" type="search" autocomplete="off" placeholder="Kërko diagnozë, bar, dozë…" aria-label="Kërko inteligjent në të gjitha skemat">
               <kbd aria-hidden="true">/</kbd>
             </label>
             <button class="rx-source-clear-search" id="rxSourceClearSearch" type="button" hidden>Pastro</button>
-            <span class="rx-source-search-scope" id="rxSourceSearchScope">Kërkim global · typo-tolerant</span>
             <div class="rx-source-result-meta" aria-live="polite">
               <strong id="rxSourceResultCount">—</strong>
               <span id="rxSourceResultLabel">skema në kapitull</span>
@@ -206,19 +178,15 @@
           <div class="rx-source-browser">
             <aside class="rx-source-index" aria-label="Skemat e kapitullit">
               <div class="rx-source-index-head">
-                <span>Mësimet / skemat</span>
-                <small id="rxSourceIndexHint">Zgjidh një mësim për ta hapur</small>
+                <span>Mësimet</span>
+                <small id="rxSourceIndexHint">—</small>
               </div>
               <div class="rx-source-guide-nav" id="rxSourceGuideNav" role="listbox" aria-label="Lista e skemave"></div>
             </aside>
 
             <div class="rx-source-detail">
               <div class="rx-source-detail-toolbar">
-                <div>
-                  <span>Mësimi aktiv</span>
-                  <strong id="rxSourceActiveTitle">Zgjidh një mësim</strong>
-                </div>
-                <small>Burimi shfaqet i ndarë në hapa, alternativa dhe kushte.</small>
+                <strong id="rxSourceActiveTitle">Zgjidh një mësim</strong>
               </div>
               <div class="rx-source-guide-list" id="rxSourceGuideList" aria-live="polite"></div>
             </div>
@@ -230,7 +198,7 @@
         <section class="rx-dashboard" id="rxComposerWorkspace" aria-label="Krijuesi i recetës">
           <article class="rx-compose-card">
             <header class="rx-card-head">
-              <div><span class="rx-step">01</span><div><h2>Ndërto recetën</h2><p>Barna të verifikuara, udhëzim i strukturuar dhe kontroll para ruajtjes.</p></div></div>
+              <div><span class="rx-step">01</span><h2>Barnat dhe udhëzimi</h2></div>
               <span class="rx-draft-label" id="rxDraftLabel">Draft i ri</span>
             </header>
 
@@ -251,7 +219,7 @@
               <header class="rx-order-builder-head">
                 <div>
                   <h3 id="rxOrderBuilderTitle">Barnat e recetës</h3>
-                  <p>Zgjidh barin nga regjistri dhe plotëso udhëzimin e dozimit. Asnjë dozë nuk aplikohet pa veprimin tënd.</p>
+                  <p>Asnjë dozë nuk aplikohet pa veprimin tënd.</p>
                 </div>
                 <button class="rx-secondary rx-add-drug" id="rxAddDrugButton" type="button" aria-controls="rxDrugPopover" aria-expanded="false">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -307,7 +275,7 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
 
           <article class="rx-preview-card">
             <header class="rx-card-head">
-              <div><span class="rx-step">02</span><div><h2>Parapamja & kontrolli</h2><p>Ruajtja aktivizohet vetëm pasi kontrollet e nevojshme konfirmohen.</p></div></div>
+              <div><span class="rx-step">02</span><h2>Parapamja &amp; kontrolli</h2></div>
               <span class="rx-state is-draft" id="rxState">Draft</span>
             </header>
 
@@ -340,7 +308,15 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
         <div class="rx-tabpanel" id="rxTabLibrary" role="tabpanel" aria-labelledby="rxTabBtnLibrary" tabindex="0" hidden>
         <section class="rx-library" aria-labelledby="rxSavedTitle">
           <header class="rx-library-head">
-            <div><p class="eyebrow">Biblioteka personale</p><h2 id="rxSavedTitle">Dosjet e recetave</h2><p>Recetat organizohen sipas kapitullit klinik dhe sinkronizohen me bibliotekën tënde personale.</p></div>
+            <div>
+              <h2 id="rxSavedTitle">Dosjet e recetave</h2>
+              <p class="rx-library-totals">
+                <span><strong id="rxSavedCount">0</strong> receta</span>
+                <span><strong id="rxFolderCount">—</strong> dosje</span>
+                <span><strong id="rxActiveChapterCount">0</strong> në <em id="rxActiveChapterMetric">të gjitha recetat</em></span>
+                <span class="rx-sync-metric" id="rxLibraryState">Local</span>
+              </p>
+            </div>
             <label class="rx-saved-search"><span class="sr-only">Kërko recetat</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg><input id="rxSavedSearch" type="search" autocomplete="off" placeholder="Kërko recetën, diagnozën ose barin…"></label>
           </header>
 
@@ -365,7 +341,7 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
         </section>
         </div>
 
-        <footer class="rx-page-footer">DRx · Recetat personale ruhen lokalisht për shpejtësi dhe sinkronizohen të enkriptuara me Supabase.</footer>
+        <footer class="rx-page-footer">Recetat ruhen lokalisht dhe sinkronizohen të enkriptuara me Supabase.</footer>
       </div>
     </main>
   </div>
