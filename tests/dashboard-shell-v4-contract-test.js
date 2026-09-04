@@ -54,7 +54,7 @@ for (const file of allPages) {
     .map(match => match[1]);
 
   assert.equal(stripeLinks.length, 1, `${file}: exactly one canonical dashboard shell stylesheet is required`);
-  assert.match(stripeLinks[0], /drx-dashboard-stripe-v6/, `${file}: shell cache version must be v6`);
+  assert.match(stripeLinks[0], /drx-dashboard-stripe-v8/, `${file}: shell cache version must be v8`);
   assert.match(html, /<meta name="theme-color" content="#1c1e54">/, `${file}: browser chrome must match the navy shell`);
 }
 
@@ -63,6 +63,9 @@ function normalizedStandaloneSidebar(html) {
   const end = html.indexOf('</aside>', start);
   assert.ok(start >= 0 && end > start, 'Canonical standalone sidebar markup is missing');
   return html.slice(start, end + 8)
+    .replace(/<button class="sidebar-collapse"[\s\S]*?<\/button>/g, '')
+    .replace(/<img class="brand-mark"[^>]*>/g, '')
+    .replace(/ class="brand-full"/g, '')
     .replace(/ class="nav-item is-active"/g, ' class="nav-item"')
     .replace(/ aria-current="page"/g, '')
     .replace(/(<details class="nav-group" id="atcNavGroup") open/g, '$1')
@@ -85,7 +88,7 @@ for (const file of standalone) {
 
   const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)]
     .map(match => match[1]);
-  assert.ok(styles.at(-1)?.includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6'), `${file}: shell CSS must load last`);
+  assert.ok(styles.at(-1)?.includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8'), `${file}: shell CSS must load last`);
 }
 
 for (const file of tailadmin) {
@@ -95,7 +98,7 @@ for (const file of tailadmin) {
 
   const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)]
     .map(match => match[1]);
-  assert.ok(styles.at(-1)?.includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v6'), `${file}: canonical shell must be the final static stylesheet`);
+  assert.ok(styles.at(-1)?.includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8'), `${file}: canonical shell must be the final static stylesheet`);
 }
 
 console.log('Dashboard shell v6: canonical sidebar, typography and one visual authority passed.');

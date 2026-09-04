@@ -43,11 +43,13 @@ const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>
   .map(match => match[1]);
 const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)]
   .map(match => match[1]);
+const pageRuntimes = scripts.filter(src => !/sidebar-taxonomy-v3\.js/.test(src));
 
 assert.equal(styles.length, 2, 'Recetat V2 must load only page CSS + shared Stripe shell');
 assert.equal(styles[0], '/recetat-v2.css?v=20');
 assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8');
-assert.deepEqual(scripts, ['/recetat-v2.js?v=20']);
+assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5'), 'Recetat V2 shared sidebar runtime is missing');
+assert.deepEqual(pageRuntimes, ['/recetat-v2.js?v=20']);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|recetat\.css|recetat-audit\.css|recetat-style-loader\.js|recetat\.js/);
 
 assert.match(css, /Recetat V2 — consolidated prescription workspace/);
@@ -72,7 +74,7 @@ assert.match(css, /--accent:#635bff/);
 assert.match(css, /font-size:32px/);
 assert.match(css, /\.rx-order-builder-head h3\{color:#0a2540;font-size:14px/);
 assert.match(css, /#rxDrugSearch\{/);
-assert.match(css, /\.rx-drug-result-main strong\{color:#0a2540;font-size:13px/);
+assert.match(css, /html\.drx-unified-sidebar\[data-drx-app="recetat-v2"\] \.rx-drug-result-main strong\{[\s\S]*color:var\(--rx15-ink\)!important;[\s\S]*font-size:13px!important;[\s\S]*font-weight:600!important/);
 assert.match(css, /Recetat V2 — embedded TailAdmin specificity bridge v8/);
 assert.match(css, /html\.medindex-tailadmin\[data-mi-page="recetat"\] \.rx-card-head h2/);
 assert.match(css, /\.rx-drug-search-summary/);
@@ -88,26 +90,27 @@ assert.match(css, /\.rx-folder-item\.is-active/);
 assert.match(css, /\.rx-saved-chapter/);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /prefers-reduced-motion:reduce/);
-assert.match(css, /Recetat V2 — persistent desktop mini-sidebar v10/);
 assert.match(stripe, /DRx canonical collapsible sidebar v8/);
 assert.match(stripe, /drx-sidebar-collapsed \.sidebar/);
 assert.match(stripe, /drx-sidebar-collapsed \.main-shell/);
 assert.match(stripe, /--drx-shell-sidebar-collapsed-width:76px/);
-assert.match(css, /--drx-shell-sidebar-collapsed-width:76px/);
-assert.match(css, /drx-sidebar-collapsed \.sidebar/);
-assert.match(css, /drx-sidebar-collapsed \.main-shell/);
-assert.match(css, /drx-sidebar-collapsed \.nav-item/);
+assert.doesNotMatch(css, /--drx-shell-sidebar-collapsed-width:76px|drx-sidebar-collapsed \.(?:sidebar|main-shell|nav-item)/,
+  'Recetat page CSS must not duplicate shared collapse authority');
 
-assert.match(js, /Recetat V2 — consolidated runtime with chapter folders/);
+assert.match(js, /Recetat V20 — chapters \+ lessons \+ global typo-tolerant smart search/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
-assert.match(js, /SIDEBAR_COLLAPSE_KEY = 'drx_sidebar_collapsed_v1'/);
-assert.match(js, /window\.matchMedia\('\(min-width:1025px\)'\)/);
+assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/);
+assert.match(js, /SIDEBAR_COLLAPSE_KEY = 'drx_sidebar_collapsed_v2'/);
+assert.match(js, /window\.matchMedia\('\(min-width:1024px\)'\)/);
 assert.match(js, /function setSidebarCollapsed\(/);
 assert.match(js, /function toggleSidebarCollapsed\(/);
 assert.match(js, /localStorage\.setItem\(SIDEBAR_COLLAPSE_KEY/);
 assert.match(js, /aria-pressed/);
 assert.match(js, /drx:sidebar-collapse/);
 assert.match(js, /sidebarWasOpen/);
+assert.match(js, /window\.DRxSidebarCollapse\?\.sync\?\.\(\)/);
+assert.match(js, /shared sidebar runtime is the canonical owner/);
+assert.match(js, /sidebarCollapseOwner !== 'local-fallback'/);
 assert.match(js, /Konteksti klinik/);
 assert.match(js, /Rruga e administrimit/);
 assert.match(js, /Sinkronizuar/);
@@ -121,8 +124,8 @@ assert.match(js, /Nr\. \$\{drug\.registryNumber\}/);
 assert.match(js, /PDID \$\{drug\.pdid\}/);
 assert.match(js, /clinicalReviewConfirmed/);
 assert.match(js, /function updateOrderField\(/);
-assert.match(js, /Asnjë skemë nuk aplikohet pa konfirmimin tënd/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/);
+assert.match(js, /asnjë dozë nuk aplikohet pa konfirmimin tënd/i);
+assert.match(js, /Nuk aplikohet automatikisht; kontrolloje dhe konfirmoje vetëm nëse i përshtatet pacientit dhe indikacionit/);
 assert.match(js, /async function ensureAuth\(\)/);
 assert.match(js, /function chapterCatalog\(\)/);
 assert.match(js, /function classifyChapter\(/);
@@ -175,4 +178,4 @@ assert.match(worker, /\/recetat-v2\.css/);
 assert.match(worker, /\/recetat-v2\.js/);
 assert.doesNotMatch(worker, /['"]\/recetat\.js['"]/);
 
-console.log('Recetat V2 folder-based Stripe workspace and Supabase chapter sync contract passed.');
+console.log('Recetat V20 folder-based Stripe workspace, shared sidebar ownership and Supabase chapter sync contract passed.');

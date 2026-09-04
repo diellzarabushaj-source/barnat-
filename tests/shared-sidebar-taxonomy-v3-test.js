@@ -39,7 +39,7 @@ assert.match(shared, /window\.DRxSidebarTaxonomy/);
 assert.match(shared, /CANONICAL_WORKER_URL = '\/sw\.js\?v=drx-workspace-v7'/);
 assert.match(shared, /navigator\.serviceWorker\.register\(CANONICAL_WORKER_URL/);
 assert.match(shared, /updateViaCache:'none'/);
-assert.match(shared, /dataset\.drxSidebarStructure = 'taxonomy-v4'/);
+assert.match(shared, /dataset\.drxSidebarStructure = 'taxonomy-v5'/);
 assert.match(shared, /PERSONAL_SUMMARY_API = '\/api\/user-library\?view=summary'/);
 assert.match(shared, /syncPersonalCounts\(nav/);
 assert.match(shared, /find\('\/index\.html#favorites'\), find\('\/index\.html#notes'\), find\('\/recetat\.html'\)/);
@@ -74,10 +74,15 @@ for (const marker of order) {
 assert.match(shellCore, />KLINIKE<\/p>/);
 assert.match(shellCore, />PUNA IME<\/p>/);
 
+const sidebarVersionForRuntime = file => file === 'recetat-v2.js'
+  ? 'sidebar-taxonomy-v5'
+  : 'sidebar-taxonomy-v4';
+
 for (const file of ['registry-v2.js','classification-v2.js','icd-v2.js','dozologjia-v2.js','urgjencat-v2.js','analizat-v2.js','protokollet-v2.js','recetat-v2.js','medical-hub-v2.js','sistemi-v2.js']) {
   const source = read(file);
+  const version = sidebarVersionForRuntime(file);
   assert.match(source, /function loadSharedSidebarTaxonomy\(\)/, `${file}: shared sidebar loader missing`);
-  assert.match(source, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/, `${file}: shared sidebar runtime missing`);
+  assert.match(source, new RegExp(`sidebar-taxonomy-v3\\.js\\?v=${version}`), `${file}: shared sidebar runtime missing`);
 }
 
 for (const [file, runtime] of [
@@ -107,13 +112,14 @@ for (const [htmlFile, runtime, version] of [
     const match = html.match(new RegExp(runtime.replace('.', '\\.') + '\\?v=(\\d+)'));
     assert.ok(match && Number(match[1]) >= 4, `${htmlFile}: runtime version must not regress below v4`);
   }
-  assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/, `${runtime}: shared taxonomy loader missing`);
+  const sidebarVersion = sidebarVersionForRuntime(runtime);
+  assert.match(js, new RegExp(`sidebar-taxonomy-v3\\.js\\?v=${sidebarVersion}`), `${runtime}: shared taxonomy loader missing`);
 }
 
 for (const file of ['index.html','klasifikimi.html','icd.html','dozologjia.html','urgjencat.html','analizat.html','protokollet.html','recetat.html','medical-hub.html','sistemi.html']) {
   const html = read(file);
   assert.match(html, /drx-unified-sidebar/, `${file}: unified standalone sidebar marker missing`);
-  assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v6/, `${file}: shared Stripe sidebar authority missing`);
+  assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/, `${file}: shared Stripe sidebar authority missing`);
   assert.match(html, /href="\/index\.html#favorites"[^>]*data-personal-nav="favorites"/, `${file}: Favorites navigation missing`);
   assert.match(html, /href="\/index\.html#notes"[^>]*data-personal-nav="notes"/, `${file}: Notes navigation missing`);
 }
@@ -124,7 +130,6 @@ assert.match(stripe, /Canonical sidebar taxonomy depth — ATC groups\/subgroups
 assert.match(stripe, /\.drx-unified-sidebar \.atc-sub-link/);
 assert.match(stripe, /\.nav-count/);
 
-
 const classificationHtml = read('klasifikimi.html');
 const classificationJs = read('classification-v2.js');
 const classificationCss = read('classification-v2.css');
@@ -134,4 +139,4 @@ assert.doesNotMatch(classificationCss, /\.group-panel|\.group-list|\.group-row/)
 assert.match(classificationJs, /window\.DRxSidebarTaxonomy\?\.syncAtc\?\.\(\)/);
 assert.match(classificationJs, /if \(!hadGroup\) writeHash/);
 
-console.log('Shared sidebar taxonomy v3: ATC + ICD nesting and canonical page order passed.');
+console.log('Shared sidebar taxonomy v3: ATC + ICD nesting, strict runtime versions and canonical page order passed.');
