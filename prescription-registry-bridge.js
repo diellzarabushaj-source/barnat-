@@ -309,7 +309,7 @@
             </fieldset>
             <div class="rx-context-guidance">
               <span class="rx-context-guidance-icon">${SVG.info}</span>
-              <span>DRx lexon kategorinë dhe rrugët e lejuara nga kartela e produktit. Ti zgjedh rrugën vetëm kur preparati ka më shumë se një rrugë të vlefshme; doza nuk aplikohet pa konfirmimin tënd.</span>
+              <span>DRx lexon kategorinë dhe rrugët e lejuara nga kartela e produktit. Rrugën e zgjedh ti kur preparati ka më shumë se një të vlefshme.</span>
             </div>
           </div>
           <button type="button" class="rx-pediatric-toggle" id="rxPediatricToggle" aria-pressed="false">

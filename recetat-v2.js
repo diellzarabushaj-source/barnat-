@@ -2812,7 +2812,7 @@
             </fieldset>
             <div class="rx-context-guidance">
               <span class="rx-context-guidance-icon">${SVG.info}</span>
-              <span>DRx lexon kategorinë dhe rrugët e lejuara nga kartela e produktit. Ti zgjedh rrugën vetëm kur preparati ka më shumë se një rrugë të vlefshme; doza nuk aplikohet pa konfirmimin tënd.</span>
+              <span>DRx lexon kategorinë dhe rrugët e lejuara nga kartela e produktit. Rrugën e zgjedh ti kur preparati ka më shumë se një të vlefshme.</span>
             </div>
           </div>
           <button type="button" class="rx-pediatric-toggle" id="rxPediatricToggle" aria-pressed="false">
@@ -7186,8 +7186,6 @@
     const total = state.chapters.reduce((sum, chapter) => sum + Math.max(0, Number(chapter?.count || 0)), 0);
     const totalNode = $('#rxSourceTotal');
     if (totalNode) totalNode.textContent = total ? String(total) : `${state.chapters.length} kap.`;
-    const scope = $('#rxSourceSearchScope');
-    if (scope) scope.textContent = `Kërkim global · ${total || '—'} skema · typo-tolerant`;
   }
 
   function syncLessonPicker() {
@@ -8017,7 +8015,6 @@
   }
 
   function syncBadges() {
-    badge($('#rxTabSourceCount'), $('#rxSourceTotal')?.textContent);
     badge($('#rxTabLibraryCount'), $('#rxSavedCount')?.textContent);
     const drugs = document.querySelectorAll('#rxSelectedDrugs .rx-order-card').length;
     badge($('#rxTabComposeState'), drugs ? String(drugs) : '');
@@ -8025,7 +8022,7 @@
 
   function watch() {
     const observer = new MutationObserver(syncBadges);
-    for (const selector of ['#rxSourceTotal', '#rxSavedCount', '#rxSelectedDrugs']) {
+    for (const selector of ['#rxSavedCount', '#rxSelectedDrugs']) {
       const node = $(selector);
       if (node) observer.observe(node, { childList:true, subtree:true, characterData:true });
     }
