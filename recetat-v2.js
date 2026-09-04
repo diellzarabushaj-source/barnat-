@@ -6729,6 +6729,7 @@
     scheduleLocalPreview();
     updateActionState();
     setStatus('Skema nga Doctor on Duty u vendos vetëm si draft. Kontrolloje klinikisht para ruajtjes, kopjimit ose printimit.', 'success');
+    window.DRxRecetatTabs?.show?.('compose');
     composer.focus({ preventScroll:true });
     composer.scrollIntoView({ behavior:'smooth', block:'center' });
     return { ok:true };
@@ -6763,7 +6764,11 @@
     if ($('#syncText')) $('#syncText').textContent = 'Supabase';
     if ($('#sourceStatus')) $('#sourceStatus').textContent = 'Recetat personale · Supabase';
     $('#appShell')?.setAttribute('aria-busy', 'false');
-    $('#rxAddDrugButton')?.focus({ preventScroll:true });
+    /* Only claim focus when the composer is the visible tab — otherwise the
+       page would open with focus parked inside a hidden panel. */
+    if (window.DRxRecetatTabs?.current?.() === 'compose') {
+      $('#rxAddDrugButton')?.focus({ preventScroll:true });
+    }
     window.addEventListener('medindex:library-ready', () => { populateChapterSelect(); renderSaved(); });
     window.addEventListener('medindex:library-synced', () => {
       if ($('#rxLibraryState')) $('#rxLibraryState').textContent = 'Sinkronizuar';
@@ -7351,6 +7356,7 @@
       sourceText:sourceDraftText(guide),
     });
     if (result?.ok) {
+      window.DRxRecetatTabs?.show?.('compose');
       $('#rxComposerWorkspace')?.scrollIntoView({ behavior:'smooth', block:'start' });
     }
   }
@@ -7359,6 +7365,7 @@
     const add = $('#rxAddDrugButton');
     const input = $('#rxDrugSearch');
     if (!add || !input || !query) return;
+    window.DRxRecetatTabs?.show?.('compose');
     add.click();
     input.value = query;
     input.dispatchEvent(new Event('input', { bubbles:true }));
@@ -7896,4 +7903,146 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(seed, 0), { once:true });
   else setTimeout(seed, 0);
+})();
+
+
+/* ==========================================================================
+   Recetat V22 — tab controller
+
+   Doctor on Duty, the composer and the personal library are three separate
+   jobs that used to share one scroll. This drives them as tabs, keeps the
+   choice across reloads, and lets the source → draft handoff pull the
+   composer forward without the clinician hunting for it.
+   ========================================================================== */
+(() => {
+  'use strict';
+
+  const $ = selector => document.querySelector(selector);
+  const STORAGE_KEY = 'drx_recetat_tab_v1';
+  const TABS = Object.freeze([
+    { id:'source',  button:'#rxTabBtnSource',  panel:'#rxTabSource',  hash:'#burimi' },
+    { id:'compose', button:'#rxTabBtnCompose', panel:'#rxTabCompose', hash:'#ndertimi' },
+    { id:'library', button:'#rxTabBtnLibrary', panel:'#rxTabLibrary', hash:'#recetat-e-mia' },
+  ]);
+
+  const byId = id => TABS.find(tab => tab.id === id) || null;
+  const byHash = hash => TABS.find(tab => tab.hash === hash) || null;
+
+  function readStored() {
+    try { return byId(localStorage.getItem(STORAGE_KEY)) ? localStorage.getItem(STORAGE_KEY) : ''; }
+    catch { return ''; }
+  }
+
+  function store(id) {
+    try { localStorage.setItem(STORAGE_KEY, id); } catch {}
+  }
+
+  let current = 'source';
+
+  function show(id, { focus = false, scroll = false } = {}) {
+    const target = byId(id);
+    if (!target || !$(target.panel)) return false;
+    current = target.id;
+
+    for (const tab of TABS) {
+      const button = $(tab.button);
+      const panel = $(tab.panel);
+      if (!button || !panel) continue;
+      const active = tab.id === target.id;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-selected', String(active));
+      button.tabIndex = active ? 0 : -1;
+      panel.hidden = !active;
+    }
+
+    store(target.id);
+    try {
+      const url = new URL(location.href);
+      url.hash = target.hash;
+      history.replaceState(history.state, '', url);
+    } catch {}
+
+    if (focus) $(target.button)?.focus({ preventScroll:true });
+    if (scroll) {
+      const top = $('#rxTabs');
+      if (top) {
+        const reduce = window.matchMedia?.('(prefers-reduced-motion:reduce)')?.matches;
+        top.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block:'start' });
+      }
+    }
+    return true;
+  }
+
+  function moveFocus(step) {
+    const index = TABS.findIndex(tab => tab.id === current);
+    if (index < 0) return;
+    const next = TABS[(index + step + TABS.length) % TABS.length];
+    show(next.id, { focus:true });
+  }
+
+  function bind() {
+    const list = $('#rxTabs');
+    if (!list) return false;
+
+    list.addEventListener('click', event => {
+      const button = event.target.closest?.('[data-rx-tab]');
+      if (!button || !list.contains(button)) return;
+      show(button.dataset.rxTab, { scroll:true });
+    });
+
+    list.addEventListener('keydown', event => {
+      if (!event.target.closest?.('[data-rx-tab]')) return;
+      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') { event.preventDefault(); moveFocus(1); }
+      else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') { event.preventDefault(); moveFocus(-1); }
+      else if (event.key === 'Home') { event.preventDefault(); show(TABS[0].id, { focus:true }); }
+      else if (event.key === 'End') { event.preventDefault(); show(TABS[TABS.length - 1].id, { focus:true }); }
+    });
+
+    window.addEventListener('hashchange', () => {
+      const tab = byHash(location.hash);
+      if (tab && tab.id !== current) show(tab.id);
+    });
+
+    return true;
+  }
+
+  /* Badges mirror what each section already reports, so they cannot drift from
+     the numbers rendered inside the panels. */
+  function badge(node, value) {
+    if (!node) return;
+    const text = String(value || '').trim();
+    const empty = !text || text === '0' || text === '—';
+    node.textContent = text;
+    node.hidden = empty;
+  }
+
+  function syncBadges() {
+    badge($('#rxTabSourceCount'), $('#rxSourceTotal')?.textContent);
+    badge($('#rxTabLibraryCount'), $('#rxSavedCount')?.textContent);
+    const drugs = document.querySelectorAll('#rxSelectedDrugs .rx-order-card').length;
+    badge($('#rxTabComposeState'), drugs ? String(drugs) : '');
+  }
+
+  function watch() {
+    const observer = new MutationObserver(syncBadges);
+    for (const selector of ['#rxSourceTotal', '#rxSavedCount', '#rxSelectedDrugs']) {
+      const node = $(selector);
+      if (node) observer.observe(node, { childList:true, subtree:true, characterData:true });
+    }
+    syncBadges();
+  }
+
+  function start() {
+    if (!bind()) return;
+    const initial = byHash(location.hash)?.id || readStored() || 'source';
+    show(initial);
+    watch();
+    window.DRxRecetatTabs = Object.freeze({
+      show:(id, options) => show(id, options),
+      current:() => current,
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once:true });
+  else start();
 })();
