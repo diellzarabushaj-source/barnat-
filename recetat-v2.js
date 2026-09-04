@@ -6999,12 +6999,24 @@
     </div>`;
   }
 
+  /* The step marker already says whether a row is a drug or a plain step
+     (filled vs outlined). Sequence is the second thing the eye needs, so the
+     marker also carries the step's position as a depth: 1 is the accent, and
+     each following step sits a shade deeper. Four stops cycle, because a
+     nine-step scheme should still read as a rhythm rather than a rainbow —
+     adjacent steps always differ, which is what the reader is scanning for.
+     The number itself stays the authority; the tint is only a cue. */
+  function stepTintIndex(smartLabel) {
+    const n = Number(String(smartLabel || '').match(/^\d+/)?.[0] || 0);
+    return n > 0 ? ((n - 1) % 4) + 1 : 1;
+  }
+
   function renderItem(item, block) {
     const meta = itemMeta(item);
     const active = item?.kind === 'active-substance';
     const query = [text(item?.genericName || item?.title), text(item?.strength)].filter(Boolean).join(' ');
     const typeLabel = active ? 'BAR' : item?.kind === 'oxygen' ? 'O₂' : 'HAP';
-    return `<article class="rx-source-item${active ? ' is-active-substance' : ''}${block?.relation === 'conditional' ? ' is-conditional' : ''}">
+    return `<article class="rx-source-item${active ? ' is-active-substance' : ''}${block?.relation === 'conditional' ? ' is-conditional' : ''}" data-rx-step="${stepTintIndex(item?.smartLabel)}">
       <div class="rx-source-step-rail" aria-label="Hapi ${esc(item.smartLabel)}">
         <span class="rx-source-item-number">${esc(item.smartLabel)}</span>
         <small>${esc(typeLabel)}</small>

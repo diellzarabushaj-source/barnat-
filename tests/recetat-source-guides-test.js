@@ -18,7 +18,10 @@ assert.match(html, /id="rxSourceLessonSelect"/);
 assert.match(html, /id="rxSourceGuideList"/);
 assert.match(html, /id="rxSourceGuideNav"/);
 assert.match(html, /id="rxSourceSearch"/);
-assert.match(html, /DHE[\s\S]*OSE[\s\S]*NËSE/);
+// The static legend that spelled out this vocabulary is gone. It lives on the
+// connectors between steps, which is where the reader actually meets it.
+assert.match(js, /RELATION_LABELS = Object\.freeze\(\{ and:'DHE', or:'OSE', plus:'PLUS', conditional:'NËSE' \}\)/);
+assert.doesNotMatch(html, /rx-source-legend/, 'the notation legend strip stays removed');
 assert.match(html, /recetat-v2\.css\?v=20/);
 assert.match(html, /recetat-v2\.js\?v=20/);
 
