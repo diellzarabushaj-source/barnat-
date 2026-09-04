@@ -49,8 +49,7 @@ body{
   font-size:var(--fs-body);
   font-weight:var(--fw-regular);
   line-height:var(--lh-body);
-  letter-spacing:var(--ls-body);
-  font-feature-settings:"cv01" 1,"cv03" 1,"cv04" 1,"ss03" 1;
+  font-feature-settings:"ss01";
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
   text-rendering:optimizeLegibility;
@@ -1747,7 +1746,6 @@ body{background:var(--rx-bg);color:var(--rx-ink)}
 .rx-page-heading{margin-bottom:14px;padding-top:2px}
 .rx-page-heading>div{max-width:880px}
 .rx-page-heading .eyebrow{margin-bottom:5px;color:#5f4cf5;font-size:12px;font-weight:700;letter-spacing:.09em}
-.rx-page-heading h1{font-size:24px;font-weight:500;letter-spacing:-.035em}
 .rx-page-heading .page-subtitle{max-width:820px;margin-top:6px;color:#667085;font-size:13px;line-height:1.55}
 .rx-new-top{min-height:40px;padding:0 14px;border-radius:9px;font-weight:600;box-shadow:0 1px 2px rgba(16,24,40,.05),0 5px 14px rgba(83,58,253,.12)}
 
@@ -1888,7 +1886,6 @@ body{background:var(--rx-bg);color:var(--rx-ink)}
 }
 @media(max-width:760px){
   .rx-page-heading{align-items:flex-start}
-  .rx-page-heading h1{font-size:24px}
   .rx-page-heading .page-subtitle{font-size:12px}
   .rx-new-top{width:100%;justify-content:center}
   .rx-metrics{grid-template-columns:1fr 1fr;border-radius:13px}
@@ -2242,8 +2239,7 @@ body{
   font-size:14px;
   font-weight:400;
   line-height:1.5;
-  letter-spacing:-.005em;
-  font-feature-settings:"ss01","cv02","cv03","cv04","tnum";
+  font-feature-settings:"ss01";
 }
 button,input,select,textarea{font-family:inherit}
 button{font-weight:600}
@@ -2256,20 +2252,9 @@ button{font-weight:600}
   font-weight:600;
   letter-spacing:.055em;
 }
-.rx-page-heading h1{
-  color:#0a2540;
-  font-size:32px;
-  font-weight:600;
-  line-height:1.12;
-  letter-spacing:-.035em;
-}
 .rx-page-heading .page-subtitle{
   max-width:760px;
   margin-top:7px;
-  color:#697386;
-  font-size:14px;
-  font-weight:400;
-  line-height:1.55;
 }
 .rx-new-top{
   min-height:42px;
@@ -2532,7 +2517,6 @@ button{font-weight:600}
   body{font-size:14px}
   .rx-page{padding-bottom:32px}
   .rx-page-heading{gap:14px;margin-bottom:16px}
-  .rx-page-heading h1{font-size:28px}
   .rx-page-heading .page-subtitle{font-size:14px}
   .rx-new-top{min-height:44px;font-size:14px}
   .rx-metrics{grid-template-columns:1fr 1fr}
@@ -2558,7 +2542,6 @@ button{font-weight:600}
   .rx-drug-result-main small{font-size:12px}
 }
 @media(max-width:430px){
-  .rx-page-heading h1{font-size:24px}
   .rx-page-heading .eyebrow{font-size:12px}
   .rx-metrics span{font-size:12px}
   .rx-metrics small{font-size:12px}
@@ -2685,16 +2668,14 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"]{
   --rx15-shadow-float:0 18px 50px rgba(10,37,64,.14),0 3px 12px rgba(10,37,64,.055);
   --rx15-focus:0 0 0 3px rgba(99,91,255,.14);
 }
+/* Body type belongs to the shared shell (300 / 1.45 / normal / "ss01"), the
+   same as Barnat and Dozologjia. This block used to restate it at 400 / 1.5 /
+   -.004em, which is why Recetat read heavier and tighter than every other
+   page; only the colour stays. The gradient it also carried is dead — the V19
+   rule below paints a flat canvas over it — and the design system rejects
+   gradients outright, so it goes with the rest. */
 html.drx-unified-sidebar[data-drx-app="recetat-v2"] body{
-  background:
-    radial-gradient(circle at 72% -10%,rgba(99,91,255,.065),transparent 32rem),
-    linear-gradient(180deg,#f8faff 0,#f6f9fc 220px,#fff 620px)!important;
   color:var(--rx15-ink)!important;
-  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif!important;
-  font-size:14px!important;
-  font-weight:400!important;
-  line-height:1.5!important;
-  letter-spacing:-.004em!important;
 }
 html.drx-unified-sidebar[data-drx-app="recetat-v2"] .page-wrap.rx-page{
   width:min(100%,1580px)!important;
@@ -2717,22 +2698,9 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-page-heading .eyebrow{
   line-height:1.25!important;
   letter-spacing:.075em!important;
 }
-html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-page-heading h1{
-  margin:0!important;
-  color:var(--rx15-ink)!important;
-  font-size:32px!important;
-  font-weight:600!important;
-  line-height:1.08!important;
-  letter-spacing:-.04em!important;
-}
 html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-page-heading .page-subtitle{
   max-width:760px!important;
   margin:8px 0 0!important;
-  color:var(--rx15-muted)!important;
-  font-size:14px!important;
-  font-weight:400!important;
-  line-height:1.58!important;
-  letter-spacing:0!important;
 }
 html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-new-top{
   min-height:42px!important;
@@ -3568,13 +3536,6 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] button:not(:disabled){cursor
     display:grid!important;
     gap:14px!important;
   }
-  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-page-heading h1{
-    font-size:24px!important;
-    letter-spacing:-.03em!important;
-  }
-  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-page-heading .page-subtitle{
-    font-size:13px!important;
-  }
   html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-new-top{
     width:100%!important;
     min-height:44px!important;
@@ -4214,10 +4175,9 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-heading{
 html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-kicker{
   margin-bottom:7px!important;
 }
-html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-kicker>span:first-child{
-  color:#635bff!important;
-  font-weight:700!important;
-}
+/* The chapter/lesson line is a locator, not a control. Accent is rationed for
+   interactive state here, so it takes the muted grey the V20 rule below sets;
+   the accent still means something on the active-substance label. */
 html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-import-badge{
   border-color:#e3e0ff!important;
   background:#f7f6ff!important;
@@ -4594,7 +4554,10 @@ html[data-ui-revision="recetat-v20"].drx-unified-sidebar[data-drx-app="recetat-v
   --rx19-subtle:#98a2b3;
   --rx19-line:var(--drx-shell-line,#e4e7ec);
   --rx19-line-soft:#eef1f5;
-  --rx19-page:#f6f9fc;
+  /* The shell's canvas is white on every other page (Barnat, Dozologjia,
+     Urgjencat); Recetat was the only tinted one. Cards carry their own
+     hairline, so they still read as surfaces on it. */
+  --rx19-page:#fff;
   --rx19-card:#fff;
   --rx19-soft:#f8fafc;
   --rx19-success:#067647;
@@ -4630,20 +4593,9 @@ html[data-ui-revision="recetat-v20"].drx-unified-sidebar[data-drx-app="recetat-v
   font-weight:700!important;
   letter-spacing:.085em!important;
 }
-html[data-ui-revision="recetat-v20"].drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-page-heading h1{
-  margin:0!important;
-  color:#0a2540!important;
-  font-size:32px!important;
-  font-weight:600!important;
-  letter-spacing:-.045em!important;
-  line-height:1.05!important;
-}
 html[data-ui-revision="recetat-v20"].drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-page-heading .page-subtitle{
   max-width:760px!important;
   margin:8px 0 0!important;
-  color:var(--rx19-muted)!important;
-  font-size:13px!important;
-  line-height:1.58!important;
 }
 html[data-ui-revision="recetat-v20"].drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-new-top{
   min-height:40px!important;
@@ -5644,8 +5596,6 @@ html[data-ui-revision="recetat-v20"] :is(.rx-source-nav-item,.rx-source-use,.rx-
 @media(max-width:760px){
   html[data-ui-revision="recetat-v20"] .rx-page{padding:18px 12px 48px!important}
   html[data-ui-revision="recetat-v20"] .rx-page-heading{align-items:flex-start!important;gap:14px!important}
-  html[data-ui-revision="recetat-v20"] .rx-page-heading h1{font-size:28px!important}
-  html[data-ui-revision="recetat-v20"] .rx-page-heading .page-subtitle{font-size:13px!important}
   html[data-ui-revision="recetat-v20"] .rx-new-top{min-width:40px!important;padding:0 11px!important}
   html[data-ui-revision="recetat-v20"] .rx-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}
   html[data-ui-revision="recetat-v20"] .rx-metrics article:nth-child(2){border-right:0!important}
@@ -6020,15 +5970,6 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-folder-item{
    the "Recetë e re" button; Stripe keeps running text near 65-75 characters. */
 html[data-ui-revision="recetat-v20"] .rx-page-heading .page-subtitle{
   max-width:72ch!important;
-  font-size:var(--fs-body)!important;
-  line-height:var(--lh-body)!important;
-  color:var(--muted)!important;
-}
-html[data-ui-revision="recetat-v20"] .rx-page-heading h1{
-  font-size:var(--fs-display)!important;
-  font-weight:var(--fw-semibold)!important;
-  letter-spacing:var(--ls-display)!important;
-  line-height:var(--lh-tight)!important;
 }
 html[data-ui-revision="recetat-v20"] .rx-page-heading .eyebrow,
 html[data-ui-revision="recetat-v20"] .rx-library-head .eyebrow{
@@ -6103,20 +6044,8 @@ html[data-ui-revision="recetat-v20"] .rx-source-detail-toolbar strong{
    which outranks the `body` rule at the top of this file. The Inter tuning has
    to be restated at the page-scoped selector to take effect. Same for the lead
    paragraph, which the shell pins to its own subtitle token. */
-html.drx-unified-sidebar[data-drx-app="recetat-v2"] body{
-  font-family:Inter,"SF Pro Text",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif!important;
-  font-size:var(--fs-body)!important;
-  font-weight:var(--fw-regular)!important;
-  line-height:var(--lh-body)!important;
-  letter-spacing:var(--ls-body)!important;
-  font-feature-settings:"cv01" 1,"cv03" 1,"cv04" 1,"ss03" 1!important;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-}
 html[data-ui-revision="recetat-v20"].drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-page-heading .page-subtitle{
   max-width:72ch!important;
-  font-size:var(--fs-body)!important;
-  line-height:var(--lh-body)!important;
 }
 
 /* Figures line up in columns: counters, metrics and the source total. */
@@ -6444,4 +6373,67 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-context-kicker{
   color:var(--muted,#697386)!important;
   font-size:var(--fs-caption,12px)!important;
   font-weight:var(--fw-medium,500)!important;
+}
+
+
+/* ==========================================================================
+   Recetat V24 — one voice with Barnat and Dozologjia
+
+   Recetat had drifted from the shell: body at 400/1.5/-.004em against the
+   house 300/1.45/normal, a page title at 600/-.045em against 32/300/-.64px,
+   Inter's cv01/cv03/cv04/ss03 set against "ss01", and the only tinted canvas
+   in the app. Those overrides are gone above; the shell owns them again.
+
+   What is left is the scheme reader, where four letter-spaced all-caps labels
+   stacked inside one card. The design system reserves that treatment for short
+   sidebar group labels, and the strings are already sentence case in the
+   source — only the CSS was shouting them.
+   ========================================================================== */
+
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-kicker,
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-kind,
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-flow-title span{
+  text-transform:none!important;
+  letter-spacing:0!important;
+  font-weight:var(--fw-medium,500)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-kicker,
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-kind{
+  font-size:var(--fs-caption,12px)!important;
+  color:var(--muted,#697386)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-flow-title span{
+  font-size:var(--fs-small,13px)!important;
+  font-weight:var(--fw-semibold,600)!important;
+  color:var(--ink,#0a2540)!important;
+}
+/* The 2–3 character type marker in the step rail stays uppercase: it is a
+   glyph, not a phrase, and it is what separates a drug step from a plain one
+   at a glance. */
+
+/* The draft handoff carried a bare arrow beside its label. It gets its own
+   circle, flush with the button's right padding, and leans into the direction
+   of travel on hover. */
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-use{
+  gap:10px!important;
+  padding-right:6px!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-use>b{
+  display:inline-grid!important;
+  place-items:center!important;
+  width:26px!important;
+  height:26px!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.16)!important;
+  font-size:13px!important;
+  line-height:1!important;
+  transition:transform .22s cubic-bezier(.32,.72,0,1),background .22s cubic-bezier(.32,.72,0,1)!important;
+}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-use:hover>b{
+  background:rgba(255,255,255,.26)!important;
+  transform:translateX(2px)!important;
+}
+@media(prefers-reduced-motion:reduce){
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-use>b{transition:none!important}
+  html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-use:hover>b{transform:none!important}
 }
