@@ -330,7 +330,31 @@
   function preferredChapterItem(key) {
     const chapter = state.items.find(item => isChapter(item) && chapterKey(item) === key) || null;
     const lessons = chapterLessons(key);
-    return lessons.length === 1 ? lessons[0] : chapter;
+    return lessons[0] || chapter;
+  }
+
+  function chapterCatalog() {
+    const byKey = new Map();
+    state.items.forEach(item => {
+      const key = chapterKey(item);
+      if (!key) return;
+      const existing = byKey.get(key);
+      if (isChapter(item)) {
+        byKey.set(key, {
+          key,
+          title:clean(item.title).replace(/^\d+\s*[—-]\s*/, ''),
+          item,
+        });
+        return;
+      }
+      const title = clean(item.chapterTitle);
+      if (!existing) {
+        byKey.set(key, { key, title:title || `Kapitulli ${Number(key)}`, item });
+      } else if ((!existing.title || /^Kapitulli \d+$/.test(existing.title)) && title) {
+        existing.title = title;
+      }
+    });
+    return [...byKey.values()].sort((a,b) => Number(a.key) - Number(b.key));
   }
 
   function topicOrder(item) {
@@ -390,7 +414,7 @@
   function applyFilterState() {
     const term = normalize(state.term);
     const candidates = term && Array.isArray(state.backendResults) ? state.backendResults : state.items;
-    const source = term ? candidates.filter(item => !isChapter(item)) : candidates;
+    const source = candidates.filter(item => !isChapter(item));
     state.filtered = source.filter(item => {
       const chapter = chapterKey(item);
       const localTermMatch = !term || Array.isArray(state.backendResults) || itemSearchText(item).includes(term);
@@ -1874,19 +1898,11 @@
     }
 
     const term = clean(state.term);
-    const chapter = state.items.find(item => isChapter(item) && chapterKey(item) === state.category);
     let options = '';
 
-    if (!term && chapter) {
-      const lessons = state.items
-        .filter(item => !isChapter(item) && chapterKey(item) === state.category)
-        .sort((a,b) => topicOrder(a) - topicOrder(b));
-      if (lessons.length === 1) {
-        options = lessons.map(item => `<option value="${esc(item._id)}">${esc(codedTitle(item))}</option>`).join('');
-      } else {
-        options = `<option value="${esc(chapter._id)}">Përmbledhja e kapitullit · ${esc(codedTitle(chapter))}</option>`
-          + lessons.map(item => `<option value="${esc(item._id)}">${esc(codedTitle(item))}</option>`).join('');
-      }
+    if (!term && state.category) {
+      const lessons = chapterLessons(state.category);
+      options = lessons.map(item => `<option value="${esc(item._id)}">${esc(codedTitle(item))}</option>`).join('');
     } else {
       const grouped = new Map();
       state.filtered.forEach(item => {
@@ -1894,13 +1910,11 @@
         if (!grouped.has(key)) grouped.set(key, []);
         grouped.get(key).push(item);
       });
+      const catalog = new Map(chapterCatalog().map(entry => [entry.key, entry]));
       options = Array.from(grouped.entries()).map(([key, items]) => {
-        const chapterItem = state.items.find(item => isChapter(item) && chapterKey(item) === key);
-        const label = chapterItem ? codedTitle(chapterItem) : `Kapitulli ${key}`;
-        return `<optgroup label="${esc(label)}">${items.map(item => {
-          const prefix = isChapter(item) ? 'Përmbledhja · ' : '';
-          return `<option value="${esc(item._id)}">${prefix}${esc(codedTitle(item))}</option>`;
-        }).join('')}</optgroup>`;
+        const meta = catalog.get(key);
+        const label = meta ? `Kapitulli ${Number(key)} — ${meta.title}` : `Kapitulli ${key}`;
+        return `<optgroup label="${esc(label)}">${items.map(item => `<option value="${esc(item._id)}">${esc(codedTitle(item))}</option>`).join('')}</optgroup>`;
       }).join('');
     }
 
@@ -1919,8 +1933,8 @@
     const previous = $('#previousTopicButton');
     const next = $('#nextTopicButton');
     const term = clean(state.term);
-    const chapterCount = state.items.filter(isChapter).length;
-    const lessonCount = state.items.length - chapterCount;
+    const chapterCount = chapterCatalog().length;
+    const lessonCount = state.items.filter(item => !isChapter(item)).length;
 
     searchField?.classList.toggle('has-value', Boolean(term));
     searchField?.classList.toggle('is-searching', state.searching);
@@ -1929,9 +1943,9 @@
       if (state.searching) result.textContent = `Duke kërkuar në gjithë librin për “${term}”…`;
       else if (term) result.textContent = `${state.filtered.length} rezultate në gjithë librin për “${term}”`;
       else if (state.category) {
-        const chapter = state.items.find(item => isChapter(item) && chapterKey(item) === state.category);
-        const lessonTotal = state.items.filter(item => !isChapter(item) && chapterKey(item) === state.category).length;
-        result.textContent = chapter ? `${lessonTotal} mësime në ${chapter.question || chapter.title}` : `${state.filtered.length} rezultate`;
+        const meta = chapterCatalog().find(entry => entry.key === state.category);
+        const lessonTotal = chapterLessons(state.category).length;
+        result.textContent = meta ? `${lessonTotal} mësime në Kapitulli ${Number(state.category)} — ${meta.title}` : `${state.filtered.length} rezultate`;
       } else result.textContent = `${chapterCount} kapituj · ${lessonCount} mësime · burimi i publikuar`;
     }
 
@@ -2055,9 +2069,9 @@
     state.term = '';
     state.backendResults = null;
     state.searching = false;
-    const firstChapter = state.items.find(isChapter) || null;
+    const firstChapter = chapterCatalog()[0] || null;
     state.category = '';
-    state.selectedId = firstChapter?._id || state.items[0]?._id || '';
+    state.selectedId = firstChapter ? preferredChapterItem(firstChapter.key)?._id || '' : state.items.find(item => !isChapter(item))?._id || '';
     const input = $('#learningSearch');
     const category = $('#learningCategory');
     if (input) input.value = '';
@@ -2078,19 +2092,15 @@
       state.items = Array.isArray(indexPayload.items) ? indexPayload.items : [];
       state.items.sort((a, b) => topicOrder(a) - topicOrder(b) || clean(a.title).localeCompare(clean(b.title), 'sq'));
 
-      const chapters = state.items.filter(isChapter);
+      const chapters = chapterCatalog();
       const category = $('#learningCategory');
       if (category) {
         category.innerHTML = '<option value="">Të gjithë kapitujt</option>'
-          + chapters.map(chapter => {
-            const number = chapterKey(chapter);
-            const title = clean(chapter.title).replace(/^\d+\s*[—-]\s*/, '');
-            return `<option value="${number}">Kapitulli ${Number(number)} — ${esc(title)}</option>`;
-          }).join('');
+          + chapters.map(chapter => `<option value="${chapter.key}">Kapitulli ${Number(chapter.key)} — ${esc(chapter.title)}</option>`).join('');
       }
 
-      state.category = chapters[0] ? chapterKey(chapters[0]) : '';
-      state.selectedId = preferredChapterItem(state.category)?._id || chapters[0]?._id || state.items[0]?._id || '';
+      state.category = chapters[0]?.key || '';
+      state.selectedId = preferredChapterItem(state.category)?._id || state.items.find(item => !isChapter(item))?._id || '';
       restoreUrl();
       if (category) category.value = state.category;
       applyFilterState();

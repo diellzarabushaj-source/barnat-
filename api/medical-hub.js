@@ -94,7 +94,7 @@ const MODERN_SEARCH_INDEX_QUERY = `*[
 
 const INDEX_QUERY = `*[_type == "learningTopic" && reviewStatus in ["review","verified"] && contentKind != "section" && (defined(summary) || count(steps) > 0 || count(relatedTopics) > 0)] | order(chapterNumber asc, lessonNumber asc) {
   _id, question, title, "slug": slug.current, keywords, icdCodes, procedureCodes, summary,
-  contentKind, chapterNumber, lessonNumber, reviewStatus, reviewedBy, lastReviewedAt, version, sourceRxTitle,
+  contentKind, chapterNumber, lessonNumber, chapterTitle, reviewStatus, reviewedBy, lastReviewedAt, version, sourceRxTitle,
   "stepCount": count(steps), "prescriptionCount": count(prescriptions),
   "protocolCount": count(relatedProtocols), "childCount": count(relatedTopics)
 }`;
