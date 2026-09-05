@@ -429,20 +429,6 @@ a{color:inherit}
   line-height:1.55;
 }
 
-.hub-count{
-  display:inline-flex;
-  align-items:center;
-  min-height:30px;
-  padding:5px 10px;
-  border:1px solid var(--hub-line);
-  border-radius:999px;
-  background:#fff;
-  color:var(--hub-muted);
-  font-size:11px;
-  font-weight:400;
-  white-space:nowrap;
-}
-
 /* Navigation ---------------------------------------------------------------- */
 
 .hub-command{
@@ -497,7 +483,7 @@ a{color:inherit}
 }
 
 .hub-search input::placeholder{
-  color:#98a2b3;
+  color:#5a6675;
 }
 
 .hub-search input:focus,
@@ -515,7 +501,7 @@ a{color:inherit}
   border:1px solid #e1e6ec;
   border-radius:5px;
   background:#f8fafc;
-  color:#98a2b3;
+  color:#5a6675;
   font:500 9px/1.3 inherit;
 }
 
@@ -564,7 +550,7 @@ a{color:inherit}
 
 .hub-field>span{
   padding-left:2px;
-  color:#7a8796;
+  color:#5a6675;
   font-size:10px;
   font-weight:450;
   line-height:1;
@@ -589,7 +575,7 @@ a{color:inherit}
 .hub-result-status{
   min-width:0;
   overflow:hidden;
-  color:#7a8796;
+  color:#5a6675;
   font-size:10.5px;
   line-height:1.35;
   text-overflow:ellipsis;
@@ -620,7 +606,7 @@ a{color:inherit}
 
 .hub-topic-nav>button:hover:not(:disabled){background:#f8fafc;border-color:#c9d3dd}
 .hub-topic-nav>button:disabled{opacity:.38;cursor:not-allowed}
-#learningTopicPosition{min-width:44px;text-align:center;color:#8a97a6;font-size:10px}
+#learningTopicPosition{min-width:44px;text-align:center;color:#5a6675;font-size:10px}
 
 /* Clinical document --------------------------------------------------------- */
 
@@ -652,7 +638,7 @@ a{color:inherit}
 
 .ck-kicker{
   margin:0 0 6px;
-  color:#7a8796;
+  color:#5a6675;
   font-size:10.5px;
   font-weight:450;
   line-height:1.4;
@@ -684,7 +670,7 @@ a{color:inherit}
   padding:4px 9px;
   border:1px solid #e0e6ec;
   background:#fff;
-  color:#687a8e;
+  color:#5a6675;
   font-size:10px;
   font-weight:400;
 }
@@ -742,7 +728,7 @@ a{color:inherit}
 }
 
 .ck-quick-summary>span{
-  color:#776fe2;
+  color:#5b52f7;
   font-size:10px;
   font-weight:600;
   line-height:1.5;
@@ -783,7 +769,7 @@ a{color:inherit}
 }
 
 .ck-section-index-head>small{
-  color:#98a2b3;
+  color:#5a6675;
   font-size:9.5px;
 }
 
@@ -848,7 +834,7 @@ a{color:inherit}
   padding:3px 7px;
   border-radius:999px;
   background:#f2f4f7;
-  color:#7a8796;
+  color:#5a6675;
   font-size:9px;
   font-weight:600;
   letter-spacing:.03em;
@@ -899,7 +885,7 @@ a{color:inherit}
   place-items:center;
   border-radius:6px;
   background:#f3f5f8;
-  color:#7b8999;
+  color:#5a6675;
   font-size:9.5px;
   font-weight:600;
 }
@@ -947,7 +933,7 @@ a{color:inherit}
   padding-top:5px;
   border-top:1px dashed #e7ebef;
 }
-.ck-step-why>span{color:#8a97a6;font-size:9.5px;font-weight:600}
+.ck-step-why>span{color:#5a6675;font-size:9.5px;font-weight:600}
 .ck-step-why>p{margin:0;color:#647588;font-size:12px;line-height:1.55}
 .ck-step-note{color:#748395;font-size:11px;line-height:1.55}
 
@@ -1033,7 +1019,7 @@ a{color:inherit}
   place-items:center;
   border-radius:6px;
   background:#f3f5f8;
-  color:#7b8999;
+  color:#5a6675;
   font-size:9.5px;
   font-weight:600;
 }
@@ -1159,7 +1145,7 @@ a{color:inherit}
 
 .ck-chapter-lesson-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
 .ck-chapter-lesson-meta .ck-chip{min-height:20px;padding:2px 6px;font-size:8.5px}
-.ck-mini-status{min-height:20px;padding:2px 6px;border:1px solid #e3e7ec;background:#fff;color:#788697;font-size:8.5px}
+.ck-mini-status{min-height:20px;padding:2px 6px;border:1px solid #e3e7ec;background:#fff;color:#5a6675;font-size:8.5px}
 .ck-chapter-lesson-arrow{align-self:center;color:#a0aab6;font-size:13px}
 
 .ck-chapter-focus-grid{display:grid;gap:0;border-top:1px solid #edf0f4}
@@ -1465,7 +1451,7 @@ a{color:inherit}
 .ck-source-card p{margin:0;color:#65778a;font-size:10.5px;line-height:1.5}
 .ck-source-card>a{width:max-content;color:#5d53da;font-size:9.5px;text-decoration:none}
 .ck-source-card>a:hover{text-decoration:underline}
-.ck-source-meta{padding:0 0 14px;color:#98a2b3;font-size:9.5px}
+.ck-source-meta{padding:0 0 14px;color:#5a6675;font-size:9.5px}
 
 .ck-section-note{margin:0 0 10px;color:#718194;font-size:10.5px;line-height:1.5}
 
@@ -1492,7 +1478,7 @@ a{color:inherit}
 }
 .ck-document-page-next{text-align:right}
 .ck-document-page:hover{border-color:#cdd6df;background:#fafbfc}
-.ck-document-page>span{color:#8b98a6;font-size:9.5px}
+.ck-document-page>span{color:#5a6675;font-size:9.5px}
 .ck-document-page>strong{color:#42566b;font-size:11.5px;font-weight:500;line-height:1.4}
 
 .ck-empty{
@@ -1544,7 +1530,6 @@ a{color:inherit}
   .hub-page .page-heading{gap:14px;margin-bottom:18px}
   .hub-page .page-heading h1{font-size:28px}
   .hub-page .page-subtitle{font-size:13px}
-  .hub-count{display:none}
 
   .hub-command{
     position:static;
@@ -1779,7 +1764,7 @@ html[data-drx-app="medical-hub-v2"] .hub-page.page-wrap{
 }
 .hub-book-card>span,
 .hub-rail-head span{
-  color:#716aca;
+  color:#5b52f7;
   font-size:10px;
   font-weight:700;
   letter-spacing:.075em;
@@ -1858,7 +1843,7 @@ html[data-drx-app="medical-hub-v2"] .hub-page.page-wrap{
   border:1px solid #dde3eb;
   border-radius:7px;
   background:#f8fafc;
-  color:#687b8e;
+  color:#5a6675;
   font:650 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 .hub-rail-row.is-active .hub-rail-number{border-color:#d4d0ff;background:#fff;color:#5146d8}
@@ -1876,25 +1861,25 @@ html[data-drx-app="medical-hub-v2"] .hub-page.page-wrap{
 }
 .hub-rail-copy small{
   overflow:hidden;
-  color:#65798c;
+  color:#5a6675;
   font-size:10px;
   line-height:1.45;
   text-overflow:ellipsis;
   white-space:nowrap;
 }
-.hub-rail-action{align-self:center;color:#746dea;font-size:9px;font-weight:700;text-transform:uppercase}
+.hub-rail-action{align-self:center;color:#5b52f7;font-size:9px;font-weight:700;text-transform:uppercase}
 .hub-mini-review{width:16px;height:26px;display:grid;place-items:center;align-self:start}
 .hub-mini-review i{width:7px;height:7px;border-radius:50%;background:#d99a16}
 .hub-mini-review.is-verified i{background:#18a67d}
 .hub-mini-review.is-draft i{background:#8a97a5}
-.hub-rail-empty{padding:18px 12px;color:#65798c;font-size:12px;line-height:1.55}
+.hub-rail-empty{padding:18px 12px;color:#5a6675;font-size:12px;line-height:1.55}
 
 .hub-reader-pane{min-width:0}
 .hub-page .hub-document{min-height:680px;border-radius:14px;box-shadow:0 3px 14px rgba(15,35,58,.045)}
 .hub-page .ck-document-inner{width:min(100%,900px);padding:0 clamp(24px,4vw,58px) 56px}
 .hub-page .ck-detail-head{padding:34px 0 26px}
 .hub-page .ck-detail-head h2{max-width:760px;font-size:32px;font-weight:430;line-height:1.2;letter-spacing:-.72px}
-.hub-page .ck-kicker{margin-bottom:8px;color:#65798c;font-size:11.5px;font-weight:600}
+.hub-page .ck-kicker{margin-bottom:8px;color:#5a6675;font-size:11.5px;font-weight:600}
 .hub-page .ck-meta{gap:7px;margin-top:14px}
 .hub-page .ck-chip{min-height:28px;padding:5px 9px;font-size:10.5px}
 .hub-page .ck-quick-summary{grid-template-columns:120px minmax(0,1fr);gap:22px;margin-top:22px;padding:17px 18px}
@@ -1913,12 +1898,12 @@ html[data-drx-app="medical-hub-v2"] .hub-page.page-wrap{
   background:#fbfcfe;
 }
 .ck-source-publication,.ck-source-verification{display:grid;gap:3px}
-.ck-source-publication>span{color:#746dea;font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+.ck-source-publication>span{color:#5b52f7;font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
 .ck-source-publication>strong{color:#263d54;font-size:12.5px;font-weight:680}
-.ck-source-publication>small{color:#65798c;font-size:10.5px;line-height:1.4}
+.ck-source-publication>small{color:#5a6675;font-size:10.5px;line-height:1.4}
 .ck-source-verification{justify-items:end}
 .ck-source-verification>a{color:#5146d8;font-size:10.5px;font-weight:650;text-decoration:none}
-.ck-source-page,.ck-source-date{color:#65798c;font-size:10px}
+.ck-source-page,.ck-source-date{color:#5a6675;font-size:10px}
 .ck-review-warning{
   margin:0 0 22px;
   padding:14px 16px;
@@ -1976,7 +1961,7 @@ html[data-drx-app="medical-hub-v2"] .hub-page.page-wrap{
   font-size:12px;
   font-weight:620;
 }
-.ck-master-outline>summary strong{color:#716aca;font-size:10.5px}
+.ck-master-outline>summary strong{color:#5b52f7;font-size:10.5px}
 .ck-master-section-index{
   display:grid;
   grid-template-columns:1fr;
@@ -2001,7 +1986,7 @@ html[data-drx-app="medical-hub-v2"] .hub-page.page-wrap{
   cursor:pointer;
 }
 .ck-master-section-index button:hover{background:#f1f3f8}
-.ck-master-section-index button span{color:#716aca;font:650 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+.ck-master-section-index button span{color:#5b52f7;font:650 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
 .ck-master-section-index button strong{font-size:11.5px;font-weight:560;line-height:1.45}
 
 .ck-modern-section-heading{display:grid;grid-template-columns:38px minmax(0,1fr);gap:13px;align-items:start}
@@ -2016,7 +2001,7 @@ html[data-drx-app="medical-hub-v2"] .hub-page.page-wrap{
   color:#5146d8;
   font:700 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
 }
-.ck-modern-section-heading small{color:#716aca;font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+.ck-modern-section-heading small{color:#5b52f7;font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
 .ck-modern-section-heading h3{margin:3px 0 0}
 .ck-modern-section-summary{margin:15px 0 0 51px;color:#52667a;font-size:13.5px;line-height:1.6}
 .ck-modern-content{display:grid;gap:15px;margin:20px 0 0 51px;max-width:74ch}
@@ -2034,7 +2019,7 @@ html[data-drx-app="medical-hub-v2"] .hub-page.page-wrap{
 .ck-clinical-callout>div{margin-top:6px}
 .ck-prescription-context{display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:#52667a;font-size:11px}
 .ck-prescription-context strong{color:#715b13}
-.ck-source-locator{display:flex;flex-wrap:wrap;align-items:baseline;gap:7px;margin-top:13px;padding-top:11px;border-top:1px dashed #dbe1e8;color:#65798c;font-size:10.5px}
+.ck-source-locator{display:flex;flex-wrap:wrap;align-items:baseline;gap:7px;margin-top:13px;padding-top:11px;border-top:1px dashed #dbe1e8;color:#5a6675;font-size:10.5px}
 .ck-source-locator>span{font-weight:700;text-transform:uppercase;letter-spacing:.05em}
 .ck-source-locator>strong{color:#435b71;font-weight:620}
 .ck-source-locator>small{flex-basis:100%;line-height:1.45}
@@ -2043,8 +2028,13 @@ html[data-drx-app="medical-hub-v2"] .hub-page.page-wrap{
 .ck-medical-table th,.ck-medical-table td{padding:10px 12px;border-right:1px solid #e6ebf0;border-bottom:1px solid #e6ebf0;text-align:left;vertical-align:top}
 .ck-medical-table th{background:#f7f9fc;color:#344b61;font-weight:650}
 
+/* SC 1.4.11 asks the focus indicator for 3:1 against the ground it sits on.
+   The violet at 34% gave 1.60:1 on the white reader, 1.55:1 on the tinted
+   active rail row and 1.47:1 on the sidebar — a ring nobody could find. The
+   same violet at full strength gives 4.70, 4.14 and 3.28. Two solid pixels
+   carry further than three faint ones, so the ring got thinner and louder. */
 html[data-drx-app="medical-hub-v2"] :where(button,a,input,select,summary,[tabindex]):focus-visible{
-  outline:3px solid rgba(99,91,255,.34);
+  outline:2px solid #635bff;
   outline-offset:2px;
 }
 
@@ -2064,7 +2054,7 @@ html[data-drx-app="medical-hub-v2"] :where(button,a,input,select,summary,[tabind
     text-align:left;
     cursor:pointer;
   }
-  .hub-navigation-toggle>span{color:#716aca;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .hub-navigation-toggle>span{color:#5b52f7;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
   .hub-navigation-toggle>strong{overflow:hidden;font-size:11px;font-weight:620;text-overflow:ellipsis;white-space:nowrap}
   .hub-page .hub-workspace{grid-template-columns:minmax(0,1fr)}
   .hub-navigation-backdrop{
@@ -2104,7 +2094,7 @@ html[data-drx-app="medical-hub-v2"] :where(button,a,input,select,summary,[tabind
     padding:0 2px;
   }
   .hub-drawer-head>div{display:grid;gap:2px}
-  .hub-drawer-head span{color:#716aca;font-size:9.5px;font-weight:700;text-transform:uppercase}
+  .hub-drawer-head span{color:#5b52f7;font-size:9.5px;font-weight:700;text-transform:uppercase}
   .hub-drawer-head strong{color:#263d54;font-size:14px;font-weight:680}
   .hub-drawer-head button{min-width:60px;min-height:40px;border:1px solid #d5dde7;border-radius:8px;background:#fff;font-size:11px;cursor:pointer}
   .hub-mobile-selects{display:grid;grid-template-columns:1fr;gap:9px}
@@ -2201,10 +2191,6 @@ html[data-drx-app="medical-hub-v2"] :where(button,a,input,select,summary,[tabind
     background:#f0efff;
     color:#635bff;
   }
-  .hub-rails-toggle:focus-visible{
-    outline:2px solid #635bff;
-    outline-offset:2px;
-  }
 
   html[data-hub-rails-hidden] .hub-page .hub-workspace{
     grid-template-columns:minmax(0,1fr);
@@ -2236,15 +2222,104 @@ html[data-drx-app="medical-hub-v2"] :where(button,a,input,select,summary,[tabind
 }
 .ck-section-fold svg{width:14px;height:14px}
 .ck-section-fold:hover{color:#0d253d;border-color:#bcc8d6}
-.ck-section-fold:focus-visible{
-  outline:2px solid #635bff;
-  outline-offset:2px;
-}
 .ck-section.is-folded .ck-section-fold{transform:rotate(-90deg)}
 .ck-section-body[hidden]{display:none}
 .ck-section.is-folded{padding-bottom:0}
 
+
+/* ==========================================================================
+   Medical Hub — polish pass
+
+   What a batched inspection at 1600px, 1280px and 390px actually found.
+
+   1. Micro-text contrast. The reader carried twelve hand-picked inks — nine
+      greys from #98a2b3 down to #65798c, three violets around #746dea — at
+      8.5-14px, landing between 2.46:1 and 4.5:1 against a 4.5 floor: thirty-
+      one declarations, none of them going through a token. They collapse to
+      two verified values. The
+      muted is #5a6675, which clears 4.5:1 on every ground the reader paints
+      (worst case 5.15:1 on the tinted #f0efff); the design system's own
+      #667085 was not enough there at 4.38:1. The violet is #5b52f7, the value
+      the Recetat step ramp already uses, so the reader now has one accent
+      rather than two that differ by an amount nobody can see. The two #98a2b3
+      status-dot backgrounds are untouched; only text colour changed.
+
+   2. Source links at 15px. Both are standalone actions in a metadata cluster,
+      not links inside a sentence, so the target-size exemption does not apply,
+      and this repo holds visible controls on an authenticated page to 28px.
+      CI missed them only because its fixture carries no source URL; with one,
+      site-ui would have gone red in production.
+
+   3. The focus ring, above — the one finding that reached every control on
+      the page.
+
+   Three per-control :focus-visible rules went with it. The page-wide ring is
+   (0,2,1); a bare `.class:focus-visible` is (0,2,0), so none of the three had
+   ever painted a pixel. One rule, one ring, everywhere. Text fields keep the
+   shell's own !important affordance instead: it is a #533afd border at 6.19:1
+   on white and 4.56:1 against its own resting edge, so it clears 1.4.11 on
+   its own and is not worth fighting.
+
+   4. The heading pill repeated the command footer word for word, 250px away
+      — the footer said the same counts plus the source. Someone had already
+      hidden the pill below 760px for exactly that reason; it is gone at every
+      width now, and the subtitle is back to one sentence, the length Recetat
+      and Urgjencat use.
+   ========================================================================== */
+
+.hub-book-state a,
+.ck-source-verification>a{
+  display:inline-flex;
+  align-items:center;
+  min-height:28px;
+}
+
+
+/* Motion -------------------------------------------------------------------
+
+   A reader is not a place for choreography. Motion earns its keep here in
+   exactly two moments, both of them answering the same question — "did the
+   thing I clicked do anything?" — and both under a fifth of a second.
+
+   The rails toggle is deliberately not among them: hiding the panels sets
+   display:none on the drawer, so animating the grid would slide the reader
+   across an empty column. A snap is the honest result there.
+   -------------------------------------------------------------------------- */
+
+@keyframes ck-doc-enter{
+  from{opacity:0;transform:translateY(5px)}
+  to{opacity:1;transform:none}
+}
+@keyframes ck-section-reveal{
+  from{opacity:0;transform:translateY(-3px)}
+  to{opacity:1;transform:none}
+}
+
+/* Picking a lesson replaces this node, so the animation runs on arrival and
+   nowhere else. It is the only signal that the right-hand pane changed when
+   the two documents happen to open on similar headings. */
+.ck-document-inner{
+  animation:ck-doc-enter .2s cubic-bezier(.32,.72,0,1) both;
+}
+
+/* Unfolding only. Folding is a disclosure the reader just asked for and can
+   see collapse under the cursor; fading it out would only slow the answer. */
+.ck-section-body.is-revealing{
+  animation:ck-section-reveal .18s ease-out both;
+}
+
+.hub-rail-row{
+  transition:background .13s ease,box-shadow .2s cubic-bezier(.32,.72,0,1);
+}
+.ck-document-page{
+  transition:border-color .14s ease,background .14s ease;
+}
+
 @media(prefers-reduced-motion:reduce){
   .hub-rails-toggle,
+  .hub-rail-row,
+  .ck-document-page,
   .ck-section-fold{transition:none}
+  .ck-document-inner,
+  .ck-section-body.is-revealing{animation:none}
 }

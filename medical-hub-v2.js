@@ -1187,20 +1187,28 @@
       heading.appendChild(button);
 
       const key = section.id || '';
-      const setOpen = open => {
+      // `reveal` is false while restoring the remembered state on render: the
+      // whole document is already animating in, and every open section
+      // fading in on top of that reads as a stutter, not as an answer.
+      const setOpen = (open, reveal) => {
         body.hidden = !open;
         section.classList.toggle('is-folded', !open);
         button.setAttribute('aria-expanded', open ? 'true' : 'false');
+        body.classList.remove('is-revealing');
+        if (open && reveal) {
+          void body.offsetWidth;
+          body.classList.add('is-revealing');
+        }
         if (!key) return;
         if (open) folded.delete(key); else folded.add(key);
         writeStore(FOLD_KEY, [...folded]);
       };
 
-      setOpen(!(key && folded.has(key)));
-      button.addEventListener('click', () => setOpen(body.hidden));
+      setOpen(!(key && folded.has(key)), false);
+      button.addEventListener('click', () => setOpen(body.hidden, true));
       heading.addEventListener('click', event => {
         if (event.target.closest('a,button')) return;
-        setOpen(body.hidden);
+        setOpen(body.hidden, true);
       });
     });
   }
@@ -1933,9 +1941,6 @@
     }
     if (previous) previous.disabled = index <= 0;
     if (next) next.disabled = index < 0 || index >= navigationItems.length - 1;
-
-    const headingStatus = $('#learningStatus');
-    if (headingStatus) headingStatus.textContent = `${chapterCount} kapituj · ${lessonCount} mësime`;
   }
 
   function selectTopic(id, { scroll = false } = {}) {
@@ -2109,7 +2114,6 @@
       $('#appShell')?.setAttribute('aria-busy','false');
     } catch (error) {
       console.error('[Medical Hub v2]', error);
-      if ($('#learningStatus')) $('#learningStatus').textContent = 'Temat nuk u ngarkuan.';
       if ($('#learningResultStatus')) $('#learningResultStatus').textContent = 'Gabim në lidhjen me backend.';
       if ($('#learningTopic')) $('#learningTopic').innerHTML = '<option>Gabim në ngarkim</option>';
       if ($('#learningDetail')) {
