@@ -1090,7 +1090,7 @@ a{color:inherit}
   padding:9px 10px;
   border-radius:7px;
   background:#f8fafc;
-  color:#6b7c8f;
+  color:#5a6675;
   font-size:12px;
 }
 
@@ -1121,19 +1121,19 @@ a{color:inherit}
   place-items:center;
   border-radius:6px;
   background:#f3f5f8;
-  color:#7e8b9a;
+  color:#5a6675;
   font-size:12px;
   font-weight:600;
 }
 
 .ck-chapter-lesson-copy{min-width:0;display:grid;gap:4px}
 .ck-chapter-lesson-copy>strong{color:#263d54;font-size:13.5px;font-weight:500;line-height:1.45}
-.ck-chapter-lesson-copy>small{color:#768697;font-size:12px;line-height:1.5}
+.ck-chapter-lesson-copy>small{color:#5a6675;font-size:12px;line-height:1.5}
 
 .ck-chapter-lesson-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
 .ck-chapter-lesson-meta .ck-chip{min-height:20px;padding:2px 6px;font-size:12px}
 .ck-mini-status{min-height:20px;padding:2px 6px;border:1px solid #e3e7ec;background:#fff;color:#5a6675;font-size:12px}
-.ck-chapter-lesson-arrow{align-self:center;color:#a0aab6;font-size:13px}
+.ck-chapter-lesson-arrow{align-self:center;color:#5a6675;font-size:13px}
 
 .ck-chapter-focus-grid{display:grid;gap:0;border-top:1px solid #edf0f4}
 .ck-chapter-focus-card{
@@ -1143,9 +1143,9 @@ a{color:inherit}
   padding:11px 0;
   border-bottom:1px solid #edf0f4;
 }
-.ck-chapter-focus-card>span{color:#8a97a5;font-size:12px;font-weight:600}
+.ck-chapter-focus-card>span{color:#5a6675;font-size:12px;font-weight:600}
 .ck-chapter-focus-card strong{color:#34475c;font-size:13px;font-weight:500}
-.ck-chapter-focus-card p{margin:3px 0 0;color:#697b8f;font-size:12px;line-height:1.55}
+.ck-chapter-focus-card p{margin:3px 0 0;color:#5a6675;font-size:12px;line-height:1.55}
 
 /* Figures ------------------------------------------------------------------- */
 
@@ -1434,7 +1434,7 @@ a{color:inherit}
 .ck-source-card{display:grid;gap:5px}
 .ck-source-card>div{display:grid;gap:2px}
 .ck-source-card strong{color:#34475c;font-size:12px;font-weight:550}
-.ck-source-card span{color:#8a97a5;font-size:12px}
+.ck-source-card span{color:#5a6675;font-size:12px}
 .ck-source-card p{margin:0;color:#65778a;font-size:12px;line-height:1.5}
 .ck-source-card>a{width:max-content;color:#5d53da;font-size:12px;text-decoration:none}
 .ck-source-card>a:hover{text-decoration:underline}
@@ -1860,7 +1860,7 @@ html[data-drx-app="medical-hub-v2"] .hub-page.page-wrap{
 
 .hub-reader-pane{min-width:0}
 .hub-page .hub-document{min-height:680px;border-radius:12px;box-shadow:0 1px 2px rgba(16,24,40,.05)}
-.hub-page .ck-document-inner{width:min(100%,900px);padding:0 clamp(24px,4vw,58px) 56px}
+.hub-page .ck-document-inner{width:min(100%,1180px);padding:0 clamp(22px,3vw,42px) 56px}
 .hub-page .ck-detail-head{padding:34px 0 26px}
 /* 28, not 32: a second 32px title on a page whose h1 is already 32 gives the
    reader two things of equal size to start from. Urgjencat, the density

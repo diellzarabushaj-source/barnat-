@@ -2114,3 +2114,369 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
   else init();
 })();
+
+
+/* Advanced search for the command bar.
+   It lives here rather than inline in medical-hub.html because vercel.json
+   serves script-src 'self' on /(.*) with no 'unsafe-inline' — an inline
+   block is refused outright and the whole feature is dead in production —
+   and rather than in its own file because dashboard-stripe-v2-contract-test
+   holds each standalone V2 page to one page runtime. */
+(() => {
+  'use strict';
+
+  const input = document.getElementById('learningSearch');
+  const panel = document.getElementById('hubSearchResults');
+  const clear = document.getElementById('learningSearchClear');
+  if (!input || !panel) return;
+
+  let timer = 0;
+  let sequence = 0;
+  let activeIndex = -1;
+  let currentResults = [];
+  let indexPromise = null;
+
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;',
+  }[char]));
+  const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
+  const normalize = value => clean(value)
+    .toLocaleLowerCase('sq')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+  const regexEsc = value => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  function setExpanded(expanded) {
+    input.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    panel.hidden = !expanded;
+    if (!expanded) {
+      activeIndex = -1;
+      input.removeAttribute('aria-activedescendant');
+    }
+  }
+
+  async function api(params) {
+    const url = new URL('/api/medical-hub', location.origin);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== '' && value != null) url.searchParams.set(key, String(value));
+    });
+    const response = await fetch(url.pathname + url.search, {
+      credentials:'same-origin',
+      cache:'no-store',
+      headers:{ Accept:'application/json' },
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || payload.ok !== true) throw new Error(payload.error || `Search ${response.status}`);
+    return payload;
+  }
+
+  function loadIndex() {
+    if (!indexPromise) {
+      indexPromise = api({ mode:'index' })
+        .then(payload => Array.isArray(payload.items) ? payload.items : [])
+        .catch(() => []);
+    }
+    return indexPromise;
+  }
+
+  function distanceWithin(left, right, maxDistance) {
+    if (left === right) return 0;
+    if (!left || !right) return Math.max(left.length, right.length);
+    if (Math.abs(left.length - right.length) > maxDistance) return maxDistance + 1;
+    let previous = Array.from({ length:right.length + 1 }, (_, index) => index);
+    for (let i = 1; i <= left.length; i += 1) {
+      const current = [i];
+      let rowMin = current[0];
+      for (let j = 1; j <= right.length; j += 1) {
+        const cost = left[i - 1] === right[j - 1] ? 0 : 1;
+        current[j] = Math.min(previous[j] + 1, current[j - 1] + 1, previous[j - 1] + cost);
+        rowMin = Math.min(rowMin, current[j]);
+      }
+      if (rowMin > maxDistance) return maxDistance + 1;
+      previous = current;
+    }
+    return previous[right.length];
+  }
+
+  function tokenScore(token, value) {
+    const text = normalize(value);
+    if (!token || !text) return 0;
+    if (text === token) return 150;
+    if (text.startsWith(token)) return 118;
+    if (text.includes(token)) return 95;
+    const maxDistance = token.length >= 8 ? 2 : token.length >= 4 ? 1 : 0;
+    if (!maxDistance) return 0;
+    let best = 0;
+    for (const word of text.split(/[^a-z0-9]+/).filter(Boolean)) {
+      if (word.startsWith(token) || token.startsWith(word)) best = Math.max(best, 86);
+      if (Math.abs(word.length - token.length) > maxDistance) continue;
+      const distance = distanceWithin(token, word, maxDistance);
+      if (distance <= maxDistance) best = Math.max(best, distance === 1 ? 76 : 58);
+    }
+    return best;
+  }
+
+  function codeText(item) {
+    const procedures = (item?.procedureCodes || []).flatMap(entry => {
+      if (typeof entry === 'string') return [entry];
+      return [entry?.code, entry?.label, entry?.system].filter(Boolean);
+    });
+    return [...(item?.icdCodes || []), ...procedures].join(' ');
+  }
+
+  function chapterTitle(item, chapterMap) {
+    const direct = clean(item?.chapter?.title);
+    if (direct) return direct;
+    const number = Number(item?.chapterNumber) || 0;
+    return clean(chapterMap.get(number)?.title || chapterMap.get(number)?.question || '');
+  }
+
+  function localScore(item, term, tokens, chapterMap) {
+    if (!item || item.contentKind === 'chapter') return 0;
+    const title = normalize(item.title || item.question);
+    const summary = normalize(item.summary);
+    const keywords = normalize((item.keywords || []).join(' '));
+    const codes = normalize(codeText(item));
+    const chapter = normalize(chapterTitle(item, chapterMap));
+    let score = 0;
+
+    if (title === term) score += 1500;
+    else if (title.startsWith(term)) score += 1100;
+    else if (title.includes(term)) score += 820;
+    if (codes === term) score += 900;
+    else if (codes.includes(term)) score += 620;
+    if (keywords.includes(term)) score += 500;
+    if (chapter.includes(term)) score += 260;
+    if (summary.includes(term)) score += 220;
+
+    let matched = 0;
+    for (const token of tokens) {
+      const weighted = Math.max(
+        tokenScore(token, title) * 4.2,
+        tokenScore(token, codes) * 4,
+        tokenScore(token, keywords) * 3,
+        tokenScore(token, chapter) * 2,
+        tokenScore(token, summary) * 1.35,
+      );
+      if (weighted > 0) {
+        matched += 1;
+        score += weighted;
+      }
+    }
+    const required = tokens.length <= 2 ? tokens.length : Math.ceil(tokens.length * .75);
+    if (matched < required) return 0;
+    if (matched === tokens.length) score += 260;
+    return score;
+  }
+
+  function highlight(value, rawTerm) {
+    let text = esc(clean(value));
+    const tokens = clean(rawTerm).split(/\s+/).filter(token => token.length >= 2).slice(0, 6);
+    for (const token of tokens) {
+      const pattern = new RegExp(`(${regexEsc(esc(token))})`, 'ig');
+      text = text.replace(pattern, '<mark>$1</mark>');
+    }
+    return text;
+  }
+
+  function compactSummary(item) {
+    const value = clean(item?.summary || '');
+    if (!value) return 'Hap temën për të parë përmbajtjen klinike të plotë.';
+    return value.length > 170 ? `${value.slice(0, 167).trim()}…` : value;
+  }
+
+  function resultBadges(item) {
+    const badges = [];
+    const chapter = Number(item?.chapterNumber) || 0;
+    const lesson = Number(item?.lessonNumber) || 0;
+    if (chapter) badges.push(`<span class="hub-search-badge is-chapter">Kapitulli ${chapter}</span>`);
+    if (lesson) badges.push(`<span class="hub-search-badge">Tema ${lesson}</span>`);
+    (item?.icdCodes || []).slice(0, 2).forEach(code => badges.push(`<span class="hub-search-badge is-code">ICD‑10 ${esc(code)}</span>`));
+    const procedures = (item?.procedureCodes || []).map(entry => typeof entry === 'string' ? entry : entry?.code).filter(Boolean);
+    procedures.slice(0, 1).forEach(code => badges.push(`<span class="hub-search-badge is-procedure">${esc(code)}</span>`));
+    return badges.join('');
+  }
+
+  function renderLoading(term) {
+    panel.innerHTML = `
+      <div class="hub-search-results-head">
+        <div><strong>Kërkim global</strong><span>Në të gjithë kapitujt</span></div>
+        <span class="hub-search-results-count">Duke kërkuar “${esc(term)}”…</span>
+      </div>
+      <div class="hub-search-results-loading"><span></span><p>Po kërkoj në tituj, përmbledhje, ICD‑10, procedura dhe përmbajtje klinike…</p></div>`;
+    setExpanded(true);
+  }
+
+  function renderResults(items, rawTerm) {
+    currentResults = items;
+    activeIndex = items.length ? 0 : -1;
+    const chapters = new Set(items.map(item => Number(item.chapterNumber) || 0).filter(Boolean));
+    const shown = items.slice(0, 40);
+    panel.innerHTML = `
+      <div class="hub-search-results-head">
+        <div><strong>Kërkim global</strong><span>Në të gjithë kapitujt</span></div>
+        <span class="hub-search-results-count">${items.length} rezultate · ${chapters.size} kapituj${items.length > 40 ? ' · 40 më relevante' : ''}</span>
+      </div>
+      ${shown.length ? `<div class="hub-search-results-list">${shown.map((item, index) => {
+        const title = item.title || item.question || 'Temë klinike';
+        const chapter = clean(item?.chapter?.title || '');
+        return `
+          <div class="hub-search-result${index === 0 ? ' is-active' : ''}" id="hub-search-result-${index}" role="option" aria-selected="${index === 0 ? 'true' : 'false'}" data-search-result="${index}">
+            <div class="hub-search-result-main">
+              <div class="hub-search-result-meta">${resultBadges(item)}${chapter ? `<span class="hub-search-chapter-name">${esc(chapter)}</span>` : ''}</div>
+              <strong>${highlight(title, rawTerm)}</strong>
+              <p>${highlight(compactSummary(item), rawTerm)}</p>
+            </div>
+            <span class="hub-search-result-open" aria-hidden="true">Hap <b>→</b></span>
+          </div>`;
+      }).join('')}</div>` : `
+        <div class="hub-search-results-empty">
+          <strong>Nuk u gjet asnjë temë.</strong>
+          <span>Provo një diagnozë, simptomë, kod ICD‑10, procedurë ose emër bari. Kërkimi toleron edhe gabime të vogla në shkrim.</span>
+        </div>`}`;
+    setExpanded(true);
+    if (activeIndex >= 0) input.setAttribute('aria-activedescendant', `hub-search-result-${activeIndex}`);
+  }
+
+  function setActive(index) {
+    const options = [...panel.querySelectorAll('[data-search-result]')];
+    if (!options.length) return;
+    activeIndex = Math.max(0, Math.min(index, options.length - 1));
+    options.forEach((option, optionIndex) => {
+      const active = optionIndex === activeIndex;
+      option.classList.toggle('is-active', active);
+      option.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    const target = options[activeIndex];
+    input.setAttribute('aria-activedescendant', target.id);
+    target.scrollIntoView({ block:'nearest' });
+  }
+
+  function openResult(index) {
+    const item = currentResults[index];
+    if (!item) return;
+    setExpanded(false);
+
+    const topic = document.getElementById('learningTopic');
+    if (topic && [...topic.options].some(option => option.value === item._id)) {
+      topic.value = item._id;
+      topic.dispatchEvent(new Event('change', { bubbles:true }));
+      return;
+    }
+
+    const url = new URL('/medical-hub.html', location.origin);
+    const chapter = Number(item.chapterNumber) || 0;
+    if (chapter) url.searchParams.set('chapter', String(chapter).padStart(2, '0'));
+    if (item.slug) url.searchParams.set('topic', item.slug);
+    window.location.assign(url.pathname + url.search);
+  }
+
+  async function runSearch(rawTerm, runSequence) {
+    const term = normalize(rawTerm).slice(0, 120);
+    if (term.length < 2) {
+      currentResults = [];
+      setExpanded(false);
+      return;
+    }
+    renderLoading(rawTerm);
+
+    try {
+      const [deepPayload, indexItems] = await Promise.all([
+        api({ mode:'search', q:rawTerm }).catch(() => ({ items:[] })),
+        loadIndex(),
+      ]);
+      if (runSequence !== sequence) return;
+
+      const deep = Array.isArray(deepPayload.items) ? deepPayload.items : [];
+      const chapters = indexItems.filter(item => item?.contentKind === 'chapter');
+      const chapterMap = new Map(chapters.map(item => [Number(item.chapterNumber) || 0, item]));
+      const tokens = term.split(/\s+/).filter(Boolean).slice(0, 8);
+      const ranked = new Map();
+
+      deep.forEach((item, deepIndex) => {
+        if (!item?._id || item.contentKind === 'chapter') return;
+        const score = localScore(item, term, tokens, chapterMap) + 700 - Math.min(deepIndex, 120);
+        ranked.set(item._id, { item, score, deepIndex });
+      });
+
+      indexItems.forEach(item => {
+        if (!item?._id || item.contentKind === 'chapter') return;
+        const score = localScore(item, term, tokens, chapterMap);
+        if (score <= 0) return;
+        const existing = ranked.get(item._id);
+        if (!existing || score > existing.score) ranked.set(item._id, { item, score, deepIndex:999 });
+      });
+
+      const merged = [...ranked.values()]
+        .sort((a, b) => b.score - a.score || a.deepIndex - b.deepIndex || (Number(a.item.chapterNumber) || 999) - (Number(b.item.chapterNumber) || 999))
+        .map(entry => {
+          const item = entry.item;
+          if (!item.chapter && chapterMap.has(Number(item.chapterNumber) || 0)) {
+            return { ...item, chapter:{ title:chapterMap.get(Number(item.chapterNumber) || 0)?.title || '' } };
+          }
+          return item;
+        });
+
+      renderResults(merged, rawTerm);
+    } catch (error) {
+      if (runSequence !== sequence) return;
+      panel.innerHTML = `
+        <div class="hub-search-results-empty">
+          <strong>Kërkimi nuk u ngarkua.</strong>
+          <span>Provo përsëri pas pak. Navigimi i librit vazhdon të funksionojë normalisht.</span>
+        </div>`;
+      setExpanded(true);
+      console.error('[Medical Hub advanced search]', error);
+    }
+  }
+
+  function schedule() {
+    const rawTerm = input.value;
+    sequence += 1;
+    const runSequence = sequence;
+    window.clearTimeout(timer);
+    if (normalize(rawTerm).length < 2) {
+      currentResults = [];
+      setExpanded(false);
+      return;
+    }
+    timer = window.setTimeout(() => runSearch(rawTerm, runSequence), 220);
+  }
+
+  input.addEventListener('input', schedule);
+  input.addEventListener('focus', () => {
+    if (normalize(input.value).length >= 2 && currentResults.length) setExpanded(true);
+  });
+  input.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !panel.hidden) {
+      event.preventDefault();
+      event.stopPropagation();
+      setExpanded(false);
+      return;
+    }
+    if (panel.hidden) return;
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setActive(activeIndex + 1);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setActive(activeIndex - 1);
+    } else if (event.key === 'Enter' && activeIndex >= 0) {
+      event.preventDefault();
+      openResult(activeIndex);
+    }
+  });
+
+  panel.addEventListener('pointermove', event => {
+    const option = event.target.closest('[data-search-result]');
+    if (option) setActive(Number(option.dataset.searchResult));
+  });
+  panel.addEventListener('click', event => {
+    const option = event.target.closest('[data-search-result]');
+    if (option) openResult(Number(option.dataset.searchResult));
+  });
+  clear?.addEventListener('click', () => setExpanded(false));
+  document.addEventListener('pointerdown', event => {
+    if (!panel.hidden && !event.target.closest('#learningSearchField') && !event.target.closest('#hubSearchResults')) setExpanded(false);
+  });
+})();
