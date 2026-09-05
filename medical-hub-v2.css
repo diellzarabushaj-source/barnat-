@@ -2218,11 +2218,13 @@ html[data-drx-app="medical-hub-v2"] :where(button,a,input,select,summary,[tabind
 
 .ck-section-heading{cursor:pointer}
 
+/* 28px, not 26: tailwind-site-browser.spec.js holds every visible control on
+   an authenticated page to a 28px floor, and it is the better target anyway. */
 .ck-section-fold{
   display:inline-grid;
   place-items:center;
-  width:26px;
-  height:26px;
+  width:28px;
+  height:28px;
   margin-left:auto;
   padding:0;
   border:1px solid #d6dee8;
