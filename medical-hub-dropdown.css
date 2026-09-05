@@ -1,0 +1,106 @@
+/* Medical Hub — dropdown-only navigation
+   The chapter/topic selectors already contain the complete browsing and
+   global-search result model. This layer removes the parallel rail/drawer UI
+   and leaves one compact navigation path before the reader. */
+
+html[data-drx-app="medical-hub-v2"] .hub-head-actions,
+html[data-drx-app="medical-hub-v2"] .hub-rails-toggle,
+html[data-drx-app="medical-hub-v2"] .hub-navigation-toggle,
+html[data-drx-app="medical-hub-v2"] .hub-drawer-head,
+html[data-drx-app="medical-hub-v2"] .hub-navigation-backdrop,
+html[data-drx-app="medical-hub-v2"] .hub-rail {
+  display:none !important;
+}
+
+html[data-drx-app="medical-hub-v2"] .hub-page .hub-workspace {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) !important;
+  gap:14px;
+  align-items:start;
+}
+
+html[data-drx-app="medical-hub-v2"] .hub-navigation-drawer {
+  position:static !important;
+  inset:auto !important;
+  top:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  left:auto !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  display:block !important;
+  padding:0 !important;
+  overflow:visible !important;
+  transform:none !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  transition:none !important;
+}
+
+html[data-drx-app="medical-hub-v2"] .hub-mobile-selects {
+  width:100%;
+  display:grid !important;
+  grid-template-columns:minmax(210px,.72fr) minmax(300px,1.28fr);
+  gap:10px;
+  padding:0;
+}
+
+html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field {
+  min-width:0;
+  gap:6px;
+}
+
+html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field > span {
+  padding-left:2px;
+  color:#52667a;
+  font-size:10.5px;
+  font-weight:600;
+  letter-spacing:.015em;
+}
+
+html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field select {
+  height:46px;
+  padding:0 38px 0 12px;
+  border:1px solid #d6dee8;
+  border-radius:10px;
+  background:#fff;
+  color:#263d54;
+  font-size:12.5px;
+  font-weight:450;
+  box-shadow:0 1px 2px rgba(15,35,58,.025);
+}
+
+html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field select:hover {
+  border-color:#c4cfdb;
+}
+
+html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field select:focus-visible {
+  border-color:#8f87ff;
+  outline:2px solid #635bff;
+  outline-offset:2px;
+  box-shadow:none;
+}
+
+html[data-drx-app="medical-hub-v2"] .hub-reader-pane {
+  min-width:0;
+  width:100%;
+}
+
+/* A stale desktop preference from the former rail toggle must not be able to
+   hide the dropdown navigator. */
+html[data-hub-rails-hidden][data-drx-app="medical-hub-v2"] .hub-navigation-drawer {
+  display:block !important;
+}
+
+@media (max-width:760px) {
+  html[data-drx-app="medical-hub-v2"] .hub-mobile-selects {
+    grid-template-columns:minmax(0,1fr);
+    gap:9px;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field select {
+    height:46px;
+    font-size:12px;
+  }
+}
