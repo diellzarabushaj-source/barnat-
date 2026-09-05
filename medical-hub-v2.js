@@ -1259,7 +1259,6 @@
     const detail = $('#learningDetail');
     if (!detail) return;
     updateBookChrome(item);
-    const review = reviewMeta(item.reviewStatus);
     const children = (item.relatedTopics || []).slice().sort((a, b) => topicOrder(a) - topicOrder(b));
     const icdLessons = children.filter(child => child.icdCodes?.length).length;
     const procedureLessons = children.filter(child => procedureEntries(child).length).length;
@@ -1273,16 +1272,11 @@
               <p class="ck-kicker">${esc(item.question || 'Kapitull')}</p>
               <h2>${esc(codedTitle(item))}</h2>
             </div>
-            <span class="ck-review-badge ${review.className}">
-              <span class="ck-review-dot" aria-hidden="true"></span>
-              <strong>${esc(review.label)}</strong>
-            </span>
           </div>
           <div class="ck-meta">
             ${chip(children.length === 1 ? '1 mësim' : `${children.length} mësime`)}
             ${icdLessons ? chip(`${icdLessons} me ICD‑10`, 'is-code-count') : ''}
             ${procedureLessons ? chip(`${procedureLessons} procedura`, 'is-procedure-count') : ''}
-            ${item.version ? chip(item.version) : ''}
           </div>
           ${item.summary ? `<div class="ck-quick-summary"><span>Përmbledhja e kapitullit</span><p>${esc(item.summary)}</p></div>` : ''}
         </header>
@@ -1380,7 +1374,6 @@
     const detail = $('#learningDetail');
     if (!detail) return;
     updateBookChrome(item);
-    const review = reviewMeta(item.reviewStatus);
     const sections = sectionEntries(item);
     const navigationItems = readerNavigationItems();
     const currentIndex = navigationItems.findIndex(candidate => candidate._id === item._id);
@@ -1396,15 +1389,10 @@
               <p class="ck-kicker">${esc(item.question || 'Mësim klinik')}</p>
               <h2>${esc(codedTitle(item))}</h2>
             </div>
-            <span class="ck-review-badge ${review.className}">
-              <span class="ck-review-dot" aria-hidden="true"></span>
-              <strong>${esc(review.label)}</strong>
-            </span>
           </div>
           <div class="ck-meta">
             ${(item.icdCodes || []).map(icdChip).join('')}
             ${procedures.map(procedureChip).join('')}
-            ${item.version ? chip(item.version) : ''}
             ${item.reviewedBy ? chip(item.reviewedBy) : ''}
           </div>
           ${item.summary ? `<div class="ck-quick-summary"><span>Në 20 sekonda</span><p>${esc(item.summary)}</p></div>` : ''}
@@ -1577,7 +1565,6 @@
     if (!detail) return;
     updateBookChrome(item);
 
-    const review = reviewMeta(item.reviewStatus);
     const procedures = procedureEntries(item);
     const sections = (item.sections || []).filter(Boolean);
     const navigationItems = readerNavigationItems().filter(candidate => !isChapter(candidate));
@@ -1593,15 +1580,10 @@
               <p class="ck-kicker">${esc(item.chapter?.title || item.question || 'Temë klinike')}</p>
               <h2>${esc(codedTitle(item))}</h2>
             </div>
-            <span class="ck-review-badge ${review.className}">
-              <span class="ck-review-dot" aria-hidden="true"></span>
-              <strong>${esc(review.label)}</strong>
-            </span>
           </div>
           <div class="ck-meta">
             ${(item.icdCodes || []).map(icdChip).join('')}
             ${procedures.map(procedureChip).join('')}
-            ${item.version ? chip(item.version) : ''}
             ${item.reviewedBy ? chip(item.reviewedBy) : ''}
           </div>
           ${item.summary ? `<div class="ck-quick-summary"><span>Në 20 sekonda</span><p>${esc(item.summary)}</p></div>` : ''}
@@ -1829,7 +1811,7 @@
     const kicker = $('#hubTopicRailKicker');
     const heading = $('#hubTopicRailHeading');
     const count = $('#hubTopicRailCount');
-    if (kicker) kicker.textContent = term ? 'Kërkim global' : `Kapitulli ${Number(state.category || 0) || '—'}`;
+    if (kicker) kicker.textContent = term ? 'Kërkim global' : (chapter ? `Kapitulli ${Number(state.category)}` : 'I gjithë libri');
     if (heading) heading.textContent = term ? 'Rezultatet' : (chapter ? railChapterTitle(chapter) : 'Temat');
     if (count) count.textContent = String(items.length);
 
