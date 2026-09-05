@@ -105,6 +105,18 @@ const PUBLIC_SECRET_APIS = new Set([
   '/api/drive-sync',
 ]);
 
+// Presentation/runtime assets must never be redirected to an HTML entry page.
+// When an authenticated page is restored from the service-worker cache while a
+// session is missing or being refreshed, redirecting its CSS/JS requests to
+// landing.html leaves the registry as raw HTML with browser-sized SVGs. Keep
+// executable UI assets public, while preserving auth on APIs and data aliases.
+const PUBLIC_STATIC_ASSET_RE = /\.(?:css|js|mjs|svg|png|jpe?g|webp|gif|ico|woff2?|ttf|otf|webmanifest)$/i;
+
+function isPublicStaticAsset(pathname) {
+  if (pathname.startsWith('/api/') || pathname.startsWith('/data/')) return false;
+  return PUBLIC_STATIC_ASSET_RE.test(pathname);
+}
+
 export const config = {
   matcher: '/:path*',
 };
@@ -123,7 +135,10 @@ const ENTRY_PAGE = '/landing.html';
 const LOGIN_PAGES = new Set(['/login.html', LOGIN_PAGE, ADMIN_LOGIN_PAGE, '/admin-login']);
 
 function isPublicPath(pathname) {
-  return PUBLIC_PATHS.has(pathname) || PUBLIC_SECRET_APIS.has(pathname) || pathname === '/api/auth';
+  return PUBLIC_PATHS.has(pathname)
+    || PUBLIC_SECRET_APIS.has(pathname)
+    || pathname === '/api/auth'
+    || isPublicStaticAsset(pathname);
 }
 
 /* Blogu është publik, por ndan të njëjtin Vercel Function me editorin klinik.
