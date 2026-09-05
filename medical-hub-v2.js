@@ -992,6 +992,34 @@
       </section>`;
   }
 
+  function stepActionMarkup(value) {
+    const text = clean(value);
+    if (!text) return '';
+
+    let lead = '';
+    let listText = text;
+    const divider = text.indexOf(' — ');
+    if (divider > 0 && text.slice(divider + 3).includes(' • ')) {
+      lead = text.slice(0, divider).trim();
+      listText = text.slice(divider + 3).trim();
+    }
+
+    const items = listText.split(' • ').map(clean).filter(Boolean);
+    if (items.length < 2) return `<p>${richText(text)}</p>`;
+
+    return `
+      ${lead ? `<p class="ck-step-lead">${richText(lead)}</p>` : ''}
+      <ul class="ck-master-bullets ck-step-bullets">
+        ${items.map(item => {
+          const cut = item.indexOf(':');
+          if (cut > 0 && cut < 90) {
+            return `<li><strong>${richText(item.slice(0, cut))}</strong><span>${richText(item.slice(cut + 1).trim())}</span></li>`;
+          }
+          return `<li><span>${richText(item)}</span></li>`;
+        }).join('')}
+      </ul>`;
+  }
+
   function stepMarkup(step, index) {
     const styleClass = stepStyleClass(step);
     const meta = [step.setting].filter(Boolean);
@@ -1003,7 +1031,7 @@
             <strong>${richText(step.title || 'Hapi')}</strong>
             ${meta.length ? `<small>${esc(meta.join(' · '))}</small>` : ''}
           </div>
-          <p>${richText(step.action || '')}</p>
+          ${stepActionMarkup(step.action || '')}
           ${step.why ? `<div class="ck-step-why"><span>Pse</span><p>${richText(step.why)}</p></div>` : ''}
           ${step.note ? `<small class="ck-step-note">${richText(step.note)}</small>` : ''}
         </div>
