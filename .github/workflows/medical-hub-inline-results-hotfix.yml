@@ -1,0 +1,158 @@
+name: Medical Hub inline results hotfix
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/medical-hub-inline-results-hotfix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  inline-results:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Make search results an inline list
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          html_path = Path('medical-hub.html')
+          html = html_path.read_text(encoding='utf-8')
+
+          old_layout = '''          <div class="hub-search-results" id="hubSearchResults" role="listbox" aria-label="Rezultatet e kërkimit global" hidden></div>
+          <div class="hub-command-footer">
+            <span class="hub-result-status" id="learningResultStatus" role="status" aria-live="polite">Duke ngarkuar temat…</span>
+            <div class="hub-topic-nav" aria-label="Navigimi mes temave">
+              <button id="previousTopicButton" type="button" aria-label="Tema e kaluar">← <span>E kaluara</span></button>
+              <span id="learningTopicPosition" aria-live="polite">—</span>
+              <button id="nextTopicButton" type="button" aria-label="Tema tjetër"><span>Tjetra</span> →</button>
+            </div>
+          </div>
+        </section>'''
+          new_layout = '''          <div class="hub-command-footer">
+            <span class="hub-result-status" id="learningResultStatus" role="status" aria-live="polite">Duke ngarkuar temat…</span>
+            <div class="hub-topic-nav" aria-label="Navigimi mes temave">
+              <button id="previousTopicButton" type="button" aria-label="Tema e kaluar">← <span>E kaluara</span></button>
+              <span id="learningTopicPosition" aria-live="polite">—</span>
+              <button id="nextTopicButton" type="button" aria-label="Tema tjetër"><span>Tjetra</span> →</button>
+            </div>
+          </div>
+          <div class="hub-search-results" id="hubSearchResults" role="list" aria-label="Rezultatet e kërkimit global" hidden></div>
+        </section>'''
+          if old_layout not in html:
+              raise SystemExit('Expected Medical Hub search/footer layout was not found; refusing unsafe edit.')
+          html = html.replace(old_layout, new_layout, 1)
+
+          # The earlier standalone search script duplicated the canonical Medical Hub
+          # search state. Remove it so the visible list is driven by medical-hub-v2.js.
+          marker = "\n<script>\n(() => {\n  'use strict';\n\n  const input = document.getElementById('learningSearch');"
+          if marker in html:
+              start = html.index(marker)
+              end = html.index('\n</script>', start) + len('\n</script>')
+              html = html[:start] + html[end:]
+
+          old_css = 'html[data-drx-app="medical-hub-v2"] .hub-search-result{min-height:82px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:11px 12px;border-bottom:1px solid #edf1f5;border-radius:9px;background:#fff;cursor:pointer;outline:0}'
+          new_css = 'html[data-drx-app="medical-hub-v2"] .hub-search-result{width:100%;min-height:82px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:11px 12px;border:0;border-bottom:1px solid #edf1f5;border-radius:9px;background:#fff;color:inherit;font:inherit;text-align:left;cursor:pointer;outline:0}'
+          if old_css in html:
+              html = html.replace(old_css, new_css, 1)
+
+          html_path.write_text(html, encoding='utf-8')
+
+          js_path = Path('medical-hub-v2.js')
+          js = js_path.read_text(encoding='utf-8')
+          anchor = '  function renderReaderNavigation() {\n'
+          if anchor not in js:
+              raise SystemExit('renderReaderNavigation anchor not found; refusing unsafe edit.')
+
+          function_code = r'''  function renderSearchResultsList() {
+    const panel = $('#hubSearchResults');
+    const input = $('#learningSearch');
+    if (!panel) return;
+
+    const term = clean(state.term);
+    if (!term) {
+      panel.hidden = true;
+      panel.innerHTML = '';
+      input?.setAttribute('aria-expanded', 'false');
+      return;
+    }
+
+    if (panel.dataset.bound !== '1') {
+      panel.dataset.bound = '1';
+      panel.addEventListener('click', event => {
+        const row = event.target.closest('[data-search-topic-id]');
+        if (!row) return;
+        selectTopic(row.dataset.searchTopicId, { scroll:true });
+      });
+    }
+
+    panel.hidden = false;
+    input?.setAttribute('aria-expanded', 'true');
+
+    if (state.searching) {
+      panel.innerHTML = '<div class="hub-search-results-loading"><span></span><p>Po kërkoj në gjithë librin…</p></div>';
+      return;
+    }
+
+    const items = state.filtered.slice(0, 40);
+    if (!items.length) {
+      panel.innerHTML = `<div class="hub-search-results-empty"><strong>Nuk u gjet asnjë rezultat.</strong><span>Provo një term tjetër, diagnozë, ICD‑10, procedurë ose bar.</span></div>`;
+      return;
+    }
+
+    const chapters = new Set(items.map(item => chapterKey(item)).filter(Boolean));
+    const rows = items.map(item => {
+      const key = chapterKey(item);
+      const chapter = state.items.find(candidate => isChapter(candidate) && chapterKey(candidate) === key) || null;
+      const chapterTitle = clean(chapter?.question || chapter?.title || '');
+      const lesson = lessonNumberFromId(item?._id) ?? Number(item?.lessonNumber || item?.order) || '';
+      const summary = clean(item?.summary || '');
+      const active = item._id === state.selectedId;
+      return `<button class="hub-search-result${active ? ' is-active' : ''}" type="button" data-search-topic-id="${esc(item._id)}" aria-current="${active ? 'true' : 'false'}">
+        <span class="hub-search-result-main">
+          <span class="hub-search-result-meta">
+            ${key ? `<span class="hub-search-badge is-chapter">Kapitulli ${Number(key)}</span>` : ''}
+            ${lesson ? `<span class="hub-search-badge">Mësimi ${esc(lesson)}</span>` : ''}
+            ${chapterTitle ? `<span class="hub-search-chapter-name">${esc(chapterTitle)}</span>` : ''}
+          </span>
+          <strong>${esc(codedTitle(item))}</strong>
+          ${summary ? `<p>${esc(summary)}</p>` : ''}
+        </span>
+        <span class="hub-search-result-open">Hap <b>→</b></span>
+      </button>`;
+    }).join('');
+
+    panel.innerHTML = `<div class="hub-search-results-head"><div><strong>Rezultatet</strong><span>për “${esc(term)}”</span></div><span class="hub-search-results-count">${state.filtered.length} rezultate · ${chapters.size} kapituj</span></div><div class="hub-search-results-list">${rows}</div>`;
+  }
+
+'''
+          if '  function renderSearchResultsList() {' not in js:
+              js = js.replace(anchor, function_code + anchor, 1)
+
+          call_anchor = '  function renderReaderNavigation() {\n    const navigationItems = readerNavigationItems();'
+          call_replacement = '  function renderReaderNavigation() {\n    renderSearchResultsList();\n    const navigationItems = readerNavigationItems();'
+          if call_anchor not in js:
+              raise SystemExit('renderReaderNavigation body anchor not found; refusing unsafe edit.')
+          js = js.replace(call_anchor, call_replacement, 1)
+          js_path.write_text(js, encoding='utf-8')
+          PY
+
+      - name: Commit inline list
+        run: |
+          if git diff --quiet -- medical-hub.html medical-hub-v2.js; then
+            echo "No change required"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add medical-hub.html medical-hub-v2.js
+          git commit -m "fix: show Medical Hub search results as inline list"
+          git push origin HEAD:main
