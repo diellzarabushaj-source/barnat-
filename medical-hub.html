@@ -9,6 +9,23 @@
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/medical-hub-v2.css?v=23">
+  <style>
+    html[data-drx-app="medical-hub-v2"] .hub-navigation-toggle,
+    html[data-drx-app="medical-hub-v2"] .hub-drawer-head,
+    html[data-drx-app="medical-hub-v2"] .hub-navigation-backdrop,
+    html[data-drx-app="medical-hub-v2"] .hub-rail{display:none!important}
+    html[data-drx-app="medical-hub-v2"] .hub-page .hub-workspace{display:grid;grid-template-columns:minmax(0,1fr)!important;gap:14px;align-items:start}
+    html[data-drx-app="medical-hub-v2"] .hub-navigation-drawer{position:static!important;inset:auto!important;width:100%!important;height:auto!important;min-height:0!important;display:block!important;padding:0!important;overflow:visible!important;transform:none!important;background:transparent!important;box-shadow:none!important;transition:none!important}
+    html[data-drx-app="medical-hub-v2"] .hub-mobile-selects{width:100%;display:grid!important;grid-template-columns:minmax(210px,.72fr) minmax(300px,1.28fr);gap:10px;padding:0}
+    html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field{min-width:0;gap:6px}
+    html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field>span{padding-left:2px;color:#52667a;font-size:10.5px;font-weight:600;letter-spacing:.015em}
+    html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field select{height:46px;padding:0 38px 0 12px;border:1px solid #d6dee8;border-radius:10px;background:#fff;color:#263d54;font-size:12.5px;font-weight:450;box-shadow:0 1px 2px rgba(15,35,58,.025)}
+    html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field select:hover{border-color:#c4cfdb}
+    html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field select:focus-visible{border-color:#8f87ff;outline:2px solid #635bff;outline-offset:2px;box-shadow:none}
+    html[data-drx-app="medical-hub-v2"] .hub-reader-pane{min-width:0;width:100%}
+    html[data-hub-rails-hidden][data-drx-app="medical-hub-v2"] .hub-navigation-drawer{display:block!important}
+    @media(max-width:760px){html[data-drx-app="medical-hub-v2"] .hub-mobile-selects{grid-template-columns:minmax(0,1fr);gap:9px}html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field select{height:46px;font-size:12px}}
+  </style>
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8">
 </head>
 <body>
@@ -94,12 +111,6 @@
             <h1>Medical Hub</h1>
             <p class="page-subtitle">Lexo librin kapitull pas kapitulli, ose kërko drejt temën që të duhet.</p>
           </div>
-          <div class="hub-head-actions">
-            <button class="hub-rails-toggle" id="hubRailsToggle" type="button" aria-pressed="false" aria-controls="hubNavigationDrawer">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 5.5h16M4 12h16M4 18.5h16"/></svg>
-              <span data-hub-rails-label>Fshih panelet</span>
-            </button>
-          </div>
         </header>
 
         <section class="hub-command" aria-label="Kërkimi dhe navigimi në Medical Hub">
@@ -112,10 +123,6 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>
             </button>
           </div>
-          <button class="hub-navigation-toggle" id="hubNavigationToggle" type="button" aria-controls="hubNavigationDrawer" aria-expanded="false">
-            <span>Shfleto librin</span>
-            <strong id="hubNavigationSelection">Kapitujt dhe mësimet</strong>
-          </button>
           <div class="hub-command-footer">
             <span class="hub-result-status" id="learningResultStatus" role="status" aria-live="polite">Duke ngarkuar temat…</span>
             <div class="hub-topic-nav" aria-label="Navigimi mes temave">
