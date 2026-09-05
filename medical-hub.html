@@ -10,6 +10,7 @@
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/medical-hub-v2.css?v=23">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8">
+  <link rel="stylesheet" href="/medical-hub-dropdown.css?v=1">
 </head>
 <body>
   <a class="hub-skip-link" href="#learningDetail">Kalo te përmbajtja</a>
@@ -94,12 +95,6 @@
             <h1>Medical Hub</h1>
             <p class="page-subtitle">Lexo librin kapitull pas kapitulli, ose kërko drejt temën që të duhet.</p>
           </div>
-          <div class="hub-head-actions">
-            <button class="hub-rails-toggle" id="hubRailsToggle" type="button" aria-pressed="false" aria-controls="hubNavigationDrawer">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 5.5h16M4 12h16M4 18.5h16"/></svg>
-              <span data-hub-rails-label>Fshih panelet</span>
-            </button>
-          </div>
         </header>
 
         <section class="hub-command" aria-label="Kërkimi dhe navigimi në Medical Hub">
@@ -112,10 +107,6 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>
             </button>
           </div>
-          <button class="hub-navigation-toggle" id="hubNavigationToggle" type="button" aria-controls="hubNavigationDrawer" aria-expanded="false">
-            <span>Shfleto librin</span>
-            <strong id="hubNavigationSelection">Kapitujt dhe mësimet</strong>
-          </button>
           <div class="hub-command-footer">
             <span class="hub-result-status" id="learningResultStatus" role="status" aria-live="polite">Duke ngarkuar temat…</span>
             <div class="hub-topic-nav" aria-label="Navigimi mes temave">
