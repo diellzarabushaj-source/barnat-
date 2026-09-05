@@ -1,0 +1,46 @@
+name: Medical Hub spacing hotfix
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/medical-hub-spacing-hotfix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  widen-reader:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Reduce reader side whitespace
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('medical-hub-v2.css')
+          text = path.read_text(encoding='utf-8')
+          old = '.hub-page .ck-document-inner{width:min(100%,900px);padding:0 clamp(24px,4vw,58px) 56px}'
+          new = '.hub-page .ck-document-inner{width:min(100%,1180px);padding:0 clamp(22px,3vw,42px) 56px}'
+          if old not in text:
+              raise SystemExit('Expected Medical Hub reader width rule was not found; refusing an unsafe edit.')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+
+      - name: Commit hotfix
+        run: |
+          if git diff --quiet -- medical-hub-v2.css; then
+            echo "No change required"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add medical-hub-v2.css
+          git commit -m "fix: reduce Medical Hub reader side whitespace"
+          git push origin HEAD:main
