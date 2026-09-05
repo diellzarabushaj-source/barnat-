@@ -8,11 +8,11 @@
   <title>DRx | Medical Hub</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/medical-hub-v2.css?v=19">
+  <link rel="stylesheet" href="/medical-hub-v2.css?v=22">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8">
 </head>
 <body>
-  <a class="sr-only" href="#learningDetail">Kalo te përmbajtja</a>
+  <a class="hub-skip-link" href="#learningDetail">Kalo te përmbajtja</a>
   <div class="app-shell" id="appShell" aria-busy="true">
     <aside class="sidebar" id="sidebar" aria-label="Navigimi kryesor">
       <div class="sidebar-head">
@@ -80,7 +80,7 @@
         <button class="icon-button menu-button" id="menuButton" type="button" aria-label="Hap menynë"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
         <div class="breadcrumbs"><span>DRx</span><span class="crumb-sep">/</span><strong>Medical Hub</strong></div>
         <div class="topbar-actions">
-          <span class="sync-pill"><span class="sync-dot"></span><span id="syncText">Sanity</span></span>
+          <span class="sync-pill"><span class="sync-dot"></span><span id="syncText">Burimi i publikuar</span></span>
           <button class="drx-profile-chip mi-profile-chip" id="profileButton" type="button" data-mi-profile-trigger aria-label="Hap profilin">
             <span class="mi-user-avatar drx-user-avatar avatar-button" id="avatarInitials">DR</span>
             <span class="drx-profile-copy"><strong>Llogaria</strong><small></small></span>
@@ -93,29 +93,25 @@
           <div>
             <p class="eyebrow">Njohuri klinike</p>
             <h1>Medical Hub</h1>
-            <p class="page-subtitle">Lëviz kapitull pas kapitulli, hap mësimet dhe gjej shpejt ICD‑10, procedurat, figurat, hapat klinikë dhe recetat relevante.</p>
+            <p class="page-subtitle">Lexo sipas strukturës së librit kryesor, lëviz mes kapitujve dhe gjej shpejt temat, ICD‑10, procedurat, figurat dhe recetat e lidhura.</p>
           </div>
           <span class="hub-count" id="learningStatus">Duke ngarkuar temat…</span>
         </header>
 
-        <section class="hub-command" aria-label="Navigimi në Medical Hub">
+        <section class="hub-command" aria-label="Kërkimi dhe navigimi në Medical Hub">
           <div class="hub-search" id="learningSearchField">
             <label class="sr-only" for="learningSearch">Kërko temën klinike</label>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.7"/><path d="m16 16 4.2 4.2"/></svg>
             <input id="learningSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko diagnozë, tekst, ICD, procedurë, bar…" aria-label="Kërko në të gjithë përmbajtjen e Medical Hub">
-            <kbd>⌘ K</kbd>
+            <kbd id="learningShortcut">Ctrl K</kbd>
             <button class="hub-search-clear" id="learningSearchClear" type="button" aria-label="Pastro kërkimin">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>
             </button>
           </div>
-          <label class="hub-field hub-chapter">
-            <span>Kapitulli</span>
-            <select id="learningCategory" aria-label="Zgjidh kapitullin"><option value="">Duke ngarkuar kapitujt…</option></select>
-          </label>
-          <label class="hub-field hub-topic">
-            <span>Mësimi / nënkapitulli</span>
-            <select id="learningTopic" aria-label="Zgjidh mësimin ose nënkapitullin"><option>Duke ngarkuar mësimet…</option></select>
-          </label>
+          <button class="hub-navigation-toggle" id="hubNavigationToggle" type="button" aria-controls="hubNavigationDrawer" aria-expanded="false">
+            <span>Shfleto librin</span>
+            <strong id="hubNavigationSelection">Kapitujt dhe mësimet</strong>
+          </button>
           <div class="hub-command-footer">
             <span class="hub-result-status" id="learningResultStatus" role="status" aria-live="polite">Duke ngarkuar temat…</span>
             <div class="hub-topic-nav" aria-label="Navigimi mes temave">
@@ -126,13 +122,61 @@
           </div>
         </section>
 
-        <article class="hub-document ck-detail" id="learningDetail" aria-live="polite">
-          <div class="ck-empty"><strong>Duke ngarkuar Medical Hub…</strong><span>Përmbajtja vjen nga Sanity.</span></div>
-        </article>
+        <div class="hub-workspace" id="hubWorkspace">
+          <div class="hub-navigation-backdrop" id="hubNavigationBackdrop" hidden></div>
+          <div class="hub-navigation-drawer" id="hubNavigationDrawer">
+            <header class="hub-drawer-head">
+              <div><span>Navigimi i librit</span><strong>Zgjidh kapitullin dhe mësimin</strong></div>
+              <button id="hubNavigationClose" type="button">Mbyll</button>
+            </header>
+
+            <div class="hub-mobile-selects">
+              <label class="hub-field hub-chapter">
+                <span>Kapitulli</span>
+                <select id="learningCategory" aria-label="Zgjidh kapitullin"><option value="">Duke ngarkuar kapitujt…</option></select>
+              </label>
+              <label class="hub-field hub-topic">
+                <span>Mësimi / nënkapitulli</span>
+                <select id="learningTopic" aria-label="Zgjidh mësimin ose nënkapitullin"><option>Duke ngarkuar mësimet…</option></select>
+              </label>
+            </div>
+
+            <aside class="hub-rail hub-chapter-rail" aria-labelledby="hubChapterRailHeading">
+              <div class="hub-book-card">
+                <span>Burimi klinik</span>
+                <strong id="hubBookTitle">Doctor on Duty</strong>
+                <small id="hubBookEdition">Duke ngarkuar botimin…</small>
+                <div class="hub-book-state">
+                  <span id="hubBookReview">Duke u lidhur…</span>
+                  <a id="hubBookSourceLink" href="#" target="_blank" rel="noopener noreferrer" hidden>Hap burimin</a>
+                </div>
+              </div>
+              <header class="hub-rail-head">
+                <div><span>Biblioteka</span><h2 id="hubChapterRailHeading">Kapitujt</h2></div>
+                <strong id="hubChapterRailCount">—</strong>
+              </header>
+              <nav class="hub-rail-list" id="learningChapterList" aria-label="Kapitujt e librit"></nav>
+            </aside>
+
+            <aside class="hub-rail hub-topic-rail" aria-labelledby="hubTopicRailHeading">
+              <header class="hub-rail-head">
+                <div><span id="hubTopicRailKicker">Përmbajtja</span><h2 id="hubTopicRailHeading">Mësimet</h2></div>
+                <strong id="hubTopicRailCount">—</strong>
+              </header>
+              <nav class="hub-rail-list" id="learningTopicList" aria-label="Mësimet e kapitullit"></nav>
+            </aside>
+          </div>
+
+          <div class="hub-reader-pane">
+            <article class="hub-document ck-detail" id="learningDetail" tabindex="-1">
+              <div class="ck-empty"><strong>Duke ngarkuar Medical Hub…</strong><span>Përmbajtja po merret nga burimi i publikuar.</span></div>
+            </article>
+          </div>
+        </div>
       </div>
     </main>
   </div>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5" defer></script>
-<script src="/medical-hub-v2.js?v=19" defer></script>
+<script src="/medical-hub-v2.js?v=22" defer></script>
 </body>
 </html>

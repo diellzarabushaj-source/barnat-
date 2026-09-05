@@ -11,14 +11,95 @@ const INDEX_CACHE_MS = 20 * 1000;
 const MAX_RESULTS = 120;
 const MAX_QUERY = 120;
 
-const INDEX_QUERY = `*[_type == "learningTopic" && reviewStatus != "archived" && contentKind != "section"] | order(chapterNumber asc, lessonNumber asc) {
+// The new authoring model is intentionally book-first. Only verified documents
+// are public; drafts and review copies stay inside the dedicated Studio.
+const MODERN_INDEX_QUERY = `{
+  "chapters": *[
+    _type == "medicalChapter" &&
+    reviewStatus == "verified" &&
+    book->reviewStatus == "verified" &&
+    count(*[_type == "medicalTopic" && reviewStatus == "verified" && chapter._ref == ^._id]) > 0
+  ] | order(order asc, number asc) {
+    _id, _type, title, originalTitle, "slug": slug.current, summary,
+    "contentKind": "chapter", "chapterNumber": number, "lessonNumber": 0,
+    reviewStatus, version, sourceLocator,
+    "childCount": count(*[_type == "medicalTopic" && reviewStatus == "verified" && chapter._ref == ^._id]),
+    "book": book->{_id,title,shortTitle,edition,publishedYear,publisher,language,reviewStatus,version,sourceFile}
+  },
+  "topics": *[
+    _type == "medicalTopic" &&
+    reviewStatus == "verified" &&
+    book->reviewStatus == "verified" &&
+    chapter->reviewStatus == "verified"
+  ] | order(chapter->order asc, order asc) {
+    _id, _type, title, originalTitle, "slug": slug.current, summary, keywords, icdCodes, procedureCodes,
+    "contentKind": "lesson", "chapterNumber": chapter->number, "lessonNumber": order, topicType,
+    reviewStatus, reviewedBy, lastReviewedAt, version, sourceLocator,
+    "sectionCount": count(sections),
+    "chapter": chapter->{_id,title,number,"slug":slug.current},
+    "book": book->{_id,title,shortTitle,edition,publishedYear,publisher,language,reviewStatus,version,sourceFile}
+  }
+}`;
+
+const MODERN_DETAIL_QUERY = `coalesce(
+  *[
+    _type == "medicalTopic" && _id == $id &&
+    reviewStatus == "verified" &&
+    book->reviewStatus == "verified" &&
+    chapter->reviewStatus == "verified"
+  ][0] {
+    _id, _type, title, originalTitle, "slug": slug.current, summary, keywords, icdCodes, procedureCodes,
+    "contentKind": "lesson", "chapterNumber": chapter->number, "lessonNumber": order, topicType,
+    reviewStatus, reviewedBy, lastReviewedAt, version, sourceLocator,
+    sections[]{
+      _key,title,"slug":slug.current,order,sectionType,summary,sourceLocator,
+      content[]{...,_type == "medicalFigure" => {"imageUrl": image.asset->url}}
+    },
+    sources[]{_key,title,organization,url,publishedAt,note,locator},
+    "chapter": chapter->{_id,title,number,"slug":slug.current},
+    "book": book->{_id,title,shortTitle,edition,publishedYear,publisher,language,reviewStatus,version,sourceFile}
+  },
+  *[
+    _type == "medicalChapter" && _id == $id &&
+    reviewStatus == "verified" && book->reviewStatus == "verified"
+  ][0] {
+    _id, _type, title, originalTitle, "slug": slug.current, summary,
+    "contentKind": "chapter", "chapterNumber": number, "lessonNumber": 0,
+    reviewStatus, version, sourceLocator,
+    "book": book->{_id,title,shortTitle,edition,publishedYear,publisher,language,reviewStatus,version,sourceFile},
+    "relatedTopics": *[
+      _type == "medicalTopic" && reviewStatus == "verified" && chapter._ref == ^._id
+    ] | order(order asc) {
+      _id,_type,title,"slug":slug.current,summary,keywords,icdCodes,procedureCodes,
+      "contentKind":"lesson","chapterNumber":chapter->number,"lessonNumber":order,
+      reviewStatus,reviewedBy,lastReviewedAt,version
+    }
+  }
+)`;
+
+const MODERN_SEARCH_INDEX_QUERY = `*[
+  _type == "medicalTopic" &&
+  reviewStatus == "verified" &&
+  book->reviewStatus == "verified" &&
+  chapter->reviewStatus == "verified"
+] | order(chapter->order asc, order asc) {
+  _id,_type,title,originalTitle,"slug":slug.current,summary,keywords,icdCodes,procedureCodes,
+  "contentKind":"lesson","chapterNumber":chapter->number,"lessonNumber":order,topicType,
+  reviewStatus,reviewedBy,lastReviewedAt,version,sourceLocator,
+  "chapter":chapter->{_id,title,number,"slug":slug.current},
+  "book":book->{_id,title,shortTitle,edition,publishedYear,publisher,language,reviewStatus,version,sourceFile},
+  sections[]{title,summary,sectionType,sourceLocator,content[]{...}},
+  sources[]{title,organization,note}
+}`;
+
+const INDEX_QUERY = `*[_type == "learningTopic" && reviewStatus in ["review","verified"] && contentKind != "section" && (defined(summary) || count(steps) > 0 || count(relatedTopics) > 0)] | order(chapterNumber asc, lessonNumber asc) {
   _id, question, title, "slug": slug.current, keywords, icdCodes, procedureCodes, summary,
   contentKind, chapterNumber, lessonNumber, reviewStatus, reviewedBy, lastReviewedAt, version, sourceRxTitle,
   "stepCount": count(steps), "prescriptionCount": count(prescriptions),
   "protocolCount": count(relatedProtocols), "childCount": count(relatedTopics)
 }`;
 
-const DETAIL_QUERY = `*[_type == "learningTopic" && _id == $id && reviewStatus != "archived"][0] {
+const DETAIL_QUERY = `*[_type == "learningTopic" && _id == $id && reviewStatus in ["review","verified"] && (defined(summary) || count(steps) > 0 || count(relatedTopics) > 0)][0] {
   _id, question, title, "slug": slug.current, keywords, icdCodes, procedureCodes, summary,
   contentKind, chapterNumber, lessonNumber, sourceRxTitle,
   contentOrder[]{_key,kind,refKey,title,text},
@@ -36,7 +117,7 @@ const DETAIL_QUERY = `*[_type == "learningTopic" && _id == $id && reviewStatus !
     redFlags,whenToRefer,sources[]{_key,title,organization,url,publishedAt,note},reviewStatus,version}
 }`;
 
-const SEARCH_INDEX_QUERY = `*[_type == "learningTopic" && reviewStatus != "archived" && contentKind != "section"] {
+const SEARCH_INDEX_QUERY = `*[_type == "learningTopic" && reviewStatus in ["review","verified"] && contentKind != "section" && (defined(summary) || count(steps) > 0 || count(relatedTopics) > 0)] {
   _id, question, title, "slug": slug.current, keywords, icdCodes, procedureCodes, summary,
   contentKind, chapterNumber, lessonNumber, reviewStatus, reviewedBy, lastReviewedAt, version,
   "stepCount": count(steps), "prescriptionCount": count(prescriptions),
@@ -55,12 +136,12 @@ const SEARCH_INDEX_QUERY = `*[_type == "learningTopic" && reviewStatus != "archi
   }
 }`;
 
-const PRESCRIPTION_CHAPTER_QUERY = `*[_type == "prescriptionChapter" && reviewStatus != "archived"] | order(chapterNumber asc) {
+const PRESCRIPTION_CHAPTER_QUERY = `*[_type == "prescriptionChapter" && reviewStatus == "verified"] | order(chapterNumber asc) {
   chapterNumber, title, hasPrescriptions, sourceNote, reviewStatus, version,
-  "count": count(*[_type == "prescriptionGuide" && reviewStatus != "archived" && chapterNumber == ^.chapterNumber])
+  "count": count(*[_type == "prescriptionGuide" && reviewStatus == "verified" && chapterNumber == ^.chapterNumber])
 }`;
 
-const PRESCRIPTION_GUIDE_QUERY = `*[_type == "prescriptionGuide" && reviewStatus != "archived" && chapterNumber == $chapter] | order(orderInChapter asc, title asc) {
+const PRESCRIPTION_GUIDE_QUERY = `*[_type == "prescriptionGuide" && reviewStatus == "verified" && chapterNumber == $chapter] | order(orderInChapter asc, title asc) {
   _id, title, "slug": slug.current, externalId, chapterNumber, chapterTitle, orderInChapter, keywords,
   logicBlocks[]{
     _key, order, relation, sourceConnectorLabel, condition, selection, note,
@@ -72,7 +153,7 @@ const PRESCRIPTION_GUIDE_QUERY = `*[_type == "prescriptionGuide" && reviewStatus
   sourceDocument, sourceHeading, sourcePageStart, sourcePageEnd, reviewStatus, version
 }`;
 
-const PRESCRIPTION_SEARCH_INDEX_QUERY = `*[_type == "prescriptionGuide" && reviewStatus != "archived"] | order(chapterNumber asc, orderInChapter asc) {
+const PRESCRIPTION_SEARCH_INDEX_QUERY = `*[_type == "prescriptionGuide" && reviewStatus == "verified"] | order(chapterNumber asc, orderInChapter asc) {
   _id, title, chapterNumber, chapterTitle, orderInChapter, keywords, sourceHeading,
   logicBlocks[]{
     relation, sourceConnectorLabel, condition, note,
@@ -295,7 +376,14 @@ async function querySanity(query, params = {}) {
 
 async function getIndex() {
   if (indexCache.expiresAt > Date.now() && indexCache.items.length) return indexCache.items;
-  const items = await querySanity(INDEX_QUERY);
+  const modern = await querySanity(MODERN_INDEX_QUERY);
+  const modernItems = [
+    ...(Array.isArray(modern?.chapters) ? modern.chapters : []),
+    ...(Array.isArray(modern?.topics) ? modern.topics : []),
+  ];
+  const items = modernItems.some(item => item?._type === 'medicalTopic')
+    ? modernItems
+    : await querySanity(INDEX_QUERY);
   indexCache = { expiresAt:Date.now() + INDEX_CACHE_MS, items:Array.isArray(items) ? items : [] };
   return indexCache.items;
 }
@@ -330,6 +418,7 @@ function searchDocument(item) {
     prescriptions:item.prescriptions,
     figures:item.figures,
     sources:item.sources,
+    sections:item.sections,
     redFlags:item.redFlags,
     whenToRefer:item.whenToRefer,
     nested:item.nested,
@@ -344,7 +433,10 @@ function searchDocument(item) {
 
 async function getSearchIndex() {
   if (searchCache.expiresAt > Date.now() && searchCache.items.length) return searchCache.items;
-  const items = await querySanity(SEARCH_INDEX_QUERY);
+  const modernItems = await querySanity(MODERN_SEARCH_INDEX_QUERY);
+  const items = Array.isArray(modernItems) && modernItems.length
+    ? modernItems
+    : await querySanity(SEARCH_INDEX_QUERY);
   const docs = (Array.isArray(items) ? items : []).map(searchDocument);
   searchCache = { expiresAt:Date.now() + SEARCH_CACHE_MS, items:docs };
   return docs;
@@ -353,7 +445,7 @@ async function getSearchIndex() {
 function publicItem(item) {
   if (!item || typeof item !== 'object') return null;
   const {
-    steps, prescriptions, figures, sources, redFlags, whenToRefer, nested, ...rest
+    steps, prescriptions, figures, sources, sections, redFlags, whenToRefer, nested, ...rest
   } = item;
   return rest;
 }
@@ -456,7 +548,8 @@ module.exports = async function handler(req, res) {
       if (!/^[a-z0-9._-]{1,180}$/i.test(id)) {
         return res.status(400).json({ ok:false, error:'ID e pavlefshme.' });
       }
-      const item = await querySanity(DETAIL_QUERY, { id });
+      const modernItem = await querySanity(MODERN_DETAIL_QUERY, { id });
+      const item = modernItem || await querySanity(DETAIL_QUERY, { id });
       if (!item) return res.status(404).json({ ok:false, error:'Tema nuk u gjet.' });
       return res.status(200).json({ ok:true, item, source:'sanity-published' });
     }

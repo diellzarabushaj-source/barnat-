@@ -1,0 +1,121 @@
+import {DocumentTextIcon} from '@sanity/icons/DocumentText'
+import {defineArrayMember, defineField, defineType} from 'sanity'
+
+export const medicalBook = defineType({
+  name: 'medicalBook',
+  title: 'Libër mjekësor',
+  type: 'document',
+  icon: DocumentTextIcon,
+  groups: [
+    {name: 'identity', title: 'Identiteti', default: true},
+    {name: 'source', title: 'Burimi'},
+    {name: 'workflow', title: 'Rishikimi'},
+  ],
+  fields: [
+    defineField({name: 'title', title: 'Titulli', type: 'string', group: 'identity', validation: (rule) => rule.required()}),
+    defineField({name: 'shortTitle', title: 'Titulli i shkurtër', type: 'string', group: 'identity'}),
+    defineField({name: 'originalTitle', title: 'Titulli origjinal', type: 'string', group: 'identity'}),
+    defineField({name: 'slug', title: 'Slug', type: 'slug', group: 'identity', options: {source: 'title'}, validation: (rule) => rule.required()}),
+    defineField({name: 'edition', title: 'Botimi', type: 'string', group: 'identity'}),
+    defineField({name: 'publishedYear', title: 'Viti', type: 'number', group: 'identity', validation: (rule) => rule.integer().min(1800).max(2200)}),
+    defineField({name: 'publisher', title: 'Botuesi', type: 'string', group: 'identity'}),
+    defineField({
+      name: 'language',
+      title: 'Gjuha',
+      type: 'string',
+      group: 'identity',
+      options: {layout: 'radio', list: [
+        {title: 'Shqip', value: 'sq'},
+        {title: 'Anglisht', value: 'en'},
+        {title: 'Tjetër', value: 'other'},
+      ]},
+      initialValue: 'sq',
+    }),
+    defineField({name: 'description', title: 'Përshkrimi', type: 'text', rows: 4, group: 'identity'}),
+    defineField({
+      name: 'coverImage',
+      title: 'Kopertina',
+      type: 'image',
+      group: 'identity',
+      options: {hotspot: true},
+      fields: [
+        defineField({name: 'alt', title: 'Teksti alternativ', type: 'string', validation: (rule) => rule.required().warning()}),
+      ],
+    }),
+    defineField({name: 'sourceFile', title: 'PDF-ja kryesore', type: 'sourceFile', group: 'source'}),
+    defineField({
+      name: 'sourceExtracts',
+      title: 'Ekstraktet e nxjerra nga libri',
+      description: 'Dokumente pune, si ekstraktet e recetave. Ato nuk zëvendësojnë PDF-në kryesore.',
+      type: 'array',
+      group: 'source',
+      of: [defineArrayMember({type: 'sourceExtract'})],
+    }),
+    defineField({name: 'sourceNotes', title: 'Shënime për burimin', type: 'text', rows: 4, group: 'source'}),
+    defineField({
+      name: 'reviewStatus',
+      title: 'Statusi',
+      type: 'string',
+      group: 'workflow',
+      options: {layout: 'radio', list: [
+        {title: 'Draft', value: 'draft'},
+        {title: 'Në rishikim', value: 'review'},
+        {title: 'I verifikuar', value: 'verified'},
+        {title: 'I arkivuar', value: 'archived'},
+      ]},
+      initialValue: 'draft',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({name: 'version', title: 'Versioni editorial', type: 'string', group: 'workflow'}),
+  ],
+  initialValue: {
+    title: 'Doctor on Duty',
+    shortTitle: 'Doctor on Duty',
+    originalTitle: 'Doctor on Duty 3rd Edition',
+    edition: '3rd Edition',
+    language: 'en',
+    reviewStatus: 'draft',
+    sourceFile: {
+      _type: 'sourceFile',
+      driveFileId: '1c1UE1EYQYOji69nyn6OB3prY96YInmFv',
+      url: 'https://drive.google.com/file/d/1c1UE1EYQYOji69nyn6OB3prY96YInmFv/view',
+      fileName: 'Doctor on Duty 3rd Edition.pdf',
+    },
+    sourceExtracts: [
+      {
+        _key: 'prescriptions-primary',
+        _type: 'sourceExtract',
+        label: 'Recetat sipas kapitujve — substancat aktive',
+        kind: 'prescriptions',
+        relationship: 'derived',
+        file: {
+          _type: 'sourceFile',
+          driveFileId: '119EyMzSHYV2SVYXLo6_P2EgkI_8Hukw_uNDvGuewyNg',
+          url: 'https://docs.google.com/document/d/119EyMzSHYV2SVYXLo6_P2EgkI_8Hukw_uNDvGuewyNg/edit',
+          fileName: 'Doctor on Duty — Recetat sipas kapitujve',
+        },
+      },
+      {
+        _key: 'prescriptions-copy',
+        _type: 'sourceExtract',
+        label: 'Recetat sipas kapitujve — kopja e punës',
+        kind: 'prescriptions',
+        relationship: 'derived',
+        file: {
+          _type: 'sourceFile',
+          driveFileId: '1l8ZgUBuvCL1891pDT4V11tHqeNTTt3rQPDIR8c7RFuo',
+          url: 'https://docs.google.com/document/d/1l8ZgUBuvCL1891pDT4V11tHqeNTTt3rQPDIR8c7RFuo/edit',
+          fileName: 'Doctor on Duty — Recetat sipas kapitujve (kopje)',
+        },
+      },
+    ],
+  },
+  preview: {
+    select: {title: 'title', edition: 'edition', year: 'publishedYear', media: 'coverImage'},
+    prepare: ({title, edition, year, media}) => ({
+      title,
+      subtitle: [edition, year].filter(Boolean).join(' · '),
+      media,
+    }),
+  },
+})

@@ -55,7 +55,7 @@ assert.match(js, /reason:'draft-not-empty'/);
 assert.match(js, /state\.composerOrigin = 'manual'/);
 assert.match(js, /Skema nga Doctor on Duty u vendos vetëm si draft/);
 
-const draftFunction = js.match(/function beginSourceGuideDraft\(payload = \{\}\) \{([\s\S]*?)\n  \}\n\n  window\.MedIndexRecetaWorkspace/)?.[1] || '';
+const draftFunction = js.match(/function beginSourceGuideDraft\(payload = \{\}\) \{([\s\S]*?)\r?\n  \}\r?\n\r?\n  window\.MedIndexRecetaWorkspace/)?.[1] || '';
 assert.ok(draftFunction, 'Source-guide draft bridge must be extractable');
 assert.doesNotMatch(draftFunction, /saveCurrent\s*\(/, 'Source guide must never auto-save a prescription');
 assert.doesNotMatch(draftFunction, /copyCurrent\s*\(/, 'Source guide must never auto-copy a prescription');

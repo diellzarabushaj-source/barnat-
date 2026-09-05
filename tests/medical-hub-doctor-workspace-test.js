@@ -14,6 +14,14 @@ const api = read('api/medical-hub.js');
 const imageApi = read('lib/medical-hub-image-handler.js');
 const imageProxy = require('../lib/medical-hub-image-handler.js');
 const icdRuntime = read('icd-v2.js');
+const smokeServer = read('tests/clinical-smoke-server.js');
+const {
+  BOOK:fixtureBook,
+  FIXTURE_GENERATED_AT,
+  indexItems:fixtureIndexItems,
+  detailsById:fixtureDetailsById,
+  medicalHubFixtureResponse,
+} = require('./medical-hub-browser-fixture.js');
 
 assert.match(html, /data-drx-app="medical-hub-v2"/);
 const cssAssetVersion = html.match(/medical-hub-v2\.css\?v=(\d+)/)?.[1] || '';
@@ -32,6 +40,10 @@ assert.match(html, /id="learningResultStatus"/);
 assert.match(html, /id="previousTopicButton"/);
 assert.match(html, /id="nextTopicButton"/);
 assert.match(html, /id="learningTopicPosition"/);
+assert.match(html, /id="hubNavigationDrawer"/);
+assert.match(html, /id="learningChapterList"/);
+assert.match(html, /id="learningTopicList"/);
+assert.match(html, /id="hubBookSourceLink"/);
 assert.doesNotMatch(html, /tailadmin-|auth-client|clinical-knowledge\.css|medical-hub\.css/);
 
 assert.match(js, /const HUB_API = '\/api\/medical-hub'/);
@@ -68,7 +80,12 @@ assert.match(js, /data-hub-section/);
 assert.match(js, /data-topic-jump/);
 assert.match(js, /sidebar-taxonomy-v3/);
 assert.match(js, /ensureAuth\(\)/);
-assert.match(js, /Sanity · Backend/);
+assert.match(js, /Burimi i publikuar/);
+assert.match(js, /function renderMedicalTopicDetail\(item\)/);
+assert.match(js, /function renderNavigationRails\(\)/);
+assert.match(js, /function browseChapter\(key\)/);
+assert.match(js, /Search is global across the complete book/);
+assert.doesNotMatch(js, /chapter:state\.category/);
 assert.doesNotMatch(js, /window\.MedIndexSanity/);
 assert.doesNotMatch(js, /ensureSanity\(/);
 assert.doesNotThrow(() => new Function(js));
@@ -80,8 +97,14 @@ assert.doesNotThrow(() => new Function(icdRuntime));
 assert.match(api, /const INDEX_QUERY = `/);
 assert.match(api, /const DETAIL_QUERY = `/);
 assert.match(api, /const SEARCH_INDEX_QUERY = `/);
+assert.match(api, /const MODERN_INDEX_QUERY = `/);
+assert.match(api, /const MODERN_DETAIL_QUERY = `/);
+assert.match(api, /const MODERN_SEARCH_INDEX_QUERY = `/);
 assert.match(api, /_type == "learningTopic"/);
-assert.match(api, /reviewStatus != "archived"/);
+assert.match(api, /_type == "medicalTopic"/);
+assert.match(api, /reviewStatus == "verified"/);
+assert.match(api, /reviewStatus in \["review","verified"\]/);
+assert.doesNotMatch(api, /prescriptionGuide" && reviewStatus != "archived"/);
 assert.match(api, /perspective', 'published'/);
 assert.match(api, /mode === 'search'/);
 assert.match(api, /authorized\(req\)/);
@@ -89,6 +112,8 @@ assert.match(api, /source:'sanity-published-index'/);
 assert.match(api, /source:'sanity-published-search'/);
 assert.match(api, /medicalHubImageHandler/);
 assert.match(api, /requestedRoute === 'image'/);
+assert.match(smokeServer, /medicalHubFixtureResponse/);
+assert.match(smokeServer, /url\.pathname === '\/api\/medical-hub'/);
 const vercel = JSON.parse(read('vercel.json'));
 assert.ok(
   vercel.rewrites.some(item => item.source === '/api/medical-hub-image' && item.destination === '/api/medical-hub?_route=image'),
@@ -118,6 +143,38 @@ assert.match(searchQuery, /figures\[\]/);
 assert.match(searchQuery, /sources\[\]/);
 assert.match(searchQuery, /nested/);
 assert.doesNotThrow(() => new Function(api));
+
+const fixtureIndex = medicalHubFixtureResponse('/api/medical-hub?mode=index');
+assert.equal(fixtureIndex.status, 200);
+assert.equal(fixtureIndex.payload.ok, true);
+assert.equal(fixtureIndex.payload.generatedAt, FIXTURE_GENERATED_AT);
+assert.equal(fixtureIndex.payload.count, fixtureIndexItems.length);
+assert.equal(fixtureIndex.payload.book.sourceType, 'google-drive');
+assert.equal(fixtureBook.sourceRevisionId, 'fixture-revision-2026-09-04');
+assert.ok(fixtureIndex.payload.items.some(item => item.contentKind === 'chapter'));
+assert.ok(fixtureIndex.payload.items.some(item => item.contentKind === 'lesson'));
+assert.ok(fixtureIndex.payload.items.some(item => item.title.length > 100), 'Browser fixture must exercise long Medical Hub names');
+
+const fixtureTopicId = 'medicalhub-dod-ch01-sub01';
+const fixtureDetail = medicalHubFixtureResponse(`/api/medical-hub?id=${fixtureTopicId}`);
+assert.equal(fixtureDetail.status, 200);
+assert.equal(fixtureDetail.payload.item._id, fixtureTopicId);
+assert.ok(fixtureDetail.payload.item.relatedTopics.length >= 2, 'Browser fixture must include nested lesson sections');
+assert.ok(fixtureDetail.payload.item.contentOrder.length >= 3, 'Browser fixture must preserve source block order');
+assert.ok(fixtureDetail.payload.item.sources[0].url.includes('drive.google.com/file/d/1c1UE1EYQYOji69nyn6OB3prY96YInmFv'));
+assert.equal(fixtureDetail.payload.item.sourceDocument.revisionId, fixtureBook.sourceRevisionId);
+assert.equal(fixtureDetail.payload.item.reviewStatus, 'verified');
+assert.equal(fixtureDetail.payload.item.reviewedBy, 'Dr. Arta Krasniqi · QA fixture');
+assert.equal(fixtureDetail.payload.item.lastReviewedAt, '2026-08-28T10:30:00.000Z');
+assert.equal(fixtureDetailsById.has(fixtureTopicId), true);
+
+const fixtureSearch = medicalHubFixtureResponse('/api/medical-hub?mode=search&q=komunikim&chapter=4');
+assert.equal(fixtureSearch.status, 200);
+assert.ok(fixtureSearch.payload.count >= 1);
+assert.ok(fixtureSearch.payload.items.every(item => item.chapterNumber === 4));
+assert.ok(fixtureSearch.payload.items.some(item => item.title.includes('Komunikimi')));
+assert.equal(medicalHubFixtureResponse('/api/medical-hub?id=missing-topic').status, 404);
+assert.equal(medicalHubFixtureResponse('/api/medical-hub?mode=unknown').status, 400);
 
 assert.match(imageApi, /ALLOWED_HOSTS/);
 assert.match(imageApi, /upload\.wikimedia\.org/);
@@ -157,6 +214,11 @@ assert.match(css, /\.ck-ordered-content/);
 assert.match(css, /\.ck-protocol-list/);
 assert.match(css, /\.ck-document-pagination/);
 assert.match(css, /\.ck-loading-spinner/);
+assert.match(css, /Medical Hub book workspace v20/);
+assert.match(css, /\.hub-navigation-drawer/);
+assert.match(css, /\.hub-rail-row/);
+assert.match(css, /\.ck-source-panel/);
+assert.match(css, /\.ck-modern-section-heading/);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /prefers-reduced-motion:reduce/);
 

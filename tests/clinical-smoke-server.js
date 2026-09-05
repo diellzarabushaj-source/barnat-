@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const zlib = require('node:zlib');
 const { phase5AuthenticatedSession, emptyUserLibrarySnapshot } = require('./phase5-browser-fixture.js');
+const { medicalHubFixtureResponse } = require('./medical-hub-browser-fixture.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const PORT = Number(process.env.PORT || 4173);
@@ -185,6 +186,13 @@ const server = http.createServer((req, res) => {
     const data = icdPayload(url);
     if (data) return send(res, 200, JSON.stringify({ ok:true, data }), 'application/json; charset=utf-8');
     return send(res, 503, JSON.stringify({ error:'Use full hierarchy test views' }), 'application/json; charset=utf-8');
+  }
+  if (url.pathname === '/api/medical-hub') {
+    if (req.method !== 'GET') {
+      return send(res, 405, JSON.stringify({ ok:false, error:'Method not allowed in browser fixture' }), 'application/json; charset=utf-8', { Allow:'GET' });
+    }
+    const fixture = medicalHubFixtureResponse(url);
+    return send(res, fixture.status, JSON.stringify(fixture.payload), 'application/json; charset=utf-8');
   }
   if (url.pathname === '/api/drug-search') {
     const q = String(url.searchParams.get('q') || '').toLowerCase();
