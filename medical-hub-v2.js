@@ -1109,8 +1109,106 @@
     });
   }
 
+  /* Reading width and foldable sections -------------------------------------
+     The two rails hold 450-520px of the desktop grid, which is right while the
+     reader is choosing a lesson and wrong once they are reading one. A control
+     in the page heading hands that column to the reader and hands it back.
+     Sections fold on their own too, so a long chapter collapses to something
+     closer to a table of contents. Both remember their state, so returning to
+     a lesson returns to how it was left.
+
+     Only the desktop grid is touched. Below 1100px the rails are already a
+     drawer behind "Shfleto librin", which stays exactly as it is. */
+
+  const RAILS_KEY = 'drx_hub_rails_hidden_v1';
+  const FOLD_KEY = 'drx_hub_folded_sections_v1';
+
+  function readStore(key, fallback) {
+    try {
+      const raw = window.localStorage.getItem(key);
+      return raw == null ? fallback : JSON.parse(raw);
+    } catch { return fallback; }
+  }
+  function writeStore(key, value) {
+    try { window.localStorage.setItem(key, JSON.stringify(value)); } catch { /* private mode */ }
+  }
+
+  function applyRailsHidden(hidden) {
+    document.documentElement.toggleAttribute('data-hub-rails-hidden', hidden);
+    const toggle = $('#hubRailsToggle');
+    if (!toggle) return;
+    toggle.setAttribute('aria-pressed', hidden ? 'true' : 'false');
+    const label = toggle.querySelector('[data-hub-rails-label]');
+    if (label) label.textContent = hidden ? 'Shfaq panelet' : 'Fshih panelet';
+  }
+
+  function bindRailsToggle() {
+    const toggle = $('#hubRailsToggle');
+    if (!toggle || toggle.dataset.bound === '1') return;
+    toggle.dataset.bound = '1';
+    applyRailsHidden(readStore(RAILS_KEY, false) === true);
+    toggle.addEventListener('click', () => {
+      const hidden = !document.documentElement.hasAttribute('data-hub-rails-hidden');
+      applyRailsHidden(hidden);
+      writeStore(RAILS_KEY, hidden);
+    });
+  }
+
+  /* Every `.ck-section` opens with `.ck-section-heading` and everything after
+     it is the body. That one shape covers each branch of the reader without
+     editing any of them. */
+  function bindSectionFolding(detail) {
+    const folded = new Set(readStore(FOLD_KEY, []) || []);
+    let seq = 0;
+
+    detail.querySelectorAll('.ck-section').forEach(section => {
+      const heading = section.querySelector(':scope > .ck-section-heading');
+      if (!heading || heading.querySelector('[data-hub-fold]')) return;
+
+      const body = document.createElement('div');
+      body.className = 'ck-section-body';
+      body.id = `${section.id || `hub-section-${++seq}`}-body`;
+      let node = heading.nextSibling;
+      while (node) {
+        const next = node.nextSibling;
+        body.appendChild(node);
+        node = next;
+      }
+      section.appendChild(body);
+
+      const title = heading.querySelector('h3')?.textContent?.trim() || 'seksionin';
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'ck-section-fold';
+      button.dataset.hubFold = '1';
+      button.setAttribute('aria-controls', body.id);
+      button.setAttribute('aria-label', `Palos ose hap ${title}`);
+      button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+      heading.appendChild(button);
+
+      const key = section.id || '';
+      const setOpen = open => {
+        body.hidden = !open;
+        section.classList.toggle('is-folded', !open);
+        button.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (!key) return;
+        if (open) folded.delete(key); else folded.add(key);
+        writeStore(FOLD_KEY, [...folded]);
+      };
+
+      setOpen(!(key && folded.has(key)));
+      button.addEventListener('click', () => setOpen(body.hidden));
+      heading.addEventListener('click', event => {
+        if (event.target.closest('a,button')) return;
+        setOpen(body.hidden);
+      });
+    });
+  }
+
   function bindDetailNavigation(detail) {
     bindFigureFallbacks(detail);
+    bindRailsToggle();
+    bindSectionFolding(detail);
     detail.querySelectorAll('[data-hub-section]').forEach(button => {
       button.addEventListener('click', () => {
         document.getElementById(button.dataset.hubSection)?.scrollIntoView({

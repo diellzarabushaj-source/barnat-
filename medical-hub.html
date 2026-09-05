@@ -91,11 +91,16 @@
       <div class="page-wrap hub-page">
         <header class="page-heading">
           <div>
-            <p class="eyebrow">Njohuri klinike</p>
             <h1>Medical Hub</h1>
             <p class="page-subtitle">Lexo sipas strukturës së librit kryesor, lëviz mes kapitujve dhe gjej shpejt temat, ICD‑10, procedurat, figurat dhe recetat e lidhura.</p>
           </div>
-          <span class="hub-count" id="learningStatus">Duke ngarkuar temat…</span>
+          <div class="hub-head-actions">
+            <span class="hub-count" id="learningStatus">Duke ngarkuar temat…</span>
+            <button class="hub-rails-toggle" id="hubRailsToggle" type="button" aria-pressed="false" aria-controls="hubNavigationDrawer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 5.5h16M4 12h16M4 18.5h16"/></svg>
+              <span data-hub-rails-label>Fshih panelet</span>
+            </button>
+          </div>
         </header>
 
         <section class="hub-command" aria-label="Kërkimi dhe navigimi në Medical Hub">

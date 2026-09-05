@@ -2151,3 +2151,100 @@ html[data-drx-app="medical-hub-v2"] :where(button,a,input,select,summary,[tabind
   .ck-modern-section-summary,.ck-modern-content{margin-left:0}
   .ck-document-pagination{grid-template-columns:1fr}
 }
+
+
+/* ==========================================================================
+   Medical Hub — reading width and foldable sections
+
+   Above 1420px the workspace gives the two rails 450-520px. That is right
+   while the reader is choosing a lesson and wrong once they are reading one,
+   so a control in the page heading hands that column to the reader and hands
+   it back. It remembers the choice.
+
+   Only that breakpoint is touched. At 1420px and below the rails are already
+   a drawer behind "Shfleto librin", which needs no second control, so the
+   toggle does not exist there.
+
+   Sections fold individually, because a long chapter is mostly sections the
+   reader has already passed.
+   ========================================================================== */
+
+.hub-head-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.hub-rails-toggle{display:none}
+
+@media(min-width:1421px){
+  .hub-rails-toggle{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    min-height:30px;
+    padding:5px 11px;
+    border:1px solid #d6dee8;
+    border-radius:999px;
+    background:#fff;
+    color:#52667a;
+    font-size:11px;
+    font-weight:500;
+    cursor:pointer;
+    transition:color .15s ease,border-color .15s ease,background .15s ease;
+  }
+  .hub-rails-toggle svg{width:13px;height:13px}
+  .hub-rails-toggle:hover{color:#0d253d;border-color:#bcc8d6}
+  .hub-rails-toggle[aria-pressed="true"]{
+    border-color:#d9d6ff;
+    background:#f0efff;
+    color:#635bff;
+  }
+  .hub-rails-toggle:focus-visible{
+    outline:2px solid #635bff;
+    outline-offset:2px;
+  }
+
+  html[data-hub-rails-hidden] .hub-page .hub-workspace{
+    grid-template-columns:minmax(0,1fr);
+  }
+  html[data-hub-rails-hidden] .hub-navigation-drawer{
+    display:none;
+  }
+}
+
+/* Foldable sections ------------------------------------------------------- */
+
+.ck-section-heading{cursor:pointer}
+
+/* 28px, not 26: tailwind-site-browser.spec.js holds every visible control on
+   an authenticated page to a 28px floor, and it is the better target anyway. */
+.ck-section-fold{
+  display:inline-grid;
+  place-items:center;
+  width:28px;
+  height:28px;
+  margin-left:auto;
+  padding:0;
+  border:1px solid #d6dee8;
+  border-radius:7px;
+  background:#fff;
+  color:#52667a;
+  cursor:pointer;
+  transition:transform .18s cubic-bezier(.32,.72,0,1),color .15s ease,border-color .15s ease;
+}
+.ck-section-fold svg{width:14px;height:14px}
+.ck-section-fold:hover{color:#0d253d;border-color:#bcc8d6}
+.ck-section-fold:focus-visible{
+  outline:2px solid #635bff;
+  outline-offset:2px;
+}
+.ck-section.is-folded .ck-section-fold{transform:rotate(-90deg)}
+.ck-section-body[hidden]{display:none}
+.ck-section.is-folded{padding-bottom:0}
+
+@media(prefers-reduced-motion:reduce){
+  .hub-rails-toggle,
+  .ck-section-fold{transition:none}
+}
