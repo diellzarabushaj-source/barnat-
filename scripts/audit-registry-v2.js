@@ -5,6 +5,7 @@ const path = require('node:path');
 
 require('./stabilize-registry-v2-column-picker.js');
 require('./stabilize-registry-v2-dose-autoload.js');
+require('./stabilize-dosage-cache-isolation.js');
 
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
@@ -12,6 +13,7 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const html = read('index.html');
 const css = read('registry-v2.css');
 const js = read('registry-v2.js');
+const worker = read(fs.existsSync(path.join(root, 'sw-resilient-v3.js')) ? 'sw-resilient-v3.js' : 'sw-resilient.js');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -117,16 +119,29 @@ assert(persistStart >= 0 && persistEnd > persistStart, 'Column preference persis
 const persistBody = js.slice(persistStart, persistEnd);
 assert(!persistBody.includes('state.visibleColumns = new Set'), 'A delayed PUT acknowledgement must not repaint visible columns.');
 
-assert(js.includes("const REGISTRY_DOSE_AUTOLOAD = 'registry-dose-autoload-retry-v1'"), 'Automatic registry dosage hydration patch is missing.');
-assert(js.includes('const maxAttempts = 2;'), 'Visible dosage hydration must retry automatically after a transient failure.');
-assert(js.includes('fetchJson(url, {}, 12000)'), 'Visible dosage hydration needs a deadline longer than the backend sequential Supabase budget.');
+assert(js.includes("const REGISTRY_DOSE_AUTOLOAD = 'registry-dose-autoload-retry-v2'"), 'Cache-safe registry dosage hydration patch is missing.');
+assert(js.includes("const LEGACY_DOSAGE_CACHE = 'medindex-private-resilient-v2'"), 'Registry must know the legacy shared dosage cache key.');
+assert(js.includes('async function clearLegacySharedDosageCache()'), 'Registry must evict the old bare dosage cache entry before hydration.');
+assert(js.includes('navigator.serviceWorker.getRegistration()'), 'Registry must request a service-worker update after the cache fix deploys.');
+assert(js.includes('const maxAttempts = 3;'), 'Visible dosage hydration must retry automatically after a transient failure.');
+assert(js.includes('fetchJson(url, {}, 14000)'), 'Visible dosage hydration needs a bounded but generous clinical deadline.');
+assert(js.includes('Stale dosage cache returned cards from another registry page'), 'Registry must reject dosage cards that belong to another page.');
 assert(js.includes("setDoseLoadMessage('Duke ringarkuar dozën…')"), 'Transient dosage failures must stay in an automatic retry state.');
-assert(js.includes("setDoseLoadMessage('Doza s’u ngarkua', 'error')"), 'Transport failure must not be mislabeled as an unpublished dose.');
+assert(js.includes("setDoseLoadMessage('Doza s’u ngarkua', 'error')"), 'Transport/cache failure must not be mislabeled as an unpublished dose.');
 const doseStart = js.indexOf('async function loadDosageForVisibleRows(requestId)');
 const doseEnd = js.indexOf('function doseMarkup', doseStart);
 assert(doseStart >= 0 && doseEnd > doseStart, 'Visible dosage loader is missing.');
 const doseBody = js.slice(doseStart, doseEnd);
-assert(!doseBody.includes("Dosage cards unavailable:'"), 'Legacy one-shot dosage failure path must not return.');
+assert(doseBody.includes('await clearLegacySharedDosageCache();'), 'Every visible-page dosage hydration must clear the legacy shared cache key.');
+
+assert(worker.includes("const DOSAGE_CACHE_ISOLATION = 'dosage-query-cache-isolation-v1'"), 'Service worker dosage cache isolation patch is missing.');
+assert(worker.includes("if (path === '/api/dosage')"), 'Service worker must give dosage its own query-aware cache-key path.');
+assert(worker.includes('normalized.searchParams.sort();'), 'Dosage cache key must retain and canonicalize query parameters.');
+assert(worker.includes('async function dosageDataResponse(event, url)'), 'Dosage requests need a dedicated network-first service-worker path.');
+assert(worker.includes("cloneWithHeader(response, 'dosage-network')"), 'Online dosage must prefer the exact network response.');
+assert(worker.includes("cloneWithHeader(cached, 'dosage-query-hit')"), 'Offline dosage fallback must use only the exact query cache entry.');
+assert(worker.includes("privateCache.delete(requestFor('/api/dosage'"), 'Updated worker must evict the old bare dosage cache entry on activation.');
+assert(worker.includes("if (url.pathname === '/api/dosage') return event.respondWith(dosageDataResponse(event, url));"), 'Dosage fetches must bypass generic pathname-only private caching.');
 
 assert(css.includes('--accent:#635bff'), 'Stripe-style accent token is missing.');
 assert(css.includes('.data-card'), 'Canonical table card style is missing.');
@@ -149,6 +164,7 @@ console.log(JSON.stringify({
   shellVersion:'drx-dashboard-stripe-v8',
   tableHeaderCount,
   columnPickerStability:'registry-column-picker-stability-v2',
-  dosageAutoload:'registry-dose-autoload-retry-v1',
+  dosageAutoload:'registry-dose-autoload-retry-v2',
+  dosageCacheIsolation:'dosage-query-cache-isolation-v1',
   legacyAssetsLoaded:0,
 }, null, 2));
