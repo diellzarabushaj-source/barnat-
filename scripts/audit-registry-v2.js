@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 require('./stabilize-registry-v2-column-picker.js');
+require('./stabilize-registry-v2-dose-autoload.js');
 
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
@@ -116,6 +117,17 @@ assert(persistStart >= 0 && persistEnd > persistStart, 'Column preference persis
 const persistBody = js.slice(persistStart, persistEnd);
 assert(!persistBody.includes('state.visibleColumns = new Set'), 'A delayed PUT acknowledgement must not repaint visible columns.');
 
+assert(js.includes("const REGISTRY_DOSE_AUTOLOAD = 'registry-dose-autoload-retry-v1'"), 'Automatic registry dosage hydration patch is missing.');
+assert(js.includes('const maxAttempts = 2;'), 'Visible dosage hydration must retry automatically after a transient failure.');
+assert(js.includes('fetchJson(url, {}, 12000)'), 'Visible dosage hydration needs a deadline longer than the backend sequential Supabase budget.');
+assert(js.includes("setDoseLoadMessage('Duke ringarkuar dozën…')"), 'Transient dosage failures must stay in an automatic retry state.');
+assert(js.includes("setDoseLoadMessage('Doza s’u ngarkua', 'error')"), 'Transport failure must not be mislabeled as an unpublished dose.');
+const doseStart = js.indexOf('async function loadDosageForVisibleRows(requestId)');
+const doseEnd = js.indexOf('function doseMarkup', doseStart);
+assert(doseStart >= 0 && doseEnd > doseStart, 'Visible dosage loader is missing.');
+const doseBody = js.slice(doseStart, doseEnd);
+assert(!doseBody.includes("Dosage cards unavailable:'"), 'Legacy one-shot dosage failure path must not return.');
+
 assert(css.includes('--accent:#635bff'), 'Stripe-style accent token is missing.');
 assert(css.includes('.data-card'), 'Canonical table card style is missing.');
 assert(css.includes('.detail-drawer'), 'Detail drawer style is missing.');
@@ -137,5 +149,6 @@ console.log(JSON.stringify({
   shellVersion:'drx-dashboard-stripe-v8',
   tableHeaderCount,
   columnPickerStability:'registry-column-picker-stability-v2',
+  dosageAutoload:'registry-dose-autoload-retry-v1',
   legacyAssetsLoaded:0,
 }, null, 2));
