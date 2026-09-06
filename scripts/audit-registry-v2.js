@@ -3,6 +3,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+require('./stabilize-registry-v2-column-picker.js');
+
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
@@ -95,6 +97,13 @@ assert(js.includes("AbortController"), 'Registry v2 requests must have bounded t
 assert(js.includes("requestId"), 'Registry v2 must discard stale concurrent responses.');
 assert(js.includes("220"), 'Registry v2 search must be debounced.');
 
+assert(js.includes("const COLUMN_PICKER_STABILITY = 'registry-column-picker-stability-v1'"), 'Stable Registry v2 column picker patch is missing.');
+assert(js.includes('function syncColumnPickerState()'), 'Column picker must update checkbox state without rebuilding its open DOM.');
+assert(js.includes('preferenceSaveInFlight: false'), 'Column preference writes must be serialized.');
+assert(js.includes('state.preferenceRevision += 1;'), 'Column preference changes must carry a stale-response revision guard.');
+assert(js.includes("el.columnPickerPanel.addEventListener('change'"), 'Column toggles must use native checkbox change events.');
+assert(js.includes('registryColumns:snapshot'), 'Column preference persistence must write an immutable visible-column snapshot.');
+
 assert(css.includes('--accent:#635bff'), 'Stripe-style accent token is missing.');
 assert(css.includes('.data-card'), 'Canonical table card style is missing.');
 assert(css.includes('.detail-drawer'), 'Detail drawer style is missing.');
@@ -112,5 +121,6 @@ console.log(JSON.stringify({
   scripts:scriptSources,
   shellVersion:'drx-dashboard-stripe-v8',
   tableHeaderCount,
+  columnPickerStability:'registry-column-picker-stability-v1',
   legacyAssetsLoaded:0,
 }, null, 2));
