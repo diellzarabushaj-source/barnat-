@@ -50,7 +50,6 @@ assert(/src="\/registry-v2\.js\?v=[^"]+"/.test(html), 'Registry v2 runtime is no
 
 const stylesheetLinks = [...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"/g)].map(match => match[1]);
 const scriptSources = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map(match => match[1]);
-// The shared sidebar taxonomy is a first-class registry runtime dependency, not a legacy asset.
 
 assert(stylesheetLinks.length === 3, `Registry v2 must load registry CSS, dose-calculator CSS and the shared Stripe shell; found ${stylesheetLinks.length}.`);
 assert(scriptSources.length === 5, `Registry v2 must load dose core/runtime, shared sidebar taxonomy, registry runtime and calculator runtime; found ${scriptSources.length}.`);
@@ -92,23 +91,39 @@ for (const asset of legacyAssets) {
 
 assert(js.includes("credentials:'same-origin'"), 'Authenticated API requests must keep same-origin credentials.');
 assert(js.includes("response.status === 401 || response.status === 403"), 'Registry v2 must fail closed on unauthenticated API responses.');
-assert(js.includes("escapeHtml"), 'Registry v2 must escape rendered text.');
-assert(js.includes("AbortController"), 'Registry v2 requests must have bounded timeouts.');
-assert(js.includes("requestId"), 'Registry v2 must discard stale concurrent responses.');
-assert(js.includes("220"), 'Registry v2 search must be debounced.');
+assert(js.includes('escapeHtml'), 'Registry v2 must escape rendered text.');
+assert(js.includes('AbortController'), 'Registry v2 requests must have bounded timeouts.');
+assert(js.includes('requestId'), 'Registry v2 must discard stale concurrent responses.');
+assert(js.includes('220'), 'Registry v2 search must be debounced.');
 
-assert(js.includes("const COLUMN_PICKER_STABILITY = 'registry-column-picker-stability-v1'"), 'Stable Registry v2 column picker patch is missing.');
+assert(js.includes("const COLUMN_PICKER_STABILITY = 'registry-column-picker-stability-v2'"), 'Transactional Registry v2 column picker patch is missing.');
+assert(js.includes('columnPickerDraft: null'), 'Column picker must keep an isolated draft while open.');
+assert(js.includes('columnPickerDirty: false'), 'Column picker must track whether the draft differs from the committed table state.');
+assert(js.includes('preferenceInteractionVersion: 0'), 'Profile preference loading must be guarded against live user interaction.');
+assert(js.includes('function sameColumnSelection('), 'Column picker must compare draft and committed selections deterministically.');
 assert(js.includes('function syncColumnPickerState()'), 'Column picker must update checkbox state without rebuilding its open DOM.');
 assert(js.includes('preferenceSaveInFlight: false'), 'Column preference writes must be serialized.');
-assert(js.includes('state.preferenceRevision += 1;'), 'Column preference changes must carry a stale-response revision guard.');
+assert(js.includes('state.preferenceRevision += 1;'), 'Committed column changes must carry a stale-response revision guard.');
+assert(js.includes('interactionVersion !== state.preferenceInteractionVersion'), 'A late profile GET must not overwrite a live checkbox interaction.');
 assert(js.includes("el.columnPickerPanel.addEventListener('change'"), 'Column toggles must use native checkbox change events.');
 assert(js.includes('registryColumns:snapshot'), 'Column preference persistence must write an immutable visible-column snapshot.');
+assert(js.includes('el.columnPickerList.scrollTop = 0;'), 'Column picker must open at a deterministic scroll position.');
+assert(!js.includes("querySelector('input:not(:disabled)')?.focus"), 'Column picker must not auto-focus an internal checkbox and trigger WebKit scroll jumps.');
+
+const persistStart = js.indexOf('async function persistColumnPreferences()');
+const persistEnd = js.indexOf('function scheduleColumnSave()', persistStart);
+assert(persistStart >= 0 && persistEnd > persistStart, 'Column preference persistence function is missing.');
+const persistBody = js.slice(persistStart, persistEnd);
+assert(!persistBody.includes('state.visibleColumns = new Set'), 'A delayed PUT acknowledgement must not repaint visible columns.');
 
 assert(css.includes('--accent:#635bff'), 'Stripe-style accent token is missing.');
 assert(css.includes('.data-card'), 'Canonical table card style is missing.');
 assert(css.includes('.detail-drawer'), 'Detail drawer style is missing.');
 assert(css.includes('@media(max-width:760px)'), 'Mobile registry layout is missing.');
 assert(css.includes('@media(prefers-reduced-motion:reduce)'), 'Reduced-motion support is missing.');
+assert(css.includes('registry-column-picker-scroll-stability-v2'), 'Column picker scroll stability marker is missing.');
+assert(css.includes('overflow-anchor:none'), 'Column picker must disable browser scroll anchoring while selections change.');
+assert(css.includes('scrollbar-gutter:stable'), 'Column picker must reserve a stable scrollbar gutter.');
 assert(!css.includes('!important'), 'Registry v2 stylesheet must not rely on !important overrides.');
 
 const tableHeaderCount = (html.match(/<th\b/g) || []).length;
@@ -121,6 +136,6 @@ console.log(JSON.stringify({
   scripts:scriptSources,
   shellVersion:'drx-dashboard-stripe-v8',
   tableHeaderCount,
-  columnPickerStability:'registry-column-picker-stability-v1',
+  columnPickerStability:'registry-column-picker-stability-v2',
   legacyAssetsLoaded:0,
 }, null, 2));
