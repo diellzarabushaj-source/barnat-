@@ -1,0 +1,57 @@
+name: Urgjencat learning flow v7
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'urgjencat.html'
+      - 'emergency-learning-flow-v7.js'
+      - 'emergency-learning-flow-v7.css'
+      - 'emergency-learning-v4.js'
+      - 'emergency-learning-v4.css'
+      - 'emergency-doctor-ux-v2.js'
+      - 'emergency-doctor-ux-v3.js'
+      - 'tests/urgjencat-learning-flow-v7-test.js'
+      - '.github/workflows/urgjencat-learning-flow-v7.yml'
+  pull_request:
+    paths:
+      - 'urgjencat.html'
+      - 'emergency-learning-flow-v7.js'
+      - 'emergency-learning-flow-v7.css'
+      - 'emergency-learning-v4.js'
+      - 'emergency-learning-v4.css'
+      - 'emergency-doctor-ux-v2.js'
+      - 'emergency-doctor-ux-v3.js'
+      - 'tests/urgjencat-learning-flow-v7-test.js'
+      - '.github/workflows/urgjencat-learning-flow-v7.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: urgjencat-learning-v7-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  learning-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Verify learning JavaScript syntax
+        run: |
+          node --check emergency-learning-flow-v7.js
+          node --check emergency-learning-v4.js
+          node --check emergency-doctor-ux-v2.js
+          node --check emergency-doctor-ux-v3.js
+
+      - name: Run Urgjencat learning flow regression contract
+        run: node tests/urgjencat-learning-flow-v7-test.js
