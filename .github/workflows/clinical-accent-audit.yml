@@ -10,6 +10,34 @@ permissions:
   contents: read
 
 jobs:
+  pediatric-reference-patch:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Patch Dozologjia
+        run: python scripts/add-pediatric-core-reference.py
+
+      - name: Verify Dozologjia contract
+        run: node tests/dozologjia-v2-workspace-test.js
+
+      - name: Commit pediatric reference
+        shell: bash
+        run: |
+          if git diff --quiet -- dozologjia.html; then
+            echo "No pediatric reference change needed"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dozologjia.html
+          git commit -m "feat: add verified pediatric core substance dosing reference"
+          git push origin HEAD:main
+
   clinical-accents:
     runs-on: ubuntu-latest
     timeout-minutes: 15
