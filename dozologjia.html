@@ -272,6 +272,65 @@
           </section>
         </section>
 
+        <article class="dosage-calculation-panel" id="pediatricDosingGuide" aria-labelledby="pediatricDosingGuideTitle" style="margin-top:13px">
+          <header class="dosage-section-head">
+            <div>
+              <h2 id="pediatricDosingGuideTitle">Rregulli i përgjithshëm për llogaritjen e dozës te fëmijët</h2>
+              <p>Kur doza jepet në mg/kg, fillimisht llogaritet sasia e barit në mg; pastaj ndahet sipas frekuencës dhe konvertohet sipas formës farmaceutike.</p>
+            </div>
+            <span class="dosage-step-state is-ready">Referencë</span>
+          </header>
+          <div class="pediatric-calculation">
+            <p class="pediatric-kicker">Hapi 1 · Llogarit dozën në mg</p>
+            <p class="pediatric-dose-daily"><strong>Doza (mg)</strong> = Pesha (kg) × Doza e rekomanduar (mg/kg)</p>
+
+            <div class="dosage-calculation-facts" aria-label="Formulat bazë të dozimit pediatrik">
+              <div class="dosage-calculation-fact">
+                <span>Doza ditore</span>
+                <strong>Pesha (kg) × mg/kg/ditë</strong>
+              </div>
+              <div class="dosage-calculation-fact">
+                <span>Doza për administrim</span>
+                <strong>Doza totale ditore ÷ numri i dozave</strong>
+              </div>
+              <div class="dosage-calculation-fact">
+                <span>Rendi i llogaritjes</span>
+                <strong>Peshë → mg → frekuencë → formë</strong>
+              </div>
+            </div>
+
+            <details class="pediatric-explain" open>
+              <summary>Sirup / solucion</summary>
+              <dl class="pediatric-explain-list">
+                <dt>Kur preparati ka X mg në Y mL</dt>
+                <dd>mL/dozë = (mg të nevojshme × Y mL) ÷ X mg</dd>
+                <dt>Kur dihet përqendrimi në mg/mL</dt>
+                <dd>mL = mg të nevojshme ÷ mg/mL</dd>
+              </dl>
+            </details>
+
+            <details class="pediatric-explain" open>
+              <summary>Tableta</summary>
+              <dl class="pediatric-explain-list">
+                <dt>Numri i tabletave</dt>
+                <dd>mg të nevojshme ÷ mg në 1 tabletë</dd>
+                <dt>Shembull</dt>
+                <dd>75 mg ÷ 50 mg = 1.5 tableta</dd>
+              </dl>
+            </details>
+
+            <div class="dosage-outcome-block">
+              <strong>Rregulli kryesor</strong>
+              <p>Pesha × mg/kg → mg të nevojshme → ndaj sipas frekuencës → konverto në mL ose tableta.</p>
+            </div>
+
+            <div class="dosage-outcome-block is-danger" role="note">
+              <strong>Kujdes: mg/kg/dozë ≠ mg/kg/ditë</strong>
+              <p>Gjithmonë verifiko si është shkruar doza për barin dhe indikacionin konkret. Kontrollo gjithashtu dozën maksimale, intervalin, moshën, funksionin renal/hepatik dhe, për tabletat, nëse formulimi lejon ndarje të saktë.</p>
+            </div>
+          </div>
+        </article>
+
         <aside class="dosage-safety-note" role="note">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3 5 6v5c0 4.8 2.8 8 7 10 4.2-2 7-5.2 7-10V6Z"/><path d="M12 8v5M12 16.5h.01"/></svg>
           <div><strong>Kontroll klinik i detyrueshëm.</strong><p>DRx nuk inferon dozë nga fortësia e produktit. Kur mungon një formulë typed, kufi maksimal, regjim i lidhur ose verifikim klinik, llogaritja ndalet dhe shfaqet vetëm informacioni burimor.</p></div>
