@@ -57,7 +57,7 @@
       const entityKey=text(row?.entityKey);
       const content=String(row?.content ?? '').slice(0,MAX_NOTE);
       if(!entityKey || !content.trim()) continue;
-      state.notes.set(id(row.entityType,entityKey),{
+      state.notes.set(id(row.entityType,row.entityKey),{
         entityType:row.entityType,
         entityKey,
         content,
@@ -179,4 +179,13 @@
   const start=()=>void load().catch(()=>{});
   window.addEventListener('medindex:auth-ready',start,{once:true});
   if(document.documentElement.classList.contains('auth-ready')) start();
+})();
+
+(() => {
+  'use strict';
+  if(document.documentElement.dataset.drxApp !== 'dozologjia-v2') return;
+  const script=document.createElement('script');
+  script.src='/pediatric-core-reference.js?v=1';
+  script.defer=true;
+  document.head.append(script);
 })();
