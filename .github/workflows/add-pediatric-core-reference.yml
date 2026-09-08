@@ -2,170 +2,28 @@ name: Add pediatric core substance reference
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
-      - '.github/workflows/add-pediatric-core-reference.yml'
+      - .github/workflows/add-pediatric-core-reference.yml
 
 permissions:
   contents: write
 
 jobs:
-  patch-dozologjia:
+  patch:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Add verified pediatric core substance cards
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path('dozologjia.html')
-          text = path.read_text(encoding='utf-8')
-          marker = 'id="pediatricCoreSubstances"'
-          anchor = '        <aside class="dosage-safety-note" role="note">'
-
-          if marker in text:
-              print('Pediatric core substance reference already exists; no patch needed.')
-              raise SystemExit(0)
-          if anchor not in text:
-              raise SystemExit('Safety-note anchor not found; refusing to patch.')
-
-          block = r'''        <article class="dosage-calculation-panel" id="pediatricCoreSubstances" aria-labelledby="pediatricCoreSubstancesTitle" style="margin-top:13px">
-          <header class="dosage-section-head">
-            <div>
-              <h2 id="pediatricCoreSubstancesTitle">Substancat bazë — dozologji pediatrike e verifikuar</h2>
-              <p>Referencë e shpejtë sipas burimit të cituar. Regjimi duhet lidhur gjithmonë me indikacionin, formulimin, moshën/peshën dhe kufijtë klinikë të pacientit.</p>
-            </div>
-            <span class="dosage-step-state is-ready">8 karta</span>
-          </header>
-          <div class="pediatric-calculation">
-            <div class="dosage-outcome-block">
-              <strong>Si të lexohet kjo pjesë</strong>
-              <p>Dozat më poshtë janë referenca të lidhura me etiketën/SmPC e shënuar. Ato nuk aktivizojnë automatikisht kalkulatorin server-side dhe nuk zëvendësojnë protokollin lokal ose vlerësimin klinik.</p>
-            </div>
-
-            <details class="pediatric-explain" open>
-              <summary>Paracetamol · N02BE01</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Përdorimi tipik</dt><dd>Dhimbje e lehtë–mesatare / temperaturë</dd>
-                <dt>Doza sipas peshës</dt><dd>10–15 mg/kg për dozë</dd>
-                <dt>Intervali</dt><dd>çdo 4–6 orë sipas nevojës</dd>
-                <dt>Maksimumi i referencës</dt><dd>60 mg/kg/ditë</dd>
-                <dt>Shënim</dt><dd>Kontrollo të gjitha produktet që përmbajnë paracetamol; formulimi konkret mund të ketë kufizime moshe/fortësie.</dd>
-                <dt>Burimi</dt><dd><a href="https://www.medicines.org.uk/emc/product/10240/smpc" target="_blank" rel="noopener noreferrer">eMC SmPC</a></dd>
-              </dl>
-            </details>
-
-            <details class="pediatric-explain" open>
-              <summary>Ibuprofen · M01AE01</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Përdorimi i referencës</dt><dd>Analgezi te fëmijët ≥6 muaj</dd>
-                <dt>Doza</dt><dd>10 mg/kg për dozë</dd>
-                <dt>Intervali</dt><dd>çdo 6–8 orë sipas nevojës</dd>
-                <dt>Maksimumi</dt><dd>40 mg/kg/ditë</dd>
-                <dt>Temperatura</dt><dd>Etiketa e burimit përdor 5 ose 10 mg/kg sipas temperaturës bazale.</dd>
-                <dt>Kujdes</dt><dd>Vlerëso hidratimin, funksionin renal, rrezikun gastrointestinal dhe kundërindikacionet ndaj NSAID.</dd>
-                <dt>Burimi</dt><dd><a href="https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=dda7645f-1666-4c1f-b974-01add2ea79ac" target="_blank" rel="noopener noreferrer">DailyMed</a></dd>
-              </dl>
-            </details>
-
-            <details class="pediatric-explain" open>
-              <summary>Diazepam · N05BA01</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Forma e referencës</dt><dd>Tableta orale; pacientë pediatrikë ≥6 muaj</dd>
-                <dt>Doza fillestare e etiketës</dt><dd>1–2.5 mg, 3–4 herë/ditë</dd>
-                <dt>Titrimi</dt><dd>Rritet gradualisht sipas nevojës dhe tolerancës.</dd>
-                <dt>Krizat akute/statusi</dt><dd>Dozimi është specifik për formulimin, moshën, peshën dhe rrugën; nuk duhet nxjerrë nga ky regjim oral.</dd>
-                <dt>Kujdes</dt><dd>Sedacion/depresion respirator; kërkon vlerësim të rrugëve të frymëmarrjes dhe barnave depresive të SNQ.</dd>
-                <dt>Burimi</dt><dd><a href="https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2f799120-0d08-47cd-8183-a98f0267c845" target="_blank" rel="noopener noreferrer">DailyMed</a></dd>
-              </dl>
-            </details>
-
-            <details class="pediatric-explain" open>
-              <summary>Urbason = methylprednisolone · H02AB04</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Substanca aktive</dt><dd>Methylprednisolone; Urbason inj. përmban methylprednisolone hemisuccinate.</dd>
-                <dt>Doza fillestare pediatrike e një etikete injektabile</dt><dd>0.11–1.6 mg/kg/ditë në 3–4 doza të ndara, varësisht sëmundjes</dd>
-                <dt>Astma sistemike — referencë e etiketës</dt><dd>1–2 mg/kg/ditë, njëherë ose e ndarë</dd>
-                <dt>Parimi</dt><dd>Nuk ka një dozë universale “Urbason”; doza individualizohet sipas sëmundjes, rëndësisë dhe përgjigjes.</dd>
-                <dt>Kujdes</dt><dd>Përdor dozën më të ulët efektive për kohën më të shkurtër; trajtimi më i zgjatur kërkon plan për reduktim sipas rastit.</dd>
-                <dt>Burimi i produktit</dt><dd><a href="https://cima.aemps.es/cima/dochtml/ft/50537/FichaTecnica_50537.html" target="_blank" rel="noopener noreferrer">AEMPS/CIMA — Urbason</a></dd>
-                <dt>Burimi i dozës pediatrike</dt><dd><a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=cd99be87-c8d9-48d6-a8e5-e081052e3f19" target="_blank" rel="noopener noreferrer">DailyMed — methylprednisolone</a></dd>
-              </dl>
-            </details>
-
-            <details class="pediatric-explain" open>
-              <summary>Antihistaminikët · shembull: cetirizine R06AE07</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Sqarim</dt><dd>“Antihistaminikët” janë klasë; doza nuk është e njëjtë për çdo substancë.</dd>
-                <dt>Cetirizine 1 mg/mL · 2–6 vjeç</dt><dd>2.5 mg (2.5 mL), 2 herë/ditë</dd>
-                <dt>6–12 vjeç</dt><dd>5 mg (5 mL), 2 herë/ditë</dd>
-                <dt>&gt;12 vjeç</dt><dd>10 mg (10 mL), 1 herë/ditë</dd>
-                <dt>Indikacionet e SmPC</dt><dd>Rinit alergjik sezonal/perennial dhe urtikarie</dd>
-                <dt>Kujdes</dt><dd>Në dëmtim renal doza/intervali mund të kërkojë individualizim.</dd>
-                <dt>Burimi</dt><dd><a href="https://www.medicines.org.uk/emc/product/4132/smpc" target="_blank" rel="noopener noreferrer">eMC SmPC — cetirizine 1 mg/mL</a></dd>
-              </dl>
-            </details>
-
-            <details class="pediatric-explain" open>
-              <summary>Amoxicillin · J01CA04</summary>
-              <dl class="pediatric-explain-list">
-                <dt>&gt;3 muaj, &lt;40 kg · infeksion i lehtë/mesatar</dt><dd>25 mg/kg/ditë q12h ose 20 mg/kg/ditë q8h</dd>
-                <dt>&gt;3 muaj, &lt;40 kg · infeksion i rëndë</dt><dd>45 mg/kg/ditë q12h ose 40 mg/kg/ditë q8h</dd>
-                <dt>Infeksion i traktit të poshtëm respirator</dt><dd>45 mg/kg/ditë q12h ose 40 mg/kg/ditë q8h</dd>
-                <dt>≤3 muaj</dt><dd>Doza e sipërme 30 mg/kg/ditë, e ndarë q12h</dd>
-                <dt>≥40 kg</dt><dd>Etiketa kalon te rekomandimet e të rriturve.</dd>
-                <dt>Kujdes</dt><dd>Alergjia ndaj beta-laktamëve, fokusi/rëndësia e infeksionit, kultura dhe funksioni renal ndikojnë në zgjedhjen e regjimit.</dd>
-                <dt>Burimi</dt><dd><a href="https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c1d9749c-5d8b-4632-9368-9586f77935b0" target="_blank" rel="noopener noreferrer">DailyMed</a></dd>
-              </dl>
-            </details>
-
-            <details class="pediatric-explain" open>
-              <summary>Gentamicin · J01GB03</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Fëmijë</dt><dd>6–7.5 mg/kg/ditë = 2–2.5 mg/kg q8h</dd>
-                <dt>Foshnja dhe neonatë &gt;1 javë</dt><dd>7.5 mg/kg/ditë = 2.5 mg/kg q8h</dd>
-                <dt>Prematurë / neonatë ≤1 javë</dt><dd>5 mg/kg/ditë = 2.5 mg/kg q12h</dd>
-                <dt>Rruga</dt><dd>IM ose IV sipas produktit dhe situatës klinike</dd>
-                <dt>Kujdes kritik</dt><dd>Ky është regjim tradicional i ndarë nga etiketa. Rregullohet në insuficiencë renale dhe, kur është e mundur, monitorohen nivelet serike; protokollet extended-interval mund të përdorin skema të tjera.</dd>
-                <dt>Monitorimi</dt><dd>Funksioni renal; me trajtim të zgjatur edhe funksioni auditiv/vestibular.</dd>
-                <dt>Burimi</dt><dd><a href="https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3532bb39-a1a6-9d67-e063-6294a90abc0c" target="_blank" rel="noopener noreferrer">DailyMed</a></dd>
-              </dl>
-            </details>
-
-            <details class="pediatric-explain" open>
-              <summary>Ceftriaxone · J01DD04</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Infeksione serioze, jo meningjit</dt><dd>50–75 mg/kg/ditë; zakonisht e ndarë q12h; maks. 2 g/ditë</dd>
-                <dt>Meningjit</dt><dd>100 mg/kg/ditë; 1 herë/ditë ose q12h; maks. 4 g/ditë</dd>
-                <dt>Otit akut bakterial</dt><dd>50 mg/kg IM një dozë; maks. 1 g</dd>
-                <dt>Kujdes neonatal</dt><dd>Kundërindikuar te neonatët hiperbilirubinemikë dhe te neonatët që kërkojnë/pritët të kërkojnë solucione IV me kalcium.</dd>
-                <dt>Rruga</dt><dd>IV/IM sipas indikacionit dhe produktit</dd>
-                <dt>Burimi</dt><dd><a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=96f3fc1e-84f4-4e9b-91ac-19a1692f227a" target="_blank" rel="noopener noreferrer">DailyMed</a></dd>
-              </dl>
-            </details>
-
-            <div class="dosage-outcome-block is-danger" role="note">
-              <strong>Jo çdo dozë mg/kg është e këmbyeshme.</strong>
-              <p>Para llogaritjes kontrollo gjithmonë: mg/kg/dozë apo mg/kg/ditë, indikacionin, moshën/peshën, rrugën, përqendrimin, dozën maksimale, funksionin renal/hepatik dhe burimin e regjimit.</p>
-            </div>
-          </div>
-        </article>'''
-
-          path.write_text(text.replace(anchor, block + '\n\n' + anchor, 1), encoding='utf-8')
-          print('Inserted pediatric core substance reference.')
-          PY
-
-      - name: Verify Dozologjia contract
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Patch Dozologjia
+        run: python scripts/add-pediatric-core-reference.py
+      - name: Verify Dozologjia
         run: node tests/dozologjia-v2-workspace-test.js
-
-      - name: Commit patched Dozologjia
-        shell: bash
+      - name: Commit change
         run: |
           if git diff --quiet -- dozologjia.html; then
-            echo "No changes to commit."
+            echo "No change needed"
             exit 0
           fi
           git config user.name "github-actions[bot]"
