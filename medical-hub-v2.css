@@ -2323,3 +2323,35 @@ html[data-drx-app="medical-hub-v2"] :where(button,a,input,select,summary,[tabind
   .ck-document-inner,
   .ck-section-body.is-revealing{animation:none}
 }
+
+/* Composable lesson blocks: readable on a narrow screen and on paper. */
+.ck-modern-content { overflow-wrap: anywhere; }
+.ck-subsection { margin: 28px 0; }
+.ck-subsection-title { padding: 10px 14px; border-left: 3px solid #7566a7; background: #f4f1f8; color: #392f51; font-size: 1rem; line-height: 1.5; }
+.ck-modern-content .ck-source-list-block .ck-source-list-block { margin: 8px 0; }
+.ck-modern-content h5 { font-size: .95rem; line-height: 1.5; }
+.ck-checklist ul { padding: 0; list-style: none; }
+.ck-checklist li { position: relative; padding: 13px 16px 13px 36px; border-bottom: 1px solid #e8edf2; }
+.ck-checklist li::before { content: '✓'; position: absolute; left: 12px; color: #686080; }
+.ck-checklist li p { margin: 5px 0 0; line-height: 1.7; }
+.ck-questions dl { margin: 12px 0; }
+.ck-questions dl > div { display: grid; grid-template-columns: minmax(140px, .8fr) minmax(0, 1.6fr); border-bottom: 1px solid #e1e7ed; }
+.ck-questions dt { padding: 14px; font-weight: 650; background: #f8f9fb; }
+.ck-questions dd { min-width: 0; margin: 0; padding: 14px; }
+.ck-questions dd p:first-child { margin-top: 0; }
+.ck-questions dd p:last-child { margin-bottom: 0; }
+.ck-decision-branch { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); margin: 12px 0; border: 1px solid #dedee9; border-radius: 8px; overflow: hidden; }
+.ck-decision-branch > div { padding: 16px; }
+.ck-decision-branch > div:first-child { background: #f5f3f9; }
+.ck-decision-branch small { display: block; margin-bottom: 6px; font-weight: 700; color: #655485; }
+.ck-decision-branch strong { display: block; }
+.ck-content-unavailable { padding: 12px 16px; background: #fff6df; color: #634718; border-left: 3px solid #c89338; }
+.ck-rx-patient-group { display: block; margin-top: 6px; color: #4d5970; }
+@media (max-width: 600px) {
+  .ck-questions dl > div, .ck-decision-branch { grid-template-columns: minmax(0, 1fr); }
+  .ck-subsection-title { padding: 9px 11px; }
+}
+@media print {
+  .ck-subsection-title, .ck-modern-content h4, .ck-modern-content h5 { break-after: avoid; }
+  .ck-checklist li, .ck-questions dl > div, .ck-decision-branch, .ck-medical-table tr { break-inside: avoid; }
+}

@@ -1,0 +1,2033 @@
+{
+  "chapterTitle": "Anamneza dhe ekzaminimi fizik",
+  "coverage": "Faqet e fotografuara 1–8; vetëm pjesë e kapitullit; faqja 2 është dërguar dy herë.",
+  "topics": [
+    {
+      "_type": "medicalTopic",
+      "title": "Parimet e vlerësimit dhe komunikimi me pacientin",
+      "order": 1,
+      "topicType": "topic",
+      "schemaVersion": 2,
+      "language": "sq",
+      "reviewStatus": "draft",
+      "summary": "Përshtatje shqip e pjesës së dërguar të kapitullit 1. Material editorial për rishikim.",
+      "sections": [
+        {
+          "_type": "medicalSection",
+          "_key": "b9",
+          "title": "Parimet e diagnostikimit klinik",
+          "sectionType": "general",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "b2",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "b1",
+                  "text": "Vlerësimi klinik mbështetet në tri pjesë të lidhura: anamnezën, ekzaminimin fizik dhe ekzaminimet diagnostike të zgjedhura sipas dyshimit klinik.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "clinicalStepGroup",
+              "_key": "b6",
+              "title": "Tri hapat kryesorë",
+              "steps": [
+                {
+                  "_type": "clinicalStep",
+                  "_key": "b3",
+                  "title": "Anamneza",
+                  "action": "Mblidh të dhëna për simptomat, historinë mjekësore dhe faktorët që lidhen me problemin aktual."
+                },
+                {
+                  "_type": "clinicalStep",
+                  "_key": "b4",
+                  "title": "Ekzaminimi fizik",
+                  "action": "Kryej ekzaminimin për të kërkuar shenja klinike dhe për të orientuar vlerësimin."
+                },
+                {
+                  "_type": "clinicalStep",
+                  "_key": "b5",
+                  "title": "Ekzaminimet diagnostike",
+                  "action": "Zgjidh dhe interpreto analizat dhe ekzaminimet në kontekstin e anamnezës dhe gjetjeve fizike."
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "b8",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "b7",
+                  "text": "Anamneza e saktë është një hap fillestar thelbësor për identifikimin e shkakut të problemit dhe formulimin e diagnozës paraprake.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "sourceLocator": {
+            "_type": "sourceLocator",
+            "pageStart": 1,
+            "pageEnd": 1,
+            "headingPath": [
+              "Parimet e diagnostikimit klinik"
+            ],
+            "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+          }
+        },
+        {
+          "_type": "medicalSection",
+          "_key": "b20",
+          "title": "Qasja ndaj pacientit",
+          "sectionType": "general",
+          "content": [
+            {
+              "_type": "clinicalStepGroup",
+              "_key": "b19",
+              "title": "Komunikimi gjatë konsultës",
+              "steps": [
+                {
+                  "_type": "clinicalStep",
+                  "_key": "b10",
+                  "title": "Prezantimi dhe identifikimi",
+                  "action": "Prezanto emrin dhe rolin tënd. Konfirmo identitetin e pacientit me emrin dhe datëlindjen."
+                },
+                {
+                  "_type": "clinicalStep",
+                  "_key": "b11",
+                  "title": "Krijimi i raportit",
+                  "action": "Komuniko me mirësjellje dhe krijo një mjedis ku pacienti ndihet i lirë të flasë."
+                },
+                {
+                  "_type": "clinicalStep",
+                  "_key": "b12",
+                  "title": "Marrja e lejes",
+                  "action": "Kërko pëlqimin për bisedën dhe shpjego çfarë do të diskutohet. Shembull: “A mund t’ju bëj disa pyetje për kollën?”"
+                },
+                {
+                  "_type": "clinicalStep",
+                  "_key": "b13",
+                  "title": "Konfidencialiteti",
+                  "action": "Respekto privatësinë dhe shpjego mënyrën si ruhen dhe përdoren të dhënat e pacientit."
+                },
+                {
+                  "_type": "clinicalStep",
+                  "_key": "b14",
+                  "title": "Empatia",
+                  "action": "Merr parasysh këndvështrimin, emocionet, ankthin dhe gjendjen psikologjike të pacientit."
+                },
+                {
+                  "_type": "clinicalStep",
+                  "_key": "b15",
+                  "title": "Pozicionimi",
+                  "action": "Ulu në nivel të përafërt me pacientin, ruaj distancë të përshtatshme dhe shmang pengesat që vështirësojnë komunikimin."
+                },
+                {
+                  "_type": "clinicalStep",
+                  "_key": "b16",
+                  "title": "Dëgjimi aktiv",
+                  "action": "Lejo pacientin të përfundojë mendimin. Mos e ndërprit pa arsye; sqaro pikat e paqarta."
+                },
+                {
+                  "_type": "clinicalStep",
+                  "_key": "b17",
+                  "title": "Kuptimi i përvojës së pacientit",
+                  "action": "Pyet si e përjeton problemin dhe si ndikon ai në jetën e përditshme."
+                },
+                {
+                  "_type": "clinicalStep",
+                  "_key": "b18",
+                  "title": "Pyetje të qarta",
+                  "action": "Përdor gjuhë të thjeshtë dhe fillo me pyetje të hapura. Përmblidh pikat kryesore dhe verifiko nëse i ke kuptuar saktë."
+                }
+              ]
+            }
+          ],
+          "sourceLocator": {
+            "_type": "sourceLocator",
+            "pageStart": 1,
+            "pageEnd": 1,
+            "headingPath": [
+              "Qasja ndaj pacientit"
+            ],
+            "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+          }
+        },
+        {
+          "_type": "medicalSection",
+          "_key": "b31",
+          "title": "Të dhënat personale",
+          "sectionType": "history",
+          "content": [
+            {
+              "_type": "medicalTable",
+              "_key": "b30",
+              "title": "Identifikimi dhe pranimi",
+              "columns": [
+                "E dhëna",
+                "Çfarë pyetet ose dokumentohet"
+              ],
+              "rows": [
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b21",
+                  "cells": [
+                    "Emri",
+                    "Si quheni?"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b22",
+                  "cells": [
+                    "Mosha / datëlindja",
+                    "Sa vjeç jeni? Cila është datëlindja juaj?"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b23",
+                  "cells": [
+                    "Gjinia",
+                    "Dokumento sipas kontekstit klinik dhe deklarimit të pacientit."
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b24",
+                  "cells": [
+                    "Adresa",
+                    "Ku banoni?"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b25",
+                  "cells": [
+                    "Profesioni",
+                    "Me çfarë pune merreni?"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b26",
+                  "cells": [
+                    "Besimi fetar",
+                    "Vetëm kur është i rëndësishëm për preferencat ose kujdesin."
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b27",
+                  "cells": [
+                    "Gjendja martesore",
+                    "Dokumento kur është e rëndësishme për historinë sociale."
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b28",
+                  "cells": [
+                    "Data e pranimit",
+                    "Kur është paraqitur ose pranuar pacienti?"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b29",
+                  "cells": [
+                    "Mënyra e pranimit",
+                    "Urgjencë, ambulancë, referim apo mënyrë tjetër?"
+                  ]
+                }
+              ]
+            }
+          ],
+          "sourceLocator": {
+            "_type": "sourceLocator",
+            "pageStart": 1,
+            "pageEnd": 1,
+            "headingPath": [
+              "Të dhënat personale"
+            ],
+            "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+          }
+        }
+      ],
+      "editorialNotes": "Vetëm 8 faqe unike të dërguara; fotografia e faqes 2 është e dyfishtë. Nuk është kapitulli i plotë. Pa atribim të rremë të verifikimit klinik. Pyetjet janë përshtatur në shqip nga teksti anglisht; shkrimi urdu nuk është transkriptuar fjalë për fjalë.",
+      "sourceLocator": {
+        "_type": "sourceLocator",
+        "pageStart": 1,
+        "pageEnd": 1
+      },
+      "sources": []
+    },
+    {
+      "_type": "medicalTopic",
+      "title": "Anamneza dhe rishikimi i sistemeve",
+      "order": 2,
+      "topicType": "topic",
+      "schemaVersion": 2,
+      "language": "sq",
+      "reviewStatus": "draft",
+      "summary": "Përshtatje shqip e pjesës së dërguar të kapitullit 1. Material editorial për rishikim.",
+      "sections": [
+        {
+          "_type": "medicalSection",
+          "_key": "b49",
+          "title": "Ankesa kryesore",
+          "sectionType": "history",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "b33",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "b32",
+                  "text": "Ankesa kryesore është arsyeja pse pacienti kërkon ndihmë në urgjencë ose ambulancë. Regjistroje shkurt, me fjalët e pacientit, së bashku me kohëzgjatjen. Nëse ka disa ankesa, renditi sipas rëndësisë klinike ose kohëzgjatjes; secila në një rresht.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "medicalQuestionSet",
+              "_key": "b43",
+              "title": "Hapja e bisedës",
+              "items": [
+                {
+                  "_type": "medicalQuestion",
+                  "_key": "b36",
+                  "question": "Çfarë ju solli sot këtu?",
+                  "answer": [
+                    {
+                      "_type": "block",
+                      "_key": "b35",
+                      "style": "normal",
+                      "markDefs": [],
+                      "children": [
+                        {
+                          "_type": "span",
+                          "_key": "b34",
+                          "text": "Lëre pacientin ta përshkruajë shqetësimin pa e orientuar menjëherë drejt një diagnoze.",
+                          "marks": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "_type": "medicalQuestion",
+                  "_key": "b39",
+                  "question": "Si mund t’ju ndihmoj?",
+                  "answer": [
+                    {
+                      "_type": "block",
+                      "_key": "b38",
+                      "style": "normal",
+                      "markDefs": [],
+                      "children": [
+                        {
+                          "_type": "span",
+                          "_key": "b37",
+                          "text": "Sqaro arsyen e vizitës dhe pritjet e pacientit.",
+                          "marks": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "_type": "medicalQuestion",
+                  "_key": "b42",
+                  "question": "Çfarë ju shqetëson më shumë?",
+                  "answer": [
+                    {
+                      "_type": "block",
+                      "_key": "b41",
+                      "style": "normal",
+                      "markDefs": [],
+                      "children": [
+                        {
+                          "_type": "span",
+                          "_key": "b40",
+                          "text": "Identifiko problemin kryesor nga këndvështrimi i pacientit.",
+                          "marks": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "_type": "medicalTable",
+              "_key": "b48",
+              "title": "Shembull dokumentimi",
+              "columns": [
+                "Ankesa",
+                "Kohëzgjatja"
+              ],
+              "rows": [
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b44",
+                  "cells": [
+                    "Temperaturë",
+                    "4 ditë"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b45",
+                  "cells": [
+                    "Kollë",
+                    "3 ditë"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b46",
+                  "cells": [
+                    "Ekspektorim / nxjerrje sputumi",
+                    "2 ditë"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b47",
+                  "cells": [
+                    "Gjak në sputum",
+                    "1 ditë"
+                  ]
+                }
+              ]
+            }
+          ],
+          "sourceLocator": {
+            "_type": "sourceLocator",
+            "pageStart": 2,
+            "pageEnd": 2,
+            "headingPath": [
+              "Ankesa kryesore"
+            ],
+            "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+          }
+        },
+        {
+          "_type": "medicalSection",
+          "_key": "b69",
+          "title": "Historia e sëmundjes aktuale",
+          "sectionType": "history",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "b51",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "b50",
+                  "text": "Zhvillo kronologjinë e problemit: pse pacienti kërkon ndihmë, kur filluan simptomat, ku shfaqen dhe si kanë ndryshuar.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "medicalTable",
+              "_key": "b58",
+              "title": "Struktura OD-PARA",
+              "columns": [
+                "Pjesa",
+                "Pyetja orientuese"
+              ],
+              "rows": [
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b52",
+                  "cells": [
+                    "O — Onset / fillimi",
+                    "Kur filloi? Ishte fillim i menjëhershëm apo gradual?"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b53",
+                  "cells": [
+                    "D — Duration / kohëzgjatja",
+                    "Sa zgjat? A shfaqet në kohë të caktuara të ditës?"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b54",
+                  "cells": [
+                    "P — Progression / ecuria",
+                    "Po përmirësohet, po përkeqësohet apo mbetet njësoj?"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b55",
+                  "cells": [
+                    "A — Aggravating / përkeqësimi",
+                    "Çfarë e nxit ose e përkeqëson?"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b56",
+                  "cells": [
+                    "R — Relieving / lehtësimi",
+                    "Çfarë e lehtëson: pushimi, pozicioni, ushqimi ose ndonjë trajtim?"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b57",
+                  "cells": [
+                    "A — Associated / shoqërimi",
+                    "Cilat simptoma të tjera e shoqërojnë, për shembull nauzea ose të vjellat?"
+                  ]
+                }
+              ]
+            },
+            {
+              "_type": "medicalSubsection",
+              "_key": "b68",
+              "title": "Vlerësimi i dhimbjes: SOCRATES",
+              "content": [
+                {
+                  "_type": "medicalTable",
+                  "_key": "b67",
+                  "title": "Tetë elementet e dhimbjes",
+                  "columns": [
+                    "Elementi",
+                    "Pyetja"
+                  ],
+                  "rows": [
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b59",
+                      "cells": [
+                        "S — Site / vendi",
+                        "Ku e ndieni saktësisht dhimbjen?"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b60",
+                      "cells": [
+                        "O — Onset / fillimi",
+                        "Kur filloi dhe si ka ndryshuar?"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b61",
+                      "cells": [
+                        "C — Character / karakteri",
+                        "Si është dhimbja: therëse, e shurdhër, shtrënguese apo tjetër?"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b62",
+                      "cells": [
+                        "R — Radiation / përhapja",
+                        "A përhapet në nofull, krah, shpinë ose diku tjetër?"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b63",
+                      "cells": [
+                        "A — Associated symptoms / simptomat shoqëruese",
+                        "A ka djersitje, nauze, të vjella, dispne, kollë, hemoptizi, marramendje ose palpitacione?"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b64",
+                      "cells": [
+                        "T — Timing / modeli kohor",
+                        "Kur shfaqet dhe sa zgjat secili episod?"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b65",
+                      "cells": [
+                        "E — Exacerbating / relieving factors",
+                        "Çfarë e përkeqëson dhe çfarë e lehtëson?"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b66",
+                      "cells": [
+                        "S — Severity / intensiteti",
+                        "Nga 0 deri në 10, ku 0 është pa dhimbje dhe 10 dhimbja më e fortë e imagjinueshme, sa është intensiteti?"
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "sourceLocator": {
+                "_type": "sourceLocator",
+                "pageStart": 3,
+                "pageEnd": 3,
+                "headingPath": [
+                  "Vlerësimi i dhimbjes: SOCRATES"
+                ],
+                "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+              }
+            }
+          ],
+          "sourceLocator": {
+            "_type": "sourceLocator",
+            "pageStart": 2,
+            "pageEnd": 2,
+            "headingPath": [
+              "Historia e sëmundjes aktuale"
+            ],
+            "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+          }
+        },
+        {
+          "_type": "medicalSection",
+          "_key": "b88",
+          "title": "Historia mjekësore dhe barnat",
+          "sectionType": "history",
+          "content": [
+            {
+              "_type": "medicalSubsection",
+              "_key": "b78",
+              "title": "Sëmundjet e mëparshme",
+              "content": [
+                {
+                  "_type": "block",
+                  "_key": "b71",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "b70",
+                      "text": "Pyet për problemet mjekësore të kaluara. Pacienti mund të mos kujtojë çdo diagnozë, prandaj ndihmoje me pyetje të orientuara.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "medicalTable",
+                  "_key": "b77",
+                  "title": "Gjendje për t’u pyetur",
+                  "columns": [
+                    "Gjendja",
+                    "Gjendja"
+                  ],
+                  "rows": [
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b72",
+                      "cells": [
+                        "Infarkt miokardi",
+                        "Ikter / verdhëz"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b73",
+                      "cells": [
+                        "Tuberkuloz",
+                        "Hipertension"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b74",
+                      "cells": [
+                        "Ethe reumatizmale",
+                        "Epilepsi"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b75",
+                      "cells": [
+                        "Astmë",
+                        "Diabet"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b76",
+                      "cells": [
+                        "Insult cerebral",
+                        "Kancer dhe trajtimet e tij"
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "sourceLocator": {
+                "_type": "sourceLocator",
+                "pageStart": 3,
+                "pageEnd": 3,
+                "headingPath": [
+                  "Sëmundjet e mëparshme"
+                ],
+                "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+              }
+            },
+            {
+              "_type": "medicalSubsection",
+              "_key": "b87",
+              "title": "Historia e përdorimit të barnave",
+              "content": [
+                {
+                  "_type": "medicalChecklist",
+                  "_key": "b86",
+                  "title": "Për çdo bar dokumento",
+                  "items": [
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b79",
+                      "label": "Substancën aktive",
+                      "detail": "Identifiko çfarë përdor realisht pacienti, përfshirë barnat pa recetë."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b80",
+                      "label": "Dozën",
+                      "detail": "Sa merr për çdo administrim?"
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b81",
+                      "label": "Frekuencën dhe rrugën",
+                      "detail": "Sa shpesh dhe në çfarë mënyre e merr?"
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b82",
+                      "label": "Rregullsinë",
+                      "detail": "A e merr sipas udhëzimit? A ka doza të harruara?"
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b83",
+                      "label": "Barnat javore",
+                      "detail": "Në cilën ditë të javës i merr?"
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b84",
+                      "label": "Dozat që ndryshojnë",
+                      "detail": "Për barna si warfarina, regjistro skemën aktuale."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b85",
+                      "label": "Substancat e tjera",
+                      "detail": "Pyet për përdorimin e substancave rekreative, përfshirë injektimin."
+                    }
+                  ]
+                }
+              ],
+              "sourceLocator": {
+                "_type": "sourceLocator",
+                "pageStart": 3,
+                "pageEnd": 3,
+                "headingPath": [
+                  "Historia e përdorimit të barnave"
+                ],
+                "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+              }
+            }
+          ],
+          "sourceLocator": {
+            "_type": "sourceLocator",
+            "pageStart": 3,
+            "pageEnd": 3,
+            "headingPath": [
+              "Historia mjekësore dhe barnat"
+            ],
+            "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+          }
+        },
+        {
+          "_type": "medicalSection",
+          "_key": "b109",
+          "title": "Alergjitë, familja dhe historia sociale",
+          "sectionType": "history",
+          "content": [
+            {
+              "_type": "medicalSubsection",
+              "_key": "b94",
+              "title": "Historia e alergjive",
+              "content": [
+                {
+                  "_type": "block",
+                  "_key": "b90",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "b89",
+                      "text": "Pyet nëse pacienti ka alergji. Për çdo bar të dyshuar dokumento substancën, llojin e reaksionit dhe çfarë ndodhi. Pyet posaçërisht për reaksione të rënda me ënjtje të fytit ose fytyrës dhe vështirësi në frymëmarrje.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "clinicalCallout",
+                  "_key": "b93",
+                  "intent": "note",
+                  "title": "Dallo alergjinë nga efekti anësor",
+                  "body": [
+                    {
+                      "_type": "block",
+                      "_key": "b92",
+                      "style": "normal",
+                      "markDefs": [],
+                      "children": [
+                        {
+                          "_type": "span",
+                          "_key": "b91",
+                          "text": "Një reaksion i padëshiruar nuk është automatikisht alergji. Shembujt e paqartë të librit nuk janë përfshirë si alergji të konfirmuara.",
+                          "marks": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "sourceLocator": {
+                "_type": "sourceLocator",
+                "pageStart": 4,
+                "pageEnd": 4,
+                "headingPath": [
+                  "Historia e alergjive"
+                ],
+                "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+              }
+            },
+            {
+              "_type": "medicalSubsection",
+              "_key": "b97",
+              "title": "Historia familjare",
+              "content": [
+                {
+                  "_type": "block",
+                  "_key": "b96",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "b95",
+                      "text": "Pyet për sëmundje familjare të lidhura me shqetësimin aktual, për shëndetin e prindërve dhe motrave/vëllezërve, si dhe për moshën e shkakun e vdekjes së familjarëve kur është e rëndësishme. Nëse dyshohet një model trashëgimie, skico pemën familjare.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "sourceLocator": {
+                "_type": "sourceLocator",
+                "pageStart": 4,
+                "pageEnd": 4,
+                "headingPath": [
+                  "Historia familjare"
+                ],
+                "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+              }
+            },
+            {
+              "_type": "medicalSubsection",
+              "_key": "b108",
+              "title": "Historia sociale",
+              "content": [
+                {
+                  "_type": "medicalChecklist",
+                  "_key": "b107",
+                  "title": "Fushat kryesore",
+                  "items": [
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b98",
+                      "label": "Puna dhe ekspozimet",
+                      "detail": "Profesioni, ekspozimi ndaj pluhurit, azbestit ose materialeve të tjera në punë."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b99",
+                      "label": "Familja dhe marrëdhëniet",
+                      "detail": "Gjendja martesore dhe mbështetja sociale sipas rëndësisë klinike."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b100",
+                      "label": "Duhani",
+                      "detail": "Sa cigare në ditë dhe prej sa vitesh? Paketë-vite = paketa në ditë × vite përdorimi."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b101",
+                      "label": "Alkooli",
+                      "detail": "Lloji, sasia dhe shpeshtësia e konsumit."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b102",
+                      "label": "Substancat rekreative",
+                      "detail": "Pyet në mënyrë neutrale dhe pa paragjykim."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b103",
+                      "label": "Vaksinimi",
+                      "detail": "Historia e vaksinimit sipas kontekstit."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b104",
+                      "label": "Kushtet e jetesës",
+                      "detail": "Me kë jeton, kush e ndihmon dhe si funksionon në përditshmëri?"
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b105",
+                      "label": "Udhëtimet",
+                      "detail": "Udhëtimet e fundit dhe ekspozimet e mundshme."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b106",
+                      "label": "Ekspozimet sipas ankesës",
+                      "detail": "Për simptoma respiratore: kafshë, zogj, bujqësi, pluhur, hobi. Për infeksione: kontakte, ushqim e ujë, histori seksuale dhe rreziqe të tjera përkatëse."
+                    }
+                  ]
+                }
+              ],
+              "sourceLocator": {
+                "_type": "sourceLocator",
+                "pageStart": 4,
+                "pageEnd": 4,
+                "headingPath": [
+                  "Historia sociale"
+                ],
+                "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+              }
+            }
+          ],
+          "sourceLocator": {
+            "_type": "sourceLocator",
+            "pageStart": 4,
+            "pageEnd": 4,
+            "headingPath": [
+              "Alergjitë, familja dhe historia sociale"
+            ],
+            "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+          }
+        },
+        {
+          "_type": "medicalSection",
+          "_key": "b123",
+          "title": "Gjestet dhe këndvështrimi i pacientit",
+          "sectionType": "history",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "b111",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "b110",
+                  "text": "Vëzhgo ku e vendos dorën pacienti, cilën zonë mbron dhe si e përshkruan dhimbjen. Gjestet ndihmojnë të lokalizohet shqetësimi, por nuk vendosin diagnozën.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "medicalTable",
+              "_key": "b120",
+              "title": "Shembuj nga burimi",
+              "columns": [
+                "Gjesti / zona",
+                "Çfarë të sqarohet me pyetje"
+              ],
+              "rows": [
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b112",
+                  "cells": [
+                    "Shtrëngimi i kraharorit",
+                    "Dhimbja torakale dhe simptomat shoqëruese"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b113",
+                  "cells": [
+                    "Mbajtja e anës së shpinës",
+                    "Dhimbje në regjionin renal ose muskuloskeletal"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b114",
+                  "cells": [
+                    "Fërkimi i sternumit",
+                    "Djegie ose dhimbje retrosternale"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b115",
+                  "cells": [
+                    "Prekja e vitheve dhe kofshës",
+                    "Dhimbje që përhapet përgjatë këmbës"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b116",
+                  "cells": [
+                    "Mbajtja e barkut",
+                    "Vendi, karakteri dhe simptomat abdominale"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b117",
+                  "cells": [
+                    "Prekja e tëmthave, ballit ose faqeve",
+                    "Karakteristikat e dhimbjes së kokës ose fytyrës"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b118",
+                  "cells": [
+                    "Mbajtja e fundit të barkut",
+                    "Simptoma gastrointestinale, urinare ose gjinekologjike"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b119",
+                  "cells": [
+                    "Mbajtja e fytit",
+                    "Dhimbje fyti ose vështirësi në gëlltitje"
+                  ]
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "b122",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "b121",
+                  "text": "Pyet çfarë mendon pacienti për simptomat dhe cilat shenja i ka konsideruar të parëndësishme. Plotëso informacionin me rishikimin e sistemeve.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "sourceLocator": {
+            "_type": "sourceLocator",
+            "pageStart": 5,
+            "pageEnd": 5,
+            "headingPath": [
+              "Gjestet dhe këndvështrimi i pacientit"
+            ],
+            "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+          }
+        },
+        {
+          "_type": "medicalSection",
+          "_key": "b136",
+          "title": "Rishikimi sistematik",
+          "sectionType": "history",
+          "content": [
+            {
+              "_type": "medicalChecklist",
+              "_key": "b135",
+              "title": "Pyetje sipas sistemeve",
+              "items": [
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b124",
+                  "label": "Të përgjithshme",
+                  "detail": "Oreksi, pesha, gjumi, temperatura, energjia, ënjtjet dhe gjendja e përgjithshme."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b125",
+                  "label": "Respirator",
+                  "detail": "Kollë, sputum, hemoptizi, dispne, dhimbje torakale dhe fishkëllima."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b126",
+                  "label": "Kardiovaskular",
+                  "detail": "Dhimbje torakale, palpitacione, dispne, edemë, dhimbje këmbësh dhe marramendje."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b127",
+                  "label": "Neurologjik",
+                  "detail": "Orientimi, dhimbje koke, marramendje, dobësi, gjumi, vetëdija dhe ndjeshmëria."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b128",
+                  "label": "Gastrointestinal",
+                  "detail": "Probleme dentare, urth, nauze, të vjella, dhimbje barku, jashtëqitja, ikteri dhe oreksi."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b129",
+                  "label": "Gjenitourinar",
+                  "detail": "Simptomat urinare, menstruacionet kur zbatohen, shëndeti seksual dhe sekrecionet gjenitale."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b130",
+                  "label": "Muskuloskeletal",
+                  "detail": "Dobësi, dhimbje nyjesh, shpine ose muskujsh, ënjtje, fraktura dhe lëvizshmëri."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b131",
+                  "label": "Veshë, hundë dhe fyt",
+                  "detail": "Dhimbje fyti, veshi ose sinusesh, dëgjimi dhe simptomat nazale."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b132",
+                  "label": "Sytë",
+                  "detail": "Ndryshime të shikimit, skuqje, sekrecione, kruarje ose dalje e syrit përpara."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b133",
+                  "label": "Endokrin",
+                  "detail": "Etje, lodhje, toleranca ndaj temperaturës, ndryshime të flokëve, djersitje, peshë dhe oreks."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b134",
+                  "label": "Lëkura",
+                  "detail": "Skuqje, formacione, kruarje, mavijosje dhe ndryshime të pamjes."
+                }
+              ]
+            }
+          ],
+          "sourceLocator": {
+            "_type": "sourceLocator",
+            "pageStart": 5,
+            "pageEnd": 5,
+            "headingPath": [
+              "Rishikimi sistematik"
+            ],
+            "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+          }
+        }
+      ],
+      "editorialNotes": "Vetëm 8 faqe unike të dërguara; fotografia e faqes 2 është e dyfishtë. Nuk është kapitulli i plotë. Pa atribim të rremë të verifikimit klinik. Pyetjet janë përshtatur në shqip nga teksti anglisht; shkrimi urdu nuk është transkriptuar fjalë për fjalë.",
+      "sourceLocator": {
+        "_type": "sourceLocator",
+        "pageStart": 2,
+        "pageEnd": 5
+      },
+      "sources": []
+    },
+    {
+      "_type": "medicalTopic",
+      "title": "Ekzaminimi fizik",
+      "order": 3,
+      "topicType": "topic",
+      "schemaVersion": 2,
+      "language": "sq",
+      "reviewStatus": "draft",
+      "summary": "Përshtatje shqip e pjesës së dërguar të kapitullit 1. Material editorial për rishikim.",
+      "sections": [
+        {
+          "_type": "medicalSection",
+          "_key": "b147",
+          "title": "Përgatitja për ekzaminim",
+          "sectionType": "examination",
+          "content": [
+            {
+              "_type": "medicalChecklist",
+              "_key": "b143",
+              "title": "Para se të fillosh",
+              "items": [
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b137",
+                  "label": "Mjedisi",
+                  "detail": "Siguro një vend të qetë dhe të përshtatshëm."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b138",
+                  "label": "Privatësia",
+                  "detail": "Kufizo praninë e personave të tjerë sipas dëshirës së pacientit dhe nevojës së ekzaminimit."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b139",
+                  "label": "Higjiena e duarve",
+                  "detail": "Pastro duart para kontaktit me pacientin."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b140",
+                  "label": "Shpjegimi dhe pëlqimi",
+                  "detail": "Prezanto rolin, shpjego ekzaminimin dhe kërko pëlqimin."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b141",
+                  "label": "Komunikimi",
+                  "detail": "Përdor emrin e pacientit dhe shpjego hapat që po kryen."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b142",
+                  "label": "Pajisjet",
+                  "detail": "Përgatit stetoskopin, dritën, spatulën, çekiçin e reflekseve, otoskopin dhe oftalmoskopin sipas nevojës."
+                }
+              ]
+            },
+            {
+              "_type": "clinicalCallout",
+              "_key": "b146",
+              "intent": "note",
+              "title": "Ekzaminimet intime",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b145",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "b144",
+                      "text": "Shpjego nevojën, merr dhe dokumento pëlqimin, ofro shoqërues profesional dhe respekto kërkesën e pacientit për të ndaluar. Kjo është një plotësim editorial sipas GMC, jo citim nga fotografia.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "sourceLocator": {
+            "_type": "sourceLocator",
+            "pageStart": 6,
+            "pageEnd": 6,
+            "headingPath": [
+              "Përgatitja për ekzaminim"
+            ],
+            "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+          }
+        },
+        {
+          "_type": "medicalSection",
+          "_key": "b160",
+          "title": "Metodat dhe rendi i ekzaminimit",
+          "sectionType": "examination",
+          "content": [
+            {
+              "_type": "medicalTable",
+              "_key": "b153",
+              "title": "Metodat bazë",
+              "columns": [
+                "Metoda",
+                "Qëllimi"
+              ],
+              "rows": [
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b148",
+                  "cells": [
+                    "Inspektimi",
+                    "Vëzhgimi"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b149",
+                  "cells": [
+                    "Palpimi",
+                    "Vlerësimi me prekje"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b150",
+                  "cells": [
+                    "Perkusioni",
+                    "Vlerësimi i rezonancës dhe densitetit me trokitje"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b151",
+                  "cells": [
+                    "Auskultimi",
+                    "Dëgjimi i tingujve"
+                  ]
+                },
+                {
+                  "_type": "medicalTableRow",
+                  "_key": "b152",
+                  "cells": [
+                    "Ekzaminimi funksional",
+                    "Vlerësimi i lëvizjes dhe funksionit"
+                  ]
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "b155",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "b154",
+                  "text": "Rendi përshtatet me ankesën, gjendjen, historinë dhe tolerancën e pacientit. Shembulli i librit është një mënyrë organizimi, jo rend i detyrueshëm për çdo rast.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "clinicalStepGroup",
+              "_key": "b159",
+              "title": "Shembull organizimi",
+              "steps": [
+                {
+                  "_type": "clinicalStep",
+                  "_key": "b156",
+                  "title": "Pacienti ulur",
+                  "action": "Ekzamino sipas nevojës duart, kokën dhe qafën, sistemin neurologjik, mushkëritë dhe sistemin muskuloskeletal."
+                },
+                {
+                  "_type": "clinicalStep",
+                  "_key": "b157",
+                  "title": "Pacienti shtrirë",
+                  "action": "Përshtat pozicionin për vlerësimin kardiovaskular, neurologjik dhe abdominal. Për vlerësime të caktuara kardiovaskulare përdoret ngritja e trungut rreth 30–45°."
+                },
+                {
+                  "_type": "clinicalStep",
+                  "_key": "b158",
+                  "title": "Ekzaminime të orientuara",
+                  "action": "Ekzaminimi i gjirit, rektal, prostatik ose pelvik kryhet sipas indikacionit klinik, pëlqimit dhe kompetencës."
+                }
+              ]
+            }
+          ],
+          "sourceLocator": {
+            "_type": "sourceLocator",
+            "pageStart": 6,
+            "pageEnd": 6,
+            "headingPath": [
+              "Metodat dhe rendi i ekzaminimit"
+            ],
+            "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+          }
+        },
+        {
+          "_type": "medicalSection",
+          "_key": "b193",
+          "title": "Ekzaminimi i përgjithshëm dhe parametrat",
+          "sectionType": "examination",
+          "content": [
+            {
+              "_type": "medicalSubsection",
+              "_key": "b177",
+              "title": "Pamja e përgjithshme",
+              "content": [
+                {
+                  "_type": "medicalChecklist",
+                  "_key": "b166",
+                  "title": "Vëzhgo",
+                  "items": [
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b161",
+                      "label": "Pamja dhe higjiena",
+                      "detail": "Ndërtimi trupor, simetria, fytyra dhe higjiena."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b162",
+                      "label": "Sjellja dhe vetëdija",
+                      "detail": "Vigjilenca, aktiviteti, letargjia, humori dhe shprehja e fytyrës."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b163",
+                      "label": "Gjendja e përgjithshme",
+                      "detail": "A duket pacienti i sëmurë dhe si toleron ekzaminimin?"
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b164",
+                      "label": "Ngjyra e lëkurës",
+                      "detail": "Zbehje, skuqje ose ikter."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b165",
+                      "label": "Qëndrimi dhe ecja",
+                      "detail": "Postura dhe modeli i ecjes."
+                    }
+                  ]
+                },
+                {
+                  "_type": "medicalTable",
+                  "_key": "b174",
+                  "title": "Pamje që mund të orientojnë vlerësimin",
+                  "columns": [
+                    "Pamja",
+                    "Shembulli nga burimi"
+                  ],
+                  "rows": [
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b167",
+                      "cells": [
+                        "Akromegalia",
+                        "Zmadhim i nofullës, hundës ose buzëve"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b168",
+                      "cells": [
+                        "Pamja cushingoide",
+                        "Fytyrë e rrumbullakosur dhe grumbullim dhjami dorsocervikal"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b169",
+                      "cells": [
+                        "Sindroma Down",
+                        "Tipare karakteristike të fytyrës"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b170",
+                      "cells": [
+                        "Habitus marfanoid",
+                        "Shtat i gjatë dhe gjymtyrë të gjata"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b171",
+                      "cells": [
+                        "Hipotiroidizmi / miksedema",
+                        "Fryrje e fytyrës dhe shprehje e plogësht"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b172",
+                      "cells": [
+                        "Tireotoksikoza",
+                        "Humbje peshe, strumë; shenja okulare në disa raste"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b173",
+                      "cells": [
+                        "Parkinsonizmi",
+                        "Mimikë e reduktuar dhe qëndrim i përkulur"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b176",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "b175",
+                      "text": "Pamja sugjeron drejtime për vlerësim; nuk mjafton për diagnozë.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "sourceLocator": {
+                "_type": "sourceLocator",
+                "pageStart": 7,
+                "pageEnd": 7,
+                "headingPath": [
+                  "Pamja e përgjithshme"
+                ],
+                "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+              }
+            },
+            {
+              "_type": "medicalSubsection",
+              "_key": "b189",
+              "title": "Shenjat vitale",
+              "content": [
+                {
+                  "_type": "block",
+                  "_key": "b179",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "b178",
+                      "text": "Dokumento temperaturën, frekuencën respiratore, pulsin, presionin arterial dhe saturimin e oksigjenit, bashkë me rrethanat e matjes.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "medicalTable",
+                  "_key": "b185",
+                  "title": "Vlera orientuese për të rritur në pushim",
+                  "columns": [
+                    "Parametri",
+                    "Orientimi"
+                  ],
+                  "rows": [
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b180",
+                      "cells": [
+                        "Temperatura",
+                        "Rreth 36.5–37.3 °C; ndikohet nga vendi dhe koha e matjes"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b181",
+                      "cells": [
+                        "Frymëmarrja",
+                        "Rreth 12–18/min sipas referencës MedlinePlus"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b182",
+                      "cells": [
+                        "Pulsi",
+                        "60–100/min"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b183",
+                      "cells": [
+                        "Presioni arterial",
+                        "Interpreto të dy vlerat në kontekst; 120/80 mmHg nuk është e vetmja vlerë normale"
+                      ]
+                    },
+                    {
+                      "_type": "medicalTableRow",
+                      "_key": "b184",
+                      "cells": [
+                        "SpO₂",
+                        "Interpreto sipas gjendjes, oksigjenoterapisë dhe cilësisë së matjes; objektivi terapeutik nuk është i njëjtë për çdo pacient"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "_type": "clinicalCallout",
+                  "_key": "b188",
+                  "intent": "note",
+                  "title": "Përshtatje editoriale",
+                  "body": [
+                    {
+                      "_type": "block",
+                      "_key": "b187",
+                      "style": "normal",
+                      "markDefs": [],
+                      "children": [
+                        {
+                          "_type": "span",
+                          "_key": "b186",
+                          "text": "Tabela është orientuese. Vlerat e temperaturës dhe frymëmarrjes janë përshtatur sipas MedlinePlus; intervali 94–98% i fotografisë nuk është paraqitur si normal universal i SpO₂.",
+                          "marks": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "sourceLocator": {
+                "_type": "sourceLocator",
+                "pageStart": 7,
+                "pageEnd": 7,
+                "headingPath": [
+                  "Shenjat vitale"
+                ],
+                "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+              }
+            },
+            {
+              "_type": "medicalSubsection",
+              "_key": "b192",
+              "title": "Matjet trupore",
+              "content": [
+                {
+                  "_type": "block",
+                  "_key": "b191",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "b190",
+                      "text": "Mat peshën dhe gjatësinë. BMI llogaritet si pesha në kilogramë / gjatësia në metra². Te të rriturit, burimi ndan nënpeshën <18.5, intervalin 18.5–24.9 dhe mbipeshën 25–29.9 kg/m². Te foshnjat dhe fëmijët e vegjël vlerëso edhe perimetrin e kokës sipas moshës.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "sourceLocator": {
+                "_type": "sourceLocator",
+                "pageStart": 7,
+                "pageEnd": 7,
+                "headingPath": [
+                  "Matjet trupore"
+                ],
+                "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+              }
+            }
+          ],
+          "sourceLocator": {
+            "_type": "sourceLocator",
+            "pageStart": 7,
+            "pageEnd": 7,
+            "headingPath": [
+              "Ekzaminimi i përgjithshëm dhe parametrat"
+            ],
+            "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+          }
+        },
+        {
+          "_type": "medicalSection",
+          "_key": "b203",
+          "title": "Lëkura, koka, qafa dhe nyjet limfatike",
+          "sectionType": "examination",
+          "content": [
+            {
+              "_type": "medicalChecklist",
+              "_key": "b202",
+              "title": "Ekzaminimi i orientuar",
+              "items": [
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b194",
+                  "label": "Lëkura",
+                  "detail": "Përshkruaj vendin, madhësinë, ngjyrën, teksturën, formën dhe shpërndarjen e lezioneve."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b195",
+                  "label": "Thonjtë",
+                  "detail": "Vëzhgo dhe palpo ndryshimet e ngjyrës, formës dhe strukturës."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b196",
+                  "label": "Koka, fytyra dhe qafa",
+                  "detail": "Inspekto dhe palpo sipas gjetjeve dhe simptomave."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b197",
+                  "label": "Sytë",
+                  "detail": "Reagimi pupilar ndaj dritës, lëvizjet okulare, mprehtësia pamore dhe fundusi kur indikohet."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b198",
+                  "label": "Veshët",
+                  "detail": "Inspektim, palpim, otoskopi dhe vlerësim dëgjimi; Rinne/Weber sipas nevojës."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b199",
+                  "label": "Hunda",
+                  "detail": "Inspektim për deformime ose sekrecione."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b200",
+                  "label": "Goja dhe fyti",
+                  "detail": "Inspekto kavitetin oral dhe faringun. Vlerëso tiroiden gjatë ekzaminimit të qafës."
+                },
+                {
+                  "_type": "medicalCheckItem",
+                  "_key": "b201",
+                  "label": "Nyjet limfatike",
+                  "detail": "Vlerëso regjionet cervikale, aksilare dhe inguinale: zmadhim, dhimbshmëri, konsistencë dhe lëvizshmëri."
+                }
+              ]
+            }
+          ],
+          "sourceLocator": {
+            "_type": "sourceLocator",
+            "pageStart": 7,
+            "pageEnd": 7,
+            "headingPath": [
+              "Lëkura, koka, qafa dhe nyjet limfatike"
+            ],
+            "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+          }
+        },
+        {
+          "_type": "medicalSection",
+          "_key": "b222",
+          "title": "Zemra, mushkëritë dhe abdomeni",
+          "sectionType": "examination",
+          "content": [
+            {
+              "_type": "medicalSubsection",
+              "_key": "b210",
+              "title": "Ekzaminimi kardiovaskular",
+              "content": [
+                {
+                  "_type": "medicalChecklist",
+                  "_key": "b209",
+                  "title": "Pikat kryesore",
+                  "items": [
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b204",
+                      "label": "Auskultimi",
+                      "detail": "Dëgjo zonat valvulare drejtpërdrejt mbi lëkurë. Vlerësimi i karotideve është pjesë më vete e ekzaminimit vaskular."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b205",
+                      "label": "Pulsacionet venoze",
+                      "detail": "Vlerëso pulsacionin jugular dhe presionin venoz sipas teknikës klinike."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b206",
+                      "label": "Pulset arteriale",
+                      "detail": "Vlerëso sipas nevojës pulsin radial, karotid, femoral, popliteal, tibial posterior dhe dorsalis pedis."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b207",
+                      "label": "Edema",
+                      "detail": "Dallo edemën me dhe pa gropëzim."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b208",
+                      "label": "Palpimi prekordial",
+                      "detail": "Vlerëso impulsin apikal, ngritjet dhe dridhjet palpabile."
+                    }
+                  ]
+                }
+              ],
+              "sourceLocator": {
+                "_type": "sourceLocator",
+                "pageStart": 8,
+                "pageEnd": 8,
+                "headingPath": [
+                  "Ekzaminimi kardiovaskular"
+                ],
+                "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+              }
+            },
+            {
+              "_type": "medicalSubsection",
+              "_key": "b216",
+              "title": "Mushkëritë dhe muri torakal",
+              "content": [
+                {
+                  "_type": "clinicalStepGroup",
+                  "_key": "b215",
+                  "title": "Rendi i vlerësimit",
+                  "steps": [
+                    {
+                      "_type": "clinicalStep",
+                      "_key": "b211",
+                      "title": "Inspektimi",
+                      "action": "Vëzhgo modelin e frymëmarrjes dhe formën e toraksit."
+                    },
+                    {
+                      "_type": "clinicalStep",
+                      "_key": "b212",
+                      "title": "Palpimi",
+                      "action": "Vlerëso dhimbshmërinë, simetrinë e ekspansionit dhe fremitusin taktil."
+                    },
+                    {
+                      "_type": "clinicalStep",
+                      "_key": "b213",
+                      "title": "Perkusioni",
+                      "action": "Vlerëso ndryshimet e rezonancës. Hiperrezonanca ose matiteti interpretohen bashkë me gjetjet e tjera."
+                    },
+                    {
+                      "_type": "clinicalStep",
+                      "_key": "b214",
+                      "title": "Auskultimi",
+                      "action": "Dëgjo tingujt respiratorë dhe zhurmat shtesë. Vlerëso egofoninë kur indikohet."
+                    }
+                  ]
+                }
+              ],
+              "sourceLocator": {
+                "_type": "sourceLocator",
+                "pageStart": 8,
+                "pageEnd": 8,
+                "headingPath": [
+                  "Mushkëritë dhe muri torakal"
+                ],
+                "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+              }
+            },
+            {
+              "_type": "medicalSubsection",
+              "_key": "b221",
+              "title": "Abdomeni",
+              "content": [
+                {
+                  "_type": "block",
+                  "_key": "b218",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "b217",
+                      "text": "Rendi i përgjithshëm: inspektim → auskultim → perkusion → palpim.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b220",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "b219",
+                      "text": "Sipas ankesës, vlerëso shenjat e Murphy, ndjeshmërinë në pikën McBurney, Rovsing, psoas dhe obturator. Vlerëso dhimbshmërinë në këndin kostovertebral kur dyshohet patologji urinare. Asnjë shenjë e vetme nuk e konfirmon diagnozën.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "sourceLocator": {
+                "_type": "sourceLocator",
+                "pageStart": 8,
+                "pageEnd": 8,
+                "headingPath": [
+                  "Abdomeni"
+                ],
+                "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+              }
+            }
+          ],
+          "sourceLocator": {
+            "_type": "sourceLocator",
+            "pageStart": 8,
+            "pageEnd": 8,
+            "headingPath": [
+              "Zemra, mushkëritë dhe abdomeni"
+            ],
+            "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+          }
+        },
+        {
+          "_type": "medicalSection",
+          "_key": "b237",
+          "title": "Ekzaminimi pelvik dhe gjenital",
+          "sectionType": "examination",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "b224",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "b223",
+                  "text": "Kjo pjesë përmbledh vetëm elementet e dukshme në faqen e dërguar. Ekzaminimi kryhet sipas indikacionit, me shpjegim, pëlqim, privatësi dhe shoqërues profesional të ofruar.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "medicalSubsection",
+              "_key": "b230",
+              "title": "Ekzaminimi gjinekologjik",
+              "content": [
+                {
+                  "_type": "medicalChecklist",
+                  "_key": "b229",
+                  "title": "Sipas indikacionit",
+                  "items": [
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b225",
+                      "label": "Gjenitalet e jashtme",
+                      "detail": "Inspekto vulvën dhe labiet për ënjtje, irritim, ulçerime ose ndryshime të tjera."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b226",
+                      "label": "Ekzaminimi me spekulum",
+                      "detail": "Vlerëso vaginën dhe qafën e mitrës; merr mostra kur indikohet."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b227",
+                      "label": "Ekzaminimi bimanual",
+                      "detail": "Vlerëso mitrën dhe adnekset për vendndodhje, madhësi, ndjeshmëri ose masa."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b228",
+                      "label": "Ekzaminimi rektovaginal",
+                      "detail": "Vetëm në indikacione të zgjedhura dhe me pëlqim të veçantë."
+                    }
+                  ]
+                }
+              ],
+              "sourceLocator": {
+                "_type": "sourceLocator",
+                "pageStart": 8,
+                "pageEnd": 8,
+                "headingPath": [
+                  "Ekzaminimi gjinekologjik"
+                ],
+                "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+              }
+            },
+            {
+              "_type": "medicalSubsection",
+              "_key": "b236",
+              "title": "Ekzaminimi gjenital mashkullor",
+              "content": [
+                {
+                  "_type": "medicalChecklist",
+                  "_key": "b235",
+                  "title": "Sipas indikacionit",
+                  "items": [
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b231",
+                      "label": "Inspektimi",
+                      "detail": "Vlerëso lëkurën, qimet, lezionet, skuqjen, edemën dhe perineumin."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b232",
+                      "label": "Prepuci",
+                      "detail": "Vlerëso me kujdes dhe vetëm kur është e përshtatshme; shmang tërheqjen me forcë."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b233",
+                      "label": "Palpimi",
+                      "detail": "Vlerëso penisin, skrotumin dhe të dy testikujt sipas indikacionit."
+                    },
+                    {
+                      "_type": "medicalCheckItem",
+                      "_key": "b234",
+                      "label": "Ekzaminime shtesë",
+                      "detail": "Vlerësimi për hernie dhe ekzaminimi prostatik kur indikohen."
+                    }
+                  ]
+                }
+              ],
+              "sourceLocator": {
+                "_type": "sourceLocator",
+                "pageStart": 8,
+                "pageEnd": 8,
+                "headingPath": [
+                  "Ekzaminimi gjenital mashkullor"
+                ],
+                "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+              }
+            }
+          ],
+          "sourceLocator": {
+            "_type": "sourceLocator",
+            "pageStart": 8,
+            "pageEnd": 8,
+            "headingPath": [
+              "Ekzaminimi pelvik dhe gjenital"
+            ],
+            "sourceNote": "Përshtatur nga fotografia e dërguar; numri i faqes i referohet librit të shtypur."
+          }
+        }
+      ],
+      "editorialNotes": "Vetëm 8 faqe unike të dërguara; fotografia e faqes 2 është e dyfishtë. Nuk është kapitulli i plotë. Pa atribim të rremë të verifikimit klinik. Pyetjet janë përshtatur në shqip nga teksti anglisht; shkrimi urdu nuk është transkriptuar fjalë për fjalë.",
+      "sourceLocator": {
+        "_type": "sourceLocator",
+        "pageStart": 6,
+        "pageEnd": 8
+      },
+      "sources": [
+        {
+          "_type": "sourceCitation",
+          "_key": "b238",
+          "title": "Vital signs",
+          "organization": "MedlinePlus",
+          "url": "https://medlineplus.gov/ency/article/002341.htm",
+          "note": "Përshtatja e tabelës së shenjave vitale; kontrolluar 2026-09-09."
+        },
+        {
+          "_type": "sourceCitation",
+          "_key": "b239",
+          "title": "Intimate examinations and chaperones",
+          "organization": "GMC",
+          "url": "https://www.gmc-uk.org/professional-standards/the-professional-standards/intimate-examinations-and-chaperones/intimate-examinations-and-chaperones",
+          "note": "Pëlqimi, privatësia dhe shoqëruesi profesional; kontrolluar 2026-09-09."
+        }
+      ]
+    }
+  ]
+}
