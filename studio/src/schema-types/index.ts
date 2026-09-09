@@ -1,3 +1,4 @@
+import {medicalSubsection, medicalChecklist, medicalQuestionSet, medicalDecision} from './learning-blocks'
 import {
   clinicalCallout,
   clinicalStep,
@@ -15,6 +16,10 @@ import {medicalTopic} from './medical-topic'
 import {sourceCitation, sourceExtract, sourceFile, sourceLocator} from './source-types'
 
 export const schemaTypes = [
+  medicalSubsection,
+  medicalChecklist,
+  medicalQuestionSet,
+  medicalDecision,
   sourceFile,
   sourceLocator,
   sourceCitation,

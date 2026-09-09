@@ -14,8 +14,15 @@ export const medicalTopic = defineType({
     {name: 'workflow', title: 'Rishikimi'},
   ],
   fields: [
+    defineField({name: 'schemaVersion', title: 'Versioni i strukturës', type: 'number', initialValue: 2, hidden: true}),
+    defineField({name: 'language', title: 'Gjuha e mësimit', type: 'string', group: 'structure', initialValue: 'sq', options: {list: [{title: 'Shqip', value: 'sq'}, {title: 'Anglisht', value: 'en'}]}}),
     defineField({name: 'book', title: 'Libri', type: 'reference', to: [{type: 'medicalBook'}], group: 'structure', validation: (rule) => rule.required()}),
-    defineField({name: 'chapter', title: 'Kapitulli', type: 'reference', to: [{type: 'medicalChapter'}], group: 'structure', validation: (rule) => rule.required()}),
+    defineField({name: 'chapter', title: 'Kapitulli', type: 'reference', to: [{type: 'medicalChapter'}], group: 'structure', options: {filter: ({document}) => ({filter: 'book._ref == $bookId', params: {bookId: (document.book as {_ref?: string})?._ref || ''}})}, validation: rule => rule.required().custom(async (value, context) => {
+      const bookId = (context.document?.book as {_ref?: string})?._ref
+      if (!value?._ref || !bookId) return true
+      const chapterBook = await context.getClient({apiVersion: '2026-08-30'}).withConfig({perspective: 'raw'}).fetch<string | null>('coalesce(*[_id == $draftId][0].book._ref, *[_id == $id][0].book._ref)', {id: value._ref, draftId: `drafts.${value._ref}`})
+      return chapterBook === bookId || 'Kapitulli duhet t’i përkasë librit të zgjedhur.'
+    })}),
     defineField({name: 'parentTopic', title: 'Tema prind (opsionale)', type: 'reference', to: [{type: 'medicalTopic'}], group: 'structure'}),
     defineField({name: 'title', title: 'Titulli', type: 'string', group: 'structure', validation: (rule) => rule.required()}),
     defineField({name: 'originalTitle', title: 'Titulli origjinal', type: 'string', group: 'structure'}),
@@ -38,7 +45,7 @@ export const medicalTopic = defineType({
     defineField({
       name: 'sections',
       title: 'Seksionet',
-      description: 'Shtoni seksionet në të njëjtin rend si në libër.',
+      description: 'Rendi këtu është rendi i leximit. Çdo mësim mund të ketë strukturë të ndryshme; përdor menunë Shto për blloqet.',
       type: 'array',
       group: 'content',
       of: [defineArrayMember({type: 'medicalSection'})],

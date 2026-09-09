@@ -102,8 +102,8 @@ export const prescriptionLine = defineType({
   title: 'Rresht i recetës',
   type: 'object',
   fields: [
-    defineField({name: 'medicine', title: 'Bari / produkti', type: 'string'}),
-    defineField({name: 'genericName', title: 'Substanca aktive', type: 'string'}),
+    defineField({name: 'medicine', title: 'Emri i vjetër', type: 'string', readOnly: true, hidden: ({value}) => value === undefined, deprecated: {reason: 'Përdor vetëm substancën aktive.'}}),
+    defineField({name: 'genericName', title: 'Substanca aktive', type: 'string', validation: rule => rule.required()}),
     defineField({name: 'form', title: 'Forma farmaceutike', type: 'string'}),
     defineField({name: 'strength', title: 'Fuqia', type: 'string'}),
     defineField({name: 'dose', title: 'Doza', type: 'string'}),
@@ -112,13 +112,14 @@ export const prescriptionLine = defineType({
     defineField({name: 'duration', title: 'Kohëzgjatja', type: 'string'}),
     defineField({name: 'quantity', title: 'Sasia', type: 'string'}),
     defineField({name: 'instructions', title: 'Udhëzimet', type: 'text', rows: 3}),
+    defineField({name: 'relationToPrevious', title: 'Lidhja me rreshtin paraardhës', type: 'string', options: {list: [{title: 'Së bashku (+)', value: 'and'}, {title: 'Alternativë (OSE)', value: 'or'}]}}),
     defineField({name: 'patientGroup', title: 'Grupi i pacientëve', type: 'string'}),
     defineField({name: 'clinicalNote', title: 'Shënim klinik', type: 'text', rows: 3}),
   ],
   preview: {
     select: {medicine: 'medicine', genericName: 'genericName', dose: 'dose'},
     prepare: ({medicine, genericName, dose}) => ({
-      title: medicine || genericName || 'Rresht i recetës',
+      title: genericName || medicine || 'Rresht i recetës',
       subtitle: dose || undefined,
     }),
   },
@@ -193,8 +194,13 @@ export const medicalTable = defineType({
   name: 'medicalTable',
   title: 'Tabelë klinike',
   type: 'object',
+  validation: rule => rule.custom(value => {
+    const table = value as {columns?: string[], rows?: {cells?: string[]}[]} | undefined
+    return !table?.columns || !table.rows?.some(row => row.cells?.length !== table.columns?.length) || 'Çdo rresht duhet të ketë po aq qeliza sa ka kolona.'
+  }),
   fields: [
     defineField({name: 'title', title: 'Titulli', type: 'string'}),
+    defineField({name: 'rowHeader', title: 'Titulli i kolonës së etiketave', type: 'string'}),
     defineField({name: 'columns', title: 'Kolonat', type: 'array', of: [{type: 'string'}], validation: (rule) => rule.required().min(1)}),
     defineField({name: 'rows', title: 'Rreshtat', type: 'array', of: [defineArrayMember({type: 'medicalTableRow'})], validation: (rule) => rule.required().min(1)}),
     defineField({name: 'note', title: 'Shënim', type: 'text', rows: 3}),

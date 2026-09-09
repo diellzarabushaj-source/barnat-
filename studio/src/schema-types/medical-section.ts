@@ -1,20 +1,23 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
 
-import {portableText} from './clinical-types'
+import {contentMembers, contentOptions} from './learning-blocks'
 
 export const medicalSection = defineType({
   name: 'medicalSection',
-  title: 'Seksion i temës',
+  title: 'Seksion i mësimit',
   type: 'object',
   fields: [
     defineField({name: 'title', title: 'Titulli', type: 'string', validation: (rule) => rule.required()}),
-    defineField({name: 'slug', title: 'Anchor', type: 'slug', options: {source: 'title'}, validation: (rule) => rule.required()}),
-    defineField({name: 'order', title: 'Renditja', type: 'number', validation: (rule) => rule.integer().positive()}),
+    defineField({name: 'slug', title: 'Anchor', type: 'slug', options: {source: 'title'}, description: 'Opsionale. Lidhja e lexuesit përdor identitetin e seksionit.'}),
+    defineField({name: 'order', title: 'Renditja e vjetër', type: 'number', readOnly: true, hidden: ({value}) => value === undefined, deprecated: {reason: 'Zhvendos seksionin në listë për të ndryshuar renditjen.'}}),
     defineField({
       name: 'sectionType',
       title: 'Lloji i seksionit',
       type: 'string',
       options: {list: [
+        {title: 'Përmbajtje e lirë', value: 'general'},
+        {title: 'Anamnezë', value: 'history'},
+        {title: 'Ekzaminim', value: 'examination'},
         {title: 'Përmbledhje', value: 'overview'},
         {title: 'Vlerësim', value: 'assessment'},
         {title: 'Diagnozë', value: 'diagnosis'},
@@ -26,7 +29,7 @@ export const medicalSection = defineType({
         {title: 'Ndjekje', value: 'followup'},
         {title: 'Referencë', value: 'reference'},
       ]},
-      initialValue: 'overview',
+      initialValue: 'general',
       validation: (rule) => rule.required(),
     }),
     defineField({name: 'summary', title: 'Përmbledhje e seksionit', type: 'text', rows: 3}),
@@ -35,21 +38,16 @@ export const medicalSection = defineType({
       name: 'content',
       title: 'Përmbajtja',
       type: 'array',
-      of: [
-        portableText,
-        defineArrayMember({type: 'clinicalCallout'}),
-        defineArrayMember({type: 'clinicalStepGroup'}),
-        defineArrayMember({type: 'prescriptionGroup'}),
-        defineArrayMember({type: 'medicalFigure'}),
-        defineArrayMember({type: 'medicalTable'}),
-      ],
+      description: 'Shto tekst, tabela, pyetje, receta ose nënndarje. Zhvendosi lirisht në rendin e dëshiruar.',
+      options: contentOptions,
+      of: [...contentMembers(), defineArrayMember({type: 'medicalSubsection'})],
       validation: (rule) => rule.required().min(1),
     }),
   ],
   preview: {
-    select: {title: 'title', order: 'order', subtitle: 'summary'},
-    prepare: ({title, order, subtitle}) => ({
-      title: order ? `${order}. ${title}` : title,
+    select: {title: 'title', subtitle: 'summary'},
+    prepare: ({title, subtitle}) => ({
+      title,
       subtitle,
     }),
   },

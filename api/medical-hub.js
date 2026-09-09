@@ -53,7 +53,12 @@ const MODERN_DETAIL_QUERY = `coalesce(
     reviewStatus, reviewedBy, lastReviewedAt, version, sourceLocator,
     sections[]{
       _key,title,"slug":slug.current,order,sectionType,summary,sourceLocator,
-      content[]{...,_type == "medicalFigure" => {"imageUrl": image.asset->url}}
+      content[]{...,
+        _type == "medicalFigure" => {"imageUrl": image.asset->url},
+        _type == "medicalSubsection" => {
+          content[]{...,_type == "medicalFigure" => {"imageUrl": image.asset->url}}
+        }
+      }
     },
     sources[]{_key,title,organization,url,publishedAt,note,locator},
     "chapter": chapter->{_id,title,number,"slug":slug.current},

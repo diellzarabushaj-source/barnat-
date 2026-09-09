@@ -536,7 +536,10 @@
     const body = portableInlineMarkup(block);
     if (!body) return '';
     const style = clean(block?.style).toLowerCase();
-    if (/^h[1-6]$/.test(style)) return `<h4 class="ck-source-subheading">${body}</h4>`;
+    if (/^h[1-6]$/.test(style)) {
+      const tag = style === 'h4' ? 'h5' : 'h4';
+      return `<${tag} class="ck-source-subheading">${body}</${tag}>`;
+    }
     if (style === 'blockquote') return `<blockquote class="ck-source-quote">${body}</blockquote>`;
     return `<p class="ck-source-paragraph">${body}</p>`;
   }
@@ -682,7 +685,7 @@
       <section class="ck-modern-block ck-modern-prescriptions">
         <div class="ck-section-heading"><span>Rx</span><h4>${esc(block?.title || 'Receta / skema e përshkrimit')}</h4></div>
         ${(block?.applicability || relation) ? `<div class="ck-prescription-context">${block?.applicability ? `<span>${esc(block.applicability)}</span>` : ''}${relation ? `<strong>${esc(relation)}</strong>` : ''}</div>` : ''}
-        ${lines.length ? rxGroupMarkup(lines) : ''}
+        ${lines.length ? rxGroupMarkup(lines.map((line, index) => ({...line, relationToPrevious: index > 0 ? (line.relationToPrevious || (/^(OR|OSE)$/i.test(clean(line.instructions)) || relation === 'Alternativa' ? 'or' : 'and')) : undefined}))) : ''}
         ${block?.note ? `<p class="ck-section-note">${esc(block.note)}</p>` : ''}
       </section>`;
   }
@@ -693,6 +696,7 @@
     const figure = figureMarkup({
       ...block,
       url,
+      alt:block.image?.alt || block.alt || block.title || block.caption,
       sourceUrl:block.sourceUrl || block.externalUrl,
     }, index);
     return `<div class="ck-modern-block ck-medical-figure">${figure}${sourceLocatorMarkup(block?.sourceLocator, 'Figura në burim')}</div>`;
@@ -708,7 +712,7 @@
         ${block?.title ? `<h4>${esc(block.title)}</h4>` : ''}
         <div class="ck-medical-table-wrap" tabindex="0" role="region" aria-label="${esc(block?.title || 'Tabelë klinike')}">
           <table class="ck-medical-table">
-            <thead><tr>${hasLabels ? '<th scope="col">Kategoria</th>' : ''}${columns.map(column => `<th scope="col">${esc(plainText(column))}</th>`).join('')}</tr></thead>
+            <thead><tr>${hasLabels ? `<th scope="col">${esc(block.rowHeader || 'Kategoria')}</th>` : ''}${columns.map(column => `<th scope="col">${esc(plainText(column))}</th>`).join('')}</tr></thead>
             <tbody>${rows.map(row => `<tr>${hasLabels ? `<th scope="row">${esc(row?.label || '')}</th>` : ''}${(row?.cells || []).map(cell => `<td>${esc(plainText(cell))}</td>`).join('')}</tr>`).join('')}</tbody>
           </table>
         </div>
@@ -725,27 +729,58 @@
     if (type === 'prescriptionGroup') return prescriptionGroupMarkup(block);
     if (type === 'medicalFigure') return medicalFigureBlockMarkup(block, index);
     if (type === 'medicalTable') return medicalTableMarkup(block);
-    return '';
+    if (type === 'medicalSubsection') return `
+      <section class="ck-subsection">
+        <h4 class="ck-subsection-title">${esc(block.title || 'Nënndarje')}</h4>
+        ${block.summary ? `<p class="ck-source-paragraph">${esc(block.summary)}</p>` : ''}
+        ${medicalContentMarkup(block.content).replace(/<h4(?=[ >])/g, '<h5').replace(/<\/h4>/g, '</h5>')}
+        ${sourceLocatorMarkup(block.sourceLocator)}
+      </section>`;
+    if (type === 'medicalChecklist') return `
+      <section class="ck-modern-block ck-checklist"><h4>${esc(block.title || 'Listë kontrolli')}</h4>
+        <ul>${(block.items || []).filter(Boolean).map(item => `<li><strong>${esc(item.label)}</strong>${item.detail ? `<p>${esc(item.detail)}</p>` : ''}</li>`).join('')}</ul>
+        ${sourceLocatorMarkup(block.sourceLocator)}
+      </section>`;
+    if (type === 'medicalQuestionSet') return `
+      <section class="ck-modern-block ck-questions"><h4>${esc(block.title || 'Pyetje dhe shpjegime')}</h4>
+        <dl>${(block.items || []).filter(Boolean).map(item => `<div><dt>${esc(item.question)}</dt><dd>${medicalContentMarkup(item.answer)}</dd></div>`).join('')}</dl>
+        ${sourceLocatorMarkup(block.sourceLocator)}
+      </section>`;
+    if (type === 'medicalDecision') return `
+      <section class="ck-modern-block ck-decisions"><h4>${esc(block.title || 'Vendimmarrja')}</h4>
+        ${(block.branches || []).filter(Boolean).map(branch => `<div class="ck-decision-branch"><div><small>Nëse</small><strong>${esc(branch.condition)}</strong></div><div><small>Atëherë</small>${medicalContentMarkup(branch.action)}</div></div>`).join('')}
+        ${sourceLocatorMarkup(block.sourceLocator)}
+      </section>`;
+    // A future/unsupported block must never disappear silently from a lesson.
+    return '<p class="ck-content-unavailable" role="note">Një pjesë e këtij mësimi nuk mund të shfaqet. Kontrollo burimin origjinal.</p>';
   }
 
+  // Nest Portable Text lists without losing level or switching numbering types.
   function medicalContentMarkup(blocks) {
-    const content = Array.isArray(blocks) ? blocks : [];
-    let html = '';
-    for (let index = 0; index < content.length; index += 1) {
-      const block = content[index];
-      if (block?._type === 'block' && block.listItem) {
-        const listItem = clean(block.listItem).toLowerCase();
-        const tag = listItem === 'number' ? 'ol' : 'ul';
-        const items = [];
-        while (index < content.length && content[index]?._type === 'block' && clean(content[index].listItem).toLowerCase() === listItem) {
-          items.push(`<li>${portableInlineMarkup(content[index])}</li>`);
-          index += 1;
+    const content = Array.isArray(blocks) ? blocks.filter(Boolean) : [];
+    let cursor = 0;
+    const levelOf = block => Math.max(1, Math.min(6, Number(block?.level) || 1));
+    function listMarkup(level) {
+      const kind = content[cursor].listItem;
+      const tag = kind === 'number' ? 'ol' : 'ul';
+      let html = `<${tag} class="ck-source-list-block">`;
+      while (cursor < content.length) {
+        const block = content[cursor];
+        if (block._type !== 'block' || !block.listItem || levelOf(block) < level || block.listItem !== kind) break;
+        html += `<li>${portableInlineMarkup(block)}`;
+        cursor += 1;
+        while (cursor < content.length && content[cursor]._type === 'block' && content[cursor].listItem && levelOf(content[cursor]) > level) {
+          html += listMarkup(levelOf(content[cursor]));
         }
-        index -= 1;
-        html += `<${tag} class="ck-source-list-block">${items.join('')}</${tag}>`;
-        continue;
+        html += '</li>';
       }
-      html += contentBlockMarkup(block, index);
+      return html + `</${tag}>`;
+    }
+    let html = '';
+    while (cursor < content.length) {
+      const block = content[cursor];
+      if (block._type === 'block' && block.listItem) html += listMarkup(levelOf(block));
+      else { html += contentBlockMarkup(block, cursor); cursor += 1; }
     }
     return html;
   }
@@ -1058,7 +1093,9 @@
 
   function rxRelation(rx) {
     const instruction = clean(rx?.instructions);
-    return /^(OR|OSE)$/i.test(instruction) ? 'OR' : '';
+    if (rx?.relationToPrevious === 'or') return 'OSE';
+    if (rx?.relationToPrevious === 'and') return '+';
+    return /^(OR|OSE)$/i.test(instruction) ? 'OSE' : '';
   }
 
   function rxSignature(rx) {
@@ -1091,7 +1128,7 @@
     const relation = rxRelation(rx);
     const signature = rxSignature(rx);
     return `
-      ${relation ? '<div class="ck-rx-or" aria-label="alternativë">OR</div>' : ''}
+      ${index > 0 && relation ? `<div class="ck-rx-or" aria-label="${relation === '+' ? 'së bashku' : 'alternativë'}">${relation}</div>` : ''}
       <div class="ck-rx-line">
         <span class="ck-rx-line-no">${index + 1}.</span>
         <div class="ck-rx-line-copy">
@@ -1102,6 +1139,7 @@
           </div>
           ${signature ? `<p class="ck-rx-signature"><strong>S.</strong> ${esc(signature)}</p>` : ''}
           ${rx?.quantity ? `<p class="ck-rx-quantity">No. ${esc(rx.quantity)}</p>` : ''}
+          ${rx?.patientGroup ? `<small class="ck-rx-patient-group">${esc(rx.patientGroup)}</small>` : ''}
           ${rx?.clinicalNote ? `<small class="ck-rx-note">${esc(rx.clinicalNote)}</small>` : ''}
         </div>
       </div>`;
@@ -1610,6 +1648,9 @@
 
   function medicalSectionLabel(section) {
     const labels = {
+      general:'Mësimi',
+      history:'Anamnezë',
+      examination:'Ekzaminim',
       overview:'Përmbledhje',
       assessment:'Vlerësim',
       diagnosis:'Diagnozë',

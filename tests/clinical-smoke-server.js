@@ -191,7 +191,8 @@ const server = http.createServer((req, res) => {
     if (req.method !== 'GET') {
       return send(res, 405, JSON.stringify({ ok:false, error:'Method not allowed in browser fixture' }), 'application/json; charset=utf-8', { Allow:'GET' });
     }
-    const fixture = medicalHubFixtureResponse(url);
+    const fixture = process.env.MEDICAL_HUB_COMPOSABLE_FIXTURE === '1'
+      ? require('./medical-hub-composable-fixture.js')(url) : medicalHubFixtureResponse(url);
     return send(res, fixture.status, JSON.stringify(fixture.payload), 'application/json; charset=utf-8');
   }
   if (url.pathname === '/api/drug-search') {
