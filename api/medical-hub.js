@@ -141,12 +141,14 @@ const SEARCH_INDEX_QUERY = `*[_type == "learningTopic" && reviewStatus in ["revi
   }
 }`;
 
-const PRESCRIPTION_CHAPTER_QUERY = `*[_type == "prescriptionChapter" && reviewStatus == "verified"] | order(chapterNumber asc) {
+// Chapter metadata may be browsed before clinical approval; treatment queries remain verified-only.
+const PRESCRIPTION_CHAPTER_QUERY = `*[_type == "prescriptionChapter" && reviewStatus in ["source-imported", "review", "verified"]] | order(chapterNumber asc) {
   chapterNumber, title, hasPrescriptions, sourceNote, reviewStatus, version,
-  "count": count(*[_type == "prescriptionGuide" && reviewStatus == "verified" && chapterNumber == ^.chapterNumber])
+  "totalCount": count(*[_type == "prescriptionGuide" && chapterNumber == ^.chapterNumber]),
+  "count": select(reviewStatus == "verified" => count(*[_type == "prescriptionGuide" && reviewStatus == "verified" && chapterNumber == ^.chapterNumber]), 0)
 }`;
 
-const PRESCRIPTION_GUIDE_QUERY = `*[_type == "prescriptionGuide" && reviewStatus == "verified" && chapterNumber == $chapter] | order(orderInChapter asc, title asc) {
+const PRESCRIPTION_GUIDE_QUERY = `*[_type == "prescriptionGuide" && reviewStatus == "verified" && chapterNumber == $chapter && chapterNumber in *[_type == "prescriptionChapter" && reviewStatus == "verified"].chapterNumber] | order(orderInChapter asc, title asc) {
   _id, title, "slug": slug.current, externalId, chapterNumber, chapterTitle, orderInChapter, keywords,
   logicBlocks[]{
     _key, order, relation, sourceConnectorLabel, condition, selection, note,
@@ -158,7 +160,7 @@ const PRESCRIPTION_GUIDE_QUERY = `*[_type == "prescriptionGuide" && reviewStatus
   sourceDocument, sourceHeading, sourcePageStart, sourcePageEnd, reviewStatus, version
 }`;
 
-const PRESCRIPTION_SEARCH_INDEX_QUERY = `*[_type == "prescriptionGuide" && reviewStatus == "verified"] | order(chapterNumber asc, orderInChapter asc) {
+const PRESCRIPTION_SEARCH_INDEX_QUERY = `*[_type == "prescriptionGuide" && reviewStatus == "verified" && chapterNumber in *[_type == "prescriptionChapter" && reviewStatus == "verified"].chapterNumber] | order(chapterNumber asc, orderInChapter asc) {
   _id, title, chapterNumber, chapterTitle, orderInChapter, keywords, sourceHeading,
   logicBlocks[]{
     relation, sourceConnectorLabel, condition, note,
@@ -320,6 +322,8 @@ function prescriptionChapters(rows) {
       number,
       title,
       count:Math.max(0, Number(row?.count || 0)),
+      totalCount:Math.max(0, Number(row?.totalCount ?? row?.count ?? 0)),
+      pendingCount:Math.max(0, Number(row?.totalCount || 0) - Number(row?.count || 0)),
       hasPrescriptions:Boolean(row?.hasPrescriptions),
       sourceNote:clean(row?.sourceNote),
       reviewStatus:clean(row?.reviewStatus),
@@ -532,7 +536,7 @@ module.exports = async function handler(req, res) {
         ? requestedChapter
         : (chapters.find(item => item.hasPrescriptions && item.count > 0)?.number || chapters[0]?.number || 0);
       const chapterMeta = chapters.find(item => item.number === selectedChapter) || null;
-      const items = selectedChapter && chapterMeta?.hasPrescriptions
+      const items = selectedChapter && chapterMeta?.count > 0 && chapterMeta?.reviewStatus === 'verified'
         ? await querySanity(PRESCRIPTION_GUIDE_QUERY, { chapter:selectedChapter })
         : [];
       return res.status(200).json({
@@ -540,6 +544,7 @@ module.exports = async function handler(req, res) {
         chapters,
         chapter:selectedChapter,
         chapterMeta,
+        availability:chapters.some(item => item.count > 0) ? 'ready' : chapters.some(item => item.pendingCount > 0) ? 'awaiting-review' : 'empty',
         items:Array.isArray(items) ? items : [],
         count:Array.isArray(items) ? items.length : 0,
         source:'sanity-prescription-guides',

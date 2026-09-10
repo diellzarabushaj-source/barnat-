@@ -6800,6 +6800,8 @@
     'source-note':'Shënim burimor',
   });
   const state = {
+    loading:true,
+    error:false,
     chapter:0,
     chapters:[],
     items:[],
@@ -7135,6 +7137,16 @@
     const list = $('#rxSourceGuideList');
     if (!list) return;
 
+    const connection = $('#rxSourceConnection');
+    if (connection) connection.textContent = state.loading ? 'Duke u lidhur…' : state.error ? 'Lidhja dështoi' : 'Burimi u lidh';
+    const retry = $('#rxSourceRetry');
+    if (retry) retry.hidden = !state.error;
+    $('#rxPrescriptionLibrary')?.setAttribute('aria-busy', String(state.loading));
+    if (state.loading || state.error) {
+      $('#rxSourceGuideNav').innerHTML = '';
+      renderEmptyDetail(state.loading ? 'Duke ngarkuar skemat…' : 'Skemat nuk u ngarkuan', state.loading ? 'Po marrim kapitujt nga burimi.' : 'Provo përsëri ose vazhdo me një recetë të re.');
+      return;
+    }
     const global = isGlobalSearchActive();
     const entries = global ? state.searchResults : filteredItems();
     const current = activeGuide();
@@ -7148,10 +7160,11 @@
     if (label) label.textContent = global ? 'rezultate në të gjitha kapitujt' : 'mësime në kapitull';
     if (hint) hint.textContent = global
       ? (state.searching ? 'Duke kërkuar në të gjithë burimin…' : `${entries.length} rezultate globale`)
-      : `${state.items.length} mësime të publikuara`;
+      : (currentChapterMeta()?.pendingCount ? `${currentChapterMeta().pendingCount} në verifikim` : `${state.items.length} mësime të verifikuara`);
     if (activeTitle) activeTitle.textContent = current?.title || (global ? 'Zgjidh një rezultat' : 'Zgjidh një mësim');
     if (clear) clear.hidden = !state.query;
 
+    if (!global && currentChapterMeta()?.pendingCount && !state.items.length && activeTitle) activeTitle.textContent = 'Në pritje të verifikimit';
     renderNav(entries, current);
 
     if (global) {
@@ -7173,7 +7186,13 @@
 
     if (!state.items.length) {
       const chapter = currentChapterMeta();
-      renderEmptyDetail('Ky kapitull nuk ka Rx në dokumentin burimor.', chapter?.sourceNote || 'Nuk ka mësime/skema të publikuara për këtë kapitull.');
+      const pending = Number(chapter?.pendingCount || 0);
+      if (pending) {
+        $('#rxSourceGuideNav').innerHTML = `<div class="rx-source-index-empty"><strong>${pending} skema në verifikim</strong><span>Do të shfaqen pas miratimit klinik.</span></div>`;
+        renderEmptyDetail('Skemat presin verifikimin klinik', `${pending} skema janë importuar për këtë kapitull. Publikimi në burim nuk është verifikim klinik. Ndërkohë mund ta ndërtosh recetën vetë.`);
+      } else {
+        renderEmptyDetail(state.chapters.length ? 'Nuk ka skema në këtë kapitull' : 'Ende nuk ka kapituj të disponueshëm', 'Mund të vazhdosh me një recetë të re.');
+      }
       return;
     }
 
@@ -7190,21 +7209,21 @@
     if (!select) return;
     select.innerHTML = state.chapters.map(chapter => {
       const count = Number(chapter?.count || 0);
-      return `<option value="${chapter.number}">Kapitulli ${chapter.number} — ${esc(chapter.title)} · ${count} mësime</option>`;
+      return `<option value="${chapter.number}">Kapitulli ${chapter.number} — ${esc(chapter.title)} · ${count} të verifikuara${chapter.pendingCount ? ` · ${chapter.pendingCount} në verifikim` : ''}</option>`;
     }).join('');
     if (state.chapter) select.value = String(state.chapter);
     select.disabled = state.chapters.length < 2;
 
-    const total = state.chapters.reduce((sum, chapter) => sum + Math.max(0, Number(chapter?.count || 0)), 0);
+    const total = state.chapters.reduce((sum, chapter) => sum + Math.max(0, Number(chapter?.totalCount || 0)), 0);
     const totalNode = $('#rxSourceTotal');
-    if (totalNode) totalNode.textContent = total ? String(total) : `${state.chapters.length} kap.`;
+    if (totalNode) totalNode.textContent = String(total);
   }
 
   function syncLessonPicker() {
     const select = $('#rxSourceLessonSelect');
     if (!select) return;
     if (!state.items.length) {
-      select.innerHTML = '<option value="">Nuk ka mësime Rx në këtë kapitull</option>';
+      select.innerHTML = `<option value="">${currentChapterMeta()?.pendingCount ? 'Skemat presin verifikim' : 'Nuk ka skema të disponueshme'}</option>`;
       select.disabled = true;
       return;
     }
@@ -7273,7 +7292,7 @@
       });
       const payload = await response.json().catch(() => ({}));
       if (requestId !== state.searchRequestId || normalize(state.query) !== normalized) return;
-      if (response.status === 401 || response.status === 403) return;
+      if (response.status === 401 || response.status === 403) throw new Error('Kërkohet autentikim.');
       if (!response.ok || payload?.ok !== true) throw new Error(payload?.error || 'Kërkimi nuk u krye.');
       state.searchResults = Array.isArray(payload.results) ? payload.results : [];
       state.searching = false;
@@ -7292,7 +7311,9 @@
   function setSearch(value) {
     state.query = text(value);
     const normalized = normalize(state.query);
-    clearTimeout(state.searchTimer);
+    cancelSearchRequest();
+    ++state.searchRequestId;
+    state.searchResults = [];
     if (normalized.length < 2) {
       cancelSearchRequest();
       state.searchResults = [];
@@ -7309,6 +7330,9 @@
   async function load(chapter = 0, options = {}) {
     const { activeId = '', preserveSearch = false } = options || {};
     const requestId = ++state.requestId;
+    state.loading = true;
+    state.error = false;
+    render();
     state.controller?.abort();
     state.controller = new AbortController();
     sourceStatus('Duke ngarkuar kapitullin dhe mësimet…');
@@ -7322,8 +7346,9 @@
       });
       const payload = await response.json().catch(() => ({}));
       if (requestId !== state.requestId) return;
-      if (response.status === 401 || response.status === 403) return;
+      if (response.status === 401 || response.status === 403) throw new Error('Kërkohet autentikim.');
       if (!response.ok || payload?.ok !== true) throw new Error(payload?.error || 'Burimi nuk u ngarkua.');
+      state.loading = false;
       state.chapters = Array.isArray(payload.chapters) ? payload.chapters : [];
       state.chapter = Number(payload.chapter) || Number(state.chapters[0]?.number) || 0;
       state.items = Array.isArray(payload.items) ? payload.items : [];
@@ -7344,12 +7369,14 @@
         sourceStatus(
           state.items.length
             ? `${state.items.length} mësime · Kapitulli ${state.chapter}`
-            : (chapterMeta?.sourceNote || `Kapitulli ${state.chapter} nuk ka Rx në burim.`),
+            : (chapterMeta?.pendingCount ? `${chapterMeta.pendingCount} skema presin verifikim klinik.` : 'Nuk ka skema të disponueshme në këtë kapitull.'),
           state.items.length ? 'success' : ''
         );
       }
     } catch(error) {
-      if (error?.name === 'AbortError') return;
+      if (error?.name === 'AbortError' || requestId !== state.requestId) return;
+      state.loading = false;
+      state.error = true;
       state.items = [];
       state.activeGuideId = '';
       syncLessonPicker();
@@ -7393,6 +7420,8 @@
   }
 
   function bind() {
+    $('#rxSourceRetry')?.addEventListener('click', () => void load(state.chapter));
+    $('#rxSourceManual')?.addEventListener('click', () => window.DRxRecetatTabs?.show?.('compose'));
     $('#rxSourceChapterSelect')?.addEventListener('change', event => {
       const chapter = Number(event.target.value);
       if (!Number.isInteger(chapter) || chapter < 1) return;
