@@ -1483,7 +1483,8 @@
   async function logout() {
     el.logoutButton.disabled = true;
     try {
-      await fetch('/api/auth', { method:'DELETE', credentials:'same-origin', headers:{ Accept:'application/json' } });
+      const response = await fetch('/api/auth', { method:'DELETE', credentials:'same-origin', headers:{ Accept:'application/json' } });
+      if (!response.ok) throw new Error('Logout failed');
       try { sessionStorage.removeItem('drx_registry_v2_selection'); } catch {}
       location.replace('/landing.html');
     } catch {
@@ -1494,7 +1495,7 @@
 
   function bindEvents() {
     el.searchInput.addEventListener('input', debounceSearch);
-    el.searchInput.addEventListener('keydown', event => { if (event.key === 'Escape' && el.searchInput.value) { el.searchInput.value = ''; state.q = ''; state.page = 1; loadPage(); } });
+    el.searchInput.addEventListener('keydown', event => { if (event.key === 'Escape' && el.searchInput.value) { clearTimeout(state.searchTimer); el.searchInput.value = ''; state.q = ''; state.page = 1; loadPage(); } });
     window.addEventListener('keydown', event => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); el.searchInput.focus(); el.searchInput.select(); }
       if (event.key === 'Escape') { closeDrawer(); closeSidebar(); closeFormPicker(); closeColumnPicker(); closeRowMenus(); closeNoteDialog(); }

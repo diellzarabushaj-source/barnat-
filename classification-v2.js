@@ -506,7 +506,8 @@
   async function logout() {
     el.logoutButton.disabled = true;
     try {
-      await fetch('/api/auth', { method:'DELETE', credentials:'same-origin', headers:{ Accept:'application/json' } });
+      const response = await fetch('/api/auth', { method:'DELETE', credentials:'same-origin', headers:{ Accept:'application/json' } });
+      if (!response.ok) throw new Error('Logout failed');
       location.replace('/landing.html');
     } catch {
       el.logoutButton.disabled = false;

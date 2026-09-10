@@ -502,8 +502,15 @@
     el.sidebarBackdrop?.addEventListener('click', closeSidebar);
 
     el.logoutButton?.addEventListener('click', async () => {
-      try { await fetch('/api/auth', { method:'DELETE', credentials:'same-origin', headers:{ Accept:'application/json' } }); } catch {}
-      location.replace('/landing.html');
+      el.logoutButton.disabled = true;
+      try {
+        const response = await fetch('/api/auth', { method:'DELETE', credentials:'same-origin', headers:{ Accept:'application/json' } });
+        if (!response.ok) throw new Error('Logout failed');
+        location.replace('/landing.html');
+      } catch {
+        el.logoutButton.disabled = false;
+        showToast('Dalja nuk u krye. Provo përsëri.');
+      }
     });
 
     window.addEventListener('hashchange', () => {

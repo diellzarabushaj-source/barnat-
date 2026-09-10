@@ -1179,6 +1179,8 @@
     });
 
     root.querySelector('[data-pc-copy-rx]')?.addEventListener('click', async event => {
+      const button = event.currentTarget;
+      const originalLabel = button.textContent;
       const status = root.querySelector('[data-pc-copy-status]');
       const value = rxClipboardText(root);
       if (!value) {
@@ -1186,14 +1188,18 @@
         root.querySelector('[data-pc-rx-field="medicine"]')?.focus();
         return;
       }
+      button.disabled = true;
       try {
         await navigator.clipboard.writeText(value);
-        event.currentTarget.textContent = 'U kopjua';
+        button.textContent = 'U kopjua';
         if (status) status.textContent = 'Drafti u kopjua. Verifiko të gjitha fushat para përdorimit.';
       } catch {
         if (status) status.textContent = 'Kopjimi automatik nuk u lejua nga shfletuesi.';
       }
-      window.setTimeout(() => { if (event.currentTarget) event.currentTarget.textContent = 'Kopjo recetën e punës'; }, 1800);
+      window.setTimeout(() => {
+        button.textContent = originalLabel;
+        button.disabled = false;
+      }, 1800);
     });
 
     root.querySelector('[data-pc-clear-rx]')?.addEventListener('click', () => {

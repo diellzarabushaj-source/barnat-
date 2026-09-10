@@ -1574,8 +1574,17 @@
     let searchTimer = 0;
     elements.search.addEventListener('input', () => {
       window.clearTimeout(searchTimer);
+      ++state.searchToken;
+      state.searchController?.abort?.();
       state.query = text(elements.search.value);
       updateSearchChrome();
+      if (state.query.length < MIN_QUERY) {
+        void runSearch(state.query);
+        return;
+      }
+      state.results = [];
+      renderSearchSkeleton();
+      setStatus('Duke kërkuar në katalog…');
       searchTimer = window.setTimeout(() => runSearch(state.query), SEARCH_DEBOUNCE_MS);
     });
 
@@ -1589,12 +1598,14 @@
       }
       if (event.key === 'Escape' && elements.search.value) {
         event.preventDefault();
+        window.clearTimeout(searchTimer);
         elements.search.value = '';
         void runSearch('');
       }
     });
 
     elements.searchClear.addEventListener('click', () => {
+      window.clearTimeout(searchTimer);
       elements.search.value = '';
       void runSearch('');
       elements.search.focus();

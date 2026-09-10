@@ -2574,3 +2574,31 @@ html.drx-unified-sidebar .brand-mark{display:none!important}
     transition:none!important;
   }
 }
+
+/* Shared interaction polish: keyboard visibility and comfortable mobile inputs. */
+html.drx-unified-sidebar :is(a,button,input,select,textarea,summary,[tabindex]):focus-visible{
+  outline:2px solid #2563eb!important;
+  outline-offset:3px!important;
+}
+html.drx-unified-sidebar a.sr-only:focus{
+  position:fixed!important;
+  top:12px!important;
+  left:12px!important;
+  z-index:10000!important;
+  width:auto!important;
+  height:auto!important;
+  margin:0!important;
+  padding:12px 18px!important;
+  clip:auto!important;
+  clip-path:none!important;
+  overflow:visible!important;
+  color:#fff!important;
+  background:#1d4ed8!important;
+  border-radius:8px;
+}
+html.drx-unified-sidebar .nav-stack{overscroll-behavior:contain}
+@media(max-width:1023px){
+  html.drx-unified-sidebar :is(input:not([type=checkbox]):not([type=radio]),select,textarea){font-size:16px!important}
+  html.drx-unified-sidebar :is(.menu-button,.sidebar-close){min-width:44px!important;min-height:44px!important}
+  html.drx-unified-sidebar .sidebar{padding-bottom:max(var(--drx-shell-sidebar-pad-bottom),env(safe-area-inset-bottom))!important}
+}
