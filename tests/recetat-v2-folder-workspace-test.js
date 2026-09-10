@@ -46,7 +46,7 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
 const pageRuntimes = scripts.filter(src => !/sidebar-taxonomy-v3\.js/.test(src));
 
 assert.equal(styles.length, 2, 'Recetat V2 must load only page CSS + shared Stripe shell');
-assert.equal(styles[0], '/recetat-v2.css?v=20-rx1');
+assert.equal(styles[0], '/recetat-v2.css?v=20-ui2');
 assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1');
 assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1'), 'Recetat V2 shared sidebar runtime is missing');
 assert.deepEqual(pageRuntimes, ['/recetat-v2.js?v=20-rx1']);

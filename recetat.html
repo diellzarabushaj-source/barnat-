@@ -10,7 +10,7 @@
   <title>DRx | Recetat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/recetat-v2.css?v=20-rx1">
+  <link rel="stylesheet" href="/recetat-v2.css?v=20-ui2">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1">
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1" defer></script>
 <script src="/recetat-v2.js?v=20-rx1" defer></script>
@@ -102,7 +102,7 @@
         <header class="page-heading rx-page-heading">
           <div>
             <h1>Recetat</h1>
-            <p class="page-subtitle">Nis nga një skemë klinike e strukturuar, ose ndërto recetën vetë.</p>
+            <p class="page-subtitle">Zgjidh një skemë, përshtat recetën dhe ruaje për përdorim të mëvonshëm.</p>
           </div>
           <button class="rx-new-top" id="rxNew" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -112,14 +112,14 @@
 
         <nav class="rx-tabs" id="rxTabs" role="tablist" aria-label="Seksionet e recetave">
           <button class="rx-tab is-active" type="button" role="tab" id="rxTabBtnSource" data-rx-tab="source" aria-controls="rxTabSource" aria-selected="true" tabindex="0">
-            <span class="rx-tab-name">Doctor on Duty</span>
+            <span class="rx-tab-name">Skemat klinike</span><span class="rx-tab-description">Gjej një pikënisje</span>
           </button>
           <button class="rx-tab" type="button" role="tab" id="rxTabBtnCompose" data-rx-tab="compose" aria-controls="rxTabCompose" aria-selected="false" tabindex="-1">
-            <span class="rx-tab-name">Ndërto recetën</span>
+            <span class="rx-tab-name">Ndërto recetën</span><span class="rx-tab-description">Përshtat barnat dhe udhëzimet</span>
             <span class="rx-tab-count" id="rxTabComposeState" hidden>0</span>
           </button>
           <button class="rx-tab" type="button" role="tab" id="rxTabBtnLibrary" data-rx-tab="library" aria-controls="rxTabLibrary" aria-selected="false" tabindex="-1">
-            <span class="rx-tab-name">Recetat e mia</span>
+            <span class="rx-tab-name">Recetat e mia</span><span class="rx-tab-description">Gjej recetat e ruajtura</span>
             <span class="rx-tab-count" id="rxTabLibraryCount" hidden>0</span>
           </button>
         </nav>
@@ -128,8 +128,8 @@
         <section class="rx-source-library rx19-source-library" id="rxPrescriptionLibrary" aria-labelledby="rxSourceLibraryTitle">
           <header class="rx-source-library-head">
             <div class="rx-source-heading-copy">
-              <h2 id="rxSourceLibraryTitle">Skemat klinike</h2>
-              <p>Burimi nuk aplikohet automatikisht — lexoje, pastaj kaloje si draft.</p>
+              <span class="rx-source-eyebrow">Biblioteka · Doctor on Duty</span><h2 id="rxSourceLibraryTitle">Gjej skemën që të duhet</h2>
+              <p>Kërko sipas diagnozës ose zgjidh kapitullin. Hape skemën dhe përdore si draft për recetën tënde.</p>
             </div>
             <div class="rx-source-head-actions">
               <div class="rx-source-total" aria-label="Skema në burim">
@@ -142,20 +142,20 @@
 
           <div class="rx-source-commandbar">
             <label class="rx-source-chapter-picker">
-              <span>Kapitulli</span>
+              <span>Kapitulli klinik</span>
               <select id="rxSourceChapterSelect" aria-label="Zgjidh kapitullin e recetave">
                 <option value="">Duke ngarkuar…</option>
               </select>
             </label>
             <label class="rx-source-lesson-picker">
-              <span>Mësimi</span>
+              <span>Mësimi / skema</span>
               <select id="rxSourceLessonSelect" aria-label="Zgjidh mësimin ose skemën">
                 <option value="">Zgjidh kapitullin…</option>
               </select>
             </label>
             <label class="rx-source-search">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
-              <input id="rxSourceSearch" type="search" autocomplete="off" placeholder="Kërko diagnozë, bar, dozë…" aria-label="Kërko inteligjent në të gjitha skemat">
+              <input id="rxSourceSearch" type="search" autocomplete="off" placeholder="Kërko në të gjitha skemat…" aria-label="Kërko inteligjent në të gjitha skemat">
               <kbd aria-hidden="true">/</kbd>
             </label>
             <button class="rx-source-clear-search" id="rxSourceClearSearch" type="button" hidden>Pastro</button>
@@ -171,7 +171,7 @@
           <div class="rx-source-browser">
             <aside class="rx-source-index" aria-label="Skemat e kapitullit">
               <div class="rx-source-index-head">
-                <span>Mësimet</span>
+                <span>Skemat e kapitullit</span>
                 <small id="rxSourceIndexHint">—</small>
               </div>
               <div class="rx-source-guide-nav" id="rxSourceGuideNav" role="listbox" aria-label="Lista e skemave"></div>
