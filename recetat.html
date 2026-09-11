@@ -10,10 +10,10 @@
   <title>DRx | Recetat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/recetat-v2.css?v=20-ui3">
+  <link rel="stylesheet" href="/recetat-v2.css?v=20-ui4">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1">
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1" defer></script>
-<script src="/recetat-v2.js?v=20-rx1" defer></script>
+<script src="/recetat-v2.js?v=20-ui4" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#rxWorkspace">Kalo te krijimi i recetës</a>
@@ -141,6 +141,13 @@
           </header>
 
           <div class="rx-source-commandbar">
+            <div class="rx-search-intro"><strong>Kërko një skemë</strong><span id="rxSearchHelp">Kërkon në të gjithë kapitujt, pavarësisht kapitullit të zgjedhur.</span></div>
+            <label class="rx-source-search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+              <input id="rxSourceSearch" type="search" autocomplete="off" placeholder="Shkruaj diagnozën ose substancën…" aria-label="Kërko diagnozën ose substancën" aria-describedby="rxSearchHelp">
+              <kbd aria-hidden="true">/</kbd>
+            </label>
+            <div class="rx-browse-divider"><span>ose shfleto sipas kapitullit</span></div>
             <label class="rx-source-chapter-picker">
               <span>Kapitulli klinik</span>
               <select id="rxSourceChapterSelect" aria-label="Zgjidh kapitullin e recetave">
@@ -152,11 +159,6 @@
               <select id="rxSourceLessonSelect" aria-label="Zgjidh mësimin ose skemën">
                 <option value="">Zgjidh kapitullin…</option>
               </select>
-            </label>
-            <label class="rx-source-search">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
-              <input id="rxSourceSearch" type="search" autocomplete="off" placeholder="Kërko në të gjitha skemat…" aria-label="Kërko inteligjent në të gjitha skemat">
-              <kbd aria-hidden="true">/</kbd>
             </label>
             <button class="rx-source-clear-search" id="rxSourceClearSearch" type="button" hidden>Pastro</button>
             <div class="rx-source-result-meta" aria-live="polite">
@@ -171,13 +173,14 @@
           <div class="rx-source-browser">
             <aside class="rx-source-index" aria-label="Skemat e kapitullit">
               <div class="rx-source-index-head">
-                <span>Skemat e kapitullit</span>
+                <span id="rxSourceIndexTitle">Skemat e kapitullit</span>
                 <small id="rxSourceIndexHint">—</small>
               </div>
-              <div class="rx-source-guide-nav" id="rxSourceGuideNav" role="listbox" aria-label="Lista e skemave"></div>
+              <div class="rx-source-guide-nav" id="rxSourceGuideNav" tabindex="-1" role="listbox" aria-label="Lista e skemave"></div>
             </aside>
 
             <div class="rx-source-detail">
+              <a class="rx-back-to-list" href="#rxSourceGuideNav">↑ Kthehu te lista e skemave</a>
               <div class="rx-source-detail-toolbar">
                 <strong id="rxSourceActiveTitle">Zgjidh një mësim</strong>
               </div>

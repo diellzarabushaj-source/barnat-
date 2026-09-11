@@ -7071,7 +7071,7 @@
         <div class="rx-source-guide-heading">
           <div class="rx-source-guide-kicker">
             <span>Kapitulli ${esc(guide?.chapterNumber || '')} · ${esc(lessonLabel(guide))}</span>
-            <span class="rx-source-import-badge">${imported ? 'Burim i importuar' : esc(guide?.reviewStatus || 'Burim')}</span>
+            <span class="rx-source-import-badge">${imported ? 'Burim i importuar' : guide?.reviewStatus === 'verified' ? 'E verifikuar' : 'Burim'}</span>
           </div>
           <h3>${esc(guide?.title || guide?.sourceHeading || 'Skemë Rx')}</h3>
           <div class="rx-source-guide-stats" aria-label="Përmbledhja e skemës">
@@ -7084,7 +7084,7 @@
           </div>
         </div>
         <button class="rx-source-use" type="button" data-rx-source-use="${esc(guide?._id)}">
-          <span>Përdor këtë skemë si draft</span><b aria-hidden="true">→</b>
+          <span>Nis recetën nga kjo skemë</span><b aria-hidden="true">→</b>
         </button>
       </header>
       <div class="rx-source-flow" aria-label="Rrjedha e recetës">
@@ -7157,7 +7157,9 @@
     const clear = $('#rxSourceClearSearch');
 
     if (count) count.textContent = state.searching ? '…' : String(entries.length);
-    if (label) label.textContent = global ? 'rezultate në të gjitha kapitujt' : 'mësime në kapitull';
+    if (label) label.textContent = global ? 'rezultate në të gjithë kapitujt' : 'mësime në kapitull';
+    const indexTitle = $('#rxSourceIndexTitle');
+    if (indexTitle) indexTitle.textContent = global ? 'Rezultatet e kërkimit' : 'Skemat e kapitullit';
     if (hint) hint.textContent = global
       ? (state.searching ? 'Duke kërkuar në të gjithë burimin…' : `${entries.length} rezultate globale`)
       : (currentChapterMeta()?.pendingCount ? `${currentChapterMeta().pendingCount} në verifikim` : `${state.items.length} mësime të verifikuara`);
