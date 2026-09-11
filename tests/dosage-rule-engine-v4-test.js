@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const engine = require('../lib/dosage-rule-engine-v4.js');
+const pediatricCalculation = require('../lib/pediatric-calculation.js');
 
 const baseRule = Object.freeze({
   drugId:'drug-1',
@@ -19,41 +20,41 @@ const baseRule = Object.freeze({
   requires:{ weight:true, age:true, route:true },
 });
 
-async function main() {
+function main() {
   assert.strictEqual(engine._test.normalizeRoute('per os'), 'oral');
   assert.strictEqual(engine._test.normalizeRoute('IV'), 'iv');
   assert.ok(engine._test.normalizeAgeDays(1, 'vjet') > 365);
 
-  const missing = await engine.evaluate({
+  const missing = engine.evaluate({
     rule:baseRule,
     patient:{ ageValue:2, ageUnit:'vjet' },
     context:{ drugId:'drug-1', regimenId:'regimen-1', route:'PO' },
-    calculate:async () => ({ outcome:'CALCULATED' }),
+    calculate:() => ({ outcome:'CALCULATED' }),
   });
   assert.strictEqual(missing.outcome, engine.OUTCOME.NEEDS_PATIENT_DATA);
   assert.deepStrictEqual(missing.missing, ['weightKg']);
 
-  const wrongRoute = await engine.evaluate({
+  const wrongRoute = engine.evaluate({
     rule:baseRule,
     patient:{ weightKg:15, ageValue:2, ageUnit:'vjet' },
     context:{ drugId:'drug-1', regimenId:'regimen-1', route:'IV' },
-    calculate:async () => ({ outcome:'CALCULATED' }),
+    calculate:() => ({ outcome:'CALCULATED' }),
   });
   assert.strictEqual(wrongRoute.outcome, engine.OUTCOME.OUT_OF_RANGE);
 
-  const tooYoung = await engine.evaluate({
+  const tooYoung = engine.evaluate({
     rule:baseRule,
     patient:{ weightKg:4, ageValue:10, ageUnit:'ditë' },
     context:{ drugId:'drug-1', regimenId:'regimen-1', route:'PO' },
-    calculate:async () => ({ outcome:'CALCULATED' }),
+    calculate:() => ({ outcome:'CALCULATED' }),
   });
   assert.strictEqual(tooYoung.outcome, engine.OUTCOME.OUT_OF_RANGE);
 
-  const unverified = await engine.evaluate({
+  const unverified = engine.evaluate({
     rule:{ ...baseRule, verificationStatus:'draft' },
     patient:{ weightKg:15, ageValue:2, ageUnit:'vjet' },
     context:{ drugId:'drug-1', regimenId:'regimen-1', route:'PO' },
-    calculate:async () => ({ outcome:'CALCULATED' }),
+    calculate:() => ({ outcome:'CALCULATED' }),
   });
   assert.strictEqual(unverified.outcome, engine.OUTCOME.SOURCE_NOT_VERIFIED);
 
@@ -65,19 +66,19 @@ async function main() {
       { min:null, max:29.99, contraindicated:true, reason:'Mos përdor në këtë interval renal.' },
     ] },
   };
-  const renalBlocked = await engine.evaluate({
+  const renalBlocked = engine.evaluate({
     rule:renalRule,
     patient:{ weightKg:15, ageValue:2, ageUnit:'vjet', crclMlMin:20 },
     context:{ drugId:'drug-1', regimenId:'regimen-1', route:'PO' },
-    calculate:async () => ({ outcome:'CALCULATED' }),
+    calculate:() => ({ outcome:'CALCULATED' }),
   });
   assert.strictEqual(renalBlocked.outcome, engine.OUTCOME.CONTRAINDICATED);
 
-  const calculated = await engine.evaluate({
+  const calculated = engine.evaluate({
     rule:baseRule,
     patient:{ weightKg:15, ageValue:2, ageUnit:'vjet' },
     context:{ drugId:'drug-1', regimenId:'regimen-1', route:'PO' },
-    calculate:async () => ({
+    calculate:() => ({
       outcome:'CALCULATED',
       perDose:{ min:125, max:125, unit:'mg' },
     }),
@@ -86,19 +87,38 @@ async function main() {
   assert.strictEqual(calculated.engine, 'drx-dosage-rule-engine-v4');
   assert.strictEqual(calculated.perDose.min, 125);
 
-  const pregnancyMissing = await engine.evaluate({
+  const pregnancyMissing = engine.evaluate({
     rule:{ ...baseRule, requires:{ ...baseRule.requires, pregnancy:true } },
     patient:{ weightKg:15, ageValue:2, ageUnit:'vjet' },
     context:{ drugId:'drug-1', regimenId:'regimen-1', route:'PO' },
-    calculate:async () => ({ outcome:'CALCULATED' }),
+    calculate:() => ({ outcome:'CALCULATED' }),
   });
   assert.strictEqual(pregnancyMissing.outcome, engine.OUTCOME.NEEDS_PATIENT_DATA);
   assert.ok(pregnancyMissing.missing.includes('pregnancy'));
 
+  const mapped = pediatricCalculation._test.ruleFromRow({
+    id:'drug-1',
+    pediatric_primary_regimen_id:'regimen-1',
+    pediatric_source_url:'https://example.test/smpc',
+    pediatric_verification_status:'verified',
+    pediatric_route:'PO',
+    pediatric_min_age_value:1,
+    pediatric_min_age_unit:'muaj',
+    pediatric_max_age_value:12,
+    pediatric_max_age_unit:'vjet',
+    pediatric_min_weight_kg:3,
+    pediatric_max_weight_kg:60,
+  });
+  assert.strictEqual(mapped.drugId, 'drug-1');
+  assert.strictEqual(mapped.regimenId, 'regimen-1');
+  assert.strictEqual(mapped.route, 'PO');
+
   console.log('dosage-rule-engine-v4-test: PASS');
 }
 
-main().catch(error => {
+try {
+  main();
+} catch (error) {
   console.error(error);
   process.exitCode = 1;
-});
+}
