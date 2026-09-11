@@ -1,17 +1,35 @@
 name: DRx Dose V3 Clinical Hardening
 
 on:
-  pull_request:
+  push:
+    branches:
+      - main
     paths:
       - 'data/drx-dose-source-policy-v1.json'
       - 'data/drx-dose-v3-schema-proposal.json'
       - 'data/drx-dose-v3-clinical-hardening-v1.json'
+      - 'data/drx-dose-v3/antibiotics/batch1/**'
       - 'lib/dose-source-policy.js'
       - 'supabase/drx-dose-v3-additive-candidate.sql'
       - 'supabase/drx-dose-v3-clinical-hardening-candidate.sql'
       - 'tests/drx-dose-source-policy-test.js'
       - 'tests/drx-dose-v3-schema-proposal-test.js'
       - 'tests/drx-dose-v3-supabase-candidate-test.js'
+      - 'tests/drx-dose-v3-antibiotics-batch1-test.js'
+      - '.github/workflows/drx-dose-v3-clinical-hardening.yml'
+  pull_request:
+    paths:
+      - 'data/drx-dose-source-policy-v1.json'
+      - 'data/drx-dose-v3-schema-proposal.json'
+      - 'data/drx-dose-v3-clinical-hardening-v1.json'
+      - 'data/drx-dose-v3/antibiotics/batch1/**'
+      - 'lib/dose-source-policy.js'
+      - 'supabase/drx-dose-v3-additive-candidate.sql'
+      - 'supabase/drx-dose-v3-clinical-hardening-candidate.sql'
+      - 'tests/drx-dose-source-policy-test.js'
+      - 'tests/drx-dose-v3-schema-proposal-test.js'
+      - 'tests/drx-dose-v3-supabase-candidate-test.js'
+      - 'tests/drx-dose-v3-antibiotics-batch1-test.js'
       - '.github/workflows/drx-dose-v3-clinical-hardening.yml'
   workflow_dispatch:
 
@@ -45,3 +63,6 @@ jobs:
 
       - name: V3 clinical hardening contract
         run: node tests/drx-dose-v3-schema-proposal-test.js
+
+      - name: Antibiotics batch 1 source-verified candidate contract
+        run: node tests/drx-dose-v3-antibiotics-batch1-test.js
