@@ -556,3 +556,8 @@ input{caret-color:#533afd}
     min-height:44px;
   }
 }
+
+
+/* Integrated 4-step flow v1 — Recetat ↔ Dozologjia */
+.dosage-flow-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 16px;padding:0;list-style:none}.dosage-flow-step{display:flex;align-items:center;gap:10px;min-width:0;padding:11px 12px;border:1px solid #e4e7ec;border-radius:10px;background:#fff;color:#667085}.dosage-flow-step.is-current{border-color:#c7d7fe;background:#f5f8ff;color:#1d2939}.dosage-flow-step.is-complete{border-color:#abefc6;background:#f6fef9;color:#067647}.dosage-flow-number{display:grid;width:28px;height:28px;place-items:center;flex:0 0 28px;border:1px solid currentColor;border-radius:8px;font-size:11px;font-weight:750}.dosage-flow-copy{display:grid;min-width:0}.dosage-flow-copy strong{font-size:12px;line-height:1.25}.dosage-flow-copy small{margin-top:2px;color:#667085;font-size:10px;line-height:1.3}.dosage-result-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.dosage-to-prescription{min-height:40px;padding:8px 13px;border:1px solid #533afd;border-radius:9px;background:#533afd;color:#fff;font-weight:700;cursor:pointer}.dosage-to-prescription:hover{background:#4530d8}.dosage-to-prescription:disabled{opacity:.5;cursor:not-allowed}.dosage-to-prescription:focus-visible{outline:0;box-shadow:0 0 0 3px rgba(83,58,253,.18)}
+@media(max-width:760px){.dosage-flow-steps{grid-template-columns:1fr 1fr}.dosage-flow-step{padding:9px}.dosage-flow-copy small{display:none}.dosage-result-actions{display:grid;grid-template-columns:1fr}.dosage-result-actions>button{width:100%}}

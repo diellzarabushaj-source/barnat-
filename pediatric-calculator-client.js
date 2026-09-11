@@ -11,6 +11,9 @@
   const SEARCH_DEBOUNCE_MS = 180;
   const REQUEST_TIMEOUT_MS = 9000;
   const MIN_QUERY = 2;
+  const PRESCRIPTION_SELECTION_KEY = 'medindexPrescriptionSelection';
+  const DOSAGE_HANDOFF_KEY = 'medindex_rx_dosage_handoff_v1';
+  const FLOW_VERSION = 'recetat-dozologjia-flow-v1';
   const $ = selector => document.querySelector(selector);
   const text = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 
@@ -1242,6 +1245,7 @@
     }
 
     elements.calculate.disabled = !valid || state.pendingCalculation;
+    updateFlowState();
     elements.patientState.textContent = valid ? 'Gati' : (options.length > 1 && !selectedCalculationOption() ? 'Zgjidh indikacionin' : 'Plotëso fushat');
     elements.patientState.className = valid ? 'dosage-step-state is-valid' : 'dosage-step-state is-ready';
     return valid;
@@ -1433,6 +1437,7 @@
     elements.calculationBody.append(block);
     elements.copy.hidden=!state.lastCopyText;
     if(!elements.copy.hidden) elements.copy.textContent='Kopjo për recetë';
+    updateFlowState();
     setStatus('Doza u llogarit nga serveri për regjimin e lidhur.', 'success');
   }
 
@@ -1442,6 +1447,7 @@
     state.lastCopyText = '';
     elements.copy.hidden = true;
     resetCalculation('Të dhënat e pacientit ndryshuan. Llogarit përsëri për një rezultat të ri.');
+    updateFlowState();
   }
 
   async function calculateDose() {
@@ -1560,6 +1566,120 @@
       elements.copy.textContent = 'Kopjimi dështoi';
       window.setTimeout(() => { elements.copy.textContent = original; }, 1600);
     }
+  }
+
+  function ensureIntegratedFlowChrome() {
+    if (!document.querySelector('.dosage-flow-steps')) {
+      const steps = element('ol', 'dosage-flow-steps');
+      steps.setAttribute('aria-label', 'Hapat e dozologjisë');
+      [
+        ['drug','1','Bari','Gjej barin ose skemën'],
+        ['patient','2','Pacienti','Plotëso vetëm fushat e kërkuara'],
+        ['calculate','3','Llogaritja','Serveri kontrollon formulën'],
+        ['result','4','Rezultati','Shiko dhe përgatit recetën'],
+      ].forEach(([key,number,title,caption]) => {
+        const item = element('li', 'dosage-flow-step');
+        item.dataset.flowStep = key;
+        item.append(element('span', 'dosage-flow-number', number));
+        const copy = element('span', 'dosage-flow-copy');
+        copy.append(element('strong', null, title), element('small', null, caption));
+        item.append(copy);
+        steps.append(item);
+      });
+      const consoleNode = document.querySelector('.dosage-console');
+      consoleNode?.parentNode?.insertBefore(steps, consoleNode);
+    }
+
+    if (!elements.toPrescription) {
+      const button = element('button', 'dosage-to-prescription', 'Përgatit recetën');
+      button.type = 'button';
+      button.hidden = true;
+      button.disabled = true;
+      button.dataset.action = 'prepare-prescription';
+      const actions = element('div', 'dosage-result-actions');
+      elements.copy?.parentNode?.insertBefore(actions, elements.copy);
+      if (elements.copy) actions.append(elements.copy);
+      actions.append(button);
+      elements.toPrescription = button;
+    }
+    document.documentElement.dataset.dosageFlow = FLOW_VERSION;
+    updateFlowState();
+  }
+
+  function updateFlowState() {
+    const validPatient = Boolean(state.product?.calculable) && !elements.calculate?.disabled;
+    const calculated = state.calculation?.outcome === 'CALCULATED' && Boolean(state.lastCopyText);
+    const states = {
+      drug:Boolean(state.product),
+      patient:Boolean(state.product) && validPatient,
+      calculate:calculated,
+      result:calculated,
+    };
+    document.querySelectorAll('[data-flow-step]').forEach(node => {
+      const key = node.dataset.flowStep;
+      node.classList.toggle('is-complete', Boolean(states[key]));
+      node.classList.toggle('is-current',
+        key === (!state.product ? 'drug' : !validPatient ? 'patient' : !calculated ? 'calculate' : 'result'));
+    });
+    if (elements.toPrescription) {
+      elements.toPrescription.hidden = !calculated;
+      elements.toPrescription.disabled = !calculated;
+    }
+  }
+
+  function prescriptionSignatura(calculation) {
+    if (!calculation || calculation.outcome !== 'CALCULATED') return '';
+    const unit = calculation.doseUnit || '';
+    const dose = calculation.isRate
+      ? amountText(calculation.ratePerHour, `${unit}/orë`)
+      : amountText(calculation.perDose, unit);
+    const frequency = calculation.isRate
+      ? 'infuzion i vazhdueshëm'
+      : calculation.scheduleText || (calculation.dosesPerDay ? `${formatNumber(calculation.dosesPerDay)} herë/ditë` : 'sipas regjimit');
+    return [dose, frequency, calculation.route].filter(Boolean).join(' · ');
+  }
+
+  function handoffToPrescription() {
+    const product = state.product || {};
+    const calculation = state.calculation;
+    if (!product.drugId || calculation?.outcome !== 'CALCULATED' || !state.lastCopyText) {
+      setStatus('Llogarit dozën para se ta kalosh në recetë.', 'error');
+      updateFlowState();
+      return;
+    }
+    const regimenId = selectedCalculationOption()?.selectionId || product.calculationRegimen?.selectionId || '';
+    const item = {
+      key:[product.substance, product.name, product.strength, product.form].filter(Boolean).join('|'),
+      substance:product.substance || product.name || '',
+      tradeName:product.name || '',
+      strength:product.strength || '',
+      form:product.form || '',
+      atcCode:product.atcCode || '',
+      registryNumber:product.registryNumber || '',
+      regimenId,
+      dosageStatus:'requires-review',
+      route:calculation.route || '',
+      signatura:prescriptionSignatura(calculation),
+      dosageSummary:state.lastCopyText,
+      dosageSource:calculation.source || product.source || null,
+      transferOrigin:'dozologjia',
+    };
+    const context = {
+      version:1,
+      createdAt:new Date().toISOString(),
+      drugId:product.drugId,
+      regimenId,
+      patient:patientPayload(),
+      calculation,
+    };
+    try {
+      sessionStorage.setItem(PRESCRIPTION_SELECTION_KEY, JSON.stringify([item]));
+      sessionStorage.setItem(DOSAGE_HANDOFF_KEY, JSON.stringify(context));
+    } catch {
+      setStatus('Konteksti nuk mund të ruhet për transferim në recetë.', 'error');
+      return;
+    }
+    location.assign('/recetat.html?from=dozologjia');
   }
 
   function focusAdjacentResult(current, delta) {
@@ -1708,6 +1828,7 @@
       }
     });
     elements.copy?.addEventListener('click', copyResult);
+    elements.toPrescription?.addEventListener('click', handoffToPrescription);
     window.addEventListener('drx:phase9-personal-ready',()=>{ if(state.product) renderProduct(); });
     window.addEventListener('drx:phase9-personal-changed',()=>{ if(state.product) renderProduct(); });
   }
@@ -1744,6 +1865,7 @@
     updateSearchChrome();
     updateFacets({ all:0, ready:0, text:0, blocked:0 });
     updateFormOptions();
+    ensureIntegratedFlowChrome();
     bindEvents();
     void restoreFromUrl();
   }
