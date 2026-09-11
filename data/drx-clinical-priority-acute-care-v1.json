@@ -1,0 +1,287 @@
+{
+  "schemaVersion": "drx-clinical-priority-acute-care-v1",
+  "publicationAllowed": false,
+  "substances": [
+    {
+      "key": "adrenaline_epinephrine",
+      "name": "Adrenaline (epinephrine)",
+      "aliases": ["adrenalin", "adrenaline", "epinephrine"],
+      "status": "guideline_verified_candidate",
+      "risk": "life_threatening",
+      "sources": [
+        "AHA 2025 Adult Cardiac Arrest Algorithm",
+        "Resuscitation Council UK anaphylaxis guidance"
+      ],
+      "doseCandidates": [
+        "Adult cardiac arrest: 1 mg IV/IO every 3–5 min",
+        "Anaphylaxis adult and child >12 years: 500 micrograms (0.5 mg) IM using 1 mg/mL, repeat after 5 min if no improvement"
+      ],
+      "clinicalNote": "IM adrenaline is first-line in anaphylaxis. Antihistamines and steroids must not delay treatment of airway/breathing/circulation compromise."
+    },
+    {
+      "key": "atropine",
+      "name": "Atropine",
+      "aliases": ["atropin", "atropine"],
+      "status": "guideline_verified_candidate",
+      "risk": "life_threatening",
+      "sourceUrl": "https://www.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Accessible/Algorithm-ACLS-Bradycardia-LngDscrp-250725-Ed.pdf",
+      "doseCandidates": ["Adult symptomatic bradycardia: 1 mg IV bolus, repeat every 3–5 min, max total 3 mg"],
+      "clinicalNote": "The user's 0.5 mg adult dose is outdated and is not stored as the current rule."
+    },
+    {
+      "key": "verapamil",
+      "name": "Verapamil",
+      "aliases": ["verapamil"],
+      "status": "smpc_verified_candidate",
+      "risk": "high_risk",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/979/smpc",
+      "doseCandidates": ["Adult PSVT or ventricular-rate reduction in atrial flutter/fibrillation: 5–10 mg slow IV over 2 min; if needed a further 5 mg after 5–10 min"],
+      "clinicalNote": "Continuous ECG and BP monitoring. Avoid in marked hypotension, uncompensated heart failure, important conduction disease and accessory-pathway AF/flutter contexts."
+    },
+    {
+      "key": "propranolol",
+      "name": "Propranolol",
+      "aliases": ["propranolol"],
+      "status": "source_required",
+      "risk": "high_risk",
+      "clinicalNote": "The raw 1–5 mg IV anxiety/hypertension note is not activated without a formulation-specific authoritative source and monitoring context."
+    },
+    {
+      "key": "amiodarone",
+      "name": "Amiodarone",
+      "aliases": ["amiodaron", "amiodarone"],
+      "status": "guideline_verified_candidate",
+      "risk": "life_threatening",
+      "doseCandidates": ["Refractory VF/pulseless VT: first 300 mg IV/IO bolus, second 150 mg IV/IO bolus"],
+      "clinicalNote": "Non-arrest tachyarrhythmia regimens are separate monitored infusion rules and are not inherited from the cardiac-arrest rule."
+    },
+    {
+      "key": "dopamine",
+      "name": "Dopamine",
+      "aliases": ["dopamin", "dopamine"],
+      "status": "guideline_verified_candidate",
+      "risk": "life_threatening",
+      "sourceUrl": "https://www.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Accessible/Algorithm-ACLS-Bradycardia-LngDscrp-250725-Ed.pdf",
+      "doseCandidates": ["Adult symptomatic bradycardia when atropine ineffective: 5–20 micrograms/kg/min IV infusion, titrate to response and taper slowly"]
+    },
+    {
+      "key": "labetalol",
+      "name": "Labetalol",
+      "aliases": ["presolol", "labetalol"],
+      "status": "smpc_verified_candidate",
+      "risk": "high_risk",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/10831/smpc",
+      "doseCandidates": ["Severe hypertension requiring rapid hospital IV control: 50 mg IV over at least 1 min; may repeat 50 mg every 5 min; total max 200 mg"],
+      "clinicalNote": "The raw 20→40→80 mg q10min / max 300 mg scheme is not stored as the default because it does not match this selected SmPC."
+    },
+    {
+      "key": "etamsylate",
+      "name": "Etamsylate",
+      "aliases": ["dicynone", "etamsylate"],
+      "status": "source_required",
+      "risk": "review_required",
+      "clinicalNote": "No blanket emergency haemorrhage rule is activated. Cause-specific haemostasis and local bleeding control take priority."
+    },
+    {
+      "key": "chloropyramine",
+      "name": "Chloropyramine",
+      "aliases": ["synopen", "alergosan", "chloropyramine"],
+      "status": "brand_mapping_review",
+      "risk": "high_risk",
+      "clinicalNote": "Brand-to-INN mapping is retained as a candidate but exact product and SmPC must be verified before a 20 mg IV/IM rule is activated. Antihistamines do not treat anaphylactic ABC compromise."
+    },
+    {
+      "key": "dexamethasone",
+      "name": "Dexamethasone",
+      "aliases": ["dexason", "dexamethasone"],
+      "status": "smpc_verified_general_review",
+      "risk": "high_risk",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/9378/smpc",
+      "doseCandidates": ["General emergency parenteral range in the selected SmPC: 3.3–16.6 mg IV/IM; exact indication must select the rule"],
+      "clinicalNote": "Not activated as a routine first-line anaphylaxis dose; IM adrenaline remains the life-saving first-line treatment."
+    },
+    {
+      "key": "methylprednisolone",
+      "name": "Methylprednisolone",
+      "aliases": ["urbazon", "urbason", "methylprednisolone"],
+      "status": "source_required_for_exact_anaphylaxis_dose",
+      "risk": "high_risk",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/100416/smpc",
+      "clinicalNote": "The product is indicated for severe allergic states including anaphylaxis, but a universal 40–125 mg rule is not activated without exact product/posology selection."
+    },
+    {
+      "key": "diclofenac",
+      "name": "Diclofenac",
+      "aliases": ["diclofenac", "voltaren"],
+      "status": "smpc_verified_pediatric_specific",
+      "risk": "high_risk_nsaid",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/1044/smpc",
+      "doseCandidates": [
+        "Juvenile chronic arthritis age 1–12 y, suppository: 1–3 mg/kg/DAY divided into 2–3 doses",
+        "Acute post-operative pain age 6–12 y, suppository: 1–2 mg/kg/DAY in divided doses, max 4 days"
+      ],
+      "clinicalNote": "The raw 1–2 mg/kg PER DOSE 2–3 times/day is excluded because it would materially overstate the cited paediatric SmPC dose."
+    },
+    {
+      "key": "ketoprofen",
+      "name": "Ketoprofen",
+      "aliases": ["ketonal", "ketoprofen"],
+      "status": "source_required",
+      "risk": "high_risk_nsaid",
+      "clinicalNote": "The label 'hypoallergenic' is explicitly rejected; NSAID hypersensitivity and bronchospasm risk remain relevant."
+    },
+    {
+      "key": "tramadol",
+      "name": "Tramadol",
+      "aliases": ["tramadol", "trodon"],
+      "status": "smpc_verified_candidate",
+      "risk": "controlled_high_risk",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/13177/smpc",
+      "doseCandidates": ["Moderate-severe pain, adults/adolescents >12 y: 50–100 mg IV/IM every 4–6 h; max 400 mg/day"],
+      "clinicalNote": "IV doses are administered slowly. Dependence, respiratory/CNS effects and interacting serotonergic/seizure-risk medicines require review."
+    },
+    {
+      "key": "morphine",
+      "name": "Morphine",
+      "aliases": ["morphine", "morphin"],
+      "status": "smpc_verified_candidate",
+      "risk": "controlled_high_risk",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/6426/smpc",
+      "doseCandidates": ["Severe pain, adults/adolescents >12 y: starting IV 2.5–10 mg, inject slowly over 4–5 min and titrate to response"],
+      "clinicalNote": "No rigid NSAID→tramadol→morphine automatic ladder is encoded."
+    },
+    {
+      "key": "paracetamol",
+      "name": "Paracetamol",
+      "aliases": ["paracetamol", "acetaminophen", "benuron"],
+      "status": "existing_drx_verified",
+      "risk": "standard",
+      "clinicalNote": "Use the existing source-backed DRX paediatric rules and exact product concentration for mL conversion; do not create a duplicate generic rule."
+    },
+    {
+      "key": "ibuprofen",
+      "name": "Ibuprofen",
+      "aliases": ["ibuprofen", "neofen", "nurofen"],
+      "status": "smpc_verified_product_specific",
+      "risk": "nsaid",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/8137/smpc",
+      "doseCandidates": ["Labelled paediatric suspension for short-term fever/pain: 20–30 mg/kg/day divided into equal doses at 6–8 h intervals"],
+      "clinicalNote": "Actual mL requires the selected product concentration and age/weight table."
+    },
+    {
+      "key": "diazepam",
+      "name": "Diazepam",
+      "aliases": ["diazepam"],
+      "status": "source_required",
+      "risk": "controlled_high_risk",
+      "clinicalNote": "A universal 5–10 mg IV rule is not activated for all seizure/anxiety contexts; age, indication, route and respiratory monitoring must be explicit."
+    },
+    {
+      "key": "metoclopramide",
+      "name": "Metoclopramide",
+      "aliases": ["reglan", "klometal", "metoclopramide"],
+      "status": "smpc_verified_candidate",
+      "risk": "high_risk",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/11550/smpc",
+      "doseCandidates": [
+        "Adult PONV prevention: 10 mg IV/IM single dose",
+        "Adult symptomatic nausea/vomiting or RINV: 10 mg per dose, up to 3 times/day; max 30 mg/day or 0.5 mg/kg/day; at least 6 h between doses; IV over at least 3 min",
+        "Age 1–18 y for labelled second-line indications: 0.1–0.15 mg/kg IV up to 3 times/day; max 0.5 mg/kg/day"
+      ],
+      "clinicalNote": "Extrapyramidal reactions are possible. DRX does not encode an automatic fixed 'Akiniton antidote' instruction."
+    },
+    {
+      "key": "biperiden",
+      "name": "Biperiden",
+      "aliases": ["akiniton", "biperiden"],
+      "status": "source_required",
+      "risk": "high_risk",
+      "clinicalNote": "Active-substance candidate for Akiniton; an acute dystonia rescue rule requires exact product evidence before activation."
+    },
+    {
+      "key": "hyoscine_butylbromide",
+      "name": "Hyoscine butylbromide",
+      "aliases": ["buscopan", "hyoscine butylbromide"],
+      "status": "smpc_verified_candidate",
+      "risk": "high_risk",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/13180/smpc",
+      "doseCandidates": ["Adults with acute spasm/renal or biliary colic: 20 mg IV/IM; may repeat after 30 min; max 100 mg/day"],
+      "clinicalNote": "Severe unexplained abdominal pain requires diagnostic investigation; this injection SmPC does not recommend paediatric use."
+    },
+    {
+      "key": "ondansetron",
+      "name": "Ondansetron",
+      "aliases": ["ondansetron", "zofran"],
+      "status": "smpc_verified_indication_specific",
+      "risk": "high_risk",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/13193/smpc",
+      "doseCandidates": [
+        "Adult PONV prevention/treatment: 4 mg IM or slow IV single dose",
+        "Paediatric PONV: 0.1 mg/kg slow IV, max 4 mg"
+      ],
+      "clinicalNote": "Do not generalise these PONV rules to gastroenteritis or CINV without the appropriate indication branch."
+    },
+    {
+      "key": "furosemide",
+      "name": "Furosemide",
+      "aliases": ["lasix", "furosemide"],
+      "status": "smpc_verified_candidate",
+      "risk": "high_risk",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/102194/smpc",
+      "doseCandidates": ["Adults when prompt parenteral diuresis is required: initial 20–50 mg IV/IM; larger doses are titrated/infused according to response"],
+      "clinicalNote": "Potassium is not automatically prescribed after furosemide; monitor electrolytes and replace when clinically indicated."
+    },
+    {
+      "key": "sodium_bicarbonate",
+      "name": "Sodium bicarbonate",
+      "aliases": ["NaHCO3", "sodium bicarbonate", "lemod solutio"],
+      "status": "indication_specific_review",
+      "risk": "life_threatening",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/15216/smpc",
+      "clinicalNote": "No blanket 50 mmol arrest/acidosis rule. Dose is acid-base- and indication-specific; routine undifferentiated cardiac-arrest administration is excluded."
+    },
+    {
+      "key": "sodium_chloride_0_9",
+      "name": "Sodium chloride 0.9% IV solution",
+      "aliases": ["NaCl 0.9%", "normal saline"],
+      "status": "context_specific",
+      "risk": "high_risk_fluid",
+      "clinicalNote": "Bolus volume depends on indication, age, cardiac/renal status and response. DRX does not publish a universal 500–1000 mL bolus for every hypotension/shock presentation."
+    },
+    {
+      "key": "glucose_5",
+      "name": "Glucose 5% IV solution",
+      "aliases": ["glucose 5%", "dextrose 5%", "D5W"],
+      "status": "context_specific",
+      "risk": "high_risk_fluid",
+      "clinicalNote": "Not a resuscitation crystalloid and not encoded as a diuretic treatment for hypertension."
+    },
+    {
+      "key": "glucose_50",
+      "name": "Glucose 50% IV solution",
+      "aliases": ["glucose 50%", "dextrose 50%", "D50"],
+      "status": "source_review",
+      "risk": "high_risk_hypertonic",
+      "clinicalNote": "Concentrated dextrose rescue dosing and venous-access precautions are formulation/protocol specific."
+    },
+    {
+      "key": "ringer_lactate",
+      "name": "Ringer's lactate / Hartmann's solution",
+      "aliases": ["ringer", "ringer lactate", "hartmann"],
+      "activeIngredients": ["Sodium chloride", "Potassium chloride", "Calcium chloride", "Sodium lactate"],
+      "status": "context_specific",
+      "risk": "high_risk_fluid",
+      "clinicalNote": "Balanced crystalloid use is volume-status-, electrolyte- and indication-dependent; no universal fixed bolus is activated."
+    },
+    {
+      "key": "mannitol",
+      "name": "Mannitol",
+      "aliases": ["mannitol", "manitol"],
+      "status": "smpc_verified_indication_specific",
+      "risk": "life_threatening",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/1839/smpc",
+      "doseCandidates": ["Adults/adolescents for reduction of intracranial pressure/cerebral volume or elevated intraocular pressure: 1.5–2 g/kg IV over 30–60 min"],
+      "clinicalNote": "The raw 0.25–1 g/kg value is not used as this source's default; renal function, osmolality and blood-brain-barrier context require monitoring."
+    }
+  ]
+}
