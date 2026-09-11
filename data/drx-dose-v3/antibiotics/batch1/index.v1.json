@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "drx-dose-v3-antibiotics-batch-index-v1",
+  "batch": "antibiotics-batch1",
+  "status": "source_verified_candidate_requires_clinical_review",
+  "createdAt": "2026-09-11",
+  "targetJurisdiction": ["Kosovo", "EU"],
+  "sourceJurisdiction": "United Kingdom",
+  "publicationEligible": false,
+  "humanClinicalReviewRequired": true,
+  "governance": {
+    "userSuppliedNamesUsedAsSeedOnly": true,
+    "userSuppliedDoseTextUsedAsSource": false,
+    "parserOrLlmMayPublishDirectly": false,
+    "immutableSourceSnapshotHashRequiredBeforePublication": true,
+    "clinicalReviewerRequiredBeforePublication": true,
+    "antimicrobialStewardship": "No severity-only antibiotic ladder is encoded. Selection must consider diagnosis, site/severity, expected or confirmed susceptibility, local resistance data and official/local guidance."
+  },
+  "records": [
+    {"id": "amoxicillin", "canonicalInn": "amoxicillin", "path": "data/drx-dose-v3/antibiotics/batch1/amoxicillin.v1.json"},
+    {"id": "amoxicillin-clavulanic-acid", "canonicalInn": "amoxicillin/clavulanic acid", "path": "data/drx-dose-v3/antibiotics/batch1/amoxicillin-clavulanic-acid.v1.json"},
+    {"id": "ceftriaxone", "canonicalInn": "ceftriaxone", "path": "data/drx-dose-v3/antibiotics/batch1/ceftriaxone.v1.json"},
+    {"id": "trimethoprim-sulfamethoxazole", "canonicalInn": "trimethoprim/sulfamethoxazole", "aliases": ["Bactrim", "co-trimoxazole"], "path": "data/drx-dose-v3/antibiotics/batch1/trimethoprim-sulfamethoxazole.v1.json"}
+  ],
+  "publicationBlockers": [
+    "Clinical reviewer sign-off not yet recorded.",
+    "Immutable source-document snapshot SHA-256 values are not yet populated.",
+    "UK SmPC evidence must be reconciled against the selected Kosovo/EU product information before publication where jurisdiction-specific differences exist."
+  ]
+}
