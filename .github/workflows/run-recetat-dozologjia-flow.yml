@@ -1,0 +1,33 @@
+name: Run integrated Recetat Dozologjia flow
+
+on:
+  push:
+    branches:
+      - feat/recetat-dozologjia-integrated-flow-2026-09-11
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/recetat-dozologjia-integrated-flow-2026-09-11
+      - name: Apply patch
+        run: python .github/scripts/apply-recetat-dozologjia-flow.py
+      - name: Verify targeted contracts
+        run: |
+          node --check pediatric-calculator-client.js
+          node --check dozologjia-v2.js
+          node tests/dozologjia-v2-workspace-test.js
+          node tests/recetat-v2-folder-workspace-test.js
+          node tests/recetat-electronic-workflow-test.js
+      - name: Commit implementation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat: integrate Dozologjia results with Recetat"
+          git push origin HEAD:feat/recetat-dozologjia-integrated-flow-2026-09-11
