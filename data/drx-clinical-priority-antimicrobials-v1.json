@@ -1,0 +1,150 @@
+{
+  "schemaVersion": "drx-clinical-priority-antimicrobials-v1",
+  "publicationAllowed": false,
+  "substances": [
+    {
+      "key": "amoxicillin",
+      "name": "Amoxicillin",
+      "aliases": ["amoksicilin", "amoxicillin"],
+      "activeIngredients": ["Amoxicillin"],
+      "status": "staged_source_regimens",
+      "sourceKeys": ["EMC-PRODUCT-13501-SMPC", "EMC-PRODUCT-10891-SMPC"],
+      "backendRegimens": [
+        "SRC-AMOX-ADULT-GROUP-A-Q8Q12",
+        "SRC-AMOX-ADULT-GROUP-B-AOM-ENT-BRONCHITIS",
+        "SRC-AMOX-ADULT-CAP",
+        "SRC-AMOX-PED-GROUP-A-20TO90MGKGDAY",
+        "SRC-AMOX-PED-TONSILLITIS-40TO90MGKGDAY"
+      ],
+      "clinicalNote": "Indication-, severity-, weight- and renal-function-specific. DRX must not reduce this to one universal 'simple infection' dose."
+    },
+    {
+      "key": "amoxicillin_clavulanate",
+      "name": "Amoxicillin + clavulanic acid",
+      "aliases": ["amoksklav", "amoxiclav", "co-amoxiclav", "augmentin"],
+      "activeIngredients": ["Amoxicillin", "Clavulanic acid"],
+      "status": "staged_source_regimens",
+      "sourceKeys": ["EMC-PRODUCT-10877-SMPC"],
+      "backendRegimens": [
+        "SRC-COAMOX-875125-ADULT-STANDARD",
+        "SRC-COAMOX-875125-ADULT-HIGHER",
+        "SRC-COAMOX-PED-STANDARD-RANGE",
+        "SRC-COAMOX-PED-HIGHER-RANGE"
+      ],
+      "doseBasis": "amoxicillin component",
+      "clinicalNote": "Keep exact component ratio/formulation. The captured 7:1 formulation is not recommended below CrCl 30 mL/min because adjustment recommendations are unavailable."
+    },
+    {
+      "key": "ceftriaxone",
+      "name": "Ceftriaxone",
+      "aliases": ["ceftriaxon", "ceftriaxone"],
+      "activeIngredients": ["Ceftriaxone"],
+      "status": "staged_source_regimens",
+      "sourceKeys": ["EMC-PRODUCT-102127-SMPC"],
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/102127/smpc",
+      "backendRegimenCount": 17,
+      "adultExamples": [
+        "CAP/COPD exacerbation/intra-abdominal infection/complicated UTI: 1–2 g IV/IM once daily",
+        "HAP/complicated SSTI/bone-joint infection: 2 g IV/IM once daily",
+        "meningitis/endocarditis/neutropenic fever: 2–4 g/day; doses >2 g/day may be divided q12h",
+        "gonorrhoea: 500 mg IM single dose",
+        "surgical prophylaxis: 2 g single pre-operative dose"
+      ],
+      "paediatricExamples": [
+        "15 days–12 years and <50 kg, CAP/HAP/intra-abdominal infection/complicated UTI: 50–80 mg/kg once daily",
+        "bacterial meningitis: 80–100 mg/kg once daily, max 4 g/day",
+        "bacterial endocarditis: 100 mg/kg once daily, max 4 g/day",
+        "acute otitis media: 50 mg/kg IM single dose; selected severe/failed cases require a separate 3-day branch"
+      ],
+      "clinicalNote": "Neonatal/prematurity restrictions and renal ceilings remain safety-gated. Existing source candidates stay review-gated until promoted."
+    },
+    {
+      "key": "cotrimoxazole",
+      "name": "Co-trimoxazole",
+      "aliases": ["bactrim", "co-trimoxazole", "trimethoprim/sulfamethoxazole", "TMP-SMX"],
+      "activeIngredients": ["Trimethoprim", "Sulfamethoxazole"],
+      "status": "source_capture_in_this_batch",
+      "sourceKey": "EMC-PRODUCT-11466-SMPC",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/11466/smpc",
+      "sourceLastUpdated": "2025-08-19",
+      "doseBasis": "trimethoprim component with sulfamethoxazole component preserved",
+      "doseCandidates": [
+        "Adults >18 years, standard acute infection: 160 mg TMP / 800 mg SMX PO every 12 h",
+        "Age >12 to <18 years: source tablet schedule 160 mg TMP / 800 mg SMX every 12 h; source states paediatric standard is approximately 6 mg TMP + 30 mg SMX/kg/day divided BID",
+        "PJP treatment age >12/adult: 20 mg TMP + 100 mg SMX/kg/day in two or more divided doses for 14 days",
+        "Renal: CrCl >30 standard; CrCl 15–30 uses reduced Forte schedule; CrCl <15 not recommended by this SmPC"
+      ],
+      "clinicalNote": "Never calculate from combined tablet mass. Severe skin reactions, hyperkalaemia, haematological risk and renal function require safety review."
+    },
+    {
+      "key": "ampicillin",
+      "name": "Ampicillin",
+      "aliases": ["ampicillin"],
+      "activeIngredients": ["Ampicillin"],
+      "status": "source_required",
+      "clinicalNote": "Raw 1–2 g q6h / paediatric 50 mg/kg/dose is not activated without indication-, route- and formulation-specific evidence."
+    },
+    {
+      "key": "azithromycin",
+      "name": "Azithromycin",
+      "aliases": ["azithromycin", "hemomycin"],
+      "activeIngredients": ["Azithromycin"],
+      "status": "staged_source_regimens",
+      "backendRegimens": [
+        "SRC-AZI-RESP-SKIN-3DAY-45KGPLUS",
+        "SRC-AZI-ERYTHEMA-MIGRANS-5DAY-45KGPLUS",
+        "SRC-AZI-CHLAMYDIA-SINGLE-45KGPLUS"
+      ],
+      "clinicalNote": "Use existing source-backed DRX regimen branches. Do not assume a universal 500 mg day 1 then 250 mg days 2–5 schedule across all indications/formulations."
+    },
+    {
+      "key": "metronidazole",
+      "name": "Metronidazole",
+      "aliases": ["metronidazole"],
+      "activeIngredients": ["Metronidazole"],
+      "status": "source_required",
+      "clinicalNote": "No universal 500 mg q8–12h rule: route, anaerobic/protozoal indication, organ function and combination therapy must be explicit."
+    },
+    {
+      "key": "meropenem",
+      "name": "Meropenem",
+      "aliases": ["meropenem"],
+      "activeIngredients": ["Meropenem"],
+      "status": "source_required_high_risk",
+      "clinicalNote": "Sepsis is not a single fixed-dose rule. Infection site, organism/susceptibility and renal function must be part of the regimen resolver."
+    },
+    {
+      "key": "cefuroxime",
+      "name": "Cefuroxime",
+      "aliases": ["cefuroxime", "neocef"],
+      "activeIngredients": ["Cefuroxime axetil (oral)", "Cefuroxime sodium (parenteral)"],
+      "status": "existing_drx_source_requires_variant_binding",
+      "clinicalNote": "Oral axetil and parenteral sodium are different clinical variants. A syrup rule must bind to the exact oral product concentration before mL conversion."
+    },
+    {
+      "key": "aciclovir",
+      "name": "Aciclovir",
+      "aliases": ["acyclovir", "aciclovir"],
+      "activeIngredients": ["Aciclovir"],
+      "status": "smpc_verified_oral_specific",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/11673/smpc",
+      "doseCandidates": [
+        "Adult herpes simplex treatment: 200 mg PO five times daily at about 4-hour intervals, omitting night dose, usually 5 days",
+        "Adult varicella/herpes zoster: 800 mg PO five times daily at about 4-hour intervals, omitting night dose, 7 days"
+      ],
+      "clinicalNote": "Topical skin and ophthalmic aciclovir are separate products and must not inherit oral dosing."
+    },
+    {
+      "key": "miconazole",
+      "name": "Miconazole",
+      "aliases": ["miconazole", "daktanol", "daktarin"],
+      "activeIngredients": ["Miconazole"],
+      "status": "smpc_verified_oral_gel_specific",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/14746/smpc",
+      "doseCandidates": [
+        "Oropharyngeal candidosis, infants 4–24 months: 1.25 mL oral gel four times daily after meals"
+      ],
+      "clinicalNote": "Oral gel and skin cream are separate formulations. Infant gel must be divided into small portions and not placed at the back of the throat because of choking risk."
+    }
+  ]
+}
