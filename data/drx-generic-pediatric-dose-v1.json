@@ -1,0 +1,135 @@
+{
+  "schemaVersion": "drx-generic-pediatric-dose-v1",
+  "updatedAt": "2026-09-11",
+  "scope": "Pediatric generic-substance calculator bridge. Official SmPC-derived rules only; no brand/trade-name entries.",
+  "sources": {
+    "amoxicillin": {
+      "sourceKey": "emc-amoxicillin-526-smpc",
+      "authority": "eMC / SmPC",
+      "url": "https://www.medicines.org.uk/emc/product/526/smpc",
+      "section": "4.2",
+      "retrievedAt": "2026-09-11"
+    },
+    "coamoxiclav7to1": {
+      "sourceKey": "emc-coamoxiclav-10877-smpc",
+      "authority": "eMC / SmPC",
+      "url": "https://www.medicines.org.uk/emc/product/10877/smpc",
+      "section": "4.2",
+      "retrievedAt": "2026-09-11"
+    },
+    "ceftriaxone": {
+      "sourceKey": "emc-ceftriaxone-15077-smpc",
+      "authority": "eMC / SmPC",
+      "url": "https://www.medicines.org.uk/emc/product/15077/smpc",
+      "section": "4.2",
+      "retrievedAt": "2026-09-11"
+    },
+    "cotrimoxazole": {
+      "sourceKey": "emc-cotrimoxazole-paediatric-6994-smpc",
+      "authority": "eMC / SmPC",
+      "url": "https://www.medicines.org.uk/emc/product/6994/smpc",
+      "section": "4.2",
+      "retrievedAt": "2026-09-11"
+    }
+  },
+  "substances": [
+    {
+      "id": "GENERIC-AMOXICILLIN",
+      "canonicalName": "Amoxicillin",
+      "atcCode": "J01CA04",
+      "sourceRef": "amoxicillin",
+      "summary": "Dozim pediatrik sipas SmPC për fëmijë <40 kg; kalkulatori automatik përdor vetëm regjime me frekuencë të përcaktuar qartë.",
+      "warnings": [
+        "Fëmijët me peshë ≥40 kg kalojnë te rekomandimet e të rriturve sipas SmPC.",
+        "Alergjia ndaj penicilinave/beta-laktamëve dhe funksioni renal duhet të vlerësohen para përdorimit."
+      ],
+      "renalVariants": [
+        {"key":"gfr_gt_30","label":"GFR >30 mL/min — pa rregullim"},
+        {"key":"gfr_10_30","label":"GFR 10–30 mL/min"},
+        {"key":"gfr_lt_10","label":"GFR <10 mL/min"},
+        {"key":"hemodialysis","label":"Hemodializë"}
+      ],
+      "options": [
+        {"id":"AMOX-TYPHOID","label":"Ethe tifoide / paratifoide","method":"dose_per_kg_per_day","doseMin":100,"doseMax":100,"doseUnit":"mg","timesPerDay":3,"route":"PO","maxWeightKg":39.999,"scheduleText":"3×/ditë","durationText":"Sipas kohëzgjatjes së përcaktuar klinikisht","renalPolicy":"amoxicillin"},
+        {"id":"AMOX-ENDOCARDITIS-PROPHYLAXIS","label":"Profilaksë e endokarditit","method":"dose_per_kg_per_dose","doseMin":50,"doseMax":50,"doseUnit":"mg","timesPerDay":null,"route":"PO","maxWeightKg":39.999,"scheduleText":"Dozë e vetme, 30–60 min para procedurës","durationText":"Dozë e vetme","renalPolicy":"amoxicillin"},
+        {"id":"AMOX-LYME-EARLY","label":"Lyme — faza e hershme","method":"dose_per_kg_per_day","doseMin":25,"doseMax":50,"doseUnit":"mg","timesPerDay":3,"route":"PO","maxWeightKg":39.999,"scheduleText":"3×/ditë","durationText":"10–21 ditë","renalPolicy":"amoxicillin"},
+        {"id":"AMOX-LYME-LATE","label":"Lyme — faza e vonshme / sistemike","method":"dose_per_kg_per_day","doseMin":100,"doseMax":100,"doseUnit":"mg","timesPerDay":3,"route":"PO","maxWeightKg":39.999,"scheduleText":"3×/ditë","durationText":"10–30 ditë","renalPolicy":"amoxicillin"}
+      ],
+      "informationalRegimens": [
+        {"indication":"Sinusit akut bakterial, otit akut, CAP, cistit, pielonefrit, absces dentar me celulit","text":"20–90 mg/kg/ditë në doza të ndara; SmPC nuk përcakton një frekuencë unike. Regjimi 2×/ditë merret në konsideratë vetëm në skajin e sipërm të dozës."},
+        {"indication":"Tonsilit/faringit akut streptokoksik","text":"40–90 mg/kg/ditë në doza të ndara; SmPC nuk përcakton një frekuencë unike."}
+      ]
+    },
+    {
+      "id": "GENERIC-AMOXICILLIN-CLAVULANIC-ACID",
+      "canonicalName": "Amoxicillin + clavulanic acid",
+      "atcCode": "J01CR02",
+      "sourceRef": "coamoxiclav7to1",
+      "summary": "Rregulla pediatrike për formulime 7:1; doza shfaqet sipas komponentit amoxicillin dhe komponenti clavulanic acid llogaritet paralelisht.",
+      "warnings": [
+        "Këto rregulla vlejnë për formulime amoxicillin/clavulanic acid me raport 7:1; raportet e tjera kërkojnë rregull të veçantë.",
+        "Nën 2 muaj SmPC nuk jep rekomandim për formulimin 7:1.",
+        "Në CrCl <30 mL/min formulimet 7:1 nuk rekomandohen sepse nuk ka rekomandim për rregullim doze.",
+        "Në dëmtim hepatik përdoret me kujdes dhe monitorohet funksioni hepatik."
+      ],
+      "options": [
+        {"id":"COAMOX-7TO1-STANDARD","label":"Regjimi standard 7:1","method":"dose_per_kg_per_day","doseMin":25,"doseMax":45,"pairedDoseMin":3.6,"pairedDoseMax":6.4,"doseUnit":"mg","timesPerDay":2,"route":"PO","minAgeMonths":2,"maxWeightKg":39.999,"scheduleText":"2×/ditë","durationText":"Sipas përgjigjes; jo >14 ditë pa rishikim","renalPolicy":"coamoxiclav_crcl"},
+        {"id":"COAMOX-7TO1-UPPER-SELECTED","label":"Infeksione të zgjedhura — kufiri i sipërm 70/10 mg/kg/ditë","method":"dose_per_kg_per_day","doseMin":70,"doseMax":70,"pairedDoseMin":10,"pairedDoseMax":10,"doseUnit":"mg","timesPerDay":2,"route":"PO","minAgeMonths":24,"maxWeightKg":39.999,"scheduleText":"2×/ditë","durationText":"Sipas përgjigjes; jo >14 ditë pa rishikim","renalPolicy":"coamoxiclav_crcl","selectionNote":"SmPC thotë ‘up to 70/10 mg/kg/day’ për disa infeksione; ky opsion përfaqëson kufirin e sipërm, jo një dozë default."}
+      ],
+      "informationalRegimens": []
+    },
+    {
+      "id": "GENERIC-CEFTRIAXONE",
+      "canonicalName": "Ceftriaxone",
+      "atcCode": "J01DD04",
+      "sourceRef": "ceftriaxone",
+      "summary": "Regjime pediatrike për moshë 15 ditë–12 vjeç dhe peshë <50 kg. Neonatët 0–14 ditë bllokohen në kalkulatorin automatik derisa të shtohen PMA/kalcium/bilirubinë.",
+      "warnings": [
+        "Neonatët 0–14 ditë nuk llogariten automatikisht në këtë version; SmPC ka kundërindikacione të varura nga PMA, bilirubina dhe kalciumi IV.",
+        "Dozat IV ≥50 mg/kg te foshnjat/fëmijët ≤12 vjeç duhet të jepen me infuzion; SmPC preferon infuzion IV ≥30 min.",
+        "Kur doza ditore është >2 g, SmPC lejon të merret në konsideratë administrimi çdo 12 orë.",
+        "Në CrCl <10 mL/min doza ditore nuk duhet të kalojë 2 g; në dializë nuk kërkohet dozë shtesë."
+      ],
+      "renalVariants": [
+        {"key":"standard_context","label":"Jo CrCl <10 mL/min me kufizim të veçantë"},
+        {"key":"crcl_lt10_hepatic_not_impaired","label":"CrCl <10 mL/min, pa dëmtim hepatik të rëndë"},
+        {"key":"severe_renal_and_hepatic","label":"Dëmtim renal + hepatik i rëndë — review manual"}
+      ],
+      "options": [
+        {"id":"CEFTRIAXONE-GENERAL","label":"Intra-abdominal / UTI e komplikuar / CAP / HAP","method":"dose_per_kg_per_dose","doseMin":50,"doseMax":80,"doseUnit":"mg","timesPerDay":1,"route":"IV/IM","minAgeDays":15,"maxAgeMonths":144,"maxWeightKg":49.999,"scheduleText":"1×/ditë","renalPolicy":"ceftriaxone"},
+        {"id":"CEFTRIAXONE-SEVERE","label":"SSTI e komplikuar / kocka-nyje / neutropeni febrile","method":"dose_per_kg_per_dose","doseMin":50,"doseMax":100,"doseUnit":"mg","timesPerDay":1,"maxDailyDoseMg":4000,"route":"IV/IM","minAgeDays":15,"maxAgeMonths":144,"maxWeightKg":49.999,"scheduleText":"1×/ditë","renalPolicy":"ceftriaxone"},
+        {"id":"CEFTRIAXONE-MENINGITIS","label":"Meningjit bakterial","method":"dose_per_kg_per_dose","doseMin":80,"doseMax":100,"doseUnit":"mg","timesPerDay":1,"maxDailyDoseMg":4000,"route":"IV","minAgeDays":15,"maxAgeMonths":144,"maxWeightKg":49.999,"scheduleText":"1×/ditë","renalPolicy":"ceftriaxone"},
+        {"id":"CEFTRIAXONE-ENDOCARDITIS","label":"Endokardit bakterial","method":"dose_per_kg_per_dose","doseMin":100,"doseMax":100,"doseUnit":"mg","timesPerDay":1,"maxDailyDoseMg":4000,"route":"IV","minAgeDays":15,"maxAgeMonths":144,"maxWeightKg":49.999,"scheduleText":"1×/ditë","renalPolicy":"ceftriaxone"},
+        {"id":"CEFTRIAXONE-AOM-SINGLE","label":"Otit akut — trajtim fillestar","method":"dose_per_kg_per_dose","doseMin":50,"doseMax":50,"doseUnit":"mg","timesPerDay":null,"maxSingleDoseMg":null,"route":"IM","minAgeDays":15,"maxAgeMonths":144,"maxWeightKg":49.999,"scheduleText":"Dozë e vetme IM","renalPolicy":"ceftriaxone"},
+        {"id":"CEFTRIAXONE-AOM-3D","label":"Otit akut — i rëndë / dështim i terapisë fillestare","method":"dose_per_kg_per_dose","doseMin":50,"doseMax":50,"doseUnit":"mg","timesPerDay":1,"route":"IM","minAgeDays":15,"maxAgeMonths":144,"maxWeightKg":49.999,"scheduleText":"1×/ditë për 3 ditë","durationText":"3 ditë","renalPolicy":"ceftriaxone"},
+        {"id":"CEFTRIAXONE-PREOP","label":"Profilaksë para operacionit","method":"dose_per_kg_per_dose","doseMin":50,"doseMax":80,"doseUnit":"mg","timesPerDay":null,"route":"IV/IM","minAgeDays":15,"maxAgeMonths":144,"maxWeightKg":49.999,"scheduleText":"Dozë e vetme 30–90 min para operacionit","renalPolicy":"ceftriaxone"},
+        {"id":"CEFTRIAXONE-SYPHILIS","label":"Sifiliz","method":"dose_per_kg_per_dose","doseMin":75,"doseMax":100,"doseUnit":"mg","timesPerDay":1,"maxDailyDoseMg":4000,"route":"IV/IM","minAgeDays":15,"maxAgeMonths":144,"maxWeightKg":49.999,"scheduleText":"1×/ditë","durationText":"10–14 ditë","renalPolicy":"ceftriaxone"},
+        {"id":"CEFTRIAXONE-LYME","label":"Lyme i diseminuar — faza II/III","method":"dose_per_kg_per_dose","doseMin":50,"doseMax":80,"doseUnit":"mg","timesPerDay":1,"route":"IV","minAgeDays":15,"maxAgeMonths":144,"maxWeightKg":49.999,"scheduleText":"1×/ditë","durationText":"14–21 ditë","renalPolicy":"ceftriaxone"}
+      ],
+      "informationalRegimens": []
+    },
+    {
+      "id": "GENERIC-SULFAMETHOXAZOLE-TRIMETHOPRIM",
+      "canonicalName": "Sulfamethoxazole + trimethoprim",
+      "atcCode": "J01EE01",
+      "sourceRef": "cotrimoxazole",
+      "summary": "Dozimi shfaqet me trimethoprim (TMP) si komponent primar dhe sulfamethoxazole (SMX) paralelisht. Auto-kalkulimi pediatrik kërkon funksion renal/hepatik pa dështim të njohur.",
+      "warnings": [
+        "SmPC pediatrik nuk jep rekomandim dozimi për fëmijë ≤12 vjeç me insuficiencë renale; në këtë kontekst auto-kalkulimi bllokohet.",
+        "SmPC nuk jep të dhëna dozimi për dëmtim hepatik; auto-kalkulimi bllokohet kur dëmtimi hepatik është i pranishëm.",
+        "Kundërindikuar te foshnjat <6 javë sipas formulimit pediatrik të burimit."
+      ],
+      "clinicalVariants": [
+        {"key":"normal_renal_no_hepatic_impairment","label":"Funksion renal pa dështim të njohur + pa dëmtim hepatik"},
+        {"key":"renal_failure_or_hepatic_impairment","label":"Insuficiencë renale ose dëmtim hepatik — review manual"}
+      ],
+      "options": [
+        {"id":"COTRIMOX-STANDARD","label":"Infeksione akute — dozë standarde","method":"dose_per_kg_per_day","doseMin":6,"doseMax":6,"pairedDoseMin":30,"pairedDoseMax":30,"doseUnit":"mg TMP","timesPerDay":2,"route":"PO","minAgeDays":42,"maxAgeMonths":144,"scheduleText":"çdo 12 orë","componentPolicy":"tmp_smx","clinicalPolicy":"cotrimoxazole_normal_only"},
+        {"id":"COTRIMOX-PJP-PROPHYLAXIS","label":"PJP — profilaksë pediatrike me dozën standarde","method":"dose_per_kg_per_day","doseMin":6,"doseMax":6,"pairedDoseMin":30,"pairedDoseMax":30,"doseUnit":"mg TMP","timesPerDay":2,"route":"PO","minAgeDays":42,"maxAgeMonths":144,"scheduleText":"2 doza të barabarta/ditë gjatë periudhës së rrezikut","componentPolicy":"tmp_smx","clinicalPolicy":"cotrimoxazole_normal_only"}
+      ],
+      "informationalRegimens": [
+        {"indication":"PJP — trajtim","text":"20 mg TMP + 100 mg SMX/kg/ditë në 2 ose më shumë doza të ndara për 2 javë. Frekuenca nuk është unike në SmPC, prandaj ky version nuk e auto-kalkulon pa zgjedhje shtesë të frekuencës."}
+      ]
+    }
+  ]
+}
