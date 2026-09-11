@@ -1,0 +1,216 @@
+{
+  "schemaVersion": "drx-dose-v3-clinical-hardening-v1",
+  "updatedAt": "2026-09-11",
+  "status": "candidate_not_applied",
+  "scope": "Additive clinical/interoperability hardening for DRx Dose V3. This contract does not authorize publication of any dose by itself.",
+  "standards": {
+    "emaEpi": {
+      "implementationGuideVersion": "1.0.0",
+      "fhirVersion": "5.0.0",
+      "smpcSection42": {
+        "display": "4.2 Posology and method of administration",
+        "codeSystem": "http://ema.europa.eu/fhir/CodeSystem/200000029659",
+        "code": "200000029800"
+      },
+      "subsections": {
+        "posology": "200000029801",
+        "paediatricPopulation": "200000029802",
+        "methodOfAdministration": "200000029803"
+      }
+    },
+    "units": {
+      "preferredCodeSystem": "UCUM",
+      "policy": "Store source unit verbatim and a normalized UCUM code when an unambiguous mapping exists. Never invent a UCUM mapping."
+    },
+    "routesAndForms": {
+      "policy": "Retain source wording and optionally store coded route/form identifiers. Coding must never change the clinical meaning of the source text."
+    }
+  },
+  "ruleModel": {
+    "requiredClinicalContext": [
+      "substance_concept_id",
+      "indication_id",
+      "patient_group",
+      "route",
+      "source_snapshot_id",
+      "source_section_sha256"
+    ],
+    "regimenRoles": [
+      "single",
+      "loading",
+      "maintenance",
+      "titration",
+      "taper",
+      "rescue",
+      "prophylaxis",
+      "cycle",
+      "continuous",
+      "manual_review"
+    ],
+    "calculationMethods": [
+      "fixed_dose",
+      "fixed_volume",
+      "dose_per_kg_per_dose",
+      "dose_per_kg_per_day",
+      "dose_per_m2_per_dose",
+      "dose_per_m2_per_day",
+      "units_per_kg_per_dose",
+      "units_per_kg_per_hour",
+      "dose_rate",
+      "age_band_fixed",
+      "manual_only"
+    ],
+    "doseDimensions": [
+      "dose_min_value",
+      "dose_max_value",
+      "dose_unit",
+      "dose_unit_ucum",
+      "frequency_or_interval",
+      "duration",
+      "maximum_single_dose",
+      "maximum_daily_dose"
+    ],
+    "optionalStructuredDimensions": [
+      "dose_rate_min",
+      "dose_rate_max",
+      "dose_rate_unit_ucum",
+      "infusion_duration_min_minutes",
+      "infusion_duration_max_minutes",
+      "cycle_length_days",
+      "cycle_days_on",
+      "cycle_days_off",
+      "phase_sequence",
+      "parent_rule_id",
+      "supersedes_rule_id",
+      "change_reason"
+    ]
+  },
+  "populationModel": {
+    "groups": [
+      "neonate",
+      "infant",
+      "child",
+      "adolescent",
+      "adult",
+      "older_adult",
+      "source_defined_age_band",
+      "manual_review"
+    ],
+    "dimensions": [
+      "chronological_age",
+      "weight_kg",
+      "body_surface_area_m2",
+      "gestational_age_weeks",
+      "postmenstrual_age_weeks"
+    ],
+    "policy": "Only use gestational/postmenstrual age when explicitly required by the authoritative source. Never infer neonatal maturity from chronological age alone."
+  },
+  "renalModel": {
+    "measures": [
+      "CrCl_mL_min",
+      "eGFR_mL_min_1_73m2",
+      "dialysis_status"
+    ],
+    "methods": [
+      "Cockcroft_Gault",
+      "CKD_EPI",
+      "source_stated_unspecified",
+      "not_applicable"
+    ],
+    "dialysisModalities": [
+      "HD",
+      "PD",
+      "CRRT",
+      "other_source_defined"
+    ],
+    "dialysisTiming": [
+      "before_dialysis",
+      "after_dialysis",
+      "during_dialysis",
+      "independent_of_dialysis",
+      "source_defined",
+      "not_stated"
+    ],
+    "policy": "CrCl and eGFR are not interchangeable. Calculation method, dialysis modality and timing are stored only when stated or deterministically derivable from an explicit structured source."
+  },
+  "hepaticModel": {
+    "measures": [
+      "Child_Pugh_class",
+      "hepatic_impairment_textual"
+    ],
+    "policy": "Never derive a Child-Pugh class from unstructured wording unless the source explicitly defines the mapping."
+  },
+  "provenance": {
+    "requiredForVerifiedOrPublished": [
+      "source_key",
+      "source_snapshot_id",
+      "source_evidence_hash",
+      "source_document_version_or_date",
+      "source_section",
+      "source_section_sha256",
+      "verified_by",
+      "verified_at"
+    ],
+    "recommendedMetadata": [
+      "authority",
+      "jurisdiction",
+      "source_language",
+      "document_type",
+      "source_document_id",
+      "parser_version",
+      "fetched_at"
+    ],
+    "policy": "Published rules must remain pinned to an immutable source snapshot and exact source-section hash. A parser version is provenance, not clinical validation."
+  },
+  "parserGovernance": {
+    "outputStatus": "candidate_only",
+    "humanClinicalReviewRequired": true,
+    "llmMayPublishDirectly": false,
+    "freeTextFallbackRequiredWhenNormalizationIsLossy": true,
+    "confidenceScoreIsNotApproval": true,
+    "rules": [
+      "Parser extraction may propose structured values but may not mark a rule verified or published.",
+      "Conflicting source statements enter the review queue.",
+      "Ambiguous units, routes, population boundaries or dose bases enter manual review.",
+      "No calculation is returned when a required patient input is missing."
+    ]
+  },
+  "publicationGates": [
+    "authoritative_source_eligible_for_jurisdiction",
+    "exact_source_identity_and_section_hash_valid",
+    "clinical_context_complete",
+    "dose_range_and_unit_semantically_valid",
+    "required_patient_inputs_declared",
+    "renal_and_hepatic_adjustments_verified_when_required",
+    "product_binding_verified",
+    "safety_validation_passed",
+    "human_clinical_review_complete",
+    "no_unresolved_source_conflict"
+  ],
+  "safetyInvariants": [
+    "Never treat dose_per_kg_per_day as dose_per_kg_per_dose.",
+    "Never convert CrCl thresholds to eGFR thresholds or vice versa without an explicit authoritative rule.",
+    "Never infer a maximum dose when the source does not provide one.",
+    "Never infer route equivalence.",
+    "Never publish parser-only evidence.",
+    "Never silently replace source wording when structured normalization cannot preserve meaning.",
+    "Never calculate a patient dose with missing required age, weight, BSA, renal or hepatic inputs."
+  ],
+  "testing": {
+    "requiredSuites": [
+      "schema_contract",
+      "source_policy",
+      "publication_gate",
+      "golden_cases",
+      "renal_adjustment",
+      "hepatic_adjustment",
+      "neonatal_boundaries",
+      "loading_maintenance_sequence",
+      "infusion_rate",
+      "unit_semantics",
+      "provenance_round_trip",
+      "conflicting_source_resolution"
+    ],
+    "goldenCasePolicy": "Golden cases must be traceable to immutable official source snapshots and test both accepted and blocked calculations."
+  }
+}
