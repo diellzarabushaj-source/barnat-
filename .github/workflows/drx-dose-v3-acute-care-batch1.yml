@@ -1,0 +1,44 @@
+name: DRx Dose V3 Acute Care Batch 1
+
+on:
+  pull_request:
+    paths:
+      - 'data/drx-dose-v3/acute-care/batch1/**'
+      - 'tests/drx-dose-v3-acute-care-batch1-test.js'
+      - '.github/workflows/drx-dose-v3-acute-care-batch1.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/drx-dose-v3/acute-care/batch1/**'
+      - 'tests/drx-dose-v3-acute-care-batch1-test.js'
+      - '.github/workflows/drx-dose-v3-acute-care-batch1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: drx-dose-v3-acute-care-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contract:
+    name: Acute-care clinical candidate gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Acute-care batch contract
+        run: node tests/drx-dose-v3-acute-care-batch1-test.js
+      - name: Canonical seed regression
+        run: node tests/drx-dose-v3-canonical-seed-test.js
+      - name: Antibiotic batch regression
+        run: node tests/drx-dose-v3-antibiotics-batch1-test.js
+      - name: Dosage v4 engine regression
+        run: node tests/dosage-rule-engine-v4-test.js
+      - name: Pediatric API regression
+        run: node tests/pediatric-dosage-api-test.js
