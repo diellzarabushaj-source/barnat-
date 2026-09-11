@@ -1,0 +1,88 @@
+{
+  "schemaVersion": "drx-clinical-priority-topical-supportive-v1",
+  "publicationAllowed": false,
+  "substances": [
+    {
+      "key": "dequalinium_chloride",
+      "name": "Dequalinium chloride",
+      "aliases": ["decatrin", "dequalinium chloride"],
+      "status": "brand_mapping_review",
+      "clinicalNote": "Exact Decatrin product and dosage form must be verified. Lozenge, oral gel and other local formulations must not share a dose automatically."
+    },
+    {
+      "key": "dexamethasone_neomycin_ophthalmic",
+      "name": "Dexamethasone + neomycin ophthalmic",
+      "aliases": ["dexason + neomicin"],
+      "activeIngredients": ["Dexamethasone", "Neomycin"],
+      "status": "source_required_specialist_review",
+      "risk": "specialist_high_risk",
+      "clinicalNote": "Steroid-containing ophthalmic combinations are not a generic bacterial-conjunctivitis treatment. Viral/fungal eye disease, corneal epithelial disease, glaucoma/IOP risk and product-specific contraindications require screening."
+    },
+    {
+      "key": "chloramphenicol_ophthalmic",
+      "name": "Chloramphenicol ophthalmic",
+      "aliases": ["chloramphenicol 1% eye ointment"],
+      "activeIngredients": ["Chloramphenicol"],
+      "status": "smpc_verified_product_specific",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/9770/smpc",
+      "doseCandidates": ["Acute bacterial conjunctivitis age >=2 years, ointment alone: about 1 cm to affected eye(s) 3–4 times/day for 5 days"],
+      "clinicalNote": "If eye drops are used in daytime, the same source permits ointment at night; product contraindications and red-flag eye symptoms still govern use."
+    },
+    {
+      "key": "vitamin_b_complex",
+      "name": "Vitamin B complex",
+      "aliases": ["vitamin B complex amp"],
+      "activeIngredients": ["Product-specific B-vitamin combination"],
+      "status": "product_specific",
+      "clinicalNote": "No universal '1 amp IV/IM daily' rule: thiamine/riboflavin/niacinamide/pyridoxine content and licensed indications vary by product."
+    },
+    {
+      "key": "ascorbic_acid",
+      "name": "Ascorbic acid (Vitamin C)",
+      "aliases": ["vitamin C", "ascorbic acid"],
+      "activeIngredients": ["Ascorbic acid"],
+      "status": "source_required_by_route",
+      "clinicalNote": "DRX does not encode 'immunity', stress or gingival bleeding as universal IV indications. Oral and parenteral products require route- and deficiency-specific evidence."
+    },
+    {
+      "key": "pyridoxine",
+      "name": "Pyridoxine (Vitamin B6)",
+      "aliases": ["bedoxin", "pyridoxine"],
+      "activeIngredients": ["Pyridoxine / pyridoxine hydrochloride"],
+      "status": "source_required_by_product",
+      "clinicalNote": "Pyridoxine may have specific deficiency/drug-related indications, but the raw claim 'use Bedoxin to take patients off diazepam' is excluded as unsupported."
+    },
+    {
+      "key": "multivitamin",
+      "name": "Multivitamin",
+      "aliases": ["multivitamin"],
+      "activeIngredients": ["Multiple vitamins; product-specific"],
+      "status": "product_specific",
+      "clinicalNote": "Dose follows the exact marketed product and age label; no generic one-tablet prescription rule is published."
+    },
+    {
+      "key": "probiotic_drops",
+      "name": "Probiotic drops",
+      "aliases": ["probiotic drops", "pika probiotike"],
+      "activeIngredients": ["Strain(s) and CFU are product-specific"],
+      "status": "product_specific",
+      "clinicalNote": "A generic 5–10 drop/day rule is not portable between probiotic products. Strain, CFU, age and manufacturer label must be stored before dosing."
+    },
+    {
+      "key": "sambucol_immuno",
+      "name": "Sambucol Immuno",
+      "aliases": ["sambucol immuno"],
+      "activeIngredients": ["Product-specific elderberry/vitamin formulation"],
+      "status": "product_specific_supplement",
+      "clinicalNote": "Not treated as a prescription-drug dosing rule. Dose must come from the exact product label by age/formulation."
+    },
+    {
+      "key": "pediacide_cough",
+      "name": "Pediacide cough syrup",
+      "aliases": ["pediacide"],
+      "activeIngredients": ["Exact herbal formulation requires product verification"],
+      "status": "product_specific_supplement",
+      "clinicalNote": "The raw 2.5–5 mL 2–3x/day instruction is not published generically. Ivy/plantain/althaea/thyme content, concentration and minimum age can differ by product."
+    }
+  ]
+}
