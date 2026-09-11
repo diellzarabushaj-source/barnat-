@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "drx-dose-v3-canonical-substance-seed-v1",
+  "createdAt": "2026-09-11",
+  "status": "canonical_names_only_doses_not_imported",
+  "targetJurisdiction": ["Kosovo", "regional Balkans", "EU"],
+  "rules": {
+    "userDoseTextIsEvidence": false,
+    "brandNameMayMapWithoutJurisdictionVerification": false,
+    "doseRulesMayPublishFromThisFile": false,
+    "exactProductRequiredForMultiIngredientOrVariableCompositionProducts": true
+  },
+  "criticalCorrections": [
+    {
+      "userText": "Presolol (Labetalol)",
+      "correction": "Do not map Presolol to labetalol in the regional Hemofarm context. Presolol 5 mg/5 mL injection and regional Presolol tablets are metoprolol tartrate. Keep labetalol as a separate canonical substance unless a specific product label proves a local brand mapping.",
+      "canonicalSubstanceForRegionalPresolol": "metoprolol",
+      "canonicalSubstanceUserLikelyIntendedForHypertensiveEmergency": "labetalol",
+      "sourceUrls": [
+        "https://www.alims.gov.rs/doc_file/lekovi/pak/515-01-04137-22-001.pdf",
+        "https://www.registarlekova.rs/single/5241/presolol-rastvor-za-iv-inj-5mg5ml-5-x-5ml"
+      ]
+    },
+    {
+      "userText": "NaHCO3 (Lemod solutio)",
+      "correction": "Lemod-Solu is methylprednisolone, not sodium bicarbonate. Sodium bicarbonate must be stored as its own substance/product and must never inherit Lemod-Solu as an alias.",
+      "canonicalSubstanceForLemodSolu": "methylprednisolone",
+      "canonicalSubstanceForNaHCO3": "sodium bicarbonate",
+      "sourceUrls": ["https://www.hemofarm.com/srb/proizvodi/lekovi-uz-lekarski-recept"]
+    },
+    {
+      "userText": "Acyclovir pika per sy",
+      "correction": "Keep aciclovir as the substance, but do not infer an ophthalmic dosage form from the note. The exact local ophthalmic product/form must be verified before a product-level rule is created."
+    },
+    {
+      "userText": "B complex / multivitamin / probiotic drops / Sambucol / Pediacide",
+      "correction": "These are not single universal active substances. They require an exact product and ingredient/strain/formula record before dosing can be modeled."
+    }
+  ],
+  "canonicalSubstances": [
+    {"id":"amoxicillin","canonicalInn":"amoxicillin","seedAliases":["amoksicilin"]},
+    {"id":"amoxicillin-clavulanic-acid","canonicalInn":"amoxicillin/clavulanic acid","seedAliases":["amoksklav","amoksiklav","co-amoxiclav"],"combination":true},
+    {"id":"ceftriaxone","canonicalInn":"ceftriaxone","seedAliases":["ceftriaxon"]},
+    {"id":"trimethoprim-sulfamethoxazole","canonicalInn":"trimethoprim/sulfamethoxazole","seedAliases":["Bactrim","co-trimoxazole"],"combination":true},
+    {"id":"adrenaline","canonicalInn":"adrenaline","seedAliases":["epinephrine"]},
+    {"id":"atropine","canonicalInn":"atropine"},
+    {"id":"verapamil","canonicalInn":"verapamil"},
+    {"id":"propranolol","canonicalInn":"propranolol"},
+    {"id":"amiodarone","canonicalInn":"amiodarone"},
+    {"id":"dopamine","canonicalInn":"dopamine"},
+    {"id":"labetalol","canonicalInn":"labetalol","brandMappingWarning":"Do not attach regional Hemofarm Presolol as an alias."},
+    {"id":"metoprolol","canonicalInn":"metoprolol","verifiedRegionalBrands":[{"brand":"Presolol","manufacturer":"Hemofarm","forms":["tablet","5 mg/5 mL IV injection"],"mappingStatus":"verified_for_regional_product"}]},
+    {"id":"etamsylate","canonicalInn":"etamsylate","seedAliases":["Dicynone"]},
+    {"id":"chloropyramine","canonicalInn":"chloropyramine","seedAliases":["Synopen","Alergosan","Allergosan"],"brandMappingStatus":"requires_exact_local_product_for_strength_and_route"},
+    {"id":"dexamethasone","canonicalInn":"dexamethasone","seedAliases":["Dexason"]},
+    {"id":"methylprednisolone","canonicalInn":"methylprednisolone","seedAliases":["Urbason","Urbazon","Lemod-Solu"]},
+    {"id":"diclofenac","canonicalInn":"diclofenac","seedAliases":["Voltaren"]},
+    {"id":"ketoprofen","canonicalInn":"ketoprofen","seedAliases":["Ketonal"]},
+    {"id":"tramadol","canonicalInn":"tramadol","seedAliases":["Trodon"]},
+    {"id":"metoclopramide","canonicalInn":"metoclopramide","seedAliases":["Reglan","Klometal","Klometol"]},
+    {"id":"ondansetron","canonicalInn":"ondansetron","seedAliases":["Zofran"]},
+    {"id":"morphine","canonicalInn":"morphine"},
+    {"id":"paracetamol","canonicalInn":"paracetamol","seedAliases":["Benuron","acetaminophen"]},
+    {"id":"ibuprofen","canonicalInn":"ibuprofen","seedAliases":["Neofen"]},
+    {"id":"diazepam","canonicalInn":"diazepam"},
+    {"id":"biperiden","canonicalInn":"biperiden","seedAliases":["Akineton"],"note":"Seeded because it was mentioned as treatment for extrapyramidal reactions; dosing is not imported here."},
+    {"id":"hyoscine-butylbromide","canonicalInn":"hyoscine butylbromide","seedAliases":["Buscopan","scopolamine butylbromide"]},
+    {"id":"furosemide","canonicalInn":"furosemide","seedAliases":["Lasix"]},
+    {"id":"sodium-bicarbonate","canonicalInn":"sodium bicarbonate","forbiddenAliases":["Lemod-Solu","Lemod solutio"]},
+    {"id":"sodium-chloride","canonicalInn":"sodium chloride","productContext":"IV solution concentration must be product-specific; user mentioned 0.9%."},
+    {"id":"glucose","canonicalInn":"glucose","seedAliases":["dextrose"],"productContext":"IV concentration must be product-specific; user mentioned 5% and 50%."},
+    {"id":"mannitol","canonicalInn":"mannitol"},
+    {"id":"ampicillin","canonicalInn":"ampicillin"},
+    {"id":"azithromycin","canonicalInn":"azithromycin"},
+    {"id":"metronidazole","canonicalInn":"metronidazole"},
+    {"id":"meropenem","canonicalInn":"meropenem"},
+    {"id":"cefuroxime","canonicalInn":"cefuroxime","seedAliases":["Neocef"],"brandMappingStatus":"exact_local_product_required"},
+    {"id":"aciclovir","canonicalInn":"aciclovir","seedAliases":["acyclovir"],"productContext":"oral, topical and ophthalmic products must remain separate product/form records."},
+    {"id":"miconazole","canonicalInn":"miconazole","seedAliases":["Daktanol"],"brandMappingStatus":"exact_local_product_required"},
+    {"id":"dequalinium-chloride","canonicalInn":"dequalinium chloride","seedAliases":["Decatrin"],"brandMappingStatus":"exact_local_product_required_before_strength_or_dose"},
+    {"id":"dexamethasone-neomycin","canonicalInn":"dexamethasone/neomycin","combination":true,"productContext":"ophthalmic combination must be verified against exact marketed product; do not infer from separate Dexason and neomycin products."},
+    {"id":"chloramphenicol","canonicalInn":"chloramphenicol","productContext":"ophthalmic formulation/strength must be product-specific."},
+    {"id":"ascorbic-acid","canonicalInn":"ascorbic acid","seedAliases":["vitamin C"]},
+    {"id":"pyridoxine","canonicalInn":"pyridoxine","seedAliases":["vitamin B6","Bedoxin"],"brandMappingStatus":"exact_local_product_required"}
+  ],
+  "variableCompositionProducts": [
+    {"seedName":"Ringer","status":"exact_product_required","reason":"Ringer, Ringer lactate/Hartmann and other balanced crystalloids have different compositions and are not one interchangeable active-substance record."},
+    {"seedName":"Vitamin B complex","status":"exact_product_required","reason":"Multiple active vitamins and strengths vary by manufacturer."},
+    {"seedName":"Multivitamin","status":"exact_product_required","reason":"Formula varies by product."},
+    {"seedName":"Probiotic drops","status":"exact_product_required","reason":"Dose and evidence depend on exact microorganism strain(s), CFU and product."},
+    {"seedName":"Sambucol Immuno","status":"exact_product_required","reason":"Supplement/product formula; do not model as a universal INN medicine."},
+    {"seedName":"Pediacide","status":"unresolved_product","reason":"Exact marketed product/ingredient list is required; do not infer ivy/plantain/Althaea/thyme from a product name."}
+  ],
+  "notImportedAsClinicalRules": [
+    "All user-written doses until separately source-verified.",
+    "The heuristic 'mild infection -> amoxicillin; medium -> co-amoxiclav; severe -> ceftriaxone'.",
+    "The claim that glucose 5% should be used as a diuretic for hypertension.",
+    "The claim that pyridoxine/Bedoxin is a routine method to take patients off diazepam.",
+    "The label 'hypoallergenic' for ketoprofen.",
+    "Any automatic potassium supplementation with furosemide without patient-specific assessment.",
+    "Any route/form assumption for aciclovir eye treatment or product-specific combinations without the exact label."
+  ]
+}
