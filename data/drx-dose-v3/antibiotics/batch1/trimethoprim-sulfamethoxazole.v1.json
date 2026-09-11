@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "drx-dose-v3-substance-candidate-v1",
+  "status": "source_verified_candidate_requires_clinical_review",
+  "publicationEligible": false,
+  "humanClinicalReviewRequired": true,
+  "userSuppliedDoseTextUsedAsSource": false,
+  "substance": {
+    "id": "trimethoprim-sulfamethoxazole",
+    "canonicalInn": "trimethoprim/sulfamethoxazole",
+    "atc": "J01EE01",
+    "aliases": ["co-trimoxazole", "cotrimoxazole", "Bactrim", "bactrim"],
+    "type": "fixed_combination",
+    "components": ["trimethoprim", "sulfamethoxazole"],
+    "routes": ["oral"]
+  },
+  "sources": [
+    {
+      "id": "emc-cotrim-tablets-6999", "type": "SmPC", "jurisdiction": "United Kingdom",
+      "product": "Co-Trimoxazole 80 mg/400 mg Tablets", "url": "https://www.medicines.org.uk/emc/product/6999/smpc",
+      "section": "4.2 Posology and method of administration", "lastUpdated": "2026-03-26", "accessedAt": "2026-09-11", "sourceDocumentSha256": null
+    },
+    {
+      "id": "emc-cotrim-paediatric-6994", "type": "SmPC", "jurisdiction": "United Kingdom",
+      "product": "Co-Trimoxazole 40 mg/200 mg per 5 ml Paediatric Suspension", "url": "https://www.medicines.org.uk/emc/product/6994/smpc",
+      "section": "4.2 Posology and method of administration", "lastUpdated": "2026-03-26", "accessedAt": "2026-09-11", "sourceDocumentSha256": null
+    }
+  ],
+  "formulations": [
+    {"id": "cotrim-80-400-tablet", "components": [{"component": "trimethoprim", "amount": 80, "unit": "mg"}, {"component": "sulfamethoxazole", "amount": 400, "unit": "mg"}], "sourceId": "emc-cotrim-tablets-6999"},
+    {"id": "cotrim-40-200-per-5ml", "volume": 5, "volumeUnit": "mL", "components": [{"component": "trimethoprim", "amount": 40, "unit": "mg"}, {"component": "sulfamethoxazole", "amount": 200, "unit": "mg"}], "sourceId": "emc-cotrim-paediatric-6994"}
+  ],
+  "rules": [
+    {
+      "id": "cotrim-standard-adult-over12", "population": {"ageMinYearsExclusive": 12},
+      "indications": ["acute uncomplicated urinary tract infection", "acute otitis media", "acute exacerbation of chronic bronchitis when susceptible and combination therapy is justified"],
+      "dose": {"basis": "fixed_combination_per_dose", "components": [{"component": "trimethoprim", "dose": 160, "unit": "mg"}, {"component": "sulfamethoxazole", "dose": 800, "unit": "mg"}], "intervalHours": 12},
+      "route": "oral", "sourceId": "emc-cotrim-tablets-6999", "sourceSection": "SmPC 4.2",
+      "notes": ["Most acute infections require at least 5 days in this SmPC; reassess if there is no clinical improvement after 7 days.", "For acute uncomplicated lower UTI, the SmPC also describes short-course therapy of 1 to 3 days."]
+    },
+    {
+      "id": "cotrim-standard-child-weight-based", "population": {"ageMinWeeks": 6, "ageMaxYears": 12},
+      "indications": ["acute susceptible infection within the paediatric SmPC indications"],
+      "dose": {"basis": "component_mg/kg/day", "components": [{"component": "trimethoprim", "doseApprox": 6, "unit": "mg/kg/day"}, {"component": "sulfamethoxazole", "doseApprox": 30, "unit": "mg/kg/day"}], "divisionsPerDay": 2},
+      "route": "oral", "sourceId": "emc-cotrim-paediatric-6994", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "cotrim-child-6w-5m", "formulationId": "cotrim-40-200-per-5ml", "population": {"ageMinWeeks": 6, "ageMaxMonths": 5},
+      "dose": {"basis": "volume_per_dose", "volume": 2.5, "volumeUnit": "mL", "intervalHours": 12},
+      "route": "oral", "sourceId": "emc-cotrim-paediatric-6994", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "cotrim-child-6m-5y", "formulationId": "cotrim-40-200-per-5ml", "population": {"ageMinMonths": 6, "ageMaxYears": 5},
+      "dose": {"basis": "volume_per_dose", "volume": 5, "volumeUnit": "mL", "intervalHours": 12},
+      "route": "oral", "sourceId": "emc-cotrim-paediatric-6994", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "cotrim-child-6-12y", "formulationId": "cotrim-40-200-per-5ml", "population": {"ageMinYears": 6, "ageMaxYears": 12},
+      "dose": {"basis": "volume_per_dose", "volume": 10, "volumeUnit": "mL", "intervalHours": 12},
+      "route": "oral", "sourceId": "emc-cotrim-paediatric-6994", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "cotrim-pjp-treatment", "population": {"ageMinWeeks": 6}, "indications": ["Pneumocystis jirovecii pneumonitis treatment"],
+      "dose": {"basis": "component_mg/kg/day", "components": [{"component": "trimethoprim", "dose": 20, "unit": "mg/kg/day"}, {"component": "sulfamethoxazole", "dose": 100, "unit": "mg/kg/day"}], "divisionsPerDayMin": 2, "durationDays": 14},
+      "route": "oral", "sourceIds": ["emc-cotrim-tablets-6999", "emc-cotrim-paediatric-6994"], "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "cotrim-pjp-prophylaxis-adult-daily", "population": {"ageMinYearsExclusive": 12}, "indications": ["Pneumocystis jirovecii pneumonitis prevention"],
+      "dose": {"basis": "fixed_combination_per_day", "components": [{"component": "trimethoprim", "dose": 160, "unit": "mg/day"}, {"component": "sulfamethoxazole", "dose": 800, "unit": "mg/day"}], "daysPerWeek": 7},
+      "route": "oral", "sourceId": "emc-cotrim-tablets-6999", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "cotrim-pjp-prophylaxis-adult-alt-days", "population": {"ageMinYearsExclusive": 12}, "indications": ["Pneumocystis jirovecii pneumonitis prevention"],
+      "dose": {"basis": "fixed_combination_treatment_day", "components": [{"component": "trimethoprim", "dose": 160, "unit": "mg"}, {"component": "sulfamethoxazole", "dose": 800, "unit": "mg"}], "timesPerTreatmentDay": 1, "daysPerWeek": 3, "schedule": "alternate days"},
+      "route": "oral", "sourceId": "emc-cotrim-tablets-6999", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "cotrim-pjp-prophylaxis-adult-divided-3xwk", "population": {"ageMinYearsExclusive": 12}, "indications": ["Pneumocystis jirovecii pneumonitis prevention"],
+      "dose": {"basis": "fixed_combination_treatment_day", "components": [{"component": "trimethoprim", "dailyDose": 320, "unit": "mg/day"}, {"component": "sulfamethoxazole", "dailyDose": 1600, "unit": "mg/day"}], "divisionsPerTreatmentDay": 2, "daysPerWeek": 3, "schedule": "alternate days"},
+      "route": "oral", "sourceId": "emc-cotrim-tablets-6999", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "cotrim-pjp-prophylaxis-child", "population": {"ageMinWeeks": 6, "ageMaxYears": 12}, "indications": ["Pneumocystis jirovecii pneumonitis prevention"],
+      "dose": {"basis": "component_mg_per_m2_treatment_day", "components": [{"component": "trimethoprim", "doseApprox": 150, "unit": "mg/m2/day"}, {"component": "sulfamethoxazole", "doseApprox": 750, "unit": "mg/m2/day"}], "maxDaily": [{"component": "trimethoprim", "dose": 320, "unit": "mg/day"}, {"component": "sulfamethoxazole", "dose": 1600, "unit": "mg/day"}]},
+      "scheduleOptions": [
+        {"age": "6 weeks to 5 months", "volume": 2.5, "volumeUnit": "mL", "intervalHours": 12, "daysPerWeek": 7},
+        {"age": "6 weeks to 5 months", "volume": 2.5, "volumeUnit": "mL", "intervalHours": 12, "daysPerWeek": 3, "schedule": "alternate days or consecutive days"},
+        {"age": "6 weeks to 5 months", "volume": 5, "volumeUnit": "mL", "timesPerTreatmentDay": 1, "daysPerWeek": 3, "schedule": "consecutive days"},
+        {"age": "6 months to 5 years", "volume": 5, "volumeUnit": "mL", "intervalHours": 12, "daysPerWeek": 7},
+        {"age": "6 months to 5 years", "volume": 5, "volumeUnit": "mL", "intervalHours": 12, "daysPerWeek": 3, "schedule": "alternate days or consecutive days"},
+        {"age": "6 months to 5 years", "volume": 10, "volumeUnit": "mL", "timesPerTreatmentDay": 1, "daysPerWeek": 3, "schedule": "consecutive days"},
+        {"age": "6 to 12 years", "volume": 10, "volumeUnit": "mL", "intervalHours": 12, "daysPerWeek": 7},
+        {"age": "6 to 12 years", "volume": 10, "volumeUnit": "mL", "intervalHours": 12, "daysPerWeek": 3, "schedule": "alternate days or consecutive days"},
+        {"age": "6 to 12 years", "volume": 20, "volumeUnit": "mL", "timesPerTreatmentDay": 1, "daysPerWeek": 3, "schedule": "consecutive days"}
+      ],
+      "formulationId": "cotrim-40-200-per-5ml", "route": "oral", "sourceId": "emc-cotrim-paediatric-6994", "sourceSection": "SmPC 4.2"
+    }
+  ],
+  "renalAdjustments": [
+    {"population": "adult_or_child_over_12", "measure": "CrCl", "unit": "mL/min", "range": {"gt": 30}, "dose": {"components": [{"component": "trimethoprim", "dose": 160, "unit": "mg"}, {"component": "sulfamethoxazole", "dose": 800, "unit": "mg"}], "intervalHours": 12}, "sourceId": "emc-cotrim-tablets-6999"},
+    {"population": "adult_or_child_over_12", "measure": "CrCl", "unit": "mL/min", "range": {"minInclusive": 15, "maxInclusive": 30}, "dose": {"components": [{"component": "trimethoprim", "dose": 80, "unit": "mg"}, {"component": "sulfamethoxazole", "dose": 400, "unit": "mg"}], "intervalHours": 12}, "sourceId": "emc-cotrim-tablets-6999"},
+    {"population": "adult_or_child_over_12", "measure": "CrCl", "unit": "mL/min", "range": {"lt": 15}, "action": "not_recommended", "sourceId": "emc-cotrim-tablets-6999"},
+    {"population": "child_12_or_under", "action": "no_renal_failure_dosing_information_in_source", "sourceId": "emc-cotrim-paediatric-6994"}
+  ],
+  "hepaticAdjustment": {"action": "no_dosage_data_available_in_source_for_hepatic_impairment"},
+  "criticalSafety": [
+    {"population": {"ageLtWeeks": 6}, "contraindication": "Do not use during the first 6 weeks of life."},
+    {"warning": "Severe cutaneous reactions including SJS/TEN/DRESS are described in the SmPC."},
+    {"warning": "Monitor potassium and sodium in patients at risk of hyperkalaemia or hyponatraemia."}
+  ]
+}
