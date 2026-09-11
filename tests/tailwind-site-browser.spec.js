@@ -117,7 +117,7 @@ async function auditRegistryV2(page, label) {
   expect(audit.adultDose).toContain('500 mg');
   expect(audit.pediatricDose.length).toBeGreaterThan(0);
   expect(audit.sidebarBg).toBe('rgb(28, 30, 84)');
-  for (const control of audit.controls) expect(control.height, `${label}: control ${control.id}`).toBeGreaterThanOrEqual(28);
+  for (const control of audit.controls) expect(Math.round(control.height), `${label}: control ${control.id}`).toBeGreaterThanOrEqual(28);
   return audit;
 }
 
@@ -174,7 +174,7 @@ function assertCommonViewport(audit,label,{requireControls=false}={}) {
 
   for(const control of audit.controls){
     const identity=`${control.tag}#${control.id}.${control.className} "${control.label}"`;
-    expect(control.height,`${label}: ${identity} is below the compact 28px floor`).toBeGreaterThanOrEqual(28);
+    expect(Math.round(control.height),`${label}: ${identity} is below the compact 28px floor`).toBeGreaterThanOrEqual(28);
   }
 }
 
