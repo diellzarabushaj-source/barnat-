@@ -1,0 +1,141 @@
+{
+  "schemaVersion": "drx-dose-v3-substance-candidate-v1",
+  "status": "source_verified_candidate_requires_clinical_review",
+  "publicationEligible": false,
+  "humanClinicalReviewRequired": true,
+  "userSuppliedDoseTextUsedAsSource": false,
+  "substance": {
+    "id": "ceftriaxone",
+    "canonicalInn": "ceftriaxone",
+    "atc": "J01DD04",
+    "aliases": ["ceftriaxon", "ceftriaxone"],
+    "type": "single_active",
+    "routes": ["IV", "IM"]
+  },
+  "source": {
+    "id": "emc-ceftriaxone-1g-102127",
+    "type": "SmPC", "jurisdiction": "United Kingdom",
+    "product": "Ceftriaxone 1 g powder for solution for injection/infusion",
+    "url": "https://www.medicines.org.uk/emc/product/102127/smpc",
+    "section": "4.2 Posology and method of administration",
+    "lastUpdated": "2026-05-01", "accessedAt": "2026-09-11", "sourceDocumentSha256": null
+  },
+  "rules": [
+    {
+      "id": "ctx-adult-1to2g-qd", "population": {"ageMinYears": 12, "weightMinKg": 50},
+      "indications": ["community-acquired pneumonia", "acute exacerbation of COPD", "intra-abdominal infection", "complicated urinary tract infection including pyelonephritis"],
+      "dose": {"basis": "fixed", "doseMin": 1, "doseMax": 2, "unit": "g", "timesPerDay": 1},
+      "routeOptions": ["IV", "IM"], "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-adult-2g-qd", "population": {"ageMinYears": 12, "weightMinKg": 50},
+      "indications": ["hospital-acquired pneumonia", "complicated skin and soft tissue infection", "bone and joint infection"],
+      "dose": {"basis": "fixed", "dose": 2, "unit": "g", "timesPerDay": 1},
+      "routeOptions": ["IV", "IM"], "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-adult-2to4g-qd", "population": {"ageMinYears": 12, "weightMinKg": 50},
+      "indications": ["neutropenic fever suspected bacterial", "bacterial endocarditis", "bacterial meningitis"],
+      "dose": {"basis": "fixed", "doseMin": 2, "doseMax": 4, "unit": "g", "timesPerDay": 1, "twelveHourlyMayBeConsideredAboveDailyDoseG": 2},
+      "routeOptions": ["IV", "IM"], "administrationConstraints": ["For doses greater than 2 g, use IV administration."], "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-adult-aom", "population": {"ageMinYears": 12, "weightMinKg": 50}, "indications": ["acute otitis media"],
+      "dose": {"basis": "fixed", "doseMin": 1, "doseMax": 2, "unit": "g", "singleDose": true},
+      "route": "IM", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-adult-surgical-prophylaxis", "population": {"ageMinYears": 12, "weightMinKg": 50}, "indications": ["pre-operative prophylaxis of surgical site infection"],
+      "dose": {"basis": "fixed", "dose": 2, "unit": "g", "singleDose": true, "timing": "30 to 90 minutes before surgery"},
+      "routeOptions": ["IV", "IM"], "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-adult-gonorrhoea", "population": {"ageMinYears": 12, "weightMinKg": 50}, "indications": ["gonorrhoea"],
+      "dose": {"basis": "fixed", "dose": 500, "unit": "mg", "singleDose": true},
+      "route": "IM", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-adult-syphilis", "population": {"ageMinYears": 12, "weightMinKg": 50}, "indications": ["syphilis"],
+      "dose": {"basis": "fixed", "doseMin": 500, "doseMax": 1000, "unit": "mg", "timesPerDay": 1, "neurosyphilisDose": 2, "neurosyphilisDoseUnit": "g", "durationDaysMin": 10, "durationDaysMax": 14},
+      "routeOptions": ["IV", "IM"], "sourceSection": "SmPC 4.2", "notes": ["The SmPC notes limited data and requires national/local guidance."]
+    },
+    {
+      "id": "ctx-adult-disseminated-lyme", "population": {"ageMinYears": 12, "weightMinKg": 50}, "indications": ["disseminated Lyme borreliosis stage II or III"],
+      "dose": {"basis": "fixed", "dose": 2, "unit": "g", "timesPerDay": 1, "durationDaysMin": 14, "durationDaysMax": 21},
+      "routeOptions": ["IV", "IM"], "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-child-15d-12y-common", "population": {"ageMinDays": 15, "ageMaxYears": 12, "weightMaxKgExclusive": 50},
+      "indications": ["intra-abdominal infection", "complicated urinary tract infection including pyelonephritis", "community-acquired pneumonia", "hospital-acquired pneumonia"],
+      "dose": {"basis": "mg/kg/day", "doseMin": 50, "doseMax": 80, "unit": "mg/kg", "timesPerDay": 1},
+      "routeOptions": ["IV", "IM"], "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-child-15d-12y-severe", "population": {"ageMinDays": 15, "ageMaxYears": 12, "weightMaxKgExclusive": 50},
+      "indications": ["complicated skin and soft tissue infection", "bone and joint infection", "neutropenic fever suspected bacterial"],
+      "dose": {"basis": "mg/kg/day", "doseMin": 50, "doseMax": 100, "unit": "mg/kg", "timesPerDay": 1, "maxDailyDose": 4, "maxDailyDoseUnit": "g"},
+      "routeOptions": ["IV", "IM"], "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-child-15d-12y-meningitis", "population": {"ageMinDays": 15, "ageMaxYears": 12, "weightMaxKgExclusive": 50}, "indications": ["bacterial meningitis"],
+      "dose": {"basis": "mg/kg/day", "doseMin": 80, "doseMax": 100, "unit": "mg/kg", "timesPerDay": 1, "maxDailyDose": 4, "maxDailyDoseUnit": "g"},
+      "routeOptions": ["IV", "IM"], "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-child-15d-12y-endocarditis", "population": {"ageMinDays": 15, "ageMaxYears": 12, "weightMaxKgExclusive": 50}, "indications": ["bacterial endocarditis"],
+      "dose": {"basis": "mg/kg/day", "dose": 100, "unit": "mg/kg", "timesPerDay": 1, "maxDailyDose": 4, "maxDailyDoseUnit": "g"},
+      "routeOptions": ["IV", "IM"], "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-child-aom", "population": {"ageMinDays": 15, "ageMaxYears": 12, "weightMaxKgExclusive": 50}, "indications": ["acute otitis media"],
+      "dose": {"basis": "mg/kg/dose", "dose": 50, "unit": "mg/kg", "singleDose": true},
+      "route": "IM", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-child-surgical-prophylaxis", "population": {"ageMinDays": 15, "ageMaxYears": 12, "weightMaxKgExclusive": 50}, "indications": ["pre-operative prophylaxis of surgical site infection"],
+      "dose": {"basis": "mg/kg/dose", "doseMin": 50, "doseMax": 80, "unit": "mg/kg", "singleDose": true},
+      "routeOptions": ["IV", "IM"], "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-child-syphilis", "population": {"ageMinDays": 15, "ageMaxYears": 12, "weightMaxKgExclusive": 50}, "indications": ["syphilis"],
+      "dose": {"basis": "mg/kg/day", "doseMin": 75, "doseMax": 100, "unit": "mg/kg", "timesPerDay": 1, "maxDailyDose": 4, "maxDailyDoseUnit": "g", "durationDaysMin": 10, "durationDaysMax": 14},
+      "routeOptions": ["IV", "IM"], "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-child-disseminated-lyme", "population": {"ageMinDays": 15, "ageMaxYears": 12, "weightMaxKgExclusive": 50}, "indications": ["disseminated Lyme borreliosis stage II or III"],
+      "dose": {"basis": "mg/kg/day", "doseMin": 50, "doseMax": 80, "unit": "mg/kg", "timesPerDay": 1, "durationDaysMin": 14, "durationDaysMax": 21},
+      "routeOptions": ["IV", "IM"], "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-neonate-0-14-common", "population": {"ageMinDays": 0, "ageMaxDays": 14, "termNeonateOnly": true},
+      "indications": ["intra-abdominal infection", "complicated skin and soft tissue infection", "complicated urinary tract infection including pyelonephritis", "community-acquired pneumonia", "hospital-acquired pneumonia", "bone and joint infection", "neutropenic fever suspected bacterial"],
+      "dose": {"basis": "mg/kg/day", "doseMin": 20, "doseMax": 50, "unit": "mg/kg", "timesPerDay": 1, "maxDailyDosePerKg": 50, "maxDailyDosePerKgUnit": "mg/kg/day"},
+      "routeOptions": ["IV", "IM"], "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "ctx-neonate-0-14-meningitis-endocarditis", "population": {"ageMinDays": 0, "ageMaxDays": 14, "termNeonateOnly": true}, "indications": ["bacterial meningitis", "bacterial endocarditis"],
+      "dose": {"basis": "mg/kg/day", "dose": 50, "unit": "mg/kg", "timesPerDay": 1, "maxDailyDosePerKg": 50, "maxDailyDosePerKgUnit": "mg/kg/day"},
+      "routeOptions": ["IV", "IM"], "sourceSection": "SmPC 4.2"
+    }
+  ],
+  "renalAdjustments": [
+    {"measure": "CrCl", "unit": "mL/min", "condition": "renal_impairment_with_preserved_hepatic_function", "action": "no_adjustment_except_preterminal_renal_failure"},
+    {"measure": "CrCl", "unit": "mL/min", "range": {"lt": 10}, "maxDailyDose": {"dose": 2, "unit": "g"}},
+    {"dialysis": ["HD", "PD"], "action": "no_post_dialysis_supplemental_dose", "notes": ["Ceftriaxone is not removed by haemodialysis or peritoneal dialysis."]}
+  ],
+  "hepaticAdjustments": [
+    {"condition": "mild_or_moderate_hepatic_impairment_with_preserved_renal_function", "action": "no_adjustment_indicated_by_available_data"},
+    {"condition": "severe_combined_renal_and_hepatic_dysfunction", "action": "close_clinical_monitoring"}
+  ],
+  "criticalSafety": [
+    {"population": "premature_neonate", "contraindication": "Contraindicated up to postmenstrual age 41 weeks (gestational age + chronological age)."},
+    {"population": "full_term_neonate_up_to_28_days", "contraindication": "Contraindicated with hyperbilirubinaemia, jaundice, hypoalbuminaemia or acidosis."},
+    {"population": "neonate_up_to_28_days", "contraindication": "Contraindicated if IV calcium treatment or calcium-containing infusions are required or expected."},
+    {"allAges": true, "warning": "Do not mix or simultaneously administer ceftriaxone with calcium-containing IV solutions."},
+    {"administration": "IV neonatal doses", "minimumInfusionMinutes": 60},
+    {"administration": "IV infusion", "minimumInfusionMinutes": 30},
+    {"administration": "slow IV injection", "durationMinutes": 5},
+    {"administration": "IM", "maxPerInjectionSite": {"dose": 1, "unit": "g"}},
+    {"administration": "IV", "rule": "Use IV administration for doses greater than 2 g."}
+  ]
+}
