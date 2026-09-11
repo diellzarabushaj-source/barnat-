@@ -9,6 +9,7 @@ on:
       - 'data/drx-dose-v3-schema-proposal.json'
       - 'data/drx-dose-v3-clinical-hardening-v1.json'
       - 'data/drx-dose-v3/antibiotics/batch1/**'
+      - 'data/drx-dose-v3/seeds/**'
       - 'lib/dose-source-policy.js'
       - 'supabase/drx-dose-v3-additive-candidate.sql'
       - 'supabase/drx-dose-v3-clinical-hardening-candidate.sql'
@@ -16,6 +17,7 @@ on:
       - 'tests/drx-dose-v3-schema-proposal-test.js'
       - 'tests/drx-dose-v3-supabase-candidate-test.js'
       - 'tests/drx-dose-v3-antibiotics-batch1-test.js'
+      - 'tests/drx-dose-v3-canonical-seed-test.js'
       - '.github/workflows/drx-dose-v3-clinical-hardening.yml'
   pull_request:
     paths:
@@ -23,6 +25,7 @@ on:
       - 'data/drx-dose-v3-schema-proposal.json'
       - 'data/drx-dose-v3-clinical-hardening-v1.json'
       - 'data/drx-dose-v3/antibiotics/batch1/**'
+      - 'data/drx-dose-v3/seeds/**'
       - 'lib/dose-source-policy.js'
       - 'supabase/drx-dose-v3-additive-candidate.sql'
       - 'supabase/drx-dose-v3-clinical-hardening-candidate.sql'
@@ -30,6 +33,7 @@ on:
       - 'tests/drx-dose-v3-schema-proposal-test.js'
       - 'tests/drx-dose-v3-supabase-candidate-test.js'
       - 'tests/drx-dose-v3-antibiotics-batch1-test.js'
+      - 'tests/drx-dose-v3-canonical-seed-test.js'
       - '.github/workflows/drx-dose-v3-clinical-hardening.yml'
   workflow_dispatch:
 
@@ -66,3 +70,6 @@ jobs:
 
       - name: Antibiotics batch 1 source-verified candidate contract
         run: node tests/drx-dose-v3-antibiotics-batch1-test.js
+
+      - name: Canonical substance seed safety contract
+        run: node tests/drx-dose-v3-canonical-seed-test.js
