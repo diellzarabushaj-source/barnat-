@@ -1,0 +1,134 @@
+{
+  "schemaVersion": "drx-dose-v3-substance-candidate-v1",
+  "status": "source_verified_candidate_requires_clinical_review",
+  "publicationEligible": false,
+  "humanClinicalReviewRequired": true,
+  "userSuppliedDoseTextUsedAsSource": false,
+  "substance": {
+    "id": "amoxicillin",
+    "canonicalInn": "amoxicillin",
+    "atc": "J01CA04",
+    "aliases": ["amoksicilin", "amoxicillin"],
+    "type": "single_active",
+    "routes": ["oral"]
+  },
+  "source": {
+    "id": "emc-amoxicillin-500-caps-526",
+    "type": "SmPC",
+    "jurisdiction": "United Kingdom",
+    "product": "Amoxicillin 500mg Capsules",
+    "url": "https://www.medicines.org.uk/emc/product/526/smpc",
+    "section": "4.2 Posology and method of administration",
+    "lastUpdated": "2025-04-01",
+    "accessedAt": "2026-09-11",
+    "sourceDocumentSha256": null
+  },
+  "rules": [
+    {
+      "id": "amox-adult-sinusitis-preg-bacteriuria-pyelo-dental-cystitis",
+      "population": {"weightMinKg": 40},
+      "indications": ["acute bacterial sinusitis", "asymptomatic bacteriuria in pregnancy", "acute pyelonephritis", "dental abscess with spreading cellulitis", "acute cystitis"],
+      "dose": {"basis": "fixed", "options": [{"doseMin": 250, "doseMax": 500, "unit": "mg", "intervalHours": 8}, {"doseMin": 750, "doseMax": 1000, "unit": "mg", "intervalHours": 12}], "severeOption": {"doseMin": 750, "doseMax": 1000, "unit": "mg", "intervalHours": 8}},
+      "route": "oral", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "amox-adult-cystitis-one-day-alternative",
+      "population": {"weightMinKg": 40}, "indications": ["acute cystitis"],
+      "dose": {"basis": "fixed", "dose": 3000, "unit": "mg", "intervalHours": 12, "durationDays": 1},
+      "route": "oral", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "amox-adult-aom",
+      "population": {"weightMinKg": 40}, "indications": ["acute otitis media"],
+      "dose": {"basis": "fixed", "options": [{"dose": 500, "unit": "mg", "intervalHours": 8}, {"doseMin": 750, "doseMax": 1000, "unit": "mg", "intervalHours": 12}], "severeOption": {"doseMin": 750, "doseMax": 1000, "unit": "mg", "intervalHours": 8, "durationDays": 10}},
+      "route": "oral", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "amox-adult-strep-aecb-cap",
+      "population": {"weightMinKg": 40},
+      "indications": ["acute streptococcal tonsillitis and pharyngitis", "acute exacerbations of chronic bronchitis", "community-acquired pneumonia"],
+      "dose": {"basis": "fixed", "doseMin": 500, "doseMax": 1000, "unit": "mg", "intervalHours": 8},
+      "route": "oral", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "amox-adult-typhoid-paratyphoid",
+      "population": {"weightMinKg": 40}, "indications": ["typhoid fever", "paratyphoid fever"],
+      "dose": {"basis": "fixed", "doseMin": 500, "doseMax": 2000, "unit": "mg", "intervalHours": 8},
+      "route": "oral", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "amox-adult-prosthetic-joint-infection",
+      "population": {"weightMinKg": 40}, "indications": ["prosthetic joint infection"],
+      "dose": {"basis": "fixed", "doseMin": 500, "doseMax": 1000, "unit": "mg", "intervalHours": 8},
+      "route": "oral", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "amox-endocarditis-prophylaxis-adult",
+      "population": {"weightMinKg": 40}, "indications": ["endocarditis prophylaxis"],
+      "dose": {"basis": "fixed", "dose": 2000, "unit": "mg", "singleDose": true, "timing": "30 to 60 minutes before procedure"},
+      "route": "oral", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "amox-hpylori-adult",
+      "population": {"weightMinKg": 40}, "indications": ["Helicobacter pylori eradication"],
+      "dose": {"basis": "fixed", "doseMin": 750, "doseMax": 1000, "unit": "mg", "timesPerDay": 2, "durationDays": 7},
+      "combinationTherapyRequired": true, "route": "oral", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "amox-lyme-adult-early", "population": {"weightMinKg": 40}, "indications": ["Lyme disease - early stage"],
+      "dose": {"basis": "fixed", "doseMin": 500, "doseMax": 1000, "unit": "mg", "intervalHours": 8, "maxDailyDose": 4000, "maxDailyDoseUnit": "mg", "durationDaysMin": 10, "durationDaysMax": 21, "sourceTypicalDurationDays": 14},
+      "route": "oral", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "amox-lyme-adult-late", "population": {"weightMinKg": 40}, "indications": ["Lyme disease - late stage with systemic involvement"],
+      "dose": {"basis": "fixed", "doseMin": 500, "doseMax": 2000, "unit": "mg", "intervalHours": 8, "maxDailyDose": 6000, "maxDailyDoseUnit": "mg", "durationDaysMin": 10, "durationDaysMax": 30},
+      "route": "oral", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "amox-child-common-infections", "population": {"weightMaxKgExclusive": 40},
+      "indications": ["acute bacterial sinusitis", "acute otitis media", "community-acquired pneumonia", "acute cystitis", "acute pyelonephritis", "dental abscess with spreading cellulitis"],
+      "dose": {"basis": "mg/kg/day", "doseMin": 20, "doseMax": 90, "unit": "mg/kg/day", "dividedDoses": true, "twiceDailyOnlyWhenUpperRange": true},
+      "route": "oral", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "amox-child-strep", "population": {"weightMaxKgExclusive": 40}, "indications": ["acute streptococcal tonsillitis and pharyngitis"],
+      "dose": {"basis": "mg/kg/day", "doseMin": 40, "doseMax": 90, "unit": "mg/kg/day", "dividedDoses": true, "twiceDailyOnlyWhenUpperRange": true},
+      "route": "oral", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "amox-child-typhoid", "population": {"weightMaxKgExclusive": 40}, "indications": ["typhoid fever", "paratyphoid fever"],
+      "dose": {"basis": "mg/kg/day", "dose": 100, "unit": "mg/kg/day", "divisionsPerDay": 3},
+      "route": "oral", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "amox-child-endocarditis-prophylaxis", "population": {"weightMaxKgExclusive": 40}, "indications": ["endocarditis prophylaxis"],
+      "dose": {"basis": "mg/kg/dose", "dose": 50, "unit": "mg/kg", "singleDose": true, "timing": "30 to 60 minutes before procedure"},
+      "route": "oral", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "amox-child-lyme-early", "population": {"weightMaxKgExclusive": 40}, "indications": ["Lyme disease - early stage"],
+      "dose": {"basis": "mg/kg/day", "doseMin": 25, "doseMax": 50, "unit": "mg/kg/day", "divisionsPerDay": 3, "durationDaysMin": 10, "durationDaysMax": 21},
+      "route": "oral", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "amox-child-lyme-late", "population": {"weightMaxKgExclusive": 40}, "indications": ["Lyme disease - late stage with systemic involvement"],
+      "dose": {"basis": "mg/kg/day", "dose": 100, "unit": "mg/kg/day", "divisionsPerDay": 3, "durationDaysMin": 10, "durationDaysMax": 30},
+      "route": "oral", "sourceSection": "SmPC 4.2"
+    }
+  ],
+  "renalAdjustments": [
+    {"population": "adult_or_child_ge_40kg", "measure": "GFR", "unit": "mL/min", "range": {"gt": 30}, "action": "no_adjustment"},
+    {"population": "adult_or_child_ge_40kg", "measure": "GFR", "unit": "mL/min", "range": {"minInclusive": 10, "maxInclusive": 30}, "maxDose": {"dose": 500, "unit": "mg", "timesPerDay": 2}},
+    {"population": "adult_or_child_ge_40kg", "measure": "GFR", "unit": "mL/min", "range": {"lt": 10}, "maxDose": {"dose": 500, "unit": "mg", "timesPerDay": 1}},
+    {"population": "child_lt_40kg", "measure": "GFR", "unit": "mL/min", "range": {"minInclusive": 10, "maxInclusive": 30}, "dose": {"dose": 15, "unit": "mg/kg", "timesPerDay": 2, "maxPerDose": 500, "maxPerDoseUnit": "mg"}},
+    {"population": "child_lt_40kg", "measure": "GFR", "unit": "mL/min", "range": {"lt": 10}, "dose": {"dose": 15, "unit": "mg/kg", "timesPerDay": 1, "maxPerDose": 500, "maxPerDoseUnit": "mg"}},
+    {"population": "adult_or_child_ge_40kg", "dialysis": "HD", "dose": {"dose": 500, "unit": "mg", "intervalHours": 24}, "supplementalDoses": ["500 mg before haemodialysis", "500 mg after haemodialysis"]},
+    {"population": "child_lt_40kg", "dialysis": "HD", "dose": {"dose": 15, "unit": "mg/kg", "timesPerDay": 1, "maxPerDose": 500, "maxPerDoseUnit": "mg"}, "supplementalDoses": ["15 mg/kg before haemodialysis", "15 mg/kg after haemodialysis"]},
+    {"population": "all", "dialysis": "PD", "maxDailyDose": {"dose": 500, "unit": "mg"}}
+  ],
+  "hepaticAdjustment": {"action": "dose_with_caution_and_monitor_hepatic_function_regularly"},
+  "clinicalNotes": [
+    "Dose selection must account for pathogen susceptibility, infection site/severity, age, weight and renal function.",
+    "This is a source-verified candidate, not a published prescribing rule until clinical review and immutable source snapshot hashing are complete."
+  ]
+}
