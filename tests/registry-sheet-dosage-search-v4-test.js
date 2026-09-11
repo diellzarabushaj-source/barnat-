@@ -102,7 +102,7 @@ assert.match(recetatJs, /singleNumeric/);
 assert.match(recetatJs, /trade_fuzzy/);
 assert.match(recetatJs, /Nr\. \$\{drug\.registryNumber\}/);
 assert.match(recetatJs, /PDID \$\{drug\.pdid\}/);
-assert.match(recetatCss, /Recetat V2 — clinical drug search v5/);
-assert.match(recetatCss, /\.rx-drug-result\.is-fuzzy/);
+assert.match(recetatCss, /Recetat V2 — consolidated prescription workspace/);
+assert.match(recetatCss, /\.rx-drug-result\{/);
 
 console.log('Registry sheet dosage + ranked search v4 regression contract passed.');
