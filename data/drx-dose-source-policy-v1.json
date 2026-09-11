@@ -1,12 +1,14 @@
 {
   "schemaVersion": "drx-dose-source-policy-v1",
-  "updatedAt": "2026-08-30",
+  "updatedAt": "2026-09-11",
   "principles": {
     "authoritativeFirst": true,
     "productSpecificPreferred": true,
     "smpcSection42PrimaryForDose": true,
     "crossCheckNeverPublishesByItself": true,
-    "fallbackNeverAutoPublishes": true
+    "fallbackNeverAutoPublishes": true,
+    "jurisdictionSpecificDoseWins": true,
+    "parserOutputIsCandidateOnly": true
   },
   "tiers": [
     {
@@ -127,19 +129,25 @@
     {
       "rank": 60,
       "key": "NON_EU_REGULATOR",
-      "label": "Non-EU national medicines regulator",
+      "label": "Non-EU national medicines regulator / official label library",
       "authority": "regulator",
       "jurisdiction": "non-EU-national",
       "domains": [
         "invima.gov.co",
         "www.invima.gov.co",
         "webservice.invima.gov.co",
-        "lekovi.zdravstvo.gov.mk"
+        "lekovi.zdravstvo.gov.mk",
+        "dailymed.nlm.nih.gov",
+        "accessdata.fda.gov",
+        "fda.gov",
+        "open.fda.gov"
       ],
       "acceptedDocumentTypes": [
         "PRODUCT_REGISTER",
         "OFFICIAL_NOTICE",
-        "REGULATORY_RESOLUTION"
+        "REGULATORY_RESOLUTION",
+        "SPL",
+        "FDA_PRESCRIBING_INFORMATION"
       ],
       "autoPublishEligible": false
     },
@@ -192,7 +200,9 @@
       "high_risk",
       "off_label",
       "no_authoritative_source",
-      "non_eu_regulator"
+      "non_eu_regulator",
+      "jurisdiction_mismatch",
+      "parser_only_evidence"
     ]
   }
 }
