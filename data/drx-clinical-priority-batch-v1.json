@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "drx-clinical-priority-batch-v1",
+  "generatedAt": "2026-09-11T22:45:00+02:00",
+  "status": "curated_review_batch",
+  "priorityOrder": [
+    "amoxicillin",
+    "amoxicillin_clavulanate",
+    "ceftriaxone",
+    "cotrimoxazole"
+  ],
+  "files": [
+    "data/drx-clinical-priority-antimicrobials-v1.json",
+    "data/drx-clinical-priority-acute-care-v1.json",
+    "data/drx-clinical-priority-topical-supportive-v1.json"
+  ],
+  "publicationPolicy": {
+    "failClosed": true,
+    "userNotesAreClinicalAuthority": false,
+    "browserSuppliedDoseFormulaAllowed": false,
+    "highRiskAutoPublishAllowed": false,
+    "brandAliasRequiresProductVerification": true,
+    "routeAndFormInheritanceAllowed": false,
+    "runtimeRequiresReviewedSourceProvenance": true,
+    "notes": [
+      "User-provided notes are curation input only.",
+      "Different indications, routes and formulations are separate clinical rules.",
+      "Unverified candidates remain in_review/source_required and cannot become CALCULATED.",
+      "Combination products preserve component-level dose basis."
+    ]
+  }
+}
