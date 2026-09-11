@@ -1,0 +1,187 @@
+from pathlib import Path
+
+client_path = Path('pediatric-calculator-client.js')
+client = client_path.read_text()
+if 'recetat-dozologjia-flow-v1' not in client:
+    client = client.replace(
+        "  const MIN_QUERY = 2;\n  const $ = selector => document.querySelector(selector);",
+        "  const MIN_QUERY = 2;\n  const PRESCRIPTION_SELECTION_KEY = 'medindexPrescriptionSelection';\n  const DOSAGE_HANDOFF_KEY = 'medindex_rx_dosage_handoff_v1';\n  const FLOW_VERSION = 'recetat-dozologjia-flow-v1';\n  const $ = selector => document.querySelector(selector);"
+    )
+    anchor = "  function focusAdjacentResult(current, delta) {"
+    enhancement = r'''  function ensureIntegratedFlowChrome() {
+    if (!document.querySelector('.dosage-flow-steps')) {
+      const steps = element('ol', 'dosage-flow-steps');
+      steps.setAttribute('aria-label', 'Hapat e dozologjisë');
+      [
+        ['drug','1','Bari','Gjej barin ose skemën'],
+        ['patient','2','Pacienti','Plotëso vetëm fushat e kërkuara'],
+        ['calculate','3','Llogaritja','Serveri kontrollon formulën'],
+        ['result','4','Rezultati','Shiko dhe përgatit recetën'],
+      ].forEach(([key,number,title,caption]) => {
+        const item = element('li', 'dosage-flow-step');
+        item.dataset.flowStep = key;
+        item.append(element('span', 'dosage-flow-number', number));
+        const copy = element('span', 'dosage-flow-copy');
+        copy.append(element('strong', null, title), element('small', null, caption));
+        item.append(copy);
+        steps.append(item);
+      });
+      const consoleNode = document.querySelector('.dosage-console');
+      consoleNode?.parentNode?.insertBefore(steps, consoleNode);
+    }
+
+    if (!elements.toPrescription) {
+      const button = element('button', 'dosage-to-prescription', 'Përgatit recetën');
+      button.type = 'button';
+      button.hidden = true;
+      button.disabled = true;
+      button.dataset.action = 'prepare-prescription';
+      const actions = element('div', 'dosage-result-actions');
+      elements.copy?.parentNode?.insertBefore(actions, elements.copy);
+      if (elements.copy) actions.append(elements.copy);
+      actions.append(button);
+      elements.toPrescription = button;
+    }
+    document.documentElement.dataset.dosageFlow = FLOW_VERSION;
+    updateFlowState();
+  }
+
+  function updateFlowState() {
+    const validPatient = Boolean(state.product?.calculable) && !elements.calculate?.disabled;
+    const calculated = state.calculation?.outcome === 'CALCULATED' && Boolean(state.lastCopyText);
+    const states = {
+      drug:Boolean(state.product),
+      patient:Boolean(state.product) && validPatient,
+      calculate:calculated,
+      result:calculated,
+    };
+    document.querySelectorAll('[data-flow-step]').forEach(node => {
+      const key = node.dataset.flowStep;
+      node.classList.toggle('is-complete', Boolean(states[key]));
+      node.classList.toggle('is-current',
+        key === (!state.product ? 'drug' : !validPatient ? 'patient' : !calculated ? 'calculate' : 'result'));
+    });
+    if (elements.toPrescription) {
+      elements.toPrescription.hidden = !calculated;
+      elements.toPrescription.disabled = !calculated;
+    }
+  }
+
+  function prescriptionSignatura(calculation) {
+    if (!calculation || calculation.outcome !== 'CALCULATED') return '';
+    const unit = calculation.doseUnit || '';
+    const dose = calculation.isRate
+      ? amountText(calculation.ratePerHour, `${unit}/orë`)
+      : amountText(calculation.perDose, unit);
+    const frequency = calculation.isRate
+      ? 'infuzion i vazhdueshëm'
+      : calculation.scheduleText || (calculation.dosesPerDay ? `${formatNumber(calculation.dosesPerDay)} herë/ditë` : 'sipas regjimit');
+    return [dose, frequency, calculation.route].filter(Boolean).join(' · ');
+  }
+
+  function handoffToPrescription() {
+    const product = state.product || {};
+    const calculation = state.calculation;
+    if (!product.drugId || calculation?.outcome !== 'CALCULATED' || !state.lastCopyText) {
+      setStatus('Llogarit dozën para se ta kalosh në recetë.', 'error');
+      updateFlowState();
+      return;
+    }
+    const regimenId = selectedCalculationOption()?.selectionId || product.calculationRegimen?.selectionId || '';
+    const item = {
+      key:[product.substance, product.name, product.strength, product.form].filter(Boolean).join('|'),
+      substance:product.substance || product.name || '',
+      tradeName:product.name || '',
+      strength:product.strength || '',
+      form:product.form || '',
+      atcCode:product.atcCode || '',
+      registryNumber:product.registryNumber || '',
+      regimenId,
+      dosageStatus:'requires-review',
+      route:calculation.route || '',
+      signatura:prescriptionSignatura(calculation),
+      dosageSummary:state.lastCopyText,
+      dosageSource:calculation.source || product.source || null,
+      transferOrigin:'dozologjia',
+    };
+    const context = {
+      version:1,
+      createdAt:new Date().toISOString(),
+      drugId:product.drugId,
+      regimenId,
+      patient:patientPayload(),
+      calculation,
+    };
+    try {
+      sessionStorage.setItem(PRESCRIPTION_SELECTION_KEY, JSON.stringify([item]));
+      sessionStorage.setItem(DOSAGE_HANDOFF_KEY, JSON.stringify(context));
+    } catch {
+      setStatus('Konteksti nuk mund të ruhet për transferim në recetë.', 'error');
+      return;
+    }
+    location.assign('/recetat.html?from=dozologjia');
+  }
+
+'''
+    if anchor not in client:
+        raise SystemExit('focusAdjacentResult anchor missing')
+    client = client.replace(anchor, enhancement + anchor)
+    client = client.replace(
+        "    elements.copy?.addEventListener('click', copyResult);",
+        "    elements.copy?.addEventListener('click', copyResult);\n    elements.toPrescription?.addEventListener('click', handoffToPrescription);"
+    )
+    client = client.replace(
+        "    elements.calculate.disabled = !valid || state.pendingCalculation;\n    elements.patientState.textContent",
+        "    elements.calculate.disabled = !valid || state.pendingCalculation;\n    updateFlowState();\n    elements.patientState.textContent"
+    )
+    client = client.replace(
+        "    elements.copy.hidden=!state.lastCopyText;\n    if(!elements.copy.hidden) elements.copy.textContent='Kopjo për recetë';",
+        "    elements.copy.hidden=!state.lastCopyText;\n    if(!elements.copy.hidden) elements.copy.textContent='Kopjo për recetë';\n    updateFlowState();"
+    )
+    client = client.replace(
+        "    elements.copy.hidden = true;\n    resetCalculation('Të dhënat e pacientit ndryshuan. Llogarit përsëri për një rezultat të ri.');",
+        "    elements.copy.hidden = true;\n    resetCalculation('Të dhënat e pacientit ndryshuan. Llogarit përsëri për një rezultat të ri.');\n    updateFlowState();"
+    )
+    client = client.replace(
+        "    updateFormOptions();\n    bindEvents();",
+        "    updateFormOptions();\n    ensureIntegratedFlowChrome();\n    bindEvents();"
+    )
+    client_path.write_text(client)
+
+bundle_path = Path('dozologjia-v2.js')
+bundle = bundle_path.read_text()
+marker = "(() => {\n  'use strict';\n\n  /* Dozologjia V3 client."
+start = bundle.find(marker)
+if start < 0:
+    raise SystemExit('Dozologjia client marker missing from bundle')
+shell = bundle[:start]
+bundle_path.write_text(shell + client_path.read_text())
+
+css_path = Path('dozologjia-v2.css')
+css = css_path.read_text()
+if 'Integrated 4-step flow v1' not in css:
+    css += r'''
+
+/* Integrated 4-step flow v1 — Recetat ↔ Dozologjia */
+.dosage-flow-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 16px;padding:0;list-style:none}.dosage-flow-step{display:flex;align-items:center;gap:10px;min-width:0;padding:11px 12px;border:1px solid #e4e7ec;border-radius:10px;background:#fff;color:#667085}.dosage-flow-step.is-current{border-color:#c7d7fe;background:#f5f8ff;color:#1d2939}.dosage-flow-step.is-complete{border-color:#abefc6;background:#f6fef9;color:#067647}.dosage-flow-number{display:grid;width:28px;height:28px;place-items:center;flex:0 0 28px;border:1px solid currentColor;border-radius:8px;font-size:11px;font-weight:750}.dosage-flow-copy{display:grid;min-width:0}.dosage-flow-copy strong{font-size:12px;line-height:1.25}.dosage-flow-copy small{margin-top:2px;color:#667085;font-size:10px;line-height:1.3}.dosage-result-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.dosage-to-prescription{min-height:40px;padding:8px 13px;border:1px solid #533afd;border-radius:9px;background:#533afd;color:#fff;font-weight:700;cursor:pointer}.dosage-to-prescription:hover{background:#4530d8}.dosage-to-prescription:disabled{opacity:.5;cursor:not-allowed}.dosage-to-prescription:focus-visible{outline:0;box-shadow:0 0 0 3px rgba(83,58,253,.18)}
+@media(max-width:760px){.dosage-flow-steps{grid-template-columns:1fr 1fr}.dosage-flow-step{padding:9px}.dosage-flow-copy small{display:none}.dosage-result-actions{display:grid;grid-template-columns:1fr}.dosage-result-actions>button{width:100%}}
+'''
+    css_path.write_text(css)
+
+html_path = Path('dozologjia.html')
+html = html_path.read_text().replace('/dozologjia-v2.css?v=6','/dozologjia-v2.css?v=7').replace('/dozologjia-v2.js?v=6','/dozologjia-v2.js?v=7')
+html_path.write_text(html)
+
+test_path = Path('tests/dozologjia-v2-workspace-test.js')
+test = test_path.read_text()
+needle = "assert.match(js, /function buildCopyText\\(calculation\\)/);"
+if needle in test and 'handoffToPrescription' not in test:
+    test = test.replace(needle, needle + "\nassert.match(js, /FLOW_VERSION = 'recetat-dozologjia-flow-v1'/);\nassert.match(js, /function handoffToPrescription\\(\\)/);\nassert.match(js, /medindexPrescriptionSelection/);\nassert.match(js, /location\\.assign\\('\\/recetat\\.html\\?from=dozologjia'\\)/);\nassert.match(css, /Integrated 4-step flow v1/);\nassert.match(css, /\\.dosage-flow-steps/);\nassert.match(css, /\\.dosage-to-prescription/);")
+    test_path.write_text(test)
+
+for file in [
+    Path('.github/workflows/apply-recetat-dozologjia-flow.yml'),
+    Path('.github/workflows/run-recetat-dozologjia-flow.yml'),
+    Path('.github/scripts/apply-recetat-dozologjia-flow.py'),
+]:
+    file.unlink(missing_ok=True)
