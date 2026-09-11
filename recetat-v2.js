@@ -7422,6 +7422,12 @@
   }
 
   function bind() {
+    $('#rxReadingToggle')?.addEventListener('click', event => {
+      const library = $('#rxPrescriptionLibrary');
+      const focused = library.classList.toggle('rx-reading-focused');
+      event.currentTarget.setAttribute('aria-pressed', String(focused));
+      event.currentTarget.textContent = focused ? 'Shfaq listën' : 'Vetëm skema';
+    });
     $('#rxSourceRetry')?.addEventListener('click', () => void load(state.chapter));
     $('#rxSourceManual')?.addEventListener('click', () => window.DRxRecetatTabs?.show?.('compose'));
     $('#rxSourceChapterSelect')?.addEventListener('change', event => {

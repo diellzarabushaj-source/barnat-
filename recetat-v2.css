@@ -6617,3 +6617,60 @@ html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-search input{font
 html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-back-to-list{display:block;padding:12px 16px;color:#1d4ed8;background:#f8fafc;font-size:12px;font-weight:500;border-bottom:1px solid #e2e8f0;text-decoration:none}
 html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-use{width:100%!important;justify-content:space-between!important}
 }
+
+/* Split workspace: compact discovery rail and a spacious clinical reader. */
+@media screen{
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-library-head{padding:20px 24px!important;background:linear-gradient(110deg,#f8fafc,#fff 65%)!important;align-items:center!important;border-bottom:1px solid #e2e8f0!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-library-head h2{font-size:20px!important;margin:0 0 5px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-library-head p{font-size:13px!important;max-width:58ch!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-browser{display:grid!important;grid-template-columns:minmax(280px,32%) minmax(0,1fr)!important;align-items:stretch!important;min-height:600px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-index{background:#f8fafc!important;border-right:1px solid #e2e8f0!important;display:flex!important;flex-direction:column!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-commandbar{display:flex!important;flex-direction:column!important;align-items:stretch!important;padding:20px!important;gap:12px!important;background:transparent!important;border:0!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-commandbar>*{flex:none!important;width:100%!important;min-width:0!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-search-intro strong{font-size:14px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-search-intro span{font-size:11px!important;line-height:1.6!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-search{height:46px!important;min-height:46px!important;box-shadow:none!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-search input{font-size:13px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-search kbd{display:none}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-browse-divider{padding:2px 0!important;font-size:10px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-result-meta{height:auto!important;justify-content:flex-start!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-lesson-jump{border:1px solid #e2e8f0;border-radius:8px;background:#fff;padding:0 12px;font-size:12px;color:#475569}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-lesson-jump summary{cursor:pointer;padding:12px 0;min-height:42px;font-weight:500}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-lesson-jump[open]{padding-bottom:12px}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-lesson-jump select{margin-top:6px}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-status{padding:8px 20px!important;background:transparent!important;color:#64748b!important;font-size:11px!important;border:0!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-status.is-error{color:#b91c1c!important;background:#fef2f2!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-recovery{padding:8px 20px 16px!important;justify-content:flex-start!important;border-bottom:1px solid #e2e8f0!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-recovery button{font-size:12px!important;background:transparent!important;box-shadow:none!important;padding:7px 10px!important;min-height:36px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-index-head{padding:15px 20px 10px!important;border:0!important;gap:8px!important;flex-wrap:wrap!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-nav{max-height:65vh!important;padding:6px 10px 14px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-nav-item{padding:13px 10px!important;margin-bottom:5px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-detail-toolbar{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:14px!important;padding:14px 22px!important;background:#fff!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-detail-toolbar strong{font-size:12px!important;color:#64748b!important;font-weight:500!important;min-width:0;overflow-wrap:anywhere}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-reading-toggle{flex-shrink:0;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#334155;min-height:38px;padding:8px 12px;font:inherit;font-size:12px;cursor:pointer}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-reading-toggle:hover{background:#f1f5f9}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-reading-toggle[aria-pressed=true]{color:#1d4ed8;border-color:#93c5fd;background:#eff6ff}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-head{padding:28px!important;background:#fff!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-head h3{font-size:24px!important;line-height:1.45!important;font-weight:600!important;letter-spacing:-.5px!important;color:#172b4d!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-kicker{margin-bottom:12px!important;gap:10px!important;font-size:11px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-stats{margin-top:14px!important;font-size:11px!important;color:#64748b!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-flow{padding:8px 28px 28px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-flow-title{padding:14px 0!important;border-top:1px solid #e2e8f0!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-item{margin-bottom:12px!important;border-color:#e2e8f0!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-use{font-size:13px!important;min-height:44px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-reading-focused .rx-source-browser{grid-template-columns:minmax(0,1fr)!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-reading-focused .rx-source-index{display:none!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-reading-focused .rx-back-to-list{display:none!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-reading-focused .rx-source-guide{max-width:980px;margin-inline:auto}
+}
+@media screen and (max-width:900px){
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-browser{grid-template-columns:minmax(0,1fr)!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-index{border-right:0!important;border-bottom:1px solid #e2e8f0!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-nav{max-height:250px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-commandbar{padding:16px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-head{padding:20px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-guide-head h3{font-size:20px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-flow{padding:6px 18px 20px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-search input{font-size:16px!important}
+html.drx-unified-sidebar[data-drx-app="recetat-v2"] .rx-source-detail-toolbar{padding:12px 16px!important}
+}
