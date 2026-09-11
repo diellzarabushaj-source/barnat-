@@ -1,0 +1,47 @@
+name: DRx Dose V3 Clinical Hardening
+
+on:
+  pull_request:
+    paths:
+      - 'data/drx-dose-source-policy-v1.json'
+      - 'data/drx-dose-v3-schema-proposal.json'
+      - 'data/drx-dose-v3-clinical-hardening-v1.json'
+      - 'lib/dose-source-policy.js'
+      - 'supabase/drx-dose-v3-additive-candidate.sql'
+      - 'supabase/drx-dose-v3-clinical-hardening-candidate.sql'
+      - 'tests/drx-dose-source-policy-test.js'
+      - 'tests/drx-dose-v3-schema-proposal-test.js'
+      - 'tests/drx-dose-v3-supabase-candidate-test.js'
+      - '.github/workflows/drx-dose-v3-clinical-hardening.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: drx-dose-v3-clinical-hardening-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contract:
+    name: Clinical contract gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Source hierarchy contract
+        run: node tests/drx-dose-source-policy-test.js
+
+      - name: V3 base schema contract
+        run: node tests/drx-dose-v3-supabase-candidate-test.js
+
+      - name: V3 clinical hardening contract
+        run: node tests/drx-dose-v3-schema-proposal-test.js
