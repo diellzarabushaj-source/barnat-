@@ -20,7 +20,7 @@ assert.match(html, /Asnjë dozë nuk aplikohet pa veprimin tënd/);
 assert.match(html, /Tekst i lirë \/ import manual/);
 assert.match(html, /Formulo Signaturën me Gemini/);
 
-assert.match(css, /electronic prescription workflow v4/);
+assert.match(css, /Recetat V2 — consolidated prescription workspace/);
 assert.match(css, /\.rx-order-card/);
 assert.match(css, /\.rx-order-grid/);
 assert.match(css, /\.rx-final-review/);
