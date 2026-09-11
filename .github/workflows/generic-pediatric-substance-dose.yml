@@ -1,0 +1,40 @@
+name: Generic pediatric substance dose gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/drx-generic-pediatric-dose-v1.json'
+      - 'lib/generic-substance-dose-catalog.js'
+      - 'lib/pediatric-dosage-handler.js'
+      - 'tests/generic-substance-dose-catalog-test.js'
+      - '.github/workflows/generic-pediatric-substance-dose.yml'
+  pull_request:
+    paths:
+      - 'data/drx-generic-pediatric-dose-v1.json'
+      - 'lib/generic-substance-dose-catalog.js'
+      - 'lib/pediatric-dosage-handler.js'
+      - 'tests/generic-substance-dose-catalog-test.js'
+      - '.github/workflows/generic-pediatric-substance-dose.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  generic-dose-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax
+        run: |
+          node --check lib/generic-substance-dose-catalog.js
+          node --check lib/pediatric-dosage-handler.js
+      - name: Generic substance dose cases
+        run: node tests/generic-substance-dose-catalog-test.js
+      - name: Existing pediatric API contract
+        run: node tests/pediatric-dosage-api-test.js
+      - name: Existing pediatric calculator UI contract
+        run: node tests/pediatric-calculator-ui-test.js
