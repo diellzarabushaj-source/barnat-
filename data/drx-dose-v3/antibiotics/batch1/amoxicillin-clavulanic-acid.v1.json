@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "drx-dose-v3-substance-candidate-v1",
+  "status": "source_verified_candidate_requires_clinical_review",
+  "publicationEligible": false,
+  "humanClinicalReviewRequired": true,
+  "userSuppliedDoseTextUsedAsSource": false,
+  "substance": {
+    "id": "amoxicillin-clavulanic-acid",
+    "canonicalInn": "amoxicillin/clavulanic acid",
+    "atc": "J01CR02",
+    "aliases": ["amoksklav", "amoksiklav", "amoxiclav", "co-amoxiclav", "amoxicillin/clavulanate"],
+    "type": "fixed_combination",
+    "components": ["amoxicillin", "clavulanic acid"],
+    "routes": ["oral"]
+  },
+  "sources": [
+    {
+      "id": "emc-coamox-500-125-6544",
+      "type": "SmPC", "jurisdiction": "United Kingdom",
+      "product": "Co-amoxiclav 500/125 mg Tablets",
+      "url": "https://www.medicines.org.uk/emc/product/6544/smpc",
+      "section": "4.2 Posology and method of administration",
+      "lastUpdated": "2026-05-14", "accessedAt": "2026-09-11", "sourceDocumentSha256": null
+    },
+    {
+      "id": "emc-coamox-875-125-10877",
+      "type": "SmPC", "jurisdiction": "United Kingdom",
+      "product": "Co-amoxiclav 875mg/125mg film-coated Tablets",
+      "url": "https://www.medicines.org.uk/emc/product/10877/smpc",
+      "section": "4.2 Posology and method of administration",
+      "lastUpdated": "2025-12-02", "accessedAt": "2026-09-11", "sourceDocumentSha256": null
+    }
+  ],
+  "formulations": [
+    {"id": "coamox-500-125-tablet", "ratio": "4:1", "components": [{"component": "amoxicillin", "amount": 500, "unit": "mg"}, {"component": "clavulanic acid", "amount": 125, "unit": "mg"}], "sourceId": "emc-coamox-500-125-6544"},
+    {"id": "coamox-875-125-tablet", "ratio": "7:1", "components": [{"component": "amoxicillin", "amount": 875, "unit": "mg"}, {"component": "clavulanic acid", "amount": 125, "unit": "mg"}], "sourceId": "emc-coamox-875-125-10877"}
+  ],
+  "rules": [
+    {
+      "id": "coamox-500-125-adult-standard", "formulationId": "coamox-500-125-tablet",
+      "population": {"weightMinKg": 40},
+      "indications": ["acute bacterial sinusitis", "acute otitis media", "acute exacerbations of chronic bronchitis", "community-acquired pneumonia", "cystitis", "pyelonephritis", "skin and soft tissue infection including cellulitis, animal bites or severe dental abscess with spreading cellulitis", "bone and joint infection including osteomyelitis"],
+      "dose": {"basis": "fixed_combination_per_dose", "components": [{"component": "amoxicillin", "dose": 500, "unit": "mg"}, {"component": "clavulanic acid", "dose": 125, "unit": "mg"}], "timesPerDay": 3},
+      "route": "oral", "administration": "with a meal", "sourceId": "emc-coamox-500-125-6544", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "coamox-500-125-child", "formulationId": "coamox-500-125-tablet",
+      "population": {"weightMaxKgExclusive": 40},
+      "dose": {"basis": "component_mg/kg/day", "components": [{"component": "amoxicillin", "doseMin": 20, "doseMax": 60, "unit": "mg/kg/day"}, {"component": "clavulanic acid", "doseMin": 5, "doseMax": 15, "unit": "mg/kg/day"}], "divisionsPerDay": 3},
+      "route": "oral", "administration": "with a meal", "sourceId": "emc-coamox-500-125-6544", "sourceSection": "SmPC 4.2",
+      "notes": ["Children aged 6 years and below should preferably receive suspension or paediatric sachets.", "No clinical data are available for 4:1 doses above 40 mg/10 mg/kg/day in children under 2 years."]
+    },
+    {
+      "id": "coamox-875-125-adult-standard", "formulationId": "coamox-875-125-tablet",
+      "population": {"weightMinKg": 40},
+      "indications": ["all SmPC-listed indications for this 7:1 formulation"],
+      "dose": {"basis": "fixed_combination_per_dose", "components": [{"component": "amoxicillin", "dose": 875, "unit": "mg"}, {"component": "clavulanic acid", "dose": 125, "unit": "mg"}], "timesPerDay": 2},
+      "route": "oral", "administration": "with a meal", "sourceId": "emc-coamox-875-125-10877", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "coamox-875-125-adult-higher", "formulationId": "coamox-875-125-tablet",
+      "population": {"weightMinKg": 40},
+      "indications": ["otitis media", "sinusitis", "lower respiratory tract infection", "urinary tract infection"],
+      "dose": {"basis": "fixed_combination_per_dose", "components": [{"component": "amoxicillin", "dose": 875, "unit": "mg"}, {"component": "clavulanic acid", "dose": 125, "unit": "mg"}], "timesPerDay": 3},
+      "route": "oral", "administration": "with a meal", "sourceId": "emc-coamox-875-125-10877", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "coamox-7to1-child-standard", "formulationRatio": "7:1",
+      "population": {"weightMaxKgExclusive": 40},
+      "dose": {"basis": "component_mg/kg/day", "components": [{"component": "amoxicillin", "doseMin": 25, "doseMax": 45, "unit": "mg/kg/day"}, {"component": "clavulanic acid", "doseMin": 3.6, "doseMax": 6.4, "unit": "mg/kg/day"}], "divisionsPerDay": 2},
+      "route": "oral", "sourceId": "emc-coamox-875-125-10877", "sourceSection": "SmPC 4.2"
+    },
+    {
+      "id": "coamox-7to1-child-higher", "formulationRatio": "7:1",
+      "population": {"weightMaxKgExclusive": 40},
+      "indications": ["otitis media", "sinusitis", "lower respiratory tract infection"],
+      "dose": {"basis": "component_mg/kg/day", "components": [{"component": "amoxicillin", "doseMax": 70, "unit": "mg/kg/day"}, {"component": "clavulanic acid", "doseMax": 10, "unit": "mg/kg/day"}], "divisionsPerDay": 2},
+      "route": "oral", "sourceId": "emc-coamox-875-125-10877", "sourceSection": "SmPC 4.2",
+      "notes": ["No clinical data for 7:1 formulations above 45 mg/6.4 mg/kg/day in children under 2 years.", "No dosing recommendation can be made for 7:1 formulations in patients under 2 months from this SmPC."]
+    }
+  ],
+  "renalAdjustments": [
+    {"formulationId": "coamox-500-125-tablet", "population": "adult_or_child_ge_40kg", "measure": "CrCl", "unit": "mL/min", "range": {"gt": 30}, "action": "no_adjustment", "sourceId": "emc-coamox-500-125-6544"},
+    {"formulationId": "coamox-500-125-tablet", "population": "adult_or_child_ge_40kg", "measure": "CrCl", "unit": "mL/min", "range": {"minInclusive": 10, "maxInclusive": 30}, "dose": {"components": [{"component": "amoxicillin", "dose": 500, "unit": "mg"}, {"component": "clavulanic acid", "dose": 125, "unit": "mg"}], "timesPerDay": 2}, "sourceId": "emc-coamox-500-125-6544"},
+    {"formulationId": "coamox-500-125-tablet", "population": "adult_or_child_ge_40kg", "measure": "CrCl", "unit": "mL/min", "range": {"lt": 10}, "dose": {"components": [{"component": "amoxicillin", "dose": 500, "unit": "mg"}, {"component": "clavulanic acid", "dose": 125, "unit": "mg"}], "timesPerDay": 1}, "sourceId": "emc-coamox-500-125-6544"},
+    {"formulationId": "coamox-500-125-tablet", "population": "adult_or_child_ge_40kg", "dialysis": "HD", "dose": {"components": [{"component": "amoxicillin", "dose": 500, "unit": "mg"}, {"component": "clavulanic acid", "dose": 125, "unit": "mg"}], "intervalHours": 24}, "supplementalDoses": ["500/125 mg during dialysis", "500/125 mg at the end of dialysis"], "sourceId": "emc-coamox-500-125-6544"},
+    {"formulationId": "coamox-500-125-tablet", "population": "child_lt_40kg", "measure": "CrCl", "unit": "mL/min", "range": {"minInclusive": 10, "maxInclusive": 30}, "dose": {"components": [{"component": "amoxicillin", "dose": 15, "unit": "mg/kg"}, {"component": "clavulanic acid", "dose": 3.75, "unit": "mg/kg"}], "timesPerDay": 2, "maxPerDose": "500/125 mg"}, "sourceId": "emc-coamox-500-125-6544"},
+    {"formulationId": "coamox-500-125-tablet", "population": "child_lt_40kg", "measure": "CrCl", "unit": "mL/min", "range": {"lt": 10}, "dose": {"components": [{"component": "amoxicillin", "dose": 15, "unit": "mg/kg"}, {"component": "clavulanic acid", "dose": 3.75, "unit": "mg/kg"}], "timesPerDay": 1, "maxPerDose": "500/125 mg"}, "sourceId": "emc-coamox-500-125-6544"},
+    {"formulationRatio": "7:1", "measure": "CrCl", "unit": "mL/min", "range": {"lt": 30}, "action": "not_recommended_no_adjustment_recommendation", "sourceId": "emc-coamox-875-125-10877"}
+  ],
+  "hepaticAdjustment": {"action": "dose_with_caution_and_monitor_hepatic_function_regularly"},
+  "formulationSafety": [
+    "Never collapse 4:1 and 7:1 products into a single ambiguous '1 g Amoksiklav' rule.",
+    "Every dose must preserve both amoxicillin and clavulanic-acid component amounts.",
+    "Treatment should not be extended beyond 14 days without review in the referenced SmPCs."
+  ]
+}
