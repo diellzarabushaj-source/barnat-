@@ -1,0 +1,42 @@
+name: Clinical priority dosing batch
+
+on:
+  pull_request:
+    paths:
+      - 'data/drx-clinical-priority-*.json'
+      - 'supabase/migrations/20260911225000_drx_priority_cotrimoxazole_source_regimens.sql'
+      - 'tests/drx-clinical-priority-batch-test.js'
+      - '.github/workflows/clinical-priority-batch.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  clinical-priority-contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Syntax checks
+        run: |
+          node --check tests/drx-clinical-priority-batch-test.js
+          node --check lib/dosage-rule-engine-v4.js
+          node --check lib/pediatric-calculation.js
+      - name: Priority batch contract
+        run: node tests/drx-clinical-priority-batch-test.js
+      - name: Dosage v4 regression
+        run: node tests/dosage-rule-engine-v4-test.js
+      - name: Pediatric runtime regression
+        run: |
+          node tests/pediatric-dosage-api-test.js
+          node tests/dozologjia-v2-workspace-test.js
+      - name: V3 safety contracts
+        run: |
+          node tests/drx-dose-v3-schema-proposal-test.js
+          node tests/drx-dose-runtime-engine-test.js
+          node tests/drx-dose-publication-gate-test.js
