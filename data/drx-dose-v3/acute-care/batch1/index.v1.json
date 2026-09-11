@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "drx-dose-v3-acute-care-batch-index-v1",
+  "batch": "acute-care-batch1",
+  "createdAt": "2026-09-11",
+  "status": "source_verified_candidates_require_clinical_review",
+  "publicationEligible": false,
+  "humanClinicalReviewRequired": true,
+  "governance": {
+    "userSuppliedDoseTextUsedAsSource": false,
+    "brandMappingRequiresExactProductWhenAmbiguous": true,
+    "highRiskRulesMayAutoPublish": false,
+    "sourceSnapshotHashRequiredBeforePublication": true,
+    "clinicalReviewerRequiredBeforePublication": true,
+    "indicationRouteFormulationSpecific": true,
+    "notes": [
+      "The batch stores candidate rules, not prescribing authority.",
+      "A source-verified candidate remains non-calculable until V3 publication gates pass.",
+      "No analgesic ladder, severity-only antibiotic ladder or automatic supplementation rule is encoded."
+    ]
+  },
+  "records": [
+    {"id":"acute-care-core","path":"data/drx-dose-v3/acute-care/batch1/acute-care-core.v1.json"},
+    {"id":"source-required-and-product-specific","path":"data/drx-dose-v3/acute-care/batch1/source-required.v1.json"}
+  ]
+}

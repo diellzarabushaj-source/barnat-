@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "drx-dose-v3-source-required-v1",
+  "status": "source_required_or_exact_product_required",
+  "publicationEligible": false,
+  "calculatorEligible": false,
+  "humanClinicalReviewRequired": true,
+  "userSuppliedDoseTextUsedAsSource": false,
+  "policy": {
+    "noDoseWithoutAuthoritativeSource": true,
+    "noBrandToInnInferenceWhenAmbiguous": true,
+    "exactProductRequiredForVariableComposition": true,
+    "existingPipelineMustBeReusedInsteadOfDuplicated": true
+  },
+  "entries": [
+    {"id":"propranolol","canonicalInn":"propranolol","status":"SOURCE_REQUIRED","reason":"IV dose/indication and contraindication context require an exact authoritative product source before a rule is created.","rules":[]},
+    {"id":"etamsylate","canonicalInn":"etamsylate","aliases":["Dicynone"],"status":"SOURCE_REQUIRED","reason":"Do not import the user-written haemostatic dose without an authoritative SmPC and exact indication.","rules":[]},
+    {"id":"chloropyramine","canonicalInn":"chloropyramine","aliases":["Synopen","Alergosan","Allergosan"],"status":"EXACT_PRODUCT_REQUIRED","reason":"Strength, route and local product identity must be verified. Antihistamines must not delay IM adrenaline in anaphylaxis.","rules":[]},
+    {"id":"dexamethasone","canonicalInn":"dexamethasone","aliases":["Dexason"],"status":"SOURCE_REQUIRED","reason":"Steroid dosing is indication-specific; no routine anaphylaxis first-line rule is encoded.","rules":[]},
+    {"id":"methylprednisolone","canonicalInn":"methylprednisolone","aliases":["Urbason","Urbazon","Lemod-Solu"],"status":"SOURCE_REQUIRED","reason":"Dose depends on indication and product. Lemod-Solu must never be treated as sodium bicarbonate.","rules":[]},
+    {"id":"ketoprofen","canonicalInn":"ketoprofen","aliases":["Ketonal"],"status":"SOURCE_REQUIRED","reason":"No 'hypoallergenic' label is accepted; exact parenteral product and indication require review.","rules":[]},
+    {"id":"diazepam","canonicalInn":"diazepam","status":"SOURCE_REQUIRED","reason":"Seizure treatment is route-, age- and scenario-specific and requires a dedicated authoritative rule.","rules":[]},
+    {"id":"biperiden","canonicalInn":"biperiden","aliases":["Akineton"],"status":"SOURCE_REQUIRED","reason":"Exact treatment context and route must be source-backed; it is not auto-linked to every metoclopramide adverse effect.","rules":[]},
+    {"id":"sodium-bicarbonate","canonicalInn":"sodium bicarbonate","status":"SOURCE_REQUIRED","forbiddenAliases":["Lemod-Solu","Lemod solutio"],"reason":"Acidosis/hyperkalaemia use requires indication- and laboratory-specific rules; no universal ampoule dose is encoded.","rules":[]},
+    {"id":"glucose-iv","canonicalInn":"glucose","status":"EXACT_PRODUCT_REQUIRED","reason":"5%, 10%, 20%, 50% and other concentrations are different products and indications. D5W is not encoded as a diuretic for hypertension or as default resuscitation fluid.","rules":[]},
+    {"id":"sodium-chloride-iv","canonicalInn":"sodium chloride","status":"EXACT_PRODUCT_REQUIRED","reason":"0.9% bolus amount is patient- and indication-specific; no universal 500-1000 mL rule is encoded.","rules":[]},
+    {"id":"ringer","status":"EXACT_PRODUCT_REQUIRED","reason":"Ringer, Ringer lactate/Hartmann and other balanced crystalloids have different compositions.","rules":[]},
+    {"id":"ampicillin","canonicalInn":"ampicillin","status":"EXISTING_PIPELINE_REVIEW","reason":"Antibacterial dosing belongs in the antimicrobial source-first pipeline and must not be duplicated in acute-care data.","rules":[]},
+    {"id":"azithromycin","canonicalInn":"azithromycin","status":"EXISTING_PIPELINE_REVIEW","reason":"Source-backed azithromycin regimen candidates already exist in the DRX antimicrobial pipeline; reuse them rather than duplicating rules here.","rules":[]},
+    {"id":"metronidazole","canonicalInn":"metronidazole","status":"EXISTING_PIPELINE_REVIEW","reason":"Indication-, route- and anaerobic-infection-specific dosing belongs in the antimicrobial pipeline.","rules":[]},
+    {"id":"meropenem","canonicalInn":"meropenem","status":"EXISTING_PIPELINE_REVIEW","reason":"Sepsis is not a sufficient standalone dosing indication; antimicrobial source and renal context are required.","rules":[]},
+    {"id":"cefuroxime","canonicalInn":"cefuroxime","aliases":["Neocef"],"status":"EXACT_PRODUCT_REQUIRED","reason":"Cefuroxime axetil oral and cefuroxime sodium parenteral formulations are not interchangeable; exact paediatric product is required.","rules":[]},
+    {"id":"dequalinium-chloride","canonicalInn":"dequalinium chloride","aliases":["Decatrin"],"status":"EXACT_PRODUCT_REQUIRED","reason":"Exact marketed formulation and strength are required before any dose is encoded.","rules":[]},
+    {"id":"dexamethasone-neomycin-ophthalmic","canonicalInn":"dexamethasone/neomycin","status":"EXACT_PRODUCT_REQUIRED","reason":"Do not infer an ophthalmic combination from separate products; exact label and ocular indication are required.","rules":[]},
+    {"id":"vitamin-b-complex","status":"EXACT_PRODUCT_REQUIRED","reason":"Variable multi-ingredient composition and strength by manufacturer.","rules":[]},
+    {"id":"ascorbic-acid","canonicalInn":"ascorbic acid","aliases":["vitamin C"],"status":"SOURCE_REQUIRED","reason":"Dose and route depend on diagnosed deficiency/indication and exact product; wellness claims are not dosing indications.","rules":[]},
+    {"id":"pyridoxine","canonicalInn":"pyridoxine","aliases":["Bedoxin","vitamin B6"],"status":"EXACT_PRODUCT_REQUIRED","reason":"Exact product/indication required. It is not encoded as a routine method to discontinue diazepam.","rules":[]},
+    {"id":"multivitamin","status":"EXACT_PRODUCT_REQUIRED","reason":"Formula varies by product; no universal tablet dose is modeled.","rules":[]},
+    {"id":"probiotic-drops","status":"EXACT_PRODUCT_REQUIRED","reason":"Exact strain(s), CFU, formulation and product evidence are required.","rules":[]},
+    {"id":"sambucol-immuno","status":"EXACT_PRODUCT_REQUIRED","reason":"Supplement/product formula and age-specific label must be verified before use.","rules":[]},
+    {"id":"pediacide","status":"UNRESOLVED_PRODUCT","reason":"Exact product identity and ingredient list are required; ivy/plantain/Althaea/thyme must not be inferred from the name.","rules":[]}
+  ]
+}

@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "drx-dose-v3-acute-care-core-v1",
+  "status": "source_verified_candidates_require_clinical_review",
+  "publicationEligible": false,
+  "humanClinicalReviewRequired": true,
+  "userSuppliedDoseTextUsedAsSource": false,
+  "records": [
+    {
+      "id": "adrenaline",
+      "canonicalInn": "adrenaline",
+      "aliases": ["epinephrine"],
+      "riskClass": "life_threatening",
+      "sources": [
+        {"id":"aha-2025-cardiac-arrest","authority":"American Heart Association","url":"https://cpr.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Accessible/Algorithm-ACLS-CA-LngDscrp-250725-Ed.pdf","section":"Adult Cardiac Arrest Algorithm","accessedAt":"2026-09-11","sourceDocumentSha256":null},
+        {"id":"rcuk-2021-anaphylaxis","authority":"Resuscitation Council UK","url":"https://www.resus.org.uk/sites/default/files/2021-05/Emergency%20Treatment%20of%20Anaphylaxis%20May%202021_0.pdf","section":"Anaphylaxis algorithm","accessedAt":"2026-09-11","sourceDocumentSha256":null}
+      ],
+      "rules": [
+        {"id":"adrenaline-adult-cardiac-arrest","indications":["adult cardiac arrest"],"population":{"group":"adult"},"route":"IV/IO","dose":{"basis":"fixed","dose":1,"unit":"mg","intervalMinutesMin":3,"intervalMinutesMax":5},"sourceId":"aha-2025-cardiac-arrest"},
+        {"id":"adrenaline-anaphylaxis-adult-over12","indications":["anaphylaxis with airway, breathing or circulation compromise"],"population":{"ageMinYearsExclusive":12},"route":"IM","productConcentration":{"value":1,"unit":"mg/mL"},"dose":{"basis":"fixed","dose":0.5,"unit":"mg","volume":0.5,"volumeUnit":"mL","repeatAfterMinutes":5,"repeatCondition":"persistent life-threatening ABC features"},"administrationSite":"anterolateral middle third of thigh","sourceId":"rcuk-2021-anaphylaxis"}
+      ],
+      "safety": ["IM adrenaline is first-line for anaphylaxis.","IV adrenaline for anaphylaxis is specialist-only in an appropriate monitored setting.","Antihistamines or corticosteroids must not delay adrenaline for life-threatening ABC features."]
+    },
+    {
+      "id": "atropine",
+      "canonicalInn": "atropine",
+      "riskClass": "life_threatening",
+      "sources": [{"id":"aha-2025-bradycardia","authority":"American Heart Association","url":"https://www.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Accessible/Algorithm-ACLS-Bradycardia-LngDscrp-250725-Ed.pdf","section":"Adult Bradycardia Algorithm","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [{"id":"atropine-adult-symptomatic-bradycardia","indications":["symptomatic bradycardia with cardiopulmonary compromise"],"population":{"group":"adult"},"route":"IV","dose":{"basis":"fixed","dose":1,"unit":"mg","repeatEveryMinutesMin":3,"repeatEveryMinutesMax":5,"maxTotalDose":3,"maxTotalDoseUnit":"mg"},"sourceId":"aha-2025-bradycardia"}],
+      "criticalCorrection": "The user-supplied 0.5 mg adult ACLS dose is not retained; the 2025 AHA algorithm uses 1 mg."
+    },
+    {
+      "id": "dopamine",
+      "canonicalInn": "dopamine",
+      "riskClass": "life_threatening",
+      "sources": [{"id":"aha-2025-bradycardia","authority":"American Heart Association","url":"https://www.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Accessible/Algorithm-ACLS-Bradycardia-LngDscrp-250725-Ed.pdf","section":"Adult Bradycardia Algorithm","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [{"id":"dopamine-adult-bradycardia-infusion","indications":["symptomatic bradycardia when atropine is ineffective"],"population":{"group":"adult"},"route":"IV infusion","dose":{"basis":"dose_rate","rateMin":5,"rateMax":20,"unit":"microgram/kg/min","titration":"to patient response","taper":"slowly"},"sourceId":"aha-2025-bradycardia"}],
+      "safety": ["This candidate is not a universal 'hypotension/shock' dose; shock-specific vasopressor selection requires a separate indication rule."]
+    },
+    {
+      "id": "amiodarone",
+      "canonicalInn": "amiodarone",
+      "riskClass": "life_threatening",
+      "sources": [{"id":"aha-2025-cardiac-arrest","authority":"American Heart Association","url":"https://cpr.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Accessible/Algorithm-ACLS-CA-LngDscrp-250725-Ed.pdf","section":"Adult Cardiac Arrest Algorithm","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [{"id":"amiodarone-adult-refractory-vf-pvt","indications":["refractory ventricular fibrillation","pulseless ventricular tachycardia"],"population":{"group":"adult"},"route":"IV/IO","dose":{"basis":"sequence","phases":[{"phase":1,"dose":300,"unit":"mg","administration":"bolus"},{"phase":2,"dose":150,"unit":"mg","administration":"bolus"}]},"sourceId":"aha-2025-cardiac-arrest"}],
+      "safety": ["Stable/wide-complex tachycardia infusion regimens are separate rules and are not inherited from this cardiac-arrest sequence."]
+    },
+    {
+      "id": "verapamil",
+      "canonicalInn": "verapamil",
+      "riskClass": "high_risk",
+      "sources": [{"id":"emc-verapamil-injection-979","authority":"eMC / SmPC","url":"https://www.medicines.org.uk/emc/product/979/smpc","section":"4.2","lastUpdated":"2025-10","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [{"id":"verapamil-adult-psvt-af-flutter","indications":["paroxysmal supraventricular tachycardia","ventricular-rate reduction in atrial flutter/fibrillation"],"population":{"group":"adult"},"route":"slow IV injection","dose":{"basis":"fixed","doseMin":5,"doseMax":10,"unit":"mg","administrationMinutes":2,"repeatDose":5,"repeatDoseUnit":"mg","repeatAfterMinutesMin":5,"repeatAfterMinutesMax":10},"monitoring":["continuous observation","ECG preferred","blood pressure preferred"],"sourceId":"emc-verapamil-injection-979"}],
+      "safety": ["Contraindications and conduction/accessory-pathway context must be checked before use; this candidate must not auto-select solely from a fast heart rate."]
+    },
+    {
+      "id": "labetalol",
+      "canonicalInn": "labetalol",
+      "riskClass": "high_risk",
+      "brandMapping": {"forbiddenRegionalAlias":"Presolol","reason":"Regional Hemofarm Presolol identified in DRX canonical seed maps to metoprolol, not labetalol."},
+      "sources": [{"id":"emc-labetalol-injection-10831","authority":"eMC / SmPC","url":"https://www.medicines.org.uk/emc/product/10831/smpc","section":"4.2","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [{"id":"labetalol-adult-severe-hypertension-bolus","indications":["severe hypertension requiring rapid control in a hospitalised patient"],"population":{"group":"adult"},"route":"IV","dose":{"basis":"fixed","dose":50,"unit":"mg","minimumAdministrationMinutes":1,"repeatEveryMinutes":5,"maxTotalDose":200,"maxTotalDoseUnit":"mg"},"sourceId":"emc-labetalol-injection-10831"}],
+      "safety": ["Monitor blood pressure and heart rate.","Do not attach Presolol as a labetalol alias without an exact local product label."]
+    },
+    {
+      "id": "tramadol",
+      "canonicalInn": "tramadol",
+      "aliases": ["Trodon"],
+      "riskClass": "controlled_high_risk",
+      "sources": [{"id":"emc-tramadol-injection-13177","authority":"eMC / SmPC","url":"https://www.medicines.org.uk/emc/product/13177/smpc","section":"4.2","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [{"id":"tramadol-adult-adolescent-pain","indications":["moderate to severe pain"],"population":{"ageMinYearsExclusive":12},"routeOptions":["IV","IM"],"dose":{"basis":"fixed","doseMin":50,"doseMax":100,"unit":"mg","intervalHoursMin":4,"intervalHoursMax":6,"maxDailyDose":400,"maxDailyDoseUnit":"mg"},"sourceId":"emc-tramadol-injection-13177"}],
+      "safety": ["Use the lowest effective dose.","IV injection must be slow; opioid/serotonergic/seizure-risk context requires review."]
+    },
+    {
+      "id": "morphine",
+      "canonicalInn": "morphine",
+      "riskClass": "controlled_high_risk",
+      "sources": [{"id":"emc-morphine-injection-6426","authority":"eMC / SmPC","url":"https://www.medicines.org.uk/emc/product/6426/smpc","section":"4.2","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [{"id":"morphine-adult-adolescent-severe-pain-iv","indications":["severe and very severe pain"],"population":{"ageMinYearsExclusive":12},"route":"IV","dose":{"basis":"fixed_starting_range","doseMin":2.5,"doseMax":10,"unit":"mg","administrationMinutesMin":4,"administrationMinutesMax":5,"titration":"adjust to severity and response"},"sourceId":"emc-morphine-injection-6426"}],
+      "safety": ["Minimum effective dose; respiratory, haemodynamic, renal/hepatic and opioid-risk context must be reviewed.","No automatic NSAID→tramadol→morphine ladder is encoded."]
+    },
+    {
+      "id": "diclofenac",
+      "canonicalInn": "diclofenac",
+      "aliases": ["Voltaren","Voltarol"],
+      "riskClass": "high_risk_nsaid",
+      "sources": [{"id":"emc-voltarol-suppository-1044","authority":"eMC / SmPC","url":"https://www.medicines.org.uk/emc/product/1044/smpc","section":"4.2","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [
+        {"id":"diclofenac-child-jia-suppository","indications":["juvenile chronic arthritis"],"population":{"ageMinYears":1,"ageMaxYears":12},"form":"suppository 12.5 mg or 25 mg","route":"rectal","dose":{"basis":"mg/kg/day","doseMin":1,"doseMax":3,"unit":"mg/kg/day","divisionsPerDayMin":2,"divisionsPerDayMax":3},"sourceId":"emc-voltarol-suppository-1044"},
+        {"id":"diclofenac-child-postoperative-suppository","indications":["acute post-operative pain"],"population":{"ageMinYears":6,"ageMaxYears":12},"form":"suppository 12.5 mg or 25 mg","route":"rectal","dose":{"basis":"mg/kg/day","doseMin":1,"doseMax":2,"unit":"mg/kg/day","dividedDoses":true,"maxDurationDays":4},"sourceId":"emc-voltarol-suppository-1044"}
+      ],
+      "criticalCorrection": "The user-supplied 1–2 mg/kg PER DOSE 2–3 times/day is not retained; the selected SmPC expresses these paediatric suppository doses per DAY."
+    },
+    {
+      "id": "ibuprofen",
+      "canonicalInn": "ibuprofen",
+      "aliases": ["Neofen"],
+      "riskClass": "nsaid",
+      "sources": [{"id":"emc-ibuprofen-paediatric-suspension-8137","authority":"eMC / SmPC","url":"https://www.medicines.org.uk/emc/product/8137/smpc","section":"4.2","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [{"id":"ibuprofen-child-short-term-fever-pain","indications":["short-term fever","mild to moderate pain"],"population":{"group":"paediatric_source_defined"},"route":"oral","dose":{"basis":"mg/kg/day","doseMin":20,"doseMax":30,"unit":"mg/kg/day","intervalHoursMin":6,"intervalHoursMax":8},"productBindingRequiredForMl":true,"sourceId":"emc-ibuprofen-paediatric-suspension-8137"}]
+    },
+    {
+      "id": "metoclopramide",
+      "canonicalInn": "metoclopramide",
+      "aliases": ["Reglan","Klometal","Klometol"],
+      "riskClass": "high_risk",
+      "sources": [{"id":"emc-metoclopramide-injection-11550","authority":"eMC / SmPC","url":"https://www.medicines.org.uk/emc/product/11550/smpc","section":"4.2","lastUpdated":"2023-02-16","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [
+        {"id":"metoclopramide-adult-ponv-prevention","indications":["prevention of postoperative nausea and vomiting"],"population":{"group":"adult"},"routeOptions":["IV","IM"],"dose":{"basis":"fixed","dose":10,"unit":"mg","singleDose":true,"ivMinimumAdministrationMinutes":3},"sourceId":"emc-metoclopramide-injection-11550"},
+        {"id":"metoclopramide-adult-nausea-rinv","indications":["symptomatic nausea and vomiting including acute migraine-induced nausea/vomiting","prevention of radiotherapy-induced nausea/vomiting"],"population":{"group":"adult"},"routeOptions":["IV","IM"],"dose":{"basis":"fixed","dose":10,"unit":"mg","maxTimesPerDay":3,"minimumIntervalHours":6,"maxDailyDose":30,"maxDailyDoseUnit":"mg","alternateMaxDailyDose":0.5,"alternateMaxDailyDoseUnit":"mg/kg/day","ivMinimumAdministrationMinutes":3},"sourceId":"emc-metoclopramide-injection-11550"},
+        {"id":"metoclopramide-child-labelled-second-line","indications":["delayed chemotherapy-induced nausea/vomiting prevention second-line","established postoperative nausea/vomiting second-line"],"population":{"ageMinYears":1,"ageMaxYears":18},"route":"IV","dose":{"basis":"mg/kg/dose","doseMin":0.1,"doseMax":0.15,"unit":"mg/kg","maxTimesPerDay":3,"maxDailyDose":0.5,"maxDailyDoseUnit":"mg/kg/day","minimumIntervalHours":6,"ivMinimumAdministrationMinutes":3},"sourceId":"emc-metoclopramide-injection-11550"}
+      ],
+      "safety": ["Extrapyramidal reactions can occur.","No automatic 'biperiden/Akineton antidote' dose is created from the user note; rescue treatment requires its own verified rule."]
+    },
+    {
+      "id": "hyoscine-butylbromide",
+      "canonicalInn": "hyoscine butylbromide",
+      "aliases": ["Buscopan"],
+      "riskClass": "high_risk",
+      "sources": [{"id":"emc-hyoscine-injection-13180","authority":"eMC / SmPC","url":"https://www.medicines.org.uk/emc/product/13180/smpc","section":"4.2","lastUpdated":"2025-05-09","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [{"id":"hyoscine-adult-acute-spasm-colic","indications":["acute spasm","renal colic","biliary colic"],"population":{"group":"adult"},"routeOptions":["IV","IM"],"dose":{"basis":"fixed","dose":20,"unit":"mg","repeatAfterMinutes":30,"maxDailyDose":100,"maxDailyDoseUnit":"mg"},"sourceId":"emc-hyoscine-injection-13180"}],
+      "safety": ["IV injection should be slow.","Injection is not recommended for children in the selected SmPC.","Severe unexplained abdominal pain requires diagnostic investigation rather than symptom-only automatic treatment."]
+    },
+    {
+      "id": "ondansetron",
+      "canonicalInn": "ondansetron",
+      "aliases": ["Zofran"],
+      "riskClass": "high_risk",
+      "sources": [{"id":"emc-ondansetron-injection-13193","authority":"eMC / SmPC","url":"https://www.medicines.org.uk/emc/product/13193/smpc","section":"4.2","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [
+        {"id":"ondansetron-adult-ponv","indications":["prevention of postoperative nausea and vomiting","treatment of established postoperative nausea and vomiting"],"population":{"group":"adult"},"routeOptions":["IM","slow IV"],"dose":{"basis":"fixed","dose":4,"unit":"mg","singleDose":true},"sourceId":"emc-ondansetron-injection-13193"},
+        {"id":"ondansetron-child-ponv","indications":["paediatric postoperative nausea and vomiting prevention or treatment"],"population":{"ageMinMonths":1,"ageMaxYears":17},"route":"slow IV","dose":{"basis":"mg/kg/dose","dose":0.1,"unit":"mg/kg","maxSingleDose":4,"maxSingleDoseUnit":"mg","minimumAdministrationSeconds":30},"sourceId":"emc-ondansetron-injection-13193"}
+      ],
+      "safety": ["These PONV rules must not be silently reused for gastroenteritis or chemotherapy-induced nausea/vomiting; those indications have separate dosing."
+      ]
+    },
+    {
+      "id": "furosemide",
+      "canonicalInn": "furosemide",
+      "aliases": ["Lasix"],
+      "riskClass": "high_risk",
+      "sources": [{"id":"emc-furosemide-injection-102194","authority":"eMC / SmPC","url":"https://www.medicines.org.uk/emc/product/102194/smpc","section":"4.2","lastUpdated":"2026","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [{"id":"furosemide-adult-parenteral-prompt-diuresis","indications":["oedema requiring prompt effective parenteral diuresis when oral therapy is not feasible"],"population":{"group":"adult"},"routeOptions":["IV","IM"],"dose":{"basis":"fixed_initial_range","doseMin":20,"doseMax":50,"unit":"mg","titration":"larger doses in 20 mg increments no more often than every 2 hours; >50 mg by slow IV infusion per selected SmPC"},"sourceId":"emc-furosemide-injection-102194"}],
+      "safety": ["Do not automatically prescribe potassium. Electrolytes, volume status, renal function and response determine replacement."]
+    },
+    {
+      "id": "mannitol",
+      "canonicalInn": "mannitol",
+      "riskClass": "life_threatening",
+      "sources": [{"id":"emc-mannitol-10pct-1839","authority":"eMC / SmPC","url":"https://www.medicines.org.uk/emc/product/1839/smpc","section":"4.2","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [{"id":"mannitol-adult-icp-iop","indications":["reduction of intracranial pressure and cerebral volume","reduction of intraocular pressure"],"population":{"group":"adult"},"route":"IV infusion","dose":{"basis":"mg/kg/dose","doseMin":1.5,"doseMax":2,"unit":"g/kg","infusionDurationMinutesMin":30,"infusionDurationMinutesMax":60},"sourceId":"emc-mannitol-10pct-1839"}],
+      "safety": ["Renal function and urine output require assessment; marked oliguria/suspected renal impairment uses a source-defined test-dose pathway."]
+    },
+    {
+      "id": "chloramphenicol-ophthalmic",
+      "canonicalInn": "chloramphenicol",
+      "riskClass": "formulation_specific",
+      "sources": [{"id":"emc-chloramphenicol-eye-ointment-9770","authority":"eMC / SmPC","url":"https://www.medicines.org.uk/emc/product/9770/smpc","section":"4.2","lastUpdated":"2023-07-19","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [{"id":"chloramphenicol-eye-ointment-bacterial-conjunctivitis","indications":["acute bacterial conjunctivitis"],"population":{"ageMinYears":2},"form":"1% w/w ophthalmic ointment","route":"ophthalmic","dose":{"basis":"length_per_application","amount":1,"unit":"cm ointment","timesPerDayMin":3,"timesPerDayMax":4,"durationDays":5},"sourceId":"emc-chloramphenicol-eye-ointment-9770"}]
+    },
+    {
+      "id": "aciclovir-oral",
+      "canonicalInn": "aciclovir",
+      "aliases": ["acyclovir"],
+      "riskClass": "formulation_specific",
+      "sources": [{"id":"emc-aciclovir-tablets-11673","authority":"eMC / SmPC","url":"https://www.medicines.org.uk/emc/product/11673/smpc","section":"4.2","lastUpdated":"2026-05-18","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [
+        {"id":"aciclovir-adult-herpes-simplex-treatment","indications":["herpes simplex infection treatment"],"population":{"group":"adult"},"route":"oral","dose":{"basis":"fixed","dose":200,"unit":"mg","timesPerDay":5,"approxIntervalHours":4,"omitNightDose":true,"durationDays":5},"sourceId":"emc-aciclovir-tablets-11673"},
+        {"id":"aciclovir-adult-varicella-zoster","indications":["varicella","herpes zoster"],"population":{"group":"adult"},"route":"oral","dose":{"basis":"fixed","dose":800,"unit":"mg","timesPerDay":5,"approxIntervalHours":4,"omitNightDose":true,"durationDays":7},"sourceId":"emc-aciclovir-tablets-11673"}
+      ],
+      "safety": ["Topical and ophthalmic aciclovir require separate exact product/formulation rules and do not inherit oral dosing."]
+    },
+    {
+      "id": "miconazole-oral-gel",
+      "canonicalInn": "miconazole",
+      "aliases": ["Daktarin","Daktanol"],
+      "riskClass": "formulation_specific",
+      "sources": [{"id":"emc-daktarin-oral-gel-14746","authority":"eMC / SmPC","url":"https://www.medicines.org.uk/emc/product/14746/smpc","section":"4.2","lastUpdated":"2026-09-04","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [
+        {"id":"miconazole-oral-gel-infant-4to24m","indications":["oropharyngeal candidosis"],"population":{"ageMinMonths":4,"ageMaxMonths":24},"form":"20 mg/g oral gel","route":"oromucosal/oral local","dose":{"basis":"fixed_volume","volume":1.25,"unit":"mL","timesPerDay":4,"timing":"after meals"},"sourceId":"emc-daktarin-oral-gel-14746"},
+        {"id":"miconazole-oral-gel-age2plus","indications":["oropharyngeal candidosis"],"population":{"ageMinYears":2},"form":"20 mg/g oral gel","route":"oromucosal/oral local","dose":{"basis":"fixed_volume","volume":2.5,"unit":"mL","timesPerDay":4,"timing":"after meals","continueAfterSymptomsDaysMin":7},"sourceId":"emc-daktarin-oral-gel-14746"}
+      ],
+      "safety": ["Infant doses must be divided into small portions and not applied to the back of the throat because of choking risk.","Skin cream is a separate formulation and must not inherit oral-gel dosing."]
+    },
+    {
+      "id": "sodium-chloride-anaphylaxis-fluid",
+      "canonicalInn": "sodium chloride",
+      "riskClass": "context_specific_fluid",
+      "sources": [{"id":"rcuk-2021-anaphylaxis","authority":"Resuscitation Council UK","url":"https://www.resus.org.uk/sites/default/files/2021-05/Emergency%20Treatment%20of%20Anaphylaxis%20May%202021_0.pdf","section":"Anaphylaxis algorithm - IV fluid challenge","accessedAt":"2026-09-11","sourceDocumentSha256":null}],
+      "rules": [
+        {"id":"crystalloid-adult-anaphylaxis-fluid-bolus","indications":["anaphylaxis with circulation compromise"],"population":{"group":"adult"},"route":"IV","dose":{"basis":"fixed_volume","volumeMin":500,"volumeMax":1000,"unit":"mL","fluidClass":"crystalloid"},"sourceId":"rcuk-2021-anaphylaxis"},
+        {"id":"crystalloid-child-anaphylaxis-fluid-bolus","indications":["paediatric anaphylaxis with circulation compromise"],"population":{"group":"paediatric"},"route":"IV","dose":{"basis":"mL/kg/dose","dose":10,"unit":"mL/kg","fluidClass":"crystalloid"},"sourceId":"rcuk-2021-anaphylaxis"}
+      ],
+      "safety": ["This does not create a universal 500–1000 mL bolus for every cause of hypotension or shock."]
+    }
+  ]
+}
