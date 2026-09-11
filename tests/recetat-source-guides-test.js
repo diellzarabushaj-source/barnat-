@@ -74,6 +74,6 @@ assert.match(css, /\.rx-source-connector\.is-or/);
 assert.match(css, /\.rx-source-connector\.is-conditional/);
 assert.doesNotMatch(css, /grid-template-columns:\s*minmax\(220px,\s*320px\)\s+minmax\(0,\s*1fr\)/, 'source browsing must not regress to an internal sidebar layout');
 assert.doesNotMatch(css, /!important/, 'consolidated Recetat stylesheet must stay free of override escalation');
-assert.match(css, /@media\(max-width:760px\)/);
+assert.match(css, /@media\(max-width:640px\)/);
 
 console.log('Recetat source-guides contract passed: compact top discovery + readable clinical flow + typo-tolerant search + draft-only handoff.');
