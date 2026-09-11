@@ -13,7 +13,7 @@ const registryJs = read('registry-v2.js');
 const registryCss = read('registry-v2.css');
 const recetatJs = read('recetat-v2.js');
 const recetatCss = read('recetat-v2.css');
-const searchMigration = read('supabase/migrations/20260901232000_harden_ranked_drug_search_v4.sql');
+const searchMigration = read('supabase/migrations/20260901233631_harden_ranked_drug_search_v4.sql');
 const history = JSON.parse(read('supabase/migration-history.json'));
 
 const BISOLVON_ID = '38c3a5f2-bb4f-46c1-913d-71d6fd256e8e';
@@ -92,7 +92,7 @@ assert.match(searchMigration, /'atc_exact'/);
 assert.match(searchMigration, /least\(greatest\(coalesce\(p_limit, 20\), 1\), 50\)/);
 assert.match(searchMigration, /security invoker/i);
 assert.ok(history.migrations.some(item =>
-  item.version === '20260901232000' && item.name === 'harden_ranked_drug_search_v4'
+  item.version === '20260901233631' && item.name === 'harden_ranked_drug_search_v4'
 ));
 
 assert.match(recetatJs, /searchSequence/);
@@ -102,7 +102,7 @@ assert.match(recetatJs, /singleNumeric/);
 assert.match(recetatJs, /trade_fuzzy/);
 assert.match(recetatJs, /Nr\. \$\{drug\.registryNumber\}/);
 assert.match(recetatJs, /PDID \$\{drug\.pdid\}/);
-assert.match(recetatCss, /Recetat V2 — clinical drug search v5/);
-assert.match(recetatCss, /\.rx-drug-result\.is-fuzzy/);
+assert.match(recetatCss, /Recetat V2 — consolidated prescription workspace/);
+assert.match(recetatCss, /\.rx-drug-result\{/);
 
 console.log('Registry sheet dosage + ranked search v4 regression contract passed.');

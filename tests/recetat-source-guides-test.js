@@ -61,16 +61,19 @@ assert.doesNotMatch(draftFunction, /saveCurrent\s*\(/, 'Source guide must never 
 assert.doesNotMatch(draftFunction, /copyCurrent\s*\(/, 'Source guide must never auto-copy a prescription');
 assert.doesNotMatch(draftFunction, /printCurrent\s*\(/, 'Source guide must never auto-print a prescription');
 
+assert.match(css, /Recetat V2 — consolidated prescription workspace/);
 assert.match(css, /\.rx-source-library/);
-assert.match(css, /Recetat V18 — smart clinical pathway UI/);
-assert.match(css, /Recetat V19 — Stripe-style clinical master-detail workspace/);
-assert.match(css, /Recetat V20 — lessons \+ global smart search refinement/);
+assert.match(css, /\.rx-source-browser\{display:block/);
+assert.match(css, /\.rx-source-commandbar\{display:grid/);
+assert.match(css, /\.rx-source-chapter-picker/);
 assert.match(css, /\.rx-source-lesson-picker/);
-assert.match(css, /\.rx-source-search-scope/);
+assert.match(css, /\.rx-source-search\{/);
 assert.match(css, /\.rx-source-step-rail/);
 assert.match(css, /\.rx-source-flow-title/);
 assert.match(css, /\.rx-source-connector\.is-or/);
 assert.match(css, /\.rx-source-connector\.is-conditional/);
-assert.match(css, /@media\(max-width:760px\)/);
+assert.doesNotMatch(css, /grid-template-columns:\s*minmax\(220px,\s*320px\)\s+minmax\(0,\s*1fr\)/, 'source browsing must not regress to an internal sidebar layout');
+assert.doesNotMatch(css, /!important/, 'consolidated Recetat stylesheet must stay free of override escalation');
+assert.match(css, /@media\(max-width:640px\)/);
 
-console.log('Recetat source-guides contract passed: chapters + lessons + global typo-tolerant search + draft-only handoff.');
+console.log('Recetat source-guides contract passed: compact top discovery + readable clinical flow + typo-tolerant search + draft-only handoff.');
