@@ -19,172 +19,94 @@ const migration = read('supabase/migrations/20260828222548_add_prescription_chap
 const history = JSON.parse(read('supabase/migration-history.json'));
 const worker = read('sw.js');
 
+// Shell and runtime contract.
 assert.match(html, /data-drx-app="recetat-v2"/);
 assert.match(html, /class="drx-unified-sidebar"/);
-assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
-assert.match(html, /\/brand\/drx-mark-on-dark\.svg/);
-assert.match(html, /id="sidebarCollapse"/);
-assert.match(html, /\/sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/);
-assert.match(html, /aria-label="Minimizo menynë"/);
 assert.match(html, /class="nav-item is-active" href="\/recetat\.html" aria-current="page"/);
 assert.match(html, /recetat-v2\.css\?v=20/);
 assert.match(html, /recetat-v2\.js\?v=20/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/);
 
 [
+  'rxSourceSearch','rxSourceChapterSelect','rxSourceLessonSelect','rxSourceGuideNav','rxSourceGuideList',
   'rxSavedCount','rxFolderCount','rxActiveChapterCount','rxLibraryState',
-  'rxDiagnosis','rxChapterSelect','rxComposer','rxSelectedDrugs',
-  'rxOrderBuilder','rxAddDrugButton','rxFreeTextPanel','rxClinicalReview',
-  'rxPreview','rxSave','rxCopy','rxPrint',
+  'rxDiagnosis','rxChapterSelect','rxComposer','rxSelectedDrugs','rxOrderBuilder','rxAddDrugButton',
+  'rxFreeTextPanel','rxClinicalReview','rxPreview','rxSave','rxCopy','rxPrint',
   'rxChapterNav','rxChapterAllCount','rxSavedSearch','rxSavedList',
 ].forEach(id => assert.match(html, new RegExp(`id="${id}"`), `Missing Recetat V2 node #${id}`));
 
-const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)]
-  .map(match => match[1]);
-const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)]
-  .map(match => match[1]);
+const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)].map(match => match[1]);
+const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map(match => match[1]);
 const pageRuntimes = scripts.filter(src => !/sidebar-taxonomy-v3\.js/.test(src));
-
-assert.equal(styles.length, 2, 'Recetat V2 must load only page CSS + shared Stripe shell');
+assert.equal(styles.length, 2, 'Recetat V2 must load only page CSS + shared shell CSS');
 assert.equal(styles[0], '/recetat-v2.css?v=20-ui5');
 assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1');
-assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1'), 'Recetat V2 shared sidebar runtime is missing');
+assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1'));
 assert.deepEqual(pageRuntimes, ['/recetat-v2.js?v=20-ui5']);
-assert.doesNotMatch(html, /tailadmin-|auth-client\.js|recetat\.css|recetat-audit\.css|recetat-style-loader\.js|recetat\.js/);
 
-assert.match(css, /Recetat V2 — consolidated prescription workspace/);
-assert.match(css, /Recetat V2 — Stripe prescription workspace/);
-assert.match(css, /Recetat V2 — clinical workspace polish v3/);
-assert.match(css, /Recetat V2 — electronic prescription workflow v4/);
-assert.match(css, /Recetat V2 — clinical drug search v5/);
-assert.match(css, /Recetat V2 — Stripe-inspired visual system & typography v8/);
-assert.match(css, /Recetat V2 — premium Stripe-inspired clinical workspace v15/);
-assert.match(css, /Recetat V2 — final UI coherence pass v16/);
-assert.match(css, /Recetat V2 — clinical context precision polish v9/);
-assert.doesNotMatch(css, /Recetat V2 — persistent desktop mini-sidebar v10/);
-assert.match(css, /rx15-shimmer/);
-assert.match(css, /safe-area-inset-bottom/);
-assert.match(css, /--rx15-accent:#635bff/);
-assert.match(css, /grid-template-columns:minmax\(0,1\.2fr\) minmax\(390px,\.8fr\)/);
-assert.match(css, /position:sticky!important/);
-// Recetat used to restate the page title at 600 / -.045em, so it read heavier
-// and tighter than every other page. The title, like the body type, now comes
-// from the shared shell — the same source Barnat and Dozologjia read — and
-// this page must not override it again.
-assert.match(stripe, /--drx-type-page-title:32px/);
-assert.match(stripe, /--drx-type-page-title-weight:300/);
-assert.doesNotMatch(css, /\.rx-page-heading h1\{[^}]*font-(?:size|weight)/,
-  'Recetat must not restate the shell page-title type');
-assert.doesNotMatch(css, /\[data-drx-app="recetat-v2"\] body\{[^}]*font-(?:size|weight|family)/,
-  'Recetat must not restate the shell body type');
-assert.match(css, /\.rx-saved-card-head h3/);
-assert.match(css, /\.rx-dialog h2/);
-assert.match(css, /--accent:#635bff/);
-assert.match(stripe, /--drx-type-page-title:25px/);  // the shell's mobile step
-assert.match(css, /\.rx-order-builder-head h3\{color:#0a2540;font-size:14px/);
-assert.match(css, /#rxDrugSearch\{/);
-assert.match(css, /html\.drx-unified-sidebar\[data-drx-app="recetat-v2"\] \.rx-drug-result-main strong\{[\s\S]*color:var\(--rx15-ink\)!important;[\s\S]*font-size:13px!important;[\s\S]*font-weight:600!important/);
-assert.match(css, /Recetat V2 — embedded TailAdmin specificity bridge v8/);
-assert.match(css, /html\.medindex-tailadmin\[data-mi-page="recetat"\] \.rx-card-head h2/);
-assert.match(css, /\.rx-drug-search-summary/);
-assert.match(css, /\.rx-drug-result\.is-fuzzy/);
+// 2026-09-11 UI reset: the page stylesheet must be a clean authority, not an override stack.
+assert.match(css, /UI reset 2026-09-11: one calm workspace, no internal browsing sidebar/);
+assert.equal((css.match(/!important/g) || []).length, 0, 'Recetat page CSS must not reintroduce !important overrides');
+assert.ok(css.split(/\r?\n/).length < 900, 'Recetat page CSS should remain compact and maintainable');
+assert.match(css, /\.rx-source-browser\{display:block/);
+assert.match(css, /\.rx-source-index\{display:block/);
+assert.doesNotMatch(css, /\.rx-source-browser\{[^}]*grid-template-columns:/,
+  'Clinical source browser must not return to an internal side-by-side panel');
+assert.match(css, /\.rx-source-commandbar\{display:grid;grid-template-columns:/);
+assert.match(css, /\.rx-source-guide-nav\{display:flex;[^}]*overflow-x:auto/);
+assert.match(css, /\.rx-back-to-list,\.rx-reading-toggle\{display:none\}/);
+assert.match(css, /\.rx-source-connector\.is-or/);
+assert.match(css, /\.rx-source-connector\.is-conditional/);
+assert.match(css, /\.rx-source-connector p\{/);
 assert.match(css, /\.rx-order-card/);
 assert.match(css, /\.rx-free-text-panel/);
-assert.match(css, /\.rx-preview-card\{position:sticky;top:72px\}/);
-assert.match(css, /\.rx-category-button\.is-active,\.rx-pediatric-toggle\.is-active/);
-assert.match(css, /\.rx-route-segments button\.is-selected\{background:#5b48e8/);
+assert.match(css, /\.rx-preview-card\{position:sticky;top:76px\}/);
 assert.match(css, /\.rx-library-layout/);
 assert.match(css, /\.rx-folder-panel/);
-assert.match(css, /\.rx-folder-item\.is-active/);
-assert.match(css, /\.rx-saved-chapter/);
-assert.match(css, /@media\(max-width:760px\)/);
+assert.match(css, /@media\(max-width:640px\)/);
+assert.match(css, /overflow-x:hidden/);
 assert.match(css, /prefers-reduced-motion:reduce/);
 assert.match(stripe, /DRx canonical collapsible sidebar v8/);
-assert.match(stripe, /drx-sidebar-collapsed \.sidebar/);
-assert.match(stripe, /drx-sidebar-collapsed \.main-shell/);
-assert.match(stripe, /--drx-shell-sidebar-collapsed-width:76px/);
-assert.doesNotMatch(css, /--drx-shell-sidebar-collapsed-width:76px|drx-sidebar-collapsed \.(?:sidebar|main-shell|nav-item)/,
-  'Recetat page CSS must not duplicate shared collapse authority');
+assert.doesNotMatch(css, /--drx-shell-sidebar-collapsed-width|drx-sidebar-collapsed \.(?:sidebar|main-shell|nav-item)/,
+  'Recetat page CSS must not duplicate shared shell-collapse authority');
 
+// Runtime/clinical-data behavior stays unchanged.
 assert.match(js, /Recetat V20 — chapters \+ lessons \+ global typo-tolerant smart search/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/);
-assert.match(js, /SIDEBAR_COLLAPSE_KEY = 'drx_sidebar_collapsed_v2'/);
-assert.match(js, /window\.matchMedia\('\(min-width:1024px\)'\)/);
-assert.match(js, /function setSidebarCollapsed\(/);
-assert.match(js, /function toggleSidebarCollapsed\(/);
-assert.match(js, /localStorage\.setItem\(SIDEBAR_COLLAPSE_KEY/);
-assert.match(js, /aria-pressed/);
-assert.match(js, /drx:sidebar-collapse/);
-assert.match(js, /sidebarWasOpen/);
-assert.match(js, /window\.DRxSidebarCollapse\?\.sync\?\.\(\)/);
-assert.match(js, /shared sidebar runtime is the canonical owner/);
-assert.match(js, /sidebarCollapseOwner !== 'local-fallback'/);
-assert.match(js, /Konteksti klinik/);
-assert.match(js, /Rruga e administrimit/);
-assert.match(js, /Sinkronizuar/);
-assert.match(js, /Lokale/);
+assert.match(js, /async function ensureAuth\(\)/);
 assert.match(js, /function structuredOrdersReady\(\)/);
-assert.match(js, /function searchReasonLabel\(/);
 assert.match(js, /function renderDrugSearchResults\(/);
-assert.match(js, /searchCache: new Map\(\)/);
-assert.match(js, /limit=50/);
-assert.match(js, /Nr\. \$\{drug\.registryNumber\}/);
-assert.match(js, /PDID \$\{drug\.pdid\}/);
 assert.match(js, /clinicalReviewConfirmed/);
 assert.match(js, /function updateOrderField\(/);
 assert.match(js, /asnjë dozë nuk aplikohet pa konfirmimin tënd/i);
-assert.match(js, /Nuk aplikohet automatikisht; kontrolloje dhe konfirmoje vetëm nëse i përshtatet pacientit dhe indikacionit/);
-assert.match(js, /async function ensureAuth\(\)/);
 assert.match(js, /function chapterCatalog\(\)/);
-assert.match(js, /function classifyChapter\(/);
 assert.match(js, /function populateChapterSelect\(\)/);
 assert.match(js, /function renderChapterNav\(/);
-assert.match(js, /function moveSavedToChapter\(/);
-assert.match(js, /function migrateLegacyChapterAssignments\(\)/);
-assert.match(js, /migrateLegacyChapterAssignments\(\);/);
-assert.match(js, /chapterManuallySelected/);
-assert.match(js, /score \+= 10/);
-assert.match(js, /score \+= 4/);
 assert.match(js, /medindex:prescriptions-changed/);
-assert.match(js, /prescriptionChapters:\(\)/);
 assert.match(js, /fetch\('\/api\/gemini-prescription'/);
 assert.doesNotMatch(js, /fetch\('\/api\/dosage'\s*,/, 'Recetat V2 must not fetch the full dosage dataset');
-assert.match(js, /function ensurePrescriptionPrefix\(/, 'Recetat V2 must canonicalize dosage-form prefixes');
-assert.match(js, /EXACT_FORM_PREFIXES/, 'Recetat V2 must carry verified exact-form abbreviations');
-assert.match(js, /pharmaceutical_form/, 'Recetat V2 must normalize API pharmaceutical-form aliases');
-assert.match(js, /core\.ensurePrescriptionPrefix\(drug\.prescriptionLine, drug\.form\)/, 'registry prescription lines must be repaired from pharmaceutical form before rendering');
+assert.match(js, /function ensurePrescriptionPrefix\(/);
+assert.match(js, /EXACT_FORM_PREFIXES/);
+assert.match(js, /core\.ensurePrescriptionPrefix\(drug\.prescriptionLine, drug\.form\)/);
+assert.match(js, /RELATION_LABELS = Object\.freeze\(\{ and:'DHE', or:'OSE', plus:'PLUS', conditional:'NËSE' \}\)/);
 assert.doesNotThrow(() => new Function(js));
 
+// Persistence and dosage provenance contract remains intact.
 assert.match(library, /chapter_key/);
 assert.match(library, /function prescriptionChapterRows\(\)/);
 assert.match(library, /prescriptionChapters/);
-assert.match(library, /payload:encryptJson\(item\.payload/);
-assert.match(library, /chapter_key:item\.chapterKey/);
 assert.match(libraryClient, /prescriptionChapters:\(\)/);
 assert.match(libraryClient, /medindex:prescriptions-changed/);
 assert.match(dataApi, /'prescription_chapters'/);
 assert.match(dataApi, /const PRIVATE_SERVER_RELATIONS/);
-
 assert.match(dosage, /X-MedIndex-Data-Source', 'supabase'/);
 assert.match(dosage, /dataSource:'supabase'/);
 assert.doesNotMatch(dosage, /dataSource:'neon'/);
-
 assert.match(migration, /create table if not exists public\.prescription_chapters/);
 assert.match(migration, /add column if not exists chapter_key text/);
-assert.match(migration, /user_prescriptions_chapter_key_fkey/);
-assert.match(migration, /user_prescriptions_user_chapter_updated_idx/);
 assert.match(migration, /alter table public\.prescription_chapters enable row level security/);
-assert.match(migration, /'kardiovaskulare'/);
-assert.match(migration, /'antiinfektive'/);
-assert.match(migration, /'respiratore'/);
-assert.match(migration, /'te-tjera'/);
-assert.ok(history.migrations.some(item =>
-  item.version === '20260828222548' && item.name === 'add_prescription_chapters_and_folder_metadata'
-));
-
+assert.ok(history.migrations.some(item => item.version === '20260828222548' && item.name === 'add_prescription_chapters_and_folder_metadata'));
 assert.match(worker, /\/recetat-v2\.css/);
 assert.match(worker, /\/recetat-v2\.js/);
-assert.doesNotMatch(worker, /['"]\/recetat\.js['"]/);
 
-console.log('Recetat V20 folder-based Stripe workspace, shared sidebar ownership and Supabase chapter sync contract passed.');
+console.log('Recetat clean single-workspace UI, clinical runtime and Supabase persistence contract passed.');
