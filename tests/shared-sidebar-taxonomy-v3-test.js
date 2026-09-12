@@ -7,13 +7,19 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
-const shared = read('sidebar-taxonomy-v3.js');
+const sharedLoader = read('sidebar-taxonomy-v3.js');
+// The loader owns the Antibiotikët nav entry and pulls in the canonical core,
+// which owns the taxonomy, the worker cutover and the personal counts.
+const shared = read('sidebar-taxonomy-core-v3.js');
 const icdSidebar = read('icd-sidebar-v3.js');
 const shell = read('tailadmin-shell.js');
 const shellCore = read('tailadmin-shell-core.js');
 const stripe = read('drx-dashboard-stripe.css');
 
+assert.doesNotThrow(() => new Function(sharedLoader));
 assert.doesNotThrow(() => new Function(shared));
+assert.match(sharedLoader, /CORE_SRC = '\/sidebar-taxonomy-core-v3\.js\?v=/, 'the sidebar loader must pull in the canonical core');
+assert.match(sharedLoader, /ANTIBIOTICS_HREF = '\/antibiotiket\.html'/, 'the loader owns the Antibiotikët nav entry');
 assert.doesNotThrow(() => new Function(icdSidebar));
 assert.doesNotThrow(() => new Function(shell));
 assert.doesNotThrow(() => new Function(shellCore));

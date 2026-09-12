@@ -4,25 +4,42 @@
   const guide = window.DRX_ANTIBIOTIC_GUIDE;
   if (!guide) return;
 
+  // drx-antibiotics-minimal-v5: two actions to an answer — tap the infection,
+  // type the real weight. Everything the source does not need for that stays
+  // out of the way, and nothing the clinician chose is lost on a refresh.
+  const STATE_KEY = 'drx.antibiotics.context.v1';
+
   const $ = id => document.getElementById(id);
   const el = {
-    indication:$('indicationSelect'),
+    indicationChoice:$('indicationChoice'),
     age:$('ageSelect'),
+    ageOptional:$('ageOptional'),
     ageHint:$('ageHint'),
     weight:$('weightInput'),
     weightHint:$('weightHint'),
+    refineBlock:$('refineBlock'),
     allergyField:$('allergyField'),
-    allergy:$('allergySelect'),
+    allergyChoice:$('allergyChoice'),
     atypicalWrap:$('atypicalWrap'),
     atypical:$('atypicalInput'),
     utiTypeWrap:$('utiTypeWrap'),
-    utiType:$('utiTypeSelect'),
+    utiTypeChoice:$('utiTypeChoice'),
     doseBasis:$('doseBasis'),
-    selectionSummary:$('selectionSummary'),
     activeSource:$('activeSource'),
     eligibility:$('eligibilityMessage'),
     list:$('recommendationList'),
     sourceList:$('sourceList'),
+  };
+
+  // The clinical context lives here, not in the DOM, so a reload can restore it
+  // exactly as the clinician left it.
+  const ctx = {
+    indication:guide.indications[0]?.id || '',
+    age:'',
+    weight:'',
+    allergy:'none',
+    atypical:false,
+    utiType:'nonfebrile',
   };
 
   const tierLabels = Object.freeze({
@@ -33,11 +50,24 @@
     option:'Opsion i tabelës',
   });
 
+  // The source splits the alternatives on "life-threatening or not", so the
+  // control has to say exactly that rather than a shorter paraphrase.
+  const allergyOptions = Object.freeze([
+    { value:'none', label:'Jo' },
+    { value:'nonsevere', label:'Po, jo kërcënuese për jetën' },
+    { value:'severe', label:'Po, kërcënuese për jetën' },
+  ]);
+
   const allergyLabels = Object.freeze({
     none:'Pa alergji ndaj penicilinës',
     nonsevere:'Alergji jo kërcënuese për jetën',
     severe:'Alergji kërcënuese për jetën',
   });
+
+  const utiOptions = Object.freeze([
+    { value:'nonfebrile', label:'Pa temperaturë' },
+    { value:'febrile', label:'Febrile' },
+  ]);
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const fmt = value => {
@@ -47,15 +77,15 @@
   };
 
   function currentIndication() {
-    return guide.indications.find(item => item.id === el.indication.value) || guide.indications[0];
+    return guide.indications.find(item => item.id === ctx.indication) || guide.indications[0];
   }
 
   function currentAgeBand() {
-    return guide.ageBands.find(item => item.id === el.age.value) || null;
+    return guide.ageBands.find(item => item.id === ctx.age) || null;
   }
 
   function weightState() {
-    const raw = clean(el.weight.value).replace(',', '.');
+    const raw = clean(ctx.weight).replace(',', '.');
     if (!raw) return { kind:'empty', value:null };
     const value = Number(raw);
     if (!Number.isFinite(value) || value < 1 || value > 200) return { kind:'invalid', value:null };
@@ -134,7 +164,7 @@
     const duration = option.duration || {};
     if (duration.type === 'fixed') return duration.text;
     if (duration.type === 'source-unspecified') return 'Nuk specifikohet në tabelë';
-    if (duration.type === 'uti') return el.utiType.value === 'febrile' ? '7–10 ditë' : '3 ditë';
+    if (duration.type === 'uti') return ctx.utiType === 'febrile' ? '7–10 ditë' : '3 ditë';
     if (duration.type === 'age') {
       const age = currentAgeBand();
       if (!age) return `<2 vjeç: ${duration.underText} · ≥2 vjeç: ${duration.otherText}`;
@@ -145,11 +175,10 @@
 
   function visibleOptions(indication) {
     if (indication.id === 'uti') return indication.options;
-    if (indication.id === 'pneumonia' && el.atypical.checked) {
+    if (indication.id === 'pneumonia' && ctx.atypical) {
       return indication.options.filter(option => option.atypical);
     }
-    const allergy = el.allergy.value;
-    return indication.options.filter(option => (option.allergy || []).includes(allergy) || (option.allergy || []).includes('any'));
+    return indication.options.filter(option => (option.allergy || []).includes(ctx.allergy) || (option.allergy || []).includes('any'));
   }
 
   function eligibilityProblem(indication) {
@@ -172,13 +201,72 @@
     return node;
   }
 
-  function renderAgeHint() {
+  // --- controls ------------------------------------------------------------
+
+  function buildChoice(container, name, options, current, onPick, className) {
+    container.replaceChildren();
+    options.forEach(option => {
+      const label = make('label', className);
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = name;
+      input.value = option.value;
+      input.checked = option.value === current;
+      input.addEventListener('change', () => { if (input.checked) onPick(option.value); });
+      label.append(input, make('span', '', option.label));
+      if (option.hint) label.append(make('small', '', option.hint));
+      container.append(label);
+    });
+  }
+
+  function buildIndicationChips() {
+    buildChoice(
+      el.indicationChoice,
+      'abx-indication',
+      guide.indications.map(item => ({ value:item.id, label:item.short || item.label, hint:item.short ? item.label : '' })),
+      ctx.indication,
+      value => { ctx.indication = value; render(); },
+      'abx-chip',
+    );
+  }
+
+  function buildAllergySegments() {
+    buildChoice(el.allergyChoice, 'abx-allergy', allergyOptions, ctx.allergy, value => {
+      ctx.allergy = value;
+      render();
+    }, 'abx-segment');
+  }
+
+  function buildUtiSegments() {
+    buildChoice(el.utiTypeChoice, 'abx-uti', utiOptions, ctx.utiType, value => {
+      ctx.utiType = value;
+      render();
+    }, 'abx-segment');
+  }
+
+  function populateAges() {
+    guide.ageBands.forEach(age => {
+      const option = document.createElement('option');
+      option.value = age.id;
+      option.textContent = `${age.label} · ref. ${age.referenceWeightLabel}`;
+      el.age.append(option);
+    });
+  }
+
+  // --- rendering -----------------------------------------------------------
+
+  function renderAgeHint(indication) {
     const age = currentAgeBand();
+    const required = Number.isFinite(indication.minAgeMonths);
+    el.ageOptional.textContent = required ? '— e nevojshme' : '— opsionale';
+    el.age.classList.toggle('is-required', required && !age);
     if (!age) {
-      el.ageHint.textContent = 'Mosha përdoret për kufijtë e burimit dhe kohëzgjatjen kur aplikohet.';
+      el.ageHint.textContent = required
+        ? 'Kjo skemë ka prag moshe në burim, prandaj mosha duhet zgjedhur.'
+        : 'Mosha përdoret vetëm për kufijtë e burimit dhe kohëzgjatjen.';
       return;
     }
-    el.ageHint.textContent = `CARPA/WBM: peshë referuese ${age.referenceWeightLabel}. Nuk përdoret automatikisht për llogaritjen e dozës.`;
+    el.ageHint.textContent = `CARPA/WBM: peshë referuese ${age.referenceWeightLabel}. Nuk përdoret për llogaritjen e dozës.`;
   }
 
   function renderWeightHint() {
@@ -200,64 +288,56 @@
   function renderDoseBasis() {
     const state = weightState();
     el.doseBasis.textContent = state.kind === 'valid' ? `Peshë reale ${fmt(state.value)} kg` : 'Formula e burimit';
+    el.doseBasis.dataset.tone = state.kind === 'valid' ? 'live' : 'formula';
   }
 
+  // A refinement is only shown when the source actually branches on it.
   function renderConditionalControls(indication) {
-    el.allergyField.hidden = indication.usesAllergy === false;
+    const usesAllergy = indication.usesAllergy !== false && !(indication.id === 'pneumonia' && ctx.atypical);
+    el.allergyField.hidden = !usesAllergy;
     el.atypicalWrap.hidden = indication.id !== 'pneumonia';
     el.utiTypeWrap.hidden = indication.id !== 'uti';
-  }
-
-  function renderSelectionSummary(indication) {
-    const age = currentAgeBand();
-    const weight = weightState();
-    const pieces = [indication.short || indication.label];
-    if (age) pieces.push(age.label);
-    if (weight.kind === 'valid') pieces.push(`${fmt(weight.value)} kg`);
-    if (indication.usesAllergy !== false) pieces.push(allergyLabels[el.allergy.value] || 'Alergjia e paspecifikuar');
-    if (indication.id === 'pneumonia' && el.atypical.checked) pieces.push('dyshim për atipike');
-    if (indication.id === 'uti') pieces.push(el.utiType.value === 'febrile' ? 'UTI febrile' : 'UTI jo febrile');
-    el.selectionSummary.textContent = pieces.join(' · ');
-
-    const source = sourceById(indication.source);
-    el.activeSource.textContent = source ? source.short : 'Burim';
+    el.refineBlock.hidden = el.allergyField.hidden && el.atypicalWrap.hidden && el.utiTypeWrap.hidden;
   }
 
   function recommendationCard(option, actualWeight) {
-    const card = make('article', `recommendation-card tier-${option.tier || 'option'}`);
+    const card = make('article', `abx-option tier-${option.tier || 'option'}`);
 
-    const main = make('div', 'rec-main');
-    main.append(
-      make('span', 'rec-tier', tierLabels[option.tier] || 'Opsion i tabelës'),
+    const head = make('div', 'abx-option-head');
+    head.append(
       make('h3', '', option.drug),
-      make('p', '', `${option.route || 'PO'} · ${option.frequency || '—'}`)
+      make('span', 'abx-tier', tierLabels[option.tier] || 'Opsion i tabelës'),
     );
 
-    const dose = make('div', 'rec-dose');
-    dose.append(make('strong', '', formulaText(option)));
+    const dose = make('div', 'abx-option-dose');
     const calculated = calculatedText(option, actualWeight);
     if (calculated) {
-      dose.append(make('span', 'calculated-dose', calculated));
+      dose.append(make('strong', 'abx-dose-value', calculated));
+      dose.append(make('span', 'abx-dose-formula', formulaText(option)));
     } else {
-      dose.append(make('small', 'dose-helper', 'Vendos peshën reale për të llogaritur mg/dozë.'));
+      dose.append(make('strong', 'abx-dose-formula-lead', formulaText(option)));
+      dose.append(make('span', 'abx-dose-formula', 'Shkruaj peshën reale për mg/dozë.'));
     }
 
-    const duration = make('div', 'rec-duration');
-    duration.append(make('span', '', 'Kohëzgjatja'), make('strong', '', durationText(option)));
+    const meta = make('div', 'abx-option-meta');
+    meta.append(
+      make('span', '', `${option.route || 'PO'} · ${option.frequency || '—'}`),
+      make('span', 'abx-duration', durationText(option)),
+    );
 
-    card.append(main, dose, duration);
-    if (option.note) card.append(make('p', 'rec-source-note', option.note));
+    card.append(head, dose, meta);
+    if (option.note) card.append(make('p', 'abx-option-note', option.note));
     return card;
   }
 
   function renderSources(indication) {
     el.sourceList.replaceChildren();
     guide.sources.forEach(source => {
-      const row = make('article', `source-item${source.id === indication.source ? ' is-active' : ''}`);
+      const row = make('article', `abx-source${source.id === indication.source ? ' is-active' : ''}`);
       const copy = make('div', '');
       copy.append(make('strong', '', source.title), make('span', '', source.note));
       const badgeText = source.id === indication.source ? 'BURIMI I SKEMËS' : 'PESHË REFERUESE';
-      row.append(copy, make('b', 'source-badge', badgeText));
+      row.append(copy, make('b', 'abx-source-badge', badgeText));
       el.sourceList.append(row);
     });
   }
@@ -270,18 +350,43 @@
     } catch {}
   }
 
+  function persistContext() {
+    try { localStorage.setItem(STATE_KEY, JSON.stringify(ctx)); }
+    catch {}
+  }
+
+  function restoreContext() {
+    let stored = null;
+    try { stored = JSON.parse(localStorage.getItem(STATE_KEY) || 'null'); }
+    catch { stored = null; }
+    if (stored && typeof stored === 'object') {
+      if (guide.indications.some(item => item.id === stored.indication)) ctx.indication = stored.indication;
+      if (guide.ageBands.some(item => item.id === stored.age)) ctx.age = stored.age;
+      if (typeof stored.weight === 'string') ctx.weight = stored.weight.slice(0, 8);
+      if (allergyOptions.some(item => item.value === stored.allergy)) ctx.allergy = stored.allergy;
+      if (utiOptions.some(item => item.value === stored.utiType)) ctx.utiType = stored.utiType;
+      ctx.atypical = stored.atypical === true;
+    }
+    // A shared link wins over the remembered context.
+    const requested = new URLSearchParams(location.search).get('indication');
+    if (requested && guide.indications.some(item => item.id === requested)) ctx.indication = requested;
+  }
+
   function render() {
     const indication = currentIndication();
     const problem = eligibilityProblem(indication);
     const weight = weightState();
 
     renderConditionalControls(indication);
-    renderAgeHint();
+    renderAgeHint(indication);
     renderWeightHint();
     renderDoseBasis();
-    renderSelectionSummary(indication);
     renderSources(indication);
     syncIndicationInUrl(indication);
+    persistContext();
+
+    const source = sourceById(indication.source);
+    el.activeSource.textContent = source ? source.short : 'Burim';
 
     el.eligibility.hidden = !problem;
     el.eligibility.textContent = problem;
@@ -291,7 +396,7 @@
 
     const options = visibleOptions(indication);
     if (!options.length) {
-      el.list.append(make('div', 'empty-state', 'Ky kombinim nuk ka skemë të specifikuar në tabelën burimore.'));
+      el.list.append(make('div', 'abx-empty', 'Ky kombinim nuk ka skemë të specifikuar në tabelën burimore.'));
       return;
     }
 
@@ -299,28 +404,20 @@
     options.forEach(option => el.list.append(recommendationCard(option, actualWeight)));
   }
 
-  function populate() {
-    const requested = new URLSearchParams(location.search).get('indication');
-    guide.indications.forEach(indication => {
-      const option = document.createElement('option');
-      option.value = indication.id;
-      option.textContent = indication.label;
-      el.indication.append(option);
-    });
-    if (requested && guide.indications.some(item => item.id === requested)) el.indication.value = requested;
-
-    guide.ageBands.forEach(age => {
-      const option = document.createElement('option');
-      option.value = age.id;
-      option.textContent = `${age.label} · ref. ${age.referenceWeightLabel}`;
-      el.age.append(option);
-    });
+  function bind() {
+    el.age.addEventListener('change', () => { ctx.age = el.age.value; render(); });
+    el.weight.addEventListener('input', () => { ctx.weight = el.weight.value; render(); });
+    el.atypical.addEventListener('change', () => { ctx.atypical = el.atypical.checked; render(); });
   }
 
-  [el.indication, el.age, el.allergy, el.utiType].forEach(node => node.addEventListener('change', render));
-  el.weight.addEventListener('input', render);
-  el.atypical.addEventListener('change', render);
-
-  populate();
+  restoreContext();
+  populateAges();
+  el.age.value = ctx.age;
+  el.weight.value = ctx.weight;
+  el.atypical.checked = ctx.atypical;
+  buildIndicationChips();
+  buildAllergySegments();
+  buildUtiSegments();
+  bind();
   render();
 })();

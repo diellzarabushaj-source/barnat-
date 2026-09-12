@@ -61,7 +61,11 @@ for (const [htmlFile, jsFile, sidebarRuntimeVersion] of workspaces) {
   assert.doesNotThrow(() => new Function(js), `${jsFile}: syntax error`);
 }
 
-const shared = read('sidebar-taxonomy-v3.js');
+// sidebar-taxonomy-v3.js is the loader; the shell behaviour it pulls in — the
+// service-worker registration and the structure marker — lives in the core.
+const sharedLoader = read('sidebar-taxonomy-v3.js');
+assert.match(sharedLoader, /CORE_SRC = '\/sidebar-taxonomy-core-v3\.js\?v=/, 'shared sidebar loader must pull in the canonical core');
+const shared = read('sidebar-taxonomy-core-v3.js');
 assert.match(shared, /CANONICAL_WORKER_URL = '\/sw\.js\?v=drx-workspace-v7'/);
 assert.match(shared, /navigator\.serviceWorker\.register\(CANONICAL_WORKER_URL/);
 assert.match(shared, /updateViaCache:'none'/);
