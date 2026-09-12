@@ -46,6 +46,29 @@
     return forms.filter(form => allow.has(form.id));
   }
 
+  // A 900 mg dose out of the weakest listed syrup is 36 mL — arithmetically
+  // right and useless at the bedside. Of the strengths the source lists for
+  // this drug (already filtered by any weight restriction), start on the one
+  // that gives the smallest dose volume a syringe can still measure, and fall
+  // back to the least concentrated when every option would be a fraction of a
+  // millilitre. The clinician can pick any other listed strength; only the
+  // starting point changes, never the dose in mg.
+  const MEASURABLE_ML = 2.5;
+
+  function preferredForm(forms, mg) {
+    if (!forms.length) return null;
+    if (!Number.isFinite(mg) || mg <= 0) return forms[0];
+    const withVolume = forms
+      .filter(form => Number.isFinite(form.mgPer5mL) && form.mgPer5mL > 0)
+      .map(form => ({ form, ml:mg * 5 / form.mgPer5mL }));
+    if (!withVolume.length) return forms[0];
+    const measurable = withVolume.filter(item => item.ml >= MEASURABLE_ML);
+    if (measurable.length) {
+      return measurable.reduce((best, item) => (item.ml < best.ml ? item : best)).form;
+    }
+    return withVolume.reduce((best, item) => (item.ml > best.ml ? item : best)).form;
+  }
+
   function frequencyRange(text) {
     const value = clean(text);
     let match = /(\d+)\s+ose\s+(\d+)\s+herë\/ditë/i.exec(value);
@@ -293,6 +316,14 @@
     const durationText = clean(card.querySelector('.abx-duration')?.textContent || '');
     const basisKind = card.querySelector('.abx-dose-basis')?.dataset.basis || '';
     const sequence = comboHeading ? [] : parseSequence(doseText);
+
+    // The largest dose the scheme asks for decides the starting strength: it is
+    // the one whose volume would be hardest to give.
+    const largestDoseMg = sequence.length
+      ? Math.max(...sequence.map(step => step.mg))
+      : parseSimpleDose(doseText)?.max;
+    const preferred = preferredForm(forms, largestDoseMg);
+    if (preferred) select.value = preferred.id;
 
     function refresh() {
       customWrap.hidden = select.value !== 'custom';
