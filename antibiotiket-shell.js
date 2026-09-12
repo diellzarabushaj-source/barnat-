@@ -105,6 +105,7 @@
   }
 
   async function loadAntibioticClinicalHardening() {
+    await loadRuntime('/antibiotiket-clinical-completeness-v2.js?v=clinical-completeness-v2', 'data-drx-abx-completeness-runtime');
     await loadStylesheet('/antibiotiket-clinical-hardening.css?v=clinical-hardening-v1', 'data-drx-abx-hardening-css');
     await loadRuntime('/antibiotiket-clinical-hardening.js?v=clinical-hardening-v1', 'data-drx-abx-hardening-runtime');
   }
@@ -182,7 +183,7 @@
       await loadClinicalModule('Receta / format solide', loadAntibioticPrescription, clinicalErrors);
       await loadClinicalModule('Hospital IV/IM', loadAntibioticHospital, clinicalErrors);
       await loadClinicalModule('Përgatitja IV/IM', loadAntibioticParenteralPreparation, clinicalErrors);
-      await loadClinicalModule('Safety hardening', loadAntibioticClinicalHardening, clinicalErrors);
+      await loadClinicalModule('Clinical completeness + safety hardening', loadAntibioticClinicalHardening, clinicalErrors);
 
       document.documentElement.dataset.theme = 'light';
       if ($('#allergyLabel')) $('#allergyLabel').textContent = 'Alergjia ndaj beta-laktameve';
