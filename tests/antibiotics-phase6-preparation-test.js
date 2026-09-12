@@ -90,8 +90,9 @@ assert.match(runtime,/Si përgatitet/);
 assert.match(runtime,/produkti\/presentation dhe route përputhen saktë/);
 assert.match(runtime,/pa rounding klinik/);
 const shell=read('antibiotiket-shell.js');
-assert.match(shell,/antibiotiket-parenteral-prep-data\.js\?v=antibiotiket-phase6-v2/);
-assert.match(shell,/antibiotiket-parenteral-bridge\.js\?v=antibiotiket-phase6-v2/);
-assert.match(shell,/antibiotiket-parenteral-prep\.js\?v=antibiotiket-phase6-v2/);
+assert.match(shell,/antibiotiket-parenteral-prep-data\.js\?v=antibiotiket-prep-v3-hardening/);
+assert.match(shell,/antibiotiket-parenteral-bridge\.js\?v=antibiotiket-prep-v3-hardening/);
+assert.match(shell,/antibiotiket-parenteral-prep\.js\?v=antibiotiket-prep-v3-hardening/);
+assert.match(shell,/clinical-hardening-v1/);
 
-console.log('Antibiotics Phase 6 gate passed: 20/20 preparation records + route/product safeguards + bridge.');
+console.log('Antibiotics Phase 6 gate passed: 20/20 preparation records + route/product safeguards + hardened loader.');
