@@ -1,9 +1,11 @@
 /* Phase 4 — final form / prescription. Kept folded by default so the main calculator stays simple. */
-.abx-rx{margin-top:2px;border-top:1px solid #f2f4f7}
-.abx-rx>summary{display:flex;align-items:center;gap:8px;min-height:42px;padding:4px 0 0;color:#475467;font-size:11.5px;font-weight:650;cursor:pointer;list-style:none}
+.abx-rx{margin-top:1px}
+.abx-rx>summary{display:inline-flex;align-items:center;gap:6px;color:#98a2b3;font-size:10px;font-weight:650;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;list-style:none}
 .abx-rx>summary::-webkit-details-marker{display:none}
-.abx-rx>summary::after{content:"";width:7px;height:7px;margin-left:auto;border-right:1.5px solid #98a2b3;border-bottom:1.5px solid #98a2b3;transform:rotate(45deg) translate(-1px,-1px);transition:transform .14s ease}
-.abx-rx[open]>summary::after{transform:rotate(-135deg) translate(-1px,-1px)}
+.abx-rx>summary::before{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg);transition:transform .14s ease}
+.abx-rx[open]>summary::before{transform:rotate(45deg)}
+.abx-rx>summary:hover{color:#667085}
+.abx-rx>summary:focus-visible{outline:2px solid rgba(83,58,253,.4);outline-offset:3px;border-radius:4px}
 .abx-rx-body{display:grid;gap:10px;padding:9px 0 1px}
 .abx-rx-shared,.abx-rx-controls{display:flex;flex-wrap:wrap;align-items:end;gap:8px}
 .abx-rx-component{display:grid;gap:8px;padding:11px;border:1px solid #eaecf0;border-radius:10px;background:#fcfcfd}

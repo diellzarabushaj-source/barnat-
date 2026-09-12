@@ -118,10 +118,13 @@
     const select = converter.querySelector('.abx-formulation-select');
     if (!select) return null;
     if (select.value === 'custom') {
-      const input = converter.querySelector('.abx-formulation-custom input');
-      const mgPer5mL = num(input?.value);
+      // A custom strength is "X mg in Y mL" — both typed by the clinician. The
+      // converter resolves it and publishes the result, so it is read from
+      // there rather than re-derived from the two inputs.
+      const mgPer5mL = num(converter.dataset.mgPer5ml);
       if (!Number.isFinite(mgPer5mL) || mgPer5mL <= 0) return null;
-      return { id:'custom', label:`${fmt(mgPer5mL)} mg / 5 mL`, mgPer5mL, custom:true };
+      const label = clean(converter.dataset.strengthLabel) || `${fmt(mgPer5mL)} mg / 5 mL`;
+      return { id:'custom', label, mgPer5mL, custom:true };
     }
     const entry = liquidConfig.drugs?.[drug];
     const forms = Array.isArray(entry?.forms) ? entry.forms : [];

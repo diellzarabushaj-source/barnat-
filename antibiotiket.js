@@ -10,16 +10,21 @@
     indicationChoice:$('indicationChoice'),
     age:$('ageSelect'),
     ageOptional:$('ageOptional'),
-    ageHint:$('ageHint'),
+
     weight:$('weightInput'),
-    weightHint:$('weightHint'),
+    contextHint:$('contextHint'),
     refineBlock:$('refineBlock'),
     allergyField:$('allergyField'),
     allergyChoice:$('allergyChoice'),
+    indicationPicker:$('indicationPicker'),
+    indicationCurrent:$('indicationCurrent'),
+    allergyPicker:$('allergyPicker'),
+    allergyCurrent:$('allergyCurrent'),
     atypicalWrap:$('atypicalWrap'),
     atypical:$('atypicalInput'),
     utiTypeWrap:$('utiTypeWrap'),
     ageSuggestion:$('ageSuggestion'),
+    resultsTitle:$('resultsTitle'),
     doseBasis:$('doseBasis'),
     activeSource:$('activeSource'),
     eligibility:$('eligibilityMessage'),
@@ -320,13 +325,18 @@
     return filtered;
   }
 
-  function eligibilityProblem(indication) {
-    if (!Number.isFinite(indication.minAgeMonths)) return '';
+  // An age threshold the source sets. Not knowing the age yet is not the same
+  // as breaking the threshold: the first states the limit and still shows the
+  // table, the second withholds a regimen the source does not cover.
+  function eligibility(indication) {
+    if (!Number.isFinite(indication.minAgeMonths)) return null;
     const age = currentAgeBand();
     const threshold = indication.minAgeMonths < 12 ? `${indication.minAgeMonths} muaj` : `${Math.round(indication.minAgeMonths / 12)} vjeç`;
-    if (!age) return `Zgjidh moshën për të kontrolluar pragun e kësaj skeme (≥${threshold}).`;
-    if (age.months >= indication.minAgeMonths) return '';
-    return `Kjo skemë ambulatore kërkon moshën ≥${threshold}. Për moshën e zgjedhur nevojitet vlerësim tjetër klinik / eskalim.`;
+    if (!age) {
+      return { blocks:false, tone:'info', text:`Kjo skemë vlen për moshën ≥${threshold}. Shkruaj peshën ose zgjidh moshën për ta konfirmuar.` };
+    }
+    if (age.months >= indication.minAgeMonths) return null;
+    return { blocks:true, tone:'warn', text:`Kjo skemë ambulatore kërkon moshën ≥${threshold}, ndërsa mosha e zgjedhur është ${age.label.toLocaleLowerCase('sq')}. Nevojitet vlerësim tjetër klinik / eskalim.` };
   }
 
   function sourceById(id) {
@@ -356,22 +366,49 @@
     });
   }
 
+  // A phone has room for one decision at a time. Below this width the two
+  // long pickers collapse to a row naming the current choice and reopen on a
+  // tap; above it they are always open and the row is not rendered at all.
+  const compact = window.matchMedia('(max-width:760px)');
+
+  function collapsePicker(picker) {
+    if (picker && compact.matches) picker.open = false;
+  }
+
+  // On a wide screen the summary is a label, not a control — CSS makes it
+  // unclickable, and this keeps a keyboard toggle from stranding the group shut.
+  function pinPickerOpen(picker) {
+    if (!picker) return;
+    picker.addEventListener('toggle', () => {
+      if (!compact.matches && !picker.open) picker.open = true;
+    });
+  }
+
+  function syncPickers() {
+    const indication = currentIndication();
+    if (el.indicationCurrent) el.indicationCurrent.textContent = indication?.short || indication?.label || '—';
+    const bucket = allergyById(ctx.allergy);
+    if (el.allergyCurrent) el.allergyCurrent.textContent = bucket?.short || bucket?.label || '—';
+    if (compact.matches) return;
+    if (el.indicationPicker) el.indicationPicker.open = true;
+    if (el.allergyPicker) el.allergyPicker.open = true;
+  }
+
   function buildIndicationChips() {
     buildChoice(
       el.indicationChoice,
       'abx-indication',
       guide.indications.map(item => ({ value:item.id, label:item.short || item.label, hint:item.label })),
       ctx.indication,
-      value => { ctx.indication = value; render(); },
+      value => { ctx.indication = value; collapsePicker(el.indicationPicker); render(); },
       'abx-chip',
     );
   }
 
   function buildAllergySegments() {
-    el.allergyChoice.style.flexWrap = 'wrap';
-    el.allergyChoice.style.maxWidth = '100%';
     buildChoice(el.allergyChoice, 'abx-allergy', allergyOptions, ctx.allergy, value => {
       ctx.allergy = value;
+      collapsePicker(el.allergyPicker);
       render();
     }, 'abx-segment');
   }
@@ -380,7 +417,9 @@
     guide.ageBands.forEach(age => {
       const option = document.createElement('option');
       option.value = age.id;
-      option.textContent = `${age.label} · ref. ${age.referenceWeightLabel}`;
+      // Short enough to survive a narrow select; the hint line explains that
+      // the second figure is the band's reference weight.
+      option.textContent = `${age.label} · ${age.referenceWeightLabel}`;
       el.age.append(option);
     });
   }
@@ -392,15 +431,6 @@
     el.ageOptional.textContent = derived ? '— nga pesha' : required ? '— e nevojshme' : '— opsionale';
     el.age.classList.toggle('is-required', required && !age);
     el.age.dataset.source = derived ? 'weight' : 'chosen';
-    if (!age) {
-      el.ageHint.textContent = required
-        ? 'Mosha nevojitet për pragun ose kohëzgjatjen. Nëse vendoset nga pesha, korrigjoje nëse mosha reale është tjetër.'
-        : 'Mosha përdoret për peshën referuese dhe kufijtë klinikë.';
-      return;
-    }
-    el.ageHint.textContent = derived
-      ? `Vendosur automatikisht nga pesha ${fmt(weightState().value)} kg. Ndryshoje nëse mosha reale është tjetër.`
-      : `CARPA/WBM: peshë referuese ${age.referenceWeightLabel}.`;
   }
 
   function renderAgeSuggestion() {
@@ -421,23 +451,39 @@
     el.ageSuggestion.append(make('span', 'abx-age-suggestion-copy', copy));
   }
 
-  function renderWeightHint() {
+  // One line, and only the one that matters right now: what the dose is being
+  // computed from, and — when the weight filled the age in — that it did.
+  function renderContextHint(indication) {
     const state = weightState();
-    if (state.kind === 'valid') {
-      el.weight.setAttribute('aria-invalid', 'false');
-      el.weightHint.textContent = 'Pesha reale përdoret për llogaritjen matematikore të mg/dozë.';
-      return;
-    }
+    const age = currentAgeBand();
+    const needsAge = Number.isFinite(indication.minAgeMonths)
+      || indication.options.some(option => option.duration?.type === 'age-bands');
+
     if (state.kind === 'invalid') {
       el.weight.setAttribute('aria-invalid', 'true');
-      el.weightHint.textContent = 'Shkruaj një peshë reale ndërmjet 1 dhe 200 kg.';
+      el.contextHint.dataset.tone = 'error';
+      el.contextHint.textContent = 'Shkruaj një peshë ndërmjet 1 dhe 200 kg.';
       return;
     }
-    el.weight.removeAttribute('aria-invalid');
-    const age = currentAgeBand();
-    el.weightHint.textContent = age
-      ? `Pa peshë reale doza llogaritet nga pesha referuese ${age.referenceWeightLabel} — vetëm orientuese.`
-      : 'Pa peshë reale shfaqet formula e burimit, jo një dozë e llogaritur.';
+    el.weight.setAttribute('aria-invalid', 'false');
+
+    if (state.kind === 'valid') {
+      el.contextHint.dataset.tone = 'live';
+      el.contextHint.textContent = ctx.ageFromWeight && age
+        ? `Doza llogaritet nga ${fmt(state.value)} kg. Mosha u vendos nga pesha — ndryshoje nëse mosha reale është tjetër.`
+        : `Doza llogaritet nga ${fmt(state.value)} kg.`;
+      return;
+    }
+
+    if (age) {
+      el.contextHint.dataset.tone = 'reference';
+      el.contextHint.textContent = `Pa peshë reale, doza llogaritet nga pesha referuese ${age.referenceWeightLabel} (CARPA/WBM) — vetëm orientuese.`;
+      return;
+    }
+    el.contextHint.dataset.tone = 'idle';
+    el.contextHint.textContent = needsAge
+      ? 'Shkruaj peshën për dozën në mg. Mosha vendos pragun dhe kohëzgjatjen — pesha e plotëson vetë.'
+      : 'Shkruaj peshën për dozën në mg. Pa të shfaqet vetëm formula e burimit.';
   }
 
   function renderDoseBasis() {
@@ -515,12 +561,18 @@
     head.append(make('h3', '', option.drug), make('span', 'abx-tier', tierLabels[option.tier] || 'Opsion'));
 
     const dose = make('div', 'abx-option-dose');
+    // The fold under the answer: the source's own rule and the multiplication
+    // behind the number, so a dose can be checked instead of trusted.
+    const working = make('details', 'abx-working');
+    working.append(make('summary', '', 'Si llogaritet'));
+    const workingBody = make('div', 'abx-working-body');
+
     const value = calculatedValue(option, basis.weight);
     if (value) {
       if (basis.label) {
         const basisLine = make('span', 'abx-dose-basis', basis.label);
         basisLine.dataset.basis = basis.kind;
-        dose.append(basisLine);
+        workingBody.append(basisLine);
       }
       const rows = make('div', 'abx-dose-rows');
       rows.append(doseRow(option.kind === 'procedure' ? 'Veprimi' : 'Doza e vetme', value, basis.kind, 'single'));
@@ -530,13 +582,8 @@
 
       const steps = calculationSteps(option, basis.weight);
       if (daily?.working) steps.push(daily.working);
-      if (steps.length) {
-        const working = make('div', 'abx-dose-working');
-        working.append(make('span', 'abx-dose-working-label', 'Si llogaritet'));
-        steps.forEach(step => working.append(make('span', 'abx-dose-step', step)));
-        dose.append(working);
-      }
-      dose.append(make('span', 'abx-dose-formula', formulaText(option)));
+      steps.forEach(step => workingBody.append(make('span', 'abx-dose-step', step)));
+
       if (!daily && !option.frequencyNotComputable && !['fixed','combo'].includes(option.dose?.type) && option.kind !== 'procedure') {
         dose.append(make('span', 'abx-dose-note', 'Doza ditore nuk llogaritet automatikisht për këtë formulim/frekuencë.'));
       }
@@ -547,19 +594,25 @@
       dose.append(make('strong', 'abx-dose-formula-lead', formulaText(option)));
       if (option.dose?.type !== 'fixed') dose.append(make('span', 'abx-dose-formula', 'Shkruaj peshën reale ose zgjidh moshën për llogaritje orientuese.'));
     }
+    workingBody.append(make('span', 'abx-dose-formula', `Rregulli i burimit: ${formulaText(option)}`));
+    working.append(workingBody);
 
+    // Route, frequency, duration and source on one strip. Its shape is a
+    // contract: the formulation and prescription modules read the first span
+    // and .abx-duration back out of it.
     const meta = make('div', 'abx-option-meta');
     const source = sourceById(option.source);
     meta.append(
       make('span', '', `${option.route || 'PO'} · ${option.frequency || '—'}`),
       make('span', 'abx-duration', durationText(option)),
-      make('span', '', source?.short || 'Burim'),
+      make('span', 'abx-option-source', source?.short || 'Burim'),
     );
 
     card.append(head, dose, meta);
     if (option.conditional) card.append(make('p', 'abx-option-note', `Kur përdoret: ${option.conditional}`));
     if (option.note) card.append(make('p', 'abx-option-note', option.note));
     if (option.stewardship) card.append(make('p', 'abx-option-note', `Stewardship: ${option.stewardship}`));
+    card.append(working);
     return card;
   }
 
@@ -623,11 +676,12 @@
 
   function render() {
     const indication = currentIndication();
-    const problem = eligibilityProblem(indication);
+    const limit = eligibility(indication);
 
     renderConditionalControls(indication);
+    syncPickers();
     renderAgeHint(indication);
-    renderWeightHint();
+    renderContextHint(indication);
     renderAgeSuggestion();
     renderDoseBasis();
     renderSources(indication);
@@ -636,10 +690,13 @@
 
     const source = sourceById(indication.source);
     el.activeSource.textContent = source ? source.short : 'Burim';
-    el.eligibility.hidden = !problem;
-    el.eligibility.textContent = problem;
+    // The chip carries the short name; the full one heads the regimens it opened.
+    el.resultsTitle.textContent = indication.label;
+    el.eligibility.hidden = !limit;
+    el.eligibility.textContent = limit ? limit.text : '';
+    el.eligibility.dataset.tone = limit ? limit.tone : 'info';
     el.list.replaceChildren();
-    if (problem) return;
+    if (limit?.blocks) return;
 
     if (indication.warning) {
       const warning = make('div', 'abx-eligibility', indication.warning);
@@ -704,6 +761,17 @@
       ctx.atypical = el.atypical.checked;
       render();
     });
+    // Rotating a phone, or opening the same page on a wide screen, must not
+    // leave a picker folded shut with no way back.
+    const onBreakpoint = () => {
+      if (compact.matches) {
+        collapsePicker(el.indicationPicker);
+        collapsePicker(el.allergyPicker);
+      }
+      syncPickers();
+    };
+    if (compact.addEventListener) compact.addEventListener('change', onBreakpoint);
+    else compact.addListener(onBreakpoint);
   }
 
   restoreContext();
@@ -714,5 +782,11 @@
   buildIndicationChips();
   buildAllergySegments();
   bind();
+  // The markup ships open so a wide screen needs no script to look right; a
+  // narrow one folds both pickers before the first paint the user sees.
+  collapsePicker(el.indicationPicker);
+  collapsePicker(el.allergyPicker);
+  pinPickerOpen(el.indicationPicker);
+  pinPickerOpen(el.allergyPicker);
   render();
 })();

@@ -8,13 +8,13 @@
   <title>DRx | Antibiotikët</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-v9-age-from-weight">
+  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-v11-mobile">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1">
   <script src="/phase9-personal-entities-client.js?v=phase9b" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1" defer></script>
   <script src="/antibiotiket-shell.js?v=antibiotiket-shell-phase2-v1" defer></script>
   <script src="/antibiotiket-data.js?v=antibiotiket-phase2-v6" defer></script>
-  <script src="/antibiotiket.js?v=antibiotiket-phase2-engine-v1" defer></script>
+  <script src="/antibiotiket.js?v=antibiotiket-v11-mobile" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#antibioticsContent">Kalo te Antibiotikët</a>
@@ -87,18 +87,24 @@
       </header>
 
       <div class="page-wrap antibiotiket-page" id="antibioticsContent">
+        <div class="abx-column">
         <header class="abx-head">
           <div>
             <h1>Antibiotikët</h1>
-            <p>Zgjidh infeksionin, shkruaj peshën reale — doza del menjëherë.</p>
+            <p>Zgjidh infeksionin, shkruaj peshën — doza del menjëherë.</p>
           </div>
           <span class="scope-pill">PEDIATRI</span>
         </header>
 
         <section class="abx-card abx-input" aria-label="Konteksti klinik">
           <div class="abx-block">
-            <p class="abx-label" id="indicationLabel">Infeksioni</p>
-            <div class="abx-chips" id="indicationChoice" role="radiogroup" aria-labelledby="indicationLabel"></div>
+            <details class="abx-picker" id="indicationPicker" open>
+              <summary class="abx-picker-summary">
+                <span class="abx-label" id="indicationLabel">Infeksioni</span>
+                <b class="abx-picker-current" id="indicationCurrent">—</b>
+              </summary>
+              <div class="abx-chips" id="indicationChoice" role="radiogroup" aria-labelledby="indicationLabel"></div>
+            </details>
           </div>
 
           <div class="abx-block abx-measure">
@@ -106,23 +112,27 @@
               <label class="abx-label" for="weightInput">Pesha reale</label>
               <div class="abx-weight">
                 <input id="weightInput" type="text" inputmode="decimal" autocomplete="off" enterkeyhint="done"
-                       placeholder="18" aria-describedby="weightHint">
+                       placeholder="18" aria-describedby="contextHint">
                 <span aria-hidden="true">kg</span>
               </div>
             </div>
             <div class="abx-age-field">
               <label class="abx-label" for="ageSelect">Mosha <em id="ageOptional">— opsionale</em></label>
-              <select id="ageSelect" aria-describedby="ageHint"><option value="">Pa zgjedhur</option></select>
+              <select id="ageSelect" aria-describedby="contextHint"><option value="">Pa zgjedhur</option></select>
             </div>
-            <p class="abx-hint" id="weightHint">Pa peshë reale doza llogaritet nga pesha referuese e moshës — vetëm orientuese.</p>
-            <p class="abx-hint" id="ageHint">Mosha jep peshën referuese, kufijtë e burimit dhe kohëzgjatjen.</p>
+            <p class="abx-hint" id="contextHint"></p>
             <div class="abx-age-suggestion" id="ageSuggestion" role="status" hidden></div>
           </div>
 
           <div class="abx-block abx-refine" id="refineBlock" hidden>
             <div class="abx-refine-item" id="allergyField">
-              <p class="abx-label" id="allergyLabel">Alergjia ndaj beta-laktameve</p>
-              <div class="abx-segments" id="allergyChoice" role="radiogroup" aria-labelledby="allergyLabel"></div>
+              <details class="abx-picker" id="allergyPicker" open>
+                <summary class="abx-picker-summary">
+                  <span class="abx-label" id="allergyLabel">Alergjia ndaj beta-laktameve</span>
+                  <b class="abx-picker-current" id="allergyCurrent">—</b>
+                </summary>
+                <div class="abx-segments" id="allergyChoice" role="radiogroup" aria-labelledby="allergyLabel"></div>
+              </details>
             </div>
             <div class="abx-refine-item" id="utiTypeWrap" hidden>
               <p class="abx-label" id="utiLabel">Tipi i UTI</p>
@@ -157,6 +167,7 @@
             <p class="abx-warning">Konteksti klinik mbetet i domosdoshëm. Çdo regjim mban burimin e vet (Children’s Mercy 2026, CDC, CPS 2026 ose CHOP sipas rolit). Për UTI, MRSA dhe alternativa ku rezistenca ndryshon, përdor kulturën/ndjeshmërinë ose epidemiologjinë/antibiogramën lokale kur është relevante. Kur burimi nuk jep maksimum, DRx nuk e shpik.</p>
           </div>
         </details>
+        </div>
       </div>
     </main>
   </div>
