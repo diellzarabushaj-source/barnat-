@@ -3,12 +3,7 @@
 
   const data = window.DRX_ANTIBIOTIC_HOSPITAL;
   const guide = window.DRX_ANTIBIOTIC_GUIDE;
-  const module = document.getElementById('hospitalModule');
-  const list = document.getElementById('hospitalList');
-  const badge = document.getElementById('hospitalCount');
-  const note = document.getElementById('hospitalContextNote');
-  const recommendations = document.getElementById('recommendationList');
-  if (!data || !guide || !module || !list || !badge || !note) return;
+  if (!data || !guide) return;
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const fmt = value => {
@@ -25,6 +20,51 @@
     if (text !== undefined) node.textContent = text;
     return node;
   }
+
+  function ensureModule() {
+    let details = document.getElementById('hospitalModule');
+    if (!details) {
+      const recommendationsSection = document.getElementById('recommendations');
+      if (!recommendationsSection) return null;
+
+      details = make('details', 'abx-hospital');
+      details.id = 'hospitalModule';
+      details.hidden = true;
+
+      const summary = document.createElement('summary');
+      const copy = make('span', 'abx-hospital-summary-copy');
+      copy.append(
+        make('strong', '', 'Hospital / IV / IM'),
+        make('small', '', 'Vetëm kur ka indikacion për eskalim')
+      );
+      const badge = make('b', 'abx-hospital-badge', '—');
+      badge.id = 'hospitalCount';
+      summary.append(copy, badge);
+
+      const body = make('div', 'abx-hospital-body');
+      const context = make('p', 'abx-hospital-context', '');
+      context.id = 'hospitalContextNote';
+      const list = make('div', 'abx-hospital-list');
+      list.id = 'hospitalList';
+      list.setAttribute('aria-live', 'polite');
+      const prep = make('p', 'abx-hospital-prep-note', 'Përgatitja/re-konstituimi, koncentrimi final dhe mL për IV/IM lidhen në Fazën 6. Deri atëherë mos konverto vial strength direkt në mL.');
+      body.append(context, list, prep);
+      details.append(summary, body);
+      recommendationsSection.insertAdjacentElement('afterend', details);
+    }
+
+    return {
+      module:details,
+      list:details.querySelector('#hospitalList'),
+      badge:details.querySelector('#hospitalCount'),
+      note:details.querySelector('#hospitalContextNote'),
+    };
+  }
+
+  const mounted = ensureModule();
+  const recommendations = document.getElementById('recommendationList');
+  if (!mounted?.module || !mounted.list || !mounted.badge || !mounted.note) return;
+  const { module, list, badge, note } = mounted;
 
   function indicationId() {
     try { return new URL(location.href).searchParams.get('indication') || guide.indications?.[0]?.id || ''; }
@@ -122,6 +162,12 @@
     return '';
   }
 
+  function metaRow(label, value) {
+    const row = make('div', 'abx-hosp-meta-row');
+    row.append(make('span', '', label), make('strong', '', value));
+    return row;
+  }
+
   function cardFor(regimen, weight, months) {
     const card = make('article', 'abx-hosp-card');
     card.dataset.regimenId = regimen.id;
@@ -170,12 +216,6 @@
 
     card.append(head, dose, meta, cautions);
     return card;
-  }
-
-  function metaRow(label, value) {
-    const row = make('div', 'abx-hosp-meta-row');
-    row.append(make('span', '', label), make('strong', '', value));
-    return row;
   }
 
   function render() {
