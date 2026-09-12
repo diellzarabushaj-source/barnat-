@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="sq" data-drx-app="antibiotiket">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#1c1e54">
+  <title>DRx | Antibiotikët</title>
+  <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
+  <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-v1">
+</head>
+<body>
+  <a class="skip-link" href="#antibioticList">Kalo te lista e antibiotikëve</a>
+
+  <header class="app-header">
+    <a class="brand" href="/index.html" aria-label="DRx — Regjistri i barnave">
+      <img src="/brand/drx-horizontal-on-dark.svg" alt="DRx" width="105" height="31">
+    </a>
+    <nav class="header-nav" aria-label="Navigimi i shpejtë">
+      <a href="/index.html">Barnat</a>
+      <a href="/dozologjia.html">Dozologjia</a>
+      <a href="/medical-hub.html">Medical Hub</a>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <div class="breadcrumbs" aria-label="Pozicioni aktual">
+      <a href="/index.html">DRx</a><span aria-hidden="true">/</span><strong>Antibiotikët</strong>
+    </div>
+
+    <section class="hero" aria-labelledby="pageTitle">
+      <div>
+        <p class="eyebrow">Referencë e shpejtë</p>
+        <h1 id="pageTitle">Antibiotikët</h1>
+        <p class="hero-copy">Të gjithë antibakterialët sistemikë të regjistrit, në një pamje të pastër dhe të shpejtë.</p>
+      </div>
+      <div class="summary" aria-live="polite">
+        <strong id="productCount">—</strong>
+        <span>produkte</span>
+        <i aria-hidden="true"></i>
+        <strong id="substanceCount">—</strong>
+        <span>substanca</span>
+      </div>
+    </section>
+
+    <section class="toolbar" aria-label="Kërkimi dhe filtrat">
+      <label class="search-box" for="antibioticSearch">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+        <input id="antibioticSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko antibiotik, substancë ose ATC…">
+        <kbd>⌘ K</kbd>
+      </label>
+      <div class="filter-row" id="filterRow" role="group" aria-label="Filtro sipas klasës">
+        <button type="button" class="filter-chip is-active" data-filter="all" aria-pressed="true">Të gjitha</button>
+        <button type="button" class="filter-chip" data-filter="penicillins" aria-pressed="false">Penicilina</button>
+        <button type="button" class="filter-chip" data-filter="beta-lactams" aria-pressed="false">β-laktame të tjera</button>
+        <button type="button" class="filter-chip" data-filter="macrolides" aria-pressed="false">Makrolide</button>
+        <button type="button" class="filter-chip" data-filter="tetracyclines" aria-pressed="false">Tetraciklina</button>
+        <button type="button" class="filter-chip" data-filter="quinolones" aria-pressed="false">Kinolone</button>
+        <button type="button" class="filter-chip" data-filter="other" aria-pressed="false">Të tjera</button>
+      </div>
+    </section>
+
+    <section class="content-card" aria-labelledby="resultsHeading">
+      <div class="results-head">
+        <div>
+          <h2 id="resultsHeading">Lista e antibiotikëve</h2>
+          <p id="resultsMeta">Duke ngarkuar të dhënat nga regjistri…</p>
+        </div>
+        <button type="button" id="refreshButton" class="refresh-button" aria-label="Rifresko të dhënat">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5"></path><path d="M4 17v-5h5"></path><path d="M6.1 8.2A7 7 0 0 1 18.4 6L20 8"></path><path d="M17.9 15.8A7 7 0 0 1 5.6 18L4 16"></path></svg>
+          Rifresko
+        </button>
+      </div>
+
+      <div id="loadingState" class="state-panel">
+        <span class="spinner" aria-hidden="true"></span>
+        <p>Po ngarkohen antibiotikët…</p>
+      </div>
+
+      <div id="errorState" class="state-panel state-error" hidden>
+        <strong>Nuk u ngarkuan të dhënat.</strong>
+        <p id="errorMessage">Provo përsëri.</p>
+        <button type="button" id="retryButton">Provo përsëri</button>
+      </div>
+
+      <div id="emptyState" class="state-panel" hidden>
+        <strong>Nuk u gjet asnjë antibiotik.</strong>
+        <p>Ndrysho kërkimin ose filtrin.</p>
+      </div>
+
+      <div id="antibioticList" class="antibiotic-list" aria-live="polite" hidden></div>
+    </section>
+
+    <aside class="clinical-note" aria-label="Shënim klinik">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 21 20H3L12 3.5Z"></path><path d="M12 9v5"></path><path d="M12 17.5h.01"></path></svg>
+      <p><strong>Përdorim profesional.</strong> Kjo faqe organizon barnat e regjistrit me ATC <b>J01</b>. Zgjedhja e antibiotikut, doza dhe kohëzgjatja duhet të bazohen në diagnozë, pacient, mikrobiologji dhe udhëzimin klinik përkatës.</p>
+    </aside>
+  </main>
+
+  <script src="/antibiotiket.js?v=antibiotiket-v1" defer></script>
+</body>
+</html>
