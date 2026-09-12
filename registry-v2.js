@@ -72,6 +72,21 @@
   // once auth resolves. Without a device-scoped fallback nothing is cached in
   // that window and a refresh snaps the table back to the default.
   const COLUMN_DEVICE_OWNER = 'device';
+  // The shape rows are drawn in: table or list. Deliberately separate from
+  // state.view, which selects the workspace (registry, favorites, notes).
+  const ROW_VIEW_STORAGE_KEY = 'drx_registry_v2_row_view';
+  const ROW_VIEWS = ['table', 'list'];
+
+  function storedRowView() {
+    try {
+      const value = localStorage.getItem(ROW_VIEW_STORAGE_KEY);
+      if (ROW_VIEWS.includes(value)) return value;
+    } catch {}
+    // A phone has no room for fifteen columns, so it opens on the list.
+    try { if (window.matchMedia('(max-width:760px)').matches) return 'list'; } catch {}
+    return 'table';
+  }
+
   const SELECTION_STORAGE_KEY = 'drx_registry_v2_selection';
   const LEGACY_SELECTION_STORAGE_KEY = 'medindexPrescriptionSelection';
 
@@ -87,6 +102,7 @@
     sort: 'registry',
     direction: 'asc',
     rows: [],
+    rowView: storedRowView(),
     dosageByRegistry: new Map(),
     selected: new Map(),
     currentDetail: null,
@@ -114,6 +130,7 @@
     columnPicker: $('columnPicker'), columnPickerButton: $('columnPickerButton'), columnPickerPanel: $('columnPickerPanel'), columnPickerList: $('columnPickerList'), columnPickerSummary: $('columnPickerSummary'), columnSaveStatus: $('columnSaveStatus'), resetColumnsButton: $('resetColumnsButton'),
     formPicker: $('formPicker'), formPickerButton: $('formPickerButton'), formPickerPanel: $('formPickerPanel'), formPickerSearch: $('formPickerSearch'), formPickerList: $('formPickerList'), formPickerValue: $('formPickerValue'), formPickerHint: $('formPickerHint'), sortSelect: $('sortSelect'), directionSelect: $('directionSelect'), clearFiltersButton: $('clearFiltersButton'),
     pageSizeSelect: $('pageSizeSelect'), resultSummary: $('resultSummary'), requestTiming: $('requestTiming'), registryRows: $('registryRows'), registryTable: $('registryTable'), tableScroll: $('tableScroll'),
+    registryList: $('registryList'), viewToggle: $('viewToggle'),
     emptyState: $('emptyState'), emptyClearButton: $('emptyClearButton'), selectPageCheckbox: $('selectPageCheckbox'), paginationSummary: $('paginationSummary'), pageIndicator: $('pageIndicator'), prevPageButton: $('prevPageButton'), nextPageButton: $('nextPageButton'),
     drawerBackdrop: $('drawerBackdrop'), detailDrawer: $('detailDrawer'), drawerClose: $('drawerClose'), drawerCloseButton: $('drawerCloseButton'), drawerTitle: $('drawerTitle'), drawerBody: $('drawerBody'), drawerPrescriptionButton: $('drawerPrescriptionButton'),
     pageTitle: $('pageTitle'), pageEyebrow: $('pageEyebrow'), pageSubtitle: $('pageSubtitle'), breadcrumbCurrent: $('breadcrumbCurrent'), headingActions: $('headingActions'),
@@ -1050,16 +1067,99 @@
 
   function rowKey(row) { return clean(row.id || row.registryNumber || row.pdid); }
 
+  // Only one view holds rows at a time. Every lookup in this file addresses a
+  // row by a single element — the dose cells, the selection checkbox — so two
+  // copies of the same row on the page would silently update only the first.
+  function applyRowView() {
+    const list = state.rowView === 'list';
+    // The shape on screen, readable from the document: styling and tests both
+    // need it without guessing from the DOM.
+    document.documentElement.dataset.registryRowView = state.rowView;
+    el.tableScroll.hidden = list || !state.rows.length;
+    el.registryList.hidden = !list || !state.rows.length;
+    if (el.viewToggle) {
+      el.viewToggle.querySelectorAll('[data-view]').forEach(button => {
+        const active = button.dataset.view === state.rowView;
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
+        button.classList.toggle('is-active', active);
+      });
+    }
+  }
+
+  function setRowView(view) {
+    if (!ROW_VIEWS.includes(view) || state.rowView === view) return;
+    state.rowView = view;
+    try { localStorage.setItem(ROW_VIEW_STORAGE_KEY, view); } catch {}
+    renderRows();
+    // The doses were fetched for the rows on screen; the new shape needs them
+    // written into its own cells.
+    patchDosageCells();
+  }
+
+  // One field of a card. It carries data-col so the column picker hides it in
+  // the list exactly as it hides the matching column in the table.
+  function listField(colId, label, valueHtml) {
+    return `<div class="registry-list-field" data-col="${escapeHtml(colId)}"><span>${escapeHtml(label)}</span><div>${valueHtml}</div></div>`;
+  }
+
+  function renderListCards() {
+    el.registryList.innerHTML = state.rows.map(row => {
+      const key = rowKey(row);
+      const selected = state.selected.has(key);
+      const number = clean(row.registryNumber);
+      const population = populationMeta(row.approvedPopulation);
+      const favorite = isFavoriteProductKey(key);
+      const classes = ['registry-list-card', selected ? 'is-selected' : '', population.key === 'pediatric-only' ? 'is-pediatric-only' : ''].filter(Boolean).join(' ');
+      return `<article class="${classes}" data-row-id="${escapeHtml(key)}" data-population="${escapeHtml(population.key)}" tabindex="0" aria-selected="${selected ? 'true' : 'false'}">
+        <div class="registry-list-head">
+          <input class="row-check" type="checkbox" data-select-row="${escapeHtml(key)}" aria-label="Zgjidh ${escapeHtml(row.tradeName)}" ${selected ? 'checked' : ''}>
+          <div class="registry-list-title">
+            <strong class="drug-name">${escapeHtml(row.tradeName || 'Pa emër')}</strong>
+            <span class="registry-list-sub"><span data-col="substance">${escapeHtml(row.activeSubstance || '—')}</span><b data-col="strength">${escapeHtml(row.strength || '—')}</b></span>
+          </div>
+          <div class="registry-row-actions">
+            <details class="registry-more" data-row-menu-key="${escapeHtml(key)}"><summary class="registry-more-trigger" aria-label="Veprime për ${escapeHtml(row.tradeName)}">${MORE_VERTICAL}</summary><div class="registry-more-menu" role="menu"><button type="button" role="menuitem" data-dose-calculator-open data-registry-number="${escapeHtml(number)}">${CALC_ICON}<span>Kalkulo</span></button><button type="button" role="menuitem" data-row-favorite="${escapeHtml(key)}" class="${favorite ? 'is-favorite' : ''}">${STAR_ICON}<span data-favorite-label>${favorite ? 'Hiq nga favoritët' : 'Shëno si favorit'}</span></button><button type="button" role="menuitem" data-row-note="${escapeHtml(key)}">${NOTE_ICON}<span>Shkruaj shënim</span></button></div></details>
+            <button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">${CHEVRON_RIGHT}</button>
+          </div>
+        </div>
+        <div class="registry-list-tags">
+          <span data-col="population">${populationBadge(row.approvedPopulation)}</span>
+          <span data-col="status">${statusBadge(row.productStatus)}</span>
+          ${row.atc ? `<span data-col="atc"><span class="atc-chip">${escapeHtml(row.atc)}</span></span>` : ''}
+          <span data-col="registry" class="registry-list-number">Nr. ${escapeHtml(number || '—')}</span>
+          <span data-col="price" class="price">${euros(row.retailPrice)}</span>
+        </div>
+        <div class="registry-list-grid">
+          ${listField('form', 'Forma', escapeHtml(row.form || '—'))}
+          ${listField('drugClass', 'Grupi / Klasa', escapeHtml(row.drugClass || '—'))}
+          ${listField('use', 'Për çka përdoret', escapeHtml(row.use || '—'))}
+          <div class="registry-list-field" data-col="adultDose"><span>Doza e të rriturit</span><div data-dose-adult="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></div></div>
+          <div class="registry-list-field" data-col="pediatricDose"><span>Doza pediatrike</span><div data-dose-pediatric="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></div></div>
+        </div>
+      </article>`;
+    }).join('');
+  }
+
   function renderRows() {
     if (!state.rows.length) {
       el.registryRows.innerHTML = '';
+      el.registryList.innerHTML = '';
       el.tableScroll.hidden = true;
+      el.registryList.hidden = true;
       el.emptyState.hidden = false;
       syncPageSelection();
       return;
     }
-    el.tableScroll.hidden = false;
     el.emptyState.hidden = true;
+    if (state.rowView === 'list') {
+      el.registryRows.innerHTML = '';
+      renderListCards();
+      applyRowView();
+      applyColumnVisibility();
+      syncPageSelection();
+      return;
+    }
+    el.registryList.innerHTML = '';
     el.registryRows.innerHTML = state.rows.map(row => {
       const key = rowKey(row);
       const selected = state.selected.has(key);
@@ -1085,6 +1185,7 @@
         <td class="registry-actions-cell"><div class="registry-row-actions"><details class="registry-more" data-row-menu-key="${escapeHtml(key)}"><summary class="registry-more-trigger" aria-label="Veprime për ${escapeHtml(row.tradeName)}">${MORE_VERTICAL}</summary><div class="registry-more-menu" role="menu"><button type="button" role="menuitem" data-dose-calculator-open data-registry-number="${escapeHtml(number)}">${CALC_ICON}<span>Kalkulo</span></button><button type="button" role="menuitem" data-row-favorite="${escapeHtml(key)}" class="${favorite ? 'is-favorite' : ''}">${STAR_ICON}<span data-favorite-label>${favorite ? 'Hiq nga favoritët' : 'Shëno si favorit'}</span></button><button type="button" role="menuitem" data-row-note="${escapeHtml(key)}">${NOTE_ICON}<span>Shkruaj shënim</span></button></div></details><button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">${CHEVRON_RIGHT}</button></div></td>
       </tr>`;
     }).join('');
+    applyRowView();
     applyColumnVisibility();
     syncPageSelection();
   }
@@ -1251,8 +1352,8 @@
     if (!row) return;
     const key = rowKey(row);
     if (selected) state.selected.set(key, row); else state.selected.delete(key);
-    const tr = document.querySelector(`tr[data-row-id="${CSS.escape(key)}"]`);
-    if (tr) { tr.classList.toggle('is-selected', selected); tr.setAttribute('aria-selected', selected ? 'true' : 'false'); }
+    const node = document.querySelector(`[data-row-id="${CSS.escape(key)}"]`);
+    if (node) { node.classList.toggle('is-selected', selected); node.setAttribute('aria-selected', selected ? 'true' : 'false'); }
     const checkbox = document.querySelector(`[data-select-row="${CSS.escape(key)}"]`);
     if (checkbox) checkbox.checked = selected;
     updateSelectedCount();
@@ -1631,7 +1732,22 @@
     el.prevPageButton.addEventListener('click', () => { if (state.page > 1) { state.page -= 1; loadPage(); } });
     el.nextPageButton.addEventListener('click', () => { if (!el.nextPageButton.disabled) { state.page += 1; loadPage(); } });
     document.querySelectorAll('.sort-head[data-sort]').forEach(button => button.addEventListener('click', () => { const next = button.dataset.sort; if (state.sort === next) state.direction = state.direction === 'asc' ? 'desc' : 'asc'; else { state.sort = next; state.direction = 'asc'; } state.page = 1; loadPage(); }));
-    el.registryRows.addEventListener('click', event => {
+    el.registryList.addEventListener('click', event => rowContainerClick(event));
+    el.registryList.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      const card = event.target.closest('[data-row-id]');
+      if (card && event.target === card) { event.preventDefault(); showDetail(findRow(card.dataset.rowId)); }
+    });
+    el.registryList.addEventListener('toggle', event => {
+      const details = event.target.closest?.('.registry-more');
+      if (details?.open) closeRowMenus(details.dataset.rowMenuKey);
+    }, true);
+    el.viewToggle?.addEventListener('click', event => {
+      const button = event.target.closest('[data-view]');
+      if (button) setRowView(button.dataset.view);
+    });
+    el.registryRows.addEventListener('click', event => rowContainerClick(event));
+    function rowContainerClick(event) {
       const doseToggle = event.target.closest('[data-dose-toggle]');
       if (doseToggle) { event.stopPropagation(); toggleDose(doseToggle); return; }
       const calculatorAction = event.target.closest('[data-dose-calculator-open]');
@@ -1645,9 +1761,9 @@
       if (checkbox) { event.stopPropagation(); const row = findRow(checkbox.dataset.selectRow); toggleSelection(row, checkbox.checked); return; }
       const button = event.target.closest('[data-open-row]');
       if (button) { event.stopPropagation(); showDetail(findRow(button.dataset.openRow)); return; }
-      const tr = event.target.closest('tr[data-row-id]');
-      if (tr) showDetail(findRow(tr.dataset.rowId));
-    });
+      const rowNode = event.target.closest('[data-row-id]');
+      if (rowNode) showDetail(findRow(rowNode.dataset.rowId));
+    }
     el.registryRows.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { const tr = event.target.closest('tr[data-row-id]'); if (tr && event.target === tr) { event.preventDefault(); showDetail(findRow(tr.dataset.rowId)); } } });
     el.selectPageCheckbox.addEventListener('change', () => state.rows.forEach(row => toggleSelection(row, el.selectPageCheckbox.checked)));
     el.openPrescriptionButton.addEventListener('click', storePrescriptionSelection);

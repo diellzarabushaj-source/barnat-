@@ -978,3 +978,52 @@ body[data-registry-view="notes"] .personal-toolbar{
   .dose-regimen-list p{font-size:11px}
   .detail-source-data .detail-section-head{position:static}
 }
+
+/* ==========================================================================
+   registry-list-view-v2
+   The same rows the table shows, as cards. One view holds rows at a time, so
+   every per-row lookup in the runtime still addresses exactly one element.
+   Fields carry data-col, so the column picker hides them here too.
+   ========================================================================== */
+.view-toggle{display:inline-flex;padding:3px;border:1px solid var(--line,#e4e7ec);border-radius:9px;background:#f2f4f7}
+.view-toggle button{
+  min-height:32px;padding:0 13px;border:0;border-radius:7px;background:transparent;
+  color:#667085;font-size:12px;font-weight:600;cursor:pointer;
+  transition:background .13s ease,color .13s ease,box-shadow .13s ease;
+}
+.view-toggle button:hover{color:#344054}
+.view-toggle button.is-active{background:#fff;color:#0d253d;box-shadow:0 1px 2px rgba(16,24,40,.07)}
+.view-toggle button:focus-visible{outline:2px solid rgba(83,58,253,.4);outline-offset:1px}
+
+.registry-list{display:grid;gap:8px;padding:10px 0}
+.registry-list-card{
+  display:grid;gap:9px;padding:13px 14px;border:1px solid var(--line,#e4e7ec);border-radius:12px;
+  background:#fff;cursor:pointer;transition:border-color .13s ease,box-shadow .13s ease;
+}
+.registry-list-card:hover{border-color:#c7c2fb;box-shadow:0 1px 2px rgba(16,24,40,.06)}
+.registry-list-card:focus-visible{outline:2px solid rgba(83,58,253,.4);outline-offset:2px}
+.registry-list-card.is-selected{border-color:#a79ef9;background:#fbfaff}
+.registry-list-card.is-pediatric-only{border-left:3px solid #32a071}
+.registry-list-head{display:flex;align-items:flex-start;gap:10px}
+.registry-list-head .row-check{margin-top:3px;flex:none}
+.registry-list-title{flex:1;min-width:0;display:grid;gap:2px}
+.registry-list-title .drug-name{color:#0d253d;font-size:14.5px;font-weight:650;line-height:1.3}
+.registry-list-sub{display:flex;flex-wrap:wrap;gap:2px 8px;color:#667085;font-size:11.5px}
+.registry-list-sub b{color:#344054;font-weight:600}
+.registry-list-head .registry-row-actions{flex:none}
+.registry-list-tags{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:11px}
+.registry-list-number{color:#98a2b3;font-variant-numeric:tabular-nums}
+.registry-list-tags .price{color:#344054;font-weight:650;font-variant-numeric:tabular-nums}
+.registry-list-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px 14px;padding-top:9px;border-top:1px solid #f2f4f7}
+.registry-list-field{display:grid;gap:2px;min-width:0}
+.registry-list-field>span{color:#98a2b3;font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.registry-list-field>div{color:#475467;font-size:12px;line-height:1.45;overflow-wrap:anywhere}
+.registry-list-field[hidden]{display:none}
+
+@media(max-width:760px){
+  .registry-list{padding:8px 0}
+  .registry-list-card{padding:12px}
+  .registry-list-grid{grid-template-columns:minmax(0,1fr);gap:7px}
+  .view-toggle{width:100%}
+  .view-toggle button{flex:1;min-height:40px}
+}
