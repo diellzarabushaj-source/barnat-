@@ -73,10 +73,10 @@
 
   async function loadAntibioticFormulations() {
     await Promise.all([
-      loadStylesheet('/antibiotiket-formulations.css?v=antibiotiket-formulations-v1', 'data-drx-abx-formulations-css'),
-      loadRuntime('/antibiotiket-formulations-data.js?v=antibiotiket-formulations-v1', 'data-drx-abx-formulations-data'),
+      loadStylesheet('/antibiotiket-formulations.css?v=antibiotiket-formulations-v2', 'data-drx-abx-formulations-css'),
+      loadRuntime('/antibiotiket-formulations-data.js?v=antibiotiket-formulations-v2', 'data-drx-abx-formulations-data'),
     ]);
-    await loadRuntime('/antibiotiket-formulations.js?v=antibiotiket-formulations-v1', 'data-drx-abx-formulations-runtime');
+    await loadRuntime('/antibiotiket-formulations.js?v=antibiotiket-formulations-v2', 'data-drx-abx-formulations-runtime');
   }
 
   async function loadAntibioticPrescription() {
@@ -97,10 +97,11 @@
 
   async function loadAntibioticParenteralPreparation() {
     await Promise.all([
-      loadStylesheet('/antibiotiket-parenteral-prep.css?v=antibiotiket-phase6-v1', 'data-drx-abx-prep-css'),
-      loadRuntime('/antibiotiket-parenteral-prep-data.js?v=antibiotiket-phase6-v1', 'data-drx-abx-prep-data'),
+      loadStylesheet('/antibiotiket-parenteral-prep.css?v=antibiotiket-phase6-v2', 'data-drx-abx-prep-css'),
+      loadRuntime('/antibiotiket-parenteral-prep-data.js?v=antibiotiket-phase6-v2', 'data-drx-abx-prep-data'),
     ]);
-    await loadRuntime('/antibiotiket-parenteral-prep.js?v=antibiotiket-phase6-v1', 'data-drx-abx-prep-runtime');
+    await loadRuntime('/antibiotiket-parenteral-bridge.js?v=antibiotiket-phase6-v2', 'data-drx-abx-prep-bridge');
+    await loadRuntime('/antibiotiket-parenteral-prep.js?v=antibiotiket-phase6-v2', 'data-drx-abx-prep-runtime');
   }
 
   function openSidebar() {
