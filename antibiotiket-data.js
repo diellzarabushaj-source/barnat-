@@ -2,14 +2,14 @@
   'use strict';
 
   window.DRX_ANTIBIOTIC_GUIDE = Object.freeze({
-    version:'2026-09-12-v3',
+    version:'2026-09-12-v4',
     scope:'paediatric',
     sources:[
       {
         id:'cps2022',
         short:'CPS 2022',
         title:'Recommended antibiotic doses and durations for common paediatric infections',
-        note:'Canadian Paediatric Society, Drug Therapy and Hazardous Substances Committee, December 2022. Tabela është publikuar në kontekstin e menaxhimit të mungesave kritike të barnave.'
+        note:'Canadian Paediatric Society, Drug Therapy and Hazardous Substances Committee, December 2022. Tabela është publikuar në kontekstin e menaxhimit të mungesave kritike të barnave. Për faringjitin GAS, kohëzgjatjet 10 ditë për amoxicillin, cephalexin dhe clarithromycin janë verifikuar edhe me udhëzimin aktual të CPS dhe CDC.'
       },
       {
         id:'carpa',
@@ -68,12 +68,12 @@
         short:'Faringjit GAS',
         source:'cps2022',
         usesAllergy:true,
-        note:'Tabela paraqet Penicillin VK dhe amoxicillin si skema pa alergji, me alternativa të ndara sipas rëndësisë së alergjisë ndaj penicilinës.',
+        note:'Tabela paraqet Penicillin VK dhe amoxicillin si skema pa alergji, me alternativa të ndara sipas rëndësisë së alergjisë ndaj penicilinës. Kohëzgjatja 10 ditë për amoxicillin, cephalexin dhe clarithromycin është verifikuar me rekomandimet aktuale CPS dhe CDC.',
         options:[
           { id:'penicillin-gas', tier:'option', allergy:['none'], drug:'Penicillin VK', route:'PO', frequency:'2 ose 3 herë/ditë', dose:{type:'weight-threshold',thresholdKg:27,below:'300 mg/dozë',atOrAbove:'600 mg/dozë'}, duration:{type:'fixed',text:'10 ditë'} },
-          { id:'amoxicillin-gas', tier:'option', allergy:['none'], drug:'Amoxicillin', route:'PO', frequency:'1 herë/ditë (mund të ndahet në 2 doza)', dose:{type:'single',value:50,unit:'mg/kg/dozë',maxDose:1000,maxLabel:'1000 mg/ditë'}, duration:{type:'source-unspecified'} },
-          { id:'cephalexin-gas', tier:'allergy-nonsevere', allergy:['nonsevere'], drug:'Cephalexin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:20,unit:'mg/kg/dozë',maxDose:500}, duration:{type:'source-unspecified'} },
-          { id:'clarithro-gas', tier:'allergy-severe', allergy:['severe'], drug:'Clarithromycin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:7.5,unit:'mg/kg/dozë',maxDose:250}, duration:{type:'source-unspecified'} },
+          { id:'amoxicillin-gas', tier:'option', allergy:['none'], drug:'Amoxicillin', route:'PO', frequency:'1 herë/ditë (mund të ndahet në 2 doza)', dose:{type:'single',value:50,unit:'mg/kg/dozë',maxDose:1000,maxLabel:'1000 mg/ditë'}, duration:{type:'fixed',text:'10 ditë'} },
+          { id:'cephalexin-gas', tier:'allergy-nonsevere', allergy:['nonsevere'], drug:'Cephalexin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:20,unit:'mg/kg/dozë',maxDose:500}, duration:{type:'fixed',text:'10 ditë'} },
+          { id:'clarithro-gas', tier:'allergy-severe', allergy:['severe'], drug:'Clarithromycin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:7.5,unit:'mg/kg/dozë',maxDose:250}, duration:{type:'fixed',text:'10 ditë'} },
           { id:'azithro-gas', tier:'allergy-severe', allergy:['severe'], drug:'Azithromycin', route:'PO', frequency:'1 herë/ditë', dose:{type:'single',value:12,unit:'mg/kg/dozë',maxDose:500}, duration:{type:'fixed',text:'5 ditë'} }
         ]
       },
