@@ -1,465 +1,86 @@
 <!doctype html>
-<html lang="sq" class="drx-unified-sidebar" data-drx-app="dozologjia-v2">
+<html lang="sq" data-drx-app="dozologjia-clean">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#1c1e54">
-  <link rel="manifest" href="manifest.webmanifest">
-  <title>DRx | Dozologjia pediatrike</title>
+  <title>DRx | Dozologjia</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/dozologjia-v2.css?v=7">
-  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1">
-  <script src="/phase9-personal-entities-client.js?v=phase9b" defer></script>
-  <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1" defer></script>
-<script src="/dozologjia-v2.js?v=7" defer></script>
+  <link rel="stylesheet" href="/dozologjia.css?v=1">
+  <script src="/dozologjia.js?v=1" defer></script>
 </head>
 <body>
-  <a class="sr-only" href="#dosageContent">Kalo te kalkulatori pediatrik</a>
-  <div class="app-shell" id="appShell" aria-busy="true">
-    <aside class="sidebar" id="sidebar" aria-label="Navigimi kryesor">
-      <div class="sidebar-head">
-        <a class="brand" href="/index.html" aria-label="DRx — Regjistri">
-          <img src="/brand/drx-horizontal-on-dark.svg" alt="DRx" width="112" height="33">
-        </a>
-        <button class="icon-button sidebar-close" id="sidebarClose" type="button" aria-label="Mbyll menynë">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.4 6.4 17.6 17.6M17.6 6.4 6.4 17.6"/></svg>
-        </button>
-      </div>
-
-      <nav class="nav-stack">
-        <p class="nav-label">Klinike</p>
-        <a class="nav-item" href="/index.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20V9h3.6a2.9 2.9 0 0 1 0 5.8H7"/><path d="m11.4 14.8 4.1 5.2"/><path d="m15.2 9.4 4.4 4.4M19.6 9.4l-4.4 4.4"/><path d="M4 4h6"/></svg></span><span>Barnat</span></a>
-        <details class="nav-group" id="atcNavGroup">
-          <summary class="nav-item nav-summary">
-            <span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg></span>
-            <span>Klasifikimi ATC</span>
-            <span class="nav-summary-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></span>
-          </summary>
-          <div class="atc-group-list">
-            <a class="atc-group-link is-all" href="/klasifikimi.html"><span class="atc-group-code">14</span><span class="atc-group-name">Të gjitha grupet</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#A" data-atc-group="A"><span class="atc-group-code">A</span><span class="atc-group-name">Tretja dhe metabolizmi</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#B" data-atc-group="B"><span class="atc-group-code">B</span><span class="atc-group-name">Gjaku dhe organet gjakformuese</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#C" data-atc-group="C"><span class="atc-group-code">C</span><span class="atc-group-name">Sistemi kardiovaskular</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#D" data-atc-group="D"><span class="atc-group-code">D</span><span class="atc-group-name">Barna dermatologjike</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#G" data-atc-group="G"><span class="atc-group-code">G</span><span class="atc-group-name">Gjenitourinar dhe hormonet seksuale</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#H" data-atc-group="H"><span class="atc-group-code">H</span><span class="atc-group-name">Hormonet sistemike</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#J" data-atc-group="J"><span class="atc-group-code">J</span><span class="atc-group-name">Antiinfektivë sistemikë</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#L" data-atc-group="L"><span class="atc-group-code">L</span><span class="atc-group-name">Antineoplastikë dhe imunomodulues</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#M" data-atc-group="M"><span class="atc-group-code">M</span><span class="atc-group-name">Sistemi muskuloskeletal</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#N" data-atc-group="N"><span class="atc-group-code">N</span><span class="atc-group-name">Sistemi nervor</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#P" data-atc-group="P"><span class="atc-group-code">P</span><span class="atc-group-name">Barna antiparazitare</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#R" data-atc-group="R"><span class="atc-group-code">R</span><span class="atc-group-name">Sistemi respirator</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#S" data-atc-group="S"><span class="atc-group-code">S</span><span class="atc-group-name">Organet shqisore</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#V" data-atc-group="V"><span class="atc-group-code">V</span><span class="atc-group-name">Produkte të ndryshme</span></a>
-          </div>
-        </details>
-        <a class="nav-item" href="/icd.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h9l4 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M14 4v5h5"/><path d="M8.5 13h7M8.5 16.5h4.5"/></svg></span><span>ICD‑10</span></a>
-        <a class="nav-item is-active" href="/dozologjia.html" aria-current="page"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16"/><path d="M6 8h12"/><path d="M6 8 3 15a3 3 0 0 0 6 0Z"/><path d="M18 8l-3 7a3 3 0 0 0 6 0Z"/></svg></span><span>Dozologjia</span></a>
-        <a class="nav-item" href="/protokollet.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M10 3.5h4v2h-4z"/><path d="m9.8 12 1.6 1.6 3-3.2"/><path d="M9.8 17h4.6"/></svg></span><span>Protokollet</span></a>
-        <a class="nav-item" href="/urgjencat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.6 2.9 20a1 1 0 0 0 .87 1.5h16.46A1 1 0 0 0 21.1 20L12 4.6Z"/><path d="M12 10v4.4"/><path d="M12 18h.01"/></svg></span><span>Urgjencat</span></a>
-
-        <p class="nav-label nav-label-spaced">Puna ime</p>
-        <a class="nav-item" href="/index.html#favorites" data-personal-nav="favorites"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg></span><span>Favoritët</span><span class="nav-count" id="favoriteNavCount" hidden>0</span></a>
-        <a class="nav-item" href="/index.html#notes" data-personal-nav="notes"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><span>Shënimet</span><span class="nav-count" id="noteNavCount" hidden>0</span></a>
-        <a class="nav-item" href="/recetat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4.5 4.5V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/><path d="M8.5 12.5h7M8.5 16h4.5"/></svg></span><span>Recetat</span></a>
-        <a class="nav-item" href="/analizat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3v6.2L4.8 17.6A2.4 2.4 0 0 0 6.9 21h10.2a2.4 2.4 0 0 0 2.1-3.4L14.5 9.2V3"/><path d="M8.5 3h7"/><path d="M7.3 14.5h9.4"/></svg></span><span>Analizat</span></a>
-        <a class="nav-item" href="/medical-hub.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 8.4v7.2M8.4 12h7.2"/></svg></span><span>Medical Hub</span></a>
+  <div class="shell" id="app" data-ready="false">
+    <aside class="sidebar" aria-label="Navigimi kryesor">
+      <a class="brand" href="/index.html"><img src="/brand/drx-horizontal-on-dark.svg" alt="DRx"></a>
+      <nav class="nav">
+        <a href="/index.html">Barnat</a>
+        <a href="/klasifikimi.html">Klasifikimi ATC</a>
+        <a href="/icd.html">ICD‑10</a>
+        <a class="active" href="/dozologjia.html" aria-current="page">Dozologjia</a>
+        <a href="/protokollet.html">Protokollet</a>
+        <a href="/urgjencat.html">Urgjencat</a>
+        <a href="/recetat.html">Recetat</a>
+        <a href="/medical-hub.html">Medical Hub</a>
       </nav>
-
-      <div class="sidebar-foot">
-        <span id="sourceStatus" class="sr-only">Duke u lidhur…</span>
-        <button class="drx-user-card mi-user-card" id="sidebarProfileButton" type="button" data-mi-profile-trigger aria-label="Hap profilin">
-          <span class="mi-user-avatar drx-user-avatar">DR</span>
-          <span class="mi-user-copy drx-user-copy"><strong>Llogaria</strong><small></small></span>
-          <span class="drx-user-arrow" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg></span>
-        </button>
-        <button class="nav-item logout-button" id="logoutButton" type="button"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-3"/><path d="M10 16.5 14.5 12 10 7.5"/><path d="M14.5 12h-10"/></svg></span><span>Dil</span></button>
-      </div>
     </aside>
-    <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
 
-    <main class="main-shell">
-      <header class="topbar">
-        <button class="icon-button menu-button" id="menuButton" type="button" aria-label="Hap menynë"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-        <div class="breadcrumbs" aria-label="Pozicioni aktual"><span>DRx</span><span class="crumb-sep">/</span><strong>Dozologjia</strong></div>
-        <div class="topbar-actions">
-          <span class="sync-pill"><span class="sync-dot"></span><span id="syncText">Duke u lidhur…</span></span>
-          <button class="drx-profile-chip mi-profile-chip" id="profileButton" type="button" data-mi-profile-trigger aria-label="Hap profilin">
-            <span class="mi-user-avatar drx-user-avatar avatar-button" id="avatarInitials">DR</span>
-            <span class="drx-profile-copy"><strong>Llogaria</strong><small></small></span>
-          </button>
-        </div>
+    <main class="main">
+      <header class="top">
+        <p class="eyebrow">Dozologjia · Antibiotikë</p>
+        <h1>Doza sipas substancës aktive</h1>
+        <p>Zgjedh substancën dhe indikacionin. Produkti komercial nuk kërkohet për llogaritjen klinike.</p>
       </header>
 
-      <div class="page-wrap dosage-page" id="dosageContent">
-        <header class="page-heading dosage-heading">
-          <div>
-            <h1>Dozologjia pediatrike</h1>
-            <p class="page-subtitle">Kërko preparatin, kontrollo regjimin e verifikuar dhe llogarit vetëm me parametrat që kërkon skema. Formula, kufijtë dhe indikacioni vijnë nga serveri.</p>
+      <section class="card" aria-labelledby="calculatorTitle">
+        <h2 id="calculatorTitle" class="sr-only">Kalkulatori i dozës</h2>
+        <div class="grid">
+          <div class="field">
+            <label for="substance">1. Substanca aktive</label>
+            <select id="substance"><option value="">Duke ngarkuar…</option></select>
           </div>
-          <div class="dosage-runtime-chip" aria-label="Statusi i kalkulatorit">
-            <span class="dosage-runtime-dot" aria-hidden="true"></span>
-            <span><strong id="dosageRuntimeLabel">Server-side</strong><small id="dosageRuntimeDetail">Supabase · fail-closed</small></span>
+          <div class="field">
+            <label for="population">2. Popullata</label>
+            <select id="population">
+              <option value="">Të gjitha</option>
+              <option value="adult">Adult</option>
+              <option value="pediatric">Pediatrik</option>
+            </select>
           </div>
-        </header>
+          <div class="field full" id="regimenField" hidden>
+            <label for="regimen">3. Indikacioni / regjimi</label>
+            <select id="regimen"><option value="">Zgjedh indikacionin</option></select>
+          </div>
+        </div>
 
-        <section class="dosage-console" aria-label="Workspace i dozologjisë pediatrike">
-          <aside class="dosage-catalog" aria-labelledby="dosageCatalogTitle">
-            <header class="dosage-panel-head">
-              <div>
-                <h2 id="dosageCatalogTitle">Katalogu pediatrik</h2>
-                <p>Emër, substancë, ATC, fortësi ose formë.</p>
-              </div>
-              <span class="dosage-count-pill"><strong id="dosageCount">0</strong><small>rezultate</small></span>
-            </header>
+        <p class="loading" id="loading" hidden>Duke ngarkuar regjimet…</p>
 
-            <div class="dosage-search-field">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
-              <input id="dosageSearch" type="search" autocomplete="off" spellcheck="false" placeholder="p.sh. amoxicillin, J01CA04, syrup…" aria-label="Kërko barin pediatrik">
-              <kbd>⌘ K</kbd>
-              <button id="dosageSearchClear" class="dosage-search-clear" type="button" aria-label="Pastro kërkimin" hidden>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>
-              </button>
-            </div>
-
-            <div class="dosage-filter-bar" role="toolbar" aria-label="Filtro sipas gatishmërisë">
-              <button class="is-active" type="button" data-readiness-filter="all" aria-pressed="true">Të gjitha <span id="dosageFacetAll">0</span></button>
-              <button type="button" data-readiness-filter="ready" aria-pressed="false">Llogaritet <span id="dosageFacetReady">0</span></button>
-              <button type="button" data-readiness-filter="text" aria-pressed="false">Vetëm tekst <span id="dosageFacetText">0</span></button>
-              <button type="button" data-readiness-filter="blocked" aria-pressed="false">Bllokuar <span id="dosageFacetBlocked">0</span></button>
-              <label class="dosage-form-filter" for="dosageFormFilter">
-                <span class="sr-only">Filtro sipas formës farmaceutike</span>
-                <select id="dosageFormFilter" aria-label="Filtro sipas formës farmaceutike">
-                  <option value="">Të gjitha format</option>
-                </select>
-              </label>
-            </div>
-
-            <p class="dosage-status" id="dosageStatus" role="status" aria-live="polite">Shkruaj së paku dy shkronja për të kërkuar.</p>
-            <div class="dosage-result-list" id="dosageList" aria-live="polite"></div>
-          </aside>
-
-          <section class="dosage-workbench" aria-label="Detajet dhe llogaritja">
-            <article class="dosage-product-panel" id="dosageProductPanel">
-              <div class="dosage-empty-state" id="dosageProductEmpty">
-                <span class="dosage-empty-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 7.5A3.5 3.5 0 0 1 8.5 4h7a3.5 3.5 0 0 1 0 7h-7A3.5 3.5 0 0 1 5 7.5Z"/><path d="m8 5.5 8 4"/><path d="M7 15h10M7 19h7"/></svg>
-                </span>
-                <div><strong>Zgjidh një bar nga katalogu</strong><p>Do të shfaqen indikacioni, regjimi i lidhur, kufizimet dhe burimi para se të aktivizohet kalkulatori.</p></div>
-              </div>
-              <div id="dosageProductBody" hidden></div>
-            </article>
-
-            <article class="dosage-patient-panel is-disabled" id="pediatricInputs" aria-labelledby="dosagePatientTitle">
-              <header class="dosage-section-head">
-                <div>
-                  <h2 id="dosagePatientTitle">Pacienti</h2>
-                  <p id="pediatricInputsHint">Zgjidh një bar të llogaritshëm për të aktivizuar fushat.</p>
-                </div>
-                <span class="dosage-step-state" id="dosagePatientState">Në pritje</span>
-              </header>
-
-              <div class="dosage-patient-fields">
-                <label data-patient-field="indication" hidden>
-                  <span>Indikacioni</span>
-                  <select id="patientIndication" aria-label="Zgjidh indikacionin e verifikuar">
-                    <option value="">Zgjidh indikacionin</option>
-                  </select>
-                  <small class="dosage-field-error" data-field-error="indication"></small>
-                </label>
-                <label data-patient-field="weight" hidden>
-                  <span>Pesha <small>kg</small></span>
-                  <input id="patientWeightKg" type="number" min="0.1" max="300" step="0.1" inputmode="decimal" placeholder="18.0" autocomplete="off">
-                  <small class="dosage-field-error" data-field-error="weight"></small>
-                </label>
-                <label data-patient-field="age" hidden>
-                  <span>Mosha</span>
-                  <input id="patientAgeMonths" type="number" min="0" max="1200" step="1" inputmode="numeric" placeholder="48" autocomplete="off">
-                  <small class="dosage-field-error" data-field-error="age"></small>
-                </label>
-                <label data-patient-field="age-unit" hidden>
-                  <span>Njësia</span>
-                  <select id="patientAgeUnit">
-                    <option value="ditë">ditë</option>
-                    <option value="javë">javë</option>
-                    <option value="muaj" selected>muaj</option>
-                    <option value="vjet">vjet</option>
-                  </select>
-                </label>
-                <label data-patient-field="treatment-day" hidden>
-                  <span>Dita e trajtimit</span>
-                  <input id="patientTreatmentDay" type="number" min="1" max="3650" step="1" inputmode="numeric" placeholder="1" autocomplete="off">
-                  <small class="dosage-field-error" data-field-error="treatment-day"></small>
-                </label>
-                <label data-patient-field="clinical-variant" hidden>
-                  <span>Varianti klinik</span>
-                  <select id="patientClinicalVariant" aria-label="Zgjidh variantin klinik të verifikuar">
-                    <option value="">Zgjidh variantin</option>
-                  </select>
-                  <small class="dosage-field-error" data-field-error="clinical-variant"></small>
-                </label>
-                <label data-patient-field="height" hidden>
-                  <span>Gjatësia <small>cm</small></span>
-                  <input id="patientHeightCm" type="number" min="20" max="250" step="0.5" inputmode="decimal" placeholder="130" autocomplete="off">
-                  <small class="dosage-field-error" data-field-error="height"></small>
-                </label>
-                <label data-patient-field="crcl" hidden>
-                  <span>CrCl <small>mL/min</small></span>
-                  <input id="patientCrCl" type="number" min="0" max="250" step="1" inputmode="decimal" placeholder="90" autocomplete="off">
-                  <small class="dosage-field-error" data-field-error="crcl"></small>
-                </label>
-                <label data-patient-field="egfr" hidden>
-                  <span>eGFR <small>mL/min/1.73m²</small></span>
-                  <input id="patientEgfr" type="number" min="0" max="250" step="1" inputmode="decimal" placeholder="90" autocomplete="off">
-                  <small class="dosage-field-error" data-field-error="egfr"></small>
-                </label>
-                <label data-patient-field="dialysis" hidden>
-                  <span>Dializa</span>
-                  <select id="patientDialysisStatus">
-                    <option value="">Zgjidh statusin</option>
-                    <option value="not_on_dialysis">Jo në dializë</option>
-                    <option value="hemodialysis">Hemodializë</option>
-                    <option value="peritoneal_dialysis">Dializë peritoneale</option>
-                  </select>
-                  <small class="dosage-field-error" data-field-error="dialysis"></small>
-                </label>
-                <label data-patient-field="child-pugh" hidden>
-                  <span>Child–Pugh</span>
-                  <select id="patientChildPugh">
-                    <option value="">Zgjidh klasën</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                  </select>
-                  <small class="dosage-field-error" data-field-error="child-pugh"></small>
-                </label>
-                <label data-patient-field="hepatic-impairment" hidden>
-                  <span>Dëmtim hepatik</span>
-                  <select id="patientHepaticImpairment">
-                    <option value="">Zgjidh sipas burimit</option>
-                    <option value="hepatic impairment">Dëmtim hepatik i pranishëm</option>
-                  </select>
-                  <small class="dosage-field-error" data-field-error="hepatic-impairment"></small>
-                </label>
-              </div>
-
-              <div class="dosage-patient-action">
-                <p id="dosagePatientActionHint">Të dhënat e pacientit nuk ruhen në këtë faqe.</p>
-                <button type="button" id="pediatricCalculate" class="dosage-primary-button" hidden disabled>
-                  <span>Llogarit dozën</span>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
-                </button>
-              </div>
-            </article>
-
-            <article class="dosage-calculation-panel" id="dosageCalculationPanel" aria-labelledby="pediatricResultTitle">
-              <header class="dosage-section-head">
-                <div>
-                  <h2 id="pediatricResultTitle">Rezultati i dozës</h2>
-                  <p>Vlera numerike shfaqet vetëm pasi serveri kalon të gjitha portat klinike.</p>
-                </div>
-                <button type="button" class="dosage-copy-button" id="dosageCopyResult" hidden>Kopjo për recetë</button>
-              </header>
-              <div class="dosage-calculation-body" id="dosageCalculationBody" aria-live="polite">
-                <div class="dosage-result-empty">
-                  <strong>Ende pa llogaritje</strong>
-                  <span>Rezultati, kufijtë, paralajmërimet dhe burimi do të shfaqen këtu.</span>
-                </div>
-              </div>
-            </article>
-          </section>
-        </section>
-
-        <article class="dosage-calculation-panel" id="pediatricDosingGuide" aria-labelledby="pediatricDosingGuideTitle" style="margin-top:13px">
-          <header class="dosage-section-head">
-            <div>
-              <h2 id="pediatricDosingGuideTitle">Rregulli i përgjithshëm për llogaritjen e dozës te fëmijët</h2>
-              <p>Kur doza jepet në mg/kg, fillimisht llogaritet sasia e barit në mg; pastaj ndahet sipas frekuencës dhe konvertohet sipas formës farmaceutike.</p>
-            </div>
-            <span class="dosage-step-state is-ready">Referencë</span>
-          </header>
-          <div class="pediatric-calculation">
-            <p class="pediatric-kicker">Hapi 1 · Llogarit dozën në mg</p>
-            <p class="pediatric-dose-daily"><strong>Doza (mg)</strong> = Pesha (kg) × Doza e rekomanduar (mg/kg)</p>
-
-            <div class="dosage-calculation-facts" aria-label="Formulat bazë të dozimit pediatrik">
-              <div class="dosage-calculation-fact">
-                <span>Doza ditore</span>
-                <strong>Pesha (kg) × mg/kg/ditë</strong>
-              </div>
-              <div class="dosage-calculation-fact">
-                <span>Doza për administrim</span>
-                <strong>Doza totale ditore ÷ numri i dozave</strong>
-              </div>
-              <div class="dosage-calculation-fact">
-                <span>Rendi i llogaritjes</span>
-                <strong>Peshë → mg → frekuencë → formë</strong>
-              </div>
-            </div>
-
-            <details class="pediatric-explain" open>
-              <summary>Sirup / solucion</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Kur preparati ka X mg në Y mL</dt>
-                <dd>mL/dozë = (mg të nevojshme × Y mL) ÷ X mg</dd>
-                <dt>Kur dihet përqendrimi në mg/mL</dt>
-                <dd>mL = mg të nevojshme ÷ mg/mL</dd>
-              </dl>
-            </details>
-
-            <details class="pediatric-explain" open>
-              <summary>Tableta</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Numri i tabletave</dt>
-                <dd>mg të nevojshme ÷ mg në 1 tabletë</dd>
-                <dt>Shembull</dt>
-                <dd>75 mg ÷ 50 mg = 1.5 tableta</dd>
-              </dl>
-            </details>
-
-            <div class="dosage-outcome-block">
-              <strong>Rregulli kryesor</strong>
-              <p>Pesha × mg/kg → mg të nevojshme → ndaj sipas frekuencës → konverto në mL ose tableta.</p>
-            </div>
-
-            <div class="dosage-outcome-block is-danger" role="note">
-              <strong>Kujdes: mg/kg/dozë ≠ mg/kg/ditë</strong>
-              <p>Gjithmonë verifiko si është shkruar doza për barin dhe indikacionin konkret. Kontrollo gjithashtu dozën maksimale, intervalin, moshën, funksionin renal/hepatik dhe, për tabletat, nëse formulimi lejon ndarje të saktë.</p>
+        <div id="patientFields" hidden>
+          <div class="grid" style="margin-top:18px">
+            <div class="field" id="weightWrap" hidden>
+              <label for="weightKg">Pesha (kg)</label>
+              <input id="weightKg" type="number" min="0.5" max="300" step="0.1" inputmode="decimal" placeholder="p.sh. 18">
             </div>
           </div>
-        </article>
-
-        <article class="dosage-calculation-panel" id="pediatricCoreSubstances" aria-labelledby="pediatricCoreSubstancesTitle" style="margin-top:13px">
-          <header class="dosage-section-head">
-            <div>
-              <h2 id="pediatricCoreSubstancesTitle">Substancat bazë — dozologji pediatrike e verifikuar</h2>
-              <p>Referencë e shpejtë sipas burimit të cituar. Regjimi duhet lidhur gjithmonë me indikacionin, formulimin, moshën/peshën dhe kufijtë klinikë të pacientit.</p>
-            </div>
-            <span class="dosage-step-state is-ready">8 karta</span>
-          </header>
-          <div class="pediatric-calculation">
-            <div class="dosage-outcome-block">
-              <strong>Si të lexohet kjo pjesë</strong>
-              <p>Dozat më poshtë janë referenca të lidhura me etiketën/SmPC e shënuar. Ato nuk aktivizojnë automatikisht kalkulatorin server-side dhe nuk zëvendësojnë protokollin lokal ose vlerësimin klinik.</p>
-            </div>
-
-            <details class="pediatric-explain" open>
-              <summary>Paracetamol · N02BE01</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Përdorimi tipik</dt><dd>Dhimbje e lehtë–mesatare / temperaturë</dd>
-                <dt>Doza sipas peshës</dt><dd>10–15 mg/kg për dozë</dd>
-                <dt>Intervali</dt><dd>çdo 4–6 orë sipas nevojës</dd>
-                <dt>Maksimumi i referencës</dt><dd>60 mg/kg/ditë</dd>
-                <dt>Shënim</dt><dd>Kontrollo të gjitha produktet që përmbajnë paracetamol; formulimi konkret mund të ketë kufizime moshe/fortësie.</dd>
-                <dt>Burimi</dt><dd><a href="https://www.medicines.org.uk/emc/product/10240/smpc" target="_blank" rel="noopener noreferrer">eMC SmPC</a></dd>
-              </dl>
-            </details>
-
-            <details class="pediatric-explain" open>
-              <summary>Ibuprofen · M01AE01</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Përdorimi i referencës</dt><dd>Analgezi te fëmijët ≥6 muaj</dd>
-                <dt>Doza</dt><dd>10 mg/kg për dozë</dd>
-                <dt>Intervali</dt><dd>çdo 6–8 orë sipas nevojës</dd>
-                <dt>Maksimumi</dt><dd>40 mg/kg/ditë</dd>
-                <dt>Temperatura</dt><dd>Etiketa e burimit përdor 5 ose 10 mg/kg sipas temperaturës bazale.</dd>
-                <dt>Kujdes</dt><dd>Vlerëso hidratimin, funksionin renal, rrezikun gastrointestinal dhe kundërindikacionet ndaj NSAID.</dd>
-                <dt>Burimi</dt><dd><a href="https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=dda7645f-1666-4c1f-b974-01add2ea79ac" target="_blank" rel="noopener noreferrer">DailyMed</a></dd>
-              </dl>
-            </details>
-
-            <details class="pediatric-explain" open>
-              <summary>Diazepam · N05BA01</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Forma e referencës</dt><dd>Tableta orale; pacientë pediatrikë ≥6 muaj</dd>
-                <dt>Doza fillestare e etiketës</dt><dd>1–2.5 mg, 3–4 herë/ditë</dd>
-                <dt>Titrimi</dt><dd>Rritet gradualisht sipas nevojës dhe tolerancës.</dd>
-                <dt>Krizat akute/statusi</dt><dd>Dozimi është specifik për formulimin, moshën, peshën dhe rrugën; nuk duhet nxjerrë nga ky regjim oral.</dd>
-                <dt>Kujdes</dt><dd>Sedacion/depresion respirator; kërkon vlerësim të rrugëve të frymëmarrjes dhe barnave depresive të SNQ.</dd>
-                <dt>Burimi</dt><dd><a href="https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2f799120-0d08-47cd-8183-a98f0267c845" target="_blank" rel="noopener noreferrer">DailyMed</a></dd>
-              </dl>
-            </details>
-
-            <details class="pediatric-explain" open>
-              <summary>Urbason = methylprednisolone · H02AB04</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Substanca aktive</dt><dd>Methylprednisolone; Urbason inj. përmban methylprednisolone hemisuccinate.</dd>
-                <dt>Doza fillestare pediatrike e një etikete injektabile</dt><dd>0.11–1.6 mg/kg/ditë në 3–4 doza të ndara, varësisht sëmundjes</dd>
-                <dt>Astma sistemike — referencë e etiketës</dt><dd>1–2 mg/kg/ditë, njëherë ose e ndarë</dd>
-                <dt>Parimi</dt><dd>Nuk ka një dozë universale “Urbason”; doza individualizohet sipas sëmundjes, rëndësisë dhe përgjigjes.</dd>
-                <dt>Kujdes</dt><dd>Përdor dozën më të ulët efektive për kohën më të shkurtër; trajtimi më i zgjatur kërkon plan për reduktim sipas rastit.</dd>
-                <dt>Burimi i produktit</dt><dd><a href="https://cima.aemps.es/cima/dochtml/ft/50537/FichaTecnica_50537.html" target="_blank" rel="noopener noreferrer">AEMPS/CIMA — Urbason</a></dd>
-                <dt>Burimi i dozës pediatrike</dt><dd><a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=cd99be87-c8d9-48d6-a8e5-e081052e3f19" target="_blank" rel="noopener noreferrer">DailyMed — methylprednisolone</a></dd>
-              </dl>
-            </details>
-
-            <details class="pediatric-explain" open>
-              <summary>Antihistaminikët · shembull: cetirizine R06AE07</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Sqarim</dt><dd>“Antihistaminikët” janë klasë; doza nuk është e njëjtë për çdo substancë.</dd>
-                <dt>Cetirizine 1 mg/mL · 2–6 vjeç</dt><dd>2.5 mg (2.5 mL), 2 herë/ditë</dd>
-                <dt>6–12 vjeç</dt><dd>5 mg (5 mL), 2 herë/ditë</dd>
-                <dt>&gt;12 vjeç</dt><dd>10 mg (10 mL), 1 herë/ditë</dd>
-                <dt>Indikacionet e SmPC</dt><dd>Rinit alergjik sezonal/perennial dhe urtikarie</dd>
-                <dt>Kujdes</dt><dd>Në dëmtim renal doza/intervali mund të kërkojë individualizim.</dd>
-                <dt>Burimi</dt><dd><a href="https://www.medicines.org.uk/emc/product/4132/smpc" target="_blank" rel="noopener noreferrer">eMC SmPC — cetirizine 1 mg/mL</a></dd>
-              </dl>
-            </details>
-
-            <details class="pediatric-explain" open>
-              <summary>Amoxicillin · J01CA04</summary>
-              <dl class="pediatric-explain-list">
-                <dt>&gt;3 muaj, &lt;40 kg · infeksion i lehtë/mesatar</dt><dd>25 mg/kg/ditë q12h ose 20 mg/kg/ditë q8h</dd>
-                <dt>&gt;3 muaj, &lt;40 kg · infeksion i rëndë</dt><dd>45 mg/kg/ditë q12h ose 40 mg/kg/ditë q8h</dd>
-                <dt>Infeksion i traktit të poshtëm respirator</dt><dd>45 mg/kg/ditë q12h ose 40 mg/kg/ditë q8h</dd>
-                <dt>≤3 muaj</dt><dd>Doza e sipërme 30 mg/kg/ditë, e ndarë q12h</dd>
-                <dt>≥40 kg</dt><dd>Etiketa kalon te rekomandimet e të rriturve.</dd>
-                <dt>Kujdes</dt><dd>Alergjia ndaj beta-laktamëve, fokusi/rëndësia e infeksionit, kultura dhe funksioni renal ndikojnë në zgjedhjen e regjimit.</dd>
-                <dt>Burimi</dt><dd><a href="https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c1d9749c-5d8b-4632-9368-9586f77935b0" target="_blank" rel="noopener noreferrer">DailyMed</a></dd>
-              </dl>
-            </details>
-
-            <details class="pediatric-explain" open>
-              <summary>Gentamicin · J01GB03</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Fëmijë</dt><dd>6–7.5 mg/kg/ditë = 2–2.5 mg/kg q8h</dd>
-                <dt>Foshnja dhe neonatë &gt;1 javë</dt><dd>7.5 mg/kg/ditë = 2.5 mg/kg q8h</dd>
-                <dt>Prematurë / neonatë ≤1 javë</dt><dd>5 mg/kg/ditë = 2.5 mg/kg q12h</dd>
-                <dt>Rruga</dt><dd>IM ose IV sipas produktit dhe situatës klinike</dd>
-                <dt>Kujdes kritik</dt><dd>Ky është regjim tradicional i ndarë nga etiketa. Rregullohet në insuficiencë renale dhe, kur është e mundur, monitorohen nivelet serike; protokollet extended-interval mund të përdorin skema të tjera.</dd>
-                <dt>Monitorimi</dt><dd>Funksioni renal; me trajtim të zgjatur edhe funksioni auditiv/vestibular.</dd>
-                <dt>Burimi</dt><dd><a href="https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3532bb39-a1a6-9d67-e063-6294a90abc0c" target="_blank" rel="noopener noreferrer">DailyMed</a></dd>
-              </dl>
-            </details>
-
-            <details class="pediatric-explain" open>
-              <summary>Ceftriaxone · J01DD04</summary>
-              <dl class="pediatric-explain-list">
-                <dt>Infeksione serioze, jo meningjit</dt><dd>50–75 mg/kg/ditë; zakonisht e ndarë q12h; maks. 2 g/ditë</dd>
-                <dt>Meningjit</dt><dd>100 mg/kg/ditë; 1 herë/ditë ose q12h; maks. 4 g/ditë</dd>
-                <dt>Otit akut bakterial</dt><dd>50 mg/kg IM një dozë; maks. 1 g</dd>
-                <dt>Kujdes neonatal</dt><dd>Kundërindikuar te neonatët hiperbilirubinemikë dhe te neonatët që kërkojnë/pritët të kërkojnë solucione IV me kalcium.</dd>
-                <dt>Rruga</dt><dd>IV/IM sipas indikacionit dhe produktit</dd>
-                <dt>Burimi</dt><dd><a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=96f3fc1e-84f4-4e9b-91ac-19a1692f227a" target="_blank" rel="noopener noreferrer">DailyMed</a></dd>
-              </dl>
-            </details>
-
-            <div class="dosage-outcome-block is-danger" role="note">
-              <strong>Jo çdo dozë mg/kg është e këmbyeshme.</strong>
-              <p>Para llogaritjes kontrollo gjithmonë: mg/kg/dozë apo mg/kg/ditë, indikacionin, moshën/peshën, rrugën, përqendrimin, dozën maksimale, funksionin renal/hepatik dhe burimin e regjimit.</p>
-            </div>
+          <div class="preview">
+            <div><span>Rruga</span><strong id="routePreview">—</strong></div>
+            <div><span>Sa ditë</span><strong id="durationPreview">—</strong></div>
           </div>
-        </article>
+        </div>
 
-        <aside class="dosage-safety-note" role="note">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3 5 6v5c0 4.8 2.8 8 7 10 4.2-2 7-5.2 7-10V6Z"/><path d="M12 8v5M12 16.5h.01"/></svg>
-          <div><strong>Kontroll klinik i detyrueshëm.</strong><p>DRx nuk inferon dozë nga fortësia e produktit. Kur mungon një formulë typed, kufi maksimal, regjim i lidhur ose verifikim klinik, llogaritja ndalet dhe shfaqet vetëm informacioni burimor.</p></div>
-        </aside>
-      </div>
+        <div class="actions">
+          <button class="btn" id="calculate" type="button" disabled>Llogarit dozën</button>
+          <span class="status" id="status">Zgjedh substancën për të filluar.</span>
+        </div>
+      </section>
+
+      <section class="result" id="result" hidden aria-live="polite">
+        <h2>Rezultati</h2>
+        <div class="result-grid" id="resultBody"></div>
+      </section>
     </main>
   </div>
-  <div class="rx-toast" id="dosageToast" role="status" aria-live="polite"></div>
 </body>
 </html>
