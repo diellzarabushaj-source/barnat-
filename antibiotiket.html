@@ -8,13 +8,13 @@
   <title>DRx | Antibiotikët</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-v5-minimal">
+  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-v6-reference-dose">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1">
   <script src="/phase9-personal-entities-client.js?v=phase9b" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1" defer></script>
   <script src="/antibiotiket-shell.js?v=antibiotiket-shell-v1" defer></script>
   <script src="/antibiotiket-data.js?v=antibiotiket-v3" defer></script>
-  <script src="/antibiotiket.js?v=antibiotiket-v5-minimal" defer></script>
+  <script src="/antibiotiket.js?v=antibiotiket-v6-reference-dose" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#antibioticsContent">Kalo te Antibiotikët</a>
@@ -114,8 +114,8 @@
               <label class="abx-label" for="ageSelect">Mosha <em id="ageOptional">— opsionale</em></label>
               <select id="ageSelect" aria-describedby="ageHint"><option value="">Pa zgjedhur</option></select>
             </div>
-            <p class="abx-hint" id="weightHint">Pa peshë reale shfaqet formula e burimit, jo një dozë e llogaritur.</p>
-            <p class="abx-hint" id="ageHint">Mosha përdoret vetëm për kufijtë e burimit dhe kohëzgjatjen.</p>
+            <p class="abx-hint" id="weightHint">Pa peshë reale doza llogaritet nga pesha referuese e moshës — vetëm orientuese.</p>
+            <p class="abx-hint" id="ageHint">Mosha jep peshën referuese, kufijtë e burimit dhe kohëzgjatjen.</p>
           </div>
 
           <div class="abx-block abx-refine" id="refineBlock" hidden>
@@ -151,7 +151,7 @@
             <b id="activeSource">—</b>
           </summary>
           <div class="abx-provenance-body">
-            <p class="abx-safety">Pesha referuese sipas moshës është vetëm orientuese. <strong>Doza numerike llogaritet vetëm nga pesha reale që shkruan ti.</strong></p>
+            <p class="abx-safety">Kur nuk ka peshë reale, doza llogaritet nga pesha referuese e moshës sipas CARPA/WBM dhe është vetëm orientuese. <strong>Doza përfundimtare llogaritet nga pesha reale që shkruan ti.</strong></p>
             <div id="sourceList" class="abx-sources"></div>
             <p class="abx-warning">Konteksti klinik mbetet i domosdoshëm. CARPA/WBM duhet përdorur bashkë me protokollet përkatëse; tabela CPS 2022 është publikuar në kontekstin e menaxhimit të mungesave kritike të barnave. Kur tabela nuk e specifikon një element, faqja nuk e plotëson me hamendje.</p>
           </div>

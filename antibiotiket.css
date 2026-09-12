@@ -93,6 +93,7 @@ button,input,select{font:inherit}button{color:inherit}a{color:inherit}[hidden]{d
 .abx-basis{flex:none;display:inline-flex;align-items:center;min-height:26px;padding:0 10px;border-radius:999px;font-size:10.5px;font-weight:650}
 .abx-basis[data-tone="formula"]{border:1px solid var(--ab-line);background:#f9fafb;color:var(--ab-muted)}
 .abx-basis[data-tone="live"]{border:1px solid #abefc6;background:var(--ab-good-bg);color:var(--ab-good)}
+.abx-basis[data-tone="reference"]{border:1px solid #fedf89;background:var(--ab-warn-bg);color:var(--ab-warn)}
 .abx-eligibility{margin:0 0 12px;padding:13px 15px;border:1px solid #fedf89;border-radius:11px;background:var(--ab-warn-bg);color:var(--ab-warn);font-size:12px;line-height:1.5}
 .abx-list{display:grid;gap:10px}
 .abx-option{position:relative;display:grid;gap:9px;padding:16px 18px 16px 21px;border:1px solid var(--ab-line);border-radius:12px;background:var(--ab-surface);box-shadow:var(--ab-shadow)}
@@ -105,6 +106,16 @@ button,input,select{font:inherit}button{color:inherit}a{color:inherit}[hidden]{d
 .abx-tier{flex:none;color:var(--ab-faint);font-size:10px;font-weight:650;letter-spacing:.03em;text-transform:uppercase}
 .abx-option-dose{display:grid;gap:4px}
 .abx-dose-value{color:var(--ab-good);font-size:15px;font-weight:650;line-height:1.4}
+/* A dose derived from the age band's reference weight is orientational, so it
+   never wears the same colour as one computed from a real weight. */
+.abx-dose-value[data-basis="reference"]{color:var(--ab-warn)}
+.abx-dose-working{display:grid;gap:3px;margin:2px 0 1px;padding:9px 11px;border-left:2px solid #e4e7ec;background:#fbfcfd;border-radius:0 8px 8px 0}
+.abx-dose-working-label{color:var(--ab-faint);font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.abx-dose-step{color:#475467;font-size:12px;font-variant-numeric:tabular-nums;line-height:1.5}
+.abx-orientational-note{
+  margin:0;padding:11px 14px;border:1px solid #fedf89;border-radius:11px;
+  background:var(--ab-warn-bg);color:var(--ab-warn);font-size:12px;line-height:1.5;
+}
 .abx-dose-formula-lead{color:#344054;font-size:13.5px;font-weight:600;line-height:1.45}
 .abx-dose-formula{color:var(--ab-muted);font-size:12px;line-height:1.45}
 .abx-option-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding-top:9px;border-top:1px solid #f2f4f7;color:var(--ab-faint);font-size:11.5px}
