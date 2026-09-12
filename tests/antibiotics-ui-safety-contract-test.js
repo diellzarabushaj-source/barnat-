@@ -8,12 +8,14 @@ const read=f=>fs.readFileSync(path.join(ROOT,f),'utf8');
 
 const shell=read('antibiotiket-shell.js');
 const hard=read('antibiotiket-clinical-hardening.js');
+const agePrecision=read('antibiotiket-age-precision.js');
 const css=read('antibiotiket-clinical-hardening.css');
 const prescription=read('antibiotiket-prescription.js');
 const prep=read('antibiotiket-parenteral-prep.js');
 
 // Fail-visible module loading.
 assert.match(shell,/clinical-completeness-v2/);
+assert.match(shell,/clinical-age-precision-v1/);
 assert.match(shell,/clinical-hardening-v1/);
 assert.match(shell,/modalitet i degraduar/);
 assert.match(shell,/Mos përdor pjesën e munguar për vendim final/);
@@ -22,6 +24,11 @@ assert.match(shell,/Mos përdor pjesën e munguar për vendim final/);
 assert.match(hard,/reconcileAgeFromWeight/);
 assert.match(hard,/Mosha klinike duhet zgjedhur veçmas/);
 assert.match(hard,/Pesha nuk përdoret si zëvendësim i moshës/);
+assert.match(agePrecision,/id:'1m'/);
+assert.match(agePrecision,/id:'2m'/);
+assert.match(agePrecision,/id:'5y'/);
+assert.match(agePrecision,/clinical-only bands never create a reference weight/i);
+assert.match(agePrecision,/nuk i caktohet peshë referuese/i);
 
 // Context-specific hard stops.
 assert.match(hard,/STOP — alergjia ndaj cefalosporinës duhet specifikuar/);
