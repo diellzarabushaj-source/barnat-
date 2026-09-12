@@ -69,12 +69,14 @@ assert.match(runtime, /thresholdMatches/);
 assert.match(runtime, /orbitalRedFlags/);
 
 const shell = read('antibiotiket-shell.js');
-assert.match(shell, /antibiotiket-hospital-data\.js\?v=antibiotiket-phase5-v1/);
-assert.match(shell, /antibiotiket-hospital\.js\?v=antibiotiket-phase5-v1/);
+assert.match(shell, /antibiotiket-hospital-data\.js\?v=antibiotiket-hospital-v2-hardening/);
+assert.match(shell, /antibiotiket-hospital\.js\?v=antibiotiket-hospital-v2-hardening/);
 assert.match(shell, /antibiotiket-hospital\.css\?v=antibiotiket-phase5-v1/);
+assert.match(shell, /clinical-completeness-v2/);
+assert.match(shell, /clinical-hardening-v1/);
 const css = read('antibiotiket-hospital.css');
 assert.match(css, /\.abx-hospital\{/);
 assert.match(css, /\.abx-hosp-route\.is-im/);
 assert.match(css, /@media\(max-width:520px\)/);
 
-console.log(`Antibiotics Phase 5 gate passed: ${hospital.regimens.length} hospital/parenteral regimens, separated from outpatient UI.`);
+console.log(`Antibiotics Phase 5 gate passed: ${hospital.regimens.length} base hospital/parenteral regimens, with audited completeness layered separately from outpatient UI.`);
