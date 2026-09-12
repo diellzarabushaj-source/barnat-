@@ -67,11 +67,80 @@
     document.head.appendChild(script);
   }
 
-  function boot() {
+  // Kept here as the shared drawer contract used by the workspace audit.
+  function initMobileSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const trigger = document.getElementById('menuButton');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    const main = document.querySelector('.main-shell');
+    if (!sidebar || !trigger || !backdrop || !main) return;
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    let opened = false;
+    let returnFocus = null;
+    let previousOverflow = '';
+    let previousInert = false;
+    trigger.setAttribute('aria-controls', sidebar.id);
+    const focusable = () => [...sidebar.querySelectorAll('a[href], button, input, select, textarea, summary, [tabindex]')]
+      .filter(node => !node.disabled && node.tabIndex >= 0 && !node.closest('[inert]') && node.getClientRects().length);
+    const close = () => {
+      sidebar.classList.remove('is-open');
+      sync();
+    };
+    const sync = () => {
+      const next = !desktop.matches && sidebar.classList.contains('is-open');
+      trigger.setAttribute('aria-expanded', String(next));
+      backdrop.hidden = !next;
+      sidebar.inert = !desktop.matches && !next;
+      if (next === opened) return;
+      opened = next;
+      if (next) {
+        returnFocus = document.activeElement;
+        previousOverflow = document.body.style.overflow;
+        previousInert = main.inert;
+        main.inert = true;
+        document.body.style.overflow = 'hidden';
+        (focusable()[0] || sidebar).focus({ preventScroll:true });
+      } else {
+        main.inert = previousInert;
+        document.body.style.overflow = previousOverflow;
+        const target = desktop.matches ? [...main.querySelectorAll('a[href], button, input')].find(node => !node.disabled && node.getClientRects().length) : returnFocus;
+        if (target?.isConnected && !target.closest('[inert]')) target.focus({ preventScroll:true });
+      }
+    };
+    new MutationObserver(sync).observe(sidebar, { attributes:true, attributeFilter:['class'] });
+    document.addEventListener('keydown', event => {
+      if (!opened) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        close();
+      } else if (event.key === 'Tab') {
+        const items = focusable();
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (!first) { event.preventDefault(); return; }
+        if (!sidebar.contains(document.activeElement) || (event.shiftKey && document.activeElement === first) || (!event.shiftKey && document.activeElement === last)) {
+          event.preventDefault();
+          (event.shiftKey ? last : first).focus();
+        }
+      }
+    }, true);
+    sidebar.addEventListener('click', event => {
+      if (opened && event.target.closest('a[href]') && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) close();
+    });
+    desktop.addEventListener('change', () => {
+      if (desktop.matches) sidebar.classList.remove('is-open');
+      sync();
+    });
+    window.addEventListener('pageshow', sync);
+    sync();
+  }
+
+  function init() {
     ensureAntibioticsNav();
     loadCore();
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true });
-  else boot();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
+  else init();
 })();
