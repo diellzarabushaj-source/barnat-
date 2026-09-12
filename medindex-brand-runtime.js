@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'drx-brand-v6';
+  const VERSION = 'drx-brand-v7';
   const PROFILE_VERSION = 'profile-portal-v2';
   // Legacy per-device photos are retained only as a one-time migration source.
   // The canonical photo lives behind the authenticated same-origin profile API.
@@ -208,8 +208,13 @@
     return `<span class="medindex-brand-picture ${className}" aria-hidden="true"><img class="medindex-sidebar-brand" src="${src}" alt="" decoding="async" draggable="false"></span>`;
   }
 
+  // The canonical v5 shell owns `.sidebar .brand` itself: the page ships the
+  // lockup and sidebar-taxonomy-core-v3.js adds the compact mark and the
+  // collapse control. Rewriting it from here wiped that mark and left the
+  // lockup with only the legacy `.mi-sidebar` sizing rules, which is what put
+  // two logos on top of each other. This runtime keeps the legacy shell only.
   function enhanceBrands() {
-    const sidebar = document.querySelector('.mi-sidebar .mi-brand, .sidebar .brand');
+    const sidebar = document.querySelector('.mi-sidebar .mi-brand');
     const mobile = document.querySelector('.mi-mobile-brand');
     if (sidebar && sidebar.dataset.medindexBrand !== VERSION) {
       sidebar.dataset.medindexBrand = VERSION;

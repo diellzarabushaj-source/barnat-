@@ -1413,7 +1413,7 @@ html.drx-unified-sidebar .sidebar-head{
   border-bottom:0!important;
   background:transparent!important;
 }
-html.drx-unified-sidebar .sidebar .brand img{
+html.drx-unified-sidebar .sidebar .brand img:not(.brand-mark){
   display:block!important;
   width:112px!important;
   height:auto!important;
@@ -1572,7 +1572,7 @@ html.drx-unified-sidebar .sidebar-head{
   background:transparent!important;
 }
 html.medindex-tailadmin .mi-sidebar .mi-brand img,
-html.drx-unified-sidebar .sidebar .brand img{
+html.drx-unified-sidebar .sidebar .brand img:not(.brand-mark){
   display:block!important;
   width:112px!important;
   height:auto!important;
@@ -1882,7 +1882,7 @@ html.drx-unified-sidebar .sidebar .brand{
   color:#fff!important;
   text-decoration:none!important;
 }
-html.drx-unified-sidebar .sidebar .brand img{
+html.drx-unified-sidebar .sidebar .brand img:not(.brand-mark){
   display:block!important;
   width:112px!important;
   height:33px!important;
@@ -2449,6 +2449,11 @@ html.drx-unified-sidebar .sidebar-collapse:focus-visible{
   box-shadow:0 0 0 3px rgba(162,155,255,.18)!important;
 }
 html.drx-unified-sidebar .brand-mark{display:none!important}
+/* One lockup at a time. The legacy TailAdmin brand runtime used to rewrite
+   this rail with its own `.mi-sidebar`-scoped markup, which left the wordmark
+   unsized and drew the compact mark over it. The canonical rail owns its
+   brand; anything the legacy runtime injects here stays inert. */
+html.drx-unified-sidebar .sidebar .brand .medindex-brand-picture{display:none!important}
 
 @media(min-width:1024px){
   html.drx-unified-sidebar .sidebar,
@@ -2467,11 +2472,16 @@ html.drx-unified-sidebar .brand-mark{display:none!important}
   html.drx-unified-sidebar.drx-sidebar-collapsed .main-shell{
     margin-left:var(--drx-shell-sidebar-collapsed-width)!important;
   }
+  /* 76px rail minus 20px of padding leaves 56px, and a 30px mark beside a 30px
+     button does not fit in it — the mark used to be pushed out of the rail and
+     clipped. Collapsed, the head stacks instead. */
   html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar-head{
     min-height:54px!important;
+    flex-direction:column!important;
+    align-items:center!important;
     justify-content:center!important;
-    gap:6px!important;
-    padding:0 0 12px!important;
+    gap:10px!important;
+    padding:0 0 14px!important;
   }
   html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar .brand{
     width:30px!important;
@@ -2479,6 +2489,9 @@ html.drx-unified-sidebar .brand-mark{display:none!important}
     display:grid!important;
     place-items:center!important;
   }
+  /* Hide the lockup by shape, not by the class the runtime adds later, and at a
+     specificity that beats the rules forcing every brand image visible. */
+  html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar .brand img:not(.brand-mark),
   html.drx-unified-sidebar.drx-sidebar-collapsed .sidebar .brand-full{
     display:none!important;
   }
