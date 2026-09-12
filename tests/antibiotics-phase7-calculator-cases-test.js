@@ -18,7 +18,8 @@ new Function('window','document','MutationObserver', read('antibiotiket-parenter
   { getElementById(){return null;}, querySelectorAll(){return [];}, createElement(){return {};} },
   function(){}
 );
-// The hardening layer patches canonical nested data before touching the DOM.
+load('antibiotiket-clinical-completeness-v2.js');
+// Hardening patches canonical nested data before touching the DOM.
 new Function('window','document','MutationObserver', read('antibiotiket-clinical-hardening.js'))(sandbox.window, undefined, undefined); // eslint-disable-line no-new-func
 
 const guide = sandbox.window.DRX_ANTIBIOTIC_GUIDE;
@@ -54,29 +55,66 @@ tc('T015',()=>{ const f=form('Ciprofloxacin','cipro-500-5'); assert.equal(f.minW
 
 assert.equal(passed,15);
 
-// Additional post-audit clinical regressions.
+// --- Post-audit clinical regressions ---------------------------------------
 assert.equal(dx('sinusitis').minAgeMonths,12, 'ABRS must be restricted to the 1–18 year pathway population');
 assert.equal(dx('uti-cystitis').minAgeMonths,1, 'CPS 2026 UTI scope starts at 1 month');
 assert.equal(dx('uti-pyelo').minAgeMonths,1, 'CPS 2026 UTI scope starts at 1 month');
+
 const biteTreat=dx('bite').options.find(x=>x.id==='combo-bite-treat');
 const biteClinda=biteTreat.dose.parts.find(x=>x.drug==='Clindamycin');
 assert.equal(biteClinda.dose.maxDose,450, 'Oral bite clindamycin must cap at 450 mg/dose');
+
 const levo=dx('sinusitis').options.find(x=>x.id==='levo-sinusitis');
 assert.equal(levo.dose.type,'fixed', 'Age-dependent levofloxacin must not be auto-finalized by a generic weight calculator');
 assert.match(levo.dose.text,/10 mg\/kg\/dozë/);
 assert.match(levo.dose.text,/500 mg\/ditë/);
 assert.ok(dx('sinusitis').options.some(x=>x.id==='cefuroxime-sinusitis'));
 assert.ok(dx('sinusitis').options.some(x=>x.id==='cefixime-clinda-sinusitis'));
+
 assert.deepEqual(liquids.indicationOverrides['uti-cystitis|Amoxicillin / clavulanate'].allow,['amoxclav-400-57-5']);
 assert.deepEqual(liquids.indicationOverrides['uti-pyelo|Amoxicillin / clavulanate'].allow,['amoxclav-400-57-5']);
 assert.equal(liquids.drugs['Amoxicillin / clavulanate'].customAllowed,false);
 assert.equal(liquids.drugs['Trimethoprim / sulfamethoxazole'].customAllowed,false);
 assert.equal(liquids.drugs.Levofloxacin.customAllowed,false);
+
+// --- Current AOM pathway completeness --------------------------------------
+const aom=dx('aom');
+assert.ok(aom.options.some(x=>x.id==='cefuroxime-aom' && x.dose.text==='250 mg/dozë'));
+assert.ok(hosp('H017') && hosp('H017').route==='IV' && hosp('H017').transition==='1 dozë');
+assert.ok(hosp('H018') && hosp('H018').route==='IM' && hosp('H018').transition==='3 ditë');
+assert.ok(hosp('H019') && hosp('H019').route==='IV' && hosp('H019').transition==='3 ditë');
+assert.deepEqual([hosp('H018').dose.value,hosp('H018').dose.maxDose],[50,1000]);
+assert.ok(hospital.linkedByIndication.aom.includes('H018') && hospital.linkedByIndication.aom.includes('H019'));
+
+// --- Current CAP pathway completeness --------------------------------------
+const pneumonia=dx('pneumonia');
+const capClinda=pneumonia.options.find(x=>x.id==='clinda-pna');
+assert.deepEqual([capClinda.dose.min,capClinda.dose.max,capClinda.dose.maxDose],[10,13,600]);
+const capCefuroxime=pneumonia.options.find(x=>x.id==='cefuroxime-pna');
+assert.ok(capCefuroxime);
+assert.equal(capCefuroxime.dose.type,'fixed');
+assert.equal(capCefuroxime.dose.text,'250–500 mg/dozë');
+assert.ok(solids.drugs.Cefuroxime.forms.some(x=>x.componentMg===500));
+
+// --- CDC GAS completeness ---------------------------------------------------
+const gas=dx('gas');
+const cefadroxil=gas.options.find(x=>x.id==='cefadroxil-gas');
+assert.ok(cefadroxil);
+assert.deepEqual([cefadroxil.dose.value,cefadroxil.dose.maxDose],[30,1000]);
+assert.equal(cefadroxil.frequency,'1 herë/ditë');
+assert.equal(cefadroxil.duration.text,'10 ditë');
+assert.deepEqual(cefadroxil.allergy,['a1']);
+assert.ok(form('Cefadroxil','cefadroxil-250-5'));
+assert.ok(form('Cefadroxil','cefadroxil-500-5'));
+assert.ok(solids.drugs.Cefadroxil.forms.some(x=>x.componentMg===500));
+
+// --- Frontend hard stops / fail-closed runtime -----------------------------
 assert.match(read('antibiotiket-clinical-hardening.js'),/Funksioni renal para dozës IV\/IM/);
 assert.match(read('antibiotiket-clinical-hardening.js'),/STOP — dyshim për sinusit të komplikuar/);
 assert.match(read('antibiotiket-clinical-hardening.js'),/Shfaq vetëm skemën për patogjen atipik/);
 assert.match(read('antibiotiket-clinical-hardening.js'),/A4 nuk mund të trajtohet si një kategori e vetme/);
 assert.match(read('antibiotiket-shell.js'),/Moduli klinik nuk u ngarkua plotësisht/);
+assert.match(read('antibiotiket-shell.js'),/clinical-completeness-v2/);
 assert.match(read('antibiotiket-shell.js'),/clinical-hardening-v1/);
 assert.doesNotMatch(read('antibiotiket-clinical-hardening.js'),/DRX_ANTIBIOTIC_CLINICAL_AUDIT\.refresh\s*=/, 'Do not mutate a frozen audit object at runtime');
 
@@ -84,4 +122,4 @@ assert.match(read('antibiotiket-hospital.css'),/@media\(max-width:520px\)/);
 assert.match(read('antibiotiket-parenteral-prep.css'),/@media\(max-width:520px\)/);
 assert.match(read('antibiotiket-prescription.css'),/@media\(max-width:560px\)/);
 assert.match(read('antibiotiket-clinical-hardening.css'),/@media\(max-width:560px\)/);
-console.log('Antibiotics Phase 7 master gate passed: 15/15 original calculator cases + post-audit clinical hardening regressions + mobile CSS contracts.');
+console.log('Antibiotics Phase 7 master gate passed: 15/15 original calculator cases + post-audit disease/antibiotic completeness + safety hardening + mobile CSS contracts.');
