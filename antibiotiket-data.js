@@ -2,7 +2,7 @@
   'use strict';
 
   window.DRX_ANTIBIOTIC_GUIDE = Object.freeze({
-    version:'2026-09-12-v4',
+    version:'2026-09-12-v5-phase1-12dx',
     scope:'paediatric',
     sources:[
       {
@@ -16,6 +16,12 @@
         short:'CARPA STM / WBM',
         title:'CARPA STM and WBM Antibiotic Doses Table (1)',
         note:'Tabela jep pesha referuese sipas moshës dhe vetë kërkon përdorim bashkë me protokollet CARPA STM/WBM; nuk përmban të gjithë informacionin e nevojshëm për trajtim.'
+      },
+      {
+        id:'phase1',
+        short:'Faza 1',
+        title:'DRx — zgjerimi i indikacioneve pediatrike',
+        note:'Diagnoza është shtuar në përzgjedhësin e thjeshtë të Antibiotikëve. Skema e dozimit nuk publikohet në Fazën 1; ajo aktivizohet vetëm pasi dataset-i i verifikuar të lidhet me kalkulatorin.'
       }
     ],
     ageBands:[
@@ -78,20 +84,106 @@
         ]
       },
       {
-        id:'uti',
-        label:'Infeksion urinar (UTI) — terapi empirike',
-        short:'UTI',
+        id:'sinusitis',
+        label:'Sinusit bakterial akut',
+        short:'Sinusit bakterial',
+        source:'phase1',
+        usesAllergy:false,
+        phase:'phase2',
+        note:'Diagnoza është shtuar në Fazën 1; skemat e verifikuara aktivizohen në Fazën 2.',
+        options:[]
+      },
+      {
+        id:'uti-cystitis',
+        label:'Cistit / UTI afebrile',
+        short:'Cistit / UTI afebrile',
         source:'cps2022',
         usesAllergy:false,
         minAgeMonths:3,
-        note:'Tabela e specifikon për moshë ≥3 muaj, si terapi empirike duke pritur rezultatin e urinokulturës. Tabela nuk i rendit këto opsione sipas alergjisë ndaj penicilinës.',
+        note:'E njëjta tabelë empirike e UTI-së që ishte në versionin e mëparshëm, tash e ndarë si zgjedhje afebrile. Kohëzgjatjet ruajnë saktësisht rezultatin e mëparshëm për opsionin “Pa temperaturë”.',
         options:[
-          { id:'cephalexin-uti', tier:'option', allergy:['any'], drug:'Cephalexin', route:'PO', frequency:'3 herë/ditë', dose:{type:'range',min:15,max:20,unit:'mg/kg/dozë',maxDose:500}, duration:{type:'fixed',text:'7 ditë'} },
-          { id:'cotrim-uti', tier:'option', allergy:['any'], drug:'Co-trimoxazole (trimethoprim / sulfamethoxazole)', route:'PO', frequency:'2 herë/ditë', dose:{type:'range',min:4,max:6,unit:'mg/kg/dozë',maxDose:160,maxLabel:'160 mg trimethoprim/dozë',component:'trimethoprim'}, duration:{type:'uti'}, note:'Doza bazohet në komponentin trimethoprim.' },
-          { id:'cefixime-uti', tier:'option', allergy:['any'], drug:'Cefixime', route:'PO', frequency:'1 herë/ditë', dose:{type:'single',value:8,unit:'mg/kg/dozë',maxDose:400}, duration:{type:'uti'} },
-          { id:'amoxclav-uti', tier:'option', allergy:['any'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'sipas peshës', dose:{type:'amoxclav-uti'}, duration:{type:'uti'}, note:'Doza bazohet në komponentin amoxicillin.' },
-          { id:'cipro-uti', tier:'option', allergy:['any'], drug:'Ciprofloxacin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:15,unit:'mg/kg/dozë',maxDose:750}, duration:{type:'uti'} }
+          { id:'cephalexin-uti-cystitis', tier:'option', allergy:['any'], drug:'Cephalexin', route:'PO', frequency:'3 herë/ditë', dose:{type:'range',min:15,max:20,unit:'mg/kg/dozë',maxDose:500}, duration:{type:'fixed',text:'7 ditë'} },
+          { id:'cotrim-uti-cystitis', tier:'option', allergy:['any'], drug:'Co-trimoxazole (trimethoprim / sulfamethoxazole)', route:'PO', frequency:'2 herë/ditë', dose:{type:'range',min:4,max:6,unit:'mg/kg/dozë',maxDose:160,maxLabel:'160 mg trimethoprim/dozë',component:'trimethoprim'}, duration:{type:'fixed',text:'3 ditë'}, note:'Doza bazohet në komponentin trimethoprim.' },
+          { id:'cefixime-uti-cystitis', tier:'option', allergy:['any'], drug:'Cefixime', route:'PO', frequency:'1 herë/ditë', dose:{type:'single',value:8,unit:'mg/kg/dozë',maxDose:400}, duration:{type:'fixed',text:'3 ditë'} },
+          { id:'amoxclav-uti-cystitis', tier:'option', allergy:['any'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'sipas peshës', dose:{type:'amoxclav-uti'}, duration:{type:'fixed',text:'3 ditë'}, note:'Doza bazohet në komponentin amoxicillin.' },
+          { id:'cipro-uti-cystitis', tier:'option', allergy:['any'], drug:'Ciprofloxacin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:15,unit:'mg/kg/dozë',maxDose:750}, duration:{type:'fixed',text:'3 ditë'} }
         ]
+      },
+      {
+        id:'uti-pyelo',
+        label:'UTI febrile / pielonefrit',
+        short:'UTI febrile / Pielonefrit',
+        source:'cps2022',
+        usesAllergy:false,
+        minAgeMonths:3,
+        note:'E njëjta tabelë empirike e UTI-së që ishte në versionin e mëparshëm, tash e ndarë si zgjedhje febrile. Kohëzgjatjet ruajnë saktësisht rezultatin e mëparshëm për opsionin “Febrile”.',
+        options:[
+          { id:'cephalexin-uti-pyelo', tier:'option', allergy:['any'], drug:'Cephalexin', route:'PO', frequency:'3 herë/ditë', dose:{type:'range',min:15,max:20,unit:'mg/kg/dozë',maxDose:500}, duration:{type:'fixed',text:'7 ditë'} },
+          { id:'cotrim-uti-pyelo', tier:'option', allergy:['any'], drug:'Co-trimoxazole (trimethoprim / sulfamethoxazole)', route:'PO', frequency:'2 herë/ditë', dose:{type:'range',min:4,max:6,unit:'mg/kg/dozë',maxDose:160,maxLabel:'160 mg trimethoprim/dozë',component:'trimethoprim'}, duration:{type:'fixed',text:'7–10 ditë'}, note:'Doza bazohet në komponentin trimethoprim.' },
+          { id:'cefixime-uti-pyelo', tier:'option', allergy:['any'], drug:'Cefixime', route:'PO', frequency:'1 herë/ditë', dose:{type:'single',value:8,unit:'mg/kg/dozë',maxDose:400}, duration:{type:'fixed',text:'7–10 ditë'} },
+          { id:'amoxclav-uti-pyelo', tier:'option', allergy:['any'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'sipas peshës', dose:{type:'amoxclav-uti'}, duration:{type:'fixed',text:'7–10 ditë'}, note:'Doza bazohet në komponentin amoxicillin.' },
+          { id:'cipro-uti-pyelo', tier:'option', allergy:['any'], drug:'Ciprofloxacin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:15,unit:'mg/kg/dozë',maxDose:750}, duration:{type:'fixed',text:'7–10 ditë'} }
+        ]
+      },
+      {
+        id:'impetigo',
+        label:'Impetigo',
+        short:'Impetigo',
+        source:'phase1',
+        usesAllergy:false,
+        phase:'phase2',
+        note:'Diagnoza është shtuar në Fazën 1; skemat e verifikuara aktivizohen në Fazën 2.',
+        options:[]
+      },
+      {
+        id:'cellulitis',
+        label:'Cellulitis / erysipelas jo-purulent',
+        short:'Cellulitis / Erizipelë',
+        source:'phase1',
+        usesAllergy:false,
+        phase:'phase2',
+        note:'Diagnoza është shtuar në Fazën 1; skemat e verifikuara aktivizohen në Fazën 2.',
+        options:[]
+      },
+      {
+        id:'abscess',
+        label:'Absces kutan',
+        short:'Absces kutan',
+        source:'phase1',
+        usesAllergy:false,
+        phase:'phase2',
+        note:'Diagnoza është shtuar në Fazën 1; source control dhe skemat e verifikuara lidhen në Fazën 2.',
+        options:[]
+      },
+      {
+        id:'preseptal',
+        label:'Cellulitis preseptal / periorbital i lehtë',
+        short:'Cellulitis preseptal',
+        source:'phase1',
+        usesAllergy:false,
+        phase:'phase2',
+        note:'Diagnoza është shtuar në Fazën 1; skema ambulatore dhe safety gate orbital aktivizohen në Fazën 2.',
+        options:[]
+      },
+      {
+        id:'bite',
+        label:'Kafshim nga gjitarët',
+        short:'Kafshim nga gjitarët',
+        source:'phase1',
+        usesAllergy:false,
+        phase:'phase2',
+        note:'Diagnoza është shtuar në Fazën 1; profilaksia/trajtimi dhe skemat e alergjisë aktivizohen në Fazën 2.',
+        options:[]
+      },
+      {
+        id:'lymphadenitis',
+        label:'Limfadenit bakterial akut cervikal',
+        short:'Limfadenit cervikal',
+        source:'phase1',
+        usesAllergy:false,
+        phase:'phase2',
+        note:'Diagnoza është shtuar në Fazën 1; skemat e verifikuara aktivizohen në Fazën 2.',
+        options:[]
       }
     ]
   });
