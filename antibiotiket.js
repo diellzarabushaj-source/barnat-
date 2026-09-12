@@ -33,6 +33,7 @@
     weight:'',
     allergy:'none',
     atypical:false,
+    orbitalRedFlags:false,
     ageFromWeight:false,
   };
 
@@ -301,7 +302,18 @@
   }
 
   function visibleOptions(indication) {
-    const filtered = indication.options.filter(allergyAllowed);
+    let filtered = indication.options.filter(allergyAllowed);
+
+    // CDC separates the pediatric Penicillin V regimen from adolescent/adult
+    // dosing. The dataset stores the pediatric 250 mg BID/TID row, therefore we
+    // only expose it when a child age-band is actually known. At 12+ (or when
+    // age is unknown) amoxicillin remains available, but the child Penicillin V
+    // row is withheld rather than silently under-dosing an adolescent.
+    if (indication.id === 'gas') {
+      const age = currentAgeBand();
+      filtered = filtered.filter(option => option.id !== 'penicillin-gas' || (age && age.months < 144));
+    }
+
     if (indication.id === 'pneumonia') {
       return filtered.filter(option => ctx.atypical ? option.atypical === true : option.atypical !== true);
     }
@@ -444,12 +456,39 @@
     el.doseBasis.dataset.tone = 'formula';
   }
 
+  function ensureOrbitalRedFlagsControl() {
+    let wrap = $('orbitalRedFlagsWrap');
+    if (wrap) return wrap;
+
+    wrap = make('div', 'abx-refine-item abx-refine-toggle');
+    wrap.id = 'orbitalRedFlagsWrap';
+    const label = make('label', 'abx-toggle');
+    const input = document.createElement('input');
+    input.id = 'orbitalRedFlagsInput';
+    input.type = 'checkbox';
+    input.checked = ctx.orbitalRedFlags;
+    input.addEventListener('change', () => {
+      ctx.orbitalRedFlags = input.checked;
+      render();
+    });
+    label.append(input, make('span', '', 'Ka red flags orbitale / ekzaminim jo adekuat'));
+    wrap.append(label);
+    el.refineBlock.append(wrap);
+    return wrap;
+  }
+
   function renderConditionalControls(indication) {
     const usesAllergy = indication.usesAllergy !== false;
     el.allergyField.hidden = !usesAllergy;
     el.atypicalWrap.hidden = indication.id !== 'pneumonia';
     if (el.utiTypeWrap) el.utiTypeWrap.hidden = true;
-    el.refineBlock.hidden = el.allergyField.hidden && el.atypicalWrap.hidden;
+
+    const orbitalWrap = ensureOrbitalRedFlagsControl();
+    const orbitalInput = $('orbitalRedFlagsInput');
+    orbitalWrap.hidden = indication.id !== 'preseptal';
+    if (orbitalInput) orbitalInput.checked = ctx.orbitalRedFlags;
+
+    el.refineBlock.hidden = el.allergyField.hidden && el.atypicalWrap.hidden && orbitalWrap.hidden;
 
     let hint = $('allergyHintPhase2');
     if (!hint) {
@@ -575,6 +614,7 @@
       if (typeof stored.weight === 'string') ctx.weight = stored.weight.slice(0, 8);
       if (allergyOptions.some(item => item.value === stored.allergy)) ctx.allergy = stored.allergy;
       ctx.atypical = stored.atypical === true;
+      ctx.orbitalRedFlags = stored.orbitalRedFlags === true;
       ctx.ageFromWeight = stored.ageFromWeight === true;
     }
     const requested = new URLSearchParams(location.search).get('indication');
@@ -605,6 +645,14 @@
       const warning = make('div', 'abx-eligibility', indication.warning);
       warning.dataset.kind = indication.warning.startsWith('HARD STOP') ? 'hard-stop' : 'clinical-warning';
       el.list.append(warning);
+    }
+
+    // This is a real safety gate, not warning copy: when orbital red flags (or
+    // an inadequate eye exam) are marked, no outpatient antibiotic regimen is
+    // rendered. The clinician is sent to urgent/specialist assessment instead.
+    if (indication.id === 'preseptal' && ctx.orbitalRedFlags) {
+      el.list.append(make('div', 'abx-empty', 'STOP — mos përdor skemë ambulatore nga ky kalkulator. Kërko vlerësim urgjent / oftalmologji-ORL-pediatri sipas kontekstit.'));
+      return;
     }
 
     const options = visibleOptions(indication);
