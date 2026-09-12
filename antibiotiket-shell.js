@@ -73,10 +73,10 @@
 
   async function loadAntibioticFormulations() {
     await Promise.all([
-      loadStylesheet('/antibiotiket-formulations.css?v=antibiotiket-formulations-v1', 'data-drx-abx-formulations-css'),
-      loadRuntime('/antibiotiket-formulations-data.js?v=antibiotiket-formulations-v1', 'data-drx-abx-formulations-data'),
+      loadStylesheet('/antibiotiket-formulations.css?v=antibiotiket-formulations-v2', 'data-drx-abx-formulations-css'),
+      loadRuntime('/antibiotiket-formulations-data.js?v=antibiotiket-formulations-v2', 'data-drx-abx-formulations-data'),
     ]);
-    await loadRuntime('/antibiotiket-formulations.js?v=antibiotiket-formulations-v1', 'data-drx-abx-formulations-runtime');
+    await loadRuntime('/antibiotiket-formulations.js?v=antibiotiket-formulations-v2', 'data-drx-abx-formulations-runtime');
   }
 
   async function loadAntibioticPrescription() {
@@ -85,6 +85,23 @@
       loadRuntime('/antibiotiket-solids-data.js?v=antibiotiket-phase4-v1', 'data-drx-abx-solids-data'),
     ]);
     await loadRuntime('/antibiotiket-prescription.js?v=antibiotiket-phase4-v1', 'data-drx-abx-prescription-runtime');
+  }
+
+  async function loadAntibioticHospital() {
+    await Promise.all([
+      loadStylesheet('/antibiotiket-hospital.css?v=antibiotiket-phase5-v1', 'data-drx-abx-hospital-css'),
+      loadRuntime('/antibiotiket-hospital-data.js?v=antibiotiket-phase5-v1', 'data-drx-abx-hospital-data'),
+    ]);
+    await loadRuntime('/antibiotiket-hospital.js?v=antibiotiket-phase5-v1', 'data-drx-abx-hospital-runtime');
+  }
+
+  async function loadAntibioticParenteralPreparation() {
+    await Promise.all([
+      loadStylesheet('/antibiotiket-parenteral-prep.css?v=antibiotiket-phase6-v2', 'data-drx-abx-prep-css'),
+      loadRuntime('/antibiotiket-parenteral-prep-data.js?v=antibiotiket-phase6-v2', 'data-drx-abx-prep-data'),
+    ]);
+    await loadRuntime('/antibiotiket-parenteral-bridge.js?v=antibiotiket-phase6-v2', 'data-drx-abx-prep-bridge');
+    await loadRuntime('/antibiotiket-parenteral-prep.js?v=antibiotiket-phase6-v2', 'data-drx-abx-prep-runtime');
   }
 
   function openSidebar() {
@@ -128,9 +145,11 @@
       await syncProfile(auth);
       await loadAntibioticFormulations().catch(() => null);
       await loadAntibioticPrescription().catch(() => null);
+      await loadAntibioticHospital().catch(() => null);
+      await loadAntibioticParenteralPreparation().catch(() => null);
       document.documentElement.dataset.theme = 'light';
       if ($('#allergyLabel')) $('#allergyLabel').textContent = 'Alergjia ndaj beta-laktameve';
-      if ($('#sourceStatus')) $('#sourceStatus').textContent = 'Antibiotikët · CM 2026 / CDC / CPS 2026 / CHOP · formulime të verifikuara';
+      if ($('#sourceStatus')) $('#sourceStatus').textContent = 'Antibiotikët · PO + Hospital IV/IM + preparation produkt-specifik';
     } catch {
       return;
     } finally {

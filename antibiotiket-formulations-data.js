@@ -4,7 +4,7 @@
   const dailymed = 'DailyMed / official U.S. label';
 
   window.DRX_ANTIBIOTIC_FORMULATIONS = Object.freeze({
-    version:'2026-09-12-v1-phase3-formulations',
+    version:'2026-09-12-v2-phase7-formulations',
     scope:'oral-liquid-conversion',
     note:'Këto janë fuqi të verifikuara nga etiketa zyrtare të produkteve, jo garanci që i njëjti formulim gjendet në Kosovë. Gjithmonë verifiko fuqinë në shishe. Për kombinimet, mL llogaritet vetëm nga komponenti mbi të cilin është bazuar doza klinike.',
     sourceLabel:dailymed,
@@ -19,6 +19,8 @@
       'Amoxicillin':{
         basis:'amoxicillin',
         forms:[
+          { id:'amox-125-5', label:'125 mg / 5 mL', mgPer5mL:125, sourceUrl:'https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=234d0dfc-cb24-413f-b798-129c73eb848e&type=display' },
+          { id:'amox-250-5', label:'250 mg / 5 mL', mgPer5mL:250, sourceUrl:'https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=234d0dfc-cb24-413f-b798-129c73eb848e&type=display' },
           { id:'amox-400-5', label:'400 mg / 5 mL', mgPer5mL:400, sourceUrl:'https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c84082fc-ea07-4e73-99c5-8356b957a1c5' },
           { id:'amox-200-5', label:'200 mg / 5 mL', mgPer5mL:200, sourceUrl:'https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c84082fc-ea07-4e73-99c5-8356b957a1c5' }
         ]
@@ -98,8 +100,8 @@
       'Ciprofloxacin':{
         basis:'ciprofloxacin',
         forms:[
-          { id:'cipro-250-5', label:'250 mg / 5 mL', mgPer5mL:250, sourceUrl:'https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=905503ef-4277-44ca-aa4a-5a969a041e16' },
-          { id:'cipro-500-5', label:'500 mg / 5 mL', mgPer5mL:500, sourceUrl:'https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=905503ef-4277-44ca-aa4a-5a969a041e16' }
+          { id:'cipro-250-5', label:'250 mg / 5 mL', mgPer5mL:250, sourceUrl:'https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=888dc7f9-ad9c-4c00-8d50-8ddfd9bd27c0' },
+          { id:'cipro-500-5', label:'500 mg / 5 mL', mgPer5mL:500, minWeightKg:13, weightRestriction:'10% suspension: do not offer below 13 kg.', sourceUrl:'https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=888dc7f9-ad9c-4c00-8d50-8ddfd9bd27c0' }
         ]
       },
       'Levofloxacin':{

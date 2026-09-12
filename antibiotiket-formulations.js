@@ -19,6 +19,12 @@
     catch { return ''; }
   }
 
+  function currentWeightKg() {
+    const raw = clean(document.getElementById('weightInput')?.value).replace(',', '.');
+    const value = Number(raw);
+    return raw && Number.isFinite(value) && value > 0 ? value : null;
+  }
+
   function drugConfig(drug) {
     return config.drugs?.[drug] || null;
   }
@@ -32,7 +38,9 @@
     if (!entry) return [];
     const override = overrideFor(drug);
     if (override?.manualOnly) return [];
-    const forms = Array.isArray(entry.forms) ? entry.forms : [];
+    const weight = currentWeightKg();
+    let forms = Array.isArray(entry.forms) ? entry.forms : [];
+    forms = forms.filter(form => !Number.isFinite(form.minWeightKg) || (Number.isFinite(weight) && weight >= form.minWeightKg));
     if (!Array.isArray(override?.allow)) return forms;
     const allow = new Set(override.allow);
     return forms.filter(form => allow.has(form.id));
@@ -178,6 +186,7 @@
     if (entry?.basis) notes.append(make('span', '', `Baza e llogaritjes: ${entry.basis}.`));
     if (orientational) notes.append(make('span', 'is-warning', 'Këto mL janë orientuese sepse doza është llogaritur nga pesha referuese, jo nga pesha reale.'));
     if (entry?.caution) notes.append(make('span', 'is-warning', entry.caution));
+    if (strength.weightRestriction) notes.append(make('span', 'is-warning', strength.weightRestriction));
     const override = overrideFor(drug);
     if (override?.note) notes.append(make('span', 'is-warning', override.note));
     notes.append(make('span', '', 'Verifiko fuqinë e produktit në shishe para përshkrimit; disponueshmëria ndryshon sipas tregut.'));
