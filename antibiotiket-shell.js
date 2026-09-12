@@ -46,7 +46,7 @@
       script.defer = true;
       script.setAttribute(marker, '1');
       script.addEventListener('load', resolve, { once:true });
-      script.addEventListener('error', reject, { once:true });
+      script.addEventListener('error', () => reject(new Error(`Nuk u ngarkua ${src}`)), { once:true });
       document.head.appendChild(script);
     });
   }
@@ -60,7 +60,7 @@
       link.href = href;
       link.setAttribute(marker, '1');
       link.addEventListener('load', resolve, { once:true });
-      link.addEventListener('error', reject, { once:true });
+      link.addEventListener('error', () => reject(new Error(`Nuk u ngarkua ${href}`)), { once:true });
       document.head.appendChild(link);
     });
   }
@@ -74,34 +74,67 @@
   async function loadAntibioticFormulations() {
     await Promise.all([
       loadStylesheet('/antibiotiket-formulations.css?v=antibiotiket-formulations-v2', 'data-drx-abx-formulations-css'),
-      loadRuntime('/antibiotiket-formulations-data.js?v=antibiotiket-formulations-v2', 'data-drx-abx-formulations-data'),
+      loadRuntime('/antibiotiket-formulations-data.js?v=antibiotiket-formulations-v3-hardening', 'data-drx-abx-formulations-data'),
     ]);
-    await loadRuntime('/antibiotiket-formulations.js?v=antibiotiket-formulations-v2', 'data-drx-abx-formulations-runtime');
+    await loadRuntime('/antibiotiket-formulations.js?v=antibiotiket-formulations-v3-hardening', 'data-drx-abx-formulations-runtime');
   }
 
   async function loadAntibioticPrescription() {
     await Promise.all([
       loadStylesheet('/antibiotiket-prescription.css?v=antibiotiket-phase4-v1', 'data-drx-abx-prescription-css'),
-      loadRuntime('/antibiotiket-solids-data.js?v=antibiotiket-phase4-v1', 'data-drx-abx-solids-data'),
+      loadRuntime('/antibiotiket-solids-data.js?v=antibiotiket-solids-v2-hardening', 'data-drx-abx-solids-data'),
     ]);
-    await loadRuntime('/antibiotiket-prescription.js?v=antibiotiket-phase4-v1', 'data-drx-abx-prescription-runtime');
+    await loadRuntime('/antibiotiket-prescription.js?v=antibiotiket-prescription-v2-hardening', 'data-drx-abx-prescription-runtime');
   }
 
   async function loadAntibioticHospital() {
     await Promise.all([
       loadStylesheet('/antibiotiket-hospital.css?v=antibiotiket-phase5-v1', 'data-drx-abx-hospital-css'),
-      loadRuntime('/antibiotiket-hospital-data.js?v=antibiotiket-phase5-v1', 'data-drx-abx-hospital-data'),
+      loadRuntime('/antibiotiket-hospital-data.js?v=antibiotiket-hospital-v2-hardening', 'data-drx-abx-hospital-data'),
     ]);
-    await loadRuntime('/antibiotiket-hospital.js?v=antibiotiket-phase5-v1', 'data-drx-abx-hospital-runtime');
+    await loadRuntime('/antibiotiket-hospital.js?v=antibiotiket-hospital-v2-hardening', 'data-drx-abx-hospital-runtime');
   }
 
   async function loadAntibioticParenteralPreparation() {
     await Promise.all([
       loadStylesheet('/antibiotiket-parenteral-prep.css?v=antibiotiket-phase6-v2', 'data-drx-abx-prep-css'),
-      loadRuntime('/antibiotiket-parenteral-prep-data.js?v=antibiotiket-phase6-v2', 'data-drx-abx-prep-data'),
+      loadRuntime('/antibiotiket-parenteral-prep-data.js?v=antibiotiket-prep-v3-hardening', 'data-drx-abx-prep-data'),
     ]);
-    await loadRuntime('/antibiotiket-parenteral-bridge.js?v=antibiotiket-phase6-v2', 'data-drx-abx-prep-bridge');
-    await loadRuntime('/antibiotiket-parenteral-prep.js?v=antibiotiket-phase6-v2', 'data-drx-abx-prep-runtime');
+    await loadRuntime('/antibiotiket-parenteral-bridge.js?v=antibiotiket-prep-v3-hardening', 'data-drx-abx-prep-bridge');
+    await loadRuntime('/antibiotiket-parenteral-prep.js?v=antibiotiket-prep-v3-hardening', 'data-drx-abx-prep-runtime');
+  }
+
+  async function loadAntibioticClinicalHardening() {
+    await loadStylesheet('/antibiotiket-clinical-hardening.css?v=clinical-hardening-v1', 'data-drx-abx-hardening-css');
+    await loadRuntime('/antibiotiket-clinical-hardening.js?v=clinical-hardening-v1', 'data-drx-abx-hardening-runtime');
+  }
+
+  function showRuntimeFailure(errors) {
+    if (!errors.length) return;
+    document.documentElement.dataset.abxRuntime = 'degraded';
+    const host = document.querySelector('.antibiotiket-page') || document.querySelector('.page-wrap');
+    if (!host || document.getElementById('antibioticRuntimeError')) return;
+    const alert = document.createElement('div');
+    alert.id = 'antibioticRuntimeError';
+    alert.className = 'abx-runtime-error';
+    alert.setAttribute('role', 'alert');
+    const strong = document.createElement('strong');
+    strong.textContent = 'Moduli klinik nuk u ngarkua plotësisht.';
+    const span = document.createElement('span');
+    span.textContent = `Mos përdor pjesën e munguar për vendim final. Modulet: ${errors.join(', ')}. Rifresko faqen; nëse vazhdon, përdor burimin klinik direkt.`;
+    alert.append(strong, span);
+    host.prepend(alert);
+  }
+
+  async function loadClinicalModule(label, loader, errors) {
+    try {
+      await loader();
+      return true;
+    } catch (error) {
+      console.error(`[DRx Antibiotikët] ${label} failed`, error);
+      errors.push(label);
+      return false;
+    }
   }
 
   function openSidebar() {
@@ -140,16 +173,25 @@
 
   async function boot() {
     bindShell();
+    const clinicalErrors = [];
     try {
       const auth = await ensureAuth();
       await syncProfile(auth);
-      await loadAntibioticFormulations().catch(() => null);
-      await loadAntibioticPrescription().catch(() => null);
-      await loadAntibioticHospital().catch(() => null);
-      await loadAntibioticParenteralPreparation().catch(() => null);
+
+      await loadClinicalModule('Formulimet orale', loadAntibioticFormulations, clinicalErrors);
+      await loadClinicalModule('Receta / format solide', loadAntibioticPrescription, clinicalErrors);
+      await loadClinicalModule('Hospital IV/IM', loadAntibioticHospital, clinicalErrors);
+      await loadClinicalModule('Përgatitja IV/IM', loadAntibioticParenteralPreparation, clinicalErrors);
+      await loadClinicalModule('Safety hardening', loadAntibioticClinicalHardening, clinicalErrors);
+
       document.documentElement.dataset.theme = 'light';
       if ($('#allergyLabel')) $('#allergyLabel').textContent = 'Alergjia ndaj beta-laktameve';
-      if ($('#sourceStatus')) $('#sourceStatus').textContent = 'Antibiotikët · PO + Hospital IV/IM + preparation produkt-specifik';
+      if ($('#sourceStatus')) {
+        $('#sourceStatus').textContent = clinicalErrors.length
+          ? `Antibiotikët · modalitet i degraduar · ${clinicalErrors.join(', ')}`
+          : 'Antibiotikët · PO + Hospital IV/IM + product-specific preparation + clinical hardening';
+      }
+      showRuntimeFailure(clinicalErrors);
     } catch {
       return;
     } finally {
