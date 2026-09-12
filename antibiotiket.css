@@ -69,6 +69,18 @@ button,input,select{font:inherit}button{color:inherit}a{color:inherit}[hidden]{d
 .abx-age-field select:focus{border-color:var(--ab-accent);box-shadow:0 0 0 3px rgba(83,58,253,.1)}
 .abx-age-field select.is-required{border-color:#f7b27a;background:#fffcf5}
 .abx-measure .abx-hint{grid-column:1/-1;margin:-2px 0 0}
+.abx-age-suggestion{
+  grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;
+  margin-top:4px;padding:9px 12px;border:1px solid #e4e7ec;border-radius:9px;background:#fbfcfd;
+}
+.abx-age-suggestion-copy{min-width:0;color:var(--ab-muted);font-size:11.5px;line-height:1.45}
+.abx-age-suggestion-apply{
+  flex:none;min-height:30px;padding:0 12px;border:1px solid #c7c2fb;border-radius:8px;
+  background:#fff;color:var(--ab-accent);font-size:11.5px;font-weight:600;cursor:pointer;
+  transition:background .13s ease,border-color .13s ease;
+}
+.abx-age-suggestion-apply:hover{border-color:var(--ab-accent);background:#f6f4ff}
+.abx-age-suggestion-apply:focus-visible{outline:2px solid rgba(83,58,253,.4);outline-offset:2px}
 .abx-measure .abx-hint+.abx-hint{margin-top:-6px}
 
 /* 3 — refinements, only when the source branches */
