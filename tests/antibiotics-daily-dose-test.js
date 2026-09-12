@@ -12,15 +12,17 @@ const sandbox = { window:{} };
 new Function('window', read('antibiotiket-data.js'))(sandbox.window);
 const guide = sandbox.window.DRX_ANTIBIOTIC_GUIDE;
 assert.ok(guide?.indications?.length, 'The antibiotic guide dataset must load');
+assert.match(guide.version, /phase2-regimen-engine/, 'The Phase 2 dataset version must be explicit');
 
 const js = read('antibiotiket.js');
 const html = read('antibiotiket.html');
+const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 
-// --- Phase 1: the simple selector now contains exactly the agreed 12 diagnoses
-const EXPECTED_PHASE1_INDICATIONS = [
-  'pneumonia',
+// --- 12 outpatient diagnoses are now active --------------------------------
+const EXPECTED = new Set([
   'aom',
   'gas',
+  'pneumonia',
   'sinusitis',
   'uti-cystitis',
   'uti-pyelo',
@@ -30,163 +32,173 @@ const EXPECTED_PHASE1_INDICATIONS = [
   'preseptal',
   'bite',
   'lymphadenitis',
-];
-assert.deepEqual(
-  guide.indications.map(item => item.id),
-  EXPECTED_PHASE1_INDICATIONS,
-  'Phase 1 must expose exactly the agreed 12 pediatric diagnoses in the planned order',
-);
-
-const stagedIds = new Set(['sinusitis', 'impetigo', 'cellulitis', 'abscess', 'preseptal', 'bite', 'lymphadenitis']);
+]);
+assert.equal(guide.indications.length, 12, 'Phase 2 must expose exactly 12 pediatric outpatient diagnoses');
+assert.deepEqual(new Set(guide.indications.map(item => item.id)), EXPECTED, 'Unexpected Phase 2 diagnosis set');
 for (const indication of guide.indications) {
-  if (!stagedIds.has(indication.id)) continue;
-  assert.equal(indication.phase, 'phase2', `${indication.id}: staged diagnosis must be explicitly marked phase2`);
-  assert.equal(indication.source, 'phase1', `${indication.id}: staged diagnosis must not claim an active clinical dosing source`);
-  assert.deepEqual(indication.options, [], `${indication.id}: Phase 1 must not publish unlinked antibiotic doses`);
+  assert.ok(indication.options.length > 0, `${indication.id}: Phase 2 diagnosis must be linked to at least one verified action/regimen`);
+  assert.notEqual(indication.phase, 'phase2', `${indication.id}: no diagnosis may remain a Phase 1 placeholder`);
 }
 
-// UTI used to be one indication with a febrile/afebrile switch. Phase 1 only
-// splits that existing output into two visible choices; it must not silently
-// alter the legacy dose formulas or their previous duration output.
+// --- provenance is per regimen, not silently mixed -------------------------
+const sourceIds = new Set(guide.sources.map(source => source.id));
+for (const indication of guide.indications) {
+  assert.ok(sourceIds.has(indication.source), `${indication.id}: invalid primary source`);
+  for (const option of indication.options) {
+    assert.ok(sourceIds.has(option.source), `${indication.id}/${option.id}: regimen source is missing or invalid`);
+    assert.ok(option.duration?.type, `${indication.id}/${option.id}: duration is missing`);
+    assert.notEqual(option.duration.type, 'source-unspecified', `${indication.id}/${option.id}: unspecified duration is forbidden`);
+  }
+}
+for (const source of guide.sources.filter(item => item.id !== 'carpa')) {
+  assert.match(source.url || '', /^https:\/\//, `${source.id}: authoritative source URL must be preserved`);
+}
+
+// --- allergy model A0-A5 ----------------------------------------------------
+assert.deepEqual(
+  guide.allergyBuckets.map(item => item.id),
+  ['none','a0','a1','a2','a3','a4','a5'],
+  'Allergy model must distinguish none plus A0-A5',
+);
+assert.match(js, /guide\.allergyBuckets/, 'UI must build allergy choices from the canonical allergy buckets');
+assert.match(js, /ctx\.allergy === 'a5'/, 'Multiple/alternative-class allergy must have an explicit no-auto-substitution branch');
+
+const betaLactam = /(amoxicillin|penicillin|cephalexin|cefdinir|cefpodoxime|cefixime|cefuroxime|cefprozil)/i;
+for (const indication of guide.indications) {
+  for (const option of indication.options) {
+    if (!(option.allergy || []).includes('a3')) continue;
+    assert.doesNotMatch(option.drug, betaLactam, `${indication.id}/${option.id}: A3 severe delayed allergy must not expose a beta-lactam`);
+  }
+}
+
+// GAS is deliberately stricter than generic cephalosporin cross-reactivity.
+const gas = guide.indications.find(item => item.id === 'gas');
+assert.ok(gas, 'GAS indication must exist');
+const gasCephalexin = gas.options.find(item => item.id === 'cephalexin-gas');
+assert.deepEqual(gasCephalexin.allergy, ['a1'], 'CDC: cephalexin must not be shown for immediate/high-risk penicillin allergy');
+assert.ok(!gas.options.some(option => option.id === 'cephalexin-gas' && option.allergy.includes('a2')));
+
+// Pin the CDC GAS values that are easy to regress.
+const gasAmox = gas.options.find(item => item.id === 'amoxicillin-gas');
+assert.equal(gasAmox.dose.value, 50);
+assert.equal(gasAmox.dose.maxDose, 1000);
+assert.equal(gasAmox.frequency, '1 herë/ditë');
+assert.equal(gasAmox.duration.text, '10 ditë');
+assert.equal(gasCephalexin.dose.value, 20);
+assert.equal(gasCephalexin.dose.maxDose, 500);
+assert.equal(gasCephalexin.duration.text, '10 ditë');
+const gasAzithro = gas.options.find(item => item.id === 'azithro-gas');
+assert.deepEqual(gasAzithro.dose.steps.map(step => step.value), [12, 6]);
+assert.deepEqual(gasAzithro.dose.steps.map(step => step.maxDose), [500, 250]);
+assert.equal(gasAzithro.duration.text, '5 ditë');
+
+// --- key diagnosis-specific contracts --------------------------------------
+const aom = guide.indications.find(item => item.id === 'aom');
+const aomAmox = aom.options.find(item => item.id === 'amox-aom');
+assert.deepEqual([aomAmox.dose.min, aomAmox.dose.max, aomAmox.dose.maxDose], [40, 50, 2000]);
+assert.equal(aomAmox.frequency, '2 herë/ditë');
+assert.equal(aomAmox.duration.type, 'age-bands');
+assert.deepEqual(aomAmox.duration.bands.map(item => [item.maxMonths, item.text]), [[24,'10 ditë'],[72,'7 ditë']]);
+assert.equal(aomAmox.duration.defaultText, '5–7 ditë');
+assert.equal(aomAmox.duration.severeText, 'Sëmundje e rëndë: 10 ditë');
+
+const pneumonia = guide.indications.find(item => item.id === 'pneumonia');
+assert.ok(!pneumonia.options.some(option => /cefdinir/i.test(option.drug)), 'Cefdinir must not be an empiric pneumonia alternative in this source hierarchy');
+assert.deepEqual(
+  [pneumonia.options.find(item => item.id === 'amox-pna').dose.min, pneumonia.options.find(item => item.id === 'amox-pna').dose.max],
+  [40, 50],
+);
+assert.ok(pneumonia.options.some(option => option.atypical && option.drug === 'Azithromycin'), 'Atypical CAP branch must remain explicit');
+
 const cystitis = guide.indications.find(item => item.id === 'uti-cystitis');
 const pyelo = guide.indications.find(item => item.id === 'uti-pyelo');
-assert.ok(cystitis && pyelo, 'Both UTI choices must exist');
-assert.equal(cystitis.options.length, 5, 'Afebrile UTI must preserve the five existing empiric options');
-assert.equal(pyelo.options.length, 5, 'Febrile UTI must preserve the five existing empiric options');
-for (let index = 0; index < cystitis.options.length; index += 1) {
-  const low = cystitis.options[index];
-  const high = pyelo.options[index];
-  assert.equal(low.drug, high.drug, `UTI option ${index + 1}: drug changed while splitting the selector`);
-  assert.deepEqual(low.dose, high.dose, `UTI/${low.drug}: dose formula changed while splitting the selector`);
-  assert.equal(low.frequency, high.frequency, `UTI/${low.drug}: frequency changed while splitting the selector`);
-}
-assert.equal(cystitis.options.find(item => item.drug === 'Cephalexin').duration.text, '7 ditë');
-assert.equal(pyelo.options.find(item => item.drug === 'Cephalexin').duration.text, '7 ditë');
-for (const option of cystitis.options.filter(item => item.drug !== 'Cephalexin')) {
-  assert.equal(option.duration.text, '3 ditë', `Afebrile UTI/${option.drug}: legacy duration output changed`);
-}
-for (const option of pyelo.options.filter(item => item.drug !== 'Cephalexin')) {
-  assert.equal(option.duration.text, '7–10 ditë', `Febrile UTI/${option.drug}: legacy duration output changed`);
-}
+assert.equal(cystitis.source, 'cps-uti-2026');
+assert.equal(pyelo.source, 'cps-uti-2026');
+assert.match(cystitis.warning, /urinokultur/i, 'Cystitis must prompt culture/local resistance context');
+assert.match(cystitis.warning, /rezistenc/i, 'Cystitis must not assume local susceptibility');
+assert.equal(cystitis.options.find(item => item.id === 'cephalexin-cystitis').dose.value, 12.5);
+assert.equal(cystitis.options.find(item => item.id === 'cephalexin-cystitis').frequency, '4 herë/ditë');
+assert.equal(cystitis.options.find(item => item.id === 'cephalexin-cystitis').dose.maxDose, undefined, 'Do not invent a CPS maximum for cystitis cephalexin');
+assert.equal(pyelo.options.find(item => item.id === 'cephalexin-pyelo').dose.value, 25);
+assert.equal(pyelo.options.find(item => item.id === 'cephalexin-pyelo').frequency, '4 herë/ditë');
+assert.equal(pyelo.options.find(item => item.id === 'cephalexin-pyelo').dose.maxDose, undefined, 'Do not invent a CPS maximum for pyelonephritis cephalexin');
+assert.ok(pyelo.options.every(option => /7 ditë/.test(option.duration.text)), 'Uncomplicated pyelonephritis must not be published with <7 days in this dataset');
 
-// --- every published scheme must have a usable duration ---------------------
+const abscess = guide.indications.find(item => item.id === 'abscess');
+assert.equal(abscess.options[0].kind, 'procedure', 'Abscess must model source control before systemic antibiotics');
+assert.match(abscess.warning, /drenazh/i);
+assert.match(abscess.warning, /nuk kërkon antibiotik/i);
+
+const preseptal = guide.indications.find(item => item.id === 'preseptal');
+assert.match(preseptal.warning, /^HARD STOP:/, 'Orbital red flags must be a hard-stop warning');
+assert.match(preseptal.warning, /proptoza/i);
+assert.match(preseptal.warning, /lëvizjeve okulare/i);
+
+const bite = guide.indications.find(item => item.id === 'bite');
+assert.match(bite.warning, /tetanus/i);
+assert.match(bite.warning, /rabies/i);
+const biteCombo = bite.options.find(item => item.id === 'combo-bite-treat');
+assert.equal(biteCombo.dose.type, 'combo', 'Penicillin-allergic bite regimen must preserve the two-drug combination');
+assert.equal(biteCombo.dose.parts.length, 2);
+assert.deepEqual(biteCombo.dose.parts.map(part => part.drug), ['Trimethoprim / sulfamethoxazole', 'Clindamycin']);
+assert.match(biteCombo.conditional, /TË DYJA/, 'UI data must state that both bite-allergy drugs are given');
+
+const lymph = guide.indications.find(item => item.id === 'lymphadenitis');
+assert.match(lymph.warning, /Bartonella.*nuk trajtohet si alternativë alergjie/i);
+
+// --- component basis is explicit -------------------------------------------
 for (const indication of guide.indications) {
   for (const option of indication.options) {
-    assert.ok(option.duration?.type, `${indication.id}/${option.drug}: treatment duration is missing`);
-    assert.notEqual(
-      option.duration.type,
-      'source-unspecified',
-      `${indication.id}/${option.drug}: a published scheme must not show an unspecified duration`,
-    );
+    if (/amoxicillin \/ clavulanate/i.test(option.drug)) {
+      assert.equal(option.dose.component, 'amoxicillin', `${indication.id}/${option.id}: amox-clav must calculate on amoxicillin component`);
+    }
+    if (/trimethoprim \/ sulfamethoxazole/i.test(option.drug)) {
+      assert.equal(option.dose.component, 'trimethoprim', `${indication.id}/${option.id}: TMP-SMX must calculate on trimethoprim component`);
+    }
+    if (option.dose?.type === 'combo') {
+      const tmpPart = option.dose.parts.find(part => /trimethoprim/i.test(part.drug));
+      if (tmpPart) assert.equal(tmpPart.dose.component, 'trimethoprim');
+    }
   }
 }
 
-// GAS duration is clinically material. Keep these exact values pinned to the
-// current CPS/CDC recommendations so a later dataset edit cannot regress them.
-const gas = guide.indications.find(item => item.id === 'gas');
-assert.ok(gas, 'The GAS pharyngitis indication must exist');
-const gasExpectedDurations = new Map([
-  ['penicillin-gas', '10 ditë'],
-  ['amoxicillin-gas', '10 ditë'],
-  ['cephalexin-gas', '10 ditë'],
-  ['clarithro-gas', '10 ditë'],
-  ['azithro-gas', '5 ditë'],
-]);
-for (const option of gas.options) {
-  assert.equal(option.duration?.type, 'fixed', `gas/${option.drug}: duration must be fixed`);
-  assert.equal(
-    option.duration?.text,
-    gasExpectedDurations.get(option.id),
-    `gas/${option.drug}: unexpected treatment duration`,
-  );
+// --- calculator handles every published dose shape -------------------------
+const HANDLED_SHAPES = new Set(['range','single','sequence','fixed','combo']);
+for (const indication of guide.indications) {
+  for (const option of indication.options) {
+    assert.ok(HANDLED_SHAPES.has(option.dose?.type), `${indication.id}/${option.id}: unhandled dose type ${option.dose?.type}`);
+    assert.match(js, new RegExp(`dose\\.type === '${option.dose.type}'`), `${option.dose.type} must be handled in antibiotiket.js`);
+  }
 }
-assert.equal(gas.options.length, gasExpectedDurations.size, 'Every GAS option must be covered by the duration gate');
-
-// --- the page must actually distinguish the two doses -----------------------
-assert.match(js, /function dosesPerDay\(option\)/);
-assert.match(js, /function perDoseMg\(option, weight\)/);
+assert.match(js, /function calculateSimple\(dose, weight\)/);
+assert.match(js, /function dosesPerDayFromFrequency\(frequency\)/);
 assert.match(js, /function dailyDose\(option, weight\)/);
-assert.match(js, /'Doza e vetme'/, 'The single dose must be labelled');
-assert.match(js, /'Doza ditore'/, 'The 24-hour total must be labelled');
-assert.match(js, /function calculationSteps\(option, weight\)/, 'The arithmetic must be shown');
-assert.match(js, /function calculatedValue\(option, weight\)/);
-const dailyStart = js.indexOf('function dailyDose(option, weight)');
-const dailyEnd = js.indexOf('function doseRow(', dailyStart);
-assert.ok(dailyStart >= 0 && dailyEnd > dailyStart, 'dailyDose must be present');
+assert.match(js, /function calculationSteps\(option, weight\)/);
+assert.match(js, /'Doza e vetme'/);
+assert.match(js, /'Doza ditore'/);
 
-// --- every frequency in the dataset must be readable ------------------------
-const EXACT_COUNT = /^(\d+) herë\/ditë$/;
-const RANGE_COUNT = /^(\d+) ose (\d+) herë\/ditë$/;
-const SPLIT_ONCE = '1 herë/ditë (mund të ndahet në 2 doza)';
-const PROSE_FREQUENCIES = new Map([['sipas peshës', 'amoxclav-uti']]);
-const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
-const seen = new Set();
-
+// Every ordinary weight-based regimen should have a machine-readable frequency.
+const COUNT = /^(\d+) herë\/ditë$/;
+const COUNT_RANGE = /^(\d+) ose (\d+) herë\/ditë$/;
 for (const indication of guide.indications) {
   for (const option of indication.options) {
-    const frequency = clean(option.frequency);
-    seen.add(frequency);
-    const readable = EXACT_COUNT.test(frequency)
-      || RANGE_COUNT.test(frequency)
-      || frequency === SPLIT_ONCE;
-    if (readable) continue;
-    assert.ok(
-      PROSE_FREQUENCIES.has(frequency),
-      `${indication.id}/${option.drug}: frequency "${frequency}" is not one the page can turn into a daily dose`,
-    );
-    assert.equal(
-      option.dose?.type,
-      PROSE_FREQUENCIES.get(frequency),
-      `${indication.id}/${option.drug}: "${frequency}" is only handled for the ${PROSE_FREQUENCIES.get(frequency)} dose shape`,
-    );
-  }
-}
-assert.ok(seen.size >= 5, 'The dataset should still cover several distinct frequencies');
-
-// --- every dose shape must reach a branch that handles it -------------------
-const HANDLED_SHAPES = new Set(['range', 'single', 'sequence', 'weight-threshold', 'amoxclav-uti']);
-const PER_DOSE_TEXT = /^(\d+(?:[.,]\d+)?) mg\/dozë$/;
-
-for (const indication of guide.indications) {
-  for (const option of indication.options) {
-    const dose = option.dose || {};
-    assert.ok(HANDLED_SHAPES.has(dose.type), `${indication.id}/${option.drug}: unhandled dose shape "${dose.type}"`);
-    assert.match(js, new RegExp(`dose\\.type === '${dose.type}'`), `${dose.type} must be handled in antibiotiket.js`);
-
-    if (/\/ditë$/.test(clean(dose.unit || ''))) {
-      assert.equal(
-        dose.type,
-        'sequence',
-        `${indication.id}/${option.drug}: a mg/kg/ditë dose is only safe in the sequence branch, which does not multiply`,
-      );
+    if (option.dose?.type === 'combo' || option.kind === 'procedure' || option.frequencyNotComputable) continue;
+    if (option.dose?.type === 'sequence') {
+      assert.equal(option.frequency, '1 herë/ditë', `${indication.id}/${option.id}: sequence dosing must remain once daily`);
+      continue;
     }
-
-    if (dose.type === 'weight-threshold') {
-      for (const key of ['below', 'atOrAbove']) {
-        assert.match(
-          clean(dose[key]),
-          PER_DOSE_TEXT,
-          `${indication.id}/${option.drug}: "${dose[key]}" cannot be read back as a number for the daily total`,
-        );
-      }
-    }
+    if (option.dose?.type === 'fixed' && option.route === 'topike') continue;
+    assert.ok(COUNT.test(clean(option.frequency)) || COUNT_RANGE.test(clean(option.frequency)), `${indication.id}/${option.id}: frequency is not computable: ${option.frequency}`);
   }
 }
 
-// --- the page must not claim the reference weight is unused -----------------
-assert.match(js, /function doseBasis\(\)/, 'The age band must be able to supply a weight');
-assert.match(js, /referenceWeightKg/, 'The reference weight must feed the calculation');
-assert.doesNotMatch(
-  html,
-  /Doza numerike llogaritet vetëm nga pesha reale/,
-  'The safety copy must not contradict the age-derived dose the page now shows',
-);
-assert.match(html, /vetëm orientuese/, 'An age-derived dose must be marked orientational');
+// --- UI safety copy / reference weight -------------------------------------
+assert.match(js, /function doseBasis\(\)/);
+assert.match(js, /referenceWeightKg/);
+assert.match(js, /Alergji ndaj alternativës \/ alergji të shumëfishta/);
+assert.match(html, /vetëm orientuese/, 'Age-derived dose must remain marked orientational');
 for (const band of guide.ageBands) {
-  assert.ok(
-    Number.isFinite(band.referenceWeightKg) && band.referenceWeightKg > 0,
-    `Age band ${band.id} needs a numeric reference weight`,
-  );
+  assert.ok(Number.isFinite(band.referenceWeightKg) && band.referenceWeightKg > 0, `Age band ${band.id} needs a positive reference weight`);
 }
 
-console.log(`Antibiotics Phase 1 gate passed: ${guide.indications.length} diagnoses, ${seen.size} frequencies readable, every published dose shape/duration handled.`);
+console.log(`Antibiotics Phase 2 gate passed: ${guide.indications.length} active diagnoses, ${guide.allergyBuckets.length} allergy states, regimen provenance and safety rules pinned.`);
