@@ -28,6 +28,8 @@ jobs:
         run: node tests/antibiotics-clinical-hardening-contract-test.js
       - name: Audited source pins
         run: node tests/antibiotics-clinical-source-pins-test.js
+      - name: Frontend safety contract
+        run: node tests/antibiotics-ui-safety-contract-test.js
       - name: Phase 2 regimen/provenance regression
         run: node tests/antibiotics-phase2-regimen-test.js
       - name: Hospital pathway regression
