@@ -49,13 +49,15 @@ assert.match(runtime, /navigator\.clipboard/, 'Clipboard copy implementation mus
 assert.doesNotMatch(runtime, /Math\.round\([^\n]+componentMg[^\n]+\)\s*\/\s*2/, 'Runtime must not invent half-tablet rounding');
 
 const shell = read('antibiotiket-shell.js');
-assert.match(shell, /antibiotiket-solids-data\.js\?v=antibiotiket-phase4-v1/);
-assert.match(shell, /antibiotiket-prescription\.js\?v=antibiotiket-phase4-v1/);
+assert.match(shell, /antibiotiket-solids-data\.js\?v=antibiotiket-solids-v2-hardening/);
+assert.match(shell, /antibiotiket-prescription\.js\?v=antibiotiket-prescription-v2-hardening/);
 assert.match(shell, /antibiotiket-prescription\.css\?v=antibiotiket-phase4-v1/);
+assert.match(shell, /clinical-completeness-v2/);
+assert.match(shell, /clinical-hardening-v1/);
 
 const css = read('antibiotiket-prescription.css');
 assert.match(css, /\.abx-rx\{/);
 assert.match(css, /\.abx-rx-copy/);
 assert.match(css, /@media\(max-width:560px\)/, 'Phase 4 finalizer must remain mobile-friendly');
 
-console.log(`Antibiotics Phase 4 gate passed: ${Object.keys(solids.drugs).length} drugs with exact-match solid forms and prescription safety rules.`);
+console.log(`Antibiotics Phase 4 gate passed: ${Object.keys(solids.drugs).length} base drugs with exact-match solid forms and prescription safety rules; audited completeness is layered separately.`);
