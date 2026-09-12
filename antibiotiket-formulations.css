@@ -1,14 +1,31 @@
 .abx-formulation-group{display:grid;gap:8px}
-.abx-formulation{display:grid;gap:9px;padding:11px 12px;border:1px solid #e4e7ec;border-radius:10px;background:#fcfcfd}
-.abx-formulation-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.abx-formulation-head>div{display:grid;gap:1px;min-width:0}
-.abx-formulation-head strong{color:#344054;font-size:11.5px;font-weight:700}
-.abx-formulation-head span{color:#98a2b3;font-size:9.5px}
+/* Folded away by default: the volume per dose rides on the summary, the
+   strength picker and the caveats open underneath it. */
+.abx-formulation{margin-top:1px;padding:0;border:0;background:none}
+.abx-formulation[open]>:not(summary){margin:0}
+.abx-formulation-summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 6px;cursor:pointer;list-style:none}
+.abx-formulation-summary::-webkit-details-marker{display:none}
+.abx-formulation-summary::before{content:"";flex:none;width:6px;height:6px;border-right:1.5px solid #98a2b3;border-bottom:1.5px solid #98a2b3;transform:rotate(-45deg);transition:transform .16s ease}
+.abx-formulation[open] .abx-formulation-summary::before{transform:rotate(45deg)}
+.abx-formulation-summary:focus-visible{outline:2px solid rgba(83,58,253,.4);outline-offset:3px;border-radius:4px}
+.abx-formulation[open]{padding:0 0 2px}
+.abx-formulation[open] .abx-formulation-head,
+.abx-formulation[open] .abx-formulation-custom,
+.abx-formulation[open] .abx-formulation-output{padding-left:12px;border-left:2px solid #e4e7ec}
+.abx-formulation-summary-label{color:#98a2b3;font-size:10px;font-weight:650;letter-spacing:.04em;text-transform:uppercase}
+.abx-formulation-summary-value{color:#067647;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.abx-formulation-summary-strength{color:#98a2b3;font-size:10px}
+.abx-formulation-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px}
+.abx-formulation-head-label{color:#667085;font-size:10.5px;font-weight:600}
 .abx-formulation-select{max-width:260px;min-height:34px;padding:0 30px 0 10px;border:1px solid #d0d5dd;border-radius:8px;background:#fff;color:#344054;font-size:11.5px;outline:0}
 .abx-formulation-select:focus{border-color:#533afd;box-shadow:0 0 0 3px rgba(83,58,253,.08)}
-.abx-formulation-custom{display:flex;align-items:center;gap:8px;color:#667085;font-size:10.5px}
-.abx-formulation-custom input{width:130px;height:34px;padding:0 9px;border:1px solid #d0d5dd;border-radius:8px;background:#fff;color:#0d253d;outline:0;font-variant-numeric:tabular-nums}
+/* Both halves of "X mg in Y mL" are editable, so each gets its own field. */
+.abx-formulation-custom{display:flex;flex-wrap:wrap;align-items:end;gap:8px;margin-top:9px}
+.abx-formulation-custom-field{display:grid;gap:3px;color:#667085;font-size:10.5px}
+.abx-formulation-custom-field>span{font-weight:600}
+.abx-formulation-custom input{width:120px;height:36px;padding:0 9px;border:1px solid #d0d5dd;border-radius:8px;background:#fff;color:#0d253d;outline:0;font-variant-numeric:tabular-nums}
 .abx-formulation-custom input:focus{border-color:#533afd;box-shadow:0 0 0 3px rgba(83,58,253,.08)}
+.abx-formulation-output{display:grid;gap:8px;margin-top:9px}
 .abx-formulation-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .abx-formulation-row{display:grid;gap:2px;padding:8px 9px;border:1px solid #eaecf0;border-radius:8px;background:#fff}
 .abx-formulation-row span{color:#98a2b3;font-size:9px;font-weight:650;letter-spacing:.03em;text-transform:uppercase}
@@ -21,7 +38,8 @@ a.abx-formulation-source:hover{text-decoration:underline}
 @media(max-width:760px){
   .abx-formulation-head{align-items:flex-start;flex-direction:column}
   .abx-formulation-select{width:100%;max-width:none}
-  .abx-formulation-custom{align-items:flex-start;flex-direction:column}
-  .abx-formulation-custom input{width:100%}
+  .abx-formulation-custom{gap:8px}
+  .abx-formulation-custom-field{flex:1 1 calc(50% - 4px)}
+  .abx-formulation-custom input{width:100%;height:44px}
   .abx-formulation-results{grid-template-columns:1fr}
 }

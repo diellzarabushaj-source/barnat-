@@ -50,8 +50,9 @@ assert.doesNotMatch(runtime, /Math\.round\([^\n]+componentMg[^\n]+\)\s*\/\s*2/, 
 
 const shell = read('antibiotiket-shell.js');
 assert.match(shell, /antibiotiket-solids-data\.js\?v=antibiotiket-phase4-v1/);
-assert.match(shell, /antibiotiket-prescription\.js\?v=antibiotiket-phase4-v1/);
-assert.match(shell, /antibiotiket-prescription\.css\?v=antibiotiket-phase4-v1/);
+assert.match(shell, /antibiotiket-prescription\.js\?v=antibiotiket-phase4-v2/);
+// v2: the fold-out summary was restyled to match the other two folds on a card.
+assert.match(shell, /antibiotiket-prescription\.css\?v=antibiotiket-phase4-v2/);
 
 const css = read('antibiotiket-prescription.css');
 assert.match(css, /\.abx-rx\{/);

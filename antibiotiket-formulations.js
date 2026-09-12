@@ -122,27 +122,36 @@
     return node;
   }
 
-  function selectedStrength(select, customInput) {
-    if (select.value === 'custom') {
-      const mgPer5mL = number(customInput.value);
-      return Number.isFinite(mgPer5mL) && mgPer5mL > 0
-        ? { id:'custom', label:`${fmt(mgPer5mL)} mg / 5 mL`, mgPer5mL, sourceUrl:null, custom:true }
-        : null;
-    }
+  // A bottle is "X mg in Y mL", and both halves vary by market. The listed
+  // strengths are the common ones; the custom option lets either number be
+  // typed, and everything downstream keeps working in mg per 5 mL.
+  function customStrength(mgInput, mlInput) {
+    const mg = number(mgInput.value);
+    const ml = number(mlInput.value);
+    if (!Number.isFinite(mg) || mg <= 0) return null;
+    if (!Number.isFinite(ml) || ml <= 0) return null;
+    return { id:'custom', label:`${fmt(mg)} mg / ${fmt(ml)} mL`, mgPer5mL:mg * 5 / ml, sourceUrl:null, custom:true };
+  }
+
+  function selectedStrength(select, mgInput, mlInput) {
+    if (select.value === 'custom') return customStrength(mgInput, mlInput);
     const drug = select.dataset.drug;
     return availableForms(drug).find(form => form.id === select.value) || null;
   }
 
+  // Returns the one line worth showing before the panel is opened: the volume
+  // per dose and the strength it came from, or null when there is none.
   function renderResult(target, { drug, doseText, frequencyText, durationText, basisKind, sequence, strength }) {
     target.replaceChildren();
     if (!strength) {
       target.append(make('span', 'abx-formulation-empty', 'Shkruaj fuqinë reale të produktit për ta kthyer dozën në mL.'));
-      return;
+      return null;
     }
 
     const entry = drugConfig(drug);
     const orientational = basisKind === 'reference';
     const rows = make('div', 'abx-formulation-results');
+    let headline = null;
 
     if (sequence.length) {
       let total = 0;
@@ -160,9 +169,10 @@
       const perDose = rangeVolume(dose, strength.mgPer5mL);
       if (!perDose) {
         target.append(make('span', 'abx-formulation-empty', 'Kjo skemë nuk ka dozë në mg që mund të kthehet automatikisht në mL.'));
-        return;
+        return null;
       }
 
+      headline = rangeText(perDose);
       rows.append(resultRow('mL për dozë', rangeText(perDose)));
       const frequency = frequencyRange(frequencyText);
       const daily = frequency ? multiplyRanges(perDose, frequency) : null;
@@ -201,6 +211,7 @@
     } else if (strength.custom) {
       target.append(make('span', 'abx-formulation-source', 'Fuqia u shkrua manualisht — kontrollo etiketën e produktit.'));
     }
+    return headline ? { volume:headline, strength:strength.label } : null;
   }
 
   function resultRow(label, value) {
@@ -221,14 +232,20 @@
     const entry = drugConfig(drug);
     if (!entry) return null;
 
-    const wrap = make('section', 'abx-formulation');
+    const wrap = make('details', 'abx-formulation');
     wrap.dataset.drug = drug;
 
+    const summary = make('summary', 'abx-formulation-summary');
+    summary.append(make('span', 'abx-formulation-summary-label', comboHeading ? `Nga mg në mL · ${drug}` : 'Nga mg në mL'));
+    const summaryValue = make('b', 'abx-formulation-summary-value', '');
+    const summaryStrength = make('span', 'abx-formulation-summary-strength', '');
+    summary.append(summaryValue, summaryStrength);
+    wrap.append(summary);
+
+    // The summary above already names the section (and the component, for a
+    // combination), so the body only labels the control.
     const head = make('div', 'abx-formulation-head');
-    const title = make('div', '');
-    title.append(make('strong', '', comboHeading ? `Formulimi · ${drug}` : 'Nga mg në mL'));
-    title.append(make('span', '', comboHeading ? 'Komponent i kombinimit' : 'Fuqia e produktit'));
-    head.append(title);
+    head.append(make('span', 'abx-formulation-head-label', 'Fuqia e produktit'));
 
     const select = document.createElement('select');
     select.className = 'abx-formulation-select';
@@ -249,14 +266,22 @@
     head.append(select);
     wrap.append(head);
 
-    const customWrap = make('label', 'abx-formulation-custom');
-    customWrap.append(make('span', '', `mg ${entry.basis || drug} në 5 mL`));
-    const customInput = document.createElement('input');
-    customInput.type = 'text';
-    customInput.inputMode = 'decimal';
-    customInput.placeholder = 'p.sh. 250';
-    customInput.setAttribute('aria-label', `mg ${entry.basis || drug} në 5 mL`);
-    customWrap.append(customInput);
+    const customWrap = make('div', 'abx-formulation-custom');
+    const numberField = (labelText, ariaText, placeholder) => {
+      const field = make('label', 'abx-formulation-custom-field');
+      field.append(make('span', '', labelText));
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.inputMode = 'decimal';
+      input.placeholder = placeholder;
+      input.setAttribute('aria-label', ariaText);
+      field.append(input);
+      customWrap.append(field);
+      return input;
+    };
+    const basis = entry.basis || drug;
+    const customMg = numberField(`mg ${basis}`, `mg ${basis} në shishe`, '125');
+    const customMl = numberField('në mL', `mL të tretësirës për ${basis}`, '5');
     wrap.append(customWrap);
 
     const output = make('div', 'abx-formulation-output');
@@ -271,12 +296,30 @@
 
     function refresh() {
       customWrap.hidden = select.value !== 'custom';
-      const strength = selectedStrength(select, customInput);
-      renderResult(output, { drug, doseText, frequencyText, durationText, basisKind, sequence, strength });
+      const strength = selectedStrength(select, customMg, customMl);
+      // One source of truth for the chosen strength: the prescription builder
+      // reads it back from here instead of re-parsing the inputs.
+      wrap.dataset.mgPer5ml = strength ? String(strength.mgPer5mL) : '';
+      wrap.dataset.strengthLabel = strength ? strength.label : '';
+      const headline = renderResult(output, { drug, doseText, frequencyText, durationText, basisKind, sequence, strength });
+      summaryValue.textContent = headline ? `${headline.volume} për dozë` : '';
+      summaryStrength.textContent = headline ? headline.strength : 'hap për ta kthyer dozën në mL';
     }
 
-    select.addEventListener('change', refresh);
-    customInput.addEventListener('input', refresh);
+    // Switching to a custom strength starts from the listed one that was on
+    // screen, so the common case is a two-character edit rather than retyping.
+    let lastFormId = select.value;
+    select.addEventListener('change', () => {
+      if (select.value === 'custom' && !clean(customMg.value)) {
+        const previous = availableForms(drug).find(form => form.id === lastFormId);
+        customMg.value = previous ? String(previous.mgPer5mL).replace('.', ',') : '';
+        customMl.value = previous ? '5' : '';
+      }
+      if (select.value !== 'custom') lastFormId = select.value;
+      refresh();
+    });
+    customMg.addEventListener('input', refresh);
+    customMl.addEventListener('input', refresh);
     refresh();
     return wrap;
   }
