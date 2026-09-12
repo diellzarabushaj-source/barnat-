@@ -97,7 +97,8 @@
       const auth = await ensureAuth();
       await syncProfile(auth);
       document.documentElement.dataset.theme = 'light';
-      if ($('#sourceStatus')) $('#sourceStatus').textContent = 'Antibiotikët · CPS 2022 / CARPA-WBM';
+      if ($('#allergyLabel')) $('#allergyLabel').textContent = 'Alergjia ndaj beta-laktameve';
+      if ($('#sourceStatus')) $('#sourceStatus').textContent = 'Antibiotikët · CM 2026 / CDC / CPS 2026 / CHOP';
     } catch {
       return;
     } finally {
