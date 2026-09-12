@@ -92,6 +92,24 @@
     return { kind:'valid', value };
   }
 
+  // Which weight the numbers come from. A real weight always wins; the age band
+  // only supplies the source's reference weight, which is orientational.
+  function doseBasis() {
+    const state = weightState();
+    if (state.kind === 'valid') {
+      return { kind:'real', weight:state.value, label:`Për ${fmt(state.value)} kg` };
+    }
+    const age = currentAgeBand();
+    if (age && Number.isFinite(age.referenceWeightKg)) {
+      return {
+        kind:'reference',
+        weight:age.referenceWeightKg,
+        label:`Sipas moshës ${age.label.toLocaleLowerCase('sq')} · ${fmt(age.referenceWeightKg)} kg`,
+      };
+    }
+    return { kind:'none', weight:null, label:'' };
+  }
+
   function maxText(dose) {
     if (!dose?.maxDose) return '';
     return dose.maxLabel || `maks. ${fmt(dose.maxDose)} mg/dozë`;
@@ -124,10 +142,10 @@
     return { value:max, capped:true };
   }
 
-  function calculatedText(option, weight) {
+  function calculatedText(option, weight, prefix) {
     if (!weight) return '';
     const dose = option.dose || {};
-    const label = `Për ${fmt(weight)} kg: `;
+    const label = `${prefix || `Për ${fmt(weight)} kg`}: `;
 
     if (dose.type === 'range') {
       const low = cap(dose.min * weight, dose.maxDose);
@@ -158,6 +176,50 @@
       return `${label}${fmt(low.value)}–${fmt(high.value)} mg amoxicillin/dozë${low.capped || high.capped ? ' · kufiri maksimal i tabelës' : ''}`;
     }
     return '';
+  }
+
+  // The arithmetic, written out. This never decides a dose — calculatedText()
+  // owns that — it only shows the multiplication behind the number so it can be
+  // checked at a glance.
+  function calculationSteps(option, weight) {
+    if (!weight) return [];
+    const dose = option.dose || {};
+    const kg = `${fmt(weight)} kg`;
+    const cap = max => `kufizuar në maks. ${fmt(max)} mg/dozë nga tabela`;
+
+    if (dose.type === 'range') {
+      const low = dose.min * weight;
+      const high = dose.max * weight;
+      const steps = [`${fmt(dose.min)}–${fmt(dose.max)} mg/kg × ${kg} = ${fmt(low)}–${fmt(high)} mg/dozë`];
+      if (dose.maxDose && high > dose.maxDose) steps.push(cap(dose.maxDose));
+      return steps;
+    }
+    if (dose.type === 'single') {
+      const value = dose.value * weight;
+      const steps = [`${fmt(dose.value)} mg/kg × ${kg} = ${fmt(value)} mg/dozë`];
+      if (dose.maxDose && value > dose.maxDose) steps.push(cap(dose.maxDose));
+      return steps;
+    }
+    if (dose.type === 'sequence') {
+      return dose.steps.map(step => {
+        const value = step.value * weight;
+        const capped = step.maxDose && value > step.maxDose;
+        return `${step.label}: ${fmt(step.value)} mg/kg × ${kg} = ${fmt(value)} mg${capped ? ` → maks. ${fmt(step.maxDose)} mg` : ''}`;
+      });
+    }
+    if (dose.type === 'weight-threshold') {
+      const below = weight < dose.thresholdKg;
+      return [`${kg} ${below ? '<' : '≥'} ${fmt(dose.thresholdKg)} kg → ${below ? dose.below : dose.atOrAbove}`];
+    }
+    if (dose.type === 'amoxclav-uti') {
+      if (weight >= 35) return [`${kg} ≥ 35 kg → doza fikse: 500/125 mg 3×/ditë ose 875/125 mg 2×/ditë`];
+      const low = 15 * weight;
+      const high = 20 * weight;
+      const steps = [`${kg} < 35 kg → 15–20 mg/kg × ${kg} = ${fmt(low)}–${fmt(high)} mg amoxicillin/dozë`];
+      if (high > 500) steps.push(cap(500));
+      return steps;
+    }
+    return [];
   }
 
   function durationText(option) {
@@ -263,10 +325,10 @@
     if (!age) {
       el.ageHint.textContent = required
         ? 'Kjo skemë ka prag moshe në burim, prandaj mosha duhet zgjedhur.'
-        : 'Mosha përdoret vetëm për kufijtë e burimit dhe kohëzgjatjen.';
+        : 'Zgjidh moshën për peshën referuese, kufijtë e burimit dhe kohëzgjatjen.';
       return;
     }
-    el.ageHint.textContent = `CARPA/WBM: peshë referuese ${age.referenceWeightLabel}. Nuk përdoret për llogaritjen e dozës.`;
+    el.ageHint.textContent = `CARPA/WBM: peshë referuese ${age.referenceWeightLabel}.`;
   }
 
   function renderWeightHint() {
@@ -282,13 +344,26 @@
       return;
     }
     el.weight.removeAttribute('aria-invalid');
-    el.weightHint.textContent = 'Pa peshë reale shfaqet formula e burimit, jo një dozë e llogaritur.';
+    const age = currentAgeBand();
+    el.weightHint.textContent = age
+      ? `Pa peshë reale doza llogaritet nga pesha referuese ${age.referenceWeightLabel} — vetëm orientuese.`
+      : 'Pa peshë reale shfaqet formula e burimit, jo një dozë e llogaritur.';
   }
 
   function renderDoseBasis() {
-    const state = weightState();
-    el.doseBasis.textContent = state.kind === 'valid' ? `Peshë reale ${fmt(state.value)} kg` : 'Formula e burimit';
-    el.doseBasis.dataset.tone = state.kind === 'valid' ? 'live' : 'formula';
+    const basis = doseBasis();
+    if (basis.kind === 'real') {
+      el.doseBasis.textContent = `Peshë reale ${fmt(basis.weight)} kg`;
+      el.doseBasis.dataset.tone = 'live';
+      return;
+    }
+    if (basis.kind === 'reference') {
+      el.doseBasis.textContent = `Peshë referuese ${fmt(basis.weight)} kg · orientuese`;
+      el.doseBasis.dataset.tone = 'reference';
+      return;
+    }
+    el.doseBasis.textContent = 'Formula e burimit';
+    el.doseBasis.dataset.tone = 'formula';
   }
 
   // A refinement is only shown when the source actually branches on it.
@@ -300,7 +375,7 @@
     el.refineBlock.hidden = el.allergyField.hidden && el.atypicalWrap.hidden && el.utiTypeWrap.hidden;
   }
 
-  function recommendationCard(option, actualWeight) {
+  function recommendationCard(option, basis) {
     const card = make('article', `abx-option tier-${option.tier || 'option'}`);
 
     const head = make('div', 'abx-option-head');
@@ -310,13 +385,25 @@
     );
 
     const dose = make('div', 'abx-option-dose');
-    const calculated = calculatedText(option, actualWeight);
+    const calculated = calculatedText(option, basis.weight, basis.label);
     if (calculated) {
-      dose.append(make('strong', 'abx-dose-value', calculated));
+      const value = make('strong', 'abx-dose-value', calculated);
+      value.dataset.basis = basis.kind;
+      dose.append(value);
+
+      // Show the multiplication, so the number can be checked without trusting it.
+      const steps = calculationSteps(option, basis.weight);
+      if (steps.length) {
+        const working = make('div', 'abx-dose-working');
+        working.append(make('span', 'abx-dose-working-label', 'Si llogaritet'));
+        steps.forEach(step => working.append(make('span', 'abx-dose-step', step)));
+        dose.append(working);
+      }
+
       dose.append(make('span', 'abx-dose-formula', formulaText(option)));
     } else {
       dose.append(make('strong', 'abx-dose-formula-lead', formulaText(option)));
-      dose.append(make('span', 'abx-dose-formula', 'Shkruaj peshën reale për mg/dozë.'));
+      dose.append(make('span', 'abx-dose-formula', 'Zgjidh moshën ose shkruaj peshën reale për mg/dozë.'));
     }
 
     const meta = make('div', 'abx-option-meta');
@@ -400,8 +487,15 @@
       return;
     }
 
-    const actualWeight = weight.kind === 'valid' ? weight.value : null;
-    options.forEach(option => el.list.append(recommendationCard(option, actualWeight)));
+    const basis = doseBasis();
+    if (basis.kind === 'reference') {
+      el.list.append(make(
+        'p',
+        'abx-orientational-note',
+        'Këto doza janë llogaritur nga pesha referuese e moshës dhe janë vetëm orientuese. Shkruaj peshën reale për dozën përfundimtare.',
+      ));
+    }
+    options.forEach(option => el.list.append(recommendationCard(option, basis)));
   }
 
   function bind() {
