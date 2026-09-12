@@ -4,11 +4,7 @@
   const guide = window.DRX_ANTIBIOTIC_GUIDE;
   if (!guide) return;
 
-  // drx-antibiotics-minimal-v5: two actions to an answer — tap the infection,
-  // type the real weight. Everything the source does not need for that stays
-  // out of the way, and nothing the clinician chose is lost on a refresh.
-  const STATE_KEY = 'drx.antibiotics.context.v1';
-
+  const STATE_KEY = 'drx.antibiotics.context.v2';
   const $ = id => document.getElementById(id);
   const el = {
     indicationChoice:$('indicationChoice'),
@@ -23,7 +19,6 @@
     atypicalWrap:$('atypicalWrap'),
     atypical:$('atypicalInput'),
     utiTypeWrap:$('utiTypeWrap'),
-    utiTypeChoice:$('utiTypeChoice'),
     ageSuggestion:$('ageSuggestion'),
     doseBasis:$('doseBasis'),
     activeSource:$('activeSource'),
@@ -32,47 +27,32 @@
     sourceList:$('sourceList'),
   };
 
-  // The clinical context lives here, not in the DOM, so a reload can restore it
-  // exactly as the clinician left it.
   const ctx = {
     indication:guide.indications[0]?.id || '',
     age:'',
     weight:'',
     allergy:'none',
     atypical:false,
-    utiType:'nonfebrile',
-    // Whether the age currently in the select was derived from the weight
-    // rather than chosen. It only changes what the page says about the age;
-    // the age itself is used the same way either way.
     ageFromWeight:false,
   };
 
   const tierLabels = Object.freeze({
     first:'Zgjedhja e parë',
     second:'Zgjedhja e dytë',
-    'allergy-nonsevere':'Alergji jo kërcënuese për jetën',
-    'allergy-severe':'Alergji kërcënuese për jetën / alternativë',
-    option:'Opsion i tabelës',
+    option:'Opsion',
+    'allergy-low':'Alternativë sipas alergjisë',
+    'allergy-severe':'Alternativë jo-beta-laktam',
+    reserve:'Rezervë / me kushte',
+    atypical:'Patogjen atipik',
+    procedure:'Source control',
   });
 
-  // The source splits the alternatives on "life-threatening or not", so the
-  // control has to say exactly that rather than a shorter paraphrase.
-  const allergyOptions = Object.freeze([
-    { value:'none', label:'Jo' },
-    { value:'nonsevere', label:'Po, jo kërcënuese për jetën' },
-    { value:'severe', label:'Po, kërcënuese për jetën' },
-  ]);
-
-  const allergyLabels = Object.freeze({
-    none:'Pa alergji ndaj penicilinës',
-    nonsevere:'Alergji jo kërcënuese për jetën',
-    severe:'Alergji kërcënuese për jetën',
-  });
-
-  const utiOptions = Object.freeze([
-    { value:'nonfebrile', label:'Pa temperaturë' },
-    { value:'febrile', label:'Febrile' },
-  ]);
+  const allergyOptions = Object.freeze((guide.allergyBuckets || []).map(item => ({
+    value:item.id,
+    label:item.short || item.label,
+    hint:item.label,
+  })));
+  const allergyById = id => (guide.allergyBuckets || []).find(item => item.id === id) || null;
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const fmt = value => {
@@ -97,13 +77,9 @@
     return { kind:'valid', value };
   }
 
-  // Which weight the numbers come from. A real weight always wins; the age band
-  // only supplies the source's reference weight, which is orientational.
   function doseBasis() {
     const state = weightState();
-    if (state.kind === 'valid') {
-      return { kind:'real', weight:state.value, label:`Për ${fmt(state.value)} kg` };
-    }
+    if (state.kind === 'valid') return { kind:'real', weight:state.value, label:`Për ${fmt(state.value)} kg` };
     const age = currentAgeBand();
     if (age && Number.isFinite(age.referenceWeightKg)) {
       return {
@@ -115,10 +91,6 @@
     return { kind:'none', weight:null, label:'' };
   }
 
-  // The band whose CARPA/WBM reference weight sits closest to the typed weight.
-  // On a tie the younger band wins: it is the more restrictive one for the
-  // source's age thresholds and gives the longer course where duration depends
-  // on age, so a coin-flip never lands on the less cautious side.
   function nearestAgeBand(weight) {
     if (!Number.isFinite(weight)) return null;
     return guide.ageBands.reduce((best, band) => {
@@ -132,231 +104,217 @@
     }, null);
   }
 
-  function maxText(dose) {
-    if (!dose?.maxDose) return '';
-    return dose.maxLabel || `maks. ${fmt(dose.maxDose)} mg/dozë`;
+  function cap(value, max) {
+    if (!Number.isFinite(max) || value <= max) return { value, capped:false };
+    return { value:max, capped:true };
   }
 
-  function formulaText(option) {
-    const dose = option.dose || {};
-    const frequency = clean(option.frequency);
+  function componentLabel(dose) {
+    return dose?.component ? ` ${dose.component}` : '';
+  }
+
+  function maxText(dose) {
+    if (!Number.isFinite(dose?.maxDose)) return '';
+    return dose.maxLabel || `maks. ${fmt(dose.maxDose)} mg${componentLabel(dose)}/dozë`;
+  }
+
+  function formulaForDose(dose, frequency='') {
+    if (!dose) return frequency || '—';
     if (dose.type === 'range') {
       const component = dose.component ? ` · sipas ${dose.component}` : '';
-      return `${fmt(dose.min)}–${fmt(dose.max)} ${dose.unit}${component} · ${frequency}${dose.maxDose ? ` · ${maxText(dose)}` : ''}`;
+      return `${fmt(dose.min)}–${fmt(dose.max)} ${dose.unit}${component}${frequency ? ` · ${frequency}` : ''}${Number.isFinite(dose.maxDose) ? ` · ${maxText(dose)}` : ''}`;
     }
     if (dose.type === 'single') {
-      return `${fmt(dose.value)} ${dose.unit} · ${frequency}${dose.maxDose ? ` · ${maxText(dose)}` : ''}`;
+      const component = dose.component ? ` · sipas ${dose.component}` : '';
+      return `${fmt(dose.value)} ${dose.unit}${component}${frequency ? ` · ${frequency}` : ''}${Number.isFinite(dose.maxDose) ? ` · ${maxText(dose)}` : ''}`;
     }
     if (dose.type === 'sequence') {
-      return dose.steps.map(step => `${step.label}: ${fmt(step.value)} ${dose.unit}${step.maxDose ? ` (maks. ${fmt(step.maxDose)} mg)` : ''}`).join(' · ');
+      return dose.steps.map(step => `${step.label}: ${fmt(step.value)} ${dose.unit}${Number.isFinite(step.maxDose) ? ` (maks. ${fmt(step.maxDose)} mg)` : ''}`).join(' · ');
     }
-    if (dose.type === 'weight-threshold') {
-      return `<${fmt(dose.thresholdKg)} kg: ${dose.below} · ≥${fmt(dose.thresholdKg)} kg: ${dose.atOrAbove} · ${frequency}`;
-    }
-    if (dose.type === 'amoxclav-uti') {
-      return '<35 kg: 15–20 mg/kg/dozë PO 3 herë/ditë (maks. 500 mg amoxicillin/dozë) · ≥35 kg: 500/125 mg 3 herë/ditë ose 875/125 mg 2 herë/ditë';
+    if (dose.type === 'fixed') return `${dose.text}${frequency ? ` · ${frequency}` : ''}`;
+    if (dose.type === 'combo') {
+      return dose.parts.map(part => `${part.drug}: ${formulaForDose(part.dose, part.frequency)}`).join(' + ');
     }
     return frequency || '—';
   }
 
-  function cap(value, max) {
-    if (!max || value <= max) return { value, capped:false };
-    return { value:max, capped:true };
+  function formulaText(option) {
+    return formulaForDose(option.dose || {}, clean(option.frequency));
   }
 
-  // The single-dose value, with no label. calculatedText() wraps it; the
-  // arithmetic below is unchanged from the verified build.
-  function calculatedValue(option, weight) {
-    if (!weight) return '';
-    const dose = option.dose || {};
-
+  function calculateSimple(dose, weight) {
+    if (!weight || !dose) return null;
+    if (dose.type === 'single') {
+      const result = cap(dose.value * weight, dose.maxDose);
+      return { min:result.value, max:result.value, capped:result.capped };
+    }
     if (dose.type === 'range') {
       const low = cap(dose.min * weight, dose.maxDose);
       const high = cap(dose.max * weight, dose.maxDose);
-      const value = low.value === high.value
-        ? `${fmt(low.value)} mg/dozë`
-        : `${fmt(low.value)}–${fmt(high.value)} mg/dozë`;
-      return `${value}${low.capped || high.capped ? ' · kufiri maksimal i tabelës' : ''}`;
+      return { min:low.value, max:high.value, capped:low.capped || high.capped };
     }
-    if (dose.type === 'single') {
-      const result = cap(dose.value * weight, dose.maxDose);
-      return `${fmt(result.value)} mg/dozë${result.capped ? ' · kufiri maksimal i tabelës' : ''}`;
-    }
+    return null;
+  }
+
+  function rangeText(range, dose, suffix='dozë') {
+    const component = componentLabel(dose);
+    const value = range.min === range.max ? fmt(range.min) : `${fmt(range.min)}–${fmt(range.max)}`;
+    return `${value} mg${component}/${suffix}${range.capped ? ' · kufiri maksimal i burimit' : ''}`;
+  }
+
+  function calculatedValue(option, weight) {
+    if (!weight) return '';
+    const dose = option.dose || {};
+    const simple = calculateSimple(dose, weight);
+    if (simple) return rangeText(simple, dose);
+
     if (dose.type === 'sequence') {
       return dose.steps.map(step => {
         const result = cap(step.value * weight, step.maxDose);
         return `${step.label}: ${fmt(result.value)} mg${result.capped ? ' (maks.)' : ''}`;
       }).join(' · ');
     }
-    if (dose.type === 'weight-threshold') {
-      return weight < dose.thresholdKg ? dose.below : dose.atOrAbove;
-    }
-    if (dose.type === 'amoxclav-uti') {
-      if (weight >= 35) return '500/125 mg 3×/ditë ose 875/125 mg 2×/ditë';
-      const low = cap(15 * weight, 500);
-      const high = cap(20 * weight, 500);
-      return `${fmt(low.value)}–${fmt(high.value)} mg amoxicillin/dozë${low.capped || high.capped ? ' · kufiri maksimal i tabelës' : ''}`;
+
+    if (dose.type === 'fixed') return dose.text;
+
+    if (dose.type === 'combo') {
+      return dose.parts.map(part => {
+        const result = calculateSimple(part.dose, weight);
+        const text = result ? rangeText(result, part.dose) : formulaForDose(part.dose, part.frequency);
+        return `${part.drug}: ${text} · ${part.frequency}`;
+      }).join(' + ');
     }
     return '';
   }
 
-  function calculatedText(option, weight, prefix) {
-    const value = calculatedValue(option, weight);
-    if (!value) return '';
-    return `${prefix || `Për ${fmt(weight)} kg`}: ${value}`;
-  }
-
-  // How many doses a day the source states. Deliberately strict: only the exact
-  // wordings used in the dataset are recognised, and a frequency this does not
-  // understand yields no daily total rather than a guess.
-  // tests/antibiotics-daily-dose-test.js fails if the dataset gains another one.
-  function dosesPerDay(option) {
-    const frequency = clean(option.frequency);
-    let match = /^(\d+) herë\/ditë$/.exec(frequency);
-    if (match) return { min:Number(match[1]), max:Number(match[1]) };
-    match = /^(\d+) ose (\d+) herë\/ditë$/.exec(frequency);
+  function dosesPerDayFromFrequency(frequency) {
+    const value = clean(frequency);
+    let match = /^(\d+) herë\/ditë$/.exec(value);
+    if (match) return Number(match[1]);
+    match = /^(\d+) ose (\d+) herë\/ditë$/.exec(value);
     if (match) return { min:Number(match[1]), max:Number(match[2]) };
-    if (frequency === '1 herë/ditë (mund të ndahet në 2 doza)') return { min:1, max:1 };
     return null;
   }
 
-  // The per-dose amount as numbers, so the daily total can be multiplied out.
-  // Returns null whenever the source gives text instead of a computable dose.
-  function perDoseMg(option, weight) {
-    if (!weight) return null;
-    const dose = option.dose || {};
-    if (dose.type === 'range') {
-      return { min:cap(dose.min * weight, dose.maxDose).value, max:cap(dose.max * weight, dose.maxDose).value };
-    }
-    if (dose.type === 'single') {
-      const value = cap(dose.value * weight, dose.maxDose).value;
-      return { min:value, max:value };
-    }
-    if (dose.type === 'weight-threshold') {
-      const text = weight < dose.thresholdKg ? dose.below : dose.atOrAbove;
-      const match = /^(\d+(?:[.,]\d+)?) mg\/dozë$/.exec(clean(text));
-      if (!match) return null;
-      const value = Number(match[1].replace(',', '.'));
-      return { min:value, max:value };
-    }
-    if (dose.type === 'amoxclav-uti' && weight < 35) {
-      return { min:cap(15 * weight, 500).value, max:cap(20 * weight, 500).value };
-    }
-    return null;
-  }
-
-  const doseUnitIsDaily = option => /\/ditë$/.test(clean(option.dose?.unit || ''));
-
-  function amount(range, unit) {
-    return range.min === range.max ? `${fmt(range.min)} ${unit}` : `${fmt(range.min)}–${fmt(range.max)} ${unit}`;
-  }
-
-  // Total for 24 hours: the source's per-dose amount times the source's
-  // frequency. It is arithmetic on the table, not a separate published figure.
   function dailyDose(option, weight) {
     if (!weight) return null;
     const dose = option.dose || {};
 
-    // The sequence doses are already stated per day, so nothing is multiplied.
-    if (dose.type === 'sequence' && doseUnitIsDaily(option)) {
+    if (dose.type === 'sequence') {
       return {
         text:dose.steps.map(step => `${step.label}: ${fmt(cap(step.value * weight, step.maxDose).value)} mg/ditë`).join(' · '),
-        working:'Doza e burimit është mg/kg/ditë — jepet një herë në ditë, prandaj nuk shumëzohet.',
+        working:'Doza është e shprehur për ditë; nuk shumëzohet përsëri me frekuencën.',
       };
     }
 
-    if (dose.type === 'amoxclav-uti' && weight >= 35) {
-      return {
-        text:'1500 mg ose 1750 mg amoxicillin/ditë',
-        working:'500 mg × 3 herë/ditë = 1500 mg/ditë · 875 mg × 2 herë/ditë = 1750 mg/ditë',
-      };
+    if (dose.type === 'combo') {
+      const rows = [];
+      const workings = [];
+      dose.parts.forEach(part => {
+        const perDose = calculateSimple(part.dose, weight);
+        const perDay = dosesPerDayFromFrequency(part.frequency);
+        if (!perDose || !perDay || typeof perDay !== 'number') return;
+        const daily = { min:perDose.min * perDay, max:perDose.max * perDay };
+        rows.push(`${part.drug}: ${rangeText(daily, part.dose, 'ditë')}`);
+        workings.push(`${part.drug}: ${rangeText(perDose, part.dose)} × ${perDay}/ditë`);
+      });
+      return rows.length ? { text:rows.join(' + '), working:workings.join(' · ') } : null;
     }
 
-    const perDose = perDoseMg(option, weight);
-    const perDay = dosesPerDay(option) || (dose.type === 'amoxclav-uti' && weight < 35 ? { min:3, max:3 } : null);
+    const perDose = calculateSimple(dose, weight);
+    const perDay = dosesPerDayFromFrequency(option.frequency);
     if (!perDose || !perDay) return null;
 
-    const unit = dose.type === 'amoxclav-uti' ? 'mg amoxicillin/ditë' : 'mg/ditë';
-    const total = { min:perDose.min * perDay.min, max:perDose.max * perDay.max };
-    const times = perDay.min === perDay.max ? `${perDay.min} herë/ditë` : `${perDay.min}–${perDay.max} herë/ditë`;
+    if (typeof perDay === 'number') {
+      const daily = { min:perDose.min * perDay, max:perDose.max * perDay, capped:false };
+      return {
+        text:rangeText(daily, dose, 'ditë'),
+        working:`${rangeText(perDose, dose)} × ${perDay} herë/ditë`,
+      };
+    }
+
+    const daily = { min:perDose.min * perDay.min, max:perDose.max * perDay.max, capped:false };
     return {
-      text:amount(total, unit),
-      working:`${amount(perDose, 'mg')} × ${times} = ${amount(total, unit)}`,
+      text:rangeText(daily, dose, 'ditë'),
+      working:`${rangeText(perDose, dose)} × ${perDay.min}–${perDay.max} herë/ditë`,
     };
   }
 
-  // The arithmetic, written out. This never decides a dose — calculatedText()
-  // owns that — it only shows the multiplication behind the number so it can be
-  // checked at a glance.
   function calculationSteps(option, weight) {
     if (!weight) return [];
     const dose = option.dose || {};
     const kg = `${fmt(weight)} kg`;
-    const cap = max => `kufizuar në maks. ${fmt(max)} mg/dozë nga tabela`;
 
-    if (dose.type === 'range') {
-      const low = dose.min * weight;
-      const high = dose.max * weight;
-      const steps = [`${fmt(dose.min)}–${fmt(dose.max)} mg/kg × ${kg} = ${fmt(low)}–${fmt(high)} mg/dozë`];
-      if (dose.maxDose && high > dose.maxDose) steps.push(cap(dose.maxDose));
+    if (dose.type === 'single' || dose.type === 'range') {
+      const values = dose.type === 'single' ? [dose.value] : [dose.min, dose.max];
+      const raw = values.map(v => v * weight);
+      const source = values.length === 1 ? `${fmt(values[0])} mg/kg × ${kg}` : `${fmt(values[0])}–${fmt(values[1])} mg/kg × ${kg}`;
+      const result = raw.length === 1 ? `${fmt(raw[0])} mg/dozë` : `${fmt(raw[0])}–${fmt(raw[1])} mg/dozë`;
+      const steps = [`${source} = ${result}`];
+      if (Number.isFinite(dose.maxDose) && Math.max(...raw) > dose.maxDose) steps.push(`kufizuar në maks. ${fmt(dose.maxDose)} mg/dozë nga burimi`);
       return steps;
     }
-    if (dose.type === 'single') {
-      const value = dose.value * weight;
-      const steps = [`${fmt(dose.value)} mg/kg × ${kg} = ${fmt(value)} mg/dozë`];
-      if (dose.maxDose && value > dose.maxDose) steps.push(cap(dose.maxDose));
-      return steps;
-    }
+
     if (dose.type === 'sequence') {
       return dose.steps.map(step => {
-        const value = step.value * weight;
-        const capped = step.maxDose && value > step.maxDose;
-        return `${step.label}: ${fmt(step.value)} mg/kg × ${kg} = ${fmt(value)} mg${capped ? ` → maks. ${fmt(step.maxDose)} mg` : ''}`;
+        const raw = step.value * weight;
+        const capped = Number.isFinite(step.maxDose) && raw > step.maxDose;
+        return `${step.label}: ${fmt(step.value)} mg/kg × ${kg} = ${fmt(raw)} mg${capped ? ` → maks. ${fmt(step.maxDose)} mg` : ''}`;
       });
     }
-    if (dose.type === 'weight-threshold') {
-      const below = weight < dose.thresholdKg;
-      return [`${kg} ${below ? '<' : '≥'} ${fmt(dose.thresholdKg)} kg → ${below ? dose.below : dose.atOrAbove}`];
+
+    if (dose.type === 'combo') {
+      return dose.parts.flatMap(part => {
+        const tempOption = { dose:part.dose, frequency:part.frequency };
+        return calculationSteps(tempOption, weight).map(step => `${part.drug}: ${step}`);
+      });
     }
-    if (dose.type === 'amoxclav-uti') {
-      if (weight >= 35) return [`${kg} ≥ 35 kg → doza fikse: 500/125 mg 3×/ditë ose 875/125 mg 2×/ditë`];
-      const low = 15 * weight;
-      const high = 20 * weight;
-      const steps = [`${kg} < 35 kg → 15–20 mg/kg × ${kg} = ${fmt(low)}–${fmt(high)} mg amoxicillin/dozë`];
-      if (high > 500) steps.push(cap(500));
-      return steps;
-    }
+
     return [];
   }
 
   function durationText(option) {
     const duration = option.duration || {};
     if (duration.type === 'fixed') return duration.text;
-    if (duration.type === 'source-unspecified') return 'Nuk specifikohet në tabelë';
-    if (duration.type === 'uti') return ctx.utiType === 'febrile' ? '7–10 ditë' : '3 ditë';
-    if (duration.type === 'age') {
+    if (duration.type === 'age-bands') {
       const age = currentAgeBand();
-      if (!age) return `<2 vjeç: ${duration.underText} · ≥2 vjeç: ${duration.otherText}`;
-      return age.months < duration.underMonths ? duration.underText : duration.otherText;
+      let text = '';
+      if (!age) {
+        const parts = (duration.bands || []).map((band, index) => {
+          const start = index === 0 ? 0 : duration.bands[index - 1].maxMonths;
+          return `${start ? `≥${Math.round(start / 12)} vjeç dhe ` : ''}<${Math.round(band.maxMonths / 12)} vjeç: ${band.text}`;
+        });
+        parts.push(`më i madh: ${duration.defaultText}`);
+        text = parts.join(' · ');
+      } else {
+        const band = (duration.bands || []).find(item => age.months < item.maxMonths);
+        text = band ? band.text : duration.defaultText;
+      }
+      return duration.severeText ? `${text} · ${duration.severeText}` : text;
     }
     return '—';
   }
 
+  function allergyAllowed(option) {
+    const list = option.allergy || [];
+    return list.includes('any') || list.includes(ctx.allergy);
+  }
+
   function visibleOptions(indication) {
-    if (indication.id === 'uti') return indication.options;
-    if (indication.id === 'pneumonia' && ctx.atypical) {
-      return indication.options.filter(option => option.atypical);
+    const filtered = indication.options.filter(allergyAllowed);
+    if (indication.id === 'pneumonia') {
+      return filtered.filter(option => ctx.atypical ? option.atypical === true : option.atypical !== true);
     }
-    return indication.options.filter(option => (option.allergy || []).includes(ctx.allergy) || (option.allergy || []).includes('any'));
+    return filtered;
   }
 
   function eligibilityProblem(indication) {
     if (!Number.isFinite(indication.minAgeMonths)) return '';
     const age = currentAgeBand();
-    const threshold = indication.minAgeMonths === 3 ? '3 muaj' : indication.minAgeMonths === 6 ? '6 muaj' : `${indication.minAgeMonths} muaj`;
-    if (!age) return `Zgjidh moshën për të kontrolluar nëse kjo skemë e burimit aplikohet (pragu: ≥${threshold}).`;
+    const threshold = indication.minAgeMonths < 12 ? `${indication.minAgeMonths} muaj` : `${Math.round(indication.minAgeMonths / 12)} vjeç`;
+    if (!age) return `Zgjidh moshën për të kontrolluar pragun e kësaj skeme (≥${threshold}).`;
     if (age.months >= indication.minAgeMonths) return '';
-    return `Kjo tabelë e kufizon skemën në moshën ≥${threshold}. Për moshën e zgjedhur nuk po shfaqet skemë automatike.`;
+    return `Kjo skemë ambulatore kërkon moshën ≥${threshold}. Për moshën e zgjedhur nevojitet vlerësim tjetër klinik / eskalim.`;
   }
 
   function sourceById(id) {
@@ -370,8 +328,6 @@
     return node;
   }
 
-  // --- controls ------------------------------------------------------------
-
   function buildChoice(container, name, options, current, onPick, className) {
     container.replaceChildren();
     options.forEach(option => {
@@ -382,8 +338,8 @@
       input.value = option.value;
       input.checked = option.value === current;
       input.addEventListener('change', () => { if (input.checked) onPick(option.value); });
+      label.title = option.hint || option.label;
       label.append(input, make('span', '', option.label));
-      if (option.hint) label.append(make('small', '', option.hint));
       container.append(label);
     });
   }
@@ -392,7 +348,7 @@
     buildChoice(
       el.indicationChoice,
       'abx-indication',
-      guide.indications.map(item => ({ value:item.id, label:item.short || item.label, hint:item.short ? item.label : '' })),
+      guide.indications.map(item => ({ value:item.id, label:item.short || item.label, hint:item.label })),
       ctx.indication,
       value => { ctx.indication = value; render(); },
       'abx-chip',
@@ -400,15 +356,10 @@
   }
 
   function buildAllergySegments() {
+    el.allergyChoice.style.flexWrap = 'wrap';
+    el.allergyChoice.style.maxWidth = '100%';
     buildChoice(el.allergyChoice, 'abx-allergy', allergyOptions, ctx.allergy, value => {
       ctx.allergy = value;
-      render();
-    }, 'abx-segment');
-  }
-
-  function buildUtiSegments() {
-    buildChoice(el.utiTypeChoice, 'abx-uti', utiOptions, ctx.utiType, value => {
-      ctx.utiType = value;
       render();
     }, 'abx-segment');
   }
@@ -422,67 +373,47 @@
     });
   }
 
-  // --- rendering -----------------------------------------------------------
-
   function renderAgeHint(indication) {
     const age = currentAgeBand();
-    const required = Number.isFinite(indication.minAgeMonths);
+    const required = Number.isFinite(indication.minAgeMonths) || indication.options.some(option => option.duration?.type === 'age-bands');
     const derived = Boolean(age) && ctx.ageFromWeight;
     el.ageOptional.textContent = derived ? '— nga pesha' : required ? '— e nevojshme' : '— opsionale';
     el.age.classList.toggle('is-required', required && !age);
     el.age.dataset.source = derived ? 'weight' : 'chosen';
     if (!age) {
       el.ageHint.textContent = required
-        ? 'Kjo skemë ka prag moshe në burim, prandaj mosha duhet zgjedhur.'
-        : 'Zgjidh moshën për peshën referuese, kufijtë e burimit dhe kohëzgjatjen.';
+        ? 'Mosha nevojitet për pragun ose kohëzgjatjen. Nëse vendoset nga pesha, korrigjoje nëse mosha reale është tjetër.'
+        : 'Mosha përdoret për peshën referuese dhe kufijtë klinikë.';
       return;
     }
-    // The age is not decoration: it gates the source's age thresholds and, for
-    // AOM, the length of the course. When the weight put it there, say so.
     el.ageHint.textContent = derived
-      ? `Vendosur nga pesha ${fmt(weightState().value)} kg. Ndryshoje nëse mosha reale është tjetër — ajo vendos pragjet e burimit dhe kohëzgjatjen.`
+      ? `Vendosur automatikisht nga pesha ${fmt(weightState().value)} kg. Ndryshoje nëse mosha reale është tjetër.`
       : `CARPA/WBM: peshë referuese ${age.referenceWeightLabel}.`;
   }
 
-  // The weight can point at an age band, but it must never set one. The age
-  // decides the source's age thresholds and, for AOM, whether the course is 10
-  // days or 5 — deciding those from a guessed age, or silently replacing an age
-  // the clinician chose, is not something a weight should do. So it is offered.
   function renderAgeSuggestion() {
     if (!el.ageSuggestion) return;
     const state = weightState();
     const suggestion = state.kind === 'valid' ? nearestAgeBand(state.value) : null;
     const chosen = currentAgeBand();
-
     if (!suggestion || ctx.ageFromWeight || (chosen && chosen.id === suggestion.id)) {
       el.ageSuggestion.hidden = true;
       el.ageSuggestion.replaceChildren();
       return;
     }
-
     el.ageSuggestion.hidden = false;
     el.ageSuggestion.replaceChildren();
     const copy = chosen
-      ? `Ke zgjedhur ${chosen.label.toLocaleLowerCase('sq')} (ref. ${chosen.referenceWeightLabel}), ndërsa ${fmt(state.value)} kg i përgjigjet moshës ${suggestion.label.toLocaleLowerCase('sq')}. Zgjedhja jote mbetet.`
-      : `${fmt(state.value)} kg i përgjigjet moshës ${suggestion.label.toLocaleLowerCase('sq')} sipas CARPA/WBM.`;
+      ? `Mosha e zgjedhur është ${chosen.label.toLocaleLowerCase('sq')}; ${fmt(state.value)} kg afrohet me bandën ${suggestion.label.toLocaleLowerCase('sq')}. Zgjedhja jote mbetet.`
+      : `${fmt(state.value)} kg afrohet me bandën ${suggestion.label.toLocaleLowerCase('sq')} sipas peshës referuese.`;
     el.ageSuggestion.append(make('span', 'abx-age-suggestion-copy', copy));
-
-    const apply = make('button', 'abx-age-suggestion-apply', `Vendos ${suggestion.label.toLocaleLowerCase('sq')}`);
-    apply.type = 'button';
-    apply.addEventListener('click', () => {
-      ctx.age = suggestion.id;
-      el.age.value = suggestion.id;
-      render();
-      el.age.focus({ preventScroll:true });
-    });
-    el.ageSuggestion.append(apply);
   }
 
   function renderWeightHint() {
     const state = weightState();
     if (state.kind === 'valid') {
       el.weight.setAttribute('aria-invalid', 'false');
-      el.weightHint.textContent = 'Pesha reale po përdoret vetëm për llogaritjen matematikore të mg/dozë.';
+      el.weightHint.textContent = 'Pesha reale përdoret për llogaritjen matematikore të mg/dozë.';
       return;
     }
     if (state.kind === 'invalid') {
@@ -513,13 +444,22 @@
     el.doseBasis.dataset.tone = 'formula';
   }
 
-  // A refinement is only shown when the source actually branches on it.
   function renderConditionalControls(indication) {
-    const usesAllergy = indication.usesAllergy !== false && !(indication.id === 'pneumonia' && ctx.atypical);
+    const usesAllergy = indication.usesAllergy !== false;
     el.allergyField.hidden = !usesAllergy;
     el.atypicalWrap.hidden = indication.id !== 'pneumonia';
-    el.utiTypeWrap.hidden = indication.id !== 'uti';
-    el.refineBlock.hidden = el.allergyField.hidden && el.atypicalWrap.hidden && el.utiTypeWrap.hidden;
+    if (el.utiTypeWrap) el.utiTypeWrap.hidden = true;
+    el.refineBlock.hidden = el.allergyField.hidden && el.atypicalWrap.hidden;
+
+    let hint = $('allergyHintPhase2');
+    if (!hint) {
+      hint = make('p', 'abx-hint');
+      hint.id = 'allergyHintPhase2';
+      el.allergyField.append(hint);
+    }
+    const bucket = allergyById(ctx.allergy);
+    hint.textContent = bucket?.note || '';
+    hint.hidden = !usesAllergy;
   }
 
   function doseRow(label, value, basisKind, role) {
@@ -532,32 +472,23 @@
 
   function recommendationCard(option, basis) {
     const card = make('article', `abx-option tier-${option.tier || 'option'}`);
-
     const head = make('div', 'abx-option-head');
-    head.append(
-      make('h3', '', option.drug),
-      make('span', 'abx-tier', tierLabels[option.tier] || 'Opsion i tabelës'),
-    );
+    head.append(make('h3', '', option.drug), make('span', 'abx-tier', tierLabels[option.tier] || 'Opsion'));
 
     const dose = make('div', 'abx-option-dose');
-    const single = calculatedValue(option, basis.weight);
-    if (single) {
-      const basisLine = make('span', 'abx-dose-basis', basis.label);
-      basisLine.dataset.basis = basis.kind;
-      dose.append(basisLine);
-
-      const daily = dailyDose(option, basis.weight);
-      const perDoseIsDaily = doseUnitIsDaily(option);
-
-      const rows = make('div', 'abx-dose-rows');
-      if (!perDoseIsDaily) rows.append(doseRow('Doza e vetme', single, basis.kind, 'single'));
-      if (daily) rows.append(doseRow('Doza ditore', daily.text, basis.kind, 'daily'));
-      if (perDoseIsDaily) {
-        rows.append(make('span', 'abx-dose-note', 'Jepet një herë në ditë, prandaj doza e vetme është e njëjtë me atë ditore.'));
+    const value = calculatedValue(option, basis.weight);
+    if (value) {
+      if (basis.label) {
+        const basisLine = make('span', 'abx-dose-basis', basis.label);
+        basisLine.dataset.basis = basis.kind;
+        dose.append(basisLine);
       }
+      const rows = make('div', 'abx-dose-rows');
+      rows.append(doseRow(option.kind === 'procedure' ? 'Veprimi' : 'Doza e vetme', value, basis.kind, 'single'));
+      const daily = dailyDose(option, basis.weight);
+      if (daily) rows.append(doseRow('Doza ditore', daily.text, basis.kind, 'daily'));
       dose.append(rows);
 
-      // Show the multiplication, so the numbers can be checked without trusting them.
       const steps = calculationSteps(option, basis.weight);
       if (daily?.working) steps.push(daily.working);
       if (steps.length) {
@@ -566,34 +497,56 @@
         steps.forEach(step => working.append(make('span', 'abx-dose-step', step)));
         dose.append(working);
       }
-
       dose.append(make('span', 'abx-dose-formula', formulaText(option)));
-      if (!daily) {
-        dose.append(make('span', 'abx-dose-note', 'Doza ditore nuk llogaritet: tabela nuk e jep frekuencën si numër.'));
+      if (!daily && !option.frequencyNotComputable && !['fixed','combo'].includes(option.dose?.type) && option.kind !== 'procedure') {
+        dose.append(make('span', 'abx-dose-note', 'Doza ditore nuk llogaritet automatikisht për këtë formulim/frekuencë.'));
+      }
+      if (option.frequencyNotComputable) {
+        dose.append(make('span', 'abx-dose-note', 'Frekuenca ndryshon sipas moshës; kontrollo moshën reale para përshkrimit.'));
       }
     } else {
       dose.append(make('strong', 'abx-dose-formula-lead', formulaText(option)));
-      dose.append(make('span', 'abx-dose-formula', 'Zgjidh moshën ose shkruaj peshën reale për mg/dozë.'));
+      if (option.dose?.type !== 'fixed') dose.append(make('span', 'abx-dose-formula', 'Shkruaj peshën reale ose zgjidh moshën për llogaritje orientuese.'));
     }
 
     const meta = make('div', 'abx-option-meta');
+    const source = sourceById(option.source);
     meta.append(
       make('span', '', `${option.route || 'PO'} · ${option.frequency || '—'}`),
       make('span', 'abx-duration', durationText(option)),
+      make('span', '', source?.short || 'Burim'),
     );
 
     card.append(head, dose, meta);
+    if (option.conditional) card.append(make('p', 'abx-option-note', `Kur përdoret: ${option.conditional}`));
     if (option.note) card.append(make('p', 'abx-option-note', option.note));
+    if (option.stewardship) card.append(make('p', 'abx-option-note', `Stewardship: ${option.stewardship}`));
     return card;
   }
 
   function renderSources(indication) {
     el.sourceList.replaceChildren();
-    guide.sources.forEach(source => {
+    const sourceIds = new Set([indication.source, 'chop-allergy-2025', 'carpa']);
+    indication.options.forEach(option => { if (option.source) sourceIds.add(option.source); });
+
+    guide.sources.filter(source => sourceIds.has(source.id)).forEach(source => {
       const row = make('article', `abx-source${source.id === indication.source ? ' is-active' : ''}`);
       const copy = make('div', '');
       copy.append(make('strong', '', source.title), make('span', '', source.note));
-      const badgeText = source.id === indication.source ? 'BURIMI I SKEMËS' : 'PESHË REFERUESE';
+      if (source.url) {
+        const link = make('a', '', 'Hap burimin');
+        link.href = source.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        copy.append(link);
+      }
+      const badgeText = source.id === indication.source
+        ? 'BURIMI KRYESOR'
+        : source.id === 'chop-allergy-2025'
+          ? 'ALERGJIA'
+          : source.id === 'carpa'
+            ? 'PESHË REF.'
+            : 'BURIM REGJIMI';
       row.append(copy, make('b', 'abx-source-badge', badgeText));
       el.sourceList.append(row);
     });
@@ -621,11 +574,9 @@
       if (guide.ageBands.some(item => item.id === stored.age)) ctx.age = stored.age;
       if (typeof stored.weight === 'string') ctx.weight = stored.weight.slice(0, 8);
       if (allergyOptions.some(item => item.value === stored.allergy)) ctx.allergy = stored.allergy;
-      if (utiOptions.some(item => item.value === stored.utiType)) ctx.utiType = stored.utiType;
       ctx.atypical = stored.atypical === true;
       ctx.ageFromWeight = stored.ageFromWeight === true;
     }
-    // A shared link wins over the remembered context.
     const requested = new URLSearchParams(location.search).get('indication');
     if (requested && guide.indications.some(item => item.id === requested)) ctx.indication = requested;
   }
@@ -633,7 +584,6 @@
   function render() {
     const indication = currentIndication();
     const problem = eligibilityProblem(indication);
-    const weight = weightState();
 
     renderConditionalControls(indication);
     renderAgeHint(indication);
@@ -646,38 +596,37 @@
 
     const source = sourceById(indication.source);
     el.activeSource.textContent = source ? source.short : 'Burim';
-
     el.eligibility.hidden = !problem;
     el.eligibility.textContent = problem;
     el.list.replaceChildren();
-
     if (problem) return;
+
+    if (indication.warning) {
+      const warning = make('div', 'abx-eligibility', indication.warning);
+      warning.dataset.kind = indication.warning.startsWith('HARD STOP') ? 'hard-stop' : 'clinical-warning';
+      el.list.append(warning);
+    }
 
     const options = visibleOptions(indication);
     if (!options.length) {
-      el.list.append(make('div', 'abx-empty', 'Ky kombinim nuk ka skemë të specifikuar në tabelën burimore.'));
+      const bucket = allergyById(ctx.allergy);
+      const text = ctx.allergy === 'a5'
+        ? 'Alergji ndaj alternativës / alergji të shumëfishta: DRx nuk bën zëvendësim automatik. Specifiko klasën konkrete dhe verifiko një regjim për këtë diagnozë.'
+        : `Nuk ka regjim të verifikuar për këtë kombinim${bucket ? ` (${bucket.short})` : ''}.`;
+      el.list.append(make('div', 'abx-empty', text));
       return;
     }
 
     const basis = doseBasis();
     if (basis.kind === 'reference') {
-      el.list.append(make(
-        'p',
-        'abx-orientational-note',
-        'Këto doza janë llogaritur nga pesha referuese e moshës dhe janë vetëm orientuese. Shkruaj peshën reale për dozën përfundimtare.',
-      ));
+      el.list.append(make('p', 'abx-orientational-note', 'Dozat numerike më poshtë përdorin peshën referuese të moshës dhe janë vetëm orientuese. Pesha reale duhet përdorur për dozën përfundimtare.'));
     }
     options.forEach(option => el.list.append(recommendationCard(option, basis)));
   }
 
-  // Editing the weight sets the age to the band it matches. A later manual
-  // choice stands until the weight is edited again — otherwise a large
-  // two-year-old could never be recorded as two.
   function applyAgeFromWeight() {
     const state = weightState();
     if (state.kind !== 'valid') {
-      // A derived age has no justification without the weight it came from.
-      // An age the clinician chose is theirs and stays.
       if (ctx.ageFromWeight) {
         ctx.age = '';
         ctx.ageFromWeight = false;
@@ -703,7 +652,10 @@
       applyAgeFromWeight();
       render();
     });
-    el.atypical.addEventListener('change', () => { ctx.atypical = el.atypical.checked; render(); });
+    el.atypical.addEventListener('change', () => {
+      ctx.atypical = el.atypical.checked;
+      render();
+    });
   }
 
   restoreContext();
@@ -713,7 +665,6 @@
   el.atypical.checked = ctx.atypical;
   buildIndicationChips();
   buildAllergySegments();
-  buildUtiSegments();
   bind();
   render();
 })();
