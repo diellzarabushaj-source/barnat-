@@ -24,6 +24,7 @@
     atypical:$('atypicalInput'),
     utiTypeWrap:$('utiTypeWrap'),
     utiTypeChoice:$('utiTypeChoice'),
+    ageSuggestion:$('ageSuggestion'),
     doseBasis:$('doseBasis'),
     activeSource:$('activeSource'),
     eligibility:$('eligibilityMessage'),
@@ -108,6 +109,23 @@
       };
     }
     return { kind:'none', weight:null, label:'' };
+  }
+
+  // The band whose CARPA/WBM reference weight sits closest to the typed weight.
+  // On a tie the younger band wins: it is the more restrictive one for the
+  // source's age thresholds and gives the longer course where duration depends
+  // on age, so a coin-flip never lands on the less cautious side.
+  function nearestAgeBand(weight) {
+    if (!Number.isFinite(weight)) return null;
+    return guide.ageBands.reduce((best, band) => {
+      if (!Number.isFinite(band.referenceWeightKg)) return best;
+      if (!best) return band;
+      const gap = Math.abs(band.referenceWeightKg - weight);
+      const bestGap = Math.abs(best.referenceWeightKg - weight);
+      if (gap < bestGap) return band;
+      if (gap === bestGap && band.months < best.months) return band;
+      return best;
+    }, null);
   }
 
   function maxText(dose) {
@@ -416,6 +434,40 @@
     el.ageHint.textContent = `CARPA/WBM: peshë referuese ${age.referenceWeightLabel}.`;
   }
 
+  // The weight can point at an age band, but it must never set one. The age
+  // decides the source's age thresholds and, for AOM, whether the course is 10
+  // days or 5 — deciding those from a guessed age, or silently replacing an age
+  // the clinician chose, is not something a weight should do. So it is offered.
+  function renderAgeSuggestion() {
+    if (!el.ageSuggestion) return;
+    const state = weightState();
+    const suggestion = state.kind === 'valid' ? nearestAgeBand(state.value) : null;
+    const chosen = currentAgeBand();
+
+    if (!suggestion || (chosen && chosen.id === suggestion.id)) {
+      el.ageSuggestion.hidden = true;
+      el.ageSuggestion.replaceChildren();
+      return;
+    }
+
+    el.ageSuggestion.hidden = false;
+    el.ageSuggestion.replaceChildren();
+    const copy = chosen
+      ? `${fmt(state.value)} kg i afrohet moshës ${suggestion.label.toLocaleLowerCase('sq')} (ref. ${suggestion.referenceWeightLabel}), ndërsa ti ke zgjedhur ${chosen.label.toLocaleLowerCase('sq')} (ref. ${chosen.referenceWeightLabel}). Mosha nuk ndryshohet vetvetiu.`
+      : `${fmt(state.value)} kg i përgjigjet moshës ${suggestion.label.toLocaleLowerCase('sq')} sipas CARPA/WBM.`;
+    el.ageSuggestion.append(make('span', 'abx-age-suggestion-copy', copy));
+
+    const apply = make('button', 'abx-age-suggestion-apply', `Vendos ${suggestion.label.toLocaleLowerCase('sq')}`);
+    apply.type = 'button';
+    apply.addEventListener('click', () => {
+      ctx.age = suggestion.id;
+      el.age.value = suggestion.id;
+      render();
+      el.age.focus({ preventScroll:true });
+    });
+    el.ageSuggestion.append(apply);
+  }
+
   function renderWeightHint() {
     const state = weightState();
     if (state.kind === 'valid') {
@@ -575,6 +627,7 @@
     renderConditionalControls(indication);
     renderAgeHint(indication);
     renderWeightHint();
+    renderAgeSuggestion();
     renderDoseBasis();
     renderSources(indication);
     syncIndicationInUrl(indication);
