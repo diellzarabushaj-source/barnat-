@@ -8,13 +8,13 @@
   <title>DRx | Regjistri i barnave</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-20260902-dose-detail-v5">
+  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-20260902-list-view-v2">
   <link rel="stylesheet" href="/registry-v2-dose-calculator.css?v=registry-v2-dose-calculator-v1">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1">
   <script src="/dose-core.js?v=drx-dose-core-v1" defer></script>
   <script src="/dose-runtime-browser.js?v=drx-dose-runtime-browser-v1" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1" defer></script>
-<script src="/registry-v2.js?v=registry-v2-20260902-dose-detail-v5-polish1" defer></script>
+<script src="/registry-v2.js?v=registry-v2-20260902-list-view-v2" defer></script>
   <script src="/registry-v2-dose-calculator.js?v=registry-v2-dose-calculator-v1" defer></script>
 </head>
 <body>
@@ -169,6 +169,10 @@
               <kbd>⌘K</kbd>
             </div>
             <div class="toolbar-actions">
+              <div class="view-toggle" id="viewToggle" role="group" aria-label="Pamja e regjistrit">
+                <button type="button" data-view="table" aria-pressed="true">Tabelë</button>
+                <button type="button" data-view="list" aria-pressed="false">Listë</button>
+              </div>
               <button class="button button-secondary filter-toggle" id="filterToggle" type="button" aria-expanded="false" aria-controls="filterPanel">Filtra <span id="filterCountBadge" class="count-chip" hidden>0</span></button>
               <label class="compact-select">Rreshta
                 <select id="pageSizeSelect" aria-label="Rreshta për faqe"><option value="25">25</option><option value="50" selected>50</option></select>
@@ -261,6 +265,8 @@
               <tbody id="registryRows"></tbody>
             </table>
           </div>
+
+          <div class="registry-list" id="registryList" hidden></div>
 
           <div class="empty-state" id="emptyState" hidden>
             <div class="empty-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.6"/><path d="m16 16 4.4 4.4"/></svg></div>
