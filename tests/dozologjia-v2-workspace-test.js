@@ -7,8 +7,8 @@ const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const html = read('dozologjia.html');
-const css = read('dozologjia.css');
-const js = read('dozologjia.js');
+const css = read('dozologjia-v2.css');
+const js = read('dozologjia-v2.js');
 const api = read('api/dosage.js');
 const data = JSON.parse(read('data/dozologjia/antibiotics.json'));
 const engine = require('../lib/dozologjia.js');
@@ -16,13 +16,11 @@ const engine = require('../lib/dozologjia.js');
 assert.match(html, /data-drx-app="dozologjia-v2"/);
 assert.match(html, /data-dozologjia-architecture="clean-substance-first"/);
 assert.match(html, /Doza sipas substancës aktive/);
-assert.match(html, /id="substance"/);
-assert.match(html, /id="population"/);
-assert.match(html, /id="regimen"/);
-assert.match(html, /id="weightKg"/);
-assert.match(html, /id="durationPreview"/);
-assert.match(html, /dozologjia\.css\?v=1/);
-assert.match(html, /dozologjia\.js\?v=1/);
+for (const id of ['substance','population','regimen','weightKg','durationPreview']) assert.match(html, new RegExp(`id="${id}"`));
+assert.match(html, /dozologjia-v2\.css\?v=clean-substance-first-1/);
+assert.match(html, /dozologjia-v2\.js\?v=clean-substance-first-1/);
+assert.match(html, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/);
+assert.match(html, /drx-unified-sidebar/);
 assert.doesNotMatch(html, /pediatric-calculator-client|dosageProductPanel|dosageFacetReady|patientTreatmentDay|patientClinicalVariant/);
 
 assert.match(css, /\.result-fact/);
@@ -74,11 +72,9 @@ assert.equal(childLyme.requiresReview, true);
 const missingWeight = engine.calculate({ substanceId:'ceftriaxone', regimenId:'ctx-aom-child-single' });
 assert.equal(missingWeight.outcome, 'NEEDS_PATIENT_DATA');
 assert.deepEqual(missingWeight.required, ['weightKg']);
-
 const cef = engine.calculate({ substanceId:'ceftriaxone', regimenId:'ctx-gonorrhoea-adult' });
 assert.equal(cef.dose.perDoseMg, 500);
 assert.equal(cef.duration.kind, 'single');
-
 const coamox = engine.calculate({ substanceId:'amoxicillin-clavulanic-acid', regimenId:'coamox-standard-adult-875-125' });
 assert.equal(coamox.duration.kind, 'clinical');
 assert.equal(coamox.duration.reviewAfterDays, 14);
