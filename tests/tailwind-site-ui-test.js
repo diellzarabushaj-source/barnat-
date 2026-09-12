@@ -50,9 +50,6 @@ assert.match(registryHtml, /registry-v2\.js\?v=[^"\s]+/);
 assert.doesNotMatch(registryHtml, /tailadmin-professional\.css|tailadmin-shell\.js/,
   'Registry V2 must stay standalone instead of reintroducing legacy UI layers.');
 
-/* ICD-10 u nda nga bundle-i i pajtueshmërisë njësoj si Barnat: nëntëmbëdhjetë
-   fletë stili mbi një guaskë tjetër u zëvendësuan me një shtresë të vetme.
-   Pohimi nuk u hoq — u drejtua nga arkitektura që ekziston vërtet. */
 const icdHtml = read('icd.html');
 assert.match(icdHtml, /data-drx-app="icd-v2"/);
 assert.match(icdHtml, /icd-v2\.css\?v=[^"\s]+/);
@@ -76,8 +73,11 @@ for (const [file, appId] of appPages) {
   assert.doesNotMatch(html, /tailadmin-professional\.css|tailadmin-shell\.js|medindex-tailadmin/,
     `${file} must stay on its standalone V2 shell instead of reintroducing TailAdmin legacy layers`);
   const stripeIndex = html.indexOf('drx-dashboard-stripe.css');
-  const pageCssIndex = html.indexOf(`${appId}.css`);
-  assert.ok(pageCssIndex >= 0 && stripeIndex > pageCssIndex, `${file}: shared Stripe authority must load after the page V2 stylesheet`);
+  const pageCssName = file === 'dozologjia.html' && /data-dozologjia-architecture="clean-substance-first"/.test(html)
+    ? 'dozologjia.css'
+    : `${appId}.css`;
+  const pageCssIndex = html.indexOf(pageCssName);
+  assert.ok(pageCssIndex >= 0 && stripeIndex > pageCssIndex, `${file}: shared Stripe authority must load after the page stylesheet`);
 }
 
 for (const file of ['rreth-nesh.html', 'kontakt.html', 'blog.html']) {
