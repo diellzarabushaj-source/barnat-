@@ -14,7 +14,6 @@
     restrictedCustomDrugs:['Amoxicillin / clavulanate','Trimethoprim / sulfamethoxazole','Ciprofloxacin','Levofloxacin'],
     renalSensitiveHospitalRegimens:['H004','H006','H007','H009','H010','H013','H014','H015','H016'],
   };
-  window.DRX_ANTIBIOTIC_CLINICAL_AUDIT = Object.freeze(audit);
 
   const indication = id => (guide.indications || []).find(item => item.id === id) || null;
   const option = (dxId, optionId) => indication(dxId)?.options?.find(item => item.id === optionId) || null;
@@ -39,8 +38,8 @@
       }
 
       if (!sinusitis.options.some(item => item.id === 'cefuroxime-sinusitis')) {
-        const insertAt = Math.max(0, sinusitis.options.findIndex(item => item.id === 'levo-sinusitis'));
-        sinusitis.options.splice(insertAt, 0, {
+        const index = sinusitis.options.findIndex(item => item.id === 'levo-sinusitis');
+        sinusitis.options.splice(index < 0 ? sinusitis.options.length : index, 0, {
           id:'cefuroxime-sinusitis', tier:'allergy-low', allergy:['a1','a2'], drug:'Cefuroxime', route:'PO',
           frequency:'2 herë/ditë', dose:{ type:'fixed', text:'250 mg/dozë' }, duration:{ type:'fixed', text:'5–7 ditë' },
           source:'cm2026', conditional:'Vetëm për fëmijë që mund të gëlltisin tabletën; alternativë e listuar nga pathway i Children’s Mercy.'
@@ -48,8 +47,8 @@
       }
 
       if (!sinusitis.options.some(item => item.id === 'cefixime-clinda-sinusitis')) {
-        const insertAt = Math.max(0, sinusitis.options.findIndex(item => item.id === 'levo-sinusitis'));
-        sinusitis.options.splice(insertAt, 0, {
+        const index = sinusitis.options.findIndex(item => item.id === 'levo-sinusitis');
+        sinusitis.options.splice(index < 0 ? sinusitis.options.length : index, 0, {
           id:'cefixime-clinda-sinusitis', tier:'allergy-low', allergy:['a1','a2'], drug:'Cefixime + Clindamycin', route:'PO',
           frequency:'kombinim',
           dose:{
@@ -106,18 +105,17 @@
 
     if (solids?.drugs && !solids.drugs.Cefuroxime) {
       solids.drugs.Cefuroxime = {
-        forms:[
-          {
-            id:'cefuroxime-tab-250', label:'Tabletë 250 mg', form:'tabletë', componentMg:250,
-            sourceUrl:'https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=135e2dfc-eb47-4d04-a903-a081d36c267e',
-            caution:'ABRS: përdore vetëm kur fëmija mund të gëlltisë tabletën; skema e pathway është 250 mg PO BID.'
-          }
-        ]
+        forms:[{
+          id:'cefuroxime-tab-250', label:'Tabletë 250 mg', form:'tabletë', componentMg:250,
+          sourceUrl:'https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=135e2dfc-eb47-4d04-a903-a081d36c267e',
+          caution:'ABRS: përdore vetëm kur fëmija mund të gëlltisë tabletën; skema e pathway është 250 mg PO BID.'
+        }]
       };
     }
   }
 
   patchClinicalData();
+  window.DRX_ANTIBIOTIC_CLINICAL_AUDIT = Object.freeze({ ...audit });
 
   if (typeof document === 'undefined') return;
 
@@ -139,9 +137,7 @@
   }
 
   function reconcileAgeFromWeight() {
-    if (!ageSelect) return;
-    const wasDerived = ageSelect.dataset.source === 'weight';
-    if (!wasDerived) return;
+    if (!ageSelect || ageSelect.dataset.source !== 'weight') return;
     ageSelect.value = explicitAge || '';
     ageSelect.dispatchEvent(new Event('change', { bubbles:true }));
   }
@@ -178,11 +174,16 @@
       ['immediate', 'Urtikarie e menjëhershme / angioedemë / anafilaksi'],
       ['scar', 'SJS / TEN / DRESS / reaksion sistemik i rëndë'],
     ].forEach(([value, text]) => {
-      const opt = document.createElement('option'); opt.value = value; opt.textContent = text; select.append(opt);
+      const opt = document.createElement('option');
+      opt.value = value;
+      opt.textContent = text;
+      select.append(opt);
     });
     label.append(select);
-    const note = make('p', 'abx-hardening-note', 'A4 nuk mund të trajtohet si një kategori e vetme për zëvendësim automatik. Reaksionet immediate/SCAR kërkojnë pathway individual të beta-laktameve.');
-    wrap.append(label, note);
+    wrap.append(
+      label,
+      make('p', 'abx-hardening-note', 'A4 nuk mund të trajtohet si një kategori e vetme për zëvendësim automatik. Reaksionet immediate/SCAR kërkojnë pathway individual të beta-laktameve.')
+    );
     refineBlock.append(wrap);
     select.addEventListener('change', updateSafetyUI);
     return wrap;
@@ -200,8 +201,10 @@
     input.id = 'sinusitisAlarmInputHardening';
     input.type = 'checkbox';
     label.append(input, make('span', '', 'Ka shenja alarmi / komplikim orbital ose neurologjik'));
-    const note = make('p', 'abx-hardening-note', 'Periorbital edema/erythema, diplopia, ophthalmoplegia, ulje e shikimit, cefale e rëndë, frontal swelling, sepsis/meningitis/neurologji → vlerësim urgjent në ED; mos përdor skemën e thjeshtë ambulatore.');
-    wrap.append(label, note);
+    wrap.append(
+      label,
+      make('p', 'abx-hardening-note', 'Periorbital edema/erythema, diplopia, ophthalmoplegia, ulje e shikimit, cefale e rëndë, frontal swelling, sepsis/meningitis/neurologji → vlerësim urgjent në ED; mos përdor skemën e thjeshtë ambulatore.')
+    );
     refineBlock.append(wrap);
     input.addEventListener('change', updateSafetyUI);
     return wrap;
@@ -275,7 +278,9 @@
     if (!note) return;
     const active = currentIndicationId() === 'pneumonia' && toggle?.checked === true;
     note.hidden = !active;
-    if (active) note.textContent = 'Ky filtër shfaq skemën për patogjen atipik. Azithromycin nuk duhet interpretuar automatikisht si zëvendësim i mbulimit për pneumoni tipike kur të dyja janë klinikisht të mundshme.';
+    if (active) {
+      note.textContent = 'Ky filtër shfaq skemën për patogjen atipik. Azithromycin nuk duhet interpretuar automatikisht si zëvendësim i mbulimit për pneumoni tipike kur të dyja janë klinikisht të mundshme.';
+    }
   }
 
   function hardenCustomFormulations() {
@@ -314,9 +319,17 @@
       ['normal', 'Normal / pa dëmtim renal të njohur'],
       ['impaired', 'I dëmtuar / kërkon përshtatje'],
       ['unknown', 'I panjohur'],
-    ].forEach(([value, text]) => { const o=document.createElement('option'); o.value=value; o.textContent=text; select.append(o); });
+    ].forEach(([value, text]) => {
+      const o = document.createElement('option');
+      o.value = value;
+      o.textContent = text;
+      select.append(o);
+    });
     label.append(select);
-    wrap.append(label, make('p', 'abx-hardening-note', 'DRx nuk prodhon renal-adjusted dose në këtë modul. Regjimet me eliminim renal bllokohen si dozë finale kur funksioni renal nuk është konfirmuar normal.'));
+    wrap.append(
+      label,
+      make('p', 'abx-hardening-note', 'DRx nuk prodhon renal-adjusted dose në këtë modul. Regjimet me eliminim renal bllokohen si dozë finale kur funksioni renal nuk është konfirmuar normal.')
+    );
     body.insertBefore(wrap, body.firstChild);
     select.addEventListener('change', hardenHospitalCards);
     return wrap;
@@ -326,22 +339,26 @@
     let gate = card.querySelector('.abx-hardening-card-gate');
     if (!gate) {
       gate = make('div', 'abx-hardening-card-gate');
-      card.insertBefore(gate, card.firstChild?.nextSibling || card.firstChild);
+      gate.hidden = true;
+      card.insertBefore(gate, card.firstChild?.nextSibling || null);
     }
     const dose = card.querySelector('.abx-hosp-dose');
     if (message) {
       card.classList.add('is-clinically-blocked');
+      if (gate.dataset.message !== message) {
+        gate.dataset.message = message;
+        gate.textContent = message;
+      }
       gate.hidden = false;
-      gate.textContent = message;
       if (dose) dose.hidden = true;
       card.querySelectorAll('input, select, button').forEach(control => {
-        if (control.closest('#renalGateHardening')) return;
         if (!control.disabled) control.dataset.drxHardeningDisabled = '1';
         control.disabled = true;
       });
     } else {
       card.classList.remove('is-clinically-blocked');
       gate.hidden = true;
+      gate.dataset.message = '';
       if (dose) dose.hidden = false;
       card.querySelectorAll('[data-drx-hardening-disabled="1"]').forEach(control => {
         control.disabled = false;
@@ -374,7 +391,6 @@
     const stop = ensureHardStop();
     if (stop) {
       stop.hidden = true;
-      stop.replaceChildren();
       const blocked = applyA4Gate(stop) || applySinusitisGate(stop);
       if (recommendationList) recommendationList.hidden = blocked;
       const hospitalModule = document.getElementById('hospitalModule');
@@ -385,7 +401,9 @@
     hardenHospitalCards();
 
     const ageHint = document.getElementById('ageHint');
-    if (ageHint && !ageIsExplicit()) ageHint.textContent = 'Mosha klinike duhet zgjedhur veçmas. Pesha mund të japë vetëm një sugjerim orientues dhe nuk zhbllokon age-gates.';
+    if (ageHint && !ageIsExplicit()) {
+      ageHint.textContent = 'Mosha klinike duhet zgjedhur veçmas. Pesha mund të japë vetëm një sugjerim orientues dhe nuk zhbllokon age-gates.';
+    }
   }
 
   document.addEventListener('change', event => {
@@ -395,16 +413,20 @@
   });
 
   if (typeof MutationObserver !== 'undefined') {
-    const observer = new MutationObserver(() => window.setTimeout(updateSafetyUI, 0));
-    if (recommendationList) observer.observe(recommendationList, { childList:true, subtree:true });
+    const recommendationObserver = new MutationObserver(() => window.setTimeout(updateSafetyUI, 0));
+    if (recommendationList) recommendationObserver.observe(recommendationList, { childList:true, subtree:true });
+
     const hospitalModule = document.getElementById('hospitalModule');
-    if (hospitalModule) observer.observe(hospitalModule, { childList:true, subtree:true });
+    if (hospitalModule) {
+      const hospitalObserver = new MutationObserver(() => window.setTimeout(hardenHospitalCards, 0));
+      hospitalObserver.observe(hospitalModule, { childList:true, subtree:true });
+    }
   }
 
   window.addEventListener('drx:antibiotics-hospital-rendered', () => window.setTimeout(updateSafetyUI, 0));
-  window.DRX_ANTIBIOTIC_CLINICAL_AUDIT.refresh = updateSafetyUI;
+  window.DRX_ANTIBIOTIC_CLINICAL_REFRESH = updateSafetyUI;
   window.setTimeout(() => {
-    if (ageSelect?.dataset?.source === 'weight') reconcileAgeFromWeight();
+    reconcileAgeFromWeight();
     ageSelect?.dispatchEvent(new Event('change', { bubbles:true }));
     updateSafetyUI();
   }, 0);
