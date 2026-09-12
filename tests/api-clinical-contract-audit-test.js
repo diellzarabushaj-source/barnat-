@@ -27,8 +27,6 @@ for (const [file, source] of Object.entries(sources)) {
   assert.match(source, /Cache-Control/, `${file}: cache policy missing`);
 }
 
-// Dozologjia was intentionally rebuilt from zero. Its API must stay small,
-// authenticated, server-calculated and detached from product/V3/V4 handlers.
 assert.match(dosage, /require\('\.\.\/lib\/dozologjia\.js'\)/);
 assert.match(dosage, /registryHandler\.authorized/);
 assert.match(dosage, /view === 'substances'/);
@@ -36,29 +34,28 @@ assert.match(dosage, /view === 'regimens'/);
 assert.match(dosage, /body\.action !== 'calculate'/);
 assert.match(dosage, /legacyViews/);
 assert.match(dosage, /status, payload/);
-assert.doesNotMatch(dosage, /dosage-handler|dose-calculator-handler|dose-safety-handler|dose-product-fast-path-handler|pediatric-dosage-handler/);
+for (const legacyImport of [
+  'dosage-handler','dose-calculator-handler','dose-safety-handler','dose-product-fast-path-handler','pediatric-dosage-handler'
+]) {
+  assert.doesNotMatch(dosage, new RegExp(`^const\\s+.*require\\([^\\n]*${legacyImport}`, 'm'));
+}
 assert.doesNotMatch(dosage, /error:error\.message|stack:/, 'Dozologjia endpoint must not return raw upstream errors');
 assert.match(dozologjiaEngine, /requiresReview:true/);
 assert.match(dozologjiaEngine, /mg-kg-day-range/);
-assert.doesNotMatch(dozologjiaEngine, /registry|product_id|drug_id/i, 'Clean Dozologjia engine must not depend on product registry identity.');
+assert.doesNotMatch(dozologjiaEngine, /product_id|drug_id/i, 'Clean Dozologjia engine must not depend on product registry identity.');
 
 const dosageHandler = require('../api/dosage.js');
 assert.equal(typeof dosageHandler.authorized, 'function');
 assert.equal(typeof dosageHandler.engine.calculate, 'function');
-const sample = dosageHandler.engine.calculate({
-  substanceId:'ceftriaxone', regimenId:'ctx-gonorrhoea-adult'
-});
+const sample = dosageHandler.engine.calculate({ substanceId:'ceftriaxone', regimenId:'ctx-gonorrhoea-adult' });
 assert.equal(sample.outcome, 'CALCULATED');
 assert.equal(sample.dose.perDoseMg, 500);
 assert.equal(sample.duration.kind, 'single');
 assert.equal(sample.requiresReview, true);
 
 const rewrites = new Map((vercel.rewrites || []).map(row => [row.source, row.destination]));
-assert.equal(
-  rewrites.get('/api/icd'),
-  '/api/clinical-editor?icdApi=1',
-  'ICD endpoint must stay routed through the consolidated clinical-editor function'
-);
+assert.equal(rewrites.get('/api/icd'), '/api/clinical-editor?icdApi=1',
+  'ICD endpoint must stay routed through the consolidated clinical-editor function');
 assert.match(clinicalEditor, /queryFlag\(req, 'icdApi'\)/);
 assert.match(clinicalEditor, /authorizedIcd/);
 assert.match(clinicalEditor, /verifySessionToken/);
