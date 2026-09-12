@@ -39,6 +39,11 @@ includes(js, "mobile: 'Testo'", 'Mobile test label must stay compact');
 includes(js, "aria: 'Mëso protokollin hap pas hapi'", 'Learning mode needs an explicit accessible name');
 includes(js, "aria: 'Testo veten me flashcards'", 'Test mode needs an explicit accessible name');
 
+includes(js, "if (button.textContent !== label) button.textContent = label;", 'Mode labels must not rewrite unchanged DOM text');
+includes(js, "if (strong && strong.textContent !== label) strong.textContent = label;", 'Jumpbar context must not rewrite unchanged DOM text');
+includes(js, "context.style.getPropertyValue('--ck-v3-progress') !== progress", 'Jumpbar progress must only mutate when its value changes');
+includes(js, "if (nav.dataset.ckV7Clean !== '1') nav.dataset.ckV7Clean = '1';", 'Learn navigation marker must be idempotent');
+
 includes(js, "[repeat, '1', 'Përsërite']", 'Key 1 must map to repeat');
 includes(js, "[hard, '2', 'Vështirë']", 'Key 2 must map to hard');
 includes(js, "[good, '3', 'E di']", 'Key 3 must map to known/good');
