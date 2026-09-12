@@ -1,0 +1,28 @@
+name: Dozologjia V5 Antibiotics Foundation
+
+on:
+  pull_request:
+    paths:
+      - 'data/dozologjia-v5/**'
+      - 'tests/dozologjia-v5-antibiotics-foundation-test.js'
+      - '.github/workflows/dozologjia-v5-antibiotics-foundation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/dozologjia-v5/**'
+      - 'tests/dozologjia-v5-antibiotics-foundation-test.js'
+
+permissions:
+  contents: read
+
+jobs:
+  antibiotic-v5-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Antibiotic V5 duration contract
+        run: node tests/dozologjia-v5-antibiotics-foundation-test.js
