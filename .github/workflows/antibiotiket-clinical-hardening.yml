@@ -1,0 +1,36 @@
+name: Antibiotikët clinical hardening
+
+on:
+  pull_request:
+    paths:
+      - 'antibiotiket*.js'
+      - 'antibiotiket*.css'
+      - 'tests/antibiotics-*.js'
+      - 'ANTIBIOTIKET_CLINICAL_AUDIT_2026-09-12.md'
+      - '.github/workflows/antibiotiket-clinical-hardening.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  clinical-hardening:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Original and extended calculator gate
+        run: node tests/antibiotics-phase7-calculator-cases-test.js
+      - name: Cross-table clinical hardening contract
+        run: node tests/antibiotics-clinical-hardening-contract-test.js
+      - name: Audited source pins
+        run: node tests/antibiotics-clinical-source-pins-test.js
+      - name: Phase 2 regimen/provenance regression
+        run: node tests/antibiotics-phase2-regimen-test.js
+      - name: Hospital pathway regression
+        run: node tests/antibiotics-phase5-hospital-test.js
+      - name: Parenteral preparation regression
+        run: node tests/antibiotics-phase6-preparation-test.js
