@@ -14,6 +14,7 @@
     const rounded = Math.round(n * 100) / 100;
     return String(rounded).replace('.', ',');
   };
+  const sameDose = (a, b) => Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) < 0.05;
 
   function currentIndication() {
     try { return new URL(location.href).searchParams.get('indication') || ''; }
@@ -118,9 +119,6 @@
     const select = converter.querySelector('.abx-formulation-select');
     if (!select) return null;
     if (select.value === 'custom') {
-      // A custom strength is "X mg in Y mL" — both typed by the clinician. The
-      // converter resolves it and publishes the result, so it is read from
-      // there rather than re-derived from the two inputs.
       const mgPer5mL = num(converter.dataset.mgPer5ml);
       if (!Number.isFinite(mgPer5mL) || mgPer5mL <= 0) return null;
       const label = clean(converter.dataset.strengthLabel) || `${fmt(mgPer5mL)} mg / 5 mL`;
@@ -150,7 +148,9 @@
   function solidMatches(drug, mg) {
     if (!Number.isFinite(mg) || mg <= 0) return [];
     return solidForms(drug).map(form => {
-      const exactUnits = mg / form.componentMg;
+      const unitMg = Number(form.componentMg);
+      if (!Number.isFinite(unitMg) || unitMg <= 0) return null;
+      const exactUnits = mg / unitMg;
       const rounded = Math.round(exactUnits);
       if (Math.abs(exactUnits - rounded) > 1e-9 || rounded < 1 || rounded > 4) return null;
       if (form.singleUnitOnly && rounded !== 1) return null;
@@ -165,6 +165,40 @@
     if (base === 'kapsulë') return 'kapsula';
     if (base === 'tabletë përtypëse') return 'tableta përtypëse';
     return `${base} × ${count}`;
+  }
+
+  function practicalDoseCandidates(state) {
+    const simple = state.simple;
+    if (!simple || sameDose(simple.min, simple.max)) return [];
+    const values = new Map();
+    const add = (mg, kind='source', match=null) => {
+      const n = Math.round(Number(mg) * 100) / 100;
+      if (!Number.isFinite(n) || n < simple.min - 0.05 || n > simple.max + 0.05) return;
+      const key = n.toFixed(2);
+      const current = values.get(key);
+      const candidate = { mg:n, kind, match };
+      if (!current || (kind === 'exact-solid' && current.kind !== 'exact-solid')) values.set(key, candidate);
+    };
+    add(simple.min, 'source');
+    add(simple.max, 'source');
+    solidForms(state.drug).forEach(form => {
+      const unitMg = Number(form.componentMg);
+      if (!Number.isFinite(unitMg) || unitMg <= 0) return;
+      for (let units = 1; units <= 4; units += 1) {
+        if (form.singleUnitOnly && units !== 1) continue;
+        const mg = unitMg * units;
+        if (mg < simple.min - 0.05 || mg > simple.max + 0.05) continue;
+        add(mg, 'exact-solid', { form, units });
+      }
+    });
+    return [...values.values()].sort((a, b) => a.mg - b.mg);
+  }
+
+  function candidateLabel(candidate) {
+    const base = `${fmt(candidate.mg)} mg`;
+    if (!candidate.match) return base;
+    const { form, units } = candidate.match;
+    return `${base} · ${units} ${formUnit(form, units)}`;
   }
 
   function copyText(text, button) {
@@ -196,38 +230,86 @@
     const sequence = parseSequence(doseText);
     const simple = sequence.length ? null : parseSimpleDose(doseText);
     const frequencyText = part.frequency || frequencyFromCard(card);
+    const frequencyValues = frequencyChoices(frequencyText);
     return {
       drug,
       doseText,
       sequence,
       simple,
       frequencyText,
-      frequencyValues:frequencyChoices(frequencyText),
-      doseFinal:simple && simple.min === simple.max ? simple.min : null,
-      frequencyFinal:frequencyChoices(frequencyText).length === 1 ? frequencyChoices(frequencyText)[0] : null,
+      frequencyValues,
+      doseFinal:simple && sameDose(simple.min, simple.max) ? simple.min : null,
+      doseChoice:'',
+      frequencyFinal:frequencyValues.length === 1 ? frequencyValues[0] : null,
       mode:liquidConverter(card, drug) ? 'liquid' : 'solid',
       solidId:'',
     };
   }
 
   function buildDoseResolver(state, refresh) {
-    if (!state.simple || state.simple.min === state.simple.max) return null;
-    const label = make('label', 'abx-rx-field');
-    label.append(make('span', '', `Doza finale · ${fmt(state.simple.min)}–${fmt(state.simple.max)} mg`));
-    const input = document.createElement('input');
-    input.type = 'number';
-    input.min = String(state.simple.min);
-    input.max = String(state.simple.max);
-    input.step = '0.1';
-    input.inputMode = 'decimal';
-    input.placeholder = 'mg';
-    input.addEventListener('input', () => {
-      const value = num(input.value);
-      state.doseFinal = Number.isFinite(value) && value >= state.simple.min && value <= state.simple.max ? value : null;
+    if (!state.simple || sameDose(state.simple.min, state.simple.max)) return null;
+
+    const wrap = make('div', 'abx-rx-field');
+    wrap.append(make('span', '', `Doza praktike · burimi ${fmt(state.simple.min)}–${fmt(state.simple.max)} mg`));
+    wrap.append(make('small', '', 'Zgjidhe vetëm një herë. Shurupi, tableta/kapsula dhe receta përditësohen automatikisht.'));
+
+    const choices = make('div', 'abx-rx-mode');
+    const manualButton = make('button', '', 'Tjetër');
+    manualButton.type = 'button';
+    manualButton.dataset.doseManual = '1';
+
+    const manual = document.createElement('input');
+    manual.type = 'number';
+    manual.min = String(state.simple.min);
+    manual.max = String(state.simple.max);
+    manual.step = '0.1';
+    manual.inputMode = 'decimal';
+    manual.placeholder = `${fmt(state.simple.min)}–${fmt(state.simple.max)} mg`;
+    manual.hidden = true;
+
+    const renderActive = () => {
+      choices.querySelectorAll('button[data-dose]').forEach(button => {
+        button.classList.toggle('is-active', sameDose(Number(button.dataset.dose), state.doseFinal));
+      });
+      manualButton.classList.toggle('is-active', state.doseChoice === 'manual');
+    };
+
+    practicalDoseCandidates(state).forEach(candidate => {
+      const button = make('button', '', candidateLabel(candidate));
+      button.type = 'button';
+      button.dataset.dose = String(candidate.mg);
+      if (candidate.kind === 'exact-solid') button.title = 'Përputhje e saktë me formulim solid të verifikuar';
+      button.addEventListener('click', () => {
+        state.doseFinal = candidate.mg;
+        state.doseChoice = 'quick';
+        manual.hidden = true;
+        manual.value = '';
+        renderActive();
+        refresh();
+      });
+      choices.append(button);
+    });
+
+    manualButton.addEventListener('click', () => {
+      state.doseChoice = 'manual';
+      state.doseFinal = null;
+      manual.hidden = false;
+      manual.focus();
+      renderActive();
       refresh();
     });
-    label.append(input);
-    return label;
+    choices.append(manualButton);
+
+    manual.addEventListener('input', () => {
+      const value = num(manual.value);
+      state.doseFinal = Number.isFinite(value) && value >= state.simple.min && value <= state.simple.max ? value : null;
+      state.doseChoice = 'manual';
+      renderActive();
+      refresh();
+    });
+
+    wrap.append(choices, manual);
+    return wrap;
   }
 
   function buildFrequencyResolver(state, refresh) {
@@ -357,7 +439,7 @@
       return null;
     }
     if (!state.simple || !Number.isFinite(state.doseFinal)) {
-      preview.append(make('p', 'abx-rx-blocked', state.simple ? 'Zgjidh dozën finale brenda intervalit të burimit.' : 'Kjo skemë nuk ka një dozë orale të finalizueshme automatikisht.'));
+      preview.append(make('p', 'abx-rx-blocked', state.simple ? 'Zgjidh dozën praktike një herë nga opsionet sipër.' : 'Kjo skemë nuk ka një dozë orale të finalizueshme automatikisht.'));
       return null;
     }
     if (!Number.isFinite(state.frequencyFinal)) {
@@ -381,7 +463,7 @@
       if (solidSelect) solidSelect.hidden = true;
       const strength = selectedLiquid(card, state.drug);
       if (!strength) {
-        preview.append(make('p', 'abx-rx-blocked', 'Zgjidh fuqinë reale të shurupit më lart ose shkruaje manualisht.'));
+        preview.append(make('p', 'abx-rx-blocked', 'Zgjidh fuqinë reale të shurupit te seksioni i shurupit më lart.'));
         return null;
       }
       const ml = volumeForMg(mg, strength.mgPer5mL);
@@ -393,7 +475,7 @@
       const { selected } = solidChoice(state, mg, solidSelect);
       if (solidSelect) solidSelect.hidden = false;
       if (!selected) {
-        preview.append(make('p', 'abx-rx-blocked', 'Nuk ka përputhje të saktë me njësi të plota të formulimeve solide të verifikuara. Përdor shurupin ose zgjedh produktin manualisht jashtë këtij auto-match.'));
+        preview.append(make('p', 'abx-rx-blocked', 'Nuk ka përputhje të saktë me njësi të plota. Zgjidh një dozë tjetër brenda intervalit ose përdor shurupin.'));
         return null;
       }
       const units = selected.units;
@@ -406,13 +488,13 @@
     }
 
     preview.append(make('strong', 'abx-rx-line', line));
-    preview.append(make('span', 'abx-rx-dose', `Doza klinike: ${fmt(mg)} mg/dozë.`));
+    preview.append(make('span', 'abx-rx-dose', `Doza e zgjedhur: ${fmt(mg)} mg/dozë.`));
     preview.append(make('span', 'abx-rx-quantity', quantity));
     if (caution) preview.append(make('span', 'abx-rx-caution', caution));
-    preview.append(make('span', 'abx-rx-note', 'Sasia është llogaritje matematike, jo zgjedhje automatike e paketimit. Verifiko produktin, matshmërinë dhe rrumbullakimin lokal para nënshkrimit.'));
+    preview.append(make('span', 'abx-rx-note', 'Sasia është llogaritje matematike, jo zgjedhje automatike e paketimit. Verifiko produktin dhe matshmërinë para nënshkrimit.'));
 
     return {
-      text:`${state.drug}\nD.S.: ${line.replace(`${state.drug} `, '')}.\nDoza klinike: ${fmt(mg)} mg/dozë.\n${quantity}.`,
+      text:`${state.drug}\nD.S.: ${line.replace(`${state.drug} `, '')}.\nDoza e zgjedhur: ${fmt(mg)} mg/dozë.\n${quantity}.`,
       sourceUrl,
     };
   }
@@ -534,7 +616,7 @@
     card.dataset.prescriptionEnhanced = '1';
 
     const details = make('details', 'abx-rx');
-    const summary = make('summary', '', 'Forma finale / Receta');
+    const summary = make('summary', '', 'Zgjedhja praktike / Receta');
     details.append(summary);
 
     const body = make('div', 'abx-rx-body');
@@ -542,7 +624,7 @@
     const duration = durationSpec(durationText);
     const shared = { days:duration?.kind === 'fixed' ? duration.values[0] : null };
     const results = new Map();
-    const copyButton = make('button', 'abx-rx-copy', 'Kopjo tekstin');
+    const copyButton = make('button', 'abx-rx-copy', 'Kopjo recetën');
     copyButton.type = 'button';
     copyButton.disabled = true;
 
@@ -552,11 +634,11 @@
     };
 
     const sharedControls = make('div', 'abx-rx-shared');
+    const componentRefreshers = [];
     const durationResolver = buildDurationResolver(duration, shared, () => componentRefreshers.forEach(fn => fn()));
     if (durationResolver) sharedControls.append(durationResolver);
     if (sharedControls.childElementCount) body.append(sharedControls);
 
-    const componentRefreshers = [];
     parts.forEach(part => {
       const built = buildComponent(card, part, parts.length > 1, shared, (drug, result) => {
         results.set(drug, result);
@@ -567,7 +649,7 @@
     });
 
     const footer = make('div', 'abx-rx-footer');
-    footer.append(copyButton, make('span', '', 'Kopjohet vetëm pasi doza, frekuenca, kohëzgjatja dhe forma të jenë finalizuar.'));
+    footer.append(copyButton, make('span', '', 'Një zgjedhje e dozës mjafton; forma, mL/njësitë dhe teksti final përditësohen automatikisht.'));
     copyButton.addEventListener('click', () => {
       const text = parts.map(part => results.get(part.drug)?.text).filter(Boolean).join('\n\n');
       if (text) copyText(text, copyButton);
