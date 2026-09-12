@@ -4,7 +4,8 @@
 // dose and the 24-hour total — and the total is arithmetic the page performs on
 // the source table, not a figure the table publishes. This gate keeps that
 // arithmetic honest: every frequency in the dataset must be one the page can
-// read, and every dose shape must land in a branch that handles it.
+// read, every dose shape must land in a branch that handles it, and every
+// published scheme must carry an explicit treatment duration.
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -21,6 +22,40 @@ assert.ok(guide?.indications?.length, 'The antibiotic guide dataset must load');
 
 const js = read('antibiotiket.js');
 const html = read('antibiotiket.html');
+
+// --- every published scheme must have a usable duration ---------------------
+for (const indication of guide.indications) {
+  for (const option of indication.options) {
+    assert.ok(option.duration?.type, `${indication.id}/${option.drug}: treatment duration is missing`);
+    assert.notEqual(
+      option.duration.type,
+      'source-unspecified',
+      `${indication.id}/${option.drug}: a published scheme must not show an unspecified duration`,
+    );
+  }
+}
+
+// GAS duration is clinically material. Keep these exact values pinned to the
+// current CPS/CDC recommendations so a later dataset edit cannot silently
+// regress the three schemes that previously displayed no duration.
+const gas = guide.indications.find(item => item.id === 'gas');
+assert.ok(gas, 'The GAS pharyngitis indication must exist');
+const gasExpectedDurations = new Map([
+  ['penicillin-gas', '10 ditë'],
+  ['amoxicillin-gas', '10 ditë'],
+  ['cephalexin-gas', '10 ditë'],
+  ['clarithro-gas', '10 ditë'],
+  ['azithro-gas', '5 ditë'],
+]);
+for (const option of gas.options) {
+  assert.equal(option.duration?.type, 'fixed', `gas/${option.drug}: duration must be fixed`);
+  assert.equal(
+    option.duration?.text,
+    gasExpectedDurations.get(option.id),
+    `gas/${option.drug}: unexpected treatment duration`,
+  );
+}
+assert.equal(gas.options.length, gasExpectedDurations.size, 'Every GAS option must be covered by the duration gate');
 
 // --- the page must actually distinguish the two doses -----------------------
 assert.match(js, /function dosesPerDay\(option\)/);
@@ -119,4 +154,4 @@ for (const band of guide.ageBands) {
   );
 }
 
-console.log(`Antibiotics dosing gate passed: ${seen.size} frequencies readable, every dose shape handled, daily and single doses labelled.`);
+console.log(`Antibiotics dosing gate passed: ${seen.size} frequencies readable, every dose shape handled, every scheme has duration, GAS durations pinned.`);
