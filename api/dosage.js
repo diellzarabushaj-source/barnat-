@@ -1,10 +1,14 @@
 'use strict';
 
 const dozologjia = require('../lib/dozologjia.js');
+const registryHandler = require('./registry.js');
+
+async function authorized(req) { return registryHandler.authorized(req); }
 
 function send(res, status, payload) {
   res.statusCode = status;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Cache-Control', 'private, no-store, max-age=0');
   res.end(JSON.stringify(payload));
 }
@@ -35,6 +39,8 @@ async function bodyOf(req) {
 }
 
 async function handler(req, res) {
+  if (!(await authorized(req))) return send(res, 401, { ok:false, error:'UNAUTHORIZED' });
+
   const method = String(req?.method || 'GET').toUpperCase();
   const url = requestUrl(req);
   const view = url.searchParams.get('view') || 'substances';
@@ -82,6 +88,7 @@ async function handler(req, res) {
   return send(res, 404, { ok:false, error:'Rruga e Dozologjisë nuk u gjet.' });
 }
 
+handler.authorized = authorized;
 handler.requestUrl = requestUrl;
 handler.bodyOf = bodyOf;
 handler.engine = dozologjia;
