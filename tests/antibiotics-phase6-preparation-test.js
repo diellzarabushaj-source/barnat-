@@ -87,7 +87,7 @@ assert.equal(regimen('H016').autoVisible,false);
 
 const runtime=read('antibiotiket-parenteral-prep.js');
 assert.match(runtime,/Si përgatitet/);
-assert.match(runtime,/produktit\/presentation dhe route përputhen saktë/);
+assert.match(runtime,/produkti\/presentation dhe route përputhen saktë/);
 assert.match(runtime,/pa rounding klinik/);
 const shell=read('antibiotiket-shell.js');
 assert.match(shell,/antibiotiket-parenteral-prep-data\.js\?v=antibiotiket-phase6-v2/);
