@@ -109,6 +109,25 @@
         forms:[
           { id:'levo-25-ml', label:'25 mg / mL (=125 mg / 5 mL)', mgPer5mL:125, sourceUrl:'https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a894e40b-77e4-439b-b0f8-9a5cc7a1dd90' }
         ]
+      },
+      // The two CORE4 alternatives ship tablets but no suspension, which left
+      // them with no paediatric liquid at all. These are the strengths the
+      // suspensions are usually sold in — templates to start from, not label
+      // claims, so they carry no source URL and the page says so.
+      'Cefprozil':{
+        basis:'cefprozil',
+        forms:[
+          { id:'cefprozil-125-5', label:'125 mg / 5 mL', mgPer5mL:125, marketTypical:true },
+          { id:'cefprozil-250-5', label:'250 mg / 5 mL', mgPer5mL:250, marketTypical:true }
+        ]
+      },
+      'Cefuroxime':{
+        basis:'cefuroxime axetil',
+        forms:[
+          { id:'cefuroxime-125-5', label:'125 mg / 5 mL', mgPer5mL:125, marketTypical:true },
+          { id:'cefuroxime-250-5', label:'250 mg / 5 mL', mgPer5mL:250, marketTypical:true }
+        ],
+        caution:'Suspensioni i cefuroxime axetil nuk është bioekuivalent me tabletën; merret me ushqim.'
       }
     },
     indicationOverrides:{

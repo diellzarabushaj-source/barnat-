@@ -52,7 +52,12 @@ tc('T011',()=>{ assert.equal(dx('aom').minAgeMonths,6); const js=read('antibioti
   assert.match(js,/blocks:true[\s\S]{0,200}kërkon moshën ≥\$\{threshold\}/);
   assert.match(js,/if \(limit\?\.blocks\) return;/); });
 tc('T012',()=>{ const capsule=solids.drugs.Amoxicillin.forms.find(x=>x.id==='amox-cap-500'); assert.ok(capsule); assert.equal(capsule.componentMg,500); assert.match(capsule.form,/kapsul/i); assert.equal(500/capsule.componentMg,1); });
-tc('T013',()=>{ assert.equal(solids.drugs.Amoxicillin.forms.some(x=>x.componentMg===600),false); assert.match(read('antibiotiket-prescription.js'),/Nuk ka përputhje të saktë me njësi të plota/); });
+tc('T013',()=>{ assert.equal(solids.drugs.Amoxicillin.forms.some(x=>x.componentMg===600),false); const rx=read('antibiotiket-prescription.js');
+  // No whole-unit match must still hard-stop, and must never round to a fraction
+  // of a tablet — the wording of the message is free to change, the stop is not.
+  assert.match(rx,/if \(!selected\) \{[\s\S]{0,900}?return null;/);
+  assert.match(rx,/nuk pjesëtohet në njësi të plota/);
+  assert.doesNotMatch(rx,/Math\.round\([^\n]+componentMg[^\n]+\)\s*\/\s*2/); });
 tc('T014',()=>{ assert.equal(hosp('H016').autoVisible,false); assert.equal(hosp('H016').dose.type,'tdm'); const r=prepEngine.calculatePreparation({prep:prep('IV014'),regimenRoute:'IV',dose:{kind:'mg',value:500},exactProductConfirmed:true}); assert.equal(r.gate,'HARD_BLOCK_PREP'); });
 tc('T015',()=>{ const f=form('Ciprofloxacin','cipro-500-5'); assert.equal(f.minWeightKg,13); assert.ok(12<f.minWeightKg); assert.match(read('antibiotiket-formulations.js'),/minWeightKg/); });
 

@@ -148,10 +148,66 @@ assert.doesNotMatch(
   'The prescription builder must not re-parse the strength inputs behind the converter',
 );
 
+// --- every drug: a template for each form, and one you can create ----------
+// The clinician needs two numbers per drug: how many mg a tablet holds, and how
+// many mg per how many mL the syrup holds. Market templates ship for both, and
+// where a template is missing — or the bottle on the shelf differs — the unit
+// is typed in once, remembered for that drug, and used everywhere after.
+const prescriptionCss = read('antibiotiket-prescription.css');
+const solidsSandbox = { window:{} };
+// eslint-disable-next-line no-new-func
+new Function('window', read('antibiotiket-solids-data.js'))(solidsSandbox.window);
+const solids = solidsSandbox.window.DRX_ANTIBIOTIC_SOLIDS?.drugs || {};
+assert.ok(Object.keys(solids).length >= 10, 'Tablet templates must ship with the page');
+for (const [drug, entry] of Object.entries(solids)) {
+  for (const form of entry.forms || []) {
+    assert.ok(Number.isFinite(form.componentMg) && form.componentMg > 0, `${drug}/${form.id} needs mg per unit`);
+    assert.ok(form.label, `${drug}/${form.id} needs a label a prescriber can read`);
+  }
+}
+
+// Both routes reach every ORAL regimen; a topical one keeps neither.
+assert.match(prescription, /const isOralCard = card => routeFromCard\(card\) === 'PO';/, 'The product picker must key off the route');
+assert.match(prescription, /const hasSolid = isOralCard\(card\);/, 'An oral regimen always offers the tablet route');
+assert.match(prescription, /if \(!isOralCard\(card\)\) return;/, 'A non-oral regimen gets no oral product picker');
+assert.match(formulations, /const entry = drugConfig\(drug\) \|\| \{\};/, 'A drug with no listed suspension must still get a mg→mL converter');
+
+// The picker is never an empty control, and a unit that cannot divide the dose
+// is shown as such rather than hidden.
+assert.match(prescription, /mine\.textContent = options\.length \? 'Njësia ime…' : 'Shkruaj njësinë reale…';/, 'The tablet picker always offers a custom unit');
+assert.match(prescription, /nuk pjesëtohet në njësi të plota/, 'A unit that does not divide the dose must say so');
+assert.doesNotMatch(
+  prescription,
+  /if \(!matches\.length\) return \{ matches, selected:null \};/,
+  'The tablet picker must not bail out before rendering its options',
+);
+
+// A typed unit is remembered per drug, so the same numbers are never re-entered.
+assert.match(prescription, /const PRODUCTS_KEY = 'drx\.antibiotics\.products\.v1';/, 'Typed products must have a storage key');
+assert.match(prescription, /function saveSolid\(drug, mg, form\)/, 'A typed unit must be stored against its drug');
+assert.match(prescription, /all\[drug\] = \{ \.\.\.\(all\[drug\] \|\| \{\}\), solid:\{ mg, form \} \};/, 'Storage must be keyed per drug, never shared between drugs');
+assert.match(prescription, /const mine = customSolidForm\(saved\.mg, saved\.form\);\s*\n\s*return mine \? \[mine, \.\.\.listed\] : listed;/, 'A remembered unit must lead the list');
+assert.match(prescriptionCss, /\.abx-rx-solid-custom\{/, 'The custom unit fields need styling');
+assert.match(prescriptionCss, /\.abx-rx-solid-custom input,\.abx-rx-solid-custom select\{height:44px\}/, 'The custom unit fields must be thumb-sized on a phone');
+
+// Templates that are market-typical rather than label-verified must say so.
+const typical = Object.entries(strengths).flatMap(([drug, entry]) =>
+  (entry.forms || []).filter(form => form.marketTypical).map(form => `${drug}/${form.id}`));
+assert.ok(typical.length > 0, 'The gap-filling suspension templates must be present');
+for (const [drug, entry] of Object.entries(strengths)) {
+  for (const form of entry.forms || []) {
+    assert.ok(
+      form.sourceUrl || form.marketTypical,
+      `${drug}/${form.id} must either cite a label or be marked market-typical`,
+    );
+  }
+}
+assert.match(formulations, /Fuqi tipike e tregut, pa etiketë të verifikuar/, 'A market-typical template must never read as a sourced claim');
+
 // --- the assets are cache-busted together ----------------------------------
 const cssVersion = /antibiotiket\.css\?v=([\w-]+)/.exec(html)?.[1];
 const jsVersion = /antibiotiket\.js\?v=([\w-]+)/.exec(html)?.[1];
 assert.ok(cssVersion && jsVersion, 'Both page assets must carry a cache-busting version');
 assert.equal(cssVersion, jsVersion, 'The page CSS and JS change together, so they share one version');
 
-console.log(`Antibiotics page UI gate passed: both pickers fold below ${BREAKPOINT}px, one hint line, 44px tap targets, ${Object.keys(strengths).length} drugs with listed strengths plus a two-field custom bottle, assets pinned at ${cssVersion}.`);
+console.log(`Antibiotics page UI gate passed: both pickers fold below ${BREAKPOINT}px, one hint line, 44px tap targets, ${Object.keys(strengths).length} drugs with syrup templates and ${Object.keys(solids).length} with tablet templates, a creatable unit remembered per drug, assets pinned at ${cssVersion}.`);
