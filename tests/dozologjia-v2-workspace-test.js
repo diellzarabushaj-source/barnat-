@@ -13,7 +13,8 @@ const api = read('api/dosage.js');
 const data = JSON.parse(read('data/dozologjia/antibiotics.json'));
 const engine = require('../lib/dozologjia.js');
 
-assert.match(html, /data-drx-app="dozologjia-clean"/);
+assert.match(html, /data-drx-app="dozologjia-v2"/);
+assert.match(html, /data-dozologjia-architecture="clean-substance-first"/);
 assert.match(html, /Doza sipas substancës aktive/);
 assert.match(html, /id="substance"/);
 assert.match(html, /id="population"/);
@@ -22,9 +23,10 @@ assert.match(html, /id="weightKg"/);
 assert.match(html, /id="durationPreview"/);
 assert.match(html, /dozologjia\.css\?v=1/);
 assert.match(html, /dozologjia\.js\?v=1/);
-assert.doesNotMatch(html, /dozologjia-v2|pediatric-calculator-client|dosageProductPanel|dosageFacetReady/);
+assert.doesNotMatch(html, /pediatric-calculator-client|dosageProductPanel|dosageFacetReady|patientTreatmentDay|patientClinicalVariant/);
 
 assert.match(css, /\.result-fact/);
+assert.match(css, /\.sr-only/);
 assert.match(css, /@media\(max-width:820px\)/);
 assert.doesNotThrow(() => new Function(js));
 assert.doesNotMatch(js, /mgPerKg\s*\*|weightKg\s*\*|\/\s*concentration/i, 'Browseri nuk guxon të bëjë matematikë klinike.');
