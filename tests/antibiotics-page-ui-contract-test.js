@@ -101,6 +101,43 @@ assert.match(formulations, /customMg\.value = previous \? String\(previous\.mgPe
 assert.match(formulationsCss, /\.abx-formulation-custom-field\{/, 'Each half of the strength needs its own field');
 assert.match(formulationsCss, /\.abx-formulation-custom input\{width:100%;height:44px\}/, 'The strength fields must be thumb-sized on a phone');
 
+// The starting bottle must be one a syringe can measure. This mirrors
+// preferredForm() in the runtime and checks it against the shipped strengths:
+// for every drug, the chosen bottle must be the smallest measurable dose
+// volume, and never a volume no one would pour.
+assert.match(formulations, /function preferredForm\(forms, mg\)/, 'The starting strength must be chosen, not taken as listed first');
+assert.match(formulations, /const MEASURABLE_ML = 2\.5;/, 'The measurable floor must be explicit');
+assert.match(formulations, /if \(preferred\) select\.value = preferred\.id;/, 'The chosen strength must actually be selected');
+
+const MEASURABLE_ML = 2.5;
+const chooseForm = (forms, mg) => {
+  const withVolume = forms.map(form => ({ form, ml:mg * 5 / form.mgPer5mL }));
+  const measurable = withVolume.filter(item => item.ml >= MEASURABLE_ML);
+  return (measurable.length
+    ? measurable.reduce((best, item) => (item.ml < best.ml ? item : best))
+    : withVolume.reduce((best, item) => (item.ml > best.ml ? item : best)));
+};
+
+for (const [drug, entry] of Object.entries(strengths)) {
+  const forms = (entry.forms || []).filter(form => !Number.isFinite(form.minWeightKg));
+  if (forms.length < 2) continue;
+  // A dose sweep wide enough to cover a newborn through an adolescent.
+  for (const mg of [25, 50, 125, 250, 500, 900, 1000]) {
+    const picked = chooseForm(forms, mg);
+    const others = forms.map(form => mg * 5 / form.mgPer5mL);
+    const smallestMeasurable = Math.min(...others.filter(ml => ml >= MEASURABLE_ML));
+    if (Number.isFinite(smallestMeasurable)) {
+      assert.equal(
+        Math.round(picked.ml * 100) / 100,
+        Math.round(smallestMeasurable * 100) / 100,
+        `${drug} at ${mg} mg should start on the smallest measurable volume`,
+      );
+    } else {
+      assert.equal(picked.ml, Math.max(...others), `${drug} at ${mg} mg should fall back to the least concentrated bottle`);
+    }
+  }
+}
+
 // One source of truth: the prescription builder reads the resolved strength
 // rather than re-deriving it from the inputs.
 assert.match(formulations, /wrap\.dataset\.mgPer5ml = strength \? String\(strength\.mgPer5mL\) : '';/, 'The converter must publish the resolved strength');
