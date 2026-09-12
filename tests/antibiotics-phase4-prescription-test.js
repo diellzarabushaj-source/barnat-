@@ -40,19 +40,29 @@ for (const indication of ['cellulitis','preseptal','bite','lymphadenitis']) {
 
 const runtime = read('antibiotiket-prescription.js');
 assert.match(runtime, /Shkruaj peshën reale/, 'Weight-based prescription finalization must require real weight');
-assert.match(runtime, /Zgjidh dozën finale brenda intervalit/, 'Range regimens must require clinician-selected final dose');
-assert.match(runtime, /Nuk ka përputhje të saktë me njësi të plota/, 'Solid forms must hard-stop when no exact whole-unit match exists');
+// These pin the guarantee rather than the sentence: the wording of the prompts
+// has moved twice, the behaviour behind them must not.
+assert.match(
+  runtime,
+  /if \(!state\.simple \|\| !Number\.isFinite\(state\.doseFinal\)\) \{[\s\S]{0,240}?return null;/,
+  'Range regimens must require a clinician-selected final dose before any text is produced',
+);
+assert.match(
+  runtime,
+  /if \(!selected\) \{[\s\S]{0,900}?return null;/,
+  'Solid forms must hard-stop when no exact whole-unit match exists',
+);
 assert.match(runtime, /singleUnitOnly/, 'Combination product solid matching must respect single-unit safety');
 assert.match(runtime, /Sasia matematike e kursit/, 'Course quantity must be labelled as mathematical, not automatic package selection');
-assert.match(runtime, /Kopjo tekstin/, 'Prescription copy action must be present');
+assert.match(runtime, /'abx-rx-copy'/, 'Prescription copy action must be present');
 assert.match(runtime, /navigator\.clipboard/, 'Clipboard copy implementation must exist');
 assert.doesNotMatch(runtime, /Math\.round\([^\n]+componentMg[^\n]+\)\s*\/\s*2/, 'Runtime must not invent half-tablet rounding');
 
 const shell = read('antibiotiket-shell.js');
 assert.match(shell, /antibiotiket-solids-data\.js\?v=antibiotiket-phase4-v1/);
-assert.match(shell, /antibiotiket-prescription\.js\?v=antibiotiket-phase4-v2/);
+assert.match(shell, /antibiotiket-prescription\.js\?v=antibiotiket-phase4-v3/);
 // v2: the fold-out summary was restyled to match the other two folds on a card.
-assert.match(shell, /antibiotiket-prescription\.css\?v=antibiotiket-phase4-v2/);
+assert.match(shell, /antibiotiket-prescription\.css\?v=antibiotiket-phase4-v3/);
 
 const css = read('antibiotiket-prescription.css');
 assert.match(css, /\.abx-rx\{/);

@@ -233,6 +233,9 @@
       target.append(source);
     } else if (strength.custom) {
       target.append(make('span', 'abx-formulation-source', 'Fuqia u shkrua manualisht — kontrollo etiketën e produktit.'));
+    } else if (strength.marketTypical) {
+      // A template, not a label claim. The page never passes one off as sourced.
+      target.append(make('span', 'abx-formulation-source', 'Fuqi tipike e tregut, pa etiketë të verifikuar — kontrollo shishen.'));
     }
     return headline ? { volume:headline, strength:strength.label } : null;
   }
@@ -252,8 +255,9 @@
   }
 
   function buildConverter(card, drug, frequencyOverride, comboHeading=false) {
-    const entry = drugConfig(drug);
-    if (!entry) return null;
+    // A drug with no listed suspension still gets a converter: the market
+    // templates are a convenience, the bottle in hand is the authority.
+    const entry = drugConfig(drug) || {};
 
     const wrap = make('details', 'abx-formulation');
     wrap.dataset.drug = drug;

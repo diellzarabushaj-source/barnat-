@@ -64,6 +64,15 @@
     return null;
   }
 
+  // The route the card states. Only an oral regimen gets a syrup/tablet
+  // product picker — a topical ointment has neither.
+  function routeFromCard(card) {
+    const first = clean(card.querySelector('.abx-option-meta > span')?.textContent || '');
+    return clean(first.split('·')[0]).toUpperCase();
+  }
+
+  const isOralCard = card => routeFromCard(card) === 'PO';
+
   function frequencyFromCard(card) {
     const first = clean(card.querySelector('.abx-option-meta > span')?.textContent || '');
     const parts = first.split('·').map(clean).filter(Boolean);
@@ -134,7 +143,7 @@
     return mg * 5 / mgPer5mL;
   }
 
-  function solidForms(drug) {
+  function listedSolidForms(drug) {
     const entry = solidConfig.drugs?.[drug];
     if (!entry) return [];
     const override = solidConfig.indicationOverrides?.[`${currentIndication()}|${drug}`];
@@ -143,6 +152,32 @@
     if (!Array.isArray(override?.allow)) return forms;
     const allowed = new Set(override.allow);
     return forms.filter(form => allowed.has(form.id));
+  }
+
+  // The market templates the page ships, plus the unit this clinic typed in
+  // last time. A remembered unit leads, because it is the one on the shelf.
+  function solidForms(drug) {
+    const listed = listedSolidForms(drug);
+    const saved = savedSolid(drug);
+    if (!saved) return listed;
+    const mine = customSolidForm(saved.mg, saved.form);
+    return mine ? [mine, ...listed] : listed;
+  }
+
+  // Every unit the drug has, each told whether it divides this dose into whole
+  // units. Nothing is filtered out here, so the picker is never empty.
+  function solidOptions(drug, mg) {
+    if (!Number.isFinite(mg) || mg <= 0) return [];
+    return solidForms(drug).map(form => {
+      const unitMg = Number(form.componentMg);
+      if (!Number.isFinite(unitMg) || unitMg <= 0) return null;
+      const exact = mg / unitMg;
+      const rounded = Math.round(exact);
+      const fits = Math.abs(exact - rounded) <= 1e-9
+        && rounded >= 1 && rounded <= 4
+        && !(form.singleUnitOnly && rounded !== 1);
+      return { form, units:fits ? rounded : null };
+    }).filter(Boolean);
   }
 
   function solidMatches(drug, mg) {
@@ -222,6 +257,44 @@
       area.remove();
       finish(ok);
     } catch { finish(false); }
+  }
+
+  // The products a clinic actually stocks. Market templates ship with the page;
+  // anything typed here is that clinic's own and comes back next time, at the
+  // top of the list, so the same numbers are never entered twice.
+  const PRODUCTS_KEY = 'drx.antibiotics.products.v1';
+
+  function readProducts() {
+    try { return JSON.parse(localStorage.getItem(PRODUCTS_KEY) || '{}') || {}; }
+    catch { return {}; }
+  }
+
+  function savedSolid(drug) {
+    const entry = readProducts()[drug]?.solid;
+    if (!entry) return null;
+    const mg = num(entry.mg);
+    if (!Number.isFinite(mg) || mg <= 0) return null;
+    const form = entry.form === 'kapsulë' ? 'kapsulë' : 'tabletë';
+    return { mg, form };
+  }
+
+  function saveSolid(drug, mg, form) {
+    try {
+      const all = readProducts();
+      all[drug] = { ...(all[drug] || {}), solid:{ mg, form } };
+      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(all));
+    } catch {}
+  }
+
+  // A unit the clinician typed, shaped exactly like a listed one so every
+  // downstream calculation treats it the same way.
+  const CUSTOM_SOLID_ID = 'drx-custom-solid';
+
+  function customSolidForm(mg, form) {
+    if (!Number.isFinite(mg) || mg <= 0) return null;
+    const unit = form === 'kapsulë' ? 'kapsulë' : 'tabletë';
+    const label = `${unit === 'kapsulë' ? 'Kapsulë' : 'Tabletë'} ${fmt(mg)} mg`;
+    return { id:CUSTOM_SOLID_ID, label:`${label} · e imja`, form:unit, componentMg:mg, custom:true };
   }
 
   function componentState(card, part, combo) {
@@ -382,7 +455,9 @@
 
   function buildModeResolver(card, state, refresh) {
     const hasLiquid = Boolean(liquidConverter(card, state.drug));
-    const hasSolid = solidForms(state.drug).length > 0;
+    // For an oral regimen solids are always offered: a drug with no listed unit
+    // still takes one the clinician types in, so neither route is a dead end.
+    const hasSolid = isOralCard(card);
     if (!hasLiquid && !hasSolid) return null;
     if (!hasLiquid) state.mode = 'solid';
     if (!hasSolid) state.mode = 'liquid';
@@ -411,23 +486,39 @@
     state.modeGroup.querySelectorAll('button').forEach(button => button.classList.toggle('is-active', button.dataset.mode === state.mode));
   }
 
+  const NEW_SOLID_ID = 'drx-new-solid';
+
+  // The picker lists every unit the drug has and always ends with "Njësia ime",
+  // so it is never an empty control. Only a unit that divides the dose into
+  // whole units is returned as the selection — the prescription text still
+  // refuses to invent a fraction of a tablet.
   function solidChoice(state, mg, select) {
-    const matches = solidMatches(state.drug, mg);
-    if (!matches.length) return { matches, selected:null };
-    const existing = matches.find(item => item.form.id === state.solidId);
-    const selected = existing || matches[0];
-    state.solidId = selected.form.id;
+    const options = solidOptions(state.drug, mg);
+    const matches = options.filter(item => item.units !== null);
+    const wanted = options.find(item => item.form.id === state.solidId);
+    const chosen = state.solidId === NEW_SOLID_ID ? null : (wanted || matches[0] || options[0] || null);
+    if (chosen) state.solidId = chosen.form.id;
+
     if (select) {
       select.replaceChildren();
-      matches.forEach(match => {
+      options.forEach(item => {
         const option = document.createElement('option');
-        option.value = match.form.id;
-        option.textContent = `${match.units} × ${match.form.label}`;
-        option.selected = match.form.id === selected.form.id;
+        option.value = item.form.id;
+        option.textContent = item.units !== null
+          ? `${item.units} × ${item.form.label}`
+          : `${item.form.label} — nuk pjesëtohet në njësi të plota`;
+        option.selected = chosen ? item.form.id === chosen.form.id : false;
         select.append(option);
       });
+      const mine = document.createElement('option');
+      mine.value = NEW_SOLID_ID;
+      mine.textContent = options.length ? 'Njësia ime…' : 'Shkruaj njësinë reale…';
+      mine.selected = state.solidId === NEW_SOLID_ID || !options.length;
+      select.append(mine);
+      if (!options.length) state.solidId = NEW_SOLID_ID;
     }
-    return { matches, selected };
+
+    return { matches, options, selected:chosen && chosen.units !== null ? chosen : null, chosen };
   }
 
   function simplePreview(card, state, shared, preview, solidSelect) {
@@ -472,10 +563,18 @@
       quantity = `Sasia matematike e kursit: ${fmt(total)} mL`;
       sourceUrl = strength.sourceUrl || '';
     } else {
-      const { selected } = solidChoice(state, mg, solidSelect);
+      const { selected, options } = solidChoice(state, mg, solidSelect);
       if (solidSelect) solidSelect.hidden = false;
       if (!selected) {
-        preview.append(make('p', 'abx-rx-blocked', 'Nuk ka përputhje të saktë me njësi të plota. Zgjidh një dozë tjetër brenda intervalit ose përdor shurupin.'));
+        // Say what is actually wrong, and never point at a syrup this drug
+        // does not have. A unit typed in above usually resolves it.
+        const hasLiquid = Boolean(liquidConverter(card, state.drug));
+        const detail = state.solidId === NEW_SOLID_ID
+          ? 'Shkruaj sa mg ka njësia që ke në dorë.'
+          : options.length
+            ? `Asnjë nga njësitë e listuara nuk e jep ${fmt(mg)} mg me njësi të plota. Zgjidh një dozë tjetër brenda intervalit, ose shkruaj njësinë që ke në dorë te "Njësia ime".`
+            : 'Kjo skemë nuk ka njësi solide të listuara. Shkruaj njësinë që ke në dorë.';
+        preview.append(make('p', 'abx-rx-blocked', hasLiquid ? `${detail} Ose kalo te shurupi.` : detail));
         return null;
       }
       const units = selected.units;
@@ -573,6 +672,50 @@
     solidSelect.setAttribute('aria-label', `Formulimi solid i ${state.drug}`);
     solidSelect.addEventListener('change', () => { state.solidId = solidSelect.value; refresh(); });
 
+    // "Njësia ime": the unit actually on the shelf. Typed once, remembered for
+    // this drug, and treated from then on exactly like a listed template.
+    const solidCustom = make('div', 'abx-rx-solid-custom');
+    solidCustom.hidden = true;
+    const mgField = make('label', 'abx-rx-field');
+    mgField.append(make('span', '', 'mg për njësi'));
+    const mgInput = document.createElement('input');
+    mgInput.type = 'text';
+    mgInput.inputMode = 'decimal';
+    mgInput.placeholder = '250';
+    mgInput.setAttribute('aria-label', `mg për njësi të ${state.drug}`);
+    mgField.append(mgInput);
+    const formField = make('label', 'abx-rx-field');
+    formField.append(make('span', '', 'Forma'));
+    const formSelect = document.createElement('select');
+    [['tabletë', 'Tabletë'], ['kapsulë', 'Kapsulë']].forEach(([value, text]) => {
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = text;
+      formSelect.append(option);
+    });
+    formSelect.setAttribute('aria-label', `Forma e njësisë së ${state.drug}`);
+    formField.append(formSelect);
+    solidCustom.append(mgField, formField);
+
+    const remembered = savedSolid(state.drug);
+    if (remembered) {
+      mgInput.value = String(remembered.mg).replace('.', ',');
+      formSelect.value = remembered.form;
+    }
+
+    const commitCustom = () => {
+      const mg = num(mgInput.value);
+      if (Number.isFinite(mg) && mg > 0) {
+        saveSolid(state.drug, mg, formSelect.value);
+        state.solidId = CUSTOM_SOLID_ID;
+      } else {
+        state.solidId = NEW_SOLID_ID;
+      }
+      refresh();
+    };
+    mgInput.addEventListener('input', commitCustom);
+    formSelect.addEventListener('change', commitCustom);
+
     const refresh = () => {
       refreshModeButtons(state);
       let result = null;
@@ -581,6 +724,8 @@
         result = sequencePreview(card, state, shared, preview);
       } else {
         result = simplePreview(card, state, shared, preview, solidSelect);
+        solidCustom.hidden = solidSelect.hidden
+          || (state.solidId !== NEW_SOLID_ID && state.solidId !== CUSTOM_SOLID_ID);
       }
       onResult(state.drug, result);
     };
@@ -591,7 +736,7 @@
     if (doseResolver) controls.append(doseResolver);
     if (frequencyResolver) controls.append(frequencyResolver);
     if (modeResolver) controls.append(modeResolver);
-    controls.append(solidSelect);
+    controls.append(solidSelect, solidCustom);
     section.append(controls, preview);
 
     card.addEventListener('change', event => {
@@ -611,8 +756,10 @@
 
     const comboParts = liquidConfig.comboAliases?.[heading];
     const parts = Array.isArray(comboParts) && comboParts.length ? comboParts : [{ drug:heading }];
-    const hasAnyForm = parts.some(part => liquidConverter(card, part.drug) || solidForms(part.drug).length);
-    if (!hasAnyForm) return;
+    // Every oral drug reaches the prescription builder: templates where they
+    // exist, a typed-in product where they do not. A non-oral regimen has no
+    // syrup and no tablet, so it keeps no product picker at all.
+    if (!isOralCard(card)) return;
     card.dataset.prescriptionEnhanced = '1';
 
     const details = make('details', 'abx-rx');
