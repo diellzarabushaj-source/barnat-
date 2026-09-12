@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "dozologjia-v5-antibiotic-regimen-v1",
+  "design": {
+    "clinicalIdentityOwner": "active_substance",
+    "dosingOwner": "regimen",
+    "productOwner": "formulation_concentration_only",
+    "marketProductDependency": false,
+    "failClosed": true
+  },
+  "requiredRegimenFields": [
+    "id",
+    "substanceId",
+    "indicationId",
+    "population",
+    "route",
+    "dose",
+    "frequency",
+    "duration",
+    "source"
+  ],
+  "durationModel": {
+    "types": [
+      "single_dose",
+      "fixed_days",
+      "range_days",
+      "until_clinical_endpoint",
+      "guideline_or_response_based",
+      "prophylaxis_while_at_risk"
+    ],
+    "fields": [
+      "type",
+      "days",
+      "minDays",
+      "maxDays",
+      "clinicalEndpoint",
+      "reviewAfterDays",
+      "notes"
+    ],
+    "rule": "Never invent a duration when the authoritative source does not specify one. Use guideline_or_response_based and require clinical selection instead."
+  },
+  "runtime": {
+    "requiresPatientInputsPerRegimen": true,
+    "durationIsFirstClassClinicalOutput": true,
+    "productConversionIsOptionalSecondStage": true,
+    "prescriptionHandoffRequiresReview": true
+  }
+}
