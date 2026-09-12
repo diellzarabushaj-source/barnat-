@@ -7,26 +7,21 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
-/* The V3 pediatric client remains in the repository only as archived/regression
- * material. Dozologjia itself is now a clean substance-first runtime. */
+/* The old product-bound pediatric client remains archived, but the canonical
+ * Dozologjia V2 asset names now contain the clean substance-first runtime. */
 const archivedClient = read('pediatric-calculator-client.js');
-const archivedBundle = read('dozologjia-v2.js');
 const html = read('dozologjia.html');
-const client = read('dozologjia.js');
-const css = read('dozologjia.css');
+const client = read('dozologjia-v2.js');
+const css = read('dozologjia-v2.css');
 const code = client.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/^\s*\/\/.*$/gm, ' ');
 
 assert.match(archivedClient, /OWNER_FLAG = 'server-v3'/);
-assert.match(archivedBundle, /OWNER_FLAG = 'server-v3'/);
 assert.match(html, /data-dozologjia-architecture="clean-substance-first"/);
-assert.doesNotMatch(html, /pediatric-calculator-client\.js|dozologjia-v2\.js|id="dosageFormFilter"|id="patientTreatmentDay"/,
-  'Clean Dozologjia must not mount the archived V3 UI.');
+assert.match(html, /dozologjia-v2\.js\?v=clean-substance-first-1/);
+assert.doesNotMatch(html, /pediatric-calculator-client\.js|id="dosageFormFilter"|id="patientTreatmentDay"/,
+  'Clean Dozologjia must not mount the archived product-bound pediatric UI.');
 
-assert.match(html, /id="substance"/);
-assert.match(html, /id="population"/);
-assert.match(html, /id="regimen"/);
-assert.match(html, /id="weightKg"/);
-assert.match(html, /id="durationPreview"/);
+for (const id of ['substance','population','regimen','weightKg','durationPreview']) assert.match(html, new RegExp(`id="${id}"`));
 assert.match(client, /\/api\/dosage\?view=substances/);
 assert.match(client, /\/api\/dosage\?view=regimens&substance=/);
 assert.match(client, /action:'calculate'/);
@@ -42,8 +37,8 @@ for (const forbidden of [
 
 assert.doesNotMatch(code, /innerHTML/);
 assert.match(client, /textContent/);
-assert.match(client, /AbortController|fetch\(/);
+assert.match(client, /fetch\(/);
 assert.match(css, /min-height:46px/);
 assert.match(css, /@media\(max-width:820px\)/);
 
-console.log('Clean Dozologjia UI passed; pediatric V3 UI remains archived and is no longer mounted.');
+console.log('Clean Dozologjia pediatric flow passed; old product-bound pediatric UI is no longer mounted.');
