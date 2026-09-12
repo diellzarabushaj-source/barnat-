@@ -248,6 +248,7 @@
       RETURN_KEY,
       'medindex_labs_cache_v3',
       'medindexPrescriptionSelection',
+      'drx_registry_v2_selection',
       'medindex_rx_diagnosis_v1',
     ];
     try { localKeys.forEach(key => localStorage.removeItem(key)); } catch {}
