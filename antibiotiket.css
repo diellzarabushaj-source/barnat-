@@ -105,10 +105,25 @@ button,input,select{font:inherit}button{color:inherit}a{color:inherit}[hidden]{d
 .abx-option-head h3{margin:0;color:var(--ab-ink);font-size:16px;font-weight:620;line-height:1.25}
 .abx-tier{flex:none;color:var(--ab-faint);font-size:10px;font-weight:650;letter-spacing:.03em;text-transform:uppercase}
 .abx-option-dose{display:grid;gap:4px}
-.abx-dose-value{color:var(--ab-good);font-size:15px;font-weight:650;line-height:1.4}
-/* A dose derived from the age band's reference weight is orientational, so it
-   never wears the same colour as one computed from a real weight. */
-.abx-dose-value[data-basis="reference"]{color:var(--ab-warn)}
+/* The single dose and the 24-hour total are different numbers and must never
+   be mistaken for one another, so each is named on its own row. */
+.abx-dose-basis{color:var(--ab-good);font-size:11.5px;font-weight:650;letter-spacing:.01em}
+.abx-dose-basis[data-basis="reference"]{color:var(--ab-warn)}
+.abx-dose-rows{display:grid;gap:6px;margin-top:5px}
+.abx-dose-row{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;
+  padding:8px 11px;border-radius:9px;background:#f6fef9;
+}
+.abx-dose-row[data-basis="reference"]{background:#fffbf2}
+.abx-dose-row[data-role="daily"]{background:#f8f9fb}
+.abx-dose-row-label{
+  min-width:96px;color:var(--ab-muted);font-size:10.5px;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;
+}
+.abx-dose-row-value{color:var(--ab-good);font-size:15px;font-weight:650;line-height:1.35}
+.abx-dose-row[data-basis="reference"] .abx-dose-row-value{color:var(--ab-warn)}
+.abx-dose-row[data-role="daily"] .abx-dose-row-value{color:#344054;font-size:14px}
+.abx-dose-note{color:var(--ab-faint);font-size:11px;line-height:1.45}
 .abx-dose-working{display:grid;gap:3px;margin:2px 0 1px;padding:9px 11px;border-left:2px solid #e4e7ec;background:#fbfcfd;border-radius:0 8px 8px 0}
 .abx-dose-working-label{color:var(--ab-faint);font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .abx-dose-step{color:#475467;font-size:12px;font-variant-numeric:tabular-nums;line-height:1.5}

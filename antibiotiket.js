@@ -142,10 +142,11 @@
     return { value:max, capped:true };
   }
 
-  function calculatedText(option, weight, prefix) {
+  // The single-dose value, with no label. calculatedText() wraps it; the
+  // arithmetic below is unchanged from the verified build.
+  function calculatedValue(option, weight) {
     if (!weight) return '';
     const dose = option.dose || {};
-    const label = `${prefix || `Për ${fmt(weight)} kg`}: `;
 
     if (dose.type === 'range') {
       const low = cap(dose.min * weight, dose.maxDose);
@@ -153,29 +154,113 @@
       const value = low.value === high.value
         ? `${fmt(low.value)} mg/dozë`
         : `${fmt(low.value)}–${fmt(high.value)} mg/dozë`;
-      return `${label}${value}${low.capped || high.capped ? ' · kufiri maksimal i tabelës' : ''}`;
+      return `${value}${low.capped || high.capped ? ' · kufiri maksimal i tabelës' : ''}`;
     }
     if (dose.type === 'single') {
       const result = cap(dose.value * weight, dose.maxDose);
-      return `${label}${fmt(result.value)} mg/dozë${result.capped ? ' · kufiri maksimal i tabelës' : ''}`;
+      return `${fmt(result.value)} mg/dozë${result.capped ? ' · kufiri maksimal i tabelës' : ''}`;
     }
     if (dose.type === 'sequence') {
-      const steps = dose.steps.map(step => {
+      return dose.steps.map(step => {
         const result = cap(step.value * weight, step.maxDose);
         return `${step.label}: ${fmt(result.value)} mg${result.capped ? ' (maks.)' : ''}`;
-      });
-      return `${label}${steps.join(' · ')}`;
+      }).join(' · ');
     }
     if (dose.type === 'weight-threshold') {
-      return `${label}${weight < dose.thresholdKg ? dose.below : dose.atOrAbove}`;
+      return weight < dose.thresholdKg ? dose.below : dose.atOrAbove;
     }
     if (dose.type === 'amoxclav-uti') {
-      if (weight >= 35) return `${label}500/125 mg 3×/ditë ose 875/125 mg 2×/ditë`;
+      if (weight >= 35) return '500/125 mg 3×/ditë ose 875/125 mg 2×/ditë';
       const low = cap(15 * weight, 500);
       const high = cap(20 * weight, 500);
-      return `${label}${fmt(low.value)}–${fmt(high.value)} mg amoxicillin/dozë${low.capped || high.capped ? ' · kufiri maksimal i tabelës' : ''}`;
+      return `${fmt(low.value)}–${fmt(high.value)} mg amoxicillin/dozë${low.capped || high.capped ? ' · kufiri maksimal i tabelës' : ''}`;
     }
     return '';
+  }
+
+  function calculatedText(option, weight, prefix) {
+    const value = calculatedValue(option, weight);
+    if (!value) return '';
+    return `${prefix || `Për ${fmt(weight)} kg`}: ${value}`;
+  }
+
+  // How many doses a day the source states. Deliberately strict: only the exact
+  // wordings used in the dataset are recognised, and a frequency this does not
+  // understand yields no daily total rather than a guess.
+  // tests/antibiotics-daily-dose-test.js fails if the dataset gains another one.
+  function dosesPerDay(option) {
+    const frequency = clean(option.frequency);
+    let match = /^(\d+) herë\/ditë$/.exec(frequency);
+    if (match) return { min:Number(match[1]), max:Number(match[1]) };
+    match = /^(\d+) ose (\d+) herë\/ditë$/.exec(frequency);
+    if (match) return { min:Number(match[1]), max:Number(match[2]) };
+    if (frequency === '1 herë/ditë (mund të ndahet në 2 doza)') return { min:1, max:1 };
+    return null;
+  }
+
+  // The per-dose amount as numbers, so the daily total can be multiplied out.
+  // Returns null whenever the source gives text instead of a computable dose.
+  function perDoseMg(option, weight) {
+    if (!weight) return null;
+    const dose = option.dose || {};
+    if (dose.type === 'range') {
+      return { min:cap(dose.min * weight, dose.maxDose).value, max:cap(dose.max * weight, dose.maxDose).value };
+    }
+    if (dose.type === 'single') {
+      const value = cap(dose.value * weight, dose.maxDose).value;
+      return { min:value, max:value };
+    }
+    if (dose.type === 'weight-threshold') {
+      const text = weight < dose.thresholdKg ? dose.below : dose.atOrAbove;
+      const match = /^(\d+(?:[.,]\d+)?) mg\/dozë$/.exec(clean(text));
+      if (!match) return null;
+      const value = Number(match[1].replace(',', '.'));
+      return { min:value, max:value };
+    }
+    if (dose.type === 'amoxclav-uti' && weight < 35) {
+      return { min:cap(15 * weight, 500).value, max:cap(20 * weight, 500).value };
+    }
+    return null;
+  }
+
+  const doseUnitIsDaily = option => /\/ditë$/.test(clean(option.dose?.unit || ''));
+
+  function amount(range, unit) {
+    return range.min === range.max ? `${fmt(range.min)} ${unit}` : `${fmt(range.min)}–${fmt(range.max)} ${unit}`;
+  }
+
+  // Total for 24 hours: the source's per-dose amount times the source's
+  // frequency. It is arithmetic on the table, not a separate published figure.
+  function dailyDose(option, weight) {
+    if (!weight) return null;
+    const dose = option.dose || {};
+
+    // The sequence doses are already stated per day, so nothing is multiplied.
+    if (dose.type === 'sequence' && doseUnitIsDaily(option)) {
+      return {
+        text:dose.steps.map(step => `${step.label}: ${fmt(cap(step.value * weight, step.maxDose).value)} mg/ditë`).join(' · '),
+        working:'Doza e burimit është mg/kg/ditë — jepet një herë në ditë, prandaj nuk shumëzohet.',
+      };
+    }
+
+    if (dose.type === 'amoxclav-uti' && weight >= 35) {
+      return {
+        text:'1500 mg ose 1750 mg amoxicillin/ditë',
+        working:'500 mg × 3 herë/ditë = 1500 mg/ditë · 875 mg × 2 herë/ditë = 1750 mg/ditë',
+      };
+    }
+
+    const perDose = perDoseMg(option, weight);
+    const perDay = dosesPerDay(option) || (dose.type === 'amoxclav-uti' && weight < 35 ? { min:3, max:3 } : null);
+    if (!perDose || !perDay) return null;
+
+    const unit = dose.type === 'amoxclav-uti' ? 'mg amoxicillin/ditë' : 'mg/ditë';
+    const total = { min:perDose.min * perDay.min, max:perDose.max * perDay.max };
+    const times = perDay.min === perDay.max ? `${perDay.min} herë/ditë` : `${perDay.min}–${perDay.max} herë/ditë`;
+    return {
+      text:amount(total, unit),
+      working:`${amount(perDose, 'mg')} × ${times} = ${amount(total, unit)}`,
+    };
   }
 
   // The arithmetic, written out. This never decides a dose — calculatedText()
@@ -375,6 +460,14 @@
     el.refineBlock.hidden = el.allergyField.hidden && el.atypicalWrap.hidden && el.utiTypeWrap.hidden;
   }
 
+  function doseRow(label, value, basisKind, role) {
+    const row = make('div', 'abx-dose-row');
+    row.dataset.role = role;
+    row.append(make('span', 'abx-dose-row-label', label), make('strong', 'abx-dose-row-value', value));
+    row.dataset.basis = basisKind;
+    return row;
+  }
+
   function recommendationCard(option, basis) {
     const card = make('article', `abx-option tier-${option.tier || 'option'}`);
 
@@ -385,14 +478,26 @@
     );
 
     const dose = make('div', 'abx-option-dose');
-    const calculated = calculatedText(option, basis.weight, basis.label);
-    if (calculated) {
-      const value = make('strong', 'abx-dose-value', calculated);
-      value.dataset.basis = basis.kind;
-      dose.append(value);
+    const single = calculatedValue(option, basis.weight);
+    if (single) {
+      const basisLine = make('span', 'abx-dose-basis', basis.label);
+      basisLine.dataset.basis = basis.kind;
+      dose.append(basisLine);
 
-      // Show the multiplication, so the number can be checked without trusting it.
+      const daily = dailyDose(option, basis.weight);
+      const perDoseIsDaily = doseUnitIsDaily(option);
+
+      const rows = make('div', 'abx-dose-rows');
+      if (!perDoseIsDaily) rows.append(doseRow('Doza e vetme', single, basis.kind, 'single'));
+      if (daily) rows.append(doseRow('Doza ditore', daily.text, basis.kind, 'daily'));
+      if (perDoseIsDaily) {
+        rows.append(make('span', 'abx-dose-note', 'Jepet një herë në ditë, prandaj doza e vetme është e njëjtë me atë ditore.'));
+      }
+      dose.append(rows);
+
+      // Show the multiplication, so the numbers can be checked without trusting them.
       const steps = calculationSteps(option, basis.weight);
+      if (daily?.working) steps.push(daily.working);
       if (steps.length) {
         const working = make('div', 'abx-dose-working');
         working.append(make('span', 'abx-dose-working-label', 'Si llogaritet'));
@@ -401,6 +506,9 @@
       }
 
       dose.append(make('span', 'abx-dose-formula', formulaText(option)));
+      if (!daily) {
+        dose.append(make('span', 'abx-dose-note', 'Doza ditore nuk llogaritet: tabela nuk e jep frekuencën si numër.'));
+      }
     } else {
       dose.append(make('strong', 'abx-dose-formula-lead', formulaText(option)));
       dose.append(make('span', 'abx-dose-formula', 'Zgjidh moshën ose shkruaj peshën reale për mg/dozë.'));
