@@ -576,12 +576,13 @@ a{color:inherit}
 .column-picker-panel{
   position:absolute;top:calc(100% + 7px);left:0;z-index:70;width:min(360px,calc(100vw - 44px));
   display:flex;flex-direction:column;max-height:var(--column-picker-max,none);
-  /* clip, not hidden: a hidden overflow is still a scroll container, and the
-     focus the checkbox takes on click was scrolling the panel's own head away. */
+  /* clip, not hidden: an overflow:hidden panel is still a scroll container, and
+     the focus the checkbox takes on click scrolled the panel's own head away. */
   overflow:clip;border:1px solid #dfe4eb;border-radius:12px;background:#fff;
   box-shadow:0 22px 55px rgba(10,37,64,.15),0 6px 18px rgba(10,37,64,.07);
 }
 .column-picker-head,.column-picker-foot{flex:0 0 auto}
+.column-picker-list{flex:1 1 auto;min-height:132px}
 .column-picker-panel[hidden]{display:none}
 .column-picker-head{
   display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:14px 15px 12px;
@@ -594,12 +595,7 @@ a{color:inherit}
   width:7px;height:7px;flex:0 0 7px;margin-top:4px;border-radius:50%;
   background:#20b486;box-shadow:0 0 0 3px rgba(32,180,134,.12);
 }
-/* registry-column-picker-scroll-stability-v2: the list must not scroll itself
-   under the pointer while columns are being ticked. */
-.column-picker-list{
-  flex:1 1 auto;min-height:132px;max-height:min(410px,calc(100vh - 270px));padding:6px;overflow:auto;
-  overscroll-behavior:contain;overflow-anchor:none;scrollbar-gutter:stable;
-}
+.column-picker-list{max-height:min(410px,calc(100vh - 270px));padding:6px;overflow:auto;overscroll-behavior:contain}
 .column-option{
   position:relative;
   min-height:48px;display:grid;grid-template-columns:20px minmax(0,1fr);align-items:center;gap:10px;

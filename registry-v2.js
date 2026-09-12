@@ -68,11 +68,9 @@
   const COLUMN_SCHEMA_VERSION = 'registry-columns-v3-clinical';
   const COLUMN_SCHEMA_PREFIX = 'drx_registry_column_schema:';
   const CLINICAL_COLUMN_IDS = Object.freeze(['drugClass', 'use', 'population']);
-  // registry-column-picker-stability-v2: the table is the workspace, so a tick
-  // must survive a refresh, a page change and a slow network. The picker edits a
-  // draft while it is open, the commit happens once on close, and a late server
-  // answer is never allowed to overwrite a newer local choice.
-  const COLUMN_PICKER_CONTRACT = 'registry-column-picker-stability-v2';
+  // Column layout is remembered per profile, but the profile id only arrives
+  // once auth resolves. Without a device-scoped fallback nothing is cached in
+  // that window and a refresh snaps the table back to the default.
   const COLUMN_DEVICE_OWNER = 'device';
   const SELECTION_STORAGE_KEY = 'drx_registry_v2_selection';
   const LEGACY_SELECTION_STORAGE_KEY = 'medindexPrescriptionSelection';
@@ -97,10 +95,6 @@
     preferenceOwner: '',
     visibleColumns: new Set(DEFAULT_VISIBLE_COLUMNS),
     preferenceSaveTimer: 0,
-    preferenceRevision: 0,
-    preferenceInteractionVersion: 0,
-    columnPickerDraft: null,
-    columnPickerDirty: false,
     openRowMenuKey: '',
     noteRow: null,
     view: 'registry',
@@ -196,28 +190,15 @@
     catch {}
   }
 
-  // While the panel is open the checkboxes describe the draft, not the table.
-  function activeColumnSelection() {
-    return state.columnPickerDraft || state.visibleColumns;
-  }
-
-  function sameColumnSelection(left, right) {
-    const a = [...left];
-    const b = new Set(right);
-    return a.length === b.size && a.every(id => b.has(id));
-  }
-
   function updateColumnPickerSummary() {
-    const selection = activeColumnSelection();
-    const visible = COLUMN_DEFS.filter(item => selection.has(item.id)).length;
+    const visible = COLUMN_DEFS.filter(item => state.visibleColumns.has(item.id)).length;
     if (el.columnPickerSummary) el.columnPickerSummary.textContent = `${visible} nga ${COLUMN_DEFS.length} të dukshme`;
   }
 
   function renderColumnPicker() {
     if (!el.columnPickerList) return;
-    const selection = activeColumnSelection();
     el.columnPickerList.innerHTML = COLUMN_DEFS.map(item => {
-      const checked = selection.has(item.id);
+      const checked = state.visibleColumns.has(item.id);
       return `<label class="column-option${item.required ? ' is-required' : ''}">
         <input type="checkbox" data-column-toggle="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} ${item.required ? 'disabled' : ''}>
         <span class="column-option-check" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="m3.2 8.1 2.8 2.8 6-6"/></svg></span>
@@ -267,57 +248,32 @@
     else el.columnSaveStatus.removeAttribute('data-tone');
   }
 
-  // A PUT is an acknowledgement, not a source of truth. The answer can land
-  // after the user has already ticked something else, so it must never be
-  // copied back into the table.
   async function persistColumnPreferences() {
-    const revision = state.preferenceRevision;
-    const snapshot = [...state.visibleColumns];
     cacheColumns();
     setColumnSaveStatus('Duke ruajtur…');
     try {
-      await fetchJson(PREFERENCES_API, {
+      const { payload } = await fetchJson(PREFERENCES_API, {
         method:'PUT',
-        body:JSON.stringify({ registryColumns:snapshot }),
+        body:JSON.stringify({ registryColumns:[...state.visibleColumns] }),
         headers:{ 'Content-Type':'application/json' },
       }, 6000);
-      if (revision === state.preferenceRevision) setColumnSaveStatus('Ruajtur në profil', 'success');
+      const normalized = ensureClinicalColumns(payload.registryColumns);
+      state.visibleColumns = new Set(normalized);
+      cacheColumns();
+      applyColumnVisibility();
+      markClinicalColumnMigration();
+      setColumnSaveStatus('Ruajtur në profil', 'success');
     } catch (error) {
       console.warn('Column preferences save failed:', error);
-      if (revision === state.preferenceRevision) setColumnSaveStatus('Ruajtur në këtë pajisje', 'local');
+      setColumnSaveStatus('Ruajtur në këtë pajisje', 'local');
     }
   }
 
   function scheduleColumnSave() {
     clearTimeout(state.preferenceSaveTimer);
-    state.preferenceRevision += 1;
-    // The device cache and the migration stamp are written before the network
-    // call, so a refresh right after a tick still shows the chosen layout.
     cacheColumns();
-    markClinicalColumnMigration();
     setColumnSaveStatus('Duke ruajtur…');
-    state.preferenceSaveTimer = setTimeout(() => {
-      state.preferenceSaveTimer = 0;
-      void persistColumnPreferences();
-    }, 260);
-  }
-
-  // Leaving the page must not drop a tick that is still inside the debounce.
-  function flushColumnSave() {
-    if (!state.preferenceSaveTimer) return;
-    clearTimeout(state.preferenceSaveTimer);
-    state.preferenceSaveTimer = 0;
-    state.preferenceRevision += 1;
-    cacheColumns();
-    try {
-      fetch(PREFERENCES_API, {
-        method:'PUT',
-        body:JSON.stringify({ registryColumns:[...state.visibleColumns] }),
-        headers:{ 'Content-Type':'application/json' },
-        credentials:'same-origin',
-        keepalive:true,
-      }).catch(() => {});
-    } catch {}
+    state.preferenceSaveTimer = setTimeout(() => { void persistColumnPreferences(); }, 260);
   }
 
   async function loadColumnPreferences(authPayload) {
@@ -326,101 +282,44 @@
     if (cached) state.visibleColumns = new Set(ensureClinicalColumns(cached));
     applyColumnVisibility();
     setColumnSaveStatus(cached ? 'Preferenca lokale u ngarkua' : 'Duke sinkronizuar…');
-    const interactionVersion = state.preferenceInteractionVersion;
     try {
       const { payload } = await fetchJson(PREFERENCES_API, {}, 6000);
       state.preferenceOwner = clean(payload.userId || state.preferenceOwner).toLowerCase();
-      // A tick made while the profile was still loading is newer than the
-      // answer that just arrived; the answer loses.
-      if (interactionVersion !== state.preferenceInteractionVersion) {
-        cacheColumns();
-        setColumnSaveStatus('Ruajtur në këtë pajisje', 'local');
-        return;
-      }
       const migrate = needsClinicalColumnMigration();
       state.visibleColumns = new Set(ensureClinicalColumns(payload.registryColumns));
       cacheColumns();
       applyColumnVisibility();
-      if (migrate) scheduleColumnSave();
+      if (migrate) await persistColumnPreferences();
       else setColumnSaveStatus('Sinkronizuar me profilin', 'success');
     } catch (error) {
       console.warn('Column preferences load failed:', error);
-      cacheColumns();
       setColumnSaveStatus(cached ? 'Nga kjo pajisje' : 'Standardi DRx', cached ? 'local' : '');
     }
-  }
-
-  // "Rivendos standardin" and the save status sit in the footer, so the panel
-  // has to end above the fold wherever the toolbar happens to be.
-  function fitColumnPickerToViewport() {
-    if (!el.columnPickerPanel || el.columnPickerPanel.hidden) return;
-    const top = el.columnPickerPanel.getBoundingClientRect().top;
-    const available = Math.max(240, window.innerHeight - top - 16);
-    el.columnPickerPanel.style.setProperty('--column-picker-max', `${Math.round(available)}px`);
   }
 
   function openColumnPicker() {
     if (!el.columnPickerPanel) return;
     closeFormPicker();
-    state.columnPickerDraft = new Set(state.visibleColumns);
-    state.columnPickerDirty = false;
     el.columnPickerPanel.hidden = false;
     el.columnPickerButton.setAttribute('aria-expanded', 'true');
     renderColumnPicker();
-    el.columnPickerList.scrollTop = 0;
-    fitColumnPickerToViewport();
-    setColumnSaveStatus('Ndryshimet ruhen kur mbyllet');
+    requestAnimationFrame(() => el.columnPickerList.querySelector('input:not(:disabled)')?.focus({ preventScroll:true }));
   }
 
   function closeColumnPicker({ focusButton = false } = {}) {
     if (!el.columnPickerPanel || el.columnPickerPanel.hidden) return;
-    const draft = state.columnPickerDraft;
-    const dirty = state.columnPickerDirty;
-    state.columnPickerDraft = null;
-    state.columnPickerDirty = false;
     el.columnPickerPanel.hidden = true;
-    el.columnPickerPanel.style.removeProperty('--column-picker-max');
     el.columnPickerButton.setAttribute('aria-expanded', 'false');
-    if (dirty && draft) commitColumnSelection(draft);
-    else updateColumnPickerSummary();
     if (focusButton) el.columnPickerButton.focus({ preventScroll:true });
   }
 
-  function commitColumnSelection(next) {
-    const normalized = normalizeColumns([...next]);
-    if (sameColumnSelection(normalized, state.visibleColumns)) {
-      updateColumnPickerSummary();
-      return;
-    }
-    state.preferenceInteractionVersion += 1;
-    state.visibleColumns = new Set(normalized);
-    applyColumnVisibility();
-    scheduleColumnSave();
-  }
-
-  // Ticking only edits the draft: the table keeps its geometry, so the row
-  // under the pointer cannot move mid-click.
   function toggleColumn(id, visible) {
     const item = COLUMN_DEFS.find(entry => entry.id === id);
     if (!item || item.required) return;
-    if (!state.columnPickerDraft) state.columnPickerDraft = new Set(state.visibleColumns);
-    if (visible) state.columnPickerDraft.add(id);
-    else state.columnPickerDraft.delete(id);
-    state.columnPickerDirty = !sameColumnSelection(state.columnPickerDraft, state.visibleColumns);
-    updateColumnPickerSummary();
-    setColumnSaveStatus(state.columnPickerDirty ? 'Ndryshimet ruhen kur mbyllet' : 'Ruhet automatikisht');
-  }
-
-  function resetColumnsToDefault() {
-    const defaults = new Set(DEFAULT_VISIBLE_COLUMNS);
-    if (state.columnPickerDraft) {
-      state.columnPickerDraft = defaults;
-      state.columnPickerDirty = !sameColumnSelection(defaults, state.visibleColumns);
-      renderColumnPicker();
-      setColumnSaveStatus(state.columnPickerDirty ? 'Ndryshimet ruhen kur mbyllet' : 'Ruhet automatikisht');
-      return;
-    }
-    commitColumnSelection(defaults);
+    if (visible) state.visibleColumns.add(id);
+    else state.visibleColumns.delete(id);
+    applyColumnVisibility();
+    scheduleColumnSave();
   }
 
   function loadProfileChrome() {
@@ -1365,9 +1264,8 @@
   // the current page of results, so paging, refreshing or stepping into another
   // workspace and back must all come back with the same rows ticked.
   function persistSelection() {
-    const rows = [...state.selected.values()];
     try {
-      const serialized = JSON.stringify(rows);
+      const serialized = JSON.stringify([...state.selected.values()]);
       sessionStorage.setItem(SELECTION_STORAGE_KEY, serialized);
       sessionStorage.setItem(LEGACY_SELECTION_STORAGE_KEY, serialized);
     } catch {}
@@ -1643,19 +1541,18 @@
       event.stopPropagation();
       if (el.columnPickerPanel.hidden) openColumnPicker(); else closeColumnPicker();
     });
-    el.columnPickerPanel.addEventListener('click', event => { event.stopPropagation(); });
-    el.columnPickerPanel.addEventListener('change', event => {
+    el.columnPickerPanel.addEventListener('click', event => {
+      event.stopPropagation();
       const input = event.target.closest('[data-column-toggle]');
       if (input) toggleColumn(input.dataset.columnToggle, input.checked);
     });
     el.columnPickerPanel.addEventListener('keydown', event => {
       if (event.key === 'Escape') { event.preventDefault(); closeColumnPicker({ focusButton:true }); }
     });
-    el.resetColumnsButton.addEventListener('click', resetColumnsToDefault);
-    window.addEventListener('resize', fitColumnPickerToViewport, { passive:true });
-    window.addEventListener('pagehide', flushColumnSave);
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') flushColumnSave();
+    el.resetColumnsButton.addEventListener('click', () => {
+      state.visibleColumns = new Set(DEFAULT_VISIBLE_COLUMNS);
+      applyColumnVisibility();
+      scheduleColumnSave();
     });
     el.formPickerButton.addEventListener('click', event => {
       event.stopPropagation();
@@ -1768,7 +1665,6 @@
   }
 
   async function init() {
-    document.documentElement.dataset.registryColumnPicker = COLUMN_PICKER_CONTRACT;
     loadSharedSidebarTaxonomy();
     const incomingAtc = clean(new URLSearchParams(location.search).get('atc')).toUpperCase().replace(/\s+/g, '');
     state.atc = /^(?:[A-Z]|[A-Z]\d{2}(?:[A-Z]{1,2})?)$/.test(incomingAtc) ? incomingAtc : '';

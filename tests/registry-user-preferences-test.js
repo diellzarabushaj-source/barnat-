@@ -110,7 +110,9 @@ assert.match(css, /scrollbar-gutter:stable/);
 // The panel must not be a scroll container of its own: an overflow:hidden panel
 // is still scrollable, and the focus the checkbox takes on click scrolled the
 // panel's own header out of sight on every tick.
-const pickerPanelRule = css.slice(css.indexOf('.column-picker-panel{'), css.indexOf('.column-picker-panel[hidden]'));
+const pickerPanelRule = css
+  .slice(css.indexOf('.column-picker-panel{'), css.indexOf('.column-picker-panel[hidden]'))
+  .replace(/\/\*[\s\S]*?\*\//g, '');
 assert.match(pickerPanelRule, /overflow:clip/);
 assert.doesNotMatch(pickerPanelRule, /overflow:hidden/);
 assert.match(css, /max-height:var\(--column-picker-max,none\)/);
