@@ -68,6 +68,8 @@ button,input,select{font:inherit}button{color:inherit}a{color:inherit}[hidden]{d
 .abx-age-field select:hover{border-color:#bfc7d1}
 .abx-age-field select:focus{border-color:var(--ab-accent);box-shadow:0 0 0 3px rgba(83,58,253,.1)}
 .abx-age-field select.is-required{border-color:#f7b27a;background:#fffcf5}
+/* An age the weight filled in reads differently from one the clinician picked. */
+.abx-age-field select[data-source="weight"]{border-color:#c7c2fb;background:#fbfaff}
 .abx-measure .abx-hint{grid-column:1/-1;margin:-2px 0 0}
 .abx-age-suggestion{
   grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;

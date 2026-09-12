@@ -41,6 +41,10 @@
     allergy:'none',
     atypical:false,
     utiType:'nonfebrile',
+    // Whether the age currently in the select was derived from the weight
+    // rather than chosen. It only changes what the page says about the age;
+    // the age itself is used the same way either way.
+    ageFromWeight:false,
   };
 
   const tierLabels = Object.freeze({
@@ -423,15 +427,21 @@
   function renderAgeHint(indication) {
     const age = currentAgeBand();
     const required = Number.isFinite(indication.minAgeMonths);
-    el.ageOptional.textContent = required ? '— e nevojshme' : '— opsionale';
+    const derived = Boolean(age) && ctx.ageFromWeight;
+    el.ageOptional.textContent = derived ? '— nga pesha' : required ? '— e nevojshme' : '— opsionale';
     el.age.classList.toggle('is-required', required && !age);
+    el.age.dataset.source = derived ? 'weight' : 'chosen';
     if (!age) {
       el.ageHint.textContent = required
         ? 'Kjo skemë ka prag moshe në burim, prandaj mosha duhet zgjedhur.'
         : 'Zgjidh moshën për peshën referuese, kufijtë e burimit dhe kohëzgjatjen.';
       return;
     }
-    el.ageHint.textContent = `CARPA/WBM: peshë referuese ${age.referenceWeightLabel}.`;
+    // The age is not decoration: it gates the source's age thresholds and, for
+    // AOM, the length of the course. When the weight put it there, say so.
+    el.ageHint.textContent = derived
+      ? `Vendosur nga pesha ${fmt(weightState().value)} kg. Ndryshoje nëse mosha reale është tjetër — ajo vendos pragjet e burimit dhe kohëzgjatjen.`
+      : `CARPA/WBM: peshë referuese ${age.referenceWeightLabel}.`;
   }
 
   // The weight can point at an age band, but it must never set one. The age
@@ -444,7 +454,7 @@
     const suggestion = state.kind === 'valid' ? nearestAgeBand(state.value) : null;
     const chosen = currentAgeBand();
 
-    if (!suggestion || (chosen && chosen.id === suggestion.id)) {
+    if (!suggestion || ctx.ageFromWeight || (chosen && chosen.id === suggestion.id)) {
       el.ageSuggestion.hidden = true;
       el.ageSuggestion.replaceChildren();
       return;
@@ -453,7 +463,7 @@
     el.ageSuggestion.hidden = false;
     el.ageSuggestion.replaceChildren();
     const copy = chosen
-      ? `${fmt(state.value)} kg i afrohet moshës ${suggestion.label.toLocaleLowerCase('sq')} (ref. ${suggestion.referenceWeightLabel}), ndërsa ti ke zgjedhur ${chosen.label.toLocaleLowerCase('sq')} (ref. ${chosen.referenceWeightLabel}). Mosha nuk ndryshohet vetvetiu.`
+      ? `Ke zgjedhur ${chosen.label.toLocaleLowerCase('sq')} (ref. ${chosen.referenceWeightLabel}), ndërsa ${fmt(state.value)} kg i përgjigjet moshës ${suggestion.label.toLocaleLowerCase('sq')}. Zgjedhja jote mbetet.`
       : `${fmt(state.value)} kg i përgjigjet moshës ${suggestion.label.toLocaleLowerCase('sq')} sipas CARPA/WBM.`;
     el.ageSuggestion.append(make('span', 'abx-age-suggestion-copy', copy));
 
@@ -613,6 +623,7 @@
       if (allergyOptions.some(item => item.value === stored.allergy)) ctx.allergy = stored.allergy;
       if (utiOptions.some(item => item.value === stored.utiType)) ctx.utiType = stored.utiType;
       ctx.atypical = stored.atypical === true;
+      ctx.ageFromWeight = stored.ageFromWeight === true;
     }
     // A shared link wins over the remembered context.
     const requested = new URLSearchParams(location.search).get('indication');
@@ -659,9 +670,39 @@
     options.forEach(option => el.list.append(recommendationCard(option, basis)));
   }
 
+  // Editing the weight sets the age to the band it matches. A later manual
+  // choice stands until the weight is edited again — otherwise a large
+  // two-year-old could never be recorded as two.
+  function applyAgeFromWeight() {
+    const state = weightState();
+    if (state.kind !== 'valid') {
+      // A derived age has no justification without the weight it came from.
+      // An age the clinician chose is theirs and stays.
+      if (ctx.ageFromWeight) {
+        ctx.age = '';
+        ctx.ageFromWeight = false;
+        el.age.value = '';
+      }
+      return;
+    }
+    const band = nearestAgeBand(state.value);
+    if (!band) return;
+    ctx.age = band.id;
+    ctx.ageFromWeight = true;
+    el.age.value = band.id;
+  }
+
   function bind() {
-    el.age.addEventListener('change', () => { ctx.age = el.age.value; render(); });
-    el.weight.addEventListener('input', () => { ctx.weight = el.weight.value; render(); });
+    el.age.addEventListener('change', () => {
+      ctx.age = el.age.value;
+      ctx.ageFromWeight = false;
+      render();
+    });
+    el.weight.addEventListener('input', () => {
+      ctx.weight = el.weight.value;
+      applyAgeFromWeight();
+      render();
+    });
     el.atypical.addEventListener('change', () => { ctx.atypical = el.atypical.checked; render(); });
   }
 
