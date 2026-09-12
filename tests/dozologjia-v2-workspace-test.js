@@ -3,138 +3,80 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const html = read('dozologjia.html');
 const css = read('dozologjia-v2.css');
 const js = read('dozologjia-v2.js');
-const client = read('pediatric-calculator-client.js');
-const worker = read('sw.js');
+const api = read('api/dosage.js');
+const data = JSON.parse(read('data/dozologjia/antibiotics.json'));
+const engine = require('../lib/dozologjia.js');
 
 assert.match(html, /data-drx-app="dozologjia-v2"/);
-assert.match(html, /class="drx-unified-sidebar"/);
-assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
-assert.match(html, /class="nav-item is-active" href="\/dozologjia\.html" aria-current="page"/);
-assert.match(html, /dozologjia-v2\.css\?v=\d+/);
-assert.match(html, /dozologjia-v2\.js\?v=\d+/);
-assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/);
+assert.match(html, /data-dozologjia-architecture="clean-substance-first"/);
+assert.match(html, /Doza sipas substancës aktive/);
+for (const id of ['substance','population','regimen','weightKg','durationPreview']) assert.match(html, new RegExp(`id="${id}"`));
+assert.match(html, /dozologjia-v2\.css\?v=clean-substance-first-1/);
+assert.match(html, /dozologjia-v2\.js\?v=clean-substance-first-1/);
+assert.match(html, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v5/);
+assert.match(html, /drx-unified-sidebar/);
+assert.doesNotMatch(html, /pediatric-calculator-client|dosageProductPanel|dosageFacetReady|patientTreatmentDay|patientClinicalVariant/);
 
-[
-  'dosageContent','dosageSearch','dosageSearchClear','dosageFormFilter','dosageCount','dosageStatus','dosageList',
-  'dosageFacetAll','dosageFacetReady','dosageFacetText','dosageFacetBlocked',
-  'dosageProductPanel','dosageProductEmpty','dosageProductBody',
-  'pediatricInputs','pediatricInputsHint','dosagePatientState','dosagePatientActionHint',
-  'patientWeightKg','patientAgeMonths','patientAgeUnit','patientHeightCm','pediatricCalculate',
-  'dosageCalculationPanel','dosageCalculationBody','dosageCopyResult',
-].forEach(id => assert.match(html, new RegExp(`id="${id}"`), `Missing #${id}`));
-
-const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)]
-  .map(match => match[1]);
-const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)]
-  .map(match => match[1]);
-const pageRuntimes = scripts.filter(src => !/(?:phase9-personal-entities-client|sidebar-taxonomy-v3)\.js/.test(src));
-
-assert.equal(styles.length, 2, 'Dozologjia must keep exactly two stylesheet owners');
-assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1');
-assert.ok(scripts.includes('/phase9-personal-entities-client.js?v=phase9b'), 'Dozologjia personal entity runtime is missing');
-assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1'), 'Dozologjia shared sidebar runtime is missing');
-assert.equal(pageRuntimes.length, 1, 'Dozologjia must own exactly one page runtime in addition to shared runtimes');
-
-const dosageCssVersion = styles[0]?.match(/^\/dozologjia-v2\.css\?v=(\d+)$/)?.[1] || '';
-const dosageJsVersion = pageRuntimes[0]?.match(/^\/dozologjia-v2\.js\?v=(\d+)$/)?.[1] || '';
-assert.ok(dosageCssVersion, 'Dozologjia stylesheet must use a numeric cache version');
-assert.ok(dosageJsVersion, 'Dozologjia runtime must use a numeric cache version');
-assert.equal(dosageCssVersion, dosageJsVersion, 'Dozologjia CSS and JS cache versions must stay synchronized');
-assert.ok(Number(dosageCssVersion) >= 4, 'Dozologjia asset version must not regress below v4');
-assert.doesNotMatch(html, /tailadmin-|auth-client\.js|dozologjia\.js|dozologjia-deep-audit\.js|style-loader|pediatric-calculator\.css|pediatric-calculator-client\.js/);
-assert.match(html, /phase9-personal-entities-client\.js\?v=phase9b/);
-
-assert.match(css, /Dozologjia V3 — Stripe clinical workbench/);
-assert.match(css, /#1c1e54/);
-assert.match(css, /#533afd/);
-assert.match(css, /\.dosage-console/);
-assert.match(css, /\.dosage-catalog/);
-assert.match(css, /\.dosage-workbench/);
-assert.match(css, /\.dosage-filter-bar/);
-assert.match(css, /\.pediatric-result-button/);
-assert.match(css, /\.dosage-product-facts/);
-assert.match(css, /\.dosage-patient-fields/);
-assert.match(css, /\.pediatric-dose-primary/);
-assert.match(css, /\.dosage-calculation-facts/);
-assert.match(css, /@media\(max-width:760px\)/);
-assert.match(css, /prefers-reduced-motion:reduce/);
-assert.doesNotMatch(css, /linear-gradient|radial-gradient/, 'Clinical workbench must not add decorative gradients');
-
-assert.match(js, /Dozologjia V3 — one runtime/);
-assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
-assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/);
-assert.match(js, /async function ensureAuth\(\)/);
-assert.match(js, /\/api\/dosage\/search\?q=/);
-assert.match(js, /\/api\/dosage\/product\//);
-assert.match(js, /'\/api\/dosage\/calculate'/);
-assert.match(js, /function setFilter\(filter\)/);
-assert.match(js, /function effectiveReadiness\(item\)/);
-assert.match(js, /item\?\.readiness === 'CALCULATOR_READY' && item\?\.calculable !== true/);
-assert.match(js, /function setFormFilter\(value\)/);
-assert.match(js, /function updateFormOptions\(\)/);
-assert.match(js, /function validatePatientFields\(/);
-assert.match(js, /function invalidateCalculation\(\)/);
-assert.match(js, /function restoreFromUrl\(\)/);
-assert.match(js, /function buildCopyText\(calculation\)/);
-assert.match(js, /FLOW_VERSION = 'recetat-dozologjia-flow-v1'/);
-assert.match(js, /function handoffToPrescription\(\)/);
-assert.match(js, /medindexPrescriptionSelection/);
-assert.match(js, /location\.assign\('\/recetat\.html\?from=dozologjia'\)/);
-assert.match(css, /Integrated 4-step flow v1/);
-assert.match(css, /\.dosage-flow-steps/);
-assert.match(css, /\.dosage-to-prescription/);
-assert.match(js, /new AbortController\(\)/);
-assert.match(js, /searchToken:0/);
-assert.match(js, /productToken:0/);
-assert.match(js, /calculationToken:0/);
+assert.match(css, /\.result-fact/);
+assert.match(css, /\.sr-only/);
+assert.match(css, /@media\(max-width:820px\)/);
 assert.doesNotThrow(() => new Function(js));
-assert.ok(
-  js.includes(client.trim()),
-  'Dozologjia bundle must embed the exact canonical pediatric calculator client',
-);
+assert.doesNotMatch(js, /mgPerKg\s*\*|weightKg\s*\*|\/\s*concentration/i, 'Browseri nuk guxon të bëjë matematikë klinike.');
+assert.match(js, /POST/);
+assert.match(js, /\/api\/dosage/);
 
-const clientCode = client
-  .replace(/\/\*[\s\S]*?\*\//g, ' ')
-  .replace(/^\s*\/\/.*$/gm, ' ');
-assert.match(client, /OWNER_FLAG = 'server-v3'/);
-assert.doesNotMatch(clientCode, /calculatePediatricDose|mgPerKg\s*\*|weightKg\s*\*|\/\s*concentration/i,
-  'Pediatric browser client must not own clinical arithmetic');
-assert.doesNotMatch(clientCode, /innerHTML/, 'V3 client must keep data rendering DOM-safe');
+for (const legacyImport of [
+  'dosage-handler', 'dose-calculator-handler', 'dose-safety-handler', 'dose-product-fast-path-handler',
+  'dosage-card-handler', 'approved-population-handler'
+]) assert.doesNotMatch(api, new RegExp(`^const\\s+.*require\\([^\\n]*${legacyImport}`, 'm'));
+assert.doesNotMatch(api, /^const\s+.*require\([^\n]*pediatric-dosage-handler/m);
+assert.match(api, /require\('\.\.\/lib\/dozologjia\.js'\)/);
+assert.match(api, /NON-RUNTIME TEST COMPATIBILITY ONLY/);
 
-assert.match(worker, /\/dozologjia-v2\.css/);
-assert.match(worker, /\/dozologjia-v2\.js/);
-assert.doesNotMatch(worker, /['"]\/dozologjia\.js['"]/);
+assert.equal(data.principles.clinicalIdentity, 'active-substance');
+assert.equal(data.principles.productTableRequired, false);
+assert.equal(data.principles.clientSideClinicalMath, false);
+assert.equal(data.principles.durationRequired, true);
+assert.equal(data.principles.inventDurationWhenMissing, false);
+assert.deepEqual(data.substances.map(x => x.id), [
+  'amoxicillin','amoxicillin-clavulanic-acid','ceftriaxone','trimethoprim-sulfamethoxazole'
+]);
+for (const substance of data.substances) {
+  assert.ok(substance.regimens.length > 0);
+  for (const regimen of substance.regimens) {
+    assert.ok(regimen.duration?.kind, `${regimen.id}: duration mungon`);
+    assert.ok(regimen.duration?.label, `${regimen.id}: duration label mungon`);
+    assert.match(regimen.source?.url || '', /^https:\/\//, `${regimen.id}: source duhet HTTPS`);
+    assert.equal(regimen.source?.section, '4.2');
+  }
+}
 
-/* Provenienca: klienti nuk guxon ta ulë pragun që serveri e mban.
-   `lib/dose-calculator-handler.js` e pranon një burim vetëm si https; blloku i
-   burimit në faqe duhet ta zbatojë të njëjtin prag, dhe vula «Verifikuar» nuk
-   qëndron pa një burim që e mban. */
-assert.match(
-  client,
-  /function safeExternalUrl\(value\)\s*\{[\s\S]*?url\.protocol === 'https:'/,
-  'Only https may count as a linked clinical source, matching the server rule.'
-);
-assert.doesNotMatch(
-  client,
-  /\['http:', 'https:'\]\.includes\(url\.protocol\)/,
-  'Plain http must not qualify as clinical provenance.'
-);
-assert.match(
-  client,
-  /const verified = url \? formatDate\(source\?\.verifiedAt\) : '';/,
-  'The verified stamp must depend on the source that backs it.'
-);
-assert.match(
-  client,
-  /Burimi klinik nuk është i regjistruar me URL\./,
-  'A source without a URL must say so rather than render as linked provenance.'
-);
+const amox = engine.substances('amoks');
+assert.equal(amox[0].id, 'amoxicillin');
+const childLyme = engine.calculate({ substanceId:'amoxicillin', regimenId:'amox-lyme-early-child', weightKg:18 });
+assert.equal(childLyme.outcome, 'CALCULATED');
+assert.equal(childLyme.dose.dailyMinMg, 450);
+assert.equal(childLyme.dose.dailyMaxMg, 900);
+assert.equal(childLyme.dose.perDoseMinMg, 150);
+assert.equal(childLyme.dose.perDoseMaxMg, 300);
+assert.equal(childLyme.duration.minDays, 10);
+assert.equal(childLyme.duration.maxDays, 21);
+assert.equal(childLyme.requiresReview, true);
 
-console.log('Dozologjia V3 Stripe workbench, resilient client state and server-calculated safety contract passed.');
+const missingWeight = engine.calculate({ substanceId:'ceftriaxone', regimenId:'ctx-aom-child-single' });
+assert.equal(missingWeight.outcome, 'NEEDS_PATIENT_DATA');
+assert.deepEqual(missingWeight.required, ['weightKg']);
+const cef = engine.calculate({ substanceId:'ceftriaxone', regimenId:'ctx-gonorrhoea-adult' });
+assert.equal(cef.dose.perDoseMg, 500);
+assert.equal(cef.duration.kind, 'single');
+const coamox = engine.calculate({ substanceId:'amoxicillin-clavulanic-acid', regimenId:'coamox-standard-adult-875-125' });
+assert.equal(coamox.duration.kind, 'clinical');
+assert.equal(coamox.duration.reviewAfterDays, 14);
+
+console.log('Dozologjia clean substance-first rebuild contract passed.');

@@ -1,0 +1,42 @@
+name: Dozologjia clean rebuild
+
+on:
+  pull_request:
+    paths:
+      - 'api/dosage.js'
+      - 'lib/dozologjia.js'
+      - 'data/dozologjia/**'
+      - 'dozologjia.html'
+      - 'dozologjia.css'
+      - 'dozologjia.js'
+      - 'tests/dozologjia-v2-workspace-test.js'
+      - '.github/workflows/dozologjia-clean-rebuild.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'api/dosage.js'
+      - 'lib/dozologjia.js'
+      - 'data/dozologjia/**'
+      - 'dozologjia.html'
+      - 'dozologjia.css'
+      - 'dozologjia.js'
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax
+        run: |
+          node --check api/dosage.js
+          node --check lib/dozologjia.js
+          node --check dozologjia.js
+      - name: Clean Dozologjia contract
+        run: node tests/dozologjia-v2-workspace-test.js

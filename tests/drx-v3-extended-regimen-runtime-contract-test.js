@@ -26,62 +26,30 @@ assert(neonatalInputs.includes('age_days'));
 assert(neonatalInputs.includes('weight_kg'));
 assert(!neonatalInputs.includes('age_months'));
 
-assert.equal(
-  Core.eligibility(neonatal,{ageDays:10,weightKg:3}).eligible,
-  true
-);
-assert.equal(
-  Core.eligibility(neonatal,{ageDays:15,weightKg:3}).outcome,
-  Core.OUTCOME.OUT_OF_RANGE
-);
-assert.deepEqual(
-  Core.eligibility(neonatal,{weightKg:3}).missing,
-  ['age_days']
-);
+assert.equal(Core.eligibility(neonatal,{ageDays:10,weightKg:3}).eligible,true);
+assert.equal(Core.eligibility(neonatal,{ageDays:15,weightKg:3}).outcome,Core.OUTCOME.OUT_OF_RANGE);
+assert.deepEqual(Core.eligibility(neonatal,{weightKg:3}).missing,['age_days']);
 
 const sequence = {
-  ruleKey:'TEST-SEQUENCE',
-  patientGroup:'adult_only',
-  calculationMethod:'fixed_dose',
-  doseMinValue:15,
-  doseMaxValue:15,
-  doseUnit:'mg',
-  frequencyMode:'times_per_day',
-  timesPerDay:2,
-  startDay:1,
-  endDay:21,
+  ruleKey:'TEST-SEQUENCE', patientGroup:'adult_only', calculationMethod:'fixed_dose',
+  doseMinValue:15, doseMaxValue:15, doseUnit:'mg', frequencyMode:'times_per_day',
+  timesPerDay:2, startDay:1, endDay:21,
 };
 assert(Core.requiredInputs(sequence).includes('treatment_day'));
 assert.equal(Core.eligibility(sequence,{ageMonths:360,treatmentDay:7}).eligible,true);
 assert.equal(Core.eligibility(sequence,{ageMonths:360,treatmentDay:22}).outcome,Core.OUTCOME.OUT_OF_RANGE);
 
 const conditional = {
-  ruleKey:'TEST-CONDITIONAL',
-  patientGroup:'adult_only',
-  calculationMethod:'fixed_dose',
-  doseMinValue:20,
-  doseMaxValue:20,
-  doseUnit:'mg',
-  frequencyMode:'times_per_day',
-  timesPerDay:1,
-  conditionReviewRequired:true,
-  regimenOptionKey:'TEST-CONDITIONAL-B1',
+  ruleKey:'TEST-CONDITIONAL', patientGroup:'adult_only', calculationMethod:'fixed_dose',
+  doseMinValue:20, doseMaxValue:20, doseUnit:'mg', frequencyMode:'times_per_day',
+  timesPerDay:1, conditionReviewRequired:true, regimenOptionKey:'TEST-CONDITIONAL-B1',
 };
 assert(Core.requiredInputs(conditional).includes('clinical_variant'));
-assert.equal(
-  Core.eligibility(conditional,{ageMonths:360,clinicalVariant:'TEST-CONDITIONAL-B1'}).eligible,
-  true
-);
-assert.equal(
-  Core.eligibility(conditional,{ageMonths:360,clinicalVariant:'OTHER'}).outcome,
-  Core.OUTCOME.OUT_OF_RANGE
-);
+assert.equal(Core.eligibility(conditional,{ageMonths:360,clinicalVariant:'TEST-CONDITIONAL-B1'}).eligible,true);
+assert.equal(Core.eligibility(conditional,{ageMonths:360,clinicalVariant:'OTHER'}).outcome,Core.OUTCOME.OUT_OF_RANGE);
 
 const p = PediatricV3._test.patientFromBody({
-  weightKg:3.2,
-  age:{value:10,unit:'ditë'},
-  treatmentDay:2,
-  clinicalVariant:'TEST-CONDITIONAL-B1',
+  weightKg:3.2, age:{value:10,unit:'ditë'}, treatmentDay:2, clinicalVariant:'TEST-CONDITIONAL-B1',
 });
 assert.equal(p.ageDays,10);
 assert(p.ageMonths > 0 && p.ageMonths < 1);
@@ -92,17 +60,19 @@ const requires = PediatricV3._test.requiresOf([neonatal]);
 assert.equal(requires.age,true);
 assert.equal(requires.ageDays,true);
 
+/* V3 remains covered as an archived engine/data contract, but Dozologjia was
+   intentionally rebuilt from zero and no longer exposes the V3 patient-input
+   DOM/runtime. This test therefore verifies V3's reader contract independently
+   and explicitly guards against re-coupling the clean page to those fields. */
 const html = fs.readFileSync(path.join(__dirname,'..','dozologjia.html'),'utf8');
-const ui = fs.readFileSync(path.join(__dirname,'..','dozologjia-v2.js'),'utf8');
+const cleanUi = fs.readFileSync(path.join(__dirname,'..','dozologjia.js'),'utf8');
 const reader = fs.readFileSync(path.join(__dirname,'..','lib','dose-v3-product-reader.js'),'utf8');
 
-assert.match(html,/id="patientTreatmentDay"/);
-assert.match(html,/id="patientClinicalVariant"/);
-assert.match(ui,/payload\.treatmentDay = treatmentDay/);
-assert.match(ui,/payload\.clinicalVariant = elements\.clinicalVariant\.value/);
-assert.match(ui,/requires\.ageDays/);
-assert.match(ui,/treatmentDayRange/);
+assert.match(html,/data-dozologjia-architecture="clean-substance-first"/);
+assert.doesNotMatch(html,/id="patientTreatmentDay"/);
+assert.doesNotMatch(html,/id="patientClinicalVariant"/);
+assert.doesNotMatch(cleanUi,/payload\.treatmentDay|clinicalVariant|treatmentDayRange|requires\.ageDays/);
 assert.match(reader,/minAgeDays:rule\.min_age_days/);
 assert.match(reader,/regimenOptionKey:clean\(rule\.regimen_option_key\)/);
 
-console.log('DRx V3 extended regimen runtime contract passed.');
+console.log('DRx V3 archived extended-regimen contract remains valid and decoupled from clean Dozologjia.');

@@ -1,0 +1,283 @@
+{
+  "schemaVersion": "dozologjia-antibiotics-v1",
+  "updatedAt": "2026-09-12",
+  "publicationStatus": "review-required",
+  "principles": {
+    "clinicalIdentity": "active-substance",
+    "productTableRequired": false,
+    "clientSideClinicalMath": false,
+    "durationRequired": true,
+    "inventDurationWhenMissing": false
+  },
+  "substances": [
+    {
+      "id": "amoxicillin",
+      "name": "Amoxicillin",
+      "atc": "J01CA04",
+      "aliases": ["amoxicillinum", "amoksiciline", "amoksicilinë"],
+      "regimens": [
+        {
+          "id": "amox-aom-adult-severe",
+          "indication": "Otit media akut – infeksion i rëndë",
+          "population": "adult",
+          "populationLabel": "Të rritur / ≥40 kg",
+          "route": "PO",
+          "dose": {"kind":"fixed-range","minMg":750,"maxMg":1000,"per":"dose"},
+          "frequency": {"everyHours":8,"label":"çdo 8 orë"},
+          "duration": {"kind":"fixed","days":10,"label":"10 ditë"},
+          "maximum": null,
+          "requires": [],
+          "source": {"url":"https://www.medicines.org.uk/emc/product/13501/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        },
+        {
+          "id": "amox-hpylori-adult",
+          "indication": "Eradikimi i Helicobacter pylori",
+          "population": "adult",
+          "populationLabel": "Të rritur / ≥40 kg",
+          "route": "PO",
+          "dose": {"kind":"fixed-range","minMg":750,"maxMg":1000,"per":"dose"},
+          "frequency": {"timesPerDay":2,"label":"2 herë/ditë"},
+          "duration": {"kind":"fixed","days":7,"label":"7 ditë"},
+          "maximum": null,
+          "requires": [],
+          "notes": "Vetëm si pjesë e terapisë së kombinuar me PPI dhe antibiotik tjetër sipas udhëzimit.",
+          "source": {"url":"https://www.medicines.org.uk/emc/product/13501/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        },
+        {
+          "id": "amox-lyme-early-adult",
+          "indication": "Lyme – faza e hershme",
+          "population": "adult",
+          "populationLabel": "Të rritur / ≥40 kg",
+          "route": "PO",
+          "dose": {"kind":"fixed-range","minMg":500,"maxMg":1000,"per":"dose"},
+          "frequency": {"everyHours":8,"label":"çdo 8 orë"},
+          "duration": {"kind":"range","minDays":10,"usualDays":14,"maxDays":21,"label":"zakonisht 14 ditë (10–21 ditë)"},
+          "maximum": {"dailyMg":4000,"label":"maks. 4 g/ditë"},
+          "requires": [],
+          "source": {"url":"https://www.medicines.org.uk/emc/product/13501/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        },
+        {
+          "id": "amox-lyme-early-child",
+          "indication": "Lyme – faza e hershme",
+          "population": "pediatric",
+          "populationLabel": "Fëmijë <40 kg",
+          "route": "PO",
+          "dose": {"kind":"mg-kg-day-range","minMgKgDay":25,"maxMgKgDay":50,"dosesPerDay":3},
+          "frequency": {"timesPerDay":3,"label":"3 doza/ditë"},
+          "duration": {"kind":"range","minDays":10,"maxDays":21,"label":"10–21 ditë"},
+          "maximum": null,
+          "requires": ["weightKg"],
+          "source": {"url":"https://www.medicines.org.uk/emc/product/13501/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        },
+        {
+          "id": "amox-endocarditis-prophylaxis-adult",
+          "indication": "Profilaksia e endokarditit",
+          "population": "adult",
+          "populationLabel": "Të rritur / ≥40 kg",
+          "route": "PO",
+          "dose": {"kind":"fixed","mg":2000,"per":"dose"},
+          "frequency": {"label":"30–60 min para procedurës"},
+          "duration": {"kind":"single","label":"dozë e vetme"},
+          "maximum": null,
+          "requires": [],
+          "source": {"url":"https://www.medicines.org.uk/emc/product/13501/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        },
+        {
+          "id": "amox-endocarditis-prophylaxis-child",
+          "indication": "Profilaksia e endokarditit",
+          "population": "pediatric",
+          "populationLabel": "Fëmijë <40 kg",
+          "route": "PO",
+          "dose": {"kind":"mg-kg-dose","mgKg":50},
+          "frequency": {"label":"30–60 min para procedurës"},
+          "duration": {"kind":"single","label":"dozë e vetme"},
+          "maximum": null,
+          "requires": ["weightKg"],
+          "source": {"url":"https://www.medicines.org.uk/emc/product/13501/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        }
+      ]
+    },
+    {
+      "id": "amoxicillin-clavulanic-acid",
+      "name": "Amoxicillin + Clavulanic acid",
+      "atc": "J01CR02",
+      "aliases": ["co-amoxiclav", "amoksiklav", "amoxicillin clavulanate"],
+      "regimens": [
+        {
+          "id": "coamox-standard-adult-875-125",
+          "indication": "Infeksione të listuara në SmPC – regjim standard",
+          "population": "adult",
+          "populationLabel": "Të rritur / ≥40 kg",
+          "route": "PO",
+          "dose": {"kind":"combo-fixed","components":[{"name":"amoxicillin","mg":875},{"name":"clavulanic acid","mg":125}]},
+          "frequency": {"timesPerDay":2,"label":"2 herë/ditë"},
+          "duration": {"kind":"clinical","label":"sipas përgjigjes klinike; rishikim nëse zgjat >14 ditë","reviewAfterDays":14},
+          "maximum": null,
+          "requires": [],
+          "notes": "Regjim specifik për formulimin 875/125 mg; mos e konverto automatikisht në formulime tjera.",
+          "source": {"url":"https://www.medicines.org.uk/emc/product/10877/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        },
+        {
+          "id": "coamox-selected-adult-875-125",
+          "indication": "Otit/sinusit/LRTI/UTI të zgjedhura – dozë më e lartë",
+          "population": "adult",
+          "populationLabel": "Të rritur / ≥40 kg",
+          "route": "PO",
+          "dose": {"kind":"combo-fixed","components":[{"name":"amoxicillin","mg":875},{"name":"clavulanic acid","mg":125}]},
+          "frequency": {"timesPerDay":3,"label":"3 herë/ditë"},
+          "duration": {"kind":"clinical","label":"sipas përgjigjes klinike; rishikim nëse zgjat >14 ditë","reviewAfterDays":14},
+          "maximum": null,
+          "requires": [],
+          "source": {"url":"https://www.medicines.org.uk/emc/product/10877/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        },
+        {
+          "id": "coamox-child-standard",
+          "indication": "Infeksione të listuara në SmPC – regjim pediatrik standard",
+          "population": "pediatric",
+          "populationLabel": "Fëmijë <40 kg",
+          "route": "PO",
+          "dose": {"kind":"combo-mg-kg-day-range","components":[{"name":"amoxicillin","minMgKgDay":25,"maxMgKgDay":45},{"name":"clavulanic acid","minMgKgDay":3.6,"maxMgKgDay":6.4}],"dosesPerDay":2},
+          "frequency": {"timesPerDay":2,"label":"2 doza/ditë"},
+          "duration": {"kind":"clinical","label":"sipas përgjigjes klinike; rishikim nëse zgjat >14 ditë","reviewAfterDays":14},
+          "maximum": null,
+          "requires": ["weightKg"],
+          "source": {"url":"https://www.medicines.org.uk/emc/product/10877/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        }
+      ]
+    },
+    {
+      "id": "ceftriaxone",
+      "name": "Ceftriaxone",
+      "atc": "J01DD04",
+      "aliases": ["ceftriakson", "ceftriaksonë"],
+      "regimens": [
+        {
+          "id": "ctx-aom-adult-single",
+          "indication": "Otit media akut",
+          "population": "adult",
+          "populationLabel": "Të rritur / >12 vjeç dhe ≥50 kg",
+          "route": "IM",
+          "dose": {"kind":"fixed-range","minMg":1000,"maxMg":2000,"per":"dose"},
+          "frequency": {"label":"dozë e vetme"},
+          "duration": {"kind":"single","label":"dozë e vetme"},
+          "maximum": null,
+          "requires": [],
+          "source": {"url":"https://www.medicines.org.uk/emc/product/15101/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        },
+        {
+          "id": "ctx-aom-adult-failure",
+          "indication": "Otit media akut – i rëndë ose dështim i trajtimit paraprak",
+          "population": "adult",
+          "populationLabel": "Të rritur / >12 vjeç dhe ≥50 kg",
+          "route": "IM",
+          "dose": {"kind":"fixed-range","minMg":1000,"maxMg":2000,"per":"dose"},
+          "frequency": {"timesPerDay":1,"label":"1 herë/ditë"},
+          "duration": {"kind":"fixed","days":3,"label":"3 ditë"},
+          "maximum": null,
+          "requires": [],
+          "source": {"url":"https://www.medicines.org.uk/emc/product/15101/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        },
+        {
+          "id": "ctx-gonorrhoea-adult",
+          "indication": "Gonorre",
+          "population": "adult",
+          "populationLabel": "Të rritur / >12 vjeç dhe ≥50 kg",
+          "route": "IM",
+          "dose": {"kind":"fixed","mg":500,"per":"dose"},
+          "frequency": {"label":"dozë e vetme"},
+          "duration": {"kind":"single","label":"dozë e vetme"},
+          "maximum": null,
+          "requires": [],
+          "source": {"url":"https://www.medicines.org.uk/emc/product/15101/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        },
+        {
+          "id": "ctx-syphilis-adult",
+          "indication": "Sifiliz, përfshirë neurosifilizin",
+          "population": "adult",
+          "populationLabel": "Të rritur / >12 vjeç dhe ≥50 kg",
+          "route": "IV/IM",
+          "dose": {"kind":"text","label":"500 mg–1 g 1×/ditë; deri 2 g 1×/ditë për neurosifiliz"},
+          "frequency": {"timesPerDay":1,"label":"1 herë/ditë"},
+          "duration": {"kind":"range","minDays":10,"maxDays":14,"label":"10–14 ditë"},
+          "maximum": null,
+          "requires": [],
+          "source": {"url":"https://www.medicines.org.uk/emc/product/15101/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        },
+        {
+          "id": "ctx-lyme-adult",
+          "indication": "Lyme e diseminuar",
+          "population": "adult",
+          "populationLabel": "Të rritur / >12 vjeç dhe ≥50 kg",
+          "route": "IV/IM",
+          "dose": {"kind":"fixed","mg":2000,"per":"dose"},
+          "frequency": {"timesPerDay":1,"label":"1 herë/ditë"},
+          "duration": {"kind":"range","minDays":14,"maxDays":21,"label":"14–21 ditë"},
+          "maximum": null,
+          "requires": [],
+          "source": {"url":"https://www.medicines.org.uk/emc/product/15101/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        },
+        {
+          "id": "ctx-aom-child-single",
+          "indication": "Otit media akut",
+          "population": "pediatric",
+          "populationLabel": "15 ditë–12 vjeç, <50 kg",
+          "route": "IM",
+          "dose": {"kind":"mg-kg-dose","mgKg":50},
+          "frequency": {"label":"dozë e vetme"},
+          "duration": {"kind":"single","label":"dozë e vetme"},
+          "maximum": null,
+          "requires": ["weightKg"],
+          "source": {"url":"https://www.medicines.org.uk/emc/product/15101/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        }
+      ]
+    },
+    {
+      "id": "trimethoprim-sulfamethoxazole",
+      "name": "Trimethoprim + Sulfamethoxazole",
+      "atc": "J01EE01",
+      "aliases": ["co-trimoxazole", "cotrimoxazole", "Bactrim", "TMP-SMX"],
+      "regimens": [
+        {
+          "id": "cotrim-standard-adult",
+          "indication": "Infeksion akut – regjim standard sipas SmPC",
+          "population": "adult",
+          "populationLabel": "Të rritur dhe >12 vjeç",
+          "route": "PO",
+          "dose": {"kind":"combo-fixed","components":[{"name":"trimethoprim","mg":160},{"name":"sulfamethoxazole","mg":800}]},
+          "frequency": {"everyHours":12,"label":"çdo 12 orë"},
+          "duration": {"kind":"clinical","minDays":5,"label":"të paktën 5 ditë; vazhdo deri 2 ditë pa simptoma","reviewAfterDays":7},
+          "maximum": null,
+          "requires": [],
+          "source": {"url":"https://www.medicines.org.uk/emc/product/6999/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        },
+        {
+          "id": "cotrim-lower-uti-adult",
+          "indication": "UTI e poshtme akute e pakomplikuar – alternativë short-course",
+          "population": "adult",
+          "populationLabel": "Të rritur dhe >12 vjeç",
+          "route": "PO",
+          "dose": {"kind":"combo-fixed","components":[{"name":"trimethoprim","mg":160},{"name":"sulfamethoxazole","mg":800}]},
+          "frequency": {"everyHours":12,"label":"çdo 12 orë"},
+          "duration": {"kind":"range","minDays":1,"maxDays":3,"label":"1–3 ditë"},
+          "maximum": null,
+          "requires": [],
+          "notes": "SmPC e paraqet si alternativë ndaj regjimit standard; zgjedhja duhet të ndjekë udhëzimet lokale të antibiotikëve.",
+          "source": {"url":"https://www.medicines.org.uk/emc/product/6999/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        },
+        {
+          "id": "cotrim-standard-child",
+          "indication": "Infeksion akut – regjim standard pediatrik",
+          "population": "pediatric",
+          "populationLabel": "Fëmijë >6 javë deri 12 vjeç",
+          "route": "PO/IV sipas produktit",
+          "dose": {"kind":"combo-mg-kg-day","components":[{"name":"trimethoprim","mgKgDay":6},{"name":"sulfamethoxazole","mgKgDay":30}],"dosesPerDay":2},
+          "frequency": {"timesPerDay":2,"label":"2 doza/ditë"},
+          "duration": {"kind":"clinical","minDays":5,"label":"të paktën 5 ditë; vazhdo deri 2 ditë pa simptoma"},
+          "maximum": null,
+          "requires": ["weightKg"],
+          "source": {"url":"https://www.medicines.org.uk/emc/product/15791/smpc","section":"4.2","verifiedOn":"2026-09-12"}
+        }
+      ]
+    }
+  ]
+}
