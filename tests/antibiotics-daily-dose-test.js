@@ -16,7 +16,15 @@ assert.match(guide.version, /phase2-regimen-engine/, 'The Phase 2 dataset versio
 
 const js = read('antibiotiket.js');
 const html = read('antibiotiket.html');
+const shell = read('antibiotiket-shell.js');
+const formulationsRuntime = read('antibiotiket-formulations.js');
+const formulationsDataSource = read('antibiotiket-formulations-data.js');
 const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
+
+const formulationSandbox = { window:{} };
+// eslint-disable-next-line no-new-func
+new Function('window', formulationsDataSource)(formulationSandbox.window);
+const formulations = formulationSandbox.window.DRX_ANTIBIOTIC_FORMULATIONS;
 
 // --- 12 outpatient diagnoses are now active --------------------------------
 const EXPECTED = new Set([
@@ -200,6 +208,76 @@ for (const indication of guide.indications) {
   }
 }
 
+// --- Phase 3 formulation conversion contracts ------------------------------
+assert.ok(formulations, 'Phase 3 formulation dataset must load');
+assert.match(formulations.version, /phase3-formulations/, 'Formulation dataset version must be explicit');
+assert.equal(formulations.scope, 'oral-liquid-conversion');
+assert.match(formulations.note, /verifiko fuqinë/i, 'Formulation data must tell the clinician to verify the actual bottle strength');
+
+for (const [drug, entry] of Object.entries(formulations.drugs)) {
+  assert.ok(entry.basis, `${drug}: formulation basis must be explicit`);
+  assert.ok(Array.isArray(entry.forms) && entry.forms.length > 0, `${drug}: at least one verified formulation is required`);
+  for (const form of entry.forms) {
+    assert.ok(Number.isFinite(form.mgPer5mL) && form.mgPer5mL > 0, `${drug}/${form.id}: mg per 5 mL must be numeric`);
+    assert.match(form.sourceUrl || '', /^https:\/\/dailymed\.nlm\.nih\.gov|^https:\/\/www\.dailymed\.nlm\.nih\.gov/, `${drug}/${form.id}: formulation must preserve a DailyMed label URL`);
+  }
+}
+
+// Every published oral regimen gets either a direct formulation entry or an explicit combo map.
+for (const indication of guide.indications) {
+  for (const option of indication.options) {
+    if (option.route !== 'PO') continue;
+    if (option.dose?.type === 'combo') {
+      assert.ok(formulations.comboAliases?.[option.drug], `${indication.id}/${option.id}: combo formulation mapping is missing`);
+      continue;
+    }
+    assert.ok(formulations.drugs?.[option.drug], `${indication.id}/${option.id}: no Phase 3 formulation mapping for ${option.drug}`);
+  }
+}
+
+// Pin key concentrations and component bases.
+assert.equal(formulations.drugs.Amoxicillin.forms.find(item => item.id === 'amox-400-5').mgPer5mL, 400);
+assert.equal(formulations.drugs['Penicillin V'].forms.find(item => item.id === 'penv-250-5').mgPer5mL, 250);
+assert.equal(formulations.drugs.Cephalexin.forms.find(item => item.id === 'cephalexin-250-5').mgPer5mL, 250);
+assert.equal(formulations.drugs.Cefpodoxime.forms.find(item => item.id === 'cefpodoxime-100-5').mgPer5mL, 100);
+assert.equal(formulations.drugs.Cefdinir.forms.find(item => item.id === 'cefdinir-250-5').mgPer5mL, 250);
+assert.equal(formulations.drugs.Clindamycin.forms.find(item => item.id === 'clinda-75-5').mgPer5mL, 75);
+assert.equal(formulations.drugs.Azithromycin.forms.find(item => item.id === 'azithro-200-5').mgPer5mL, 200);
+assert.equal(formulations.drugs.Clarithromycin.forms.find(item => item.id === 'clarithro-250-5').mgPer5mL, 250);
+assert.equal(formulations.drugs.Cefixime.forms.find(item => item.id === 'cefixime-200-5').mgPer5mL, 200);
+assert.equal(formulations.drugs.Nitrofurantoin.forms.find(item => item.id === 'nitro-25-5').mgPer5mL, 25);
+assert.equal(formulations.drugs['Trimethoprim / sulfamethoxazole'].basis, 'trimethoprim');
+assert.equal(formulations.drugs['Trimethoprim / sulfamethoxazole'].forms[0].mgPer5mL, 40);
+assert.equal(formulations.drugs['Amoxicillin / clavulanate'].basis, 'amoxicillin');
+assert.match(formulations.drugs['Amoxicillin / clavulanate'].caution, /nuk janë të këmbyeshme/i);
+assert.equal(formulations.drugs.Ciprofloxacin.forms.find(item => item.id === 'cipro-250-5').mgPer5mL, 250);
+assert.equal(formulations.drugs.Levofloxacin.forms.find(item => item.id === 'levo-25-ml').mgPer5mL, 125);
+
+// Amox-clav ratios are indication-aware rather than silently interchangeable.
+assert.deepEqual(formulations.indicationOverrides['aom|Amoxicillin / clavulanate'].allow, ['amoxclav-600-42.9-5']);
+assert.deepEqual(formulations.indicationOverrides['sinusitis|Amoxicillin / clavulanate'].allow, ['amoxclav-600-42.9-5']);
+assert.deepEqual(formulations.indicationOverrides['cellulitis|Amoxicillin / clavulanate'].allow, ['amoxclav-400-57-5']);
+assert.equal(formulations.indicationOverrides['uti-cystitis|Amoxicillin / clavulanate'].manualOnly, true);
+assert.equal(formulations.indicationOverrides['uti-pyelo|Amoxicillin / clavulanate'].manualOnly, true);
+assert.match(formulations.indicationOverrides['uti-cystitis|Amoxicillin / clavulanate'].note, /nuk specifikon raportin/i);
+
+// Runtime must calculate mL without changing the clinical mg dose.
+assert.match(formulationsRuntime, /function volumeForMg\(mg, mgPer5mL\)/);
+assert.match(formulationsRuntime, /mg \* 5 \/ mgPer5mL/);
+assert.match(formulationsRuntime, /function parseSimpleDose\(text\)/);
+assert.match(formulationsRuntime, /function parseSequence\(text\)/);
+assert.match(formulationsRuntime, /function durationRange\(text\)/);
+assert.match(formulationsRuntime, /Volumi teorik i kursit/);
+assert.match(formulationsRuntime, /Minimumi i kursit/);
+assert.match(formulationsRuntime, /MutationObserver/, 'Phase 3 must re-attach converters after the Phase 2 card list re-renders');
+assert.match(formulationsRuntime, /Fuqia u shkrua manualisht/, 'Manual local-product strength must stay available');
+
+// Shell owns loading/caching of the isolated Phase 3 runtime.
+assert.match(shell, /antibiotiket-formulations-data\.js\?v=antibiotiket-formulations-v1/);
+assert.match(shell, /antibiotiket-formulations\.js\?v=antibiotiket-formulations-v1/);
+assert.match(shell, /antibiotiket-formulations\.css\?v=antibiotiket-formulations-v1/);
+assert.match(shell, /formulimet DailyMed/);
+
 // --- UI safety copy / reference weight -------------------------------------
 assert.match(js, /function doseBasis\(\)/);
 assert.match(js, /referenceWeightKg/);
@@ -211,4 +289,4 @@ for (const band of guide.ageBands) {
   assert.ok(Number.isFinite(band.referenceWeightKg) && band.referenceWeightKg > 0, `Age band ${band.id} needs a positive reference weight`);
 }
 
-console.log(`Antibiotics Phase 2 gate passed: ${guide.indications.length} active diagnoses, ${guide.allergyBuckets.length} allergy states, regimen provenance and safety rules pinned.`);
+console.log(`Antibiotics Phase 3 gate passed: ${guide.indications.length} active diagnoses, ${guide.allergyBuckets.length} allergy states, ${Object.keys(formulations.drugs).length} oral-liquid drug mappings.`);
