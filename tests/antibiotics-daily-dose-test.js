@@ -91,6 +91,11 @@ const gasAzithro = gas.options.find(item => item.id === 'azithro-gas');
 assert.deepEqual(gasAzithro.dose.steps.map(step => step.value), [12, 6]);
 assert.deepEqual(gasAzithro.dose.steps.map(step => step.maxDose), [500, 250]);
 assert.equal(gasAzithro.duration.text, '5 ditë');
+assert.match(
+  js,
+  /option\.id !== 'penicillin-gas' \|\| \(age && age\.months < 144\)/,
+  'The child Penicillin V 250 mg BID/TID row must be withheld when age is unknown or the 12+ band is selected',
+);
 
 // --- key diagnosis-specific contracts --------------------------------------
 const aom = guide.indications.find(item => item.id === 'aom');
@@ -133,6 +138,9 @@ const preseptal = guide.indications.find(item => item.id === 'preseptal');
 assert.match(preseptal.warning, /^HARD STOP:/, 'Orbital red flags must be a hard-stop warning');
 assert.match(preseptal.warning, /proptoza/i);
 assert.match(preseptal.warning, /lëvizjeve okulare/i);
+assert.match(js, /orbitalRedFlags:false/, 'Preseptal red-flag state must be explicit');
+assert.match(js, /if \(indication\.id === 'preseptal' && ctx\.orbitalRedFlags\)/, 'Orbital red flags must gate the outpatient result list');
+assert.match(js, /STOP — mos përdor skemë ambulatore/, 'Hard-stop state must tell the clinician not to use the outpatient regimen');
 
 const bite = guide.indications.find(item => item.id === 'bite');
 assert.match(bite.warning, /tetanus/i);
@@ -197,6 +205,8 @@ assert.match(js, /function doseBasis\(\)/);
 assert.match(js, /referenceWeightKg/);
 assert.match(js, /Alergji ndaj alternativës \/ alergji të shumëfishta/);
 assert.match(html, /vetëm orientuese/, 'Age-derived dose must remain marked orientational');
+assert.match(html, /antibiotiket-data\.js\?v=antibiotiket-phase2-v6/, 'Phase 2 data must be cache-busted in the page');
+assert.match(html, /Alergjia ndaj beta-laktameve/, 'The static allergy label must match the A0-A5 model');
 for (const band of guide.ageBands) {
   assert.ok(Number.isFinite(band.referenceWeightKg) && band.referenceWeightKg > 0, `Age band ${band.id} needs a positive reference weight`);
 }
