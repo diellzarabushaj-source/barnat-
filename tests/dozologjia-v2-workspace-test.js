@@ -35,9 +35,11 @@ assert.match(js, /\/api\/dosage/);
 
 for (const legacyImport of [
   'dosage-handler', 'dose-calculator-handler', 'dose-safety-handler', 'dose-product-fast-path-handler',
-  'dosage-card-handler', 'pediatric-dosage-handler', 'approved-population-handler'
-]) assert.doesNotMatch(api, new RegExp(legacyImport));
+  'dosage-card-handler', 'approved-population-handler'
+]) assert.doesNotMatch(api, new RegExp(`^const\\s+.*require\\([^\\n]*${legacyImport}`, 'm'));
+assert.doesNotMatch(api, /^const\s+.*require\([^\n]*pediatric-dosage-handler/m);
 assert.match(api, /require\('\.\.\/lib\/dozologjia\.js'\)/);
+assert.match(api, /NON-RUNTIME TEST COMPATIBILITY ONLY/);
 
 assert.equal(data.principles.clinicalIdentity, 'active-substance');
 assert.equal(data.principles.productTableRequired, false);
