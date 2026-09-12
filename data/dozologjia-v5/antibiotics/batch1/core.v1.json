@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "dozologjia-v5-antibiotics-batch1-v1",
+  "status": "source_verified_candidates_require_clinical_review",
+  "publicationEligible": false,
+  "humanClinicalReviewRequired": true,
+  "substances": [
+    {
+      "id": "amoxicillin",
+      "inn": "amoxicillin",
+      "atc": "J01CA04",
+      "source": "https://www.medicines.org.uk/emc/product/13501/smpc",
+      "regimens": [
+        {"id":"amox-aom-adult-severe","indicationId":"acute-otitis-media","population":"adult_or_ge40kg","route":"oral","dose":{"text":"750 mg to 1 g every 8 hours for severe infection"},"frequency":{"type":"q8h"},"duration":{"type":"fixed_days","days":10},"sourceSection":"SmPC 4.2"},
+        {"id":"amox-hpylori-adult","indicationId":"helicobacter-pylori-eradication","population":"adult_or_ge40kg","route":"oral","dose":{"text":"750 mg to 1 g twice daily as part of combination therapy"},"frequency":{"type":"bid"},"duration":{"type":"fixed_days","days":7},"sourceSection":"SmPC 4.2"},
+        {"id":"amox-lyme-early-adult","indicationId":"lyme-disease-early","population":"adult_or_ge40kg","route":"oral","dose":{"text":"500 mg to 1 g every 8 hours; max 4 g/day"},"frequency":{"type":"q8h"},"duration":{"type":"range_days","minDays":10,"maxDays":21,"notes":"SmPC states 14 days, acceptable range 10–21 days."},"sourceSection":"SmPC 4.2"},
+        {"id":"amox-lyme-late-adult","indicationId":"lyme-disease-late-systemic","population":"adult_or_ge40kg","route":"oral","dose":{"text":"500 mg to 2 g every 8 hours; max 6 g/day"},"frequency":{"type":"q8h"},"duration":{"type":"range_days","minDays":10,"maxDays":30},"sourceSection":"SmPC 4.2"},
+        {"id":"amox-endocarditis-prophylaxis-adult","indicationId":"endocarditis-prophylaxis","population":"adult_or_ge40kg","route":"oral","dose":{"text":"2 g 30–60 minutes before procedure"},"frequency":{"type":"single"},"duration":{"type":"single_dose"},"sourceSection":"SmPC 4.2"},
+        {"id":"amox-standard-infection-adult","indicationId":"source-listed-standard-infection","population":"adult_or_ge40kg","route":"oral","dose":{"text":"Indication-specific dose per SmPC"},"frequency":{"type":"source_defined"},"duration":{"type":"guideline_or_response_based","notes":"SmPC says duration depends on infection type and response and should generally be as short as possible."},"sourceSection":"SmPC 4.2"}
+      ]
+    },
+    {
+      "id": "amoxicillin-clavulanic-acid",
+      "inn": "amoxicillin/clavulanic acid",
+      "atc": "J01CR02",
+      "source": "https://www.medicines.org.uk/emc/product/10877/smpc",
+      "regimens": [
+        {"id":"coamox-standard-adult","indicationId":"source-listed-infections","population":"adult_or_ge40kg","route":"oral","dose":{"text":"875 mg/125 mg twice daily; higher dose 875/125 mg three times daily for selected infections"},"frequency":{"type":"bid_or_tid_source_selected"},"duration":{"type":"guideline_or_response_based","reviewAfterDays":14,"notes":"Duration determined by response. Do not extend beyond 14 days without review; osteomyelitis may require longer treatment."},"sourceSection":"SmPC 4.2"},
+        {"id":"coamox-child-7to1-selected-infections","indicationId":"otitis-sinusitis-lrti-selected","population":"child_lt40kg","route":"oral","dose":{"text":"Up to 70 mg/10 mg/kg/day in 2 divided doses for selected infections"},"frequency":{"type":"bid"},"duration":{"type":"guideline_or_response_based","reviewAfterDays":14,"notes":"Do not invent a fixed course from product dose alone."},"sourceSection":"SmPC 4.2"}
+      ]
+    },
+    {
+      "id": "ceftriaxone",
+      "inn": "ceftriaxone",
+      "atc": "J01DD04",
+      "source": "https://www.medicines.org.uk/emc/product/15101/smpc",
+      "regimens": [
+        {"id":"ctx-aom-adult-single","indicationId":"acute-otitis-media","population":"adult_or_ge12y_ge50kg","route":"IM","dose":{"text":"1–2 g"},"frequency":{"type":"single"},"duration":{"type":"single_dose"},"sourceSection":"SmPC 4.2"},
+        {"id":"ctx-aom-adult-failure","indicationId":"acute-otitis-media-severe-or-prior-treatment-failure","population":"adult_or_ge12y_ge50kg","route":"IM","dose":{"text":"1–2 g once daily"},"frequency":{"type":"daily"},"duration":{"type":"fixed_days","days":3},"sourceSection":"SmPC 4.2"},
+        {"id":"ctx-gonorrhoea-adult","indicationId":"gonorrhoea","population":"adult_or_ge12y_ge50kg","route":"IM","dose":{"text":"500 mg"},"frequency":{"type":"single"},"duration":{"type":"single_dose"},"sourceSection":"SmPC 4.2"},
+        {"id":"ctx-syphilis-adult","indicationId":"syphilis-including-neurosyphilis","population":"adult_or_ge12y_ge50kg","route":"IV_or_IM","dose":{"text":"500 mg–1 g once daily; up to 2 g once daily for neurosyphilis"},"frequency":{"type":"daily"},"duration":{"type":"range_days","minDays":10,"maxDays":14},"sourceSection":"SmPC 4.2"},
+        {"id":"ctx-lyme-adult","indicationId":"disseminated-lyme-borreliosis","population":"adult_or_ge12y_ge50kg","route":"IV_or_IM","dose":{"text":"2 g once daily"},"frequency":{"type":"daily"},"duration":{"type":"range_days","minDays":14,"maxDays":21},"sourceSection":"SmPC 4.2"},
+        {"id":"ctx-aom-child-single","indicationId":"acute-otitis-media","population":"15d_to12y_lt50kg","route":"IM","dose":{"text":"50 mg/kg"},"frequency":{"type":"single"},"duration":{"type":"single_dose"},"sourceSection":"SmPC 4.2"},
+        {"id":"ctx-aom-child-failure","indicationId":"acute-otitis-media-severe-or-prior-treatment-failure","population":"15d_to12y_lt50kg","route":"IM","dose":{"text":"50 mg/kg once daily"},"frequency":{"type":"daily"},"duration":{"type":"fixed_days","days":3},"sourceSection":"SmPC 4.2"},
+        {"id":"ctx-lyme-child","indicationId":"disseminated-lyme-borreliosis","population":"15d_to12y_lt50kg","route":"IV_or_IM","dose":{"text":"50–80 mg/kg once daily"},"frequency":{"type":"daily"},"duration":{"type":"range_days","minDays":14,"maxDays":21},"sourceSection":"SmPC 4.2"}
+      ]
+    },
+    {
+      "id": "trimethoprim-sulfamethoxazole",
+      "inn": "trimethoprim/sulfamethoxazole",
+      "aliases": ["co-trimoxazole","Bactrim"],
+      "atc": "J01EE01",
+      "source": "https://www.medicines.org.uk/emc/product/6999/smpc",
+      "regimens": [
+        {"id":"cotrim-standard-acute-infection","indicationId":"source-listed-acute-infection","population":"adult_or_gt12y","route":"oral","dose":{"text":"Standard dose; component-based dosing required"},"frequency":{"type":"q12h"},"duration":{"type":"until_clinical_endpoint","minDays":5,"clinicalEndpoint":"continue until symptom-free for 2 days","reviewAfterDays":7},"sourceSection":"SmPC 4.2"},
+        {"id":"cotrim-uncomplicated-lower-uti","indicationId":"acute-uncomplicated-lower-uti","population":"adult_or_gt12y","route":"oral","dose":{"text":"Short-course alternative to standard dosage"},"frequency":{"type":"source_defined"},"duration":{"type":"range_days","minDays":1,"maxDays":3},"sourceSection":"SmPC 4.2"},
+        {"id":"cotrim-pjp-treatment-iv","indicationId":"pneumocystis-jirovecii-pneumonia-treatment","population":"all_source_defined","route":"IV_then_oral","dose":{"text":"15–20 mg TMP/kg/day + 75–100 mg SMX/kg/day in >=2 divided doses"},"frequency":{"type":"divided_doses"},"duration":{"type":"fixed_days","days":14},"source":"https://www.medicines.org.uk/emc/product/15791/smpc","sourceSection":"SmPC 4.2"},
+        {"id":"cotrim-nocardiosis-adult","indicationId":"nocardiosis","population":"adult","route":"oral","dose":{"text":"6–8 standard tablets daily have been used"},"frequency":{"type":"source_defined"},"duration":{"type":"range_days","minDays":1,"maxDays":90,"notes":"SmPC: up to 3 months; no consensus on optimal dosage."},"sourceSection":"SmPC 4.2"},
+        {"id":"cotrim-pjp-prophylaxis","indicationId":"pneumocystis-jirovecii-prophylaxis","population":"source_defined","route":"oral","dose":{"text":"Source-defined prophylaxis schedules"},"frequency":{"type":"source_defined"},"duration":{"type":"prophylaxis_while_at_risk"},"sourceSection":"SmPC 4.2"}
+      ]
+    }
+  ]
+}
