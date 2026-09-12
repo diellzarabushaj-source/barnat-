@@ -51,10 +51,32 @@
     });
   }
 
+  function loadStylesheet(href, marker) {
+    const existing = document.querySelector(`link[${marker}]`);
+    if (existing) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      link.setAttribute(marker, '1');
+      link.addEventListener('load', resolve, { once:true });
+      link.addEventListener('error', reject, { once:true });
+      document.head.appendChild(link);
+    });
+  }
+
   async function syncProfile(payload) {
     await loadRuntime('/medindex-brand-runtime.js?v=drx-brand-v7', 'data-drx-profile-runtime').catch(() => null);
     window.MedIndexProfile?.adoptAccount?.(payload);
     window.dispatchEvent(new CustomEvent('medindex:auth-ready', { detail:payload }));
+  }
+
+  async function loadAntibioticFormulations() {
+    await Promise.all([
+      loadStylesheet('/antibiotiket-formulations.css?v=antibiotiket-formulations-v1', 'data-drx-abx-formulations-css'),
+      loadRuntime('/antibiotiket-formulations-data.js?v=antibiotiket-formulations-v1', 'data-drx-abx-formulations-data'),
+    ]);
+    await loadRuntime('/antibiotiket-formulations.js?v=antibiotiket-formulations-v1', 'data-drx-abx-formulations-runtime');
   }
 
   function openSidebar() {
@@ -96,9 +118,10 @@
     try {
       const auth = await ensureAuth();
       await syncProfile(auth);
+      await loadAntibioticFormulations().catch(() => null);
       document.documentElement.dataset.theme = 'light';
       if ($('#allergyLabel')) $('#allergyLabel').textContent = 'Alergjia ndaj beta-laktameve';
-      if ($('#sourceStatus')) $('#sourceStatus').textContent = 'Antibiotikët · CM 2026 / CDC / CPS 2026 / CHOP';
+      if ($('#sourceStatus')) $('#sourceStatus').textContent = 'Antibiotikët · CM 2026 / CDC / CPS 2026 / CHOP · formulimet DailyMed';
     } catch {
       return;
     } finally {
