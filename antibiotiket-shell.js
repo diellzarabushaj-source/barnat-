@@ -87,6 +87,14 @@
     await loadRuntime('/antibiotiket-prescription.js?v=antibiotiket-phase4-v1', 'data-drx-abx-prescription-runtime');
   }
 
+  async function loadAntibioticHospital() {
+    await Promise.all([
+      loadStylesheet('/antibiotiket-hospital.css?v=antibiotiket-phase5-v1', 'data-drx-abx-hospital-css'),
+      loadRuntime('/antibiotiket-hospital-data.js?v=antibiotiket-phase5-v1', 'data-drx-abx-hospital-data'),
+    ]);
+    await loadRuntime('/antibiotiket-hospital.js?v=antibiotiket-phase5-v1', 'data-drx-abx-hospital-runtime');
+  }
+
   function openSidebar() {
     $('#sidebar')?.classList.add('is-open');
     const backdrop = $('#sidebarBackdrop');
@@ -128,9 +136,10 @@
       await syncProfile(auth);
       await loadAntibioticFormulations().catch(() => null);
       await loadAntibioticPrescription().catch(() => null);
+      await loadAntibioticHospital().catch(() => null);
       document.documentElement.dataset.theme = 'light';
       if ($('#allergyLabel')) $('#allergyLabel').textContent = 'Alergjia ndaj beta-laktameve';
-      if ($('#sourceStatus')) $('#sourceStatus').textContent = 'Antibiotikët · CM 2026 / CDC / CPS 2026 / CHOP · formulime të verifikuara';
+      if ($('#sourceStatus')) $('#sourceStatus').textContent = 'Antibiotikët · CM / CDC / CPS / CHOP · PO + Hospital IV/IM';
     } catch {
       return;
     } finally {
