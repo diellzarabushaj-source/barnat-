@@ -1,280 +1,269 @@
 (() => {
   'use strict';
 
-  const API = '/api/drug-search';
-  const PAGE_SIZE = 50;
-  const ATC_PREFIX = 'J01';
-
-  const categoryLabels = Object.freeze({
-    penicillins:'Penicilina',
-    'beta-lactams':'β-laktame të tjera',
-    macrolides:'Makrolide & lincosamide',
-    tetracyclines:'Tetraciklina',
-    quinolones:'Kinolone',
-    other:'Të tjera',
-  });
-
-  const state = {
-    rows:[],
-    query:'',
-    filter:'all',
-    loading:false,
-    controller:null,
-  };
+  const guide = window.DRX_ANTIBIOTIC_GUIDE;
+  if (!guide) return;
 
   const $ = id => document.getElementById(id);
   const el = {
-    search:$('antibioticSearch'),
-    filterRow:$('filterRow'),
-    list:$('antibioticList'),
-    loading:$('loadingState'),
-    error:$('errorState'),
-    errorMessage:$('errorMessage'),
-    empty:$('emptyState'),
-    retry:$('retryButton'),
-    refresh:$('refreshButton'),
-    resultsMeta:$('resultsMeta'),
-    productCount:$('productCount'),
-    substanceCount:$('substanceCount'),
+    indication:$('indicationSelect'),
+    age:$('ageSelect'),
+    ageHint:$('ageHint'),
+    weight:$('weightInput'),
+    weightHint:$('weightHint'),
+    allergy:$('allergySelect'),
+    atypicalWrap:$('atypicalWrap'),
+    atypical:$('atypicalInput'),
+    utiTypeWrap:$('utiTypeWrap'),
+    utiType:$('utiTypeSelect'),
+    doseBasis:$('doseBasis'),
+    eligibility:$('eligibilityMessage'),
+    list:$('recommendationList'),
+    sourceList:$('sourceList'),
   };
 
-  function clean(value) {
-    return String(value ?? '').replace(/\s+/g, ' ').trim();
+  const tierLabels = Object.freeze({
+    first:'Zgjedhja e parë',
+    second:'Zgjedhja e dytë',
+    'allergy-nonsevere':'Alergji jo e rëndë',
+    'allergy-severe':'Alergji e rëndë / alternativë',
+    option:'Opsion empirik',
+  });
+
+  const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
+  const fmt = value => {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return '—';
+    return Number.isInteger(n) ? String(n) : String(Math.round(n * 10) / 10).replace('.', ',');
+  };
+
+  function currentIndication() {
+    return guide.indications.find(item => item.id === el.indication.value) || guide.indications[0];
   }
 
-  function searchable(value) {
-    return clean(value)
-      .toLocaleLowerCase('sq')
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
+  function currentAgeBand() {
+    return guide.ageBands.find(item => item.id === el.age.value) || null;
   }
 
-  function categoryOf(row) {
-    const atc = clean(row?.atc).toUpperCase();
-    if (atc.startsWith('J01C')) return 'penicillins';
-    if (atc.startsWith('J01D')) return 'beta-lactams';
-    if (atc.startsWith('J01F')) return 'macrolides';
-    if (atc.startsWith('J01A')) return 'tetracyclines';
-    if (atc.startsWith('J01M')) return 'quinolones';
-    return 'other';
+  function actualWeight() {
+    const value = Number(String(el.weight.value || '').replace(',', '.'));
+    return Number.isFinite(value) && value >= 1 && value <= 200 ? value : null;
   }
 
-  function uniqueSubstanceCount(rows) {
-    return new Set(rows.map(row => searchable(row.activeSubstance)).filter(Boolean)).size;
+  function doseWeight() {
+    const actual = actualWeight();
+    if (actual) return { value:actual, source:'actual' };
+    const age = currentAgeBand();
+    if (age?.referenceWeightKg) return { value:age.referenceWeightKg, source:'reference' };
+    return { value:null, source:'none' };
   }
 
-  function endpoint(page, includeTotal = false) {
-    const params = new URLSearchParams({
-      view:'registry-page',
-      atc:ATC_PREFIX,
-      page:String(page),
-      pageSize:String(PAGE_SIZE),
-      sort:'substance',
-      direction:'asc',
-    });
-    if (includeTotal) params.set('includeTotal', 'true');
-    return `${API}?${params.toString()}`;
+  function maxText(dose) {
+    if (!dose?.maxDose) return '';
+    return dose.maxLabel || `maks. ${fmt(dose.maxDose)} mg/dozë`;
   }
 
-  async function fetchPage(page, includeTotal, signal) {
-    const response = await fetch(endpoint(page, includeTotal), {
-      credentials:'same-origin',
-      cache:'no-store',
-      signal,
-      headers:{ Accept:'application/json' },
-    });
-    if (!response.ok) {
-      const payload = await response.json().catch(() => ({}));
-      const error = new Error(clean(payload?.error) || `Gabim ${response.status}`);
-      error.status = response.status;
-      throw error;
+  function formulaText(option) {
+    const dose = option.dose || {};
+    const frequency = clean(option.frequency);
+    if (dose.type === 'range') {
+      const component = dose.component ? `, sipas ${dose.component}` : '';
+      return `${fmt(dose.min)}–${fmt(dose.max)} ${dose.unit}${component} · ${frequency}${dose.maxDose ? ` · ${maxText(dose)}` : ''}`;
     }
-    const payload = await response.json();
-    if (!payload?.ok || !Array.isArray(payload.rows)) throw new Error('Regjistri ktheu përgjigje të pavlefshme.');
-    return payload;
-  }
-
-  async function fetchAllAntibiotics(signal) {
-    const first = await fetchPage(1, true, signal);
-    const totalPages = Math.max(1, Number(first?.pagination?.totalPages) || 1);
-    const rows = [...first.rows];
-
-    for (let start = 2; start <= totalPages; start += 4) {
-      const pages = [];
-      for (let page = start; page < start + 4 && page <= totalPages; page += 1) pages.push(page);
-      const batch = await Promise.all(pages.map(page => fetchPage(page, false, signal)));
-      batch.forEach(payload => rows.push(...payload.rows));
+    if (dose.type === 'single') {
+      return `${fmt(dose.value)} ${dose.unit} · ${frequency}${dose.maxDose ? ` · ${maxText(dose)}` : ''}`;
     }
-
-    const seen = new Set();
-    return rows.filter(row => {
-      const key = clean(row.id) || [row.registryNumber, row.tradeName, row.activeSubstance, row.strength, row.form].map(clean).join('|');
-      if (!key || seen.has(key)) return false;
-      seen.add(key);
-      return clean(row.atc).toUpperCase().startsWith(ATC_PREFIX);
-    });
+    if (dose.type === 'sequence') {
+      return dose.steps.map(step => `${step.label}: ${fmt(step.value)} ${dose.unit}${step.maxDose ? ` (maks. ${fmt(step.maxDose)} mg)` : ''}`).join(' · ');
+    }
+    if (dose.type === 'weight-threshold') {
+      return `<${fmt(dose.thresholdKg)} kg: ${dose.below} · ≥${fmt(dose.thresholdKg)} kg: ${dose.atOrAbove} · ${frequency}`;
+    }
+    if (dose.type === 'amoxclav-uti') {
+      return '<35 kg: 15–20 mg/kg/dozë PO 3 herë/ditë (maks. 500 mg amoxicillin/dozë) · ≥35 kg: 500/125 mg 3 herë/ditë ose 875/125 mg 2 herë/ditë';
+    }
+    return frequency || '—';
   }
 
-  function visibleRows() {
-    const needle = searchable(state.query);
-    return state.rows.filter(row => {
-      if (state.filter !== 'all' && categoryOf(row) !== state.filter) return false;
-      if (!needle) return true;
-      const haystack = searchable([
-        row.tradeName,
-        row.activeSubstance,
-        row.atc,
-        row.drugClass,
-        row.strength,
-        row.form,
-      ].join(' '));
-      return haystack.includes(needle);
-    });
+  function clampDose(value, max) {
+    return max ? Math.min(value, max) : value;
   }
 
-  function makeText(tag, className, text) {
+  function calculatedText(option, weightInfo) {
+    const weight = weightInfo.value;
+    const dose = option.dose || {};
+    if (!weight) return '';
+    const prefix = weightInfo.source === 'reference' ? '≈ ' : '';
+
+    if (dose.type === 'range') {
+      const low = clampDose(dose.min * weight, dose.maxDose);
+      const high = clampDose(dose.max * weight, dose.maxDose);
+      return low === high
+        ? `${prefix}${fmt(low)} mg/dozë`
+        : `${prefix}${fmt(low)}–${fmt(high)} mg/dozë`;
+    }
+    if (dose.type === 'single') {
+      return `${prefix}${fmt(clampDose(dose.value * weight, dose.maxDose))} mg/dozë`;
+    }
+    if (dose.type === 'sequence') {
+      return dose.steps.map(step => `${step.label}: ${prefix}${fmt(clampDose(step.value * weight, step.maxDose))} mg`).join(' · ');
+    }
+    if (dose.type === 'weight-threshold') {
+      return weight < dose.thresholdKg ? dose.below : dose.atOrAbove;
+    }
+    if (dose.type === 'amoxclav-uti') {
+      if (weight >= 35) return '500/125 mg 3×/ditë ose 875/125 mg 2×/ditë';
+      const low = Math.min(15 * weight, 500);
+      const high = Math.min(20 * weight, 500);
+      return `${prefix}${fmt(low)}–${fmt(high)} mg amoxicillin/dozë`;
+    }
+    return '';
+  }
+
+  function durationText(option) {
+    const duration = option.duration || {};
+    if (duration.type === 'fixed') return duration.text;
+    if (duration.type === 'source-unspecified') return 'Nuk specifikohet në tabelë';
+    if (duration.type === 'uti') return el.utiType.value === 'febrile' ? '7–10 ditë' : '3 ditë';
+    if (duration.type === 'age') {
+      const age = currentAgeBand();
+      if (!age) return `<2 vjeç: ${duration.underText} · ≥2 vjeç: ${duration.otherText}`;
+      return age.months < duration.underMonths ? duration.underText : duration.otherText;
+    }
+    return '—';
+  }
+
+  function visibleOptions(indication) {
+    if (indication.id === 'uti') return indication.options;
+    if (indication.id === 'pneumonia' && el.atypical.checked) {
+      return indication.options.filter(option => option.atypical);
+    }
+    const allergy = el.allergy.value;
+    return indication.options.filter(option => (option.allergy || []).includes(allergy) || (option.allergy || []).includes('any'));
+  }
+
+  function renderAgeHint() {
+    const age = currentAgeBand();
+    if (!age) {
+      el.ageHint.textContent = 'Peshat referuese vijnë nga tabela CARPA STM/WBM.';
+      return;
+    }
+    el.ageHint.textContent = `Pesha referuese e tabelës: ${fmt(age.referenceWeightKg)} kg.`;
+  }
+
+  function renderDoseBasis() {
+    const weight = doseWeight();
+    if (weight.source === 'actual') {
+      el.doseBasis.textContent = `Peshë reale ${fmt(weight.value)} kg`;
+      el.weightHint.textContent = 'Llogaritja po përdor peshën reale të pacientit.';
+      return;
+    }
+    if (weight.source === 'reference') {
+      el.doseBasis.textContent = `Referencë ${fmt(weight.value)} kg`;
+      el.weightHint.textContent = 'Nuk ka peshë reale; llogaritja përdor peshën referuese CARPA/WBM.';
+      return;
+    }
+    el.doseBasis.textContent = 'Pa peshë';
+    el.weightHint.textContent = 'Vendos peshën reale për llogaritje mg/dozë.';
+  }
+
+  function eligibilityProblem(indication) {
+    const age = currentAgeBand();
+    if (!age || !Number.isFinite(indication.minAgeMonths)) return '';
+    if (age.months >= indication.minAgeMonths) return '';
+    const threshold = indication.minAgeMonths === 3 ? '3 muaj' : indication.minAgeMonths === 6 ? '6 muaj' : `${indication.minAgeMonths} muaj`;
+    return `Ky burim e kufizon këtë skemë në moshën ≥${threshold}. Për moshën e zgjedhur nuk po shfaqet skemë automatike.`;
+  }
+
+  function make(tag, className, text) {
     const node = document.createElement(tag);
     if (className) node.className = className;
-    node.textContent = clean(text) || '—';
+    if (text !== undefined) node.textContent = text;
     return node;
   }
 
-  function buildRow(row) {
-    const article = document.createElement('article');
-    article.className = 'antibiotic-row';
-
-    const main = document.createElement('div');
-    main.className = 'drug-main';
+  function recommendationCard(option, weightInfo) {
+    const card = make('article', 'recommendation-card');
+    const main = make('div', 'rec-main');
     main.append(
-      makeText('strong', '', row.tradeName || row.activeSubstance),
-      makeText('small', '', row.registryNumber ? `Nr. regjistri: ${row.registryNumber}` : clean(row.atc) || 'Antibakterial sistemik')
+      make('span', 'rec-tier', tierLabels[option.tier] || 'Opsion'),
+      make('h3', '', option.drug),
+      make('p', '', `${option.route || 'PO'} · ${option.frequency || '—'}`)
     );
 
-    const substance = document.createElement('div');
-    substance.className = 'drug-substance';
-    substance.append(
-      makeText('strong', '', row.activeSubstance || 'Substanca aktive e papërcaktuar'),
-      makeText('small', '', clean(row.atc) || 'ATC —')
-    );
+    const dose = make('div', 'rec-dose');
+    dose.append(make('strong', '', formulaText(option)));
+    const calculated = calculatedText(option, weightInfo);
+    if (calculated) dose.append(make('span', 'calculated-dose', calculated));
+    if (weightInfo.source === 'reference' && calculated) {
+      dose.append(make('small', '', 'Llogaritje orientuese me peshën referuese të tabelës; pesha reale ka përparësi.'));
+    }
 
-    const meta = document.createElement('div');
-    meta.className = 'drug-meta';
-    meta.append(
-      makeText('small', '', [row.strength, row.form].map(clean).filter(Boolean).join(' · ') || '—'),
-      makeText('small', '', row.drugClass || '—')
-    );
+    const duration = make('div', 'rec-duration');
+    duration.append(make('span', '', 'Kohëzgjatja'), make('strong', '', durationText(option)));
+    card.append(main, dose, duration);
 
-    const badge = makeText('span', 'class-badge', categoryLabels[categoryOf(row)] || categoryLabels.other);
-    article.append(main, substance, meta, badge);
-    return article;
+    if (option.note) card.append(make('p', 'rec-source-note', option.note));
+    return card;
+  }
+
+  function renderSources(indication) {
+    el.sourceList.replaceChildren();
+    guide.sources.forEach(source => {
+      const row = make('div', 'source-item');
+      const copy = make('div', '');
+      copy.append(make('strong', '', source.title), make('span', '', source.note));
+      const badge = make('b', 'source-badge', source.id === indication.source ? 'DOZA / INDIKACIONI' : 'PESHA REFERUESE');
+      row.append(copy, badge);
+      el.sourceList.append(row);
+    });
   }
 
   function render() {
-    const rows = visibleRows();
+    const indication = currentIndication();
+    const problem = eligibilityProblem(indication);
+    const weightInfo = doseWeight();
+
+    el.atypicalWrap.hidden = indication.id !== 'pneumonia';
+    el.utiTypeWrap.hidden = indication.id !== 'uti';
+    renderAgeHint();
+    renderDoseBasis();
+    renderSources(indication);
+
+    el.eligibility.hidden = !problem;
+    el.eligibility.textContent = problem;
     el.list.replaceChildren();
 
-    const fragment = document.createDocumentFragment();
-    rows.forEach(row => fragment.append(buildRow(row)));
-    el.list.append(fragment);
+    if (problem) return;
 
-    el.empty.hidden = rows.length > 0;
-    el.list.hidden = rows.length === 0;
-
-    const filterName = state.filter === 'all' ? 'Të gjitha klasat' : categoryLabels[state.filter] || 'Të tjera';
-    const queryText = clean(state.query) ? ` · kërkimi “${clean(state.query)}”` : '';
-    el.resultsMeta.textContent = `${rows.length} nga ${state.rows.length} produkte · ${filterName}${queryText}`;
-  }
-
-  function setLoading(value) {
-    state.loading = value;
-    el.loading.hidden = !value;
-    el.refresh.disabled = value;
-    if (value) {
-      el.error.hidden = true;
-      el.empty.hidden = true;
-      el.list.hidden = true;
-      el.resultsMeta.textContent = 'Duke ngarkuar të dhënat nga regjistri…';
+    const options = visibleOptions(indication);
+    if (!options.length) {
+      el.list.append(make('div', 'empty-state', 'Nuk ka opsion të specifikuar në burim për këtë kombinim.'));
+      return;
     }
+
+    options.forEach(option => el.list.append(recommendationCard(option, weightInfo)));
   }
 
-  function showError(error) {
-    el.loading.hidden = true;
-    el.list.hidden = true;
-    el.empty.hidden = true;
-    el.error.hidden = false;
-    if (Number(error?.status) === 401) {
-      el.errorMessage.textContent = 'Sesioni nuk është aktiv. Kyçu në DRx dhe provo përsëri.';
-    } else {
-      el.errorMessage.textContent = clean(error?.message) || 'Provo përsëri.';
-    }
-    el.resultsMeta.textContent = 'Të dhënat nuk u ngarkuan.';
-  }
-
-  async function load() {
-    if (state.controller) state.controller.abort();
-    const controller = new AbortController();
-    state.controller = controller;
-    setLoading(true);
-
-    try {
-      const rows = await fetchAllAntibiotics(controller.signal);
-      rows.sort((a, b) => {
-        const substance = clean(a.activeSubstance).localeCompare(clean(b.activeSubstance), 'sq', { sensitivity:'base' });
-        if (substance) return substance;
-        return clean(a.tradeName).localeCompare(clean(b.tradeName), 'sq', { sensitivity:'base' });
-      });
-      if (controller.signal.aborted) return;
-      state.rows = rows;
-      el.productCount.textContent = String(rows.length);
-      el.substanceCount.textContent = String(uniqueSubstanceCount(rows));
-      el.error.hidden = true;
-      setLoading(false);
-      render();
-    } catch (error) {
-      if (error?.name === 'AbortError') return;
-      setLoading(false);
-      showError(error);
-    } finally {
-      if (state.controller === controller) state.controller = null;
-    }
-  }
-
-  function selectFilter(value) {
-    state.filter = value || 'all';
-    el.filterRow.querySelectorAll('[data-filter]').forEach(button => {
-      const active = button.dataset.filter === state.filter;
-      button.classList.toggle('is-active', active);
-      button.setAttribute('aria-pressed', String(active));
+  function populate() {
+    guide.indications.forEach(indication => {
+      const option = document.createElement('option');
+      option.value = indication.id;
+      option.textContent = indication.label;
+      el.indication.append(option);
     });
-    render();
+    guide.ageBands.forEach(age => {
+      const option = document.createElement('option');
+      option.value = age.id;
+      option.textContent = `${age.label} · ref. ${fmt(age.referenceWeightKg)} kg`;
+      el.age.append(option);
+    });
   }
 
-  el.search.addEventListener('input', event => {
-    state.query = event.target.value;
-    render();
-  });
+  [el.indication, el.age, el.allergy, el.utiType].forEach(node => node.addEventListener('change', render));
+  el.weight.addEventListener('input', render);
+  el.atypical.addEventListener('change', render);
 
-  el.filterRow.addEventListener('click', event => {
-    const button = event.target.closest('[data-filter]');
-    if (!button) return;
-    selectFilter(button.dataset.filter);
-  });
-
-  el.refresh.addEventListener('click', load);
-  el.retry.addEventListener('click', load);
-
-  document.addEventListener('keydown', event => {
-    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-      event.preventDefault();
-      el.search.focus();
-      el.search.select();
-    }
-    if (event.key === 'Escape' && document.activeElement === el.search && el.search.value) {
-      el.search.value = '';
-      state.query = '';
-      render();
-    }
-  });
-
-  load();
+  populate();
+  render();
 })();
