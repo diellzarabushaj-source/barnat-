@@ -106,6 +106,7 @@
 
   async function loadAntibioticClinicalHardening() {
     await loadRuntime('/antibiotiket-clinical-completeness-v2.js?v=clinical-completeness-v2', 'data-drx-abx-completeness-runtime');
+    await loadRuntime('/antibiotiket-age-precision.js?v=clinical-age-precision-v1', 'data-drx-abx-age-precision-runtime');
     await loadStylesheet('/antibiotiket-clinical-hardening.css?v=clinical-hardening-v1', 'data-drx-abx-hardening-css');
     await loadRuntime('/antibiotiket-clinical-hardening.js?v=clinical-hardening-v1', 'data-drx-abx-hardening-runtime');
   }
