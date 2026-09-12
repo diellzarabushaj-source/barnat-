@@ -8,7 +8,7 @@ const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const library = read('lib/user-library.js');
-const sidebar = read('sidebar-taxonomy-v3.js');
+const sidebar = read('sidebar-taxonomy-core-v3.js');
 const client = read('phase9-personal-entities-client.js');
 const libraryModule = require('../lib/user-library.js');
 

@@ -8,13 +8,13 @@
   <title>DRx | Antibiotikët</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-v4-shell">
+  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-v5-minimal">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1">
   <script src="/phase9-personal-entities-client.js?v=phase9b" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1" defer></script>
   <script src="/antibiotiket-shell.js?v=antibiotiket-shell-v1" defer></script>
   <script src="/antibiotiket-data.js?v=antibiotiket-v3" defer></script>
-  <script src="/antibiotiket.js?v=antibiotiket-v3" defer></script>
+  <script src="/antibiotiket.js?v=antibiotiket-v5-minimal" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#antibioticsContent">Kalo te Antibiotikët</a>
@@ -87,108 +87,75 @@
       </header>
 
       <div class="page-wrap antibiotiket-page" id="antibioticsContent">
-        <header class="page-heading antibiotics-heading">
+        <header class="abx-head">
           <div>
-            <p class="workspace-kicker">Klinike · Antimikrobikë</p>
             <h1>Antibiotikët</h1>
-            <p class="page-subtitle">Zgjidh indikacionin dhe parametrat që ndryshojnë skemën. Doza numerike llogaritet vetëm nga pesha reale; burimi dhe kufijtë mbeten gjithmonë të dukshëm.</p>
+            <p>Zgjidh infeksionin, shkruaj peshën reale — doza del menjëherë.</p>
           </div>
-          <div class="heading-actions" aria-label="Konteksti i modulit">
-            <span class="scope-pill">PEDIATRI</span>
-          </div>
+          <span class="scope-pill">PEDIATRI</span>
         </header>
 
-        <div class="safety-line" role="note">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 21 20H3L12 3.5Z"></path><path d="M12 9v5"></path><path d="M12 17.5h.01"></path></svg>
-          <span>Pesha referuese sipas moshës është vetëm orientuese. <strong>Doza numerike llogaritet vetëm nga pesha reale që shkruan ti.</strong></span>
-        </div>
-
-        <div class="antibiotic-workbench">
-          <section class="decision-panel" aria-labelledby="contextTitle">
-            <div class="panel-head">
-              <div>
-                <p class="section-kicker">Konteksti klinik</p>
-                <h2 id="contextTitle">Çfarë po trajton?</h2>
-              </div>
-              <span class="panel-step">01</span>
-            </div>
-
-            <div class="decision-body">
-              <div class="field field-primary">
-                <label for="indicationSelect">Indikacioni</label>
-                <select id="indicationSelect" aria-describedby="indicationHelp"></select>
-                <small id="indicationHelp">Skemat vijnë nga tabela burimore.</small>
-              </div>
-
-              <div class="field">
-                <label for="ageSelect">Mosha</label>
-                <select id="ageSelect"><option value="">Zgjidh moshën</option></select>
-                <small id="ageHint">Mosha përdoret për kufijtë e burimit dhe kohëzgjatjen kur aplikohet.</small>
-              </div>
-
-              <div class="field">
-                <label for="weightInput">Pesha reale</label>
-                <div class="input-with-unit">
-                  <input id="weightInput" type="text" inputmode="decimal" autocomplete="off" placeholder="p.sh. 18" aria-describedby="weightHint">
-                  <span>kg</span>
-                </div>
-                <small id="weightHint">Pa peshë reale shfaqet formula e burimit.</small>
-              </div>
-
-              <div class="field" id="allergyField">
-                <label for="allergySelect">Alergji ndaj penicilinës</label>
-                <select id="allergySelect">
-                  <option value="none">Jo</option>
-                  <option value="nonsevere">Po — jo kërcënuese për jetën</option>
-                  <option value="severe">Po — kërcënuese për jetën</option>
-                </select>
-                <small>Shfaqet vetëm kur burimi i ndan alternativat sipas alergjisë.</small>
-              </div>
-
-              <div class="context-row">
-                <label class="toggle" id="atypicalWrap" hidden>
-                  <input id="atypicalInput" type="checkbox">
-                  <span>Dyshohet pneumoni atipike</span>
-                </label>
-                <label class="field compact-field" id="utiTypeWrap" hidden>
-                  <span>Tipi i UTI</span>
-                  <select id="utiTypeSelect"><option value="nonfebrile">Pa temperaturë</option><option value="febrile">Febrile</option></select>
-                </label>
-              </div>
-            </div>
-
-            <div class="selection-summary" aria-live="polite">
-              <div>
-                <span class="summary-label">Konteksti aktiv</span>
-                <strong id="selectionSummary">—</strong>
-              </div>
-              <span class="source-inline">Burim <b id="activeSource">—</b></span>
-            </div>
-          </section>
-
-          <section id="recommendations" class="results" aria-labelledby="resultsTitle">
-            <div class="results-head">
-              <div>
-                <p class="section-kicker">Skema</p>
-                <h2 id="resultsTitle">Opsionet nga burimi</h2>
-                <p>Formula, doza e llogaritur dhe kohëzgjatja në një pamje.</p>
-              </div>
-              <span id="doseBasis" class="dose-basis">Formula e burimit</span>
-            </div>
-            <div id="eligibilityMessage" class="eligibility" role="status" hidden></div>
-            <div id="recommendationList" class="recommendation-list" aria-live="polite"></div>
-          </section>
-        </div>
-
-        <section class="source-card" aria-labelledby="sourceTitle">
-          <div class="source-heading">
-            <p class="section-kicker">Provenienca</p>
-            <h2 id="sourceTitle">Burimet e këtij moduli</h2>
-            <p>Kur tabela nuk e specifikon një element, faqja nuk e plotëson me hamendje.</p>
+        <section class="abx-card abx-input" aria-label="Konteksti klinik">
+          <div class="abx-block">
+            <p class="abx-label" id="indicationLabel">Infeksioni</p>
+            <div class="abx-chips" id="indicationChoice" role="radiogroup" aria-labelledby="indicationLabel"></div>
           </div>
-          <div id="sourceList" class="source-list"></div>
-          <p class="source-warning"><strong>Konteksti klinik mbetet i domosdoshëm.</strong> CARPA/WBM duhet përdorur bashkë me protokollet përkatëse; tabela CPS 2022 është publikuar në kontekstin e menaxhimit të mungesave kritike të barnave.</p>
+
+          <div class="abx-block abx-measure">
+            <div class="abx-weight-field">
+              <label class="abx-label" for="weightInput">Pesha reale</label>
+              <div class="abx-weight">
+                <input id="weightInput" type="text" inputmode="decimal" autocomplete="off" enterkeyhint="done"
+                       placeholder="18" aria-describedby="weightHint">
+                <span aria-hidden="true">kg</span>
+              </div>
+            </div>
+            <div class="abx-age-field">
+              <label class="abx-label" for="ageSelect">Mosha <em id="ageOptional">— opsionale</em></label>
+              <select id="ageSelect" aria-describedby="ageHint"><option value="">Pa zgjedhur</option></select>
+            </div>
+            <p class="abx-hint" id="weightHint">Pa peshë reale shfaqet formula e burimit, jo një dozë e llogaritur.</p>
+            <p class="abx-hint" id="ageHint">Mosha përdoret vetëm për kufijtë e burimit dhe kohëzgjatjen.</p>
+          </div>
+
+          <div class="abx-block abx-refine" id="refineBlock" hidden>
+            <div class="abx-refine-item" id="allergyField">
+              <p class="abx-label" id="allergyLabel">Alergji ndaj penicilinës</p>
+              <div class="abx-segments" id="allergyChoice" role="radiogroup" aria-labelledby="allergyLabel"></div>
+            </div>
+            <div class="abx-refine-item" id="utiTypeWrap" hidden>
+              <p class="abx-label" id="utiLabel">Tipi i UTI</p>
+              <div class="abx-segments" id="utiTypeChoice" role="radiogroup" aria-labelledby="utiLabel"></div>
+            </div>
+            <div class="abx-refine-item abx-refine-toggle" id="atypicalWrap" hidden>
+              <label class="abx-toggle">
+                <input id="atypicalInput" type="checkbox">
+                <span>Dyshohet pneumoni atipike</span>
+              </label>
+            </div>
+          </div>
         </section>
+
+        <section id="recommendations" class="abx-results" aria-labelledby="resultsTitle">
+          <div class="abx-results-head">
+            <h2 id="resultsTitle">Skemat nga burimi</h2>
+            <span id="doseBasis" class="abx-basis">Formula e burimit</span>
+          </div>
+          <div id="eligibilityMessage" class="abx-eligibility" role="status" hidden></div>
+          <div id="recommendationList" class="abx-list" aria-live="polite"></div>
+        </section>
+
+        <details class="abx-provenance">
+          <summary>
+            <span>Burimet dhe kufizimet</span>
+            <b id="activeSource">—</b>
+          </summary>
+          <div class="abx-provenance-body">
+            <p class="abx-safety">Pesha referuese sipas moshës është vetëm orientuese. <strong>Doza numerike llogaritet vetëm nga pesha reale që shkruan ti.</strong></p>
+            <div id="sourceList" class="abx-sources"></div>
+            <p class="abx-warning">Konteksti klinik mbetet i domosdoshëm. CARPA/WBM duhet përdorur bashkë me protokollet përkatëse; tabela CPS 2022 është publikuar në kontekstin e menaxhimit të mungesave kritike të barnave. Kur tabela nuk e specifikon një element, faqja nuk e plotëson me hamendje.</p>
+          </div>
+        </details>
       </div>
     </main>
   </div>

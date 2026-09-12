@@ -68,6 +68,12 @@
   const COLUMN_SCHEMA_VERSION = 'registry-columns-v3-clinical';
   const COLUMN_SCHEMA_PREFIX = 'drx_registry_column_schema:';
   const CLINICAL_COLUMN_IDS = Object.freeze(['drugClass', 'use', 'population']);
+  // Column layout is remembered per profile, but the profile id only arrives
+  // once auth resolves. Without a device-scoped fallback nothing is cached in
+  // that window and a refresh snaps the table back to the default.
+  const COLUMN_DEVICE_OWNER = 'device';
+  const SELECTION_STORAGE_KEY = 'drx_registry_v2_selection';
+  const LEGACY_SELECTION_STORAGE_KEY = 'medindexPrescriptionSelection';
 
   const state = {
     page: 1,
@@ -137,11 +143,11 @@
   }
 
   function columnCacheKey() {
-    return state.preferenceOwner ? `${COLUMN_CACHE_PREFIX}${state.preferenceOwner}` : '';
+    return `${COLUMN_CACHE_PREFIX}${state.preferenceOwner || COLUMN_DEVICE_OWNER}`;
   }
 
   function columnSchemaKey() {
-    return state.preferenceOwner ? `${COLUMN_SCHEMA_PREFIX}${state.preferenceOwner}` : '';
+    return `${COLUMN_SCHEMA_PREFIX}${state.preferenceOwner || COLUMN_DEVICE_OWNER}`;
   }
 
   function needsClinicalColumnMigration() {
@@ -328,7 +334,7 @@
     }
     return new Promise(resolve => {
       const script = document.createElement('script');
-      script.src = '/medindex-brand-runtime.js?v=drx-brand-v6';
+      script.src = '/medindex-brand-runtime.js?v=drx-brand-v7';
       script.defer = true;
       script.dataset.drxProfileRuntime = '1';
       script.addEventListener('load', () => resolve(window.MedIndexProfile || null), { once:true });
@@ -1251,6 +1257,32 @@
     if (checkbox) checkbox.checked = selected;
     updateSelectedCount();
     syncPageSelection();
+    persistSelection();
+  }
+
+  // The selection is a prescription in progress. It belongs to the tab, not to
+  // the current page of results, so paging, refreshing or stepping into another
+  // workspace and back must all come back with the same rows ticked.
+  function persistSelection() {
+    try {
+      const serialized = JSON.stringify([...state.selected.values()]);
+      sessionStorage.setItem(SELECTION_STORAGE_KEY, serialized);
+      sessionStorage.setItem(LEGACY_SELECTION_STORAGE_KEY, serialized);
+    } catch {}
+  }
+
+  function restoreSelection() {
+    let stored = null;
+    try { stored = JSON.parse(sessionStorage.getItem(SELECTION_STORAGE_KEY) || 'null'); }
+    catch { stored = null; }
+    if (!Array.isArray(stored)) return;
+    for (const row of stored) {
+      if (!row || typeof row !== 'object') continue;
+      const key = rowKey(row);
+      if (key) state.selected.set(key, row);
+    }
+    updateSelectedCount();
+    syncPageSelection();
   }
 
   function updateSelectedCount() {
@@ -1267,11 +1299,7 @@
   }
 
   function storePrescriptionSelection() {
-    const selected = [...state.selected.values()];
-    try {
-      sessionStorage.setItem('medindexPrescriptionSelection', JSON.stringify(selected));
-      sessionStorage.setItem('drx_registry_v2_selection', JSON.stringify(selected));
-    } catch {}
+    persistSelection();
     location.href = '/recetat.html';
   }
 
@@ -1485,7 +1513,10 @@
     try {
       const response = await fetch('/api/auth', { method:'DELETE', credentials:'same-origin', headers:{ Accept:'application/json' } });
       if (!response.ok) throw new Error('Logout failed');
-      try { sessionStorage.removeItem('drx_registry_v2_selection'); } catch {}
+      try {
+        sessionStorage.removeItem(SELECTION_STORAGE_KEY);
+        sessionStorage.removeItem(LEGACY_SELECTION_STORAGE_KEY);
+      } catch {}
       location.replace('/landing.html');
     } catch {
       el.logoutButton.disabled = false;
@@ -1641,6 +1672,7 @@
     applyRegistryView();
     renderFormPicker();
     syncFormPickerTrigger();
+    restoreSelection();
     updateSelectedCount();
     try {
       const authPayload = await ensureAuth();
