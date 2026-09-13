@@ -190,3 +190,39 @@ assert.equal((client.match(/numberInput\('masterWeight'/g) || []).length, 1, 'We
 assert.doesNotMatch(client, /Llogarit dozën/, 'The answer arrives on its own, without a submit step');
 
 console.log('PASS: the page folds, reads and taps like the antibiotics one');
+
+/* ------------------------------------------- 6 · the weight fills the age in */
+/* Re-derive the shipped rule, not a copy of it. */
+const ages = {};
+new Function('exports', `
+  const positive = value => Number.isFinite(value) && value > 0;
+  ${client.match(/const REFERENCE_AGES = \[[\s\S]*?\n  \];/)[0]}
+  ${client.match(/const HEAVIEST_BAND_KG = \d+;/)[0]}
+  ${client.match(/function ageForWeight\(kg\) \{[\s\S]*?\n  \}/)[0]}
+  exports.ageForWeight = ageForWeight;
+`)(ages);
+const { ageForWeight } = ages;
+
+assert.deepEqual(ageForWeight(20), { value:6, unit:'year' }, '20 kg is the six-year band');
+assert.deepEqual(ageForWeight(9), { value:1, unit:'year' }, '12 months reads as one year');
+assert.deepEqual(ageForWeight(7), { value:6, unit:'month' }, 'under a year the answer is in months');
+/* A weight between two bands takes the younger one — the same tie-break the
+   antibiotics page uses, and the safer one against a minimum-age gate. */
+assert.deepEqual(ageForWeight(14), { value:2, unit:'year' });
+/* Neither end of the table is guessable: a neonate's age turns on days, and an
+   adult's cannot be read off a weight at all. */
+assert.equal(ageForWeight(3.4), null);
+assert.equal(ageForWeight(70), null);
+assert.equal(ageForWeight(0), null);
+assert.equal(ageForWeight(NaN), null);
+/* The estimate never silently becomes the clinician's own answer. */
+assert.match(client, /state\.ageSource = 'chosen'/);
+assert.match(client, /if \(!age \|\| state\.ageSource === 'chosen'\) return;/,
+  'An age the clinician typed is never overwritten by a weight');
+assert.match(client, /Plotësuar nga pesha/);
+assert.match(css, /\.dz-field\[data-source="weight"\]/, 'A derived age must look different from a typed one');
+/* Weight is asked first, because it is the number that fills the other in. */
+assert.ok(client.indexOf("numberInput('masterWeight'") < client.indexOf("numberInput('masterAge'"),
+  'The weight field must come before the age field');
+
+console.log('PASS: the weight fills the age in, and never overwrites one the clinician typed');

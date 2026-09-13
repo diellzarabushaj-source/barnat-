@@ -159,6 +159,33 @@
   const PRODUCTS_KEY = 'drx.dozologjia.products.v1';
   const MINE = 'drx-mine';
 
+  /* Reference weight for age, from the CARPA STM / WBM table the antibiotics
+     page already uses. It runs one way here: a real weight is on the scale in
+     front of the clinician, so it fills the age in rather than the reverse.
+     The estimate is marked as derived and is overwritten the moment the
+     clinician types an age of their own. */
+  const REFERENCE_AGES = [
+    { months:0, kg:3.3 }, { months:3, kg:6.2 }, { months:6, kg:7.6 },
+    { months:12, kg:9 }, { months:24, kg:12 }, { months:48, kg:16 },
+    { months:72, kg:20 }, { months:96, kg:25 }, { months:120, kg:32 },
+    { months:144, kg:40 },
+  ];
+  const HEAVIEST_BAND_KG = 40;
+  function ageForWeight(kg) {
+    /* Past the table an age cannot be read off a weight at all, and under the
+       three-month band it turns on days rather than kilograms — both are the
+       clinician's to state. */
+    if (!positive(kg) || kg > HEAVIEST_BAND_KG) return null;
+    const band = REFERENCE_AGES.reduce((best, entry) => {
+      if (!best) return entry;
+      const gap = Math.abs(entry.kg - kg), bestGap = Math.abs(best.kg - kg);
+      if (gap < bestGap) return entry;
+      return gap === bestGap && entry.months < best.months ? entry : best;
+    }, null);
+    if (!band || band.months < 3) return null;
+    return band.months < 12 ? { value:band.months, unit:'month' } : { value:band.months / 12, unit:'year' };
+  }
+
   const state = {
     rows:[],
     drugId:'',
@@ -169,6 +196,7 @@
     result:null,
     productId:'',        // the shelf item the volume is measured from
     editing:false,       // the "my own unit" editor is open
+    ageSource:'',        // '' | 'weight' (derived) | 'chosen' (the clinician's)
     kind:'liquid',       // what that editor is describing
   };
 
@@ -305,6 +333,8 @@
     state.regimen = null;
     state.productId = '';
     state.editing = false;
+    /* A shape chosen for one drug says nothing about the next one. */
+    state.kindTouched = false;
     invalidate();
     renderDrugs();
     renderIndications();
@@ -389,13 +419,17 @@
     const fields = $('masterFields');
     const gates = $('masterGates');
     form.hidden = !regimen;
+    state.ageSource = '';
     fields.replaceChildren();
     gates.replaceChildren();
     if (!regimen) { renderAnswer(); return; }
 
+    /* Weight leads: it is the number on the scale, and on a child it fills the
+       age in too, so the same fact is never typed twice. */
     if (regimen.needs.weight) {
       const weight = numberInput('masterWeight', '18', 'kg');
       weight.shell.classList.add('dz-number-lead');
+      weight.input.addEventListener('input', applyAgeFromWeight);
       fields.append(fieldRow('Pesha', weight.shell));
     }
     if (regimen.needs.age) {
@@ -407,9 +441,17 @@
         option.value = value;
         unit.append(option);
       });
+      /* Touching the age makes it the clinician's, and the weight stops
+         writing over it. */
+      const own = () => { state.ageSource = 'chosen'; markAgeSource(); };
+      age.input.addEventListener('input', own);
+      unit.addEventListener('change', own);
       const row = el('div', null, 'dz-row');
       row.append(age.shell, unit);
-      fields.append(fieldRow('Mosha', row, '', age.input.id));
+      const field = fieldRow('Mosha', row, '', age.input.id);
+      field.id = 'masterAgeField';
+      field.append(el('p', '', 'dz-hint dz-age-note'));
+      fields.append(field);
     }
     const priors = [
       ['masterDaily', regimen.needs.daily, 'Sa ka marrë në 24 orët e fundit'],
@@ -460,6 +502,31 @@
     const wrap = el('div', null, 'dz-field dz-field-wide');
     wrap.append(el('p', labelText, 'dz-label'), node);
     return wrap;
+  }
+
+  function markAgeSource() {
+    const field = $('masterAgeField');
+    if (!field) return;
+    const derived = state.ageSource === 'weight';
+    field.dataset.source = derived ? 'weight' : 'chosen';
+    const note = field.querySelector('.dz-age-note');
+    if (note) note.textContent = derived ? 'Plotësuar nga pesha — ndryshoje nëse mosha e vërtetë është tjetër.' : '';
+  }
+  function applyAgeFromWeight() {
+    const age = $('masterAge');
+    if (!age || state.ageSource === 'chosen') return;
+    const derived = ageForWeight(num($('masterWeight')?.value));
+    if (!derived) {
+      /* Clearing or overshooting the table retires an estimate, never an
+         age the clinician typed. */
+      if (state.ageSource === 'weight') { age.value = ''; state.ageSource = ''; }
+      markAgeSource();
+      return;
+    }
+    age.value = String(derived.value).replace('.', ',');
+    $('masterAgeUnit').value = derived.unit;
+    state.ageSource = 'weight';
+    markAgeSource();
   }
 
   /* --------------------------------------------------------------- request */

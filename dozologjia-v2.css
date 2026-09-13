@@ -614,6 +614,9 @@ input{caret-color:#533afd}
 .dz-field{min-width:0;flex:0 1 200px}
 .dz-field-wide{flex:1 1 100%}
 .dz-row{display:flex;align-items:center;gap:8px}
+/* An age the weight filled in reads differently from one the clinician typed. */
+.dz-field[data-source="weight"] .dz-number input,.dz-field[data-source="weight"] .dz-unit{border-color:#c7c2fb;background:#fbfaff}
+.dz-age-note:empty{display:none}
 .dz-row .dz-number{flex:1 1 auto;min-width:0}
 .dz-number{position:relative;display:flex;align-items:center}
 .dz-number input{width:100%;height:52px;padding:0 14px;border:1px solid var(--dz-line-strong);border-radius:10px;background:#fff;color:var(--dz-ink);font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;outline:0;transition:border-color .13s ease,box-shadow .13s ease}
