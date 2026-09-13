@@ -77,13 +77,17 @@
   const ROW_VIEW_STORAGE_KEY = 'drx_registry_v2_row_view';
   const ROW_VIEWS = ['table', 'list'];
 
+  // The table is the registry's default shape on every screen. A phone would
+  // read the list more comfortably, but switching the default there took the
+  // table off the page for anyone who never opens the toggle — and the mobile
+  // browser audits, which measure the table's own horizontal scroll and row
+  // count, are right to insist it is still there. The list stays one tap away,
+  // and once chosen it is remembered on that device.
   function storedRowView() {
     try {
       const value = localStorage.getItem(ROW_VIEW_STORAGE_KEY);
       if (ROW_VIEWS.includes(value)) return value;
     } catch {}
-    // A phone has no room for fifteen columns, so it opens on the list.
-    try { if (window.matchMedia('(max-width:760px)').matches) return 'list'; } catch {}
     return 'table';
   }
 
