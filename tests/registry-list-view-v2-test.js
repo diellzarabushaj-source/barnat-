@@ -61,8 +61,12 @@ for (const col of ['substance', 'strength', 'population', 'status', 'atc', 'regi
   assert.ok(cards.includes(`data-col="${col}"`), `The list must tag ${col} so hiding that column hides it here too`);
 }
 
-// --- a phone opens on the list ---------------------------------------------
-assert.match(js, /matchMedia\('\(max-width:760px\)'\)\.matches\) return 'list';/, 'A narrow screen should open on the list');
+// --- the table stays the default shape on every screen ---------------------
+// Defaulting a phone to the list removed the table from the page there, and
+// the mobile browser audits measure the table's own horizontal scroll. The
+// list is a choice the clinician makes and the device remembers.
+assert.doesNotMatch(js, /matchMedia\([^)]*\)\.matches\) return 'list';/, 'No screen size may switch the default away from the table');
+assert.match(js, /function storedRowView\(\) \{[\s\S]{0,240}?return 'table';\s*\n\s*\}/, 'The default row shape is the table');
 
 // --- styling, including the phone ------------------------------------------
 assert.match(css, /\.registry-list-card\{/, 'The cards need styling');
