@@ -10,7 +10,7 @@
     "studio:schema": "pnpm --dir studio schema:extract",
     "test:medical-hub": "node tests/medical-hub-doctor-workspace-test.js && node tests/medical-hub-authoring-schema-test.js && node tests/medical-hub-composable-test.js",
     "repomix": "npx --yes repomix",
-    "build:runtime": "node scripts/build-static-runtime.js && node scripts/materialize-official-brand-assets.js && node scripts/seed-horizontal-brand-assets.js && node scripts/audit-registry-v2.js",
+    "build:runtime": "node scripts/build-dozologjia-master.js && node scripts/build-static-runtime.js && node scripts/materialize-official-brand-assets.js && node scripts/seed-horizontal-brand-assets.js && node scripts/audit-registry-v2.js",
     "build:icd-snapshot": "node scripts/build-icd-hierarchy-snapshot.js",
     "audit:clinical-accents": "node scripts/audit-clinical-accents.js",
     "audit:contrast": "node scripts/audit-contrast.js",
@@ -184,9 +184,11 @@
     "test:drx-phase11-finalization": "node tests/drx-phase11-finalization-contract-test.js && node tests/drx-v3-extended-regimen-runtime-contract-test.js",
     "test:drx-phase11-review-workbench": "node tests/drx-phase11-review-workbench-contract-test.js",
     "test:drx-phase11-release-shadow": "node tests/drx-phase11-release-shadow-contract-test.js",
-    "test:deploy": "node tests/recetat-source-availability-test.js && node tests/workspace-interaction-polish-test.js && node tests/registry-v2-contract-test.js && node tests/fullstack-audit-v8-test.js && node tests/vercel-hobby-function-budget-test.js && node tests/api-security-deep-audit-test.js && node tests/supabase-privileged-key-guard-test.js && node tests/vercel-runtime-resilience-test.js && node tests/vercel-ignore-build-test.js && node tests/p0-database-integrity-test.js && node tests/drx-dose-core-test.js && node tests/drx-dose-runtime-engine-test.js && node tests/drx-dose-v3-runtime-gate-test.js && node tests/drx-dose-v3-rpc-reader-test.js && node tests/drx-dose-golden-cases-test.js && node tests/recetat-source-guides-test.js && node tests/medical-hub-doctor-workspace-test.js && node tests/medical-hub-authoring-schema-test.js && node tests/medical-hub-composable-test.js",
+    "test:deploy": "node tests/recetat-source-availability-test.js && node tests/workspace-interaction-polish-test.js && node tests/registry-v2-contract-test.js && node tests/fullstack-audit-v8-test.js && node tests/vercel-hobby-function-budget-test.js && node tests/api-security-deep-audit-test.js && node tests/supabase-privileged-key-guard-test.js && node tests/vercel-runtime-resilience-test.js && node tests/vercel-ignore-build-test.js && node tests/p0-database-integrity-test.js && node tests/drx-dose-core-test.js && node tests/drx-dose-runtime-engine-test.js && node tests/drx-dose-v3-runtime-gate-test.js && node tests/drx-dose-v3-rpc-reader-test.js && node tests/drx-dose-golden-cases-test.js && node tests/recetat-source-guides-test.js && node tests/medical-hub-doctor-workspace-test.js && node tests/medical-hub-authoring-schema-test.js && node tests/medical-hub-composable-test.js && node tests/dozologjia-master-test.js && node tests/dozologjia-v2-workspace-test.js",
     "test:recetat-ui-browser": "playwright test tests/recetat-ui-playwright.spec.js --reporter=line",
-    "test:antibiotics-dosing": "node tests/antibiotics-daily-dose-test.js"
+    "test:antibiotics-dosing": "node tests/antibiotics-daily-dose-test.js",
+    "build:dozologjia": "node scripts/build-dozologjia-master.js",
+    "test:dozologjia": "node tests/dozologjia-master-test.js && node tests/dozologjia-v2-workspace-test.js"
   },
   "dependencies": {
     "@vercel/blob": "^2.3.0",

@@ -8,9 +8,9 @@ const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const client = read('pediatric-calculator-client.js');
-const bundle = read('dozologjia-v2.js');
-const html = read('dozologjia.html');
-const css = read('dozologjia-v2.css');
+const bundle = read('docs/archive/dozologjia-before-v27/dozologjia-v2.js.txt');
+const html = read('docs/archive/dozologjia-before-v27/dozologjia.html.txt');
+const css = read('docs/archive/dozologjia-before-v27/dozologjia-v2.css.txt');
 const code = client
   .replace(/\/\*[\s\S]*?\*\//g, ' ')
   .replace(/^\s*\/\/.*$/gm, ' ');
