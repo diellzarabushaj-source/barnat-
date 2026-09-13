@@ -9,11 +9,11 @@
   <title>DRx | Dozologjia pediatrike</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/dozologjia-v2.css?v=27">
+  <link rel="stylesheet" href="/dozologjia-v2.css?v=28">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1">
   <script src="/phase9-personal-entities-client.js?v=phase9b" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1" defer></script>
-<script src="/dozologjia-v2.js?v=27" defer></script>
+<script src="/dozologjia-v2.js?v=28" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#dosageContent">Kalo te kalkulatori pediatrik</a>
@@ -94,13 +94,65 @@
       </header>
 
       <div class="page-wrap dosage-page" id="dosageContent">
-        <header><p class="master-eyebrow">DOZOLOGJIA</p><h1>Doza, qartë.</h1><p>Bari → Indikacioni → Doza</p></header>
-        <p id="masterStatus" role="status">Duke ngarkuar Master-in…</p>
-        <section class="master-card"><h2>1. Bari</h2><label for="dosageSearch">Kërko barin</label><input id="dosageSearch" type="search" placeholder="Emri i substancës…" autocomplete="off"><div id="masterDrugs" class="master-drugs"></div></section>
-        <section class="master-card" id="masterChoice" hidden><h2>2. Indikacioni</h2><label for="masterIndication">Indikacioni</label><select id="masterIndication"></select><label for="masterRegimens">Rruga dhe skema</label><select id="masterRegimens"></select></section>
-        <section class="master-card" id="masterPatient" hidden><h2>3. Doza</h2><form id="masterForm"><div id="masterFields"></div><button class="master-submit" type="submit">Llogarit dozën</button></form><div id="masterErrors" role="alert"></div></section>
-        <section class="master-card master-result" id="masterResult" aria-live="polite" hidden></section>
-        <p class="master-footnote">Master v2.7 · SOURCE_AUDITED_ONLY · pa certifikim të pavarur klinik.</p>
+        <div class="dz-column">
+          <header class="dz-head">
+            <div>
+              <h1>Doza</h1>
+              <p>Zgjidh barin dhe për çka — doza del vetë.</p>
+            </div>
+            <span class="scope-pill">DOZOLOGJIA</span>
+          </header>
+
+          <p class="dz-status" id="masterStatus" role="status">Duke ngarkuar…</p>
+
+          <section class="dz-card dz-input" aria-label="Zgjedhja klinike">
+            <div class="dz-block">
+              <details class="dz-picker" id="drugPicker" open>
+                <summary class="dz-picker-summary">
+                  <span class="dz-label" id="drugLabel">Bari</span>
+                  <b class="dz-picker-current" id="drugCurrent">—</b>
+                </summary>
+                <input class="dz-search" id="dosageSearch" type="search" placeholder="Kërko barin…" autocomplete="off" aria-label="Kërko barin">
+                <div class="dz-chips" id="masterDrugs" role="radiogroup" aria-labelledby="drugLabel"></div>
+              </details>
+            </div>
+
+            <div class="dz-block" id="indicationBlock" hidden>
+              <details class="dz-picker" id="indicationPicker" open>
+                <summary class="dz-picker-summary">
+                  <span class="dz-label" id="indicationLabel">Për çka</span>
+                  <b class="dz-picker-current" id="indicationCurrent">—</b>
+                </summary>
+                <div class="dz-chips" id="masterIndication" role="radiogroup" aria-labelledby="indicationLabel"></div>
+              </details>
+            </div>
+
+            <div class="dz-block" id="regimenBlock" hidden>
+              <details class="dz-picker" id="regimenPicker" open>
+                <summary class="dz-picker-summary">
+                  <span class="dz-label" id="regimenLabel">Si jepet</span>
+                  <b class="dz-picker-current" id="regimenCurrent">—</b>
+                </summary>
+                <div class="dz-chips" id="masterRegimens" role="radiogroup" aria-labelledby="regimenLabel"></div>
+              </details>
+            </div>
+
+            <form class="dz-block dz-patient" id="masterForm" hidden>
+              <div class="dz-fields" id="masterFields"></div>
+              <div class="dz-gates" id="masterGates"></div>
+            </form>
+          </section>
+
+          <section class="dz-answer" id="masterResult" aria-live="polite" hidden></section>
+          <div class="dz-errors" id="masterErrors" role="alert" hidden></div>
+
+          <details class="dz-provenance" id="masterProvenance" hidden>
+            <summary><span>Burimet</span><b id="masterSourceCount">—</b></summary>
+            <div class="dz-provenance-body" id="masterProvenanceBody"></div>
+          </details>
+
+          <p class="dz-footnote">Doza, kufijtë dhe kushtet vijnë nga Master v2.7, vetëm nga burime të audituara, dhe llogariten në server. Sasia për të matur nga një produkt që zgjedh vetë ti është thjesht llogaritje mbi atë fuqi — verifiko gjithmonë shishen ose kutinë.</p>
+        </div>
       </div>
     </main>
   </div>
