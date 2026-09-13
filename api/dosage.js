@@ -62,6 +62,7 @@ function isPediatricRequest(req) {
 }
 
 async function handler(req, res) {
+  if (['master-catalog','master-calculate'].includes(requestView(req))) return require('../lib/dozologjia-master-handler.js')(req,res);
   if (isCalculatorRequest(req)) return doseCalculatorHandler(req, res);
   if (isSafetyRequest(req)) return doseSafetyHandler(req, res);
   if (isProductFastPathRequest(req)) return doseProductFastPathHandler(req, res);
