@@ -985,7 +985,9 @@ body[data-registry-view="notes"] .personal-toolbar{
    every per-row lookup in the runtime still addresses exactly one element.
    Fields carry data-col, so the column picker hides them here too.
    ========================================================================== */
-.view-toggle{display:inline-flex;padding:3px;border:1px solid var(--line,#e4e7ec);border-radius:9px;background:#f2f4f7}
+/* 8px, not a new value: the responsive audit budgets four distinct corner
+   radii per viewport, and this control must not spend the fifth. */
+.view-toggle{display:inline-flex;padding:3px;border:1px solid var(--line,#e4e7ec);border-radius:8px;background:#f2f4f7}
 .view-toggle button{
   min-height:32px;padding:0 13px;border:0;border-radius:7px;background:transparent;
   color:#667085;font-size:12px;font-weight:600;cursor:pointer;
