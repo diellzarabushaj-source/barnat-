@@ -1,0 +1,191 @@
+/* Medical Hub — wide paper layout refinement.
+   Removes the gray reader canvas and lets the clinical book page use the available width,
+   while preserving the textbook shadow, paper edge and specialty tabs. */
+
+html[data-drx-app="medical-hub-v2"] .main-shell,
+html[data-drx-app="medical-hub-v2"] .page-wrap,
+html[data-drx-app="medical-hub-v2"] .page-wrap.hub-page,
+html[data-drx-app="medical-hub-v2"] .hub-page,
+html[data-drx-app="medical-hub-v2"] .hub-workspace,
+html[data-drx-app="medical-hub-v2"] .hub-reader-pane{
+  background:#fff !important;
+}
+
+/* Give the reader the whole content area instead of framing it inside a gray card. */
+html[data-drx-app="medical-hub-v2"] .page-wrap.hub-page{
+  width:100% !important;
+  max-width:none !important;
+  padding-left:20px !important;
+  padding-right:20px !important;
+  padding-bottom:42px !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+
+html[data-drx-app="medical-hub-v2"] .hub-page .hub-workspace,
+html[data-drx-app="medical-hub-v2"] .hub-workspace{
+  width:100% !important;
+  max-width:none !important;
+  grid-template-columns:minmax(0,1fr) !important;
+  gap:0 !important;
+}
+
+html[data-drx-app="medical-hub-v2"] .hub-reader-pane{
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:12px 18px 42px 36px !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+}
+
+/* The book page itself is substantially wider, closer to the supplied reference. */
+html[data-drx-app="medical-hub-v2"] .hub-document{
+  width:min(100%,1280px) !important;
+  max-width:1280px !important;
+  margin:0 auto !important;
+  border-color:#ddd9cf !important;
+  border-radius:1px 2px 2px 1px !important;
+  box-shadow:
+    0 18px 44px rgba(30,40,48,.105),
+    0 3px 9px rgba(30,40,48,.055),
+    inset 11px 0 18px rgba(83,79,69,.022),
+    inset -1px 0 rgba(83,79,69,.08) !important;
+}
+
+/* More generous print margins without wasting horizontal space. */
+html[data-drx-app="medical-hub-v2"] .ck-document-inner{
+  padding-left:64px !important;
+  padding-right:62px !important;
+}
+
+/* Keep the colored section tabs visible outside the now-clean white canvas. */
+html[data-drx-app="medical-hub-v2"] .hub-document::before{
+  left:-34px !important;
+  width:34px !important;
+}
+
+/* Slightly softer book-edge crease on white background. */
+html[data-drx-app="medical-hub-v2"] .hub-document::after{
+  right:-10px !important;
+  width:15px !important;
+  background:linear-gradient(90deg,rgba(92,88,78,.065),rgba(255,255,255,.34) 46%,rgba(66,60,52,.035)) !important;
+}
+
+/* Use the extra width like the reference: body copy left, illustrations in a wider right rail. */
+@media(min-width:1100px){
+  html[data-drx-app="medical-hub-v2"] .ck-detail-head h2{
+    max-width:82% !important;
+    font-size:clamp(31px,3.35vw,46px) !important;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .ck-section-heading{
+    width:64% !important;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .ck-section-body>.ck-medical-figure,
+  html[data-drx-app="medical-hub-v2"] .ck-section-body>.ck-figure{
+    width:32% !important;
+    max-width:32% !important;
+    margin-left:28px !important;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .ck-section-body>.ck-source-paragraph,
+  html[data-drx-app="medical-hub-v2"] .ck-section-body>.ck-source-list-block,
+  html[data-drx-app="medical-hub-v2"] .ck-section-body>.ck-subsection,
+  html[data-drx-app="medical-hub-v2"] .ck-section-body>.ck-modern-block:not(.ck-medical-figure):not(.ck-medical-table-block):not(.ck-modern-prescriptions){
+    max-width:66% !important;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .ck-figure{
+    width:min(100%,330px) !important;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .ck-figure img{
+    max-height:330px !important;
+  }
+}
+
+@media(min-width:1500px){
+  html[data-drx-app="medical-hub-v2"] .page-wrap.hub-page{
+    padding-left:28px !important;
+    padding-right:28px !important;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .hub-document{
+    width:min(100%,1340px) !important;
+    max-width:1340px !important;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .ck-document-inner{
+    padding-left:72px !important;
+    padding-right:70px !important;
+  }
+}
+
+/* Tablet: still white, wider, and without the gray tray. */
+@media(max-width:980px){
+  html[data-drx-app="medical-hub-v2"] .page-wrap.hub-page{
+    padding-left:12px !important;
+    padding-right:12px !important;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .hub-reader-pane{
+    padding:8px 10px 28px 24px !important;
+    background:#fff !important;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .ck-document-inner{
+    padding-left:40px !important;
+    padding-right:38px !important;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .hub-document::before{
+    left:-22px !important;
+    width:22px !important;
+  }
+}
+
+/* Mobile: paper nearly edge-to-edge, still with a soft real-page shadow. */
+@media(max-width:760px){
+  html[data-drx-app="medical-hub-v2"] .page-wrap.hub-page{
+    padding-left:0 !important;
+    padding-right:0 !important;
+    padding-bottom:24px !important;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .hub-reader-pane{
+    margin:0 !important;
+    padding:4px 6px 18px 10px !important;
+    background:#fff !important;
+    border-radius:0 !important;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .hub-document{
+    width:100% !important;
+    max-width:100% !important;
+    border-left:1px solid #e1ddd4 !important;
+    border-right:1px solid #e1ddd4 !important;
+    box-shadow:
+      0 9px 22px rgba(30,39,47,.085),
+      0 2px 5px rgba(30,39,47,.04),
+      inset 7px 0 11px rgba(91,86,75,.018) !important;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .hub-document::before{
+    left:-8px !important;
+    width:8px !important;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .hub-document::after{
+    right:-2px !important;
+    width:4px !important;
+  }
+
+  html[data-drx-app="medical-hub-v2"] .ck-document-inner{
+    padding-left:18px !important;
+    padding-right:16px !important;
+  }
+}
