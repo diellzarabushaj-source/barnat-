@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="sq" class="drx-unified-sidebar" data-drx-app="medical-hub-v2">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#1c1e54">
+  <title>DRx | Medical Hub</title>
+  <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
+  <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/medical-hub-v2.css?v=24">
+  <style>
+    html[data-drx-app="medical-hub-v2"] .hub-navigation-toggle,
+    html[data-drx-app="medical-hub-v2"] .hub-drawer-head,
+    html[data-drx-app="medical-hub-v2"] .hub-navigation-backdrop,
+    html[data-drx-app="medical-hub-v2"] .hub-rail{display:none!important}
+    html[data-drx-app="medical-hub-v2"] .hub-page .hub-workspace{display:grid;grid-template-columns:minmax(0,1fr)!important;gap:14px;align-items:start}
+    html[data-drx-app="medical-hub-v2"] .hub-navigation-drawer{position:static!important;inset:auto!important;width:100%!important;height:auto!important;min-height:0!important;display:block!important;padding:0!important;overflow:visible!important;transform:none!important;background:transparent!important;box-shadow:none!important;transition:none!important}
+    html[data-drx-app="medical-hub-v2"] .hub-mobile-selects{width:100%;display:grid!important;grid-template-columns:minmax(210px,.72fr) minmax(300px,1.28fr);gap:10px;padding:0}
+    html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field{min-width:0;gap:6px}
+    html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field>span{padding-left:2px;color:#52667a;font-size:10.5px;font-weight:600;letter-spacing:.015em}
+    html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field select{height:46px;padding:0 38px 0 12px;border:1px solid #d6dee8;border-radius:10px;background:#fff;color:#263d54;font-size:12.5px;font-weight:450;box-shadow:0 1px 2px rgba(15,35,58,.025)}
+    html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field select:hover{border-color:#c4cfdb}
+    html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field select:focus-visible{border-color:#8f87ff;outline:2px solid #635bff;outline-offset:2px;box-shadow:none}
+    html[data-drx-app="medical-hub-v2"] .hub-reader-pane{min-width:0;width:100%}
+    html[data-hub-rails-hidden][data-drx-app="medical-hub-v2"] .hub-navigation-drawer{display:block!important}
+    html[data-drx-app="medical-hub-v2"] .hub-search-results{grid-column:1/-1;min-width:0;margin-top:2px;overflow:hidden;border:1px solid #dfe5ec;border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(15,35,58,.045)}
+    html[data-drx-app="medical-hub-v2"] .hub-search-results[hidden]{display:none!important}
+    html[data-drx-app="medical-hub-v2"] .hub-search-results-head{min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 14px;border-bottom:1px solid #e8edf2;background:#fbfcfe}
+    html[data-drx-app="medical-hub-v2"] .hub-search-results-head>div{min-width:0;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+    html[data-drx-app="medical-hub-v2"] .hub-search-results-head strong{color:#172f47;font-size:12.5px;font-weight:680}
+    html[data-drx-app="medical-hub-v2"] .hub-search-results-head span{color:#6a7a8c;font-size:10.5px}
+    html[data-drx-app="medical-hub-v2"] .hub-search-results-count{flex:none;text-align:right}
+    html[data-drx-app="medical-hub-v2"] .hub-search-results-list{max-height:min(52vh,560px);overflow:auto;padding:6px;scrollbar-width:thin;scrollbar-color:#c8d0da transparent}
+    html[data-drx-app="medical-hub-v2"] .hub-search-result{min-height:72px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:10px 12px;border-bottom:1px solid #edf1f5;border-radius:6px;background:#fff;cursor:pointer;outline:0}
+    html[data-drx-app="medical-hub-v2"] .hub-search-result:last-child{border-bottom-color:transparent}
+    html[data-drx-app="medical-hub-v2"] .hub-search-result:hover,
+    html[data-drx-app="medical-hub-v2"] .hub-search-result.is-active{background:#f7f7ff;box-shadow:inset 3px 0 #635bff}
+    html[data-drx-app="medical-hub-v2"] .hub-search-result-main{min-width:0;display:grid;gap:4px}
+    html[data-drx-app="medical-hub-v2"] .hub-search-result-main>strong{color:#20384f;font-size:13px;font-weight:650;line-height:1.4}
+    html[data-drx-app="medical-hub-v2"] .hub-search-result-main>p{margin:0;overflow:hidden;color:#6a7a8c;font-size:11.5px;line-height:1.5;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+    html[data-drx-app="medical-hub-v2"] .hub-search-result-meta{min-width:0;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+    html[data-drx-app="medical-hub-v2"] .hub-search-badge{min-height:20px;display:inline-flex;align-items:center;padding:2px 6px;border:1px solid #dfe5ec;border-radius:999px;background:#fff;color:#627387;font-size:9px;font-weight:650;line-height:1}
+    html[data-drx-app="medical-hub-v2"] .hub-search-badge.is-chapter{border-color:#d9d6ff;background:#f3f2ff;color:#5146d8}
+    html[data-drx-app="medical-hub-v2"] .hub-search-badge.is-code{border-color:#cfe3ee;background:#f4fbff;color:#27627d}
+    html[data-drx-app="medical-hub-v2"] .hub-search-badge.is-procedure{border-color:#d6e4dd;background:#f5fbf8;color:#32705a}
+    html[data-drx-app="medical-hub-v2"] .hub-search-chapter-name{min-width:0;overflow:hidden;color:#7a8796;font-size:9.5px;text-overflow:ellipsis;white-space:nowrap}
+    html[data-drx-app="medical-hub-v2"] .hub-search-result-open{display:inline-flex;align-items:center;gap:5px;color:#6d63ee;font-size:10.5px;font-weight:650;white-space:nowrap}
+    html[data-drx-app="medical-hub-v2"] .hub-search-result-open b{font-size:13px;font-weight:500}
+    html[data-drx-app="medical-hub-v2"] .hub-search-result mark{padding:0 1px;border-radius:3px;background:#eceaff;color:#3f37b8}
+    html[data-drx-app="medical-hub-v2"] .hub-search-results-loading,
+    html[data-drx-app="medical-hub-v2"] .hub-search-results-empty{min-height:92px;display:flex;align-items:center;justify-content:center;gap:10px;padding:20px;color:#68798c;text-align:center}
+    html[data-drx-app="medical-hub-v2"] .hub-search-results-loading span{width:16px;height:16px;flex:none;border:2px solid #dfe3e9;border-top-color:#635bff;border-radius:50%;animation:hub-spin .65s linear infinite}
+    html[data-drx-app="medical-hub-v2"] .hub-search-results-loading p{margin:0;font-size:11.5px}
+    html[data-drx-app="medical-hub-v2"] .hub-search-results-empty{flex-direction:column;gap:4px}
+    html[data-drx-app="medical-hub-v2"] .hub-search-results-empty strong{color:#344b61;font-size:12.5px}
+    html[data-drx-app="medical-hub-v2"] .hub-search-results-empty span{max-width:620px;font-size:11.5px;line-height:1.5}
+    @media(max-width:760px){
+      html[data-drx-app="medical-hub-v2"] .hub-mobile-selects{grid-template-columns:minmax(0,1fr);gap:9px}
+      html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field select{height:46px;font-size:12px}
+      html[data-drx-app="medical-hub-v2"] .hub-search-results-head{align-items:flex-start;gap:8px;padding:9px 10px}
+      html[data-drx-app="medical-hub-v2"] .hub-search-results-count{max-width:46%;font-size:9.5px}
+      html[data-drx-app="medical-hub-v2"] .hub-search-results-list{max-height:50vh;padding:4px}
+      html[data-drx-app="medical-hub-v2"] .hub-search-result{min-height:88px;grid-template-columns:minmax(0,1fr);gap:6px;padding:10px}
+      html[data-drx-app="medical-hub-v2"] .hub-search-result-open{display:none}
+      html[data-drx-app="medical-hub-v2"] .hub-search-result-main>strong{font-size:12.5px}
+      html[data-drx-app="medical-hub-v2"] .hub-search-result-main>p{font-size:11px;-webkit-line-clamp:2}
+    }
+  </style>
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1">
+</head>
+<body>
+  <a class="hub-skip-link" href="#learningDetail">Kalo te përmbajtja</a>
+  <div class="app-shell" id="appShell" aria-busy="true">
+    <aside class="sidebar" id="sidebar" aria-label="Navigimi kryesor">
+      <div class="sidebar-head">
+        <a class="brand" href="/index.html" aria-label="DRx — Regjistri">
+          <img src="/brand/drx-horizontal-on-dark.svg" alt="DRx" width="112" height="33">
+        </a>
+        <button class="icon-button sidebar-close" id="sidebarClose" type="button" aria-label="Mbyll menynë">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.4 6.4 17.6 17.6M17.6 6.4 6.4 17.6"/></svg>
+        </button>
+      </div>
+
+      <nav class="nav-stack">
+        <p class="nav-label">Klinike</p>
+        <a class="nav-item" href="/index.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20V9h3.6a2.9 2.9 0 0 1 0 5.8H7"/><path d="m11.4 14.8 4.1 5.2"/><path d="m15.2 9.4 4.4 4.4M19.6 9.4l-4.4 4.4"/><path d="M4 4h6"/></svg></span><span>Barnat</span></a>
+        <details class="nav-group" id="atcNavGroup">
+          <summary class="nav-item nav-summary">
+            <span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg></span>
+            <span>Klasifikimi ATC</span>
+            <span class="nav-summary-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></span>
+          </summary>
+          <div class="atc-group-list">
+            <a class="atc-group-link is-all" href="/klasifikimi.html"><span class="atc-group-code">14</span><span class="atc-group-name">Të gjitha grupet</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#A" data-atc-group="A"><span class="atc-group-code">A</span><span class="atc-group-name">Tretja dhe metabolizmi</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#B" data-atc-group="B"><span class="atc-group-code">B</span><span class="atc-group-name">Gjaku dhe organet gjakformuese</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#C" data-atc-group="C"><span class="atc-group-code">C</span><span class="atc-group-name">Sistemi kardiovaskular</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#D" data-atc-group="D"><span class="atc-group-code">D</span><span class="atc-group-name">Barna dermatologjike</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#G" data-atc-group="G"><span class="atc-group-code">G</span><span class="atc-group-name">Gjenitourinar dhe hormonet seksuale</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#H" data-atc-group="H"><span class="atc-group-code">H</span><span class="atc-group-name">Hormonet sistemike</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#J" data-atc-group="J"><span class="atc-group-code">J</span><span class="atc-group-name">Antiinfektivë sistemikë</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#L" data-atc-group="L"><span class="atc-group-code">L</span><span class="atc-group-name">Antineoplastikë dhe imunomodulues</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#M" data-atc-group="M"><span class="atc-group-code">M</span><span class="atc-group-name">Sistemi muskuloskeletal</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#N" data-atc-group="N"><span class="atc-group-code">N</span><span class="atc-group-name">Sistemi nervor</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#P" data-atc-group="P"><span class="atc-group-code">P</span><span class="atc-group-name">Barna antiparazitare</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#R" data-atc-group="R"><span class="atc-group-code">R</span><span class="atc-group-name">Sistemi respirator</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#S" data-atc-group="S"><span class="atc-group-code">S</span><span class="atc-group-name">Organet shqisore</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#V" data-atc-group="V"><span class="atc-group-code">V</span><span class="atc-group-name">Produkte të ndryshme</span></a>
+          </div>
+        </details>
+        <a class="nav-item" href="/icd.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h9l4 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M14 4v5h5"/><path d="M8.5 13h7M8.5 16.5h4.5"/></svg></span><span>ICD‑10</span></a>
+        <a class="nav-item" href="/dozologjia.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16"/><path d="M6 8h12"/><path d="M6 8 3 15a3 3 0 0 0 6 0Z"/><path d="M18 8l-3 7a3 3 0 0 0 6 0Z"/></svg></span><span>Dozologjia</span></a>
+        <a class="nav-item" href="/protokollet.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M10 3.5h4v2h-4z"/><path d="m9.8 12 1.6 1.6 3-3.2"/><path d="M9.8 17h4.6"/></svg></span><span>Protokollet</span></a>
+        <a class="nav-item" href="/urgjencat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.6 2.9 20a1 1 0 0 0 .87 1.5h16.46A1 1 0 0 0 21.1 20L12 4.6Z"/><path d="M12 10v4.4"/><path d="M12 18h.01"/></svg></span><span>Urgjencat</span></a>
+
+        <p class="nav-label nav-label-spaced">Puna ime</p>
+        <a class="nav-item" href="/index.html#favorites" data-personal-nav="favorites"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg></span><span>Favoritët</span><span class="nav-count" id="favoriteNavCount" hidden>0</span></a>
+        <a class="nav-item" href="/index.html#notes" data-personal-nav="notes"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><span>Shënimet</span><span class="nav-count" id="noteNavCount" hidden>0</span></a>
+        <a class="nav-item" href="/recetat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4.5 4.5V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/><path d="M8.5 12.5h7M8.5 16h4.5"/></svg></span><span>Recetat</span></a>
+        <a class="nav-item" href="/analizat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3v6.2L4.8 17.6A2.4 2.4 0 0 0 6.9 21h10.2a2.4 2.4 0 0 0 2.1-3.4L14.5 9.2V3"/><path d="M8.5 3h7"/><path d="M7.3 14.5h9.4"/></svg></span><span>Analizat</span></a>
+        <a class="nav-item is-active" href="/medical-hub.html" aria-current="page"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 8.4v7.2M8.4 12h7.2"/></svg></span><span>Medical Hub</span></a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <span id="sourceStatus" class="sr-only">Duke u lidhur…</span>
+        <button class="drx-user-card mi-user-card" id="sidebarProfileButton" type="button" data-mi-profile-trigger aria-label="Hap profilin">
+          <span class="mi-user-avatar drx-user-avatar">DR</span>
+          <span class="mi-user-copy drx-user-copy"><strong>Llogaria</strong><small></small></span>
+          <span class="drx-user-arrow" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg></span>
+        </button>
+        <button class="nav-item logout-button" id="logoutButton" type="button"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-3"/><path d="M10 16.5 14.5 12 10 7.5"/><path d="M14.5 12h-10"/></svg></span><span>Dil</span></button>
+      </div>
+    </aside>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+    <main class="main-shell">
+      <header class="topbar">
+        <button class="icon-button menu-button" id="menuButton" type="button" aria-label="Hap menynë"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+        <div class="breadcrumbs"><span>DRx</span><span class="crumb-sep">/</span><strong>Medical Hub</strong></div>
+        <div class="topbar-actions">
+          <span class="sync-pill"><span class="sync-dot"></span><span id="syncText">Burimi i publikuar</span></span>
+          <button class="drx-profile-chip mi-profile-chip" id="profileButton" type="button" data-mi-profile-trigger aria-label="Hap profilin">
+            <span class="mi-user-avatar drx-user-avatar avatar-button" id="avatarInitials">DR</span>
+            <span class="drx-profile-copy"><strong>Llogaria</strong><small></small></span>
+          </button>
+        </div>
+      </header>
+
+      <div class="page-wrap hub-page">
+        <header class="page-heading">
+          <div>
+            <h1>Medical Hub</h1>
+            <p class="page-subtitle">Lexo librin kapitull pas kapitulli, ose kërko drejt temën që të duhet.</p>
+          </div>
+        </header>
+
+        <section class="hub-command" aria-label="Kërkimi dhe navigimi në Medical Hub">
+          <div class="hub-search" id="learningSearchField">
+            <label class="sr-only" for="learningSearch">Kërko temën klinike</label>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.7"/><path d="m16 16 4.2 4.2"/></svg>
+            <input id="learningSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko diagnozë, tekst, ICD, procedurë, bar…" aria-label="Kërko në të gjithë përmbajtjen e Medical Hub" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="hubSearchResults" aria-expanded="false">
+            <kbd id="learningShortcut">Ctrl K</kbd>
+            <button class="hub-search-clear" id="learningSearchClear" type="button" aria-label="Pastro kërkimin">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>
+            </button>
+          </div>
+          <div class="hub-command-footer">
+            <span class="hub-result-status" id="learningResultStatus" role="status" aria-live="polite">Duke ngarkuar temat…</span>
+            <div class="hub-topic-nav" aria-label="Navigimi mes temave">
+              <button id="previousTopicButton" type="button" aria-label="Tema e kaluar">← <span>E kaluara</span></button>
+              <span id="learningTopicPosition" aria-live="polite">—</span>
+              <button id="nextTopicButton" type="button" aria-label="Tema tjetër"><span>Tjetra</span> →</button>
+            </div>
+          </div>
+          <div class="hub-search-results" id="hubSearchResults" role="listbox" aria-label="Rezultatet e kërkimit global" hidden></div>
+        </section>
+
+        <div class="hub-workspace" id="hubWorkspace">
+          <div class="hub-navigation-backdrop" id="hubNavigationBackdrop" hidden></div>
+          <div class="hub-navigation-drawer" id="hubNavigationDrawer">
+            <header class="hub-drawer-head">
+              <div><span>Navigimi i librit</span><strong>Zgjidh kapitullin dhe mësimin</strong></div>
+              <button id="hubNavigationClose" type="button">Mbyll</button>
+            </header>
+
+            <div class="hub-mobile-selects">
+              <label class="hub-field hub-chapter">
+                <span>Kapitulli</span>
+                <select id="learningCategory" aria-label="Zgjidh kapitullin"><option value="">Duke ngarkuar kapitujt…</option></select>
+              </label>
+              <label class="hub-field hub-topic">
+                <span>Mësimi / nënkapitulli</span>
+                <select id="learningTopic" aria-label="Zgjidh mësimin ose nënkapitullin"><option>Duke ngarkuar mësimet…</option></select>
+              </label>
+            </div>
+
+            <aside class="hub-rail hub-chapter-rail" aria-labelledby="hubChapterRailHeading">
+              <div class="hub-book-card">
+                <span>Burimi klinik</span>
+                <strong id="hubBookTitle">Doctor on Duty</strong>
+                <small id="hubBookEdition">Duke ngarkuar botimin…</small>
+                <div class="hub-book-state">
+                  <span id="hubBookReview">Duke u lidhur…</span>
+                  <a id="hubBookSourceLink" href="#" target="_blank" rel="noopener noreferrer" hidden>Hap burimin</a>
+                </div>
+              </div>
+              <header class="hub-rail-head">
+                <div><span>Biblioteka</span><h2 id="hubChapterRailHeading">Kapitujt</h2></div>
+                <strong id="hubChapterRailCount">—</strong>
+              </header>
+              <nav class="hub-rail-list" id="learningChapterList" aria-label="Kapitujt e librit"></nav>
+            </aside>
+
+            <aside class="hub-rail hub-topic-rail" aria-labelledby="hubTopicRailHeading">
+              <header class="hub-rail-head">
+                <div><span id="hubTopicRailKicker">Përmbajtja</span><h2 id="hubTopicRailHeading">Mësimet</h2></div>
+                <strong id="hubTopicRailCount">—</strong>
+              </header>
+              <nav class="hub-rail-list" id="learningTopicList" aria-label="Mësimet e kapitullit"></nav>
+            </aside>
+          </div>
+
+          <div class="hub-reader-pane">
+            <article class="hub-document ck-detail" id="learningDetail" tabindex="-1">
+              <div class="ck-empty"><strong>Duke ngarkuar Medical Hub…</strong><span>Përmbajtja po merret nga burimi i publikuar.</span></div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1" defer></script>
+<script src="/medical-hub-v2.js?v=24" defer></script>
+<script>
+(() => {
+  'use strict';
+
+  const input = document.getElementById('learningSearch');
+  const panel = document.getElementById('hubSearchResults');
+  const clear = document.getElementById('learningSearchClear');
+  if (!input || !panel) return;
+
+  let timer = 0;
+  let sequence = 0;
+  let activeIndex = -1;
+  let currentResults = [];
+  let indexPromise = null;
+
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;',
+  }[char]));
+  const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
+  const normalize = value => clean(value)
+    .toLocaleLowerCase('sq')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+  const regexEsc = value => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  function setExpanded(expanded) {
+    input.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    panel.hidden = !expanded;
+    if (!expanded) {
+      activeIndex = -1;
+      input.removeAttribute('aria-activedescendant');
+    }
+  }
+
+  async function api(params) {
+    const url = new URL('/api/medical-hub', location.origin);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== '' && value != null) url.searchParams.set(key, String(value));
+    });
+    const response = await fetch(url.pathname + url.search, {
+      credentials:'same-origin',
+      cache:'no-store',
+      headers:{ Accept:'application/json' },
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || payload.ok !== true) throw new Error(payload.error || `Search ${response.status}`);
+    return payload;
+  }
+
+  function loadIndex() {
+    if (!indexPromise) {
+      indexPromise = api({ mode:'index' })
+        .then(payload => Array.isArray(payload.items) ? payload.items : [])
+        .catch(() => []);
+    }
+    return indexPromise;
+  }
+
+  function distanceWithin(left, right, maxDistance) {
+    if (left === right) return 0;
+    if (!left || !right) return Math.max(left.length, right.length);
+    if (Math.abs(left.length - right.length) > maxDistance) return maxDistance + 1;
+    let previous = Array.from({ length:right.length + 1 }, (_, index) => index);
+    for (let i = 1; i <= left.length; i += 1) {
+      const current = [i];
+      let rowMin = current[0];
+      for (let j = 1; j <= right.length; j += 1) {
+        const cost = left[i - 1] === right[j - 1] ? 0 : 1;
+        current[j] = Math.min(previous[j] + 1, current[j - 1] + 1, previous[j - 1] + cost);
+        rowMin = Math.min(rowMin, current[j]);
+      }
+      if (rowMin > maxDistance) return maxDistance + 1;
+      previous = current;
+    }
+    return previous[right.length];
+  }
+
+  function tokenScore(token, value) {
+    const text = normalize(value);
+    if (!token || !text) return 0;
+    if (text === token) return 150;
+    if (text.startsWith(token)) return 118;
+    if (text.includes(token)) return 95;
+    const maxDistance = token.length >= 8 ? 2 : token.length >= 4 ? 1 : 0;
+    if (!maxDistance) return 0;
+    let best = 0;
+    for (const word of text.split(/[^a-z0-9]+/).filter(Boolean)) {
+      if (word.startsWith(token) || token.startsWith(word)) best = Math.max(best, 86);
+      if (Math.abs(word.length - token.length) > maxDistance) continue;
+      const distance = distanceWithin(token, word, maxDistance);
+      if (distance <= maxDistance) best = Math.max(best, distance === 1 ? 76 : 58);
+    }
+    return best;
+  }
+
+  function codeText(item) {
+    const procedures = (item?.procedureCodes || []).flatMap(entry => {
+      if (typeof entry === 'string') return [entry];
+      return [entry?.code, entry?.label, entry?.system].filter(Boolean);
+    });
+    return [...(item?.icdCodes || []), ...procedures].join(' ');
+  }
+
+  function chapterTitle(item, chapterMap) {
+    const direct = clean(item?.chapter?.title);
+    if (direct) return direct;
+    const number = Number(item?.chapterNumber) || 0;
+    return clean(chapterMap.get(number)?.title || chapterMap.get(number)?.question || '');
+  }
+
+  function localScore(item, term, tokens, chapterMap) {
+    if (!item || item.contentKind === 'chapter') return 0;
+    const title = normalize(item.title || item.question);
+    const summary = normalize(item.summary);
+    const keywords = normalize((item.keywords || []).join(' '));
+    const codes = normalize(codeText(item));
+    const chapter = normalize(chapterTitle(item, chapterMap));
+    let score = 0;
+
+    if (title === term) score += 1500;
+    else if (title.startsWith(term)) score += 1100;
+    else if (title.includes(term)) score += 820;
+    if (codes === term) score += 900;
+    else if (codes.includes(term)) score += 620;
+    if (keywords.includes(term)) score += 500;
+    if (chapter.includes(term)) score += 260;
+    if (summary.includes(term)) score += 220;
+
+    let matched = 0;
+    for (const token of tokens) {
+      const weighted = Math.max(
+        tokenScore(token, title) * 4.2,
+        tokenScore(token, codes) * 4,
+        tokenScore(token, keywords) * 3,
+        tokenScore(token, chapter) * 2,
+        tokenScore(token, summary) * 1.35,
+      );
+      if (weighted > 0) {
+        matched += 1;
+        score += weighted;
+      }
+    }
+    const required = tokens.length <= 2 ? tokens.length : Math.ceil(tokens.length * .75);
+    if (matched < required) return 0;
+    if (matched === tokens.length) score += 260;
+    return score;
+  }
+
+  function highlight(value, rawTerm) {
+    let text = esc(clean(value));
+    const tokens = clean(rawTerm).split(/\s+/).filter(token => token.length >= 2).slice(0, 6);
+    for (const token of tokens) {
+      const pattern = new RegExp(`(${regexEsc(esc(token))})`, 'ig');
+      text = text.replace(pattern, '<mark>$1</mark>');
+    }
+    return text;
+  }
+
+  function compactSummary(item) {
+    const value = clean(item?.summary || '');
+    if (!value) return 'Hap temën për të parë përmbajtjen klinike të plotë.';
+    return value.length > 170 ? `${value.slice(0, 167).trim()}…` : value;
+  }
+
+  function resultBadges(item) {
+    const badges = [];
+    const chapter = Number(item?.chapterNumber) || 0;
+    const lesson = Number(item?.lessonNumber) || 0;
+    if (chapter) badges.push(`<span class="hub-search-badge is-chapter">Kapitulli ${chapter}</span>`);
+    if (lesson) badges.push(`<span class="hub-search-badge">Tema ${lesson}</span>`);
+    (item?.icdCodes || []).slice(0, 2).forEach(code => badges.push(`<span class="hub-search-badge is-code">ICD‑10 ${esc(code)}</span>`));
+    const procedures = (item?.procedureCodes || []).map(entry => typeof entry === 'string' ? entry : entry?.code).filter(Boolean);
+    procedures.slice(0, 1).forEach(code => badges.push(`<span class="hub-search-badge is-procedure">${esc(code)}</span>`));
+    return badges.join('');
+  }
+
+  function renderLoading(term) {
+    panel.innerHTML = `
+      <div class="hub-search-results-head">
+        <div><strong>Kërkim global</strong><span>Në të gjithë kapitujt</span></div>
+        <span class="hub-search-results-count">Duke kërkuar “${esc(term)}”…</span>
+      </div>
+      <div class="hub-search-results-loading"><span></span><p>Po kërkoj në tituj, përmbledhje, ICD‑10, procedura dhe përmbajtje klinike…</p></div>`;
+    setExpanded(true);
+  }
+
+  function renderResults(items, rawTerm) {
+    currentResults = items;
+    activeIndex = items.length ? 0 : -1;
+    const chapters = new Set(items.map(item => Number(item.chapterNumber) || 0).filter(Boolean));
+    const shown = items.slice(0, 40);
+    panel.innerHTML = `
+      <div class="hub-search-results-head">
+        <div><strong>Kërkim global</strong><span>Në të gjithë kapitujt</span></div>
+        <span class="hub-search-results-count">${items.length} rezultate · ${chapters.size} kapituj${items.length > 40 ? ' · 40 më relevante' : ''}</span>
+      </div>
+      ${shown.length ? `<div class="hub-search-results-list">${shown.map((item, index) => {
+        const title = item.title || item.question || 'Temë klinike';
+        const chapter = clean(item?.chapter?.title || '');
+        return `
+          <div class="hub-search-result${index === 0 ? ' is-active' : ''}" id="hub-search-result-${index}" role="option" aria-selected="${index === 0 ? 'true' : 'false'}" data-search-result="${index}">
+            <div class="hub-search-result-main">
+              <div class="hub-search-result-meta">${resultBadges(item)}${chapter ? `<span class="hub-search-chapter-name">${esc(chapter)}</span>` : ''}</div>
+              <strong>${highlight(title, rawTerm)}</strong>
+              <p>${highlight(compactSummary(item), rawTerm)}</p>
+            </div>
+            <span class="hub-search-result-open" aria-hidden="true">Hap <b>→</b></span>
+          </div>`;
+      }).join('')}</div>` : `
+        <div class="hub-search-results-empty">
+          <strong>Nuk u gjet asnjë temë.</strong>
+          <span>Provo një diagnozë, simptomë, kod ICD‑10, procedurë ose emër bari. Kërkimi toleron edhe gabime të vogla në shkrim.</span>
+        </div>`}`;
+    setExpanded(true);
+    if (activeIndex >= 0) input.setAttribute('aria-activedescendant', `hub-search-result-${activeIndex}`);
+  }
+
+  function setActive(index) {
+    const options = [...panel.querySelectorAll('[data-search-result]')];
+    if (!options.length) return;
+    activeIndex = Math.max(0, Math.min(index, options.length - 1));
+    options.forEach((option, optionIndex) => {
+      const active = optionIndex === activeIndex;
+      option.classList.toggle('is-active', active);
+      option.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    const target = options[activeIndex];
+    input.setAttribute('aria-activedescendant', target.id);
+    target.scrollIntoView({ block:'nearest' });
+  }
+
+  function openResult(index) {
+    const item = currentResults[index];
+    if (!item) return;
+    setExpanded(false);
+
+    const topic = document.getElementById('learningTopic');
+    if (topic && [...topic.options].some(option => option.value === item._id)) {
+      topic.value = item._id;
+      topic.dispatchEvent(new Event('change', { bubbles:true }));
+      return;
+    }
+
+    const url = new URL('/medical-hub.html', location.origin);
+    const chapter = Number(item.chapterNumber) || 0;
+    if (chapter) url.searchParams.set('chapter', String(chapter).padStart(2, '0'));
+    if (item.slug) url.searchParams.set('topic', item.slug);
+    window.location.assign(url.pathname + url.search);
+  }
+
+  async function runSearch(rawTerm, runSequence) {
+    const term = normalize(rawTerm).slice(0, 120);
+    if (term.length < 2) {
+      currentResults = [];
+      setExpanded(false);
+      return;
+    }
+    renderLoading(rawTerm);
+
+    try {
+      const [deepPayload, indexItems] = await Promise.all([
+        api({ mode:'search', q:rawTerm }).catch(() => ({ items:[] })),
+        loadIndex(),
+      ]);
+      if (runSequence !== sequence) return;
+
+      const deep = Array.isArray(deepPayload.items) ? deepPayload.items : [];
+      const chapters = indexItems.filter(item => item?.contentKind === 'chapter');
+      const chapterMap = new Map(chapters.map(item => [Number(item.chapterNumber) || 0, item]));
+      const tokens = term.split(/\s+/).filter(Boolean).slice(0, 8);
+      const ranked = new Map();
+
+      deep.forEach((item, deepIndex) => {
+        if (!item?._id || item.contentKind === 'chapter') return;
+        const score = localScore(item, term, tokens, chapterMap) + 700 - Math.min(deepIndex, 120);
+        ranked.set(item._id, { item, score, deepIndex });
+      });
+
+      indexItems.forEach(item => {
+        if (!item?._id || item.contentKind === 'chapter') return;
+        const score = localScore(item, term, tokens, chapterMap);
+        if (score <= 0) return;
+        const existing = ranked.get(item._id);
+        if (!existing || score > existing.score) ranked.set(item._id, { item, score, deepIndex:999 });
+      });
+
+      const merged = [...ranked.values()]
+        .sort((a, b) => b.score - a.score || a.deepIndex - b.deepIndex || (Number(a.item.chapterNumber) || 999) - (Number(b.item.chapterNumber) || 999))
+        .map(entry => {
+          const item = entry.item;
+          if (!item.chapter && chapterMap.has(Number(item.chapterNumber) || 0)) {
+            return { ...item, chapter:{ title:chapterMap.get(Number(item.chapterNumber) || 0)?.title || '' } };
+          }
+          return item;
+        });
+
+      renderResults(merged, rawTerm);
+    } catch (error) {
+      if (runSequence !== sequence) return;
+      panel.innerHTML = `
+        <div class="hub-search-results-empty">
+          <strong>Kërkimi nuk u ngarkua.</strong>
+          <span>Provo përsëri pas pak. Navigimi i librit vazhdon të funksionojë normalisht.</span>
+        </div>`;
+      setExpanded(true);
+      console.error('[Medical Hub advanced search]', error);
+    }
+  }
+
+  function schedule() {
+    const rawTerm = input.value;
+    sequence += 1;
+    const runSequence = sequence;
+    window.clearTimeout(timer);
+    if (normalize(rawTerm).length < 2) {
+      currentResults = [];
+      setExpanded(false);
+      return;
+    }
+    timer = window.setTimeout(() => runSearch(rawTerm, runSequence), 220);
+  }
+
+  input.addEventListener('input', schedule);
+  input.addEventListener('focus', () => {
+    if (normalize(input.value).length >= 2 && currentResults.length) setExpanded(true);
+  });
+  input.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !panel.hidden) {
+      event.preventDefault();
+      event.stopPropagation();
+      setExpanded(false);
+      return;
+    }
+    if (panel.hidden) return;
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setActive(activeIndex + 1);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setActive(activeIndex - 1);
+    } else if (event.key === 'Enter' && activeIndex >= 0) {
+      event.preventDefault();
+      openResult(activeIndex);
+    }
+  });
+
+  panel.addEventListener('pointermove', event => {
+    const option = event.target.closest('[data-search-result]');
+    if (option) setActive(Number(option.dataset.searchResult));
+  });
+  panel.addEventListener('click', event => {
+    const option = event.target.closest('[data-search-result]');
+    if (option) openResult(Number(option.dataset.searchResult));
+  });
+  clear?.addEventListener('click', () => setExpanded(false));
+  document.addEventListener('pointerdown', event => {
+    if (!panel.hidden && !event.target.closest('#learningSearchField') && !event.target.closest('#hubSearchResults')) setExpanded(false);
+  });
+})();
+</script>
+</body>
+</html>
