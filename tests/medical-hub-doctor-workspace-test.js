@@ -9,7 +9,11 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const html = read('medical-hub.html');
 const js = read('medical-hub-v2.js');
-const css = read('medical-hub-v2.css');
+const css = [
+  read('medical-hub-v2.css'),
+  read('medical-hub-v2-base.css'),
+  read('medical-hub-book-reference.css'),
+].join('\n');
 const api = read('api/medical-hub.js');
 const imageApi = read('lib/medical-hub-image-handler.js');
 const imageProxy = require('../lib/medical-hub-image-handler.js');
