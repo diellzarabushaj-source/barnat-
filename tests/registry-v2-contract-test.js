@@ -14,8 +14,8 @@ const doseJs = fs.readFileSync(path.join(root, 'registry-v2-dose-calculator.js')
 const doseRuntime = fs.readFileSync(path.join(root, 'dose-runtime-browser.js'), 'utf8');
 
 assert.match(html, /data-drx-app="registry-v2"/);
-assert.match(html, /\/registry-v2\.css\?v=[^"\s]+/);
-assert.match(html, /\/registry-v2\.js\?v=[^"\s]+/);
+assert.match(html, /\/registry-v2\.css\?(?:v|build)=[^"\s]+/);
+assert.match(html, /\/registry-v2\.js\?(?:v|build)=[^"\s]+/);
 assert.match(html, /\/registry-v2-dose-calculator\.css\?v=[^"\s]+/);
 assert.match(html, /\/dose-core\.js\?v=drx-dose-core-v1/);
 assert.match(html, /\/dose-runtime-browser\.js\?v=drx-dose-runtime-browser-v1/);
