@@ -2,8 +2,8 @@
 /* workspace-cache-cutover-v7: purge pre-v6 shell caches after canonical sidebar migration. */
 'use strict';
 
-const VERSION = 'workspace-coherence-v7';
-const CACHE_EPOCH = '20260901-shell-v6-sidebar-v4';
+const VERSION = 'workspace-coherence-v8-search-freshness';
+const CACHE_EPOCH = '20260914-registry-search-v1';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
 const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
@@ -97,6 +97,7 @@ function manifestKey() {
 function queryKey(url) {
   const normalized = new URL(url.href);
   normalized.hash = '';
+  normalized.searchParams.set('__drx_worker', VERSION);
   normalized.searchParams.sort();
   return requestFor(normalized.href, { headers:{ Accept:'application/json' } });
 }
@@ -328,16 +329,18 @@ async function queryDataResponse(event, url) {
   const request = event.request;
   const key = queryKey(url);
   const cache = await caches.open(PRIVATE_CACHE);
-  const cached = await cache.match(key);
-  if (cached) {
-    event.waitUntil(fetch(request).then(response => putIfCacheable(PRIVATE_CACHE, key, response, { key, limit:MAX_QUERY_RESPONSES })).catch(() => null));
-    return cloneWithHeader(cached, 'X-MedIndex-Cache', 'query-hit');
-  }
   try {
-    const response = await timeoutFetch(request);
-    return putIfCacheable(PRIVATE_CACHE, key, response, { key, limit:MAX_QUERY_RESPONSES });
+    const response = await timeoutFetch(new Request(request, { cache:'no-store' }));
+    if ([401, 403].includes(response.status)) {
+      await broadcast({ type:'MEDINDEX_AUTH_INVALID' });
+      return response;
+    }
+    if (response.ok) return putIfCacheable(PRIVATE_CACHE, key, response, { key, limit:MAX_QUERY_RESPONSES });
+    return response;
   } catch {
-    return new Response(JSON.stringify({ error:'Kërkimi online nuk është i disponueshëm.', results:[], offline:true }), {
+    const cached = await cache.match(key);
+    if (cached) return cloneWithHeader(cached, 'X-MedIndex-Cache', 'query-offline-hit');
+    return new Response(JSON.stringify({ error:'Kërkimi online nuk është i disponueshëm.', results:[], rows:[], offline:true }), {
       status:503,
       headers:{ 'Content-Type':'application/json; charset=utf-8', 'X-MedIndex-Offline':'1' },
     });

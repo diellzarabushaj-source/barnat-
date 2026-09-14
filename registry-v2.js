@@ -1336,14 +1336,26 @@
   }
 
   function renderError(message) {
-    el.registryRows.innerHTML = '';
-    el.tableScroll.hidden = true;
-    el.emptyState.hidden = false;
-    el.emptyState.querySelector('h2').textContent = 'Regjistri nuk u ngarkua';
-    el.emptyState.querySelector('p').textContent = message;
-    el.resultSummary.textContent = 'Gabim gjatë ngarkimit';
-    el.requestTiming.textContent = '';
-  }
+  // Fail closed visually as well as at the API layer: never mix an error
+  // for the new query with rows left over from the previous query.
+  state.rows = [];
+  state.total = 0;
+  state.totalPages = 1;
+  state.dosageByRegistry.clear();
+  el.registryRows.innerHTML = '';
+  el.registryList.innerHTML = '';
+  el.tableScroll.hidden = true;
+  el.registryList.hidden = true;
+  el.emptyState.hidden = false;
+  el.emptyState.querySelector('h2').textContent = 'Regjistri nuk u ngarkua';
+  el.emptyState.querySelector('p').textContent = message;
+  el.resultSummary.textContent = 'Gabim gjatë ngarkimit';
+  el.requestTiming.textContent = '';
+  el.paginationSummary.textContent = 'Asnjë rezultat';
+  el.pageIndicator.textContent = '1 / 1';
+  el.prevPageButton.disabled = true;
+  el.nextPageButton.disabled = true;
+}
 
   function setBusy(busy) {
     el.appShell.setAttribute('aria-busy', busy ? 'true' : 'false');
@@ -1784,7 +1796,18 @@
     loadPage();
   }
 
-  async function init() {
+  async function refreshRegistryServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(registrations.map(registration => registration.update().catch(() => null)));
+  } catch (error) {
+    console.debug('Registry service worker refresh skipped:', error);
+  }
+}
+
+async function init() {
+  void refreshRegistryServiceWorker();
     loadSharedSidebarTaxonomy();
     const incomingAtc = clean(new URLSearchParams(location.search).get('atc')).toUpperCase().replace(/\s+/g, '');
     state.atc = /^(?:[A-Z]|[A-Z]\d{2}(?:[A-Z]{1,2})?)$/.test(incomingAtc) ? incomingAtc : '';

@@ -1,7 +1,7 @@
 /* MedIndex resilient low-bandwidth service worker */
 'use strict';
 
-const VERSION = 'low-bandwidth-v3';
+const VERSION = 'low-bandwidth-v4-search-freshness';
 const STATIC_CACHE = `medindex-static-${VERSION}`;
 const PAGE_CACHE = `medindex-pages-${VERSION}`;
 const PRIVATE_CACHE = 'medindex-private-resilient-v2';
@@ -88,6 +88,7 @@ function manifestKey() {
 function queryKey(url) {
   const normalized = new URL(url.href);
   normalized.hash = '';
+  normalized.searchParams.set('__drx_worker', VERSION);
   normalized.searchParams.sort();
   return requestFor(normalized.href, { headers:{ Accept:'application/json' } });
 }
@@ -290,19 +291,20 @@ async function queryDataResponse(event, url) {
   const request = event.request;
   const key = queryKey(url);
   const cache = await caches.open(PRIVATE_CACHE);
-  const cached = await cache.match(key);
-  if (cached) {
-    if (networkProfile.online && !networkProfile.slow && !networkProfile.saveData) {
-      event.waitUntil(refreshPrivate(request, key).then(response => response?.ok ? trimCache(cache, MAX_QUERY_RESPONSES) : null));
+
+  // Clinical search is network-first while online. Cached search results
+  // are an offline fallback only, never a substitute for an HTTP/auth error.
+  if (networkProfile.online) {
+    const response = await refreshPrivate(request, key);
+    if (response) {
+      if (response.ok) await trimCache(cache, MAX_QUERY_RESPONSES);
+      return response;
     }
-    return cloneWithHeader(cached, 'query-fast-hit');
   }
-  const response = await refreshPrivate(request, key);
-  if (response) {
-    await trimCache(cache, MAX_QUERY_RESPONSES);
-    return response;
-  }
-  return new Response(JSON.stringify({ error:'Kërkimi online nuk është i disponueshëm.', results:[], offline:true }), {
+
+  const cached = await cache.match(key);
+  if (cached) return cloneWithHeader(cached, 'query-offline-hit');
+  return new Response(JSON.stringify({ error:'Kërkimi online nuk është i disponueshëm.', results:[], rows:[], offline:true }), {
     status:503,
     headers:{ 'Content-Type':'application/json; charset=utf-8', 'X-MedIndex-Offline':'1' },
   });

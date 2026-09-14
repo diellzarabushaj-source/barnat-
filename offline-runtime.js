@@ -2,7 +2,7 @@
   'use strict';
 
   const VERSION = 'production-audit-v2';
-  const RESILIENCE_VERSION = 'low-bandwidth-v2';
+  const RESILIENCE_VERSION = 'low-bandwidth-v4-search-freshness';
   const MANIFEST_URL = `/manifest.webmanifest?v=${VERSION}`;
   const SERVICE_WORKER_URL = `/sw-resilient.js?v=${RESILIENCE_VERSION}`;
   const CLINICAL_WORKFLOW_URL = `/clinical-workflow.js?v=${VERSION}`;
