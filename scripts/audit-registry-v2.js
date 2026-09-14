@@ -48,8 +48,8 @@ const legacyAssets = [
 ];
 
 assert(/data-drx-app="registry-v2"/.test(html), 'Registry v2 document marker is missing.');
-assert(/href="\/registry-v2\.css\?v=[^"]+"/.test(html), 'Registry v2 stylesheet is not published.');
-assert(/src="\/registry-v2\.js\?v=[^"]+"/.test(html), 'Registry v2 runtime is not published.');
+assert(/href="\/registry-v2\.css\?(?:v|build)=[^"]+"/.test(html), 'Registry v2 stylesheet is not published.');
+assert(/src="\/registry-v2\.js\?(?:v|build)=[^"]+"/.test(html), 'Registry v2 runtime is not published.');
 
 const stylesheetLinks = [...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"/g)].map(match => match[1]);
 const scriptSources = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map(match => match[1]);
