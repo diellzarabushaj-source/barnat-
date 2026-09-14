@@ -1,0 +1,253 @@
+name: One-shot registry search repair
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-shot-registry-search-repair.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply global registry search repair
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              text = p.read_text()
+              if old not in text:
+                  raise SystemExit(f'Expected block not found in {path}')
+              text = text.replace(old, new, 1)
+              p.write_text(text)
+
+          # 1) Registry UI: never leave stale drugs visible after a failed query,
+          # and proactively update whichever DRx service worker controls the page.
+          old_error = """  function renderError(message) {
+            el.registryRows.innerHTML = '';
+            el.tableScroll.hidden = true;
+            el.emptyState.hidden = false;
+            el.emptyState.querySelector('h2').textContent = 'Regjistri nuk u ngarkua';
+            el.emptyState.querySelector('p').textContent = message;
+            el.resultSummary.textContent = 'Gabim gjatë ngarkimit';
+            el.requestTiming.textContent = '';
+          }
+          """
+          new_error = """  function renderError(message) {
+            // Fail closed visually as well as at the API layer. A failed search must
+            // never leave rows from the previous query on screen.
+            state.rows = [];
+            state.total = 0;
+            state.totalPages = 1;
+            state.dosageByRegistry.clear();
+            el.registryRows.innerHTML = '';
+            el.registryList.innerHTML = '';
+            el.tableScroll.hidden = true;
+            el.registryList.hidden = true;
+            el.emptyState.hidden = false;
+            el.emptyState.querySelector('h2').textContent = 'Regjistri nuk u ngarkua';
+            el.emptyState.querySelector('p').textContent = message;
+            el.resultSummary.textContent = 'Gabim gjatë ngarkimit';
+            el.requestTiming.textContent = '';
+            el.paginationSummary.textContent = 'Asnjë rezultat';
+            el.pageIndicator.textContent = '1 / 1';
+            el.prevPageButton.disabled = true;
+            el.nextPageButton.disabled = true;
+            syncPageSelection();
+          }
+          """
+          replace_once('registry-v2.js', old_error, new_error)
+
+          old_init = """  async function init() {
+            loadSharedSidebarTaxonomy();
+          """
+          new_init = """  async function refreshRegistryServiceWorker() {
+            if (!('serviceWorker' in navigator)) return;
+            try {
+              const registrations = await navigator.serviceWorker.getRegistrations();
+              await Promise.all(registrations.map(registration => registration.update().catch(() => null)));
+            } catch (error) {
+              console.debug('Registry service worker refresh skipped:', error);
+            }
+          }
+
+          async function init() {
+            // Search correctness is more important than an old offline shell. Ask the
+            // browser to check for the current worker without blocking the registry.
+            void refreshRegistryServiceWorker();
+            loadSharedSidebarTaxonomy();
+          """
+          replace_once('registry-v2.js', old_init, new_init)
+
+          # 2) Pin the registry shell to a new build URL. sw-resilient treats
+          # ?build= as immutable-by-build and will never substitute an older asset.
+          replace_once(
+              'index.html',
+              '/registry-v2.css?v=registry-v2-20260902-list-view-v2',
+              '/registry-v2.css?build=registry-search-20260914-v1',
+          )
+          replace_once(
+              'index.html',
+              '/registry-v2.js?v=registry-v2-20260902-list-view-v2',
+              '/registry-v2.js?build=registry-search-20260914-v1',
+          )
+
+          # 3) Current resilient worker: version query cache keys and make clinical
+          # searches network-first while online. Cache is fallback only when the
+          # network itself is unavailable, never after an HTTP/auth/server error.
+          replace_once(
+              'sw-resilient.js',
+              "const VERSION = 'low-bandwidth-v3';",
+              "const VERSION = 'low-bandwidth-v4-search-freshness';",
+          )
+          replace_once(
+              'sw-resilient.js',
+              """function queryKey(url) {
+            const normalized = new URL(url.href);
+            normalized.hash = '';
+            normalized.searchParams.sort();
+            return requestFor(normalized.href, { headers:{ Accept:'application/json' } });
+          }
+          """,
+              """function queryKey(url) {
+            const normalized = new URL(url.href);
+            normalized.hash = '';
+            // A worker release gets its own query namespace. Old medication-search
+            // responses can never masquerade as results from the current build.
+            normalized.searchParams.set('__drx_worker', VERSION);
+            normalized.searchParams.sort();
+            return requestFor(normalized.href, { headers:{ Accept:'application/json' } });
+          }
+          """,
+          )
+          p = Path('sw-resilient.js')
+          text = p.read_text()
+          pattern = re.compile(r"async function queryDataResponse\(event, url\) \{.*?\n\}\n\nfunction parseRange", re.S)
+          replacement = """async function queryDataResponse(event, url) {
+            const request = event.request;
+            const key = queryKey(url);
+            const cache = await caches.open(PRIVATE_CACHE);
+
+            // Medication/ICD search is network-first whenever the device is online.
+            // Cached clinical query results are only an offline fallback.
+            if (networkProfile.online) {
+              const response = await refreshPrivate(request, key);
+              if (response) {
+                if (response.ok) await trimCache(cache, MAX_QUERY_RESPONSES);
+                return response;
+              }
+            }
+
+            const cached = await cache.match(key);
+            if (cached) return cloneWithHeader(cached, 'query-offline-hit');
+            return new Response(JSON.stringify({ error:'Kërkimi online nuk është i disponueshëm.', results:[], rows:[], offline:true }), {
+              status:503,
+              headers:{ 'Content-Type':'application/json; charset=utf-8', 'X-MedIndex-Offline':'1' },
+            });
+          }
+
+          function parseRange"""
+          text2, count = pattern.subn(replacement, text, count=1)
+          if count != 1:
+              raise SystemExit('Could not replace sw-resilient queryDataResponse')
+          p.write_text(text2)
+
+          # 4) Legacy worker gets the same fail-fresh behavior so browsers that still
+          # have /sw.js registered are repaired too.
+          replace_once(
+              'sw.js',
+              "const VERSION = 'workspace-coherence-v7';",
+              "const VERSION = 'workspace-coherence-v8-search-freshness';",
+          )
+          replace_once(
+              'sw.js',
+              "const CACHE_EPOCH = '20260901-shell-v6-sidebar-v4';",
+              "const CACHE_EPOCH = '20260914-registry-search-v1';",
+          )
+          replace_once(
+              'sw.js',
+              """function queryKey(url) {
+            const normalized = new URL(url.href);
+            normalized.hash = '';
+            normalized.searchParams.sort();
+            return requestFor(normalized.href, { headers:{ Accept:'application/json' } });
+          }
+          """,
+              """function queryKey(url) {
+            const normalized = new URL(url.href);
+            normalized.hash = '';
+            normalized.searchParams.set('__drx_worker', VERSION);
+            normalized.searchParams.sort();
+            return requestFor(normalized.href, { headers:{ Accept:'application/json' } });
+          }
+          """,
+          )
+          p = Path('sw.js')
+          text = p.read_text()
+          pattern = re.compile(r"async function queryDataResponse\(event, url\) \{.*?\n\}\n\nfunction parseRange", re.S)
+          replacement = """async function queryDataResponse(event, url) {
+            const request = event.request;
+            const key = queryKey(url);
+            const cache = await caches.open(PRIVATE_CACHE);
+            try {
+              const response = await timeoutFetch(request);
+              if ([401, 403].includes(response.status)) {
+                await broadcast({ type:'MEDINDEX_AUTH_INVALID' });
+                return response;
+              }
+              if (response.ok) return putIfCacheable(PRIVATE_CACHE, key, response, { key, limit:MAX_QUERY_RESPONSES });
+              return response;
+            } catch {
+              const cached = await cache.match(key);
+              if (cached) return cloneWithHeader(cached, 'X-MedIndex-Cache', 'query-offline-hit');
+              return new Response(JSON.stringify({ error:'Kërkimi online nuk është i disponueshëm.', results:[], rows:[], offline:true }), {
+                status:503,
+                headers:{ 'Content-Type':'application/json; charset=utf-8', 'X-MedIndex-Offline':'1' },
+              });
+            }
+          }
+
+          function parseRange"""
+          text2, count = pattern.subn(replacement, text, count=1)
+          if count != 1:
+              raise SystemExit('Could not replace sw.js queryDataResponse')
+          p.write_text(text2)
+
+          # 5) Pages that register the resilient worker now request the same release.
+          replace_once(
+              'offline-runtime.js',
+              "const RESILIENCE_VERSION = 'low-bandwidth-v2';",
+              "const RESILIENCE_VERSION = 'low-bandwidth-v4-search-freshness';",
+          )
+          PY
+
+      - name: Validate changed runtimes
+        run: |
+          node --check registry-v2.js
+          node --check sw-resilient.js
+          node --check sw.js
+          node --check offline-runtime.js
+          node tests/phase3-ranked-registry-search-test.js
+          node tests/registry-page-api-test.js
+          node tests/vercel-hobby-function-budget-test.js
+
+      - name: Commit repair directly to main
+        shell: bash
+        run: |
+          rm -f .github/workflows/one-shot-registry-search-repair.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add registry-v2.js index.html sw-resilient.js sw.js offline-runtime.js .github/workflows/one-shot-registry-search-repair.yml
+          git commit -m "fix(registry): make search fresh and fail cleanly for all drugs"
+          git push origin HEAD:main
