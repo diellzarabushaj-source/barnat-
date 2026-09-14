@@ -1,0 +1,151 @@
+/* Medical Hub — source-faithful Rx layout.
+   Keeps one source number per treatment group and renders alternatives as OSE. */
+
+html[data-drx-app="medical-hub-v2"] .ck-book-rx{
+  margin:10px 0 18px;
+  overflow:hidden;
+  border:1px solid #a9c0ce;
+  border-radius:0;
+  background:#fff;
+  box-shadow:none;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-head{
+  min-height:46px;
+  display:grid;
+  grid-template-columns:52px minmax(0,1fr);
+  align-items:stretch;
+  padding:0;
+  border:0;
+  border-bottom:1px solid #a9c0ce;
+  background:#c9dce7;
+  color:#1b4d48;
+}
+
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-head>span{
+  display:grid;
+  place-items:center;
+  padding:0 8px;
+  background:#46657b;
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+}
+
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-head>strong{
+  display:flex;
+  align-items:center;
+  min-width:0;
+  padding:10px 14px;
+  color:#235e56;
+  font-size:15px;
+  font-weight:800;
+  line-height:1.2;
+}
+
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-body{
+  display:block;
+  padding:0;
+}
+
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-group{
+  display:grid;
+  grid-template-columns:48px minmax(0,1fr);
+  gap:0;
+  margin:0;
+  padding:0;
+  border:0;
+  border-bottom:1px solid #e0e7eb;
+  background:#fff;
+}
+
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-group:last-child{
+  border-bottom:0;
+}
+
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-number{
+  display:block;
+  padding:15px 10px 14px 17px;
+  color:#6c8683;
+  font-size:12px;
+  font-weight:800;
+  line-height:1.35;
+}
+
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy{
+  min-width:0;
+  padding:14px 18px 15px 0;
+  color:#425c59;
+  font-size:13px;
+  line-height:1.55;
+}
+
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy>strong{
+  display:block;
+  margin:0 0 6px;
+  color:#244f4a;
+  font-size:13.5px;
+  font-weight:800;
+  line-height:1.35;
+}
+
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-lines{
+  display:grid;
+  gap:5px;
+}
+
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-line{
+  min-width:0;
+  color:#4b625f;
+  font-size:13px;
+  line-height:1.5;
+}
+
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-alternative{
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  align-items:start;
+  gap:5px;
+  margin:1px 0;
+  color:#4b625f;
+  font-size:13px;
+  line-height:1.5;
+}
+
+/* The renderer historically emitted the English label OR. The Medical Hub
+   Albanian reader displays the same source relation as OSE. */
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-alternative>span{
+  display:block;
+  min-width:0;
+  overflow:hidden;
+  color:#007b69;
+  font-size:0;
+  font-weight:800;
+  line-height:1.5;
+  white-space:nowrap;
+}
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-alternative>span::after{
+  content:"OSE";
+  font-size:11px;
+  letter-spacing:.01em;
+}
+
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-note{
+  display:block;
+  margin-top:7px;
+  color:#6b7775;
+  font-size:10.5px;
+  line-height:1.45;
+}
+
+@media(max-width:760px){
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-head{grid-template-columns:44px minmax(0,1fr)}
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-group{grid-template-columns:38px minmax(0,1fr)}
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-number{padding:13px 6px 12px 11px;font-size:11px}
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy{padding:12px 12px 13px 0;font-size:12.5px}
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy>strong{font-size:13px}
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-line,
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-alternative{font-size:12.5px}
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-alternative{grid-template-columns:36px minmax(0,1fr)}
+}
