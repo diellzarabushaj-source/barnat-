@@ -1,49 +1,578 @@
-/* Medical Hub — textbook page treatment based on the supplied clinical-book reference. */
-:root{--book-navy:#123f68;--book-blue:#d9e7f0;--book-blue-2:#edf4f8;--book-ink:#202a31;--book-muted:#5f6b73;--book-paper:#fffef9;--book-edge:#d8d7d1}
-html[data-drx-app="medical-hub-v2"] .hub-reader-pane{padding:22px;background:#e8ecef;border-radius:12px}
-html[data-drx-app="medical-hub-v2"] .hub-document{position:relative;max-width:980px;margin:0 auto;background:var(--book-paper);border:1px solid var(--book-edge);border-radius:2px;box-shadow:0 16px 38px rgba(31,43,55,.14);overflow:visible;color:var(--book-ink)}
-html[data-drx-app="medical-hub-v2"] .hub-document:before{content:"";position:absolute;z-index:0;left:-13px;top:70px;width:13px;height:360px;border-radius:5px 0 0 5px;background:linear-gradient(to bottom,#ea9aa5 0 10%,#d7abc7 10% 20%,#b8c9de 20% 30%,#9ebc9e 30% 40%,#e5d38a 40% 50%,#b2c6bd 50% 60%,#cab1d1 60% 70%,#a5b5cf 70% 80%,#c9bfd8 80% 90%,#dbb38b 90% 100%)}
-html[data-drx-app="medical-hub-v2"] .ck-document-inner{position:relative;z-index:1;padding:36px 42px 44px;background:transparent}
-html[data-drx-app="medical-hub-v2"] .ck-detail-head{margin:0 0 20px;padding:0 0 13px;border-bottom:1px solid #cbd2d8;background:transparent}
-html[data-drx-app="medical-hub-v2"] .ck-detail-title-row{align-items:flex-start;gap:18px}
-html[data-drx-app="medical-hub-v2"] .ck-detail-head h2{margin:3px 0 0;color:var(--book-navy);font-family:Arial,Helvetica,sans-serif;font-size:clamp(25px,3vw,34px);font-weight:800;line-height:1.04;letter-spacing:.01em;text-transform:uppercase}
-html[data-drx-app="medical-hub-v2"] .ck-kicker{margin:0 0 5px;color:#3d4f5e;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-html[data-drx-app="medical-hub-v2"] .ck-meta{gap:6px;margin-top:11px}
-html[data-drx-app="medical-hub-v2"] .ck-chip{border-radius:3px;border-color:#cfd9e0;background:#f6f9fb;color:#465b6b;font-size:9px;box-shadow:none}
-html[data-drx-app="medical-hub-v2"] .ck-review-badge{border-radius:3px;box-shadow:none}
-html[data-drx-app="medical-hub-v2"] .ck-quick-summary{margin-top:13px;padding:10px 12px;border:0;border-left:3px solid var(--book-navy);border-radius:0;background:#f2f5f6}
-html[data-drx-app="medical-hub-v2"] .ck-quick-summary span{color:var(--book-navy);font-weight:800}
-html[data-drx-app="medical-hub-v2"] .ck-quick-summary p{color:#313c43;line-height:1.52}
-html[data-drx-app="medical-hub-v2"] .ck-section{margin:18px 0 0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
-html[data-drx-app="medical-hub-v2"] .ck-section-heading{min-height:34px;margin:0 0 9px;padding:6px 10px;display:flex;align-items:center;gap:9px;border:0;border-radius:0;background:linear-gradient(90deg,#cfdee8 0,#e8f0f5 78%,transparent 100%);cursor:default}
+/* Medical Hub — clinical textbook page UI refined from the supplied reference. */
+:root{
+  --book-navy:#153f65;
+  --book-navy-deep:#103652;
+  --book-blue:#d3e1ea;
+  --book-blue-strong:#c5d9e5;
+  --book-blue-soft:#edf3f6;
+  --book-ink:#11181e;
+  --book-muted:#53616b;
+  --book-paper:#fbfaf5;
+  --book-paper-2:#f7f5ee;
+  --book-rule:#c8ccd0;
+  --book-edge:#d8d5cb;
+}
+
+/* Page canvas ------------------------------------------------------------- */
+html[data-drx-app="medical-hub-v2"] .hub-reader-pane{
+  padding:30px 34px 42px;
+  background:#dfe4e7;
+  border:0;
+  border-radius:10px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.68);
+}
+
+html[data-drx-app="medical-hub-v2"] .hub-document{
+  position:relative;
+  isolation:isolate;
+  width:min(100%,900px);
+  max-width:900px;
+  min-height:1040px;
+  margin:0 auto;
+  overflow:visible;
+  color:var(--book-ink);
+  border:1px solid var(--book-edge);
+  border-radius:1px 3px 3px 1px;
+  background:
+    radial-gradient(circle at 19% 11%,rgba(55,71,82,.022),transparent 30%),
+    radial-gradient(circle at 78% 72%,rgba(64,73,78,.018),transparent 35%),
+    linear-gradient(90deg,#f7f5ef 0,#fffefa 4.5%,#fffef9 94%,#f4f1e8 100%);
+  box-shadow:
+    0 30px 62px rgba(31,41,48,.18),
+    0 7px 18px rgba(31,41,48,.08),
+    inset 12px 0 18px rgba(91,86,75,.025),
+    inset -1px 0 rgba(83,79,69,.09);
+}
+
+/* Colored specialty tabs from the reference book. */
+html[data-drx-app="medical-hub-v2"] .hub-document::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:-28px;
+  top:84px;
+  width:28px;
+  height:616px;
+  border-radius:8px 0 0 8px;
+  background:
+    linear-gradient(to bottom,
+      #eca3a8 0 7.14%,
+      #d8adc4 7.14% 14.28%,
+      #b7c8db 14.28% 21.42%,
+      #a5c2a6 21.42% 28.56%,
+      #e3d18b 28.56% 35.70%,
+      #b6c9c0 35.70% 42.84%,
+      #caaed0 42.84% 49.98%,
+      #a8b7cf 49.98% 57.12%,
+      #c8bfd8 57.12% 64.26%,
+      #b8cfb6 64.26% 71.40%,
+      #dfc6a2 71.40% 78.54%,
+      #d8b8a5 78.54% 85.68%,
+      #b7c9d7 85.68% 92.82%,
+      #d6c5a6 92.82% 100%);
+  box-shadow:-2px 4px 7px rgba(33,38,42,.11),inset -1px 0 rgba(0,0,0,.08);
+}
+
+/* The faint right-page edge/crease makes the reader feel like an open handbook. */
+html[data-drx-app="medical-hub-v2"] .hub-document::after{
+  content:"";
+  position:absolute;
+  z-index:3;
+  top:0;
+  right:-8px;
+  width:13px;
+  height:100%;
+  pointer-events:none;
+  background:linear-gradient(90deg,rgba(92,88,78,.08),rgba(255,255,255,.3) 45%,rgba(66,60,52,.05));
+  border-radius:0 3px 3px 0;
+}
+
+html[data-drx-app="medical-hub-v2"] .ck-document-inner{
+  position:relative;
+  z-index:1;
+  min-height:1038px;
+  padding:38px 48px 52px 52px;
+  background:transparent;
+}
+
+/* Header ----------------------------------------------------------------- */
+html[data-drx-app="medical-hub-v2"] .ck-detail-head{
+  position:relative;
+  margin:0 0 14px;
+  padding:12px 0 10px;
+  border-top:1px solid #b9bdc1;
+  border-bottom:0;
+  background:transparent;
+}
+html[data-drx-app="medical-hub-v2"] .ck-detail-head::before{
+  content:"";
+  position:absolute;
+  top:-1px;
+  left:0;
+  width:47%;
+  height:1px;
+  background:#8f969c;
+}
+html[data-drx-app="medical-hub-v2"] .ck-detail-title-row{
+  align-items:flex-start;
+  gap:14px;
+}
+html[data-drx-app="medical-hub-v2"] .ck-detail-title-row>div:first-child{
+  min-width:0;
+  flex:1;
+}
+html[data-drx-app="medical-hub-v2"] .ck-kicker{
+  margin:0 0 14px;
+  color:#303b43;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:9.5px;
+  font-weight:700;
+  line-height:1.15;
+  letter-spacing:.035em;
+  text-transform:uppercase;
+}
+html[data-drx-app="medical-hub-v2"] .ck-detail-head h2{
+  margin:0;
+  max-width:86%;
+  color:var(--book-navy);
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:clamp(27px,3.25vw,38px);
+  font-weight:800;
+  line-height:1.02;
+  letter-spacing:.005em;
+  text-transform:uppercase;
+}
+
+/* Web-app metadata is retained but made visually secondary, like book colophon data. */
+html[data-drx-app="medical-hub-v2"] .ck-meta{
+  gap:5px;
+  margin:10px 0 0;
+}
+html[data-drx-app="medical-hub-v2"] .ck-chip{
+  min-height:20px;
+  padding:3px 6px;
+  border:1px solid #d3d8dc;
+  border-radius:2px;
+  background:#f6f6f3;
+  color:#59666f;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:8.5px;
+  font-weight:600;
+  box-shadow:none;
+}
+html[data-drx-app="medical-hub-v2"] .ck-review-badge{
+  min-height:21px;
+  padding:3px 7px;
+  border-radius:2px;
+  border-color:#d0d5d8;
+  box-shadow:none;
+  font-size:8.5px;
+}
+html[data-drx-app="medical-hub-v2"] .ck-review-dot{width:5px;height:5px}
+
+/* Summary becomes a textbook-style key-point box. */
+html[data-drx-app="medical-hub-v2"] .ck-quick-summary{
+  width:min(100%,58%);
+  margin:16px 0 2px;
+  padding:0;
+  overflow:hidden;
+  border:0;
+  border-radius:0;
+  background:#dce3e7;
+  box-shadow:none;
+}
+html[data-drx-app="medical-hub-v2"] .ck-quick-summary span{
+  display:block;
+  width:max-content;
+  min-width:106px;
+  padding:5px 10px 4px;
+  background:#3f5669;
+  color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:10px;
+  font-weight:800;
+  line-height:1.15;
+}
+html[data-drx-app="medical-hub-v2"] .ck-quick-summary p{
+  margin:0;
+  padding:10px 12px 11px;
+  color:#202a31;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:11.5px;
+  line-height:1.42;
+}
+
+/* Source block is preserved, but no longer reads like a website card. */
+html[data-drx-app="medical-hub-v2"] .ck-source-panel{
+  margin:3px 0 15px;
+  padding:6px 0 7px;
+  border:0;
+  border-top:1px solid #e1e1dc;
+  border-bottom:1px solid #e1e1dc;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  color:#647078;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-panel strong{color:#46545e}
+html[data-drx-app="medical-hub-v2"] .ck-source-panel a{color:#405f76;text-decoration:none}
+html[data-drx-app="medical-hub-v2"] .ck-source-panel a:hover{text-decoration:underline}
+html[data-drx-app="medical-hub-v2"] .ck-review-warning{
+  margin:10px 0 14px;
+  padding:9px 11px;
+  border:1px solid #dfc5b1;
+  border-radius:0;
+  background:#f8efe6;
+  box-shadow:none;
+}
+
+/* Section bars ----------------------------------------------------------- */
+html[data-drx-app="medical-hub-v2"] .ck-section{
+  position:relative;
+  clear:both;
+  margin:17px 0 0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  overflow:visible;
+}
+html[data-drx-app="medical-hub-v2"] .ck-section-heading{
+  min-height:28px;
+  width:66%;
+  margin:0 0 6px;
+  padding:5px 9px 4px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  border:0;
+  border-radius:0;
+  background:linear-gradient(90deg,var(--book-blue-strong) 0,#d7e4ec 76%,rgba(215,228,236,.16) 100%);
+  cursor:default;
+  box-shadow:none;
+}
 html[data-drx-app="medical-hub-v2"] .ck-section-heading>span{display:none}
-html[data-drx-app="medical-hub-v2"] .ck-section-heading h3,html[data-drx-app="medical-hub-v2"] .ck-section-heading h4{margin:0;color:#173c5d;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:800;line-height:1.25}
-html[data-drx-app="medical-hub-v2"] .ck-section-fold{margin-left:auto;width:28px;height:28px;border:0;background:transparent;color:#536b7c}
-html[data-drx-app="medical-hub-v2"] .ck-section-body,html[data-drx-app="medical-hub-v2"] .ck-source-paragraph,html[data-drx-app="medical-hub-v2"] .ck-source-list-block{font-family:Arial,Helvetica,sans-serif;color:#283139;font-size:13px;line-height:1.48}
-html[data-drx-app="medical-hub-v2"] .ck-source-list-block{margin:7px 0 11px;padding-left:23px}
-html[data-drx-app="medical-hub-v2"] .ck-source-list-block li{margin:5px 0;padding-left:2px}
-html[data-drx-app="medical-hub-v2"] .ck-inline-mark{padding:1px 3px;border-radius:0;background:#cfe0ef;color:#173c5d}
-html[data-drx-app="medical-hub-v2"] .ck-source-subheading,html[data-drx-app="medical-hub-v2"] .ck-subsection-title{margin:13px 0 5px;color:#183e60;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:800}
-html[data-drx-app="medical-hub-v2"] .ck-subsection,html[data-drx-app="medical-hub-v2"] .ck-modern-block{margin:13px 0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
-html[data-drx-app="medical-hub-v2"] .ck-clinical-callout{margin:12px 0;padding:10px 12px;border:0;border-left:4px solid #7191a9;border-radius:0;background:#edf3f6;box-shadow:none}
-html[data-drx-app="medical-hub-v2"] .ck-clinical-callout.is-danger{border-left-color:#b34747;background:#f7eceb}
-html[data-drx-app="medical-hub-v2"] .ck-clinical-callout.is-warning{border-left-color:#bc8a2e;background:#faf4e5}
-html[data-drx-app="medical-hub-v2"] .ck-clinical-callout.is-success{border-left-color:#4b7d68;background:#edf5f1}
-html[data-drx-app="medical-hub-v2"] .ck-figure{width:min(100%,320px);margin:10px auto 14px;border:0;border-radius:0;background:transparent;box-shadow:none}
-html[data-drx-app="medical-hub-v2"] .ck-figure-media{display:block;padding:0;border:0;border-radius:0;background:#f0f0ed;overflow:hidden}
-html[data-drx-app="medical-hub-v2"] .ck-figure img{display:block;width:100%;height:auto;max-height:320px;object-fit:contain}
-html[data-drx-app="medical-hub-v2"] .ck-figure figcaption{padding:6px 0 0;color:#52616b;font-size:9.5px;line-height:1.35;background:transparent}
-html[data-drx-app="medical-hub-v2"] .ck-figure figcaption strong{display:block;color:#3e4d57}
+html[data-drx-app="medical-hub-v2"] .ck-section-heading h3,
+html[data-drx-app="medical-hub-v2"] .ck-section-heading h4{
+  margin:0;
+  color:#173c5d;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:14px;
+  font-weight:800;
+  line-height:1.15;
+  letter-spacing:.005em;
+}
+html[data-drx-app="medical-hub-v2"] .ck-section-fold{
+  margin-left:auto;
+  width:22px;
+  height:22px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:#4f687a;
+  opacity:.56;
+}
+html[data-drx-app="medical-hub-v2"] .ck-section-fold:hover{opacity:1;background:rgba(255,255,255,.35)}
+
+/* Book typography -------------------------------------------------------- */
+html[data-drx-app="medical-hub-v2"] .ck-section-body,
+html[data-drx-app="medical-hub-v2"] .ck-source-paragraph,
+html[data-drx-app="medical-hub-v2"] .ck-source-list-block,
+html[data-drx-app="medical-hub-v2"] .ck-subsection,
+html[data-drx-app="medical-hub-v2"] .ck-modern-block{
+  font-family:Arial,Helvetica,sans-serif;
+  color:#161d22;
+  font-size:12.3px;
+  line-height:1.38;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-paragraph{
+  margin:5px 0 8px;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-list-block{
+  margin:4px 0 10px;
+  padding-left:19px;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-list-block li{
+  margin:3px 0;
+  padding-left:1px;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-list-block li::marker{font-size:.9em;color:#11181e}
+html[data-drx-app="medical-hub-v2"] .ck-source-subheading,
+html[data-drx-app="medical-hub-v2"] .ck-subsection-title{
+  margin:10px 0 4px;
+  color:#173c5d;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:13px;
+  font-weight:800;
+  line-height:1.2;
+}
+html[data-drx-app="medical-hub-v2"] .ck-subsection,
+html[data-drx-app="medical-hub-v2"] .ck-modern-block{
+  margin:9px 0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+
+/* Highlights exactly like the blue marker strips in the reference. */
+html[data-drx-app="medical-hub-v2"] .ck-inline-mark,
+html[data-drx-app="medical-hub-v2"] mark{
+  padding:1px 3px 2px;
+  border-radius:0;
+  background:#bfd6e6;
+  color:#163b5c;
+  box-decoration-break:clone;
+  -webkit-box-decoration-break:clone;
+}
+html[data-drx-app="medical-hub-v2"] .ck-inline-bold{font-weight:800}
+
+/* Figures --------------------------------------------------------------- */
+html[data-drx-app="medical-hub-v2"] .ck-medical-figure{
+  margin:6px 0 12px;
+  padding:0;
+  display:block;
+}
+html[data-drx-app="medical-hub-v2"] .ck-figure{
+  width:min(100%,286px);
+  margin:0 auto 10px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+html[data-drx-app="medical-hub-v2"] .ck-figure-media{
+  display:block;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:#f0efea;
+  overflow:hidden;
+  box-shadow:none;
+}
+html[data-drx-app="medical-hub-v2"] .ck-figure img{
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:285px;
+  object-fit:contain;
+  filter:saturate(.96) contrast(1.01);
+}
+html[data-drx-app="medical-hub-v2"] .ck-figure figcaption{
+  padding:5px 2px 0;
+  color:#303b43;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:8.8px;
+  line-height:1.25;
+  text-align:center;
+  background:transparent;
+}
+html[data-drx-app="medical-hub-v2"] .ck-figure figcaption strong{display:block;color:#27343d;font-weight:700}
+html[data-drx-app="medical-hub-v2"] .ck-figure figcaption span{display:block}
+html[data-drx-app="medical-hub-v2"] .ck-figure figcaption a{font-size:8px;color:#64717a;text-decoration:none}
 html[data-drx-app="medical-hub-v2"] .ck-figure-zoom{display:none}
-html[data-drx-app="medical-hub-v2"] .ck-medical-figure{display:grid;place-items:center}
-html[data-drx-app="medical-hub-v2"] .ck-medical-table-wrap{border:1px solid #bcc9d1;border-radius:0;box-shadow:none}
-html[data-drx-app="medical-hub-v2"] .ck-medical-table{font-family:Arial,Helvetica,sans-serif;font-size:11px}
-html[data-drx-app="medical-hub-v2"] .ck-medical-table th{background:#dbe7ef;color:#244761}
-html[data-drx-app="medical-hub-v2"] .ck-rx-sheet,html[data-drx-app="medical-hub-v2"] .ck-book-rx{border:1px solid #c9d5dd;border-radius:0;background:#fff;box-shadow:none}
-html[data-drx-app="medical-hub-v2"] .ck-rx-sheet-head,html[data-drx-app="medical-hub-v2"] .ck-book-rx-head{background:#dbe7ef;color:#183e60;border-radius:0}
-html[data-drx-app="medical-hub-v2"] .ck-source-panel{margin:12px 0 16px;padding:9px 11px;border:1px solid #dbe1e5;border-radius:0;background:#f7f8f7;box-shadow:none}
-html[data-drx-app="medical-hub-v2"] .ck-review-warning{border-radius:0;box-shadow:none}
-html[data-drx-app="medical-hub-v2"] .ck-chapter-focus-card,html[data-drx-app="medical-hub-v2"] .ck-chapter-lesson{border-radius:0;box-shadow:none}
+html[data-drx-app="medical-hub-v2"] .ck-source-locator{font-size:8px;color:#69757d}
+
+/* Clinical callouts ------------------------------------------------------ */
+html[data-drx-app="medical-hub-v2"] .ck-clinical-callout{
+  width:min(100%,58%);
+  margin:12px 0;
+  padding:0 0 9px;
+  overflow:hidden;
+  border:0;
+  border-radius:0;
+  background:#dfe5e8;
+  box-shadow:none;
+}
+html[data-drx-app="medical-hub-v2"] .ck-clinical-callout>strong{
+  display:block;
+  width:max-content;
+  min-width:92px;
+  padding:4px 9px;
+  background:#43596a;
+  color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:10px;
+  font-weight:800;
+}
+html[data-drx-app="medical-hub-v2"] .ck-clinical-callout>div{padding:7px 10px 0}
+html[data-drx-app="medical-hub-v2"] .ck-clinical-callout.is-danger{background:#f4e7e5}
+html[data-drx-app="medical-hub-v2"] .ck-clinical-callout.is-danger>strong{background:#8f4b48}
+html[data-drx-app="medical-hub-v2"] .ck-clinical-callout.is-warning{background:#f6eedb}
+html[data-drx-app="medical-hub-v2"] .ck-clinical-callout.is-warning>strong{background:#8c6d33}
+html[data-drx-app="medical-hub-v2"] .ck-clinical-callout.is-success{background:#e6efe9}
+html[data-drx-app="medical-hub-v2"] .ck-clinical-callout.is-success>strong{background:#4f7664}
+
+/* Tables ---------------------------------------------------------------- */
+html[data-drx-app="medical-hub-v2"] .ck-medical-table-block{clear:both}
+html[data-drx-app="medical-hub-v2"] .ck-medical-table-wrap{
+  overflow:auto;
+  border:1px solid #aebdc7;
+  border-radius:0;
+  background:#fffefb;
+  box-shadow:none;
+}
+html[data-drx-app="medical-hub-v2"] .ck-medical-table{
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:10.6px;
+  line-height:1.3;
+}
+html[data-drx-app="medical-hub-v2"] .ck-medical-table th{
+  padding:6px 7px;
+  border-color:#bac7cf;
+  background:#d5e3eb;
+  color:#213f55;
+  font-weight:800;
+}
+html[data-drx-app="medical-hub-v2"] .ck-medical-table td{
+  padding:6px 7px;
+  border-color:#d6dddf;
+  color:#202a31;
+  background:#fffefb;
+}
+html[data-drx-app="medical-hub-v2"] .ck-medical-table tbody tr:nth-child(even) td{background:#fafaf6}
+
+/* Rx blocks ------------------------------------------------------------- */
+html[data-drx-app="medical-hub-v2"] .ck-rx-sheet,
+html[data-drx-app="medical-hub-v2"] .ck-book-rx{
+  clear:both;
+  margin:12px 0;
+  border:1px solid #b8c7d0;
+  border-radius:0;
+  background:#fffefb;
+  box-shadow:none;
+}
+html[data-drx-app="medical-hub-v2"] .ck-rx-sheet-head,
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-head{
+  min-height:31px;
+  padding:5px 8px;
+  border-radius:0;
+  border-bottom:1px solid #b7c7d0;
+  background:#d1e0e9;
+  color:#173c5d;
+}
+html[data-drx-app="medical-hub-v2"] .ck-rx-sheet-head>span,
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-head>span{
+  background:#35536a;
+  color:#fff;
+  border-radius:0;
+}
+html[data-drx-app="medical-hub-v2"] .ck-rx-lines,
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-body{font-family:Arial,Helvetica,sans-serif}
+html[data-drx-app="medical-hub-v2"] .ck-rx-line{border-color:#e0e3e3}
+
+/* Chapter / index views inherit the same book language. */
+html[data-drx-app="medical-hub-v2"] .ck-chapter-focus-card,
+html[data-drx-app="medical-hub-v2"] .ck-chapter-lesson{
+  border-radius:0;
+  border-color:#ccd5da;
+  background:#fffef9;
+  box-shadow:none;
+}
+html[data-drx-app="medical-hub-v2"] .ck-chapter-focus-card>span,
+html[data-drx-app="medical-hub-v2"] .ck-chapter-lesson-no{color:#31546e}
 html[data-drx-app="medical-hub-v2"] .ck-status{font-family:Arial,Helvetica,sans-serif}
-@media(min-width:900px){html[data-drx-app="medical-hub-v2"] .ck-section-body>.ck-medical-figure:nth-child(odd),html[data-drx-app="medical-hub-v2"] .ck-section-body>.ck-figure:nth-child(odd){float:right;margin:2px 0 12px 22px;max-width:34%}html[data-drx-app="medical-hub-v2"] .ck-section-body:after{content:"";display:block;clear:both}}
-@media(max-width:760px){html[data-drx-app="medical-hub-v2"] .hub-reader-pane{padding:8px;background:#e7eaec;border-radius:8px}html[data-drx-app="medical-hub-v2"] .hub-document{border-radius:1px;box-shadow:0 8px 22px rgba(30,39,47,.12)}html[data-drx-app="medical-hub-v2"] .hub-document:before{left:-6px;width:6px;top:54px;height:250px}html[data-drx-app="medical-hub-v2"] .ck-document-inner{padding:23px 18px 30px}html[data-drx-app="medical-hub-v2"] .ck-detail-head h2{font-size:23px}html[data-drx-app="medical-hub-v2"] .ck-section-heading{margin-left:-2px;margin-right:-2px;padding:6px 8px}html[data-drx-app="medical-hub-v2"] .ck-section-body,html[data-drx-app="medical-hub-v2"] .ck-source-paragraph,html[data-drx-app="medical-hub-v2"] .ck-source-list-block{font-size:12.5px;line-height:1.48}html[data-drx-app="medical-hub-v2"] .ck-figure{width:100%;max-width:310px}html[data-drx-app="medical-hub-v2"] .ck-source-panel{font-size:10px}}
+
+/* Desktop book-page composition: copy stays left, figures stack in a right rail. */
+@media(min-width:900px){
+  html[data-drx-app="medical-hub-v2"] .ck-section-body::after{content:"";display:block;clear:both}
+  html[data-drx-app="medical-hub-v2"] .ck-section-body>.ck-medical-figure,
+  html[data-drx-app="medical-hub-v2"] .ck-section-body>.ck-figure{
+    float:right;
+    clear:right;
+    width:30%;
+    max-width:30%;
+    margin:0 0 13px 23px;
+  }
+  html[data-drx-app="medical-hub-v2"] .ck-section-body>.ck-medical-figure .ck-figure{width:100%;max-width:none}
+  html[data-drx-app="medical-hub-v2"] .ck-section-body>.ck-source-paragraph,
+  html[data-drx-app="medical-hub-v2"] .ck-section-body>.ck-source-list-block{
+    max-width:69%;
+  }
+  html[data-drx-app="medical-hub-v2"] .ck-section-body>.ck-subsection,
+  html[data-drx-app="medical-hub-v2"] .ck-section-body>.ck-modern-block:not(.ck-medical-figure):not(.ck-medical-table-block):not(.ck-modern-prescriptions){
+    max-width:69%;
+  }
+  html[data-drx-app="medical-hub-v2"] .ck-medical-table-block,
+  html[data-drx-app="medical-hub-v2"] .ck-modern-prescriptions,
+  html[data-drx-app="medical-hub-v2"] .ck-rx-sheet,
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx{max-width:100%}
+}
+
+/* Tablet ---------------------------------------------------------------- */
+@media(max-width:980px){
+  html[data-drx-app="medical-hub-v2"] .hub-reader-pane{padding:18px 20px 28px}
+  html[data-drx-app="medical-hub-v2"] .hub-document{min-height:0}
+  html[data-drx-app="medical-hub-v2"] .ck-document-inner{min-height:0;padding:34px 38px 44px 42px}
+  html[data-drx-app="medical-hub-v2"] .hub-document::before{left:-20px;width:20px;height:560px}
+}
+
+/* Mobile: same page, simply collapsed to one readable column. */
+@media(max-width:760px){
+  html[data-drx-app="medical-hub-v2"] .hub-reader-pane{
+    margin-inline:-4px;
+    padding:8px 8px 18px 12px;
+    border-radius:6px;
+    background:#e3e6e8;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-document{
+    width:100%;
+    border-radius:1px;
+    box-shadow:0 10px 24px rgba(30,39,47,.13),inset 8px 0 12px rgba(91,86,75,.02);
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-document::before{
+    left:-8px;
+    top:58px;
+    width:8px;
+    height:330px;
+    border-radius:3px 0 0 3px;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-document::after{right:-3px;width:5px}
+  html[data-drx-app="medical-hub-v2"] .ck-document-inner{padding:24px 18px 30px 20px}
+  html[data-drx-app="medical-hub-v2"] .ck-detail-head{padding-top:8px;margin-bottom:11px}
+  html[data-drx-app="medical-hub-v2"] .ck-kicker{margin-bottom:9px;font-size:8px}
+  html[data-drx-app="medical-hub-v2"] .ck-detail-head h2{max-width:100%;font-size:24px;line-height:1.03}
+  html[data-drx-app="medical-hub-v2"] .ck-detail-title-row>.ck-review-badge{display:none}
+  html[data-drx-app="medical-hub-v2"] .ck-meta{margin-top:8px}
+  html[data-drx-app="medical-hub-v2"] .ck-chip{font-size:7.8px}
+  html[data-drx-app="medical-hub-v2"] .ck-quick-summary,
+  html[data-drx-app="medical-hub-v2"] .ck-clinical-callout{width:100%}
+  html[data-drx-app="medical-hub-v2"] .ck-section{margin-top:14px}
+  html[data-drx-app="medical-hub-v2"] .ck-section-heading{
+    width:100%;
+    min-height:27px;
+    margin-left:0;
+    margin-right:0;
+    padding:5px 8px;
+    background:linear-gradient(90deg,#c8dce8 0,#e6eef3 100%);
+  }
+  html[data-drx-app="medical-hub-v2"] .ck-section-heading h3,
+  html[data-drx-app="medical-hub-v2"] .ck-section-heading h4{font-size:13px}
+  html[data-drx-app="medical-hub-v2"] .ck-section-body,
+  html[data-drx-app="medical-hub-v2"] .ck-source-paragraph,
+  html[data-drx-app="medical-hub-v2"] .ck-source-list-block,
+  html[data-drx-app="medical-hub-v2"] .ck-subsection,
+  html[data-drx-app="medical-hub-v2"] .ck-modern-block{font-size:11.7px;line-height:1.39}
+  html[data-drx-app="medical-hub-v2"] .ck-source-list-block{padding-left:17px}
+  html[data-drx-app="medical-hub-v2"] .ck-figure{width:100%;max-width:285px;margin:8px auto 12px}
+  html[data-drx-app="medical-hub-v2"] .ck-figure img{max-height:260px}
+  html[data-drx-app="medical-hub-v2"] .ck-source-panel{font-size:8.6px}
+  html[data-drx-app="medical-hub-v2"] .ck-medical-table{font-size:9.8px}
+}
+
+@media(max-width:420px){
+  html[data-drx-app="medical-hub-v2"] .ck-document-inner{padding:21px 14px 27px 17px}
+  html[data-drx-app="medical-hub-v2"] .ck-detail-head h2{font-size:21px}
+  html[data-drx-app="medical-hub-v2"] .ck-section-body,
+  html[data-drx-app="medical-hub-v2"] .ck-source-paragraph,
+  html[data-drx-app="medical-hub-v2"] .ck-source-list-block,
+  html[data-drx-app="medical-hub-v2"] .ck-subsection,
+  html[data-drx-app="medical-hub-v2"] .ck-modern-block{font-size:11.3px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html[data-drx-app="medical-hub-v2"] .hub-document,
+  html[data-drx-app="medical-hub-v2"] .ck-section-body{scroll-behavior:auto}
+}
