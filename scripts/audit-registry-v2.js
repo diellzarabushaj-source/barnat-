@@ -15,6 +15,7 @@ const css = read('registry-v2.css');
 const js = read('registry-v2.js');
 const worker = read(fs.existsSync(path.join(root, 'sw-resilient-v3.js')) ? 'sw-resilient-v3.js' : 'sw-resilient.js');
 
+// Registry assets may use either ?v= or ?build= as an explicit cache-buster.
 function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
