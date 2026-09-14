@@ -30,7 +30,7 @@ const clinicalPages = [
   '/sistemi.html',
 ];
 // Keep offline discovery aligned with the canonical authenticated surface:
- // all ten authenticated standalone workspaces must be discoverable together.
+// all ten authenticated standalone workspaces must be discoverable together.
 const generatedStaticSources = new Map([
   ['/offline-runtime-performance.js', 'offline-runtime.js'],
   ['/app-runtime-performance.js', 'app-runtime-performance.js'],
@@ -160,6 +160,8 @@ function buildRegistryRuntime() {
 function buildCacheIsolatedOfflineRuntime() {
   const workerInput = path.join(root, 'sw-resilient.js');
   const runtimeInput = path.join(root, 'offline-runtime.js');
+  // Keep this compatibility filename because deployed pages/tests already reference it.
+  // The cache namespace itself is controlled by VERSION inside the worker source.
   const workerOutput = path.join(root, 'sw-resilient-v3.js');
   const runtimeOutput = path.join(root, 'offline-runtime-performance.js');
   if (!fs.existsSync(workerInput) || !fs.existsSync(runtimeInput)) {
@@ -167,9 +169,11 @@ function buildCacheIsolatedOfflineRuntime() {
   }
 
   const workerSource = readSource(workerInput);
+  const workerVersionMatch = workerSource.match(/const VERSION = '([^']+)';/);
+  if (!workerVersionMatch) throw new Error('Versioni i resilient service worker-it nuk u gjet.');
+  const resilientVersion = workerVersionMatch[1];
   const offlineShell = buildOfflineShell(workerSource);
   const workerGenerated = workerSource
-    .replace("const VERSION = 'low-bandwidth-v2';", "const VERSION = 'low-bandwidth-v3';")
     .replace(/const CORE_SHELL = \[[\s\S]*?\n\];/, renderCoreShell(offlineShell))
     .replace('async function cacheCoreShell() {\n  const cache = await caches.open(STATIC_CACHE);', 'async function cacheCoreShell() {')
     .replace(
@@ -185,7 +189,7 @@ function buildCacheIsolatedOfflineRuntime() {
       "  return { state:cached === REQUIRED_PRIVATE_PATHS.length ? 'ready' : 'limited', cached, required:REQUIRED_PRIVATE_PATHS.length, online:networkProfile.online };"
     );
   if (workerGenerated === workerSource
-      || !workerGenerated.includes("const VERSION = 'low-bandwidth-v3';")
+      || !workerGenerated.includes(`const VERSION = '${resilientVersion}';`)
       || !workerGenerated.includes('privatePage ? PAGE_CACHE : STATIC_CACHE')
       || !workerGenerated.includes("'/analizat.html',")
       || !workerGenerated.includes('MEDINDEX_NETWORK_STATUS')
@@ -197,11 +201,14 @@ function buildCacheIsolatedOfflineRuntime() {
   fs.writeFileSync(workerOutput, workerGenerated, 'utf8');
 
   const runtimeSource = readSource(runtimeInput);
+  const runtimeVersionMatch = runtimeSource.match(/const RESILIENCE_VERSION = '([^']+)';/);
+  if (!runtimeVersionMatch || runtimeVersionMatch[1] !== resilientVersion) {
+    throw new Error('Offline runtime dhe resilient service worker nuk kanë të njëjtin version.');
+  }
   const runtimeGenerated = runtimeSource
-    .replace("const RESILIENCE_VERSION = 'low-bandwidth-v2';", "const RESILIENCE_VERSION = 'low-bandwidth-v3';")
     .replace('const SERVICE_WORKER_URL = `/sw-resilient.js?v=${RESILIENCE_VERSION}`;', 'const SERVICE_WORKER_URL = `/sw-resilient-v3.js?v=${RESILIENCE_VERSION}`;');
   if (runtimeGenerated === runtimeSource
-      || !runtimeGenerated.includes("const RESILIENCE_VERSION = 'low-bandwidth-v3';")
+      || !runtimeGenerated.includes(`const RESILIENCE_VERSION = '${resilientVersion}';`)
       || !runtimeGenerated.includes('/sw-resilient-v3.js')
       || !runtimeGenerated.includes('window.MEDINDEX_AUTH_READY')
       || !runtimeGenerated.includes('reachabilityPromise')
@@ -212,7 +219,7 @@ function buildCacheIsolatedOfflineRuntime() {
   }
   checkGeneratedSyntax(runtimeOutput, runtimeGenerated);
   fs.writeFileSync(runtimeOutput, runtimeGenerated, 'utf8');
-  console.log('Generated cache-isolated offline runtime, verified clinical page precache, deterministic network probe and resilient service worker v3.');
+  console.log(`Generated cache-isolated offline runtime, verified clinical page precache, deterministic network probe and resilient service worker ${resilientVersion}.`);
 }
 
 function hardenTailAdminCss() {
