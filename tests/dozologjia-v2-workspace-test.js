@@ -21,7 +21,8 @@ assert.match(html, /dozologjia-v2\.css\?v=\d+/);
 assert.match(html, /dozologjia-v2\.js\?v=\d+/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/);
 
-['dosageContent','dosageSearch','masterIndication','masterRegimens','masterForm','masterResult'].forEach(id=>assert.match(html,new RegExp(`id="${id}"`)));
+['dosageContent','dosageSearch','masterDrugs','masterIndication','masterRegimens','masterForm','masterFields','masterGates','masterResult','masterErrors','masterProvenance']
+  .forEach(id=>assert.match(html,new RegExp(`id="${id}"`),`Dozologjia is missing #${id}`));
 
 const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)]
   .map(match => match[1]);
@@ -40,15 +41,21 @@ const dosageJsVersion = pageRuntimes[0]?.match(/^\/dozologjia-v2\.js\?v=(\d+)$/)
 assert.ok(dosageCssVersion, 'Dozologjia stylesheet must use a numeric cache version');
 assert.ok(dosageJsVersion, 'Dozologjia runtime must use a numeric cache version');
 assert.equal(dosageCssVersion, dosageJsVersion, 'Dozologjia CSS and JS cache versions must stay synchronized');
-assert.ok(Number(dosageCssVersion) >= 4, 'Dozologjia asset version must not regress below v4');
+assert.ok(Number(dosageCssVersion) >= 28, 'Dozologjia asset version must not regress below v28');
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|dozologjia\.js|dozologjia-deep-audit\.js|style-loader|pediatric-calculator\.css|pediatric-calculator-client\.js/);
 assert.match(html, /phase9-personal-entities-client\.js\?v=phase9b/);
 
 
 assert.match(js,/master-catalog/);
 assert.match(js,/master-calculate/);
-assert.match(js,/token!==revision/);
-assert.match(css,/master-card/);
+/* Every input change retires the standing answer before a new one is asked
+   for, so a stale dose can never sit beside fresh patient values. */
+assert.match(js,/token !== state\.revision/);
+assert.match(js,/function invalidate\(\)/);
+/* The page reads as one column of decisions, not as a form to submit. */
+assert.doesNotMatch(html,/master-submit|Llogarit dozën/);
+assert.match(html,/class="dz-column"/);
+assert.match(css,/\.dz-card/);
 assert.match(css,/@media\(max-width:760px\)/);
 assert.ok(js.endsWith(read('dozologjia-master-client.js')));
 assert.doesNotMatch(js,/innerHTML|mgPerKg/);

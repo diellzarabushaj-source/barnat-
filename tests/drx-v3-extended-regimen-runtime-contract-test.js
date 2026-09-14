@@ -92,8 +92,13 @@ const requires = PediatricV3._test.requiresOf([neonatal]);
 assert.equal(requires.age,true);
 assert.equal(requires.ageDays,true);
 
-const html = fs.readFileSync(path.join(__dirname,'..','dozologjia.html'),'utf8');
-const ui = fs.readFileSync(path.join(__dirname,'..','dozologjia-v2.js'),'utf8');
+/* The pediatric V3 runtime no longer lives on the Dozologjia page: that page
+   moved to the Master v2.7 engine and its previous UI is archived as inert
+   text, exactly as tests/pediatric-calculator-ui-test.js already reads it.
+   The contract itself is unchanged — the markup is asserted against the
+   archive, and the client behaviour against the runtime that still ships. */
+const html = fs.readFileSync(path.join(__dirname,'..','docs','archive','dozologjia-before-v27','dozologjia.html.txt'),'utf8');
+const ui = fs.readFileSync(path.join(__dirname,'..','pediatric-calculator-client.js'),'utf8');
 const reader = fs.readFileSync(path.join(__dirname,'..','lib','dose-v3-product-reader.js'),'utf8');
 
 assert.match(html,/id="patientTreatmentDay"/);
