@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Apply global registry search repair
         shell: bash
@@ -24,29 +24,28 @@ jobs:
           from pathlib import Path
           import re
 
-          def replace_once(path, old, new):
+          def replace_literal(path, old, new):
               p = Path(path)
               text = p.read_text()
               if old not in text:
-                  raise SystemExit(f'Expected block not found in {path}')
-              text = text.replace(old, new, 1)
-              p.write_text(text)
+                  raise SystemExit(f'Expected literal not found in {path}: {old[:80]}')
+              p.write_text(text.replace(old, new, 1))
 
-          # 1) Registry UI: never leave stale drugs visible after a failed query,
-          # and proactively update whichever DRx service worker controls the page.
-          old_error = """  function renderError(message) {
-            el.registryRows.innerHTML = '';
-            el.tableScroll.hidden = true;
-            el.emptyState.hidden = false;
-            el.emptyState.querySelector('h2').textContent = 'Regjistri nuk u ngarkua';
-            el.emptyState.querySelector('p').textContent = message;
-            el.resultSummary.textContent = 'Gabim gjatë ngarkimit';
-            el.requestTiming.textContent = '';
-          }
-          """
-          new_error = """  function renderError(message) {
-            // Fail closed visually as well as at the API layer. A failed search must
-            // never leave rows from the previous query on screen.
+          def replace_regex(path, pattern, replacement, flags=0):
+              p = Path(path)
+              text = p.read_text()
+              updated, count = re.subn(pattern, replacement, text, count=1, flags=flags)
+              if count != 1:
+                  raise SystemExit(f'Expected pattern not found in {path}: {pattern[:100]}')
+              p.write_text(updated)
+
+          # UI: a failed query must never leave rows from the previous drug visible.
+          replace_regex(
+              'registry-v2.js',
+              r"  function renderError\(message\) \{.*?\n  \}(?=\n\n  (?:async )?function )",
+              """  function renderError(message) {
+            // Fail closed visually as well as at the API layer: never mix an error
+            // for the new query with rows left over from the previous query.
             state.rows = [];
             state.total = 0;
             state.totalPages = 1;
@@ -64,15 +63,16 @@ jobs:
             el.pageIndicator.textContent = '1 / 1';
             el.prevPageButton.disabled = true;
             el.nextPageButton.disabled = true;
-            syncPageSelection();
-          }
-          """
-          replace_once('registry-v2.js', old_error, new_error)
+          }""",
+              re.S,
+          )
 
-          old_init = """  async function init() {
-            loadSharedSidebarTaxonomy();
-          """
-          new_init = """  async function refreshRegistryServiceWorker() {
+          # Ask every browser already controlling the registry to check its worker
+          # immediately instead of waiting for the normal service-worker cadence.
+          replace_regex(
+              'registry-v2.js',
+              r"  async function init\(\) \{",
+              """  async function refreshRegistryServiceWorker() {
             if (!('serviceWorker' in navigator)) return;
             try {
               const registrations = await navigator.serviceWorker.getRegistrations();
@@ -83,64 +83,50 @@ jobs:
           }
 
           async function init() {
-            // Search correctness is more important than an old offline shell. Ask the
-            // browser to check for the current worker without blocking the registry.
-            void refreshRegistryServiceWorker();
-            loadSharedSidebarTaxonomy();
-          """
-          replace_once('registry-v2.js', old_init, new_init)
+            void refreshRegistryServiceWorker();""",
+          )
 
-          # 2) Pin the registry shell to a new build URL. sw-resilient treats
-          # ?build= as immutable-by-build and will never substitute an older asset.
-          replace_once(
+          # Build-pinned URLs are intentionally treated as non-substitutable by the
+          # resilient worker; an older registry JS/CSS can no longer be served here.
+          replace_regex(
               'index.html',
-              '/registry-v2.css?v=registry-v2-20260902-list-view-v2',
+              r'/registry-v2\.css\?(?:v|build)=[^"\']+',
               '/registry-v2.css?build=registry-search-20260914-v1',
           )
-          replace_once(
+          replace_regex(
               'index.html',
-              '/registry-v2.js?v=registry-v2-20260902-list-view-v2',
+              r'/registry-v2\.js\?(?:v|build)=[^"\']+',
               '/registry-v2.js?build=registry-search-20260914-v1',
           )
 
-          # 3) Current resilient worker: version query cache keys and make clinical
-          # searches network-first while online. Cache is fallback only when the
-          # network itself is unavailable, never after an HTTP/auth/server error.
-          replace_once(
+          # Current resilient worker: new cache namespace + versioned query keys.
+          replace_regex(
               'sw-resilient.js',
-              "const VERSION = 'low-bandwidth-v3';",
+              r"const VERSION = '[^']+';",
               "const VERSION = 'low-bandwidth-v4-search-freshness';",
           )
-          replace_once(
+          replace_regex(
               'sw-resilient.js',
+              r"function queryKey\(url\) \{.*?\n\}",
               """function queryKey(url) {
             const normalized = new URL(url.href);
             normalized.hash = '';
-            normalized.searchParams.sort();
-            return requestFor(normalized.href, { headers:{ Accept:'application/json' } });
-          }
-          """,
-              """function queryKey(url) {
-            const normalized = new URL(url.href);
-            normalized.hash = '';
-            // A worker release gets its own query namespace. Old medication-search
-            // responses can never masquerade as results from the current build.
             normalized.searchParams.set('__drx_worker', VERSION);
             normalized.searchParams.sort();
             return requestFor(normalized.href, { headers:{ Accept:'application/json' } });
-          }
-          """,
+          }""",
+              re.S,
           )
-          p = Path('sw-resilient.js')
-          text = p.read_text()
-          pattern = re.compile(r"async function queryDataResponse\(event, url\) \{.*?\n\}\n\nfunction parseRange", re.S)
-          replacement = """async function queryDataResponse(event, url) {
+          replace_regex(
+              'sw-resilient.js',
+              r"async function queryDataResponse\(event, url\) \{.*?\n\}(?=\n\nfunction parseRange)",
+              """async function queryDataResponse(event, url) {
             const request = event.request;
             const key = queryKey(url);
             const cache = await caches.open(PRIVATE_CACHE);
 
-            // Medication/ICD search is network-first whenever the device is online.
-            // Cached clinical query results are only an offline fallback.
+            // Clinical search is network-first while online. A cached response is
+            // only an offline fallback, never a substitute for an HTTP/auth error.
             if (networkProfile.online) {
               const response = await refreshPrivate(request, key);
               if (response) {
@@ -155,53 +141,43 @@ jobs:
               status:503,
               headers:{ 'Content-Type':'application/json; charset=utf-8', 'X-MedIndex-Offline':'1' },
             });
-          }
+          }""",
+              re.S,
+          )
 
-          function parseRange"""
-          text2, count = pattern.subn(replacement, text, count=1)
-          if count != 1:
-              raise SystemExit('Could not replace sw-resilient queryDataResponse')
-          p.write_text(text2)
-
-          # 4) Legacy worker gets the same fail-fresh behavior so browsers that still
-          # have /sw.js registered are repaired too.
-          replace_once(
+          # Legacy worker receives the same semantics for users whose browser still
+          # has /sw.js registered from an older release.
+          replace_regex(
               'sw.js',
-              "const VERSION = 'workspace-coherence-v7';",
+              r"const VERSION = '[^']+';",
               "const VERSION = 'workspace-coherence-v8-search-freshness';",
           )
-          replace_once(
+          replace_regex(
               'sw.js',
-              "const CACHE_EPOCH = '20260901-shell-v6-sidebar-v4';",
+              r"const CACHE_EPOCH = '[^']+';",
               "const CACHE_EPOCH = '20260914-registry-search-v1';",
           )
-          replace_once(
+          replace_regex(
               'sw.js',
-              """function queryKey(url) {
-            const normalized = new URL(url.href);
-            normalized.hash = '';
-            normalized.searchParams.sort();
-            return requestFor(normalized.href, { headers:{ Accept:'application/json' } });
-          }
-          """,
+              r"function queryKey\(url\) \{.*?\n\}",
               """function queryKey(url) {
             const normalized = new URL(url.href);
             normalized.hash = '';
             normalized.searchParams.set('__drx_worker', VERSION);
             normalized.searchParams.sort();
             return requestFor(normalized.href, { headers:{ Accept:'application/json' } });
-          }
-          """,
+          }""",
+              re.S,
           )
-          p = Path('sw.js')
-          text = p.read_text()
-          pattern = re.compile(r"async function queryDataResponse\(event, url\) \{.*?\n\}\n\nfunction parseRange", re.S)
-          replacement = """async function queryDataResponse(event, url) {
+          replace_regex(
+              'sw.js',
+              r"async function queryDataResponse\(event, url\) \{.*?\n\}(?=\n\nfunction parseRange)",
+              """async function queryDataResponse(event, url) {
             const request = event.request;
             const key = queryKey(url);
             const cache = await caches.open(PRIVATE_CACHE);
             try {
-              const response = await timeoutFetch(request);
+              const response = await timeoutFetch(new Request(request, { cache:'no-store' }));
               if ([401, 403].includes(response.status)) {
                 await broadcast({ type:'MEDINDEX_AUTH_INVALID' });
                 return response;
@@ -216,18 +192,13 @@ jobs:
                 headers:{ 'Content-Type':'application/json; charset=utf-8', 'X-MedIndex-Offline':'1' },
               });
             }
-          }
+          }""",
+              re.S,
+          )
 
-          function parseRange"""
-          text2, count = pattern.subn(replacement, text, count=1)
-          if count != 1:
-              raise SystemExit('Could not replace sw.js queryDataResponse')
-          p.write_text(text2)
-
-          # 5) Pages that register the resilient worker now request the same release.
-          replace_once(
+          replace_regex(
               'offline-runtime.js',
-              "const RESILIENCE_VERSION = 'low-bandwidth-v2';",
+              r"const RESILIENCE_VERSION = '[^']+';",
               "const RESILIENCE_VERSION = 'low-bandwidth-v4-search-freshness';",
           )
           PY
