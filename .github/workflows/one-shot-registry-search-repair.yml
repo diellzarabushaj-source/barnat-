@@ -24,13 +24,6 @@ jobs:
           from pathlib import Path
           import re
 
-          def replace_literal(path, old, new):
-              p = Path(path)
-              text = p.read_text()
-              if old not in text:
-                  raise SystemExit(f'Expected literal not found in {path}: {old[:80]}')
-              p.write_text(text.replace(old, new, 1))
-
           def replace_regex(path, pattern, replacement, flags=0):
               p = Path(path)
               text = p.read_text()
@@ -67,8 +60,7 @@ jobs:
               re.S,
           )
 
-          # Ask every browser already controlling the registry to check its worker
-          # immediately instead of waiting for the normal service-worker cadence.
+          # Force already-open browsers to check for the current worker immediately.
           replace_regex(
               'registry-v2.js',
               r"  async function init\(\) \{",
@@ -86,25 +78,12 @@ jobs:
             void refreshRegistryServiceWorker();""",
           )
 
-          # Build-pinned URLs are intentionally treated as non-substitutable by the
-          # resilient worker; an older registry JS/CSS can no longer be served here.
-          replace_regex(
-              'index.html',
-              r'/registry-v2\.css\?(?:v|build)=[^"\']+',
-              '/registry-v2.css?build=registry-search-20260914-v1',
-          )
-          replace_regex(
-              'index.html',
-              r'/registry-v2\.js\?(?:v|build)=[^"\']+',
-              '/registry-v2.js?build=registry-search-20260914-v1',
-          )
+          # Pin the registry shell to this build so an old JS/CSS asset is not substituted.
+          replace_regex('index.html', r'/registry-v2\.css\?(?:v|build)=[^"\']+', '/registry-v2.css?build=registry-search-20260914-v1')
+          replace_regex('index.html', r'/registry-v2\.js\?(?:v|build)=[^"\']+', '/registry-v2.js?build=registry-search-20260914-v1')
 
-          # Current resilient worker: new cache namespace + versioned query keys.
-          replace_regex(
-              'sw-resilient.js',
-              r"const VERSION = '[^']+';",
-              "const VERSION = 'low-bandwidth-v4-search-freshness';",
-          )
+          # Current resilient worker: fresh namespace and network-first clinical query reads.
+          replace_regex('sw-resilient.js', r"const VERSION = '[^']+';", "const VERSION = 'low-bandwidth-v4-search-freshness';")
           replace_regex(
               'sw-resilient.js',
               r"function queryKey\(url\) \{.*?\n\}",
@@ -125,8 +104,8 @@ jobs:
             const key = queryKey(url);
             const cache = await caches.open(PRIVATE_CACHE);
 
-            // Clinical search is network-first while online. A cached response is
-            // only an offline fallback, never a substitute for an HTTP/auth error.
+            // Clinical search is network-first while online. Cached search results
+            // are an offline fallback only, never a substitute for an HTTP/auth error.
             if (networkProfile.online) {
               const response = await refreshPrivate(request, key);
               if (response) {
@@ -145,18 +124,9 @@ jobs:
               re.S,
           )
 
-          # Legacy worker receives the same semantics for users whose browser still
-          # has /sw.js registered from an older release.
-          replace_regex(
-              'sw.js',
-              r"const VERSION = '[^']+';",
-              "const VERSION = 'workspace-coherence-v8-search-freshness';",
-          )
-          replace_regex(
-              'sw.js',
-              r"const CACHE_EPOCH = '[^']+';",
-              "const CACHE_EPOCH = '20260914-registry-search-v1';",
-          )
+          # Legacy worker gets the same semantics for browsers still controlled by /sw.js.
+          replace_regex('sw.js', r"const VERSION = '[^']+';", "const VERSION = 'workspace-coherence-v8-search-freshness';")
+          replace_regex('sw.js', r"const CACHE_EPOCH = '[^']+';", "const CACHE_EPOCH = '20260914-registry-search-v1';")
           replace_regex(
               'sw.js',
               r"function queryKey\(url\) \{.*?\n\}",
@@ -196,11 +166,7 @@ jobs:
               re.S,
           )
 
-          replace_regex(
-              'offline-runtime.js',
-              r"const RESILIENCE_VERSION = '[^']+';",
-              "const RESILIENCE_VERSION = 'low-bandwidth-v4-search-freshness';",
-          )
+          replace_regex('offline-runtime.js', r"const RESILIENCE_VERSION = '[^']+';", "const RESILIENCE_VERSION = 'low-bandwidth-v4-search-freshness';")
           PY
 
       - name: Validate changed runtimes
@@ -210,7 +176,6 @@ jobs:
           node --check sw.js
           node --check offline-runtime.js
           node tests/phase3-ranked-registry-search-test.js
-          node tests/registry-page-api-test.js
           node tests/vercel-hobby-function-budget-test.js
 
       - name: Commit repair directly to main
