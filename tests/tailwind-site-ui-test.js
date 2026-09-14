@@ -45,8 +45,8 @@ assert.match(themePreload, /dataset\.miTailwindUi = '20260805-1'/);
 
 const registryHtml = read('index.html');
 assert.match(registryHtml, /data-drx-app="registry-v2"/);
-assert.match(registryHtml, /registry-v2\.css\?v=[^"\s]+/);
-assert.match(registryHtml, /registry-v2\.js\?v=[^"\s]+/);
+assert.match(registryHtml, /registry-v2\.css\?(?:v|build)=[^"\s]+/);
+assert.match(registryHtml, /registry-v2\.js\?(?:v|build)=[^"\s]+/);
 assert.doesNotMatch(registryHtml, /tailadmin-professional\.css|tailadmin-shell\.js/,
   'Registry V2 must stay standalone instead of reintroducing legacy UI layers.');
 
