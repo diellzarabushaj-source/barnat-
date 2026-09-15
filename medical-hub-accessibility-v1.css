@@ -1,0 +1,11 @@
+/* Medical Hub accessibility guardrails.
+   Keep compact interactive controls at or above the shared clinical audit floor. */
+html[data-drx-app="medical-hub-v2"] .ck-section-fold{
+  width:28px;
+  min-width:28px;
+  height:28px;
+  min-height:28px;
+  display:inline-grid;
+  place-items:center;
+  flex:0 0 28px;
+}
