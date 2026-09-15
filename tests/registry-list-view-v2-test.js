@@ -81,8 +81,10 @@ const audit = read('scripts/audit-registry-v2.js');
 assert.ok(audit.includes("'registry-list-view.css'"), 'The build must keep denying the legacy list stylesheet');
 
 // --- the assets are cache-busted together ----------------------------------
-const cssVersion = /registry-v2\.css\?v=([\w-]+)/.exec(html)?.[1];
-const jsVersion = /registry-v2\.js\?v=([\w-]+)/.exec(html)?.[1];
+// `v` and `build` are both valid cache-busting query keys; the invariant is
+// that CSS and JS carry the same non-empty revision value.
+const cssVersion = /registry-v2\.css\?(?:v|build)=([\w-]+)/.exec(html)?.[1];
+const jsVersion = /registry-v2\.js\?(?:v|build)=([\w-]+)/.exec(html)?.[1];
 assert.ok(cssVersion && jsVersion, 'Both registry assets must carry a cache-busting version');
 assert.equal(cssVersion, jsVersion, 'The registry CSS and JS change together, so they share one version');
 
