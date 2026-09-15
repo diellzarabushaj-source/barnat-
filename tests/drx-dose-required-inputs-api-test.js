@@ -55,6 +55,7 @@ const perKg = Handler._test.rulePublic({
 
 assert.ok(perKg.requiredInputs.includes('weight_kg'));
 assert.ok(perKg.requiredInputs.includes('age_months'));
+assert.equal(perKg.hepaticAdjustmentRequired, null);
 
 const bsa = Handler._test.rulePublic({
   rule_key:'bsa',
@@ -87,6 +88,23 @@ const renal = Handler._test.rulePublic({
   verified_at:'2026-01-01T00:00:00Z',
 }, indication, source, link);
 assert.ok(renal.requiredInputs.includes('renal_function'));
+
+const hepatic = Handler._test.rulePublic({
+  rule_key:'hepatic',
+  indication_key:'fever',
+  patient_group:'adult_only',
+  calculation_method:'fixed_dose',
+  dose_min_value:100,
+  dose_unit:'mg',
+  frequency_mode:'single',
+  route:'PO',
+  hepatic_adjustment_required:true,
+  editorial_status:'published',
+  verified_by:'reviewer',
+  verified_at:'2026-01-01T00:00:00Z',
+}, indication, source, link);
+assert.equal(hepatic.hepaticAdjustmentRequired, true);
+assert.ok(hepatic.requiredInputs.includes('hepatic_function'));
 
 const root = path.resolve(__dirname, '..');
 const calculatorSource = fs.readFileSync(path.join(root, 'lib', 'dose-calculator-handler.js'), 'utf8');
