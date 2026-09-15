@@ -97,7 +97,7 @@ for (const [file, runtime] of [
   ['icd.html','icd-v2.js'],
 ]) {
   const html = read(file);
-  assert.match(html, new RegExp(runtime.replace('.', '\\.') + '\\?v=[^"\\s]+'), `${file}: V2 runtime cache-bust missing`);
+  assert.match(html, new RegExp(runtime.replace('.', '\\.') + '\\?(?:v|build)=[^"\\s]+'), `${file}: V2 runtime cache-bust missing`);
 }
 for (const [htmlFile, runtime, version] of [
   ['dozologjia.html','dozologjia-v2.js','dynamic-v4+'],

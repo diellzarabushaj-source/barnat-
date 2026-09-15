@@ -273,7 +273,7 @@ button,input,select{font:inherit}
 .dosage-page #regimenBlock .dz-chip,
 .dosage-page .dz-chips-tight .dz-chip{
   width:auto;
-  min-height:38px;
+  min-height:44px;
   border-radius:999px;
   padding:8px 12px;
 }
@@ -360,7 +360,7 @@ button,input,select{font:inherit}
 .dosage-page .dz-age-note:not(:empty){color:#6757d7}
 .dosage-page .dz-none{
   flex:none;
-  height:42px;
+  height:44px;
   padding:0 13px;
   border:1px solid var(--dz-line-strong);
   border-radius:999px;
@@ -381,7 +381,7 @@ button,input,select{font:inherit}
   display:flex;
   align-items:flex-start;
   gap:10px;
-  min-height:42px;
+  min-height:44px;
   padding:8px 10px;
   border:1px solid transparent;
   border-radius:9px;
@@ -494,7 +494,7 @@ button,input,select{font:inherit}
 .dosage-page .dz-editor-line .dz-number input{padding-right:44px;font-size:16px}
 .dosage-page .dz-editor-sep{color:var(--dz-faint);font-size:11px}
 .dosage-page .dz-save{
-  min-height:40px;
+  min-height:44px;
   margin-top:10px;
   padding:0 15px;
   border:0;
@@ -527,7 +527,7 @@ button,input,select{font:inherit}
   padding-top:8px;
 }
 .dosage-page .dz-fold>summary{
-  min-height:32px;
+  min-height:44px;
   display:flex;
   align-items:center;
   color:var(--dz-muted);
@@ -567,7 +567,7 @@ button,input,select{font:inherit}
   align-items:center;
   justify-content:space-between;
   gap:12px;
-  min-height:42px;
+  min-height:44px;
   padding:0 14px;
   color:var(--dz-muted);
   font-size:11px;
@@ -625,7 +625,7 @@ button,input,select{font:inherit}
     align-items:center;
     justify-content:space-between;
     gap:12px;
-    min-height:42px;
+    min-height:44px;
     pointer-events:auto;
     cursor:pointer;
   }
@@ -646,7 +646,7 @@ button,input,select{font:inherit}
   .dosage-page .dz-search{height:45px;margin-bottom:9px}
   .dosage-page .dz-chips{grid-template-columns:1fr;gap:7px}
   .dosage-page .dz-chip{min-height:46px;padding:10px 12px}
-  .dosage-page #regimenBlock .dz-chip,.dosage-page .dz-chips-tight .dz-chip{min-height:42px}
+  .dosage-page #regimenBlock .dz-chip,.dosage-page .dz-chips-tight .dz-chip{min-height:44px}
   .dosage-page .dz-field{flex:1 1 100%}
   .dosage-page .dz-number input{height:52px}
   .dosage-page .dz-number-lead input{height:60px;font-size:24px}

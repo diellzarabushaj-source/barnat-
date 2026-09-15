@@ -160,7 +160,7 @@ assert.match(client, /const compact = window\.matchMedia\('\(max-width:760px\)'\
 assert.match(client, /function fold\(id\) \{\n\s*const picker = \$\(id\);\n\s*if \(picker && compact\.matches\) picker\.open = false;/,
   'A picker folds after a choice only when the screen is small');
 /* A folded picker has to say what it is holding. */
-assert.match(phone, /\.dz-picker-current\{display:block/);
+assert.match(phone, /\.dz-picker-current\s*\{[\s\S]*?display\s*:\s*block\s*;/);
 assert.match(css, /\.dz-picker-current\{display:none\}/);
 /* ...and on a wide screen it cannot be clicked shut at all. */
 assert.match(client, /if \(!compact\.matches && !picker\.open\) picker\.open = true;/);
