@@ -90,8 +90,8 @@ const canonicalWorkspaceAssets = [
 
 const worker = read('sw.js');
 assert.match(worker, /workspace-cache-cutover-v7/);
-assert.match(worker, /VERSION = 'workspace-coherence-v7'/);
-assert.match(worker, /CACHE_EPOCH = '20260901-shell-v6-sidebar-v4'/);
+assert.match(worker, /VERSION = 'workspace-coherence-v8-search-freshness'/);
+assert.match(worker, /CACHE_EPOCH = '20260914-registry-search-v1'/);
 for (const [htmlFile] of workspaces) {
   assert.ok(worker.includes(`'/${htmlFile}'`), `sw.js: ${htmlFile} is missing from the clinical shell`);
 }
@@ -110,4 +110,4 @@ assert.match(design, /Urgjencat is the canonical content-density reference/);
 const pkg = JSON.parse(read('package.json'));
 assert.match(pkg.scripts.test, /workspace-coherence-v7-test\.js/);
 
-console.log('Workspace coherence v7: 10/10 pages share one shell, strict sidebar runtime versions, one typography contract and one canonical worker cutover.');
+console.log('Workspace coherence v7: 10/10 pages share one shell, strict sidebar runtime versions, one typography contract and current search-freshness worker epoch.');
