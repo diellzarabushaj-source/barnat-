@@ -7,6 +7,22 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
+function localCssBundle(cssFile, css) {
+  const imports = [...css.matchAll(/@import\s+url\((['"]?)(\/[^)'"?]+\.css)(?:\?[^)'"\s]+)?\1\)\s*;/gi)]
+    .map(match => match[2].replace(/^\//, ''));
+  if (!imports.length) return { imports:[], content:css };
+
+  const imported = imports.map(file => {
+    const full = path.join(ROOT, file);
+    assert.ok(fs.existsSync(full), `${cssFile}: imported local stylesheet is missing: ${file}`);
+    const content = read(file);
+    assert.ok(content.trim().length > 0, `${cssFile}: imported local stylesheet is empty: ${file}`);
+    assert.doesNotMatch(content, /@import\s+url\((['"]?)https?:\/\//i, `${file}: remote stylesheet import is forbidden`);
+    return content;
+  });
+  return { imports, content:[css, ...imported].join('\n') };
+}
+
 const stripe = read('drx-dashboard-stripe.css');
 assert.match(stripe, /DRx Stripe Dashboard v2 — final visual authority/);
 assert.match(stripe, /--drx-nav:#1c1e54/);
@@ -63,6 +79,7 @@ for (const [htmlFile, cssFile, jsFile, markerName] of [
 ]) {
   const html = read(htmlFile);
   const css = read(cssFile);
+  const cssBundle = localCssBundle(cssFile, css);
   const js = read(jsFile);
   const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)].map(match => match[1]);
   const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map(match => match[1]);
@@ -77,8 +94,9 @@ for (const [htmlFile, cssFile, jsFile, markerName] of [
   assert.ok(/drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/.test(styles[1]), `${htmlFile}: shared Stripe shell must load last`);
   assert.ok(pageRuntimes[0].includes(jsFile), `${htmlFile}: unexpected runtime owner`);
   assert.doesNotMatch(html, /tailadmin-|auth-client|emergency-curriculum|clinical-knowledge\.css|medical-hub\.css/);
-  assert.ok(css.length > 500, `${cssFile}: standalone page stylesheet is unexpectedly empty`);
-  assert.doesNotMatch(css, /https?:\/\//, `${cssFile}: page stylesheet must not depend on remote style assets`);
+  assert.ok(cssBundle.content.length > 500, `${cssFile}: standalone page stylesheet bundle is unexpectedly empty`);
+  assert.doesNotMatch(css, /@import\s+url\((['"]?)https?:\/\//i, `${cssFile}: page stylesheet must not depend on remote style assets`);
+  assert.doesNotMatch(cssBundle.content, /@import\s+url\((['"]?)https?:\/\//i, `${cssFile}: imported page styles must not depend on remote style assets`);
   assert.doesNotThrow(() => new Function(js));
 }
 
