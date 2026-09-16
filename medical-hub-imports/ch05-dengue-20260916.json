@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "medical-hub-import-v1",
+  "createdAt": "2026-09-16",
+  "source": {
+    "book": "Doctor on Duty Treatment Guide, 3rd Edition 2024–25",
+    "chapter": 5,
+    "chapterTitle": "Infectious Diseases",
+    "heading": "DENGUE FEVER",
+    "printedPages": [66, 67, 68],
+    "pdfPages": [74, 75, 76],
+    "input": "User-provided page images"
+  },
+  "sanity": {
+    "projectId": "4wdtp8cz",
+    "dataset": "production",
+    "workspace": "medical-hub-authoring",
+    "legacyLearningTopicId": "medicalhub-dod-ch05-sub06",
+    "legacyDraftId": "drafts.medicalhub-dod-ch05-sub06",
+    "modernMedicalTopicDraftId": "drafts.3be48e89-2372-47e2-9f9c-a125241f9c90",
+    "slug": "05-06-ethet-dengue",
+    "reviewStatus": "review"
+  },
+  "migration": {
+    "doseValuesChanged": false,
+    "clinicalContentAddedBeyondSource": false,
+    "formatChangesOnly": true,
+    "rendererBlocks": [
+      "medicalTable",
+      "clinicalCallout",
+      "clinicalStepGroup",
+      "prescriptionGroup"
+    ],
+    "sections": [
+      "Hyrje dhe ecuria",
+      "TIPARET KLINIKE TË ETHEVE DENGUE",
+      "VLERËSIMI DIAGNOSTIK",
+      "TRAJTIMI I ETHEVE DENGUE"
+    ],
+    "treatmentLayout": {
+      "singleTreatmentSection": true,
+      "inventedPrescriptionNumbering": false,
+      "sourceOrderPreserved": true,
+      "sourceDivisions": [
+        {
+          "heading": "WHO GROUP-A — HOME/OUTPATIENT MANAGEMENT",
+          "items": [
+            "Paracetamol 500 mg",
+            "Multivitamins/appetizer",
+            "Folic acid 5 mg",
+            "Plenty of fluids / ORS therapy / coconut water"
+          ]
+        },
+        {
+          "heading": "WHO GROUP-B — REQUIRE HOSPITAL ADMISSION",
+          "items": [
+            "Paracetamol IV",
+            "Omeprazole OSE Esomeprazole",
+            "Dimenhydrinate OSE Metoclopramide OSE Ondansetron",
+            "Neurobion",
+            "Stepwise isotonic crystalloid protocol based on Hct and clinical response"
+          ]
+        },
+        {
+          "heading": "WHO GROUP-C",
+          "items": [
+            "Emergency medical treatment and specialist/ICU input as referenced by the source"
+          ]
+        }
+      ],
+      "alternativeRelationRenderedAs": "OSE",
+      "individualDrugLines": true,
+      "drugCardDividers": false,
+      "sectionLevelSeparatorsOnly": true
+    }
+  },
+  "publicationGate": {
+    "modernTopicRequiredBeforeVerified": "Clinical review of source-transcribed regimens, laboratory thresholds and fluid protocol",
+    "legacyDraftPublishStatus": "pending-connector-publish",
+    "reason": "Modern content remains review-gated; the Sanity publish connector rejected its own documented string-ID payload, so the legacy update remains safely in draft rather than being forced live."
+  }
+}
