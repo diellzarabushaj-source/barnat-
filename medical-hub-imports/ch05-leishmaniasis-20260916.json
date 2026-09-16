@@ -1,0 +1,25 @@
+{
+  "lessonId": "medicalhub-dod-ch05-sub10",
+  "chapter": 5,
+  "lesson": 10,
+  "title": "Leishmanioza",
+  "source": "Doctor on Duty Treatment Guide, 3rd Edition 2024-25",
+  "sourcePages": "user-supplied Leishmaniasis / Cutaneous Leishmaniasis pages",
+  "language": "sq",
+  "mode": "source-faithful translation and frontend override",
+  "sections": [
+    "Përkufizimi, shkaktari dhe transmetimi",
+    "Leishmanioza kutane dhe mukoze",
+    "Vlerësimi diagnostik",
+    "Trajtimi i leishmaniozës kutane",
+    "Leishmanioza viscerale (existing downstream lesson content preserved)"
+  ],
+  "treatmentBlocks": [
+    "Sëmundja e pakomplikuar (CL e thjeshtë)",
+    "Sëmundja e komplikuar (CL komplekse)"
+  ],
+  "doseValuesChanged": false,
+  "reviewStatus": "review",
+  "sanityPublishStatus": "draft-updated; publish_documents connector blocked by argument validation",
+  "frontendOverride": "/medical-hub-overrides/medicalhub-dod-ch05-sub10.json"
+}
