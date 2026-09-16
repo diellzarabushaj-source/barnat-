@@ -1,6 +1,6 @@
 /* Medical Hub — source-faithful Rx layout.
-   Keep one treatment section, avoid synthetic outer numbering, and render
-   every regimen/drug as its own separated clinical row while preserving OSE. */
+   Reference: clean textbook-style treatment block. Each regimen is its own
+   line; OSE gets its own label column; only treatment groups get separators. */
 
 html[data-drx-app="medical-hub-v2"] .ck-book-rx{
   margin:10px 0 18px;
@@ -13,9 +13,9 @@ html[data-drx-app="medical-hub-v2"] .ck-book-rx{
 }
 
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-head{
-  min-height:46px;
+  min-height:50px;
   display:grid;
-  grid-template-columns:52px minmax(0,1fr);
+  grid-template-columns:44px minmax(0,1fr);
   align-items:stretch;
   padding:0;
   border:0;
@@ -27,6 +27,8 @@ html[data-drx-app="medical-hub-v2"] .ck-book-rx-head{
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-head>span{
   display:grid;
   place-items:center;
+  align-self:start;
+  min-height:27px;
   padding:0 8px;
   background:#46657b;
   color:#fff;
@@ -38,11 +40,12 @@ html[data-drx-app="medical-hub-v2"] .ck-book-rx-head>strong{
   display:flex;
   align-items:center;
   min-width:0;
-  padding:10px 14px;
+  padding:10px 18px;
   color:#235e56;
-  font-size:15px;
+  font-size:15.5px;
   font-weight:800;
   line-height:1.2;
+  letter-spacing:.01em;
 }
 
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-body{
@@ -50,6 +53,7 @@ html[data-drx-app="medical-hub-v2"] .ck-book-rx-body{
   padding:0;
 }
 
+/* One source subsection = one clean textbook section. */
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-group{
   display:block;
   margin:0;
@@ -63,50 +67,49 @@ html[data-drx-app="medical-hub-v2"] .ck-book-rx-group:last-child{
   border-bottom:0;
 }
 
-/* The source step title already carries the source numbering where applicable.
-   Do not add a second generated 1., 2., 3. column on the left. */
+/* Never add generated numbering in a separate left column. */
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-number{
   display:none;
 }
 
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy{
   min-width:0;
-  padding:0;
+  padding:18px 22px 19px;
   color:#425c59;
   font-size:13px;
   line-height:1.55;
 }
 
-/* Group title stays separate from the individual drug rows. */
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy>strong{
   display:block;
-  margin:0;
-  padding:14px 18px 12px;
-  border-bottom:1px solid #dfe7eb;
-  background:#fff;
+  margin:0 0 13px;
+  padding:0;
+  border:0;
+  background:transparent;
   color:#244f4a;
-  font-size:14px;
+  font-size:14.5px;
   font-weight:800;
   line-height:1.35;
 }
 
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-lines{
-  display:block;
+  display:grid;
+  gap:8px;
   margin:0;
   padding:0;
 }
 
-/* Every normal drug/regimen is a separate clinical row. */
+/* Normal regimen: teal bullet + content, no card or internal divider. */
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-line{
   min-width:0;
   display:grid;
-  grid-template-columns:12px minmax(0,1fr);
-  gap:9px;
+  grid-template-columns:14px minmax(0,1fr);
+  gap:8px;
   align-items:start;
   margin:0;
-  padding:11px 18px;
-  border-bottom:1px solid #e8eef1;
-  background:#fff;
+  padding:0;
+  border:0;
+  background:transparent;
   color:#4b625f;
   font-size:13px;
   line-height:1.5;
@@ -115,39 +118,33 @@ html[data-drx-app="medical-hub-v2"] .ck-book-rx-line{
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-line::before{
   content:"•";
   display:block;
-  color:#1f7779;
+  color:#16837a;
   font-size:17px;
   font-weight:800;
   line-height:1.15;
   transform:translateY(1px);
 }
 
-/* Alternatives are also full-width rows with their own divider. */
+/* Alternative regimen: OSE label aligned exactly like the reference page. */
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-alternative{
   display:grid;
-  grid-template-columns:48px minmax(0,1fr);
+  grid-template-columns:54px minmax(0,1fr);
   align-items:start;
-  gap:10px;
+  gap:7px;
   margin:0;
-  padding:11px 18px;
-  border-bottom:1px solid #e8eef1;
-  background:#fbfdfd;
+  padding:0;
+  border:0;
+  background:transparent;
   color:#4b625f;
   font-size:13px;
   line-height:1.5;
 }
 
-html[data-drx-app="medical-hub-v2"] .ck-book-rx-lines>:last-child{
-  border-bottom:0;
-}
-
-/* The renderer historically emitted the English label OR. The Medical Hub
-   Albanian reader displays the same source relation as OSE. */
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-alternative>span{
   display:block;
   min-width:0;
   overflow:hidden;
-  color:#007b69;
+  color:#00806f;
   font-size:0;
   font-weight:800;
   line-height:1.5;
@@ -161,21 +158,22 @@ html[data-drx-app="medical-hub-v2"] .ck-book-rx-alternative>span::after{
 
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-note{
   display:block;
-  margin:0;
-  padding:10px 18px 12px;
-  border-top:1px solid #e8eef1;
-  background:#fafcfc;
+  margin:10px 0 0;
+  padding:0;
+  border:0;
+  background:transparent;
   color:#6b7775;
   font-size:10.5px;
   line-height:1.45;
 }
 
 @media(max-width:760px){
-  html[data-drx-app="medical-hub-v2"] .ck-book-rx-head{grid-template-columns:44px minmax(0,1fr)}
-  html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy{font-size:12.5px}
-  html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy>strong{padding:12px 13px 10px;font-size:13px}
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-head{grid-template-columns:42px minmax(0,1fr);min-height:46px}
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-head>strong{padding:9px 13px;font-size:14px}
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy{padding:14px 14px 15px;font-size:12.5px}
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy>strong{margin-bottom:10px;font-size:13px}
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-lines{gap:7px}
   html[data-drx-app="medical-hub-v2"] .ck-book-rx-line,
-  html[data-drx-app="medical-hub-v2"] .ck-book-rx-alternative{padding:10px 13px;font-size:12.5px}
-  html[data-drx-app="medical-hub-v2"] .ck-book-rx-alternative{grid-template-columns:40px minmax(0,1fr);gap:7px}
-  html[data-drx-app="medical-hub-v2"] .ck-book-rx-note{padding:9px 13px 11px}
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-alternative{font-size:12.5px}
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-alternative{grid-template-columns:45px minmax(0,1fr);gap:6px}
 }
