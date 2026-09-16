@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "medical-hub-import-v1",
+  "createdAt": "2026-09-16",
+  "source": {
+    "book": "Doctor on Duty Treatment Guide, 3rd Edition 2024–25",
+    "chapter": 5,
+    "chapterTitle": "Infectious Diseases",
+    "heading": "BRUCELLOSIS",
+    "printedPages": [69],
+    "pdfPages": [77],
+    "input": "User-provided page image"
+  },
+  "sanity": {
+    "projectId": "4wdtp8cz",
+    "dataset": "production",
+    "workspace": "medical-hub-authoring",
+    "legacyLearningTopicId": "medicalhub-dod-ch05-sub07",
+    "legacyDraftId": "drafts.medicalhub-dod-ch05-sub07",
+    "modernMedicalTopicDraftId": "drafts.5634e7f7-0f34-46c0-8f57-e254d7778bdc",
+    "slug": "05-07-bruceloza",
+    "reviewStatus": "review"
+  },
+  "migration": {
+    "doseValuesChanged": false,
+    "clinicalContentAddedBeyondSource": false,
+    "formatChangesOnly": true,
+    "rendererBlocks": [
+      "clinicalStepGroup",
+      "prescriptionGroup"
+    ],
+    "sections": [
+      "PËRKUFIZIMI, ETIOLOGJIA DHE TRANSMETIMI",
+      "TIPARET KLINIKE",
+      "VLERËSIMI DIAGNOSTIK",
+      "TRAJTIMI I BRUCELOZËS"
+    ],
+    "treatmentLayout": {
+      "singleTreatmentSection": true,
+      "inventedPrescriptionNumbering": false,
+      "sourceOrderPreserved": true,
+      "sourceDivisions": [
+        {
+          "heading": "UNCOMPLICATED BRUCELLA DISEASE — acute without focal disease",
+          "items": [
+            "Doxycycline 100 mg BD",
+            "PLUS Streptomycin 1 g IM OD × 3 weeks",
+            "OSE Gentamicin 5 mg/kg IM/IV OD × 7–10 days",
+            "OSE Rifampicin 300 mg PO twice daily × 6 weeks",
+            "Paracetamol 500–1000 mg TDS/QID",
+            "Multivitamins/appetizer 10 ml twice daily"
+          ]
+        },
+        {
+          "heading": "COMPLICATED BRUCELLA DISEASE — focal disease",
+          "items": [
+            "Doxycycline 100 mg twice daily for at least 3–6 months",
+            "PLUS Rifampicin 300 mg twice daily for at least 3–6 months",
+            "PLUS Streptomycin 1 g IM OD × 2 weeks",
+            "OSE Gentamicin 5 mg/kg IM/IV OD × 7–10 days",
+            "FOR NEUROBRUCELLOSIS Ceftriaxone 1–2 g IM/IV OD × 3–6 months"
+          ]
+        }
+      ],
+      "alternativeRelationRenderedAs": "OSE",
+      "plusRelationPreserved": true,
+      "individualDrugLines": true,
+      "drugCardDividers": false,
+      "sectionLevelSeparatorsOnly": true
+    }
+  },
+  "publicationGate": {
+    "modernTopicRequiredBeforeVerified": "Clinical review of source-transcribed regimens and prolonged focal/neurobrucellosis durations",
+    "legacyDraftPublishStatus": "blocked-by-sanity-publish-connector",
+    "reason": "The legacy source-faithful update is ready, but the Sanity publish_documents connector currently has contradictory client/server ID validation; no unsafe workaround was used."
+  }
+}
