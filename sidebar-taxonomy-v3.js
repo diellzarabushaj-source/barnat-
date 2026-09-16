@@ -3,10 +3,12 @@
 
   const CORE_SRC = '/sidebar-taxonomy-core-v3.js?v=sidebar-taxonomy-v5-polish1';
   const ANTIBIOTICS_HREF = '/antibiotiket.html';
-  const HUB_OVERRIDE_ID = 'medicalhub-dod-ch05-sub07';
-  const HUB_OVERRIDE_URL = '/medical-hub-overrides/medicalhub-dod-ch05-sub07.json?v=20260916-1';
+  const HUB_SOURCE_OVERRIDES = new Map([
+    ['medicalhub-dod-ch05-sub07', '/medical-hub-overrides/medicalhub-dod-ch05-sub07.json?v=20260916-2'],
+    ['medicalhub-dod-ch05-sub08', '/medical-hub-overrides/medicalhub-dod-ch05-sub08.json?v=20260916-1'],
+  ]);
   let observer = null;
-  let hubOverridePromise = null;
+  const hubOverridePromises = new Map();
   let hubRxObserver = null;
 
   function currentPath() {
@@ -26,33 +28,34 @@
     }
   }
 
-  function isBrucellosisDetailRequest(input) {
-    if (!isMedicalHub()) return false;
+  function medicalHubOverrideRequest(input) {
+    if (!isMedicalHub()) return null;
     const url = requestUrl(input);
-    return Boolean(url
-      && url.origin === location.origin
-      && url.pathname === '/api/medical-hub'
-      && url.searchParams.get('id') === HUB_OVERRIDE_ID);
+    if (!url || url.origin !== location.origin || url.pathname !== '/api/medical-hub') return null;
+    const id = url.searchParams.get('id') || '';
+    const overrideUrl = HUB_SOURCE_OVERRIDES.get(id);
+    return overrideUrl ? { id, overrideUrl } : null;
   }
 
-  async function loadHubOverride(originalFetch) {
-    if (!hubOverridePromise) {
-      hubOverridePromise = originalFetch(HUB_OVERRIDE_URL, {
+  async function loadHubOverride(originalFetch, config) {
+    if (!hubOverridePromises.has(config.id)) {
+      const promise = originalFetch(config.overrideUrl, {
         credentials:'same-origin',
         cache:'no-store',
         headers:{ Accept:'application/json' },
       }).then(async response => {
         if (!response.ok) throw new Error(`Medical Hub override ${response.status}`);
         const payload = await response.json();
-        if (!payload || payload._id !== HUB_OVERRIDE_ID) throw new Error('Medical Hub override ID mismatch.');
+        if (!payload || payload._id !== config.id) throw new Error('Medical Hub override ID mismatch.');
         return payload;
       }).catch(error => {
-        hubOverridePromise = null;
+        hubOverridePromises.delete(config.id);
         console.error('[Medical Hub source override]', error);
         return null;
       });
+      hubOverridePromises.set(config.id, promise);
     }
-    return hubOverridePromise;
+    return hubOverridePromises.get(config.id);
   }
 
   function installMedicalHubSourceOverride() {
@@ -61,13 +64,14 @@
     const originalFetch = window.fetch.bind(window);
 
     window.fetch = async function drxMedicalHubFetch(input, init) {
+      const overrideRequest = medicalHubOverrideRequest(input);
       const response = await originalFetch(input, init);
-      if (!isBrucellosisDetailRequest(input) || !response.ok) return response;
+      if (!overrideRequest || !response.ok) return response;
 
       try {
         const payload = await response.clone().json();
-        if (payload?.ok !== true || payload?.item?._id !== HUB_OVERRIDE_ID) return response;
-        const override = await loadHubOverride(originalFetch);
+        if (payload?.ok !== true || payload?.item?._id !== overrideRequest.id) return response;
+        const override = await loadHubOverride(originalFetch, overrideRequest);
         if (!override) return response;
 
         const headers = new Headers(response.headers);
@@ -76,7 +80,7 @@
         headers.delete('Content-Encoding');
         return new Response(JSON.stringify({
           ...payload,
-          item:{ ...payload.item, ...override, _id:HUB_OVERRIDE_ID },
+          item:{ ...payload.item, ...override, _id:overrideRequest.id },
           source:'sanity-published+book-source-override',
         }), {
           status:response.status,
