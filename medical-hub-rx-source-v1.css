@@ -1,5 +1,6 @@
 /* Medical Hub — source-faithful Rx layout.
-   Keeps one source number per treatment group and renders alternatives as OSE. */
+   Keep one treatment section, avoid synthetic outer numbering, and render
+   regimen lines as readable bullet points while preserving OSE relations. */
 
 html[data-drx-app="medical-hub-v2"] .ck-book-rx{
   margin:10px 0 18px;
@@ -50,9 +51,7 @@ html[data-drx-app="medical-hub-v2"] .ck-book-rx-body{
 }
 
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-group{
-  display:grid;
-  grid-template-columns:48px minmax(0,1fr);
-  gap:0;
+  display:block;
   margin:0;
   padding:0;
   border:0;
@@ -64,18 +63,15 @@ html[data-drx-app="medical-hub-v2"] .ck-book-rx-group:last-child{
   border-bottom:0;
 }
 
+/* The source step title already carries the source numbering where applicable.
+   Do not add a second generated 1., 2., 3. column on the left. */
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-number{
-  display:block;
-  padding:15px 10px 14px 17px;
-  color:#6c8683;
-  font-size:12px;
-  font-weight:800;
-  line-height:1.35;
+  display:none;
 }
 
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy{
   min-width:0;
-  padding:14px 18px 15px 0;
+  padding:14px 18px 15px;
   color:#425c59;
   font-size:13px;
   line-height:1.55;
@@ -83,30 +79,46 @@ html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy{
 
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy>strong{
   display:block;
-  margin:0 0 6px;
+  margin:0 0 8px;
   color:#244f4a;
-  font-size:13.5px;
+  font-size:14px;
   font-weight:800;
   line-height:1.35;
 }
 
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-lines{
   display:grid;
-  gap:5px;
+  gap:6px;
+  margin:0;
+  padding:0;
 }
 
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-line{
   min-width:0;
+  display:grid;
+  grid-template-columns:10px minmax(0,1fr);
+  gap:8px;
+  align-items:start;
   color:#4b625f;
   font-size:13px;
   line-height:1.5;
+}
+
+html[data-drx-app="medical-hub-v2"] .ck-book-rx-line::before{
+  content:"•";
+  display:block;
+  color:#1f7779;
+  font-size:17px;
+  font-weight:800;
+  line-height:1.15;
+  transform:translateY(1px);
 }
 
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-alternative{
   display:grid;
   grid-template-columns:42px minmax(0,1fr);
   align-items:start;
-  gap:5px;
+  gap:7px;
   margin:1px 0;
   color:#4b625f;
   font-size:13px;
@@ -141,9 +153,7 @@ html[data-drx-app="medical-hub-v2"] .ck-book-rx-note{
 
 @media(max-width:760px){
   html[data-drx-app="medical-hub-v2"] .ck-book-rx-head{grid-template-columns:44px minmax(0,1fr)}
-  html[data-drx-app="medical-hub-v2"] .ck-book-rx-group{grid-template-columns:38px minmax(0,1fr)}
-  html[data-drx-app="medical-hub-v2"] .ck-book-rx-number{padding:13px 6px 12px 11px;font-size:11px}
-  html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy{padding:12px 12px 13px 0;font-size:12.5px}
+  html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy{padding:12px 12px 13px;font-size:12.5px}
   html[data-drx-app="medical-hub-v2"] .ck-book-rx-copy>strong{font-size:13px}
   html[data-drx-app="medical-hub-v2"] .ck-book-rx-line,
   html[data-drx-app="medical-hub-v2"] .ck-book-rx-alternative{font-size:12.5px}
