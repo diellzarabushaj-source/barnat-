@@ -15,11 +15,32 @@ const icdSidebar = read('icd-sidebar-v3.js');
 const shell = read('tailadmin-shell.js');
 const shellCore = read('tailadmin-shell-core.js');
 const stripe = read('drx-dashboard-stripe.css');
+const hubCss = read('medical-hub-v2.css');
+const hubRxCss = read('medical-hub-rx-source-v1.css');
+const brucellosisOverride = JSON.parse(read('medical-hub-overrides/medicalhub-dod-ch05-sub07.json'));
 
 assert.doesNotThrow(() => new Function(sharedLoader));
 assert.doesNotThrow(() => new Function(shared));
 assert.match(sharedLoader, /CORE_SRC = '\/sidebar-taxonomy-core-v3\.js\?v=/, 'the sidebar loader must pull in the canonical core');
 assert.match(sharedLoader, /ANTIBIOTICS_HREF = '\/antibiotiket\.html'/, 'the loader owns the Antibiotikët nav entry');
+assert.match(sharedLoader, /HUB_OVERRIDE_ID = 'medicalhub-dod-ch05-sub07'/, 'the temporary Brucellosis source override must stay narrowly scoped');
+assert.match(sharedLoader, /sanity-published\+book-source-override/, 'the Medical Hub response must identify when the source override is active');
+assert.match(sharedLoader, /decorateBrucellosisRx/, 'Brucellosis source connectors must be decorated after render');
+assert.equal(brucellosisOverride._id, 'medicalhub-dod-ch05-sub07');
+assert.equal(brucellosisOverride.sourceRxTitle, 'TRAJTIMI I BRUCELOZËS');
+const brucellosisRx = brucellosisOverride.steps.filter(step => step.priority === 'rx-source');
+assert.equal(brucellosisRx.length, 2, 'the source has two distinct treatment blocks: uncomplicated and complicated/focal');
+assert.match(brucellosisRx[0].title, /PAKOMPLIKUAR/);
+assert.match(brucellosisRx[0].action, /PLUS Inj\. Streptomycin 1 g/);
+assert.match(brucellosisRx[0].action, /OSE Inj\. Gentamicin 40 mg\/ml/);
+assert.match(brucellosisRx[0].action, /OSE Tab\. Rifampicin 300 mg/);
+assert.match(brucellosisRx[1].title, /KOMPLIKUAR/);
+assert.match(brucellosisRx[1].action, /PLUS Tab\. Rifampicin 300 mg/);
+assert.match(brucellosisRx[1].action, /PLUS Inj\. Streptomycin 1 g/);
+assert.match(brucellosisRx[1].action, /PËR NEUROBRUCELOZË: Inj\. Ceftriaxone/);
+assert.match(hubCss, /medical-hub-rx-source-v1\.css\?v=4/);
+assert.match(hubRxCss, /\.ck-book-rx-line\.is-source-connector/);
+assert.match(hubRxCss, /\.ck-book-rx-line\.is-source-neuro/);
 assert.doesNotThrow(() => new Function(icdSidebar));
 assert.doesNotThrow(() => new Function(shell));
 assert.doesNotThrow(() => new Function(shellCore));
@@ -145,4 +166,4 @@ assert.doesNotMatch(classificationCss, /\.group-panel|\.group-list|\.group-row/)
 assert.match(classificationJs, /window\.DRxSidebarTaxonomy\?\.syncAtc\?\.\(\)/);
 assert.match(classificationJs, /if \(!hadGroup\) writeHash/);
 
-console.log('Shared sidebar taxonomy v3: ATC + ICD nesting, strict runtime versions and canonical page order passed.');
+console.log('Shared sidebar taxonomy v3: ATC + ICD nesting, strict runtime versions, Brucellosis source override and canonical page order passed.');
