@@ -3,10 +3,131 @@
 
   const CORE_SRC = '/sidebar-taxonomy-core-v3.js?v=sidebar-taxonomy-v5-polish1';
   const ANTIBIOTICS_HREF = '/antibiotiket.html';
+  const HUB_OVERRIDE_ID = 'medicalhub-dod-ch05-sub07';
+  const HUB_OVERRIDE_URL = '/medical-hub-overrides/medicalhub-dod-ch05-sub07.json?v=20260916-1';
   let observer = null;
+  let hubOverridePromise = null;
+  let hubRxObserver = null;
 
   function currentPath() {
     return location.pathname.replace(/\/{2,}/g, '/').replace(/\/+$/, '') || '/';
+  }
+
+  function isMedicalHub() {
+    return document.documentElement?.dataset?.drxApp === 'medical-hub-v2';
+  }
+
+  function requestUrl(input) {
+    try {
+      const raw = typeof input === 'string' ? input : input?.url;
+      return raw ? new URL(raw, location.origin) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function isBrucellosisDetailRequest(input) {
+    if (!isMedicalHub()) return false;
+    const url = requestUrl(input);
+    return Boolean(url
+      && url.origin === location.origin
+      && url.pathname === '/api/medical-hub'
+      && url.searchParams.get('id') === HUB_OVERRIDE_ID);
+  }
+
+  async function loadHubOverride(originalFetch) {
+    if (!hubOverridePromise) {
+      hubOverridePromise = originalFetch(HUB_OVERRIDE_URL, {
+        credentials:'same-origin',
+        cache:'no-store',
+        headers:{ Accept:'application/json' },
+      }).then(async response => {
+        if (!response.ok) throw new Error(`Medical Hub override ${response.status}`);
+        const payload = await response.json();
+        if (!payload || payload._id !== HUB_OVERRIDE_ID) throw new Error('Medical Hub override ID mismatch.');
+        return payload;
+      }).catch(error => {
+        hubOverridePromise = null;
+        console.error('[Medical Hub source override]', error);
+        return null;
+      });
+    }
+    return hubOverridePromise;
+  }
+
+  function installMedicalHubSourceOverride() {
+    if (!isMedicalHub() || window.__drxMedicalHubSourceOverrideInstalled) return;
+    window.__drxMedicalHubSourceOverrideInstalled = true;
+    const originalFetch = window.fetch.bind(window);
+
+    window.fetch = async function drxMedicalHubFetch(input, init) {
+      const response = await originalFetch(input, init);
+      if (!isBrucellosisDetailRequest(input) || !response.ok) return response;
+
+      try {
+        const payload = await response.clone().json();
+        if (payload?.ok !== true || payload?.item?._id !== HUB_OVERRIDE_ID) return response;
+        const override = await loadHubOverride(originalFetch);
+        if (!override) return response;
+
+        const headers = new Headers(response.headers);
+        headers.set('Content-Type', 'application/json; charset=utf-8');
+        headers.delete('Content-Length');
+        headers.delete('Content-Encoding');
+        return new Response(JSON.stringify({
+          ...payload,
+          item:{ ...payload.item, ...override, _id:HUB_OVERRIDE_ID },
+          source:'sanity-published+book-source-override',
+        }), {
+          status:response.status,
+          statusText:response.statusText,
+          headers,
+        });
+      } catch (error) {
+        console.error('[Medical Hub source override response]', error);
+        return response;
+      }
+    };
+  }
+
+  function decorateBrucellosisRx() {
+    if (!isMedicalHub()) return;
+    const rxBlocks = [...document.querySelectorAll('.ck-book-rx')];
+    const rx = rxBlocks.find(block => /TRAJTIMI\s+I\s+BRUCELOZ/i.test(block.querySelector('.ck-book-rx-head>strong')?.textContent || ''));
+    if (!rx) return;
+    rx.classList.add('is-brucellosis-source');
+
+    rx.querySelectorAll('.ck-book-rx-line').forEach(line => {
+      if (line.dataset.sourceConnector === '1') return;
+      const value = String(line.textContent || '').replace(/\s+/g, ' ').trim();
+      const plus = value.match(/^PLUS\s+(.+)$/i);
+      const neuro = value.match(/^PËR\s+NEUROBRUCELOZË\s*:\s*(.+)$/i);
+      const match = plus || neuro;
+      if (!match) return;
+
+      line.dataset.sourceConnector = '1';
+      line.classList.add('is-source-connector');
+      if (neuro) line.classList.add('is-source-neuro');
+      else line.classList.add('is-source-plus');
+      line.textContent = '';
+
+      const connector = document.createElement('span');
+      connector.className = 'ck-book-rx-source-connector';
+      connector.textContent = neuro ? 'PËR NEUROBRUCELOZË' : 'PLUS';
+      const copy = document.createElement('span');
+      copy.className = 'ck-book-rx-source-copy';
+      copy.textContent = match[1];
+      line.append(connector, copy);
+    });
+  }
+
+  function observeMedicalHubRx() {
+    if (!isMedicalHub() || hubRxObserver) return;
+    const root = document.getElementById('learningDetail');
+    if (!root) return;
+    decorateBrucellosisRx();
+    hubRxObserver = new MutationObserver(() => decorateBrucellosisRx());
+    hubRxObserver.observe(root, { childList:true, subtree:true });
   }
 
   function antibioticLinkMarkup() {
@@ -137,6 +258,8 @@
   }
 
   function init() {
+    installMedicalHubSourceOverride();
+    observeMedicalHubRx();
     ensureAntibioticsNav();
     loadCore();
   }
