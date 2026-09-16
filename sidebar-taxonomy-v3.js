@@ -3,8 +3,9 @@
 
   const CORE_SRC = '/sidebar-taxonomy-core-v3.js?v=sidebar-taxonomy-v5-polish1';
   const ANTIBIOTICS_HREF = '/antibiotiket.html';
+  const HUB_OVERRIDE_ID = 'medicalhub-dod-ch05-sub07';
   const HUB_SOURCE_OVERRIDES = new Map([
-    ['medicalhub-dod-ch05-sub07', '/medical-hub-overrides/medicalhub-dod-ch05-sub07.json?v=20260916-2'],
+    [HUB_OVERRIDE_ID, '/medical-hub-overrides/medicalhub-dod-ch05-sub07.json?v=20260916-2'],
     ['medicalhub-dod-ch05-sub08', '/medical-hub-overrides/medicalhub-dod-ch05-sub08.json?v=20260916-1'],
   ]);
   let observer = null;
