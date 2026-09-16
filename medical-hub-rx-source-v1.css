@@ -145,10 +145,7 @@ html[data-drx-app="medical-hub-v2"] .ck-book-rx-alternative>span::after{
 
 html[data-drx-app="medical-hub-v2"] .ck-book-rx-note{
   display:block;
-  margin-top:8px;
-  padding:8px 10px;
-  border-radius:8px;
-  background:#fff8e7;
+  margin-top:7px;
   color:#6b7775;
   font-size:10.5px;
   line-height:1.45;
