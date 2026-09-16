@@ -7,6 +7,7 @@
   const HUB_SOURCE_OVERRIDES = new Map([
     [HUB_OVERRIDE_ID, '/medical-hub-overrides/medicalhub-dod-ch05-sub07.json?v=20260916-2'],
     ['medicalhub-dod-ch05-sub08', '/medical-hub-overrides/medicalhub-dod-ch05-sub08.json?v=20260916-1'],
+    ['medicalhub-dod-ch05-sub09', '/medical-hub-overrides/medicalhub-dod-ch05-sub09.json?v=20260916-1'],
   ]);
   let observer = null;
   const hubOverridePromises = new Map();
