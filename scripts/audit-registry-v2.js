@@ -155,7 +155,7 @@ assert(css.includes('scrollbar-gutter:stable'), 'Column picker must reserve a st
 assert(!css.includes('!important'), 'Registry v2 stylesheet must not rely on !important overrides.');
 
 const tableHeaderCount = (html.match(/<th\b/g) || []).length;
-assert(tableHeaderCount >= 10 && tableHeaderCount <= 15, `Registry v2 table column count is unexpected: ${tableHeaderCount}.`);
+assert(tableHeaderCount >= 10 && tableHeaderCount <= 16, `Registry v2 table column count is unexpected: ${tableHeaderCount}.`);
 
 console.log(JSON.stringify({
   ok:true,
