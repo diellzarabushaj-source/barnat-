@@ -6,6 +6,7 @@ const path = require('node:path');
 require('./stabilize-registry-v2-column-picker.js');
 require('./stabilize-registry-v2-dose-autoload.js');
 require('./stabilize-dosage-cache-isolation.js');
+require('./stabilize-registry-prescription-notation.js');
 
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
@@ -167,5 +168,6 @@ console.log(JSON.stringify({
   columnPickerStability:'registry-column-picker-stability-v2',
   dosageAutoload:'registry-dose-autoload-retry-v2',
   dosageCacheIsolation:'dosage-query-cache-isolation-v1',
+  prescriptionNotationFallback:'registry-prescription-derived-notation-v1',
   legacyAssetsLoaded:0,
 }, null, 2));
