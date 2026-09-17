@@ -9,6 +9,7 @@ const root = path.resolve(__dirname, '..');
 const landingPath = path.join(root, 'landing.html');
 const aboutPath = path.join(root, 'rreth-nesh.html');
 const contactPath = path.join(root, 'kontakt.html');
+const middlewarePath = path.join(root, 'middleware.ts');
 const CONTACT_MARKER = 'drx-contact-v2';
 
 function read(file) {
@@ -84,4 +85,20 @@ if (!contact.includes(`contact.js?v=${CONTACT_MARKER}`)) throw new Error('Contac
 if (/<script>\s*[\s\S]*?medindexContactForm/.test(contact)) throw new Error('Contact form still relies on an inline CSP-blocked script.');
 writeIfChanged(contactPath, contactBefore, contact);
 
-console.log('Public DRx polish applied: current Registry counts, honest stats, return-safe CTAs and CSP-safe contact form.');
+// Vercel's Edge middleware runtime is deprecated. The auth middleware only uses
+// Web/Node-compatible APIs, so opt into the supported Node.js runtime without
+// changing matcher or authentication behavior.
+let middleware = read(middlewarePath);
+const middlewareBefore = middleware;
+if (!/runtime:\s*['"]nodejs['"]/.test(middleware)) {
+  const configAnchor = "export const config = {\n  matcher: '/:path*',\n};";
+  if (!middleware.includes(configAnchor)) throw new Error('Middleware runtime config anchor missing.');
+  middleware = middleware.replace(
+    configAnchor,
+    "export const config = {\n  matcher: '/:path*',\n  runtime: 'nodejs',\n};"
+  );
+}
+if (!middleware.includes("runtime: 'nodejs'")) throw new Error('Middleware Node.js runtime was not materialized.');
+writeIfChanged(middlewarePath, middlewareBefore, middleware);
+
+console.log('Public DRx polish applied: current Registry counts, honest stats, return-safe CTAs, CSP-safe contact form and Node.js middleware runtime.');
