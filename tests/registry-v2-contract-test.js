@@ -186,6 +186,12 @@ assert.match(personalLookup.path, /editorial_status=eq\.published/);
 
 const mapped = drugSearch.listRow({ id:'11111111-1111-4111-8111-111111111111', approved_population:'Pediatric only' });
 assert.equal(mapped.approvedPopulation, 'Pediatric only');
+assert.equal(drugSearch.listRow({prescription_notation:'Tab. Test 500 mg'}).prescriptionNotation, 'Tab. Test 500 mg');
+assert.equal(drugSearch.listRow({}).prescriptionNotation, '');
+const notationSelect = new URL(drugSearch.buildPageRequest({}).path, 'https://example.test').searchParams.get('select');
+assert.ok(notationSelect.includes('prescription_notation:source_payload->>"Si të shënohet në recetë"'));
+assert.ok(!notationSelect.split(',').includes('source_payload'), 'list queries must not download full source documents');
+assert.match(html, /data-col="prescription"/);
 
 const detailMapped = drugSearch.detailRow({
   id:'11111111-1111-4111-8111-111111111111',
