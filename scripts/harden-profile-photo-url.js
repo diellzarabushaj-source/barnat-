@@ -26,9 +26,18 @@ if (!runtime.includes(MARKER)) {
     "    profile = { ...profile, photo:safeProfilePhotoUrl(saved?.url) };"
   );
 
-  const avatarAnchor = "  function setAvatar(node) {\n    if (!node) return;\n    node.dataset.hasPhoto = String(Boolean(profile.photo));\n    node.style.backgroundImage = profile.photo ? `url(\\\"${profile.photo}\\\")` : '';\n    node.textContent = profile.photo ? '' : initials(profile.name);\n  }";
-  if (!runtime.includes(avatarAnchor)) throw new Error('Profile avatar render anchor missing.');
-  runtime = runtime.replace(avatarAnchor, "  function setAvatar(node) {\n    if (!node) return;\n    const photo = safeProfilePhotoUrl(profile.photo);\n    node.dataset.hasPhoto = String(Boolean(photo));\n    node.style.backgroundImage = photo ? `url(\\\"${photo}\\\")` : '';\n    node.textContent = photo ? '' : initials(profile.name);\n  }");
+  const avatarLines = [
+    "    node.dataset.hasPhoto = String(Boolean(profile.photo));",
+    "    node.style.backgroundImage = profile.photo ? `url(\\\"${profile.photo}\\\")` : '';",
+    "    node.textContent = profile.photo ? '' : initials(profile.name);",
+  ];
+  if (!avatarLines.every(line => runtime.includes(line))) {
+    throw new Error('Profile avatar render lines missing.');
+  }
+  runtime = runtime
+    .replace(avatarLines[0], "    const photo = safeProfilePhotoUrl(profile.photo);\n    node.dataset.hasPhoto = String(Boolean(photo));")
+    .replace(avatarLines[1], "    node.style.backgroundImage = photo ? `url(\\\"${photo}\\\")` : '';")
+    .replace(avatarLines[2], "    node.textContent = photo ? '' : initials(profile.name);");
 
   runtime = runtime.replace("const VERSION = 'drx-brand-v7';", `const VERSION = '${VERSION}';`);
   fs.writeFileSync(runtimePath, runtime, 'utf8');
@@ -37,7 +46,7 @@ if (!runtime.includes(MARKER)) {
 registry = registry.replaceAll('/medindex-brand-runtime.js?v=drx-brand-v7', `/medindex-brand-runtime.js?v=${VERSION}`);
 fs.writeFileSync(registryPath, registry, 'utf8');
 
-if (!runtime.includes(MARKER) || !runtime.includes("safeProfilePhotoUrl(meta?.url)")) {
+if (!runtime.includes(MARKER) || !runtime.includes('safeProfilePhotoUrl(meta?.url)') || !runtime.includes('const photo = safeProfilePhotoUrl(profile.photo);')) {
   throw new Error('Profile photo URL guard was not materialized.');
 }
 
