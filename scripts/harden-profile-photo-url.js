@@ -26,18 +26,17 @@ if (!runtime.includes(MARKER)) {
     "    profile = { ...profile, photo:safeProfilePhotoUrl(saved?.url) };"
   );
 
-  const avatarLines = [
-    "    node.dataset.hasPhoto = String(Boolean(profile.photo));",
-    "    node.style.backgroundImage = profile.photo ? `url(\\\"${profile.photo}\\\")` : '';",
-    "    node.textContent = profile.photo ? '' : initials(profile.name);",
-  ];
-  if (!avatarLines.every(line => runtime.includes(line))) {
-    throw new Error('Profile avatar render lines missing.');
+  const avatarPattern = /  function setAvatar\(node\) \{\n    if \(!node\) return;\n[\s\S]*?\n  \}\n\n  function applyProfile\(\) \{/;
+  if (!avatarPattern.test(runtime)) throw new Error('Profile avatar function anchor missing.');
+  runtime = runtime.replace(avatarPattern, `  function setAvatar(node) {
+    if (!node) return;
+    const photo = safeProfilePhotoUrl(profile.photo);
+    node.dataset.hasPhoto = String(Boolean(photo));
+    node.style.backgroundImage = photo ? \`url("\${photo}")\` : '';
+    node.textContent = photo ? '' : initials(profile.name);
   }
-  runtime = runtime
-    .replace(avatarLines[0], "    const photo = safeProfilePhotoUrl(profile.photo);\n    node.dataset.hasPhoto = String(Boolean(photo));")
-    .replace(avatarLines[1], "    node.style.backgroundImage = photo ? `url(\\\"${photo}\\\")` : '';")
-    .replace(avatarLines[2], "    node.textContent = photo ? '' : initials(profile.name);");
+
+  function applyProfile() {`);
 
   runtime = runtime.replace("const VERSION = 'drx-brand-v7';", `const VERSION = '${VERSION}';`);
   fs.writeFileSync(runtimePath, runtime, 'utf8');
