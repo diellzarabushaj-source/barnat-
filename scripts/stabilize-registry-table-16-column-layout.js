@@ -3,6 +3,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+require('./polish-public-site-consistency.js');
+
 const root = path.resolve(__dirname, '..');
 const jsPath = path.join(root, 'registry-v2.js');
 const cssPath = path.join(root, 'registry-v2.css');
