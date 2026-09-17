@@ -3,6 +3,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+require('./harden-profile-photo-url.js');
+
 const root = path.resolve(__dirname, '..');
 const landingPath = path.join(root, 'landing.html');
 const aboutPath = path.join(root, 'rreth-nesh.html');
