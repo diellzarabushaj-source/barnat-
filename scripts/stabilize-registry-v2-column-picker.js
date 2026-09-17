@@ -15,7 +15,7 @@ let css = fs.readFileSync(cssTarget, 'utf8');
 const block = (...lines) => lines.join('\n');
 
 function replaceOnce(pattern, replacement, label) {
-  const matches = source.match(pattern);
+  const matches = typeof pattern === 'string' ? source.includes(pattern) : source.match(pattern);
   if (!matches) throw new Error(`Registry column picker stability anchor missing: ${label}`);
   source = source.replace(pattern, replacement);
 }
