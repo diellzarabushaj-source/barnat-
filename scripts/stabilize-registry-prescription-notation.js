@@ -47,7 +47,8 @@ if (!source.includes(MARKER)) {
     if (explicit) return explicit;
     const prefix = prescriptionFormPrefix(row?.form);
     const identity = [clean(row?.activeSubstance), clean(row?.strength)].filter(Boolean).join(' ');
-    return [prefix, identity].filter(Boolean).join(' ') || '—';
+    const line = [prefix, identity].filter(Boolean).join(' ');
+    return line ? `Rp.: ${line}` : '—';
   }
 `;
 
@@ -65,6 +66,7 @@ if (!source.includes(MARKER)) {
       || !source.includes("return 'Caps.';")
       || !source.includes("return 'Ung.';")
       || !source.includes("return 'Gel.';")
+      || !source.includes('Rp.: ${line}')
       || source.includes('Nuk është plotësuar në burim')) {
     throw new Error('Registry prescription notation fallback was not materialized correctly.');
   }
@@ -72,4 +74,4 @@ if (!source.includes(MARKER)) {
   fs.writeFileSync(target, source, 'utf8');
 }
 
-console.log('Materialized Registry prescription notation fallback from form + active substance + strength.');
+console.log('Materialized Registry prescription notation fallback with Rp. + form + active substance + strength.');
