@@ -53,6 +53,7 @@
     { id:'substance', label:'Substanca aktive', hint:'Përbërësi aktiv' },
     { id:'strength', label:'Fortësia', hint:'Doza / përqendrimi' },
     { id:'form', label:'Forma', hint:'Forma farmaceutike' },
+    { id:'prescription', label:'Si shënohet në recetë', hint:'Shënimi nga burimi i regjistrit' },
     { id:'drugClass', label:'Grupi / Klasa', hint:'Grupi farmakologjik / terapeutik' },
     { id:'use', label:'Për çka përdoret', hint:'Indikacionet / përdorimi' },
     { id:'population', label:'Popullata', hint:'Adult / pediatrik' },
@@ -65,9 +66,9 @@
   const DEFAULT_VISIBLE_COLUMNS = Object.freeze(COLUMN_DEFS.map(item => item.id));
   const PREFERENCES_API = '/api/auth?scope=ui-preferences';
   const COLUMN_CACHE_PREFIX = 'drx_registry_columns_v2:';
-  const COLUMN_SCHEMA_VERSION = 'registry-columns-v3-clinical';
+  const COLUMN_SCHEMA_VERSION = 'registry-columns-v4-prescription';
   const COLUMN_SCHEMA_PREFIX = 'drx_registry_column_schema:';
-  const CLINICAL_COLUMN_IDS = Object.freeze(['drugClass', 'use', 'population']);
+  const CLINICAL_COLUMN_IDS = Object.freeze(['drugClass', 'use', 'population', 'prescription']);
   // Column layout is remembered per profile, but the profile id only arrives
   // once auth resolves. Without a device-scoped fallback nothing is cached in
   // that window and a refresh snaps the table back to the default.
@@ -250,7 +251,7 @@
     });
 
     const widths = {
-      registry:68, name:225, substance:190, strength:105, form:145,
+      registry:68, name:225, substance:190, strength:105, form:145, prescription:260,
       drugClass:180, use:220, population:150, atc:90,
       adultDose:190, pediatricDose:190, status:105, price:92,
     };
@@ -867,6 +868,9 @@
 
   async function fetchJson(url, options = {}, timeoutMs = 9000) {
     const controller = new AbortController();
+    const abort = () => controller.abort();
+    if (options.signal?.aborted) abort();
+    else options.signal?.addEventListener('abort', abort, { once:true });
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const response = await fetch(url, { credentials:'same-origin', cache:'no-store', ...options, signal:controller.signal, headers:{ Accept:'application/json', ...(options.headers || {}) } });
@@ -877,7 +881,7 @@
       }
       if (!response.ok) throw new Error(payload.error || `Gabim ${response.status}`);
       return { payload, response };
-    } finally { clearTimeout(timer); }
+    } finally { clearTimeout(timer); options.signal?.removeEventListener('abort', abort); }
   }
 
   function redirectToLogin() {
@@ -936,6 +940,7 @@
         <td data-col="substance"><span class="skeleton md"></span></td>
         <td data-col="strength"><span class="skeleton sm"></span></td>
         <td data-col="form"><span class="skeleton md"></span></td>
+        <td data-col="prescription"><span class="skeleton lg"></span></td>
         <td data-col="drugClass"><span class="skeleton md"></span></td>
         <td data-col="use"><span class="skeleton lg"></span></td>
         <td data-col="population"><span class="skeleton md"></span></td>
@@ -953,11 +958,13 @@
 
   async function loadPage({ preserveScroll = false } = {}) {
     const requestId = ++state.requestId;
+    state.pageController?.abort();
+    state.pageController = new AbortController();
     const startedAt = performance.now();
     renderSkeleton();
     setBusy(true);
     try {
-      const { payload, response } = await fetchJson(queryUrl());
+      const { payload, response } = await fetchJson(queryUrl(), { signal:state.pageController.signal });
       if (requestId !== state.requestId) return;
       state.rows = Array.isArray(payload.rows) ? payload.rows : [];
       state.page = Number(payload.pagination?.page || state.page);
@@ -1029,10 +1036,10 @@
     for (const row of state.rows) {
       const number = clean(row.registryNumber);
       const card = state.dosageByRegistry.get(number);
-      const adult = document.querySelector(`[data-dose-adult="${CSS.escape(number)}"]`);
-      const pediatric = document.querySelector(`[data-dose-pediatric="${CSS.escape(number)}"]`);
-      if (adult) { adult.innerHTML = doseMarkup(card?.adultDose, card?.adultRoute); adult.dataset.doseStatus = 'ready'; }
-      if (pediatric) { pediatric.innerHTML = doseMarkup(card?.pediatricDose, card?.pediatricRoute); pediatric.dataset.doseStatus = 'ready'; }
+      const adults = document.querySelectorAll(`[data-dose-adult="${CSS.escape(number)}"]`);
+      const pediatrics = document.querySelectorAll(`[data-dose-pediatric="${CSS.escape(number)}"]`);
+      for (const adult of adults) { adult.innerHTML = doseMarkup(card?.adultDose, card?.adultRoute); adult.dataset.doseStatus = 'ready'; }
+      for (const pediatric of pediatrics) { pediatric.innerHTML = doseMarkup(card?.pediatricDose, card?.pediatricRoute); pediatric.dataset.doseStatus = 'ready'; }
     }
     requestAnimationFrame(syncAllDoseToggles);
   }
@@ -1135,6 +1142,7 @@
         </div>
         <div class="registry-list-grid">
           ${listField('form', 'Forma', escapeHtml(row.form || '—'))}
+          ${listField('prescription', 'Si shënohet në recetë', escapeHtml(row.prescriptionNotation || 'Nuk është plotësuar në burim'))}
           ${listField('drugClass', 'Grupi / Klasa', escapeHtml(row.drugClass || '—'))}
           ${listField('use', 'Për çka përdoret', escapeHtml(row.use || '—'))}
           <div class="registry-list-field" data-col="adultDose"><span>Doza e të rriturit</span><div data-dose-adult="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></div></div>
@@ -1178,6 +1186,7 @@
         <td data-col="substance"><span class="cell-clamp">${escapeHtml(row.activeSubstance || '—')}</span></td>
         <td data-col="strength">${escapeHtml(row.strength || '—')}</td>
         <td data-col="form"><span class="cell-clamp">${escapeHtml(row.form || '—')}</span></td>
+        <td data-col="prescription"><span class="registry-prescription-text">${escapeHtml(row.prescriptionNotation || 'Nuk është plotësuar në burim')}</span></td>
         <td data-col="drugClass"><span class="cell-clamp">${escapeHtml(row.drugClass || '—')}</span></td>
         <td data-col="use"><span class="cell-clamp">${escapeHtml(row.use || '—')}</span></td>
         <td data-col="population">${populationBadge(row.approvedPopulation)}</td>
