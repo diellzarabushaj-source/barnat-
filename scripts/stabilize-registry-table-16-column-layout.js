@@ -7,6 +7,7 @@ const root = path.resolve(__dirname, '..');
 const jsPath = path.join(root, 'registry-v2.js');
 const cssPath = path.join(root, 'registry-v2.css');
 const MARKER = 'registry-table-16-column-layout-v1';
+const ACTIONS_MARKER = 'registry-actions-sticky-v1';
 
 let js = fs.readFileSync(jsPath, 'utf8').replace(/\r\n?/g, '\n');
 let css = fs.readFileSync(cssPath, 'utf8').replace(/\r\n?/g, '\n');
@@ -28,7 +29,7 @@ if (!js.includes(MARKER)) {
 
   const oldChromeWidth = '    }, 44 + 48);';
   if (!js.includes(oldChromeWidth)) throw new Error('Registry table chrome width anchor missing.');
-  js = js.replace(oldChromeWidth, '    }, 44 + 64);');
+  js = js.replace(oldChromeWidth, '    }, 44 + 88);');
 
   fs.writeFileSync(jsPath, js, 'utf8');
 }
@@ -38,7 +39,9 @@ if (!css.includes(MARKER)) {
 
 /* ${MARKER}
    The prescription column made Registry V2 a 16-column table. Keep widths tied
-   to semantic data-col ids so a new column cannot shift every column after it. */
+   to semantic data-col ids so a new column cannot shift every column after it.
+   ${ACTIONS_MARKER}: row actions stay visible at the right edge while the
+   clinical columns scroll horizontally. */
 @media(min-width:761px){
   .registry-table td{overflow:hidden}
   .registry-table th[data-col="registry"],.registry-table td[data-col="registry"]{width:68px}
@@ -55,7 +58,24 @@ if (!css.includes(MARKER)) {
   .registry-table th[data-col="pediatricDose"],.registry-table td[data-col="pediatricDose"]{width:190px}
   .registry-table th[data-col="status"],.registry-table td[data-col="status"]{width:105px;text-align:left}
   .registry-table th[data-col="price"],.registry-table td[data-col="price"]{width:92px;text-align:right}
-  .registry-table th.actions-col,.registry-table td.registry-actions-cell{width:64px;text-align:center}
+
+  .registry-table th.actions-col{
+    position:sticky;right:0;z-index:13;width:88px;min-width:88px;max-width:88px;
+    padding-left:8px;padding-right:8px;background:#f7f9fb;text-align:center;
+    box-shadow:-1px 0 0 #e8edf2,-10px 0 18px -18px rgba(10,37,64,.55)
+  }
+  .registry-table td.registry-actions-cell{
+    position:sticky;right:0;z-index:9;width:88px;min-width:88px;max-width:88px;
+    overflow:visible;padding-left:8px;padding-right:8px;background:#fff;text-align:center;
+    box-shadow:-1px 0 0 #edf0f3,-10px 0 18px -18px rgba(10,37,64,.45)
+  }
+  .registry-table td.registry-actions-cell .registry-row-actions{min-width:0;justify-content:center}
+  .registry-table tbody tr:hover td.registry-actions-cell{background:#fbfcff}
+  .registry-table tbody tr.is-selected td.registry-actions-cell{background:#f7f6ff}
+  .registry-table tbody tr.is-pediatric-only td.registry-actions-cell{background:#fff3f8}
+  .registry-table tbody tr.is-pediatric-only:hover td.registry-actions-cell{background:#ffeaf3}
+  .registry-table tbody tr.is-pediatric-only.is-selected td.registry-actions-cell{background:#fce8f3}
+  .registry-table td.registry-actions-cell:has(.registry-more[open]){z-index:30}
 
   .registry-table td[data-col="prescription"]{padding-right:20px;white-space:normal}
   .registry-table td[data-col="drugClass"]{padding-left:18px}
@@ -68,4 +88,4 @@ if (!css.includes(MARKER)) {
   fs.writeFileSync(cssPath, css, 'utf8');
 }
 
-console.log('Stabilized Registry V2 16-column widths and prescription wrapping.');
+console.log('Stabilized Registry V2 16-column widths, prescription wrapping and sticky row actions.');
