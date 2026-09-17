@@ -7,6 +7,7 @@ require('./stabilize-registry-v2-column-picker.js');
 require('./stabilize-registry-v2-dose-autoload.js');
 require('./stabilize-dosage-cache-isolation.js');
 require('./stabilize-registry-prescription-notation.js');
+require('./stabilize-registry-table-16-column-layout.js');
 
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
@@ -153,6 +154,10 @@ assert(css.includes('@media(prefers-reduced-motion:reduce)'), 'Reduced-motion su
 assert(css.includes('registry-column-picker-scroll-stability-v2'), 'Column picker scroll stability marker is missing.');
 assert(css.includes('overflow-anchor:none'), 'Column picker must disable browser scroll anchoring while selections change.');
 assert(css.includes('scrollbar-gutter:stable'), 'Column picker must reserve a stable scrollbar gutter.');
+assert(js.includes("const REGISTRY_TABLE_LAYOUT = 'registry-table-16-column-layout-v1'"), 'Registry 16-column width map is missing.');
+assert(css.includes('registry-table-16-column-layout-v1'), 'Registry 16-column CSS layout is missing.');
+assert(css.includes('td[data-col="prescription"]{width:300px}'), 'Prescription column must keep a readable desktop width.');
+assert(css.includes('td.registry-actions-cell{width:64px'), 'Actions column must remain mapped after the prescription column.');
 assert(!css.includes('!important'), 'Registry v2 stylesheet must not rely on !important overrides.');
 
 const tableHeaderCount = (html.match(/<th\b/g) || []).length;
@@ -169,5 +174,6 @@ console.log(JSON.stringify({
   dosageAutoload:'registry-dose-autoload-retry-v2',
   dosageCacheIsolation:'dosage-query-cache-isolation-v1',
   prescriptionNotationFallback:'registry-prescription-derived-notation-v1',
+  tableLayout:'registry-table-16-column-layout-v1',
   legacyAssetsLoaded:0,
 }, null, 2));
