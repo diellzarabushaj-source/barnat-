@@ -157,7 +157,9 @@ assert(css.includes('scrollbar-gutter:stable'), 'Column picker must reserve a st
 assert(js.includes("const REGISTRY_TABLE_LAYOUT = 'registry-table-16-column-layout-v1'"), 'Registry 16-column width map is missing.');
 assert(css.includes('registry-table-16-column-layout-v1'), 'Registry 16-column CSS layout is missing.');
 assert(css.includes('td[data-col="prescription"]{width:300px}'), 'Prescription column must keep a readable desktop width.');
-assert(css.includes('td.registry-actions-cell{width:64px'), 'Actions column must remain mapped after the prescription column.');
+assert(css.includes('registry-actions-sticky-v1'), 'Sticky actions layout marker is missing.');
+assert(css.includes('td.registry-actions-cell{\n    position:sticky;right:0;z-index:9;width:88px'), 'Actions column must stay visible at the right edge.');
+assert(css.includes('td.registry-actions-cell:has(.registry-more[open]){z-index:30}'), 'Open row action menus must layer above neighboring cells.');
 assert(!css.includes('!important'), 'Registry v2 stylesheet must not rely on !important overrides.');
 
 const tableHeaderCount = (html.match(/<th\b/g) || []).length;
@@ -175,5 +177,6 @@ console.log(JSON.stringify({
   dosageCacheIsolation:'dosage-query-cache-isolation-v1',
   prescriptionNotationFallback:'registry-prescription-derived-notation-v1',
   tableLayout:'registry-table-16-column-layout-v1',
+  stickyActions:'registry-actions-sticky-v1',
   legacyAssetsLoaded:0,
 }, null, 2));
