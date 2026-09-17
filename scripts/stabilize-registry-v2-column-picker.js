@@ -9,8 +9,8 @@ const cssTarget = path.join(root, 'registry-v2.css');
 const STABILITY_MARKER = 'registry-column-picker-stability-v2';
 const CSS_STABILITY_MARKER = 'registry-column-picker-scroll-stability-v2';
 
-let source = fs.readFileSync(target, 'utf8');
-let css = fs.readFileSync(cssTarget, 'utf8');
+let source = fs.readFileSync(target, 'utf8').replace(/\r\n?/g, '\n');
+let css = fs.readFileSync(cssTarget, 'utf8').replace(/\r\n?/g, '\n');
 
 const block = (...lines) => lines.join('\n');
 
@@ -22,8 +22,8 @@ function replaceOnce(pattern, replacement, label) {
 
 if (!source.includes(STABILITY_MARKER)) {
   replaceOnce(
-    "  'use strict';\n",
-    "  'use strict';\n\n  const COLUMN_PICKER_STABILITY = 'registry-column-picker-stability-v2';\n",
+    /'use strict';\n/,
+    "'use strict';\n\n  const COLUMN_PICKER_STABILITY = 'registry-column-picker-stability-v2';\n",
     'runtime marker',
   );
 
