@@ -22,7 +22,8 @@ let atcCountsRevisionCheckedAt = 0;
 
 const LIST_SELECT = [
   'id','registry_number','pdid','trade_name','active_substance','atc_code','drug_class','use_text','approved_population',
-  'strength','pharmaceutical_form','product_status','retail_price','editorial_status'
+  'strength','pharmaceutical_form','product_status','retail_price','editorial_status',
+  'prescription_notation:source_payload->>"Si të shënohet në recetë"'
 ].join(',');
 
 const DETAIL_SELECT = [
@@ -200,7 +201,7 @@ async function neonAtcCounts() {
   return supabaseAtcCounts();
 }
 
-function listRow(row) { return { id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName:clean(row.trade_name), activeSubstance:clean(row.active_substance), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), approvedPopulation:clean(row.approved_population), strength:clean(row.strength), form:clean(row.pharmaceutical_form), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, qualityStatus:clean(row.editorial_status || row.product_status) }; }
+function listRow(row) { return { prescriptionNotation:clean(row.prescription_notation), id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName:clean(row.trade_name), activeSubstance:clean(row.active_substance), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), approvedPopulation:clean(row.approved_population), strength:clean(row.strength), form:clean(row.pharmaceutical_form), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, qualityStatus:clean(row.editorial_status || row.product_status) }; }
 function sourceFields(value) {
   const source=value && typeof value==='object' && !Array.isArray(value) ? value : {};
   return Object.entries(source).flatMap(([label,raw]) => {

@@ -75,8 +75,7 @@ test('desktop workspace: typography, layout and mini-sidebar', async ({ page }) 
   await expect(page.locator('html')).toHaveClass(/drx-sidebar-collapsed/);
   await expect(page.locator('#sidebarCollapse')).toHaveAttribute('aria-pressed','true');
 
-  const sidebarWidth = await page.locator('#sidebar').evaluate(el => Math.round(el.getBoundingClientRect().width));
-  expect(sidebarWidth).toBe(76);
+  await expect.poll(() => page.locator('#sidebar').evaluate(el => Math.round(el.getBoundingClientRect().width))).toBe(76);
 });
 
 test('mobile workspace: touch sizing and search sheet', async ({ page }) => {
@@ -89,6 +88,7 @@ test('mobile workspace: touch sizing and search sheet', async ({ page }) => {
   const newHeight = await page.locator('#rxNew').evaluate(el => Math.round(el.getBoundingClientRect().height));
   expect(newHeight).toBeGreaterThanOrEqual(44);
 
+  await page.locator('#rxTabBtnCompose').click();
   await page.locator('#rxAddDrugButton').click();
   await expect(page.locator('#rxDrugPopover')).toBeVisible();
   await expect(page.locator('#rxDrugSearch')).toHaveCSS('font-size','16px');

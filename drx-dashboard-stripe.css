@@ -2610,6 +2610,64 @@ html.drx-unified-sidebar a.sr-only:focus{
   border-radius:8px;
 }
 html.drx-unified-sidebar .nav-stack{overscroll-behavior:contain}
+html.drx-unified-sidebar .sidebar{box-sizing:border-box}
+/* September workspace polish: shared surfaces, readable clinical content,
+   bounded mobile controls, and no additional runtime or font requests. */
+html[data-drx-app] :is(.data-card,.rx-compose-card,.rx-preview-card,.rx-source-library,.hub-command){
+  border-color:#dfe5ef;border-radius:16px;
+  box-shadow:0 2px 4px #17255404,0 10px 32px #17255406;
+}
+html[data-drx-app] :is(.page-heading h1,.rx-page-heading h1){
+  letter-spacing:-.035em;line-height:1.15;text-wrap:balance;
+}
+html[data-drx-app] :is(button,a,input,select,textarea):focus-visible{
+  outline:3px solid #635bff;outline-offset:3px;
+}
+html[data-drx-app] :is(button,a){touch-action:manipulation}
+html[data-drx-app="registry-v2"] .registry-prescription-text{
+  display:block;min-width:220px;max-width:320px;white-space:pre-line;
+  overflow-wrap:anywhere;line-height:1.65;color:#34475c;font-weight:400;
+}
+html[data-drx-app="registry-v2"] .registry-list-field[data-col="prescription"]{
+  grid-column:1/-1;padding:12px 14px;border:1px solid #e1defb;
+  border-radius:10px;background:#f8f7ff;white-space:pre-line;overflow-wrap:anywhere;
+}
+html[data-drx-app="registry-v2"] .table-scroll{overscroll-behavior-x:contain;scrollbar-width:thin}
+html[data-drx-app="registry-v2"] .drug-name{font-weight:550;line-height:1.5}
+html[data-drx-app="registry-v2"] .registry-list-card{border-radius:14px}
+html[data-drx-app="medical-hub-v2"] .hub-command{background:#fff;padding:20px}
+html[data-drx-app="medical-hub-v2"] .hub-book-card{
+  background:linear-gradient(135deg,#f5f3ff,#f8fafc);border:1px solid #e5e1f7;border-radius:14px;
+}
+html[data-drx-app="medical-hub-v2"] .hub-document{
+  border:1px solid #e1e6ed;border-radius:16px;box-shadow:0 8px 32px #17255406;
+}
+html[data-drx-app="medical-hub-v2"] :is(.ck-source-paragraph,.ck-source-list-block){line-height:1.8}
+html[data-drx-app="medical-hub-v2"] .hub-search:focus-within{
+  border-color:#635bff;box-shadow:0 0 0 3px #635bff16;
+}
+html[data-drx-app] .rx-order-card{border-radius:12px;overflow:hidden}
+html[data-drx-app] .rx-order-card>header{background:#f8f9fd;padding-block:14px}
+html[data-drx-app] .rx-source-item-body{line-height:1.7}
+html[data-drx-app] .rx-preview-card{border-top:3px solid #635bff}
+html[data-drx-app] :is(.rx-source-nav-item,.rx-folder-item){transition:background-color .15s,border-color .15s}
+@media(hover:hover){
+  html[data-drx-app] :is(.rx-source-nav-item,.rx-folder-item):hover{background:#f4f3ff;border-color:#d8d3ff}
+}
+@media(max-width:767px){
+  html[data-drx-app] :is(.hub-command,.rx-compose-card,.rx-preview-card){padding:16px;border-radius:12px}
+  html[data-drx-app] :is(.hub-topic-nav button,.rx-tab,.rx-primary,.rx-secondary,.rx-new-top,.rx-source-find-drug,.rx-source-use,.dose-toggle){min-height:44px}
+  html[data-drx-app] :is(.hub-reader-pane,.rx-dashboard,.rx-context-row,.registry-list-grid){min-width:0}
+  html[data-drx-app] :is(.rx-compose-card,.rx-preview-card,.hub-document){overflow-wrap:anywhere}
+  html[data-drx-app="medical-hub-v2"] .hub-document{border-radius:12px}
+  html[data-drx-app] :is(.rx-page,.hub-page){padding-bottom:max(28px,env(safe-area-inset-bottom))}
+  html[data-drx-app] :is(.rx-source-head-actions,.rx-compose-actions,.rx-preview-actions){gap:10px;flex-wrap:wrap}
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-drx-app] *,html[data-drx-app] *::before,html[data-drx-app] *::after{
+    scroll-behavior:auto!important;animation:none!important;transition:none!important;
+  }
+}
 @media(max-width:1023px){
   html.drx-unified-sidebar :is(input:not([type=checkbox]):not([type=radio]),select,textarea){font-size:16px!important}
   html.drx-unified-sidebar :is(.menu-button,.sidebar-close){min-width:44px!important;min-height:44px!important}

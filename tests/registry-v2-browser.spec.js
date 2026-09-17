@@ -128,6 +128,7 @@ test('registry v2 desktop flow is stable and usable', async ({ page }) => {
   await page.goto('http://127.0.0.1:4173/index.html');
   await expect(page.getByText('PARACETAMOL TEST')).toBeVisible();
   await expect(page.getByText('AMOXICILLIN TEST')).toBeVisible();
+  await expect(page.locator('#registryRows [data-col="prescription"]').first()).toHaveText('Tab. Paracetamol 500 mg');
   await expect(page.locator('[data-dose-pediatric]').first()).toContainText('15 mg/kg për dozë');
   await expect(page.getByText('Analgesik / antipiretik')).toBeVisible();
   await expect(page.getByText('Dhimbje dhe temperaturë')).toBeVisible();
@@ -172,7 +173,7 @@ test('registry v2 desktop flow is stable and usable', async ({ page }) => {
   await expect(page.locator('#registryRows')).not.toContainText('PARACETAMOL TEST');
   await expect(page.locator('#registryRows tr[data-row-id]')).toHaveCount(1);
 
-  await page.screenshot({ path:'/tmp/registry-v2-desktop.png', fullPage:true });
+  await page.screenshot({ path:test.info().outputPath('registry-v2-desktop.png'), fullPage:true });
 });
 
 test('registry v2 mobile keeps navigation and table overflow contained', async ({ page }) => {
@@ -209,7 +210,7 @@ test('registry v2 mobile keeps navigation and table overflow contained', async (
   expect(drawerWidth).toBeLessThanOrEqual(390);
   await page.locator('#drawerClose').click();
 
-  await page.screenshot({ path:'/tmp/registry-v2-mobile.png', fullPage:true });
+  await page.screenshot({ path:test.info().outputPath('registry-v2-mobile.png'), fullPage:true });
 });
 
 
@@ -253,5 +254,5 @@ test('registry v2 tablet keeps shell and detail geometry contained', async ({ pa
   ).toBeLessThanOrEqual(769);
   await page.locator('#drawerClose').click();
 
-  await page.screenshot({ path:'/tmp/registry-v2-tablet.png', fullPage:true });
+  await page.screenshot({ path:test.info().outputPath('registry-v2-tablet.png'), fullPage:true });
 });
