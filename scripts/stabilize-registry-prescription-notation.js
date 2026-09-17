@@ -48,7 +48,7 @@ if (!source.includes(MARKER)) {
     const prefix = prescriptionFormPrefix(row?.form);
     const identity = [clean(row?.activeSubstance), clean(row?.strength)].filter(Boolean).join(' ');
     const line = [prefix, identity].filter(Boolean).join(' ');
-    return line ? `Rp.: ${line}` : '—';
+    return line ? 'Rp.: ' + line : '—';
   }
 `;
 
@@ -66,7 +66,7 @@ if (!source.includes(MARKER)) {
       || !source.includes("return 'Caps.';")
       || !source.includes("return 'Ung.';")
       || !source.includes("return 'Gel.';")
-      || !source.includes('Rp.: ${line}')
+      || !source.includes("return line ? 'Rp.: ' + line : '—';")
       || source.includes('Nuk është plotësuar në burim')) {
     throw new Error('Registry prescription notation fallback was not materialized correctly.');
   }
