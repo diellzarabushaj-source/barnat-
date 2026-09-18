@@ -745,3 +745,190 @@ body.lp{
   .lp-nav,.lp-ecg,.lp-final__cta,.lp-scrollbg{display:none;}
   .lp-band{padding:24px 0;}
 }
+
+
+/* ==========================================================================
+   DRx cross-device responsive polish — 2026-09-18
+   Keeps the existing visual language while hardening phone, tablet/iPad,
+   laptop and wide-desktop behavior.
+   ========================================================================== */
+
+.lp{
+  overflow-x:clip;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+.lp .lp-shell{
+  min-width:0;
+  padding-left:max(var(--lp-gutter),env(safe-area-inset-left));
+  padding-right:max(var(--lp-gutter),env(safe-area-inset-right));
+}
+.lp .lp-nav__row,
+.lp .lp-hero__grid,
+.lp .lp-mock,
+.lp .lp-side,
+.lp .lp-grid,
+.lp .lp-split,
+.lp .lp-split__copy,
+.lp .lp-split__media,
+.lp .lp-panel,
+.lp .lp-panel__body,
+.lp .lp-stats,
+.lp .lp-footer__grid{min-width:0}
+.lp .lp-panel,
+.lp .lp-card{max-width:100%}
+.lp .lp-display-xxl,
+.lp .lp-display-xl,
+.lp .lp-display-lg,
+.lp .lp-heading-lg,
+.lp .lp-heading-md,
+.lp p,
+.lp li{overflow-wrap:anywhere}
+.lp section[id]{scroll-margin-top:84px}
+.lp .lp-btn,
+.lp .lp-nav__toggle,
+.lp .lp-nav__close{
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* Tablet and compact laptop: preserve breathing room without wasting width. */
+@media (min-width:768px) and (max-width:1180px){
+  :root{--lp-gutter:clamp(22px,3.2vw,34px)}
+  .lp .lp-band{padding:clamp(66px,7.5vw,84px) 0}
+  .lp .lp-band--tight{padding:clamp(42px,5vw,56px) 0}
+  .lp .lp-band--flushBottom{padding-bottom:24px}
+  .lp .lp-band--flushTop{padding-top:32px}
+  .lp .lp-hero__body{padding-top:clamp(44px,5vw,60px)}
+  .lp .lp-display-xxl{font-size:clamp(44px,5.8vw,58px);line-height:1.04}
+  .lp .lp-display-xl{font-size:clamp(32px,4vw,42px)}
+  .lp .lp-display-lg{font-size:clamp(27px,3.3vw,34px)}
+  .lp .lp-hero__lead{font-size:clamp(17px,2vw,19px)}
+  .lp .lp-mock{gap:16px}
+  .lp .lp-panel__body{padding:15px}
+  .lp .lp-split{gap:clamp(30px,4vw,44px)}
+  .lp .lp-grid{gap:16px}
+  .lp .lp-card{padding:clamp(22px,3vw,28px)}
+}
+
+@media (min-width:768px) and (max-width:1023px){
+  .lp .lp-mock{margin-top:-18px}
+  .lp .lp-side{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:16px;
+  }
+  .lp .lp-side>.lp-panel{height:100%}
+  .lp .lp-nav__links{
+    width:min(430px,100%);
+    left:auto;
+    padding-left:24px;
+    padding-right:max(24px,env(safe-area-inset-right));
+    box-shadow:-24px 0 60px rgba(15,23,42,.12);
+  }
+  .lp .lp-footer__grid{gap:30px 24px}
+}
+
+/* Phones: one clear reading column, thumb-sized controls and no accidental
+   horizontal page scroll. Wide mock tables remain intentionally swipeable. */
+@media (max-width:767px){
+  .lp .lp-nav{
+    padding-top:max(12px,env(safe-area-inset-top));
+    padding-bottom:12px;
+  }
+  .lp .lp-nav__links{
+    height:100dvh;
+    padding-top:max(80px,calc(64px + env(safe-area-inset-top)));
+    padding-bottom:max(20px,env(safe-area-inset-bottom));
+    padding-left:max(16px,env(safe-area-inset-left));
+    padding-right:max(16px,env(safe-area-inset-right));
+  }
+  .lp .lp-nav__close{
+    top:max(14px,env(safe-area-inset-top));
+    right:max(16px,env(safe-area-inset-right));
+  }
+  .lp .lp-hero__body{padding-top:clamp(28px,8vw,40px)}
+  .lp .lp-display-xxl{font-size:clamp(32px,9vw,38px);line-height:1.07;letter-spacing:-.75px}
+  .lp .lp-display-xl{font-size:clamp(27px,7.6vw,31px);line-height:1.12}
+  .lp .lp-display-lg{font-size:clamp(23px,6.5vw,27px);line-height:1.16}
+  .lp .lp-hero__lead{font-size:16.5px;line-height:1.55}
+  .lp .lp-hero__cta{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+  .lp .lp-hero__cta .lp-btn{min-height:46px}
+  .lp .lp-hero__note{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    gap:8px;
+    margin-top:16px;
+  }
+  .lp .lp-hero__note span{min-width:0}
+  .lp .lp-ecg,.lp .lp-ecg__svg{height:86px}
+  .lp .lp-mock{margin-top:-10px;gap:12px}
+  .lp .lp-side{gap:12px}
+  .lp .lp-panel{border-radius:16px}
+  .lp .lp-panel__bar{padding:11px 13px;gap:8px}
+  .lp .lp-panel__title{min-width:0;font-size:12px}
+  .lp .lp-panel__body{padding:13px}
+  .lp .lp-mockbar{min-height:44px;padding:9px 10px}
+  .lp .lp-mock-scroll{
+    margin-left:-13px;
+    margin-right:-13px;
+    padding-left:13px;
+    padding-right:13px;
+    scrollbar-width:thin;
+    overscroll-behavior-inline:contain;
+  }
+  .lp .lp-mock-scroll .lp-table{min-width:500px}
+  .lp .lp-table th{font-size:11px;padding:8px}
+  .lp .lp-table td{font-size:12px;padding:10px 8px}
+  .lp .lp-dose__row{align-items:flex-start;flex-direction:column;gap:4px}
+  .lp .lp-dose__value{font-size:24px}
+  .lp .lp-dose__meta div{align-items:flex-start}
+  .lp .lp-band{padding:clamp(54px,14vw,66px) 0}
+  .lp .lp-band--tight{padding:42px 0}
+  .lp .lp-band--flushBottom{padding-bottom:20px}
+  .lp .lp-band--flushTop{padding-top:28px}
+  .lp .lp-split{gap:28px}
+  .lp .lp-split + .lp-split{margin-top:54px}
+  .lp .lp-grid{margin-top:30px;gap:14px}
+  .lp .lp-card{padding:20px;border-radius:16px}
+  .lp .lp-stats{gap:0}
+  .lp .lp-final{padding:38px 18px}
+  .lp .lp-footer__legal{margin-top:34px}
+}
+
+/* Narrow phones (320–480 px): eliminate two-column remnants and tighten
+   chrome without shrinking the touch targets. */
+@media (max-width:480px){
+  :root{--lp-gutter:14px}
+  .lp .lp-nav__row{gap:8px}
+  .lp .drx-logo__img{height:27px;width:auto}
+  .lp .lp-nav__toggle{width:44px;height:44px}
+  .lp .lp-panel__spacer{min-width:4px}
+  .lp .lp-panel__title:last-child{white-space:nowrap}
+  .lp .lp-mock-scroll .lp-table{min-width:470px}
+  .lp .lp-stat{padding-left:0;padding-right:0}
+  .lp .lp-footer__grid{grid-template-columns:minmax(0,1fr)}
+  .lp .lp-footer__brand{grid-column:auto}
+  .lp .lp-footer__legal{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+}
+
+@media (max-width:359px){
+  :root{--lp-gutter:12px}
+  .lp .lp-display-xxl{font-size:30px}
+  .lp .lp-card{padding:18px}
+  .lp .lp-panel__body{padding:12px}
+  .lp .lp-mock-scroll{margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px}
+}
+
+/* Touch devices get dependable 44 px targets even when viewport width is
+   desktop-like (e.g. iPad landscape). */
+@media (hover:none) and (pointer:coarse){
+  .lp .lp-btn,
+  .lp .lp-nav__link,
+  .lp .lp-footer li a{min-height:44px}
+}
+
+/* Landscape phones / short tablets: keep the slide-out menu usable. */
+@media (max-height:520px) and (max-width:1023px){
+  .lp .lp-nav__links{padding-top:64px}
+  .lp .lp-nav__close{top:10px}
+}
