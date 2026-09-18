@@ -2810,3 +2810,10 @@ html[data-drx-app] :is(.button,.icon-button,.nav-item,.drx-profile-chip,.drx-use
     padding-bottom:0!important;
   }
 }
+
+
+/* Registry mobile radius budget: reuse an existing 10px token instead of
+   introducing a fifth corner scale in the compact clinical viewport. */
+@media (max-width:760px){
+  html[data-drx-app="registry-v2"] .data-card{border-radius:10px!important}
+}
