@@ -319,7 +319,6 @@
       state.rows = Array.isArray(data.rows) ? data.rows : [];
       setStatus(`${formatNumber(state.rows.length)} nyje nën ${code}`);
     } catch (error) {
-      if (error?.name === 'AbortError') return;
       if (requestId !== state.requestId) return;
       state.rows = [];
       setStatus(error?.message || 'Hierarkia nuk u ngarkua.', 'error');
@@ -353,6 +352,7 @@
       state.rows = Array.isArray(data.rows) ? data.rows : (Array.isArray(data.suggestions) ? data.suggestions : []);
       setStatus(`${formatNumber(state.rows.length)} përputhje për «${query}»`);
     } catch (error) {
+      if (error?.name === 'AbortError') return;
       if (requestId !== state.requestId) return;
       state.rows = [];
       setStatus(error?.message || 'Kërkimi dështoi.', 'error');
