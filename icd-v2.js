@@ -79,8 +79,13 @@
 
   // --- rrjeti ---------------------------------------------------------------
 
-  async function fetchJson(url, timeoutMs = 9000) {
+  async function fetchJson(url, timeoutMs = 9000, externalSignal = null) {
     const controller = new AbortController();
+    const abortFromExternal = () => controller.abort();
+    if (externalSignal) {
+      if (externalSignal.aborted) controller.abort();
+      else externalSignal.addEventListener('abort', abortFromExternal, { once:true });
+    }
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const response = await fetch(url, {
@@ -91,7 +96,10 @@
       if (response.status === 401 || response.status === 403) { redirectToLogin(); throw new Error('Sesioni nuk është aktiv.'); }
       if (!response.ok || payload?.ok === false) throw new Error(payload?.error || payload?.detail || `Gabim ${response.status}`);
       return { payload, response };
-    } finally { clearTimeout(timer); }
+    } finally {
+      clearTimeout(timer);
+      externalSignal?.removeEventListener?.('abort', abortFromExternal);
+    }
   }
 
   function endpoint(view, values = {}) {
@@ -134,9 +142,13 @@
   }
 
   function nodeSubtitle(node) {
-    const english = clean(node?.englishTitle);
     const shown = nodeTitle(node);
-    return english && english !== shown ? english : '';
+    const english = clean(node?.englishTitle);
+    const latin = clean(node?.latinTitle);
+    return [
+      english && english !== shown ? `EN · ${english}` : '',
+      latin && latin !== shown && latin !== english ? `LA · ${latin}` : '',
+    ].filter(Boolean).join(' · ');
   }
 
   function renderMetrics() {
@@ -307,6 +319,7 @@
       state.rows = Array.isArray(data.rows) ? data.rows : [];
       setStatus(`${formatNumber(state.rows.length)} nyje nën ${code}`);
     } catch (error) {
+      if (error?.name === 'AbortError') return;
       if (requestId !== state.requestId) return;
       state.rows = [];
       setStatus(error?.message || 'Hierarkia nuk u ngarkua.', 'error');
@@ -320,7 +333,12 @@
     }
   }
 
+  let searchAbortController = null;
+
   async function runSearch(query) {
+    searchAbortController?.abort();
+    const controller = new AbortController();
+    searchAbortController = controller;
     const requestId = ++state.requestId;
     state.searching = true;
     state.query = query;
@@ -329,7 +347,7 @@
     setStatus(`Duke kërkuar «${query}»…`, 'busy');
     renderRows();
     try {
-      const { payload } = await fetchJson(endpoint('suggest', { q:query }));
+      const { payload } = await fetchJson(endpoint('suggest', { q:query }), 9000, controller.signal);
       if (requestId !== state.requestId) return;
       const data = payload.data || {};
       state.rows = Array.isArray(data.rows) ? data.rows : (Array.isArray(data.suggestions) ? data.suggestions : []);
@@ -339,11 +357,14 @@
       state.rows = [];
       setStatus(error?.message || 'Kërkimi dështoi.', 'error');
     } finally {
+      if (searchAbortController === controller) searchAbortController = null;
       if (requestId === state.requestId) { state.loading = false; render(); }
     }
   }
 
   function clearSearch() {
+    searchAbortController?.abort();
+    searchAbortController = null;
     state.searching = false;
     state.query = '';
     if (el.icdSearch.value) el.icdSearch.value = '';
@@ -485,11 +506,11 @@
         if (state.searching) { clearSearch(); render(); if (state.chapter) void loadChildren(clean(currentNode()?.code) || state.chapter); }
         return;
       }
-      searchTimer = setTimeout(() => void runSearch(value), 220);
+      searchTimer = setTimeout(() => void runSearch(value), 90);
     });
 
     /* Vendmbajtësi i gjatë pritej në mes të fjalës në 390px. */
-    if (window.matchMedia('(max-width:760px)').matches) el.icdSearch.placeholder = 'Kërko kodin ose diagnozën…';
+    if (window.matchMedia('(max-width:760px)').matches) el.icdSearch.placeholder = 'Kërko kod ose diagnozë…';
 
     document.addEventListener('keydown', event => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); el.icdSearch.focus(); el.icdSearch.select(); }
