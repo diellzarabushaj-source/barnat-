@@ -2355,3 +2355,131 @@ html[data-drx-app="medical-hub-v2"] :where(button,a,input,select,summary,[tabind
   .ck-subsection-title, .ck-modern-content h4, .ck-modern-content h5 { break-after: avoid; }
   .ck-checklist li, .ck-questions dl > div, .ck-decision-branch, .ck-medical-table tr { break-inside: avoid; }
 }
+
+
+/* ==========================================================================
+   Medical Hub cross-device polish — 2026-09-18
+   Keeps the source/book presentation intact while hardening controls and
+   reader ergonomics on iPad/tablet and phones.
+   ========================================================================== */
+html[data-drx-app="medical-hub-v2"] :is(
+  .hub-page,.hub-command,.hub-workspace,.hub-navigation-drawer,.hub-mobile-selects,
+  .hub-reader-pane,.hub-document,.ck-document-inner,.ck-section,.ck-section-body,
+  .ck-source-panel,.ck-medical-table-wrap,.hub-search-results
+){min-width:0}
+
+html[data-drx-app="medical-hub-v2"] :is(button,a,summary,input,select){
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+
+@media (min-width:981px) and (max-width:1100px){
+  html[data-drx-app="medical-hub-v2"] .hub-page .page-heading{
+    align-items:flex-start;
+    gap:18px;
+    margin-bottom:18px;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-page .page-heading h1{font-size:33px}
+  html[data-drx-app="medical-hub-v2"] .hub-page .page-subtitle{max-width:72ch;font-size:14px}
+  html[data-drx-app="medical-hub-v2"] .hub-page .hub-command{
+    top:66px;
+    margin-bottom:14px;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-mobile-selects{
+    grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)!important;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-search-results-list{
+    max-height:min(48dvh,520px)!important;
+  }
+}
+
+@media (min-width:761px) and (max-width:980px){
+  html[data-drx-app="medical-hub-v2"] .hub-page .page-heading{
+    align-items:flex-start;
+    gap:14px;
+    margin-bottom:16px;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-page .page-heading h1{font-size:31px}
+  html[data-drx-app="medical-hub-v2"] .hub-page .page-subtitle{font-size:13.5px}
+  html[data-drx-app="medical-hub-v2"] .hub-page .hub-command{
+    position:static;
+    margin-bottom:12px;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-mobile-selects{
+    grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)!important;
+    gap:9px!important;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field select{
+    min-height:46px;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-search-results-list{
+    max-height:min(46dvh,480px)!important;
+    -webkit-overflow-scrolling:touch;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-search-result{min-width:0}
+  html[data-drx-app="medical-hub-v2"] .hub-search-result-main{
+    min-width:0;
+    overflow-wrap:anywhere;
+  }
+}
+
+@media (max-width:760px){
+  html[data-drx-app="medical-hub-v2"] .hub-page{max-width:100%;overflow-x:hidden}
+  html[data-drx-app="medical-hub-v2"] .hub-page .page-heading>div{min-width:0}
+  html[data-drx-app="medical-hub-v2"] .hub-page :is(.page-heading h1,.page-subtitle){
+    overflow-wrap:anywhere;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-mobile-selects{
+    grid-template-columns:minmax(0,1fr)!important;
+    width:100%;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-mobile-selects .hub-field select{
+    min-height:46px;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-search-results{
+    max-width:100%;
+    overflow:hidden;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-search-results-list{
+    max-height:min(50dvh,430px)!important;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-search-result,
+  html[data-drx-app="medical-hub-v2"] .hub-search-result-main{min-width:0}
+  html[data-drx-app="medical-hub-v2"] .hub-search-result-main :is(strong,p){
+    overflow-wrap:anywhere;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-page .hub-command-footer{
+    min-width:0;
+    gap:9px;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-page .hub-topic-nav{
+    min-width:0;
+    max-width:100%;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-page .hub-topic-nav>button{
+    min-width:44px;
+    min-height:44px;
+  }
+  html[data-drx-app="medical-hub-v2"] .ck-medical-table-wrap{
+    max-width:100%;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-inline:contain;
+  }
+}
+
+@media (max-width:430px){
+  html[data-drx-app="medical-hub-v2"] .hub-page .page-heading h1{font-size:27px}
+  html[data-drx-app="medical-hub-v2"] .hub-page .hub-command-footer{
+    align-items:stretch;
+    flex-direction:column;
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-page .hub-topic-nav{
+    width:100%;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  }
+  html[data-drx-app="medical-hub-v2"] .hub-page .hub-topic-nav>button{min-width:0}
+  html[data-drx-app="medical-hub-v2"] #learningTopicPosition{min-width:48px}
+}
