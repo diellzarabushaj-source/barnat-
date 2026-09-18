@@ -2791,3 +2791,22 @@ html[data-drx-app] :is(.button,.icon-button,.nav-item,.drx-profile-chip,.drx-use
     button:not(.sort-head),select
   ){min-height:44px}
 }
+
+
+/* Shell height contract: keep the approved Stripe chrome geometry exact. */
+@media (min-width:761px) and (max-width:1100px){
+  html.drx-unified-sidebar .topbar{
+    height:58px!important;
+    min-height:58px!important;
+    padding-top:0!important;
+    padding-bottom:0!important;
+  }
+}
+@media (max-width:760px){
+  html.drx-unified-sidebar .topbar{
+    height:50px!important;
+    min-height:50px!important;
+    padding-top:0!important;
+    padding-bottom:0!important;
+  }
+}
