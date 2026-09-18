@@ -595,3 +595,93 @@ body.lp.lp-auth{
 @media (prefers-reduced-motion:reduce){
   .lp-auth *{scroll-behavior:auto!important;transition-duration:.001ms!important;}
 }
+
+
+/* ==========================================================================
+   DRx auth cross-device polish — 2026-09-18
+   ========================================================================== */
+.lp-auth{
+  max-width:100%;
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+.lp-auth .auth-nav,
+.lp-auth .auth-stage,
+.lp-auth .register-stage,
+.lp-auth .auth-footer{min-width:0}
+.lp-auth .auth-nav__row,
+.lp-auth .auth-stage,
+.lp-auth .register-stage,
+.lp-auth .auth-footer{
+  padding-left:max(var(--lp-gutter,24px),env(safe-area-inset-left));
+  padding-right:max(var(--lp-gutter,24px),env(safe-area-inset-right));
+}
+.lp-auth .au-card,
+.lp-auth .auth-plan,
+.lp-auth .register-card{min-width:0;width:100%}
+.lp-auth :is(input,button,a){touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+
+@media (min-width:621px) and (max-width:900px){
+  .lp-auth .auth-stage,
+  .lp-auth .register-stage{
+    width:min(100%,760px);
+    margin-inline:auto;
+    gap:30px;
+    padding-top:36px;
+  }
+  .lp-auth .auth-intro h1{font-size:clamp(40px,6vw,48px)}
+  .lp-auth .auth-intro__lead{max-width:58ch}
+  .lp-auth .au-card,
+  .lp-auth .auth-plan,
+  .lp-auth .register-card{max-width:620px}
+  .lp-auth .auth-plan{margin-top:2px}
+}
+
+@media (max-width:620px){
+  .lp-auth .auth-nav{
+    padding-top:max(10px,env(safe-area-inset-top));
+  }
+  .lp-auth .auth-nav__row{
+    min-height:52px;
+    gap:10px;
+  }
+  .lp-auth .auth-nav__actions{gap:8px}
+  .lp-auth .auth-nav__actions .lp-btn{
+    min-height:42px;
+    padding-inline:12px;
+  }
+  .lp-auth .auth-stage,
+  .lp-auth .register-stage{
+    width:100%;
+    gap:24px;
+    padding-top:22px;
+    padding-bottom:max(44px,env(safe-area-inset-bottom));
+  }
+  .lp-auth .auth-intro h1{
+    font-size:clamp(32px,9vw,37px);
+    overflow-wrap:anywhere;
+  }
+  .lp-auth .auth-intro__lead{font-size:15.5px;line-height:1.55}
+  .lp-auth .auth-facts{margin-top:22px}
+  .lp-auth .auth-facts div{grid-template-columns:88px minmax(0,1fr)}
+  .lp-auth .au-card,
+  .lp-auth .register-card,
+  .lp-auth .auth-plan.plan-block{
+    padding:20px 16px!important;
+    border-radius:16px;
+  }
+  .lp-auth :is(.au-input,input,select,textarea){font-size:16px!important}
+  .lp-auth .auth-password-row{min-width:0}
+  .lp-auth .auth-password-row .au-input{min-width:0}
+  .lp-auth .au-submit{width:100%;min-height:46px}
+  .lp-auth .auth-footer{
+    padding-bottom:max(20px,env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width:380px){
+  .lp-auth .auth-nav__actions .lp-btn{font-size:12px;padding-inline:10px}
+  .lp-auth .auth-facts div{grid-template-columns:minmax(0,1fr);gap:3px}
+  .lp-auth .auth-card__head h2{font-size:25px}
+}
