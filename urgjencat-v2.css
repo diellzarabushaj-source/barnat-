@@ -640,3 +640,47 @@ body.ec-modal-open{overflow:hidden}
   .ec-figure-lightbox-caption{padding:10px 11px}
   .ec-figure-zoom-hint{opacity:1;transform:none}
 }
+
+
+/* ==========================================================================
+   Urgjencat responsive polish — 2026-09-18
+   ========================================================================== */
+.emergency-page,.emergency-command,.emergency-command-footer,.emergency-document,
+.ec-detail-inner,.ec-section,.ec-table-card,.ec-table-scroll{min-width:0}
+
+@media (min-width:761px) and (max-width:1100px){
+  .page-wrap.emergency-page{padding:20px 18px 40px}
+  .emergency-heading{gap:18px;margin-bottom:18px}
+  .emergency-command{top:66px;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .command-search,.emergency-command-footer{grid-column:1/-1}
+  .ec-detail-inner{max-width:900px;padding:30px 30px 46px}
+  .ec-detail-title h2{font-size:26px}
+}
+
+@media (max-width:760px){
+  .emergency-page{max-width:100%;overflow-x:hidden}
+  .emergency-totals{display:flex;flex-wrap:wrap;gap:6px 14px}
+  .emergency-command{width:100%}
+  .command-field,.command-search{min-width:0}
+  .emergency-lesson-nav{min-width:0}
+  .emergency-lesson-nav>button{min-width:0}
+  .ec-detail-inner{max-width:100%}
+  .ec-section :is(p,li,dd,td,th){overflow-wrap:anywhere}
+  .ec-table-scroll{
+    width:auto;
+    margin-left:-16px;
+    margin-right:-16px;
+    padding-left:16px;
+    padding-right:16px;
+    -webkit-overflow-scrolling:touch;
+  }
+}
+
+@media (max-width:420px){
+  .page-wrap.emergency-page{padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
+  .ec-detail-inner{padding:20px 12px 30px}
+  .ec-detail-title h2{font-size:21px}
+  .emergency-lesson-nav{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+  .emergency-lesson-nav>button{padding-inline:8px}
+  .ec-section-index-list button{min-width:190px;flex-basis:190px}
+}

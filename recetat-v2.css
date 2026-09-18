@@ -20,3 +20,83 @@
 @media(max-width:640px){body{font-size:13px}.page-wrap.rx-page{width:100%;padding:14px 10px 28px;overflow-x:hidden}.rx-page-heading{gap:10px;margin-bottom:12px}.rx-page-heading h1{font-size:23px}.rx-page-heading .page-subtitle{display:none}.rx-new-top{min-height:38px;padding:7px 10px;font-size:12px}.rx-tabs{gap:2px;margin-bottom:12px;padding:3px}.rx-tab{min-height:40px;padding:6px 5px}.rx-tab-name{font-size:11px}.rx-source-library{border-radius:11px}.rx-source-library-head{padding:16px}.rx-source-library-head h2{font-size:18px}.rx-source-library-head p{font-size:12px}.rx-source-commandbar{grid-template-columns:minmax(0,1fr);padding:12px}.rx-source-search,.rx-source-chapter-picker,.rx-source-lesson-picker{grid-column:1}.rx-source-search input{font-size:16px}.rx-source-result-meta{grid-column:1}.rx-source-status{padding-inline:12px}.rx-source-recovery{padding:0 12px 12px}.rx-source-index-head{padding:10px 12px 6px}.rx-source-guide-nav{padding:0 12px 12px}.rx-source-nav-item{min-width:min(260px,78vw);max-width:78vw}.rx-source-detail-toolbar{padding:10px 14px}.rx-source-guide-head{display:grid;gap:14px;padding:18px 14px 14px}.rx-source-guide-head h3{font-size:20px}.rx-source-use{width:100%;justify-content:space-between}.rx-source-flow{padding:0 12px 16px}.rx-source-flow-title{display:grid;gap:2px}.rx-source-item{grid-template-columns:44px minmax(0,1fr)}.rx-source-step-rail{padding-inline:4px}.rx-source-item-number{width:28px;height:28px;font-size:11px}.rx-source-item-body{padding:11px}.rx-source-item-title{display:grid;gap:8px}.rx-source-find-drug{width:100%;justify-content:space-between}.rx-source-connector{grid-template-columns:minmax(8px,1fr) auto minmax(8px,1fr);gap:7px}.rx-source-connector p{font-size:11px}.rx-source-guide-foot{padding:12px 14px 16px}.rx-compose-card,.rx-preview-card{padding:15px;border-radius:11px}.rx-context-row{grid-template-columns:1fr}.rx-order-builder-head{align-items:flex-start}.rx-order-card>header{grid-template-columns:28px minmax(0,1fr) auto}.rx-order-source{grid-column:2}.rx-order-remove{grid-column:3;grid-row:1}.rx-order-grid{grid-template-columns:1fr;padding:11px}.rx-order-signature{grid-column:auto}.rx-order-card>footer{align-items:flex-start;flex-direction:column}.rx-compose-actions,.rx-preview-actions{display:grid;grid-template-columns:1fr 1fr}.rx-compose-actions .rx-primary,.rx-preview-actions .rx-primary{grid-column:1/-1}.rx-library-head{align-items:stretch;flex-direction:column;padding:15px}.rx-saved-search{width:100%}.rx-saved-grid{grid-template-columns:1fr;padding:12px}.rx-dialog{padding:16px}.rx-dialog>div{display:grid;grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto;transition:none}}
 [hidden]{display:none}
+
+
+/* ==========================================================================
+   Recetat responsive polish — 2026-09-18
+   ========================================================================== */
+.rx-page,.rx-tabs,.rx-tabpanel,.rx-source-library,.rx-source-browser,.rx-source-index,
+.rx-source-detail,.rx-dashboard,.rx-compose-card,.rx-preview-card,.rx-library,
+.rx-library-layout,.rx-library-content,.rx-order-card{min-width:0}
+.rx-page :is(button,a,summary){touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+
+@media (min-width:901px) and (max-width:1100px){
+  .page-wrap.rx-page{padding:22px 18px 40px}
+  .rx-source-commandbar{
+    grid-template-columns:minmax(0,1.4fr) minmax(190px,.8fr);
+    gap:10px;
+  }
+  .rx-source-search{grid-column:1/-1}
+  .rx-source-result-meta{grid-column:1/-1}
+  .rx-source-clear-search{justify-self:start}
+  .rx-dashboard{grid-template-columns:1fr}
+  .rx-preview-card{position:relative;top:auto}
+  .rx-library-layout{grid-template-columns:220px minmax(0,1fr)}
+}
+
+@media (min-width:641px) and (max-width:900px){
+  .page-wrap.rx-page{padding:18px 16px 36px}
+  .rx-page-heading{align-items:flex-start}
+  .rx-source-commandbar{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rx-source-search{grid-column:1/-1}
+  .rx-source-result-meta{grid-column:1/-1}
+  .rx-source-guide-nav{overscroll-behavior-inline:contain}
+  .rx-order-grid{gap:10px}
+}
+
+@media (max-width:760px){
+  .page-wrap.rx-page{max-width:100%;overflow-x:hidden}
+  .rx-page-heading{min-width:0}
+  .rx-page-heading>div{min-width:0}
+  .rx-page-heading h1{overflow-wrap:anywhere}
+  .rx-new-top{min-height:44px}
+  .rx-tabs{width:100%;min-width:0}
+  .rx-tab{min-width:0;min-height:44px}
+  .rx-source-head-actions{min-width:0}
+  .rx-source-total{min-width:0}
+  .rx-source-commandbar{min-width:0}
+  .rx-source-guide-nav{
+    overscroll-behavior-inline:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+  .rx-source-detail-toolbar{min-width:0}
+  .rx-source-active-title{min-width:0}
+  .rx-order-builder-head{gap:10px}
+  .rx-order-card>header{min-width:0}
+  .rx-order-identity{min-width:0}
+  .rx-dialog-overlay{
+    padding:
+      max(12px,env(safe-area-inset-top))
+      max(12px,env(safe-area-inset-right))
+      max(12px,env(safe-area-inset-bottom))
+      max(12px,env(safe-area-inset-left));
+  }
+  .rx-dialog{max-height:calc(100dvh - 24px);overflow:auto}
+}
+
+@media (max-width:480px){
+  .rx-page-heading{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+  .rx-new-top{width:100%;justify-content:center}
+  .rx-tabs{gap:2px;padding:3px}
+  .rx-tab{padding-inline:4px}
+  .rx-tab-name{font-size:10.5px}
+  .rx-source-head-actions{display:grid;grid-template-columns:minmax(0,1fr);width:100%}
+  .rx-source-live-pill{justify-self:start}
+  .rx-source-nav-item{min-width:min(230px,82vw);max-width:82vw}
+  .rx-compose-actions,.rx-preview-actions{grid-template-columns:minmax(0,1fr)}
+  .rx-compose-actions .rx-primary,.rx-preview-actions .rx-primary{grid-column:auto}
+  .rx-order-card>header{grid-template-columns:28px minmax(0,1fr) auto}
+  .rx-order-source{grid-column:2}
+  .rx-order-remove{grid-column:3;grid-row:1}
+  .rx-dialog>div{grid-template-columns:minmax(0,1fr)}
+}

@@ -3479,3 +3479,58 @@ html.drx-unified-sidebar body{background:#fff!important}
   .protocol-metric{border-right:0;border-bottom:1px solid var(--protocol-doc-line)}
   .protocol-metric:last-child{border-bottom:0}
 }
+
+
+/* ==========================================================================
+   Protokollet responsive polish — 2026-09-18
+   ========================================================================== */
+.protocol-page,.protocol-directory,.protocol-reader,.protocol-reader-frame,
+.protocol-reader-layout,.protocol-reader-main,.protocol-reader-sidebar,
+.clinical-list,.clinical-row{min-width:0}
+
+@media (min-width:901px) and (max-width:1100px){
+  .protocol-page{padding-top:20px!important}
+  .protocol-page-heading{gap:20px}
+  .protocol-metrics{margin-bottom:16px}
+  .protocol-toolbar-card{padding:11px}
+  .clinical-toolbar{
+    grid-template-columns:minmax(240px,1.5fr) repeat(3,minmax(120px,1fr));
+    gap:7px;
+  }
+  .protocol-reader-layout{grid-template-columns:minmax(0,1fr) 250px}
+  .protocol-reader-main{padding:18px}
+}
+
+@media (min-width:761px) and (max-width:900px){
+  .protocol-page{padding-top:16px!important}
+  .protocol-page-heading{align-items:flex-start!important}
+  .protocol-source-badge{max-width:320px}
+  .clinical-toolbar{gap:9px}
+  .clinical-row{gap:12px}
+  .protocol-reader-main{padding:18px}
+}
+
+@media (max-width:760px){
+  .protocol-page{max-width:100%;overflow-x:hidden}
+  .protocol-page-heading h1{font-size:25px}
+  .protocol-source-badge{min-width:0}
+  .protocol-list-head{gap:10px}
+  .protocol-list-count{white-space:nowrap}
+  .clinical-row,.clinical-row>div{min-width:0}
+  .clinical-row h2,.clinical-row p{overflow-wrap:anywhere}
+  .clinical-actions{gap:8px}
+  .clinical-actions :is(button,a){min-height:44px}
+  .protocol-reader-actions{width:100%}
+  .protocol-reader-actions :is(a,button){min-height:44px}
+  .protocol-reader-main{min-width:0}
+}
+
+@media (max-width:520px){
+  .protocol-source-badge{display:grid;grid-template-columns:auto minmax(0,1fr)}
+  .protocol-list-head{align-items:flex-start;flex-direction:column}
+  .protocol-list-count{align-self:flex-start}
+  .clinical-row{grid-template-columns:minmax(0,1fr)}
+  .clinical-actions{grid-column:1}
+  .protocol-reader-header{padding-inline:12px}
+  .protocol-reader-main{padding:20px 12px 30px}
+}
