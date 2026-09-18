@@ -2817,3 +2817,12 @@ html[data-drx-app] :is(.button,.icon-button,.nav-item,.drx-profile-chip,.drx-use
 @media (max-width:760px){
   html[data-drx-app="registry-v2"] .data-card{border-radius:10px!important}
 }
+
+
+/* Registry card radius follows the shared 12px card token on tablet/desktop.
+   Mobile keeps the compact 10px token below. This holds the 4-radius budget
+   at every audited width (320 → 1920) without changing layout geometry. */
+html[data-drx-app="registry-v2"] .data-card{border-radius:12px!important}
+@media (max-width:760px){
+  html[data-drx-app="registry-v2"] .data-card{border-radius:10px!important}
+}
