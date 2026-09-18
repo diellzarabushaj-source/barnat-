@@ -133,3 +133,68 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
   .drx-profile-chip{width:38px;height:38px;padding:1px;border:0;background:transparent}
   .drx-profile-chip .drx-user-avatar{width:36px;height:36px}
 }
+
+
+/* ==========================================================================
+   Klasifikimi ATC cross-device polish — 2026-09-18
+   ========================================================================== */
+.atc-card,.atc-workspace,.category-panel,.category-list,.category-row,
+.category-copy,.search-results,.search-result,.search-result-copy,
+.subdivision-block,.subdivision-tree,.subdivision-branch{min-width:0}
+.atc-card :is(button,a,input,summary){touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+
+@media (min-width:941px) and (max-width:1100px){
+  .page-heading{gap:18px;margin-bottom:20px}
+  .metrics-row{margin-bottom:18px}
+  .metric-card{padding:16px 18px}
+  .atc-toolbar{grid-template-columns:minmax(0,1fr) auto;gap:9px}
+  .atc-status{grid-column:1/-1;justify-self:start}
+  .category-hero{grid-template-columns:58px minmax(0,1fr) auto;padding:18px}
+  .hero-code{width:56px;height:56px}
+  .category-list{padding:12px 14px 18px}
+}
+
+@media (min-width:761px) and (max-width:940px){
+  .page-heading{gap:16px;margin-bottom:18px}
+  .metrics-row{margin-bottom:16px}
+  .atc-card{max-width:100%}
+  .atc-path-items{overscroll-behavior-inline:contain}
+  .atc-toolbar{grid-template-columns:minmax(0,1fr) auto}
+  .atc-status{grid-column:1/-1;justify-self:start}
+  .category-hero{grid-template-columns:56px minmax(0,1fr) auto;padding:16px}
+  .hero-code{width:54px;height:54px}
+  .category-list,.search-results{padding:12px}
+  .category-row{grid-template-columns:60px minmax(0,1fr) auto}
+}
+
+@media (max-width:760px){
+  .atc-card{max-width:100%;overflow:hidden}
+  .atc-path-items{
+    overscroll-behavior-inline:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+  .category-hero,.category-row,.search-result{min-width:0}
+  .hero-copy h2,.hero-copy p,.category-copy strong,.category-copy small,
+  .search-result-copy strong,.search-result-copy small{overflow-wrap:anywhere}
+  .category-actions{flex-wrap:wrap}
+  .category-actions :is(button,a),.hero-actions :is(button,a){min-height:44px}
+  .subdivision-parent,.subdivision-child{min-width:0}
+  .subdivision-name{min-width:0;overflow-wrap:anywhere}
+  .toast{
+    right:max(10px,env(safe-area-inset-right));
+    bottom:max(10px,env(safe-area-inset-bottom));
+    max-width:calc(100vw - 20px - env(safe-area-inset-left) - env(safe-area-inset-right));
+  }
+}
+
+@media (max-width:430px){
+  .atc-toolbar{gap:8px}
+  .category-hero{grid-template-columns:48px minmax(0,1fr)}
+  .hero-code{width:46px;height:46px}
+  .hero-actions{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) auto}
+  .category-row{grid-template-columns:50px minmax(0,1fr)}
+  .category-actions{grid-column:1/-1;justify-content:stretch}
+  .category-actions :is(button,a){flex:1}
+  .search-result{grid-template-columns:54px minmax(0,1fr)}
+  .search-result-meta{grid-column:1/-1;align-items:flex-start}
+}
