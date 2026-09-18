@@ -73,3 +73,5 @@ from public.icd_hierarchy_nodes n
 join public.icd_hierarchy_revisions r on r.revision = n.revision
 where r.status = 'active'
   and n.is_published = true;
+
+alter view public.icd_hierarchy_active set (security_invoker = true);
