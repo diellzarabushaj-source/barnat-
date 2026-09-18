@@ -1101,6 +1101,22 @@
     {
       "name": "localize_non_atc_supplement_status_detection",
       "version": "20260910101305"
+    },
+    {
+      "name": "store_antibiotic_core4_dataset_v1",
+      "version": "20260912222035"
+    },
+    {
+      "name": "harden_antibiotic_snapshot_trigger_v1",
+      "version": "20260912222107"
+    },
+    {
+      "name": "icd_latin_language_and_fast_search",
+      "version": "20260918094959"
+    },
+    {
+      "name": "icd_hierarchy_active_security_invoker",
+      "version": "20260918095839"
     }
   ]
 }
