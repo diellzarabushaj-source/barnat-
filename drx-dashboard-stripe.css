@@ -2673,3 +2673,121 @@ html[data-drx-app] :is(.rx-source-nav-item,.rx-folder-item){transition:backgroun
   html.drx-unified-sidebar :is(.menu-button,.sidebar-close){min-width:44px!important;min-height:44px!important}
   html.drx-unified-sidebar .sidebar{padding-bottom:max(var(--drx-shell-sidebar-pad-bottom),env(safe-area-inset-bottom))!important}
 }
+
+
+/* ==========================================================================
+   DRx site-wide responsive shell hardening — 2026-09-18
+   Shared by Registry, ICD-10, Dozologjia, Protokollet, Urgjencat and Recetat.
+   ========================================================================== */
+html[data-drx-app]{
+  max-width:100%;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+html[data-drx-app] body{max-width:100%;overflow-x:hidden}
+html[data-drx-app] :is(.app-shell,.main-shell,.page-wrap,.page-heading,.topbar,.topbar-actions){min-width:0}
+html[data-drx-app] .topbar{
+  padding-left:max(16px,env(safe-area-inset-left));
+  padding-right:max(16px,env(safe-area-inset-right));
+}
+html[data-drx-app] .page-wrap{
+  padding-left:max(18px,env(safe-area-inset-left));
+  padding-right:max(18px,env(safe-area-inset-right));
+}
+html[data-drx-app] :is(.breadcrumbs,.page-subtitle,.drx-profile-copy,.drx-user-copy){min-width:0}
+html[data-drx-app] :is(.button,.icon-button,.nav-item,.drx-profile-chip,.drx-user-card){
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* 10–11" tablets should prioritize the clinical workspace instead of keeping
+   a permanent 238px sidebar. This also covers iPad portrait/compact landscape. */
+@media (min-width:761px) and (max-width:1100px){
+  html.drx-unified-sidebar .sidebar{
+    width:min(286px,82vw)!important;
+    min-width:0!important;
+    transform:translateX(-102%)!important;
+    box-shadow:0 24px 64px rgba(10,37,64,.18)!important;
+    transition:transform .2s ease!important;
+  }
+  html.drx-unified-sidebar .sidebar.is-open{transform:translateX(0)!important}
+  html.drx-unified-sidebar .main-shell{
+    width:100%!important;
+    margin-left:0!important;
+  }
+  html.drx-unified-sidebar :is(.menu-button,.sidebar-close){
+    display:grid!important;
+    min-width:44px!important;
+    min-height:44px!important;
+  }
+  html.drx-unified-sidebar .sidebar-backdrop{
+    position:fixed!important;
+    inset:0!important;
+    z-index:45!important;
+    background:rgba(10,20,45,.28)!important;
+    backdrop-filter:blur(2px);
+  }
+  html.drx-unified-sidebar .topbar{
+    min-height:56px;
+    height:auto;
+    padding-top:6px;
+    padding-bottom:6px;
+  }
+  html.drx-unified-sidebar .page-wrap{
+    padding-left:max(18px,env(safe-area-inset-left))!important;
+    padding-right:max(18px,env(safe-area-inset-right))!important;
+  }
+  html.drx-unified-sidebar .breadcrumbs{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+}
+
+/* Phone chrome: safe areas, thumb targets and no viewport-width surprises. */
+@media (max-width:760px){
+  html.drx-unified-sidebar .topbar{
+    min-height:52px;
+    height:auto!important;
+    padding:
+      max(6px,env(safe-area-inset-top))
+      max(10px,env(safe-area-inset-right))
+      6px
+      max(10px,env(safe-area-inset-left))!important;
+  }
+  html.drx-unified-sidebar .page-wrap{
+    width:100%!important;
+    max-width:100%!important;
+    padding-left:max(10px,env(safe-area-inset-left))!important;
+    padding-right:max(10px,env(safe-area-inset-right))!important;
+    padding-bottom:max(24px,env(safe-area-inset-bottom))!important;
+  }
+  html.drx-unified-sidebar :is(.breadcrumbs,.sync-pill){display:none}
+  html.drx-unified-sidebar .topbar-actions{gap:6px}
+  html.drx-unified-sidebar .page-heading{
+    min-width:0;
+    gap:10px;
+  }
+  html.drx-unified-sidebar .page-heading h1{
+    overflow-wrap:anywhere;
+    line-height:1.12;
+  }
+  html.drx-unified-sidebar :is(input:not([type=checkbox]):not([type=radio]),select,textarea){
+    max-width:100%;
+    font-size:16px!important;
+  }
+}
+
+@media (max-width:420px){
+  html.drx-unified-sidebar .page-wrap{
+    padding-left:max(8px,env(safe-area-inset-left))!important;
+    padding-right:max(8px,env(safe-area-inset-right))!important;
+  }
+}
+
+@media (hover:none) and (pointer:coarse){
+  html[data-drx-app] :is(
+    .button,.icon-button,.nav-item,.drx-profile-chip,.drx-user-card,
+    button:not(.sort-head),select
+  ){min-height:44px}
+}
