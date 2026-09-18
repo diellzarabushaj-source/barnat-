@@ -1,6 +1,3 @@
--- ICD Latin terminology + search performance.
--- Latin titles remain NULL until sourced/verified; English must never be copied into title_la.
-
 alter table public.icd_codes
   add column if not exists title_la text;
 
@@ -13,19 +10,6 @@ alter table public.icd_hierarchy_nodes
 comment on column public.icd_hierarchy_nodes.title_la is
   'Medical Latin diagnosis title. Keep NULL unless sourced/verified; do not substitute English.';
 
-create index if not exists icd_search_v2_idx
-on public.icd_codes
-using gin (
-  to_tsvector(
-    'simple',
-    coalesce(code,'') || ' ' ||
-    coalesce(title_sq,'') || ' ' ||
-    coalesce(title_en,'') || ' ' ||
-    coalesce(title_la,'') || ' ' ||
-    coalesce(description_sq,'')
-  )
-);
-
 create index if not exists icd_codes_title_la_trgm_idx
   on public.icd_codes using gin (title_la gin_trgm_ops)
   where title_la is not null;
@@ -35,18 +19,18 @@ create index if not exists icd_hierarchy_nodes_title_la_trgm_idx
   where title_la is not null;
 
 create index if not exists icd_hierarchy_nodes_search_v2_idx
-on public.icd_hierarchy_nodes
-using gin (
-  to_tsvector(
-    'simple',
-    coalesce(code,'') || ' ' ||
-    coalesce(title_sq,'') || ' ' ||
-    coalesce(title_en,'') || ' ' ||
-    coalesce(title_la,'') || ' ' ||
-    coalesce(path_text,'') || ' ' ||
-    coalesce(search_text,'')
-  )
-);
+  on public.icd_hierarchy_nodes
+  using gin (
+    to_tsvector(
+      'simple',
+      coalesce(code,'') || ' ' ||
+      coalesce(title_sq,'') || ' ' ||
+      coalesce(title_en,'') || ' ' ||
+      coalesce(title_la,'') || ' ' ||
+      coalesce(path_text,'') || ' ' ||
+      coalesce(search_text,'')
+    )
+  );
 
 create or replace view public.icd_hierarchy_active as
 select
@@ -73,5 +57,3 @@ from public.icd_hierarchy_nodes n
 join public.icd_hierarchy_revisions r on r.revision = n.revision
 where r.status = 'active'
   and n.is_published = true;
-
-alter view public.icd_hierarchy_active set (security_invoker = true);
