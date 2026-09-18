@@ -12,7 +12,7 @@ const nodes = [
   { code:'A00.1', level:'subcategory', chapter:'I', block:'A00-A09', parentCode:'A00', englishTitle:'Cholera due to Vibrio cholerae 01, biovar eltor', albanianDraft:'Kolera nga Vibrio cholerae 01, biovar eltor', displayTitle:'Kolera nga Vibrio cholerae 01, biovar eltor', sourceRow:4 },
   { code:'IX', level:'chapter', chapter:'IX', block:'', parentCode:'', englishTitle:'Diseases of the circulatory system', albanianDraft:'Sëmundjet e sistemit të qarkullimit', displayTitle:'Sëmundjet e sistemit të qarkullimit', sourceRow:5 },
   { code:'I10-I15', level:'block', chapter:'IX', block:'I10-I15', parentCode:'IX', englishTitle:'Hypertensive diseases', albanianDraft:'Sëmundjet hipertensive', displayTitle:'Sëmundjet hipertensive', sourceRow:6 },
-  { code:'I10', level:'category', chapter:'IX', block:'I10-I15', parentCode:'I10-I15', englishTitle:'Essential (primary) hypertension', albanianDraft:'Hipertensioni esencial (primar)', displayTitle:'Hipertensioni esencial (primar)', terminologyAliases:['tensioni i lartë', 'shtypja e lartë e gjakut'], sourceRow:7 },
+  { code:'I10', level:'category', chapter:'IX', block:'I10-I15', parentCode:'I10-I15', englishTitle:'Essential (primary) hypertension', albanianDraft:'Hipertensioni esencial (primar)', latinTitle:'Hypertensio essentialis primaria', displayTitle:'Hipertensioni esencial (primar)', terminologyAliases:['tensioni i lartë', 'shtypja e lartë e gjakut'], sourceRow:7 },
   { code:'XVIII', level:'chapter', chapter:'XVIII', block:'', parentCode:'', englishTitle:'Symptoms, signs and abnormal findings', albanianDraft:'Simptomat, shenjat dhe gjetjet jonormale', displayTitle:'Simptomat, shenjat dhe gjetjet jonormale', sourceRow:8 },
   { code:'R00-R09', level:'block', chapter:'XVIII', block:'R00-R09', parentCode:'XVIII', englishTitle:'Symptoms involving the circulatory and respiratory systems', albanianDraft:'Simptoma të sistemit qarkullues dhe respirator', displayTitle:'Simptoma të sistemit qarkullues dhe respirator', sourceRow:9 },
   { code:'R07', level:'category', chapter:'XVIII', block:'R00-R09', parentCode:'R00-R09', englishTitle:'Pain in throat and chest', albanianDraft:'Dhimbje në fyt dhe gjoks', displayTitle:'Dhimbje në fyt dhe gjoks', sourceRow:10 },
@@ -60,6 +60,11 @@ assert.equal(result.rows[0].code, 'I10');
 assert.equal(result.rows[0].searchMatch.type, 'editorial-alias-exact');
 assert.equal(result.rows[0].searchMatch.label, 'Term klinik i saktë');
 
+result = Search.suggestDataset(dataset, 'Hypertensio essentialis primaria', { limit:12 });
+assert.equal(result.rows[0].code, 'I10');
+assert.equal(result.rows[0].searchMatch.type, 'title-la-exact');
+assert.equal(result.rows[0].searchMatch.label, 'Titull i saktë latinisht');
+
 const chestCodes = Search.suggestDataset(dataset, 'dhimbje gjoksi', { limit:12 }).rows.map(node => node.code);
 assert.equal(chestCodes[0], 'R07.4');
 assert.ok(!chestCodes.includes('I21'), 'Symptom search must not infer myocardial infarction.');
@@ -86,5 +91,6 @@ assert.equal(suggestion.rows[0].code, 'A00.1');
 assert.equal(suggestion.meta.search.engine, 'clinical-ranking-v3');
 assert.ok(suggestion.meta.search.supports.includes('normalized-code'));
 assert.ok(suggestion.meta.search.supports.includes('breadcrumbs'));
+assert.ok(suggestion.meta.search.supports.includes('la-title'));
 
 console.log('Normalized ICD codes, editorial aliases, breadcrumbs and bounded search cache passed.');
