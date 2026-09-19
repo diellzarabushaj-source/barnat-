@@ -501,6 +501,1295 @@
 ]);
 
 
+  const CLINICAL_PRESENTATIONS = Object.freeze([
+  {
+    "id": "puls-i-rritur",
+    "slug": "puls-i-rritur",
+    "title": "Puls i rritur / takikardi",
+    "clinicalType": "Shenjë",
+    "aliases": [
+      "takikardi",
+      "puls i shpejte",
+      "rrahje te shpejta"
+    ],
+    "summary": "Work-up për ritmin, shkaqet metabolike, aneminë dhe disfunksionin tiroide.",
+    "tests": [
+      {
+        "testId": "exam-ecg",
+        "tier": "core",
+        "rationale": "Dokumento ritmin dhe shiko për aritmi, ishemi ose çrregullime të përçimit.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-cbc",
+        "tier": "core",
+        "rationale": "Përjashto aneminë ose infeksionin si nxitës të takikardisë.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-electrolytes",
+        "tier": "core",
+        "rationale": "Kërko çrregullime të K/Mg/Ca që mund të nxisin aritmi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-tsh",
+        "tier": "core",
+        "rationale": "Disfunksioni tiroide mund të shkaktojë takikardi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-glucose",
+        "tier": "recommended",
+        "rationale": "Hipoglikemia/hiperglikemia mund të shoqërohet me takikardi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-holter-ecg",
+        "tier": "conditional",
+        "rationale": "Nëse episodet janë intermitente dhe EKG e momentit nuk e kap ritmin.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-troponin",
+        "tier": "conditional",
+        "rationale": "Vetëm nëse ka dhimbje gjoksi, ndryshime ishemike ose dyshim për ACS.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-ddimer",
+        "tier": "conditional",
+        "rationale": "Vetëm kur dyshohet PE dhe probabiliteti klinik e bën testin të përshtatshëm.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-echo",
+        "tier": "conditional",
+        "rationale": "Nëse ka murmur, HF, EKG jonormale ose dyshim për sëmundje strukturore.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Takikardi me hipotension, sinkopë, dhimbje gjoksi, dispne të rëndë ose shenja shoku → vlerësim urgjent."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 10
+  },
+  {
+    "id": "puls-i-ngadalesuar",
+    "slug": "puls-i-ngadalesuar",
+    "title": "Puls i ngadalësuar / bradikardi",
+    "clinicalType": "Shenjë",
+    "aliases": [
+      "bradikardi",
+      "puls i ulet"
+    ],
+    "summary": "Vlerësim i ritmit, barnave, elektroliteve dhe shkaqeve metabolike.",
+    "tests": [
+      {
+        "testId": "exam-ecg",
+        "tier": "core",
+        "rationale": "Dokumento ritmin dhe çrregullimet e përçimit.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-electrolytes",
+        "tier": "core",
+        "rationale": "Kërko hiperkalemi dhe çrregullime tjera elektrolitike.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-tsh",
+        "tier": "recommended",
+        "rationale": "Hipotiroidizmi mund të kontribuojë në bradikardi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-glucose",
+        "tier": "recommended",
+        "rationale": "Përjashto çrregullimet e glukozës në pacient simptomatik.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-holter-ecg",
+        "tier": "conditional",
+        "rationale": "Në simptoma episodike ose dyshim për pauza/bradiaritmi intermitente.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-echo",
+        "tier": "conditional",
+        "rationale": "Nëse ka dyshim për sëmundje strukturore.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Bradikardi me sinkopë, hipotension, dhimbje gjoksi, insuficiencë kardiake ose alterim të vetëdijes → urgjencë."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 20
+  },
+  {
+    "id": "palpitacione",
+    "slug": "palpitacione",
+    "title": "Palpitacione",
+    "clinicalType": "Simptomë",
+    "aliases": [
+      "rrahje zemre",
+      "zemra me rreh",
+      "palpitation"
+    ],
+    "summary": "Dokumentimi i ritmit ka përparësi ndaj trajtimit empirik.",
+    "tests": [
+      {
+        "testId": "exam-ecg",
+        "tier": "core",
+        "rationale": "EKG 12 derivacione për ritmin bazal dhe shenja të përçimit/pre-ekscitimit.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-cbc",
+        "tier": "recommended",
+        "rationale": "Anemia mund të japë palpitacione.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-electrolytes",
+        "tier": "recommended",
+        "rationale": "Elektrolitet mund të predispozojnë për aritmi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-tsh",
+        "tier": "recommended",
+        "rationale": "Disfunksioni tiroide është shkak i mundshëm.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-holter-ecg",
+        "tier": "conditional",
+        "rationale": "Kur episodet nuk dokumentohen në EKG; zgjidh kohëzgjatjen sipas frekuencës së episodeve.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-echo",
+        "tier": "conditional",
+        "rationale": "Në EKG jonormale, murmur, sëmundje strukturore ose HF.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Palpitacione me sinkopë gjatë ushtrimit, dhimbje gjoksi, histori familjare të vdekjes së papritur ose ritëm të qëndrueshëm shumë të shpejtë → vlerësim urgjent/kardiologjik."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 30
+  },
+  {
+    "id": "dhimbje-gjoksi",
+    "slug": "dhimbje-gjoksi",
+    "title": "Dhimbje gjoksi",
+    "clinicalType": "Simptomë",
+    "aliases": [
+      "chest pain",
+      "shtrengim gjoksi",
+      "dhembje gjoksi"
+    ],
+    "summary": "Work-up fillestar për shkaqe kardiake dhe pulmonare; testet kushtëzohen nga probabiliteti klinik.",
+    "tests": [
+      {
+        "testId": "exam-ecg",
+        "tier": "urgent",
+        "rationale": "EKG sa më shpejt kur dyshohet ACS ose aritmi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-troponin",
+        "tier": "urgent",
+        "rationale": "Kur tabloja sugjeron sindromë koronare akute; interpretohet me kohën dhe EKG-në.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-spo2",
+        "tier": "core",
+        "rationale": "Vlerëson hipokseminë.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-cxr",
+        "tier": "conditional",
+        "rationale": "Nëse dyshohet pneumoni, pneumotoraks, HF ose shkak tjetër torakal.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-ddimer",
+        "tier": "conditional",
+        "rationale": "Vetëm kur vlerësimi klinik për PE e justifikon.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-ctpa",
+        "tier": "conditional",
+        "rationale": "Kur algoritmi për PE e kërkon pas vlerësimit klinik/D-dimerit.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Dhimbje gjoksi me instabilitet hemodinamik, EKG ishemike, dispne të rëndë, sinkopë ose dyshim për diseksion/PE → urgjencë."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 40
+  },
+  {
+    "id": "dispne",
+    "slug": "dispne",
+    "title": "Dispne / frymëmarrje e vështirësuar",
+    "clinicalType": "Simptomë",
+    "aliases": [
+      "shortness of breath",
+      "gulcim",
+      "veshtiresi ne frymemarrje"
+    ],
+    "summary": "Work-up i orientuar drejt hipoksemisë, zemrës, mushkërive dhe anemisë.",
+    "tests": [
+      {
+        "testId": "exam-spo2",
+        "tier": "core",
+        "rationale": "Vlerësim i menjëhershëm i oksigjenimit.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-ecg",
+        "tier": "core",
+        "rationale": "Kërko aritmi, ishemi ose strain.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-cbc",
+        "tier": "core",
+        "rationale": "Anemia ose leukocitoza mund të shpjegojnë/mbështesin shkakun.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-cxr",
+        "tier": "core",
+        "rationale": "Imazheri fillestare në dispne të re ose të pashpjeguar sipas tablosë.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-crp",
+        "tier": "conditional",
+        "rationale": "Nëse dyshohet proces infektiv/inflamator.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-bnp",
+        "tier": "conditional",
+        "rationale": "Nëse dyshohet insuficiencë kardiake.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-echo",
+        "tier": "conditional",
+        "rationale": "Kur dyshohet problem strukturor/HF.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-spirometry",
+        "tier": "conditional",
+        "rationale": "Për obstruksion kronik/asthmë pasi faza akute të jetë e përshtatshme për testim.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-ddimer",
+        "tier": "conditional",
+        "rationale": "Vetëm sipas probabilitetit klinik për PE.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-ctpa",
+        "tier": "conditional",
+        "rationale": "Kur work-up i PE e indikojnë.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "SpO₂ e ulët, lodhje respiratore, cianozë, hipotension, konfuzion ose dispne e papritur e rëndë → urgjencë."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 50
+  },
+  {
+    "id": "kolle",
+    "slug": "kolle",
+    "title": "Kollë",
+    "clinicalType": "Simptomë",
+    "aliases": [
+      "cough",
+      "kolle e zgjatur",
+      "kollitje"
+    ],
+    "summary": "Shumica e kollës akute nuk kërkon panel të gjerë; ekzaminimet varen nga kohëzgjatja dhe red flags.",
+    "tests": [
+      {
+        "testId": "exam-spo2",
+        "tier": "recommended",
+        "rationale": "Në pacient të sëmurë, me dispne ose risk respirator.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-cxr",
+        "tier": "conditional",
+        "rationale": "Në kollë persistente, red flags, pneumoni të dyshuar ose risk për patologji torakale.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-cbc",
+        "tier": "conditional",
+        "rationale": "Kur ka ethe të rëndësishme ose sëmundje sistemike.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-crp",
+        "tier": "conditional",
+        "rationale": "Mund të ndihmojë në disa raste kur pas ekzaminimit mbetet paqartësi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-spirometry",
+        "tier": "conditional",
+        "rationale": "Në kollë kronike me dyshim për astmë/COPD.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Hemoptizi, hipoksemi, humbje peshe, dispne progresive ose gjendje e rënduar sistemike → vlerësim i përshpejtuar."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 60
+  },
+  {
+    "id": "sinkope-marramendje",
+    "slug": "sinkope-marramendje",
+    "title": "Sinkopë / presinkopë / marramendje",
+    "clinicalType": "Simptomë",
+    "aliases": [
+      "sinkope",
+      "presinkope",
+      "marramendje",
+      "dizziness",
+      "te fiket"
+    ],
+    "summary": "Dallo sinkopën nga vertigo dhe disequilibrium; ritmi dhe ortostatika janë pjesë kyçe.",
+    "tests": [
+      {
+        "testId": "exam-ecg",
+        "tier": "core",
+        "rationale": "EKG bazale në sinkopë/presinkopë.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-orthostatics",
+        "tier": "core",
+        "rationale": "Kërko hipotension ortostatik ose përgjigje jonormale të pulsit.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-glucose",
+        "tier": "core",
+        "rationale": "Përjashto hipoglikeminë/hiperglikeminë.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-cbc",
+        "tier": "recommended",
+        "rationale": "Anemia mund të kontribuojë.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-electrolytes",
+        "tier": "recommended",
+        "rationale": "Çrregullimet elektrolitike mund të shkaktojnë simptoma/aritmi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-holter-ecg",
+        "tier": "conditional",
+        "rationale": "Në episode intermitente kur dyshohet aritmi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-echo",
+        "tier": "conditional",
+        "rationale": "Në murmur, EKG jonormale ose dyshim strukturor.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-mri-brain",
+        "tier": "conditional",
+        "rationale": "Jo rutinë; vetëm me shenja neurologjike fokale ose indikacion neurologjik.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Sinkopë gjatë ushtrimit, EKG jonormale, dhimbje gjoksi, histori familjare vdekjeje të papritur ose deficit neurologjik → vlerësim urgjent."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 70
+  },
+  {
+    "id": "humbje-peshe",
+    "slug": "humbje-peshe",
+    "title": "Humbje peshe pa arsye",
+    "clinicalType": "Simptomë",
+    "aliases": [
+      "humbje ne peshe",
+      "renie peshe",
+      "unintentional weight loss"
+    ],
+    "summary": "Work-up bazë metabolik, hematologjik dhe sipas simptomave shoqëruese; mos porosit imazheri të gjerë pa drejtim klinik.",
+    "tests": [
+      {
+        "testId": "exam-cbc",
+        "tier": "core",
+        "rationale": "Kërko anemi, leukocitozë/leukopeni ose çrregullime hematologjike.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-crp",
+        "tier": "core",
+        "rationale": "Marker orientues i inflamacionit.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-esr",
+        "tier": "recommended",
+        "rationale": "Mund të plotësojë vlerësimin e proceseve kronike.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-glucose",
+        "tier": "core",
+        "rationale": "Kërko diabet/hiperglikemi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-hba1c",
+        "tier": "recommended",
+        "rationale": "Vlerësim i glikemisë afatmesme.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-tsh",
+        "tier": "core",
+        "rationale": "Disfunksioni tiroide mund të shkaktojë humbje peshe.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-ft4",
+        "tier": "conditional",
+        "rationale": "Në TSH jonormal ose dyshim të fortë tiroide.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-renal",
+        "tier": "core",
+        "rationale": "Funksioni renal dhe gjendja metabolike.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-liver",
+        "tier": "core",
+        "rationale": "Vlerësim hepatik/metabolik.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-urinalysis",
+        "tier": "recommended",
+        "rationale": "Gjetje renale, urinare ose glukozuri.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-cxr",
+        "tier": "conditional",
+        "rationale": "Në risk/simptoma respiratore ose red flags të përshtatshme.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-fit",
+        "tier": "conditional",
+        "rationale": "Sipas moshës dhe simptomave gastrointestinale/riskut.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-us-abdomen",
+        "tier": "conditional",
+        "rationale": "Kur ekzaminimi/simptomat e orientojnë drejt abdomenit.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-ct-abdomen",
+        "tier": "conditional",
+        "rationale": "Vetëm në red flags ose simptoma të orientuara që e justifikojnë.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-endoscopy",
+        "tier": "conditional",
+        "rationale": "Në simptoma të sipërme GI/red flags sipas rrugës diagnostike.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Humbje peshe progresive me masë, adenopati, gjakderdhje, disfagi, ethe/natë djersitje ose ndryshim të habitit intestinal → hetim/referral i përshpejtuar."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 80
+  },
+  {
+    "id": "shtim-peshe",
+    "slug": "shtim-peshe",
+    "title": "Shtim peshe",
+    "clinicalType": "Simptomë",
+    "aliases": [
+      "rritje peshe",
+      "weight gain",
+      "shtim ne peshe"
+    ],
+    "summary": "Vlerëso adipositetin, faktorët metabolikë, tiroiden dhe barnat; jo çdo shtim peshe kërkon panel hormonal të gjerë.",
+    "tests": [
+      {
+        "testId": "exam-bmi-waist",
+        "tier": "core",
+        "rationale": "Kuantifiko BMI dhe adipozitetin qendror.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-tsh",
+        "tier": "core",
+        "rationale": "Kërko hipotiroidizëm kur ka dyshim klinik.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-ft4",
+        "tier": "conditional",
+        "rationale": "Në TSH jonormal ose dyshim për problem hipofizar.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-glucose",
+        "tier": "core",
+        "rationale": "Vlerësim metabolik.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-hba1c",
+        "tier": "recommended",
+        "rationale": "Skrining/monitorim i disglikemisë.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-liver",
+        "tier": "recommended",
+        "rationale": "Kërko dëmtim hepatik/metabolik sipas riskut.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-renal",
+        "tier": "recommended",
+        "rationale": "Vlerësim renal veçanërisht në edemë/HTA.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-pregnancy",
+        "tier": "conditional",
+        "rationale": "Kur shtatzënia është e mundshme dhe relevante.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Shtim peshe shumë i shpejtë me edemë, dispne ose oliguri → vlerëso volume overload dhe shkaqe kardiake/renale."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 90
+  },
+  {
+    "id": "dhimbje-muskulare",
+    "slug": "dhimbje-muskulare",
+    "title": "Dhimbje muskulare / mialgji",
+    "clinicalType": "Simptomë",
+    "aliases": [
+      "mialgji",
+      "dhimbje ne muskuj",
+      "dhimbje muskulare"
+    ],
+    "summary": "Kërko dëmtim muskular dhe shkaqe metabolike; mos porosit panel autoimun pa gjetje që e justifikojnë.",
+    "tests": [
+      {
+        "testId": "exam-ck",
+        "tier": "core",
+        "rationale": "Vlerëson dëmtimin muskular kur mialgjia është e rëndësishme ose ka dobësi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-renal",
+        "tier": "core",
+        "rationale": "Rëndësi e veçantë në CK të lartë/dehidrim ose dyshim për rhabdomyolysis.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-electrolytes",
+        "tier": "core",
+        "rationale": "K/Mg/Ca mund të lidhen me simptoma muskulare.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-tsh",
+        "tier": "recommended",
+        "rationale": "Disfunksioni tiroide mund të japë mialgji.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-crp",
+        "tier": "conditional",
+        "rationale": "Kur ka dyshim për proces inflamator/sistemik.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-esr",
+        "tier": "conditional",
+        "rationale": "Në simptoma kronike/inflamatore të zgjedhura.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-urinalysis",
+        "tier": "conditional",
+        "rationale": "Në urinë të errët ose dyshim për rhabdomyolysis.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Dobësi e rëndë, urinë e errët, CK shumë e lartë, hiperkalemi ose dëmtim renal → vlerësim urgjent."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 100
+  },
+  {
+    "id": "dobesi-muskulare",
+    "slug": "dobesi-muskulare",
+    "title": "Dobësi muskulare",
+    "clinicalType": "Shenjë",
+    "aliases": [
+      "dobesi e muskujve",
+      "muscle weakness"
+    ],
+    "summary": "Dallo dobësinë objektive nga lodhja; work-up bazë metabolik, muskular dhe neurologjik.",
+    "tests": [
+      {
+        "testId": "exam-ck",
+        "tier": "core",
+        "rationale": "Kërko dëmtim/miozit.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-electrolytes",
+        "tier": "core",
+        "rationale": "Çrregullimet e K/Ca/Mg mund të japin dobësi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-tsh",
+        "tier": "core",
+        "rationale": "Disfunksioni tiroide mund të shkaktojë dobësi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-cbc",
+        "tier": "recommended",
+        "rationale": "Anemia/sëmundja sistemike mund të kontribuojë.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-renal",
+        "tier": "recommended",
+        "rationale": "Uremia dhe çrregullimet metabolike mund të kontribuojnë.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-glucose",
+        "tier": "recommended",
+        "rationale": "Hipo/hiperglikemia mund të japë dobësi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-crp",
+        "tier": "conditional",
+        "rationale": "Kur ka shenja inflamatore.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Dobësi akute fokale, bulbare, respiratore ose progresion i shpejtë → urgjencë neurologjike."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 110
+  },
+  {
+    "id": "gushe-tiroide",
+    "slug": "gushe-tiroide",
+    "title": "Gushë e rritur / tiroide e zmadhuar",
+    "clinicalType": "Gjetje",
+    "aliases": [
+      "gushe",
+      "tiroide e zmadhuar",
+      "goiter",
+      "goitre",
+      "nodul tiroide"
+    ],
+    "summary": "Vlerësimi fillon me funksionin tiroide dhe karakteristikat klinike; ultrazëri varet nga nodulariteti/dyshimi.",
+    "tests": [
+      {
+        "testId": "exam-tsh",
+        "tier": "core",
+        "rationale": "Test fillestar për funksionin tiroide.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-ft4",
+        "tier": "conditional",
+        "rationale": "Në TSH të lartë/ulët ose dyshim për disfunksion qendror.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-ft3",
+        "tier": "conditional",
+        "rationale": "Në TSH të ulët për të karakterizuar thyrotoxicosis.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-us-thyroid",
+        "tier": "recommended",
+        "rationale": "Për zmadhim/nodul të palpueshëm kur duhet karakterizim strukturor ose ka dyshim për malignitet.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-thyroid-fna",
+        "tier": "conditional",
+        "rationale": "Vetëm për noduj të përzgjedhur sipas karakteristikave të ultrazërit.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Rritje e shpejtë e masës, disfagi, dispne, zë i ngjirur ose adenopati cervikale → vlerësim i përshpejtuar."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 120
+  },
+  {
+    "id": "bark-rigid",
+    "slug": "bark-rigid",
+    "title": "Bark rigid / peritonizëm",
+    "clinicalType": "Gjetje",
+    "aliases": [
+      "bark i forte",
+      "bark rigid",
+      "abdomen rigid",
+      "peritonizem"
+    ],
+    "summary": "Gjetje potencialisht kirurgjikale; ekzaminimet nuk duhet ta vonojnë referimin urgjent.",
+    "tests": [
+      {
+        "testId": "exam-cbc",
+        "tier": "urgent",
+        "rationale": "Kërko leukocitozë/anemi, por mos e vono konsultën kirurgjikale.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-crp",
+        "tier": "urgent",
+        "rationale": "Vlerësim inflamator në kontekst të abdomenit akut.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-electrolytes",
+        "tier": "urgent",
+        "rationale": "Çrregullime nga të vjellat/dehidrimi dhe përgatitje për trajtim.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-renal",
+        "tier": "urgent",
+        "rationale": "Funksioni renal dhe statusi i volumit, veçanërisht para kontrastit kur indikohet.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-liver",
+        "tier": "urgent",
+        "rationale": "Në dhimbje hepatobiliare/verdhezë ose si pjesë e work-up të abdomenit akut.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-lipase",
+        "tier": "urgent",
+        "rationale": "Në dhimbje epigastrike ose dyshim për pankreatit.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-lactate",
+        "tier": "urgent",
+        "rationale": "Në kompromis sistemik, hipoperfuzion ose dyshim për ishemi/sepsë.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-pregnancy",
+        "tier": "urgent",
+        "rationale": "Kur shtatzënia është biologjikisht e mundshme.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-urinalysis",
+        "tier": "recommended",
+        "rationale": "Ndihmon në diferencimin urinar/renal.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-us-abdomen",
+        "tier": "conditional",
+        "rationale": "Në hepatobiliar, aneurizëm ose patologji të orientuar ku US është i përshtatshëm.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-ct-abdomen",
+        "tier": "urgent",
+        "rationale": "Imazheri definitive në shumë tablo të abdomenit akut kur pacienti është stabil dhe indikacioni është i qartë.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Bark rigid/peritonizëm = red flag kirurgjikal. Mos prit që ekzaminimet të përfundojnë para referimit/assessment-it urgjent."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 130
+  },
+  {
+    "id": "dhimbje-abdominale",
+    "slug": "dhimbje-abdominale",
+    "title": "Dhimbje abdominale",
+    "clinicalType": "Simptomë",
+    "aliases": [
+      "dhembje barku",
+      "abdominal pain",
+      "dhimbje barku"
+    ],
+    "summary": "Work-up drejtohet nga lokalizimi, mosha, shtatzënia dhe ekzaminimi fizik.",
+    "tests": [
+      {
+        "testId": "exam-cbc",
+        "tier": "recommended",
+        "rationale": "Anemi/leukocitozë sipas tablosë.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-crp",
+        "tier": "recommended",
+        "rationale": "Marker inflamator jo-specifik.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-urinalysis",
+        "tier": "core",
+        "rationale": "Kërko UTI, hematuri, ketone ose gjetje të tjera.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-pregnancy",
+        "tier": "core",
+        "rationale": "Kur shtatzënia është e mundshme.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-lipase",
+        "tier": "conditional",
+        "rationale": "Në dhimbje epigastrike/pankreatit të dyshuar.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-liver",
+        "tier": "conditional",
+        "rationale": "Në RUQ/verdhezë ose dyshim hepatobiliar.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-us-abdomen",
+        "tier": "conditional",
+        "rationale": "Sipas lokalizimit dhe dyshimit klinik.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-us-pelvis",
+        "tier": "conditional",
+        "rationale": "Në simptoma pelvike/gjinekologjike.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-ct-abdomen",
+        "tier": "conditional",
+        "rationale": "Në red flags, tablo të paqartë ose dyshim për patologji që kërkon CT.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Peritonizëm, hipotension, gjakderdhje GI, dhimbje disproporcionale, shtatzëni ektopike e dyshuar ose aneurizëm → urgjencë."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 140
+  },
+  {
+    "id": "vjellje",
+    "slug": "vjellje",
+    "title": "Të vjella",
+    "clinicalType": "Simptomë",
+    "aliases": [
+      "vjellje",
+      "te vjella",
+      "vomiting",
+      "nauze"
+    ],
+    "summary": "Shumica e rasteve të lehta nuk kërkon panel të gjerë; kërko shkaqet dhe dehidrimin.",
+    "tests": [
+      {
+        "testId": "exam-electrolytes",
+        "tier": "core",
+        "rationale": "Vlerëso humbjet e Na/K dhe çrregullime metabolike në të vjella të konsiderueshme.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-renal",
+        "tier": "core",
+        "rationale": "Vlerëso dehidrimin dhe funksionin renal.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-glucose",
+        "tier": "core",
+        "rationale": "Hipo/hiperglikemia dhe DKA mund të paraqiten me të vjella.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-pregnancy",
+        "tier": "core",
+        "rationale": "Kur shtatzënia është e mundshme.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-cbc",
+        "tier": "conditional",
+        "rationale": "Në ethe, gjakderdhje ose sëmundje sistemike.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-crp",
+        "tier": "conditional",
+        "rationale": "Kur dyshohet proces inflamator/infektiv.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-liver",
+        "tier": "conditional",
+        "rationale": "Në verdhezë/RUQ ose dyshim hepatobiliar.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-lipase",
+        "tier": "conditional",
+        "rationale": "Në dhimbje epigastrike/pankreatit.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-vbg-ketones",
+        "tier": "conditional",
+        "rationale": "Kur dyshohet DKA, acidozë ose dekompensim metabolik.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-ct-abdomen",
+        "tier": "conditional",
+        "rationale": "Vetëm kur ekzaminimi sugjeron obstruksion/abdomen akut ose patologji strukturore.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Pamundësi për lëngje, hipotension, oliguri, hematemezë, alterim të vetëdijes ose abdomen akut → vlerësim urgjent."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 150
+  },
+  {
+    "id": "diarre",
+    "slug": "diarre",
+    "title": "Diarre",
+    "clinicalType": "Simptomë",
+    "aliases": [
+      "diarrhea",
+      "barkqitje",
+      "jashteqitje te ujshme"
+    ],
+    "summary": "Në diarre akute të lehtë pa dehidrim/red flags nuk nevojitet panel rutinë i gjerë.",
+    "tests": [
+      {
+        "testId": "exam-electrolytes",
+        "tier": "conditional",
+        "rationale": "Në dehidrim, sëmundje të rëndë, moshë/risk të lartë ose nevojë për IV fluid.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-renal",
+        "tier": "conditional",
+        "rationale": "Në dehidrim, oliguri ose risk renal.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-cbc",
+        "tier": "conditional",
+        "rationale": "Në gjak në feçe, ethe të lartë ose sëmundje sistemike.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-crp",
+        "tier": "conditional",
+        "rationale": "Në sëmundje inflamatore/infektive më të rëndë.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-stool",
+        "tier": "conditional",
+        "rationale": "Në gjak/mukus, imunosupresion, udhëtim, outbreak, persistencë ose diagnozë të pasigurt.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Dehidrim i rëndë/shok, gjakderdhje e konsiderueshme, alterim të vetëdijes ose abdomen akut → urgjencë."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 160
+  },
+  {
+    "id": "edeme",
+    "slug": "edeme",
+    "title": "Edemë e këmbëve / edemë periferike",
+    "clinicalType": "Shenjë",
+    "aliases": [
+      "edeme",
+      "kembe te enjtura",
+      "swelling legs"
+    ],
+    "summary": "Dallo edemën unilaterale nga bilaterale dhe vlerëso zemrën, veshkat, mëlçinë dhe venat.",
+    "tests": [
+      {
+        "testId": "exam-renal",
+        "tier": "core",
+        "rationale": "Funksion renal dhe status volumor.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-electrolytes",
+        "tier": "core",
+        "rationale": "Elektrolite para/gjatë trajtimit dhe në dyshim renal/HF.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-liver",
+        "tier": "recommended",
+        "rationale": "Hipoalbuminemi/hepatopati mund të kontribuojnë.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-urinalysis",
+        "tier": "recommended",
+        "rationale": "Proteinuri/hematuri dhe shenja të dëmtimit renal.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-acr",
+        "tier": "conditional",
+        "rationale": "Në dyshim për albuminuri/CKD.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-ecg",
+        "tier": "recommended",
+        "rationale": "Në dyshim kardiak.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-bnp",
+        "tier": "conditional",
+        "rationale": "Në dispne/kongjestion me dyshim për HF.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-echo",
+        "tier": "conditional",
+        "rationale": "Në shenja të HF ose problem strukturor.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-venous-doppler",
+        "tier": "conditional",
+        "rationale": "Në edemë akute unilaterale me dyshim për DVT.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Edemë unilaterale akute me dhimbje, dispne e re, hipoksemi ose dhimbje gjoksi → vlerësim urgjent për VTE."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 170
+  },
+  {
+    "id": "poliuri-polidipsi",
+    "slug": "poliuri-polidipsi",
+    "title": "Urinim i shpeshtë / etje e shtuar",
+    "clinicalType": "Simptomë",
+    "aliases": [
+      "poliuri",
+      "polidipsi",
+      "etje",
+      "urinim i shpeshte"
+    ],
+    "summary": "Fillimisht përjashto diabetin dhe çrregullimet renale/elektrolitike.",
+    "tests": [
+      {
+        "testId": "exam-glucose",
+        "tier": "core",
+        "rationale": "Kërko hiperglikemi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-hba1c",
+        "tier": "core",
+        "rationale": "Vlerëso glikeminë afatmesme kur është e përshtatshme.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-urinalysis",
+        "tier": "core",
+        "rationale": "Glukozuri, ketonuri dhe gjetje urinare.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-electrolytes",
+        "tier": "recommended",
+        "rationale": "Na/K/Ca mund të ndihmojnë në shkaqe metabolike.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-renal",
+        "tier": "recommended",
+        "rationale": "Funksion renal dhe status hidratimi.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-osmolality",
+        "tier": "conditional",
+        "rationale": "Në poliuri të vërtetë të pashpjeguar pas work-up fillestar.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Hiperglikemi me ketone, të vjella, frymëmarrje të thellë, dehidrim ose alterim të vetëdijes → DKA/HHS pathway urgjent."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 180
+  },
+  {
+    "id": "temperature",
+    "slug": "temperature",
+    "title": "Temperaturë / ethe",
+    "clinicalType": "Shenjë",
+    "aliases": [
+      "ethe",
+      "fever",
+      "temperature e larte"
+    ],
+    "summary": "Mos porosit panel të njëjtë për çdo ethe; ekzaminimet orientohen nga fokusi dhe gjendja sistemike.",
+    "tests": [
+      {
+        "testId": "exam-cbc",
+        "tier": "recommended",
+        "rationale": "Në sëmundje sistemike, ethe persistente ose dyshim bakterial.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-crp",
+        "tier": "recommended",
+        "rationale": "Mund të ndihmojë në monitorim/diferencim së bashku me klinikën.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-urinalysis",
+        "tier": "conditional",
+        "rationale": "Kur ka simptoma urinare ose nuk ka fokus të qartë sipas riskut.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-cxr",
+        "tier": "conditional",
+        "rationale": "Kur ka simptoma respiratore/dispne ose auskultim jonormal.",
+        "contextNote": ""
+      },
+      {
+        "testId": "exam-lactate",
+        "tier": "urgent",
+        "rationale": "Në hipotension, hipoperfuzion ose dyshim për sepsë.",
+        "contextNote": ""
+      }
+    ],
+    "redFlags": [
+      "Hipotension, konfuzion, takipne, hipoksemi, rash purpurik ose shenja hipoperfuzioni → sepsis/emergency pathway."
+    ],
+    "titleEn": "",
+    "icdCodes": [],
+    "catalogGaps": [],
+    "sortOrder": 190
+  }
+]);
+
   const state = {
     data:null,
     testsById:new Map(),
