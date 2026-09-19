@@ -1,12 +1,21 @@
 # ICD-10 Latin terminology
 
-This repository snapshot mirrors the verified Latin terminology loaded in Supabase.
+The Supabase `public.icd_codes` table is fully populated in `title_la`.
 
 - Total `icd_codes`: **701**
-- Verified medical-Latin titles: **681**
-- Intentional exceptions: **20**
-- Policy: English titles are never copied into `title_la`.
+- Latin titles populated: **701 / 701 (100%)**
+- Published-source medical-Latin titles: **681**
+- Explicitly curated Neo-Latin titles: **20**
+- Missing Latin titles: **0**
 
-The exceptions are the external-cause codes W/X/Y and the newer special-purpose COVID U codes for which the adopted source set does not provide a verified medical-Latin title. Those codes continue to use the official international English title through `title_en` in search and display.
+## Provenance policy
 
-Primary provenance is retained in Supabase table `private.icd_latin_terms_v1`. The data file `data/icd-latin-verified-v1.json` is the reviewable repository snapshot.
+Published Latin terminology is preferred whenever an adopted source provides a Latin field or Latin descriptor. The remaining 20 codes did not expose a Latin field in the adopted official datasets; those entries are labeled in Supabase as **DRX curated medical Latin** rather than being misrepresented as official WHO/ICD Latin.
+
+English titles are never silently copied into `title_la`.
+
+Primary provenance is stored in `private.icd_latin_terms_v1`. The repository snapshot is `data/icd-latin-verified-v1.json`.
+
+## Reference datasets
+
+The project also keeps the structured ICD-10-SE 2026 Latin-bearing export as an audit reference where the authority explicitly publishes a `Latin` column.
