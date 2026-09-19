@@ -34,6 +34,9 @@
     activeSuggestion: -1,
     searchSeed: [],
     searchSeedReady: false,
+    hotQuick: [],
+    hotSymptoms: [],
+    hotSearchReady: false,
     requestId: 0,
     loading: false,
     reveal: false,     // sill panelin e nyjeve në pamje pasi të mbërrijnë fëmijët (vetëm në celular)
@@ -110,8 +113,8 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view, sv:'symptom-v10' });
-    if (view === 'suggest' || view === 'seed') params.set('advanced', '1');
+    const params = new URLSearchParams({ view, sv:'hot-v11' });
+    if (view === 'suggest' || view === 'seed' || view === 'hot') params.set('advanced', '1');
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
     return `${API}?${params}`;
   }
@@ -293,7 +296,10 @@
   const SUGGESTION_CACHE_TTL_MS = 5 * 60 * 1000;
   const SEARCH_SEED_STORAGE_KEY = 'medindex.icd.category-seed.v1';
   const SEARCH_SEED_STORAGE_VERSION = 1;
-  const SEARCH_NETWORK_DELAY_MS = 25;
+  const HOT_SEARCH_STORAGE_KEY = 'medindex.icd.qkmf-hot.v1';
+  const HOT_SEARCH_STORAGE_VERSION = 1;
+  const HOT_SEARCH_TTL_MS = 24 * 60 * 60 * 1000;
+  const SEARCH_NETWORK_DELAY_MS = 14;
 
   function cacheSuggestions(query, data) {
     const key = searchNormalize(query);
@@ -484,14 +490,264 @@
     else setTimeout(start, 450);
   }
 
+  function prepareHotQuick(rows) {
+    return (Array.isArray(rows) ? rows : []).map(item => {
+      const aliases = [item.label_sq, ...(item.aliases || [])].map(searchNormalize).filter(Boolean);
+      const node = item.node || {};
+      const fields = [
+        clean(item.code), item.label_sq, ...(item.aliases || []),
+        node.displayTitle, node.albanianDraft, node.englishTitle, node.latinTitle,
+      ].map(searchNormalize).filter(Boolean);
+      return {
+        ...item,
+        node,
+        _aliases:[...new Set(aliases)],
+        _search:[...new Set(fields)].join(' '),
+        _tokens:[...new Set(fields.join(' ').split(' ').filter(Boolean))],
+      };
+    });
+  }
+
+  function prepareHotSymptoms(rows) {
+    return (Array.isArray(rows) ? rows : []).map(item => {
+      const aliases = [item.label_sq, ...(item.aliases || [])].map(searchNormalize).filter(Boolean);
+      return {
+        ...item,
+        _aliases:[...new Set(aliases)],
+        _tokens:[...new Set(aliases.join(' ').split(' ').filter(Boolean))],
+      };
+    });
+  }
+
+  function bootstrapDomHotQuick() {
+    if (state.hotQuick.length) return;
+    const rows = [...document.querySelectorAll('.icd-quick-chip[data-search-example]')].map(button => {
+      const code = clean(button.dataset.searchExample);
+      const label = clean(button.getAttribute('title')) || clean(button.querySelector('span')?.textContent) || code;
+      const categoryLike = /^[A-Z]\d{2}$/.test(code);
+      return {
+        code,
+        label_sq:label,
+        aliases:[label],
+        urgent:button.classList.contains('is-urgent'),
+        node:{
+          code,
+          level:categoryLike ? 'category' : 'subcategory',
+          chapter:code.charAt(0),
+          block:'',
+          parentCode:categoryLike ? '' : code.slice(0, 3),
+          englishTitle:'',
+          albanianDraft:label,
+          latinTitle:'',
+          latinParentTitle:'',
+          latinParentCode:'',
+          displayTitle:label,
+          childCount:0,
+          breadcrumb:[],
+          searchMatch:null,
+          symptomRelation:null,
+        },
+      };
+    }).filter(item => item.code);
+    if (!rows.length) return;
+    state.hotQuick = prepareHotQuick(rows);
+    state.hotSearchReady = true;
+  }
+
+  function applyHotPayload(data) {
+    state.hotQuick = prepareHotQuick(data?.quick);
+    state.hotSymptoms = prepareHotSymptoms(data?.symptoms);
+    state.hotSearchReady = Boolean(state.hotQuick.length || state.hotSymptoms.length);
+  }
+
+  function loadStoredHotSearch() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(HOT_SEARCH_STORAGE_KEY) || 'null');
+      if (stored?.version !== HOT_SEARCH_STORAGE_VERSION || !stored.data) return false;
+      if (Date.now() - Number(stored.savedAt || 0) > HOT_SEARCH_TTL_MS) return false;
+      applyHotPayload(stored.data);
+      return state.hotSearchReady;
+    } catch {
+      return false;
+    }
+  }
+
+  function storeHotSearch(data) {
+    try {
+      localStorage.setItem(HOT_SEARCH_STORAGE_KEY, JSON.stringify({
+        version:HOT_SEARCH_STORAGE_VERSION,
+        savedAt:Date.now(),
+        data,
+      }));
+    } catch {
+      // One-shot hot cache is an optimization; server search remains authoritative.
+    }
+  }
+
+  async function warmHotSearch() {
+    if (!state.hotSearchReady) loadStoredHotSearch();
+    try {
+      const { payload } = await fetchJson(endpoint('hot'), 7000, null, 'default');
+      const data = payload.data || {};
+      if (!Array.isArray(data.quick) && !Array.isArray(data.symptoms)) return;
+      applyHotPayload(data);
+      storeHotSearch(data);
+    } catch {
+      // Keep locally stored hot index when refresh is temporarily unavailable.
+    }
+  }
+
+  function phraseHotScore(query, aliases) {
+    if (!query || !aliases?.length) return 0;
+    let best = 0;
+    for (const alias of aliases) {
+      if (alias === query) best = Math.max(best, 1);
+      else if (query.length >= 2 && alias.startsWith(query)) best = Math.max(best, .97);
+      else if (alias.length >= 3 && query.startsWith(alias)) best = Math.max(best, .93);
+      else if (query.length >= 3 && alias.includes(query)) best = Math.max(best, .91);
+      else if (alias.length >= 3 && query.includes(alias)) best = Math.max(best, .88);
+      else if (Math.abs(alias.length - query.length) <= 3 && Math.max(alias.length, query.length) <= 28) {
+        const maxDistance = Math.max(alias.length, query.length) >= 12 ? 3 : 2;
+        const distance = boundedTokenDistance(query, alias, maxDistance);
+        if (distance <= maxDistance) best = Math.max(best, distance === 1 ? .88 : distance === 2 ? .78 : .70);
+      }
+    }
+    return best;
+  }
+
+  function hotSymptomPreview(query) {
+    const q = searchNormalize(query);
+    if (!q || q.length < 3 || !state.hotSymptoms.length) return null;
+    if (/^[a-tv-z][0-9oil]{2}/i.test(clean(query).replace(/\s+/g, ''))) return null;
+
+    const qTokens = q.split(' ').filter(Boolean);
+    let best = null;
+    for (const concept of state.hotSymptoms) {
+      let score = phraseHotScore(q, concept._aliases);
+      if (score < .70 && qTokens.length) {
+        let sum = 0;
+        let matched = 0;
+        for (const token of qTokens) {
+          let tokenBest = 0;
+          for (const candidate of concept._tokens) tokenBest = Math.max(tokenBest, tokenSimilarity(token, candidate));
+          if (tokenBest >= .64) matched += 1;
+          sum += tokenBest;
+        }
+        const coverage = matched / qTokens.length;
+        if (coverage >= .75) score = Math.max(score, .58 + ((sum / qTokens.length) * .28));
+      }
+      if (score >= .72 && (!best || score > best.score)) best = { concept, score };
+    }
+    if (!best) return null;
+
+    const symptom = {
+      id:best.concept.id,
+      label_sq:best.concept.label_sq,
+      symptom_code:best.concept.symptom_code,
+      confidence:Number(best.score.toFixed(3)),
+      match_type:best.score >= .995 ? 'exact' : best.score >= .90 ? 'prefix' : 'fuzzy-tokens',
+      matched_alias:'',
+      ambiguous:false,
+      alternatives:[],
+      diagnosticDecision:false,
+      probability:false,
+      note_sq:'Këto janë kandidatë për kërkim/diferencial nga një simptomë e vetme; nuk janë diagnozë përfundimtare.',
+      localHot:true,
+    };
+    const rows = (best.concept.candidates || []).map(node => ({
+      ...node,
+      searchMatch:{
+        ...(node.searchMatch || {}),
+        type:'symptom-differential',
+        field:'symptom',
+        label:'Nga simptoma',
+        score:Number(node.searchMatch?.score || 980),
+        group:'suggested',
+        groupLabel:'Sugjerime',
+      },
+    }));
+    return { symptomIntent:symptom, rows };
+  }
+
+  function hotQuickPreview(query, limit = 8) {
+    const q = searchNormalize(query);
+    if (!q || !state.hotQuick.length) return [];
+    const qTokens = q.split(' ').filter(Boolean);
+    const codeQuery = clean(query).toUpperCase().replace(/\s+/g, '');
+    const ranked = [];
+
+    for (const item of state.hotQuick) {
+      const node = item.node || {};
+      const code = clean(item.code).toUpperCase();
+      let score = 0;
+      if (code === codeQuery) score = 6000;
+      else if (codeQuery.length >= 2 && code.startsWith(codeQuery)) score = 5700 - Math.min(80, code.length - codeQuery.length);
+      else {
+        const phrase = phraseHotScore(q, item._aliases);
+        if (phrase) score = 5000 + Math.round(phrase * 500);
+        else if (qTokens.length && qTokens.every(token => item._search.includes(token))) score = 4300;
+        else if (q.length >= 4) {
+          let sum = 0;
+          let matched = true;
+          for (const token of qTokens) {
+            let best = 0;
+            for (const candidate of item._tokens) best = Math.max(best, tokenSimilarity(token, candidate));
+            if (best < .60) { matched = false; break; }
+            sum += best;
+          }
+          if (matched && qTokens.length) score = 3600 + Math.round((sum / qTokens.length) * 450);
+        }
+      }
+      if (!score) continue;
+      ranked.push({
+        ...node,
+        searchMatch:{
+          type:'hot-local',
+          field:'hot',
+          score,
+          matchedTerm:item.label_sq || node.displayTitle || code,
+          label:item.urgent ? 'Instant · Urgjencë' : 'Instant · QKMF',
+          group:'suggested',
+          groupLabel:'Sugjerime',
+        },
+      });
+    }
+
+    return ranked.sort((a, b) => Number(b.searchMatch.score) - Number(a.searchMatch.score)
+      || clean(a.code).localeCompare(clean(b.code), 'en', { numeric:true })).slice(0, limit);
+  }
+
+  function mergeInstantRows(...lists) {
+    const seen = new Set();
+    const rows = [];
+    for (const list of lists) {
+      for (const row of list || []) {
+        const code = clean(row?.code);
+        if (!code || seen.has(code)) continue;
+        seen.add(code);
+        rows.push(row);
+        if (rows.length >= 18) return rows;
+      }
+    }
+    return rows;
+  }
+
   function immediatePreview(query) {
     const normalized = searchNormalize(query);
-    if (!normalized) return [];
+    if (!normalized) return { rows:[], meta:null };
     const direct = cachedSuggestions(query);
-    if (direct?.rows?.length) return direct.rows;
+    if (direct?.rows?.length) return { rows:direct.rows, meta:direct };
 
+    const symptom = hotSymptomPreview(query);
+    const hot = hotQuickPreview(query, 8);
     const local = localCategoryPreview(query, 8);
-    if (local.length) return local;
+    const instantRows = mergeInstantRows(symptom?.rows || [], hot, local);
+    if (instantRows.length) {
+      return {
+        rows:instantRows,
+        meta:symptom ? { symptomIntent:symptom.symptomIntent, instantHot:true } : { instantHot:true },
+      };
+    }
 
     let best = null;
     for (const [key, entry] of [...suggestionCache.entries()].reverse()) {
@@ -501,12 +757,15 @@
       break;
     }
     const source = best || state.suggestions;
-    if (!Array.isArray(source) || !source.length) return [];
+    if (!Array.isArray(source) || !source.length) return { rows:[], meta:null };
     const tokens = normalized.split(' ').filter(Boolean);
-    return source.filter(node => {
-      const haystack = suggestionHaystack(node);
-      return tokens.every(token => haystack.includes(token));
-    }).slice(0, 18);
+    return {
+      rows:source.filter(node => {
+        const haystack = suggestionHaystack(node);
+        return tokens.every(token => haystack.includes(token));
+      }).slice(0, 18),
+      meta:null,
+    };
   }
 
   function suggestionTranslations(node) {
@@ -592,7 +851,8 @@
           : field === 'code' ? 'Kodi'
             : field === 'hierarchy' ? 'Hierarki'
               : field === 'local' ? 'Instant'
-                : field === 'symptom' ? 'Simptomë'
+                : field === 'hot' ? 'QKMF'
+                  : field === 'symptom' ? 'Simptomë'
                   : field === 'alias' ? 'Term klinik'
                     : '';
     if (!source) return '';
@@ -842,10 +1102,11 @@
     state.suggestionMeta = null;
 
     const preview = immediatePreview(value);
-    if (preview.length) {
-      state.suggestions = preview;
+    if (preview.rows.length) {
+      state.suggestions = preview.rows;
+      state.suggestionMeta = preview.meta;
       state.activeSuggestion = 0;
-      setStatus(`${formatNumber(preview.length)} kategori instant · duke plotësuar…`, 'busy');
+      setStatus(`${formatNumber(preview.rows.length)} rezultate instant · duke rafinuar…`, 'busy');
     } else {
       setStatus(`Duke kërkuar «${value}»…`, 'busy');
     }
@@ -1048,18 +1309,19 @@
       state.query = value;
       state.suggestionOpen = true;
       const preview = immediatePreview(value);
-      state.suggestionMeta = null;
-      if (preview.length) {
-        state.suggestions = preview;
+      state.suggestionMeta = preview.meta;
+      if (preview.rows.length) {
+        state.suggestions = preview.rows;
         state.activeSuggestion = 0;
         renderSuggestions();
-        prefetchChildren(preview[0]);
+        prefetchChildren(preview.rows[0]);
       }
       updateSearchClear();
       searchTimer = setTimeout(() => void runSearch(value), SEARCH_NETWORK_DELAY_MS);
     });
 
     el.icdSearch.addEventListener('focus', () => {
+      if (!state.hotSearchReady) void warmHotSearch();
       if (!state.searchSeedReady) void warmSearchSeed();
       if (clean(el.icdSearch.value).length >= 2) {
         state.suggestionOpen = true;
@@ -1174,9 +1436,12 @@
     loadSharedSidebarTaxonomy();
     bindElements();
     bindEvents();
+    bootstrapDomHotQuick();
+    loadStoredHotSearch();
     render();
     try {
       const authPayload = await ensureAuth();
+      void warmHotSearch();
       await syncProfileChrome(authPayload);
       await loadNav();
       scheduleSearchSeedWarmup();

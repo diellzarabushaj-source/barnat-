@@ -1,0 +1,835 @@
+{
+  "schema": "medindex.icd10.qkmf-hot-search.v1",
+  "version": 1,
+  "purpose": "Ultra-fast local retrieval seed for common QKMF family-medicine, urgent and high-frequency ICD searches.",
+  "rows": [
+    {
+      "code": "I10",
+      "label_sq": "Hipertension",
+      "urgent": false,
+      "aliases": [
+        "Hipertension",
+        "tension",
+        "tensioni",
+        "tensioni i larte",
+        "hta",
+        "hypertension",
+        "hypertensio"
+      ]
+    },
+    {
+      "code": "E11",
+      "label_sq": "Diabet tip 2",
+      "urgent": false,
+      "aliases": [
+        "Diabet tip 2",
+        "diabet",
+        "diabetes",
+        "sheqeri",
+        "sheqer i larte",
+        "diabetes mellitus"
+      ]
+    },
+    {
+      "code": "J06",
+      "label_sq": "Infeksion respirator akut",
+      "urgent": false,
+      "aliases": [
+        "Infeksion respirator akut",
+        "viroze",
+        "virozë",
+        "ftohje",
+        "infeksion respirator",
+        "uri",
+        "upper respiratory infection"
+      ]
+    },
+    {
+      "code": "R05",
+      "label_sq": "Kollë",
+      "urgent": false,
+      "aliases": [
+        "Kollë",
+        "kolle",
+        "kollë",
+        "cough",
+        "tussis"
+      ]
+    },
+    {
+      "code": "R50",
+      "label_sq": "Temperaturë",
+      "urgent": false,
+      "aliases": [
+        "Temperaturë",
+        "temperature",
+        "temperaturë",
+        "ethe",
+        "fever",
+        "febris"
+      ]
+    },
+    {
+      "code": "R51",
+      "label_sq": "Dhimbje koke",
+      "urgent": false,
+      "aliases": [
+        "Dhimbje koke",
+        "kokedhimbje",
+        "kokëdhimbje",
+        "dhimbje koke",
+        "headache",
+        "cephalalgia"
+      ]
+    },
+    {
+      "code": "R19.7",
+      "label_sq": "Diarre",
+      "urgent": false,
+      "aliases": [
+        "Diarre",
+        "diarre",
+        "diare",
+        "diarrhea",
+        "diarrhoea",
+        "barkqitje"
+      ]
+    },
+    {
+      "code": "R11",
+      "label_sq": "Nauze / vjellje",
+      "urgent": false,
+      "aliases": [
+        "Nauze / vjellje",
+        "vjellje",
+        "vjelje",
+        "te vjella",
+        "të vjella",
+        "nauze",
+        "vomiting",
+        "nausea",
+        "emesis"
+      ]
+    },
+    {
+      "code": "R10.4",
+      "label_sq": "Dhimbje barku",
+      "urgent": false,
+      "aliases": [
+        "Dhimbje barku",
+        "dhimbje barku",
+        "dhembje barku",
+        "abdominal pain",
+        "stomach pain"
+      ]
+    },
+    {
+      "code": "R42",
+      "label_sq": "Marramendje",
+      "urgent": false,
+      "aliases": [
+        "Marramendje",
+        "marramendje",
+        "maramendje",
+        "trullim",
+        "vertigo",
+        "dizziness"
+      ]
+    },
+    {
+      "code": "R53",
+      "label_sq": "Lodhje / dobësi",
+      "urgent": false,
+      "aliases": [
+        "Lodhje / dobësi",
+        "lodhje",
+        "dobesi",
+        "dobësi",
+        "fatigue",
+        "weakness",
+        "asthenia"
+      ]
+    },
+    {
+      "code": "R00.2",
+      "label_sq": "Palpitacione",
+      "urgent": false,
+      "aliases": [
+        "Palpitacione",
+        "palpitacione",
+        "rrahje te shpejta",
+        "rrahje të shpejta",
+        "palpitations",
+        "heart racing"
+      ]
+    },
+    {
+      "code": "J02",
+      "label_sq": "Faringit akut",
+      "urgent": false,
+      "aliases": [
+        "Faringit akut",
+        "dhimbje fyti",
+        "fyt i kuq",
+        "sore throat",
+        "pharyngitis"
+      ]
+    },
+    {
+      "code": "J00",
+      "label_sq": "Ftohje e zakonshme",
+      "urgent": false,
+      "aliases": [
+        "Ftohje e zakonshme",
+        "ftohje",
+        "rrufe",
+        "common cold",
+        "nasopharyngitis"
+      ]
+    },
+    {
+      "code": "J01",
+      "label_sq": "Sinusit akut",
+      "urgent": false,
+      "aliases": [
+        "Sinusit akut",
+        "sinusit",
+        "sinus",
+        "sinusitis"
+      ]
+    },
+    {
+      "code": "J20",
+      "label_sq": "Bronkit akut",
+      "urgent": false,
+      "aliases": [
+        "Bronkit akut",
+        "bronkit",
+        "bronchitis"
+      ]
+    },
+    {
+      "code": "J45",
+      "label_sq": "Astmë",
+      "urgent": false,
+      "aliases": [
+        "Astmë",
+        "astme",
+        "astmë",
+        "asthma"
+      ]
+    },
+    {
+      "code": "J44",
+      "label_sq": "COPD",
+      "urgent": false,
+      "aliases": [
+        "COPD",
+        "copd",
+        "bpok",
+        "bronkit kronik"
+      ]
+    },
+    {
+      "code": "J30",
+      "label_sq": "Rinit alergjik",
+      "urgent": false,
+      "aliases": [
+        "Rinit alergjik",
+        "alergji hunde",
+        "rinit alergjik",
+        "allergic rhinitis"
+      ]
+    },
+    {
+      "code": "H66",
+      "label_sq": "Otit media",
+      "urgent": false,
+      "aliases": [
+        "Otit media",
+        "otit",
+        "vesh i dhemb",
+        "otitis media"
+      ]
+    },
+    {
+      "code": "H92.0",
+      "label_sq": "Dhimbje veshi",
+      "urgent": false,
+      "aliases": [
+        "Dhimbje veshi",
+        "dhimbje veshi",
+        "otalgia",
+        "ear pain"
+      ]
+    },
+    {
+      "code": "H10",
+      "label_sq": "Konjunktivit",
+      "urgent": false,
+      "aliases": [
+        "Konjunktivit",
+        "konjunktivit",
+        "sy i kuq",
+        "conjunctivitis",
+        "red eye"
+      ]
+    },
+    {
+      "code": "K21",
+      "label_sq": "Refluks gastroezofageal",
+      "urgent": false,
+      "aliases": [
+        "Refluks gastroezofageal",
+        "refluks",
+        "urth",
+        "gerd",
+        "gord",
+        "reflux"
+      ]
+    },
+    {
+      "code": "K29",
+      "label_sq": "Gastrit / duodenit",
+      "urgent": false,
+      "aliases": [
+        "Gastrit / duodenit",
+        "gastrit",
+        "gastritis",
+        "duodenit"
+      ]
+    },
+    {
+      "code": "A09",
+      "label_sq": "Gastroenterit / diarre infektive",
+      "urgent": false,
+      "aliases": [
+        "Gastroenterit / diarre infektive",
+        "gastroenterit",
+        "diarre infektive",
+        "stomach bug"
+      ]
+    },
+    {
+      "code": "R12",
+      "label_sq": "Urth / djegie retrosternale",
+      "urgent": false,
+      "aliases": [
+        "Urth / djegie retrosternale",
+        "urth",
+        "djegie ne gjoks",
+        "heartburn",
+        "pyrosis"
+      ]
+    },
+    {
+      "code": "R14",
+      "label_sq": "Fryrje / gazra",
+      "urgent": false,
+      "aliases": [
+        "Fryrje / gazra",
+        "fryrje",
+        "gazra",
+        "bloating",
+        "flatulence"
+      ]
+    },
+    {
+      "code": "K59.0",
+      "label_sq": "Konstipacion",
+      "urgent": false,
+      "aliases": [
+        "Konstipacion",
+        "kapsllek",
+        "kapsllëk",
+        "konstipacion",
+        "constipation"
+      ]
+    },
+    {
+      "code": "N39.0",
+      "label_sq": "Infeksion urinar",
+      "urgent": false,
+      "aliases": [
+        "Infeksion urinar",
+        "infeksion urinar",
+        "uti",
+        "djegie urinimi",
+        "urinary infection"
+      ]
+    },
+    {
+      "code": "M54",
+      "label_sq": "Dhimbje shpine",
+      "urgent": false,
+      "aliases": [
+        "Dhimbje shpine",
+        "dhimbje shpine",
+        "back pain",
+        "dorsalgia"
+      ]
+    },
+    {
+      "code": "M54.5",
+      "label_sq": "Dhimbje mesi",
+      "urgent": false,
+      "aliases": [
+        "Dhimbje mesi",
+        "dhimbje mesi",
+        "lumbago",
+        "low back pain"
+      ]
+    },
+    {
+      "code": "M54.2",
+      "label_sq": "Dhimbje qafe",
+      "urgent": false,
+      "aliases": [
+        "Dhimbje qafe",
+        "dhimbje qafe",
+        "neck pain",
+        "cervicalgia"
+      ]
+    },
+    {
+      "code": "M54.3",
+      "label_sq": "Ishialgji / shiatik",
+      "urgent": false,
+      "aliases": [
+        "Ishialgji / shiatik",
+        "shiatik",
+        "ishialgji",
+        "sciatica",
+        "dhimbje ne kembe nga shpina"
+      ]
+    },
+    {
+      "code": "M47",
+      "label_sq": "Spondilozë / probleme me unaza",
+      "urgent": false,
+      "aliases": [
+        "Spondilozë / probleme me unaza",
+        "unaza",
+        "probleme me unaza",
+        "spondiloze",
+        "spondilozë",
+        "spondylosis"
+      ]
+    },
+    {
+      "code": "M51",
+      "label_sq": "Çrregullime të disqeve intervertebrale",
+      "urgent": false,
+      "aliases": [
+        "Çrregullime të disqeve intervertebrale",
+        "disk",
+        "disqe",
+        "disku",
+        "probleme me disqe",
+        "disc disorder",
+        "intervertebral disc"
+      ]
+    },
+    {
+      "code": "M25.5",
+      "label_sq": "Dhimbje artikulare",
+      "urgent": false,
+      "aliases": [
+        "Dhimbje artikulare",
+        "dhimbje nyjesh",
+        "dhimbje artikulare",
+        "arthralgia",
+        "joint pain"
+      ]
+    },
+    {
+      "code": "M19",
+      "label_sq": "Artrozë",
+      "urgent": false,
+      "aliases": [
+        "Artrozë",
+        "artroze",
+        "artrozë",
+        "osteoarthritis"
+      ]
+    },
+    {
+      "code": "M79.1",
+      "label_sq": "Dhimbje muskulore",
+      "urgent": false,
+      "aliases": [
+        "Dhimbje muskulore",
+        "dhimbje muskulore",
+        "mialgji",
+        "myalgia",
+        "muscle pain"
+      ]
+    },
+    {
+      "code": "G43",
+      "label_sq": "Migrenë",
+      "urgent": false,
+      "aliases": [
+        "Migrenë",
+        "migrene",
+        "migrenë",
+        "migraine"
+      ]
+    },
+    {
+      "code": "R60",
+      "label_sq": "Edemë",
+      "urgent": false,
+      "aliases": [
+        "Edemë",
+        "edeme",
+        "edemë",
+        "enjtje",
+        "ënjtje",
+        "swelling",
+        "oedema"
+      ]
+    },
+    {
+      "code": "L30",
+      "label_sq": "Dermatit",
+      "urgent": false,
+      "aliases": [
+        "Dermatit"
+      ]
+    },
+    {
+      "code": "B35",
+      "label_sq": "Dermatofitozë",
+      "urgent": false,
+      "aliases": [
+        "Dermatofitozë"
+      ]
+    },
+    {
+      "code": "D50",
+      "label_sq": "Anemi nga mungesa e hekurit",
+      "urgent": false,
+      "aliases": [
+        "Anemi nga mungesa e hekurit"
+      ]
+    },
+    {
+      "code": "E03",
+      "label_sq": "Hipotiroidizëm",
+      "urgent": false,
+      "aliases": [
+        "Hipotiroidizëm"
+      ]
+    },
+    {
+      "code": "F41",
+      "label_sq": "Ankth",
+      "urgent": false,
+      "aliases": [
+        "Ankth"
+      ]
+    },
+    {
+      "code": "I21",
+      "label_sq": "Infarkt akut i miokardit",
+      "urgent": true,
+      "aliases": [
+        "Infarkt akut i miokardit",
+        "infarkt",
+        "stemi",
+        "mi",
+        "myocardial infarction"
+      ]
+    },
+    {
+      "code": "I20",
+      "label_sq": "Anginë pektoris",
+      "urgent": true,
+      "aliases": [
+        "Anginë pektoris",
+        "angine",
+        "anginë",
+        "angina"
+      ]
+    },
+    {
+      "code": "I63",
+      "label_sq": "Stroke iskemik",
+      "urgent": true,
+      "aliases": [
+        "Stroke iskemik",
+        "stroke",
+        "insult",
+        "goditje ne tru",
+        "goditje në tru"
+      ]
+    },
+    {
+      "code": "G45",
+      "label_sq": "TIA",
+      "urgent": true,
+      "aliases": [
+        "TIA",
+        "tia",
+        "mini stroke"
+      ]
+    },
+    {
+      "code": "I26",
+      "label_sq": "Emboli pulmonare",
+      "urgent": true,
+      "aliases": [
+        "Emboli pulmonare",
+        "emboli pulmonare",
+        "pulmonary embolism",
+        "pe"
+      ]
+    },
+    {
+      "code": "I47",
+      "label_sq": "Takikardi paroksizmale",
+      "urgent": true,
+      "aliases": [
+        "Takikardi paroksizmale",
+        "takikardi",
+        "svt",
+        "tachycardia"
+      ]
+    },
+    {
+      "code": "I48",
+      "label_sq": "Fibrilacion / flutter atrial",
+      "urgent": true,
+      "aliases": [
+        "Fibrilacion / flutter atrial",
+        "fibrilacion atrial",
+        "af",
+        "atrial fibrillation",
+        "flutter"
+      ]
+    },
+    {
+      "code": "I50",
+      "label_sq": "Insuficiencë kardiake",
+      "urgent": true,
+      "aliases": [
+        "Insuficiencë kardiake",
+        "insuficience kardiake",
+        "heart failure"
+      ]
+    },
+    {
+      "code": "J81",
+      "label_sq": "Edemë pulmonare",
+      "urgent": true,
+      "aliases": [
+        "Edemë pulmonare",
+        "edeme pulmonare",
+        "pulmonary edema",
+        "oedema pulmonum"
+      ]
+    },
+    {
+      "code": "J46",
+      "label_sq": "Status asthmaticus",
+      "urgent": true,
+      "aliases": [
+        "Status asthmaticus",
+        "status asthmaticus",
+        "krize astme",
+        "krizë astme"
+      ]
+    },
+    {
+      "code": "A41",
+      "label_sq": "Sepsë",
+      "urgent": true,
+      "aliases": [
+        "Sepsë",
+        "sepse",
+        "sepsis"
+      ]
+    },
+    {
+      "code": "R57",
+      "label_sq": "Shok",
+      "urgent": true,
+      "aliases": [
+        "Shok",
+        "shok",
+        "shock"
+      ]
+    },
+    {
+      "code": "T78.2",
+      "label_sq": "Anafilaksi",
+      "urgent": true,
+      "aliases": [
+        "Anafilaksi",
+        "anafilaksi",
+        "anaphylaxis"
+      ]
+    },
+    {
+      "code": "E16.2",
+      "label_sq": "Hipoglikemi",
+      "urgent": true,
+      "aliases": [
+        "Hipoglikemi",
+        "hipoglikemi",
+        "low sugar",
+        "hypoglycemia"
+      ]
+    },
+    {
+      "code": "E10.1",
+      "label_sq": "Ketoacidozë diabetike",
+      "urgent": true,
+      "aliases": [
+        "Ketoacidozë diabetike",
+        "ketoacidoze",
+        "dka",
+        "diabetic ketoacidosis"
+      ]
+    },
+    {
+      "code": "R56.8",
+      "label_sq": "Konvulsione",
+      "urgent": true,
+      "aliases": [
+        "Konvulsione",
+        "konvulsione",
+        "seizure",
+        "kriza"
+      ]
+    },
+    {
+      "code": "R55",
+      "label_sq": "Sinkopë",
+      "urgent": true,
+      "aliases": [
+        "Sinkopë",
+        "sinkope",
+        "sinkopë",
+        "fainting",
+        "syncope"
+      ]
+    },
+    {
+      "code": "R07.4",
+      "label_sq": "Dhimbje gjoksi",
+      "urgent": true,
+      "aliases": [
+        "Dhimbje gjoksi",
+        "dhimbje gjoksi",
+        "shtrengim gjoksi",
+        "shtrëngim gjoksi",
+        "chest pain",
+        "chest tightness"
+      ]
+    },
+    {
+      "code": "R06.0",
+      "label_sq": "Dispne",
+      "urgent": true,
+      "aliases": [
+        "Dispne",
+        "dispne",
+        "veshtiresi ne frymemarrje",
+        "vështirësi në frymëmarrje",
+        "shortness of breath",
+        "dyspnea"
+      ]
+    },
+    {
+      "code": "R04.0",
+      "label_sq": "Epistaksis",
+      "urgent": true,
+      "aliases": [
+        "Epistaksis",
+        "epistaksis",
+        "gjak nga hunda",
+        "nosebleed"
+      ]
+    },
+    {
+      "code": "R10.0",
+      "label_sq": "Abdomen akut",
+      "urgent": true,
+      "aliases": [
+        "Abdomen akut",
+        "abdomen akut",
+        "acute abdomen"
+      ]
+    },
+    {
+      "code": "K92.2",
+      "label_sq": "Hemorragji gastrointestinale",
+      "urgent": true,
+      "aliases": [
+        "Hemorragji gastrointestinale",
+        "gjakderdhje gi",
+        "hemorragji gastrointestinale",
+        "gi bleed"
+      ]
+    },
+    {
+      "code": "N23",
+      "label_sq": "Kolikë renale",
+      "urgent": true,
+      "aliases": [
+        "Kolikë renale",
+        "kolike renale",
+        "kolikë renale",
+        "renal colic"
+      ]
+    },
+    {
+      "code": "S06.0",
+      "label_sq": "Commotio cerebri",
+      "urgent": true,
+      "aliases": [
+        "Commotio cerebri",
+        "commotio",
+        "concussion",
+        "tronditje truri"
+      ]
+    },
+    {
+      "code": "T50.9",
+      "label_sq": "Helmim me barna",
+      "urgent": true,
+      "aliases": [
+        "Helmim me barna",
+        "helmim barna",
+        "overdose",
+        "poisoning"
+      ]
+    },
+    {
+      "code": "J10",
+      "label_sq": "Gripi nga virus i identifikuar",
+      "urgent": false,
+      "aliases": [
+        "grip",
+        "gripi",
+        "influenza",
+        "flu",
+        "influenza virus identified"
+      ]
+    },
+    {
+      "code": "J11",
+      "label_sq": "Gripi, virusi i paidentifikuar",
+      "urgent": false,
+      "aliases": [
+        "grip",
+        "gripi",
+        "influenza",
+        "flu",
+        "influenza virus not identified"
+      ]
+    }
+  ]
+}
