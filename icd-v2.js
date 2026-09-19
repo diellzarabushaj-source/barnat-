@@ -168,7 +168,7 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view, sv:'clinical-workspace-v21' });
+    const params = new URLSearchParams({ view, sv:'clinical-workspace-v22' });
     if (view === 'suggest' || view === 'seed' || view === 'hot' || view === 'guidance' || view === 'guidance-list') params.set('advanced', '1');
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
     return `${API}?${params}`;
@@ -1814,6 +1814,16 @@
     });
 
     el.clinicalActionPanel?.addEventListener('click', async event => {
+      const navLink = event.target.closest('.clinical-action-nav a[href^="#"]');
+      if (navLink) {
+        const target = document.querySelector(navLink.getAttribute('href'));
+        if (target) {
+          event.preventDefault();
+          const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+          target.scrollIntoView({ block:'start', behavior });
+        }
+        return;
+      }
       const clearButton = event.target.closest('[data-clinical-clear]');
       if (clearButton) { clearClinicalGuidance(); return; }
       const button = event.target.closest('[data-clinical-copy]');
