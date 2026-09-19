@@ -32,6 +32,8 @@
     suggestionLoading: false,
     suggestionOpen: false,
     activeSuggestion: -1,
+    searchSeed: [],
+    searchSeedReady: false,
     requestId: 0,
     loading: false,
     reveal: false,     // sill panelin e nyjeve në pamje pasi të mbërrijnë fëmijët (vetëm në celular)
@@ -77,7 +79,7 @@
     [
       'appShell','sidebar','sidebarBackdrop','menuButton','sidebarClose','logoutButton','avatarInitials','sourceStatus','syncText',
       'metricNodes','metricChapters','metricCategories','metricCoverage','metricCoverageNote',
-      'icdPath','icdPathItems','icdPathReset','icdSearch','icdSearchBox','icdSuggestions','icdStatusText',
+      'icdPath','icdPathItems','icdPathReset','icdSearch','icdSearchBox','icdSearchClear','icdSuggestions','icdStatusText',
       'chapterList','chapterCount','nodeHero','nodeList','nodeSectionTitle','nodeCount','nodeKicker','toast',
     ].forEach(id => { el[id] = document.getElementById(id); });
   }
@@ -108,7 +110,8 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view, sv:'hierarchy-v5' });
+    const params = new URLSearchParams({ view, sv:'instant-v6' });
+    if (view === 'suggest' || view === 'seed') params.set('advanced', '1');
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
     return `${API}?${params}`;
   }
@@ -286,23 +289,199 @@
   }
 
   const suggestionCache = new Map();
-  const SUGGESTION_CACHE_LIMIT = 80;
+  const SUGGESTION_CACHE_LIMIT = 120;
+  const SUGGESTION_CACHE_TTL_MS = 5 * 60 * 1000;
+  const SEARCH_SEED_STORAGE_KEY = 'medindex.icd.category-seed.v1';
+  const SEARCH_SEED_STORAGE_VERSION = 1;
+  const SEARCH_NETWORK_DELAY_MS = 25;
 
   function cacheSuggestions(query, data) {
     const key = searchNormalize(query);
     if (!key) return;
     if (suggestionCache.has(key)) suggestionCache.delete(key);
-    suggestionCache.set(key, data);
+    suggestionCache.set(key, { data, at:Date.now() });
     while (suggestionCache.size > SUGGESTION_CACHE_LIMIT) suggestionCache.delete(suggestionCache.keys().next().value);
   }
 
-  function cachedSuggestions(query) {
+  function cachedSuggestions(query, { allowExpired = false } = {}) {
     const key = searchNormalize(query);
     if (!key || !suggestionCache.has(key)) return null;
-    const value = suggestionCache.get(key);
+    const entry = suggestionCache.get(key);
+    if (!allowExpired && Date.now() - Number(entry?.at || 0) > SUGGESTION_CACHE_TTL_MS) {
+      suggestionCache.delete(key);
+      return null;
+    }
     suggestionCache.delete(key);
-    suggestionCache.set(key, value);
-    return value;
+    suggestionCache.set(key, entry);
+    return entry?.data || null;
+  }
+
+  function prepareSeedRows(rows) {
+    return (Array.isArray(rows) ? rows : []).map(node => {
+      const normalizedFields = [
+        clean(node?.code),
+        clean(node?.displayTitle),
+        clean(node?.albanianDraft),
+        clean(node?.englishTitle),
+        clean(node?.latinTitle),
+      ].map(searchNormalize).filter(Boolean);
+      const tokens = [...new Set(normalizedFields.join(' ').split(' ').filter(Boolean))];
+      return { ...node, _search:normalizedFields.join(' '), _tokens:tokens };
+    });
+  }
+
+  function loadStoredSearchSeed() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(SEARCH_SEED_STORAGE_KEY) || 'null');
+      if (stored?.version !== SEARCH_SEED_STORAGE_VERSION || !Array.isArray(stored.rows) || !stored.rows.length) return false;
+      state.searchSeed = prepareSeedRows(stored.rows);
+      state.searchSeedReady = true;
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  function storeSearchSeed(rows, revision = '') {
+    try {
+      const compactRows = (rows || []).map(({ _search, _tokens, ...node }) => node);
+      localStorage.setItem(SEARCH_SEED_STORAGE_KEY, JSON.stringify({
+        version:SEARCH_SEED_STORAGE_VERSION,
+        revision:clean(revision),
+        savedAt:Date.now(),
+        rows:compactRows,
+      }));
+    } catch {
+      // Search still works from memory/server when storage is unavailable or full.
+    }
+  }
+
+  function boundedTokenDistance(left, right, maxDistance = 2) {
+    if (left === right) return 0;
+    if (Math.abs(left.length - right.length) > maxDistance) return maxDistance + 1;
+    const rows = Array.from({ length:left.length + 1 }, () => new Array(right.length + 1).fill(0));
+    for (let i = 0; i <= left.length; i += 1) rows[i][0] = i;
+    for (let j = 0; j <= right.length; j += 1) rows[0][j] = j;
+    for (let i = 1; i <= left.length; i += 1) {
+      let rowMin = maxDistance + 1;
+      for (let j = 1; j <= right.length; j += 1) {
+        const cost = left[i - 1] === right[j - 1] ? 0 : 1;
+        let value = Math.min(
+          rows[i - 1][j] + 1,
+          rows[i][j - 1] + 1,
+          rows[i - 1][j - 1] + cost,
+        );
+        if (i > 1 && j > 1 && left[i - 1] === right[j - 2] && left[i - 2] === right[j - 1]) {
+          value = Math.min(value, rows[i - 2][j - 2] + 1);
+        }
+        rows[i][j] = value;
+        rowMin = Math.min(rowMin, value);
+      }
+      if (rowMin > maxDistance) return maxDistance + 1;
+    }
+    return rows[left.length][right.length];
+  }
+
+  function tokenSimilarity(left, right) {
+    if (left === right) return 1;
+    if (!left || !right) return 0;
+    if (left.length >= 3 && right.startsWith(left)) return .9;
+    if (right.length >= 3 && left.startsWith(right)) return .86;
+    if (Math.abs(left.length - right.length) <= 2 && Math.max(left.length, right.length) <= 18) {
+      const distance = boundedTokenDistance(left, right, 2);
+      if (distance === 1) return .82;
+      if (distance === 2 && Math.max(left.length, right.length) >= 6) return .62;
+    }
+    if (left.length < 3 || right.length < 3) return left[0] === right[0] ? 0.35 : 0;
+    const grams = value => {
+      const set = new Set();
+      for (let index = 0; index <= value.length - 3; index += 1) set.add(value.slice(index, index + 3));
+      return set;
+    };
+    const a = grams(left);
+    const b = grams(right);
+    let overlap = 0;
+    for (const gram of a) if (b.has(gram)) overlap += 1;
+    return (2 * overlap) / Math.max(1, a.size + b.size);
+  }
+
+  function localCategoryPreview(query, limit = 8) {
+    const q = searchNormalize(query);
+    if (!q || !state.searchSeed.length) return [];
+    const qTokens = q.split(' ').filter(Boolean);
+    const codeQuery = clean(query).toUpperCase().replace(/\s+/g, '');
+    const rows = [];
+
+    for (const node of state.searchSeed) {
+      const code = clean(node.code).toUpperCase();
+      const fields = [
+        searchNormalize(node.displayTitle),
+        searchNormalize(node.albanianDraft),
+        searchNormalize(node.englishTitle),
+        searchNormalize(node.latinTitle),
+      ].filter(Boolean);
+      let score = 0;
+
+      if (code === codeQuery) score = 5000;
+      else if (codeQuery.length >= 2 && code.startsWith(codeQuery)) score = 4700 - Math.min(100, code.length - codeQuery.length);
+      else if (fields.some(field => field === q)) score = 4500;
+      else if (fields.some(field => field.startsWith(q))) score = 4200;
+      else if (fields.some(field => field.includes(q))) score = 3650;
+      else if (qTokens.length && qTokens.every(token => node._search.includes(token))) score = 3300;
+      else if (q.length >= 4) {
+        let sum = 0;
+        let matched = true;
+        for (const token of qTokens) {
+          let best = 0;
+          for (const candidate of node._tokens) {
+            if (Math.abs(candidate.length - token.length) > 3) continue;
+            best = Math.max(best, tokenSimilarity(token, candidate));
+            if (best >= .92) break;
+          }
+          if (best < .46) { matched = false; break; }
+          sum += best;
+        }
+        if (matched && qTokens.length) score = 2400 + Math.round((sum / qTokens.length) * 500);
+      }
+
+      if (!score) continue;
+      rows.push({
+        ...node,
+        searchMatch:{
+          type:'local-category',
+          field:'local',
+          score,
+          matchedTerm:node.displayTitle || node.albanianDraft || node.englishTitle || node.code,
+          label:'Instant · Kategori',
+          group:'suggested',
+          groupLabel:'Sugjerime',
+        },
+      });
+    }
+
+    return rows.sort((a, b) => Number(b.searchMatch.score) - Number(a.searchMatch.score)
+      || clean(a.code).localeCompare(clean(b.code), 'en', { numeric:true })).slice(0, limit);
+  }
+
+  async function warmSearchSeed() {
+    loadStoredSearchSeed();
+    try {
+      const { payload, response } = await fetchJson(endpoint('seed'), 7000, null, 'default');
+      const data = payload.data || {};
+      const rows = Array.isArray(data.rows) ? data.rows : [];
+      if (!rows.length) return;
+      state.searchSeed = prepareSeedRows(rows);
+      state.searchSeedReady = true;
+      storeSearchSeed(rows, response.headers.get('X-MedIndex-ICD-Revision') || data?.meta?.source?.revision || '');
+    } catch {
+      // Non-blocking optimization only; authoritative server search remains available.
+    }
+  }
+
+  function scheduleSearchSeedWarmup() {
+    const start = () => void warmSearchSeed();
+    if ('requestIdleCallback' in window) window.requestIdleCallback(start, { timeout:1200 });
+    else setTimeout(start, 450);
   }
 
   function immediatePreview(query) {
@@ -311,8 +490,12 @@
     const direct = cachedSuggestions(query);
     if (direct?.rows?.length) return direct.rows;
 
+    const local = localCategoryPreview(query, 8);
+    if (local.length) return local;
+
     let best = null;
-    for (const [key, value] of [...suggestionCache.entries()].reverse()) {
+    for (const [key, entry] of [...suggestionCache.entries()].reverse()) {
+      const value = entry?.data;
       if (!normalized.startsWith(key) || !value?.rows?.length) continue;
       best = value.rows;
       break;
@@ -441,17 +624,64 @@
     setStatus(`${formatNumber(state.chapters.length)} kapituj të ngarkuar`);
   }
 
+  const childrenCache = new Map();
+  const childrenPending = new Map();
+  const CHILDREN_CACHE_TTL_MS = 5 * 60 * 1000;
+
+  function cachedChildren(code) {
+    const key = clean(code);
+    const entry = childrenCache.get(key);
+    if (!entry || Date.now() - entry.at > CHILDREN_CACHE_TTL_MS) {
+      childrenCache.delete(key);
+      return null;
+    }
+    return entry.rows;
+  }
+
+  async function fetchChildrenRows(code) {
+    const key = clean(code);
+    const cached = cachedChildren(key);
+    if (cached) return cached;
+    if (childrenPending.has(key)) return childrenPending.get(key);
+
+    const pending = fetchJson(endpoint('children', { parent:key }), 6000, null, 'default')
+      .then(({ payload }) => {
+        const rows = Array.isArray(payload?.data?.rows) ? payload.data.rows : [];
+        childrenCache.set(key, { rows, at:Date.now() });
+        return rows;
+      })
+      .finally(() => childrenPending.delete(key));
+    childrenPending.set(key, pending);
+    return pending;
+  }
+
+  function prefetchChildren(node) {
+    const code = clean(node?.code);
+    if (!code || Number(node?.childCount || 0) <= 0 || cachedChildren(code) || childrenPending.has(code)) return;
+    void fetchChildrenRows(code).catch(() => {});
+  }
+
   async function loadChildren(code) {
+    const key = clean(code);
+    const instant = cachedChildren(key);
     const requestId = ++state.requestId;
+    if (instant) {
+      state.rows = instant;
+      state.loading = false;
+      setStatus(`${formatNumber(instant.length)} nyje nën ${key} · instant`);
+      render();
+      if (state.reveal) { state.reveal = false; revealNodePanel(); }
+      return;
+    }
+
     state.loading = true;
-    setStatus(`Duke hapur ${code}…`, 'busy');
+    setStatus(`Duke hapur ${key}…`, 'busy');
     renderRows();
     try {
-      const { payload } = await fetchJson(endpoint('children', { parent:code }));
+      const rows = await fetchChildrenRows(key);
       if (requestId !== state.requestId) return;
-      const data = payload.data || {};
-      state.rows = Array.isArray(data.rows) ? data.rows : [];
-      setStatus(`${formatNumber(state.rows.length)} nyje nën ${code}`);
+      state.rows = rows;
+      setStatus(`${formatNumber(state.rows.length)} nyje nën ${key}`);
     } catch (error) {
       if (requestId !== state.requestId) return;
       state.rows = [];
@@ -460,7 +690,6 @@
       if (requestId === state.requestId) {
         state.loading = false;
         render();
-        // Pas rirenderimit, që lartësia e panelit të jetë ajo përfundimtare.
         if (state.reveal) { state.reveal = false; revealNodePanel(); }
       }
     }
@@ -478,6 +707,7 @@
     renderSuggestions();
 
     const top = state.suggestions[0];
+    prefetchChildren(top);
     const corrected = top?.searchMatch?.type?.startsWith('fuzzy-') || top?.searchMatch?.type === 'code-fuzzy';
     const suffix = corrected ? ' · typo i korrigjuar' : fromCache ? ' · instant' : '';
     setStatus(`${formatNumber(state.suggestions.length)} sugjerime për «${query}»${suffix}`);
@@ -487,27 +717,34 @@
     const value = clean(query);
     if (value.length < 2) return;
 
-    const cached = cachedSuggestions(value);
-    if (cached) applySuggestionData(value, cached, { fromCache:true });
-
     searchAbortController?.abort();
+    searchAbortController = null;
+    const requestId = ++state.requestId;
+
+    const cached = cachedSuggestions(value);
+    if (cached) {
+      applySuggestionData(value, cached, { fromCache:true });
+      state.suggestionLoading = false;
+      return;
+    }
+
     const controller = new AbortController();
     searchAbortController = controller;
-    const requestId = ++state.requestId;
     state.searching = true;
     state.query = value;
     state.suggestionOpen = true;
     state.suggestionLoading = true;
+    state.suggestionMeta = null;
 
-    if (!cached) {
-      const preview = immediatePreview(value);
-      if (preview.length) {
-        state.suggestions = preview;
-        state.activeSuggestion = 0;
-      }
+    const preview = immediatePreview(value);
+    if (preview.length) {
+      state.suggestions = preview;
+      state.activeSuggestion = 0;
+      setStatus(`${formatNumber(preview.length)} kategori instant · duke plotësuar…`, 'busy');
+    } else {
       setStatus(`Duke kërkuar «${value}»…`, 'busy');
-      renderSuggestions();
     }
+    renderSuggestions();
 
     try {
       const { payload } = await fetchJson(endpoint('suggest', { q:value }), 6000, controller.signal, 'default');
@@ -528,6 +765,26 @@
     }
   }
 
+  function updateSearchClear() {
+    if (el.icdSearchClear) el.icdSearchClear.hidden = !clean(el.icdSearch?.value);
+  }
+
+  function setActiveSuggestion(index) {
+    if (!state.suggestions.length) return;
+    const next = ((index % state.suggestions.length) + state.suggestions.length) % state.suggestions.length;
+    const previous = state.activeSuggestion;
+    state.activeSuggestion = next;
+    const oldRow = previous >= 0 ? document.getElementById(`icd-suggestion-${previous}`) : null;
+    const newRow = document.getElementById(`icd-suggestion-${next}`);
+    oldRow?.classList.remove('is-active');
+    oldRow?.setAttribute('aria-selected', 'false');
+    newRow?.classList.add('is-active');
+    newRow?.setAttribute('aria-selected', 'true');
+    el.icdSearch?.setAttribute('aria-activedescendant', `icd-suggestion-${next}`);
+    newRow?.scrollIntoView({ block:'nearest' });
+    prefetchChildren(state.suggestions[next]);
+  }
+
   function clearSearch({ preserveInput = false } = {}) {
     searchAbortController?.abort();
     searchAbortController = null;
@@ -539,6 +796,7 @@
     state.suggestionOpen = false;
     state.activeSuggestion = -1;
     if (!preserveInput && el.icdSearch?.value) el.icdSearch.value = '';
+    updateSearchClear();
     renderSuggestions();
   }
 
@@ -685,15 +943,19 @@
       state.query = value;
       state.suggestionOpen = true;
       const preview = immediatePreview(value);
+      state.suggestionMeta = null;
       if (preview.length) {
         state.suggestions = preview;
         state.activeSuggestion = 0;
         renderSuggestions();
+        prefetchChildren(preview[0]);
       }
-      searchTimer = setTimeout(() => void runSearch(value), 35);
+      updateSearchClear();
+      searchTimer = setTimeout(() => void runSearch(value), SEARCH_NETWORK_DELAY_MS);
     });
 
     el.icdSearch.addEventListener('focus', () => {
+      if (!state.searchSeedReady) void warmSearchSeed();
       if (clean(el.icdSearch.value).length >= 2) {
         state.suggestionOpen = true;
         renderSuggestions();
@@ -702,15 +964,18 @@
 
     el.icdSearch.addEventListener('keydown', event => {
       if (!state.suggestionOpen || !state.suggestions.length) {
+        if (event.key === 'Enter' && clean(el.icdSearch.value).length >= 2) {
+          event.preventDefault();
+          void runSearch(clean(el.icdSearch.value));
+          return;
+        }
         if (event.key === 'Escape') { clearSearch({ preserveInput:true }); el.icdSearch.blur(); }
         return;
       }
       if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
         event.preventDefault();
         const direction = event.key === 'ArrowDown' ? 1 : -1;
-        const count = state.suggestions.length;
-        state.activeSuggestion = (state.activeSuggestion + direction + count) % count;
-        renderSuggestions();
+        setActiveSuggestion(state.activeSuggestion + direction);
         return;
       }
       if (event.key === 'Enter') {
@@ -727,7 +992,19 @@
       }
     });
 
+    el.icdSearchClear?.addEventListener('click', () => {
+      clearTimeout(searchTimer);
+      clearSearch();
+      el.icdSearch.focus();
+      setStatus(`${formatNumber(state.chapters.length)} kapituj të ngarkuar`);
+    });
+
     el.icdSuggestions?.addEventListener('mousedown', event => event.preventDefault());
+    el.icdSuggestions?.addEventListener('pointerover', event => {
+      const button = event.target.closest('[data-suggestion-index]');
+      if (!button) return;
+      prefetchChildren(state.suggestions[Number(button.dataset.suggestionIndex)]);
+    });
     el.icdSuggestions?.addEventListener('click', event => {
       const button = event.target.closest('[data-suggestion-index]');
       if (!button) return;
@@ -752,7 +1029,11 @@
     });
 
     document.addEventListener('keydown', event => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      const target = event.target;
+      const typing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target?.isContentEditable;
+      const commandK = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
+      const slash = event.key === '/' && !typing && !event.metaKey && !event.ctrlKey && !event.altKey;
+      if (commandK || slash) {
         event.preventDefault();
         el.icdSearch.focus();
         el.icdSearch.select();
@@ -793,6 +1074,7 @@
       const authPayload = await ensureAuth();
       await syncProfileChrome(authPayload);
       await loadNav();
+      scheduleSearchSeedWarmup();
       render();
       const hash = readHash();
       const opened = hash ? await openHashCode(hash) : false;

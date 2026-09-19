@@ -331,15 +331,24 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 .search-box-primary{max-width:none}
 .search-box-primary svg{left:18px;width:21px;height:21px;stroke:var(--stripe);stroke-width:1.9}
 .search-box-primary input{
-  height:60px;padding:0 82px 0 54px;border:1.5px solid #c9c4ff;border-radius:14px;
+  height:60px;padding:0 126px 0 54px;border:1.5px solid #c9c4ff;border-radius:14px;
   background:#fff;color:#102b45;font-size:17px;font-weight:420;
   box-shadow:0 8px 24px rgba(24,35,75,.08);
   transition:border-color .12s,box-shadow .12s,transform .12s
 }
 .search-box-primary input::placeholder{color:#8190a1}
+.search-box-primary input::-webkit-search-cancel-button{display:none}
 .search-box-primary input:hover{border-color:#aaa2ff}
 .search-box-primary input:focus{border-color:var(--stripe);box-shadow:0 0 0 4px rgba(83,58,253,.12),0 16px 32px rgba(24,35,75,.12)}
 .search-box-primary kbd{right:14px;padding:6px 8px;border-radius:7px;background:#f7f6ff;color:#6d63b7}
+.icd-search-clear{
+  position:absolute;right:69px;top:50%;z-index:3;width:30px;height:30px;display:grid;place-items:center;
+  transform:translateY(-50%);border:0;border-radius:8px;background:transparent;color:#7a8796;
+  font:400 22px/1 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer
+}
+.icd-search-clear:hover{background:#f2f1ff;color:#5344e8}
+.icd-search-clear:focus-visible{outline:2px solid var(--stripe);outline-offset:2px}
+.icd-search-clear[hidden]{display:none}
 .icd-search-command:focus-within{z-index:40}
 .icd-suggestions{
   position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:60;max-height:min(520px,62vh);overflow:auto;
@@ -408,9 +417,10 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
   .icd-search-stage-copy{margin-bottom:11px;text-align:left}
   .icd-search-stage-copy h2{font-size:21px}
   .icd-search-stage-copy p{font-size:11.5px}
-  .search-box-primary input{height:54px;padding-left:47px;padding-right:46px;border-radius:12px;font-size:16px}
+  .search-box-primary input{height:54px;padding-left:47px;padding-right:50px;border-radius:12px;font-size:16px}
   .search-box-primary svg{left:15px;width:19px;height:19px}
   .search-box-primary kbd{display:none}
+  .icd-search-clear{right:10px;width:32px;height:32px}
   .icd-suggestions{top:calc(100% + 6px);max-height:60vh;border-radius:12px}
   .icd-suggestion-row{grid-template-columns:62px minmax(0,1fr);gap:9px;min-height:74px;padding:9px}
   .icd-suggestion-row.is-subcategory{padding-left:13px}
