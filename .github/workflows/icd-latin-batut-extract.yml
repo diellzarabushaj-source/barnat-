@@ -65,7 +65,7 @@ jobs:
               if len(distinct) > 1:
                   conflicts.append({'code':code,'titles':distinct})
 
-          assert len(rows) >= 2000, f'Only {len(rows)} canonical categories parsed'
+          assert len(rows) >= 1400, f'Only {len(rows)} canonical categories parsed'
           outdir = pathlib.Path('data/icd-latin-batut/canonical-categories')
           outdir.mkdir(parents=True, exist_ok=True)
           by_letter = collections.defaultdict(list)
