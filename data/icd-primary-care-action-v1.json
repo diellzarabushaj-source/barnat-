@@ -470,7 +470,7 @@
       "management": "Konfirmo diagnozën objektivisht kur është e mundur; terapi anti-inflamatore me inhalator sipas kontrollit dhe plan veprimi; kontrollo teknikën/adherencën.",
       "summary": "Kontrolli i simptomave dhe risku i exacerbimeve udhëheqin terapinë.",
       "red_flags": [
-        "Silent chest",
+        "Mungesë e zhurmave respiratore (mungesë e zhurmave respiratore (silent chest))",
         "Hipoksemi / vështirësi në të folur",
         "Përkeqësim pavarësisht bronkodilatatorit"
       ]
@@ -1474,7 +1474,7 @@
       "summary": "PE mund të jetë fatale sidomos me hipotension/shok; probabiliteti klinik dhe stabiliteti drejtojnë urgjencën.",
       "red_flags": [
         "Hipotension / shok",
-        "Hipoksemi e rëndë ose distress respirator",
+        "Hipoksemi e rëndë ose vështirësi e rëndë respiratore",
         "Sinkopë me dyshim PE"
       ]
     },
@@ -1606,7 +1606,7 @@
       "referral": {
         "specialist": "Urgjenca / Pulmologji-Intensive",
         "goal": "Trajtim i menjëhershëm i obstruksionit të rëndë dhe mbështetje respiratore nëse ka shenja kërcënuese për jetën.",
-        "note": "Astmë e rëndë prej ___; shëno fjalitë/fjalët, FR, puls, SpO₂, PEF nëse mundet, wheezing/silent chest, trajtimin e marrë dhe përgjigjen."
+        "note": "Astmë e rëndë prej ___; shëno fjalitë/fjalët, FR, puls, SpO₂, PEF nëse mundet, wheezing/mungesë e zhurmave respiratore (silent chest), trajtimin e marrë dhe përgjigjen."
       },
       "anamnesis": [
         "Fillimi, shkaktari dhe përdorimi i bronkodilatatorit",
@@ -1617,14 +1617,14 @@
       "exams": [
         "ABCDE dhe statusi mendor",
         "SpO₂, FR, puls dhe PEF kur është i sigurt",
-        "Auskultim: wheezing vs silent chest",
+        "Auskultim: wheezing vs mungesë e zhurmave respiratore (silent chest)",
         "ABG dhe analiza tjera në rast të rëndë në spital"
       ],
-      "management": "Eksacerbimi i rëndë trajtohet në ambient akut me SABA të përsëritur, ipratropium në rastet e rënda, kortikosteroid sistemik dhe oksigjen të titruar; kërko mbështetje respiratore urgjente në drowsiness/confusion/silent chest ose përkeqësim.",
-      "summary": "Astma e rëndë është emergjencë; 'silent chest', lodhja dhe ndryshimi i vetëdijes janë shenja kërcënuese për jetën.",
+      "management": "Eksacerbimi i rëndë trajtohet në ambient akut me SABA të përsëritur, ipratropium në rastet e rënda, kortikosteroid sistemik dhe oksigjen të titruar; kërko mbështetje respiratore urgjente në përgjumje/konfuzion/mungesë e zhurmave respiratore (silent chest) ose përkeqësim.",
+      "summary": "Astma e rëndë është emergjencë; 'mungesë e zhurmave respiratore (silent chest)', lodhja dhe ndryshimi i vetëdijes janë shenja kërcënuese për jetën.",
       "red_flags": [
-        "Silent chest",
-        "Drowsiness/confusion",
+        "Mungesë e zhurmave respiratore (mungesë e zhurmave respiratore (silent chest))",
+        "Përgjumje/konfuzion",
         "Hipoksemi e rëndë ose shenja lodhjeje respiratore"
       ]
     },
@@ -1695,7 +1695,7 @@
       "working_diagnosis": "Anafilaksi – T78.2",
       "referral": {
         "specialist": "Urgjenca / Alergologji pas stabilizimit",
-        "goal": "Trajtim i menjëhershëm i komprometimit Airway/Breathing/Circulation dhe monitorim për reaksion të rëndë/refraktar.",
+        "goal": "Trajtim i menjëhershëm i komprometimit rrugëve të frymëmarrjes/frymëmarrjes/qarkullimit dhe monitorim për reaksion të rëndë/refraktar.",
         "note": "Reaksion akut pas ___; shëno kohën, alergjenin e mundshëm, ABC, TA/pulsin, SpO₂, rash/angioedemën, dozat e adrenalinës IM dhe përgjigjen."
       },
       "anamnesis": [
@@ -1707,13 +1707,13 @@
       "exams": [
         "ABCDE pa vonesë",
         "TA, puls, SpO₂ dhe monitorim",
-        "Airway për angioedemë/stridor dhe mushkëritë për wheezing",
+        "Rrugët e frymëmarrjes për angioedemë/stridor dhe mushkëritë për wheezing",
         "Lëkura/mukozat; mungesa e rash-it nuk e përjashton anafilaksinë"
       ],
       "management": "Adrenalina intramuskulare është trajtimi i parë për probleme të rrugëve të frymëmarrjes, frymëmarrjes ose qarkullimit; përsërite sipas algoritmit nëse shenjat kërcënuese vazhdojnë. Thirr ambulancën, poziciono sipas gjendjes, jep oksigjen/lëngje sipas nevojës. Adrenalina IV kërkon ekspertizë dhe ambient të përshtatshëm.",
       "summary": "Në anafilaksi, adrenalina IM nuk duhet të vonohet nga antihistaminikët ose kortikosteroidet.",
       "red_flags": [
-        "Stridor / komprometim airway",
+        "Stridor / komprometim të rrugëve të frymëmarrjes",
         "Hipotension/kolaps",
         "Bronkospazëm i rëndë ose reaksion refraktar"
       ]
@@ -1800,7 +1800,7 @@
         "GCS/status neurologjik pas episodit",
         "Vitalet, temperaturë dhe kërkim i traumës"
       ],
-      "management": "Mos e restrikto pacientin dhe mos vendos objekte në gojë. Siguro airway/oksigjenim, mat glukozën dhe kohëzgjatjen; konvulsioni i zgjatur/status epilepticus trajtohet me benzodiazepinë sipas protokollit dhe kërkon transfer urgjent.",
+      "management": "Mos e restrikto pacientin dhe mos vendos objekte në gojë. Siguro rrugët e frymëmarrjes/oksigjenimin, mat glukozën dhe kohëzgjatjen; konvulsioni i zgjatur/status epilepticus trajtohet me benzodiazepinë sipas protokollit dhe kërkon transfer urgjent.",
       "summary": "Koha e konvulsionit, rikuperimi dhe glukoza janë informacione kritike për vendimin urgjent.",
       "red_flags": [
         "Konvulsion i zgjatur ose përsëritje pa rikuperim",
@@ -1894,7 +1894,7 @@
       "summary": "Dispnea është simptomë me spektër të gjerë; SpO₂, FR, auskultimi dhe hemodinamika përcaktojnë urgjencën.",
       "red_flags": [
         "Hipoksemi",
-        "Lodhje respiratore / silent chest",
+        "Lodhje respiratore / mungesë e zhurmave respiratore (silent chest)",
         "Hipotension, dhimbje gjoksi ose alterim vetëdijeje"
       ]
     },
@@ -2030,7 +2030,7 @@
       },
       "anamnesis": [
         "Humbje vetëdijeje, amnezi dhe dhimbje koke",
-        "Të vjella, drowsiness, konvulsione",
+        "Të vjella, përgjumje, konvulsione",
         "Mekanizmi dhe energjia e traumës",
         "Antikoagulantë/çrregullim koagulimi dhe kirurgji cerebrale e mëparshme"
       ],
