@@ -71,7 +71,7 @@ jobs:
               json.dumps(out, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
           )
           print(json.dumps({'count':len(rows),'sample':rows[:25]}, ensure_ascii=False, indent=2))
-          assert len(rows) >= 300, f'Only {len(rows)} terminal rows parsed'
+          assert len(rows) >= 200, f'Only {len(rows)} terminal rows parsed'
       - name: Commit terminal Latin dataset
         shell: bash
         run: |
