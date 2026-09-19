@@ -519,6 +519,41 @@
     });
   }
 
+  function bootstrapDomHotQuick() {
+    if (state.hotQuick.length) return;
+    const rows = [...document.querySelectorAll('.icd-quick-chip[data-search-example]')].map(button => {
+      const code = clean(button.dataset.searchExample);
+      const label = clean(button.getAttribute('title')) || clean(button.querySelector('span')?.textContent) || code;
+      const categoryLike = /^[A-Z]\d{2}$/.test(code);
+      return {
+        code,
+        label_sq:label,
+        aliases:[label],
+        urgent:button.classList.contains('is-urgent'),
+        node:{
+          code,
+          level:categoryLike ? 'category' : 'subcategory',
+          chapter:code.charAt(0),
+          block:'',
+          parentCode:categoryLike ? '' : code.slice(0, 3),
+          englishTitle:'',
+          albanianDraft:label,
+          latinTitle:'',
+          latinParentTitle:'',
+          latinParentCode:'',
+          displayTitle:label,
+          childCount:0,
+          breadcrumb:[],
+          searchMatch:null,
+          symptomRelation:null,
+        },
+      };
+    }).filter(item => item.code);
+    if (!rows.length) return;
+    state.hotQuick = prepareHotQuick(rows);
+    state.hotSearchReady = true;
+  }
+
   function applyHotPayload(data) {
     state.hotQuick = prepareHotQuick(data?.quick);
     state.hotSymptoms = prepareHotSymptoms(data?.symptoms);
@@ -1401,6 +1436,7 @@
     loadSharedSidebarTaxonomy();
     bindElements();
     bindEvents();
+    bootstrapDomHotQuick();
     loadStoredHotSearch();
     render();
     try {
