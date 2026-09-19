@@ -6,6 +6,26 @@ const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const pages = ['index.html', 'klasifikimi.html', 'icd.html'];
 
+const shellRuntime = read('tailadmin-shell.js');
+assert.match(shellRuntime, /RUNTIME_WARM_IDLE_MS = 6000/, 'shared shell warm must be idle-scheduled');
+assert.match(shellRuntime, /DESKTOP_ENHANCEMENT_IDLE_MS = 1400/, 'desktop clinical enhancements must stay off the immediate critical path');
+assert.match(shellRuntime, /cache:'force-cache'/, 'runtime warming must reuse browser cache instead of forcing revalidation');
+assert.doesNotMatch(shellRuntime, /const warm = source => fetch\(source, \{ cache:'no-cache'/, 'shared runtime must not aggressively no-cache warm assets');
+assert.match(shellRuntime, /Promise\.allSettled/, 'background asset warming must not reject the shell path');
+assert.match(shellRuntime, /document\.visibilityState === 'hidden'/, 'background warm must not run for hidden pages');
+
+const themePreload = read('theme-preload.js');
+assert.match(themePreload, /function ensureTailwindUi\(moveToEnd = false\)/, 'theme preload must avoid unconditional stylesheet reparenting');
+assert.match(themePreload, /else if \(moveToEnd && stylesheet !== document\.head\.lastElementChild\)/, 'stylesheet reordering must be opt-in');
+
+const vercelConfig = JSON.parse(read('vercel.json'));
+const cacheFor = source => vercelConfig.headers.find(item => item.source === source)?.headers?.find(header => header.key === 'Cache-Control')?.value || '';
+assert.match(cacheFor('/(.*)\\.html'), /private, no-cache, max-age=0/, 'static HTML should be revalidated, not fully re-downloaded with no-store');
+assert.match(cacheFor('/(.*)\\.(css|js)'), /max-age=300/, 'static CSS/JS should get a short browser freshness window');
+assert.match(cacheFor('/(.*)\\.(css|js)'), /stale-while-revalidate=86400/, 'static CSS/JS should remain immediately reusable while refreshing');
+assert.match(cacheFor('/(.*)\\.(woff|woff2)'), /31536000, immutable/, 'font assets should be immutable cached');
+
+
 
 const labs = read('analizat.html');
 assert.match(labs, /analizat-v2\.css\?v=1/, 'analizat.html: V2 stylesheet version is stale');

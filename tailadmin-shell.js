@@ -25,11 +25,15 @@
   const SHELL_VERSION = 'shell-profile-v4';
   const SHELL_RETRY_MS = 3500;
   const SHELL_FALLBACK_MS = 8000;
+  const RUNTIME_WARM_IDLE_MS = 6000;
+  const DESKTOP_ENHANCEMENT_IDLE_MS = 1400;
   let shellReady = false;
   let shellRetry = 0;
   let shellFallback = 0;
   let mobileStarted = false;
   let mobileClinicalEnhancementTriggersBound = false;
+  let runtimeWarmSchedule = 0;
+  let desktopEnhancementSchedule = 0;
 
   // Static compatibility contract retained for the navigation safety gates:
   // data-mi-sidebar-toggle aria-controls="miSidebar" data-mi-sidebar-overlay
@@ -179,23 +183,38 @@
     return script;
   }
 
+  function scheduleIdle(run, timeout) {
+    if ('requestIdleCallback' in window) return requestIdleCallback(run, { timeout });
+    return setTimeout(run, Math.min(timeout, 1200));
+  }
+
   function warmRuntimeAssets() {
+    if (runtimeWarmSchedule) return;
     const profile = connectionProfile();
     if (profile.slow || profile.saveData || !('serviceWorker' in navigator)) return;
-    const warm = source => fetch(source, { cache:'no-cache', credentials:'same-origin' }).catch(() => null);
+
+    const run = () => {
+      runtimeWarmSchedule = 0;
+      if (document.visibilityState === 'hidden') return;
+      const loaded = new Set([...document.scripts].map(script => {
+        try { return new URL(script.src, location.href).pathname; } catch { return ''; }
+      }));
+      const assets = [
+        LEGACY_SRC, MOBILE_SRC, MOBILE_A11Y_SRC, MOBILE_SIDEBAR_HARDENING_SRC,
+        OFFLINE_RUNTIME_SRC, BRAND_SRC,
+      ];
+      if (!isMobileLayout()) assets.push(ATC_NAV_SRC, ATC_SEARCH_SRC);
+      const pending = assets.filter(source => {
+        try { return !loaded.has(new URL(source, location.href).pathname); } catch { return true; }
+      });
+      if (!pending.length) return;
+      Promise.allSettled(pending.map(source =>
+        fetch(source, { cache:'force-cache', credentials:'same-origin', priority:'low' }).catch(() => null)
+      ));
+    };
+
     navigator.serviceWorker.ready.then(() => {
-      const run = () => {
-        const assets = [
-          LEGACY_SRC, MOBILE_SRC, MOBILE_A11Y_SRC, MOBILE_SIDEBAR_HARDENING_SRC,
-          OFFLINE_RUNTIME_SRC, BRAND_SRC,
-        ];
-        // ATC bundles are intentionally not warmed on phone startup. They are
-        // already discoverable by the offline shell and load on first user intent.
-        if (!isMobileLayout()) assets.push(ATC_NAV_SRC, ATC_SEARCH_SRC);
-        return Promise.all(assets.map(warm));
-      };
-      if (navigator.serviceWorker.controller) run();
-      else navigator.serviceWorker.addEventListener('controllerchange', run, { once:true });
+      runtimeWarmSchedule = scheduleIdle(run, RUNTIME_WARM_IDLE_MS);
     }).catch(() => null);
   }
 
@@ -278,9 +297,14 @@
       bindMobileClinicalEnhancements();
       return;
     }
-    loadAtcNavigation();
-    loadIcdNavigation();
-    loadAtcSearch();
+    if (desktopEnhancementSchedule) return;
+    desktopEnhancementSchedule = scheduleIdle(() => {
+      desktopEnhancementSchedule = 0;
+      if (document.visibilityState === 'hidden') return;
+      loadAtcNavigation();
+      loadIcdNavigation();
+      loadAtcSearch();
+    }, DESKTOP_ENHANCEMENT_IDLE_MS);
   }
 
   function clearBootState() {
