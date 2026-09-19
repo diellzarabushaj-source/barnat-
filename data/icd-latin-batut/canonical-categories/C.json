@@ -1,0 +1,357 @@
+[
+  {
+    "code": "C00",
+    "title_la": "Neoplasma malignum labii",
+    "source_line": 8359
+  },
+  {
+    "code": "C02",
+    "title_la": "Neoplasma malignum partium linguae aliarum",
+    "source_line": 8418
+  },
+  {
+    "code": "C03",
+    "title_la": "Neoplasma malignum gingivae",
+    "source_line": 8453
+  },
+  {
+    "code": "C04",
+    "title_la": "Neoplasma malignum basis oris",
+    "source_line": 8465
+  },
+  {
+    "code": "C05",
+    "title_la": "Neoplasma malignum palati",
+    "source_line": 8478
+  },
+  {
+    "code": "C06",
+    "title_la": "Neoplasma malignum partium oris aliarum",
+    "source_line": 8494
+  },
+  {
+    "code": "C08",
+    "title_la": "Neoplasma malignum glandularum salivarium majorum aliarum et non",
+    "source_line": 8525
+  },
+  {
+    "code": "C09",
+    "title_la": "Neoplasma malignum tonsillae",
+    "source_line": 8544
+  },
+  {
+    "code": "C10",
+    "title_la": "Neoplasma malignum oropharyngis",
+    "source_line": 8570
+  },
+  {
+    "code": "C11",
+    "title_la": "Neoplasma malignum nasopharyngis",
+    "source_line": 8594
+  },
+  {
+    "code": "C13",
+    "title_la": "Neoplasma malignum hypopharyngis",
+    "source_line": 8630
+  },
+  {
+    "code": "C14",
+    "title_la": "Neoplasma malignum labii, oris et pharyngis loci anterius",
+    "source_line": 8650
+  },
+  {
+    "code": "C15",
+    "title_la": "Neoplasma malignum oesophagi",
+    "source_line": 8673
+  },
+  {
+    "code": "C16",
+    "title_la": "Neoplasma malignum gasteris",
+    "source_line": 8698
+  },
+  {
+    "code": "C17",
+    "title_la": "Neoplasma malignum intestini tenuis",
+    "source_line": 8738
+  },
+  {
+    "code": "C18",
+    "title_la": "Neoplasma malignum coli",
+    "source_line": 8755
+  },
+  {
+    "code": "C21",
+    "title_la": "Neoplasma malignum ani et canalis analis",
+    "source_line": 8800
+  },
+  {
+    "code": "C22",
+    "title_la": "Neoplasma malignum hepatis et ductuum biliarium intrahepaticorum",
+    "source_line": 8821
+  },
+  {
+    "code": "C24",
+    "title_la": "Neoplasma malignum ductuum biliarium, partium aliarium",
+    "source_line": 8855
+  },
+  {
+    "code": "C25",
+    "title_la": "Neoplasma malignum pancreatis",
+    "source_line": 8875
+  },
+  {
+    "code": "C26",
+    "title_la": "Neoplasma malignum organorum digestivorum aliorum et non satis",
+    "source_line": 8902
+  },
+  {
+    "code": "C30",
+    "title_la": "Neoplasma malignum cavi nasi et auris mediae",
+    "source_line": 8940
+  },
+  {
+    "code": "C31",
+    "title_la": "Neoplasma malignum sinuum nasi",
+    "source_line": 8964
+  },
+  {
+    "code": "C32",
+    "title_la": "Neoplasma malignum laryngis",
+    "source_line": 8988
+  },
+  {
+    "code": "C34",
+    "title_la": "Neoplasma malignum bronchi et pulmonis",
+    "source_line": 9020
+  },
+  {
+    "code": "C38",
+    "title_la": "Neoplasma malignum cordis, mediastini et pleurae",
+    "source_line": 9046
+  },
+  {
+    "code": "C39",
+    "title_la": "Neoplasma malignum cavitatis thoracis, loci alterius",
+    "source_line": 9065
+  },
+  {
+    "code": "C40",
+    "title_la": "Neoplasma malignum ossis et cartilaginis articuli extremitatum",
+    "source_line": 9089
+  },
+  {
+    "code": "C41",
+    "title_la": "Neoplasma malignum ossis et cartilaginis articuli, loci alterius",
+    "source_line": 9111
+  },
+  {
+    "code": "C43",
+    "title_la": "Melanoma malignum cutis",
+    "source_line": 9160
+  },
+  {
+    "code": "C44",
+    "title_la": "Neoplasmata malignum cutis alia",
+    "source_line": 9194
+  },
+  {
+    "code": "C45",
+    "title_la": "Mesothelioma",
+    "source_line": 9245
+  },
+  {
+    "code": "C46",
+    "title_la": "Sarcoma Kaposi",
+    "source_line": 9274
+  },
+  {
+    "code": "C47",
+    "title_la": "Neoplasma malignum nervorum periphericorum et systematis nervosi",
+    "source_line": 9292
+  },
+  {
+    "code": "C48",
+    "title_la": "Neoplasma malignum peritonaei et retroperitonaei",
+    "source_line": 9330
+  },
+  {
+    "code": "C49",
+    "title_la": "Neoplasma malignum textus connexivi et mollis alterius",
+    "source_line": 9350
+  },
+  {
+    "code": "C50",
+    "title_la": "Neoplasma malignum mammae",
+    "source_line": 9426
+  },
+  {
+    "code": "C51",
+    "title_la": "Neoplasma malignum vulvae",
+    "source_line": 9464
+  },
+  {
+    "code": "C53",
+    "title_la": "Neoplasma malignum cervicis uteri",
+    "source_line": 9484
+  },
+  {
+    "code": "C54",
+    "title_la": "Neoplasma malignum corporis uteri",
+    "source_line": 9501
+  },
+  {
+    "code": "C57",
+    "title_la": "Neoplasma malignum organorum genitaliorum femininorum aliorum et non",
+    "source_line": 9524
+  },
+  {
+    "code": "C60",
+    "title_la": "Neoplasma malignum penis",
+    "source_line": 9575
+  },
+  {
+    "code": "C62",
+    "title_la": "Neoplasma malignum testis",
+    "source_line": 9595
+  },
+  {
+    "code": "C63",
+    "title_la": "Neoplasma malignum organorum genitaliorum masculinorum aliorum et non",
+    "source_line": 9614
+  },
+  {
+    "code": "C67",
+    "title_la": "Neoplasma malignum vesicae urinariae",
+    "source_line": 9658
+  },
+  {
+    "code": "C68",
+    "title_la": "Neoplasma malignum organorum urinariorum aliorum et non specificatorum",
+    "source_line": 9690
+  },
+  {
+    "code": "C69",
+    "title_la": "Neoplasma malignum oculi et adnexorum oculi",
+    "source_line": 9714
+  },
+  {
+    "code": "C70",
+    "title_la": "Neoplasma malignum meningium",
+    "source_line": 9755
+  },
+  {
+    "code": "C71",
+    "title_la": "Neoplasma malignum cerebri",
+    "source_line": 9764
+  },
+  {
+    "code": "C72",
+    "title_la": "Neoplasma malignum medullae spinalis, nervorum cranialium et partium",
+    "source_line": 9799
+  },
+  {
+    "code": "C74",
+    "title_la": "Neoplasma malignum glandulae suprarenalis",
+    "source_line": 9842
+  },
+  {
+    "code": "C75",
+    "title_la": "Neoplasma malignum glandularum endocrinarum alium et structurarum",
+    "source_line": 9851
+  },
+  {
+    "code": "C76",
+    "title_la": "Neoplasma malignum, locorum aliorum et satis non definitorum",
+    "source_line": 9889
+  },
+  {
+    "code": "C77",
+    "title_la": "Neoplasma malignum lymphonodorum secundarium et non specificatum",
+    "source_line": 9921
+  },
+  {
+    "code": "C78",
+    "title_la": "Neoplasma malignum secundarium organorum respiratorium et",
+    "source_line": 9952
+  },
+  {
+    "code": "C79",
+    "title_la": "Neoplasma malignum secundarium, locorum aliorum et non specificatorum",
+    "source_line": 9978
+  },
+  {
+    "code": "C80",
+    "title_la": "Neoplasma malignum, sine loco specificato",
+    "source_line": 10018
+  },
+  {
+    "code": "C81",
+    "title_la": "Morbus Hodgkin",
+    "source_line": 10039
+  },
+  {
+    "code": "C82",
+    "title_la": "Lymphoma non-Hodgkin folliculare",
+    "source_line": 10066
+  },
+  {
+    "code": "C83",
+    "title_la": "Lymphoma non-Hodgkin, non folliculare",
+    "source_line": 10090
+  },
+  {
+    "code": "C84",
+    "title_la": "Lymphomata T-cellularum peripherica et cutanea",
+    "source_line": 10145
+  },
+  {
+    "code": "C85",
+    "title_la": "Lymphomata non-Hodgkin alia et non specificata",
+    "source_line": 10188
+  },
+  {
+    "code": "C86",
+    "title_la": "Lymphoma T/NK-cellularum, alia genera specifica",
+    "source_line": 10204
+  },
+  {
+    "code": "C88",
+    "title_la": "Morbi maligni imunoproliferativi",
+    "source_line": 10237
+  },
+  {
+    "code": "C90",
+    "title_la": "Myeloma multiplex et neoplasmata maligna plasma - cellularum",
+    "source_line": 10274
+  },
+  {
+    "code": "C91",
+    "title_la": "Leukaemia lymphoides",
+    "source_line": 10353
+  },
+  {
+    "code": "C92",
+    "title_la": "Leukaemia myeloides",
+    "source_line": 10294
+  },
+  {
+    "code": "C93",
+    "title_la": "Leukaemia monocytica",
+    "source_line": 10392
+  },
+  {
+    "code": "C94",
+    "title_la": "Leukaemiae generum cellularum aliae, specificatorum",
+    "source_line": 10413
+  },
+  {
+    "code": "C95",
+    "title_la": "Leukaemia generis cellularum non specificati",
+    "source_line": 10444
+  },
+  {
+    "code": "C96",
+    "title_la": "Neoplasmata maligna textus lymphoidis, haematopoietici et textuum",
+    "source_line": 10460
+  }
+]

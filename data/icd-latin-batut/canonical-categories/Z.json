@@ -1,0 +1,412 @@
+[
+  {
+    "code": "Z00",
+    "title_la": "Opšti pregled i ispitivanje osoba bez tegoba ili postavljene dijagnoze",
+    "source_line": 52778
+  },
+  {
+    "code": "Z01",
+    "title_la": "Drugi posebni pregledi i ispitivanja osoba bez tegoba ili ranije dijagnoze",
+    "source_line": 52809
+  },
+  {
+    "code": "Z02",
+    "title_la": "Pregled i kontakt iz administrativnih razloga",
+    "source_line": 52838
+  },
+  {
+    "code": "Z03",
+    "title_la": "Medicinsko posmatranje i praćenje zbog sumnje na neke bolesti ili stanja",
+    "source_line": 52880
+  },
+  {
+    "code": "Z04",
+    "title_la": "Pregledi i posmatranje zbog drugih razloga",
+    "source_line": 52909
+  },
+  {
+    "code": "Z08",
+    "title_la": "Kontrolni pregled posle lečenja zloćudnog tumora",
+    "source_line": 52929
+  },
+  {
+    "code": "Z09",
+    "title_la": "Kontrolni pregled posle lečenja stanja koja nisu zloćudni tumori",
+    "source_line": 52941
+  },
+  {
+    "code": "Z10",
+    "title_la": "Rutinski opšti zdravstveni pregled definisane subpopulacije",
+    "source_line": 52963
+  },
+  {
+    "code": "Z11",
+    "title_la": "Specijalan skrining pregled radi otkrivanja infektivnih i parazitarnih bolesti",
+    "source_line": 52978
+  },
+  {
+    "code": "Z12",
+    "title_la": "Specijalan skrining pregled radi otkrivanja neoplazmi",
+    "source_line": 52998
+  },
+  {
+    "code": "Z13",
+    "title_la": "Specijalan skrining pregled radi otkrivanja drugih bolesti i poremećaja",
+    "source_line": 53018
+  },
+  {
+    "code": "Z20",
+    "title_la": "Kontakt i izloženost zaraznim bolestima",
+    "source_line": 53046
+  },
+  {
+    "code": "Z22",
+    "title_la": "Kliconoša zaraznih bolesti",
+    "source_line": 53075
+  },
+  {
+    "code": "Z23",
+    "title_la": "Potreba za imunizacijom protiv bakterijskih bolesti (pojedinačno)",
+    "source_line": 53095
+  },
+  {
+    "code": "Z24",
+    "title_la": "Potreba za imunizacijom protiv samo jedne virusne bolesti",
+    "source_line": 53109
+  },
+  {
+    "code": "Z25",
+    "title_la": "Potreba za imunizacijom protiv drugih virusnih bolesti (pojedinačno)",
+    "source_line": 53127
+  },
+  {
+    "code": "Z26",
+    "title_la": "Potreba za imunizacijom protiv drugih zaraznih bolesti (pojedinačno)",
+    "source_line": 53135
+  },
+  {
+    "code": "Z27",
+    "title_la": "Potreba za kombinovanom imunizacijom protiv više infektivnih bolesti",
+    "source_line": 53144
+  },
+  {
+    "code": "Z28",
+    "title_la": "Neizvršena imunizacija",
+    "source_line": 53156
+  },
+  {
+    "code": "Z29",
+    "title_la": "Potreba za drugim profilaktičkim merama",
+    "source_line": 53165
+  },
+  {
+    "code": "Z30",
+    "title_la": "Kontracepcija",
+    "source_line": 53191
+  },
+  {
+    "code": "Z31",
+    "title_la": "Unapređenje reprodukcije",
+    "source_line": 53210
+  },
+  {
+    "code": "Z32",
+    "title_la": "Ispitivanje i testiranje na trudnoću",
+    "source_line": 53232
+  },
+  {
+    "code": "Z34",
+    "title_la": "Kontrola normalne trudnoće",
+    "source_line": 53239
+  },
+  {
+    "code": "Z35",
+    "title_la": "Kontrola trudnoće sa visokim rizikom",
+    "source_line": 53244
+  },
+  {
+    "code": "Z36",
+    "title_la": "Antenatalni skrining (screening)",
+    "source_line": 53269
+  },
+  {
+    "code": "Z37",
+    "title_la": "Ishod porođaja",
+    "source_line": 53292
+  },
+  {
+    "code": "Z38",
+    "title_la": "Živorođena deca prema mestu rođenja",
+    "source_line": 53307
+  },
+  {
+    "code": "Z39",
+    "title_la": "Nega i pregled posle porođaja",
+    "source_line": 53319
+  },
+  {
+    "code": "Z40",
+    "title_la": "Profilaktička operacija",
+    "source_line": 53345
+  },
+  {
+    "code": "Z41",
+    "title_la": "Procedure koje se ne izvode u cilju lečenja",
+    "source_line": 53351
+  },
+  {
+    "code": "Z42",
+    "title_la": "Praćenje i nega koji uključuju plastičnu operaciju",
+    "source_line": 53361
+  },
+  {
+    "code": "Z43",
+    "title_la": "Nadziranje vestačkih (arteficijalnih) otvora",
+    "source_line": 53383
+  },
+  {
+    "code": "Z44",
+    "title_la": "Nameštanje i podešavanje spoljašnjih protetskih pomagala",
+    "source_line": 53406
+  },
+  {
+    "code": "Z45",
+    "title_la": "Podešavanje i održavanje ugrađenog pomagala",
+    "source_line": 53416
+  },
+  {
+    "code": "Z46",
+    "title_la": "Postavljanje i podešavanje drugih pomagala",
+    "source_line": 53436
+  },
+  {
+    "code": "Z47",
+    "title_la": "Drugo praćenje i nega u ortopedskom lečenju",
+    "source_line": 53458
+  },
+  {
+    "code": "Z48",
+    "title_la": "Drugo praćenje i nega u hirurškom lečenju",
+    "source_line": 53476
+  },
+  {
+    "code": "Z49",
+    "title_la": "Nega koja uključuje dijalizu",
+    "source_line": 53494
+  },
+  {
+    "code": "Z50",
+    "title_la": "Nega koja uključuje upotrebu rehabilitacionih procedura",
+    "source_line": 53503
+  },
+  {
+    "code": "Z51",
+    "title_la": "Druga medicinska nega",
+    "source_line": 53520
+  },
+  {
+    "code": "Z52",
+    "title_la": "Davaoci organa i tkiva",
+    "source_line": 53536
+  },
+  {
+    "code": "Z53",
+    "title_la": "Osobe u kontaktu sa zdravstvenom službom zbog specifičnih procedura",
+    "source_line": 53556
+  },
+  {
+    "code": "Z54",
+    "title_la": "Oporavljanje",
+    "source_line": 53567
+  },
+  {
+    "code": "Z55",
+    "title_la": "Problemi sa obrazovanjem i pismenošću",
+    "source_line": 53584
+  },
+  {
+    "code": "Z56",
+    "title_la": "Problemi zaposlenih i nezaposlenih osoba",
+    "source_line": 53601
+  },
+  {
+    "code": "Z57",
+    "title_la": "Profesionalna izloženost faktorima rizika",
+    "source_line": 53614
+  },
+  {
+    "code": "Z58",
+    "title_la": "Problemi osoba u životnoj sredini",
+    "source_line": 53628
+  },
+  {
+    "code": "Z59",
+    "title_la": "Problemi stanovanja i ekonomski problemi",
+    "source_line": 53652
+  },
+  {
+    "code": "Z60",
+    "title_la": "Problemi osoba u socijalnoj sredini",
+    "source_line": 53678
+  },
+  {
+    "code": "Z61",
+    "title_la": "Problemi sa negativnim životnim doživljajima u detinjstvu",
+    "source_line": 53707
+  },
+  {
+    "code": "Z62",
+    "title_la": "Drugi problemi vaspitanja",
+    "source_line": 53742
+  },
+  {
+    "code": "Z63",
+    "title_la": "Drugi problemi sa grupom za primarnu podršku, uključujući i porodičnu",
+    "source_line": 53776
+  },
+  {
+    "code": "Z64",
+    "title_la": "Problemi uzrokovani psihosocijalnim uslovima",
+    "source_line": 53804
+  },
+  {
+    "code": "Z65",
+    "title_la": "Problemi uzrokovani drugim psihosocijalnim uslovima",
+    "source_line": 53824
+  },
+  {
+    "code": "Z70",
+    "title_la": "Konsultovanje u vezi sa seksualnim stavom, ponašanjem i orijentacijom",
+    "source_line": 53846
+  },
+  {
+    "code": "Z71",
+    "title_la": "Osobe u kontaktu sa zdravstvenom službom radi drugog konsultovanja i",
+    "source_line": 53868
+  },
+  {
+    "code": "Z72",
+    "title_la": "Problemi povezani sa načinom života",
+    "source_line": 53908
+  },
+  {
+    "code": "Z73",
+    "title_la": "Problemi u savlađivanju životnih teškoća",
+    "source_line": 53939
+  },
+  {
+    "code": "Z74",
+    "title_la": "Problemi osoba sa tuđom negom",
+    "source_line": 53958
+  },
+  {
+    "code": "Z75",
+    "title_la": "Problemi osoba sa medicinskim ustanovama i drugom zdravstvenom",
+    "source_line": 53968
+  },
+  {
+    "code": "Z76",
+    "title_la": "Osobe u kontaktu sa zdravstvenom službom u drugim okolnostima",
+    "source_line": 53993
+  },
+  {
+    "code": "Z80",
+    "title_la": "Porodična anamneza o zloćudnom tumoru",
+    "source_line": 54030
+  },
+  {
+    "code": "Z81",
+    "title_la": "Porodična anamneza o duševnim poremećajima i poremećajima ponašanja",
+    "source_line": 54062
+  },
+  {
+    "code": "Z82",
+    "title_la": "Porodična anamneza o određenim onesposobljenostima i hroničnim",
+    "source_line": 54076
+  },
+  {
+    "code": "Z83",
+    "title_la": "Porodična anamneza o drugim označenim poremećajima",
+    "source_line": 54107
+  },
+  {
+    "code": "Z84",
+    "title_la": "Porodična anamneza o drugim stanjima",
+    "source_line": 54133
+  },
+  {
+    "code": "Z85",
+    "title_la": "Lična anamneza o zloćudnom tumoru",
+    "source_line": 54143
+  },
+  {
+    "code": "Z86",
+    "title_la": "Lična anamneza o određenim drugim bolestima",
+    "source_line": 54175
+  },
+  {
+    "code": "Z87",
+    "title_la": "Lična anamneza o drugim bolestima i stanjima",
+    "source_line": 54205
+  },
+  {
+    "code": "Z88",
+    "title_la": "Lična anamneza o alergiji na lekove, preparate i biološke supstance",
+    "source_line": 54238
+  },
+  {
+    "code": "Z89",
+    "title_la": "Stečeni nedostatak uda",
+    "source_line": 54250
+  },
+  {
+    "code": "Z90",
+    "title_la": "Stečeni nedostatak organa, neklasifikovan na drugom mestu",
+    "source_line": 54277
+  },
+  {
+    "code": "Z91",
+    "title_la": "Lična anamneza o faktorima rizika, neklasifikovana na drugom mestu",
+    "source_line": 54297
+  },
+  {
+    "code": "Z92",
+    "title_la": "Lična anamneza o medicinskom lečenju",
+    "source_line": 54318
+  },
+  {
+    "code": "Z93",
+    "title_la": "Stanje vestačkog (arteficijalnog) otvora",
+    "source_line": 54346
+  },
+  {
+    "code": "Z94",
+    "title_la": "Stanje presađenog organa ili tkiva",
+    "source_line": 54362
+  },
+  {
+    "code": "Z95",
+    "title_la": "Prisustvo implantata i graftova na srcu i krvnim sudovima",
+    "source_line": 54392
+  },
+  {
+    "code": "Z96",
+    "title_la": "Prisustvo drugog funkcionalnog implantata",
+    "source_line": 54408
+  },
+  {
+    "code": "Z97",
+    "title_la": "Prisustvo drugih naprava",
+    "source_line": 54439
+  },
+  {
+    "code": "Z98",
+    "title_la": "Druga postoperativna stanja",
+    "source_line": 54453
+  },
+  {
+    "code": "Z99",
+    "title_la": "Zavisnost od pomagala, neklasifikovana na drugom mestu",
+    "source_line": 54462
+  }
+]

@@ -1,0 +1,337 @@
+[
+  {
+    "code": "A00",
+    "title_la": "Cholera",
+    "source_line": 4480
+  },
+  {
+    "code": "A01",
+    "title_la": "Febris typhica et febris paratyphica",
+    "source_line": 4495
+  },
+  {
+    "code": "A02",
+    "title_la": "Salmonelloses aliae",
+    "source_line": 4510
+  },
+  {
+    "code": "A03",
+    "title_la": "Shigellosis",
+    "source_line": 4531
+  },
+  {
+    "code": "A04",
+    "title_la": "Infectiones intestinales bacteriales aliae",
+    "source_line": 4557
+  },
+  {
+    "code": "A05",
+    "title_la": "Intoxicationes alimentariae bacteriales aliae, non alibi classificatae",
+    "source_line": 4587
+  },
+  {
+    "code": "A06",
+    "title_la": "Amoebiasis",
+    "source_line": 4620
+  },
+  {
+    "code": "A07",
+    "title_la": "Infectiones intestinales protozoicae aliae",
+    "source_line": 4660
+  },
+  {
+    "code": "A08",
+    "title_la": "Infectiones intestinales virales",
+    "source_line": 4686
+  },
+  {
+    "code": "A09",
+    "title_la": "Gastroenteritis et colitis origine infectiva et non specificata alia",
+    "source_line": 4713
+  },
+  {
+    "code": "A15",
+    "title_la": "Tuberculosis organorum respiratoriorum, per bacteriologiam et histologiam",
+    "source_line": 4746
+  },
+  {
+    "code": "A16",
+    "title_la": "Tuberculosis organorum respiratoriorum, per bacteriologiam et histologiam",
+    "source_line": 4808
+  },
+  {
+    "code": "A18",
+    "title_la": "Tuberculosis organorum aliorum",
+    "source_line": 4906
+  },
+  {
+    "code": "A19",
+    "title_la": "Tuberculosis miliaris",
+    "source_line": 4987
+  },
+  {
+    "code": "A20",
+    "title_la": "Pestis",
+    "source_line": 5012
+  },
+  {
+    "code": "A21",
+    "title_la": "Tularaemia",
+    "source_line": 5033
+  },
+  {
+    "code": "A22",
+    "title_la": "Anthrax",
+    "source_line": 5062
+  },
+  {
+    "code": "A23",
+    "title_la": "Brucellosis",
+    "source_line": 5084
+  },
+  {
+    "code": "A24",
+    "title_la": "Malleus et melioidosis",
+    "source_line": 5103
+  },
+  {
+    "code": "A25",
+    "title_la": "Febris post morsum muris",
+    "source_line": 5132
+  },
+  {
+    "code": "A26",
+    "title_la": "Erysipeloides",
+    "source_line": 5145
+  },
+  {
+    "code": "A27",
+    "title_la": "Leptospirosis",
+    "source_line": 5157
+  },
+  {
+    "code": "A28",
+    "title_la": "Zoonoses bacteriales aliae, non alibi classificatae",
+    "source_line": 5174
+  },
+  {
+    "code": "A30",
+    "title_la": "Lepra [Morbus Hansen]",
+    "source_line": 5195
+  },
+  {
+    "code": "A31",
+    "title_la": "Morbi mycobacteriales alii",
+    "source_line": 5229
+  },
+  {
+    "code": "A32",
+    "title_la": "Listeriosis",
+    "source_line": 5252
+  },
+  {
+    "code": "A36",
+    "title_la": "Diphtheria",
+    "source_line": 5292
+  },
+  {
+    "code": "A37",
+    "title_la": "Pertussis",
+    "source_line": 5314
+  },
+  {
+    "code": "A39",
+    "title_la": "Infectio meningococcica",
+    "source_line": 5330
+  },
+  {
+    "code": "A40",
+    "title_la": "Sepsis streptococcica",
+    "source_line": 5370
+  },
+  {
+    "code": "A41",
+    "title_la": "Sepses aliae",
+    "source_line": 5400
+  },
+  {
+    "code": "A42",
+    "title_la": "Actinomycosis",
+    "source_line": 5456
+  },
+  {
+    "code": "A43",
+    "title_la": "Nocardiosis",
+    "source_line": 5472
+  },
+  {
+    "code": "A44",
+    "title_la": "Bartonellosis",
+    "source_line": 5483
+  },
+  {
+    "code": "A48",
+    "title_la": "Morbi bacteriales alii, non alibi classificati",
+    "source_line": 5507
+  },
+  {
+    "code": "A49",
+    "title_la": "Infectio bacterialis, loci non specificati",
+    "source_line": 5529
+  },
+  {
+    "code": "A50",
+    "title_la": "Syphilis congenita",
+    "source_line": 5563
+  },
+  {
+    "code": "A51",
+    "title_la": "Syphilis recens",
+    "source_line": 5631
+  },
+  {
+    "code": "A52",
+    "title_la": "Syphilis tarda",
+    "source_line": 5669
+  },
+  {
+    "code": "A53",
+    "title_la": "Syphilides aliae non specificatae",
+    "source_line": 5730
+  },
+  {
+    "code": "A54",
+    "title_la": "Infectio gonococcica",
+    "source_line": 5742
+  },
+  {
+    "code": "A56",
+    "title_la": "Morbi sexuales alii per Chlamydiam transmissa",
+    "source_line": 5812
+  },
+  {
+    "code": "A59",
+    "title_la": "Trichomoniasis",
+    "source_line": 5854
+  },
+  {
+    "code": "A60",
+    "title_la": "Infectio herpesviralis [herpes simplex] regionis anogenitalis",
+    "source_line": 5867
+  },
+  {
+    "code": "A63",
+    "title_la": "Morbi praedominanter modo sexuali transmissi alii, non alibi classificati",
+    "source_line": 5879
+  },
+  {
+    "code": "A66",
+    "title_la": "Framboesia",
+    "source_line": 5911
+  },
+  {
+    "code": "A67",
+    "title_la": "Pinta-\"mal del pinto\"",
+    "source_line": 5972
+  },
+  {
+    "code": "A68",
+    "title_la": "Febris recurrens",
+    "source_line": 5996
+  },
+  {
+    "code": "A69",
+    "title_la": "Infectiones spirochaetales aliae",
+    "source_line": 6016
+  },
+  {
+    "code": "A71",
+    "title_la": "Trachoma",
+    "source_line": 6052
+  },
+  {
+    "code": "A74",
+    "title_la": "Morbi chlamydiales alii",
+    "source_line": 6074
+  },
+  {
+    "code": "A75",
+    "title_la": "Febris typhica pediculis transmissa",
+    "source_line": 6095
+  },
+  {
+    "code": "A77",
+    "title_la": "Febris exanthematosa ixodibus transmissa",
+    "source_line": 6122
+  },
+  {
+    "code": "A79",
+    "title_la": "Rickettsioses aliae",
+    "source_line": 6155
+  },
+  {
+    "code": "A80",
+    "title_la": "Poliomyelitis anterior acuta",
+    "source_line": 6185
+  },
+  {
+    "code": "A81",
+    "title_la": "Infectiones systematis nervosi centralis virales lentae",
+    "source_line": 6200
+  },
+  {
+    "code": "A82",
+    "title_la": "Rabies",
+    "source_line": 6220
+  },
+  {
+    "code": "A83",
+    "title_la": "Encephalitis viralis anophelis transmissa",
+    "source_line": 6233
+  },
+  {
+    "code": "A84",
+    "title_la": "Encephalitis viralis ixodibus transmissa",
+    "source_line": 6259
+  },
+  {
+    "code": "A85",
+    "title_la": "Encephalitides virales aliae, non alibi classificatae",
+    "source_line": 6280
+  },
+  {
+    "code": "A87",
+    "title_la": "Meningitis viralis",
+    "source_line": 6310
+  },
+  {
+    "code": "A88",
+    "title_la": "Infectiones systematis nervosi centralis virales aliae, non alibi classificatae",
+    "source_line": 6338
+  },
+  {
+    "code": "A92",
+    "title_la": "Febres virales anophelis transmissae aliae",
+    "source_line": 6365
+  },
+  {
+    "code": "A93",
+    "title_la": "Febres virales arthropodis transmissae aliae, non alibi classificatae",
+    "source_line": 6393
+  },
+  {
+    "code": "A95",
+    "title_la": "Febris flava",
+    "source_line": 6415
+  },
+  {
+    "code": "A96",
+    "title_la": "Febris haemorrhagica arenaviralis",
+    "source_line": 6425
+  },
+  {
+    "code": "A98",
+    "title_la": "Febres haemorrhagicae virales aliae, non alibi classificatae",
+    "source_line": 6447
+  }
+]

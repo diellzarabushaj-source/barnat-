@@ -1,0 +1,277 @@
+[
+  {
+    "code": "E00",
+    "title_la": "Cretenismus endemicus congenitus",
+    "source_line": 12976
+  },
+  {
+    "code": "E01",
+    "title_la": "Struma non toxica endemica et status alii",
+    "source_line": 13007
+  },
+  {
+    "code": "E03",
+    "title_la": "Hypothyreoidismus alius",
+    "source_line": 13026
+  },
+  {
+    "code": "E04",
+    "title_la": "Struma atoxica alia",
+    "source_line": 13066
+  },
+  {
+    "code": "E05",
+    "title_la": "Thyreotoxicosis",
+    "source_line": 13094
+  },
+  {
+    "code": "E06",
+    "title_la": "Thyreoiditis",
+    "source_line": 13130
+  },
+  {
+    "code": "E07",
+    "title_la": "Morbi thyreoideae alii",
+    "source_line": 13180
+  },
+  {
+    "code": "E10",
+    "title_la": "Diabetes mellitus ab insulino dependens",
+    "source_line": 13259
+  },
+  {
+    "code": "E11",
+    "title_la": "Diabetes mellitus ad insulino independens",
+    "source_line": 13284
+  },
+  {
+    "code": "E12",
+    "title_la": "Diabetes mellitus malnutritionalis",
+    "source_line": 13304
+  },
+  {
+    "code": "E13",
+    "title_la": "Diabetes mellitus alius, specificatus",
+    "source_line": 13318
+  },
+  {
+    "code": "E14",
+    "title_la": "Diabetes mellitus, non specificatus",
+    "source_line": 13340
+  },
+  {
+    "code": "E16",
+    "title_la": "Dysfunctiones secretionis pancreatis interni",
+    "source_line": 13370
+  },
+  {
+    "code": "E20",
+    "title_la": "Hypoparathyreoidismus",
+    "source_line": 13418
+  },
+  {
+    "code": "E21",
+    "title_la": "Hyperparathyreoidismus et disordines glandulae parathyreoideae alii",
+    "source_line": 13434
+  },
+  {
+    "code": "E22",
+    "title_la": "Hyperfunctio glandulae pituitarie",
+    "source_line": 13462
+  },
+  {
+    "code": "E23",
+    "title_la": "Hypopituitarismus et morbi hypophysis alii",
+    "source_line": 13496
+  },
+  {
+    "code": "E24",
+    "title_la": "Sindroma Cushing",
+    "source_line": 13535
+  },
+  {
+    "code": "E25",
+    "title_la": "Disordines adrenogenitales",
+    "source_line": 13561
+  },
+  {
+    "code": "E26",
+    "title_la": "Hyperaldosteronismus",
+    "source_line": 13587
+  },
+  {
+    "code": "E27",
+    "title_la": "Disordines glandulae adrenalis alii",
+    "source_line": 13608
+  },
+  {
+    "code": "E28",
+    "title_la": "Dysfunctiones ovariales",
+    "source_line": 13647
+  },
+  {
+    "code": "E29",
+    "title_la": "Dysfunctiones testiculares",
+    "source_line": 13686
+  },
+  {
+    "code": "E30",
+    "title_la": "Disordines pubertatis, non alibi classificatae",
+    "source_line": 13709
+  },
+  {
+    "code": "E31",
+    "title_la": "Dysfunctiones polyglandulares endocrinae",
+    "source_line": 13735
+  },
+  {
+    "code": "E32",
+    "title_la": "Morbi thymi",
+    "source_line": 13751
+  },
+  {
+    "code": "E34",
+    "title_la": "Disordines systematis endocrini alii",
+    "source_line": 13765
+  },
+  {
+    "code": "E44",
+    "title_la": "Malnutritio proteinoenergetica mitis et moderate gravis",
+    "source_line": 13891
+  },
+  {
+    "code": "E50",
+    "title_la": "Avitaminosis A",
+    "source_line": 13931
+  },
+  {
+    "code": "E51",
+    "title_la": "Deficientia thiamini",
+    "source_line": 13969
+  },
+  {
+    "code": "E53",
+    "title_la": "Deficientia vitaminorum B aliorum",
+    "source_line": 13992
+  },
+  {
+    "code": "E55",
+    "title_la": "Deficientia vitamini D",
+    "source_line": 14030
+  },
+  {
+    "code": "E56",
+    "title_la": "Deficientiae vitaminorum aliae",
+    "source_line": 14050
+  },
+  {
+    "code": "E61",
+    "title_la": "Deficientia materiarum nutritivarum aliarum",
+    "source_line": 14082
+  },
+  {
+    "code": "E63",
+    "title_la": "Deficientiae materiarum nutritivarum aliae",
+    "source_line": 14111
+  },
+  {
+    "code": "E64",
+    "title_la": "Sequelae malnutritionis et deficientiae materiarum nutritivarum, aliae",
+    "source_line": 14135
+  },
+  {
+    "code": "E66",
+    "title_la": "Obesitas",
+    "source_line": 14163
+  },
+  {
+    "code": "E67",
+    "title_la": "Hyperalimentatio alia",
+    "source_line": 14191
+  },
+  {
+    "code": "E70",
+    "title_la": "Disordines metabolismi aminoacidorum aromaticorum",
+    "source_line": 14222
+  },
+  {
+    "code": "E71",
+    "title_la": "Disordines metabolismi aminoacidorum catenosorum et metabolismi",
+    "source_line": 14259
+  },
+  {
+    "code": "E72",
+    "title_la": "Disordines metabolismi aminoacidorum, alii",
+    "source_line": 14286
+  },
+  {
+    "code": "E73",
+    "title_la": "Intolerantia lactosi",
+    "source_line": 14350
+  },
+  {
+    "code": "E74",
+    "title_la": "Disordines metabolismi carbohydratorum alii",
+    "source_line": 14361
+  },
+  {
+    "code": "E75",
+    "title_la": "Disordines metabolismi sphingolipidi et depositionis lipidorum alii",
+    "source_line": 14417
+  },
+  {
+    "code": "E76",
+    "title_la": "Disordines metabolismi glycosaminoglycanorum",
+    "source_line": 14472
+  },
+  {
+    "code": "E77",
+    "title_la": "Disordines metabolismi glycoproteini",
+    "source_line": 14498
+  },
+  {
+    "code": "E78",
+    "title_la": "Disordines metabolismi lipoproteini et lipidaemiae alii",
+    "source_line": 14521
+  },
+  {
+    "code": "E79",
+    "title_la": "Disordines metabolismi purini et pyrimidini",
+    "source_line": 14577
+  },
+  {
+    "code": "E80",
+    "title_la": "Porphyria et disordines metabolismi bilirubini",
+    "source_line": 14594
+  },
+  {
+    "code": "E83",
+    "title_la": "Disordines metabolismi mineralium",
+    "source_line": 14631
+  },
+  {
+    "code": "E84",
+    "title_la": "Fibrosis cystica",
+    "source_line": 14673
+  },
+  {
+    "code": "E85",
+    "title_la": "Amyloidosis",
+    "source_line": 14697
+  },
+  {
+    "code": "E87",
+    "title_la": "Disordines fluidi, electrolyti et aequilibrii acidobasis alii",
+    "source_line": 14731
+  },
+  {
+    "code": "E88",
+    "title_la": "Disordines metabolismi alii",
+    "source_line": 14778
+  },
+  {
+    "code": "E89",
+    "title_la": "Disordines endocrini et disordines metabolici postprocedurales, non alibi",
+    "source_line": 14818
+  }
+]

@@ -1,0 +1,427 @@
+[
+  {
+    "code": "T00",
+    "title_la": "Laesiones traumaticae regionum corporis multiplicium superficiales",
+    "source_line": 45493
+  },
+  {
+    "code": "T01",
+    "title_la": "Vulnus apertum regionum corporis multiplicium",
+    "source_line": 45543
+  },
+  {
+    "code": "T02",
+    "title_la": "Fracturae regionum corporis multiplicium",
+    "source_line": 45589
+  },
+  {
+    "code": "T03",
+    "title_la": "Luxatio, distorsio et distensio regionum corporis multiplicium",
+    "source_line": 45648
+  },
+  {
+    "code": "T04",
+    "title_la": "Conquassatio regionum corporis multiplicium",
+    "source_line": 45679
+  },
+  {
+    "code": "T05",
+    "title_la": "Amputatio traumatica regionum corporis multiplicium",
+    "source_line": 45728
+  },
+  {
+    "code": "T06",
+    "title_la": "Laesiones traumaticae regionum corporis multiplicium aliae, non alibi",
+    "source_line": 45770
+  },
+  {
+    "code": "T08",
+    "title_la": "Fractura columnae vertebralis regionis non specificata",
+    "source_line": 45812
+  },
+  {
+    "code": "T09",
+    "title_la": "Laesiones traumaticae columnae vertebralis et trunci regionis non",
+    "source_line": 45820
+  },
+  {
+    "code": "T10",
+    "title_la": "Fractura extremitatis superioris regionis non specificatae",
+    "source_line": 45845
+  },
+  {
+    "code": "T11",
+    "title_la": "Laesiones traumaticae extremitatis superioris regionis non specificatae aliae",
+    "source_line": 45860
+  },
+  {
+    "code": "T12",
+    "title_la": "Fractura extremitatis inferioris regionis non specificatae",
+    "source_line": 45888
+  },
+  {
+    "code": "T13",
+    "title_la": "Laesiones traumaticae extremitatis iferioris regionis non specificatae, aliae",
+    "source_line": 45897
+  },
+  {
+    "code": "T14",
+    "title_la": "Laesio traumatica corporis regionis non specificatae",
+    "source_line": 45933
+  },
+  {
+    "code": "T15",
+    "title_la": "Corpus alienum partis oculi externae",
+    "source_line": 46051
+  },
+  {
+    "code": "T17",
+    "title_la": "Corpus alienum tractus respiratorii",
+    "source_line": 46072
+  },
+  {
+    "code": "T18",
+    "title_la": "Corpus alienum tractus digestivi",
+    "source_line": 46105
+  },
+  {
+    "code": "T19",
+    "title_la": "Corpus alienum tractus urogenitalis",
+    "source_line": 46128
+  },
+  {
+    "code": "T20",
+    "title_la": "Combustio et corrosio capitis et colli",
+    "source_line": 46180
+  },
+  {
+    "code": "T21",
+    "title_la": "Combustio et corrosio trunci",
+    "source_line": 46215
+  },
+  {
+    "code": "T22",
+    "title_la": "Combustio et corrosio extremitatis superioris (excl. carpus et manus)",
+    "source_line": 46259
+  },
+  {
+    "code": "T23",
+    "title_la": "Combustio et corrosio carpi et manus",
+    "source_line": 46284
+  },
+  {
+    "code": "T24",
+    "title_la": "Combustio et corrosio coxae et extremitatis inferioris (excl.regio malleoli et",
+    "source_line": 46313
+  },
+  {
+    "code": "T25",
+    "title_la": "Combustio et corrosio regionis malleoli et pedis",
+    "source_line": 46338
+  },
+  {
+    "code": "T26",
+    "title_la": "Combustio et corrosio oculi et regionis orbitalis",
+    "source_line": 46368
+  },
+  {
+    "code": "T27",
+    "title_la": "Combustio et corrosio tractus respiratorii",
+    "source_line": 46391
+  },
+  {
+    "code": "T28",
+    "title_la": "Combustio et corrosio organorum internorum aliorum",
+    "source_line": 46419
+  },
+  {
+    "code": "T29",
+    "title_la": "Combustio et corrosio regionum corporis multiplicium",
+    "source_line": 46447
+  },
+  {
+    "code": "T30",
+    "title_la": "Combustio et corrosio corporis, regionis non specificatae",
+    "source_line": 46474
+  },
+  {
+    "code": "T31",
+    "title_la": "Combustiones secundum amplitudinem superficiei corporis comprehensae",
+    "source_line": 46502
+  },
+  {
+    "code": "T32",
+    "title_la": "Corrosiones secundum amplitudinem superficiei corporis comprehensae",
+    "source_line": 46536
+  },
+  {
+    "code": "T33",
+    "title_la": "Congelatio superficialis",
+    "source_line": 46569
+  },
+  {
+    "code": "T34",
+    "title_la": "Congelatio cum necrosi textus",
+    "source_line": 46606
+  },
+  {
+    "code": "T35",
+    "title_la": "Congelatio regionum corporis multiplicium et congelatio non specificata",
+    "source_line": 46641
+  },
+  {
+    "code": "T36",
+    "title_la": "Intoxicatio antibioticis systemicis",
+    "source_line": 46691
+  },
+  {
+    "code": "T37",
+    "title_la": "Intoxicatio medicamentis antiinfectivis et antiparasitariis systemicis aliis",
+    "source_line": 46727
+  },
+  {
+    "code": "T38",
+    "title_la": "Intoxicatio hormonis, substitutis syntheticis eorum et antagonistis, non alibi",
+    "source_line": 46758
+  },
+  {
+    "code": "T39",
+    "title_la": "Intoxicatio analgeticis non opiaticis, antipireticis et antirheumaticis",
+    "source_line": 46797
+  },
+  {
+    "code": "T40",
+    "title_la": "Intoxicatio narcoticis et psychodyslepticis [hallucinogenibus]",
+    "source_line": 46816
+  },
+  {
+    "code": "T41",
+    "title_la": "Intoxicatio anaestheticis et vaporibus(gas) therapeuticis",
+    "source_line": 46853
+  },
+  {
+    "code": "T42",
+    "title_la": "Intoxicatio medicamentis antiepilepticis, sedativohypnoticis et",
+    "source_line": 46875
+  },
+  {
+    "code": "T43",
+    "title_la": "Intoxicatio medicamentis psychotropicis, non alibi classificatis",
+    "source_line": 46915
+  },
+  {
+    "code": "T44",
+    "title_la": "Intoxicatio medicamentis ad systema nervosum autonomicum primum",
+    "source_line": 46951
+  },
+  {
+    "code": "T45",
+    "title_la": "Intoxicatio primum instrumentis systemicis et haematologicis, non alibi",
+    "source_line": 46986
+  },
+  {
+    "code": "T46",
+    "title_la": "Intoxicatio instrumentis ad systema cardiovasculare primum afficientibus",
+    "source_line": 47030
+  },
+  {
+    "code": "T47",
+    "title_la": "Intoxicatio instrumentis ad systema gastrointestinale primum afficientibus",
+    "source_line": 47073
+  },
+  {
+    "code": "T48",
+    "title_la": "Intoxicatio instrumentis ad textum muscularem non striatum et striatum",
+    "source_line": 47098
+  },
+  {
+    "code": "T49",
+    "title_la": "Intoxicatio instrumentis localibus ad cutem et tunicam mucosam primum",
+    "source_line": 47131
+  },
+  {
+    "code": "T50",
+    "title_la": "Intoxicatio diureticis et remediis aliis non specificatis, medicamentis et",
+    "source_line": 47161
+  },
+  {
+    "code": "T51",
+    "title_la": "Effectus alcoholis toxicus",
+    "source_line": 47210
+  },
+  {
+    "code": "T52",
+    "title_la": "Effectus solventium organicorum toxici",
+    "source_line": 47241
+  },
+  {
+    "code": "T53",
+    "title_la": "Effectus derivatorum hydrocarbonum aliphaticorum et aromaticorum toxici",
+    "source_line": 47271
+  },
+  {
+    "code": "T54",
+    "title_la": "Effectus substantiarum corrosivarum toxicus",
+    "source_line": 47307
+  },
+  {
+    "code": "T56",
+    "title_la": "Effectus metallorum toxicus",
+    "source_line": 47328
+  },
+  {
+    "code": "T57",
+    "title_la": "Effectus substantiarum anorganicarum aliarum toxicus",
+    "source_line": 47363
+  },
+  {
+    "code": "T59",
+    "title_la": "Effectus vaporum (gas), fumorum et exhalationum aliarum toxicus",
+    "source_line": 47383
+  },
+  {
+    "code": "T60",
+    "title_la": "Effectus pesticidorum toxicus",
+    "source_line": 47417
+  },
+  {
+    "code": "T61",
+    "title_la": "Effectus substantiarum nocivarum, ut alimentum maritimum ingestarum",
+    "source_line": 47437
+  },
+  {
+    "code": "T62",
+    "title_la": "Effectus substantiarum nocivarum aliarum, ut alimentum ingestarum toxicus",
+    "source_line": 47468
+  },
+  {
+    "code": "T63",
+    "title_la": "Effectus contactus cum animalibus venenosis toxicus",
+    "source_line": 47491
+  },
+  {
+    "code": "T65",
+    "title_la": "Effectus substantiarum aliarum et non specificatarum toxicus",
+    "source_line": 47533
+  },
+  {
+    "code": "T67",
+    "title_la": "Effectus caloris et lucis",
+    "source_line": 47581
+  },
+  {
+    "code": "T69",
+    "title_la": "Effectus temperaturae reductae alii",
+    "source_line": 47637
+  },
+  {
+    "code": "T70",
+    "title_la": "Effectus pressionis atmosphaericae et aquae",
+    "source_line": 47650
+  },
+  {
+    "code": "T73",
+    "title_la": "Effectus deprivationum aliarum",
+    "source_line": 47703
+  },
+  {
+    "code": "T74",
+    "title_la": "Syndroma maltractationis",
+    "source_line": 47721
+  },
+  {
+    "code": "T75",
+    "title_la": "Effectus causarum externarum aliarum",
+    "source_line": 47751
+  },
+  {
+    "code": "T78",
+    "title_la": "Effectus adversi, non alibi classificati",
+    "source_line": 47783
+  },
+  {
+    "code": "T79",
+    "title_la": "Complicationes traumatis praecoces, non alibi classificatae",
+    "source_line": 47844
+  },
+  {
+    "code": "T80",
+    "title_la": "Complicationes ex infusione, transfusione et injectione",
+    "source_line": 47933
+  },
+  {
+    "code": "T81",
+    "title_la": "Complicationes procedurales, non alibi classificates",
+    "source_line": 48001
+  },
+  {
+    "code": "T82",
+    "title_la": "Complicationes propter apparatos protheticos cardiacos et vasculares",
+    "source_line": 48119
+  },
+  {
+    "code": "T83",
+    "title_la": "Complicationes propter apparatus protheticos urogenitales, implantata et",
+    "source_line": 48193
+  },
+  {
+    "code": "T84",
+    "title_la": "Complicationes propter collocationem apparatum protheticorum,",
+    "source_line": 48243
+  },
+  {
+    "code": "T85",
+    "title_la": "Complicationes propter apparatus protheticos internos allios, implantata et",
+    "source_line": 48296
+  },
+  {
+    "code": "T86",
+    "title_la": "Insufficientia et rejectio organorum et textuum transplantatorum",
+    "source_line": 48362
+  },
+  {
+    "code": "T87",
+    "title_la": "Complicationes propter reunionem et amputationem",
+    "source_line": 48389
+  },
+  {
+    "code": "T88",
+    "title_la": "Complicationes curae chirurgicae et medicalis aliae",
+    "source_line": 48417
+  },
+  {
+    "code": "T90",
+    "title_la": "Sequelae laesionum traumaticarum capitis",
+    "source_line": 48502
+  },
+  {
+    "code": "T91",
+    "title_la": "Sequelae leasionum traumaticarum colli et trunci",
+    "source_line": 48535
+  },
+  {
+    "code": "T92",
+    "title_la": "Sequelae laesionum traumaticarum extremitatis superioris",
+    "source_line": 48563
+  },
+  {
+    "code": "T93",
+    "title_la": "Sequelae laesionum traumaticarum extremitatis inferioris",
+    "source_line": 48602
+  },
+  {
+    "code": "T94",
+    "title_la": "Sequelae laesionum traumaticarum regionum corporis multiplicum, non",
+    "source_line": 48642
+  },
+  {
+    "code": "T95",
+    "title_la": "Sequelae combustionis, corrosionis et congelationis",
+    "source_line": 48652
+  },
+  {
+    "code": "T98",
+    "title_la": "Sequelae effectuum agentium externorum, aliorum et non specificatorum",
+    "source_line": 48694
+  }
+]

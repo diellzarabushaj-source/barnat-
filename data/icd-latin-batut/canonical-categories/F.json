@@ -1,0 +1,292 @@
+[
+  {
+    "code": "F01",
+    "title_la": "Dementia vascularis",
+    "source_line": 14950
+  },
+  {
+    "code": "F05",
+    "title_la": "Delirium, non propter usum alcoholis et substantiarum psychoactivarum",
+    "source_line": 15080
+  },
+  {
+    "code": "F06",
+    "title_la": "Disordines mentales propter laesionem et dysfunctionem cerebri sive",
+    "source_line": 15105
+  },
+  {
+    "code": "F07",
+    "title_la": "Disordines personae et disordines morum propter morbum, laesionem et",
+    "source_line": 15205
+  },
+  {
+    "code": "F10",
+    "title_la": "Disordines mentales et disordines morum propter usum alcoholis",
+    "source_line": 15400
+  },
+  {
+    "code": "F11",
+    "title_la": "Disordines mentales et disordines morum propter usum opiatorum",
+    "source_line": 15404
+  },
+  {
+    "code": "F12",
+    "title_la": "Disordines mentales et disordines morum propter usum cannabinoidarum",
+    "source_line": 15408
+  },
+  {
+    "code": "F13",
+    "title_la": "Disordines mentales et disordines morum propter usum hiponoticorum sive",
+    "source_line": 15412
+  },
+  {
+    "code": "F14",
+    "title_la": "Disordines mentales et disordines morum propter usum cocaini",
+    "source_line": 15418
+  },
+  {
+    "code": "F15",
+    "title_la": "Disordines mentales et disordines morum propter usum stimulantium",
+    "source_line": 15422
+  },
+  {
+    "code": "F16",
+    "title_la": "Disordines mentales et disordines morum propter usum hallucinogenium",
+    "source_line": 15428
+  },
+  {
+    "code": "F17",
+    "title_la": "Disordines mentales et disordines morum propter usum tabaci",
+    "source_line": 15436
+  },
+  {
+    "code": "F18",
+    "title_la": "Disordines mentales et disordines morum propter usum solutionum",
+    "source_line": 15440
+  },
+  {
+    "code": "F19",
+    "title_la": "Disordines mentales et disordines morum propter usum substantiarum",
+    "source_line": 15446
+  },
+  {
+    "code": "F20",
+    "title_la": "Schizophrenia",
+    "source_line": 15465
+  },
+  {
+    "code": "F22",
+    "title_la": "Psychoses paranoides persistentes",
+    "source_line": 15589
+  },
+  {
+    "code": "F23",
+    "title_la": "Psychoses acutae et transitivae",
+    "source_line": 15631
+  },
+  {
+    "code": "F25",
+    "title_la": "Psychoses schizoaffectivae",
+    "source_line": 15702
+  },
+  {
+    "code": "F30",
+    "title_la": "Mania",
+    "source_line": 15759
+  },
+  {
+    "code": "F31",
+    "title_la": "Psychosis affectiva, typus bipolaris",
+    "source_line": 15803
+  },
+  {
+    "code": "F32",
+    "title_la": "Depressio",
+    "source_line": 15863
+  },
+  {
+    "code": "F33",
+    "title_la": "Depressio recurrens",
+    "source_line": 15924
+  },
+  {
+    "code": "F34",
+    "title_la": "Disordines thymici (affectivi) permanentes",
+    "source_line": 15986
+  },
+  {
+    "code": "F38",
+    "title_la": "Disordines thymiaci affectivi alii",
+    "source_line": 16016
+  },
+  {
+    "code": "F40",
+    "title_la": "Disordines anxiosi phobici",
+    "source_line": 16044
+  },
+  {
+    "code": "F41",
+    "title_la": "Disordines anxiosi alii",
+    "source_line": 16096
+  },
+  {
+    "code": "F42",
+    "title_la": "Disordo obsessivocompulsivus",
+    "source_line": 16148
+  },
+  {
+    "code": "F43",
+    "title_la": "Reactio stressogenes, gradus majoris, et reactiones maladaptivae",
+    "source_line": 16188
+  },
+  {
+    "code": "F44",
+    "title_la": "Disordines dissociativi (conversiones)",
+    "source_line": 16265
+  },
+  {
+    "code": "F45",
+    "title_la": "Disordines somatoformes",
+    "source_line": 16378
+  },
+  {
+    "code": "F48",
+    "title_la": "Disordines neurotici alii",
+    "source_line": 16501
+  },
+  {
+    "code": "F50",
+    "title_la": "Disordines alimentarii",
+    "source_line": 16554
+  },
+  {
+    "code": "F51",
+    "title_la": "Disordines somni non organici",
+    "source_line": 16621
+  },
+  {
+    "code": "F52",
+    "title_la": "Dysfunctio sexualis non organica",
+    "source_line": 16686
+  },
+  {
+    "code": "F53",
+    "title_la": "Disordines mentales et disordines morum cum puerperio associati, non alibi",
+    "source_line": 16756
+  },
+  {
+    "code": "F60",
+    "title_la": "Disordines personae specifici",
+    "source_line": 16850
+  },
+  {
+    "code": "F62",
+    "title_la": "Mutatio personae persistens non organica",
+    "source_line": 16996
+  },
+  {
+    "code": "F63",
+    "title_la": "Disordines consuetudinum et impulsuum",
+    "source_line": 17044
+  },
+  {
+    "code": "F64",
+    "title_la": "Disordines identitatis sexualis",
+    "source_line": 17104
+  },
+  {
+    "code": "F65",
+    "title_la": "Disordines inclinationis sexualis",
+    "source_line": 17132
+  },
+  {
+    "code": "F66",
+    "title_la": "Disordines mentales et disordines cum evolutione et orientatione sexuali",
+    "source_line": 17190
+  },
+  {
+    "code": "F68",
+    "title_la": "Disordines personae et disordines morum adultorum alii",
+    "source_line": 17221
+  },
+  {
+    "code": "F70",
+    "title_la": "Retardatio mentalis levis",
+    "source_line": 17278
+  },
+  {
+    "code": "F71",
+    "title_la": "Retardatio mentalis moderata",
+    "source_line": 17287
+  },
+  {
+    "code": "F72",
+    "title_la": "Retardatio mentalis gravis",
+    "source_line": 17296
+  },
+  {
+    "code": "F73",
+    "title_la": "Retardatio mentalis profunda",
+    "source_line": 17303
+  },
+  {
+    "code": "F78",
+    "title_la": "Retardatio mentalis alia",
+    "source_line": 17310
+  },
+  {
+    "code": "F79",
+    "title_la": "Retardatio mentalis, non specificata",
+    "source_line": 17314
+  },
+  {
+    "code": "F80",
+    "title_la": "Disordines evolutionis orationis et linguae, specifici",
+    "source_line": 17335
+  },
+  {
+    "code": "F81",
+    "title_la": "Disordines evolutionis facultatum scholasticarum specifici",
+    "source_line": 17416
+  },
+  {
+    "code": "F84",
+    "title_la": "Disordines evolutionis pervasivi",
+    "source_line": 17512
+  },
+  {
+    "code": "F90",
+    "title_la": "Disordines hyperkinetici",
+    "source_line": 17615
+  },
+  {
+    "code": "F91",
+    "title_la": "Disordines morum",
+    "source_line": 17653
+  },
+  {
+    "code": "F92",
+    "title_la": "Disordines morum et emotionum mixti",
+    "source_line": 17715
+  },
+  {
+    "code": "F93",
+    "title_la": "Disordo emotionum in infantia oreus",
+    "source_line": 17737
+  },
+  {
+    "code": "F94",
+    "title_la": "Disordines functionis socialis in infantia et adolescentia orti",
+    "source_line": 17789
+  },
+  {
+    "code": "F95",
+    "title_la": "Disordines spasmi involuntarii",
+    "source_line": 17842
+  },
+  {
+    "code": "F98",
+    "title_la": "Disordines emotionum et disordines morum in infantia sive adolescentia orti",
+    "source_line": 17879
+  }
+]

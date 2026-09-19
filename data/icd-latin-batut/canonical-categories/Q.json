@@ -1,0 +1,432 @@
+[
+  {
+    "code": "Q00",
+    "title_la": "Anencephalus et malformationes similes",
+    "source_line": 38127
+  },
+  {
+    "code": "Q01",
+    "title_la": "Encephalocele",
+    "source_line": 38141
+  },
+  {
+    "code": "Q03",
+    "title_la": "Hydrocephalus congenitus",
+    "source_line": 38172
+  },
+  {
+    "code": "Q04",
+    "title_la": "Malformationes cerebri congenitae aliae",
+    "source_line": 38193
+  },
+  {
+    "code": "Q05",
+    "title_la": "Spina bifida",
+    "source_line": 38244
+  },
+  {
+    "code": "Q06",
+    "title_la": "Malformationes medullae spinalis congenitae aliae",
+    "source_line": 38291
+  },
+  {
+    "code": "Q07",
+    "title_la": "Malformationes systematis nervosi congenitae aliae",
+    "source_line": 38315
+  },
+  {
+    "code": "Q10",
+    "title_la": "Malformationes palpebrae, apparatus lacrimalis et orbitae congenitae",
+    "source_line": 38353
+  },
+  {
+    "code": "Q11",
+    "title_la": "Anophthalmus, microphthalmus et macrophthalmus",
+    "source_line": 38390
+  },
+  {
+    "code": "Q12",
+    "title_la": "Malformationes lentis oculi congenitae",
+    "source_line": 38410
+  },
+  {
+    "code": "Q13",
+    "title_la": "Malformationes segmenti oculi anterioris congenitae",
+    "source_line": 38427
+  },
+  {
+    "code": "Q14",
+    "title_la": "Malformationes segmenti oculi posterioris congenitae",
+    "source_line": 38464
+  },
+  {
+    "code": "Q15",
+    "title_la": "Malformationes oculi congenitae aliae",
+    "source_line": 38490
+  },
+  {
+    "code": "Q16",
+    "title_la": "Malformationes auris cum hypacusia congenitae",
+    "source_line": 38511
+  },
+  {
+    "code": "Q17",
+    "title_la": "Malformationes auris congenitae aliae",
+    "source_line": 38542
+  },
+  {
+    "code": "Q18",
+    "title_la": "Malformationes faciei et colli congenitae aliae",
+    "source_line": 38573
+  },
+  {
+    "code": "Q20",
+    "title_la": "Malformationes atrii et ventriculi cordis congenitae",
+    "source_line": 38629
+  },
+  {
+    "code": "Q21",
+    "title_la": "Malformationes septi cordis congenitae",
+    "source_line": 38671
+  },
+  {
+    "code": "Q22",
+    "title_la": "Malformationes valvulae pulmonalis et tricuspidalis congenitae",
+    "source_line": 38710
+  },
+  {
+    "code": "Q23",
+    "title_la": "Malformationes valvulae aortae et mitralis congenitae",
+    "source_line": 38734
+  },
+  {
+    "code": "Q24",
+    "title_la": "Malformationes cordis congenitae aliae",
+    "source_line": 38766
+  },
+  {
+    "code": "Q25",
+    "title_la": "Malformationes arteriarum magnarum congenitae",
+    "source_line": 38802
+  },
+  {
+    "code": "Q26",
+    "title_la": "Malformationes venarum magnarum congenitae",
+    "source_line": 38855
+  },
+  {
+    "code": "Q27",
+    "title_la": "Malformationes systematis vascularis peripherici congenitae aliae",
+    "source_line": 38890
+  },
+  {
+    "code": "Q28",
+    "title_la": "Malformationes systematis circulatorii congenitae aliae",
+    "source_line": 38932
+  },
+  {
+    "code": "Q30",
+    "title_la": "Malformationes nasi congenitae",
+    "source_line": 38966
+  },
+  {
+    "code": "Q31",
+    "title_la": "Malformationes laryngis congenitae",
+    "source_line": 38995
+  },
+  {
+    "code": "Q32",
+    "title_la": "Malformationes tracheae et bronchi congenitae",
+    "source_line": 39023
+  },
+  {
+    "code": "Q33",
+    "title_la": "Malformationes pulmonis congenitae",
+    "source_line": 39054
+  },
+  {
+    "code": "Q34",
+    "title_la": "Malformationes systematis respiratorii congenitae aliae",
+    "source_line": 39081
+  },
+  {
+    "code": "Q35",
+    "title_la": "Palatoschisis",
+    "source_line": 39107
+  },
+  {
+    "code": "Q36",
+    "title_la": "Labium leporinum",
+    "source_line": 39124
+  },
+  {
+    "code": "Q37",
+    "title_la": "Cheilopalatoschisis",
+    "source_line": 39139
+  },
+  {
+    "code": "Q38",
+    "title_la": "Malformationes linguae, oris et pharyngis congenitae aliae",
+    "source_line": 39175
+  },
+  {
+    "code": "Q39",
+    "title_la": "Malformationes oesophagi congenitae",
+    "source_line": 39234
+  },
+  {
+    "code": "Q40",
+    "title_la": "Malformationes organorum digestivorum proximalium congenitae aliae",
+    "source_line": 39267
+  },
+  {
+    "code": "Q41",
+    "title_la": "Agenesia, atresia et stenosis intestini tenuis congenita",
+    "source_line": 39299
+  },
+  {
+    "code": "Q42",
+    "title_la": "Agenesia, atresia et stenosis coli congenita",
+    "source_line": 39324
+  },
+  {
+    "code": "Q43",
+    "title_la": "Malformationes intestini congenitae aliae",
+    "source_line": 39342
+  },
+  {
+    "code": "Q44",
+    "title_la": "Malformationes vesicae felleae, ductuum biliarium et hepatis congenitae",
+    "source_line": 39400
+  },
+  {
+    "code": "Q45",
+    "title_la": "Malformationes organorum digestivorum congenitae aliae",
+    "source_line": 39439
+  },
+  {
+    "code": "Q50",
+    "title_la": "Malformationes ovarii, tubae uterinae et ligamenti lati congenitae",
+    "source_line": 39477
+  },
+  {
+    "code": "Q51",
+    "title_la": "Malformationes uteri et cervicis uteri congenitae",
+    "source_line": 39515
+  },
+  {
+    "code": "Q52",
+    "title_la": "Malformationes genitaliorum femininorum congenitae aliae",
+    "source_line": 39549
+  },
+  {
+    "code": "Q53",
+    "title_la": "Cryptorchismus",
+    "source_line": 39582
+  },
+  {
+    "code": "Q54",
+    "title_la": "Hypospadia",
+    "source_line": 39602
+  },
+  {
+    "code": "Q55",
+    "title_la": "Malformationes genitaliorum masculinorum congenitae aliae",
+    "source_line": 39623
+  },
+  {
+    "code": "Q56",
+    "title_la": "Sexus indeterminatus et pseudohermaphroditismus",
+    "source_line": 39671
+  },
+  {
+    "code": "Q60",
+    "title_la": "Agenesia et hypoplasia renis",
+    "source_line": 39697
+  },
+  {
+    "code": "Q61",
+    "title_la": "Morbus renis cysticus",
+    "source_line": 39725
+  },
+  {
+    "code": "Q62",
+    "title_la": "Obstructiones pelvis renis congenitae et malformationes ureteris congenitae",
+    "source_line": 39760
+  },
+  {
+    "code": "Q63",
+    "title_la": "Malformationes renis congenitae aliae",
+    "source_line": 39806
+  },
+  {
+    "code": "Q64",
+    "title_la": "Malformationes systematis urinarii congenitae aliae",
+    "source_line": 39829
+  },
+  {
+    "code": "Q65",
+    "title_la": "Deformationes coxae congenitae",
+    "source_line": 39890
+  },
+  {
+    "code": "Q66",
+    "title_la": "Deformationes pedis congenitae",
+    "source_line": 39919
+  },
+  {
+    "code": "Q67",
+    "title_la": "Deformationes capitis, faciei, columnae vertebralis et thoracis",
+    "source_line": 39966
+  },
+  {
+    "code": "Q68",
+    "title_la": "Deformationes systematis musculosceletalis congenitae aliae",
+    "source_line": 40011
+  },
+  {
+    "code": "Q69",
+    "title_la": "Polydactylia",
+    "source_line": 40045
+  },
+  {
+    "code": "Q70",
+    "title_la": "Syndactylia",
+    "source_line": 40064
+  },
+  {
+    "code": "Q71",
+    "title_la": "Reductiones extremitatis superioris congenitae",
+    "source_line": 40084
+  },
+  {
+    "code": "Q72",
+    "title_la": "Reductiones extremitatis inferioris congenitae",
+    "source_line": 40113
+  },
+  {
+    "code": "Q73",
+    "title_la": "Reductiones extremitatum congenitae, non specificatae",
+    "source_line": 40138
+  },
+  {
+    "code": "Q74",
+    "title_la": "Malformationes extremitatis congenitae aliae",
+    "source_line": 40160
+  },
+  {
+    "code": "Q75",
+    "title_la": "Malformationes ossium cranii et faciei congenitae aliae",
+    "source_line": 40211
+  },
+  {
+    "code": "Q76",
+    "title_la": "Malformationes columnae vertebralis et ossium thoracis congenitae",
+    "source_line": 40252
+  },
+  {
+    "code": "Q77",
+    "title_la": "Osteochondrodysplasia cum osteogenesi ossium tubariorum et columnae",
+    "source_line": 40308
+  },
+  {
+    "code": "Q78",
+    "title_la": "Osteochondrodysplasiae aliae",
+    "source_line": 40346
+  },
+  {
+    "code": "Q79",
+    "title_la": "Malformationes systematis musculosceletalis congenitae, non alibi",
+    "source_line": 40387
+  },
+  {
+    "code": "Q80",
+    "title_la": "Ichthyosis congenita",
+    "source_line": 40438
+  },
+  {
+    "code": "Q81",
+    "title_la": "Epidermolysis bullosa",
+    "source_line": 40457
+  },
+  {
+    "code": "Q82",
+    "title_la": "Malformationes cutis congenitae aliae",
+    "source_line": 40472
+  },
+  {
+    "code": "Q83",
+    "title_la": "Malformationes mammae congenitae",
+    "source_line": 40531
+  },
+  {
+    "code": "Q84",
+    "title_la": "Malformationes integumenti congenitae aliae",
+    "source_line": 40557
+  },
+  {
+    "code": "Q85",
+    "title_la": "Phakomatoses, non alibi classificatae",
+    "source_line": 40603
+  },
+  {
+    "code": "Q86",
+    "title_la": "Syndromata malformationum congenitarum causis exogenibus notis",
+    "source_line": 40625
+  },
+  {
+    "code": "Q87",
+    "title_la": "Syndromata malformationum systematum multiplicium congenitarum alia,",
+    "source_line": 40650
+  },
+  {
+    "code": "Q89",
+    "title_la": "Malformationes congenitae aliae, non alibi classificatae",
+    "source_line": 40714
+  },
+  {
+    "code": "Q90",
+    "title_la": "Syndroma Down",
+    "source_line": 40774
+  },
+  {
+    "code": "Q91",
+    "title_la": "Syndroma Edward et syndroma Patau",
+    "source_line": 40786
+  },
+  {
+    "code": "Q92",
+    "title_la": "Trisomiae aliae et trisomiae autosomaticae partiales, non alibi classificatae",
+    "source_line": 40805
+  },
+  {
+    "code": "Q93",
+    "title_la": "Monosomiae et monosomiae partiales autosomaticae, non alibi classificatae",
+    "source_line": 40839
+  },
+  {
+    "code": "Q95",
+    "title_la": "Translocationes aequatae et signacula structuralia non alibi classificata",
+    "source_line": 40873
+  },
+  {
+    "code": "Q96",
+    "title_la": "Syndroma Turner",
+    "source_line": 40895
+  },
+  {
+    "code": "Q97",
+    "title_la": "Anomaliae chromosmatis sexualis aliae, phaenotypus femininus, non alibi",
+    "source_line": 40913
+  },
+  {
+    "code": "Q98",
+    "title_la": "Anomaliae chromosmatis sexualis aliae, phaenotypus masculinus, non alibi",
+    "source_line": 40938
+  },
+  {
+    "code": "Q99",
+    "title_la": "Anomaliae chromosomaticae aliae, non alibi classificatae",
+    "source_line": 40963
+  }
+]

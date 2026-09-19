@@ -1,0 +1,217 @@
+[
+  {
+    "code": "G00",
+    "title_la": "Meningitis bacterialis, non alibi classificatis",
+    "source_line": 18079
+  },
+  {
+    "code": "G03",
+    "title_la": "Meningitis propter causas alias et non specificatas",
+    "source_line": 18165
+  },
+  {
+    "code": "G04",
+    "title_la": "Encephalitis, myelitis et encephalomyelitis",
+    "source_line": 18194
+  },
+  {
+    "code": "G06",
+    "title_la": "Abscessus intracranialis et intraspinalis et granuloma intracraniale et",
+    "source_line": 18273
+  },
+  {
+    "code": "G11",
+    "title_la": "Ataxia hereditaria",
+    "source_line": 18347
+  },
+  {
+    "code": "G12",
+    "title_la": "Atrophia musculorum spinalis et syndromata affinia",
+    "source_line": 18390
+  },
+  {
+    "code": "G21",
+    "title_la": "Parkinsonismus secundarius",
+    "source_line": 18462
+  },
+  {
+    "code": "G23",
+    "title_la": "Degenerationes gangliorum basalium aliae",
+    "source_line": 18493
+  },
+  {
+    "code": "G24",
+    "title_la": "Dystonia",
+    "source_line": 18509
+  },
+  {
+    "code": "G25",
+    "title_la": "Affectiones extrapyramidales et disordines motionum alie",
+    "source_line": 18541
+  },
+  {
+    "code": "G30",
+    "title_la": "Morbus Alzheimer",
+    "source_line": 18600
+  },
+  {
+    "code": "G31",
+    "title_la": "Morbi degenerativi systematis nervosi alii, non alibi clssificati",
+    "source_line": 18617
+  },
+  {
+    "code": "G36",
+    "title_la": "Demyelinisatio disseminata acuta alia",
+    "source_line": 18675
+  },
+  {
+    "code": "G37",
+    "title_la": "Morbi demyelinantes systematis nervosi centralis, alii",
+    "source_line": 18689
+  },
+  {
+    "code": "G40",
+    "title_la": "Epilepsia",
+    "source_line": 18725
+  },
+  {
+    "code": "G41",
+    "title_la": "Status epilepticus",
+    "source_line": 18813
+  },
+  {
+    "code": "G43",
+    "title_la": "Migraena",
+    "source_line": 18829
+  },
+  {
+    "code": "G44",
+    "title_la": "Syndromata cephalalgica alia",
+    "source_line": 18864
+  },
+  {
+    "code": "G45",
+    "title_la": "Paroxysmi cerebrales ischaemici transitorii et syndromata affinia",
+    "source_line": 18891
+  },
+  {
+    "code": "G47",
+    "title_la": "Disordines somni",
+    "source_line": 18947
+  },
+  {
+    "code": "G50",
+    "title_la": "Disordines nervi trigemini",
+    "source_line": 18993
+  },
+  {
+    "code": "G51",
+    "title_la": "Disordines nervi facialis",
+    "source_line": 19007
+  },
+  {
+    "code": "G52",
+    "title_la": "Disordines nervorum cranialium aliorum",
+    "source_line": 19035
+  },
+  {
+    "code": "G54",
+    "title_la": "Affectiones radicum et plexuum nervorum",
+    "source_line": 19087
+  },
+  {
+    "code": "G56",
+    "title_la": "Mononeuropathiae extremitatis superioris",
+    "source_line": 19148
+  },
+  {
+    "code": "G57",
+    "title_la": "Mononeuropathiae extremitatis inferioris",
+    "source_line": 19168
+  },
+  {
+    "code": "G58",
+    "title_la": "Mononeuropathiae aliae",
+    "source_line": 19203
+  },
+  {
+    "code": "G60",
+    "title_la": "Neuropathia hereditaria et neuropathia idiopathica",
+    "source_line": 19230
+  },
+  {
+    "code": "G61",
+    "title_la": "Polyneuropathia inflammatoria",
+    "source_line": 19265
+  },
+  {
+    "code": "G62",
+    "title_la": "Polyneuropathiae aliae",
+    "source_line": 19279
+  },
+  {
+    "code": "G70",
+    "title_la": "Myasthenia gravis et disordines myoneurales alii",
+    "source_line": 19346
+  },
+  {
+    "code": "G71",
+    "title_la": "Disordines musculorum primarii",
+    "source_line": 19373
+  },
+  {
+    "code": "G72",
+    "title_la": "Myopathiae aliae",
+    "source_line": 19439
+  },
+  {
+    "code": "G80",
+    "title_la": "Paralysis cerebralis",
+    "source_line": 19517
+  },
+  {
+    "code": "G81",
+    "title_la": "Hemiplegia",
+    "source_line": 19548
+  },
+  {
+    "code": "G82",
+    "title_la": "Paraplegia et tetraplegia",
+    "source_line": 19562
+  },
+  {
+    "code": "G83",
+    "title_la": "Paralyses aliae",
+    "source_line": 19590
+  },
+  {
+    "code": "G90",
+    "title_la": "Disordines systematis nervosi autonomi",
+    "source_line": 19623
+  },
+  {
+    "code": "G91",
+    "title_la": "Hydrocephalus",
+    "source_line": 19652
+  },
+  {
+    "code": "G93",
+    "title_la": "Disordines cerebri alii",
+    "source_line": 19676
+  },
+  {
+    "code": "G95",
+    "title_la": "Disorders medullae spinalis alii",
+    "source_line": 19743
+  },
+  {
+    "code": "G96",
+    "title_la": "Disordines systematis nervosi centralis alii",
+    "source_line": 19782
+  },
+  {
+    "code": "G97",
+    "title_la": "Disordines systematis nervosi postprocedurales, non alibi classificatae",
+    "source_line": 19795
+  }
+]

@@ -1,0 +1,487 @@
+[
+  {
+    "code": "S00",
+    "title_la": "Laesio traumatica capitis, superficialis",
+    "source_line": 42989
+  },
+  {
+    "code": "S01",
+    "title_la": "Vulnus apertum capitis",
+    "source_line": 43024
+  },
+  {
+    "code": "S02",
+    "title_la": "Fractura cranii et fractura ossium faciei",
+    "source_line": 43052
+  },
+  {
+    "code": "S03",
+    "title_la": "Luxatio, distorsio et distensio articulorum et ligamentorum capitis",
+    "source_line": 43115
+  },
+  {
+    "code": "S04",
+    "title_la": "Laesiones traumaticae nervorum cranialium",
+    "source_line": 43141
+  },
+  {
+    "code": "S05",
+    "title_la": "Laesio traumatica oculi et orbitae",
+    "source_line": 43186
+  },
+  {
+    "code": "S06",
+    "title_la": "Laesio traumatica intracranialis",
+    "source_line": 43227
+  },
+  {
+    "code": "S07",
+    "title_la": "Conquassatio capitis",
+    "source_line": 43275
+  },
+  {
+    "code": "S08",
+    "title_la": "Amputatio traumatica partis capitis",
+    "source_line": 43286
+  },
+  {
+    "code": "S09",
+    "title_la": "Laesiones traumaticae capitis aliae et non classificatae",
+    "source_line": 43304
+  },
+  {
+    "code": "S10",
+    "title_la": "Laesio traumatica colli superficialis",
+    "source_line": 43353
+  },
+  {
+    "code": "S11",
+    "title_la": "Vulnus apertum colli",
+    "source_line": 43370
+  },
+  {
+    "code": "S12",
+    "title_la": "Fractura colli",
+    "source_line": 43398
+  },
+  {
+    "code": "S13",
+    "title_la": "Luxatio, distorsio et distensio articulorum et ligamentorum colli",
+    "source_line": 43435
+  },
+  {
+    "code": "S14",
+    "title_la": "Laesio traumatica nervorum et medullae spinalis colli",
+    "source_line": 43472
+  },
+  {
+    "code": "S15",
+    "title_la": "Laesio traumatica vasorum colli",
+    "source_line": 43490
+  },
+  {
+    "code": "S17",
+    "title_la": "Conquassatio colli",
+    "source_line": 43517
+  },
+  {
+    "code": "S19",
+    "title_la": "Laesiones traumatica colli aliae et non specificatae",
+    "source_line": 43530
+  },
+  {
+    "code": "S20",
+    "title_la": "Laesio traumatica thoracis superficialis",
+    "source_line": 43570
+  },
+  {
+    "code": "S21",
+    "title_la": "Vulnus apertum thoracis",
+    "source_line": 43588
+  },
+  {
+    "code": "S22",
+    "title_la": "Fractura costae(costarum), sterni and columnae vertebralis thoracalis",
+    "source_line": 43615
+  },
+  {
+    "code": "S23",
+    "title_la": "Luxatio, distorsio et distensio articulorum et ligamentorum thoracis",
+    "source_line": 43649
+  },
+  {
+    "code": "S24",
+    "title_la": "Laesiones traumaticae nervorum et medullae spinalis thoracalis",
+    "source_line": 43674
+  },
+  {
+    "code": "S25",
+    "title_la": "Laesio traumatica vasorum thoracis",
+    "source_line": 43697
+  },
+  {
+    "code": "S26",
+    "title_la": "Laesio traumatica cordis",
+    "source_line": 43729
+  },
+  {
+    "code": "S27",
+    "title_la": "Laesiones traumaticae organorum thoracis aliorum, non specificatorum",
+    "source_line": 43746
+  },
+  {
+    "code": "S28",
+    "title_la": "Conquassatio et amputatio traumatica partis thoracis",
+    "source_line": 43786
+  },
+  {
+    "code": "S29",
+    "title_la": "Laesiones traumaticae thoracis aliae et non specificatae",
+    "source_line": 43796
+  },
+  {
+    "code": "S30",
+    "title_la": "Laesio traumatica abdominis, lumbi et pelvis, superficialis",
+    "source_line": 43836
+  },
+  {
+    "code": "S31",
+    "title_la": "Vulnus apertum abdominis lumbi et pelvis",
+    "source_line": 43869
+  },
+  {
+    "code": "S32",
+    "title_la": "Fractura columnae vertebralis lumbalis et pelvis",
+    "source_line": 43894
+  },
+  {
+    "code": "S33",
+    "title_la": "Luxatio, distorsio et distensio articulorum et ligamentorum columnae",
+    "source_line": 43936
+  },
+  {
+    "code": "S34",
+    "title_la": "Laesio traumatica nervorum et medullae spinalis lumbalis regionis",
+    "source_line": 43961
+  },
+  {
+    "code": "S35",
+    "title_la": "Laesio traumatica vasorum regionis abdominis, lumbi et pelvis",
+    "source_line": 43993
+  },
+  {
+    "code": "S36",
+    "title_la": "Laesio traumatica organorum intraabdominalium",
+    "source_line": 44028
+  },
+  {
+    "code": "S37",
+    "title_la": "Laesio traumatica organorum urinariorum et pelvicis",
+    "source_line": 44063
+  },
+  {
+    "code": "S38",
+    "title_la": "Conquassatio et amputatio partis abdominis, lumbi et pelvis traumatica",
+    "source_line": 44104
+  },
+  {
+    "code": "S39",
+    "title_la": "Laesiones traumaticae abdominis, lumbi et pelvis aliae et non specificatae",
+    "source_line": 44123
+  },
+  {
+    "code": "S40",
+    "title_la": "Laesio traumatica regionis deltoideae et brachii superficialis",
+    "source_line": 44158
+  },
+  {
+    "code": "S41",
+    "title_la": "Vulnus apertum regionis deltoideae et brachii",
+    "source_line": 44169
+  },
+  {
+    "code": "S42",
+    "title_la": "Fractura regionis deltoideae et brachii",
+    "source_line": 44181
+  },
+  {
+    "code": "S43",
+    "title_la": "Luxatio, distorsio et distensio articulorum et ligamentorum cinguli",
+    "source_line": 44235
+  },
+  {
+    "code": "S44",
+    "title_la": "Laesio traumatica nervorum regionis deltoideae et brachii",
+    "source_line": 44268
+  },
+  {
+    "code": "S45",
+    "title_la": "Laesio traumatica vasorum regionis deltoideae et brachii",
+    "source_line": 44293
+  },
+  {
+    "code": "S46",
+    "title_la": "Laesio traumatica musculi et tendinis regionis deltoideae et brachii",
+    "source_line": 44318
+  },
+  {
+    "code": "S48",
+    "title_la": "Amputatio traumatica regionis deltoideae et brachii",
+    "source_line": 44340
+  },
+  {
+    "code": "S49",
+    "title_la": "Laesiones traumaticae regionis deltoideae et brachii aliae, non specificatae",
+    "source_line": 44352
+  },
+  {
+    "code": "S50",
+    "title_la": "Laesio traumatica antebrachii, superficialis",
+    "source_line": 44379
+  },
+  {
+    "code": "S51",
+    "title_la": "Vulnus apertum antebrachii",
+    "source_line": 44394
+  },
+  {
+    "code": "S52",
+    "title_la": "Fractura antebrachii",
+    "source_line": 44407
+  },
+  {
+    "code": "S53",
+    "title_la": "Luxatio, distorsio et distensio articulorum et ligamentorum cubiti",
+    "source_line": 44457
+  },
+  {
+    "code": "S54",
+    "title_la": "Laesio traumatica nervorum antebrachii",
+    "source_line": 44479
+  },
+  {
+    "code": "S55",
+    "title_la": "Laesio traumatica vasorum regionis antebrachii",
+    "source_line": 44500
+  },
+  {
+    "code": "S56",
+    "title_la": "Laesio traumatica musculi et tendinis regionis antebrachii",
+    "source_line": 44518
+  },
+  {
+    "code": "S57",
+    "title_la": "Conquassatio antebrachii",
+    "source_line": 44549
+  },
+  {
+    "code": "S58",
+    "title_la": "Amputatio traumatica antebrachii",
+    "source_line": 44559
+  },
+  {
+    "code": "S59",
+    "title_la": "Laesiones traumaticae antebrachii aliae, non specificatae",
+    "source_line": 44569
+  },
+  {
+    "code": "S60",
+    "title_la": "Laesio traumatica carpi et manus, superficalis",
+    "source_line": 44595
+  },
+  {
+    "code": "S61",
+    "title_la": "Vulnus apertum carpi et manus",
+    "source_line": 44612
+  },
+  {
+    "code": "S62",
+    "title_la": "Fractura carpi et manus",
+    "source_line": 44628
+  },
+  {
+    "code": "S63",
+    "title_la": "Luxatio, distorsio et distensio articulorum et ligamentorum regionis carpi et",
+    "source_line": 44669
+  },
+  {
+    "code": "S64",
+    "title_la": "Laesio traumatica nervorum carpi et manus",
+    "source_line": 44722
+  },
+  {
+    "code": "S65",
+    "title_la": "Laesio traumatica vasorum regionis carpi et manus",
+    "source_line": 44741
+  },
+  {
+    "code": "S66",
+    "title_la": "Laesio traumatica musculi et tendinis regionis carpi et manus",
+    "source_line": 44769
+  },
+  {
+    "code": "S67",
+    "title_la": "Conquasatio carpi et manus",
+    "source_line": 44799
+  },
+  {
+    "code": "S68",
+    "title_la": "Amputatio traumatica carpi et manus",
+    "source_line": 44813
+  },
+  {
+    "code": "S69",
+    "title_la": "Laesiones traumaticae carpi et manus aliae et non specificatae",
+    "source_line": 44831
+  },
+  {
+    "code": "S70",
+    "title_la": "Laesio traumatica regionis coxae et femoris superficialis",
+    "source_line": 44851
+  },
+  {
+    "code": "S71",
+    "title_la": "Vulnus apertum regionis coxae et femoris",
+    "source_line": 44869
+  },
+  {
+    "code": "S72",
+    "title_la": "Fractura femoris",
+    "source_line": 44881
+  },
+  {
+    "code": "S73",
+    "title_la": "Luxatio, distorsio et distensio articuli et ligamentorum coxae",
+    "source_line": 44908
+  },
+  {
+    "code": "S74",
+    "title_la": "Laesio traumatica nervorum regionis coxae et femoris",
+    "source_line": 44915
+  },
+  {
+    "code": "S75",
+    "title_la": "Laesio traumatica vasorum regionis coxae et femoris",
+    "source_line": 44936
+  },
+  {
+    "code": "S76",
+    "title_la": "Laesio traumatica musculi et tendinis regionis coxae et femoris",
+    "source_line": 44953
+  },
+  {
+    "code": "S77",
+    "title_la": "Conquassatio coxae et conquassatio femoris",
+    "source_line": 44969
+  },
+  {
+    "code": "S78",
+    "title_la": "Amputatio traumatica coxae et femoris",
+    "source_line": 44984
+  },
+  {
+    "code": "S79",
+    "title_la": "Laesiones traumaticae coxae et femoris aliae, non specificatae",
+    "source_line": 44994
+  },
+  {
+    "code": "S80",
+    "title_la": "Laesio traumatica cruris superficialis",
+    "source_line": 45016
+  },
+  {
+    "code": "S81",
+    "title_la": "Vulnus apertum cruris",
+    "source_line": 45037
+  },
+  {
+    "code": "S82",
+    "title_la": "Fractura cruris, regionem talocruralem, includens",
+    "source_line": 45050
+  },
+  {
+    "code": "S83",
+    "title_la": "Luxatio, distorsio et distensio articulorum et ligamentorum genus",
+    "source_line": 45105
+  },
+  {
+    "code": "S84",
+    "title_la": "Laesio traumatica nervorum cruris",
+    "source_line": 45147
+  },
+  {
+    "code": "S85",
+    "title_la": "Laesio traumatica vasorum cruris",
+    "source_line": 45163
+  },
+  {
+    "code": "S86",
+    "title_la": "Laesio traumatica musculi et tendinis cruris",
+    "source_line": 45186
+  },
+  {
+    "code": "S87",
+    "title_la": "Conquassatio genus et conquassatio cruris",
+    "source_line": 45216
+  },
+  {
+    "code": "S88",
+    "title_la": "Amputatio traumatica cruris",
+    "source_line": 45224
+  },
+  {
+    "code": "S89",
+    "title_la": "Laesiones traumatica cruris aliae, non specificatae",
+    "source_line": 45236
+  },
+  {
+    "code": "S90",
+    "title_la": "Laesio traumatica regionis malleoli et pedis, superficialis",
+    "source_line": 45263
+  },
+  {
+    "code": "S91",
+    "title_la": "Vulnus apertum regionis malleoli et pedis",
+    "source_line": 45281
+  },
+  {
+    "code": "S92",
+    "title_la": "Fractura pedis (excl.regio malleoli)",
+    "source_line": 45297
+  },
+  {
+    "code": "S93",
+    "title_la": "Luxatio, distorsio et distensio articulorum et ligamentorum regionis malleoli",
+    "source_line": 45334
+  },
+  {
+    "code": "S94",
+    "title_la": "Laesio traumatica nervorum regionis malleoli et pedis",
+    "source_line": 45378
+  },
+  {
+    "code": "S95",
+    "title_la": "Laesio traumatica vasorum regionis malleoli et pedis",
+    "source_line": 45396
+  },
+  {
+    "code": "S96",
+    "title_la": "Laesio traumatica musculi et tendinis regionis malleoli et pedis",
+    "source_line": 45417
+  },
+  {
+    "code": "S97",
+    "title_la": "Conquassatio regionis malleoli et pedis",
+    "source_line": 45440
+  },
+  {
+    "code": "S98",
+    "title_la": "Amputatio traumatica tarsi et pedis",
+    "source_line": 45450
+  },
+  {
+    "code": "S99",
+    "title_la": "Laesiones traumaticae regionis malleoli et pedis aliae non specificatae",
+    "source_line": 45471
+  }
+]

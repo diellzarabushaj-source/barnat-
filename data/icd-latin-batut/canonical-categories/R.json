@@ -1,0 +1,287 @@
+[
+  {
+    "code": "R00",
+    "title_la": "Arrhytmiae cordis",
+    "source_line": 41037
+  },
+  {
+    "code": "R01",
+    "title_la": "Strepitus et soni cardiaci alii",
+    "source_line": 41066
+  },
+  {
+    "code": "R03",
+    "title_la": "Tensio sanguinea abnormalis, sine diagnosi",
+    "source_line": 41090
+  },
+  {
+    "code": "R04",
+    "title_la": "Haemorrhagia tractuum respiratoriorum",
+    "source_line": 41103
+  },
+  {
+    "code": "R06",
+    "title_la": "Respirationes abnormales",
+    "source_line": 41135
+  },
+  {
+    "code": "R07",
+    "title_la": "Dolor laryngicus et pectoralis",
+    "source_line": 41186
+  },
+  {
+    "code": "R09",
+    "title_la": "Symptomata et signa systematis circulatorii et respiratorii alia",
+    "source_line": 41206
+  },
+  {
+    "code": "R10",
+    "title_la": "Dolor abdominalis et pelvicus",
+    "source_line": 41267
+  },
+  {
+    "code": "R16",
+    "title_la": "Hepatomegalia et splenomegalia, non alibi classificatae",
+    "source_line": 41328
+  },
+  {
+    "code": "R19",
+    "title_la": "Symptomata et signa systematis digestivi et abdominis alia",
+    "source_line": 41355
+  },
+  {
+    "code": "R20",
+    "title_la": "Disordines sensibilitatis cutis",
+    "source_line": 41404
+  },
+  {
+    "code": "R22",
+    "title_la": "Intumescentia et tumefactia localisata cutis et subcutis",
+    "source_line": 41426
+  },
+  {
+    "code": "R23",
+    "title_la": "Mutationes cutis aliae",
+    "source_line": 41461
+  },
+  {
+    "code": "R25",
+    "title_la": "Motus involuntarii abnormales",
+    "source_line": 41493
+  },
+  {
+    "code": "R26",
+    "title_la": "Abnormitates ingressus et mobilitatis",
+    "source_line": 41525
+  },
+  {
+    "code": "R27",
+    "title_la": "Coordinatio disordinata alia",
+    "source_line": 41548
+  },
+  {
+    "code": "R29",
+    "title_la": "Symptomata et signa systematis nervosi et musculosceletalis alia",
+    "source_line": 41565
+  },
+  {
+    "code": "R30",
+    "title_la": "Mictio dolorosa",
+    "source_line": 41604
+  },
+  {
+    "code": "R39",
+    "title_la": "Symptomata et signa systematis urinarii alia",
+    "source_line": 41650
+  },
+  {
+    "code": "R40",
+    "title_la": "Somnolentia, stupor et coma",
+    "source_line": 41676
+  },
+  {
+    "code": "R41",
+    "title_la": "Symptomata et signa cognitionis et conscientiae alia",
+    "source_line": 41697
+  },
+  {
+    "code": "R43",
+    "title_la": "Disordines olfactus et disordines gustus",
+    "source_line": 41727
+  },
+  {
+    "code": "R44",
+    "title_la": "Symptomata et signa sensus et perceptionis generalisata alia",
+    "source_line": 41739
+  },
+  {
+    "code": "R45",
+    "title_la": "Symptomata et signa emmotionalia",
+    "source_line": 41753
+  },
+  {
+    "code": "R46",
+    "title_la": "Symptomata et signa aspectus externi et morum",
+    "source_line": 41786
+  },
+  {
+    "code": "R47",
+    "title_la": "Disordines orationis, non alibi classificatae",
+    "source_line": 41815
+  },
+  {
+    "code": "R48",
+    "title_la": "Dyslexia et dysfunctiones symbolicae aliae, non alibi classificatae",
+    "source_line": 41836
+  },
+  {
+    "code": "R49",
+    "title_la": "Disordines vocales",
+    "source_line": 41851
+  },
+  {
+    "code": "R50",
+    "title_la": "Febris causae ignotae aliae",
+    "source_line": 41871
+  },
+  {
+    "code": "R52",
+    "title_la": "Dolor, non alibi classificatus",
+    "source_line": 41905
+  },
+  {
+    "code": "R56",
+    "title_la": "Convulsiones, non alibi classificatae",
+    "source_line": 42007
+  },
+  {
+    "code": "R57",
+    "title_la": "Afflictus (shock), non alibi classificatus",
+    "source_line": 42019
+  },
+  {
+    "code": "R59",
+    "title_la": "Hypertrophia lymphonodorum",
+    "source_line": 42060
+  },
+  {
+    "code": "R60",
+    "title_la": "Oedema, non alibi classificatum",
+    "source_line": 42077
+  },
+  {
+    "code": "R61",
+    "title_la": "Hyperhydrosis",
+    "source_line": 42103
+  },
+  {
+    "code": "R62",
+    "title_la": "Insufficientia evolutonis physiologicae",
+    "source_line": 42122
+  },
+  {
+    "code": "R63",
+    "title_la": "Symptomata et signa ad receptionem alimenti et liquoris",
+    "source_line": 42143
+  },
+  {
+    "code": "R65",
+    "title_la": "Syndroma responsi inflammatorii systemici [SIRS]",
+    "source_line": 42189
+  },
+  {
+    "code": "R68",
+    "title_la": "Symptomata et signa generalia alia",
+    "source_line": 42210
+  },
+  {
+    "code": "R70",
+    "title_la": "Hypersedimentatio erythrocytorum acuta et disordines viscositatis plasmatis",
+    "source_line": 42265
+  },
+  {
+    "code": "R73",
+    "title_la": "Hyperglycaemia",
+    "source_line": 42297
+  },
+  {
+    "code": "R74",
+    "title_la": "Gradus seroenzymarum abnormalis",
+    "source_line": 42314
+  },
+  {
+    "code": "R76",
+    "title_la": "Abnormitates seroimmunologicae aliae",
+    "source_line": 42335
+  },
+  {
+    "code": "R77",
+    "title_la": "Disordines proteini in sanguine alii",
+    "source_line": 42362
+  },
+  {
+    "code": "R78",
+    "title_la": "Medicamenta et substantiae in sanguine, quae normale non sunt, aliae",
+    "source_line": 42377
+  },
+  {
+    "code": "R79",
+    "title_la": "Chemicaemiae abnormales aliae",
+    "source_line": 42412
+  },
+  {
+    "code": "R82",
+    "title_la": "Abnormalitates urinae aliae",
+    "source_line": 42473
+  },
+  {
+    "code": "R83",
+    "title_la": "Liquor cerebrospinalis abnormalis",
+    "source_line": 42559
+  },
+  {
+    "code": "R84",
+    "title_la": "Probae organorum respiratoriorum et thoracis abnormales",
+    "source_line": 42563
+  },
+  {
+    "code": "R85",
+    "title_la": "Probae organorum digestivorum et cavi abdominalis abnormales",
+    "source_line": 42573
+  },
+  {
+    "code": "R86",
+    "title_la": "Probae organorum genitalium masculinorum abnormales",
+    "source_line": 42580
+  },
+  {
+    "code": "R87",
+    "title_la": "Probae organorum genitalium femininorum abnormales",
+    "source_line": 42589
+  },
+  {
+    "code": "R89",
+    "title_la": "Probae organorum, systematum et textuum aliorum abnormales",
+    "source_line": 42602
+  },
+  {
+    "code": "R90",
+    "title_la": "Systema nervorum centrale ad diagnosticam abnormale",
+    "source_line": 42629
+  },
+  {
+    "code": "R93",
+    "title_la": "Structurae corporales ad diagnosticam abnormales aliae",
+    "source_line": 42646
+  },
+  {
+    "code": "R94",
+    "title_la": "Dysfunctiones organorum",
+    "source_line": 42688
+  },
+  {
+    "code": "R96",
+    "title_la": "Mors subita alia, causa ignota",
+    "source_line": 42749
+  }
+]

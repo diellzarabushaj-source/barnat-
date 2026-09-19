@@ -1,0 +1,277 @@
+[
+  {
+    "code": "L01",
+    "title_la": "Impetigo",
+    "source_line": 28257
+  },
+  {
+    "code": "L02",
+    "title_la": "Abscessus, furunculus et carbunculus cutis",
+    "source_line": 28274
+  },
+  {
+    "code": "L03",
+    "title_la": "Cellulitis [Phlegmone]",
+    "source_line": 28330
+  },
+  {
+    "code": "L04",
+    "title_la": "Lymphadenitis acuta",
+    "source_line": 28382
+  },
+  {
+    "code": "L05",
+    "title_la": "Cystis pilonidalis",
+    "source_line": 28409
+  },
+  {
+    "code": "L08",
+    "title_la": "Infectiones locales cutis et subcutis aliae",
+    "source_line": 28420
+  },
+  {
+    "code": "L10",
+    "title_la": "Pemphigus",
+    "source_line": 28448
+  },
+  {
+    "code": "L11",
+    "title_la": "Disordines acantolici alii",
+    "source_line": 28470
+  },
+  {
+    "code": "L12",
+    "title_la": "Pemphigoides",
+    "source_line": 28482
+  },
+  {
+    "code": "L13",
+    "title_la": "Disordines bullosum, alii",
+    "source_line": 28508
+  },
+  {
+    "code": "L20",
+    "title_la": "Dermatitis atopica",
+    "source_line": 28539
+  },
+  {
+    "code": "L21",
+    "title_la": "Dermatitis seborrhoeica",
+    "source_line": 28564
+  },
+  {
+    "code": "L23",
+    "title_la": "Dermatitis contacta allergica",
+    "source_line": 28584
+  },
+  {
+    "code": "L24",
+    "title_la": "Dermatitis contacta irritans",
+    "source_line": 28638
+  },
+  {
+    "code": "L25",
+    "title_la": "Dermatitis contacta, non specificata",
+    "source_line": 28697
+  },
+  {
+    "code": "L27",
+    "title_la": "Dermatitis propter materiam consumptam",
+    "source_line": 28749
+  },
+  {
+    "code": "L28",
+    "title_la": "Lichen simplex chronicus et prurigo",
+    "source_line": 28783
+  },
+  {
+    "code": "L29",
+    "title_la": "Pruritus",
+    "source_line": 28799
+  },
+  {
+    "code": "L30",
+    "title_la": "Dermatitis alia",
+    "source_line": 28817
+  },
+  {
+    "code": "L40",
+    "title_la": "Psoriasis",
+    "source_line": 28858
+  },
+  {
+    "code": "L41",
+    "title_la": "Parapsoriasis",
+    "source_line": 28889
+  },
+  {
+    "code": "L43",
+    "title_la": "Lichen planus",
+    "source_line": 28913
+  },
+  {
+    "code": "L44",
+    "title_la": "Disordines papulosquamosi alii",
+    "source_line": 28932
+  },
+  {
+    "code": "L50",
+    "title_la": "Urticaria",
+    "source_line": 28965
+  },
+  {
+    "code": "L51",
+    "title_la": "Erythema multiforme",
+    "source_line": 29008
+  },
+  {
+    "code": "L53",
+    "title_la": "Conditiones erythematosi, alii",
+    "source_line": 29025
+  },
+  {
+    "code": "L55",
+    "title_la": "Combustio solaris",
+    "source_line": 29068
+  },
+  {
+    "code": "L56",
+    "title_la": "Alterationes cutis acutae propter radiationem ultraviolaceam, aliae",
+    "source_line": 29081
+  },
+  {
+    "code": "L57",
+    "title_la": "Alterationes cutis propter expositionem chronicum in radiatione non ionica",
+    "source_line": 29107
+  },
+  {
+    "code": "L58",
+    "title_la": "Radiodermatitis",
+    "source_line": 29135
+  },
+  {
+    "code": "L59",
+    "title_la": "Disordines cutis et subcutis propter radiationem, alii",
+    "source_line": 29144
+  },
+  {
+    "code": "L60",
+    "title_la": "Disordines unguium",
+    "source_line": 29164
+  },
+  {
+    "code": "L63",
+    "title_la": "Alopecia areata",
+    "source_line": 29192
+  },
+  {
+    "code": "L64",
+    "title_la": "Alopecia androgenes",
+    "source_line": 29212
+  },
+  {
+    "code": "L65",
+    "title_la": "Alopecia alia non cicatricosa",
+    "source_line": 29223
+  },
+  {
+    "code": "L66",
+    "title_la": "Alopecia cicatricosa",
+    "source_line": 29240
+  },
+  {
+    "code": "L67",
+    "title_la": "Abnormitates coloris et scapi pilorum",
+    "source_line": 29265
+  },
+  {
+    "code": "L68",
+    "title_la": "Hypertrichosis",
+    "source_line": 29286
+  },
+  {
+    "code": "L70",
+    "title_la": "Acnae",
+    "source_line": 29308
+  },
+  {
+    "code": "L71",
+    "title_la": "Rosacea",
+    "source_line": 29337
+  },
+  {
+    "code": "L72",
+    "title_la": "Cystes folliculares cutis et subcutis",
+    "source_line": 29350
+  },
+  {
+    "code": "L73",
+    "title_la": "Disordines folliculares alii",
+    "source_line": 29365
+  },
+  {
+    "code": "L74",
+    "title_la": "Disordines sudoris eccrinae",
+    "source_line": 29386
+  },
+  {
+    "code": "L75",
+    "title_la": "Disordines sudoris apoccrinae",
+    "source_line": 29407
+  },
+  {
+    "code": "L81",
+    "title_la": "Disordines pigmentationis cutis alii",
+    "source_line": 29435
+  },
+  {
+    "code": "L85",
+    "title_la": "Crassificatio epidermidis alia",
+    "source_line": 29479
+  },
+  {
+    "code": "L87",
+    "title_la": "Disordines eliminationis transepidermalis",
+    "source_line": 29511
+  },
+  {
+    "code": "L89",
+    "title_la": "Ulcus decubitale",
+    "source_line": 29538
+  },
+  {
+    "code": "L90",
+    "title_la": "Disordines atrophicae cutis",
+    "source_line": 29569
+  },
+  {
+    "code": "L91",
+    "title_la": "Disordines hypertrophici cutis",
+    "source_line": 29607
+  },
+  {
+    "code": "L92",
+    "title_la": "Cutis et subcutis granulomatosa",
+    "source_line": 29620
+  },
+  {
+    "code": "L93",
+    "title_la": "Lupus erythematosus",
+    "source_line": 29645
+  },
+  {
+    "code": "L94",
+    "title_la": "Collagenoses localisatae aliae",
+    "source_line": 29665
+  },
+  {
+    "code": "L95",
+    "title_la": "Vasculitis in cute limitata, non alibi classificata",
+    "source_line": 29696
+  },
+  {
+    "code": "L98",
+    "title_la": "Disordines cutis et subcutis alii, non alibi classificati",
+    "source_line": 29729
+  }
+]

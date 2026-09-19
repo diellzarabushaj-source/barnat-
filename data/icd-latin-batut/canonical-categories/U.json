@@ -1,0 +1,22 @@
+[
+  {
+    "code": "U04",
+    "title_la": "Teški akutni respiratorni sindrom [SARS]",
+    "source_line": 54505
+  },
+  {
+    "code": "U80",
+    "title_la": "Agens otporan na penicilin i srodne antibiotike",
+    "source_line": 54517
+  },
+  {
+    "code": "U81",
+    "title_la": "Agens otporan na vankomicin i srodne antibiotike",
+    "source_line": 54522
+  },
+  {
+    "code": "U89",
+    "title_la": "Agens otporan na druge i neodređene antibiotike",
+    "source_line": 54533
+  }
+]

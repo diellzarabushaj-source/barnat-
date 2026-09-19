@@ -1,0 +1,337 @@
+[
+  {
+    "code": "B00",
+    "title_la": "Infectiones herpesvirales",
+    "source_line": 6483
+  },
+  {
+    "code": "B01",
+    "title_la": "Varicella",
+    "source_line": 6538
+  },
+  {
+    "code": "B02",
+    "title_la": "Herpes zoster",
+    "source_line": 6562
+  },
+  {
+    "code": "B05",
+    "title_la": "Morbilli",
+    "source_line": 6599
+  },
+  {
+    "code": "B06",
+    "title_la": "Rubeola",
+    "source_line": 6630
+  },
+  {
+    "code": "B08",
+    "title_la": "Infectiones virales cum laesionibus mucocutaneis aliae, non alibi",
+    "source_line": 6664
+  },
+  {
+    "code": "B15",
+    "title_la": "Hepatitis acuta A",
+    "source_line": 6709
+  },
+  {
+    "code": "B16",
+    "title_la": "Hepatitis acuta B",
+    "source_line": 6724
+  },
+  {
+    "code": "B17",
+    "title_la": "Hepatitides virales acutae aliae",
+    "source_line": 6737
+  },
+  {
+    "code": "B18",
+    "title_la": "Hepatitis viralis chronica",
+    "source_line": 6752
+  },
+  {
+    "code": "B19",
+    "title_la": "Hepatitis viralis, non specificata",
+    "source_line": 6766
+  },
+  {
+    "code": "B20",
+    "title_la": "Morbus HIV - morbus immunodeficientiae acquisitae cum morbis infectivis et",
+    "source_line": 6788
+  },
+  {
+    "code": "B21",
+    "title_la": "Morbus HIV cum neoplasmatis malignis",
+    "source_line": 6816
+  },
+  {
+    "code": "B22",
+    "title_la": "Morbus HIV cum morbis aliis specificatis",
+    "source_line": 6841
+  },
+  {
+    "code": "B23",
+    "title_la": "Morbus HIV cum statibus adjunctis aliis",
+    "source_line": 6857
+  },
+  {
+    "code": "B25",
+    "title_la": "Morbus cytomegaloviralis",
+    "source_line": 6883
+  },
+  {
+    "code": "B26",
+    "title_la": "Parotitis",
+    "source_line": 6898
+  },
+  {
+    "code": "B27",
+    "title_la": "Mononucleosis infectiva",
+    "source_line": 6921
+  },
+  {
+    "code": "B30",
+    "title_la": "Coniunctivitis viralis",
+    "source_line": 6943
+  },
+  {
+    "code": "B33",
+    "title_la": "Morbi virales alii, non alibi classificati",
+    "source_line": 6970
+  },
+  {
+    "code": "B34",
+    "title_la": "Infectio viralis, loci non specificati",
+    "source_line": 7003
+  },
+  {
+    "code": "B35",
+    "title_la": "Dermatophytosis",
+    "source_line": 7040
+  },
+  {
+    "code": "B36",
+    "title_la": "Mycoses superficiales aliae",
+    "source_line": 7089
+  },
+  {
+    "code": "B37",
+    "title_la": "Candidiasis",
+    "source_line": 7111
+  },
+  {
+    "code": "B38",
+    "title_la": "Coccidioidomycosis",
+    "source_line": 7154
+  },
+  {
+    "code": "B39",
+    "title_la": "Histoplasmosis",
+    "source_line": 7174
+  },
+  {
+    "code": "B40",
+    "title_la": "Blastomycosis",
+    "source_line": 7201
+  },
+  {
+    "code": "B41",
+    "title_la": "Paracoccidioidomycosis",
+    "source_line": 7221
+  },
+  {
+    "code": "B42",
+    "title_la": "Sporotrichosis",
+    "source_line": 7235
+  },
+  {
+    "code": "B43",
+    "title_la": "Chromomycosis et abscessus phaemycoticus",
+    "source_line": 7256
+  },
+  {
+    "code": "B44",
+    "title_la": "Aspergillosis",
+    "source_line": 7271
+  },
+  {
+    "code": "B45",
+    "title_la": "Cryptococcosis",
+    "source_line": 7288
+  },
+  {
+    "code": "B46",
+    "title_la": "Zygomycosis",
+    "source_line": 7314
+  },
+  {
+    "code": "B47",
+    "title_la": "Mycetoma",
+    "source_line": 7337
+  },
+  {
+    "code": "B48",
+    "title_la": "Mycoses aliae, non alibi classificatae",
+    "source_line": 7349
+  },
+  {
+    "code": "B50",
+    "title_la": "Malaria cum Plasmodio falciparo",
+    "source_line": 7392
+  },
+  {
+    "code": "B51",
+    "title_la": "Malarija cum Plasmodio vivaci",
+    "source_line": 7406
+  },
+  {
+    "code": "B52",
+    "title_la": "Malaria cum Plasmodio malariae",
+    "source_line": 7427
+  },
+  {
+    "code": "B53",
+    "title_la": "Malariae aliae, per parasitologiam confirmatae",
+    "source_line": 7441
+  },
+  {
+    "code": "B55",
+    "title_la": "Leishmaniasis",
+    "source_line": 7464
+  },
+  {
+    "code": "B56",
+    "title_la": "Trypanosomiasis africana",
+    "source_line": 7483
+  },
+  {
+    "code": "B57",
+    "title_la": "Morbus Chagas",
+    "source_line": 7498
+  },
+  {
+    "code": "B58",
+    "title_la": "Toxoplasmosis",
+    "source_line": 7532
+  },
+  {
+    "code": "B60",
+    "title_la": "Morbi protozoici alii, non alibi classificati",
+    "source_line": 7558
+  },
+  {
+    "code": "B65",
+    "title_la": "Schistosomiasis (bilharziasis)",
+    "source_line": 7590
+  },
+  {
+    "code": "B66",
+    "title_la": "Infectiones trematodicae aliae",
+    "source_line": 7612
+  },
+  {
+    "code": "B67",
+    "title_la": "Echinococcosis",
+    "source_line": 7662
+  },
+  {
+    "code": "B68",
+    "title_la": "Taeniasis",
+    "source_line": 7696
+  },
+  {
+    "code": "B69",
+    "title_la": "Cysticercosis",
+    "source_line": 7708
+  },
+  {
+    "code": "B70",
+    "title_la": "Diphyllobothriasis et sparganosis",
+    "source_line": 7720
+  },
+  {
+    "code": "B71",
+    "title_la": "Infectiones cestodicae aliae",
+    "source_line": 7735
+  },
+  {
+    "code": "B74",
+    "title_la": "Filariasis",
+    "source_line": 7770
+  },
+  {
+    "code": "B76",
+    "title_la": "Ankylostomiasis",
+    "source_line": 7812
+  },
+  {
+    "code": "B77",
+    "title_la": "Ascariasis",
+    "source_line": 7827
+  },
+  {
+    "code": "B78",
+    "title_la": "Strongyloidiasis",
+    "source_line": 7838
+  },
+  {
+    "code": "B81",
+    "title_la": "Helminthiases intestinales aliae, non alibi classificatae",
+    "source_line": 7868
+  },
+  {
+    "code": "B82",
+    "title_la": "Infectio intestinalis parasitaria, non specificata",
+    "source_line": 7897
+  },
+  {
+    "code": "B83",
+    "title_la": "Helminthiases aliae",
+    "source_line": 7904
+  },
+  {
+    "code": "B85",
+    "title_la": "Pediculosis et phthiriasis",
+    "source_line": 7950
+  },
+  {
+    "code": "B87",
+    "title_la": "Myiasis",
+    "source_line": 7977
+  },
+  {
+    "code": "B88",
+    "title_la": "Infestationes per arthropodes aliae",
+    "source_line": 8000
+  },
+  {
+    "code": "B90",
+    "title_la": "Sequelae tuberculosis",
+    "source_line": 8055
+  },
+  {
+    "code": "B94",
+    "title_la": "Sequelae morborum infectivorum et parasitariorum aliorum, non",
+    "source_line": 8083
+  },
+  {
+    "code": "B95",
+    "title_la": "Streptococcus et staphylococcus ut causae morborum",
+    "source_line": 8105
+  },
+  {
+    "code": "B96",
+    "title_la": "Agentes bacteriales specificati alii ut causa morborum",
+    "source_line": 8126
+  },
+  {
+    "code": "B97",
+    "title_la": "Agentes virales ut causa morborum",
+    "source_line": 8157
+  },
+  {
+    "code": "B98",
+    "title_la": "Agenti infectivi specificati alii ut causa morborum",
+    "source_line": 8183
+  }
+]

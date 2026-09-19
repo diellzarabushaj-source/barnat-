@@ -1,0 +1,312 @@
+[
+  {
+    "code": "I01",
+    "title_la": "Febris rheumatica cum alterationibus cardiacis",
+    "source_line": 22023
+  },
+  {
+    "code": "I02",
+    "title_la": "Chorea rheumatica",
+    "source_line": 22050
+  },
+  {
+    "code": "I05",
+    "title_la": "Morbus valvulae mitralis rheumaticus",
+    "source_line": 22074
+  },
+  {
+    "code": "I06",
+    "title_la": "Morbi valvulae aortae rheumatici",
+    "source_line": 22096
+  },
+  {
+    "code": "I07",
+    "title_la": "Morbi valvulae tricuspidalis rheumatici",
+    "source_line": 22123
+  },
+  {
+    "code": "I08",
+    "title_la": "Morbi valvularum cordis multiplices",
+    "source_line": 22141
+  },
+  {
+    "code": "I09",
+    "title_la": "Morbi cordis rheumatici alii",
+    "source_line": 22163
+  },
+  {
+    "code": "I11",
+    "title_la": "Morbus cordis hypertensivus",
+    "source_line": 22212
+  },
+  {
+    "code": "I12",
+    "title_la": "Morbus renalis hypertensivus",
+    "source_line": 22230
+  },
+  {
+    "code": "I13",
+    "title_la": "Morbus cordis et morbus renis hypertensivus",
+    "source_line": 22245
+  },
+  {
+    "code": "I15",
+    "title_la": "Hypertensio arterialis secundaria",
+    "source_line": 22263
+  },
+  {
+    "code": "I20",
+    "title_la": "Angina pectoris",
+    "source_line": 22295
+  },
+  {
+    "code": "I21",
+    "title_la": "Infarctus myocardii acutus",
+    "source_line": 22330
+  },
+  {
+    "code": "I22",
+    "title_la": "Infarctus myocardii recidivus",
+    "source_line": 22379
+  },
+  {
+    "code": "I23",
+    "title_la": "Complicationes post infarctum cordis acutum",
+    "source_line": 22415
+  },
+  {
+    "code": "I24",
+    "title_la": "Morbi cordis ishaemici acuti alli",
+    "source_line": 22449
+  },
+  {
+    "code": "I25",
+    "title_la": "Morbus cordis ischaemicus chronicus",
+    "source_line": 22470
+  },
+  {
+    "code": "I26",
+    "title_la": "Embolia pulmonis",
+    "source_line": 22519
+  },
+  {
+    "code": "I27",
+    "title_la": "Morbi cordis pulmonales alii",
+    "source_line": 22533
+  },
+  {
+    "code": "I28",
+    "title_la": "Morbi vasorum pulmonis alii",
+    "source_line": 22558
+  },
+  {
+    "code": "I30",
+    "title_la": "Pericarditis acuta",
+    "source_line": 22577
+  },
+  {
+    "code": "I31",
+    "title_la": "Morbi pericardii alii",
+    "source_line": 22605
+  },
+  {
+    "code": "I33",
+    "title_la": "Endocarditis acuta et subacuta",
+    "source_line": 22659
+  },
+  {
+    "code": "I34",
+    "title_la": "Morbi valvulae mitralis, non rheumatici",
+    "source_line": 22679
+  },
+  {
+    "code": "I35",
+    "title_la": "Morbi valvulae aortae non rheumatici",
+    "source_line": 22713
+  },
+  {
+    "code": "I36",
+    "title_la": "Morbi valvulae tricuspidalis non rheumatici",
+    "source_line": 22733
+  },
+  {
+    "code": "I37",
+    "title_la": "Morbi valvulae pulmonalis",
+    "source_line": 22752
+  },
+  {
+    "code": "I40",
+    "title_la": "Myocarditis acuta",
+    "source_line": 22813
+  },
+  {
+    "code": "I42",
+    "title_la": "Cardiomyopathia",
+    "source_line": 22861
+  },
+  {
+    "code": "I44",
+    "title_la": "Block atrioventricularis et block rami sinistri",
+    "source_line": 22921
+  },
+  {
+    "code": "I45",
+    "title_la": "Disordines systematis conductivi cordis alii",
+    "source_line": 22955
+  },
+  {
+    "code": "I46",
+    "title_la": "Institio cordis",
+    "source_line": 23001
+  },
+  {
+    "code": "I47",
+    "title_la": "Tachycardia paraoxysmalis",
+    "source_line": 23019
+  },
+  {
+    "code": "I49",
+    "title_la": "Arrhytmiae cordis aliae",
+    "source_line": 23050
+  },
+  {
+    "code": "I50",
+    "title_la": "Insufficientia cordis",
+    "source_line": 23090
+  },
+  {
+    "code": "I51",
+    "title_la": "Complicationes et morbi cordis male definiti",
+    "source_line": 23118
+  },
+  {
+    "code": "I60",
+    "title_la": "Haemorrhagia subarachnoidalis",
+    "source_line": 23201
+  },
+  {
+    "code": "I61",
+    "title_la": "Haemorrhagia intracerebralis",
+    "source_line": 23239
+  },
+  {
+    "code": "I62",
+    "title_la": "Haemorrhagia intracranialis non traumatica, alia",
+    "source_line": 23264
+  },
+  {
+    "code": "I63",
+    "title_la": "Infarctus cerebri",
+    "source_line": 23282
+  },
+  {
+    "code": "I65",
+    "title_la": "Occlusio arteriae praecerebralis et stenosis arteriae praecerebralis sine",
+    "source_line": 23312
+  },
+  {
+    "code": "I66",
+    "title_la": "Occlusio arteriae cerebri et stenosis arteriae cerebri sine infarctu",
+    "source_line": 23342
+  },
+  {
+    "code": "I67",
+    "title_la": "Morbi cerebrovasculares alli",
+    "source_line": 23365
+  },
+  {
+    "code": "I69",
+    "title_la": "Sequelae morbi cerebrovascularis",
+    "source_line": 23428
+  },
+  {
+    "code": "I70",
+    "title_la": "Atherosclerosis",
+    "source_line": 23458
+  },
+  {
+    "code": "I71",
+    "title_la": "Aneurysma et dissectio aortae",
+    "source_line": 23501
+  },
+  {
+    "code": "I72",
+    "title_la": "Aneurysmata et dissectio alia",
+    "source_line": 23527
+  },
+  {
+    "code": "I73",
+    "title_la": "Morbi vasorum periphericorum alii",
+    "source_line": 23572
+  },
+  {
+    "code": "I74",
+    "title_la": "Embolia et thrombosis arteriarum",
+    "source_line": 23605
+  },
+  {
+    "code": "I77",
+    "title_la": "Morbi arteriales et arteriolares alli",
+    "source_line": 23654
+  },
+  {
+    "code": "I78",
+    "title_la": "Morbi vasorum capillarium",
+    "source_line": 23699
+  },
+  {
+    "code": "I80",
+    "title_la": "Phlebitis et thrombophlebitis",
+    "source_line": 23760
+  },
+  {
+    "code": "I82",
+    "title_la": "Embolia et thrombosis venarum alia",
+    "source_line": 23805
+  },
+  {
+    "code": "I83",
+    "title_la": "Varices venarum extremitatum inferiorum",
+    "source_line": 23835
+  },
+  {
+    "code": "I84",
+    "title_la": "Haemorrhoides",
+    "source_line": 23862
+  },
+  {
+    "code": "I85",
+    "title_la": "Varices oesophagi",
+    "source_line": 23908
+  },
+  {
+    "code": "I86",
+    "title_la": "Varices locorum aliorum",
+    "source_line": 23922
+  },
+  {
+    "code": "I87",
+    "title_la": "Morbi venarum alii",
+    "source_line": 23943
+  },
+  {
+    "code": "I88",
+    "title_la": "Lymphadenitis non specificata",
+    "source_line": 23960
+  },
+  {
+    "code": "I89",
+    "title_la": "Morbi vasorum et nodorum lymphaticorum non infectivi, alii",
+    "source_line": 23985
+  },
+  {
+    "code": "I95",
+    "title_la": "Hypotensio arterialis",
+    "source_line": 24016
+  },
+  {
+    "code": "I97",
+    "title_la": "Morbi systematis circulatorii postprocedurales, non alibi classificati",
+    "source_line": 24044
+  }
+]

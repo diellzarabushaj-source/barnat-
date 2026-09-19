@@ -1,0 +1,292 @@
+[
+  {
+    "code": "N00",
+    "title_la": "Syndroma nephritica acuta",
+    "source_line": 32581
+  },
+  {
+    "code": "N01",
+    "title_la": "Syndroma nephriticum progressivum peracutum",
+    "source_line": 32591
+  },
+  {
+    "code": "N02",
+    "title_la": "Haematuria recidiva et persistens",
+    "source_line": 32606
+  },
+  {
+    "code": "N03",
+    "title_la": "Syndroma nephriticum chronicum",
+    "source_line": 32614
+  },
+  {
+    "code": "N04",
+    "title_la": "Syndroma nephroticum",
+    "source_line": 32624
+  },
+  {
+    "code": "N05",
+    "title_la": "Syndroma nephriticum non specificatum",
+    "source_line": 32629
+  },
+  {
+    "code": "N06",
+    "title_la": "Proteinuria isolata cum laesione morphologica specificata",
+    "source_line": 32641
+  },
+  {
+    "code": "N07",
+    "title_la": "Nephropathia hereditaria non alibi classificata",
+    "source_line": 32654
+  },
+  {
+    "code": "N11",
+    "title_la": "Nephritis tubulointerstitialis chronica",
+    "source_line": 32736
+  },
+  {
+    "code": "N13",
+    "title_la": "Uropathia propter obstructioneem cum refluxu",
+    "source_line": 32778
+  },
+  {
+    "code": "N14",
+    "title_la": "Status tubulointerstitiales et tubulares propter medicamenta et metalla",
+    "source_line": 32828
+  },
+  {
+    "code": "N15",
+    "title_la": "Morbi renales tubulointerstitiales aliae",
+    "source_line": 32849
+  },
+  {
+    "code": "N17",
+    "title_la": "Insufficientia renalis acuta",
+    "source_line": 32936
+  },
+  {
+    "code": "N18",
+    "title_la": "Morbus renalis chronicus",
+    "source_line": 32962
+  },
+  {
+    "code": "N20",
+    "title_la": "Nephrolithiasis et ureterolithiasis",
+    "source_line": 33015
+  },
+  {
+    "code": "N21",
+    "title_la": "Calculus tractus urinarii inferioris",
+    "source_line": 33040
+  },
+  {
+    "code": "N25",
+    "title_la": "Disordines propter disfunctionem tubulorum renum",
+    "source_line": 33071
+  },
+  {
+    "code": "N27",
+    "title_la": "Ren parvus, causa ignota",
+    "source_line": 33108
+  },
+  {
+    "code": "N28",
+    "title_la": "Disordines renis et ureteris aliae, non alibi classificatae",
+    "source_line": 33117
+  },
+  {
+    "code": "N30",
+    "title_la": "Cystitis",
+    "source_line": 33191
+  },
+  {
+    "code": "N31",
+    "title_la": "Dysfunctio neuromuscularis vesicae urinariae, non alibi classificata",
+    "source_line": 33221
+  },
+  {
+    "code": "N32",
+    "title_la": "Disordines vesicae urinariae alii",
+    "source_line": 33246
+  },
+  {
+    "code": "N34",
+    "title_la": "Urethritis et syndroma urethrale",
+    "source_line": 33291
+  },
+  {
+    "code": "N35",
+    "title_la": "Strictura urethrae",
+    "source_line": 33329
+  },
+  {
+    "code": "N36",
+    "title_la": "Disordines urethrae alii",
+    "source_line": 33345
+  },
+  {
+    "code": "N39",
+    "title_la": "Disordines tractus urinarii alii",
+    "source_line": 33384
+  },
+  {
+    "code": "N41",
+    "title_la": "Morbi inflammatorii prostatae",
+    "source_line": 33441
+  },
+  {
+    "code": "N42",
+    "title_la": "Disordines prostatae alii",
+    "source_line": 33458
+  },
+  {
+    "code": "N43",
+    "title_la": "Hydrocele et spermatocele",
+    "source_line": 33483
+  },
+  {
+    "code": "N45",
+    "title_la": "Orchitis et epididymitis",
+    "source_line": 33506
+  },
+  {
+    "code": "N48",
+    "title_la": "Disordines penis alii",
+    "source_line": 33527
+  },
+  {
+    "code": "N49",
+    "title_la": "Disordines inflammatorii genitaliorum masculinorum, non alibi classificati",
+    "source_line": 33575
+  },
+  {
+    "code": "N50",
+    "title_la": "Disordines genitaliorum masculinorum alii",
+    "source_line": 33607
+  },
+  {
+    "code": "N60",
+    "title_la": "Dysplasia mammae benigna",
+    "source_line": 33677
+  },
+  {
+    "code": "N64",
+    "title_la": "Disordines mammae alii",
+    "source_line": 33727
+  },
+  {
+    "code": "N70",
+    "title_la": "Salpingitis et oophoritis",
+    "source_line": 33765
+  },
+  {
+    "code": "N71",
+    "title_la": "Endometris, sine cervice",
+    "source_line": 33783
+  },
+  {
+    "code": "N73",
+    "title_la": "Morbi inflammatorii pelvici feminae alii",
+    "source_line": 33813
+  },
+  {
+    "code": "N75",
+    "title_la": "Morbi glandulae Bartholin",
+    "source_line": 33871
+  },
+  {
+    "code": "N76",
+    "title_la": "Inflammationes vaginae et vulvae aliae",
+    "source_line": 33883
+  },
+  {
+    "code": "N80",
+    "title_la": "Endometriosis",
+    "source_line": 33945
+  },
+  {
+    "code": "N81",
+    "title_la": "Prolapsus genitaliorum femininorum",
+    "source_line": 33967
+  },
+  {
+    "code": "N82",
+    "title_la": "Fistulae genitaliorum femininorum",
+    "source_line": 34018
+  },
+  {
+    "code": "N83",
+    "title_la": "Disordines ovarii, tubae uterinae et ligamenti lati non inflammatorii",
+    "source_line": 34057
+  },
+  {
+    "code": "N84",
+    "title_la": "Polypus genitaliorum femininorum",
+    "source_line": 34104
+  },
+  {
+    "code": "N85",
+    "title_la": "Disordines non inflammatorii uteri alii sine cervice",
+    "source_line": 34127
+  },
+  {
+    "code": "N87",
+    "title_la": "Dysplasia cervicis uteri",
+    "source_line": 34188
+  },
+  {
+    "code": "N88",
+    "title_la": "Disordines cervicis uteri non inflammatorii, alii",
+    "source_line": 34211
+  },
+  {
+    "code": "N89",
+    "title_la": "Disordines vaginae non inflammatorii alii",
+    "source_line": 34238
+  },
+  {
+    "code": "N90",
+    "title_la": "Disordines vulvae et perinaei non inflammatorii, alii",
+    "source_line": 34289
+  },
+  {
+    "code": "N91",
+    "title_la": "Amenorrhoea et oligomenorrhoea",
+    "source_line": 34334
+  },
+  {
+    "code": "N92",
+    "title_la": "Menorrhagia, polymenorrhoea et metrorrhagia",
+    "source_line": 34352
+  },
+  {
+    "code": "N93",
+    "title_la": "Haemorrhagia uteri et vaginae abnormalis alia",
+    "source_line": 34399
+  },
+  {
+    "code": "N94",
+    "title_la": "Dolor et status alii cum genitalibus femininis et cyclo menstruali coniunctus",
+    "source_line": 34411
+  },
+  {
+    "code": "N95",
+    "title_la": "Disordines menopausales et disordines alii perimenopausales",
+    "source_line": 34440
+  },
+  {
+    "code": "N97",
+    "title_la": "Sterilitas feminae",
+    "source_line": 34474
+  },
+  {
+    "code": "N98",
+    "title_la": "Complicationes cum fertilisatione artificiali coniunctae",
+    "source_line": 34505
+  },
+  {
+    "code": "N99",
+    "title_la": "Disordines post interventiones in systemate urogenitali, non alibi classificati",
+    "source_line": 34528
+  }
+]

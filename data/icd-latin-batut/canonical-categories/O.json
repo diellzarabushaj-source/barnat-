@@ -1,0 +1,337 @@
+[
+  {
+    "code": "O00",
+    "title_la": "Graviditas extrauterina",
+    "source_line": 34639
+  },
+  {
+    "code": "O01",
+    "title_la": "Mola hydatidosa",
+    "source_line": 34663
+  },
+  {
+    "code": "O02",
+    "title_la": "Eventus conceptionis abnormalis alius",
+    "source_line": 34684
+  },
+  {
+    "code": "O03",
+    "title_la": "Abortus spontaneus",
+    "source_line": 34712
+  },
+  {
+    "code": "O04",
+    "title_la": "Abortus medicalis",
+    "source_line": 34717
+  },
+  {
+    "code": "O05",
+    "title_la": "Abortus alius",
+    "source_line": 34725
+  },
+  {
+    "code": "O06",
+    "title_la": "Abortus non specificatus",
+    "source_line": 34729
+  },
+  {
+    "code": "O07",
+    "title_la": "Abortus temptatus inefficax",
+    "source_line": 34741
+  },
+  {
+    "code": "O08",
+    "title_la": "Complicationes post abortum, graviditatem ectopicam et molarem",
+    "source_line": 34787
+  },
+  {
+    "code": "O10",
+    "title_la": "Hypertensio arterialis praeexistens per graviditatem, partum et puerperium",
+    "source_line": 34870
+  },
+  {
+    "code": "O12",
+    "title_la": "Oedema et proteinuria in graviditate sine hypertensione arteriali",
+    "source_line": 34919
+  },
+  {
+    "code": "O14",
+    "title_la": "Praeeclampsia – Hypertensio arterialis in graviditate cum proteinuria",
+    "source_line": 34933
+  },
+  {
+    "code": "O15",
+    "title_la": "Eclampsia",
+    "source_line": 34947
+  },
+  {
+    "code": "O20",
+    "title_la": "Haemorrhagia in graviditate initiali",
+    "source_line": 34978
+  },
+  {
+    "code": "O21",
+    "title_la": "Hyperemesis in graviditate",
+    "source_line": 34989
+  },
+  {
+    "code": "O22",
+    "title_la": "Complicationes venarum gravidae",
+    "source_line": 35016
+  },
+  {
+    "code": "O23",
+    "title_la": "Infectiones tractus urogenitalis in graviditate",
+    "source_line": 35049
+  },
+  {
+    "code": "O24",
+    "title_la": "Diabetes mellitus in graviditate",
+    "source_line": 35072
+  },
+  {
+    "code": "O26",
+    "title_la": "Curatio matris propter alias conditiones praedominantes coniunctas cum",
+    "source_line": 35093
+  },
+  {
+    "code": "O28",
+    "title_la": "Status matris abnormalis, proba antenatali detectus",
+    "source_line": 35135
+  },
+  {
+    "code": "O29",
+    "title_la": "Complicationes anaesthesionales, per graviditatem",
+    "source_line": 35157
+  },
+  {
+    "code": "O30",
+    "title_la": "Graviditas plurifetalis",
+    "source_line": 35207
+  },
+  {
+    "code": "O31",
+    "title_la": "Complicationes graviditatis plurifetalis",
+    "source_line": 35222
+  },
+  {
+    "code": "O32",
+    "title_la": "Curatio matris ad malpraesentationem fetus notam sive suspectam",
+    "source_line": 35243
+  },
+  {
+    "code": "O33",
+    "title_la": "Curatio matris ad disproportionem notam sive suspectam",
+    "source_line": 35272
+  },
+  {
+    "code": "O34",
+    "title_la": "Curatio matris ad abnormitates organorum pelvicorum notas sive suspectas",
+    "source_line": 35322
+  },
+  {
+    "code": "O35",
+    "title_la": "Curatio matris ad abnormitates et laesiones fetus notas sive suspectas",
+    "source_line": 35389
+  },
+  {
+    "code": "O36",
+    "title_la": "Curatio matris ad problema fetus nota sive suspecta alia",
+    "source_line": 35439
+  },
+  {
+    "code": "O41",
+    "title_la": "Disordines liquoris et membranarum amnii alii",
+    "source_line": 35487
+  },
+  {
+    "code": "O42",
+    "title_la": "Ruptura membranarum amnii praematura",
+    "source_line": 35504
+  },
+  {
+    "code": "O43",
+    "title_la": "Morbi placentae",
+    "source_line": 35523
+  },
+  {
+    "code": "O44",
+    "title_la": "Placenta praevia",
+    "source_line": 35553
+  },
+  {
+    "code": "O45",
+    "title_la": "Abruptio placentae praematura",
+    "source_line": 35575
+  },
+  {
+    "code": "O46",
+    "title_la": "Haemorrhagia ante partum, non alibi classificata",
+    "source_line": 35590
+  },
+  {
+    "code": "O47",
+    "title_la": "Labores falsi",
+    "source_line": 35608
+  },
+  {
+    "code": "O60",
+    "title_la": "Labores praematuri et partus praematurus",
+    "source_line": 35632
+  },
+  {
+    "code": "O61",
+    "title_la": "Inductio partus inefficax",
+    "source_line": 35653
+  },
+  {
+    "code": "O62",
+    "title_la": "Abnormitates vis laborum",
+    "source_line": 35668
+  },
+  {
+    "code": "O63",
+    "title_la": "Partus prolongatus",
+    "source_line": 35709
+  },
+  {
+    "code": "O64",
+    "title_la": "Partus propter malpositionem et malpraesentationem fetus complicatus",
+    "source_line": 35721
+  },
+  {
+    "code": "O65",
+    "title_la": "Partus propter pelvem matris abnormalem complicatus",
+    "source_line": 35757
+  },
+  {
+    "code": "O66",
+    "title_la": "Partus complicatus alius",
+    "source_line": 35778
+  },
+  {
+    "code": "O67",
+    "title_la": "Partus propter haemorrhagiam complicatus, non alibi classificatus",
+    "source_line": 35820
+  },
+  {
+    "code": "O68",
+    "title_la": "Partus propter asphyxiam fetus complicatus",
+    "source_line": 35838
+  },
+  {
+    "code": "O69",
+    "title_la": "Partus propter complicationes chordae umbilicalis complicatus",
+    "source_line": 35871
+  },
+  {
+    "code": "O70",
+    "title_la": "Laesio perinei, per partum",
+    "source_line": 35905
+  },
+  {
+    "code": "O71",
+    "title_la": "Trauma obstetricia alia",
+    "source_line": 35942
+  },
+  {
+    "code": "O72",
+    "title_la": "Haemorrhagia post partum",
+    "source_line": 35984
+  },
+  {
+    "code": "O73",
+    "title_la": "Retentio placentae et membranarum placentae, sine haemorrhagia",
+    "source_line": 36005
+  },
+  {
+    "code": "O74",
+    "title_la": "Complicationes anaesthesionales, per partum",
+    "source_line": 36021
+  },
+  {
+    "code": "O75",
+    "title_la": "Complicationes per partum aliae, non alibi classificatae",
+    "source_line": 36054
+  },
+  {
+    "code": "O80",
+    "title_la": "Partus spontaneus simplex",
+    "source_line": 36107
+  },
+  {
+    "code": "O81",
+    "title_la": "Partus simplex forcipe et vacuum-extractore",
+    "source_line": 36121
+  },
+  {
+    "code": "O82",
+    "title_la": "Partus simplex sectione caesarea",
+    "source_line": 36146
+  },
+  {
+    "code": "O83",
+    "title_la": "Partus simplex cum assistentia, alius",
+    "source_line": 36160
+  },
+  {
+    "code": "O84",
+    "title_la": "Partus multiplex",
+    "source_line": 36190
+  },
+  {
+    "code": "O86",
+    "title_la": "Infectiones puerperales aliae",
+    "source_line": 36227
+  },
+  {
+    "code": "O87",
+    "title_la": "Complicationes venosae puerperales",
+    "source_line": 36264
+  },
+  {
+    "code": "O88",
+    "title_la": "Embolia obstetricia",
+    "source_line": 36289
+  },
+  {
+    "code": "O89",
+    "title_la": "Complicationes anaesthesionales, per puerperium",
+    "source_line": 36314
+  },
+  {
+    "code": "O90",
+    "title_la": "Complicationes puerperales, non alibi classificatae",
+    "source_line": 36346
+  },
+  {
+    "code": "O91",
+    "title_la": "Mastitis per lactationem",
+    "source_line": 36377
+  },
+  {
+    "code": "O92",
+    "title_la": "Disordines mammae et lactationes alii",
+    "source_line": 36397
+  },
+  {
+    "code": "O96",
+    "title_la": "MMors ex qualibet causa obstetricia per 42 dies usque ad unum annum post",
+    "source_line": 36454
+  },
+  {
+    "code": "O97",
+    "title_la": "Mors matris propter sequelas obstetricias",
+    "source_line": 36474
+  },
+  {
+    "code": "O98",
+    "title_la": "Morbi materni infectiosi et parasitici alibi classificabiles sed complicantes",
+    "source_line": 36486
+  },
+  {
+    "code": "O99",
+    "title_la": "Alii morbi materni alibi classificabiles sed complicantes graviditatem, partum",
+    "source_line": 36537
+  }
+]

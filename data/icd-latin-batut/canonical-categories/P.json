@@ -1,0 +1,257 @@
+[
+  {
+    "code": "P00",
+    "title_la": "Morbi matris cum graviditale non coniuncti, cum sequelis ad fetum et",
+    "source_line": 36664
+  },
+  {
+    "code": "P01",
+    "title_la": "Complicationes graviditatis matris cum sequelis ad fetum et neonatum",
+    "source_line": 36729
+  },
+  {
+    "code": "P02",
+    "title_la": "Status placentae, chordae umbilicalis et membranarum cum sequelis ad",
+    "source_line": 36770
+  },
+  {
+    "code": "P03",
+    "title_la": "Complicationes partus cum sequelis ad fetum et neonatum aliae",
+    "source_line": 36824
+  },
+  {
+    "code": "P04",
+    "title_la": "Substantiae nocivae cum sequelis ad fetum et neonatum, per placentam sive",
+    "source_line": 36868
+  },
+  {
+    "code": "P05",
+    "title_la": "Incrementum lentum et malnutritio fetus",
+    "source_line": 36915
+  },
+  {
+    "code": "P07",
+    "title_la": "Disordines cum gestatione brevi et pondus ad terminum parvum, coniuncti,",
+    "source_line": 36936
+  },
+  {
+    "code": "P08",
+    "title_la": "Disordines cum gestatione longa et pondus ad terminum magnum, coniuncti",
+    "source_line": 36967
+  },
+  {
+    "code": "P10",
+    "title_la": "Laceratio et haemorrhagia intracranialis neonati traumatica, per partum",
+    "source_line": 36997
+  },
+  {
+    "code": "P11",
+    "title_la": "Laesiones traumaticae systematis nervosi centralis neonati aliae, per partum",
+    "source_line": 37028
+  },
+  {
+    "code": "P12",
+    "title_la": "Laesiones traumaticae capillitii neonati, per partum",
+    "source_line": 37048
+  },
+  {
+    "code": "P13",
+    "title_la": "Laesiones traumaticae sceletales neonati, per partum",
+    "source_line": 37067
+  },
+  {
+    "code": "P14",
+    "title_la": "Laesiones traumaticae systematis nervosi peripherici neonati, per partum",
+    "source_line": 37094
+  },
+  {
+    "code": "P15",
+    "title_la": "Laesiones traumaticae neonati aliae, per partum",
+    "source_line": 37111
+  },
+  {
+    "code": "P20",
+    "title_la": "Hypoxia intrauterina",
+    "source_line": 37148
+  },
+  {
+    "code": "P21",
+    "title_la": "Asphyxia neonatalis",
+    "source_line": 37166
+  },
+  {
+    "code": "P22",
+    "title_la": "Angor (distress) neonati respiratorius",
+    "source_line": 37194
+  },
+  {
+    "code": "P23",
+    "title_la": "Pneumonia congenita",
+    "source_line": 37207
+  },
+  {
+    "code": "P24",
+    "title_la": "Syndromata aspirationis neonati",
+    "source_line": 37235
+  },
+  {
+    "code": "P25",
+    "title_la": "Emphysema interstitiale et status perinatales coniuncti",
+    "source_line": 37260
+  },
+  {
+    "code": "P26",
+    "title_la": "Haemorrhagia pulmonum perinatalis",
+    "source_line": 37274
+  },
+  {
+    "code": "P27",
+    "title_la": "Morbi organorum respiratoriorum perinatales chronici",
+    "source_line": 37285
+  },
+  {
+    "code": "P28",
+    "title_la": "Morbi organorum respiratoriorum perinatales alii",
+    "source_line": 37306
+  },
+  {
+    "code": "P29",
+    "title_la": "Disordines organorum cardiovascularium perinatales",
+    "source_line": 37346
+  },
+  {
+    "code": "P35",
+    "title_la": "Infectiones virales congenitae",
+    "source_line": 37390
+  },
+  {
+    "code": "P36",
+    "title_la": "Sepsis neonati bacterialis",
+    "source_line": 37407
+  },
+  {
+    "code": "P37",
+    "title_la": "Infectiones et morbi parasitarii congeniti alii",
+    "source_line": 37433
+  },
+  {
+    "code": "P39",
+    "title_la": "Aliae infectiones temporis perinatalis specificae",
+    "source_line": 37463
+  },
+  {
+    "code": "P50",
+    "title_la": "Amissio sanguinis fetus",
+    "source_line": 37506
+  },
+  {
+    "code": "P51",
+    "title_la": "Haemorrhagia neonati umbilicalis",
+    "source_line": 37533
+  },
+  {
+    "code": "P52",
+    "title_la": "Haemorrhagia intracranialis fetus et neonati non traumatica",
+    "source_line": 37544
+  },
+  {
+    "code": "P54",
+    "title_la": "Haemorrhagiae neonati, aliae",
+    "source_line": 37585
+  },
+  {
+    "code": "P55",
+    "title_la": "Morbus haemolyticus fetus et neonati",
+    "source_line": 37618
+  },
+  {
+    "code": "P56",
+    "title_la": "Hydrops fetus propter morbum haemolyticum",
+    "source_line": 37629
+  },
+  {
+    "code": "P57",
+    "title_la": "Kernicterus",
+    "source_line": 37646
+  },
+  {
+    "code": "P58",
+    "title_la": "Icterus neonati propter excessivam haemolysim aliam",
+    "source_line": 37656
+  },
+  {
+    "code": "P59",
+    "title_la": "Icterus neonati alius et non specificatus",
+    "source_line": 37679
+  },
+  {
+    "code": "P61",
+    "title_la": "Disordines haematologici perinatales alii",
+    "source_line": 37711
+  },
+  {
+    "code": "P70",
+    "title_la": "Disordines metabolismi carbohydratorum fetus et neonati transitivi",
+    "source_line": 37751
+  },
+  {
+    "code": "P71",
+    "title_la": "Disordines metabolismi calcii et magnesii neonati transitivi",
+    "source_line": 37771
+  },
+  {
+    "code": "P72",
+    "title_la": "Morbi systematis endocrini neonati transitivi, alii",
+    "source_line": 37797
+  },
+  {
+    "code": "P74",
+    "title_la": "Disordines neonati electrolyticae et metabolicae transitivi, alii",
+    "source_line": 37817
+  },
+  {
+    "code": "P76",
+    "title_la": "Obstructio intestinalis neonatalis alia",
+    "source_line": 37851
+  },
+  {
+    "code": "P78",
+    "title_la": "Morbi tractus digestivi perinatales alii",
+    "source_line": 37870
+  },
+  {
+    "code": "P80",
+    "title_la": "Hypothermia neonati",
+    "source_line": 37903
+  },
+  {
+    "code": "P81",
+    "title_la": "Disordines regulationis temperaturae neonati alii",
+    "source_line": 37916
+  },
+  {
+    "code": "P83",
+    "title_la": "Morbi cutis et subcutis fetus et neonati, specifici alii",
+    "source_line": 37926
+  },
+  {
+    "code": "P91",
+    "title_la": "Morbi cerebri neonati alii",
+    "source_line": 37972
+  },
+  {
+    "code": "P92",
+    "title_la": "Morbi neonati alimentarii",
+    "source_line": 37993
+  },
+  {
+    "code": "P94",
+    "title_la": "Morbi toni musculorum neonati",
+    "source_line": 38029
+  },
+  {
+    "code": "P96",
+    "title_la": "Morbi perinatales alii",
+    "source_line": 38049
+  }
+]

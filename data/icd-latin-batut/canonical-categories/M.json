@@ -1,0 +1,337 @@
+[
+  {
+    "code": "M00",
+    "title_la": "Arthritis purulenta",
+    "source_line": 29941
+  },
+  {
+    "code": "M02",
+    "title_la": "Arthropathiae reactivae",
+    "source_line": 29996
+  },
+  {
+    "code": "M05",
+    "title_la": "Arthritis rheumatoides seropositiva",
+    "source_line": 30049
+  },
+  {
+    "code": "M06",
+    "title_la": "Arthritis rheumatoides alia",
+    "source_line": 30076
+  },
+  {
+    "code": "M08",
+    "title_la": "Arthritis juvenilis",
+    "source_line": 30122
+  },
+  {
+    "code": "M10",
+    "title_la": "Arthritis urica",
+    "source_line": 30169
+  },
+  {
+    "code": "M11",
+    "title_la": "Arthropathiae crystallogenes aliae",
+    "source_line": 30191
+  },
+  {
+    "code": "M12",
+    "title_la": "Arthropathiae aliae, specificatae",
+    "source_line": 30214
+  },
+  {
+    "code": "M13",
+    "title_la": "Arthritis alia",
+    "source_line": 30242
+  },
+  {
+    "code": "M15",
+    "title_la": "Polyarthrosis",
+    "source_line": 30326
+  },
+  {
+    "code": "M16",
+    "title_la": "Coxarthrosis",
+    "source_line": 30347
+  },
+  {
+    "code": "M17",
+    "title_la": "Gonarthrosis",
+    "source_line": 30388
+  },
+  {
+    "code": "M18",
+    "title_la": "Arthrosis articuli carpometacarpalis pollicis",
+    "source_line": 30414
+  },
+  {
+    "code": "M19",
+    "title_la": "Arthrosis alia",
+    "source_line": 30448
+  },
+  {
+    "code": "M20",
+    "title_la": "Deformationes digitorum manus et digitorum pedis acquisitae",
+    "source_line": 30479
+  },
+  {
+    "code": "M21",
+    "title_la": "Deformationes extremitatum acquisitae aliae",
+    "source_line": 30506
+  },
+  {
+    "code": "M22",
+    "title_la": "Morbi patellae",
+    "source_line": 30549
+  },
+  {
+    "code": "M23",
+    "title_la": "Morbi genus interni",
+    "source_line": 30567
+  },
+  {
+    "code": "M24",
+    "title_la": "Mutationes articuli aliae specificatae",
+    "source_line": 30620
+  },
+  {
+    "code": "M25",
+    "title_la": "Morbi articulorum alii, non alibi classificati",
+    "source_line": 30677
+  },
+  {
+    "code": "M30",
+    "title_la": "Polyarteritis nodosa et morbi affines",
+    "source_line": 30734
+  },
+  {
+    "code": "M31",
+    "title_la": "Vasculopathiae necroticae aliae",
+    "source_line": 30756
+  },
+  {
+    "code": "M32",
+    "title_la": "Lupus erythematosus systemicus",
+    "source_line": 30785
+  },
+  {
+    "code": "M33",
+    "title_la": "Dermatopolymyositis",
+    "source_line": 30810
+  },
+  {
+    "code": "M34",
+    "title_la": "Sclerosis systemica",
+    "source_line": 30821
+  },
+  {
+    "code": "M35",
+    "title_la": "Morbi textus connexivi systemici alii",
+    "source_line": 30844
+  },
+  {
+    "code": "M40",
+    "title_la": "Kyphosis et lordosis",
+    "source_line": 30945
+  },
+  {
+    "code": "M41",
+    "title_la": "Scoliosis",
+    "source_line": 30976
+  },
+  {
+    "code": "M42",
+    "title_la": "Osteochondrosis spinalis",
+    "source_line": 31006
+  },
+  {
+    "code": "M43",
+    "title_la": "Dorsopathiae deformantes aliae",
+    "source_line": 31027
+  },
+  {
+    "code": "M45",
+    "title_la": "Spondylitis ankylopoietica",
+    "source_line": 31081
+  },
+  {
+    "code": "M46",
+    "title_la": "Spondylopathiae inflammatoriae aliae",
+    "source_line": 31089
+  },
+  {
+    "code": "M47",
+    "title_la": "Spondylosis",
+    "source_line": 31111
+  },
+  {
+    "code": "M48",
+    "title_la": "Spondylopathiae aliae",
+    "source_line": 31141
+  },
+  {
+    "code": "M50",
+    "title_la": "Morbi discorum intervertebralium cervicalium",
+    "source_line": 31211
+  },
+  {
+    "code": "M51",
+    "title_la": "Morbi discorum intervertebralium alii",
+    "source_line": 31229
+  },
+  {
+    "code": "M53",
+    "title_la": "Dorsopathiae aliae, non alibi classificatae",
+    "source_line": 31262
+  },
+  {
+    "code": "M54",
+    "title_la": "Dorsalgia",
+    "source_line": 31282
+  },
+  {
+    "code": "M60",
+    "title_la": "Myositis",
+    "source_line": 31366
+  },
+  {
+    "code": "M61",
+    "title_la": "Calcificatio musculi et ossificatio musculi",
+    "source_line": 31383
+  },
+  {
+    "code": "M62",
+    "title_la": "Morbi musculi alii",
+    "source_line": 31415
+  },
+  {
+    "code": "M65",
+    "title_la": "Synovitis et tenosynovitis",
+    "source_line": 31492
+  },
+  {
+    "code": "M66",
+    "title_la": "Ruptura synoviae et tendinis spontanea",
+    "source_line": 31525
+  },
+  {
+    "code": "M67",
+    "title_la": "Morbi synoviae et tendinis alii",
+    "source_line": 31549
+  },
+  {
+    "code": "M70",
+    "title_la": "Morbi textuum mollium propter activitatem, hyperactivitatem et pressionem",
+    "source_line": 31601
+  },
+  {
+    "code": "M71",
+    "title_la": "Bursopathiae aliae",
+    "source_line": 31643
+  },
+  {
+    "code": "M72",
+    "title_la": "Morbi fibroblastici",
+    "source_line": 31682
+  },
+  {
+    "code": "M75",
+    "title_la": "Laesiones regionis humeroscapularis",
+    "source_line": 31725
+  },
+  {
+    "code": "M76",
+    "title_la": "Enthesopathia extremitatis inferioris, pedem excludens",
+    "source_line": 31758
+  },
+  {
+    "code": "M77",
+    "title_la": "Enthesopathiae aliae",
+    "source_line": 31796
+  },
+  {
+    "code": "M79",
+    "title_la": "Morbi textuum mollium alii, non alibi classificati",
+    "source_line": 31827
+  },
+  {
+    "code": "M80",
+    "title_la": "Osteoporosis cum fractura pathologica",
+    "source_line": 31889
+  },
+  {
+    "code": "M81",
+    "title_la": "Osteoporosis sine fractura pathologica",
+    "source_line": 31923
+  },
+  {
+    "code": "M83",
+    "title_la": "Osteomalacia ad adultum",
+    "source_line": 31967
+  },
+  {
+    "code": "M84",
+    "title_la": "Morbi continuitatis ossis",
+    "source_line": 31999
+  },
+  {
+    "code": "M85",
+    "title_la": "Morbi densitatis et structurae ossis alii",
+    "source_line": 32029
+  },
+  {
+    "code": "M86",
+    "title_la": "Osteomyelitis",
+    "source_line": 32077
+  },
+  {
+    "code": "M87",
+    "title_la": "Osteonecrosis",
+    "source_line": 32108
+  },
+  {
+    "code": "M88",
+    "title_la": "Morbus Paget ossium [osteitis deformans]",
+    "source_line": 32133
+  },
+  {
+    "code": "M89",
+    "title_la": "Morbi ossium alii",
+    "source_line": 32143
+  },
+  {
+    "code": "M91",
+    "title_la": "Osteochondrosis coxae et pelvis juvenilis",
+    "source_line": 32219
+  },
+  {
+    "code": "M92",
+    "title_la": "Osteochondrosis juvenilis alia",
+    "source_line": 32250
+  },
+  {
+    "code": "M93",
+    "title_la": "Osteochondropathiae aliae",
+    "source_line": 32311
+  },
+  {
+    "code": "M94",
+    "title_la": "Morbi cartilaginis alii",
+    "source_line": 32331
+  },
+  {
+    "code": "M95",
+    "title_la": "Deformationes musculorum et ossium acquisitae aliae",
+    "source_line": 32357
+  },
+  {
+    "code": "M96",
+    "title_la": "Morbi musculorum et ossium postprocedurales, non alibi classificata",
+    "source_line": 32386
+  },
+  {
+    "code": "M99",
+    "title_la": "Leasiones biomechanicae, non alibi classificatae",
+    "source_line": 32420
+  }
+]

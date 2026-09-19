@@ -1,0 +1,312 @@
+[
+  {
+    "code": "K00",
+    "title_la": "Disordines evolutionis et eruptionis dentium",
+    "source_line": 25764
+  },
+  {
+    "code": "K01",
+    "title_la": "Dentes retenti et impacti",
+    "source_line": 25850
+  },
+  {
+    "code": "K02",
+    "title_la": "Caries dentium",
+    "source_line": 25860
+  },
+  {
+    "code": "K03",
+    "title_la": "Morbi textuum dentium durarum alii",
+    "source_line": 25880
+  },
+  {
+    "code": "K04",
+    "title_la": "Morbi pulpae et textus periapicalis",
+    "source_line": 25957
+  },
+  {
+    "code": "K05",
+    "title_la": "Gingivitis et morbi periodontales",
+    "source_line": 26012
+  },
+  {
+    "code": "K06",
+    "title_la": "Morbi gingivae et processus alveolaris edentati alii",
+    "source_line": 26049
+  },
+  {
+    "code": "K07",
+    "title_la": "Anomaliae dentofaciales [malocclusiones includens]",
+    "source_line": 26084
+  },
+  {
+    "code": "K08",
+    "title_la": "Morbi dentium et textus sustentionalis alii",
+    "source_line": 26158
+  },
+  {
+    "code": "K09",
+    "title_la": "Cistes regionis oralis, non alibi classificatae",
+    "source_line": 26181
+  },
+  {
+    "code": "K10",
+    "title_la": "Morbi maxillae et mandibulae alii",
+    "source_line": 26222
+  },
+  {
+    "code": "K11",
+    "title_la": "Morbi glandularum salivarium",
+    "source_line": 26268
+  },
+  {
+    "code": "K12",
+    "title_la": "Stomatitis et affinibus laesiones",
+    "source_line": 26320
+  },
+  {
+    "code": "K13",
+    "title_la": "Morbi labii et mucosae oris alii",
+    "source_line": 26371
+  },
+  {
+    "code": "K14",
+    "title_la": "Morbi linguae",
+    "source_line": 26427
+  },
+  {
+    "code": "K21",
+    "title_la": "Morbus refluxualis gastro-oesophageus",
+    "source_line": 26529
+  },
+  {
+    "code": "K22",
+    "title_la": "Morbi oesophagi alii",
+    "source_line": 26538
+  },
+  {
+    "code": "K25",
+    "title_la": "Ulcus ventriculi",
+    "source_line": 26610
+  },
+  {
+    "code": "K26",
+    "title_la": "Ulcus duodeni",
+    "source_line": 26622
+  },
+  {
+    "code": "K27",
+    "title_la": "Ulcus pepticum, loci non specificati",
+    "source_line": 26632
+  },
+  {
+    "code": "K28",
+    "title_la": "Ulcus gastrojejunale",
+    "source_line": 26645
+  },
+  {
+    "code": "K29",
+    "title_la": "Gastritis et duedenitis",
+    "source_line": 26657
+  },
+  {
+    "code": "K31",
+    "title_la": "Morbi ventriculi et morbi duodeni alii",
+    "source_line": 26706
+  },
+  {
+    "code": "K35",
+    "title_la": "Appendicitis acuta",
+    "source_line": 26767
+  },
+  {
+    "code": "K38",
+    "title_la": "Morbi apendicis alii",
+    "source_line": 26789
+  },
+  {
+    "code": "K40",
+    "title_la": "Hernia inguinalis",
+    "source_line": 26825
+  },
+  {
+    "code": "K41",
+    "title_la": "Hernia femoralis",
+    "source_line": 26856
+  },
+  {
+    "code": "K42",
+    "title_la": "Hernia umbilicalis",
+    "source_line": 26885
+  },
+  {
+    "code": "K43",
+    "title_la": "Hernia ventralis",
+    "source_line": 26902
+  },
+  {
+    "code": "K44",
+    "title_la": "Hernia diaphragmatica",
+    "source_line": 26927
+  },
+  {
+    "code": "K45",
+    "title_la": "Hernia abdominalis alia",
+    "source_line": 26946
+  },
+  {
+    "code": "K46",
+    "title_la": "Hernia abdominalis, non specificata",
+    "source_line": 26975
+  },
+  {
+    "code": "K50",
+    "title_la": "Morbus Crohn [enteritis regionalis]",
+    "source_line": 27007
+  },
+  {
+    "code": "K51",
+    "title_la": "Colitis ulcerosa",
+    "source_line": 27045
+  },
+  {
+    "code": "K52",
+    "title_la": "Gastroenteritis et colitis non infectiva alia",
+    "source_line": 27064
+  },
+  {
+    "code": "K55",
+    "title_la": "Morbi intestini vasculares",
+    "source_line": 27109
+  },
+  {
+    "code": "K56",
+    "title_la": "Ileus paralyticus et obstructio intestinalis, sine hernia",
+    "source_line": 27143
+  },
+  {
+    "code": "K57",
+    "title_la": "Diverticulosis intestini",
+    "source_line": 27205
+  },
+  {
+    "code": "K58",
+    "title_la": "Syndroma intestini irritabilis",
+    "source_line": 27242
+  },
+  {
+    "code": "K59",
+    "title_la": "Dysfunctiones intestinales aliae",
+    "source_line": 27257
+  },
+  {
+    "code": "K60",
+    "title_la": "Fissura et fistula regionis analis et rectalis",
+    "source_line": 27287
+  },
+  {
+    "code": "K61",
+    "title_la": "Abscessus regionis analis et rectalis",
+    "source_line": 27314
+  },
+  {
+    "code": "K62",
+    "title_la": "Morbi ani et morbi recti alii",
+    "source_line": 27335
+  },
+  {
+    "code": "K63",
+    "title_la": "Morbi intestini alii",
+    "source_line": 27382
+  },
+  {
+    "code": "K65",
+    "title_la": "Peritonitis",
+    "source_line": 27439
+  },
+  {
+    "code": "K66",
+    "title_la": "Morbi peritonaei alii",
+    "source_line": 27489
+  },
+  {
+    "code": "K70",
+    "title_la": "Morbus hepatis alcoholicus",
+    "source_line": 27542
+  },
+  {
+    "code": "K71",
+    "title_la": "Morbus hepatis toxicus",
+    "source_line": 27564
+  },
+  {
+    "code": "K72",
+    "title_la": "Insufficientia hepatis, non alibi classificata",
+    "source_line": 27609
+  },
+  {
+    "code": "K73",
+    "title_la": "Hepatitis chronica, non alibi classificata",
+    "source_line": 27643
+  },
+  {
+    "code": "K74",
+    "title_la": "Fibrosis et cirrhosis hepatis",
+    "source_line": 27663
+  },
+  {
+    "code": "K75",
+    "title_la": "Morbi hepatis inflammatorii alii",
+    "source_line": 27701
+  },
+  {
+    "code": "K76",
+    "title_la": "Morbi hepatis alii",
+    "source_line": 27736
+  },
+  {
+    "code": "K80",
+    "title_la": "Cholelithiasis",
+    "source_line": 27805
+  },
+  {
+    "code": "K81",
+    "title_la": "Cholecystitis",
+    "source_line": 27846
+  },
+  {
+    "code": "K82",
+    "title_la": "Morbi vesicae felleae alii",
+    "source_line": 27874
+  },
+  {
+    "code": "K83",
+    "title_la": "Morbi tracti biliares alii",
+    "source_line": 27916
+  },
+  {
+    "code": "K85",
+    "title_la": "Pancreatitis acuta",
+    "source_line": 27969
+  },
+  {
+    "code": "K86",
+    "title_la": "Morbi pancreatis alii",
+    "source_line": 27996
+  },
+  {
+    "code": "K90",
+    "title_la": "Malabsorptio intestini",
+    "source_line": 28053
+  },
+  {
+    "code": "K91",
+    "title_la": "Morbi organorum digestivorum postprocedurales, non alibi classificati",
+    "source_line": 28096
+  },
+  {
+    "code": "K92",
+    "title_la": "Morbi organorum digestivorum alii",
+    "source_line": 28135
+  }
+]

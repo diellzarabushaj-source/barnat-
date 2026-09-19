@@ -1,0 +1,217 @@
+[
+  {
+    "code": "J01",
+    "title_la": "Sinusitis acuta",
+    "source_line": 24189
+  },
+  {
+    "code": "J02",
+    "title_la": "Pharyngitis acuta",
+    "source_line": 24221
+  },
+  {
+    "code": "J03",
+    "title_la": "Tonsillitis acuta",
+    "source_line": 24252
+  },
+  {
+    "code": "J04",
+    "title_la": "Laryngitis acuta et tracheitis acuta",
+    "source_line": 24281
+  },
+  {
+    "code": "J05",
+    "title_la": "Laryngitis obstructiva acuta [croup] et epiglottitis acuta",
+    "source_line": 24308
+  },
+  {
+    "code": "J06",
+    "title_la": "Infectiones tractus respiratorii superioris acutae, locis multis et non",
+    "source_line": 24325
+  },
+  {
+    "code": "J10",
+    "title_la": "Influenza, virus influencae aliud identificatum",
+    "source_line": 24360
+  },
+  {
+    "code": "J11",
+    "title_la": "Influenza, virus non identificatum",
+    "source_line": 24393
+  },
+  {
+    "code": "J12",
+    "title_la": "Pneumonia viralis, non alibi classificata",
+    "source_line": 24420
+  },
+  {
+    "code": "J15",
+    "title_la": "Pneumonia bacterialis, non alibi classificata",
+    "source_line": 24469
+  },
+  {
+    "code": "J16",
+    "title_la": "Pneumonia propter organismos infectivos alios, non alibi classificata",
+    "source_line": 24505
+  },
+  {
+    "code": "J18",
+    "title_la": "Pneumonia per microorganismum non specificatum",
+    "source_line": 24565
+  },
+  {
+    "code": "J20",
+    "title_la": "Bronchitis acuta",
+    "source_line": 24608
+  },
+  {
+    "code": "J21",
+    "title_la": "Bronchiolitis acuta",
+    "source_line": 24660
+  },
+  {
+    "code": "J30",
+    "title_la": "Rhinitis vasomotoria et rhinitis allergica",
+    "source_line": 24682
+  },
+  {
+    "code": "J31",
+    "title_la": "Rhinitis, nasopharingitis et pharyngitis chronica",
+    "source_line": 24709
+  },
+  {
+    "code": "J32",
+    "title_la": "Sinusitis chronica",
+    "source_line": 24737
+  },
+  {
+    "code": "J33",
+    "title_la": "Polypus nasalis",
+    "source_line": 24774
+  },
+  {
+    "code": "J34",
+    "title_la": "Disordines nasi et sinuum nasi alii",
+    "source_line": 24795
+  },
+  {
+    "code": "J35",
+    "title_la": "Morbi tonsillarum et vegetationum adenoidium chronici",
+    "source_line": 24822
+  },
+  {
+    "code": "J37",
+    "title_la": "Laryngitis et laryngotracheitis chronica",
+    "source_line": 24860
+  },
+  {
+    "code": "J38",
+    "title_la": "Morbi plicarum vocalium et laryngis, non alibi classificati",
+    "source_line": 24893
+  },
+  {
+    "code": "J39",
+    "title_la": "Morbi tractus respiratorii superioris alii",
+    "source_line": 24952
+  },
+  {
+    "code": "J41",
+    "title_la": "Bronchitis simplex et mucopurulenta chronica",
+    "source_line": 25006
+  },
+  {
+    "code": "J43",
+    "title_la": "Emphysema pulmonum",
+    "source_line": 25037
+  },
+  {
+    "code": "J44",
+    "title_la": "Morbus pulmonis obstructivus chronicus alius",
+    "source_line": 25077
+  },
+  {
+    "code": "J45",
+    "title_la": "Asthma",
+    "source_line": 25128
+  },
+  {
+    "code": "J62",
+    "title_la": "Pneumoconiosis silicotica",
+    "source_line": 25193
+  },
+  {
+    "code": "J63",
+    "title_la": "Pneumoconiosis propter pulverem inorganicum",
+    "source_line": 25203
+  },
+  {
+    "code": "J66",
+    "title_la": "Morbus tractuum respiratoriorum propter pulverem organicum specificatum",
+    "source_line": 25237
+  },
+  {
+    "code": "J67",
+    "title_la": "Pneumonitis hypersensitiva propter pulvarem organicum",
+    "source_line": 25253
+  },
+  {
+    "code": "J68",
+    "title_la": "Condiciones respiratoriae propter inhalationem chemicalium, gasorum,",
+    "source_line": 25308
+  },
+  {
+    "code": "J69",
+    "title_la": "Pneumonia propter corpora dura et liquores",
+    "source_line": 25346
+  },
+  {
+    "code": "J70",
+    "title_la": "Condiciones respiratoriae per agentes externos alios",
+    "source_line": 25366
+  },
+  {
+    "code": "J84",
+    "title_la": "Morbi interstitiales pulmonum, alii",
+    "source_line": 25422
+  },
+  {
+    "code": "J85",
+    "title_la": "Abscessus pulmonum et mediastini",
+    "source_line": 25459
+  },
+  {
+    "code": "J86",
+    "title_la": "Pyothorax",
+    "source_line": 25472
+  },
+  {
+    "code": "J92",
+    "title_la": "Lamella pleuralis",
+    "source_line": 25508
+  },
+  {
+    "code": "J93",
+    "title_la": "Pneumothorax",
+    "source_line": 25517
+  },
+  {
+    "code": "J94",
+    "title_la": "Condiciones pleurae, aliae",
+    "source_line": 25533
+  },
+  {
+    "code": "J95",
+    "title_la": "Disordines respiratorii postprocedurales non alibi classificati",
+    "source_line": 25564
+  },
+  {
+    "code": "J96",
+    "title_la": "Insufficientia respiratoria, non alibi classificata",
+    "source_line": 25594
+  },
+  {
+    "code": "J98",
+    "title_la": "Disordines respiratorii alii",
+    "source_line": 25615
+  }
+]

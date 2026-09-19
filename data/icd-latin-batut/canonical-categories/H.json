@@ -1,0 +1,257 @@
+[
+  {
+    "code": "H00",
+    "title_la": "Hordeolum et chalazion",
+    "source_line": 19907
+  },
+  {
+    "code": "H01",
+    "title_la": "Morbi palpebrae inflammatorii alii",
+    "source_line": 19925
+  },
+  {
+    "code": "H02",
+    "title_la": "Morbi palpebrae alii",
+    "source_line": 19944
+  },
+  {
+    "code": "H04",
+    "title_la": "Morbi apparatus lacrimalis",
+    "source_line": 20008
+  },
+  {
+    "code": "H05",
+    "title_la": "Morbi orbitae",
+    "source_line": 20056
+  },
+  {
+    "code": "H10",
+    "title_la": "Conjunctivitis",
+    "source_line": 20113
+  },
+  {
+    "code": "H11",
+    "title_la": "Morbi conjunctivae alii",
+    "source_line": 20134
+  },
+  {
+    "code": "H15",
+    "title_la": "Morbi sclerae",
+    "source_line": 20206
+  },
+  {
+    "code": "H16",
+    "title_la": "Keratitis",
+    "source_line": 20220
+  },
+  {
+    "code": "H17",
+    "title_la": "Cicatrix et opacitas corneae",
+    "source_line": 20270
+  },
+  {
+    "code": "H18",
+    "title_la": "Morbi corneae alii",
+    "source_line": 20281
+  },
+  {
+    "code": "H20",
+    "title_la": "Iridocyclitis",
+    "source_line": 20365
+  },
+  {
+    "code": "H21",
+    "title_la": "Morbi iridis et morbi corporis ciliaris alii",
+    "source_line": 20387
+  },
+  {
+    "code": "H25",
+    "title_la": "Cataracta senilis",
+    "source_line": 20465
+  },
+  {
+    "code": "H26",
+    "title_la": "Cataractae aliae",
+    "source_line": 20497
+  },
+  {
+    "code": "H27",
+    "title_la": "Morbi lentis alii",
+    "source_line": 20521
+  },
+  {
+    "code": "H30",
+    "title_la": "Chorioretinitis",
+    "source_line": 20562
+  },
+  {
+    "code": "H31",
+    "title_la": "Morbi chorioideae alii",
+    "source_line": 20591
+  },
+  {
+    "code": "H33",
+    "title_la": "Ablatio retinae et ruptura retinae",
+    "source_line": 20641
+  },
+  {
+    "code": "H34",
+    "title_la": "Occlusio retinae vascularis",
+    "source_line": 20681
+  },
+  {
+    "code": "H35",
+    "title_la": "Morbi retinae alii",
+    "source_line": 20704
+  },
+  {
+    "code": "H40",
+    "title_la": "Glaucoma",
+    "source_line": 20795
+  },
+  {
+    "code": "H43",
+    "title_la": "Morbi corporis vitrei",
+    "source_line": 20856
+  },
+  {
+    "code": "H44",
+    "title_la": "Morbi bulbi oculi",
+    "source_line": 20876
+  },
+  {
+    "code": "H47",
+    "title_la": "Morbi nervi optici et morbi tractuum opticorum alii",
+    "source_line": 20963
+  },
+  {
+    "code": "H49",
+    "title_la": "Strabismus paralyticus",
+    "source_line": 21012
+  },
+  {
+    "code": "H50",
+    "title_la": "Strabismus alius",
+    "source_line": 21035
+  },
+  {
+    "code": "H51",
+    "title_la": "Anomaliae motuum binocularium aliae",
+    "source_line": 21082
+  },
+  {
+    "code": "H52",
+    "title_la": "Anomaliae refractionis et anomaliae accommodationis",
+    "source_line": 21095
+  },
+  {
+    "code": "H53",
+    "title_la": "Disordines visuales",
+    "source_line": 21132
+  },
+  {
+    "code": "H54",
+    "title_la": "Amblyopia et amaurosis (binocularis vel monocularis)",
+    "source_line": 21195
+  },
+  {
+    "code": "H57",
+    "title_la": "Morbi oculi et adnexorum alii",
+    "source_line": 21292
+  },
+  {
+    "code": "H59",
+    "title_la": "Disordines oculi et adnexorum post interventiones, non alibi classificatis",
+    "source_line": 21318
+  },
+  {
+    "code": "H60",
+    "title_la": "Otitis externa",
+    "source_line": 21396
+  },
+  {
+    "code": "H61",
+    "title_la": "Morbi auris externae alii",
+    "source_line": 21441
+  },
+  {
+    "code": "H65",
+    "title_la": "Otitis media non suppurativa",
+    "source_line": 21504
+  },
+  {
+    "code": "H66",
+    "title_la": "Otitis media suppurativa et non specificata",
+    "source_line": 21557
+  },
+  {
+    "code": "H68",
+    "title_la": "Otosalpingitis et occlusio tubae auditivae (Eustachii)",
+    "source_line": 21605
+  },
+  {
+    "code": "H69",
+    "title_la": "Morbi tubae auditivae (Eustachii) alii",
+    "source_line": 21615
+  },
+  {
+    "code": "H70",
+    "title_la": "Mastoiditis et morbi affines",
+    "source_line": 21624
+  },
+  {
+    "code": "H72",
+    "title_la": "Perforatio membranae tympani",
+    "source_line": 21656
+  },
+  {
+    "code": "H73",
+    "title_la": "Morbi membranae tympani alii",
+    "source_line": 21676
+  },
+  {
+    "code": "H74",
+    "title_la": "Morbi auris mediae et morbi processus mastoidei alii",
+    "source_line": 21692
+  },
+  {
+    "code": "H80",
+    "title_la": "Otosclerosis",
+    "source_line": 21735
+  },
+  {
+    "code": "H81",
+    "title_la": "Morbi functionis organorum vestibularium",
+    "source_line": 21759
+  },
+  {
+    "code": "H83",
+    "title_la": "Morbi auris internae alii",
+    "source_line": 21791
+  },
+  {
+    "code": "H90",
+    "title_la": "Surditas conductiva et surditas sensorineuralis",
+    "source_line": 21819
+  },
+  {
+    "code": "H91",
+    "title_la": "Surditas alia",
+    "source_line": 21854
+  },
+  {
+    "code": "H92",
+    "title_la": "Otalgia et otorrhoea",
+    "source_line": 21886
+  },
+  {
+    "code": "H93",
+    "title_la": "Disordines auris alii, non alibi classificatis",
+    "source_line": 21897
+  },
+  {
+    "code": "H95",
+    "title_la": "Morbi auris et processus mastoidei postprocedurales, non alibi classificatis",
+    "source_line": 21934
+  }
+]

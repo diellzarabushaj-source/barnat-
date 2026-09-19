@@ -1,0 +1,352 @@
+[
+  {
+    "code": "D00",
+    "title_la": "Carcinoma in situ cavi oris, oesophagi et ventriculi",
+    "source_line": 10535
+  },
+  {
+    "code": "D01",
+    "title_la": "Carcinoma in situ organorum digestivorum aliorum",
+    "source_line": 10560
+  },
+  {
+    "code": "D02",
+    "title_la": "Carcinoma in situ auris mediae et systematis respiratorii",
+    "source_line": 10588
+  },
+  {
+    "code": "D03",
+    "title_la": "Melanoma in situ",
+    "source_line": 10623
+  },
+  {
+    "code": "D04",
+    "title_la": "Carcinoma in situ cutis",
+    "source_line": 10652
+  },
+  {
+    "code": "D05",
+    "title_la": "Carcinoma in situ mammae",
+    "source_line": 10692
+  },
+  {
+    "code": "D06",
+    "title_la": "Carcinoma in situ cervicis uteri",
+    "source_line": 10705
+  },
+  {
+    "code": "D07",
+    "title_la": "Carcinoma in situ genitalium aliorum et non specificatorum",
+    "source_line": 10725
+  },
+  {
+    "code": "D09",
+    "title_la": "Carcinoma in situ, locorum aliorum, non specificatorum",
+    "source_line": 10749
+  },
+  {
+    "code": "D10",
+    "title_la": "Neoplasma benignum labii, oris et pharyngis",
+    "source_line": 10780
+  },
+  {
+    "code": "D11",
+    "title_la": "Neoplasma benignum glandularum salivarium majorum",
+    "source_line": 10829
+  },
+  {
+    "code": "D12",
+    "title_la": "Neoplasma benignum coli, recti, ani et canalis analis",
+    "source_line": 10844
+  },
+  {
+    "code": "D13",
+    "title_la": "Neoplasma benignum systematis digestivi, partium aliarum",
+    "source_line": 10884
+  },
+  {
+    "code": "D14",
+    "title_la": "Neoplasma benignum auris mediae et organorum respiratoriorum",
+    "source_line": 10912
+  },
+  {
+    "code": "D15",
+    "title_la": "Neoplasma benignum organorum intrathoracalium aliorum",
+    "source_line": 10952
+  },
+  {
+    "code": "D16",
+    "title_la": "Neoplasma benignum ossis et cartilaginis articuli",
+    "source_line": 10967
+  },
+  {
+    "code": "D17",
+    "title_la": "Neoplasma benignum lipomatosum",
+    "source_line": 11009
+  },
+  {
+    "code": "D18",
+    "title_la": "Haemangioma et lymphangioma, quovis loco",
+    "source_line": 11035
+  },
+  {
+    "code": "D19",
+    "title_la": "Neoplasma benignum mesothelii (Mesothelioma)",
+    "source_line": 11052
+  },
+  {
+    "code": "D20",
+    "title_la": "Neoplasma benignum textus mollis peritonaei et retroperitonaei",
+    "source_line": 11065
+  },
+  {
+    "code": "D21",
+    "title_la": "Neoplasma benignum textus mollium et textuum connexivi aliorum",
+    "source_line": 11081
+  },
+  {
+    "code": "D22",
+    "title_la": "Naevus melanocyticus",
+    "source_line": 11151
+  },
+  {
+    "code": "D23",
+    "title_la": "Neoplasma benignum cutis aliud",
+    "source_line": 11190
+  },
+  {
+    "code": "D25",
+    "title_la": "Leiomyoma uteri",
+    "source_line": 11233
+  },
+  {
+    "code": "D26",
+    "title_la": "Neoplasmata benigna uteri alia",
+    "source_line": 11252
+  },
+  {
+    "code": "D28",
+    "title_la": "Neoplasma benignum genitaliorum femininorum aliorum",
+    "source_line": 11266
+  },
+  {
+    "code": "D29",
+    "title_la": "Neoplasma benignum genitaliorum masculinorum",
+    "source_line": 11283
+  },
+  {
+    "code": "D30",
+    "title_la": "Neoplasma benignum organorum urinariorum",
+    "source_line": 11315
+  },
+  {
+    "code": "D31",
+    "title_la": "Neoplasma benignum oculi et adnexorum oculi",
+    "source_line": 11342
+  },
+  {
+    "code": "D32",
+    "title_la": "Neoplasma benignum meningium",
+    "source_line": 11381
+  },
+  {
+    "code": "D33",
+    "title_la": "Neoplasmata benigna cerebri et systematis nervosi ceniralis, partium",
+    "source_line": 11391
+  },
+  {
+    "code": "D35",
+    "title_la": "Neoplasma benignum glandularum endocrinarum aliarum et non",
+    "source_line": 11435
+  },
+  {
+    "code": "D36",
+    "title_la": "Neoplasma benignum locorum aliorum et non specificatorum",
+    "source_line": 11463
+  },
+  {
+    "code": "D37",
+    "title_la": "Neoplasma oris et organorum systematis digestivi",
+    "source_line": 11493
+  },
+  {
+    "code": "D38",
+    "title_la": "Neoplasma auris mediae, organorum respiratoriorum et intrathoracalium",
+    "source_line": 11546
+  },
+  {
+    "code": "D39",
+    "title_la": "Neoplasma genitalium femininorum",
+    "source_line": 11578
+  },
+  {
+    "code": "D40",
+    "title_la": "Neoplasma genitalium masculinorum",
+    "source_line": 11603
+  },
+  {
+    "code": "D41",
+    "title_la": "Neoplasma organorum urinariorum",
+    "source_line": 11615
+  },
+  {
+    "code": "D42",
+    "title_la": "Neoplasma meningium",
+    "source_line": 11633
+  },
+  {
+    "code": "D43",
+    "title_la": "Neoplasmata cerebri et systematis nervosi centralis",
+    "source_line": 11650
+  },
+  {
+    "code": "D44",
+    "title_la": "Neoplasma glandulae endocrinae",
+    "source_line": 11680
+  },
+  {
+    "code": "D46",
+    "title_la": "Syndromata myelodysplastica",
+    "source_line": 11722
+  },
+  {
+    "code": "D47",
+    "title_la": "Neoplasmata telae lymphaticae, hematopoieticae et telarum affinium alia",
+    "source_line": 11759
+  },
+  {
+    "code": "D48",
+    "title_la": "Neoplasma indefiniti sive ignoti, loci alterius",
+    "source_line": 11807
+  },
+  {
+    "code": "D50",
+    "title_la": "Anaemia sideropenica",
+    "source_line": 11924
+  },
+  {
+    "code": "D51",
+    "title_la": "Anaemia propter deficientiam vitamini B12",
+    "source_line": 11948
+  },
+  {
+    "code": "D52",
+    "title_la": "Anaemia propter deficientiam acidi folici",
+    "source_line": 11974
+  },
+  {
+    "code": "D53",
+    "title_la": "Anaemiae nutritionales aliae",
+    "source_line": 11988
+  },
+  {
+    "code": "D55",
+    "title_la": "Anaemia haemolytica enzymopathica",
+    "source_line": 12032
+  },
+  {
+    "code": "D56",
+    "title_la": "Thalassaemia",
+    "source_line": 12067
+  },
+  {
+    "code": "D57",
+    "title_la": "Drepanocytosis",
+    "source_line": 12092
+  },
+  {
+    "code": "D58",
+    "title_la": "Anaemiae haemolyticae hereditariae aliae",
+    "source_line": 12127
+  },
+  {
+    "code": "D59",
+    "title_la": "Anaemia haemolytica acquisita",
+    "source_line": 12159
+  },
+  {
+    "code": "D60",
+    "title_la": "Aplasia erythrocytocitica pura acquisita [erythroblastopenia]",
+    "source_line": 12224
+  },
+  {
+    "code": "D61",
+    "title_la": "Anaemiae aplasticae aliae",
+    "source_line": 12236
+  },
+  {
+    "code": "D64",
+    "title_la": "Anaemiae aliae",
+    "source_line": 12284
+  },
+  {
+    "code": "D68",
+    "title_la": "Defectus coagulationis alii",
+    "source_line": 12360
+  },
+  {
+    "code": "D69",
+    "title_la": "Purpura et status haemorrhagici alii",
+    "source_line": 12448
+  },
+  {
+    "code": "D72",
+    "title_la": "Disordines leucocytorum alii",
+    "source_line": 12538
+  },
+  {
+    "code": "D73",
+    "title_la": "Morbus splenis",
+    "source_line": 12583
+  },
+  {
+    "code": "D74",
+    "title_la": "Methaemoglobinaemia",
+    "source_line": 12621
+  },
+  {
+    "code": "D75",
+    "title_la": "Morbi sanguinis et morbi organorum haematopoieticorum, alii",
+    "source_line": 12636
+  },
+  {
+    "code": "D76",
+    "title_la": "Morbi telae lymphoreticularis et morbi systematis reticulohistiocytici, alii",
+    "source_line": 12680
+  },
+  {
+    "code": "D80",
+    "title_la": "Immunodeficientia cum defectibus anticorporum praedominantibus",
+    "source_line": 12736
+  },
+  {
+    "code": "D81",
+    "title_la": "Immunodeficientiae combinatae",
+    "source_line": 12766
+  },
+  {
+    "code": "D82",
+    "title_la": "Immunodeficientia cum defectibus majoribus aliis",
+    "source_line": 12801
+  },
+  {
+    "code": "D83",
+    "title_la": "Immunodeficientia variabilis communis",
+    "source_line": 12834
+  },
+  {
+    "code": "D84",
+    "title_la": "Immunodeficientiae aliae",
+    "source_line": 12851
+  },
+  {
+    "code": "D86",
+    "title_la": "Sarcoidosis",
+    "source_line": 12863
+  },
+  {
+    "code": "D89",
+    "title_la": "Disordines immunitatis alii, non alibi classificatis",
+    "source_line": 12892
+  }
+]
