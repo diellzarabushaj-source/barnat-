@@ -674,6 +674,7 @@
     renderSuggestions();
 
     const top = state.suggestions[0];
+    prefetchChildren(top);
     const corrected = top?.searchMatch?.type?.startsWith('fuzzy-') || top?.searchMatch?.type === 'code-fuzzy';
     const suffix = corrected ? ' · typo i korrigjuar' : fromCache ? ' · instant' : '';
     setStatus(`${formatNumber(state.suggestions.length)} sugjerime për «${query}»${suffix}`);
@@ -921,6 +922,7 @@
     });
 
     el.icdSearch.addEventListener('focus', () => {
+      if (!state.searchSeedReady) void warmSearchSeed();
       if (clean(el.icdSearch.value).length >= 2) {
         state.suggestionOpen = true;
         renderSuggestions();
@@ -929,6 +931,11 @@
 
     el.icdSearch.addEventListener('keydown', event => {
       if (!state.suggestionOpen || !state.suggestions.length) {
+        if (event.key === 'Enter' && clean(el.icdSearch.value).length >= 2) {
+          event.preventDefault();
+          void runSearch(clean(el.icdSearch.value));
+          return;
+        }
         if (event.key === 'Escape') { clearSearch({ preserveInput:true }); el.icdSearch.blur(); }
         return;
       }
