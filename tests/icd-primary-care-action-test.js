@@ -5,11 +5,11 @@ const Data = require('../data/icd-primary-care-action-v1.json');
 const Handler = require('../lib/icd-advanced-handler.js');
 const FullIcd = require('../lib/icd-full-hierarchy.js');
 
-assert.equal(Data.version, 1);
-assert.equal(Data.entries.length, 25);
-assert.equal(new Set(Data.entries.map(entry => entry.code)).size, 25);
+assert.equal(Data.version, 2);
+assert.equal(Data.entries.length, 45);
+assert.equal(new Set(Data.entries.map(entry => entry.code)).size, 45);
 
-for (const code of ['I10','E11','J06','R51','R19.7','R11','R10.4','R42','R00.2','J45','J44','K21','A09','N39.0','M54','M47','M51']) {
+for (const code of ['I10','E11','J06','R51','R19.7','R11','R10.4','R42','R00.2','J45','J44','K21','A09','N39.0','M54','M47','M51','J00','J30','H92.0','H10','R12','R14','K59.0','M54.5','M54.2','M54.3','M25.5','M19','M79.1','G43','R60','L30','B35','D50','E03','F41']) {
   const entry = Data.entries.find(item => item.code === code);
   assert.ok(entry, `Missing primary-care action entry for ${code}`);
   assert.ok(entry.working_diagnosis);
@@ -62,8 +62,8 @@ const indexPayload = Handler._test.guidanceListPayload(dataset, {
   sourceRevision:'test', stale:false, loadedAt:Date.now(), csvBytes:1, fetchMs:1, buildMs:1,
 });
 assert.equal(indexPayload.kind, 'primary-care-guidance-index');
-assert.equal(indexPayload.total, 25);
-assert.equal(indexPayload.items.length, 25);
+assert.equal(indexPayload.total, 45);
+assert.equal(indexPayload.items.length, 45);
 assert.ok(indexPayload.items.some(item => item.code === 'I10' && /Kardiolog/.test(item.specialist)));
 assert.ok(indexPayload.items.every(item => item.code && item.title_sq && item.specialist));
 console.log('Primary-care action dataset, exact guidance and parent fallback passed.');
