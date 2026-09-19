@@ -8,7 +8,9 @@ on:
       - 'icd-v2.js'
       - 'lib/icd-*.js'
       - 'data/icd-latin-*.json'
+      - 'data/icd-symptom-*.json'
       - 'tests/icd-clinical-search-v3-test.js'
+      - 'tests/icd-symptom-intent-test.js'
       - 'tests/icd-search-command-center-test.js'
   pull_request:
     paths:
@@ -17,7 +19,9 @@ on:
       - 'icd-v2.js'
       - 'lib/icd-*.js'
       - 'data/icd-latin-*.json'
+      - 'data/icd-symptom-*.json'
       - 'tests/icd-clinical-search-v3-test.js'
+      - 'tests/icd-symptom-intent-test.js'
       - 'tests/icd-search-command-center-test.js'
 
 jobs:
@@ -33,8 +37,10 @@ jobs:
           node --check icd-v2.js
           node --check lib/icd-search-engine.js
           node --check lib/icd-search-engine-v3.js
+          node --check lib/icd-symptom-intent.js
           node --check lib/icd-advanced-handler.js
       - name: Search engine tests
         run: |
           node tests/icd-clinical-search-v3-test.js
+          node tests/icd-symptom-intent-test.js
           node tests/icd-search-command-center-test.js
