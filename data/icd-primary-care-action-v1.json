@@ -470,7 +470,7 @@
       "management": "Konfirmo diagnozën objektivisht kur është e mundur; terapi anti-inflamatore me inhalator sipas kontrollit dhe plan veprimi; kontrollo teknikën/adherencën.",
       "summary": "Kontrolli i simptomave dhe risku i exacerbimeve udhëheqin terapinë.",
       "red_flags": [
-        "Mungesë e zhurmave respiratore (mungesë e zhurmave respiratore (silent chest))",
+        "Mungesë e zhurmave respiratore (silent chest)",
         "Hipoksemi / vështirësi në të folur",
         "Përkeqësim pavarësisht bronkodilatatorit"
       ]
@@ -1396,7 +1396,7 @@
       "referral": {
         "specialist": "Qendër Stroke / Neurologji emergjente",
         "goal": "Neuroimazheri urgjente dhe vlerësim kohë-varur për trombolizë dhe/ose trombektomi endovaskulare.",
-        "note": "Deficit neurologjik akut; 'last known well' ___; shëno deficitin, GCS/NIHSS nëse përdoret, glukozën, TA, antikoagulantët dhe kohën e nisjes për transfer."
+        "note": "Deficit neurologjik akut; koha e fundit pa deficit ('last known well') ___; shëno deficitin, GCS/NIHSS nëse përdoret, glukozën, TA, antikoagulantët dhe kohën e nisjes për transfer."
       },
       "anamnesis": [
         "Koha e fundit kur pacienti ishte normal dhe koha e zbulimit",
@@ -1617,13 +1617,13 @@
       "exams": [
         "ABCDE dhe statusi mendor",
         "SpO₂, FR, puls dhe PEF kur është i sigurt",
-        "Auskultim: wheezing vs mungesë e zhurmave respiratore (silent chest)",
+        "Auskultim: wheezing kundrejt mungesës së zhurmave respiratore (silent chest)",
         "ABG dhe analiza tjera në rast të rëndë në spital"
       ],
       "management": "Eksacerbimi i rëndë trajtohet në ambient akut me SABA të përsëritur, ipratropium në rastet e rënda, kortikosteroid sistemik dhe oksigjen të titruar; kërko mbështetje respiratore urgjente në përgjumje/konfuzion/mungesë e zhurmave respiratore (silent chest) ose përkeqësim.",
       "summary": "Astma e rëndë është emergjencë; 'mungesë e zhurmave respiratore (silent chest)', lodhja dhe ndryshimi i vetëdijes janë shenja kërcënuese për jetën.",
       "red_flags": [
-        "Mungesë e zhurmave respiratore (mungesë e zhurmave respiratore (silent chest))",
+        "Mungesë e zhurmave respiratore (silent chest)",
         "Përgjumje/konfuzion",
         "Hipoksemi e rëndë ose shenja lodhjeje respiratore"
       ]
@@ -1890,7 +1890,7 @@
         "TA, puls, temperaturë dhe perfuzioni",
         "EKG; CXR/ABG/laborator sipas tablosë"
       ],
-      "management": "Oksigjen kur ka hipoksemi, monitorim dhe trajtim shkakësor. Dispnea me distress, hipoksemi ose instabilitet kërkon transport urgjent; mos e trajto vetëm si 'ankth' pa përjashtuar shkak organik kur ka shenja objektive.",
+      "management": "Oksigjen kur ka hipoksemi, monitorim dhe trajtim shkakësor. Dispnea me vështirësi të rëndë respiratore, hipoksemi ose instabilitet kërkon transport urgjent; mos e trajto vetëm si 'ankth' pa përjashtuar shkak organik kur ka shenja objektive.",
       "summary": "Dispnea është simptomë me spektër të gjerë; SpO₂, FR, auskultimi dhe hemodinamika përcaktojnë urgjencën.",
       "red_flags": [
         "Hipoksemi",
