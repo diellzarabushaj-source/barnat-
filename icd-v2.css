@@ -396,14 +396,37 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 .icd-level-chip{color:#8793a2;font-size:9.5px;white-space:nowrap}
 .icd-suggestion-empty{padding:18px 16px;color:#67778a;text-align:center;font-size:12px}
 .icd-suggestion-empty strong{display:block;margin-bottom:4px;color:#31475e;font-size:13px}
-.icd-search-foot{max-width:920px;display:flex;align-items:center;justify-content:space-between;gap:14px;margin:10px auto 0}
-.icd-search-examples{display:flex;flex-wrap:wrap;gap:6px}
-.icd-search-examples button{
-  min-height:28px;padding:0 9px;border:1px solid #e1e4ea;border-radius:999px;background:#fff;color:#66768a;
-  font-size:10.5px;cursor:pointer
+.icd-search-foot{max-width:920px;display:grid;gap:8px;margin:10px auto 0}
+.icd-quick-diagnoses{display:grid;gap:7px;min-width:0}
+.icd-quick-group{display:grid;grid-template-columns:126px minmax(0,1fr);align-items:center;gap:8px;min-width:0}
+.icd-quick-label{display:flex;align-items:center;gap:5px;min-width:0;color:#627286;white-space:nowrap}
+.icd-quick-label strong{font-size:10.5px;font-weight:700;color:#40546b}
+.icd-quick-label small{font-size:9px;color:#97a2af}
+.icd-quick-dot{width:6px;height:6px;flex:none;border-radius:999px;background:#6255ef;box-shadow:0 0 0 3px rgba(98,85,239,.09)}
+.icd-quick-scroll{
+  display:flex;gap:6px;min-width:0;overflow-x:auto;padding:1px 2px 3px;
+  scroll-snap-type:x proximity;scrollbar-width:thin;overscroll-behavior-inline:contain
 }
-.icd-search-examples button:hover{border-color:var(--stripe-line);background:var(--stripe-soft);color:var(--stripe)}
-.icd-search-stage .icd-status{flex:none}
+.icd-quick-scroll::-webkit-scrollbar{height:4px}
+.icd-quick-scroll::-webkit-scrollbar-thumb{border-radius:999px;background:#d9dce3}
+.icd-quick-chip{
+  min-height:30px;display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;padding:0 10px;
+  border:1px solid #e0e3ea;border-radius:999px;background:#fff;color:#617185;
+  font-size:10.5px;line-height:1;cursor:pointer;scroll-snap-align:start;
+  transition:border-color .12s,background .12s,color .12s,transform .12s,box-shadow .12s
+}
+.icd-quick-chip b{color:#5748e9;font:700 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+.icd-quick-chip span{font-weight:520}
+.icd-quick-chip:hover{border-color:#c7c2ff;background:#f7f6ff;color:#31278f;box-shadow:0 3px 9px rgba(60,48,150,.08)}
+.icd-quick-chip:active{transform:translateY(1px)}
+.icd-quick-chip:focus-visible{outline:2px solid var(--stripe);outline-offset:2px}
+.icd-quick-group.is-urgent .icd-quick-label strong{color:#a22f39}
+.icd-quick-group.is-urgent .icd-quick-label small{color:#bd7178}
+.icd-quick-group.is-urgent .icd-quick-dot{background:#d6424f;box-shadow:0 0 0 3px rgba(214,66,79,.1)}
+.icd-quick-chip.is-urgent{border-color:#f0cdd1;background:#fffafa;color:#9b3640}
+.icd-quick-chip.is-urgent b{color:#c92f3d}
+.icd-quick-chip.is-urgent:hover{border-color:#df7d86;background:#fff1f2;color:#841e29;box-shadow:0 3px 10px rgba(184,44,57,.09)}
+.icd-search-stage .icd-status{justify-self:end;min-height:22px}
 .icd-card{overflow:visible}
 .icd-workspace{overflow:hidden;border-radius:12px}
 .icd-path{border-radius:12px 12px 0 0}
@@ -430,10 +453,15 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
   .icd-suggestion-copy .icd-suggestion-translation{align-items:flex-start;white-space:normal}
   .icd-suggestion-copy .icd-suggestion-translation span{display:-webkit-box;white-space:normal;-webkit-box-orient:vertical;-webkit-line-clamp:2}
   .icd-suggestion-meta{grid-column:2;flex-direction:row;align-items:center;justify-content:flex-start;min-width:0}
-  .icd-search-foot{display:block;margin-top:8px}
-  .icd-search-examples{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;scrollbar-width:none}
-  .icd-search-examples::-webkit-scrollbar{display:none}
-  .icd-search-stage .icd-status{margin-top:8px;white-space:normal}
+  .icd-search-foot{display:grid;margin-top:8px;gap:8px}
+  .icd-quick-diagnoses{gap:9px}
+  .icd-quick-group{grid-template-columns:1fr;gap:5px}
+  .icd-quick-label{padding:0 2px}
+  .icd-quick-label strong{font-size:10px}
+  .icd-quick-scroll{padding-bottom:3px;scrollbar-width:none}
+  .icd-quick-scroll::-webkit-scrollbar{display:none}
+  .icd-quick-chip{min-height:32px;font-size:10px}
+  .icd-search-stage .icd-status{justify-self:start;margin-top:1px;white-space:normal}
 }
 @media(forced-colors:active){
   .icd-search-stage,.icd-suggestions,.icd-suggestion-row,.search-box-primary input{border:1px solid ButtonText;background:Canvas;color:CanvasText;box-shadow:none}
