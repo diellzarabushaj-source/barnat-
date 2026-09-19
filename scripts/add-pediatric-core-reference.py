@@ -8,6 +8,15 @@ anchor = '        <aside class="dosage-safety-note" role="note">'
 if marker in text:
     print("Pediatric core substance reference already exists; no patch needed.")
     raise SystemExit(0)
+
+current_v2_markers = [
+    'data-drx-app="dozologjia-v2"',
+    'id="masterResult"',
+    'Master v2.7',
+]
+if all(marker_text in text for marker_text in current_v2_markers):
+    print("Current Dozologjia V2 uses audited Master v2.7 server-side dosing; legacy static pediatric reference is intentionally retired.")
+    raise SystemExit(0)
 if anchor not in text:
     raise SystemExit("Safety-note anchor not found; refusing to patch.")
 
