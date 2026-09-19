@@ -1,0 +1,22 @@
+{
+  "schema": "medindex.icd10.latin.batut-reviewed-subcodes.v1",
+  "generated_date": "2026-09-19",
+  "policy": "Only individually reviewed Batut subcategory rows are included. No bulk raw Latin import is allowed because some raw extraction rows contain Serbian or truncated text.",
+  "source": {
+    "publisher": "Institut za javno zdravlje Srbije Dr Milan Jovanovic Batut",
+    "work": "MKB-10, Deseta revizija, Knjiga 1, Tabelarna lista, izdanje 2010",
+    "url": "https://www.rfzo.rs/download/dsg/MKB102010Knjiga1%281%29.pdf"
+  },
+  "rows": [
+    {
+      "code": "J68.1",
+      "title_la": "Oedema pulmonis chemicale, gasogenes, fumogenes et vaporogenes",
+      "source_line": 25315
+    },
+    {
+      "code": "S06.1",
+      "title_la": "Oedema cerebri traumaticum",
+      "source_line": 43244
+    }
+  ]
+}

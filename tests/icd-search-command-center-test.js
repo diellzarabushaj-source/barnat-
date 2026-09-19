@@ -21,6 +21,7 @@ assert.match(html, /Kërko ICD, diagnozë, Latin, English/);
 assert.match(css, /\.icd-search-stage\{/);
 assert.match(css, /\.icd-suggestions\{/);
 assert.match(css, /\.icd-suggestion-row\.is-active/);
+assert.match(css, /\.icd-suggestion-copy \.icd-suggestion-translation/);
 assert.match(css, /@media\(max-width:760px\)/);
 
 assert.match(js, /const suggestionCache = new Map\(\)/);
@@ -31,6 +32,10 @@ assert.match(js, /event\.key === 'ArrowDown'/);
 assert.match(js, /event\.key === 'Enter'/);
 assert.match(js, /cacheMode = 'no-store'/);
 assert.match(js, /controller\.signal, 'default'/);
+assert.match(js, /function suggestionTranslations\(node\)/);
+assert.match(js, /lang:'EN'/);
+assert.match(js, /lang:'LA'/);
+assert.match(js, /icd-suggestion-translation/);
 
 assert.match(handler, /clinical-ranking-v4/);
 assert.match(handler, /trigram-candidate-index/);
@@ -80,4 +85,9 @@ result = Search.suggestDataset(dataset, 'I1O', { limit:8 });
 assert.equal(result.rows[0].code, 'I10');
 assert.equal(result.normalizedCode, 'I10');
 
-console.log('ICD command-center UI, indexed multilingual search and typo correction passed.');
+assert.equal(FullIcd.LATIN_TITLE_BY_CODE.get('J81'), 'Oedema pulmonum');
+assert.equal(FullIcd.LATIN_TITLE_BY_CODE.get('J68.1'), 'Oedema pulmonis chemicale, gasogenes, fumogenes et vaporogenes');
+assert.equal(FullIcd.LATIN_TITLE_BY_CODE.get('S06.1'), 'Oedema cerebri traumaticum');
+assert.equal(FullIcd.LATIN_TITLE_BY_CODE.get('O10-O16'), 'Oedema, proteinuria et hypertonia in graviditate, partu et puerperio');
+
+console.log('ICD command-center UI, EN+LA autocomplete, indexed multilingual search and typo correction passed.');

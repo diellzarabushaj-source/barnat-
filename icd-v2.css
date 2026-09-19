@@ -367,8 +367,9 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 }
 .icd-suggestion-copy{min-width:0}
 .icd-suggestion-copy strong{display:block;overflow:hidden;color:#18334d;font-size:13px;font-weight:590;line-height:1.28;text-overflow:ellipsis;white-space:nowrap}
-.icd-suggestion-copy small{display:block;overflow:hidden;margin-top:3px;color:#758397;font-size:10.5px;line-height:1.35;text-overflow:ellipsis;white-space:nowrap}
-.icd-suggestion-copy small b{color:#5d4ee8;font-weight:600}
+.icd-suggestion-copy .icd-suggestion-translation{display:flex;align-items:baseline;gap:6px;min-width:0;overflow:hidden;margin-top:3px;color:#758397;font-size:10.5px;line-height:1.35;white-space:nowrap}
+.icd-suggestion-copy .icd-suggestion-translation b{flex:0 0 20px;color:#5d4ee8;font-weight:700;letter-spacing:.02em}
+.icd-suggestion-copy .icd-suggestion-translation span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .icd-suggestion-meta{display:flex;flex-direction:column;align-items:flex-end;gap:5px;min-width:95px}
 .icd-match-chip{display:inline-flex;align-items:center;min-height:22px;padding:0 7px;border:1px solid #e0defe;border-radius:999px;background:#f8f7ff;color:#6558c9;font-size:9.5px;font-weight:600;white-space:nowrap}
 .icd-level-chip{color:#8793a2;font-size:9.5px;white-space:nowrap}
@@ -402,7 +403,8 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
   .icd-suggestion-row{grid-template-columns:62px minmax(0,1fr);gap:9px;min-height:66px;padding:9px}
   .icd-suggestion-code{min-height:32px;padding:4px 6px;font-size:10.5px}
   .icd-suggestion-copy strong{font-size:12.5px}
-  .icd-suggestion-copy small{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+  .icd-suggestion-copy .icd-suggestion-translation{align-items:flex-start;white-space:normal}
+  .icd-suggestion-copy .icd-suggestion-translation span{display:-webkit-box;white-space:normal;-webkit-box-orient:vertical;-webkit-line-clamp:2}
   .icd-suggestion-meta{grid-column:2;flex-direction:row;align-items:center;justify-content:flex-start;min-width:0}
   .icd-search-foot{display:block;margin-top:8px}
   .icd-search-examples{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;scrollbar-width:none}

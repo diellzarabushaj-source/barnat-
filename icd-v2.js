@@ -326,16 +326,23 @@
     }).slice(0, 18);
   }
 
-  function suggestionSecondary(node) {
+  function suggestionTranslations(node) {
     const primary = nodeTitle(node);
-    const parts = [];
+    const items = [];
     const sq = clean(node?.albanianDraft);
     const en = clean(node?.englishTitle);
     const la = clean(node?.latinTitle);
-    if (sq && sq !== primary) parts.push(`SQ · ${sq}`);
-    if (en && en !== primary) parts.push(`EN · ${en}`);
-    if (la && la !== primary && la !== en) parts.push(`LA · ${la}`);
-    return parts.slice(0, 2).join(' · ');
+    if (sq && sq !== primary) items.push({ lang:'SQ', text:sq });
+    if (en) items.push({ lang:'EN', text:en });
+    if (la) items.push({ lang:'LA', text:la });
+    return items;
+  }
+
+  function suggestionTranslationHtml(node) {
+    return suggestionTranslations(node).map(item => `
+      <small class="icd-suggestion-translation">
+        <b>${escapeHtml(item.lang)}</b><span>${escapeHtml(item.text)}</span>
+      </small>`).join('');
   }
 
   function renderSuggestions() {
@@ -364,11 +371,11 @@
     const rows = state.suggestions.map((node, index) => {
       const active = index === state.activeSuggestion;
       const match = clean(node?.searchMatch?.label) || 'Përputhje';
-      const secondary = suggestionSecondary(node);
+      const translations = suggestionTranslationHtml(node);
       return `<button class="icd-suggestion-row ${active ? 'is-active' : ''}" type="button" role="option"
         id="icd-suggestion-${index}" aria-selected="${active}" data-suggestion-index="${index}" data-code="${escapeHtml(clean(node.code))}">
         <span class="icd-suggestion-code">${escapeHtml(clean(node.code))}</span>
-        <span class="icd-suggestion-copy"><strong>${escapeHtml(nodeTitle(node))}</strong>${secondary ? `<small>${escapeHtml(secondary)}</small>` : ''}</span>
+        <span class="icd-suggestion-copy"><strong>${escapeHtml(nodeTitle(node))}</strong>${translations}</span>
         <span class="icd-suggestion-meta"><span class="icd-match-chip">${escapeHtml(match)}</span><span class="icd-level-chip">${escapeHtml(levelLabel(node.level))}</span></span>
       </button>`;
     }).join('');
