@@ -103,7 +103,7 @@ const suggestion = Handler._test.suggestionPayload(dataset, { q:'A00 1' }, {
   sourceRevision:'test-revision', stale:false, loadedAt:Date.now(), csvBytes:100, fetchMs:1, buildMs:1,
 });
 assert.equal(suggestion.rows[0].code, 'A00.1');
-assert.equal(suggestion.meta.search.engine, 'clinical-ranking-v6');
+assert.equal(suggestion.meta.search.engine, 'clinical-ranking-v7');
 assert.ok(suggestion.meta.search.supports.includes('normalized-code'));
 assert.ok(suggestion.meta.search.supports.includes('breadcrumbs'));
 assert.ok(suggestion.meta.search.supports.includes('la-title'));
@@ -112,6 +112,9 @@ assert.ok(suggestion.meta.search.supports.includes('family-grouping'));
 assert.ok(suggestion.meta.search.supports.includes('latin-parent-fallback'));
 assert.ok(suggestion.meta.search.supports.includes('category-seed'));
 assert.ok(suggestion.meta.search.supports.includes('instant-local-preview'));
+assert.ok(suggestion.meta.search.supports.includes('symptom-intent'));
+assert.ok(suggestion.meta.search.supports.includes('symptom-differential-retrieval'));
+assert.equal(suggestion.meta.search.diagnosticDecision, false);
 
 const seed = Handler._test.seedPayload(dataset, {
   sourceRevision:'test-revision', stale:false, loadedAt:Date.now(), csvBytes:100, fetchMs:1, buildMs:1,
