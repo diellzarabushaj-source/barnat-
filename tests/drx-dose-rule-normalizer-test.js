@@ -62,6 +62,20 @@ const renal = Dose.normalizeRule({
 });
 assert.ok(renal.requiredInputs.includes('renal_function'));
 
+const hepatic = Dose.normalizeRule({
+  calculationMethod:'fixed_dose',
+  hepaticAdjustmentRequired:true,
+});
+assert.equal(hepatic.hepaticAdjustmentRequired, true);
+assert.ok(hepatic.requiredInputs.includes('hepatic_function'));
+
+const hepaticSnakeCase = Dose.normalizeRule({
+  calculation_method:'fixed_dose',
+  hepatic_adjustment_required:true,
+});
+assert.equal(hepaticSnakeCase.hepaticAdjustmentRequired, true);
+assert.ok(hepaticSnakeCase.requiredInputs.includes('hepatic_function'));
+
 const prnMissingCeiling = Dose.validateRule({
   ruleKey:'bad-prn',
   indicationKey:'pain',
