@@ -138,7 +138,7 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view, sv:'clinical-action-v12' });
+    const params = new URLSearchParams({ view, sv:'clinical-workspace-v13' });
     if (view === 'suggest' || view === 'seed' || view === 'hot' || view === 'guidance' || view === 'guidance-list') params.set('advanced', '1');
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
     return `${API}?${params}`;
@@ -403,7 +403,7 @@
         <article class="clinical-action-card is-referral">
           <div class="clinical-card-head">
             <span class="clinical-card-icon">↗</span>
-            <div><span class="clinical-card-label">Referimi</span><strong>${escapeHtml(clean(guidance.referral?.specialist) || 'Sipas tablosë klinike')}</strong></div>
+            <div><span class="clinical-card-label">Te cili specialist referohet</span><strong>${escapeHtml(clean(guidance.referral?.specialist) || 'Sipas tablosë klinike')}</strong></div>
           </div>
           <div class="clinical-referral-purpose">
             <span>Qëllimi i referimit</span>
@@ -481,6 +481,7 @@
     state.clinicalGuidanceLoading = true;
     state.clinicalGuidanceError = '';
     renderClinicalAction();
+    renderClinicalQuickHub();
 
     try {
       const { payload } = await fetchJson(endpoint('guidance', { code:key }), 5000, null, 'default');
