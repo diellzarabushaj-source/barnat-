@@ -1950,19 +1950,41 @@
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(payload?.error || `API ${response.status}`);
       const data = payload?.data;
-      if (!data || !Array.isArray(data.tests) || !Array.isArray(data.categories) || !Array.isArray(data.indications)) {
-        throw new Error('Dataset-i i analizave nuk është i plotë.');
+      if (!data || !Array.isArray(data.tests) || !Array.isArray(data.categories)) {
+        throw new Error('Dataset-i laboratorik nuk është i plotë.');
       }
-      if (!data.tests.length || !data.categories.length || !data.indications.length) {
-        throw new Error('Katalogu ose profilet klinike janë bosh.');
-      }
+      if (!data.tests.length || !data.categories.length) throw new Error('Katalogu laboratorik është bosh.');
       return data;
     } finally {
       clearTimeout(timer);
     }
   }
 
+  function buildClinicalDataset(data) {
+    const categoryIds = new Set((data.categories || []).map(item => item.id));
+    const testIds = new Set((data.tests || []).map(item => item.id));
+    const categories = [
+      ...(data.categories || []),
+      ...EXAM_CATEGORIES.filter(item => !categoryIds.has(item.id)),
+    ];
+    const tests = [
+      ...(data.tests || []).map(test => ({ ...test, examGroup:test.examGroup || 'laboratory' })),
+      ...EXAM_CATALOG.filter(item => !testIds.has(item.id)),
+    ];
+    return {
+      ...data,
+      categories,
+      tests,
+      indications:CLINICAL_PRESENTATIONS.map(item => ({
+        ...item,
+        tests:(item.tests || []).filter(link => tests.some(test => test.id === link.testId)),
+      })),
+      source:`${data.source || 'Supabase'} + DRx clinical work-up`,
+    };
+  }
+
   function installDataset(data) {
+    data = buildClinicalDataset(data);
     state.data = data;
     state.testsById = new Map(data.tests.map(test => [test.id, test]));
     state.categoriesById = new Map(data.categories.map(category => [category.id, category]));
@@ -1970,8 +1992,8 @@
 
     $('#labTestTotal').textContent = String(data.tests.length);
     $('#labIndicationTotal').textContent = String(data.indications.length);
-    $('#syncText').textContent = data.source || 'Supabase';
-    $('#sourceStatus').textContent = `${data.source || 'Supabase'} · ${data.tests.length} analiza · ${data.indications.length} profile klinike`;
+    $('#syncText').textContent = 'Aktiv';
+    $('#sourceStatus').textContent = `${data.source || 'Supabase + DRx'} · ${data.tests.length} ekzaminime · ${data.indications.length} prezantime klinike`;
 
     restoreUrl();
     renderAll();
@@ -1988,7 +2010,7 @@
     return normalize([
       indication.title,
       indication.titleEn,
-      ...(indication.icdCodes || []),
+      indication.clinicalType,
       ...(indication.aliases || []),
       indication.summary,
     ].join(' '));
@@ -2001,6 +2023,7 @@
       test.englishName,
       test.category,
       test.whatItShows,
+      test.examGroup,
     ].join(' '));
   }
 
@@ -2018,23 +2041,16 @@
       for (const link of indication.tests || []) {
         const test = state.testsById.get(link.testId);
         if (!test) continue;
-
         if (!map.has(test.id)) {
-          map.set(test.id, {
-            test,
-            tier:link.tier || 'recommended',
-            reasons:[],
-            manual:false,
-          });
+          map.set(test.id, { test, tier:link.tier || 'recommended', reasons:[], manual:false });
         }
-
         const entry = map.get(test.id);
         entry.tier = tierOf(entry.tier, link.tier || 'recommended');
         if (!entry.reasons.some(reason => reason.indicationId === indication.id)) {
           entry.reasons.push({
             indicationId:indication.id,
-            disease:indication.title,
-            icdCodes:indication.icdCodes || [],
+            presentation:indication.title,
+            clinicalType:indication.clinicalType || 'Prezantim klinik',
             rationale:link.rationale || '',
             contextNote:link.contextNote || '',
           });
@@ -2045,11 +2061,8 @@
     for (const testId of state.manualTestIds) {
       const test = state.testsById.get(testId);
       if (!test) continue;
-      if (!map.has(testId)) {
-        map.set(testId, { test, tier:'manual', reasons:[], manual:true });
-      } else {
-        map.get(testId).manual = true;
-      }
+      if (!map.has(testId)) map.set(testId, { test, tier:'manual', reasons:[], manual:true });
+      else map.get(testId).manual = true;
     }
 
     return [...map.values()].sort((a, b) => {
@@ -2063,8 +2076,9 @@
     try {
       const url = new URL(window.location.href);
       const slugs = selectedIndications().map(item => item.slug).filter(Boolean);
-      if (slugs.length) url.searchParams.set('dx', slugs.join(','));
-      else url.searchParams.delete('dx');
+      if (slugs.length) url.searchParams.set('sx', slugs.join(','));
+      else url.searchParams.delete('sx');
+      url.searchParams.delete('dx');
       history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
     } catch {}
   }
@@ -2072,7 +2086,7 @@
   function restoreUrl() {
     try {
       const url = new URL(window.location.href);
-      const slugs = (url.searchParams.get('dx') || '').split(',').map(clean).filter(Boolean);
+      const slugs = (url.searchParams.get('sx') || url.searchParams.get('dx') || '').split(',').map(clean).filter(Boolean);
       const bySlug = new Map((state.data?.indications || []).map(item => [item.slug, item.id]));
       slugs.forEach(slug => {
         const id = bySlug.get(slug);
