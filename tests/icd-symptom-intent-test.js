@@ -33,6 +33,7 @@ assert.ok(result.candidates.some(item => item.code === 'M51'));
 result = intent('veshtirsi ne frymemarrje', 'dyspnea');
 assert.equal(result.symptom_code, 'R06.0');
 assert.ok(result.candidates.some(item => item.code === 'I26' && item.urgent));
+assert.ok(result.candidates.every(item => 'retrieval_weight' in item && !('weight' in item)));
 
 assert.equal(SymptomIntent.intentPayload('I10'), null, 'ICD code input must not be treated as symptom intent.');
 assert.equal(SymptomIntent.intentPayload('a'), null, 'Very short input must not activate symptom intent.');
