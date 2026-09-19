@@ -10,7 +10,7 @@
     '/klasifikimi.html': ['Klasifikimi ATC', 'Grupet, nën-grupet dhe substancat aktive'],
     '/icd.html': ['ICD', 'Diagnozat dhe kodet klinike'],
     '/urgjencat.html': ['Urgjencat', 'Hapa të shpejtë, referim dhe kujdes sekondar'],
-    '/analizat.html': ['Analizat laboratorike', 'Referencë klinike e strukturuar'],
+    '/analizat.html': ['Ekzaminet', 'Work-up klinik sipas shenjave dhe simptomave'],
     '/dozologjia.html': ['Dozologjia', 'Skema me burim për të rritur dhe pediatri'],
     '/protokollet.html': ['Protokollet', 'Dokumentet zyrtare të Ministrisë së Shëndetësisë'],
     '/medical-hub.html': ['Medical Hub', 'Pyetje klinike, trajtim hap pas hapi dhe receta'],
@@ -146,7 +146,7 @@
       <div class="mi-menu-group">
         <p class="mi-menu-heading">PUNA IME</p>
         ${navItem({ id:'prescriptions', href:'/recetat.html', label:'Recetat', icon:ICONS.prescriptions })}
-        ${navItem({ id:'labs', href:'/analizat.html', label:'Analizat', icon:ICONS.labs })}
+        ${navItem({ id:'labs', href:'/analizat.html', label:'Ekzaminet', icon:ICONS.labs })}
         ${navItem({ id:'learning', href:'/medical-hub.html', label:'Medical Hub', icon:ICONS.learning })}
       </div>
       <div class="mi-menu-group mi-menu-group-tools">
