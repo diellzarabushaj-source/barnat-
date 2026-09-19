@@ -47,6 +47,14 @@
     E78:'endo', E66:'endo', R73:'endo',
     I95:'cardio', I83:'cardio', 'I87.2':'cardio',
     M17:'neuro', M75:'neuro', M77:'neuro',
+    B37:'derm', L70:'derm', L01:'derm', B00:'derm', B02:'derm',
+    J32:'resp', J04:'resp', H00:'resp', H01:'resp', 'H61.2':'resp',
+    K58:'gastro', K80:'gastro', 'K76.0':'gastro',
+    N20:'uro', N45:'uro',
+    N92:'gyn', 'N94.6':'gyn',
+    D64:'endo', E05:'endo', E04:'endo',
+    M10:'neuro', M06:'neuro', 'M79.7':'neuro',
+    'R00.0':'cardio', 'R00.1':'cardio',
     'T78.2':'general',
     'R04.0':'resp',
   });
@@ -160,7 +168,7 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view, sv:'clinical-workspace-v16' });
+    const params = new URLSearchParams({ view, sv:'clinical-workspace-v17' });
     if (view === 'suggest' || view === 'seed' || view === 'hot' || view === 'guidance' || view === 'guidance-list') params.set('advanced', '1');
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
     return `${API}?${params}`;
