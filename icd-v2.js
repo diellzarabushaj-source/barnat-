@@ -438,7 +438,7 @@
             <span class="clinical-card-icon">1→</span>
             <div><span class="clinical-card-label">Si vepron praktikisht</span><strong>Hapat në rend</strong></div>
           </div>
-          <ol class="clinical-practical-steps">${practical.steps.map(step => '<li>' + escapeHtml(clean(step).replace(/^\\d+\\.\\s*/, '')) + '</li>').join('')}</ol>
+          <ol class="clinical-practical-steps">${practical.steps.map(step => '<li>' + escapeHtml(clean(step).replace(/^\d+\.\s*/, '')) + '</li>').join('')}</ol>
           ${clean(practical.reassess) ? `<div class="clinical-reassess"><span>Rivlerëso</span><p>${escapeHtml(clean(practical.reassess))}</p></div>` : ''}
           <button class="clinical-copy-button" type="button" data-clinical-copy="practical">Kopjo hapat</button>
         </article>
