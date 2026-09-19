@@ -2917,7 +2917,7 @@
         "Shenja të infeksionit",
         "Sipërfaqja trupore e përfshirë"
       ],
-      "management": "Bazë: emollientë liberalisht çdo ditë. Flare: kortikosteroid topik 1–2×/ditë me potencë sipas zonës/as hpërsisë; fytyrë/qafë zakonisht mild potency, zona tjera sipas ashpërsisë. Mos përdor antibiotik topik/systemik rutinë pa shenja infeksioni. Në refraktar mund specialisti të përdorë tacrolimus/pimecrolimus sipas indikacionit.",
+      "management": "Bazë: emollientë liberalisht çdo ditë. Flare: kortikosteroid topik 1–2×/ditë me potencë sipas zonës/ashpërsisë; fytyrë/qafë zakonisht mild potency, zona tjera sipas ashpërsisë. Mos përdor antibiotik topik/systemik rutinë pa shenja infeksioni. Në refraktar mund specialisti të përdorë tacrolimus/pimecrolimus sipas indikacionit.",
       "summary": "Dermatiti atopik është kronik dhe relapsues; menaxhimi i barrierës së lëkurës është po aq i rëndësishëm sa trajtimi i flare-it.",
       "red_flags": [
         "Eczema herpeticum e dyshuar",
@@ -2927,7 +2927,7 @@
       "medications": {
         "first_line": [
           "Emollient i yndyrshëm rregullisht",
-          "Kortikosteroid topik 1–2×/ditë në zonat aktive, potencë sipas zonës/as hpërsisë"
+          "Kortikosteroid topik 1–2×/ditë në zonat aktive, potencë sipas zonës/ashpërsisë"
         ],
         "alternatives": [
           "Tacrolimus/pimecrolimus në raste të zgjedhura me këshillë specialistike"
