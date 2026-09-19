@@ -12,6 +12,7 @@ on:
       - 'data/icd-qkmf-hot-*.json'
       - 'tests/icd-clinical-search-v3-test.js'
       - 'tests/icd-symptom-intent-test.js'
+      - 'tests/icd-hot-search-test.js'
       - 'tests/icd-search-command-center-test.js'
   pull_request:
     paths:
@@ -24,6 +25,7 @@ on:
       - 'data/icd-qkmf-hot-*.json'
       - 'tests/icd-clinical-search-v3-test.js'
       - 'tests/icd-symptom-intent-test.js'
+      - 'tests/icd-hot-search-test.js'
       - 'tests/icd-search-command-center-test.js'
 
 jobs:
@@ -45,4 +47,5 @@ jobs:
         run: |
           node tests/icd-clinical-search-v3-test.js
           node tests/icd-symptom-intent-test.js
+          node tests/icd-hot-search-test.js
           node tests/icd-search-command-center-test.js
