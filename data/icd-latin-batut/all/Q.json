@@ -1,0 +1,3527 @@
+[
+  {
+    "code": "Q00",
+    "title_la": "Nedostatak mozga i slične malformacije",
+    "source_line": 3104
+  },
+  {
+    "code": "Q00.0",
+    "title_la": "Anencephalia",
+    "source_line": 38129
+  },
+  {
+    "code": "Q00.1",
+    "title_la": "Craniorachischisis",
+    "source_line": 38136
+  },
+  {
+    "code": "Q00.2",
+    "title_la": "Iniencephalus",
+    "source_line": 38138
+  },
+  {
+    "code": "Q01",
+    "title_la": "Kila mozga",
+    "source_line": 3105
+  },
+  {
+    "code": "Q01.0",
+    "title_la": "Encephalocele frontalis",
+    "source_line": 38149
+  },
+  {
+    "code": "Q01.1",
+    "title_la": "Encephalocele nasofrontalis",
+    "source_line": 38151
+  },
+  {
+    "code": "Q01.2",
+    "title_la": "Encephalocele occipitalis",
+    "source_line": 38159
+  },
+  {
+    "code": "Q01.8",
+    "title_la": "Encephalocele, loci alii",
+    "source_line": 38161
+  },
+  {
+    "code": "Q01.9",
+    "title_la": "Encephalocele, non specificata",
+    "source_line": 38163
+  },
+  {
+    "code": "Q02",
+    "title_la": "Mala glava",
+    "source_line": 3106
+  },
+  {
+    "code": "Q03",
+    "title_la": "Urođena vodena glava",
+    "source_line": 3107
+  },
+  {
+    "code": "Q03.0",
+    "title_la": "Malformatio aquaeductus cerebri (Sylvius)",
+    "source_line": 38180
+  },
+  {
+    "code": "Q03.1",
+    "title_la": "Atresia aperturae medianae (Magendie) et lateralis ventriculi quarti (Luschka)",
+    "source_line": 38185
+  },
+  {
+    "code": "Q03.8",
+    "title_la": "Hydrocephalus congenitus alius",
+    "source_line": 38188
+  },
+  {
+    "code": "Q03.9",
+    "title_la": "Hydrocephalus congenitus, non specificatus",
+    "source_line": 38190
+  },
+  {
+    "code": "Q04",
+    "title_la": "Druge urođene anomalije mozga",
+    "source_line": 3108
+  },
+  {
+    "code": "Q04.0",
+    "title_la": "Malformationes corporis callosi congenitae",
+    "source_line": 38197
+  },
+  {
+    "code": "Q04.1",
+    "title_la": "Arhinencephalia",
+    "source_line": 38200
+  },
+  {
+    "code": "Q04.2",
+    "title_la": "Holoprosencephalia",
+    "source_line": 38202
+  },
+  {
+    "code": "Q04.3",
+    "title_la": "Hypoplasia cerebri alia",
+    "source_line": 38212
+  },
+  {
+    "code": "Q04.4",
+    "title_la": "Dysplasia septi optici",
+    "source_line": 38225
+  },
+  {
+    "code": "Q04.5",
+    "title_la": "Megacephalus",
+    "source_line": 38227
+  },
+  {
+    "code": "Q04.6",
+    "title_la": "Cystis cerebri congenita",
+    "source_line": 38229
+  },
+  {
+    "code": "Q04.8",
+    "title_la": "Malformationes cerebri congenitae aliae, specificatae",
+    "source_line": 38234
+  },
+  {
+    "code": "Q04.9",
+    "title_la": "Malformatio cerebri congenita, non specificata",
+    "source_line": 38237
+  },
+  {
+    "code": "Q05",
+    "title_la": "Rascep stuba kičme",
+    "source_line": 3109
+  },
+  {
+    "code": "Q05.0",
+    "title_la": "Spina bifida cervicalis cum hydrocephalo",
+    "source_line": 38256
+  },
+  {
+    "code": "Q05.1",
+    "title_la": "Spina bifida thoracica cum hydrocephalo",
+    "source_line": 38258
+  },
+  {
+    "code": "Q05.2",
+    "title_la": "Spina bifida lumbalis cum hydrocephalo",
+    "source_line": 38263
+  },
+  {
+    "code": "Q05.3",
+    "title_la": "Spina bifida sacralis cum hydrocephalo",
+    "source_line": 38273
+  },
+  {
+    "code": "Q05.4",
+    "title_la": "Spina bifida cum hydrocephalo, non specificata",
+    "source_line": 38275
+  },
+  {
+    "code": "Q05.5",
+    "title_la": "Spina bifida cervicalis sine hydrocephalo",
+    "source_line": 38277
+  },
+  {
+    "code": "Q05.6",
+    "title_la": "Spina bifida thoracica sine hydrocephalo",
+    "source_line": 38279
+  },
+  {
+    "code": "Q05.7",
+    "title_la": "Spina bifida lumbalis sine hydrocephalo",
+    "source_line": 38283
+  },
+  {
+    "code": "Q05.8",
+    "title_la": "Spina bifida sacralis sine hydrocephalo",
+    "source_line": 38286
+  },
+  {
+    "code": "Q05.9",
+    "title_la": "Spina bifida, non specificata",
+    "source_line": 38288
+  },
+  {
+    "code": "Q06",
+    "title_la": "Druge urođene malformacije kičmene moždine",
+    "source_line": 3110
+  },
+  {
+    "code": "Q06.0",
+    "title_la": "Amyelia",
+    "source_line": 38293
+  },
+  {
+    "code": "Q06.1",
+    "title_la": "Hypoplasia et dysplasia medullae spinalis",
+    "source_line": 38295
+  },
+  {
+    "code": "Q06.2",
+    "title_la": "Diastematomyelia",
+    "source_line": 38300
+  },
+  {
+    "code": "Q06.3",
+    "title_la": "Malformationes caudae equinae congenitae aliae",
+    "source_line": 38302
+  },
+  {
+    "code": "Q06.4",
+    "title_la": "Hydromyelia",
+    "source_line": 38304
+  },
+  {
+    "code": "Q06.8",
+    "title_la": "Malformationes medullae spinalis congenitae aliae, specificatae",
+    "source_line": 38307
+  },
+  {
+    "code": "Q06.9",
+    "title_la": "Malformatio medullae spinalis congenita, non specificata",
+    "source_line": 38309
+  },
+  {
+    "code": "Q07",
+    "title_la": "Druge urođene anomalije nervnog sistema",
+    "source_line": 3111
+  },
+  {
+    "code": "Q07.0",
+    "title_la": "Syndroma Arnold-Chiari",
+    "source_line": 38319
+  },
+  {
+    "code": "Q07.8",
+    "title_la": "Malformationes systematis nervosi congenitae aliae, specificatae",
+    "source_line": 38329
+  },
+  {
+    "code": "Q07.9",
+    "title_la": "Malformatio systematis nervosi congenita, non specificata",
+    "source_line": 38335
+  },
+  {
+    "code": "Q10",
+    "title_la": "Urođene malformacije kapka, suznog aparata i duplje oka",
+    "source_line": 3114
+  },
+  {
+    "code": "Q10.0",
+    "title_la": "Ptosis palpebrae congenita",
+    "source_line": 38357
+  },
+  {
+    "code": "Q10.1",
+    "title_la": "Ectropium congenitum",
+    "source_line": 38359
+  },
+  {
+    "code": "Q10.2",
+    "title_la": "Entropium congenitum",
+    "source_line": 38361
+  },
+  {
+    "code": "Q10.3",
+    "title_la": "Malformationes palpebrae congenitae aliae",
+    "source_line": 38363
+  },
+  {
+    "code": "Q10.4",
+    "title_la": "Absentia et agenesia apparatus lacrimalis",
+    "source_line": 38373
+  },
+  {
+    "code": "Q10.5",
+    "title_la": "Stenosis ductus lacrimalis congenita",
+    "source_line": 38376
+  },
+  {
+    "code": "Q10.6",
+    "title_la": "Malformationes apparatus lacrimalis congenitae aliae",
+    "source_line": 38378
+  },
+  {
+    "code": "Q10.7",
+    "title_la": "Malformatio orbitae congenita",
+    "source_line": 38387
+  },
+  {
+    "code": "Q11",
+    "title_la": "Nedostatak oka, malo oko i preveliko oko",
+    "source_line": 3115
+  },
+  {
+    "code": "Q11.0",
+    "title_la": "Oculus cysticus",
+    "source_line": 38392
+  },
+  {
+    "code": "Q11.1",
+    "title_la": "Anophthalmus alius",
+    "source_line": 38394
+  },
+  {
+    "code": "Q11.2",
+    "title_la": "Microphthalmus",
+    "source_line": 38399
+  },
+  {
+    "code": "Q11.3",
+    "title_la": "Macrophthalmia",
+    "source_line": 38406
+  },
+  {
+    "code": "Q12",
+    "title_la": "Urođene malformacije očnog sočiva",
+    "source_line": 3116
+  },
+  {
+    "code": "Q12.0",
+    "title_la": "Cataracta congenita",
+    "source_line": 38412
+  },
+  {
+    "code": "Q12.1",
+    "title_la": "Dysplasia lentis congenita",
+    "source_line": 38414
+  },
+  {
+    "code": "Q12.2",
+    "title_la": "Coloboma lentis",
+    "source_line": 38416
+  },
+  {
+    "code": "Q12.3",
+    "title_la": "Aphakia congenita",
+    "source_line": 38418
+  },
+  {
+    "code": "Q12.4",
+    "title_la": "Sphaerophakia",
+    "source_line": 38420
+  },
+  {
+    "code": "Q12.8",
+    "title_la": "Malformationes lentis congenitae aliae",
+    "source_line": 38422
+  },
+  {
+    "code": "Q12.9",
+    "title_la": "Malformatio lentis congenita, non specificata",
+    "source_line": 38424
+  },
+  {
+    "code": "Q13",
+    "title_la": "Urođene malformacije prednjeg segmenta oka",
+    "source_line": 3117
+  },
+  {
+    "code": "Q13.0",
+    "title_la": "Coloboma iridis",
+    "source_line": 38429
+  },
+  {
+    "code": "Q13.1",
+    "title_la": "Absentia iridis",
+    "source_line": 38432
+  },
+  {
+    "code": "Q13.2",
+    "title_la": "Malformationes iridis congenitae aliae",
+    "source_line": 38443
+  },
+  {
+    "code": "Q13.3",
+    "title_la": "Opacitas corneae congenita",
+    "source_line": 38449
+  },
+  {
+    "code": "Q13.4",
+    "title_la": "Malformationes corneae congenitae aliae",
+    "source_line": 38451
+  },
+  {
+    "code": "Q13.5",
+    "title_la": "Sclera caerulea",
+    "source_line": 38456
+  },
+  {
+    "code": "Q13.8",
+    "title_la": "Malformationes segmenti oculi anterioris congenitae aliae",
+    "source_line": 38458
+  },
+  {
+    "code": "Q13.9",
+    "title_la": "Malformatio segmenti oculi anterioris congenita, non specificata",
+    "source_line": 38461
+  },
+  {
+    "code": "Q14",
+    "title_la": "Urođene anomalije zadnjeg dela oka",
+    "source_line": 3118
+  },
+  {
+    "code": "Q14.0",
+    "title_la": "Malformatio corporis vitrei congenita",
+    "source_line": 38466
+  },
+  {
+    "code": "Q14.1",
+    "title_la": "Malformatio retinae congenita",
+    "source_line": 38469
+  },
+  {
+    "code": "Q14.2",
+    "title_la": "Malformatio disci nervi optici congenita",
+    "source_line": 38472
+  },
+  {
+    "code": "Q14.3",
+    "title_la": "Malformatio chorioideae congenita",
+    "source_line": 38475
+  },
+  {
+    "code": "Q14.8",
+    "title_la": "Malformationes segmenti oculi posterioris congenitae aliae",
+    "source_line": 38477
+  },
+  {
+    "code": "Q14.9",
+    "title_la": "Malformatio segmenti oculi posterioris congenita, non specificata",
+    "source_line": 38480
+  },
+  {
+    "code": "Q15",
+    "title_la": "Druge urođene anomalije oka",
+    "source_line": 3119
+  },
+  {
+    "code": "Q15.0",
+    "title_la": "Glaucoma congenitum",
+    "source_line": 38495
+  },
+  {
+    "code": "Q15.8",
+    "title_la": "Malformationes oculi congenitae aliae, specificatae",
+    "source_line": 38504
+  },
+  {
+    "code": "Q15.9",
+    "title_la": "Malformatio oculi congenita, non specificata",
+    "source_line": 38506
+  },
+  {
+    "code": "Q16",
+    "title_la": "Urođene malformacije uva koje uzrokuju oštećenje sluha",
+    "source_line": 3120
+  },
+  {
+    "code": "Q16.0",
+    "title_la": "Agenesia auriculae auris",
+    "source_line": 38514
+  },
+  {
+    "code": "Q16.1",
+    "title_la": "Agenesia, atresia et strictura meatus acustici externi",
+    "source_line": 38516
+  },
+  {
+    "code": "Q16.2",
+    "title_la": "Agenesia tubae auditivae",
+    "source_line": 38519
+  },
+  {
+    "code": "Q16.3",
+    "title_la": "Malformatio ossiculorum auditivorum congenita",
+    "source_line": 38521
+  },
+  {
+    "code": "Q16.4",
+    "title_la": "Malformationes auris mediae congenitae aliae",
+    "source_line": 38524
+  },
+  {
+    "code": "Q16.5",
+    "title_la": "Malformatio auris internae congenita",
+    "source_line": 38527
+  },
+  {
+    "code": "Q16.9",
+    "title_la": "Malformatio auris cum hypacusia congenita, non specificata",
+    "source_line": 38531
+  },
+  {
+    "code": "Q17",
+    "title_la": "Druge urođene malformacije uva",
+    "source_line": 3121
+  },
+  {
+    "code": "Q17.0",
+    "title_la": "Auricula accessoria",
+    "source_line": 38545
+  },
+  {
+    "code": "Q17.1",
+    "title_la": "Macrotia",
+    "source_line": 38552
+  },
+  {
+    "code": "Q17.2",
+    "title_la": "Microtia",
+    "source_line": 38554
+  },
+  {
+    "code": "Q17.3",
+    "title_la": "Auris deformata",
+    "source_line": 38556
+  },
+  {
+    "code": "Q17.4",
+    "title_la": "Auris false sita",
+    "source_line": 38559
+  },
+  {
+    "code": "Q17.5",
+    "title_la": "Auris prominens",
+    "source_line": 38563
+  },
+  {
+    "code": "Q17.8",
+    "title_la": "Malformationes auris congenitae aliae, specificatae",
+    "source_line": 38566
+  },
+  {
+    "code": "Q17.9",
+    "title_la": "Malformatio auris congenita, non specificata",
+    "source_line": 38569
+  },
+  {
+    "code": "Q18",
+    "title_la": "Druge urođene malformacije lica i vrata",
+    "source_line": 3122
+  },
+  {
+    "code": "Q18.0",
+    "title_la": "Fistula et cystis branchiogenes",
+    "source_line": 38582
+  },
+  {
+    "code": "Q18.1",
+    "title_la": "Fistula et cystis praeauricularis",
+    "source_line": 38585
+  },
+  {
+    "code": "Q18.2",
+    "title_la": "Malformationes branchiogenes aliae",
+    "source_line": 38598
+  },
+  {
+    "code": "Q18.3",
+    "title_la": "Plica colli cutanea",
+    "source_line": 38603
+  },
+  {
+    "code": "Q18.4",
+    "title_la": "Macrostomia",
+    "source_line": 38606
+  },
+  {
+    "code": "Q18.5",
+    "title_la": "Microstomia",
+    "source_line": 38608
+  },
+  {
+    "code": "Q18.6",
+    "title_la": "Macrocheilia",
+    "source_line": 38610
+  },
+  {
+    "code": "Q18.7",
+    "title_la": "Microcheilia",
+    "source_line": 38613
+  },
+  {
+    "code": "Q18.8",
+    "title_la": "Malformationes faciei et colli congenitae aliae, specificatae",
+    "source_line": 38615
+  },
+  {
+    "code": "Q18.9",
+    "title_la": "Malformatio faciei et colli congenita, non specificata",
+    "source_line": 38620
+  },
+  {
+    "code": "Q20",
+    "title_la": "Urođene malformacije pretkomore i komore srca",
+    "source_line": 3125
+  },
+  {
+    "code": "Q20.0",
+    "title_la": "Truncus arteriosus communis",
+    "source_line": 38633
+  },
+  {
+    "code": "Q20.1",
+    "title_la": "Orificium ventriculi dextri duplex",
+    "source_line": 38636
+  },
+  {
+    "code": "Q20.2",
+    "title_la": "Orificium ventriculi sinistri duplex",
+    "source_line": 38639
+  },
+  {
+    "code": "Q20.3",
+    "title_la": "Connexio ventriculoarterialis discordans",
+    "source_line": 38641
+  },
+  {
+    "code": "Q20.4",
+    "title_la": "Ventriculus cordis communis",
+    "source_line": 38653
+  },
+  {
+    "code": "Q20.5",
+    "title_la": "Connexio atrioventricularis discordans",
+    "source_line": 38658
+  },
+  {
+    "code": "Q20.6",
+    "title_la": "Isomeria appendicum atrialium",
+    "source_line": 38663
+  },
+  {
+    "code": "Q20.8",
+    "title_la": "Malformationes atrii et ventriculi cordis congenitae aliae",
+    "source_line": 38666
+  },
+  {
+    "code": "Q20.9",
+    "title_la": "Malformatio atrii et ventriculi cordis congenita, non specificata",
+    "source_line": 38668
+  },
+  {
+    "code": "Q21",
+    "title_la": "Urođene malformacije pregrade srca",
+    "source_line": 3126
+  },
+  {
+    "code": "Q21.0",
+    "title_la": "Defectus septi ventriculorum cordis",
+    "source_line": 38674
+  },
+  {
+    "code": "Q21.1",
+    "title_la": "Defectus septi atriorum cordis",
+    "source_line": 38676
+  },
+  {
+    "code": "Q21.2",
+    "title_la": "Defectus septi atrioventriculorum",
+    "source_line": 38682
+  },
+  {
+    "code": "Q21.3",
+    "title_la": "Tetras Fallot",
+    "source_line": 38687
+  },
+  {
+    "code": "Q21.4",
+    "title_la": "Defectus aortopulmonalis",
+    "source_line": 38691
+  },
+  {
+    "code": "Q21.8",
+    "title_la": "Malformationes septi cordis congenitae, aliae",
+    "source_line": 38695
+  },
+  {
+    "code": "Q21.9",
+    "title_la": "Malformatio septi cordis congenita, non specificata",
+    "source_line": 38701
+  },
+  {
+    "code": "Q22",
+    "title_la": "Urođene malformacije plućnih i trolisnih zalistaka",
+    "source_line": 3127
+  },
+  {
+    "code": "Q22.0",
+    "title_la": "Atresia valvulae pulmonalis",
+    "source_line": 38712
+  },
+  {
+    "code": "Q22.1",
+    "title_la": "Stenosis valvulae pulmonalis congenita",
+    "source_line": 38714
+  },
+  {
+    "code": "Q22.2",
+    "title_la": "Insufficientia valvulae pulmonalis congenita",
+    "source_line": 38716
+  },
+  {
+    "code": "Q22.3",
+    "title_la": "Malformationes valvulae pulmonalis congenitae aliae",
+    "source_line": 38719
+  },
+  {
+    "code": "Q22.4",
+    "title_la": "Stenosis tricuspidalis congenita",
+    "source_line": 38722
+  },
+  {
+    "code": "Q22.5",
+    "title_la": "Anomalia Ebstein",
+    "source_line": 38725
+  },
+  {
+    "code": "Q22.6",
+    "title_la": "Syndroma hypoplasiae cordis dextri",
+    "source_line": 38727
+  },
+  {
+    "code": "Q22.8",
+    "title_la": "Malformationes valvulae tricuspidalis congenitae aliae",
+    "source_line": 38729
+  },
+  {
+    "code": "Q22.9",
+    "title_la": "Malformatio valvulae tricuspidalis congenita, non specificata",
+    "source_line": 38731
+  },
+  {
+    "code": "Q23",
+    "title_la": "Urođene malformacije aortnog i mitralnog zaliska",
+    "source_line": 3128
+  },
+  {
+    "code": "Q23.0",
+    "title_la": "Stenosis valvulae aortae congenita",
+    "source_line": 38736
+  },
+  {
+    "code": "Q23.1",
+    "title_la": "Insufficientia valvulae aortae congenita",
+    "source_line": 38742
+  },
+  {
+    "code": "Q23.2",
+    "title_la": "Stenosis mitralis congenita",
+    "source_line": 38746
+  },
+  {
+    "code": "Q23.3",
+    "title_la": "Insufficientia mitralis congenita",
+    "source_line": 38749
+  },
+  {
+    "code": "Q23.4",
+    "title_la": "Syndroma hypoplasiae cordis sinistri",
+    "source_line": 38751
+  },
+  {
+    "code": "Q23.8",
+    "title_la": "Malformationes valvulae aortae et mitralis congenitae aliae",
+    "source_line": 38755
+  },
+  {
+    "code": "Q23.9",
+    "title_la": "Malformatio valvulae aortae et mitralis congenita, non specificata",
+    "source_line": 38757
+  },
+  {
+    "code": "Q24",
+    "title_la": "Druge urođene malformacije srca",
+    "source_line": 3129
+  },
+  {
+    "code": "Q24.0",
+    "title_la": "Dextrocardia",
+    "source_line": 38769
+  },
+  {
+    "code": "Q24.1",
+    "title_la": "Sinistrocardia",
+    "source_line": 38774
+  },
+  {
+    "code": "Q24.2",
+    "title_la": "Cor triatriale",
+    "source_line": 38778
+  },
+  {
+    "code": "Q24.3",
+    "title_la": "Stenosis infundibuli pulmonalis",
+    "source_line": 38780
+  },
+  {
+    "code": "Q24.4",
+    "title_la": "Stenosis subaortae congenita",
+    "source_line": 38782
+  },
+  {
+    "code": "Q24.5",
+    "title_la": "Malformatio vasorum coronariorum",
+    "source_line": 38784
+  },
+  {
+    "code": "Q24.6",
+    "title_la": "Block cordis congenitus",
+    "source_line": 38787
+  },
+  {
+    "code": "Q24.8",
+    "title_la": "Malformationes cordis congenitae aliae, specificatae",
+    "source_line": 38789
+  },
+  {
+    "code": "Q24.9",
+    "title_la": "Malformatio cordis congenita, non specificata",
+    "source_line": 38796
+  },
+  {
+    "code": "Q25",
+    "title_la": "Urođene malformacije velikih arterija",
+    "source_line": 3130
+  },
+  {
+    "code": "Q25.0",
+    "title_la": "Ductus arteriosus patens",
+    "source_line": 38804
+  },
+  {
+    "code": "Q25.1",
+    "title_la": "Coarctatio aortae",
+    "source_line": 38808
+  },
+  {
+    "code": "Q25.2",
+    "title_la": "Atresia aortae",
+    "source_line": 38811
+  },
+  {
+    "code": "Q25.3",
+    "title_la": "Stenosis aortae",
+    "source_line": 38813
+  },
+  {
+    "code": "Q25.4",
+    "title_la": "Malformationes aortae congenitae aliae",
+    "source_line": 38824
+  },
+  {
+    "code": "Q25.5",
+    "title_la": "Atresia arteriae pulmonalis",
+    "source_line": 38836
+  },
+  {
+    "code": "Q25.6",
+    "title_la": "Stenosis arteriae pulmonalis",
+    "source_line": 38838
+  },
+  {
+    "code": "Q25.7",
+    "title_la": "Malformationes arteriae pulmonalis congenitae aliae",
+    "source_line": 38841
+  },
+  {
+    "code": "Q25.8",
+    "title_la": "Malformationes arteriarum magnarum congenitae, aliae",
+    "source_line": 38850
+  },
+  {
+    "code": "Q25.9",
+    "title_la": "Malformatio arteriarum magnarum congenita, non specificata",
+    "source_line": 38852
+  },
+  {
+    "code": "Q26",
+    "title_la": "Urođene malformacije velikih vena",
+    "source_line": 3131
+  },
+  {
+    "code": "Q26.0",
+    "title_la": "Stenosis venae cavae congenita",
+    "source_line": 38857
+  },
+  {
+    "code": "Q26.1",
+    "title_la": "Vena cava superior sinistra persistens",
+    "source_line": 38860
+  },
+  {
+    "code": "Q26.2",
+    "title_la": "Anomalia totalis connexus venarum pulmonalium",
+    "source_line": 38862
+  },
+  {
+    "code": "Q26.3",
+    "title_la": "Anomalia partialis connexus venarum pulmonalium",
+    "source_line": 38864
+  },
+  {
+    "code": "Q26.4",
+    "title_la": "Anomalia connexus venarum pulmonalium, non specificata",
+    "source_line": 38866
+  },
+  {
+    "code": "Q26.5",
+    "title_la": "Anomalia venae portae",
+    "source_line": 38868
+  },
+  {
+    "code": "Q26.6",
+    "title_la": "Fistula venae portae-arteriae hepaticae",
+    "source_line": 38870
+  },
+  {
+    "code": "Q26.8",
+    "title_la": "Malformationes venarum magnarum congenitae aliae",
+    "source_line": 38880
+  },
+  {
+    "code": "Q26.9",
+    "title_la": "Malformatio venarum magnarum congenita, non specificata",
+    "source_line": 38886
+  },
+  {
+    "code": "Q27",
+    "title_la": "Druge urođene malformacije perifernog sudovnog sistema",
+    "source_line": 3132
+  },
+  {
+    "code": "Q27.0",
+    "title_la": "Absentia et hypoplasia arteriae umbilicalis congenita",
+    "source_line": 38897
+  },
+  {
+    "code": "Q27.1",
+    "title_la": "Stenosis arteriae renalis congenita",
+    "source_line": 38900
+  },
+  {
+    "code": "Q27.2",
+    "title_la": "Malformationes arteriae renalis congenitae, aliae",
+    "source_line": 38902
+  },
+  {
+    "code": "Q27.3",
+    "title_la": "Malformatio arteriovenosa peripherica",
+    "source_line": 38906
+  },
+  {
+    "code": "Q27.4",
+    "title_la": "Phlebectasia congenita",
+    "source_line": 38910
+  },
+  {
+    "code": "Q27.8",
+    "title_la": "Malformationes systematis vascularis peripherici congenitae specificatae, aliae",
+    "source_line": 38912
+  },
+  {
+    "code": "Q27.9",
+    "title_la": "Malformatio systematis vascularis peripherici congenita, non specificata",
+    "source_line": 38921
+  },
+  {
+    "code": "Q28",
+    "title_la": "Druge urođene malformacije sistema krvotoka",
+    "source_line": 3133
+  },
+  {
+    "code": "Q28.0",
+    "title_la": "Malformatio vasorum arteriovenosorum praecerebralium",
+    "source_line": 38941
+  },
+  {
+    "code": "Q28.1",
+    "title_la": "Malformationes vasorum praecerebralium aliae",
+    "source_line": 38944
+  },
+  {
+    "code": "Q28.2",
+    "title_la": "Malformatio vasorum arteriovenosorum cerebralium",
+    "source_line": 38948
+  },
+  {
+    "code": "Q28.3",
+    "title_la": "Malformationes vasorum arteriovenosorum cerebralium aliae",
+    "source_line": 38952
+  },
+  {
+    "code": "Q28.8",
+    "title_la": "Malformationes systematis circulatorii congenitae, specificatae",
+    "source_line": 38955
+  },
+  {
+    "code": "Q28.9",
+    "title_la": "Malformatio systematis circulatorii congenita, non specificata",
+    "source_line": 38958
+  },
+  {
+    "code": "Q30",
+    "title_la": "Urođene malformacije nosa",
+    "source_line": 3136
+  },
+  {
+    "code": "Q30.0",
+    "title_la": "Atresia choanae",
+    "source_line": 38969
+  },
+  {
+    "code": "Q30.1",
+    "title_la": "Agenesia et evolutio nasi minor",
+    "source_line": 38973
+  },
+  {
+    "code": "Q30.2",
+    "title_la": "Fissura nasi congenita",
+    "source_line": 38976
+  },
+  {
+    "code": "Q30.3",
+    "title_la": "Perforatio septi nasi congenita",
+    "source_line": 38978
+  },
+  {
+    "code": "Q30.8",
+    "title_la": "Malformationes nasi congenitae, aliae",
+    "source_line": 38988
+  },
+  {
+    "code": "Q30.9",
+    "title_la": "Malformatio nasi congenita, non specificata",
+    "source_line": 38992
+  },
+  {
+    "code": "Q31",
+    "title_la": "Urođene malformacije grkljana",
+    "source_line": 3137
+  },
+  {
+    "code": "Q31.0",
+    "title_la": "Plica laryngis",
+    "source_line": 38998
+  },
+  {
+    "code": "Q31.1",
+    "title_la": "Stenosis subglottica congenita",
+    "source_line": 39003
+  },
+  {
+    "code": "Q31.2",
+    "title_la": "Hypoplasia laryngis",
+    "source_line": 39005
+  },
+  {
+    "code": "Q31.3",
+    "title_la": "Laryngocele",
+    "source_line": 39007
+  },
+  {
+    "code": "Q31.5",
+    "title_la": "Laryngomalacia congenita",
+    "source_line": 39009
+  },
+  {
+    "code": "Q31.8",
+    "title_la": "Malformationes laryngis congenitae aliae",
+    "source_line": 39011
+  },
+  {
+    "code": "Q31.9",
+    "title_la": "Malformatio laryngis congenita, non specificata",
+    "source_line": 39020
+  },
+  {
+    "code": "Q32",
+    "title_la": "Urođene malformacije dušnika i bronhija",
+    "source_line": 3138
+  },
+  {
+    "code": "Q32.0",
+    "title_la": "Tracheomalacia congenita",
+    "source_line": 39026
+  },
+  {
+    "code": "Q32.1",
+    "title_la": "Malformationes tracheae congenitae aliae",
+    "source_line": 39028
+  },
+  {
+    "code": "Q32.2",
+    "title_la": "Bronchomalacia congenita",
+    "source_line": 39036
+  },
+  {
+    "code": "Q32.3",
+    "title_la": "Stenosis bronchi congenita",
+    "source_line": 39038
+  },
+  {
+    "code": "Q32.4",
+    "title_la": "Malformationes bronchi congenitae aliae",
+    "source_line": 39046
+  },
+  {
+    "code": "Q33",
+    "title_la": "Urođene malformacije pluća",
+    "source_line": 3139
+  },
+  {
+    "code": "Q33.0",
+    "title_la": "Cystis pulmonis congenita",
+    "source_line": 39056
+  },
+  {
+    "code": "Q33.1",
+    "title_la": "Lobus pulmonis accessorius",
+    "source_line": 39062
+  },
+  {
+    "code": "Q33.2",
+    "title_la": "Sequestratio pulmonis",
+    "source_line": 39064
+  },
+  {
+    "code": "Q33.3",
+    "title_la": "Agenesia pulmonis",
+    "source_line": 39066
+  },
+  {
+    "code": "Q33.4",
+    "title_la": "Bronchiectasia congenita",
+    "source_line": 39069
+  },
+  {
+    "code": "Q33.5",
+    "title_la": "Textus ectopicus in pulmone",
+    "source_line": 39071
+  },
+  {
+    "code": "Q33.6",
+    "title_la": "Hypoplasia et dysplasia pulmonis",
+    "source_line": 39073
+  },
+  {
+    "code": "Q33.8",
+    "title_la": "Malformationes pulmonis congenitae aliae",
+    "source_line": 39076
+  },
+  {
+    "code": "Q33.9",
+    "title_la": "Malformatio pulmonis congenita, non specificata",
+    "source_line": 39078
+  },
+  {
+    "code": "Q34",
+    "title_la": "Druge urođene malformacije sistema za disanje",
+    "source_line": 3140
+  },
+  {
+    "code": "Q34.0",
+    "title_la": "Anomalia pleurae",
+    "source_line": 39083
+  },
+  {
+    "code": "Q34.1",
+    "title_la": "Cystis mediastini congenita",
+    "source_line": 39085
+  },
+  {
+    "code": "Q34.8",
+    "title_la": "Malformationes systematis respiratorii congenitae aliae, specificatae",
+    "source_line": 39087
+  },
+  {
+    "code": "Q34.9",
+    "title_la": "Malformatio systematis respiratorii congenita, non specificata",
+    "source_line": 39090
+  },
+  {
+    "code": "Q35",
+    "title_la": "Rascep nepca",
+    "source_line": 3143
+  },
+  {
+    "code": "Q35.1",
+    "title_la": "Palatoschisis dura",
+    "source_line": 39112
+  },
+  {
+    "code": "Q35.3",
+    "title_la": "Palatoschisis mollis",
+    "source_line": 39114
+  },
+  {
+    "code": "Q35.5",
+    "title_la": "Palatoschisis dura et mollis",
+    "source_line": 39116
+  },
+  {
+    "code": "Q35.7",
+    "title_la": "Uvula bifida",
+    "source_line": 39118
+  },
+  {
+    "code": "Q35.9",
+    "title_la": "Palatoschisis non specificata",
+    "source_line": 39120
+  },
+  {
+    "code": "Q36",
+    "title_la": "Rascep usne- „zečja“ usna",
+    "source_line": 3144
+  },
+  {
+    "code": "Q36.0",
+    "title_la": "Labium leporinum bilaterale",
+    "source_line": 39131
+  },
+  {
+    "code": "Q36.1",
+    "title_la": "Labium leporinum mediale",
+    "source_line": 39133
+  },
+  {
+    "code": "Q36.9",
+    "title_la": "Labium leporinum unilaterale",
+    "source_line": 39135
+  },
+  {
+    "code": "Q37",
+    "title_la": "Rascep usne i nepca",
+    "source_line": 3145
+  },
+  {
+    "code": "Q37.0",
+    "title_la": "Cheilopalatoschisis dura bilateralis",
+    "source_line": 39141
+  },
+  {
+    "code": "Q37.1",
+    "title_la": "Cheilopalatoschisis dura unilateralis",
+    "source_line": 39143
+  },
+  {
+    "code": "Q37.2",
+    "title_la": "Cheilopalatoschisis mollis bilateralis",
+    "source_line": 39146
+  },
+  {
+    "code": "Q37.3",
+    "title_la": "Cheilopalatoschisis mollis unilateralis",
+    "source_line": 39156
+  },
+  {
+    "code": "Q37.4",
+    "title_la": "Cheilopalatoschisis dura et mollis bilateralis",
+    "source_line": 39159
+  },
+  {
+    "code": "Q37.5",
+    "title_la": "Cheilopalatoschisis dura et mollis unilateralis",
+    "source_line": 39161
+  },
+  {
+    "code": "Q37.8",
+    "title_la": "Cheilopalatoschisis bilateralis, non specificata",
+    "source_line": 39164
+  },
+  {
+    "code": "Q37.9",
+    "title_la": "Cheilopalatoschisis unilateralis, non specificata",
+    "source_line": 39166
+  },
+  {
+    "code": "Q38",
+    "title_la": "Druge urođene malformacije jezika, usta i ždrela",
+    "source_line": 3153
+  },
+  {
+    "code": "Q38.0",
+    "title_la": "Malformationes labii oris congenitae, non alibi classificatae",
+    "source_line": 39179
+  },
+  {
+    "code": "Q38.1",
+    "title_la": "Ankyloglossia",
+    "source_line": 39188
+  },
+  {
+    "code": "Q38.2",
+    "title_la": "Macroglossia",
+    "source_line": 39191
+  },
+  {
+    "code": "Q38.3",
+    "title_la": "Malformationes linguae congenitae aliae",
+    "source_line": 39193
+  },
+  {
+    "code": "Q38.4",
+    "title_la": "Malformationes glandulae et ductus salivaris congenitae",
+    "source_line": 39211
+  },
+  {
+    "code": "Q38.5",
+    "title_la": "Malformationes palati congenitae, non alibi classificatae",
+    "source_line": 39217
+  },
+  {
+    "code": "Q38.6",
+    "title_la": "Malformationes oris congenitae aliae",
+    "source_line": 39224
+  },
+  {
+    "code": "Q38.7",
+    "title_la": "Diverticulum pharyngis",
+    "source_line": 39227
+  },
+  {
+    "code": "Q38.8",
+    "title_la": "Malformationes pharyngis congenitae aliae",
+    "source_line": 39230
+  },
+  {
+    "code": "Q39",
+    "title_la": "Urođene malformacije jednjaka",
+    "source_line": 3154
+  },
+  {
+    "code": "Q39.0",
+    "title_la": "Atresia oesophagi sine fistula",
+    "source_line": 39236
+  },
+  {
+    "code": "Q39.1",
+    "title_la": "Atresia oesophagi cum fistula tracheooesophagica",
+    "source_line": 39239
+  },
+  {
+    "code": "Q39.2",
+    "title_la": "Fistula tracheooesophagica congenita",
+    "source_line": 39242
+  },
+  {
+    "code": "Q39.3",
+    "title_la": "Stenosis et strictura oesophagi congenita",
+    "source_line": 39245
+  },
+  {
+    "code": "Q39.4",
+    "title_la": "Plica oesophagi",
+    "source_line": 39247
+  },
+  {
+    "code": "Q39.5",
+    "title_la": "Dilatatio oesophagi congenita",
+    "source_line": 39249
+  },
+  {
+    "code": "Q39.6",
+    "title_la": "Diverticulum oesophagi",
+    "source_line": 39251
+  },
+  {
+    "code": "Q39.8",
+    "title_la": "Malformationes oesophagi congenitae aliae",
+    "source_line": 39254
+  },
+  {
+    "code": "Q39.9",
+    "title_la": "Malformatio oesophagi congenita, non specificata",
+    "source_line": 39259
+  },
+  {
+    "code": "Q40",
+    "title_la": "Druge urođene malformacije gornjih organa za varenje",
+    "source_line": 3155
+  },
+  {
+    "code": "Q40.0",
+    "title_la": "Stenosis pylori congenita hypertrophica",
+    "source_line": 39269
+  },
+  {
+    "code": "Q40.1",
+    "title_la": "Hernia hiatus oesophagi congenita",
+    "source_line": 39277
+  },
+  {
+    "code": "Q40.2",
+    "title_la": "Malformationes ventriculi congenitae aliae, specificatae",
+    "source_line": 39281
+  },
+  {
+    "code": "Q40.3",
+    "title_la": "Malformatio ventriculi congenita, non specificata",
+    "source_line": 39289
+  },
+  {
+    "code": "Q40.8",
+    "title_la": "Malformationes organorum digestivorum proximalium congenitae aliae, specificatae",
+    "source_line": 39291
+  },
+  {
+    "code": "Q40.9",
+    "title_la": "Malformatio organorum digestivorum proximalium congenita, non specificata",
+    "source_line": 39293
+  },
+  {
+    "code": "Q41",
+    "title_la": "Urođeni nedostatak, urođena pregrada i suženje tankog creva",
+    "source_line": 3156
+  },
+  {
+    "code": "Q41.0",
+    "title_la": "Agenesia, atresia et stenosis duodeni congenita",
+    "source_line": 39303
+  },
+  {
+    "code": "Q41.1",
+    "title_la": "Agenesia, atresia et stenosis jejuni congenita",
+    "source_line": 39305
+  },
+  {
+    "code": "Q41.2",
+    "title_la": "Agenesia, atresia et stenosis ilei congenita",
+    "source_line": 39309
+  },
+  {
+    "code": "Q41.8",
+    "title_la": "Agenesia, atresia et stenosis partium intestini tenuis specificarum aliarum",
+    "source_line": 39311
+  },
+  {
+    "code": "Q41.9",
+    "title_la": "Agenesia, atresia et stenosis partis intestini tenuis, non specificata",
+    "source_line": 39313
+  },
+  {
+    "code": "Q42",
+    "title_la": "Urođeni nedostatak, urođena pregrada i suženje debelog creva",
+    "source_line": 3157
+  },
+  {
+    "code": "Q42.0",
+    "title_la": "Agenesia, atresia et stenosis recti congenita, cum fistula",
+    "source_line": 39327
+  },
+  {
+    "code": "Q42.1",
+    "title_la": "Agenesia, atresia et stenosis recti congenita, sine fistula",
+    "source_line": 39329
+  },
+  {
+    "code": "Q42.2",
+    "title_la": "Agenesia, atresia et stenosis ani congenita, cum fistula",
+    "source_line": 39332
+  },
+  {
+    "code": "Q42.3",
+    "title_la": "Agenesia, atresia et stenosis ani congenita, sine fistula",
+    "source_line": 39334
+  },
+  {
+    "code": "Q42.8",
+    "title_la": "Agenesia, atresia et stenosis partis coli congenita alia",
+    "source_line": 39337
+  },
+  {
+    "code": "Q42.9",
+    "title_la": "Agenesia, atresia et stenosis partis coli congenita, non specificata",
+    "source_line": 39339
+  },
+  {
+    "code": "Q43",
+    "title_la": "Druge urođene malformacije creva",
+    "source_line": 3158
+  },
+  {
+    "code": "Q43.0",
+    "title_la": "Diverticulum intestini Meckel",
+    "source_line": 39344
+  },
+  {
+    "code": "Q43.1",
+    "title_la": "Morbus Hirschsprung",
+    "source_line": 39348
+  },
+  {
+    "code": "Q43.2",
+    "title_la": "Disoridines coli functionales congeniti alii",
+    "source_line": 39352
+  },
+  {
+    "code": "Q43.3",
+    "title_la": "Malformationes fixationis intestini congenitae",
+    "source_line": 39355
+  },
+  {
+    "code": "Q43.4",
+    "title_la": "Duplicitas intestini",
+    "source_line": 39365
+  },
+  {
+    "code": "Q43.5",
+    "title_la": "Ectopia ani",
+    "source_line": 39367
+  },
+  {
+    "code": "Q43.6",
+    "title_la": "Fistula recti et ani congenita",
+    "source_line": 39369
+  },
+  {
+    "code": "Q43.7",
+    "title_la": "Cloaca persistens",
+    "source_line": 39381
+  },
+  {
+    "code": "Q43.8",
+    "title_la": "Malformationes intestini congenitae aliae, specificatae",
+    "source_line": 39384
+  },
+  {
+    "code": "Q43.9",
+    "title_la": "Malformatio intestini congenita, non specificata",
+    "source_line": 39397
+  },
+  {
+    "code": "Q44",
+    "title_la": "Urođene malformacije žučne kese, žučnih kanala i jetre",
+    "source_line": 3159
+  },
+  {
+    "code": "Q44.0",
+    "title_la": "Agenesia, aplasia et hypoplasia vesicae felleae",
+    "source_line": 39402
+  },
+  {
+    "code": "Q44.1",
+    "title_la": "Malformationes vesicae felleae congenitae aliae",
+    "source_line": 39405
+  },
+  {
+    "code": "Q44.2",
+    "title_la": "Atresia ductuum biliarium",
+    "source_line": 39409
+  },
+  {
+    "code": "Q44.3",
+    "title_la": "Stenosis et strictura ductuum biliarium congenita",
+    "source_line": 39411
+  },
+  {
+    "code": "Q44.4",
+    "title_la": "Cystis ductus choledochi",
+    "source_line": 39413
+  },
+  {
+    "code": "Q44.5",
+    "title_la": "Malformationes ductuum biliarium congenitae aliae",
+    "source_line": 39415
+  },
+  {
+    "code": "Q44.6",
+    "title_la": "Hepar cysticum congenitum",
+    "source_line": 39421
+  },
+  {
+    "code": "Q44.7",
+    "title_la": "Malformationes hepatis congenitae aliae",
+    "source_line": 39424
+  },
+  {
+    "code": "Q45",
+    "title_la": "Druge urođene malformacije organa za varenje",
+    "source_line": 3160
+  },
+  {
+    "code": "Q45.0",
+    "title_la": "Agenesia, aplasia et hypoplasia pancreatis",
+    "source_line": 39443
+  },
+  {
+    "code": "Q45.1",
+    "title_la": "Pancreas anulare",
+    "source_line": 39446
+  },
+  {
+    "code": "Q45.2",
+    "title_la": "Cystis pancreatica congenita",
+    "source_line": 39448
+  },
+  {
+    "code": "Q45.3",
+    "title_la": "Malformationes pancreatis et ductus pancreatici congenitae aliae",
+    "source_line": 39450
+  },
+  {
+    "code": "Q45.8",
+    "title_la": "Malformationes organorum digestivorum congenitae aliae, specificatae",
+    "source_line": 39458
+  },
+  {
+    "code": "Q45.9",
+    "title_la": "Malformatio organorum digestivorum congenita, non specificata",
+    "source_line": 39464
+  },
+  {
+    "code": "Q50",
+    "title_la": "Urođene malformacije jajnika, jajovoda i širokog ligamenta",
+    "source_line": 3163
+  },
+  {
+    "code": "Q50.0",
+    "title_la": "Agenesia ovarii congenita",
+    "source_line": 39479
+  },
+  {
+    "code": "Q50.1",
+    "title_la": "Cystis ovarii congenita",
+    "source_line": 39482
+  },
+  {
+    "code": "Q50.2",
+    "title_la": "Torsio ovarii congenita",
+    "source_line": 39484
+  },
+  {
+    "code": "Q50.3",
+    "title_la": "Malformationes ovarii congenitae aliae",
+    "source_line": 39494
+  },
+  {
+    "code": "Q50.4",
+    "title_la": "Cystis tubae uterinae congenita",
+    "source_line": 39499
+  },
+  {
+    "code": "Q50.5",
+    "title_la": "Cystis parovarialis congenita",
+    "source_line": 39502
+  },
+  {
+    "code": "Q50.6",
+    "title_la": "Malformationes tubae uterinae et ligamenti lati congenitae aliae",
+    "source_line": 39508
+  },
+  {
+    "code": "Q51",
+    "title_la": "Urođene malformacije materice i grlića materice",
+    "source_line": 3164
+  },
+  {
+    "code": "Q51.0",
+    "title_la": "Agenesia et aplasia uteri",
+    "source_line": 39517
+  },
+  {
+    "code": "Q51.1",
+    "title_la": "Duplicitas uteri cum duplicitate cervicis uteri et vaginae",
+    "source_line": 39520
+  },
+  {
+    "code": "Q51.2",
+    "title_la": "Duplicitas uteri alia",
+    "source_line": 39522
+  },
+  {
+    "code": "Q51.3",
+    "title_la": "Uterus bicornis",
+    "source_line": 39525
+  },
+  {
+    "code": "Q51.4",
+    "title_la": "Uterus unicornis",
+    "source_line": 39527
+  },
+  {
+    "code": "Q51.5",
+    "title_la": "Agenesia et aplasia cervicis uteri",
+    "source_line": 39529
+  },
+  {
+    "code": "Q51.6",
+    "title_la": "Cystis cervicis uteri congenita",
+    "source_line": 39532
+  },
+  {
+    "code": "Q51.7",
+    "title_la": "Fistula uterointestinalis et fistula uterourinaria congenita",
+    "source_line": 39534
+  },
+  {
+    "code": "Q51.8",
+    "title_la": "Malformationes uteri et cervicis uteri congenitae aliae",
+    "source_line": 39536
+  },
+  {
+    "code": "Q51.9",
+    "title_la": "Malformatio uteri et cervicis uteri congenita, non specificata",
+    "source_line": 39539
+  },
+  {
+    "code": "Q52",
+    "title_la": "Druge urođene malformacije polnih organa žene",
+    "source_line": 3165
+  },
+  {
+    "code": "Q52.0",
+    "title_la": "Agenesia vaginae congenita",
+    "source_line": 39551
+  },
+  {
+    "code": "Q52.1",
+    "title_la": "Duplicitas vaginae",
+    "source_line": 39553
+  },
+  {
+    "code": "Q52.2",
+    "title_la": "Fistula rectovaginalis congenita",
+    "source_line": 39557
+  },
+  {
+    "code": "Q52.3",
+    "title_la": "Hymen imperforatum",
+    "source_line": 39560
+  },
+  {
+    "code": "Q52.4",
+    "title_la": "Malformationes vaginae congenitae aliae",
+    "source_line": 39562
+  },
+  {
+    "code": "Q52.5",
+    "title_la": "Fusio labiorum vulvae",
+    "source_line": 39568
+  },
+  {
+    "code": "Q52.6",
+    "title_la": "Malformatio clitoridis congenita",
+    "source_line": 39570
+  },
+  {
+    "code": "Q52.7",
+    "title_la": "Malformationes vulvae congenitae aliae",
+    "source_line": 39572
+  },
+  {
+    "code": "Q52.8",
+    "title_la": "Malformationes genitaliorum femininorum congenitae aliae, specificatae",
+    "source_line": 39577
+  },
+  {
+    "code": "Q52.9",
+    "title_la": "Malformatio genitaliorum femininorum congenita, non specificata",
+    "source_line": 39579
+  },
+  {
+    "code": "Q53",
+    "title_la": "Nespušten testis",
+    "source_line": 3166
+  },
+  {
+    "code": "Q53.0",
+    "title_la": "Ectopia testis",
+    "source_line": 39584
+  },
+  {
+    "code": "Q53.1",
+    "title_la": "Cryptorchismus unilateralis",
+    "source_line": 39587
+  },
+  {
+    "code": "Q53.2",
+    "title_la": "Cryptorchismus bilateralis",
+    "source_line": 39589
+  },
+  {
+    "code": "Q53.9",
+    "title_la": "Cryptorchismus, non specificatus",
+    "source_line": 39591
+  },
+  {
+    "code": "Q54",
+    "title_la": "Urođen rascep na donjoj strani penisa",
+    "source_line": 3167
+  },
+  {
+    "code": "Q54.0",
+    "title_la": "Hypospadia balanica",
+    "source_line": 39605
+  },
+  {
+    "code": "Q54.1",
+    "title_la": "Hypospadia corporis penis",
+    "source_line": 39610
+  },
+  {
+    "code": "Q54.2",
+    "title_la": "Hypospadia penoscrotalis",
+    "source_line": 39612
+  },
+  {
+    "code": "Q54.3",
+    "title_la": "Hypospadia perinaealis",
+    "source_line": 39614
+  },
+  {
+    "code": "Q54.4",
+    "title_la": "Penis arcuatus [Chordae congenitae]",
+    "source_line": 39616
+  },
+  {
+    "code": "Q54.8",
+    "title_la": "Hypospadiae aliae",
+    "source_line": 39618
+  },
+  {
+    "code": "Q54.9",
+    "title_la": "Hypospadiae, non specificata",
+    "source_line": 39620
+  },
+  {
+    "code": "Q55",
+    "title_la": "Druge urođene malformacije muških polnih organa",
+    "source_line": 3168
+  },
+  {
+    "code": "Q55.0",
+    "title_la": "Agenesia et aplasia testis",
+    "source_line": 39627
+  },
+  {
+    "code": "Q55.1",
+    "title_la": "Hypoplasia testis et scroti",
+    "source_line": 39630
+  },
+  {
+    "code": "Q55.2",
+    "title_la": "Malformationes testis et scroti congenitae aliae",
+    "source_line": 39633
+  },
+  {
+    "code": "Q55.3",
+    "title_la": "Atresia vasis deferentis",
+    "source_line": 39639
+  },
+  {
+    "code": "Q55.4",
+    "title_la": "Malformationes vasis deferentis, epididymidis, vesicae seminalis et prostatae",
+    "source_line": 39641
+  },
+  {
+    "code": "Q55.5",
+    "title_la": "Agenesia et aplasia penis congenita",
+    "source_line": 39648
+  },
+  {
+    "code": "Q55.6",
+    "title_la": "Malformationes penis congenitae aliae",
+    "source_line": 39658
+  },
+  {
+    "code": "Q55.8",
+    "title_la": "Malformationes genitaliorum masculinorum congenitae aliae specificatae",
+    "source_line": 39663
+  },
+  {
+    "code": "Q55.9",
+    "title_la": "Malformatio genitaliorum masculinorum congenita non specificata",
+    "source_line": 39665
+  },
+  {
+    "code": "Q56",
+    "title_la": "Neodređen pol i prividna dvopolnost",
+    "source_line": 3169
+  },
+  {
+    "code": "Q56.0",
+    "title_la": "Hermaphroditismus, non alibi classificatus",
+    "source_line": 39677
+  },
+  {
+    "code": "Q56.1",
+    "title_la": "Pseudohermaphroditismus masculinus, non alibi classificatus",
+    "source_line": 39680
+  },
+  {
+    "code": "Q56.2",
+    "title_la": "Pseudohermaphroditismus femininus, non alibi classificatus",
+    "source_line": 39683
+  },
+  {
+    "code": "Q56.3",
+    "title_la": "Pseudohermaphroditismus, non specificatus",
+    "source_line": 39686
+  },
+  {
+    "code": "Q56.4",
+    "title_la": "Sexus indeterminatus, non specificatus",
+    "source_line": 39688
+  },
+  {
+    "code": "Q60",
+    "title_la": "Nedostatak i nerazvijenost bubrega",
+    "source_line": 3172
+  },
+  {
+    "code": "Q60.0",
+    "title_la": "Agenesia renis unilateralis",
+    "source_line": 39703
+  },
+  {
+    "code": "Q60.1",
+    "title_la": "Agenesia renis bilateralis",
+    "source_line": 39705
+  },
+  {
+    "code": "Q60.2",
+    "title_la": "Agenesia renis, non specificata",
+    "source_line": 39707
+  },
+  {
+    "code": "Q60.3",
+    "title_la": "Hypoplasia renis unilateralis",
+    "source_line": 39716
+  },
+  {
+    "code": "Q60.4",
+    "title_la": "Hypoplasia renis bilateralis",
+    "source_line": 39718
+  },
+  {
+    "code": "Q60.5",
+    "title_la": "Hypoplasia renis, non specificata",
+    "source_line": 39720
+  },
+  {
+    "code": "Q60.6",
+    "title_la": "Syndroma Potter",
+    "source_line": 39722
+  },
+  {
+    "code": "Q61",
+    "title_la": "Cistična bolest bubrega",
+    "source_line": 3173
+  },
+  {
+    "code": "Q61.0",
+    "title_la": "Cystis renis solitaria congenita",
+    "source_line": 39729
+  },
+  {
+    "code": "Q61.1",
+    "title_la": "Ren polycysticus, autosomaticus recessivus",
+    "source_line": 39732
+  },
+  {
+    "code": "Q61.2",
+    "title_la": "Ren polycysticus, autosomaticus dominantus",
+    "source_line": 39735
+  },
+  {
+    "code": "Q61.3",
+    "title_la": "Ren polycysticus, non specificatus",
+    "source_line": 39738
+  },
+  {
+    "code": "Q61.4",
+    "title_la": "Dysplasia renis",
+    "source_line": 39740
+  },
+  {
+    "code": "Q61.5",
+    "title_la": "Ren cysticus medullaris",
+    "source_line": 39748
+  },
+  {
+    "code": "Q61.8",
+    "title_la": "Morbi renis cystici alii",
+    "source_line": 39751
+  },
+  {
+    "code": "Q61.9",
+    "title_la": "Morbus renis cysticus, non specificatus",
+    "source_line": 39756
+  },
+  {
+    "code": "Q62",
+    "title_la": "Urodene prepreke karlice bubrega i malformacije mokraćovoda bubrega",
+    "source_line": 3174
+  },
+  {
+    "code": "Q62.0",
+    "title_la": "Hydronephrosis congenita",
+    "source_line": 39762
+  },
+  {
+    "code": "Q62.1",
+    "title_la": "Atresia ureteris et stenosis ureteris congenita",
+    "source_line": 39772
+  },
+  {
+    "code": "Q62.2",
+    "title_la": "Megaureter congenitus",
+    "source_line": 39779
+  },
+  {
+    "code": "Q62.3",
+    "title_la": "Obstructiones pelvis renis et ureteris congenitae aliae",
+    "source_line": 39782
+  },
+  {
+    "code": "Q62.4",
+    "title_la": "Agenesia ureteris",
+    "source_line": 39785
+  },
+  {
+    "code": "Q62.5",
+    "title_la": "Duplicitas ureteris",
+    "source_line": 39788
+  },
+  {
+    "code": "Q62.6",
+    "title_la": "Malpositio ureteris",
+    "source_line": 39793
+  },
+  {
+    "code": "Q62.7",
+    "title_la": "Refluum vesico-uretero-renalis congenitum",
+    "source_line": 39800
+  },
+  {
+    "code": "Q62.8",
+    "title_la": "Malformationes ureteris congenitae aliae",
+    "source_line": 39802
+  },
+  {
+    "code": "Q63",
+    "title_la": "Druge urođene malformacije bubrega",
+    "source_line": 3175
+  },
+  {
+    "code": "Q63.0",
+    "title_la": "Ren accessorius",
+    "source_line": 39809
+  },
+  {
+    "code": "Q63.1",
+    "title_la": "Ren lobularis, ren conjunctus et ren hippocrepicus",
+    "source_line": 39811
+  },
+  {
+    "code": "Q63.2",
+    "title_la": "Ectopia renis",
+    "source_line": 39813
+  },
+  {
+    "code": "Q63.3",
+    "title_la": "Ren hyperplasticus et giganteus",
+    "source_line": 39817
+  },
+  {
+    "code": "Q63.8",
+    "title_la": "Malformationes renis congenitae aliae, specificatae",
+    "source_line": 39819
+  },
+  {
+    "code": "Q63.9",
+    "title_la": "Malformatio renis congenita, non specificata",
+    "source_line": 39822
+  },
+  {
+    "code": "Q64",
+    "title_la": "Druge urođene malformacije mokraćnog sistema",
+    "source_line": 3176
+  },
+  {
+    "code": "Q64.0",
+    "title_la": "Epispadia",
+    "source_line": 39831
+  },
+  {
+    "code": "Q64.1",
+    "title_la": "Extrophia vesicae urinariae",
+    "source_line": 39834
+  },
+  {
+    "code": "Q64.2",
+    "title_la": "Valvula urethralis posterior congenita",
+    "source_line": 39838
+  },
+  {
+    "code": "Q64.3",
+    "title_la": "Atresia et stenosis urethrae et colli vesicae urinariae alia",
+    "source_line": 39840
+  },
+  {
+    "code": "Q64.4",
+    "title_la": "Malformatio urachi",
+    "source_line": 39848
+  },
+  {
+    "code": "Q64.5",
+    "title_la": "Agenesia vesicae urinariae et urethrae congenita",
+    "source_line": 39853
+  },
+  {
+    "code": "Q64.6",
+    "title_la": "Diverticulum vesicae urinariae congenitum",
+    "source_line": 39855
+  },
+  {
+    "code": "Q64.7",
+    "title_la": "Malformationes vesicae urinariae et urethrae congenitae aliae",
+    "source_line": 39857
+  },
+  {
+    "code": "Q64.8",
+    "title_la": "Malformationes systematis urinarii congenitae aliae, specificatae",
+    "source_line": 39872
+  },
+  {
+    "code": "Q64.9",
+    "title_la": "Malformatio systematis urinarii congenita, non specificata",
+    "source_line": 39874
+  },
+  {
+    "code": "Q65",
+    "title_la": "Urođeni deformiteti kuka",
+    "source_line": 3180
+  },
+  {
+    "code": "Q65.0",
+    "title_la": "Luxatio coxae unilateralis congenita",
+    "source_line": 39893
+  },
+  {
+    "code": "Q65.1",
+    "title_la": "Luxatio coxae bilateralis congenita",
+    "source_line": 39895
+  },
+  {
+    "code": "Q65.2",
+    "title_la": "Luxatio coxae congenita, non specificata",
+    "source_line": 39897
+  },
+  {
+    "code": "Q65.3",
+    "title_la": "Subluxatio coxae unilateralis congenita",
+    "source_line": 39899
+  },
+  {
+    "code": "Q65.4",
+    "title_la": "Subluxatio coxae bilateralis congenita",
+    "source_line": 39901
+  },
+  {
+    "code": "Q65.5",
+    "title_la": "Subluxatio coxae congenita, non specificata",
+    "source_line": 39903
+  },
+  {
+    "code": "Q65.6",
+    "title_la": "Instabilitas coxae congenita",
+    "source_line": 39905
+  },
+  {
+    "code": "Q65.8",
+    "title_la": "Deformationes coxae congenitae aliae",
+    "source_line": 39909
+  },
+  {
+    "code": "Q65.9",
+    "title_la": "Deformatio coxae congenita, non specificata",
+    "source_line": 39916
+  },
+  {
+    "code": "Q66",
+    "title_la": "Urođeni deformiteti stopala",
+    "source_line": 3181
+  },
+  {
+    "code": "Q66.0",
+    "title_la": "Talipes equinovarus",
+    "source_line": 39924
+  },
+  {
+    "code": "Q66.1",
+    "title_la": "Talipes calcaneovarus",
+    "source_line": 39926
+  },
+  {
+    "code": "Q66.2",
+    "title_la": "Metatarsus varus",
+    "source_line": 39928
+  },
+  {
+    "code": "Q66.3",
+    "title_la": "Deformationes pedis vari congenitae aliae",
+    "source_line": 39930
+  },
+  {
+    "code": "Q66.4",
+    "title_la": "Talipes calcaneovalgus",
+    "source_line": 39933
+  },
+  {
+    "code": "Q66.5",
+    "title_la": "Pes planus congenitus",
+    "source_line": 39943
+  },
+  {
+    "code": "Q66.6",
+    "title_la": "Deformationes pedis valgi congenitae aliae",
+    "source_line": 39949
+  },
+  {
+    "code": "Q66.7",
+    "title_la": "Pes cavus",
+    "source_line": 39952
+  },
+  {
+    "code": "Q66.8",
+    "title_la": "Deformationes pedis congenitae aliae",
+    "source_line": 39954
+  },
+  {
+    "code": "Q66.9",
+    "title_la": "Deformatio pedis congenita, non specificata",
+    "source_line": 39963
+  },
+  {
+    "code": "Q67",
+    "title_la": "Urođene mišićno-koštane deformacije glave, lica, kičme i grudnog koša",
+    "source_line": 3182
+  },
+  {
+    "code": "Q67.0",
+    "title_la": "Asymmetria faciei",
+    "source_line": 39971
+  },
+  {
+    "code": "Q67.1",
+    "title_la": "Compressio faciei",
+    "source_line": 39973
+  },
+  {
+    "code": "Q67.2",
+    "title_la": "Dolichocephalia",
+    "source_line": 39975
+  },
+  {
+    "code": "Q67.3",
+    "title_la": "Plagiocephalia",
+    "source_line": 39977
+  },
+  {
+    "code": "Q67.4",
+    "title_la": "Deformationes cranii, faciei, maxillae et mandibulae congenitae aliae",
+    "source_line": 39979
+  },
+  {
+    "code": "Q67.5",
+    "title_la": "Deformatio spinalis congenita",
+    "source_line": 39987
+  },
+  {
+    "code": "Q67.6",
+    "title_la": "Pectus excavatum",
+    "source_line": 40001
+  },
+  {
+    "code": "Q67.7",
+    "title_la": "Pectus carinatum",
+    "source_line": 40004
+  },
+  {
+    "code": "Q67.8",
+    "title_la": "Deformationes thoracis congenitae aliae",
+    "source_line": 40007
+  },
+  {
+    "code": "Q68",
+    "title_la": "Druge urođene deformacije mišićno-koštanog sistema",
+    "source_line": 3183
+  },
+  {
+    "code": "Q68.0",
+    "title_la": "Deformatio musculi sternocleidomastoidei congenita",
+    "source_line": 40014
+  },
+  {
+    "code": "Q68.1",
+    "title_la": "Deformatio manus congenita",
+    "source_line": 40019
+  },
+  {
+    "code": "Q68.2",
+    "title_la": "Deformatio genus congenita",
+    "source_line": 40023
+  },
+  {
+    "code": "Q68.3",
+    "title_la": "Curvatura corporis femoris congenita",
+    "source_line": 40027
+  },
+  {
+    "code": "Q68.4",
+    "title_la": "Curvatura tibiae et fibulae congenita",
+    "source_line": 40030
+  },
+  {
+    "code": "Q68.5",
+    "title_la": "Curvatura ossium extremitatis inferioris longorum congenita, non specificata",
+    "source_line": 40032
+  },
+  {
+    "code": "Q68.8",
+    "title_la": "Deformationes systematis musculosceletalis aliae, specificatae",
+    "source_line": 40034
+  },
+  {
+    "code": "Q69",
+    "title_la": "Prekobrojni prsti",
+    "source_line": 3184
+  },
+  {
+    "code": "Q69.0",
+    "title_la": "Digitus manus accessorius",
+    "source_line": 40047
+  },
+  {
+    "code": "Q69.1",
+    "title_la": "Pollex accessorius",
+    "source_line": 40049
+  },
+  {
+    "code": "Q69.2",
+    "title_la": "Hallux accessorius",
+    "source_line": 40058
+  },
+  {
+    "code": "Q69.9",
+    "title_la": "Polydactylia, non specificata",
+    "source_line": 40060
+  },
+  {
+    "code": "Q70",
+    "title_la": "Sraslost prstiju",
+    "source_line": 3185
+  },
+  {
+    "code": "Q70.0",
+    "title_la": "Conjunctio digitorum manus",
+    "source_line": 40066
+  },
+  {
+    "code": "Q70.1",
+    "title_la": "Syndactylia manus simplex sine synostosi",
+    "source_line": 40069
+  },
+  {
+    "code": "Q70.2",
+    "title_la": "Conjunctio digitorum pedis",
+    "source_line": 40072
+  },
+  {
+    "code": "Q70.3",
+    "title_la": "Syndactylia pedis simplex sine synostosi",
+    "source_line": 40075
+  },
+  {
+    "code": "Q70.4",
+    "title_la": "Polysyndactylia",
+    "source_line": 40078
+  },
+  {
+    "code": "Q70.9",
+    "title_la": "Syndactylia, non specificata",
+    "source_line": 40080
+  },
+  {
+    "code": "Q71",
+    "title_la": "Urođena skraćenost ruke",
+    "source_line": 3186
+  },
+  {
+    "code": "Q71.0",
+    "title_la": "Amelia extremitatis superioris congenita",
+    "source_line": 40086
+  },
+  {
+    "code": "Q71.1",
+    "title_la": "Phocomelia extremitatis superioris congenita",
+    "source_line": 40088
+  },
+  {
+    "code": "Q71.2",
+    "title_la": "Aplasia antebrachii et manus congenita",
+    "source_line": 40090
+  },
+  {
+    "code": "Q71.3",
+    "title_la": "Aplasia manus et digiti(-orum) congenita",
+    "source_line": 40092
+  },
+  {
+    "code": "Q71.4",
+    "title_la": "Reductio longitudinis radii congenita",
+    "source_line": 40094
+  },
+  {
+    "code": "Q71.5",
+    "title_la": "Reductio longitudinis ulnae congenita",
+    "source_line": 40098
+  },
+  {
+    "code": "Q71.6",
+    "title_la": "Manus unguiformis",
+    "source_line": 40100
+  },
+  {
+    "code": "Q71.8",
+    "title_la": "Reductiones extremitatis superioris congenitae aliae",
+    "source_line": 40102
+  },
+  {
+    "code": "Q71.9",
+    "title_la": "Reductio extremitatis superioris congenita, non specificata",
+    "source_line": 40105
+  },
+  {
+    "code": "Q72",
+    "title_la": "Urođena skraćenost noge",
+    "source_line": 3187
+  },
+  {
+    "code": "Q72.0",
+    "title_la": "Amelia extremitatis inferioris congenita",
+    "source_line": 40115
+  },
+  {
+    "code": "Q72.1",
+    "title_la": "Phocomelia extrmitatis inferioris congenita",
+    "source_line": 40117
+  },
+  {
+    "code": "Q72.2",
+    "title_la": "Aplasia cruris et pedis congenita",
+    "source_line": 40119
+  },
+  {
+    "code": "Q72.3",
+    "title_la": "Aplasia pedium et digiti(-orum) congenita",
+    "source_line": 40121
+  },
+  {
+    "code": "Q72.4",
+    "title_la": "Reductio longitudinis femoris congenita",
+    "source_line": 40123
+  },
+  {
+    "code": "Q72.5",
+    "title_la": "Reductio longitudinis tibiae congenita",
+    "source_line": 40126
+  },
+  {
+    "code": "Q72.6",
+    "title_la": "Reductio longitudinis fibulae congenita",
+    "source_line": 40128
+  },
+  {
+    "code": "Q72.7",
+    "title_la": "Fissura pedis",
+    "source_line": 40130
+  },
+  {
+    "code": "Q72.8",
+    "title_la": "Reductiones extremitatis inferioris congenitae aliae",
+    "source_line": 40132
+  },
+  {
+    "code": "Q72.9",
+    "title_la": "Reductio extremitatis inferioris congenita, non specificata",
+    "source_line": 40135
+  },
+  {
+    "code": "Q73",
+    "title_la": "Urođena skraćenost uda, neoznačena",
+    "source_line": 3188
+  },
+  {
+    "code": "Q73.0",
+    "title_la": "Aplasia congenita extremitatis non specificatae",
+    "source_line": 40140
+  },
+  {
+    "code": "Q73.1",
+    "title_la": "Phocomelia extremitatis non specificati",
+    "source_line": 40143
+  },
+  {
+    "code": "Q73.8",
+    "title_la": "Reductiones extremitatis congenitae aliae, non specificatae",
+    "source_line": 40146
+  },
+  {
+    "code": "Q74",
+    "title_la": "Druge urođene anomalije uda(-ova)",
+    "source_line": 3189
+  },
+  {
+    "code": "Q74.0",
+    "title_la": "Malformationes extremitatis superioris congenitae aliae, cingulum pectorale",
+    "source_line": 40165
+  },
+  {
+    "code": "Q74.1",
+    "title_la": "Malformatio genus congenita",
+    "source_line": 40176
+  },
+  {
+    "code": "Q74.2",
+    "title_la": "Malformationes extremitatis inferioris congenitae aliae, cingulum pelvicum",
+    "source_line": 40187
+  },
+  {
+    "code": "Q74.3",
+    "title_la": "Arthrogryposis multiplex congenita",
+    "source_line": 40196
+  },
+  {
+    "code": "Q74.8",
+    "title_la": "Malformationes extremitatis congenitae aliae, specificatae",
+    "source_line": 40198
+  },
+  {
+    "code": "Q74.9",
+    "title_la": "Malformatio extremitatis congenita, non specificata",
+    "source_line": 40200
+  },
+  {
+    "code": "Q75",
+    "title_la": "Druge urođene anomalije kostiju lobanje i lica",
+    "source_line": 3190
+  },
+  {
+    "code": "Q75.0",
+    "title_la": "Craniosynostosis",
+    "source_line": 40222
+  },
+  {
+    "code": "Q75.1",
+    "title_la": "Dysostosis craniofacialis",
+    "source_line": 40228
+  },
+  {
+    "code": "Q75.2",
+    "title_la": "Hypertelorismus",
+    "source_line": 40231
+  },
+  {
+    "code": "Q75.3",
+    "title_la": "Macrocephalia",
+    "source_line": 40233
+  },
+  {
+    "code": "Q75.4",
+    "title_la": "Dysostosis mandibulofacialis",
+    "source_line": 40235
+  },
+  {
+    "code": "Q75.5",
+    "title_la": "Dysostosis oculomandibularis",
+    "source_line": 40239
+  },
+  {
+    "code": "Q75.8",
+    "title_la": "Malformationes ossium cranii et faciei congenitae aliae specificatae",
+    "source_line": 40241
+  },
+  {
+    "code": "Q75.9",
+    "title_la": "Malformatio ossium cranii et faciei, non specificata",
+    "source_line": 40246
+  },
+  {
+    "code": "Q76",
+    "title_la": "Urođene malformacije kičme i kostiju grudnog koša",
+    "source_line": 3191
+  },
+  {
+    "code": "Q76.0",
+    "title_la": "Spina bifida occulta",
+    "source_line": 40255
+  },
+  {
+    "code": "Q76.1",
+    "title_la": "Syndroma Klippel-Feil",
+    "source_line": 40259
+  },
+  {
+    "code": "Q76.2",
+    "title_la": "Spondylolisthesis congenita",
+    "source_line": 40268
+  },
+  {
+    "code": "Q76.3",
+    "title_la": "Scoliosis congenita propter malformationem congenitam ossium",
+    "source_line": 40273
+  },
+  {
+    "code": "Q76.4",
+    "title_la": "Malformationes columnae vertebralis congenitae aliae sine scoliosi",
+    "source_line": 40276
+  },
+  {
+    "code": "Q76.5",
+    "title_la": "Costa cervicalis",
+    "source_line": 40289
+  },
+  {
+    "code": "Q76.6",
+    "title_la": "Malformationes costarum congenitae alie",
+    "source_line": 40292
+  },
+  {
+    "code": "Q76.7",
+    "title_la": "Malformatio sterni congenita",
+    "source_line": 40299
+  },
+  {
+    "code": "Q76.8",
+    "title_la": "Malformationes ossium thoracis congenitae aliae",
+    "source_line": 40303
+  },
+  {
+    "code": "Q76.9",
+    "title_la": "Malformatio ossium thoracis congenita, non specificata",
+    "source_line": 40305
+  },
+  {
+    "code": "Q77",
+    "title_la": "Nepravilan razvoj kostiju i hrskavica sa lošim stvaranjem šupljih kostiju i kičme",
+    "source_line": 3192
+  },
+  {
+    "code": "Q77.0",
+    "title_la": "Achondrogenesis",
+    "source_line": 40312
+  },
+  {
+    "code": "Q77.1",
+    "title_la": "Nanismus thanatophoricus",
+    "source_line": 40315
+  },
+  {
+    "code": "Q77.2",
+    "title_la": "Syndroma costae brevis",
+    "source_line": 40317
+  },
+  {
+    "code": "Q77.3",
+    "title_la": "Chondrodysplasia punctata",
+    "source_line": 40326
+  },
+  {
+    "code": "Q77.4",
+    "title_la": "Achondroplasia",
+    "source_line": 40328
+  },
+  {
+    "code": "Q77.5",
+    "title_la": "Dysplasia dystrophica",
+    "source_line": 40332
+  },
+  {
+    "code": "Q77.6",
+    "title_la": "Dysplasia chondroectodermatica",
+    "source_line": 40334
+  },
+  {
+    "code": "Q77.7",
+    "title_la": "Dysplasia spondyloepiphysealis",
+    "source_line": 40337
+  },
+  {
+    "code": "Q77.8",
+    "title_la": "Osteochondrodysplasia cum osteogenesi ossium tubariorum et columnae",
+    "source_line": 40339
+  },
+  {
+    "code": "Q77.9",
+    "title_la": "Osteochondrodysplasia cum osteogenesi ossium tubariorum et columnae",
+    "source_line": 40342
+  },
+  {
+    "code": "Q78",
+    "title_la": "Drugi nepravilan razvoj kostiju i hrskavice",
+    "source_line": 3193
+  },
+  {
+    "code": "Q78.0",
+    "title_la": "Osteogenesis imperfecta",
+    "source_line": 40348
+  },
+  {
+    "code": "Q78.1",
+    "title_la": "Dysplasia fibrosa polyosteosa",
+    "source_line": 40352
+  },
+  {
+    "code": "Q78.2",
+    "title_la": "Osteopetrosis",
+    "source_line": 40355
+  },
+  {
+    "code": "Q78.3",
+    "title_la": "Dysplasia diaphysealis progressiva",
+    "source_line": 40358
+  },
+  {
+    "code": "Q78.4",
+    "title_la": "Enchondromatosis",
+    "source_line": 40361
+  },
+  {
+    "code": "Q78.5",
+    "title_la": "Dysplasia Metaphysealis",
+    "source_line": 40365
+  },
+  {
+    "code": "Q78.6",
+    "title_la": "Exosteosis multiplex congenita",
+    "source_line": 40368
+  },
+  {
+    "code": "Q78.8",
+    "title_la": "Osteochondrodysplasiae aliae, specificatae",
+    "source_line": 40371
+  },
+  {
+    "code": "Q78.9",
+    "title_la": "Osteochondrodysplasia, non specificata",
+    "source_line": 40382
+  },
+  {
+    "code": "Q79",
+    "title_la": "Urođene malformacije mišićno-koštanog sistema, neklasifikovane na drugom",
+    "source_line": 3194
+  },
+  {
+    "code": "Q79.0",
+    "title_la": "Hernia diaphragmatica congenita",
+    "source_line": 40392
+  },
+  {
+    "code": "Q79.1",
+    "title_la": "Malformationes diaphragmatis congenitae aliae",
+    "source_line": 40395
+  },
+  {
+    "code": "Q79.2",
+    "title_la": "Exomphalos",
+    "source_line": 40400
+  },
+  {
+    "code": "Q79.3",
+    "title_la": "Gastroschisis",
+    "source_line": 40404
+  },
+  {
+    "code": "Q79.4",
+    "title_la": "Syndroma alvi inflatae",
+    "source_line": 40406
+  },
+  {
+    "code": "Q79.5",
+    "title_la": "Malformationes tegmenti abdominalis congenitae aliae",
+    "source_line": 40408
+  },
+  {
+    "code": "Q79.6",
+    "title_la": "Syndroma Ehlers-Danlos",
+    "source_line": 40411
+  },
+  {
+    "code": "Q79.8",
+    "title_la": "Malformationes systematis musculosceletalis congenitae aliae",
+    "source_line": 40413
+  },
+  {
+    "code": "Q79.9",
+    "title_la": "Malformatio musculosceletalis congenita, non specificata",
+    "source_line": 40422
+  },
+  {
+    "code": "Q80",
+    "title_la": "Urođena krljuštica",
+    "source_line": 3198
+  },
+  {
+    "code": "Q80.0",
+    "title_la": "Ichthyosis vulgaris",
+    "source_line": 40441
+  },
+  {
+    "code": "Q80.1",
+    "title_la": "Ichthyosis X-connexa",
+    "source_line": 40443
+  },
+  {
+    "code": "Q80.2",
+    "title_la": "Ichthyosis lamellosa",
+    "source_line": 40445
+  },
+  {
+    "code": "Q80.3",
+    "title_la": "Erythoderma ichthyosiforme bullosum congenitum",
+    "source_line": 40448
+  },
+  {
+    "code": "Q80.4",
+    "title_la": "Fetus ridiculus",
+    "source_line": 40450
+  },
+  {
+    "code": "Q80.8",
+    "title_la": "Ichthyosis congenita alia",
+    "source_line": 40452
+  },
+  {
+    "code": "Q80.9",
+    "title_la": "Ichthyosis congenita, non specificata",
+    "source_line": 40454
+  },
+  {
+    "code": "Q81",
+    "title_la": "Mehurasto ljuštenje pokožice",
+    "source_line": 3199
+  },
+  {
+    "code": "Q81.0",
+    "title_la": "Epidermolysis bullosa simplex",
+    "source_line": 40459
+  },
+  {
+    "code": "Q81.1",
+    "title_la": "Epidermolysis bullosa letalis",
+    "source_line": 40462
+  },
+  {
+    "code": "Q81.2",
+    "title_la": "Epidermolysis bullosa dystrophica",
+    "source_line": 40465
+  },
+  {
+    "code": "Q81.8",
+    "title_la": "Epidermolysis bullosa alia",
+    "source_line": 40467
+  },
+  {
+    "code": "Q81.9",
+    "title_la": "Epidermolysis bullosa, non specificata",
+    "source_line": 40469
+  },
+  {
+    "code": "Q82",
+    "title_la": "Druge urođene malformacije kože",
+    "source_line": 3200
+  },
+  {
+    "code": "Q82.0",
+    "title_la": "Lymphoedema hereditarium",
+    "source_line": 40478
+  },
+  {
+    "code": "Q82.1",
+    "title_la": "Xeroderma pigmentosum",
+    "source_line": 40480
+  },
+  {
+    "code": "Q82.2",
+    "title_la": "Mastocytosis",
+    "source_line": 40490
+  },
+  {
+    "code": "Q82.3",
+    "title_la": "Incontinentia pigmenti",
+    "source_line": 40494
+  },
+  {
+    "code": "Q82.4",
+    "title_la": "Dysplasia ectodematica (anhydrica)",
+    "source_line": 40496
+  },
+  {
+    "code": "Q82.5",
+    "title_la": "Naevus non malignus congenitus",
+    "source_line": 40499
+  },
+  {
+    "code": "Q82.8",
+    "title_la": "Malformationes cutis congenitae aliae, specificatae",
+    "source_line": 40518
+  },
+  {
+    "code": "Q82.9",
+    "title_la": "Malformatio cutis congenita, non specificata",
+    "source_line": 40528
+  },
+  {
+    "code": "Q83",
+    "title_la": "Urođene malformacije dojke",
+    "source_line": 3207
+  },
+  {
+    "code": "Q83.0",
+    "title_la": "Aplasia mammae et papillae mammillae congenita",
+    "source_line": 40534
+  },
+  {
+    "code": "Q83.1",
+    "title_la": "Mamma accessoria",
+    "source_line": 40536
+  },
+  {
+    "code": "Q83.2",
+    "title_la": "Aplasia mamillae",
+    "source_line": 40539
+  },
+  {
+    "code": "Q83.3",
+    "title_la": "Mamilla accessoria",
+    "source_line": 40548
+  },
+  {
+    "code": "Q83.8",
+    "title_la": "Malformationes mammae congenitae aliae",
+    "source_line": 40551
+  },
+  {
+    "code": "Q83.9",
+    "title_la": "Malformatio mammae congenita, non specificata",
+    "source_line": 40554
+  },
+  {
+    "code": "Q84",
+    "title_la": "Druge urođene malformacije kože i kožnih adneksa",
+    "source_line": 3208
+  },
+  {
+    "code": "Q84.0",
+    "title_la": "Alopecia congenita",
+    "source_line": 40559
+  },
+  {
+    "code": "Q84.1",
+    "title_la": "Dysmorphologiae capilli, non alibi classificatae",
+    "source_line": 40562
+  },
+  {
+    "code": "Q84.2",
+    "title_la": "Malformationes pilorum congenitae aliae",
+    "source_line": 40568
+  },
+  {
+    "code": "Q84.3",
+    "title_la": "Anonychia",
+    "source_line": 40573
+  },
+  {
+    "code": "Q84.4",
+    "title_la": "Leukonychia congenita",
+    "source_line": 40576
+  },
+  {
+    "code": "Q84.5",
+    "title_la": "Unguis auctus et hypertrophicus",
+    "source_line": 40578
+  },
+  {
+    "code": "Q84.6",
+    "title_la": "Malformationes unguium congenitae aliae",
+    "source_line": 40582
+  },
+  {
+    "code": "Q84.8",
+    "title_la": "Malformationes integumenti congenitae aliae, specificatae",
+    "source_line": 40587
+  },
+  {
+    "code": "Q84.9",
+    "title_la": "Malformatio integumenti congenita, non specificata",
+    "source_line": 40590
+  },
+  {
+    "code": "Q85",
+    "title_la": "Fakomatoze – tumori sočiva oka, neklasifikovane na drugom mestu",
+    "source_line": 3209
+  },
+  {
+    "code": "Q85.0",
+    "title_la": "Neurofibromatosis (non maligna)",
+    "source_line": 40607
+  },
+  {
+    "code": "Q85.1",
+    "title_la": "Sclerosis tuberosa",
+    "source_line": 40610
+  },
+  {
+    "code": "Q85.8",
+    "title_la": "Phakomatoses aliae, non alibi classificatae",
+    "source_line": 40614
+  },
+  {
+    "code": "Q85.9",
+    "title_la": "Phakomatosis, non specificata",
+    "source_line": 40621
+  },
+  {
+    "code": "Q86",
+    "title_la": "Sindromi urođenih malformacija izazvani poznatim spoljnjim uzrocima,",
+    "source_line": 3210
+  },
+  {
+    "code": "Q86.0",
+    "title_la": "Syndroma fetus matris alcoholicae",
+    "source_line": 40632
+  },
+  {
+    "code": "Q86.1",
+    "title_la": "Syndroma fetus hyndantoino laesi",
+    "source_line": 40634
+  },
+  {
+    "code": "Q86.2",
+    "title_la": "Dysmorphosis warfarini",
+    "source_line": 40637
+  },
+  {
+    "code": "Q86.8",
+    "title_la": "Syndromata malformationum congenitarum causis exogenibus notis excitatarum",
+    "source_line": 40639
+  },
+  {
+    "code": "Q87",
+    "title_la": "Drugi označeni sindromi urođenih malformacija više sistema",
+    "source_line": 3212
+  },
+  {
+    "code": "Q87.0",
+    "title_la": "Syndromata malformationum congenitarum praesertim faciei",
+    "source_line": 40653
+  },
+  {
+    "code": "Q87.1",
+    "title_la": "Syndromata malformationum congenitarum, cum praesertim nanosimae",
+    "source_line": 40665
+  },
+  {
+    "code": "Q87.2",
+    "title_la": "Syndromata malformationum congenitarum praesertim extremitatum",
+    "source_line": 40679
+  },
+  {
+    "code": "Q87.3",
+    "title_la": "Syndromata malformationum incermenti enormis praecocis congenitarum",
+    "source_line": 40689
+  },
+  {
+    "code": "Q87.4",
+    "title_la": "Syndroma Marfan",
+    "source_line": 40695
+  },
+  {
+    "code": "Q87.5",
+    "title_la": "Syndromata malformationum congenitarum alia, cum mutationibus sceleti aliis",
+    "source_line": 40697
+  },
+  {
+    "code": "Q87.8",
+    "title_la": "Syndromata malformationum congenitarum alia specificata, non alibi classificata",
+    "source_line": 40707
+  },
+  {
+    "code": "Q89",
+    "title_la": "Druge urođene malformacije, neklasifikovane na drugom mestu",
+    "source_line": 3213
+  },
+  {
+    "code": "Q89.0",
+    "title_la": "Malformationes lienis congenitae",
+    "source_line": 40716
+  },
+  {
+    "code": "Q89.1",
+    "title_la": "Malformationes glandulae suprarenalis congenitae",
+    "source_line": 40721
+  },
+  {
+    "code": "Q89.2",
+    "title_la": "Malformatines glandularum endocrinarum aliarum congenitae",
+    "source_line": 40724
+  },
+  {
+    "code": "Q89.3",
+    "title_la": "Situs inversus",
+    "source_line": 40729
+  },
+  {
+    "code": "Q89.4",
+    "title_la": "Gemelli conjuncti",
+    "source_line": 40741
+  },
+  {
+    "code": "Q89.7",
+    "title_la": "Malformationes multiplices congenitae, non alibi classificatae",
+    "source_line": 40748
+  },
+  {
+    "code": "Q89.8",
+    "title_la": "Malformationes congenitae aliae, specificatae",
+    "source_line": 40754
+  },
+  {
+    "code": "Q89.9",
+    "title_la": "Malformatio congenita, non specificata",
+    "source_line": 40764
+  },
+  {
+    "code": "Q90",
+    "title_la": "Downov sindrom",
+    "source_line": 3217
+  },
+  {
+    "code": "Q90.0",
+    "title_la": "Trisomia 21, inseparatio meiotica",
+    "source_line": 40776
+  },
+  {
+    "code": "Q90.1",
+    "title_la": "Trisomia 21, mosaicismus (inseparatio mitotica)",
+    "source_line": 40778
+  },
+  {
+    "code": "Q90.2",
+    "title_la": "Trisomia 21, translocatio",
+    "source_line": 40780
+  },
+  {
+    "code": "Q90.9",
+    "title_la": "Syndroma Down, non specificatum",
+    "source_line": 40782
+  },
+  {
+    "code": "Q91",
+    "title_la": "Edwardov i Patauov sindrom",
+    "source_line": 3218
+  },
+  {
+    "code": "Q91.0",
+    "title_la": "Trisomia 18, inseparatio meiotica",
+    "source_line": 40788
+  },
+  {
+    "code": "Q91.1",
+    "title_la": "Trisomia 18, mosaicismus (inseparatio mitotica)",
+    "source_line": 40790
+  },
+  {
+    "code": "Q91.2",
+    "title_la": "Trisomia 18, translocatio",
+    "source_line": 40792
+  },
+  {
+    "code": "Q91.3",
+    "title_la": "Syndroma Edwards, non specificatum",
+    "source_line": 40794
+  },
+  {
+    "code": "Q91.4",
+    "title_la": "Trisomia 13, inseparatio meiotica",
+    "source_line": 40796
+  },
+  {
+    "code": "Q91.5",
+    "title_la": "Trisomia 13, mosaicismus (inseparatio mitotica)",
+    "source_line": 40798
+  },
+  {
+    "code": "Q91.6",
+    "title_la": "Trisomia 13, translocatio",
+    "source_line": 40800
+  },
+  {
+    "code": "Q91.7",
+    "title_la": "Syndroma Patau, non specificatum",
+    "source_line": 40802
+  },
+  {
+    "code": "Q92",
+    "title_la": "Druge trizomije i delimične autozomne trizomije, neklasifikovane na drugom mestu",
+    "source_line": 3219
+  },
+  {
+    "code": "Q92.0",
+    "title_la": "Trisomia autosomatica, inseparatio meiotica",
+    "source_line": 40809
+  },
+  {
+    "code": "Q92.1",
+    "title_la": "Trisomia autosomatica, mosaicismus (inseparatio mitotica)",
+    "source_line": 40811
+  },
+  {
+    "code": "Q92.2",
+    "title_la": "Trisomia autosomatica partialis major",
+    "source_line": 40820
+  },
+  {
+    "code": "Q92.3",
+    "title_la": "Trisomia autosomatica partialis minor",
+    "source_line": 40823
+  },
+  {
+    "code": "Q92.4",
+    "title_la": "Duplicitas chromosomatica autosomatica, solum in prometaphasi visa",
+    "source_line": 40826
+  },
+  {
+    "code": "Q92.5",
+    "title_la": "Duplicatas chromosomatica autosomatica cum reorganisatione completa",
+    "source_line": 40828
+  },
+  {
+    "code": "Q92.6",
+    "title_la": "Chromosomata extra signata",
+    "source_line": 40830
+  },
+  {
+    "code": "Q92.7",
+    "title_la": "Triploida et polyploida",
+    "source_line": 40832
+  },
+  {
+    "code": "Q92.8",
+    "title_la": "Trisomiae autosomaticae et trisomia autosomaticae partiales aliae, specificatae",
+    "source_line": 40834
+  },
+  {
+    "code": "Q92.9",
+    "title_la": "Trisomia autosomatica et trisomia autosomatica partialis, non specificata",
+    "source_line": 40836
+  },
+  {
+    "code": "Q93",
+    "title_la": "Monozomije i delimične autozomne monozomije, neklasifikovane na drugom",
+    "source_line": 3220
+  },
+  {
+    "code": "Q93.0",
+    "title_la": "Monosomia autosomatica, inseparatio meiotica",
+    "source_line": 40842
+  },
+  {
+    "code": "Q93.1",
+    "title_la": "Monosomia autosomatica, mosaicismus (inseparatio mitotica)",
+    "source_line": 40844
+  },
+  {
+    "code": "Q93.2",
+    "title_la": "Chromosoma anulare mutatum sive dicentricum",
+    "source_line": 40846
+  },
+  {
+    "code": "Q93.3",
+    "title_la": "Deletio rami brevis chromosomatis 4",
+    "source_line": 40848
+  },
+  {
+    "code": "Q93.4",
+    "title_la": "Deletio rami brevis chromasomatis 5",
+    "source_line": 40851
+  },
+  {
+    "code": "Q93.5",
+    "title_la": "Deletiones partis chromosomatis aliae",
+    "source_line": 40854
+  },
+  {
+    "code": "Q93.6",
+    "title_la": "Deletiones solum in prometaphasi visae",
+    "source_line": 40857
+  },
+  {
+    "code": "Q93.7",
+    "title_la": "Deletiones cum reorganisationibus completis aliis",
+    "source_line": 40859
+  },
+  {
+    "code": "Q93.8",
+    "title_la": "Deletiones chromosomaticae autosomaticae aliae",
+    "source_line": 40861
+  },
+  {
+    "code": "Q93.9",
+    "title_la": "Deletio chromosomatica autosomatica, non specificata",
+    "source_line": 40863
+  },
+  {
+    "code": "Q95",
+    "title_la": "Uravnotežene hromozomske preraspodele i strukturni markeri, neklasifikovani na",
+    "source_line": 3222
+  },
+  {
+    "code": "Q95.0",
+    "title_la": "Translocationes et insertiones chromosomaticae aequilibratae ad personas",
+    "source_line": 40877
+  },
+  {
+    "code": "Q95.1",
+    "title_la": "Inversiones chromosomaticae ad personas normales",
+    "source_line": 40880
+  },
+  {
+    "code": "Q95.2",
+    "title_la": "Reorganisatio autosomatica aequilibrata ad personas abnormales",
+    "source_line": 40882
+  },
+  {
+    "code": "Q95.3",
+    "title_la": "Reorganisato sexualis-autosomatica aequilibrata ad personas abnormales",
+    "source_line": 40884
+  },
+  {
+    "code": "Q95.4",
+    "title_la": "Personae cum heterochromatino specificato",
+    "source_line": 40886
+  },
+  {
+    "code": "Q95.5",
+    "title_la": "Personae cum situ autosomatico instabili",
+    "source_line": 40888
+  },
+  {
+    "code": "Q95.8",
+    "title_la": "Translocationes transversae et insertiones chromosomaticae aliae",
+    "source_line": 40890
+  },
+  {
+    "code": "Q95.9",
+    "title_la": "Translocatio et insertio chromosomatica, non specificata",
+    "source_line": 40892
+  },
+  {
+    "code": "Q96",
+    "title_la": "Turnerov sindrom",
+    "source_line": 3224
+  },
+  {
+    "code": "Q96.0",
+    "title_la": "Karyotype 45, X",
+    "source_line": 40898
+  },
+  {
+    "code": "Q96.1",
+    "title_la": "Karyotype 46, X iso (Xq)",
+    "source_line": 40900
+  },
+  {
+    "code": "Q96.2",
+    "title_la": "Karyotype 46, X cum chromosomate sexuali abnormali, praeter iso (Xq)",
+    "source_line": 40902
+  },
+  {
+    "code": "Q96.3",
+    "title_la": "Mosaicismus 45, X/46, XX sive XY",
+    "source_line": 40904
+  },
+  {
+    "code": "Q96.4",
+    "title_la": "Mosaicismus 45, X cella-lineae cum chromosomate sexuali anormali aliae",
+    "source_line": 40906
+  },
+  {
+    "code": "Q96.8",
+    "title_la": "Variationes syndomatis Turner aliae",
+    "source_line": 40908
+  },
+  {
+    "code": "Q96.9",
+    "title_la": "Syndroma Turner, non specificatum",
+    "source_line": 40910
+  },
+  {
+    "code": "Q97",
+    "title_la": "Druge anomalije polnog hromozoma, ženski fenotip, neklasifikovane na drugom",
+    "source_line": 3225
+  },
+  {
+    "code": "Q97.0",
+    "title_la": "Karyotype 47, XXX",
+    "source_line": 40918
+  },
+  {
+    "code": "Q97.1",
+    "title_la": "Femina cum numero X chromasomatum tribus majore",
+    "source_line": 40920
+  },
+  {
+    "code": "Q97.2",
+    "title_la": "Mosaicismus, linea cum numero X chromosomatum vario",
+    "source_line": 40929
+  },
+  {
+    "code": "Q97.3",
+    "title_la": "Femina cum 46, XY karytypo",
+    "source_line": 40931
+  },
+  {
+    "code": "Q97.8",
+    "title_la": "Anomaliae chromosomatis sexualis, phaenotypus femininus aliae, specificatae",
+    "source_line": 40933
+  },
+  {
+    "code": "Q97.9",
+    "title_la": "Anomalia chromosomatis sexualis, phaenotypus femininus, non specificata",
+    "source_line": 40935
+  },
+  {
+    "code": "Q98",
+    "title_la": "Druge anomalije polnog hromozoma, muški fenotip, neklasifikovane na drgugom",
+    "source_line": 3227
+  },
+  {
+    "code": "Q98.0",
+    "title_la": "Syndroma Klinefelter, karyotypus 47, XXY",
+    "source_line": 40942
+  },
+  {
+    "code": "Q98.1",
+    "title_la": "Syndroma Klinefelter, mas cum numero X chromosomatum duobus majore",
+    "source_line": 40944
+  },
+  {
+    "code": "Q98.2",
+    "title_la": "Syndroma Klinfelter, mas cum 46, XX karyotypo",
+    "source_line": 40946
+  },
+  {
+    "code": "Q98.3",
+    "title_la": "Mas cum 46, XX karyotypo alius",
+    "source_line": 40948
+  },
+  {
+    "code": "Q98.4",
+    "title_la": "Syndroma Klinefelter, non specificata",
+    "source_line": 40950
+  },
+  {
+    "code": "Q98.5",
+    "title_la": "Karyotypus 47, XYY",
+    "source_line": 40952
+  },
+  {
+    "code": "Q98.6",
+    "title_la": "Mas cum strictura chromosomatis sexualis abnormali",
+    "source_line": 40954
+  },
+  {
+    "code": "Q98.7",
+    "title_la": "Mas cum mosaicismo chromosomatis sexualis",
+    "source_line": 40956
+  },
+  {
+    "code": "Q98.8",
+    "title_la": "Anomaliae chromosomatis sexualis, phaenotypus masculinus aliae, specificatae",
+    "source_line": 40958
+  },
+  {
+    "code": "Q98.9",
+    "title_la": "Anomalia chromosomatis sexualis, phaenotypus masculinus, non specificata",
+    "source_line": 40960
+  },
+  {
+    "code": "Q99",
+    "title_la": "Druge hromozomske anomalije, neklasifikovane na drugom mestu",
+    "source_line": 3229
+  },
+  {
+    "code": "Q99.0",
+    "title_la": "Chimera 46, XX/46, XY",
+    "source_line": 40965
+  },
+  {
+    "code": "Q99.1",
+    "title_la": "Hermaphroditismus verus 46, XX",
+    "source_line": 40968
+  },
+  {
+    "code": "Q99.2",
+    "title_la": "Chromosoma X instabile",
+    "source_line": 40973
+  },
+  {
+    "code": "Q99.8",
+    "title_la": "Anomaliae chromosomaticae aliae, specificatae",
+    "source_line": 40976
+  },
+  {
+    "code": "Q99.9",
+    "title_la": "Anomalia chromosomatica, non specificata",
+    "source_line": 40986
+  }
+]

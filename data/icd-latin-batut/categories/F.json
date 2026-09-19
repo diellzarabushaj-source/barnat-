@@ -1,0 +1,392 @@
+[
+  {
+    "code": "F00",
+    "title_la": "Demencija u Alzheimerovoj bolesti (G30.-†)",
+    "source_line": 1768
+  },
+  {
+    "code": "F01",
+    "title_la": "Vaskularna demencija",
+    "source_line": 1769
+  },
+  {
+    "code": "F02",
+    "title_la": "Demencija u drugim bolestima, klasifikovanim na drugom mestu",
+    "source_line": 1770
+  },
+  {
+    "code": "F03",
+    "title_la": "Demencija, neoznačena",
+    "source_line": 1771
+  },
+  {
+    "code": "F04",
+    "title_la": "Organski sindrom nesećanja, neizazvan upotrebom alkohola i psihoaktivnih",
+    "source_line": 1772
+  },
+  {
+    "code": "F05",
+    "title_la": "Delirijum, neizazvan upotrebom alkohola i psihoaktivnih supstanci",
+    "source_line": 1774
+  },
+  {
+    "code": "F06",
+    "title_la": "Drugi duševni poremećaji uzrokovani oštećenjem i disfunkcijom mozga i telesnom",
+    "source_line": 1775
+  },
+  {
+    "code": "F07",
+    "title_la": "Poremećaji ličnosti i poremećaji ponašanja uzrokovani bolešću, oštećenjem i",
+    "source_line": 1777
+  },
+  {
+    "code": "F09",
+    "title_la": "Organska ili simptomatska duševna bolest, neoznačena",
+    "source_line": 1779
+  },
+  {
+    "code": "F10",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom alkohola",
+    "source_line": 1783
+  },
+  {
+    "code": "F11",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom opijata",
+    "source_line": 1784
+  },
+  {
+    "code": "F12",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom kanabinoida",
+    "source_line": 1785
+  },
+  {
+    "code": "F13",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom hipnotika ili",
+    "source_line": 1786
+  },
+  {
+    "code": "F14",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom kokaina",
+    "source_line": 1788
+  },
+  {
+    "code": "F15",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom drugih",
+    "source_line": 1789
+  },
+  {
+    "code": "F16",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom halucinogena",
+    "source_line": 1791
+  },
+  {
+    "code": "F17",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom duvana",
+    "source_line": 1792
+  },
+  {
+    "code": "F18",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom isparljivih",
+    "source_line": 1793
+  },
+  {
+    "code": "F19",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom više",
+    "source_line": 1795
+  },
+  {
+    "code": "F20",
+    "title_la": "Shizofrenija",
+    "source_line": 1799
+  },
+  {
+    "code": "F21",
+    "title_la": "Poremećaj sličan shizofreniji",
+    "source_line": 1800
+  },
+  {
+    "code": "F22",
+    "title_la": "Stalna sumanuta duševna oboljenja",
+    "source_line": 1801
+  },
+  {
+    "code": "F23",
+    "title_la": "Akutna i prolazna duševna oboljenja",
+    "source_line": 1802
+  },
+  {
+    "code": "F24",
+    "title_la": "Indukovano sumanuto duševno oboljenje",
+    "source_line": 1803
+  },
+  {
+    "code": "F25",
+    "title_la": "Shizoafektivna duševna oboljenja",
+    "source_line": 1804
+  },
+  {
+    "code": "F28",
+    "title_la": "Drugo neorgansko duševno oboljenje",
+    "source_line": 1805
+  },
+  {
+    "code": "F29",
+    "title_la": "Neorgansko duševno oboljenje, neoznačeno",
+    "source_line": 1806
+  },
+  {
+    "code": "F30",
+    "title_la": "Manična epizoda",
+    "source_line": 1809
+  },
+  {
+    "code": "F31",
+    "title_la": "Afektivno bipolarno duševno oboljenje",
+    "source_line": 1816
+  },
+  {
+    "code": "F32",
+    "title_la": "Depresija-depresijsko duševno oboljenje",
+    "source_line": 1817
+  },
+  {
+    "code": "F33",
+    "title_la": "Povratan depresijski poremećaj",
+    "source_line": 1818
+  },
+  {
+    "code": "F34",
+    "title_la": "Stalni poremećaji raspoloženja (afekata)",
+    "source_line": 1819
+  },
+  {
+    "code": "F38",
+    "title_la": "Drugi poremećaji raspoloženja (afekata)",
+    "source_line": 1820
+  },
+  {
+    "code": "F39",
+    "title_la": "Poremećaj raspoloženja (afekta), neoznačen",
+    "source_line": 1821
+  },
+  {
+    "code": "F40",
+    "title_la": "Fobijski anksiozni poremećaji",
+    "source_line": 1824
+  },
+  {
+    "code": "F41",
+    "title_la": "Drugi anksiozni poremećaji",
+    "source_line": 1825
+  },
+  {
+    "code": "F42",
+    "title_la": "Opsesijsko-prisilni poremećaj",
+    "source_line": 1826
+  },
+  {
+    "code": "F43",
+    "title_la": "Reakcija na težak stres i poremećaj prilagođavanja",
+    "source_line": 1827
+  },
+  {
+    "code": "F44",
+    "title_la": "Disocijativni (konverzivni) poremećaji",
+    "source_line": 1828
+  },
+  {
+    "code": "F45",
+    "title_la": "Telesni psihogeni poremećaji",
+    "source_line": 1829
+  },
+  {
+    "code": "F48",
+    "title_la": "Drugi neurotski poremećaji",
+    "source_line": 1830
+  },
+  {
+    "code": "F50",
+    "title_la": "Poremećaji ishrane",
+    "source_line": 1834
+  },
+  {
+    "code": "F51",
+    "title_la": "Neorganski poremećaji spavanja",
+    "source_line": 1835
+  },
+  {
+    "code": "F52",
+    "title_la": "Neorganski poremećaj u polnom odnosu",
+    "source_line": 1836
+  },
+  {
+    "code": "F53",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja udruženi sa babinjama,",
+    "source_line": 1837
+  },
+  {
+    "code": "F54",
+    "title_la": "Psihološki faktori i faktori ponašanja povezani sa poremećajima ili bolestima",
+    "source_line": 1839
+  },
+  {
+    "code": "F55",
+    "title_la": "Zloupotreba lekova bez uzrokovanja zavisnosti",
+    "source_line": 1841
+  },
+  {
+    "code": "F59",
+    "title_la": "Sindromi ponašanja udruženi sa fiziološkim smetnjama i fizičkim faktorima,",
+    "source_line": 1842
+  },
+  {
+    "code": "F60",
+    "title_la": "Specifični poremećaji ličnosti",
+    "source_line": 1846
+  },
+  {
+    "code": "F61",
+    "title_la": "Mešoviti i drugi poremećaji ličnosti",
+    "source_line": 1847
+  },
+  {
+    "code": "F62",
+    "title_la": "Trajna promena ličnosti neorganskog porekla",
+    "source_line": 1848
+  },
+  {
+    "code": "F63",
+    "title_la": "Poremećaji navika i impulsa",
+    "source_line": 1849
+  },
+  {
+    "code": "F64",
+    "title_la": "Poremećaji polnog identiteta",
+    "source_line": 1850
+  },
+  {
+    "code": "F65",
+    "title_la": "Poremećaji polne sklonosti",
+    "source_line": 1851
+  },
+  {
+    "code": "F66",
+    "title_la": "Psihološki poremećaji i poremećaji ponašanja povezani sa polnim razvojem i",
+    "source_line": 1852
+  },
+  {
+    "code": "F68",
+    "title_la": "Drugi poremećaji ličnosti i poremećaji ponašanja odraslih",
+    "source_line": 1854
+  },
+  {
+    "code": "F69",
+    "title_la": "Poremećaji ličnosti i poremećaji ponašanja odrasle osobe, neoznačeni",
+    "source_line": 1855
+  },
+  {
+    "code": "F70",
+    "title_la": "Laka duševna zaostalost",
+    "source_line": 1858
+  },
+  {
+    "code": "F71",
+    "title_la": "Umerena duševna zaostalost",
+    "source_line": 1859
+  },
+  {
+    "code": "F72",
+    "title_la": "Teška duševna zaostalost",
+    "source_line": 1860
+  },
+  {
+    "code": "F73",
+    "title_la": "Duboka duševna zaostalost",
+    "source_line": 1861
+  },
+  {
+    "code": "F78",
+    "title_la": "Druga duševna zaostalost",
+    "source_line": 1862
+  },
+  {
+    "code": "F79",
+    "title_la": "Duševna zaostalost, neoznačena",
+    "source_line": 1863
+  },
+  {
+    "code": "F80",
+    "title_la": "Specifični poremećaji razvoja govora i jezika",
+    "source_line": 1872
+  },
+  {
+    "code": "F81",
+    "title_la": "Specifični poremećaji razvoja sposobnosti za školovanje",
+    "source_line": 1873
+  },
+  {
+    "code": "F82",
+    "title_la": "Specifičan poremećaj razvoja pokretljivosti",
+    "source_line": 1874
+  },
+  {
+    "code": "F83",
+    "title_la": "Mešoviti specifični poremećaji razvoja",
+    "source_line": 1875
+  },
+  {
+    "code": "F84",
+    "title_la": "Prožimajući poremećaji razvoja",
+    "source_line": 1876
+  },
+  {
+    "code": "F88",
+    "title_la": "Drugi psihički poremećaji razvoja",
+    "source_line": 1877
+  },
+  {
+    "code": "F89",
+    "title_la": "Poremećaj psihičkog razvoja, neoznačen",
+    "source_line": 1878
+  },
+  {
+    "code": "F90",
+    "title_la": "Hiperkinetički poremećaji",
+    "source_line": 1882
+  },
+  {
+    "code": "F91",
+    "title_la": "Poremećaji ponašanja",
+    "source_line": 1883
+  },
+  {
+    "code": "F92",
+    "title_la": "Mešoviti poremećaji ponašanja i emocija",
+    "source_line": 1884
+  },
+  {
+    "code": "F93",
+    "title_la": "Poremećaj emocija sa početkom u detinjstvu",
+    "source_line": 1885
+  },
+  {
+    "code": "F94",
+    "title_la": "Poremećaji socijalnog funkcionisanja nastali u detinjstvu i adolescenciji",
+    "source_line": 1886
+  },
+  {
+    "code": "F95",
+    "title_la": "Tikovi – nevoljni pokreti mišića",
+    "source_line": 1887
+  },
+  {
+    "code": "F98",
+    "title_la": "Drugi poremećaji emocija i poremećaji ponašanja nastali u detinjstvu i",
+    "source_line": 1888
+  },
+  {
+    "code": "F99",
+    "title_la": "Duševni poremećaj",
+    "source_line": 1892
+  }
+]

@@ -1,0 +1,432 @@
+[
+  {
+    "code": "B00",
+    "title_la": "Infekcije uzrokovane herpes virusom, uzročnik Herpes simplex",
+    "source_line": 1247
+  },
+  {
+    "code": "B01",
+    "title_la": "Varičela-ovčije boginje",
+    "source_line": 1248
+  },
+  {
+    "code": "B02",
+    "title_la": "Zonski-pojasasti herpes",
+    "source_line": 1249
+  },
+  {
+    "code": "B03",
+    "title_la": "Velike boginje",
+    "source_line": 1250
+  },
+  {
+    "code": "B04",
+    "title_la": "Boginje majmuna",
+    "source_line": 1251
+  },
+  {
+    "code": "B05",
+    "title_la": "Morbili [male boginje]",
+    "source_line": 1252
+  },
+  {
+    "code": "B06",
+    "title_la": "Rubeola [crvenka]",
+    "source_line": 1253
+  },
+  {
+    "code": "B07",
+    "title_la": "Virusne bradavice",
+    "source_line": 1254
+  },
+  {
+    "code": "B08",
+    "title_la": "Ostale infekcije sa oštećenjem kože i sluznice uzrokovane virusima,",
+    "source_line": 1255
+  },
+  {
+    "code": "B09",
+    "title_la": "Infekcija sa ostećenjima kože i sluznice uzrokovana virusima, neoznačena",
+    "source_line": 1257
+  },
+  {
+    "code": "B15",
+    "title_la": "Akutno zapaljenje jetre uzrokovano virusom A",
+    "source_line": 1260
+  },
+  {
+    "code": "B16",
+    "title_la": "Akutno zapaljenje jetre uzrokovano virusom B",
+    "source_line": 1261
+  },
+  {
+    "code": "B17",
+    "title_la": "Ostala akutna zapaljenja jetre uzrokovana virusima",
+    "source_line": 1262
+  },
+  {
+    "code": "B18",
+    "title_la": "Hronično zapaljenje jetre uzrokovano virusima",
+    "source_line": 1263
+  },
+  {
+    "code": "B19",
+    "title_la": "Zapaljenje jetre uzrokovano virusima, neoznačeno",
+    "source_line": 1264
+  },
+  {
+    "code": "B20",
+    "title_la": "Sida – Bolest stečenog nedostatka imuniteta sa zaraznim i parazitarnim bolestima",
+    "source_line": 1268
+  },
+  {
+    "code": "B21",
+    "title_la": "Sida sa zloćudnim tumorima",
+    "source_line": 1269
+  },
+  {
+    "code": "B22",
+    "title_la": "Sida sa drugim označenim bolestima",
+    "source_line": 1270
+  },
+  {
+    "code": "B23",
+    "title_la": "Sida sa drugim stanjima",
+    "source_line": 1271
+  },
+  {
+    "code": "B24",
+    "title_la": "Sida, neoznačena",
+    "source_line": 1272
+  },
+  {
+    "code": "B25",
+    "title_la": "Citomegalovirusna bolest",
+    "source_line": 1275
+  },
+  {
+    "code": "B26",
+    "title_la": "Zauške",
+    "source_line": 1276
+  },
+  {
+    "code": "B27",
+    "title_la": "Mononukleoza – oboljenje uzrokovano virusom praćeno povećanjem broja",
+    "source_line": 1283
+  },
+  {
+    "code": "B30",
+    "title_la": "Zapaljenje vežnjače uzrokovano virusima",
+    "source_line": 1285
+  },
+  {
+    "code": "B33",
+    "title_la": "Druge bolesti uzrokovane virusima, neklasifikovane na drugom mestu",
+    "source_line": 1286
+  },
+  {
+    "code": "B34",
+    "title_la": "Infekcija uzrokovana virusima, neoznačene lokalizacije",
+    "source_line": 1287
+  },
+  {
+    "code": "B35",
+    "title_la": "Dermatofitoza, uzročnik dermatofiti",
+    "source_line": 1290
+  },
+  {
+    "code": "B36",
+    "title_la": "Ostala površinska oboljenja kože uzrokovana gljivicama",
+    "source_line": 1291
+  },
+  {
+    "code": "B37",
+    "title_la": "Kandidijaza, uzročnik Candida species",
+    "source_line": 1292
+  },
+  {
+    "code": "B38",
+    "title_la": "Kokcidioidomikoza, uzročnik Coccidioides immitis",
+    "source_line": 1293
+  },
+  {
+    "code": "B39",
+    "title_la": "Histoplazmoza, uzročnik Histoplasma species",
+    "source_line": 1294
+  },
+  {
+    "code": "B40",
+    "title_la": "Blastomikoza, uzročnik Blastomyces dermatitidis",
+    "source_line": 1295
+  },
+  {
+    "code": "B41",
+    "title_la": "Parakokcidioidomikoza, uzročnik Paracoccidioides",
+    "source_line": 1296
+  },
+  {
+    "code": "B42",
+    "title_la": "Sporotrihoza, uzročnik Sporothrix (Sporotrichum) schenckii",
+    "source_line": 1297
+  },
+  {
+    "code": "B43",
+    "title_la": "Hromomikoza i apsces, uzročnici braon-pigmentisane gljive",
+    "source_line": 1298
+  },
+  {
+    "code": "B44",
+    "title_la": "Aspergiloza, uzročnik Aspergillus species",
+    "source_line": 1299
+  },
+  {
+    "code": "B45",
+    "title_la": "Kriptokokoza, uzročnik Criptococcus neoformans",
+    "source_line": 1300
+  },
+  {
+    "code": "B46",
+    "title_la": "Zigomikoza, uzročnici Rhizopus sp., Mucor sp. i Absidia sp.",
+    "source_line": 1301
+  },
+  {
+    "code": "B47",
+    "title_la": "Micetom",
+    "source_line": 1302
+  },
+  {
+    "code": "B48",
+    "title_la": "Ostale mikoze, neklasifikovane na drugom mestu",
+    "source_line": 1303
+  },
+  {
+    "code": "B49",
+    "title_la": "Mikoza, neoznačena",
+    "source_line": 1304
+  },
+  {
+    "code": "B50",
+    "title_la": "Tropska malarija [Barska groznica ili groznica močvara], uzročnik Plasmodium",
+    "source_line": 1307
+  },
+  {
+    "code": "B51",
+    "title_la": "Malarija, uzročnik Plasmodium vivax",
+    "source_line": 1309
+  },
+  {
+    "code": "B52",
+    "title_la": "Malarija, uzročnik Plasmodium malariae",
+    "source_line": 1310
+  },
+  {
+    "code": "B53",
+    "title_la": "Ostale malarije, parazitološki potvrđene",
+    "source_line": 1311
+  },
+  {
+    "code": "B54",
+    "title_la": "Malarija, neoznačena",
+    "source_line": 1312
+  },
+  {
+    "code": "B55",
+    "title_la": "Lajšmanijaza, uzročnik Leishmania",
+    "source_line": 1313
+  },
+  {
+    "code": "B56",
+    "title_la": "Bolest spavanja ili afrička tripanozomijaza, uzročnik Trypanosoma sp.",
+    "source_line": 1314
+  },
+  {
+    "code": "B57",
+    "title_la": "Chagasova bolest, uzročnik Trypanosoma cruzi",
+    "source_line": 1315
+  },
+  {
+    "code": "B58",
+    "title_la": "Toksoplazmoza, uzročnik Toxoplasma gondii",
+    "source_line": 1316
+  },
+  {
+    "code": "B59",
+    "title_la": "Pneumocistoza, uzročnik Pneumocystis carinii (J17.3*)",
+    "source_line": 1317
+  },
+  {
+    "code": "B60",
+    "title_la": "Ostale bolesti uzrokovane protozoama, neklasifikovane na drugom mestu",
+    "source_line": 1318
+  },
+  {
+    "code": "B64",
+    "title_la": "Bolest uzrokovana protozoama, neoznačena",
+    "source_line": 1319
+  },
+  {
+    "code": "B65",
+    "title_la": "Šistozomijaza, uzročnik Schistosoma",
+    "source_line": 1322
+  },
+  {
+    "code": "B66",
+    "title_la": "Ostale bolesti uzrokovane metiljima",
+    "source_line": 1323
+  },
+  {
+    "code": "B67",
+    "title_la": "Ehinokokoza, uzročnik Echinococcus granulosus i Echinococcus multilocularis",
+    "source_line": 1324
+  },
+  {
+    "code": "B68",
+    "title_la": "Tenijaze, uzročnici pantljičare",
+    "source_line": 1325
+  },
+  {
+    "code": "B69",
+    "title_la": "Cisticerkoza, uzročnik Cysticercus cellulosae",
+    "source_line": 1326
+  },
+  {
+    "code": "B70",
+    "title_la": "Difilobotrijaza i sparganoza, uzročnik Diphyllobothrium i Sparganum",
+    "source_line": 1327
+  },
+  {
+    "code": "B71",
+    "title_la": "Ostale infekcije uzrokovane pantljičarama",
+    "source_line": 1328
+  },
+  {
+    "code": "B72",
+    "title_la": "Drakunkulijaza, uzročnik Dracunculus medinensis",
+    "source_line": 1329
+  },
+  {
+    "code": "B73",
+    "title_la": "Onkocerkijaza, uzročnik Onchocerca volvulus",
+    "source_line": 1330
+  },
+  {
+    "code": "B74",
+    "title_la": "Filarijaza, uzročnik Filaria",
+    "source_line": 1331
+  },
+  {
+    "code": "B75",
+    "title_la": "Trihineloza, uzročnik Trichinella species",
+    "source_line": 1332
+  },
+  {
+    "code": "B76",
+    "title_la": "Ankilostomijaza",
+    "source_line": 1339
+  },
+  {
+    "code": "B77",
+    "title_la": "Askarijaza, uzročnik Ascaris lumbricoides",
+    "source_line": 1340
+  },
+  {
+    "code": "B78",
+    "title_la": "Strongiloidijaza, uzročnik Strongyloides stercoralis",
+    "source_line": 1341
+  },
+  {
+    "code": "B79",
+    "title_la": "Trihurijaza, uzročnik Trichuris trichiura",
+    "source_line": 1342
+  },
+  {
+    "code": "B80",
+    "title_la": "Enterobijaza, uzročnik Enterobius vermicularis",
+    "source_line": 1343
+  },
+  {
+    "code": "B81",
+    "title_la": "Ostale helmintijaze creva, neklasifikovane ne drugom mestu",
+    "source_line": 1344
+  },
+  {
+    "code": "B82",
+    "title_la": "Neoznačena infekcija parazitima creva",
+    "source_line": 1345
+  },
+  {
+    "code": "B83",
+    "title_la": "Ostale helmintijaze",
+    "source_line": 1346
+  },
+  {
+    "code": "B85",
+    "title_la": "Vašljivost glave i stidnog predela",
+    "source_line": 1349
+  },
+  {
+    "code": "B86",
+    "title_la": "Šuga, uzročnik Sarcoptes scabiei",
+    "source_line": 1350
+  },
+  {
+    "code": "B87",
+    "title_la": "Mijaza, uzročnik larve raznih vrsta muva",
+    "source_line": 1351
+  },
+  {
+    "code": "B88",
+    "title_la": "Ostale infestacije člankonošcima",
+    "source_line": 1352
+  },
+  {
+    "code": "B89",
+    "title_la": "Parazitarna bolest, neoznačena",
+    "source_line": 1353
+  },
+  {
+    "code": "B90",
+    "title_la": "Posledice tuberkuloze",
+    "source_line": 1356
+  },
+  {
+    "code": "B91",
+    "title_la": "Posledice zapaljenja sive mase kičmene moždine",
+    "source_line": 1357
+  },
+  {
+    "code": "B92",
+    "title_la": "Posledice lepre",
+    "source_line": 1358
+  },
+  {
+    "code": "B94",
+    "title_la": "Posledice drugih i neoznačenih zaraznih i parazitarnih bolesti",
+    "source_line": 1359
+  },
+  {
+    "code": "B95",
+    "title_la": "Streptokok i stafilokok kao uzročnici bolesti klasifikovanih u drugim grupama",
+    "source_line": 1362
+  },
+  {
+    "code": "B96",
+    "title_la": "Drugi označeni bakterijski agensi kao uzročnici bolesti klasifikovanih u drugim",
+    "source_line": 1363
+  },
+  {
+    "code": "B97",
+    "title_la": "Virusi kao uzročnici bolesti klasifikovanih u drugim poglavljima",
+    "source_line": 1365
+  },
+  {
+    "code": "B98",
+    "title_la": "Ostali označeni infektivni agensi kao uzročnici bolesti klasifikovanih u drugim",
+    "source_line": 1366
+  },
+  {
+    "code": "B99",
+    "title_la": "Druge i neoznačene zarazne bolesti",
+    "source_line": 1370
+  }
+]

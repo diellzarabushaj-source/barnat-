@@ -1,0 +1,3117 @@
+[
+  {
+    "code": "M00",
+    "title_la": "Gnojno zapaljenje zgloba",
+    "source_line": 2603
+  },
+  {
+    "code": "M00.0",
+    "title_la": "Arthritis et polyarthritis staphylococcica",
+    "source_line": 29944
+  },
+  {
+    "code": "M00.1",
+    "title_la": "Atrhritis et polyarthritis pneumococcica",
+    "source_line": 29946
+  },
+  {
+    "code": "M00.2",
+    "title_la": "Arthritis et polyarthritis streptococcica alia",
+    "source_line": 29948
+  },
+  {
+    "code": "M00.8",
+    "title_la": "Arthritis et polyarthritis purulenta per bacterias specificatas alias",
+    "source_line": 29950
+  },
+  {
+    "code": "M00.9",
+    "title_la": "Arthritis purulenta, non specificata",
+    "source_line": 29953
+  },
+  {
+    "code": "M01",
+    "title_la": "Direktna infekcija zglobova u zaraznim i parazitarnim bolestima klasifikovanim na",
+    "source_line": 2604
+  },
+  {
+    "code": "M01.0",
+    "title_la": "Arthritis meningococcica (A39.8†)",
+    "source_line": 29964
+  },
+  {
+    "code": "M01.1",
+    "title_la": "Arthritis tuberculosa (A18.0†)",
+    "source_line": 29967
+  },
+  {
+    "code": "M01.2",
+    "title_la": "Arthritis in morbo Lyme (A69.2†)",
+    "source_line": 29970
+  },
+  {
+    "code": "M01.3",
+    "title_la": "Arthritis in morbis bacterialibus aliis alibi classificatis",
+    "source_line": 29977
+  },
+  {
+    "code": "M01.4",
+    "title_la": "Arthritis rubellosa (B06.8†)",
+    "source_line": 29984
+  },
+  {
+    "code": "M01.5",
+    "title_la": "Arthritis in morbis viralibus aliis alibi classificatis",
+    "source_line": 29986
+  },
+  {
+    "code": "M01.6",
+    "title_la": "Arthritis mycotica (B35-B49†)",
+    "source_line": 29990
+  },
+  {
+    "code": "M01.8",
+    "title_la": "Arthritis in morbis infectivis et parasitariis aliis alibi classificatis",
+    "source_line": 29992
+  },
+  {
+    "code": "M02",
+    "title_la": "Reaktivna oboljenja zglobova",
+    "source_line": 2606
+  },
+  {
+    "code": "M02.0",
+    "title_la": "Arthropathia post circuitum (\"by pass\") intestinalem",
+    "source_line": 30001
+  },
+  {
+    "code": "M02.1",
+    "title_la": "Arthropathia postdysenterica",
+    "source_line": 30003
+  },
+  {
+    "code": "M02.2",
+    "title_la": "Arthropathia postimmunisationalis",
+    "source_line": 30005
+  },
+  {
+    "code": "M02.3",
+    "title_la": "Morbus Reiter",
+    "source_line": 30007
+  },
+  {
+    "code": "M02.8",
+    "title_la": "Arthropathiae reactivae aliae",
+    "source_line": 30009
+  },
+  {
+    "code": "M02.9",
+    "title_la": "Arthropathia reactiva, non specificata",
+    "source_line": 30011
+  },
+  {
+    "code": "M03",
+    "title_la": "Postinfektivna i reaktivna oboljenja zglobova u bolestima klasifikovanim na drugom",
+    "source_line": 2607
+  },
+  {
+    "code": "M03.0",
+    "title_la": "Arthritis postmeningococcica (A39.8†)",
+    "source_line": 30020
+  },
+  {
+    "code": "M03.1",
+    "title_la": "Arthropathia syphilitica",
+    "source_line": 30023
+  },
+  {
+    "code": "M03.2",
+    "title_la": "Arthropathiae postinfectivae aliae in morbis alibi classificatis",
+    "source_line": 30034
+  },
+  {
+    "code": "M03.6",
+    "title_la": "Arthropathia reactiva in morbis aliis alibi classificatis",
+    "source_line": 30040
+  },
+  {
+    "code": "M05",
+    "title_la": "Seropozitivni reumatoidni artritis",
+    "source_line": 2611
+  },
+  {
+    "code": "M05.0",
+    "title_la": "Syndroma Felty",
+    "source_line": 30055
+  },
+  {
+    "code": "M05.1",
+    "title_la": "Morbus pulmonum rheumatoides (J99.0*)",
+    "source_line": 30058
+  },
+  {
+    "code": "M05.2",
+    "title_la": "Vasculitis rheumatoides",
+    "source_line": 30060
+  },
+  {
+    "code": "M05.3",
+    "title_la": "Arthritis rheumatoides cum apprehensione organorum et systematum aliorum",
+    "source_line": 30062
+  },
+  {
+    "code": "M05.8",
+    "title_la": "Arthritis rheumatoides seropositiva alia",
+    "source_line": 30071
+  },
+  {
+    "code": "M05.9",
+    "title_la": "Arthritis rheumatoides seropositiva, non specificata",
+    "source_line": 30073
+  },
+  {
+    "code": "M06",
+    "title_la": "Ostali reumatoidni artritisi",
+    "source_line": 2612
+  },
+  {
+    "code": "M06.0",
+    "title_la": "Arthritis rheumatoides seronegativa",
+    "source_line": 30079
+  },
+  {
+    "code": "M06.1",
+    "title_la": "Morbus Still tardus",
+    "source_line": 30081
+  },
+  {
+    "code": "M06.2",
+    "title_la": "Bursitis rheumatoides",
+    "source_line": 30091
+  },
+  {
+    "code": "M06.3",
+    "title_la": "Nodulus rheumatoides",
+    "source_line": 30093
+  },
+  {
+    "code": "M06.4",
+    "title_la": "Polyarthropathia inflammatoria",
+    "source_line": 30095
+  },
+  {
+    "code": "M06.8",
+    "title_la": "Arthritis rheumatoides specificata alia",
+    "source_line": 30098
+  },
+  {
+    "code": "M06.9",
+    "title_la": "Arthritis rheumatoides, non specificata",
+    "source_line": 30100
+  },
+  {
+    "code": "M07",
+    "title_la": "Psorijazna oboljenja i enteropatička oboljenja zgloba",
+    "source_line": 2613
+  },
+  {
+    "code": "M07.0",
+    "title_la": "Arthropathia psoriatica interphalangica distalis (L40.5†)",
+    "source_line": 30107
+  },
+  {
+    "code": "M07.1",
+    "title_la": "Arthritis psoriatica mutilans (L40.5†)",
+    "source_line": 30109
+  },
+  {
+    "code": "M07.2",
+    "title_la": "Spondylitis psoriatica (L40.5†)",
+    "source_line": 30111
+  },
+  {
+    "code": "M07.3",
+    "title_la": "Arthropathiae psoriaticae aliae (L40.5†)",
+    "source_line": 30113
+  },
+  {
+    "code": "M07.4",
+    "title_la": "Arthropathia in morbo Crohn [enteritis regionalis] (K50.-†)",
+    "source_line": 30115
+  },
+  {
+    "code": "M07.5",
+    "title_la": "Arthropathia in colitide ulcerativa (K51.-†)",
+    "source_line": 30117
+  },
+  {
+    "code": "M07.6",
+    "title_la": "Arthropathiae enteropaticae aliae",
+    "source_line": 30119
+  },
+  {
+    "code": "M08",
+    "title_la": "Juvenilni artritis",
+    "source_line": 2614
+  },
+  {
+    "code": "M08.0",
+    "title_la": "Arthritis juvenilis rheumatoides",
+    "source_line": 30128
+  },
+  {
+    "code": "M08.1",
+    "title_la": "Spondylitis juvenilis ankylopoietica",
+    "source_line": 30131
+  },
+  {
+    "code": "M08.2",
+    "title_la": "Arthritis juvenilis cum initio systemico",
+    "source_line": 30134
+  },
+  {
+    "code": "M08.3",
+    "title_la": "Polyarthritis juvenilis (seronegativa)",
+    "source_line": 30146
+  },
+  {
+    "code": "M08.4",
+    "title_la": "Arthritis juvenilis oligoarticularis",
+    "source_line": 30149
+  },
+  {
+    "code": "M08.8",
+    "title_la": "Arthritis juvenilis alia",
+    "source_line": 30151
+  },
+  {
+    "code": "M08.9",
+    "title_la": "Arthritis juvenilis, non specificata",
+    "source_line": 30153
+  },
+  {
+    "code": "M09",
+    "title_la": "Juvenilni artritis u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2615
+  },
+  {
+    "code": "M09.0",
+    "title_la": "Arthritis juvenilis psoriatica (L40.5†)",
+    "source_line": 30160
+  },
+  {
+    "code": "M09.1",
+    "title_la": "Arthritis juvenilis in morbo Crohn [enteritis regionalis] (K50.-†)",
+    "source_line": 30162
+  },
+  {
+    "code": "M09.2",
+    "title_la": "Arthritis juvenilis in colitide ulcerativa (K51.-†)",
+    "source_line": 30164
+  },
+  {
+    "code": "M09.8",
+    "title_la": "Arthritis juvenilis in morbis aliis alibi classificatis",
+    "source_line": 30166
+  },
+  {
+    "code": "M10",
+    "title_la": "Giht",
+    "source_line": 2616
+  },
+  {
+    "code": "M10.0",
+    "title_la": "Arthritis urica idiopathica",
+    "source_line": 30172
+  },
+  {
+    "code": "M10.1",
+    "title_la": "Arthritis urica plumbica",
+    "source_line": 30177
+  },
+  {
+    "code": "M10.2",
+    "title_la": "Arthritis urica medicamentosa",
+    "source_line": 30179
+  },
+  {
+    "code": "M10.3",
+    "title_la": "Arthritis urica propter insufficientiam renalem",
+    "source_line": 30183
+  },
+  {
+    "code": "M10.4",
+    "title_la": "Arthritis urica secundaria alia",
+    "source_line": 30186
+  },
+  {
+    "code": "M10.9",
+    "title_la": "Arthritis urica, non specificata",
+    "source_line": 30188
+  },
+  {
+    "code": "M11",
+    "title_la": "Druga oboljenja zglobova uzrokovana taloženjem kristala",
+    "source_line": 2617
+  },
+  {
+    "code": "M11.0",
+    "title_la": "Morbus hydroxyapatitogenes",
+    "source_line": 30194
+  },
+  {
+    "code": "M11.1",
+    "title_la": "Chondrocalcinosis familiaris",
+    "source_line": 30204
+  },
+  {
+    "code": "M11.2",
+    "title_la": "Chondrocalcinosis alia",
+    "source_line": 30206
+  },
+  {
+    "code": "M11.8",
+    "title_la": "Arthropathiae crystallogenes aliae, specificatae",
+    "source_line": 30209
+  },
+  {
+    "code": "M11.9",
+    "title_la": "Arthropathia crystallogenes, non specificata",
+    "source_line": 30211
+  },
+  {
+    "code": "M12",
+    "title_la": "Druga označena oboljenja zglobova",
+    "source_line": 2618
+  },
+  {
+    "code": "M12.0",
+    "title_la": "Arthropathia postrheumatica chronica Jaccoud",
+    "source_line": 30220
+  },
+  {
+    "code": "M12.1",
+    "title_la": "Morbus Kaschin-Beck",
+    "source_line": 30222
+  },
+  {
+    "code": "M12.2",
+    "title_la": "Synovitis villonodularis (pigmentosa)",
+    "source_line": 30224
+  },
+  {
+    "code": "M12.3",
+    "title_la": "Rheumatismus palindromicus",
+    "source_line": 30226
+  },
+  {
+    "code": "M12.4",
+    "title_la": "Hydrarthrosis intermittens",
+    "source_line": 30228
+  },
+  {
+    "code": "M12.5",
+    "title_la": "Arthropathia traumatica",
+    "source_line": 30230
+  },
+  {
+    "code": "M12.8",
+    "title_la": "Arthropathiae aliae specificatae, non alibi classificatae",
+    "source_line": 30238
+  },
+  {
+    "code": "M13",
+    "title_la": "Druga zapaljenja zgloba",
+    "source_line": 2619
+  },
+  {
+    "code": "M13.0",
+    "title_la": "Polyarthritis, non specificata",
+    "source_line": 30246
+  },
+  {
+    "code": "M13.1",
+    "title_la": "Monarthritis, non alibi classificata",
+    "source_line": 30248
+  },
+  {
+    "code": "M13.8",
+    "title_la": "Arthritis alia, specificata",
+    "source_line": 30250
+  },
+  {
+    "code": "M13.9",
+    "title_la": "Arthritis, non specificata",
+    "source_line": 30261
+  },
+  {
+    "code": "M14",
+    "title_la": "Oboljenja zglobova u drugim bolestima, klasifikovanim na drugom mestu",
+    "source_line": 2620
+  },
+  {
+    "code": "M14.0",
+    "title_la": "Arthropathia urica propter defectus enzimarum et disordines hereditarios alios",
+    "source_line": 30275
+  },
+  {
+    "code": "M14.1",
+    "title_la": "Arthropathia crystaliogenes in disordinibus metabolicis aliis",
+    "source_line": 30280
+  },
+  {
+    "code": "M14.2",
+    "title_la": "Arthropathia diabetica (E10-E14 sa zajedničkim četvrtim karakterom .6†)",
+    "source_line": 30283
+  },
+  {
+    "code": "M14.3",
+    "title_la": "Dermatoarthritis lipoidalis (E78.8†)",
+    "source_line": 30286
+  },
+  {
+    "code": "M14.4",
+    "title_la": "Arthropathia amyloidalis (E85.-†)",
+    "source_line": 30288
+  },
+  {
+    "code": "M14.5",
+    "title_la": "Arthropathiae in morbis endocrinis, nutritionalibus et metabolicis aliis",
+    "source_line": 30290
+  },
+  {
+    "code": "M14.6",
+    "title_la": "Arthropathia neuropathica",
+    "source_line": 30298
+  },
+  {
+    "code": "M14.8",
+    "title_la": "Arthropathiae in morbis aliis specificatis, alibi classificatis",
+    "source_line": 30302
+  },
+  {
+    "code": "M15",
+    "title_la": "Degenerativna oboljenja više zglobova",
+    "source_line": 2623
+  },
+  {
+    "code": "M15.0",
+    "title_la": "(Osteo)arthrosis generalisata primaria",
+    "source_line": 30330
+  },
+  {
+    "code": "M15.1",
+    "title_la": "Nodi Heberden (cum arthropathia)",
+    "source_line": 30332
+  },
+  {
+    "code": "M15.2",
+    "title_la": "Nodi Bouchard (cum arthropathia)",
+    "source_line": 30334
+  },
+  {
+    "code": "M15.3",
+    "title_la": "Arthrosis multiplex secundaria",
+    "source_line": 30336
+  },
+  {
+    "code": "M15.4",
+    "title_la": "Arthrosis erosiva",
+    "source_line": 30339
+  },
+  {
+    "code": "M15.8",
+    "title_la": "Polyarthrosis alia",
+    "source_line": 30341
+  },
+  {
+    "code": "M15.9",
+    "title_la": "Polyarthrosis, non specificata",
+    "source_line": 30343
+  },
+  {
+    "code": "M16",
+    "title_la": "Degenerativno oboljenje zgloba kuka",
+    "source_line": 2624
+  },
+  {
+    "code": "M16.0",
+    "title_la": "Coxarthrosis primaria bilateralis",
+    "source_line": 30349
+  },
+  {
+    "code": "M16.1",
+    "title_la": "Coxarthrosis primaria alia",
+    "source_line": 30351
+  },
+  {
+    "code": "M16.2",
+    "title_la": "Coxarthrosis dysplastica bilateralis",
+    "source_line": 30356
+  },
+  {
+    "code": "M16.3",
+    "title_la": "Coxarthrosis dysplastica alia",
+    "source_line": 30358
+  },
+  {
+    "code": "M16.4",
+    "title_la": "Coxarthrosis posttraumatica bilateralis",
+    "source_line": 30363
+  },
+  {
+    "code": "M16.5",
+    "title_la": "Coxarthrosis posttraumatica alia",
+    "source_line": 30373
+  },
+  {
+    "code": "M16.6",
+    "title_la": "Coxarthrosis secundaria bilateralis alia",
+    "source_line": 30378
+  },
+  {
+    "code": "M16.7",
+    "title_la": "Coxarthrosis secundaria alia",
+    "source_line": 30380
+  },
+  {
+    "code": "M16.9",
+    "title_la": "Coxarthrosis, non specificata",
+    "source_line": 30385
+  },
+  {
+    "code": "M17",
+    "title_la": "Degenerativno oboljenje zgloba kolena",
+    "source_line": 2625
+  },
+  {
+    "code": "M17.0",
+    "title_la": "Gonarthrosis primaria bilateralis",
+    "source_line": 30390
+  },
+  {
+    "code": "M17.1",
+    "title_la": "Gonarthrosis primaria alia",
+    "source_line": 30392
+  },
+  {
+    "code": "M17.2",
+    "title_la": "Gonarthrosis posttraumatica bilateralis",
+    "source_line": 30397
+  },
+  {
+    "code": "M17.3",
+    "title_la": "Gonarthrosis posttraumatica alia",
+    "source_line": 30399
+  },
+  {
+    "code": "M17.4",
+    "title_la": "Gonarthrosis secundaria bilateralis alia",
+    "source_line": 30404
+  },
+  {
+    "code": "M17.5",
+    "title_la": "Gonarthrosis secundaria alia",
+    "source_line": 30406
+  },
+  {
+    "code": "M17.9",
+    "title_la": "Gonarthrosis, non specificata",
+    "source_line": 30411
+  },
+  {
+    "code": "M18",
+    "title_la": "Degenerativno oboljenje prvog ručno-doručnog zgloba",
+    "source_line": 2626
+  },
+  {
+    "code": "M18.0",
+    "title_la": "Arthrosis articuli carpometacarpalis poliicis primaria bilateralis",
+    "source_line": 30416
+  },
+  {
+    "code": "M18.1",
+    "title_la": "Arthrosis articuli carpometacarpalis pollicis primaria alia",
+    "source_line": 30418
+  },
+  {
+    "code": "M18.2",
+    "title_la": "Arthrosis articuli carpometacarpalis pollicis posttraumatica bilateralis",
+    "source_line": 30431
+  },
+  {
+    "code": "M18.3",
+    "title_la": "Arthrosis articuli carpometacarpalis pollicis posttraumatica alia",
+    "source_line": 30433
+  },
+  {
+    "code": "M18.4",
+    "title_la": "Arthrosis articuli carpometacarpalis pollicis secundaria bilateralis alia",
+    "source_line": 30438
+  },
+  {
+    "code": "M18.5",
+    "title_la": "Arthrosis articuli carpometacarpalis pollicis secundaria alia",
+    "source_line": 30440
+  },
+  {
+    "code": "M18.9",
+    "title_la": "Arthrosis articuli carpometacarpalis pollicis, non specificata",
+    "source_line": 30445
+  },
+  {
+    "code": "M19",
+    "title_la": "Druge artroze",
+    "source_line": 2627
+  },
+  {
+    "code": "M19.0",
+    "title_la": "Arthrosis artriculorum aliorum primaria",
+    "source_line": 30454
+  },
+  {
+    "code": "M19.1",
+    "title_la": "Arthrosis articulorum aliorum posttraumatica",
+    "source_line": 30457
+  },
+  {
+    "code": "M19.2",
+    "title_la": "Arthrosis articulorum aliorum secundaria",
+    "source_line": 30460
+  },
+  {
+    "code": "M19.8",
+    "title_la": "Arthrosis alia, specificata",
+    "source_line": 30463
+  },
+  {
+    "code": "M19.9",
+    "title_la": "Artrhrosis, non specificata",
+    "source_line": 30465
+  },
+  {
+    "code": "M20",
+    "title_la": "Stečeni deformiteti prstiju šake i prstiju stopala",
+    "source_line": 2630
+  },
+  {
+    "code": "M20.0",
+    "title_la": "Deformatio digiti manus",
+    "source_line": 30485
+  },
+  {
+    "code": "M20.1",
+    "title_la": "Hallux valgus (acquisitus)",
+    "source_line": 30491
+  },
+  {
+    "code": "M20.2",
+    "title_la": "Hallux rigidus",
+    "source_line": 30494
+  },
+  {
+    "code": "M20.3",
+    "title_la": "Deformatio hallucis (acquisita) alia",
+    "source_line": 30496
+  },
+  {
+    "code": "M20.4",
+    "title_la": "Deformatio digiti pedis maleiformis (acquisita) alia",
+    "source_line": 30499
+  },
+  {
+    "code": "M20.5",
+    "title_la": "Deformationes digitorum pedis (acquisitae) aliae",
+    "source_line": 30501
+  },
+  {
+    "code": "M20.6",
+    "title_la": "Deformatio digiti pedis acquisita, non specificata",
+    "source_line": 30503
+  },
+  {
+    "code": "M21",
+    "title_la": "Drugi stečeni deformiteti udova",
+    "source_line": 2631
+  },
+  {
+    "code": "M21.0",
+    "title_la": "Deformatio valga, non alibi classificata",
+    "source_line": 30514
+  },
+  {
+    "code": "M21.1",
+    "title_la": "Deformatio vara, non alibi classificata",
+    "source_line": 30518
+  },
+  {
+    "code": "M21.2",
+    "title_la": "Deformatio flexionis",
+    "source_line": 30522
+  },
+  {
+    "code": "M21.3",
+    "title_la": "Articulus instabilis sive pes haerens (acquisitus)",
+    "source_line": 30531
+  },
+  {
+    "code": "M21.4",
+    "title_la": "Pes planus (acquisitus)",
+    "source_line": 30533
+  },
+  {
+    "code": "M21.5",
+    "title_la": "Manus unguliformis, talipomanus, pes unguliformis et talipes acquisita",
+    "source_line": 30536
+  },
+  {
+    "code": "M21.6",
+    "title_la": "Deformationes malleoli et pedis acquisitae aliae",
+    "source_line": 30539
+  },
+  {
+    "code": "M21.7",
+    "title_la": "Longitudo extremitatum impar (acquisita)",
+    "source_line": 30542
+  },
+  {
+    "code": "M21.8",
+    "title_la": "Deformationes extremitatum acquisitae aliae, specificatae",
+    "source_line": 30544
+  },
+  {
+    "code": "M21.9",
+    "title_la": "Deformatio extremitatis acquisita, non specificata",
+    "source_line": 30546
+  },
+  {
+    "code": "M22",
+    "title_la": "Bolesti čašice kolena",
+    "source_line": 2632
+  },
+  {
+    "code": "M22.0",
+    "title_la": "Luxatio patellae recurrens (recidiva)",
+    "source_line": 30552
+  },
+  {
+    "code": "M22.1",
+    "title_la": "Subluxatio patellae recurrens",
+    "source_line": 30554
+  },
+  {
+    "code": "M22.2",
+    "title_la": "Disordines patellofemorales",
+    "source_line": 30556
+  },
+  {
+    "code": "M22.3",
+    "title_la": "Mutationes patellae aliae",
+    "source_line": 30558
+  },
+  {
+    "code": "M22.4",
+    "title_la": "Chondromalacia patellae",
+    "source_line": 30560
+  },
+  {
+    "code": "M22.8",
+    "title_la": "Morbi patellae alii",
+    "source_line": 30562
+  },
+  {
+    "code": "M22.9",
+    "title_la": "Morbus patellae, non specificatus",
+    "source_line": 30564
+  },
+  {
+    "code": "M23",
+    "title_la": "Unutrašnje bolesti kolena",
+    "source_line": 2633
+  },
+  {
+    "code": "M23.0",
+    "title_la": "Cystis menisci genus",
+    "source_line": 30594
+  },
+  {
+    "code": "M23.1",
+    "title_la": "Meniscus genus discoides (congenitus)",
+    "source_line": 30596
+  },
+  {
+    "code": "M23.2",
+    "title_la": "Laesio menisci genus traumatica obsoleta",
+    "source_line": 30598
+  },
+  {
+    "code": "M23.3",
+    "title_la": "Mutationes menisci aliae",
+    "source_line": 30601
+  },
+  {
+    "code": "M23.4",
+    "title_la": "Corpus liberum genus",
+    "source_line": 30607
+  },
+  {
+    "code": "M23.5",
+    "title_la": "Instabilitas genus chronica",
+    "source_line": 30609
+  },
+  {
+    "code": "M23.6",
+    "title_la": "Ruptura ligamenti genus spontanea alia",
+    "source_line": 30611
+  },
+  {
+    "code": "M23.8",
+    "title_la": "Mutationes genus internae aliae",
+    "source_line": 30613
+  },
+  {
+    "code": "M23.9",
+    "title_la": "Mutatio genus interna, non specificata",
+    "source_line": 30617
+  },
+  {
+    "code": "M24",
+    "title_la": "Druge označene promene zglobova",
+    "source_line": 2634
+  },
+  {
+    "code": "M24.0",
+    "title_la": "Corpus liberum articuli",
+    "source_line": 30627
+  },
+  {
+    "code": "M24.1",
+    "title_la": "Morbi cartilaginis articularis alii",
+    "source_line": 30630
+  },
+  {
+    "code": "M24.2",
+    "title_la": "Morbus ligamenti",
+    "source_line": 30643
+  },
+  {
+    "code": "M24.3",
+    "title_la": "Luxatio et subluxatio articuli pathologica, non alibi classificata",
+    "source_line": 30649
+  },
+  {
+    "code": "M24.4",
+    "title_la": "Luxatio et subluxatio articuli recidiva",
+    "source_line": 30656
+  },
+  {
+    "code": "M24.5",
+    "title_la": "Contractura articuli",
+    "source_line": 30660
+  },
+  {
+    "code": "M24.6",
+    "title_la": "Ankylosis articuli",
+    "source_line": 30665
+  },
+  {
+    "code": "M24.7",
+    "title_la": "Protrusio acetabuli",
+    "source_line": 30669
+  },
+  {
+    "code": "M24.8",
+    "title_la": "Mutationes articuli aliae specificatae, non alibi classificatae",
+    "source_line": 30671
+  },
+  {
+    "code": "M24.9",
+    "title_la": "Mutatio articuli, non specificata",
+    "source_line": 30674
+  },
+  {
+    "code": "M25",
+    "title_la": "Druge bolesti zglobova, koje nisu klasifikovane na drugom mestu",
+    "source_line": 2635
+  },
+  {
+    "code": "M25.0",
+    "title_la": "Haemorthrosis",
+    "source_line": 30687
+  },
+  {
+    "code": "M25.1",
+    "title_la": "Fistula articuli",
+    "source_line": 30690
+  },
+  {
+    "code": "M25.2",
+    "title_la": "Instabilitas articuli",
+    "source_line": 30692
+  },
+  {
+    "code": "M25.3",
+    "title_la": "Instabilitas articuli alia",
+    "source_line": 30701
+  },
+  {
+    "code": "M25.4",
+    "title_la": "Hydrarthron",
+    "source_line": 30706
+  },
+  {
+    "code": "M25.5",
+    "title_la": "Arthralgia",
+    "source_line": 30709
+  },
+  {
+    "code": "M25.6",
+    "title_la": "Rigiditas articuli, non alibi classificata",
+    "source_line": 30711
+  },
+  {
+    "code": "M25.7",
+    "title_la": "Osteophyton",
+    "source_line": 30713
+  },
+  {
+    "code": "M25.8",
+    "title_la": "Morbi articulorum alii, specificati",
+    "source_line": 30715
+  },
+  {
+    "code": "M25.9",
+    "title_la": "Morbus articuli, non specificatus",
+    "source_line": 30717
+  },
+  {
+    "code": "M30",
+    "title_la": "Čvoričasto zapaljenje više arterija i slične bolesti",
+    "source_line": 2638
+  },
+  {
+    "code": "M30.0",
+    "title_la": "Polyarteritis nodosa",
+    "source_line": 30736
+  },
+  {
+    "code": "M30.1",
+    "title_la": "Polyarteritis pulmonum [Churg-Strauss]",
+    "source_line": 30738
+  },
+  {
+    "code": "M30.2",
+    "title_la": "Polyarteritis juvenilis",
+    "source_line": 30741
+  },
+  {
+    "code": "M30.3",
+    "title_la": "Syndroma nodi lymphatici mucocutaneum [Kawasaki]",
+    "source_line": 30743
+  },
+  {
+    "code": "M30.8",
+    "title_la": "Status similes cum polyarteritide nodosa alii",
+    "source_line": 30745
+  },
+  {
+    "code": "M31",
+    "title_la": "Druga nekrozna oboljenja krvnih sudova",
+    "source_line": 2639
+  },
+  {
+    "code": "M31.0",
+    "title_la": "Angiitis hypersensitiva",
+    "source_line": 30758
+  },
+  {
+    "code": "M31.1",
+    "title_la": "Microangiopathia thrombotica",
+    "source_line": 30761
+  },
+  {
+    "code": "M31.2",
+    "title_la": "Granuloma centrale letale",
+    "source_line": 30764
+  },
+  {
+    "code": "M31.3",
+    "title_la": "Granulomatosis Wegner",
+    "source_line": 30766
+  },
+  {
+    "code": "M31.4",
+    "title_la": "Syndroma arcus aortae [Takayasu]",
+    "source_line": 30769
+  },
+  {
+    "code": "M31.5",
+    "title_la": "Arteritis gigantocellularis cum polymyalgia rheumatica",
+    "source_line": 30771
+  },
+  {
+    "code": "M31.6",
+    "title_la": "Arteritis gigantocellularis alia",
+    "source_line": 30773
+  },
+  {
+    "code": "M31.7",
+    "title_la": "Polyangiitis microscopica",
+    "source_line": 30775
+  },
+  {
+    "code": "M31.8",
+    "title_la": "Vasculopathiae necroticae aliae, specificatae",
+    "source_line": 30779
+  },
+  {
+    "code": "M31.9",
+    "title_la": "Vasculopathia necrotica, non specificata",
+    "source_line": 30782
+  },
+  {
+    "code": "M32",
+    "title_la": "Sistemski eritemski lupus - vučja rana",
+    "source_line": 2640
+  },
+  {
+    "code": "M32.0",
+    "title_la": "Lupus erythematosus systematicus medicamentosus",
+    "source_line": 30788
+  },
+  {
+    "code": "M32.1",
+    "title_la": "Lupus erythematosus systemicus cum organo sive systemate apprehendenti",
+    "source_line": 30791
+  },
+  {
+    "code": "M32.8",
+    "title_la": "Lupus erythematosus systemicus, formae aliae",
+    "source_line": 30798
+  },
+  {
+    "code": "M32.9",
+    "title_la": "Lupus erythematosus systemicus, non specificatus",
+    "source_line": 30800
+  },
+  {
+    "code": "M33",
+    "title_la": "Zapaljenje kože i više mišića",
+    "source_line": 2641
+  },
+  {
+    "code": "M33.0",
+    "title_la": "Dermatomyositis juvenilis",
+    "source_line": 30812
+  },
+  {
+    "code": "M33.1",
+    "title_la": "Dermatomyositis alia",
+    "source_line": 30814
+  },
+  {
+    "code": "M33.2",
+    "title_la": "Polymyositis",
+    "source_line": 30816
+  },
+  {
+    "code": "M33.9",
+    "title_la": "Dermatopolymyositis, non specificata",
+    "source_line": 30818
+  },
+  {
+    "code": "M34",
+    "title_la": "Sistemska skleroza",
+    "source_line": 2642
+  },
+  {
+    "code": "M34.0",
+    "title_la": "Scleroderma progressivum diffusum",
+    "source_line": 30827
+  },
+  {
+    "code": "M34.1",
+    "title_la": "Syndroma CREST",
+    "source_line": 30829
+  },
+  {
+    "code": "M34.2",
+    "title_la": "Sclerosis systemica medicamentosa et chemicaliis",
+    "source_line": 30833
+  },
+  {
+    "code": "M34.8",
+    "title_la": "Sclerosis systemica, formae aliae",
+    "source_line": 30836
+  },
+  {
+    "code": "M34.9",
+    "title_la": "Sclerosis systemica, non specificatum",
+    "source_line": 30841
+  },
+  {
+    "code": "M35",
+    "title_la": "Druge sistemske bolesti vezivnog tkiva",
+    "source_line": 2648
+  },
+  {
+    "code": "M35.0",
+    "title_la": "Syndroma sicca [Sjögren]",
+    "source_line": 30847
+  },
+  {
+    "code": "M35.1",
+    "title_la": "Syndromata flectentes aliae",
+    "source_line": 30854
+  },
+  {
+    "code": "M35.2",
+    "title_la": "Morbus Behçet",
+    "source_line": 30858
+  },
+  {
+    "code": "M35.3",
+    "title_la": "Polymyalgia rheumatica",
+    "source_line": 30867
+  },
+  {
+    "code": "M35.4",
+    "title_la": "Fasciitis diffusa (eosinophilica)",
+    "source_line": 30870
+  },
+  {
+    "code": "M35.5",
+    "title_la": "Fibrosclerosis multifocalis",
+    "source_line": 30872
+  },
+  {
+    "code": "M35.6",
+    "title_la": "Panniculitis recidiva [Weber-Christian]",
+    "source_line": 30874
+  },
+  {
+    "code": "M35.7",
+    "title_la": "Syndroma hypermobilitatis",
+    "source_line": 30879
+  },
+  {
+    "code": "M35.8",
+    "title_la": "Morbi textus connexivi systemici alii, specificati",
+    "source_line": 30884
+  },
+  {
+    "code": "M35.9",
+    "title_la": "Morbus textus connexivi systemicus alius, non specificatus",
+    "source_line": 30886
+  },
+  {
+    "code": "M36",
+    "title_la": "Sistemske bolesti vezivnog tkiva u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2649
+  },
+  {
+    "code": "M36.0",
+    "title_la": "Dermato(poly)myositis in morbo neoplastico (C00-D48†)",
+    "source_line": 30894
+  },
+  {
+    "code": "M36.1",
+    "title_la": "Arthropathia in morbo neoplastico (C00-D48†)",
+    "source_line": 30896
+  },
+  {
+    "code": "M36.2",
+    "title_la": "Arthropathia haemophilica (D66-D68†)",
+    "source_line": 30902
+  },
+  {
+    "code": "M36.3",
+    "title_la": "Arthropathia in morbis sanguinis aliis (D50-D76†)",
+    "source_line": 30904
+  },
+  {
+    "code": "M36.4",
+    "title_la": "Arthropathia in reactionibus hypersensibilitatis alibi classificatis",
+    "source_line": 30907
+  },
+  {
+    "code": "M36.8",
+    "title_la": "Morbi textus connexivi systemici in morbis aliis alibi classificatis",
+    "source_line": 30910
+  },
+  {
+    "code": "M40",
+    "title_la": "Grba i unapred iskrivljena kičma",
+    "source_line": 2654
+  },
+  {
+    "code": "M40.0",
+    "title_la": "Kyphosis posturalis",
+    "source_line": 30952
+  },
+  {
+    "code": "M40.1",
+    "title_la": "Kyphosis secundaria alia",
+    "source_line": 30955
+  },
+  {
+    "code": "M40.2",
+    "title_la": "Kyphosis alia et non specificata",
+    "source_line": 30957
+  },
+  {
+    "code": "M40.3",
+    "title_la": "Syndroma dorsi plani",
+    "source_line": 30959
+  },
+  {
+    "code": "M40.4",
+    "title_la": "Lordosis alia",
+    "source_line": 30961
+  },
+  {
+    "code": "M40.5",
+    "title_la": "Lordosis, non specificata",
+    "source_line": 30966
+  },
+  {
+    "code": "M41",
+    "title_la": "Bočno iskrivljena kičma",
+    "source_line": 2655
+  },
+  {
+    "code": "M41.0",
+    "title_la": "Scoliosis idiopathica infantilis",
+    "source_line": 30986
+  },
+  {
+    "code": "M41.1",
+    "title_la": "Scoliosis idiopathica juvenilis",
+    "source_line": 30988
+  },
+  {
+    "code": "M41.2",
+    "title_la": "Scoliosis idiopathica alia",
+    "source_line": 30991
+  },
+  {
+    "code": "M41.3",
+    "title_la": "Scoliosis thoracogenes",
+    "source_line": 30993
+  },
+  {
+    "code": "M41.4",
+    "title_la": "Scoliosis neuromuscularis",
+    "source_line": 30995
+  },
+  {
+    "code": "M41.5",
+    "title_la": "Scoliosis secundaria alia",
+    "source_line": 30999
+  },
+  {
+    "code": "M41.8",
+    "title_la": "Scoliosis formae aliae",
+    "source_line": 31001
+  },
+  {
+    "code": "M41.9",
+    "title_la": "Scoliosis, non specificata",
+    "source_line": 31003
+  },
+  {
+    "code": "M42",
+    "title_la": "Koštano-hrskavično oboljenje kičme",
+    "source_line": 2656
+  },
+  {
+    "code": "M42.0",
+    "title_la": "Osteochondrosis spinalis juvenilis",
+    "source_line": 31010
+  },
+  {
+    "code": "M42.1",
+    "title_la": "Osteochondrosis spinalis adultorum",
+    "source_line": 31015
+  },
+  {
+    "code": "M42.9",
+    "title_la": "Osteochondrosis spinalis, non specificata",
+    "source_line": 31017
+  },
+  {
+    "code": "M43",
+    "title_la": "Druga deformacijska oboljenja kičme",
+    "source_line": 2657
+  },
+  {
+    "code": "M43.0",
+    "title_la": "Spondylolysis",
+    "source_line": 31038
+  },
+  {
+    "code": "M43.1",
+    "title_la": "Spondylolisthesis",
+    "source_line": 31040
+  },
+  {
+    "code": "M43.2",
+    "title_la": "Fusio columnae vertebralis alia",
+    "source_line": 31042
+  },
+  {
+    "code": "M43.3",
+    "title_la": "Subluxatio atlantoaxialis recurrens cum myelopathia",
+    "source_line": 31048
+  },
+  {
+    "code": "M43.4",
+    "title_la": "Subluxatio atlantoaxialis recurrens alia",
+    "source_line": 31050
+  },
+  {
+    "code": "M43.5",
+    "title_la": "Subluxatio vertebralis recurrens alia",
+    "source_line": 31052
+  },
+  {
+    "code": "M43.6",
+    "title_la": "Torticollis",
+    "source_line": 31055
+  },
+  {
+    "code": "M43.8",
+    "title_la": "Dorsopathiae deformantes aliae, specificatae",
+    "source_line": 31063
+  },
+  {
+    "code": "M43.9",
+    "title_la": "Dorsopathia deformans, non specificata",
+    "source_line": 31067
+  },
+  {
+    "code": "M45",
+    "title_la": "Zapaljenje pršljena sa ukočenošću",
+    "source_line": 2660
+  },
+  {
+    "code": "M46",
+    "title_la": "Druge zapaljenske spondilopatije",
+    "source_line": 2661
+  },
+  {
+    "code": "M46.0",
+    "title_la": "Enthesopathia spinalis",
+    "source_line": 31092
+  },
+  {
+    "code": "M46.1",
+    "title_la": "Sacroiliitis, non alibi classificata",
+    "source_line": 31095
+  },
+  {
+    "code": "M46.2",
+    "title_la": "Osteomyelitis vertebralis",
+    "source_line": 31097
+  },
+  {
+    "code": "M46.3",
+    "title_la": "Discitis intervertebralis (pyogenes)",
+    "source_line": 31099
+  },
+  {
+    "code": "M46.4",
+    "title_la": "Discitis, non specificata",
+    "source_line": 31102
+  },
+  {
+    "code": "M46.5",
+    "title_la": "Spondylopathiae infectivae aliae",
+    "source_line": 31104
+  },
+  {
+    "code": "M46.8",
+    "title_la": "Spondylopathiae inflammatoriae aliae specificatae",
+    "source_line": 31106
+  },
+  {
+    "code": "M46.9",
+    "title_la": "Spondylopathia inflammatoria non specificata",
+    "source_line": 31108
+  },
+  {
+    "code": "M47",
+    "title_la": "Okoštavanje zglobova pršljenova",
+    "source_line": 2662
+  },
+  {
+    "code": "M47.0",
+    "title_la": "Syndromae compressionales arteriae spinalis anterioris et arteriae vertebralis",
+    "source_line": 31116
+  },
+  {
+    "code": "M47.1",
+    "title_la": "Spondylosis cum myelopathia, alia",
+    "source_line": 31119
+  },
+  {
+    "code": "M47.2",
+    "title_la": "Spondylosis cum radiculopathia, alia",
+    "source_line": 31123
+  },
+  {
+    "code": "M47.8",
+    "title_la": "Spondylosis alia",
+    "source_line": 31133
+  },
+  {
+    "code": "M47.9",
+    "title_la": "Spondylosis, non specificata",
+    "source_line": 31138
+  },
+  {
+    "code": "M48",
+    "title_la": "Spondylopathiae aliae",
+    "source_line": 31141
+  },
+  {
+    "code": "M48.0",
+    "title_la": "Stenosis spinalis",
+    "source_line": 31144
+  },
+  {
+    "code": "M48.1",
+    "title_la": "Hyperosteosis ankylopoietica [Forestier]",
+    "source_line": 31147
+  },
+  {
+    "code": "M48.2",
+    "title_la": "Contactus processuum spinosorum [„Kissing spine“]",
+    "source_line": 31150
+  },
+  {
+    "code": "M48.3",
+    "title_la": "Spondylopathia traumatica",
+    "source_line": 31152
+  },
+  {
+    "code": "M48.4",
+    "title_la": "Fractura vertebrae propter contentionem",
+    "source_line": 31154
+  },
+  {
+    "code": "M48.5",
+    "title_la": "Collapsus vertebrae, non alibi classificatus",
+    "source_line": 31157
+  },
+  {
+    "code": "M48.8",
+    "title_la": "Spondylopathiae aliae, specificatae",
+    "source_line": 31164
+  },
+  {
+    "code": "M48.9",
+    "title_la": "Spondylopathia, non specificata",
+    "source_line": 31167
+  },
+  {
+    "code": "M49",
+    "title_la": "Oboljenja kičme u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2663
+  },
+  {
+    "code": "M49.0",
+    "title_la": "Tuberculosis columnae vertebralis (A18.0†)",
+    "source_line": 31174
+  },
+  {
+    "code": "M49.1",
+    "title_la": "Spondylitis brucellosa (A23.-†)",
+    "source_line": 31177
+  },
+  {
+    "code": "M49.2",
+    "title_la": "Spondylitis enterobacterialis (A01-A04†)",
+    "source_line": 31179
+  },
+  {
+    "code": "M49.3",
+    "title_la": "Spondylopathia in aliis morbis infectiosis et parasiticis alibi classificatis",
+    "source_line": 31189
+  },
+  {
+    "code": "M49.4",
+    "title_la": "Spondylopathia neuropathica",
+    "source_line": 31193
+  },
+  {
+    "code": "M49.5",
+    "title_la": "Collapsus vertebrae in morbis alibi classificatis",
+    "source_line": 31198
+  },
+  {
+    "code": "M49.8",
+    "title_la": "Spondylopathia in morbis aliis, alibi classificatis",
+    "source_line": 31201
+  },
+  {
+    "code": "M50",
+    "title_la": "Bolesti međupršljenskih diskusa vrata",
+    "source_line": 2666
+  },
+  {
+    "code": "M50.0",
+    "title_la": "Prolapsus disci intervertebralis cervicalis cum myelopathia (G99.2*)",
+    "source_line": 31215
+  },
+  {
+    "code": "M50.1",
+    "title_la": "Prolapsus disci intervertebralis cervicalis cum radiculopathia",
+    "source_line": 31217
+  },
+  {
+    "code": "M50.2",
+    "title_la": "Prolapsus disci intervertebralis cervicalis alius",
+    "source_line": 31220
+  },
+  {
+    "code": "M50.3",
+    "title_la": "Degenerationes discorum cervicaliorum aliae",
+    "source_line": 31222
+  },
+  {
+    "code": "M50.8",
+    "title_la": "Morbi discorum intervertebralium cervicalium alii",
+    "source_line": 31224
+  },
+  {
+    "code": "M50.9",
+    "title_la": "Morbus disci intervertebralis cervicalis, non specificatus",
+    "source_line": 31226
+  },
+  {
+    "code": "M51",
+    "title_la": "Druge bolesti međupršljenskog diskusa",
+    "source_line": 2667
+  },
+  {
+    "code": "M51.0",
+    "title_la": "Prolapsus disci intervertebralis lumbalis et discorum intervertebralium aliorum cum",
+    "source_line": 31232
+  },
+  {
+    "code": "M51.1",
+    "title_la": "Prolapsus disci intervertebralis lumbalis et disci interverterbralis aliorum cum",
+    "source_line": 31244
+  },
+  {
+    "code": "M51.2",
+    "title_la": "Dislocatio disci intervertebralis alia, specificata",
+    "source_line": 31250
+  },
+  {
+    "code": "M51.3",
+    "title_la": "Degeneratio disci intervertebralis alia, specificata",
+    "source_line": 31253
+  },
+  {
+    "code": "M51.4",
+    "title_la": "Nodi Schmorl",
+    "source_line": 31255
+  },
+  {
+    "code": "M51.8",
+    "title_la": "Morbi discorum intervertebralium alii, specificati",
+    "source_line": 31257
+  },
+  {
+    "code": "M51.9",
+    "title_la": "Morbus disci intervertebralis, non specificatus",
+    "source_line": 31259
+  },
+  {
+    "code": "M53",
+    "title_la": "Ostale dozopatije, koje nisu klasifikovane na drugom mestu",
+    "source_line": 2668
+  },
+  {
+    "code": "M53.0",
+    "title_la": "Syndroma cervicocranialis",
+    "source_line": 31265
+  },
+  {
+    "code": "M53.1",
+    "title_la": "Syndroma cervicobrachialis",
+    "source_line": 31268
+  },
+  {
+    "code": "M53.2",
+    "title_la": "Instabilitas columnae vertebralis",
+    "source_line": 31272
+  },
+  {
+    "code": "M53.3",
+    "title_la": "Morbi sacrococcygei, non alibi classificati",
+    "source_line": 31274
+  },
+  {
+    "code": "M53.8",
+    "title_la": "Dorsopathiae aliae, specificatae",
+    "source_line": 31277
+  },
+  {
+    "code": "M53.9",
+    "title_la": "Dorsopathia, non specificata",
+    "source_line": 31279
+  },
+  {
+    "code": "M54",
+    "title_la": "Bol u leđima",
+    "source_line": 2669
+  },
+  {
+    "code": "M54.0",
+    "title_la": "Panniculitis regionis colli et dorsi",
+    "source_line": 31286
+  },
+  {
+    "code": "M54.1",
+    "title_la": "Radiculopathia",
+    "source_line": 31300
+  },
+  {
+    "code": "M54.2",
+    "title_la": "Cervicalgia",
+    "source_line": 31313
+  },
+  {
+    "code": "M54.3",
+    "title_la": "Ischialgia",
+    "source_line": 31316
+  },
+  {
+    "code": "M54.4",
+    "title_la": "Lumboischialgia",
+    "source_line": 31322
+  },
+  {
+    "code": "M54.5",
+    "title_la": "Dolor sacralis",
+    "source_line": 31326
+  },
+  {
+    "code": "M54.6",
+    "title_la": "Dolor dorsi thoracalis",
+    "source_line": 31334
+  },
+  {
+    "code": "M54.8",
+    "title_la": "Dorsalgia alia",
+    "source_line": 31337
+  },
+  {
+    "code": "M54.9",
+    "title_la": "Dorsalgia, non specificata",
+    "source_line": 31339
+  },
+  {
+    "code": "M60",
+    "title_la": "Zapaljenje mišića",
+    "source_line": 2674
+  },
+  {
+    "code": "M60.0",
+    "title_la": "Myositis infectiva",
+    "source_line": 31369
+  },
+  {
+    "code": "M60.1",
+    "title_la": "Myositis interstitialis",
+    "source_line": 31373
+  },
+  {
+    "code": "M60.2",
+    "title_la": "Granuloma corporis alieni textus mollis, non alibi classificatum",
+    "source_line": 31375
+  },
+  {
+    "code": "M60.8",
+    "title_la": "Myositis alia",
+    "source_line": 31378
+  },
+  {
+    "code": "M60.9",
+    "title_la": "Myositis, non specificata",
+    "source_line": 31380
+  },
+  {
+    "code": "M61",
+    "title_la": "Kalcifikacija - zakrečavanje mišića i okoštavanje mišića",
+    "source_line": 2675
+  },
+  {
+    "code": "M61.0",
+    "title_la": "Myositis ossificans traumatica",
+    "source_line": 31386
+  },
+  {
+    "code": "M61.1",
+    "title_la": "Myositis ossificans progressiva",
+    "source_line": 31388
+  },
+  {
+    "code": "M61.2",
+    "title_la": "Calcificatio musculi et ossificatio musculi paralytici",
+    "source_line": 31391
+  },
+  {
+    "code": "M61.3",
+    "title_la": "Calcificatio musculi et ossificatio musculi cum combustionibus",
+    "source_line": 31394
+  },
+  {
+    "code": "M61.4",
+    "title_la": "Calcificatio musculi alia",
+    "source_line": 31405
+  },
+  {
+    "code": "M61.5",
+    "title_la": "Ossificatio musculi alia",
+    "source_line": 31410
+  },
+  {
+    "code": "M61.9",
+    "title_la": "Calcificatio musculi et ossificatio musculi, non specificata",
+    "source_line": 31412
+  },
+  {
+    "code": "M62",
+    "title_la": "Ostale bolesti mišića",
+    "source_line": 2676
+  },
+  {
+    "code": "M62.0",
+    "title_la": "Diastasis musculi",
+    "source_line": 31424
+  },
+  {
+    "code": "M62.1",
+    "title_la": "Ruptura musculi alia (non traumatica)",
+    "source_line": 31426
+  },
+  {
+    "code": "M62.2",
+    "title_la": "Infarctus musculi ischaemicus",
+    "source_line": 31430
+  },
+  {
+    "code": "M62.3",
+    "title_la": "Syndroma immobilitatis (paraplegica)",
+    "source_line": 31436
+  },
+  {
+    "code": "M62.4",
+    "title_la": "Contractura musculi",
+    "source_line": 31438
+  },
+  {
+    "code": "M62.5",
+    "title_la": "Deminutio et atrophia musculi, non alibi classificata",
+    "source_line": 31441
+  },
+  {
+    "code": "M62.6",
+    "title_la": "Distensio musculi",
+    "source_line": 31444
+  },
+  {
+    "code": "M62.8",
+    "title_la": "Morbi musculorum alii, specificati",
+    "source_line": 31447
+  },
+  {
+    "code": "M62.9",
+    "title_la": "Morbus musculi, non specificatus",
+    "source_line": 31450
+  },
+  {
+    "code": "M63",
+    "title_la": "Bolesti mišića kod bolesti klasifikovanih na drugom mestu",
+    "source_line": 2677
+  },
+  {
+    "code": "M63.0",
+    "title_la": "Myositis in morbis bacterialibus alibi classificatis",
+    "source_line": 31465
+  },
+  {
+    "code": "M63.1",
+    "title_la": "Myositis in infectionibus protozoalibus et parazitariis alibi classificatis",
+    "source_line": 31470
+  },
+  {
+    "code": "M63.2",
+    "title_la": "Myositis in aliis morbis infectivis, alibi classificatis",
+    "source_line": 31478
+  },
+  {
+    "code": "M63.3",
+    "title_la": "Myositis sarcoidosa (D86.8†)",
+    "source_line": 31482
+  },
+  {
+    "code": "M63.8",
+    "title_la": "Morbi musculorum alii in morbis alibi classificatis",
+    "source_line": 31484
+  },
+  {
+    "code": "M65",
+    "title_la": "Zapaljenje sinovije i zapaljenje tetive sa sinovijom",
+    "source_line": 2680
+  },
+  {
+    "code": "M65.0",
+    "title_la": "Tenosynovitis purulenta",
+    "source_line": 31499
+  },
+  {
+    "code": "M65.1",
+    "title_la": "(Teno)synovitis infectiva alia",
+    "source_line": 31502
+  },
+  {
+    "code": "M65.2",
+    "title_la": "Tendinitis calcificata",
+    "source_line": 31504
+  },
+  {
+    "code": "M65.3",
+    "title_la": "Digitus detendens",
+    "source_line": 31508
+  },
+  {
+    "code": "M65.4",
+    "title_la": "Tenosynovitis radii styloidis [de Quervain]",
+    "source_line": 31517
+  },
+  {
+    "code": "M65.8",
+    "title_la": "Synovitis et tenosynovitis alia",
+    "source_line": 31519
+  },
+  {
+    "code": "M65.9",
+    "title_la": "Synovitis et tenosynovitis, non specificata",
+    "source_line": 31522
+  },
+  {
+    "code": "M66",
+    "title_la": "Spontano prsnuće sinovije i tetive",
+    "source_line": 2681
+  },
+  {
+    "code": "M66.0",
+    "title_la": "Ruptura cystae popliteae",
+    "source_line": 31533
+  },
+  {
+    "code": "M66.1",
+    "title_la": "Ruptura synoviae spontanea",
+    "source_line": 31535
+  },
+  {
+    "code": "M66.2",
+    "title_la": "Ruptura tendinis extensoris spontanea",
+    "source_line": 31539
+  },
+  {
+    "code": "M66.3",
+    "title_la": "Ruptura tendinis flexoris spontanea",
+    "source_line": 31541
+  },
+  {
+    "code": "M66.4",
+    "title_la": "Ruptura tendinum aliorum spontanea",
+    "source_line": 31543
+  },
+  {
+    "code": "M66.5",
+    "title_la": "Ruptura tendinis spontanea, non specificati",
+    "source_line": 31545
+  },
+  {
+    "code": "M67",
+    "title_la": "Druge bolesti sinovije i tetive",
+    "source_line": 2682
+  },
+  {
+    "code": "M67.0",
+    "title_la": "Tendo calcanei brevis (acquisita)",
+    "source_line": 31554
+  },
+  {
+    "code": "M67.1",
+    "title_la": "Contractura tendinis (tunicarum) alia",
+    "source_line": 31556
+  },
+  {
+    "code": "M67.2",
+    "title_la": "Hypertrophia synovialis, non alibi classificata",
+    "source_line": 31559
+  },
+  {
+    "code": "M67.3",
+    "title_la": "Synovitis transitiva",
+    "source_line": 31562
+  },
+  {
+    "code": "M67.4",
+    "title_la": "Ganglion",
+    "source_line": 31573
+  },
+  {
+    "code": "M67.8",
+    "title_la": "Morbi synoviae et tendinis alii, specificati",
+    "source_line": 31580
+  },
+  {
+    "code": "M67.9",
+    "title_la": "Morbus synovialis et tendinis, non specificatus",
+    "source_line": 31582
+  },
+  {
+    "code": "M68",
+    "title_la": "Bolesti sinovije i tetive u bolestima koje su klasifikovane na drugom mestu",
+    "source_line": 2683
+  },
+  {
+    "code": "M68.0",
+    "title_la": "Morbi synoviae et tendinis in morbis bacterialibus alibi classificatis",
+    "source_line": 31587
+  },
+  {
+    "code": "M68.8",
+    "title_la": "Morbi synoviae et tendinis alii in morbis alibi classificatis",
+    "source_line": 31593
+  },
+  {
+    "code": "M70",
+    "title_la": "Bolesti mekih tkiva nastale kao posledica aktivnosti, povećane aktivnosti i pritiska",
+    "source_line": 2686
+  },
+  {
+    "code": "M70.0",
+    "title_la": "Synovitis manus et carpi crepitans chronica",
+    "source_line": 31610
+  },
+  {
+    "code": "M70.1",
+    "title_la": "Bursitis manus",
+    "source_line": 31612
+  },
+  {
+    "code": "M70.2",
+    "title_la": "Bursitis olecrani",
+    "source_line": 31614
+  },
+  {
+    "code": "M70.3",
+    "title_la": "Bursitis cubiti alia",
+    "source_line": 31616
+  },
+  {
+    "code": "M70.4",
+    "title_la": "Bursitis praepatellaris",
+    "source_line": 31618
+  },
+  {
+    "code": "M70.5",
+    "title_la": "Bursitis genus alia",
+    "source_line": 31620
+  },
+  {
+    "code": "M70.6",
+    "title_la": "Bursitis trochanterica",
+    "source_line": 31630
+  },
+  {
+    "code": "M70.7",
+    "title_la": "Bursitis coxae alia",
+    "source_line": 31633
+  },
+  {
+    "code": "M70.8",
+    "title_la": "Morbi textuum mollium propter activitatem, hyperactivitatem et pressionem alii",
+    "source_line": 31636
+  },
+  {
+    "code": "M70.9",
+    "title_la": "Morbus textuum mollium propter activitatem, hyperactivitatem et pressionem, non",
+    "source_line": 31638
+  },
+  {
+    "code": "M71",
+    "title_la": "Ostala oboljenja serozne kese",
+    "source_line": 2687
+  },
+  {
+    "code": "M71.0",
+    "title_la": "Bursitis purulenta",
+    "source_line": 31649
+  },
+  {
+    "code": "M71.1",
+    "title_la": "Bursitis infectiva alia",
+    "source_line": 31651
+  },
+  {
+    "code": "M71.2",
+    "title_la": "Cystis synovialis poplitea [Baker]",
+    "source_line": 31653
+  },
+  {
+    "code": "M71.3",
+    "title_la": "Cystis bursae alia",
+    "source_line": 31656
+  },
+  {
+    "code": "M71.4",
+    "title_la": "Calcificatio bursae",
+    "source_line": 31660
+  },
+  {
+    "code": "M71.5",
+    "title_la": "Bursitis alia, non alibi classificata",
+    "source_line": 31663
+  },
+  {
+    "code": "M71.8",
+    "title_la": "Bursopathia alia, specificata",
+    "source_line": 31669
+  },
+  {
+    "code": "M71.9",
+    "title_la": "Bursopathia, non specificata",
+    "source_line": 31671
+  },
+  {
+    "code": "M72",
+    "title_la": "Bolesti umnožavanja vezivnog tkiva",
+    "source_line": 2688
+  },
+  {
+    "code": "M72.0",
+    "title_la": "Fibromatosis fasciae palmaris [Dupuytren]",
+    "source_line": 31686
+  },
+  {
+    "code": "M72.1",
+    "title_la": "Caro malleoli mollis [malleolus carnosus]",
+    "source_line": 31688
+  },
+  {
+    "code": "M72.2",
+    "title_la": "Fibromatosis fasciae plantaris",
+    "source_line": 31690
+  },
+  {
+    "code": "M72.4",
+    "title_la": "Fibromatosis pseudosarcomatosa",
+    "source_line": 31693
+  },
+  {
+    "code": "M72.6",
+    "title_la": "Fasciitis necroticans",
+    "source_line": 31696
+  },
+  {
+    "code": "M72.8",
+    "title_la": "Morbi fibroblastici alii",
+    "source_line": 31699
+  },
+  {
+    "code": "M72.9",
+    "title_la": "Morbus fibroblasticus, non specificatus",
+    "source_line": 31710
+  },
+  {
+    "code": "M73",
+    "title_la": "Bolesti mekih tkiva u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2689
+  },
+  {
+    "code": "M73.0",
+    "title_la": "Bursitis gonococcica (A54.4†)",
+    "source_line": 31718
+  },
+  {
+    "code": "M73.1",
+    "title_la": "Bursitis syphilitica (A52.7†)",
+    "source_line": 31720
+  },
+  {
+    "code": "M73.8",
+    "title_la": "Morbi textuum mollium alii in morbis alibi classificatis",
+    "source_line": 31722
+  },
+  {
+    "code": "M75",
+    "title_la": "Oštećenja ramena",
+    "source_line": 2690
+  },
+  {
+    "code": "M75.0",
+    "title_la": "Capsulitis humeroscapularis adhaesiva",
+    "source_line": 31728
+  },
+  {
+    "code": "M75.1",
+    "title_la": "Syndroma armillae rotatoriae",
+    "source_line": 31739
+  },
+  {
+    "code": "M75.2",
+    "title_la": "Tendinitis bicipitis",
+    "source_line": 31744
+  },
+  {
+    "code": "M75.3",
+    "title_la": "Tendinitis humeroscapularis calcificata",
+    "source_line": 31746
+  },
+  {
+    "code": "M75.4",
+    "title_la": "Syndroma humeri percussionale",
+    "source_line": 31749
+  },
+  {
+    "code": "M75.5",
+    "title_la": "Bursitis regionis humeroscapularis",
+    "source_line": 31751
+  },
+  {
+    "code": "M75.8",
+    "title_la": "Laesiones regionis humeroscapularis, alii",
+    "source_line": 31753
+  },
+  {
+    "code": "M75.9",
+    "title_la": "Laesio regionis humeroscapularis, non specificata",
+    "source_line": 31755
+  },
+  {
+    "code": "M76",
+    "title_la": "Entezopatija noge, isključujući stopalo",
+    "source_line": 2691
+  },
+  {
+    "code": "M76.0",
+    "title_la": "Tendinitis glutaealis",
+    "source_line": 31766
+  },
+  {
+    "code": "M76.1",
+    "title_la": "Tendinitis iliopsoae",
+    "source_line": 31768
+  },
+  {
+    "code": "M76.2",
+    "title_la": "Excrescentia cristae ilicae",
+    "source_line": 31770
+  },
+  {
+    "code": "M76.3",
+    "title_la": "Syndroma lemnisci iliotibialis",
+    "source_line": 31772
+  },
+  {
+    "code": "M76.4",
+    "title_la": "Bursitis collateralis tibiae [Pellegrini-Stieda]",
+    "source_line": 31774
+  },
+  {
+    "code": "M76.5",
+    "title_la": "Tendinitis patellaris",
+    "source_line": 31776
+  },
+  {
+    "code": "M76.6",
+    "title_la": "Tendinitis calcanei",
+    "source_line": 31778
+  },
+  {
+    "code": "M76.7",
+    "title_la": "Tendinitis peronealis",
+    "source_line": 31781
+  },
+  {
+    "code": "M76.8",
+    "title_la": "Enthesopathiae extremitatis inferioris, pedem excludens, aliae",
+    "source_line": 31783
+  },
+  {
+    "code": "M76.9",
+    "title_la": "Enthesopathia extremitatis inferioris, non specificata",
+    "source_line": 31787
+  },
+  {
+    "code": "M77",
+    "title_la": "Ostale entezopatije",
+    "source_line": 2692
+  },
+  {
+    "code": "M77.0",
+    "title_la": "Epicondylitis medialis",
+    "source_line": 31804
+  },
+  {
+    "code": "M77.1",
+    "title_la": "Epicondylitis lateralis",
+    "source_line": 31806
+  },
+  {
+    "code": "M77.2",
+    "title_la": "Periarthritis carpi",
+    "source_line": 31809
+  },
+  {
+    "code": "M77.3",
+    "title_la": "Excrescentia calcanei [calx dolorosa]",
+    "source_line": 31811
+  },
+  {
+    "code": "M77.4",
+    "title_la": "Metatarsalgia",
+    "source_line": 31813
+  },
+  {
+    "code": "M77.5",
+    "title_la": "Enthesopathia pedis alia",
+    "source_line": 31816
+  },
+  {
+    "code": "M77.8",
+    "title_la": "Enthesopathiae aliae, non alibi classificatae",
+    "source_line": 31818
+  },
+  {
+    "code": "M77.9",
+    "title_la": "Enthesopathia, non specificata",
+    "source_line": 31820
+  },
+  {
+    "code": "M79",
+    "title_la": "Ostale bolesti mekih tkiva, koje nisu klasifikovane na drugom mestu",
+    "source_line": 2693
+  },
+  {
+    "code": "M79.0",
+    "title_la": "Rheumatismus, non specificatus",
+    "source_line": 31831
+  },
+  {
+    "code": "M79.1",
+    "title_la": "Myalgia",
+    "source_line": 31835
+  },
+  {
+    "code": "M79.2",
+    "title_la": "Neuralgia et neuritis, non specificata",
+    "source_line": 31838
+  },
+  {
+    "code": "M79.3",
+    "title_la": "Panniculitis, non specificata",
+    "source_line": 31854
+  },
+  {
+    "code": "M79.4",
+    "title_la": "Hypertrophia corporis adiposi infrapatellaris",
+    "source_line": 31860
+  },
+  {
+    "code": "M79.5",
+    "title_la": "Corpus alienum in textu molli residuale",
+    "source_line": 31863
+  },
+  {
+    "code": "M79.6",
+    "title_la": "Dolor extremitatis",
+    "source_line": 31868
+  },
+  {
+    "code": "M79.7",
+    "title_la": "Fibromyalgia",
+    "source_line": 31870
+  },
+  {
+    "code": "M79.8",
+    "title_la": "Morbi textuum mollium alii, specificati",
+    "source_line": 31875
+  },
+  {
+    "code": "M79.9",
+    "title_la": "Morbus textuum mollium, non specificatus",
+    "source_line": 31877
+  },
+  {
+    "code": "M80",
+    "title_la": "Gubitak koštane mase sa patološkim prelomom [Osteoporoza sa patološkim",
+    "source_line": 2705
+  },
+  {
+    "code": "M80.0",
+    "title_la": "Osteoporosis postmenopausalis cum fractura pathologica",
+    "source_line": 31897
+  },
+  {
+    "code": "M80.1",
+    "title_la": "Osteoporosis post ovariectomiam cum fractura pathologica",
+    "source_line": 31899
+  },
+  {
+    "code": "M80.2",
+    "title_la": "Osteoporosis immobilisationalis cum fractura pathologica",
+    "source_line": 31901
+  },
+  {
+    "code": "M80.3",
+    "title_la": "Osteoporosis malabsorptionalis postchirurgica cum fractura pathologica",
+    "source_line": 31910
+  },
+  {
+    "code": "M80.4",
+    "title_la": "Osteoporosis medicamentosa cum fractura pathologica",
+    "source_line": 31912
+  },
+  {
+    "code": "M80.5",
+    "title_la": "Osteoporosis idiopathica cum fractura pathologica",
+    "source_line": 31916
+  },
+  {
+    "code": "M80.8",
+    "title_la": "Osteoporosis cum fractura pathologica, alia",
+    "source_line": 31918
+  },
+  {
+    "code": "M80.9",
+    "title_la": "Osteoporosis cum fractura pathologica, non specificata",
+    "source_line": 31920
+  },
+  {
+    "code": "M81",
+    "title_la": "Gubitak koštane mase bez patološkog preloma [Osteoporoza bez patološkog",
+    "source_line": 2707
+  },
+  {
+    "code": "M81.0",
+    "title_la": "Osteoporosis postmenopausalis",
+    "source_line": 31928
+  },
+  {
+    "code": "M81.1",
+    "title_la": "Osteoporosis post ovariectomiam",
+    "source_line": 31930
+  },
+  {
+    "code": "M81.2",
+    "title_la": "Osteoporosis immobilisationalis",
+    "source_line": 31932
+  },
+  {
+    "code": "M81.3",
+    "title_la": "Osteoporosis malabsorptionalis postchirurgica",
+    "source_line": 31935
+  },
+  {
+    "code": "M81.4",
+    "title_la": "Osteoporosis medicamentosa",
+    "source_line": 31937
+  },
+  {
+    "code": "M81.5",
+    "title_la": "Osteoporosis idiopathica",
+    "source_line": 31941
+  },
+  {
+    "code": "M81.6",
+    "title_la": "Osteoporosis localisata [Lequesne]",
+    "source_line": 31943
+  },
+  {
+    "code": "M81.8",
+    "title_la": "Osteoporosis alia",
+    "source_line": 31946
+  },
+  {
+    "code": "M81.9",
+    "title_la": "Osteoporosis, non specificata",
+    "source_line": 31949
+  },
+  {
+    "code": "M82",
+    "title_la": "Osteoporoza kod bolesti klasifikovanih na drugom mestu",
+    "source_line": 2709
+  },
+  {
+    "code": "M82.0",
+    "title_la": "Osteoporosis in myelomatosi multiplici (C90.0†)",
+    "source_line": 31955
+  },
+  {
+    "code": "M82.1",
+    "title_la": "Osteoporosis in morbis endocrinis (E00-E34†)",
+    "source_line": 31957
+  },
+  {
+    "code": "M82.8",
+    "title_la": "Osteoporosis in morbis aliis alibi classificatis",
+    "source_line": 31959
+  },
+  {
+    "code": "M83",
+    "title_la": "Osteomalacija [Razmekšavanje kosti] u odraslih osoba",
+    "source_line": 2710
+  },
+  {
+    "code": "M83.0",
+    "title_la": "Osteomalacia puerperalis",
+    "source_line": 31979
+  },
+  {
+    "code": "M83.1",
+    "title_la": "Osteomalacia senilis",
+    "source_line": 31981
+  },
+  {
+    "code": "M83.2",
+    "title_la": "Osteomalacia ad adultum malabsorptionalis",
+    "source_line": 31983
+  },
+  {
+    "code": "M83.3",
+    "title_la": "Osteomalacia ad adultum malnutritionalis",
+    "source_line": 31986
+  },
+  {
+    "code": "M83.4",
+    "title_la": "Morbus ossium aluminicus",
+    "source_line": 31988
+  },
+  {
+    "code": "M83.5",
+    "title_la": "Osteomalacia ad adultum medicamentosa alia",
+    "source_line": 31990
+  },
+  {
+    "code": "M83.8",
+    "title_la": "Osteomalacia ad adultum alia",
+    "source_line": 31994
+  },
+  {
+    "code": "M83.9",
+    "title_la": "Osteomalacia ad adultum, non specificata",
+    "source_line": 31996
+  },
+  {
+    "code": "M84",
+    "title_la": "Poremećaji kontinuiteta kosti",
+    "source_line": 2711
+  },
+  {
+    "code": "M84.0",
+    "title_la": "Malconcretio fracturae",
+    "source_line": 32002
+  },
+  {
+    "code": "M84.1",
+    "title_la": "Inconcretio ossis [pseudarthrosis]",
+    "source_line": 32004
+  },
+  {
+    "code": "M84.2",
+    "title_la": "Concretio fracturae retardata",
+    "source_line": 32007
+  },
+  {
+    "code": "M84.3",
+    "title_la": "Fractura pressionalis, non alibi classificata",
+    "source_line": 32009
+  },
+  {
+    "code": "M84.4",
+    "title_la": "Fractura pathologica, non alibi classificata",
+    "source_line": 32013
+  },
+  {
+    "code": "M84.8",
+    "title_la": "Morbi continuitatis ossis alii",
+    "source_line": 32024
+  },
+  {
+    "code": "M84.9",
+    "title_la": "Morbus continuitatis ossis, non specificatus",
+    "source_line": 32026
+  },
+  {
+    "code": "M85",
+    "title_la": "Ostali poremećaji u čvrstoći i građi kosti",
+    "source_line": 2712
+  },
+  {
+    "code": "M85.0",
+    "title_la": "Dysplasia fibrosa (monostotica)",
+    "source_line": 32036
+  },
+  {
+    "code": "M85.1",
+    "title_la": "Fluorosis sceleti",
+    "source_line": 32039
+  },
+  {
+    "code": "M85.2",
+    "title_la": "Hyperosteosis cranii",
+    "source_line": 32041
+  },
+  {
+    "code": "M85.3",
+    "title_la": "Osteitis condensans",
+    "source_line": 32043
+  },
+  {
+    "code": "M85.4",
+    "title_la": "Cystis ossis solitaria",
+    "source_line": 32045
+  },
+  {
+    "code": "M85.5",
+    "title_la": "Cystis ossis aneurismatica",
+    "source_line": 32048
+  },
+  {
+    "code": "M85.6",
+    "title_la": "Cystis ossis alia",
+    "source_line": 32051
+  },
+  {
+    "code": "M85.8",
+    "title_la": "Morbi densitatis et structurae ossis alii, specificati",
+    "source_line": 32055
+  },
+  {
+    "code": "M85.9",
+    "title_la": "Morbus densitatis et structurae ossis, non specificatus",
+    "source_line": 32063
+  },
+  {
+    "code": "M86",
+    "title_la": "Zapaljenje koštane srži",
+    "source_line": 2715
+  },
+  {
+    "code": "M86.0",
+    "title_la": "Osteomyelitis haematogenes acuta",
+    "source_line": 32086
+  },
+  {
+    "code": "M86.1",
+    "title_la": "Osteomyelitis acuta alia",
+    "source_line": 32088
+  },
+  {
+    "code": "M86.2",
+    "title_la": "Osteomyelitis subacuta",
+    "source_line": 32090
+  },
+  {
+    "code": "M86.3",
+    "title_la": "Osteomyelitis multifocalis chronica",
+    "source_line": 32092
+  },
+  {
+    "code": "M86.4",
+    "title_la": "Osteomyelitis cum fluore foci chronica",
+    "source_line": 32094
+  },
+  {
+    "code": "M86.5",
+    "title_la": "Osteomyelitis haematogenes chronica alia",
+    "source_line": 32096
+  },
+  {
+    "code": "M86.6",
+    "title_la": "Osteomyelitis chronica alia",
+    "source_line": 32098
+  },
+  {
+    "code": "M86.8",
+    "title_la": "Osteomyelitis alia",
+    "source_line": 32100
+  },
+  {
+    "code": "M86.9",
+    "title_la": "Osteomyelitis, non specificata",
+    "source_line": 32103
+  },
+  {
+    "code": "M87",
+    "title_la": "Osteonekroza",
+    "source_line": 2716
+  },
+  {
+    "code": "M87.0",
+    "title_la": "Osteonecrosis aseptica idiopathica",
+    "source_line": 32113
+  },
+  {
+    "code": "M87.1",
+    "title_la": "Osteonecrosis medicamentosa",
+    "source_line": 32115
+  },
+  {
+    "code": "M87.2",
+    "title_la": "Osteonecrosis posttraumatica",
+    "source_line": 32119
+  },
+  {
+    "code": "M87.3",
+    "title_la": "Osteonecrosis secundaria alia",
+    "source_line": 32121
+  },
+  {
+    "code": "M87.8",
+    "title_la": "Osteonecrosis alia",
+    "source_line": 32128
+  },
+  {
+    "code": "M87.9",
+    "title_la": "Osteonecrosis, non specificata",
+    "source_line": 32130
+  },
+  {
+    "code": "M88",
+    "title_la": "Pagetova bolest kosti",
+    "source_line": 2717
+  },
+  {
+    "code": "M88.0",
+    "title_la": "Morbus Paget cranii",
+    "source_line": 32136
+  },
+  {
+    "code": "M88.8",
+    "title_la": "Morbus Paget ossium aliorum",
+    "source_line": 32138
+  },
+  {
+    "code": "M88.9",
+    "title_la": "Morbus Paget ossium, non specificatus",
+    "source_line": 32140
+  },
+  {
+    "code": "M89",
+    "title_la": "Ostali poremećaji kosti",
+    "source_line": 2718
+  },
+  {
+    "code": "M89.0",
+    "title_la": "Algoneurodystrophia",
+    "source_line": 32146
+  },
+  {
+    "code": "M89.1",
+    "title_la": "Stasis epiphysica",
+    "source_line": 32151
+  },
+  {
+    "code": "M89.2",
+    "title_la": "Morbi staturae et evolutionis ossium alii",
+    "source_line": 32153
+  },
+  {
+    "code": "M89.3",
+    "title_la": "Hypertrophia ossium",
+    "source_line": 32155
+  },
+  {
+    "code": "M89.4",
+    "title_la": "Osteoartropathia hypertrophica alia",
+    "source_line": 32157
+  },
+  {
+    "code": "M89.5",
+    "title_la": "Osteolysis",
+    "source_line": 32161
+  },
+  {
+    "code": "M89.6",
+    "title_la": "Osteopathia postpolyomyelitica",
+    "source_line": 32163
+  },
+  {
+    "code": "M89.8",
+    "title_la": "Morbi ossium alii, specificati",
+    "source_line": 32167
+  },
+  {
+    "code": "M89.9",
+    "title_la": "Morbus ossium, non specificatus",
+    "source_line": 32171
+  },
+  {
+    "code": "M90",
+    "title_la": "Oboljenja kosti [Osteopatije] kod bolesti koje su klasifikovane na drugom mestu",
+    "source_line": 2719
+  },
+  {
+    "code": "M90.0",
+    "title_la": "Osteomyelitis tuberculosa (A18.0†)",
+    "source_line": 32184
+  },
+  {
+    "code": "M90.1",
+    "title_la": "Periostitis in morbis infectivis aliis alibi classificatis",
+    "source_line": 32187
+  },
+  {
+    "code": "M90.2",
+    "title_la": "Osteopathia in morbis infectivis aliis alibi classificatis",
+    "source_line": 32190
+  },
+  {
+    "code": "M90.3",
+    "title_la": "Osteonecrosis in morbo capsico (T70.3†)",
+    "source_line": 32197
+  },
+  {
+    "code": "M90.4",
+    "title_la": "Osteonecrosis haemoglobinopathica (D50-D64†)",
+    "source_line": 32199
+  },
+  {
+    "code": "M90.5",
+    "title_la": "Osteonecrosis in morbis aliis alibi classificatis",
+    "source_line": 32201
+  },
+  {
+    "code": "M90.6",
+    "title_la": "Osteitis deformans neoplastica (C00-D48†)",
+    "source_line": 32203
+  },
+  {
+    "code": "M90.7",
+    "title_la": "Fractura ossium neoplastica (C00-D48†)",
+    "source_line": 32206
+  },
+  {
+    "code": "M90.8",
+    "title_la": "Osteopathia in morbis aliis alibi classificatis",
+    "source_line": 32209
+  },
+  {
+    "code": "M91",
+    "title_la": "Juvenilna osteohondroza kuka i karlice",
+    "source_line": 2722
+  },
+  {
+    "code": "M91.0",
+    "title_la": "Osteochondrosis pelvis juvenilis",
+    "source_line": 32223
+  },
+  {
+    "code": "M91.1",
+    "title_la": "Osteochondrosis capitis femoralis juvenilis [Legg-Calvé-Perthes]",
+    "source_line": 32237
+  },
+  {
+    "code": "M91.2",
+    "title_la": "Coxa plana",
+    "source_line": 32239
+  },
+  {
+    "code": "M91.3",
+    "title_la": "Pseudocoxalgia",
+    "source_line": 32242
+  },
+  {
+    "code": "M91.8",
+    "title_la": "Osteochondrosis coxae et pelvis juvenilis alia",
+    "source_line": 32244
+  },
+  {
+    "code": "M91.9",
+    "title_la": "Osteochondrosis coxae et pelvis juvenilis, non specificata",
+    "source_line": 32247
+  },
+  {
+    "code": "M92",
+    "title_la": "Druge juvenilne osteohondroze",
+    "source_line": 2723
+  },
+  {
+    "code": "M92.0",
+    "title_la": "Osteochondrosis humeri juvenilis",
+    "source_line": 32252
+  },
+  {
+    "code": "M92.1",
+    "title_la": "Osteochondrosis radii et ulnae juvenilis",
+    "source_line": 32257
+  },
+  {
+    "code": "M92.2",
+    "title_la": "Osteochondrosis manus juvenilis",
+    "source_line": 32262
+  },
+  {
+    "code": "M92.3",
+    "title_la": "Osteochondrosis extremitatis superioris juvenilis alia",
+    "source_line": 32267
+  },
+  {
+    "code": "M92.4",
+    "title_la": "Osteochondrosis patellae juvenilis",
+    "source_line": 32269
+  },
+  {
+    "code": "M92.5",
+    "title_la": "Osteochondrosis tibiae et fibulae juvenilis",
+    "source_line": 32274
+  },
+  {
+    "code": "M92.6",
+    "title_la": "Osteochondrosis tarsi juvenilis",
+    "source_line": 32280
+  },
+  {
+    "code": "M92.7",
+    "title_la": "Osteochondrosis metatarsi juvenilis",
+    "source_line": 32295
+  },
+  {
+    "code": "M92.8",
+    "title_la": "Osteochondrosis juvenilis alia specificata",
+    "source_line": 32300
+  },
+  {
+    "code": "M92.9",
+    "title_la": "Osteochondrosis juvenilis, non specificata",
+    "source_line": 32303
+  },
+  {
+    "code": "M93",
+    "title_la": "Ostale osteohondropatije",
+    "source_line": 2724
+  },
+  {
+    "code": "M93.0",
+    "title_la": "Prolapsus epiphysis femoralis superioris (non traumaticus)",
+    "source_line": 32314
+  },
+  {
+    "code": "M93.1",
+    "title_la": "Morbus Kienböck adulti",
+    "source_line": 32316
+  },
+  {
+    "code": "M93.2",
+    "title_la": "Osteochondritis dissecans",
+    "source_line": 32319
+  },
+  {
+    "code": "M93.8",
+    "title_la": "Osteochondropathiae aliae, specificatae",
+    "source_line": 32321
+  },
+  {
+    "code": "M93.9",
+    "title_la": "Osteochondropathia, non specificata",
+    "source_line": 32323
+  },
+  {
+    "code": "M94",
+    "title_la": "Ostali poremećaji hrskavice",
+    "source_line": 2725
+  },
+  {
+    "code": "M94.0",
+    "title_la": "Syndroma junctionis chondrocostalis [Tietze]",
+    "source_line": 32334
+  },
+  {
+    "code": "M94.1",
+    "title_la": "Polychondritis recidiva",
+    "source_line": 32337
+  },
+  {
+    "code": "M94.2",
+    "title_la": "Chondromalacia",
+    "source_line": 32339
+  },
+  {
+    "code": "M94.3",
+    "title_la": "Chondrolysis",
+    "source_line": 32342
+  },
+  {
+    "code": "M94.8",
+    "title_la": "Morbi cartilaginis alii, specificati",
+    "source_line": 32344
+  },
+  {
+    "code": "M94.9",
+    "title_la": "Morbus cartilaginis, non specificatus",
+    "source_line": 32346
+  },
+  {
+    "code": "M95",
+    "title_la": "Ostale stečene deformacije mišićno-koštanog sistema i vezivnog tkiva",
+    "source_line": 2728
+  },
+  {
+    "code": "M95.0",
+    "title_la": "Deformatio nasi acquisita",
+    "source_line": 32366
+  },
+  {
+    "code": "M95.1",
+    "title_la": "Auris cymosa",
+    "source_line": 32369
+  },
+  {
+    "code": "M95.2",
+    "title_la": "Deformatio capitis acquisita alia",
+    "source_line": 32372
+  },
+  {
+    "code": "M95.3",
+    "title_la": "Deformatio colli acquisita",
+    "source_line": 32374
+  },
+  {
+    "code": "M95.4",
+    "title_la": "Deformatio thoracis et costae acquisita",
+    "source_line": 32376
+  },
+  {
+    "code": "M95.5",
+    "title_la": "Deformatio pelvis acquisita",
+    "source_line": 32378
+  },
+  {
+    "code": "M95.8",
+    "title_la": "Deformationes musculorum et ossium acquisitae aliae, specificatae",
+    "source_line": 32381
+  },
+  {
+    "code": "M95.9",
+    "title_la": "Deformatio musculorum et ossium acquisita, non specificata",
+    "source_line": 32383
+  },
+  {
+    "code": "M96",
+    "title_la": "Poremećaji mišića i kostiju posle medicinskih intervencija, neklasifikovani na",
+    "source_line": 2729
+  },
+  {
+    "code": "M96.0",
+    "title_la": "Pseudoarthrosis post fusionem sive arthrodesis",
+    "source_line": 32392
+  },
+  {
+    "code": "M96.1",
+    "title_la": "Syndroma post laminectomiam, non alibi classificata",
+    "source_line": 32394
+  },
+  {
+    "code": "M96.2",
+    "title_la": "Kyphosis postradiationalis",
+    "source_line": 32396
+  },
+  {
+    "code": "M96.3",
+    "title_la": "Kyphosis postlaminectomialis",
+    "source_line": 32398
+  },
+  {
+    "code": "M96.4",
+    "title_la": "Lordosis postoperativa",
+    "source_line": 32400
+  },
+  {
+    "code": "M96.5",
+    "title_la": "Scoliosis postradiationalis",
+    "source_line": 32402
+  },
+  {
+    "code": "M96.6",
+    "title_la": "Fractura ossium post instalationem inplantatuum orthopaedicorum, prothesis",
+    "source_line": 32410
+  },
+  {
+    "code": "M96.8",
+    "title_la": "Morbi musculorum et ossium postprocedurales alii",
+    "source_line": 32414
+  },
+  {
+    "code": "M96.9",
+    "title_la": "Morbus musculorum et ossium postprocedurales, non specificatus",
+    "source_line": 32417
+  },
+  {
+    "code": "M99",
+    "title_la": "Biomehanička oštećenja koja nisu klasifikovana na drugom mestu",
+    "source_line": 2731
+  },
+  {
+    "code": "M99.0",
+    "title_la": "Dysfunctio segmentalis et somatica",
+    "source_line": 32449
+  },
+  {
+    "code": "M99.1",
+    "title_la": "Subluxatio columnae vertebralis complex",
+    "source_line": 32451
+  },
+  {
+    "code": "M99.2",
+    "title_la": "Stenosis canalis neuralis subluxationalis",
+    "source_line": 32453
+  },
+  {
+    "code": "M99.3",
+    "title_la": "Stenosis canalis neuralis ossea",
+    "source_line": 32455
+  },
+  {
+    "code": "M99.4",
+    "title_la": "Stenosis canalis neuralis textu connexivo",
+    "source_line": 32457
+  },
+  {
+    "code": "M99.5",
+    "title_la": "Stenosis canalis neuralis discalis",
+    "source_line": 32459
+  },
+  {
+    "code": "M99.6",
+    "title_la": "Stenosis foraminis intervertebralis ossea et subluxatio discalis",
+    "source_line": 32468
+  },
+  {
+    "code": "M99.7",
+    "title_la": "Stenosis foraminis intervertebralis textu connexivo et discalis",
+    "source_line": 32470
+  },
+  {
+    "code": "M99.8",
+    "title_la": "Laesiones biomechanicae aliae",
+    "source_line": 32472
+  },
+  {
+    "code": "M99.9",
+    "title_la": "Laesio biomechanica, non specificata",
+    "source_line": 32474
+  }
+]

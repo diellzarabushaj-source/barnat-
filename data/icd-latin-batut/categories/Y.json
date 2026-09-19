@@ -1,0 +1,457 @@
+[
+  {
+    "code": "Y00",
+    "title_la": "Napad tupim predmetom",
+    "source_line": 4120
+  },
+  {
+    "code": "Y01",
+    "title_la": "Napad guranjem sa visine",
+    "source_line": 4121
+  },
+  {
+    "code": "Y02",
+    "title_la": "Napad guranjem ili stavljanjem žrtve ispred predmeta u pokretu",
+    "source_line": 4122
+  },
+  {
+    "code": "Y03",
+    "title_la": "Napad razbijanjem motornog vozila",
+    "source_line": 4123
+  },
+  {
+    "code": "Y04",
+    "title_la": "Napad primenom telesne snage",
+    "source_line": 4124
+  },
+  {
+    "code": "Y05",
+    "title_la": "Seksualni napad uz primenu telesne snage",
+    "source_line": 4125
+  },
+  {
+    "code": "Y06",
+    "title_la": "Zanemarivanje i napuštanje",
+    "source_line": 4126
+  },
+  {
+    "code": "Y07",
+    "title_la": "Druga zlostavljanja",
+    "source_line": 4127
+  },
+  {
+    "code": "Y08",
+    "title_la": "Napad na druge označene načine",
+    "source_line": 4128
+  },
+  {
+    "code": "Y09",
+    "title_la": "Napad na neoznačene načine",
+    "source_line": 4129
+  },
+  {
+    "code": "Y10",
+    "title_la": "Trovanje i izlaganje neopioidnim analgeticima, antipireticima i antireumaticima,",
+    "source_line": 4132
+  },
+  {
+    "code": "Y11",
+    "title_la": "Trovanje i izlaganje antiepilepticima, sedativima-hipnoticima, antiparkinsonicima i",
+    "source_line": 4134
+  },
+  {
+    "code": "Y12",
+    "title_la": "Trovanje i izlaganje narkoticima i psihodislepticima [halucinogenima],",
+    "source_line": 4136
+  },
+  {
+    "code": "Y13",
+    "title_la": "Trovanje i izlaganje drugim lekovima koji deluju na autonomni nervni sistem,",
+    "source_line": 4138
+  },
+  {
+    "code": "Y14",
+    "title_la": "Trovanje i izlaganje drugim i neoznačenim lekovima, preparatima i biološkim",
+    "source_line": 4140
+  },
+  {
+    "code": "Y15",
+    "title_la": "Trovanje i izlaganje alkoholu, neutvrđene namere",
+    "source_line": 4142
+  },
+  {
+    "code": "Y16",
+    "title_la": "Trovanje i izlaganje organskim rastvaračima i halogenskim ugljovodonicima i",
+    "source_line": 4143
+  },
+  {
+    "code": "Y17",
+    "title_la": "Trovanje i izlaganje drugim gasovima i parama, neodređene namere",
+    "source_line": 4145
+  },
+  {
+    "code": "Y18",
+    "title_la": "Trovanje i izlaganje pesticidima, neutvrđene namere",
+    "source_line": 4146
+  },
+  {
+    "code": "Y19",
+    "title_la": "Trovanje i izlaganje drugim i neoznačenim hemikalijama i štetnim supstancama,",
+    "source_line": 4147
+  },
+  {
+    "code": "Y20",
+    "title_la": "Vešanje, davljenje i gušenje, neodređene namere",
+    "source_line": 4149
+  },
+  {
+    "code": "Y21",
+    "title_la": "Davljenje i potapanje, neodređene namere",
+    "source_line": 4150
+  },
+  {
+    "code": "Y22",
+    "title_la": "Opaljivanje iz pištolja, neodređene namere",
+    "source_line": 4151
+  },
+  {
+    "code": "Y23",
+    "title_la": "Opaljivanje iz puške, sačmare i većeg vatrenog oružja, neodređene namere",
+    "source_line": 4152
+  },
+  {
+    "code": "Y24",
+    "title_la": "Opaljivanje iz drugog i neoznačenog vatrenog oružja, neodređene namere",
+    "source_line": 4153
+  },
+  {
+    "code": "Y25",
+    "title_la": "Kontakt sa eksplozivnim materijalom, neodređene namere",
+    "source_line": 4154
+  },
+  {
+    "code": "Y26",
+    "title_la": "Izlaganje dimu, vatri i plamenu, neodređene namere",
+    "source_line": 4155
+  },
+  {
+    "code": "Y27",
+    "title_la": "Kontakt sa vodenom parom, vrelim parama i vrelim predmetima, neodređene",
+    "source_line": 4156
+  },
+  {
+    "code": "Y28",
+    "title_la": "Kontakt sa oštrim predmetom, neodređene namere",
+    "source_line": 4158
+  },
+  {
+    "code": "Y29",
+    "title_la": "Kontakt sa tupim predmetom, neodređene namere",
+    "source_line": 4159
+  },
+  {
+    "code": "Y30",
+    "title_la": "Padanje, skakanje ili guranje sa visine, neodređene namere",
+    "source_line": 4160
+  },
+  {
+    "code": "Y31",
+    "title_la": "Padanje, ležanje ili trčanje ispred ili prema predmetu koji je u pokretu, neodređene",
+    "source_line": 4161
+  },
+  {
+    "code": "Y32",
+    "title_la": "Razbijanje motornog vozila, neodređene namere",
+    "source_line": 4163
+  },
+  {
+    "code": "Y33",
+    "title_la": "Drugi označeni događaji, neodređene namere",
+    "source_line": 4164
+  },
+  {
+    "code": "Y34",
+    "title_la": "Neoznačeni događaj, neodređene namere",
+    "source_line": 4165
+  },
+  {
+    "code": "Y35",
+    "title_la": "Zakonska intervencija",
+    "source_line": 4173
+  },
+  {
+    "code": "Y36",
+    "title_la": "Ratne operacije",
+    "source_line": 4174
+  },
+  {
+    "code": "Y40",
+    "title_la": "Antibiotici koji deluju na pojedine sisteme",
+    "source_line": 4180
+  },
+  {
+    "code": "Y41",
+    "title_la": "Drugi antiinfektivni i antiparazitarni lekovi koji deluju na pojedine sisteme",
+    "source_line": 4181
+  },
+  {
+    "code": "Y42",
+    "title_la": "Hormoni i njihove sintetičke zamene i antagonisti, neklasifikovani na drugom",
+    "source_line": 4182
+  },
+  {
+    "code": "Y43",
+    "title_la": "Sredstva koja deluju primarno sistemski",
+    "source_line": 4184
+  },
+  {
+    "code": "Y44",
+    "title_la": "Sredstva koja primarno deluju na sastojke krvi",
+    "source_line": 4185
+  },
+  {
+    "code": "Y45",
+    "title_la": "Analgetici, antipiretici i antiinflamatorni lekovi",
+    "source_line": 4186
+  },
+  {
+    "code": "Y46",
+    "title_la": "Antiepileptici i antiparkisonični lekovi",
+    "source_line": 4187
+  },
+  {
+    "code": "Y47",
+    "title_la": "Sedativi, hipnotici i anksiolitici",
+    "source_line": 4188
+  },
+  {
+    "code": "Y48",
+    "title_la": "Anestetici i terapijski gasovi",
+    "source_line": 4189
+  },
+  {
+    "code": "Y49",
+    "title_la": "Psihotropni lekovi, neklasifikovani na drugom mestu",
+    "source_line": 4190
+  },
+  {
+    "code": "Y50",
+    "title_la": "Stimulatori centralnog nervnog sistema, neklasifikovani na drugom mestu",
+    "source_line": 4191
+  },
+  {
+    "code": "Y51",
+    "title_la": "Lekovi koji primarno deluju na autonomni nervni sistem",
+    "source_line": 4192
+  },
+  {
+    "code": "Y52",
+    "title_la": "Sredstva koja primarno deluju na kardiovaskularni sistem",
+    "source_line": 4193
+  },
+  {
+    "code": "Y53",
+    "title_la": "Sredstva koja primarno deluju na gastrointestinalni sistem",
+    "source_line": 4194
+  },
+  {
+    "code": "Y54",
+    "title_la": "Sredstva koja primarno deluju na ravnotežu vode i minerala i metabolizam",
+    "source_line": 4195
+  },
+  {
+    "code": "Y55",
+    "title_la": "Sredstva koja primarno deluju na glatke i skeletne mišiće i na respiratorni sistem",
+    "source_line": 4197
+  },
+  {
+    "code": "Y56",
+    "title_la": "Lokalna sredstva koja primarno deluju na kožu i sluznicu i lekovi za lečenje oka,",
+    "source_line": 4198
+  },
+  {
+    "code": "Y57",
+    "title_la": "Drugi i neoznačeni lekovi i medikamenti",
+    "source_line": 4200
+  },
+  {
+    "code": "Y58",
+    "title_la": "Vakcine protiv bakterija",
+    "source_line": 4201
+  },
+  {
+    "code": "Y59",
+    "title_la": "Druge i neoznačene vakcine i biološke supstance",
+    "source_line": 4202
+  },
+  {
+    "code": "Y60",
+    "title_la": "Nenamerno uzrokovana posekotina, ubod, perforacija ili krvarenje u toku hirurškog",
+    "source_line": 4206
+  },
+  {
+    "code": "Y61",
+    "title_la": "Strani predmet slučajno ostavljen u telu tokom hirurškog i medicinskog lečenja",
+    "source_line": 4208
+  },
+  {
+    "code": "Y62",
+    "title_la": "Greška u postupku sterilizacije tokom hirurškog i medicinskog lečenja",
+    "source_line": 4209
+  },
+  {
+    "code": "Y63",
+    "title_la": "Greška u doziranju tokom hirurškog i medicinskog lečenja",
+    "source_line": 4210
+  },
+  {
+    "code": "Y64",
+    "title_la": "Kontaminirane medicinske ili biološke materije",
+    "source_line": 4211
+  },
+  {
+    "code": "Y65",
+    "title_la": "Drugi neželjeni događaji tokom hirurškog i medicinskog lečenja",
+    "source_line": 4212
+  },
+  {
+    "code": "Y66",
+    "title_la": "Nesprovođenje hirurškog i medicinskog lečenja",
+    "source_line": 4213
+  },
+  {
+    "code": "Y69",
+    "title_la": "Neoznačen neželjeni događaj tokom hirurškog i medicinskog lečenja",
+    "source_line": 4214
+  },
+  {
+    "code": "Y70",
+    "title_la": "Uređaji u anesteziologiji povezani sa neželjenim događajima",
+    "source_line": 4218
+  },
+  {
+    "code": "Y71",
+    "title_la": "Uređaji u kardiovaskularnoj oblasti povezani sa neželjenim događajima",
+    "source_line": 4219
+  },
+  {
+    "code": "Y72",
+    "title_la": "Uređaji u otorinolaringologiji povezani sa neželjenim događajima",
+    "source_line": 4220
+  },
+  {
+    "code": "Y73",
+    "title_la": "Uređaji u gastroenterologiji i urologiji povezani sa neželjenim događajima",
+    "source_line": 4226
+  },
+  {
+    "code": "Y74",
+    "title_la": "Uređaji za opštu bolničku i ličnu upotrebu povezani sa neželjenim događajima",
+    "source_line": 4227
+  },
+  {
+    "code": "Y75",
+    "title_la": "Uređaji u neurologiji povezani sa neželjenim događajima",
+    "source_line": 4228
+  },
+  {
+    "code": "Y76",
+    "title_la": "Uređaji u akušerstvu i ginekologiji povezani sa neželjenim događajima",
+    "source_line": 4229
+  },
+  {
+    "code": "Y77",
+    "title_la": "Uređaji u oftalmologiji povezani sa neželjenim događajima",
+    "source_line": 4230
+  },
+  {
+    "code": "Y78",
+    "title_la": "Uređaji u radiologiji povezani sa neželjenim događajima",
+    "source_line": 4231
+  },
+  {
+    "code": "Y79",
+    "title_la": "Uređaji u ortopediji povezani sa neželjenim događajima",
+    "source_line": 4232
+  },
+  {
+    "code": "Y80",
+    "title_la": "Uređaji u fizikalnoj medicini povezani sa neželjenim događajima",
+    "source_line": 4233
+  },
+  {
+    "code": "Y81",
+    "title_la": "Uređaji u opštoj i plastičnoj hirurgiji povezani sa neželjenim događajima",
+    "source_line": 4234
+  },
+  {
+    "code": "Y82",
+    "title_la": "Drugi i neoznačeni medicinski uređaji povezani sa neželjenim događajima",
+    "source_line": 4235
+  },
+  {
+    "code": "Y83",
+    "title_la": "Hirurški zahvat i drugi hirurški postupci kao uzrok neželjene reakcije bolesnika, ili",
+    "source_line": 4240
+  },
+  {
+    "code": "Y84",
+    "title_la": "Drugi medicinski postupci kao uzrok neželjene reakcije bolesnika, ili kasne",
+    "source_line": 4242
+  },
+  {
+    "code": "Y85",
+    "title_la": "Posledice saobraćajnih udesa",
+    "source_line": 4246
+  },
+  {
+    "code": "Y86",
+    "title_la": "Posledice drugih udesa",
+    "source_line": 4247
+  },
+  {
+    "code": "Y87",
+    "title_la": "Posledice namernog samopovređivanja, nasilja i događaja neodređene namere",
+    "source_line": 4248
+  },
+  {
+    "code": "Y88",
+    "title_la": "Posledice hirurškog i medicinskog lečenja kao spoljašnjeg uzroka",
+    "source_line": 4249
+  },
+  {
+    "code": "Y89",
+    "title_la": "Posledice drugih spoljašnjih uzroka",
+    "source_line": 4250
+  },
+  {
+    "code": "Y90",
+    "title_la": "Podatak o prisustvu alkohola određen nivoom alkohola u krvi",
+    "source_line": 4254
+  },
+  {
+    "code": "Y91",
+    "title_la": "Dokaz o prisustvu alkohola određen nivoom intoksikacije",
+    "source_line": 4255
+  },
+  {
+    "code": "Y95",
+    "title_la": "Bolnički uslovi",
+    "source_line": 4256
+  },
+  {
+    "code": "Y96",
+    "title_la": "Uslovi povezani sa radom",
+    "source_line": 4257
+  },
+  {
+    "code": "Y97",
+    "title_la": "Uslovi povezani sa zagađenjem spoljašnje sredine",
+    "source_line": 4258
+  },
+  {
+    "code": "Y98",
+    "title_la": "Uslovi povezani sa načinom života",
+    "source_line": 4259
+  }
+]

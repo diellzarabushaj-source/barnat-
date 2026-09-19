@@ -1,0 +1,2287 @@
+[
+  {
+    "code": "I00",
+    "title_la": "Reumatska groznica bez promena na srcu",
+    "source_line": 2157
+  },
+  {
+    "code": "I01",
+    "title_la": "Reumatska groznica sa promenama na srcu",
+    "source_line": 2158
+  },
+  {
+    "code": "I01.0",
+    "title_la": "Pericarditis rheumatica acuta",
+    "source_line": 22029
+  },
+  {
+    "code": "I01.1",
+    "title_la": "Endocarditis rheumatica acuta",
+    "source_line": 22033
+  },
+  {
+    "code": "I01.2",
+    "title_la": "Myocarditis rheumatica acuta",
+    "source_line": 22037
+  },
+  {
+    "code": "I01.8",
+    "title_la": "Morbus cordis rheumaticus acutus alius",
+    "source_line": 22040
+  },
+  {
+    "code": "I01.9",
+    "title_la": "Morbus cordis rheumaticus acutus, non specificatus",
+    "source_line": 22044
+  },
+  {
+    "code": "I02",
+    "title_la": "Reumatska horea - spontani nevoljni pokreti delova tela",
+    "source_line": 2159
+  },
+  {
+    "code": "I02.0",
+    "title_la": "Chorea rheumatica cum alterationibus cardiacis",
+    "source_line": 22056
+  },
+  {
+    "code": "I02.9",
+    "title_la": "Chorea rheumatica sine alterationibus cardiacis",
+    "source_line": 22060
+  },
+  {
+    "code": "I05",
+    "title_la": "Reumatske bolesti mitralnog zaliska",
+    "source_line": 2162
+  },
+  {
+    "code": "I05.0",
+    "title_la": "Stenosis mitralis",
+    "source_line": 22078
+  },
+  {
+    "code": "I05.1",
+    "title_la": "Insufficientia valvulae mitralis rheumatica",
+    "source_line": 22081
+  },
+  {
+    "code": "I05.2",
+    "title_la": "Stenosis et insufficientia valvulae mitralis",
+    "source_line": 22086
+  },
+  {
+    "code": "I05.8",
+    "title_la": "Morbi valvulae mitralis alii",
+    "source_line": 22089
+  },
+  {
+    "code": "I05.9",
+    "title_la": "Morbus valvulae mitralis, non specificatus",
+    "source_line": 22092
+  },
+  {
+    "code": "I06",
+    "title_la": "Reumatske bolesti aortnog zaliska",
+    "source_line": 2163
+  },
+  {
+    "code": "I06.0",
+    "title_la": "Stenosis aortae rheumatica",
+    "source_line": 22099
+  },
+  {
+    "code": "I06.1",
+    "title_la": "Insufficientia aortae rheumatica",
+    "source_line": 22102
+  },
+  {
+    "code": "I06.2",
+    "title_la": "Stenosis cum insufficientia aortae rheumatica",
+    "source_line": 22107
+  },
+  {
+    "code": "I06.8",
+    "title_la": "Morbi valvulae aortae rheumatici alii",
+    "source_line": 22110
+  },
+  {
+    "code": "I06.9",
+    "title_la": "Morbus valvulae aortae rheumaticus, non specificatus",
+    "source_line": 22112
+  },
+  {
+    "code": "I07",
+    "title_la": "Reumatske bolesti trolisnog zaliska",
+    "source_line": 2164
+  },
+  {
+    "code": "I07.0",
+    "title_la": "Stenosis valvulae tricuspidalis",
+    "source_line": 22127
+  },
+  {
+    "code": "I07.1",
+    "title_la": "Insufficientia valvulae tricuspidalis",
+    "source_line": 22130
+  },
+  {
+    "code": "I07.2",
+    "title_la": "Stenosis cum insufficientia valvulae tricuspidalis",
+    "source_line": 22133
+  },
+  {
+    "code": "I07.8",
+    "title_la": "Morbi valvulae tricuspidalis rheumatici alii",
+    "source_line": 22135
+  },
+  {
+    "code": "I07.9",
+    "title_la": "Morbus valvulae tricuspidalis rheumaticus, non specificatus",
+    "source_line": 22137
+  },
+  {
+    "code": "I08",
+    "title_la": "Višestruke bolesti zalistaka srca",
+    "source_line": 2165
+  },
+  {
+    "code": "I08.0",
+    "title_la": "Morbi valvularum cordis mitralium et aortae",
+    "source_line": 22148
+  },
+  {
+    "code": "I08.1",
+    "title_la": "Morbi valvularum mitralium et tricuspidalium",
+    "source_line": 22152
+  },
+  {
+    "code": "I08.2",
+    "title_la": "Morbi valvularum aortae et tricuspidalium",
+    "source_line": 22154
+  },
+  {
+    "code": "I08.3",
+    "title_la": "Morbi valvularum aortae, mitralium et tricuspidalium",
+    "source_line": 22156
+  },
+  {
+    "code": "I08.8",
+    "title_la": "Morbi valvularum multiplices alii",
+    "source_line": 22158
+  },
+  {
+    "code": "I08.9",
+    "title_la": "Morbus valvulae multiplex, non specificatus",
+    "source_line": 22160
+  },
+  {
+    "code": "I09",
+    "title_la": "Druge reumatske bolesti srca",
+    "source_line": 2166
+  },
+  {
+    "code": "I09.0",
+    "title_la": "Myocarditis rheumatica",
+    "source_line": 22165
+  },
+  {
+    "code": "I09.1",
+    "title_la": "Endocarditis rheumatica valvulae non specificatae",
+    "source_line": 22176
+  },
+  {
+    "code": "I09.2",
+    "title_la": "Pericarditis rheumatica chronica",
+    "source_line": 22181
+  },
+  {
+    "code": "I09.8",
+    "title_la": "Morbi cordis rheumatici specificati, alii",
+    "source_line": 22187
+  },
+  {
+    "code": "I09.9",
+    "title_la": "Morbus cordis rheumaticus, non specificatus",
+    "source_line": 22190
+  },
+  {
+    "code": "I10",
+    "title_la": "Povišen krvni pritisak, nepoznatog porekla",
+    "source_line": 2169
+  },
+  {
+    "code": "I11",
+    "title_la": "Bolest srca uzrokovana povišenim krvnim pritiskom",
+    "source_line": 2170
+  },
+  {
+    "code": "I11.0",
+    "title_la": "Morbus cordis hypertensivus cum insufficientia cordis (congestiva)",
+    "source_line": 22215
+  },
+  {
+    "code": "I11.9",
+    "title_la": "Morbus cordis hypertensivus sine insufficientia cordis (congestiva)",
+    "source_line": 22219
+  },
+  {
+    "code": "I12",
+    "title_la": "Oboljenje bubrega uzrokovano povišenim krvnim pritiskom",
+    "source_line": 2171
+  },
+  {
+    "code": "I12.0",
+    "title_la": "Morbus renalis hypertensivus cum insufficientia renis",
+    "source_line": 22238
+  },
+  {
+    "code": "I12.9",
+    "title_la": "Morbus renalis hypertensivus sine insufficientia renis",
+    "source_line": 22241
+  },
+  {
+    "code": "I13",
+    "title_la": "Bolest srca i bubrega uzrokovana povišenim krvnim pritiskom",
+    "source_line": 2172
+  },
+  {
+    "code": "I13.0",
+    "title_la": "Morbus cordis et morbus renis hypertensivus cum insufficientia cordis (congestiva)",
+    "source_line": 22250
+  },
+  {
+    "code": "I13.1",
+    "title_la": "Morbus cordis et morbus renis hypertensivus cum insufficientia renis",
+    "source_line": 22253
+  },
+  {
+    "code": "I13.2",
+    "title_la": "Morbus cordis et morbus renis hypertensivum cum insufficientia cordis (congestiva)",
+    "source_line": 22256
+  },
+  {
+    "code": "I13.9",
+    "title_la": "Morbus cordis et morbus renis hypertensivus, non specificatus",
+    "source_line": 22260
+  },
+  {
+    "code": "I15",
+    "title_la": "Sekundarno povišen krvni pritisak",
+    "source_line": 2173
+  },
+  {
+    "code": "I15.0",
+    "title_la": "Hypertensio renovascularis",
+    "source_line": 22267
+  },
+  {
+    "code": "I15.1",
+    "title_la": "Hypertensio secundaria in morbis renalibus aliis",
+    "source_line": 22269
+  },
+  {
+    "code": "I15.2",
+    "title_la": "Hypertensio secundaria endocrinogenes",
+    "source_line": 22271
+  },
+  {
+    "code": "I15.8",
+    "title_la": "Hypertensio secundaria alia",
+    "source_line": 22274
+  },
+  {
+    "code": "I15.9",
+    "title_la": "Hypertensio secundaria, non specificata",
+    "source_line": 22276
+  },
+  {
+    "code": "I20",
+    "title_la": "Stezanje u grudima",
+    "source_line": 2176
+  },
+  {
+    "code": "I20.0",
+    "title_la": "Angina pectoris non stabilis",
+    "source_line": 22297
+  },
+  {
+    "code": "I20.1",
+    "title_la": "Angina pectoris spastica verificata",
+    "source_line": 22305
+  },
+  {
+    "code": "I20.8",
+    "title_la": "Angina pectoris, formae aliae",
+    "source_line": 22311
+  },
+  {
+    "code": "I20.9",
+    "title_la": "Angina pectoris, non specificata",
+    "source_line": 22315
+  },
+  {
+    "code": "I21",
+    "title_la": "Akutni infarkt miokarda",
+    "source_line": 2177
+  },
+  {
+    "code": "I21.0",
+    "title_la": "Infarctus myocardii anterioris transmuralis acutus",
+    "source_line": 22339
+  },
+  {
+    "code": "I21.1",
+    "title_la": "Infarctus myocardii inferioris transmuralis acutus",
+    "source_line": 22345
+  },
+  {
+    "code": "I21.2",
+    "title_la": "Infarctus myocardii transmuralis acutus, partium aliarum",
+    "source_line": 22351
+  },
+  {
+    "code": "I21.3",
+    "title_la": "Infarctus myocardii transmuralis acutus sine loco specificato",
+    "source_line": 22362
+  },
+  {
+    "code": "I21.4",
+    "title_la": "Infarctus myocardii subendocardialis acutus",
+    "source_line": 22365
+  },
+  {
+    "code": "I21.9",
+    "title_la": "Infarctus myocardii acutus, non specificatus",
+    "source_line": 22368
+  },
+  {
+    "code": "I22",
+    "title_la": "Ponovljen infarkt miokarda",
+    "source_line": 2178
+  },
+  {
+    "code": "I22.0",
+    "title_la": "Infarctus myocardii anterioris recidivus",
+    "source_line": 22389
+  },
+  {
+    "code": "I22.1",
+    "title_la": "Infarctus myocardii inferioris recidivus",
+    "source_line": 22395
+  },
+  {
+    "code": "I22.8",
+    "title_la": "Infarctus myocardii recidivus, partium aliarum",
+    "source_line": 22401
+  },
+  {
+    "code": "I22.9",
+    "title_la": "Infarctus myocardii recidivus, partis non specificatae",
+    "source_line": 22412
+  },
+  {
+    "code": "I23",
+    "title_la": "Komplikacije posle akutnog infarkta miokarda",
+    "source_line": 2179
+  },
+  {
+    "code": "I23.0",
+    "title_la": "Haemopericardium ut complicatio post infarctum myocardii acutum",
+    "source_line": 22420
+  },
+  {
+    "code": "I23.1",
+    "title_la": "Defectus septi atrialis ut complicatio post infarctum myocardii acutum",
+    "source_line": 22422
+  },
+  {
+    "code": "I23.2",
+    "title_la": "Defectus septi ventriculorum ut complicatio post infarctum myocardii acutum",
+    "source_line": 22424
+  },
+  {
+    "code": "I23.3",
+    "title_la": "Ruptura parietis cordis sine haemopericardio ut complicatio post infarctum",
+    "source_line": 22426
+  },
+  {
+    "code": "I23.4",
+    "title_la": "Ruptura chordae tendineae ut complicatio post infarctum myocardii acutum",
+    "source_line": 22438
+  },
+  {
+    "code": "I23.5",
+    "title_la": "Ruptura musculi papillaris ut complicatio post infarctum myocardii acutum",
+    "source_line": 22440
+  },
+  {
+    "code": "I23.6",
+    "title_la": "Thrombosis atrii, auriculae atrii et ventriculi cordis ut complicatio post infarctum",
+    "source_line": 22442
+  },
+  {
+    "code": "I23.8",
+    "title_la": "Complicationes post infarctum cordis acutum aliae",
+    "source_line": 22446
+  },
+  {
+    "code": "I24",
+    "title_la": "Druge akutne ishemijske bolesti srca",
+    "source_line": 2180
+  },
+  {
+    "code": "I24.0",
+    "title_la": "Thrombosis coronaria sine infarctu myocardii",
+    "source_line": 22453
+  },
+  {
+    "code": "I24.1",
+    "title_la": "Syndroma Dressler",
+    "source_line": 22459
+  },
+  {
+    "code": "I24.8",
+    "title_la": "Morbus cordis ischaemicus acutus, formae aliae",
+    "source_line": 22462
+  },
+  {
+    "code": "I24.9",
+    "title_la": "Morbus cordis ischaemicus acutus, non specificatus",
+    "source_line": 22466
+  },
+  {
+    "code": "I25",
+    "title_la": "Hronična ishemijska bolest srca",
+    "source_line": 2181
+  },
+  {
+    "code": "I25.0",
+    "title_la": "Atherosclerosis cardiovascularis",
+    "source_line": 22473
+  },
+  {
+    "code": "I25.1",
+    "title_la": "Morbus cordis atheroscleroticus",
+    "source_line": 22475
+  },
+  {
+    "code": "I25.2",
+    "title_la": "Infarctus myocardi antea",
+    "source_line": 22481
+  },
+  {
+    "code": "I25.3",
+    "title_la": "Aneurisma cordis",
+    "source_line": 22494
+  },
+  {
+    "code": "I25.4",
+    "title_la": "Aneurisma arteriae coronariae",
+    "source_line": 22498
+  },
+  {
+    "code": "I25.5",
+    "title_la": "Cardiomyopathia ischaemica",
+    "source_line": 22502
+  },
+  {
+    "code": "I25.6",
+    "title_la": "Ischaemia myocardii asymptomatica",
+    "source_line": 22504
+  },
+  {
+    "code": "I25.8",
+    "title_la": "Morbus cordis ischaemicus chronicus, formae aliae",
+    "source_line": 22506
+  },
+  {
+    "code": "I25.9",
+    "title_la": "Morbus cordis ischaemicus chronicus, non specificatus",
+    "source_line": 22510
+  },
+  {
+    "code": "I26",
+    "title_la": "Plućna embolija",
+    "source_line": 2184
+  },
+  {
+    "code": "I26.0",
+    "title_la": "Embolia arteriae pulmonalis cum mentione cordis pulmonalis acuti",
+    "source_line": 22526
+  },
+  {
+    "code": "I26.9",
+    "title_la": "Embolia arteriae pulmonalis sine mentione cordis pulmonalis acuti",
+    "source_line": 22529
+  },
+  {
+    "code": "I27",
+    "title_la": "Druge bolesti srca plućnog porekla",
+    "source_line": 2185
+  },
+  {
+    "code": "I27.0",
+    "title_la": "Hypertensio arteriae pulmonalis essentialis",
+    "source_line": 22535
+  },
+  {
+    "code": "I27.1",
+    "title_la": "Cor kyphoscolioticum",
+    "source_line": 22537
+  },
+  {
+    "code": "I27.2",
+    "title_la": "Hypertensio pulmonalis secundaria",
+    "source_line": 22539
+  },
+  {
+    "code": "I27.8",
+    "title_la": "Morbi cordis pulmonales alii, specificati",
+    "source_line": 22550
+  },
+  {
+    "code": "I27.9",
+    "title_la": "Morbus cordis pulmonalis, non specificatus",
+    "source_line": 22553
+  },
+  {
+    "code": "I28",
+    "title_la": "Druge bolesti krvnih sudova pluća",
+    "source_line": 2186
+  },
+  {
+    "code": "I28.0",
+    "title_la": "Fistula arteriovenosa pulmonalis",
+    "source_line": 22560
+  },
+  {
+    "code": "I28.1",
+    "title_la": "Aneurisma arteriae pulmonalis",
+    "source_line": 22562
+  },
+  {
+    "code": "I28.8",
+    "title_la": "Morbi vasorum pulmonis specificati, alii",
+    "source_line": 22564
+  },
+  {
+    "code": "I28.9",
+    "title_la": "Morbus vasorum pulmonis, non specificatus",
+    "source_line": 22569
+  },
+  {
+    "code": "I30",
+    "title_la": "Akutni perikarditis",
+    "source_line": 2189
+  },
+  {
+    "code": "I30.0",
+    "title_la": "Pericarditis idopathica acuta, non specificata",
+    "source_line": 22581
+  },
+  {
+    "code": "I30.1",
+    "title_la": "Pericarditis infectiva",
+    "source_line": 22583
+  },
+  {
+    "code": "I30.8",
+    "title_la": "Pericarditis acuta, formae aliae",
+    "source_line": 22593
+  },
+  {
+    "code": "I30.9",
+    "title_la": "Pericarditis acuta, non specificata",
+    "source_line": 22595
+  },
+  {
+    "code": "I31",
+    "title_la": "Druge bolesti perikarda",
+    "source_line": 2190
+  },
+  {
+    "code": "I31.0",
+    "title_la": "Pericarditis adhaesiva chronica",
+    "source_line": 22611
+  },
+  {
+    "code": "I31.1",
+    "title_la": "Pericarditis constrictiva chronica",
+    "source_line": 22616
+  },
+  {
+    "code": "I31.2",
+    "title_la": "Haemopericardium non alibi classificatum",
+    "source_line": 22620
+  },
+  {
+    "code": "I31.3",
+    "title_la": "Exudatio pericardii non inflammatoria",
+    "source_line": 22622
+  },
+  {
+    "code": "I31.8",
+    "title_la": "Morbi pericardii specificati, alii",
+    "source_line": 22625
+  },
+  {
+    "code": "I31.9",
+    "title_la": "Morbus pericardii, non specificatus",
+    "source_line": 22629
+  },
+  {
+    "code": "I32",
+    "title_la": "Perikarditis u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2191
+  },
+  {
+    "code": "I32.0",
+    "title_la": "Pericarditis in morbis bacterialibus alibi classificatis",
+    "source_line": 22636
+  },
+  {
+    "code": "I32.1",
+    "title_la": "Pericarditis in morbis infectivis et parasitariis aliis, alibi classificatis",
+    "source_line": 22643
+  },
+  {
+    "code": "I32.8",
+    "title_la": "Pericarditis in aliis morbis alibi classificatis",
+    "source_line": 22645
+  },
+  {
+    "code": "I33",
+    "title_la": "Akutni i subakutni endokarditis",
+    "source_line": 2192
+  },
+  {
+    "code": "I33.0",
+    "title_la": "Endocarditis infectiva acuta et subacuta",
+    "source_line": 22663
+  },
+  {
+    "code": "I33.9",
+    "title_la": "Endocarditis acuta, non specificata",
+    "source_line": 22673
+  },
+  {
+    "code": "I34",
+    "title_la": "Nereumatske bolesti mitralnog zaliska",
+    "source_line": 2193
+  },
+  {
+    "code": "I34.0",
+    "title_la": "Insufficientia valvulae mitralis non rheumatica",
+    "source_line": 22690
+  },
+  {
+    "code": "I34.1",
+    "title_la": "Prolapsus valvulae mitralis",
+    "source_line": 22695
+  },
+  {
+    "code": "I34.2",
+    "title_la": "Stenosis valvulae mitralis non rheumatica",
+    "source_line": 22699
+  },
+  {
+    "code": "I34.8",
+    "title_la": "Morbi valvulae mitralis non rheumatici alii",
+    "source_line": 22701
+  },
+  {
+    "code": "I34.9",
+    "title_la": "Morbus valvulae mitralis non rheumaticus, non specificatus",
+    "source_line": 22703
+  },
+  {
+    "code": "I35",
+    "title_la": "Nereumatske bolesti aortnog zaliska",
+    "source_line": 2194
+  },
+  {
+    "code": "I35.0",
+    "title_la": "Stenosis valvulae aortae non rheumatica",
+    "source_line": 22719
+  },
+  {
+    "code": "I35.1",
+    "title_la": "Insufficientia valvularum aortae non rheumatica",
+    "source_line": 22721
+  },
+  {
+    "code": "I35.2",
+    "title_la": "Stenosis cum insufficientia valvulae aortae, non rheumatica",
+    "source_line": 22726
+  },
+  {
+    "code": "I35.8",
+    "title_la": "Morbi valvulae aortae non rheumatici alii",
+    "source_line": 22728
+  },
+  {
+    "code": "I35.9",
+    "title_la": "Morbus valvulae aortae non rheumaticus, non specificatus",
+    "source_line": 22730
+  },
+  {
+    "code": "I36",
+    "title_la": "Nerumatske bolesti trolisnog zaliska",
+    "source_line": 2195
+  },
+  {
+    "code": "I36.0",
+    "title_la": "Stenosis valvulae tricuspidalis non rheumatica",
+    "source_line": 22738
+  },
+  {
+    "code": "I36.1",
+    "title_la": "Insufficientia valvulae tricuspidalis non rheumatica",
+    "source_line": 22740
+  },
+  {
+    "code": "I36.2",
+    "title_la": "Stenosis cum insufficientia valvulae tricuspidalis non rheumatica",
+    "source_line": 22745
+  },
+  {
+    "code": "I36.8",
+    "title_la": "Morbi valvulae tricuspidalis non rheumatici alii",
+    "source_line": 22747
+  },
+  {
+    "code": "I36.9",
+    "title_la": "Morbus valvulae tricuspidalis non rheumaticus, non specificatus",
+    "source_line": 22749
+  },
+  {
+    "code": "I37",
+    "title_la": "Bolesti zaliska arterije pluća",
+    "source_line": 2196
+  },
+  {
+    "code": "I37.0",
+    "title_la": "Stenosis valvulae pulmonalis",
+    "source_line": 22756
+  },
+  {
+    "code": "I37.1",
+    "title_la": "Insufficientia valvulae pulmonalis",
+    "source_line": 22758
+  },
+  {
+    "code": "I37.2",
+    "title_la": "Stenosis cum insufficientia valvulae pulmonalis",
+    "source_line": 22763
+  },
+  {
+    "code": "I37.8",
+    "title_la": "Morbi valvulae pulmonalis alii",
+    "source_line": 22765
+  },
+  {
+    "code": "I37.9",
+    "title_la": "Morbus valvulae pulmonalis, non specificatus",
+    "source_line": 22774
+  },
+  {
+    "code": "I38",
+    "title_la": "Endokarditis, neoznačenog zaliska",
+    "source_line": 2197
+  },
+  {
+    "code": "I39",
+    "title_la": "Zapaljenje endokarda i bolesti srčanih zalistaka u bolestima klasifikovanim na",
+    "source_line": 2198
+  },
+  {
+    "code": "I39.0",
+    "title_la": "Morbi valvulae mitralis in morbis alibi classificatis",
+    "source_line": 22799
+  },
+  {
+    "code": "I39.1",
+    "title_la": "Morbi valvulae aortae in morbis alibi classificatis",
+    "source_line": 22801
+  },
+  {
+    "code": "I39.2",
+    "title_la": "Morbi valvulae tricuspidalis in morbis alibi classificatis",
+    "source_line": 22803
+  },
+  {
+    "code": "I39.3",
+    "title_la": "Morbi valvulae pulmonalis in morbis alibi classificatis",
+    "source_line": 22805
+  },
+  {
+    "code": "I39.4",
+    "title_la": "Morbi valvularum multiplicium in morbis alibi classificatis",
+    "source_line": 22807
+  },
+  {
+    "code": "I39.8",
+    "title_la": "Endocarditis valvulae non specificatae in morbis alibi classificatis",
+    "source_line": 22809
+  },
+  {
+    "code": "I40",
+    "title_la": "Akutno zapaljenje miokarda",
+    "source_line": 2206
+  },
+  {
+    "code": "I40.0",
+    "title_la": "Myocarditis infectiva",
+    "source_line": 22815
+  },
+  {
+    "code": "I40.1",
+    "title_la": "Myocarditis isolata",
+    "source_line": 22819
+  },
+  {
+    "code": "I40.8",
+    "title_la": "Myocarditis acuta alia",
+    "source_line": 22821
+  },
+  {
+    "code": "I40.9",
+    "title_la": "Myocarditis acuta, non specificata",
+    "source_line": 22823
+  },
+  {
+    "code": "I41",
+    "title_la": "Zapaljenje miokarda u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2207
+  },
+  {
+    "code": "I41.0",
+    "title_la": "Myocarditis in morbis bacterialibus alibi classificatis",
+    "source_line": 22835
+  },
+  {
+    "code": "I41.1",
+    "title_la": "Myocarditis in morbis viralibus alibi classificatis",
+    "source_line": 22843
+  },
+  {
+    "code": "I41.2",
+    "title_la": "Myocarditis in morbis infectiosis et parasiticis aliis alibi classificatis",
+    "source_line": 22850
+  },
+  {
+    "code": "I41.8",
+    "title_la": "Myocarditis in morbis aliis alibi classificatis",
+    "source_line": 22856
+  },
+  {
+    "code": "I42",
+    "title_la": "Oboljenja srčanog mišića",
+    "source_line": 2208
+  },
+  {
+    "code": "I42.0",
+    "title_la": "Cardiomyopathia congestiva",
+    "source_line": 22867
+  },
+  {
+    "code": "I42.1",
+    "title_la": "Cardiomyopathia hypertrophica obstructiva",
+    "source_line": 22870
+  },
+  {
+    "code": "I42.2",
+    "title_la": "Cardiomyopathia hypertrophica alia",
+    "source_line": 22873
+  },
+  {
+    "code": "I42.3",
+    "title_la": "Endomyocarditis eosinophilica",
+    "source_line": 22876
+  },
+  {
+    "code": "I42.4",
+    "title_la": "Fibroelastosis endocardii",
+    "source_line": 22880
+  },
+  {
+    "code": "I42.5",
+    "title_la": "Cardiomyopathia restrictiva alia",
+    "source_line": 22891
+  },
+  {
+    "code": "I42.6",
+    "title_la": "Cardiomyopathia alcoholica",
+    "source_line": 22894
+  },
+  {
+    "code": "I42.7",
+    "title_la": "Cardiomyopathia propter usum medicamentorum et factorum externorum aliorum",
+    "source_line": 22896
+  },
+  {
+    "code": "I42.8",
+    "title_la": "Cardiomyopathiae aliae",
+    "source_line": 22899
+  },
+  {
+    "code": "I42.9",
+    "title_la": "Cardiomyopathia, non specificata",
+    "source_line": 22901
+  },
+  {
+    "code": "I43",
+    "title_la": "Kardiomiopatija u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2209
+  },
+  {
+    "code": "I43.0",
+    "title_la": "Cardiomyopathia in morbis infectivis et parasitariis alibi classificatis",
+    "source_line": 22907
+  },
+  {
+    "code": "I43.1",
+    "title_la": "Cardiomyopathia in morbis metabolicis",
+    "source_line": 22910
+  },
+  {
+    "code": "I43.2",
+    "title_la": "Cardiomyopathia in morbis nutritionalibus",
+    "source_line": 22913
+  },
+  {
+    "code": "I43.8",
+    "title_la": "Cardiomyopathia in morbis aliis alibi classificatis",
+    "source_line": 22916
+  },
+  {
+    "code": "I44",
+    "title_la": "Pretkomorsko-komorski blok i blok leve grane",
+    "source_line": 2210
+  },
+  {
+    "code": "I44.0",
+    "title_la": "Block atrioventricularis, gradus primus",
+    "source_line": 22923
+  },
+  {
+    "code": "I44.1",
+    "title_la": "Block atrioventricularis, gradus secundus",
+    "source_line": 22925
+  },
+  {
+    "code": "I44.2",
+    "title_la": "Block atrioventricularis completus",
+    "source_line": 22931
+  },
+  {
+    "code": "I44.3",
+    "title_la": "Block atrioventricularis alius et non specificatus",
+    "source_line": 22935
+  },
+  {
+    "code": "I44.4",
+    "title_la": "Block fasciculi anterioris, rami atrioventricularis sinistri",
+    "source_line": 22938
+  },
+  {
+    "code": "I44.5",
+    "title_la": "Block fasciculi posterioris, rami atrioventricularis sinistri",
+    "source_line": 22947
+  },
+  {
+    "code": "I44.6",
+    "title_la": "Block fasciculi alterius et non specificati",
+    "source_line": 22949
+  },
+  {
+    "code": "I44.7",
+    "title_la": "Block fasciculi sinistri, non specificatus",
+    "source_line": 22952
+  },
+  {
+    "code": "I45",
+    "title_la": "Drugi poremećaji sprovodnog sistema srca",
+    "source_line": 2211
+  },
+  {
+    "code": "I45.0",
+    "title_la": "Block fasciculi dextri",
+    "source_line": 22957
+  },
+  {
+    "code": "I45.1",
+    "title_la": "Block fasciculi dextri alius et non specificatus",
+    "source_line": 22959
+  },
+  {
+    "code": "I45.2",
+    "title_la": "Block bifascicularis",
+    "source_line": 22962
+  },
+  {
+    "code": "I45.3",
+    "title_la": "Block trifascicularis",
+    "source_line": 22964
+  },
+  {
+    "code": "I45.4",
+    "title_la": "Block intraventricularis, non specificatus",
+    "source_line": 22966
+  },
+  {
+    "code": "I45.5",
+    "title_la": "Block cordis specificatus, alius",
+    "source_line": 22969
+  },
+  {
+    "code": "I45.6",
+    "title_la": "Syndroma praeexcitationis",
+    "source_line": 22974
+  },
+  {
+    "code": "I45.8",
+    "title_la": "Disordines systematis conductivi cordis specificati alii",
+    "source_line": 22983
+  },
+  {
+    "code": "I45.9",
+    "title_la": "Disordo conductionis, non specificatus",
+    "source_line": 22989
+  },
+  {
+    "code": "I46",
+    "title_la": "Zastoj srca",
+    "source_line": 2212
+  },
+  {
+    "code": "I46.0",
+    "title_la": "Institio cordis cum reanimatione positiva",
+    "source_line": 23007
+  },
+  {
+    "code": "I46.1",
+    "title_la": "Mors cardiaca subita",
+    "source_line": 23009
+  },
+  {
+    "code": "I46.9",
+    "title_la": "Institio cordis, non specificata",
+    "source_line": 23016
+  },
+  {
+    "code": "I47",
+    "title_la": "Napad ubrzanog rada srca",
+    "source_line": 2213
+  },
+  {
+    "code": "I47.0",
+    "title_la": "Arrhytmia ventricularis paroxysmalis [„Re-entry“ arrhytmia]",
+    "source_line": 23026
+  },
+  {
+    "code": "I47.1",
+    "title_la": "Tachycardia supraventricularis",
+    "source_line": 23028
+  },
+  {
+    "code": "I47.2",
+    "title_la": "Tachycardia ventricularis paroxysmalis",
+    "source_line": 23034
+  },
+  {
+    "code": "I47.9",
+    "title_la": "Tachycardia paroxysmalis, non specificata",
+    "source_line": 23036
+  },
+  {
+    "code": "I48",
+    "title_la": "Treperenje pretkomora i lepršanje pretkomora",
+    "source_line": 2214
+  },
+  {
+    "code": "I49",
+    "title_la": "Drugi poremećaji ritma srca",
+    "source_line": 2215
+  },
+  {
+    "code": "I49.0",
+    "title_la": "Fibrillatio ventriculorum et fluctuatio ventriculorum",
+    "source_line": 23061
+  },
+  {
+    "code": "I49.1",
+    "title_la": "Extrasystole supraventricularis",
+    "source_line": 23063
+  },
+  {
+    "code": "I49.2",
+    "title_la": "Extrasystole nodalis",
+    "source_line": 23066
+  },
+  {
+    "code": "I49.3",
+    "title_la": "Extrasystole ventricularis",
+    "source_line": 23068
+  },
+  {
+    "code": "I49.4",
+    "title_la": "Extrasystole alia, non specificata",
+    "source_line": 23070
+  },
+  {
+    "code": "I49.5",
+    "title_la": "Disordo sinus cordi",
+    "source_line": 23077
+  },
+  {
+    "code": "I49.8",
+    "title_la": "Arrhytmiae cordis specificatae, aliae",
+    "source_line": 23080
+  },
+  {
+    "code": "I49.9",
+    "title_la": "Arrhytmia cordis, non specificata",
+    "source_line": 23086
+  },
+  {
+    "code": "I50",
+    "title_la": "Srčana insuficijencija",
+    "source_line": 2216
+  },
+  {
+    "code": "I50.0",
+    "title_la": "Insufficientia cordis congestiva",
+    "source_line": 23097
+  },
+  {
+    "code": "I50.1",
+    "title_la": "Insufficientia ventriculi sinistri",
+    "source_line": 23108
+  },
+  {
+    "code": "I50.9",
+    "title_la": "Insufficientia cordis, non specificata",
+    "source_line": 23114
+  },
+  {
+    "code": "I51",
+    "title_la": "Komplikacije i nedovoljno definisane bolesti srca",
+    "source_line": 2217
+  },
+  {
+    "code": "I51.0",
+    "title_la": "Defectus septi cordis acquisitus",
+    "source_line": 23125
+  },
+  {
+    "code": "I51.1",
+    "title_la": "Ruptura chordae tendineae, non alibi classificata",
+    "source_line": 23130
+  },
+  {
+    "code": "I51.2",
+    "title_la": "Ruptura musculi papillaris, non alibi classificata",
+    "source_line": 23132
+  },
+  {
+    "code": "I51.3",
+    "title_la": "Thrombosis intracardialis, non alibi classificata",
+    "source_line": 23134
+  },
+  {
+    "code": "I51.4",
+    "title_la": "Myocarditis, non specificata",
+    "source_line": 23141
+  },
+  {
+    "code": "I51.5",
+    "title_la": "Degeneratio myocardii",
+    "source_line": 23147
+  },
+  {
+    "code": "I51.6",
+    "title_la": "Morbus cardiovascularis, non specificatus",
+    "source_line": 23153
+  },
+  {
+    "code": "I51.7",
+    "title_la": "Cardiomegalia",
+    "source_line": 23165
+  },
+  {
+    "code": "I51.8",
+    "title_la": "Morbi cordis allii",
+    "source_line": 23170
+  },
+  {
+    "code": "I51.9",
+    "title_la": "Morbus cordis, non specificatus",
+    "source_line": 23174
+  },
+  {
+    "code": "I52",
+    "title_la": "Druge bolesti srca u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2218
+  },
+  {
+    "code": "I52.0",
+    "title_la": "Morbi cordis alii in morbis bacterialibus alibi classificatis",
+    "source_line": 23180
+  },
+  {
+    "code": "I52.1",
+    "title_la": "Morbi cordis alii in morbis infectivis et morbis parasitariis aliis alibi classificatis",
+    "source_line": 23183
+  },
+  {
+    "code": "I52.8",
+    "title_la": "Morbi cordis alii in morbis aliis alibi classificatis",
+    "source_line": 23187
+  },
+  {
+    "code": "I60",
+    "title_la": "Krvarenje ispod paučinaste moždanice",
+    "source_line": 2221
+  },
+  {
+    "code": "I60.0",
+    "title_la": "Haemorrhagia subarachnoidalis (carotis sipho)",
+    "source_line": 23205
+  },
+  {
+    "code": "I60.1",
+    "title_la": "Haemorrhagia subarachnoidalis (arteria cerebri media)",
+    "source_line": 23207
+  },
+  {
+    "code": "I60.2",
+    "title_la": "Haemorrhagia subarachnoidalis (arteria communicans anterior)",
+    "source_line": 23209
+  },
+  {
+    "code": "I60.3",
+    "title_la": "Haemorrhagia subarachnoidalis (arteria communicans posterior)",
+    "source_line": 23211
+  },
+  {
+    "code": "I60.4",
+    "title_la": "Haemorrhagia subarachnoidalis (arteria basilaris)",
+    "source_line": 23220
+  },
+  {
+    "code": "I60.5",
+    "title_la": "Haemorrhagia subarachnoidalis (arteria vertebralis)",
+    "source_line": 23222
+  },
+  {
+    "code": "I60.6",
+    "title_la": "Haemorrhagia subarachnoidalis (arteriae intracraniales aliae)",
+    "source_line": 23224
+  },
+  {
+    "code": "I60.7",
+    "title_la": "Haemorrhagia subarachnoidalis (arteria intracranialis), non specificata",
+    "source_line": 23226
+  },
+  {
+    "code": "I60.8",
+    "title_la": "Haemorrhagia subarachnoidalis alia",
+    "source_line": 23231
+  },
+  {
+    "code": "I60.9",
+    "title_la": "Haemorrhagia subarachnoidalis, non specificata",
+    "source_line": 23235
+  },
+  {
+    "code": "I61",
+    "title_la": "Intracerebralno krvarenje",
+    "source_line": 2222
+  },
+  {
+    "code": "I61.0",
+    "title_la": "Haemorrhagia intracerebralis subcorticalis in hemisphaera",
+    "source_line": 23242
+  },
+  {
+    "code": "I61.1",
+    "title_la": "Haemorrhagia intracerebralis corticalis in hemispahera",
+    "source_line": 23245
+  },
+  {
+    "code": "I61.2",
+    "title_la": "Haemorrhagia intracerebralis in hemispahera, non specifacata",
+    "source_line": 23249
+  },
+  {
+    "code": "I61.3",
+    "title_la": "Haemorrhagia intracerebralis in trunco cerebri",
+    "source_line": 23251
+  },
+  {
+    "code": "I61.4",
+    "title_la": "Haemorrhagia intracerebralis in cerebello",
+    "source_line": 23253
+  },
+  {
+    "code": "I61.5",
+    "title_la": "Haemorrhagia intracerebralis intraventricularis",
+    "source_line": 23255
+  },
+  {
+    "code": "I61.6",
+    "title_la": "Haemorrhagia intracerebralis locorum multiplicum",
+    "source_line": 23257
+  },
+  {
+    "code": "I61.8",
+    "title_la": "Haemorrhagia intracerebralis alia",
+    "source_line": 23259
+  },
+  {
+    "code": "I61.9",
+    "title_la": "Haemorrhagia intracerebralis, non specificata",
+    "source_line": 23261
+  },
+  {
+    "code": "I62",
+    "title_la": "Drugo netraumatsko krvarenje u mozgu",
+    "source_line": 2223
+  },
+  {
+    "code": "I62.0",
+    "title_la": "Haemorrhagia subduralis (acuta)(non traumatica)",
+    "source_line": 23267
+  },
+  {
+    "code": "I62.1",
+    "title_la": "Haemorrhagia extraduralis non traumatica",
+    "source_line": 23276
+  },
+  {
+    "code": "I62.9",
+    "title_la": "Haemorrhagia intracranialis (non traumatica), non specificata",
+    "source_line": 23279
+  },
+  {
+    "code": "I63",
+    "title_la": "Infarkt mozga",
+    "source_line": 2224
+  },
+  {
+    "code": "I63.0",
+    "title_la": "Infarctus cerebri propter thrombosim arteriae praecerebralis",
+    "source_line": 23286
+  },
+  {
+    "code": "I63.1",
+    "title_la": "Infarctus cerebri propter emboliam arteriae praecerebralis",
+    "source_line": 23288
+  },
+  {
+    "code": "I63.2",
+    "title_la": "Infarctus cerebri propter occlusionem sive stenosim arteriae praecerebralis, non",
+    "source_line": 23290
+  },
+  {
+    "code": "I63.3",
+    "title_la": "Infarctus cerebri propter trombosim arteriae cerebri",
+    "source_line": 23293
+  },
+  {
+    "code": "I63.4",
+    "title_la": "Infarctus cerebri propter emboliam arteriae cerebri",
+    "source_line": 23295
+  },
+  {
+    "code": "I63.5",
+    "title_la": "Infarctus cerebri propter occlusionem sive stenosim arteriae cerebri non",
+    "source_line": 23297
+  },
+  {
+    "code": "I63.6",
+    "title_la": "Infarctus cerebri propter thrombosim venae cerebri non pyogenem",
+    "source_line": 23300
+  },
+  {
+    "code": "I63.8",
+    "title_la": "Infarctus cerebri alius",
+    "source_line": 23302
+  },
+  {
+    "code": "I63.9",
+    "title_la": "Infarctus cerebri, non specificatus",
+    "source_line": 23304
+  },
+  {
+    "code": "I64",
+    "title_la": "Apopleksija – Moždana kap, neoznačena kao krvarenje ili infarkt mozga",
+    "source_line": 2225
+  },
+  {
+    "code": "I65",
+    "title_la": "Zapušenje premoždanih arterija i suženje premoždanih arterija bez infarkta mozga",
+    "source_line": 2226
+  },
+  {
+    "code": "I65.0",
+    "title_la": "Occlusio arteriae vertebralis et stenosis arteriae vertebralis",
+    "source_line": 23320
+  },
+  {
+    "code": "I65.1",
+    "title_la": "Occlusio arteriae basalis et stenosis arteriae basalis",
+    "source_line": 23322
+  },
+  {
+    "code": "I65.2",
+    "title_la": "Occlusio arteriae carotidis et stenosis arteriae carotidis",
+    "source_line": 23324
+  },
+  {
+    "code": "I65.3",
+    "title_la": "Occlusio arteriae praecerebralis et stenosis arteriae praecerebralis bilateralis",
+    "source_line": 23333
+  },
+  {
+    "code": "I65.8",
+    "title_la": "Occlusio arteriae praecerebralis et stenosis arteriae praecerebralis alia",
+    "source_line": 23336
+  },
+  {
+    "code": "I65.9",
+    "title_la": "Occlusio arteriae praecerebralis et stenosis arteriae praecerebralis, non specificata",
+    "source_line": 23338
+  },
+  {
+    "code": "I66",
+    "title_la": "Zapušenje arterije mozga i suženje arterije mozga bez infarkta mozga",
+    "source_line": 2227
+  },
+  {
+    "code": "I66.0",
+    "title_la": "Occlusio arteriae cerebri mediae et stenosis arteriae cerebri mediae",
+    "source_line": 23349
+  },
+  {
+    "code": "I66.1",
+    "title_la": "Occlusio arteriae cerebri anterioris et stenosis arteriae cerebri anterioris",
+    "source_line": 23351
+  },
+  {
+    "code": "I66.2",
+    "title_la": "Occlusio arteriae cerebri posterioris et stenosis arteriae cerebri posterioris",
+    "source_line": 23353
+  },
+  {
+    "code": "I66.3",
+    "title_la": "Occlusio arteriae cerebelli et stenosis arteriae cerebelli",
+    "source_line": 23355
+  },
+  {
+    "code": "I66.4",
+    "title_la": "Occlusio arteriae cerebri bilateralis et stenosis arteriae cerebri bilateralis (multiplex)",
+    "source_line": 23357
+  },
+  {
+    "code": "I66.8",
+    "title_la": "Occlusio arteriae cerebri et stenosis arteriae cerebri alia",
+    "source_line": 23359
+  },
+  {
+    "code": "I66.9",
+    "title_la": "Occlusio arteriae cerebri et stenosis arteriae cerebri, non specificata",
+    "source_line": 23362
+  },
+  {
+    "code": "I67",
+    "title_la": "Druge bolesti krvnih sudova mozga",
+    "source_line": 2228
+  },
+  {
+    "code": "I67.0",
+    "title_la": "Dissectio arteriarum cerebralium sine ruptura",
+    "source_line": 23368
+  },
+  {
+    "code": "I67.1",
+    "title_la": "Aneurysma cerebri, non ruptum",
+    "source_line": 23371
+  },
+  {
+    "code": "I67.2",
+    "title_la": "Atherosclerosis cerebri",
+    "source_line": 23377
+  },
+  {
+    "code": "I67.3",
+    "title_la": "Leucoencephalopathia vascularis progressiva",
+    "source_line": 23388
+  },
+  {
+    "code": "I67.4",
+    "title_la": "Encephalopathia hypertensiva",
+    "source_line": 23392
+  },
+  {
+    "code": "I67.5",
+    "title_la": "Morbus Moyamoya",
+    "source_line": 23394
+  },
+  {
+    "code": "I67.6",
+    "title_la": "Thrombosis venarum intracranialium non pyogenes",
+    "source_line": 23396
+  },
+  {
+    "code": "I67.7",
+    "title_la": "Arteritis cerebri non alibi classificata",
+    "source_line": 23401
+  },
+  {
+    "code": "I67.8",
+    "title_la": "Morbi cerebrovasculares specificati, alii",
+    "source_line": 23403
+  },
+  {
+    "code": "I67.9",
+    "title_la": "Morbus cerebrovascularis, non specificatus",
+    "source_line": 23407
+  },
+  {
+    "code": "I68",
+    "title_la": "Bolesti krvnih sudova mozga u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2229
+  },
+  {
+    "code": "I68.0",
+    "title_la": "Angiopathia cerebri amyloides (E85.-†)",
+    "source_line": 23412
+  },
+  {
+    "code": "I68.1",
+    "title_la": "Arteritis cerebri in morbis infectivis et parasitariis alibi classificatis",
+    "source_line": 23414
+  },
+  {
+    "code": "I68.2",
+    "title_la": "Arteritis cerebri in morbis aliis alibi classificatis",
+    "source_line": 23421
+  },
+  {
+    "code": "I68.8",
+    "title_la": "Morbi cerebrovasculares alii in morbis alibi classificatis",
+    "source_line": 23424
+  },
+  {
+    "code": "I69",
+    "title_la": "Posledice bolesti krvnih sudova mozga",
+    "source_line": 2230
+  },
+  {
+    "code": "I69.0",
+    "title_la": "Sequelae haemorrhagiae subarachnoidalis",
+    "source_line": 23434
+  },
+  {
+    "code": "I69.1",
+    "title_la": "Sequelae haemorrhagiae cerebri",
+    "source_line": 23436
+  },
+  {
+    "code": "I69.2",
+    "title_la": "Sequelae haemorrhagiae intracranialis alterius non traumaticae",
+    "source_line": 23444
+  },
+  {
+    "code": "I69.3",
+    "title_la": "Sequelae infarctus cerebri",
+    "source_line": 23446
+  },
+  {
+    "code": "I69.4",
+    "title_la": "Sequelae apoplexiae cerebri ut sine haemorrhagia sive infarctu specificatae",
+    "source_line": 23448
+  },
+  {
+    "code": "I69.8",
+    "title_la": "Sequelae morbi cerebrovascularis alterius non specificati",
+    "source_line": 23450
+  },
+  {
+    "code": "I70",
+    "title_la": "Ateroskleroza – zakrečavanje velikih krvnih sudova",
+    "source_line": 2233
+  },
+  {
+    "code": "I70.0",
+    "title_la": "Atherosclerosis aortae",
+    "source_line": 23479
+  },
+  {
+    "code": "I70.1",
+    "title_la": "Atherosclerosis arteriae renalis",
+    "source_line": 23481
+  },
+  {
+    "code": "I70.2",
+    "title_la": "Atherosclerosis arteriarum extremitatum",
+    "source_line": 23485
+  },
+  {
+    "code": "I70.8",
+    "title_la": "Atherosclerosis arteriarum aliarum",
+    "source_line": 23489
+  },
+  {
+    "code": "I70.9",
+    "title_la": "Atherosclerosis generalisata, non specificata",
+    "source_line": 23491
+  },
+  {
+    "code": "I71",
+    "title_la": "Aneurizma i disekcija aorte",
+    "source_line": 2234
+  },
+  {
+    "code": "I71.0",
+    "title_la": "Dissectio aortae [quaelibet pars]",
+    "source_line": 23503
+  },
+  {
+    "code": "I71.1",
+    "title_la": "Aneurysma aortae thoracicalis ruptum",
+    "source_line": 23506
+  },
+  {
+    "code": "I71.2",
+    "title_la": "Aneurysma aortae thoracicalis non ruptum",
+    "source_line": 23508
+  },
+  {
+    "code": "I71.3",
+    "title_la": "Aneurysma aortae abdominalis ruptum",
+    "source_line": 23510
+  },
+  {
+    "code": "I71.4",
+    "title_la": "Aneurysma aortae abdominalis non ruptum",
+    "source_line": 23512
+  },
+  {
+    "code": "I71.5",
+    "title_la": "Aneurysma aortae thoracoabdominalis ruptum",
+    "source_line": 23514
+  },
+  {
+    "code": "I71.6",
+    "title_la": "Aneurysma aortae thoracoabdominalis non ruptum",
+    "source_line": 23516
+  },
+  {
+    "code": "I71.8",
+    "title_la": "Aneurysma partis aortae non specificatae ruptum",
+    "source_line": 23518
+  },
+  {
+    "code": "I71.9",
+    "title_la": "Aneurysma partis aortae non specificatae non ruptum",
+    "source_line": 23521
+  },
+  {
+    "code": "I72",
+    "title_la": "Ostale aneurizme i disekcije",
+    "source_line": 2235
+  },
+  {
+    "code": "I72.0",
+    "title_la": "Aneurysma et dissectio arteriae carotidis",
+    "source_line": 23543
+  },
+  {
+    "code": "I72.1",
+    "title_la": "Aneurysma et dissectio arteriae extremitatis superioris",
+    "source_line": 23545
+  },
+  {
+    "code": "I72.2",
+    "title_la": "Aneurysma et dissectio arteriae renalis",
+    "source_line": 23547
+  },
+  {
+    "code": "I72.3",
+    "title_la": "Aneurysma et dissectio arteriae iliacae",
+    "source_line": 23549
+  },
+  {
+    "code": "I72.4",
+    "title_la": "Aneurysma et dissectio arteriae extremitatis inferioris",
+    "source_line": 23559
+  },
+  {
+    "code": "I72.5",
+    "title_la": "Aneurysma et dissectio arteriarum praecerebralium aliarum",
+    "source_line": 23561
+  },
+  {
+    "code": "I72.8",
+    "title_la": "Aneurysma et dissectio arteriarum aliarum specificatarum",
+    "source_line": 23567
+  },
+  {
+    "code": "I72.9",
+    "title_la": "Aneurysma et dissectio arteriae, loco non specificato",
+    "source_line": 23569
+  },
+  {
+    "code": "I73",
+    "title_la": "Druge bolesti perifernih krvnih sudova",
+    "source_line": 2236
+  },
+  {
+    "code": "I73.0",
+    "title_la": "Syndroma Raynaud",
+    "source_line": 23578
+  },
+  {
+    "code": "I73.1",
+    "title_la": "Thromboangiitis obliterans [Buerger]",
+    "source_line": 23583
+  },
+  {
+    "code": "I73.8",
+    "title_la": "Morbi vasorum perifericorum specificati, alii",
+    "source_line": 23585
+  },
+  {
+    "code": "I73.9",
+    "title_la": "Morbus vasorum perifericorum, non specificatus",
+    "source_line": 23593
+  },
+  {
+    "code": "I74",
+    "title_la": "Embolija i tromboza arterija",
+    "source_line": 2237
+  },
+  {
+    "code": "I74.0",
+    "title_la": "Embolia et thrombosis aortae abdominalis",
+    "source_line": 23627
+  },
+  {
+    "code": "I74.1",
+    "title_la": "Embolia et thrombosis partium aortae aliarum et non specificatarum",
+    "source_line": 23631
+  },
+  {
+    "code": "I74.2",
+    "title_la": "Embolia et thrombosis arteriarum extremitatum superiorum",
+    "source_line": 23633
+  },
+  {
+    "code": "I74.3",
+    "title_la": "Embolia et thrombosis arteriarum extremitatum inferiorum",
+    "source_line": 23635
+  },
+  {
+    "code": "I74.4",
+    "title_la": "Embolia et thrombosis arteriarum extremitatum non specificata",
+    "source_line": 23637
+  },
+  {
+    "code": "I74.5",
+    "title_la": "Embolia et thrombosis arteriae iliacae",
+    "source_line": 23640
+  },
+  {
+    "code": "I74.8",
+    "title_la": "Embolia et thrombosis arteriarum aliarum",
+    "source_line": 23642
+  },
+  {
+    "code": "I74.9",
+    "title_la": "Embolia et thrombosis arteriae non specificatae",
+    "source_line": 23644
+  },
+  {
+    "code": "I77",
+    "title_la": "Druge bolesti arterija i malih arterija",
+    "source_line": 2238
+  },
+  {
+    "code": "I77.0",
+    "title_la": "Fistula arteriovenosa acquisita",
+    "source_line": 23659
+  },
+  {
+    "code": "I77.1",
+    "title_la": "Stricturae arteriae",
+    "source_line": 23667
+  },
+  {
+    "code": "I77.2",
+    "title_la": "Ruptura arteriae",
+    "source_line": 23669
+  },
+  {
+    "code": "I77.3",
+    "title_la": "Dysplasio fibromuscularis arterialis",
+    "source_line": 23673
+  },
+  {
+    "code": "I77.4",
+    "title_la": "Syndroma compressionis arteriae coeliacae",
+    "source_line": 23675
+  },
+  {
+    "code": "I77.5",
+    "title_la": "Necrosis arteriae",
+    "source_line": 23677
+  },
+  {
+    "code": "I77.6",
+    "title_la": "Arteritis, non specificata",
+    "source_line": 23679
+  },
+  {
+    "code": "I77.8",
+    "title_la": "Morbi arteriales et arteriolares specificati, alii",
+    "source_line": 23691
+  },
+  {
+    "code": "I77.9",
+    "title_la": "Morbus arterialis et arteriolaris, non specificatus",
+    "source_line": 23696
+  },
+  {
+    "code": "I78",
+    "title_la": "Bolesti krvnih kapilara",
+    "source_line": 2239
+  },
+  {
+    "code": "I78.0",
+    "title_la": "Telangiectasia haemorrhagica hereditaria",
+    "source_line": 23701
+  },
+  {
+    "code": "I78.1",
+    "title_la": "Naevus, non neoplasticus",
+    "source_line": 23712
+  },
+  {
+    "code": "I78.8",
+    "title_la": "Morbi vasorum capillarium alii",
+    "source_line": 23730
+  },
+  {
+    "code": "I78.9",
+    "title_la": "Morbus capillarius, non specificatus",
+    "source_line": 23732
+  },
+  {
+    "code": "I79",
+    "title_la": "Bolesti arterija, arteriola i kapilara u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2240
+  },
+  {
+    "code": "I79.0",
+    "title_la": "Aneurysma aortae in morbis alibi classificatis",
+    "source_line": 23737
+  },
+  {
+    "code": "I79.1",
+    "title_la": "Aortitis in morbis alibi classificatis",
+    "source_line": 23740
+  },
+  {
+    "code": "I79.2",
+    "title_la": "Angiopathia peripherica in morbis alibi classificatis",
+    "source_line": 23743
+  },
+  {
+    "code": "I79.8",
+    "title_la": "Morbi arteriales, arteriolares et capillaries alii in morbis alibi classificatis",
+    "source_line": 23746
+  },
+  {
+    "code": "I80",
+    "title_la": "Flebitis i tromboflebitis",
+    "source_line": 2244
+  },
+  {
+    "code": "I80.0",
+    "title_la": "Phlebitis et thrombophlebitis extremitatis inferioris superficialis",
+    "source_line": 23778
+  },
+  {
+    "code": "I80.1",
+    "title_la": "Phlebitis et thrombophlebitis venae femoralis",
+    "source_line": 23780
+  },
+  {
+    "code": "I80.2",
+    "title_la": "Phlebitis et thrombophlebitis vasorum profundorum aliorum membrorum inferiorum",
+    "source_line": 23782
+  },
+  {
+    "code": "I80.3",
+    "title_la": "Phlebitis et thrombophlebitis extremitatis inferioris, non specificata",
+    "source_line": 23785
+  },
+  {
+    "code": "I80.8",
+    "title_la": "Phlebitis et thrombophlebitis aliorum locorum",
+    "source_line": 23788
+  },
+  {
+    "code": "I80.9",
+    "title_la": "Phlebitis et thrombophlebitis loco non specificato",
+    "source_line": 23790
+  },
+  {
+    "code": "I81",
+    "title_la": "Tromboza vene porte",
+    "source_line": 2245
+  },
+  {
+    "code": "I82",
+    "title_la": "Ostale embolije i tromboze vena",
+    "source_line": 2246
+  },
+  {
+    "code": "I82.0",
+    "title_la": "Syndroma Budd-Chiari",
+    "source_line": 23820
+  },
+  {
+    "code": "I82.1",
+    "title_la": "Thrombophlebitis migrans",
+    "source_line": 23822
+  },
+  {
+    "code": "I82.2",
+    "title_la": "Embolia et thrombosis venae cavae",
+    "source_line": 23824
+  },
+  {
+    "code": "I82.3",
+    "title_la": "Embolia et thrombosis venae renalis",
+    "source_line": 23826
+  },
+  {
+    "code": "I82.8",
+    "title_la": "Embolia et thrombosis venarum aliarum specificatarum",
+    "source_line": 23828
+  },
+  {
+    "code": "I82.9",
+    "title_la": "Embolia et thrombosis venae non specificatae",
+    "source_line": 23830
+  },
+  {
+    "code": "I83",
+    "title_la": "Proširene vene nogu",
+    "source_line": 2247
+  },
+  {
+    "code": "I83.0",
+    "title_la": "Varices extremitatis inferioris cum ulcere",
+    "source_line": 23839
+  },
+  {
+    "code": "I83.1",
+    "title_la": "Varices extremitatis inferioris cum inflammatione",
+    "source_line": 23843
+  },
+  {
+    "code": "I83.2",
+    "title_la": "Varices extremitatis inferioris cum inflammatione et ulcere",
+    "source_line": 23846
+  },
+  {
+    "code": "I83.9",
+    "title_la": "Varices extremitatis inferioris sine ulcere sive inflammatione",
+    "source_line": 23849
+  },
+  {
+    "code": "I84",
+    "title_la": "Hemoroidi",
+    "source_line": 2248
+  },
+  {
+    "code": "I84.0",
+    "title_la": "Haemorrhoides internae thromboticae",
+    "source_line": 23868
+  },
+  {
+    "code": "I84.1",
+    "title_la": "Haemorrhoides internae cum complicationibus aliis",
+    "source_line": 23870
+  },
+  {
+    "code": "I84.2",
+    "title_la": "Haemorrhoides internae sine complicationibus",
+    "source_line": 23876
+  },
+  {
+    "code": "I84.3",
+    "title_la": "Haemorrhoides externae thromboticae",
+    "source_line": 23879
+  },
+  {
+    "code": "I84.4",
+    "title_la": "Haemorrhoides externae cum complicationibus aliis",
+    "source_line": 23883
+  },
+  {
+    "code": "I84.5",
+    "title_la": "Haemorrhoides externae sine complicationibus",
+    "source_line": 23889
+  },
+  {
+    "code": "I84.6",
+    "title_la": "Accessiones haermorrhoidum residuales dermaticae",
+    "source_line": 23892
+  },
+  {
+    "code": "I84.7",
+    "title_la": "Haemorrhoides thromboticae, non specificatae",
+    "source_line": 23895
+  },
+  {
+    "code": "I84.8",
+    "title_la": "Haemorrhoides non specificatae cum complicationibus aliis",
+    "source_line": 23898
+  },
+  {
+    "code": "I84.9",
+    "title_la": "Haemorrhoides non specificatae sine complicationibus",
+    "source_line": 23904
+  },
+  {
+    "code": "I85",
+    "title_la": "Proširene vene jednjaka",
+    "source_line": 2249
+  },
+  {
+    "code": "I85.0",
+    "title_la": "Varices oesophagi cum haemorrhagia",
+    "source_line": 23910
+  },
+  {
+    "code": "I85.9",
+    "title_la": "Varices oesophagi sine haemorragia",
+    "source_line": 23918
+  },
+  {
+    "code": "I86",
+    "title_la": "Proširene vene drugih lokalizacija",
+    "source_line": 2250
+  },
+  {
+    "code": "I86.0",
+    "title_la": "Varices sublinguales",
+    "source_line": 23926
+  },
+  {
+    "code": "I86.1",
+    "title_la": "Varices scroti",
+    "source_line": 23928
+  },
+  {
+    "code": "I86.2",
+    "title_la": "Varices pelvis",
+    "source_line": 23931
+  },
+  {
+    "code": "I86.3",
+    "title_la": "Varices vulvae",
+    "source_line": 23933
+  },
+  {
+    "code": "I86.4",
+    "title_la": "Varices gastricae",
+    "source_line": 23937
+  },
+  {
+    "code": "I86.8",
+    "title_la": "Varices locorum specificatorum, aliorum",
+    "source_line": 23939
+  },
+  {
+    "code": "I87",
+    "title_la": "Druge bolesti vena",
+    "source_line": 2251
+  },
+  {
+    "code": "I87.0",
+    "title_la": "Syndroma postthromboticum",
+    "source_line": 23945
+  },
+  {
+    "code": "I87.1",
+    "title_la": "Compressio venae",
+    "source_line": 23948
+  },
+  {
+    "code": "I87.2",
+    "title_la": "Insufficientia venosa (chronica)(peripherica)",
+    "source_line": 23953
+  },
+  {
+    "code": "I87.8",
+    "title_la": "Morbi venarum specificati, alii",
+    "source_line": 23955
+  },
+  {
+    "code": "I87.9",
+    "title_la": "Morbus venae, non specificatus",
+    "source_line": 23957
+  },
+  {
+    "code": "I88",
+    "title_la": "Neoznačeno zapaljenje limfnih čvorova",
+    "source_line": 2252
+  },
+  {
+    "code": "I88.0",
+    "title_la": "Lymphadenitis mesenterica non specificata",
+    "source_line": 23965
+  },
+  {
+    "code": "I88.1",
+    "title_la": "Lymphadenitis chronica non mesenterica",
+    "source_line": 23974
+  },
+  {
+    "code": "I88.8",
+    "title_la": "Lymphadenitis non specificata, alia",
+    "source_line": 23979
+  },
+  {
+    "code": "I88.9",
+    "title_la": "Lymphadenitis, non specificata",
+    "source_line": 23981
+  },
+  {
+    "code": "I89",
+    "title_la": "Druge neinfektivne bolesti limfnih sudova i limfnih čvorova",
+    "source_line": 2253
+  },
+  {
+    "code": "I89.0",
+    "title_la": "Lymphoedema, non alibi classificatum",
+    "source_line": 23993
+  },
+  {
+    "code": "I89.1",
+    "title_la": "Lymphangitis",
+    "source_line": 23996
+  },
+  {
+    "code": "I89.8",
+    "title_la": "Morbi vasorum et nodorum lymphaticorum non infectivi alii, specificati",
+    "source_line": 24003
+  },
+  {
+    "code": "I89.9",
+    "title_la": "Morbi vasorum et nodorum lymphaticorum non infectivi, non specificati",
+    "source_line": 24007
+  },
+  {
+    "code": "I95",
+    "title_la": "Nizak krvni pritisak",
+    "source_line": 2263
+  },
+  {
+    "code": "I95.0",
+    "title_la": "Hypotensio arterialis idiopathica",
+    "source_line": 24021
+  },
+  {
+    "code": "I95.1",
+    "title_la": "Hypotensio arterialis orthostatica",
+    "source_line": 24031
+  },
+  {
+    "code": "I95.2",
+    "title_la": "Hypotensio arterialis medicamentosa",
+    "source_line": 24035
+  },
+  {
+    "code": "I95.8",
+    "title_la": "Hypotensio arterialis alia",
+    "source_line": 24038
+  },
+  {
+    "code": "I95.9",
+    "title_la": "Hypotensio arterialis, non specificata",
+    "source_line": 24041
+  },
+  {
+    "code": "I97",
+    "title_la": "Bolesti krvotoka posle medicinskih intervencija, neklasifikovane na drugom mestu",
+    "source_line": 2264
+  },
+  {
+    "code": "I97.0",
+    "title_la": "Syndroma post cardiotomiam",
+    "source_line": 24047
+  },
+  {
+    "code": "I97.1",
+    "title_la": "Disordines post cardiotomiam functionales alii",
+    "source_line": 24049
+  },
+  {
+    "code": "I97.2",
+    "title_la": "Syndroma lymphoedematis post mastectomiam",
+    "source_line": 24054
+  },
+  {
+    "code": "I97.8",
+    "title_la": "Morbi systematis circulatorii postprocedurales alii, non alibi classificati",
+    "source_line": 24059
+  },
+  {
+    "code": "I97.9",
+    "title_la": "Morbus systematis circulatorii postproceduralis, non specificatus",
+    "source_line": 24061
+  },
+  {
+    "code": "I98",
+    "title_la": "Druge bolesti krvotoka u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2265
+  },
+  {
+    "code": "I98.0",
+    "title_la": "Syphilis cardiovascularis",
+    "source_line": 24067
+  },
+  {
+    "code": "I98.1",
+    "title_la": "Morbi cardiovasculares in morbis infectives et parasitariis aliis alibi classificatis",
+    "source_line": 24072
+  },
+  {
+    "code": "I98.2",
+    "title_la": "Varices oesophagi sine haemorrhagia in morbis alibi classificatis",
+    "source_line": 24078
+  },
+  {
+    "code": "I98.3",
+    "title_la": "Varices oesophagi cum haemorrhagia in morbis alibi classificatis",
+    "source_line": 24090
+  },
+  {
+    "code": "I98.8",
+    "title_la": "Morbi systematis circulatorii specificati, alii in morbis alibi classificatis",
+    "source_line": 24095
+  },
+  {
+    "code": "I99",
+    "title_la": "Druge i neoznačene bolesti krvotoka",
+    "source_line": 2266
+  }
+]

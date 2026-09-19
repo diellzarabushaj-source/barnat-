@@ -1,0 +1,382 @@
+[
+  {
+    "code": "O00",
+    "title_la": "Vanmaterična trudnoća",
+    "source_line": 2878
+  },
+  {
+    "code": "O01",
+    "title_la": "Grozdasta mola",
+    "source_line": 2879
+  },
+  {
+    "code": "O02",
+    "title_la": "Drugi nenormalnan ishod začeća",
+    "source_line": 2880
+  },
+  {
+    "code": "O03",
+    "title_la": "Spontani pobačaj",
+    "source_line": 2881
+  },
+  {
+    "code": "O04",
+    "title_la": "Medicinski abortus",
+    "source_line": 2882
+  },
+  {
+    "code": "O05",
+    "title_la": "Drugi pobačaj",
+    "source_line": 2883
+  },
+  {
+    "code": "O06",
+    "title_la": "Neoznačen pobačaj",
+    "source_line": 2884
+  },
+  {
+    "code": "O07",
+    "title_la": "Neuspeo pokušaj pobačaja",
+    "source_line": 2885
+  },
+  {
+    "code": "O08",
+    "title_la": "Komplikacije posle pobačaja, vanmaterične i molarne trudnoće",
+    "source_line": 2886
+  },
+  {
+    "code": "O10",
+    "title_la": "Ranije postojeći povišen krvni pritisak komplikovan u toku trudnoće, porođaja i",
+    "source_line": 2890
+  },
+  {
+    "code": "O11",
+    "title_la": "Povišen krvni pritisak pre trudnoće sa pojavom belančevina u mokraći",
+    "source_line": 2892
+  },
+  {
+    "code": "O12",
+    "title_la": "Edem i belančevine u mokraći u toku trudnoće bez povišenog krvnog pritiska",
+    "source_line": 2893
+  },
+  {
+    "code": "O13",
+    "title_la": "Povišen krvni pritisak u toku trudnoće bez belančevina u mokraći",
+    "source_line": 2894
+  },
+  {
+    "code": "O14",
+    "title_la": "Preeklampsija – Povišen krvni pritisak u toku trudnoće sa belančevinama u",
+    "source_line": 2895
+  },
+  {
+    "code": "O15",
+    "title_la": "Eklampsija – povišen krvni pritisak, grčevi i belančevine u mokraći u trudnoći",
+    "source_line": 2897
+  },
+  {
+    "code": "O16",
+    "title_la": "Povišen krvni pritisak majke, neoznačen",
+    "source_line": 2898
+  },
+  {
+    "code": "O20",
+    "title_la": "Krvarenje u početnoj trudnoći",
+    "source_line": 2901
+  },
+  {
+    "code": "O21",
+    "title_la": "Prekomerno povraćanje u trudnoći",
+    "source_line": 2902
+  },
+  {
+    "code": "O22",
+    "title_la": "Komplikacije vena u trudnoći",
+    "source_line": 2903
+  },
+  {
+    "code": "O23",
+    "title_la": "Infekcije mokraćno–polnih puteva u trudnoći",
+    "source_line": 2904
+  },
+  {
+    "code": "O24",
+    "title_la": "Šećerna bolest u trudnoći",
+    "source_line": 2905
+  },
+  {
+    "code": "O25",
+    "title_la": "Nedovoljna ishrana trudnice",
+    "source_line": 2906
+  },
+  {
+    "code": "O26",
+    "title_la": "Zbrinjavanje majke zbog drugih stanja pretežno vezanih za trudnoću",
+    "source_line": 2907
+  },
+  {
+    "code": "O28",
+    "title_la": "Nenormalan nalaz otkriven kod majke pretporođajnom kontrolom",
+    "source_line": 2908
+  },
+  {
+    "code": "O29",
+    "title_la": "Komplikacije uzrokovane davanjem anestezije tokom trudnoće",
+    "source_line": 2909
+  },
+  {
+    "code": "O30",
+    "title_la": "Višeplodna trudnoća",
+    "source_line": 2913
+  },
+  {
+    "code": "O31",
+    "title_la": "Komplikacije višeplodne trudnoće",
+    "source_line": 2914
+  },
+  {
+    "code": "O32",
+    "title_la": "Zbrinjavanje majke kod poznatog ili sumnjivog nepravilnog stava ploda",
+    "source_line": 2915
+  },
+  {
+    "code": "O33",
+    "title_la": "Zbrinjavanje majke kod poznate ili sumnjive disproporcije",
+    "source_line": 2916
+  },
+  {
+    "code": "O34",
+    "title_la": "Zbrinjavanje majke kod poznatih ili sumnjivih nenormalnosti organa karlice",
+    "source_line": 2917
+  },
+  {
+    "code": "O35",
+    "title_la": "Zbrinjavanje majke kod poznatih ili sumnjivih nenormalnosti i oštećenja ploda",
+    "source_line": 2918
+  },
+  {
+    "code": "O36",
+    "title_la": "Zbrinjavanje majke kod drugih poznatih ili sumnjivih problema ploda",
+    "source_line": 2919
+  },
+  {
+    "code": "O40",
+    "title_la": "Prevelika količina amnionske tečnosti",
+    "source_line": 2920
+  },
+  {
+    "code": "O41",
+    "title_la": "Drugi poremećaji amnionske tečnosti i vodenjaka",
+    "source_line": 2927
+  },
+  {
+    "code": "O42",
+    "title_la": "Prerana ruptura vodenjaka",
+    "source_line": 2928
+  },
+  {
+    "code": "O43",
+    "title_la": "Bolesti posteljice",
+    "source_line": 2929
+  },
+  {
+    "code": "O44",
+    "title_la": "Nisko usađena posteljica",
+    "source_line": 2930
+  },
+  {
+    "code": "O45",
+    "title_la": "Prerano odlubljivanje posteljice",
+    "source_line": 2931
+  },
+  {
+    "code": "O46",
+    "title_la": "Krvarenje pre porođaja, neklasifikovano na drugom mestu",
+    "source_line": 2932
+  },
+  {
+    "code": "O47",
+    "title_la": "Lažni trudovi",
+    "source_line": 2933
+  },
+  {
+    "code": "O48",
+    "title_la": "Produžena trudnoća",
+    "source_line": 2934
+  },
+  {
+    "code": "O60",
+    "title_la": "Prevremeni trudovi i prevremeni porođaj",
+    "source_line": 2937
+  },
+  {
+    "code": "O61",
+    "title_la": "Neuspela indukcija porođaja",
+    "source_line": 2938
+  },
+  {
+    "code": "O62",
+    "title_la": "Nenormalnosti jačine trudova",
+    "source_line": 2939
+  },
+  {
+    "code": "O63",
+    "title_la": "Produžen porođaj",
+    "source_line": 2940
+  },
+  {
+    "code": "O64",
+    "title_la": "Komplikovan porođaj zbog nepravilnog položaja i stava ploda",
+    "source_line": 2941
+  },
+  {
+    "code": "O65",
+    "title_la": "Komplikovan porođaj zbog nenormalnosti karlice majke",
+    "source_line": 2942
+  },
+  {
+    "code": "O66",
+    "title_la": "Drugi komplikovan porođaj",
+    "source_line": 2943
+  },
+  {
+    "code": "O67",
+    "title_la": "Porođaj komplikovan zbog krvarenja, neklasifikovan na drugom mestu",
+    "source_line": 2944
+  },
+  {
+    "code": "O68",
+    "title_la": "Porođaj komplikovan zbog gušenja ploda",
+    "source_line": 2945
+  },
+  {
+    "code": "O69",
+    "title_la": "Porođaj komplikovan zbog komplikacija sa pupčanikom",
+    "source_line": 2946
+  },
+  {
+    "code": "O70",
+    "title_la": "Povreda međice u toku porođaja",
+    "source_line": 2947
+  },
+  {
+    "code": "O71",
+    "title_la": "Druge akušerske ozlede u toku porođaja",
+    "source_line": 2948
+  },
+  {
+    "code": "O72",
+    "title_la": "Krvarenje posle porođaja",
+    "source_line": 2949
+  },
+  {
+    "code": "O73",
+    "title_la": "Zaostajanje posteljice i ovojnica posteljice bez krvarenja",
+    "source_line": 2950
+  },
+  {
+    "code": "O74",
+    "title_la": "Komplikacije uzorkovane anestezijom tokom porođaja",
+    "source_line": 2951
+  },
+  {
+    "code": "O75",
+    "title_la": "Druge komplikacije tokom porođaja, neklasifikovane na drugom mestu",
+    "source_line": 2952
+  },
+  {
+    "code": "O80",
+    "title_la": "Spontani porođaj kod jednoplodne trudnoće",
+    "source_line": 2955
+  },
+  {
+    "code": "O81",
+    "title_la": "Porođaj kod jednoplodne trudnoće forcepsom i vakuum-ekstraktorom",
+    "source_line": 2956
+  },
+  {
+    "code": "O82",
+    "title_la": "Porođaj carskim rezom kod jednoplodne trudnoće",
+    "source_line": 2957
+  },
+  {
+    "code": "O83",
+    "title_la": "Drugi porođaj kod jednoplodne trudnoće uz stručnu pomoć",
+    "source_line": 2958
+  },
+  {
+    "code": "O84",
+    "title_la": "Višeplodni porođaj",
+    "source_line": 2959
+  },
+  {
+    "code": "O85",
+    "title_la": "Sepsa (trovanje bakterijama) u babinjama",
+    "source_line": 2962
+  },
+  {
+    "code": "O86",
+    "title_la": "Druge infekcije u babinjama",
+    "source_line": 2963
+  },
+  {
+    "code": "O87",
+    "title_la": "Komplikacije vena u babinjama",
+    "source_line": 2964
+  },
+  {
+    "code": "O88",
+    "title_la": "Akušerska embolija",
+    "source_line": 2965
+  },
+  {
+    "code": "O89",
+    "title_la": "Komplikacije uzrokovane anestezijom tokom babinja",
+    "source_line": 2966
+  },
+  {
+    "code": "O90",
+    "title_la": "Komplikacije u babinjama, neklasifikovane na drugom mestu",
+    "source_line": 2967
+  },
+  {
+    "code": "O91",
+    "title_la": "Zapaljenje dojke tokom dojenja",
+    "source_line": 2968
+  },
+  {
+    "code": "O92",
+    "title_la": "Drugi poremećaji dojke i lučenja mleka",
+    "source_line": 2969
+  },
+  {
+    "code": "O94",
+    "title_la": "Posledice komplikacija trudnoće, porođaja i babinja",
+    "source_line": 2972
+  },
+  {
+    "code": "O95",
+    "title_la": "Akušerska smrt neoznačenog uzroka",
+    "source_line": 2973
+  },
+  {
+    "code": "O96",
+    "title_la": "Smrt zbog bilo kog akušerskog uzroka koja je nastupila više od 42 dana, ali manje",
+    "source_line": 2974
+  },
+  {
+    "code": "O97",
+    "title_la": "Smrt zbog kasnih posledica akušerskih uzroka",
+    "source_line": 2976
+  },
+  {
+    "code": "O98",
+    "title_la": "Zarazne i parazitarne bolesti majke koje mogu bili klasifikovane na drugom mestu,",
+    "source_line": 2982
+  },
+  {
+    "code": "O99",
+    "title_la": "Druge bolesti majke koje mogu biti klasifikovane na drugom mestu, ali koje",
+    "source_line": 2984
+  }
+]

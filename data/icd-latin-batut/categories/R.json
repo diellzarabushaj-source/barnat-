@@ -1,0 +1,457 @@
+[
+  {
+    "code": "R00",
+    "title_la": "Poremećaji srčanog ritma",
+    "source_line": 3243
+  },
+  {
+    "code": "R01",
+    "title_la": "Šumovi i drugi zvuci srca",
+    "source_line": 3244
+  },
+  {
+    "code": "R02",
+    "title_la": "Gangrena, neklasifikovana na drugom mestu",
+    "source_line": 3245
+  },
+  {
+    "code": "R03",
+    "title_la": "Nenormalan krvni pritisak, bez dijagnoze",
+    "source_line": 3246
+  },
+  {
+    "code": "R04",
+    "title_la": "Krvarenje iz disajnih puteva",
+    "source_line": 3247
+  },
+  {
+    "code": "R05",
+    "title_la": "Kašalj",
+    "source_line": 3248
+  },
+  {
+    "code": "R06",
+    "title_la": "Smetnje disanja",
+    "source_line": 3249
+  },
+  {
+    "code": "R07",
+    "title_la": "Bol u grlu i grudima",
+    "source_line": 3250
+  },
+  {
+    "code": "R09",
+    "title_la": "Drugi simptomi i znaci sistema za krvotok i sistema za disanje",
+    "source_line": 3251
+  },
+  {
+    "code": "R10",
+    "title_la": "Bol u trbuhu i karlici",
+    "source_line": 3254
+  },
+  {
+    "code": "R11",
+    "title_la": "Mučnina i povraćanje",
+    "source_line": 3255
+  },
+  {
+    "code": "R12",
+    "title_la": "Gorušica",
+    "source_line": 3256
+  },
+  {
+    "code": "R13",
+    "title_la": "Otežano gutanje",
+    "source_line": 3257
+  },
+  {
+    "code": "R14",
+    "title_la": "Nadutost i slična stanja trbuha",
+    "source_line": 3258
+  },
+  {
+    "code": "R15",
+    "title_la": "Nevoljno pražnjenje creva",
+    "source_line": 3259
+  },
+  {
+    "code": "R16",
+    "title_la": "Uvećana jetra i uvećana slezina, neklasifikovane na drugom mestu",
+    "source_line": 3260
+  },
+  {
+    "code": "R17",
+    "title_la": "Žutica nepoznatog porekla",
+    "source_line": 3261
+  },
+  {
+    "code": "R18",
+    "title_la": "Tečnost u trbuhu",
+    "source_line": 3262
+  },
+  {
+    "code": "R19",
+    "title_la": "Drugi simptomi i znaci sistema za varenje i trbuha",
+    "source_line": 3263
+  },
+  {
+    "code": "R20",
+    "title_la": "Poremećaj osetljivosti kože",
+    "source_line": 3266
+  },
+  {
+    "code": "R21",
+    "title_la": "Koprivnjača i drugi osip kože",
+    "source_line": 3267
+  },
+  {
+    "code": "R22",
+    "title_la": "Lokalizovana oteklina i masa kože i potkožnog tkiva",
+    "source_line": 3268
+  },
+  {
+    "code": "R23",
+    "title_la": "Druge promene kože",
+    "source_line": 3269
+  },
+  {
+    "code": "R25",
+    "title_la": "Nenormalni nevoljni pokreti",
+    "source_line": 3272
+  },
+  {
+    "code": "R26",
+    "title_la": "Nenormalnosti hoda i pokretljivosti",
+    "source_line": 3273
+  },
+  {
+    "code": "R27",
+    "title_la": "Drugi poremećaji koordinacije",
+    "source_line": 3274
+  },
+  {
+    "code": "R29",
+    "title_la": "Drugi simptomi i znaci nervnog i mišićno-koštanog sistema",
+    "source_line": 3275
+  },
+  {
+    "code": "R30",
+    "title_la": "Bolno mokrenje",
+    "source_line": 3278
+  },
+  {
+    "code": "R31",
+    "title_la": "Krvava mokraća, neoznačena",
+    "source_line": 3279
+  },
+  {
+    "code": "R32",
+    "title_la": "Neoznačeno nezadržavanje mokraće",
+    "source_line": 3280
+  },
+  {
+    "code": "R33",
+    "title_la": "Zadržavanje mokraće",
+    "source_line": 3281
+  },
+  {
+    "code": "R34",
+    "title_la": "Nemogućnost mokrenja i umanjeno mokrenje",
+    "source_line": 3282
+  },
+  {
+    "code": "R35",
+    "title_la": "Učestalo mokrenje",
+    "source_line": 3283
+  },
+  {
+    "code": "R36",
+    "title_la": "Curenje iz mokraćovoda bešike",
+    "source_line": 3284
+  },
+  {
+    "code": "R39",
+    "title_la": "Drugi simptomi i znaci mokraćnog sistema",
+    "source_line": 3291
+  },
+  {
+    "code": "R40",
+    "title_la": "Pospanost, ošamućenost i besvesnost",
+    "source_line": 3295
+  },
+  {
+    "code": "R41",
+    "title_la": "Drugi simptomi i znaci poimanja i svesnosti",
+    "source_line": 3296
+  },
+  {
+    "code": "R42",
+    "title_la": "Nestabilnost i vrtoglavica",
+    "source_line": 3297
+  },
+  {
+    "code": "R43",
+    "title_la": "Poremećaji čula mirisa i poremećaji čula ukusa",
+    "source_line": 3298
+  },
+  {
+    "code": "R44",
+    "title_la": "Drugi opšti simptomi i znaci osećanja i opažanja",
+    "source_line": 3299
+  },
+  {
+    "code": "R45",
+    "title_la": "Simptomi i znaci osećanja (emocija)",
+    "source_line": 3300
+  },
+  {
+    "code": "R46",
+    "title_la": "Simptomi i znaci spoljašnjeg izgleda i ponašanja",
+    "source_line": 3301
+  },
+  {
+    "code": "R47",
+    "title_la": "Poremećaji govora, neklasifikovani na drugom mestu",
+    "source_line": 3304
+  },
+  {
+    "code": "R48",
+    "title_la": "Poremećaji čitanja i drugi poremećaji raspoznavanja znakova, neklasifikovani na",
+    "source_line": 3305
+  },
+  {
+    "code": "R49",
+    "title_la": "Poremećaji glasa",
+    "source_line": 3307
+  },
+  {
+    "code": "R50",
+    "title_la": "Groznica drugog nepoznatog porekla",
+    "source_line": 3310
+  },
+  {
+    "code": "R51",
+    "title_la": "Glavobolja",
+    "source_line": 3311
+  },
+  {
+    "code": "R52",
+    "title_la": "Bol, neklasifikovan na drugom mestu",
+    "source_line": 3312
+  },
+  {
+    "code": "R53",
+    "title_la": "Klonulost i umor",
+    "source_line": 3313
+  },
+  {
+    "code": "R54",
+    "title_la": "Starost",
+    "source_line": 3314
+  },
+  {
+    "code": "R55",
+    "title_la": "Padanje u nesvest i iznenadna nedovoljna funkcija mozga i srca",
+    "source_line": 3315
+  },
+  {
+    "code": "R56",
+    "title_la": "Konvulzije, neklasifikovane na drugom mestu",
+    "source_line": 3316
+  },
+  {
+    "code": "R57",
+    "title_la": "Šok, neklasifikovan na drugom mestu",
+    "source_line": 3317
+  },
+  {
+    "code": "R58",
+    "title_la": "Krvarenje, neklasifikovano na drugom mestu",
+    "source_line": 3318
+  },
+  {
+    "code": "R59",
+    "title_la": "Povećanje limfnih čvorova",
+    "source_line": 3319
+  },
+  {
+    "code": "R60",
+    "title_la": "Edem, neklasifikovan na drugom mestu",
+    "source_line": 3320
+  },
+  {
+    "code": "R61",
+    "title_la": "Prekomerno znojenje",
+    "source_line": 3321
+  },
+  {
+    "code": "R62",
+    "title_la": "Usporen fiziološki razvoj",
+    "source_line": 3322
+  },
+  {
+    "code": "R63",
+    "title_la": "Simptomi i znaci pri uzimanju hrane i tečnosti",
+    "source_line": 3323
+  },
+  {
+    "code": "R64",
+    "title_la": "Izrazita mršavost",
+    "source_line": 3324
+  },
+  {
+    "code": "R65",
+    "title_la": "Sindrom sistemskog inflamatornog (zapaljenskog) odgovora",
+    "source_line": 3325
+  },
+  {
+    "code": "R68",
+    "title_la": "Drugi opšti simptomi i znaci",
+    "source_line": 3326
+  },
+  {
+    "code": "R69",
+    "title_la": "Nepoznati i neoznačeni uzroci oboljevanja",
+    "source_line": 3327
+  },
+  {
+    "code": "R70",
+    "title_la": "Akutna povećana sedimentacija eritrocita i poremećaji viskoznosti plazme krvi",
+    "source_line": 3330
+  },
+  {
+    "code": "R71",
+    "title_la": "Poremećaji crvenih krvnih zrnaca",
+    "source_line": 3331
+  },
+  {
+    "code": "R72",
+    "title_la": "Nenormalnost belih krvnih zrnaca, neklasifikovana na drugom mestu",
+    "source_line": 3332
+  },
+  {
+    "code": "R73",
+    "title_la": "Povišen nivo šećera u krvi",
+    "source_line": 3333
+  },
+  {
+    "code": "R74",
+    "title_la": "Nenormalan nivo enzima u serumu krvi",
+    "source_line": 3334
+  },
+  {
+    "code": "R75",
+    "title_la": "Laboratorijski dokaz o prisustvu virusa humane imunodeficijencije (HIV)",
+    "source_line": 3335
+  },
+  {
+    "code": "R76",
+    "title_la": "Druge nenormalni imunološki nalazi u serumu",
+    "source_line": 3336
+  },
+  {
+    "code": "R77",
+    "title_la": "Drugi poremećaji belančevina u krvi",
+    "source_line": 3337
+  },
+  {
+    "code": "R78",
+    "title_la": "Lekovi i druge supstance u krvi kojih normalno nema",
+    "source_line": 3338
+  },
+  {
+    "code": "R79",
+    "title_la": "Drugi nenormalni hemijski nalazi krvi",
+    "source_line": 3339
+  },
+  {
+    "code": "R80",
+    "title_la": "Belančevine u mokraći",
+    "source_line": 3347
+  },
+  {
+    "code": "R81",
+    "title_la": "Šećer u mokraći",
+    "source_line": 3348
+  },
+  {
+    "code": "R82",
+    "title_la": "Drugi abnormalni nalaz mokraće",
+    "source_line": 3349
+  },
+  {
+    "code": "R83",
+    "title_la": "Nenormalna moždano-kičmena tečnost",
+    "source_line": 3353
+  },
+  {
+    "code": "R84",
+    "title_la": "Nenormalni nalazi uzoraka disajnih organa i grudnog koša",
+    "source_line": 3354
+  },
+  {
+    "code": "R85",
+    "title_la": "Nenormalni nalazi uzoraka organa za varenje i trbušne duplje",
+    "source_line": 3355
+  },
+  {
+    "code": "R86",
+    "title_la": "Nenormalni nalazi uzoraka muških polnih organa",
+    "source_line": 3356
+  },
+  {
+    "code": "R87",
+    "title_la": "Nenormalni nalazi uzoraka ženskih polnih organa",
+    "source_line": 3357
+  },
+  {
+    "code": "R89",
+    "title_la": "Nenormalini nalazi uzoraka drugih organa, sistema i tkiva",
+    "source_line": 3358
+  },
+  {
+    "code": "R90",
+    "title_la": "Nenormalni nalazi kod dijagnostike centralnog nervnog sistema",
+    "source_line": 3362
+  },
+  {
+    "code": "R91",
+    "title_la": "Nenormalni nalazi kod dijagnostike pluća",
+    "source_line": 3363
+  },
+  {
+    "code": "R92",
+    "title_la": "Nenormalni nalazi kod dijagnostike dojke",
+    "source_line": 3364
+  },
+  {
+    "code": "R93",
+    "title_la": "Nenormalni nalazi kod dijagnostike drugih struktura tela",
+    "source_line": 3365
+  },
+  {
+    "code": "R94",
+    "title_la": "Poremećaji funkcija organa",
+    "source_line": 3366
+  },
+  {
+    "code": "R95",
+    "title_la": "Iznenadna smrt odojčeta",
+    "source_line": 3369
+  },
+  {
+    "code": "R96",
+    "title_la": "Druga iznenadna smrt nepoznatog uzroka",
+    "source_line": 3370
+  },
+  {
+    "code": "R98",
+    "title_la": "Smrt bez svedoka",
+    "source_line": 3371
+  },
+  {
+    "code": "R99",
+    "title_la": "Drugi nedovoljno definisani i neoznačeni uzroci smrti",
+    "source_line": 3372
+  }
+]

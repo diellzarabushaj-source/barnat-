@@ -1,0 +1,322 @@
+[
+  {
+    "code": "J00",
+    "title_la": "Akutno zapaljenje nosnog dela ždrela [obična prehlada]",
+    "source_line": 2279
+  },
+  {
+    "code": "J01",
+    "title_la": "Akutno zapaljenje sinusa",
+    "source_line": 2280
+  },
+  {
+    "code": "J02",
+    "title_la": "Akutno zapaljenje ždrela",
+    "source_line": 2281
+  },
+  {
+    "code": "J03",
+    "title_la": "Akutno zapaljenje krajnika",
+    "source_line": 2282
+  },
+  {
+    "code": "J04",
+    "title_la": "Akutno zapaljenje grkljana i akutno zapaljenje dušnika",
+    "source_line": 2283
+  },
+  {
+    "code": "J05",
+    "title_la": "Akutno opstruktivno zapaljenje grkljana [krup] i zapaljenje poklopca grkljana",
+    "source_line": 2284
+  },
+  {
+    "code": "J06",
+    "title_la": "Akutne infekcije gornjeg dela sistema za disanje multiplih i neoznačenih",
+    "source_line": 2285
+  },
+  {
+    "code": "J09",
+    "title_la": "Grip, virus dokazan",
+    "source_line": 2289
+  },
+  {
+    "code": "J10",
+    "title_la": "Grip, izazvan dugim identifikovanim virusom gripa",
+    "source_line": 2290
+  },
+  {
+    "code": "J11",
+    "title_la": "Grip, virus nedokazan",
+    "source_line": 2291
+  },
+  {
+    "code": "J12",
+    "title_la": "Virusno zapaljenje pluća, neklasifikovano na drugom mestu",
+    "source_line": 2292
+  },
+  {
+    "code": "J13",
+    "title_la": "Zapaljenje pluća, uzrokovano Streptococcus-om pneumoniae (Pneumococcus)",
+    "source_line": 2293
+  },
+  {
+    "code": "J14",
+    "title_la": "Zapaljenje pluća uzrokovano Haemophilusom influence",
+    "source_line": 2294
+  },
+  {
+    "code": "J15",
+    "title_la": "Bakterijsko zapaljenje pluća, neklasifikovano na drugom mestu",
+    "source_line": 2295
+  },
+  {
+    "code": "J16",
+    "title_la": "Zapaljenje pluća uzrokovano drugim zaraznim organizmima, neklasifikovano na",
+    "source_line": 2296
+  },
+  {
+    "code": "J17",
+    "title_la": "Zapaljenje pluća u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2298
+  },
+  {
+    "code": "J18",
+    "title_la": "Zapaljenje pluća uzrokovano neoznačenim mikroorganizom",
+    "source_line": 2299
+  },
+  {
+    "code": "J20",
+    "title_la": "Akutni bronhitis",
+    "source_line": 2302
+  },
+  {
+    "code": "J21",
+    "title_la": "Akutni bronhiolitis",
+    "source_line": 2303
+  },
+  {
+    "code": "J22",
+    "title_la": "Akutna infekcija donjih respiratornih puteva, neoznačena",
+    "source_line": 2304
+  },
+  {
+    "code": "J30",
+    "title_la": "Vazomotorna kijavica i alergijska kijavica",
+    "source_line": 2307
+  },
+  {
+    "code": "J31",
+    "title_la": "Hronična kijavica, zapaljenje nosnog dela ždrela i ždrela",
+    "source_line": 2308
+  },
+  {
+    "code": "J32",
+    "title_la": "Hronično zapaljenje sinusa",
+    "source_line": 2309
+  },
+  {
+    "code": "J33",
+    "title_la": "Polip nosa – peteljkast izraštaj sluznice nosa",
+    "source_line": 2310
+  },
+  {
+    "code": "J34",
+    "title_la": "Drugi poremećaji nosa i sinusa nosa",
+    "source_line": 2311
+  },
+  {
+    "code": "J35",
+    "title_la": "Hronične bolesti krajnika i trećeg krajnika",
+    "source_line": 2312
+  },
+  {
+    "code": "J36",
+    "title_la": "Apsces oko krajnika",
+    "source_line": 2313
+  },
+  {
+    "code": "J37",
+    "title_la": "Hronično zapaljenje grkljana i grkljana sa dušnikom",
+    "source_line": 2314
+  },
+  {
+    "code": "J38",
+    "title_la": "Bolesti glasnica i grkljana, neklasifikovane na drugom mestu",
+    "source_line": 2315
+  },
+  {
+    "code": "J39",
+    "title_la": "Druge bolesti gornjeg dela sistema za disanje",
+    "source_line": 2316
+  },
+  {
+    "code": "J40",
+    "title_la": "Bronhitis, neoznačen kao akutni ili hronični",
+    "source_line": 2319
+  },
+  {
+    "code": "J41",
+    "title_la": "Obični hronični i sluzno-gnojni bronhitis",
+    "source_line": 2320
+  },
+  {
+    "code": "J42",
+    "title_la": "Hronični bronhitis, neoznačen",
+    "source_line": 2321
+  },
+  {
+    "code": "J43",
+    "title_la": "Emfizem pluća",
+    "source_line": 2322
+  },
+  {
+    "code": "J44",
+    "title_la": "Druga hronična opstruktivna bolest pluća",
+    "source_line": 2328
+  },
+  {
+    "code": "J45",
+    "title_la": "Astma",
+    "source_line": 2329
+  },
+  {
+    "code": "J46",
+    "title_la": "Astmatični status",
+    "source_line": 2330
+  },
+  {
+    "code": "J47",
+    "title_la": "Bronhiektazije",
+    "source_line": 2331
+  },
+  {
+    "code": "J60",
+    "title_la": "Pneumokonioza - Profesionalna (kopača uglja) bolest pluća uzrokovana udisanjem",
+    "source_line": 2334
+  },
+  {
+    "code": "J61",
+    "title_la": "Pneumokonioza uzrokovana udisanjem azbestnih čestica i drugih mineralnih",
+    "source_line": 2336
+  },
+  {
+    "code": "J62",
+    "title_la": "Silikoza pluća - Profesionalna bolest uzrokovana udisanjem silikatnih čestica",
+    "source_line": 2338
+  },
+  {
+    "code": "J63",
+    "title_la": "Pneumokonioza uzrokovana drugom neorganskom prašinom",
+    "source_line": 2339
+  },
+  {
+    "code": "J64",
+    "title_la": "Pneumokonioza, neoznačena",
+    "source_line": 2340
+  },
+  {
+    "code": "J65",
+    "title_la": "Pneumokonioza sa tuberkulozom",
+    "source_line": 2341
+  },
+  {
+    "code": "J66",
+    "title_la": "Profesionalna bolest puteva za disanje uzrokovana označenom organskom",
+    "source_line": 2342
+  },
+  {
+    "code": "J67",
+    "title_la": "Hipersenzitivni pneumonitis uzrokovan organskom prašinom",
+    "source_line": 2344
+  },
+  {
+    "code": "J68",
+    "title_la": "Respiratorna stanja uzrokovana udisanjem hemikalija, gasova, dimova i para",
+    "source_line": 2345
+  },
+  {
+    "code": "J69",
+    "title_la": "Zapaljenje pluća uzrokovano čvrstim telima i tečnostima",
+    "source_line": 2346
+  },
+  {
+    "code": "J70",
+    "title_la": "Respiratorna stanja uzrokovana drugim spoljašnjim uzročnicima",
+    "source_line": 2347
+  },
+  {
+    "code": "J80",
+    "title_la": "Sindrom poremećenog disanja kod odraslih osoba",
+    "source_line": 2351
+  },
+  {
+    "code": "J81",
+    "title_la": "Edem pluća",
+    "source_line": 2352
+  },
+  {
+    "code": "J82",
+    "title_la": "Plućna eozinofilija, neklasifikovana na drugom mestu",
+    "source_line": 2353
+  },
+  {
+    "code": "J84",
+    "title_la": "Druge intersticijske bolesti pluća",
+    "source_line": 2354
+  },
+  {
+    "code": "J85",
+    "title_la": "Apsces pluća i medijastinuma",
+    "source_line": 2358
+  },
+  {
+    "code": "J86",
+    "title_la": "Gnojni proces u grudnom košu",
+    "source_line": 2359
+  },
+  {
+    "code": "J90",
+    "title_la": "Pleuralni izliv, neklasifikovan na drugom mestu",
+    "source_line": 2362
+  },
+  {
+    "code": "J91",
+    "title_la": "Pleuralni izliv u stanjima klasifikovanim na drugom mestu",
+    "source_line": 2363
+  },
+  {
+    "code": "J92",
+    "title_la": "Pleuralne naslage („plak”)",
+    "source_line": 2364
+  },
+  {
+    "code": "J93",
+    "title_la": "Pneumotoraks – vazduh u slobodnom pleuralnom prostoru",
+    "source_line": 2365
+  },
+  {
+    "code": "J94",
+    "title_la": "Druga stanja pleure",
+    "source_line": 2366
+  },
+  {
+    "code": "J95",
+    "title_la": "Respiratorni poremećaji posle medicinskih intervencija, neklasifikovani na drugom",
+    "source_line": 2369
+  },
+  {
+    "code": "J96",
+    "title_la": "Respiratorna insuficijencija, neklasifikovana na drugom mestu",
+    "source_line": 2371
+  },
+  {
+    "code": "J98",
+    "title_la": "Drugi respiratorni poremećaji",
+    "source_line": 2372
+  },
+  {
+    "code": "J99",
+    "title_la": "Respiratorni poremećaji u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2373
+  }
+]

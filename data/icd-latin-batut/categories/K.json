@@ -1,0 +1,357 @@
+[
+  {
+    "code": "K00",
+    "title_la": "Poremećaji razvoja i nicanja zuba",
+    "source_line": 2386
+  },
+  {
+    "code": "K01",
+    "title_la": "Neiznikli i uklešteni zubi",
+    "source_line": 2387
+  },
+  {
+    "code": "K02",
+    "title_la": "Karijes – kvar zuba",
+    "source_line": 2388
+  },
+  {
+    "code": "K03",
+    "title_la": "Druge bolesti tvrdih tkiva zuba",
+    "source_line": 2389
+  },
+  {
+    "code": "K04",
+    "title_la": "Bolesti pulpe zuba i tkiva oko vrha zuba",
+    "source_line": 2390
+  },
+  {
+    "code": "K05",
+    "title_la": "Gingivitis - zapaljenje desni - i bolesti okoline zuba",
+    "source_line": 2391
+  },
+  {
+    "code": "K06",
+    "title_la": "Druge bolesti desni i bezubog alveolarnog grebena",
+    "source_line": 2392
+  },
+  {
+    "code": "K07",
+    "title_la": "Anomalije zuba i kostiju lica [uključujući smetnje zagrižaja]",
+    "source_line": 2393
+  },
+  {
+    "code": "K08",
+    "title_la": "Druge bolesti zuba i potpornog tkiva",
+    "source_line": 2394
+  },
+  {
+    "code": "K09",
+    "title_la": "Ciste usta, neklasifikovane na drugom mestu",
+    "source_line": 2395
+  },
+  {
+    "code": "K10",
+    "title_la": "Druge bolesti vilica",
+    "source_line": 2396
+  },
+  {
+    "code": "K11",
+    "title_la": "Bolesti pljuvačnih žlezda",
+    "source_line": 2397
+  },
+  {
+    "code": "K12",
+    "title_la": "Zapaljenje usta i srodne lezije",
+    "source_line": 2398
+  },
+  {
+    "code": "K13",
+    "title_la": "Druge bolesti usne i sluznice usta",
+    "source_line": 2399
+  },
+  {
+    "code": "K14",
+    "title_la": "Bolesti jezika",
+    "source_line": 2400
+  },
+  {
+    "code": "K20",
+    "title_la": "Zapaljenje jednjaka",
+    "source_line": 2403
+  },
+  {
+    "code": "K21",
+    "title_la": "Gastro-ezofagealna refluksna bolest",
+    "source_line": 2404
+  },
+  {
+    "code": "K22",
+    "title_la": "Druge bolesti jednjaka",
+    "source_line": 2405
+  },
+  {
+    "code": "K23",
+    "title_la": "Bolesti jednjaka u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2406
+  },
+  {
+    "code": "K25",
+    "title_la": "Grizlica želuca",
+    "source_line": 2407
+  },
+  {
+    "code": "K26",
+    "title_la": "Grizlica dvanaestopalačnog creva",
+    "source_line": 2408
+  },
+  {
+    "code": "K27",
+    "title_la": "Peptička grizlica, neoznačene lokalizacije",
+    "source_line": 2409
+  },
+  {
+    "code": "K28",
+    "title_la": "Želudačno-crevna grizlica",
+    "source_line": 2410
+  },
+  {
+    "code": "K29",
+    "title_la": "Zapaljenje želuca i dvanaestopalačnog creva",
+    "source_line": 2411
+  },
+  {
+    "code": "K30",
+    "title_la": "Poremećeno varenje",
+    "source_line": 2412
+  },
+  {
+    "code": "K31",
+    "title_la": "Druge bolesti želuca i bolesti dvanaestopalačnog creva",
+    "source_line": 2413
+  },
+  {
+    "code": "K35",
+    "title_la": "Akutno zapaljenje slepog creva",
+    "source_line": 2416
+  },
+  {
+    "code": "K36",
+    "title_la": "Drugo zapaljenje slepog creva",
+    "source_line": 2417
+  },
+  {
+    "code": "K37",
+    "title_la": "Zapaljenje slepog creva, neoznačeno",
+    "source_line": 2418
+  },
+  {
+    "code": "K38",
+    "title_la": "Druge bolesti slepog creva",
+    "source_line": 2419
+  },
+  {
+    "code": "K40",
+    "title_la": "Preponska kila",
+    "source_line": 2422
+  },
+  {
+    "code": "K41",
+    "title_la": "Butna kila",
+    "source_line": 2423
+  },
+  {
+    "code": "K42",
+    "title_la": "Pupčana kila",
+    "source_line": 2424
+  },
+  {
+    "code": "K43",
+    "title_la": "Kila prednjeg zida trbuha",
+    "source_line": 2425
+  },
+  {
+    "code": "K44",
+    "title_la": "Kila grudno-trbušne prečage",
+    "source_line": 2426
+  },
+  {
+    "code": "K45",
+    "title_la": "Druga trbušna kila",
+    "source_line": 2427
+  },
+  {
+    "code": "K46",
+    "title_la": "Trbušna kila, neoznačena",
+    "source_line": 2428
+  },
+  {
+    "code": "K50",
+    "title_la": "Crohnova bolest",
+    "source_line": 2437
+  },
+  {
+    "code": "K51",
+    "title_la": "Ulcerozni kolitis",
+    "source_line": 2438
+  },
+  {
+    "code": "K52",
+    "title_la": "Druga nezarazna zapaljenja želuca, tankog creva i debelog creva",
+    "source_line": 2439
+  },
+  {
+    "code": "K55",
+    "title_la": "Vaskularne bolesti creva",
+    "source_line": 2442
+  },
+  {
+    "code": "K56",
+    "title_la": "Paralitički zavezano crevo i začepljenje creva, bez kile",
+    "source_line": 2443
+  },
+  {
+    "code": "K57",
+    "title_la": "Divertikuloza - vrećasta proširenja creva",
+    "source_line": 2444
+  },
+  {
+    "code": "K58",
+    "title_la": "Sindrom nadraženog creva",
+    "source_line": 2445
+  },
+  {
+    "code": "K59",
+    "title_la": "Drugi funkcionalni poremećaji rada creva",
+    "source_line": 2446
+  },
+  {
+    "code": "K60",
+    "title_la": "Prskotina i fistula analnog i rektalnog predela",
+    "source_line": 2447
+  },
+  {
+    "code": "K61",
+    "title_la": "Apsces analnog i rektalnog predela",
+    "source_line": 2448
+  },
+  {
+    "code": "K62",
+    "title_la": "Druge bolesti anusa i rektuma",
+    "source_line": 2449
+  },
+  {
+    "code": "K63",
+    "title_la": "Druge bolesti creva",
+    "source_line": 2450
+  },
+  {
+    "code": "K65",
+    "title_la": "Peritonitis",
+    "source_line": 2453
+  },
+  {
+    "code": "K66",
+    "title_la": "Druge bolesti peritoneuma",
+    "source_line": 2454
+  },
+  {
+    "code": "K67",
+    "title_la": "Bolesti peritoneuma u zaraznim bolestima, klasifikovanim na drugom mestu",
+    "source_line": 2455
+  },
+  {
+    "code": "K70",
+    "title_la": "Bolest jetre uzrokovana alkoholom",
+    "source_line": 2458
+  },
+  {
+    "code": "K71",
+    "title_la": "Bolest jetre uzrokovana toksinima",
+    "source_line": 2459
+  },
+  {
+    "code": "K72",
+    "title_la": "Insuficijencija jetre, neklasifikovana na drugom mestu",
+    "source_line": 2460
+  },
+  {
+    "code": "K73",
+    "title_la": "Hronično zapaljenje jetre, neklasifikovano na drugom mestu",
+    "source_line": 2461
+  },
+  {
+    "code": "K74",
+    "title_la": "Fibroza i ciroza jetre",
+    "source_line": 2462
+  },
+  {
+    "code": "K75",
+    "title_la": "Druge zapaljenske bolesti jetre",
+    "source_line": 2463
+  },
+  {
+    "code": "K76",
+    "title_la": "Druge bolesti jetre",
+    "source_line": 2464
+  },
+  {
+    "code": "K77",
+    "title_la": "Bolesti jetre u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2465
+  },
+  {
+    "code": "K80",
+    "title_la": "Kamen u žučnoj kesi",
+    "source_line": 2468
+  },
+  {
+    "code": "K81",
+    "title_la": "Zapaljenje žučne kese",
+    "source_line": 2469
+  },
+  {
+    "code": "K82",
+    "title_la": "Druge bolesti žučne kese",
+    "source_line": 2470
+  },
+  {
+    "code": "K83",
+    "title_la": "Druge bolesti žučnog trakta",
+    "source_line": 2471
+  },
+  {
+    "code": "K85",
+    "title_la": "Akutno zapaljenje pankreasa",
+    "source_line": 2472
+  },
+  {
+    "code": "K86",
+    "title_la": "Druge bolesti pankreasa",
+    "source_line": 2473
+  },
+  {
+    "code": "K87",
+    "title_la": "Bolesti žučne kese, žučnih puteva i pankreasa u bolestima klasifikovanim na",
+    "source_line": 2474
+  },
+  {
+    "code": "K90",
+    "title_la": "Loša apsorpcija u crevima",
+    "source_line": 2478
+  },
+  {
+    "code": "K91",
+    "title_la": "Bolesti organa za varenje posle medicinskih intervencija, neklasifikovane na",
+    "source_line": 2479
+  },
+  {
+    "code": "K92",
+    "title_la": "Druge bolesti organa za varenje",
+    "source_line": 2481
+  },
+  {
+    "code": "K93",
+    "title_la": "Druge bolesti organa za varenje u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2482
+  }
+]

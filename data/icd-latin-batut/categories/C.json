@@ -1,0 +1,447 @@
+[
+  {
+    "code": "C00",
+    "title_la": "Zloćudni tumor usne",
+    "source_line": 1389
+  },
+  {
+    "code": "C01",
+    "title_la": "Zloćudni tumor korena jezika",
+    "source_line": 1390
+  },
+  {
+    "code": "C02",
+    "title_la": "Zloćudni tumor drugih delova jezika",
+    "source_line": 1391
+  },
+  {
+    "code": "C03",
+    "title_la": "Zloćudni tumor desni",
+    "source_line": 1392
+  },
+  {
+    "code": "C04",
+    "title_la": "Zloćudni tumor poda usta",
+    "source_line": 1393
+  },
+  {
+    "code": "C05",
+    "title_la": "Zloćudni tumor nepca",
+    "source_line": 1394
+  },
+  {
+    "code": "C06",
+    "title_la": "Zloćudni tumor drugih delova usta",
+    "source_line": 1395
+  },
+  {
+    "code": "C07",
+    "title_la": "Zloćudni tumor parotidne [doušne] žlezde",
+    "source_line": 1396
+  },
+  {
+    "code": "C08",
+    "title_la": "Zloćudni tumor drugih i neoznačenih velikih pljuvačnih žlezda",
+    "source_line": 1397
+  },
+  {
+    "code": "C09",
+    "title_la": "Zloćudni tumor krajnika",
+    "source_line": 1398
+  },
+  {
+    "code": "C10",
+    "title_la": "Zloćudni tumor usno-ždrelnog dela usta",
+    "source_line": 1399
+  },
+  {
+    "code": "C11",
+    "title_la": "Zloćudni tumor nosnog dela ždrela",
+    "source_line": 1400
+  },
+  {
+    "code": "C12",
+    "title_la": "Zloćudni tumor kruškolike jamice",
+    "source_line": 1401
+  },
+  {
+    "code": "C13",
+    "title_la": "Zloćudni tumor donjeg dela ždrela",
+    "source_line": 1402
+  },
+  {
+    "code": "C14",
+    "title_la": "Zloćudni tumor usana, usta, ždrela i druge lokalizacije",
+    "source_line": 1403
+  },
+  {
+    "code": "C15",
+    "title_la": "Zloćudni tumor jednjaka",
+    "source_line": 1406
+  },
+  {
+    "code": "C16",
+    "title_la": "Zloćudni tumor želuca",
+    "source_line": 1407
+  },
+  {
+    "code": "C17",
+    "title_la": "Zloćudni tumor tankog creva",
+    "source_line": 1408
+  },
+  {
+    "code": "C18",
+    "title_la": "Zloćudni tumor debelog creva",
+    "source_line": 1409
+  },
+  {
+    "code": "C19",
+    "title_la": "Zloćudni tumor rektosigmoidnog spoja debelog creva",
+    "source_line": 1410
+  },
+  {
+    "code": "C20",
+    "title_la": "Zloćudni tumor rektuma",
+    "source_line": 1411
+  },
+  {
+    "code": "C21",
+    "title_la": "Zloćudni tumor anusa i analnog kanala",
+    "source_line": 1412
+  },
+  {
+    "code": "C22",
+    "title_la": "Zloćudni tumor jetre i intrahepatičnih žučnih kanala",
+    "source_line": 1413
+  },
+  {
+    "code": "C23",
+    "title_la": "Zloćudni tumor žučne kese",
+    "source_line": 1414
+  },
+  {
+    "code": "C24",
+    "title_la": "Zloćudni tumor drugih delova žučnih kanala",
+    "source_line": 1415
+  },
+  {
+    "code": "C25",
+    "title_la": "Zloćudni tumor pankreasa",
+    "source_line": 1416
+  },
+  {
+    "code": "C26",
+    "title_la": "Zloćudni tumor organa za varenje, nedovoljno određene lokalizacije",
+    "source_line": 1417
+  },
+  {
+    "code": "C30",
+    "title_la": "Zloćudni tumor nosne šupljine i srednjeg uva",
+    "source_line": 1420
+  },
+  {
+    "code": "C31",
+    "title_la": "Zloćudni tumor nosnih sinusa",
+    "source_line": 1421
+  },
+  {
+    "code": "C32",
+    "title_la": "Zloćudni tumor grkljana",
+    "source_line": 1422
+  },
+  {
+    "code": "C33",
+    "title_la": "Zloćudni tumor dušnika",
+    "source_line": 1423
+  },
+  {
+    "code": "C34",
+    "title_la": "Zloćudni tumor bronhija i pluća",
+    "source_line": 1424
+  },
+  {
+    "code": "C37",
+    "title_la": "Zloćudni tumor grudne žlezde",
+    "source_line": 1425
+  },
+  {
+    "code": "C38",
+    "title_la": "Zloćudni tumor srca, medijastinuma i pleure",
+    "source_line": 1432
+  },
+  {
+    "code": "C39",
+    "title_la": "Zloćudni tumor grudne duplje, druge lokalizacije",
+    "source_line": 1433
+  },
+  {
+    "code": "C40",
+    "title_la": "Zloćudni tumor kosti i zglobne hrskavice udova",
+    "source_line": 1436
+  },
+  {
+    "code": "C41",
+    "title_la": "Zloćudni tumor kosti i zglobne hrskavice druge lokalizacije",
+    "source_line": 1437
+  },
+  {
+    "code": "C43",
+    "title_la": "Melanom – crni zloćudni tumor kože",
+    "source_line": 1440
+  },
+  {
+    "code": "C44",
+    "title_la": "Ostali zloćudni tumori kože",
+    "source_line": 1441
+  },
+  {
+    "code": "C45",
+    "title_la": "Mezoteliom – zloćudni tumor ćelija mezotela",
+    "source_line": 1444
+  },
+  {
+    "code": "C46",
+    "title_la": "Kapošijev sarkom – zloćudni tumor vezivnog tkiva",
+    "source_line": 1445
+  },
+  {
+    "code": "C47",
+    "title_la": "Zloćudni tumor perifernih živaca i autonomnog nervnog sistema",
+    "source_line": 1446
+  },
+  {
+    "code": "C48",
+    "title_la": "Zloćudni tumor peritoneuma i retroperitoneuma",
+    "source_line": 1447
+  },
+  {
+    "code": "C49",
+    "title_la": "Zloćudni tumor drugog vezivnog i mekog tkiva",
+    "source_line": 1448
+  },
+  {
+    "code": "C50",
+    "title_la": "Zloćudni tumor dojke",
+    "source_line": 1451
+  },
+  {
+    "code": "C51",
+    "title_la": "Zloćudni tumor stidnice",
+    "source_line": 1454
+  },
+  {
+    "code": "C52",
+    "title_la": "Zloćudni tumor vagine",
+    "source_line": 1455
+  },
+  {
+    "code": "C53",
+    "title_la": "Zloćudni tumor grlića materice",
+    "source_line": 1456
+  },
+  {
+    "code": "C54",
+    "title_la": "Zloćudni tumor tela materice",
+    "source_line": 1457
+  },
+  {
+    "code": "C55",
+    "title_la": "Zloćudni tumor materice, neoznačenog dela",
+    "source_line": 1458
+  },
+  {
+    "code": "C56",
+    "title_la": "Zloćudni tumor jajnika",
+    "source_line": 1459
+  },
+  {
+    "code": "C57",
+    "title_la": "Zloćudni tumor ostalih i neoznačenih ženskih polnih organa",
+    "source_line": 1460
+  },
+  {
+    "code": "C58",
+    "title_la": "Zloćudni tumor posteljice materice",
+    "source_line": 1461
+  },
+  {
+    "code": "C60",
+    "title_la": "Zloćudni tumor penisa",
+    "source_line": 1464
+  },
+  {
+    "code": "C61",
+    "title_la": "Zloćudni tumor prostate",
+    "source_line": 1465
+  },
+  {
+    "code": "C62",
+    "title_la": "Zloćudni tumor testisa",
+    "source_line": 1466
+  },
+  {
+    "code": "C63",
+    "title_la": "Zloćudni tumor ostalih i neoznačenih muških polnih organa",
+    "source_line": 1467
+  },
+  {
+    "code": "C64",
+    "title_la": "Zloćudni tumor bubrega, izuzev karlice bubrega",
+    "source_line": 1470
+  },
+  {
+    "code": "C65",
+    "title_la": "Zloćudni tumor karlice bubrega",
+    "source_line": 1471
+  },
+  {
+    "code": "C66",
+    "title_la": "Zloćudni tumor mokraćovoda bubrega",
+    "source_line": 1472
+  },
+  {
+    "code": "C67",
+    "title_la": "Zloćudni tumor mokraćne bešike",
+    "source_line": 1473
+  },
+  {
+    "code": "C68",
+    "title_la": "Zloćudni tumor ostalih i neoznačenih mokraćnih organa",
+    "source_line": 1474
+  },
+  {
+    "code": "C69",
+    "title_la": "Zloćudni tumor oka i pripojaka oka",
+    "source_line": 1478
+  },
+  {
+    "code": "C70",
+    "title_la": "Zloćudni tumor moždanica",
+    "source_line": 1479
+  },
+  {
+    "code": "C71",
+    "title_la": "Zloćudni tumor mozga",
+    "source_line": 1486
+  },
+  {
+    "code": "C72",
+    "title_la": "Zloćudni tumor kičmene moždine, lobanjskih živaca i ostalih delova centralnog",
+    "source_line": 1487
+  },
+  {
+    "code": "C73",
+    "title_la": "Zloćudni tumori štitaste žlezde",
+    "source_line": 1492
+  },
+  {
+    "code": "C74",
+    "title_la": "Zloćudni tumor nadbubrežne žlezde",
+    "source_line": 1493
+  },
+  {
+    "code": "C75",
+    "title_la": "Zloćudni tumor ostalih endokrinih žlezda i srodnih struktura",
+    "source_line": 1494
+  },
+  {
+    "code": "C76",
+    "title_la": "Zloćudni tumor ostalih i nedovoljno definisanih lokalizacija",
+    "source_line": 1498
+  },
+  {
+    "code": "C77",
+    "title_la": "Sekundarni i neoznačeni zloćudni tumor limfnih čvorova",
+    "source_line": 1499
+  },
+  {
+    "code": "C78",
+    "title_la": "Sekundarni zloćudni tumor organa za disanje i varenje",
+    "source_line": 1500
+  },
+  {
+    "code": "C79",
+    "title_la": "Sekundarni zloćudni tumor ostalih i neoznačenih lokalizacija",
+    "source_line": 1501
+  },
+  {
+    "code": "C80",
+    "title_la": "Zloćudni tumor bez označene lokalizacije",
+    "source_line": 1502
+  },
+  {
+    "code": "C81",
+    "title_la": "Hodgkinova bolest-zloćudni tumor limfnog tkiva",
+    "source_line": 1505
+  },
+  {
+    "code": "C82",
+    "title_la": "Folikularni ne-Hodgkinov limfom-zloćudni tumor",
+    "source_line": 1506
+  },
+  {
+    "code": "C83",
+    "title_la": "Nefolikularni ne-Hodgkinov limfom",
+    "source_line": 1507
+  },
+  {
+    "code": "C84",
+    "title_la": "Periferni i kožni limfomi T ćelija",
+    "source_line": 1508
+  },
+  {
+    "code": "C85",
+    "title_la": "Drugi i neoznačeni ne-Hodgkinovi limfomi",
+    "source_line": 1509
+  },
+  {
+    "code": "C86",
+    "title_la": "Limfom T/NK-ćelija, drugi specifični tipovi",
+    "source_line": 1510
+  },
+  {
+    "code": "C88",
+    "title_la": "Zloćudne imunoproliferativne bolesti",
+    "source_line": 1511
+  },
+  {
+    "code": "C90",
+    "title_la": "Multipli mijelom i drugi zloćudni tumori plazma-ćelija",
+    "source_line": 1512
+  },
+  {
+    "code": "C91",
+    "title_la": "Leukemija limfoidnih ćelija krvi - zloćudna bolest krvi",
+    "source_line": 1514
+  },
+  {
+    "code": "C92",
+    "title_la": "Mijeloidna leukemija",
+    "source_line": 1513
+  },
+  {
+    "code": "C93",
+    "title_la": "Monocitna leukemija - zloćudna bolest monocitnih ćelija krvi",
+    "source_line": 1515
+  },
+  {
+    "code": "C94",
+    "title_la": "Druge leukemije označenih tipova ćelija krvi",
+    "source_line": 1516
+  },
+  {
+    "code": "C95",
+    "title_la": "Leukemija-zloćudna bolest neoznačenog tipa ćelija krvi",
+    "source_line": 1517
+  },
+  {
+    "code": "C96",
+    "title_la": "Drugi zloćudni tumori limfoidnog, hematopoeznog i srodnih tkiva, neodređeni",
+    "source_line": 1518
+  },
+  {
+    "code": "C97",
+    "title_la": "Zloćudni tumori više nezavisnih primarnih lokalizacija",
+    "source_line": 1521
+  }
+]

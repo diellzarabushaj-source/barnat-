@@ -1,0 +1,362 @@
+[
+  {
+    "code": "L00",
+    "title_la": "Sindom stafilokoknog ljuštenja kože",
+    "source_line": 2495
+  },
+  {
+    "code": "L01",
+    "title_la": "Gnojno oboljenje kože",
+    "source_line": 2496
+  },
+  {
+    "code": "L02",
+    "title_la": "Apsces, čir i grupa čireva kože",
+    "source_line": 2497
+  },
+  {
+    "code": "L03",
+    "title_la": "Celulitis [Flegmona] – zapaljenje vezivnog ćelijskog tkiva",
+    "source_line": 2498
+  },
+  {
+    "code": "L04",
+    "title_la": "Akutno zapaljenje limfnog čvora",
+    "source_line": 2499
+  },
+  {
+    "code": "L05",
+    "title_la": "Pilonidalna cista",
+    "source_line": 2500
+  },
+  {
+    "code": "L08",
+    "title_la": "Ostale lokalizovane infekcije kože i potkožnog tkiva",
+    "source_line": 2501
+  },
+  {
+    "code": "L10",
+    "title_la": "Pemfigus – Plikovnjača",
+    "source_line": 2504
+  },
+  {
+    "code": "L11",
+    "title_la": "Drugi akantolitički poremećaji",
+    "source_line": 2505
+  },
+  {
+    "code": "L12",
+    "title_la": "Pemfigoid – oboljenje slično plikovnjači",
+    "source_line": 2506
+  },
+  {
+    "code": "L13",
+    "title_la": "Drugi plikoviti poremećaji kože",
+    "source_line": 2507
+  },
+  {
+    "code": "L14",
+    "title_la": "Plikovita oboljenja kože u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2508
+  },
+  {
+    "code": "L20",
+    "title_la": "Atopijsko zapaljenje kože",
+    "source_line": 2511
+  },
+  {
+    "code": "L21",
+    "title_la": "Seboreja – zapaljenje kože uzrokovano povećanim lučenjem lojnih žlezda",
+    "source_line": 2512
+  },
+  {
+    "code": "L22",
+    "title_la": "Zapaljenje kože izazvano pelenama",
+    "source_line": 2513
+  },
+  {
+    "code": "L23",
+    "title_la": "Kontaktno alergijsko zapaljenje kože",
+    "source_line": 2514
+  },
+  {
+    "code": "L24",
+    "title_la": "Kontaktno nadražajno zapaljenje kože",
+    "source_line": 2515
+  },
+  {
+    "code": "L25",
+    "title_la": "Kontaktno zapaljenje kože, neoznačeno",
+    "source_line": 2516
+  },
+  {
+    "code": "L26",
+    "title_la": "Zapaljenje kože sa ljuštenjem",
+    "source_line": 2517
+  },
+  {
+    "code": "L27",
+    "title_la": "Zapaljenje kože uzrokovano progutanom materijom",
+    "source_line": 2518
+  },
+  {
+    "code": "L28",
+    "title_la": "Običan hroničan lišaj i svrab",
+    "source_line": 2519
+  },
+  {
+    "code": "L29",
+    "title_la": "Svrab",
+    "source_line": 2520
+  },
+  {
+    "code": "L30",
+    "title_la": "Ostala zapaljenja kože",
+    "source_line": 2521
+  },
+  {
+    "code": "L40",
+    "title_la": "Psoriaza - Ljuskavica",
+    "source_line": 2524
+  },
+  {
+    "code": "L41",
+    "title_la": "Parapsorijaza - ljuskavičaste promene kože slične psorijazi",
+    "source_line": 2525
+  },
+  {
+    "code": "L42",
+    "title_la": "Ružičaste kružne pločice sa perutanjem",
+    "source_line": 2526
+  },
+  {
+    "code": "L43",
+    "title_la": "Ravan lišaj",
+    "source_line": 2527
+  },
+  {
+    "code": "L44",
+    "title_la": "Ostali papulo-ljuskasti poremećaji",
+    "source_line": 2528
+  },
+  {
+    "code": "L45",
+    "title_la": "Papulo-ljuskasti poremećaji u bolestima koje su klasifikovane na drugom mestu",
+    "source_line": 2529
+  },
+  {
+    "code": "L50",
+    "title_la": "Koprivnjača",
+    "source_line": 2532
+  },
+  {
+    "code": "L51",
+    "title_la": "Raznoliki eritem",
+    "source_line": 2533
+  },
+  {
+    "code": "L52",
+    "title_la": "Eritem sa nodusima",
+    "source_line": 2534
+  },
+  {
+    "code": "L53",
+    "title_la": "Druga eritematozna stanja",
+    "source_line": 2535
+  },
+  {
+    "code": "L54",
+    "title_la": "Eritem u bolestima koje su klasifikovane na drugom mestu",
+    "source_line": 2536
+  },
+  {
+    "code": "L55",
+    "title_la": "Opekotina uzrokovana sunčevim zracima",
+    "source_line": 2545
+  },
+  {
+    "code": "L56",
+    "title_la": "Druge akutne promene na koži uzrokovane ultraljubičastim zračenjem",
+    "source_line": 2546
+  },
+  {
+    "code": "L57",
+    "title_la": "Promene kože uzrokovane hroničnom izloženošću nejonizirajućim zračenjima",
+    "source_line": 2547
+  },
+  {
+    "code": "L58",
+    "title_la": "Zapaljenje kože uzrokovano X zracima",
+    "source_line": 2548
+  },
+  {
+    "code": "L59",
+    "title_la": "Drugi poremećaji kože i potkožnog tkiva u vezi sa zračenjem",
+    "source_line": 2549
+  },
+  {
+    "code": "L60",
+    "title_la": "Poremećaji nokta",
+    "source_line": 2552
+  },
+  {
+    "code": "L62",
+    "title_la": "Poremećaji nokta kod bolesti koje su klasifikovane na drugom mestu",
+    "source_line": 2553
+  },
+  {
+    "code": "L63",
+    "title_la": "Kružno opadanje kose",
+    "source_line": 2554
+  },
+  {
+    "code": "L64",
+    "title_la": "Androgena ćelavost",
+    "source_line": 2555
+  },
+  {
+    "code": "L65",
+    "title_la": "Drugo opadanje kose bez ožiljaka",
+    "source_line": 2556
+  },
+  {
+    "code": "L66",
+    "title_la": "Ožiljno opadanje kose",
+    "source_line": 2557
+  },
+  {
+    "code": "L67",
+    "title_la": "Nenormalnosti boje i stabla dlaka",
+    "source_line": 2558
+  },
+  {
+    "code": "L68",
+    "title_la": "Prekomerna maljavost",
+    "source_line": 2559
+  },
+  {
+    "code": "L70",
+    "title_la": "Akne - Bubuljice",
+    "source_line": 2560
+  },
+  {
+    "code": "L71",
+    "title_la": "Rozacea",
+    "source_line": 2561
+  },
+  {
+    "code": "L72",
+    "title_la": "Ciste korena dlake kože i potkožnog tkiva",
+    "source_line": 2562
+  },
+  {
+    "code": "L73",
+    "title_la": "Drugi folikularni poremećaji",
+    "source_line": 2563
+  },
+  {
+    "code": "L74",
+    "title_la": "Poremećaji lučenja ekrinih znojnih žlezda",
+    "source_line": 2564
+  },
+  {
+    "code": "L75",
+    "title_la": "Poremećaji lučenja apokrinih znojnih žlezda",
+    "source_line": 2565
+  },
+  {
+    "code": "L80",
+    "title_la": "Vitiligo - stečene depigmentovane mrlje kože",
+    "source_line": 2568
+  },
+  {
+    "code": "L81",
+    "title_la": "Drugi poremećaji pigmentacije kože",
+    "source_line": 2569
+  },
+  {
+    "code": "L82",
+    "title_la": "Seboreičko orožavanje kože",
+    "source_line": 2570
+  },
+  {
+    "code": "L83",
+    "title_la": "Crnkasta akantoza kože",
+    "source_line": 2571
+  },
+  {
+    "code": "L84",
+    "title_la": "Žuljevi i žuljevitost",
+    "source_line": 2572
+  },
+  {
+    "code": "L85",
+    "title_la": "Druga epidermalna zadebljanja",
+    "source_line": 2573
+  },
+  {
+    "code": "L86",
+    "title_la": "Keratodermija u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2574
+  },
+  {
+    "code": "L87",
+    "title_la": "Poremećaji lučenja preko pokožice",
+    "source_line": 2575
+  },
+  {
+    "code": "L88",
+    "title_la": "Gnojno-gangrenozno zapaljenje kože",
+    "source_line": 2576
+  },
+  {
+    "code": "L89",
+    "title_la": "Dekubitus",
+    "source_line": 2577
+  },
+  {
+    "code": "L90",
+    "title_la": "Atrofički poremećaji kože",
+    "source_line": 2578
+  },
+  {
+    "code": "L91",
+    "title_la": "Hipertrofični poremećaji (uvećanja, zadebljanja) kože",
+    "source_line": 2579
+  },
+  {
+    "code": "L92",
+    "title_la": "Granulomatoza - višestruki zrnasti tumori kože i potkožnog tkiva",
+    "source_line": 2580
+  },
+  {
+    "code": "L93",
+    "title_la": "Eritemski lupus – sistemsko oboljenje kože",
+    "source_line": 2581
+  },
+  {
+    "code": "L94",
+    "title_la": "Drugi lokalizovani poremećaji vezivnog tkiva",
+    "source_line": 2582
+  },
+  {
+    "code": "L95",
+    "title_la": "Zapaljenje krvnih sudova ograničeno na kožu, neklasifikovano na drugom mestu",
+    "source_line": 2583
+  },
+  {
+    "code": "L97",
+    "title_la": "Grizlica na nozi neklasifikovana na drugom mestu",
+    "source_line": 2584
+  },
+  {
+    "code": "L98",
+    "title_la": "Drugi poremećaji kože i potkožnog tkiva neklasifikovani na drugom mestu",
+    "source_line": 2585
+  },
+  {
+    "code": "L99",
+    "title_la": "Drugi poremećaji kože i potkožnog tkiva u bolestima koje su klasifikovane na",
+    "source_line": 2586
+  }
+]

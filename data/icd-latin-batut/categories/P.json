@@ -1,0 +1,297 @@
+[
+  {
+    "code": "P00",
+    "title_la": "Plod i novorođenče na koje su uticala stanja majke koja ne moraju biti povezana",
+    "source_line": 3000
+  },
+  {
+    "code": "P01",
+    "title_la": "Plod i novorođenče na koje su uticale komplikacije trudnoće majke",
+    "source_line": 3002
+  },
+  {
+    "code": "P02",
+    "title_la": "Plod i novorođenče na koje su uticala stanja posteljice, pupčanika i vodenjaka",
+    "source_line": 3003
+  },
+  {
+    "code": "P03",
+    "title_la": "Plod i novorođenče na koje su uticale druge komplikacije porođaja",
+    "source_line": 3004
+  },
+  {
+    "code": "P04",
+    "title_la": "Plod i novorođenče na koje su uticale štetne materije koje se prenose preko",
+    "source_line": 3005
+  },
+  {
+    "code": "P05",
+    "title_la": "Usporen rast i loša ishrana ploda",
+    "source_line": 3009
+  },
+  {
+    "code": "P07",
+    "title_la": "Poremećaji koji se odnose na kratko trajanje trudnoće i malu težinu na rođenju,",
+    "source_line": 3010
+  },
+  {
+    "code": "P08",
+    "title_la": "Poremećaji koji se odnose na dugo trajanje trudnoće i veliku težinu na rođenju",
+    "source_line": 3012
+  },
+  {
+    "code": "P10",
+    "title_la": "Unutarlobanjska razderotina i krvarenje novorođenčeta usled porođajne povrede",
+    "source_line": 3015
+  },
+  {
+    "code": "P11",
+    "title_la": "Druge povrede centralnog nervnog sistema novorođenčeta usled porođajne",
+    "source_line": 3016
+  },
+  {
+    "code": "P12",
+    "title_la": "Povrede poglavine novorođenčeta u toku porođaja",
+    "source_line": 3018
+  },
+  {
+    "code": "P13",
+    "title_la": "Povrede kostiju novorođenčeta u toku porođaja",
+    "source_line": 3019
+  },
+  {
+    "code": "P14",
+    "title_la": "Povrede perifernog nervnog sistema novorođenčeta u toku porođaja",
+    "source_line": 3020
+  },
+  {
+    "code": "P15",
+    "title_la": "Druge povrede novorođenčeta u toku porođaja",
+    "source_line": 3021
+  },
+  {
+    "code": "P20",
+    "title_la": "Nedostatak kiseonika u materici",
+    "source_line": 3025
+  },
+  {
+    "code": "P21",
+    "title_la": "Gušenje novorođenčeta uzrokovano nedostatkom kiseonika",
+    "source_line": 3026
+  },
+  {
+    "code": "P22",
+    "title_la": "Težak poremećaj disanja novorođenčeta",
+    "source_line": 3027
+  },
+  {
+    "code": "P23",
+    "title_la": "Urođeno zapaljenje pluća",
+    "source_line": 3028
+  },
+  {
+    "code": "P24",
+    "title_la": "Sindromi novorođenčetovog udisanja stranih sadržaja",
+    "source_line": 3029
+  },
+  {
+    "code": "P25",
+    "title_la": "Tkivni emfizem (međuprostorno nakupljanje vazduha) i stanja povezana sa njim",
+    "source_line": 3030
+  },
+  {
+    "code": "P26",
+    "title_la": "Krvarenje pluća nastalo u perinatalnom periodu",
+    "source_line": 3032
+  },
+  {
+    "code": "P27",
+    "title_la": "Hronične bolesti organa za disanje nastale u perinatalnom periodu",
+    "source_line": 3033
+  },
+  {
+    "code": "P28",
+    "title_la": "Druge bolesti organa za disanje nastale u perinatalnom periodu",
+    "source_line": 3034
+  },
+  {
+    "code": "P29",
+    "title_la": "Poremećaji srca i krvotoka nastali u perinatalnom periodu",
+    "source_line": 3035
+  },
+  {
+    "code": "P35",
+    "title_la": "Urođene infekcije uzrokovane virusima",
+    "source_line": 3038
+  },
+  {
+    "code": "P36",
+    "title_la": "Bakterijska sepsa novorođenčeta",
+    "source_line": 3039
+  },
+  {
+    "code": "P37",
+    "title_la": "Druge urođene infektivne i parazitarne bolesti",
+    "source_line": 3046
+  },
+  {
+    "code": "P38",
+    "title_la": "Zapaljenje pupka novorođenčeta, sa blagim krvarenjem ili bez njega",
+    "source_line": 3047
+  },
+  {
+    "code": "P39",
+    "title_la": "Druge infekcije specifične za perinatalni period",
+    "source_line": 3048
+  },
+  {
+    "code": "P50",
+    "title_la": "Fetalni gubitak krvi",
+    "source_line": 3051
+  },
+  {
+    "code": "P51",
+    "title_la": "Krvarenje novorođenčeta iz pupka",
+    "source_line": 3052
+  },
+  {
+    "code": "P52",
+    "title_la": "Unutarlobanjsko krvarenje ploda i novorođenčeta, neuzrokovano povredom",
+    "source_line": 3053
+  },
+  {
+    "code": "P53",
+    "title_la": "Hemoragijska bolest ploda i novorođenčeta",
+    "source_line": 3054
+  },
+  {
+    "code": "P54",
+    "title_la": "Druga krvarenja novorođenčeta",
+    "source_line": 3055
+  },
+  {
+    "code": "P55",
+    "title_la": "Hemolitička bolest-razaranje crvenih krvnih zrnaca ploda i novorođenčeta",
+    "source_line": 3056
+  },
+  {
+    "code": "P56",
+    "title_la": "Vodena bolest ploda uzrokovana hemolitičkom bolešću",
+    "source_line": 3057
+  },
+  {
+    "code": "P57",
+    "title_la": "Kernikterus-žutica jedara mozga",
+    "source_line": 3058
+  },
+  {
+    "code": "P58",
+    "title_la": "Žutica novorođenčeta nastala zbog druge prekomerne hemolize",
+    "source_line": 3059
+  },
+  {
+    "code": "P59",
+    "title_la": "Žutica novorođenčeta zbog drugih i neoznačenih uzroka",
+    "source_line": 3060
+  },
+  {
+    "code": "P60",
+    "title_la": "Diseminovano zgrušavanje krvi u krvnim sudovima ploda i novorođenčeta",
+    "source_line": 3061
+  },
+  {
+    "code": "P61",
+    "title_la": "Drugi perinatalni hematološki poremećaji",
+    "source_line": 3062
+  },
+  {
+    "code": "P70",
+    "title_la": "Prolazni poremećaji metabolizma ugljenih hidrata ploda i novorođenčeta",
+    "source_line": 3066
+  },
+  {
+    "code": "P71",
+    "title_la": "Prolazni poremećaji metabolizma kalcijuma i magnezijuma novorođenčeta",
+    "source_line": 3067
+  },
+  {
+    "code": "P72",
+    "title_la": "Druge prolazne bolesti žlezda sa unutrašnjim lučenjem novorođenčeta",
+    "source_line": 3068
+  },
+  {
+    "code": "P74",
+    "title_la": "Drugi prolazni poremećaji elektrolita i metabolizma novorođenčeta",
+    "source_line": 3069
+  },
+  {
+    "code": "P75",
+    "title_la": "Zavezano crevo uzrokovano mekonijumom u cističnoj fibrozi",
+    "source_line": 3072
+  },
+  {
+    "code": "P76",
+    "title_la": "Druga začepljenost creva novorođenčeta",
+    "source_line": 3073
+  },
+  {
+    "code": "P77",
+    "title_la": "Nekrotizujući enterokolitis ploda i novorođenčeta",
+    "source_line": 3074
+  },
+  {
+    "code": "P78",
+    "title_la": "Druge bolesti sistema za varenje u perinatalnom periodu",
+    "source_line": 3075
+  },
+  {
+    "code": "P80",
+    "title_la": "Niska temperatura tela novorođenčeta",
+    "source_line": 3079
+  },
+  {
+    "code": "P81",
+    "title_la": "Drugi poremećaji regulisanja temperature tela novorođenčeta",
+    "source_line": 3080
+  },
+  {
+    "code": "P83",
+    "title_la": "Druga stanja kože i potkožnog tkiva specifična za plod i novorođenče",
+    "source_line": 3081
+  },
+  {
+    "code": "P90",
+    "title_la": "Konvulzije novorođenčeta",
+    "source_line": 3084
+  },
+  {
+    "code": "P91",
+    "title_la": "Druge bolesti mozga novorođenčeta",
+    "source_line": 3085
+  },
+  {
+    "code": "P92",
+    "title_la": "Bolesti ishrane novorođenčeta",
+    "source_line": 3086
+  },
+  {
+    "code": "P93",
+    "title_la": "Reakcije i trovanja lekovima ploda i novorođenčeta",
+    "source_line": 3087
+  },
+  {
+    "code": "P94",
+    "title_la": "Bolesti mišićnog tonusa novorođenčeta",
+    "source_line": 3088
+  },
+  {
+    "code": "P95",
+    "title_la": "Smrt ploda zbog neoznačenog uzroka",
+    "source_line": 3089
+  },
+  {
+    "code": "P96",
+    "title_la": "Druge bolesti nastale u perinatalnom periodu",
+    "source_line": 3090
+  }
+]

@@ -1,0 +1,357 @@
+[
+  {
+    "code": "H00",
+    "title_la": "Čmičak i tvrdo zrno u kapku oka",
+    "source_line": 2025
+  },
+  {
+    "code": "H01",
+    "title_la": "Druga zapaljenja kapka oka",
+    "source_line": 2026
+  },
+  {
+    "code": "H02",
+    "title_la": "Druge bolesti kapka oka",
+    "source_line": 2027
+  },
+  {
+    "code": "H03",
+    "title_la": "Bolesti kapka oka u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2028
+  },
+  {
+    "code": "H04",
+    "title_la": "Bolesti suznog aparata",
+    "source_line": 2029
+  },
+  {
+    "code": "H05",
+    "title_la": "Bolesti duplje oka",
+    "source_line": 2030
+  },
+  {
+    "code": "H06",
+    "title_la": "Bolesti suznog aparata i očne duplje u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2031
+  },
+  {
+    "code": "H10",
+    "title_la": "Zapaljenje vežnjače oka",
+    "source_line": 2034
+  },
+  {
+    "code": "H11",
+    "title_la": "Druge bolesti vežnjače oka",
+    "source_line": 2035
+  },
+  {
+    "code": "H13",
+    "title_la": "Bolesti vežnjače oka u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2036
+  },
+  {
+    "code": "H15",
+    "title_la": "Bolesti beonjače",
+    "source_line": 2039
+  },
+  {
+    "code": "H16",
+    "title_la": "Zapaljenje rožnjače",
+    "source_line": 2040
+  },
+  {
+    "code": "H17",
+    "title_la": "Ožiljna promena i zamućenje rožnjače",
+    "source_line": 2041
+  },
+  {
+    "code": "H18",
+    "title_la": "Druge bolesti rožnjače",
+    "source_line": 2042
+  },
+  {
+    "code": "H19",
+    "title_la": "Bolesti beonjače i rožnjače u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2043
+  },
+  {
+    "code": "H20",
+    "title_la": "Zapaljenje dužice i zrakastog tela",
+    "source_line": 2044
+  },
+  {
+    "code": "H21",
+    "title_la": "Druge bolesti dužice i zrakastog tela",
+    "source_line": 2045
+  },
+  {
+    "code": "H22",
+    "title_la": "Bolesti dužice i zrakastog tela u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2046
+  },
+  {
+    "code": "H25",
+    "title_la": "Staračka katarakta",
+    "source_line": 2049
+  },
+  {
+    "code": "H26",
+    "title_la": "Druge katarakte",
+    "source_line": 2050
+  },
+  {
+    "code": "H27",
+    "title_la": "Druge bolesti sočiva",
+    "source_line": 2051
+  },
+  {
+    "code": "H28",
+    "title_la": "Katarakta i druge bolesti sočiva oka u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2052
+  },
+  {
+    "code": "H30",
+    "title_la": "Zapaljenje sudovnjače i mrežnjače",
+    "source_line": 2055
+  },
+  {
+    "code": "H31",
+    "title_la": "Druge bolesti sudovnjače",
+    "source_line": 2056
+  },
+  {
+    "code": "H32",
+    "title_la": "Horioretinalne bolesti u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2057
+  },
+  {
+    "code": "H33",
+    "title_la": "Odlubljivanje mrežnjače i rascep mrežnjače",
+    "source_line": 2058
+  },
+  {
+    "code": "H34",
+    "title_la": "Zapušen krvni sud mrežnjače",
+    "source_line": 2059
+  },
+  {
+    "code": "H35",
+    "title_la": "Druge bolesti mrežnjače",
+    "source_line": 2060
+  },
+  {
+    "code": "H36",
+    "title_la": "Bolesti mrežnjače u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2061
+  },
+  {
+    "code": "H40",
+    "title_la": "Glaukom",
+    "source_line": 2064
+  },
+  {
+    "code": "H42",
+    "title_la": "Glaukom u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2065
+  },
+  {
+    "code": "H43",
+    "title_la": "Bolesti staklastog tela",
+    "source_line": 2075
+  },
+  {
+    "code": "H44",
+    "title_la": "Bolesti jabučice oka",
+    "source_line": 2076
+  },
+  {
+    "code": "H45",
+    "title_la": "Bolesti staklastog tela i jabučice oka u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2077
+  },
+  {
+    "code": "H46",
+    "title_la": "Optički neuritis",
+    "source_line": 2080
+  },
+  {
+    "code": "H47",
+    "title_la": "Druge bolesti vidnog živca i bolesti vidnih puteva",
+    "source_line": 2081
+  },
+  {
+    "code": "H48",
+    "title_la": "Bolesti vidnog živca i vidnih puteva u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2082
+  },
+  {
+    "code": "H49",
+    "title_la": "Razrokost usled oduzetosti mišića pokretača oka",
+    "source_line": 2086
+  },
+  {
+    "code": "H50",
+    "title_la": "Druga razrokost",
+    "source_line": 2087
+  },
+  {
+    "code": "H51",
+    "title_la": "Drugi poremećaji pokretanja oba oka",
+    "source_line": 2088
+  },
+  {
+    "code": "H52",
+    "title_la": "Poremećaji prelamanja svetlosti i poremećaji prilagođavanja oka",
+    "source_line": 2089
+  },
+  {
+    "code": "H53",
+    "title_la": "Poremećaji vida",
+    "source_line": 2092
+  },
+  {
+    "code": "H54",
+    "title_la": "Oštećenje vida uključujući slepilo (binokularno ili monokularno)",
+    "source_line": 2093
+  },
+  {
+    "code": "H55",
+    "title_la": "Spontani i drugi nejednaki pokreti oka",
+    "source_line": 2096
+  },
+  {
+    "code": "H57",
+    "title_la": "Druge bolesti oka i pripojaka oka",
+    "source_line": 2097
+  },
+  {
+    "code": "H58",
+    "title_la": "Druge bolesti oka i pripojaka oka u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2098
+  },
+  {
+    "code": "H59",
+    "title_la": "Poremećaji oka i pripojaka oka posle medicinskih intervencija, neklasifikovani na",
+    "source_line": 2099
+  },
+  {
+    "code": "H60",
+    "title_la": "Zapaljenje spoljašnjeg uva",
+    "source_line": 2113
+  },
+  {
+    "code": "H61",
+    "title_la": "Druge bolesti spoljašnjeg uva",
+    "source_line": 2114
+  },
+  {
+    "code": "H62",
+    "title_la": "Bolesti spoljašnjeg uva u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2115
+  },
+  {
+    "code": "H65",
+    "title_la": "Negnojno zapaljenje srednjeg uva",
+    "source_line": 2118
+  },
+  {
+    "code": "H66",
+    "title_la": "Gnojno i neoznačeno zapaljenje srednjeg uva",
+    "source_line": 2119
+  },
+  {
+    "code": "H67",
+    "title_la": "Zapaljenje srednjeg uva u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2120
+  },
+  {
+    "code": "H68",
+    "title_la": "Zapaljenje i začepljenje Eustahijeve tube",
+    "source_line": 2121
+  },
+  {
+    "code": "H69",
+    "title_la": "Druge bolesti Eustahijeve tube",
+    "source_line": 2122
+  },
+  {
+    "code": "H70",
+    "title_la": "Zapaljenje mastoidnog nastavka i srodne bolesti",
+    "source_line": 2123
+  },
+  {
+    "code": "H71",
+    "title_la": "Pokožična tvorevina srednjeg uva",
+    "source_line": 2124
+  },
+  {
+    "code": "H72",
+    "title_la": "Perforacija bubne opne",
+    "source_line": 2125
+  },
+  {
+    "code": "H73",
+    "title_la": "Druge bolesti bubne opne",
+    "source_line": 2126
+  },
+  {
+    "code": "H74",
+    "title_la": "Druge bolesti srednjeg uva i bolesti mastoidnog nastavka",
+    "source_line": 2127
+  },
+  {
+    "code": "H75",
+    "title_la": "Druge bolesti srednjeg uva i mastoidnog nastavka u bolestima klasifikovanim na",
+    "source_line": 2128
+  },
+  {
+    "code": "H80",
+    "title_la": "Otoskleroza",
+    "source_line": 2132
+  },
+  {
+    "code": "H81",
+    "title_la": "Funkcijske bolesti organa za održavanje ravnoteže",
+    "source_line": 2133
+  },
+  {
+    "code": "H82",
+    "title_la": "Vertiginozni sindromi u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2134
+  },
+  {
+    "code": "H83",
+    "title_la": "Druge bolesti unutrašnjeg uva",
+    "source_line": 2135
+  },
+  {
+    "code": "H90",
+    "title_la": "Konduktivni gubitak sluha i senzorineuralni gubitak sluha",
+    "source_line": 2138
+  },
+  {
+    "code": "H91",
+    "title_la": "Drugi gubitak sluha",
+    "source_line": 2139
+  },
+  {
+    "code": "H92",
+    "title_la": "Bol u uvu i curenje iz uva",
+    "source_line": 2140
+  },
+  {
+    "code": "H93",
+    "title_la": "Drugi poremećaji uva, neklasifikovani na drugom mestu",
+    "source_line": 2141
+  },
+  {
+    "code": "H94",
+    "title_la": "Druge bolesti uva u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2142
+  },
+  {
+    "code": "H95",
+    "title_la": "Bolesti uva i mastoidnog nastavka posle medicinskih intervencija, neklasifikovane",
+    "source_line": 2143
+  }
+]

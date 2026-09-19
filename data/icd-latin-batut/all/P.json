@@ -1,0 +1,1937 @@
+[
+  {
+    "code": "P00",
+    "title_la": "Plod i novorođenče na koje su uticala stanja majke koja ne moraju biti povezana",
+    "source_line": 3000
+  },
+  {
+    "code": "P00.0",
+    "title_la": "Hypertensio arterialis matris cum sequelis ad fetum et neonatum",
+    "source_line": 36673
+  },
+  {
+    "code": "P00.1",
+    "title_la": "Morbi tractus urinarii matris cum sequelis ad fetum et neonatum",
+    "source_line": 36676
+  },
+  {
+    "code": "P00.2",
+    "title_la": "Morbi matris infectivi et morbi parasitarii cum sequelis ad fetum et neonatum",
+    "source_line": 36687
+  },
+  {
+    "code": "P00.3",
+    "title_la": "Morbi systematis circulatorii et morbi respiratorii matris cum sequelis ad fetum et",
+    "source_line": 36693
+  },
+  {
+    "code": "P00.4",
+    "title_la": "Morbi matris nutritionales cum sequelis ad fetum et neonatum",
+    "source_line": 36698
+  },
+  {
+    "code": "P00.5",
+    "title_la": "Laesiones matris cum sequelis ad fetum et neonatum",
+    "source_line": 36702
+  },
+  {
+    "code": "P00.6",
+    "title_la": "Interventiones ad matrem chirurgicae cum sequelis ad fetum et neonatum",
+    "source_line": 36705
+  },
+  {
+    "code": "P00.7",
+    "title_la": "Interventiones medicales ad matrem cum sequelis ad fetum et neonatum aliae, non",
+    "source_line": 36711
+  },
+  {
+    "code": "P00.8",
+    "title_la": "Status matris cum sequelis ad fetum et neonatum alii",
+    "source_line": 36718
+  },
+  {
+    "code": "P00.9",
+    "title_la": "Status matris cum sequelis ad fetum et neonatum, non specificatus",
+    "source_line": 36726
+  },
+  {
+    "code": "P01",
+    "title_la": "Plod i novorođenče na koje su uticale komplikacije trudnoće majke",
+    "source_line": 3002
+  },
+  {
+    "code": "P01.0",
+    "title_la": "Insufficientia cervicis uteri cum sequelis ad fetum et neonatum",
+    "source_line": 36731
+  },
+  {
+    "code": "P01.1",
+    "title_la": "Ruptura membranae praematura cum sequelis ad fetum et neonatum",
+    "source_line": 36733
+  },
+  {
+    "code": "P01.2",
+    "title_la": "Oligohydramnion cum sequelis ad fetum et neonatum",
+    "source_line": 36735
+  },
+  {
+    "code": "P01.3",
+    "title_la": "Polyhydramnion cum sequelis ad fetum et neonatum",
+    "source_line": 36744
+  },
+  {
+    "code": "P01.4",
+    "title_la": "Graviditas extrauterina cum sequelis ad fetum et neonatum",
+    "source_line": 36747
+  },
+  {
+    "code": "P01.5",
+    "title_la": "Graviditas plurifetalis cum sequelis ad fetum et neonatum",
+    "source_line": 36750
+  },
+  {
+    "code": "P01.6",
+    "title_la": "Mors matris cum sequelis ad fetum et neonatum",
+    "source_line": 36754
+  },
+  {
+    "code": "P01.7",
+    "title_la": "Malpraesentatio ante partum cum sequelis ad fetum et neonatum",
+    "source_line": 36756
+  },
+  {
+    "code": "P01.8",
+    "title_la": "Complicationes graviditatis matris cum sequelis ad fetum et neonatum aliae",
+    "source_line": 36763
+  },
+  {
+    "code": "P01.9",
+    "title_la": "Complicationes graviditatis matris cum sequelis ad fetum et neonatum, non",
+    "source_line": 36766
+  },
+  {
+    "code": "P02",
+    "title_la": "Plod i novorođenče na koje su uticala stanja posteljice, pupčanika i vodenjaka",
+    "source_line": 3003
+  },
+  {
+    "code": "P02.0",
+    "title_la": "Placenta praevia cum sequelis ad fetum et neonatum",
+    "source_line": 36773
+  },
+  {
+    "code": "P02.1",
+    "title_la": "Ablationes placentae et haemorrhagiae cum sequelis ad fetum et neonatum",
+    "source_line": 36775
+  },
+  {
+    "code": "P02.2",
+    "title_la": "Placenta praevia et dysfunctiones placentae cum sequelis ad fetum et neonatum",
+    "source_line": 36783
+  },
+  {
+    "code": "P02.3",
+    "title_la": "Syndroma transfusionis placentalis cum sequelis ad fetum et neonatum",
+    "source_line": 36790
+  },
+  {
+    "code": "P02.4",
+    "title_la": "Prolapsus chordae umbilicalis cum sequelis ad fetum et neonatum",
+    "source_line": 36802
+  },
+  {
+    "code": "P02.5",
+    "title_la": "Compressio chordae umbilicalis cum sequelis ad fetum et neonatum alia",
+    "source_line": 36804
+  },
+  {
+    "code": "P02.6",
+    "title_la": "Status chordae umbilicalis cum sequelis ad fetum et neonatum alii et non specificati",
+    "source_line": 36809
+  },
+  {
+    "code": "P02.7",
+    "title_la": "Chorioamnionitis cum sequelis ad fetum et neonatum",
+    "source_line": 36814
+  },
+  {
+    "code": "P02.8",
+    "title_la": "Abnormitates membranarum cum sequelis ad fetum et neonatum aliae",
+    "source_line": 36819
+  },
+  {
+    "code": "P02.9",
+    "title_la": "Abnormitates membranarum cum sequelis ad fetum et neonatum, non specificatae",
+    "source_line": 36821
+  },
+  {
+    "code": "P03",
+    "title_la": "Plod i novorođenče na koje su uticale druge komplikacije porođaja",
+    "source_line": 3004
+  },
+  {
+    "code": "P03.0",
+    "title_la": "Praesentatio et extractio pelvica cum sequelis ad fetum et neonatum",
+    "source_line": 36826
+  },
+  {
+    "code": "P03.1",
+    "title_la": "Malpraesentatio, malpositio et disproportio cum sequelis ad fetum et neonatum aliae",
+    "source_line": 36828
+  },
+  {
+    "code": "P03.2",
+    "title_la": "Partus forcipe cum sequelis ad fetum et neonatum",
+    "source_line": 36835
+  },
+  {
+    "code": "P03.3",
+    "title_la": "Partus vacuum-extractore cum sequelis ad fetum et neonatum",
+    "source_line": 36837
+  },
+  {
+    "code": "P03.4",
+    "title_la": "Sectio caesarea cum sequelis ad fetum et neonatum",
+    "source_line": 36839
+  },
+  {
+    "code": "P03.5",
+    "title_la": "Partus praecipitatus cum sequelis ad fetum et neonatum",
+    "source_line": 36841
+  },
+  {
+    "code": "P03.6",
+    "title_la": "Contractio uteri abnormalis cum sequelis ad fetum et neonatum",
+    "source_line": 36844
+  },
+  {
+    "code": "P03.8",
+    "title_la": "Complicationes partus cum sequelis ad fetum et neonatum aliae, specificatae",
+    "source_line": 36857
+  },
+  {
+    "code": "P03.9",
+    "title_la": "Complicatio partus cum sequelis ad fetum et neonatum, non specificata",
+    "source_line": 36865
+  },
+  {
+    "code": "P04",
+    "title_la": "Plod i novorođenče na koje su uticale štetne materije koje se prenose preko",
+    "source_line": 3005
+  },
+  {
+    "code": "P04.0",
+    "title_la": "Anaesthesia et analgesia matris in graviditate et partu cum sequelis ad fetum et",
+    "source_line": 36875
+  },
+  {
+    "code": "P04.1",
+    "title_la": "Medicatio matris cum sequelis ad fetum et neonatum alia",
+    "source_line": 36880
+  },
+  {
+    "code": "P04.2",
+    "title_la": "Abusus tabaci matris cum sequelis ad fetum et neonatum",
+    "source_line": 36887
+  },
+  {
+    "code": "P04.3",
+    "title_la": "Abusus alcoholis maternus cum sequelis ad fetum et neonatum",
+    "source_line": 36889
+  },
+  {
+    "code": "P04.4",
+    "title_la": "Narcomania matris cum sequelis ad fetum et neonatum",
+    "source_line": 36892
+  },
+  {
+    "code": "P04.5",
+    "title_la": "Usus substantiarum chemicarum nutrientium cum sequelis ad fetum et neonatum",
+    "source_line": 36896
+  },
+  {
+    "code": "P04.6",
+    "title_la": "Expositio matris substantiis hemicis externis cum sequelis ad fetum et neonatum",
+    "source_line": 36898
+  },
+  {
+    "code": "P04.8",
+    "title_la": "Factores matris nocivi cum sequelis ad fetum et neonatum alii",
+    "source_line": 36900
+  },
+  {
+    "code": "P04.9",
+    "title_la": "Factor matris nocivus cum sequelis ad fetum et neonatum, non specificatus",
+    "source_line": 36902
+  },
+  {
+    "code": "P05",
+    "title_la": "Usporen rast i loša ishrana ploda",
+    "source_line": 3009
+  },
+  {
+    "code": "P05.0",
+    "title_la": "Pondus ad terminum gestationalem parvum",
+    "source_line": 36917
+  },
+  {
+    "code": "P05.1",
+    "title_la": "Longitudo ad terminum gestationalem parva",
+    "source_line": 36921
+  },
+  {
+    "code": "P05.2",
+    "title_la": "Dysmaturitas",
+    "source_line": 36926
+  },
+  {
+    "code": "P05.9",
+    "title_la": "Incrementum fetus lentum, non specificatum",
+    "source_line": 36932
+  },
+  {
+    "code": "P07",
+    "title_la": "Poremećaji koji se odnose na kratko trajanje trudnoće i malu težinu na rođenju,",
+    "source_line": 3010
+  },
+  {
+    "code": "P07.0",
+    "title_la": "Pondus ad partum minimum",
+    "source_line": 36945
+  },
+  {
+    "code": "P07.1",
+    "title_la": "Pondus ad partum parvum aliud",
+    "source_line": 36948
+  },
+  {
+    "code": "P07.2",
+    "title_la": "Immaturitas extrema",
+    "source_line": 36951
+  },
+  {
+    "code": "P07.3",
+    "title_la": "Infanti praematuri, alii",
+    "source_line": 36954
+  },
+  {
+    "code": "P08",
+    "title_la": "Poremećaji koji se odnose na dugo trajanje trudnoće i veliku težinu na rođenju",
+    "source_line": 3012
+  },
+  {
+    "code": "P08.0",
+    "title_la": "Neonatus valde magnus",
+    "source_line": 36973
+  },
+  {
+    "code": "P08.1",
+    "title_la": "Neonati, magni ponderis ad terminum gestationalem, alii",
+    "source_line": 36978
+  },
+  {
+    "code": "P08.2",
+    "title_la": "Postmaturitas neonati",
+    "source_line": 36986
+  },
+  {
+    "code": "P10",
+    "title_la": "Unutarlobanjska razderotina i krvarenje novorođenčeta usled porođajne povrede",
+    "source_line": 3015
+  },
+  {
+    "code": "P10.0",
+    "title_la": "Haemorrhagia subduralis neonati traumatica per partum",
+    "source_line": 37002
+  },
+  {
+    "code": "P10.1",
+    "title_la": "Haemorrhagia cerebri neonati traumatica, per partum",
+    "source_line": 37006
+  },
+  {
+    "code": "P10.2",
+    "title_la": "Haemorrhagia intraventricularis neonati trauma per partum",
+    "source_line": 37008
+  },
+  {
+    "code": "P10.3",
+    "title_la": "Haemorrhagia subarachnoidalis neonati traumatica, per partum",
+    "source_line": 37010
+  },
+  {
+    "code": "P10.4",
+    "title_la": "Laceratio tentorii cerebelli neonati traumatica, per partum",
+    "source_line": 37012
+  },
+  {
+    "code": "P10.8",
+    "title_la": "Lacerationes et haemorrhagiae intracraniales neonati tramaticae aliae, per partum",
+    "source_line": 37014
+  },
+  {
+    "code": "P10.9",
+    "title_la": "Laceratio et haemorrhagia intracranialis neonati traumatica, per partum, non",
+    "source_line": 37024
+  },
+  {
+    "code": "P11",
+    "title_la": "Druge povrede centralnog nervnog sistema novorođenčeta usled porođajne",
+    "source_line": 3016
+  },
+  {
+    "code": "P11.0",
+    "title_la": "Oedema cerebrale neonati traumatica, per partum",
+    "source_line": 37031
+  },
+  {
+    "code": "P11.1",
+    "title_la": "Laesiones traumaticae cerebralis neonati specificatae aliae, per partum",
+    "source_line": 37033
+  },
+  {
+    "code": "P11.2",
+    "title_la": "Laesio traumatica cerebralis neonati non specificata, per partum",
+    "source_line": 37035
+  },
+  {
+    "code": "P11.3",
+    "title_la": "Laesio traumatica nervi facialis neonati, per partum",
+    "source_line": 37037
+  },
+  {
+    "code": "P11.4",
+    "title_la": "Laesio traumatica nervorum cranialium neonati aliorum, per partum",
+    "source_line": 37040
+  },
+  {
+    "code": "P11.5",
+    "title_la": "Laesio traumatica spinalis et medullae spinalis neonati, per partum",
+    "source_line": 37042
+  },
+  {
+    "code": "P11.9",
+    "title_la": "Laesio traumatica systematis nervosi centralis neonati, per partum, non specificata",
+    "source_line": 37045
+  },
+  {
+    "code": "P12",
+    "title_la": "Povrede poglavine novorođenčeta u toku porođaja",
+    "source_line": 3018
+  },
+  {
+    "code": "P12.0",
+    "title_la": "Cephalhaematoma neonati traumaticum, per partum",
+    "source_line": 37050
+  },
+  {
+    "code": "P12.1",
+    "title_la": "Caput succedaneum neonati, per partum",
+    "source_line": 37052
+  },
+  {
+    "code": "P12.2",
+    "title_la": "Haemorrhagia subaponeurotica epicranialis neonati traumatica, per partum",
+    "source_line": 37054
+  },
+  {
+    "code": "P12.3",
+    "title_la": "Ecchymosis capillitii neonati traumatica, per partum",
+    "source_line": 37056
+  },
+  {
+    "code": "P12.4",
+    "title_la": "Laesio traumatica capillitii neonati „monitoring-systemate“",
+    "source_line": 37058
+  },
+  {
+    "code": "P12.8",
+    "title_la": "Laesiones traumaticae capillitii neonati aliae, per partum",
+    "source_line": 37062
+  },
+  {
+    "code": "P12.9",
+    "title_la": "Laesio traumatica capillitii neonati non specificata, per partum",
+    "source_line": 37064
+  },
+  {
+    "code": "P13",
+    "title_la": "Povrede kostiju novorođenčeta u toku porođaja",
+    "source_line": 3019
+  },
+  {
+    "code": "P13.0",
+    "title_la": "Fractura cranii neonati, per partum",
+    "source_line": 37070
+  },
+  {
+    "code": "P13.1",
+    "title_la": "Laesiones traumaticae cranii neonati aliae, per partum",
+    "source_line": 37080
+  },
+  {
+    "code": "P13.2",
+    "title_la": "Laesio traumatica femoris neonati, per partum",
+    "source_line": 37083
+  },
+  {
+    "code": "P13.3",
+    "title_la": "Laesio traumatica ossium longorum alliorum neonati, per partum",
+    "source_line": 37085
+  },
+  {
+    "code": "P13.4",
+    "title_la": "Fractura claviculae neonati, per partum",
+    "source_line": 37087
+  },
+  {
+    "code": "P13.8",
+    "title_la": "Laesiones traumaticae sceletales neonati aliae, per partum",
+    "source_line": 37089
+  },
+  {
+    "code": "P13.9",
+    "title_la": "Laesio traumatica sceleti neonati non specificata, per partum",
+    "source_line": 37091
+  },
+  {
+    "code": "P14",
+    "title_la": "Povrede perifernog nervnog sistema novorođenčeta u toku porođaja",
+    "source_line": 3020
+  },
+  {
+    "code": "P14.0",
+    "title_la": "Paralysis Erb neonati, per partum",
+    "source_line": 37096
+  },
+  {
+    "code": "P14.1",
+    "title_la": "Paralysis Klumpke neonati, per partum",
+    "source_line": 37098
+  },
+  {
+    "code": "P14.2",
+    "title_la": "Paralysis nervi phrenici neonati, per partum",
+    "source_line": 37100
+  },
+  {
+    "code": "P14.3",
+    "title_la": "Laesiones traumaticae plexus brachialis neonati aliae, per partum",
+    "source_line": 37102
+  },
+  {
+    "code": "P14.8",
+    "title_la": "Laesiones traumaticae partium systematis nervosi peripherici neonati aliarum, per",
+    "source_line": 37104
+  },
+  {
+    "code": "P14.9",
+    "title_la": "Laesio traumatica systematis nervosi peripherici neonati, per partum, non",
+    "source_line": 37107
+  },
+  {
+    "code": "P15",
+    "title_la": "Druge povrede novorođenčeta u toku porođaja",
+    "source_line": 3021
+  },
+  {
+    "code": "P15.0",
+    "title_la": "Laesio traumatica hepatis neonati, per partum",
+    "source_line": 37113
+  },
+  {
+    "code": "P15.1",
+    "title_la": "Laesio traumatica lienis neonati, per partum",
+    "source_line": 37116
+  },
+  {
+    "code": "P15.2",
+    "title_la": "Laesio traumatica musculi sternocleidomastoidei neonati, per partum",
+    "source_line": 37119
+  },
+  {
+    "code": "P15.3",
+    "title_la": "Laesio traumatica oculi neonati, per partum",
+    "source_line": 37121
+  },
+  {
+    "code": "P15.4",
+    "title_la": "Laesio traumatica faciei neonati, per partum",
+    "source_line": 37125
+  },
+  {
+    "code": "P15.5",
+    "title_la": "Laesio traumatica genitaliorum externorum neonati, per partum",
+    "source_line": 37128
+  },
+  {
+    "code": "P15.6",
+    "title_la": "Necrosis adiposa subcutanea neonati, per partum",
+    "source_line": 37136
+  },
+  {
+    "code": "P15.8",
+    "title_la": "Laesiones traumaticae neonati, specificatae aliae, per partum",
+    "source_line": 37138
+  },
+  {
+    "code": "P15.9",
+    "title_la": "Laesio traumatica neonati, non specificata, per partum",
+    "source_line": 37140
+  },
+  {
+    "code": "P20",
+    "title_la": "Nedostatak kiseonika u materici",
+    "source_line": 3025
+  },
+  {
+    "code": "P20.0",
+    "title_la": "Hypoxia intrauterina ante initium partus",
+    "source_line": 37159
+  },
+  {
+    "code": "P20.1",
+    "title_la": "Hypoxia intrauterina, per partum",
+    "source_line": 37161
+  },
+  {
+    "code": "P20.9",
+    "title_la": "Hypoxia intrauterina, non specificata",
+    "source_line": 37163
+  },
+  {
+    "code": "P21",
+    "title_la": "Gušenje novorođenčeta uzrokovano nedostatkom kiseonika",
+    "source_line": 3026
+  },
+  {
+    "code": "P21.0",
+    "title_la": "Asphyxia neonatalis gravis",
+    "source_line": 37171
+  },
+  {
+    "code": "P21.1",
+    "title_la": "Asphyxia neonatalis mitis et levis",
+    "source_line": 37177
+  },
+  {
+    "code": "P21.9",
+    "title_la": "Asphyxia neonatalis, non specificata",
+    "source_line": 37183
+  },
+  {
+    "code": "P22",
+    "title_la": "Težak poremećaj disanja novorođenčeta",
+    "source_line": 3027
+  },
+  {
+    "code": "P22.0",
+    "title_la": "Syndroma angoris (distress) neonati respiratorii",
+    "source_line": 37197
+  },
+  {
+    "code": "P22.1",
+    "title_la": "Tachypnoea neonati transitoria",
+    "source_line": 37200
+  },
+  {
+    "code": "P22.8",
+    "title_la": "Angor (distress) neonati respiratorius alius",
+    "source_line": 37202
+  },
+  {
+    "code": "P22.9",
+    "title_la": "Angor (distress) neonati respiratorius, non specificatus",
+    "source_line": 37204
+  },
+  {
+    "code": "P23",
+    "title_la": "Urođeno zapaljenje pluća",
+    "source_line": 3028
+  },
+  {
+    "code": "P23.0",
+    "title_la": "Pneumonia viralis congenita",
+    "source_line": 37211
+  },
+  {
+    "code": "P23.1",
+    "title_la": "Pneumonia per Chlamydiam congenita",
+    "source_line": 37214
+  },
+  {
+    "code": "P23.2",
+    "title_la": "Pneumonia staphylococcica congenita",
+    "source_line": 37216
+  },
+  {
+    "code": "P23.3",
+    "title_la": "Pneumonia streptococcica, classis B, congenita",
+    "source_line": 37218
+  },
+  {
+    "code": "P23.4",
+    "title_la": "Pneumonia per Escherichiam coli congenita",
+    "source_line": 37220
+  },
+  {
+    "code": "P23.5",
+    "title_la": "Pneumonia per Pseudomonadem congenita",
+    "source_line": 37222
+  },
+  {
+    "code": "P23.6",
+    "title_la": "Pneumonia per bacterias alias congenita",
+    "source_line": 37224
+  },
+  {
+    "code": "P23.8",
+    "title_la": "Pneumonia per microorganismos alios congenita",
+    "source_line": 37230
+  },
+  {
+    "code": "P23.9",
+    "title_la": "Pneumonia congenita, non specificata",
+    "source_line": 37232
+  },
+  {
+    "code": "P24",
+    "title_la": "Sindromi novorođenčetovog udisanja stranih sadržaja",
+    "source_line": 3029
+  },
+  {
+    "code": "P24.0",
+    "title_la": "Aspiratio meconii neonatalis",
+    "source_line": 37238
+  },
+  {
+    "code": "P24.1",
+    "title_la": "Aspiratio amnii et muci neonatalis",
+    "source_line": 37240
+  },
+  {
+    "code": "P24.2",
+    "title_la": "Aspiratio sanguinis neonatalis",
+    "source_line": 37250
+  },
+  {
+    "code": "P24.3",
+    "title_la": "Aspiratio lactis et alimenti regurgitatio neonatalis",
+    "source_line": 37252
+  },
+  {
+    "code": "P24.8",
+    "title_la": "Syndromata aspirationis neonatalis alia",
+    "source_line": 37254
+  },
+  {
+    "code": "P24.9",
+    "title_la": "Syndroma aspirationis neonatalis, non specificata",
+    "source_line": 37256
+  },
+  {
+    "code": "P25",
+    "title_la": "Tkivni emfizem (međuprostorno nakupljanje vazduha) i stanja povezana sa njim",
+    "source_line": 3030
+  },
+  {
+    "code": "P25.0",
+    "title_la": "Emphysema interstitiale neonati",
+    "source_line": 37263
+  },
+  {
+    "code": "P25.1",
+    "title_la": "Pneumothorax neonati",
+    "source_line": 37265
+  },
+  {
+    "code": "P25.2",
+    "title_la": "Pneumomediastinum neonati",
+    "source_line": 37267
+  },
+  {
+    "code": "P25.3",
+    "title_la": "Pneumopericardium neonati",
+    "source_line": 37269
+  },
+  {
+    "code": "P25.8",
+    "title_la": "Status cum emphysemate interstinali neonati coniuncti alii",
+    "source_line": 37271
+  },
+  {
+    "code": "P26",
+    "title_la": "Krvarenje pluća nastalo u perinatalnom periodu",
+    "source_line": 3032
+  },
+  {
+    "code": "P26.0",
+    "title_la": "Haemorrhagia tracheobronchialis perinatalis",
+    "source_line": 37276
+  },
+  {
+    "code": "P26.1",
+    "title_la": "Haemorrhagia pulmonum abundans perinatalis",
+    "source_line": 37278
+  },
+  {
+    "code": "P26.8",
+    "title_la": "Haemorrhagia pulmonum abundans perinatalis alia",
+    "source_line": 37280
+  },
+  {
+    "code": "P26.9",
+    "title_la": "Haemorrhagia pulmonum perinatalis, non specificata",
+    "source_line": 37282
+  },
+  {
+    "code": "P27",
+    "title_la": "Hronične bolesti organa za disanje nastale u perinatalnom periodu",
+    "source_line": 3033
+  },
+  {
+    "code": "P27.0",
+    "title_la": "Syndroma Wilson-Mikity",
+    "source_line": 37287
+  },
+  {
+    "code": "P27.1",
+    "title_la": "Dysplasia bronchopulmonalis perinatalis",
+    "source_line": 37290
+  },
+  {
+    "code": "P27.8",
+    "title_la": "Morbi organorum respiratoriorum perinatales chronici alii",
+    "source_line": 37292
+  },
+  {
+    "code": "P27.9",
+    "title_la": "Morbus organi respiratorii perinatalis chronicus, non specificatus",
+    "source_line": 37296
+  },
+  {
+    "code": "P28",
+    "title_la": "Druge bolesti organa za disanje nastale u perinatalnom periodu",
+    "source_line": 3034
+  },
+  {
+    "code": "P28.0",
+    "title_la": "Atelectasis neonati primaria",
+    "source_line": 37309
+  },
+  {
+    "code": "P28.1",
+    "title_la": "Atelectases neonati aliae, non specificatae",
+    "source_line": 37314
+  },
+  {
+    "code": "P28.2",
+    "title_la": "Cyanosis paroxysmatica neonati",
+    "source_line": 37321
+  },
+  {
+    "code": "P28.3",
+    "title_la": "Apnoea neonati in somno primaria",
+    "source_line": 37324
+  },
+  {
+    "code": "P28.4",
+    "title_la": "Apnoea neonati alia",
+    "source_line": 37330
+  },
+  {
+    "code": "P28.5",
+    "title_la": "Insufficientia pulmonis neonati",
+    "source_line": 37336
+  },
+  {
+    "code": "P28.8",
+    "title_la": "Morbi organorum respiratoriorum neonati alii, specificati",
+    "source_line": 37338
+  },
+  {
+    "code": "P28.9",
+    "title_la": "Morbus organi respiratorii neonati, non specificatus",
+    "source_line": 37343
+  },
+  {
+    "code": "P29",
+    "title_la": "Poremećaji srca i krvotoka nastali u perinatalnom periodu",
+    "source_line": 3035
+  },
+  {
+    "code": "P29.0",
+    "title_la": "Insufficientia cordis neonati",
+    "source_line": 37349
+  },
+  {
+    "code": "P29.1",
+    "title_la": "Dysrhytmia cordis neonati",
+    "source_line": 37351
+  },
+  {
+    "code": "P29.2",
+    "title_la": "Hypertensio arterialis neonati",
+    "source_line": 37353
+  },
+  {
+    "code": "P29.3",
+    "title_la": "Circulatio fetalis persistens",
+    "source_line": 37363
+  },
+  {
+    "code": "P29.4",
+    "title_la": "Ischaemia myocardii neonati transitiva",
+    "source_line": 37367
+  },
+  {
+    "code": "P29.8",
+    "title_la": "Disordines organorum cardiovascularium perinatales, alii",
+    "source_line": 37369
+  },
+  {
+    "code": "P29.9",
+    "title_la": "Disordo organi cardiovascularis perinatalis, non specificatus",
+    "source_line": 37371
+  },
+  {
+    "code": "P35",
+    "title_la": "Urođene infekcije uzrokovane virusima",
+    "source_line": 3038
+  },
+  {
+    "code": "P35.0",
+    "title_la": "Syndroma rubeolae congenitae",
+    "source_line": 37392
+  },
+  {
+    "code": "P35.1",
+    "title_la": "Infectio cytomegaloviralis congenita",
+    "source_line": 37395
+  },
+  {
+    "code": "P35.2",
+    "title_la": "Infectio herpesviralis [herpes simplex] congenita",
+    "source_line": 37397
+  },
+  {
+    "code": "P35.3",
+    "title_la": "Hepatitis viralis congenita",
+    "source_line": 37399
+  },
+  {
+    "code": "P35.8",
+    "title_la": "Infectiones virales congenitae aliae",
+    "source_line": 37401
+  },
+  {
+    "code": "P35.9",
+    "title_la": "Infectio viralis congenita, non specificata",
+    "source_line": 37404
+  },
+  {
+    "code": "P36",
+    "title_la": "Bakterijska sepsa novorođenčeta",
+    "source_line": 3039
+  },
+  {
+    "code": "P36.0",
+    "title_la": "Sepsis neonati streptococcica, classis B",
+    "source_line": 37410
+  },
+  {
+    "code": "P36.1",
+    "title_la": "Sepsis neonati per streptococcum alium et non specificatum",
+    "source_line": 37412
+  },
+  {
+    "code": "P36.2",
+    "title_la": "Sepsis neonati per Staphylococcum aureum",
+    "source_line": 37420
+  },
+  {
+    "code": "P36.3",
+    "title_la": "Sepsis neonati per staphylococcum alium et non specificatum",
+    "source_line": 37422
+  },
+  {
+    "code": "P36.4",
+    "title_la": "Sepsis neonati per Escherichiam coli",
+    "source_line": 37424
+  },
+  {
+    "code": "P36.5",
+    "title_la": "Sepsis neonati anaerobica",
+    "source_line": 37426
+  },
+  {
+    "code": "P36.8",
+    "title_la": "Sepsis neonati bacterialis alia",
+    "source_line": 37428
+  },
+  {
+    "code": "P36.9",
+    "title_la": "Sepsis neonati bacterialis, non specificata",
+    "source_line": 37430
+  },
+  {
+    "code": "P37",
+    "title_la": "Druge urođene infektivne i parazitarne bolesti",
+    "source_line": 3046
+  },
+  {
+    "code": "P37.0",
+    "title_la": "Tuberculosis congenita",
+    "source_line": 37442
+  },
+  {
+    "code": "P37.1",
+    "title_la": "Toxoplasmosis congenita",
+    "source_line": 37444
+  },
+  {
+    "code": "P37.2",
+    "title_la": "Listeriosis neonati disseminata",
+    "source_line": 37447
+  },
+  {
+    "code": "P37.3",
+    "title_la": "Malaria falciparum congenita",
+    "source_line": 37449
+  },
+  {
+    "code": "P37.4",
+    "title_la": "Malariae congenitae aliae",
+    "source_line": 37451
+  },
+  {
+    "code": "P37.5",
+    "title_la": "Candidiasis neonati",
+    "source_line": 37453
+  },
+  {
+    "code": "P37.8",
+    "title_la": "Infectiones et morbi parasitarii congeniti alii, specificati",
+    "source_line": 37455
+  },
+  {
+    "code": "P37.9",
+    "title_la": "Infectio et morbus parasitarius congenitus, non specificatus",
+    "source_line": 37457
+  },
+  {
+    "code": "P38",
+    "title_la": "Zapaljenje pupka novorođenčeta, sa blagim krvarenjem ili bez njega",
+    "source_line": 3047
+  },
+  {
+    "code": "P39",
+    "title_la": "Druge infekcije specifične za perinatalni period",
+    "source_line": 3048
+  },
+  {
+    "code": "P39.0",
+    "title_la": "Mastitis neonati infectiva",
+    "source_line": 37465
+  },
+  {
+    "code": "P39.1",
+    "title_la": "Coniunctivitis et dacriocystitis neonati",
+    "source_line": 37477
+  },
+  {
+    "code": "P39.2",
+    "title_la": "Infectio fetus intraamniotica, non alibi clasificata",
+    "source_line": 37482
+  },
+  {
+    "code": "P39.3",
+    "title_la": "Infectio tractus urinarii neonati",
+    "source_line": 37484
+  },
+  {
+    "code": "P39.4",
+    "title_la": "Infectio cutis neonati",
+    "source_line": 37486
+  },
+  {
+    "code": "P39.8",
+    "title_la": "Aliae infectiones temporis perinatalis specificae specificatae",
+    "source_line": 37491
+  },
+  {
+    "code": "P39.9",
+    "title_la": "Infectio neonati perinatalis specifica, non specificata",
+    "source_line": 37493
+  },
+  {
+    "code": "P50",
+    "title_la": "Fetalni gubitak krvi",
+    "source_line": 3051
+  },
+  {
+    "code": "P50.0",
+    "title_la": "Amissio sanguinis fetus e vasa praeviis",
+    "source_line": 37509
+  },
+  {
+    "code": "P50.1",
+    "title_la": "Amissio sanguinis fetus e chorda umbilicali lacerata",
+    "source_line": 37511
+  },
+  {
+    "code": "P50.2",
+    "title_la": "Amissio sanguinis fetus e placenta",
+    "source_line": 37513
+  },
+  {
+    "code": "P50.3",
+    "title_la": "Haemorrhagia ad geminum",
+    "source_line": 37515
+  },
+  {
+    "code": "P50.4",
+    "title_la": "Haemorrhagia in circulatione matris",
+    "source_line": 37517
+  },
+  {
+    "code": "P50.5",
+    "title_la": "Amissio sanguinis fetus e chorda umbilicali gemini caesa",
+    "source_line": 37519
+  },
+  {
+    "code": "P50.8",
+    "title_la": "Amissio sanguinis fetus alius",
+    "source_line": 37521
+  },
+  {
+    "code": "P50.9",
+    "title_la": "Amissio sanguinis fetus, non specificata",
+    "source_line": 37523
+  },
+  {
+    "code": "P51",
+    "title_la": "Krvarenje novorođenčeta iz pupka",
+    "source_line": 3052
+  },
+  {
+    "code": "P51.0",
+    "title_la": "Haemorrhagia neonati umbilicalis, abundans",
+    "source_line": 37536
+  },
+  {
+    "code": "P51.8",
+    "title_la": "Haemorrhagiae neonati umbilicales aliae",
+    "source_line": 37538
+  },
+  {
+    "code": "P51.9",
+    "title_la": "Haemorrhagia neonati umbilicalis, non specificata",
+    "source_line": 37541
+  },
+  {
+    "code": "P52",
+    "title_la": "Unutarlobanjsko krvarenje ploda i novorođenčeta, neuzrokovano povredom",
+    "source_line": 3053
+  },
+  {
+    "code": "P52.0",
+    "title_la": "Haemorrhagia cerebri intraventricularis fetus et neonati non traumatica, gradus 1",
+    "source_line": 37551
+  },
+  {
+    "code": "P52.1",
+    "title_la": "Haemorrhagia cerebri intraventricularis fetus et neonati non traumatica, gradus 2",
+    "source_line": 37554
+  },
+  {
+    "code": "P52.2",
+    "title_la": "Haemorrhagia cerebri intraventricularis fetus et neonati non traumatica, gradus 3",
+    "source_line": 37557
+  },
+  {
+    "code": "P52.3",
+    "title_la": "Haemorrhagia cerebri intraventricularis fetus et neonati non traumatica, non",
+    "source_line": 37560
+  },
+  {
+    "code": "P52.4",
+    "title_la": "Haemorrhagia intracerebralis fetus et neonati, non traumatica",
+    "source_line": 37563
+  },
+  {
+    "code": "P52.5",
+    "title_la": "Haemorrhagia subarachnoidalis fetus et neonati, non traumatica",
+    "source_line": 37565
+  },
+  {
+    "code": "P52.6",
+    "title_la": "Haemorrhagia cerebellaris fetus et neonati in fossa posteriore, non traumatica",
+    "source_line": 37567
+  },
+  {
+    "code": "P52.8",
+    "title_la": "Haemorrhagia intracranialis fetus et neonati non traumatica, alia",
+    "source_line": 37569
+  },
+  {
+    "code": "P52.9",
+    "title_la": "Haemorrhagia intracranialis fetus et neonati non traumatica, non specificata",
+    "source_line": 37571
+  },
+  {
+    "code": "P53",
+    "title_la": "Hemoragijska bolest ploda i novorođenčeta",
+    "source_line": 3054
+  },
+  {
+    "code": "P54",
+    "title_la": "Druga krvarenja novorođenčeta",
+    "source_line": 3055
+  },
+  {
+    "code": "P54.0",
+    "title_la": "Haematemesis neonati",
+    "source_line": 37589
+  },
+  {
+    "code": "P54.1",
+    "title_la": "Melaena neonati",
+    "source_line": 37592
+  },
+  {
+    "code": "P54.2",
+    "title_la": "Haemorrhagia neonati rectalis",
+    "source_line": 37595
+  },
+  {
+    "code": "P54.3",
+    "title_la": "Haemorrhagia neonati gastrointestinalis, alia",
+    "source_line": 37597
+  },
+  {
+    "code": "P54.4",
+    "title_la": "Haemorrhagia glandulae suprarenalis neonati",
+    "source_line": 37599
+  },
+  {
+    "code": "P54.5",
+    "title_la": "Haemorrhagia cutis neonati",
+    "source_line": 37601
+  },
+  {
+    "code": "P54.6",
+    "title_la": "Haemorrhagia neonati vaginalis",
+    "source_line": 37610
+  },
+  {
+    "code": "P54.8",
+    "title_la": "Haemorrhagiae neonati aliae, specificatae",
+    "source_line": 37613
+  },
+  {
+    "code": "P54.9",
+    "title_la": "Haemorrhagia neonati, non specificata",
+    "source_line": 37615
+  },
+  {
+    "code": "P55",
+    "title_la": "Hemolitička bolest-razaranje crvenih krvnih zrnaca ploda i novorođenčeta",
+    "source_line": 3056
+  },
+  {
+    "code": "P55.0",
+    "title_la": "Rhesus isoimmunisatio fetus et neonati",
+    "source_line": 37620
+  },
+  {
+    "code": "P55.1",
+    "title_la": "ABO isoimmunisatio fetus et neonati",
+    "source_line": 37622
+  },
+  {
+    "code": "P55.8",
+    "title_la": "Morbi haemolytici fetus et neonati, alii",
+    "source_line": 37624
+  },
+  {
+    "code": "P55.9",
+    "title_la": "Morbus haemolyticus fetus et neonati, non specificatus",
+    "source_line": 37626
+  },
+  {
+    "code": "P56",
+    "title_la": "Vodena bolest ploda uzrokovana hemolitičkom bolešću",
+    "source_line": 3057
+  },
+  {
+    "code": "P56.0",
+    "title_la": "Hydrops fetus propter isoimmunisationem",
+    "source_line": 37634
+  },
+  {
+    "code": "P56.9",
+    "title_la": "Hydrops fetus propter morbum haemolyticum alium et non specificatum",
+    "source_line": 37643
+  },
+  {
+    "code": "P57",
+    "title_la": "Kernikterus-žutica jedara mozga",
+    "source_line": 3058
+  },
+  {
+    "code": "P57.0",
+    "title_la": "Kernicterus isoimmunisationalis",
+    "source_line": 37648
+  },
+  {
+    "code": "P57.8",
+    "title_la": "Kernicteri alii, specificati",
+    "source_line": 37650
+  },
+  {
+    "code": "P57.9",
+    "title_la": "Kernicterus, non specificatus",
+    "source_line": 37653
+  },
+  {
+    "code": "P58",
+    "title_la": "Žutica novorođenčeta nastala zbog druge prekomerne hemolize",
+    "source_line": 3059
+  },
+  {
+    "code": "P58.0",
+    "title_la": "Icterus haemolyticus neonati cum livoribus",
+    "source_line": 37659
+  },
+  {
+    "code": "P58.1",
+    "title_la": "Icterus haemolyticus neonati haemorrhagicus",
+    "source_line": 37661
+  },
+  {
+    "code": "P58.2",
+    "title_la": "Icterus haemolyticus neonati infectivus",
+    "source_line": 37663
+  },
+  {
+    "code": "P58.3",
+    "title_la": "Icterus haemolyticus neonati polycytaemicus",
+    "source_line": 37665
+  },
+  {
+    "code": "P58.4",
+    "title_la": "Icterus neonati propter medicamenta sive toxina per matrem transmissa sive",
+    "source_line": 37667
+  },
+  {
+    "code": "P58.5",
+    "title_la": "Icterus haemolyticus neonati propter sanguinem matris haustum",
+    "source_line": 37672
+  },
+  {
+    "code": "P58.8",
+    "title_la": "Icterus haemolyticus neonati alius, specificatus",
+    "source_line": 37674
+  },
+  {
+    "code": "P58.9",
+    "title_la": "Icterus haemolyticus neonati, non specificatus",
+    "source_line": 37676
+  },
+  {
+    "code": "P59",
+    "title_la": "Žutica novorođenčeta zbog drugih i neoznačenih uzroka",
+    "source_line": 3060
+  },
+  {
+    "code": "P59.0",
+    "title_la": "Icterus neonati post partum praematurum",
+    "source_line": 37683
+  },
+  {
+    "code": "P59.1",
+    "title_la": "Syndroma bilis codensatae",
+    "source_line": 37687
+  },
+  {
+    "code": "P59.2",
+    "title_la": "Icterus neonati propter laesionem hepatocellularum aliam et non specificatam",
+    "source_line": 37689
+  },
+  {
+    "code": "P59.3",
+    "title_la": "Icterus neonati propter inhibitores in lacte matris",
+    "source_line": 37699
+  },
+  {
+    "code": "P59.8",
+    "title_la": "Icterus neonati propter causas alias specificatas",
+    "source_line": 37701
+  },
+  {
+    "code": "P59.9",
+    "title_la": "Icterus neonati, non specificatus",
+    "source_line": 37703
+  },
+  {
+    "code": "P60",
+    "title_la": "Diseminovano zgrušavanje krvi u krvnim sudovima ploda i novorođenčeta",
+    "source_line": 3061
+  },
+  {
+    "code": "P61",
+    "title_la": "Drugi perinatalni hematološki poremećaji",
+    "source_line": 3062
+  },
+  {
+    "code": "P61.0",
+    "title_la": "Thrombocytopenia neonati transitiva",
+    "source_line": 37714
+  },
+  {
+    "code": "P61.1",
+    "title_la": "Polycythaemia neonati",
+    "source_line": 37720
+  },
+  {
+    "code": "P61.2",
+    "title_la": "Anaemia praematuri",
+    "source_line": 37722
+  },
+  {
+    "code": "P61.3",
+    "title_la": "Anaemia fetus posthaemorrhagica congenita",
+    "source_line": 37724
+  },
+  {
+    "code": "P61.4",
+    "title_la": "Anaemiae congenitae aliae, non alibi classificatae",
+    "source_line": 37726
+  },
+  {
+    "code": "P61.5",
+    "title_la": "Neutrocytopenia neonati transitiva",
+    "source_line": 37729
+  },
+  {
+    "code": "P61.6",
+    "title_la": "Disordines coagulationis neonati transitivi, alii",
+    "source_line": 37731
+  },
+  {
+    "code": "P61.8",
+    "title_la": "Disordines haematologici perinatales alii, specificati",
+    "source_line": 37733
+  },
+  {
+    "code": "P61.9",
+    "title_la": "Disordo haematologicus perinatalis, non specificatus",
+    "source_line": 37735
+  },
+  {
+    "code": "P70",
+    "title_la": "Prolazni poremećaji metabolizma ugljenih hidrata ploda i novorođenčeta",
+    "source_line": 3066
+  },
+  {
+    "code": "P70.0",
+    "title_la": "Syndroma infantis matris cum diabeta gestationali",
+    "source_line": 37753
+  },
+  {
+    "code": "P70.1",
+    "title_la": "Syndroma infantis matris cum diabeta",
+    "source_line": 37756
+  },
+  {
+    "code": "P70.2",
+    "title_la": "Diabetes mellitus neonati",
+    "source_line": 37759
+  },
+  {
+    "code": "P70.3",
+    "title_la": "Hypoglycaemia neonati iatrogenica",
+    "source_line": 37761
+  },
+  {
+    "code": "P70.4",
+    "title_la": "Hypoglycaemia neonati alia",
+    "source_line": 37763
+  },
+  {
+    "code": "P70.8",
+    "title_la": "Disordines metabolismi carbohydratorum fetus et neonati transitivi alii",
+    "source_line": 37766
+  },
+  {
+    "code": "P70.9",
+    "title_la": "Disordo metabolismi carbohydratorum fetus et neonati transitivus, non specificatus",
+    "source_line": 37768
+  },
+  {
+    "code": "P71",
+    "title_la": "Prolazni poremećaji metabolizma kalcijuma i magnezijuma novorođenčeta",
+    "source_line": 3067
+  },
+  {
+    "code": "P71.0",
+    "title_la": "Hypocalcaemia neonati propter lac vaccae",
+    "source_line": 37773
+  },
+  {
+    "code": "P71.1",
+    "title_la": "Hypocalcaemia neonati alia",
+    "source_line": 37775
+  },
+  {
+    "code": "P71.2",
+    "title_la": "Hypomagnesiaemia neonati",
+    "source_line": 37778
+  },
+  {
+    "code": "P71.3",
+    "title_la": "Tetania neonati sine deficientia calcii sive magnesii",
+    "source_line": 37780
+  },
+  {
+    "code": "P71.4",
+    "title_la": "Hypoparathyreoidismus neonati transitivus",
+    "source_line": 37783
+  },
+  {
+    "code": "P71.8",
+    "title_la": "Disordines metabolismi calcii et magnesii neonati transitivi alii",
+    "source_line": 37785
+  },
+  {
+    "code": "P71.9",
+    "title_la": "Disordo metabolismi calcii et magnesii neonati transitivus alius, non specificatus",
+    "source_line": 37787
+  },
+  {
+    "code": "P72",
+    "title_la": "Druge prolazne bolesti žlezda sa unutrašnjim lučenjem novorođenčeta",
+    "source_line": 3068
+  },
+  {
+    "code": "P72.0",
+    "title_la": "Struma neonati, non alibi classificata",
+    "source_line": 37802
+  },
+  {
+    "code": "P72.1",
+    "title_la": "Hyperthyreosis neonati transitiva",
+    "source_line": 37805
+  },
+  {
+    "code": "P72.2",
+    "title_la": "Dysfunctiones glandulae thyreoideae neonati transitive, non alibi classificatae",
+    "source_line": 37808
+  },
+  {
+    "code": "P72.8",
+    "title_la": "Morbi systematis endocrini neonati transitivi alii, specificati",
+    "source_line": 37812
+  },
+  {
+    "code": "P72.9",
+    "title_la": "Morbus systematis endocrini neonati transitivus, non specificatus",
+    "source_line": 37814
+  },
+  {
+    "code": "P74",
+    "title_la": "Drugi prolazni poremećaji elektrolita i metabolizma novorođenčeta",
+    "source_line": 3069
+  },
+  {
+    "code": "P74.0",
+    "title_la": "Acidosis neonati metabolica tarda",
+    "source_line": 37819
+  },
+  {
+    "code": "P74.1",
+    "title_la": "Dehydratio neonati",
+    "source_line": 37821
+  },
+  {
+    "code": "P74.2",
+    "title_la": "Disordines equilibrii natrii neonati",
+    "source_line": 37823
+  },
+  {
+    "code": "P74.3",
+    "title_la": "Disordines equilibrii kalii neonati",
+    "source_line": 37825
+  },
+  {
+    "code": "P74.4",
+    "title_la": "Disordines neonati electrolytici transitivi, alii",
+    "source_line": 37827
+  },
+  {
+    "code": "P74.5",
+    "title_la": "Tyrosinaemia neonati transitiva",
+    "source_line": 37829
+  },
+  {
+    "code": "P74.8",
+    "title_la": "Disordines neonati metabolici transitivi, alii",
+    "source_line": 37831
+  },
+  {
+    "code": "P74.9",
+    "title_la": "Disordo metabolismi neonati transitivus, non specificatus",
+    "source_line": 37833
+  },
+  {
+    "code": "P75",
+    "title_la": "Zavezano crevo uzrokovano mekonijumom u cističnoj fibrozi",
+    "source_line": 3072
+  },
+  {
+    "code": "P76",
+    "title_la": "Druga začepljenost creva novorođenčeta",
+    "source_line": 3073
+  },
+  {
+    "code": "P76.0",
+    "title_la": "Syndroma embolii meconialis",
+    "source_line": 37853
+  },
+  {
+    "code": "P76.1",
+    "title_la": "Ileus neonati transitivus",
+    "source_line": 37856
+  },
+  {
+    "code": "P76.2",
+    "title_la": "Obstructio intestinalis propter lac condensatum",
+    "source_line": 37859
+  },
+  {
+    "code": "P76.8",
+    "title_la": "Obstructio intestinalis neonatalis alia, specificata",
+    "source_line": 37861
+  },
+  {
+    "code": "P76.9",
+    "title_la": "Obstructio intestinalis neonatalis, non specificata",
+    "source_line": 37864
+  },
+  {
+    "code": "P77",
+    "title_la": "Nekrotizujući enterokolitis ploda i novorođenčeta",
+    "source_line": 3074
+  },
+  {
+    "code": "P78",
+    "title_la": "Druge bolesti sistema za varenje u perinatalnom periodu",
+    "source_line": 3075
+  },
+  {
+    "code": "P78.0",
+    "title_la": "Perforatio intestinalis perinatalis",
+    "source_line": 37873
+  },
+  {
+    "code": "P78.1",
+    "title_la": "Peritonitis neonati alia",
+    "source_line": 37876
+  },
+  {
+    "code": "P78.2",
+    "title_la": "Haematemesis et melaena neonati propter sanguinem matris haustum",
+    "source_line": 37879
+  },
+  {
+    "code": "P78.3",
+    "title_la": "Diarrhoea neonati non infectiva",
+    "source_line": 37881
+  },
+  {
+    "code": "P78.8",
+    "title_la": "Morbi systematis digestivi perinatales alii, specificati",
+    "source_line": 37885
+  },
+  {
+    "code": "P78.9",
+    "title_la": "Morbus systematis digestivi perinatalis, non specificatus",
+    "source_line": 37890
+  },
+  {
+    "code": "P80",
+    "title_la": "Niska temperatura tela novorođenčeta",
+    "source_line": 3079
+  },
+  {
+    "code": "P80.0",
+    "title_la": "Syndroma laesionis neonati frigore",
+    "source_line": 37905
+  },
+  {
+    "code": "P80.8",
+    "title_la": "Hypothermia neonati alia",
+    "source_line": 37910
+  },
+  {
+    "code": "P80.9",
+    "title_la": "Hypothermia neonati, non specificata",
+    "source_line": 37913
+  },
+  {
+    "code": "P81",
+    "title_la": "Drugi poremećaji regulisanja temperature tela novorođenčeta",
+    "source_line": 3080
+  },
+  {
+    "code": "P81.0",
+    "title_la": "Hyperthermia neonati externa",
+    "source_line": 37918
+  },
+  {
+    "code": "P81.8",
+    "title_la": "Disordines regulationis temperaturae neonati alii, specificati",
+    "source_line": 37920
+  },
+  {
+    "code": "P81.9",
+    "title_la": "Disordo regulationis temperaturae neonati, non specificatus",
+    "source_line": 37922
+  },
+  {
+    "code": "P83",
+    "title_la": "Druga stanja kože i potkožnog tkiva specifična za plod i novorođenče",
+    "source_line": 3081
+  },
+  {
+    "code": "P83.0",
+    "title_la": "Sclerema neonati",
+    "source_line": 37934
+  },
+  {
+    "code": "P83.1",
+    "title_la": "Erythema toxicum neonati",
+    "source_line": 37936
+  },
+  {
+    "code": "P83.2",
+    "title_la": "Hydrops fetalis sine morbo haemolytico",
+    "source_line": 37938
+  },
+  {
+    "code": "P83.3",
+    "title_la": "Oedema ad fetum et neonatum specificum aliud, non specificatum",
+    "source_line": 37941
+  },
+  {
+    "code": "P83.4",
+    "title_la": "Hypertrophia mammae neonati",
+    "source_line": 37943
+  },
+  {
+    "code": "P83.5",
+    "title_la": "Hydrocele congenita",
+    "source_line": 37946
+  },
+  {
+    "code": "P83.6",
+    "title_la": "Polypus umbilicalis neonati",
+    "source_line": 37948
+  },
+  {
+    "code": "P83.8",
+    "title_la": "Morbi cutis et subcutis fetus et neonati specifici alii, specificati",
+    "source_line": 37955
+  },
+  {
+    "code": "P83.9",
+    "title_la": "Morbus cutis et subcutis fetus et neonati specificus, non specificatus",
+    "source_line": 37960
+  },
+  {
+    "code": "P90",
+    "title_la": "Konvulzije novorođenčeta",
+    "source_line": 3084
+  },
+  {
+    "code": "P91",
+    "title_la": "Druge bolesti mozga novorođenčeta",
+    "source_line": 3085
+  },
+  {
+    "code": "P91.0",
+    "title_la": "Ischaemia cerebri neonati",
+    "source_line": 37974
+  },
+  {
+    "code": "P91.1",
+    "title_la": "Cystes cerebri neonati, acqiusitae periventiculares",
+    "source_line": 37976
+  },
+  {
+    "code": "P91.2",
+    "title_la": "Leukomalacia cerebri neonati",
+    "source_line": 37978
+  },
+  {
+    "code": "P91.3",
+    "title_la": "Irritabilitas cerebri neonati",
+    "source_line": 37980
+  },
+  {
+    "code": "P91.4",
+    "title_la": "Depressio cerebri neonati",
+    "source_line": 37982
+  },
+  {
+    "code": "P91.5",
+    "title_la": "Coma neonati",
+    "source_line": 37984
+  },
+  {
+    "code": "P91.6",
+    "title_la": "Encephalopathia hypoxica ischaemica neonati",
+    "source_line": 37986
+  },
+  {
+    "code": "P91.8",
+    "title_la": "Morbi cerebri neonati alii, specificati",
+    "source_line": 37988
+  },
+  {
+    "code": "P91.9",
+    "title_la": "Morbus cerebri neonati, non specificatus",
+    "source_line": 37990
+  },
+  {
+    "code": "P92",
+    "title_la": "Bolesti ishrane novorođenčeta",
+    "source_line": 3086
+  },
+  {
+    "code": "P92.0",
+    "title_la": "Vomitus neonati",
+    "source_line": 37995
+  },
+  {
+    "code": "P92.1",
+    "title_la": "Regurgitatio et ruminatio neonati",
+    "source_line": 37997
+  },
+  {
+    "code": "P92.2",
+    "title_la": "Receptio alimenti neonati tarda",
+    "source_line": 37999
+  },
+  {
+    "code": "P92.3",
+    "title_la": "Hyponutritio neonati",
+    "source_line": 38001
+  },
+  {
+    "code": "P92.4",
+    "title_la": "Hypernutritio neonati",
+    "source_line": 38003
+  },
+  {
+    "code": "P92.5",
+    "title_la": "Difficultates neonti ad suctionem",
+    "source_line": 38011
+  },
+  {
+    "code": "P92.8",
+    "title_la": "Morbi neonati alimentarii alii",
+    "source_line": 38013
+  },
+  {
+    "code": "P92.9",
+    "title_la": "Morbus neonati nutritionalis, non specificatus",
+    "source_line": 38015
+  },
+  {
+    "code": "P93",
+    "title_la": "Reakcije i trovanja lekovima ploda i novorođenčeta",
+    "source_line": 3087
+  },
+  {
+    "code": "P94",
+    "title_la": "Bolesti mišićnog tonusa novorođenčeta",
+    "source_line": 3088
+  },
+  {
+    "code": "P94.0",
+    "title_la": "Myasthenia gravis neonati transitiva",
+    "source_line": 38031
+  },
+  {
+    "code": "P94.1",
+    "title_la": "Hypertonia musculorum neonati congenita",
+    "source_line": 38034
+  },
+  {
+    "code": "P94.2",
+    "title_la": "Hypotonia musculorum neonati congenita",
+    "source_line": 38036
+  },
+  {
+    "code": "P94.8",
+    "title_la": "Morbi toni musculorum neonati alii",
+    "source_line": 38039
+  },
+  {
+    "code": "P94.9",
+    "title_la": "Morbus toni musculorum neonati, non specificatus",
+    "source_line": 38041
+  },
+  {
+    "code": "P95",
+    "title_la": "Smrt ploda zbog neoznačenog uzroka",
+    "source_line": 3089
+  },
+  {
+    "code": "P96",
+    "title_la": "Druge bolesti nastale u perinatalnom periodu",
+    "source_line": 3090
+  },
+  {
+    "code": "P96.0",
+    "title_la": "Insufficientia renalis congenita",
+    "source_line": 38051
+  },
+  {
+    "code": "P96.1",
+    "title_la": "Symptomata abstinentiae neonati matris dependetis",
+    "source_line": 38054
+  },
+  {
+    "code": "P96.2",
+    "title_la": "Symptomata abstinentiae propter applicationem medicamentorum therapeuticum ad",
+    "source_line": 38059
+  },
+  {
+    "code": "P96.3",
+    "title_la": "Suturae cranii neonati latae",
+    "source_line": 38068
+  },
+  {
+    "code": "P96.4",
+    "title_la": "Terminatio graviditatis ut sequela ad fetum et neonatum",
+    "source_line": 38071
+  },
+  {
+    "code": "P96.5",
+    "title_la": "Complicationes interventionum intrauterinarum, non alibi classificatae",
+    "source_line": 38074
+  },
+  {
+    "code": "P96.8",
+    "title_la": "Morbi perinatales alii, specificati",
+    "source_line": 38076
+  },
+  {
+    "code": "P96.9",
+    "title_la": "Morbus perinatalis, non specificatus",
+    "source_line": 38078
+  }
+]

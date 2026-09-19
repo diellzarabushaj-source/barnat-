@@ -1,0 +1,3812 @@
+[
+  {
+    "code": "T00",
+    "title_la": "Površinske povrede u više predela tela",
+    "source_line": 3519
+  },
+  {
+    "code": "T00.0",
+    "title_la": "Laesiones tramuaticae capitis et colli superficiales",
+    "source_line": 45495
+  },
+  {
+    "code": "T00.1",
+    "title_la": "Laesiones traumaticae thoracis, abdominis, regionis lumbalis (et pelvis)",
+    "source_line": 45499
+  },
+  {
+    "code": "T00.2",
+    "title_la": "Laesio traumatica extremitatis (-um) superioris (-um) regionum multiplicium,",
+    "source_line": 45504
+  },
+  {
+    "code": "T00.3",
+    "title_la": "Laesio traumatica extremitatis (-um) inferioris (-um) regionum multiplicium,",
+    "source_line": 45511
+  },
+  {
+    "code": "T00.6",
+    "title_la": "Laesio traumatica extremitatis (-um)) superioris (-um) et inferioris (-um) superficialis",
+    "source_line": 45526
+  },
+  {
+    "code": "T00.8",
+    "title_la": "Laesio traumatica regionum corporis aliarum superficialis combinata",
+    "source_line": 45531
+  },
+  {
+    "code": "T00.9",
+    "title_la": "Laesiones traumaticae superficiales multiplices, non specificatae",
+    "source_line": 45533
+  },
+  {
+    "code": "T01",
+    "title_la": "Otvorena rana u više predela tela",
+    "source_line": 3520
+  },
+  {
+    "code": "T01.0",
+    "title_la": "Vulnus apertum capitis (et colli)",
+    "source_line": 45546
+  },
+  {
+    "code": "T01.1",
+    "title_la": "Vulnus apertum thoracis, abdominis, regionis lumbalis et pelvis",
+    "source_line": 45550
+  },
+  {
+    "code": "T01.2",
+    "title_la": "Vulnus apertum regionum extremitatis superioris multiplicium",
+    "source_line": 45554
+  },
+  {
+    "code": "T01.3",
+    "title_la": "Vulnus apertum regionum extremitatis inferioris multiplicium",
+    "source_line": 45560
+  },
+  {
+    "code": "T01.6",
+    "title_la": "Vulnus apertum regionum extremitatis superioris et extremitatis inferioris",
+    "source_line": 45566
+  },
+  {
+    "code": "T01.8",
+    "title_la": "Vulnus apertum regionum corporis aliarum combinatum",
+    "source_line": 45571
+  },
+  {
+    "code": "T01.9",
+    "title_la": "Vulnus apertum corporis multiplex, non specificatum",
+    "source_line": 45581
+  },
+  {
+    "code": "T02",
+    "title_la": "Prelomi u više predela tela",
+    "source_line": 3521
+  },
+  {
+    "code": "T02.0",
+    "title_la": "Fracturae capitis et colli",
+    "source_line": 45596
+  },
+  {
+    "code": "T02.1",
+    "title_la": "Fracturae thoracis, regionis lumbalis et pelvis",
+    "source_line": 45600
+  },
+  {
+    "code": "T02.2",
+    "title_la": "Fractura regionum extremitatis superioris unae multiplicium",
+    "source_line": 45606
+  },
+  {
+    "code": "T02.3",
+    "title_la": "Fractura regionum extremitatis inferioris unae multiplicium",
+    "source_line": 45613
+  },
+  {
+    "code": "T02.4",
+    "title_la": "Fractura extremitatis superioris bilateralis",
+    "source_line": 45620
+  },
+  {
+    "code": "T02.5",
+    "title_la": "Fractura extremitatis inferioris, bilateralis",
+    "source_line": 45626
+  },
+  {
+    "code": "T02.6",
+    "title_la": "Fracturae regionum extremitatis superioris (-um) et inferioris (-um) multiplicium",
+    "source_line": 45638
+  },
+  {
+    "code": "T02.7",
+    "title_la": "Fracturae thoracis, regionis lumbalis, pelvis et extremitatis (-um)",
+    "source_line": 45641
+  },
+  {
+    "code": "T02.8",
+    "title_la": "Fracturae regionum corporis aliarum combinatae",
+    "source_line": 45643
+  },
+  {
+    "code": "T02.9",
+    "title_la": "Fractura multipliex, non specificata",
+    "source_line": 45645
+  },
+  {
+    "code": "T03",
+    "title_la": "Iščašenje, uganuće i istegnuće u više delova tela",
+    "source_line": 3522
+  },
+  {
+    "code": "T03.0",
+    "title_la": "Luxatio, distorsio et distensio capitis et colli",
+    "source_line": 45650
+  },
+  {
+    "code": "T03.1",
+    "title_la": "Luxatio, distorsio et distensio thoracis, regionis lumbalis et pelvis",
+    "source_line": 45654
+  },
+  {
+    "code": "T03.2",
+    "title_la": "Luxatio, distorsio et distensio extremitatis (-um) superioris (-um) multiplicium",
+    "source_line": 45658
+  },
+  {
+    "code": "T03.3",
+    "title_la": "Luxatio, distorsio et distensio regionum extremitatis (-um) inferioris (-um)",
+    "source_line": 45664
+  },
+  {
+    "code": "T03.4",
+    "title_la": "Luxatio, distorsio et distensio extremitatis (-um) superioris (-um) et inferioris (-um)",
+    "source_line": 45671
+  },
+  {
+    "code": "T03.8",
+    "title_la": "Luxatio, distorsio et distensio regionum corporis aliarum combinata",
+    "source_line": 45674
+  },
+  {
+    "code": "T03.9",
+    "title_la": "Luxatio, distrosio et distensio multiplex, non specificata",
+    "source_line": 45676
+  },
+  {
+    "code": "T04",
+    "title_la": "Povrede uzrokovane zdrobljavanjem – kraš u više predela tela",
+    "source_line": 3523
+  },
+  {
+    "code": "T04.0",
+    "title_la": "Conquassatio capitis et colli",
+    "source_line": 45681
+  },
+  {
+    "code": "T04.1",
+    "title_la": "Conquassatio thoracis, abdominis, regionis lumbalis et pelvis",
+    "source_line": 45693
+  },
+  {
+    "code": "T04.2",
+    "title_la": "Conquassatio regionum extremitatis (-um) superioris (-um) multiplicium",
+    "source_line": 45701
+  },
+  {
+    "code": "T04.3",
+    "title_la": "Conquassatio regionum extremitatis (-um) inferioris (-um) multiplicium",
+    "source_line": 45709
+  },
+  {
+    "code": "T04.4",
+    "title_la": "Conquassatio extremitatis (-um) superioris (-um) et inferioris(-um) multiplex",
+    "source_line": 45717
+  },
+  {
+    "code": "T04.7",
+    "title_la": "Conquassatio thoracis, abdominis, regionis lumbalis, pelvis et extremitatis (-um)",
+    "source_line": 45720
+  },
+  {
+    "code": "T04.8",
+    "title_la": "Conquassatio regionum corporis aliarum, combinata",
+    "source_line": 45723
+  },
+  {
+    "code": "T04.9",
+    "title_la": "Conquassatio multiplex, non specificata",
+    "source_line": 45725
+  },
+  {
+    "code": "T05",
+    "title_la": "Traumatska amputacija više predela tela",
+    "source_line": 3524
+  },
+  {
+    "code": "T05.0",
+    "title_la": "Amputatio traumatica manus, bilateralis",
+    "source_line": 45737
+  },
+  {
+    "code": "T05.1",
+    "title_la": "Amputatio traumatica manus unius et membri superioris alterius [in qualibet regione",
+    "source_line": 45739
+  },
+  {
+    "code": "T05.2",
+    "title_la": "Amputatio traumatica extremitatis superioris bilateralis [in qualibet regione]",
+    "source_line": 45742
+  },
+  {
+    "code": "T05.3",
+    "title_la": "Amputatio traumatica pedis bilateralis",
+    "source_line": 45751
+  },
+  {
+    "code": "T05.4",
+    "title_la": "Amputatio traumatica pedis et membri inferioris alterius [in qualibet regione,",
+    "source_line": 45753
+  },
+  {
+    "code": "T05.5",
+    "title_la": "Amputatio traumatica extremitatis inferioris regionis indefinitae bilateralis [in",
+    "source_line": 45756
+  },
+  {
+    "code": "T05.6",
+    "title_la": "Amputatio traumatica extremitatum superiorum et inferiorum, combinata [in qualibet",
+    "source_line": 45759
+  },
+  {
+    "code": "T05.8",
+    "title_la": "Amputationes traumaticae combinatae regionum corporis aliarum",
+    "source_line": 45762
+  },
+  {
+    "code": "T05.9",
+    "title_la": "Amputationes multiplices traumaticae, non specificatae",
+    "source_line": 45767
+  },
+  {
+    "code": "T06",
+    "title_la": "Druge povreda više predela tela, neklasifikovane na drugom mestu",
+    "source_line": 3525
+  },
+  {
+    "code": "T06.0",
+    "title_la": "Laesio traumatica cerebri et nervorum cranialium cum traumatis nervorum et",
+    "source_line": 45773
+  },
+  {
+    "code": "T06.1",
+    "title_la": "Laesio traumatica nervorum et medullae spinalis regionum corporis multiplicium",
+    "source_line": 45778
+  },
+  {
+    "code": "T06.2",
+    "title_la": "Laesio traumatica nervorum regionum corporis multiplicium",
+    "source_line": 45781
+  },
+  {
+    "code": "T06.3",
+    "title_la": "Laesiones traumaticae vasorum regionum corporis multiplicum",
+    "source_line": 45785
+  },
+  {
+    "code": "T06.4",
+    "title_la": "Laesiones traumaticae musculi et tendinis regionum corporis multiplicium",
+    "source_line": 45787
+  },
+  {
+    "code": "T06.5",
+    "title_la": "Laesio traumatica organorum intrathoracalium, intraabdominalium et pelvicorum",
+    "source_line": 45789
+  },
+  {
+    "code": "T06.8",
+    "title_la": "Laesio traumatica regionum corporis multiplicium alia, specificata",
+    "source_line": 45791
+  },
+  {
+    "code": "T07",
+    "title_la": "Višestruke neoznače povrede",
+    "source_line": 3526
+  },
+  {
+    "code": "T08",
+    "title_la": "Prelom kičme, neoznačen",
+    "source_line": 3529
+  },
+  {
+    "code": "T09",
+    "title_la": "Druge povrede kičme i trupa, neoznačene",
+    "source_line": 3530
+  },
+  {
+    "code": "T09.0",
+    "title_la": "Laesio traumatica trunci regionis superficialis, non specificatae",
+    "source_line": 45826
+  },
+  {
+    "code": "T09.1",
+    "title_la": "Vulnus apertum trunci regionis non specificatae",
+    "source_line": 45828
+  },
+  {
+    "code": "T09.2",
+    "title_la": "Luxatio, distorsio et distensio articuli et ligamenti trunci, non specificati",
+    "source_line": 45830
+  },
+  {
+    "code": "T09.3",
+    "title_la": "Laesio traumatica medullae spinalis, regionis non specificatae",
+    "source_line": 45832
+  },
+  {
+    "code": "T09.4",
+    "title_la": "Laesio traumatica nervi, radicis spinalis et plexus nervorum trunci non specificati",
+    "source_line": 45834
+  },
+  {
+    "code": "T09.5",
+    "title_la": "Laesio traumatica musculi et tendinis trunci non specificatae",
+    "source_line": 45836
+  },
+  {
+    "code": "T09.6",
+    "title_la": "Amputatio traumatica trunci, regionis non specificatae",
+    "source_line": 45838
+  },
+  {
+    "code": "T09.8",
+    "title_la": "Laesiones traumaticae trunci regionis non specificatae aliae, specificatae",
+    "source_line": 45840
+  },
+  {
+    "code": "T09.9",
+    "title_la": "Laesio traumatica trunci non specificata, regionis non specificatae",
+    "source_line": 45842
+  },
+  {
+    "code": "T10",
+    "title_la": "Prelom u neoznačenom predelu ruke",
+    "source_line": 3531
+  },
+  {
+    "code": "T11",
+    "title_la": "Druge povrede u neoznačenom predelu ruke",
+    "source_line": 3532
+  },
+  {
+    "code": "T11.0",
+    "title_la": "Laesio traumatica extremitatis superioris regionis superficialis non specificatae",
+    "source_line": 45865
+  },
+  {
+    "code": "T11.1",
+    "title_la": "Vulnus apertum extremitatis superioris regionis non specificatae",
+    "source_line": 45867
+  },
+  {
+    "code": "T11.2",
+    "title_la": "Luxatio, distorsio et distensio articuli et ligamenti extremitatis superioris regionis",
+    "source_line": 45869
+  },
+  {
+    "code": "T11.3",
+    "title_la": "Laesio traumatica nervi extremitatis superioris regionis non specificatae",
+    "source_line": 45872
+  },
+  {
+    "code": "T11.4",
+    "title_la": "Laesio traumatica vasis extremitatis superioris regionis non specificatae",
+    "source_line": 45874
+  },
+  {
+    "code": "T11.5",
+    "title_la": "Laesio traumatica musculi et tendinis extremitatis superioris regionis non",
+    "source_line": 45876
+  },
+  {
+    "code": "T11.6",
+    "title_la": "Amputatio traumatica extremitatis superioris, regionis non specificatae",
+    "source_line": 45879
+  },
+  {
+    "code": "T11.8",
+    "title_la": "Laesiones traumaticae extremitatis superioris regionis non specificatae, aliae",
+    "source_line": 45882
+  },
+  {
+    "code": "T11.9",
+    "title_la": "Laesio traumatica non specificata extremitatis superioris regionis non specificatae",
+    "source_line": 45884
+  },
+  {
+    "code": "T12",
+    "title_la": "Prelom u neoznačenom predelu noge",
+    "source_line": 3533
+  },
+  {
+    "code": "T13",
+    "title_la": "Druge povrede u neoznačenom predelu noge",
+    "source_line": 3534
+  },
+  {
+    "code": "T13.0",
+    "title_la": "Laesio traumatica extramitatis inferioris regionis non specificatae, superficialis",
+    "source_line": 45902
+  },
+  {
+    "code": "T13.1",
+    "title_la": "Vulnus apertum extremitatis inferioris regionis non specificatae",
+    "source_line": 45904
+  },
+  {
+    "code": "T13.2",
+    "title_la": "Luxatio, distrosio et distensio articuli et ligamenti extremitatis inferioris regionis non",
+    "source_line": 45906
+  },
+  {
+    "code": "T13.3",
+    "title_la": "Laesio traumatica nervi extremitatis inferioris regionis non specificatae",
+    "source_line": 45916
+  },
+  {
+    "code": "T13.4",
+    "title_la": "Laesio traumatica vasis extremitatis inferioris regionis non specificatae",
+    "source_line": 45918
+  },
+  {
+    "code": "T13.5",
+    "title_la": "Laesio traumatica musculi et tendinis extremitatis inferioris regionis non",
+    "source_line": 45920
+  },
+  {
+    "code": "T13.6",
+    "title_la": "Amputatio traumatica extremitatis inferioris, regionis non specificatae",
+    "source_line": 45923
+  },
+  {
+    "code": "T13.8",
+    "title_la": "Laesiones traumaticae extremitatis inferioris regionis non specificatae aliae,",
+    "source_line": 45926
+  },
+  {
+    "code": "T13.9",
+    "title_la": "Laesio traumatica extremitatis inferioris non specificata, regionis non specificatae",
+    "source_line": 45929
+  },
+  {
+    "code": "T14",
+    "title_la": "Povreda tela u neoznačenom predelu",
+    "source_line": 3535
+  },
+  {
+    "code": "T14.0",
+    "title_la": "Laesio traumatica corporis regionis non specificatae, superficialis",
+    "source_line": 45936
+  },
+  {
+    "code": "T14.1",
+    "title_la": "Vulnus apertum corporis regionis non specificatae",
+    "source_line": 45946
+  },
+  {
+    "code": "T14.3",
+    "title_la": "Luxatio, distorsio et distensio regionis corporis non specificatae",
+    "source_line": 45977
+  },
+  {
+    "code": "T14.4",
+    "title_la": "Laesio traumatica nervi (-orum) regionis corporis non specificatae",
+    "source_line": 45989
+  },
+  {
+    "code": "T14.5",
+    "title_la": "Laesio traumatica vasis (-orum) regionis corporis non specificatae",
+    "source_line": 45999
+  },
+  {
+    "code": "T14.6",
+    "title_la": "Laesio traumatica tendinis (-um) et musculi (-orum) regionis corporis non",
+    "source_line": 46009
+  },
+  {
+    "code": "T14.7",
+    "title_la": "Conquassatio et amputatio traumatica regionis corporis non specificatae",
+    "source_line": 46020
+  },
+  {
+    "code": "T14.8",
+    "title_la": "Laesiones traumaticae regionis corporis non specificatae, aliae",
+    "source_line": 46027
+  },
+  {
+    "code": "T14.9",
+    "title_la": "Laesio traumatica, non specificata",
+    "source_line": 46037
+  },
+  {
+    "code": "T15",
+    "title_la": "Strano telo u spoljašnjem delu oka",
+    "source_line": 3538
+  },
+  {
+    "code": "T15.0",
+    "title_la": "Corpus alienum corneae",
+    "source_line": 46058
+  },
+  {
+    "code": "T15.1",
+    "title_la": "Corpus alienum conjunctivae",
+    "source_line": 46060
+  },
+  {
+    "code": "T15.8",
+    "title_la": "Corpus alienum partis alterius et partium oculi externi multiplicium",
+    "source_line": 46062
+  },
+  {
+    "code": "T15.9",
+    "title_la": "Corpus alienum partis oculi externi non specificatae",
+    "source_line": 46065
+  },
+  {
+    "code": "T16",
+    "title_la": "Strano telo u uvu",
+    "source_line": 3539
+  },
+  {
+    "code": "T17",
+    "title_la": "Strano telo u sistemu za disanje",
+    "source_line": 3545
+  },
+  {
+    "code": "T17.0",
+    "title_la": "Corpus alienum sinus nasalis",
+    "source_line": 46078
+  },
+  {
+    "code": "T17.1",
+    "title_la": "Corpus alienum nasi",
+    "source_line": 46080
+  },
+  {
+    "code": "T17.2",
+    "title_la": "Corpus alienum pharyngis",
+    "source_line": 46083
+  },
+  {
+    "code": "T17.3",
+    "title_la": "Corpus alienum laryngis",
+    "source_line": 46086
+  },
+  {
+    "code": "T17.4",
+    "title_la": "Corpus alienum tracheae",
+    "source_line": 46094
+  },
+  {
+    "code": "T17.5",
+    "title_la": "Corpus alienum bronchi",
+    "source_line": 46096
+  },
+  {
+    "code": "T17.8",
+    "title_la": "Corpus alienum partis alterius et partium tractus respiratorii multiplicium",
+    "source_line": 46098
+  },
+  {
+    "code": "T17.9",
+    "title_la": "Corpus alienum tractus respiratorii, pars non specificata",
+    "source_line": 46102
+  },
+  {
+    "code": "T18",
+    "title_la": "Strano telo u sistemu za varenje",
+    "source_line": 3546
+  },
+  {
+    "code": "T18.0",
+    "title_la": "Corpus alienum oris",
+    "source_line": 46108
+  },
+  {
+    "code": "T18.1",
+    "title_la": "Corpus alienum oesophagi",
+    "source_line": 46110
+  },
+  {
+    "code": "T18.2",
+    "title_la": "Corpus alienum ventriculi",
+    "source_line": 46112
+  },
+  {
+    "code": "T18.3",
+    "title_la": "Corpus alienum intestini tenuis",
+    "source_line": 46114
+  },
+  {
+    "code": "T18.4",
+    "title_la": "Corpus alienum coli",
+    "source_line": 46116
+  },
+  {
+    "code": "T18.5",
+    "title_la": "Corpus alienum ani et recti",
+    "source_line": 46118
+  },
+  {
+    "code": "T18.8",
+    "title_la": "Corpus alienum partis alterius et partium tractus disgestivii multiplicium",
+    "source_line": 46121
+  },
+  {
+    "code": "T18.9",
+    "title_la": "Corpus alienum tractus digestivi, pars non specificata",
+    "source_line": 46123
+  },
+  {
+    "code": "T19",
+    "title_la": "Strano telo u mokraćno-polnom sistemu",
+    "source_line": 3547
+  },
+  {
+    "code": "T19.0",
+    "title_la": "Corpus alienum urethrae",
+    "source_line": 46133
+  },
+  {
+    "code": "T19.1",
+    "title_la": "Corpus alienum vesicae urinariae",
+    "source_line": 46135
+  },
+  {
+    "code": "T19.2",
+    "title_la": "Corpus alienum vulvae et vaginae",
+    "source_line": 46137
+  },
+  {
+    "code": "T19.3",
+    "title_la": "Corpus alienum uteri, pars non specificata",
+    "source_line": 46139
+  },
+  {
+    "code": "T19.8",
+    "title_la": "Corpus alienum partis alterius et partium tractus urogenitalis multiplicium",
+    "source_line": 46141
+  },
+  {
+    "code": "T19.9",
+    "title_la": "Corpus alienum tractus urogenitalis, pars no specificata",
+    "source_line": 46150
+  },
+  {
+    "code": "T20",
+    "title_la": "Opekotina i razjed glave i vrata",
+    "source_line": 3552
+  },
+  {
+    "code": "T20.0",
+    "title_la": "Combustio capitis et colli, gradus non specificati",
+    "source_line": 46191
+  },
+  {
+    "code": "T20.1",
+    "title_la": "Combustio capitis et colli, gradus primi",
+    "source_line": 46193
+  },
+  {
+    "code": "T20.2",
+    "title_la": "Combustio capitis et colli, gradus secundi",
+    "source_line": 46195
+  },
+  {
+    "code": "T20.3",
+    "title_la": "Combustio capitis et colli, gradus tertii",
+    "source_line": 46197
+  },
+  {
+    "code": "T20.4",
+    "title_la": "Corrosio capitis et colli, gradus non specificati",
+    "source_line": 46199
+  },
+  {
+    "code": "T20.5",
+    "title_la": "Corrosio capitis et colli, gradus primi",
+    "source_line": 46208
+  },
+  {
+    "code": "T20.6",
+    "title_la": "Corrosio capitis et colli, gradus secundi",
+    "source_line": 46210
+  },
+  {
+    "code": "T20.7",
+    "title_la": "Corrosio capitis et colli, gradus tertii",
+    "source_line": 46212
+  },
+  {
+    "code": "T21",
+    "title_la": "Opekotina i razjed trupa",
+    "source_line": 3553
+  },
+  {
+    "code": "T21.0",
+    "title_la": "Combustio trunci, gradus non specificati",
+    "source_line": 46235
+  },
+  {
+    "code": "T21.1",
+    "title_la": "Combustio trunci, gradus primi",
+    "source_line": 46237
+  },
+  {
+    "code": "T21.2",
+    "title_la": "Combustio trunci, gradus secundi",
+    "source_line": 46239
+  },
+  {
+    "code": "T21.3",
+    "title_la": "Combustio trunci, gradus tertii",
+    "source_line": 46241
+  },
+  {
+    "code": "T21.4",
+    "title_la": "Corrosio trunci, gradus non specificati",
+    "source_line": 46243
+  },
+  {
+    "code": "T21.5",
+    "title_la": "Corrosio trunci, gradus primi",
+    "source_line": 46245
+  },
+  {
+    "code": "T21.6",
+    "title_la": "Corrosio trunci, gradus secundi",
+    "source_line": 46247
+  },
+  {
+    "code": "T21.7",
+    "title_la": "Corrosio trunci, gradus tertii",
+    "source_line": 46249
+  },
+  {
+    "code": "T22",
+    "title_la": "Opekotine i razjed ruke izuzev predela ručja i šake",
+    "source_line": 3554
+  },
+  {
+    "code": "T22.0",
+    "title_la": "Combustio extremitatis superioris, gradus non specificati (excl. carpus et manus)",
+    "source_line": 46267
+  },
+  {
+    "code": "T22.1",
+    "title_la": "Combustio extremitatis superioris, gradus primi (excl. carpus et manus)",
+    "source_line": 46269
+  },
+  {
+    "code": "T22.2",
+    "title_la": "Combustio extremitatis superioris, gradus secundi (excl.carpus et manus)",
+    "source_line": 46271
+  },
+  {
+    "code": "T22.3",
+    "title_la": "Combustio extremitatis superioris, gradus tertii (excl.carpus et manus)",
+    "source_line": 46273
+  },
+  {
+    "code": "T22.4",
+    "title_la": "Corrosio extremitatis superioris, gradus non specificati (excl.carpus et manus)",
+    "source_line": 46275
+  },
+  {
+    "code": "T22.5",
+    "title_la": "Corrosio extremitatis superioris, gradus primi (excl.carpus et manus)",
+    "source_line": 46277
+  },
+  {
+    "code": "T22.6",
+    "title_la": "Corrosio extremitatis superioris, gradus secundi (excl.carpus et manus)",
+    "source_line": 46279
+  },
+  {
+    "code": "T22.7",
+    "title_la": "Corrosio extremitatis superioris, gradus tertii (excl.carpus et manus)",
+    "source_line": 46281
+  },
+  {
+    "code": "T23",
+    "title_la": "Opekotina i razjed ručja i šake",
+    "source_line": 3555
+  },
+  {
+    "code": "T23.0",
+    "title_la": "Combustio carpi et manus, gradus non specificati",
+    "source_line": 46289
+  },
+  {
+    "code": "T23.1",
+    "title_la": "Combustio carpi et manus, gradus primi",
+    "source_line": 46291
+  },
+  {
+    "code": "T23.2",
+    "title_la": "Combustio carpi et manus, gradus secundi",
+    "source_line": 46293
+  },
+  {
+    "code": "T23.3",
+    "title_la": "Combustio carpi et manus, gradus tertii",
+    "source_line": 46295
+  },
+  {
+    "code": "T23.4",
+    "title_la": "Corrosio carpi et manus, gradus non specificati",
+    "source_line": 46297
+  },
+  {
+    "code": "T23.5",
+    "title_la": "Corrosio carpi et manus, gradus primi",
+    "source_line": 46299
+  },
+  {
+    "code": "T23.6",
+    "title_la": "Corrosio carpi et manus, gradus secundi",
+    "source_line": 46301
+  },
+  {
+    "code": "T23.7",
+    "title_la": "Corrosio carpi et manus, gradus tertii",
+    "source_line": 46303
+  },
+  {
+    "code": "T24",
+    "title_la": "Opekotina i razjed kuka i noge, izuzev predela skočnog zgloba i stopala",
+    "source_line": 3556
+  },
+  {
+    "code": "T24.0",
+    "title_la": "Combustio coxae et extremitatis inferioris, gradus non specificati (excl.regio malleoli",
+    "source_line": 46318
+  },
+  {
+    "code": "T24.1",
+    "title_la": "Combustio coxae extremitatis inferioris, gradus primi (excl.regio malleoli et pes)",
+    "source_line": 46321
+  },
+  {
+    "code": "T24.2",
+    "title_la": "Combustio coxae et extremitatis inferioris, gradus secundi (excl.regio malleoli et",
+    "source_line": 46323
+  },
+  {
+    "code": "T24.3",
+    "title_la": "Combustio coxae et extremitatis inferioris, gradus tertii (excl.regio malleoli et pes)",
+    "source_line": 46326
+  },
+  {
+    "code": "T24.4",
+    "title_la": "Corrosio coxae et extremitatis inferioris gradus non specificati (excl.regio malleoli et",
+    "source_line": 46328
+  },
+  {
+    "code": "T24.5",
+    "title_la": "Corrosio coxae et extremitatis inferioris, gradus primi (excl. regio malleoli et pes)",
+    "source_line": 46331
+  },
+  {
+    "code": "T24.6",
+    "title_la": "Corrosio coxae et extremitatis inferioris, gradus secundi (excl.regio malleoli et pes)",
+    "source_line": 46333
+  },
+  {
+    "code": "T24.7",
+    "title_la": "Corrosio coxae et extremitatis inferioris, gradus tertii (excl.regio malleoli et pes)",
+    "source_line": 46335
+  },
+  {
+    "code": "T25",
+    "title_la": "Opekotina i razjed u predelu skočnog zgloba i stopala",
+    "source_line": 3557
+  },
+  {
+    "code": "T25.0",
+    "title_la": "Combustio regionis malleoli et pedis, gradus non specificati",
+    "source_line": 46341
+  },
+  {
+    "code": "T25.1",
+    "title_la": "Combustio regionis malleoli et pedis gradus primi",
+    "source_line": 46343
+  },
+  {
+    "code": "T25.2",
+    "title_la": "Combustio regionis malleoli et pedis, gradus secundi",
+    "source_line": 46345
+  },
+  {
+    "code": "T25.3",
+    "title_la": "Combustio regionis malleoli et pedis, gradus tertii",
+    "source_line": 46347
+  },
+  {
+    "code": "T25.4",
+    "title_la": "Corrosio regionis malleoli et pedis, gradus non specificati",
+    "source_line": 46349
+  },
+  {
+    "code": "T25.5",
+    "title_la": "Corrosio regionis malleoli et pedis, gradus primi",
+    "source_line": 46351
+  },
+  {
+    "code": "T25.6",
+    "title_la": "Corrosio regionis malleoli et pedis, gradus secundi",
+    "source_line": 46353
+  },
+  {
+    "code": "T25.7",
+    "title_la": "Corrosio regionis malleoli et pedis, gradus tertii",
+    "source_line": 46355
+  },
+  {
+    "code": "T26",
+    "title_la": "Opekotina i razjed oka i predela duplje oka",
+    "source_line": 3560
+  },
+  {
+    "code": "T26.0",
+    "title_la": "Combustio palpebrae et regionis orbitalis",
+    "source_line": 46370
+  },
+  {
+    "code": "T26.1",
+    "title_la": "Combustio corneae et conjunctivae",
+    "source_line": 46372
+  },
+  {
+    "code": "T26.2",
+    "title_la": "Combustio cum ruptura et destructione bulbi oculi",
+    "source_line": 46374
+  },
+  {
+    "code": "T26.3",
+    "title_la": "Combustio partium oculi et adnexorum aliarum",
+    "source_line": 46376
+  },
+  {
+    "code": "T26.4",
+    "title_la": "Combustio oculi et adnexorum, pars non specificata",
+    "source_line": 46378
+  },
+  {
+    "code": "T26.5",
+    "title_la": "Corrosio palpebrae et regionis periocularis",
+    "source_line": 46380
+  },
+  {
+    "code": "T26.6",
+    "title_la": "Corrosio cornaee et conjunctivae",
+    "source_line": 46382
+  },
+  {
+    "code": "T26.7",
+    "title_la": "Corrosio cum ruptura et destructione bulbi oculi",
+    "source_line": 46384
+  },
+  {
+    "code": "T26.8",
+    "title_la": "Corrosio partium oculi et adnexorum aliarum",
+    "source_line": 46386
+  },
+  {
+    "code": "T26.9",
+    "title_la": "Corrosio oculi et adnexorum, pars non specificata",
+    "source_line": 46388
+  },
+  {
+    "code": "T27",
+    "title_la": "Opekotina i razjed sistema za disanje",
+    "source_line": 3561
+  },
+  {
+    "code": "T27.0",
+    "title_la": "Combustio laryngis et tracheae",
+    "source_line": 46393
+  },
+  {
+    "code": "T27.1",
+    "title_la": "Combustio laryngis, tracheae et pulmonis",
+    "source_line": 46395
+  },
+  {
+    "code": "T27.2",
+    "title_la": "Combustio partium tractus respiratorii aliarum",
+    "source_line": 46398
+  },
+  {
+    "code": "T27.3",
+    "title_la": "Combustio tractus respiratorii, pars non specificata",
+    "source_line": 46401
+  },
+  {
+    "code": "T27.4",
+    "title_la": "Corrosio laryngis et tracheae",
+    "source_line": 46403
+  },
+  {
+    "code": "T27.5",
+    "title_la": "Corrosio laryngis, tracheae et pulmonis",
+    "source_line": 46405
+  },
+  {
+    "code": "T27.6",
+    "title_la": "Corrosio partium tractus respiratorii aliarum",
+    "source_line": 46407
+  },
+  {
+    "code": "T27.7",
+    "title_la": "Corrosio tractus respiratorii, pars non specificata",
+    "source_line": 46409
+  },
+  {
+    "code": "T28",
+    "title_la": "Opekotina i razjed drugih unutrašnjih organa",
+    "source_line": 3562
+  },
+  {
+    "code": "T28.0",
+    "title_la": "Combustio cavi oris et pharyngis",
+    "source_line": 46421
+  },
+  {
+    "code": "T28.1",
+    "title_la": "Combustio oesophagi",
+    "source_line": 46423
+  },
+  {
+    "code": "T28.2",
+    "title_la": "Combustio partium tractus alimentarii aliarum",
+    "source_line": 46425
+  },
+  {
+    "code": "T28.3",
+    "title_la": "Combustio organorum urogenitalium internorum",
+    "source_line": 46427
+  },
+  {
+    "code": "T28.4",
+    "title_la": "Combustio organorum internorum aliorum, non specificatorum",
+    "source_line": 46429
+  },
+  {
+    "code": "T28.5",
+    "title_la": "Corrosio cavi oris et cavi pharyngis",
+    "source_line": 46431
+  },
+  {
+    "code": "T28.6",
+    "title_la": "Corrosio oesophagi",
+    "source_line": 46433
+  },
+  {
+    "code": "T28.7",
+    "title_la": "Corrosio partium tractus alimentarii aliarum",
+    "source_line": 46435
+  },
+  {
+    "code": "T28.8",
+    "title_la": "Corrosio organorum urogenitalium internorum",
+    "source_line": 46437
+  },
+  {
+    "code": "T28.9",
+    "title_la": "Corrosio organorum internorum aliorum, non specificatorum",
+    "source_line": 46439
+  },
+  {
+    "code": "T29",
+    "title_la": "Opekotine i razjedi u više predela tela",
+    "source_line": 3565
+  },
+  {
+    "code": "T29.0",
+    "title_la": "Combustio regionum multiplicium, gradus non specificati",
+    "source_line": 46450
+  },
+  {
+    "code": "T29.1",
+    "title_la": "Combustio regionum multiplicium, gradus primi",
+    "source_line": 46453
+  },
+  {
+    "code": "T29.2",
+    "title_la": "Combustio regionum multiplicium, gradus secundi",
+    "source_line": 46455
+  },
+  {
+    "code": "T29.3",
+    "title_la": "Combustio regionum multiplicium, gradus tertii",
+    "source_line": 46457
+  },
+  {
+    "code": "T29.4",
+    "title_la": "Corrosio regionum multiplicium, gradus non specificati",
+    "source_line": 46459
+  },
+  {
+    "code": "T29.5",
+    "title_la": "Corrosio regionum multiplicium, ad gradum primum majoris non citati",
+    "source_line": 46462
+  },
+  {
+    "code": "T29.6",
+    "title_la": "Corrosio regionum multiplicium, ad gradum secundum majoris non citati",
+    "source_line": 46464
+  },
+  {
+    "code": "T29.7",
+    "title_la": "Corrosio regionum multiplicium, ad gradum tertium majoris non citati",
+    "source_line": 46466
+  },
+  {
+    "code": "T30",
+    "title_la": "Opekotina i razjed tela u neoznačenom predelu",
+    "source_line": 3566
+  },
+  {
+    "code": "T30.0",
+    "title_la": "Combustio regionis corporis non specificatae, gradus non specificati",
+    "source_line": 46477
+  },
+  {
+    "code": "T30.1",
+    "title_la": "Combustio regionis corporis non specificatae, gradus primi",
+    "source_line": 46480
+  },
+  {
+    "code": "T30.2",
+    "title_la": "Combustio regionis corporis non specificatae, gradus secundi",
+    "source_line": 46483
+  },
+  {
+    "code": "T30.3",
+    "title_la": "Combustio regionis corporis non specificatae, gradus tertii",
+    "source_line": 46486
+  },
+  {
+    "code": "T30.4",
+    "title_la": "Corrosio regionis corporis non specificatae, gradus non specificati",
+    "source_line": 46489
+  },
+  {
+    "code": "T30.5",
+    "title_la": "Corrosio regionis corporis non specificatae, gradus primi",
+    "source_line": 46492
+  },
+  {
+    "code": "T30.6",
+    "title_la": "Corrosio regionis corporis non specificatae, gradus secundi",
+    "source_line": 46495
+  },
+  {
+    "code": "T30.7",
+    "title_la": "Corrosio regionis corporis non specificatae, gradus tertii",
+    "source_line": 46498
+  },
+  {
+    "code": "T31",
+    "title_la": "Opekotine svrstane prema obimu zahvaćene telesne površine",
+    "source_line": 3567
+  },
+  {
+    "code": "T31.0",
+    "title_la": "Combustiones superficiei corporis comprehendentes minus quam 10%",
+    "source_line": 46508
+  },
+  {
+    "code": "T31.1",
+    "title_la": "Combustiones superficiei corporis comprehendentes 10-19%",
+    "source_line": 46510
+  },
+  {
+    "code": "T31.2",
+    "title_la": "Combustiones superficiei corporis comprehendentes 20-29%",
+    "source_line": 46512
+  },
+  {
+    "code": "T31.3",
+    "title_la": "Combustiones superficiei corporis comprehendentes 30-39%",
+    "source_line": 46514
+  },
+  {
+    "code": "T31.4",
+    "title_la": "Combustiones superficiei corporis comprehendentes 40-49%",
+    "source_line": 46516
+  },
+  {
+    "code": "T31.5",
+    "title_la": "Combustiones superficiei corporis comprehendentes 50-59%",
+    "source_line": 46518
+  },
+  {
+    "code": "T31.6",
+    "title_la": "Combustiones superficiei corporis comprehendentes 60-69%",
+    "source_line": 46520
+  },
+  {
+    "code": "T31.7",
+    "title_la": "Combustiones superficiei corporis comprehendentes 70-79%",
+    "source_line": 46529
+  },
+  {
+    "code": "T31.8",
+    "title_la": "Combustiones superficiei corporis comprehendentes 80-89%",
+    "source_line": 46531
+  },
+  {
+    "code": "T31.9",
+    "title_la": "Combustiones sive plus superficiei corporis comprehendentes 90%",
+    "source_line": 46533
+  },
+  {
+    "code": "T32",
+    "title_la": "Razjedi svrstani prema obimu zahvaćene telesne površine",
+    "source_line": 3568
+  },
+  {
+    "code": "T32.0",
+    "title_la": "Corrosiones superficiei corporis comprehendentes minus quam 10%",
+    "source_line": 46542
+  },
+  {
+    "code": "T32.1",
+    "title_la": "Corrosiones superficiei corporis comprehendentes 10-19%",
+    "source_line": 46544
+  },
+  {
+    "code": "T32.2",
+    "title_la": "Corrosiones superficiei corporis comprehendentes 20-29%",
+    "source_line": 46546
+  },
+  {
+    "code": "T32.3",
+    "title_la": "Corrosiones superficiei corporis comprehendentes 30-39%",
+    "source_line": 46548
+  },
+  {
+    "code": "T32.4",
+    "title_la": "Corrosiones superficiei corporis comprehendentes 40-49%",
+    "source_line": 46550
+  },
+  {
+    "code": "T32.5",
+    "title_la": "Corrosiones superficiei corporis comprehendentes 50-59%",
+    "source_line": 46552
+  },
+  {
+    "code": "T32.6",
+    "title_la": "Corrosiones superficiei corporis comprehendentes 60-69%",
+    "source_line": 46554
+  },
+  {
+    "code": "T32.7",
+    "title_la": "Corrosiones superficiei corporis comprehendentes 70-79%",
+    "source_line": 46556
+  },
+  {
+    "code": "T32.8",
+    "title_la": "Corrosiones superficiei corporis comprehendentes 80-89%",
+    "source_line": 46558
+  },
+  {
+    "code": "T32.9",
+    "title_la": "Corrosiones sive plus superficiei corporis comprehendentes 90%",
+    "source_line": 46560
+  },
+  {
+    "code": "T33",
+    "title_la": "Površinska promrzlina",
+    "source_line": 3571
+  },
+  {
+    "code": "T33.0",
+    "title_la": "Congelatio capitis, superficialis",
+    "source_line": 46573
+  },
+  {
+    "code": "T33.1",
+    "title_la": "Congelatio colii, superficialis",
+    "source_line": 46575
+  },
+  {
+    "code": "T33.2",
+    "title_la": "Congelatio thoracis, superficialis",
+    "source_line": 46577
+  },
+  {
+    "code": "T33.3",
+    "title_la": "Congelatio abdominis regionis lumbalis et pelvis, superficialis",
+    "source_line": 46585
+  },
+  {
+    "code": "T33.4",
+    "title_la": "Congelatio extremitatis superioris, superficialis",
+    "source_line": 46587
+  },
+  {
+    "code": "T33.5",
+    "title_la": "Congelatio carpi et manus, superficialis",
+    "source_line": 46590
+  },
+  {
+    "code": "T33.6",
+    "title_la": "Cangelatio coxae et femoris, superficialis",
+    "source_line": 46592
+  },
+  {
+    "code": "T33.7",
+    "title_la": "Congelatio genus et cruris, superficialis",
+    "source_line": 46594
+  },
+  {
+    "code": "T33.8",
+    "title_la": "Congelatio regionis malleoli et pedis, superficialis",
+    "source_line": 46597
+  },
+  {
+    "code": "T33.9",
+    "title_la": "Congelatio locorum aliorum et non specificatorum superficialis",
+    "source_line": 46599
+  },
+  {
+    "code": "T34",
+    "title_la": "Promrzlina sa nekrozom tkiva",
+    "source_line": 3572
+  },
+  {
+    "code": "T34.0",
+    "title_la": "Congelatio capitis cum necrosi textus",
+    "source_line": 46609
+  },
+  {
+    "code": "T34.1",
+    "title_la": "Congelatio colii cum necrosi textus",
+    "source_line": 46611
+  },
+  {
+    "code": "T34.2",
+    "title_la": "Congelatio thoracis cum necrosi textus",
+    "source_line": 46613
+  },
+  {
+    "code": "T34.3",
+    "title_la": "Congelatio abdominis, regionis lumbalis et pelvis cum necrosi textus",
+    "source_line": 46615
+  },
+  {
+    "code": "T34.4",
+    "title_la": "Congelatio extremitatis superioris cum necrosi textus",
+    "source_line": 46617
+  },
+  {
+    "code": "T34.5",
+    "title_la": "Congelatio carpi et manus cum necrosi textus",
+    "source_line": 46620
+  },
+  {
+    "code": "T34.6",
+    "title_la": "Congelatio coxae et femoris cum necrosi textus",
+    "source_line": 46622
+  },
+  {
+    "code": "T34.7",
+    "title_la": "Congelatio genus et cruris cum necrosi textus",
+    "source_line": 46624
+  },
+  {
+    "code": "T34.8",
+    "title_la": "Congelatio regionis malleoli et pedis cum necrosi textus",
+    "source_line": 46627
+  },
+  {
+    "code": "T34.9",
+    "title_la": "Congelatio locorum aliorum et non specificatorum cum necrosi textus",
+    "source_line": 46629
+  },
+  {
+    "code": "T35",
+    "title_la": "Promrzline više delova tela i neoznačene promrzline",
+    "source_line": 3573
+  },
+  {
+    "code": "T35.0",
+    "title_la": "Congelatio regionum corporis multiplicium superficialis",
+    "source_line": 46643
+  },
+  {
+    "code": "T35.1",
+    "title_la": "Congelatio regionum corporis multiplicium cum necrosi textus",
+    "source_line": 46646
+  },
+  {
+    "code": "T35.2",
+    "title_la": "Congelatio non specificata capitis et colli",
+    "source_line": 46649
+  },
+  {
+    "code": "T35.3",
+    "title_la": "Congelatio non specificata thoracis, abdominis, regionis lumbalis et pelvis",
+    "source_line": 46651
+  },
+  {
+    "code": "T35.4",
+    "title_la": "Congelatio non specificata extremitatis superioris",
+    "source_line": 46654
+  },
+  {
+    "code": "T35.5",
+    "title_la": "Congelatio non specificata extremitatis inferioris",
+    "source_line": 46656
+  },
+  {
+    "code": "T35.6",
+    "title_la": "Congelatio non specificata regionum corporis multiplicium",
+    "source_line": 46658
+  },
+  {
+    "code": "T35.7",
+    "title_la": "Congelatio non specificata loco non specificato",
+    "source_line": 46661
+  },
+  {
+    "code": "T36",
+    "title_la": "Trovanje sistemskim antbioticima",
+    "source_line": 3576
+  },
+  {
+    "code": "T36.0",
+    "title_la": "Penicillina",
+    "source_line": 46698
+  },
+  {
+    "code": "T36.1",
+    "title_la": "Cephalosporina et beta-lactam-antibiotica",
+    "source_line": 46700
+  },
+  {
+    "code": "T36.2",
+    "title_la": "Chloramphenicol-classis",
+    "source_line": 46702
+  },
+  {
+    "code": "T36.3",
+    "title_la": "Macrolida",
+    "source_line": 46704
+  },
+  {
+    "code": "T36.4",
+    "title_la": "Tetracyclina",
+    "source_line": 46706
+  },
+  {
+    "code": "T36.5",
+    "title_la": "Aminoglycosida",
+    "source_line": 46708
+  },
+  {
+    "code": "T36.6",
+    "title_la": "Rifamycina",
+    "source_line": 46711
+  },
+  {
+    "code": "T36.7",
+    "title_la": "Antibiotica antifungalia systemica applikata",
+    "source_line": 46713
+  },
+  {
+    "code": "T36.8",
+    "title_la": "Antibiotica systemica alia",
+    "source_line": 46715
+  },
+  {
+    "code": "T36.9",
+    "title_la": "Antibiotica systemica, non specificata",
+    "source_line": 46717
+  },
+  {
+    "code": "T37",
+    "title_la": "Trovanje drugim sistemskim antiinfektivnim i antiparazitarnim lekovima",
+    "source_line": 3577
+  },
+  {
+    "code": "T37.0",
+    "title_la": "Sulfonamida",
+    "source_line": 46733
+  },
+  {
+    "code": "T37.1",
+    "title_la": "Medicamenta antimycobacterialia",
+    "source_line": 46735
+  },
+  {
+    "code": "T37.2",
+    "title_la": "Medicamenta antimalarica et remedia, ad eliminationem protozoorum sanquineorum",
+    "source_line": 46739
+  },
+  {
+    "code": "T37.3",
+    "title_la": "Medicamenta antiprotozoica alia",
+    "source_line": 46743
+  },
+  {
+    "code": "T37.4",
+    "title_la": "Antihelminthica",
+    "source_line": 46745
+  },
+  {
+    "code": "T37.5",
+    "title_la": "Medicamenta antiviralia",
+    "source_line": 46747
+  },
+  {
+    "code": "T37.8",
+    "title_la": "Medicamenta antiinfectiva et antiparasitaria systemica alia specificata",
+    "source_line": 46751
+  },
+  {
+    "code": "T37.9",
+    "title_la": "Medicamenta antiinfectiva et antiparasitaria systemica, non specificata",
+    "source_line": 46755
+  },
+  {
+    "code": "T38",
+    "title_la": "Trovanje hormonima i njihovim sintetičkim zamenama i antagonistima,",
+    "source_line": 3578
+  },
+  {
+    "code": "T38.0",
+    "title_la": "Glycocorticoida et praeparatus synthetici analogici",
+    "source_line": 46765
+  },
+  {
+    "code": "T38.1",
+    "title_la": "Hormona glandulae thyreoideae et substitutiones",
+    "source_line": 46768
+  },
+  {
+    "code": "T38.2",
+    "title_la": "Medicamenta antithyreoidea",
+    "source_line": 46770
+  },
+  {
+    "code": "T38.3",
+    "title_la": "Insulinum et medicamenta hypoglycaemica(antidiabetica ad usum oralem)",
+    "source_line": 46772
+  },
+  {
+    "code": "T38.4",
+    "title_la": "Contraceptiva ad usum oralem",
+    "source_line": 46774
+  },
+  {
+    "code": "T38.5",
+    "title_la": "Oestrogenia et progestrogenia alia",
+    "source_line": 46783
+  },
+  {
+    "code": "T38.6",
+    "title_la": "Intoxicatio per remedia antigonadotrophina, antioestrogenia, antiandrogenia",
+    "source_line": 46786
+  },
+  {
+    "code": "T38.7",
+    "title_la": "Remedia androgenia et anabolica identica",
+    "source_line": 46789
+  },
+  {
+    "code": "T38.8",
+    "title_la": "Hormona alia, non specificata et substitutiones synthethicae eorum",
+    "source_line": 46791
+  },
+  {
+    "code": "T38.9",
+    "title_la": "Antagonistae hormonorum alii, non specificati",
+    "source_line": 46794
+  },
+  {
+    "code": "T39",
+    "title_la": "Trovanje neopijatskim analgeticima, antipireticima i antireumaticima",
+    "source_line": 3580
+  },
+  {
+    "code": "T39.0",
+    "title_la": "Salicylata",
+    "source_line": 46799
+  },
+  {
+    "code": "T39.1",
+    "title_la": "Derivata 4-aminophenoli",
+    "source_line": 46801
+  },
+  {
+    "code": "T39.2",
+    "title_la": "Derivata pyrazoloni",
+    "source_line": 46803
+  },
+  {
+    "code": "T39.3",
+    "title_la": "Medicamenta antiinflamatoria non steroida alia",
+    "source_line": 46805
+  },
+  {
+    "code": "T39.4",
+    "title_la": "Antirheumatica, non alibi classificata",
+    "source_line": 46807
+  },
+  {
+    "code": "T39.8",
+    "title_la": "Analgetica et antipyretica non opiatica alia, non alibi classificata",
+    "source_line": 46811
+  },
+  {
+    "code": "T39.9",
+    "title_la": "Analgetica antipyretica et antirheumatica non opiatica, non specificata",
+    "source_line": 46813
+  },
+  {
+    "code": "T40",
+    "title_la": "Trovanje narkoticima i psihodislepticima [halucinogenima]",
+    "source_line": 3581
+  },
+  {
+    "code": "T40.0",
+    "title_la": "Opium",
+    "source_line": 46819
+  },
+  {
+    "code": "T40.1",
+    "title_la": "Heroinum",
+    "source_line": 46821
+  },
+  {
+    "code": "T40.2",
+    "title_la": "Opiata alia",
+    "source_line": 46823
+  },
+  {
+    "code": "T40.3",
+    "title_la": "Methadonum",
+    "source_line": 46827
+  },
+  {
+    "code": "T40.4",
+    "title_la": "Narcotica synthetica alia",
+    "source_line": 46829
+  },
+  {
+    "code": "T40.5",
+    "title_la": "Cocainum",
+    "source_line": 46839
+  },
+  {
+    "code": "T40.6",
+    "title_la": "Narcotica alia, non specificata",
+    "source_line": 46841
+  },
+  {
+    "code": "T40.7",
+    "title_la": "Cannabis (derivata)",
+    "source_line": 46843
+  },
+  {
+    "code": "T40.8",
+    "title_la": "Lysergidum [LSD]",
+    "source_line": 46845
+  },
+  {
+    "code": "T40.9",
+    "title_la": "Psychodisleptica [hallucinogenia] alia et non specificata",
+    "source_line": 46847
+  },
+  {
+    "code": "T41",
+    "title_la": "Trovanje anesteticima i gasovima upotrebljenim u svrhu lečenja",
+    "source_line": 3582
+  },
+  {
+    "code": "T41.0",
+    "title_la": "Anaesthetica inhalata",
+    "source_line": 46858
+  },
+  {
+    "code": "T41.1",
+    "title_la": "Anaesthetica intravenosa",
+    "source_line": 46861
+  },
+  {
+    "code": "T41.2",
+    "title_la": "Anaesthetica generalia alia et non specificata",
+    "source_line": 46864
+  },
+  {
+    "code": "T41.3",
+    "title_la": "Anaesthetica localia",
+    "source_line": 46866
+  },
+  {
+    "code": "T41.4",
+    "title_la": "Anaesthetica, non specificata",
+    "source_line": 46868
+  },
+  {
+    "code": "T41.5",
+    "title_la": "Vapores (gas) therapeutici",
+    "source_line": 46870
+  },
+  {
+    "code": "T42",
+    "title_la": "Trovanje antiepilepticima, sedativno-hipnotičkim i antiparkinsonskim lekovima",
+    "source_line": 3583
+  },
+  {
+    "code": "T42.0",
+    "title_la": "Derivata hydantoini",
+    "source_line": 46879
+  },
+  {
+    "code": "T42.1",
+    "title_la": "Iminostilbena",
+    "source_line": 46881
+  },
+  {
+    "code": "T42.2",
+    "title_la": "Succinimida et oxazolidinediona",
+    "source_line": 46884
+  },
+  {
+    "code": "T42.3",
+    "title_la": "Barbiturata",
+    "source_line": 46886
+  },
+  {
+    "code": "T42.4",
+    "title_la": "Benzodiazopina",
+    "source_line": 46895
+  },
+  {
+    "code": "T42.5",
+    "title_la": "Mixturae antiepilepticae, non alibi classificatae",
+    "source_line": 46897
+  },
+  {
+    "code": "T42.6",
+    "title_la": "Medicamenta antiepileptica et sedativo-hypnotica alia",
+    "source_line": 46899
+  },
+  {
+    "code": "T42.7",
+    "title_la": "Medicamenta antiepileptica et sedativo-hypnotica, non specificata",
+    "source_line": 46904
+  },
+  {
+    "code": "T42.8",
+    "title_la": "Medicamenta antiparkinsonica et depressores toni muscularis centrales alii",
+    "source_line": 46911
+  },
+  {
+    "code": "T43",
+    "title_la": "Trovanje psihotropnim lekovima, neklasifikovano na drugom mestu",
+    "source_line": 3584
+  },
+  {
+    "code": "T43.0",
+    "title_la": "Antidepressiva tricyclica et tetracylica",
+    "source_line": 46923
+  },
+  {
+    "code": "T43.1",
+    "title_la": "Antidepressiva inhibitores monoamino-oxydasis",
+    "source_line": 46925
+  },
+  {
+    "code": "T43.2",
+    "title_la": "Antidepressiva alia et non specificata",
+    "source_line": 46927
+  },
+  {
+    "code": "T43.3",
+    "title_la": "Antipsyhotica et neuroleptica phenothiazinica",
+    "source_line": 46929
+  },
+  {
+    "code": "T43.4",
+    "title_la": "Neuroleptica butyrophenonica et thioxanthenica",
+    "source_line": 46931
+  },
+  {
+    "code": "T43.5",
+    "title_la": "Antipsychotica et neuroleptica alia et non specificata",
+    "source_line": 46933
+  },
+  {
+    "code": "T43.6",
+    "title_la": "Psychostimulantia cum possibilitate abusus",
+    "source_line": 46936
+  },
+  {
+    "code": "T43.8",
+    "title_la": "Medicamenta psychotropica alia, non alibi classificata",
+    "source_line": 46939
+  },
+  {
+    "code": "T43.9",
+    "title_la": "Medicamenta psychotropica, non specificata",
+    "source_line": 46941
+  },
+  {
+    "code": "T44",
+    "title_la": "Trovanje lekovima koji prvenstveno deluju na autonomni nervni sistem",
+    "source_line": 3585
+  },
+  {
+    "code": "T44.0",
+    "title_la": "Instrumenta anticholinesterasica",
+    "source_line": 46954
+  },
+  {
+    "code": "T44.1",
+    "title_la": "Parasympathomimetica alia [cholinergica)]",
+    "source_line": 46956
+  },
+  {
+    "code": "T44.2",
+    "title_la": "Medicamenta-inhibitores ganglionici, non alibi classificata",
+    "source_line": 46958
+  },
+  {
+    "code": "T44.3",
+    "title_la": "Parasympathicolytica [anticholinergica et antimuscarinica] et spasmolitica alia, non",
+    "source_line": 46960
+  },
+  {
+    "code": "T44.4",
+    "title_la": "Agonistae praedominanter alfa-adrenoreceptorum, non alibi classificatae",
+    "source_line": 46965
+  },
+  {
+    "code": "T44.5",
+    "title_la": "Agonistae praedominanter beta-adrenoreceptorum, non alibi classificatae",
+    "source_line": 46968
+  },
+  {
+    "code": "T44.6",
+    "title_la": "Antagonistae alfa-adrenoreceptorum, non alibi classificatae",
+    "source_line": 46971
+  },
+  {
+    "code": "T44.7",
+    "title_la": "Antagonistae beta-adrenoreceptorum, non alibi classificatae",
+    "source_line": 46974
+  },
+  {
+    "code": "T44.8",
+    "title_la": "Actores et inhibitores neuronorum adrenergicorum centrales, non alibi classificatae",
+    "source_line": 46976
+  },
+  {
+    "code": "T44.9",
+    "title_la": "Remedia systema ad nervosum autonomicum primum afficientia alia, non",
+    "source_line": 46981
+  },
+  {
+    "code": "T45",
+    "title_la": "Trovanje prvenstveno sistemskim i hematološkim sredstvima, neklasifikovano na",
+    "source_line": 3586
+  },
+  {
+    "code": "T45.0",
+    "title_la": "Remedia antiallergica et antiemetica",
+    "source_line": 46990
+  },
+  {
+    "code": "T45.1",
+    "title_la": "Remedia antineoplastica et immunosupressiva",
+    "source_line": 46993
+  },
+  {
+    "code": "T45.2",
+    "title_la": "Vitamina, non alibi classificata",
+    "source_line": 47006
+  },
+  {
+    "code": "T45.3",
+    "title_la": "Enzymae, non alibi classificatae",
+    "source_line": 47010
+  },
+  {
+    "code": "T45.4",
+    "title_la": "Ferrum et composita ferri",
+    "source_line": 47012
+  },
+  {
+    "code": "T45.5",
+    "title_la": "Anticoagulantia",
+    "source_line": 47014
+  },
+  {
+    "code": "T45.6",
+    "title_la": "Remedia ad fibrinolysim afficientia",
+    "source_line": 47016
+  },
+  {
+    "code": "T45.7",
+    "title_la": "Antagonistae anticoagulantium, vitaminum K et coagulantia alia",
+    "source_line": 47018
+  },
+  {
+    "code": "T45.8",
+    "title_la": "Instrumenta primum systemica et haematologici alia",
+    "source_line": 47020
+  },
+  {
+    "code": "T45.9",
+    "title_la": "Instrumenta primum systemica et haematologica, non specificata",
+    "source_line": 47027
+  },
+  {
+    "code": "T46",
+    "title_la": "Trovanje sredstvima koja prvenstveno utiču na sistem krvotoka",
+    "source_line": 3588
+  },
+  {
+    "code": "T46.0",
+    "title_la": "Glycosida cardiostimulantia et remedia actionis simillis",
+    "source_line": 47033
+  },
+  {
+    "code": "T46.1",
+    "title_la": "Inhibitores calcium-canalis",
+    "source_line": 47035
+  },
+  {
+    "code": "T46.2",
+    "title_la": "Remedia antidysrhythmica alia, non alibi classificata",
+    "source_line": 47037
+  },
+  {
+    "code": "T46.3",
+    "title_la": "Vasodilatatores coronarii, non alibi clasificati",
+    "source_line": 47040
+  },
+  {
+    "code": "T46.4",
+    "title_la": "Inhibitores enzymes convertoris anglotensini",
+    "source_line": 47045
+  },
+  {
+    "code": "T46.5",
+    "title_la": "Remedia antihypertensiva alia, non alibi classificata",
+    "source_line": 47047
+  },
+  {
+    "code": "T46.6",
+    "title_la": "Remedia antihyperlipidaemica et antiarteriosclerotica",
+    "source_line": 47062
+  },
+  {
+    "code": "T46.7",
+    "title_la": "Vasodilatatores peripherici",
+    "source_line": 47064
+  },
+  {
+    "code": "T46.8",
+    "title_la": "Remedia antivaricosa et agentes sclerosantes",
+    "source_line": 47068
+  },
+  {
+    "code": "T46.9",
+    "title_la": "Instrumenta ad systema cardiovasculare primum afficientia alia et non specificata",
+    "source_line": 47070
+  },
+  {
+    "code": "T47",
+    "title_la": "Trovanje sredstvima koji prvenstveno deluju na želudačno-crevni sistem",
+    "source_line": 3589
+  },
+  {
+    "code": "T47.0",
+    "title_la": "Antagonistae H2-receptoris histamini",
+    "source_line": 47075
+  },
+  {
+    "code": "T47.1",
+    "title_la": "Remedia antacida et anti secretionem gastricam alia",
+    "source_line": 47077
+  },
+  {
+    "code": "T47.2",
+    "title_la": "Laxativa stimulantia",
+    "source_line": 47079
+  },
+  {
+    "code": "T47.3",
+    "title_la": "Laxativa salina et osmotica",
+    "source_line": 47081
+  },
+  {
+    "code": "T47.4",
+    "title_la": "Laxativa alia",
+    "source_line": 47083
+  },
+  {
+    "code": "T47.5",
+    "title_la": "Digestiva",
+    "source_line": 47086
+  },
+  {
+    "code": "T47.6",
+    "title_la": "Remedia antidiarrhoeica",
+    "source_line": 47088
+  },
+  {
+    "code": "T47.7",
+    "title_la": "Emetica",
+    "source_line": 47091
+  },
+  {
+    "code": "T47.8",
+    "title_la": "Instrumenta ad systema gastrointestinale primum afficientia alia",
+    "source_line": 47093
+  },
+  {
+    "code": "T47.9",
+    "title_la": "Instrumenta systema ad gastrointestinale primum afficientia, non specificata",
+    "source_line": 47095
+  },
+  {
+    "code": "T48",
+    "title_la": "Trovanje sredstvima koja prvenstveno deluju na glatke mišiće i mišiće skeleta i",
+    "source_line": 3590
+  },
+  {
+    "code": "T48.0",
+    "title_la": "Remedia oxytocica",
+    "source_line": 47102
+  },
+  {
+    "code": "T48.1",
+    "title_la": "Relaxantia textus muscularis sceletalis [inhibitores neuromusculares]",
+    "source_line": 47105
+  },
+  {
+    "code": "T48.2",
+    "title_la": "Instrumenta musculos primum afficientia alia et non specificata",
+    "source_line": 47107
+  },
+  {
+    "code": "T48.3",
+    "title_la": "Antitussiva (remedia)",
+    "source_line": 47109
+  },
+  {
+    "code": "T48.4",
+    "title_la": "Expectorantia (remedia)",
+    "source_line": 47118
+  },
+  {
+    "code": "T48.5",
+    "title_la": "Remedia contra frigus commune",
+    "source_line": 47120
+  },
+  {
+    "code": "T48.6",
+    "title_la": "Antiasthmatica, non alibi classificata",
+    "source_line": 47122
+  },
+  {
+    "code": "T48.7",
+    "title_la": "Instrumenta systema ad respiratorium primum afficientia alia et non specificata",
+    "source_line": 47128
+  },
+  {
+    "code": "T49",
+    "title_la": "Trovanje lokalnim sredstvima koja deluju na kožu i sluznicu i trovanje",
+    "source_line": 3592
+  },
+  {
+    "code": "T49.0",
+    "title_la": "Remedia antifungalia, antiinfectiva et antiinflammatoria localia, non alibi classificata",
+    "source_line": 47137
+  },
+  {
+    "code": "T49.1",
+    "title_la": "Instrumenta antipruriginosa",
+    "source_line": 47139
+  },
+  {
+    "code": "T49.2",
+    "title_la": "Instrumenta adstrigentia et detergentes locales",
+    "source_line": 47141
+  },
+  {
+    "code": "T49.3",
+    "title_la": "Instrumenta emollientia, demulcentia et protegenita",
+    "source_line": 47143
+  },
+  {
+    "code": "T49.4",
+    "title_la": "Keratolitica, keratoplastica et remedia et praeparatus ad crinem alii",
+    "source_line": 47145
+  },
+  {
+    "code": "T49.5",
+    "title_la": "Remedia et praeparatus ophthalmologici",
+    "source_line": 47147
+  },
+  {
+    "code": "T49.6",
+    "title_la": "Remedia et praeparatus otorhinolaryngologici antiinfectivi",
+    "source_line": 47150
+  },
+  {
+    "code": "T49.7",
+    "title_la": "Remedia dentalia, ad usum localem",
+    "source_line": 47153
+  },
+  {
+    "code": "T49.8",
+    "title_la": "Instrumenta localia alia",
+    "source_line": 47155
+  },
+  {
+    "code": "T49.9",
+    "title_la": "Instrumentum locale, non specificatum",
+    "source_line": 47158
+  },
+  {
+    "code": "T50",
+    "title_la": "Trovanje diureticima i drugim neoznačenim lekovima, preparatima i biološkim",
+    "source_line": 3600
+  },
+  {
+    "code": "T50.0",
+    "title_la": "Mineralocorticoidae et antagonistae eorum",
+    "source_line": 47165
+  },
+  {
+    "code": "T50.1",
+    "title_la": "Remedia diuretica ad ansam nephriticam afficientia",
+    "source_line": 47174
+  },
+  {
+    "code": "T50.2",
+    "title_la": "Inhibitores carbo-anhydrasis, benzothiadiasida et remedia diuretica alia",
+    "source_line": 47176
+  },
+  {
+    "code": "T50.3",
+    "title_la": "Instrumenta electrolytica, calorica et aquae-aequilibrica",
+    "source_line": 47179
+  },
+  {
+    "code": "T50.4",
+    "title_la": "Remedia ad metabolismum acidi urici afticientia",
+    "source_line": 47182
+  },
+  {
+    "code": "T50.5",
+    "title_la": "Deprimentia appetitus",
+    "source_line": 47184
+  },
+  {
+    "code": "T50.6",
+    "title_la": "Antidota et instrumenta chelatica, non alibi classificata",
+    "source_line": 47186
+  },
+  {
+    "code": "T50.7",
+    "title_la": "Analeptica et antagonistae receptorum opiaticorum",
+    "source_line": 47189
+  },
+  {
+    "code": "T50.8",
+    "title_la": "Agentes diagnostici",
+    "source_line": 47191
+  },
+  {
+    "code": "T50.9",
+    "title_la": "Remedia, medicamenta et substantiae biologicae alia, non specificata",
+    "source_line": 47193
+  },
+  {
+    "code": "T51",
+    "title_la": "Toksičko dejstvo alkohola",
+    "source_line": 3604
+  },
+  {
+    "code": "T51.0",
+    "title_la": "Aethanolum",
+    "source_line": 47212
+  },
+  {
+    "code": "T51.1",
+    "title_la": "Methanolum",
+    "source_line": 47218
+  },
+  {
+    "code": "T51.2",
+    "title_la": "2-propanolum",
+    "source_line": 47221
+  },
+  {
+    "code": "T51.3",
+    "title_la": "Oleum in spiritu",
+    "source_line": 47230
+  },
+  {
+    "code": "T51.8",
+    "title_la": "Spiritus alii",
+    "source_line": 47236
+  },
+  {
+    "code": "T51.9",
+    "title_la": "Spiritus, non specificatus",
+    "source_line": 47238
+  },
+  {
+    "code": "T52",
+    "title_la": "Toksičko dejstvo organskih rastvarača",
+    "source_line": 3605
+  },
+  {
+    "code": "T52.0",
+    "title_la": "Producta petrolei",
+    "source_line": 47245
+  },
+  {
+    "code": "T52.1",
+    "title_la": "Benzenum",
+    "source_line": 47254
+  },
+  {
+    "code": "T52.2",
+    "title_la": "Homologa cum benzeno",
+    "source_line": 47258
+  },
+  {
+    "code": "T52.3",
+    "title_la": "Glycolia",
+    "source_line": 47262
+  },
+  {
+    "code": "T52.4",
+    "title_la": "Ketona",
+    "source_line": 47264
+  },
+  {
+    "code": "T52.8",
+    "title_la": "Solventes organici alii",
+    "source_line": 47266
+  },
+  {
+    "code": "T52.9",
+    "title_la": "Solventi organici, non specificati",
+    "source_line": 47268
+  },
+  {
+    "code": "T53",
+    "title_la": "Toksičko dejstvo halogenih derivata alifatičnih i aromatičnih ugljovodonika",
+    "source_line": 3606
+  },
+  {
+    "code": "T53.0",
+    "title_la": "Carbo- tetrachloridum",
+    "source_line": 47274
+  },
+  {
+    "code": "T53.1",
+    "title_la": "Chloroformium",
+    "source_line": 47277
+  },
+  {
+    "code": "T53.2",
+    "title_la": "Trichloroethylenum",
+    "source_line": 47288
+  },
+  {
+    "code": "T53.3",
+    "title_la": "Tetrachloroethylenum",
+    "source_line": 47291
+  },
+  {
+    "code": "T53.4",
+    "title_la": "Dichloromethanum",
+    "source_line": 47295
+  },
+  {
+    "code": "T53.5",
+    "title_la": "Chlorofluorocarbones",
+    "source_line": 47298
+  },
+  {
+    "code": "T53.6",
+    "title_la": "Derivata hydrocarbonum aliphaticorum halogenia alia",
+    "source_line": 47300
+  },
+  {
+    "code": "T53.7",
+    "title_la": "Derivata hidrocarbonum aromaticorum halogenia alia",
+    "source_line": 47302
+  },
+  {
+    "code": "T53.9",
+    "title_la": "Derivata hydrocarbonum aliphaticorum et aromaticorum halogenia, non specificata",
+    "source_line": 47304
+  },
+  {
+    "code": "T54",
+    "title_la": "Toksičko dejstvo korozivnih supstanci",
+    "source_line": 3607
+  },
+  {
+    "code": "T54.0",
+    "title_la": "Phenolum et eius homologa",
+    "source_line": 47309
+  },
+  {
+    "code": "T54.1",
+    "title_la": "Mixturae organicae corosivae aliae",
+    "source_line": 47311
+  },
+  {
+    "code": "T54.2",
+    "title_la": "Acida corrosiva et substantiae acidis similes",
+    "source_line": 47313
+  },
+  {
+    "code": "T54.3",
+    "title_la": "Alkalia corrosiva et substantiae alkaliis similes",
+    "source_line": 47318
+  },
+  {
+    "code": "T54.9",
+    "title_la": "Substantia corrosiva, non specificata",
+    "source_line": 47322
+  },
+  {
+    "code": "T55",
+    "title_la": "Toksičko dejstvo sapuna i deterdženata",
+    "source_line": 3608
+  },
+  {
+    "code": "T56",
+    "title_la": "Toksičko dejstvo metala",
+    "source_line": 3609
+  },
+  {
+    "code": "T56.0",
+    "title_la": "Plumbum et composita plumbi",
+    "source_line": 47334
+  },
+  {
+    "code": "T56.1",
+    "title_la": "Hydrargyrum et composita hydrargyri",
+    "source_line": 47336
+  },
+  {
+    "code": "T56.2",
+    "title_la": "Chromium et composita chromi",
+    "source_line": 47345
+  },
+  {
+    "code": "T56.3",
+    "title_la": "Cadmium et composita cadmii",
+    "source_line": 47347
+  },
+  {
+    "code": "T56.4",
+    "title_la": "Cuprum et composita cupri",
+    "source_line": 47349
+  },
+  {
+    "code": "T56.5",
+    "title_la": "Zincum et composita zinci",
+    "source_line": 47351
+  },
+  {
+    "code": "T56.6",
+    "title_la": "Stannum et composita stanni",
+    "source_line": 47353
+  },
+  {
+    "code": "T56.7",
+    "title_la": "Beryllium et composita berylli",
+    "source_line": 47355
+  },
+  {
+    "code": "T56.8",
+    "title_la": "Metalla alia",
+    "source_line": 47357
+  },
+  {
+    "code": "T56.9",
+    "title_la": "Metallum, non specificatum",
+    "source_line": 47360
+  },
+  {
+    "code": "T57",
+    "title_la": "Toksičko dejstvo drugih neorganskih supstanci",
+    "source_line": 3610
+  },
+  {
+    "code": "T57.0",
+    "title_la": "Arsenum et composita arseni",
+    "source_line": 47365
+  },
+  {
+    "code": "T57.1",
+    "title_la": "Phosphorum et composita phosphori",
+    "source_line": 47367
+  },
+  {
+    "code": "T57.2",
+    "title_la": "Manganum et composita mangani",
+    "source_line": 47370
+  },
+  {
+    "code": "T57.3",
+    "title_la": "Hydrogenium cyanidum",
+    "source_line": 47372
+  },
+  {
+    "code": "T57.8",
+    "title_la": "Substantiae anorganicae aliae, specificatae",
+    "source_line": 47374
+  },
+  {
+    "code": "T57.9",
+    "title_la": "Substantia anorganica, non specificata",
+    "source_line": 47376
+  },
+  {
+    "code": "T58",
+    "title_la": "Toksičko dejstvo ugljen-monoksida",
+    "source_line": 3611
+  },
+  {
+    "code": "T59",
+    "title_la": "Toksičko dejstvo drugih gasova, dimova i para",
+    "source_line": 3612
+  },
+  {
+    "code": "T59.0",
+    "title_la": "Oxyda nitrogenii",
+    "source_line": 47387
+  },
+  {
+    "code": "T59.1",
+    "title_la": "Dioxidum sulphuricum",
+    "source_line": 47389
+  },
+  {
+    "code": "T59.2",
+    "title_la": "Formaldehydum",
+    "source_line": 47391
+  },
+  {
+    "code": "T59.3",
+    "title_la": "Vapor (gas) lacrimoferens",
+    "source_line": 47401
+  },
+  {
+    "code": "T59.4",
+    "title_la": "Vapor (gas) chloricus",
+    "source_line": 47404
+  },
+  {
+    "code": "T59.5",
+    "title_la": "Vapor (gas) fluorinus et hydrogenium-fluoridum",
+    "source_line": 47406
+  },
+  {
+    "code": "T59.6",
+    "title_la": "Hydrogenium- sulfidum",
+    "source_line": 47408
+  },
+  {
+    "code": "T59.7",
+    "title_la": "Arbodioxidum",
+    "source_line": 47410
+  },
+  {
+    "code": "T59.8",
+    "title_la": "Vapores (gas), fumi et exhalationes aliae, specificatae",
+    "source_line": 47412
+  },
+  {
+    "code": "T59.9",
+    "title_la": "Vapores (gas), fumi et exhalationes, non specificatae",
+    "source_line": 47414
+  },
+  {
+    "code": "T60",
+    "title_la": "Toksičko dejstvo pesticida",
+    "source_line": 3613
+  },
+  {
+    "code": "T60.0",
+    "title_la": "Organophosphata et insecticida carbamata",
+    "source_line": 47420
+  },
+  {
+    "code": "T60.1",
+    "title_la": "Insecticida halogenisata (mercurialia)",
+    "source_line": 47422
+  },
+  {
+    "code": "T60.2",
+    "title_la": "Insecticida alia",
+    "source_line": 47425
+  },
+  {
+    "code": "T60.3",
+    "title_la": "Herbicida et fungicida",
+    "source_line": 47427
+  },
+  {
+    "code": "T60.4",
+    "title_la": "Rodenticida",
+    "source_line": 47429
+  },
+  {
+    "code": "T60.8",
+    "title_la": "Pesticida alia",
+    "source_line": 47432
+  },
+  {
+    "code": "T60.9",
+    "title_la": "Pesticidum, non specificatum",
+    "source_line": 47434
+  },
+  {
+    "code": "T61",
+    "title_la": "Toksičko dejstvo štetnih supstanci unetih kao hrana iz mora",
+    "source_line": 3614
+  },
+  {
+    "code": "T61.0",
+    "title_la": "Intoxicatio pisce Ciguatera",
+    "source_line": 47450
+  },
+  {
+    "code": "T61.1",
+    "title_la": "Intoxicatio pisce scombroidi",
+    "source_line": 47458
+  },
+  {
+    "code": "T61.2",
+    "title_la": "Intoxicatio pisce alio et concha",
+    "source_line": 47461
+  },
+  {
+    "code": "T61.8",
+    "title_la": "Effectus allmenti maritimi alterius toxicus",
+    "source_line": 47463
+  },
+  {
+    "code": "T61.9",
+    "title_la": "Effectus allmenti maritimi non specificati toxicus",
+    "source_line": 47465
+  },
+  {
+    "code": "T62",
+    "title_la": "Otrovno dejstvo drugih štetnih supstanci unetih kao hrana",
+    "source_line": 3615
+  },
+  {
+    "code": "T62.0",
+    "title_la": "Fungi ingesti",
+    "source_line": 47480
+  },
+  {
+    "code": "T62.1",
+    "title_la": "Baccae ingestae",
+    "source_line": 47482
+  },
+  {
+    "code": "T62.2",
+    "title_la": "Plantae ingestae aliae",
+    "source_line": 47484
+  },
+  {
+    "code": "T62.8",
+    "title_la": "Substantiae nocivae, ut alimentum ingestae, aliae, specificatae",
+    "source_line": 47486
+  },
+  {
+    "code": "T62.9",
+    "title_la": "Substantia nociva, ut alimentum ingesta, alia, non specificata",
+    "source_line": 47488
+  },
+  {
+    "code": "T63",
+    "title_la": "Otrovno dejstvo kontakta sa otrovnim životinjama",
+    "source_line": 3616
+  },
+  {
+    "code": "T63.0",
+    "title_la": "Morsus serpentis venenosi",
+    "source_line": 47493
+  },
+  {
+    "code": "T63.1",
+    "title_la": "Morsus reptilium venenosorum",
+    "source_line": 47496
+  },
+  {
+    "code": "T63.2",
+    "title_la": "Morsus scorpionis venenosi",
+    "source_line": 47499
+  },
+  {
+    "code": "T63.3",
+    "title_la": "Morsus arachnae venenosae",
+    "source_line": 47501
+  },
+  {
+    "code": "T63.4",
+    "title_la": "Morsus arthropodarum aliorum",
+    "source_line": 47503
+  },
+  {
+    "code": "T63.5",
+    "title_la": "Effectus contactus cum pisce toxicus",
+    "source_line": 47506
+  },
+  {
+    "code": "T63.6",
+    "title_la": "Effectus contactus cum animalibus maritimis aliis toxicus",
+    "source_line": 47515
+  },
+  {
+    "code": "T63.8",
+    "title_la": "Effectus contactus cum animalibus venenosis aliis toxicus",
+    "source_line": 47523
+  },
+  {
+    "code": "T63.9",
+    "title_la": "Effectus contactus cum animalibus venenosis non specificatis toxicus",
+    "source_line": 47526
+  },
+  {
+    "code": "T64",
+    "title_la": "Otrovno dejstvo aflatotoksina i drugih mikotoksinskih zagađivača hrane",
+    "source_line": 3617
+  },
+  {
+    "code": "T65",
+    "title_la": "Otrovno dejstvo drugih i neoznačenih supstanci",
+    "source_line": 3618
+  },
+  {
+    "code": "T65.0",
+    "title_la": "Cyanida",
+    "source_line": 47535
+  },
+  {
+    "code": "T65.1",
+    "title_la": "Strychninum et sales strichnini",
+    "source_line": 47538
+  },
+  {
+    "code": "T65.2",
+    "title_la": "Tabaccum et nicotinum",
+    "source_line": 47540
+  },
+  {
+    "code": "T65.3",
+    "title_la": "Nitroderivata et aminoderivata benzeni et homologa benzeni",
+    "source_line": 47542
+  },
+  {
+    "code": "T65.4",
+    "title_la": "Carbo- disulfidum",
+    "source_line": 47547
+  },
+  {
+    "code": "T65.5",
+    "title_la": "Nitroglycerinum, acida nitrica alia et estri",
+    "source_line": 47549
+  },
+  {
+    "code": "T65.6",
+    "title_la": "Colores et pigmenta, non alibi classificata",
+    "source_line": 47552
+  },
+  {
+    "code": "T65.8",
+    "title_la": "Effectus substantiarum aliarum specificatarum toxicus",
+    "source_line": 47554
+  },
+  {
+    "code": "T65.9",
+    "title_la": "Effectus substantiarum non specificatarum toxicus",
+    "source_line": 47556
+  },
+  {
+    "code": "T66",
+    "title_la": "Neoznačena dejstva zračenja",
+    "source_line": 3621
+  },
+  {
+    "code": "T67",
+    "title_la": "Dejstva toplote i svetlosti",
+    "source_line": 3622
+  },
+  {
+    "code": "T67.0",
+    "title_la": "Ictus e calore et sole (insolatio)",
+    "source_line": 47589
+  },
+  {
+    "code": "T67.1",
+    "title_la": "Syncopa e calore",
+    "source_line": 47596
+  },
+  {
+    "code": "T67.2",
+    "title_la": "Convulsiones e calore",
+    "source_line": 47599
+  },
+  {
+    "code": "T67.3",
+    "title_la": "Exhaustio e calore anhydrotica",
+    "source_line": 47601
+  },
+  {
+    "code": "T67.4",
+    "title_la": "Exhaustio e calore propter deficientiam salis",
+    "source_line": 47605
+  },
+  {
+    "code": "T67.5",
+    "title_la": "Exhaustio e calore, non specificata",
+    "source_line": 47608
+  },
+  {
+    "code": "T67.6",
+    "title_la": "Fatigatio e calore transitoria",
+    "source_line": 47611
+  },
+  {
+    "code": "T67.7",
+    "title_la": "Oedema e calore",
+    "source_line": 47613
+  },
+  {
+    "code": "T67.8",
+    "title_la": "Effectus caloris et lucis alii",
+    "source_line": 47615
+  },
+  {
+    "code": "T67.9",
+    "title_la": "Effectus caloris et lucis, non specificati",
+    "source_line": 47625
+  },
+  {
+    "code": "T68",
+    "title_la": "Rashlađenje tela",
+    "source_line": 3623
+  },
+  {
+    "code": "T69",
+    "title_la": "Druga dejstva snižene temperature",
+    "source_line": 3624
+  },
+  {
+    "code": "T69.0",
+    "title_la": "Immersio manus et pedis",
+    "source_line": 47640
+  },
+  {
+    "code": "T69.1",
+    "title_la": "Perniones",
+    "source_line": 47643
+  },
+  {
+    "code": "T69.8",
+    "title_la": "Effectus reductionis temperaturae alii, specificati",
+    "source_line": 47645
+  },
+  {
+    "code": "T69.9",
+    "title_la": "Effectus reductionis temperaturae, non specificatus",
+    "source_line": 47647
+  },
+  {
+    "code": "T70",
+    "title_la": "Dejstva povišenog pritiska vazduha i vode",
+    "source_line": 3625
+  },
+  {
+    "code": "T70.0",
+    "title_la": "Barotrauma auris",
+    "source_line": 47652
+  },
+  {
+    "code": "T70.1",
+    "title_la": "Barotrauma sinus",
+    "source_line": 47656
+  },
+  {
+    "code": "T70.2",
+    "title_la": "Effectus altitudinis magnae alii, non specificati",
+    "source_line": 47660
+  },
+  {
+    "code": "T70.3",
+    "title_la": "Morbus capsicus",
+    "source_line": 47668
+  },
+  {
+    "code": "T70.4",
+    "title_la": "Effectus hypercompressionis in fluidis",
+    "source_line": 47672
+  },
+  {
+    "code": "T70.8",
+    "title_la": "Effectus pressionis atmosphaericae et aquae alii",
+    "source_line": 47682
+  },
+  {
+    "code": "T70.9",
+    "title_la": "Effectus pressionis atmosphaericae et aquae, non specificatus",
+    "source_line": 47685
+  },
+  {
+    "code": "T71",
+    "title_la": "Gušenje",
+    "source_line": 3626
+  },
+  {
+    "code": "T73",
+    "title_la": "Dejstva drugih lišavanja",
+    "source_line": 3627
+  },
+  {
+    "code": "T73.0",
+    "title_la": "Inanitio",
+    "source_line": 47705
+  },
+  {
+    "code": "T73.1",
+    "title_la": "Effectus sitis (dipsesis)",
+    "source_line": 47708
+  },
+  {
+    "code": "T73.2",
+    "title_la": "Exhaustio propter expositionem",
+    "source_line": 47711
+  },
+  {
+    "code": "T73.3",
+    "title_la": "Exhaustio propter exercitationem nimiam",
+    "source_line": 47713
+  },
+  {
+    "code": "T73.8",
+    "title_la": "Effectus deprivationis alii",
+    "source_line": 47716
+  },
+  {
+    "code": "T73.9",
+    "title_la": "Effectus deprivationis, non specificati",
+    "source_line": 47718
+  },
+  {
+    "code": "T74",
+    "title_la": "Sindrom lošeg postupanja",
+    "source_line": 3628
+  },
+  {
+    "code": "T74.0",
+    "title_la": "Neglegentia sive derelictio",
+    "source_line": 47724
+  },
+  {
+    "code": "T74.1",
+    "title_la": "Abusus physicus",
+    "source_line": 47726
+  },
+  {
+    "code": "T74.2",
+    "title_la": "Abusus sexualis",
+    "source_line": 47731
+  },
+  {
+    "code": "T74.3",
+    "title_la": "Abusus psychologicus",
+    "source_line": 47740
+  },
+  {
+    "code": "T74.8",
+    "title_la": "Syndromata maltractationis alia",
+    "source_line": 47742
+  },
+  {
+    "code": "T74.9",
+    "title_la": "Syndroma maltractationis, non specificatum",
+    "source_line": 47745
+  },
+  {
+    "code": "T75",
+    "title_la": "Dejstva drugih spoljnih uzroka",
+    "source_line": 3629
+  },
+  {
+    "code": "T75.0",
+    "title_la": "Effectus fulguris",
+    "source_line": 47755
+  },
+  {
+    "code": "T75.1",
+    "title_la": "Immersio et submersio non letalis",
+    "source_line": 47759
+  },
+  {
+    "code": "T75.2",
+    "title_la": "Effectus vibrationum",
+    "source_line": 47763
+  },
+  {
+    "code": "T75.3",
+    "title_la": "Kinetosis",
+    "source_line": 47768
+  },
+  {
+    "code": "T75.4",
+    "title_la": "Effectus cursus electrici",
+    "source_line": 47773
+  },
+  {
+    "code": "T75.8",
+    "title_la": "Effectus causarum externarum alii, specificati",
+    "source_line": 47777
+  },
+  {
+    "code": "T78",
+    "title_la": "Nepovoljna dejstva, neklasifikovana na drugom mestu",
+    "source_line": 3630
+  },
+  {
+    "code": "T78.0",
+    "title_la": "Afflictus (shock) anaphylacticus propter reactionem in alimentum adversam",
+    "source_line": 47790
+  },
+  {
+    "code": "T78.1",
+    "title_la": "Reactiones ad alimentum adversae aliae, non alibi classificatae",
+    "source_line": 47797
+  },
+  {
+    "code": "T78.2",
+    "title_la": "Afflictus (shock) anaphylacticus, non specificatus",
+    "source_line": 47803
+  },
+  {
+    "code": "T78.3",
+    "title_la": "Oedema angioneuroticum",
+    "source_line": 47812
+  },
+  {
+    "code": "T78.4",
+    "title_la": "Allergia, non specificata",
+    "source_line": 47818
+  },
+  {
+    "code": "T78.8",
+    "title_la": "Effectus adversi alii, non alibi classificati",
+    "source_line": 47828
+  },
+  {
+    "code": "T78.9",
+    "title_la": "Effectus adversus, non specificatus",
+    "source_line": 47830
+  },
+  {
+    "code": "T79",
+    "title_la": "Rane komplikacije posle povrede, neklasifikovane na drugom mestu",
+    "source_line": 3633
+  },
+  {
+    "code": "T79.0",
+    "title_la": "Embolia aeria traumatica",
+    "source_line": 47851
+  },
+  {
+    "code": "T79.1",
+    "title_la": "Embolia adiposa traumatica",
+    "source_line": 47856
+  },
+  {
+    "code": "T79.2",
+    "title_la": "Haemorrhagia traumatica secundaria et recidiva",
+    "source_line": 47861
+  },
+  {
+    "code": "T79.3",
+    "title_la": "Infectio vulneris post trauma, non alibi classificata",
+    "source_line": 47863
+  },
+  {
+    "code": "T79.4",
+    "title_la": "Afflictus (shock) traumaticus",
+    "source_line": 47866
+  },
+  {
+    "code": "T79.5",
+    "title_la": "Anuria posttraumatica",
+    "source_line": 47883
+  },
+  {
+    "code": "T79.6",
+    "title_la": "Ischaemia musculorum traumatica",
+    "source_line": 47887
+  },
+  {
+    "code": "T79.7",
+    "title_la": "Emphysema subcutaneum traumaticum",
+    "source_line": 47899
+  },
+  {
+    "code": "T79.8",
+    "title_la": "Complicatio traumatis praecox alia",
+    "source_line": 47902
+  },
+  {
+    "code": "T79.9",
+    "title_la": "Complicatio traumatis praecox, non specificata",
+    "source_line": 47904
+  },
+  {
+    "code": "T80",
+    "title_la": "Komplikacije zbog infuzije, transfuzije i injekcije",
+    "source_line": 3637
+  },
+  {
+    "code": "T80.0",
+    "title_la": "Embolia aeria ex infusione, transfusione et injectione",
+    "source_line": 47937
+  },
+  {
+    "code": "T80.1",
+    "title_la": "Complicationes ex infusione, transfusione et injectione vasculares",
+    "source_line": 47939
+  },
+  {
+    "code": "T80.2",
+    "title_la": "Infectio ex infusione, tranfusione et injectione",
+    "source_line": 47955
+  },
+  {
+    "code": "T80.3",
+    "title_la": "Reactio in incompatibilitatem ABO",
+    "source_line": 47964
+  },
+  {
+    "code": "T80.4",
+    "title_la": "Reactio in incompatibilitatem Rh",
+    "source_line": 47968
+  },
+  {
+    "code": "T80.5",
+    "title_la": "Afflictus (shock) anaphylacticus propter serum",
+    "source_line": 47971
+  },
+  {
+    "code": "T80.6",
+    "title_la": "Reactiones in serum aliae",
+    "source_line": 47979
+  },
+  {
+    "code": "T80.8",
+    "title_la": "Complicationes ex infusione, transfusione et injectione aliae",
+    "source_line": 47988
+  },
+  {
+    "code": "T80.9",
+    "title_la": "Complcatio ex infusione, transfusione et injectione, non specificata",
+    "source_line": 47990
+  },
+  {
+    "code": "T81",
+    "title_la": "Komplikacije medicinskih intervencija, neklasifikovane na drugom mestu",
+    "source_line": 3638
+  },
+  {
+    "code": "T81.0",
+    "title_la": "Hamorrhagia et haematoma ut complicationes procedurae medicinalis, non alibi",
+    "source_line": 48012
+  },
+  {
+    "code": "T81.1",
+    "title_la": "Afflictus (shock) per sive post proceduram, non alibi classificatus",
+    "source_line": 48020
+  },
+  {
+    "code": "T81.2",
+    "title_la": "Punctura et laceratio accidentalis inter proceduram, non alibi classificata",
+    "source_line": 48037
+  },
+  {
+    "code": "T81.3",
+    "title_la": "Disruptio vulneris operativum non alibi classificata",
+    "source_line": 48050
+  },
+  {
+    "code": "T81.4",
+    "title_la": "Infectio post proceduram, non alibi classificata",
+    "source_line": 48064
+  },
+  {
+    "code": "T81.5",
+    "title_la": "Corpus alienum vulneris post operationem",
+    "source_line": 48079
+  },
+  {
+    "code": "T81.6",
+    "title_la": "Reactio ad substantiam alienam per proceduram casu relictam acuta",
+    "source_line": 48086
+  },
+  {
+    "code": "T81.7",
+    "title_la": "Complicationes vasculares post proceduram, non alibi classificatae",
+    "source_line": 48091
+  },
+  {
+    "code": "T81.8",
+    "title_la": "Complicationes post proceduram aliae, non alibi classificatae",
+    "source_line": 48102
+  },
+  {
+    "code": "T81.9",
+    "title_la": "Complicatio procedurae, non specificata",
+    "source_line": 48109
+  },
+  {
+    "code": "T82",
+    "title_la": "Komplikacije zbog ugradnje protetskih aparata, implantata i transplantata u srce i",
+    "source_line": 3639
+  },
+  {
+    "code": "T82.0",
+    "title_la": "Complicatio valvulam cordis propter protheticam, mechanica",
+    "source_line": 48124
+  },
+  {
+    "code": "T82.1",
+    "title_la": "Complicatio propter apparatum cardiacum electronicum, mechanica",
+    "source_line": 48133
+  },
+  {
+    "code": "T82.2",
+    "title_la": "Complicatio propter circuitum (bypass) arteriarum coronariarum et transplantata",
+    "source_line": 48138
+  },
+  {
+    "code": "T82.3",
+    "title_la": "Complicationes propter transplantata vascularis alia, mechanicae",
+    "source_line": 48143
+  },
+  {
+    "code": "T82.4",
+    "title_la": "Complicatio propter catheterem ad dialysim vascularem, mechanica",
+    "source_line": 48148
+  },
+  {
+    "code": "T82.5",
+    "title_la": "Complicatio propter apparatus cardiacos et vasculares implantata-mechanica alios",
+    "source_line": 48152
+  },
+  {
+    "code": "T82.6",
+    "title_la": "Infectio et reactio inflammatoria ad prothesim valvulae cardiacae",
+    "source_line": 48164
+  },
+  {
+    "code": "T82.7",
+    "title_la": "Infectio et reactio inflamatoria ad apparatus, cardicos et vasculares alios, implantata",
+    "source_line": 48166
+  },
+  {
+    "code": "T82.8",
+    "title_la": "Complicationes propter apparatus protheticos, implantata et transplantata cardiaca",
+    "source_line": 48178
+  },
+  {
+    "code": "T82.9",
+    "title_la": "Complicatio propter apparatum protheticum, cardiacum et vascularem et",
+    "source_line": 48188
+  },
+  {
+    "code": "T83",
+    "title_la": "Komplikacije zbog mokraćno-polnih protetskih aparata, implantata i kalemova",
+    "source_line": 3641
+  },
+  {
+    "code": "T83.0",
+    "title_la": "Complicatio propter catheterem urinarium (persistentem), mechanica",
+    "source_line": 48197
+  },
+  {
+    "code": "T83.1",
+    "title_la": "Complicatio propter apparatus urinarios alios et implantata, mechanica",
+    "source_line": 48203
+  },
+  {
+    "code": "T83.2",
+    "title_la": "Complicatio propter transplantationem organi urinarii, mechanica",
+    "source_line": 48210
+  },
+  {
+    "code": "T83.3",
+    "title_la": "Complicatio propter apparatum contraceptivum intrauterinum, mechanica",
+    "source_line": 48213
+  },
+  {
+    "code": "T83.4",
+    "title_la": "Complicatio propter apparatus protheticos alios implantata et transplantata in",
+    "source_line": 48216
+  },
+  {
+    "code": "T83.5",
+    "title_la": "Infectio et reactio inflammatoria ad apparatum protheticum, implantatum et",
+    "source_line": 48221
+  },
+  {
+    "code": "T83.6",
+    "title_la": "Infectio et reactio inflammatoria ad apparatum protheticum, implantatum et",
+    "source_line": 48224
+  },
+  {
+    "code": "T83.8",
+    "title_la": "Complicationes propter apparatus protheticos urogenitales, implantata et",
+    "source_line": 48235
+  },
+  {
+    "code": "T83.9",
+    "title_la": "Complicatio propter apparatum protheticum urogenitalem, implantata et",
+    "source_line": 48239
+  },
+  {
+    "code": "T84",
+    "title_la": "Komplikacije zbog položaja unutrašnjih ortopedskih protetskih aparata, implantata i",
+    "source_line": 3642
+  },
+  {
+    "code": "T84.0",
+    "title_la": "Complicatio propter prothesim articuli internam, mechanica",
+    "source_line": 48250
+  },
+  {
+    "code": "T84.1",
+    "title_la": "Complicatio propter apparatum ad fixationem ossium extremitatis internam,",
+    "source_line": 48253
+  },
+  {
+    "code": "T84.2",
+    "title_la": "Complicatio propter apparatum ad fixationem ossium aliorum internam, mechanica",
+    "source_line": 48257
+  },
+  {
+    "code": "T84.3",
+    "title_la": "Complicatio propter apparatus ossium alios, implantata et transplantata, mechanica",
+    "source_line": 48260
+  },
+  {
+    "code": "T84.4",
+    "title_la": "Complicatio propter apparatus orthopedicos internos alios implantata et",
+    "source_line": 48265
+  },
+  {
+    "code": "T84.5",
+    "title_la": "Infectio et reactio inflammatoria in prothesim articularem internam",
+    "source_line": 48270
+  },
+  {
+    "code": "T84.6",
+    "title_la": "Infectio et reactio inflammatoria ad apparatum ad fixationem internam (loci indefiniti)",
+    "source_line": 48272
+  },
+  {
+    "code": "T84.7",
+    "title_la": "Infectio et reactio inflammatoria ad apparatus protheticos orthopedicos internos",
+    "source_line": 48274
+  },
+  {
+    "code": "T84.8",
+    "title_la": "Complicationes propter apparatus protheticos orthopaedicos internos, implantata et",
+    "source_line": 48278
+  },
+  {
+    "code": "T84.9",
+    "title_la": "Complicatio propter apparatum protheticum orthopedicum internum, implantata et",
+    "source_line": 48291
+  },
+  {
+    "code": "T85",
+    "title_la": "Komplikacije zbog drugih unutrašnjih protetskih aparata, implantata i kalemova",
+    "source_line": 3644
+  },
+  {
+    "code": "T85.0",
+    "title_la": "Complicatio propter canalem (communicantem) ventricularem intracranialem,",
+    "source_line": 48300
+  },
+  {
+    "code": "T85.1",
+    "title_la": "Complicatio propter stimulatorem systematis nervosi electronicum implantatum,",
+    "source_line": 48304
+  },
+  {
+    "code": "T85.2",
+    "title_la": "Complicatio propter lentem intraocularem, mechanica",
+    "source_line": 48311
+  },
+  {
+    "code": "T85.3",
+    "title_la": "Complicatio propter apparatus protheticos oculorum allos, implantata et",
+    "source_line": 48314
+  },
+  {
+    "code": "T85.4",
+    "title_la": "Complicatio propter prothesim et implantata mammae mechanica",
+    "source_line": 48320
+  },
+  {
+    "code": "T85.5",
+    "title_la": "Complicatio propter apparatus protheticos gastrointestinales, implantata et",
+    "source_line": 48323
+  },
+  {
+    "code": "T85.6",
+    "title_la": "Complicatio propter apparatus protheticos internos specificatos implantata et",
+    "source_line": 48329
+  },
+  {
+    "code": "T85.7",
+    "title_la": "Infectio et reactio inflammatoria ad apparatus protheticos internos alios, implantata",
+    "source_line": 48348
+  },
+  {
+    "code": "T85.8",
+    "title_la": "Complicationes propter apparatus protheticos internos, implantata et transplantata",
+    "source_line": 48352
+  },
+  {
+    "code": "T85.9",
+    "title_la": "Complicatio propter apparatum protheticum internum, implantata et transplantata,",
+    "source_line": 48357
+  },
+  {
+    "code": "T86",
+    "title_la": "Otkazivanje i odbacivanje transplantiranih organa i tkiva",
+    "source_line": 3645
+  },
+  {
+    "code": "T86.0",
+    "title_la": "Rejectio medullae ossium transplantatae",
+    "source_line": 48364
+  },
+  {
+    "code": "T86.1",
+    "title_la": "Insufficientia et rejectio renis transplantati",
+    "source_line": 48367
+  },
+  {
+    "code": "T86.2",
+    "title_la": "Insufficientia et rejectio cordis transplantati",
+    "source_line": 48369
+  },
+  {
+    "code": "T86.3",
+    "title_la": "Insufficientia et rejectio transplantati cardio-pulmonalis",
+    "source_line": 48374
+  },
+  {
+    "code": "T86.4",
+    "title_la": "Insufficientia et rejectio transplantati hepatis",
+    "source_line": 48376
+  },
+  {
+    "code": "T86.8",
+    "title_la": "Insufficientia et rejectio organorum et textuum transplantatorum aliorum",
+    "source_line": 48378
+  },
+  {
+    "code": "T86.9",
+    "title_la": "Insufficientia et rejectio organi et textus transplantati non specificati",
+    "source_line": 48386
+  },
+  {
+    "code": "T87",
+    "title_la": "Komplikacije svojstvene ponovnom spajanju i amputaciji",
+    "source_line": 3646
+  },
+  {
+    "code": "T87.0",
+    "title_la": "Complicationes partis extremitatis superioris reunitae",
+    "source_line": 48391
+  },
+  {
+    "code": "T87.1",
+    "title_la": "Complicationes partis extremitatis inferioris reunitae",
+    "source_line": 48393
+  },
+  {
+    "code": "T87.2",
+    "title_la": "Complicationes partis corporis reunitae, alterius",
+    "source_line": 48395
+  },
+  {
+    "code": "T87.3",
+    "title_la": "Neuroma trunculi amputati",
+    "source_line": 48397
+  },
+  {
+    "code": "T87.4",
+    "title_la": "Infectio trunculi amputati",
+    "source_line": 48405
+  },
+  {
+    "code": "T87.5",
+    "title_la": "Necrosis trunculi amputati",
+    "source_line": 48407
+  },
+  {
+    "code": "T87.6",
+    "title_la": "Complicationes trunculi amputati aliae, non specificatae",
+    "source_line": 48409
+  },
+  {
+    "code": "T88",
+    "title_la": "Druge komplikacije hirurške i medicinske nege",
+    "source_line": 3647
+  },
+  {
+    "code": "T88.0",
+    "title_la": "Infectio post immunisationem",
+    "source_line": 48433
+  },
+  {
+    "code": "T88.1",
+    "title_la": "Complicationes post immunisationem aliae, non alibi classificatae",
+    "source_line": 48436
+  },
+  {
+    "code": "T88.2",
+    "title_la": "Afflictus (shock) propter anaesthesiam",
+    "source_line": 48444
+  },
+  {
+    "code": "T88.3",
+    "title_la": "Hyperthermia maligna propter anaesthesiam",
+    "source_line": 48453
+  },
+  {
+    "code": "T88.4",
+    "title_la": "Intubatio inefficax sive gravis",
+    "source_line": 48455
+  },
+  {
+    "code": "T88.5",
+    "title_la": "Complicationes propter anaesthesiam, aliae",
+    "source_line": 48464
+  },
+  {
+    "code": "T88.6",
+    "title_la": "Afflictus (shock) anaphylacticus propter effectum remedii sive medicamenti correcti",
+    "source_line": 48467
+  },
+  {
+    "code": "T88.7",
+    "title_la": "Effectus remedii sive medicamenti adversus, non specificatus",
+    "source_line": 48471
+  },
+  {
+    "code": "T88.8",
+    "title_la": "Complicationes curae chirurgicae et medicalis aliae, specificatae, non alibi",
+    "source_line": 48482
+  },
+  {
+    "code": "T88.9",
+    "title_la": "Complicatio curae chirurgicae et medicalis, non specificata",
+    "source_line": 48486
+  },
+  {
+    "code": "T90",
+    "title_la": "Posledice povreda glave",
+    "source_line": 3656
+  },
+  {
+    "code": "T90.0",
+    "title_la": "Sequelae laesionis traumaticae capitis, superficiales",
+    "source_line": 48504
+  },
+  {
+    "code": "T90.1",
+    "title_la": "Sequelae vulneris aperti capitis",
+    "source_line": 48507
+  },
+  {
+    "code": "T90.2",
+    "title_la": "Sequelae fracturae ossium cranii et faciei",
+    "source_line": 48510
+  },
+  {
+    "code": "T90.3",
+    "title_la": "Sequelae laesionis traumaticae nervorum cranii",
+    "source_line": 48513
+  },
+  {
+    "code": "T90.4",
+    "title_la": "Sequelae laesionis traumaticae oculi et orbitae",
+    "source_line": 48522
+  },
+  {
+    "code": "T90.5",
+    "title_la": "Sequelae laesionis traumaticae intracranialis",
+    "source_line": 48525
+  },
+  {
+    "code": "T90.8",
+    "title_la": "Sequelae laesionum traumaticarum capitis aliarum specificatarum",
+    "source_line": 48528
+  },
+  {
+    "code": "T90.9",
+    "title_la": "Sequelae laesionis traumaticae capitis, non specificatae",
+    "source_line": 48531
+  },
+  {
+    "code": "T91",
+    "title_la": "Posledice povreda vrata i trupa",
+    "source_line": 3657
+  },
+  {
+    "code": "T91.0",
+    "title_la": "Sequelae laesionis traumaticae superficialis et vulneris aperti colli et trunci",
+    "source_line": 48537
+  },
+  {
+    "code": "T91.1",
+    "title_la": "Sequelae fracturae columnae vertebralis",
+    "source_line": 48540
+  },
+  {
+    "code": "T91.2",
+    "title_la": "Sequelae fracturarum thoracis et pelvis aliarum",
+    "source_line": 48543
+  },
+  {
+    "code": "T91.3",
+    "title_la": "Sequelae laesionis traumaticae medullae spinalis",
+    "source_line": 48546
+  },
+  {
+    "code": "T91.4",
+    "title_la": "Sequelae laesionis traumaticae organorum thoracis",
+    "source_line": 48549
+  },
+  {
+    "code": "T91.5",
+    "title_la": "Sequelae laesionis traumaticae organorum abdominis et pelvis",
+    "source_line": 48552
+  },
+  {
+    "code": "T91.8",
+    "title_la": "Sequelae laesionum traumaticarum colli et trunci aliarum specificatarum",
+    "source_line": 48555
+  },
+  {
+    "code": "T91.9",
+    "title_la": "Sequelae laesionis traumaticae colli et trunci, non specificatae",
+    "source_line": 48559
+  },
+  {
+    "code": "T92",
+    "title_la": "Posledice povreda ruke",
+    "source_line": 3658
+  },
+  {
+    "code": "T92.0",
+    "title_la": "Sequelae vulneris aperti extremitatis superioris",
+    "source_line": 48565
+  },
+  {
+    "code": "T92.1",
+    "title_la": "Sequelae fracturae extremitatis superioris",
+    "source_line": 48576
+  },
+  {
+    "code": "T92.2",
+    "title_la": "Sequelae fracturae carpi et manus",
+    "source_line": 48579
+  },
+  {
+    "code": "T92.3",
+    "title_la": "Sequelae luxationis, distorsionis et distensionis extremitatis superioris",
+    "source_line": 48582
+  },
+  {
+    "code": "T92.4",
+    "title_la": "Sequelae laesionis traumaticae nervi extremitatis superioris",
+    "source_line": 48585
+  },
+  {
+    "code": "T92.5",
+    "title_la": "Sequelae laesionis traumaticae musculi et tendinis extremitatis superioris",
+    "source_line": 48588
+  },
+  {
+    "code": "T92.6",
+    "title_la": "Sequelae conquassationis et amputationis extremitatis superioris",
+    "source_line": 48591
+  },
+  {
+    "code": "T92.8",
+    "title_la": "Sequelae laesionum traumaticarum extremitatis superioris aliarum specificatarum",
+    "source_line": 48594
+  },
+  {
+    "code": "T92.9",
+    "title_la": "Sequelae laesionis traumaticae extremitatis superioris non specificatae",
+    "source_line": 48598
+  },
+  {
+    "code": "T93",
+    "title_la": "Posledice povreda nogu",
+    "source_line": 3659
+  },
+  {
+    "code": "T93.0",
+    "title_la": "Sequelae vulneris aperti extremitatis inferioris",
+    "source_line": 48604
+  },
+  {
+    "code": "T93.1",
+    "title_la": "Sequelae fracturae femoris",
+    "source_line": 48607
+  },
+  {
+    "code": "T93.2",
+    "title_la": "Sequelae fracturarum extremitatis inferioris aliarum",
+    "source_line": 48610
+  },
+  {
+    "code": "T93.3",
+    "title_la": "Sequelae luxationis, distorsionis et distensionis extremitatis inferioris",
+    "source_line": 48613
+  },
+  {
+    "code": "T93.4",
+    "title_la": "Sequelae laesionis traumaticae nervi extremitatis inferioris",
+    "source_line": 48616
+  },
+  {
+    "code": "T93.5",
+    "title_la": "Sequelae laesionis traumaticae musculi et tendinis extremitatis inferioris",
+    "source_line": 48619
+  },
+  {
+    "code": "T93.6",
+    "title_la": "Sequelae laesionis traumaticae conquassatione et amputatione extremitatis",
+    "source_line": 48630
+  },
+  {
+    "code": "T93.8",
+    "title_la": "Sequelae laesionum traumaticarum extremitatis inferioris aliarum specificatarum",
+    "source_line": 48634
+  },
+  {
+    "code": "T93.9",
+    "title_la": "Sequelae laesionis traumaticae extremitatis inferioris non specificatae",
+    "source_line": 48638
+  },
+  {
+    "code": "T94",
+    "title_la": "Posledice povreda u više neoznačenih predela tela",
+    "source_line": 3660
+  },
+  {
+    "code": "T94.0",
+    "title_la": "Sequelae laesionum traumaticarum regionum corporis multiplicium",
+    "source_line": 48645
+  },
+  {
+    "code": "T94.1",
+    "title_la": "Sequelae laesionum traumaticarum regionum corporis non specificatarum",
+    "source_line": 48648
+  },
+  {
+    "code": "T95",
+    "title_la": "Posledice opekotina, razjeda i promrzline",
+    "source_line": 3661
+  },
+  {
+    "code": "T95.0",
+    "title_la": "Sequelae combustionis, corrosionis et congelationis capitis et colli",
+    "source_line": 48654
+  },
+  {
+    "code": "T95.1",
+    "title_la": "Sequelae combustionis, corrosionis et congelationis trunci",
+    "source_line": 48657
+  },
+  {
+    "code": "T95.2",
+    "title_la": "Sequelae combustionis, corrosionis et congelationis extremitatis superioris",
+    "source_line": 48660
+  },
+  {
+    "code": "T95.3",
+    "title_la": "Sequelae combustionis, corrosionis et congelationis extremitatis inferioris",
+    "source_line": 48663
+  },
+  {
+    "code": "T95.4",
+    "title_la": "Sequelae combustionis et corrosionis secundum amplitudinem superficiei corporis",
+    "source_line": 48666
+  },
+  {
+    "code": "T95.8",
+    "title_la": "Sequelae combustionis, corrosionis et congelationis alterius specificatae",
+    "source_line": 48671
+  },
+  {
+    "code": "T95.9",
+    "title_la": "Sequelae combustionis, corrosionis et congelationis non specificatae",
+    "source_line": 48674
+  },
+  {
+    "code": "T96",
+    "title_la": "Posledice trovanja lekovima, preparatima i biološkim supstancama",
+    "source_line": 3662
+  },
+  {
+    "code": "T97",
+    "title_la": "Posledice toksičkih dejstava uglavnom nemedicinskih supstanci",
+    "source_line": 3663
+  },
+  {
+    "code": "T98",
+    "title_la": "Posledice drugih i neoznačenih dejstava spoljašnjih faktora",
+    "source_line": 3664
+  },
+  {
+    "code": "T98.0",
+    "title_la": "Sequelae effectus corporis alieni per orificium naturale inserti",
+    "source_line": 48696
+  },
+  {
+    "code": "T98.1",
+    "title_la": "Sequelae effectuum agentium externorum, aliorum et non specificatorum",
+    "source_line": 48699
+  },
+  {
+    "code": "T98.2",
+    "title_la": "Sequelae complicationum traumatis certarum praecocium",
+    "source_line": 48702
+  },
+  {
+    "code": "T98.3",
+    "title_la": "Sequelae complicationum curae chirurgicae et medicinalis, non alibi classificatae",
+    "source_line": 48705
+  }
+]

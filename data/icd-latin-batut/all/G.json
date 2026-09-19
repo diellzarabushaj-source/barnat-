@@ -1,0 +1,1947 @@
+[
+  {
+    "code": "G00",
+    "title_la": "Bakterijski meningitis, neklasifikovan na drugom mestu",
+    "source_line": 1905
+  },
+  {
+    "code": "G00.0",
+    "title_la": "Meningitis haemophilosa",
+    "source_line": 18088
+  },
+  {
+    "code": "G00.1",
+    "title_la": "Meningitis pneumococcica",
+    "source_line": 18091
+  },
+  {
+    "code": "G00.2",
+    "title_la": "Meningitis streptococcica",
+    "source_line": 18093
+  },
+  {
+    "code": "G00.3",
+    "title_la": "Meningitis staphylococcica",
+    "source_line": 18095
+  },
+  {
+    "code": "G00.8",
+    "title_la": "Meningitis bacterialis alia",
+    "source_line": 18097
+  },
+  {
+    "code": "G00.9",
+    "title_la": "Meningitis bacterialis, non specificata",
+    "source_line": 18103
+  },
+  {
+    "code": "G01",
+    "title_la": "Meningitis u bakterijskim bolestima, klasifikovanim na drugom mestu",
+    "source_line": 1906
+  },
+  {
+    "code": "G02",
+    "title_la": "Meningitis u drugim zaraznim i parazitarnim bolestima, klasifikovanim na drugom",
+    "source_line": 1907
+  },
+  {
+    "code": "G02.0",
+    "title_la": "Meningitis in morbis viralibus, alibi classificatis",
+    "source_line": 18139
+  },
+  {
+    "code": "G02.1",
+    "title_la": "Meningitis mycotica",
+    "source_line": 18151
+  },
+  {
+    "code": "G02.8",
+    "title_la": "Meningitis in morbis infectivis et parasitariis aliis specificatis, alibi classificatis",
+    "source_line": 18158
+  },
+  {
+    "code": "G03",
+    "title_la": "Meningitis zbog ostalih i neoznačenih uzroka",
+    "source_line": 1909
+  },
+  {
+    "code": "G03.0",
+    "title_la": "Meningitis non pyogenes",
+    "source_line": 18174
+  },
+  {
+    "code": "G03.1",
+    "title_la": "Meningitis chronica",
+    "source_line": 18177
+  },
+  {
+    "code": "G03.2",
+    "title_la": "Meningitis benigna recidivans [Mollaret]",
+    "source_line": 18179
+  },
+  {
+    "code": "G03.8",
+    "title_la": "Meningitis propter causas specificatas alias",
+    "source_line": 18181
+  },
+  {
+    "code": "G03.9",
+    "title_la": "Meningitis, non specificata",
+    "source_line": 18183
+  },
+  {
+    "code": "G04",
+    "title_la": "Encefalitis, mijelitis i encefalomijelitis",
+    "source_line": 1910
+  },
+  {
+    "code": "G04.0",
+    "title_la": "Encephalitis disseminata acuta",
+    "source_line": 18208
+  },
+  {
+    "code": "G04.1",
+    "title_la": "Paraplegia spastica tropica",
+    "source_line": 18214
+  },
+  {
+    "code": "G04.2",
+    "title_la": "Meningoencephalitis et meningomyelitis bacterialis, non alibi classificatis",
+    "source_line": 18216
+  },
+  {
+    "code": "G04.8",
+    "title_la": "Encephalitis, myelitis et encephalomyelitis alia",
+    "source_line": 18218
+  },
+  {
+    "code": "G04.9",
+    "title_la": "Encephalitis, myelitis et encephalomyelitis, non specificata",
+    "source_line": 18221
+  },
+  {
+    "code": "G05",
+    "title_la": "Encefalitis, mijelitis i encefalomijelitis u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1911
+  },
+  {
+    "code": "G05.0",
+    "title_la": "Encephalitis, myelitis et encephalomyelitis in morbis bacterialibus alibi classificatis",
+    "source_line": 18228
+  },
+  {
+    "code": "G05.1",
+    "title_la": "Encephalitis, myelitis et encephalomyelitis in morbis viralibus alibi classificatis",
+    "source_line": 18246
+  },
+  {
+    "code": "G05.2",
+    "title_la": "Encephalitis, myelitis et encephalomyelitis in morbus infectivis et parasitariis aliis",
+    "source_line": 18259
+  },
+  {
+    "code": "G05.8",
+    "title_la": "Encephalitis, myelitis et encephalomyelitis in aliis morbis alibi classificatis",
+    "source_line": 18269
+  },
+  {
+    "code": "G06",
+    "title_la": "Apsces i granulom u lobanji i kičmi",
+    "source_line": 1912
+  },
+  {
+    "code": "G06.0",
+    "title_la": "Abscessus intracranialis et granuloma intracraniale",
+    "source_line": 18277
+  },
+  {
+    "code": "G06.1",
+    "title_la": "Abscesus intraspinalis et granuloma intraspinale",
+    "source_line": 18288
+  },
+  {
+    "code": "G06.2",
+    "title_la": "Abscessus extraduralis et abscessus subduralis, non specificatus",
+    "source_line": 18295
+  },
+  {
+    "code": "G07",
+    "title_la": "Apsces i granulom u lobanji i kičmi u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1913
+  },
+  {
+    "code": "G08",
+    "title_la": "Flebitis i tromboflebitis u lobanji i kičmi",
+    "source_line": 1914
+  },
+  {
+    "code": "G09",
+    "title_la": "Posledice zapaljenjskih bolesti CNS-a",
+    "source_line": 1915
+  },
+  {
+    "code": "G10",
+    "title_la": "Huntingtonova bolest",
+    "source_line": 1918
+  },
+  {
+    "code": "G11",
+    "title_la": "Ataksija – nasledni poremećaj koordinacije pokreta",
+    "source_line": 1919
+  },
+  {
+    "code": "G11.0",
+    "title_la": "Ataxia non progressiva congenita",
+    "source_line": 18352
+  },
+  {
+    "code": "G11.1",
+    "title_la": "Ataxia cerebellaris initio praecoccae",
+    "source_line": 18362
+  },
+  {
+    "code": "G11.2",
+    "title_la": "Ataxia cerebellaris tardiva",
+    "source_line": 18371
+  },
+  {
+    "code": "G11.3",
+    "title_la": "Ataxia cerebellaris cum defectu DNA",
+    "source_line": 18374
+  },
+  {
+    "code": "G11.4",
+    "title_la": "Paraplegia spastica hereditaria",
+    "source_line": 18379
+  },
+  {
+    "code": "G11.8",
+    "title_la": "Ataxiae hereditariae aliae",
+    "source_line": 18381
+  },
+  {
+    "code": "G11.9",
+    "title_la": "Ataxia hereditaria, non specificata",
+    "source_line": 18383
+  },
+  {
+    "code": "G12",
+    "title_la": "Spinalna mišićina atrofija i srodni sindromi",
+    "source_line": 1920
+  },
+  {
+    "code": "G12.0",
+    "title_la": "Atrophia musculorum spinalis infantilis, typus I (Werdnig-Hoffman]",
+    "source_line": 18392
+  },
+  {
+    "code": "G12.1",
+    "title_la": "Atrophia musculorum spinalis hereditaria alia",
+    "source_line": 18394
+  },
+  {
+    "code": "G12.2",
+    "title_la": "Morbus neuroni motorii",
+    "source_line": 18403
+  },
+  {
+    "code": "G12.8",
+    "title_la": "Atrophiae musculorum spinales aliae et syndromata affinia spinalia alia",
+    "source_line": 18412
+  },
+  {
+    "code": "G12.9",
+    "title_la": "Atrophia musculorum spinalis, non specificata",
+    "source_line": 18414
+  },
+  {
+    "code": "G13",
+    "title_la": "Sistemske atrofije koje pre svega zahvataju centralni nervni sistem u bolestima",
+    "source_line": 1921
+  },
+  {
+    "code": "G13.0",
+    "title_la": "Neuropathia et neuromyopathia paraneoplastica",
+    "source_line": 18426
+  },
+  {
+    "code": "G13.1",
+    "title_la": "Atrophiae systemicae praecipue systema nervosum centrale afficientes in morbis",
+    "source_line": 18430
+  },
+  {
+    "code": "G13.2",
+    "title_la": "Atrophia systemica praecipue systema nervosum centrale afficientes in myxoedema",
+    "source_line": 18435
+  },
+  {
+    "code": "G13.8",
+    "title_la": "Atrophia systemica praecipue systema nervosum centrale afficientes in morbis aliis",
+    "source_line": 18438
+  },
+  {
+    "code": "G14",
+    "title_la": "Sindrom posle infekcije polio virusom",
+    "source_line": 1923
+  },
+  {
+    "code": "G20",
+    "title_la": "Parkinsonova bolest",
+    "source_line": 1926
+  },
+  {
+    "code": "G21",
+    "title_la": "Sekundarni parkinsonizam",
+    "source_line": 1927
+  },
+  {
+    "code": "G21.0",
+    "title_la": "Syndroma neurolepticum malignum",
+    "source_line": 18464
+  },
+  {
+    "code": "G21.1",
+    "title_la": "Parkinsonismus secundarius medicamentosus, alius",
+    "source_line": 18467
+  },
+  {
+    "code": "G21.2",
+    "title_la": "Parkinsonismus secundarius propter factores externo, alios",
+    "source_line": 18470
+  },
+  {
+    "code": "G21.3",
+    "title_la": "Parkinsonismus postencephaliticus",
+    "source_line": 18480
+  },
+  {
+    "code": "G21.4",
+    "title_la": "Parkinsonismus vascularis",
+    "source_line": 18482
+  },
+  {
+    "code": "G21.8",
+    "title_la": "Parkinsonismus secundarius alius",
+    "source_line": 18484
+  },
+  {
+    "code": "G21.9",
+    "title_la": "Parkinsonismus secundarius, non specificatus",
+    "source_line": 18486
+  },
+  {
+    "code": "G22",
+    "title_la": "Parkinsonizam u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1928
+  },
+  {
+    "code": "G23",
+    "title_la": "Druga degenerativna oboljenja bazalnih ganglija",
+    "source_line": 1929
+  },
+  {
+    "code": "G23.0",
+    "title_la": "Morbus Hallervorden-Spatz",
+    "source_line": 18496
+  },
+  {
+    "code": "G23.1",
+    "title_la": "Ophthalmoplegia supranuclearis progressiva [Steelo-Richardson-Olszewski]",
+    "source_line": 18499
+  },
+  {
+    "code": "G23.2",
+    "title_la": "Degeneratio ganglii striatonigralis",
+    "source_line": 18501
+  },
+  {
+    "code": "G23.8",
+    "title_la": "Degenerationes gangliorum basalium specificatae, aliae",
+    "source_line": 18503
+  },
+  {
+    "code": "G23.9",
+    "title_la": "Degeneratio ganglii basalis, non specificata",
+    "source_line": 18506
+  },
+  {
+    "code": "G24",
+    "title_la": "Distonija-poremećaj mišićnog tonusa",
+    "source_line": 1930
+  },
+  {
+    "code": "G24.0",
+    "title_la": "Dystonia medicamentosa",
+    "source_line": 18513
+  },
+  {
+    "code": "G24.1",
+    "title_la": "Dystonia idiopathica familiaris",
+    "source_line": 18516
+  },
+  {
+    "code": "G24.2",
+    "title_la": "Dystonia idiopathica non familiaris",
+    "source_line": 18519
+  },
+  {
+    "code": "G24.3",
+    "title_la": "Torticollis spasmodica",
+    "source_line": 18521
+  },
+  {
+    "code": "G24.4",
+    "title_la": "Dystonia orofacialis idiopathica",
+    "source_line": 18524
+  },
+  {
+    "code": "G24.5",
+    "title_la": "Blepharospasmus",
+    "source_line": 18527
+  },
+  {
+    "code": "G24.8",
+    "title_la": "Dystonia alia",
+    "source_line": 18535
+  },
+  {
+    "code": "G24.9",
+    "title_la": "Dystonia, non specificata",
+    "source_line": 18537
+  },
+  {
+    "code": "G25",
+    "title_la": "Druga vanpiramidna oboljenja i poremećaji kretanja",
+    "source_line": 1931
+  },
+  {
+    "code": "G25.0",
+    "title_la": "Tremor essentiallis",
+    "source_line": 18543
+  },
+  {
+    "code": "G25.1",
+    "title_la": "Tremor medicamentosus",
+    "source_line": 18547
+  },
+  {
+    "code": "G25.2",
+    "title_la": "Formae tremoris specifici ailae",
+    "source_line": 18550
+  },
+  {
+    "code": "G25.3",
+    "title_la": "Myoclonus",
+    "source_line": 18553
+  },
+  {
+    "code": "G25.4",
+    "title_la": "Chorea medicamentosa",
+    "source_line": 18560
+  },
+  {
+    "code": "G25.5",
+    "title_la": "Chorea alia",
+    "source_line": 18564
+  },
+  {
+    "code": "G25.6",
+    "title_la": "Tics medicamentosi et organici",
+    "source_line": 18571
+  },
+  {
+    "code": "G25.8",
+    "title_la": "Affectiones extrapyramidales et disordines motionum specificatae aliae",
+    "source_line": 18577
+  },
+  {
+    "code": "G25.9",
+    "title_la": "Affectio extrapyramidales et disordo motionum, non specificatus",
+    "source_line": 18581
+  },
+  {
+    "code": "G26",
+    "title_la": "Vanpiramidna oboljenja i poremećaji kretanja u bolestima klasifikovanim na",
+    "source_line": 1932
+  },
+  {
+    "code": "G30",
+    "title_la": "Alzheimerova bolest",
+    "source_line": 1936
+  },
+  {
+    "code": "G30.0",
+    "title_la": "Morbus Alzheimer praecox",
+    "source_line": 18606
+  },
+  {
+    "code": "G30.1",
+    "title_la": "Morbus Alzheimer tardivus",
+    "source_line": 18609
+  },
+  {
+    "code": "G30.8",
+    "title_la": "Morbus Alzheimer alius",
+    "source_line": 18612
+  },
+  {
+    "code": "G30.9",
+    "title_la": "Morbus Alzheimer, non specificatus",
+    "source_line": 18614
+  },
+  {
+    "code": "G31",
+    "title_la": "Druge degenerativne bolesti nervnog sistema, neklasifikovane na drugom mestu",
+    "source_line": 1937
+  },
+  {
+    "code": "G31.0",
+    "title_la": "Atrophia cerebri circumscripta",
+    "source_line": 18620
+  },
+  {
+    "code": "G31.1",
+    "title_la": "Degeneratio cerebri senilis non alibi clssificatis",
+    "source_line": 18625
+  },
+  {
+    "code": "G31.2",
+    "title_la": "Degeneratio systematis nervosi alcoholica",
+    "source_line": 18629
+  },
+  {
+    "code": "G31.8",
+    "title_la": "Morbi systematis nervosi degenerativi specificati, alii",
+    "source_line": 18636
+  },
+  {
+    "code": "G31.9",
+    "title_la": "Morbus systematis nervosi dagenerativus, non specificatus",
+    "source_line": 18647
+  },
+  {
+    "code": "G32",
+    "title_la": "Druge degenerativne bolesti nervnog sistema u bolestima klasifikovanim na",
+    "source_line": 1938
+  },
+  {
+    "code": "G32.0",
+    "title_la": "Degeneratio medullae spinalis subacuta combinata in morbis alibi classificatis",
+    "source_line": 18653
+  },
+  {
+    "code": "G32.8",
+    "title_la": "Morbi systematis nervosi degenerativi specificati alii in morbis alibi classificatis",
+    "source_line": 18658
+  },
+  {
+    "code": "G35",
+    "title_la": "Multipla skleroza",
+    "source_line": 1942
+  },
+  {
+    "code": "G36",
+    "title_la": "Druga akutna rasejana demijelinizacija",
+    "source_line": 1943
+  },
+  {
+    "code": "G36.0",
+    "title_la": "Neuromyelitis optica [Devic]",
+    "source_line": 18678
+  },
+  {
+    "code": "G36.1",
+    "title_la": "Leucoencephalitis haemorrhagica acuta et subacuta [Hurst]",
+    "source_line": 18682
+  },
+  {
+    "code": "G36.8",
+    "title_la": "Demyelinisatio disseminata acuta specificata alia",
+    "source_line": 18684
+  },
+  {
+    "code": "G36.9",
+    "title_la": "Demyelinisatio disseminata acuta non specificata",
+    "source_line": 18686
+  },
+  {
+    "code": "G37",
+    "title_la": "Druge demijelinizujuće bolesti CNS-a",
+    "source_line": 1944
+  },
+  {
+    "code": "G37.0",
+    "title_la": "Sclerosis cerebri diffusa",
+    "source_line": 18691
+  },
+  {
+    "code": "G37.1",
+    "title_la": "Demyelinisatio corporis callosi centralis",
+    "source_line": 18696
+  },
+  {
+    "code": "G37.2",
+    "title_la": "Myelinolysis pontis centralis",
+    "source_line": 18704
+  },
+  {
+    "code": "G37.3",
+    "title_la": "Myelitis transversa acuta in morbo demyelinisato sistematis nervosi centralis",
+    "source_line": 18706
+  },
+  {
+    "code": "G37.4",
+    "title_la": "Myelitis necroticans subacuta",
+    "source_line": 18711
+  },
+  {
+    "code": "G37.5",
+    "title_la": "Sclerosis cerebri concentrica [Balo]",
+    "source_line": 18713
+  },
+  {
+    "code": "G37.8",
+    "title_la": "Morbi demyelinantes systematis nervosi centralis specificati, alii",
+    "source_line": 18715
+  },
+  {
+    "code": "G37.9",
+    "title_la": "Morbus demyelinans systematis nervosi centralis, non specificatus",
+    "source_line": 18717
+  },
+  {
+    "code": "G40",
+    "title_la": "Epilepsija – Padavica",
+    "source_line": 1947
+  },
+  {
+    "code": "G40.0",
+    "title_la": "Epilepsia idiopathica (focalis) (partialis) et syndromata epileptica cum impetu focali",
+    "source_line": 18731
+  },
+  {
+    "code": "G40.1",
+    "title_la": "Epilepsia idiopathica (focalis) (partialis) et syndromata epileptica cum impetu",
+    "source_line": 18735
+  },
+  {
+    "code": "G40.2",
+    "title_la": "Epilepsia idiopathica (focalis) (partialis) et syndromata epileptica cum impetu",
+    "source_line": 18741
+  },
+  {
+    "code": "G40.3",
+    "title_la": "Epilepsia idiopathica generalisata et syndromata epileptica",
+    "source_line": 18755
+  },
+  {
+    "code": "G40.4",
+    "title_la": "Epilepsia generalisata alia et syndromata epileptica",
+    "source_line": 18771
+  },
+  {
+    "code": "G40.5",
+    "title_la": "Syndromata epileptica specifica",
+    "source_line": 18781
+  },
+  {
+    "code": "G40.6",
+    "title_la": "Epilepsia Grand mal, non specificata (cum Petit mal sive sine Petit mal)",
+    "source_line": 18792
+  },
+  {
+    "code": "G40.7",
+    "title_la": "Petit mal, non specificatus, sine Grand mal",
+    "source_line": 18794
+  },
+  {
+    "code": "G40.8",
+    "title_la": "Epilepsia alia",
+    "source_line": 18796
+  },
+  {
+    "code": "G40.9",
+    "title_la": "Epilepsia, non specificata",
+    "source_line": 18799
+  },
+  {
+    "code": "G41",
+    "title_la": "Epilepsijski status - neprekidan niz napada padavice",
+    "source_line": 1954
+  },
+  {
+    "code": "G41.0",
+    "title_la": "Status epilepticus, Grand mal",
+    "source_line": 18815
+  },
+  {
+    "code": "G41.1",
+    "title_la": "Status epilepticus, Petit mal",
+    "source_line": 18819
+  },
+  {
+    "code": "G41.2",
+    "title_la": "Status epilepticus impetuum complexorum partialium",
+    "source_line": 18822
+  },
+  {
+    "code": "G41.8",
+    "title_la": "Status epileptici alii",
+    "source_line": 18824
+  },
+  {
+    "code": "G41.9",
+    "title_la": "Status epilepticus, non specificatus",
+    "source_line": 18826
+  },
+  {
+    "code": "G43",
+    "title_la": "Migrena – jednostrana glavobolja u napadima",
+    "source_line": 1955
+  },
+  {
+    "code": "G43.0",
+    "title_la": "Migraena simplex [sine aura]",
+    "source_line": 18834
+  },
+  {
+    "code": "G43.1",
+    "title_la": "Migraena classica [cum aura]",
+    "source_line": 18836
+  },
+  {
+    "code": "G43.2",
+    "title_la": "Status migraenosus",
+    "source_line": 18846
+  },
+  {
+    "code": "G43.3",
+    "title_la": "Migraena complicata",
+    "source_line": 18848
+  },
+  {
+    "code": "G43.8",
+    "title_la": "Migraena alia",
+    "source_line": 18850
+  },
+  {
+    "code": "G43.9",
+    "title_la": "Migraena, non specificata",
+    "source_line": 18854
+  },
+  {
+    "code": "G44",
+    "title_la": "Druge glavobolje",
+    "source_line": 1956
+  },
+  {
+    "code": "G44.0",
+    "title_la": "Syndroma cephalalgica „cluster”",
+    "source_line": 18869
+  },
+  {
+    "code": "G44.1",
+    "title_la": "Cephalalgia vascularis, non alibi classificata",
+    "source_line": 18875
+  },
+  {
+    "code": "G44.2",
+    "title_la": "Cephalalgia tensionalis",
+    "source_line": 18878
+  },
+  {
+    "code": "G44.3",
+    "title_la": "Cephalalgia posttraumatica chronica",
+    "source_line": 18883
+  },
+  {
+    "code": "G44.4",
+    "title_la": "Cephalalgia medicamentosa, non alibi classificata",
+    "source_line": 18885
+  },
+  {
+    "code": "G44.8",
+    "title_la": "Syndromata cephalalgica specificata, alia",
+    "source_line": 18888
+  },
+  {
+    "code": "G45",
+    "title_la": "Prolazni cerebralni ishemijski napadi i srodni sindromi",
+    "source_line": 1957
+  },
+  {
+    "code": "G45.0",
+    "title_la": "Syndroma arteriae vertebrobasalis",
+    "source_line": 18894
+  },
+  {
+    "code": "G45.1",
+    "title_la": "Syndroma arteriae carotidis (hemisphaericae)",
+    "source_line": 18896
+  },
+  {
+    "code": "G45.2",
+    "title_la": "Syndromata arteriarum praecerebralium bilateralia et multiplicia",
+    "source_line": 18898
+  },
+  {
+    "code": "G45.3",
+    "title_la": "Amaurosis fugax",
+    "source_line": 18900
+  },
+  {
+    "code": "G45.4",
+    "title_la": "Amnesia globalis transitiva",
+    "source_line": 18902
+  },
+  {
+    "code": "G45.8",
+    "title_la": "Paroxysmi cerebrales ischaemici transitorii et syndromata affinia, alii",
+    "source_line": 18905
+  },
+  {
+    "code": "G45.9",
+    "title_la": "Paroxysmi cerebrales ischaemici transitorii non specificati",
+    "source_line": 18907
+  },
+  {
+    "code": "G46",
+    "title_la": "Sindromi krvnih sudova mozga kod cerebrovaskularnih bolesti (I60-I67†)",
+    "source_line": 1958
+  },
+  {
+    "code": "G46.0",
+    "title_la": "Syndroma arteriae cerebri mediae (I66.0†)",
+    "source_line": 18921
+  },
+  {
+    "code": "G46.1",
+    "title_la": "Syndroma arteriae cerebri anterioris (I66.1†)",
+    "source_line": 18923
+  },
+  {
+    "code": "G46.2",
+    "title_la": "Syndroma arteriae cerebri posterioris (I66.2†)",
+    "source_line": 18925
+  },
+  {
+    "code": "G46.3",
+    "title_la": "Syndroma apoplexiae trunci cerebri (I60-I67†)",
+    "source_line": 18927
+  },
+  {
+    "code": "G46.4",
+    "title_la": "Syndroma apoplexiae cerebellaris (I60-I67†)",
+    "source_line": 18936
+  },
+  {
+    "code": "G46.5",
+    "title_la": "Syndroma lacunaris motoria purum (I60-I67†)",
+    "source_line": 18938
+  },
+  {
+    "code": "G46.6",
+    "title_la": "Syndroma lacunaris sensualis purum (I60-I67†)",
+    "source_line": 18940
+  },
+  {
+    "code": "G46.7",
+    "title_la": "Syndromata lacunaria alia (I60-I67†)",
+    "source_line": 18942
+  },
+  {
+    "code": "G46.8",
+    "title_la": "Syndromata vascularia cerebri alia in morbis cerebrovascularibus (I60-I67†)",
+    "source_line": 18944
+  },
+  {
+    "code": "G47",
+    "title_la": "Poremećaji spavanja",
+    "source_line": 1959
+  },
+  {
+    "code": "G47.0",
+    "title_la": "Insomnia",
+    "source_line": 18953
+  },
+  {
+    "code": "G47.1",
+    "title_la": "Hypersomnia",
+    "source_line": 18955
+  },
+  {
+    "code": "G47.2",
+    "title_la": "Disordines rhythmi somnii et virgiliae",
+    "source_line": 18957
+  },
+  {
+    "code": "G47.3",
+    "title_la": "Apnoea ad somnum",
+    "source_line": 18961
+  },
+  {
+    "code": "G47.4",
+    "title_la": "Narcolepsia et cataplexia",
+    "source_line": 18968
+  },
+  {
+    "code": "G47.8",
+    "title_la": "Disordines somni alii",
+    "source_line": 18976
+  },
+  {
+    "code": "G47.9",
+    "title_la": "Disordo somni, non specificatus",
+    "source_line": 18979
+  },
+  {
+    "code": "G50",
+    "title_la": "Poremećaji trigeminalnog živca",
+    "source_line": 1962
+  },
+  {
+    "code": "G50.0",
+    "title_la": "Neuralgia nervi trigemini",
+    "source_line": 18996
+  },
+  {
+    "code": "G50.1",
+    "title_la": "Dolor facialis atypicus",
+    "source_line": 19000
+  },
+  {
+    "code": "G50.8",
+    "title_la": "Disordines nervi trigemini alii",
+    "source_line": 19002
+  },
+  {
+    "code": "G50.9",
+    "title_la": "Disordo nervi trigemini, non specificatus",
+    "source_line": 19004
+  },
+  {
+    "code": "G51",
+    "title_la": "Poremećaji facijalnog živca",
+    "source_line": 1963
+  },
+  {
+    "code": "G51.0",
+    "title_la": "Paralysis nervi facialis",
+    "source_line": 19010
+  },
+  {
+    "code": "G51.1",
+    "title_la": "Ganglionitis geniculata",
+    "source_line": 19013
+  },
+  {
+    "code": "G51.2",
+    "title_la": "Syndroma Melkersson",
+    "source_line": 19016
+  },
+  {
+    "code": "G51.3",
+    "title_la": "Spasmus hemifacialis cionicus",
+    "source_line": 19019
+  },
+  {
+    "code": "G51.4",
+    "title_la": "Myokymia facialis",
+    "source_line": 19021
+  },
+  {
+    "code": "G51.8",
+    "title_la": "Disordines nervi facialis alii",
+    "source_line": 19023
+  },
+  {
+    "code": "G51.9",
+    "title_la": "Disordo nervi facialis, non specificatus",
+    "source_line": 19032
+  },
+  {
+    "code": "G52",
+    "title_la": "Poremećaji drugih lobanjskih živaca",
+    "source_line": 1964
+  },
+  {
+    "code": "G52.0",
+    "title_la": "Disordines nervi olfactorii",
+    "source_line": 19041
+  },
+  {
+    "code": "G52.1",
+    "title_la": "Disordines nervi glossopharyngici",
+    "source_line": 19044
+  },
+  {
+    "code": "G52.2",
+    "title_la": "Disordines nervi vagi",
+    "source_line": 19048
+  },
+  {
+    "code": "G52.3",
+    "title_la": "Disordines nervi hypoglossi",
+    "source_line": 19051
+  },
+  {
+    "code": "G52.7",
+    "title_la": "Disordines nervorum cranialium multiplices",
+    "source_line": 19054
+  },
+  {
+    "code": "G52.8",
+    "title_la": "Disordines nervorum cranialium specificatum aliorum",
+    "source_line": 19057
+  },
+  {
+    "code": "G52.9",
+    "title_la": "Disordo nervi cranialis, non specificatus",
+    "source_line": 19059
+  },
+  {
+    "code": "G53",
+    "title_la": "Poremećaji lobanjskih živaca u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1965
+  },
+  {
+    "code": "G53.0",
+    "title_la": "Neuralgia postherpetica (B02.2†)",
+    "source_line": 19064
+  },
+  {
+    "code": "G53.1",
+    "title_la": "Paralyses nervorum cranialium multiplices in morbis infectivis et parasitariis in",
+    "source_line": 19069
+  },
+  {
+    "code": "G53.2",
+    "title_la": "Paralyses nervorum cranialium multiplices ad sarcoidosim (D86.8†)",
+    "source_line": 19073
+  },
+  {
+    "code": "G53.3",
+    "title_la": "Paralyses nervorum cranialium multiploces ad neoplasma (C00-D48†)",
+    "source_line": 19075
+  },
+  {
+    "code": "G53.8",
+    "title_la": "Disordines nervorum cranialium alii in morbis alibi classificatis",
+    "source_line": 19077
+  },
+  {
+    "code": "G54",
+    "title_la": "Oboljenja korenova i spletova živaca",
+    "source_line": 1966
+  },
+  {
+    "code": "G54.0",
+    "title_la": "Plexopathia brachialis",
+    "source_line": 19101
+  },
+  {
+    "code": "G54.1",
+    "title_la": "Plexopathia lumbosacralis",
+    "source_line": 19104
+  },
+  {
+    "code": "G54.2",
+    "title_la": "Radiculopathia cervicalis, non alibi classificata",
+    "source_line": 19106
+  },
+  {
+    "code": "G54.3",
+    "title_la": "Radiculopathia thoracalis, non alibi classificata",
+    "source_line": 19108
+  },
+  {
+    "code": "G54.4",
+    "title_la": "Radiculopathia lumbosacralis, non alibi classificata",
+    "source_line": 19110
+  },
+  {
+    "code": "G54.5",
+    "title_la": "Amyotrophia neuralgica",
+    "source_line": 19112
+  },
+  {
+    "code": "G54.6",
+    "title_la": "Syndroma phantomatis membri cum dolore",
+    "source_line": 19116
+  },
+  {
+    "code": "G54.7",
+    "title_la": "Syndroma phantomatis membri sine dolore",
+    "source_line": 19118
+  },
+  {
+    "code": "G54.8",
+    "title_la": "Affectiones radicum et plexuum nervorum aliae",
+    "source_line": 19121
+  },
+  {
+    "code": "G54.9",
+    "title_la": "Affectio radicis et plexus nervi, non specificatus",
+    "source_line": 19123
+  },
+  {
+    "code": "G55",
+    "title_la": "Pritisak na korenove i spletove živaca u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1967
+  },
+  {
+    "code": "G55.0",
+    "title_la": "Compressio radicum et plexuum nervorum ad neoplasma (C00-D48†)",
+    "source_line": 19128
+  },
+  {
+    "code": "G55.1",
+    "title_la": "Compressio radicum et plexuum nervorum ad disordines disci intervertebralis (M50",
+    "source_line": 19130
+  },
+  {
+    "code": "G55.2",
+    "title_la": "Compressio radicum et plexuum nervorum ad spondylosim (M47.-†)",
+    "source_line": 19133
+  },
+  {
+    "code": "G55.3",
+    "title_la": "Compressiones radicum et plexuum nervorum ad dorsopathias alias (M45-M46† ,",
+    "source_line": 19135
+  },
+  {
+    "code": "G55.8",
+    "title_la": "Compressiones radicum et plexuum nervorum in morbis aliis alibi classificatis",
+    "source_line": 19145
+  },
+  {
+    "code": "G56",
+    "title_la": "Oboljenja jednog živca ruke",
+    "source_line": 1968
+  },
+  {
+    "code": "G56.0",
+    "title_la": "Syndroma canalis carpalis",
+    "source_line": 19151
+  },
+  {
+    "code": "G56.1",
+    "title_la": "Laesiones nervi mediani aliae",
+    "source_line": 19153
+  },
+  {
+    "code": "G56.2",
+    "title_la": "Laesio nervi ulnaris",
+    "source_line": 19155
+  },
+  {
+    "code": "G56.3",
+    "title_la": "Laesio nervi radialis",
+    "source_line": 19158
+  },
+  {
+    "code": "G56.4",
+    "title_la": "Causalgia",
+    "source_line": 19160
+  },
+  {
+    "code": "G56.8",
+    "title_la": "Mononeuropahtiae extremitatis superioris aliae",
+    "source_line": 19162
+  },
+  {
+    "code": "G56.9",
+    "title_la": "Mononeuropathia extremitatis superioris, non specificata",
+    "source_line": 19165
+  },
+  {
+    "code": "G57",
+    "title_la": "Oboljenja jednog živca noge",
+    "source_line": 1969
+  },
+  {
+    "code": "G57.0",
+    "title_la": "Laesio nervi ischiadici",
+    "source_line": 19171
+  },
+  {
+    "code": "G57.1",
+    "title_la": "Meralgia paraesthetica",
+    "source_line": 19176
+  },
+  {
+    "code": "G57.2",
+    "title_la": "Laesio nervi femoralis",
+    "source_line": 19179
+  },
+  {
+    "code": "G57.3",
+    "title_la": "Laesio nervi peronaei",
+    "source_line": 19181
+  },
+  {
+    "code": "G57.4",
+    "title_la": "Laesio nervi sapheni",
+    "source_line": 19184
+  },
+  {
+    "code": "G57.5",
+    "title_la": "Syndroma canalis tarsalis",
+    "source_line": 19186
+  },
+  {
+    "code": "G57.6",
+    "title_la": "Laesio nervi plantaris",
+    "source_line": 19188
+  },
+  {
+    "code": "G57.8",
+    "title_la": "Mononeuropathiae extremitatis inferioris aliae",
+    "source_line": 19191
+  },
+  {
+    "code": "G57.9",
+    "title_la": "Mononeuropathia extremitatis inferioris, non specificata",
+    "source_line": 19200
+  },
+  {
+    "code": "G58",
+    "title_la": "Druga pojedinačna oboljenja živaca",
+    "source_line": 1970
+  },
+  {
+    "code": "G58.0",
+    "title_la": "Neuropathia intercostalis",
+    "source_line": 19205
+  },
+  {
+    "code": "G58.7",
+    "title_la": "Mononeuritis multiplex",
+    "source_line": 19207
+  },
+  {
+    "code": "G58.8",
+    "title_la": "Mononeuropathiae, aliae specificatae",
+    "source_line": 19209
+  },
+  {
+    "code": "G58.9",
+    "title_la": "Mononeuropathia, non specificata",
+    "source_line": 19211
+  },
+  {
+    "code": "G59",
+    "title_la": "Pojedinačno oboljenje živca u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1971
+  },
+  {
+    "code": "G59.0",
+    "title_la": "Mononeuropathia diabetica (E10-E14 sa zajedničkim četvrtim karakterom .4†)",
+    "source_line": 19216
+  },
+  {
+    "code": "G59.8",
+    "title_la": "Mononeuropathiae aliae in morbi alibi classificati",
+    "source_line": 19218
+  },
+  {
+    "code": "G60",
+    "title_la": "Nasledno i idiopatsko oboljenje živaca",
+    "source_line": 1975
+  },
+  {
+    "code": "G60.0",
+    "title_la": "Neurophatia motoria et sensualis hereditaria",
+    "source_line": 19232
+  },
+  {
+    "code": "G60.1",
+    "title_la": "Morbus Refsum",
+    "source_line": 19241
+  },
+  {
+    "code": "G60.2",
+    "title_la": "Neuropathia cum ataxia hereditaria",
+    "source_line": 19243
+  },
+  {
+    "code": "G60.3",
+    "title_la": "Neuropathia idiopathica progressiva",
+    "source_line": 19245
+  },
+  {
+    "code": "G60.8",
+    "title_la": "Neuropathiae hereditariae et idiopathicae aliae",
+    "source_line": 19255
+  },
+  {
+    "code": "G60.9",
+    "title_la": "Neuropathia hereditaria et idiopathica, non specificata",
+    "source_line": 19262
+  },
+  {
+    "code": "G61",
+    "title_la": "Zapaljensko oboljenje više živaca",
+    "source_line": 1976
+  },
+  {
+    "code": "G61.0",
+    "title_la": "Syndroma Guillain-Barre",
+    "source_line": 19267
+  },
+  {
+    "code": "G61.1",
+    "title_la": "Neuropathia serumica",
+    "source_line": 19271
+  },
+  {
+    "code": "G61.8",
+    "title_la": "Polyneuropathiae inflammatoriae aliae",
+    "source_line": 19274
+  },
+  {
+    "code": "G61.9",
+    "title_la": "Polyneuropathia inflammatoria, non specificata",
+    "source_line": 19276
+  },
+  {
+    "code": "G62",
+    "title_la": "Druga oboljenja živaca",
+    "source_line": 1977
+  },
+  {
+    "code": "G62.0",
+    "title_la": "Polyneuropathia medicamentosa",
+    "source_line": 19281
+  },
+  {
+    "code": "G62.1",
+    "title_la": "Polyneuropathia alcoholica",
+    "source_line": 19284
+  },
+  {
+    "code": "G62.2",
+    "title_la": "Polyneuropathia propter factores toxicos alios",
+    "source_line": 19286
+  },
+  {
+    "code": "G62.8",
+    "title_la": "Polyneuropathiae specificatae, aliae",
+    "source_line": 19290
+  },
+  {
+    "code": "G62.9",
+    "title_la": "Polyneuropthia, non specificata",
+    "source_line": 19294
+  },
+  {
+    "code": "G63",
+    "title_la": "Oboljenje živaca u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1978
+  },
+  {
+    "code": "G63.0",
+    "title_la": "Polyneuropathia in morbis infectivis et parasitariis alibi classificatis",
+    "source_line": 19307
+  },
+  {
+    "code": "G63.1",
+    "title_la": "Polyneuroropathia ad neoplasma (C00-D48†)",
+    "source_line": 19319
+  },
+  {
+    "code": "G63.2",
+    "title_la": "Polyneuropathia diabetica (E10-E14 sa zajedničkim četvrtim karakterom .4†)",
+    "source_line": 19321
+  },
+  {
+    "code": "G63.3",
+    "title_la": "Polyneuropathia in morbis endocrinis et metabolicis aliis (E00-E07† , E15-E16† , E20",
+    "source_line": 19323
+  },
+  {
+    "code": "G63.4",
+    "title_la": "Polyneuropathia ad defficientiam nutritionalem (E40-E64†)",
+    "source_line": 19327
+  },
+  {
+    "code": "G63.5",
+    "title_la": "Polyneuropathia in disordinibus textus connexivi systemicis (M30-M35†)",
+    "source_line": 19329
+  },
+  {
+    "code": "G63.6",
+    "title_la": "Polyneuropathia in disordinibus muscularis et osseis aliis (M00-M25† , M40-M96†)",
+    "source_line": 19331
+  },
+  {
+    "code": "G63.8",
+    "title_la": "Polyneuropathia in morbis aliis alibi classificatis",
+    "source_line": 19333
+  },
+  {
+    "code": "G64",
+    "title_la": "Drugi poremećaji perifernog nervnog sistema",
+    "source_line": 1979
+  },
+  {
+    "code": "G70",
+    "title_la": "Miastenija – teška slabost mišića i drugi mišićno-živčani poremećaji",
+    "source_line": 1982
+  },
+  {
+    "code": "G70.0",
+    "title_la": "Myasthenia gravis",
+    "source_line": 19350
+  },
+  {
+    "code": "G70.1",
+    "title_la": "Disordines myoneurales toxici",
+    "source_line": 19362
+  },
+  {
+    "code": "G70.2",
+    "title_la": "Myasthenia congenita evolutionalis",
+    "source_line": 19366
+  },
+  {
+    "code": "G70.8",
+    "title_la": "Disordines myoneurales specificati, alii",
+    "source_line": 19368
+  },
+  {
+    "code": "G70.9",
+    "title_la": "Disordo myoneuralis, non specificatus",
+    "source_line": 19370
+  },
+  {
+    "code": "G71",
+    "title_la": "Primarni poremećaji mišića",
+    "source_line": 1983
+  },
+  {
+    "code": "G71.0",
+    "title_la": "Dystrophia musculorum",
+    "source_line": 19378
+  },
+  {
+    "code": "G71.1",
+    "title_la": "Disordines myotonici",
+    "source_line": 19394
+  },
+  {
+    "code": "G71.2",
+    "title_la": "Myopathia congenita",
+    "source_line": 19418
+  },
+  {
+    "code": "G71.3",
+    "title_la": "Myopathia mitochoodrialis, non alibi classificata",
+    "source_line": 19431
+  },
+  {
+    "code": "G71.8",
+    "title_la": "Disordines musculorum primarii alii",
+    "source_line": 19433
+  },
+  {
+    "code": "G71.9",
+    "title_la": "Disordo musculorum primarius, non specificatus",
+    "source_line": 19435
+  },
+  {
+    "code": "G72",
+    "title_la": "Druge miopatije - oboljenja mišića",
+    "source_line": 1984
+  },
+  {
+    "code": "G72.0",
+    "title_la": "Myopathia medicamentosa",
+    "source_line": 19446
+  },
+  {
+    "code": "G72.1",
+    "title_la": "Myopathia alcoholica",
+    "source_line": 19449
+  },
+  {
+    "code": "G72.2",
+    "title_la": "Myopathia propter factores toxicos alia",
+    "source_line": 19451
+  },
+  {
+    "code": "G72.3",
+    "title_la": "Paralysis periodica",
+    "source_line": 19455
+  },
+  {
+    "code": "G72.4",
+    "title_la": "Myopathia inflammatoria non alibi classificata",
+    "source_line": 19462
+  },
+  {
+    "code": "G72.8",
+    "title_la": "Myopathiae specificatae, aliae",
+    "source_line": 19464
+  },
+  {
+    "code": "G72.9",
+    "title_la": "Myopathia, non specificata",
+    "source_line": 19466
+  },
+  {
+    "code": "G73",
+    "title_la": "Bolesti mišićno-nervne spojnice i mišića u bolestima klasifikovanim na drugom",
+    "source_line": 1985
+  },
+  {
+    "code": "G73.0",
+    "title_la": "Syndromata myasthenicum in morbis endocrinis",
+    "source_line": 19480
+  },
+  {
+    "code": "G73.1",
+    "title_la": "Syndroma Lambert-Eaton (C00-D48†)",
+    "source_line": 19485
+  },
+  {
+    "code": "G73.2",
+    "title_la": "Syndromata myasthenicum ad neoplasma (C00-D48†)",
+    "source_line": 19487
+  },
+  {
+    "code": "G73.3",
+    "title_la": "Syndromata myasthenicum in morbis aliis alibi classificatis",
+    "source_line": 19489
+  },
+  {
+    "code": "G73.4",
+    "title_la": "Myopathia in morbis infectivis et parasitaris alibi classificatis",
+    "source_line": 19491
+  },
+  {
+    "code": "G73.5",
+    "title_la": "Myopathia in morbis endocrinis",
+    "source_line": 19493
+  },
+  {
+    "code": "G73.6",
+    "title_la": "Myopathia in morbis metabolicis",
+    "source_line": 19499
+  },
+  {
+    "code": "G73.7",
+    "title_la": "Myopathia in morbis aliis alibi classificatis",
+    "source_line": 19504
+  },
+  {
+    "code": "G80",
+    "title_la": "Cerebralna paraliza",
+    "source_line": 1989
+  },
+  {
+    "code": "G80.0",
+    "title_la": "Paralysis cerebralis spastica quadriplegica",
+    "source_line": 19520
+  },
+  {
+    "code": "G80.1",
+    "title_la": "Paralysis cerebralis spastica diaplegica",
+    "source_line": 19523
+  },
+  {
+    "code": "G80.2",
+    "title_la": "Paralysis cerebralis spastica hemiplegica",
+    "source_line": 19533
+  },
+  {
+    "code": "G80.3",
+    "title_la": "Paralysis cerebralis dyskinetica",
+    "source_line": 19535
+  },
+  {
+    "code": "G80.4",
+    "title_la": "Paralysis cerebralis ataxica",
+    "source_line": 19539
+  },
+  {
+    "code": "G80.8",
+    "title_la": "Paralysis cerebralis alia",
+    "source_line": 19541
+  },
+  {
+    "code": "G80.9",
+    "title_la": "Paralysis cerebralis, non specificata",
+    "source_line": 19544
+  },
+  {
+    "code": "G81",
+    "title_la": "Jednostrana paraliza - oduzetost",
+    "source_line": 1990
+  },
+  {
+    "code": "G81.0",
+    "title_la": "Hemiplegia flaccida",
+    "source_line": 19555
+  },
+  {
+    "code": "G81.1",
+    "title_la": "Hemiplegia spastica",
+    "source_line": 19557
+  },
+  {
+    "code": "G81.9",
+    "title_la": "Hemiplegia, non specificata",
+    "source_line": 19559
+  },
+  {
+    "code": "G82",
+    "title_la": "Simetrična paraliza - oduzetost obe ruke ili obe noge i svih udova",
+    "source_line": 1991
+  },
+  {
+    "code": "G82.0",
+    "title_la": "Paraplegia flaccida",
+    "source_line": 19568
+  },
+  {
+    "code": "G82.1",
+    "title_la": "Paraplegia spastica",
+    "source_line": 19570
+  },
+  {
+    "code": "G82.2",
+    "title_la": "Paraplegia, non specificata",
+    "source_line": 19572
+  },
+  {
+    "code": "G82.3",
+    "title_la": "Tetraplegia flaccida",
+    "source_line": 19576
+  },
+  {
+    "code": "G82.4",
+    "title_la": "Tetraplegia spastica",
+    "source_line": 19578
+  },
+  {
+    "code": "G82.5",
+    "title_la": "Tetraplegia, non specificata",
+    "source_line": 19580
+  },
+  {
+    "code": "G83",
+    "title_la": "Druge paralize",
+    "source_line": 1992
+  },
+  {
+    "code": "G83.0",
+    "title_la": "Diplegia extremitatum superiorum",
+    "source_line": 19596
+  },
+  {
+    "code": "G83.1",
+    "title_la": "Monoplegia extremitatis inferioris",
+    "source_line": 19600
+  },
+  {
+    "code": "G83.2",
+    "title_la": "Monoplegia extremitatis superioris",
+    "source_line": 19603
+  },
+  {
+    "code": "G83.3",
+    "title_la": "Monoplegia, non specificata",
+    "source_line": 19606
+  },
+  {
+    "code": "G83.4",
+    "title_la": "Syndroma caudae equinae",
+    "source_line": 19608
+  },
+  {
+    "code": "G83.8",
+    "title_la": "Syndromata paralytica specificata, alia",
+    "source_line": 19612
+  },
+  {
+    "code": "G83.9",
+    "title_la": "Syndroma paralyticum, non specificatum",
+    "source_line": 19615
+  },
+  {
+    "code": "G90",
+    "title_la": "Poremećaji autonomnog nervnog sistema",
+    "source_line": 1995
+  },
+  {
+    "code": "G90.0",
+    "title_la": "Neuropathia autonoma peripherica idiopathica",
+    "source_line": 19626
+  },
+  {
+    "code": "G90.1",
+    "title_la": "Dysautonomia familiaris [Riley-Day]",
+    "source_line": 19629
+  },
+  {
+    "code": "G90.2",
+    "title_la": "Syndroma Horner",
+    "source_line": 19631
+  },
+  {
+    "code": "G90.3",
+    "title_la": "Degeneratio multisystemica",
+    "source_line": 19634
+  },
+  {
+    "code": "G90.4",
+    "title_la": "Dysreflexia autonomica",
+    "source_line": 19645
+  },
+  {
+    "code": "G90.8",
+    "title_la": "Disordines systematis nervosi autonomi alii",
+    "source_line": 19647
+  },
+  {
+    "code": "G90.9",
+    "title_la": "Disordo systematis nervosi autonomi, non specificatus",
+    "source_line": 19649
+  },
+  {
+    "code": "G91",
+    "title_la": "Hidrocefalus – patološki povećana količina moždane tečnosti",
+    "source_line": 1996
+  },
+  {
+    "code": "G91.0",
+    "title_la": "Hydrocephalus communicans",
+    "source_line": 19658
+  },
+  {
+    "code": "G91.1",
+    "title_la": "Hydrocephalus obstructivus",
+    "source_line": 19660
+  },
+  {
+    "code": "G91.2",
+    "title_la": "Hydrocephalus cum tensione normali",
+    "source_line": 19662
+  },
+  {
+    "code": "G91.3",
+    "title_la": "Hydrocephalus posttraumaticus, non specificatus",
+    "source_line": 19664
+  },
+  {
+    "code": "G91.8",
+    "title_la": "Hydrocephalus alius",
+    "source_line": 19666
+  },
+  {
+    "code": "G91.9",
+    "title_la": "Hydrocephalus, non specificatus",
+    "source_line": 19668
+  },
+  {
+    "code": "G92",
+    "title_la": "Toksičko oboljenje mozga",
+    "source_line": 1997
+  },
+  {
+    "code": "G93",
+    "title_la": "Drugi poremećaji mozga",
+    "source_line": 1998
+  },
+  {
+    "code": "G93.0",
+    "title_la": "Cystis cerebri",
+    "source_line": 19678
+  },
+  {
+    "code": "G93.1",
+    "title_la": "Laesio cerebri anoxica, non alibi classificata",
+    "source_line": 19684
+  },
+  {
+    "code": "G93.2",
+    "title_la": "Hypertensio intracranialis benigna",
+    "source_line": 19691
+  },
+  {
+    "code": "G93.3",
+    "title_la": "Syndroma fatigationis postviralis",
+    "source_line": 19702
+  },
+  {
+    "code": "G93.4",
+    "title_la": "Encephalopathia, non specificata",
+    "source_line": 19705
+  },
+  {
+    "code": "G93.5",
+    "title_la": "Compressio cerebri",
+    "source_line": 19710
+  },
+  {
+    "code": "G93.6",
+    "title_la": "Oedema cerebri",
+    "source_line": 19717
+  },
+  {
+    "code": "G93.7",
+    "title_la": "Syndroma Reye",
+    "source_line": 19722
+  },
+  {
+    "code": "G93.8",
+    "title_la": "Disordines cerebri specificati, alii",
+    "source_line": 19725
+  },
+  {
+    "code": "G93.9",
+    "title_la": "Disordo cerebri, non specificatus",
+    "source_line": 19729
+  },
+  {
+    "code": "G94",
+    "title_la": "Drugi poremećaji mozga u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1999
+  },
+  {
+    "code": "G94.0",
+    "title_la": "Hydrocephalus in morbis infectivis et parazitariis alibi classificatis (A00-B99†)",
+    "source_line": 19734
+  },
+  {
+    "code": "G94.1",
+    "title_la": "Hydrocephalus ad neoplasma (C00-D48†)",
+    "source_line": 19736
+  },
+  {
+    "code": "G94.2",
+    "title_la": "Hydrocephalus in morbis aliis alibi classificatis",
+    "source_line": 19738
+  },
+  {
+    "code": "G94.8",
+    "title_la": "Disordines cerebri specificati alii in morbis alibi classificatis",
+    "source_line": 19740
+  },
+  {
+    "code": "G95",
+    "title_la": "Drugi poremećaji kičmene moždine",
+    "source_line": 2000
+  },
+  {
+    "code": "G95.0",
+    "title_la": "Syringomyelia et syringobulbia",
+    "source_line": 19746
+  },
+  {
+    "code": "G95.1",
+    "title_la": "Myelopathia vascularis",
+    "source_line": 19756
+  },
+  {
+    "code": "G95.2",
+    "title_la": "Compressio medullae spinalis, non specificata",
+    "source_line": 19765
+  },
+  {
+    "code": "G95.8",
+    "title_la": "Morbus medullae spinalis specificatus, alius",
+    "source_line": 19767
+  },
+  {
+    "code": "G95.9",
+    "title_la": "Morbus medullae spinalis, non specificatus",
+    "source_line": 19778
+  },
+  {
+    "code": "G96",
+    "title_la": "Drugi poremećaji CNS-a",
+    "source_line": 2001
+  },
+  {
+    "code": "G96.0",
+    "title_la": "Liquorrhoea",
+    "source_line": 19784
+  },
+  {
+    "code": "G96.1",
+    "title_la": "Disordines meningium, non alibi classificati",
+    "source_line": 19787
+  },
+  {
+    "code": "G96.8",
+    "title_la": "Disordines systematis nervosi centralis specificati, alii",
+    "source_line": 19790
+  },
+  {
+    "code": "G96.9",
+    "title_la": "Disordo systematis nervosi centralis, non specificatus",
+    "source_line": 19792
+  },
+  {
+    "code": "G97",
+    "title_la": "Poremećaji nervnog sistema posle medicinskih intervencija, neklasifikovani na",
+    "source_line": 2009
+  },
+  {
+    "code": "G97.0",
+    "title_la": "Liquorrhoea cerebrospinalis puncturalis",
+    "source_line": 19798
+  },
+  {
+    "code": "G97.1",
+    "title_la": "Reactio ad punctionem spinolumbalem alia",
+    "source_line": 19800
+  },
+  {
+    "code": "G97.2",
+    "title_la": "Hypotensio intracranialis ad shunting ventricularem",
+    "source_line": 19802
+  },
+  {
+    "code": "G97.8",
+    "title_la": "Disordines systematis nervosi postprocedurales alii",
+    "source_line": 19804
+  },
+  {
+    "code": "G97.9",
+    "title_la": "Disordo systematis nervosi postproceduralis, non specificatus",
+    "source_line": 19813
+  },
+  {
+    "code": "G98",
+    "title_la": "Druge poremećaji nervnog sistema neklasifikovani na drugom mestu",
+    "source_line": 2011
+  },
+  {
+    "code": "G99",
+    "title_la": "Drugi poremećaji nervnog sistema u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2012
+  },
+  {
+    "code": "G99.0",
+    "title_la": "Neuropathia autonomica in morbis endocrinis et metabolicis",
+    "source_line": 19822
+  },
+  {
+    "code": "G99.1",
+    "title_la": "Disordines systematis nervosi autonomi alii in morbis aliis alibi classificatis",
+    "source_line": 19827
+  },
+  {
+    "code": "G99.2",
+    "title_la": "Myelopathia in morbis alibi classificatis",
+    "source_line": 19830
+  },
+  {
+    "code": "G99.8",
+    "title_la": "Disordines systematis nervosi specificati alii in morbis alibi classificatis",
+    "source_line": 19837
+  }
+]

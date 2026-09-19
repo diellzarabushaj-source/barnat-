@@ -1,0 +1,342 @@
+[
+  {
+    "code": "G00",
+    "title_la": "Bakterijski meningitis, neklasifikovan na drugom mestu",
+    "source_line": 1905
+  },
+  {
+    "code": "G01",
+    "title_la": "Meningitis u bakterijskim bolestima, klasifikovanim na drugom mestu",
+    "source_line": 1906
+  },
+  {
+    "code": "G02",
+    "title_la": "Meningitis u drugim zaraznim i parazitarnim bolestima, klasifikovanim na drugom",
+    "source_line": 1907
+  },
+  {
+    "code": "G03",
+    "title_la": "Meningitis zbog ostalih i neoznačenih uzroka",
+    "source_line": 1909
+  },
+  {
+    "code": "G04",
+    "title_la": "Encefalitis, mijelitis i encefalomijelitis",
+    "source_line": 1910
+  },
+  {
+    "code": "G05",
+    "title_la": "Encefalitis, mijelitis i encefalomijelitis u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1911
+  },
+  {
+    "code": "G06",
+    "title_la": "Apsces i granulom u lobanji i kičmi",
+    "source_line": 1912
+  },
+  {
+    "code": "G07",
+    "title_la": "Apsces i granulom u lobanji i kičmi u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1913
+  },
+  {
+    "code": "G08",
+    "title_la": "Flebitis i tromboflebitis u lobanji i kičmi",
+    "source_line": 1914
+  },
+  {
+    "code": "G09",
+    "title_la": "Posledice zapaljenjskih bolesti CNS-a",
+    "source_line": 1915
+  },
+  {
+    "code": "G10",
+    "title_la": "Huntingtonova bolest",
+    "source_line": 1918
+  },
+  {
+    "code": "G11",
+    "title_la": "Ataksija – nasledni poremećaj koordinacije pokreta",
+    "source_line": 1919
+  },
+  {
+    "code": "G12",
+    "title_la": "Spinalna mišićina atrofija i srodni sindromi",
+    "source_line": 1920
+  },
+  {
+    "code": "G13",
+    "title_la": "Sistemske atrofije koje pre svega zahvataju centralni nervni sistem u bolestima",
+    "source_line": 1921
+  },
+  {
+    "code": "G14",
+    "title_la": "Sindrom posle infekcije polio virusom",
+    "source_line": 1923
+  },
+  {
+    "code": "G20",
+    "title_la": "Parkinsonova bolest",
+    "source_line": 1926
+  },
+  {
+    "code": "G21",
+    "title_la": "Sekundarni parkinsonizam",
+    "source_line": 1927
+  },
+  {
+    "code": "G22",
+    "title_la": "Parkinsonizam u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1928
+  },
+  {
+    "code": "G23",
+    "title_la": "Druga degenerativna oboljenja bazalnih ganglija",
+    "source_line": 1929
+  },
+  {
+    "code": "G24",
+    "title_la": "Distonija-poremećaj mišićnog tonusa",
+    "source_line": 1930
+  },
+  {
+    "code": "G25",
+    "title_la": "Druga vanpiramidna oboljenja i poremećaji kretanja",
+    "source_line": 1931
+  },
+  {
+    "code": "G26",
+    "title_la": "Vanpiramidna oboljenja i poremećaji kretanja u bolestima klasifikovanim na",
+    "source_line": 1932
+  },
+  {
+    "code": "G30",
+    "title_la": "Alzheimerova bolest",
+    "source_line": 1936
+  },
+  {
+    "code": "G31",
+    "title_la": "Druge degenerativne bolesti nervnog sistema, neklasifikovane na drugom mestu",
+    "source_line": 1937
+  },
+  {
+    "code": "G32",
+    "title_la": "Druge degenerativne bolesti nervnog sistema u bolestima klasifikovanim na",
+    "source_line": 1938
+  },
+  {
+    "code": "G35",
+    "title_la": "Multipla skleroza",
+    "source_line": 1942
+  },
+  {
+    "code": "G36",
+    "title_la": "Druga akutna rasejana demijelinizacija",
+    "source_line": 1943
+  },
+  {
+    "code": "G37",
+    "title_la": "Druge demijelinizujuće bolesti CNS-a",
+    "source_line": 1944
+  },
+  {
+    "code": "G40",
+    "title_la": "Epilepsija – Padavica",
+    "source_line": 1947
+  },
+  {
+    "code": "G41",
+    "title_la": "Epilepsijski status - neprekidan niz napada padavice",
+    "source_line": 1954
+  },
+  {
+    "code": "G43",
+    "title_la": "Migrena – jednostrana glavobolja u napadima",
+    "source_line": 1955
+  },
+  {
+    "code": "G44",
+    "title_la": "Druge glavobolje",
+    "source_line": 1956
+  },
+  {
+    "code": "G45",
+    "title_la": "Prolazni cerebralni ishemijski napadi i srodni sindromi",
+    "source_line": 1957
+  },
+  {
+    "code": "G46",
+    "title_la": "Sindromi krvnih sudova mozga kod cerebrovaskularnih bolesti (I60-I67†)",
+    "source_line": 1958
+  },
+  {
+    "code": "G47",
+    "title_la": "Poremećaji spavanja",
+    "source_line": 1959
+  },
+  {
+    "code": "G50",
+    "title_la": "Poremećaji trigeminalnog živca",
+    "source_line": 1962
+  },
+  {
+    "code": "G51",
+    "title_la": "Poremećaji facijalnog živca",
+    "source_line": 1963
+  },
+  {
+    "code": "G52",
+    "title_la": "Poremećaji drugih lobanjskih živaca",
+    "source_line": 1964
+  },
+  {
+    "code": "G53",
+    "title_la": "Poremećaji lobanjskih živaca u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1965
+  },
+  {
+    "code": "G54",
+    "title_la": "Oboljenja korenova i spletova živaca",
+    "source_line": 1966
+  },
+  {
+    "code": "G55",
+    "title_la": "Pritisak na korenove i spletove živaca u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1967
+  },
+  {
+    "code": "G56",
+    "title_la": "Oboljenja jednog živca ruke",
+    "source_line": 1968
+  },
+  {
+    "code": "G57",
+    "title_la": "Oboljenja jednog živca noge",
+    "source_line": 1969
+  },
+  {
+    "code": "G58",
+    "title_la": "Druga pojedinačna oboljenja živaca",
+    "source_line": 1970
+  },
+  {
+    "code": "G59",
+    "title_la": "Pojedinačno oboljenje živca u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1971
+  },
+  {
+    "code": "G60",
+    "title_la": "Nasledno i idiopatsko oboljenje živaca",
+    "source_line": 1975
+  },
+  {
+    "code": "G61",
+    "title_la": "Zapaljensko oboljenje više živaca",
+    "source_line": 1976
+  },
+  {
+    "code": "G62",
+    "title_la": "Druga oboljenja živaca",
+    "source_line": 1977
+  },
+  {
+    "code": "G63",
+    "title_la": "Oboljenje živaca u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1978
+  },
+  {
+    "code": "G64",
+    "title_la": "Drugi poremećaji perifernog nervnog sistema",
+    "source_line": 1979
+  },
+  {
+    "code": "G70",
+    "title_la": "Miastenija – teška slabost mišića i drugi mišićno-živčani poremećaji",
+    "source_line": 1982
+  },
+  {
+    "code": "G71",
+    "title_la": "Primarni poremećaji mišića",
+    "source_line": 1983
+  },
+  {
+    "code": "G72",
+    "title_la": "Druge miopatije - oboljenja mišića",
+    "source_line": 1984
+  },
+  {
+    "code": "G73",
+    "title_la": "Bolesti mišićno-nervne spojnice i mišića u bolestima klasifikovanim na drugom",
+    "source_line": 1985
+  },
+  {
+    "code": "G80",
+    "title_la": "Cerebralna paraliza",
+    "source_line": 1989
+  },
+  {
+    "code": "G81",
+    "title_la": "Jednostrana paraliza - oduzetost",
+    "source_line": 1990
+  },
+  {
+    "code": "G82",
+    "title_la": "Simetrična paraliza - oduzetost obe ruke ili obe noge i svih udova",
+    "source_line": 1991
+  },
+  {
+    "code": "G83",
+    "title_la": "Druge paralize",
+    "source_line": 1992
+  },
+  {
+    "code": "G90",
+    "title_la": "Poremećaji autonomnog nervnog sistema",
+    "source_line": 1995
+  },
+  {
+    "code": "G91",
+    "title_la": "Hidrocefalus – patološki povećana količina moždane tečnosti",
+    "source_line": 1996
+  },
+  {
+    "code": "G92",
+    "title_la": "Toksičko oboljenje mozga",
+    "source_line": 1997
+  },
+  {
+    "code": "G93",
+    "title_la": "Drugi poremećaji mozga",
+    "source_line": 1998
+  },
+  {
+    "code": "G94",
+    "title_la": "Drugi poremećaji mozga u bolestima klasifikovanim na drugom mestu",
+    "source_line": 1999
+  },
+  {
+    "code": "G95",
+    "title_la": "Drugi poremećaji kičmene moždine",
+    "source_line": 2000
+  },
+  {
+    "code": "G96",
+    "title_la": "Drugi poremećaji CNS-a",
+    "source_line": 2001
+  },
+  {
+    "code": "G97",
+    "title_la": "Poremećaji nervnog sistema posle medicinskih intervencija, neklasifikovani na",
+    "source_line": 2009
+  },
+  {
+    "code": "G98",
+    "title_la": "Druge poremećaji nervnog sistema neklasifikovani na drugom mestu",
+    "source_line": 2011
+  },
+  {
+    "code": "G99",
+    "title_la": "Drugi poremećaji nervnog sistema u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2012
+  }
+]

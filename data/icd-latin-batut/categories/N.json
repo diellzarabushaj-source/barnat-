@@ -1,0 +1,412 @@
+[
+  {
+    "code": "N00",
+    "title_la": "Akutni zapaljenski bubrežni sindrom",
+    "source_line": 2744
+  },
+  {
+    "code": "N01",
+    "title_la": "Perakutni progresivni zapaljenski bubrežni sindrom",
+    "source_line": 2745
+  },
+  {
+    "code": "N02",
+    "title_la": "Povratna i trajna pojava krvi u mokraći",
+    "source_line": 2746
+  },
+  {
+    "code": "N03",
+    "title_la": "Hronični zapaljenski bubrežni sindrom",
+    "source_line": 2747
+  },
+  {
+    "code": "N04",
+    "title_la": "Syndroma nephroticum",
+    "source_line": 32624
+  },
+  {
+    "code": "N05",
+    "title_la": "Neoznačen zapaljenski bubrežni sindrom",
+    "source_line": 2748
+  },
+  {
+    "code": "N06",
+    "title_la": "Izolovana proteinurija sa označenim morfološkim oštećenjem",
+    "source_line": 2749
+  },
+  {
+    "code": "N07",
+    "title_la": "Nasledno oboljenje bubrega, neklasifikovano na drugom mestu",
+    "source_line": 2750
+  },
+  {
+    "code": "N08",
+    "title_la": "Oboljenje glomerula bubrega u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2751
+  },
+  {
+    "code": "N10",
+    "title_la": "Akutno tubulo-intersticijalno zapaljenje bubrega",
+    "source_line": 2754
+  },
+  {
+    "code": "N11",
+    "title_la": "Hronično tubulo-intersticijalno zapaljenje bubrega",
+    "source_line": 2755
+  },
+  {
+    "code": "N12",
+    "title_la": "Tubulo-intersticijalno zapaljenje bubrega, neoznačeno kao akutno ili hronično",
+    "source_line": 2756
+  },
+  {
+    "code": "N13",
+    "title_la": "Oboljenje mokraćnog sistema uzrokovano preprekom sa vraćanjem mokraće",
+    "source_line": 2757
+  },
+  {
+    "code": "N14",
+    "title_la": "Oboljenje kanalića bubrega i međućelijskog tkiva uzrokovano lekovima i teškim",
+    "source_line": 2758
+  },
+  {
+    "code": "N15",
+    "title_la": "Ostala oboljenja kanalića bubrega i međućelijskog tkiva",
+    "source_line": 2760
+  },
+  {
+    "code": "N16",
+    "title_la": "Poremećaji kanalića bubrega i međućelijskog tkiva u bolestima klasifikovanim na",
+    "source_line": 2761
+  },
+  {
+    "code": "N17",
+    "title_la": "Akutna bubrežna insuficijencija",
+    "source_line": 2765
+  },
+  {
+    "code": "N18",
+    "title_la": "Hronična bolest bubrega",
+    "source_line": 2766
+  },
+  {
+    "code": "N19",
+    "title_la": "Neoznačena bubrežna insuficijencija",
+    "source_line": 2767
+  },
+  {
+    "code": "N20",
+    "title_la": "Kamenci u bubregu i mokraćovodu bubrega",
+    "source_line": 2770
+  },
+  {
+    "code": "N21",
+    "title_la": "Kamen donjih mokraćnih puteva",
+    "source_line": 2771
+  },
+  {
+    "code": "N22",
+    "title_la": "Kamenci mokraćnog puta u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2772
+  },
+  {
+    "code": "N23",
+    "title_la": "Kolika bubrega, neoznačena",
+    "source_line": 2773
+  },
+  {
+    "code": "N25",
+    "title_la": "Poremećaj koji se javljaju kao posledica disfunkcije kanalića bubrega",
+    "source_line": 2776
+  },
+  {
+    "code": "N26",
+    "title_la": "Skrvčen bubreg, neoznačen",
+    "source_line": 2777
+  },
+  {
+    "code": "N27",
+    "title_la": "Mali bubreg, nepoznatog uzroka",
+    "source_line": 2778
+  },
+  {
+    "code": "N28",
+    "title_la": "Drugi poremećaji bubrega i mokraćovoda bubrega, neklasifikovani na drugom",
+    "source_line": 2779
+  },
+  {
+    "code": "N29",
+    "title_la": "Druge bolesti bubrega i mokraćovoda bubrega u bolestima klasifikovanim na",
+    "source_line": 2781
+  },
+  {
+    "code": "N30",
+    "title_la": "Zapaljenje mokraćne bešike",
+    "source_line": 2785
+  },
+  {
+    "code": "N31",
+    "title_la": "Neuro-mišićni poremećaj funkcije mokraćne bešike, neklasifikovan na drugom",
+    "source_line": 2793
+  },
+  {
+    "code": "N32",
+    "title_la": "Drugi poremećaji mokraćne bešike",
+    "source_line": 2795
+  },
+  {
+    "code": "N33",
+    "title_la": "Poremećaji mokraćne bešike u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2796
+  },
+  {
+    "code": "N34",
+    "title_la": "Uretritis i uretralni sindrom",
+    "source_line": 2797
+  },
+  {
+    "code": "N35",
+    "title_la": "Suženje mokraćovoda bešike",
+    "source_line": 2798
+  },
+  {
+    "code": "N36",
+    "title_la": "Ostali poremećaji mokraćovoda bešike",
+    "source_line": 2799
+  },
+  {
+    "code": "N37",
+    "title_la": "Poremećaji mokraćovoda bešike u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2800
+  },
+  {
+    "code": "N39",
+    "title_la": "Drugi poremećaji mokraćnih puteva",
+    "source_line": 2801
+  },
+  {
+    "code": "N40",
+    "title_la": "Povećanje prostate",
+    "source_line": 2804
+  },
+  {
+    "code": "N41",
+    "title_la": "Zapaljenjska oboljenja prostate",
+    "source_line": 2805
+  },
+  {
+    "code": "N42",
+    "title_la": "Drugi poremećaji prostate",
+    "source_line": 2806
+  },
+  {
+    "code": "N43",
+    "title_la": "Vodena kila i nakupljanje semena u ovojnici muških polnih žlezda",
+    "source_line": 2807
+  },
+  {
+    "code": "N44",
+    "title_la": "Uvrtanje semene vrpce",
+    "source_line": 2808
+  },
+  {
+    "code": "N45",
+    "title_la": "Zapaljenje testisa i zapaljenje pasemenika",
+    "source_line": 2809
+  },
+  {
+    "code": "N46",
+    "title_la": "Muška neplodnost",
+    "source_line": 2810
+  },
+  {
+    "code": "N47",
+    "title_la": "Prevelik prepucijum (udna navlaka), fimoza i parafimoza",
+    "source_line": 2811
+  },
+  {
+    "code": "N48",
+    "title_la": "Drugi poremećaji penisa",
+    "source_line": 2812
+  },
+  {
+    "code": "N49",
+    "title_la": "Zapaljenjski poremećaji muških polnih organa, neklasifikovani na drugom mestu",
+    "source_line": 2813
+  },
+  {
+    "code": "N50",
+    "title_la": "Drugi poremećaji muških polnih organa",
+    "source_line": 2814
+  },
+  {
+    "code": "N51",
+    "title_la": "Poremećaji muških polnih organa u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2815
+  },
+  {
+    "code": "N60",
+    "title_la": "Dobroćudna displazija dojke",
+    "source_line": 2818
+  },
+  {
+    "code": "N61",
+    "title_la": "Upalni poremećaji dojke",
+    "source_line": 2819
+  },
+  {
+    "code": "N62",
+    "title_la": "Uvećanje dojke",
+    "source_line": 2820
+  },
+  {
+    "code": "N63",
+    "title_la": "Čvor dojke, neoznačen",
+    "source_line": 2821
+  },
+  {
+    "code": "N64",
+    "title_la": "Drugi poremećaji dojke",
+    "source_line": 2822
+  },
+  {
+    "code": "N70",
+    "title_la": "Zapaljenje jajovoda i zapaljenje jajnika",
+    "source_line": 2825
+  },
+  {
+    "code": "N71",
+    "title_la": "Zapaljenje sluznice materice, bez grlića materice",
+    "source_line": 2826
+  },
+  {
+    "code": "N72",
+    "title_la": "Zapaljenje grlića marerice",
+    "source_line": 2827
+  },
+  {
+    "code": "N73",
+    "title_la": "Druge zapaljenske bolesti male karlice žene",
+    "source_line": 2828
+  },
+  {
+    "code": "N74",
+    "title_la": "Zapaljenski poremećaji male karlice kod žena u bolestima, koje su klasifikovane na",
+    "source_line": 2829
+  },
+  {
+    "code": "N75",
+    "title_la": "Bolesti Bartholinijeve žlezde",
+    "source_line": 2831
+  },
+  {
+    "code": "N76",
+    "title_la": "Druga zapaljenja vagine i stidnice",
+    "source_line": 2832
+  },
+  {
+    "code": "N77",
+    "title_la": "Grizlica i upala vagine i stidnice u bolestima koje su klasifikovane na drugom",
+    "source_line": 2833
+  },
+  {
+    "code": "N80",
+    "title_la": "Endometrioza",
+    "source_line": 2837
+  },
+  {
+    "code": "N81",
+    "title_la": "Ispadanje polnih organa žene",
+    "source_line": 2838
+  },
+  {
+    "code": "N82",
+    "title_la": "Fistule ženskih polnih organa",
+    "source_line": 2839
+  },
+  {
+    "code": "N83",
+    "title_la": "Nezapaljenjski poremećaji jajnika, jajovoda i širokog ligamenta",
+    "source_line": 2840
+  },
+  {
+    "code": "N84",
+    "title_la": "Polip - peteljkast sluznični izraštaj ženskih polnih organa",
+    "source_line": 2841
+  },
+  {
+    "code": "N85",
+    "title_la": "Drugi nezapaljenjski poremećaji materice osim grlića",
+    "source_line": 2842
+  },
+  {
+    "code": "N86",
+    "title_la": "Nagriženost i izvrnutost grlića materice",
+    "source_line": 2849
+  },
+  {
+    "code": "N87",
+    "title_la": "Displazija grlića materice",
+    "source_line": 2850
+  },
+  {
+    "code": "N88",
+    "title_la": "Drugi nezapaljenjski poremećaji grlića materice",
+    "source_line": 2851
+  },
+  {
+    "code": "N89",
+    "title_la": "Drugi nezapaljenjski poremećaji vagine",
+    "source_line": 2852
+  },
+  {
+    "code": "N90",
+    "title_la": "Drugi nezapaljenjski poremećaji stidnice i međice",
+    "source_line": 2853
+  },
+  {
+    "code": "N91",
+    "title_la": "Izostanak menstruacije i smanjenje menstruacije",
+    "source_line": 2854
+  },
+  {
+    "code": "N92",
+    "title_la": "Pojačano, učestalo i neuredno krvarenje iz materice",
+    "source_line": 2855
+  },
+  {
+    "code": "N93",
+    "title_la": "Druga nenormalna krvarenja iz materice i vagine",
+    "source_line": 2856
+  },
+  {
+    "code": "N94",
+    "title_la": "Bol i druga stanja povezani sa polnim organima žene i menstrualnim ciklusom",
+    "source_line": 2857
+  },
+  {
+    "code": "N95",
+    "title_la": "Menopauzalni i drugi perimenopauzalni poremećaji",
+    "source_line": 2858
+  },
+  {
+    "code": "N96",
+    "title_la": "Žena sa ponavljajućim pobačajima",
+    "source_line": 2859
+  },
+  {
+    "code": "N97",
+    "title_la": "Neplodnost žene",
+    "source_line": 2860
+  },
+  {
+    "code": "N98",
+    "title_la": "Komplikacije uzrokovane veštačkom oplodnjom",
+    "source_line": 2861
+  },
+  {
+    "code": "N99",
+    "title_la": "Poremećaji mokraćno-polnog sistema posle medicinskih intervencija,",
+    "source_line": 2864
+  }
+]

@@ -1,0 +1,2637 @@
+[
+  {
+    "code": "D00",
+    "title_la": "Karcinom „in situ“ usta, jednjaka i želuca",
+    "source_line": 1524
+  },
+  {
+    "code": "D00.0",
+    "title_la": "Carcinoma in situ labii, cavi oris et pharyngis",
+    "source_line": 10538
+  },
+  {
+    "code": "D00.1",
+    "title_la": "Carcinoma in situ oesophagi",
+    "source_line": 10550
+  },
+  {
+    "code": "D00.2",
+    "title_la": "Carcinoma in situ ventriculi",
+    "source_line": 10552
+  },
+  {
+    "code": "D01",
+    "title_la": "Karcinom „in situ“ drugih organa za varenje",
+    "source_line": 1525
+  },
+  {
+    "code": "D01.0",
+    "title_la": "Carcinoma in situ coli",
+    "source_line": 10563
+  },
+  {
+    "code": "D01.1",
+    "title_la": "Carcinoma in situ juncturae rectosigmoidis",
+    "source_line": 10566
+  },
+  {
+    "code": "D01.2",
+    "title_la": "Carcinoma in situ recti",
+    "source_line": 10568
+  },
+  {
+    "code": "D01.3",
+    "title_la": "Carcinoma in situ ani et canalis analis",
+    "source_line": 10570
+  },
+  {
+    "code": "D01.4",
+    "title_la": "Carcinoma in situ partium intestiniorum aliarum et non specificatarum",
+    "source_line": 10576
+  },
+  {
+    "code": "D01.5",
+    "title_la": "Carcinoma in situ hepatis, vesicae felleae et ductus biliaris",
+    "source_line": 10579
+  },
+  {
+    "code": "D01.7",
+    "title_la": "Carcinoma in situ organorum digestivorum aliorum, specificatorum",
+    "source_line": 10582
+  },
+  {
+    "code": "D01.9",
+    "title_la": "Carcinoma in situ organorum digestivorum, non specificatum",
+    "source_line": 10585
+  },
+  {
+    "code": "D02",
+    "title_la": "Karcinom „in situ“, srednjeg uva i organa za disanje",
+    "source_line": 1526
+  },
+  {
+    "code": "D02.0",
+    "title_la": "Carcinoma in situ laryngis",
+    "source_line": 10591
+  },
+  {
+    "code": "D02.1",
+    "title_la": "Carcinoma in situ tracheae",
+    "source_line": 10599
+  },
+  {
+    "code": "D02.2",
+    "title_la": "Carcinoma in situ bronchi et pulmonis",
+    "source_line": 10601
+  },
+  {
+    "code": "D02.3",
+    "title_la": "Carcinoma in situ partium systematis respiratorii aliarum",
+    "source_line": 10611
+  },
+  {
+    "code": "D02.4",
+    "title_la": "Carcinoma in situ partium systematis respiratorii, non specificatum",
+    "source_line": 10620
+  },
+  {
+    "code": "D03",
+    "title_la": "Melanom „in situ“ zloćudni crni tumor kože",
+    "source_line": 1527
+  },
+  {
+    "code": "D03.0",
+    "title_la": "Melanoma in situ labii oris",
+    "source_line": 10626
+  },
+  {
+    "code": "D03.1",
+    "title_la": "Melanoma in situ palpebrae, canthum includens",
+    "source_line": 10628
+  },
+  {
+    "code": "D03.2",
+    "title_la": "Melanoma in situ auris et meatus acustici externi",
+    "source_line": 10630
+  },
+  {
+    "code": "D03.3",
+    "title_la": "Melanoma in situ partium faciei aliarum et non specificatarum",
+    "source_line": 10632
+  },
+  {
+    "code": "D03.4",
+    "title_la": "Melanoma in situ capillitii et colli",
+    "source_line": 10634
+  },
+  {
+    "code": "D03.5",
+    "title_la": "Melanoma in situ trunci",
+    "source_line": 10636
+  },
+  {
+    "code": "D03.6",
+    "title_la": "Melanoma in situ extremitatis superioris, omam includens",
+    "source_line": 10643
+  },
+  {
+    "code": "D03.7",
+    "title_la": "Melanoma in situ extremitatis inferioris, regionem coxae includens",
+    "source_line": 10645
+  },
+  {
+    "code": "D03.8",
+    "title_la": "Melanoma in situ, locorum aliorum",
+    "source_line": 10647
+  },
+  {
+    "code": "D03.9",
+    "title_la": "Melanoma in situ, non specificatum",
+    "source_line": 10649
+  },
+  {
+    "code": "D04",
+    "title_la": "Karcinom „in situ“, kože",
+    "source_line": 1528
+  },
+  {
+    "code": "D04.0",
+    "title_la": "Carcinoma in situ cutis labii",
+    "source_line": 10656
+  },
+  {
+    "code": "D04.1",
+    "title_la": "Carcinoma in situ cutis palpebrae, canthum includens",
+    "source_line": 10659
+  },
+  {
+    "code": "D04.2",
+    "title_la": "Carcinoma in situ cutis auris et meatus acustici externi",
+    "source_line": 10668
+  },
+  {
+    "code": "D04.3",
+    "title_la": "Carcinoma in situ cutis partium faciei aliarum",
+    "source_line": 10670
+  },
+  {
+    "code": "D04.4",
+    "title_la": "Carcinoma in situ cutis capillitii et cutis colli",
+    "source_line": 10672
+  },
+  {
+    "code": "D04.5",
+    "title_la": "Carcinoma in situ cutis trunci",
+    "source_line": 10674
+  },
+  {
+    "code": "D04.6",
+    "title_la": "Carcinoma in situ cutis extremitatis superioris, omam includens",
+    "source_line": 10683
+  },
+  {
+    "code": "D04.7",
+    "title_la": "Carcinoma in situ cutis extremitatis inferioris, coxam includens",
+    "source_line": 10685
+  },
+  {
+    "code": "D04.8",
+    "title_la": "Carcinoma in situ cutis, locorum aliorum",
+    "source_line": 10687
+  },
+  {
+    "code": "D04.9",
+    "title_la": "Carcinoma in situ cutis, non specificatum",
+    "source_line": 10689
+  },
+  {
+    "code": "D05",
+    "title_la": "Karcinom „in situ“ dojke",
+    "source_line": 1529
+  },
+  {
+    "code": "D05.0",
+    "title_la": "Carcinoma in situ lobulare",
+    "source_line": 10696
+  },
+  {
+    "code": "D05.1",
+    "title_la": "Carcinoma in situ intraductale",
+    "source_line": 10698
+  },
+  {
+    "code": "D05.7",
+    "title_la": "Carcinoma in situ mammae, alia",
+    "source_line": 10700
+  },
+  {
+    "code": "D05.9",
+    "title_la": "Carcinoma in situ mammae, non specificatum",
+    "source_line": 10702
+  },
+  {
+    "code": "D06",
+    "title_la": "Karcinom „in situ“ grlića materice",
+    "source_line": 1530
+  },
+  {
+    "code": "D06.0",
+    "title_la": "Carcinoma in situ endocervicis uteri",
+    "source_line": 10711
+  },
+  {
+    "code": "D06.1",
+    "title_la": "Carcinoma in situ exocervicis uteri",
+    "source_line": 10713
+  },
+  {
+    "code": "D06.7",
+    "title_la": "Carcinoma in situ partium cervicis uteri aliarum",
+    "source_line": 10715
+  },
+  {
+    "code": "D06.9",
+    "title_la": "Carcinoma in situ cervicis uteri, non specificatum",
+    "source_line": 10717
+  },
+  {
+    "code": "D07",
+    "title_la": "Karcinom „in situ“ drugih i neoznačenih polnih organa",
+    "source_line": 1531
+  },
+  {
+    "code": "D07.0",
+    "title_la": "Carcinoma in situ endometrii",
+    "source_line": 10728
+  },
+  {
+    "code": "D07.1",
+    "title_la": "Carcinoma in situ vulvae",
+    "source_line": 10730
+  },
+  {
+    "code": "D07.2",
+    "title_la": "Carcinoma in situ vaginae",
+    "source_line": 10734
+  },
+  {
+    "code": "D07.3",
+    "title_la": "Carcinoma in situ genitaliorum femininorum aliorum",
+    "source_line": 10738
+  },
+  {
+    "code": "D07.4",
+    "title_la": "Carcinoma in situ penis",
+    "source_line": 10740
+  },
+  {
+    "code": "D07.5",
+    "title_la": "Carcinoma in situ prostatae",
+    "source_line": 10743
+  },
+  {
+    "code": "D07.6",
+    "title_la": "Carcinoma in situ genitalium masculinorum aliorum",
+    "source_line": 10746
+  },
+  {
+    "code": "D09",
+    "title_la": "Karcinom „in situ“ drugih neoznačenih lokalizacija",
+    "source_line": 1532
+  },
+  {
+    "code": "D09.0",
+    "title_la": "Carcinoma in situ vesicae urinariae",
+    "source_line": 10752
+  },
+  {
+    "code": "D09.1",
+    "title_la": "Carcinoma in situ organorum urinariorum aliorum",
+    "source_line": 10754
+  },
+  {
+    "code": "D09.2",
+    "title_la": "Carcinoma in situ oculi",
+    "source_line": 10756
+  },
+  {
+    "code": "D09.3",
+    "title_la": "Carcinoma in situ glandulae thyreoideae et glandularum endocrinarum aliarum",
+    "source_line": 10759
+  },
+  {
+    "code": "D09.7",
+    "title_la": "Carcinoma in situ locorum aliorum, specificatorum",
+    "source_line": 10764
+  },
+  {
+    "code": "D09.9",
+    "title_la": "Carcinoma in situ, non specificatum",
+    "source_line": 10766
+  },
+  {
+    "code": "D10",
+    "title_la": "Dobroćudni tumor usne, usta i ždrela",
+    "source_line": 1542
+  },
+  {
+    "code": "D10.0",
+    "title_la": "Neoplasma benignum labii",
+    "source_line": 10782
+  },
+  {
+    "code": "D10.1",
+    "title_la": "Neoplasma benignum linguee",
+    "source_line": 10786
+  },
+  {
+    "code": "D10.2",
+    "title_la": "Neoplasma benignum basis oris",
+    "source_line": 10789
+  },
+  {
+    "code": "D10.3",
+    "title_la": "Neoplasma benignum partium oris, aliarum",
+    "source_line": 10791
+  },
+  {
+    "code": "D10.4",
+    "title_la": "Neoplasma benignum tonsillae",
+    "source_line": 10797
+  },
+  {
+    "code": "D10.5",
+    "title_la": "Neoplasma benignum oropharyngis, partium aliarum",
+    "source_line": 10804
+  },
+  {
+    "code": "D10.6",
+    "title_la": "Neoplasma benignum nasopharyngis",
+    "source_line": 10813
+  },
+  {
+    "code": "D10.7",
+    "title_la": "Neoplasma benignum hypopharyngis",
+    "source_line": 10817
+  },
+  {
+    "code": "D10.9",
+    "title_la": "Neoplasma benignum pharyngis, non specificatum",
+    "source_line": 10819
+  },
+  {
+    "code": "D11",
+    "title_la": "Dobroćudni tumor velikih pljuvačnih žlezda",
+    "source_line": 1543
+  },
+  {
+    "code": "D11.0",
+    "title_la": "Neoplasma benignum glandulae parotidis",
+    "source_line": 10834
+  },
+  {
+    "code": "D11.7",
+    "title_la": "Neoplasma benignum glandularum salivarium majorum, aliarum",
+    "source_line": 10836
+  },
+  {
+    "code": "D11.9",
+    "title_la": "Neoplasma benignum glandulae salivaris majoris, non specificatum",
+    "source_line": 10841
+  },
+  {
+    "code": "D12",
+    "title_la": "Dobroćudni tumor debelog creva, rektuma, anusa i analnog kanala",
+    "source_line": 1544
+  },
+  {
+    "code": "D12.0",
+    "title_la": "Neoplasma benignum caeci",
+    "source_line": 10846
+  },
+  {
+    "code": "D12.1",
+    "title_la": "Neoplasma benignum appendicis",
+    "source_line": 10849
+  },
+  {
+    "code": "D12.2",
+    "title_la": "Neoplasma benignum coli ascendentis",
+    "source_line": 10851
+  },
+  {
+    "code": "D12.3",
+    "title_la": "Neoplasma benignum coli transversi",
+    "source_line": 10853
+  },
+  {
+    "code": "D12.4",
+    "title_la": "Neoplasma benignum coli descendentis",
+    "source_line": 10857
+  },
+  {
+    "code": "D12.5",
+    "title_la": "Neoplasma benignum coli sigmoidis",
+    "source_line": 10859
+  },
+  {
+    "code": "D12.6",
+    "title_la": "Neoplasma benignum coli, non specificatum",
+    "source_line": 10861
+  },
+  {
+    "code": "D12.7",
+    "title_la": "Neoplasma benignum juncturae, rectosigmoidis",
+    "source_line": 10866
+  },
+  {
+    "code": "D12.8",
+    "title_la": "Neplasma benignum recti",
+    "source_line": 10868
+  },
+  {
+    "code": "D12.9",
+    "title_la": "Neoplasma benignum ani et canalis analis",
+    "source_line": 10870
+  },
+  {
+    "code": "D13",
+    "title_la": "Dobroćudni tumor drugih delova digestivnog sistema",
+    "source_line": 1545
+  },
+  {
+    "code": "D13.0",
+    "title_la": "Neoplasma benignum oesophagi",
+    "source_line": 10886
+  },
+  {
+    "code": "D13.1",
+    "title_la": "Neoplasma benignum ventriculi",
+    "source_line": 10888
+  },
+  {
+    "code": "D13.2",
+    "title_la": "Neoplasma benignum duodeni",
+    "source_line": 10890
+  },
+  {
+    "code": "D13.3",
+    "title_la": "Neoplasma benignum intestini tenuis, partium aliarum",
+    "source_line": 10892
+  },
+  {
+    "code": "D13.4",
+    "title_la": "Neoplasma benignum hepatis",
+    "source_line": 10894
+  },
+  {
+    "code": "D13.5",
+    "title_la": "Neoplasma benignum ductuum billarium extrahepaticorum",
+    "source_line": 10897
+  },
+  {
+    "code": "D13.6",
+    "title_la": "Neoplasma benignum pancreatis",
+    "source_line": 10899
+  },
+  {
+    "code": "D13.7",
+    "title_la": "Neoplasma benignum pancreatis endocrini",
+    "source_line": 10902
+  },
+  {
+    "code": "D13.9",
+    "title_la": "Neoplasma benignum systematis digestivi, partium non specificatum",
+    "source_line": 10906
+  },
+  {
+    "code": "D14",
+    "title_la": "Dobroćudni tumor srednjeg uva i organa za disanje",
+    "source_line": 1546
+  },
+  {
+    "code": "D14.0",
+    "title_la": "Neoplasma benignum auris medine, cavi nasi et sinuum nasi",
+    "source_line": 10914
+  },
+  {
+    "code": "D14.1",
+    "title_la": "Neoplasma benignum laryngis",
+    "source_line": 10940
+  },
+  {
+    "code": "D14.2",
+    "title_la": "Neoplasma benignum tracheae",
+    "source_line": 10945
+  },
+  {
+    "code": "D14.3",
+    "title_la": "Neoplasma benignum bronchi et pulmonis",
+    "source_line": 10947
+  },
+  {
+    "code": "D14.4",
+    "title_la": "Neoplasma benignum systematis respiratorii non specificatum",
+    "source_line": 10949
+  },
+  {
+    "code": "D15",
+    "title_la": "Dobroćudni tumor drugih organa grudne duplje",
+    "source_line": 1547
+  },
+  {
+    "code": "D15.0",
+    "title_la": "Neoplasma benignum thymi",
+    "source_line": 10955
+  },
+  {
+    "code": "D15.1",
+    "title_la": "Neoplasma benignum cordis",
+    "source_line": 10957
+  },
+  {
+    "code": "D15.2",
+    "title_la": "Neoplasma benignum mediastini",
+    "source_line": 10960
+  },
+  {
+    "code": "D15.7",
+    "title_la": "Neoplasma benignum organorum intrathoracalium aliorum, specificatorum",
+    "source_line": 10962
+  },
+  {
+    "code": "D15.9",
+    "title_la": "Neoplasma benignum organorum intrathoracalium, non specificatum",
+    "source_line": 10964
+  },
+  {
+    "code": "D16",
+    "title_la": "Dobroćudni tumor kosti i zglobne hrskavice",
+    "source_line": 1548
+  },
+  {
+    "code": "D16.0",
+    "title_la": "Neoplasma benignum scapulae et ossium longorum extremitatis superioris",
+    "source_line": 10976
+  },
+  {
+    "code": "D16.1",
+    "title_la": "Neoplasma benignum ossium brevium extremitatis superioris",
+    "source_line": 10978
+  },
+  {
+    "code": "D16.2",
+    "title_la": "Neoplasma benignum ossium longorum extremitatis interioris",
+    "source_line": 10980
+  },
+  {
+    "code": "D16.3",
+    "title_la": "Neoplasma benignum ossium brevium extremitatis inferioris",
+    "source_line": 10982
+  },
+  {
+    "code": "D16.4",
+    "title_la": "Neoplasma benignum ossium cranii et faciei",
+    "source_line": 10984
+  },
+  {
+    "code": "D16.5",
+    "title_la": "Neoplasma benignum mandibulae",
+    "source_line": 10997
+  },
+  {
+    "code": "D16.6",
+    "title_la": "Neoplasma benignum columnae vertebralis",
+    "source_line": 10999
+  },
+  {
+    "code": "D16.7",
+    "title_la": "Neoplasma benignum costae, sterni et claviculae",
+    "source_line": 11002
+  },
+  {
+    "code": "D16.8",
+    "title_la": "Neoplasma benignum ossium pelvis, ossis sacri et ossis coccygei",
+    "source_line": 11004
+  },
+  {
+    "code": "D16.9",
+    "title_la": "Neoplasma benignum ossis et cartilaginis articuli, non specificatum",
+    "source_line": 11006
+  },
+  {
+    "code": "D17",
+    "title_la": "Dobroćudni tumor masnog tkiva",
+    "source_line": 1549
+  },
+  {
+    "code": "D17.0",
+    "title_la": "Neoplasma benignum lipomatosum cutis et subcutis capitis, faciei et coli",
+    "source_line": 11012
+  },
+  {
+    "code": "D17.1",
+    "title_la": "Neoplasma benignum lipomatosum cutis et subcutis trunci",
+    "source_line": 11014
+  },
+  {
+    "code": "D17.2",
+    "title_la": "Neoplasma benignum lipomatosum cutis et subcutis extremitatum",
+    "source_line": 11016
+  },
+  {
+    "code": "D17.3",
+    "title_la": "Neoplasma benignum lipomatosum cutis et subcutis, locorum aliorum",
+    "source_line": 11018
+  },
+  {
+    "code": "D17.4",
+    "title_la": "Neoplasma benignum lipomatosum organorum intrathoracalium",
+    "source_line": 11020
+  },
+  {
+    "code": "D17.5",
+    "title_la": "Neoplasma benignum lipomatosum organorum abdominalium",
+    "source_line": 11022
+  },
+  {
+    "code": "D17.6",
+    "title_la": "Neoplasma benignum lipomatosum funiculi spermatici",
+    "source_line": 11025
+  },
+  {
+    "code": "D17.7",
+    "title_la": "Neoplasma benignum lipomatosum, locorum aliorum",
+    "source_line": 11027
+  },
+  {
+    "code": "D17.9",
+    "title_la": "Neoplasma benignum lipomatosum, non specificatum",
+    "source_line": 11031
+  },
+  {
+    "code": "D18",
+    "title_la": "Hemangiom i limfangiom, bilo koje lokalizacije",
+    "source_line": 1550
+  },
+  {
+    "code": "D18.0",
+    "title_la": "Haemangioma, quovis loco",
+    "source_line": 11039
+  },
+  {
+    "code": "D18.1",
+    "title_la": "Lymphangioma, quovis loco",
+    "source_line": 11042
+  },
+  {
+    "code": "D19",
+    "title_la": "Dobroćudni tumor mezotela",
+    "source_line": 1551
+  },
+  {
+    "code": "D19.0",
+    "title_la": "Mesothelioma begnignum pleurae",
+    "source_line": 11055
+  },
+  {
+    "code": "D19.1",
+    "title_la": "Mesothelioma benignum peritonaei",
+    "source_line": 11057
+  },
+  {
+    "code": "D19.7",
+    "title_la": "Mesothelioma benignum, loci alterius",
+    "source_line": 11059
+  },
+  {
+    "code": "D19.9",
+    "title_la": "Mesothelioma benignum, non specificatum",
+    "source_line": 11061
+  },
+  {
+    "code": "D20",
+    "title_la": "Dobroćudni tumor mekog tkiva peritoneuma i retroperitoneuma",
+    "source_line": 1552
+  },
+  {
+    "code": "D20.0",
+    "title_la": "Neoplasma benignum textus mollis retroperitonaei",
+    "source_line": 11069
+  },
+  {
+    "code": "D20.1",
+    "title_la": "Neoplasma benignum textus mollis peritonaei",
+    "source_line": 11071
+  },
+  {
+    "code": "D21",
+    "title_la": "Dobroćudni tumor vezivnog i drugih mekih tkiva",
+    "source_line": 1553
+  },
+  {
+    "code": "D21.0",
+    "title_la": "Neoplasma benignum textus connexivi et textuum mollium capitis, faciei et colli",
+    "source_line": 11108
+  },
+  {
+    "code": "D21.1",
+    "title_la": "Neoplasma benignum textus connexivi et textuum mollium extremitatis superioris",
+    "source_line": 11115
+  },
+  {
+    "code": "D21.2",
+    "title_la": "Neoplasma benignum textus connexivi et textuum mollium extremitatis inferioris",
+    "source_line": 11118
+  },
+  {
+    "code": "D21.3",
+    "title_la": "Neoplasma benignum textus connexivi et textuum mollium thoracis aliorum",
+    "source_line": 11121
+  },
+  {
+    "code": "D21.4",
+    "title_la": "Neoplasma benignum textus connexivi et textuum mollium abdominis aliorum",
+    "source_line": 11129
+  },
+  {
+    "code": "D21.5",
+    "title_la": "Neoplasma benignum textus connexivi et textuum mollium pelvis aliorum",
+    "source_line": 11139
+  },
+  {
+    "code": "D21.6",
+    "title_la": "Neoplasma benignum textus connexivi et et textuum mollium trunci aliorum, non",
+    "source_line": 11144
+  },
+  {
+    "code": "D21.9",
+    "title_la": "Neoplasma benignum textus connexivi et textuum mollium, non specificatum",
+    "source_line": 11148
+  },
+  {
+    "code": "D22",
+    "title_la": "Mladež",
+    "source_line": 1554
+  },
+  {
+    "code": "D22.0",
+    "title_la": "Naevus melanocyticus labii",
+    "source_line": 11159
+  },
+  {
+    "code": "D22.1",
+    "title_la": "Naevus melanocyticus palpebrae, canthum includens",
+    "source_line": 11161
+  },
+  {
+    "code": "D22.2",
+    "title_la": "Naevus melanocyticus auris et canalis auris externi",
+    "source_line": 11163
+  },
+  {
+    "code": "D22.3",
+    "title_la": "Naevus melanocyticus, locorum faciei aliorum",
+    "source_line": 11165
+  },
+  {
+    "code": "D22.4",
+    "title_la": "Naevus melanocyiticus capillitii et colli",
+    "source_line": 11167
+  },
+  {
+    "code": "D22.5",
+    "title_la": "Naevus melanocyticus trunci",
+    "source_line": 11169
+  },
+  {
+    "code": "D22.6",
+    "title_la": "Naevus melanocyticus extremitatis superioris, omam includens",
+    "source_line": 11176
+  },
+  {
+    "code": "D22.7",
+    "title_la": "Naevus melanocyticus extremitatis inferioris, regionem coxam includens",
+    "source_line": 11178
+  },
+  {
+    "code": "D22.9",
+    "title_la": "Naevus melanocyticus, non specificatus",
+    "source_line": 11180
+  },
+  {
+    "code": "D23",
+    "title_la": "Drugi dobroćudni tumor kože",
+    "source_line": 1555
+  },
+  {
+    "code": "D23.0",
+    "title_la": "Neoplasma benignum cutis labii",
+    "source_line": 11198
+  },
+  {
+    "code": "D23.1",
+    "title_la": "Neoplasma benignum cutis palpebrae, canthum includens",
+    "source_line": 11201
+  },
+  {
+    "code": "D23.2",
+    "title_la": "Neoplasma benignum cutis auris et canalis auris externi",
+    "source_line": 11203
+  },
+  {
+    "code": "D23.3",
+    "title_la": "Neoplasma benignum cutis faciei, partium aliarum et non specificatarum",
+    "source_line": 11205
+  },
+  {
+    "code": "D23.4",
+    "title_la": "Neoplasma benignum cutis capillitii et colli",
+    "source_line": 11207
+  },
+  {
+    "code": "D23.5",
+    "title_la": "Neoplasma benignum cutis trunci",
+    "source_line": 11209
+  },
+  {
+    "code": "D23.6",
+    "title_la": "Neoplasma benignum cutis extremitatis superioris, omam includens",
+    "source_line": 11218
+  },
+  {
+    "code": "D23.7",
+    "title_la": "Neoplasma benignum cutis extremitatis inferioris, regionem coxam includens",
+    "source_line": 11220
+  },
+  {
+    "code": "D23.9",
+    "title_la": "Neoplasma benignum cutis, non specificatum",
+    "source_line": 11222
+  },
+  {
+    "code": "D24",
+    "title_la": "Dobroćudni tumor dojke",
+    "source_line": 1556
+  },
+  {
+    "code": "D25",
+    "title_la": "Tumor glatkog mišića materice",
+    "source_line": 1557
+  },
+  {
+    "code": "D25.0",
+    "title_la": "Leiomyoma submucosum uteri",
+    "source_line": 11237
+  },
+  {
+    "code": "D25.1",
+    "title_la": "Leiomyoma uteri intramurale",
+    "source_line": 11239
+  },
+  {
+    "code": "D25.2",
+    "title_la": "Leiomyoma subserosum uteri",
+    "source_line": 11247
+  },
+  {
+    "code": "D25.9",
+    "title_la": "Leiomyoma uteri, non specificatum",
+    "source_line": 11249
+  },
+  {
+    "code": "D26",
+    "title_la": "Drugi dobroćudni tumori materice",
+    "source_line": 1558
+  },
+  {
+    "code": "D26.0",
+    "title_la": "Neoplasma benignum cervicis uteri",
+    "source_line": 11254
+  },
+  {
+    "code": "D26.1",
+    "title_la": "Neoplasma benignum corporis uteri",
+    "source_line": 11256
+  },
+  {
+    "code": "D26.7",
+    "title_la": "Neoplasma benignum partium uteri aliarum",
+    "source_line": 11258
+  },
+  {
+    "code": "D26.9",
+    "title_la": "Neoplasma benignum uteri, non specificatum",
+    "source_line": 11260
+  },
+  {
+    "code": "D27",
+    "title_la": "Dobroćudni tumor jajnika",
+    "source_line": 1559
+  },
+  {
+    "code": "D28",
+    "title_la": "Dobroćudni tumor drugih ženskih polnih organa",
+    "source_line": 1560
+  },
+  {
+    "code": "D28.0",
+    "title_la": "Neoplasma benignum vulvae",
+    "source_line": 11270
+  },
+  {
+    "code": "D28.1",
+    "title_la": "Neoplasma benignum vaginae",
+    "source_line": 11272
+  },
+  {
+    "code": "D28.2",
+    "title_la": "Neoplasma benignum tubae uterinae et ligamentorum",
+    "source_line": 11274
+  },
+  {
+    "code": "D28.7",
+    "title_la": "Neoplasma benignum genitaliorum femininorum specificatorum, aliorum",
+    "source_line": 11278
+  },
+  {
+    "code": "D28.9",
+    "title_la": "Neoplasma benignum genitaliorum femininorum, non specificatum",
+    "source_line": 11280
+  },
+  {
+    "code": "D29",
+    "title_la": "Dobroćudni tumor muških polnih organa",
+    "source_line": 1561
+  },
+  {
+    "code": "D29.0",
+    "title_la": "Neoplasma benignum penis",
+    "source_line": 11286
+  },
+  {
+    "code": "D29.1",
+    "title_la": "Neoplasma benignum prostatae",
+    "source_line": 11288
+  },
+  {
+    "code": "D29.2",
+    "title_la": "Neoplasma benignum testis",
+    "source_line": 11294
+  },
+  {
+    "code": "D29.3",
+    "title_la": "Neoplasma epididymitis",
+    "source_line": 11296
+  },
+  {
+    "code": "D29.4",
+    "title_la": "Neoplasma benignum scroti",
+    "source_line": 11304
+  },
+  {
+    "code": "D29.7",
+    "title_la": "Neoplasma benignum genitaliorum masculinorum specificatorum, aliorum",
+    "source_line": 11307
+  },
+  {
+    "code": "D29.9",
+    "title_la": "Neoplasma benignum genitaliorum masculinorum, non specificatum",
+    "source_line": 11312
+  },
+  {
+    "code": "D30",
+    "title_la": "Dobroćudni tumor mokraćnih organa",
+    "source_line": 1562
+  },
+  {
+    "code": "D30.0",
+    "title_la": "Neoplasma benignum renis",
+    "source_line": 11317
+  },
+  {
+    "code": "D30.1",
+    "title_la": "Neoplasma benignum pelvis renis",
+    "source_line": 11322
+  },
+  {
+    "code": "D30.2",
+    "title_la": "Neoplasma benignum ureteris",
+    "source_line": 11324
+  },
+  {
+    "code": "D30.3",
+    "title_la": "Neoplasma benignum vesicae urinariae",
+    "source_line": 11327
+  },
+  {
+    "code": "D30.4",
+    "title_la": "Neoplasma benignum urethrae",
+    "source_line": 11332
+  },
+  {
+    "code": "D30.7",
+    "title_la": "Neoplasma benignum organorum urinariorum aliorum",
+    "source_line": 11335
+  },
+  {
+    "code": "D30.9",
+    "title_la": "Neoplasma benignum organorum urinariorum aliorum, non specificatum",
+    "source_line": 11338
+  },
+  {
+    "code": "D31",
+    "title_la": "Dobroćudni tumor oka i pripojaka oka",
+    "source_line": 1563
+  },
+  {
+    "code": "D31.0",
+    "title_la": "Neoplasma benignum coniuctivae",
+    "source_line": 11347
+  },
+  {
+    "code": "D31.1",
+    "title_la": "Neoplasma benignum corneae",
+    "source_line": 11349
+  },
+  {
+    "code": "D31.2",
+    "title_la": "Neoplasma benignum retinae",
+    "source_line": 11351
+  },
+  {
+    "code": "D31.3",
+    "title_la": "Neoplasma benignum chorioideae",
+    "source_line": 11361
+  },
+  {
+    "code": "D31.4",
+    "title_la": "Neoplasma benignum corporis ciliaris",
+    "source_line": 11363
+  },
+  {
+    "code": "D31.5",
+    "title_la": "Neoplasma benignum glandulae et ductus lacrimalis",
+    "source_line": 11366
+  },
+  {
+    "code": "D31.6",
+    "title_la": "Neoplasma benignum orbitae, non specificatum",
+    "source_line": 11370
+  },
+  {
+    "code": "D31.9",
+    "title_la": "Neoplasma benignum oculi, non specificatum",
+    "source_line": 11378
+  },
+  {
+    "code": "D32",
+    "title_la": "Dobroćudni tumor moždanica",
+    "source_line": 1564
+  },
+  {
+    "code": "D32.0",
+    "title_la": "Neoplasma benignum meningium intracraniale",
+    "source_line": 11383
+  },
+  {
+    "code": "D32.1",
+    "title_la": "Neoplasma benignum meningium medullae spinalis",
+    "source_line": 11385
+  },
+  {
+    "code": "D32.9",
+    "title_la": "Neoplasma benignum meningium, non specificatum",
+    "source_line": 11387
+  },
+  {
+    "code": "D33",
+    "title_la": "Dobroćudni tumori mozga i drugih delova centralnog nervnog sistema",
+    "source_line": 1565
+  },
+  {
+    "code": "D33.0",
+    "title_la": "Neoplasma benignum cerebri supratentoriale",
+    "source_line": 11398
+  },
+  {
+    "code": "D33.1",
+    "title_la": "Neoplasma benignum cerebri infratentoriale",
+    "source_line": 11407
+  },
+  {
+    "code": "D33.2",
+    "title_la": "Neoplasma benignum cerebri, non specificatum",
+    "source_line": 11419
+  },
+  {
+    "code": "D33.3",
+    "title_la": "Neoplasma benignum nervi cranialis",
+    "source_line": 11421
+  },
+  {
+    "code": "D33.4",
+    "title_la": "Neoplasma benignum medullae spinalis",
+    "source_line": 11424
+  },
+  {
+    "code": "D33.7",
+    "title_la": "Neoplasma benignum systematis nervosi centralis, partium aliarum specificatarum",
+    "source_line": 11426
+  },
+  {
+    "code": "D33.9",
+    "title_la": "Neoplasma benignum systematis nervosi centralis, non specificatum",
+    "source_line": 11428
+  },
+  {
+    "code": "D34",
+    "title_la": "Dobroćudni tumor štitaste žlezde",
+    "source_line": 1566
+  },
+  {
+    "code": "D35",
+    "title_la": "Dobroćudni tumor ostalih i neoznačenih endokrinih žlezda",
+    "source_line": 1567
+  },
+  {
+    "code": "D35.0",
+    "title_la": "Neoplasma benignum glandulae suprarenalis",
+    "source_line": 11442
+  },
+  {
+    "code": "D35.1",
+    "title_la": "Neoplasma benignum glandulae parathyreoideae",
+    "source_line": 11444
+  },
+  {
+    "code": "D35.2",
+    "title_la": "Neoplasma benignum glandulae pituitariae",
+    "source_line": 11446
+  },
+  {
+    "code": "D35.3",
+    "title_la": "Neoplasma benignum ductus craniopharyngici",
+    "source_line": 11448
+  },
+  {
+    "code": "D35.4",
+    "title_la": "Neoplasma benignum corporis pinealls",
+    "source_line": 11450
+  },
+  {
+    "code": "D35.5",
+    "title_la": "Neoplasma benignum corporis carotici",
+    "source_line": 11452
+  },
+  {
+    "code": "D35.6",
+    "title_la": "Neoplasma benignum corporis paraaortici et paragangliorum aliorum",
+    "source_line": 11454
+  },
+  {
+    "code": "D35.7",
+    "title_la": "Neoplasma benignum glandulae endocrinae alterius",
+    "source_line": 11456
+  },
+  {
+    "code": "D35.8",
+    "title_la": "Neoplasma benignum pluriglandulare",
+    "source_line": 11458
+  },
+  {
+    "code": "D35.9",
+    "title_la": "Neoplasma benignum glandulae endocrinae, non specificatum",
+    "source_line": 11460
+  },
+  {
+    "code": "D36",
+    "title_la": "Dobroćudni tumor ostalih i neoznačenih lokalizacija",
+    "source_line": 1568
+  },
+  {
+    "code": "D36.0",
+    "title_la": "Neoplasma benignum lymphonodorum",
+    "source_line": 11465
+  },
+  {
+    "code": "D36.1",
+    "title_la": "Neoplasma benignum nervi peripherici et systemati nervosi autonomi",
+    "source_line": 11475
+  },
+  {
+    "code": "D36.7",
+    "title_la": "Neoplasma benignum, loci specificata",
+    "source_line": 11478
+  },
+  {
+    "code": "D36.9",
+    "title_la": "Neoplasma benignum, loci non specificati",
+    "source_line": 11481
+  },
+  {
+    "code": "D37",
+    "title_la": "Tumor usta i organa za varenje",
+    "source_line": 1571
+  },
+  {
+    "code": "D37.0",
+    "title_la": "Neoplasma labii, oris et pharyngis",
+    "source_line": 11495
+  },
+  {
+    "code": "D37.1",
+    "title_la": "Neoplasma ventriculi",
+    "source_line": 11508
+  },
+  {
+    "code": "D37.2",
+    "title_la": "Neoplasma intestini tenuis",
+    "source_line": 11510
+  },
+  {
+    "code": "D37.3",
+    "title_la": "Neoplasma appendicis",
+    "source_line": 11512
+  },
+  {
+    "code": "D37.4",
+    "title_la": "Neoplasma coli",
+    "source_line": 11514
+  },
+  {
+    "code": "D37.5",
+    "title_la": "Neoplasma recti",
+    "source_line": 11516
+  },
+  {
+    "code": "D37.6",
+    "title_la": "Neoplasma hepatis et ductuum billarium",
+    "source_line": 11519
+  },
+  {
+    "code": "D37.7",
+    "title_la": "Neoplasma organorum systematis digestivi aliorum",
+    "source_line": 11530
+  },
+  {
+    "code": "D37.9",
+    "title_la": "Neoplasma organorum systematis digestivi, non specificatum",
+    "source_line": 11543
+  },
+  {
+    "code": "D38",
+    "title_la": "Tumor srednjeg uva, organa za disanje i grudne duplje",
+    "source_line": 1572
+  },
+  {
+    "code": "D38.0",
+    "title_la": "Neoplasma laryngis",
+    "source_line": 11549
+  },
+  {
+    "code": "D38.1",
+    "title_la": "Neoplasma tracheae, bronchi et pulmonis",
+    "source_line": 11557
+  },
+  {
+    "code": "D38.2",
+    "title_la": "Neoplasma pleurae",
+    "source_line": 11559
+  },
+  {
+    "code": "D38.3",
+    "title_la": "Neoplasma mediastini",
+    "source_line": 11561
+  },
+  {
+    "code": "D38.4",
+    "title_la": "Neoplasma thymi",
+    "source_line": 11563
+  },
+  {
+    "code": "D38.5",
+    "title_la": "Neoplasma organorum respiratoriorum aliorum, non specificatorum",
+    "source_line": 11565
+  },
+  {
+    "code": "D38.6",
+    "title_la": "Neoplasma organi respiratorii, non specificatum",
+    "source_line": 11575
+  },
+  {
+    "code": "D39",
+    "title_la": "Tumor ženskih polnih organa",
+    "source_line": 1573
+  },
+  {
+    "code": "D39.0",
+    "title_la": "Neoplasma uteri",
+    "source_line": 11580
+  },
+  {
+    "code": "D39.1",
+    "title_la": "Neoplasma ovarii",
+    "source_line": 11588
+  },
+  {
+    "code": "D39.2",
+    "title_la": "Neoplasma placentae",
+    "source_line": 11590
+  },
+  {
+    "code": "D39.7",
+    "title_la": "Neoplasma genitaliorum femininorum aliorum",
+    "source_line": 11597
+  },
+  {
+    "code": "D39.9",
+    "title_la": "Neoplasma genitaliorum femininorum, non specificatum",
+    "source_line": 11600
+  },
+  {
+    "code": "D40",
+    "title_la": "Tumor muških polnih organa",
+    "source_line": 1574
+  },
+  {
+    "code": "D40.0",
+    "title_la": "Neoplasma prostatae",
+    "source_line": 11605
+  },
+  {
+    "code": "D40.1",
+    "title_la": "Neoplasma testis",
+    "source_line": 11607
+  },
+  {
+    "code": "D40.7",
+    "title_la": "Neoplasma genitalium masculinorum aliorum",
+    "source_line": 11609
+  },
+  {
+    "code": "D40.9",
+    "title_la": "Neoplasma genitalium masculinorum, non specificatum",
+    "source_line": 11612
+  },
+  {
+    "code": "D41",
+    "title_la": "Tumor mokraćnih organa",
+    "source_line": 1575
+  },
+  {
+    "code": "D41.0",
+    "title_la": "Neoplasma renis",
+    "source_line": 11617
+  },
+  {
+    "code": "D41.1",
+    "title_la": "Neoplasma pelvis renis",
+    "source_line": 11620
+  },
+  {
+    "code": "D41.2",
+    "title_la": "Neoplasma ureteris",
+    "source_line": 11622
+  },
+  {
+    "code": "D41.3",
+    "title_la": "Neoplasma urethrae",
+    "source_line": 11624
+  },
+  {
+    "code": "D41.4",
+    "title_la": "Neoplasma vesicae urinariae",
+    "source_line": 11626
+  },
+  {
+    "code": "D41.7",
+    "title_la": "Neoplasma organorum urinariorum aliorum",
+    "source_line": 11628
+  },
+  {
+    "code": "D41.9",
+    "title_la": "Neoplasma organi urinarii, non specificatum",
+    "source_line": 11630
+  },
+  {
+    "code": "D42",
+    "title_la": "Tumor moždanica",
+    "source_line": 1576
+  },
+  {
+    "code": "D42.0",
+    "title_la": "Neoplasma meningis cerebri",
+    "source_line": 11635
+  },
+  {
+    "code": "D42.1",
+    "title_la": "Neoplasma meningium medullae spinalis",
+    "source_line": 11645
+  },
+  {
+    "code": "D42.9",
+    "title_la": "Neoplasma meningis, non specificatum",
+    "source_line": 11647
+  },
+  {
+    "code": "D43",
+    "title_la": "Tumori mozga i centralnog nervnog sistema",
+    "source_line": 1577
+  },
+  {
+    "code": "D43.0",
+    "title_la": "Neoplasma cerebri supratentoriale",
+    "source_line": 11653
+  },
+  {
+    "code": "D43.1",
+    "title_la": "Neoplasma cerebri infratentoriale",
+    "source_line": 11663
+  },
+  {
+    "code": "D43.2",
+    "title_la": "Neoplasma cerebri",
+    "source_line": 11668
+  },
+  {
+    "code": "D43.3",
+    "title_la": "Neoplasma nervi cranialie",
+    "source_line": 11670
+  },
+  {
+    "code": "D43.4",
+    "title_la": "Neoplasma medullae spinalis",
+    "source_line": 11672
+  },
+  {
+    "code": "D43.7",
+    "title_la": "Neoplasma systematis nervosi centralis, partium aliorum",
+    "source_line": 11674
+  },
+  {
+    "code": "D43.9",
+    "title_la": "Neoplasma systematis nervosi centralis, non specificatum",
+    "source_line": 11676
+  },
+  {
+    "code": "D44",
+    "title_la": "Tumor žlezde sa unutrašnjim lučenjem",
+    "source_line": 1578
+  },
+  {
+    "code": "D44.0",
+    "title_la": "Neoplasma glandulae thyreoideae",
+    "source_line": 11686
+  },
+  {
+    "code": "D44.1",
+    "title_la": "Neoplasma glandulae suprarenalis",
+    "source_line": 11688
+  },
+  {
+    "code": "D44.2",
+    "title_la": "Neoplasma glandulae parathyreoideae",
+    "source_line": 11690
+  },
+  {
+    "code": "D44.3",
+    "title_la": "Neoplasma glandulae pituitariae",
+    "source_line": 11692
+  },
+  {
+    "code": "D44.4",
+    "title_la": "Neoplasma ductus craniopharyngici",
+    "source_line": 11694
+  },
+  {
+    "code": "D44.5",
+    "title_la": "Neoplasma corporis pinealis",
+    "source_line": 11703
+  },
+  {
+    "code": "D44.6",
+    "title_la": "Neoplasma corporis carotici",
+    "source_line": 11705
+  },
+  {
+    "code": "D44.7",
+    "title_la": "Neoplasma corporis aortici et paragangliorum aliorum",
+    "source_line": 11707
+  },
+  {
+    "code": "D44.8",
+    "title_la": "Neoplasma pluriglandulare",
+    "source_line": 11709
+  },
+  {
+    "code": "D44.9",
+    "title_la": "Neoplasma glandulae endocrinae, non specificatum",
+    "source_line": 11712
+  },
+  {
+    "code": "D45",
+    "title_la": "Povećanje broja ćelija krvi",
+    "source_line": 1579
+  },
+  {
+    "code": "D46",
+    "title_la": "Mijelodisplastični sindromi",
+    "source_line": 1580
+  },
+  {
+    "code": "D46.0",
+    "title_la": "Anaemia refractaria sine sideroblastis",
+    "source_line": 11728
+  },
+  {
+    "code": "D46.1",
+    "title_la": "Anaemia refractaria cum sideroblastis",
+    "source_line": 11731
+  },
+  {
+    "code": "D46.2",
+    "title_la": "Anaemia refractaria cum nimio blastorum",
+    "source_line": 11733
+  },
+  {
+    "code": "D46.4",
+    "title_la": "Anaemia refractaria, non specificata",
+    "source_line": 11737
+  },
+  {
+    "code": "D46.5",
+    "title_la": "Anaemia refractoria cum dysplasia generis multiplici",
+    "source_line": 11739
+  },
+  {
+    "code": "D46.6",
+    "title_la": "Syndroma myelodisplasticum cum abnormalitate segregata del(5q) chromosomali",
+    "source_line": 11741
+  },
+  {
+    "code": "D46.7",
+    "title_la": "Syndromata myelodysplastica alia",
+    "source_line": 11744
+  },
+  {
+    "code": "D46.9",
+    "title_la": "Syndroma myelodysplasticum, non specificatum",
+    "source_line": 11747
+  },
+  {
+    "code": "D47",
+    "title_la": "Drugi tumori limfoidnog, hematopoeznog i srodnih tkiva",
+    "source_line": 1581
+  },
+  {
+    "code": "D47.0",
+    "title_la": "Histiocytoma et mastocytoma",
+    "source_line": 11761
+  },
+  {
+    "code": "D47.1",
+    "title_la": "Morbus myeloproliferativus chronicus",
+    "source_line": 11769
+  },
+  {
+    "code": "D47.2",
+    "title_la": "Gammapathia monoclonalis indeterminatae significationis",
+    "source_line": 11775
+  },
+  {
+    "code": "D47.3",
+    "title_la": "Throbocythaemia essentialis (haemorrhagica)",
+    "source_line": 11777
+  },
+  {
+    "code": "D47.4",
+    "title_la": "Osteomyelofibrosis",
+    "source_line": 11780
+  },
+  {
+    "code": "D47.5",
+    "title_la": "Leukaemia eosinophilica chronica (Syndroma hypereosinophilicum)",
+    "source_line": 11787
+  },
+  {
+    "code": "D47.7",
+    "title_la": "Neoplasmata maligna alia incertae et ignotae dispositionis lymphatici, haemopoetici",
+    "source_line": 11789
+  },
+  {
+    "code": "D47.9",
+    "title_la": "Neoplasmata incertae et ignotae dispositionis lymphatici, haemopoetici et affinium",
+    "source_line": 11794
+  },
+  {
+    "code": "D48",
+    "title_la": "Neoplasma neodređene ili nepoznate druge lokalizacije",
+    "source_line": 1582
+  },
+  {
+    "code": "D48.0",
+    "title_la": "Neoplasma ossis et cartilaginis articuli",
+    "source_line": 11810
+  },
+  {
+    "code": "D48.1",
+    "title_la": "Neoplasma textus connexivi et textuum mollium aliorum",
+    "source_line": 11818
+  },
+  {
+    "code": "D48.2",
+    "title_la": "Neoplasma nervi peripherici et systematis nervosi autonomi",
+    "source_line": 11828
+  },
+  {
+    "code": "D48.3",
+    "title_la": "Neoplasma retroperitonaei",
+    "source_line": 11831
+  },
+  {
+    "code": "D48.4",
+    "title_la": "Neoplasma peritonaei",
+    "source_line": 11833
+  },
+  {
+    "code": "D48.5",
+    "title_la": "Neoplasma cutis",
+    "source_line": 11835
+  },
+  {
+    "code": "D48.6",
+    "title_la": "Neoplasma mammae",
+    "source_line": 11845
+  },
+  {
+    "code": "D48.7",
+    "title_la": "Neoplasma alii loci specificati",
+    "source_line": 11850
+  },
+  {
+    "code": "D48.9",
+    "title_la": "Neoplasma, non specificatum",
+    "source_line": 11865
+  },
+  {
+    "code": "D50",
+    "title_la": "Anemija uzrokovana nedostatkom gvožđa",
+    "source_line": 1596
+  },
+  {
+    "code": "D50.0",
+    "title_la": "Anaemia sideropenica secundaria",
+    "source_line": 11929
+  },
+  {
+    "code": "D50.1",
+    "title_la": "Dysphagia sideropenica",
+    "source_line": 11934
+  },
+  {
+    "code": "D50.8",
+    "title_la": "Anaemiae sideropenicae aliae",
+    "source_line": 11938
+  },
+  {
+    "code": "D50.9",
+    "title_la": "Anaemia sideropenica, non specificata",
+    "source_line": 11940
+  },
+  {
+    "code": "D51",
+    "title_la": "Anemija uzrokovana neostatkom vitamina B12",
+    "source_line": 1597
+  },
+  {
+    "code": "D51.0",
+    "title_la": "Anaemia deficientia vitamini B12 excitata propter deficientiam factoris interni",
+    "source_line": 11951
+  },
+  {
+    "code": "D51.1",
+    "title_la": "Anaemia deficientia vitamini B12 excitata propter malabsorbtionem vitamini B12",
+    "source_line": 11958
+  },
+  {
+    "code": "D51.2",
+    "title_la": "Deficientia transcobalamini II",
+    "source_line": 11964
+  },
+  {
+    "code": "D51.3",
+    "title_la": "Anaemiae nutritionales aliae propter deficientiam vitamini B12",
+    "source_line": 11966
+  },
+  {
+    "code": "D51.8",
+    "title_la": "Anaemiae propter deficientiam vitamini B12 aliae",
+    "source_line": 11969
+  },
+  {
+    "code": "D51.9",
+    "title_la": "Anaemia propter deficientiam vitamini B12, non specificata",
+    "source_line": 11971
+  },
+  {
+    "code": "D52",
+    "title_la": "Anemija uzrokovana nedostatkom folata",
+    "source_line": 1598
+  },
+  {
+    "code": "D52.0",
+    "title_la": "Anaemia nutritionalis propter deficientiam folati",
+    "source_line": 11976
+  },
+  {
+    "code": "D52.1",
+    "title_la": "Anaemia medicamentosa propter deficientiam folati",
+    "source_line": 11979
+  },
+  {
+    "code": "D52.8",
+    "title_la": "Anaemiae propter deficientiam folati aliae",
+    "source_line": 11982
+  },
+  {
+    "code": "D52.9",
+    "title_la": "Anaemia propter deficientiam folati, non specificata",
+    "source_line": 11984
+  },
+  {
+    "code": "D53",
+    "title_la": "Ostale anemije uzrokovane neodgovarajućom ishranom",
+    "source_line": 1599
+  },
+  {
+    "code": "D53.0",
+    "title_la": "Anaemia propter deficientiam proteinorum",
+    "source_line": 11992
+  },
+  {
+    "code": "D53.1",
+    "title_la": "Anaemiae megaloblasticae aliae, non alibi classificatae",
+    "source_line": 12005
+  },
+  {
+    "code": "D53.2",
+    "title_la": "Anaemia scorbutica",
+    "source_line": 12009
+  },
+  {
+    "code": "D53.8",
+    "title_la": "Anaemiae nutritionales specificatae aliae",
+    "source_line": 12012
+  },
+  {
+    "code": "D53.9",
+    "title_la": "Anaemia nutritionalis, non specificata",
+    "source_line": 12022
+  },
+  {
+    "code": "D55",
+    "title_la": "Anemija uzrokovana poremećajima enzima",
+    "source_line": 1602
+  },
+  {
+    "code": "D55.0",
+    "title_la": "Amaemia propter deficientiam enzymarum glucoso-6-phosphat-dehydrogenais",
+    "source_line": 12035
+  },
+  {
+    "code": "D55.1",
+    "title_la": "Anaemia propter disordines metabolismi glutathioni alios",
+    "source_line": 12040
+  },
+  {
+    "code": "D55.2",
+    "title_la": "Anaemia propter disordines enzymarum glycolyticarum",
+    "source_line": 12046
+  },
+  {
+    "code": "D55.3",
+    "title_la": "Anaemia propter disordines metabolismi nucleotidorum",
+    "source_line": 12053
+  },
+  {
+    "code": "D55.8",
+    "title_la": "Anaemiae propter disordines enzymarum aliae",
+    "source_line": 12062
+  },
+  {
+    "code": "D55.9",
+    "title_la": "Anaemia propter disordines enzymarum, non specificata",
+    "source_line": 12064
+  },
+  {
+    "code": "D56",
+    "title_la": "Talasemija – porodična anemija dece",
+    "source_line": 1603
+  },
+  {
+    "code": "D56.0",
+    "title_la": "Thalassaemia alpha",
+    "source_line": 12069
+  },
+  {
+    "code": "D56.1",
+    "title_la": "Thalassaemia beta",
+    "source_line": 12072
+  },
+  {
+    "code": "D56.2",
+    "title_la": "Thalassaemia delta-beta",
+    "source_line": 12079
+  },
+  {
+    "code": "D56.3",
+    "title_la": "Thalassaemia minax",
+    "source_line": 12081
+  },
+  {
+    "code": "D56.4",
+    "title_la": "Haemoglobinum fetale persistens hereditarium (HPFH)",
+    "source_line": 12083
+  },
+  {
+    "code": "D56.8",
+    "title_la": "Thalassaemiae aliae",
+    "source_line": 12085
+  },
+  {
+    "code": "D56.9",
+    "title_la": "Thalassaemia, non specificata",
+    "source_line": 12087
+  },
+  {
+    "code": "D57",
+    "title_la": "Bolest uzrokovana pojavom srpastih ćelija",
+    "source_line": 1604
+  },
+  {
+    "code": "D57.0",
+    "title_la": "Anaemia drepanocytorum cum crisi",
+    "source_line": 12095
+  },
+  {
+    "code": "D57.1",
+    "title_la": "Anaemia drepanocytorum sine crisi",
+    "source_line": 12098
+  },
+  {
+    "code": "D57.2",
+    "title_la": "Disordines dupilciter heterozygotici cum erythrocytis drepanoformibus",
+    "source_line": 12105
+  },
+  {
+    "code": "D57.3",
+    "title_la": "Anaemia drepanocytorum minax",
+    "source_line": 12120
+  },
+  {
+    "code": "D57.8",
+    "title_la": "Morbi drepanocytorum alii",
+    "source_line": 12124
+  },
+  {
+    "code": "D58",
+    "title_la": "Ostale nasledne anemije uzrokovane hemolizom",
+    "source_line": 1605
+  },
+  {
+    "code": "D58.0",
+    "title_la": "Sphaerocytosis hereditaria",
+    "source_line": 12129
+  },
+  {
+    "code": "D58.1",
+    "title_la": "Elliptocytosis hereditaria",
+    "source_line": 12134
+  },
+  {
+    "code": "D58.2",
+    "title_la": "Haemoglobinopathiae aliae",
+    "source_line": 12138
+  },
+  {
+    "code": "D58.8",
+    "title_la": "Anaemiae haemolyticae hereditariae specificatae aliae",
+    "source_line": 12153
+  },
+  {
+    "code": "D58.9",
+    "title_la": "Anaemia haemolytica hereditaria, non specificata",
+    "source_line": 12156
+  },
+  {
+    "code": "D59",
+    "title_la": "Stečena anemija uzrokovana hemolizom",
+    "source_line": 1606
+  },
+  {
+    "code": "D59.0",
+    "title_la": "Anaemia haemolytica autoimmunis medicamentosa",
+    "source_line": 12161
+  },
+  {
+    "code": "D59.1",
+    "title_la": "Anaemiae haemolyticae autoimmunes aliae",
+    "source_line": 12172
+  },
+  {
+    "code": "D59.2",
+    "title_la": "Anaemia haemolytica non autoimmunis medicamentosa",
+    "source_line": 12184
+  },
+  {
+    "code": "D59.3",
+    "title_la": "Syndroma haemolyticouraemica",
+    "source_line": 12188
+  },
+  {
+    "code": "D59.4",
+    "title_la": "Anaemia haemolytica, non autoimmunisatoria alia",
+    "source_line": 12190
+  },
+  {
+    "code": "D59.5",
+    "title_la": "Haemoglobinuria paroxysmailis nocturna (Marchiafava-Micheli)",
+    "source_line": 12197
+  },
+  {
+    "code": "D59.6",
+    "title_la": "Haemoglobinuria haemolysi exitata propter agentes externos alios",
+    "source_line": 12200
+  },
+  {
+    "code": "D59.8",
+    "title_la": "Anaemiae haemolyticae acquisitae, aliae",
+    "source_line": 12208
+  },
+  {
+    "code": "D59.9",
+    "title_la": "Anaemia haemolytica acquisita, non specificata",
+    "source_line": 12210
+  },
+  {
+    "code": "D60",
+    "title_la": "Stečena izolovana aplazija crvene loze",
+    "source_line": 1609
+  },
+  {
+    "code": "D60.0",
+    "title_la": "Aplasia erythrocytorum pura acquisita chronica",
+    "source_line": 12227
+  },
+  {
+    "code": "D60.1",
+    "title_la": "Aplasia erythrocytorum pura acquisita transitiva",
+    "source_line": 12229
+  },
+  {
+    "code": "D60.8",
+    "title_la": "Aplasiae erythrocitorum purae acuisitae aliae",
+    "source_line": 12231
+  },
+  {
+    "code": "D60.9",
+    "title_la": "Aplasia erythrocytorum pura acquisita, non specificata",
+    "source_line": 12233
+  },
+  {
+    "code": "D61",
+    "title_la": "Aplastične i ostale anemije",
+    "source_line": 1610
+  },
+  {
+    "code": "D61.0",
+    "title_la": "Anaemia aplastica constitutionalis",
+    "source_line": 12239
+  },
+  {
+    "code": "D61.1",
+    "title_la": "Anaemia aplastica medicamentosa",
+    "source_line": 12249
+  },
+  {
+    "code": "D61.2",
+    "title_la": "Anaemia aplastica propter factores externos alios",
+    "source_line": 12252
+  },
+  {
+    "code": "D61.3",
+    "title_la": "Anaemia idiopathica aplastica",
+    "source_line": 12255
+  },
+  {
+    "code": "D61.8",
+    "title_la": "Anaemiae aplasticae aliae, specificatae",
+    "source_line": 12257
+  },
+  {
+    "code": "D61.9",
+    "title_la": "Anaemia aplastica, non specificata",
+    "source_line": 12259
+  },
+  {
+    "code": "D62",
+    "title_la": "Akutna anemija posle krvarenja",
+    "source_line": 1611
+  },
+  {
+    "code": "D63",
+    "title_la": "Anemija kod hroničnih oboljenja klasifikovanih na drugom mestu",
+    "source_line": 1612
+  },
+  {
+    "code": "D63.0",
+    "title_la": "Anaemia in morbis neoplasticis (C00-D48†)",
+    "source_line": 12278
+  },
+  {
+    "code": "D63.8",
+    "title_la": "Anaemia in morbis chronicis aliis, alibi classificatis",
+    "source_line": 12280
+  },
+  {
+    "code": "D64",
+    "title_la": "Ostale anemije",
+    "source_line": 1613
+  },
+  {
+    "code": "D64.0",
+    "title_la": "Anaemia sideroblastica hereditaria",
+    "source_line": 12293
+  },
+  {
+    "code": "D64.1",
+    "title_la": "Anaemia sideroblastica morbogenes secundaria",
+    "source_line": 12296
+  },
+  {
+    "code": "D64.2",
+    "title_la": "Anaemia sideroblastica medicamentosa et toxicogenes secundaria",
+    "source_line": 12299
+  },
+  {
+    "code": "D64.3",
+    "title_la": "Anaemiae sideroblasticae aliae",
+    "source_line": 12302
+  },
+  {
+    "code": "D64.4",
+    "title_la": "Anaemia dyserythoropoietica congenita",
+    "source_line": 12307
+  },
+  {
+    "code": "D64.8",
+    "title_la": "Anaemiae specificatae, aliae",
+    "source_line": 12312
+  },
+  {
+    "code": "D64.9",
+    "title_la": "Anaemia, non specificata",
+    "source_line": 12316
+  },
+  {
+    "code": "D65",
+    "title_la": "Rasejano zgrušavanje krvi u krvnim sudovima",
+    "source_line": 1616
+  },
+  {
+    "code": "D66",
+    "title_la": "Nasledni nedostatak faktora VIII",
+    "source_line": 1617
+  },
+  {
+    "code": "D67",
+    "title_la": "Nasledni nedostatak faktora IX",
+    "source_line": 1618
+  },
+  {
+    "code": "D68",
+    "title_la": "Ostali poremećaji zgrušavanja krvi",
+    "source_line": 1619
+  },
+  {
+    "code": "D68.0",
+    "title_la": "Morbus Von Willebrand",
+    "source_line": 12365
+  },
+  {
+    "code": "D68.1",
+    "title_la": "Deficientia hereditaria factoris XI",
+    "source_line": 12374
+  },
+  {
+    "code": "D68.2",
+    "title_la": "Deficientia factorum coagulationis aliorum hereditaria",
+    "source_line": 12385
+  },
+  {
+    "code": "D68.3",
+    "title_la": "Disordo haemorrhagicus proper anticoagulantes circulatorios",
+    "source_line": 12402
+  },
+  {
+    "code": "D68.4",
+    "title_la": "Deficientia factoris coagulationis acquisita",
+    "source_line": 12415
+  },
+  {
+    "code": "D68.5",
+    "title_la": "Thrombophilia primaria",
+    "source_line": 12421
+  },
+  {
+    "code": "D68.6",
+    "title_la": "Thrombophiliae, aliae",
+    "source_line": 12429
+  },
+  {
+    "code": "D68.8",
+    "title_la": "Defectus coagulationis specificati alii",
+    "source_line": 12436
+  },
+  {
+    "code": "D68.9",
+    "title_la": "Defectus coagulationis, non specificatus",
+    "source_line": 12445
+  },
+  {
+    "code": "D69",
+    "title_la": "Purpura i druga hemoragijska stanja",
+    "source_line": 1620
+  },
+  {
+    "code": "D69.0",
+    "title_la": "Purpura allergica",
+    "source_line": 12455
+  },
+  {
+    "code": "D69.1",
+    "title_la": "Defectus trombocytorum qualitativi",
+    "source_line": 12465
+  },
+  {
+    "code": "D69.2",
+    "title_la": "Purpurae non thrombocytopenicae aliae",
+    "source_line": 12473
+  },
+  {
+    "code": "D69.3",
+    "title_la": "Purpura thrombocytopenica idiopathica",
+    "source_line": 12479
+  },
+  {
+    "code": "D69.4",
+    "title_la": "Thrombocytopenia primaria alia",
+    "source_line": 12482
+  },
+  {
+    "code": "D69.5",
+    "title_la": "Thrombocytopenia secundaria",
+    "source_line": 12487
+  },
+  {
+    "code": "D69.6",
+    "title_la": "Thrombocytopenia, non specificata",
+    "source_line": 12490
+  },
+  {
+    "code": "D69.8",
+    "title_la": "Status haemorrhagici specificati, alii",
+    "source_line": 12492
+  },
+  {
+    "code": "D69.9",
+    "title_la": "Status haemorrhagicus, non specificatus",
+    "source_line": 12504
+  },
+  {
+    "code": "D70",
+    "title_la": "Agranulocitoza – smanjenje broja granulocita",
+    "source_line": 1623
+  },
+  {
+    "code": "D71",
+    "title_la": "Funkcionalni poremećaji polimorfonuklearnih neutrofila",
+    "source_line": 1624
+  },
+  {
+    "code": "D72",
+    "title_la": "Ostali poremećaji belih krvnih zrnaca",
+    "source_line": 1625
+  },
+  {
+    "code": "D72.0",
+    "title_la": "Anomaliae leucocytorum geneticae",
+    "source_line": 12545
+  },
+  {
+    "code": "D72.1",
+    "title_la": "Eosinophilia",
+    "source_line": 12564
+  },
+  {
+    "code": "D72.8",
+    "title_la": "Disordines leucocytorum specificati, alii",
+    "source_line": 12569
+  },
+  {
+    "code": "D72.9",
+    "title_la": "Disordines leucocytorum, non specificati",
+    "source_line": 12580
+  },
+  {
+    "code": "D73",
+    "title_la": "Bolesti slezine",
+    "source_line": 1626
+  },
+  {
+    "code": "D73.0",
+    "title_la": "Hyposplenismus",
+    "source_line": 12585
+  },
+  {
+    "code": "D73.1",
+    "title_la": "Hypersplenismus",
+    "source_line": 12590
+  },
+  {
+    "code": "D73.2",
+    "title_la": "Splenomegalia congestiva chronica",
+    "source_line": 12595
+  },
+  {
+    "code": "D73.3",
+    "title_la": "Abscessus splenis",
+    "source_line": 12597
+  },
+  {
+    "code": "D73.4",
+    "title_la": "Cystis splenis",
+    "source_line": 12599
+  },
+  {
+    "code": "D73.5",
+    "title_la": "Infarctus splenis",
+    "source_line": 12601
+  },
+  {
+    "code": "D73.8",
+    "title_la": "Morbi splenis alii",
+    "source_line": 12606
+  },
+  {
+    "code": "D73.9",
+    "title_la": "Morbus splenis, non specificatus",
+    "source_line": 12611
+  },
+  {
+    "code": "D74",
+    "title_la": "Methemoglobinemija – Plava bolest",
+    "source_line": 1627
+  },
+  {
+    "code": "D74.0",
+    "title_la": "Methaemoglobinaemia congenita",
+    "source_line": 12623
+  },
+  {
+    "code": "D74.8",
+    "title_la": "Methaemoglobinaemiae aliae",
+    "source_line": 12628
+  },
+  {
+    "code": "D74.9",
+    "title_la": "Methaemoglobinaemia, non specificata",
+    "source_line": 12633
+  },
+  {
+    "code": "D75",
+    "title_la": "Ostale bolesti krvi i krvotvornih organa",
+    "source_line": 1628
+  },
+  {
+    "code": "D75.0",
+    "title_la": "Erythrocytosis familiaris",
+    "source_line": 12645
+  },
+  {
+    "code": "D75.1",
+    "title_la": "Polycythaemia secundaria",
+    "source_line": 12651
+  },
+  {
+    "code": "D75.8",
+    "title_la": "Morbi sanguinis et morbi organorum haematopoieticorum specificati, alii",
+    "source_line": 12669
+  },
+  {
+    "code": "D75.9",
+    "title_la": "Morbi sanguinis et morbi organorum haematopoieticorum, non specificatus",
+    "source_line": 12672
+  },
+  {
+    "code": "D76",
+    "title_la": "Druge označene bolesti koje zahvataju limforetikularno tkivo i retikulohistocitni",
+    "source_line": 1629
+  },
+  {
+    "code": "D76.1",
+    "title_la": "Lymphohistiocytosis haemophagocytica",
+    "source_line": 12699
+  },
+  {
+    "code": "D76.2",
+    "title_la": "Syndroma haemophagocyticum infectivum",
+    "source_line": 12703
+  },
+  {
+    "code": "D76.3",
+    "title_la": "Syndromata histiocytosis alia",
+    "source_line": 12706
+  },
+  {
+    "code": "D77",
+    "title_la": "Drugi poremećaji krvi i krvotvornih organa u bolestima klasifikovanim na drugom",
+    "source_line": 1631
+  },
+  {
+    "code": "D80",
+    "title_la": "Smanjenje imuniteta – sa predominantnim poremećajima antitela",
+    "source_line": 1635
+  },
+  {
+    "code": "D80.0",
+    "title_la": "Hypogammaglobulinaemia hereditaria",
+    "source_line": 12738
+  },
+  {
+    "code": "D80.1",
+    "title_la": "Hypogammaglobulinaemia non familiaris",
+    "source_line": 12742
+  },
+  {
+    "code": "D80.2",
+    "title_la": "Deficientia immunoglobulini A selectiva [IgA]",
+    "source_line": 12747
+  },
+  {
+    "code": "D80.3",
+    "title_la": "Deficientia immunoglobulini G [IgG](subclassis) selectiva",
+    "source_line": 12749
+  },
+  {
+    "code": "D80.4",
+    "title_la": "Deficientia immunoglobulini M selectiva [IgM]",
+    "source_line": 12751
+  },
+  {
+    "code": "D80.5",
+    "title_la": "Immunodeficientia hyper-immunoglobulinica M [IgM]",
+    "source_line": 12753
+  },
+  {
+    "code": "D80.6",
+    "title_la": "Deficientia anticorporum cum immunoglobulinis fere normalibus sive cum",
+    "source_line": 12755
+  },
+  {
+    "code": "D80.7",
+    "title_la": "Hypogammaglobulinaemia puerilis transitiva",
+    "source_line": 12758
+  },
+  {
+    "code": "D80.8",
+    "title_la": "Immunodeficientiae cum defectibus anticorporum praedominantibus, aliae",
+    "source_line": 12760
+  },
+  {
+    "code": "D80.9",
+    "title_la": "Immunodeficientia cum defectibus anticorporum preadominantibus, non specificata",
+    "source_line": 12763
+  },
+  {
+    "code": "D81",
+    "title_la": "Kombinovana smanjenja imuniteta",
+    "source_line": 1636
+  },
+  {
+    "code": "D81.0",
+    "title_la": "Immunodeficientia gravis combinata, cum dysgenesi reticulari",
+    "source_line": 12769
+  },
+  {
+    "code": "D81.1",
+    "title_la": "Immunodeficientia gravis combinata, cum numero T-et B-cellularum parvo",
+    "source_line": 12771
+  },
+  {
+    "code": "D81.2",
+    "title_la": "Immunodeficientia gravis combinata, cum numero B-cellularum parvo sive normali",
+    "source_line": 12781
+  },
+  {
+    "code": "D81.3",
+    "title_la": "Deficientia adenosinum-deaminasis [ADA]",
+    "source_line": 12783
+  },
+  {
+    "code": "D81.4",
+    "title_la": "Syndroma Nezelof",
+    "source_line": 12785
+  },
+  {
+    "code": "D81.5",
+    "title_la": "Deficientia purinum-nucleosidum-phosphorilasis [PNP]",
+    "source_line": 12787
+  },
+  {
+    "code": "D81.6",
+    "title_la": "Deficientia complexus histocompatibilitatis majoris classis I",
+    "source_line": 12789
+  },
+  {
+    "code": "D81.7",
+    "title_la": "Deficientia complexus histocompatibilitatis majoris classis II",
+    "source_line": 12792
+  },
+  {
+    "code": "D81.8",
+    "title_la": "Immunodeficientiae combinata aliae",
+    "source_line": 12794
+  },
+  {
+    "code": "D81.9",
+    "title_la": "Immunodeficientia combinata, non specificata",
+    "source_line": 12797
+  },
+  {
+    "code": "D82",
+    "title_la": "Smanjenje imuniteta – udruženo sa drugim većim defektima",
+    "source_line": 1637
+  },
+  {
+    "code": "D82.0",
+    "title_la": "Syndroma Wiskott-Aldrich",
+    "source_line": 12804
+  },
+  {
+    "code": "D82.1",
+    "title_la": "Syndroma Di George",
+    "source_line": 12807
+  },
+  {
+    "code": "D82.2",
+    "title_la": "Immunodeficientia cum extremitatibus brevibus",
+    "source_line": 12813
+  },
+  {
+    "code": "D82.3",
+    "title_la": "Immunodeficientia ut con sequela responsi hereditarii defectivi ad infectionem",
+    "source_line": 12815
+  },
+  {
+    "code": "D82.4",
+    "title_la": "Syndroma hyperimmunoglobulinaemia E [IgE]",
+    "source_line": 12820
+  },
+  {
+    "code": "D82.8",
+    "title_la": "Immunodeficientia cum defectibus majorubus aliis specificatis",
+    "source_line": 12822
+  },
+  {
+    "code": "D82.9",
+    "title_la": "Immunodeficientia cum defectibus majoribus, non specificata",
+    "source_line": 12824
+  },
+  {
+    "code": "D83",
+    "title_la": "Obično promenljivo smanjenje imuniteta",
+    "source_line": 1643
+  },
+  {
+    "code": "D83.0",
+    "title_la": "Immunodeficientia variabilis communis cum abnormitatibus numeri et functionis B",
+    "source_line": 12836
+  },
+  {
+    "code": "D83.1",
+    "title_la": "Immunodeficientia variabilis communis cum disordinibus immunoregulationis T",
+    "source_line": 12840
+  },
+  {
+    "code": "D83.2",
+    "title_la": "Immunodeficientia variabilis communis cum autoanticorporibus in B- et T-cellulas",
+    "source_line": 12844
+  },
+  {
+    "code": "D83.8",
+    "title_la": "Immunodeficientiae variabiles communes aliae",
+    "source_line": 12846
+  },
+  {
+    "code": "D83.9",
+    "title_la": "Immunodeficientia variabilis communis, non specificata",
+    "source_line": 12848
+  },
+  {
+    "code": "D84",
+    "title_la": "Ostala smanjenja imuniteta",
+    "source_line": 1644
+  },
+  {
+    "code": "D84.0",
+    "title_la": "Defectus functionis antigeni-1 lymphocytici",
+    "source_line": 12853
+  },
+  {
+    "code": "D84.1",
+    "title_la": "Defectus systematis complementi",
+    "source_line": 12855
+  },
+  {
+    "code": "D84.8",
+    "title_la": "Immunodeficientiae aliae, specificatae",
+    "source_line": 12858
+  },
+  {
+    "code": "D84.9",
+    "title_la": "Immunodeficientia, non specificata",
+    "source_line": 12860
+  },
+  {
+    "code": "D86",
+    "title_la": "Sarkoidoza – Čvorići vezivnog tkiva",
+    "source_line": 1645
+  },
+  {
+    "code": "D86.0",
+    "title_la": "Sarcoidosis pulmonum",
+    "source_line": 12865
+  },
+  {
+    "code": "D86.1",
+    "title_la": "Sarcoidosis nodulorum lymphaticorum",
+    "source_line": 12867
+  },
+  {
+    "code": "D86.2",
+    "title_la": "Sarcoidosis pulmonum cum sarcoidosi nodulorum lymphaticorum",
+    "source_line": 12869
+  },
+  {
+    "code": "D86.3",
+    "title_la": "Sarcoidosis cutis",
+    "source_line": 12871
+  },
+  {
+    "code": "D86.8",
+    "title_la": "Sarcoidosis locorum aliorum et locorum combinatorum",
+    "source_line": 12873
+  },
+  {
+    "code": "D86.9",
+    "title_la": "Sarcoidosis, non specificata",
+    "source_line": 12882
+  },
+  {
+    "code": "D89",
+    "title_la": "Drugi poremećaji imuniteta, neklasifikovani na drugom mestu",
+    "source_line": 1646
+  },
+  {
+    "code": "D89.0",
+    "title_la": "Hypergammaglobulinaemia polyclonalis",
+    "source_line": 12897
+  },
+  {
+    "code": "D89.1",
+    "title_la": "Cryoglobulinaemia",
+    "source_line": 12901
+  },
+  {
+    "code": "D89.2",
+    "title_la": "Hypergammaglobulinaemia, non specificata",
+    "source_line": 12911
+  },
+  {
+    "code": "D89.3",
+    "title_la": "Syndroma immunoreconstitutionis",
+    "source_line": 12913
+  },
+  {
+    "code": "D89.8",
+    "title_la": "Disordines immunitatis specificati, alii, non alibi classificatis",
+    "source_line": 12916
+  },
+  {
+    "code": "D89.9",
+    "title_la": "Disordo immunitatis, non specificatus",
+    "source_line": 12918
+  }
+]

@@ -1,0 +1,43 @@
+{
+  "source": {
+    "publisher": "Institut za javno zdravlje Srbije Dr Milan Jovanovic Batut",
+    "work": "MKB-10, Deseta revizija, Knjiga 1, Tabelarna lista, izdanje 2010",
+    "source_url": "https://www.rfzo.rs/download/dsg/MKB102010Knjiga1%281%29.pdf",
+    "sha256_pdf": "019f4d8070aff3b6c44b6e75830fe89959399ab9f5120531e734118b403a31b5"
+  },
+  "counts": {
+    "rows": 11075,
+    "categories": 2048,
+    "subcodes": 9027,
+    "conflicts": 1649
+  },
+  "category_conflicts": 1649,
+  "letters": {
+    "A": 86,
+    "B": 86,
+    "C": 89,
+    "D": 82,
+    "E": 73,
+    "F": 78,
+    "G": 68,
+    "H": 71,
+    "I": 77,
+    "J": 64,
+    "K": 71,
+    "L": 72,
+    "M": 79,
+    "N": 82,
+    "O": 76,
+    "P": 59,
+    "Q": 87,
+    "R": 91,
+    "S": 100,
+    "T": 95,
+    "U": 5,
+    "V": 97,
+    "W": 88,
+    "X": 97,
+    "Y": 91,
+    "Z": 84
+  }
+}

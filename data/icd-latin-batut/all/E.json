@@ -1,0 +1,1812 @@
+[
+  {
+    "code": "E00",
+    "title_la": "Sindrom urođenog nedostatka joda",
+    "source_line": 1660
+  },
+  {
+    "code": "E00.0",
+    "title_la": "Syndroma deficientiae iodi congenitae, typus neurologicus",
+    "source_line": 12984
+  },
+  {
+    "code": "E00.1",
+    "title_la": "Syndroma deficientiae iodi congenitae, typus mixoedematosus",
+    "source_line": 12987
+  },
+  {
+    "code": "E00.2",
+    "title_la": "Syndroma deficientiae iodi congenitae, typus mixtus",
+    "source_line": 12999
+  },
+  {
+    "code": "E00.9",
+    "title_la": "Sindroma deficientiae iodi congenitae, non specificatum",
+    "source_line": 13002
+  },
+  {
+    "code": "E01",
+    "title_la": "Endemska netoksična gušavost i druga stanja",
+    "source_line": 1661
+  },
+  {
+    "code": "E01.0",
+    "title_la": "Struma diffusa endemica propter deficientiam iodi",
+    "source_line": 13011
+  },
+  {
+    "code": "E01.1",
+    "title_la": "Struma nodosa endemica propter deficientiam iodi",
+    "source_line": 13013
+  },
+  {
+    "code": "E01.2",
+    "title_la": "Struma endemica non specificata propter deficientiam iodi",
+    "source_line": 13016
+  },
+  {
+    "code": "E01.8",
+    "title_la": "Dysfunctiones thyreoideae aliae et status alii propter deficientiam iodi",
+    "source_line": 13019
+  },
+  {
+    "code": "E02",
+    "title_la": "Klinički neizražena smanjena funkcija štitaste žlezde zbog nedostatka joda",
+    "source_line": 1662
+  },
+  {
+    "code": "E03",
+    "title_la": "Druge smanjene funkcije štitaste žlezde",
+    "source_line": 1663
+  },
+  {
+    "code": "E03.0",
+    "title_la": "Hypothyreoidismus cum struma diffusa congenita",
+    "source_line": 13030
+  },
+  {
+    "code": "E03.1",
+    "title_la": "Hypothyreoidismus congenitus",
+    "source_line": 13036
+  },
+  {
+    "code": "E03.2",
+    "title_la": "Hypothyreoidismus medicamentosus et hypothyreoidismus propter usum",
+    "source_line": 13041
+  },
+  {
+    "code": "E03.3",
+    "title_la": "Hypothyreoidismus post infectionem",
+    "source_line": 13045
+  },
+  {
+    "code": "E03.4",
+    "title_la": "Atrophia thyreoideae (acquisita)",
+    "source_line": 13055
+  },
+  {
+    "code": "E03.5",
+    "title_la": "Coma myxoedematosum",
+    "source_line": 13058
+  },
+  {
+    "code": "E03.8",
+    "title_la": "Hypothyreoidismus specificatus, alius",
+    "source_line": 13060
+  },
+  {
+    "code": "E03.9",
+    "title_la": "Hypothyreoidismus, non specificatus",
+    "source_line": 13062
+  },
+  {
+    "code": "E04",
+    "title_la": "Druga netoksična gušavost",
+    "source_line": 1664
+  },
+  {
+    "code": "E04.0",
+    "title_la": "Struma diffusa atoxica",
+    "source_line": 13073
+  },
+  {
+    "code": "E04.1",
+    "title_la": "Nodus thyreoideae autonomus atoxicus",
+    "source_line": 13078
+  },
+  {
+    "code": "E04.2",
+    "title_la": "Struma multinodosa atoxica",
+    "source_line": 13083
+  },
+  {
+    "code": "E04.8",
+    "title_la": "Struma atoxica alia, specificata",
+    "source_line": 13087
+  },
+  {
+    "code": "E04.9",
+    "title_la": "Struma atoxica, non specificata",
+    "source_line": 13089
+  },
+  {
+    "code": "E05",
+    "title_la": "Tireotoksikoza – povećana funkcija štitaste žlezde",
+    "source_line": 1665
+  },
+  {
+    "code": "E05.0",
+    "title_la": "Thyreotoxicosis cum struma diffusa",
+    "source_line": 13098
+  },
+  {
+    "code": "E05.1",
+    "title_la": "Thyreotoxicosis nodosa singularis",
+    "source_line": 13103
+  },
+  {
+    "code": "E05.2",
+    "title_la": "Thyreotoxicosis cum struma toxica multinodulari",
+    "source_line": 13112
+  },
+  {
+    "code": "E05.3",
+    "title_la": "Thyreotoxicosis thyreoideae extopicae",
+    "source_line": 13115
+  },
+  {
+    "code": "E05.4",
+    "title_la": "Thyreotoxicosis factitia",
+    "source_line": 13117
+  },
+  {
+    "code": "E05.5",
+    "title_la": "Crisis thyreotoxica",
+    "source_line": 13119
+  },
+  {
+    "code": "E05.8",
+    "title_la": "Thyreotoxicosis alia",
+    "source_line": 13121
+  },
+  {
+    "code": "E05.9",
+    "title_la": "Thyreotoxicosis, non specificata",
+    "source_line": 13125
+  },
+  {
+    "code": "E06",
+    "title_la": "Zapaljenje štitaste žlezde",
+    "source_line": 1666
+  },
+  {
+    "code": "E06.0",
+    "title_la": "Thyreoiditis acuta",
+    "source_line": 13133
+  },
+  {
+    "code": "E06.1",
+    "title_la": "Thyreoiditis subacuta",
+    "source_line": 13140
+  },
+  {
+    "code": "E06.2",
+    "title_la": "Thyreoiditis chronica cum thyreotoxicosi transitiva",
+    "source_line": 13148
+  },
+  {
+    "code": "E06.3",
+    "title_la": "Thyreoiditis autoimmunis",
+    "source_line": 13151
+  },
+  {
+    "code": "E06.4",
+    "title_la": "Thyreoiditis medicamentosa",
+    "source_line": 13158
+  },
+  {
+    "code": "E06.5",
+    "title_la": "Thyreoiditis chronica alia",
+    "source_line": 13169
+  },
+  {
+    "code": "E06.9",
+    "title_la": "Thyreoiditis, non specificata",
+    "source_line": 13177
+  },
+  {
+    "code": "E07",
+    "title_la": "Druge bolesti štitaste žlezde",
+    "source_line": 1667
+  },
+  {
+    "code": "E07.0",
+    "title_la": "Hypersecretio calcitonini",
+    "source_line": 13182
+  },
+  {
+    "code": "E07.1",
+    "title_la": "Struma dyshormogenes",
+    "source_line": 13186
+  },
+  {
+    "code": "E07.8",
+    "title_la": "Morbi thyreoideae specificati, alii",
+    "source_line": 13191
+  },
+  {
+    "code": "E07.9",
+    "title_la": "Morbus thyreoideae, non specificatus",
+    "source_line": 13198
+  },
+  {
+    "code": "E10",
+    "title_la": "Šećerna bolest, insulinozavisan oblik",
+    "source_line": 1670
+  },
+  {
+    "code": "E11",
+    "title_la": "Šećerna bolest, insulinonezavisan oblik",
+    "source_line": 1671
+  },
+  {
+    "code": "E12",
+    "title_la": "Šećerna bolest kod pothranjenosti",
+    "source_line": 1672
+  },
+  {
+    "code": "E13",
+    "title_la": "Druga označena šećerna bolest",
+    "source_line": 1673
+  },
+  {
+    "code": "E14",
+    "title_la": "Šećerna bolest, neoznačena",
+    "source_line": 1674
+  },
+  {
+    "code": "E15",
+    "title_la": "Besvesno stanje zbog niskog nivoa šećera u krvi, bez šećerne bolesti",
+    "source_line": 1678
+  },
+  {
+    "code": "E16",
+    "title_la": "Poremećaji unutrašnjeg lučenja pankreasa",
+    "source_line": 1679
+  },
+  {
+    "code": "E16.0",
+    "title_la": "Hypoglicaemia medicamentosa, sine comate",
+    "source_line": 13372
+  },
+  {
+    "code": "E16.1",
+    "title_la": "Hypoglycaemia alia",
+    "source_line": 13375
+  },
+  {
+    "code": "E16.2",
+    "title_la": "Hypoglycaemia, non specificata",
+    "source_line": 13383
+  },
+  {
+    "code": "E16.3",
+    "title_la": "Hypersecretio glucagoni",
+    "source_line": 13385
+  },
+  {
+    "code": "E16.4",
+    "title_la": "Hypersecretio gastrini",
+    "source_line": 13388
+  },
+  {
+    "code": "E16.8",
+    "title_la": "Dysfunctiones secretionis pancreatis interni specificatae aliae",
+    "source_line": 13399
+  },
+  {
+    "code": "E16.9",
+    "title_la": "Dysfunctio secretionis pancreatis interni, non specificata",
+    "source_line": 13406
+  },
+  {
+    "code": "E20",
+    "title_la": "Smanjena funkcija paraštitaste žlezde",
+    "source_line": 1682
+  },
+  {
+    "code": "E20.0",
+    "title_la": "Hypoparathyreoidismus idiopathicus",
+    "source_line": 13424
+  },
+  {
+    "code": "E20.1",
+    "title_la": "Pseudohypoparathyreoidismus",
+    "source_line": 13426
+  },
+  {
+    "code": "E20.8",
+    "title_la": "Hypoparathyreoidismus alius",
+    "source_line": 13428
+  },
+  {
+    "code": "E20.9",
+    "title_la": "Hypoparathyreoidismus, non specificatus",
+    "source_line": 13430
+  },
+  {
+    "code": "E21",
+    "title_la": "Pojačana funkcija i drugi poremećaji paraštitaste žlezde",
+    "source_line": 1683
+  },
+  {
+    "code": "E21.0",
+    "title_la": "Hyperparathyreoidismus primarius",
+    "source_line": 13439
+  },
+  {
+    "code": "E21.1",
+    "title_la": "Hyperparathyreoidismus secundarius, non alibi classificatus",
+    "source_line": 13443
+  },
+  {
+    "code": "E21.2",
+    "title_la": "Hyperparathyreoidismus alius",
+    "source_line": 13446
+  },
+  {
+    "code": "E21.3",
+    "title_la": "Hyperparathyreoidismus, non specificatus",
+    "source_line": 13455
+  },
+  {
+    "code": "E21.4",
+    "title_la": "Disordines glandulae parathyreoideae alii, specificati",
+    "source_line": 13457
+  },
+  {
+    "code": "E21.5",
+    "title_la": "Disordo glandulae parathyreoideae, non specificatus",
+    "source_line": 13459
+  },
+  {
+    "code": "E22",
+    "title_la": "Pojačana funkcija hipofize",
+    "source_line": 1684
+  },
+  {
+    "code": "E22.0",
+    "title_la": "Acromegalia et gigantismus pituitarius",
+    "source_line": 13470
+  },
+  {
+    "code": "E22.1",
+    "title_la": "Hyperprolactinaemia",
+    "source_line": 13477
+  },
+  {
+    "code": "E22.2",
+    "title_la": "Syndroma secretionis hormoni antidiuretici abnormalis",
+    "source_line": 13481
+  },
+  {
+    "code": "E22.8",
+    "title_la": "Hyperfunctio glandulae pituitariae alia",
+    "source_line": 13483
+  },
+  {
+    "code": "E22.9",
+    "title_la": "Hyperfunctio glandulae pituitariae, non specificata",
+    "source_line": 13486
+  },
+  {
+    "code": "E23",
+    "title_la": "Smanjena funkcija hipofize i druge bolesti hipofize",
+    "source_line": 1685
+  },
+  {
+    "code": "E23.0",
+    "title_la": "Hypopituitarismus",
+    "source_line": 13500
+  },
+  {
+    "code": "E23.1",
+    "title_la": "Hypopituitarismus medicamentosus",
+    "source_line": 13518
+  },
+  {
+    "code": "E23.2",
+    "title_la": "Diabetes insipidus",
+    "source_line": 13521
+  },
+  {
+    "code": "E23.3",
+    "title_la": "Dysfunctio hypothalami, non alibi classificati",
+    "source_line": 13524
+  },
+  {
+    "code": "E23.6",
+    "title_la": "Morbi glandulae pituitariae alii",
+    "source_line": 13528
+  },
+  {
+    "code": "E23.7",
+    "title_la": "Morbus glandulae pituitariae, non specificatus",
+    "source_line": 13532
+  },
+  {
+    "code": "E24",
+    "title_la": "Cushingov sindrom",
+    "source_line": 1686
+  },
+  {
+    "code": "E24.0",
+    "title_la": "Morbus Cushing, glandula pituitaria dependens",
+    "source_line": 13537
+  },
+  {
+    "code": "E24.1",
+    "title_la": "Syndroma Nelson",
+    "source_line": 13541
+  },
+  {
+    "code": "E24.2",
+    "title_la": "Syndroma Cushing medicamentosum",
+    "source_line": 13543
+  },
+  {
+    "code": "E24.3",
+    "title_la": "Syndroma ACTH ectopicum",
+    "source_line": 13546
+  },
+  {
+    "code": "E24.4",
+    "title_la": "Pseudosyndroma Cushing alcoholicum",
+    "source_line": 13554
+  },
+  {
+    "code": "E24.8",
+    "title_la": "Syndroma Cushing alia",
+    "source_line": 13556
+  },
+  {
+    "code": "E24.9",
+    "title_la": "Syndroma Cushing, non specificatum",
+    "source_line": 13558
+  },
+  {
+    "code": "E25",
+    "title_la": "Poremećaji lučenja polnih hormona nadbubrežne žlezde",
+    "source_line": 1687
+  },
+  {
+    "code": "E25.0",
+    "title_la": "Disordines adrenogenitales propter deficientiam enzymarum congenitam",
+    "source_line": 13572
+  },
+  {
+    "code": "E25.8",
+    "title_la": "Disordines adrenogenitales alii",
+    "source_line": 13578
+  },
+  {
+    "code": "E25.9",
+    "title_la": "Disordo adrenogenitalis, non specificatus",
+    "source_line": 13583
+  },
+  {
+    "code": "E26",
+    "title_la": "Pojačano lučenje aldosterona",
+    "source_line": 1688
+  },
+  {
+    "code": "E26.0",
+    "title_la": "Hyperaldosteronismus primarius",
+    "source_line": 13589
+  },
+  {
+    "code": "E26.1",
+    "title_la": "Hyperaldosteronismus secundarius",
+    "source_line": 13593
+  },
+  {
+    "code": "E26.8",
+    "title_la": "Hyperaldosteronismus alius",
+    "source_line": 13595
+  },
+  {
+    "code": "E26.9",
+    "title_la": "Hyperaldosteronismus, non specificatus",
+    "source_line": 13598
+  },
+  {
+    "code": "E27",
+    "title_la": "Drugi poremećaji funkcije nadbubrežne žlezde",
+    "source_line": 1689
+  },
+  {
+    "code": "E27.0",
+    "title_la": "Hyperfunctiones adrenocorticales aliae",
+    "source_line": 13610
+  },
+  {
+    "code": "E27.1",
+    "title_la": "Hypofunctio adrenocorticalis primaria",
+    "source_line": 13615
+  },
+  {
+    "code": "E27.2",
+    "title_la": "Crisis Addison",
+    "source_line": 13622
+  },
+  {
+    "code": "E27.3",
+    "title_la": "Hypofunctio adrenocorticalis medicamentosa",
+    "source_line": 13626
+  },
+  {
+    "code": "E27.4",
+    "title_la": "Hypofunctiones adrenocorticales aliae, non specificatae",
+    "source_line": 13629
+  },
+  {
+    "code": "E27.5",
+    "title_la": "Hyperfunctio adrenomedullaris",
+    "source_line": 13637
+  },
+  {
+    "code": "E27.8",
+    "title_la": "Disordines glandulae adrenalis alii, specificati",
+    "source_line": 13641
+  },
+  {
+    "code": "E27.9",
+    "title_la": "Disordo glandulae adrenalis, non specificatus",
+    "source_line": 13644
+  },
+  {
+    "code": "E28",
+    "title_la": "Poremećaji funkcije jajnika",
+    "source_line": 1690
+  },
+  {
+    "code": "E28.0",
+    "title_la": "Hyperestrogenesis",
+    "source_line": 13651
+  },
+  {
+    "code": "E28.1",
+    "title_la": "Hyperandrogenesis",
+    "source_line": 13663
+  },
+  {
+    "code": "E28.2",
+    "title_la": "Syndroma ovarii polycystici",
+    "source_line": 13668
+  },
+  {
+    "code": "E28.3",
+    "title_la": "Hypofunctio ovarii primaria",
+    "source_line": 13672
+  },
+  {
+    "code": "E28.8",
+    "title_la": "Dysfunctiones ovarii aliae",
+    "source_line": 13680
+  },
+  {
+    "code": "E28.9",
+    "title_la": "Dysfunctio ovarii, non specificata",
+    "source_line": 13683
+  },
+  {
+    "code": "E29",
+    "title_la": "Poremećaji funkcija muških polnih žlezda",
+    "source_line": 1691
+  },
+  {
+    "code": "E29.0",
+    "title_la": "Hyperfunctio testicularis",
+    "source_line": 13694
+  },
+  {
+    "code": "E29.1",
+    "title_la": "Hypofunctio testicularis",
+    "source_line": 13697
+  },
+  {
+    "code": "E29.8",
+    "title_la": "Dysfunctio testicularis alia",
+    "source_line": 13704
+  },
+  {
+    "code": "E29.9",
+    "title_la": "Dysfunctio testicularis, non specificata",
+    "source_line": 13706
+  },
+  {
+    "code": "E30",
+    "title_la": "Poremećaji polnog sazrevanja, neklasifikovani na drugom mestu",
+    "source_line": 1692
+  },
+  {
+    "code": "E30.0",
+    "title_la": "Pubertas tarda",
+    "source_line": 13711
+  },
+  {
+    "code": "E30.1",
+    "title_la": "Pubertas praecox",
+    "source_line": 13721
+  },
+  {
+    "code": "E30.8",
+    "title_la": "Disordines pubertatis alii",
+    "source_line": 13729
+  },
+  {
+    "code": "E30.9",
+    "title_la": "Disordo pubertatis, non specificatus",
+    "source_line": 13732
+  },
+  {
+    "code": "E31",
+    "title_la": "Poremećaji funkcija više žlezda sa unutrašnjim lučenjem",
+    "source_line": 1693
+  },
+  {
+    "code": "E31.0",
+    "title_la": "Hypofunctio polyglandularis autoimmunis",
+    "source_line": 13740
+  },
+  {
+    "code": "E31.1",
+    "title_la": "Hyperfunctio polyglandularis",
+    "source_line": 13743
+  },
+  {
+    "code": "E31.8",
+    "title_la": "Dysfunctiones polyglandulares aliae",
+    "source_line": 13746
+  },
+  {
+    "code": "E31.9",
+    "title_la": "Dysfunctio polyglandularis, non specificata",
+    "source_line": 13748
+  },
+  {
+    "code": "E32",
+    "title_la": "Bolest grudne žlezde",
+    "source_line": 1694
+  },
+  {
+    "code": "E32.0",
+    "title_la": "Hyperplasia thymi persistens",
+    "source_line": 13755
+  },
+  {
+    "code": "E32.1",
+    "title_la": "Abscessus thymi",
+    "source_line": 13758
+  },
+  {
+    "code": "E32.8",
+    "title_la": "Morbi thymi alii",
+    "source_line": 13760
+  },
+  {
+    "code": "E32.9",
+    "title_la": "Morbus thymi, non specificatus",
+    "source_line": 13762
+  },
+  {
+    "code": "E34",
+    "title_la": "Drugi poremećaji žlezda sa unutrašnjim lučenjem",
+    "source_line": 1695
+  },
+  {
+    "code": "E34.0",
+    "title_la": "Syndroma glandulae endocrinae carcinoides",
+    "source_line": 13768
+  },
+  {
+    "code": "E34.1",
+    "title_la": "Hypersecretio hormonarum intestinorum",
+    "source_line": 13778
+  },
+  {
+    "code": "E34.2",
+    "title_la": "Secretio hormoni ectopici, non alibi classificati",
+    "source_line": 13780
+  },
+  {
+    "code": "E34.3",
+    "title_la": "Nanosomia, non alibi classificata",
+    "source_line": 13782
+  },
+  {
+    "code": "E34.4",
+    "title_la": "Gigantismus constitutionalis",
+    "source_line": 13799
+  },
+  {
+    "code": "E34.5",
+    "title_la": "Syndroma resistentiae androgenis",
+    "source_line": 13802
+  },
+  {
+    "code": "E34.8",
+    "title_la": "Disordines endocrinales specificati, alii",
+    "source_line": 13808
+  },
+  {
+    "code": "E34.9",
+    "title_la": "Disordo endocrinalis, non specificatus",
+    "source_line": 13812
+  },
+  {
+    "code": "E35",
+    "title_la": "Bolesti žlezda sa unutrašnjim lučenjem u bolestima klasifikovanim na drugom",
+    "source_line": 1696
+  },
+  {
+    "code": "E35.0",
+    "title_la": "Morbi thyreoideae in morbis alibi classificatis",
+    "source_line": 13821
+  },
+  {
+    "code": "E35.1",
+    "title_la": "Morbi glandularum adrenalium in morbis alibi classificatis",
+    "source_line": 13824
+  },
+  {
+    "code": "E35.8",
+    "title_la": "Morbi glandularum endocrinarum aliarum in morbis alibi classificatis",
+    "source_line": 13828
+  },
+  {
+    "code": "E40",
+    "title_la": "Teška proteinska pothranjenost, „Kwashiorkor“",
+    "source_line": 1700
+  },
+  {
+    "code": "E41",
+    "title_la": "Teška energetska pothranjenost",
+    "source_line": 1701
+  },
+  {
+    "code": "E42",
+    "title_la": "Teška proteinsko-energetska pothranjenost",
+    "source_line": 1707
+  },
+  {
+    "code": "E43",
+    "title_la": "Teška proteinsko-energetska pothranjenost, neoznačena",
+    "source_line": 1708
+  },
+  {
+    "code": "E44",
+    "title_la": "Blaga i umereno teška proteinsko-energetska pothranjenost",
+    "source_line": 1709
+  },
+  {
+    "code": "E44.0",
+    "title_la": "Malnutritio moderata",
+    "source_line": 13893
+  },
+  {
+    "code": "E44.1",
+    "title_la": "Malnutritio proteinoenergetica mitis",
+    "source_line": 13903
+  },
+  {
+    "code": "E45",
+    "title_la": "Zastoj u razvoju usled proteinsko-energetske pothranjenosti",
+    "source_line": 1710
+  },
+  {
+    "code": "E46",
+    "title_la": "Proteinsko-energetska pothranjenost, neoznačena",
+    "source_line": 1711
+  },
+  {
+    "code": "E50",
+    "title_la": "Avitaminoza A – bolest uzrokovana nedostatkom vitamina A",
+    "source_line": 1714
+  },
+  {
+    "code": "E50.0",
+    "title_la": "Avitaminosis A cum xerosi coniunctivali",
+    "source_line": 13934
+  },
+  {
+    "code": "E50.1",
+    "title_la": "Avitaminosis A cum maculis Bitot et xerosi coniunctivali",
+    "source_line": 13936
+  },
+  {
+    "code": "E50.2",
+    "title_la": "Avitaminosis A cum xerosi corneali",
+    "source_line": 13939
+  },
+  {
+    "code": "E50.3",
+    "title_la": "Avitaminosis A cum ulceratione et xerosi corneali",
+    "source_line": 13941
+  },
+  {
+    "code": "E50.4",
+    "title_la": "Avitaminosis A cum keratomaliacia",
+    "source_line": 13943
+  },
+  {
+    "code": "E50.5",
+    "title_la": "Avitaminosis A cum hemaralopia",
+    "source_line": 13945
+  },
+  {
+    "code": "E50.6",
+    "title_la": "Avitaminosis A cum cicatrice corneali xerophthalmica",
+    "source_line": 13955
+  },
+  {
+    "code": "E50.7",
+    "title_la": "Avitaminosis A cum mutationibus ocularibus, non specificatis",
+    "source_line": 13957
+  },
+  {
+    "code": "E50.8",
+    "title_la": "Avitaminosis A cum manifestationibus aliis",
+    "source_line": 13960
+  },
+  {
+    "code": "E50.9",
+    "title_la": "Avitaminosis A, non specificata",
+    "source_line": 13965
+  },
+  {
+    "code": "E51",
+    "title_la": "Nedosatatak tiamina",
+    "source_line": 1715
+  },
+  {
+    "code": "E51.1",
+    "title_la": "Morbus beriberi",
+    "source_line": 13972
+  },
+  {
+    "code": "E51.2",
+    "title_la": "Encephalopathia Wernicke",
+    "source_line": 13977
+  },
+  {
+    "code": "E51.8",
+    "title_la": "Hypothiaminoses cum manifestationibus aliis",
+    "source_line": 13979
+  },
+  {
+    "code": "E51.9",
+    "title_la": "Hypothiaminosis, non specificata",
+    "source_line": 13981
+  },
+  {
+    "code": "E52",
+    "title_la": "Pelagra – bolest uzrokovana nedostatkom vitamina B3 [vitamin PP]",
+    "source_line": 1716
+  },
+  {
+    "code": "E53",
+    "title_la": "Nedostatak ostalih vitamina B-grupe",
+    "source_line": 1717
+  },
+  {
+    "code": "E53.0",
+    "title_la": "Deficientia riboflavini",
+    "source_line": 13996
+  },
+  {
+    "code": "E53.1",
+    "title_la": "Deficientia pyridoxini",
+    "source_line": 13999
+  },
+  {
+    "code": "E53.8",
+    "title_la": "Deficientia vitaminorum B specificatorum, aliorum",
+    "source_line": 14011
+  },
+  {
+    "code": "E53.9",
+    "title_la": "Deficientia vitamini B, non specificata",
+    "source_line": 14020
+  },
+  {
+    "code": "E54",
+    "title_la": "Nedostatak vitamina C",
+    "source_line": 1718
+  },
+  {
+    "code": "E55",
+    "title_la": "Nedostatak vitamina D",
+    "source_line": 1719
+  },
+  {
+    "code": "E55.0",
+    "title_la": "Rachitis activa",
+    "source_line": 14035
+  },
+  {
+    "code": "E55.9",
+    "title_la": "Deficientia vitamini D, non specificata",
+    "source_line": 14046
+  },
+  {
+    "code": "E56",
+    "title_la": "Nedostatci ostalih vitamina",
+    "source_line": 1720
+  },
+  {
+    "code": "E56.0",
+    "title_la": "Deficientia vitamini E",
+    "source_line": 14053
+  },
+  {
+    "code": "E56.1",
+    "title_la": "Deficientia vitamini K",
+    "source_line": 14055
+  },
+  {
+    "code": "E56.8",
+    "title_la": "Deficientia vitaminorum aliorum",
+    "source_line": 14059
+  },
+  {
+    "code": "E56.9",
+    "title_la": "Deficientia vitamini, non specificata",
+    "source_line": 14061
+  },
+  {
+    "code": "E58",
+    "title_la": "Nedostatak kalcijuma u ishrani",
+    "source_line": 1721
+  },
+  {
+    "code": "E59",
+    "title_la": "Nedostatak selena u ishrani",
+    "source_line": 1722
+  },
+  {
+    "code": "E60",
+    "title_la": "Nedostatak cinka u ishrani",
+    "source_line": 1723
+  },
+  {
+    "code": "E61",
+    "title_la": "Nedostatak drugih hranljivih materija",
+    "source_line": 1724
+  },
+  {
+    "code": "E61.0",
+    "title_la": "Deficientia cupri nutritivi",
+    "source_line": 14089
+  },
+  {
+    "code": "E61.1",
+    "title_la": "Deficientia ferrum nutritivi",
+    "source_line": 14091
+  },
+  {
+    "code": "E61.2",
+    "title_la": "Deficientia magnesii nutritivi",
+    "source_line": 14094
+  },
+  {
+    "code": "E61.3",
+    "title_la": "Deficientia mangani nutritivi",
+    "source_line": 14096
+  },
+  {
+    "code": "E61.4",
+    "title_la": "Deficientia chromii nutritivi",
+    "source_line": 14098
+  },
+  {
+    "code": "E61.5",
+    "title_la": "Deficientia molibdeni nutritivi",
+    "source_line": 14100
+  },
+  {
+    "code": "E61.6",
+    "title_la": "Deficientia vanadii nutritivi",
+    "source_line": 14102
+  },
+  {
+    "code": "E61.7",
+    "title_la": "Deficientia materiarum nutritivarum plurium",
+    "source_line": 14104
+  },
+  {
+    "code": "E61.8",
+    "title_la": "Deficientia materiarum nutritivarum non specificatarum, aliarum",
+    "source_line": 14106
+  },
+  {
+    "code": "E61.9",
+    "title_la": "Deficientia materiae nutritivae, non specificatae",
+    "source_line": 14108
+  },
+  {
+    "code": "E63",
+    "title_la": "Drugi nedostaci hranljivih materija",
+    "source_line": 1725
+  },
+  {
+    "code": "E63.0",
+    "title_la": "Deficientia acidorum stearicorum essentialium",
+    "source_line": 14117
+  },
+  {
+    "code": "E63.1",
+    "title_la": "Inaequilibrium alimenti constitutionale",
+    "source_line": 14127
+  },
+  {
+    "code": "E63.8",
+    "title_la": "Deficientiae materiarum nutritivarum specificatae, aliae",
+    "source_line": 14129
+  },
+  {
+    "code": "E63.9",
+    "title_la": "Deficientia materiarum nutritivarum, non specificata",
+    "source_line": 14131
+  },
+  {
+    "code": "E64",
+    "title_la": "Posledice pothranjenosti i drugi nedostaci hranljivih materija",
+    "source_line": 1726
+  },
+  {
+    "code": "E64.0",
+    "title_la": "Sequelae malnutritionis proteinoenergeticae",
+    "source_line": 14139
+  },
+  {
+    "code": "E64.1",
+    "title_la": "Sequelae avitaminosis A",
+    "source_line": 14142
+  },
+  {
+    "code": "E64.2",
+    "title_la": "Sequelae avitaminosis C",
+    "source_line": 14144
+  },
+  {
+    "code": "E64.3",
+    "title_la": "Sequelae rachitidis",
+    "source_line": 14146
+  },
+  {
+    "code": "E64.8",
+    "title_la": "Sequelae deficientiae materiarum nutritivarum aliarum",
+    "source_line": 14149
+  },
+  {
+    "code": "E64.9",
+    "title_la": "Sequelae deficientiae materiarum nutritivarum, non specificatae",
+    "source_line": 14151
+  },
+  {
+    "code": "E65",
+    "title_la": "Lokalizovana gojaznost",
+    "source_line": 1729
+  },
+  {
+    "code": "E66",
+    "title_la": "Opšta gojaznost",
+    "source_line": 1730
+  },
+  {
+    "code": "E66.0",
+    "title_la": "Obesitas propter calorias enormes",
+    "source_line": 14170
+  },
+  {
+    "code": "E66.1",
+    "title_la": "Obesitas medicamentosa",
+    "source_line": 14172
+  },
+  {
+    "code": "E66.2",
+    "title_la": "Obesitas extrema cum hypoventilatione alveolari",
+    "source_line": 14175
+  },
+  {
+    "code": "E66.8",
+    "title_la": "Obesitas alia",
+    "source_line": 14184
+  },
+  {
+    "code": "E66.9",
+    "title_la": "Obesitas, non specificata",
+    "source_line": 14187
+  },
+  {
+    "code": "E67",
+    "title_la": "Drugo prekomerno hranjenje",
+    "source_line": 1731
+  },
+  {
+    "code": "E67.0",
+    "title_la": "Hypervitaminosis A",
+    "source_line": 14195
+  },
+  {
+    "code": "E67.1",
+    "title_la": "Hypercarotinaemia",
+    "source_line": 14197
+  },
+  {
+    "code": "E67.2",
+    "title_la": "Hypervitaminosis pyridoxini",
+    "source_line": 14199
+  },
+  {
+    "code": "E67.3",
+    "title_la": "Hypervitaminosis D",
+    "source_line": 14201
+  },
+  {
+    "code": "E67.8",
+    "title_la": "Hyperalimentatio specificata, alia",
+    "source_line": 14203
+  },
+  {
+    "code": "E68",
+    "title_la": "Posledice prekomernog hranjenja",
+    "source_line": 1732
+  },
+  {
+    "code": "E70",
+    "title_la": "Poremećaji metabolizma aromatičnih aminokiselina",
+    "source_line": 1735
+  },
+  {
+    "code": "E70.0",
+    "title_la": "Phenylketonuria classica",
+    "source_line": 14224
+  },
+  {
+    "code": "E70.1",
+    "title_la": "Hyperphenylalaninaemiae aliae",
+    "source_line": 14226
+  },
+  {
+    "code": "E70.2",
+    "title_la": "Disordo metabolismi thyrosini",
+    "source_line": 14228
+  },
+  {
+    "code": "E70.3",
+    "title_la": "Albinismus",
+    "source_line": 14242
+  },
+  {
+    "code": "E70.8",
+    "title_la": "Disordines metabolismi aminoacidorum aromaticorum alii",
+    "source_line": 14251
+  },
+  {
+    "code": "E70.9",
+    "title_la": "Disordo metabolismi aminoacidorum aromaticorum, non specificatus",
+    "source_line": 14256
+  },
+  {
+    "code": "E71",
+    "title_la": "Poremećaji metabolizma lančanih aminokiselina i matabolizma masnih kiselina",
+    "source_line": 1736
+  },
+  {
+    "code": "E71.0",
+    "title_la": "Morbus sirupus aceris-urina",
+    "source_line": 14262
+  },
+  {
+    "code": "E71.1",
+    "title_la": "Disordines metabolismi aminoacidorum catenosorum alii",
+    "source_line": 14264
+  },
+  {
+    "code": "E71.2",
+    "title_la": "Disordo metabolismi aminoacidorum catenosorum, non specificatus",
+    "source_line": 14271
+  },
+  {
+    "code": "E71.3",
+    "title_la": "Disordines metabolismi acidorum stearicorum",
+    "source_line": 14273
+  },
+  {
+    "code": "E72",
+    "title_la": "Drugi poremećaji metabolizma aminokiselina",
+    "source_line": 1737
+  },
+  {
+    "code": "E72.0",
+    "title_la": "Disordines transportationis aminoacidorum",
+    "source_line": 14295
+  },
+  {
+    "code": "E72.1",
+    "title_la": "Disordines metabolismi aminoacidorum cum sulfure",
+    "source_line": 14304
+  },
+  {
+    "code": "E72.2",
+    "title_la": "Disordines metabolismi ureae",
+    "source_line": 14311
+  },
+  {
+    "code": "E72.3",
+    "title_la": "Disordines metabolismi lysini et hydroxylysini",
+    "source_line": 14318
+  },
+  {
+    "code": "E72.4",
+    "title_la": "Disordines metabolismi ornithini",
+    "source_line": 14325
+  },
+  {
+    "code": "E72.5",
+    "title_la": "Disordines metabolismi glycini",
+    "source_line": 14328
+  },
+  {
+    "code": "E72.8",
+    "title_la": "Disordines metabolismi aminoacidorum alii, specificati",
+    "source_line": 14342
+  },
+  {
+    "code": "E72.9",
+    "title_la": "Disordo metabolismi aminoacidorum, non specificatus",
+    "source_line": 14347
+  },
+  {
+    "code": "E73",
+    "title_la": "Nepodnošenje mlečnog šećera",
+    "source_line": 1738
+  },
+  {
+    "code": "E73.0",
+    "title_la": "Deficientia lactasi congenita",
+    "source_line": 14352
+  },
+  {
+    "code": "E73.1",
+    "title_la": "Deficientia lactasi secundaria",
+    "source_line": 14354
+  },
+  {
+    "code": "E73.8",
+    "title_la": "Intolerantia lactosi alia",
+    "source_line": 14356
+  },
+  {
+    "code": "E73.9",
+    "title_la": "Intolerantia lactosi, non specificata",
+    "source_line": 14358
+  },
+  {
+    "code": "E74",
+    "title_la": "Drugi poremećaji metabolizma ugljenih hidrata",
+    "source_line": 1739
+  },
+  {
+    "code": "E74.0",
+    "title_la": "Accumulatio glycogeni abnormalis",
+    "source_line": 14367
+  },
+  {
+    "code": "E74.1",
+    "title_la": "Disordines metabolismi fructosi",
+    "source_line": 14381
+  },
+  {
+    "code": "E74.2",
+    "title_la": "Disordines metabolismi galactosi",
+    "source_line": 14386
+  },
+  {
+    "code": "E74.3",
+    "title_la": "Disordines absorptionis carbohydratorum intestinales alii",
+    "source_line": 14390
+  },
+  {
+    "code": "E74.4",
+    "title_la": "Disordines metabolismi pyruvati et gluconeogenesis",
+    "source_line": 14400
+  },
+  {
+    "code": "E74.8",
+    "title_la": "Disordines metabolismi carbohydratorum alii, specificati",
+    "source_line": 14408
+  },
+  {
+    "code": "E74.9",
+    "title_la": "Disordo metabolismi carbohydrati, non specificatus",
+    "source_line": 14414
+  },
+  {
+    "code": "E75",
+    "title_la": "Drugi poremećaji metabolizma sfingolipida i deponovanja masti",
+    "source_line": 1740
+  },
+  {
+    "code": "E75.0",
+    "title_la": "Gangliosidosis GM2",
+    "source_line": 14421
+  },
+  {
+    "code": "E75.1",
+    "title_la": "Gangliosidoses aliae",
+    "source_line": 14430
+  },
+  {
+    "code": "E75.2",
+    "title_la": "Sphingolipidosis alia",
+    "source_line": 14437
+  },
+  {
+    "code": "E75.3",
+    "title_la": "Sphingolipidosis, non specificata",
+    "source_line": 14448
+  },
+  {
+    "code": "E75.4",
+    "title_la": "Neuronalis ceroides lipofuscinosis",
+    "source_line": 14458
+  },
+  {
+    "code": "E75.5",
+    "title_la": "Disordines depositionis lipidorum alii",
+    "source_line": 14465
+  },
+  {
+    "code": "E75.6",
+    "title_la": "Disordo depositionis lipidorum, non specificatus",
+    "source_line": 14469
+  },
+  {
+    "code": "E76",
+    "title_la": "Poremećaj metabolizma glikozaminoglikana",
+    "source_line": 1741
+  },
+  {
+    "code": "E76.0",
+    "title_la": "Mucopolysaccharidosis, typus I",
+    "source_line": 14474
+  },
+  {
+    "code": "E76.1",
+    "title_la": "Mucopolysaccharidosis, typus II",
+    "source_line": 14480
+  },
+  {
+    "code": "E76.2",
+    "title_la": "Mucopolysaccharidoses alii",
+    "source_line": 14483
+  },
+  {
+    "code": "E76.3",
+    "title_la": "Mucopolysaccharidoses, non specificatae",
+    "source_line": 14491
+  },
+  {
+    "code": "E76.8",
+    "title_la": "Disordines metabolismi glucosaminoglycanorum alii",
+    "source_line": 14493
+  },
+  {
+    "code": "E76.9",
+    "title_la": "Disordines metabolismi glucosaminoglycanorum, non specificatus",
+    "source_line": 14495
+  },
+  {
+    "code": "E77",
+    "title_la": "Poremećaji metabolizma glikoproteina",
+    "source_line": 1742
+  },
+  {
+    "code": "E77.0",
+    "title_la": "Disordines modificationis posttranslationalis enzymarum lysosomarium",
+    "source_line": 14500
+  },
+  {
+    "code": "E77.1",
+    "title_la": "Disordines in degradatione glycoproteini",
+    "source_line": 14504
+  },
+  {
+    "code": "E77.8",
+    "title_la": "Disordines metabolismi glycoproteini alii",
+    "source_line": 14516
+  },
+  {
+    "code": "E77.9",
+    "title_la": "Disordo metabolismi glycoproteini, non specificatus",
+    "source_line": 14518
+  },
+  {
+    "code": "E78",
+    "title_la": "Poremećaji metabolizma masti i drugi poremećaji masti u krvi",
+    "source_line": 1743
+  },
+  {
+    "code": "E78.0",
+    "title_la": "Hypercholesterolaemia vera",
+    "source_line": 14524
+  },
+  {
+    "code": "E78.1",
+    "title_la": "Hyperglyceridaemia vera",
+    "source_line": 14531
+  },
+  {
+    "code": "E78.2",
+    "title_la": "Hyperlipidaemia mixta",
+    "source_line": 14538
+  },
+  {
+    "code": "E78.3",
+    "title_la": "Hyperhylomicronaemia",
+    "source_line": 14548
+  },
+  {
+    "code": "E78.4",
+    "title_la": "Hyperlipidaemia alia",
+    "source_line": 14553
+  },
+  {
+    "code": "E78.5",
+    "title_la": "Hyperlipidaemia, non specificata",
+    "source_line": 14556
+  },
+  {
+    "code": "E78.6",
+    "title_la": "Deficientia lipoproteini",
+    "source_line": 14558
+  },
+  {
+    "code": "E78.8",
+    "title_la": "Disordines metabolismi lipoproteini alii",
+    "source_line": 14566
+  },
+  {
+    "code": "E78.9",
+    "title_la": "Disordo metabolismi lipoproteini, non specificatus",
+    "source_line": 14574
+  },
+  {
+    "code": "E79",
+    "title_la": "Poremećaji metabolizma purina i pirimidina",
+    "source_line": 1744
+  },
+  {
+    "code": "E79.0",
+    "title_la": "Hyperuricaemia asymptomatica",
+    "source_line": 14584
+  },
+  {
+    "code": "E79.1",
+    "title_la": "Syndroma Lesch-Nyhan",
+    "source_line": 14586
+  },
+  {
+    "code": "E79.8",
+    "title_la": "Disordines metabolismi purini et pyrimidini alii",
+    "source_line": 14588
+  },
+  {
+    "code": "E79.9",
+    "title_la": "Disordo metabolismi purini et pyrimidini, non specificatus",
+    "source_line": 14591
+  },
+  {
+    "code": "E80",
+    "title_la": "Porfirija i poremećaji metabolizma bilirubina",
+    "source_line": 1745
+  },
+  {
+    "code": "E80.0",
+    "title_la": "Porphyria erythropoietica hereditaria",
+    "source_line": 14597
+  },
+  {
+    "code": "E80.1",
+    "title_la": "Porphyria cutanea tarda",
+    "source_line": 14601
+  },
+  {
+    "code": "E80.2",
+    "title_la": "Porphyria alia",
+    "source_line": 14603
+  },
+  {
+    "code": "E80.3",
+    "title_la": "Disordines catalasis et peroxidasis",
+    "source_line": 14610
+  },
+  {
+    "code": "E80.4",
+    "title_la": "Syndroma Gilbert",
+    "source_line": 14613
+  },
+  {
+    "code": "E80.5",
+    "title_la": "Syndroma Crigler-Najjar",
+    "source_line": 14615
+  },
+  {
+    "code": "E80.6",
+    "title_la": "Disordines metabolismi bilirubinorum alii",
+    "source_line": 14617
+  },
+  {
+    "code": "E80.7",
+    "title_la": "Disordo metabolismi bilirubini, non specificatus",
+    "source_line": 14621
+  },
+  {
+    "code": "E83",
+    "title_la": "Poremećji metabolizma mineralnih materija",
+    "source_line": 1746
+  },
+  {
+    "code": "E83.0",
+    "title_la": "Disordo metabolismi cupri",
+    "source_line": 14636
+  },
+  {
+    "code": "E83.1",
+    "title_la": "Disordines metabolismi ferri",
+    "source_line": 14640
+  },
+  {
+    "code": "E83.2",
+    "title_la": "Disordines metabolismi zinci",
+    "source_line": 14646
+  },
+  {
+    "code": "E83.3",
+    "title_la": "Disordines metabolismi phosphori et phosphatasis",
+    "source_line": 14649
+  },
+  {
+    "code": "E83.4",
+    "title_la": "Disordines metabolismi magnesii",
+    "source_line": 14658
+  },
+  {
+    "code": "E83.5",
+    "title_la": "Disordines metabolismi calcii",
+    "source_line": 14662
+  },
+  {
+    "code": "E83.8",
+    "title_la": "Disordines metabolismi mineralium alii",
+    "source_line": 14668
+  },
+  {
+    "code": "E83.9",
+    "title_la": "Disordo metabolismi mineralium, non specificatus",
+    "source_line": 14670
+  },
+  {
+    "code": "E84",
+    "title_la": "Cistična fibroza",
+    "source_line": 1747
+  },
+  {
+    "code": "E84.0",
+    "title_la": "Fibrosis cystica pulmonalis",
+    "source_line": 14676
+  },
+  {
+    "code": "E84.1",
+    "title_la": "Fibrosis cystica intestinalis",
+    "source_line": 14686
+  },
+  {
+    "code": "E84.8",
+    "title_la": "Fibrosis cystica cum manifestationibus alli",
+    "source_line": 14691
+  },
+  {
+    "code": "E84.9",
+    "title_la": "Fibrosis cystica, non specificata",
+    "source_line": 14694
+  },
+  {
+    "code": "E85",
+    "title_la": "Amiloidoza – nagomilavanje amiloida u tkivima",
+    "source_line": 1748
+  },
+  {
+    "code": "E85.0",
+    "title_la": "Amyloidosis heredofamiliaris, non-neuropathica",
+    "source_line": 14700
+  },
+  {
+    "code": "E85.1",
+    "title_la": "Amyloidosis heredofamiliaris neuropathica",
+    "source_line": 14704
+  },
+  {
+    "code": "E85.2",
+    "title_la": "Amyloidosis heredofamiliaris, non specificata",
+    "source_line": 14707
+  },
+  {
+    "code": "E85.3",
+    "title_la": "Amyloidosis systemica secundaria",
+    "source_line": 14709
+  },
+  {
+    "code": "E85.4",
+    "title_la": "Amyloidosis localisata",
+    "source_line": 14712
+  },
+  {
+    "code": "E85.8",
+    "title_la": "Amyloidosis alia",
+    "source_line": 14715
+  },
+  {
+    "code": "E85.9",
+    "title_la": "Amyloidosis, non specificata",
+    "source_line": 14717
+  },
+  {
+    "code": "E86",
+    "title_la": "Smanjenje količine vode i zapremine krvi",
+    "source_line": 1749
+  },
+  {
+    "code": "E87",
+    "title_la": "Drugi poremećaji tečnosti, elektrolita i acido-bazne ravnoteže",
+    "source_line": 1750
+  },
+  {
+    "code": "E87.0",
+    "title_la": "Hyperosmolalia et hypernatraemia",
+    "source_line": 14733
+  },
+  {
+    "code": "E87.1",
+    "title_la": "Hypoosmolalia et hyponatraemia",
+    "source_line": 14742
+  },
+  {
+    "code": "E87.2",
+    "title_la": "Acidosis",
+    "source_line": 14746
+  },
+  {
+    "code": "E87.3",
+    "title_la": "Alkalosis",
+    "source_line": 14754
+  },
+  {
+    "code": "E87.4",
+    "title_la": "Disordo aequilibrii acidobasici mixtus",
+    "source_line": 14760
+  },
+  {
+    "code": "E87.5",
+    "title_la": "Hyperkaliaemia",
+    "source_line": 14762
+  },
+  {
+    "code": "E87.6",
+    "title_la": "Hypokaliaemia",
+    "source_line": 14766
+  },
+  {
+    "code": "E87.7",
+    "title_la": "Hypervolaemia",
+    "source_line": 14769
+  },
+  {
+    "code": "E87.8",
+    "title_la": "Disordines aequlibrii electrolyti et fluidi alii, non alibi classificati",
+    "source_line": 14772
+  },
+  {
+    "code": "E88",
+    "title_la": "Drugi poremećaji metabolizma",
+    "source_line": 1751
+  },
+  {
+    "code": "E88.0",
+    "title_la": "Disordines metabolismi plasma-proteini, non alibi classificati",
+    "source_line": 14783
+  },
+  {
+    "code": "E88.1",
+    "title_la": "Lipodystrophia, non alibi classificata",
+    "source_line": 14799
+  },
+  {
+    "code": "E88.2",
+    "title_la": "Lipomatosis, non alibi clasificata",
+    "source_line": 14803
+  },
+  {
+    "code": "E88.3",
+    "title_la": "Syndroma tumor lysis",
+    "source_line": 14808
+  },
+  {
+    "code": "E88.8",
+    "title_la": "Disordines metabolismi alii, specificati",
+    "source_line": 14811
+  },
+  {
+    "code": "E88.9",
+    "title_la": "Disordo metabolismi, non specificatus",
+    "source_line": 14815
+  },
+  {
+    "code": "E89",
+    "title_la": "Poremećaji žlezda sa unutrašnjim lučenjem i poremećaji metabolizma posle",
+    "source_line": 1752
+  },
+  {
+    "code": "E89.0",
+    "title_la": "Hypothyreoidismus postproceduralis",
+    "source_line": 14822
+  },
+  {
+    "code": "E89.1",
+    "title_la": "Hypoinsulinaemia postproceduralis",
+    "source_line": 14826
+  },
+  {
+    "code": "E89.2",
+    "title_la": "Hypoparathyreoidismus postproceduralis",
+    "source_line": 14830
+  },
+  {
+    "code": "E89.3",
+    "title_la": "Hypopituitarismus postproceduralis",
+    "source_line": 14833
+  },
+  {
+    "code": "E89.4",
+    "title_la": "Hypofunctio ovarii postproceduralis",
+    "source_line": 14836
+  },
+  {
+    "code": "E89.5",
+    "title_la": "Hypofunctio testicularis postproceduralis",
+    "source_line": 14838
+  },
+  {
+    "code": "E89.6",
+    "title_la": "Hypofunctio adrenocorticalis (-medullaris) postproceduralis",
+    "source_line": 14840
+  },
+  {
+    "code": "E89.8",
+    "title_la": "Disordines glandulae endocrinae et disordines metabolismi postprocedurales alii",
+    "source_line": 14842
+  },
+  {
+    "code": "E89.9",
+    "title_la": "Disordo glandulae endocrinae et disordo metabolismi postproceduralis, non",
+    "source_line": 14845
+  },
+  {
+    "code": "E90",
+    "title_la": "Poremećaji ishrane i poremećaji metabolizma u bolestima klasifikovanim na",
+    "source_line": 1754
+  }
+]

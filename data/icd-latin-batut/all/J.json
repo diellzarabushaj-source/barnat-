@@ -1,0 +1,1397 @@
+[
+  {
+    "code": "J00",
+    "title_la": "Akutno zapaljenje nosnog dela ždrela [obična prehlada]",
+    "source_line": 2279
+  },
+  {
+    "code": "J01",
+    "title_la": "Akutno zapaljenje sinusa",
+    "source_line": 2280
+  },
+  {
+    "code": "J01.0",
+    "title_la": "Sinusitis maxillaris acuta",
+    "source_line": 24198
+  },
+  {
+    "code": "J01.1",
+    "title_la": "Sinusitis frontalis acuta",
+    "source_line": 24201
+  },
+  {
+    "code": "J01.2",
+    "title_la": "Sinusitis ehmoidalis acuta",
+    "source_line": 24203
+  },
+  {
+    "code": "J01.3",
+    "title_la": "Sinusitis sphenoidalis acuta",
+    "source_line": 24205
+  },
+  {
+    "code": "J01.4",
+    "title_la": "Pansinusitis acuta",
+    "source_line": 24207
+  },
+  {
+    "code": "J01.8",
+    "title_la": "Sinusitis acuta alia",
+    "source_line": 24209
+  },
+  {
+    "code": "J01.9",
+    "title_la": "Sinusitis acuta, non specificata",
+    "source_line": 24218
+  },
+  {
+    "code": "J02",
+    "title_la": "Akutno zapaljenje ždrela",
+    "source_line": 2281
+  },
+  {
+    "code": "J02.0",
+    "title_la": "Pharyngitis streptococcica",
+    "source_line": 24230
+  },
+  {
+    "code": "J02.8",
+    "title_la": "Pharyngitis acuta propter microorganismos specificatos alios",
+    "source_line": 24234
+  },
+  {
+    "code": "J02.9",
+    "title_la": "Pharyngitis acuta, non specificata",
+    "source_line": 24242
+  },
+  {
+    "code": "J03",
+    "title_la": "Akutno zapaljenje krajnika",
+    "source_line": 2282
+  },
+  {
+    "code": "J03.0",
+    "title_la": "Tonsillitis streptococcica",
+    "source_line": 24258
+  },
+  {
+    "code": "J03.8",
+    "title_la": "Tonsillitis acuta propter organismos specificatos alios",
+    "source_line": 24260
+  },
+  {
+    "code": "J03.9",
+    "title_la": "Tonsillitis acuta, non specificata",
+    "source_line": 24272
+  },
+  {
+    "code": "J04",
+    "title_la": "Akutno zapaljenje grkljana i akutno zapaljenje dušnika",
+    "source_line": 2283
+  },
+  {
+    "code": "J04.0",
+    "title_la": "Laryngitis acuta",
+    "source_line": 24286
+  },
+  {
+    "code": "J04.1",
+    "title_la": "Tracheitis acuta",
+    "source_line": 24297
+  },
+  {
+    "code": "J04.2",
+    "title_la": "Laryngotracheitis acuta",
+    "source_line": 24303
+  },
+  {
+    "code": "J05",
+    "title_la": "Akutno opstruktivno zapaljenje grkljana [krup] i zapaljenje poklopca grkljana",
+    "source_line": 2284
+  },
+  {
+    "code": "J05.0",
+    "title_la": "Laryngitis obstructiva acuta [croup]",
+    "source_line": 24311
+  },
+  {
+    "code": "J05.1",
+    "title_la": "Epiglottitis acuta",
+    "source_line": 24314
+  },
+  {
+    "code": "J06",
+    "title_la": "Akutne infekcije gornjeg dela sistema za disanje multiplih i neoznačenih",
+    "source_line": 2285
+  },
+  {
+    "code": "J06.0",
+    "title_la": "Laryngopharyngitis acuta",
+    "source_line": 24333
+  },
+  {
+    "code": "J06.8",
+    "title_la": "Infectiones tractus respiratorii superioris acutae locis multis, alii",
+    "source_line": 24335
+  },
+  {
+    "code": "J06.9",
+    "title_la": "Infectiones tractus respiratorii superioris acutae, non specificatae",
+    "source_line": 24337
+  },
+  {
+    "code": "J09",
+    "title_la": "Grip, virus dokazan",
+    "source_line": 2289
+  },
+  {
+    "code": "J10",
+    "title_la": "Grip, izazvan dugim identifikovanim virusom gripa",
+    "source_line": 2290
+  },
+  {
+    "code": "J10.0",
+    "title_la": "Influenza cum pneumonia, virus influenca aliud identificatum",
+    "source_line": 24365
+  },
+  {
+    "code": "J10.1",
+    "title_la": "Influenza cum symptomatis respiratoriis allis, virus influenzae aliud identificatum",
+    "source_line": 24368
+  },
+  {
+    "code": "J10.8",
+    "title_la": "Influenza cum symptomatis allis, virus influenzae aliud identificatum",
+    "source_line": 24385
+  },
+  {
+    "code": "J11",
+    "title_la": "Grip, virus nedokazan",
+    "source_line": 2291
+  },
+  {
+    "code": "J11.0",
+    "title_la": "Influenza cum pneumonia, virus non identificatum",
+    "source_line": 24401
+  },
+  {
+    "code": "J11.1",
+    "title_la": "Influenza cum symptomatis respiratoriis aliis, virus non identificatum",
+    "source_line": 24404
+  },
+  {
+    "code": "J11.8",
+    "title_la": "Influenza cum symptomatis aliis, virus non identificatum",
+    "source_line": 24412
+  },
+  {
+    "code": "J12",
+    "title_la": "Virusno zapaljenje pluća, neklasifikovano na drugom mestu",
+    "source_line": 2292
+  },
+  {
+    "code": "J12.0",
+    "title_la": "Pneumonia adenoviralis",
+    "source_line": 24438
+  },
+  {
+    "code": "J12.1",
+    "title_la": "Pneumonia viralis syncytialis",
+    "source_line": 24440
+  },
+  {
+    "code": "J12.2",
+    "title_la": "Pneumonia viralis parainfluenzae",
+    "source_line": 24449
+  },
+  {
+    "code": "J12.3",
+    "title_la": "Pneumonia viralis hMPV",
+    "source_line": 24451
+  },
+  {
+    "code": "J12.8",
+    "title_la": "Pneumonia viralis, alia",
+    "source_line": 24453
+  },
+  {
+    "code": "J12.9",
+    "title_la": "Pneumonia viralis, non specificata",
+    "source_line": 24455
+  },
+  {
+    "code": "J13",
+    "title_la": "Zapaljenje pluća, uzrokovano Streptococcus-om pneumoniae (Pneumococcus)",
+    "source_line": 2293
+  },
+  {
+    "code": "J14",
+    "title_la": "Zapaljenje pluća uzrokovano Haemophilusom influence",
+    "source_line": 2294
+  },
+  {
+    "code": "J15",
+    "title_la": "Bakterijsko zapaljenje pluća, neklasifikovano na drugom mestu",
+    "source_line": 2295
+  },
+  {
+    "code": "J15.0",
+    "title_la": "Pneumonia per Klebsiellam pneumoniae",
+    "source_line": 24475
+  },
+  {
+    "code": "J15.1",
+    "title_la": "Pneumonia per Pseudomonadem",
+    "source_line": 24477
+  },
+  {
+    "code": "J15.2",
+    "title_la": "Pneumonia staphylococcica",
+    "source_line": 24479
+  },
+  {
+    "code": "J15.3",
+    "title_la": "Pneumonia streptococcica B",
+    "source_line": 24481
+  },
+  {
+    "code": "J15.4",
+    "title_la": "Pneumonia streptococcica alia",
+    "source_line": 24483
+  },
+  {
+    "code": "J15.5",
+    "title_la": "Pneumonia per Escherichiam coli",
+    "source_line": 24487
+  },
+  {
+    "code": "J15.6",
+    "title_la": "Pneumonia bacterialis, gram-negativa-aerobica",
+    "source_line": 24489
+  },
+  {
+    "code": "J15.7",
+    "title_la": "Pneumonia per Mycoplasmam pneumoniae",
+    "source_line": 24492
+  },
+  {
+    "code": "J15.8",
+    "title_la": "Pneumonia bacterialis alia",
+    "source_line": 24494
+  },
+  {
+    "code": "J15.9",
+    "title_la": "Pneumonia bacterialis, non specificata",
+    "source_line": 24496
+  },
+  {
+    "code": "J16",
+    "title_la": "Zapaljenje pluća uzrokovano drugim zaraznim organizmima, neklasifikovano na",
+    "source_line": 2296
+  },
+  {
+    "code": "J16.0",
+    "title_la": "Pneumonia chlamydialis",
+    "source_line": 24513
+  },
+  {
+    "code": "J16.8",
+    "title_la": "Pneumonia propter organismos infectivos alios specificatos",
+    "source_line": 24515
+  },
+  {
+    "code": "J17",
+    "title_la": "Zapaljenje pluća u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2298
+  },
+  {
+    "code": "J17.0",
+    "title_la": "Pneumonia in morbis bacterialibus alibi classificatis",
+    "source_line": 24520
+  },
+  {
+    "code": "J17.1",
+    "title_la": "Pneumonia in morbis viralibus alibi classificatis",
+    "source_line": 24530
+  },
+  {
+    "code": "J17.2",
+    "title_la": "Pneumonia in morbis mycoticis",
+    "source_line": 24537
+  },
+  {
+    "code": "J17.3",
+    "title_la": "Pneumonia in morbis parasitariis",
+    "source_line": 24544
+  },
+  {
+    "code": "J17.8",
+    "title_la": "Pneumonia in morbis aliis alibi classificatis",
+    "source_line": 24550
+  },
+  {
+    "code": "J18",
+    "title_la": "Zapaljenje pluća uzrokovano neoznačenim mikroorganizom",
+    "source_line": 2299
+  },
+  {
+    "code": "J18.0",
+    "title_la": "Bronchopneumonia, non specificata",
+    "source_line": 24583
+  },
+  {
+    "code": "J18.1",
+    "title_la": "Pneumonia lobaris, non specificata",
+    "source_line": 24586
+  },
+  {
+    "code": "J18.2",
+    "title_la": "Pneumonia hypostatica, non specificata",
+    "source_line": 24588
+  },
+  {
+    "code": "J18.8",
+    "title_la": "Pneumonia alia per microorganismum non specificatum",
+    "source_line": 24590
+  },
+  {
+    "code": "J18.9",
+    "title_la": "Pneumonia, non specificata",
+    "source_line": 24592
+  },
+  {
+    "code": "J20",
+    "title_la": "Akutni bronhitis",
+    "source_line": 2302
+  },
+  {
+    "code": "J20.0",
+    "title_la": "Bronchitis per Mycoplasma pneumoniae acuta",
+    "source_line": 24632
+  },
+  {
+    "code": "J20.1",
+    "title_la": "Bronchitis per Haemophillum Influenzae acuta",
+    "source_line": 24634
+  },
+  {
+    "code": "J20.2",
+    "title_la": "Bronchitis streptococcica acuta",
+    "source_line": 24636
+  },
+  {
+    "code": "J20.3",
+    "title_la": "Bronchitis coxsackieviralis acuta",
+    "source_line": 24638
+  },
+  {
+    "code": "J20.4",
+    "title_la": "Bronchitis parainfluenzoviralis acuta",
+    "source_line": 24640
+  },
+  {
+    "code": "J20.5",
+    "title_la": "Bronchitis syncytioviralis acuta",
+    "source_line": 24642
+  },
+  {
+    "code": "J20.6",
+    "title_la": "Bronchitis rhinoviralis acuta",
+    "source_line": 24644
+  },
+  {
+    "code": "J20.7",
+    "title_la": "Bronchitis echoviralis acuta",
+    "source_line": 24646
+  },
+  {
+    "code": "J20.8",
+    "title_la": "Bronchitis acuta propter microorganismos alios, specificatos",
+    "source_line": 24648
+  },
+  {
+    "code": "J20.9",
+    "title_la": "Bronchitis acuta, non specificata",
+    "source_line": 24650
+  },
+  {
+    "code": "J21",
+    "title_la": "Akutni bronhiolitis",
+    "source_line": 2303
+  },
+  {
+    "code": "J21.0",
+    "title_la": "Bronchiolitis syncytioviralis acuta",
+    "source_line": 24663
+  },
+  {
+    "code": "J21.1",
+    "title_la": "Bronchiolitis hMPV acuta",
+    "source_line": 24665
+  },
+  {
+    "code": "J21.8",
+    "title_la": "Bronchiolitis acuta propter microorganismos alios, specificatos",
+    "source_line": 24667
+  },
+  {
+    "code": "J21.9",
+    "title_la": "Bronchiolitis acuta, non specificata",
+    "source_line": 24669
+  },
+  {
+    "code": "J22",
+    "title_la": "Akutna infekcija donjih respiratornih puteva, neoznačena",
+    "source_line": 2304
+  },
+  {
+    "code": "J30",
+    "title_la": "Vazomotorna kijavica i alergijska kijavica",
+    "source_line": 2307
+  },
+  {
+    "code": "J30.0",
+    "title_la": "Rhinitis vasomotoria",
+    "source_line": 24687
+  },
+  {
+    "code": "J30.1",
+    "title_la": "Rhinitis allergica pollinosa",
+    "source_line": 24689
+  },
+  {
+    "code": "J30.2",
+    "title_la": "Rhinitis allergica saesonalis alia",
+    "source_line": 24694
+  },
+  {
+    "code": "J30.3",
+    "title_la": "Rhinitis allergica alia",
+    "source_line": 24696
+  },
+  {
+    "code": "J30.4",
+    "title_la": "Rhinitis allergica, non specificata",
+    "source_line": 24699
+  },
+  {
+    "code": "J31",
+    "title_la": "Hronična kijavica, zapaljenje nosnog dela ždrela i ždrela",
+    "source_line": 2308
+  },
+  {
+    "code": "J31.0",
+    "title_la": "Rhinitis chronica",
+    "source_line": 24711
+  },
+  {
+    "code": "J31.1",
+    "title_la": "Nasopharyngitis chronica",
+    "source_line": 24725
+  },
+  {
+    "code": "J31.2",
+    "title_la": "Pharyngitis chronica",
+    "source_line": 24728
+  },
+  {
+    "code": "J32",
+    "title_la": "Hronično zapaljenje sinusa",
+    "source_line": 2309
+  },
+  {
+    "code": "J32.0",
+    "title_la": "Sinusitis maxillaris chronica",
+    "source_line": 24746
+  },
+  {
+    "code": "J32.1",
+    "title_la": "Sinusitis frontalis chronica",
+    "source_line": 24750
+  },
+  {
+    "code": "J32.2",
+    "title_la": "Sinusitis ethmoidalis chronica",
+    "source_line": 24753
+  },
+  {
+    "code": "J32.3",
+    "title_la": "Sinusitis sphenoidalis chronica",
+    "source_line": 24756
+  },
+  {
+    "code": "J32.4",
+    "title_la": "Pansinusitis chronica",
+    "source_line": 24759
+  },
+  {
+    "code": "J32.8",
+    "title_la": "Sinusitis chronica alia",
+    "source_line": 24767
+  },
+  {
+    "code": "J32.9",
+    "title_la": "Sinusitis chronica, non specificata",
+    "source_line": 24770
+  },
+  {
+    "code": "J33",
+    "title_la": "Polip nosa – peteljkast izraštaj sluznice nosa",
+    "source_line": 2310
+  },
+  {
+    "code": "J33.0",
+    "title_la": "Polypus cavi nasi",
+    "source_line": 24777
+  },
+  {
+    "code": "J33.1",
+    "title_la": "Degeneratio sinus nasi polypoidea",
+    "source_line": 24782
+  },
+  {
+    "code": "J33.8",
+    "title_la": "Polypi sinus alius",
+    "source_line": 24785
+  },
+  {
+    "code": "J33.9",
+    "title_la": "Polypus nasalis non specificatus",
+    "source_line": 24792
+  },
+  {
+    "code": "J34",
+    "title_la": "Drugi poremećaji nosa i sinusa nosa",
+    "source_line": 2311
+  },
+  {
+    "code": "J34.0",
+    "title_la": "Abscessus, furunculus et carbunculus nasi",
+    "source_line": 24798
+  },
+  {
+    "code": "J34.1",
+    "title_la": "Cystis et mucocele sinuum nasi",
+    "source_line": 24803
+  },
+  {
+    "code": "J34.2",
+    "title_la": "Deviatio septi nasi",
+    "source_line": 24805
+  },
+  {
+    "code": "J34.3",
+    "title_la": "Hypertrophia concharum nasalium",
+    "source_line": 24808
+  },
+  {
+    "code": "J34.8",
+    "title_la": "Disordines nasi et sinuum nasi alii, specificati",
+    "source_line": 24810
+  },
+  {
+    "code": "J35",
+    "title_la": "Hronične bolesti krajnika i trećeg krajnika",
+    "source_line": 2312
+  },
+  {
+    "code": "J35.0",
+    "title_la": "Tonsillitis chronica",
+    "source_line": 24824
+  },
+  {
+    "code": "J35.1",
+    "title_la": "Hypertrophio tonsillarum",
+    "source_line": 24829
+  },
+  {
+    "code": "J35.2",
+    "title_la": "Hyperthrophio adenoides",
+    "source_line": 24832
+  },
+  {
+    "code": "J35.3",
+    "title_la": "Hypertrophio tonsillarum cum vegetatione adenoidium",
+    "source_line": 24835
+  },
+  {
+    "code": "J35.8",
+    "title_la": "Morbi tonsillarum et vegetationum adenoidium chronici alii",
+    "source_line": 24837
+  },
+  {
+    "code": "J35.9",
+    "title_la": "Morbus tonsillarum et vegetationum adenoidium chronicus, non specificatus",
+    "source_line": 24844
+  },
+  {
+    "code": "J36",
+    "title_la": "Apsces oko krajnika",
+    "source_line": 2313
+  },
+  {
+    "code": "J37",
+    "title_la": "Hronično zapaljenje grkljana i grkljana sa dušnikom",
+    "source_line": 2314
+  },
+  {
+    "code": "J37.0",
+    "title_la": "Laryngitis chronica",
+    "source_line": 24863
+  },
+  {
+    "code": "J37.1",
+    "title_la": "Laryngotracheitis chronica",
+    "source_line": 24881
+  },
+  {
+    "code": "J38",
+    "title_la": "Bolesti glasnica i grkljana, neklasifikovane na drugom mestu",
+    "source_line": 2315
+  },
+  {
+    "code": "J38.0",
+    "title_la": "Paralysis plicarum vocalium et laryngis",
+    "source_line": 24902
+  },
+  {
+    "code": "J38.1",
+    "title_la": "Polypus plicae vocalis et laryngis",
+    "source_line": 24906
+  },
+  {
+    "code": "J38.2",
+    "title_la": "Noduli plicarum vocalium",
+    "source_line": 24909
+  },
+  {
+    "code": "J38.3",
+    "title_la": "Morbi plicarum vocalium alii",
+    "source_line": 24914
+  },
+  {
+    "code": "J38.4",
+    "title_la": "Oedema laryngis",
+    "source_line": 24921
+  },
+  {
+    "code": "J38.5",
+    "title_la": "Spasmus laryngis",
+    "source_line": 24930
+  },
+  {
+    "code": "J38.6",
+    "title_la": "Stenosis laryngis",
+    "source_line": 24940
+  },
+  {
+    "code": "J38.7",
+    "title_la": "Morbi laryngis alii",
+    "source_line": 24942
+  },
+  {
+    "code": "J39",
+    "title_la": "Druge bolesti gornjeg dela sistema za disanje",
+    "source_line": 2316
+  },
+  {
+    "code": "J39.0",
+    "title_la": "Abscessus retropharyngicus et parapharyngicus",
+    "source_line": 24958
+  },
+  {
+    "code": "J39.1",
+    "title_la": "Abscessus pharyngis alius",
+    "source_line": 24962
+  },
+  {
+    "code": "J39.2",
+    "title_la": "Morbi pharyngis alii",
+    "source_line": 24966
+  },
+  {
+    "code": "J39.3",
+    "title_la": "Reactio tractus respiratorii superioris hypersensitiva, loci non specificati",
+    "source_line": 24974
+  },
+  {
+    "code": "J39.8",
+    "title_la": "Morbi tractus respiratorii superioris alii, specificati",
+    "source_line": 24976
+  },
+  {
+    "code": "J39.9",
+    "title_la": "Morbus tractus respiratorii superioris, non specificatus",
+    "source_line": 24978
+  },
+  {
+    "code": "J40",
+    "title_la": "Bronhitis, neoznačen kao akutni ili hronični",
+    "source_line": 2319
+  },
+  {
+    "code": "J41",
+    "title_la": "Obični hronični i sluzno-gnojni bronhitis",
+    "source_line": 2320
+  },
+  {
+    "code": "J41.0",
+    "title_la": "Bronchitis simplex chronica",
+    "source_line": 25011
+  },
+  {
+    "code": "J41.1",
+    "title_la": "Bronchitis mucopurulenta chronica",
+    "source_line": 25013
+  },
+  {
+    "code": "J41.8",
+    "title_la": "Bronchitis simplex et mucopurulenta mixta",
+    "source_line": 25015
+  },
+  {
+    "code": "J42",
+    "title_la": "Hronični bronhitis, neoznačen",
+    "source_line": 2321
+  },
+  {
+    "code": "J43",
+    "title_la": "Emfizem pluća",
+    "source_line": 2322
+  },
+  {
+    "code": "J43.0",
+    "title_la": "Syndroma MacLeod",
+    "source_line": 25050
+  },
+  {
+    "code": "J43.1",
+    "title_la": "Emphysema panlobulare",
+    "source_line": 25055
+  },
+  {
+    "code": "J43.2",
+    "title_la": "Emphysema controlobulare",
+    "source_line": 25058
+  },
+  {
+    "code": "J43.8",
+    "title_la": "Emphysema alium",
+    "source_line": 25060
+  },
+  {
+    "code": "J43.9",
+    "title_la": "Emphysema, non specificatum",
+    "source_line": 25062
+  },
+  {
+    "code": "J44",
+    "title_la": "Druga hronična opstruktivna bolest pluća",
+    "source_line": 2328
+  },
+  {
+    "code": "J44.0",
+    "title_la": "Morbus pulmonum obstructivus chronicus cum infectione partis tractus respiratorii",
+    "source_line": 25099
+  },
+  {
+    "code": "J44.1",
+    "title_la": "Morbus pulmonum obstructivus chronicus cum exacerbatione acutus, non",
+    "source_line": 25103
+  },
+  {
+    "code": "J44.8",
+    "title_la": "Morbus pulmonum obstructivus chronicus alius, specificatus",
+    "source_line": 25106
+  },
+  {
+    "code": "J44.9",
+    "title_la": "Morbus pulmonum obstructivus chronicus, non specificatus",
+    "source_line": 25116
+  },
+  {
+    "code": "J45",
+    "title_la": "Astma",
+    "source_line": 2329
+  },
+  {
+    "code": "J45.0",
+    "title_la": "Asthma praedominanter allergicum",
+    "source_line": 25136
+  },
+  {
+    "code": "J45.1",
+    "title_la": "Asthma non allergicum",
+    "source_line": 25143
+  },
+  {
+    "code": "J45.8",
+    "title_la": "Asthma mixtum",
+    "source_line": 25147
+  },
+  {
+    "code": "J45.9",
+    "title_la": "Asthma, non specificatum",
+    "source_line": 25150
+  },
+  {
+    "code": "J46",
+    "title_la": "Astmatični status",
+    "source_line": 2330
+  },
+  {
+    "code": "J47",
+    "title_la": "Bronhiektazije",
+    "source_line": 2331
+  },
+  {
+    "code": "J60",
+    "title_la": "Pneumokonioza - Profesionalna (kopača uglja) bolest pluća uzrokovana udisanjem",
+    "source_line": 2334
+  },
+  {
+    "code": "J61",
+    "title_la": "Pneumokonioza uzrokovana udisanjem azbestnih čestica i drugih mineralnih",
+    "source_line": 2336
+  },
+  {
+    "code": "J62",
+    "title_la": "Silikoza pluća - Profesionalna bolest uzrokovana udisanjem silikatnih čestica",
+    "source_line": 2338
+  },
+  {
+    "code": "J62.0",
+    "title_la": "Pneumoconiosis pulverogenes",
+    "source_line": 25197
+  },
+  {
+    "code": "J62.8",
+    "title_la": "Pneumoconiosis silicotica alia",
+    "source_line": 25199
+  },
+  {
+    "code": "J63",
+    "title_la": "Pneumokonioza uzrokovana drugom neorganskom prašinom",
+    "source_line": 2339
+  },
+  {
+    "code": "J63.0",
+    "title_la": "Aluminiosis pulmonum",
+    "source_line": 25206
+  },
+  {
+    "code": "J63.1",
+    "title_la": "Fibrosis pulmonum boxitogenes",
+    "source_line": 25208
+  },
+  {
+    "code": "J63.2",
+    "title_la": "Berylliosis",
+    "source_line": 25210
+  },
+  {
+    "code": "J63.3",
+    "title_la": "Fibrosis pulmonum graphitogenes",
+    "source_line": 25212
+  },
+  {
+    "code": "J63.4",
+    "title_la": "Siderosis",
+    "source_line": 25214
+  },
+  {
+    "code": "J63.5",
+    "title_la": "Stannosis",
+    "source_line": 25216
+  },
+  {
+    "code": "J63.8",
+    "title_la": "Pneumoconiosis propter pulverem inorganicum alium specificatum",
+    "source_line": 25218
+  },
+  {
+    "code": "J64",
+    "title_la": "Pneumokonioza, neoznačena",
+    "source_line": 2340
+  },
+  {
+    "code": "J65",
+    "title_la": "Pneumokonioza sa tuberkulozom",
+    "source_line": 2341
+  },
+  {
+    "code": "J66",
+    "title_la": "Profesionalna bolest puteva za disanje uzrokovana označenom organskom",
+    "source_line": 2342
+  },
+  {
+    "code": "J66.0",
+    "title_la": "Byssinosis",
+    "source_line": 25244
+  },
+  {
+    "code": "J66.1",
+    "title_la": "Morbus fabricatoris lini",
+    "source_line": 25246
+  },
+  {
+    "code": "J66.2",
+    "title_la": "Cannabinosis",
+    "source_line": 25248
+  },
+  {
+    "code": "J66.8",
+    "title_la": "Morbus tractuum respiratoriorum propter pulverem organicum alium specificatum",
+    "source_line": 25250
+  },
+  {
+    "code": "J67",
+    "title_la": "Hipersenzitivni pneumonitis uzrokovan organskom prašinom",
+    "source_line": 2344
+  },
+  {
+    "code": "J67.0",
+    "title_la": "Pulmones agricultoris",
+    "source_line": 25258
+  },
+  {
+    "code": "J67.1",
+    "title_la": "Bagassosis",
+    "source_line": 25263
+  },
+  {
+    "code": "J67.2",
+    "title_la": "Pulmones amatoris avium",
+    "source_line": 25267
+  },
+  {
+    "code": "J67.3",
+    "title_la": "Suberosis",
+    "source_line": 25271
+  },
+  {
+    "code": "J67.4",
+    "title_la": "Pulmones braseum producentis",
+    "source_line": 25275
+  },
+  {
+    "code": "J67.5",
+    "title_la": "Pulmones operarii fungis",
+    "source_line": 25278
+  },
+  {
+    "code": "J67.6",
+    "title_la": "Pulmones radentis Cryptostromatis corticalis",
+    "source_line": 25280
+  },
+  {
+    "code": "J67.7",
+    "title_la": "Alveolitis ventilationalis",
+    "source_line": 25292
+  },
+  {
+    "code": "J67.8",
+    "title_la": "Pneumonitis hypersensitiva propter pulvares organicos alios",
+    "source_line": 25296
+  },
+  {
+    "code": "J67.9",
+    "title_la": "Alveolitis allergica hypersensitiva, non specificata",
+    "source_line": 25303
+  },
+  {
+    "code": "J68",
+    "title_la": "Respiratorna stanja uzrokovana udisanjem hemikalija, gasova, dimova i para",
+    "source_line": 2345
+  },
+  {
+    "code": "J68.0",
+    "title_la": "Bronchitis et pneumonitis chemicalis, gasogenes, fumogenes et vaporogenes",
+    "source_line": 25312
+  },
+  {
+    "code": "J68.1",
+    "title_la": "Oedema pulmonis chemicale, gasogenes, fumogenes et vaporogenes",
+    "source_line": 25315
+  },
+  {
+    "code": "J68.2",
+    "title_la": "Inflammatio tractus respiratorii superioris chemicalis, gasogenes, fumogenes et",
+    "source_line": 25318
+  },
+  {
+    "code": "J68.3",
+    "title_la": "Condiciones respiratoriae chemicales, gasogenes, fumogenes et vaporogenes acuti",
+    "source_line": 25322
+  },
+  {
+    "code": "J68.4",
+    "title_la": "Condiciones respiratoriae chemicales, gasogenes, fumogenes et vaporogenes",
+    "source_line": 25327
+  },
+  {
+    "code": "J68.8",
+    "title_la": "Condiciones respiratoriae chemicales, gasogenes, fumogenes et vaporogenes, aliae",
+    "source_line": 25333
+  },
+  {
+    "code": "J68.9",
+    "title_la": "Condiciones respiratoriae chemicales, gasogenes, fumogenes et vaporogenes, non",
+    "source_line": 25335
+  },
+  {
+    "code": "J69",
+    "title_la": "Zapaljenje pluća uzrokovano čvrstim telima i tečnostima",
+    "source_line": 2346
+  },
+  {
+    "code": "J69.0",
+    "title_la": "Pneumonia alimentaria et vomitegenes",
+    "source_line": 25350
+  },
+  {
+    "code": "J69.1",
+    "title_la": "Pneumonia oleogenes et essentiogenes",
+    "source_line": 25359
+  },
+  {
+    "code": "J69.8",
+    "title_la": "Pneumonia propter materias solidas et liquores alios",
+    "source_line": 25362
+  },
+  {
+    "code": "J70",
+    "title_la": "Respiratorna stanja uzrokovana drugim spoljašnjim uzročnicima",
+    "source_line": 2347
+  },
+  {
+    "code": "J70.0",
+    "title_la": "Manifestationes pulmonales radiationales acutae",
+    "source_line": 25369
+  },
+  {
+    "code": "J70.1",
+    "title_la": "Manifestationes pulmonales radiationales chronicae et aliae",
+    "source_line": 25372
+  },
+  {
+    "code": "J70.2",
+    "title_la": "Disordines intersticialis pneumonis medicamentosae acuti",
+    "source_line": 25375
+  },
+  {
+    "code": "J70.3",
+    "title_la": "Disordines intersticialis pneumonis medicamentosae chronici",
+    "source_line": 25377
+  },
+  {
+    "code": "J70.4",
+    "title_la": "Disordines intersticialis pneumonis medicamentosi, non specificati",
+    "source_line": 25379
+  },
+  {
+    "code": "J70.8",
+    "title_la": "Condiciones pulmonum per alios agentes externos specificatis",
+    "source_line": 25381
+  },
+  {
+    "code": "J70.9",
+    "title_la": "Condiciones pulmonum per agentes externos non specificates",
+    "source_line": 25383
+  },
+  {
+    "code": "J80",
+    "title_la": "Sindrom poremećenog disanja kod odraslih osoba",
+    "source_line": 2351
+  },
+  {
+    "code": "J81",
+    "title_la": "Edem pluća",
+    "source_line": 2352
+  },
+  {
+    "code": "J82",
+    "title_la": "Plućna eozinofilija, neklasifikovana na drugom mestu",
+    "source_line": 2353
+  },
+  {
+    "code": "J84",
+    "title_la": "Druge intersticijske bolesti pluća",
+    "source_line": 2354
+  },
+  {
+    "code": "J84.0",
+    "title_la": "Disordines alveolares et parietoalveolares",
+    "source_line": 25428
+  },
+  {
+    "code": "J84.1",
+    "title_la": "Morbi interstitiales pulmonum alii, cum fibrosi",
+    "source_line": 25432
+  },
+  {
+    "code": "J84.8",
+    "title_la": "Morbi interstitiales pulmonum, alii specificati",
+    "source_line": 25442
+  },
+  {
+    "code": "J84.9",
+    "title_la": "Morbi interstitiales pulmonum, non specificati",
+    "source_line": 25444
+  },
+  {
+    "code": "J85",
+    "title_la": "Apsces pluća i medijastinuma",
+    "source_line": 2358
+  },
+  {
+    "code": "J85.0",
+    "title_la": "Gangrena et necrosis pulmonum",
+    "source_line": 25461
+  },
+  {
+    "code": "J85.1",
+    "title_la": "Abscessus pulmonum cum pneumonia",
+    "source_line": 25463
+  },
+  {
+    "code": "J85.2",
+    "title_la": "Abscessus pulmonum sine pneumoniam",
+    "source_line": 25466
+  },
+  {
+    "code": "J85.3",
+    "title_la": "Abscessus mediastini",
+    "source_line": 25469
+  },
+  {
+    "code": "J86",
+    "title_la": "Gnojni proces u grudnom košu",
+    "source_line": 2359
+  },
+  {
+    "code": "J86.0",
+    "title_la": "Pyothorax cum fistula",
+    "source_line": 25481
+  },
+  {
+    "code": "J86.9",
+    "title_la": "Pyothorax sine fistula",
+    "source_line": 25483
+  },
+  {
+    "code": "J90",
+    "title_la": "Pleuralni izliv, neklasifikovan na drugom mestu",
+    "source_line": 2362
+  },
+  {
+    "code": "J91",
+    "title_la": "Pleuralni izliv u stanjima klasifikovanim na drugom mestu",
+    "source_line": 2363
+  },
+  {
+    "code": "J92",
+    "title_la": "Pleuralne naslage („plak”)",
+    "source_line": 2364
+  },
+  {
+    "code": "J92.0",
+    "title_la": "Lamella pleuralis cum asbesto",
+    "source_line": 25511
+  },
+  {
+    "code": "J92.9",
+    "title_la": "Lamella pleuralis sine asbesto",
+    "source_line": 25513
+  },
+  {
+    "code": "J93",
+    "title_la": "Pneumotoraks – vazduh u slobodnom pleuralnom prostoru",
+    "source_line": 2365
+  },
+  {
+    "code": "J93.0",
+    "title_la": "Pneumothorax spontaneus tensionis",
+    "source_line": 25524
+  },
+  {
+    "code": "J93.1",
+    "title_la": "Pneumothorax spontaneus alius",
+    "source_line": 25526
+  },
+  {
+    "code": "J93.8",
+    "title_la": "Pneumothorax alius",
+    "source_line": 25528
+  },
+  {
+    "code": "J93.9",
+    "title_la": "Pneumotorax, non specificatus",
+    "source_line": 25530
+  },
+  {
+    "code": "J94",
+    "title_la": "Druga stanja pleure",
+    "source_line": 2366
+  },
+  {
+    "code": "J94.0",
+    "title_la": "Chylothorax",
+    "source_line": 25540
+  },
+  {
+    "code": "J94.1",
+    "title_la": "Fibrothorax",
+    "source_line": 25543
+  },
+  {
+    "code": "J94.2",
+    "title_la": "Haemothorax",
+    "source_line": 25545
+  },
+  {
+    "code": "J94.8",
+    "title_la": "Condiciones pleurae, aliae specificatae",
+    "source_line": 25548
+  },
+  {
+    "code": "J94.9",
+    "title_la": "Condicio pleurae, non specificatae",
+    "source_line": 25551
+  },
+  {
+    "code": "J95",
+    "title_la": "Respiratorni poremećaji posle medicinskih intervencija, neklasifikovani na drugom",
+    "source_line": 2369
+  },
+  {
+    "code": "J95.0",
+    "title_la": "Dysfunctio tracheostomatis",
+    "source_line": 25569
+  },
+  {
+    "code": "J95.1",
+    "title_la": "Insufficientia pulmonum acuta post operationem thoracalem",
+    "source_line": 25575
+  },
+  {
+    "code": "J95.2",
+    "title_la": "Insufficientia pulmonum acuta post operationem extrathoracalem",
+    "source_line": 25577
+  },
+  {
+    "code": "J95.3",
+    "title_la": "Insufficientia pulmonum postoperativa chronica",
+    "source_line": 25579
+  },
+  {
+    "code": "J95.4",
+    "title_la": "Syndroma Mendelson",
+    "source_line": 25581
+  },
+  {
+    "code": "J95.5",
+    "title_la": "Stenosis subglottica post interventiones",
+    "source_line": 25587
+  },
+  {
+    "code": "J95.8",
+    "title_la": "Disordines respiratoriii postprocedurales, alii",
+    "source_line": 25589
+  },
+  {
+    "code": "J95.9",
+    "title_la": "Disordo respiratorium postprocedurales, non specificatum",
+    "source_line": 25591
+  },
+  {
+    "code": "J96",
+    "title_la": "Respiratorna insuficijencija, neklasifikovana na drugom mestu",
+    "source_line": 2371
+  },
+  {
+    "code": "J96.0",
+    "title_la": "Insufficientia respiratoria acuta",
+    "source_line": 25601
+  },
+  {
+    "code": "J96.1",
+    "title_la": "Insufficientia respiratoria chronica",
+    "source_line": 25603
+  },
+  {
+    "code": "J96.9",
+    "title_la": "Insufficientia respiratoria, non specificata",
+    "source_line": 25605
+  },
+  {
+    "code": "J98",
+    "title_la": "Drugi respiratorni poremećaji",
+    "source_line": 2372
+  },
+  {
+    "code": "J98.0",
+    "title_la": "Morbi bronchi, non alibi classificati",
+    "source_line": 25622
+  },
+  {
+    "code": "J98.1",
+    "title_la": "Collapsus pulmonum",
+    "source_line": 25631
+  },
+  {
+    "code": "J98.2",
+    "title_la": "Emphysema interstitiale",
+    "source_line": 25638
+  },
+  {
+    "code": "J98.3",
+    "title_la": "Emphysema compensatorium",
+    "source_line": 25646
+  },
+  {
+    "code": "J98.4",
+    "title_la": "Disordines pulmonum, alii",
+    "source_line": 25648
+  },
+  {
+    "code": "J98.5",
+    "title_la": "Morbi mediastini, non alibi classificati",
+    "source_line": 25654
+  },
+  {
+    "code": "J98.6",
+    "title_la": "Disordines diaphragmatis",
+    "source_line": 25670
+  },
+  {
+    "code": "J98.8",
+    "title_la": "Disordines respiratoriii alii, specificati",
+    "source_line": 25679
+  },
+  {
+    "code": "J98.9",
+    "title_la": "Disordo respiratorius, non specificatus",
+    "source_line": 25681
+  },
+  {
+    "code": "J99",
+    "title_la": "Respiratorni poremećaji u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2373
+  },
+  {
+    "code": "J99.0",
+    "title_la": "Morbus pulmonum rheumatoides (M05.1†)",
+    "source_line": 25687
+  },
+  {
+    "code": "J99.1",
+    "title_la": "Disordines respiratorii in morbis textus connexivi diffusis",
+    "source_line": 25689
+  },
+  {
+    "code": "J99.8",
+    "title_la": "Disordines respiratorii in morbis aliis alibi classificatis",
+    "source_line": 25698
+  }
+]

@@ -1,0 +1,412 @@
+[
+  {
+    "code": "D00",
+    "title_la": "Karcinom „in situ“ usta, jednjaka i želuca",
+    "source_line": 1524
+  },
+  {
+    "code": "D01",
+    "title_la": "Karcinom „in situ“ drugih organa za varenje",
+    "source_line": 1525
+  },
+  {
+    "code": "D02",
+    "title_la": "Karcinom „in situ“, srednjeg uva i organa za disanje",
+    "source_line": 1526
+  },
+  {
+    "code": "D03",
+    "title_la": "Melanom „in situ“ zloćudni crni tumor kože",
+    "source_line": 1527
+  },
+  {
+    "code": "D04",
+    "title_la": "Karcinom „in situ“, kože",
+    "source_line": 1528
+  },
+  {
+    "code": "D05",
+    "title_la": "Karcinom „in situ“ dojke",
+    "source_line": 1529
+  },
+  {
+    "code": "D06",
+    "title_la": "Karcinom „in situ“ grlića materice",
+    "source_line": 1530
+  },
+  {
+    "code": "D07",
+    "title_la": "Karcinom „in situ“ drugih i neoznačenih polnih organa",
+    "source_line": 1531
+  },
+  {
+    "code": "D09",
+    "title_la": "Karcinom „in situ“ drugih neoznačenih lokalizacija",
+    "source_line": 1532
+  },
+  {
+    "code": "D10",
+    "title_la": "Dobroćudni tumor usne, usta i ždrela",
+    "source_line": 1542
+  },
+  {
+    "code": "D11",
+    "title_la": "Dobroćudni tumor velikih pljuvačnih žlezda",
+    "source_line": 1543
+  },
+  {
+    "code": "D12",
+    "title_la": "Dobroćudni tumor debelog creva, rektuma, anusa i analnog kanala",
+    "source_line": 1544
+  },
+  {
+    "code": "D13",
+    "title_la": "Dobroćudni tumor drugih delova digestivnog sistema",
+    "source_line": 1545
+  },
+  {
+    "code": "D14",
+    "title_la": "Dobroćudni tumor srednjeg uva i organa za disanje",
+    "source_line": 1546
+  },
+  {
+    "code": "D15",
+    "title_la": "Dobroćudni tumor drugih organa grudne duplje",
+    "source_line": 1547
+  },
+  {
+    "code": "D16",
+    "title_la": "Dobroćudni tumor kosti i zglobne hrskavice",
+    "source_line": 1548
+  },
+  {
+    "code": "D17",
+    "title_la": "Dobroćudni tumor masnog tkiva",
+    "source_line": 1549
+  },
+  {
+    "code": "D18",
+    "title_la": "Hemangiom i limfangiom, bilo koje lokalizacije",
+    "source_line": 1550
+  },
+  {
+    "code": "D19",
+    "title_la": "Dobroćudni tumor mezotela",
+    "source_line": 1551
+  },
+  {
+    "code": "D20",
+    "title_la": "Dobroćudni tumor mekog tkiva peritoneuma i retroperitoneuma",
+    "source_line": 1552
+  },
+  {
+    "code": "D21",
+    "title_la": "Dobroćudni tumor vezivnog i drugih mekih tkiva",
+    "source_line": 1553
+  },
+  {
+    "code": "D22",
+    "title_la": "Mladež",
+    "source_line": 1554
+  },
+  {
+    "code": "D23",
+    "title_la": "Drugi dobroćudni tumor kože",
+    "source_line": 1555
+  },
+  {
+    "code": "D24",
+    "title_la": "Dobroćudni tumor dojke",
+    "source_line": 1556
+  },
+  {
+    "code": "D25",
+    "title_la": "Tumor glatkog mišića materice",
+    "source_line": 1557
+  },
+  {
+    "code": "D26",
+    "title_la": "Drugi dobroćudni tumori materice",
+    "source_line": 1558
+  },
+  {
+    "code": "D27",
+    "title_la": "Dobroćudni tumor jajnika",
+    "source_line": 1559
+  },
+  {
+    "code": "D28",
+    "title_la": "Dobroćudni tumor drugih ženskih polnih organa",
+    "source_line": 1560
+  },
+  {
+    "code": "D29",
+    "title_la": "Dobroćudni tumor muških polnih organa",
+    "source_line": 1561
+  },
+  {
+    "code": "D30",
+    "title_la": "Dobroćudni tumor mokraćnih organa",
+    "source_line": 1562
+  },
+  {
+    "code": "D31",
+    "title_la": "Dobroćudni tumor oka i pripojaka oka",
+    "source_line": 1563
+  },
+  {
+    "code": "D32",
+    "title_la": "Dobroćudni tumor moždanica",
+    "source_line": 1564
+  },
+  {
+    "code": "D33",
+    "title_la": "Dobroćudni tumori mozga i drugih delova centralnog nervnog sistema",
+    "source_line": 1565
+  },
+  {
+    "code": "D34",
+    "title_la": "Dobroćudni tumor štitaste žlezde",
+    "source_line": 1566
+  },
+  {
+    "code": "D35",
+    "title_la": "Dobroćudni tumor ostalih i neoznačenih endokrinih žlezda",
+    "source_line": 1567
+  },
+  {
+    "code": "D36",
+    "title_la": "Dobroćudni tumor ostalih i neoznačenih lokalizacija",
+    "source_line": 1568
+  },
+  {
+    "code": "D37",
+    "title_la": "Tumor usta i organa za varenje",
+    "source_line": 1571
+  },
+  {
+    "code": "D38",
+    "title_la": "Tumor srednjeg uva, organa za disanje i grudne duplje",
+    "source_line": 1572
+  },
+  {
+    "code": "D39",
+    "title_la": "Tumor ženskih polnih organa",
+    "source_line": 1573
+  },
+  {
+    "code": "D40",
+    "title_la": "Tumor muških polnih organa",
+    "source_line": 1574
+  },
+  {
+    "code": "D41",
+    "title_la": "Tumor mokraćnih organa",
+    "source_line": 1575
+  },
+  {
+    "code": "D42",
+    "title_la": "Tumor moždanica",
+    "source_line": 1576
+  },
+  {
+    "code": "D43",
+    "title_la": "Tumori mozga i centralnog nervnog sistema",
+    "source_line": 1577
+  },
+  {
+    "code": "D44",
+    "title_la": "Tumor žlezde sa unutrašnjim lučenjem",
+    "source_line": 1578
+  },
+  {
+    "code": "D45",
+    "title_la": "Povećanje broja ćelija krvi",
+    "source_line": 1579
+  },
+  {
+    "code": "D46",
+    "title_la": "Mijelodisplastični sindromi",
+    "source_line": 1580
+  },
+  {
+    "code": "D47",
+    "title_la": "Drugi tumori limfoidnog, hematopoeznog i srodnih tkiva",
+    "source_line": 1581
+  },
+  {
+    "code": "D48",
+    "title_la": "Neoplasma neodređene ili nepoznate druge lokalizacije",
+    "source_line": 1582
+  },
+  {
+    "code": "D50",
+    "title_la": "Anemija uzrokovana nedostatkom gvožđa",
+    "source_line": 1596
+  },
+  {
+    "code": "D51",
+    "title_la": "Anemija uzrokovana neostatkom vitamina B12",
+    "source_line": 1597
+  },
+  {
+    "code": "D52",
+    "title_la": "Anemija uzrokovana nedostatkom folata",
+    "source_line": 1598
+  },
+  {
+    "code": "D53",
+    "title_la": "Ostale anemije uzrokovane neodgovarajućom ishranom",
+    "source_line": 1599
+  },
+  {
+    "code": "D55",
+    "title_la": "Anemija uzrokovana poremećajima enzima",
+    "source_line": 1602
+  },
+  {
+    "code": "D56",
+    "title_la": "Talasemija – porodična anemija dece",
+    "source_line": 1603
+  },
+  {
+    "code": "D57",
+    "title_la": "Bolest uzrokovana pojavom srpastih ćelija",
+    "source_line": 1604
+  },
+  {
+    "code": "D58",
+    "title_la": "Ostale nasledne anemije uzrokovane hemolizom",
+    "source_line": 1605
+  },
+  {
+    "code": "D59",
+    "title_la": "Stečena anemija uzrokovana hemolizom",
+    "source_line": 1606
+  },
+  {
+    "code": "D60",
+    "title_la": "Stečena izolovana aplazija crvene loze",
+    "source_line": 1609
+  },
+  {
+    "code": "D61",
+    "title_la": "Aplastične i ostale anemije",
+    "source_line": 1610
+  },
+  {
+    "code": "D62",
+    "title_la": "Akutna anemija posle krvarenja",
+    "source_line": 1611
+  },
+  {
+    "code": "D63",
+    "title_la": "Anemija kod hroničnih oboljenja klasifikovanih na drugom mestu",
+    "source_line": 1612
+  },
+  {
+    "code": "D64",
+    "title_la": "Ostale anemije",
+    "source_line": 1613
+  },
+  {
+    "code": "D65",
+    "title_la": "Rasejano zgrušavanje krvi u krvnim sudovima",
+    "source_line": 1616
+  },
+  {
+    "code": "D66",
+    "title_la": "Nasledni nedostatak faktora VIII",
+    "source_line": 1617
+  },
+  {
+    "code": "D67",
+    "title_la": "Nasledni nedostatak faktora IX",
+    "source_line": 1618
+  },
+  {
+    "code": "D68",
+    "title_la": "Ostali poremećaji zgrušavanja krvi",
+    "source_line": 1619
+  },
+  {
+    "code": "D69",
+    "title_la": "Purpura i druga hemoragijska stanja",
+    "source_line": 1620
+  },
+  {
+    "code": "D70",
+    "title_la": "Agranulocitoza – smanjenje broja granulocita",
+    "source_line": 1623
+  },
+  {
+    "code": "D71",
+    "title_la": "Funkcionalni poremećaji polimorfonuklearnih neutrofila",
+    "source_line": 1624
+  },
+  {
+    "code": "D72",
+    "title_la": "Ostali poremećaji belih krvnih zrnaca",
+    "source_line": 1625
+  },
+  {
+    "code": "D73",
+    "title_la": "Bolesti slezine",
+    "source_line": 1626
+  },
+  {
+    "code": "D74",
+    "title_la": "Methemoglobinemija – Plava bolest",
+    "source_line": 1627
+  },
+  {
+    "code": "D75",
+    "title_la": "Ostale bolesti krvi i krvotvornih organa",
+    "source_line": 1628
+  },
+  {
+    "code": "D76",
+    "title_la": "Druge označene bolesti koje zahvataju limforetikularno tkivo i retikulohistocitni",
+    "source_line": 1629
+  },
+  {
+    "code": "D77",
+    "title_la": "Drugi poremećaji krvi i krvotvornih organa u bolestima klasifikovanim na drugom",
+    "source_line": 1631
+  },
+  {
+    "code": "D80",
+    "title_la": "Smanjenje imuniteta – sa predominantnim poremećajima antitela",
+    "source_line": 1635
+  },
+  {
+    "code": "D81",
+    "title_la": "Kombinovana smanjenja imuniteta",
+    "source_line": 1636
+  },
+  {
+    "code": "D82",
+    "title_la": "Smanjenje imuniteta – udruženo sa drugim većim defektima",
+    "source_line": 1637
+  },
+  {
+    "code": "D83",
+    "title_la": "Obično promenljivo smanjenje imuniteta",
+    "source_line": 1643
+  },
+  {
+    "code": "D84",
+    "title_la": "Ostala smanjenja imuniteta",
+    "source_line": 1644
+  },
+  {
+    "code": "D86",
+    "title_la": "Sarkoidoza – Čvorići vezivnog tkiva",
+    "source_line": 1645
+  },
+  {
+    "code": "D89",
+    "title_la": "Drugi poremećaji imuniteta, neklasifikovani na drugom mestu",
+    "source_line": 1646
+  }
+]

@@ -1,0 +1,2307 @@
+[
+  {
+    "code": "A00",
+    "title_la": "Kolera",
+    "source_line": 1123
+  },
+  {
+    "code": "A00.0",
+    "title_la": "Cholera classica",
+    "source_line": 4482
+  },
+  {
+    "code": "A00.1",
+    "title_la": "Cholera El Tor",
+    "source_line": 4485
+  },
+  {
+    "code": "A00.9",
+    "title_la": "Cholera, non specificata",
+    "source_line": 4488
+  },
+  {
+    "code": "A01",
+    "title_la": "Tifusna groznica i paratifusna groznica",
+    "source_line": 1124
+  },
+  {
+    "code": "A01.0",
+    "title_la": "Typhus abdominalis",
+    "source_line": 4497
+  },
+  {
+    "code": "A01.1",
+    "title_la": "Paratyphus A",
+    "source_line": 4500
+  },
+  {
+    "code": "A01.2",
+    "title_la": "Paratyphus B",
+    "source_line": 4502
+  },
+  {
+    "code": "A01.3",
+    "title_la": "Paratyphus C",
+    "source_line": 4504
+  },
+  {
+    "code": "A01.4",
+    "title_la": "Paratyphus, non specificatus",
+    "source_line": 4506
+  },
+  {
+    "code": "A02",
+    "title_la": "Druge infekcije uzrokovane salmonelama",
+    "source_line": 1125
+  },
+  {
+    "code": "A02.0",
+    "title_la": "Enteritis salmonellosa",
+    "source_line": 4514
+  },
+  {
+    "code": "A02.1",
+    "title_la": "Salmonellosis septica",
+    "source_line": 4517
+  },
+  {
+    "code": "A02.2",
+    "title_la": "Infectiones salmonellosae localisatae",
+    "source_line": 4519
+  },
+  {
+    "code": "A02.8",
+    "title_la": "Infectiones salmonellosae aliae, specificatae",
+    "source_line": 4526
+  },
+  {
+    "code": "A02.9",
+    "title_la": "Infectio salmonellosa, non specificata",
+    "source_line": 4528
+  },
+  {
+    "code": "A03",
+    "title_la": "Šigeloza, uzročnik Shigellae",
+    "source_line": 1126
+  },
+  {
+    "code": "A03.0",
+    "title_la": "Dysenteria bacillaris per Shigellam dysenteriae",
+    "source_line": 4533
+  },
+  {
+    "code": "A03.1",
+    "title_la": "Dysenteria bacillaris per Shigellam flexneri",
+    "source_line": 4536
+  },
+  {
+    "code": "A03.2",
+    "title_la": "Dysenteria bacillaris per Shigellam boydii",
+    "source_line": 4539
+  },
+  {
+    "code": "A03.3",
+    "title_la": "Dysenteria bacillaris per Shigellam sonnei",
+    "source_line": 4542
+  },
+  {
+    "code": "A03.8",
+    "title_la": "Shigelloses aliae",
+    "source_line": 4551
+  },
+  {
+    "code": "A03.9",
+    "title_la": "Shigellosis, non specificata",
+    "source_line": 4553
+  },
+  {
+    "code": "A04",
+    "title_la": "Ostale bakterijske crevne infekcije",
+    "source_line": 1127
+  },
+  {
+    "code": "A04.0",
+    "title_la": "Infectio intestinalis per Escherichiam coli enteropathogenem",
+    "source_line": 4561
+  },
+  {
+    "code": "A04.1",
+    "title_la": "Infectio intestinalis per Escherichiam coli enterotoxigenem",
+    "source_line": 4563
+  },
+  {
+    "code": "A04.2",
+    "title_la": "Infectio intestinalis per Escherichiam coli enteroinvasivam",
+    "source_line": 4565
+  },
+  {
+    "code": "A04.3",
+    "title_la": "Infectio intestinalis per Escherichiam coli enterohaemorrhagicam",
+    "source_line": 4567
+  },
+  {
+    "code": "A04.4",
+    "title_la": "Infectiones intestinales per Escherichiam coli aliae",
+    "source_line": 4569
+  },
+  {
+    "code": "A04.5",
+    "title_la": "Enteritis campylobacterialis",
+    "source_line": 4572
+  },
+  {
+    "code": "A04.6",
+    "title_la": "Enteritis yersiniosa enterocolitica",
+    "source_line": 4574
+  },
+  {
+    "code": "A04.7",
+    "title_la": "Enterocolitis per Clostridium difficile",
+    "source_line": 4577
+  },
+  {
+    "code": "A04.8",
+    "title_la": "Infectiones intestinales bacteriales aliae, specificatae",
+    "source_line": 4581
+  },
+  {
+    "code": "A04.9",
+    "title_la": "Infectio intestinalis bacterialis, non specificata",
+    "source_line": 4583
+  },
+  {
+    "code": "A05",
+    "title_la": "Ostala trovanja hranom uzrokovana bakterijama, neklasifikovana na drugom",
+    "source_line": 1128
+  },
+  {
+    "code": "A05.0",
+    "title_la": "Intoxicatio allimentaria staphylococcica",
+    "source_line": 4594
+  },
+  {
+    "code": "A05.1",
+    "title_la": "Botulismus",
+    "source_line": 4596
+  },
+  {
+    "code": "A05.2",
+    "title_la": "Intoxicato ailmentaria per Clostridium perfringentem (Clostridium welchii)",
+    "source_line": 4607
+  },
+  {
+    "code": "A05.3",
+    "title_la": "Intoxicatio alimentaria per Vibrionem parahaemolyticam",
+    "source_line": 4611
+  },
+  {
+    "code": "A05.4",
+    "title_la": "Intoxicatio alimentaria per Bacillum cereum",
+    "source_line": 4613
+  },
+  {
+    "code": "A05.8",
+    "title_la": "Intoxicationes alimentariae bacteriales aliae, specificatae",
+    "source_line": 4615
+  },
+  {
+    "code": "A05.9",
+    "title_la": "Intoxicatio alimentaria bacterialis, non specificata",
+    "source_line": 4617
+  },
+  {
+    "code": "A06",
+    "title_la": "Amebijaza",
+    "source_line": 1130
+  },
+  {
+    "code": "A06.0",
+    "title_la": "Dysenteria amoebica acuta",
+    "source_line": 4624
+  },
+  {
+    "code": "A06.1",
+    "title_la": "Amoebiasis intestinalis chronica",
+    "source_line": 4628
+  },
+  {
+    "code": "A06.2",
+    "title_la": "Colitis amoebica non dysenterica",
+    "source_line": 4630
+  },
+  {
+    "code": "A06.3",
+    "title_la": "Amoeboma intestinale",
+    "source_line": 4632
+  },
+  {
+    "code": "A06.4",
+    "title_la": "Abscessus hepatis amoebicus",
+    "source_line": 4635
+  },
+  {
+    "code": "A06.5",
+    "title_la": "Abscessus pulmonum amoebicus (J99.8*)",
+    "source_line": 4638
+  },
+  {
+    "code": "A06.6",
+    "title_la": "Abscessus cerebri amoebicus (G07*)",
+    "source_line": 4641
+  },
+  {
+    "code": "A06.7",
+    "title_la": "Amoebiasis cutanea",
+    "source_line": 4644
+  },
+  {
+    "code": "A06.8",
+    "title_la": "Infectio amoebica localisationum aliorum",
+    "source_line": 4646
+  },
+  {
+    "code": "A06.9",
+    "title_la": "Amoebiasis, non specificata",
+    "source_line": 4650
+  },
+  {
+    "code": "A07",
+    "title_la": "Ostale crevne infekcije uzrokovane protozoama",
+    "source_line": 1131
+  },
+  {
+    "code": "A07.0",
+    "title_la": "Balantidiasis",
+    "source_line": 4662
+  },
+  {
+    "code": "A07.1",
+    "title_la": "Giardiasis [lambliasis]",
+    "source_line": 4665
+  },
+  {
+    "code": "A07.2",
+    "title_la": "Cryptosporidiasis",
+    "source_line": 4667
+  },
+  {
+    "code": "A07.3",
+    "title_la": "Isosporiasis",
+    "source_line": 4669
+  },
+  {
+    "code": "A07.8",
+    "title_la": "Infectiones intestinales protozoicae aliae, specificatae",
+    "source_line": 4674
+  },
+  {
+    "code": "A07.9",
+    "title_la": "Infectio intestinalis protozoica, non specificata",
+    "source_line": 4679
+  },
+  {
+    "code": "A08",
+    "title_la": "Crevne infekcije uzrokovane virusima",
+    "source_line": 1132
+  },
+  {
+    "code": "A08.0",
+    "title_la": "Enteritis rotaviralis",
+    "source_line": 4689
+  },
+  {
+    "code": "A08.1",
+    "title_la": "Gastroenteritis acuta Norwalk",
+    "source_line": 4691
+  },
+  {
+    "code": "A08.2",
+    "title_la": "Enteritis adenoviralis",
+    "source_line": 4694
+  },
+  {
+    "code": "A08.3",
+    "title_la": "Enteritides virales aliae",
+    "source_line": 4696
+  },
+  {
+    "code": "A08.4",
+    "title_la": "Infectio intestinalis viralis, non specificata",
+    "source_line": 4698
+  },
+  {
+    "code": "A08.5",
+    "title_la": "Infectiones intestinales aliae, specificatae",
+    "source_line": 4703
+  },
+  {
+    "code": "A09",
+    "title_la": "Drugi gastroenteritis i kolitis infektivnog ili neoznačenog porekla",
+    "source_line": 1133
+  },
+  {
+    "code": "A09.0",
+    "title_la": "Gastroenteritis et colitis origine infectiva alia et non specificata",
+    "source_line": 4718
+  },
+  {
+    "code": "A09.9",
+    "title_la": "Gastroenteritis et colitis origine non specificata",
+    "source_line": 4732
+  },
+  {
+    "code": "A15",
+    "title_la": "Tuberkuloza organa za disanje potvrđena bakteriološki i histološki",
+    "source_line": 1136
+  },
+  {
+    "code": "A15.0",
+    "title_la": "Tuberculosis pulmonum, per microscopiam sputi confirmata",
+    "source_line": 4749
+  },
+  {
+    "code": "A15.1",
+    "title_la": "Tuberculosis pulmonum per culturam solum confirmata",
+    "source_line": 4756
+  },
+  {
+    "code": "A15.2",
+    "title_la": "Tuberculosis pulmonum, per histologiam confirmata",
+    "source_line": 4759
+  },
+  {
+    "code": "A15.3",
+    "title_la": "Tuberculosis pulmonum, methodis non specificatis confirmata",
+    "source_line": 4762
+  },
+  {
+    "code": "A15.4",
+    "title_la": "Tuberculosis lymphonodorum intrathoracalium, per bacteriologiam et histologiam",
+    "source_line": 4772
+  },
+  {
+    "code": "A15.5",
+    "title_la": "Tuberculosis laryngis, tracheae et bronchi, per bacteriologiam et histologiam",
+    "source_line": 4781
+  },
+  {
+    "code": "A15.6",
+    "title_la": "Pleuritis tuberculosa, per bacteriologiam et histologiam confirmata",
+    "source_line": 4789
+  },
+  {
+    "code": "A15.7",
+    "title_la": "Tuberculosis pulmonum primaria, per bacteriologiam et histologiam confirmata",
+    "source_line": 4795
+  },
+  {
+    "code": "A15.8",
+    "title_la": "Tuberculoses pulmonum, per bacteriologiam et histologiam confirmatae aliae",
+    "source_line": 4797
+  },
+  {
+    "code": "A15.9",
+    "title_la": "Tuberculosis organorum respiratoriorum, per bacteriologiam et histologiam",
+    "source_line": 4804
+  },
+  {
+    "code": "A16",
+    "title_la": "Tuberkuloza organa za disanje, nepotvrđena bakteriološki i histološki",
+    "source_line": 1137
+  },
+  {
+    "code": "A16.0",
+    "title_la": "Tuberculosis pulmonum per bacteriologiam et histologiam nonconfirmata",
+    "source_line": 4811
+  },
+  {
+    "code": "A16.1",
+    "title_la": "Tuberculosis pulmonum, sine exploratione bacteriologica et histologica",
+    "source_line": 4818
+  },
+  {
+    "code": "A16.2",
+    "title_la": "Tuberculosis pulmonum, sine confirmatione bacteriologica sive histologica",
+    "source_line": 4821
+  },
+  {
+    "code": "A16.3",
+    "title_la": "Tuberculosis lymphonodorum intrathoracalium, sine confirmatione bacteriologica",
+    "source_line": 4836
+  },
+  {
+    "code": "A16.4",
+    "title_la": "Tuberculosis laryngis, tracheae et bronchi, sine confirmatione bacteriologica sive",
+    "source_line": 4845
+  },
+  {
+    "code": "A16.5",
+    "title_la": "Pleuritis tuberculosa, sine confirmatione bacteriologica sive histologica",
+    "source_line": 4853
+  },
+  {
+    "code": "A16.7",
+    "title_la": "Tuberculosis pulmonum primaria, sine confirmatione bacteriologica sive histologica",
+    "source_line": 4859
+  },
+  {
+    "code": "A16.8",
+    "title_la": "Tuberculoses organorum respiratoriorum aliae, sine confirmatione bacteriologica",
+    "source_line": 4864
+  },
+  {
+    "code": "A16.9",
+    "title_la": "Tuberculosis organorum respiratoriorum, sine confirmatione bacteriologica sive",
+    "source_line": 4872
+  },
+  {
+    "code": "A17",
+    "title_la": "Tuberkuloza nervnog sistema",
+    "source_line": 1138
+  },
+  {
+    "code": "A17.0",
+    "title_la": "Meningitis tuberculosa (G01*)",
+    "source_line": 4880
+  },
+  {
+    "code": "A17.1",
+    "title_la": "Tuberculoma meningium (G07*)",
+    "source_line": 4884
+  },
+  {
+    "code": "A17.8",
+    "title_la": "Tuberculoses systematis nervosi aliae",
+    "source_line": 4895
+  },
+  {
+    "code": "A17.9",
+    "title_la": "Tuberculosis systematis nervosi, non specificata (G99.8*)",
+    "source_line": 4903
+  },
+  {
+    "code": "A18",
+    "title_la": "Tuberkuloza drugih organa",
+    "source_line": 1139
+  },
+  {
+    "code": "A18.0",
+    "title_la": "Tuberculosis ossium et articulorum",
+    "source_line": 4908
+  },
+  {
+    "code": "A18.1",
+    "title_la": "Tuberculosis systematis genitourinarii",
+    "source_line": 4919
+  },
+  {
+    "code": "A18.2",
+    "title_la": "Tuberculosis lymphoglandularum periphericarum",
+    "source_line": 4927
+  },
+  {
+    "code": "A18.3",
+    "title_la": "Tuberculosis glandularum intestinalium, peritonaealium et mesentericarum",
+    "source_line": 4934
+  },
+  {
+    "code": "A18.4",
+    "title_la": "Tuberculosis cutis et subcutis",
+    "source_line": 4951
+  },
+  {
+    "code": "A18.5",
+    "title_la": "Tuberculosis oculi",
+    "source_line": 4963
+  },
+  {
+    "code": "A18.6",
+    "title_la": "Tuberculosis auris",
+    "source_line": 4971
+  },
+  {
+    "code": "A18.7",
+    "title_la": "Tubercuiosis glandularum suprarenalium (E35.1*)",
+    "source_line": 4975
+  },
+  {
+    "code": "A18.8",
+    "title_la": "Tuberculosis organorum aliorum, specificatorum",
+    "source_line": 4978
+  },
+  {
+    "code": "A19",
+    "title_la": "Rasejana tuberkuloza",
+    "source_line": 1140
+  },
+  {
+    "code": "A19.0",
+    "title_la": "Tuberculosis miliaris acuta, loci specificati",
+    "source_line": 4993
+  },
+  {
+    "code": "A19.1",
+    "title_la": "Tuberculosis miliaris acuta, locorum multiplicium",
+    "source_line": 4995
+  },
+  {
+    "code": "A19.2",
+    "title_la": "Tuberculosis miliaris acuta, non specificata",
+    "source_line": 4997
+  },
+  {
+    "code": "A19.8",
+    "title_la": "Tuberculoses miliares aliae",
+    "source_line": 4999
+  },
+  {
+    "code": "A19.9",
+    "title_la": "Tuberculosis miliaris, non specificata",
+    "source_line": 5001
+  },
+  {
+    "code": "A20",
+    "title_la": "Kuga",
+    "source_line": 1143
+  },
+  {
+    "code": "A20.0",
+    "title_la": "Pestis bubonica",
+    "source_line": 5015
+  },
+  {
+    "code": "A20.1",
+    "title_la": "Pestis cellulocutanea",
+    "source_line": 5017
+  },
+  {
+    "code": "A20.2",
+    "title_la": "Pestis pneumonica",
+    "source_line": 5019
+  },
+  {
+    "code": "A20.3",
+    "title_la": "Meningitis pestica",
+    "source_line": 5021
+  },
+  {
+    "code": "A20.7",
+    "title_la": "Pestis septica",
+    "source_line": 5023
+  },
+  {
+    "code": "A20.8",
+    "title_la": "Pestis, formae aliae",
+    "source_line": 5025
+  },
+  {
+    "code": "A20.9",
+    "title_la": "Pestis, non specificata",
+    "source_line": 5030
+  },
+  {
+    "code": "A21",
+    "title_la": "Tularemija",
+    "source_line": 1144
+  },
+  {
+    "code": "A21.0",
+    "title_la": "Tularaemia ulceroglandularis",
+    "source_line": 5038
+  },
+  {
+    "code": "A21.1",
+    "title_la": "Tularaemia oculoglandularis",
+    "source_line": 5040
+  },
+  {
+    "code": "A21.2",
+    "title_la": "Tularaemia pulmonalis",
+    "source_line": 5043
+  },
+  {
+    "code": "A21.3",
+    "title_la": "Tularaemia gastrointestinalis",
+    "source_line": 5045
+  },
+  {
+    "code": "A21.7",
+    "title_la": "Tularaemia generalisata",
+    "source_line": 5048
+  },
+  {
+    "code": "A21.8",
+    "title_la": "Tularaemia, formae aliae",
+    "source_line": 5050
+  },
+  {
+    "code": "A21.9",
+    "title_la": "Tularaemia, non specificata",
+    "source_line": 5052
+  },
+  {
+    "code": "A22",
+    "title_la": "Antraks [Crni prišt]",
+    "source_line": 1145
+  },
+  {
+    "code": "A22.0",
+    "title_la": "Anthrax cutaneus",
+    "source_line": 5065
+  },
+  {
+    "code": "A22.1",
+    "title_la": "Anthrax pulmonalis",
+    "source_line": 5069
+  },
+  {
+    "code": "A22.2",
+    "title_la": "Anthrax gastrointestinalis",
+    "source_line": 5074
+  },
+  {
+    "code": "A22.7",
+    "title_la": "Sepsis per anthracem",
+    "source_line": 5076
+  },
+  {
+    "code": "A22.8",
+    "title_la": "Anthrax, formae aliae",
+    "source_line": 5078
+  },
+  {
+    "code": "A22.9",
+    "title_la": "Anthrax, non specificatus",
+    "source_line": 5081
+  },
+  {
+    "code": "A23",
+    "title_la": "Bruceloza [Mediteranska groznica]",
+    "source_line": 1146
+  },
+  {
+    "code": "A23.0",
+    "title_la": "Brucellosis per Brucellam melitensem",
+    "source_line": 5090
+  },
+  {
+    "code": "A23.1",
+    "title_la": "Brucellosis per Brucellam abortus",
+    "source_line": 5092
+  },
+  {
+    "code": "A23.2",
+    "title_la": "Brucellosis per Brucellam suis",
+    "source_line": 5094
+  },
+  {
+    "code": "A23.3",
+    "title_la": "Brucellosis per Brucellam canis",
+    "source_line": 5096
+  },
+  {
+    "code": "A23.8",
+    "title_la": "Brucelloses aliae",
+    "source_line": 5098
+  },
+  {
+    "code": "A23.9",
+    "title_la": "Brucellosis, non specificata",
+    "source_line": 5100
+  },
+  {
+    "code": "A24",
+    "title_la": "Sakagija i Melioidoza, uzročnik Pseudomonas pseudomallei",
+    "source_line": 1147
+  },
+  {
+    "code": "A24.0",
+    "title_la": "Malleus",
+    "source_line": 5105
+  },
+  {
+    "code": "A24.1",
+    "title_la": "Melioidosis acuta et fulminans",
+    "source_line": 5118
+  },
+  {
+    "code": "A24.2",
+    "title_la": "Melioidosis subacuta et chronica",
+    "source_line": 5122
+  },
+  {
+    "code": "A24.3",
+    "title_la": "Melioidoses aliae",
+    "source_line": 5124
+  },
+  {
+    "code": "A24.4",
+    "title_la": "Melioidosis, non specificata",
+    "source_line": 5126
+  },
+  {
+    "code": "A25",
+    "title_la": "Groznica posle ujeda miša",
+    "source_line": 1148
+  },
+  {
+    "code": "A25.0",
+    "title_la": "Spirillosis",
+    "source_line": 5134
+  },
+  {
+    "code": "A25.1",
+    "title_la": "Streptobacillosis",
+    "source_line": 5137
+  },
+  {
+    "code": "A25.9",
+    "title_la": "Febris post morsum muris, non specificata",
+    "source_line": 5142
+  },
+  {
+    "code": "A26",
+    "title_la": "Erizipeloid – oboljenje slično crvenom vetru",
+    "source_line": 1149
+  },
+  {
+    "code": "A26.0",
+    "title_la": "Erysipeloides cutaneus",
+    "source_line": 5147
+  },
+  {
+    "code": "A26.7",
+    "title_la": "Erysipeloides septicus",
+    "source_line": 5150
+  },
+  {
+    "code": "A26.8",
+    "title_la": "Erysipeloides, formae aliae",
+    "source_line": 5152
+  },
+  {
+    "code": "A26.9",
+    "title_la": "Erysipeloides, non specificatus",
+    "source_line": 5154
+  },
+  {
+    "code": "A27",
+    "title_la": "Leptospiroza, uzročnik Leptospira interrogans",
+    "source_line": 1150
+  },
+  {
+    "code": "A27.0",
+    "title_la": "Leptospirosis icterohaemorrhagica",
+    "source_line": 5159
+  },
+  {
+    "code": "A27.8",
+    "title_la": "Leptospirosis, formae aliae",
+    "source_line": 5162
+  },
+  {
+    "code": "A27.9",
+    "title_la": "Leptospirosis, non specificata",
+    "source_line": 5164
+  },
+  {
+    "code": "A28",
+    "title_la": "Ostale bakterijske zoonoze, neklasifikovane na drugom mestu",
+    "source_line": 1151
+  },
+  {
+    "code": "A28.0",
+    "title_la": "Pasteurellosis",
+    "source_line": 5176
+  },
+  {
+    "code": "A28.1",
+    "title_la": "Morbus post excoriationem felis",
+    "source_line": 5178
+  },
+  {
+    "code": "A28.2",
+    "title_la": "Yersiniosis extraintestinalis",
+    "source_line": 5181
+  },
+  {
+    "code": "A28.8",
+    "title_la": "Zoonoses bacteriales aliae, specificatae, non alibi classificatae",
+    "source_line": 5185
+  },
+  {
+    "code": "A28.9",
+    "title_la": "Zoonosis bacterialis, non specificata",
+    "source_line": 5187
+  },
+  {
+    "code": "A30",
+    "title_la": "Lepra [Hansenova bolest]",
+    "source_line": 1154
+  },
+  {
+    "code": "A30.0",
+    "title_la": "Lepra indefinita",
+    "source_line": 5199
+  },
+  {
+    "code": "A30.1",
+    "title_la": "Lepra tuberculoides",
+    "source_line": 5202
+  },
+  {
+    "code": "A30.2",
+    "title_la": "Lepra tuberculoides limitans",
+    "source_line": 5205
+  },
+  {
+    "code": "A30.3",
+    "title_la": "Lepra limitans",
+    "source_line": 5208
+  },
+  {
+    "code": "A30.4",
+    "title_la": "Lepra lepromatosa limitans",
+    "source_line": 5211
+  },
+  {
+    "code": "A30.5",
+    "title_la": "Lepra lepromatosa",
+    "source_line": 5214
+  },
+  {
+    "code": "A30.8",
+    "title_la": "Lepra, formae aliae",
+    "source_line": 5217
+  },
+  {
+    "code": "A30.9",
+    "title_la": "Lepra, non specificata",
+    "source_line": 5219
+  },
+  {
+    "code": "A31",
+    "title_la": "Ostale bolesti uzrokovane mikobakterijama",
+    "source_line": 1155
+  },
+  {
+    "code": "A31.0",
+    "title_la": "Infectio pulmonalis mycobacterialis",
+    "source_line": 5233
+  },
+  {
+    "code": "A31.1",
+    "title_la": "Infectio cutanea mycobacterialis",
+    "source_line": 5239
+  },
+  {
+    "code": "A31.8",
+    "title_la": "Infectiones mycobacteriales aliae",
+    "source_line": 5245
+  },
+  {
+    "code": "A31.9",
+    "title_la": "Infectio mycobacterialis, non specificata",
+    "source_line": 5247
+  },
+  {
+    "code": "A32",
+    "title_la": "Listerioza, uzročnik Listeria monocytogenes",
+    "source_line": 1156
+  },
+  {
+    "code": "A32.0",
+    "title_la": "Listeriosis cutanea",
+    "source_line": 5256
+  },
+  {
+    "code": "A32.1",
+    "title_la": "Meningitis et meningoencephalitis listerialis",
+    "source_line": 5258
+  },
+  {
+    "code": "A32.7",
+    "title_la": "Listeriosis septica",
+    "source_line": 5262
+  },
+  {
+    "code": "A32.8",
+    "title_la": "Listeriosis, formae aliae",
+    "source_line": 5264
+  },
+  {
+    "code": "A32.9",
+    "title_la": "Listeriosis, non specificata",
+    "source_line": 5269
+  },
+  {
+    "code": "A33",
+    "title_la": "Tetanus novorođenčeta",
+    "source_line": 1157
+  },
+  {
+    "code": "A34",
+    "title_la": "Porođajni tetanus",
+    "source_line": 1158
+  },
+  {
+    "code": "A35",
+    "title_la": "Drugi tetanus",
+    "source_line": 1159
+  },
+  {
+    "code": "A36",
+    "title_la": "Difterija",
+    "source_line": 1160
+  },
+  {
+    "code": "A36.0",
+    "title_la": "Diphtheria pharyngica",
+    "source_line": 5294
+  },
+  {
+    "code": "A36.1",
+    "title_la": "Diphtheria nasopharyngica",
+    "source_line": 5298
+  },
+  {
+    "code": "A36.2",
+    "title_la": "Diphtheria laryngica",
+    "source_line": 5300
+  },
+  {
+    "code": "A36.3",
+    "title_la": "Diphtheria cutanea",
+    "source_line": 5303
+  },
+  {
+    "code": "A36.8",
+    "title_la": "Diphtheriae aliae",
+    "source_line": 5306
+  },
+  {
+    "code": "A36.9",
+    "title_la": "Diphtheria, non specificata",
+    "source_line": 5311
+  },
+  {
+    "code": "A37",
+    "title_la": "Veliki kašalj",
+    "source_line": 1161
+  },
+  {
+    "code": "A37.0",
+    "title_la": "Pertussis per Bordetellam pertussis",
+    "source_line": 5316
+  },
+  {
+    "code": "A37.1",
+    "title_la": "Pertussis per Bordetellam parapertussis",
+    "source_line": 5318
+  },
+  {
+    "code": "A37.8",
+    "title_la": "Pertussis per Bordetellam speciei aliae",
+    "source_line": 5320
+  },
+  {
+    "code": "A37.9",
+    "title_la": "Pertussis, non specificata",
+    "source_line": 5322
+  },
+  {
+    "code": "A38",
+    "title_la": "Šarlah",
+    "source_line": 1162
+  },
+  {
+    "code": "A39",
+    "title_la": "Infekcija uzrokovana meningokokom",
+    "source_line": 1163
+  },
+  {
+    "code": "A39.0",
+    "title_la": "Meningitis meningococcica (G01*)",
+    "source_line": 5332
+  },
+  {
+    "code": "A39.1",
+    "title_la": "Syndroma Waterhouse – Friderichsen (E35.1*)",
+    "source_line": 5342
+  },
+  {
+    "code": "A39.2",
+    "title_la": "Sepsis meningococcica acuta",
+    "source_line": 5346
+  },
+  {
+    "code": "A39.3",
+    "title_la": "Meningococcaemia chronica",
+    "source_line": 5348
+  },
+  {
+    "code": "A39.4",
+    "title_la": "Meningococcaemia, non specificata",
+    "source_line": 5350
+  },
+  {
+    "code": "A39.5",
+    "title_la": "Morbus cordis meningococcica",
+    "source_line": 5353
+  },
+  {
+    "code": "A39.8",
+    "title_la": "Infectiones meningococcicae aliae",
+    "source_line": 5359
+  },
+  {
+    "code": "A39.9",
+    "title_la": "Infectio meningococcica, non specificata",
+    "source_line": 5366
+  },
+  {
+    "code": "A40",
+    "title_la": "Streptokokna sepsa",
+    "source_line": 1164
+  },
+  {
+    "code": "A40.0",
+    "title_la": "Sepsis streptococcica A",
+    "source_line": 5379
+  },
+  {
+    "code": "A40.1",
+    "title_la": "Sepsis streptococcica B",
+    "source_line": 5381
+  },
+  {
+    "code": "A40.2",
+    "title_la": "Sepsis streptococcica D",
+    "source_line": 5383
+  },
+  {
+    "code": "A40.3",
+    "title_la": "Sepsis pneumococcica",
+    "source_line": 5385
+  },
+  {
+    "code": "A40.8",
+    "title_la": "Sepsis streptococcica alia",
+    "source_line": 5388
+  },
+  {
+    "code": "A40.9",
+    "title_la": "Sepsis streptococcica, non specificata",
+    "source_line": 5390
+  },
+  {
+    "code": "A41",
+    "title_la": "Ostale sepse",
+    "source_line": 1165
+  },
+  {
+    "code": "A41.0",
+    "title_la": "Sepsis staphylococcica",
+    "source_line": 5425
+  },
+  {
+    "code": "A41.1",
+    "title_la": "Sepsis staphylococcica alia, specificata",
+    "source_line": 5427
+  },
+  {
+    "code": "A41.2",
+    "title_la": "Sepsis staphylococcica, non specificata",
+    "source_line": 5430
+  },
+  {
+    "code": "A41.3",
+    "title_la": "Sepsis per Haemophilum influenzae",
+    "source_line": 5432
+  },
+  {
+    "code": "A41.4",
+    "title_la": "Sepsis anaerobica",
+    "source_line": 5434
+  },
+  {
+    "code": "A41.5",
+    "title_la": "Sepsis per organismos Gramos-negativos alios",
+    "source_line": 5437
+  },
+  {
+    "code": "A41.8",
+    "title_la": "Sepsis alia, specificata",
+    "source_line": 5440
+  },
+  {
+    "code": "A41.9",
+    "title_la": "Sepsis, non specificata",
+    "source_line": 5442
+  },
+  {
+    "code": "A42",
+    "title_la": "Aktinomikoza, uzročnik Actinomyces",
+    "source_line": 1166
+  },
+  {
+    "code": "A42.0",
+    "title_la": "Actinomycosis pulmonalis",
+    "source_line": 5459
+  },
+  {
+    "code": "A42.1",
+    "title_la": "Actinomycosis abdominalis",
+    "source_line": 5461
+  },
+  {
+    "code": "A42.2",
+    "title_la": "Actinomycosis cervicofacialis",
+    "source_line": 5463
+  },
+  {
+    "code": "A42.7",
+    "title_la": "Sepsis actinomycotica",
+    "source_line": 5465
+  },
+  {
+    "code": "A42.8",
+    "title_la": "Actinomycosis, formae aliae",
+    "source_line": 5467
+  },
+  {
+    "code": "A42.9",
+    "title_la": "Actinomycosis, non specificata",
+    "source_line": 5469
+  },
+  {
+    "code": "A43",
+    "title_la": "Nokardioza, uzročnik Nocardia",
+    "source_line": 1173
+  },
+  {
+    "code": "A43.0",
+    "title_la": "Nocardiosis pulmonalis",
+    "source_line": 5474
+  },
+  {
+    "code": "A43.1",
+    "title_la": "Nocardiosis cutanea",
+    "source_line": 5476
+  },
+  {
+    "code": "A43.8",
+    "title_la": "Nocardiosis, formae aliae",
+    "source_line": 5478
+  },
+  {
+    "code": "A43.9",
+    "title_la": "Nocardiosis, non specificata",
+    "source_line": 5480
+  },
+  {
+    "code": "A44",
+    "title_la": "Bartoneloza, uzročnik Bartonella",
+    "source_line": 1174
+  },
+  {
+    "code": "A44.0",
+    "title_la": "Bartonellosis systematica",
+    "source_line": 5485
+  },
+  {
+    "code": "A44.1",
+    "title_la": "Bartonellosis cutanea et mucocutanea",
+    "source_line": 5488
+  },
+  {
+    "code": "A44.8",
+    "title_la": "Bartonellosis, formae aliae",
+    "source_line": 5491
+  },
+  {
+    "code": "A44.9",
+    "title_la": "Bartonellosis, non specificata",
+    "source_line": 5493
+  },
+  {
+    "code": "A46",
+    "title_la": "Crveni vetar",
+    "source_line": 1175
+  },
+  {
+    "code": "A48",
+    "title_la": "Druge bakterijske bolesti, neklasifikovane na drugom mestu",
+    "source_line": 1176
+  },
+  {
+    "code": "A48.0",
+    "title_la": "Gaseosa gangraena",
+    "source_line": 5510
+  },
+  {
+    "code": "A48.1",
+    "title_la": "Legionellosis",
+    "source_line": 5514
+  },
+  {
+    "code": "A48.2",
+    "title_la": "Legionellosis extrapulmonalis",
+    "source_line": 5516
+  },
+  {
+    "code": "A48.3",
+    "title_la": "Afflictus (shock) toxicus",
+    "source_line": 5519
+  },
+  {
+    "code": "A48.4",
+    "title_la": "Febris brasiliana purpurica",
+    "source_line": 5523
+  },
+  {
+    "code": "A48.8",
+    "title_la": "Morbi bacteriales alii, specificati",
+    "source_line": 5526
+  },
+  {
+    "code": "A49",
+    "title_la": "Bakterijska infekcija neoznačene lokalizacije",
+    "source_line": 1177
+  },
+  {
+    "code": "A49.0",
+    "title_la": "Infectio staphylococcica, loci non specificati",
+    "source_line": 5536
+  },
+  {
+    "code": "A49.1",
+    "title_la": "Infectio streptococcica, loci non specificati",
+    "source_line": 5538
+  },
+  {
+    "code": "A49.2",
+    "title_la": "Infectio per Haemophilum influenzae, loci non specificati",
+    "source_line": 5540
+  },
+  {
+    "code": "A49.3",
+    "title_la": "Infectio mycoplasmatica, loci non specificati",
+    "source_line": 5542
+  },
+  {
+    "code": "A49.8",
+    "title_la": "Infectiones bacteriales aliae",
+    "source_line": 5544
+  },
+  {
+    "code": "A49.9",
+    "title_la": "Infectio bacterialis, non specificata",
+    "source_line": 5546
+  },
+  {
+    "code": "A50",
+    "title_la": "Urođeni sifilis",
+    "source_line": 1180
+  },
+  {
+    "code": "A50.0",
+    "title_la": "Syphilis symptomatica praecox congenita",
+    "source_line": 5565
+  },
+  {
+    "code": "A50.1",
+    "title_la": "Syphilis praecox latens congenita",
+    "source_line": 5579
+  },
+  {
+    "code": "A50.2",
+    "title_la": "Syphilis praecox congenita, non specificata",
+    "source_line": 5583
+  },
+  {
+    "code": "A50.3",
+    "title_la": "Oculopathia syphilitica tarda congenita",
+    "source_line": 5586
+  },
+  {
+    "code": "A50.4",
+    "title_la": "Neurosyphilis juvenilis tarda congenita",
+    "source_line": 5591
+  },
+  {
+    "code": "A50.5",
+    "title_la": "Syphilides symptomaticae tardae congenitae aliae",
+    "source_line": 5610
+  },
+  {
+    "code": "A50.6",
+    "title_la": "Syphilis tarda latens, congenita",
+    "source_line": 5621
+  },
+  {
+    "code": "A50.7",
+    "title_la": "Syphilis tarda congenita, non specificata",
+    "source_line": 5625
+  },
+  {
+    "code": "A50.9",
+    "title_la": "Syphilis congenita, non specificata",
+    "source_line": 5628
+  },
+  {
+    "code": "A51",
+    "title_la": "Sveži sifilis",
+    "source_line": 1181
+  },
+  {
+    "code": "A51.0",
+    "title_la": "Syphilis genitalis primaria",
+    "source_line": 5633
+  },
+  {
+    "code": "A51.1",
+    "title_la": "Syphilis analis primaria",
+    "source_line": 5636
+  },
+  {
+    "code": "A51.2",
+    "title_la": "Syphilis primaria, locorum alliorum",
+    "source_line": 5638
+  },
+  {
+    "code": "A51.3",
+    "title_la": "Syphilis cutis et mucosae secundaria",
+    "source_line": 5640
+  },
+  {
+    "code": "A51.4",
+    "title_la": "Syphildes secundariae aliae",
+    "source_line": 5646
+  },
+  {
+    "code": "A51.5",
+    "title_la": "Syphilis recens latens",
+    "source_line": 5655
+  },
+  {
+    "code": "A51.9",
+    "title_la": "Syphilis recens, non specificata",
+    "source_line": 5659
+  },
+  {
+    "code": "A52",
+    "title_la": "Pozni sifilis",
+    "source_line": 1182
+  },
+  {
+    "code": "A52.0",
+    "title_la": "Syphilis cardiovascularis",
+    "source_line": 5671
+  },
+  {
+    "code": "A52.1",
+    "title_la": "Neurosyphilis symptomatica",
+    "source_line": 5682
+  },
+  {
+    "code": "A52.2",
+    "title_la": "Neurosyphilis asymptomatica",
+    "source_line": 5693
+  },
+  {
+    "code": "A52.3",
+    "title_la": "Neurosyphilis, non specificata",
+    "source_line": 5695
+  },
+  {
+    "code": "A52.7",
+    "title_la": "Syphilis symptomatica tarda alia",
+    "source_line": 5700
+  },
+  {
+    "code": "A52.8",
+    "title_la": "Syphilis tarda latens",
+    "source_line": 5718
+  },
+  {
+    "code": "A52.9",
+    "title_la": "Syphilis tarda, non specificata",
+    "source_line": 5722
+  },
+  {
+    "code": "A53",
+    "title_la": "Ostali neoznačeni sifilisi",
+    "source_line": 1183
+  },
+  {
+    "code": "A53.0",
+    "title_la": "Syphilis latens, ut recens sive tarda, non specificata",
+    "source_line": 5732
+  },
+  {
+    "code": "A53.9",
+    "title_la": "Syphilis, non specificata",
+    "source_line": 5736
+  },
+  {
+    "code": "A54",
+    "title_la": "Infekcija gonokokom",
+    "source_line": 1184
+  },
+  {
+    "code": "A54.0",
+    "title_la": "Infectio tractus genitourinarii inferioris gonococcica sine abscessu periurethrali et",
+    "source_line": 5744
+  },
+  {
+    "code": "A54.1",
+    "title_la": "Infectio tractus genitourinarii inferioris gonococcica cum abscessu periurethrali et",
+    "source_line": 5754
+  },
+  {
+    "code": "A54.2",
+    "title_la": "Pelvioperitonitides et infectiones genitourinariae gonococcicae aliae",
+    "source_line": 5759
+  },
+  {
+    "code": "A54.3",
+    "title_la": "Infectio oculi gonococcica",
+    "source_line": 5767
+  },
+  {
+    "code": "A54.4",
+    "title_la": "Infectio systematis musculosceletalis gonococcica",
+    "source_line": 5772
+  },
+  {
+    "code": "A54.5",
+    "title_la": "Pharyngitis gonococcica",
+    "source_line": 5779
+  },
+  {
+    "code": "A54.6",
+    "title_la": "Infectio ani et recti gonococcica",
+    "source_line": 5788
+  },
+  {
+    "code": "A54.8",
+    "title_la": "Infectiones gonococcicae aliae",
+    "source_line": 5790
+  },
+  {
+    "code": "A54.9",
+    "title_la": "Infectio gonococcica, non specificata",
+    "source_line": 5802
+  },
+  {
+    "code": "A55",
+    "title_la": "Venerički limfogranulom, uzročnik Chlamydia",
+    "source_line": 1185
+  },
+  {
+    "code": "A56",
+    "title_la": "Ostale polne bolesti uzrokovane hlamidijama",
+    "source_line": 1186
+  },
+  {
+    "code": "A56.0",
+    "title_la": "Infectio tractus genitourinarii inferioris, chlamydialis",
+    "source_line": 5819
+  },
+  {
+    "code": "A56.1",
+    "title_la": "Infectio pelviopernitonaei et organorum genitourinariorum aliorum chlamydialis",
+    "source_line": 5825
+  },
+  {
+    "code": "A56.2",
+    "title_la": "Infectio tractus genitourinarii, chlamydialis, non specificata",
+    "source_line": 5830
+  },
+  {
+    "code": "A56.3",
+    "title_la": "Infectio ani et recti chlamydialis",
+    "source_line": 5832
+  },
+  {
+    "code": "A56.4",
+    "title_la": "Infectio pharyngis, chlamydialis",
+    "source_line": 5834
+  },
+  {
+    "code": "A56.8",
+    "title_la": "Infectio chlamydialis, modo sexuali transmissa, locorum aliorum",
+    "source_line": 5836
+  },
+  {
+    "code": "A57",
+    "title_la": "Meki šankr",
+    "source_line": 1187
+  },
+  {
+    "code": "A58",
+    "title_la": "Zrnasti tumor prepone",
+    "source_line": 1188
+  },
+  {
+    "code": "A59",
+    "title_la": "Trihomonijaza, uzročnik Trichomonas vaginalis",
+    "source_line": 1189
+  },
+  {
+    "code": "A59.0",
+    "title_la": "Trichomoniasis urogenitalis",
+    "source_line": 5857
+  },
+  {
+    "code": "A59.8",
+    "title_la": "Trichomoniasis locorum aliorum",
+    "source_line": 5862
+  },
+  {
+    "code": "A59.9",
+    "title_la": "Trichomoniasis, non specificata",
+    "source_line": 5864
+  },
+  {
+    "code": "A60",
+    "title_la": "Anogenitalna infekcija uzrokovana virusom herpesa [herpes simplex]",
+    "source_line": 1190
+  },
+  {
+    "code": "A60.0",
+    "title_la": "Infectio genitaliorum et tractus urogenitalis, herpesviralis",
+    "source_line": 5869
+  },
+  {
+    "code": "A60.1",
+    "title_la": "Infectio cutis perianalis et recti, herpesviralis",
+    "source_line": 5874
+  },
+  {
+    "code": "A60.9",
+    "title_la": "Infectio anogenitalis herpesviralis, non specificata",
+    "source_line": 5876
+  },
+  {
+    "code": "A63",
+    "title_la": "Ostale bolesti prenete pretežno polnim odnosom, neklasifikovane na drugom",
+    "source_line": 1191
+  },
+  {
+    "code": "A63.0",
+    "title_la": "Verrucae anogenitales",
+    "source_line": 5884
+  },
+  {
+    "code": "A63.8",
+    "title_la": "Morbi praedominanter modo sexuali transmissi alii, specificati",
+    "source_line": 5886
+  },
+  {
+    "code": "A64",
+    "title_la": "Neoznačena bolest preneta polnim odnosom",
+    "source_line": 1193
+  },
+  {
+    "code": "A65",
+    "title_la": "Sifilis van polnih organa",
+    "source_line": 1196
+  },
+  {
+    "code": "A66",
+    "title_la": "Frambezijaze, uzročnik Treponaema pertenuis",
+    "source_line": 1197
+  },
+  {
+    "code": "A66.0",
+    "title_la": "Laesiones framboesiales initiales",
+    "source_line": 5916
+  },
+  {
+    "code": "A66.1",
+    "title_la": "Papillomata multiplicia et ulcera humida framboesialia",
+    "source_line": 5922
+  },
+  {
+    "code": "A66.2",
+    "title_la": "Laesiones cutis framboesiales initiales aliae",
+    "source_line": 5927
+  },
+  {
+    "code": "A66.3",
+    "title_la": "Hyperkeratosis framboesialis",
+    "source_line": 5932
+  },
+  {
+    "code": "A66.4",
+    "title_la": "Gummata et ulcera framboesialia",
+    "source_line": 5937
+  },
+  {
+    "code": "A66.5",
+    "title_la": "Gangosa",
+    "source_line": 5941
+  },
+  {
+    "code": "A66.6",
+    "title_la": "Laesiones ossium et articulorum framboesiales",
+    "source_line": 5952
+  },
+  {
+    "code": "A66.7",
+    "title_la": "Manifestationes framboesiales aliae",
+    "source_line": 5962
+  },
+  {
+    "code": "A66.8",
+    "title_la": "Framboesia latens",
+    "source_line": 5966
+  },
+  {
+    "code": "A66.9",
+    "title_la": "Framboesia, non specificata",
+    "source_line": 5969
+  },
+  {
+    "code": "A67",
+    "title_la": "Pinta – ljuskasto-pegasto oboljenje kože",
+    "source_line": 1198
+  },
+  {
+    "code": "A67.0",
+    "title_la": "Laesiones \"pinta\" primariae",
+    "source_line": 5974
+  },
+  {
+    "code": "A67.1",
+    "title_la": "Laesiones \"pinta\" intermediae",
+    "source_line": 5978
+  },
+  {
+    "code": "A67.2",
+    "title_la": "Laesiones \"pinta\" tardae",
+    "source_line": 5984
+  },
+  {
+    "code": "A67.3",
+    "title_la": "Laesiones \"pinta\" mixtae",
+    "source_line": 5990
+  },
+  {
+    "code": "A67.9",
+    "title_la": "Pinta, non specificata",
+    "source_line": 5993
+  },
+  {
+    "code": "A68",
+    "title_la": "Povratna groznica",
+    "source_line": 1199
+  },
+  {
+    "code": "A68.0",
+    "title_la": "Febris recurrens pedicularis",
+    "source_line": 5999
+  },
+  {
+    "code": "A68.1",
+    "title_la": "Febris recurrens ixodibus transmissa",
+    "source_line": 6010
+  },
+  {
+    "code": "A68.9",
+    "title_la": "Febris recurrens, non specificata",
+    "source_line": 6013
+  },
+  {
+    "code": "A69",
+    "title_la": "Ostale infekcije spirohetama",
+    "source_line": 1200
+  },
+  {
+    "code": "A69.0",
+    "title_la": "Stomatitis ulcerosa necroticans",
+    "source_line": 6018
+  },
+  {
+    "code": "A69.1",
+    "title_la": "Infectiones Vincent aliae",
+    "source_line": 6024
+  },
+  {
+    "code": "A69.2",
+    "title_la": "Morbus Lyme",
+    "source_line": 6033
+  },
+  {
+    "code": "A69.8",
+    "title_la": "Infectiones spirochaetales aliae, specificatae",
+    "source_line": 6036
+  },
+  {
+    "code": "A69.9",
+    "title_la": "Infectio spirochaetalis, non specificata",
+    "source_line": 6038
+  },
+  {
+    "code": "A70",
+    "title_la": "Hlamidijaza, uzročnik Chlamydia psittaci",
+    "source_line": 1203
+  },
+  {
+    "code": "A71",
+    "title_la": "Trahom",
+    "source_line": 1204
+  },
+  {
+    "code": "A71.0",
+    "title_la": "Trachoma incipiens",
+    "source_line": 6055
+  },
+  {
+    "code": "A71.1",
+    "title_la": "Trachoma floridum",
+    "source_line": 6066
+  },
+  {
+    "code": "A71.9",
+    "title_la": "Trachoma, non specificatum",
+    "source_line": 6071
+  },
+  {
+    "code": "A74",
+    "title_la": "Ostale hlamidijaze",
+    "source_line": 1205
+  },
+  {
+    "code": "A74.0",
+    "title_la": "Conjunctivitis chlamydialis (H13.1*)",
+    "source_line": 6080
+  },
+  {
+    "code": "A74.8",
+    "title_la": "Morbi chlamydiales alii",
+    "source_line": 6083
+  },
+  {
+    "code": "A74.9",
+    "title_la": "Infectio chlamydialis, non specificata",
+    "source_line": 6086
+  },
+  {
+    "code": "A75",
+    "title_la": "Pegavac [Pegavi tifus] – tifusna groznica koju prenose vaši",
+    "source_line": 1208
+  },
+  {
+    "code": "A75.0",
+    "title_la": "Typhus exanthematosus per Rickettsiam prowazeki",
+    "source_line": 6098
+  },
+  {
+    "code": "A75.1",
+    "title_la": "Typhus recrudescens [Morbus \"Brill\"]",
+    "source_line": 6102
+  },
+  {
+    "code": "A75.2",
+    "title_la": "Febris typhica per Rickettsiam typhi",
+    "source_line": 6105
+  },
+  {
+    "code": "A75.3",
+    "title_la": "Febria typhica per Rickettsiam tsutsugamushi",
+    "source_line": 6108
+  },
+  {
+    "code": "A75.9",
+    "title_la": "Febris typhica, non specificata",
+    "source_line": 6112
+  },
+  {
+    "code": "A77",
+    "title_la": "Osipna groznica koju prenose krpelji",
+    "source_line": 1209
+  },
+  {
+    "code": "A77.0",
+    "title_la": "Febris exanthematosa per Rickettsiam rickettsii",
+    "source_line": 6124
+  },
+  {
+    "code": "A77.1",
+    "title_la": "Febris exanthematosa per Rickettsiam conori",
+    "source_line": 6128
+  },
+  {
+    "code": "A77.2",
+    "title_la": "Febris exanthematosa per Rickettsiam sibericam",
+    "source_line": 6136
+  },
+  {
+    "code": "A77.3",
+    "title_la": "Ferbis exanthematosa per Rickettsiam australem",
+    "source_line": 6140
+  },
+  {
+    "code": "A77.8",
+    "title_la": "Febres exanthematosae ixodibus transmissae aliae",
+    "source_line": 6143
+  },
+  {
+    "code": "A77.9",
+    "title_la": "Febris exanthematosa, non specificata",
+    "source_line": 6145
+  },
+  {
+    "code": "A78",
+    "title_la": "Kju-groznica",
+    "source_line": 1210
+  },
+  {
+    "code": "A79",
+    "title_la": "Druge rikecioze",
+    "source_line": 1211
+  },
+  {
+    "code": "A79.0",
+    "title_la": "Febris fossae - \"trench-fever\"",
+    "source_line": 6157
+  },
+  {
+    "code": "A79.1",
+    "title_la": "Rickettsialopox per Rickettsiam akari",
+    "source_line": 6161
+  },
+  {
+    "code": "A79.8",
+    "title_la": "Rickettsiosess aliae, specificatae",
+    "source_line": 6165
+  },
+  {
+    "code": "A79.9",
+    "title_la": "Rickettsiosis, non specificata",
+    "source_line": 6168
+  },
+  {
+    "code": "A80",
+    "title_la": "Akutna dečja paraliza",
+    "source_line": 1214
+  },
+  {
+    "code": "A80.0",
+    "title_la": "Poliomyelitis paralytica acuta, postvaccinalis",
+    "source_line": 6187
+  },
+  {
+    "code": "A80.1",
+    "title_la": "Poliomyelitis paralytica acuta (virus importatum)",
+    "source_line": 6189
+  },
+  {
+    "code": "A80.2",
+    "title_la": "Poliomyelitis paralytica acuta (virus autochtonum)",
+    "source_line": 6191
+  },
+  {
+    "code": "A80.3",
+    "title_la": "Poliomyelitides paralyticae acutae, aliae, non specificatae",
+    "source_line": 6193
+  },
+  {
+    "code": "A80.4",
+    "title_la": "Poliomyelitis acuta, non paralytica",
+    "source_line": 6195
+  },
+  {
+    "code": "A80.9",
+    "title_la": "Poliomyelitis acuta, non specificata",
+    "source_line": 6197
+  },
+  {
+    "code": "A81",
+    "title_la": "Infekcije centralnog nervnog sistema sporog toka uzrokovane virusima",
+    "source_line": 1215
+  },
+  {
+    "code": "A81.0",
+    "title_la": "Morbus „Creutzfeldt-Jakob“",
+    "source_line": 6203
+  },
+  {
+    "code": "A81.1",
+    "title_la": "Panencephalitis scleroticans subacuta",
+    "source_line": 6206
+  },
+  {
+    "code": "A81.2",
+    "title_la": "Leucoencephalopathia multifocalia progressiva",
+    "source_line": 6210
+  },
+  {
+    "code": "A81.8",
+    "title_la": "Infectiones systematis nervosi centralis virales lentae aliae",
+    "source_line": 6213
+  },
+  {
+    "code": "A81.9",
+    "title_la": "Infectio systematis nervosi centralis viralis lenta, non specificata",
+    "source_line": 6216
+  },
+  {
+    "code": "A82",
+    "title_la": "Besnilo",
+    "source_line": 1216
+  },
+  {
+    "code": "A82.0",
+    "title_la": "Rabies silvatica",
+    "source_line": 6222
+  },
+  {
+    "code": "A82.1",
+    "title_la": "Rabies urbana",
+    "source_line": 6224
+  },
+  {
+    "code": "A82.9",
+    "title_la": "Rabies, non specificata",
+    "source_line": 6226
+  },
+  {
+    "code": "A83",
+    "title_la": "Zapaljenje mozga uzrokovano virusima koje prenose komarci",
+    "source_line": 1217
+  },
+  {
+    "code": "A83.0",
+    "title_la": "Encephalitis „japonica“",
+    "source_line": 6237
+  },
+  {
+    "code": "A83.1",
+    "title_la": "Encephalitis equina occidentalis",
+    "source_line": 6239
+  },
+  {
+    "code": "A83.2",
+    "title_la": "Encephalitis equina orientalis",
+    "source_line": 6241
+  },
+  {
+    "code": "A83.3",
+    "title_la": "Encephalitis „St. Louis“",
+    "source_line": 6243
+  },
+  {
+    "code": "A83.4",
+    "title_la": "Encephalitis „australiensis“",
+    "source_line": 6245
+  },
+  {
+    "code": "A83.5",
+    "title_la": "Encephalitis „californiensis“",
+    "source_line": 6248
+  },
+  {
+    "code": "A83.6",
+    "title_la": "Morbus viralis „Rocio“",
+    "source_line": 6252
+  },
+  {
+    "code": "A83.8",
+    "title_la": "Encephalitides virales anophelis transmissae aliae",
+    "source_line": 6254
+  },
+  {
+    "code": "A83.9",
+    "title_la": "Encephalitis viralis anophelis transmissa, non specificata",
+    "source_line": 6256
+  },
+  {
+    "code": "A84",
+    "title_la": "Zapaljenje mozga uzrokovano virusima koje prenose krpelji",
+    "source_line": 1218
+  },
+  {
+    "code": "A84.0",
+    "title_la": "Encephalitis Orientis extremi ixodibus transmissa",
+    "source_line": 6262
+  },
+  {
+    "code": "A84.1",
+    "title_la": "Encephalitis Europae centralis ixodibus transmissa",
+    "source_line": 6264
+  },
+  {
+    "code": "A84.8",
+    "title_la": "Encephalitides virales ixodibus transmissae aliae",
+    "source_line": 6266
+  },
+  {
+    "code": "A84.9",
+    "title_la": "Encephalitis viralis ixodibus transmissa, non specificata",
+    "source_line": 6270
+  },
+  {
+    "code": "A85",
+    "title_la": "Ostala zapaljenja mozga uzrokovana virusima, neklasifikovana na drugom mestu",
+    "source_line": 1219
+  },
+  {
+    "code": "A85.0",
+    "title_la": "Encephalitis enteroviralis (G05.1*)",
+    "source_line": 6292
+  },
+  {
+    "code": "A85.1",
+    "title_la": "Encephalitis adenoviralis (G05.1*)",
+    "source_line": 6295
+  },
+  {
+    "code": "A85.2",
+    "title_la": "Encephalitis viralis arthoropodis transmissa, non specificata",
+    "source_line": 6298
+  },
+  {
+    "code": "A85.8",
+    "title_la": "Encephalitides virales aliae, specificatae",
+    "source_line": 6300
+  },
+  {
+    "code": "A86",
+    "title_la": "Zapaljenje mozga uzrokovano virusima, neoznačeno",
+    "source_line": 1220
+  },
+  {
+    "code": "A87",
+    "title_la": "Zapaljenje moždanica uzrokovano virusima",
+    "source_line": 1221
+  },
+  {
+    "code": "A87.0",
+    "title_la": "Meningitis enteroviralis (G02.0*)",
+    "source_line": 6318
+  },
+  {
+    "code": "A87.1",
+    "title_la": "Meningitis adenoviralis (G02.0*)",
+    "source_line": 6322
+  },
+  {
+    "code": "A87.2",
+    "title_la": "Choriomeningitis lymphocytica",
+    "source_line": 6324
+  },
+  {
+    "code": "A87.8",
+    "title_la": "Meningitides virales aliae",
+    "source_line": 6327
+  },
+  {
+    "code": "A87.9",
+    "title_la": "Meningitis viralis, non specificata",
+    "source_line": 6329
+  },
+  {
+    "code": "A88",
+    "title_la": "Ostale infekcije centralnog nervnog sistema uzrokovane virusima, neklasifikovane",
+    "source_line": 1228
+  },
+  {
+    "code": "A88.0",
+    "title_la": "Febris exanthematosa enteroviralis (exanthema Boston)",
+    "source_line": 6343
+  },
+  {
+    "code": "A88.1",
+    "title_la": "Vertigo epidemica",
+    "source_line": 6345
+  },
+  {
+    "code": "A88.8",
+    "title_la": "Infectiones systematis nervosi centralis virales aliae, specificatae",
+    "source_line": 6347
+  },
+  {
+    "code": "A89",
+    "title_la": "Infekcija centralnog nervnog sistema uzrokovana virusima, neoznačena",
+    "source_line": 1230
+  },
+  {
+    "code": "A90",
+    "title_la": "Denga groznica",
+    "source_line": 1234
+  },
+  {
+    "code": "A91",
+    "title_la": "Hemoragijska denga groznica",
+    "source_line": 1235
+  },
+  {
+    "code": "A92",
+    "title_la": "Ostale groznice uzrokovane virusima koje prenose komarci",
+    "source_line": 1236
+  },
+  {
+    "code": "A92.0",
+    "title_la": "Morbus viralis Chikungunya",
+    "source_line": 6368
+  },
+  {
+    "code": "A92.1",
+    "title_la": "Febris „O nyong-nyong“",
+    "source_line": 6371
+  },
+  {
+    "code": "A92.2",
+    "title_la": "Febris equina venezuelensis",
+    "source_line": 6373
+  },
+  {
+    "code": "A92.3",
+    "title_la": "Febris „West Nile“",
+    "source_line": 6377
+  },
+  {
+    "code": "A92.4",
+    "title_la": "Febris „Rift valley“",
+    "source_line": 6380
+  },
+  {
+    "code": "A92.8",
+    "title_la": "Febres virales anophelis tranamissae aliae, specificatae",
+    "source_line": 6382
+  },
+  {
+    "code": "A92.9",
+    "title_la": "Febris viralis anophelis transmissa, non specificata",
+    "source_line": 6384
+  },
+  {
+    "code": "A93",
+    "title_la": "Ostale groznice uzrokovane virusima koje prenose člankonošci, neklasifikovane na",
+    "source_line": 1237
+  },
+  {
+    "code": "A93.0",
+    "title_la": "Morbus viralis „Oropouche“",
+    "source_line": 6396
+  },
+  {
+    "code": "A93.1",
+    "title_la": "Febris „Sandfly“",
+    "source_line": 6399
+  },
+  {
+    "code": "A93.2",
+    "title_la": "Febris ixodica „Colorado“",
+    "source_line": 6403
+  },
+  {
+    "code": "A93.8",
+    "title_la": "Febres virales arthropodis transmissae aliae, specificatae",
+    "source_line": 6405
+  },
+  {
+    "code": "A94",
+    "title_la": "Groznica uzrokovana virusima koje prenose člankonošci, neoznačena",
+    "source_line": 1239
+  },
+  {
+    "code": "A95",
+    "title_la": "Žuta groznica",
+    "source_line": 1240
+  },
+  {
+    "code": "A95.0",
+    "title_la": "Febris flava silvatica",
+    "source_line": 6417
+  },
+  {
+    "code": "A95.1",
+    "title_la": "Febris flava urbana",
+    "source_line": 6420
+  },
+  {
+    "code": "A95.9",
+    "title_la": "Febris flava, non specificata",
+    "source_line": 6422
+  },
+  {
+    "code": "A96",
+    "title_la": "Hemoragijska groznica uzrokovana arenavirusima",
+    "source_line": 1241
+  },
+  {
+    "code": "A96.0",
+    "title_la": "Febris haemorrhagica „Junin“",
+    "source_line": 6427
+  },
+  {
+    "code": "A96.1",
+    "title_la": "Febris haemorrhagica „Machupo“",
+    "source_line": 6430
+  },
+  {
+    "code": "A96.2",
+    "title_la": "Febris lassa",
+    "source_line": 6433
+  },
+  {
+    "code": "A96.8",
+    "title_la": "Febres haemorrhagicae arenavirales aliae",
+    "source_line": 6435
+  },
+  {
+    "code": "A96.9",
+    "title_la": "Febris haemorrhagica arenaviralis, non specificata",
+    "source_line": 6437
+  },
+  {
+    "code": "A98",
+    "title_la": "Ostale hemoragijske groznice uzrokovane virusima, neklasifikovane na drugom",
+    "source_line": 1242
+  },
+  {
+    "code": "A98.0",
+    "title_la": "Febris haemorrhagica „Crim-Congo“",
+    "source_line": 6452
+  },
+  {
+    "code": "A98.1",
+    "title_la": "Febris haemorrhagica „Omsk“",
+    "source_line": 6455
+  },
+  {
+    "code": "A98.2",
+    "title_la": "Morbus silvaticus „Kyasanur“",
+    "source_line": 6457
+  },
+  {
+    "code": "A98.3",
+    "title_la": "Morbus viralis „Marburg“",
+    "source_line": 6459
+  },
+  {
+    "code": "A98.4",
+    "title_la": "Morbus viralis Ebola",
+    "source_line": 6461
+  },
+  {
+    "code": "A98.5",
+    "title_la": "Febris haemorrhagica cum syndromate renali",
+    "source_line": 6463
+  },
+  {
+    "code": "A98.8",
+    "title_la": "Febres haemorrhagicae virales aliae, specificatae",
+    "source_line": 6473
+  },
+  {
+    "code": "A99",
+    "title_la": "Hemoragijska groznica uzrokovana virusom, neoznačena",
+    "source_line": 1244
+  }
+]

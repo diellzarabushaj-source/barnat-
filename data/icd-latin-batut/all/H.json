@@ -1,0 +1,2212 @@
+[
+  {
+    "code": "H00",
+    "title_la": "Čmičak i tvrdo zrno u kapku oka",
+    "source_line": 2025
+  },
+  {
+    "code": "H00.0",
+    "title_la": "Hordeolum et inflammationes palpebrae profundae aliae",
+    "source_line": 19909
+  },
+  {
+    "code": "H00.1",
+    "title_la": "Chalazion",
+    "source_line": 19922
+  },
+  {
+    "code": "H01",
+    "title_la": "Druga zapaljenja kapka oka",
+    "source_line": 2026
+  },
+  {
+    "code": "H01.0",
+    "title_la": "Blepharitis",
+    "source_line": 19927
+  },
+  {
+    "code": "H01.1",
+    "title_la": "Dermatosis palpebrae non infectiva",
+    "source_line": 19930
+  },
+  {
+    "code": "H01.8",
+    "title_la": "Morbi palpebrae inflammatorii alii, specificati",
+    "source_line": 19939
+  },
+  {
+    "code": "H01.9",
+    "title_la": "Morbus palpebrae inflammatorius, non specificatus",
+    "source_line": 19941
+  },
+  {
+    "code": "H02",
+    "title_la": "Druge bolesti kapka oka",
+    "source_line": 2027
+  },
+  {
+    "code": "H02.0",
+    "title_la": "Entropium et trichiasis palpebrae",
+    "source_line": 19947
+  },
+  {
+    "code": "H02.1",
+    "title_la": "Ectropium palpebrae",
+    "source_line": 19949
+  },
+  {
+    "code": "H02.2",
+    "title_la": "Lagophthalmus",
+    "source_line": 19951
+  },
+  {
+    "code": "H02.3",
+    "title_la": "Blepharochalasis",
+    "source_line": 19953
+  },
+  {
+    "code": "H02.4",
+    "title_la": "Ptosis palpebrae",
+    "source_line": 19955
+  },
+  {
+    "code": "H02.5",
+    "title_la": "Disordines palpebrae alii",
+    "source_line": 19957
+  },
+  {
+    "code": "H02.6",
+    "title_la": "Xanthelasma palpebrae",
+    "source_line": 19965
+  },
+  {
+    "code": "H02.7",
+    "title_la": "Degenerationes palpebrae et areae periocularis aliae",
+    "source_line": 19967
+  },
+  {
+    "code": "H02.8",
+    "title_la": "Morbi palpebrae specificati, alii",
+    "source_line": 19980
+  },
+  {
+    "code": "H02.9",
+    "title_la": "Morbus palpebrae, non specificatus",
+    "source_line": 19984
+  },
+  {
+    "code": "H03",
+    "title_la": "Bolesti kapka oka u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2028
+  },
+  {
+    "code": "H03.0",
+    "title_la": "Parasitosis palpebrae in morbis alibi classificatis",
+    "source_line": 19989
+  },
+  {
+    "code": "H03.1",
+    "title_la": "Morbus palpebrae in morbis infectivis aliis alibi classificatis",
+    "source_line": 19996
+  },
+  {
+    "code": "H03.8",
+    "title_la": "Morbi palpebrae in morbis aliis, alibi classificatis",
+    "source_line": 20004
+  },
+  {
+    "code": "H04",
+    "title_la": "Bolesti suznog aparata",
+    "source_line": 2029
+  },
+  {
+    "code": "H04.0",
+    "title_la": "Dacryoadenitis",
+    "source_line": 20011
+  },
+  {
+    "code": "H04.1",
+    "title_la": "Morbi glandulae lacrimalis alii",
+    "source_line": 20014
+  },
+  {
+    "code": "H04.2",
+    "title_la": "Epiphora",
+    "source_line": 20020
+  },
+  {
+    "code": "H04.3",
+    "title_la": "Dacryocystitis acuta, non specificata",
+    "source_line": 20022
+  },
+  {
+    "code": "H04.4",
+    "title_la": "Dacryocystitis chronica",
+    "source_line": 20036
+  },
+  {
+    "code": "H04.5",
+    "title_la": "Stenosis et insufficientia ductuum lacrimalium",
+    "source_line": 20041
+  },
+  {
+    "code": "H04.6",
+    "title_la": "Mutationes canalis lacrimalis aliae",
+    "source_line": 20048
+  },
+  {
+    "code": "H04.8",
+    "title_la": "Morbi apparatus lacrimalis alii",
+    "source_line": 20051
+  },
+  {
+    "code": "H04.9",
+    "title_la": "Morbus apparatus lacrimalis, non specificatus",
+    "source_line": 20053
+  },
+  {
+    "code": "H05",
+    "title_la": "Bolesti duplje oka",
+    "source_line": 2030
+  },
+  {
+    "code": "H05.0",
+    "title_la": "Inflammatio orbitae acuta",
+    "source_line": 20059
+  },
+  {
+    "code": "H05.1",
+    "title_la": "Inflammatio orbitae chronica",
+    "source_line": 20066
+  },
+  {
+    "code": "H05.2",
+    "title_la": "Exophthalmus",
+    "source_line": 20069
+  },
+  {
+    "code": "H05.3",
+    "title_la": "Deformatio orbitae",
+    "source_line": 20075
+  },
+  {
+    "code": "H05.4",
+    "title_la": "Enophthalmus",
+    "source_line": 20080
+  },
+  {
+    "code": "H05.5",
+    "title_la": "Corpus alienum orbitae",
+    "source_line": 20082
+  },
+  {
+    "code": "H05.8",
+    "title_la": "Morbi orbitae alii",
+    "source_line": 20085
+  },
+  {
+    "code": "H05.9",
+    "title_la": "Morbus orbitae, non specificatus",
+    "source_line": 20088
+  },
+  {
+    "code": "H06",
+    "title_la": "Bolesti suznog aparata i očne duplje u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2031
+  },
+  {
+    "code": "H06.0",
+    "title_la": "Morbi apparatus lacrimalis in morbis alibi classificatis",
+    "source_line": 20097
+  },
+  {
+    "code": "H06.1",
+    "title_la": "Parasitosis orbitae in morbis alibi classificatis",
+    "source_line": 20099
+  },
+  {
+    "code": "H06.2",
+    "title_la": "Exophthalmia dysthyreoidea (E05.-†)",
+    "source_line": 20103
+  },
+  {
+    "code": "H06.3",
+    "title_la": "Morbi orbitae alii in morbis alibi classificatis",
+    "source_line": 20105
+  },
+  {
+    "code": "H10",
+    "title_la": "Zapaljenje vežnjače oka",
+    "source_line": 2034
+  },
+  {
+    "code": "H10.0",
+    "title_la": "Conjunctivitis mucopurulenta",
+    "source_line": 20116
+  },
+  {
+    "code": "H10.1",
+    "title_la": "Conjunctivitis allergica acuta",
+    "source_line": 20118
+  },
+  {
+    "code": "H10.2",
+    "title_la": "Conjunctivitis acuta alia",
+    "source_line": 20120
+  },
+  {
+    "code": "H10.3",
+    "title_la": "Conjunctivitis acuta, non specificata",
+    "source_line": 20122
+  },
+  {
+    "code": "H10.4",
+    "title_la": "Conjunctivitis chronica",
+    "source_line": 20125
+  },
+  {
+    "code": "H10.5",
+    "title_la": "Blepharoconjunctivitis",
+    "source_line": 20127
+  },
+  {
+    "code": "H10.8",
+    "title_la": "Conjunctivitis alia",
+    "source_line": 20129
+  },
+  {
+    "code": "H10.9",
+    "title_la": "Conjunctivitis, non specificata",
+    "source_line": 20131
+  },
+  {
+    "code": "H11",
+    "title_la": "Druge bolesti vežnjače oka",
+    "source_line": 2035
+  },
+  {
+    "code": "H11.0",
+    "title_la": "Pterygium",
+    "source_line": 20137
+  },
+  {
+    "code": "H11.1",
+    "title_la": "Degenerationes et deposita conjunctivae",
+    "source_line": 20148
+  },
+  {
+    "code": "H11.2",
+    "title_la": "Cicatrix conjunctivae",
+    "source_line": 20154
+  },
+  {
+    "code": "H11.3",
+    "title_la": "Haemorrhagia conjunctivae",
+    "source_line": 20157
+  },
+  {
+    "code": "H11.4",
+    "title_la": "Morbi vasorum et cystis conjunctivae alii",
+    "source_line": 20160
+  },
+  {
+    "code": "H11.8",
+    "title_la": "Morbi conjunctivae specificati, alii",
+    "source_line": 20165
+  },
+  {
+    "code": "H11.9",
+    "title_la": "Morbus conjunctivae alius, non specificatus",
+    "source_line": 20168
+  },
+  {
+    "code": "H13",
+    "title_la": "Bolesti vežnjače oka u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2036
+  },
+  {
+    "code": "H13.0",
+    "title_la": "Filariasis conjunctivae (B74.-†)",
+    "source_line": 20173
+  },
+  {
+    "code": "H13.1",
+    "title_la": "Conjunctivitis in morbis infectivis et parasitariis alibi classificatis",
+    "source_line": 20175
+  },
+  {
+    "code": "H13.2",
+    "title_la": "Conjunctivitis in morbis aliis alibi classificatis",
+    "source_line": 20189
+  },
+  {
+    "code": "H13.3",
+    "title_la": "Pemphigus ocularis (L12.-†)",
+    "source_line": 20191
+  },
+  {
+    "code": "H13.8",
+    "title_la": "Morbi conjunctivae alii in morbis alibi classificatis",
+    "source_line": 20193
+  },
+  {
+    "code": "H15",
+    "title_la": "Bolesti beonjače",
+    "source_line": 2039
+  },
+  {
+    "code": "H15.0",
+    "title_la": "Scleritis",
+    "source_line": 20208
+  },
+  {
+    "code": "H15.1",
+    "title_la": "Episcleritis",
+    "source_line": 20210
+  },
+  {
+    "code": "H15.8",
+    "title_la": "Morbi sclerae alii",
+    "source_line": 20212
+  },
+  {
+    "code": "H15.9",
+    "title_la": "Morbus sclerae, non specificatus",
+    "source_line": 20217
+  },
+  {
+    "code": "H16",
+    "title_la": "Zapaljenje rožnjače",
+    "source_line": 2040
+  },
+  {
+    "code": "H16.0",
+    "title_la": "Ulcus corneae",
+    "source_line": 20222
+  },
+  {
+    "code": "H16.1",
+    "title_la": "Keratitis superficialis alia, sine conjunctivitide",
+    "source_line": 20233
+  },
+  {
+    "code": "H16.2",
+    "title_la": "Keratoconjunctivitis",
+    "source_line": 20244
+  },
+  {
+    "code": "H16.3",
+    "title_la": "Keratitis profunda interstitialis",
+    "source_line": 20253
+  },
+  {
+    "code": "H16.4",
+    "title_la": "Neovascularisatio cornealis",
+    "source_line": 20261
+  },
+  {
+    "code": "H16.8",
+    "title_la": "Keratitis alia",
+    "source_line": 20265
+  },
+  {
+    "code": "H16.9",
+    "title_la": "Keratitis, non specificata",
+    "source_line": 20267
+  },
+  {
+    "code": "H17",
+    "title_la": "Ožiljna promena i zamućenje rožnjače",
+    "source_line": 2041
+  },
+  {
+    "code": "H17.0",
+    "title_la": "Leucoma adhaerens",
+    "source_line": 20272
+  },
+  {
+    "code": "H17.1",
+    "title_la": "Opacitas corneae centralis alia",
+    "source_line": 20274
+  },
+  {
+    "code": "H17.8",
+    "title_la": "Cicatrix et opacitas corneae alia",
+    "source_line": 20276
+  },
+  {
+    "code": "H17.9",
+    "title_la": "Cicatrix et opacitas corneae alia, non specificata",
+    "source_line": 20278
+  },
+  {
+    "code": "H18",
+    "title_la": "Druge bolesti rožnjače",
+    "source_line": 2042
+  },
+  {
+    "code": "H18.0",
+    "title_la": "Pigmentationes et deposita corneae",
+    "source_line": 20283
+  },
+  {
+    "code": "H18.1",
+    "title_la": "Keratopathia bullosa",
+    "source_line": 20291
+  },
+  {
+    "code": "H18.2",
+    "title_la": "Oedema corneae aliud",
+    "source_line": 20293
+  },
+  {
+    "code": "H18.3",
+    "title_la": "Mutationes membranae cornealis",
+    "source_line": 20295
+  },
+  {
+    "code": "H18.4",
+    "title_la": "Degeneratio corneae",
+    "source_line": 20300
+  },
+  {
+    "code": "H18.5",
+    "title_la": "Dystrophia corneae congenita",
+    "source_line": 20305
+  },
+  {
+    "code": "H18.6",
+    "title_la": "Keratoconus",
+    "source_line": 20320
+  },
+  {
+    "code": "H18.7",
+    "title_la": "Deformationes corneales alie",
+    "source_line": 20322
+  },
+  {
+    "code": "H18.8",
+    "title_la": "Morbi corneae specificati, alii",
+    "source_line": 20328
+  },
+  {
+    "code": "H18.9",
+    "title_la": "Morbus corneae, non specificatus",
+    "source_line": 20333
+  },
+  {
+    "code": "H19",
+    "title_la": "Bolesti beonjače i rožnjače u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2043
+  },
+  {
+    "code": "H19.0",
+    "title_la": "Scleritis et episcleritis in morbis alibi classificatis",
+    "source_line": 20338
+  },
+  {
+    "code": "H19.1",
+    "title_la": "Keratitis et keratoconjunctivitis herpetica (B00.5†)",
+    "source_line": 20343
+  },
+  {
+    "code": "H19.2",
+    "title_la": "Keratitis et keratoconjunctivitis in morbis infectivis et parasitariis aliis, alibi",
+    "source_line": 20346
+  },
+  {
+    "code": "H19.3",
+    "title_la": "Keratitis et keratoconjunctivitis in morbi aliis, alibi classificatis",
+    "source_line": 20357
+  },
+  {
+    "code": "H19.8",
+    "title_la": "Morbi sclerae et corneae alii in morbis alibi classificatis",
+    "source_line": 20361
+  },
+  {
+    "code": "H20",
+    "title_la": "Zapaljenje dužice i zrakastog tela",
+    "source_line": 2044
+  },
+  {
+    "code": "H20.0",
+    "title_la": "Iridocyclitis acuta et subacuta",
+    "source_line": 20367
+  },
+  {
+    "code": "H20.1",
+    "title_la": "Iridocyclitis chronica",
+    "source_line": 20378
+  },
+  {
+    "code": "H20.2",
+    "title_la": "Iridocyclitis lentica",
+    "source_line": 20380
+  },
+  {
+    "code": "H20.8",
+    "title_la": "Iridocyclitis alia",
+    "source_line": 20382
+  },
+  {
+    "code": "H20.9",
+    "title_la": "Iridocyclitis, non specificata",
+    "source_line": 20384
+  },
+  {
+    "code": "H21",
+    "title_la": "Druge bolesti dužice i zrakastog tela",
+    "source_line": 2045
+  },
+  {
+    "code": "H21.0",
+    "title_la": "Hyphaema",
+    "source_line": 20390
+  },
+  {
+    "code": "H21.1",
+    "title_la": "Morbi iridis et morbi corporis ciliaris vasculares alii",
+    "source_line": 20393
+  },
+  {
+    "code": "H21.2",
+    "title_la": "Degeneratio iridis et degeneratio corporis ciliaris",
+    "source_line": 20397
+  },
+  {
+    "code": "H21.3",
+    "title_la": "Cystis iridis, corporis ciliaris et camerae oculi anterioris",
+    "source_line": 20406
+  },
+  {
+    "code": "H21.4",
+    "title_la": "Membranae pupillae",
+    "source_line": 20414
+  },
+  {
+    "code": "H21.5",
+    "title_la": "Synechiae et rupturae iridis et corporis ciliaris aliae",
+    "source_line": 20419
+  },
+  {
+    "code": "H21.8",
+    "title_la": "Morbi iridis et morbi corporis ciliaris specificati, alii",
+    "source_line": 20436
+  },
+  {
+    "code": "H21.9",
+    "title_la": "Morbus iridis et morbus corporis ciliaris, non specificatus",
+    "source_line": 20438
+  },
+  {
+    "code": "H22",
+    "title_la": "Bolesti dužice i zrakastog tela u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2046
+  },
+  {
+    "code": "H22.0",
+    "title_la": "Iridocyclitis in morbis infectivis et parasitariis alibi classificatis",
+    "source_line": 20443
+  },
+  {
+    "code": "H22.1",
+    "title_la": "Iridocyclitis in morbis aliis, alibi classificatis",
+    "source_line": 20452
+  },
+  {
+    "code": "H22.8",
+    "title_la": "Morbi iridis et corporis ciliaris alii in morbis alibi classificatis",
+    "source_line": 20457
+  },
+  {
+    "code": "H25",
+    "title_la": "Staračka katarakta",
+    "source_line": 2049
+  },
+  {
+    "code": "H25.0",
+    "title_la": "Cataracta senilis incipiens",
+    "source_line": 20468
+  },
+  {
+    "code": "H25.1",
+    "title_la": "Cataracta senilis nuclearis",
+    "source_line": 20476
+  },
+  {
+    "code": "H25.2",
+    "title_la": "Cataracta senilis Morgagni",
+    "source_line": 20480
+  },
+  {
+    "code": "H25.8",
+    "title_la": "Cataracta senilis alia",
+    "source_line": 20483
+  },
+  {
+    "code": "H25.9",
+    "title_la": "Cataracta senilis, non specificata",
+    "source_line": 20494
+  },
+  {
+    "code": "H26",
+    "title_la": "Druge katarakte",
+    "source_line": 2050
+  },
+  {
+    "code": "H26.0",
+    "title_la": "Cataracta infantilis, juvenilis et praesenilis",
+    "source_line": 20500
+  },
+  {
+    "code": "H26.1",
+    "title_la": "Cataracta traumatica",
+    "source_line": 20502
+  },
+  {
+    "code": "H26.2",
+    "title_la": "Cataracta complicata",
+    "source_line": 20505
+  },
+  {
+    "code": "H26.3",
+    "title_la": "Cataracta medicamentosa",
+    "source_line": 20510
+  },
+  {
+    "code": "H26.4",
+    "title_la": "Cataracta secundaria",
+    "source_line": 20513
+  },
+  {
+    "code": "H26.8",
+    "title_la": "Cataracta specificata, alia",
+    "source_line": 20516
+  },
+  {
+    "code": "H26.9",
+    "title_la": "Cataracta, non specificata",
+    "source_line": 20518
+  },
+  {
+    "code": "H27",
+    "title_la": "Druge bolesti sočiva",
+    "source_line": 2051
+  },
+  {
+    "code": "H27.0",
+    "title_la": "Aphakia",
+    "source_line": 20526
+  },
+  {
+    "code": "H27.1",
+    "title_la": "Luxatio et subluxatio lentis",
+    "source_line": 20528
+  },
+  {
+    "code": "H27.8",
+    "title_la": "Morbi lentis specificati, alii",
+    "source_line": 20530
+  },
+  {
+    "code": "H27.9",
+    "title_la": "Morbus lentis, non specificatus",
+    "source_line": 20532
+  },
+  {
+    "code": "H28",
+    "title_la": "Katarakta i druge bolesti sočiva oka u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2052
+  },
+  {
+    "code": "H28.0",
+    "title_la": "Cataracta diabetica (E10-E14 sa zajedničkim četvrtim karakterom .3†)",
+    "source_line": 20537
+  },
+  {
+    "code": "H28.1",
+    "title_la": "Cataracta in morbis endocrinis, nutritionalibus et metabolicis aliis",
+    "source_line": 20539
+  },
+  {
+    "code": "H28.2",
+    "title_la": "Cataracta in morbis aliis, alibi classificatis",
+    "source_line": 20551
+  },
+  {
+    "code": "H28.8",
+    "title_la": "Morbi lentis ocull alii in morbis alibi classificatis",
+    "source_line": 20554
+  },
+  {
+    "code": "H30",
+    "title_la": "Zapaljenje sudovnjače i mrežnjače",
+    "source_line": 2055
+  },
+  {
+    "code": "H30.0",
+    "title_la": "Chorioretinitis focalis",
+    "source_line": 20564
+  },
+  {
+    "code": "H30.1",
+    "title_la": "Chorioretinitis disseminata",
+    "source_line": 20570
+  },
+  {
+    "code": "H30.2",
+    "title_la": "Cyclitis posterior",
+    "source_line": 20577
+  },
+  {
+    "code": "H30.8",
+    "title_la": "Chorioretinitis alia",
+    "source_line": 20580
+  },
+  {
+    "code": "H30.9",
+    "title_la": "Chorioretinitis, non specificata",
+    "source_line": 20583
+  },
+  {
+    "code": "H31",
+    "title_la": "Druge bolesti sudovnjače",
+    "source_line": 2056
+  },
+  {
+    "code": "H31.0",
+    "title_la": "Cicatrix chorioretinalis",
+    "source_line": 20593
+  },
+  {
+    "code": "H31.1",
+    "title_la": "Degeneratio chorioidealis",
+    "source_line": 20597
+  },
+  {
+    "code": "H31.2",
+    "title_la": "Dystrophia chorioidealis hereditaria",
+    "source_line": 20610
+  },
+  {
+    "code": "H31.3",
+    "title_la": "Haemorrhagia et ruptura chorioideae",
+    "source_line": 20616
+  },
+  {
+    "code": "H31.4",
+    "title_la": "Ablatio chorioideae",
+    "source_line": 20621
+  },
+  {
+    "code": "H31.8",
+    "title_la": "Morbi chorioideae specificatus, alii",
+    "source_line": 20623
+  },
+  {
+    "code": "H31.9",
+    "title_la": "Morbus chorioideae, non specificatus",
+    "source_line": 20625
+  },
+  {
+    "code": "H32",
+    "title_la": "Horioretinalne bolesti u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2057
+  },
+  {
+    "code": "H32.0",
+    "title_la": "Chorioretinitis in morbis infectivis et parasitariis alibi classificatis",
+    "source_line": 20630
+  },
+  {
+    "code": "H32.8",
+    "title_la": "Morbi chorioretinales alii in morbis alibi classificatis",
+    "source_line": 20636
+  },
+  {
+    "code": "H33",
+    "title_la": "Odlubljivanje mrežnjače i rascep mrežnjače",
+    "source_line": 2058
+  },
+  {
+    "code": "H33.0",
+    "title_la": "Ablatio retinae cum ruptura",
+    "source_line": 20644
+  },
+  {
+    "code": "H33.1",
+    "title_la": "Retinoschisis et cystis retinae",
+    "source_line": 20647
+  },
+  {
+    "code": "H33.2",
+    "title_la": "Ablatio retinae serosa",
+    "source_line": 20654
+  },
+  {
+    "code": "H33.3",
+    "title_la": "Ruptura retinae sine ablatione",
+    "source_line": 20667
+  },
+  {
+    "code": "H33.4",
+    "title_la": "Ablatio retinae tractionalis",
+    "source_line": 20675
+  },
+  {
+    "code": "H33.5",
+    "title_la": "Ablationes retinae aliae",
+    "source_line": 20678
+  },
+  {
+    "code": "H34",
+    "title_la": "Zapušen krvni sud mrežnjače",
+    "source_line": 2059
+  },
+  {
+    "code": "H34.0",
+    "title_la": "Occlusio arteriae retinae transitiva",
+    "source_line": 20684
+  },
+  {
+    "code": "H34.1",
+    "title_la": "Occlusio arteriae retinae centralis",
+    "source_line": 20686
+  },
+  {
+    "code": "H34.2",
+    "title_la": "Occlusio arteriae retinae alia",
+    "source_line": 20688
+  },
+  {
+    "code": "H34.8",
+    "title_la": "Occlusiones retinae vasculares aliae",
+    "source_line": 20694
+  },
+  {
+    "code": "H34.9",
+    "title_la": "Occlusio retinae vascularis, non specificata",
+    "source_line": 20701
+  },
+  {
+    "code": "H35",
+    "title_la": "Druge bolesti mrežnjače",
+    "source_line": 2060
+  },
+  {
+    "code": "H35.0",
+    "title_la": "Retinopathia et angiopathia retinae",
+    "source_line": 20706
+  },
+  {
+    "code": "H35.1",
+    "title_la": "Retinopathia praematuri",
+    "source_line": 20726
+  },
+  {
+    "code": "H35.2",
+    "title_la": "Retinopathia proliferativa alia",
+    "source_line": 20729
+  },
+  {
+    "code": "H35.3",
+    "title_la": "Degeneratio maculae luteae et poli retinae posterioris",
+    "source_line": 20733
+  },
+  {
+    "code": "H35.4",
+    "title_la": "Degeneratio retinae peripherica",
+    "source_line": 20745
+  },
+  {
+    "code": "H35.5",
+    "title_la": "Dystrophia retinae hereditaria",
+    "source_line": 20754
+  },
+  {
+    "code": "H35.6",
+    "title_la": "Haemorrhagia retinae",
+    "source_line": 20762
+  },
+  {
+    "code": "H35.7",
+    "title_la": "Separatio stratorum retinae",
+    "source_line": 20764
+  },
+  {
+    "code": "H35.8",
+    "title_la": "Morbi retinae specificati, alii",
+    "source_line": 20768
+  },
+  {
+    "code": "H35.9",
+    "title_la": "Morbus retinae, non specificatus",
+    "source_line": 20770
+  },
+  {
+    "code": "H36",
+    "title_la": "Bolesti mrežnjače u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2061
+  },
+  {
+    "code": "H36.0",
+    "title_la": "Retinopathia diabetica (E10-E14 sa zajedničkim četvrtim karakterom .3†)",
+    "source_line": 20775
+  },
+  {
+    "code": "H36.8",
+    "title_la": "Morbi retinae alii in morbis alibi classificatis",
+    "source_line": 20784
+  },
+  {
+    "code": "H40",
+    "title_la": "Glaukom",
+    "source_line": 2064
+  },
+  {
+    "code": "H40.0",
+    "title_la": "Glaucoma suspectum",
+    "source_line": 20800
+  },
+  {
+    "code": "H40.1",
+    "title_la": "Glaucoma anguli aperti primarium",
+    "source_line": 20803
+  },
+  {
+    "code": "H40.2",
+    "title_la": "Glaucoma anguli clausi primarium",
+    "source_line": 20810
+  },
+  {
+    "code": "H40.3",
+    "title_la": "Glaucoma oculi traumaticum secundarium",
+    "source_line": 20816
+  },
+  {
+    "code": "H40.4",
+    "title_la": "Glaucoma secundarium post inflammationem oculi",
+    "source_line": 20819
+  },
+  {
+    "code": "H40.5",
+    "title_la": "Glaucoma secondarium post morbos oculi alios",
+    "source_line": 20822
+  },
+  {
+    "code": "H40.6",
+    "title_la": "Glaucoma medicamentosum",
+    "source_line": 20825
+  },
+  {
+    "code": "H40.8",
+    "title_la": "Glaucoma aliud",
+    "source_line": 20828
+  },
+  {
+    "code": "H40.9",
+    "title_la": "Glaucoma, non specificatum",
+    "source_line": 20830
+  },
+  {
+    "code": "H42",
+    "title_la": "Glaukom u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2065
+  },
+  {
+    "code": "H42.0",
+    "title_la": "Glaucoma in morbis endocrinis, nutritionalibus et metabolicis",
+    "source_line": 20842
+  },
+  {
+    "code": "H42.8",
+    "title_la": "Glaucoma in morbis aliis, alibi classificatis",
+    "source_line": 20847
+  },
+  {
+    "code": "H43",
+    "title_la": "Bolesti staklastog tela",
+    "source_line": 2075
+  },
+  {
+    "code": "H43.0",
+    "title_la": "Prolapsus corporis vitrei",
+    "source_line": 20858
+  },
+  {
+    "code": "H43.1",
+    "title_la": "Haemorrhagia corporis vitrei",
+    "source_line": 20861
+  },
+  {
+    "code": "H43.2",
+    "title_la": "Deposita corporis vitrei crystallina",
+    "source_line": 20863
+  },
+  {
+    "code": "H43.3",
+    "title_la": "Opacitates corporis vitrei aliae",
+    "source_line": 20865
+  },
+  {
+    "code": "H43.8",
+    "title_la": "Morbi corporis vitrei alii",
+    "source_line": 20868
+  },
+  {
+    "code": "H43.9",
+    "title_la": "Morbus corporis vitrei, non specificatus",
+    "source_line": 20873
+  },
+  {
+    "code": "H44",
+    "title_la": "Bolesti jabučice oka",
+    "source_line": 2076
+  },
+  {
+    "code": "H44.0",
+    "title_la": "Endophthalmitis purulenta",
+    "source_line": 20878
+  },
+  {
+    "code": "H44.1",
+    "title_la": "Endophthalmitides aliae",
+    "source_line": 20882
+  },
+  {
+    "code": "H44.2",
+    "title_la": "Myopia degenerativa",
+    "source_line": 20886
+  },
+  {
+    "code": "H44.3",
+    "title_la": "Morbi bulbi oculi degenerativi alii",
+    "source_line": 20896
+  },
+  {
+    "code": "H44.4",
+    "title_la": "Hypothonia oculi",
+    "source_line": 20900
+  },
+  {
+    "code": "H44.5",
+    "title_la": "Degenerationes bulbi oculi",
+    "source_line": 20902
+  },
+  {
+    "code": "H44.6",
+    "title_la": "Corpus alienum magneticum intraoculare chronicum",
+    "source_line": 20907
+  },
+  {
+    "code": "H44.7",
+    "title_la": "Corpus alienum non magneticum intraoculare chronicum",
+    "source_line": 20916
+  },
+  {
+    "code": "H44.8",
+    "title_la": "Morbi bulbi oculi alii",
+    "source_line": 20925
+  },
+  {
+    "code": "H44.9",
+    "title_la": "Morbus bulbi oculi, non specificatus",
+    "source_line": 20929
+  },
+  {
+    "code": "H45",
+    "title_la": "Bolesti staklastog tela i jabučice oka u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2077
+  },
+  {
+    "code": "H45.0",
+    "title_la": "Haemorrhagia corporis vitrei in morbis alibi classificatis",
+    "source_line": 20934
+  },
+  {
+    "code": "H45.1",
+    "title_la": "Endophthalmitis in morbis alibi classificatis",
+    "source_line": 20936
+  },
+  {
+    "code": "H45.8",
+    "title_la": "Morbi corporis vitrei et bulbi oculi alii in morbis alibi classifcatis",
+    "source_line": 20942
+  },
+  {
+    "code": "H46",
+    "title_la": "Optički neuritis",
+    "source_line": 2080
+  },
+  {
+    "code": "H47",
+    "title_la": "Druge bolesti vidnog živca i bolesti vidnih puteva",
+    "source_line": 2081
+  },
+  {
+    "code": "H47.0",
+    "title_la": "Morbi nervi optici, non alibi classificati",
+    "source_line": 20965
+  },
+  {
+    "code": "H47.1",
+    "title_la": "Oedema papillae nervi optici, non specificatum",
+    "source_line": 20970
+  },
+  {
+    "code": "H47.2",
+    "title_la": "Atrophia nervi optici",
+    "source_line": 20972
+  },
+  {
+    "code": "H47.3",
+    "title_la": "Morbi disci nervi optici alii",
+    "source_line": 20975
+  },
+  {
+    "code": "H47.4",
+    "title_la": "Morbi chiasmatis nervi optici",
+    "source_line": 20979
+  },
+  {
+    "code": "H47.5",
+    "title_la": "Morbi tractus optici alii",
+    "source_line": 20981
+  },
+  {
+    "code": "H47.6",
+    "title_la": "Morbi corticis optici lobi occipitalis",
+    "source_line": 20984
+  },
+  {
+    "code": "H47.7",
+    "title_la": "Morbus tractus optici, non specificatus",
+    "source_line": 20986
+  },
+  {
+    "code": "H48",
+    "title_la": "Bolesti vidnog živca i vidnih puteva u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2082
+  },
+  {
+    "code": "H48.0",
+    "title_la": "Atrophia nervi optici in morbis alibi classificatis",
+    "source_line": 20991
+  },
+  {
+    "code": "H48.1",
+    "title_la": "Neuritis nervi optici retrobulbaris in morbis alibi classificatis",
+    "source_line": 20994
+  },
+  {
+    "code": "H48.8",
+    "title_la": "Morbi nervi optici et tractuum opticorum alii in morbis alibi classificatis",
+    "source_line": 21000
+  },
+  {
+    "code": "H49",
+    "title_la": "Razrokost usled oduzetosti mišića pokretača oka",
+    "source_line": 2086
+  },
+  {
+    "code": "H49.0",
+    "title_la": "Paralysis nervi oculomotorii",
+    "source_line": 21018
+  },
+  {
+    "code": "H49.1",
+    "title_la": "Paralysis nervi trochlearis",
+    "source_line": 21020
+  },
+  {
+    "code": "H49.2",
+    "title_la": "Paralysis nervi abducentis",
+    "source_line": 21022
+  },
+  {
+    "code": "H49.3",
+    "title_la": "Ophthalmoplegia totalis (externa)",
+    "source_line": 21024
+  },
+  {
+    "code": "H49.4",
+    "title_la": "Ophthalmoplegia externa progressiva",
+    "source_line": 21026
+  },
+  {
+    "code": "H49.8",
+    "title_la": "Strabismus paralyticus alius",
+    "source_line": 21028
+  },
+  {
+    "code": "H49.9",
+    "title_la": "Strabismus paralyticus, non specificatus",
+    "source_line": 21032
+  },
+  {
+    "code": "H50",
+    "title_la": "Druga razrokost",
+    "source_line": 2087
+  },
+  {
+    "code": "H50.0",
+    "title_la": "Strabismus concomitans convergens",
+    "source_line": 21037
+  },
+  {
+    "code": "H50.1",
+    "title_la": "Strabismus concomitans divergens",
+    "source_line": 21040
+  },
+  {
+    "code": "H50.2",
+    "title_la": "Strabismus verticalis",
+    "source_line": 21043
+  },
+  {
+    "code": "H50.3",
+    "title_la": "Heterotropia temporalis",
+    "source_line": 21047
+  },
+  {
+    "code": "H50.4",
+    "title_la": "Heterotropia alia, non specificata",
+    "source_line": 21060
+  },
+  {
+    "code": "H50.5",
+    "title_la": "Heterophoria",
+    "source_line": 21066
+  },
+  {
+    "code": "H50.6",
+    "title_la": "Strabismus mechanicus",
+    "source_line": 21071
+  },
+  {
+    "code": "H50.8",
+    "title_la": "Strabismus specificatus, alius",
+    "source_line": 21076
+  },
+  {
+    "code": "H50.9",
+    "title_la": "Strabismus, non specificatus",
+    "source_line": 21079
+  },
+  {
+    "code": "H51",
+    "title_la": "Drugi poremećaji pokretanja oba oka",
+    "source_line": 2088
+  },
+  {
+    "code": "H51.0",
+    "title_la": "Paralysis aspectus conjuncti",
+    "source_line": 21084
+  },
+  {
+    "code": "H51.1",
+    "title_la": "Insufficientia sive excessus convergentiae",
+    "source_line": 21086
+  },
+  {
+    "code": "H51.2",
+    "title_la": "Ophthalmoplegia internuclearis",
+    "source_line": 21088
+  },
+  {
+    "code": "H51.8",
+    "title_la": "Anomaliae motuum binocularium aliae, specificatae",
+    "source_line": 21090
+  },
+  {
+    "code": "H51.9",
+    "title_la": "Anomalia motuum binocularium, non specificata",
+    "source_line": 21092
+  },
+  {
+    "code": "H52",
+    "title_la": "Poremećaji prelamanja svetlosti i poremećaji prilagođavanja oka",
+    "source_line": 2089
+  },
+  {
+    "code": "H52.0",
+    "title_la": "Hypermetropia",
+    "source_line": 21097
+  },
+  {
+    "code": "H52.1",
+    "title_la": "Myopia",
+    "source_line": 21099
+  },
+  {
+    "code": "H52.2",
+    "title_la": "Astigmatismus",
+    "source_line": 21102
+  },
+  {
+    "code": "H52.3",
+    "title_la": "Anisometropia et aniseikonia",
+    "source_line": 21104
+  },
+  {
+    "code": "H52.4",
+    "title_la": "Presbyopia",
+    "source_line": 21106
+  },
+  {
+    "code": "H52.5",
+    "title_la": "Anomaliae accommodationis",
+    "source_line": 21116
+  },
+  {
+    "code": "H52.6",
+    "title_la": "Anomaliae refractionis aliae",
+    "source_line": 21122
+  },
+  {
+    "code": "H52.7",
+    "title_la": "Anomalia refractionis, non specificata",
+    "source_line": 21124
+  },
+  {
+    "code": "H53",
+    "title_la": "Poremećaji vida",
+    "source_line": 2092
+  },
+  {
+    "code": "H53.0",
+    "title_la": "Amblyopia sine anopsia",
+    "source_line": 21134
+  },
+  {
+    "code": "H53.1",
+    "title_la": "Disordines visus subjectivi",
+    "source_line": 21140
+  },
+  {
+    "code": "H53.2",
+    "title_la": "Diplopia",
+    "source_line": 21151
+  },
+  {
+    "code": "H53.3",
+    "title_la": "Disordines visus binocularis alii",
+    "source_line": 21153
+  },
+  {
+    "code": "H53.4",
+    "title_la": "Defectus regionis visualis",
+    "source_line": 21159
+  },
+  {
+    "code": "H53.5",
+    "title_la": "Dyschromatopsiae",
+    "source_line": 21176
+  },
+  {
+    "code": "H53.6",
+    "title_la": "Nyctalopia",
+    "source_line": 21187
+  },
+  {
+    "code": "H53.8",
+    "title_la": "Disordines visuales alii",
+    "source_line": 21190
+  },
+  {
+    "code": "H53.9",
+    "title_la": "Disordo visualis, non specificatus",
+    "source_line": 21192
+  },
+  {
+    "code": "H54",
+    "title_la": "Oštećenje vida uključujući slepilo (binokularno ili monokularno)",
+    "source_line": 2093
+  },
+  {
+    "code": "H54.0",
+    "title_la": "Amaurosis, binocularis",
+    "source_line": 21199
+  },
+  {
+    "code": "H54.1",
+    "title_la": "Amblyopia binocularis gravis",
+    "source_line": 21202
+  },
+  {
+    "code": "H54.2",
+    "title_la": "Amblyopia binocularis modica",
+    "source_line": 21205
+  },
+  {
+    "code": "H54.3",
+    "title_la": "Amblyopia binocularis mitis, aut sine amblyopia binoculari",
+    "source_line": 21208
+  },
+  {
+    "code": "H54.4",
+    "title_la": "Amaurosis, monocularis",
+    "source_line": 21211
+  },
+  {
+    "code": "H54.5",
+    "title_la": "Amblyopia monocularis gravis",
+    "source_line": 21214
+  },
+  {
+    "code": "H54.6",
+    "title_la": "Amblyopia monocularis modica",
+    "source_line": 21217
+  },
+  {
+    "code": "H54.9",
+    "title_la": "Amblyopia binocularis, non specificatus",
+    "source_line": 21228
+  },
+  {
+    "code": "H55",
+    "title_la": "Spontani i drugi nejednaki pokreti oka",
+    "source_line": 2096
+  },
+  {
+    "code": "H57",
+    "title_la": "Druge bolesti oka i pripojaka oka",
+    "source_line": 2097
+  },
+  {
+    "code": "H57.0",
+    "title_la": "Anomaliae functionis pupillae",
+    "source_line": 21294
+  },
+  {
+    "code": "H57.1",
+    "title_la": "Dolor oculi",
+    "source_line": 21296
+  },
+  {
+    "code": "H57.8",
+    "title_la": "Morbi oculi et adnexorum specificati, alii",
+    "source_line": 21298
+  },
+  {
+    "code": "H57.9",
+    "title_la": "Morbus oculi et adnexorum, non specificatus",
+    "source_line": 21300
+  },
+  {
+    "code": "H58",
+    "title_la": "Druge bolesti oka i pripojaka oka u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2098
+  },
+  {
+    "code": "H58.0",
+    "title_la": "Anomaliae functionis pupillae in morbis alibi classificatis",
+    "source_line": 21305
+  },
+  {
+    "code": "H58.1",
+    "title_la": "Perturbationes visus in morbis alibi classificatis",
+    "source_line": 21308
+  },
+  {
+    "code": "H58.8",
+    "title_la": "Morbi oculi et adnexorum specificati, alii in morbis alibi classificatis",
+    "source_line": 21310
+  },
+  {
+    "code": "H59",
+    "title_la": "Poremećaji oka i pripojaka oka posle medicinskih intervencija, neklasifikovani na",
+    "source_line": 2099
+  },
+  {
+    "code": "H59.0",
+    "title_la": "Keratopathia (bullosae aphakicae) post operationem cataractae",
+    "source_line": 21324
+  },
+  {
+    "code": "H59.8",
+    "title_la": "Disordines oculi et adnexorum post interventiones alii",
+    "source_line": 21336
+  },
+  {
+    "code": "H59.9",
+    "title_la": "Disordo oculi et adnexorum post interventiones, non specificatus",
+    "source_line": 21341
+  },
+  {
+    "code": "H60",
+    "title_la": "Zapaljenje spoljašnjeg uva",
+    "source_line": 2113
+  },
+  {
+    "code": "H60.0",
+    "title_la": "Abscessus auris externae",
+    "source_line": 21398
+  },
+  {
+    "code": "H60.1",
+    "title_la": "Phlegmone auris externae",
+    "source_line": 21403
+  },
+  {
+    "code": "H60.2",
+    "title_la": "Otitis externa maligna",
+    "source_line": 21408
+  },
+  {
+    "code": "H60.3",
+    "title_la": "Otitis externa infectiva alia",
+    "source_line": 21410
+  },
+  {
+    "code": "H60.4",
+    "title_la": "Cholesteatoma auris externae",
+    "source_line": 21423
+  },
+  {
+    "code": "H60.5",
+    "title_la": "Otitis externa acuta, non infectiva",
+    "source_line": 21426
+  },
+  {
+    "code": "H60.8",
+    "title_la": "Otitis externa alia",
+    "source_line": 21435
+  },
+  {
+    "code": "H60.9",
+    "title_la": "Otitis externa, non specificata",
+    "source_line": 21438
+  },
+  {
+    "code": "H61",
+    "title_la": "Druge bolesti spoljašnjeg uva",
+    "source_line": 2114
+  },
+  {
+    "code": "H61.0",
+    "title_la": "Perichondritis auris externae",
+    "source_line": 21443
+  },
+  {
+    "code": "H61.1",
+    "title_la": "Morbi auriculae, non infectivi",
+    "source_line": 21449
+  },
+  {
+    "code": "H61.2",
+    "title_la": "Cerumen obturans",
+    "source_line": 21455
+  },
+  {
+    "code": "H61.3",
+    "title_la": "Stenosis meatus acustici externi acquisita",
+    "source_line": 21457
+  },
+  {
+    "code": "H61.8",
+    "title_la": "Morbi auris externae specificati, alii",
+    "source_line": 21460
+  },
+  {
+    "code": "H61.9",
+    "title_la": "Morbus auris externae, non specificatus",
+    "source_line": 21463
+  },
+  {
+    "code": "H62",
+    "title_la": "Bolesti spoljašnjeg uva u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2115
+  },
+  {
+    "code": "H62.0",
+    "title_la": "Otitis externa in morbis bacterialibus alibi classificatis",
+    "source_line": 21468
+  },
+  {
+    "code": "H62.1",
+    "title_la": "Otitis externa in morbis viralibus alibi classificatis",
+    "source_line": 21479
+  },
+  {
+    "code": "H62.2",
+    "title_la": "Otitis externa in morbis mycoticis",
+    "source_line": 21484
+  },
+  {
+    "code": "H62.3",
+    "title_la": "Otitis externa in morbis infectivis et parasitariis aliis, alibi classificatis",
+    "source_line": 21490
+  },
+  {
+    "code": "H62.4",
+    "title_la": "Otitis externa in morbis aliis, alibi classificatis",
+    "source_line": 21493
+  },
+  {
+    "code": "H62.8",
+    "title_la": "Morbi auris externae alii in morbis alibi classificatis",
+    "source_line": 21496
+  },
+  {
+    "code": "H65",
+    "title_la": "Negnojno zapaljenje srednjeg uva",
+    "source_line": 2118
+  },
+  {
+    "code": "H65.0",
+    "title_la": "Otitis media serosa acuta",
+    "source_line": 21508
+  },
+  {
+    "code": "H65.1",
+    "title_la": "Otitis media non suppurativa acuta alia",
+    "source_line": 21511
+  },
+  {
+    "code": "H65.2",
+    "title_la": "Otitis media serosa chronica",
+    "source_line": 21521
+  },
+  {
+    "code": "H65.3",
+    "title_la": "Otitis media mucosa chronica",
+    "source_line": 21532
+  },
+  {
+    "code": "H65.4",
+    "title_la": "Otitis media non suppurativa chronica alia",
+    "source_line": 21539
+  },
+  {
+    "code": "H65.9",
+    "title_la": "Otitis media non suppurativa, non specificata",
+    "source_line": 21545
+  },
+  {
+    "code": "H66",
+    "title_la": "Gnojno i neoznačeno zapaljenje srednjeg uva",
+    "source_line": 2119
+  },
+  {
+    "code": "H66.0",
+    "title_la": "Otitis media suppurativa acuta",
+    "source_line": 21561
+  },
+  {
+    "code": "H66.1",
+    "title_la": "Otitis media tubotympanica suppurativa chronica",
+    "source_line": 21563
+  },
+  {
+    "code": "H66.2",
+    "title_la": "Otitis media atticoantralis suppurativa chronica",
+    "source_line": 21567
+  },
+  {
+    "code": "H66.3",
+    "title_la": "Otitis media suppurativa chronica alia",
+    "source_line": 21570
+  },
+  {
+    "code": "H66.4",
+    "title_la": "Otitis media suppurativa, non specificata",
+    "source_line": 21573
+  },
+  {
+    "code": "H66.9",
+    "title_la": "Otitis media, non specificata",
+    "source_line": 21576
+  },
+  {
+    "code": "H67",
+    "title_la": "Zapaljenje srednjeg uva u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2120
+  },
+  {
+    "code": "H67.0",
+    "title_la": "Otitis media in morbis bacterialibus alibi classificatis",
+    "source_line": 21592
+  },
+  {
+    "code": "H67.1",
+    "title_la": "Otitis media in morbis viralibus alibi classificatis",
+    "source_line": 21597
+  },
+  {
+    "code": "H67.8",
+    "title_la": "Otitis media in morbis aliis, alibi classificatis",
+    "source_line": 21602
+  },
+  {
+    "code": "H68",
+    "title_la": "Zapaljenje i začepljenje Eustahijeve tube",
+    "source_line": 2121
+  },
+  {
+    "code": "H68.0",
+    "title_la": "Otosalpingitis tubae Eustachii",
+    "source_line": 21607
+  },
+  {
+    "code": "H68.1",
+    "title_la": "Occlusio tubae auditivae Eustachii",
+    "source_line": 21609
+  },
+  {
+    "code": "H69",
+    "title_la": "Druge bolesti Eustahijeve tube",
+    "source_line": 2122
+  },
+  {
+    "code": "H69.0",
+    "title_la": "Tuba Eustachii patulosa",
+    "source_line": 21617
+  },
+  {
+    "code": "H69.8",
+    "title_la": "Morbi tubae auditivae Eustachii specificati, alii",
+    "source_line": 21619
+  },
+  {
+    "code": "H69.9",
+    "title_la": "Morbus tubae auditivae Eustachii, non specificatus",
+    "source_line": 21621
+  },
+  {
+    "code": "H70",
+    "title_la": "Zapaljenje mastoidnog nastavka i srodne bolesti",
+    "source_line": 2123
+  },
+  {
+    "code": "H70.0",
+    "title_la": "Mastoiditis acuta",
+    "source_line": 21626
+  },
+  {
+    "code": "H70.1",
+    "title_la": "Mastoiditis chronica",
+    "source_line": 21631
+  },
+  {
+    "code": "H70.2",
+    "title_la": "Petrositis",
+    "source_line": 21636
+  },
+  {
+    "code": "H70.8",
+    "title_la": "Mastoiditis alia et morbi affines",
+    "source_line": 21639
+  },
+  {
+    "code": "H70.9",
+    "title_la": "Mastoiditis, non specificata",
+    "source_line": 21641
+  },
+  {
+    "code": "H71",
+    "title_la": "Pokožična tvorevina srednjeg uva",
+    "source_line": 2124
+  },
+  {
+    "code": "H72",
+    "title_la": "Perforacija bubne opne",
+    "source_line": 2125
+  },
+  {
+    "code": "H72.0",
+    "title_la": "Perforatio membranae centralis",
+    "source_line": 21662
+  },
+  {
+    "code": "H72.1",
+    "title_la": "Perforatio membranae attica",
+    "source_line": 21664
+  },
+  {
+    "code": "H72.2",
+    "title_la": "Perforationes membranae tympani marginales aliae",
+    "source_line": 21667
+  },
+  {
+    "code": "H72.8",
+    "title_la": "Perforationes membranae tympani aliae",
+    "source_line": 21669
+  },
+  {
+    "code": "H72.9",
+    "title_la": "Perforatio membranae tympani, non specificata",
+    "source_line": 21673
+  },
+  {
+    "code": "H73",
+    "title_la": "Druge bolesti bubne opne",
+    "source_line": 2126
+  },
+  {
+    "code": "H73.0",
+    "title_la": "Myringitis acuta",
+    "source_line": 21678
+  },
+  {
+    "code": "H73.1",
+    "title_la": "Myringitis chronica",
+    "source_line": 21683
+  },
+  {
+    "code": "H73.8",
+    "title_la": "Morbi membranae tympani specificati, alii",
+    "source_line": 21687
+  },
+  {
+    "code": "H73.9",
+    "title_la": "Morbus membranae tympani, non specificatus",
+    "source_line": 21689
+  },
+  {
+    "code": "H74",
+    "title_la": "Druge bolesti srednjeg uva i bolesti mastoidnog nastavka",
+    "source_line": 2127
+  },
+  {
+    "code": "H74.0",
+    "title_la": "Tympanosclerosis",
+    "source_line": 21694
+  },
+  {
+    "code": "H74.1",
+    "title_la": "Morbus adhaesivus auris mediae",
+    "source_line": 21696
+  },
+  {
+    "code": "H74.2",
+    "title_la": "Dislocatio ossiculorum auditorium",
+    "source_line": 21705
+  },
+  {
+    "code": "H74.3",
+    "title_la": "Abnormitates ossium auricularium acquisitae aliae",
+    "source_line": 21707
+  },
+  {
+    "code": "H74.4",
+    "title_la": "Polypus auris mediae",
+    "source_line": 21711
+  },
+  {
+    "code": "H74.8",
+    "title_la": "Morbi auris mediae et morbi processus mastoidei specificati, alii",
+    "source_line": 21713
+  },
+  {
+    "code": "H74.9",
+    "title_la": "Morbus auris mediae et morbus processus mastoidei, non specificatus",
+    "source_line": 21715
+  },
+  {
+    "code": "H75",
+    "title_la": "Druge bolesti srednjeg uva i mastoidnog nastavka u bolestima klasifikovanim na",
+    "source_line": 2128
+  },
+  {
+    "code": "H75.0",
+    "title_la": "Mastoiditis in morbis infectivis et parasitariis alibi classificatis",
+    "source_line": 21721
+  },
+  {
+    "code": "H75.8",
+    "title_la": "Morbi auris mediae et processus mastoidei specificati, alii in morbis alibi",
+    "source_line": 21725
+  },
+  {
+    "code": "H80",
+    "title_la": "Otoskleroza",
+    "source_line": 2132
+  },
+  {
+    "code": "H80.0",
+    "title_la": "Otosclerosis fenestrae ovalis, non obliterativa",
+    "source_line": 21738
+  },
+  {
+    "code": "H80.1",
+    "title_la": "Otosclerosis fenestrae ovalis obliterativa",
+    "source_line": 21740
+  },
+  {
+    "code": "H80.2",
+    "title_la": "Otosclerosis cochleae",
+    "source_line": 21742
+  },
+  {
+    "code": "H80.8",
+    "title_la": "Otosclerosis alia",
+    "source_line": 21747
+  },
+  {
+    "code": "H80.9",
+    "title_la": "Otosclerosis, non specificata",
+    "source_line": 21749
+  },
+  {
+    "code": "H81",
+    "title_la": "Funkcijske bolesti organa za održavanje ravnoteže",
+    "source_line": 2133
+  },
+  {
+    "code": "H81.0",
+    "title_la": "Morbus Ménière",
+    "source_line": 21764
+  },
+  {
+    "code": "H81.1",
+    "title_la": "Vertigo paroxysmalis benigna",
+    "source_line": 21768
+  },
+  {
+    "code": "H81.2",
+    "title_la": "Neuronitis nervi vestibularis",
+    "source_line": 21770
+  },
+  {
+    "code": "H81.3",
+    "title_la": "Vertigo peripherica alia",
+    "source_line": 21772
+  },
+  {
+    "code": "H81.4",
+    "title_la": "Vertigo centralis",
+    "source_line": 21779
+  },
+  {
+    "code": "H81.8",
+    "title_la": "Morbi functionis organorum vestibularium alii",
+    "source_line": 21782
+  },
+  {
+    "code": "H81.9",
+    "title_la": "Morbus functionis organi vestibularis, non specificatus",
+    "source_line": 21784
+  },
+  {
+    "code": "H82",
+    "title_la": "Vertiginozni sindromi u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2134
+  },
+  {
+    "code": "H83",
+    "title_la": "Druge bolesti unutrašnjeg uva",
+    "source_line": 2135
+  },
+  {
+    "code": "H83.0",
+    "title_la": "Labyrinthitis",
+    "source_line": 21793
+  },
+  {
+    "code": "H83.1",
+    "title_la": "Fistula labyrinthica",
+    "source_line": 21795
+  },
+  {
+    "code": "H83.2",
+    "title_la": "Dysfunctio labyrinthica",
+    "source_line": 21797
+  },
+  {
+    "code": "H83.3",
+    "title_la": "Sequelae tumultus ad aurem internam noxiae",
+    "source_line": 21802
+  },
+  {
+    "code": "H83.8",
+    "title_la": "Morbi auris internae specificati, alii",
+    "source_line": 21806
+  },
+  {
+    "code": "H83.9",
+    "title_la": "Morbus auris internae, non specificatus",
+    "source_line": 21808
+  },
+  {
+    "code": "H90",
+    "title_la": "Konduktivni gubitak sluha i senzorineuralni gubitak sluha",
+    "source_line": 2138
+  },
+  {
+    "code": "H90.0",
+    "title_la": "Surditas conductiva bilateralis",
+    "source_line": 21828
+  },
+  {
+    "code": "H90.1",
+    "title_la": "Surditas conductiva unilateralis",
+    "source_line": 21830
+  },
+  {
+    "code": "H90.2",
+    "title_la": "Surditas conductiva, non specificata",
+    "source_line": 21832
+  },
+  {
+    "code": "H90.3",
+    "title_la": "Surditas sensorineuralis bilateralis",
+    "source_line": 21834
+  },
+  {
+    "code": "H90.4",
+    "title_la": "Surditas sensorineuralis unilateralis",
+    "source_line": 21836
+  },
+  {
+    "code": "H90.5",
+    "title_la": "Surditas sensorineuralis, non specificata",
+    "source_line": 21838
+  },
+  {
+    "code": "H90.6",
+    "title_la": "Surditas conductiva et surditas sensorineuralis mixta billateralis",
+    "source_line": 21847
+  },
+  {
+    "code": "H90.7",
+    "title_la": "Surditas conductiva et surditas sensorineuralis mixta unilateralis",
+    "source_line": 21849
+  },
+  {
+    "code": "H90.8",
+    "title_la": "Surditas conductiva et surditas sensorineuralis mixta, non specificata",
+    "source_line": 21851
+  },
+  {
+    "code": "H91",
+    "title_la": "Drugi gubitak sluha",
+    "source_line": 2139
+  },
+  {
+    "code": "H91.0",
+    "title_la": "Surditas toxica",
+    "source_line": 21862
+  },
+  {
+    "code": "H91.1",
+    "title_la": "Presbyacusis",
+    "source_line": 21864
+  },
+  {
+    "code": "H91.2",
+    "title_la": "Surditas idiopathica acuta",
+    "source_line": 21873
+  },
+  {
+    "code": "H91.3",
+    "title_la": "Surdomutitas non alibi classificata",
+    "source_line": 21875
+  },
+  {
+    "code": "H91.8",
+    "title_la": "Surditas specificata, alia",
+    "source_line": 21877
+  },
+  {
+    "code": "H91.9",
+    "title_la": "Surditas, non specificata",
+    "source_line": 21879
+  },
+  {
+    "code": "H92",
+    "title_la": "Bol u uvu i curenje iz uva",
+    "source_line": 2140
+  },
+  {
+    "code": "H92.0",
+    "title_la": "Otalgia",
+    "source_line": 21888
+  },
+  {
+    "code": "H92.1",
+    "title_la": "Otorrhoea",
+    "source_line": 21890
+  },
+  {
+    "code": "H92.2",
+    "title_la": "Otorrhagia",
+    "source_line": 21893
+  },
+  {
+    "code": "H93",
+    "title_la": "Drugi poremećaji uva, neklasifikovani na drugom mestu",
+    "source_line": 2141
+  },
+  {
+    "code": "H93.0",
+    "title_la": "Disordines auris degenerativi et vasculares",
+    "source_line": 21899
+  },
+  {
+    "code": "H93.1",
+    "title_la": "Tinnitus",
+    "source_line": 21903
+  },
+  {
+    "code": "H93.2",
+    "title_la": "Perceptiones acusticae abnormales aliae",
+    "source_line": 21905
+  },
+  {
+    "code": "H93.3",
+    "title_la": "Degeneratio nervi acustici",
+    "source_line": 21911
+  },
+  {
+    "code": "H93.8",
+    "title_la": "Morbi auris alii, specificati",
+    "source_line": 21913
+  },
+  {
+    "code": "H93.9",
+    "title_la": "Morbus auris, non specificatus",
+    "source_line": 21915
+  },
+  {
+    "code": "H94",
+    "title_la": "Druge bolesti uva u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2142
+  },
+  {
+    "code": "H94.0",
+    "title_la": "Neuritis nervi acustici in morbis infectivis et parasitariis, alibi classificatis",
+    "source_line": 21927
+  },
+  {
+    "code": "H94.8",
+    "title_la": "Morbi auris specificati alii, in morbis alibi classificatis",
+    "source_line": 21931
+  },
+  {
+    "code": "H95",
+    "title_la": "Bolesti uva i mastoidnog nastavka posle medicinskih intervencija, neklasifikovane",
+    "source_line": 2143
+  },
+  {
+    "code": "H95.0",
+    "title_la": "Cholesteatoma cavi recidiva post mastoidectomiam",
+    "source_line": 21937
+  },
+  {
+    "code": "H95.1",
+    "title_la": "Morbi post mastoidectomiam alii",
+    "source_line": 21939
+  },
+  {
+    "code": "H95.8",
+    "title_la": "Morbi auris et morbi processus mastoidei postprocedurales alii",
+    "source_line": 21944
+  },
+  {
+    "code": "H95.9",
+    "title_la": "Morbus auris et morbus processus mastoidei postproceduralis, non specificatus",
+    "source_line": 21946
+  }
+]

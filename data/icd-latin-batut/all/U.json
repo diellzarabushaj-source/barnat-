@@ -1,0 +1,67 @@
+[
+  {
+    "code": "U04",
+    "title_la": "Teški akutni respiratorni sindrom [SARS]",
+    "source_line": 4405
+  },
+  {
+    "code": "U04.9",
+    "title_la": "Teški akutni repiratorni sindrom [SARS], neoznačen",
+    "source_line": 54506
+  },
+  {
+    "code": "U80",
+    "title_la": "Agens otporan na penicilin i srodne antibiotike",
+    "source_line": 4408
+  },
+  {
+    "code": "U80.0",
+    "title_la": "Agens otporan na penicilin",
+    "source_line": 54518
+  },
+  {
+    "code": "U80.1",
+    "title_la": "Agens otporan na meticilin",
+    "source_line": 54519
+  },
+  {
+    "code": "U80.8",
+    "title_la": "Agens otporan na druge antibiotike srodne penicilinu",
+    "source_line": 54520
+  },
+  {
+    "code": "U81",
+    "title_la": "Agens otporan na vankomicin i srodne antibiotike",
+    "source_line": 4409
+  },
+  {
+    "code": "U81.0",
+    "title_la": "Agens otporan na vankomicin",
+    "source_line": 54523
+  },
+  {
+    "code": "U81.8",
+    "title_la": "Agens otporan na antibiotike srodne vankomicinu",
+    "source_line": 54524
+  },
+  {
+    "code": "U88",
+    "title_la": "Agens otporan na više antibiotika",
+    "source_line": 4410
+  },
+  {
+    "code": "U89",
+    "title_la": "Agens otporan na druge i neodređene antibiotike",
+    "source_line": 4411
+  },
+  {
+    "code": "U89.8",
+    "title_la": "Agens otporan na neki drugi označen antibiotik",
+    "source_line": 54534
+  },
+  {
+    "code": "U89.9",
+    "title_la": "Agens otporan na neoznačen antibiotik",
+    "source_line": 54535
+  }
+]

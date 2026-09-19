@@ -1,0 +1,437 @@
+[
+  {
+    "code": "Q00",
+    "title_la": "Nedostatak mozga i slične malformacije",
+    "source_line": 3104
+  },
+  {
+    "code": "Q01",
+    "title_la": "Kila mozga",
+    "source_line": 3105
+  },
+  {
+    "code": "Q02",
+    "title_la": "Mala glava",
+    "source_line": 3106
+  },
+  {
+    "code": "Q03",
+    "title_la": "Urođena vodena glava",
+    "source_line": 3107
+  },
+  {
+    "code": "Q04",
+    "title_la": "Druge urođene anomalije mozga",
+    "source_line": 3108
+  },
+  {
+    "code": "Q05",
+    "title_la": "Rascep stuba kičme",
+    "source_line": 3109
+  },
+  {
+    "code": "Q06",
+    "title_la": "Druge urođene malformacije kičmene moždine",
+    "source_line": 3110
+  },
+  {
+    "code": "Q07",
+    "title_la": "Druge urođene anomalije nervnog sistema",
+    "source_line": 3111
+  },
+  {
+    "code": "Q10",
+    "title_la": "Urođene malformacije kapka, suznog aparata i duplje oka",
+    "source_line": 3114
+  },
+  {
+    "code": "Q11",
+    "title_la": "Nedostatak oka, malo oko i preveliko oko",
+    "source_line": 3115
+  },
+  {
+    "code": "Q12",
+    "title_la": "Urođene malformacije očnog sočiva",
+    "source_line": 3116
+  },
+  {
+    "code": "Q13",
+    "title_la": "Urođene malformacije prednjeg segmenta oka",
+    "source_line": 3117
+  },
+  {
+    "code": "Q14",
+    "title_la": "Urođene anomalije zadnjeg dela oka",
+    "source_line": 3118
+  },
+  {
+    "code": "Q15",
+    "title_la": "Druge urođene anomalije oka",
+    "source_line": 3119
+  },
+  {
+    "code": "Q16",
+    "title_la": "Urođene malformacije uva koje uzrokuju oštećenje sluha",
+    "source_line": 3120
+  },
+  {
+    "code": "Q17",
+    "title_la": "Druge urođene malformacije uva",
+    "source_line": 3121
+  },
+  {
+    "code": "Q18",
+    "title_la": "Druge urođene malformacije lica i vrata",
+    "source_line": 3122
+  },
+  {
+    "code": "Q20",
+    "title_la": "Urođene malformacije pretkomore i komore srca",
+    "source_line": 3125
+  },
+  {
+    "code": "Q21",
+    "title_la": "Urođene malformacije pregrade srca",
+    "source_line": 3126
+  },
+  {
+    "code": "Q22",
+    "title_la": "Urođene malformacije plućnih i trolisnih zalistaka",
+    "source_line": 3127
+  },
+  {
+    "code": "Q23",
+    "title_la": "Urođene malformacije aortnog i mitralnog zaliska",
+    "source_line": 3128
+  },
+  {
+    "code": "Q24",
+    "title_la": "Druge urođene malformacije srca",
+    "source_line": 3129
+  },
+  {
+    "code": "Q25",
+    "title_la": "Urođene malformacije velikih arterija",
+    "source_line": 3130
+  },
+  {
+    "code": "Q26",
+    "title_la": "Urođene malformacije velikih vena",
+    "source_line": 3131
+  },
+  {
+    "code": "Q27",
+    "title_la": "Druge urođene malformacije perifernog sudovnog sistema",
+    "source_line": 3132
+  },
+  {
+    "code": "Q28",
+    "title_la": "Druge urođene malformacije sistema krvotoka",
+    "source_line": 3133
+  },
+  {
+    "code": "Q30",
+    "title_la": "Urođene malformacije nosa",
+    "source_line": 3136
+  },
+  {
+    "code": "Q31",
+    "title_la": "Urođene malformacije grkljana",
+    "source_line": 3137
+  },
+  {
+    "code": "Q32",
+    "title_la": "Urođene malformacije dušnika i bronhija",
+    "source_line": 3138
+  },
+  {
+    "code": "Q33",
+    "title_la": "Urođene malformacije pluća",
+    "source_line": 3139
+  },
+  {
+    "code": "Q34",
+    "title_la": "Druge urođene malformacije sistema za disanje",
+    "source_line": 3140
+  },
+  {
+    "code": "Q35",
+    "title_la": "Rascep nepca",
+    "source_line": 3143
+  },
+  {
+    "code": "Q36",
+    "title_la": "Rascep usne- „zečja“ usna",
+    "source_line": 3144
+  },
+  {
+    "code": "Q37",
+    "title_la": "Rascep usne i nepca",
+    "source_line": 3145
+  },
+  {
+    "code": "Q38",
+    "title_la": "Druge urođene malformacije jezika, usta i ždrela",
+    "source_line": 3153
+  },
+  {
+    "code": "Q39",
+    "title_la": "Urođene malformacije jednjaka",
+    "source_line": 3154
+  },
+  {
+    "code": "Q40",
+    "title_la": "Druge urođene malformacije gornjih organa za varenje",
+    "source_line": 3155
+  },
+  {
+    "code": "Q41",
+    "title_la": "Urođeni nedostatak, urođena pregrada i suženje tankog creva",
+    "source_line": 3156
+  },
+  {
+    "code": "Q42",
+    "title_la": "Urođeni nedostatak, urođena pregrada i suženje debelog creva",
+    "source_line": 3157
+  },
+  {
+    "code": "Q43",
+    "title_la": "Druge urođene malformacije creva",
+    "source_line": 3158
+  },
+  {
+    "code": "Q44",
+    "title_la": "Urođene malformacije žučne kese, žučnih kanala i jetre",
+    "source_line": 3159
+  },
+  {
+    "code": "Q45",
+    "title_la": "Druge urođene malformacije organa za varenje",
+    "source_line": 3160
+  },
+  {
+    "code": "Q50",
+    "title_la": "Urođene malformacije jajnika, jajovoda i širokog ligamenta",
+    "source_line": 3163
+  },
+  {
+    "code": "Q51",
+    "title_la": "Urođene malformacije materice i grlića materice",
+    "source_line": 3164
+  },
+  {
+    "code": "Q52",
+    "title_la": "Druge urođene malformacije polnih organa žene",
+    "source_line": 3165
+  },
+  {
+    "code": "Q53",
+    "title_la": "Nespušten testis",
+    "source_line": 3166
+  },
+  {
+    "code": "Q54",
+    "title_la": "Urođen rascep na donjoj strani penisa",
+    "source_line": 3167
+  },
+  {
+    "code": "Q55",
+    "title_la": "Druge urođene malformacije muških polnih organa",
+    "source_line": 3168
+  },
+  {
+    "code": "Q56",
+    "title_la": "Neodređen pol i prividna dvopolnost",
+    "source_line": 3169
+  },
+  {
+    "code": "Q60",
+    "title_la": "Nedostatak i nerazvijenost bubrega",
+    "source_line": 3172
+  },
+  {
+    "code": "Q61",
+    "title_la": "Cistična bolest bubrega",
+    "source_line": 3173
+  },
+  {
+    "code": "Q62",
+    "title_la": "Urodene prepreke karlice bubrega i malformacije mokraćovoda bubrega",
+    "source_line": 3174
+  },
+  {
+    "code": "Q63",
+    "title_la": "Druge urođene malformacije bubrega",
+    "source_line": 3175
+  },
+  {
+    "code": "Q64",
+    "title_la": "Druge urođene malformacije mokraćnog sistema",
+    "source_line": 3176
+  },
+  {
+    "code": "Q65",
+    "title_la": "Urođeni deformiteti kuka",
+    "source_line": 3180
+  },
+  {
+    "code": "Q66",
+    "title_la": "Urođeni deformiteti stopala",
+    "source_line": 3181
+  },
+  {
+    "code": "Q67",
+    "title_la": "Urođene mišićno-koštane deformacije glave, lica, kičme i grudnog koša",
+    "source_line": 3182
+  },
+  {
+    "code": "Q68",
+    "title_la": "Druge urođene deformacije mišićno-koštanog sistema",
+    "source_line": 3183
+  },
+  {
+    "code": "Q69",
+    "title_la": "Prekobrojni prsti",
+    "source_line": 3184
+  },
+  {
+    "code": "Q70",
+    "title_la": "Sraslost prstiju",
+    "source_line": 3185
+  },
+  {
+    "code": "Q71",
+    "title_la": "Urođena skraćenost ruke",
+    "source_line": 3186
+  },
+  {
+    "code": "Q72",
+    "title_la": "Urođena skraćenost noge",
+    "source_line": 3187
+  },
+  {
+    "code": "Q73",
+    "title_la": "Urođena skraćenost uda, neoznačena",
+    "source_line": 3188
+  },
+  {
+    "code": "Q74",
+    "title_la": "Druge urođene anomalije uda(-ova)",
+    "source_line": 3189
+  },
+  {
+    "code": "Q75",
+    "title_la": "Druge urođene anomalije kostiju lobanje i lica",
+    "source_line": 3190
+  },
+  {
+    "code": "Q76",
+    "title_la": "Urođene malformacije kičme i kostiju grudnog koša",
+    "source_line": 3191
+  },
+  {
+    "code": "Q77",
+    "title_la": "Nepravilan razvoj kostiju i hrskavica sa lošim stvaranjem šupljih kostiju i kičme",
+    "source_line": 3192
+  },
+  {
+    "code": "Q78",
+    "title_la": "Drugi nepravilan razvoj kostiju i hrskavice",
+    "source_line": 3193
+  },
+  {
+    "code": "Q79",
+    "title_la": "Urođene malformacije mišićno-koštanog sistema, neklasifikovane na drugom",
+    "source_line": 3194
+  },
+  {
+    "code": "Q80",
+    "title_la": "Urođena krljuštica",
+    "source_line": 3198
+  },
+  {
+    "code": "Q81",
+    "title_la": "Mehurasto ljuštenje pokožice",
+    "source_line": 3199
+  },
+  {
+    "code": "Q82",
+    "title_la": "Druge urođene malformacije kože",
+    "source_line": 3200
+  },
+  {
+    "code": "Q83",
+    "title_la": "Urođene malformacije dojke",
+    "source_line": 3207
+  },
+  {
+    "code": "Q84",
+    "title_la": "Druge urođene malformacije kože i kožnih adneksa",
+    "source_line": 3208
+  },
+  {
+    "code": "Q85",
+    "title_la": "Fakomatoze – tumori sočiva oka, neklasifikovane na drugom mestu",
+    "source_line": 3209
+  },
+  {
+    "code": "Q86",
+    "title_la": "Sindromi urođenih malformacija izazvani poznatim spoljnjim uzrocima,",
+    "source_line": 3210
+  },
+  {
+    "code": "Q87",
+    "title_la": "Drugi označeni sindromi urođenih malformacija više sistema",
+    "source_line": 3212
+  },
+  {
+    "code": "Q89",
+    "title_la": "Druge urođene malformacije, neklasifikovane na drugom mestu",
+    "source_line": 3213
+  },
+  {
+    "code": "Q90",
+    "title_la": "Downov sindrom",
+    "source_line": 3217
+  },
+  {
+    "code": "Q91",
+    "title_la": "Edwardov i Patauov sindrom",
+    "source_line": 3218
+  },
+  {
+    "code": "Q92",
+    "title_la": "Druge trizomije i delimične autozomne trizomije, neklasifikovane na drugom mestu",
+    "source_line": 3219
+  },
+  {
+    "code": "Q93",
+    "title_la": "Monozomije i delimične autozomne monozomije, neklasifikovane na drugom",
+    "source_line": 3220
+  },
+  {
+    "code": "Q95",
+    "title_la": "Uravnotežene hromozomske preraspodele i strukturni markeri, neklasifikovani na",
+    "source_line": 3222
+  },
+  {
+    "code": "Q96",
+    "title_la": "Turnerov sindrom",
+    "source_line": 3224
+  },
+  {
+    "code": "Q97",
+    "title_la": "Druge anomalije polnog hromozoma, ženski fenotip, neklasifikovane na drugom",
+    "source_line": 3225
+  },
+  {
+    "code": "Q98",
+    "title_la": "Druge anomalije polnog hromozoma, muški fenotip, neklasifikovane na drgugom",
+    "source_line": 3227
+  },
+  {
+    "code": "Q99",
+    "title_la": "Druge hromozomske anomalije, neklasifikovane na drugom mestu",
+    "source_line": 3229
+  }
+]

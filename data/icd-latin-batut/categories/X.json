@@ -1,0 +1,487 @@
+[
+  {
+    "code": "X00",
+    "title_la": "Izloženost nekontrolisanom požaru u zgradi ili građevini",
+    "source_line": 3974
+  },
+  {
+    "code": "X01",
+    "title_la": "Izlaganje nekontrolisanoj vatri, izvan zgrade ili građevine",
+    "source_line": 3975
+  },
+  {
+    "code": "X02",
+    "title_la": "Izlaganje kontrolisanoj vatri u zgradi i građevini",
+    "source_line": 3976
+  },
+  {
+    "code": "X03",
+    "title_la": "Izlaganje kontrolisanoj vatri, izvan zgrade ili građevine",
+    "source_line": 3977
+  },
+  {
+    "code": "X04",
+    "title_la": "Izlaganje zapaljiivanju od jako zapaljivih materijala",
+    "source_line": 3978
+  },
+  {
+    "code": "X05",
+    "title_la": "Izlaganje zapaljivanju ili pregrejavanju noćne odeće",
+    "source_line": 3979
+  },
+  {
+    "code": "X06",
+    "title_la": "Izlaganje zapaljivanju i pregrejavanju druge odeće i opreme",
+    "source_line": 3980
+  },
+  {
+    "code": "X08",
+    "title_la": "Izlaganje drugom označenom dimu, vatri i plamenu",
+    "source_line": 3981
+  },
+  {
+    "code": "X09",
+    "title_la": "Izlaganje neoznačenom dimu, vatri i plamenu",
+    "source_line": 3982
+  },
+  {
+    "code": "X10",
+    "title_la": "Kontakt sa vrelim pićima, hranom, mastima i uljima za kuvanje",
+    "source_line": 3985
+  },
+  {
+    "code": "X11",
+    "title_la": "Kontakt sa vrelom vodom iz slavine",
+    "source_line": 3986
+  },
+  {
+    "code": "X12",
+    "title_la": "Kontakt sa drugim vrelim tečnostima",
+    "source_line": 3987
+  },
+  {
+    "code": "X13",
+    "title_la": "Kontakt sa parom i vrelim isparenjima",
+    "source_line": 3988
+  },
+  {
+    "code": "X14",
+    "title_la": "Kontakt sa vrelim vazduhom i gasovima",
+    "source_line": 3989
+  },
+  {
+    "code": "X15",
+    "title_la": "Kontakt sa vrelim uređajima u domaćinstvu",
+    "source_line": 3990
+  },
+  {
+    "code": "X16",
+    "title_la": "Kontakt sa vrelim uređajima za zagrevanje, radijatorima i cevima",
+    "source_line": 3991
+  },
+  {
+    "code": "X17",
+    "title_la": "Kontakt sa vrelim motorima, mašinama i alatom",
+    "source_line": 3992
+  },
+  {
+    "code": "X18",
+    "title_la": "Kontakt sa drugim vrelim metalima",
+    "source_line": 3993
+  },
+  {
+    "code": "X19",
+    "title_la": "Kontakt sa drugim i neoznačenim toplim i vrelim materijama",
+    "source_line": 3994
+  },
+  {
+    "code": "X20",
+    "title_la": "Kontakt sa otrovnim zmijama i gušterima",
+    "source_line": 4004
+  },
+  {
+    "code": "X21",
+    "title_la": "Kontakt sa otrovnim paucima",
+    "source_line": 4005
+  },
+  {
+    "code": "X22",
+    "title_la": "Kontakt sa škorpionima",
+    "source_line": 4006
+  },
+  {
+    "code": "X23",
+    "title_la": "Kontakt sa stršljenima, osama i pčelama",
+    "source_line": 4007
+  },
+  {
+    "code": "X24",
+    "title_la": "Kontakt sa stonogama i otrovnim gusenicama (tropskim)",
+    "source_line": 4008
+  },
+  {
+    "code": "X25",
+    "title_la": "Kontakt sa drugim otrovnim artropodama",
+    "source_line": 4009
+  },
+  {
+    "code": "X26",
+    "title_la": "Kontakt sa otrovnim morskim životinjama i biljkama",
+    "source_line": 4010
+  },
+  {
+    "code": "X27",
+    "title_la": "Kontakt sa drugim označenim otrovnim životinjama",
+    "source_line": 4011
+  },
+  {
+    "code": "X28",
+    "title_la": "Kontakt sa drugim označenim otrovnim biljkama",
+    "source_line": 4012
+  },
+  {
+    "code": "X29",
+    "title_la": "Kontakt sa neoznačenom otrovnom životinjom ili biljkom",
+    "source_line": 4013
+  },
+  {
+    "code": "X30",
+    "title_la": "Izlaganje prekomernoj prirodnoj toploti",
+    "source_line": 4016
+  },
+  {
+    "code": "X31",
+    "title_la": "Izlaganje prekomernoj hladnoći u prirodi",
+    "source_line": 4017
+  },
+  {
+    "code": "X32",
+    "title_la": "Izlaganje sunčevoj svetlosti",
+    "source_line": 4018
+  },
+  {
+    "code": "X33",
+    "title_la": "Žrtva munje",
+    "source_line": 4019
+  },
+  {
+    "code": "X34",
+    "title_la": "Žrtva zemljotresa",
+    "source_line": 4020
+  },
+  {
+    "code": "X35",
+    "title_la": "Žrtva vulkanske erupcije",
+    "source_line": 4021
+  },
+  {
+    "code": "X36",
+    "title_la": "Žrtva lavine, klizanja zemljišta ili drugih kretanja zemlje",
+    "source_line": 4022
+  },
+  {
+    "code": "X37",
+    "title_la": "Žrtva katastrofalne oluje",
+    "source_line": 4023
+  },
+  {
+    "code": "X38",
+    "title_la": "Žrtva poplave",
+    "source_line": 4024
+  },
+  {
+    "code": "X39",
+    "title_la": "Izlaganje drugim i neoznačenim prirodnim silama",
+    "source_line": 4025
+  },
+  {
+    "code": "X40",
+    "title_la": "Slučajno trovanje i izlaganje analgeticima, antipireticima i antireumaticima koji ne",
+    "source_line": 4028
+  },
+  {
+    "code": "X41",
+    "title_la": "Slučajno trovanje ili izlaganje antiepilepticima, sedativima-hipnoticima,",
+    "source_line": 4030
+  },
+  {
+    "code": "X42",
+    "title_la": "Slučajno trovanje i izlaganje narkoticima i psihodislepticima [halucinogenima],",
+    "source_line": 4032
+  },
+  {
+    "code": "X43",
+    "title_la": "Slučajno trovanje i izlaganje drugim lekovima koji deluju na autonomni nervni",
+    "source_line": 4034
+  },
+  {
+    "code": "X44",
+    "title_la": "Slučajno trovanje i izlaganje drugim neoznačenim lekovima, preparatima i",
+    "source_line": 4036
+  },
+  {
+    "code": "X45",
+    "title_la": "Slučajno trovanje i izlaganje alkoholu",
+    "source_line": 4038
+  },
+  {
+    "code": "X46",
+    "title_la": "Slučajno trovanje i izlaganje organskim rastvaračima i halogenskim",
+    "source_line": 4039
+  },
+  {
+    "code": "X47",
+    "title_la": "Slučajno trovanje i izlaganje drugim gasovima i parama",
+    "source_line": 4041
+  },
+  {
+    "code": "X48",
+    "title_la": "Slučajno trovanje i izlaganje pesticidima",
+    "source_line": 4042
+  },
+  {
+    "code": "X49",
+    "title_la": "Slučajno trovanje i izlaganje drugim i neoznačenim hemikalijama i štetnim",
+    "source_line": 4043
+  },
+  {
+    "code": "X50",
+    "title_la": "Prekomeran napor i preterani ili ponavljani pokreti",
+    "source_line": 4047
+  },
+  {
+    "code": "X51",
+    "title_la": "Putovanje i kretanje",
+    "source_line": 4048
+  },
+  {
+    "code": "X52",
+    "title_la": "Produženo ostajanje u bestežinskim uslovima",
+    "source_line": 4049
+  },
+  {
+    "code": "X53",
+    "title_la": "Nedostatak hrane",
+    "source_line": 4050
+  },
+  {
+    "code": "X54",
+    "title_la": "Nedostatak vode",
+    "source_line": 4051
+  },
+  {
+    "code": "X57",
+    "title_la": "Neoznačena oskudica",
+    "source_line": 4052
+  },
+  {
+    "code": "X58",
+    "title_la": "Izlaganje drugim označenim faktorima",
+    "source_line": 4060
+  },
+  {
+    "code": "X59",
+    "title_la": "Izlaganje neoznačenim faktorima",
+    "source_line": 4061
+  },
+  {
+    "code": "X60",
+    "title_la": "Namerno samotrovanje i izlaganje analgeticima, antipireticima i antireumaticima",
+    "source_line": 4064
+  },
+  {
+    "code": "X61",
+    "title_la": "Namerno samotrovanje i izlaganje antiepilepticima, sedativima-hipnoticima,",
+    "source_line": 4066
+  },
+  {
+    "code": "X62",
+    "title_la": "Namerno samotrovanje i izlaganje narkoticima i psihodislepticima",
+    "source_line": 4068
+  },
+  {
+    "code": "X63",
+    "title_la": "Namerno samotrovanje i izlaganje drugim lekovima koji deluju na autonomni",
+    "source_line": 4070
+  },
+  {
+    "code": "X64",
+    "title_la": "Namerno samotrovanje i izlaganje drugim neoznačenim lekovima, preparatima i",
+    "source_line": 4072
+  },
+  {
+    "code": "X65",
+    "title_la": "Namerno samotrovanje i izlaganje alkoholu",
+    "source_line": 4074
+  },
+  {
+    "code": "X66",
+    "title_la": "Namerno samotrovanje i izlaganje organskim rastvaračima i halogenskim",
+    "source_line": 4075
+  },
+  {
+    "code": "X67",
+    "title_la": "Namerno samotrovanje i izlaganje drugim gasovima i parama",
+    "source_line": 4077
+  },
+  {
+    "code": "X68",
+    "title_la": "Namerno samotrovanje i izlaganje pesticidima",
+    "source_line": 4078
+  },
+  {
+    "code": "X69",
+    "title_la": "Namerno samotrovanje i izlaganje drugim i neoznačenim hemikalijama i štetnim",
+    "source_line": 4079
+  },
+  {
+    "code": "X70",
+    "title_la": "Namerno samopovređivanje vešanjem, davljenjem i gušenjem",
+    "source_line": 4081
+  },
+  {
+    "code": "X71",
+    "title_la": "Namerno samopovređivanje davljenjem i potapanjem",
+    "source_line": 4082
+  },
+  {
+    "code": "X72",
+    "title_la": "Namerno samopovređivanje opaljivanjem iz revolvera",
+    "source_line": 4083
+  },
+  {
+    "code": "X73",
+    "title_la": "Namerno samopovređivanje opaljivanjem iz puške, karabina i većeg vatrenog",
+    "source_line": 4084
+  },
+  {
+    "code": "X74",
+    "title_la": "Namerno samopovređivanje opaljivanjem iz drugog i neoznačenog oružja",
+    "source_line": 4086
+  },
+  {
+    "code": "X75",
+    "title_la": "Namerno samopovređivanje eksplozivnim materijalom",
+    "source_line": 4087
+  },
+  {
+    "code": "X76",
+    "title_la": "Namerno samopovređivanje dimom, vatrom i plamenom",
+    "source_line": 4088
+  },
+  {
+    "code": "X77",
+    "title_la": "Namerno samopovređivanje vodenom parom, vrelim parama i vrelim predmetima",
+    "source_line": 4089
+  },
+  {
+    "code": "X78",
+    "title_la": "Namerno samopovređivanje oštrim predmetom",
+    "source_line": 4090
+  },
+  {
+    "code": "X79",
+    "title_la": "Namerno samopovređivanje tupim predmetom",
+    "source_line": 4091
+  },
+  {
+    "code": "X80",
+    "title_la": "Namerno samopovređivanje skakanjem sa visine",
+    "source_line": 4092
+  },
+  {
+    "code": "X81",
+    "title_la": "Namerno samopovređivanje skakanjem ili leganjem ispred predmeta u pokretu",
+    "source_line": 4093
+  },
+  {
+    "code": "X82",
+    "title_la": "Namerno samopovređivanje udarom motornog vozila",
+    "source_line": 4094
+  },
+  {
+    "code": "X83",
+    "title_la": "Namerno samopovređivanje na druge označene načine",
+    "source_line": 4095
+  },
+  {
+    "code": "X84",
+    "title_la": "Namerno samopovređivanje na neoznačene načine",
+    "source_line": 4096
+  },
+  {
+    "code": "X85",
+    "title_la": "Nasilje lekovima, preparatima i biološkim supstancama",
+    "source_line": 4099
+  },
+  {
+    "code": "X86",
+    "title_la": "Nasilje korozivnim supstancama",
+    "source_line": 4100
+  },
+  {
+    "code": "X87",
+    "title_la": "Nasilje pesticidima",
+    "source_line": 4101
+  },
+  {
+    "code": "X88",
+    "title_la": "Nasilje gasovima i parama",
+    "source_line": 4102
+  },
+  {
+    "code": "X89",
+    "title_la": "Nasilje drugim označenim hemikalijama i štetnim materijama",
+    "source_line": 4103
+  },
+  {
+    "code": "X90",
+    "title_la": "Nasilje neoznačenim hemikalijama ili štetnim materijama",
+    "source_line": 4104
+  },
+  {
+    "code": "X91",
+    "title_la": "Nasilje vešanjem, davljenjem i ugušivanjem",
+    "source_line": 4105
+  },
+  {
+    "code": "X92",
+    "title_la": "Nasilje davljenjem i potapanjem",
+    "source_line": 4106
+  },
+  {
+    "code": "X93",
+    "title_la": "Nasilje pucanjem iz revolvera",
+    "source_line": 4107
+  },
+  {
+    "code": "X94",
+    "title_la": "Nasilje pucanjem iz puške, karabina i drugog većeg vatrenog oružja",
+    "source_line": 4108
+  },
+  {
+    "code": "X95",
+    "title_la": "Nasilje pucanjem iz drugog i neoznačenog vatrenog oružja",
+    "source_line": 4115
+  },
+  {
+    "code": "X96",
+    "title_la": "Nasilje eksplozivnim materijalom",
+    "source_line": 4116
+  },
+  {
+    "code": "X97",
+    "title_la": "Nasilje dimom, vatrom i plamenom",
+    "source_line": 4117
+  },
+  {
+    "code": "X98",
+    "title_la": "Nasilje vodenom parom, vrelim parama i vrelim predmetima",
+    "source_line": 4118
+  },
+  {
+    "code": "X99",
+    "title_la": "Nasilje oštrim predmetom",
+    "source_line": 4119
+  }
+]

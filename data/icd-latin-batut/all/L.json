@@ -1,0 +1,2002 @@
+[
+  {
+    "code": "L00",
+    "title_la": "Sindom stafilokoknog ljuštenja kože",
+    "source_line": 2495
+  },
+  {
+    "code": "L01",
+    "title_la": "Gnojno oboljenje kože",
+    "source_line": 2496
+  },
+  {
+    "code": "L01.0",
+    "title_la": "Impetigo [ullius organismi] [ullius loci]",
+    "source_line": 28261
+  },
+  {
+    "code": "L01.1",
+    "title_la": "Dermatoses impetiginosae aliae",
+    "source_line": 28264
+  },
+  {
+    "code": "L02",
+    "title_la": "Apsces, čir i grupa čireva kože",
+    "source_line": 2497
+  },
+  {
+    "code": "L02.0",
+    "title_la": "Abscessus, furunculus et carbunculus cutis faciei",
+    "source_line": 28282
+  },
+  {
+    "code": "L02.1",
+    "title_la": "Abscessus, furunculus et carbunculus cutis colli",
+    "source_line": 28293
+  },
+  {
+    "code": "L02.2",
+    "title_la": "Abscessus, furunculus et carbunculus cutis trunci",
+    "source_line": 28295
+  },
+  {
+    "code": "L02.3",
+    "title_la": "Abscessus, furunculus et carbunculus cutis regionis glutealis",
+    "source_line": 28306
+  },
+  {
+    "code": "L02.4",
+    "title_la": "Abscessus, furunculus et carbunculus cutis extremitatum",
+    "source_line": 28310
+  },
+  {
+    "code": "L02.8",
+    "title_la": "Abscessus, furunculus et carbunculus cutis locorum aliorum",
+    "source_line": 28315
+  },
+  {
+    "code": "L02.9",
+    "title_la": "Abscessus, furunculus et carbunculus cutis, non specificatus",
+    "source_line": 28319
+  },
+  {
+    "code": "L03",
+    "title_la": "Celulitis [Flegmona] – zapaljenje vezivnog ćelijskog tkiva",
+    "source_line": 2498
+  },
+  {
+    "code": "L03.0",
+    "title_la": "Cellulitis [Phlegmone] digitorum manus et pedis",
+    "source_line": 28346
+  },
+  {
+    "code": "L03.1",
+    "title_la": "Cellulitis [Phlegmone] extremitatum partium aliarum",
+    "source_line": 28352
+  },
+  {
+    "code": "L03.2",
+    "title_la": "Cellulitis [Erysipelas] faciei",
+    "source_line": 28357
+  },
+  {
+    "code": "L03.3",
+    "title_la": "Cellulitis [Phlegmone] trunci",
+    "source_line": 28359
+  },
+  {
+    "code": "L03.8",
+    "title_la": "Cellulitis [Phlegmone] locorum aliorum",
+    "source_line": 28368
+  },
+  {
+    "code": "L03.9",
+    "title_la": "Cellulitis [Phlegmone], non specificata",
+    "source_line": 28372
+  },
+  {
+    "code": "L04",
+    "title_la": "Akutno zapaljenje limfnog čvora",
+    "source_line": 2499
+  },
+  {
+    "code": "L04.0",
+    "title_la": "Lymphadenitis faciei, capitis et colli acuta",
+    "source_line": 28393
+  },
+  {
+    "code": "L04.1",
+    "title_la": "Lymphadenitis trunci acuta",
+    "source_line": 28395
+  },
+  {
+    "code": "L04.2",
+    "title_la": "Lymphadenitis extremitatis superioris acuta",
+    "source_line": 28397
+  },
+  {
+    "code": "L04.3",
+    "title_la": "Lymphadenitis extremitatis inferioris acuta",
+    "source_line": 28401
+  },
+  {
+    "code": "L04.8",
+    "title_la": "Lymphadenitis acuta locorum aliorum",
+    "source_line": 28404
+  },
+  {
+    "code": "L04.9",
+    "title_la": "Lymphadenitis acuta, non specificata",
+    "source_line": 28406
+  },
+  {
+    "code": "L05",
+    "title_la": "Pilonidalna cista",
+    "source_line": 2500
+  },
+  {
+    "code": "L05.0",
+    "title_la": "Cystis pilonidalis cum abscessu",
+    "source_line": 28414
+  },
+  {
+    "code": "L05.9",
+    "title_la": "Cystis pilonidalis sine abscessu",
+    "source_line": 28416
+  },
+  {
+    "code": "L08",
+    "title_la": "Ostale lokalizovane infekcije kože i potkožnog tkiva",
+    "source_line": 2501
+  },
+  {
+    "code": "L08.0",
+    "title_la": "Pyoderma",
+    "source_line": 28422
+  },
+  {
+    "code": "L08.1",
+    "title_la": "Erythrasma",
+    "source_line": 28429
+  },
+  {
+    "code": "L08.8",
+    "title_la": "Infectiones locales cutis et subcutis aliae, specificatae",
+    "source_line": 28431
+  },
+  {
+    "code": "L08.9",
+    "title_la": "Infectio localis cutis et subcutis, non specificata",
+    "source_line": 28433
+  },
+  {
+    "code": "L10",
+    "title_la": "Pemfigus – Plikovnjača",
+    "source_line": 2504
+  },
+  {
+    "code": "L10.0",
+    "title_la": "Pemphigus vulgaris",
+    "source_line": 28451
+  },
+  {
+    "code": "L10.1",
+    "title_la": "Pemphigus vegetans",
+    "source_line": 28453
+  },
+  {
+    "code": "L10.2",
+    "title_la": "Pemphigus foliaceus",
+    "source_line": 28455
+  },
+  {
+    "code": "L10.3",
+    "title_la": "Pemphigus brazilicus [fogo selvagem]",
+    "source_line": 28457
+  },
+  {
+    "code": "L10.4",
+    "title_la": "Pemphigus erythematosus",
+    "source_line": 28459
+  },
+  {
+    "code": "L10.5",
+    "title_la": "Pemphigus medicamentosus",
+    "source_line": 28462
+  },
+  {
+    "code": "L10.8",
+    "title_la": "Pemphigus alius",
+    "source_line": 28465
+  },
+  {
+    "code": "L10.9",
+    "title_la": "Pemphigus, non specificatus",
+    "source_line": 28467
+  },
+  {
+    "code": "L11",
+    "title_la": "Drugi akantolitički poremećaji",
+    "source_line": 2505
+  },
+  {
+    "code": "L11.0",
+    "title_la": "Keratosis follicularis acquisita",
+    "source_line": 28472
+  },
+  {
+    "code": "L11.1",
+    "title_la": "Dermatosis acantholytica transitoria (Grover)",
+    "source_line": 28475
+  },
+  {
+    "code": "L11.8",
+    "title_la": "Disordines acantolici alii, specificati",
+    "source_line": 28477
+  },
+  {
+    "code": "L11.9",
+    "title_la": "Disordines acantolici, non specificati",
+    "source_line": 28479
+  },
+  {
+    "code": "L12",
+    "title_la": "Pemfigoid – oboljenje slično plikovnjači",
+    "source_line": 2506
+  },
+  {
+    "code": "L12.0",
+    "title_la": "Pemphigoides bullosae",
+    "source_line": 28486
+  },
+  {
+    "code": "L12.1",
+    "title_la": "Pemphigoides cicatricialis",
+    "source_line": 28488
+  },
+  {
+    "code": "L12.2",
+    "title_la": "Dermatitis bullosa infantilis chronica",
+    "source_line": 28497
+  },
+  {
+    "code": "L12.3",
+    "title_la": "Epidermolysis bullosa acquisita",
+    "source_line": 28500
+  },
+  {
+    "code": "L12.8",
+    "title_la": "Pemphigoides aliae",
+    "source_line": 28503
+  },
+  {
+    "code": "L12.9",
+    "title_la": "Pemphigoides, non specificata",
+    "source_line": 28505
+  },
+  {
+    "code": "L13",
+    "title_la": "Drugi plikoviti poremećaji kože",
+    "source_line": 2507
+  },
+  {
+    "code": "L13.0",
+    "title_la": "Dermatitis herpetiformis",
+    "source_line": 28510
+  },
+  {
+    "code": "L13.1",
+    "title_la": "Dermatitis pustulosa subcornealis",
+    "source_line": 28513
+  },
+  {
+    "code": "L13.8",
+    "title_la": "Dermatoses bullosae aliae, specificatae",
+    "source_line": 28516
+  },
+  {
+    "code": "L13.9",
+    "title_la": "Dermatosis bullosa, non specificata",
+    "source_line": 28518
+  },
+  {
+    "code": "L14",
+    "title_la": "Plikovita oboljenja kože u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2508
+  },
+  {
+    "code": "L20",
+    "title_la": "Atopijsko zapaljenje kože",
+    "source_line": 2511
+  },
+  {
+    "code": "L20.0",
+    "title_la": "Prurigo Besnier",
+    "source_line": 28542
+  },
+  {
+    "code": "L20.8",
+    "title_la": "Dermatitis atopica alia",
+    "source_line": 28552
+  },
+  {
+    "code": "L20.9",
+    "title_la": "Dermatitis atopica, non specifica",
+    "source_line": 28561
+  },
+  {
+    "code": "L21",
+    "title_la": "Seboreja – zapaljenje kože uzrokovano povećanim lučenjem lojnih žlezda",
+    "source_line": 2512
+  },
+  {
+    "code": "L21.0",
+    "title_la": "Dermatitis seborrhoeica capitis",
+    "source_line": 28567
+  },
+  {
+    "code": "L21.1",
+    "title_la": "Dermatitis seborrhoeica infantilis",
+    "source_line": 28570
+  },
+  {
+    "code": "L21.8",
+    "title_la": "Dermatitis seborrhoeica alia",
+    "source_line": 28572
+  },
+  {
+    "code": "L21.9",
+    "title_la": "Dermatitis seborrhoeica, non specificata",
+    "source_line": 28574
+  },
+  {
+    "code": "L22",
+    "title_la": "Zapaljenje kože izazvano pelenama",
+    "source_line": 2513
+  },
+  {
+    "code": "L23",
+    "title_la": "Kontaktno alergijsko zapaljenje kože",
+    "source_line": 2514
+  },
+  {
+    "code": "L23.0",
+    "title_la": "Dermatitis contacta allergica metallogenes",
+    "source_line": 28598
+  },
+  {
+    "code": "L23.1",
+    "title_la": "Dermatitis contacta allergica propter materias adhaesivas",
+    "source_line": 28602
+  },
+  {
+    "code": "L23.2",
+    "title_la": "Dermatitis contacta allergica cosmeticogenes",
+    "source_line": 28611
+  },
+  {
+    "code": "L23.3",
+    "title_la": "Dermatitis contacta allergica medicamentosa",
+    "source_line": 28613
+  },
+  {
+    "code": "L23.4",
+    "title_la": "Dermatitis contacta allergica colorogenes",
+    "source_line": 28619
+  },
+  {
+    "code": "L23.5",
+    "title_la": "Dermatitis contacta allergica propter chemicalias alias",
+    "source_line": 28621
+  },
+  {
+    "code": "L23.6",
+    "title_la": "Dermatitis contacta allergica alimentaria",
+    "source_line": 28627
+  },
+  {
+    "code": "L23.7",
+    "title_la": "Dermatitis contacta allergica plantogenes, praeter plantas nutritivas",
+    "source_line": 28630
+  },
+  {
+    "code": "L23.8",
+    "title_la": "Dermatitis contacta allergica propter agentes alios",
+    "source_line": 28632
+  },
+  {
+    "code": "L23.9",
+    "title_la": "Dermatitis contacta allergica, causae non specificatae.",
+    "source_line": 28634
+  },
+  {
+    "code": "L24",
+    "title_la": "Kontaktno nadražajno zapaljenje kože",
+    "source_line": 2515
+  },
+  {
+    "code": "L24.0",
+    "title_la": "Dermatitis contacta irritans detergentogenes",
+    "source_line": 28652
+  },
+  {
+    "code": "L24.1",
+    "title_la": "Dermatitis contacta irritans oleogenes et unguentogenes",
+    "source_line": 28654
+  },
+  {
+    "code": "L24.2",
+    "title_la": "Dermatitis contacta irritans solventogenes",
+    "source_line": 28664
+  },
+  {
+    "code": "L24.3",
+    "title_la": "Dermatitis contacta irritans cosmeticogens",
+    "source_line": 28673
+  },
+  {
+    "code": "L24.4",
+    "title_la": "Dermatitis contacta irritans medicamentosa",
+    "source_line": 28675
+  },
+  {
+    "code": "L24.5",
+    "title_la": "Dermatitis contacta irritans chemicalis",
+    "source_line": 28681
+  },
+  {
+    "code": "L24.6",
+    "title_la": "Dermatitis contacta irritans alimentaria",
+    "source_line": 28685
+  },
+  {
+    "code": "L24.7",
+    "title_la": "Dermatitis contacta irritans plantogenes, praeter plantas nutritivas",
+    "source_line": 28688
+  },
+  {
+    "code": "L24.8",
+    "title_la": "Dermatitis contacta irritans propter agentes alios",
+    "source_line": 28690
+  },
+  {
+    "code": "L24.9",
+    "title_la": "Dermatitis contacta irritans causae non specificatae",
+    "source_line": 28693
+  },
+  {
+    "code": "L25",
+    "title_la": "Kontaktno zapaljenje kože, neoznačeno",
+    "source_line": 2516
+  },
+  {
+    "code": "L25.0",
+    "title_la": "Dermatitis contacta cosmeticogens, non specificata",
+    "source_line": 28710
+  },
+  {
+    "code": "L25.1",
+    "title_la": "Dermatitis contacta medicamentosa, non specificata",
+    "source_line": 28720
+  },
+  {
+    "code": "L25.2",
+    "title_la": "Dermatitis contacta colorogenes, non specificata",
+    "source_line": 28726
+  },
+  {
+    "code": "L25.3",
+    "title_la": "Dermatitis contacta chemicalis alia, non specificata",
+    "source_line": 28728
+  },
+  {
+    "code": "L25.4",
+    "title_la": "Dermatitis contacta alimentaria, non specificata",
+    "source_line": 28732
+  },
+  {
+    "code": "L25.5",
+    "title_la": "Dermatitis contacta plantogenes, praeter plantas nutritivas, non specificata",
+    "source_line": 28735
+  },
+  {
+    "code": "L25.8",
+    "title_la": "Dermatitis contacta propter agentes alios, non specificata",
+    "source_line": 28737
+  },
+  {
+    "code": "L25.9",
+    "title_la": "Dermatitis contacta, causae non specificatae",
+    "source_line": 28739
+  },
+  {
+    "code": "L26",
+    "title_la": "Zapaljenje kože sa ljuštenjem",
+    "source_line": 2517
+  },
+  {
+    "code": "L27",
+    "title_la": "Zapaljenje kože uzrokovano progutanom materijom",
+    "source_line": 2518
+  },
+  {
+    "code": "L27.0",
+    "title_la": "Eruptio cutis medicamentosa generalisata",
+    "source_line": 28759
+  },
+  {
+    "code": "L27.1",
+    "title_la": "Eruptio cutis medicamentosa localisata",
+    "source_line": 28763
+  },
+  {
+    "code": "L27.2",
+    "title_la": "Dermatitis alimentaria ingestiva",
+    "source_line": 28767
+  },
+  {
+    "code": "L27.8",
+    "title_la": "Dermatitis propter materias consumptas alias",
+    "source_line": 28778
+  },
+  {
+    "code": "L27.9",
+    "title_la": "Dermatitis propter materiam consumptam non specificatum",
+    "source_line": 28780
+  },
+  {
+    "code": "L28",
+    "title_la": "Običan hroničan lišaj i svrab",
+    "source_line": 2519
+  },
+  {
+    "code": "L28.0",
+    "title_la": "Lichen simplex chronicus",
+    "source_line": 28785
+  },
+  {
+    "code": "L28.1",
+    "title_la": "Prurigo nodularis",
+    "source_line": 28789
+  },
+  {
+    "code": "L28.2",
+    "title_la": "Prurigo alia",
+    "source_line": 28791
+  },
+  {
+    "code": "L29",
+    "title_la": "Svrab",
+    "source_line": 2520
+  },
+  {
+    "code": "L29.0",
+    "title_la": "Pruritus ani",
+    "source_line": 28803
+  },
+  {
+    "code": "L29.1",
+    "title_la": "Pruritus scroti",
+    "source_line": 28805
+  },
+  {
+    "code": "L29.2",
+    "title_la": "Pruritus vulvae",
+    "source_line": 28807
+  },
+  {
+    "code": "L29.3",
+    "title_la": "Pruritus anogenitalis, non specificatus",
+    "source_line": 28809
+  },
+  {
+    "code": "L29.8",
+    "title_la": "Pruritus alia",
+    "source_line": 28811
+  },
+  {
+    "code": "L29.9",
+    "title_la": "Pruritus, non specificatus",
+    "source_line": 28813
+  },
+  {
+    "code": "L30",
+    "title_la": "Ostala zapaljenja kože",
+    "source_line": 2521
+  },
+  {
+    "code": "L30.0",
+    "title_la": "Dermatitis nummularis",
+    "source_line": 28823
+  },
+  {
+    "code": "L30.1",
+    "title_la": "Dyshidrosis [pompholyx]",
+    "source_line": 28825
+  },
+  {
+    "code": "L30.2",
+    "title_la": "Autosensibilisatio cutanea",
+    "source_line": 28835
+  },
+  {
+    "code": "L30.3",
+    "title_la": "Dermatitis infectiva",
+    "source_line": 28840
+  },
+  {
+    "code": "L30.4",
+    "title_la": "Erythema intertriginosum",
+    "source_line": 28843
+  },
+  {
+    "code": "L30.5",
+    "title_la": "Pityriasis alba",
+    "source_line": 28845
+  },
+  {
+    "code": "L30.8",
+    "title_la": "Dermatitis alia, specificata",
+    "source_line": 28847
+  },
+  {
+    "code": "L30.9",
+    "title_la": "Dermatitis, non specificata",
+    "source_line": 28849
+  },
+  {
+    "code": "L40",
+    "title_la": "Psoriaza - Ljuskavica",
+    "source_line": 2524
+  },
+  {
+    "code": "L40.0",
+    "title_la": "Psoriasis vulgaris",
+    "source_line": 28860
+  },
+  {
+    "code": "L40.1",
+    "title_la": "Psoriasis pustulosa generalisata",
+    "source_line": 28864
+  },
+  {
+    "code": "L40.2",
+    "title_la": "Acrodermatitis continua",
+    "source_line": 28868
+  },
+  {
+    "code": "L40.3",
+    "title_la": "Pustulosis palmaris et plantaris",
+    "source_line": 28870
+  },
+  {
+    "code": "L40.4",
+    "title_la": "Psoriasis guttata",
+    "source_line": 28872
+  },
+  {
+    "code": "L40.5",
+    "title_la": "Psoriasis arthropathica (M07.0-M07.3* , M09.0*)",
+    "source_line": 28874
+  },
+  {
+    "code": "L40.8",
+    "title_la": "Psoriasis alia",
+    "source_line": 28876
+  },
+  {
+    "code": "L40.9",
+    "title_la": "Psoriasis non specificata",
+    "source_line": 28879
+  },
+  {
+    "code": "L41",
+    "title_la": "Parapsorijaza - ljuskavičaste promene kože slične psorijazi",
+    "source_line": 2525
+  },
+  {
+    "code": "L41.0",
+    "title_la": "Pityriasis lichenoides et varioliformis acuta",
+    "source_line": 28892
+  },
+  {
+    "code": "L41.1",
+    "title_la": "Pityriasis lichenoides chronica",
+    "source_line": 28895
+  },
+  {
+    "code": "L41.2",
+    "title_la": "Papulosis lymphomatoides",
+    "source_line": 28897
+  },
+  {
+    "code": "L41.3",
+    "title_la": "Parapsoriasis microlamellaris",
+    "source_line": 28899
+  },
+  {
+    "code": "L41.4",
+    "title_la": "Parapsoriasis macrolamellaris",
+    "source_line": 28901
+  },
+  {
+    "code": "L41.5",
+    "title_la": "Parapsoriasis retiformis",
+    "source_line": 28903
+  },
+  {
+    "code": "L41.8",
+    "title_la": "Parapsoriasis alia",
+    "source_line": 28905
+  },
+  {
+    "code": "L41.9",
+    "title_la": "Parapsoriasis, non specificata",
+    "source_line": 28907
+  },
+  {
+    "code": "L42",
+    "title_la": "Ružičaste kružne pločice sa perutanjem",
+    "source_line": 2526
+  },
+  {
+    "code": "L43",
+    "title_la": "Ravan lišaj",
+    "source_line": 2527
+  },
+  {
+    "code": "L43.0",
+    "title_la": "Lichen planus hypertrophicus",
+    "source_line": 28916
+  },
+  {
+    "code": "L43.1",
+    "title_la": "Lichen planus bullosus",
+    "source_line": 28918
+  },
+  {
+    "code": "L43.2",
+    "title_la": "Lichenoid medicamentosus",
+    "source_line": 28920
+  },
+  {
+    "code": "L43.3",
+    "title_la": "Lichen planus subacutus (activum)",
+    "source_line": 28924
+  },
+  {
+    "code": "L43.8",
+    "title_la": "Lichen planus alius",
+    "source_line": 28927
+  },
+  {
+    "code": "L43.9",
+    "title_la": "Lichen planus, non specificatus",
+    "source_line": 28929
+  },
+  {
+    "code": "L44",
+    "title_la": "Ostali papulo-ljuskasti poremećaji",
+    "source_line": 2528
+  },
+  {
+    "code": "L44.0",
+    "title_la": "Pityriasis rubra pilaris",
+    "source_line": 28934
+  },
+  {
+    "code": "L44.1",
+    "title_la": "Lichen nitidus",
+    "source_line": 28936
+  },
+  {
+    "code": "L44.2",
+    "title_la": "Lichen striatus",
+    "source_line": 28945
+  },
+  {
+    "code": "L44.3",
+    "title_la": "Lichen ruber moniliformis",
+    "source_line": 28947
+  },
+  {
+    "code": "L44.4",
+    "title_la": "Acrodermatitis papulosa infantilis [Giannotti-Crosti]",
+    "source_line": 28949
+  },
+  {
+    "code": "L44.8",
+    "title_la": "Disordines papulosquamosi alii, specificati",
+    "source_line": 28951
+  },
+  {
+    "code": "L44.9",
+    "title_la": "Disordo papulosquamosis, non specificatus",
+    "source_line": 28953
+  },
+  {
+    "code": "L45",
+    "title_la": "Papulo-ljuskasti poremećaji u bolestima koje su klasifikovane na drugom mestu",
+    "source_line": 2529
+  },
+  {
+    "code": "L50",
+    "title_la": "Koprivnjača",
+    "source_line": 2532
+  },
+  {
+    "code": "L50.0",
+    "title_la": "Urticaria allergica",
+    "source_line": 28978
+  },
+  {
+    "code": "L50.1",
+    "title_la": "Urticaria idiopathica",
+    "source_line": 28980
+  },
+  {
+    "code": "L50.2",
+    "title_la": "Urticaria propter frigorem et calorem",
+    "source_line": 28982
+  },
+  {
+    "code": "L50.3",
+    "title_la": "Urticaria dermatographica",
+    "source_line": 28984
+  },
+  {
+    "code": "L50.4",
+    "title_la": "Urticaria vibratoria",
+    "source_line": 28986
+  },
+  {
+    "code": "L50.5",
+    "title_la": "Urticaria cholinergica",
+    "source_line": 28988
+  },
+  {
+    "code": "L50.6",
+    "title_la": "Urticaria contacta",
+    "source_line": 28990
+  },
+  {
+    "code": "L50.8",
+    "title_la": "Urticaria alia",
+    "source_line": 29000
+  },
+  {
+    "code": "L50.9",
+    "title_la": "Urticaria, non specificata",
+    "source_line": 29005
+  },
+  {
+    "code": "L51",
+    "title_la": "Raznoliki eritem",
+    "source_line": 2533
+  },
+  {
+    "code": "L51.0",
+    "title_la": "Erythema multiforme non bullosum",
+    "source_line": 29010
+  },
+  {
+    "code": "L51.1",
+    "title_la": "Erythema bullosum multiforme",
+    "source_line": 29012
+  },
+  {
+    "code": "L51.2",
+    "title_la": "Necrolysis epidermatica toxica (Lyell)",
+    "source_line": 29015
+  },
+  {
+    "code": "L51.8",
+    "title_la": "Erythema multiforme aliud",
+    "source_line": 29017
+  },
+  {
+    "code": "L51.9",
+    "title_la": "Erythema multiforme, non specificatum",
+    "source_line": 29019
+  },
+  {
+    "code": "L52",
+    "title_la": "Eritem sa nodusima",
+    "source_line": 2534
+  },
+  {
+    "code": "L53",
+    "title_la": "Druga eritematozna stanja",
+    "source_line": 2535
+  },
+  {
+    "code": "L53.0",
+    "title_la": "Erythema toxicum",
+    "source_line": 29031
+  },
+  {
+    "code": "L53.1",
+    "title_la": "Erythema annulare centrifugum",
+    "source_line": 29036
+  },
+  {
+    "code": "L53.2",
+    "title_la": "Erythema marginatum",
+    "source_line": 29038
+  },
+  {
+    "code": "L53.3",
+    "title_la": "Erythema figuratum chronicum aliud",
+    "source_line": 29040
+  },
+  {
+    "code": "L53.8",
+    "title_la": "Conditiones erythematosus alii, specificati",
+    "source_line": 29042
+  },
+  {
+    "code": "L53.9",
+    "title_la": "Conditio erythematosa, non specificata",
+    "source_line": 29044
+  },
+  {
+    "code": "L54",
+    "title_la": "Eritem u bolestima koje su klasifikovane na drugom mestu",
+    "source_line": 2536
+  },
+  {
+    "code": "L54.0",
+    "title_la": "Erythema marginatum in febri rheumatica acuta (I00†)",
+    "source_line": 29058
+  },
+  {
+    "code": "L54.8",
+    "title_la": "Erythema in morbis aliis alibi classificatis",
+    "source_line": 29060
+  },
+  {
+    "code": "L55",
+    "title_la": "Opekotina uzrokovana sunčevim zracima",
+    "source_line": 2545
+  },
+  {
+    "code": "L55.0",
+    "title_la": "Combustio solaris gradus minoris",
+    "source_line": 29070
+  },
+  {
+    "code": "L55.1",
+    "title_la": "Combustio solaris gradus medii",
+    "source_line": 29072
+  },
+  {
+    "code": "L55.2",
+    "title_la": "Combustio solaris gradus majoris",
+    "source_line": 29074
+  },
+  {
+    "code": "L55.8",
+    "title_la": "Combustio solaris alia",
+    "source_line": 29076
+  },
+  {
+    "code": "L55.9",
+    "title_la": "Combustio solaris, non specificata",
+    "source_line": 29078
+  },
+  {
+    "code": "L56",
+    "title_la": "Druge akutne promene na koži uzrokovane ultraljubičastim zračenjem",
+    "source_line": 2546
+  },
+  {
+    "code": "L56.0",
+    "title_la": "Reactio phototoxica medicamentosa",
+    "source_line": 29083
+  },
+  {
+    "code": "L56.1",
+    "title_la": "Reactio photoallergica medicamentosa",
+    "source_line": 29086
+  },
+  {
+    "code": "L56.2",
+    "title_la": "Dermatitis photocontacta [berloque dermatitis]",
+    "source_line": 29089
+  },
+  {
+    "code": "L56.3",
+    "title_la": "Urticaria solaris",
+    "source_line": 29091
+  },
+  {
+    "code": "L56.4",
+    "title_la": "Eruptio photogenes polymorpha",
+    "source_line": 29093
+  },
+  {
+    "code": "L56.8",
+    "title_la": "Alterationes cutis acutae propter radiationem ultraviolaceam, specificatae, aliae",
+    "source_line": 29095
+  },
+  {
+    "code": "L56.9",
+    "title_la": "Alterationes acutae cutis propter radiationem ultraviolaceam, non specificatae, aliae",
+    "source_line": 29097
+  },
+  {
+    "code": "L57",
+    "title_la": "Promene kože uzrokovane hroničnom izloženošću nejonizirajućim zračenjima",
+    "source_line": 2547
+  },
+  {
+    "code": "L57.0",
+    "title_la": "Keratosis actinica",
+    "source_line": 29109
+  },
+  {
+    "code": "L57.1",
+    "title_la": "Reticulosis actinica",
+    "source_line": 29115
+  },
+  {
+    "code": "L57.2",
+    "title_la": "Cutis rhomboidalis nuchae",
+    "source_line": 29117
+  },
+  {
+    "code": "L57.3",
+    "title_la": "Poikiloderma Civatte",
+    "source_line": 29119
+  },
+  {
+    "code": "L57.4",
+    "title_la": "Cutis laxa senilis",
+    "source_line": 29121
+  },
+  {
+    "code": "L57.5",
+    "title_la": "Granuloma actinicum",
+    "source_line": 29124
+  },
+  {
+    "code": "L57.8",
+    "title_la": "Alterationes cutis propter expositionem chronicum in radiatione non ionica, aliae",
+    "source_line": 29126
+  },
+  {
+    "code": "L57.9",
+    "title_la": "Alterationes cutis propter expositionem chronicum in radiatione non ionica, non",
+    "source_line": 29131
+  },
+  {
+    "code": "L58",
+    "title_la": "Zapaljenje kože uzrokovano X zracima",
+    "source_line": 2548
+  },
+  {
+    "code": "L58.0",
+    "title_la": "Radiodermatitis acuta",
+    "source_line": 29137
+  },
+  {
+    "code": "L58.1",
+    "title_la": "Radiodermatitis chronica",
+    "source_line": 29139
+  },
+  {
+    "code": "L58.9",
+    "title_la": "Radiodermatitis, non specificata",
+    "source_line": 29141
+  },
+  {
+    "code": "L59",
+    "title_la": "Drugi poremećaji kože i potkožnog tkiva u vezi sa zračenjem",
+    "source_line": 2549
+  },
+  {
+    "code": "L59.0",
+    "title_la": "Erythema propter ignem [dermatitis propter ignem]",
+    "source_line": 29146
+  },
+  {
+    "code": "L59.8",
+    "title_la": "Disordines cutis et subcutis propter radiationem, specificati, alii",
+    "source_line": 29148
+  },
+  {
+    "code": "L59.9",
+    "title_la": "Disordo cutis et subcutis propter radiationem, non specificatus",
+    "source_line": 29150
+  },
+  {
+    "code": "L60",
+    "title_la": "Poremećaji nokta",
+    "source_line": 2552
+  },
+  {
+    "code": "L60.0",
+    "title_la": "Unguis incarnatus",
+    "source_line": 29168
+  },
+  {
+    "code": "L60.1",
+    "title_la": "Onycholysis",
+    "source_line": 29170
+  },
+  {
+    "code": "L60.2",
+    "title_la": "Onychogryphosis",
+    "source_line": 29172
+  },
+  {
+    "code": "L60.3",
+    "title_la": "Onychodystrophia",
+    "source_line": 29174
+  },
+  {
+    "code": "L60.4",
+    "title_la": "Lineae Beau",
+    "source_line": 29176
+  },
+  {
+    "code": "L60.5",
+    "title_la": "Syndroma unguis flavi",
+    "source_line": 29178
+  },
+  {
+    "code": "L60.8",
+    "title_la": "Disordines unguium, alii",
+    "source_line": 29180
+  },
+  {
+    "code": "L60.9",
+    "title_la": "Disordo unguium non specificatus",
+    "source_line": 29182
+  },
+  {
+    "code": "L62",
+    "title_la": "Poremećaji nokta kod bolesti koje su klasifikovane na drugom mestu",
+    "source_line": 2553
+  },
+  {
+    "code": "L62.0",
+    "title_la": "Onychophyma in pachydermoperiosteosi (M89.4†)",
+    "source_line": 29187
+  },
+  {
+    "code": "L62.8",
+    "title_la": "Disordines unguium in morbis aliis alibi classificatis",
+    "source_line": 29189
+  },
+  {
+    "code": "L63",
+    "title_la": "Kružno opadanje kose",
+    "source_line": 2554
+  },
+  {
+    "code": "L63.0",
+    "title_la": "Alopecia totalis (capitis)",
+    "source_line": 29194
+  },
+  {
+    "code": "L63.1",
+    "title_la": "Alopecia universalis",
+    "source_line": 29196
+  },
+  {
+    "code": "L63.2",
+    "title_la": "Ophiasis",
+    "source_line": 29198
+  },
+  {
+    "code": "L63.8",
+    "title_la": "Alopecia areata, alia",
+    "source_line": 29200
+  },
+  {
+    "code": "L63.9",
+    "title_la": "Alopecia areata, non specificata",
+    "source_line": 29202
+  },
+  {
+    "code": "L64",
+    "title_la": "Androgena ćelavost",
+    "source_line": 2555
+  },
+  {
+    "code": "L64.0",
+    "title_la": "Alopecia androgenes medicamentosa",
+    "source_line": 29215
+  },
+  {
+    "code": "L64.8",
+    "title_la": "Alopecia androgenes alia",
+    "source_line": 29218
+  },
+  {
+    "code": "L64.9",
+    "title_la": "Alopecia androgenes, non specificata",
+    "source_line": 29220
+  },
+  {
+    "code": "L65",
+    "title_la": "Drugo opadanje kose bez ožiljaka",
+    "source_line": 2556
+  },
+  {
+    "code": "L65.0",
+    "title_la": "Effluvium telogenes",
+    "source_line": 29228
+  },
+  {
+    "code": "L65.1",
+    "title_la": "Effluvium anagenes",
+    "source_line": 29230
+  },
+  {
+    "code": "L65.2",
+    "title_la": "Alopecia mucinosa",
+    "source_line": 29232
+  },
+  {
+    "code": "L65.8",
+    "title_la": "Alopecia alia non cicatricosa, specificata",
+    "source_line": 29234
+  },
+  {
+    "code": "L65.9",
+    "title_la": "Alopecia non cicatricosa, non specificata",
+    "source_line": 29236
+  },
+  {
+    "code": "L66",
+    "title_la": "Ožiljno opadanje kose",
+    "source_line": 2557
+  },
+  {
+    "code": "L66.0",
+    "title_la": "Pseudopelada",
+    "source_line": 29242
+  },
+  {
+    "code": "L66.1",
+    "title_la": "Lichen planopilaris",
+    "source_line": 29244
+  },
+  {
+    "code": "L66.2",
+    "title_la": "Folliculitis decalvans",
+    "source_line": 29247
+  },
+  {
+    "code": "L66.3",
+    "title_la": "Perifolliculitis capitis abscedens",
+    "source_line": 29249
+  },
+  {
+    "code": "L66.4",
+    "title_la": "Folliculitis ulerythematosa reticulata",
+    "source_line": 29251
+  },
+  {
+    "code": "L66.8",
+    "title_la": "Alopecia cicatricosa, alia",
+    "source_line": 29253
+  },
+  {
+    "code": "L66.9",
+    "title_la": "Alopecia cicatricosa, non specificata",
+    "source_line": 29255
+  },
+  {
+    "code": "L67",
+    "title_la": "Nenormalnosti boje i stabla dlaka",
+    "source_line": 2558
+  },
+  {
+    "code": "L67.0",
+    "title_la": "Trichorrhexis nodosa",
+    "source_line": 29270
+  },
+  {
+    "code": "L67.1",
+    "title_la": "Variationes coloris pilorum",
+    "source_line": 29272
+  },
+  {
+    "code": "L67.8",
+    "title_la": "Abnormitates coloris et scapi pilorum, aliae",
+    "source_line": 29280
+  },
+  {
+    "code": "L67.9",
+    "title_la": "Abnormitates coloris et scapi pilorum, non specificati",
+    "source_line": 29283
+  },
+  {
+    "code": "L68",
+    "title_la": "Prekomerna maljavost",
+    "source_line": 2559
+  },
+  {
+    "code": "L68.0",
+    "title_la": "Hirsutism",
+    "source_line": 29291
+  },
+  {
+    "code": "L68.1",
+    "title_la": "Hypertrichosis lanuginosa acquisita",
+    "source_line": 29295
+  },
+  {
+    "code": "L68.2",
+    "title_la": "Hypertrichosis localisata",
+    "source_line": 29299
+  },
+  {
+    "code": "L68.3",
+    "title_la": "Polytrichia",
+    "source_line": 29301
+  },
+  {
+    "code": "L68.8",
+    "title_la": "Hypertrichosis alia",
+    "source_line": 29303
+  },
+  {
+    "code": "L68.9",
+    "title_la": "Hypertrichosis, non specificata",
+    "source_line": 29305
+  },
+  {
+    "code": "L70",
+    "title_la": "Akne - Bubuljice",
+    "source_line": 2560
+  },
+  {
+    "code": "L70.0",
+    "title_la": "Acnae vulgares",
+    "source_line": 29311
+  },
+  {
+    "code": "L70.1",
+    "title_la": "Acnae conglobatae",
+    "source_line": 29313
+  },
+  {
+    "code": "L70.2",
+    "title_la": "Acnae varioliformes",
+    "source_line": 29323
+  },
+  {
+    "code": "L70.3",
+    "title_la": "Acnae tropicae",
+    "source_line": 29326
+  },
+  {
+    "code": "L70.4",
+    "title_la": "Acnae infantiles",
+    "source_line": 29328
+  },
+  {
+    "code": "L70.5",
+    "title_la": "Acnae excoriatae iuveniles",
+    "source_line": 29330
+  },
+  {
+    "code": "L70.8",
+    "title_la": "Acnae, aliae",
+    "source_line": 29332
+  },
+  {
+    "code": "L70.9",
+    "title_la": "Acnae, non specificatae",
+    "source_line": 29334
+  },
+  {
+    "code": "L71",
+    "title_la": "Rozacea",
+    "source_line": 2561
+  },
+  {
+    "code": "L71.0",
+    "title_la": "Dermatitis perioralis",
+    "source_line": 29339
+  },
+  {
+    "code": "L71.1",
+    "title_la": "Rhinophyma",
+    "source_line": 29343
+  },
+  {
+    "code": "L71.8",
+    "title_la": "Rosacea alia",
+    "source_line": 29345
+  },
+  {
+    "code": "L71.9",
+    "title_la": "Rosacea, non specificata",
+    "source_line": 29347
+  },
+  {
+    "code": "L72",
+    "title_la": "Ciste korena dlake kože i potkožnog tkiva",
+    "source_line": 2562
+  },
+  {
+    "code": "L72.0",
+    "title_la": "Cystis epidermalis",
+    "source_line": 29352
+  },
+  {
+    "code": "L72.1",
+    "title_la": "Cystis trichilemmalis",
+    "source_line": 29354
+  },
+  {
+    "code": "L72.2",
+    "title_la": "Steatocystoma multiplex",
+    "source_line": 29358
+  },
+  {
+    "code": "L72.8",
+    "title_la": "Cystes folliculares cutis et subcutis, aliae",
+    "source_line": 29360
+  },
+  {
+    "code": "L72.9",
+    "title_la": "Cystes folliculares cutis et subcutis, non specificatae",
+    "source_line": 29362
+  },
+  {
+    "code": "L73",
+    "title_la": "Drugi folikularni poremećaji",
+    "source_line": 2563
+  },
+  {
+    "code": "L73.0",
+    "title_la": "Acnee keloides",
+    "source_line": 29367
+  },
+  {
+    "code": "L73.1",
+    "title_la": "Pseudofolliculitis barbae",
+    "source_line": 29369
+  },
+  {
+    "code": "L73.2",
+    "title_la": "Hidradenitis suppurativa",
+    "source_line": 29371
+  },
+  {
+    "code": "L73.8",
+    "title_la": "Disordines folliculares alii, specificati",
+    "source_line": 29380
+  },
+  {
+    "code": "L73.9",
+    "title_la": "Disordo folliculares, non specificatus",
+    "source_line": 29383
+  },
+  {
+    "code": "L74",
+    "title_la": "Poremećaji lučenja ekrinih znojnih žlezda",
+    "source_line": 2564
+  },
+  {
+    "code": "L74.0",
+    "title_la": "Miliaria rubra",
+    "source_line": 29389
+  },
+  {
+    "code": "L74.1",
+    "title_la": "Miliaria crystallina",
+    "source_line": 29391
+  },
+  {
+    "code": "L74.2",
+    "title_la": "Miliaria profunda",
+    "source_line": 29393
+  },
+  {
+    "code": "L74.3",
+    "title_la": "Miliaria, non specificata",
+    "source_line": 29396
+  },
+  {
+    "code": "L74.4",
+    "title_la": "Anhidrosis",
+    "source_line": 29398
+  },
+  {
+    "code": "L74.8",
+    "title_la": "Disordines sudoris eccrinae alii",
+    "source_line": 29401
+  },
+  {
+    "code": "L74.9",
+    "title_la": "Disordo sudoris eccrinae, non specificatus",
+    "source_line": 29403
+  },
+  {
+    "code": "L75",
+    "title_la": "Poremećaji lučenja apokrinih znojnih žlezda",
+    "source_line": 2565
+  },
+  {
+    "code": "L75.0",
+    "title_la": "Bromhidrosis",
+    "source_line": 29411
+  },
+  {
+    "code": "L75.1",
+    "title_la": "Chromhidrosis",
+    "source_line": 29413
+  },
+  {
+    "code": "L75.2",
+    "title_la": "Miliaria apocrinis",
+    "source_line": 29415
+  },
+  {
+    "code": "L75.8",
+    "title_la": "Disordines sudoris apoccrinae alii",
+    "source_line": 29418
+  },
+  {
+    "code": "L75.9",
+    "title_la": "Disordo sudoris apoccrinae, non specificatus",
+    "source_line": 29420
+  },
+  {
+    "code": "L80",
+    "title_la": "Vitiligo - stečene depigmentovane mrlje kože",
+    "source_line": 2568
+  },
+  {
+    "code": "L81",
+    "title_la": "Drugi poremećaji pigmentacije kože",
+    "source_line": 2569
+  },
+  {
+    "code": "L81.0",
+    "title_la": "Hyperpigmentatio postinflammatoria",
+    "source_line": 29440
+  },
+  {
+    "code": "L81.1",
+    "title_la": "Chloasma",
+    "source_line": 29442
+  },
+  {
+    "code": "L81.2",
+    "title_la": "Ephelides",
+    "source_line": 29444
+  },
+  {
+    "code": "L81.3",
+    "title_la": "Maculae „Café au lait”",
+    "source_line": 29446
+  },
+  {
+    "code": "L81.4",
+    "title_la": "Hyperpigmentatio melaninotica alia",
+    "source_line": 29448
+  },
+  {
+    "code": "L81.5",
+    "title_la": "Leukoderma non alibi classificata",
+    "source_line": 29451
+  },
+  {
+    "code": "L81.6",
+    "title_la": "Disordines cum formatione melaninica deminuta aliae",
+    "source_line": 29453
+  },
+  {
+    "code": "L81.7",
+    "title_la": "Purpura pigmentosa chronica",
+    "source_line": 29455
+  },
+  {
+    "code": "L81.8",
+    "title_la": "Disordines pigmentationes cutis alii, specificati",
+    "source_line": 29458
+  },
+  {
+    "code": "L81.9",
+    "title_la": "Disordo pigmentationes, non specificatus",
+    "source_line": 29462
+  },
+  {
+    "code": "L82",
+    "title_la": "Seboreičko orožavanje kože",
+    "source_line": 2570
+  },
+  {
+    "code": "L83",
+    "title_la": "Crnkasta akantoza kože",
+    "source_line": 2571
+  },
+  {
+    "code": "L84",
+    "title_la": "Žuljevi i žuljevitost",
+    "source_line": 2572
+  },
+  {
+    "code": "L85",
+    "title_la": "Druga epidermalna zadebljanja",
+    "source_line": 2573
+  },
+  {
+    "code": "L85.0",
+    "title_la": "Ichthyosis acquisita",
+    "source_line": 29482
+  },
+  {
+    "code": "L85.1",
+    "title_la": "Keratosis (keratoderma) palmaris et plantaris acquisita",
+    "source_line": 29491
+  },
+  {
+    "code": "L85.2",
+    "title_la": "Keratosis punctata (palmaris et plantaris)",
+    "source_line": 29494
+  },
+  {
+    "code": "L85.3",
+    "title_la": "Xerosis cutis (sin. Dermatitis sicca)",
+    "source_line": 29496
+  },
+  {
+    "code": "L85.8",
+    "title_la": "Crassificatio epidermidis alia, specificata",
+    "source_line": 29499
+  },
+  {
+    "code": "L85.9",
+    "title_la": "Crassificatio epidermidis, non specificata",
+    "source_line": 29502
+  },
+  {
+    "code": "L86",
+    "title_la": "Keratodermija u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2574
+  },
+  {
+    "code": "L87",
+    "title_la": "Poremećaji lučenja preko pokožice",
+    "source_line": 2575
+  },
+  {
+    "code": "L87.0",
+    "title_la": "Keratosis follicularis et parafollicularis in cutem penetrans [Kyrle]",
+    "source_line": 29514
+  },
+  {
+    "code": "L87.1",
+    "title_la": "Collagenosis perforans reactiva",
+    "source_line": 29517
+  },
+  {
+    "code": "L87.2",
+    "title_la": "Elastosis perforans serpiginosa",
+    "source_line": 29519
+  },
+  {
+    "code": "L87.8",
+    "title_la": "Disordines eliminationis transepidermalis alii",
+    "source_line": 29521
+  },
+  {
+    "code": "L87.9",
+    "title_la": "Disordo eliminationis transepidermalis, non specificatus",
+    "source_line": 29523
+  },
+  {
+    "code": "L88",
+    "title_la": "Gnojno-gangrenozno zapaljenje kože",
+    "source_line": 2576
+  },
+  {
+    "code": "L89",
+    "title_la": "Dekubitus",
+    "source_line": 2577
+  },
+  {
+    "code": "L89.0",
+    "title_la": "Ulcus decubitale gradus I",
+    "source_line": 29545
+  },
+  {
+    "code": "L89.1",
+    "title_la": "Ulcus decubitale gradus II",
+    "source_line": 29551
+  },
+  {
+    "code": "L89.2",
+    "title_la": "Ulcus decubitale gradus III",
+    "source_line": 29558
+  },
+  {
+    "code": "L89.3",
+    "title_la": "Ulcus decubitale gradus IV",
+    "source_line": 29562
+  },
+  {
+    "code": "L89.9",
+    "title_la": "Ulcus decubitale, non specificatus",
+    "source_line": 29565
+  },
+  {
+    "code": "L90",
+    "title_la": "Atrofički poremećaji kože",
+    "source_line": 2578
+  },
+  {
+    "code": "L90.0",
+    "title_la": "Lichen sclerosus et lichen atrophicus",
+    "source_line": 29571
+  },
+  {
+    "code": "L90.1",
+    "title_la": "Anetodermia Schweninger-Buzzi",
+    "source_line": 29576
+  },
+  {
+    "code": "L90.2",
+    "title_la": "Anetodermia Jadassohn-Pellizzari",
+    "source_line": 29578
+  },
+  {
+    "code": "L90.3",
+    "title_la": "Atrophodermia Pasini and Pierini",
+    "source_line": 29580
+  },
+  {
+    "code": "L90.4",
+    "title_la": "Acrodermatitis chronica atrophicans",
+    "source_line": 29582
+  },
+  {
+    "code": "L90.5",
+    "title_la": "Status cicatriciales et fibrosis cutis",
+    "source_line": 29592
+  },
+  {
+    "code": "L90.6",
+    "title_la": "Striae atrophicae",
+    "source_line": 29600
+  },
+  {
+    "code": "L90.8",
+    "title_la": "Disordines atrophicae cutis, alii",
+    "source_line": 29602
+  },
+  {
+    "code": "L90.9",
+    "title_la": "Disordo atrophicae cutis, non specificatus",
+    "source_line": 29604
+  },
+  {
+    "code": "L91",
+    "title_la": "Hipertrofični poremećaji (uvećanja, zadebljanja) kože",
+    "source_line": 2579
+  },
+  {
+    "code": "L91.0",
+    "title_la": "Cicatrix keloides",
+    "source_line": 29609
+  },
+  {
+    "code": "L91.8",
+    "title_la": "Disordines hypertrophicae cutis alii",
+    "source_line": 29615
+  },
+  {
+    "code": "L91.9",
+    "title_la": "Disordo hypertrophicae cutis, non specificatus",
+    "source_line": 29617
+  },
+  {
+    "code": "L92",
+    "title_la": "Granulomatoza - višestruki zrnasti tumori kože i potkožnog tkiva",
+    "source_line": 2580
+  },
+  {
+    "code": "L92.0",
+    "title_la": "Granuloma annulare",
+    "source_line": 29623
+  },
+  {
+    "code": "L92.1",
+    "title_la": "Necrobiosis lipoidica, non alibi classificata",
+    "source_line": 29626
+  },
+  {
+    "code": "L92.2",
+    "title_la": "Granuloma faciei [eosinophilicum]",
+    "source_line": 29629
+  },
+  {
+    "code": "L92.3",
+    "title_la": "Granuloma cutis et subcutis corpore alieno excitatum",
+    "source_line": 29631
+  },
+  {
+    "code": "L92.8",
+    "title_la": "Cutes et subcutes granulomatosae aliae",
+    "source_line": 29633
+  },
+  {
+    "code": "L92.9",
+    "title_la": "Cutis et subcutis granulomatosa, non specificata",
+    "source_line": 29635
+  },
+  {
+    "code": "L93",
+    "title_la": "Eritemski lupus – sistemsko oboljenje kože",
+    "source_line": 2581
+  },
+  {
+    "code": "L93.0",
+    "title_la": "Lupus erythematosus discoides",
+    "source_line": 29654
+  },
+  {
+    "code": "L93.1",
+    "title_la": "Lupus erythematosus cutaneus subacutas",
+    "source_line": 29657
+  },
+  {
+    "code": "L93.2",
+    "title_la": "Lupus erythematosus alius, localisatus",
+    "source_line": 29659
+  },
+  {
+    "code": "L94",
+    "title_la": "Drugi lokalizovani poremećaji vezivnog tkiva",
+    "source_line": 2582
+  },
+  {
+    "code": "L94.0",
+    "title_la": "Scleroderma (morphea) localisatum",
+    "source_line": 29668
+  },
+  {
+    "code": "L94.1",
+    "title_la": "Scleroderma lineare",
+    "source_line": 29671
+  },
+  {
+    "code": "L94.2",
+    "title_la": "Calcinosis cutis",
+    "source_line": 29674
+  },
+  {
+    "code": "L94.3",
+    "title_la": "Sclerodactylia",
+    "source_line": 29676
+  },
+  {
+    "code": "L94.4",
+    "title_la": "Papulae Gottron",
+    "source_line": 29678
+  },
+  {
+    "code": "L94.5",
+    "title_la": "Poikiloderma vasculare atrophicans",
+    "source_line": 29680
+  },
+  {
+    "code": "L94.6",
+    "title_la": "Ainhum",
+    "source_line": 29682
+  },
+  {
+    "code": "L94.8",
+    "title_la": "Collagenoses localisatae aliae, specificatae",
+    "source_line": 29684
+  },
+  {
+    "code": "L94.9",
+    "title_la": "Collagenosis localisata, non specificata",
+    "source_line": 29686
+  },
+  {
+    "code": "L95",
+    "title_la": "Zapaljenje krvnih sudova ograničeno na kožu, neklasifikovano na drugom mestu",
+    "source_line": 2583
+  },
+  {
+    "code": "L95.0",
+    "title_la": "Vasculitis livedoides",
+    "source_line": 29711
+  },
+  {
+    "code": "L95.1",
+    "title_la": "Erythema elevatum diutinum",
+    "source_line": 29714
+  },
+  {
+    "code": "L95.8",
+    "title_la": "Vasculitis in cute limitata, alius",
+    "source_line": 29716
+  },
+  {
+    "code": "L95.9",
+    "title_la": "Vasculitis in cute limitata, non specificatus",
+    "source_line": 29718
+  },
+  {
+    "code": "L97",
+    "title_la": "Grizlica na nozi neklasifikovana na drugom mestu",
+    "source_line": 2584
+  },
+  {
+    "code": "L98",
+    "title_la": "Drugi poremećaji kože i potkožnog tkiva neklasifikovani na drugom mestu",
+    "source_line": 2585
+  },
+  {
+    "code": "L98.0",
+    "title_la": "Granuloma pyogenes",
+    "source_line": 29731
+  },
+  {
+    "code": "L98.1",
+    "title_la": "Dermatitis factitia",
+    "source_line": 29733
+  },
+  {
+    "code": "L98.2",
+    "title_la": "Dermatosis febrilis neutrophilocytica (Sweet)",
+    "source_line": 29736
+  },
+  {
+    "code": "L98.3",
+    "title_la": "Cellulitis / Phlegmone eosinophilica (Wells)",
+    "source_line": 29738
+  },
+  {
+    "code": "L98.4",
+    "title_la": "Ulcus cutis chronicum, non alibi classificatum",
+    "source_line": 29748
+  },
+  {
+    "code": "L98.5",
+    "title_la": "Mucinosis cutis",
+    "source_line": 29759
+  },
+  {
+    "code": "L98.6",
+    "title_la": "Disordines cutis et subcutis infiltrativi, alii",
+    "source_line": 29765
+  },
+  {
+    "code": "L98.8",
+    "title_la": "Disordines cutis et subcutis specificati, alii",
+    "source_line": 29768
+  },
+  {
+    "code": "L98.9",
+    "title_la": "Disordo cutis et subcutis, non specificatus",
+    "source_line": 29770
+  },
+  {
+    "code": "L99",
+    "title_la": "Drugi poremećaji kože i potkožnog tkiva u bolestima koje su klasifikovane na",
+    "source_line": 2586
+  },
+  {
+    "code": "L99.0",
+    "title_la": "Amyloidosis cutis (E85.-†)",
+    "source_line": 29776
+  },
+  {
+    "code": "L99.8",
+    "title_la": "Disordines cutis et subcutis alii specificati in morbis alibi classificatis",
+    "source_line": 29780
+  }
+]

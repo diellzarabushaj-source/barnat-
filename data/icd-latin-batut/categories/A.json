@@ -1,0 +1,432 @@
+[
+  {
+    "code": "A00",
+    "title_la": "Kolera",
+    "source_line": 1123
+  },
+  {
+    "code": "A01",
+    "title_la": "Tifusna groznica i paratifusna groznica",
+    "source_line": 1124
+  },
+  {
+    "code": "A02",
+    "title_la": "Druge infekcije uzrokovane salmonelama",
+    "source_line": 1125
+  },
+  {
+    "code": "A03",
+    "title_la": "Šigeloza, uzročnik Shigellae",
+    "source_line": 1126
+  },
+  {
+    "code": "A04",
+    "title_la": "Ostale bakterijske crevne infekcije",
+    "source_line": 1127
+  },
+  {
+    "code": "A05",
+    "title_la": "Ostala trovanja hranom uzrokovana bakterijama, neklasifikovana na drugom",
+    "source_line": 1128
+  },
+  {
+    "code": "A06",
+    "title_la": "Amebijaza",
+    "source_line": 1130
+  },
+  {
+    "code": "A07",
+    "title_la": "Ostale crevne infekcije uzrokovane protozoama",
+    "source_line": 1131
+  },
+  {
+    "code": "A08",
+    "title_la": "Crevne infekcije uzrokovane virusima",
+    "source_line": 1132
+  },
+  {
+    "code": "A09",
+    "title_la": "Drugi gastroenteritis i kolitis infektivnog ili neoznačenog porekla",
+    "source_line": 1133
+  },
+  {
+    "code": "A15",
+    "title_la": "Tuberkuloza organa za disanje potvrđena bakteriološki i histološki",
+    "source_line": 1136
+  },
+  {
+    "code": "A16",
+    "title_la": "Tuberkuloza organa za disanje, nepotvrđena bakteriološki i histološki",
+    "source_line": 1137
+  },
+  {
+    "code": "A17",
+    "title_la": "Tuberkuloza nervnog sistema",
+    "source_line": 1138
+  },
+  {
+    "code": "A18",
+    "title_la": "Tuberkuloza drugih organa",
+    "source_line": 1139
+  },
+  {
+    "code": "A19",
+    "title_la": "Rasejana tuberkuloza",
+    "source_line": 1140
+  },
+  {
+    "code": "A20",
+    "title_la": "Kuga",
+    "source_line": 1143
+  },
+  {
+    "code": "A21",
+    "title_la": "Tularemija",
+    "source_line": 1144
+  },
+  {
+    "code": "A22",
+    "title_la": "Antraks [Crni prišt]",
+    "source_line": 1145
+  },
+  {
+    "code": "A23",
+    "title_la": "Bruceloza [Mediteranska groznica]",
+    "source_line": 1146
+  },
+  {
+    "code": "A24",
+    "title_la": "Sakagija i Melioidoza, uzročnik Pseudomonas pseudomallei",
+    "source_line": 1147
+  },
+  {
+    "code": "A25",
+    "title_la": "Groznica posle ujeda miša",
+    "source_line": 1148
+  },
+  {
+    "code": "A26",
+    "title_la": "Erizipeloid – oboljenje slično crvenom vetru",
+    "source_line": 1149
+  },
+  {
+    "code": "A27",
+    "title_la": "Leptospiroza, uzročnik Leptospira interrogans",
+    "source_line": 1150
+  },
+  {
+    "code": "A28",
+    "title_la": "Ostale bakterijske zoonoze, neklasifikovane na drugom mestu",
+    "source_line": 1151
+  },
+  {
+    "code": "A30",
+    "title_la": "Lepra [Hansenova bolest]",
+    "source_line": 1154
+  },
+  {
+    "code": "A31",
+    "title_la": "Ostale bolesti uzrokovane mikobakterijama",
+    "source_line": 1155
+  },
+  {
+    "code": "A32",
+    "title_la": "Listerioza, uzročnik Listeria monocytogenes",
+    "source_line": 1156
+  },
+  {
+    "code": "A33",
+    "title_la": "Tetanus novorođenčeta",
+    "source_line": 1157
+  },
+  {
+    "code": "A34",
+    "title_la": "Porođajni tetanus",
+    "source_line": 1158
+  },
+  {
+    "code": "A35",
+    "title_la": "Drugi tetanus",
+    "source_line": 1159
+  },
+  {
+    "code": "A36",
+    "title_la": "Difterija",
+    "source_line": 1160
+  },
+  {
+    "code": "A37",
+    "title_la": "Veliki kašalj",
+    "source_line": 1161
+  },
+  {
+    "code": "A38",
+    "title_la": "Šarlah",
+    "source_line": 1162
+  },
+  {
+    "code": "A39",
+    "title_la": "Infekcija uzrokovana meningokokom",
+    "source_line": 1163
+  },
+  {
+    "code": "A40",
+    "title_la": "Streptokokna sepsa",
+    "source_line": 1164
+  },
+  {
+    "code": "A41",
+    "title_la": "Ostale sepse",
+    "source_line": 1165
+  },
+  {
+    "code": "A42",
+    "title_la": "Aktinomikoza, uzročnik Actinomyces",
+    "source_line": 1166
+  },
+  {
+    "code": "A43",
+    "title_la": "Nokardioza, uzročnik Nocardia",
+    "source_line": 1173
+  },
+  {
+    "code": "A44",
+    "title_la": "Bartoneloza, uzročnik Bartonella",
+    "source_line": 1174
+  },
+  {
+    "code": "A46",
+    "title_la": "Crveni vetar",
+    "source_line": 1175
+  },
+  {
+    "code": "A48",
+    "title_la": "Druge bakterijske bolesti, neklasifikovane na drugom mestu",
+    "source_line": 1176
+  },
+  {
+    "code": "A49",
+    "title_la": "Bakterijska infekcija neoznačene lokalizacije",
+    "source_line": 1177
+  },
+  {
+    "code": "A50",
+    "title_la": "Urođeni sifilis",
+    "source_line": 1180
+  },
+  {
+    "code": "A51",
+    "title_la": "Sveži sifilis",
+    "source_line": 1181
+  },
+  {
+    "code": "A52",
+    "title_la": "Pozni sifilis",
+    "source_line": 1182
+  },
+  {
+    "code": "A53",
+    "title_la": "Ostali neoznačeni sifilisi",
+    "source_line": 1183
+  },
+  {
+    "code": "A54",
+    "title_la": "Infekcija gonokokom",
+    "source_line": 1184
+  },
+  {
+    "code": "A55",
+    "title_la": "Venerički limfogranulom, uzročnik Chlamydia",
+    "source_line": 1185
+  },
+  {
+    "code": "A56",
+    "title_la": "Ostale polne bolesti uzrokovane hlamidijama",
+    "source_line": 1186
+  },
+  {
+    "code": "A57",
+    "title_la": "Meki šankr",
+    "source_line": 1187
+  },
+  {
+    "code": "A58",
+    "title_la": "Zrnasti tumor prepone",
+    "source_line": 1188
+  },
+  {
+    "code": "A59",
+    "title_la": "Trihomonijaza, uzročnik Trichomonas vaginalis",
+    "source_line": 1189
+  },
+  {
+    "code": "A60",
+    "title_la": "Anogenitalna infekcija uzrokovana virusom herpesa [herpes simplex]",
+    "source_line": 1190
+  },
+  {
+    "code": "A63",
+    "title_la": "Ostale bolesti prenete pretežno polnim odnosom, neklasifikovane na drugom",
+    "source_line": 1191
+  },
+  {
+    "code": "A64",
+    "title_la": "Neoznačena bolest preneta polnim odnosom",
+    "source_line": 1193
+  },
+  {
+    "code": "A65",
+    "title_la": "Sifilis van polnih organa",
+    "source_line": 1196
+  },
+  {
+    "code": "A66",
+    "title_la": "Frambezijaze, uzročnik Treponaema pertenuis",
+    "source_line": 1197
+  },
+  {
+    "code": "A67",
+    "title_la": "Pinta – ljuskasto-pegasto oboljenje kože",
+    "source_line": 1198
+  },
+  {
+    "code": "A68",
+    "title_la": "Povratna groznica",
+    "source_line": 1199
+  },
+  {
+    "code": "A69",
+    "title_la": "Ostale infekcije spirohetama",
+    "source_line": 1200
+  },
+  {
+    "code": "A70",
+    "title_la": "Hlamidijaza, uzročnik Chlamydia psittaci",
+    "source_line": 1203
+  },
+  {
+    "code": "A71",
+    "title_la": "Trahom",
+    "source_line": 1204
+  },
+  {
+    "code": "A74",
+    "title_la": "Ostale hlamidijaze",
+    "source_line": 1205
+  },
+  {
+    "code": "A75",
+    "title_la": "Pegavac [Pegavi tifus] – tifusna groznica koju prenose vaši",
+    "source_line": 1208
+  },
+  {
+    "code": "A77",
+    "title_la": "Osipna groznica koju prenose krpelji",
+    "source_line": 1209
+  },
+  {
+    "code": "A78",
+    "title_la": "Kju-groznica",
+    "source_line": 1210
+  },
+  {
+    "code": "A79",
+    "title_la": "Druge rikecioze",
+    "source_line": 1211
+  },
+  {
+    "code": "A80",
+    "title_la": "Akutna dečja paraliza",
+    "source_line": 1214
+  },
+  {
+    "code": "A81",
+    "title_la": "Infekcije centralnog nervnog sistema sporog toka uzrokovane virusima",
+    "source_line": 1215
+  },
+  {
+    "code": "A82",
+    "title_la": "Besnilo",
+    "source_line": 1216
+  },
+  {
+    "code": "A83",
+    "title_la": "Zapaljenje mozga uzrokovano virusima koje prenose komarci",
+    "source_line": 1217
+  },
+  {
+    "code": "A84",
+    "title_la": "Zapaljenje mozga uzrokovano virusima koje prenose krpelji",
+    "source_line": 1218
+  },
+  {
+    "code": "A85",
+    "title_la": "Ostala zapaljenja mozga uzrokovana virusima, neklasifikovana na drugom mestu",
+    "source_line": 1219
+  },
+  {
+    "code": "A86",
+    "title_la": "Zapaljenje mozga uzrokovano virusima, neoznačeno",
+    "source_line": 1220
+  },
+  {
+    "code": "A87",
+    "title_la": "Zapaljenje moždanica uzrokovano virusima",
+    "source_line": 1221
+  },
+  {
+    "code": "A88",
+    "title_la": "Ostale infekcije centralnog nervnog sistema uzrokovane virusima, neklasifikovane",
+    "source_line": 1228
+  },
+  {
+    "code": "A89",
+    "title_la": "Infekcija centralnog nervnog sistema uzrokovana virusima, neoznačena",
+    "source_line": 1230
+  },
+  {
+    "code": "A90",
+    "title_la": "Denga groznica",
+    "source_line": 1234
+  },
+  {
+    "code": "A91",
+    "title_la": "Hemoragijska denga groznica",
+    "source_line": 1235
+  },
+  {
+    "code": "A92",
+    "title_la": "Ostale groznice uzrokovane virusima koje prenose komarci",
+    "source_line": 1236
+  },
+  {
+    "code": "A93",
+    "title_la": "Ostale groznice uzrokovane virusima koje prenose člankonošci, neklasifikovane na",
+    "source_line": 1237
+  },
+  {
+    "code": "A94",
+    "title_la": "Groznica uzrokovana virusima koje prenose člankonošci, neoznačena",
+    "source_line": 1239
+  },
+  {
+    "code": "A95",
+    "title_la": "Žuta groznica",
+    "source_line": 1240
+  },
+  {
+    "code": "A96",
+    "title_la": "Hemoragijska groznica uzrokovana arenavirusima",
+    "source_line": 1241
+  },
+  {
+    "code": "A98",
+    "title_la": "Ostale hemoragijske groznice uzrokovane virusima, neklasifikovane na drugom",
+    "source_line": 1242
+  },
+  {
+    "code": "A99",
+    "title_la": "Hemoragijska groznica uzrokovana virusom, neoznačena",
+    "source_line": 1244
+  }
+]

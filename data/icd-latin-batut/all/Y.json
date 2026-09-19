@@ -1,0 +1,1952 @@
+[
+  {
+    "code": "Y00",
+    "title_la": "Napad tupim predmetom",
+    "source_line": 4120
+  },
+  {
+    "code": "Y01",
+    "title_la": "Napad guranjem sa visine",
+    "source_line": 4121
+  },
+  {
+    "code": "Y02",
+    "title_la": "Napad guranjem ili stavljanjem žrtve ispred predmeta u pokretu",
+    "source_line": 4122
+  },
+  {
+    "code": "Y03",
+    "title_la": "Napad razbijanjem motornog vozila",
+    "source_line": 4123
+  },
+  {
+    "code": "Y04",
+    "title_la": "Napad primenom telesne snage",
+    "source_line": 4124
+  },
+  {
+    "code": "Y05",
+    "title_la": "Seksualni napad uz primenu telesne snage",
+    "source_line": 4125
+  },
+  {
+    "code": "Y06",
+    "title_la": "Zanemarivanje i napuštanje",
+    "source_line": 4126
+  },
+  {
+    "code": "Y06.0",
+    "title_la": "Od strane supružnika ili partnera",
+    "source_line": 51707
+  },
+  {
+    "code": "Y06.1",
+    "title_la": "Od strane roditelja",
+    "source_line": 51708
+  },
+  {
+    "code": "Y06.2",
+    "title_la": "Od strane poznanika ili prijatelja",
+    "source_line": 51709
+  },
+  {
+    "code": "Y06.8",
+    "title_la": "Od strane drugih označenih osoba",
+    "source_line": 51710
+  },
+  {
+    "code": "Y06.9",
+    "title_la": "Od strane neoznačene osobe",
+    "source_line": 51711
+  },
+  {
+    "code": "Y07",
+    "title_la": "Druga zlostavljanja",
+    "source_line": 4127
+  },
+  {
+    "code": "Y07.0",
+    "title_la": "Od strane supružnika ili partnera",
+    "source_line": 51720
+  },
+  {
+    "code": "Y07.1",
+    "title_la": "Od strane roditelja",
+    "source_line": 51721
+  },
+  {
+    "code": "Y07.2",
+    "title_la": "Od strane poznanika ili prijatelja",
+    "source_line": 51722
+  },
+  {
+    "code": "Y07.3",
+    "title_la": "Od strane zvaničnih autoriteta",
+    "source_line": 51723
+  },
+  {
+    "code": "Y07.8",
+    "title_la": "Od strane drugih označenih osoba",
+    "source_line": 51724
+  },
+  {
+    "code": "Y07.9",
+    "title_la": "Od strane neoznačene osobe",
+    "source_line": 51725
+  },
+  {
+    "code": "Y08",
+    "title_la": "Napad na druge označene načine",
+    "source_line": 4128
+  },
+  {
+    "code": "Y09",
+    "title_la": "Napad na neoznačene načine",
+    "source_line": 4129
+  },
+  {
+    "code": "Y10",
+    "title_la": "Trovanje i izlaganje neopioidnim analgeticima, antipireticima i antireumaticima,",
+    "source_line": 4132
+  },
+  {
+    "code": "Y11",
+    "title_la": "Trovanje i izlaganje antiepilepticima, sedativima-hipnoticima, antiparkinsonicima i",
+    "source_line": 4134
+  },
+  {
+    "code": "Y12",
+    "title_la": "Trovanje i izlaganje narkoticima i psihodislepticima [halucinogenima],",
+    "source_line": 4136
+  },
+  {
+    "code": "Y13",
+    "title_la": "Trovanje i izlaganje drugim lekovima koji deluju na autonomni nervni sistem,",
+    "source_line": 4138
+  },
+  {
+    "code": "Y14",
+    "title_la": "Trovanje i izlaganje drugim i neoznačenim lekovima, preparatima i biološkim",
+    "source_line": 4140
+  },
+  {
+    "code": "Y15",
+    "title_la": "Trovanje i izlaganje alkoholu, neutvrđene namere",
+    "source_line": 4142
+  },
+  {
+    "code": "Y16",
+    "title_la": "Trovanje i izlaganje organskim rastvaračima i halogenskim ugljovodonicima i",
+    "source_line": 4143
+  },
+  {
+    "code": "Y17",
+    "title_la": "Trovanje i izlaganje drugim gasovima i parama, neodređene namere",
+    "source_line": 4145
+  },
+  {
+    "code": "Y18",
+    "title_la": "Trovanje i izlaganje pesticidima, neutvrđene namere",
+    "source_line": 4146
+  },
+  {
+    "code": "Y19",
+    "title_la": "Trovanje i izlaganje drugim i neoznačenim hemikalijama i štetnim supstancama,",
+    "source_line": 4147
+  },
+  {
+    "code": "Y20",
+    "title_la": "Vešanje, davljenje i gušenje, neodređene namere",
+    "source_line": 4149
+  },
+  {
+    "code": "Y21",
+    "title_la": "Davljenje i potapanje, neodređene namere",
+    "source_line": 4150
+  },
+  {
+    "code": "Y22",
+    "title_la": "Opaljivanje iz pištolja, neodređene namere",
+    "source_line": 4151
+  },
+  {
+    "code": "Y23",
+    "title_la": "Opaljivanje iz puške, sačmare i većeg vatrenog oružja, neodređene namere",
+    "source_line": 4152
+  },
+  {
+    "code": "Y24",
+    "title_la": "Opaljivanje iz drugog i neoznačenog vatrenog oružja, neodređene namere",
+    "source_line": 4153
+  },
+  {
+    "code": "Y25",
+    "title_la": "Kontakt sa eksplozivnim materijalom, neodređene namere",
+    "source_line": 4154
+  },
+  {
+    "code": "Y26",
+    "title_la": "Izlaganje dimu, vatri i plamenu, neodređene namere",
+    "source_line": 4155
+  },
+  {
+    "code": "Y27",
+    "title_la": "Kontakt sa vodenom parom, vrelim parama i vrelim predmetima, neodređene",
+    "source_line": 4156
+  },
+  {
+    "code": "Y28",
+    "title_la": "Kontakt sa oštrim predmetom, neodređene namere",
+    "source_line": 4158
+  },
+  {
+    "code": "Y29",
+    "title_la": "Kontakt sa tupim predmetom, neodređene namere",
+    "source_line": 4159
+  },
+  {
+    "code": "Y30",
+    "title_la": "Padanje, skakanje ili guranje sa visine, neodređene namere",
+    "source_line": 4160
+  },
+  {
+    "code": "Y31",
+    "title_la": "Padanje, ležanje ili trčanje ispred ili prema predmetu koji je u pokretu, neodređene",
+    "source_line": 4161
+  },
+  {
+    "code": "Y32",
+    "title_la": "Razbijanje motornog vozila, neodređene namere",
+    "source_line": 4163
+  },
+  {
+    "code": "Y33",
+    "title_la": "Drugi označeni događaji, neodređene namere",
+    "source_line": 4164
+  },
+  {
+    "code": "Y34",
+    "title_la": "Neoznačeni događaj, neodređene namere",
+    "source_line": 4165
+  },
+  {
+    "code": "Y35",
+    "title_la": "Zakonska intervencija",
+    "source_line": 4173
+  },
+  {
+    "code": "Y35.0",
+    "title_la": "Zakonska intervencija koja uključuje opaljivanje iz vatrenog oružja",
+    "source_line": 51912
+  },
+  {
+    "code": "Y35.1",
+    "title_la": "Zakonska intervencija koja uključuje primenu eksploziva",
+    "source_line": 51917
+  },
+  {
+    "code": "Y35.2",
+    "title_la": "Zakonska intervencija koja uključuje primenu gasa",
+    "source_line": 51923
+  },
+  {
+    "code": "Y35.3",
+    "title_la": "Zakonska intervencija koja uključuje primenu tupih predmeta",
+    "source_line": 51927
+  },
+  {
+    "code": "Y35.4",
+    "title_la": "Zakonska intervencija koja uključuje primenu oštrih predmeta",
+    "source_line": 51933
+  },
+  {
+    "code": "Y35.5",
+    "title_la": "Zakonska egzekucija",
+    "source_line": 51937
+  },
+  {
+    "code": "Y35.6",
+    "title_la": "Zakonska intervencija koja uključuje druga označena sredstva",
+    "source_line": 51947
+  },
+  {
+    "code": "Y35.7",
+    "title_la": "Zakonska intervencija, sredstvo neoznačeno",
+    "source_line": 51949
+  },
+  {
+    "code": "Y36",
+    "title_la": "Ratne operacije",
+    "source_line": 4174
+  },
+  {
+    "code": "Y36.0",
+    "title_la": "Ratne operacije koje uključuju eksploziju pomorskog oružja",
+    "source_line": 51962
+  },
+  {
+    "code": "Y36.1",
+    "title_la": "Ratne operacije koje uključuju razaranje letelice",
+    "source_line": 51969
+  },
+  {
+    "code": "Y36.2",
+    "title_la": "Ratne operacije koje uključuju druge eksplozije i fragmente",
+    "source_line": 51975
+  },
+  {
+    "code": "Y36.3",
+    "title_la": "Ratne operacije koje uključuju primenu vatre, velikih požara i zapaljivih materija",
+    "source_line": 51993
+  },
+  {
+    "code": "Y36.4",
+    "title_la": "Ratne operacije koje uključuju opaljivanje iz vatrenog oružja i druge oblike",
+    "source_line": 52000
+  },
+  {
+    "code": "Y36.5",
+    "title_la": "Ratne operacije koje uključuju nuklearno oružje",
+    "source_line": 52020
+  },
+  {
+    "code": "Y36.6",
+    "title_la": "Ratne operacije koje uključuju biološko oružje",
+    "source_line": 52026
+  },
+  {
+    "code": "Y36.7",
+    "title_la": "Ratne operacije koje uključuju hemijska oružja i druge oblike nekonvencionalnog",
+    "source_line": 52027
+  },
+  {
+    "code": "Y36.8",
+    "title_la": "Ratne operacije koje su se desile posle prestanka neprijateljstva",
+    "source_line": 52031
+  },
+  {
+    "code": "Y36.9",
+    "title_la": "Ratne operacije, neoznačene",
+    "source_line": 52036
+  },
+  {
+    "code": "Y40",
+    "title_la": "Antibiotici koji deluju na pojedine sisteme",
+    "source_line": 4180
+  },
+  {
+    "code": "Y40.0",
+    "title_la": "Penicilini",
+    "source_line": 52065
+  },
+  {
+    "code": "Y40.1",
+    "title_la": "Cefalosporini i drugi beta-laktamski antibiotici",
+    "source_line": 52066
+  },
+  {
+    "code": "Y40.2",
+    "title_la": "Grupa hloramfenikola",
+    "source_line": 52067
+  },
+  {
+    "code": "Y40.3",
+    "title_la": "Makrolidi",
+    "source_line": 52068
+  },
+  {
+    "code": "Y40.4",
+    "title_la": "Tetraciklini",
+    "source_line": 52069
+  },
+  {
+    "code": "Y40.5",
+    "title_la": "Aminoglikozidi",
+    "source_line": 52077
+  },
+  {
+    "code": "Y40.6",
+    "title_la": "Rifamicini",
+    "source_line": 52079
+  },
+  {
+    "code": "Y40.7",
+    "title_la": "Antifungicidni antibiotici, primenjeni sistemski",
+    "source_line": 52080
+  },
+  {
+    "code": "Y40.8",
+    "title_la": "Drugi antibiotici koji deluju na pojedine sisteme",
+    "source_line": 52081
+  },
+  {
+    "code": "Y40.9",
+    "title_la": "Antibiotik koji deluje na pojedine sisteme, neoznačen",
+    "source_line": 52082
+  },
+  {
+    "code": "Y41",
+    "title_la": "Drugi antiinfektivni i antiparazitarni lekovi koji deluju na pojedine sisteme",
+    "source_line": 4181
+  },
+  {
+    "code": "Y41.0",
+    "title_la": "Sulfonamidi",
+    "source_line": 52086
+  },
+  {
+    "code": "Y41.1",
+    "title_la": "Antimikobakterijski lekovi",
+    "source_line": 52087
+  },
+  {
+    "code": "Y41.2",
+    "title_la": "Antimalarici i lekovi koji deluju na druge protozoe u krvi",
+    "source_line": 52090
+  },
+  {
+    "code": "Y41.3",
+    "title_la": "Drugi lekovi koji deluju protiv protozoa",
+    "source_line": 52092
+  },
+  {
+    "code": "Y41.4",
+    "title_la": "Antihelmintici",
+    "source_line": 52093
+  },
+  {
+    "code": "Y41.5",
+    "title_la": "Antivirusni lekovi",
+    "source_line": 52094
+  },
+  {
+    "code": "Y41.8",
+    "title_la": "Druga označena antiinfektivna i antiparazitarna sredstva koja deluju na sisteme",
+    "source_line": 52097
+  },
+  {
+    "code": "Y41.9",
+    "title_la": "Antiinfektivna i antiparazitarna sredstva koja deluju na sisteme, neoznačena",
+    "source_line": 52100
+  },
+  {
+    "code": "Y42",
+    "title_la": "Hormoni i njihove sintetičke zamene i antagonisti, neklasifikovani na drugom",
+    "source_line": 4182
+  },
+  {
+    "code": "Y42.0",
+    "title_la": "Glikokortikoidi i sintetički analozi",
+    "source_line": 52107
+  },
+  {
+    "code": "Y42.1",
+    "title_la": "Tireoidni hormoni i njihove zamene",
+    "source_line": 52109
+  },
+  {
+    "code": "Y42.2",
+    "title_la": "Antitireoidni lekovi",
+    "source_line": 52110
+  },
+  {
+    "code": "Y42.3",
+    "title_la": "Insulin i oralni hipoglikemijski lekovi [antidijabetici]",
+    "source_line": 52111
+  },
+  {
+    "code": "Y42.4",
+    "title_la": "Kontraceptivna sredstva za oralnu primenu",
+    "source_line": 52112
+  },
+  {
+    "code": "Y42.5",
+    "title_la": "Drugi estrogeni i progesteroni",
+    "source_line": 52114
+  },
+  {
+    "code": "Y42.6",
+    "title_la": "Antigonadotropini, antiestrogeni, antiandrogeni, neklasifikovani na drugom mestu",
+    "source_line": 52116
+  },
+  {
+    "code": "Y42.7",
+    "title_la": "Androgeni i drugi anabolici",
+    "source_line": 52118
+  },
+  {
+    "code": "Y42.8",
+    "title_la": "Drugi i neoznačeni hormoni i njihove sintetičke zamene",
+    "source_line": 52119
+  },
+  {
+    "code": "Y42.9",
+    "title_la": "Drugi i neoznačeni antagonisti hormona",
+    "source_line": 52121
+  },
+  {
+    "code": "Y43",
+    "title_la": "Sredstva koja deluju primarno sistemski",
+    "source_line": 4184
+  },
+  {
+    "code": "Y43.0",
+    "title_la": "Antialergijski i antiemetički lekovi",
+    "source_line": 52132
+  },
+  {
+    "code": "Y43.1",
+    "title_la": "Antimetaboliti za lečenje neoplazmi",
+    "source_line": 52134
+  },
+  {
+    "code": "Y43.2",
+    "title_la": "Prirodni proizvodi za lečenje neoplazmi",
+    "source_line": 52136
+  },
+  {
+    "code": "Y43.3",
+    "title_la": "Drugi lekovi za lečenje neoplazmi",
+    "source_line": 52137
+  },
+  {
+    "code": "Y43.4",
+    "title_la": "Imunosupresivna sredstva",
+    "source_line": 52140
+  },
+  {
+    "code": "Y43.5",
+    "title_la": "Acidifikantna i alkalizantna sredstva",
+    "source_line": 52141
+  },
+  {
+    "code": "Y43.6",
+    "title_la": "Enzimi, neklasifikovani na drugom mestu",
+    "source_line": 52142
+  },
+  {
+    "code": "Y43.8",
+    "title_la": "Druga sredstva koja deluju primarno sistemski, neklasifikovana na drugom mestu",
+    "source_line": 52143
+  },
+  {
+    "code": "Y43.9",
+    "title_la": "Sredstvo koje deluje primarno sistemski, neoznačeno",
+    "source_line": 52145
+  },
+  {
+    "code": "Y44",
+    "title_la": "Sredstva koja primarno deluju na sastojke krvi",
+    "source_line": 4185
+  },
+  {
+    "code": "Y44.0",
+    "title_la": "Preparati gvožđa i drugi preparati koji deluju protiv hipohromne anemije",
+    "source_line": 52148
+  },
+  {
+    "code": "Y44.1",
+    "title_la": "Vitamin B12, folna kiselina i drugi preparati koji deluju protiv magaloblastne anemije",
+    "source_line": 52149
+  },
+  {
+    "code": "Y44.2",
+    "title_la": "Antikoagulansi",
+    "source_line": 52150
+  },
+  {
+    "code": "Y44.3",
+    "title_la": "Antagonisti antikoagulanata, vitamin K i drugi koagulansi",
+    "source_line": 52151
+  },
+  {
+    "code": "Y44.4",
+    "title_la": "Antitrombocitni lekovi [inhibitori agregacije trombocita]",
+    "source_line": 52152
+  },
+  {
+    "code": "Y44.5",
+    "title_la": "Trombolitički lekovi",
+    "source_line": 52155
+  },
+  {
+    "code": "Y44.6",
+    "title_la": "Prirodna krv i produkti krvi",
+    "source_line": 52156
+  },
+  {
+    "code": "Y44.7",
+    "title_la": "Zamene plazme",
+    "source_line": 52158
+  },
+  {
+    "code": "Y44.9",
+    "title_la": "Druga i neoznačena sredstva koja deluju na sastojke krvi",
+    "source_line": 52159
+  },
+  {
+    "code": "Y45",
+    "title_la": "Analgetici, antipiretici i antiinflamatorni lekovi",
+    "source_line": 4186
+  },
+  {
+    "code": "Y45.0",
+    "title_la": "Opiodi i srodni analgetici",
+    "source_line": 52162
+  },
+  {
+    "code": "Y45.1",
+    "title_la": "Salicilati",
+    "source_line": 52163
+  },
+  {
+    "code": "Y45.2",
+    "title_la": "Derivati propionske kiseline",
+    "source_line": 52164
+  },
+  {
+    "code": "Y45.3",
+    "title_la": "Drugi nesteroidni antiinflamatorni lekovi [NSAIL]",
+    "source_line": 52166
+  },
+  {
+    "code": "Y45.4",
+    "title_la": "Antireumatici",
+    "source_line": 52167
+  },
+  {
+    "code": "Y45.5",
+    "title_la": "Derivati 4-aminofenola",
+    "source_line": 52171
+  },
+  {
+    "code": "Y45.8",
+    "title_la": "Drugi analgetici i antipiretici",
+    "source_line": 52172
+  },
+  {
+    "code": "Y45.9",
+    "title_la": "Analgetik, antipiretik i drugi antiinflamatorni lek, neoznačen",
+    "source_line": 52173
+  },
+  {
+    "code": "Y46",
+    "title_la": "Antiepileptici i antiparkisonični lekovi",
+    "source_line": 4187
+  },
+  {
+    "code": "Y46.0",
+    "title_la": "Sukcinimidi",
+    "source_line": 52187
+  },
+  {
+    "code": "Y46.1",
+    "title_la": "Oksazolidinedioni",
+    "source_line": 52188
+  },
+  {
+    "code": "Y46.2",
+    "title_la": "Derivati hidantoina",
+    "source_line": 52189
+  },
+  {
+    "code": "Y46.3",
+    "title_la": "Deoksibarbiturati",
+    "source_line": 52190
+  },
+  {
+    "code": "Y46.4",
+    "title_la": "Iminostilbeni",
+    "source_line": 52191
+  },
+  {
+    "code": "Y46.5",
+    "title_la": "Valproička kiselina",
+    "source_line": 52193
+  },
+  {
+    "code": "Y46.6",
+    "title_la": "Drugi i neoznačeni antiepileptici",
+    "source_line": 52194
+  },
+  {
+    "code": "Y46.7",
+    "title_la": "Antiparkisonični lekovi",
+    "source_line": 52195
+  },
+  {
+    "code": "Y46.8",
+    "title_la": "Antispazmolitički lekovi",
+    "source_line": 52197
+  },
+  {
+    "code": "Y47",
+    "title_la": "Sedativi, hipnotici i anksiolitici",
+    "source_line": 4188
+  },
+  {
+    "code": "Y47.0",
+    "title_la": "Barbiturati, neklasifikovani na drugom mestu",
+    "source_line": 52201
+  },
+  {
+    "code": "Y47.1",
+    "title_la": "Benzodiazepini",
+    "source_line": 52204
+  },
+  {
+    "code": "Y47.2",
+    "title_la": "Derivati hlorala",
+    "source_line": 52205
+  },
+  {
+    "code": "Y47.3",
+    "title_la": "Paraldehid",
+    "source_line": 52206
+  },
+  {
+    "code": "Y47.4",
+    "title_la": "Jedinjenja broma",
+    "source_line": 52207
+  },
+  {
+    "code": "Y47.5",
+    "title_la": "Mešavine sedativa i hipnotika, neklasifikovane na drugom mestu",
+    "source_line": 52208
+  },
+  {
+    "code": "Y47.8",
+    "title_la": "Drugi sedativi, hipnotici i anksiolitici",
+    "source_line": 52209
+  },
+  {
+    "code": "Y47.9",
+    "title_la": "Sedativ, hipnotik i anksiolitik, neoznačen",
+    "source_line": 52211
+  },
+  {
+    "code": "Y48",
+    "title_la": "Anestetici i terapijski gasovi",
+    "source_line": 4189
+  },
+  {
+    "code": "Y48.0",
+    "title_la": "Inhalacioni anestetici",
+    "source_line": 52219
+  },
+  {
+    "code": "Y48.1",
+    "title_la": "Parenteralni anestetici",
+    "source_line": 52220
+  },
+  {
+    "code": "Y48.2",
+    "title_la": "Drugi i neoznačeni opšti anestetici",
+    "source_line": 52222
+  },
+  {
+    "code": "Y48.3",
+    "title_la": "Lokalni anestetici",
+    "source_line": 52223
+  },
+  {
+    "code": "Y48.4",
+    "title_la": "Anestetik, neoznačen",
+    "source_line": 52224
+  },
+  {
+    "code": "Y48.5",
+    "title_la": "Terapijski gasovi",
+    "source_line": 52225
+  },
+  {
+    "code": "Y49",
+    "title_la": "Psihotropni lekovi, neklasifikovani na drugom mestu",
+    "source_line": 4190
+  },
+  {
+    "code": "Y49.0",
+    "title_la": "Triciklični i tetraciklični antidepresivi",
+    "source_line": 52241
+  },
+  {
+    "code": "Y49.1",
+    "title_la": "Inhibitori monoamino-oksidaze antidepresivi",
+    "source_line": 52242
+  },
+  {
+    "code": "Y49.2",
+    "title_la": "Drugi i neoznačeni antidepresivi",
+    "source_line": 52243
+  },
+  {
+    "code": "Y49.3",
+    "title_la": "Fenotiazinski antipsihotici i neuroleptici",
+    "source_line": 52244
+  },
+  {
+    "code": "Y49.4",
+    "title_la": "Butirofenonski i tioksantenski neuroleptici",
+    "source_line": 52245
+  },
+  {
+    "code": "Y49.5",
+    "title_la": "Drugi antipsihotici i neuroleptici",
+    "source_line": 52246
+  },
+  {
+    "code": "Y49.6",
+    "title_la": "Psihodisleptici [halucinogeni]",
+    "source_line": 52248
+  },
+  {
+    "code": "Y49.7",
+    "title_la": "Psihostimulansi sa sposobnošću stvaranja zavisnosti",
+    "source_line": 52249
+  },
+  {
+    "code": "Y49.8",
+    "title_la": "Drugi psihotropni lekovi, neklasifikovani na drugom mestu",
+    "source_line": 52250
+  },
+  {
+    "code": "Y49.9",
+    "title_la": "Psihotropni lek, neoznačen",
+    "source_line": 52251
+  },
+  {
+    "code": "Y50",
+    "title_la": "Stimulatori centralnog nervnog sistema, neklasifikovani na drugom mestu",
+    "source_line": 4191
+  },
+  {
+    "code": "Y50.0",
+    "title_la": "Analeptici",
+    "source_line": 52254
+  },
+  {
+    "code": "Y50.1",
+    "title_la": "Antagonisti opioidnih receptora",
+    "source_line": 52255
+  },
+  {
+    "code": "Y50.2",
+    "title_la": "Metilksantini, neklasifikovani na drugom mestu",
+    "source_line": 52256
+  },
+  {
+    "code": "Y50.8",
+    "title_la": "Drugi stimulatori centralnog nervnog sistema",
+    "source_line": 52261
+  },
+  {
+    "code": "Y50.9",
+    "title_la": "Stimulator centralnog nervnog sistema, neoznačen",
+    "source_line": 52262
+  },
+  {
+    "code": "Y51",
+    "title_la": "Lekovi koji primarno deluju na autonomni nervni sistem",
+    "source_line": 4192
+  },
+  {
+    "code": "Y51.0",
+    "title_la": "Antiholinesterazna sredstva",
+    "source_line": 52265
+  },
+  {
+    "code": "Y51.1",
+    "title_la": "Drugi parasimpatikomimetici [holinergici]",
+    "source_line": 52266
+  },
+  {
+    "code": "Y51.2",
+    "title_la": "Ganglijski blokatori, neklasifikovani na drugom mestu",
+    "source_line": 52267
+  },
+  {
+    "code": "Y51.3",
+    "title_la": "Drugi parasimpatikolitici [antiholinergici i antimuskarinici] i spazmolitici,",
+    "source_line": 52268
+  },
+  {
+    "code": "Y51.4",
+    "title_la": "Pretežno alfa-adrenoreceptorski agonisti, neklasifikovani na drugom mestu",
+    "source_line": 52271
+  },
+  {
+    "code": "Y51.5",
+    "title_la": "Pretežno beta-adrenoreceptorski agonisti, neklasifikovani na drugom mestu",
+    "source_line": 52273
+  },
+  {
+    "code": "Y51.6",
+    "title_la": "Antagonisti alfa-adrenoreceptora, neklasifikovani na drugom mestu",
+    "source_line": 52275
+  },
+  {
+    "code": "Y51.7",
+    "title_la": "Antagonisti beta-adrenoreceptora, neklasifikovani na drugom mestu",
+    "source_line": 52277
+  },
+  {
+    "code": "Y51.8",
+    "title_la": "Sredstva koja deluju centralno i blokatori adrenergičkih neurona, neklasifikovani na",
+    "source_line": 52278
+  },
+  {
+    "code": "Y51.9",
+    "title_la": "Drugi i neoznačeni lekovi koji primarno deluju na autonomni nervni sistem",
+    "source_line": 52288
+  },
+  {
+    "code": "Y52",
+    "title_la": "Sredstva koja primarno deluju na kardiovaskularni sistem",
+    "source_line": 4193
+  },
+  {
+    "code": "Y52.0",
+    "title_la": "Glikozidi koji stimulišu srce i lekovi sličnog delovanja",
+    "source_line": 52293
+  },
+  {
+    "code": "Y52.1",
+    "title_la": "Blokatori kalcijumskih kanala",
+    "source_line": 52294
+  },
+  {
+    "code": "Y52.2",
+    "title_la": "Drugi antiaritmički lekovi, neklasifikovani na drugom mestu",
+    "source_line": 52295
+  },
+  {
+    "code": "Y52.3",
+    "title_la": "Koronarni vazodilatatori, neklasifikovani na drugom mestu",
+    "source_line": 52297
+  },
+  {
+    "code": "Y52.4",
+    "title_la": "Inhibitori angiotenzin-konvertujućeg enzima",
+    "source_line": 52301
+  },
+  {
+    "code": "Y52.5",
+    "title_la": "Drugi antihipertenzivni lekovi, neklasifikovani na drugom mestu",
+    "source_line": 52302
+  },
+  {
+    "code": "Y52.6",
+    "title_la": "Lekovi koji deluju protiv hiperlipidemije i arterioskleroze",
+    "source_line": 52309
+  },
+  {
+    "code": "Y52.7",
+    "title_la": "Periferni vazodilatatori",
+    "source_line": 52310
+  },
+  {
+    "code": "Y52.8",
+    "title_la": "Antivarikozni lekovi, uključujući sklerozirajuća sredstva",
+    "source_line": 52313
+  },
+  {
+    "code": "Y52.9",
+    "title_la": "Druga i neoznačena sredstva koja primarno deluju na kardiovaskularni sistem",
+    "source_line": 52314
+  },
+  {
+    "code": "Y53",
+    "title_la": "Sredstva koja primarno deluju na gastrointestinalni sistem",
+    "source_line": 4194
+  },
+  {
+    "code": "Y53.0",
+    "title_la": "Antagonisti histaminskih H2- receptora",
+    "source_line": 52317
+  },
+  {
+    "code": "Y53.1",
+    "title_la": "Drugi antacidi i lekovi koji deluju protiv sekrecije želuca",
+    "source_line": 52318
+  },
+  {
+    "code": "Y53.2",
+    "title_la": "Stimulantni laksativi",
+    "source_line": 52319
+  },
+  {
+    "code": "Y53.3",
+    "title_la": "Soni i osmotski laksativi",
+    "source_line": 52320
+  },
+  {
+    "code": "Y53.4",
+    "title_la": "Drugi laksativi",
+    "source_line": 52321
+  },
+  {
+    "code": "Y53.5",
+    "title_la": "Digestivi",
+    "source_line": 52323
+  },
+  {
+    "code": "Y53.6",
+    "title_la": "Lekovi protiv proliva",
+    "source_line": 52324
+  },
+  {
+    "code": "Y53.7",
+    "title_la": "Emetici",
+    "source_line": 52326
+  },
+  {
+    "code": "Y53.8",
+    "title_la": "Druga sredstva koja primarno deluju na gastrointestinalni sistem",
+    "source_line": 52327
+  },
+  {
+    "code": "Y53.9",
+    "title_la": "Sredstvo koje primarno deluje na gastrointestinalni sistem, neoznačeno",
+    "source_line": 52328
+  },
+  {
+    "code": "Y54",
+    "title_la": "Sredstva koja primarno deluju na ravnotežu vode i minerala i metabolizam",
+    "source_line": 4195
+  },
+  {
+    "code": "Y54.0",
+    "title_la": "Mineralokortikoidi",
+    "source_line": 52332
+  },
+  {
+    "code": "Y54.1",
+    "title_la": "Antagonisti mineralokortikoida [antagonisti aldosterona]",
+    "source_line": 52333
+  },
+  {
+    "code": "Y54.2",
+    "title_la": "Inhibitori karboanhidraze",
+    "source_line": 52334
+  },
+  {
+    "code": "Y54.3",
+    "title_la": "Derivati benzotiadiazina",
+    "source_line": 52342
+  },
+  {
+    "code": "Y54.4",
+    "title_la": "Diuretici sa brzim i snažnim delovanjem",
+    "source_line": 52343
+  },
+  {
+    "code": "Y54.5",
+    "title_la": "Drugi diuretici",
+    "source_line": 52344
+  },
+  {
+    "code": "Y54.6",
+    "title_la": "Elektrolitici, kalorici i sredstva koja deluju na ravnotežu vode",
+    "source_line": 52345
+  },
+  {
+    "code": "Y54.7",
+    "title_la": "Sredstva koja deluju na kalcifikaciju",
+    "source_line": 52347
+  },
+  {
+    "code": "Y54.8",
+    "title_la": "Sredstva koja deluju na metabolizam mokraćne kiseline",
+    "source_line": 52350
+  },
+  {
+    "code": "Y54.9",
+    "title_la": "Mineralne soli, neklasifikovane na drugom mestu",
+    "source_line": 52351
+  },
+  {
+    "code": "Y55",
+    "title_la": "Sredstva koja primarno deluju na glatke i skeletne mišiće i na respiratorni sistem",
+    "source_line": 4197
+  },
+  {
+    "code": "Y55.0",
+    "title_la": "Oksitocički lekovi",
+    "source_line": 52355
+  },
+  {
+    "code": "Y55.1",
+    "title_la": "Relaksanti skeletnih mišića [nervno-mišićni blokatori]",
+    "source_line": 52358
+  },
+  {
+    "code": "Y55.2",
+    "title_la": "Druga i neoznačena sredstva koja primarno deluju na mišiće",
+    "source_line": 52360
+  },
+  {
+    "code": "Y55.3",
+    "title_la": "Antitusici",
+    "source_line": 52361
+  },
+  {
+    "code": "Y55.4",
+    "title_la": "Ekspektoransi",
+    "source_line": 52362
+  },
+  {
+    "code": "Y55.5",
+    "title_la": "Lekovi protiv prehlade",
+    "source_line": 52363
+  },
+  {
+    "code": "Y55.6",
+    "title_la": "Antiasmatici, neklasifikovani na drugom mestu",
+    "source_line": 52364
+  },
+  {
+    "code": "Y55.7",
+    "title_la": "Druga i neoznačena sredstva koja primarno deluju na respiratorni sistem",
+    "source_line": 52371
+  },
+  {
+    "code": "Y56",
+    "title_la": "Lokalna sredstva koja primarno deluju na kožu i sluznicu i lekovi za lečenje oka,",
+    "source_line": 4198
+  },
+  {
+    "code": "Y56.0",
+    "title_la": "Lokalni antifungicidi, antiinfektivni i antiinflamatorni lekovi, neklasifikovani na",
+    "source_line": 52376
+  },
+  {
+    "code": "Y56.1",
+    "title_la": "Antipruritici",
+    "source_line": 52378
+  },
+  {
+    "code": "Y56.2",
+    "title_la": "Lokalni astrigenti i lokalni deterdženti",
+    "source_line": 52379
+  },
+  {
+    "code": "Y56.3",
+    "title_la": "Sredstva za omekšavanje (emolijencije, demulcencije) i zaštitu",
+    "source_line": 52380
+  },
+  {
+    "code": "Y56.4",
+    "title_la": "Keratolitici, keratoplastici i drugi lekovi i preparati koji deluju na dlaku",
+    "source_line": 52381
+  },
+  {
+    "code": "Y56.5",
+    "title_la": "Oftalmološki lekovi i preparati",
+    "source_line": 52382
+  },
+  {
+    "code": "Y56.6",
+    "title_la": "Otorinolaringološki lekovi i preparati",
+    "source_line": 52383
+  },
+  {
+    "code": "Y56.7",
+    "title_la": "Stomatološki lekovi koji se primenjuju lokalno",
+    "source_line": 52384
+  },
+  {
+    "code": "Y56.8",
+    "title_la": "Druga sredstva koja se primenjuju lokalno",
+    "source_line": 52385
+  },
+  {
+    "code": "Y56.9",
+    "title_la": "Lokalno sredstvo, neoznačeno",
+    "source_line": 52387
+  },
+  {
+    "code": "Y57",
+    "title_la": "Drugi i neoznačeni lekovi i medikamenti",
+    "source_line": 4200
+  },
+  {
+    "code": "Y57.0",
+    "title_la": "Sredstva koja smanjuju apetit [anorektici]",
+    "source_line": 52397
+  },
+  {
+    "code": "Y57.1",
+    "title_la": "Lipotropni lekovi",
+    "source_line": 52398
+  },
+  {
+    "code": "Y57.2",
+    "title_la": "Antidoti i helirajući agensi, neklasifikovani na drugom mestu",
+    "source_line": 52399
+  },
+  {
+    "code": "Y57.3",
+    "title_la": "Sredstva koja izazivaju odbojnost prema alkoholu",
+    "source_line": 52400
+  },
+  {
+    "code": "Y57.4",
+    "title_la": "Farmaceutski ekscipijenti",
+    "source_line": 52401
+  },
+  {
+    "code": "Y57.5",
+    "title_la": "Kontrastna sredstva za X-zračenje",
+    "source_line": 52402
+  },
+  {
+    "code": "Y57.6",
+    "title_la": "Druga dijagnostička sredstva",
+    "source_line": 52403
+  },
+  {
+    "code": "Y57.7",
+    "title_la": "Vitamini, neklasifikovani na drugom mestu",
+    "source_line": 52404
+  },
+  {
+    "code": "Y57.8",
+    "title_la": "Drugi lekovi i preparati",
+    "source_line": 52409
+  },
+  {
+    "code": "Y57.9",
+    "title_la": "Lek ili preparat, neoznačen",
+    "source_line": 52410
+  },
+  {
+    "code": "Y58",
+    "title_la": "Vakcine protiv bakterija",
+    "source_line": 4201
+  },
+  {
+    "code": "Y58.0",
+    "title_la": "BCG vakcina",
+    "source_line": 52413
+  },
+  {
+    "code": "Y58.1",
+    "title_la": "Vakcina protiv trbušnog tifusa i paratifusa",
+    "source_line": 52414
+  },
+  {
+    "code": "Y58.2",
+    "title_la": "Vakcina protiv kolere",
+    "source_line": 52415
+  },
+  {
+    "code": "Y58.3",
+    "title_la": "Vakcina protiv kuge",
+    "source_line": 52416
+  },
+  {
+    "code": "Y58.4",
+    "title_la": "Vakcina protiv tetanusa",
+    "source_line": 52417
+  },
+  {
+    "code": "Y58.5",
+    "title_la": "Vakcina protiv difterije",
+    "source_line": 52418
+  },
+  {
+    "code": "Y58.6",
+    "title_la": "Vakcina protiv pertusisa, uključujući i kombinacije sa komponentama pertusisa",
+    "source_line": 52419
+  },
+  {
+    "code": "Y58.8",
+    "title_la": "Mešane bakterijske vakcine, izuzev kombinovanih vakcina sa komponentom",
+    "source_line": 52420
+  },
+  {
+    "code": "Y58.9",
+    "title_la": "Druge i neoznačene bakterijske vakcine",
+    "source_line": 52422
+  },
+  {
+    "code": "Y59",
+    "title_la": "Druge i neoznačene vakcine i biološke supstance",
+    "source_line": 4202
+  },
+  {
+    "code": "Y59.0",
+    "title_la": "Vakcine protiv virusa",
+    "source_line": 52425
+  },
+  {
+    "code": "Y59.1",
+    "title_la": "Vakcine protiv rikecija",
+    "source_line": 52426
+  },
+  {
+    "code": "Y59.2",
+    "title_la": "Vakcine protiv protozoa",
+    "source_line": 52427
+  },
+  {
+    "code": "Y59.3",
+    "title_la": "Imunoglobulin",
+    "source_line": 52428
+  },
+  {
+    "code": "Y59.8",
+    "title_la": "Druge označene vakcine i biološke supstance",
+    "source_line": 52429
+  },
+  {
+    "code": "Y59.9",
+    "title_la": "Vakcina ili biološka supstanca, neoznačena",
+    "source_line": 52430
+  },
+  {
+    "code": "Y60",
+    "title_la": "Nenamerno uzrokovana posekotina, ubod, perforacija ili krvarenje u toku hirurškog",
+    "source_line": 4206
+  },
+  {
+    "code": "Y60.0",
+    "title_la": "U toku hirurškog zahvata",
+    "source_line": 52448
+  },
+  {
+    "code": "Y60.1",
+    "title_la": "U toku davanja infuzije ili transfuzije",
+    "source_line": 52449
+  },
+  {
+    "code": "Y60.2",
+    "title_la": "U toku dijalize bubrega ili drugih perfuzija",
+    "source_line": 52450
+  },
+  {
+    "code": "Y60.3",
+    "title_la": "U toku davanja injekcija ili imunizacije",
+    "source_line": 52451
+  },
+  {
+    "code": "Y60.4",
+    "title_la": "U toku endoskopskog pregleda",
+    "source_line": 52452
+  },
+  {
+    "code": "Y60.5",
+    "title_la": "U toku kateterizacije srca",
+    "source_line": 52453
+  },
+  {
+    "code": "Y60.6",
+    "title_la": "U toku aspiracije, punkcije i drugih kateterizacija",
+    "source_line": 52454
+  },
+  {
+    "code": "Y60.7",
+    "title_la": "U toku davanja klistira",
+    "source_line": 52455
+  },
+  {
+    "code": "Y60.8",
+    "title_la": "U toku drugog hirurškog i medicinskog lečenja",
+    "source_line": 52456
+  },
+  {
+    "code": "Y60.9",
+    "title_la": "U toku neoznačenog hirurškog i medicinskog lečenja",
+    "source_line": 52457
+  },
+  {
+    "code": "Y61",
+    "title_la": "Strani predmet slučajno ostavljen u telu tokom hirurškog i medicinskog lečenja",
+    "source_line": 4208
+  },
+  {
+    "code": "Y61.0",
+    "title_la": "U toku hirurškog zahvata",
+    "source_line": 52461
+  },
+  {
+    "code": "Y61.1",
+    "title_la": "U toku davanja infuzije ili transfuzije",
+    "source_line": 52462
+  },
+  {
+    "code": "Y61.2",
+    "title_la": "U toku dijalize bubrega ili drugih perfuzija",
+    "source_line": 52463
+  },
+  {
+    "code": "Y61.3",
+    "title_la": "U toku davanja injekcija ili imunizacije",
+    "source_line": 52464
+  },
+  {
+    "code": "Y61.4",
+    "title_la": "U toku endoskopskog pregleda",
+    "source_line": 52465
+  },
+  {
+    "code": "Y61.5",
+    "title_la": "U toku kateterizacije srca",
+    "source_line": 52466
+  },
+  {
+    "code": "Y61.6",
+    "title_la": "U toku aspiracije, punkcije i drugih kateterizacija",
+    "source_line": 52467
+  },
+  {
+    "code": "Y61.7",
+    "title_la": "U toku uklanjanja katetera ili zavoja",
+    "source_line": 52468
+  },
+  {
+    "code": "Y61.8",
+    "title_la": "U toku drugog hirurškog i medicinskog lečenja",
+    "source_line": 52469
+  },
+  {
+    "code": "Y61.9",
+    "title_la": "U toku neoznačenog hirurškog i medicinskog lečenja",
+    "source_line": 52470
+  },
+  {
+    "code": "Y62",
+    "title_la": "Greška u postupku sterilizacije tokom hirurškog i medicinskog lečenja",
+    "source_line": 4209
+  },
+  {
+    "code": "Y62.0",
+    "title_la": "U toku hirurškog zahvata",
+    "source_line": 52473
+  },
+  {
+    "code": "Y62.1",
+    "title_la": "U toku davanja infuzije ili transfuzije",
+    "source_line": 52474
+  },
+  {
+    "code": "Y62.2",
+    "title_la": "U toku dijalize bubrega ili drugih perfuzija",
+    "source_line": 52475
+  },
+  {
+    "code": "Y62.3",
+    "title_la": "U toku davanja injekcija ili imunizacije",
+    "source_line": 52476
+  },
+  {
+    "code": "Y62.4",
+    "title_la": "U toku endoskopskog pregleda",
+    "source_line": 52477
+  },
+  {
+    "code": "Y62.5",
+    "title_la": "U toku kateterizacije srca",
+    "source_line": 52478
+  },
+  {
+    "code": "Y62.6",
+    "title_la": "U toku aspiracije, punkcije i drugih kateterizacija",
+    "source_line": 52479
+  },
+  {
+    "code": "Y62.8",
+    "title_la": "U toku drugog hirurškog i medicinskog lečenja",
+    "source_line": 52480
+  },
+  {
+    "code": "Y62.9",
+    "title_la": "U toku neoznačenog hirurškog i medicinskog lečenja",
+    "source_line": 52481
+  },
+  {
+    "code": "Y63",
+    "title_la": "Greška u doziranju tokom hirurškog i medicinskog lečenja",
+    "source_line": 4210
+  },
+  {
+    "code": "Y63.0",
+    "title_la": "Prekomerna količina krvi ili drugih tečnosti data tokom transfuzije ili infuzije",
+    "source_line": 52491
+  },
+  {
+    "code": "Y63.1",
+    "title_la": "Nepravilno rastvaranje tečnosti korišćene za davanje infuzije",
+    "source_line": 52492
+  },
+  {
+    "code": "Y63.2",
+    "title_la": "Prekomerna doza zračenja primljena tokom terapije",
+    "source_line": 52493
+  },
+  {
+    "code": "Y63.3",
+    "title_la": "Nenamerno izlaganje bolesnika zračenju tokom medicinskog lečenja",
+    "source_line": 52494
+  },
+  {
+    "code": "Y63.4",
+    "title_la": "Greška u doziranju kod elektrošoka ili u insulinskoj šok-terapiji",
+    "source_line": 52495
+  },
+  {
+    "code": "Y63.5",
+    "title_la": "Neodgovarajuća temperatura pri lokalnoj primeni obloga i zavoja",
+    "source_line": 52496
+  },
+  {
+    "code": "Y63.6",
+    "title_la": "Nedavanje neophodnog leka, preparata ili biološke supstance",
+    "source_line": 52497
+  },
+  {
+    "code": "Y63.8",
+    "title_la": "Greška u doziranju tokom drugog hirurškog i medicinskog lečenja",
+    "source_line": 52498
+  },
+  {
+    "code": "Y63.9",
+    "title_la": "Greška u doziranju tokom neoznačenog hirurškog i medicinskog lečenja",
+    "source_line": 52499
+  },
+  {
+    "code": "Y64",
+    "title_la": "Kontaminirane medicinske ili biološke materije",
+    "source_line": 4211
+  },
+  {
+    "code": "Y64.0",
+    "title_la": "Kontaminirane medicinske ili biološke materije, koje se daju transfuzijom ili",
+    "source_line": 52502
+  },
+  {
+    "code": "Y64.1",
+    "title_la": "Kontaminirana medicinska ili biološka materija, koja se daje putem injekcije ili za",
+    "source_line": 52504
+  },
+  {
+    "code": "Y64.8",
+    "title_la": "Kontaminirana medicinska ili biološka materija koja se daje na druge načine",
+    "source_line": 52506
+  },
+  {
+    "code": "Y64.9",
+    "title_la": "Kontaminirana medicinska ili biološka materija koja se daje na neoznačeni način",
+    "source_line": 52507
+  },
+  {
+    "code": "Y65",
+    "title_la": "Drugi neželjeni događaji tokom hirurškog i medicinskog lečenja",
+    "source_line": 4212
+  },
+  {
+    "code": "Y65.0",
+    "title_la": "Neodgovarajuća krv upotrebljena pri transfuziji",
+    "source_line": 52511
+  },
+  {
+    "code": "Y65.1",
+    "title_la": "Infuzija pogrešne vrste tečnosti",
+    "source_line": 52512
+  },
+  {
+    "code": "Y65.2",
+    "title_la": "Greška u suturi ili ligaturi tokom hirurškog zahvata",
+    "source_line": 52513
+  },
+  {
+    "code": "Y65.3",
+    "title_la": "Pogrešno postavljen endotrahealni tubus u toku anestezije",
+    "source_line": 52514
+  },
+  {
+    "code": "Y65.4",
+    "title_la": "Greška pri stavljanju ili uklanjanju drugog tubusa ili instrumenta",
+    "source_line": 52515
+  },
+  {
+    "code": "Y65.5",
+    "title_la": "Izvođenje neodgovarajuće operacije",
+    "source_line": 52516
+  },
+  {
+    "code": "Y65.8",
+    "title_la": "Drugi označeni neželjeni događaji tokom hirurškog i medicinskog lečenja",
+    "source_line": 52517
+  },
+  {
+    "code": "Y66",
+    "title_la": "Nesprovođenje hirurškog i medicinskog lečenja",
+    "source_line": 4213
+  },
+  {
+    "code": "Y69",
+    "title_la": "Neoznačen neželjeni događaj tokom hirurškog i medicinskog lečenja",
+    "source_line": 4214
+  },
+  {
+    "code": "Y70",
+    "title_la": "Uređaji u anesteziologiji povezani sa neželjenim događajima",
+    "source_line": 4218
+  },
+  {
+    "code": "Y71",
+    "title_la": "Uređaji u kardiovaskularnoj oblasti povezani sa neželjenim događajima",
+    "source_line": 4219
+  },
+  {
+    "code": "Y72",
+    "title_la": "Uređaji u otorinolaringologiji povezani sa neželjenim događajima",
+    "source_line": 4220
+  },
+  {
+    "code": "Y73",
+    "title_la": "Uređaji u gastroenterologiji i urologiji povezani sa neželjenim događajima",
+    "source_line": 4226
+  },
+  {
+    "code": "Y74",
+    "title_la": "Uređaji za opštu bolničku i ličnu upotrebu povezani sa neželjenim događajima",
+    "source_line": 4227
+  },
+  {
+    "code": "Y75",
+    "title_la": "Uređaji u neurologiji povezani sa neželjenim događajima",
+    "source_line": 4228
+  },
+  {
+    "code": "Y76",
+    "title_la": "Uređaji u akušerstvu i ginekologiji povezani sa neželjenim događajima",
+    "source_line": 4229
+  },
+  {
+    "code": "Y77",
+    "title_la": "Uređaji u oftalmologiji povezani sa neželjenim događajima",
+    "source_line": 4230
+  },
+  {
+    "code": "Y78",
+    "title_la": "Uređaji u radiologiji povezani sa neželjenim događajima",
+    "source_line": 4231
+  },
+  {
+    "code": "Y79",
+    "title_la": "Uređaji u ortopediji povezani sa neželjenim događajima",
+    "source_line": 4232
+  },
+  {
+    "code": "Y80",
+    "title_la": "Uređaji u fizikalnoj medicini povezani sa neželjenim događajima",
+    "source_line": 4233
+  },
+  {
+    "code": "Y81",
+    "title_la": "Uređaji u opštoj i plastičnoj hirurgiji povezani sa neželjenim događajima",
+    "source_line": 4234
+  },
+  {
+    "code": "Y82",
+    "title_la": "Drugi i neoznačeni medicinski uređaji povezani sa neželjenim događajima",
+    "source_line": 4235
+  },
+  {
+    "code": "Y83",
+    "title_la": "Hirurški zahvat i drugi hirurški postupci kao uzrok neželjene reakcije bolesnika, ili",
+    "source_line": 4240
+  },
+  {
+    "code": "Y83.0",
+    "title_la": "Hirurški zahvat sa transplantacijom kompletnog organa",
+    "source_line": 52604
+  },
+  {
+    "code": "Y83.1",
+    "title_la": "Hirurški zahvat sa ugradnjom veštačkog unutrašnjeg uređaja",
+    "source_line": 52605
+  },
+  {
+    "code": "Y83.2",
+    "title_la": "Hirurški zahvat kod anastomoza, bajpasa ili grafta",
+    "source_line": 52606
+  },
+  {
+    "code": "Y83.3",
+    "title_la": "Hirurški zahvat sa formiranjem spoljašnje stome",
+    "source_line": 52607
+  },
+  {
+    "code": "Y83.4",
+    "title_la": "Drugi rekonstruktivni hirurški zahvati",
+    "source_line": 52608
+  },
+  {
+    "code": "Y83.5",
+    "title_la": "Amputacija udova",
+    "source_line": 52609
+  },
+  {
+    "code": "Y83.6",
+    "title_la": "Uklanjanje drugih organa (delimično) (potpuno)",
+    "source_line": 52610
+  },
+  {
+    "code": "Y83.8",
+    "title_la": "Drugi hirurški postupci",
+    "source_line": 52611
+  },
+  {
+    "code": "Y83.9",
+    "title_la": "Hirurški postupak, neoznačen",
+    "source_line": 52612
+  },
+  {
+    "code": "Y84",
+    "title_la": "Drugi medicinski postupci kao uzrok neželjene reakcije bolesnika, ili kasne",
+    "source_line": 4242
+  },
+  {
+    "code": "Y84.0",
+    "title_la": "Kateterizacija srca",
+    "source_line": 52616
+  },
+  {
+    "code": "Y84.1",
+    "title_la": "Bubrežna dijaliza",
+    "source_line": 52617
+  },
+  {
+    "code": "Y84.2",
+    "title_la": "Radiološke procedure i radioterapija",
+    "source_line": 52618
+  },
+  {
+    "code": "Y84.3",
+    "title_la": "Šok terapija",
+    "source_line": 52619
+  },
+  {
+    "code": "Y84.4",
+    "title_la": "Aspiracija tečnosti",
+    "source_line": 52620
+  },
+  {
+    "code": "Y84.5",
+    "title_la": "Uvođenje gastične ili duodenalne sonde",
+    "source_line": 52621
+  },
+  {
+    "code": "Y84.6",
+    "title_la": "Kateterizacija mokraćnih puteva",
+    "source_line": 52622
+  },
+  {
+    "code": "Y84.7",
+    "title_la": "Uzimanje krvi",
+    "source_line": 52623
+  },
+  {
+    "code": "Y84.8",
+    "title_la": "Druge medicinske procedure",
+    "source_line": 52624
+  },
+  {
+    "code": "Y84.9",
+    "title_la": "Medicinska procedura, neoznačena",
+    "source_line": 52625
+  },
+  {
+    "code": "Y85",
+    "title_la": "Posledice saobraćajnih udesa",
+    "source_line": 4246
+  },
+  {
+    "code": "Y85.0",
+    "title_la": "Posledice udesa sa motornim vozilom",
+    "source_line": 52645
+  },
+  {
+    "code": "Y85.9",
+    "title_la": "Posledice drugih i neoznačenih saobraćajnih udesa",
+    "source_line": 52646
+  },
+  {
+    "code": "Y86",
+    "title_la": "Posledice drugih udesa",
+    "source_line": 4247
+  },
+  {
+    "code": "Y87",
+    "title_la": "Posledice namernog samopovređivanja, nasilja i događaja neodređene namere",
+    "source_line": 4248
+  },
+  {
+    "code": "Y87.0",
+    "title_la": "Posledice namernog samopovređivanja",
+    "source_line": 52652
+  },
+  {
+    "code": "Y87.1",
+    "title_la": "Posledice nasilja",
+    "source_line": 52653
+  },
+  {
+    "code": "Y87.2",
+    "title_la": "Posledice događaja neodređene namere",
+    "source_line": 52654
+  },
+  {
+    "code": "Y88",
+    "title_la": "Posledice hirurškog i medicinskog lečenja kao spoljašnjeg uzroka",
+    "source_line": 4249
+  },
+  {
+    "code": "Y88.0",
+    "title_la": "Posledice neželjenih efekata izazvanih lekovima, medikamentima i biološkim",
+    "source_line": 52657
+  },
+  {
+    "code": "Y88.1",
+    "title_la": "Posledice neželjenih događaja tokom hirurških i medicinskih postupaka",
+    "source_line": 52659
+  },
+  {
+    "code": "Y88.2",
+    "title_la": "Posledice neželjenih događaja povezanih sa medicinskim uređajima u dijagnostičkoj",
+    "source_line": 52660
+  },
+  {
+    "code": "Y88.3",
+    "title_la": "Posledice hirurških i medicinskih postupaka kao uzrok neželjene reakcije bolesnika,",
+    "source_line": 52662
+  },
+  {
+    "code": "Y89",
+    "title_la": "Posledice drugih spoljašnjih uzroka",
+    "source_line": 4250
+  },
+  {
+    "code": "Y89.0",
+    "title_la": "Posledice zakonske intervencije",
+    "source_line": 52666
+  },
+  {
+    "code": "Y89.1",
+    "title_la": "Posledice ratnih operacija",
+    "source_line": 52667
+  },
+  {
+    "code": "Y89.9",
+    "title_la": "Posledice neoznačenog spoljašnjeg uzroka",
+    "source_line": 52668
+  },
+  {
+    "code": "Y90",
+    "title_la": "Podatak o prisustvu alkohola određen nivoom alkohola u krvi",
+    "source_line": 4254
+  },
+  {
+    "code": "Y90.0",
+    "title_la": "Nivo alkohola u krvi manji od 20 mg/100 ml",
+    "source_line": 52680
+  },
+  {
+    "code": "Y90.1",
+    "title_la": "Nivo alkohola u krvi od 20-39 mg/100 ml",
+    "source_line": 52681
+  },
+  {
+    "code": "Y90.2",
+    "title_la": "Nivo alkohola u krvi od 40-59 mg/100 ml",
+    "source_line": 52688
+  },
+  {
+    "code": "Y90.3",
+    "title_la": "Nivo alkohola u krvi od 60-79 mg/100 ml",
+    "source_line": 52689
+  },
+  {
+    "code": "Y90.4",
+    "title_la": "Nivo alkohola u krvi od 80-99 mg/100 ml",
+    "source_line": 52690
+  },
+  {
+    "code": "Y90.5",
+    "title_la": "Nivo alkohola u krvi od 100-119 mg/100 ml",
+    "source_line": 52691
+  },
+  {
+    "code": "Y90.6",
+    "title_la": "Nivo alkohola u krvi od 120-199 mg/100 ml",
+    "source_line": 52692
+  },
+  {
+    "code": "Y90.7",
+    "title_la": "Nivo alkohola u krvi od 200-239 mg/100 ml",
+    "source_line": 52693
+  },
+  {
+    "code": "Y90.8",
+    "title_la": "Nivo alkohola u krvi od 240 mg/100 ml ili više",
+    "source_line": 52694
+  },
+  {
+    "code": "Y90.9",
+    "title_la": "Prisustvo alkohola u krvi, nivo neoznačen",
+    "source_line": 52695
+  },
+  {
+    "code": "Y91",
+    "title_la": "Dokaz o prisustvu alkohola određen nivoom intoksikacije",
+    "source_line": 4255
+  },
+  {
+    "code": "Y91.0",
+    "title_la": "Blaga intoksikacija alkoholom",
+    "source_line": 52699
+  },
+  {
+    "code": "Y91.1",
+    "title_la": "Umerena intoksikacija alkoholom",
+    "source_line": 52702
+  },
+  {
+    "code": "Y91.2",
+    "title_la": "Teška intoksikacija alkoholom",
+    "source_line": 52705
+  },
+  {
+    "code": "Y91.3",
+    "title_la": "Veoma teška intoksikacija alkoholom",
+    "source_line": 52708
+  },
+  {
+    "code": "Y91.9",
+    "title_la": "Uticaj alkohola, koji nije drugačije označen",
+    "source_line": 52711
+  },
+  {
+    "code": "Y95",
+    "title_la": "Bolnički uslovi",
+    "source_line": 4256
+  },
+  {
+    "code": "Y96",
+    "title_la": "Uslovi povezani sa radom",
+    "source_line": 4257
+  },
+  {
+    "code": "Y97",
+    "title_la": "Uslovi povezani sa zagađenjem spoljašnje sredine",
+    "source_line": 4258
+  },
+  {
+    "code": "Y98",
+    "title_la": "Uslovi povezani sa načinom života",
+    "source_line": 4259
+  }
+]

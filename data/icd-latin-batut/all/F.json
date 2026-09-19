@@ -1,0 +1,1717 @@
+[
+  {
+    "code": "F00",
+    "title_la": "Demencija u Alzheimerovoj bolesti (G30.-†)",
+    "source_line": 1768
+  },
+  {
+    "code": "F00.0",
+    "title_la": "Dementia in morbo Alzheimer praecox (G30.0†)",
+    "source_line": 14930
+  },
+  {
+    "code": "F00.1",
+    "title_la": "Dementia in morbo Alzheimer tardiva (G30.1†)",
+    "source_line": 14937
+  },
+  {
+    "code": "F00.2",
+    "title_la": "Dementia in morbo Alzheimer atypica sive mixta (G30.8†)",
+    "source_line": 14944
+  },
+  {
+    "code": "F00.9",
+    "title_la": "Dementia in morbo Alzheimer, non specificata (G30.9†)",
+    "source_line": 14947
+  },
+  {
+    "code": "F01",
+    "title_la": "Vaskularna demencija",
+    "source_line": 1769
+  },
+  {
+    "code": "F01.0",
+    "title_la": "Dementia vascularis acuta",
+    "source_line": 14956
+  },
+  {
+    "code": "F01.1",
+    "title_la": "Dementia multiinfarctiva",
+    "source_line": 14968
+  },
+  {
+    "code": "F01.2",
+    "title_la": "Dementia vascularis subcorticalis",
+    "source_line": 14972
+  },
+  {
+    "code": "F01.3",
+    "title_la": "Dementia vascularis mixta, corticalis et subcorticalis",
+    "source_line": 14977
+  },
+  {
+    "code": "F01.8",
+    "title_la": "Dementia vascularis alia",
+    "source_line": 14979
+  },
+  {
+    "code": "F01.9",
+    "title_la": "Dementia vascularis, non specificata",
+    "source_line": 14981
+  },
+  {
+    "code": "F02",
+    "title_la": "Demencija u drugim bolestima, klasifikovanim na drugom mestu",
+    "source_line": 1770
+  },
+  {
+    "code": "F02.0",
+    "title_la": "Dementia in morbo Pick (G31.0†)",
+    "source_line": 14988
+  },
+  {
+    "code": "F02.1",
+    "title_la": "Dementia in morbo Creutzfeldt-Jakob (A81.0†)",
+    "source_line": 14993
+  },
+  {
+    "code": "F02.2",
+    "title_la": "Dementia in morbo Huntington (G10†)",
+    "source_line": 14999
+  },
+  {
+    "code": "F02.3",
+    "title_la": "Dementia in morbo Parkinson (G20†)",
+    "source_line": 15005
+  },
+  {
+    "code": "F02.4",
+    "title_la": "Dementia in morbo AIDS (B22.0†)",
+    "source_line": 15012
+  },
+  {
+    "code": "F02.8",
+    "title_la": "Dementia in morbis aliis specificatis, alibi classificatis",
+    "source_line": 15024
+  },
+  {
+    "code": "F03",
+    "title_la": "Demencija, neoznačena",
+    "source_line": 1771
+  },
+  {
+    "code": "F04",
+    "title_la": "Organski sindrom nesećanja, neizazvan upotrebom alkohola i psihoaktivnih",
+    "source_line": 1772
+  },
+  {
+    "code": "F05",
+    "title_la": "Delirijum, neizazvan upotrebom alkohola i psihoaktivnih supstanci",
+    "source_line": 1774
+  },
+  {
+    "code": "F05.0",
+    "title_la": "Delirium sine dementia",
+    "source_line": 15093
+  },
+  {
+    "code": "F05.1",
+    "title_la": "Delirium superpositum, sed intradementium",
+    "source_line": 15095
+  },
+  {
+    "code": "F05.8",
+    "title_la": "Delirium aliud",
+    "source_line": 15098
+  },
+  {
+    "code": "F05.9",
+    "title_la": "Delirium, non specificatum",
+    "source_line": 15102
+  },
+  {
+    "code": "F06",
+    "title_la": "Drugi duševni poremećaji uzrokovani oštećenjem i disfunkcijom mozga i telesnom",
+    "source_line": 1775
+  },
+  {
+    "code": "F06.0",
+    "title_la": "Hallucinosis organica",
+    "source_line": 15117
+  },
+  {
+    "code": "F06.1",
+    "title_la": "Disordo catatonicus organicus",
+    "source_line": 15125
+  },
+  {
+    "code": "F06.2",
+    "title_la": "Disordo paranoides organicus (schizophreniae similis)",
+    "source_line": 15140
+  },
+  {
+    "code": "F06.3",
+    "title_la": "Disordines thymiaci [affectivi organici]",
+    "source_line": 15152
+  },
+  {
+    "code": "F06.4",
+    "title_la": "Disordo anxioticus organicus",
+    "source_line": 15157
+  },
+  {
+    "code": "F06.5",
+    "title_la": "Disordo dissociativus organicus",
+    "source_line": 15162
+  },
+  {
+    "code": "F06.6",
+    "title_la": "Disordo emotionalis organicus [asthenicus]",
+    "source_line": 15168
+  },
+  {
+    "code": "F06.7",
+    "title_la": "Disordo cognitivus gradus minoris",
+    "source_line": 15173
+  },
+  {
+    "code": "F06.8",
+    "title_la": "Disordines mentales propter laesionem et dysfunctionem cerebri et morbum",
+    "source_line": 15185
+  },
+  {
+    "code": "F06.9",
+    "title_la": "Disordines mentales propter laesionem et dysfunctionem cerebri et morbum",
+    "source_line": 15198
+  },
+  {
+    "code": "F07",
+    "title_la": "Poremećaji ličnosti i poremećaji ponašanja uzrokovani bolešću, oštećenjem i",
+    "source_line": 1777
+  },
+  {
+    "code": "F07.0",
+    "title_la": "Disordo personae organicus",
+    "source_line": 15210
+  },
+  {
+    "code": "F07.1",
+    "title_la": "Syndroma post encephalitidem",
+    "source_line": 15229
+  },
+  {
+    "code": "F07.2",
+    "title_la": "Syndroma post commotionem cerebri",
+    "source_line": 15234
+  },
+  {
+    "code": "F07.8",
+    "title_la": "Disordines personae et disordines morum organici propter morbum, laesionem et",
+    "source_line": 15243
+  },
+  {
+    "code": "F07.9",
+    "title_la": "Disordo personae et disordo morum organicus propter morbum, laesionem et",
+    "source_line": 15256
+  },
+  {
+    "code": "F09",
+    "title_la": "Organska ili simptomatska duševna bolest, neoznačena",
+    "source_line": 1779
+  },
+  {
+    "code": "F10",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom alkohola",
+    "source_line": 1783
+  },
+  {
+    "code": "F11",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom opijata",
+    "source_line": 1784
+  },
+  {
+    "code": "F12",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom kanabinoida",
+    "source_line": 1785
+  },
+  {
+    "code": "F13",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom hipnotika ili",
+    "source_line": 1786
+  },
+  {
+    "code": "F14",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom kokaina",
+    "source_line": 1788
+  },
+  {
+    "code": "F15",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom drugih",
+    "source_line": 1789
+  },
+  {
+    "code": "F16",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom halucinogena",
+    "source_line": 1791
+  },
+  {
+    "code": "F17",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom duvana",
+    "source_line": 1792
+  },
+  {
+    "code": "F18",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom isparljivih",
+    "source_line": 1793
+  },
+  {
+    "code": "F19",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja uzrokovani upotrebom više",
+    "source_line": 1795
+  },
+  {
+    "code": "F20",
+    "title_la": "Shizofrenija",
+    "source_line": 1799
+  },
+  {
+    "code": "F20.0",
+    "title_la": "Schizophrenia paranoides",
+    "source_line": 15483
+  },
+  {
+    "code": "F20.1",
+    "title_la": "Schizophrenia hebephrenica",
+    "source_line": 15499
+  },
+  {
+    "code": "F20.2",
+    "title_la": "Schizophrenia catatonica",
+    "source_line": 15508
+  },
+  {
+    "code": "F20.3",
+    "title_la": "Schizophrenia non differentialis",
+    "source_line": 15519
+  },
+  {
+    "code": "F20.4",
+    "title_la": "Depressio postschizophrenica",
+    "source_line": 15528
+  },
+  {
+    "code": "F20.5",
+    "title_la": "Schizophrenia residualis",
+    "source_line": 15535
+  },
+  {
+    "code": "F20.6",
+    "title_la": "Schizophrenia simplex",
+    "source_line": 15545
+  },
+  {
+    "code": "F20.8",
+    "title_la": "Schizophrenia alia",
+    "source_line": 15558
+  },
+  {
+    "code": "F20.9",
+    "title_la": "Schizophrenia, non specificata",
+    "source_line": 15565
+  },
+  {
+    "code": "F21",
+    "title_la": "Poremećaj sličan shizofreniji",
+    "source_line": 1800
+  },
+  {
+    "code": "F22",
+    "title_la": "Stalna sumanuta duševna oboljenja",
+    "source_line": 1801
+  },
+  {
+    "code": "F22.0",
+    "title_la": "Paranoia",
+    "source_line": 15594
+  },
+  {
+    "code": "F22.8",
+    "title_la": "Psychoses paranoides persistentes aliae",
+    "source_line": 15621
+  },
+  {
+    "code": "F22.9",
+    "title_la": "Psychosis paranoides persistens, non specificata",
+    "source_line": 15628
+  },
+  {
+    "code": "F23",
+    "title_la": "Akutna i prolazna duševna oboljenja",
+    "source_line": 1802
+  },
+  {
+    "code": "F23.0",
+    "title_la": "Psychosis polymorpha acuta sine symptomatis schizophreniae",
+    "source_line": 15641
+  },
+  {
+    "code": "F23.1",
+    "title_la": "Psychosis polymorpha acuta cum symptomatis schizophreniae",
+    "source_line": 15651
+  },
+  {
+    "code": "F23.2",
+    "title_la": "Psychosis acuta schizophreniae similis",
+    "source_line": 15658
+  },
+  {
+    "code": "F23.3",
+    "title_la": "Psychoses acutae praedominanter paranoides aliae",
+    "source_line": 15671
+  },
+  {
+    "code": "F23.8",
+    "title_la": "Psychoses acutae et transitivae aliae",
+    "source_line": 15684
+  },
+  {
+    "code": "F23.9",
+    "title_la": "Psychosis acuta et transitiva, non specificata",
+    "source_line": 15688
+  },
+  {
+    "code": "F24",
+    "title_la": "Indukovano sumanuto duševno oboljenje",
+    "source_line": 1803
+  },
+  {
+    "code": "F25",
+    "title_la": "Shizoafektivna duševna oboljenja",
+    "source_line": 1804
+  },
+  {
+    "code": "F25.0",
+    "title_la": "Psychosis schizoaffectiva, typus maniacus",
+    "source_line": 15709
+  },
+  {
+    "code": "F25.1",
+    "title_la": "Psychosis schizoaffectiva, typus depressivus",
+    "source_line": 15716
+  },
+  {
+    "code": "F25.2",
+    "title_la": "Psychosis schizoaffectiva, typus mixtus",
+    "source_line": 15723
+  },
+  {
+    "code": "F25.8",
+    "title_la": "Psychoses schizoaffectivae aliae",
+    "source_line": 15727
+  },
+  {
+    "code": "F25.9",
+    "title_la": "Psychosis schizoaffectiva, non specificata",
+    "source_line": 15729
+  },
+  {
+    "code": "F28",
+    "title_la": "Drugo neorgansko duševno oboljenje",
+    "source_line": 1805
+  },
+  {
+    "code": "F29",
+    "title_la": "Neorgansko duševno oboljenje, neoznačeno",
+    "source_line": 1806
+  },
+  {
+    "code": "F30",
+    "title_la": "Manična epizoda",
+    "source_line": 1809
+  },
+  {
+    "code": "F30.0",
+    "title_la": "Hypomania",
+    "source_line": 15765
+  },
+  {
+    "code": "F30.1",
+    "title_la": "Mania non psychotica",
+    "source_line": 15773
+  },
+  {
+    "code": "F30.2",
+    "title_la": "Mania psychotica",
+    "source_line": 15781
+  },
+  {
+    "code": "F30.8",
+    "title_la": "Episodia maniaca alia",
+    "source_line": 15790
+  },
+  {
+    "code": "F30.9",
+    "title_la": "Episodium maniacum, non specificatum",
+    "source_line": 15792
+  },
+  {
+    "code": "F31",
+    "title_la": "Afektivno bipolarno duševno oboljenje",
+    "source_line": 1816
+  },
+  {
+    "code": "F31.0",
+    "title_la": "Psychosis affectiva bipolaris, episodium hypomaniacum",
+    "source_line": 15816
+  },
+  {
+    "code": "F31.1",
+    "title_la": "Psychosis affectiva bipolaris, episodium maniacum non psychoticum",
+    "source_line": 15820
+  },
+  {
+    "code": "F31.2",
+    "title_la": "Psychosis affectiva bipolaris, episodium maniacum psychoticum",
+    "source_line": 15824
+  },
+  {
+    "code": "F31.3",
+    "title_la": "Psychosis affectiva bipolaris, episodium depressivum, gradus levis sive moderati",
+    "source_line": 15828
+  },
+  {
+    "code": "F31.4",
+    "title_la": "Psychosis affectiva bipolaris, episodium depressivum non psychoticum, gradus",
+    "source_line": 15832
+  },
+  {
+    "code": "F31.5",
+    "title_la": "Psychosis affectiva bipolaris, episodium depressivum psychoticum, gradus gravis",
+    "source_line": 15837
+  },
+  {
+    "code": "F31.6",
+    "title_la": "Psychosis affectiva bipolaris, episodium mixtum",
+    "source_line": 15841
+  },
+  {
+    "code": "F31.7",
+    "title_la": "Psychosis affectiva bipolaris, in remissione",
+    "source_line": 15846
+  },
+  {
+    "code": "F31.8",
+    "title_la": "Psychosis affectiva bipolaris alia",
+    "source_line": 15852
+  },
+  {
+    "code": "F31.9",
+    "title_la": "Psychosis affectiva bipolaris, non specificata",
+    "source_line": 15856
+  },
+  {
+    "code": "F32",
+    "title_la": "Depresija-depresijsko duševno oboljenje",
+    "source_line": 1817
+  },
+  {
+    "code": "F32.0",
+    "title_la": "Episodium depressivum, gradus levis",
+    "source_line": 15881
+  },
+  {
+    "code": "F32.1",
+    "title_la": "Episodium depressivum, gradus moderati",
+    "source_line": 15885
+  },
+  {
+    "code": "F32.2",
+    "title_la": "Episodium depressivum non psychoticum, gradus majoris",
+    "source_line": 15889
+  },
+  {
+    "code": "F32.3",
+    "title_la": "Episodium depressivum psychoticum, gradus majoris",
+    "source_line": 15897
+  },
+  {
+    "code": "F32.8",
+    "title_la": "Episodia depressiva alia",
+    "source_line": 15908
+  },
+  {
+    "code": "F32.9",
+    "title_la": "Episodium depressivum, non specificatum",
+    "source_line": 15912
+  },
+  {
+    "code": "F33",
+    "title_la": "Povratan depresijski poremećaj",
+    "source_line": 1818
+  },
+  {
+    "code": "F33.0",
+    "title_la": "Depressio recidiva, gradus levis",
+    "source_line": 15942
+  },
+  {
+    "code": "F33.1",
+    "title_la": "Depressio recidiva gradus moderati",
+    "source_line": 15946
+  },
+  {
+    "code": "F33.2",
+    "title_la": "Depressio recidiva non psychotica gradus majoris",
+    "source_line": 15950
+  },
+  {
+    "code": "F33.3",
+    "title_la": "Depressio psychotica recidiva gradus majoris",
+    "source_line": 15958
+  },
+  {
+    "code": "F33.4",
+    "title_la": "Depressio recidiva in remissione",
+    "source_line": 15969
+  },
+  {
+    "code": "F33.8",
+    "title_la": "Depressio recidiva alia",
+    "source_line": 15973
+  },
+  {
+    "code": "F33.9",
+    "title_la": "Disordo depressivus recidivus, non specificatus",
+    "source_line": 15975
+  },
+  {
+    "code": "F34",
+    "title_la": "Stalni poremećaji raspoloženja (afekata)",
+    "source_line": 1819
+  },
+  {
+    "code": "F34.0",
+    "title_la": "Cyclothymia",
+    "source_line": 15992
+  },
+  {
+    "code": "F34.1",
+    "title_la": "Dysthimia",
+    "source_line": 16001
+  },
+  {
+    "code": "F34.8",
+    "title_la": "Disordines affectivi permanentes alii",
+    "source_line": 16011
+  },
+  {
+    "code": "F34.9",
+    "title_la": "Disordo thymicus (affectivus) permanens, non specificatus",
+    "source_line": 16013
+  },
+  {
+    "code": "F38",
+    "title_la": "Drugi poremećaji raspoloženja (afekata)",
+    "source_line": 1820
+  },
+  {
+    "code": "F38.0",
+    "title_la": "Disordines thymiaci (affectivi) singuli alii",
+    "source_line": 16020
+  },
+  {
+    "code": "F38.1",
+    "title_la": "Disordines thymiaci (affectivi) recidivi alii",
+    "source_line": 16023
+  },
+  {
+    "code": "F38.8",
+    "title_la": "Disordines thymiaci (affectivi) alii specificati",
+    "source_line": 16026
+  },
+  {
+    "code": "F39",
+    "title_la": "Poremećaj raspoloženja (afekta), neoznačen",
+    "source_line": 1821
+  },
+  {
+    "code": "F40",
+    "title_la": "Fobijski anksiozni poremećaji",
+    "source_line": 1824
+  },
+  {
+    "code": "F40.0",
+    "title_la": "Agoraphobia",
+    "source_line": 16053
+  },
+  {
+    "code": "F40.1",
+    "title_la": "Phobia socialis",
+    "source_line": 16062
+  },
+  {
+    "code": "F40.2",
+    "title_la": "Phobia specifica (separata)",
+    "source_line": 16070
+  },
+  {
+    "code": "F40.8",
+    "title_la": "Disordines phobici anxiosi alii",
+    "source_line": 16082
+  },
+  {
+    "code": "F40.9",
+    "title_la": "Disordo phobica anxiosus non specificatus",
+    "source_line": 16084
+  },
+  {
+    "code": "F41",
+    "title_la": "Drugi anksiozni poremećaji",
+    "source_line": 1825
+  },
+  {
+    "code": "F41.0",
+    "title_la": "Disordo panicus, episodum anxiosum paroxismale",
+    "source_line": 16101
+  },
+  {
+    "code": "F41.1",
+    "title_la": "Disordo anxiosus generalisatus",
+    "source_line": 16113
+  },
+  {
+    "code": "F41.2",
+    "title_la": "Disordo anxiosus et depressivus mixtus",
+    "source_line": 16124
+  },
+  {
+    "code": "F41.3",
+    "title_la": "Disordo anxiosus mixtus alius",
+    "source_line": 16130
+  },
+  {
+    "code": "F41.8",
+    "title_la": "Disordines anxiosi alii specificati",
+    "source_line": 16134
+  },
+  {
+    "code": "F41.9",
+    "title_la": "Disordo anxiosus, non specificatus",
+    "source_line": 16137
+  },
+  {
+    "code": "F42",
+    "title_la": "Opsesijsko-prisilni poremećaj",
+    "source_line": 1826
+  },
+  {
+    "code": "F42.0",
+    "title_la": "Ideae praedominanter obsessivae sive ruminationes",
+    "source_line": 16161
+  },
+  {
+    "code": "F42.1",
+    "title_la": "Actiones praedominanter compulsivae (ritus obsessivi)",
+    "source_line": 16168
+  },
+  {
+    "code": "F42.2",
+    "title_la": "Actiones et ideae obsessivae mixtae",
+    "source_line": 16174
+  },
+  {
+    "code": "F42.8",
+    "title_la": "Disordines obsessivo-compulsivi alii",
+    "source_line": 16176
+  },
+  {
+    "code": "F42.9",
+    "title_la": "Disordo obsessivo-compulsivus, non specificatus",
+    "source_line": 16178
+  },
+  {
+    "code": "F43",
+    "title_la": "Reakcija na težak stres i poremećaj prilagođavanja",
+    "source_line": 1827
+  },
+  {
+    "code": "F43.0",
+    "title_la": "Reactio stressogenes acuta",
+    "source_line": 16202
+  },
+  {
+    "code": "F43.1",
+    "title_la": "Disordo posttraumaticus stressogenes",
+    "source_line": 16220
+  },
+  {
+    "code": "F43.2",
+    "title_la": "Disordines accomodationis",
+    "source_line": 16243
+  },
+  {
+    "code": "F43.8",
+    "title_la": "Reactio stressogenes gradus majoris, alia",
+    "source_line": 16260
+  },
+  {
+    "code": "F43.9",
+    "title_la": "Reactio stressogenes gradus majoris, non specificata",
+    "source_line": 16262
+  },
+  {
+    "code": "F44",
+    "title_la": "Disocijativni (konverzivni) poremećaji",
+    "source_line": 1828
+  },
+  {
+    "code": "F44.0",
+    "title_la": "Amnesia dissociativa",
+    "source_line": 16287
+  },
+  {
+    "code": "F44.1",
+    "title_la": "Fuga dissociativa",
+    "source_line": 16309
+  },
+  {
+    "code": "F44.2",
+    "title_la": "Stupor dissociativus",
+    "source_line": 16315
+  },
+  {
+    "code": "F44.3",
+    "title_la": "Extasis et disordines possessivi",
+    "source_line": 16327
+  },
+  {
+    "code": "F44.4",
+    "title_la": "Disordines musculorum dissociativi",
+    "source_line": 16338
+  },
+  {
+    "code": "F44.5",
+    "title_la": "Convulsiones dissociativae",
+    "source_line": 16346
+  },
+  {
+    "code": "F44.6",
+    "title_la": "Anaesthesia dissociativa et perditio sensoria",
+    "source_line": 16350
+  },
+  {
+    "code": "F44.7",
+    "title_la": "Disordines dissociativi (conversivi) mixti",
+    "source_line": 16357
+  },
+  {
+    "code": "F44.8",
+    "title_la": "Disordines dissociativi (conversivi) alii",
+    "source_line": 16368
+  },
+  {
+    "code": "F44.9",
+    "title_la": "Disordo dissociativus (conversivus), non specificatus",
+    "source_line": 16375
+  },
+  {
+    "code": "F45",
+    "title_la": "Telesni psihogeni poremećaji",
+    "source_line": 1829
+  },
+  {
+    "code": "F45.0",
+    "title_la": "Disordo somatisationalis",
+    "source_line": 16395
+  },
+  {
+    "code": "F45.1",
+    "title_la": "Disordo somatoformis non differentialis",
+    "source_line": 16406
+  },
+  {
+    "code": "F45.2",
+    "title_la": "Disordo hypochondrialis",
+    "source_line": 16419
+  },
+  {
+    "code": "F45.3",
+    "title_la": "Dysfunctio somatoformis autonoma",
+    "source_line": 16433
+  },
+  {
+    "code": "F45.4",
+    "title_la": "Disordo doloris somatoformis permanens",
+    "source_line": 16467
+  },
+  {
+    "code": "F45.8",
+    "title_la": "Disordines somatoformes alii",
+    "source_line": 16486
+  },
+  {
+    "code": "F45.9",
+    "title_la": "Disordo somatoformis, non specificatus",
+    "source_line": 16497
+  },
+  {
+    "code": "F48",
+    "title_la": "Drugi neurotski poremećaji",
+    "source_line": 1830
+  },
+  {
+    "code": "F48.0",
+    "title_la": "Neurasthenia",
+    "source_line": 16503
+  },
+  {
+    "code": "F48.1",
+    "title_la": "Syndroma depersonalisationis-derealisationis",
+    "source_line": 16529
+  },
+  {
+    "code": "F48.8",
+    "title_la": "Disordines neurotici specificati, alii",
+    "source_line": 16537
+  },
+  {
+    "code": "F48.9",
+    "title_la": "Disordo neuroticus, non specificatus",
+    "source_line": 16544
+  },
+  {
+    "code": "F50",
+    "title_la": "Poremećaji ishrane",
+    "source_line": 1834
+  },
+  {
+    "code": "F50.0",
+    "title_la": "Anorexia nervosa",
+    "source_line": 16560
+  },
+  {
+    "code": "F50.1",
+    "title_la": "Anorexia nervosa psychogenes atypica",
+    "source_line": 16572
+  },
+  {
+    "code": "F50.2",
+    "title_la": "Bulimia nervosa",
+    "source_line": 16586
+  },
+  {
+    "code": "F50.3",
+    "title_la": "Bulimia nervosa atypica",
+    "source_line": 16595
+  },
+  {
+    "code": "F50.4",
+    "title_la": "Bulimia cum disordinibus psychicis aliis",
+    "source_line": 16600
+  },
+  {
+    "code": "F50.5",
+    "title_la": "Vomitus cum disordinibus psychicis aliis",
+    "source_line": 16605
+  },
+  {
+    "code": "F50.8",
+    "title_la": "Disordines alimentarii alii",
+    "source_line": 16613
+  },
+  {
+    "code": "F50.9",
+    "title_la": "Disordo alimentarius, non specificatus",
+    "source_line": 16618
+  },
+  {
+    "code": "F51",
+    "title_la": "Neorganski poremećaji spavanja",
+    "source_line": 1835
+  },
+  {
+    "code": "F51.0",
+    "title_la": "Insomnia non organica",
+    "source_line": 16632
+  },
+  {
+    "code": "F51.1",
+    "title_la": "Hypersomnia non organica",
+    "source_line": 16646
+  },
+  {
+    "code": "F51.2",
+    "title_la": "Dysrhytmia somni non organica",
+    "source_line": 16653
+  },
+  {
+    "code": "F51.3",
+    "title_la": "Somnambulismus",
+    "source_line": 16662
+  },
+  {
+    "code": "F51.4",
+    "title_la": "Pavor nocturnus",
+    "source_line": 16667
+  },
+  {
+    "code": "F51.5",
+    "title_la": "Incubi nocturni",
+    "source_line": 16673
+  },
+  {
+    "code": "F51.8",
+    "title_la": "Dyssomni non organici alii",
+    "source_line": 16680
+  },
+  {
+    "code": "F51.9",
+    "title_la": "Dyssomnus non organicus, non specificatus",
+    "source_line": 16682
+  },
+  {
+    "code": "F52",
+    "title_la": "Neorganski poremećaj u polnom odnosu",
+    "source_line": 1836
+  },
+  {
+    "code": "F52.0",
+    "title_la": "Insufficientia sive perditio desiderii sexualis",
+    "source_line": 16692
+  },
+  {
+    "code": "F52.1",
+    "title_la": "Aversio et anhedonia sexualis",
+    "source_line": 16706
+  },
+  {
+    "code": "F52.2",
+    "title_la": "Insufficientia cupidinis genitalis",
+    "source_line": 16712
+  },
+  {
+    "code": "F52.3",
+    "title_la": "Dysfunctio orgasmi",
+    "source_line": 16720
+  },
+  {
+    "code": "F52.4",
+    "title_la": "Ejaculatio praecox",
+    "source_line": 16725
+  },
+  {
+    "code": "F52.5",
+    "title_la": "Vaginismus non organicus",
+    "source_line": 16728
+  },
+  {
+    "code": "F52.6",
+    "title_la": "Dyspareunia non organica",
+    "source_line": 16733
+  },
+  {
+    "code": "F52.7",
+    "title_la": "Cupido sexualis enormis",
+    "source_line": 16740
+  },
+  {
+    "code": "F52.8",
+    "title_la": "Dysfunctio sexualis alia, non organica",
+    "source_line": 16744
+  },
+  {
+    "code": "F52.9",
+    "title_la": "Dysfunctio sexualis non organica, non specificata",
+    "source_line": 16746
+  },
+  {
+    "code": "F53",
+    "title_la": "Duševni poremećaji i poremećaji ponašanja udruženi sa babinjama,",
+    "source_line": 1837
+  },
+  {
+    "code": "F53.0",
+    "title_la": "Disordines mentales et disordines morum mites cum puerperio assiciati, non alibi",
+    "source_line": 16763
+  },
+  {
+    "code": "F53.1",
+    "title_la": "Disordines mentales et disordines morum graves cum puerperio associati, non alibi",
+    "source_line": 16769
+  },
+  {
+    "code": "F53.8",
+    "title_la": "Disordines mentales et disordines morum cum puerperio associati alii, non alibi",
+    "source_line": 16774
+  },
+  {
+    "code": "F53.9",
+    "title_la": "Disordo mentalis puerperalis, non specificatus",
+    "source_line": 16778
+  },
+  {
+    "code": "F54",
+    "title_la": "Psihološki faktori i faktori ponašanja povezani sa poremećajima ili bolestima",
+    "source_line": 1839
+  },
+  {
+    "code": "F55",
+    "title_la": "Zloupotreba lekova bez uzrokovanja zavisnosti",
+    "source_line": 1841
+  },
+  {
+    "code": "F59",
+    "title_la": "Sindromi ponašanja udruženi sa fiziološkim smetnjama i fizičkim faktorima,",
+    "source_line": 1842
+  },
+  {
+    "code": "F60",
+    "title_la": "Specifični poremećaji ličnosti",
+    "source_line": 1846
+  },
+  {
+    "code": "F60.0",
+    "title_la": "Disordo personae paranoides",
+    "source_line": 16856
+  },
+  {
+    "code": "F60.1",
+    "title_la": "Disordo personae schizoides",
+    "source_line": 16873
+  },
+  {
+    "code": "F60.2",
+    "title_la": "Disordo personae dissocialis",
+    "source_line": 16891
+  },
+  {
+    "code": "F60.3",
+    "title_la": "Disordo personae emotionalis instabilis",
+    "source_line": 16906
+  },
+  {
+    "code": "F60.4",
+    "title_la": "Disordo personae histrionicus",
+    "source_line": 16920
+  },
+  {
+    "code": "F60.5",
+    "title_la": "Disordo personae anankasticus",
+    "source_line": 16928
+  },
+  {
+    "code": "F60.6",
+    "title_la": "Disordo personae anxiosus [evitans]",
+    "source_line": 16938
+  },
+  {
+    "code": "F60.7",
+    "title_la": "Disordo personae dependens",
+    "source_line": 16952
+  },
+  {
+    "code": "F60.8",
+    "title_la": "Disordines personae alii, specificati",
+    "source_line": 16963
+  },
+  {
+    "code": "F60.9",
+    "title_la": "Disordo personae, non specificatus",
+    "source_line": 16972
+  },
+  {
+    "code": "F61",
+    "title_la": "Mešoviti i drugi poremećaji ličnosti",
+    "source_line": 1847
+  },
+  {
+    "code": "F62",
+    "title_la": "Trajna promena ličnosti neorganskog porekla",
+    "source_line": 1848
+  },
+  {
+    "code": "F62.0",
+    "title_la": "Mutatio personae postcatastrophica permanens",
+    "source_line": 17006
+  },
+  {
+    "code": "F62.1",
+    "title_la": "Disordo personae persistens post morbum psychiatricum",
+    "source_line": 17019
+  },
+  {
+    "code": "F62.8",
+    "title_la": "Disordines personae persistentes alii",
+    "source_line": 17031
+  },
+  {
+    "code": "F62.9",
+    "title_la": "Disordo personae persistens, non specificatus",
+    "source_line": 17034
+  },
+  {
+    "code": "F63",
+    "title_la": "Poremećaji navika i impulsa",
+    "source_line": 1849
+  },
+  {
+    "code": "F63.0",
+    "title_la": "Alea pathologica",
+    "source_line": 17054
+  },
+  {
+    "code": "F63.1",
+    "title_la": "Pyromania pathologica",
+    "source_line": 17062
+  },
+  {
+    "code": "F63.2",
+    "title_la": "Cleptomania",
+    "source_line": 17073
+  },
+  {
+    "code": "F63.3",
+    "title_la": "Trichotillomania",
+    "source_line": 17081
+  },
+  {
+    "code": "F63.8",
+    "title_la": "Disordines consuetudinum et impulsuum alii",
+    "source_line": 17088
+  },
+  {
+    "code": "F63.9",
+    "title_la": "Disordo consuetudinum et impulsuum, non specificatus",
+    "source_line": 17094
+  },
+  {
+    "code": "F64",
+    "title_la": "Poremećaji polnog identiteta",
+    "source_line": 1850
+  },
+  {
+    "code": "F64.0",
+    "title_la": "Transsexualismus",
+    "source_line": 17106
+  },
+  {
+    "code": "F64.1",
+    "title_la": "Transvestitismus duplex",
+    "source_line": 17110
+  },
+  {
+    "code": "F64.2",
+    "title_la": "Disordo identitatis sexualis puerilis",
+    "source_line": 17116
+  },
+  {
+    "code": "F64.8",
+    "title_la": "Disordines identitatis sexualis alii",
+    "source_line": 17126
+  },
+  {
+    "code": "F64.9",
+    "title_la": "Disordo identitatis sexualis, non specificatus",
+    "source_line": 17128
+  },
+  {
+    "code": "F65",
+    "title_la": "Poremećaji polne sklonosti",
+    "source_line": 1851
+  },
+  {
+    "code": "F65.0",
+    "title_la": "Fetishismus",
+    "source_line": 17135
+  },
+  {
+    "code": "F65.1",
+    "title_la": "Transvestitismus fetishisticus",
+    "source_line": 17141
+  },
+  {
+    "code": "F65.2",
+    "title_la": "Exhibitionismus",
+    "source_line": 17148
+  },
+  {
+    "code": "F65.3",
+    "title_la": "Voyeurismus",
+    "source_line": 17153
+  },
+  {
+    "code": "F65.4",
+    "title_la": "Paedophilia",
+    "source_line": 17165
+  },
+  {
+    "code": "F65.5",
+    "title_la": "Sadomasochismus",
+    "source_line": 17168
+  },
+  {
+    "code": "F65.6",
+    "title_la": "Disordines inclinationis sexualis multiplices",
+    "source_line": 17175
+  },
+  {
+    "code": "F65.8",
+    "title_la": "Disordines inclinationis sexualis alii",
+    "source_line": 17179
+  },
+  {
+    "code": "F65.9",
+    "title_la": "Disordo inclinationis sexualis, non specificatus",
+    "source_line": 17186
+  },
+  {
+    "code": "F66",
+    "title_la": "Psihološki poremećaji i poremećaji ponašanja povezani sa polnim razvojem i",
+    "source_line": 1852
+  },
+  {
+    "code": "F66.0",
+    "title_la": "Disordo maturationis sexualis",
+    "source_line": 17194
+  },
+  {
+    "code": "F66.1",
+    "title_la": "Orientatio sexualis egodystonica",
+    "source_line": 17200
+  },
+  {
+    "code": "F66.2",
+    "title_la": "Disordo relationis sexualis",
+    "source_line": 17205
+  },
+  {
+    "code": "F66.8",
+    "title_la": "Disordines evolutionis psychosexualis alii",
+    "source_line": 17209
+  },
+  {
+    "code": "F66.9",
+    "title_la": "Disordo evolutionis psychosexualis, non specificatus",
+    "source_line": 17211
+  },
+  {
+    "code": "F68",
+    "title_la": "Drugi poremećaji ličnosti i poremećaji ponašanja odraslih",
+    "source_line": 1854
+  },
+  {
+    "code": "F68.0",
+    "title_la": "Elaboratio symptomatum somaticorum psychogenium",
+    "source_line": 17223
+  },
+  {
+    "code": "F68.1",
+    "title_la": "Provocatio symptomatum intenta sive simulatio symptomatum impotentiarum",
+    "source_line": 17230
+  },
+  {
+    "code": "F68.8",
+    "title_la": "Disordines personae et disordines morum adultorum alii, specifici",
+    "source_line": 17242
+  },
+  {
+    "code": "F69",
+    "title_la": "Poremećaji ličnosti i poremećaji ponašanja odrasle osobe, neoznačeni",
+    "source_line": 1855
+  },
+  {
+    "code": "F70",
+    "title_la": "Laka duševna zaostalost",
+    "source_line": 1858
+  },
+  {
+    "code": "F71",
+    "title_la": "Umerena duševna zaostalost",
+    "source_line": 1859
+  },
+  {
+    "code": "F72",
+    "title_la": "Teška duševna zaostalost",
+    "source_line": 1860
+  },
+  {
+    "code": "F73",
+    "title_la": "Duboka duševna zaostalost",
+    "source_line": 1861
+  },
+  {
+    "code": "F78",
+    "title_la": "Druga duševna zaostalost",
+    "source_line": 1862
+  },
+  {
+    "code": "F79",
+    "title_la": "Duševna zaostalost, neoznačena",
+    "source_line": 1863
+  },
+  {
+    "code": "F80",
+    "title_la": "Specifični poremećaji razvoja govora i jezika",
+    "source_line": 1872
+  },
+  {
+    "code": "F80.0",
+    "title_la": "Disordo orationis articularis specificus",
+    "source_line": 17341
+  },
+  {
+    "code": "F80.1",
+    "title_la": "Disordo orationis expressiva",
+    "source_line": 17359
+  },
+  {
+    "code": "F80.2",
+    "title_la": "Disordo orationis (receptivus)",
+    "source_line": 17380
+  },
+  {
+    "code": "F80.3",
+    "title_la": "Aphasia aquisita cum epilepsia [Landau-Kleffner]",
+    "source_line": 17398
+  },
+  {
+    "code": "F80.8",
+    "title_la": "Disordines evolutionis orationis et linguae alii",
+    "source_line": 17411
+  },
+  {
+    "code": "F80.9",
+    "title_la": "Disordo evolutionis orationis et linguae, non specificatus",
+    "source_line": 17413
+  },
+  {
+    "code": "F81",
+    "title_la": "Specifični poremećaji razvoja sposobnosti za školovanje",
+    "source_line": 1873
+  },
+  {
+    "code": "F81.0",
+    "title_la": "Dyslexia specifica",
+    "source_line": 17421
+  },
+  {
+    "code": "F81.1",
+    "title_la": "Disordo separationis litterarum specificatus",
+    "source_line": 17443
+  },
+  {
+    "code": "F81.2",
+    "title_la": "Disordo arithmeticalis specificus",
+    "source_line": 17454
+  },
+  {
+    "code": "F81.3",
+    "title_la": "Disordo facultatum scholasticarum mixtus",
+    "source_line": 17467
+  },
+  {
+    "code": "F81.8",
+    "title_la": "Disordines evolutionis facultatum scholasticarum alii",
+    "source_line": 17476
+  },
+  {
+    "code": "F81.9",
+    "title_la": "Disordo evolutionis facultatum scholasticarum, non specificatus",
+    "source_line": 17478
+  },
+  {
+    "code": "F82",
+    "title_la": "Specifičan poremećaj razvoja pokretljivosti",
+    "source_line": 1874
+  },
+  {
+    "code": "F83",
+    "title_la": "Mešoviti specifični poremećaji razvoja",
+    "source_line": 1875
+  },
+  {
+    "code": "F84",
+    "title_la": "Prožimajući poremećaji razvoja",
+    "source_line": 1876
+  },
+  {
+    "code": "F84.0",
+    "title_la": "Autismus puerilis",
+    "source_line": 17519
+  },
+  {
+    "code": "F84.1",
+    "title_la": "Autismus atypicus",
+    "source_line": 17532
+  },
+  {
+    "code": "F84.2",
+    "title_la": "Syndroma Rett",
+    "source_line": 17544
+  },
+  {
+    "code": "F84.3",
+    "title_la": "Disordo pueritiae desintegrativus alius",
+    "source_line": 17560
+  },
+  {
+    "code": "F84.4",
+    "title_la": "Hyperkinesia cum retardatione mentali et motibus stereotypicis",
+    "source_line": 17573
+  },
+  {
+    "code": "F84.5",
+    "title_la": "Syndroma Asperger",
+    "source_line": 17583
+  },
+  {
+    "code": "F84.8",
+    "title_la": "Disordines evolutionis pervasivi alii",
+    "source_line": 17591
+  },
+  {
+    "code": "F84.9",
+    "title_la": "Disordo evolutionis pervasivus, non specificatus",
+    "source_line": 17593
+  },
+  {
+    "code": "F88",
+    "title_la": "Drugi psihički poremećaji razvoja",
+    "source_line": 1877
+  },
+  {
+    "code": "F89",
+    "title_la": "Poremećaj psihičkog razvoja, neoznačen",
+    "source_line": 1878
+  },
+  {
+    "code": "F90",
+    "title_la": "Hiperkinetički poremećaji",
+    "source_line": 1882
+  },
+  {
+    "code": "F90.0",
+    "title_la": "Disordo activitatis et disordo attentionis",
+    "source_line": 17630
+  },
+  {
+    "code": "F90.1",
+    "title_la": "Disordo morum hyperkineticus",
+    "source_line": 17636
+  },
+  {
+    "code": "F90.8",
+    "title_la": "Disordines hyperkinetici alii",
+    "source_line": 17639
+  },
+  {
+    "code": "F90.9",
+    "title_la": "Disordo hyperkineticus, non specificatus",
+    "source_line": 17641
+  },
+  {
+    "code": "F91",
+    "title_la": "Poremećaji ponašanja",
+    "source_line": 1883
+  },
+  {
+    "code": "F91.0",
+    "title_la": "Disordo morum in familia",
+    "source_line": 17670
+  },
+  {
+    "code": "F91.1",
+    "title_la": "Disordo morum non socialisatus",
+    "source_line": 17676
+  },
+  {
+    "code": "F91.2",
+    "title_la": "Disordo morum socialisatus",
+    "source_line": 17683
+  },
+  {
+    "code": "F91.3",
+    "title_la": "Disordo oppositus et provocatus",
+    "source_line": 17693
+  },
+  {
+    "code": "F91.8",
+    "title_la": "Disordines morum alii",
+    "source_line": 17701
+  },
+  {
+    "code": "F91.9",
+    "title_la": "Disordo morum, non specificatus",
+    "source_line": 17703
+  },
+  {
+    "code": "F92",
+    "title_la": "Mešoviti poremećaji ponašanja i emocija",
+    "source_line": 1884
+  },
+  {
+    "code": "F92.0",
+    "title_la": "Disordo morum depressivus",
+    "source_line": 17721
+  },
+  {
+    "code": "F92.8",
+    "title_la": "Disordines morum et emotionum mixti alii",
+    "source_line": 17727
+  },
+  {
+    "code": "F92.9",
+    "title_la": "Disordo morum et emotionum mixtus, non specificatus",
+    "source_line": 17734
+  },
+  {
+    "code": "F93",
+    "title_la": "Poremećaj emocija sa početkom u detinjstvu",
+    "source_line": 1885
+  },
+  {
+    "code": "F93.0",
+    "title_la": "Disordo separationis puerilis anxiosus",
+    "source_line": 17744
+  },
+  {
+    "code": "F93.1",
+    "title_la": "Disordo puerilis phobicus anxiosus",
+    "source_line": 17754
+  },
+  {
+    "code": "F93.2",
+    "title_la": "Disordo puerilis socialis anxiosus",
+    "source_line": 17760
+  },
+  {
+    "code": "F93.3",
+    "title_la": "Disordo aemulationis cum fratre et sorore",
+    "source_line": 17775
+  },
+  {
+    "code": "F93.8",
+    "title_la": "Disordines emotionum in infantia orti alii",
+    "source_line": 17781
+  },
+  {
+    "code": "F93.9",
+    "title_la": "Disordo emotionum puerilis, non specificatus",
+    "source_line": 17786
+  },
+  {
+    "code": "F94",
+    "title_la": "Poremećaji socijalnog funkcionisanja nastali u detinjstvu i adolescenciji",
+    "source_line": 1886
+  },
+  {
+    "code": "F94.0",
+    "title_la": "Mutismus selectivus",
+    "source_line": 17796
+  },
+  {
+    "code": "F94.1",
+    "title_la": "Disordo connoxivus reactivus puerilis",
+    "source_line": 17805
+  },
+  {
+    "code": "F94.2",
+    "title_la": "Disordo disinhibitionalis connexivus puerilis",
+    "source_line": 17818
+  },
+  {
+    "code": "F94.8",
+    "title_la": "Disordines functionalis socialis puerilis alii",
+    "source_line": 17837
+  },
+  {
+    "code": "F94.9",
+    "title_la": "Disordo functionis socialis puerilis, non specificatus",
+    "source_line": 17839
+  },
+  {
+    "code": "F95",
+    "title_la": "Tikovi – nevoljni pokreti mišića",
+    "source_line": 1887
+  },
+  {
+    "code": "F95.0",
+    "title_la": "Tic transitorius",
+    "source_line": 17851
+  },
+  {
+    "code": "F95.1",
+    "title_la": "Tic motorius sive vocalis chronicus",
+    "source_line": 17855
+  },
+  {
+    "code": "F95.2",
+    "title_la": "Tic motorius et vocalis multiplex [de la Tourette]",
+    "source_line": 17859
+  },
+  {
+    "code": "F95.8",
+    "title_la": "Tic alius",
+    "source_line": 17866
+  },
+  {
+    "code": "F95.9",
+    "title_la": "Tic, non specificatus",
+    "source_line": 17868
+  },
+  {
+    "code": "F98",
+    "title_la": "Drugi poremećaji emocija i poremećaji ponašanja nastali u detinjstvu i",
+    "source_line": 1888
+  },
+  {
+    "code": "F98.0",
+    "title_la": "Enuresis non organica",
+    "source_line": 17892
+  },
+  {
+    "code": "F98.1",
+    "title_la": "Encopresis non organica",
+    "source_line": 17903
+  },
+  {
+    "code": "F98.2",
+    "title_la": "Disordo nutritionis infantis et pueri",
+    "source_line": 17915
+  },
+  {
+    "code": "F98.3",
+    "title_la": "Pica infantilis et pica puerilis",
+    "source_line": 17927
+  },
+  {
+    "code": "F98.4",
+    "title_la": "Disordines motuum stereotypici",
+    "source_line": 17941
+  },
+  {
+    "code": "F98.5",
+    "title_la": "Battarismus",
+    "source_line": 17961
+  },
+  {
+    "code": "F98.6",
+    "title_la": "Oratio festinans cum interruptionibus",
+    "source_line": 17968
+  },
+  {
+    "code": "F98.8",
+    "title_la": "Disordines emotionum et disordines morum in infantia sive adolescentia alii",
+    "source_line": 17975
+  },
+  {
+    "code": "F98.9",
+    "title_la": "Disordines emotionum et disordines morum in infantia sive adolescentia, non",
+    "source_line": 17984
+  },
+  {
+    "code": "F99",
+    "title_la": "Duševni poremećaj",
+    "source_line": 1892
+  }
+]

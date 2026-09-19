@@ -1,0 +1,1367 @@
+[
+  {
+    "code": "V01",
+    "title_la": "Pešak povređen udarom bicikla",
+    "source_line": 3681
+  },
+  {
+    "code": "V02",
+    "title_la": "Pešak povređen udarom motornog vozila sa dva ili tri točka",
+    "source_line": 3682
+  },
+  {
+    "code": "V03",
+    "title_la": "Pešak povređen udarom kola, dostavnog vozila ili kamiona",
+    "source_line": 3683
+  },
+  {
+    "code": "V04",
+    "title_la": "Pešak povređen udarom teškog transportnog vozila ili autobusa",
+    "source_line": 3684
+  },
+  {
+    "code": "V05",
+    "title_la": "Pešak povređen udarom voza ili vozila na železničkoj pruzi",
+    "source_line": 3685
+  },
+  {
+    "code": "V06",
+    "title_la": "Pešak povređen udarom nekog drugog vozila bez motora",
+    "source_line": 3686
+  },
+  {
+    "code": "V09",
+    "title_la": "Pešak povređen u drugim i neoznačenim saobraćajnim udesima",
+    "source_line": 3687
+  },
+  {
+    "code": "V09.0",
+    "title_la": "Pešak povređen u nesaobraćajnom udesu u kome su učestvovala neka druga ili",
+    "source_line": 49354
+  },
+  {
+    "code": "V09.1",
+    "title_la": "Pešak povređen u neoznačenom nesaobraćajnom udesu",
+    "source_line": 49356
+  },
+  {
+    "code": "V09.2",
+    "title_la": "Pešak povređen u saobraćajnom udesu u kome je učestvovalo neko drugo i",
+    "source_line": 49357
+  },
+  {
+    "code": "V09.3",
+    "title_la": "Pešak povređen u neoznačenom saobraćajnom udesu",
+    "source_line": 49359
+  },
+  {
+    "code": "V09.9",
+    "title_la": "Pešak povređen u neoznačenom transportnom udesu",
+    "source_line": 49360
+  },
+  {
+    "code": "V10",
+    "title_la": "Biciklista povređen u sudaru sa pešakom ili životinjom",
+    "source_line": 3690
+  },
+  {
+    "code": "V11",
+    "title_la": "Biciklista povređen u sudaru sa drugim biciklistom",
+    "source_line": 3691
+  },
+  {
+    "code": "V12",
+    "title_la": "Biciklista povređen u sudaru sa motornim vozilom na dva ili tri točka",
+    "source_line": 3692
+  },
+  {
+    "code": "V13",
+    "title_la": "Biciklista povređen u sudaru sa automobilom, dostavnim vozilom ili kamionom",
+    "source_line": 3693
+  },
+  {
+    "code": "V14",
+    "title_la": "Biciklista povređen u sudaru sa teškim transportnim vozilom ili autobusom",
+    "source_line": 3694
+  },
+  {
+    "code": "V15",
+    "title_la": "Biciklista povređen u sudaru sa vozom ili vozilom na železničkoj pruzi",
+    "source_line": 3695
+  },
+  {
+    "code": "V16",
+    "title_la": "Biciklista povređen u sudaru sa drugim vozilom bez motora",
+    "source_line": 3696
+  },
+  {
+    "code": "V17",
+    "title_la": "Biciklista povređen u sudaru sa fiksiranim ili nepokretnim objektom",
+    "source_line": 3697
+  },
+  {
+    "code": "V18",
+    "title_la": "Biciklista povređen u saobraćajnom udesu bez sudara",
+    "source_line": 3698
+  },
+  {
+    "code": "V19",
+    "title_la": "Biciklista povređen u drugim i neoznačenim saobraćajnim udesima",
+    "source_line": 3699
+  },
+  {
+    "code": "V19.0",
+    "title_la": "Vozač povređen u sudaru sa drugim i neoznačenim motornim vozilom u",
+    "source_line": 49415
+  },
+  {
+    "code": "V19.1",
+    "title_la": "Prolaznik povređen u sudaru sa drugim i neoznačenim motornim vozilom u",
+    "source_line": 49417
+  },
+  {
+    "code": "V19.2",
+    "title_la": "Biciklista (nepoznat) povređen u sudaru sa drugim i neoznačenim motornim vozilom",
+    "source_line": 49419
+  },
+  {
+    "code": "V19.3",
+    "title_la": "Biciklista (svaki) povređen u neoznačenom nesaobraćajnom udesu",
+    "source_line": 49422
+  },
+  {
+    "code": "V19.4",
+    "title_la": "Vozač povređen u sudaru sa drugim i neoznačenim motornim vozilom u",
+    "source_line": 49425
+  },
+  {
+    "code": "V19.5",
+    "title_la": "Prolaznik povređen u sudaru sa drugim i neoznačenim motornim vozilom u",
+    "source_line": 49427
+  },
+  {
+    "code": "V19.6",
+    "title_la": "Biciklista (nepoznat) povređen u sudaru sa drugim i neoznačenim motornim vozilom",
+    "source_line": 49429
+  },
+  {
+    "code": "V19.8",
+    "title_la": "Biciklista (svaki) povređen u drugim označenim saobraćajnim udesima",
+    "source_line": 49432
+  },
+  {
+    "code": "V19.9",
+    "title_la": "Biciklista (svaki) povređen u neoznačenom saobraćajnom udesu",
+    "source_line": 49434
+  },
+  {
+    "code": "V20",
+    "title_la": "Motociklista povređen u sudaru sa pešakom ili životinjom",
+    "source_line": 3702
+  },
+  {
+    "code": "V21",
+    "title_la": "Motociklista povređen u sudaru sa biciklom",
+    "source_line": 3703
+  },
+  {
+    "code": "V22",
+    "title_la": "Motociklista povređen u sudaru sa motornim vozilom sa dva ili tri točka",
+    "source_line": 3704
+  },
+  {
+    "code": "V23",
+    "title_la": "Motociklista povređen u sudaru sa automobilom, dostavnim vozilom ili kamionom",
+    "source_line": 3705
+  },
+  {
+    "code": "V24",
+    "title_la": "Motociklista povređen u sudaru sa teškim transportnim vozilom ili autobusom",
+    "source_line": 3706
+  },
+  {
+    "code": "V25",
+    "title_la": "Motociklista povređen u sudaru sa vozom ili vozilom na železničkoj pruzi",
+    "source_line": 3707
+  },
+  {
+    "code": "V26",
+    "title_la": "Motociklista povređen u sudaru sa drugim vozilom bez motora",
+    "source_line": 3708
+  },
+  {
+    "code": "V27",
+    "title_la": "Motociklista povređen u sudaru sa fiksiranim ili nepokretnim predmetom",
+    "source_line": 3709
+  },
+  {
+    "code": "V28",
+    "title_la": "Motociklista povređen u saobraćajnom udesu bez sudara",
+    "source_line": 3710
+  },
+  {
+    "code": "V29",
+    "title_la": "Motociklista povređen u drugim i neoznačenim saobraćajnim udesima",
+    "source_line": 3711
+  },
+  {
+    "code": "V29.0",
+    "title_la": "Vozač povređen u sudaru sa drugim ili neoznačenim motornim vozilom u",
+    "source_line": 49501
+  },
+  {
+    "code": "V29.1",
+    "title_la": "Prolaznik povređen u sudaru sa drugim i neoznačenim motornim vozilom u",
+    "source_line": 49503
+  },
+  {
+    "code": "V29.2",
+    "title_la": "Motociklista (nepoznat) povređen u sudaru sa drugim i neoznačenim motornim",
+    "source_line": 49505
+  },
+  {
+    "code": "V29.3",
+    "title_la": "Motociklista (svaki) povređen u neoznačenom nesaobraćajnom udesu",
+    "source_line": 49508
+  },
+  {
+    "code": "V29.4",
+    "title_la": "Vozač povređen u sudaru sa drugim i neoznačenim motornim vozilom u",
+    "source_line": 49511
+  },
+  {
+    "code": "V29.5",
+    "title_la": "Prolaznik povređen u sudaru sa drugim i neoznačenim motornim vozilom u",
+    "source_line": 49513
+  },
+  {
+    "code": "V29.6",
+    "title_la": "Motociklista (nepoznat) povređen u sudaru sa drugim i neoznačenim motornim",
+    "source_line": 49515
+  },
+  {
+    "code": "V29.8",
+    "title_la": "Motociklista (svaki) povređen u drugim označenim saobraćajnim udesima",
+    "source_line": 49518
+  },
+  {
+    "code": "V29.9",
+    "title_la": "Motociklista (svaki) povređen u neoznačenom saobraćajnom udesu",
+    "source_line": 49520
+  },
+  {
+    "code": "V30",
+    "title_la": "Putnik motornog vozila sa tri točka povređen u sudaru sa pešakom ili životinjom",
+    "source_line": 3715
+  },
+  {
+    "code": "V31",
+    "title_la": "Putnik motornog vozila sa tri točka povređen u sudaru sa biciklom",
+    "source_line": 3716
+  },
+  {
+    "code": "V32",
+    "title_la": "Putnik motornog vozila sa tri točka povređen u sudaru sa motornim vozilom sa dva",
+    "source_line": 3717
+  },
+  {
+    "code": "V33",
+    "title_la": "Putnik motornog vozila sa tri točka povređen u sudaru sa automobilom, dostavnim",
+    "source_line": 3726
+  },
+  {
+    "code": "V34",
+    "title_la": "Putnik motornog vozila sa tri točka povređen u sudaru sa teškim transportnim",
+    "source_line": 3728
+  },
+  {
+    "code": "V35",
+    "title_la": "Putnik motornog vozila sa tri točka povređen u sudaru sa vozom ili vozilom na",
+    "source_line": 3730
+  },
+  {
+    "code": "V36",
+    "title_la": "Putnik motornog vozila sa tri točka povređen u sudaru sa drugim vozilom bez",
+    "source_line": 3732
+  },
+  {
+    "code": "V37",
+    "title_la": "Putnik motornog vozila sa tri točka povređen u sudaru sa fiksiranim ili nepokretnim",
+    "source_line": 3734
+  },
+  {
+    "code": "V38",
+    "title_la": "Putnik motornog vozila sa tri točka povređen u saobraćajnom udesu bez sudara",
+    "source_line": 3736
+  },
+  {
+    "code": "V39",
+    "title_la": "Putnik motornog vozila sa tri točka povređen u drugim i neoznačenim",
+    "source_line": 3737
+  },
+  {
+    "code": "V39.0",
+    "title_la": "Vozač povređen u sudaru sa drugim i neoznačenim motornim vozilom u",
+    "source_line": 49588
+  },
+  {
+    "code": "V39.1",
+    "title_la": "Prolaznik povređen u sudaru sa drugim i neoznačenim motornim vozilima u",
+    "source_line": 49590
+  },
+  {
+    "code": "V39.2",
+    "title_la": "Putnik (nepoznat) motornog vozila sa tri točka povređen u sudaru sa drugim i",
+    "source_line": 49592
+  },
+  {
+    "code": "V39.3",
+    "title_la": "Putnik (svaki) motornog vozila sa tri točka povređen u neoznačenom",
+    "source_line": 49595
+  },
+  {
+    "code": "V39.4",
+    "title_la": "Vozač povređen u sudaru sa drugim i neoznačenim motornim vozilima u",
+    "source_line": 49599
+  },
+  {
+    "code": "V39.5",
+    "title_la": "Prolaznik povređen u sudaru sa drugim i neoznačenim motornim vozilima u",
+    "source_line": 49601
+  },
+  {
+    "code": "V39.6",
+    "title_la": "Putnik (nepoznat) motornog vozila sa tri točka povređen u sudaru sa drugim i",
+    "source_line": 49603
+  },
+  {
+    "code": "V39.8",
+    "title_la": "Putnik (svaki) motornog vozila sa tri točka povređen u drugim označenim",
+    "source_line": 49612
+  },
+  {
+    "code": "V39.9",
+    "title_la": "Putnik (svaki) motornog vozila sa tri točka povređen u neoznačenom saobraćajnom",
+    "source_line": 49615
+  },
+  {
+    "code": "V40",
+    "title_la": "Putnik automobila povređen u sudaru sa pešakom ili životinjom",
+    "source_line": 3741
+  },
+  {
+    "code": "V41",
+    "title_la": "Putnik automobila povređen u sudaru sa biciklistom",
+    "source_line": 3742
+  },
+  {
+    "code": "V42",
+    "title_la": "Putnik automobila povređen u sudaru sa motornim vozilom sa dva ili tri točka",
+    "source_line": 3743
+  },
+  {
+    "code": "V43",
+    "title_la": "Putnik automobila povređen u sudaru sa automobilom, dostavnim vozilom ili",
+    "source_line": 3744
+  },
+  {
+    "code": "V44",
+    "title_la": "Putnik automobila povređen u sudaru sa teškim transportnim vozilom ili",
+    "source_line": 3746
+  },
+  {
+    "code": "V45",
+    "title_la": "Putnik automobila povređen u sudaru sa vozom ili vozilom na železničkoj pruzi",
+    "source_line": 3748
+  },
+  {
+    "code": "V46",
+    "title_la": "Putnik automobila povređen u sudaru sa drugim vozilom bez motora",
+    "source_line": 3749
+  },
+  {
+    "code": "V47",
+    "title_la": "Putnik automobila povređen u sudaru sa fiksiranim ili nepokretnim predmetom",
+    "source_line": 3750
+  },
+  {
+    "code": "V48",
+    "title_la": "Putnik automobila povređen u saobraćajnom udesu bez sudara",
+    "source_line": 3751
+  },
+  {
+    "code": "V49",
+    "title_la": "Putnik automobila povređen u drugim i neoznačenim saobraćajnim udesima",
+    "source_line": 3752
+  },
+  {
+    "code": "V49.0",
+    "title_la": "Vozač povređen u sudaru sa drugim i neoznačenim motornim vozilom u",
+    "source_line": 49679
+  },
+  {
+    "code": "V49.1",
+    "title_la": "Prolaznik povređen u sudaru sa drugim i neoznačenim motornim vozilom u",
+    "source_line": 49681
+  },
+  {
+    "code": "V49.2",
+    "title_la": "Putnik (nepoznat) automobila povređen u sudaru sa drugim i neoznačenim motornim",
+    "source_line": 49683
+  },
+  {
+    "code": "V49.3",
+    "title_la": "Putnik automobila (svaki) povređen u neoznačenom nesaobraćajnom udesu",
+    "source_line": 49686
+  },
+  {
+    "code": "V49.4",
+    "title_la": "Vozač povređen u sudaru sa drugim i neoznačenim motornim vozilom u",
+    "source_line": 49689
+  },
+  {
+    "code": "V49.5",
+    "title_la": "Prolaznik povređen u sudaru sa drugim i neoznačenim motornim vozilom u",
+    "source_line": 49691
+  },
+  {
+    "code": "V49.6",
+    "title_la": "Putnik (nepoznat) automobila povređen u sudaru sa drugim i neoznačenim motornim",
+    "source_line": 49693
+  },
+  {
+    "code": "V49.8",
+    "title_la": "Putnik automobila (svaki) povređen u drugim označenim saobraćajnim udesima",
+    "source_line": 49696
+  },
+  {
+    "code": "V49.9",
+    "title_la": "Putnik automobila (svaki) povređen u neoznačenom saobraćajnom udesu",
+    "source_line": 49698
+  },
+  {
+    "code": "V50",
+    "title_la": "Putnik dostavnog vozila ili kamiona povređen u sudaru sa pešakom ili životinjom",
+    "source_line": 3756
+  },
+  {
+    "code": "V51",
+    "title_la": "Putnik dostavnog vozila ili kamiona povređen u sudaru sa biciklom",
+    "source_line": 3757
+  },
+  {
+    "code": "V52",
+    "title_la": "Putnik dostavnog vozila ili kamiona povređen u sudaru sa motornim vozilom sa",
+    "source_line": 3758
+  },
+  {
+    "code": "V53",
+    "title_la": "Putnik dostavnog vozila ili kamiona povređen u sudaru sa automobilom, dostavnim",
+    "source_line": 3760
+  },
+  {
+    "code": "V54",
+    "title_la": "Putnik dostavnog vozila ili kamiona povređen u sudaru sa teškim transportnim",
+    "source_line": 3762
+  },
+  {
+    "code": "V55",
+    "title_la": "Putnik dostavnog vozila ili kamiona povređen u sudaru sa vozom ili vozilom na",
+    "source_line": 3764
+  },
+  {
+    "code": "V56",
+    "title_la": "Putnik dostavnog vozila ili kamiona povređen u sudaru sa drugim vozilom bez",
+    "source_line": 3766
+  },
+  {
+    "code": "V57",
+    "title_la": "Putnik dostavnog vozila ili kamiona povređen u sudaru sa fiksiranim ili nepokretnim",
+    "source_line": 3768
+  },
+  {
+    "code": "V58",
+    "title_la": "Putnik dostavnog vozila ili kamiona povređen u saobraćajnom udesu bez sudara",
+    "source_line": 3770
+  },
+  {
+    "code": "V59",
+    "title_la": "Putnik dostavnog vozila ili kamiona povređen u drugim i neoznačenim",
+    "source_line": 3771
+  },
+  {
+    "code": "V59.0",
+    "title_la": "Vozač povređen u sudaru sa drugim i neoznačenim motornim vozilima u",
+    "source_line": 49764
+  },
+  {
+    "code": "V59.1",
+    "title_la": "Prolaznik povređen u sudaru sa drugim i neoznačenim motornim vozilima u",
+    "source_line": 49766
+  },
+  {
+    "code": "V59.2",
+    "title_la": "Neoznačeni putnik dostavnog vozila ili kamiona povređen u sudaru sa drugim i",
+    "source_line": 49768
+  },
+  {
+    "code": "V59.3",
+    "title_la": "Putnik [svaki] dostavnog vozila ili kamiona povređen u neoznačenom",
+    "source_line": 49771
+  },
+  {
+    "code": "V59.4",
+    "title_la": "Vozač povređen u sudaru sa drugim i neoznačenim motornim vozilima u",
+    "source_line": 49781
+  },
+  {
+    "code": "V59.5",
+    "title_la": "Prolaznik povređen u sudaru sa drugim i neoznačenim motornim vozilima u",
+    "source_line": 49783
+  },
+  {
+    "code": "V59.6",
+    "title_la": "Putnik (nepoznat) dostavnog vozila ili kamiona povređen u sudaru sa drugim i",
+    "source_line": 49785
+  },
+  {
+    "code": "V59.8",
+    "title_la": "Putnik (svaki) dostavnog vozila ili kamiona povređen u drugim označenim",
+    "source_line": 49788
+  },
+  {
+    "code": "V59.9",
+    "title_la": "Putnik (svaki) dostavnog vozila ili kamiona povređen u neoznačenom saobraćajnom",
+    "source_line": 49791
+  },
+  {
+    "code": "V60",
+    "title_la": "Putnik teškog transportnog vozila povređen u sudaru sa pešakom ili životinjom",
+    "source_line": 3783
+  },
+  {
+    "code": "V61",
+    "title_la": "Putnik teškog transportnog vozila povređen u sudaru sa biciklom",
+    "source_line": 3784
+  },
+  {
+    "code": "V62",
+    "title_la": "Putnik teškog transportnog vozila povređen u sudaru sa motornim vozilom sa dva",
+    "source_line": 3785
+  },
+  {
+    "code": "V63",
+    "title_la": "Putnik teškog transportnog vozila povređen u sudaru sa automobilom, dostavnim",
+    "source_line": 3787
+  },
+  {
+    "code": "V64",
+    "title_la": "Putnik teškog transportnog vozila povređen u sudaru sa teškim transportnim",
+    "source_line": 3789
+  },
+  {
+    "code": "V65",
+    "title_la": "Putnik teškog transportnog vozila povređen u sudaru sa vozom ili vozilom na",
+    "source_line": 3791
+  },
+  {
+    "code": "V66",
+    "title_la": "Putnik teškog transportnog vozila povređen u sudaru sa drugim vozilom bez",
+    "source_line": 3793
+  },
+  {
+    "code": "V67",
+    "title_la": "Putnik teškog transportnog vozila povređen u sudaru sa fiksiranim ili nepokretnim",
+    "source_line": 3795
+  },
+  {
+    "code": "V68",
+    "title_la": "Putnik teškog transportnog vozila povređen u saobraćajnom udesu bez sudara",
+    "source_line": 3797
+  },
+  {
+    "code": "V69",
+    "title_la": "Putnik teškog transportnog vozila povređen u drugim i neoznačenim saobraćajnim",
+    "source_line": 3798
+  },
+  {
+    "code": "V69.0",
+    "title_la": "Vozač povređen u sudaru sa drugim i neoznačenim motornim vozilima u",
+    "source_line": 49859
+  },
+  {
+    "code": "V69.1",
+    "title_la": "Prolaznik povređen u sudaru sa drugim i neoznačenim motornim vozilima u",
+    "source_line": 49861
+  },
+  {
+    "code": "V69.2",
+    "title_la": "Putnik (nepoznat) teškog transportnog vozila povređen u sudaru sa drugim i",
+    "source_line": 49863
+  },
+  {
+    "code": "V69.3",
+    "title_la": "Putnik (svaki) teškog transportnog vozila povređen u neoznačenom nesaobraćajnom",
+    "source_line": 49866
+  },
+  {
+    "code": "V69.4",
+    "title_la": "Vozač povređen u sudaru sa drugim i neoznačenim motornim vozilima u",
+    "source_line": 49870
+  },
+  {
+    "code": "V69.5",
+    "title_la": "Prolaznik povređen u sudaru sa drugim i neoznačenim motornim vozilima u",
+    "source_line": 49872
+  },
+  {
+    "code": "V69.6",
+    "title_la": "Putnik (nepoznat) teškog transportnog vozila povređen u sudaru sa drugim i",
+    "source_line": 49874
+  },
+  {
+    "code": "V69.8",
+    "title_la": "Putnik (svaki) teškog transportnog vozila povređen u drugim označenim",
+    "source_line": 49877
+  },
+  {
+    "code": "V69.9",
+    "title_la": "Putnik (svaki) teškog transportnog vozila povređen u neoznačenom saobraćajnom",
+    "source_line": 49880
+  },
+  {
+    "code": "V70",
+    "title_la": "Putnik autobusa povređen u sudaru sa pešakom ili životinjom",
+    "source_line": 3802
+  },
+  {
+    "code": "V71",
+    "title_la": "Putnik autobusa povređen u sudaru sa biciklom",
+    "source_line": 3803
+  },
+  {
+    "code": "V72",
+    "title_la": "Putnik autobusa povređen u sudaru sa motornim vozilom sa dva ili tri točka",
+    "source_line": 3804
+  },
+  {
+    "code": "V73",
+    "title_la": "Putnik autobusa povređen u sudaru sa automobilom, dostavnim vozilom ili",
+    "source_line": 3805
+  },
+  {
+    "code": "V74",
+    "title_la": "Putnik autobusa povređen u sudaru sa teškim transportnim vozilom ili autobusom",
+    "source_line": 3807
+  },
+  {
+    "code": "V75",
+    "title_la": "Putnik autobusa povređen u sudaru sa vozom ili vozilom na železničkoj pruzi",
+    "source_line": 3808
+  },
+  {
+    "code": "V76",
+    "title_la": "Putnik autobusa povređen u sudaru sa drugim vozilom bez motora",
+    "source_line": 3809
+  },
+  {
+    "code": "V77",
+    "title_la": "Putnik autobusa povređen u sudaru sa fiksiranim ili nepokretnim predmetom",
+    "source_line": 3810
+  },
+  {
+    "code": "V78",
+    "title_la": "Putnik autobusa povređen u saobraćajnom udesu bez sudara",
+    "source_line": 3811
+  },
+  {
+    "code": "V79",
+    "title_la": "Putnik autobusa povređen u drugim i neoznačenim saobraćajnim udesima",
+    "source_line": 3812
+  },
+  {
+    "code": "V79.0",
+    "title_la": "Vozač povređen u sudaru sa drugim i neoznačenim motornim vozilima u",
+    "source_line": 49947
+  },
+  {
+    "code": "V79.1",
+    "title_la": "Prolaznik povređen u sudaru sa drugim i neoznačenim motornim vozilima u",
+    "source_line": 49949
+  },
+  {
+    "code": "V79.2",
+    "title_la": "Putnik (nepoznat) autobusa povređen u sudaru sa drugim i neoznačenim motornim",
+    "source_line": 49951
+  },
+  {
+    "code": "V79.3",
+    "title_la": "Putnik (svaki) autobusa povređen u neoznačenom nesaobraćajnom udesu",
+    "source_line": 49954
+  },
+  {
+    "code": "V79.4",
+    "title_la": "Vozač povređen u sudaru sa drugim i neoznačenim motornim vozilima u",
+    "source_line": 49957
+  },
+  {
+    "code": "V79.5",
+    "title_la": "Prolaznik povređen u sudaru sa drugim i neoznačenim motornim vozilima u",
+    "source_line": 49959
+  },
+  {
+    "code": "V79.6",
+    "title_la": "Putnik (nepoznat) autobusa povređen u sudaru sa drugim i neoznačenim motornim",
+    "source_line": 49961
+  },
+  {
+    "code": "V79.8",
+    "title_la": "Putnik (svaki) autobusa povređen u drugim označenim saobraćajnim udesima",
+    "source_line": 49964
+  },
+  {
+    "code": "V79.9",
+    "title_la": "Putnik (svaki) autobusa povređen u neoznačenom saobraćajnom udesu",
+    "source_line": 49966
+  },
+  {
+    "code": "V80",
+    "title_la": "Jahač životinje ili putnik koji se nalazi u vozilu koje vuče životinja povređen u",
+    "source_line": 3815
+  },
+  {
+    "code": "V80.0",
+    "title_la": "Jahač ili putnik povređen padom ili guranjem sa životinje ili vozila koje vuče životinja",
+    "source_line": 49976
+  },
+  {
+    "code": "V80.1",
+    "title_la": "Jahač ili putnik povređen u sudaru sa pešakom ili životinjom",
+    "source_line": 49981
+  },
+  {
+    "code": "V80.2",
+    "title_la": "Jahač ili putnik povređen u sudaru sa biciklom",
+    "source_line": 49983
+  },
+  {
+    "code": "V80.3",
+    "title_la": "Jahač ili putnik povređen u sudaru sa motornim vozilom sa dva ili tri točka",
+    "source_line": 49984
+  },
+  {
+    "code": "V80.4",
+    "title_la": "Jahač ili putnik povređen u sudaru sa automobilom, dostavnim vozilom, kamionom,",
+    "source_line": 49985
+  },
+  {
+    "code": "V80.5",
+    "title_la": "Jahač ili putnik povređen u sudaru sa drugim označenim motornim vozilom",
+    "source_line": 49987
+  },
+  {
+    "code": "V80.6",
+    "title_la": "Jahač ili putnik povređen u sudaru sa železničkim vozom ili vozilom na železničkoj",
+    "source_line": 49988
+  },
+  {
+    "code": "V80.7",
+    "title_la": "Jahač ili putnik povređen u sudaru sa drugim vozilom bez motora",
+    "source_line": 49990
+  },
+  {
+    "code": "V80.8",
+    "title_la": "Jahač ili putnik povređen u sudaru sa fiksiranim ili nepokretnim predmetom",
+    "source_line": 49995
+  },
+  {
+    "code": "V80.9",
+    "title_la": "Jahač ili putnik povređen u drugim i neoznačenim saobraćajnim udesima",
+    "source_line": 50002
+  },
+  {
+    "code": "V81",
+    "title_la": "Putnik voza ili vozila na železničkoj pruzi povređen u saobraćajnom udesu",
+    "source_line": 3817
+  },
+  {
+    "code": "V81.0",
+    "title_la": "Putnik železničkog voza ili vozila na železničkoj pruzi povređen u sudaru sa drugim",
+    "source_line": 50008
+  },
+  {
+    "code": "V81.1",
+    "title_la": "Putnik železničkog voza ili vozila na železničkoj pruzi povređen u sudaru sa",
+    "source_line": 50010
+  },
+  {
+    "code": "V81.2",
+    "title_la": "Putnik železničkog voza ili vozila na železničkoj pruzi povređen u sudaru sa",
+    "source_line": 50012
+  },
+  {
+    "code": "V81.3",
+    "title_la": "Putnik železničkog voza ili vozila na železničkoj pruzi povređen u sudaru sa drugim",
+    "source_line": 50014
+  },
+  {
+    "code": "V81.4",
+    "title_la": "Osoba povređena u toku ulaženja ili izlaženja u ili iz železničkog voza ili vozila na",
+    "source_line": 50017
+  },
+  {
+    "code": "V81.5",
+    "title_la": "Putnik železničkog voza ili vozila na železničkoj pruzi povređen padom u vozu ili u",
+    "source_line": 50019
+  },
+  {
+    "code": "V81.6",
+    "title_la": "Putnik železničkog voza ili vozila na železničkoj pruzi povređen padom iz voza ili",
+    "source_line": 50026
+  },
+  {
+    "code": "V81.7",
+    "title_la": "Putnik železničkog voza ili vozila na železničkoj pruzi povređen pri iskakanju voza iz",
+    "source_line": 50033
+  },
+  {
+    "code": "V81.8",
+    "title_la": "Putnik železničkog voza ili vozila na železničkoj pruzi povređen u drugim označenim",
+    "source_line": 50035
+  },
+  {
+    "code": "V81.9",
+    "title_la": "Putnik železničkog voza ili vozila na železničkoj pruzi povređen u neoznačenom",
+    "source_line": 50045
+  },
+  {
+    "code": "V82",
+    "title_la": "Putnik tramvaja povređen u saobraćajnom udesu",
+    "source_line": 3818
+  },
+  {
+    "code": "V82.0",
+    "title_la": "Putnik tramvaja povređen u sudaru sa motornim vozilom u nesaobraćajnom udesu",
+    "source_line": 50051
+  },
+  {
+    "code": "V82.1",
+    "title_la": "Putnik tramvaja povređen u sudaru sa motornim vozilom u saobraćajnom udesu",
+    "source_line": 50052
+  },
+  {
+    "code": "V82.2",
+    "title_la": "Putnik tramvaja povređen u sudaru sa odronom ili pri udaru odrona",
+    "source_line": 50053
+  },
+  {
+    "code": "V82.3",
+    "title_la": "Putnik tramvaja povređen u sudaru sa drugim predmetom",
+    "source_line": 50061
+  },
+  {
+    "code": "V82.4",
+    "title_la": "Osoba povređena pri ulasku ili izlasku iz tramvaja",
+    "source_line": 50063
+  },
+  {
+    "code": "V82.5",
+    "title_la": "Putnik tramvaja povređen padom u tramvaju",
+    "source_line": 50064
+  },
+  {
+    "code": "V82.6",
+    "title_la": "Putnik tramvaja povređen padom iz tramvaja",
+    "source_line": 50068
+  },
+  {
+    "code": "V82.7",
+    "title_la": "Putnik tramvaja povređen tokom iskakanja iz šina bez prethodnog sudara",
+    "source_line": 50072
+  },
+  {
+    "code": "V82.8",
+    "title_la": "Putnik tramvaja povređen u drugim označenim saobraćajnim udesima",
+    "source_line": 50073
+  },
+  {
+    "code": "V82.9",
+    "title_la": "Putnik tramvaja povređen u neoznačenom saobraćajnom udesu",
+    "source_line": 50075
+  },
+  {
+    "code": "V83",
+    "title_la": "Putnik specijalnog vozila koje se uglavnom koristi u industrijskim postrojenjima",
+    "source_line": 3819
+  },
+  {
+    "code": "V83.0",
+    "title_la": "Vozač specijalnog industrijskog vozila povređen u saobraćajnom udesu",
+    "source_line": 50081
+  },
+  {
+    "code": "V83.1",
+    "title_la": "Putnik specijalnog industrijskog vozila povređen u saobraćajnom udesu",
+    "source_line": 50082
+  },
+  {
+    "code": "V83.2",
+    "title_la": "Osoba van i na specijalnom industrijskom vozilu povređena u saobraćajnom udesu",
+    "source_line": 50083
+  },
+  {
+    "code": "V83.3",
+    "title_la": "Putnik (nepoznat) specijalnog industrijskog vozila povređen u saobraćajnom udesu",
+    "source_line": 50084
+  },
+  {
+    "code": "V83.4",
+    "title_la": "Osoba povređena pri ulasku ili izlasku iz specijalnog industrijskog vozila",
+    "source_line": 50085
+  },
+  {
+    "code": "V83.5",
+    "title_la": "Vozač specijalnog industrijskog vozila povređen u nesaobraćajnom udesu",
+    "source_line": 50086
+  },
+  {
+    "code": "V83.6",
+    "title_la": "Putnik specijalnog industrijskog vozila povređen u nesaobraćajnom udesu",
+    "source_line": 50087
+  },
+  {
+    "code": "V83.7",
+    "title_la": "Osoba van i na specijalnom industrijskom vozilu povređena u nesaobraćajnom",
+    "source_line": 50088
+  },
+  {
+    "code": "V83.9",
+    "title_la": "Putnik (nepoznat) specijalnog industrijskog vozila povređen u nesaobraćajnom",
+    "source_line": 50090
+  },
+  {
+    "code": "V84",
+    "title_la": "Putnik specijalnog vozila koje se uglavnom koristi u poljoprivredi povređen u",
+    "source_line": 3821
+  },
+  {
+    "code": "V84.0",
+    "title_la": "Vozač specijalnog poljoprivrednog vozila povređen u saobraćajnom udesu",
+    "source_line": 50097
+  },
+  {
+    "code": "V84.1",
+    "title_la": "Putnik specijalnog poljoprivrednog vozila povređen u saobraćajnom udesu",
+    "source_line": 50098
+  },
+  {
+    "code": "V84.2",
+    "title_la": "Osoba van i na specijalnom poljoprivrednom vozilu povređena u saobraćajnom",
+    "source_line": 50099
+  },
+  {
+    "code": "V84.3",
+    "title_la": "Putnik (nepoznat) specijalnog poljoprivrednog vozila povređen u saobraćajnom",
+    "source_line": 50101
+  },
+  {
+    "code": "V84.4",
+    "title_la": "Osoba povređena tokom ulaženja ili izlaženja iz specijalnog poljoprivrednog vozila",
+    "source_line": 50103
+  },
+  {
+    "code": "V84.5",
+    "title_la": "Vozač specijalnog poljoprivrednog vozila povređen u nesaobraćajnom udesu",
+    "source_line": 50104
+  },
+  {
+    "code": "V84.6",
+    "title_la": "Putnik specijalnog poljoprivrednog vozila povređen u nesaobraćajnom udesu",
+    "source_line": 50105
+  },
+  {
+    "code": "V84.7",
+    "title_la": "Osoba van i na specijalnom poljoprivrednom vozilu povređena u nesaobraćajnom",
+    "source_line": 50106
+  },
+  {
+    "code": "V84.9",
+    "title_la": "Putnik (nepoznat) specijalnog poljoprivrednog vozila povređen u nesaobraćajnom",
+    "source_line": 50116
+  },
+  {
+    "code": "V85",
+    "title_la": "Putnik vozila specijalne konstrukcije povređen u saobraćajnom udesu",
+    "source_line": 3823
+  },
+  {
+    "code": "V85.0",
+    "title_la": "Vozač vozila specijalne konstrukcije povređen u saobraćajnom udesu",
+    "source_line": 50122
+  },
+  {
+    "code": "V85.1",
+    "title_la": "Putnik vozila specijalne konstrukcije povređen u saobraćajnom udesu",
+    "source_line": 50123
+  },
+  {
+    "code": "V85.2",
+    "title_la": "Osoba van i na vozilu specijalne konstrukcije povređena u saobraćajnom udesu",
+    "source_line": 50124
+  },
+  {
+    "code": "V85.3",
+    "title_la": "Putnik (nepoznat) vozila specijalne konstrukcije povređen u saobraćajnom udesu",
+    "source_line": 50125
+  },
+  {
+    "code": "V85.4",
+    "title_la": "Osoba povređena tokom ulaska ili izlaska iz vozila specijalne konstrukcije",
+    "source_line": 50126
+  },
+  {
+    "code": "V85.5",
+    "title_la": "Vozač vozila specijalne konstrukcije povređen u nesaobraćajnom udesu",
+    "source_line": 50127
+  },
+  {
+    "code": "V85.6",
+    "title_la": "Putnik vozila specijalne konstrukcije povređen u nesaobraćajnom udesu",
+    "source_line": 50128
+  },
+  {
+    "code": "V85.7",
+    "title_la": "Osoba van i na vozilu specijalne konstrukcije povređena u nesaobraćajnom udesu",
+    "source_line": 50129
+  },
+  {
+    "code": "V85.9",
+    "title_la": "Putnik (nepoznat) vozila specijalne konstrukcije povređen u nesaobraćajnom udesu",
+    "source_line": 50130
+  },
+  {
+    "code": "V86",
+    "title_la": "Putnik specijalnog vozila za sve terene ili drugog motornog vozila namenjenog",
+    "source_line": 3824
+  },
+  {
+    "code": "V86.0",
+    "title_la": "Vozač vozila za sve terene ili drugog motornog vozila za korišćenje van puteva",
+    "source_line": 50137
+  },
+  {
+    "code": "V86.1",
+    "title_la": "Putnik vozila za sve terene ili drugog motornog vozila za korišćenje van puteva",
+    "source_line": 50139
+  },
+  {
+    "code": "V86.2",
+    "title_la": "Osoba van i na vozilu za sve terene ili drugom motornom vozilu za korišćenje van",
+    "source_line": 50141
+  },
+  {
+    "code": "V86.3",
+    "title_la": "Putnik (nepoznat) vozila za sve terene ili drugog motornog vozila za korišćenje van",
+    "source_line": 50143
+  },
+  {
+    "code": "V86.4",
+    "title_la": "Osoba povređena tokom ulaska ili izlaska iz vozila za sve terene ili drugog motornog",
+    "source_line": 50145
+  },
+  {
+    "code": "V86.5",
+    "title_la": "Vozač vozila za sve terene ili drugog motornog vozila za korišćenje van puteva",
+    "source_line": 50147
+  },
+  {
+    "code": "V86.6",
+    "title_la": "Putnik vozila za sve terene ili drugog motornog vozila za korišćenje van puteva",
+    "source_line": 50149
+  },
+  {
+    "code": "V86.7",
+    "title_la": "Osoba na i van vozila za sve terene ili drugom motornom vozilu za korišćenje van",
+    "source_line": 50151
+  },
+  {
+    "code": "V86.9",
+    "title_la": "Putnik (nepoznat) vozila za sve terene ili drugog motornog vozila za korišćenje van",
+    "source_line": 50153
+  },
+  {
+    "code": "V87",
+    "title_la": "Saobraćajni udes označenog tipa s tim što je način transporta žrtve nepoznat",
+    "source_line": 3826
+  },
+  {
+    "code": "V87.0",
+    "title_la": "Osoba povređena u sudaru između automobila i motornog vozila sa dva ili tri točka",
+    "source_line": 50163
+  },
+  {
+    "code": "V87.1",
+    "title_la": "Osoba povređena u sudaru između drugog motornog vozila i motornog vozila sa dva",
+    "source_line": 50172
+  },
+  {
+    "code": "V87.2",
+    "title_la": "Osoba povređena u sudaru između automobila i dostavnog vozila ili kamiona (u",
+    "source_line": 50174
+  },
+  {
+    "code": "V87.3",
+    "title_la": "Osoba povređena u sudaru između automobila i autobusa (u saobraćaju)",
+    "source_line": 50176
+  },
+  {
+    "code": "V87.4",
+    "title_la": "Osoba povređena u sudaru između automobila i teškog transportnog vozila (u",
+    "source_line": 50177
+  },
+  {
+    "code": "V87.5",
+    "title_la": "Osoba povređena u sudaru između teškog transportnog vozila i autobusa (u",
+    "source_line": 50179
+  },
+  {
+    "code": "V87.6",
+    "title_la": "Osoba povređena u sudaru između železničkog voza ili vozila na železničkoj pruzi i",
+    "source_line": 50181
+  },
+  {
+    "code": "V87.7",
+    "title_la": "Osoba povređena u sudaru između drugih označenih motornih vozila (u saobraćaju)",
+    "source_line": 50183
+  },
+  {
+    "code": "V87.8",
+    "title_la": "Osoba povređena u drugim označenim saobraćajnim udesima bez sudara u kojima",
+    "source_line": 50184
+  },
+  {
+    "code": "V87.9",
+    "title_la": "Osoba povređena u drugim označenim (sa sudarom) (bez sudara) saobraćajnim",
+    "source_line": 50186
+  },
+  {
+    "code": "V88",
+    "title_la": "Nesaobraćajni udes označenog tipa s tim što je način transporta žrtve nepoznat",
+    "source_line": 3827
+  },
+  {
+    "code": "V88.0",
+    "title_la": "Osoba povređena u sudaru između automobila i motornog vozila sa dva ili tri točka,",
+    "source_line": 50194
+  },
+  {
+    "code": "V88.1",
+    "title_la": "Osoba povređena u sudaru između drugog motornog vozila i motornog vozila sa dva",
+    "source_line": 50196
+  },
+  {
+    "code": "V88.2",
+    "title_la": "Osoba povređena u sudaru između automobila i dostavnog vozila ili kamiona, van",
+    "source_line": 50198
+  },
+  {
+    "code": "V88.3",
+    "title_la": "Osoba povređena u sudaru između automobila i autobusa, van saobraćaja",
+    "source_line": 50200
+  },
+  {
+    "code": "V88.4",
+    "title_la": "Osoba povređena u sudaru između automobila i teškog transportnog vozila, van",
+    "source_line": 50201
+  },
+  {
+    "code": "V88.5",
+    "title_la": "Osoba povređena u sudaru između teškog transportnog vozila i autobusa, van",
+    "source_line": 50203
+  },
+  {
+    "code": "V88.6",
+    "title_la": "Osoba povređena u sudaru između železničkog voza ili vozila na železničkoj pruzi i",
+    "source_line": 50205
+  },
+  {
+    "code": "V88.7",
+    "title_la": "Osoba povređena u sudaru između drugih označenih motornih vozila, van",
+    "source_line": 50207
+  },
+  {
+    "code": "V88.8",
+    "title_la": "Osoba povređena u drugim označenim saobraćajnim udesima bez sudara u kojima",
+    "source_line": 50209
+  },
+  {
+    "code": "V88.9",
+    "title_la": "Osoba povređena u drugim označenim saobraćajnim udesima (sa sudarom) (bez",
+    "source_line": 50211
+  },
+  {
+    "code": "V89",
+    "title_la": "Udes motornog vozila ili vozila bez motora, tip vozila neoznačen",
+    "source_line": 3828
+  },
+  {
+    "code": "V89.0",
+    "title_la": "Osoba povređena u udesu neoznačenog motornog vozila, van saobraćaja",
+    "source_line": 50215
+  },
+  {
+    "code": "V89.1",
+    "title_la": "Osoba povređena u udesu neoznačenog vozila bez motora, van saobraćaja",
+    "source_line": 50217
+  },
+  {
+    "code": "V89.2",
+    "title_la": "Osoba povređena u udesu neoznačenog motornog vozila, u saobraćaju",
+    "source_line": 50227
+  },
+  {
+    "code": "V89.3",
+    "title_la": "Osoba povređena u neoznačenom udesu vozila bez motora u saobraćaju",
+    "source_line": 50230
+  },
+  {
+    "code": "V89.9",
+    "title_la": "Osoba povređena u udesu neoznačenog vozila",
+    "source_line": 50232
+  },
+  {
+    "code": "V90",
+    "title_la": "Udes plovila koji uzrokuje davljenje i potapanje",
+    "source_line": 3838
+  },
+  {
+    "code": "V91",
+    "title_la": "Udes plovila koji uzrokuje drugu povredu",
+    "source_line": 3839
+  },
+  {
+    "code": "V92",
+    "title_la": "Davljenje i potapanje vezano za transport na vodi bez udesa plovila",
+    "source_line": 3840
+  },
+  {
+    "code": "V93",
+    "title_la": "Nezgoda na palubi plovila bez udesa plovila koja ne uzrokuje davljenje i potapanje",
+    "source_line": 3841
+  },
+  {
+    "code": "V94",
+    "title_la": "Drugi i neoznačeni udesi pri transportu na vodi",
+    "source_line": 3842
+  },
+  {
+    "code": "V95",
+    "title_la": "Udes letelice sa motorom koji uzrokuje povredu putnika",
+    "source_line": 3845
+  },
+  {
+    "code": "V95.0",
+    "title_la": "Udes helikoptera koji uzrokuje povredu putnika",
+    "source_line": 50349
+  },
+  {
+    "code": "V95.1",
+    "title_la": "Udes ultralake, mikrolake i jedrilice sa napajanjem koje uzrokuje povredu putnika",
+    "source_line": 50350
+  },
+  {
+    "code": "V95.2",
+    "title_la": "Udes druge privatne letelice sa fiksiranim krilima koji uzrokuje povredu putnika",
+    "source_line": 50351
+  },
+  {
+    "code": "V95.3",
+    "title_la": "Udes komercijalne letelice sa fiksiranim krilima koji uzrokuje povredu putnika",
+    "source_line": 50352
+  },
+  {
+    "code": "V95.4",
+    "title_la": "Udes svemirske letelice koji uzrokuje povredu putnika",
+    "source_line": 50353
+  },
+  {
+    "code": "V95.8",
+    "title_la": "Drugi vazdušni udesi koji uzrokuju povredu putnika",
+    "source_line": 50354
+  },
+  {
+    "code": "V95.9",
+    "title_la": "Udes neoznačene letelice koji uzrokuje povredu putnika",
+    "source_line": 50355
+  },
+  {
+    "code": "V96",
+    "title_la": "Udes letelice bez motora koji uzrokuje povredu putnika",
+    "source_line": 3846
+  },
+  {
+    "code": "V96.0",
+    "title_la": "Udes balona koji uzrokuje povredu putnika",
+    "source_line": 50366
+  },
+  {
+    "code": "V96.1",
+    "title_la": "Udes vučene jedrilice koji uzrokuje povredu putnika",
+    "source_line": 50367
+  },
+  {
+    "code": "V96.2",
+    "title_la": "Udes jedrilice (bez motora) koji uzrokuje povredu putnika",
+    "source_line": 50368
+  },
+  {
+    "code": "V96.8",
+    "title_la": "Drugi udesi letelica bez motora koji uzrokuju povredu putnika",
+    "source_line": 50369
+  },
+  {
+    "code": "V96.9",
+    "title_la": "Udes neoznačene letelice koji uzrokuje povredu putnika",
+    "source_line": 50371
+  },
+  {
+    "code": "V97",
+    "title_la": "Drugi označeni udesi u vazdušnom saobraćaju",
+    "source_line": 3847
+  },
+  {
+    "code": "V97.0",
+    "title_la": "Putnik letelice povređen u nekim drugim označenim vazdušnim udesima",
+    "source_line": 50376
+  },
+  {
+    "code": "V97.1",
+    "title_la": "Osoba povređena u toku ukrcavanja ili iskrcavanja iz letelice",
+    "source_line": 50379
+  },
+  {
+    "code": "V97.2",
+    "title_la": "Padobranac povređen u udesu vazdušnog transporta",
+    "source_line": 50380
+  },
+  {
+    "code": "V97.3",
+    "title_la": "Osoba povređena na zemlji u udesu vazdušnog saobraćaja",
+    "source_line": 50382
+  },
+  {
+    "code": "V97.8",
+    "title_la": "Drugi udesi u vazdušnom saobraćaju, neklasifikovani na drugom mestu",
+    "source_line": 50394
+  },
+  {
+    "code": "V98",
+    "title_la": "Drugi označeni saobraćajni udesi",
+    "source_line": 3850
+  },
+  {
+    "code": "V99",
+    "title_la": "Neoznačen saobraćajni udes",
+    "source_line": 3851
+  }
+]

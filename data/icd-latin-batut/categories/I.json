@@ -1,0 +1,387 @@
+[
+  {
+    "code": "I00",
+    "title_la": "Reumatska groznica bez promena na srcu",
+    "source_line": 2157
+  },
+  {
+    "code": "I01",
+    "title_la": "Reumatska groznica sa promenama na srcu",
+    "source_line": 2158
+  },
+  {
+    "code": "I02",
+    "title_la": "Reumatska horea - spontani nevoljni pokreti delova tela",
+    "source_line": 2159
+  },
+  {
+    "code": "I05",
+    "title_la": "Reumatske bolesti mitralnog zaliska",
+    "source_line": 2162
+  },
+  {
+    "code": "I06",
+    "title_la": "Reumatske bolesti aortnog zaliska",
+    "source_line": 2163
+  },
+  {
+    "code": "I07",
+    "title_la": "Reumatske bolesti trolisnog zaliska",
+    "source_line": 2164
+  },
+  {
+    "code": "I08",
+    "title_la": "Višestruke bolesti zalistaka srca",
+    "source_line": 2165
+  },
+  {
+    "code": "I09",
+    "title_la": "Druge reumatske bolesti srca",
+    "source_line": 2166
+  },
+  {
+    "code": "I10",
+    "title_la": "Povišen krvni pritisak, nepoznatog porekla",
+    "source_line": 2169
+  },
+  {
+    "code": "I11",
+    "title_la": "Bolest srca uzrokovana povišenim krvnim pritiskom",
+    "source_line": 2170
+  },
+  {
+    "code": "I12",
+    "title_la": "Oboljenje bubrega uzrokovano povišenim krvnim pritiskom",
+    "source_line": 2171
+  },
+  {
+    "code": "I13",
+    "title_la": "Bolest srca i bubrega uzrokovana povišenim krvnim pritiskom",
+    "source_line": 2172
+  },
+  {
+    "code": "I15",
+    "title_la": "Sekundarno povišen krvni pritisak",
+    "source_line": 2173
+  },
+  {
+    "code": "I20",
+    "title_la": "Stezanje u grudima",
+    "source_line": 2176
+  },
+  {
+    "code": "I21",
+    "title_la": "Akutni infarkt miokarda",
+    "source_line": 2177
+  },
+  {
+    "code": "I22",
+    "title_la": "Ponovljen infarkt miokarda",
+    "source_line": 2178
+  },
+  {
+    "code": "I23",
+    "title_la": "Komplikacije posle akutnog infarkta miokarda",
+    "source_line": 2179
+  },
+  {
+    "code": "I24",
+    "title_la": "Druge akutne ishemijske bolesti srca",
+    "source_line": 2180
+  },
+  {
+    "code": "I25",
+    "title_la": "Hronična ishemijska bolest srca",
+    "source_line": 2181
+  },
+  {
+    "code": "I26",
+    "title_la": "Plućna embolija",
+    "source_line": 2184
+  },
+  {
+    "code": "I27",
+    "title_la": "Druge bolesti srca plućnog porekla",
+    "source_line": 2185
+  },
+  {
+    "code": "I28",
+    "title_la": "Druge bolesti krvnih sudova pluća",
+    "source_line": 2186
+  },
+  {
+    "code": "I30",
+    "title_la": "Akutni perikarditis",
+    "source_line": 2189
+  },
+  {
+    "code": "I31",
+    "title_la": "Druge bolesti perikarda",
+    "source_line": 2190
+  },
+  {
+    "code": "I32",
+    "title_la": "Perikarditis u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2191
+  },
+  {
+    "code": "I33",
+    "title_la": "Akutni i subakutni endokarditis",
+    "source_line": 2192
+  },
+  {
+    "code": "I34",
+    "title_la": "Nereumatske bolesti mitralnog zaliska",
+    "source_line": 2193
+  },
+  {
+    "code": "I35",
+    "title_la": "Nereumatske bolesti aortnog zaliska",
+    "source_line": 2194
+  },
+  {
+    "code": "I36",
+    "title_la": "Nerumatske bolesti trolisnog zaliska",
+    "source_line": 2195
+  },
+  {
+    "code": "I37",
+    "title_la": "Bolesti zaliska arterije pluća",
+    "source_line": 2196
+  },
+  {
+    "code": "I38",
+    "title_la": "Endokarditis, neoznačenog zaliska",
+    "source_line": 2197
+  },
+  {
+    "code": "I39",
+    "title_la": "Zapaljenje endokarda i bolesti srčanih zalistaka u bolestima klasifikovanim na",
+    "source_line": 2198
+  },
+  {
+    "code": "I40",
+    "title_la": "Akutno zapaljenje miokarda",
+    "source_line": 2206
+  },
+  {
+    "code": "I41",
+    "title_la": "Zapaljenje miokarda u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2207
+  },
+  {
+    "code": "I42",
+    "title_la": "Oboljenja srčanog mišića",
+    "source_line": 2208
+  },
+  {
+    "code": "I43",
+    "title_la": "Kardiomiopatija u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2209
+  },
+  {
+    "code": "I44",
+    "title_la": "Pretkomorsko-komorski blok i blok leve grane",
+    "source_line": 2210
+  },
+  {
+    "code": "I45",
+    "title_la": "Drugi poremećaji sprovodnog sistema srca",
+    "source_line": 2211
+  },
+  {
+    "code": "I46",
+    "title_la": "Zastoj srca",
+    "source_line": 2212
+  },
+  {
+    "code": "I47",
+    "title_la": "Napad ubrzanog rada srca",
+    "source_line": 2213
+  },
+  {
+    "code": "I48",
+    "title_la": "Treperenje pretkomora i lepršanje pretkomora",
+    "source_line": 2214
+  },
+  {
+    "code": "I49",
+    "title_la": "Drugi poremećaji ritma srca",
+    "source_line": 2215
+  },
+  {
+    "code": "I50",
+    "title_la": "Srčana insuficijencija",
+    "source_line": 2216
+  },
+  {
+    "code": "I51",
+    "title_la": "Komplikacije i nedovoljno definisane bolesti srca",
+    "source_line": 2217
+  },
+  {
+    "code": "I52",
+    "title_la": "Druge bolesti srca u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2218
+  },
+  {
+    "code": "I60",
+    "title_la": "Krvarenje ispod paučinaste moždanice",
+    "source_line": 2221
+  },
+  {
+    "code": "I61",
+    "title_la": "Intracerebralno krvarenje",
+    "source_line": 2222
+  },
+  {
+    "code": "I62",
+    "title_la": "Drugo netraumatsko krvarenje u mozgu",
+    "source_line": 2223
+  },
+  {
+    "code": "I63",
+    "title_la": "Infarkt mozga",
+    "source_line": 2224
+  },
+  {
+    "code": "I64",
+    "title_la": "Apopleksija – Moždana kap, neoznačena kao krvarenje ili infarkt mozga",
+    "source_line": 2225
+  },
+  {
+    "code": "I65",
+    "title_la": "Zapušenje premoždanih arterija i suženje premoždanih arterija bez infarkta mozga",
+    "source_line": 2226
+  },
+  {
+    "code": "I66",
+    "title_la": "Zapušenje arterije mozga i suženje arterije mozga bez infarkta mozga",
+    "source_line": 2227
+  },
+  {
+    "code": "I67",
+    "title_la": "Druge bolesti krvnih sudova mozga",
+    "source_line": 2228
+  },
+  {
+    "code": "I68",
+    "title_la": "Bolesti krvnih sudova mozga u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2229
+  },
+  {
+    "code": "I69",
+    "title_la": "Posledice bolesti krvnih sudova mozga",
+    "source_line": 2230
+  },
+  {
+    "code": "I70",
+    "title_la": "Ateroskleroza – zakrečavanje velikih krvnih sudova",
+    "source_line": 2233
+  },
+  {
+    "code": "I71",
+    "title_la": "Aneurizma i disekcija aorte",
+    "source_line": 2234
+  },
+  {
+    "code": "I72",
+    "title_la": "Ostale aneurizme i disekcije",
+    "source_line": 2235
+  },
+  {
+    "code": "I73",
+    "title_la": "Druge bolesti perifernih krvnih sudova",
+    "source_line": 2236
+  },
+  {
+    "code": "I74",
+    "title_la": "Embolija i tromboza arterija",
+    "source_line": 2237
+  },
+  {
+    "code": "I77",
+    "title_la": "Druge bolesti arterija i malih arterija",
+    "source_line": 2238
+  },
+  {
+    "code": "I78",
+    "title_la": "Bolesti krvnih kapilara",
+    "source_line": 2239
+  },
+  {
+    "code": "I79",
+    "title_la": "Bolesti arterija, arteriola i kapilara u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2240
+  },
+  {
+    "code": "I80",
+    "title_la": "Flebitis i tromboflebitis",
+    "source_line": 2244
+  },
+  {
+    "code": "I81",
+    "title_la": "Tromboza vene porte",
+    "source_line": 2245
+  },
+  {
+    "code": "I82",
+    "title_la": "Ostale embolije i tromboze vena",
+    "source_line": 2246
+  },
+  {
+    "code": "I83",
+    "title_la": "Proširene vene nogu",
+    "source_line": 2247
+  },
+  {
+    "code": "I84",
+    "title_la": "Hemoroidi",
+    "source_line": 2248
+  },
+  {
+    "code": "I85",
+    "title_la": "Proširene vene jednjaka",
+    "source_line": 2249
+  },
+  {
+    "code": "I86",
+    "title_la": "Proširene vene drugih lokalizacija",
+    "source_line": 2250
+  },
+  {
+    "code": "I87",
+    "title_la": "Druge bolesti vena",
+    "source_line": 2251
+  },
+  {
+    "code": "I88",
+    "title_la": "Neoznačeno zapaljenje limfnih čvorova",
+    "source_line": 2252
+  },
+  {
+    "code": "I89",
+    "title_la": "Druge neinfektivne bolesti limfnih sudova i limfnih čvorova",
+    "source_line": 2253
+  },
+  {
+    "code": "I95",
+    "title_la": "Nizak krvni pritisak",
+    "source_line": 2263
+  },
+  {
+    "code": "I97",
+    "title_la": "Bolesti krvotoka posle medicinskih intervencija, neklasifikovane na drugom mestu",
+    "source_line": 2264
+  },
+  {
+    "code": "I98",
+    "title_la": "Druge bolesti krvotoka u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2265
+  },
+  {
+    "code": "I99",
+    "title_la": "Druge i neoznačene bolesti krvotoka",
+    "source_line": 2266
+  }
+]

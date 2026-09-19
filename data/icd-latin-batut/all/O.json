@@ -1,0 +1,2307 @@
+[
+  {
+    "code": "O00",
+    "title_la": "Vanmaterična trudnoća",
+    "source_line": 2878
+  },
+  {
+    "code": "O00.0",
+    "title_la": "Graviditas abdominalis",
+    "source_line": 34643
+  },
+  {
+    "code": "O00.1",
+    "title_la": "Graviditas tubaria",
+    "source_line": 34647
+  },
+  {
+    "code": "O00.2",
+    "title_la": "Graviditas ovarialis",
+    "source_line": 34652
+  },
+  {
+    "code": "O00.8",
+    "title_la": "Graviditas extrauterina alia",
+    "source_line": 34654
+  },
+  {
+    "code": "O00.9",
+    "title_la": "Graviditas extrauterina, non specificata",
+    "source_line": 34660
+  },
+  {
+    "code": "O01",
+    "title_la": "Grozdasta mola",
+    "source_line": 2879
+  },
+  {
+    "code": "O01.0",
+    "title_la": "Mola hydatidosa simplex",
+    "source_line": 34667
+  },
+  {
+    "code": "O01.1",
+    "title_la": "Mola hydatidosa incompleta et partialis",
+    "source_line": 34670
+  },
+  {
+    "code": "O01.9",
+    "title_la": "Mola hydatidosa non specificata",
+    "source_line": 34672
+  },
+  {
+    "code": "O02",
+    "title_la": "Drugi nenormalnan ishod začeća",
+    "source_line": 2880
+  },
+  {
+    "code": "O02.0",
+    "title_la": "Ovum laesum et mola non hydatidosa",
+    "source_line": 34688
+  },
+  {
+    "code": "O02.1",
+    "title_la": "Abortus imperfectus",
+    "source_line": 34695
+  },
+  {
+    "code": "O02.8",
+    "title_la": "Eventus conceptionalis abnormalis alius non specificatus",
+    "source_line": 34703
+  },
+  {
+    "code": "O02.9",
+    "title_la": "Eventus conceptionalis abnormalis, non specificatus",
+    "source_line": 34709
+  },
+  {
+    "code": "O03",
+    "title_la": "Spontani pobačaj",
+    "source_line": 2881
+  },
+  {
+    "code": "O04",
+    "title_la": "Medicinski abortus",
+    "source_line": 2882
+  },
+  {
+    "code": "O05",
+    "title_la": "Drugi pobačaj",
+    "source_line": 2883
+  },
+  {
+    "code": "O06",
+    "title_la": "Neoznačen pobačaj",
+    "source_line": 2884
+  },
+  {
+    "code": "O07",
+    "title_la": "Neuspeo pokušaj pobačaja",
+    "source_line": 2885
+  },
+  {
+    "code": "O07.0",
+    "title_la": "Abortus medicalis inefficax propter infectionem tractus genitalis et pelvis",
+    "source_line": 34745
+  },
+  {
+    "code": "O07.1",
+    "title_la": "Abortus medicalis inefficax propter hemorrhagiam retardatam sine gravem",
+    "source_line": 34749
+  },
+  {
+    "code": "O07.2",
+    "title_la": "Abortus medicalis inefficax propter emboliam complicatus",
+    "source_line": 34753
+  },
+  {
+    "code": "O07.3",
+    "title_la": "Abortus medicalis inefficax, cum complicationibus aliis et non specificatis",
+    "source_line": 34756
+  },
+  {
+    "code": "O07.4",
+    "title_la": "Abortus medicalis inefficax, sine complicationibus",
+    "source_line": 34759
+  },
+  {
+    "code": "O07.5",
+    "title_la": "Abortus inefficax propter infectionem tractus genitalis et pelvis complicatus alius,",
+    "source_line": 34762
+  },
+  {
+    "code": "O07.6",
+    "title_la": "Abortus temptatus inefficax propter haemorrhagiam retardatam gravem complicatus",
+    "source_line": 34766
+  },
+  {
+    "code": "O07.7",
+    "title_la": "Abortus temptatus inefficax propter emboliam comlicatus alius et non specificatus",
+    "source_line": 34770
+  },
+  {
+    "code": "O07.8",
+    "title_la": "Abortus temptatus inefficax cum complicatus alius, non specificatus",
+    "source_line": 34773
+  },
+  {
+    "code": "O07.9",
+    "title_la": "Abortus temptatus inefficax sine complicationibus alius, non specificatus",
+    "source_line": 34776
+  },
+  {
+    "code": "O08",
+    "title_la": "Komplikacije posle pobačaja, vanmaterične i molarne trudnoće",
+    "source_line": 2886
+  },
+  {
+    "code": "O08.0",
+    "title_la": "Infectio tractus genitalis et pelvis post abortum, graviditatem ectopicam et molarem",
+    "source_line": 34791
+  },
+  {
+    "code": "O08.1",
+    "title_la": "Haemorrhagia retardata sive gravis post abortum, graviditatem ectopicam et",
+    "source_line": 34803
+  },
+  {
+    "code": "O08.2",
+    "title_la": "Embolia post abortum, graviditatem ectopicam et molarem",
+    "source_line": 34809
+  },
+  {
+    "code": "O08.3",
+    "title_la": "Afflictus (shock) post abortum, graviditatem ectopiam et molarem",
+    "source_line": 34820
+  },
+  {
+    "code": "O08.4",
+    "title_la": "Insufficientia renalis post abortum, graviditatem ectopicam et molarem",
+    "source_line": 34826
+  },
+  {
+    "code": "O08.5",
+    "title_la": "Disordines metabolismi post abortum, graviditatem ectopicam et molarem",
+    "source_line": 34833
+  },
+  {
+    "code": "O08.6",
+    "title_la": "Laesio organorum et textus pelvis post abortum, graviditatem ectopicam et molarem",
+    "source_line": 34844
+  },
+  {
+    "code": "O08.7",
+    "title_la": "Complicationes venarum post abortum, graviditatem ectopicam et molarem, aliae",
+    "source_line": 34853
+  },
+  {
+    "code": "O08.8",
+    "title_la": "Complicationes post abortum, graviditatem ectopicam et molarem aliae",
+    "source_line": 34855
+  },
+  {
+    "code": "O08.9",
+    "title_la": "Complicatio post abortum, graviditatem ectopicam et molarem, non specificata",
+    "source_line": 34860
+  },
+  {
+    "code": "O10",
+    "title_la": "Ranije postojeći povišen krvni pritisak komplikovan u toku trudnoće, porođaja i",
+    "source_line": 2890
+  },
+  {
+    "code": "O10.0",
+    "title_la": "Hypertensio arterialis essentialis praeexistens, per graviditatem, partum et",
+    "source_line": 34876
+  },
+  {
+    "code": "O10.1",
+    "title_la": "Morbus cardiacus hypertensivus praeexistens, per graviditatem, partum et",
+    "source_line": 34881
+  },
+  {
+    "code": "O10.2",
+    "title_la": "Morbus renalis hypertensivus praeexistens, per graviditatem, partum et puerperium",
+    "source_line": 34886
+  },
+  {
+    "code": "O10.3",
+    "title_la": "Morbus cardiacus et renalis hypertensivus praeexistens, per graviditatem, partum et",
+    "source_line": 34891
+  },
+  {
+    "code": "O10.4",
+    "title_la": "Hypertensio arterialis secundaria praeexistens, per graviditatem, partum et",
+    "source_line": 34903
+  },
+  {
+    "code": "O10.9",
+    "title_la": "Hypertensio arterialis praeexistens, per graviditatem, partum et puerperium",
+    "source_line": 34909
+  },
+  {
+    "code": "O11",
+    "title_la": "Povišen krvni pritisak pre trudnoće sa pojavom belančevina u mokraći",
+    "source_line": 2892
+  },
+  {
+    "code": "O12",
+    "title_la": "Edem i belančevine u mokraći u toku trudnoće bez povišenog krvnog pritiska",
+    "source_line": 2893
+  },
+  {
+    "code": "O12.0",
+    "title_la": "Oedema in graviditate",
+    "source_line": 34921
+  },
+  {
+    "code": "O12.1",
+    "title_la": "Proteinuria per graviditatem",
+    "source_line": 34923
+  },
+  {
+    "code": "O12.2",
+    "title_la": "Oedema et proteinuria per graviditatem",
+    "source_line": 34925
+  },
+  {
+    "code": "O13",
+    "title_la": "Povišen krvni pritisak u toku trudnoće bez belančevina u mokraći",
+    "source_line": 2894
+  },
+  {
+    "code": "O14",
+    "title_la": "Preeklampsija – Povišen krvni pritisak u toku trudnoće sa belančevinama u",
+    "source_line": 2895
+  },
+  {
+    "code": "O14.0",
+    "title_la": "Praeeclampsia moderata",
+    "source_line": 34937
+  },
+  {
+    "code": "O14.1",
+    "title_la": "Praeeclampsia severa",
+    "source_line": 34939
+  },
+  {
+    "code": "O14.2",
+    "title_la": "Syndroma „HELLP“",
+    "source_line": 34941
+  },
+  {
+    "code": "O14.9",
+    "title_la": "Praeeclampsia non specificata",
+    "source_line": 34944
+  },
+  {
+    "code": "O15",
+    "title_la": "Eklampsija – povišen krvni pritisak, grčevi i belančevine u mokraći u trudnoći",
+    "source_line": 2897
+  },
+  {
+    "code": "O15.0",
+    "title_la": "Eclampsia in graviditate",
+    "source_line": 34951
+  },
+  {
+    "code": "O15.1",
+    "title_la": "Eclampsia partualis",
+    "source_line": 34953
+  },
+  {
+    "code": "O15.2",
+    "title_la": "Eclampsia in puerperio",
+    "source_line": 34961
+  },
+  {
+    "code": "O15.9",
+    "title_la": "Eclampsia, non specificata",
+    "source_line": 34963
+  },
+  {
+    "code": "O16",
+    "title_la": "Povišen krvni pritisak majke, neoznačen",
+    "source_line": 2898
+  },
+  {
+    "code": "O20",
+    "title_la": "Krvarenje u početnoj trudnoći",
+    "source_line": 2901
+  },
+  {
+    "code": "O20.0",
+    "title_la": "Abortus imminens",
+    "source_line": 34981
+  },
+  {
+    "code": "O20.8",
+    "title_la": "Haemorrhagia in graviditate initiali alia",
+    "source_line": 34984
+  },
+  {
+    "code": "O20.9",
+    "title_la": "Haemorrhagia in graviditate initiali non specificata",
+    "source_line": 34986
+  },
+  {
+    "code": "O21",
+    "title_la": "Prekomerno povraćanje u trudnoći",
+    "source_line": 2902
+  },
+  {
+    "code": "O21.0",
+    "title_la": "Hyperemesis gravidae mitis",
+    "source_line": 34991
+  },
+  {
+    "code": "O21.1",
+    "title_la": "Hyperemesis gravidae cum disordine metabolico",
+    "source_line": 34994
+  },
+  {
+    "code": "O21.2",
+    "title_la": "Vomitus gravidae tardus",
+    "source_line": 35000
+  },
+  {
+    "code": "O21.8",
+    "title_la": "Hyperemesis gravidae complicata alia",
+    "source_line": 35003
+  },
+  {
+    "code": "O21.9",
+    "title_la": "Hyperemesis gravidae, non specificata",
+    "source_line": 35006
+  },
+  {
+    "code": "O22",
+    "title_la": "Komplikacije vena u trudnoći",
+    "source_line": 2903
+  },
+  {
+    "code": "O22.0",
+    "title_la": "Varicaes extremitatis inferioris gravidae",
+    "source_line": 35022
+  },
+  {
+    "code": "O22.1",
+    "title_la": "Varices genitaliorum gravidae",
+    "source_line": 35025
+  },
+  {
+    "code": "O22.2",
+    "title_la": "Trombophlebitis gravidae superficialis",
+    "source_line": 35030
+  },
+  {
+    "code": "O22.3",
+    "title_la": "Thrombophlebitis gravidae profunda",
+    "source_line": 35033
+  },
+  {
+    "code": "O22.4",
+    "title_la": "Haemorrhoides gravidae",
+    "source_line": 35036
+  },
+  {
+    "code": "O22.5",
+    "title_la": "Thrombosis venarum cerebri gravidae",
+    "source_line": 35038
+  },
+  {
+    "code": "O22.8",
+    "title_la": "Complicationes venarum gravidae aliae",
+    "source_line": 35041
+  },
+  {
+    "code": "O22.9",
+    "title_la": "Complicatio venarum gravidae, non specificata",
+    "source_line": 35043
+  },
+  {
+    "code": "O23",
+    "title_la": "Infekcije mokraćno–polnih puteva u trudnoći",
+    "source_line": 2904
+  },
+  {
+    "code": "O23.0",
+    "title_la": "Pyelonephritis in graviditate",
+    "source_line": 35051
+  },
+  {
+    "code": "O23.1",
+    "title_la": "Cystitis in graviditate",
+    "source_line": 35053
+  },
+  {
+    "code": "O23.2",
+    "title_la": "Urethritis in graviditate",
+    "source_line": 35055
+  },
+  {
+    "code": "O23.3",
+    "title_la": "Infectiones partium tractus urinarii aliarum in graviditate",
+    "source_line": 35057
+  },
+  {
+    "code": "O23.4",
+    "title_la": "Infectiones tractus urinarii in graviditate, non specificatae",
+    "source_line": 35059
+  },
+  {
+    "code": "O23.5",
+    "title_la": "Infectiones tractus genitalis in graviditate",
+    "source_line": 35061
+  },
+  {
+    "code": "O23.9",
+    "title_la": "Infectio tractus urogenitalis in graviditate alia et non specificata",
+    "source_line": 35063
+  },
+  {
+    "code": "O24",
+    "title_la": "Šećerna bolest u trudnoći",
+    "source_line": 2905
+  },
+  {
+    "code": "O24.0",
+    "title_la": "Diabetes mellitus praeexistens, insulinum-dependens",
+    "source_line": 35075
+  },
+  {
+    "code": "O24.1",
+    "title_la": "Diabetes mellitus praeexistens, non-insulinum-dependens",
+    "source_line": 35077
+  },
+  {
+    "code": "O24.2",
+    "title_la": "Diabetes mellitus praeexistens malnutritionalis",
+    "source_line": 35079
+  },
+  {
+    "code": "O24.3",
+    "title_la": "Diabetes mellitus praeexistens, non specificatus",
+    "source_line": 35081
+  },
+  {
+    "code": "O24.4",
+    "title_la": "Diabetes mellitus in graviditate ortus",
+    "source_line": 35083
+  },
+  {
+    "code": "O24.9",
+    "title_la": "Diabetes mellitus in graviditate, non specificatus",
+    "source_line": 35086
+  },
+  {
+    "code": "O25",
+    "title_la": "Nedovoljna ishrana trudnice",
+    "source_line": 2906
+  },
+  {
+    "code": "O26",
+    "title_la": "Zbrinjavanje majke zbog drugih stanja pretežno vezanih za trudnoću",
+    "source_line": 2907
+  },
+  {
+    "code": "O26.0",
+    "title_la": "Auctus ponderis corporalis in graviditate enormis",
+    "source_line": 35096
+  },
+  {
+    "code": "O26.1",
+    "title_la": "Auctus ponderis corporalis in graviditate parvus",
+    "source_line": 35099
+  },
+  {
+    "code": "O26.2",
+    "title_la": "Curatio feminae propter abortum spontaneum antecedentem",
+    "source_line": 35101
+  },
+  {
+    "code": "O26.3",
+    "title_la": "Spira contraceptiva intrauterina in graviditate retenta",
+    "source_line": 35106
+  },
+  {
+    "code": "O26.4",
+    "title_la": "Herpes gestationalis",
+    "source_line": 35108
+  },
+  {
+    "code": "O26.5",
+    "title_la": "Hypotensio arterialis gravidae",
+    "source_line": 35110
+  },
+  {
+    "code": "O26.6",
+    "title_la": "Disordines hepatis in graviditate, partu et puerperio",
+    "source_line": 35113
+  },
+  {
+    "code": "O26.7",
+    "title_la": "Subluxatio pubis in graviditate, partu et puerperio",
+    "source_line": 35118
+  },
+  {
+    "code": "O26.8",
+    "title_la": "Status cum graviditate coniuncti alii, specificati",
+    "source_line": 35127
+  },
+  {
+    "code": "O26.9",
+    "title_la": "Status cum graviditate coniunctus, non specificatus",
+    "source_line": 35132
+  },
+  {
+    "code": "O28",
+    "title_la": "Nenormalan nalaz otkriven kod majke pretporođajnom kontrolom",
+    "source_line": 2908
+  },
+  {
+    "code": "O28.0",
+    "title_la": "Status haematologicus matris abnormalis, proba antenatali detectus",
+    "source_line": 35140
+  },
+  {
+    "code": "O28.1",
+    "title_la": "Status biochemicus matris abnormalis, proba antenatali detectus",
+    "source_line": 35142
+  },
+  {
+    "code": "O28.2",
+    "title_la": "Status cytologicus matris abnormalis, proba antenatali detectus",
+    "source_line": 35144
+  },
+  {
+    "code": "O28.3",
+    "title_la": "Status ultrasonorus matris abnormalis, proba antenatali detectus",
+    "source_line": 35146
+  },
+  {
+    "code": "O28.4",
+    "title_la": "Status radiologicus matris abnormalis, proba antenatali detectus",
+    "source_line": 35148
+  },
+  {
+    "code": "O28.5",
+    "title_la": "Status chromosomaticus et geneticus abnormalis, proba antenatali detectus",
+    "source_line": 35150
+  },
+  {
+    "code": "O28.8",
+    "title_la": "Status matris abnormalis, proba antenatali detectus, alius",
+    "source_line": 35152
+  },
+  {
+    "code": "O28.9",
+    "title_la": "Status matris abnormalis, proba antenatali detectus, non specificatus",
+    "source_line": 35154
+  },
+  {
+    "code": "O29",
+    "title_la": "Komplikacije uzrokovane davanjem anestezije tokom trudnoće",
+    "source_line": 2909
+  },
+  {
+    "code": "O29.0",
+    "title_la": "Complicationes pulmonales anaesthesionales, per graviditatem",
+    "source_line": 35165
+  },
+  {
+    "code": "O29.1",
+    "title_la": "Complicationes cardiacae anaesthesionalis, per graviditatem",
+    "source_line": 35172
+  },
+  {
+    "code": "O29.2",
+    "title_la": "Complicationes systematis nervosi centralis anaestesionales, per graviditatem",
+    "source_line": 35177
+  },
+  {
+    "code": "O29.3",
+    "title_la": "Reactio toxica ad anaestesiam localem, per graviditatem",
+    "source_line": 35187
+  },
+  {
+    "code": "O29.4",
+    "title_la": "Cephalea propter anesthesiam spinalem et epiduralem, per graviditatem",
+    "source_line": 35189
+  },
+  {
+    "code": "O29.5",
+    "title_la": "Complicationes propter anaesthesiam spinalem et epiduralem, per graviditatem,",
+    "source_line": 35191
+  },
+  {
+    "code": "O29.6",
+    "title_la": "Intubatio inefficax sive difficile facta, per graviditatem",
+    "source_line": 35194
+  },
+  {
+    "code": "O29.8",
+    "title_la": "Complicationes anaestesionales, per graviditatem, aliae",
+    "source_line": 35196
+  },
+  {
+    "code": "O29.9",
+    "title_la": "Complicatio anaesthesionalis, per graviditatem, non specificata",
+    "source_line": 35198
+  },
+  {
+    "code": "O30",
+    "title_la": "Višeplodna trudnoća",
+    "source_line": 2913
+  },
+  {
+    "code": "O30.0",
+    "title_la": "Graviditas duplex",
+    "source_line": 35210
+  },
+  {
+    "code": "O30.1",
+    "title_la": "Graviditas triplex",
+    "source_line": 35212
+  },
+  {
+    "code": "O30.2",
+    "title_la": "Graviditas quadriplex",
+    "source_line": 35214
+  },
+  {
+    "code": "O30.8",
+    "title_la": "Graviditas plurifetalis alia",
+    "source_line": 35216
+  },
+  {
+    "code": "O30.9",
+    "title_la": "Graviditas plurifetalis, non specificata",
+    "source_line": 35218
+  },
+  {
+    "code": "O31",
+    "title_la": "Komplikacije višeplodne trudnoće",
+    "source_line": 2914
+  },
+  {
+    "code": "O31.0",
+    "title_la": "Fetus papyraceus",
+    "source_line": 35228
+  },
+  {
+    "code": "O31.1",
+    "title_la": "Graviditas post abortum unius sive fetuum plurium continuata",
+    "source_line": 35231
+  },
+  {
+    "code": "O31.2",
+    "title_la": "Graviditas post mortem intrauterinam unius sive fetuum plurium continuata",
+    "source_line": 35233
+  },
+  {
+    "code": "O31.8",
+    "title_la": "Complicationes graviditatis plurifetalis aliae, specificatae",
+    "source_line": 35235
+  },
+  {
+    "code": "O32",
+    "title_la": "Zbrinjavanje majke kod poznatog ili sumnjivog nepravilnog stava ploda",
+    "source_line": 2915
+  },
+  {
+    "code": "O32.0",
+    "title_la": "Curatio matris ad positionem fetus instabilem",
+    "source_line": 35248
+  },
+  {
+    "code": "O32.1",
+    "title_la": "Curatio matris ad positionem fetus pelvicam",
+    "source_line": 35250
+  },
+  {
+    "code": "O32.2",
+    "title_la": "Curatio matris ad positionem fetus transversam et obliquam",
+    "source_line": 35252
+  },
+  {
+    "code": "O32.3",
+    "title_la": "Curatio matris ad praesentationem fetus facie, fronte et mento",
+    "source_line": 35257
+  },
+  {
+    "code": "O32.4",
+    "title_la": "Curatio matris ad positionem capitis fetus altam in relatione ad terminum",
+    "source_line": 35259
+  },
+  {
+    "code": "O32.5",
+    "title_la": "Curatio matris ad graviditatem plurifetalem cum malpraesentatione unius sive",
+    "source_line": 35262
+  },
+  {
+    "code": "O32.6",
+    "title_la": "Curatio matris ad malpresentationem fetus compositam",
+    "source_line": 35265
+  },
+  {
+    "code": "O32.8",
+    "title_la": "Curatio matris ad malpraesentationem fetus aliam",
+    "source_line": 35267
+  },
+  {
+    "code": "O32.9",
+    "title_la": "Curatio matris ad malpraesentationem fetus, non specificata",
+    "source_line": 35269
+  },
+  {
+    "code": "O33",
+    "title_la": "Zbrinjavanje majke kod poznate ili sumnjive disproporcije",
+    "source_line": 2916
+  },
+  {
+    "code": "O33.0",
+    "title_la": "Curatio matris ad disproportionem propter deformationem ossium pelvicorum",
+    "source_line": 35277
+  },
+  {
+    "code": "O33.1",
+    "title_la": "Curatio matris ad disproportionem propter contractionem pelvis totalem",
+    "source_line": 35280
+  },
+  {
+    "code": "O33.2",
+    "title_la": "Curatio matris ad disproportionem propter contractionem aditus pelvis",
+    "source_line": 35283
+  },
+  {
+    "code": "O33.3",
+    "title_la": "Curatio matris ad disproportionem propter contractionem exitus pelvis",
+    "source_line": 35286
+  },
+  {
+    "code": "O33.4",
+    "title_la": "Curatio matris ad disproportionem matris et fetus",
+    "source_line": 35291
+  },
+  {
+    "code": "O33.5",
+    "title_la": "Curatio matris ad disproportionem propter fetum inusitate magnum",
+    "source_line": 35300
+  },
+  {
+    "code": "O33.6",
+    "title_la": "Curatio matris ad disproportionem propter fetum hydrocephalicum",
+    "source_line": 35304
+  },
+  {
+    "code": "O33.7",
+    "title_la": "Curatio matris ad disproportionem propter deformationem fetalem aliam",
+    "source_line": 35306
+  },
+  {
+    "code": "O33.8",
+    "title_la": "Curatio matris ad disproportionem propter causas alias",
+    "source_line": 35315
+  },
+  {
+    "code": "O33.9",
+    "title_la": "Curatio matris ad disproportionem, non specificata",
+    "source_line": 35317
+  },
+  {
+    "code": "O34",
+    "title_la": "Zbrinjavanje majke kod poznatih ili sumnjivih nenormalnosti organa karlice",
+    "source_line": 2917
+  },
+  {
+    "code": "O34.0",
+    "title_la": "Curatio matris ad malformationem uteri congenitam",
+    "source_line": 35327
+  },
+  {
+    "code": "O34.1",
+    "title_la": "Curatio matris ad tumorem corporis uteri",
+    "source_line": 35331
+  },
+  {
+    "code": "O34.2",
+    "title_la": "Curatio matris ad cicatricem uteri post operationem praecedentem factam",
+    "source_line": 35336
+  },
+  {
+    "code": "O34.3",
+    "title_la": "Curatio matris ad insufficientiam cervicis",
+    "source_line": 35340
+  },
+  {
+    "code": "O34.4",
+    "title_la": "Curatio matris ad abnormitates cervicis alias",
+    "source_line": 35345
+  },
+  {
+    "code": "O34.5",
+    "title_la": "Curatio matris ad abnormitates uteri gravidae alias",
+    "source_line": 35359
+  },
+  {
+    "code": "O34.6",
+    "title_la": "Curatio matris ad abnormalitatem vaginae",
+    "source_line": 35364
+  },
+  {
+    "code": "O34.7",
+    "title_la": "Curatio matris ad abnormitatem vulvae et perinei",
+    "source_line": 35372
+  },
+  {
+    "code": "O34.8",
+    "title_la": "Curatio matris ad abnormalitates organorum pelvicorum alias",
+    "source_line": 35379
+  },
+  {
+    "code": "O34.9",
+    "title_la": "Curatio matris ad abnormalitates organorum pelvicorum, non specificata",
+    "source_line": 35386
+  },
+  {
+    "code": "O35",
+    "title_la": "Zbrinjavanje majke kod poznatih ili sumnjivih nenormalnosti i oštećenja ploda",
+    "source_line": 2918
+  },
+  {
+    "code": "O35.0",
+    "title_la": "Curatio matris ad malformationes systematis nervosi centralis fetus suspectas",
+    "source_line": 35394
+  },
+  {
+    "code": "O35.1",
+    "title_la": "Curatio matris ad disordinem chromosomatosum (suspectum)",
+    "source_line": 35399
+  },
+  {
+    "code": "O35.2",
+    "title_la": "Curatio matris ad morbum fetus hereditarium suspectum",
+    "source_line": 35401
+  },
+  {
+    "code": "O35.3",
+    "title_la": "Curatio matris ad laesionem fetus infectione matris virali (suspectam)",
+    "source_line": 35404
+  },
+  {
+    "code": "O35.4",
+    "title_la": "Curatio matris ad laesionem fetus alcoholicam (suspectam)",
+    "source_line": 35417
+  },
+  {
+    "code": "O35.5",
+    "title_la": "Curatio matris ad laesionem fetus medicamentosam (suspectam)",
+    "source_line": 35419
+  },
+  {
+    "code": "O35.6",
+    "title_la": "Curatio matris ad laesionem fetus radiationalem (suspectam)",
+    "source_line": 35423
+  },
+  {
+    "code": "O35.7",
+    "title_la": "Curatio matris ad laesionem fetus proceduris medicinalis aliis (suspectam)",
+    "source_line": 35425
+  },
+  {
+    "code": "O35.8",
+    "title_la": "Curatio matris ad abnormalitates et laesiones fetus alias (suspectas)",
+    "source_line": 35432
+  },
+  {
+    "code": "O35.9",
+    "title_la": "Curatio matris ad abnormalitates et laesiones fetus (suspectas), non specificata",
+    "source_line": 35436
+  },
+  {
+    "code": "O36",
+    "title_la": "Zbrinjavanje majke kod drugih poznatih ili sumnjivih problema ploda",
+    "source_line": 2919
+  },
+  {
+    "code": "O36.0",
+    "title_la": "Curatio matris ad rhesus-isoimmunizationem",
+    "source_line": 35445
+  },
+  {
+    "code": "O36.1",
+    "title_la": "Curatio matris ad isoimmunisationem aliam",
+    "source_line": 35449
+  },
+  {
+    "code": "O36.2",
+    "title_la": "Curatio matris cum hydrope fetali",
+    "source_line": 35453
+  },
+  {
+    "code": "O36.3",
+    "title_la": "Curatio matris ad signa hypoxiae fetalis",
+    "source_line": 35458
+  },
+  {
+    "code": "O36.4",
+    "title_la": "Curatio matris ad mortem intrauterinam",
+    "source_line": 35460
+  },
+  {
+    "code": "O36.5",
+    "title_la": "Curatio matris ad staturam fetalem parvam",
+    "source_line": 35463
+  },
+  {
+    "code": "O36.6",
+    "title_la": "Curatio matris ad staturam fetalem magnam",
+    "source_line": 35473
+  },
+  {
+    "code": "O36.7",
+    "title_la": "Curatio matris ad fetum vivum in graviditate abdominali",
+    "source_line": 35476
+  },
+  {
+    "code": "O36.8",
+    "title_la": "Curatio matris ad problemata fetalia alia, specificata",
+    "source_line": 35478
+  },
+  {
+    "code": "O36.9",
+    "title_la": "Curatio matris ad problemata fetalia, non specificata",
+    "source_line": 35480
+  },
+  {
+    "code": "O40",
+    "title_la": "Prevelika količina amnionske tečnosti",
+    "source_line": 2920
+  },
+  {
+    "code": "O41",
+    "title_la": "Drugi poremećaji amnionske tečnosti i vodenjaka",
+    "source_line": 2927
+  },
+  {
+    "code": "O41.0",
+    "title_la": "Oligohydramnion",
+    "source_line": 35490
+  },
+  {
+    "code": "O41.1",
+    "title_la": "Infectio liquoris et membranarum amnii",
+    "source_line": 35493
+  },
+  {
+    "code": "O41.8",
+    "title_la": "Disordines liquoris et membranarum amnii alii, specificati",
+    "source_line": 35499
+  },
+  {
+    "code": "O41.9",
+    "title_la": "Disordo liquoris et membranarum amnii, non specificatus",
+    "source_line": 35501
+  },
+  {
+    "code": "O42",
+    "title_la": "Prerana ruptura vodenjaka",
+    "source_line": 2928
+  },
+  {
+    "code": "O42.0",
+    "title_la": "Ruptura membranarum amnii, initium partus per 24 horas",
+    "source_line": 35506
+  },
+  {
+    "code": "O42.1",
+    "title_la": "Ruptura membranarum amnii praematura, initium partus post 24 horas",
+    "source_line": 35508
+  },
+  {
+    "code": "O42.2",
+    "title_la": "Ruptura membranarum amnii praematura, partus therapia prolongatus",
+    "source_line": 35511
+  },
+  {
+    "code": "O42.9",
+    "title_la": "Ruptura membranarum amnii praematura, non specificata",
+    "source_line": 35513
+  },
+  {
+    "code": "O43",
+    "title_la": "Bolesti posteljice",
+    "source_line": 2929
+  },
+  {
+    "code": "O43.0",
+    "title_la": "Syndroma transfusionis placentalis",
+    "source_line": 35528
+  },
+  {
+    "code": "O43.1",
+    "title_la": "Malformatio placentae",
+    "source_line": 35534
+  },
+  {
+    "code": "O43.2",
+    "title_la": "Placenta adherens morbida",
+    "source_line": 35538
+  },
+  {
+    "code": "O43.8",
+    "title_la": "Morbi placaentae alii",
+    "source_line": 35546
+  },
+  {
+    "code": "O43.9",
+    "title_la": "Morbus placentae, non specificatus",
+    "source_line": 35550
+  },
+  {
+    "code": "O44",
+    "title_la": "Nisko usađena posteljica",
+    "source_line": 2930
+  },
+  {
+    "code": "O44.0",
+    "title_la": "Placenta praevia sine haemorrhagia",
+    "source_line": 35555
+  },
+  {
+    "code": "O44.1",
+    "title_la": "Placenta praevia cum haemorrhagia",
+    "source_line": 35558
+  },
+  {
+    "code": "O45",
+    "title_la": "Prerano odlubljivanje posteljice",
+    "source_line": 2931
+  },
+  {
+    "code": "O45.0",
+    "title_la": "Abruptio placentae cum defectu coagulationis",
+    "source_line": 35577
+  },
+  {
+    "code": "O45.8",
+    "title_la": "Abruptio placentae praematura alia",
+    "source_line": 35584
+  },
+  {
+    "code": "O45.9",
+    "title_la": "Abruptio placentae praematura, non specificata",
+    "source_line": 35586
+  },
+  {
+    "code": "O46",
+    "title_la": "Krvarenje pre porođaja, neklasifikovano na drugom mestu",
+    "source_line": 2932
+  },
+  {
+    "code": "O46.0",
+    "title_la": "Haemorrhagia ante partum cum defectu coagulationis",
+    "source_line": 35596
+  },
+  {
+    "code": "O46.8",
+    "title_la": "Haemorrhagia ante partum alia",
+    "source_line": 35603
+  },
+  {
+    "code": "O46.9",
+    "title_la": "Haemorrhagia ante partum, non specificata",
+    "source_line": 35605
+  },
+  {
+    "code": "O47",
+    "title_la": "Lažni trudovi",
+    "source_line": 2933
+  },
+  {
+    "code": "O47.0",
+    "title_la": "Labores falsi ante 37 septimanas graviditatis completas",
+    "source_line": 35610
+  },
+  {
+    "code": "O47.1",
+    "title_la": "Labores falsi per sive post 37 septimanas graviditatis completas",
+    "source_line": 35612
+  },
+  {
+    "code": "O47.9",
+    "title_la": "Labores falsi, non specificatus",
+    "source_line": 35614
+  },
+  {
+    "code": "O48",
+    "title_la": "Produžena trudnoća",
+    "source_line": 2934
+  },
+  {
+    "code": "O60",
+    "title_la": "Prevremeni trudovi i prevremeni porođaj",
+    "source_line": 2937
+  },
+  {
+    "code": "O60.0",
+    "title_la": "Labores praetermini sine partu",
+    "source_line": 35635
+  },
+  {
+    "code": "O60.1",
+    "title_la": "Labores praematuri spontanei cum partu pretermini",
+    "source_line": 35640
+  },
+  {
+    "code": "O60.2",
+    "title_la": "Labores praetermini spontanei cum partu termini",
+    "source_line": 35644
+  },
+  {
+    "code": "O60.3",
+    "title_la": "Partus praematurus sine labores spontanei",
+    "source_line": 35647
+  },
+  {
+    "code": "O61",
+    "title_la": "Neuspela indukcija porođaja",
+    "source_line": 2938
+  },
+  {
+    "code": "O61.0",
+    "title_la": "Inductio partus medicalis inefficax",
+    "source_line": 35655
+  },
+  {
+    "code": "O61.1",
+    "title_la": "Inductio partus instrumentalis inefficax",
+    "source_line": 35659
+  },
+  {
+    "code": "O61.8",
+    "title_la": "Inductio partus inefficax alia",
+    "source_line": 35663
+  },
+  {
+    "code": "O61.9",
+    "title_la": "Inductio partus inefficax, non specificata",
+    "source_line": 35665
+  },
+  {
+    "code": "O62",
+    "title_la": "Nenormalnosti jačine trudova",
+    "source_line": 2939
+  },
+  {
+    "code": "O62.0",
+    "title_la": "Contractiones uteri primariae inadaequatae",
+    "source_line": 35670
+  },
+  {
+    "code": "O62.1",
+    "title_la": "Inertia uteri secundaria",
+    "source_line": 35675
+  },
+  {
+    "code": "O62.2",
+    "title_la": "Inertia uteri alia",
+    "source_line": 35684
+  },
+  {
+    "code": "O62.3",
+    "title_la": "Partus praeceps",
+    "source_line": 35692
+  },
+  {
+    "code": "O62.4",
+    "title_la": "Contractiones uteri hypotonicae, incoordinatae et prolongatae",
+    "source_line": 35694
+  },
+  {
+    "code": "O62.8",
+    "title_la": "Abnormitates vis laborum aliae",
+    "source_line": 35704
+  },
+  {
+    "code": "O62.9",
+    "title_la": "Abnormitas vis laborum, non specificatus",
+    "source_line": 35706
+  },
+  {
+    "code": "O63",
+    "title_la": "Produžen porođaj",
+    "source_line": 2940
+  },
+  {
+    "code": "O63.0",
+    "title_la": "Partus prolongatus, phasis prima",
+    "source_line": 35711
+  },
+  {
+    "code": "O63.1",
+    "title_la": "Partus prolongatus, phasis secundaria",
+    "source_line": 35713
+  },
+  {
+    "code": "O63.2",
+    "title_la": "Partus gemini secundi, tertii et tardivus",
+    "source_line": 35715
+  },
+  {
+    "code": "O63.9",
+    "title_la": "Partus prolongatus, non specificatus",
+    "source_line": 35717
+  },
+  {
+    "code": "O64",
+    "title_la": "Komplikovan porođaj zbog nepravilnog položaja i stava ploda",
+    "source_line": 2941
+  },
+  {
+    "code": "O64.0",
+    "title_la": "Partus propter rotationem capitis fetus incompletam complicatus",
+    "source_line": 35723
+  },
+  {
+    "code": "O64.1",
+    "title_la": "Partus propter praesentationem pelvis obstruens",
+    "source_line": 35730
+  },
+  {
+    "code": "O64.2",
+    "title_la": "Partus propter praesentationem faciei complicatus",
+    "source_line": 35732
+  },
+  {
+    "code": "O64.3",
+    "title_la": "Partus propter praesentationem frontis complicatus",
+    "source_line": 35742
+  },
+  {
+    "code": "O64.4",
+    "title_la": "Partus propter praesentationem omae complicatus",
+    "source_line": 35744
+  },
+  {
+    "code": "O64.5",
+    "title_la": "Partus propter praesentationem (manuum, pedum) compositam complicatus",
+    "source_line": 35749
+  },
+  {
+    "code": "O64.8",
+    "title_la": "Partus propter malpositionem et malpraesentationem fetus aliam complicatus",
+    "source_line": 35751
+  },
+  {
+    "code": "O64.9",
+    "title_la": "Partus propter malpositionem et malpraesentationem fetus complicatus, non",
+    "source_line": 35753
+  },
+  {
+    "code": "O65",
+    "title_la": "Komplikovan porođaj zbog nenormalnosti karlice majke",
+    "source_line": 2942
+  },
+  {
+    "code": "O65.0",
+    "title_la": "Partus propter pelvem deformatam complicatus",
+    "source_line": 35759
+  },
+  {
+    "code": "O65.1",
+    "title_la": "Partus propter contractionem aditus pelvis totalem complicatus",
+    "source_line": 35761
+  },
+  {
+    "code": "O65.2",
+    "title_la": "Partus propter contractionem aditus pelvis complicatus",
+    "source_line": 35763
+  },
+  {
+    "code": "O65.3",
+    "title_la": "Partus propter contractionem orificii et cavitatis mediae complicatus",
+    "source_line": 35765
+  },
+  {
+    "code": "O65.4",
+    "title_la": "Partus propter disproportionem fetus et pelvis, non specificatam complicatus",
+    "source_line": 35767
+  },
+  {
+    "code": "O65.5",
+    "title_la": "Partus propter abnormitatem organorum pelvis matris complicatus",
+    "source_line": 35770
+  },
+  {
+    "code": "O65.8",
+    "title_la": "Partus propter abnormitates pelvis matris aliae complicatus",
+    "source_line": 35773
+  },
+  {
+    "code": "O65.9",
+    "title_la": "Partus propter abnormitatem pelvis matris complicatus, non specificatus",
+    "source_line": 35775
+  },
+  {
+    "code": "O66",
+    "title_la": "Drugi komplikovan porođaj",
+    "source_line": 2943
+  },
+  {
+    "code": "O66.0",
+    "title_la": "Partus propter dystociam omae complicatus",
+    "source_line": 35780
+  },
+  {
+    "code": "O66.1",
+    "title_la": "Partus propter geminos transversos complicatus",
+    "source_line": 35783
+  },
+  {
+    "code": "O66.2",
+    "title_la": "Partus propter fetum inusitate magnum complicatus",
+    "source_line": 35785
+  },
+  {
+    "code": "O66.3",
+    "title_la": "Partus propter abnormitates fetus alias complicatus",
+    "source_line": 35795
+  },
+  {
+    "code": "O66.4",
+    "title_la": "Conatus partus inefficax, non specificatus",
+    "source_line": 35805
+  },
+  {
+    "code": "O66.5",
+    "title_la": "Usus vacuum-extractoris et forcipis inefficax, non specificata",
+    "source_line": 35808
+  },
+  {
+    "code": "O66.8",
+    "title_la": "Partus complicatus alius, specificatus",
+    "source_line": 35811
+  },
+  {
+    "code": "O66.9",
+    "title_la": "Partus complicatus, non specificatus",
+    "source_line": 35813
+  },
+  {
+    "code": "O67",
+    "title_la": "Porođaj komplikovan zbog krvarenja, neklasifikovan na drugom mestu",
+    "source_line": 2944
+  },
+  {
+    "code": "O67.0",
+    "title_la": "Haemorrhagia intrapartualis propter defectum coagulationis",
+    "source_line": 35826
+  },
+  {
+    "code": "O67.8",
+    "title_la": "Haemorrhagia intrapartualis alia",
+    "source_line": 35832
+  },
+  {
+    "code": "O67.9",
+    "title_la": "Haemorrhagia intrapartualis, non specificata",
+    "source_line": 35835
+  },
+  {
+    "code": "O68",
+    "title_la": "Porođaj komplikovan zbog gušenja ploda",
+    "source_line": 2945
+  },
+  {
+    "code": "O68.0",
+    "title_la": "Partus propter anomaliam rythmi cardiaci fetalis complicatus",
+    "source_line": 35841
+  },
+  {
+    "code": "O68.1",
+    "title_la": "Partus propter meconium in fluido amniotico complicatus",
+    "source_line": 35853
+  },
+  {
+    "code": "O68.2",
+    "title_la": "Partus propter rythmum cardiacum irregularem et meconium in fluido amniotico",
+    "source_line": 35856
+  },
+  {
+    "code": "O68.3",
+    "title_la": "Partus propter argumenta biochemica ad „stress“ fetus complicatus",
+    "source_line": 35860
+  },
+  {
+    "code": "O68.8",
+    "title_la": "Partus propter argumenta ad „stress“ fetus alia complicatus",
+    "source_line": 35864
+  },
+  {
+    "code": "O68.9",
+    "title_la": "Partus propter „stress“ fetus complicatus, non specificatus",
+    "source_line": 35868
+  },
+  {
+    "code": "O69",
+    "title_la": "Porođaj komplikovan zbog komplikacija sa pupčanikom",
+    "source_line": 2946
+  },
+  {
+    "code": "O69.0",
+    "title_la": "Partus propter prolapsum chordae umbilicalis complicatus",
+    "source_line": 35873
+  },
+  {
+    "code": "O69.1",
+    "title_la": "Partus propter chordam umbilicalem collum circumvolutam complicatus",
+    "source_line": 35875
+  },
+  {
+    "code": "O69.2",
+    "title_la": "Partus propter implicationem chordae umbilicalis aliam complicatus",
+    "source_line": 35877
+  },
+  {
+    "code": "O69.3",
+    "title_la": "Partus propter chordam umbilicalem brevem complicatus",
+    "source_line": 35882
+  },
+  {
+    "code": "O69.4",
+    "title_la": "Partus propter vasa praevia complicatus",
+    "source_line": 35884
+  },
+  {
+    "code": "O69.5",
+    "title_la": "Partus propter laesionem vascularem chordae umbilicalis complicatus",
+    "source_line": 35887
+  },
+  {
+    "code": "O69.8",
+    "title_la": "Partus propter aliae complicationes chordae umbilicalis complicatus",
+    "source_line": 35892
+  },
+  {
+    "code": "O69.9",
+    "title_la": "Partus complicatus propter complicationem chordae umbilicalis, non specificatus",
+    "source_line": 35895
+  },
+  {
+    "code": "O70",
+    "title_la": "Povreda međice u toku porođaja",
+    "source_line": 2947
+  },
+  {
+    "code": "O70.0",
+    "title_la": "Laesio perinaei per partum, gradus primus",
+    "source_line": 35909
+  },
+  {
+    "code": "O70.1",
+    "title_la": "Laesio perinei per partum, gradus secundus",
+    "source_line": 35918
+  },
+  {
+    "code": "O70.2",
+    "title_la": "Laesio perinei per partum, gradus tertius",
+    "source_line": 35926
+  },
+  {
+    "code": "O70.3",
+    "title_la": "Laesio perinei per partum, gradus quartus",
+    "source_line": 35934
+  },
+  {
+    "code": "O70.9",
+    "title_la": "Laesio perinei per partum, non specificatus",
+    "source_line": 35939
+  },
+  {
+    "code": "O71",
+    "title_la": "Druge akušerske ozlede u toku porođaja",
+    "source_line": 2948
+  },
+  {
+    "code": "O71.0",
+    "title_la": "Ruptura uteri, ante partum",
+    "source_line": 35945
+  },
+  {
+    "code": "O71.1",
+    "title_la": "Ruptura uteri, per partum",
+    "source_line": 35947
+  },
+  {
+    "code": "O71.2",
+    "title_la": "Inversio uteri postpartualis",
+    "source_line": 35950
+  },
+  {
+    "code": "O71.3",
+    "title_la": "Laceratio cervicis uteri obstetricia",
+    "source_line": 35952
+  },
+  {
+    "code": "O71.4",
+    "title_la": "Laceratio solum parietalis vaginae obstetricia",
+    "source_line": 35955
+  },
+  {
+    "code": "O71.5",
+    "title_la": "Laesio organorum pelvicorum obstetricia",
+    "source_line": 35964
+  },
+  {
+    "code": "O71.6",
+    "title_la": "Laesio articulorum et ligamentorum obstetricia alia",
+    "source_line": 35968
+  },
+  {
+    "code": "O71.7",
+    "title_la": "Haematoma pelvis obstetricum",
+    "source_line": 35973
+  },
+  {
+    "code": "O71.8",
+    "title_la": "Trauma obstetricum aliud, specificatum",
+    "source_line": 35979
+  },
+  {
+    "code": "O71.9",
+    "title_la": "Trauma obstetricum, non specificatum",
+    "source_line": 35981
+  },
+  {
+    "code": "O72",
+    "title_la": "Krvarenje posle porođaja",
+    "source_line": 2949
+  },
+  {
+    "code": "O72.0",
+    "title_la": "Haemorrhagia post partum, phasis tertia",
+    "source_line": 35987
+  },
+  {
+    "code": "O72.1",
+    "title_la": "Haemorrhagia directa, post partum, alia",
+    "source_line": 35992
+  },
+  {
+    "code": "O72.2",
+    "title_la": "Haemorrhagia tarda, post partum",
+    "source_line": 35996
+  },
+  {
+    "code": "O72.3",
+    "title_la": "Coagulopathia sanguinis, post partum",
+    "source_line": 36000
+  },
+  {
+    "code": "O73",
+    "title_la": "Zaostajanje posteljice i ovojnica posteljice bez krvarenja",
+    "source_line": 2950
+  },
+  {
+    "code": "O73.0",
+    "title_la": "Retentio placentae, sine haemorrhagia",
+    "source_line": 36007
+  },
+  {
+    "code": "O73.1",
+    "title_la": "Retentio placentae partialis et membranarum, sine haemorrhagia",
+    "source_line": 36010
+  },
+  {
+    "code": "O74",
+    "title_la": "Komplikacije uzorkovane anestezijom tokom porođaja",
+    "source_line": 2951
+  },
+  {
+    "code": "O74.0",
+    "title_la": "Pneumonia aspirationalis anaesthesionalis, per partum",
+    "source_line": 36025
+  },
+  {
+    "code": "O74.1",
+    "title_la": "Complicationes pulmonum anaesthesionales aliae, per partum",
+    "source_line": 36030
+  },
+  {
+    "code": "O74.2",
+    "title_la": "Complicationes cardiacae anaesthesionales, per partum",
+    "source_line": 36033
+  },
+  {
+    "code": "O74.3",
+    "title_la": "Complicationes systematis nervosi centralis anaesthesioanles, per partum",
+    "source_line": 36038
+  },
+  {
+    "code": "O74.4",
+    "title_la": "Reactio toxica anaesthesionalis, per partum",
+    "source_line": 36041
+  },
+  {
+    "code": "O74.5",
+    "title_la": "Cephalalgia propter anaesthesiam spinalem et epiduralem, per partum",
+    "source_line": 36043
+  },
+  {
+    "code": "O74.6",
+    "title_la": "Complicationes propter anaesthesiam spinalem et epiduralem, aliae, per partum",
+    "source_line": 36045
+  },
+  {
+    "code": "O74.7",
+    "title_la": "Intubatio inefficax sive difficilis, per partum",
+    "source_line": 36047
+  },
+  {
+    "code": "O74.8",
+    "title_la": "Complicationes anaesthesionales, aliae, per partum",
+    "source_line": 36049
+  },
+  {
+    "code": "O74.9",
+    "title_la": "Complicatio anaesthesionalis, non specificata, per partum",
+    "source_line": 36051
+  },
+  {
+    "code": "O75",
+    "title_la": "Druge komplikacije tokom porođaja, neklasifikovane na drugom mestu",
+    "source_line": 2952
+  },
+  {
+    "code": "O75.0",
+    "title_la": "Exhaustio matris per partum",
+    "source_line": 36058
+  },
+  {
+    "code": "O75.1",
+    "title_la": "Afflictus (shock) per sive post partum",
+    "source_line": 36060
+  },
+  {
+    "code": "O75.2",
+    "title_la": "Pyrehia per partum, non alibi classificata",
+    "source_line": 36063
+  },
+  {
+    "code": "O75.3",
+    "title_la": "Infectiones, aliae, per partum",
+    "source_line": 36065
+  },
+  {
+    "code": "O75.4",
+    "title_la": "Complicationes propter chirurgiam obstetriciam sive proceduras aliae",
+    "source_line": 36076
+  },
+  {
+    "code": "O75.5",
+    "title_la": "Partus post ruputuram membranarum arteficialiem prolongatus",
+    "source_line": 36087
+  },
+  {
+    "code": "O75.6",
+    "title_la": "Partus post rupturam membranarum spontaneam sive non specificatam prolongatus",
+    "source_line": 36089
+  },
+  {
+    "code": "O75.7",
+    "title_la": "Partus vaginalis post sectionem caesaream praecedentem",
+    "source_line": 36092
+  },
+  {
+    "code": "O75.8",
+    "title_la": "Complicationes partus aliae, specificatae",
+    "source_line": 36094
+  },
+  {
+    "code": "O75.9",
+    "title_la": "Complicatio partus, non specificata",
+    "source_line": 36096
+  },
+  {
+    "code": "O80",
+    "title_la": "Spontani porođaj kod jednoplodne trudnoće",
+    "source_line": 2955
+  },
+  {
+    "code": "O80.0",
+    "title_la": "Partus spontaneus capite",
+    "source_line": 36111
+  },
+  {
+    "code": "O80.1",
+    "title_la": "Partus spontaneus natibus",
+    "source_line": 36113
+  },
+  {
+    "code": "O80.8",
+    "title_la": "Partus spontaneus simplex alius",
+    "source_line": 36115
+  },
+  {
+    "code": "O80.9",
+    "title_la": "Partus spontaneus simplex, non specificatus",
+    "source_line": 36117
+  },
+  {
+    "code": "O81",
+    "title_la": "Porođaj kod jednoplodne trudnoće forcepsom i vakuum-ekstraktorom",
+    "source_line": 2956
+  },
+  {
+    "code": "O81.0",
+    "title_la": "Partus forcipe inferiore",
+    "source_line": 36124
+  },
+  {
+    "code": "O81.1",
+    "title_la": "Partus forcipe medio",
+    "source_line": 36126
+  },
+  {
+    "code": "O81.2",
+    "title_la": "Partus forcipe medio cum rotatione",
+    "source_line": 36135
+  },
+  {
+    "code": "O81.3",
+    "title_la": "Partus forcipe alio et non specificato",
+    "source_line": 36137
+  },
+  {
+    "code": "O81.4",
+    "title_la": "Partus vacuum- extractore",
+    "source_line": 36139
+  },
+  {
+    "code": "O81.5",
+    "title_la": "Partus combinatione forcipis et vacuum-extractoris",
+    "source_line": 36142
+  },
+  {
+    "code": "O82",
+    "title_la": "Porođaj carskim rezom kod jednoplodne trudnoće",
+    "source_line": 2957
+  },
+  {
+    "code": "O82.0",
+    "title_la": "Partus sectione caesarea selectivus",
+    "source_line": 36148
+  },
+  {
+    "code": "O82.1",
+    "title_la": "Partus sectione caesarea urgens",
+    "source_line": 36151
+  },
+  {
+    "code": "O82.2",
+    "title_la": "Partus hysterectomia, per sectionem caesaream",
+    "source_line": 36153
+  },
+  {
+    "code": "O82.8",
+    "title_la": "Partus simplex sectione caesaream alius",
+    "source_line": 36155
+  },
+  {
+    "code": "O82.9",
+    "title_la": "Partus sectione caesarea, non specificatus",
+    "source_line": 36157
+  },
+  {
+    "code": "O83",
+    "title_la": "Drugi porođaj kod jednoplodne trudnoće uz stručnu pomoć",
+    "source_line": 2958
+  },
+  {
+    "code": "O83.0",
+    "title_la": "Extractio natibus",
+    "source_line": 36162
+  },
+  {
+    "code": "O83.1",
+    "title_la": "Partus natibus cum assistentia alia",
+    "source_line": 36164
+  },
+  {
+    "code": "O83.2",
+    "title_la": "Partus cum assistentia manuum alius",
+    "source_line": 36167
+  },
+  {
+    "code": "O83.3",
+    "title_la": "Partus fetus vivi in graviditate abdominali",
+    "source_line": 36170
+  },
+  {
+    "code": "O83.4",
+    "title_la": "Operatio destructiva obstetricia",
+    "source_line": 36172
+  },
+  {
+    "code": "O83.8",
+    "title_la": "Partus simplex cum assistentia alius, specificatus",
+    "source_line": 36177
+  },
+  {
+    "code": "O83.9",
+    "title_la": "Partus simplex cum assistentia, non specificatus",
+    "source_line": 36179
+  },
+  {
+    "code": "O84",
+    "title_la": "Višeplodni porođaj",
+    "source_line": 2959
+  },
+  {
+    "code": "O84.0",
+    "title_la": "Partus multiplex, omnis spontaneus",
+    "source_line": 36194
+  },
+  {
+    "code": "O84.1",
+    "title_la": "Partus multiplex, omnis forcipe et vakuum-extractore",
+    "source_line": 36196
+  },
+  {
+    "code": "O84.2",
+    "title_la": "Partus multiplex, omnis sectione caesarea",
+    "source_line": 36198
+  },
+  {
+    "code": "O84.8",
+    "title_la": "Partus multiplex alius",
+    "source_line": 36200
+  },
+  {
+    "code": "O84.9",
+    "title_la": "Partus multiplex, non specificatus",
+    "source_line": 36203
+  },
+  {
+    "code": "O85",
+    "title_la": "Sepsa (trovanje bakterijama) u babinjama",
+    "source_line": 2962
+  },
+  {
+    "code": "O86",
+    "title_la": "Druge infekcije u babinjama",
+    "source_line": 2963
+  },
+  {
+    "code": "O86.0",
+    "title_la": "Infectio vulneris chirurgici obstetricii",
+    "source_line": 36231
+  },
+  {
+    "code": "O86.1",
+    "title_la": "Infectio tractus genitalis, alia, post partum",
+    "source_line": 36236
+  },
+  {
+    "code": "O86.2",
+    "title_la": "Infectio tractus urinarii, post partum",
+    "source_line": 36249
+  },
+  {
+    "code": "O86.3",
+    "title_la": "Infectiones tractus genitourinarii aliae, post partum",
+    "source_line": 36252
+  },
+  {
+    "code": "O86.4",
+    "title_la": "Temperatura postpartualis, causa ignota",
+    "source_line": 36255
+  },
+  {
+    "code": "O86.8",
+    "title_la": "Infectiones puerperales aliae, specificatae",
+    "source_line": 36261
+  },
+  {
+    "code": "O87",
+    "title_la": "Komplikacije vena u babinjama",
+    "source_line": 2964
+  },
+  {
+    "code": "O87.0",
+    "title_la": "Thrombophlebitis puerperalis, superficialis",
+    "source_line": 36269
+  },
+  {
+    "code": "O87.1",
+    "title_la": "Thrombophlebitis profunda puerperalis",
+    "source_line": 36271
+  },
+  {
+    "code": "O87.2",
+    "title_la": "Haemorrhoides puerperales",
+    "source_line": 36275
+  },
+  {
+    "code": "O87.3",
+    "title_la": "Thrombosis venosa cerebralis in puerperio",
+    "source_line": 36277
+  },
+  {
+    "code": "O87.8",
+    "title_la": "Complicationes venosae puerperales aliae",
+    "source_line": 36280
+  },
+  {
+    "code": "O87.9",
+    "title_la": "Complicatio venosa puerperalis, non specificata",
+    "source_line": 36283
+  },
+  {
+    "code": "O88",
+    "title_la": "Akušerska embolija",
+    "source_line": 2965
+  },
+  {
+    "code": "O88.0",
+    "title_la": "Embolia aero obstetricia",
+    "source_line": 36294
+  },
+  {
+    "code": "O88.1",
+    "title_la": "Embolia fluido amniotico",
+    "source_line": 36296
+  },
+  {
+    "code": "O88.2",
+    "title_la": "Embolia coagulo sanguinis obstetricia",
+    "source_line": 36304
+  },
+  {
+    "code": "O88.3",
+    "title_la": "Embolia septica et pyemica obstetricia",
+    "source_line": 36308
+  },
+  {
+    "code": "O88.8",
+    "title_la": "Embolia obstetricia alia",
+    "source_line": 36310
+  },
+  {
+    "code": "O89",
+    "title_la": "Komplikacije uzrokovane anestezijom tokom babinja",
+    "source_line": 2966
+  },
+  {
+    "code": "O89.0",
+    "title_la": "Complicationes pulmonales anaestesionales, per puerperium",
+    "source_line": 36318
+  },
+  {
+    "code": "O89.1",
+    "title_la": "Complicationes cardiacae anaestesionales, per puerperium",
+    "source_line": 36325
+  },
+  {
+    "code": "O89.2",
+    "title_la": "Complicationes sistematis nervorum centralis anaesthesionales, per puerperium",
+    "source_line": 36330
+  },
+  {
+    "code": "O89.3",
+    "title_la": "Reactio toxica propter anaesthesiam localem, per puerperium",
+    "source_line": 36333
+  },
+  {
+    "code": "O89.4",
+    "title_la": "Cephaliea propter anaesthesiam spianlem et epiduralem, per puerperium",
+    "source_line": 36335
+  },
+  {
+    "code": "O89.5",
+    "title_la": "Complicationes propter anaesthesiam spinalem et epiduralem, per puerperium, aliae",
+    "source_line": 36337
+  },
+  {
+    "code": "O89.6",
+    "title_la": "Intubatio inefficax sive difficilis, per puerperium",
+    "source_line": 36339
+  },
+  {
+    "code": "O89.8",
+    "title_la": "Complicationes anaesthesionales, per puerperium, aliae",
+    "source_line": 36341
+  },
+  {
+    "code": "O89.9",
+    "title_la": "Complicatio anaesthesionalis, per puerperium, non specificata",
+    "source_line": 36343
+  },
+  {
+    "code": "O90",
+    "title_la": "Komplikacije u babinjama, neklasifikovane na drugom mestu",
+    "source_line": 2967
+  },
+  {
+    "code": "O90.0",
+    "title_la": "Ruptura vulneris sectiones caesarea facti",
+    "source_line": 36348
+  },
+  {
+    "code": "O90.1",
+    "title_la": "Ruptura vulneris perinealis obstetriciae",
+    "source_line": 36350
+  },
+  {
+    "code": "O90.2",
+    "title_la": "Haematoma vulneris obstetricii",
+    "source_line": 36355
+  },
+  {
+    "code": "O90.3",
+    "title_la": "Cardiomyopathia puerperalis",
+    "source_line": 36363
+  },
+  {
+    "code": "O90.4",
+    "title_la": "Insuficientia renalis postpartualis acuta",
+    "source_line": 36366
+  },
+  {
+    "code": "O90.5",
+    "title_la": "Thyroiditis postpartualis",
+    "source_line": 36369
+  },
+  {
+    "code": "O90.8",
+    "title_la": "Complicationes puerperales aliae, non alibi classificatae",
+    "source_line": 36371
+  },
+  {
+    "code": "O90.9",
+    "title_la": "Complicatio puerperalis, non specificata",
+    "source_line": 36374
+  },
+  {
+    "code": "O91",
+    "title_la": "Zapaljenje dojke tokom dojenja",
+    "source_line": 2968
+  },
+  {
+    "code": "O91.0",
+    "title_la": "Infectio papille mammae cum lactatione associata",
+    "source_line": 36380
+  },
+  {
+    "code": "O91.1",
+    "title_la": "Abscessus mammae per lactationem",
+    "source_line": 36384
+  },
+  {
+    "code": "O91.2",
+    "title_la": "Mastitis non purulenta per lactationem",
+    "source_line": 36389
+  },
+  {
+    "code": "O92",
+    "title_la": "Drugi poremećaji dojke i lučenja mleka",
+    "source_line": 2969
+  },
+  {
+    "code": "O92.0",
+    "title_la": "Papilla mammae post partum et per puerperium retracta",
+    "source_line": 36400
+  },
+  {
+    "code": "O92.1",
+    "title_la": "Fissura papillae mammae post partum et per puerperium",
+    "source_line": 36402
+  },
+  {
+    "code": "O92.2",
+    "title_la": "Morbi mammae post partum alii, non specificati",
+    "source_line": 36405
+  },
+  {
+    "code": "O92.3",
+    "title_la": "Agalactia",
+    "source_line": 36407
+  },
+  {
+    "code": "O92.4",
+    "title_la": "Hypogalactia",
+    "source_line": 36410
+  },
+  {
+    "code": "O92.5",
+    "title_la": "Agalactia arteficialis",
+    "source_line": 36420
+  },
+  {
+    "code": "O92.6",
+    "title_la": "Galactorrhoea",
+    "source_line": 36426
+  },
+  {
+    "code": "O92.7",
+    "title_la": "Disordines lactationales alii, non specificata",
+    "source_line": 36429
+  },
+  {
+    "code": "O94",
+    "title_la": "Posledice komplikacija trudnoće, porođaja i babinja",
+    "source_line": 2972
+  },
+  {
+    "code": "O95",
+    "title_la": "Akušerska smrt neoznačenog uzroka",
+    "source_line": 2973
+  },
+  {
+    "code": "O96",
+    "title_la": "Smrt zbog bilo kog akušerskog uzroka koja je nastupila više od 42 dana, ali manje",
+    "source_line": 2974
+  },
+  {
+    "code": "O96.0",
+    "title_la": "Mors propter causam obstetriciam directam",
+    "source_line": 36460
+  },
+  {
+    "code": "O96.1",
+    "title_la": "Mors propter causam obstetriciam indirectam",
+    "source_line": 36462
+  },
+  {
+    "code": "O96.9",
+    "title_la": "Mors propter causam obstetriciam non specificatam",
+    "source_line": 36464
+  },
+  {
+    "code": "O97",
+    "title_la": "Smrt zbog kasnih posledica akušerskih uzroka",
+    "source_line": 2976
+  },
+  {
+    "code": "O97.0",
+    "title_la": "Mors propter sequelas e causa directa obstetricia",
+    "source_line": 36479
+  },
+  {
+    "code": "O97.1",
+    "title_la": "Mors propter sequelas e causa indirecta obstetricia",
+    "source_line": 36481
+  },
+  {
+    "code": "O97.9",
+    "title_la": "Mors propter sequelas e causa obstetricia non specificata",
+    "source_line": 36483
+  },
+  {
+    "code": "O98",
+    "title_la": "Zarazne i parazitarne bolesti majke koje mogu bili klasifikovane na drugom mestu,",
+    "source_line": 2982
+  },
+  {
+    "code": "O98.0",
+    "title_la": "Tuberculosis in graviditate, partu et puerperio",
+    "source_line": 36500
+  },
+  {
+    "code": "O98.1",
+    "title_la": "Syphilis in graviditate, partu et puerperio",
+    "source_line": 36503
+  },
+  {
+    "code": "O98.2",
+    "title_la": "Gonorrhoea in graviditate, partu et puerperio",
+    "source_line": 36506
+  },
+  {
+    "code": "O98.3",
+    "title_la": "Infectiones sexuales in graviditate, partu et puerperio aliae",
+    "source_line": 36509
+  },
+  {
+    "code": "O98.4",
+    "title_la": "Hepatitis viralis in graviditate, partu et puerperio",
+    "source_line": 36512
+  },
+  {
+    "code": "O98.5",
+    "title_la": "Morbi virales in graviditate, partu et puerprio, alii",
+    "source_line": 36515
+  },
+  {
+    "code": "O98.6",
+    "title_la": "Morbi protozoales in garviditate, partu et puerperio",
+    "source_line": 36518
+  },
+  {
+    "code": "O98.7",
+    "title_la": "HIV infectio in graviditate, partu et puerperio",
+    "source_line": 36521
+  },
+  {
+    "code": "O98.8",
+    "title_la": "Morbus matris infectivi et morbi parasitarii in graviditate, partu et puerperio, alii",
+    "source_line": 36531
+  },
+  {
+    "code": "O98.9",
+    "title_la": "Morbus matris infectivus et morbus parasitarius graviditate, partu et puerperio, non",
+    "source_line": 36533
+  },
+  {
+    "code": "O99",
+    "title_la": "Druge bolesti majke koje mogu biti klasifikovane na drugom mestu, ali koje",
+    "source_line": 2984
+  },
+  {
+    "code": "O99.0",
+    "title_la": "Anaemia graviditate partu et puerperio",
+    "source_line": 36549
+  },
+  {
+    "code": "O99.1",
+    "title_la": "Morbi sanguinis et organorum haematopoeticorum alii et disordines mechanismi",
+    "source_line": 36552
+  },
+  {
+    "code": "O99.2",
+    "title_la": "Morbi glandularum endocrinarum, nutricionis et metabolismi in graviditate, partu et",
+    "source_line": 36558
+  },
+  {
+    "code": "O99.3",
+    "title_la": "Disordines mentales et morbi systematis nervosi in graviditate, partu et puerperio",
+    "source_line": 36566
+  },
+  {
+    "code": "O99.4",
+    "title_la": "Morbi circulatorii in graviditate, partu et puerperio",
+    "source_line": 36572
+  },
+  {
+    "code": "O99.5",
+    "title_la": "Morbi organorum respiratoriorum in graviditate, partu et puerperio",
+    "source_line": 36589
+  },
+  {
+    "code": "O99.6",
+    "title_la": "Morbi organorum digestivorum in garviditate, partu et puerperio",
+    "source_line": 36592
+  },
+  {
+    "code": "O99.7",
+    "title_la": "Morbi cutis et subcutis in graviditate, partu et puerperio",
+    "source_line": 36596
+  },
+  {
+    "code": "O99.8",
+    "title_la": "Morbi et status in graviditate, partu et puerperio alii, specificati",
+    "source_line": 36600
+  }
+]

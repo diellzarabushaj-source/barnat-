@@ -1,0 +1,442 @@
+[
+  {
+    "code": "W00",
+    "title_la": "Pad na istom nivou na ledu i snegu",
+    "source_line": 3856
+  },
+  {
+    "code": "W01",
+    "title_la": "Pad na istom nivou zbog okliznuća, saplitanja i posrtanja",
+    "source_line": 3857
+  },
+  {
+    "code": "W02",
+    "title_la": "Pad sa klizaljkama za led, skijama, koturaljkama ili daskom sa točkovima",
+    "source_line": 3858
+  },
+  {
+    "code": "W03",
+    "title_la": "Drugi padovi na istom nivou uzrokovani sudarom sa drugom osobom ili guranjem",
+    "source_line": 3859
+  },
+  {
+    "code": "W04",
+    "title_la": "Pad u toku nošenja ili pridržavanja od strane drugih osoba",
+    "source_line": 3861
+  },
+  {
+    "code": "W05",
+    "title_la": "Pad iz invalidskih kolica",
+    "source_line": 3862
+  },
+  {
+    "code": "W06",
+    "title_la": "Pad sa kreveta",
+    "source_line": 3863
+  },
+  {
+    "code": "W07",
+    "title_la": "Pad sa stolice",
+    "source_line": 3864
+  },
+  {
+    "code": "W08",
+    "title_la": "Pad sa druge vrste nameštaja",
+    "source_line": 3865
+  },
+  {
+    "code": "W09",
+    "title_la": "Pad sa sprava na terenu za rekreaciju",
+    "source_line": 3866
+  },
+  {
+    "code": "W10",
+    "title_la": "Pad na i sa stepeništa i stepenika",
+    "source_line": 3867
+  },
+  {
+    "code": "W11",
+    "title_la": "Pad na i sa merdevina",
+    "source_line": 3868
+  },
+  {
+    "code": "W12",
+    "title_la": "Pad na i sa građevinske skele",
+    "source_line": 3869
+  },
+  {
+    "code": "W13",
+    "title_la": "Pad sa, iz ili kroz zgradu ili građevinu",
+    "source_line": 3870
+  },
+  {
+    "code": "W14",
+    "title_la": "Pad sa drveta",
+    "source_line": 3871
+  },
+  {
+    "code": "W15",
+    "title_la": "Pad sa litice",
+    "source_line": 3872
+  },
+  {
+    "code": "W16",
+    "title_la": "Ronjenje ili skakanje u vodu koje je uzrokovalo neku drugu povredu, a ne davljenje",
+    "source_line": 3873
+  },
+  {
+    "code": "W17",
+    "title_la": "Drugi padovi sa jednog nivoa na drugi",
+    "source_line": 3875
+  },
+  {
+    "code": "W18",
+    "title_la": "Drugi padovi na istom nivou",
+    "source_line": 3876
+  },
+  {
+    "code": "W19",
+    "title_la": "Pad, neoznačen",
+    "source_line": 3877
+  },
+  {
+    "code": "W20",
+    "title_la": "Udarac bačenim, ispaljenim ili padajućim predmetom",
+    "source_line": 3880
+  },
+  {
+    "code": "W21",
+    "title_la": "Udaranje u sportski rekvizit ili udarac sportskog rekvizita",
+    "source_line": 3881
+  },
+  {
+    "code": "W22",
+    "title_la": "Udaranje u druge predmete ili udarac drugih predmeta",
+    "source_line": 3882
+  },
+  {
+    "code": "W23",
+    "title_la": "Uhvaćen, prignječen, zaglavljen ili uštinut u ili između objekata",
+    "source_line": 3883
+  },
+  {
+    "code": "W24",
+    "title_la": "Kontakt sa uređajima za dizanje i prenošenje, neklasifikovan na drugom mestu",
+    "source_line": 3884
+  },
+  {
+    "code": "W25",
+    "title_la": "Kontakt sa razbijenim staklom",
+    "source_line": 3885
+  },
+  {
+    "code": "W26",
+    "title_la": "Kontakt sa nožem, mačem ili bodežom",
+    "source_line": 3892
+  },
+  {
+    "code": "W27",
+    "title_la": "Kontakt sa ručnim alatom bez motora",
+    "source_line": 3893
+  },
+  {
+    "code": "W28",
+    "title_la": "Kontakt sa motornom kosačicom trave",
+    "source_line": 3894
+  },
+  {
+    "code": "W29",
+    "title_la": "Kontakt sa drugim motornim ručnim alatima i kućnim aparatima",
+    "source_line": 3895
+  },
+  {
+    "code": "W30",
+    "title_la": "Kontakt sa poljoprivrednim mašinama",
+    "source_line": 3896
+  },
+  {
+    "code": "W31",
+    "title_la": "Kontakt sa drugom i neoznačenom mašinom",
+    "source_line": 3897
+  },
+  {
+    "code": "W32",
+    "title_la": "Opaljivanje iz revolvera",
+    "source_line": 3898
+  },
+  {
+    "code": "W33",
+    "title_la": "Opaljivanje iz puške, sačmare i većeg vatrenog oružja",
+    "source_line": 3899
+  },
+  {
+    "code": "W34",
+    "title_la": "Opaljivanje iz drugog i neoznačenog vatrenog oružja",
+    "source_line": 3900
+  },
+  {
+    "code": "W35",
+    "title_la": "Eksplozija i pucanje bojlera",
+    "source_line": 3901
+  },
+  {
+    "code": "W36",
+    "title_la": "Eksplozija i pucanje boce sa gasom",
+    "source_line": 3902
+  },
+  {
+    "code": "W37",
+    "title_la": "Eksplozija i pucanje gume, cevi ili creva pod pritiskom",
+    "source_line": 3903
+  },
+  {
+    "code": "W38",
+    "title_la": "Eksplozija i pucanje drugih označenih uređaja pod pritiskom",
+    "source_line": 3904
+  },
+  {
+    "code": "W39",
+    "title_la": "Vatromet",
+    "source_line": 3905
+  },
+  {
+    "code": "W40",
+    "title_la": "Eksplozija drugih sredstava",
+    "source_line": 3906
+  },
+  {
+    "code": "W41",
+    "title_la": "Izlaganje mlazu visokog pritiska",
+    "source_line": 3907
+  },
+  {
+    "code": "W42",
+    "title_la": "Izlaganje buci",
+    "source_line": 3908
+  },
+  {
+    "code": "W43",
+    "title_la": "Izlaganje vibraciji",
+    "source_line": 3909
+  },
+  {
+    "code": "W44",
+    "title_la": "Strano telo koje je ušlo ili prošlo kroz oko ili prirodni otvor",
+    "source_line": 3910
+  },
+  {
+    "code": "W45",
+    "title_la": "Strano telo ili predmet koje je ušlo kroz kožu",
+    "source_line": 3911
+  },
+  {
+    "code": "W46",
+    "title_la": "Kontakt sa hipodermalnom iglom",
+    "source_line": 3912
+  },
+  {
+    "code": "W49",
+    "title_la": "Izlaganje drugim i neoznačenim neživim mehaničkim silama",
+    "source_line": 3913
+  },
+  {
+    "code": "W50",
+    "title_la": "Udaranje, rušenje, udaranje nogom, savijanje, ujedanje ili grebanje od strane",
+    "source_line": 3916
+  },
+  {
+    "code": "W51",
+    "title_la": "Udaranje ili naletanje na drugu osobu",
+    "source_line": 3918
+  },
+  {
+    "code": "W52",
+    "title_la": "Gnječenje, guranje, ili gaženje od gomile ili gomile ljudi u pokretu (ljudskog",
+    "source_line": 3919
+  },
+  {
+    "code": "W53",
+    "title_la": "Ujed pacova",
+    "source_line": 3921
+  },
+  {
+    "code": "W54",
+    "title_la": "Ujed ili udar psa",
+    "source_line": 3922
+  },
+  {
+    "code": "W55",
+    "title_la": "Ujed ili udar drugih sisara",
+    "source_line": 3923
+  },
+  {
+    "code": "W56",
+    "title_la": "Kontakt sa morskim životinjama",
+    "source_line": 3924
+  },
+  {
+    "code": "W57",
+    "title_la": "Ujed ili ubod neotrovnih insekata ili drugih neotrovnih artropoda",
+    "source_line": 3925
+  },
+  {
+    "code": "W58",
+    "title_la": "Ujed ili udar krokodila ili aligatora",
+    "source_line": 3926
+  },
+  {
+    "code": "W59",
+    "title_la": "Ujed ili zgnječenje od drugih reptila",
+    "source_line": 3927
+  },
+  {
+    "code": "W60",
+    "title_la": "Kontakt sa trnjem i bodljama biljaka i oštrim lišćem",
+    "source_line": 3928
+  },
+  {
+    "code": "W64",
+    "title_la": "Izlaganje drugim i neoznačenim živim mehaničkim silama",
+    "source_line": 3929
+  },
+  {
+    "code": "W65",
+    "title_la": "Davljenje i potapanje u kadi za kupanje",
+    "source_line": 3932
+  },
+  {
+    "code": "W66",
+    "title_la": "Davljenje i potapanje posle pada u kadu za kupanje",
+    "source_line": 3933
+  },
+  {
+    "code": "W67",
+    "title_la": "Davljenje i potapanje u bazenu za plivanje",
+    "source_line": 3934
+  },
+  {
+    "code": "W68",
+    "title_la": "Davljenje i potapanje posle pada u bazen za plivanje",
+    "source_line": 3935
+  },
+  {
+    "code": "W69",
+    "title_la": "Davljenje i potapanje u vodi u prirodi",
+    "source_line": 3936
+  },
+  {
+    "code": "W70",
+    "title_la": "Davljenje i potapanje posle pada u vodu u prirodi",
+    "source_line": 3937
+  },
+  {
+    "code": "W73",
+    "title_la": "Drugo označeno davljenje i potapanje",
+    "source_line": 3938
+  },
+  {
+    "code": "W74",
+    "title_la": "Neoznačeno davljenje i potapanje",
+    "source_line": 3939
+  },
+  {
+    "code": "W75",
+    "title_la": "Zadesno ugušenje i davljenje u krevetu",
+    "source_line": 3949
+  },
+  {
+    "code": "W76",
+    "title_la": "Druga zadesna vešanja i davljenja",
+    "source_line": 3950
+  },
+  {
+    "code": "W77",
+    "title_la": "Ugrožavanje disanja uzrokovano obrušavanjem, padanjem zemlje i drugih materija",
+    "source_line": 3951
+  },
+  {
+    "code": "W78",
+    "title_la": "Udisanje sadržaja želuca",
+    "source_line": 3952
+  },
+  {
+    "code": "W79",
+    "title_la": "Udisanje i gutanje hrane koja uzokuje začepljenost disajnih puteva",
+    "source_line": 3953
+  },
+  {
+    "code": "W80",
+    "title_la": "Udisanje i gutanje drugih predmeta koji uzrokuju začepljenost disajnih puteva",
+    "source_line": 3954
+  },
+  {
+    "code": "W81",
+    "title_la": "Zatvoren ili zaglavljen u okolini sa nedovoljno kiseonika",
+    "source_line": 3955
+  },
+  {
+    "code": "W83",
+    "title_la": "Druga označena ugrožavanja disanja",
+    "source_line": 3956
+  },
+  {
+    "code": "W84",
+    "title_la": "Neoznačeno ugrožavanje disanja",
+    "source_line": 3957
+  },
+  {
+    "code": "W85",
+    "title_la": "Izlaganje vodovima za prenos električne energije",
+    "source_line": 3961
+  },
+  {
+    "code": "W86",
+    "title_la": "Izlaganje drugim označenim električnim strujama",
+    "source_line": 3962
+  },
+  {
+    "code": "W87",
+    "title_la": "Izlaganje neoznačenim električnim strujama",
+    "source_line": 3963
+  },
+  {
+    "code": "W88",
+    "title_la": "Izlaganje jonizujućem zračenju",
+    "source_line": 3964
+  },
+  {
+    "code": "W89",
+    "title_la": "Izlaganje za čoveka vidljivom i ultraljubičastom zračenju",
+    "source_line": 3965
+  },
+  {
+    "code": "W90",
+    "title_la": "Izlaganje drugom nejonizujućem zračenju",
+    "source_line": 3966
+  },
+  {
+    "code": "W91",
+    "title_la": "Izlaganje neoznačenom tipu zračenja",
+    "source_line": 3967
+  },
+  {
+    "code": "W92",
+    "title_la": "Izlaganje prekomernoj toploti koju je prouzrokovao čovek",
+    "source_line": 3968
+  },
+  {
+    "code": "W93",
+    "title_la": "Izlaganje prekomernoj hladnoći koju je uzrokovao čovek",
+    "source_line": 3969
+  },
+  {
+    "code": "W94",
+    "title_la": "Izlaganje visokom i niskom vazdušnom pritisku i izmenama vazdušnog pritiska",
+    "source_line": 3970
+  },
+  {
+    "code": "W99",
+    "title_la": "Izlaganje drugim i neoznačenim faktorima okoline koje je uzrokovao čovek",
+    "source_line": 3971
+  }
+]

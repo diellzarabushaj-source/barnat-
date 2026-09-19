@@ -1,0 +1,477 @@
+[
+  {
+    "code": "T00",
+    "title_la": "Površinske povrede u više predela tela",
+    "source_line": 3519
+  },
+  {
+    "code": "T01",
+    "title_la": "Otvorena rana u više predela tela",
+    "source_line": 3520
+  },
+  {
+    "code": "T02",
+    "title_la": "Prelomi u više predela tela",
+    "source_line": 3521
+  },
+  {
+    "code": "T03",
+    "title_la": "Iščašenje, uganuće i istegnuće u više delova tela",
+    "source_line": 3522
+  },
+  {
+    "code": "T04",
+    "title_la": "Povrede uzrokovane zdrobljavanjem – kraš u više predela tela",
+    "source_line": 3523
+  },
+  {
+    "code": "T05",
+    "title_la": "Traumatska amputacija više predela tela",
+    "source_line": 3524
+  },
+  {
+    "code": "T06",
+    "title_la": "Druge povreda više predela tela, neklasifikovane na drugom mestu",
+    "source_line": 3525
+  },
+  {
+    "code": "T07",
+    "title_la": "Višestruke neoznače povrede",
+    "source_line": 3526
+  },
+  {
+    "code": "T08",
+    "title_la": "Prelom kičme, neoznačen",
+    "source_line": 3529
+  },
+  {
+    "code": "T09",
+    "title_la": "Druge povrede kičme i trupa, neoznačene",
+    "source_line": 3530
+  },
+  {
+    "code": "T10",
+    "title_la": "Prelom u neoznačenom predelu ruke",
+    "source_line": 3531
+  },
+  {
+    "code": "T11",
+    "title_la": "Druge povrede u neoznačenom predelu ruke",
+    "source_line": 3532
+  },
+  {
+    "code": "T12",
+    "title_la": "Prelom u neoznačenom predelu noge",
+    "source_line": 3533
+  },
+  {
+    "code": "T13",
+    "title_la": "Druge povrede u neoznačenom predelu noge",
+    "source_line": 3534
+  },
+  {
+    "code": "T14",
+    "title_la": "Povreda tela u neoznačenom predelu",
+    "source_line": 3535
+  },
+  {
+    "code": "T15",
+    "title_la": "Strano telo u spoljašnjem delu oka",
+    "source_line": 3538
+  },
+  {
+    "code": "T16",
+    "title_la": "Strano telo u uvu",
+    "source_line": 3539
+  },
+  {
+    "code": "T17",
+    "title_la": "Strano telo u sistemu za disanje",
+    "source_line": 3545
+  },
+  {
+    "code": "T18",
+    "title_la": "Strano telo u sistemu za varenje",
+    "source_line": 3546
+  },
+  {
+    "code": "T19",
+    "title_la": "Strano telo u mokraćno-polnom sistemu",
+    "source_line": 3547
+  },
+  {
+    "code": "T20",
+    "title_la": "Opekotina i razjed glave i vrata",
+    "source_line": 3552
+  },
+  {
+    "code": "T21",
+    "title_la": "Opekotina i razjed trupa",
+    "source_line": 3553
+  },
+  {
+    "code": "T22",
+    "title_la": "Opekotine i razjed ruke izuzev predela ručja i šake",
+    "source_line": 3554
+  },
+  {
+    "code": "T23",
+    "title_la": "Opekotina i razjed ručja i šake",
+    "source_line": 3555
+  },
+  {
+    "code": "T24",
+    "title_la": "Opekotina i razjed kuka i noge, izuzev predela skočnog zgloba i stopala",
+    "source_line": 3556
+  },
+  {
+    "code": "T25",
+    "title_la": "Opekotina i razjed u predelu skočnog zgloba i stopala",
+    "source_line": 3557
+  },
+  {
+    "code": "T26",
+    "title_la": "Opekotina i razjed oka i predela duplje oka",
+    "source_line": 3560
+  },
+  {
+    "code": "T27",
+    "title_la": "Opekotina i razjed sistema za disanje",
+    "source_line": 3561
+  },
+  {
+    "code": "T28",
+    "title_la": "Opekotina i razjed drugih unutrašnjih organa",
+    "source_line": 3562
+  },
+  {
+    "code": "T29",
+    "title_la": "Opekotine i razjedi u više predela tela",
+    "source_line": 3565
+  },
+  {
+    "code": "T30",
+    "title_la": "Opekotina i razjed tela u neoznačenom predelu",
+    "source_line": 3566
+  },
+  {
+    "code": "T31",
+    "title_la": "Opekotine svrstane prema obimu zahvaćene telesne površine",
+    "source_line": 3567
+  },
+  {
+    "code": "T32",
+    "title_la": "Razjedi svrstani prema obimu zahvaćene telesne površine",
+    "source_line": 3568
+  },
+  {
+    "code": "T33",
+    "title_la": "Površinska promrzlina",
+    "source_line": 3571
+  },
+  {
+    "code": "T34",
+    "title_la": "Promrzlina sa nekrozom tkiva",
+    "source_line": 3572
+  },
+  {
+    "code": "T35",
+    "title_la": "Promrzline više delova tela i neoznačene promrzline",
+    "source_line": 3573
+  },
+  {
+    "code": "T36",
+    "title_la": "Trovanje sistemskim antbioticima",
+    "source_line": 3576
+  },
+  {
+    "code": "T37",
+    "title_la": "Trovanje drugim sistemskim antiinfektivnim i antiparazitarnim lekovima",
+    "source_line": 3577
+  },
+  {
+    "code": "T38",
+    "title_la": "Trovanje hormonima i njihovim sintetičkim zamenama i antagonistima,",
+    "source_line": 3578
+  },
+  {
+    "code": "T39",
+    "title_la": "Trovanje neopijatskim analgeticima, antipireticima i antireumaticima",
+    "source_line": 3580
+  },
+  {
+    "code": "T40",
+    "title_la": "Trovanje narkoticima i psihodislepticima [halucinogenima]",
+    "source_line": 3581
+  },
+  {
+    "code": "T41",
+    "title_la": "Trovanje anesteticima i gasovima upotrebljenim u svrhu lečenja",
+    "source_line": 3582
+  },
+  {
+    "code": "T42",
+    "title_la": "Trovanje antiepilepticima, sedativno-hipnotičkim i antiparkinsonskim lekovima",
+    "source_line": 3583
+  },
+  {
+    "code": "T43",
+    "title_la": "Trovanje psihotropnim lekovima, neklasifikovano na drugom mestu",
+    "source_line": 3584
+  },
+  {
+    "code": "T44",
+    "title_la": "Trovanje lekovima koji prvenstveno deluju na autonomni nervni sistem",
+    "source_line": 3585
+  },
+  {
+    "code": "T45",
+    "title_la": "Trovanje prvenstveno sistemskim i hematološkim sredstvima, neklasifikovano na",
+    "source_line": 3586
+  },
+  {
+    "code": "T46",
+    "title_la": "Trovanje sredstvima koja prvenstveno utiču na sistem krvotoka",
+    "source_line": 3588
+  },
+  {
+    "code": "T47",
+    "title_la": "Trovanje sredstvima koji prvenstveno deluju na želudačno-crevni sistem",
+    "source_line": 3589
+  },
+  {
+    "code": "T48",
+    "title_la": "Trovanje sredstvima koja prvenstveno deluju na glatke mišiće i mišiće skeleta i",
+    "source_line": 3590
+  },
+  {
+    "code": "T49",
+    "title_la": "Trovanje lokalnim sredstvima koja deluju na kožu i sluznicu i trovanje",
+    "source_line": 3592
+  },
+  {
+    "code": "T50",
+    "title_la": "Trovanje diureticima i drugim neoznačenim lekovima, preparatima i biološkim",
+    "source_line": 3600
+  },
+  {
+    "code": "T51",
+    "title_la": "Toksičko dejstvo alkohola",
+    "source_line": 3604
+  },
+  {
+    "code": "T52",
+    "title_la": "Toksičko dejstvo organskih rastvarača",
+    "source_line": 3605
+  },
+  {
+    "code": "T53",
+    "title_la": "Toksičko dejstvo halogenih derivata alifatičnih i aromatičnih ugljovodonika",
+    "source_line": 3606
+  },
+  {
+    "code": "T54",
+    "title_la": "Toksičko dejstvo korozivnih supstanci",
+    "source_line": 3607
+  },
+  {
+    "code": "T55",
+    "title_la": "Toksičko dejstvo sapuna i deterdženata",
+    "source_line": 3608
+  },
+  {
+    "code": "T56",
+    "title_la": "Toksičko dejstvo metala",
+    "source_line": 3609
+  },
+  {
+    "code": "T57",
+    "title_la": "Toksičko dejstvo drugih neorganskih supstanci",
+    "source_line": 3610
+  },
+  {
+    "code": "T58",
+    "title_la": "Toksičko dejstvo ugljen-monoksida",
+    "source_line": 3611
+  },
+  {
+    "code": "T59",
+    "title_la": "Toksičko dejstvo drugih gasova, dimova i para",
+    "source_line": 3612
+  },
+  {
+    "code": "T60",
+    "title_la": "Toksičko dejstvo pesticida",
+    "source_line": 3613
+  },
+  {
+    "code": "T61",
+    "title_la": "Toksičko dejstvo štetnih supstanci unetih kao hrana iz mora",
+    "source_line": 3614
+  },
+  {
+    "code": "T62",
+    "title_la": "Otrovno dejstvo drugih štetnih supstanci unetih kao hrana",
+    "source_line": 3615
+  },
+  {
+    "code": "T63",
+    "title_la": "Otrovno dejstvo kontakta sa otrovnim životinjama",
+    "source_line": 3616
+  },
+  {
+    "code": "T64",
+    "title_la": "Otrovno dejstvo aflatotoksina i drugih mikotoksinskih zagađivača hrane",
+    "source_line": 3617
+  },
+  {
+    "code": "T65",
+    "title_la": "Otrovno dejstvo drugih i neoznačenih supstanci",
+    "source_line": 3618
+  },
+  {
+    "code": "T66",
+    "title_la": "Neoznačena dejstva zračenja",
+    "source_line": 3621
+  },
+  {
+    "code": "T67",
+    "title_la": "Dejstva toplote i svetlosti",
+    "source_line": 3622
+  },
+  {
+    "code": "T68",
+    "title_la": "Rashlađenje tela",
+    "source_line": 3623
+  },
+  {
+    "code": "T69",
+    "title_la": "Druga dejstva snižene temperature",
+    "source_line": 3624
+  },
+  {
+    "code": "T70",
+    "title_la": "Dejstva povišenog pritiska vazduha i vode",
+    "source_line": 3625
+  },
+  {
+    "code": "T71",
+    "title_la": "Gušenje",
+    "source_line": 3626
+  },
+  {
+    "code": "T73",
+    "title_la": "Dejstva drugih lišavanja",
+    "source_line": 3627
+  },
+  {
+    "code": "T74",
+    "title_la": "Sindrom lošeg postupanja",
+    "source_line": 3628
+  },
+  {
+    "code": "T75",
+    "title_la": "Dejstva drugih spoljnih uzroka",
+    "source_line": 3629
+  },
+  {
+    "code": "T78",
+    "title_la": "Nepovoljna dejstva, neklasifikovana na drugom mestu",
+    "source_line": 3630
+  },
+  {
+    "code": "T79",
+    "title_la": "Rane komplikacije posle povrede, neklasifikovane na drugom mestu",
+    "source_line": 3633
+  },
+  {
+    "code": "T80",
+    "title_la": "Komplikacije zbog infuzije, transfuzije i injekcije",
+    "source_line": 3637
+  },
+  {
+    "code": "T81",
+    "title_la": "Komplikacije medicinskih intervencija, neklasifikovane na drugom mestu",
+    "source_line": 3638
+  },
+  {
+    "code": "T82",
+    "title_la": "Komplikacije zbog ugradnje protetskih aparata, implantata i transplantata u srce i",
+    "source_line": 3639
+  },
+  {
+    "code": "T83",
+    "title_la": "Komplikacije zbog mokraćno-polnih protetskih aparata, implantata i kalemova",
+    "source_line": 3641
+  },
+  {
+    "code": "T84",
+    "title_la": "Komplikacije zbog položaja unutrašnjih ortopedskih protetskih aparata, implantata i",
+    "source_line": 3642
+  },
+  {
+    "code": "T85",
+    "title_la": "Komplikacije zbog drugih unutrašnjih protetskih aparata, implantata i kalemova",
+    "source_line": 3644
+  },
+  {
+    "code": "T86",
+    "title_la": "Otkazivanje i odbacivanje transplantiranih organa i tkiva",
+    "source_line": 3645
+  },
+  {
+    "code": "T87",
+    "title_la": "Komplikacije svojstvene ponovnom spajanju i amputaciji",
+    "source_line": 3646
+  },
+  {
+    "code": "T88",
+    "title_la": "Druge komplikacije hirurške i medicinske nege",
+    "source_line": 3647
+  },
+  {
+    "code": "T90",
+    "title_la": "Posledice povreda glave",
+    "source_line": 3656
+  },
+  {
+    "code": "T91",
+    "title_la": "Posledice povreda vrata i trupa",
+    "source_line": 3657
+  },
+  {
+    "code": "T92",
+    "title_la": "Posledice povreda ruke",
+    "source_line": 3658
+  },
+  {
+    "code": "T93",
+    "title_la": "Posledice povreda nogu",
+    "source_line": 3659
+  },
+  {
+    "code": "T94",
+    "title_la": "Posledice povreda u više neoznačenih predela tela",
+    "source_line": 3660
+  },
+  {
+    "code": "T95",
+    "title_la": "Posledice opekotina, razjeda i promrzline",
+    "source_line": 3661
+  },
+  {
+    "code": "T96",
+    "title_la": "Posledice trovanja lekovima, preparatima i biološkim supstancama",
+    "source_line": 3662
+  },
+  {
+    "code": "T97",
+    "title_la": "Posledice toksičkih dejstava uglavnom nemedicinskih supstanci",
+    "source_line": 3663
+  },
+  {
+    "code": "T98",
+    "title_la": "Posledice drugih i neoznačenih dejstava spoljašnjih faktora",
+    "source_line": 3664
+  }
+]

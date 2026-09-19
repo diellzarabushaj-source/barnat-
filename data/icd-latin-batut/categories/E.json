@@ -1,0 +1,367 @@
+[
+  {
+    "code": "E00",
+    "title_la": "Sindrom urođenog nedostatka joda",
+    "source_line": 1660
+  },
+  {
+    "code": "E01",
+    "title_la": "Endemska netoksična gušavost i druga stanja",
+    "source_line": 1661
+  },
+  {
+    "code": "E02",
+    "title_la": "Klinički neizražena smanjena funkcija štitaste žlezde zbog nedostatka joda",
+    "source_line": 1662
+  },
+  {
+    "code": "E03",
+    "title_la": "Druge smanjene funkcije štitaste žlezde",
+    "source_line": 1663
+  },
+  {
+    "code": "E04",
+    "title_la": "Druga netoksična gušavost",
+    "source_line": 1664
+  },
+  {
+    "code": "E05",
+    "title_la": "Tireotoksikoza – povećana funkcija štitaste žlezde",
+    "source_line": 1665
+  },
+  {
+    "code": "E06",
+    "title_la": "Zapaljenje štitaste žlezde",
+    "source_line": 1666
+  },
+  {
+    "code": "E07",
+    "title_la": "Druge bolesti štitaste žlezde",
+    "source_line": 1667
+  },
+  {
+    "code": "E10",
+    "title_la": "Šećerna bolest, insulinozavisan oblik",
+    "source_line": 1670
+  },
+  {
+    "code": "E11",
+    "title_la": "Šećerna bolest, insulinonezavisan oblik",
+    "source_line": 1671
+  },
+  {
+    "code": "E12",
+    "title_la": "Šećerna bolest kod pothranjenosti",
+    "source_line": 1672
+  },
+  {
+    "code": "E13",
+    "title_la": "Druga označena šećerna bolest",
+    "source_line": 1673
+  },
+  {
+    "code": "E14",
+    "title_la": "Šećerna bolest, neoznačena",
+    "source_line": 1674
+  },
+  {
+    "code": "E15",
+    "title_la": "Besvesno stanje zbog niskog nivoa šećera u krvi, bez šećerne bolesti",
+    "source_line": 1678
+  },
+  {
+    "code": "E16",
+    "title_la": "Poremećaji unutrašnjeg lučenja pankreasa",
+    "source_line": 1679
+  },
+  {
+    "code": "E20",
+    "title_la": "Smanjena funkcija paraštitaste žlezde",
+    "source_line": 1682
+  },
+  {
+    "code": "E21",
+    "title_la": "Pojačana funkcija i drugi poremećaji paraštitaste žlezde",
+    "source_line": 1683
+  },
+  {
+    "code": "E22",
+    "title_la": "Pojačana funkcija hipofize",
+    "source_line": 1684
+  },
+  {
+    "code": "E23",
+    "title_la": "Smanjena funkcija hipofize i druge bolesti hipofize",
+    "source_line": 1685
+  },
+  {
+    "code": "E24",
+    "title_la": "Cushingov sindrom",
+    "source_line": 1686
+  },
+  {
+    "code": "E25",
+    "title_la": "Poremećaji lučenja polnih hormona nadbubrežne žlezde",
+    "source_line": 1687
+  },
+  {
+    "code": "E26",
+    "title_la": "Pojačano lučenje aldosterona",
+    "source_line": 1688
+  },
+  {
+    "code": "E27",
+    "title_la": "Drugi poremećaji funkcije nadbubrežne žlezde",
+    "source_line": 1689
+  },
+  {
+    "code": "E28",
+    "title_la": "Poremećaji funkcije jajnika",
+    "source_line": 1690
+  },
+  {
+    "code": "E29",
+    "title_la": "Poremećaji funkcija muških polnih žlezda",
+    "source_line": 1691
+  },
+  {
+    "code": "E30",
+    "title_la": "Poremećaji polnog sazrevanja, neklasifikovani na drugom mestu",
+    "source_line": 1692
+  },
+  {
+    "code": "E31",
+    "title_la": "Poremećaji funkcija više žlezda sa unutrašnjim lučenjem",
+    "source_line": 1693
+  },
+  {
+    "code": "E32",
+    "title_la": "Bolest grudne žlezde",
+    "source_line": 1694
+  },
+  {
+    "code": "E34",
+    "title_la": "Drugi poremećaji žlezda sa unutrašnjim lučenjem",
+    "source_line": 1695
+  },
+  {
+    "code": "E35",
+    "title_la": "Bolesti žlezda sa unutrašnjim lučenjem u bolestima klasifikovanim na drugom",
+    "source_line": 1696
+  },
+  {
+    "code": "E40",
+    "title_la": "Teška proteinska pothranjenost, „Kwashiorkor“",
+    "source_line": 1700
+  },
+  {
+    "code": "E41",
+    "title_la": "Teška energetska pothranjenost",
+    "source_line": 1701
+  },
+  {
+    "code": "E42",
+    "title_la": "Teška proteinsko-energetska pothranjenost",
+    "source_line": 1707
+  },
+  {
+    "code": "E43",
+    "title_la": "Teška proteinsko-energetska pothranjenost, neoznačena",
+    "source_line": 1708
+  },
+  {
+    "code": "E44",
+    "title_la": "Blaga i umereno teška proteinsko-energetska pothranjenost",
+    "source_line": 1709
+  },
+  {
+    "code": "E45",
+    "title_la": "Zastoj u razvoju usled proteinsko-energetske pothranjenosti",
+    "source_line": 1710
+  },
+  {
+    "code": "E46",
+    "title_la": "Proteinsko-energetska pothranjenost, neoznačena",
+    "source_line": 1711
+  },
+  {
+    "code": "E50",
+    "title_la": "Avitaminoza A – bolest uzrokovana nedostatkom vitamina A",
+    "source_line": 1714
+  },
+  {
+    "code": "E51",
+    "title_la": "Nedosatatak tiamina",
+    "source_line": 1715
+  },
+  {
+    "code": "E52",
+    "title_la": "Pelagra – bolest uzrokovana nedostatkom vitamina B3 [vitamin PP]",
+    "source_line": 1716
+  },
+  {
+    "code": "E53",
+    "title_la": "Nedostatak ostalih vitamina B-grupe",
+    "source_line": 1717
+  },
+  {
+    "code": "E54",
+    "title_la": "Nedostatak vitamina C",
+    "source_line": 1718
+  },
+  {
+    "code": "E55",
+    "title_la": "Nedostatak vitamina D",
+    "source_line": 1719
+  },
+  {
+    "code": "E56",
+    "title_la": "Nedostatci ostalih vitamina",
+    "source_line": 1720
+  },
+  {
+    "code": "E58",
+    "title_la": "Nedostatak kalcijuma u ishrani",
+    "source_line": 1721
+  },
+  {
+    "code": "E59",
+    "title_la": "Nedostatak selena u ishrani",
+    "source_line": 1722
+  },
+  {
+    "code": "E60",
+    "title_la": "Nedostatak cinka u ishrani",
+    "source_line": 1723
+  },
+  {
+    "code": "E61",
+    "title_la": "Nedostatak drugih hranljivih materija",
+    "source_line": 1724
+  },
+  {
+    "code": "E63",
+    "title_la": "Drugi nedostaci hranljivih materija",
+    "source_line": 1725
+  },
+  {
+    "code": "E64",
+    "title_la": "Posledice pothranjenosti i drugi nedostaci hranljivih materija",
+    "source_line": 1726
+  },
+  {
+    "code": "E65",
+    "title_la": "Lokalizovana gojaznost",
+    "source_line": 1729
+  },
+  {
+    "code": "E66",
+    "title_la": "Opšta gojaznost",
+    "source_line": 1730
+  },
+  {
+    "code": "E67",
+    "title_la": "Drugo prekomerno hranjenje",
+    "source_line": 1731
+  },
+  {
+    "code": "E68",
+    "title_la": "Posledice prekomernog hranjenja",
+    "source_line": 1732
+  },
+  {
+    "code": "E70",
+    "title_la": "Poremećaji metabolizma aromatičnih aminokiselina",
+    "source_line": 1735
+  },
+  {
+    "code": "E71",
+    "title_la": "Poremećaji metabolizma lančanih aminokiselina i matabolizma masnih kiselina",
+    "source_line": 1736
+  },
+  {
+    "code": "E72",
+    "title_la": "Drugi poremećaji metabolizma aminokiselina",
+    "source_line": 1737
+  },
+  {
+    "code": "E73",
+    "title_la": "Nepodnošenje mlečnog šećera",
+    "source_line": 1738
+  },
+  {
+    "code": "E74",
+    "title_la": "Drugi poremećaji metabolizma ugljenih hidrata",
+    "source_line": 1739
+  },
+  {
+    "code": "E75",
+    "title_la": "Drugi poremećaji metabolizma sfingolipida i deponovanja masti",
+    "source_line": 1740
+  },
+  {
+    "code": "E76",
+    "title_la": "Poremećaj metabolizma glikozaminoglikana",
+    "source_line": 1741
+  },
+  {
+    "code": "E77",
+    "title_la": "Poremećaji metabolizma glikoproteina",
+    "source_line": 1742
+  },
+  {
+    "code": "E78",
+    "title_la": "Poremećaji metabolizma masti i drugi poremećaji masti u krvi",
+    "source_line": 1743
+  },
+  {
+    "code": "E79",
+    "title_la": "Poremećaji metabolizma purina i pirimidina",
+    "source_line": 1744
+  },
+  {
+    "code": "E80",
+    "title_la": "Porfirija i poremećaji metabolizma bilirubina",
+    "source_line": 1745
+  },
+  {
+    "code": "E83",
+    "title_la": "Poremećji metabolizma mineralnih materija",
+    "source_line": 1746
+  },
+  {
+    "code": "E84",
+    "title_la": "Cistična fibroza",
+    "source_line": 1747
+  },
+  {
+    "code": "E85",
+    "title_la": "Amiloidoza – nagomilavanje amiloida u tkivima",
+    "source_line": 1748
+  },
+  {
+    "code": "E86",
+    "title_la": "Smanjenje količine vode i zapremine krvi",
+    "source_line": 1749
+  },
+  {
+    "code": "E87",
+    "title_la": "Drugi poremećaji tečnosti, elektrolita i acido-bazne ravnoteže",
+    "source_line": 1750
+  },
+  {
+    "code": "E88",
+    "title_la": "Drugi poremećaji metabolizma",
+    "source_line": 1751
+  },
+  {
+    "code": "E89",
+    "title_la": "Poremećaji žlezda sa unutrašnjim lučenjem i poremećaji metabolizma posle",
+    "source_line": 1752
+  },
+  {
+    "code": "E90",
+    "title_la": "Poremećaji ishrane i poremećaji metabolizma u bolestima klasifikovanim na",
+    "source_line": 1754
+  }
+]

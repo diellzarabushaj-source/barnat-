@@ -1,0 +1,2257 @@
+[
+  {
+    "code": "K00",
+    "title_la": "Poremećaji razvoja i nicanja zuba",
+    "source_line": 2386
+  },
+  {
+    "code": "K00.0",
+    "title_la": "Anodontia",
+    "source_line": 25767
+  },
+  {
+    "code": "K00.1",
+    "title_la": "Dentes supernumerarii",
+    "source_line": 25771
+  },
+  {
+    "code": "K00.2",
+    "title_la": "Magnitudo et forma dentium abnormalis",
+    "source_line": 25785
+  },
+  {
+    "code": "K00.3",
+    "title_la": "Dentes versicolores",
+    "source_line": 25801
+  },
+  {
+    "code": "K00.4",
+    "title_la": "Disordines formationis dentium",
+    "source_line": 25807
+  },
+  {
+    "code": "K00.5",
+    "title_la": "Anomaliae structurae dentium congenitae, non alibi classificatae",
+    "source_line": 25816
+  },
+  {
+    "code": "K00.6",
+    "title_la": "Disordines eruptionis dentium",
+    "source_line": 25824
+  },
+  {
+    "code": "K00.7",
+    "title_la": "Syndroma dentitionis",
+    "source_line": 25832
+  },
+  {
+    "code": "K00.8",
+    "title_la": "Disordines evolutionis dentium alii",
+    "source_line": 25834
+  },
+  {
+    "code": "K00.9",
+    "title_la": "Disordo evolutionis dentium, non specificatus",
+    "source_line": 25846
+  },
+  {
+    "code": "K01",
+    "title_la": "Neiznikli i uklešteni zubi",
+    "source_line": 2387
+  },
+  {
+    "code": "K01.0",
+    "title_la": "Dentes retenti",
+    "source_line": 25853
+  },
+  {
+    "code": "K01.1",
+    "title_la": "Dentes impacti",
+    "source_line": 25856
+  },
+  {
+    "code": "K02",
+    "title_la": "Karijes – kvar zuba",
+    "source_line": 2388
+  },
+  {
+    "code": "K02.0",
+    "title_la": "Caries adamantini dentium",
+    "source_line": 25862
+  },
+  {
+    "code": "K02.1",
+    "title_la": "Caries dentini dentium",
+    "source_line": 25865
+  },
+  {
+    "code": "K02.2",
+    "title_la": "Caries caementi dentium",
+    "source_line": 25867
+  },
+  {
+    "code": "K02.3",
+    "title_la": "Caries dentium inhibita",
+    "source_line": 25869
+  },
+  {
+    "code": "K02.4",
+    "title_la": "Odontoclasia",
+    "source_line": 25871
+  },
+  {
+    "code": "K02.8",
+    "title_la": "Caries dentium alia",
+    "source_line": 25875
+  },
+  {
+    "code": "K02.9",
+    "title_la": "Caries dentium, non specificata",
+    "source_line": 25877
+  },
+  {
+    "code": "K03",
+    "title_la": "Druge bolesti tvrdih tkiva zuba",
+    "source_line": 2389
+  },
+  {
+    "code": "K03.0",
+    "title_la": "Attritio dentium",
+    "source_line": 25885
+  },
+  {
+    "code": "K03.1",
+    "title_la": "Abrasio dentium",
+    "source_line": 25898
+  },
+  {
+    "code": "K03.2",
+    "title_la": "Erosio dentium",
+    "source_line": 25907
+  },
+  {
+    "code": "K03.3",
+    "title_la": "Resorptio dentium pathologica",
+    "source_line": 25916
+  },
+  {
+    "code": "K03.4",
+    "title_la": "Hypercementosis",
+    "source_line": 25920
+  },
+  {
+    "code": "K03.5",
+    "title_la": "Ancylosis dentis",
+    "source_line": 25923
+  },
+  {
+    "code": "K03.6",
+    "title_la": "Sedimenta dentis",
+    "source_line": 25925
+  },
+  {
+    "code": "K03.7",
+    "title_la": "Discoloratio dentis posteruptiva",
+    "source_line": 25939
+  },
+  {
+    "code": "K03.8",
+    "title_la": "Morbi textuum dentium durarum alii, specificati",
+    "source_line": 25942
+  },
+  {
+    "code": "K03.9",
+    "title_la": "Morbus textuum dentium durorum, non specificatus",
+    "source_line": 25948
+  },
+  {
+    "code": "K04",
+    "title_la": "Bolesti pulpe zuba i tkiva oko vrha zuba",
+    "source_line": 2390
+  },
+  {
+    "code": "K04.0",
+    "title_la": "Pulpitis",
+    "source_line": 25959
+  },
+  {
+    "code": "K04.1",
+    "title_la": "Necrosis pulpae dentis",
+    "source_line": 25967
+  },
+  {
+    "code": "K04.2",
+    "title_la": "Degeneratio pulpae dentis",
+    "source_line": 25970
+  },
+  {
+    "code": "K04.3",
+    "title_la": "Formatio textus duri in pulpa abnormalis",
+    "source_line": 25975
+  },
+  {
+    "code": "K04.4",
+    "title_la": "Periodontitis pulpae apicalis acuta",
+    "source_line": 25978
+  },
+  {
+    "code": "K04.5",
+    "title_la": "Periodontitis pulpae apicalis chronica",
+    "source_line": 25981
+  },
+  {
+    "code": "K04.6",
+    "title_la": "Abscessus periapicalis fistulosus",
+    "source_line": 25985
+  },
+  {
+    "code": "K04.7",
+    "title_la": "Abscessus periapicalis non fistulosus",
+    "source_line": 25990
+  },
+  {
+    "code": "K04.8",
+    "title_la": "Cystis dentis radicularis",
+    "source_line": 25995
+  },
+  {
+    "code": "K04.9",
+    "title_la": "Morbi pulpae et textus periapicalis alii et non specificati",
+    "source_line": 26002
+  },
+  {
+    "code": "K05",
+    "title_la": "Gingivitis - zapaljenje desni - i bolesti okoline zuba",
+    "source_line": 2391
+  },
+  {
+    "code": "K05.0",
+    "title_la": "Gingivitis acuta",
+    "source_line": 26014
+  },
+  {
+    "code": "K05.1",
+    "title_la": "Gingivitis chronica",
+    "source_line": 26018
+  },
+  {
+    "code": "K05.2",
+    "title_la": "Periodontitis acuta",
+    "source_line": 26026
+  },
+  {
+    "code": "K05.3",
+    "title_la": "Periodontitis chronica",
+    "source_line": 26034
+  },
+  {
+    "code": "K05.4",
+    "title_la": "Periodontosis",
+    "source_line": 26041
+  },
+  {
+    "code": "K05.5",
+    "title_la": "Morbi periodontales alii",
+    "source_line": 26044
+  },
+  {
+    "code": "K05.6",
+    "title_la": "Morbi periodontales, non specificati",
+    "source_line": 26046
+  },
+  {
+    "code": "K06",
+    "title_la": "Druge bolesti desni i bezubog alveolarnog grebena",
+    "source_line": 2392
+  },
+  {
+    "code": "K06.0",
+    "title_la": "Recessio gingivae",
+    "source_line": 26056
+  },
+  {
+    "code": "K06.1",
+    "title_la": "Hypertrophia gingivae",
+    "source_line": 26059
+  },
+  {
+    "code": "K06.2",
+    "title_la": "Laesio gingivae et processus alveolaris edentati traumatica",
+    "source_line": 26070
+  },
+  {
+    "code": "K06.8",
+    "title_la": "Morbi gingivae et processus alveoralis edentati alii, specificati",
+    "source_line": 26074
+  },
+  {
+    "code": "K06.9",
+    "title_la": "Morbus gingivae et processus alveolaris edentati, non specificatus",
+    "source_line": 26081
+  },
+  {
+    "code": "K07",
+    "title_la": "Anomalije zuba i kostiju lica [uključujući smetnje zagrižaja]",
+    "source_line": 2393
+  },
+  {
+    "code": "K07.0",
+    "title_la": "Gnathanomaliae majores",
+    "source_line": 26088
+  },
+  {
+    "code": "K07.1",
+    "title_la": "Gnathanomaliae et anomaliae basis cranii",
+    "source_line": 26097
+  },
+  {
+    "code": "K07.2",
+    "title_la": "Gnathanomaliae arcuum dentalium",
+    "source_line": 26102
+  },
+  {
+    "code": "K07.3",
+    "title_la": "Malpositiones dentis",
+    "source_line": 26123
+  },
+  {
+    "code": "K07.4",
+    "title_la": "Malocclusio dentis, non specificata",
+    "source_line": 26133
+  },
+  {
+    "code": "K07.5",
+    "title_la": "Abnormitas functionis dentofacialis",
+    "source_line": 26135
+  },
+  {
+    "code": "K07.6",
+    "title_la": "Disordines articuli temporomandibularis",
+    "source_line": 26144
+  },
+  {
+    "code": "K07.8",
+    "title_la": "Anomaliae dentofaciales aliae",
+    "source_line": 26153
+  },
+  {
+    "code": "K07.9",
+    "title_la": "Anomalia dentofacialis, non specificata",
+    "source_line": 26155
+  },
+  {
+    "code": "K08",
+    "title_la": "Druge bolesti zuba i potpornog tkiva",
+    "source_line": 2394
+  },
+  {
+    "code": "K08.0",
+    "title_la": "Exfoliatio dentium in morbis systematicis",
+    "source_line": 26160
+  },
+  {
+    "code": "K08.1",
+    "title_la": "Edentatio dentium propter accidentem, extractionem sive morbum periodonti",
+    "source_line": 26162
+  },
+  {
+    "code": "K08.2",
+    "title_la": "Atrophia processus alveolaris edentati",
+    "source_line": 26164
+  },
+  {
+    "code": "K08.3",
+    "title_la": "Radix relicta",
+    "source_line": 26166
+  },
+  {
+    "code": "K08.8",
+    "title_la": "Morbi dentium et textus sustentionalis alii, specificati",
+    "source_line": 26168
+  },
+  {
+    "code": "K08.9",
+    "title_la": "Morbus dentium et textus sustentionalis, non specificatus",
+    "source_line": 26173
+  },
+  {
+    "code": "K09",
+    "title_la": "Ciste usta, neklasifikovane na drugom mestu",
+    "source_line": 2395
+  },
+  {
+    "code": "K09.0",
+    "title_la": "Cystes odontogenales evolutionales",
+    "source_line": 26185
+  },
+  {
+    "code": "K09.1",
+    "title_la": "Cystes non odontogenes evolutionales",
+    "source_line": 26194
+  },
+  {
+    "code": "K09.2",
+    "title_la": "Cystes maxillae, aliae",
+    "source_line": 26202
+  },
+  {
+    "code": "K09.8",
+    "title_la": "Cystes regionis oralis aliae, non alibi classificatae",
+    "source_line": 26211
+  },
+  {
+    "code": "K09.9",
+    "title_la": "Cystis regionis oralis, non specificata",
+    "source_line": 26219
+  },
+  {
+    "code": "K10",
+    "title_la": "Druge bolesti vilica",
+    "source_line": 2396
+  },
+  {
+    "code": "K10.0",
+    "title_la": "Disordines maxillae et mandibulae evolutionales",
+    "source_line": 26224
+  },
+  {
+    "code": "K10.1",
+    "title_la": "Granuloma maxillae et mandibulae gigantocellulare centrale",
+    "source_line": 26239
+  },
+  {
+    "code": "K10.2",
+    "title_la": "Status inflammatorii maxillae et mandibulae",
+    "source_line": 26243
+  },
+  {
+    "code": "K10.3",
+    "title_la": "Alveolitis",
+    "source_line": 26253
+  },
+  {
+    "code": "K10.8",
+    "title_la": "Morbi maxillae et mandibulae alii, specificati",
+    "source_line": 26257
+  },
+  {
+    "code": "K10.9",
+    "title_la": "Morbus maxillae et mandibulae, non specificatus",
+    "source_line": 26265
+  },
+  {
+    "code": "K11",
+    "title_la": "Bolesti pljuvačnih žlezda",
+    "source_line": 2397
+  },
+  {
+    "code": "K11.0",
+    "title_la": "Atrophia glandulae salivaris",
+    "source_line": 26270
+  },
+  {
+    "code": "K11.1",
+    "title_la": "Hypertrophia glandulae salivaris",
+    "source_line": 26272
+  },
+  {
+    "code": "K11.2",
+    "title_la": "Sialoadenitis",
+    "source_line": 26274
+  },
+  {
+    "code": "K11.3",
+    "title_la": "Abscessus glandulae salivaris",
+    "source_line": 26278
+  },
+  {
+    "code": "K11.4",
+    "title_la": "Fistula glandulae salivaris",
+    "source_line": 26280
+  },
+  {
+    "code": "K11.5",
+    "title_la": "Sialolithiasis",
+    "source_line": 26283
+  },
+  {
+    "code": "K11.6",
+    "title_la": "Mucocele glandulae salivaris",
+    "source_line": 26288
+  },
+  {
+    "code": "K11.7",
+    "title_la": "Dysfunctio secretionis glandulae salivaris",
+    "source_line": 26300
+  },
+  {
+    "code": "K11.8",
+    "title_la": "Morbi glandularum salivarium alii",
+    "source_line": 26306
+  },
+  {
+    "code": "K11.9",
+    "title_la": "Morbus glandulae salivaris, non specificatus",
+    "source_line": 26316
+  },
+  {
+    "code": "K12",
+    "title_la": "Zapaljenje usta i srodne lezije",
+    "source_line": 2398
+  },
+  {
+    "code": "K12.0",
+    "title_la": "Aphtae oris recurrentes",
+    "source_line": 26327
+  },
+  {
+    "code": "K12.1",
+    "title_la": "Stomatitis, formae aliae",
+    "source_line": 26334
+  },
+  {
+    "code": "K12.2",
+    "title_la": "Phlegmone et abscessus oris",
+    "source_line": 26341
+  },
+  {
+    "code": "K12.3",
+    "title_la": "Mucositis oris (ulcerosa)",
+    "source_line": 26359
+  },
+  {
+    "code": "K13",
+    "title_la": "Druge bolesti usne i sluznice usta",
+    "source_line": 2399
+  },
+  {
+    "code": "K13.0",
+    "title_la": "Morbi labii",
+    "source_line": 26378
+  },
+  {
+    "code": "K13.1",
+    "title_la": "Morsus buccae et labii oris",
+    "source_line": 26393
+  },
+  {
+    "code": "K13.2",
+    "title_la": "Leucoplakia et disordines epithelii oris et linguae alii",
+    "source_line": 26395
+  },
+  {
+    "code": "K13.3",
+    "title_la": "Leucoplakia pilosa",
+    "source_line": 26403
+  },
+  {
+    "code": "K13.4",
+    "title_la": "Granuloma et laesiones mucosae oris granulomatosae",
+    "source_line": 26405
+  },
+  {
+    "code": "K13.5",
+    "title_la": "Fibrosis submucosae oris",
+    "source_line": 26410
+  },
+  {
+    "code": "K13.6",
+    "title_la": "Hyperplasia mucosae oris irritativa",
+    "source_line": 26420
+  },
+  {
+    "code": "K13.7",
+    "title_la": "Laesiones mucosae oris aliae et non specificatae",
+    "source_line": 26423
+  },
+  {
+    "code": "K14",
+    "title_la": "Bolesti jezika",
+    "source_line": 2400
+  },
+  {
+    "code": "K14.0",
+    "title_la": "Glossitis",
+    "source_line": 26437
+  },
+  {
+    "code": "K14.1",
+    "title_la": "Lingua geographica",
+    "source_line": 26442
+  },
+  {
+    "code": "K14.2",
+    "title_la": "Glossitis rhomboides mediana",
+    "source_line": 26446
+  },
+  {
+    "code": "K14.3",
+    "title_la": "Hypertrophia papillarum linguae",
+    "source_line": 26448
+  },
+  {
+    "code": "K14.4",
+    "title_la": "Atrophia papillarum linguae",
+    "source_line": 26454
+  },
+  {
+    "code": "K14.5",
+    "title_la": "Lingua plicata",
+    "source_line": 26457
+  },
+  {
+    "code": "K14.6",
+    "title_la": "Lingua dolorosa",
+    "source_line": 26463
+  },
+  {
+    "code": "K14.8",
+    "title_la": "Morbi linguae alii",
+    "source_line": 26475
+  },
+  {
+    "code": "K14.9",
+    "title_la": "Morbus linguae, non specificatus",
+    "source_line": 26481
+  },
+  {
+    "code": "K20",
+    "title_la": "Zapaljenje jednjaka",
+    "source_line": 2403
+  },
+  {
+    "code": "K21",
+    "title_la": "Gastro-ezofagealna refluksna bolest",
+    "source_line": 2404
+  },
+  {
+    "code": "K21.0",
+    "title_la": "Morbus refluxualis gastro-oesophageus cum oesophagitide",
+    "source_line": 26531
+  },
+  {
+    "code": "K21.9",
+    "title_la": "Morbus refluxualis gastro-oesophageus sine oesophagitide",
+    "source_line": 26534
+  },
+  {
+    "code": "K22",
+    "title_la": "Druge bolesti jednjaka",
+    "source_line": 2405
+  },
+  {
+    "code": "K22.0",
+    "title_la": "Achalasia cardialis",
+    "source_line": 26541
+  },
+  {
+    "code": "K22.1",
+    "title_la": "Ulcus oesophagi",
+    "source_line": 26546
+  },
+  {
+    "code": "K22.2",
+    "title_la": "Obstructio oesophagi",
+    "source_line": 26558
+  },
+  {
+    "code": "K22.3",
+    "title_la": "Perforatio oesophagi",
+    "source_line": 26566
+  },
+  {
+    "code": "K22.4",
+    "title_la": "Dyskinesia oesophagi",
+    "source_line": 26570
+  },
+  {
+    "code": "K22.5",
+    "title_la": "Diverticulum oesophagi acquisitum",
+    "source_line": 26576
+  },
+  {
+    "code": "K22.6",
+    "title_la": "Syndroma haemorrhagica gastrooesophagica",
+    "source_line": 26587
+  },
+  {
+    "code": "K22.7",
+    "title_la": "Oesophagus Barrett",
+    "source_line": 26590
+  },
+  {
+    "code": "K22.8",
+    "title_la": "Morbi oesophagi alii, specificati",
+    "source_line": 26595
+  },
+  {
+    "code": "K22.9",
+    "title_la": "Morbus oesophagi, non specificatus",
+    "source_line": 26598
+  },
+  {
+    "code": "K23",
+    "title_la": "Bolesti jednjaka u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2406
+  },
+  {
+    "code": "K23.0",
+    "title_la": "Oesophagis tuberculosa (A18.8†)",
+    "source_line": 26603
+  },
+  {
+    "code": "K23.1",
+    "title_la": "Megaoesophagus in morbo Chagas (B57.3†)",
+    "source_line": 26605
+  },
+  {
+    "code": "K23.8",
+    "title_la": "Morbi oesophagi in morbis aliis, alibi classificati",
+    "source_line": 26607
+  },
+  {
+    "code": "K25",
+    "title_la": "Grizlica želuca",
+    "source_line": 2407
+  },
+  {
+    "code": "K26",
+    "title_la": "Grizlica dvanaestopalačnog creva",
+    "source_line": 2408
+  },
+  {
+    "code": "K27",
+    "title_la": "Peptička grizlica, neoznačene lokalizacije",
+    "source_line": 2409
+  },
+  {
+    "code": "K28",
+    "title_la": "Želudačno-crevna grizlica",
+    "source_line": 2410
+  },
+  {
+    "code": "K29",
+    "title_la": "Zapaljenje želuca i dvanaestopalačnog creva",
+    "source_line": 2411
+  },
+  {
+    "code": "K29.0",
+    "title_la": "Gastritis haemorrhagica acuta",
+    "source_line": 26661
+  },
+  {
+    "code": "K29.1",
+    "title_la": "Gastritis acuta alia",
+    "source_line": 26665
+  },
+  {
+    "code": "K29.2",
+    "title_la": "Gastritis alcoholica",
+    "source_line": 26667
+  },
+  {
+    "code": "K29.3",
+    "title_la": "Gastritis superficialis chronica",
+    "source_line": 26669
+  },
+  {
+    "code": "K29.4",
+    "title_la": "Gastritis atrophica chronica",
+    "source_line": 26671
+  },
+  {
+    "code": "K29.5",
+    "title_la": "Gastritis chronica, non specificata",
+    "source_line": 26674
+  },
+  {
+    "code": "K29.6",
+    "title_la": "Gastritis alia",
+    "source_line": 26678
+  },
+  {
+    "code": "K29.7",
+    "title_la": "Gastritis, non specificata",
+    "source_line": 26683
+  },
+  {
+    "code": "K29.8",
+    "title_la": "Duodenitis",
+    "source_line": 26685
+  },
+  {
+    "code": "K29.9",
+    "title_la": "Gastroduodenitis, non specificata",
+    "source_line": 26687
+  },
+  {
+    "code": "K30",
+    "title_la": "Poremećeno varenje",
+    "source_line": 2412
+  },
+  {
+    "code": "K31",
+    "title_la": "Druge bolesti želuca i bolesti dvanaestopalačnog creva",
+    "source_line": 2413
+  },
+  {
+    "code": "K31.0",
+    "title_la": "Dilatatio ventriculi acuta",
+    "source_line": 26711
+  },
+  {
+    "code": "K31.1",
+    "title_la": "Stenosis pylori hypertrophica adultorum",
+    "source_line": 26714
+  },
+  {
+    "code": "K31.2",
+    "title_la": "Strictura et stenosis ventriculi formae horologii arenarii",
+    "source_line": 26718
+  },
+  {
+    "code": "K31.3",
+    "title_la": "Pylorospasmus, non alibi classificatus",
+    "source_line": 26722
+  },
+  {
+    "code": "K31.4",
+    "title_la": "Diverticulum ventriculi",
+    "source_line": 26728
+  },
+  {
+    "code": "K31.5",
+    "title_la": "Obstructio duodeni",
+    "source_line": 26731
+  },
+  {
+    "code": "K31.6",
+    "title_la": "Fistula ventriculi et fistula duodeni",
+    "source_line": 26739
+  },
+  {
+    "code": "K31.7",
+    "title_la": "Polypus ventriculi et duodeni",
+    "source_line": 26743
+  },
+  {
+    "code": "K31.8",
+    "title_la": "Morbi ventriculi et morbi duodeni alii, specificati",
+    "source_line": 26754
+  },
+  {
+    "code": "K31.9",
+    "title_la": "Morbus ventriculi et morbus duodeni, non specificatus",
+    "source_line": 26759
+  },
+  {
+    "code": "K35",
+    "title_la": "Akutno zapaljenje slepog creva",
+    "source_line": 2416
+  },
+  {
+    "code": "K35.2",
+    "title_la": "Appendicitis acuta cum peritonitide generalisata",
+    "source_line": 26769
+  },
+  {
+    "code": "K35.3",
+    "title_la": "Appendicitis acuta cum peritonitide localisata",
+    "source_line": 26772
+  },
+  {
+    "code": "K35.8",
+    "title_la": "Appendicitis acuta, alia et non specificata",
+    "source_line": 26776
+  },
+  {
+    "code": "K36",
+    "title_la": "Drugo zapaljenje slepog creva",
+    "source_line": 2417
+  },
+  {
+    "code": "K37",
+    "title_la": "Zapaljenje slepog creva, neoznačeno",
+    "source_line": 2418
+  },
+  {
+    "code": "K38",
+    "title_la": "Druge bolesti slepog creva",
+    "source_line": 2419
+  },
+  {
+    "code": "K38.0",
+    "title_la": "Hyperplasia appendicis",
+    "source_line": 26791
+  },
+  {
+    "code": "K38.1",
+    "title_la": "Concrementa appendicis",
+    "source_line": 26793
+  },
+  {
+    "code": "K38.2",
+    "title_la": "Diverticulum appendicis",
+    "source_line": 26797
+  },
+  {
+    "code": "K38.3",
+    "title_la": "Fistula appendicis",
+    "source_line": 26799
+  },
+  {
+    "code": "K38.8",
+    "title_la": "Morbi appendicis alii, specificati",
+    "source_line": 26801
+  },
+  {
+    "code": "K38.9",
+    "title_la": "Morbus appendicis, non specificatus",
+    "source_line": 26811
+  },
+  {
+    "code": "K40",
+    "title_la": "Preponska kila",
+    "source_line": 2422
+  },
+  {
+    "code": "K40.0",
+    "title_la": "Hernia inguinalis incarcerata, non gangraenosa, bilateralis",
+    "source_line": 26835
+  },
+  {
+    "code": "K40.1",
+    "title_la": "Hernia inguinalis gangraenosa bilateralis",
+    "source_line": 26837
+  },
+  {
+    "code": "K40.2",
+    "title_la": "Hernia inguinalis bilateralis non incarcerata, non gangraenosa",
+    "source_line": 26839
+  },
+  {
+    "code": "K40.3",
+    "title_la": "Hernia inguinalis unilateralis non specificata sive incarcerata, non gangraenosa",
+    "source_line": 26842
+  },
+  {
+    "code": "K40.4",
+    "title_la": "Hernia inguinalis gangraenosa unilateralis, non specificata",
+    "source_line": 26849
+  },
+  {
+    "code": "K40.9",
+    "title_la": "Hernia inguinalis unilateralis, non incarcerata, non gangraenosa, non specificata",
+    "source_line": 26852
+  },
+  {
+    "code": "K41",
+    "title_la": "Butna kila",
+    "source_line": 2423
+  },
+  {
+    "code": "K41.0",
+    "title_la": "Hernia femoralis incarcerata bilateralis, non gangraenosa",
+    "source_line": 26858
+  },
+  {
+    "code": "K41.1",
+    "title_la": "Hernia femoralis gangraenosa bilateralis",
+    "source_line": 26860
+  },
+  {
+    "code": "K41.2",
+    "title_la": "Hernia femoralis non incarcerata, non gangraenosa, bilateralis",
+    "source_line": 26869
+  },
+  {
+    "code": "K41.3",
+    "title_la": "Hernia femoralis unilateralis incarcerata, non gangraenosa, non specificata",
+    "source_line": 26872
+  },
+  {
+    "code": "K41.4",
+    "title_la": "Hernia femoralis gangraenosa unilateralis, non specificata",
+    "source_line": 26879
+  },
+  {
+    "code": "K41.9",
+    "title_la": "Hernia femoralis unilateralis non incarcerata, non gangraenosa, non specificata",
+    "source_line": 26881
+  },
+  {
+    "code": "K42",
+    "title_la": "Pupčana kila",
+    "source_line": 2424
+  },
+  {
+    "code": "K42.0",
+    "title_la": "Hernia umbilicalis incarcerata, non gangraenosa",
+    "source_line": 26889
+  },
+  {
+    "code": "K42.1",
+    "title_la": "Hernia umbilicalis gangraenosa",
+    "source_line": 26896
+  },
+  {
+    "code": "K42.9",
+    "title_la": "Hernia umbilicalis non incarcerata, non gangraenosa",
+    "source_line": 26898
+  },
+  {
+    "code": "K43",
+    "title_la": "Kila prednjeg zida trbuha",
+    "source_line": 2425
+  },
+  {
+    "code": "K43.0",
+    "title_la": "Hernia ventralis incarcerata, non gangraenosa",
+    "source_line": 26907
+  },
+  {
+    "code": "K43.1",
+    "title_la": "Hernia ventralis gangraenosa",
+    "source_line": 26914
+  },
+  {
+    "code": "K43.9",
+    "title_la": "Hernia ventralis non incarcerata, non gangraenosa",
+    "source_line": 26916
+  },
+  {
+    "code": "K44",
+    "title_la": "Kila grudno-trbušne prečage",
+    "source_line": 2426
+  },
+  {
+    "code": "K44.0",
+    "title_la": "Hernia diaphragmatica incarcerata, non gangraenosa",
+    "source_line": 26933
+  },
+  {
+    "code": "K44.1",
+    "title_la": "Hernia diaphragmatica gangraenosa",
+    "source_line": 26940
+  },
+  {
+    "code": "K44.9",
+    "title_la": "Hernia diaphragmatica non incarcerata, non gangraenosa",
+    "source_line": 26942
+  },
+  {
+    "code": "K45",
+    "title_la": "Druga trbušna kila",
+    "source_line": 2427
+  },
+  {
+    "code": "K45.0",
+    "title_la": "Hernia abdominalis incarcerata, non gangraenosa, alia, specificata",
+    "source_line": 26955
+  },
+  {
+    "code": "K45.1",
+    "title_la": "Hernia abdominalis gangraenosa alia",
+    "source_line": 26962
+  },
+  {
+    "code": "K45.8",
+    "title_la": "Hernia abdominalis specificata alia, non incarcerata, non gangraenosa",
+    "source_line": 26965
+  },
+  {
+    "code": "K46",
+    "title_la": "Trbušna kila, neoznačena",
+    "source_line": 2428
+  },
+  {
+    "code": "K46.0",
+    "title_la": "Hernia abdominalis incarcerata, non gangraenosa, non specificata",
+    "source_line": 26985
+  },
+  {
+    "code": "K46.1",
+    "title_la": "Hernia abdominalis gangraenosa, non specificata",
+    "source_line": 26992
+  },
+  {
+    "code": "K46.9",
+    "title_la": "Hernia abdominalis, non obstructionalis, non gangraenosa",
+    "source_line": 26995
+  },
+  {
+    "code": "K50",
+    "title_la": "Crohnova bolest",
+    "source_line": 2437
+  },
+  {
+    "code": "K50.0",
+    "title_la": "Morbus Crohn intestini tenuis",
+    "source_line": 27011
+  },
+  {
+    "code": "K50.1",
+    "title_la": "Morbus Crohn coli",
+    "source_line": 27029
+  },
+  {
+    "code": "K50.8",
+    "title_la": "Morbus Crohn alius",
+    "source_line": 27038
+  },
+  {
+    "code": "K50.9",
+    "title_la": "Morbus Crohn, non specificatus",
+    "source_line": 27041
+  },
+  {
+    "code": "K51",
+    "title_la": "Ulcerozni kolitis",
+    "source_line": 2438
+  },
+  {
+    "code": "K51.0",
+    "title_la": "Pancolitis ulcerosa (chronica)",
+    "source_line": 27048
+  },
+  {
+    "code": "K51.2",
+    "title_la": "Proctitis ulcerosa (chronica)",
+    "source_line": 27050
+  },
+  {
+    "code": "K51.3",
+    "title_la": "Rectosigmoiditis ulcerosa (chronica)",
+    "source_line": 27052
+  },
+  {
+    "code": "K51.4",
+    "title_la": "Polyposis inflammatoria",
+    "source_line": 27054
+  },
+  {
+    "code": "K51.5",
+    "title_la": "Colitis lateralis sinistri",
+    "source_line": 27056
+  },
+  {
+    "code": "K51.8",
+    "title_la": "Colitis ulcerosa alia",
+    "source_line": 27059
+  },
+  {
+    "code": "K51.9",
+    "title_la": "Colitis ulcerosa, non specificata",
+    "source_line": 27061
+  },
+  {
+    "code": "K52",
+    "title_la": "Druga nezarazna zapaljenja želuca, tankog creva i debelog creva",
+    "source_line": 2439
+  },
+  {
+    "code": "K52.0",
+    "title_la": "Gastroenteritis et colitis radiationalis",
+    "source_line": 27066
+  },
+  {
+    "code": "K52.1",
+    "title_la": "Gastroenteritis et colitis toxica",
+    "source_line": 27068
+  },
+  {
+    "code": "K52.2",
+    "title_la": "Gastroenteritis et colitis allergica et diaetetica",
+    "source_line": 27071
+  },
+  {
+    "code": "K52.3",
+    "title_la": "Colitis inderterminata",
+    "source_line": 27074
+  },
+  {
+    "code": "K52.8",
+    "title_la": "Gastroenteritis et colitis non infectiva alia, specificata",
+    "source_line": 27084
+  },
+  {
+    "code": "K52.9",
+    "title_la": "Gastroenteritis et colitis non infectiva, non specificata",
+    "source_line": 27090
+  },
+  {
+    "code": "K55",
+    "title_la": "Vaskularne bolesti creva",
+    "source_line": 2442
+  },
+  {
+    "code": "K55.0",
+    "title_la": "Morbi intestini vasculares acuti",
+    "source_line": 27112
+  },
+  {
+    "code": "K55.1",
+    "title_la": "Morbi intestini vasculares chronici",
+    "source_line": 27121
+  },
+  {
+    "code": "K55.2",
+    "title_la": "Angiodysplasia coli",
+    "source_line": 27129
+  },
+  {
+    "code": "K55.8",
+    "title_la": "Morbi intestini vasculares alii",
+    "source_line": 27131
+  },
+  {
+    "code": "K55.9",
+    "title_la": "Morbus intestini vascularis, non specificatus",
+    "source_line": 27133
+  },
+  {
+    "code": "K56",
+    "title_la": "Paralitički zavezano crevo i začepljenje creva, bez kile",
+    "source_line": 2443
+  },
+  {
+    "code": "K56.0",
+    "title_la": "Ileus paralyticus",
+    "source_line": 27152
+  },
+  {
+    "code": "K56.1",
+    "title_la": "Incarceratio",
+    "source_line": 27161
+  },
+  {
+    "code": "K56.2",
+    "title_la": "Volvulus",
+    "source_line": 27169
+  },
+  {
+    "code": "K56.3",
+    "title_la": "Ileus cholelithiatica",
+    "source_line": 27174
+  },
+  {
+    "code": "K56.4",
+    "title_la": "Impactio intestini alia",
+    "source_line": 27177
+  },
+  {
+    "code": "K56.5",
+    "title_la": "Adhaesiones intestini obstructionales",
+    "source_line": 27183
+  },
+  {
+    "code": "K56.6",
+    "title_la": "Ileus alius, non specificatus",
+    "source_line": 27186
+  },
+  {
+    "code": "K56.7",
+    "title_la": "Ileus, non specificatus",
+    "source_line": 27202
+  },
+  {
+    "code": "K57",
+    "title_la": "Divertikuloza - vrećasta proširenja creva",
+    "source_line": 2444
+  },
+  {
+    "code": "K57.0",
+    "title_la": "Diverticulosis intestini tenuis perforans cum abscessu",
+    "source_line": 27213
+  },
+  {
+    "code": "K57.1",
+    "title_la": "Diverticulosis intestini tenuis non perforans sine abscessu",
+    "source_line": 27217
+  },
+  {
+    "code": "K57.2",
+    "title_la": "Diverticulosis coli perforans cum abscessu",
+    "source_line": 27221
+  },
+  {
+    "code": "K57.3",
+    "title_la": "Diverticulosis coli non perforans cum abscessu",
+    "source_line": 27225
+  },
+  {
+    "code": "K57.4",
+    "title_la": "Diverticulosis intestini tenuis et coli perforans cum abscessu",
+    "source_line": 27229
+  },
+  {
+    "code": "K57.5",
+    "title_la": "Diverticulosis intestini tenuis et coli non perforans sine abscessu",
+    "source_line": 27232
+  },
+  {
+    "code": "K57.8",
+    "title_la": "Diverticulosis intestini, partis non specificatae, perforans cum abscessu",
+    "source_line": 27235
+  },
+  {
+    "code": "K57.9",
+    "title_la": "Diverticulosis intestini, partis non specificatae, non perforans sine abscessu",
+    "source_line": 27238
+  },
+  {
+    "code": "K58",
+    "title_la": "Sindrom nadraženog creva",
+    "source_line": 2445
+  },
+  {
+    "code": "K58.0",
+    "title_la": "Syndroma intestini irritabilis cum diarrhoea",
+    "source_line": 27245
+  },
+  {
+    "code": "K58.9",
+    "title_la": "Syndroma intestini irritabilis sine diarrhoea",
+    "source_line": 27247
+  },
+  {
+    "code": "K59",
+    "title_la": "Drugi funkcionalni poremećaji rada creva",
+    "source_line": 2446
+  },
+  {
+    "code": "K59.0",
+    "title_la": "Opstipatio",
+    "source_line": 27263
+  },
+  {
+    "code": "K59.1",
+    "title_la": "Diarrhoea functionalis",
+    "source_line": 27265
+  },
+  {
+    "code": "K59.2",
+    "title_la": "Intestinum neurogenes non alibi classificatum",
+    "source_line": 27267
+  },
+  {
+    "code": "K59.3",
+    "title_la": "Megacolon, non alibi classificatum",
+    "source_line": 27269
+  },
+  {
+    "code": "K59.4",
+    "title_la": "Spasmus analis",
+    "source_line": 27278
+  },
+  {
+    "code": "K59.8",
+    "title_la": "Dysfunctiones intestinales aliae, specificati",
+    "source_line": 27281
+  },
+  {
+    "code": "K59.9",
+    "title_la": "Dysfunctio intestinalis, non specificatus",
+    "source_line": 27284
+  },
+  {
+    "code": "K60",
+    "title_la": "Prskotina i fistula analnog i rektalnog predela",
+    "source_line": 2447
+  },
+  {
+    "code": "K60.0",
+    "title_la": "Fissura ani acuta",
+    "source_line": 27290
+  },
+  {
+    "code": "K60.1",
+    "title_la": "Fissura ani chronica",
+    "source_line": 27292
+  },
+  {
+    "code": "K60.2",
+    "title_la": "Fissura ani, non specificata",
+    "source_line": 27294
+  },
+  {
+    "code": "K60.3",
+    "title_la": "Fistula ani",
+    "source_line": 27296
+  },
+  {
+    "code": "K60.4",
+    "title_la": "Fistula recti",
+    "source_line": 27298
+  },
+  {
+    "code": "K60.5",
+    "title_la": "Fistula anorectalis",
+    "source_line": 27304
+  },
+  {
+    "code": "K61",
+    "title_la": "Apsces analnog i rektalnog predela",
+    "source_line": 2448
+  },
+  {
+    "code": "K61.0",
+    "title_la": "Abscessus ani",
+    "source_line": 27319
+  },
+  {
+    "code": "K61.1",
+    "title_la": "Abscessus recti",
+    "source_line": 27323
+  },
+  {
+    "code": "K61.2",
+    "title_la": "Abscessus anorectalis",
+    "source_line": 27327
+  },
+  {
+    "code": "K61.3",
+    "title_la": "Abscessus ischiorectalis",
+    "source_line": 27329
+  },
+  {
+    "code": "K61.4",
+    "title_la": "Abscessus intrasphinctericus",
+    "source_line": 27332
+  },
+  {
+    "code": "K62",
+    "title_la": "Druge bolesti anusa i rektuma",
+    "source_line": 2449
+  },
+  {
+    "code": "K62.0",
+    "title_la": "Polypus ani",
+    "source_line": 27342
+  },
+  {
+    "code": "K62.1",
+    "title_la": "Polypus recti",
+    "source_line": 27344
+  },
+  {
+    "code": "K62.2",
+    "title_la": "Prolapsus ani",
+    "source_line": 27347
+  },
+  {
+    "code": "K62.3",
+    "title_la": "Prolapsus recti",
+    "source_line": 27350
+  },
+  {
+    "code": "K62.4",
+    "title_la": "Stenosis ani et recti",
+    "source_line": 27353
+  },
+  {
+    "code": "K62.5",
+    "title_la": "Haemorrhagia ani et recti",
+    "source_line": 27356
+  },
+  {
+    "code": "K62.6",
+    "title_la": "Ulcus ani et recti",
+    "source_line": 27367
+  },
+  {
+    "code": "K62.7",
+    "title_la": "Proctitis radiationalis",
+    "source_line": 27374
+  },
+  {
+    "code": "K62.8",
+    "title_la": "Morbi ani et recti alii specificati",
+    "source_line": 27376
+  },
+  {
+    "code": "K62.9",
+    "title_la": "Morbus ani et recti, non specificatus",
+    "source_line": 27379
+  },
+  {
+    "code": "K63",
+    "title_la": "Druge bolesti creva",
+    "source_line": 2450
+  },
+  {
+    "code": "K63.0",
+    "title_la": "Abscessus intestini",
+    "source_line": 27384
+  },
+  {
+    "code": "K63.1",
+    "title_la": "Perforatio intestini (non traumatica)",
+    "source_line": 27390
+  },
+  {
+    "code": "K63.2",
+    "title_la": "Fistula intestini",
+    "source_line": 27396
+  },
+  {
+    "code": "K63.3",
+    "title_la": "Ulcus intestini",
+    "source_line": 27404
+  },
+  {
+    "code": "K63.4",
+    "title_la": "Enteroptosis",
+    "source_line": 27415
+  },
+  {
+    "code": "K63.5",
+    "title_la": "Polypus coli",
+    "source_line": 27425
+  },
+  {
+    "code": "K63.8",
+    "title_la": "Morbi intestini alii, specificati",
+    "source_line": 27429
+  },
+  {
+    "code": "K63.9",
+    "title_la": "Morbus intestini, non specificatus",
+    "source_line": 27431
+  },
+  {
+    "code": "K65",
+    "title_la": "Peritonitis",
+    "source_line": 2453
+  },
+  {
+    "code": "K65.0",
+    "title_la": "Peritonitis acuta",
+    "source_line": 27454
+  },
+  {
+    "code": "K65.8",
+    "title_la": "Peritonitis alia",
+    "source_line": 27472
+  },
+  {
+    "code": "K65.9",
+    "title_la": "Peritonitis non specificata",
+    "source_line": 27486
+  },
+  {
+    "code": "K66",
+    "title_la": "Druge bolesti peritoneuma",
+    "source_line": 2454
+  },
+  {
+    "code": "K66.0",
+    "title_la": "Adhaesiones peritonaei",
+    "source_line": 27492
+  },
+  {
+    "code": "K66.1",
+    "title_la": "Haemoperitonaeum",
+    "source_line": 27506
+  },
+  {
+    "code": "K66.8",
+    "title_la": "Morbi peritonaei alii, specificati",
+    "source_line": 27509
+  },
+  {
+    "code": "K66.9",
+    "title_la": "Morbus peritonaei, non specificatus",
+    "source_line": 27511
+  },
+  {
+    "code": "K67",
+    "title_la": "Bolesti peritoneuma u zaraznim bolestima, klasifikovanim na drugom mestu",
+    "source_line": 2455
+  },
+  {
+    "code": "K67.0",
+    "title_la": "Peritonitis chlamydialis (A74.8†)",
+    "source_line": 27516
+  },
+  {
+    "code": "K67.1",
+    "title_la": "Peritonitis gonococcica (A54.8†)",
+    "source_line": 27518
+  },
+  {
+    "code": "K67.2",
+    "title_la": "Peritonitis syphilitica (A52.7†)",
+    "source_line": 27520
+  },
+  {
+    "code": "K67.3",
+    "title_la": "Peritonitis tuberculosa (A18.3†)",
+    "source_line": 27522
+  },
+  {
+    "code": "K67.8",
+    "title_la": "Morbi peritonaei alii in morbis infectivis alibi classificatis",
+    "source_line": 27524
+  },
+  {
+    "code": "K70",
+    "title_la": "Bolest jetre uzrokovana alkoholom",
+    "source_line": 2458
+  },
+  {
+    "code": "K70.0",
+    "title_la": "Steatosis hepatis alcoholica",
+    "source_line": 27544
+  },
+  {
+    "code": "K70.1",
+    "title_la": "Hepatitis alcoholica",
+    "source_line": 27546
+  },
+  {
+    "code": "K70.2",
+    "title_la": "Fibrosis et sclerosis hepatis alcoholica",
+    "source_line": 27548
+  },
+  {
+    "code": "K70.3",
+    "title_la": "Cirrhosis hepatis alcoholica",
+    "source_line": 27550
+  },
+  {
+    "code": "K70.4",
+    "title_la": "Insufficientia hepatis alcoholica",
+    "source_line": 27553
+  },
+  {
+    "code": "K70.9",
+    "title_la": "Morbus hepatis alcoholicus, non specificatus",
+    "source_line": 27561
+  },
+  {
+    "code": "K71",
+    "title_la": "Bolest jetre uzrokovana toksinima",
+    "source_line": 2459
+  },
+  {
+    "code": "K71.0",
+    "title_la": "Morbus hepatis toxicus cholestaticus",
+    "source_line": 27572
+  },
+  {
+    "code": "K71.1",
+    "title_la": "Morbus hepatis toxicus hepatonecroticans",
+    "source_line": 27576
+  },
+  {
+    "code": "K71.2",
+    "title_la": "Morbus hepatis toxicus cum hepatitide",
+    "source_line": 27579
+  },
+  {
+    "code": "K71.3",
+    "title_la": "Morbus hepatis toxicus cum hepatitide chronica persistenti",
+    "source_line": 27581
+  },
+  {
+    "code": "K71.4",
+    "title_la": "Morbus hepatis toxicus cum hepatitide lobulari chronica",
+    "source_line": 27590
+  },
+  {
+    "code": "K71.5",
+    "title_la": "Morbus hepatis toxicus cum hepatitide activa chronica",
+    "source_line": 27592
+  },
+  {
+    "code": "K71.6",
+    "title_la": "Morbus hepatis toxicus cum hepatitide, non alibi classificata",
+    "source_line": 27595
+  },
+  {
+    "code": "K71.7",
+    "title_la": "Morbus hepatis toxicus cum fibrosi et cirhosi hepatis",
+    "source_line": 27597
+  },
+  {
+    "code": "K71.8",
+    "title_la": "Morbi hepatis toxici cum morbis hepatis aliis",
+    "source_line": 27599
+  },
+  {
+    "code": "K71.9",
+    "title_la": "Morbus hepatis toxicus, non specificatus",
+    "source_line": 27606
+  },
+  {
+    "code": "K72",
+    "title_la": "Insuficijencija jetre, neklasifikovana na drugom mestu",
+    "source_line": 2460
+  },
+  {
+    "code": "K72.0",
+    "title_la": "Insufficientia hepatis acuta et subacuta",
+    "source_line": 27629
+  },
+  {
+    "code": "K72.1",
+    "title_la": "Insufficientia hepatis chronica",
+    "source_line": 27631
+  },
+  {
+    "code": "K72.9",
+    "title_la": "Insufficientia hepatis, non specificata",
+    "source_line": 27633
+  },
+  {
+    "code": "K73",
+    "title_la": "Hronično zapaljenje jetre, neklasifikovano na drugom mestu",
+    "source_line": 2461
+  },
+  {
+    "code": "K73.0",
+    "title_la": "Hepatitis chronica persistens, non alibi classificata",
+    "source_line": 27651
+  },
+  {
+    "code": "K73.1",
+    "title_la": "Hepatitis lobularis chronica persistens, non alibi classificata",
+    "source_line": 27653
+  },
+  {
+    "code": "K73.2",
+    "title_la": "Hepatitis activa chronica, non alibi classificata",
+    "source_line": 27655
+  },
+  {
+    "code": "K73.8",
+    "title_la": "Hepatitis chronica alia, non alibi classificata",
+    "source_line": 27658
+  },
+  {
+    "code": "K73.9",
+    "title_la": "Hepatitis chronica, non specificata",
+    "source_line": 27660
+  },
+  {
+    "code": "K74",
+    "title_la": "Fibroza i ciroza jetre",
+    "source_line": 2462
+  },
+  {
+    "code": "K74.0",
+    "title_la": "Fibrosis hepatis",
+    "source_line": 27671
+  },
+  {
+    "code": "K74.1",
+    "title_la": "Sclerosis hepatis",
+    "source_line": 27673
+  },
+  {
+    "code": "K74.2",
+    "title_la": "Fibrosis hepatis cum sclerosi hepatia",
+    "source_line": 27675
+  },
+  {
+    "code": "K74.3",
+    "title_la": "Cirrhosis biliaris primaria",
+    "source_line": 27677
+  },
+  {
+    "code": "K74.4",
+    "title_la": "Cirrhosis biliaris secundaria",
+    "source_line": 27680
+  },
+  {
+    "code": "K74.5",
+    "title_la": "Cirrhosis biliaris, non specificata",
+    "source_line": 27682
+  },
+  {
+    "code": "K74.6",
+    "title_la": "Cirrohosis hepatis alia et non specificata",
+    "source_line": 27684
+  },
+  {
+    "code": "K75",
+    "title_la": "Druge zapaljenske bolesti jetre",
+    "source_line": 2463
+  },
+  {
+    "code": "K75.0",
+    "title_la": "Abscessus hepatis",
+    "source_line": 27708
+  },
+  {
+    "code": "K75.1",
+    "title_la": "Phlebitis venae portae",
+    "source_line": 27719
+  },
+  {
+    "code": "K75.2",
+    "title_la": "Hepatitis reactiva, non specificata",
+    "source_line": 27723
+  },
+  {
+    "code": "K75.3",
+    "title_la": "Hepatitis granulomatosa, non alibi classificata",
+    "source_line": 27725
+  },
+  {
+    "code": "K75.4",
+    "title_la": "Hepatitis autoimmune",
+    "source_line": 27727
+  },
+  {
+    "code": "K75.8",
+    "title_la": "Morbi hepatis inflammatorii alii, specificati",
+    "source_line": 27729
+  },
+  {
+    "code": "K75.9",
+    "title_la": "Morbus hepatis inflammatorius, non specificatus",
+    "source_line": 27732
+  },
+  {
+    "code": "K76",
+    "title_la": "Druge bolesti jetre",
+    "source_line": 2464
+  },
+  {
+    "code": "K76.0",
+    "title_la": "Steatosis hepatis, non alibi classificata",
+    "source_line": 27745
+  },
+  {
+    "code": "K76.1",
+    "title_la": "Stasis hepatis chronica",
+    "source_line": 27749
+  },
+  {
+    "code": "K76.2",
+    "title_la": "Necrosis hepatis haemorrhagica centralis",
+    "source_line": 27759
+  },
+  {
+    "code": "K76.3",
+    "title_la": "Infarctus hepatis",
+    "source_line": 27762
+  },
+  {
+    "code": "K76.4",
+    "title_la": "Peliosis hepatis",
+    "source_line": 27764
+  },
+  {
+    "code": "K76.5",
+    "title_la": "Occlusio venae hepaticae",
+    "source_line": 27767
+  },
+  {
+    "code": "K76.6",
+    "title_la": "Hypertensio portalis",
+    "source_line": 27770
+  },
+  {
+    "code": "K76.7",
+    "title_la": "Syndroma hepatorenale",
+    "source_line": 27772
+  },
+  {
+    "code": "K76.8",
+    "title_la": "Morbi hepatis alii, specificati",
+    "source_line": 27775
+  },
+  {
+    "code": "K76.9",
+    "title_la": "Morbus hepatis, non specificatus",
+    "source_line": 27780
+  },
+  {
+    "code": "K77",
+    "title_la": "Bolesti jetre u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2465
+  },
+  {
+    "code": "K77.0",
+    "title_la": "Morbi hepatis in morbis infectivis et parasitariis alibi classificatis",
+    "source_line": 27785
+  },
+  {
+    "code": "K77.8",
+    "title_la": "Morbi hepatis in morbis aliis, alibi classificatis",
+    "source_line": 27794
+  },
+  {
+    "code": "K80",
+    "title_la": "Kamen u žučnoj kesi",
+    "source_line": 2468
+  },
+  {
+    "code": "K80.0",
+    "title_la": "Cholelithiasis et cholecystitis acuta",
+    "source_line": 27807
+  },
+  {
+    "code": "K80.1",
+    "title_la": "Cholelithiasis et cholecystitis alia",
+    "source_line": 27815
+  },
+  {
+    "code": "K80.2",
+    "title_la": "Calculus vesicae felleae sine cholecystitide",
+    "source_line": 27819
+  },
+  {
+    "code": "K80.3",
+    "title_la": "Calculus ductus billiaris cum cholangitide",
+    "source_line": 27828
+  },
+  {
+    "code": "K80.4",
+    "title_la": "Calculus ductus billiaris cum cholecystitide",
+    "source_line": 27831
+  },
+  {
+    "code": "K80.5",
+    "title_la": "Calculus ductus billiaris sine cholangitide sive cholecystitide",
+    "source_line": 27834
+  },
+  {
+    "code": "K80.8",
+    "title_la": "Cholelithiasis alia",
+    "source_line": 27843
+  },
+  {
+    "code": "K81",
+    "title_la": "Zapaljenje žučne kese",
+    "source_line": 2469
+  },
+  {
+    "code": "K81.0",
+    "title_la": "Cholecystitis acuta",
+    "source_line": 27849
+  },
+  {
+    "code": "K81.1",
+    "title_la": "Cholecystitis chronica",
+    "source_line": 27860
+  },
+  {
+    "code": "K81.8",
+    "title_la": "Cholecystitis alia",
+    "source_line": 27862
+  },
+  {
+    "code": "K81.9",
+    "title_la": "Cholecystitis, non specificata",
+    "source_line": 27864
+  },
+  {
+    "code": "K82",
+    "title_la": "Druge bolesti žučne kese",
+    "source_line": 2470
+  },
+  {
+    "code": "K82.0",
+    "title_la": "Obstructio vesicae felleae",
+    "source_line": 27878
+  },
+  {
+    "code": "K82.1",
+    "title_la": "Hydrops vesicae felleae",
+    "source_line": 27884
+  },
+  {
+    "code": "K82.2",
+    "title_la": "Perforatio vesicae felleae",
+    "source_line": 27887
+  },
+  {
+    "code": "K82.3",
+    "title_la": "Fistula vesicae felleae",
+    "source_line": 27890
+  },
+  {
+    "code": "K82.4",
+    "title_la": "Cholesterolosis vesicae felleae",
+    "source_line": 27894
+  },
+  {
+    "code": "K82.8",
+    "title_la": "Morbi vesicae felleae alii, specificati",
+    "source_line": 27897
+  },
+  {
+    "code": "K82.9",
+    "title_la": "Morbus vesicae felleae, non specificatus",
+    "source_line": 27906
+  },
+  {
+    "code": "K83",
+    "title_la": "Druge bolesti žučnog trakta",
+    "source_line": 2471
+  },
+  {
+    "code": "K83.0",
+    "title_la": "Cholangitis",
+    "source_line": 27922
+  },
+  {
+    "code": "K83.1",
+    "title_la": "Occlusio ductus biliaris",
+    "source_line": 27936
+  },
+  {
+    "code": "K83.2",
+    "title_la": "Perforatio ductus biliaris",
+    "source_line": 27942
+  },
+  {
+    "code": "K83.3",
+    "title_la": "Fistula ductus biliaris",
+    "source_line": 27945
+  },
+  {
+    "code": "K83.4",
+    "title_la": "Spasmus sphincteris Oddi",
+    "source_line": 27948
+  },
+  {
+    "code": "K83.5",
+    "title_la": "Cystis biliaris",
+    "source_line": 27950
+  },
+  {
+    "code": "K83.8",
+    "title_la": "Morbi tracti biliares alii, specificati",
+    "source_line": 27952
+  },
+  {
+    "code": "K83.9",
+    "title_la": "Morbus tractus biliaris, non specificatus",
+    "source_line": 27959
+  },
+  {
+    "code": "K85",
+    "title_la": "Akutno zapaljenje pankreasa",
+    "source_line": 2472
+  },
+  {
+    "code": "K85.0",
+    "title_la": "Pancreatitis acuta idiopathica",
+    "source_line": 27981
+  },
+  {
+    "code": "K85.1",
+    "title_la": "Pancreatitis acuta biliaris",
+    "source_line": 27983
+  },
+  {
+    "code": "K85.2",
+    "title_la": "Pancreatitis acuta alcoholica",
+    "source_line": 27986
+  },
+  {
+    "code": "K85.3",
+    "title_la": "Pancreatitis acuta medicamentosa",
+    "source_line": 27988
+  },
+  {
+    "code": "K85.8",
+    "title_la": "Pancreatitis acuta alia",
+    "source_line": 27991
+  },
+  {
+    "code": "K85.9",
+    "title_la": "Pancreatitis acuta, non specificata",
+    "source_line": 27993
+  },
+  {
+    "code": "K86",
+    "title_la": "Druge bolesti pankreasa",
+    "source_line": 2473
+  },
+  {
+    "code": "K86.0",
+    "title_la": "Pancreatitis alcoholica chronica",
+    "source_line": 28001
+  },
+  {
+    "code": "K86.1",
+    "title_la": "Pancreatitis chronica alia",
+    "source_line": 28003
+  },
+  {
+    "code": "K86.2",
+    "title_la": "Cystis pancreatis",
+    "source_line": 28010
+  },
+  {
+    "code": "K86.3",
+    "title_la": "Pseudocystis pancreatis",
+    "source_line": 28012
+  },
+  {
+    "code": "K86.8",
+    "title_la": "Morbi pancreatis alii, specificati",
+    "source_line": 28022
+  },
+  {
+    "code": "K86.9",
+    "title_la": "Morbus pancreatis, non specificatus",
+    "source_line": 28034
+  },
+  {
+    "code": "K87",
+    "title_la": "Bolesti žučne kese, žučnih puteva i pankreasa u bolestima klasifikovanim na",
+    "source_line": 2474
+  },
+  {
+    "code": "K87.0",
+    "title_la": "Morbi vesicae felleae et ductuum biliarium in morbis alibi classificatis",
+    "source_line": 28041
+  },
+  {
+    "code": "K87.1",
+    "title_la": "Morbi pancreatis in morbis alibi classificatis",
+    "source_line": 28043
+  },
+  {
+    "code": "K90",
+    "title_la": "Loša apsorpcija u crevima",
+    "source_line": 2478
+  },
+  {
+    "code": "K90.0",
+    "title_la": "Morbus coeliacus",
+    "source_line": 28056
+  },
+  {
+    "code": "K90.1",
+    "title_la": "„Sprue“ tropica",
+    "source_line": 28061
+  },
+  {
+    "code": "K90.2",
+    "title_la": "Syndroma gyri caeci, non alibi classificatum",
+    "source_line": 28065
+  },
+  {
+    "code": "K90.3",
+    "title_la": "Steatorrhoea pancreatica",
+    "source_line": 28071
+  },
+  {
+    "code": "K90.4",
+    "title_la": "Malabsorptio propter intolerantiam alimenti, non alibi classificata",
+    "source_line": 28081
+  },
+  {
+    "code": "K90.8",
+    "title_la": "Malabsorptio intestini alia",
+    "source_line": 28090
+  },
+  {
+    "code": "K90.9",
+    "title_la": "Malabsorptio intestini, non specificata",
+    "source_line": 28093
+  },
+  {
+    "code": "K91",
+    "title_la": "Bolesti organa za varenje posle medicinskih intervencija, neklasifikovane na",
+    "source_line": 2479
+  },
+  {
+    "code": "K91.0",
+    "title_la": "Vomitus post resectionem gastrointestinalem",
+    "source_line": 28103
+  },
+  {
+    "code": "K91.1",
+    "title_la": "Sindroma post gastrectomiam",
+    "source_line": 28105
+  },
+  {
+    "code": "K91.2",
+    "title_la": "Malabsorptio post operationem",
+    "source_line": 28111
+  },
+  {
+    "code": "K91.3",
+    "title_la": "Ileus postoperativus",
+    "source_line": 28116
+  },
+  {
+    "code": "K91.4",
+    "title_la": "Dysfunctio colostomatis et enterostomatis",
+    "source_line": 28118
+  },
+  {
+    "code": "K91.5",
+    "title_la": "Syndroma post cholecystectomiam",
+    "source_line": 28120
+  },
+  {
+    "code": "K91.8",
+    "title_la": "Morbi organorum digestivorum postprocedurales alii, non alibi classificati",
+    "source_line": 28122
+  },
+  {
+    "code": "K91.9",
+    "title_la": "Morbus organorum digestivorum postproceduralis, non specificatus",
+    "source_line": 28125
+  },
+  {
+    "code": "K92",
+    "title_la": "Druge bolesti organa za varenje",
+    "source_line": 2481
+  },
+  {
+    "code": "K92.0",
+    "title_la": "Haematemesis",
+    "source_line": 28138
+  },
+  {
+    "code": "K92.1",
+    "title_la": "Melaena",
+    "source_line": 28140
+  },
+  {
+    "code": "K92.2",
+    "title_la": "Haemorrhagia gastrointestinalis, non specificata",
+    "source_line": 28143
+  },
+  {
+    "code": "K92.8",
+    "title_la": "Morbi organorum digestivorum alii, specificati",
+    "source_line": 28151
+  },
+  {
+    "code": "K92.9",
+    "title_la": "Morbus organorum digestivorum, non specificatus",
+    "source_line": 28153
+  },
+  {
+    "code": "K93",
+    "title_la": "Druge bolesti organa za varenje u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2482
+  },
+  {
+    "code": "K93.0",
+    "title_la": "Tuberculosis intestini, peritonaei et glandularum mesentericarum (A18.3†)",
+    "source_line": 28158
+  },
+  {
+    "code": "K93.1",
+    "title_la": "Megacolon in morbo Chagas (B57.3†)",
+    "source_line": 28161
+  },
+  {
+    "code": "K93.8",
+    "title_la": "Morbi organorum digestivorum aliorum specificatorum, in morbis alibi classificatis",
+    "source_line": 28163
+  }
+]

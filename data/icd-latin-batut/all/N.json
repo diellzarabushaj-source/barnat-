@@ -1,0 +1,2127 @@
+[
+  {
+    "code": "N00",
+    "title_la": "Akutni zapaljenski bubrežni sindrom",
+    "source_line": 2744
+  },
+  {
+    "code": "N01",
+    "title_la": "Perakutni progresivni zapaljenski bubrežni sindrom",
+    "source_line": 2745
+  },
+  {
+    "code": "N02",
+    "title_la": "Povratna i trajna pojava krvi u mokraći",
+    "source_line": 2746
+  },
+  {
+    "code": "N03",
+    "title_la": "Hronični zapaljenski bubrežni sindrom",
+    "source_line": 2747
+  },
+  {
+    "code": "N04",
+    "title_la": "Syndroma nephroticum",
+    "source_line": 32624
+  },
+  {
+    "code": "N05",
+    "title_la": "Neoznačen zapaljenski bubrežni sindrom",
+    "source_line": 2748
+  },
+  {
+    "code": "N06",
+    "title_la": "Izolovana proteinurija sa označenim morfološkim oštećenjem",
+    "source_line": 2749
+  },
+  {
+    "code": "N07",
+    "title_la": "Nasledno oboljenje bubrega, neklasifikovano na drugom mestu",
+    "source_line": 2750
+  },
+  {
+    "code": "N08",
+    "title_la": "Oboljenje glomerula bubrega u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2751
+  },
+  {
+    "code": "N08.0",
+    "title_la": "Glomerulonephropathia in morbis infectivis et parasitariis alibi classificatis",
+    "source_line": 32670
+  },
+  {
+    "code": "N08.1",
+    "title_la": "Glomerulonephropathia neoplastica",
+    "source_line": 32680
+  },
+  {
+    "code": "N08.2",
+    "title_la": "Glomerulonephropathia in morbis sanguinis et disordinibus systematis imunologicis",
+    "source_line": 32685
+  },
+  {
+    "code": "N08.3",
+    "title_la": "Glomerulonephropathia diabetica (E10-E14 sa zajedničkim četvrtim mestom .2)",
+    "source_line": 32693
+  },
+  {
+    "code": "N08.4",
+    "title_la": "Glomerulonephropathia in morbis glandularum endocrinarum nutritionis et",
+    "source_line": 32696
+  },
+  {
+    "code": "N08.5",
+    "title_la": "Glomerulonephropathia in morbis textus connexivi systemicis",
+    "source_line": 32704
+  },
+  {
+    "code": "N08.8",
+    "title_la": "Glomerulonephropathia in morbis aliis alibi classificatis",
+    "source_line": 32712
+  },
+  {
+    "code": "N10",
+    "title_la": "Akutno tubulo-intersticijalno zapaljenje bubrega",
+    "source_line": 2754
+  },
+  {
+    "code": "N11",
+    "title_la": "Hronično tubulo-intersticijalno zapaljenje bubrega",
+    "source_line": 2755
+  },
+  {
+    "code": "N11.0",
+    "title_la": "Pyelonephritis cum refluxu non obstructiva chronica",
+    "source_line": 32742
+  },
+  {
+    "code": "N11.1",
+    "title_la": "Pyelonephritis obstructiva chronica",
+    "source_line": 32746
+  },
+  {
+    "code": "N11.8",
+    "title_la": "Nephritis tubulointerstitialis chronica alia",
+    "source_line": 32755
+  },
+  {
+    "code": "N11.9",
+    "title_la": "Nephritis tubulointerstitialis chronica, non specificata",
+    "source_line": 32758
+  },
+  {
+    "code": "N12",
+    "title_la": "Tubulo-intersticijalno zapaljenje bubrega, neoznačeno kao akutno ili hronično",
+    "source_line": 2756
+  },
+  {
+    "code": "N13",
+    "title_la": "Oboljenje mokraćnog sistema uzrokovano preprekom sa vraćanjem mokraće",
+    "source_line": 2757
+  },
+  {
+    "code": "N13.0",
+    "title_la": "Hydronephrosis obstructiva ureteropelvica",
+    "source_line": 32785
+  },
+  {
+    "code": "N13.1",
+    "title_la": "Hydronephrosis cum strictura ureteris, non alibi classificata",
+    "source_line": 32788
+  },
+  {
+    "code": "N13.2",
+    "title_la": "Hydronephrosis obstructiva calculosa (renis et ureteris)",
+    "source_line": 32792
+  },
+  {
+    "code": "N13.3",
+    "title_la": "Hydronephrosis alia et non specificata",
+    "source_line": 32795
+  },
+  {
+    "code": "N13.4",
+    "title_la": "Hydroureter",
+    "source_line": 32798
+  },
+  {
+    "code": "N13.5",
+    "title_la": "Flexio et strictura ureteris sine hydronephrosi",
+    "source_line": 32801
+  },
+  {
+    "code": "N13.6",
+    "title_la": "Pyonephrosis",
+    "source_line": 32804
+  },
+  {
+    "code": "N13.7",
+    "title_la": "Regurgitatio urinae vesicoureteris",
+    "source_line": 32809
+  },
+  {
+    "code": "N13.8",
+    "title_la": "Uropathia obstructiva cum reflux alia",
+    "source_line": 32815
+  },
+  {
+    "code": "N13.9",
+    "title_la": "Uropathia obstructiva cum refluxu, non specificata",
+    "source_line": 32817
+  },
+  {
+    "code": "N14",
+    "title_la": "Oboljenje kanalića bubrega i međućelijskog tkiva uzrokovano lekovima i teškim",
+    "source_line": 2758
+  },
+  {
+    "code": "N14.0",
+    "title_la": "Nephropathia analgetica",
+    "source_line": 32834
+  },
+  {
+    "code": "N14.1",
+    "title_la": "Nephropathia propter medicamenta alia, substantias medicinales et materias",
+    "source_line": 32836
+  },
+  {
+    "code": "N14.2",
+    "title_la": "Nephropathia propter medicamenta, non specificata, substantias medicinales et",
+    "source_line": 32840
+  },
+  {
+    "code": "N14.3",
+    "title_la": "Nephropathia propter metalla gravia",
+    "source_line": 32844
+  },
+  {
+    "code": "N14.4",
+    "title_la": "Nephropathia toxica, non alibi classificata",
+    "source_line": 32846
+  },
+  {
+    "code": "N15",
+    "title_la": "Ostala oboljenja kanalića bubrega i međućelijskog tkiva",
+    "source_line": 2760
+  },
+  {
+    "code": "N15.0",
+    "title_la": "Nephropathia balcanica",
+    "source_line": 32851
+  },
+  {
+    "code": "N15.1",
+    "title_la": "Abscessus renis et perirenalis",
+    "source_line": 32854
+  },
+  {
+    "code": "N15.8",
+    "title_la": "Nephropathiae tubulointerstitiales aliae, specificatae",
+    "source_line": 32856
+  },
+  {
+    "code": "N15.9",
+    "title_la": "Nephropathia tubulointerstitialis, non specificata",
+    "source_line": 32858
+  },
+  {
+    "code": "N16",
+    "title_la": "Poremećaji kanalića bubrega i međućelijskog tkiva u bolestima klasifikovanim na",
+    "source_line": 2761
+  },
+  {
+    "code": "N16.0",
+    "title_la": "Nephropathiae tubulointerstitiales in morbis infectivis et parasitariis alibi",
+    "source_line": 32866
+  },
+  {
+    "code": "N16.1",
+    "title_la": "Nephropathiae tubulointerstitiales in morbis neoplasticis",
+    "source_line": 32884
+  },
+  {
+    "code": "N16.2",
+    "title_la": "Nephropathiae tubulointerstitialies in morbis sanguinis et systematis immunologici",
+    "source_line": 32890
+  },
+  {
+    "code": "N16.3",
+    "title_la": "Nephropathiae tubulointerstitiales in morbis metabolicis",
+    "source_line": 32895
+  },
+  {
+    "code": "N16.4",
+    "title_la": "Nephropathiae tubulointerstitiales in morbis textus connexivi systemicis",
+    "source_line": 32901
+  },
+  {
+    "code": "N16.5",
+    "title_la": "Nephropathiae tubulointerstitiales in reiectione transplantati (T86.-†)",
+    "source_line": 32906
+  },
+  {
+    "code": "N16.8",
+    "title_la": "Nephropathiae tubulointerstitiales in morbis aliis alibi classificatis",
+    "source_line": 32908
+  },
+  {
+    "code": "N17",
+    "title_la": "Akutna bubrežna insuficijencija",
+    "source_line": 2765
+  },
+  {
+    "code": "N17.0",
+    "title_la": "Insufficientia renalis acuta cum necrosi tubulorum",
+    "source_line": 32939
+  },
+  {
+    "code": "N17.1",
+    "title_la": "Insufficientia renalis acuta cum necrosi corticali acuta",
+    "source_line": 32945
+  },
+  {
+    "code": "N17.2",
+    "title_la": "Insufficientia renalis acuta cum necrosi medullari",
+    "source_line": 32951
+  },
+  {
+    "code": "N17.8",
+    "title_la": "Insufficientia renalis acuta alia",
+    "source_line": 32957
+  },
+  {
+    "code": "N17.9",
+    "title_la": "Insufficientia renalis acuta, non specificata",
+    "source_line": 32959
+  },
+  {
+    "code": "N18",
+    "title_la": "Hronična bolest bubrega",
+    "source_line": 2766
+  },
+  {
+    "code": "N18.1",
+    "title_la": "Morbus renalis chronicus, gradus 1",
+    "source_line": 32966
+  },
+  {
+    "code": "N18.2",
+    "title_la": "Morbus renalis chronicus, gradus 2",
+    "source_line": 32977
+  },
+  {
+    "code": "N18.3",
+    "title_la": "Morbus renalis chronicus, gradus 3",
+    "source_line": 32980
+  },
+  {
+    "code": "N18.4",
+    "title_la": "Morbus renalis chronicus, gradus 4",
+    "source_line": 32983
+  },
+  {
+    "code": "N18.5",
+    "title_la": "Morbus renalis chronicus, gradus 5",
+    "source_line": 32986
+  },
+  {
+    "code": "N18.9",
+    "title_la": "Morbus renalis chronicus, non specificatus",
+    "source_line": 33001
+  },
+  {
+    "code": "N19",
+    "title_la": "Neoznačena bubrežna insuficijencija",
+    "source_line": 2767
+  },
+  {
+    "code": "N20",
+    "title_la": "Kamenci u bubregu i mokraćovodu bubrega",
+    "source_line": 2770
+  },
+  {
+    "code": "N20.0",
+    "title_la": "Calculus renis",
+    "source_line": 33019
+  },
+  {
+    "code": "N20.1",
+    "title_la": "Calculus ureteris",
+    "source_line": 33025
+  },
+  {
+    "code": "N20.2",
+    "title_la": "Calculus renis cum calculo ureteris",
+    "source_line": 33035
+  },
+  {
+    "code": "N20.9",
+    "title_la": "Calculus urinarius, non specificatus",
+    "source_line": 33037
+  },
+  {
+    "code": "N21",
+    "title_la": "Kamen donjih mokraćnih puteva",
+    "source_line": 2771
+  },
+  {
+    "code": "N21.0",
+    "title_la": "Calculus vesicae urinariae",
+    "source_line": 33043
+  },
+  {
+    "code": "N21.1",
+    "title_la": "Calculus urethralis",
+    "source_line": 33048
+  },
+  {
+    "code": "N21.8",
+    "title_la": "Calculus tractuum urinariorum inferioriorum alii",
+    "source_line": 33051
+  },
+  {
+    "code": "N21.9",
+    "title_la": "Calculus ttractuum urinariorum inferiorum, non specificati",
+    "source_line": 33053
+  },
+  {
+    "code": "N22",
+    "title_la": "Kamenci mokraćnog puta u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2772
+  },
+  {
+    "code": "N22.0",
+    "title_la": "Calculus urinarius in schistosomiasi [bilharziasi] (B65.-†)",
+    "source_line": 33058
+  },
+  {
+    "code": "N22.8",
+    "title_la": "Calculus tractus urinarii in morbis aliis alibi classificatis",
+    "source_line": 33060
+  },
+  {
+    "code": "N23",
+    "title_la": "Kolika bubrega, neoznačena",
+    "source_line": 2773
+  },
+  {
+    "code": "N25",
+    "title_la": "Poremećaj koji se javljaju kao posledica disfunkcije kanalića bubrega",
+    "source_line": 2776
+  },
+  {
+    "code": "N25.0",
+    "title_la": "Osteodystrophia renalis",
+    "source_line": 33074
+  },
+  {
+    "code": "N25.1",
+    "title_la": "Diabetes insipidus nephrogenes",
+    "source_line": 33081
+  },
+  {
+    "code": "N25.8",
+    "title_la": "Disordines propter disfunctionem tubulorum renum alii",
+    "source_line": 33091
+  },
+  {
+    "code": "N25.9",
+    "title_la": "Disordines propter disfunctionem tubulorum renum, non specificati",
+    "source_line": 33096
+  },
+  {
+    "code": "N26",
+    "title_la": "Skrvčen bubreg, neoznačen",
+    "source_line": 2777
+  },
+  {
+    "code": "N27",
+    "title_la": "Mali bubreg, nepoznatog uzroka",
+    "source_line": 2778
+  },
+  {
+    "code": "N27.0",
+    "title_la": "Ren parvus unilateralis",
+    "source_line": 33110
+  },
+  {
+    "code": "N27.1",
+    "title_la": "Ren parvus, bilateralis",
+    "source_line": 33112
+  },
+  {
+    "code": "N27.9",
+    "title_la": "Ren parvus, non specificatus",
+    "source_line": 33114
+  },
+  {
+    "code": "N28",
+    "title_la": "Drugi poremećaji bubrega i mokraćovoda bubrega, neklasifikovani na drugom",
+    "source_line": 2779
+  },
+  {
+    "code": "N28.0",
+    "title_la": "Ischaemia et infarctus renis",
+    "source_line": 33127
+  },
+  {
+    "code": "N28.1",
+    "title_la": "Cystis renis acquisita",
+    "source_line": 33139
+  },
+  {
+    "code": "N28.8",
+    "title_la": "Disordines renis et ureteris alii, specificati",
+    "source_line": 33150
+  },
+  {
+    "code": "N28.9",
+    "title_la": "Disordines renis et ureteris, non specificati",
+    "source_line": 33159
+  },
+  {
+    "code": "N29",
+    "title_la": "Druge bolesti bubrega i mokraćovoda bubrega u bolestima klasifikovanim na",
+    "source_line": 2781
+  },
+  {
+    "code": "N29.0",
+    "title_la": "Syphilis renis tarda (A52.7†)",
+    "source_line": 33169
+  },
+  {
+    "code": "N29.1",
+    "title_la": "Disordines renis et ureteris alii in morbis infectivis et parasitariis alibi classificatis",
+    "source_line": 33171
+  },
+  {
+    "code": "N29.8",
+    "title_la": "Disordines renis et ureteris alii in morbis aliis alibi classificatis",
+    "source_line": 33177
+  },
+  {
+    "code": "N30",
+    "title_la": "Zapaljenje mokraćne bešike",
+    "source_line": 2785
+  },
+  {
+    "code": "N30.0",
+    "title_la": "Cystitis acuta",
+    "source_line": 33196
+  },
+  {
+    "code": "N30.1",
+    "title_la": "Cystitis interstitialis (chronica)",
+    "source_line": 33200
+  },
+  {
+    "code": "N30.2",
+    "title_la": "Cystitis chronica alia",
+    "source_line": 33208
+  },
+  {
+    "code": "N30.3",
+    "title_la": "Trigonitis",
+    "source_line": 33210
+  },
+  {
+    "code": "N30.4",
+    "title_la": "Cystitis postradiationalis",
+    "source_line": 33213
+  },
+  {
+    "code": "N30.8",
+    "title_la": "Cystitis alia",
+    "source_line": 33215
+  },
+  {
+    "code": "N30.9",
+    "title_la": "Cystitis, non specificata",
+    "source_line": 33218
+  },
+  {
+    "code": "N31",
+    "title_la": "Neuro-mišićni poremećaj funkcije mokraćne bešike, neklasifikovan na drugom",
+    "source_line": 2793
+  },
+  {
+    "code": "N31.0",
+    "title_la": "Vesica urinaria neuropathica non inhibitiva, non alibi classificata",
+    "source_line": 33230
+  },
+  {
+    "code": "N31.1",
+    "title_la": "Vesica urinaria neuropathica reflexiva, non alibi classificata",
+    "source_line": 33232
+  },
+  {
+    "code": "N31.2",
+    "title_la": "Vesica urinaria neuroflaccida, non alibi classificata",
+    "source_line": 33234
+  },
+  {
+    "code": "N31.8",
+    "title_la": "Dysfunctio vesicae urinariae neuro-muscularis alia",
+    "source_line": 33240
+  },
+  {
+    "code": "N31.9",
+    "title_la": "Dysfunctio vesicae urinariae neuromuscularis, non specificata",
+    "source_line": 33242
+  },
+  {
+    "code": "N32",
+    "title_la": "Drugi poremećaji mokraćne bešike",
+    "source_line": 2795
+  },
+  {
+    "code": "N32.0",
+    "title_la": "Obstructio cervicis vesicae urinariae",
+    "source_line": 33251
+  },
+  {
+    "code": "N32.1",
+    "title_la": "Fistula vesicointestinalis",
+    "source_line": 33254
+  },
+  {
+    "code": "N32.2",
+    "title_la": "Fistula vesicae urinariae, non alibi classificata",
+    "source_line": 33265
+  },
+  {
+    "code": "N32.3",
+    "title_la": "Diverticulum vesicae urinariae",
+    "source_line": 33268
+  },
+  {
+    "code": "N32.4",
+    "title_la": "Ruptura vesicae urinariae, non traumatica",
+    "source_line": 33272
+  },
+  {
+    "code": "N32.8",
+    "title_la": "Disordines vesicae urinariae alii, specificati",
+    "source_line": 33274
+  },
+  {
+    "code": "N32.9",
+    "title_la": "Disordo vesicae urinariae, non specificatus",
+    "source_line": 33280
+  },
+  {
+    "code": "N33",
+    "title_la": "Poremećaji mokraćne bešike u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2796
+  },
+  {
+    "code": "N33.0",
+    "title_la": "Cystitis tuberculosa (A18.1†)",
+    "source_line": 33285
+  },
+  {
+    "code": "N33.8",
+    "title_la": "Disordines vesicae urinariae in morbis aliis alibi classificatis",
+    "source_line": 33287
+  },
+  {
+    "code": "N34",
+    "title_la": "Uretritis i uretralni sindrom",
+    "source_line": 2797
+  },
+  {
+    "code": "N34.0",
+    "title_la": "Abscessus uretrae",
+    "source_line": 33298
+  },
+  {
+    "code": "N34.1",
+    "title_la": "Urethritis non specificata",
+    "source_line": 33306
+  },
+  {
+    "code": "N34.2",
+    "title_la": "Urethritis alia",
+    "source_line": 33319
+  },
+  {
+    "code": "N34.3",
+    "title_la": "Syndroma urethrae, non specificatum",
+    "source_line": 33326
+  },
+  {
+    "code": "N35",
+    "title_la": "Suženje mokraćovoda bešike",
+    "source_line": 2798
+  },
+  {
+    "code": "N35.0",
+    "title_la": "Strictura urethrae posttraumatica",
+    "source_line": 33332
+  },
+  {
+    "code": "N35.1",
+    "title_la": "Strictura urethrae postinfectiva, non alibi classificata",
+    "source_line": 33337
+  },
+  {
+    "code": "N35.8",
+    "title_la": "Strictura urethrae alia",
+    "source_line": 33339
+  },
+  {
+    "code": "N35.9",
+    "title_la": "Strictura urethrae, non specificata",
+    "source_line": 33341
+  },
+  {
+    "code": "N36",
+    "title_la": "Ostali poremećaji mokraćovoda bešike",
+    "source_line": 2799
+  },
+  {
+    "code": "N36.0",
+    "title_la": "Fistula urethrae",
+    "source_line": 33347
+  },
+  {
+    "code": "N36.1",
+    "title_la": "Diverticulum urethrae",
+    "source_line": 33357
+  },
+  {
+    "code": "N36.2",
+    "title_la": "Caruncula urethrae",
+    "source_line": 33359
+  },
+  {
+    "code": "N36.3",
+    "title_la": "Prolapsus mucosae urethrae",
+    "source_line": 33361
+  },
+  {
+    "code": "N36.8",
+    "title_la": "Disordines urethrae alii, specificati",
+    "source_line": 33366
+  },
+  {
+    "code": "N36.9",
+    "title_la": "Disordo urethrae, non specificatus",
+    "source_line": 33368
+  },
+  {
+    "code": "N37",
+    "title_la": "Poremećaji mokraćovoda bešike u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2800
+  },
+  {
+    "code": "N37.0",
+    "title_la": "Urethritis in morbis alibi classificatis",
+    "source_line": 33378
+  },
+  {
+    "code": "N37.8",
+    "title_la": "Disordines urethrae alii in morbis alibi classificatis",
+    "source_line": 33381
+  },
+  {
+    "code": "N39",
+    "title_la": "Drugi poremećaji mokraćnih puteva",
+    "source_line": 2801
+  },
+  {
+    "code": "N39.0",
+    "title_la": "Infectio tractuum urinariorum loci non specificati",
+    "source_line": 33391
+  },
+  {
+    "code": "N39.1",
+    "title_la": "Proteinuria persistens, non specificata",
+    "source_line": 33394
+  },
+  {
+    "code": "N39.2",
+    "title_la": "Proteinuria orthostatica, non specificata",
+    "source_line": 33398
+  },
+  {
+    "code": "N39.3",
+    "title_la": "Incontinentia stressogenes",
+    "source_line": 33401
+  },
+  {
+    "code": "N39.4",
+    "title_la": "Incontinentia urinae alia, specificata",
+    "source_line": 33405
+  },
+  {
+    "code": "N39.8",
+    "title_la": "Disordines tractuum urinariorum alii, specificati",
+    "source_line": 33416
+  },
+  {
+    "code": "N39.9",
+    "title_la": "Disordo tractuum urinariorum, non specificatus",
+    "source_line": 33418
+  },
+  {
+    "code": "N40",
+    "title_la": "Povećanje prostate",
+    "source_line": 2804
+  },
+  {
+    "code": "N41",
+    "title_la": "Zapaljenjska oboljenja prostate",
+    "source_line": 2805
+  },
+  {
+    "code": "N41.0",
+    "title_la": "Prostatitis acuta",
+    "source_line": 33444
+  },
+  {
+    "code": "N41.1",
+    "title_la": "Prostatitis chronica",
+    "source_line": 33446
+  },
+  {
+    "code": "N41.2",
+    "title_la": "Abscessus prostatae",
+    "source_line": 33448
+  },
+  {
+    "code": "N41.3",
+    "title_la": "Prostatocystitis",
+    "source_line": 33450
+  },
+  {
+    "code": "N41.8",
+    "title_la": "Morbi inflammatorii prostatae alii",
+    "source_line": 33452
+  },
+  {
+    "code": "N41.9",
+    "title_la": "Morbus inflammatorius prostatae non specificatus",
+    "source_line": 33454
+  },
+  {
+    "code": "N42",
+    "title_la": "Drugi poremećaji prostate",
+    "source_line": 2806
+  },
+  {
+    "code": "N42.0",
+    "title_la": "Calculus prostatae",
+    "source_line": 33460
+  },
+  {
+    "code": "N42.1",
+    "title_la": "Congestio et haemorrhagia prostatae",
+    "source_line": 33463
+  },
+  {
+    "code": "N42.2",
+    "title_la": "Atrophia prostatae",
+    "source_line": 33465
+  },
+  {
+    "code": "N42.3",
+    "title_la": "Dysplasia prostatae",
+    "source_line": 33467
+  },
+  {
+    "code": "N42.8",
+    "title_la": "Disordines prostatae alii, specificati",
+    "source_line": 33471
+  },
+  {
+    "code": "N42.9",
+    "title_la": "Disordo prostatae, non specificatus",
+    "source_line": 33473
+  },
+  {
+    "code": "N43",
+    "title_la": "Vodena kila i nakupljanje semena u ovojnici muških polnih žlezda",
+    "source_line": 2807
+  },
+  {
+    "code": "N43.0",
+    "title_la": "Hydrocele cystica",
+    "source_line": 33487
+  },
+  {
+    "code": "N43.1",
+    "title_la": "Hydrocele infectiva",
+    "source_line": 33489
+  },
+  {
+    "code": "N43.2",
+    "title_la": "Hydrocele alia",
+    "source_line": 33492
+  },
+  {
+    "code": "N43.3",
+    "title_la": "Hydrocele, non specificata",
+    "source_line": 33494
+  },
+  {
+    "code": "N43.4",
+    "title_la": "Spermatocele",
+    "source_line": 33496
+  },
+  {
+    "code": "N44",
+    "title_la": "Uvrtanje semene vrpce",
+    "source_line": 2808
+  },
+  {
+    "code": "N45",
+    "title_la": "Zapaljenje testisa i zapaljenje pasemenika",
+    "source_line": 2809
+  },
+  {
+    "code": "N45.0",
+    "title_la": "Orchitis, epididymitis et epididymoorchitis cum abscessu",
+    "source_line": 33509
+  },
+  {
+    "code": "N45.9",
+    "title_la": "Orchitis, epididymitis et epididymoorchitis sine abscessu",
+    "source_line": 33512
+  },
+  {
+    "code": "N46",
+    "title_la": "Muška neplodnost",
+    "source_line": 2810
+  },
+  {
+    "code": "N47",
+    "title_la": "Prevelik prepucijum (udna navlaka), fimoza i parafimoza",
+    "source_line": 2811
+  },
+  {
+    "code": "N48",
+    "title_la": "Drugi poremećaji penisa",
+    "source_line": 2812
+  },
+  {
+    "code": "N48.0",
+    "title_la": "Leucoplakia penis",
+    "source_line": 33529
+  },
+  {
+    "code": "N48.1",
+    "title_la": "Balanopostithis",
+    "source_line": 33540
+  },
+  {
+    "code": "N48.2",
+    "title_la": "Disordines penis inflamatorii alii",
+    "source_line": 33544
+  },
+  {
+    "code": "N48.3",
+    "title_la": "Priapismus",
+    "source_line": 33554
+  },
+  {
+    "code": "N48.4",
+    "title_la": "Impotentia organica",
+    "source_line": 33557
+  },
+  {
+    "code": "N48.5",
+    "title_la": "Ulcus penis",
+    "source_line": 33561
+  },
+  {
+    "code": "N48.6",
+    "title_la": "Induratio penis plastica",
+    "source_line": 33563
+  },
+  {
+    "code": "N48.8",
+    "title_la": "Disordines penis alii, specificati",
+    "source_line": 33567
+  },
+  {
+    "code": "N48.9",
+    "title_la": "Disordo penis, non specificatus",
+    "source_line": 33572
+  },
+  {
+    "code": "N49",
+    "title_la": "Zapaljenjski poremećaji muških polnih organa, neklasifikovani na drugom mestu",
+    "source_line": 2813
+  },
+  {
+    "code": "N49.0",
+    "title_la": "Disordines inflammatorii vesicae seminalis",
+    "source_line": 33580
+  },
+  {
+    "code": "N49.1",
+    "title_la": "Disordines inflammatorii funiculi spermatici, tunicae vaginalis et vasis deferentis",
+    "source_line": 33583
+  },
+  {
+    "code": "N49.2",
+    "title_la": "Disordines inflammatorii scroti",
+    "source_line": 33586
+  },
+  {
+    "code": "N49.8",
+    "title_la": "Disordines inflammatorii genitaliorum masculinorum aliorum specificatorum",
+    "source_line": 33588
+  },
+  {
+    "code": "N49.9",
+    "title_la": "Disordo inflammatoria organi genitalis masculini non specificati",
+    "source_line": 33599
+  },
+  {
+    "code": "N50",
+    "title_la": "Drugi poremećaji muških polnih organa",
+    "source_line": 2814
+  },
+  {
+    "code": "N50.0",
+    "title_la": "Atrophia testis",
+    "source_line": 33610
+  },
+  {
+    "code": "N50.1",
+    "title_la": "Disordines genitaliorum masculinorum vasculares",
+    "source_line": 33612
+  },
+  {
+    "code": "N50.8",
+    "title_la": "Disordines genitaliorum masculinorum alii, specificati",
+    "source_line": 33617
+  },
+  {
+    "code": "N50.9",
+    "title_la": "Disordo genitaliorum masculinorum, non specificatus",
+    "source_line": 33629
+  },
+  {
+    "code": "N51",
+    "title_la": "Poremećaji muških polnih organa u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2815
+  },
+  {
+    "code": "N51.0",
+    "title_la": "Disordines prostatae in morbis alibi classificatis",
+    "source_line": 33634
+  },
+  {
+    "code": "N51.1",
+    "title_la": "Disordines testis et epididymidis in morbis alibi classificatis",
+    "source_line": 33640
+  },
+  {
+    "code": "N51.2",
+    "title_la": "Balanitis in morbis alibi classificatis",
+    "source_line": 33660
+  },
+  {
+    "code": "N51.8",
+    "title_la": "Disordines genitaliorum masculionorum alii in morbis alibi classificatis",
+    "source_line": 33665
+  },
+  {
+    "code": "N60",
+    "title_la": "Dobroćudna displazija dojke",
+    "source_line": 2818
+  },
+  {
+    "code": "N60.0",
+    "title_la": "Cystis mammae solitaria",
+    "source_line": 33680
+  },
+  {
+    "code": "N60.1",
+    "title_la": "Mastopathia cystica diffusa",
+    "source_line": 33683
+  },
+  {
+    "code": "N60.2",
+    "title_la": "Fibroadenosis mammae",
+    "source_line": 33687
+  },
+  {
+    "code": "N60.3",
+    "title_la": "Fibrosclerosis mammae",
+    "source_line": 33690
+  },
+  {
+    "code": "N60.4",
+    "title_la": "Ectasis ductus mammae",
+    "source_line": 33693
+  },
+  {
+    "code": "N60.8",
+    "title_la": "Dysplasiae mammae benignae aliae",
+    "source_line": 33695
+  },
+  {
+    "code": "N60.9",
+    "title_la": "Dysplasia mammae benigna, non specificata",
+    "source_line": 33697
+  },
+  {
+    "code": "N61",
+    "title_la": "Upalni poremećaji dojke",
+    "source_line": 2819
+  },
+  {
+    "code": "N62",
+    "title_la": "Uvećanje dojke",
+    "source_line": 2820
+  },
+  {
+    "code": "N63",
+    "title_la": "Čvor dojke, neoznačen",
+    "source_line": 2821
+  },
+  {
+    "code": "N64",
+    "title_la": "Drugi poremećaji dojke",
+    "source_line": 2822
+  },
+  {
+    "code": "N64.0",
+    "title_la": "Fissura et fistula papillae mammariae",
+    "source_line": 33729
+  },
+  {
+    "code": "N64.1",
+    "title_la": "Liponecrosis mammae",
+    "source_line": 33731
+  },
+  {
+    "code": "N64.2",
+    "title_la": "Atrophia mammae",
+    "source_line": 33734
+  },
+  {
+    "code": "N64.3",
+    "title_la": "Galactorrhoea non puerperalis",
+    "source_line": 33736
+  },
+  {
+    "code": "N64.4",
+    "title_la": "Mastodynia",
+    "source_line": 33738
+  },
+  {
+    "code": "N64.5",
+    "title_la": "Signa et symptomata ad mammam coniuncta alia",
+    "source_line": 33740
+  },
+  {
+    "code": "N64.8",
+    "title_la": "Disordines mammae alii, specificati",
+    "source_line": 33745
+  },
+  {
+    "code": "N64.9",
+    "title_la": "Disordo mammae, non specificatus",
+    "source_line": 33749
+  },
+  {
+    "code": "N70",
+    "title_la": "Zapaljenje jajovoda i zapaljenje jajnika",
+    "source_line": 2825
+  },
+  {
+    "code": "N70.0",
+    "title_la": "Salpingitis et oophoritis acuta",
+    "source_line": 33775
+  },
+  {
+    "code": "N70.1",
+    "title_la": "Salpingitis et oophoritis chronica",
+    "source_line": 33777
+  },
+  {
+    "code": "N70.9",
+    "title_la": "Salpingitis et oophoritis, non specificata",
+    "source_line": 33780
+  },
+  {
+    "code": "N71",
+    "title_la": "Zapaljenje sluznice materice, bez grlića materice",
+    "source_line": 2826
+  },
+  {
+    "code": "N71.0",
+    "title_la": "Endometritis acuta",
+    "source_line": 33791
+  },
+  {
+    "code": "N71.1",
+    "title_la": "Endometritis chronica",
+    "source_line": 33793
+  },
+  {
+    "code": "N71.9",
+    "title_la": "Endometritis, non specificata",
+    "source_line": 33795
+  },
+  {
+    "code": "N72",
+    "title_la": "Zapaljenje grlića marerice",
+    "source_line": 2827
+  },
+  {
+    "code": "N73",
+    "title_la": "Druge zapaljenske bolesti male karlice žene",
+    "source_line": 2828
+  },
+  {
+    "code": "N73.0",
+    "title_la": "Parametritis et cellulitis (phlegmone) pelvis acuta",
+    "source_line": 33816
+  },
+  {
+    "code": "N73.1",
+    "title_la": "Parametritis et cellulitis (phlegmone) pelvis chronica",
+    "source_line": 33823
+  },
+  {
+    "code": "N73.2",
+    "title_la": "Parametritis et cellulitis (phlegmone) pelvis, non specificata",
+    "source_line": 33826
+  },
+  {
+    "code": "N73.3",
+    "title_la": "Pelvioperitonitis feminae acuta",
+    "source_line": 33829
+  },
+  {
+    "code": "N73.4",
+    "title_la": "Pelvioperitonitis feminae chronica",
+    "source_line": 33831
+  },
+  {
+    "code": "N73.5",
+    "title_la": "Pelvioperitonitis feminae, non specificata",
+    "source_line": 33833
+  },
+  {
+    "code": "N73.6",
+    "title_la": "Adhaesiones peritonaei pelvis feminae",
+    "source_line": 33835
+  },
+  {
+    "code": "N73.8",
+    "title_la": "Morbi inflammatorii pelvici feminae alii, specificati",
+    "source_line": 33838
+  },
+  {
+    "code": "N73.9",
+    "title_la": "Morbus inflammatorius pelvici feminae, non specificatus",
+    "source_line": 33840
+  },
+  {
+    "code": "N74",
+    "title_la": "Zapaljenski poremećaji male karlice kod žena u bolestima, koje su klasifikovane na",
+    "source_line": 2829
+  },
+  {
+    "code": "N74.0",
+    "title_la": "Cervicitis uteri tuberculosa (A18.1+)",
+    "source_line": 33848
+  },
+  {
+    "code": "N74.1",
+    "title_la": "Pelvioperitonitis feminae tuberculosa (A18.1+)",
+    "source_line": 33850
+  },
+  {
+    "code": "N74.2",
+    "title_la": "Pelvioperitonitis feminae syphilitica (A51.4+, A52.7+)",
+    "source_line": 33853
+  },
+  {
+    "code": "N74.3",
+    "title_la": "Pelvioperitonitis feminae gonococcica (A54.2+)",
+    "source_line": 33855
+  },
+  {
+    "code": "N74.4",
+    "title_la": "Pelvioperitonitis feminae chlamidialis (A56.1+)",
+    "source_line": 33857
+  },
+  {
+    "code": "N74.8",
+    "title_la": "Disordines inflammatorii organorum feminae intrapelvicorum in morbis aliis alibi",
+    "source_line": 33859
+  },
+  {
+    "code": "N75",
+    "title_la": "Bolesti Bartholinijeve žlezde",
+    "source_line": 2831
+  },
+  {
+    "code": "N75.0",
+    "title_la": "Cystis glandulae Bartholin",
+    "source_line": 33873
+  },
+  {
+    "code": "N75.1",
+    "title_la": "Abscessus glandulae Bartholin",
+    "source_line": 33875
+  },
+  {
+    "code": "N75.8",
+    "title_la": "Morbi glandulae Bartholin alii",
+    "source_line": 33877
+  },
+  {
+    "code": "N75.9",
+    "title_la": "Morbus glandulae Bartholin, non specificatus",
+    "source_line": 33880
+  },
+  {
+    "code": "N76",
+    "title_la": "Druga zapaljenja vagine i stidnice",
+    "source_line": 2832
+  },
+  {
+    "code": "N76.0",
+    "title_la": "Vaginitis acuta",
+    "source_line": 33887
+  },
+  {
+    "code": "N76.1",
+    "title_la": "Vaginitis subacuta et chronica",
+    "source_line": 33893
+  },
+  {
+    "code": "N76.2",
+    "title_la": "Vulvitis acuta",
+    "source_line": 33898
+  },
+  {
+    "code": "N76.3",
+    "title_la": "Vulvitis subacuta et chronica",
+    "source_line": 33901
+  },
+  {
+    "code": "N76.4",
+    "title_la": "Abscessus vulvae",
+    "source_line": 33903
+  },
+  {
+    "code": "N76.5",
+    "title_la": "Ulceratio vaginae",
+    "source_line": 33906
+  },
+  {
+    "code": "N76.6",
+    "title_la": "Ulceratio vulvae",
+    "source_line": 33908
+  },
+  {
+    "code": "N76.8",
+    "title_la": "Inflammationes vaginae et vulvae aliae, specificatae",
+    "source_line": 33910
+  },
+  {
+    "code": "N77",
+    "title_la": "Grizlica i upala vagine i stidnice u bolestima koje su klasifikovane na drugom",
+    "source_line": 2833
+  },
+  {
+    "code": "N77.0",
+    "title_la": "Ulceratio vulvae in morbis infectivis et parasitariis, alibi classificatis",
+    "source_line": 33916
+  },
+  {
+    "code": "N77.1",
+    "title_la": "Vaginitis, vulvitis et vulvovaginitis in morbis infectivis et mparasitariis, alibi",
+    "source_line": 33928
+  },
+  {
+    "code": "N77.8",
+    "title_la": "Ulceratio et inflammatio vulvovaginalis in morbis aliis alibi classificatis",
+    "source_line": 33936
+  },
+  {
+    "code": "N80",
+    "title_la": "Endometrioza",
+    "source_line": 2837
+  },
+  {
+    "code": "N80.0",
+    "title_la": "Endometriosis uteri",
+    "source_line": 33947
+  },
+  {
+    "code": "N80.1",
+    "title_la": "Endometriosis ovarii",
+    "source_line": 33950
+  },
+  {
+    "code": "N80.2",
+    "title_la": "Endometriosis tubae uterinae",
+    "source_line": 33952
+  },
+  {
+    "code": "N80.3",
+    "title_la": "Endometriosis peritonaei pelvis",
+    "source_line": 33954
+  },
+  {
+    "code": "N80.4",
+    "title_la": "Endometriosis septi rectovaginalis et vaginae",
+    "source_line": 33956
+  },
+  {
+    "code": "N80.5",
+    "title_la": "Endrometriosis intestini",
+    "source_line": 33958
+  },
+  {
+    "code": "N80.6",
+    "title_la": "Endometriosis in scarificationibus cutaneis",
+    "source_line": 33960
+  },
+  {
+    "code": "N80.8",
+    "title_la": "Endometriosis alia",
+    "source_line": 33962
+  },
+  {
+    "code": "N80.9",
+    "title_la": "Endometriosis, non specificata",
+    "source_line": 33964
+  },
+  {
+    "code": "N81",
+    "title_la": "Ispadanje polnih organa žene",
+    "source_line": 2838
+  },
+  {
+    "code": "N81.0",
+    "title_la": "Urethrocele feminae",
+    "source_line": 33972
+  },
+  {
+    "code": "N81.1",
+    "title_la": "Cystocele",
+    "source_line": 33985
+  },
+  {
+    "code": "N81.2",
+    "title_la": "Prolapsus uterovaginalis incompletus",
+    "source_line": 33990
+  },
+  {
+    "code": "N81.3",
+    "title_la": "Prolapsus uterovaginalis completus",
+    "source_line": 33996
+  },
+  {
+    "code": "N81.4",
+    "title_la": "Prolapsus uterovaginalis, non specificatus",
+    "source_line": 34000
+  },
+  {
+    "code": "N81.5",
+    "title_la": "Enterocele vaginalis",
+    "source_line": 34003
+  },
+  {
+    "code": "N81.6",
+    "title_la": "Rectocele",
+    "source_line": 34006
+  },
+  {
+    "code": "N81.8",
+    "title_la": "Prolapsus genitaliorum femininorum alius",
+    "source_line": 34011
+  },
+  {
+    "code": "N81.9",
+    "title_la": "Prolapsus genitaliorum femininorum, non specificatus",
+    "source_line": 34015
+  },
+  {
+    "code": "N82",
+    "title_la": "Fistule ženskih polnih organa",
+    "source_line": 2839
+  },
+  {
+    "code": "N82.0",
+    "title_la": "Fistula vesicovaginalis",
+    "source_line": 34021
+  },
+  {
+    "code": "N82.1",
+    "title_la": "Fistulae tractus urinogenitalis aliae",
+    "source_line": 34023
+  },
+  {
+    "code": "N82.2",
+    "title_la": "Fistula intestinovaginalis",
+    "source_line": 34031
+  },
+  {
+    "code": "N82.3",
+    "title_la": "Fistula colovaginalis",
+    "source_line": 34041
+  },
+  {
+    "code": "N82.4",
+    "title_la": "Fistulae intestinogenitales feminae aliae",
+    "source_line": 34044
+  },
+  {
+    "code": "N82.5",
+    "title_la": "Fistula cutaneogenitales",
+    "source_line": 34047
+  },
+  {
+    "code": "N82.8",
+    "title_la": "Fistulae genitaliorum femininorum aliae",
+    "source_line": 34052
+  },
+  {
+    "code": "N82.9",
+    "title_la": "Fistula genitaliorum femininorum, non specificata",
+    "source_line": 34054
+  },
+  {
+    "code": "N83",
+    "title_la": "Nezapaljenjski poremećaji jajnika, jajovoda i širokog ligamenta",
+    "source_line": 2840
+  },
+  {
+    "code": "N83.0",
+    "title_la": "Cystis ovarii follicularis",
+    "source_line": 34060
+  },
+  {
+    "code": "N83.1",
+    "title_la": "Cystis corporis lutei ovarii",
+    "source_line": 34064
+  },
+  {
+    "code": "N83.2",
+    "title_la": "Cystes ovarii aliae et non specificatae",
+    "source_line": 34067
+  },
+  {
+    "code": "N83.3",
+    "title_la": "Atrophia ovarii et salpingitis acquisita",
+    "source_line": 34074
+  },
+  {
+    "code": "N83.4",
+    "title_la": "Prolapsus et hernia ovarii et tubae uterinae",
+    "source_line": 34076
+  },
+  {
+    "code": "N83.5",
+    "title_la": "Torsio ovarii, pedunculi ovarii et tubae uterinae",
+    "source_line": 34078
+  },
+  {
+    "code": "N83.6",
+    "title_la": "Haematosalpinx",
+    "source_line": 34083
+  },
+  {
+    "code": "N83.7",
+    "title_la": "Haematoma ligamenti lati",
+    "source_line": 34088
+  },
+  {
+    "code": "N83.8",
+    "title_la": "Disordines ovarii, tubae uterinae et ligamenti lati non inflammatorii, alii",
+    "source_line": 34098
+  },
+  {
+    "code": "N83.9",
+    "title_la": "Disordo ovarii, tubae uterinae et ligamenti lati non inflammatorius, non specificatus",
+    "source_line": 34101
+  },
+  {
+    "code": "N84",
+    "title_la": "Polip - peteljkast sluznični izraštaj ženskih polnih organa",
+    "source_line": 2841
+  },
+  {
+    "code": "N84.0",
+    "title_la": "Polypus corporis uteri",
+    "source_line": 34108
+  },
+  {
+    "code": "N84.1",
+    "title_la": "Polypus cervicis uteri",
+    "source_line": 34114
+  },
+  {
+    "code": "N84.2",
+    "title_la": "Polypus vaginae",
+    "source_line": 34117
+  },
+  {
+    "code": "N84.3",
+    "title_la": "Polypus vulvae",
+    "source_line": 34119
+  },
+  {
+    "code": "N84.8",
+    "title_la": "Polypus genitaliorum femininorum, partium aliarum",
+    "source_line": 34122
+  },
+  {
+    "code": "N84.9",
+    "title_la": "Polypus genitaliorum femininorum, non specificatus",
+    "source_line": 34124
+  },
+  {
+    "code": "N85",
+    "title_la": "Drugi nezapaljenjski poremećaji materice osim grlića",
+    "source_line": 2842
+  },
+  {
+    "code": "N85.0",
+    "title_la": "Hyperplasia glandularis endometrii",
+    "source_line": 34134
+  },
+  {
+    "code": "N85.1",
+    "title_la": "Hyperplasia endometrii adenomatosa",
+    "source_line": 34141
+  },
+  {
+    "code": "N85.2",
+    "title_la": "Hypertrophia uteri",
+    "source_line": 34144
+  },
+  {
+    "code": "N85.3",
+    "title_la": "Subinvolutio uteri",
+    "source_line": 34155
+  },
+  {
+    "code": "N85.4",
+    "title_la": "Malpositio uteri",
+    "source_line": 34158
+  },
+  {
+    "code": "N85.5",
+    "title_la": "Inversio uteri",
+    "source_line": 34164
+  },
+  {
+    "code": "N85.6",
+    "title_la": "Synechiae intrauterinae",
+    "source_line": 34168
+  },
+  {
+    "code": "N85.7",
+    "title_la": "Haematometra",
+    "source_line": 34170
+  },
+  {
+    "code": "N85.8",
+    "title_la": "Disordines non inflammatorii uteri alii specificati",
+    "source_line": 34174
+  },
+  {
+    "code": "N85.9",
+    "title_la": "Disordo non inflammatorius uteri alius non specificatus",
+    "source_line": 34178
+  },
+  {
+    "code": "N86",
+    "title_la": "Nagriženost i izvrnutost grlića materice",
+    "source_line": 2849
+  },
+  {
+    "code": "N87",
+    "title_la": "Displazija grlića materice",
+    "source_line": 2850
+  },
+  {
+    "code": "N87.0",
+    "title_la": "Dysplasia cervicis uteri levis",
+    "source_line": 34191
+  },
+  {
+    "code": "N87.1",
+    "title_la": "Dysplasia cervicis uteri moderata",
+    "source_line": 34194
+  },
+  {
+    "code": "N87.2",
+    "title_la": "Dysplasia cervicis uteri gravis, non alibi classificata",
+    "source_line": 34197
+  },
+  {
+    "code": "N87.9",
+    "title_la": "Dysplasia cervicis uteri, non specificata",
+    "source_line": 34202
+  },
+  {
+    "code": "N88",
+    "title_la": "Drugi nezapaljenjski poremećaji grlića materice",
+    "source_line": 2851
+  },
+  {
+    "code": "N88.0",
+    "title_la": "Leucoplakia cervicis uteri",
+    "source_line": 34215
+  },
+  {
+    "code": "N88.1",
+    "title_la": "Laceratio cervicis uteri obsoleta",
+    "source_line": 34217
+  },
+  {
+    "code": "N88.2",
+    "title_la": "Strictura et stenosis cervicis uteri",
+    "source_line": 34221
+  },
+  {
+    "code": "N88.3",
+    "title_la": "Insufficientia isthmi cervicis uteri",
+    "source_line": 34224
+  },
+  {
+    "code": "N88.4",
+    "title_la": "Elongatio cervicis uteri hipertrophica",
+    "source_line": 34230
+  },
+  {
+    "code": "N88.8",
+    "title_la": "Disordines cervicis uteri non inflammatorii alii, specificati",
+    "source_line": 34232
+  },
+  {
+    "code": "N88.9",
+    "title_la": "Disordo cervicis uteri non inflammatorius, non specificatus",
+    "source_line": 34235
+  },
+  {
+    "code": "N89",
+    "title_la": "Drugi nezapaljenjski poremećaji vagine",
+    "source_line": 2852
+  },
+  {
+    "code": "N89.0",
+    "title_la": "Dysplasia vaginae levis",
+    "source_line": 34244
+  },
+  {
+    "code": "N89.1",
+    "title_la": "Dysplasia vaginae moderata",
+    "source_line": 34247
+  },
+  {
+    "code": "N89.2",
+    "title_la": "Dysplasia vaginae gravis, non alibi classificata",
+    "source_line": 34250
+  },
+  {
+    "code": "N89.3",
+    "title_la": "Dysplasia vaginae, non specificata",
+    "source_line": 34255
+  },
+  {
+    "code": "N89.4",
+    "title_la": "Leucoplakia vaginae",
+    "source_line": 34257
+  },
+  {
+    "code": "N89.5",
+    "title_la": "Strictura et atresia vaginae",
+    "source_line": 34267
+  },
+  {
+    "code": "N89.6",
+    "title_la": "Hymen rigidum",
+    "source_line": 34272
+  },
+  {
+    "code": "N89.7",
+    "title_la": "Haematocolpos",
+    "source_line": 34276
+  },
+  {
+    "code": "N89.8",
+    "title_la": "Disordines vaginae non inflammatorii alii, specificati",
+    "source_line": 34279
+  },
+  {
+    "code": "N89.9",
+    "title_la": "Disordo vaginae non inflammatorius, non specificatus",
+    "source_line": 34286
+  },
+  {
+    "code": "N90",
+    "title_la": "Drugi nezapaljenjski poremećaji stidnice i međice",
+    "source_line": 2853
+  },
+  {
+    "code": "N90.0",
+    "title_la": "Dysplasia vulvae levis",
+    "source_line": 34294
+  },
+  {
+    "code": "N90.1",
+    "title_la": "Dysplasia vulvae moderata",
+    "source_line": 34297
+  },
+  {
+    "code": "N90.2",
+    "title_la": "Dysplasia vulvae gravis, non alibi classificata",
+    "source_line": 34300
+  },
+  {
+    "code": "N90.3",
+    "title_la": "Dysplasia vulvae, non specificata",
+    "source_line": 34305
+  },
+  {
+    "code": "N90.4",
+    "title_la": "Leukoplakia vulvae",
+    "source_line": 34307
+  },
+  {
+    "code": "N90.5",
+    "title_la": "Atrophia vulvae",
+    "source_line": 34311
+  },
+  {
+    "code": "N90.6",
+    "title_la": "Hypertrophia vulvae",
+    "source_line": 34322
+  },
+  {
+    "code": "N90.7",
+    "title_la": "Cystis vulvae",
+    "source_line": 34325
+  },
+  {
+    "code": "N90.8",
+    "title_la": "Disordines vulvae et perinaei non inflammatorii alii, specificati",
+    "source_line": 34327
+  },
+  {
+    "code": "N90.9",
+    "title_la": "Disordo vulvae et perinaei non inflammatorius, non specificatus",
+    "source_line": 34331
+  },
+  {
+    "code": "N91",
+    "title_la": "Izostanak menstruacije i smanjenje menstruacije",
+    "source_line": 2854
+  },
+  {
+    "code": "N91.0",
+    "title_la": "Amenorrhoea primaria",
+    "source_line": 34337
+  },
+  {
+    "code": "N91.1",
+    "title_la": "Amenorrhoea secundaria",
+    "source_line": 34339
+  },
+  {
+    "code": "N91.2",
+    "title_la": "Amenorrhoea, non specificata",
+    "source_line": 34341
+  },
+  {
+    "code": "N91.3",
+    "title_la": "Oligomenorrhoea primaria",
+    "source_line": 34344
+  },
+  {
+    "code": "N91.4",
+    "title_la": "Oligomenorrhoea secundaria",
+    "source_line": 34346
+  },
+  {
+    "code": "N91.5",
+    "title_la": "Oligomenorrhoea, non specificata",
+    "source_line": 34348
+  },
+  {
+    "code": "N92",
+    "title_la": "Pojačano, učestalo i neuredno krvarenje iz materice",
+    "source_line": 2855
+  },
+  {
+    "code": "N92.0",
+    "title_la": "Menorrhagia et polymenorrhoea cum cyclo regulari",
+    "source_line": 34355
+  },
+  {
+    "code": "N92.1",
+    "title_la": "Metrorrhagia et polymenorrhoea cum cyclo iregulari",
+    "source_line": 34360
+  },
+  {
+    "code": "N92.2",
+    "title_la": "Menorrhagia juvenilis",
+    "source_line": 34366
+  },
+  {
+    "code": "N92.3",
+    "title_la": "Haemorrhagia ex utero in ovulatione",
+    "source_line": 34379
+  },
+  {
+    "code": "N92.4",
+    "title_la": "Menorrhagia sive metrrorhagia climacterica",
+    "source_line": 34382
+  },
+  {
+    "code": "N92.5",
+    "title_la": "Menstruatio irregularis alia",
+    "source_line": 34389
+  },
+  {
+    "code": "N92.6",
+    "title_la": "Menstruatio irregularis, non specificata",
+    "source_line": 34391
+  },
+  {
+    "code": "N93",
+    "title_la": "Druga nenormalna krvarenja iz materice i vagine",
+    "source_line": 2856
+  },
+  {
+    "code": "N93.0",
+    "title_la": "Haemorrhagia post coitum et post contactum",
+    "source_line": 34403
+  },
+  {
+    "code": "N93.8",
+    "title_la": "Haemorrhagia ex utero et vagina abnormalis alia, specificata",
+    "source_line": 34405
+  },
+  {
+    "code": "N93.9",
+    "title_la": "Haemorrhagia ex utero et vagina abnormalis non specificata",
+    "source_line": 34408
+  },
+  {
+    "code": "N94",
+    "title_la": "Bol i druga stanja povezani sa polnim organima žene i menstrualnim ciklusom",
+    "source_line": 2857
+  },
+  {
+    "code": "N94.0",
+    "title_la": "Dysmenorrhoea intermenstrualis",
+    "source_line": 34413
+  },
+  {
+    "code": "N94.1",
+    "title_la": "Dyspareunia",
+    "source_line": 34415
+  },
+  {
+    "code": "N94.2",
+    "title_la": "Vaginismus",
+    "source_line": 34418
+  },
+  {
+    "code": "N94.3",
+    "title_la": "Syndroma tensionis praemenstrualis",
+    "source_line": 34421
+  },
+  {
+    "code": "N94.4",
+    "title_la": "Dysmenorrhoea primaria",
+    "source_line": 34423
+  },
+  {
+    "code": "N94.5",
+    "title_la": "Dysmenorrhoea secundaria",
+    "source_line": 34425
+  },
+  {
+    "code": "N94.6",
+    "title_la": "Dysmenorrhoea, non specificata",
+    "source_line": 34427
+  },
+  {
+    "code": "N94.8",
+    "title_la": "Status alii cum genitalibus femininis et cyclo menstruali coniunctus",
+    "source_line": 34435
+  },
+  {
+    "code": "N94.9",
+    "title_la": "Status non specificatus cum genitalibus femininis et cyclo menstruali coniunctus",
+    "source_line": 34437
+  },
+  {
+    "code": "N95",
+    "title_la": "Menopauzalni i drugi perimenopauzalni poremećaji",
+    "source_line": 2858
+  },
+  {
+    "code": "N95.0",
+    "title_la": "Metrorrhagia post menopausim",
+    "source_line": 34447
+  },
+  {
+    "code": "N95.1",
+    "title_la": "Status menopausales et climacterici feminae",
+    "source_line": 34450
+  },
+  {
+    "code": "N95.2",
+    "title_la": "Vaginitis postmenopausalis atrophica",
+    "source_line": 34455
+  },
+  {
+    "code": "N95.3",
+    "title_la": "Status cum menopausi artificiali coniuncti",
+    "source_line": 34459
+  },
+  {
+    "code": "N95.8",
+    "title_la": "Disordines menopausales et perimenopausales speccificati alii",
+    "source_line": 34462
+  },
+  {
+    "code": "N95.9",
+    "title_la": "Disordo menopausalis et perimenopausalis, non specificatus",
+    "source_line": 34464
+  },
+  {
+    "code": "N96",
+    "title_la": "Žena sa ponavljajućim pobačajima",
+    "source_line": 2859
+  },
+  {
+    "code": "N97",
+    "title_la": "Neplodnost žene",
+    "source_line": 2860
+  },
+  {
+    "code": "N97.0",
+    "title_la": "Sterilitas feminae propter anovulationem",
+    "source_line": 34479
+  },
+  {
+    "code": "N97.1",
+    "title_la": "Sterilitas feminae propter tubam uterinam",
+    "source_line": 34481
+  },
+  {
+    "code": "N97.2",
+    "title_la": "Sterilitas feminae propter uterum",
+    "source_line": 34492
+  },
+  {
+    "code": "N97.3",
+    "title_la": "Sterlitas feminae propter cervicem vaginalem",
+    "source_line": 34496
+  },
+  {
+    "code": "N97.4",
+    "title_la": "Sterilitas feminae cum factoribus masculinis coniuncta",
+    "source_line": 34498
+  },
+  {
+    "code": "N97.8",
+    "title_la": "Sterilitas feminae e causa alia",
+    "source_line": 34500
+  },
+  {
+    "code": "N97.9",
+    "title_la": "Sterilitas feminae, non specificata",
+    "source_line": 34502
+  },
+  {
+    "code": "N98",
+    "title_la": "Komplikacije uzrokovane veštačkom oplodnjom",
+    "source_line": 2861
+  },
+  {
+    "code": "N98.0",
+    "title_la": "Infectio per inseminationem artificialem",
+    "source_line": 34507
+  },
+  {
+    "code": "N98.1",
+    "title_la": "Hyperstimulatio ovarii",
+    "source_line": 34509
+  },
+  {
+    "code": "N98.2",
+    "title_la": "Complicationes in attemptu introductionis ovi fertilisati post fertilisationem in vitro",
+    "source_line": 34513
+  },
+  {
+    "code": "N98.3",
+    "title_la": "Complicationes in attemptu introductionis embryonis in cavitatem uteri",
+    "source_line": 34515
+  },
+  {
+    "code": "N98.8",
+    "title_la": "Complicationes cum fertilisatione artificiali coniunctae aliae",
+    "source_line": 34517
+  },
+  {
+    "code": "N98.9",
+    "title_la": "Complicatio cum fertilisatione artificiali coniuncta non specificata",
+    "source_line": 34520
+  },
+  {
+    "code": "N99",
+    "title_la": "Poremećaji mokraćno-polnog sistema posle medicinskih intervencija,",
+    "source_line": 2864
+  },
+  {
+    "code": "N99.0",
+    "title_la": "Insufficientia renis postproceduralis",
+    "source_line": 34536
+  },
+  {
+    "code": "N99.1",
+    "title_la": "Strictura urethrae postproceduralis",
+    "source_line": 34538
+  },
+  {
+    "code": "N99.2",
+    "title_la": "Adhaesiones vaginae post operationem",
+    "source_line": 34541
+  },
+  {
+    "code": "N99.3",
+    "title_la": "Prolapsus vaginae post hysterectomiam",
+    "source_line": 34548
+  },
+  {
+    "code": "N99.4",
+    "title_la": "Adhaesiones peritonaei pelvis feminae postprocedurales",
+    "source_line": 34550
+  },
+  {
+    "code": "N99.5",
+    "title_la": "Malfunctio meatus urethrae externi",
+    "source_line": 34552
+  },
+  {
+    "code": "N99.8",
+    "title_la": "Disordines post interventiones in systemate urogenitali alii",
+    "source_line": 34554
+  },
+  {
+    "code": "N99.9",
+    "title_la": "Disordo post interventiones in systemate urogenitali, non specificatus",
+    "source_line": 34557
+  }
+]

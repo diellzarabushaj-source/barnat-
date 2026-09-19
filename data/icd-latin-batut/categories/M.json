@@ -1,0 +1,397 @@
+[
+  {
+    "code": "M00",
+    "title_la": "Gnojno zapaljenje zgloba",
+    "source_line": 2603
+  },
+  {
+    "code": "M01",
+    "title_la": "Direktna infekcija zglobova u zaraznim i parazitarnim bolestima klasifikovanim na",
+    "source_line": 2604
+  },
+  {
+    "code": "M02",
+    "title_la": "Reaktivna oboljenja zglobova",
+    "source_line": 2606
+  },
+  {
+    "code": "M03",
+    "title_la": "Postinfektivna i reaktivna oboljenja zglobova u bolestima klasifikovanim na drugom",
+    "source_line": 2607
+  },
+  {
+    "code": "M05",
+    "title_la": "Seropozitivni reumatoidni artritis",
+    "source_line": 2611
+  },
+  {
+    "code": "M06",
+    "title_la": "Ostali reumatoidni artritisi",
+    "source_line": 2612
+  },
+  {
+    "code": "M07",
+    "title_la": "Psorijazna oboljenja i enteropatička oboljenja zgloba",
+    "source_line": 2613
+  },
+  {
+    "code": "M08",
+    "title_la": "Juvenilni artritis",
+    "source_line": 2614
+  },
+  {
+    "code": "M09",
+    "title_la": "Juvenilni artritis u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2615
+  },
+  {
+    "code": "M10",
+    "title_la": "Giht",
+    "source_line": 2616
+  },
+  {
+    "code": "M11",
+    "title_la": "Druga oboljenja zglobova uzrokovana taloženjem kristala",
+    "source_line": 2617
+  },
+  {
+    "code": "M12",
+    "title_la": "Druga označena oboljenja zglobova",
+    "source_line": 2618
+  },
+  {
+    "code": "M13",
+    "title_la": "Druga zapaljenja zgloba",
+    "source_line": 2619
+  },
+  {
+    "code": "M14",
+    "title_la": "Oboljenja zglobova u drugim bolestima, klasifikovanim na drugom mestu",
+    "source_line": 2620
+  },
+  {
+    "code": "M15",
+    "title_la": "Degenerativna oboljenja više zglobova",
+    "source_line": 2623
+  },
+  {
+    "code": "M16",
+    "title_la": "Degenerativno oboljenje zgloba kuka",
+    "source_line": 2624
+  },
+  {
+    "code": "M17",
+    "title_la": "Degenerativno oboljenje zgloba kolena",
+    "source_line": 2625
+  },
+  {
+    "code": "M18",
+    "title_la": "Degenerativno oboljenje prvog ručno-doručnog zgloba",
+    "source_line": 2626
+  },
+  {
+    "code": "M19",
+    "title_la": "Druge artroze",
+    "source_line": 2627
+  },
+  {
+    "code": "M20",
+    "title_la": "Stečeni deformiteti prstiju šake i prstiju stopala",
+    "source_line": 2630
+  },
+  {
+    "code": "M21",
+    "title_la": "Drugi stečeni deformiteti udova",
+    "source_line": 2631
+  },
+  {
+    "code": "M22",
+    "title_la": "Bolesti čašice kolena",
+    "source_line": 2632
+  },
+  {
+    "code": "M23",
+    "title_la": "Unutrašnje bolesti kolena",
+    "source_line": 2633
+  },
+  {
+    "code": "M24",
+    "title_la": "Druge označene promene zglobova",
+    "source_line": 2634
+  },
+  {
+    "code": "M25",
+    "title_la": "Druge bolesti zglobova, koje nisu klasifikovane na drugom mestu",
+    "source_line": 2635
+  },
+  {
+    "code": "M30",
+    "title_la": "Čvoričasto zapaljenje više arterija i slične bolesti",
+    "source_line": 2638
+  },
+  {
+    "code": "M31",
+    "title_la": "Druga nekrozna oboljenja krvnih sudova",
+    "source_line": 2639
+  },
+  {
+    "code": "M32",
+    "title_la": "Sistemski eritemski lupus - vučja rana",
+    "source_line": 2640
+  },
+  {
+    "code": "M33",
+    "title_la": "Zapaljenje kože i više mišića",
+    "source_line": 2641
+  },
+  {
+    "code": "M34",
+    "title_la": "Sistemska skleroza",
+    "source_line": 2642
+  },
+  {
+    "code": "M35",
+    "title_la": "Druge sistemske bolesti vezivnog tkiva",
+    "source_line": 2648
+  },
+  {
+    "code": "M36",
+    "title_la": "Sistemske bolesti vezivnog tkiva u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2649
+  },
+  {
+    "code": "M40",
+    "title_la": "Grba i unapred iskrivljena kičma",
+    "source_line": 2654
+  },
+  {
+    "code": "M41",
+    "title_la": "Bočno iskrivljena kičma",
+    "source_line": 2655
+  },
+  {
+    "code": "M42",
+    "title_la": "Koštano-hrskavično oboljenje kičme",
+    "source_line": 2656
+  },
+  {
+    "code": "M43",
+    "title_la": "Druga deformacijska oboljenja kičme",
+    "source_line": 2657
+  },
+  {
+    "code": "M45",
+    "title_la": "Zapaljenje pršljena sa ukočenošću",
+    "source_line": 2660
+  },
+  {
+    "code": "M46",
+    "title_la": "Druge zapaljenske spondilopatije",
+    "source_line": 2661
+  },
+  {
+    "code": "M47",
+    "title_la": "Okoštavanje zglobova pršljenova",
+    "source_line": 2662
+  },
+  {
+    "code": "M48",
+    "title_la": "Spondylopathiae aliae",
+    "source_line": 31141
+  },
+  {
+    "code": "M49",
+    "title_la": "Oboljenja kičme u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2663
+  },
+  {
+    "code": "M50",
+    "title_la": "Bolesti međupršljenskih diskusa vrata",
+    "source_line": 2666
+  },
+  {
+    "code": "M51",
+    "title_la": "Druge bolesti međupršljenskog diskusa",
+    "source_line": 2667
+  },
+  {
+    "code": "M53",
+    "title_la": "Ostale dozopatije, koje nisu klasifikovane na drugom mestu",
+    "source_line": 2668
+  },
+  {
+    "code": "M54",
+    "title_la": "Bol u leđima",
+    "source_line": 2669
+  },
+  {
+    "code": "M60",
+    "title_la": "Zapaljenje mišića",
+    "source_line": 2674
+  },
+  {
+    "code": "M61",
+    "title_la": "Kalcifikacija - zakrečavanje mišića i okoštavanje mišića",
+    "source_line": 2675
+  },
+  {
+    "code": "M62",
+    "title_la": "Ostale bolesti mišića",
+    "source_line": 2676
+  },
+  {
+    "code": "M63",
+    "title_la": "Bolesti mišića kod bolesti klasifikovanih na drugom mestu",
+    "source_line": 2677
+  },
+  {
+    "code": "M65",
+    "title_la": "Zapaljenje sinovije i zapaljenje tetive sa sinovijom",
+    "source_line": 2680
+  },
+  {
+    "code": "M66",
+    "title_la": "Spontano prsnuće sinovije i tetive",
+    "source_line": 2681
+  },
+  {
+    "code": "M67",
+    "title_la": "Druge bolesti sinovije i tetive",
+    "source_line": 2682
+  },
+  {
+    "code": "M68",
+    "title_la": "Bolesti sinovije i tetive u bolestima koje su klasifikovane na drugom mestu",
+    "source_line": 2683
+  },
+  {
+    "code": "M70",
+    "title_la": "Bolesti mekih tkiva nastale kao posledica aktivnosti, povećane aktivnosti i pritiska",
+    "source_line": 2686
+  },
+  {
+    "code": "M71",
+    "title_la": "Ostala oboljenja serozne kese",
+    "source_line": 2687
+  },
+  {
+    "code": "M72",
+    "title_la": "Bolesti umnožavanja vezivnog tkiva",
+    "source_line": 2688
+  },
+  {
+    "code": "M73",
+    "title_la": "Bolesti mekih tkiva u bolestima klasifikovanim na drugom mestu",
+    "source_line": 2689
+  },
+  {
+    "code": "M75",
+    "title_la": "Oštećenja ramena",
+    "source_line": 2690
+  },
+  {
+    "code": "M76",
+    "title_la": "Entezopatija noge, isključujući stopalo",
+    "source_line": 2691
+  },
+  {
+    "code": "M77",
+    "title_la": "Ostale entezopatije",
+    "source_line": 2692
+  },
+  {
+    "code": "M79",
+    "title_la": "Ostale bolesti mekih tkiva, koje nisu klasifikovane na drugom mestu",
+    "source_line": 2693
+  },
+  {
+    "code": "M80",
+    "title_la": "Gubitak koštane mase sa patološkim prelomom [Osteoporoza sa patološkim",
+    "source_line": 2705
+  },
+  {
+    "code": "M81",
+    "title_la": "Gubitak koštane mase bez patološkog preloma [Osteoporoza bez patološkog",
+    "source_line": 2707
+  },
+  {
+    "code": "M82",
+    "title_la": "Osteoporoza kod bolesti klasifikovanih na drugom mestu",
+    "source_line": 2709
+  },
+  {
+    "code": "M83",
+    "title_la": "Osteomalacija [Razmekšavanje kosti] u odraslih osoba",
+    "source_line": 2710
+  },
+  {
+    "code": "M84",
+    "title_la": "Poremećaji kontinuiteta kosti",
+    "source_line": 2711
+  },
+  {
+    "code": "M85",
+    "title_la": "Ostali poremećaji u čvrstoći i građi kosti",
+    "source_line": 2712
+  },
+  {
+    "code": "M86",
+    "title_la": "Zapaljenje koštane srži",
+    "source_line": 2715
+  },
+  {
+    "code": "M87",
+    "title_la": "Osteonekroza",
+    "source_line": 2716
+  },
+  {
+    "code": "M88",
+    "title_la": "Pagetova bolest kosti",
+    "source_line": 2717
+  },
+  {
+    "code": "M89",
+    "title_la": "Ostali poremećaji kosti",
+    "source_line": 2718
+  },
+  {
+    "code": "M90",
+    "title_la": "Oboljenja kosti [Osteopatije] kod bolesti koje su klasifikovane na drugom mestu",
+    "source_line": 2719
+  },
+  {
+    "code": "M91",
+    "title_la": "Juvenilna osteohondroza kuka i karlice",
+    "source_line": 2722
+  },
+  {
+    "code": "M92",
+    "title_la": "Druge juvenilne osteohondroze",
+    "source_line": 2723
+  },
+  {
+    "code": "M93",
+    "title_la": "Ostale osteohondropatije",
+    "source_line": 2724
+  },
+  {
+    "code": "M94",
+    "title_la": "Ostali poremećaji hrskavice",
+    "source_line": 2725
+  },
+  {
+    "code": "M95",
+    "title_la": "Ostale stečene deformacije mišićno-koštanog sistema i vezivnog tkiva",
+    "source_line": 2728
+  },
+  {
+    "code": "M96",
+    "title_la": "Poremećaji mišića i kostiju posle medicinskih intervencija, neklasifikovani na",
+    "source_line": 2729
+  },
+  {
+    "code": "M99",
+    "title_la": "Biomehanička oštećenja koja nisu klasifikovana na drugom mestu",
+    "source_line": 2731
+  }
+]

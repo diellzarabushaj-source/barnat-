@@ -1,0 +1,3472 @@
+[
+  {
+    "code": "S00",
+    "title_la": "Površinska povreda glave",
+    "source_line": 3386
+  },
+  {
+    "code": "S00.0",
+    "title_la": "Laesio traumatica capillitii, superficialis",
+    "source_line": 42994
+  },
+  {
+    "code": "S00.1",
+    "title_la": "Contusio palpebrae et periocularis",
+    "source_line": 42996
+  },
+  {
+    "code": "S00.2",
+    "title_la": "Laesiones traumaticae palpebrae et perioculares, superficiales aliae",
+    "source_line": 43000
+  },
+  {
+    "code": "S00.3",
+    "title_la": "Laesio traumatica nasi, superficialis",
+    "source_line": 43003
+  },
+  {
+    "code": "S00.4",
+    "title_la": "Laesio traumatica auris, superficialis",
+    "source_line": 43005
+  },
+  {
+    "code": "S00.5",
+    "title_la": "Lasio traumatica labii et cavitatis oris, superficialis",
+    "source_line": 43007
+  },
+  {
+    "code": "S00.7",
+    "title_la": "Laesiones traumaticae capitis superficiales multiplices",
+    "source_line": 43009
+  },
+  {
+    "code": "S00.8",
+    "title_la": "Laesio traumatica partium capitis aliarum, superficialis",
+    "source_line": 43011
+  },
+  {
+    "code": "S00.9",
+    "title_la": "Laesio traumatica capitis superficialis, partium non specificatarum",
+    "source_line": 43021
+  },
+  {
+    "code": "S01",
+    "title_la": "Otvorena rana glave",
+    "source_line": 3387
+  },
+  {
+    "code": "S01.0",
+    "title_la": "Vulnus apertum capillitii",
+    "source_line": 43029
+  },
+  {
+    "code": "S01.1",
+    "title_la": "Vulnus apertum palpebrae et perioculare",
+    "source_line": 43032
+  },
+  {
+    "code": "S01.2",
+    "title_la": "Vulnus apertum nasi",
+    "source_line": 43035
+  },
+  {
+    "code": "S01.3",
+    "title_la": "Vulnus apertum auris",
+    "source_line": 43037
+  },
+  {
+    "code": "S01.4",
+    "title_la": "Vulnus apertum buccae et regionis temporomandibularis",
+    "source_line": 43039
+  },
+  {
+    "code": "S01.5",
+    "title_la": "Vulnus apertum labii et cavitatis oris",
+    "source_line": 43041
+  },
+  {
+    "code": "S01.7",
+    "title_la": "Vulnera aperta capitis multiplicia",
+    "source_line": 43045
+  },
+  {
+    "code": "S01.8",
+    "title_la": "Vulnus apertum capitis (aliarum) partium",
+    "source_line": 43047
+  },
+  {
+    "code": "S01.9",
+    "title_la": "Vulnus apertum capitis non specificatarum partium",
+    "source_line": 43049
+  },
+  {
+    "code": "S02",
+    "title_la": "Prelom lobanje i prelom kostiju lica",
+    "source_line": 3388
+  },
+  {
+    "code": "S02.0",
+    "title_la": "Fractura calvarii",
+    "source_line": 43062
+  },
+  {
+    "code": "S02.1",
+    "title_la": "Fractura basis cranii",
+    "source_line": 43074
+  },
+  {
+    "code": "S02.2",
+    "title_la": "Fractura ossium nasalium",
+    "source_line": 43087
+  },
+  {
+    "code": "S02.3",
+    "title_la": "Fractura orbite, pars inferior",
+    "source_line": 43089
+  },
+  {
+    "code": "S02.4",
+    "title_la": "Fractura ossis zygomatici et fractura ossis maxillaris",
+    "source_line": 43093
+  },
+  {
+    "code": "S02.5",
+    "title_la": "Fractura dentis",
+    "source_line": 43098
+  },
+  {
+    "code": "S02.6",
+    "title_la": "Fractura mandibulae",
+    "source_line": 43100
+  },
+  {
+    "code": "S02.7",
+    "title_la": "Fractura cranii et fractura ossium faciei multiplex",
+    "source_line": 43103
+  },
+  {
+    "code": "S02.8",
+    "title_la": "Fracturae aliorum ossium cranii et faciei",
+    "source_line": 43105
+  },
+  {
+    "code": "S02.9",
+    "title_la": "Fractura partium ossium cranii et fractura ossium faciei, non specificatarum",
+    "source_line": 43112
+  },
+  {
+    "code": "S03",
+    "title_la": "Iščašenje, uganuće i istegnuće zglobova i veza glave",
+    "source_line": 3389
+  },
+  {
+    "code": "S03.0",
+    "title_la": "Luxatio mandibulae",
+    "source_line": 43117
+  },
+  {
+    "code": "S03.1",
+    "title_la": "Luxatio cartilaginis septi nasi",
+    "source_line": 43121
+  },
+  {
+    "code": "S03.2",
+    "title_la": "Luxatio denti",
+    "source_line": 43123
+  },
+  {
+    "code": "S03.3",
+    "title_la": "Luxatio partium aliarum et non specificatarum capitis",
+    "source_line": 43132
+  },
+  {
+    "code": "S03.4",
+    "title_la": "Distorsio et distensio mandibulae",
+    "source_line": 43134
+  },
+  {
+    "code": "S03.5",
+    "title_la": "Distorsio et distensio articulorum et ligamentorum partium capitis aliarum et non",
+    "source_line": 43137
+  },
+  {
+    "code": "S04",
+    "title_la": "Povrede živaca lobanje",
+    "source_line": 3390
+  },
+  {
+    "code": "S04.0",
+    "title_la": "Laesio traumatica nervi optici et tractus optici",
+    "source_line": 43143
+  },
+  {
+    "code": "S04.1",
+    "title_la": "Laesio traumatica nervi oculomotorii",
+    "source_line": 43148
+  },
+  {
+    "code": "S04.2",
+    "title_la": "Laesio traumatica nervi trochlearis",
+    "source_line": 43151
+  },
+  {
+    "code": "S04.3",
+    "title_la": "Laesio traumatica nervi trigemini",
+    "source_line": 43154
+  },
+  {
+    "code": "S04.4",
+    "title_la": "Laesio traumatica nervi abducentis",
+    "source_line": 43157
+  },
+  {
+    "code": "S04.5",
+    "title_la": "Laesio traumatica nervi facialis",
+    "source_line": 43160
+  },
+  {
+    "code": "S04.6",
+    "title_la": "Laesio traumatica nervi acustici",
+    "source_line": 43163
+  },
+  {
+    "code": "S04.7",
+    "title_la": "Laesio traumatica nervi accessorii",
+    "source_line": 43167
+  },
+  {
+    "code": "S04.8",
+    "title_la": "Laesio traumatica nervorum cranialium aliorum",
+    "source_line": 43170
+  },
+  {
+    "code": "S04.9",
+    "title_la": "Laesio traumatica nervi cranialis non specificati",
+    "source_line": 43176
+  },
+  {
+    "code": "S05",
+    "title_la": "Povreda oka i očne duplje",
+    "source_line": 3391
+  },
+  {
+    "code": "S05.0",
+    "title_la": "Laesio traumatica conjuctivae et abrasio corneae sine corpore alieno",
+    "source_line": 43193
+  },
+  {
+    "code": "S05.1",
+    "title_la": "Contusio bulbi oculi et textus orbitae",
+    "source_line": 43198
+  },
+  {
+    "code": "S05.2",
+    "title_la": "Laceratio et ruptura oculi cum prolapsu sive amissione textus intraocularis",
+    "source_line": 43203
+  },
+  {
+    "code": "S05.3",
+    "title_la": "Laceratio oculi sine prolapsu sive amissione textus intraocularis",
+    "source_line": 43205
+  },
+  {
+    "code": "S05.4",
+    "title_la": "Vulnus penetrans orbitae cum sive sine corpore alieno",
+    "source_line": 43208
+  },
+  {
+    "code": "S05.5",
+    "title_la": "Vulnus penetrans bulbi oculi cum corpore alieno",
+    "source_line": 43211
+  },
+  {
+    "code": "S05.6",
+    "title_la": "Vulnus penetrans bulbi oculi sine corpore alieno",
+    "source_line": 43214
+  },
+  {
+    "code": "S05.7",
+    "title_la": "Avulsio oculi",
+    "source_line": 43217
+  },
+  {
+    "code": "S05.8",
+    "title_la": "Laesiones traumaticae oculi et orbitae aliae",
+    "source_line": 43220
+  },
+  {
+    "code": "S05.9",
+    "title_la": "Laesio traumatica oculi et orbitae, non specificata",
+    "source_line": 43223
+  },
+  {
+    "code": "S06",
+    "title_la": "Intrakranijalna [Unutarlobanjska] povreda",
+    "source_line": 3392
+  },
+  {
+    "code": "S06.0",
+    "title_la": "Commotio cerebri",
+    "source_line": 43242
+  },
+  {
+    "code": "S06.1",
+    "title_la": "Oedema cerebri traumaticum",
+    "source_line": 43244
+  },
+  {
+    "code": "S06.2",
+    "title_la": "Laesio traumatica cerebri diffusa",
+    "source_line": 43246
+  },
+  {
+    "code": "S06.3",
+    "title_la": "Laesio traumatica cerebri focalis",
+    "source_line": 43251
+  },
+  {
+    "code": "S06.4",
+    "title_la": "Haemorrhagia epiduralis",
+    "source_line": 43256
+  },
+  {
+    "code": "S06.5",
+    "title_la": "Haemorrhagia subduralis traumatica",
+    "source_line": 43259
+  },
+  {
+    "code": "S06.6",
+    "title_la": "Haemorrhagia subarachnoidalis traumatica",
+    "source_line": 43261
+  },
+  {
+    "code": "S06.7",
+    "title_la": "Laesio traumatica intracranialis cum comate prolongato",
+    "source_line": 43263
+  },
+  {
+    "code": "S06.8",
+    "title_la": "Laesiones traumaticae intracraniales aliae",
+    "source_line": 43265
+  },
+  {
+    "code": "S06.9",
+    "title_la": "Laesio traumatica intracranialis, non specificata",
+    "source_line": 43270
+  },
+  {
+    "code": "S07",
+    "title_la": "Povrede glave uzrokovane zdrobljavanjem – kraš",
+    "source_line": 3393
+  },
+  {
+    "code": "S07.0",
+    "title_la": "Conquassatio faciei",
+    "source_line": 43277
+  },
+  {
+    "code": "S07.1",
+    "title_la": "Conquassatio cranii",
+    "source_line": 43279
+  },
+  {
+    "code": "S07.8",
+    "title_la": "Conquassatio partium capitis aliarum",
+    "source_line": 43281
+  },
+  {
+    "code": "S07.9",
+    "title_la": "Conquassatio capitis parte non specificata",
+    "source_line": 43283
+  },
+  {
+    "code": "S08",
+    "title_la": "Traumatska amputacija dela glave",
+    "source_line": 3394
+  },
+  {
+    "code": "S08.0",
+    "title_la": "Avulsio capillitii",
+    "source_line": 43288
+  },
+  {
+    "code": "S08.1",
+    "title_la": "Amputatio traumatica auris",
+    "source_line": 43290
+  },
+  {
+    "code": "S08.8",
+    "title_la": "Amputatio traumatica partium capitis aliarum",
+    "source_line": 43298
+  },
+  {
+    "code": "S08.9",
+    "title_la": "Amputatio traumatica partis capitis non specificatae",
+    "source_line": 43300
+  },
+  {
+    "code": "S09",
+    "title_la": "Ostale i neoznačene povrede glave",
+    "source_line": 3395
+  },
+  {
+    "code": "S09.0",
+    "title_la": "Laesio traumatica vasorum capitis, non alibi classificatae",
+    "source_line": 43306
+  },
+  {
+    "code": "S09.1",
+    "title_la": "Laesio traumatica musculi et tendinis capitis",
+    "source_line": 43311
+  },
+  {
+    "code": "S09.2",
+    "title_la": "Ruptura traumatica membranae tympani",
+    "source_line": 43313
+  },
+  {
+    "code": "S09.7",
+    "title_la": "Laesio traumatica capitis multiplex",
+    "source_line": 43315
+  },
+  {
+    "code": "S09.8",
+    "title_la": "Laesiones traumaticae capitis aliae, specificatae",
+    "source_line": 43318
+  },
+  {
+    "code": "S09.9",
+    "title_la": "Laesio traumatica capitis, non specificata",
+    "source_line": 43320
+  },
+  {
+    "code": "S10",
+    "title_la": "Površinska povreda vrata",
+    "source_line": 3398
+  },
+  {
+    "code": "S10.0",
+    "title_la": "Contusio juguli",
+    "source_line": 43355
+  },
+  {
+    "code": "S10.1",
+    "title_la": "Laesiones traumaticae juguli superfaciales aliae et non specificatae",
+    "source_line": 43361
+  },
+  {
+    "code": "S10.7",
+    "title_la": "Laesiones traumaticae colli superficiales multiplices",
+    "source_line": 43363
+  },
+  {
+    "code": "S10.8",
+    "title_la": "Laesio traumatica partium colli aliairum superficialis",
+    "source_line": 43365
+  },
+  {
+    "code": "S10.9",
+    "title_la": "Laesio traumatica colli superficialis parte non specificata",
+    "source_line": 43367
+  },
+  {
+    "code": "S11",
+    "title_la": "Otvorena rana vrata",
+    "source_line": 3399
+  },
+  {
+    "code": "S11.0",
+    "title_la": "Vulnus apertum laryngis et tracheae",
+    "source_line": 43373
+  },
+  {
+    "code": "S11.1",
+    "title_la": "Vulnus apertum glanduale thyreoideae",
+    "source_line": 43379
+  },
+  {
+    "code": "S11.2",
+    "title_la": "Vulnus apertum pharyngis et oesophagi, pars cervicalis",
+    "source_line": 43381
+  },
+  {
+    "code": "S11.7",
+    "title_la": "Vulnera aperta colli multiplicia",
+    "source_line": 43391
+  },
+  {
+    "code": "S11.8",
+    "title_la": "Vulnus apertum partium colli aliarum",
+    "source_line": 43393
+  },
+  {
+    "code": "S11.9",
+    "title_la": "Vulnus apertum partis colli, non specificatum",
+    "source_line": 43395
+  },
+  {
+    "code": "S12",
+    "title_la": "Prelom vrata",
+    "source_line": 3400
+  },
+  {
+    "code": "S12.0",
+    "title_la": "Fractura vertebrae cervicalis primae",
+    "source_line": 43412
+  },
+  {
+    "code": "S12.1",
+    "title_la": "Fractura vertebrae cervicalis secundae",
+    "source_line": 43415
+  },
+  {
+    "code": "S12.2",
+    "title_la": "Fractura vertebrae cervicalis aliae specificatae",
+    "source_line": 43418
+  },
+  {
+    "code": "S12.7",
+    "title_la": "Fractureae columnae vertebralis cervicalis multiplices",
+    "source_line": 43421
+  },
+  {
+    "code": "S12.8",
+    "title_la": "Fractura aliarum partium colli",
+    "source_line": 43423
+  },
+  {
+    "code": "S12.9",
+    "title_la": "Fractura partis colli, non specificatae",
+    "source_line": 43429
+  },
+  {
+    "code": "S13",
+    "title_la": "Iščašenje, uganuće i istegnuće zglobova i veza vrata",
+    "source_line": 3401
+  },
+  {
+    "code": "S13.0",
+    "title_la": "Ruptura traumatica disci intervertebralis cervicalis",
+    "source_line": 43438
+  },
+  {
+    "code": "S13.1",
+    "title_la": "Luxatio vertebrae cervicalis",
+    "source_line": 43448
+  },
+  {
+    "code": "S13.2",
+    "title_la": "Luxatio partium colli aliarum et non specificarum",
+    "source_line": 43451
+  },
+  {
+    "code": "S13.3",
+    "title_la": "Luxatio colli multiplex",
+    "source_line": 43453
+  },
+  {
+    "code": "S13.4",
+    "title_la": "Distorsio et distensio columnae vertebrlis cervicalis",
+    "source_line": 43455
+  },
+  {
+    "code": "S13.5",
+    "title_la": "Distorsio et distensio regionis thyreoideae",
+    "source_line": 43461
+  },
+  {
+    "code": "S13.6",
+    "title_la": "Distorsio et distensio partium articulorum et ligamentorum colli aliarum et non",
+    "source_line": 43468
+  },
+  {
+    "code": "S14",
+    "title_la": "Povreda živaca i kičmene moždine u nivou vrata",
+    "source_line": 3402
+  },
+  {
+    "code": "S14.0",
+    "title_la": "Commotio et oedema medullae spinalis cervicalis",
+    "source_line": 43474
+  },
+  {
+    "code": "S14.1",
+    "title_la": "Laesiones traumaticae medullae spinalis cervicalis aliae et non specificatae",
+    "source_line": 43476
+  },
+  {
+    "code": "S14.2",
+    "title_la": "Laesio traumatica radicis nervi spinalis cervicalis",
+    "source_line": 43479
+  },
+  {
+    "code": "S14.3",
+    "title_la": "Laesio traumatica plexus brachialis",
+    "source_line": 43481
+  },
+  {
+    "code": "S14.4",
+    "title_la": "Laesio traumatica nervorum cervicalium periphericorum",
+    "source_line": 43483
+  },
+  {
+    "code": "S14.5",
+    "title_la": "Laesio traumatica nervorum sympatheticorum colli",
+    "source_line": 43485
+  },
+  {
+    "code": "S14.6",
+    "title_la": "Laesio traumatica nervorum colli aliorum et non specificatorum",
+    "source_line": 43487
+  },
+  {
+    "code": "S15",
+    "title_la": "Povreda krvnih sudova u nivou vrata",
+    "source_line": 3403
+  },
+  {
+    "code": "S15.0",
+    "title_la": "Laesio traumatica arteriae carotidis",
+    "source_line": 43492
+  },
+  {
+    "code": "S15.1",
+    "title_la": "Laesio traumatica arteriae vertebralis",
+    "source_line": 43495
+  },
+  {
+    "code": "S15.2",
+    "title_la": "Laesio traumatica venae jugularis externae",
+    "source_line": 43497
+  },
+  {
+    "code": "S15.3",
+    "title_la": "Laesio traumatica venae jugularis internae",
+    "source_line": 43505
+  },
+  {
+    "code": "S15.7",
+    "title_la": "Laesio traumatica vasorum colli multiplicium",
+    "source_line": 43507
+  },
+  {
+    "code": "S15.8",
+    "title_la": "Laesio traumatica vasorum colli aliorum",
+    "source_line": 43509
+  },
+  {
+    "code": "S15.9",
+    "title_la": "Laesio traumatica vasis colli, non specificati",
+    "source_line": 43511
+  },
+  {
+    "code": "S16",
+    "title_la": "Povreda mišića i tetive vrata",
+    "source_line": 3404
+  },
+  {
+    "code": "S17",
+    "title_la": "Povreda vrata uzrokovana zdrobljavanjem – kraš",
+    "source_line": 3405
+  },
+  {
+    "code": "S17.0",
+    "title_la": "Conquassatio laryngis et tracheae",
+    "source_line": 43519
+  },
+  {
+    "code": "S17.8",
+    "title_la": "Conquassatio colli, aliarum partium",
+    "source_line": 43521
+  },
+  {
+    "code": "S17.9",
+    "title_la": "Conquassatio colli, parte non specificata",
+    "source_line": 43523
+  },
+  {
+    "code": "S18",
+    "title_la": "Traumatska amputacija u nivou vrata",
+    "source_line": 3406
+  },
+  {
+    "code": "S19",
+    "title_la": "Druge i neoznačene povrede vrata",
+    "source_line": 3407
+  },
+  {
+    "code": "S19.7",
+    "title_la": "Laesiones traumaticae colli multiplices",
+    "source_line": 43532
+  },
+  {
+    "code": "S19.8",
+    "title_la": "Laesiones traumaticae coli aliae, specificatae",
+    "source_line": 43535
+  },
+  {
+    "code": "S19.9",
+    "title_la": "Laesio traumatica colli, non specificata",
+    "source_line": 43537
+  },
+  {
+    "code": "S20",
+    "title_la": "Površinska povreda grudnog koša",
+    "source_line": 3410
+  },
+  {
+    "code": "S20.0",
+    "title_la": "Contusio mammae",
+    "source_line": 43572
+  },
+  {
+    "code": "S20.1",
+    "title_la": "Laesiones traumaticae mammae superficiales aliae et non specificatae",
+    "source_line": 43574
+  },
+  {
+    "code": "S20.2",
+    "title_la": "Contusio thoracis",
+    "source_line": 43576
+  },
+  {
+    "code": "S20.3",
+    "title_la": "Laesiones trumaticae parietis thoracis anterioris superficiales aliae",
+    "source_line": 43578
+  },
+  {
+    "code": "S20.4",
+    "title_la": "Laesiones traumaticae parietis thoracis posterioris superficiales aliae",
+    "source_line": 43580
+  },
+  {
+    "code": "S20.7",
+    "title_la": "Laesiones traumaticae thoracis superficiales multiplices",
+    "source_line": 43582
+  },
+  {
+    "code": "S20.8",
+    "title_la": "Laesio traumatica partium thoracis aliarum et non specificarum superficialis",
+    "source_line": 43584
+  },
+  {
+    "code": "S21",
+    "title_la": "Otvorena rana grudnog koša",
+    "source_line": 3411
+  },
+  {
+    "code": "S21.0",
+    "title_la": "Vulnus apertum mammae",
+    "source_line": 43593
+  },
+  {
+    "code": "S21.1",
+    "title_la": "Vulnus apertum parietis thoracis anterioris",
+    "source_line": 43595
+  },
+  {
+    "code": "S21.2",
+    "title_la": "Vulnus apertum parietis thoracis posterioris",
+    "source_line": 43605
+  },
+  {
+    "code": "S21.7",
+    "title_la": "Vulnera aperta parietis thoracis multiplicia",
+    "source_line": 43607
+  },
+  {
+    "code": "S21.8",
+    "title_la": "Vulnus apertum partium thoracis aliarum",
+    "source_line": 43609
+  },
+  {
+    "code": "S21.9",
+    "title_la": "Vulnus apertum thoracis, parte non specificata",
+    "source_line": 43611
+  },
+  {
+    "code": "S22",
+    "title_la": "Prelom rebra(rebara), grudne kosti i grudnog dela kičme",
+    "source_line": 3412
+  },
+  {
+    "code": "S22.0",
+    "title_la": "Fractura vertebrae thoracalis",
+    "source_line": 43631
+  },
+  {
+    "code": "S22.1",
+    "title_la": "Fracturae columnae vertebralis thoracalis multiplices",
+    "source_line": 43634
+  },
+  {
+    "code": "S22.2",
+    "title_la": "Fractura sterni",
+    "source_line": 43636
+  },
+  {
+    "code": "S22.3",
+    "title_la": "Fractura costae",
+    "source_line": 43638
+  },
+  {
+    "code": "S22.4",
+    "title_la": "Fracturae costarum multiplices",
+    "source_line": 43640
+  },
+  {
+    "code": "S22.5",
+    "title_la": "Thorax fluitans",
+    "source_line": 43642
+  },
+  {
+    "code": "S22.8",
+    "title_la": "Fractura ossium thoracis aliorum",
+    "source_line": 43644
+  },
+  {
+    "code": "S22.9",
+    "title_la": "Fractura ossis thoracis, parte non specificata",
+    "source_line": 43646
+  },
+  {
+    "code": "S23",
+    "title_la": "Iščašenje, uganuće i istegnuće zglobova i veza grudnog koša",
+    "source_line": 3413
+  },
+  {
+    "code": "S23.0",
+    "title_la": "Ruptura traumatica disci intervertebralis thoracalis",
+    "source_line": 43653
+  },
+  {
+    "code": "S23.1",
+    "title_la": "Luxatio vertebrae thoracalis",
+    "source_line": 43662
+  },
+  {
+    "code": "S23.2",
+    "title_la": "Luxatio partium thoracis aliarum et non specificatarum",
+    "source_line": 43665
+  },
+  {
+    "code": "S23.3",
+    "title_la": "Distorsio et distensio columnae vertebralis thoracalis",
+    "source_line": 43667
+  },
+  {
+    "code": "S23.4",
+    "title_la": "Distorsio et distensio costarum et sterni",
+    "source_line": 43669
+  },
+  {
+    "code": "S23.5",
+    "title_la": "Distorsio et distensio partium thoracis aliarum et non specificatarum",
+    "source_line": 43671
+  },
+  {
+    "code": "S24",
+    "title_la": "Povrede živaca i kičmene moždine u nivou grudnog koša",
+    "source_line": 3414
+  },
+  {
+    "code": "S24.0",
+    "title_la": "Commotio et oedema medullae spinalis thoracalis",
+    "source_line": 43677
+  },
+  {
+    "code": "S24.1",
+    "title_la": "Laesiones traumaticae medullae spinalis thoracalis aliae et non specificatae",
+    "source_line": 43679
+  },
+  {
+    "code": "S24.2",
+    "title_la": "Laesio traumatica radicis nervi spinalis thoracalis",
+    "source_line": 43681
+  },
+  {
+    "code": "S24.3",
+    "title_la": "Laesiones traumaticae nervorum perifericorum thoracis",
+    "source_line": 43683
+  },
+  {
+    "code": "S24.4",
+    "title_la": "Laesiones traumaticae nervorum sympatheticorum thoracalium",
+    "source_line": 43685
+  },
+  {
+    "code": "S24.5",
+    "title_la": "Laesio traumatica nervorum thoracalium aliorum",
+    "source_line": 43692
+  },
+  {
+    "code": "S24.6",
+    "title_la": "Laesio traumatica nervi thoracalis, non specificata",
+    "source_line": 43694
+  },
+  {
+    "code": "S25",
+    "title_la": "Povreda grudnih krvnih sudova",
+    "source_line": 3415
+  },
+  {
+    "code": "S25.0",
+    "title_la": "Laesio traumatica aortae thoracalis",
+    "source_line": 43699
+  },
+  {
+    "code": "S25.1",
+    "title_la": "Laesio traumatica trunci brachiocephalici sive arteriae subclaviae",
+    "source_line": 43702
+  },
+  {
+    "code": "S25.2",
+    "title_la": "Laesio traumatica venae cavae superioris",
+    "source_line": 43704
+  },
+  {
+    "code": "S25.3",
+    "title_la": "Laesio traumatica venae brachiocephalicae sive venae subclaviae",
+    "source_line": 43707
+  },
+  {
+    "code": "S25.4",
+    "title_la": "Laesio traumatica vasorum pulmonalium",
+    "source_line": 43709
+  },
+  {
+    "code": "S25.5",
+    "title_la": "Laesio traumatica vasorum intercostalium",
+    "source_line": 43718
+  },
+  {
+    "code": "S25.7",
+    "title_la": "Laesio traumatica vasorum thoracis multiplicium",
+    "source_line": 43720
+  },
+  {
+    "code": "S25.8",
+    "title_la": "Laesio traumatica vasorum thoracis aliorum",
+    "source_line": 43722
+  },
+  {
+    "code": "S25.9",
+    "title_la": "Laesio traumatica vasis thoracis, non specificati",
+    "source_line": 43726
+  },
+  {
+    "code": "S26",
+    "title_la": "Povreda srca",
+    "source_line": 3416
+  },
+  {
+    "code": "S26.0",
+    "title_la": "Laesio traumatica cordis cum haemopericardio",
+    "source_line": 43739
+  },
+  {
+    "code": "S26.8",
+    "title_la": "Laesiones traumaticae cordis aliae",
+    "source_line": 43741
+  },
+  {
+    "code": "S26.9",
+    "title_la": "Laesio traumatica cordis, non specificata",
+    "source_line": 43743
+  },
+  {
+    "code": "S27",
+    "title_la": "Povrede drugih neoznačenih unutargrudnih organa",
+    "source_line": 3417
+  },
+  {
+    "code": "S27.0",
+    "title_la": "Pneumotorax traumaticus",
+    "source_line": 43755
+  },
+  {
+    "code": "S27.1",
+    "title_la": "Haemothorax traumaticus",
+    "source_line": 43757
+  },
+  {
+    "code": "S27.2",
+    "title_la": "Haemopneumothorax traumaticus",
+    "source_line": 43759
+  },
+  {
+    "code": "S27.3",
+    "title_la": "Laesiones traumatica pulmonis aliae",
+    "source_line": 43761
+  },
+  {
+    "code": "S27.4",
+    "title_la": "Laesio traumatica bronchi",
+    "source_line": 43763
+  },
+  {
+    "code": "S27.5",
+    "title_la": "Laesio traumatica partis tracheae thoracalis",
+    "source_line": 43765
+  },
+  {
+    "code": "S27.6",
+    "title_la": "Laesio traumatica pleurae",
+    "source_line": 43767
+  },
+  {
+    "code": "S27.7",
+    "title_la": "Laesiones traumaticae organorum thoracis multiplices",
+    "source_line": 43775
+  },
+  {
+    "code": "S27.8",
+    "title_la": "Laesio traumatica organorum thoracis aliorum, specificatorum",
+    "source_line": 43777
+  },
+  {
+    "code": "S27.9",
+    "title_la": "Laesio traumatica organi thoracis, non specificati",
+    "source_line": 43783
+  },
+  {
+    "code": "S28",
+    "title_la": "Povreda grudnog koša uzrokovana zdrobljavanjem – kraš i traumatska amputacija",
+    "source_line": 3418
+  },
+  {
+    "code": "S28.0",
+    "title_la": "Conquassatio thoracis",
+    "source_line": 43789
+  },
+  {
+    "code": "S28.1",
+    "title_la": "Amputatio traumatica partis thoracis",
+    "source_line": 43792
+  },
+  {
+    "code": "S29",
+    "title_la": "Druge i neoznačene povrede grudnog koša",
+    "source_line": 3420
+  },
+  {
+    "code": "S29.0",
+    "title_la": "Laesio traumatica muculi et tendinis thoracis",
+    "source_line": 43798
+  },
+  {
+    "code": "S29.7",
+    "title_la": "Laesiones traumaticae thoracis multiplices",
+    "source_line": 43800
+  },
+  {
+    "code": "S29.8",
+    "title_la": "Laesiones traumaticae thoracis aliae, specificatae",
+    "source_line": 43803
+  },
+  {
+    "code": "S29.9",
+    "title_la": "Laesio traumatica thoracis, non specificata",
+    "source_line": 43805
+  },
+  {
+    "code": "S30",
+    "title_la": "Površinska povreda trbuha, slabine i karlice",
+    "source_line": 3423
+  },
+  {
+    "code": "S30.0",
+    "title_la": "Contusio lumbi et pelvis",
+    "source_line": 43839
+  },
+  {
+    "code": "S30.1",
+    "title_la": "Contusio parietis abdominis",
+    "source_line": 43842
+  },
+  {
+    "code": "S30.2",
+    "title_la": "Contusio genitaliorum externorum",
+    "source_line": 43846
+  },
+  {
+    "code": "S30.7",
+    "title_la": "Laesiones traumaticae abdominis, lumbi et pelvis superficiales multiplices",
+    "source_line": 43855
+  },
+  {
+    "code": "S30.8",
+    "title_la": "Laesiones traumaticae abdominis, lumbi et pelvis superficiales aliae",
+    "source_line": 43857
+  },
+  {
+    "code": "S30.9",
+    "title_la": "Laesio traumatica abdominis, lumbi et pelvis, superficialis, non specificata",
+    "source_line": 43859
+  },
+  {
+    "code": "S31",
+    "title_la": "Otvorena rana trbuha, slabine i karlice",
+    "source_line": 3424
+  },
+  {
+    "code": "S31.0",
+    "title_la": "Vulnus apertum lumbi et pelvis",
+    "source_line": 43873
+  },
+  {
+    "code": "S31.1",
+    "title_la": "Vulnus apertum parietis abdominis",
+    "source_line": 43876
+  },
+  {
+    "code": "S31.2",
+    "title_la": "Vulnus apertum penis",
+    "source_line": 43880
+  },
+  {
+    "code": "S31.3",
+    "title_la": "Vulnus apertum scroti et testis",
+    "source_line": 43882
+  },
+  {
+    "code": "S31.4",
+    "title_la": "Vulnus apertum vaginae et vulvae",
+    "source_line": 43884
+  },
+  {
+    "code": "S31.5",
+    "title_la": "Vulnus apertum genitaliorum externorum aliorum, non specificorum",
+    "source_line": 43886
+  },
+  {
+    "code": "S31.7",
+    "title_la": "Vulnera aperta abdominis, lumbi et pelvis multiplicia",
+    "source_line": 43889
+  },
+  {
+    "code": "S31.8",
+    "title_la": "Vulnus apertum partium abdominis aliarum et non specificatarum",
+    "source_line": 43891
+  },
+  {
+    "code": "S32",
+    "title_la": "Prelom slabinskog dela kičme i karlice",
+    "source_line": 3425
+  },
+  {
+    "code": "S32.0",
+    "title_la": "Fractura vertebrae lumbalis",
+    "source_line": 43908
+  },
+  {
+    "code": "S32.1",
+    "title_la": "Fractura ossis sacri",
+    "source_line": 43911
+  },
+  {
+    "code": "S32.2",
+    "title_la": "Fractura coccygis",
+    "source_line": 43913
+  },
+  {
+    "code": "S32.3",
+    "title_la": "Fractura ossis ilii",
+    "source_line": 43915
+  },
+  {
+    "code": "S32.4",
+    "title_la": "Fractura acetabuli",
+    "source_line": 43917
+  },
+  {
+    "code": "S32.5",
+    "title_la": "Fractura ossis pubis",
+    "source_line": 43925
+  },
+  {
+    "code": "S32.7",
+    "title_la": "Fracturae columnae lumbalis et pelvis multiplices",
+    "source_line": 43927
+  },
+  {
+    "code": "S32.8",
+    "title_la": "Fractura partium aliarum et non specificatarum vertebrae lumbalis et pelvis",
+    "source_line": 43929
+  },
+  {
+    "code": "S33",
+    "title_la": "Iščašenje, uganuće i istegnuće zglobova i veza slabinskog dela kičme i karlice",
+    "source_line": 3426
+  },
+  {
+    "code": "S33.0",
+    "title_la": "Ruptura disci intervertebralis lumbalis traumatica",
+    "source_line": 43942
+  },
+  {
+    "code": "S33.1",
+    "title_la": "Luxatio vertebrae lumbalis",
+    "source_line": 43944
+  },
+  {
+    "code": "S33.2",
+    "title_la": "Luxatio articuli sacroilici et sacrococcygei",
+    "source_line": 43947
+  },
+  {
+    "code": "S33.3",
+    "title_la": "Luxatio partium aliarum et non specificatarum vertebrae lumbalis et pelvis",
+    "source_line": 43949
+  },
+  {
+    "code": "S33.4",
+    "title_la": "Ruptura traumatica symphisis pubis",
+    "source_line": 43951
+  },
+  {
+    "code": "S33.5",
+    "title_la": "Distorsio et distensio columnae lumbalis",
+    "source_line": 43953
+  },
+  {
+    "code": "S33.6",
+    "title_la": "Distorsio et distensio articuli sacroilici",
+    "source_line": 43955
+  },
+  {
+    "code": "S33.7",
+    "title_la": "Distorsio et distensio partium aliarum et non specificatarum vertebrae lumbalis et",
+    "source_line": 43957
+  },
+  {
+    "code": "S34",
+    "title_la": "Povreda živaca i slabinskog dela kičmene moždine u nivou trbuha, slabina i karlice",
+    "source_line": 3427
+  },
+  {
+    "code": "S34.0",
+    "title_la": "Commotio et oedema medullae spinalis lumbalis",
+    "source_line": 43964
+  },
+  {
+    "code": "S34.1",
+    "title_la": "Laesio traumatica medullae spinalis lumbalis alia",
+    "source_line": 43966
+  },
+  {
+    "code": "S34.2",
+    "title_la": "Laesio traumatica radicis nervi spinalis lumbalis et sacralis",
+    "source_line": 43968
+  },
+  {
+    "code": "S34.3",
+    "title_la": "Laesio traumatica caudae equinae",
+    "source_line": 43970
+  },
+  {
+    "code": "S34.4",
+    "title_la": "Laesio traumatica plexus lumbosacralis",
+    "source_line": 43972
+  },
+  {
+    "code": "S34.5",
+    "title_la": "Laesio traumatica nervi sympathetici lumbalis, sacralis et pelvici",
+    "source_line": 43982
+  },
+  {
+    "code": "S34.6",
+    "title_la": "Laesio traumatica nervi peripherici abdominis lumbi et pelvis",
+    "source_line": 43988
+  },
+  {
+    "code": "S34.8",
+    "title_la": "Laesio traumatica nervorum abdominis, lumbi, pelvis aliorum et non specificatorum",
+    "source_line": 43990
+  },
+  {
+    "code": "S35",
+    "title_la": "Povreda krvnih sudova u nivou trbuha, slabina i karlice",
+    "source_line": 3434
+  },
+  {
+    "code": "S35.0",
+    "title_la": "Laesio traumatica aortae abdominalis",
+    "source_line": 43995
+  },
+  {
+    "code": "S35.1",
+    "title_la": "Laesio traumatica venae cavae inferioris",
+    "source_line": 43998
+  },
+  {
+    "code": "S35.2",
+    "title_la": "Laesio traumatica arteriae coeliacae sive mesentericae",
+    "source_line": 44002
+  },
+  {
+    "code": "S35.3",
+    "title_la": "Laesio traumatica venae portae sive splenicae",
+    "source_line": 44009
+  },
+  {
+    "code": "S35.4",
+    "title_la": "Laesio traumatica vasorum renis",
+    "source_line": 44012
+  },
+  {
+    "code": "S35.5",
+    "title_la": "Laesio traumatica vasorum iliacorum",
+    "source_line": 44015
+  },
+  {
+    "code": "S35.7",
+    "title_la": "Laesio traumatica vasorum regionis abdominis, lumbi et pelvis multiplicium",
+    "source_line": 44020
+  },
+  {
+    "code": "S35.8",
+    "title_la": "Laesio traumatica vasorum regionis abdominis, lumbi et pelvis aliorum",
+    "source_line": 44022
+  },
+  {
+    "code": "S35.9",
+    "title_la": "Laesio traumatica vasis regionis abdominis, lumbi et pelvis, non clasificati",
+    "source_line": 44025
+  },
+  {
+    "code": "S36",
+    "title_la": "Povreda organa trbuha",
+    "source_line": 3435
+  },
+  {
+    "code": "S36.0",
+    "title_la": "Laesio traumatica lienis",
+    "source_line": 44039
+  },
+  {
+    "code": "S36.1",
+    "title_la": "Laesio traumatica hepatis sive vesicae felleae",
+    "source_line": 44041
+  },
+  {
+    "code": "S36.2",
+    "title_la": "Laesio traumatica pancreatis",
+    "source_line": 44044
+  },
+  {
+    "code": "S36.3",
+    "title_la": "Laesio traumatica ventriculi",
+    "source_line": 44046
+  },
+  {
+    "code": "S36.4",
+    "title_la": "Laesio traumatica intestini tenuis",
+    "source_line": 44048
+  },
+  {
+    "code": "S36.5",
+    "title_la": "Laesio traumatica coli",
+    "source_line": 44050
+  },
+  {
+    "code": "S36.6",
+    "title_la": "Laesio traumatica recti",
+    "source_line": 44052
+  },
+  {
+    "code": "S36.7",
+    "title_la": "Laesio traumatica organorum intraabdominalium multiplicium",
+    "source_line": 44054
+  },
+  {
+    "code": "S36.8",
+    "title_la": "Laesio traumatica organorum intraabdominalium aliorum",
+    "source_line": 44056
+  },
+  {
+    "code": "S36.9",
+    "title_la": "Laesio traumatica organi intraabdominalis non specificati",
+    "source_line": 44060
+  },
+  {
+    "code": "S37",
+    "title_la": "Povreda mokraćnih organa i organa karlice",
+    "source_line": 3436
+  },
+  {
+    "code": "S37.0",
+    "title_la": "Laesio traumatica renis",
+    "source_line": 44070
+  },
+  {
+    "code": "S37.1",
+    "title_la": "Laesio traumatica ureteris",
+    "source_line": 44072
+  },
+  {
+    "code": "S37.2",
+    "title_la": "Laesio traumatica vesicae urinariae",
+    "source_line": 44074
+  },
+  {
+    "code": "S37.3",
+    "title_la": "Laesio traumatica urethrae",
+    "source_line": 44076
+  },
+  {
+    "code": "S37.4",
+    "title_la": "Laesio traumatica ovarii",
+    "source_line": 44078
+  },
+  {
+    "code": "S37.5",
+    "title_la": "Laesio traumatica tubae uterinae",
+    "source_line": 44080
+  },
+  {
+    "code": "S37.6",
+    "title_la": "Laesio traumatica uteri",
+    "source_line": 44082
+  },
+  {
+    "code": "S37.7",
+    "title_la": "Laesio traumatica organorum pelvis multiplicium",
+    "source_line": 44084
+  },
+  {
+    "code": "S37.8",
+    "title_la": "Laesio traumatica organorum pelvis aliorum",
+    "source_line": 44094
+  },
+  {
+    "code": "S37.9",
+    "title_la": "Laesio traumatica organi pelvis, non specificati",
+    "source_line": 44101
+  },
+  {
+    "code": "S38",
+    "title_la": "Povreda uzrokovana zdrobljavanjem – kraš i traumatska amputacija dela trbuha,",
+    "source_line": 3437
+  },
+  {
+    "code": "S38.0",
+    "title_la": "Conquassatio genitaliorum externorum",
+    "source_line": 44107
+  },
+  {
+    "code": "S38.1",
+    "title_la": "Conquassatio partium abdominis, lumbi et pelvis aliarum et non specificatarum",
+    "source_line": 44109
+  },
+  {
+    "code": "S38.2",
+    "title_la": "Amputatio traumatica genitaliorum externorum",
+    "source_line": 44111
+  },
+  {
+    "code": "S38.3",
+    "title_la": "Amputatio traumatica partium abdominis, lumbi et pelvis aliarum et non",
+    "source_line": 44118
+  },
+  {
+    "code": "S39",
+    "title_la": "Druge i neoznačene povrede trbuha, slabine i karlice",
+    "source_line": 3439
+  },
+  {
+    "code": "S39.0",
+    "title_la": "Laesio traumatica musculi et tendinis abdominis lumbi et pelvis",
+    "source_line": 44125
+  },
+  {
+    "code": "S39.6",
+    "title_la": "Laesio traumatica organorum intraabdominalium cum organis pelvis",
+    "source_line": 44127
+  },
+  {
+    "code": "S39.7",
+    "title_la": "Laesiones traumaticae abdominis, lumbi et pelvis multiplices aliae",
+    "source_line": 44129
+  },
+  {
+    "code": "S39.8",
+    "title_la": "Laesiones traumaticae abdominis, lumbi et pelvis aliae, specificatae",
+    "source_line": 44133
+  },
+  {
+    "code": "S39.9",
+    "title_la": "Laesio traumatica abdominis, lumbi et pelvis, non specificata",
+    "source_line": 44135
+  },
+  {
+    "code": "S40",
+    "title_la": "Površinska povreda u predelu ramena i nadlaktice",
+    "source_line": 3442
+  },
+  {
+    "code": "S40.0",
+    "title_la": "Contusio regionis deltoideae et brachii",
+    "source_line": 44160
+  },
+  {
+    "code": "S40.7",
+    "title_la": "Laesiones traumaticae regionis deltoideae et brachii superficiales multiplices",
+    "source_line": 44162
+  },
+  {
+    "code": "S40.8",
+    "title_la": "Laesiones traumaticae regionis deltoideae et brachii superficiales aliae",
+    "source_line": 44164
+  },
+  {
+    "code": "S40.9",
+    "title_la": "Laesio traumatica regionis deltoideae et brachii, superficialis, non specificata",
+    "source_line": 44166
+  },
+  {
+    "code": "S41",
+    "title_la": "Otvorena rana u predelu ramena i nadlaktice",
+    "source_line": 3443
+  },
+  {
+    "code": "S41.0",
+    "title_la": "Vulnus apertum regionis deltoideae",
+    "source_line": 44172
+  },
+  {
+    "code": "S41.1",
+    "title_la": "Vulnus apertum brachii",
+    "source_line": 44174
+  },
+  {
+    "code": "S41.7",
+    "title_la": "Vulnera aperta regionis deltoideae et brachii multiplicia",
+    "source_line": 44176
+  },
+  {
+    "code": "S41.8",
+    "title_la": "Vulnus apertum partium cinguli pectoralis aliarum et non specificatarum",
+    "source_line": 44178
+  },
+  {
+    "code": "S42",
+    "title_la": "Prelom u predelu ramena i nadlaktice",
+    "source_line": 3444
+  },
+  {
+    "code": "S42.0",
+    "title_la": "Fractura claviculae",
+    "source_line": 44188
+  },
+  {
+    "code": "S42.1",
+    "title_la": "Fractura scapulae",
+    "source_line": 44201
+  },
+  {
+    "code": "S42.2",
+    "title_la": "Fractura humeri, extremitatis proximalis",
+    "source_line": 44206
+  },
+  {
+    "code": "S42.3",
+    "title_la": "Fractura corporis humeri",
+    "source_line": 44213
+  },
+  {
+    "code": "S42.4",
+    "title_la": "Fractura humeri, extremitatis distalis",
+    "source_line": 44217
+  },
+  {
+    "code": "S42.7",
+    "title_la": "Fractura claviculae, scapulae et humeri multiplex",
+    "source_line": 44227
+  },
+  {
+    "code": "S42.8",
+    "title_la": "Fractura regionis deltoideae et brachii alia",
+    "source_line": 44229
+  },
+  {
+    "code": "S42.9",
+    "title_la": "Fractura regionis deltoidae, non specificata",
+    "source_line": 44231
+  },
+  {
+    "code": "S43",
+    "title_la": "Iščašenje, uganuće i istegnuće zglobova i veza ramenog pojasa",
+    "source_line": 3445
+  },
+  {
+    "code": "S43.0",
+    "title_la": "Luxatio articuli humeroscapularis",
+    "source_line": 44238
+  },
+  {
+    "code": "S43.1",
+    "title_la": "Luxatio articuli acromioclavicularis",
+    "source_line": 44241
+  },
+  {
+    "code": "S43.2",
+    "title_la": "Luxatio articuli sternoclavicularis",
+    "source_line": 44243
+  },
+  {
+    "code": "S43.3",
+    "title_la": "Luxatio partium cinguli extremitatis superioris aliarum et non specificatarum",
+    "source_line": 44245
+  },
+  {
+    "code": "S43.4",
+    "title_la": "Distorsio et distensio articuli humeroscapularis",
+    "source_line": 44248
+  },
+  {
+    "code": "S43.5",
+    "title_la": "Distorsio et distensio articuli acromioclavicularis",
+    "source_line": 44258
+  },
+  {
+    "code": "S43.6",
+    "title_la": "Distorsio et distensio articuli sternoclavicularis",
+    "source_line": 44261
+  },
+  {
+    "code": "S43.7",
+    "title_la": "Distorsio et distensio partium cinguli extremitatis superioris aliarum, non",
+    "source_line": 44263
+  },
+  {
+    "code": "S44",
+    "title_la": "Povreda živaca u predelu ramena i nadlaktice",
+    "source_line": 3446
+  },
+  {
+    "code": "S44.0",
+    "title_la": "Laesio traumatica nervi ulnaris regionis brachii",
+    "source_line": 44271
+  },
+  {
+    "code": "S44.1",
+    "title_la": "Laesio traumatica nervi mediani regionis brachii",
+    "source_line": 44274
+  },
+  {
+    "code": "S44.2",
+    "title_la": "Laesio traumatica nervi radialis regionis brachii",
+    "source_line": 44277
+  },
+  {
+    "code": "S44.3",
+    "title_la": "Laesio traumatica nervi axillaris",
+    "source_line": 44280
+  },
+  {
+    "code": "S44.4",
+    "title_la": "Laesio traumatica nervi musculocutanei",
+    "source_line": 44282
+  },
+  {
+    "code": "S44.5",
+    "title_la": "Laesio traumatica nervi cutanei sensitivi regionis deltoideae et brachii",
+    "source_line": 44284
+  },
+  {
+    "code": "S44.7",
+    "title_la": "Laesio traumatica nervorum regionis deltoideae et brachii multiplicium",
+    "source_line": 44286
+  },
+  {
+    "code": "S44.8",
+    "title_la": "Laesio traumatica nervorum regionis axillaris et brachii aliorum",
+    "source_line": 44288
+  },
+  {
+    "code": "S44.9",
+    "title_la": "Laesio traumatica nervi regionis deltoideae et brachii non specificati",
+    "source_line": 44290
+  },
+  {
+    "code": "S45",
+    "title_la": "Povreda krvnih sudova u predelu ramena i nadlaktice",
+    "source_line": 3447
+  },
+  {
+    "code": "S45.0",
+    "title_la": "Laesio traumatica arteriae axillaris",
+    "source_line": 44298
+  },
+  {
+    "code": "S45.1",
+    "title_la": "Laesio traumatica arteriae brachialis",
+    "source_line": 44300
+  },
+  {
+    "code": "S45.2",
+    "title_la": "Laesio traumatica venae axillaris sive venae brachialis",
+    "source_line": 44302
+  },
+  {
+    "code": "S45.3",
+    "title_la": "Laesio traumatica venae superficialis, regionis deltoideae et brachii",
+    "source_line": 44304
+  },
+  {
+    "code": "S45.7",
+    "title_la": "Laesio traumatica vasorum regionis deltoideae et brachii multiplicium",
+    "source_line": 44306
+  },
+  {
+    "code": "S45.8",
+    "title_la": "Laesio traumatica vasorum regionis deltoideae et brachii aliorum",
+    "source_line": 44313
+  },
+  {
+    "code": "S45.9",
+    "title_la": "Laesio traumatica vasis regionis deltoideae et brachii, non specificati",
+    "source_line": 44315
+  },
+  {
+    "code": "S46",
+    "title_la": "Povrede mišića i tetive u predelu ramena i nadlaktice",
+    "source_line": 3448
+  },
+  {
+    "code": "S46.0",
+    "title_la": "Laesio traumatica tendinis musculi rotatoris articuli humeri",
+    "source_line": 44321
+  },
+  {
+    "code": "S46.1",
+    "title_la": "Laesio traumatica capitis longi(et tendinis eius) musculi biciptis brachii",
+    "source_line": 44323
+  },
+  {
+    "code": "S46.2",
+    "title_la": "Laesio traumatica musculi(et tendinis eius) bicipitis brachii alia",
+    "source_line": 44325
+  },
+  {
+    "code": "S46.3",
+    "title_la": "Laesio traumatica musculi et tendinis musculi tricipitis brachii",
+    "source_line": 44327
+  },
+  {
+    "code": "S46.7",
+    "title_la": "Laesio traumatica musculorum et tendinis regionis deitoideae et brachii multiplicium",
+    "source_line": 44329
+  },
+  {
+    "code": "S46.8",
+    "title_la": "Laesio traumatica musculorum et tendinum regionis deitoideae et brachii aliorum",
+    "source_line": 44331
+  },
+  {
+    "code": "S46.9",
+    "title_la": "Laesio traumatica musculi et tendinis non specificatae, regionis deltoideae et brachii",
+    "source_line": 44333
+  },
+  {
+    "code": "S47",
+    "title_la": "Povreda uzrokovana zdrobljavanjem u predelu ramena i nadlaktice",
+    "source_line": 3449
+  },
+  {
+    "code": "S48",
+    "title_la": "Traumatska amputacija u predelu ramena i nadlaktice",
+    "source_line": 3450
+  },
+  {
+    "code": "S48.0",
+    "title_la": "Amputatio traumatica articuli humeroscapularis",
+    "source_line": 44345
+  },
+  {
+    "code": "S48.1",
+    "title_la": "Amputatio traumatica inter regionem deltoideam et cubitum",
+    "source_line": 44347
+  },
+  {
+    "code": "S48.9",
+    "title_la": "Amputatio traumatica humeri et brachii, non specificata",
+    "source_line": 44349
+  },
+  {
+    "code": "S49",
+    "title_la": "Druge neoznačene povrede u predelu ramena i nadlaktice",
+    "source_line": 3451
+  },
+  {
+    "code": "S49.7",
+    "title_la": "Laesiones traumaticae regionis deltoideae et brachii multiplices",
+    "source_line": 44354
+  },
+  {
+    "code": "S49.8",
+    "title_la": "Laesiones traumaticae regionis deltoideae et brachii aliae, specificatae",
+    "source_line": 44357
+  },
+  {
+    "code": "S49.9",
+    "title_la": "Laesio traumatica regionis deltoideae et brachii, non specificata",
+    "source_line": 44359
+  },
+  {
+    "code": "S50",
+    "title_la": "Površinska povreda podlaktice",
+    "source_line": 3454
+  },
+  {
+    "code": "S50.0",
+    "title_la": "Contusio cubiti",
+    "source_line": 44382
+  },
+  {
+    "code": "S50.1",
+    "title_la": "Contusio partium antebrachii aliarum, non specificatarum",
+    "source_line": 44384
+  },
+  {
+    "code": "S50.7",
+    "title_la": "Laesio traumatica antebrachii superficialis multiplex",
+    "source_line": 44386
+  },
+  {
+    "code": "S50.8",
+    "title_la": "Leasiones traumaticae antebrachii superficialis aliae",
+    "source_line": 44388
+  },
+  {
+    "code": "S50.9",
+    "title_la": "Laesio traumatica antebrachii, superficialis, non specificata",
+    "source_line": 44390
+  },
+  {
+    "code": "S51",
+    "title_la": "Otvorena rana podlaktice",
+    "source_line": 3455
+  },
+  {
+    "code": "S51.0",
+    "title_la": "Vulnus apertum cubiti",
+    "source_line": 44398
+  },
+  {
+    "code": "S51.7",
+    "title_la": "Vulnus apertum antebrachii multiplex",
+    "source_line": 44400
+  },
+  {
+    "code": "S51.8",
+    "title_la": "Vulnus apertum antebrachii aliud",
+    "source_line": 44402
+  },
+  {
+    "code": "S51.9",
+    "title_la": "Vulnus apertum partis antebrachii non specificatae",
+    "source_line": 44404
+  },
+  {
+    "code": "S52",
+    "title_la": "Fractura antebrachii",
+    "source_line": 44407
+  },
+  {
+    "code": "S52.0",
+    "title_la": "Fractura ulnae, extremitas proximalis",
+    "source_line": 44423
+  },
+  {
+    "code": "S52.1",
+    "title_la": "Fractura radii, extremitas proximalis",
+    "source_line": 44429
+  },
+  {
+    "code": "S52.2",
+    "title_la": "Fractura corporis ulnae",
+    "source_line": 44433
+  },
+  {
+    "code": "S52.3",
+    "title_la": "Fractura corporis radii",
+    "source_line": 44435
+  },
+  {
+    "code": "S52.4",
+    "title_la": "Fractura corporis ulnae et radii",
+    "source_line": 44437
+  },
+  {
+    "code": "S52.5",
+    "title_la": "Fractura radii, extremitas distalis",
+    "source_line": 44439
+  },
+  {
+    "code": "S52.6",
+    "title_la": "Fractura ulnae et radii, extremitatis distalis",
+    "source_line": 44443
+  },
+  {
+    "code": "S52.7",
+    "title_la": "Fractura antebrachii multiplex",
+    "source_line": 44445
+  },
+  {
+    "code": "S52.8",
+    "title_la": "Fractura antebrachii alia",
+    "source_line": 44450
+  },
+  {
+    "code": "S52.9",
+    "title_la": "Fractura partis antebrachii non specificata",
+    "source_line": 44454
+  },
+  {
+    "code": "S53",
+    "title_la": "Iščašenje, uganuće i istegnuće zglobova i veza lakta",
+    "source_line": 3456
+  },
+  {
+    "code": "S53.0",
+    "title_la": "Luxatio capitis radii",
+    "source_line": 44459
+  },
+  {
+    "code": "S53.1",
+    "title_la": "Luxatio cubiti, non specificata",
+    "source_line": 44463
+  },
+  {
+    "code": "S53.2",
+    "title_la": "Ruptura traumatica ligamenti radialis collateralis",
+    "source_line": 44467
+  },
+  {
+    "code": "S53.3",
+    "title_la": "Ruptura traumatica ligamenti ulnaris collateralis",
+    "source_line": 44469
+  },
+  {
+    "code": "S53.4",
+    "title_la": "Distorsio et distensio cubiti",
+    "source_line": 44471
+  },
+  {
+    "code": "S54",
+    "title_la": "Povreda živaca podlaktice",
+    "source_line": 3457
+  },
+  {
+    "code": "S54.0",
+    "title_la": "Laesio traumatica nervi ulnaris regionis antebrachii",
+    "source_line": 44482
+  },
+  {
+    "code": "S54.1",
+    "title_la": "Laesio traumatica nervi mediani regionis antebrachii",
+    "source_line": 44485
+  },
+  {
+    "code": "S54.2",
+    "title_la": "Laesio traumatica nervi radialis regionis antebrachii",
+    "source_line": 44488
+  },
+  {
+    "code": "S54.3",
+    "title_la": "Laesio traumatica nervi cutanei sensitivi regionis antebrachii",
+    "source_line": 44491
+  },
+  {
+    "code": "S54.7",
+    "title_la": "Laesio traumatica nervorum regionis antebrachii multiplicium",
+    "source_line": 44493
+  },
+  {
+    "code": "S54.8",
+    "title_la": "Laesio traumatica nervorum regionis antebrachii aliorum",
+    "source_line": 44495
+  },
+  {
+    "code": "S54.9",
+    "title_la": "Laesio traumatica nervi regionis antebrachii, non specificati",
+    "source_line": 44497
+  },
+  {
+    "code": "S55",
+    "title_la": "Povreda krvnih sudova u predelu podlaktice",
+    "source_line": 3458
+  },
+  {
+    "code": "S55.0",
+    "title_la": "Laesio traumatica arteriae ulnaris regionis antebrachii",
+    "source_line": 44505
+  },
+  {
+    "code": "S55.1",
+    "title_la": "Laesio traumatica arteriae radialis regionis antebrachii",
+    "source_line": 44507
+  },
+  {
+    "code": "S55.2",
+    "title_la": "Laesio traumatica venae regionis antebrachii",
+    "source_line": 44509
+  },
+  {
+    "code": "S55.7",
+    "title_la": "Laesio traumatica vasorum multiplicium regionis antebrachii",
+    "source_line": 44511
+  },
+  {
+    "code": "S55.8",
+    "title_la": "Laesio traumatica vasorum regionis antebrachii alia",
+    "source_line": 44513
+  },
+  {
+    "code": "S55.9",
+    "title_la": "Laesio traumatica vasis regionis antebrachii, non specificati",
+    "source_line": 44515
+  },
+  {
+    "code": "S56",
+    "title_la": "Povreda mišića i tetive u predelu podlaktice",
+    "source_line": 3459
+  },
+  {
+    "code": "S56.0",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) flexoris pollicis longi regionis",
+    "source_line": 44521
+  },
+  {
+    "code": "S56.1",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) flexoris digitorum regionis antebrachii",
+    "source_line": 44524
+  },
+  {
+    "code": "S56.2",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) flexoris arterius regionis antebrachii",
+    "source_line": 44526
+  },
+  {
+    "code": "S56.3",
+    "title_la": "Laesio traumatica musculorum (et tendinum eorum) extensorum sive abductorum",
+    "source_line": 44535
+  },
+  {
+    "code": "S56.4",
+    "title_la": "Laesio traumatica musculi (et tendinius eius) extensoris digiti (dogitorum) regionis",
+    "source_line": 44538
+  },
+  {
+    "code": "S56.5",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) extensoris regionis antebrachii alia",
+    "source_line": 44541
+  },
+  {
+    "code": "S56.7",
+    "title_la": "Laesio traumatica musculorum et tendinum regionis antebrachii multiplicium",
+    "source_line": 44543
+  },
+  {
+    "code": "S56.8",
+    "title_la": "Laesio traumatica musculorum et tendinum regionis antebrachii aliorum, non",
+    "source_line": 44545
+  },
+  {
+    "code": "S57",
+    "title_la": "Rana podlaktice uzrokovana zdrobljavanjem – kraš",
+    "source_line": 3460
+  },
+  {
+    "code": "S57.0",
+    "title_la": "Conquassatio cubiti",
+    "source_line": 44552
+  },
+  {
+    "code": "S57.8",
+    "title_la": "Conquassatio antebrachii alia",
+    "source_line": 44554
+  },
+  {
+    "code": "S57.9",
+    "title_la": "Conquassatio partis antebrachii non specificatae",
+    "source_line": 44556
+  },
+  {
+    "code": "S58",
+    "title_la": "Traumatska amputacija podlaktice",
+    "source_line": 3461
+  },
+  {
+    "code": "S58.0",
+    "title_la": "Amputatio traumatica regionis cubiti",
+    "source_line": 44562
+  },
+  {
+    "code": "S58.1",
+    "title_la": "Amputatio traumatica inter regionem cubiti et carpi",
+    "source_line": 44564
+  },
+  {
+    "code": "S58.9",
+    "title_la": "Amputatio traumatica antebrachii, regione non specificata",
+    "source_line": 44566
+  },
+  {
+    "code": "S59",
+    "title_la": "Druge neoznačene povrede podlaktice",
+    "source_line": 3462
+  },
+  {
+    "code": "S59.7",
+    "title_la": "Laesiones traumaticae antebrachii multiplices",
+    "source_line": 44572
+  },
+  {
+    "code": "S59.8",
+    "title_la": "Laesiones traumaticae antebrachii aliae, specificatae",
+    "source_line": 44575
+  },
+  {
+    "code": "S59.9",
+    "title_la": "Laesio traumatica antebrachii, non specificata",
+    "source_line": 44577
+  },
+  {
+    "code": "S60",
+    "title_la": "Površinska povreda ručja i šake",
+    "source_line": 3465
+  },
+  {
+    "code": "S60.0",
+    "title_la": "Contusio digiti (digitorum) manus sine laesione unguis",
+    "source_line": 44597
+  },
+  {
+    "code": "S60.1",
+    "title_la": "Contusio digiti (digitorum) manus cum laesione unguis",
+    "source_line": 44601
+  },
+  {
+    "code": "S60.2",
+    "title_la": "Contusio carpi et manus alia",
+    "source_line": 44603
+  },
+  {
+    "code": "S60.7",
+    "title_la": "Laesio traumatica carpi et manus superficialis multiplex",
+    "source_line": 44605
+  },
+  {
+    "code": "S60.8",
+    "title_la": "Laesiones traumaticae carpi et manus, superficiales aliae",
+    "source_line": 44607
+  },
+  {
+    "code": "S60.9",
+    "title_la": "Laesio traumatica carpi et manus, superficialis, non specificata",
+    "source_line": 44609
+  },
+  {
+    "code": "S61",
+    "title_la": "Otvorena rana ručja i šake",
+    "source_line": 3466
+  },
+  {
+    "code": "S61.0",
+    "title_la": "Vulnus apertum digiti (digitorum) manus sine laesione unguis",
+    "source_line": 44615
+  },
+  {
+    "code": "S61.1",
+    "title_la": "Vulnus apertum digiti (digitorum) manus cum laesione unguis",
+    "source_line": 44619
+  },
+  {
+    "code": "S61.7",
+    "title_la": "Vulnus apertum carpi et manus multiplex",
+    "source_line": 44621
+  },
+  {
+    "code": "S61.8",
+    "title_la": "Vulnus apertum partium carpi et manus aliarum",
+    "source_line": 44623
+  },
+  {
+    "code": "S61.9",
+    "title_la": "Vulnus apertum partis carpi et manus, non specificatae",
+    "source_line": 44625
+  },
+  {
+    "code": "S62",
+    "title_la": "Prelom ručja i šake",
+    "source_line": 3467
+  },
+  {
+    "code": "S62.0",
+    "title_la": "Fractura ossis navicularis (scaphoidis) manus",
+    "source_line": 44642
+  },
+  {
+    "code": "S62.1",
+    "title_la": "Fractura ossis carpi (ossium carpalium), alterius",
+    "source_line": 44644
+  },
+  {
+    "code": "S62.2",
+    "title_la": "Fractura ossis metacarpalis primi",
+    "source_line": 44653
+  },
+  {
+    "code": "S62.3",
+    "title_la": "Fractura ossis metacarpalis alterius",
+    "source_line": 44656
+  },
+  {
+    "code": "S62.4",
+    "title_la": "Fractura ossis metacarpalis multiplex",
+    "source_line": 44658
+  },
+  {
+    "code": "S62.5",
+    "title_la": "Fractura pollicis",
+    "source_line": 44660
+  },
+  {
+    "code": "S62.6",
+    "title_la": "Fractura digiti manus alterius",
+    "source_line": 44662
+  },
+  {
+    "code": "S62.7",
+    "title_la": "Fractura digiti manus multiplex",
+    "source_line": 44664
+  },
+  {
+    "code": "S62.8",
+    "title_la": "Fractura partium carpi et manus aliarum, non specificatarum",
+    "source_line": 44666
+  },
+  {
+    "code": "S63",
+    "title_la": "Iščašenje, uganuće i istegnuće zglobova i veza u predelu ručja i šake",
+    "source_line": 3468
+  },
+  {
+    "code": "S63.0",
+    "title_la": "Luxatio carpi",
+    "source_line": 44672
+  },
+  {
+    "code": "S63.1",
+    "title_la": "Luxatio digiti manus",
+    "source_line": 44682
+  },
+  {
+    "code": "S63.2",
+    "title_la": "Luxatio digitorum multiplex",
+    "source_line": 44689
+  },
+  {
+    "code": "S63.3",
+    "title_la": "Ruptura traumatica ligamenti carpi",
+    "source_line": 44699
+  },
+  {
+    "code": "S63.4",
+    "title_la": "Ruptura traumatica ligamenti articuli metacarpophalangici et interphalangici manus",
+    "source_line": 44704
+  },
+  {
+    "code": "S63.5",
+    "title_la": "Distorsio et distensio carpi",
+    "source_line": 44709
+  },
+  {
+    "code": "S63.6",
+    "title_la": "Distorsio et distensio digiti (digitorum) manus",
+    "source_line": 44713
+  },
+  {
+    "code": "S63.7",
+    "title_la": "Distorsio et distensio partium manus aliarum et non specificatarum",
+    "source_line": 44719
+  },
+  {
+    "code": "S64",
+    "title_la": "Povreda živaca ručja i šake",
+    "source_line": 3469
+  },
+  {
+    "code": "S64.0",
+    "title_la": "Laesio traumatica nervi ulnaris regionis carpi et manus",
+    "source_line": 44724
+  },
+  {
+    "code": "S64.1",
+    "title_la": "Laesio traumatica nervi mediani regionis carpi et manus",
+    "source_line": 44726
+  },
+  {
+    "code": "S64.2",
+    "title_la": "Laesio traumatica nervi radialis regionis carpi et manus",
+    "source_line": 44728
+  },
+  {
+    "code": "S64.3",
+    "title_la": "Laesio traumatica nervi pollicis",
+    "source_line": 44730
+  },
+  {
+    "code": "S64.4",
+    "title_la": "Laesio traumatica nervi digiti manus, alterius",
+    "source_line": 44732
+  },
+  {
+    "code": "S64.7",
+    "title_la": "Laesio traumatica nervorum regionis carpi et manus multiplicium",
+    "source_line": 44734
+  },
+  {
+    "code": "S64.8",
+    "title_la": "Laesio traumatica nervorum regionis carpi et manus aliorum",
+    "source_line": 44736
+  },
+  {
+    "code": "S64.9",
+    "title_la": "Laesio traumatica nervi regionis carpi et manus, non specificati",
+    "source_line": 44738
+  },
+  {
+    "code": "S65",
+    "title_la": "Povreda krvnih sudova u predelu ručja i šake",
+    "source_line": 3470
+  },
+  {
+    "code": "S65.0",
+    "title_la": "Laesio traumatica arteriae ulnaris regionis carpi et manus",
+    "source_line": 44743
+  },
+  {
+    "code": "S65.1",
+    "title_la": "Laesio traumatica arteriae radialis regionis carpi et manus",
+    "source_line": 44745
+  },
+  {
+    "code": "S65.2",
+    "title_la": "Laesio traumatica arcus palmaris superficialis",
+    "source_line": 44747
+  },
+  {
+    "code": "S65.3",
+    "title_la": "Laesio traumatica arcus palmaris profundi",
+    "source_line": 44756
+  },
+  {
+    "code": "S65.4",
+    "title_la": "Laesio traumatica vasis (vasorum) pollicis",
+    "source_line": 44758
+  },
+  {
+    "code": "S65.5",
+    "title_la": "Laesio traumatica vasis (vasorum) digiti alterius",
+    "source_line": 44760
+  },
+  {
+    "code": "S65.7",
+    "title_la": "Laesio traumatica vasorum regionis carpi et manus multiplicium",
+    "source_line": 44762
+  },
+  {
+    "code": "S65.8",
+    "title_la": "Laesio traumatica vasorum regionis carpi et manus aliorum",
+    "source_line": 44764
+  },
+  {
+    "code": "S65.9",
+    "title_la": "Laesio traumatica vasis regionis carpi et manus, non specificati",
+    "source_line": 44766
+  },
+  {
+    "code": "S66",
+    "title_la": "Povreda mišića i tetive u predelu ručja i šake",
+    "source_line": 3471
+  },
+  {
+    "code": "S66.0",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) flexoris pollicis longi regionis carpi et",
+    "source_line": 44771
+  },
+  {
+    "code": "S66.1",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) flexoris digiti regionis carpi et manus",
+    "source_line": 44774
+  },
+  {
+    "code": "S66.2",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) extensoris pollicis regionis carpi et",
+    "source_line": 44777
+  },
+  {
+    "code": "S66.3",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) extensoris digiti alterius regionis carpi",
+    "source_line": 44780
+  },
+  {
+    "code": "S66.4",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) pollicis brevis regionis carpi et manus",
+    "source_line": 44783
+  },
+  {
+    "code": "S66.5",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) interossei digiti alterius regionis carpi et",
+    "source_line": 44785
+  },
+  {
+    "code": "S66.6",
+    "title_la": "Laesio traumatica musculorum (et tendinis eorum) flexorum, regionis carpi et manus",
+    "source_line": 44788
+  },
+  {
+    "code": "S66.7",
+    "title_la": "Laesio traumatica musculorum (et tendinis eorum) extensorum regionis carpi et",
+    "source_line": 44791
+  },
+  {
+    "code": "S66.8",
+    "title_la": "Laesio traumatica musculorum (et tendinum eorum) regionis carpi et manus aliorum",
+    "source_line": 44794
+  },
+  {
+    "code": "S66.9",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) regionis carpi et manus, non specificati",
+    "source_line": 44796
+  },
+  {
+    "code": "S67",
+    "title_la": "Rana uzrokovana zdrobljavanjem – kraš ručja i šake",
+    "source_line": 3472
+  },
+  {
+    "code": "S67.0",
+    "title_la": "Conquasatio pollicis et digiti alterius",
+    "source_line": 44801
+  },
+  {
+    "code": "S67.8",
+    "title_la": "Conquasatio partium carpi et manus aliarum, non specificatarum",
+    "source_line": 44803
+  },
+  {
+    "code": "S68",
+    "title_la": "Traumatska amputacija ručja i šake",
+    "source_line": 3473
+  },
+  {
+    "code": "S68.0",
+    "title_la": "Amputatio traumatica pollicis (completa)(partiallis)",
+    "source_line": 44815
+  },
+  {
+    "code": "S68.1",
+    "title_la": "Amputatio traumatica digiti alterius (completa)(partialis)",
+    "source_line": 44817
+  },
+  {
+    "code": "S68.2",
+    "title_la": "Amputatio traumatica digitorum multiplicium (completa)(partialis)",
+    "source_line": 44819
+  },
+  {
+    "code": "S68.3",
+    "title_la": "Amputatio traumatica (partis) digiti (digitorum) cum partibus aliis carpi et manus",
+    "source_line": 44821
+  },
+  {
+    "code": "S68.4",
+    "title_la": "Amputatio traumatica manus in regione carpi traumatica",
+    "source_line": 44824
+  },
+  {
+    "code": "S68.8",
+    "title_la": "Amputatio traumatica partium carpi et manus aliarum",
+    "source_line": 44826
+  },
+  {
+    "code": "S68.9",
+    "title_la": "Amputatio traumatica carpi et manus, regionis non specificatae",
+    "source_line": 44828
+  },
+  {
+    "code": "S69",
+    "title_la": "Druge i neoznačene povrede ručja i šake",
+    "source_line": 3474
+  },
+  {
+    "code": "S69.7",
+    "title_la": "Laesio traumatica carpi et manus multiplex",
+    "source_line": 44833
+  },
+  {
+    "code": "S69.8",
+    "title_la": "Laesiones traumaticae carpi et manus aliae, specificatae",
+    "source_line": 44836
+  },
+  {
+    "code": "S69.9",
+    "title_la": "Laesio traumatica carpi et manus regionis non specificatae",
+    "source_line": 44838
+  },
+  {
+    "code": "S70",
+    "title_la": "Površinska povreda u predelu kuka i butine",
+    "source_line": 3477
+  },
+  {
+    "code": "S70.0",
+    "title_la": "Contusio coxae",
+    "source_line": 44853
+  },
+  {
+    "code": "S70.1",
+    "title_la": "Contusio femoris",
+    "source_line": 44855
+  },
+  {
+    "code": "S70.7",
+    "title_la": "Laesio traumatica regionis coxae et femoris, superficialis, multiplex",
+    "source_line": 44857
+  },
+  {
+    "code": "S70.8",
+    "title_la": "Laesiones traumaticae regionis coxae et femoris superficiales aliae",
+    "source_line": 44859
+  },
+  {
+    "code": "S70.9",
+    "title_la": "Laesio traumatica regionis coxae et femoris, superficialis, non specificata",
+    "source_line": 44861
+  },
+  {
+    "code": "S71",
+    "title_la": "Otvorena rana u predelu kuka i butine",
+    "source_line": 3478
+  },
+  {
+    "code": "S71.0",
+    "title_la": "Vulnus apertum coxae",
+    "source_line": 44872
+  },
+  {
+    "code": "S71.1",
+    "title_la": "Vulnus apertum femoris",
+    "source_line": 44874
+  },
+  {
+    "code": "S71.7",
+    "title_la": "Vulnus apertum regionis coxae et femoris multiplex",
+    "source_line": 44876
+  },
+  {
+    "code": "S71.8",
+    "title_la": "Vulnus apertum partium cinguli pelvici aliarum, non specificatarum",
+    "source_line": 44878
+  },
+  {
+    "code": "S72",
+    "title_la": "Prelom butnjače",
+    "source_line": 3479
+  },
+  {
+    "code": "S72.0",
+    "title_la": "Fractura colli femoris",
+    "source_line": 44888
+  },
+  {
+    "code": "S72.1",
+    "title_la": "Fractura praetrochanterica",
+    "source_line": 44891
+  },
+  {
+    "code": "S72.2",
+    "title_la": "Fractura subtrochanterica",
+    "source_line": 44895
+  },
+  {
+    "code": "S72.3",
+    "title_la": "Fractura corporis femoris",
+    "source_line": 44897
+  },
+  {
+    "code": "S72.4",
+    "title_la": "Fractura femoris extremitas distalis",
+    "source_line": 44899
+  },
+  {
+    "code": "S72.7",
+    "title_la": "Fractura femoris multiplex",
+    "source_line": 44901
+  },
+  {
+    "code": "S72.8",
+    "title_la": "Fracturae partium femoris aliarum",
+    "source_line": 44903
+  },
+  {
+    "code": "S72.9",
+    "title_la": "Fractura femoris, pars non specificata",
+    "source_line": 44905
+  },
+  {
+    "code": "S73",
+    "title_la": "Iščašenje, uganuće i istegnuće zgloba i veza kuka",
+    "source_line": 3480
+  },
+  {
+    "code": "S73.0",
+    "title_la": "Luxatio coxae",
+    "source_line": 44910
+  },
+  {
+    "code": "S73.1",
+    "title_la": "Distorsio et distensio coxae",
+    "source_line": 44912
+  },
+  {
+    "code": "S74",
+    "title_la": "Povreda živaca u predelu kuka i butine",
+    "source_line": 3481
+  },
+  {
+    "code": "S74.0",
+    "title_la": "Laesio traumatica nervi ischiadici regionis coxae et femoris",
+    "source_line": 44917
+  },
+  {
+    "code": "S74.1",
+    "title_la": "Laesio traumatica nervi femoralis regionis coxae et femoris",
+    "source_line": 44925
+  },
+  {
+    "code": "S74.2",
+    "title_la": "Laesio traumatica nervi cutanei sensitivi regionis coxae et femoris",
+    "source_line": 44927
+  },
+  {
+    "code": "S74.7",
+    "title_la": "Laesio traumatica nervorum regionis coxae et femoris multiplicium",
+    "source_line": 44929
+  },
+  {
+    "code": "S74.8",
+    "title_la": "Laesio traumatica nervorum regionis coxae et femoris aliorum",
+    "source_line": 44931
+  },
+  {
+    "code": "S74.9",
+    "title_la": "Laesio traumatica nervi regionis coxae et femoris, non specificati",
+    "source_line": 44933
+  },
+  {
+    "code": "S75",
+    "title_la": "Povreda krvnih sudova u predelu kuka i butine",
+    "source_line": 3482
+  },
+  {
+    "code": "S75.0",
+    "title_la": "Laesio traumatica arteriae femoris",
+    "source_line": 44939
+  },
+  {
+    "code": "S75.1",
+    "title_la": "Laesio traumatica venae femoralis regionis coxae et femoris",
+    "source_line": 44941
+  },
+  {
+    "code": "S75.2",
+    "title_la": "Laesio traumatica venae saphenae magnae regionis coxae et femoris",
+    "source_line": 44943
+  },
+  {
+    "code": "S75.7",
+    "title_la": "Laesio traumatica vasorum regionis coxae et femoris multiplicium",
+    "source_line": 44946
+  },
+  {
+    "code": "S75.8",
+    "title_la": "Laesio traumatica vasorum regionis coxae et femoris aliorum",
+    "source_line": 44948
+  },
+  {
+    "code": "S75.9",
+    "title_la": "Laesio traumatica vasis regionis coxae et femoris, non specificati",
+    "source_line": 44950
+  },
+  {
+    "code": "S76",
+    "title_la": "Povreda mišića i tetive u predelu kuka i butine",
+    "source_line": 3483
+  },
+  {
+    "code": "S76.0",
+    "title_la": "Laesio traumatica musculi et tendinis coxae",
+    "source_line": 44955
+  },
+  {
+    "code": "S76.1",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) quadricipitis femoris",
+    "source_line": 44957
+  },
+  {
+    "code": "S76.2",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) adductoris femoris",
+    "source_line": 44960
+  },
+  {
+    "code": "S76.3",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) regionis femoris posterioris",
+    "source_line": 44962
+  },
+  {
+    "code": "S76.4",
+    "title_la": "Laesio traumatica musculorum et tendinum femoris aliorum, non specificatarum",
+    "source_line": 44964
+  },
+  {
+    "code": "S76.7",
+    "title_la": "Laesio traumatica musoulorum et tendinum regionis coxae et femoris multiplicium",
+    "source_line": 44966
+  },
+  {
+    "code": "S77",
+    "title_la": "Rana uzrokovana zdrobljavanjem – kraš kuka i butine",
+    "source_line": 3490
+  },
+  {
+    "code": "S77.0",
+    "title_la": "Conquassatio coxae",
+    "source_line": 44971
+  },
+  {
+    "code": "S77.1",
+    "title_la": "Conquassatio femoris",
+    "source_line": 44973
+  },
+  {
+    "code": "S77.2",
+    "title_la": "Conquassatio coxae et femoris",
+    "source_line": 44981
+  },
+  {
+    "code": "S78",
+    "title_la": "Traumatska amputacija kuka i butine",
+    "source_line": 3491
+  },
+  {
+    "code": "S78.0",
+    "title_la": "Amputatio traumatica ad articulationem coxae",
+    "source_line": 44987
+  },
+  {
+    "code": "S78.1",
+    "title_la": "Amputatio traumatica inter regionem coxae et genus",
+    "source_line": 44989
+  },
+  {
+    "code": "S78.9",
+    "title_la": "Amputatio traumatica coxae et femoris, regionis non specificatae",
+    "source_line": 44991
+  },
+  {
+    "code": "S79",
+    "title_la": "Druge neoznačene povrede kuka i butine",
+    "source_line": 3492
+  },
+  {
+    "code": "S79.7",
+    "title_la": "Laesiones traumaticae coxae et femoris multiplices",
+    "source_line": 44996
+  },
+  {
+    "code": "S79.8",
+    "title_la": "Laesiones traumaticae coxae et femoris aliae, specificatae",
+    "source_line": 44999
+  },
+  {
+    "code": "S79.9",
+    "title_la": "Laesio traumatica coxae et femoris, non specificata",
+    "source_line": 45001
+  },
+  {
+    "code": "S80",
+    "title_la": "Površinska povreda potkolenice",
+    "source_line": 3495
+  },
+  {
+    "code": "S80.0",
+    "title_la": "Contusio genus",
+    "source_line": 45019
+  },
+  {
+    "code": "S80.1",
+    "title_la": "Contusio partium cruris aliarum, non specificatarum",
+    "source_line": 45021
+  },
+  {
+    "code": "S80.7",
+    "title_la": "Laesio traumatica cruris, superficialis multiplex",
+    "source_line": 45023
+  },
+  {
+    "code": "S80.8",
+    "title_la": "Laesiones traumaticae cruris, superficiales aliae",
+    "source_line": 45025
+  },
+  {
+    "code": "S80.9",
+    "title_la": "Laesio traumatica cruris, superficialis, non specificata",
+    "source_line": 45027
+  },
+  {
+    "code": "S81",
+    "title_la": "Otvorena rana potkolenice",
+    "source_line": 3496
+  },
+  {
+    "code": "S81.0",
+    "title_la": "Vulnus apertum genus",
+    "source_line": 45041
+  },
+  {
+    "code": "S81.7",
+    "title_la": "Vulnus apertum cruris multiplex",
+    "source_line": 45043
+  },
+  {
+    "code": "S81.8",
+    "title_la": "Vulnus apertum partium cruris aliarum",
+    "source_line": 45045
+  },
+  {
+    "code": "S81.9",
+    "title_la": "Vulnus apertum cruris, partis non specificatae",
+    "source_line": 45047
+  },
+  {
+    "code": "S82",
+    "title_la": "Prelom potkolenice uključujući i predeo skočnog zgloba",
+    "source_line": 3497
+  },
+  {
+    "code": "S82.0",
+    "title_la": "Fractura patellae",
+    "source_line": 45059
+  },
+  {
+    "code": "S82.1",
+    "title_la": "Fractura tibiae, pars proximalis",
+    "source_line": 45061
+  },
+  {
+    "code": "S82.2",
+    "title_la": "Fractura corporis tibiae",
+    "source_line": 45068
+  },
+  {
+    "code": "S82.3",
+    "title_la": "Fractura tibiae, pars distalis",
+    "source_line": 45071
+  },
+  {
+    "code": "S82.4",
+    "title_la": "Fractura fibulae",
+    "source_line": 45075
+  },
+  {
+    "code": "S82.5",
+    "title_la": "Fractura malleoli medialis",
+    "source_line": 45078
+  },
+  {
+    "code": "S82.6",
+    "title_la": "Fractura malleoli lateralis",
+    "source_line": 45080
+  },
+  {
+    "code": "S82.7",
+    "title_la": "Fractura cruris multiplex, pars distalis",
+    "source_line": 45090
+  },
+  {
+    "code": "S82.8",
+    "title_la": "Fractura partium cruris aliarum",
+    "source_line": 45096
+  },
+  {
+    "code": "S82.9",
+    "title_la": "Fractura cruris, pars non specificata",
+    "source_line": 45102
+  },
+  {
+    "code": "S83",
+    "title_la": "Iščašenje, uganuće i istegnuće zglobova i veza kolena",
+    "source_line": 3498
+  },
+  {
+    "code": "S83.0",
+    "title_la": "Luxatio patellae",
+    "source_line": 45114
+  },
+  {
+    "code": "S83.1",
+    "title_la": "Luxatio genus",
+    "source_line": 45116
+  },
+  {
+    "code": "S83.2",
+    "title_la": "Fissura menisci traumatica recens",
+    "source_line": 45119
+  },
+  {
+    "code": "S83.3",
+    "title_la": "Fissura cartilaginis genus recens",
+    "source_line": 45126
+  },
+  {
+    "code": "S83.4",
+    "title_la": "Distorsio et distensio ligamenti genus collateralis (fibularis) (tibialis)",
+    "source_line": 45128
+  },
+  {
+    "code": "S83.5",
+    "title_la": "Distorsio et distensio ligamenti cruciati genus (anterioris) (posterioris)",
+    "source_line": 45130
+  },
+  {
+    "code": "S83.6",
+    "title_la": "Distorsio et distensio partium genus aliarum, non specificatarum",
+    "source_line": 45132
+  },
+  {
+    "code": "S83.7",
+    "title_la": "Laesio traumatica partium genus multiplicium",
+    "source_line": 45136
+  },
+  {
+    "code": "S84",
+    "title_la": "Povreda živaca potkolenice",
+    "source_line": 3499
+  },
+  {
+    "code": "S84.0",
+    "title_la": "Laesio traumatica nervi tibialis regionis cruris",
+    "source_line": 45150
+  },
+  {
+    "code": "S84.1",
+    "title_la": "Laesio traumatica nervi peronaealis regionis cruris",
+    "source_line": 45152
+  },
+  {
+    "code": "S84.2",
+    "title_la": "Laesio traumatica nervi cutanei sensitivi cruris",
+    "source_line": 45154
+  },
+  {
+    "code": "S84.7",
+    "title_la": "Laesio traumatica nervorum cruris multiplicium",
+    "source_line": 45156
+  },
+  {
+    "code": "S84.8",
+    "title_la": "Laesio traumatica nervorum cruris aliorum",
+    "source_line": 45158
+  },
+  {
+    "code": "S84.9",
+    "title_la": "Laesio traumatica nervi cruris, non specificati",
+    "source_line": 45160
+  },
+  {
+    "code": "S85",
+    "title_la": "Povreda krvnih sudova potkolenice",
+    "source_line": 3500
+  },
+  {
+    "code": "S85.0",
+    "title_la": "Laesio traumatica arteriae popliteae",
+    "source_line": 45166
+  },
+  {
+    "code": "S85.1",
+    "title_la": "Laesio traumatica arteriae tibialis (anterioris) (posterioris)",
+    "source_line": 45168
+  },
+  {
+    "code": "S85.2",
+    "title_la": "Laesio traumatica arteriae fibularis",
+    "source_line": 45170
+  },
+  {
+    "code": "S85.3",
+    "title_la": "Laesio traumatica venae saphenae magnae regionis cruris",
+    "source_line": 45172
+  },
+  {
+    "code": "S85.4",
+    "title_la": "Laesio traumatica venae saphenae parvae regionis cruris",
+    "source_line": 45175
+  },
+  {
+    "code": "S85.5",
+    "title_la": "Laesio traumatica venae popliteae",
+    "source_line": 45177
+  },
+  {
+    "code": "S85.7",
+    "title_la": "Laesio traumatica vasorum cruris multiplicium",
+    "source_line": 45179
+  },
+  {
+    "code": "S85.8",
+    "title_la": "Laesio traumatica vasorum cruris aliorum",
+    "source_line": 45181
+  },
+  {
+    "code": "S85.9",
+    "title_la": "Laesio traumatica vasis cruris, non specificati",
+    "source_line": 45183
+  },
+  {
+    "code": "S86",
+    "title_la": "Povreda mišića i tetive potkolenice",
+    "source_line": 3501
+  },
+  {
+    "code": "S86.0",
+    "title_la": "Laesio traumatica tendinis Achillis",
+    "source_line": 45191
+  },
+  {
+    "code": "S86.1",
+    "title_la": "Laesio traumatica musculi et tendinis (musculorum et tendinum) alterius regionis",
+    "source_line": 45193
+  },
+  {
+    "code": "S86.2",
+    "title_la": "Laesio traumatica musculi et tendinis (musculorum et tendinum) regionis cruris,",
+    "source_line": 45203
+  },
+  {
+    "code": "S86.3",
+    "title_la": "Laesio traumatica musculi peronaei (et tendinis eius) (musculorum et tendinum)",
+    "source_line": 45206
+  },
+  {
+    "code": "S86.7",
+    "title_la": "Laesio traumatica musculorum et tendinum cruris multiplicium",
+    "source_line": 45209
+  },
+  {
+    "code": "S86.8",
+    "title_la": "Laesio traumatica musculorum et tendinum cruris non specificatae",
+    "source_line": 45211
+  },
+  {
+    "code": "S86.9",
+    "title_la": "Laesio traumatica musculi et tendinis cruris non specificatae",
+    "source_line": 45213
+  },
+  {
+    "code": "S87",
+    "title_la": "Povreda uzrokovana zdrobljavanjem – kraš kolena i potkolenice",
+    "source_line": 3502
+  },
+  {
+    "code": "S87.0",
+    "title_la": "Conquassatio genus",
+    "source_line": 45219
+  },
+  {
+    "code": "S87.8",
+    "title_la": "Conquassatio partium cruris aliarum, non specificatarum",
+    "source_line": 45221
+  },
+  {
+    "code": "S88",
+    "title_la": "Traumatska amputacija potkolenice",
+    "source_line": 3503
+  },
+  {
+    "code": "S88.0",
+    "title_la": "Amputatio traumatica in altitudine genus",
+    "source_line": 45229
+  },
+  {
+    "code": "S88.1",
+    "title_la": "Amputatio traumatica inter genum et tarsum",
+    "source_line": 45231
+  },
+  {
+    "code": "S88.9",
+    "title_la": "Amputatio traumatica cruris, regione non specificata",
+    "source_line": 45233
+  },
+  {
+    "code": "S89",
+    "title_la": "Druge neoznačene povrede potkolenice",
+    "source_line": 3504
+  },
+  {
+    "code": "S89.7",
+    "title_la": "Laesiones traumaticae cruris multiplices",
+    "source_line": 45239
+  },
+  {
+    "code": "S89.8",
+    "title_la": "Laesiones traumaticae cruris aliae, specificatae",
+    "source_line": 45242
+  },
+  {
+    "code": "S89.9",
+    "title_la": "Laesio traumatica cruris, non specificata",
+    "source_line": 45244
+  },
+  {
+    "code": "S90",
+    "title_la": "Površinska povreda u predelu skočnog zgloba i stopala",
+    "source_line": 3507
+  },
+  {
+    "code": "S90.0",
+    "title_la": "Contusio regionis malleoli",
+    "source_line": 45265
+  },
+  {
+    "code": "S90.1",
+    "title_la": "Contusio digiti (digitorum) pedis sine laesione unguis",
+    "source_line": 45267
+  },
+  {
+    "code": "S90.2",
+    "title_la": "Contusio digiti (digitorum) pedis cum laesione uguis",
+    "source_line": 45270
+  },
+  {
+    "code": "S90.3",
+    "title_la": "Contusio partium pedis aliarum, non specificatarum",
+    "source_line": 45272
+  },
+  {
+    "code": "S90.7",
+    "title_la": "Laesio traumatica regionis malleoli et pedis multiplex superficialis",
+    "source_line": 45274
+  },
+  {
+    "code": "S90.8",
+    "title_la": "Laesiones traumaticae regionis malleoli et pedis superficialis aliae",
+    "source_line": 45276
+  },
+  {
+    "code": "S90.9",
+    "title_la": "Laesio traumatica regionis malleoli et pedis, superficialis, non specificata",
+    "source_line": 45278
+  },
+  {
+    "code": "S91",
+    "title_la": "Otvorena rana u predelu skočnog zgloba i stopala",
+    "source_line": 3508
+  },
+  {
+    "code": "S91.0",
+    "title_la": "Vulnus apertum regionis malleoli",
+    "source_line": 45284
+  },
+  {
+    "code": "S91.1",
+    "title_la": "Vulnus apertum digiti (digitorum) pedis sine laesione unguis",
+    "source_line": 45286
+  },
+  {
+    "code": "S91.2",
+    "title_la": "Vulnus apertum digiti (digitorum) pedis cum laesione unguis",
+    "source_line": 45289
+  },
+  {
+    "code": "S91.3",
+    "title_la": "Vulnus apertum partium pedis aliarum",
+    "source_line": 45291
+  },
+  {
+    "code": "S91.7",
+    "title_la": "Vulnus apertum regionis malleoli et pedis multiplex",
+    "source_line": 45294
+  },
+  {
+    "code": "S92",
+    "title_la": "Prelom stopala - izuzev predela skočnog zgloba",
+    "source_line": 3509
+  },
+  {
+    "code": "S92.0",
+    "title_la": "Fractura calcanei",
+    "source_line": 45312
+  },
+  {
+    "code": "S92.1",
+    "title_la": "Fractura tali",
+    "source_line": 45315
+  },
+  {
+    "code": "S92.2",
+    "title_la": "Fractura ossis (ossium) tarsi alterius",
+    "source_line": 45318
+  },
+  {
+    "code": "S92.3",
+    "title_la": "Fractura ossis metatarsi",
+    "source_line": 45323
+  },
+  {
+    "code": "S92.4",
+    "title_la": "Fractura hallucis",
+    "source_line": 45325
+  },
+  {
+    "code": "S92.5",
+    "title_la": "Fractura digiti pedis alterius",
+    "source_line": 45327
+  },
+  {
+    "code": "S92.7",
+    "title_la": "Fractura pedis multiplex",
+    "source_line": 45329
+  },
+  {
+    "code": "S92.9",
+    "title_la": "Fractura pedis, non specificata",
+    "source_line": 45331
+  },
+  {
+    "code": "S93",
+    "title_la": "Iščašenje, uganuće i istegnuće zglobova i veza u predelu skočnog zgloba i stopala",
+    "source_line": 3510
+  },
+  {
+    "code": "S93.0",
+    "title_la": "Luxatio articuli talocruralis",
+    "source_line": 45337
+  },
+  {
+    "code": "S93.1",
+    "title_la": "Luxatio digiti (digitorum) pedis",
+    "source_line": 45342
+  },
+  {
+    "code": "S93.2",
+    "title_la": "Ruptura ligamentorum regionis malleoli et pedis",
+    "source_line": 45346
+  },
+  {
+    "code": "S93.3",
+    "title_la": "Luxatio partium pedis aliarum, non specificatarum",
+    "source_line": 45348
+  },
+  {
+    "code": "S93.4",
+    "title_la": "Distorsio et distensio articuli talocruralis",
+    "source_line": 45361
+  },
+  {
+    "code": "S93.5",
+    "title_la": "Distorsio et distensio digiti (digitorum) pedis",
+    "source_line": 45369
+  },
+  {
+    "code": "S93.6",
+    "title_la": "Distorsio et distensio partium pedis aliarum, non specificatarum",
+    "source_line": 45373
+  },
+  {
+    "code": "S94",
+    "title_la": "Povreda živaca u predelu skočnog zgloba i stopala",
+    "source_line": 3511
+  },
+  {
+    "code": "S94.0",
+    "title_la": "Laesio traumatica nervi plantaris lateralis",
+    "source_line": 45380
+  },
+  {
+    "code": "S94.1",
+    "title_la": "Laesio traumatica nervi plantaris medialis",
+    "source_line": 45382
+  },
+  {
+    "code": "S94.2",
+    "title_la": "Laesio traumatica nervi peronaei profundi regionis malleoli et pedis",
+    "source_line": 45384
+  },
+  {
+    "code": "S94.3",
+    "title_la": "Laesio traumatica nervi cutanei sensitivi regionis malleoli (et pedis)",
+    "source_line": 45387
+  },
+  {
+    "code": "S94.7",
+    "title_la": "Laesio traumatica nervorum regionis malleoli (et pedis) multiplicium",
+    "source_line": 45389
+  },
+  {
+    "code": "S94.8",
+    "title_la": "Laesio traumatica nervi regionis malleoli (et pedis) alterius",
+    "source_line": 45391
+  },
+  {
+    "code": "S94.9",
+    "title_la": "Laesio traumatica nervi regionis malleoli (et pedis) non specificati",
+    "source_line": 45393
+  },
+  {
+    "code": "S95",
+    "title_la": "Povreda krvnih sudova u predelu skočnog zgloba i stopala",
+    "source_line": 3512
+  },
+  {
+    "code": "S95.0",
+    "title_la": "Laesio traumatica arteriae dorsalis pedis",
+    "source_line": 45399
+  },
+  {
+    "code": "S95.1",
+    "title_la": "Laesio traumatica arteriae plantaris pedis",
+    "source_line": 45401
+  },
+  {
+    "code": "S95.2",
+    "title_la": "Laesio traumatica venae dorsalis pedis",
+    "source_line": 45403
+  },
+  {
+    "code": "S95.7",
+    "title_la": "Laesio traumatica vasorum regionis malleoli (et pedis) multiplicium",
+    "source_line": 45405
+  },
+  {
+    "code": "S95.8",
+    "title_la": "Laesio traumatica vasorum regionis malleoli (et pedis) aliorum",
+    "source_line": 45407
+  },
+  {
+    "code": "S95.9",
+    "title_la": "Laesio traumatica vasis regionis malleoli (et pedis) non specificati",
+    "source_line": 45409
+  },
+  {
+    "code": "S96",
+    "title_la": "Povreda mišića i tetive u predelu skočnog zgloba i stopala",
+    "source_line": 3513
+  },
+  {
+    "code": "S96.0",
+    "title_la": "Laesio traumatica musculi et (tendinis eius) flexoris hallucis pedis longi regionis",
+    "source_line": 45420
+  },
+  {
+    "code": "S96.1",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) extensoris hallucis pedis longi regionis",
+    "source_line": 45424
+  },
+  {
+    "code": "S96.2",
+    "title_la": "Laesio traumatica musculi (et tendinis aius) interni regionis malleoli et pedis",
+    "source_line": 45428
+  },
+  {
+    "code": "S96.7",
+    "title_la": "Laesio traumatica musculorum (et tendinum eorum) regionis malleoli et pedis",
+    "source_line": 45430
+  },
+  {
+    "code": "S96.8",
+    "title_la": "Laesio traumatica musculorum (et tendinum eorum) regionis malleoli (et pedis)",
+    "source_line": 45433
+  },
+  {
+    "code": "S96.9",
+    "title_la": "Laesio traumatica musculi (et tendinis eius) regionis malleoli et pedis, non",
+    "source_line": 45436
+  },
+  {
+    "code": "S97",
+    "title_la": "Povreda uzrokovana zdrobljavanjem – kraš u predelu skočnog zgloba i stopala",
+    "source_line": 3514
+  },
+  {
+    "code": "S97.0",
+    "title_la": "Conquassatio regionis malleoli",
+    "source_line": 45442
+  },
+  {
+    "code": "S97.1",
+    "title_la": "Conquassatio digiti (digitorum) pedis",
+    "source_line": 45444
+  },
+  {
+    "code": "S97.8",
+    "title_la": "Conquassatio partium regionis malleoli et pedis aliarum",
+    "source_line": 45446
+  },
+  {
+    "code": "S98",
+    "title_la": "Traumatska amputacija skočnog zgloba i stopala",
+    "source_line": 3515
+  },
+  {
+    "code": "S98.0",
+    "title_la": "Amputatio traumatica in regione tarsi et pedis",
+    "source_line": 45452
+  },
+  {
+    "code": "S98.1",
+    "title_la": "Amputatio traumatica digiti pedis singularis",
+    "source_line": 45454
+  },
+  {
+    "code": "S98.2",
+    "title_la": "Amputatio traumatica duorum vel plurium digitorum pedis",
+    "source_line": 45456
+  },
+  {
+    "code": "S98.3",
+    "title_la": "Amputatio traumatica partium pedis aliarum",
+    "source_line": 45458
+  },
+  {
+    "code": "S98.4",
+    "title_la": "Amputatio traumatica pedis, regionis non specificatae",
+    "source_line": 45461
+  },
+  {
+    "code": "S99",
+    "title_la": "Druge neoznačene povrede u predelu skočnog zgloba i stopala",
+    "source_line": 3516
+  },
+  {
+    "code": "S99.7",
+    "title_la": "Laesiones traumaticae regionis malleoli et pedis multiplices",
+    "source_line": 45473
+  },
+  {
+    "code": "S99.8",
+    "title_la": "Laesiones traumaticae regionis malleoli et pedis aliae, specificatae",
+    "source_line": 45476
+  },
+  {
+    "code": "S99.9",
+    "title_la": "Laesio traumatica regionis malleoli et pedis, non specificata",
+    "source_line": 45478
+  }
+]
