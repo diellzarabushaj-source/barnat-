@@ -21,10 +21,18 @@ assert.match(html, /icd-v2\.css\?v=search-polish-v8/);
 assert.match(html, /icd-v2\.js\?v=search-polish-v8/);
 assert.match(html, /Mjekësi familjare/);
 assert.match(html, /Urgjenca QKMF/);
+assert.match(html, /45 të shpeshta/);
+assert.match(html, /Spondilozë \/ probleme me unaza/);
+assert.match(html, /Diarre/);
+assert.match(html, /Nauze \/ vjellje/);
 const quickButtons = [...html.matchAll(/<button type="button" class="icd-quick-chip([^"]*)" data-search-example="([^"]+)"/g)];
-assert.equal(quickButtons.length, 50, 'QKMF quick rails must contain exactly 50 shortcuts.');
+assert.equal(quickButtons.length, 70, 'QKMF quick rails must contain 45 family-medicine and 25 urgent shortcuts.');
 assert.equal(quickButtons.filter(match => match[1].includes('is-urgent')).length, 25, 'Urgency rail must contain exactly 25 red shortcuts.');
-assert.equal(new Set(quickButtons.map(match => match[2])).size, 50, 'QKMF shortcut ICD codes must be unique.');
+assert.equal(quickButtons.filter(match => !match[1].includes('is-urgent')).length, 45, 'Family medicine rail must contain exactly 45 shortcuts.');
+assert.equal(new Set(quickButtons.map(match => match[2])).size, 70, 'QKMF shortcut ICD codes must be unique.');
+for (const requiredCode of ['R19.7','R11','R51','R42','R10.4','M54.5','M54.2','M54.3','M47','M51']) {
+  assert.ok(quickButtons.some(match => match[2] === requiredCode), `Family medicine shortcut missing ${requiredCode}`);
+}
 
 assert.match(css, /\.icd-search-stage\{/);
 assert.match(css, /\.icd-suggestions\{/);
