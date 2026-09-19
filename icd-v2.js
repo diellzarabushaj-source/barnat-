@@ -27,6 +27,11 @@
     rows: [],
     query: '',
     searching: false,
+    suggestions: [],
+    suggestionMeta: null,
+    suggestionLoading: false,
+    suggestionOpen: false,
+    activeSuggestion: -1,
     requestId: 0,
     loading: false,
     reveal: false,     // sill panelin e nyjeve në pamje pasi të mbërrijnë fëmijët (vetëm në celular)
@@ -72,14 +77,14 @@
     [
       'appShell','sidebar','sidebarBackdrop','menuButton','sidebarClose','logoutButton','avatarInitials','sourceStatus','syncText',
       'metricNodes','metricChapters','metricCategories','metricCoverage','metricCoverageNote',
-      'icdPath','icdPathItems','icdPathReset','icdSearch','icdStatusText',
+      'icdPath','icdPathItems','icdPathReset','icdSearch','icdSearchBox','icdSuggestions','icdStatusText',
       'chapterList','chapterCount','nodeHero','nodeList','nodeSectionTitle','nodeCount','nodeKicker','toast',
     ].forEach(id => { el[id] = document.getElementById(id); });
   }
 
   // --- rrjeti ---------------------------------------------------------------
 
-  async function fetchJson(url, timeoutMs = 9000, externalSignal = null) {
+  async function fetchJson(url, timeoutMs = 9000, externalSignal = null, cacheMode = 'no-store') {
     const controller = new AbortController();
     const abortFromExternal = () => controller.abort();
     if (externalSignal) {
@@ -89,7 +94,7 @@
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const response = await fetch(url, {
-        credentials:'same-origin', cache:'no-store', signal:controller.signal,
+        credentials:'same-origin', cache:cacheMode, signal:controller.signal,
         headers:{ Accept:'application/json' },
       });
       const payload = await response.json().catch(() => ({}));
@@ -228,8 +233,8 @@
     if (!state.rows.length) {
       el.nodeList.innerHTML = `<div class="icd-empty">
         <div class="icd-empty-icon">${SEARCH_GLYPH}</div>
-        <h3>${state.searching ? 'Asnjë kod nuk përputhet' : 'Nuk ka nënndarje'}</h3>
-        <p>${state.searching ? 'Provo një kod tjetër, p.sh. I10, ose një term si «hipertension».' : 'Ky është niveli i fundit i kësaj dege.'}</p>
+        <h3>Nuk ka nënndarje</h3>
+        <p>Ky është niveli i fundit i kësaj dege.</p>
       </div>`;
       return;
     }
@@ -248,11 +253,6 @@
   }
 
   function renderSection() {
-    if (state.searching) {
-      el.nodeKicker.textContent = 'Rezultatet';
-      el.nodeSectionTitle.textContent = `Kërkimi «${state.query}»`;
-      return;
-    }
     const node = currentNode();
     if (!node) {
       el.nodeKicker.textContent = 'Fillo';
@@ -274,6 +274,113 @@
     return LEVEL_PLURALS[levels[0]] || levelLabel(levels[0]);
   }
 
+  function searchNormalize(value) {
+    return clean(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function suggestionHaystack(node) {
+    return searchNormalize([
+      node?.code, node?.displayTitle, node?.albanianDraft, node?.englishTitle, node?.latinTitle,
+      node?.searchMatch?.matchedTerm, node?.searchMatch?.expandedTerm,
+    ].filter(Boolean).join(' '));
+  }
+
+  const suggestionCache = new Map();
+  const SUGGESTION_CACHE_LIMIT = 80;
+
+  function cacheSuggestions(query, data) {
+    const key = searchNormalize(query);
+    if (!key) return;
+    if (suggestionCache.has(key)) suggestionCache.delete(key);
+    suggestionCache.set(key, data);
+    while (suggestionCache.size > SUGGESTION_CACHE_LIMIT) suggestionCache.delete(suggestionCache.keys().next().value);
+  }
+
+  function cachedSuggestions(query) {
+    const key = searchNormalize(query);
+    if (!key || !suggestionCache.has(key)) return null;
+    const value = suggestionCache.get(key);
+    suggestionCache.delete(key);
+    suggestionCache.set(key, value);
+    return value;
+  }
+
+  function immediatePreview(query) {
+    const normalized = searchNormalize(query);
+    if (!normalized) return [];
+    const direct = cachedSuggestions(query);
+    if (direct?.rows?.length) return direct.rows;
+
+    let best = null;
+    for (const [key, value] of [...suggestionCache.entries()].reverse()) {
+      if (!normalized.startsWith(key) || !value?.rows?.length) continue;
+      best = value.rows;
+      break;
+    }
+    const source = best || state.suggestions;
+    if (!Array.isArray(source) || !source.length) return [];
+    const tokens = normalized.split(' ').filter(Boolean);
+    return source.filter(node => {
+      const haystack = suggestionHaystack(node);
+      return tokens.every(token => haystack.includes(token));
+    }).slice(0, 18);
+  }
+
+  function suggestionSecondary(node) {
+    const primary = nodeTitle(node);
+    const parts = [];
+    const sq = clean(node?.albanianDraft);
+    const en = clean(node?.englishTitle);
+    const la = clean(node?.latinTitle);
+    if (sq && sq !== primary) parts.push(`SQ · ${sq}`);
+    if (en && en !== primary) parts.push(`EN · ${en}`);
+    if (la && la !== primary && la !== en) parts.push(`LA · ${la}`);
+    return parts.slice(0, 2).join(' · ');
+  }
+
+  function renderSuggestions() {
+    if (!el.icdSuggestions || !el.icdSearchBox) return;
+    const query = clean(el.icdSearch?.value);
+    const shouldOpen = state.suggestionOpen && query.length >= 2 && (state.suggestionLoading || state.suggestions.length || state.searching);
+    el.icdSearchBox.setAttribute('aria-expanded', String(Boolean(shouldOpen)));
+    if (!shouldOpen) {
+      el.icdSuggestions.hidden = true;
+      el.icdSearch?.removeAttribute('aria-activedescendant');
+      return;
+    }
+
+    el.icdSuggestions.hidden = false;
+    const interpreted = clean(state.suggestionMeta?.interpretedAs);
+    const interpretation = interpreted && searchNormalize(interpreted) !== searchNormalize(query)
+      ? ` · kuptuar si <strong>${escapeHtml(interpreted)}</strong>`
+      : '';
+    const head = `<div class="icd-suggestion-head"><span>${state.suggestionLoading ? 'Duke rafinuar…' : `${formatNumber(state.suggestions.length)} sugjerime`}${interpretation}</span><strong>↑ ↓ Enter</strong></div>`;
+
+    if (!state.suggestions.length) {
+      el.icdSuggestions.innerHTML = head + `<div class="icd-suggestion-empty"><strong>${state.suggestionLoading ? 'Po kërkoj…' : 'Nuk gjeta përputhje të sigurt'}</strong><span>Provo kod, Shqip, English ose Latin — edhe me një typo tjetër.</span></div>`;
+      return;
+    }
+
+    const rows = state.suggestions.map((node, index) => {
+      const active = index === state.activeSuggestion;
+      const match = clean(node?.searchMatch?.label) || 'Përputhje';
+      const secondary = suggestionSecondary(node);
+      return `<button class="icd-suggestion-row ${active ? 'is-active' : ''}" type="button" role="option"
+        id="icd-suggestion-${index}" aria-selected="${active}" data-suggestion-index="${index}" data-code="${escapeHtml(clean(node.code))}">
+        <span class="icd-suggestion-code">${escapeHtml(clean(node.code))}</span>
+        <span class="icd-suggestion-copy"><strong>${escapeHtml(nodeTitle(node))}</strong>${secondary ? `<small>${escapeHtml(secondary)}</small>` : ''}</span>
+        <span class="icd-suggestion-meta"><span class="icd-match-chip">${escapeHtml(match)}</span><span class="icd-level-chip">${escapeHtml(levelLabel(node.level))}</span></span>
+      </button>`;
+    }).join('');
+    el.icdSuggestions.innerHTML = head + rows;
+    if (state.activeSuggestion >= 0) {
+      el.icdSearch?.setAttribute('aria-activedescendant', `icd-suggestion-${state.activeSuggestion}`);
+      el.icdSuggestions.querySelector('.icd-suggestion-row.is-active')?.scrollIntoView({ block:'nearest' });
+    } else {
+      el.icdSearch?.removeAttribute('aria-activedescendant');
+    }
+  }
+
   function render() {
     renderMetrics();
     renderChapters();
@@ -281,6 +388,7 @@
     renderPath();
     renderSection();
     renderRows();
+    renderSuggestions();
   }
 
   /* Statusi rri në rreshtin e komandës, jo në një brez të vetin, dhe nuk tregon
@@ -334,40 +442,78 @@
 
   let searchAbortController = null;
 
+  function applySuggestionData(query, data, { fromCache = false } = {}) {
+    state.searching = true;
+    state.query = query;
+    state.suggestions = Array.isArray(data?.rows) ? data.rows : (Array.isArray(data?.suggestions) ? data.suggestions : []);
+    state.suggestionMeta = data || null;
+    state.suggestionOpen = true;
+    state.activeSuggestion = state.suggestions.length ? 0 : -1;
+    renderSuggestions();
+
+    const top = state.suggestions[0];
+    const corrected = top?.searchMatch?.type?.startsWith('fuzzy-') || top?.searchMatch?.type === 'code-fuzzy';
+    const suffix = corrected ? ' · typo i korrigjuar' : fromCache ? ' · instant' : '';
+    setStatus(`${formatNumber(state.suggestions.length)} sugjerime për «${query}»${suffix}`);
+  }
+
   async function runSearch(query) {
+    const value = clean(query);
+    if (value.length < 2) return;
+
+    const cached = cachedSuggestions(value);
+    if (cached) applySuggestionData(value, cached, { fromCache:true });
+
     searchAbortController?.abort();
     const controller = new AbortController();
     searchAbortController = controller;
     const requestId = ++state.requestId;
     state.searching = true;
-    state.query = query;
-    state.loading = true;
-    renderSection();
-    setStatus(`Duke kërkuar «${query}»…`, 'busy');
-    renderRows();
+    state.query = value;
+    state.suggestionOpen = true;
+    state.suggestionLoading = true;
+
+    if (!cached) {
+      const preview = immediatePreview(value);
+      if (preview.length) {
+        state.suggestions = preview;
+        state.activeSuggestion = 0;
+      }
+      setStatus(`Duke kërkuar «${value}»…`, 'busy');
+      renderSuggestions();
+    }
+
     try {
-      const { payload } = await fetchJson(endpoint('suggest', { q:query }), 9000, controller.signal);
+      const { payload } = await fetchJson(endpoint('suggest', { q:value }), 6000, controller.signal, 'default');
       if (requestId !== state.requestId) return;
       const data = payload.data || {};
-      state.rows = Array.isArray(data.rows) ? data.rows : (Array.isArray(data.suggestions) ? data.suggestions : []);
-      setStatus(`${formatNumber(state.rows.length)} përputhje për «${query}»`);
+      cacheSuggestions(value, data);
+      applySuggestionData(value, data);
     } catch (error) {
       if (error?.name === 'AbortError') return;
       if (requestId !== state.requestId) return;
-      state.rows = [];
-      setStatus(error?.message || 'Kërkimi dështoi.', 'error');
+      if (!state.suggestions.length) setStatus(error?.message || 'Kërkimi dështoi.', 'error');
     } finally {
       if (searchAbortController === controller) searchAbortController = null;
-      if (requestId === state.requestId) { state.loading = false; render(); }
+      if (requestId === state.requestId) {
+        state.suggestionLoading = false;
+        renderSuggestions();
+      }
     }
   }
 
-  function clearSearch() {
+  function clearSearch({ preserveInput = false } = {}) {
     searchAbortController?.abort();
     searchAbortController = null;
     state.searching = false;
     state.query = '';
-    if (el.icdSearch.value) el.icdSearch.value = '';
+    state.suggestions = [];
+    state.suggestionMeta = null;
+    state.suggestionLoading = false;
+    state.suggestionOpen = false;
+    state.activeSuggestion = -1;
+    if (!preserveInput && el.icdSearch?.value) el.icdSearch.value = '';
+    renderSuggestions();
   }
 
   // --- lëvizja --------------------------------------------------------------
@@ -393,7 +539,7 @@
   }
 
   async function openNode(code) {
-    const node = state.rows.find(row => clean(row.code) === clean(code));
+    const node = [...state.suggestions, ...state.rows].find(row => clean(row.code) === clean(code));
     if (!node) return false;
 
     if (state.searching) {
@@ -435,7 +581,8 @@
     }
 
     await runSearch(value);
-    const exact = state.rows.find(row => clean(row.code).toUpperCase() === value);
+    const exact = state.suggestions.find(row => clean(row.code).toUpperCase() === value)
+      || state.rows.find(row => clean(row.code).toUpperCase() === value);
     if (exact) return openNode(clean(exact.code));
 
     return false;
@@ -503,18 +650,88 @@
       clearTimeout(searchTimer);
       const value = clean(el.icdSearch.value);
       if (value.length < 2) {
-        if (state.searching) { clearSearch(); render(); if (state.chapter) void loadChildren(clean(currentNode()?.code) || state.chapter); }
+        clearSearch({ preserveInput:true });
+        setStatus(value ? 'Shkruaj edhe një karakter…' : `${formatNumber(state.chapters.length)} kapituj të ngarkuar`);
         return;
       }
-      searchTimer = setTimeout(() => void runSearch(value), 90);
+
+      state.searching = true;
+      state.query = value;
+      state.suggestionOpen = true;
+      const preview = immediatePreview(value);
+      if (preview.length) {
+        state.suggestions = preview;
+        state.activeSuggestion = 0;
+        renderSuggestions();
+      }
+      searchTimer = setTimeout(() => void runSearch(value), 35);
     });
 
-    /* Vendmbajtësi i gjatë pritej në mes të fjalës në 390px. */
-    if (window.matchMedia('(max-width:760px)').matches) el.icdSearch.placeholder = 'Kërko kod ose diagnozë…';
+    el.icdSearch.addEventListener('focus', () => {
+      if (clean(el.icdSearch.value).length >= 2) {
+        state.suggestionOpen = true;
+        renderSuggestions();
+      }
+    });
+
+    el.icdSearch.addEventListener('keydown', event => {
+      if (!state.suggestionOpen || !state.suggestions.length) {
+        if (event.key === 'Escape') { clearSearch({ preserveInput:true }); el.icdSearch.blur(); }
+        return;
+      }
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const direction = event.key === 'ArrowDown' ? 1 : -1;
+        const count = state.suggestions.length;
+        state.activeSuggestion = (state.activeSuggestion + direction + count) % count;
+        renderSuggestions();
+        return;
+      }
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        const index = state.activeSuggestion >= 0 ? state.activeSuggestion : 0;
+        const node = state.suggestions[index];
+        if (node) void openNode(clean(node.code));
+        return;
+      }
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        state.suggestionOpen = false;
+        renderSuggestions();
+      }
+    });
+
+    el.icdSuggestions?.addEventListener('mousedown', event => event.preventDefault());
+    el.icdSuggestions?.addEventListener('click', event => {
+      const button = event.target.closest('[data-suggestion-index]');
+      if (!button) return;
+      const node = state.suggestions[Number(button.dataset.suggestionIndex)];
+      if (node) void openNode(clean(node.code));
+    });
+
+    document.querySelectorAll('[data-search-example]').forEach(button => {
+      button.addEventListener('click', () => {
+        const value = clean(button.dataset.searchExample);
+        el.icdSearch.value = value;
+        el.icdSearch.focus();
+        state.suggestionOpen = true;
+        void runSearch(value);
+      });
+    });
+
+    document.addEventListener('pointerdown', event => {
+      if (event.target.closest('#icdSearchBox') || event.target.closest('#icdSuggestions')) return;
+      state.suggestionOpen = false;
+      renderSuggestions();
+    });
 
     document.addEventListener('keydown', event => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); el.icdSearch.focus(); el.icdSearch.select(); }
-      if (event.key === 'Escape' && document.activeElement === el.icdSearch) { el.icdSearch.blur(); }
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        el.icdSearch.focus();
+        el.icdSearch.select();
+        if (clean(el.icdSearch.value).length >= 2) { state.suggestionOpen = true; renderSuggestions(); }
+      }
     });
 
     el.menuButton?.addEventListener('click', () => { el.sidebar.classList.add('is-open'); el.sidebarBackdrop.hidden = false; });

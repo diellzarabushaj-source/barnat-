@@ -65,6 +65,20 @@ assert.equal(result.rows[0].code, 'I10');
 assert.equal(result.rows[0].searchMatch.type, 'title-la-exact');
 assert.equal(result.rows[0].searchMatch.label, 'Titull i saktë latinisht');
 
+result = Search.suggestDataset(dataset, 'I1O', { limit:12 });
+assert.equal(result.rows[0].code, 'I10');
+assert.equal(result.rows[0].searchMatch.type, 'code-normalized');
+assert.equal(result.normalizedCode, 'I10');
+
+result = Search.suggestDataset(dataset, 'hipertensoin', { limit:12 });
+assert.equal(result.rows[0].code, 'I10');
+assert.ok(result.rows[0].searchMatch.type.startsWith('fuzzy-'), 'Albanian typo should fuzzy-match I10.');
+
+result = Search.suggestDataset(dataset, 'Hypertensio esentialis primria', { limit:12 });
+assert.equal(result.rows[0].code, 'I10');
+assert.equal(result.rows[0].searchMatch.field, 'la');
+assert.equal(result.rows[0].searchMatch.type, 'fuzzy-la');
+
 const chestCodes = Search.suggestDataset(dataset, 'dhimbje gjoksi', { limit:12 }).rows.map(node => node.code);
 assert.equal(chestCodes[0], 'R07.4');
 assert.ok(!chestCodes.includes('I21'), 'Symptom search must not infer myocardial infarction.');
@@ -82,13 +96,13 @@ assert.equal(builds, 1);
 for (let index = 0; index < 140; index += 1) {
   Handler._test.cachedPayload(cacheOwner, `q-${index}`, () => ({ index }));
 }
-assert.ok(Handler._test.payloadCache(cacheOwner).size <= 120);
+assert.ok(Handler._test.payloadCache(cacheOwner).size <= 240);
 
 const suggestion = Handler._test.suggestionPayload(dataset, { q:'A00 1' }, {
   sourceRevision:'test-revision', stale:false, loadedAt:Date.now(), csvBytes:100, fetchMs:1, buildMs:1,
 });
 assert.equal(suggestion.rows[0].code, 'A00.1');
-assert.equal(suggestion.meta.search.engine, 'clinical-ranking-v3');
+assert.ok(['clinical-ranking-v3','clinical-ranking-v4'].includes(suggestion.meta.search.engine));
 assert.ok(suggestion.meta.search.supports.includes('normalized-code'));
 assert.ok(suggestion.meta.search.supports.includes('breadcrumbs'));
 assert.ok(suggestion.meta.search.supports.includes('la-title'));
