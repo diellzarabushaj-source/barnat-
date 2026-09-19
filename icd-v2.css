@@ -313,3 +313,102 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
   .node-row{grid-template-columns:58px minmax(0,1fr)}
   .node-code{min-width:54px;padding-inline:6px}
 }
+
+
+/* Universal ICD search command center — primary interaction surface. */
+.icd-search-stage{
+  position:relative;z-index:25;margin:0 0 18px;padding:22px 24px 18px;
+  border:1px solid var(--stripe-line);border-radius:16px;
+  background:linear-gradient(135deg,#fbfbff 0%,#fff 55%,#f7f6ff 100%);
+  box-shadow:0 14px 34px rgba(46,36,125,.08)
+}
+.icd-search-stage-copy{max-width:820px;margin:0 auto 15px;text-align:center}
+.icd-search-stage-copy .eyebrow{margin-bottom:6px}
+.icd-search-stage-copy h2{margin:0;color:var(--ink);font-size:clamp(22px,2.35vw,31px);font-weight:620;letter-spacing:-.03em;line-height:1.12}
+.icd-search-stage-copy p{margin:8px auto 0;color:var(--muted);font-size:12.5px;line-height:1.55}
+.icd-search-stage-copy strong{color:#394f68;font-weight:600}
+.icd-search-command{position:relative;max-width:920px;margin:0 auto}
+.search-box-primary{max-width:none}
+.search-box-primary svg{left:18px;width:21px;height:21px;stroke:var(--stripe);stroke-width:1.9}
+.search-box-primary input{
+  height:60px;padding:0 82px 0 54px;border:1.5px solid #c9c4ff;border-radius:14px;
+  background:#fff;color:#102b45;font-size:17px;font-weight:420;
+  box-shadow:0 8px 24px rgba(24,35,75,.08);
+  transition:border-color .12s,box-shadow .12s,transform .12s
+}
+.search-box-primary input::placeholder{color:#8190a1}
+.search-box-primary input:hover{border-color:#aaa2ff}
+.search-box-primary input:focus{border-color:var(--stripe);box-shadow:0 0 0 4px rgba(83,58,253,.12),0 16px 32px rgba(24,35,75,.12)}
+.search-box-primary kbd{right:14px;padding:6px 8px;border-radius:7px;background:#f7f6ff;color:#6d63b7}
+.icd-search-command:focus-within{z-index:40}
+.icd-suggestions{
+  position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:60;max-height:min(520px,62vh);overflow:auto;
+  border:1px solid #d8d8ea;border-radius:14px;background:#fff;
+  box-shadow:0 24px 56px rgba(12,30,60,.18);scrollbar-width:thin
+}
+.icd-suggestions[hidden]{display:none}
+.icd-suggestion-head{
+  position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 13px;border-bottom:1px solid #eef0f3;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);
+  color:#718097;font-size:10.5px
+}
+.icd-suggestion-head strong{color:#42566d;font-weight:600}
+.icd-suggestion-row{
+  width:100%;display:grid;grid-template-columns:76px minmax(0,1fr) auto;align-items:center;gap:12px;
+  min-height:67px;padding:9px 12px;border:0;border-bottom:1px solid #f0f2f5;background:#fff;
+  color:#2b4259;text-align:left;cursor:pointer
+}
+.icd-suggestion-row:last-child{border-bottom:0}
+.icd-suggestion-row:hover,.icd-suggestion-row.is-active{background:#f7f6ff}
+.icd-suggestion-row.is-active{box-shadow:inset 3px 0 0 var(--stripe)}
+.icd-suggestion-code{
+  display:grid;min-height:36px;place-items:center;padding:5px 8px;border:1px solid var(--stripe-line);border-radius:8px;
+  background:var(--stripe-soft);color:var(--stripe);font:650 12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap
+}
+.icd-suggestion-copy{min-width:0}
+.icd-suggestion-copy strong{display:block;overflow:hidden;color:#18334d;font-size:13px;font-weight:590;line-height:1.28;text-overflow:ellipsis;white-space:nowrap}
+.icd-suggestion-copy small{display:block;overflow:hidden;margin-top:3px;color:#758397;font-size:10.5px;line-height:1.35;text-overflow:ellipsis;white-space:nowrap}
+.icd-suggestion-copy small b{color:#5d4ee8;font-weight:600}
+.icd-suggestion-meta{display:flex;flex-direction:column;align-items:flex-end;gap:5px;min-width:95px}
+.icd-match-chip{display:inline-flex;align-items:center;min-height:22px;padding:0 7px;border:1px solid #e0defe;border-radius:999px;background:#f8f7ff;color:#6558c9;font-size:9.5px;font-weight:600;white-space:nowrap}
+.icd-level-chip{color:#8793a2;font-size:9.5px;white-space:nowrap}
+.icd-suggestion-empty{padding:18px 16px;color:#67778a;text-align:center;font-size:12px}
+.icd-suggestion-empty strong{display:block;margin-bottom:4px;color:#31475e;font-size:13px}
+.icd-search-foot{max-width:920px;display:flex;align-items:center;justify-content:space-between;gap:14px;margin:10px auto 0}
+.icd-search-examples{display:flex;flex-wrap:wrap;gap:6px}
+.icd-search-examples button{
+  min-height:28px;padding:0 9px;border:1px solid #e1e4ea;border-radius:999px;background:#fff;color:#66768a;
+  font-size:10.5px;cursor:pointer
+}
+.icd-search-examples button:hover{border-color:var(--stripe-line);background:var(--stripe-soft);color:var(--stripe)}
+.icd-search-stage .icd-status{flex:none}
+.icd-card{overflow:visible}
+.icd-workspace{overflow:hidden;border-radius:12px}
+.icd-path{border-radius:12px 12px 0 0}
+
+@media(max-width:940px){
+  .icd-search-stage{padding:20px 18px 16px}
+  .icd-search-command{max-width:none}
+}
+@media(max-width:760px){
+  .icd-search-stage{margin-bottom:12px;padding:16px 10px 11px;border-radius:13px}
+  .icd-search-stage-copy{margin-bottom:11px;text-align:left}
+  .icd-search-stage-copy h2{font-size:21px}
+  .icd-search-stage-copy p{font-size:11.5px}
+  .search-box-primary input{height:54px;padding-left:47px;padding-right:46px;border-radius:12px;font-size:16px}
+  .search-box-primary svg{left:15px;width:19px;height:19px}
+  .search-box-primary kbd{display:none}
+  .icd-suggestions{top:calc(100% + 6px);max-height:60vh;border-radius:12px}
+  .icd-suggestion-row{grid-template-columns:62px minmax(0,1fr);gap:9px;min-height:66px;padding:9px}
+  .icd-suggestion-code{min-height:32px;padding:4px 6px;font-size:10.5px}
+  .icd-suggestion-copy strong{font-size:12.5px}
+  .icd-suggestion-copy small{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+  .icd-suggestion-meta{grid-column:2;flex-direction:row;align-items:center;justify-content:flex-start;min-width:0}
+  .icd-search-foot{display:block;margin-top:8px}
+  .icd-search-examples{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;scrollbar-width:none}
+  .icd-search-examples::-webkit-scrollbar{display:none}
+  .icd-search-stage .icd-status{margin-top:8px;white-space:normal}
+}
+@media(forced-colors:active){
+  .icd-search-stage,.icd-suggestions,.icd-suggestion-row,.search-box-primary input{border:1px solid ButtonText;background:Canvas;color:CanvasText;box-shadow:none}
+}
