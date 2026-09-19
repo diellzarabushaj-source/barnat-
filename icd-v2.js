@@ -591,17 +591,64 @@
     setStatus(`${formatNumber(state.chapters.length)} kapituj të ngarkuar`);
   }
 
+  const childrenCache = new Map();
+  const childrenPending = new Map();
+  const CHILDREN_CACHE_TTL_MS = 5 * 60 * 1000;
+
+  function cachedChildren(code) {
+    const key = clean(code);
+    const entry = childrenCache.get(key);
+    if (!entry || Date.now() - entry.at > CHILDREN_CACHE_TTL_MS) {
+      childrenCache.delete(key);
+      return null;
+    }
+    return entry.rows;
+  }
+
+  async function fetchChildrenRows(code) {
+    const key = clean(code);
+    const cached = cachedChildren(key);
+    if (cached) return cached;
+    if (childrenPending.has(key)) return childrenPending.get(key);
+
+    const pending = fetchJson(endpoint('children', { parent:key }), 6000, null, 'default')
+      .then(({ payload }) => {
+        const rows = Array.isArray(payload?.data?.rows) ? payload.data.rows : [];
+        childrenCache.set(key, { rows, at:Date.now() });
+        return rows;
+      })
+      .finally(() => childrenPending.delete(key));
+    childrenPending.set(key, pending);
+    return pending;
+  }
+
+  function prefetchChildren(node) {
+    const code = clean(node?.code);
+    if (!code || Number(node?.childCount || 0) <= 0 || cachedChildren(code) || childrenPending.has(code)) return;
+    void fetchChildrenRows(code).catch(() => {});
+  }
+
   async function loadChildren(code) {
+    const key = clean(code);
+    const instant = cachedChildren(key);
     const requestId = ++state.requestId;
+    if (instant) {
+      state.rows = instant;
+      state.loading = false;
+      setStatus(`${formatNumber(instant.length)} nyje nën ${key} · instant`);
+      render();
+      if (state.reveal) { state.reveal = false; revealNodePanel(); }
+      return;
+    }
+
     state.loading = true;
-    setStatus(`Duke hapur ${code}…`, 'busy');
+    setStatus(`Duke hapur ${key}…`, 'busy');
     renderRows();
     try {
-      const { payload } = await fetchJson(endpoint('children', { parent:code }));
+      const rows = await fetchChildrenRows(key);
       if (requestId !== state.requestId) return;
-      const data = payload.data || {};
-      state.rows = Array.isArray(data.rows) ? data.rows : [];
-      setStatus(`${formatNumber(state.rows.length)} nyje nën ${code}`);
+      state.rows = rows;
+      setStatus(`${formatNumber(state.rows.length)} nyje nën ${key}`);
     } catch (error) {
       if (requestId !== state.requestId) return;
       state.rows = [];
@@ -610,7 +657,6 @@
       if (requestId === state.requestId) {
         state.loading = false;
         render();
-        // Pas rirenderimit, që lartësia e panelit të jetë ajo përfundimtare.
         if (state.reveal) { state.reveal = false; revealNodePanel(); }
       }
     }
@@ -637,6 +683,10 @@
     const value = clean(query);
     if (value.length < 2) return;
 
+    searchAbortController?.abort();
+    searchAbortController = null;
+    const requestId = ++state.requestId;
+
     const cached = cachedSuggestions(value);
     if (cached) {
       applySuggestionData(value, cached, { fromCache:true });
@@ -644,14 +694,13 @@
       return;
     }
 
-    searchAbortController?.abort();
     const controller = new AbortController();
     searchAbortController = controller;
-    const requestId = ++state.requestId;
     state.searching = true;
     state.query = value;
     state.suggestionOpen = true;
     state.suggestionLoading = true;
+    state.suggestionMeta = null;
 
     const preview = immediatePreview(value);
     if (preview.length) {
@@ -699,6 +748,7 @@
     newRow?.setAttribute('aria-selected', 'true');
     el.icdSearch?.setAttribute('aria-activedescendant', `icd-suggestion-${next}`);
     newRow?.scrollIntoView({ block:'nearest' });
+    prefetchChildren(state.suggestions[next]);
   }
 
   function clearSearch({ preserveInput = false } = {}) {
@@ -859,10 +909,12 @@
       state.query = value;
       state.suggestionOpen = true;
       const preview = immediatePreview(value);
+      state.suggestionMeta = null;
       if (preview.length) {
         state.suggestions = preview;
         state.activeSuggestion = 0;
         renderSuggestions();
+        prefetchChildren(preview[0]);
       }
       updateSearchClear();
       searchTimer = setTimeout(() => void runSearch(value), SEARCH_NETWORK_DELAY_MS);
@@ -908,6 +960,11 @@
     });
 
     el.icdSuggestions?.addEventListener('mousedown', event => event.preventDefault());
+    el.icdSuggestions?.addEventListener('pointerover', event => {
+      const button = event.target.closest('[data-suggestion-index]');
+      if (!button) return;
+      prefetchChildren(state.suggestions[Number(button.dataset.suggestionIndex)]);
+    });
     el.icdSuggestions?.addEventListener('click', event => {
       const button = event.target.closest('[data-suggestion-index]');
       if (!button) return;
