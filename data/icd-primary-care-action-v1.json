@@ -3246,13 +3246,37 @@
         "Anoskopi/proktoskopi sipas mundësisë",
         "Hemogramë kur ka gjakderdhje të rëndësishme"
       ],
-      "management": "Rregullo konstipacionin me fibra/lëngje dhe shmang sforcimin; trajtimi simptomatik dhe procedurat varen nga grada dhe simptomat. Mos ia atribuo automatikisht gjakderdhjen hemorroideve pa vlerësuar burime tjera.",
+      "management": "Hemorroidet pa red flags: zbut jashtëqitjen, rrit fibra/lëngje dhe shmang sforcimin. Laksativ osmotic si macrogol/PEG kur ka konstipacion; paracetamol për dhimbje. Topical haemorrhoidal preparation/anesthetic vetëm afatshkurtër për simptomë. Trombosed external haemorrhoid shumë i dhimbshëm brenda rreth 72 orësh, prolaps i inkarceruar ose gjakderdhje e rëndë → kirurg.",
       "summary": "Hemorroidet janë të zakonshme, por gjakderdhja rektale kërkon vlerësim sipas moshës dhe riskut.",
       "red_flags": [
         "Anemi ose gjakderdhje e konsiderueshme",
         "Humbje peshe / ndryshim i ri i jashtëqitjes",
         "Masë rektale ose dhimbje e fortë me ethe"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Macrogol/PEG kur ka konstipacion",
+          "Paracetamol për dhimbje"
+        ],
+        "alternatives": [
+          "Topical haemorrhoidal/anesthetic preparation për lehtësim afatshkurtër"
+        ],
+        "avoid": [
+          "Mos përdor topical steroid/anesthetic për periudha të gjata",
+          "Mos ia atribuo çdo gjakderdhje rektale hemorroideve pa vlerësim"
+        ],
+        "note": "Gjakderdhja, anemia, ndryshimi i habitit dhe humbja e peshës kërkojnë hetim tjetër.",
+        "evidence": "NICE haemorrhoid care pathway / MIB201 current care"
+      },
+      "practical": {
+        "steps": [
+          "1. Konfirmo burimin anorektal dhe kërko red flags.",
+          "2. Trajto konstipacionin dhe sforcimin.",
+          "3. Symptom relief short-term; mos e bëj kremën terapi definitive.",
+          "4. Persistent grade II–IV symptoms → procedural/surgical assessment."
+        ],
+        "reassess": "2–4 javë pas conservative therapy; më herët në gjakderdhje të konsiderueshme."
+      }
     },
     {
       "code": "N30",
@@ -3401,13 +3425,38 @@
         "Testim për STI sipas riskut",
         "Test shtatzënie kur relevant"
       ],
-      "management": "Trajtimi varet nga etiologjia (Candida, vaginozë bakteriale, Trichomonas, irritim, etj.); shmang trajtimin empirik të përsëritur pa konfirmim te rastet recidivante.",
+      "management": "Vaginit/vulvovaginit: mos trajto vetëm nga ngjyra e sekrecionit; përcakto BV vs Candida vs Trichomonas/STI. BV simptomatik: metronidazole 500 mg PO 2×/ditë 7 ditë; alternativa metronidazole gel 0.75% 5 g intravaginal 1×/ditë 5 ditë ose clindamycin cream 2% 5 g HS 7 ditë. Trichomonas te femra: metronidazole 500 mg 2×/ditë 7 ditë + trajtim i partnerit. Candida trajtohet sipas pathway B37.",
       "summary": "Simptomat mbivendosen mes etiologjive; historia, pH/testet dhe ekzaminimi ndihmojnë në trajtim të saktë.",
       "red_flags": [
         "Dhimbje pelvike + ethe",
         "Gjakderdhje jo normale",
         "Shtatzëni me simptoma të rënda"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "BV: metronidazole 500 mg PO 2×/ditë × 7 ditë",
+          "Trichomonas te femra: metronidazole 500 mg PO 2×/ditë × 7 ditë"
+        ],
+        "alternatives": [
+          "BV: metronidazole gel 0.75%, 5 g intravaginal 1×/ditë × 5 ditë",
+          "BV: clindamycin cream 2%, 5 g intravaginal HS × 7 ditë"
+        ],
+        "avoid": [
+          "Mos trajto recurrent vaginitis pa testim/diagnozë",
+          "Mos harro partner management dhe STI testing te Trichomonas"
+        ],
+        "note": "Shtatzënia, alergjia dhe recurrent infection kërkojnë pathway specifik; Candida ka regjim tjetër.",
+        "evidence": "CDC STI Treatment Guidelines — BV/Trichomoniasis"
+      },
+      "practical": {
+        "steps": [
+          "1. Pyet për erë/prurit/dhimbje, STI risk, shtatzëni dhe pelvic pain.",
+          "2. pH/mikroskopi/NAAT sipas mundësisë; mos e diagnostiko vetëm vizualisht.",
+          "3. Trajto etiologjinë specifike.",
+          "4. Pelvic pain + fever/cervical motion tenderness → PID pathway, jo simple vaginitis."
+        ],
+        "reassess": "BV: follow-up jo rutinë nëse zgjidhet; rikthim në recidiv. Trichomonas: retesting sipas STI guidance."
+      }
     },
     {
       "code": "L50",
@@ -3633,13 +3682,38 @@
         "Shenja të komplikimeve metabolike",
         "HbA1c/glukozë, lipide, liver profile sipas riskut"
       ],
-      "management": "Përdor qasje jo-stigmatizuese dhe objektiva të përbashkëta; dieta, aktiviteti dhe ndërhyrjet e sjelljes janë bazë. Farmakoterapia dhe kirurgjia merren në konsideratë sipas BMI, komplikimeve, preferencave dhe kritereve lokale.",
+      "management": "Obezitet: lifestyle + behavioural support janë baza; farmakoterapia shtohet kur kriteret BMI/komorbiditetet dhe licenca lokale e lejojnë. Opsione moderne për adultë përfshijnë tirzepatide, semaglutide, liraglutide dhe orlistat. Tirzepatide zakonisht nis 2.5 mg SC 1×/javë për 4 javë, pastaj 5 mg/javë dhe rritet me 2.5 mg jo më shpesh se çdo 4 javë sipas tolerancës; semaglutide për obezitet titrohet gradualisht drejt 2.4 mg/javë. Monitoro efektet GI, shenjat biliare/pankreatike dhe humbjen e peshës.",
       "summary": "Vlerësimi i obezitetit përfshin komplikimet dhe shpërndarjen e yndyrës, jo vetëm BMI.",
       "red_flags": [
         "Simptoma të OSA të rëndë / hipoventilim",
         "Hiperglikemi simptomatike",
         "Çrregullim i të ngrënit ose krizë psikike"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Tirzepatide SC weekly kur kriteret/licenca lokale e lejojnë",
+          "Semaglutide 2.4 mg SC weekly pas titrimit gradual kur kriteret e lejojnë"
+        ],
+        "alternatives": [
+          "Liraglutide 3 mg SC daily pas titrimit",
+          "Orlistat 120 mg PO me vakte që përmbajnë yndyrë"
+        ],
+        "avoid": [
+          "Mos përdor GLP‑1/GIP në shtatzëni",
+          "Mos vazhdo farmakoterapi pa objektiva dhe review të efektit/tolerancës"
+        ],
+        "note": "Kriteret e financimit/indikacionit ndryshojnë sipas vendit. Kontrollo SmPC për titrim, kundërindikacione dhe ndërveprime.",
+        "evidence": "NICE NG246 + TA1026/TA875"
+      },
+      "practical": {
+        "steps": [
+          "1. BMI + waist + komorbiditete + barna që rrisin peshën.",
+          "2. Vendos objektiv peshë dhe plan ushqim/aktivitet/gjumë.",
+          "3. Në kriter: zgjidh farmakoterapi sipas komorbiditeteve, preferencës dhe disponueshmërisë.",
+          "4. Monitoro peshën, efektet GI, glikeminë/TA dhe ndrysho planin nëse nuk ka përfitim të mjaftueshëm."
+        ],
+        "reassess": "Çdo 4–12 javë gjatë titrimit; më pas periodikisht sipas barit dhe përgjigjes."
+      }
     },
     {
       "code": "R73",
