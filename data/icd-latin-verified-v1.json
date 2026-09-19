@@ -1,0 +1,2858 @@
+{
+  "schema": "medindex.icd10.latin.verified.v1",
+  "generated_date": "2026-09-19",
+  "policy": "title_la contains only sourced medical-Latin terminology; English is never copied into title_la.",
+  "counts": {
+    "total_icd_codes": 701,
+    "latin_verified": 681,
+    "exceptions": 20
+  },
+  "sources": [
+    {
+      "publisher": "Institut za javno zdravlje Srbije Dr Milan Jovanovic Batut",
+      "work": "MKB-10, Deseta revizija, Knjiga 1, Tabelarna lista, izdanje 2010",
+      "url": "https://www.rfzo.rs/download/dsg/MKB102010Knjiga1%281%29.pdf",
+      "count": 590
+    },
+    {
+      "publisher": "Zdravstveni centar Zajecar — MKB-10 terminalne tri kodna mesta",
+      "work": "MKB-10 terminalne tri kodna mesta — Naziv latinski",
+      "url": "https://www.zczajecar.com/images/MKB10_terminalne_tri_kodna_mesta.pdf",
+      "count": 90
+    },
+    {
+      "publisher": "Socialstyrelsen (Sweden)",
+      "work": "ICD-10-SE cumulative changes 2012-2026",
+      "url": "https://www.socialstyrelsen.se/globalassets/sharepoint-dokument/dokument-webb/klassifikationer-och-koder/icd10se-kumulativ-2012-2026.pdf",
+      "count": 1
+    }
+  ],
+  "rows": [
+    {
+      "code": "A00",
+      "title_la": "Cholera"
+    },
+    {
+      "code": "A01",
+      "title_la": "Febris typhica et febris paratyphica"
+    },
+    {
+      "code": "A02",
+      "title_la": "Salmonelloses aliae"
+    },
+    {
+      "code": "A03",
+      "title_la": "Shigellosis"
+    },
+    {
+      "code": "A04",
+      "title_la": "Infectiones intestinales bacteriales aliae"
+    },
+    {
+      "code": "A05",
+      "title_la": "Intoxicationes alimentariae bacteriales aliae, non alibi classificatae"
+    },
+    {
+      "code": "A06",
+      "title_la": "Amoebiasis"
+    },
+    {
+      "code": "A07",
+      "title_la": "Infectiones intestinales protozoicae aliae"
+    },
+    {
+      "code": "A08",
+      "title_la": "Infectiones intestinales virales"
+    },
+    {
+      "code": "A09",
+      "title_la": "Gastroenteritis et colitis origine infectiva et non specificata alia"
+    },
+    {
+      "code": "A15",
+      "title_la": "Tuberculosis organorum respiratoriorum, per bacteriologiam et histologiam"
+    },
+    {
+      "code": "A16",
+      "title_la": "Tuberculosis organorum respiratoriorum, per bacteriologiam et histologiam"
+    },
+    {
+      "code": "A23",
+      "title_la": "Brucellosis"
+    },
+    {
+      "code": "A27",
+      "title_la": "Leptospirosis"
+    },
+    {
+      "code": "A35",
+      "title_la": "Tetanus alius"
+    },
+    {
+      "code": "A36",
+      "title_la": "Diphtheria"
+    },
+    {
+      "code": "A37",
+      "title_la": "Pertussis"
+    },
+    {
+      "code": "A38",
+      "title_la": "Scarlatina"
+    },
+    {
+      "code": "A39",
+      "title_la": "Infectio meningococcica"
+    },
+    {
+      "code": "A40",
+      "title_la": "Sepsis streptococcica"
+    },
+    {
+      "code": "A41",
+      "title_la": "Sepses aliae"
+    },
+    {
+      "code": "A46",
+      "title_la": "Erysipelas"
+    },
+    {
+      "code": "A48",
+      "title_la": "Morbi bacteriales alii, non alibi classificati"
+    },
+    {
+      "code": "A49",
+      "title_la": "Infectio bacterialis, loci non specificati"
+    },
+    {
+      "code": "A51",
+      "title_la": "Syphilis recens"
+    },
+    {
+      "code": "A52",
+      "title_la": "Syphilis tarda"
+    },
+    {
+      "code": "A53",
+      "title_la": "Syphilides aliae non specificatae"
+    },
+    {
+      "code": "A54",
+      "title_la": "Infectio gonococcica"
+    },
+    {
+      "code": "A56",
+      "title_la": "Morbi sexuales alii per Chlamydiam transmissa"
+    },
+    {
+      "code": "A59",
+      "title_la": "Trichomoniasis"
+    },
+    {
+      "code": "A60",
+      "title_la": "Infectio herpesviralis [herpes simplex] regionis anogenitalis"
+    },
+    {
+      "code": "A63",
+      "title_la": "Morbi praedominanter modo sexuali transmissi alii, non alibi classificati"
+    },
+    {
+      "code": "A87",
+      "title_la": "Meningitis viralis"
+    },
+    {
+      "code": "A92",
+      "title_la": "Febres virales anophelis transmissae aliae"
+    },
+    {
+      "code": "A95",
+      "title_la": "Febris flava"
+    },
+    {
+      "code": "A98",
+      "title_la": "Febres haemorrhagicae virales aliae, non alibi classificatae"
+    },
+    {
+      "code": "B00",
+      "title_la": "Infectiones herpesvirales"
+    },
+    {
+      "code": "B01",
+      "title_la": "Varicella"
+    },
+    {
+      "code": "B02",
+      "title_la": "Herpes zoster"
+    },
+    {
+      "code": "B05",
+      "title_la": "Morbilli"
+    },
+    {
+      "code": "B06",
+      "title_la": "Rubeola"
+    },
+    {
+      "code": "B08",
+      "title_la": "Infectiones virales cum laesionibus mucocutaneis aliae, non alibi"
+    },
+    {
+      "code": "B15",
+      "title_la": "Hepatitis acuta A"
+    },
+    {
+      "code": "B16",
+      "title_la": "Hepatitis acuta B"
+    },
+    {
+      "code": "B17",
+      "title_la": "Hepatitides virales acutae aliae"
+    },
+    {
+      "code": "B18",
+      "title_la": "Hepatitis viralis chronica"
+    },
+    {
+      "code": "B19",
+      "title_la": "Hepatitis viralis, non specificata"
+    },
+    {
+      "code": "B20",
+      "title_la": "Morbus HIV - morbus immunodeficientiae acquisitae cum morbis infectivis et"
+    },
+    {
+      "code": "B26",
+      "title_la": "Parotitis"
+    },
+    {
+      "code": "B27",
+      "title_la": "Mononucleosis infectiva"
+    },
+    {
+      "code": "B34",
+      "title_la": "Infectio viralis, loci non specificati"
+    },
+    {
+      "code": "B35",
+      "title_la": "Dermatophytosis"
+    },
+    {
+      "code": "B36",
+      "title_la": "Mycoses superficiales aliae"
+    },
+    {
+      "code": "B37",
+      "title_la": "Candidiasis"
+    },
+    {
+      "code": "B50",
+      "title_la": "Malaria cum Plasmodio falciparo"
+    },
+    {
+      "code": "B51",
+      "title_la": "Malarija cum Plasmodio vivaci"
+    },
+    {
+      "code": "B54",
+      "title_la": "Malaria, non specificata"
+    },
+    {
+      "code": "B68",
+      "title_la": "Taeniasis"
+    },
+    {
+      "code": "B77",
+      "title_la": "Ascariasis"
+    },
+    {
+      "code": "B80",
+      "title_la": "Enterobiasis"
+    },
+    {
+      "code": "B82",
+      "title_la": "Infectio intestinalis parasitaria, non specificata"
+    },
+    {
+      "code": "B85",
+      "title_la": "Pediculosis et phthiriasis"
+    },
+    {
+      "code": "B86",
+      "title_la": "Scabies"
+    },
+    {
+      "code": "C16",
+      "title_la": "Neoplasma malignum gasteris"
+    },
+    {
+      "code": "C18",
+      "title_la": "Neoplasma malignum coli"
+    },
+    {
+      "code": "C20",
+      "title_la": "Neoplasma malignum recti"
+    },
+    {
+      "code": "C22",
+      "title_la": "Neoplasma malignum hepatis et ductuum biliarium intrahepaticorum"
+    },
+    {
+      "code": "C25",
+      "title_la": "Neoplasma malignum pancreatis"
+    },
+    {
+      "code": "C34",
+      "title_la": "Neoplasma malignum bronchi et pulmonis"
+    },
+    {
+      "code": "C43",
+      "title_la": "Melanoma malignum cutis"
+    },
+    {
+      "code": "C44",
+      "title_la": "Neoplasmata malignum cutis alia"
+    },
+    {
+      "code": "C50",
+      "title_la": "Neoplasma malignum mammae"
+    },
+    {
+      "code": "C53",
+      "title_la": "Neoplasma malignum cervicis uteri"
+    },
+    {
+      "code": "C54",
+      "title_la": "Neoplasma malignum corporis uteri"
+    },
+    {
+      "code": "C56",
+      "title_la": "Neoplasma malignum ovarii"
+    },
+    {
+      "code": "C61",
+      "title_la": "Neoplazma malignum prostatae"
+    },
+    {
+      "code": "C64",
+      "title_la": "Neoplasma malignum renis, pelvem renalem excludens"
+    },
+    {
+      "code": "C67",
+      "title_la": "Neoplasma malignum vesicae urinariae"
+    },
+    {
+      "code": "C71",
+      "title_la": "Neoplasma malignum cerebri"
+    },
+    {
+      "code": "C73",
+      "title_la": "Neoplasma malignum glandulae thyreoideae"
+    },
+    {
+      "code": "C77",
+      "title_la": "Neoplasma malignum lymphonodorum secundarium et non specificatum"
+    },
+    {
+      "code": "C78",
+      "title_la": "Neoplasma malignum secundarium organorum respiratorium et"
+    },
+    {
+      "code": "C79",
+      "title_la": "Neoplasma malignum secundarium, locorum aliorum et non specificatorum"
+    },
+    {
+      "code": "C80",
+      "title_la": "Neoplasma malignum, sine loco specificato"
+    },
+    {
+      "code": "C90",
+      "title_la": "Myeloma multiplex et neoplasmata maligna plasma - cellularum"
+    },
+    {
+      "code": "C91",
+      "title_la": "Leukaemia lymphoides"
+    },
+    {
+      "code": "C92",
+      "title_la": "Leukaemia myeloides"
+    },
+    {
+      "code": "D12",
+      "title_la": "Neoplasma benignum coli, recti, ani et canalis analis"
+    },
+    {
+      "code": "D17",
+      "title_la": "Neoplasma benignum lipomatosum"
+    },
+    {
+      "code": "D22",
+      "title_la": "Naevus melanocyticus"
+    },
+    {
+      "code": "D24",
+      "title_la": "Neoplasma benignum mammae"
+    },
+    {
+      "code": "D25",
+      "title_la": "Leiomyoma uteri"
+    },
+    {
+      "code": "D34",
+      "title_la": "Neoplasma benignum glandulae thyreoideae"
+    },
+    {
+      "code": "D37",
+      "title_la": "Neoplasma oris et organorum systematis digestivi"
+    },
+    {
+      "code": "D48",
+      "title_la": "Neoplasma indefiniti sive ignoti, loci alterius"
+    },
+    {
+      "code": "D50",
+      "title_la": "Anaemia sideropenica"
+    },
+    {
+      "code": "D51",
+      "title_la": "Anaemia propter deficientiam vitamini B12"
+    },
+    {
+      "code": "D52",
+      "title_la": "Anaemia propter deficientiam acidi folici"
+    },
+    {
+      "code": "D56",
+      "title_la": "Thalassaemia"
+    },
+    {
+      "code": "D57",
+      "title_la": "Drepanocytosis"
+    },
+    {
+      "code": "D59",
+      "title_la": "Anaemia haemolytica acquisita"
+    },
+    {
+      "code": "D61",
+      "title_la": "Anaemiae aplasticae aliae"
+    },
+    {
+      "code": "D62",
+      "title_la": "Anaemia posthaemorrhagica acuta"
+    },
+    {
+      "code": "D63",
+      "title_la": "Anaemia in morbis chronicis alibi classificatis"
+    },
+    {
+      "code": "D64",
+      "title_la": "Anaemiae aliae"
+    },
+    {
+      "code": "D65",
+      "title_la": "Coagulatio intravascularis disseminata [sindrom defibrinacije]"
+    },
+    {
+      "code": "D66",
+      "title_la": "Deficientia hereditaria factoris VIII"
+    },
+    {
+      "code": "D67",
+      "title_la": "Deficientia hereditaria factoris IX"
+    },
+    {
+      "code": "D68",
+      "title_la": "Defectus coagulationis alii"
+    },
+    {
+      "code": "D69",
+      "title_la": "Purpura et status haemorrhagici alii"
+    },
+    {
+      "code": "D70",
+      "title_la": "Agranulocytosis"
+    },
+    {
+      "code": "D72",
+      "title_la": "Disordines leucocytorum alii"
+    },
+    {
+      "code": "D80",
+      "title_la": "Immunodeficientia cum defectibus anticorporum praedominantibus"
+    },
+    {
+      "code": "D89",
+      "title_la": "Disordines immunitatis alii, non alibi classificatis"
+    },
+    {
+      "code": "E03",
+      "title_la": "Hypothyreoidismus alius"
+    },
+    {
+      "code": "E04",
+      "title_la": "Struma atoxica alia"
+    },
+    {
+      "code": "E05",
+      "title_la": "Thyreotoxicosis"
+    },
+    {
+      "code": "E06",
+      "title_la": "Thyreoiditis"
+    },
+    {
+      "code": "E10",
+      "title_la": "Diabetes mellitus ab insulino dependens"
+    },
+    {
+      "code": "E11",
+      "title_la": "Diabetes mellitus ad insulino independens"
+    },
+    {
+      "code": "E13",
+      "title_la": "Diabetes mellitus alius, specificatus"
+    },
+    {
+      "code": "E14",
+      "title_la": "Diabetes mellitus, non specificatus"
+    },
+    {
+      "code": "E15",
+      "title_la": "Coma hypoglycaemicum non diabeticum"
+    },
+    {
+      "code": "E16",
+      "title_la": "Dysfunctiones secretionis pancreatis interni"
+    },
+    {
+      "code": "E21",
+      "title_la": "Hyperparathyreoidismus et disordines glandulae parathyreoideae alii"
+    },
+    {
+      "code": "E24",
+      "title_la": "Sindroma Cushing"
+    },
+    {
+      "code": "E27",
+      "title_la": "Disordines glandulae adrenalis alii"
+    },
+    {
+      "code": "E28",
+      "title_la": "Dysfunctiones ovariales"
+    },
+    {
+      "code": "E44",
+      "title_la": "Malnutritio proteinoenergetica mitis et moderate gravis"
+    },
+    {
+      "code": "E46",
+      "title_la": "Malnutritio proteinoenergetica, non specificata"
+    },
+    {
+      "code": "E53",
+      "title_la": "Deficientia vitaminorum B aliorum"
+    },
+    {
+      "code": "E55",
+      "title_la": "Deficientia vitamini D"
+    },
+    {
+      "code": "E61",
+      "title_la": "Deficientia materiarum nutritivarum aliarum"
+    },
+    {
+      "code": "E66",
+      "title_la": "Obesitas"
+    },
+    {
+      "code": "E78",
+      "title_la": "Disordines metabolismi lipoproteini et lipidaemiae alii"
+    },
+    {
+      "code": "E79",
+      "title_la": "Disordines metabolismi purini et pyrimidini"
+    },
+    {
+      "code": "E83",
+      "title_la": "Disordines metabolismi mineralium"
+    },
+    {
+      "code": "E86",
+      "title_la": "Dehidratio et hypovolaemia"
+    },
+    {
+      "code": "E87",
+      "title_la": "Disordines fluidi, electrolyti et aequilibrii acidobasis alii"
+    },
+    {
+      "code": "F03",
+      "title_la": "Dementia non specificata"
+    },
+    {
+      "code": "F05",
+      "title_la": "Delirium, non propter usum alcoholis et substantiarum psychoactivarum"
+    },
+    {
+      "code": "F10",
+      "title_la": "Disordines mentales et disordines morum propter usum alcoholis"
+    },
+    {
+      "code": "F11",
+      "title_la": "Disordines mentales et disordines morum propter usum opiatorum"
+    },
+    {
+      "code": "F12",
+      "title_la": "Disordines mentales et disordines morum propter usum cannabinoidarum"
+    },
+    {
+      "code": "F13",
+      "title_la": "Disordines mentales et disordines morum propter usum hiponoticorum sive"
+    },
+    {
+      "code": "F14",
+      "title_la": "Disordines mentales et disordines morum propter usum cocaini"
+    },
+    {
+      "code": "F15",
+      "title_la": "Disordines mentales et disordines morum propter usum stimulantium"
+    },
+    {
+      "code": "F17",
+      "title_la": "Disordines mentales et disordines morum propter usum tabaci"
+    },
+    {
+      "code": "F19",
+      "title_la": "Disordines mentales et disordines morum propter usum substantiarum"
+    },
+    {
+      "code": "F20",
+      "title_la": "Schizophrenia"
+    },
+    {
+      "code": "F23",
+      "title_la": "Psychoses acutae et transitivae"
+    },
+    {
+      "code": "F25",
+      "title_la": "Psychoses schizoaffectivae"
+    },
+    {
+      "code": "F30",
+      "title_la": "Mania"
+    },
+    {
+      "code": "F31",
+      "title_la": "Psychosis affectiva, typus bipolaris"
+    },
+    {
+      "code": "F32",
+      "title_la": "Depressio"
+    },
+    {
+      "code": "F33",
+      "title_la": "Depressio recurrens"
+    },
+    {
+      "code": "F40",
+      "title_la": "Disordines anxiosi phobici"
+    },
+    {
+      "code": "F41",
+      "title_la": "Disordines anxiosi alii"
+    },
+    {
+      "code": "F42",
+      "title_la": "Disordo obsessivocompulsivus"
+    },
+    {
+      "code": "F43",
+      "title_la": "Reactio stressogenes, gradus majoris, et reactiones maladaptivae"
+    },
+    {
+      "code": "F45",
+      "title_la": "Disordines somatoformes"
+    },
+    {
+      "code": "F50",
+      "title_la": "Disordines alimentarii"
+    },
+    {
+      "code": "F51",
+      "title_la": "Disordines somni non organici"
+    },
+    {
+      "code": "F90",
+      "title_la": "Disordines hyperkinetici"
+    },
+    {
+      "code": "F99",
+      "title_la": "Disordo mentalis"
+    },
+    {
+      "code": "G00",
+      "title_la": "Meningitis bacterialis, non alibi classificatis"
+    },
+    {
+      "code": "G03",
+      "title_la": "Meningitis propter causas alias et non specificatas"
+    },
+    {
+      "code": "G04",
+      "title_la": "Encephalitis, myelitis et encephalomyelitis"
+    },
+    {
+      "code": "G20",
+      "title_la": "Morbus Parkinson"
+    },
+    {
+      "code": "G30",
+      "title_la": "Morbus Alzheimer"
+    },
+    {
+      "code": "G35",
+      "title_la": "Sclerosis multiplex"
+    },
+    {
+      "code": "G40",
+      "title_la": "Epilepsia"
+    },
+    {
+      "code": "G41",
+      "title_la": "Status epilepticus"
+    },
+    {
+      "code": "G43",
+      "title_la": "Migraena"
+    },
+    {
+      "code": "G44",
+      "title_la": "Syndromata cephalalgica alia"
+    },
+    {
+      "code": "G45",
+      "title_la": "Paroxysmi cerebrales ischaemici transitorii et syndromata affinia"
+    },
+    {
+      "code": "G47",
+      "title_la": "Disordines somni"
+    },
+    {
+      "code": "G50",
+      "title_la": "Disordines nervi trigemini"
+    },
+    {
+      "code": "G51",
+      "title_la": "Disordines nervi facialis"
+    },
+    {
+      "code": "G54",
+      "title_la": "Affectiones radicum et plexuum nervorum"
+    },
+    {
+      "code": "G56",
+      "title_la": "Mononeuropathiae extremitatis superioris"
+    },
+    {
+      "code": "G57",
+      "title_la": "Mononeuropathiae extremitatis inferioris"
+    },
+    {
+      "code": "G62",
+      "title_la": "Polyneuropathiae aliae"
+    },
+    {
+      "code": "G70",
+      "title_la": "Myasthenia gravis et disordines myoneurales alii"
+    },
+    {
+      "code": "G81",
+      "title_la": "Hemiplegia"
+    },
+    {
+      "code": "G82",
+      "title_la": "Paraplegia et tetraplegia"
+    },
+    {
+      "code": "G93",
+      "title_la": "Disordines cerebri alii"
+    },
+    {
+      "code": "H00",
+      "title_la": "Hordeolum et chalazion"
+    },
+    {
+      "code": "H01",
+      "title_la": "Morbi palpebrae inflammatorii alii"
+    },
+    {
+      "code": "H10",
+      "title_la": "Conjunctivitis"
+    },
+    {
+      "code": "H16",
+      "title_la": "Keratitis"
+    },
+    {
+      "code": "H20",
+      "title_la": "Iridocyclitis"
+    },
+    {
+      "code": "H25",
+      "title_la": "Cataracta senilis"
+    },
+    {
+      "code": "H33",
+      "title_la": "Ablatio retinae et ruptura retinae"
+    },
+    {
+      "code": "H34",
+      "title_la": "Occlusio retinae vascularis"
+    },
+    {
+      "code": "H40",
+      "title_la": "Glaucoma"
+    },
+    {
+      "code": "H46",
+      "title_la": "Neuritis optica"
+    },
+    {
+      "code": "H52",
+      "title_la": "Anomaliae refractionis et anomaliae accommodationis"
+    },
+    {
+      "code": "H53",
+      "title_la": "Disordines visuales"
+    },
+    {
+      "code": "H54",
+      "title_la": "Amblyopia et amaurosis (binocularis vel monocularis)"
+    },
+    {
+      "code": "H57",
+      "title_la": "Morbi oculi et adnexorum alii"
+    },
+    {
+      "code": "H60",
+      "title_la": "Otitis externa"
+    },
+    {
+      "code": "H61",
+      "title_la": "Morbi auris externae alii"
+    },
+    {
+      "code": "H65",
+      "title_la": "Otitis media non suppurativa"
+    },
+    {
+      "code": "H66",
+      "title_la": "Otitis media suppurativa et non specificata"
+    },
+    {
+      "code": "H70",
+      "title_la": "Mastoiditis et morbi affines"
+    },
+    {
+      "code": "H72",
+      "title_la": "Perforatio membranae tympani"
+    },
+    {
+      "code": "H81",
+      "title_la": "Morbi functionis organorum vestibularium"
+    },
+    {
+      "code": "H90",
+      "title_la": "Surditas conductiva et surditas sensorineuralis"
+    },
+    {
+      "code": "H91",
+      "title_la": "Surditas alia"
+    },
+    {
+      "code": "H92",
+      "title_la": "Otalgia et otorrhoea"
+    },
+    {
+      "code": "H93",
+      "title_la": "Disordines auris alii, non alibi classificatis"
+    },
+    {
+      "code": "I10",
+      "title_la": "Hypertensio arterialis essentialis (primaria)"
+    },
+    {
+      "code": "I11",
+      "title_la": "Morbus cordis hypertensivus"
+    },
+    {
+      "code": "I12",
+      "title_la": "Morbus renalis hypertensivus"
+    },
+    {
+      "code": "I13",
+      "title_la": "Morbus cordis et morbus renis hypertensivus"
+    },
+    {
+      "code": "I15",
+      "title_la": "Hypertensio arterialis secundaria"
+    },
+    {
+      "code": "I20",
+      "title_la": "Angina pectoris"
+    },
+    {
+      "code": "I21",
+      "title_la": "Infarctus myocardii acutus"
+    },
+    {
+      "code": "I24",
+      "title_la": "Morbi cordis ishaemici acuti alli"
+    },
+    {
+      "code": "I25",
+      "title_la": "Morbus cordis ischaemicus chronicus"
+    },
+    {
+      "code": "I26",
+      "title_la": "Embolia pulmonis"
+    },
+    {
+      "code": "I30",
+      "title_la": "Pericarditis acuta"
+    },
+    {
+      "code": "I33",
+      "title_la": "Endocarditis acuta et subacuta"
+    },
+    {
+      "code": "I40",
+      "title_la": "Myocarditis acuta"
+    },
+    {
+      "code": "I42",
+      "title_la": "Cardiomyopathia"
+    },
+    {
+      "code": "I44",
+      "title_la": "Block atrioventricularis et block rami sinistri"
+    },
+    {
+      "code": "I45",
+      "title_la": "Disordines systematis conductivi cordis alii"
+    },
+    {
+      "code": "I46",
+      "title_la": "Institio cordis"
+    },
+    {
+      "code": "I47",
+      "title_la": "Tachycardia paraoxysmalis"
+    },
+    {
+      "code": "I48",
+      "title_la": "Fibrillatio atriorum et fluctuatio atriorum"
+    },
+    {
+      "code": "I49",
+      "title_la": "Arrhytmiae cordis aliae"
+    },
+    {
+      "code": "I50",
+      "title_la": "Insufficientia cordis"
+    },
+    {
+      "code": "I51",
+      "title_la": "Complicationes et morbi cordis male definiti"
+    },
+    {
+      "code": "I60",
+      "title_la": "Haemorrhagia subarachnoidalis"
+    },
+    {
+      "code": "I61",
+      "title_la": "Haemorrhagia intracerebralis"
+    },
+    {
+      "code": "I62",
+      "title_la": "Haemorrhagia intracranialis non traumatica, alia"
+    },
+    {
+      "code": "I63",
+      "title_la": "Infarctus cerebri"
+    },
+    {
+      "code": "I64",
+      "title_la": "specificata"
+    },
+    {
+      "code": "I65",
+      "title_la": "Occlusio arteriae praecerebralis et stenosis arteriae praecerebralis sine"
+    },
+    {
+      "code": "I67",
+      "title_la": "Morbi cerebrovasculares alli"
+    },
+    {
+      "code": "I69",
+      "title_la": "Sequelae morbi cerebrovascularis"
+    },
+    {
+      "code": "I70",
+      "title_la": "Atherosclerosis"
+    },
+    {
+      "code": "I71",
+      "title_la": "Aneurysma et dissectio aortae"
+    },
+    {
+      "code": "I73",
+      "title_la": "Morbi vasorum periphericorum alii"
+    },
+    {
+      "code": "I74",
+      "title_la": "Embolia et thrombosis arteriarum"
+    },
+    {
+      "code": "I80",
+      "title_la": "Phlebitis et thrombophlebitis"
+    },
+    {
+      "code": "I82",
+      "title_la": "Embolia et thrombosis venarum alia"
+    },
+    {
+      "code": "I83",
+      "title_la": "Varices venarum extremitatum inferiorum"
+    },
+    {
+      "code": "I85",
+      "title_la": "Varices oesophagi"
+    },
+    {
+      "code": "I87",
+      "title_la": "Morbi venarum alii"
+    },
+    {
+      "code": "I95",
+      "title_la": "Hypotensio arterialis"
+    },
+    {
+      "code": "J00",
+      "title_la": "Nasopharyngitis acuta"
+    },
+    {
+      "code": "J01",
+      "title_la": "Sinusitis acuta"
+    },
+    {
+      "code": "J02",
+      "title_la": "Pharyngitis acuta"
+    },
+    {
+      "code": "J03",
+      "title_la": "Tonsillitis acuta"
+    },
+    {
+      "code": "J04",
+      "title_la": "Laryngitis acuta et tracheitis acuta"
+    },
+    {
+      "code": "J05",
+      "title_la": "Laryngitis obstructiva acuta [croup] et epiglottitis acuta"
+    },
+    {
+      "code": "J06",
+      "title_la": "Infectiones tractus respiratorii superioris acutae, locis multis et non"
+    },
+    {
+      "code": "J09",
+      "title_la": "Influenza, virus identificatum"
+    },
+    {
+      "code": "J10",
+      "title_la": "Influenza, virus influencae aliud identificatum"
+    },
+    {
+      "code": "J11",
+      "title_la": "Influenza, virus non identificatum"
+    },
+    {
+      "code": "J12",
+      "title_la": "Pneumonia viralis, non alibi classificata"
+    },
+    {
+      "code": "J13",
+      "title_la": "Pneumonia per Streptococcum pneumoniae"
+    },
+    {
+      "code": "J15",
+      "title_la": "Pneumonia bacterialis, non alibi classificata"
+    },
+    {
+      "code": "J18",
+      "title_la": "Pneumonia per microorganismum non specificatum"
+    },
+    {
+      "code": "J20",
+      "title_la": "Bronchitis acuta"
+    },
+    {
+      "code": "J21",
+      "title_la": "Bronchiolitis acuta"
+    },
+    {
+      "code": "J22",
+      "title_la": "Infectio respiratoria systematis inferioris acuta, non specificata"
+    },
+    {
+      "code": "J30",
+      "title_la": "Rhinitis vasomotoria et rhinitis allergica"
+    },
+    {
+      "code": "J32",
+      "title_la": "Sinusitis chronica"
+    },
+    {
+      "code": "J36",
+      "title_la": "Abscessus peritonsillaris"
+    },
+    {
+      "code": "J40",
+      "title_la": "Bronchitis non specificata ut acuta sive chronica"
+    },
+    {
+      "code": "J42",
+      "title_la": "Bronchitis chronica, non specificata"
+    },
+    {
+      "code": "J43",
+      "title_la": "Emphysema pulmonum"
+    },
+    {
+      "code": "J44",
+      "title_la": "Morbus pulmonis obstructivus chronicus alius"
+    },
+    {
+      "code": "J45",
+      "title_la": "Asthma"
+    },
+    {
+      "code": "J46",
+      "title_la": "Status asthmaticus"
+    },
+    {
+      "code": "J47",
+      "title_la": "Bronchiectasia"
+    },
+    {
+      "code": "J69",
+      "title_la": "Pneumonia propter corpora dura et liquores"
+    },
+    {
+      "code": "J80",
+      "title_la": "Syndroma distress respiratorium ad adultum"
+    },
+    {
+      "code": "J81",
+      "title_la": "Oedema pulmonum"
+    },
+    {
+      "code": "J84",
+      "title_la": "Morbi interstitiales pulmonum, alii"
+    },
+    {
+      "code": "J90",
+      "title_la": "Effusio pleurae non alibi classificata"
+    },
+    {
+      "code": "J93",
+      "title_la": "Pneumothorax"
+    },
+    {
+      "code": "J96",
+      "title_la": "Insufficientia respiratoria, non alibi classificata"
+    },
+    {
+      "code": "K02",
+      "title_la": "Caries dentium"
+    },
+    {
+      "code": "K04",
+      "title_la": "Morbi pulpae et textus periapicalis"
+    },
+    {
+      "code": "K05",
+      "title_la": "Gingivitis et morbi periodontales"
+    },
+    {
+      "code": "K12",
+      "title_la": "Stomatitis et affinibus laesiones"
+    },
+    {
+      "code": "K20",
+      "title_la": "Oesophagitis"
+    },
+    {
+      "code": "K21",
+      "title_la": "Morbus refluxualis gastro-oesophageus"
+    },
+    {
+      "code": "K22",
+      "title_la": "Morbi oesophagi alii"
+    },
+    {
+      "code": "K25",
+      "title_la": "Ulcus ventriculi"
+    },
+    {
+      "code": "K26",
+      "title_la": "Ulcus duodeni"
+    },
+    {
+      "code": "K27",
+      "title_la": "Ulcus pepticum, loci non specificati"
+    },
+    {
+      "code": "K29",
+      "title_la": "Gastritis et duedenitis"
+    },
+    {
+      "code": "K30",
+      "title_la": "Dyspepsia"
+    },
+    {
+      "code": "K31",
+      "title_la": "Morbi ventriculi et morbi duodeni alii"
+    },
+    {
+      "code": "K35",
+      "title_la": "Appendicitis acuta"
+    },
+    {
+      "code": "K37",
+      "title_la": "Appendicitis, non specificata"
+    },
+    {
+      "code": "K40",
+      "title_la": "Hernia inguinalis"
+    },
+    {
+      "code": "K42",
+      "title_la": "Hernia umbilicalis"
+    },
+    {
+      "code": "K43",
+      "title_la": "Hernia ventralis"
+    },
+    {
+      "code": "K44",
+      "title_la": "Hernia diaphragmatica"
+    },
+    {
+      "code": "K50",
+      "title_la": "Morbus Crohn [enteritis regionalis]"
+    },
+    {
+      "code": "K51",
+      "title_la": "Colitis ulcerosa"
+    },
+    {
+      "code": "K52",
+      "title_la": "Gastroenteritis et colitis non infectiva alia"
+    },
+    {
+      "code": "K55",
+      "title_la": "Morbi intestini vasculares"
+    },
+    {
+      "code": "K56",
+      "title_la": "Ileus paralyticus et obstructio intestinalis, sine hernia"
+    },
+    {
+      "code": "K57",
+      "title_la": "Diverticulosis intestini"
+    },
+    {
+      "code": "K58",
+      "title_la": "Syndroma intestini irritabilis"
+    },
+    {
+      "code": "K59",
+      "title_la": "Dysfunctiones intestinales aliae"
+    },
+    {
+      "code": "K60",
+      "title_la": "Fissura et fistula regionis analis et rectalis"
+    },
+    {
+      "code": "K61",
+      "title_la": "Abscessus regionis analis et rectalis"
+    },
+    {
+      "code": "K64",
+      "title_la": "Haemorrhoides et thrombosis venosa perianalis"
+    },
+    {
+      "code": "K65",
+      "title_la": "Peritonitis"
+    },
+    {
+      "code": "K70",
+      "title_la": "Morbus hepatis alcoholicus"
+    },
+    {
+      "code": "K71",
+      "title_la": "Morbus hepatis toxicus"
+    },
+    {
+      "code": "K72",
+      "title_la": "Insufficientia hepatis, non alibi classificata"
+    },
+    {
+      "code": "K74",
+      "title_la": "Fibrosis et cirrhosis hepatis"
+    },
+    {
+      "code": "K76",
+      "title_la": "Morbi hepatis alii"
+    },
+    {
+      "code": "K80",
+      "title_la": "Cholelithiasis"
+    },
+    {
+      "code": "K81",
+      "title_la": "Cholecystitis"
+    },
+    {
+      "code": "K83",
+      "title_la": "Morbi tracti biliares alii"
+    },
+    {
+      "code": "K85",
+      "title_la": "Pancreatitis acuta"
+    },
+    {
+      "code": "K86",
+      "title_la": "Morbi pancreatis alii"
+    },
+    {
+      "code": "K90",
+      "title_la": "Malabsorptio intestini"
+    },
+    {
+      "code": "K92",
+      "title_la": "Morbi organorum digestivorum alii"
+    },
+    {
+      "code": "L01",
+      "title_la": "Impetigo"
+    },
+    {
+      "code": "L02",
+      "title_la": "Abscessus, furunculus et carbunculus cutis"
+    },
+    {
+      "code": "L03",
+      "title_la": "Cellulitis [Phlegmone]"
+    },
+    {
+      "code": "L05",
+      "title_la": "Cystis pilonidalis"
+    },
+    {
+      "code": "L08",
+      "title_la": "Infectiones locales cutis et subcutis aliae"
+    },
+    {
+      "code": "L20",
+      "title_la": "Dermatitis atopica"
+    },
+    {
+      "code": "L21",
+      "title_la": "Dermatitis seborrhoeica"
+    },
+    {
+      "code": "L22",
+      "title_la": "Diaper [napkin] dermatitis"
+    },
+    {
+      "code": "L23",
+      "title_la": "Dermatitis contacta allergica"
+    },
+    {
+      "code": "L24",
+      "title_la": "Dermatitis contacta irritans"
+    },
+    {
+      "code": "L25",
+      "title_la": "Dermatitis contacta, non specificata"
+    },
+    {
+      "code": "L29",
+      "title_la": "Pruritus"
+    },
+    {
+      "code": "L30",
+      "title_la": "Dermatitis alia"
+    },
+    {
+      "code": "L40",
+      "title_la": "Psoriasis"
+    },
+    {
+      "code": "L50",
+      "title_la": "Urticaria"
+    },
+    {
+      "code": "L51",
+      "title_la": "Erythema multiforme"
+    },
+    {
+      "code": "L55",
+      "title_la": "Combustio solaris"
+    },
+    {
+      "code": "L60",
+      "title_la": "Disordines unguium"
+    },
+    {
+      "code": "L63",
+      "title_la": "Alopecia areata"
+    },
+    {
+      "code": "L70",
+      "title_la": "Acnae"
+    },
+    {
+      "code": "L71",
+      "title_la": "Rosacea"
+    },
+    {
+      "code": "L72",
+      "title_la": "Cystes folliculares cutis et subcutis"
+    },
+    {
+      "code": "L80",
+      "title_la": "Vitiligo"
+    },
+    {
+      "code": "L89",
+      "title_la": "Ulcus decubitale"
+    },
+    {
+      "code": "L97",
+      "title_la": "Ulcus extremitatis inferioris non alibi classificatis"
+    },
+    {
+      "code": "M00",
+      "title_la": "Arthritis purulenta"
+    },
+    {
+      "code": "M05",
+      "title_la": "Arthritis rheumatoides seropositiva"
+    },
+    {
+      "code": "M06",
+      "title_la": "Arthritis rheumatoides alia"
+    },
+    {
+      "code": "M10",
+      "title_la": "Arthritis urica"
+    },
+    {
+      "code": "M13",
+      "title_la": "Arthritis alia"
+    },
+    {
+      "code": "M15",
+      "title_la": "Polyarthrosis"
+    },
+    {
+      "code": "M16",
+      "title_la": "Coxarthrosis"
+    },
+    {
+      "code": "M17",
+      "title_la": "Gonarthrosis"
+    },
+    {
+      "code": "M18",
+      "title_la": "Arthrosis articuli carpometacarpalis pollicis"
+    },
+    {
+      "code": "M19",
+      "title_la": "Arthrosis alia"
+    },
+    {
+      "code": "M22",
+      "title_la": "Morbi patellae"
+    },
+    {
+      "code": "M23",
+      "title_la": "Morbi genus interni"
+    },
+    {
+      "code": "M25",
+      "title_la": "Morbi articulorum alii, non alibi classificati"
+    },
+    {
+      "code": "M32",
+      "title_la": "Lupus erythematosus systemicus"
+    },
+    {
+      "code": "M35",
+      "title_la": "Morbi textus connexivi systemici alii"
+    },
+    {
+      "code": "M40",
+      "title_la": "Kyphosis et lordosis"
+    },
+    {
+      "code": "M41",
+      "title_la": "Scoliosis"
+    },
+    {
+      "code": "M45",
+      "title_la": "Spondylitis ankylopoietica"
+    },
+    {
+      "code": "M47",
+      "title_la": "Spondylosis"
+    },
+    {
+      "code": "M48",
+      "title_la": "Spondylopathiae aliae"
+    },
+    {
+      "code": "M50",
+      "title_la": "Morbi discorum intervertebralium cervicalium"
+    },
+    {
+      "code": "M51",
+      "title_la": "Morbi discorum intervertebralium alii"
+    },
+    {
+      "code": "M54",
+      "title_la": "Dorsalgia"
+    },
+    {
+      "code": "M60",
+      "title_la": "Myositis"
+    },
+    {
+      "code": "M62",
+      "title_la": "Morbi musculi alii"
+    },
+    {
+      "code": "M65",
+      "title_la": "Synovitis et tenosynovitis"
+    },
+    {
+      "code": "M70",
+      "title_la": "Morbi textuum mollium propter activitatem, hyperactivitatem et pressionem"
+    },
+    {
+      "code": "M75",
+      "title_la": "Laesiones regionis humeroscapularis"
+    },
+    {
+      "code": "M76",
+      "title_la": "Enthesopathia extremitatis inferioris, pedem excludens"
+    },
+    {
+      "code": "M77",
+      "title_la": "Enthesopathiae aliae"
+    },
+    {
+      "code": "M79",
+      "title_la": "Morbi textuum mollium alii, non alibi classificati"
+    },
+    {
+      "code": "M80",
+      "title_la": "Osteoporosis cum fractura pathologica"
+    },
+    {
+      "code": "M81",
+      "title_la": "Osteoporosis sine fractura pathologica"
+    },
+    {
+      "code": "M83",
+      "title_la": "Osteomalacia ad adultum"
+    },
+    {
+      "code": "M84",
+      "title_la": "Morbi continuitatis ossis"
+    },
+    {
+      "code": "M86",
+      "title_la": "Osteomyelitis"
+    },
+    {
+      "code": "M87",
+      "title_la": "Osteonecrosis"
+    },
+    {
+      "code": "N00",
+      "title_la": "Syndroma nephritica acuta"
+    },
+    {
+      "code": "N04",
+      "title_la": "Syndroma nephroticum"
+    },
+    {
+      "code": "N10",
+      "title_la": "Nephritis tubulointerstitialis acuta"
+    },
+    {
+      "code": "N12",
+      "title_la": "chronica"
+    },
+    {
+      "code": "N13",
+      "title_la": "Uropathia propter obstructioneem cum refluxu"
+    },
+    {
+      "code": "N17",
+      "title_la": "Insufficientia renalis acuta"
+    },
+    {
+      "code": "N18",
+      "title_la": "Morbus renalis chronicus"
+    },
+    {
+      "code": "N19",
+      "title_la": "Insufficientia renalis non specificata"
+    },
+    {
+      "code": "N20",
+      "title_la": "Nephrolithiasis et ureterolithiasis"
+    },
+    {
+      "code": "N21",
+      "title_la": "Calculus tractus urinarii inferioris"
+    },
+    {
+      "code": "N23",
+      "title_la": "Colica renalis, non specificata"
+    },
+    {
+      "code": "N30",
+      "title_la": "Cystitis"
+    },
+    {
+      "code": "N34",
+      "title_la": "Urethritis et syndroma urethrale"
+    },
+    {
+      "code": "N39",
+      "title_la": "Disordines tractus urinarii alii"
+    },
+    {
+      "code": "N40",
+      "title_la": "Hyperplasia prostatae"
+    },
+    {
+      "code": "N41",
+      "title_la": "Morbi inflammatorii prostatae"
+    },
+    {
+      "code": "N43",
+      "title_la": "Hydrocele et spermatocele"
+    },
+    {
+      "code": "N44",
+      "title_la": "Torsio testis"
+    },
+    {
+      "code": "N45",
+      "title_la": "Orchitis et epididymitis"
+    },
+    {
+      "code": "N47",
+      "title_la": "Praeputium redundans, phimosis et paraphimosis"
+    },
+    {
+      "code": "N49",
+      "title_la": "Disordines inflammatorii genitaliorum masculinorum, non alibi classificati"
+    },
+    {
+      "code": "N61",
+      "title_la": "Disordines mammae inflammatorii"
+    },
+    {
+      "code": "N63",
+      "title_la": "Gleba mammae, non specificata"
+    },
+    {
+      "code": "N70",
+      "title_la": "Salpingitis et oophoritis"
+    },
+    {
+      "code": "N72",
+      "title_la": "Cervicitis uteri"
+    },
+    {
+      "code": "N73",
+      "title_la": "Morbi inflammatorii pelvici feminae alii"
+    },
+    {
+      "code": "N75",
+      "title_la": "Morbi glandulae Bartholin"
+    },
+    {
+      "code": "N76",
+      "title_la": "Inflammationes vaginae et vulvae aliae"
+    },
+    {
+      "code": "N80",
+      "title_la": "Endometriosis"
+    },
+    {
+      "code": "N83",
+      "title_la": "Disordines ovarii, tubae uterinae et ligamenti lati non inflammatorii"
+    },
+    {
+      "code": "N91",
+      "title_la": "Amenorrhoea et oligomenorrhoea"
+    },
+    {
+      "code": "N92",
+      "title_la": "Menorrhagia, polymenorrhoea et metrorrhagia"
+    },
+    {
+      "code": "N93",
+      "title_la": "Haemorrhagia uteri et vaginae abnormalis alia"
+    },
+    {
+      "code": "N94",
+      "title_la": "Dolor et status alii cum genitalibus femininis et cyclo menstruali coniunctus"
+    },
+    {
+      "code": "N95",
+      "title_la": "Disordines menopausales et disordines alii perimenopausales"
+    },
+    {
+      "code": "O00",
+      "title_la": "Graviditas extrauterina"
+    },
+    {
+      "code": "O02",
+      "title_la": "Eventus conceptionis abnormalis alius"
+    },
+    {
+      "code": "O03",
+      "title_la": "Abortus spontaneus"
+    },
+    {
+      "code": "O08",
+      "title_la": "Complicationes post abortum, graviditatem ectopicam et molarem"
+    },
+    {
+      "code": "O10",
+      "title_la": "Hypertensio arterialis praeexistens per graviditatem, partum et puerperium"
+    },
+    {
+      "code": "O13",
+      "title_la": "Hypertensio arterialis in graviditate sine proteinuria"
+    },
+    {
+      "code": "O14",
+      "title_la": "Praeeclampsia – Hypertensio arterialis in graviditate cum proteinuria"
+    },
+    {
+      "code": "O15",
+      "title_la": "Eclampsia"
+    },
+    {
+      "code": "O20",
+      "title_la": "Haemorrhagia in graviditate initiali"
+    },
+    {
+      "code": "O21",
+      "title_la": "Hyperemesis in graviditate"
+    },
+    {
+      "code": "O22",
+      "title_la": "Complicationes venarum gravidae"
+    },
+    {
+      "code": "O23",
+      "title_la": "Infectiones tractus urogenitalis in graviditate"
+    },
+    {
+      "code": "O24",
+      "title_la": "Diabetes mellitus in graviditate"
+    },
+    {
+      "code": "O26",
+      "title_la": "Curatio matris propter alias conditiones praedominantes coniunctas cum"
+    },
+    {
+      "code": "O30",
+      "title_la": "Graviditas plurifetalis"
+    },
+    {
+      "code": "O36",
+      "title_la": "Curatio matris ad problema fetus nota sive suspecta alia"
+    },
+    {
+      "code": "O40",
+      "title_la": "Polyhydramnion"
+    },
+    {
+      "code": "O41",
+      "title_la": "Disordines liquoris et membranarum amnii alii"
+    },
+    {
+      "code": "O42",
+      "title_la": "Ruptura membranarum amnii praematura"
+    },
+    {
+      "code": "O44",
+      "title_la": "Placenta praevia"
+    },
+    {
+      "code": "O45",
+      "title_la": "Abruptio placentae praematura"
+    },
+    {
+      "code": "O46",
+      "title_la": "Haemorrhagia ante partum, non alibi classificata"
+    },
+    {
+      "code": "O47",
+      "title_la": "Labores falsi"
+    },
+    {
+      "code": "O60",
+      "title_la": "Labores praematuri et partus praematurus"
+    },
+    {
+      "code": "O68",
+      "title_la": "Partus propter asphyxiam fetus complicatus"
+    },
+    {
+      "code": "O72",
+      "title_la": "Haemorrhagia post partum"
+    },
+    {
+      "code": "O75",
+      "title_la": "Complicationes per partum aliae, non alibi classificatae"
+    },
+    {
+      "code": "O80",
+      "title_la": "Partus spontaneus simplex"
+    },
+    {
+      "code": "O85",
+      "title_la": "Sepsis puerperalis"
+    },
+    {
+      "code": "O91",
+      "title_la": "Mastitis per lactationem"
+    },
+    {
+      "code": "O98",
+      "title_la": "Morbi materni infectiosi et parasitici alibi classificabiles sed complicantes"
+    },
+    {
+      "code": "O99",
+      "title_la": "Alii morbi materni alibi classificabiles sed complicantes graviditatem, partum"
+    },
+    {
+      "code": "P05",
+      "title_la": "Incrementum lentum et malnutritio fetus"
+    },
+    {
+      "code": "P07",
+      "title_la": "Disordines cum gestatione brevi et pondus ad terminum parvum, coniuncti,"
+    },
+    {
+      "code": "P21",
+      "title_la": "Asphyxia neonatalis"
+    },
+    {
+      "code": "P22",
+      "title_la": "Angor (distress) neonati respiratorius"
+    },
+    {
+      "code": "P23",
+      "title_la": "Pneumonia congenita"
+    },
+    {
+      "code": "P24",
+      "title_la": "Syndromata aspirationis neonati"
+    },
+    {
+      "code": "P36",
+      "title_la": "Sepsis neonati bacterialis"
+    },
+    {
+      "code": "P55",
+      "title_la": "Morbus haemolyticus fetus et neonati"
+    },
+    {
+      "code": "P59",
+      "title_la": "Icterus neonati alius et non specificatus"
+    },
+    {
+      "code": "P70",
+      "title_la": "Disordines metabolismi carbohydratorum fetus et neonati transitivi"
+    },
+    {
+      "code": "P80",
+      "title_la": "Hypothermia neonati"
+    },
+    {
+      "code": "P90",
+      "title_la": "Convulsiones neonati"
+    },
+    {
+      "code": "P92",
+      "title_la": "Morbi neonati alimentarii"
+    },
+    {
+      "code": "Q20",
+      "title_la": "Malformationes atrii et ventriculi cordis congenitae"
+    },
+    {
+      "code": "Q21",
+      "title_la": "Malformationes septi cordis congenitae"
+    },
+    {
+      "code": "Q25",
+      "title_la": "Malformationes arteriarum magnarum congenitae"
+    },
+    {
+      "code": "Q35",
+      "title_la": "Palatoschisis"
+    },
+    {
+      "code": "Q36",
+      "title_la": "Labium leporinum"
+    },
+    {
+      "code": "Q37",
+      "title_la": "Cheilopalatoschisis"
+    },
+    {
+      "code": "Q53",
+      "title_la": "Cryptorchismus"
+    },
+    {
+      "code": "Q65",
+      "title_la": "Deformationes coxae congenitae"
+    },
+    {
+      "code": "Q66",
+      "title_la": "Deformationes pedis congenitae"
+    },
+    {
+      "code": "Q90",
+      "title_la": "Syndroma Down"
+    },
+    {
+      "code": "R00",
+      "title_la": "Arrhytmiae cordis"
+    },
+    {
+      "code": "R01",
+      "title_la": "Strepitus et soni cardiaci alii"
+    },
+    {
+      "code": "R03",
+      "title_la": "Tensio sanguinea abnormalis, sine diagnosi"
+    },
+    {
+      "code": "R04",
+      "title_la": "Haemorrhagia tractuum respiratoriorum"
+    },
+    {
+      "code": "R05",
+      "title_la": "Tussis"
+    },
+    {
+      "code": "R06",
+      "title_la": "Respirationes abnormales"
+    },
+    {
+      "code": "R07",
+      "title_la": "Dolor laryngicus et pectoralis"
+    },
+    {
+      "code": "R09",
+      "title_la": "Symptomata et signa systematis circulatorii et respiratorii alia"
+    },
+    {
+      "code": "R10",
+      "title_la": "Dolor abdominalis et pelvicus"
+    },
+    {
+      "code": "R11",
+      "title_la": "Nausea et vomitus"
+    },
+    {
+      "code": "R12",
+      "title_la": "Pyrosis"
+    },
+    {
+      "code": "R13",
+      "title_la": "Dysphagia"
+    },
+    {
+      "code": "R14",
+      "title_la": "Flatulentia et status similes"
+    },
+    {
+      "code": "R15",
+      "title_la": "Incontinentia alvi"
+    },
+    {
+      "code": "R16",
+      "title_la": "Hepatomegalia et splenomegalia, non alibi classificatae"
+    },
+    {
+      "code": "R17",
+      "title_la": "Icterus non specificatus"
+    },
+    {
+      "code": "R18",
+      "title_la": "Ascites"
+    },
+    {
+      "code": "R19",
+      "title_la": "Symptomata et signa systematis digestivi et abdominis alia"
+    },
+    {
+      "code": "R20",
+      "title_la": "Disordines sensibilitatis cutis"
+    },
+    {
+      "code": "R21",
+      "title_la": "Urticaria et exanthemata cutis alia"
+    },
+    {
+      "code": "R22",
+      "title_la": "Intumescentia et tumefactia localisata cutis et subcutis"
+    },
+    {
+      "code": "R23",
+      "title_la": "Mutationes cutis aliae"
+    },
+    {
+      "code": "R25",
+      "title_la": "Motus involuntarii abnormales"
+    },
+    {
+      "code": "R26",
+      "title_la": "Abnormitates ingressus et mobilitatis"
+    },
+    {
+      "code": "R27",
+      "title_la": "Coordinatio disordinata alia"
+    },
+    {
+      "code": "R29",
+      "title_la": "Symptomata et signa systematis nervosi et musculosceletalis alia"
+    },
+    {
+      "code": "R30",
+      "title_la": "Mictio dolorosa"
+    },
+    {
+      "code": "R31",
+      "title_la": "Haematuria, non specificata"
+    },
+    {
+      "code": "R32",
+      "title_la": "Incontinentia urinae, non specificata"
+    },
+    {
+      "code": "R33",
+      "title_la": "Retentia urinae"
+    },
+    {
+      "code": "R34",
+      "title_la": "Anuria et oliguria"
+    },
+    {
+      "code": "R35",
+      "title_la": "Polyuria"
+    },
+    {
+      "code": "R39",
+      "title_la": "Symptomata et signa systematis urinarii alia"
+    },
+    {
+      "code": "R40",
+      "title_la": "Somnolentia, stupor et coma"
+    },
+    {
+      "code": "R41",
+      "title_la": "Symptomata et signa cognitionis et conscientiae alia"
+    },
+    {
+      "code": "R42",
+      "title_la": "Instabilitas et vertigo"
+    },
+    {
+      "code": "R45",
+      "title_la": "Symptomata et signa emmotionalia"
+    },
+    {
+      "code": "R46",
+      "title_la": "Symptomata et signa aspectus externi et morum"
+    },
+    {
+      "code": "R50",
+      "title_la": "Febris causae ignotae aliae"
+    },
+    {
+      "code": "R51",
+      "title_la": "Cephalalgia"
+    },
+    {
+      "code": "R52",
+      "title_la": "Dolor, non alibi classificatus"
+    },
+    {
+      "code": "R53",
+      "title_la": "Languor et lassitudo"
+    },
+    {
+      "code": "R55",
+      "title_la": "Syncopa et collapsus"
+    },
+    {
+      "code": "R56",
+      "title_la": "Convulsiones, non alibi classificatae"
+    },
+    {
+      "code": "R57",
+      "title_la": "Afflictus (shock), non alibi classificatus"
+    },
+    {
+      "code": "R58",
+      "title_la": "Haemorrhagia, non alibi classificata"
+    },
+    {
+      "code": "R59",
+      "title_la": "Hypertrophia lymphonodorum"
+    },
+    {
+      "code": "R60",
+      "title_la": "Oedema, non alibi classificatum"
+    },
+    {
+      "code": "R63",
+      "title_la": "Symptomata et signa ad receptionem alimenti et liquoris"
+    },
+    {
+      "code": "R64",
+      "title_la": "Cachexia"
+    },
+    {
+      "code": "R68",
+      "title_la": "Symptomata et signa generalia alia"
+    },
+    {
+      "code": "R70",
+      "title_la": "Hypersedimentatio erythrocytorum acuta et disordines viscositatis plasmatis"
+    },
+    {
+      "code": "R73",
+      "title_la": "Hyperglycaemia"
+    },
+    {
+      "code": "R74",
+      "title_la": "Gradus seroenzymarum abnormalis"
+    },
+    {
+      "code": "R79",
+      "title_la": "Chemicaemiae abnormales aliae"
+    },
+    {
+      "code": "R80",
+      "title_la": "Proteinuria isolata"
+    },
+    {
+      "code": "R81",
+      "title_la": "Glycosuria"
+    },
+    {
+      "code": "R82",
+      "title_la": "Abnormalitates urinae aliae"
+    },
+    {
+      "code": "R90",
+      "title_la": "Systema nervorum centrale ad diagnosticam abnormale"
+    },
+    {
+      "code": "R91",
+      "title_la": "Pulmones ad diagnosticam abnormales"
+    },
+    {
+      "code": "R92",
+      "title_la": "Mamma ad diagnosticam abnormalis"
+    },
+    {
+      "code": "R93",
+      "title_la": "Structurae corporales ad diagnosticam abnormales aliae"
+    },
+    {
+      "code": "S00",
+      "title_la": "Laesio traumatica capitis, superficialis"
+    },
+    {
+      "code": "S01",
+      "title_la": "Vulnus apertum capitis"
+    },
+    {
+      "code": "S02",
+      "title_la": "Fractura cranii et fractura ossium faciei"
+    },
+    {
+      "code": "S05",
+      "title_la": "Laesio traumatica oculi et orbitae"
+    },
+    {
+      "code": "S06",
+      "title_la": "Laesio traumatica intracranialis"
+    },
+    {
+      "code": "S09",
+      "title_la": "Laesiones traumaticae capitis aliae et non classificatae"
+    },
+    {
+      "code": "S10",
+      "title_la": "Laesio traumatica colli superficialis"
+    },
+    {
+      "code": "S11",
+      "title_la": "Vulnus apertum colli"
+    },
+    {
+      "code": "S12",
+      "title_la": "Fractura colli"
+    },
+    {
+      "code": "S13",
+      "title_la": "Luxatio, distorsio et distensio articulorum et ligamentorum colli"
+    },
+    {
+      "code": "S20",
+      "title_la": "Laesio traumatica thoracis superficialis"
+    },
+    {
+      "code": "S21",
+      "title_la": "Vulnus apertum thoracis"
+    },
+    {
+      "code": "S22",
+      "title_la": "Fractura costae(costarum), sterni and columnae vertebralis thoracalis"
+    },
+    {
+      "code": "S27",
+      "title_la": "Laesiones traumaticae organorum thoracis aliorum, non specificatorum"
+    },
+    {
+      "code": "S30",
+      "title_la": "Laesio traumatica abdominis, lumbi et pelvis, superficialis"
+    },
+    {
+      "code": "S31",
+      "title_la": "Vulnus apertum abdominis lumbi et pelvis"
+    },
+    {
+      "code": "S32",
+      "title_la": "Fractura columnae vertebralis lumbalis et pelvis"
+    },
+    {
+      "code": "S36",
+      "title_la": "Laesio traumatica organorum intraabdominalium"
+    },
+    {
+      "code": "S37",
+      "title_la": "Laesio traumatica organorum urinariorum et pelvicis"
+    },
+    {
+      "code": "S40",
+      "title_la": "Laesio traumatica regionis deltoideae et brachii superficialis"
+    },
+    {
+      "code": "S41",
+      "title_la": "Vulnus apertum regionis deltoideae et brachii"
+    },
+    {
+      "code": "S42",
+      "title_la": "Fractura regionis deltoideae et brachii"
+    },
+    {
+      "code": "S43",
+      "title_la": "Luxatio, distorsio et distensio articulorum et ligamentorum cinguli"
+    },
+    {
+      "code": "S50",
+      "title_la": "Laesio traumatica antebrachii, superficialis"
+    },
+    {
+      "code": "S51",
+      "title_la": "Vulnus apertum antebrachii"
+    },
+    {
+      "code": "S52",
+      "title_la": "Fractura antebrachii"
+    },
+    {
+      "code": "S53",
+      "title_la": "Luxatio, distorsio et distensio articulorum et ligamentorum cubiti"
+    },
+    {
+      "code": "S60",
+      "title_la": "Laesio traumatica carpi et manus, superficalis"
+    },
+    {
+      "code": "S61",
+      "title_la": "Vulnus apertum carpi et manus"
+    },
+    {
+      "code": "S62",
+      "title_la": "Fractura carpi et manus"
+    },
+    {
+      "code": "S63",
+      "title_la": "Luxatio, distorsio et distensio articulorum et ligamentorum regionis carpi et"
+    },
+    {
+      "code": "S68",
+      "title_la": "Amputatio traumatica carpi et manus"
+    },
+    {
+      "code": "S70",
+      "title_la": "Laesio traumatica regionis coxae et femoris superficialis"
+    },
+    {
+      "code": "S71",
+      "title_la": "Vulnus apertum regionis coxae et femoris"
+    },
+    {
+      "code": "S72",
+      "title_la": "Fractura femoris"
+    },
+    {
+      "code": "S73",
+      "title_la": "Luxatio, distorsio et distensio articuli et ligamentorum coxae"
+    },
+    {
+      "code": "S80",
+      "title_la": "Laesio traumatica cruris superficialis"
+    },
+    {
+      "code": "S81",
+      "title_la": "Vulnus apertum cruris"
+    },
+    {
+      "code": "S82",
+      "title_la": "Fractura cruris, regionem talocruralem, includens"
+    },
+    {
+      "code": "S83",
+      "title_la": "Luxatio, distorsio et distensio articulorum et ligamentorum genus"
+    },
+    {
+      "code": "S90",
+      "title_la": "Laesio traumatica regionis malleoli et pedis, superficialis"
+    },
+    {
+      "code": "S91",
+      "title_la": "Vulnus apertum regionis malleoli et pedis"
+    },
+    {
+      "code": "S92",
+      "title_la": "Fractura pedis (excl.regio malleoli)"
+    },
+    {
+      "code": "S93",
+      "title_la": "Luxatio, distorsio et distensio articulorum et ligamentorum regionis malleoli"
+    },
+    {
+      "code": "T14",
+      "title_la": "Laesio traumatica corporis regionis non specificatae"
+    },
+    {
+      "code": "T15",
+      "title_la": "Corpus alienum partis oculi externae"
+    },
+    {
+      "code": "T16",
+      "title_la": "Corpus alienum auris"
+    },
+    {
+      "code": "T17",
+      "title_la": "Corpus alienum tractus respiratorii"
+    },
+    {
+      "code": "T18",
+      "title_la": "Corpus alienum tractus digestivi"
+    },
+    {
+      "code": "T20",
+      "title_la": "Combustio et corrosio capitis et colli"
+    },
+    {
+      "code": "T21",
+      "title_la": "Combustio et corrosio trunci"
+    },
+    {
+      "code": "T22",
+      "title_la": "Combustio et corrosio extremitatis superioris (excl. carpus et manus)"
+    },
+    {
+      "code": "T23",
+      "title_la": "Combustio et corrosio carpi et manus"
+    },
+    {
+      "code": "T24",
+      "title_la": "Combustio et corrosio coxae et extremitatis inferioris (excl.regio malleoli et"
+    },
+    {
+      "code": "T25",
+      "title_la": "Combustio et corrosio regionis malleoli et pedis"
+    },
+    {
+      "code": "T29",
+      "title_la": "Combustio et corrosio regionum corporis multiplicium"
+    },
+    {
+      "code": "T30",
+      "title_la": "Combustio et corrosio corporis, regionis non specificatae"
+    },
+    {
+      "code": "T31",
+      "title_la": "Combustiones secundum amplitudinem superficiei corporis comprehensae"
+    },
+    {
+      "code": "T36",
+      "title_la": "Intoxicatio antibioticis systemicis"
+    },
+    {
+      "code": "T39",
+      "title_la": "Intoxicatio analgeticis non opiaticis, antipireticis et antirheumaticis"
+    },
+    {
+      "code": "T40",
+      "title_la": "Intoxicatio narcoticis et psychodyslepticis [hallucinogenibus]"
+    },
+    {
+      "code": "T42",
+      "title_la": "Intoxicatio medicamentis antiepilepticis, sedativohypnoticis et"
+    },
+    {
+      "code": "T43",
+      "title_la": "Intoxicatio medicamentis psychotropicis, non alibi classificatis"
+    },
+    {
+      "code": "T46",
+      "title_la": "Intoxicatio instrumentis ad systema cardiovasculare primum afficientibus"
+    },
+    {
+      "code": "T50",
+      "title_la": "Intoxicatio diureticis et remediis aliis non specificatis, medicamentis et"
+    },
+    {
+      "code": "T51",
+      "title_la": "Effectus alcoholis toxicus"
+    },
+    {
+      "code": "T54",
+      "title_la": "Effectus substantiarum corrosivarum toxicus"
+    },
+    {
+      "code": "T58",
+      "title_la": "Effectus carbomonoxidi toxicus"
+    },
+    {
+      "code": "T60",
+      "title_la": "Effectus pesticidorum toxicus"
+    },
+    {
+      "code": "T63",
+      "title_la": "Effectus contactus cum animalibus venenosis toxicus"
+    },
+    {
+      "code": "T67",
+      "title_la": "Effectus caloris et lucis"
+    },
+    {
+      "code": "T68",
+      "title_la": "Hypothermia"
+    },
+    {
+      "code": "T71",
+      "title_la": "Asphyxia"
+    },
+    {
+      "code": "T74",
+      "title_la": "Syndroma maltractationis"
+    },
+    {
+      "code": "T75",
+      "title_la": "Effectus causarum externarum aliarum"
+    },
+    {
+      "code": "T78",
+      "title_la": "Effectus adversi, non alibi classificati"
+    },
+    {
+      "code": "T79",
+      "title_la": "Complicationes traumatis praecoces, non alibi classificatae"
+    },
+    {
+      "code": "T81",
+      "title_la": "Complicationes procedurales, non alibi classificates"
+    },
+    {
+      "code": "T88",
+      "title_la": "Complicationes curae chirurgicae et medicalis aliae"
+    },
+    {
+      "code": "U04",
+      "title_la": "Teški akutni respiratorni sindrom [SARS]"
+    },
+    {
+      "code": "V09",
+      "title_la": "Pešak povređen u drugim i neoznačenim saobraćajnim udesima"
+    },
+    {
+      "code": "V19",
+      "title_la": "Biciklista povređen u drugim i neoznačenim saobraćajnim udesima"
+    },
+    {
+      "code": "V29",
+      "title_la": "Motociklista povređen u drugim i neoznačenim saobraćajnim udesima"
+    },
+    {
+      "code": "V49",
+      "title_la": "Putnik automobila povređen u drugim i neoznačenim saobraćajnim udesima"
+    },
+    {
+      "code": "V89",
+      "title_la": "Udes motornog vozila ili vozila bez motora, tip vozila neoznačen"
+    },
+    {
+      "code": "Y83",
+      "title_la": "Hirurški zahvat i drugi hirurški postupci kao uzrok neželjene reakcije"
+    },
+    {
+      "code": "Z00",
+      "title_la": "Opšti pregled i ispitivanje osoba bez tegoba ili postavljene dijagnoze"
+    },
+    {
+      "code": "Z01",
+      "title_la": "Drugi posebni pregledi i ispitivanja osoba bez tegoba ili ranije dijagnoze"
+    },
+    {
+      "code": "Z02",
+      "title_la": "Pregled i kontakt iz administrativnih razloga"
+    },
+    {
+      "code": "Z03",
+      "title_la": "Medicinsko posmatranje i praćenje zbog sumnje na neke bolesti ili stanja"
+    },
+    {
+      "code": "Z08",
+      "title_la": "Kontrolni pregled posle lečenja zloćudnog tumora"
+    },
+    {
+      "code": "Z09",
+      "title_la": "Kontrolni pregled posle lečenja stanja koja nisu zloćudni tumori"
+    },
+    {
+      "code": "Z11",
+      "title_la": "Specijalan skrining pregled radi otkrivanja infektivnih i parazitarnih bolesti"
+    },
+    {
+      "code": "Z12",
+      "title_la": "Specijalan skrining pregled radi otkrivanja neoplazmi"
+    },
+    {
+      "code": "Z13",
+      "title_la": "Specijalan skrining pregled radi otkrivanja drugih bolesti i poremećaja"
+    },
+    {
+      "code": "Z20",
+      "title_la": "Kontakt i izloženost zaraznim bolestima"
+    },
+    {
+      "code": "Z21",
+      "title_la": "(HIV)"
+    },
+    {
+      "code": "Z22",
+      "title_la": "Kliconoša zaraznih bolesti"
+    },
+    {
+      "code": "Z23",
+      "title_la": "Potreba za imunizacijom protiv bakterijskih bolesti (pojedinačno)"
+    },
+    {
+      "code": "Z28",
+      "title_la": "Neizvršena imunizacija"
+    },
+    {
+      "code": "Z29",
+      "title_la": "Potreba za drugim profilaktičkim merama"
+    },
+    {
+      "code": "Z30",
+      "title_la": "Kontracepcija"
+    },
+    {
+      "code": "Z31",
+      "title_la": "Unapređenje reprodukcije"
+    },
+    {
+      "code": "Z32",
+      "title_la": "Ispitivanje i testiranje na trudnoću"
+    },
+    {
+      "code": "Z34",
+      "title_la": "Kontrola normalne trudnoće"
+    },
+    {
+      "code": "Z35",
+      "title_la": "Kontrola trudnoće sa visokim rizikom"
+    },
+    {
+      "code": "Z39",
+      "title_la": "Nega i pregled posle porođaja"
+    },
+    {
+      "code": "Z45",
+      "title_la": "Podešavanje i održavanje ugrađenog pomagala"
+    },
+    {
+      "code": "Z47",
+      "title_la": "Drugo praćenje i nega u ortopedskom lečenju"
+    },
+    {
+      "code": "Z48",
+      "title_la": "Drugo praćenje i nega u hirurškom lečenju"
+    },
+    {
+      "code": "Z49",
+      "title_la": "Nega koja uključuje dijalizu"
+    },
+    {
+      "code": "Z50",
+      "title_la": "Nega koja uključuje upotrebu rehabilitacionih procedura"
+    },
+    {
+      "code": "Z51",
+      "title_la": "Druga medicinska nega"
+    },
+    {
+      "code": "Z55",
+      "title_la": "Problemi sa obrazovanjem i pismenošću"
+    },
+    {
+      "code": "Z56",
+      "title_la": "Problemi zaposlenih i nezaposlenih osoba"
+    },
+    {
+      "code": "Z57",
+      "title_la": "Profesionalna izloženost faktorima rizika"
+    },
+    {
+      "code": "Z59",
+      "title_la": "Problemi stanovanja i ekonomski problemi"
+    },
+    {
+      "code": "Z63",
+      "title_la": "Drugi problemi sa grupom za primarnu podršku, uključujući i porodičnu"
+    },
+    {
+      "code": "Z65",
+      "title_la": "Problemi uzrokovani drugim psihosocijalnim uslovima"
+    },
+    {
+      "code": "Z71",
+      "title_la": "Osobe u kontaktu sa zdravstvenom službom radi drugog konsultovanja i"
+    },
+    {
+      "code": "Z72",
+      "title_la": "Problemi povezani sa načinom života"
+    },
+    {
+      "code": "Z73",
+      "title_la": "Problemi u savlađivanju životnih teškoća"
+    },
+    {
+      "code": "Z74",
+      "title_la": "Problemi osoba sa tuđom negom"
+    },
+    {
+      "code": "Z75",
+      "title_la": "Problemi osoba sa medicinskim ustanovama i drugom zdravstvenom"
+    },
+    {
+      "code": "Z76",
+      "title_la": "Osobe u kontaktu sa zdravstvenom službom u drugim okolnostima"
+    },
+    {
+      "code": "Z80",
+      "title_la": "Porodična anamneza o zloćudnom tumoru"
+    },
+    {
+      "code": "Z82",
+      "title_la": "Porodična anamneza o određenim onesposobljenostima i hroničnim"
+    },
+    {
+      "code": "Z85",
+      "title_la": "Lična anamneza o zloćudnom tumoru"
+    },
+    {
+      "code": "Z86",
+      "title_la": "Lična anamneza o određenim drugim bolestima"
+    },
+    {
+      "code": "Z88",
+      "title_la": "Lična anamneza o alergiji na lekove, preparate i biološke supstance"
+    },
+    {
+      "code": "Z91",
+      "title_la": "Lična anamneza o faktorima rizika, neklasifikovana na drugom mestu"
+    },
+    {
+      "code": "Z92",
+      "title_la": "Lična anamneza o medicinskom lečenju"
+    },
+    {
+      "code": "Z93",
+      "title_la": "Stanje vestačkog (arteficijalnog) otvora"
+    },
+    {
+      "code": "Z94",
+      "title_la": "Stanje presađenog organa ili tkiva"
+    },
+    {
+      "code": "Z95",
+      "title_la": "Prisustvo implantata i graftova na srcu i krvnim sudovima"
+    },
+    {
+      "code": "Z96",
+      "title_la": "Prisustvo drugog funkcionalnog implantata"
+    },
+    {
+      "code": "Z98",
+      "title_la": "Druga postoperativna stanja"
+    },
+    {
+      "code": "Z99",
+      "title_la": "Zavisnost od pomagala, neklasifikovana na drugom mestu"
+    }
+  ],
+  "exceptions": [
+    {
+      "code": "U07.1",
+      "international_title_en": "COVID-19, virus identified",
+      "reason": "special-purpose COVID code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "U07.2",
+      "international_title_en": "COVID-19, virus not identified",
+      "reason": "special-purpose COVID code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "U09.9",
+      "international_title_en": "Post COVID-19 condition, unspecified",
+      "reason": "special-purpose COVID code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "U10.9",
+      "international_title_en": "Multisystem inflammatory syndrome associated with COVID-19, unspecified",
+      "reason": "special-purpose COVID code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "W01",
+      "international_title_en": "Fall on same level from slipping, tripping and stumbling",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "W10",
+      "international_title_en": "Fall on and from stairs and steps",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "W19",
+      "international_title_en": "Unspecified fall",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "W54",
+      "international_title_en": "Bitten or struck by dog",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "W57",
+      "international_title_en": "Bitten or stung by nonvenomous insect and other nonvenomous arthropods",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "X00",
+      "international_title_en": "Exposure to uncontrolled fire in building or structure",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "X10",
+      "international_title_en": "Contact with hot drinks, food, fats and cooking oils",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "X40",
+      "international_title_en": "Accidental poisoning by and exposure to nonopioid analgesics, antipyretics and antirheumatics",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "X42",
+      "international_title_en": "Accidental poisoning by and exposure to narcotics and psychodysleptics",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "X49",
+      "international_title_en": "Accidental poisoning by and exposure to other and unspecified drugs, medicaments and biological substances",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "X60",
+      "international_title_en": "Intentional self-poisoning by and exposure to nonopioid analgesics, antipyretics and antirheumatics",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "X70",
+      "international_title_en": "Intentional self-harm by hanging, strangulation and suffocation",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "X78",
+      "international_title_en": "Intentional self-harm by sharp object",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "X99",
+      "international_title_en": "Assault by sharp object",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "Y04",
+      "international_title_en": "Assault by bodily force",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    },
+    {
+      "code": "Y10",
+      "international_title_en": "Poisoning by and exposure to nonopioid analgesics, antipyretics and antirheumatics, undetermined intent",
+      "reason": "external-cause code; no verified medical-Latin title in the adopted sources"
+    }
+  ]
+}
