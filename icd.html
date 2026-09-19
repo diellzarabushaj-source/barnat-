@@ -8,10 +8,10 @@
   <title>DRx | ICD-10</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/icd-v2.css?v=search-polish-v8">
+  <link rel="stylesheet" href="/icd-v2.css?v=family-common-v9">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1">
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1" defer></script>
-<script src="/icd-v2.js?v=search-polish-v8" defer></script>
+<script src="/icd-v2.js?v=family-common-v9" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -125,11 +125,20 @@
           <div class="icd-search-foot">
             <div class="icd-quick-diagnoses" aria-label="Shkurtore klinike QKMF">
               <section class="icd-quick-group" aria-labelledby="familyQuickTitle">
-                <div class="icd-quick-label" id="familyQuickTitle"><span class="icd-quick-dot"></span><strong>Mjekësi familjare</strong><small>25 të shpeshta</small></div>
-                <div class="icd-quick-scroll" aria-label="25 diagnoza të shpeshta në mjekësi familjare">
+                <div class="icd-quick-label" id="familyQuickTitle"><span class="icd-quick-dot"></span><strong>Mjekësi familjare</strong><small>45 të shpeshta</small></div>
+                <div class="icd-quick-scroll" aria-label="45 diagnoza dhe simptoma të shpeshta në mjekësi familjare">
                 <button type="button" class="icd-quick-chip" data-search-example="I10" title="Hipertension"><b>I10</b><span>Hipertension</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="E11" title="Diabet tip 2"><b>E11</b><span>Diabet tip 2</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="J06" title="Infeksion respirator akut"><b>J06</b><span>Infeksion respirator akut</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="R05" title="Kollë"><b>R05</b><span>Kollë</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="R50" title="Temperaturë"><b>R50</b><span>Temperaturë</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="R51" title="Dhimbje koke"><b>R51</b><span>Dhimbje koke</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="R19.7" title="Diarre"><b>R19.7</b><span>Diarre</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="R11" title="Nauze / vjellje"><b>R11</b><span>Nauze / vjellje</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="R10.4" title="Dhimbje barku"><b>R10.4</b><span>Dhimbje barku</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="R42" title="Marramendje"><b>R42</b><span>Marramendje</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="R53" title="Lodhje / dobësi"><b>R53</b><span>Lodhje / dobësi</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="R00.2" title="Palpitacione"><b>R00.2</b><span>Palpitacione</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="J02" title="Faringit akut"><b>J02</b><span>Faringit akut</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="J00" title="Ftohje e zakonshme"><b>J00</b><span>Ftohje e zakonshme</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="J01" title="Sinusit akut"><b>J01</b><span>Sinusit akut</span></button>
@@ -137,21 +146,32 @@
                 <button type="button" class="icd-quick-chip" data-search-example="J45" title="Astmë"><b>J45</b><span>Astmë</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="J44" title="COPD"><b>J44</b><span>COPD</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="J30" title="Rinit alergjik"><b>J30</b><span>Rinit alergjik</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="H66" title="Otit media"><b>H66</b><span>Otit media</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="H92.0" title="Dhimbje veshi"><b>H92.0</b><span>Dhimbje veshi</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="H10" title="Konjunktivit"><b>H10</b><span>Konjunktivit</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="K21" title="Refluks gastroezofageal"><b>K21</b><span>Refluks gastroezofageal</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="K29" title="Gastrit / duodenit"><b>K29</b><span>Gastrit / duodenit</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="A09" title="Gastroenterit / diarre infektive"><b>A09</b><span>Gastroenterit / diarre infektive</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="R12" title="Urth / djegie retrosternale"><b>R12</b><span>Urth / djegie retrosternale</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="R14" title="Fryrje / gazra"><b>R14</b><span>Fryrje / gazra</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="K59.0" title="Konstipacion"><b>K59.0</b><span>Konstipacion</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="N39.0" title="Infeksion urinar"><b>N39.0</b><span>Infeksion urinar</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="M54" title="Dhimbje shpine"><b>M54</b><span>Dhimbje shpine</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="M54.5" title="Dhimbje mesi"><b>M54.5</b><span>Dhimbje mesi</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="M54.2" title="Dhimbje qafe"><b>M54.2</b><span>Dhimbje qafe</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="M54.3" title="Ishialgji / shiatik"><b>M54.3</b><span>Ishialgji / shiatik</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="M47" title="Spondilozë / probleme me unaza"><b>M47</b><span>Spondilozë / probleme me unaza</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="M51" title="Çrregullime të disqeve intervertebrale"><b>M51</b><span>Çrregullime të disqeve intervertebrale</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="M25.5" title="Dhimbje artikulare"><b>M25.5</b><span>Dhimbje artikulare</span></button>
-                <button type="button" class="icd-quick-chip" data-search-example="R51" title="Dhimbje koke"><b>R51</b><span>Dhimbje koke</span></button>
-                <button type="button" class="icd-quick-chip" data-search-example="R05" title="Kollë"><b>R05</b><span>Kollë</span></button>
-                <button type="button" class="icd-quick-chip" data-search-example="R50" title="Temperaturë"><b>R50</b><span>Temperaturë</span></button>
-                <button type="button" class="icd-quick-chip" data-search-example="H66" title="Otit media"><b>H66</b><span>Otit media</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="M19" title="Artrozë"><b>M19</b><span>Artrozë</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="M79.1" title="Dhimbje muskulore"><b>M79.1</b><span>Dhimbje muskulore</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="G43" title="Migrenë"><b>G43</b><span>Migrenë</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="R60" title="Edemë"><b>R60</b><span>Edemë</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="L30" title="Dermatit"><b>L30</b><span>Dermatit</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="B35" title="Dermatofitozë"><b>B35</b><span>Dermatofitozë</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="D50" title="Anemi nga mungesa e hekurit"><b>D50</b><span>Anemi nga mungesa e hekurit</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="E03" title="Hipotiroidizëm"><b>E03</b><span>Hipotiroidizëm</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="F41" title="Ankth"><b>F41</b><span>Ankth</span></button>
-                <button type="button" class="icd-quick-chip" data-search-example="K59.0" title="Konstipacion"><b>K59.0</b><span>Konstipacion</span></button>
                 </div>
               </section>
               <section class="icd-quick-group is-urgent" aria-labelledby="urgentQuickTitle">
