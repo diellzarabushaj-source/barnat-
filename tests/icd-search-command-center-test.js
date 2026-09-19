@@ -68,7 +68,7 @@ assert.match(js, /lang:'LA'/);
 assert.match(js, /icd-suggestion-translation/);
 assert.match(js, /Kategoritë kryesore/);
 assert.match(js, /Nënkategoritë/);
-assert.match(js, /sv:'instant-v6'/);
+assert.match(js, /sv:'symptom-v10'/);
 assert.match(js, /params\.set\('advanced', '1'\)/);
 assert.match(js, /function localCategoryPreview\(query, limit = 8\)/);
 assert.match(js, /function warmSearchSeed\(\)/);
