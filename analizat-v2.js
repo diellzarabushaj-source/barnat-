@@ -1,13 +1,505 @@
 (() => {
   'use strict';
 
-  const TIER_ORDER = Object.freeze({ core:0, recommended:1, conditional:2, manual:3 });
+  const TIER_ORDER = Object.freeze({ urgent:0, core:1, recommended:2, conditional:3, manual:4 });
   const TIER_META = Object.freeze({
-    core:{ label:'Bazë', description:'Analiza kryesore të panelit' },
-    recommended:{ label:'Të rekomanduara', description:'Plotësojnë vlerësimin klinik' },
-    conditional:{ label:'Sipas situatës', description:'Varen nga konteksti i pacientit' },
-    manual:{ label:'Shtuar manualisht', description:'Të shtuara nga katalogu' },
+    urgent:{ label:'Urgjente', description:'Ekzaminime që mund të ndikojnë menjëherë në vendimin klinik' },
+    core:{ label:'Fillestare', description:'Work-up bazë me yield të lartë' },
+    recommended:{ label:'Të rekomanduara', description:'Plotësojnë vlerësimin sipas prezantimit klinik' },
+    conditional:{ label:'Vetëm nëse…', description:'Bëji vetëm kur konteksti klinik i justifikon' },
+    manual:{ label:'Shtuar manualisht', description:'Ekzaminime të shtuara nga katalogu' },
   });
+
+  const EXAM_CATEGORIES = Object.freeze([
+  {
+    "id": "exam-laboratory",
+    "title": "Laborator",
+    "label": "Laboratorike"
+  },
+  {
+    "id": "exam-cardio",
+    "title": "EKG / funksionale",
+    "label": "Funksionale"
+  },
+  {
+    "id": "exam-imaging",
+    "title": "RTG / CT / MRI",
+    "label": "Imazheri"
+  },
+  {
+    "id": "exam-ultrasound",
+    "title": "Ultrazë",
+    "label": "Ultrazë"
+  },
+  {
+    "id": "exam-other",
+    "title": "Ekzaminime tjera",
+    "label": "Tjera"
+  }
+]);
+  const EXAM_CATALOG = Object.freeze([
+  {
+    "id": "exam-cbc",
+    "formName": "Hemogram / CBC",
+    "albanianName": "Hemogram i plotë",
+    "englishName": "Complete Blood Count",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Anemi, leukocitozë/leukopeni dhe çrregullime të trombociteve."
+  },
+  {
+    "id": "exam-crp",
+    "formName": "CRP",
+    "albanianName": "Proteina C-reaktive",
+    "englishName": "C-reactive protein",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Marker jo-specifik i inflamacionit; interpretohet në kontekst klinik."
+  },
+  {
+    "id": "exam-esr",
+    "formName": "ESR / Sedimentimi",
+    "albanianName": "Shpejtësia e sedimentimit",
+    "englishName": "Erythrocyte Sedimentation Rate",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Marker jo-specifik i inflamacionit, më i dobishëm në disa procese kronike."
+  },
+  {
+    "id": "exam-glucose",
+    "formName": "Glukoza",
+    "albanianName": "Glukoza në gjak",
+    "englishName": "Blood glucose",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Hiperglikemi ose hipoglikemi aktuale."
+  },
+  {
+    "id": "exam-hba1c",
+    "formName": "HbA1c",
+    "albanianName": "Hemoglobina e glikoziluar",
+    "englishName": "Glycated hemoglobin",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Ekspozimi mesatar ndaj glukozës gjatë javëve të fundit."
+  },
+  {
+    "id": "exam-electrolytes",
+    "formName": "Elektrolitet",
+    "albanianName": "Na / K / Ca / Mg",
+    "englishName": "Electrolytes",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Çrregullime elektrolitike që mund të shkaktojnë aritmi, dobësi, të vjella ose simptoma neurologjike."
+  },
+  {
+    "id": "exam-renal",
+    "formName": "Funksioni renal",
+    "albanianName": "Urea / Kreatinina / eGFR",
+    "englishName": "Renal function",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Funksion renal dhe ndikim të dehidrimit ose sëmundjes sistemike."
+  },
+  {
+    "id": "exam-liver",
+    "formName": "Paneli hepatik",
+    "albanianName": "AST / ALT / ALP / GGT / Bilirubina",
+    "englishName": "Liver profile",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Dëmtim hepatocelular, kolestazë ose çrregullim hepatobiliar."
+  },
+  {
+    "id": "exam-tsh",
+    "formName": "TSH",
+    "albanianName": "Hormoni stimulues i tiroides",
+    "englishName": "Thyroid-stimulating hormone",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Testi fillestar për shumicën e dyshimeve për disfunksion tiroide."
+  },
+  {
+    "id": "exam-ft4",
+    "formName": "FT4",
+    "albanianName": "Tiroksina e lirë",
+    "englishName": "Free thyroxine",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Plotëson vlerësimin e funksionit tiroide, veçanërisht kur TSH është jonormal."
+  },
+  {
+    "id": "exam-ft3",
+    "formName": "FT3",
+    "albanianName": "Triiodotironina e lirë",
+    "englishName": "Free triiodothyronine",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Mund të ndihmojë kur TSH është i ulët dhe dyshohet hipertiroidizëm."
+  },
+  {
+    "id": "exam-ck",
+    "formName": "CK",
+    "albanianName": "Kreatin kinaza",
+    "englishName": "Creatine kinase",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Dëmtim muskular; interpretohet me simptomat, aktivitetin dhe barnat."
+  },
+  {
+    "id": "exam-ferritin",
+    "formName": "Ferritina",
+    "albanianName": "Ferritina",
+    "englishName": "Ferritin",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Rezervat e hekurit; mund të ndikohet nga inflamacioni."
+  },
+  {
+    "id": "exam-urinalysis",
+    "formName": "Urinaliza",
+    "albanianName": "Ekzaminimi i urinës",
+    "englishName": "Urinalysis",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Gjak, proteinë, leukocite, nitrite, glukozë, ketone dhe gjetje tjera urinare."
+  },
+  {
+    "id": "exam-acr",
+    "formName": "ACR urinar",
+    "albanianName": "Raporti albuminë/kreatininë në urinë",
+    "englishName": "Urine albumin-creatinine ratio",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Albuminuri dhe dëmtim renal."
+  },
+  {
+    "id": "exam-lipase",
+    "formName": "Lipaza",
+    "albanianName": "Lipaza",
+    "englishName": "Lipase",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Mbështet vlerësimin për pankreatit kur tabloja klinike e sugjeron."
+  },
+  {
+    "id": "exam-troponin",
+    "formName": "Troponina",
+    "albanianName": "Troponina kardiake",
+    "englishName": "Cardiac troponin",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Dëmtim miokardial; përdoret vetëm në kontekst klinik të përshtatshëm."
+  },
+  {
+    "id": "exam-ddimer",
+    "formName": "D-dimer",
+    "albanianName": "D-dimer",
+    "englishName": "D-dimer",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Ndihmon në përjashtimin e VTE vetëm kur probabiliteti klinik është i përshtatshëm."
+  },
+  {
+    "id": "exam-bnp",
+    "formName": "BNP / NT-proBNP",
+    "albanianName": "Peptidet natriuretike",
+    "englishName": "BNP / NT-proBNP",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Mbështet vlerësimin e dyshimit për insuficiencë kardiake."
+  },
+  {
+    "id": "exam-lactate",
+    "formName": "Laktati",
+    "albanianName": "Laktati",
+    "englishName": "Lactate",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Hipoperfuzion ose sëmundje kritike; nuk interpretohet i izoluar."
+  },
+  {
+    "id": "exam-vbg-ketones",
+    "formName": "Ketone + VBG",
+    "albanianName": "Ketone dhe gazra venozë",
+    "englishName": "Ketones and venous blood gas",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Ketoacidozë dhe status acid-bazë kur dyshohet DKA ose dekompensim metabolik."
+  },
+  {
+    "id": "exam-stool",
+    "formName": "Mikrobiologjia e feçeve",
+    "albanianName": "Kulturë / PCR e feçeve",
+    "englishName": "Stool microbiology",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Etiologji infektive në diarretë e zgjedhura, jo rutinë në çdo rast."
+  },
+  {
+    "id": "exam-fit",
+    "formName": "FIT",
+    "albanianName": "Test imunokimik fekal",
+    "englishName": "Faecal immunochemical test",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Gjak okult në feçe në kontekste të zgjedhura gastrointestinale."
+  },
+  {
+    "id": "exam-pregnancy",
+    "formName": "Test shtatzënie",
+    "albanianName": "β-hCG / test shtatzënie",
+    "englishName": "Pregnancy test",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Shtatzëni kur është klinikisht relevante për simptomat ose imazherinë."
+  },
+  {
+    "id": "exam-osmolality",
+    "formName": "Osmolaliteti serum/urinë",
+    "albanianName": "Osmolaliteti i serumit dhe urinës",
+    "englishName": "Serum and urine osmolality",
+    "categoryId": "exam-laboratory",
+    "category": "Laborator",
+    "examGroup": "laboratory",
+    "whatItShows": "Ndihmon në work-up të poliurisë/polidipsisë së pashpjeguar."
+  },
+  {
+    "id": "exam-ecg",
+    "formName": "EKG 12 derivacione",
+    "albanianName": "Elektrokardiogram",
+    "englishName": "12-lead ECG",
+    "categoryId": "exam-cardio",
+    "category": "EKG / funksionale",
+    "examGroup": "cardio",
+    "whatItShows": "Ritmin, frekuencën, përçimin dhe shenja të ishemisë ose hipertrofisë."
+  },
+  {
+    "id": "exam-holter-ecg",
+    "formName": "Holter EKG",
+    "albanianName": "Monitorim ambulant i EKG-së",
+    "englishName": "Ambulatory ECG monitoring",
+    "categoryId": "exam-cardio",
+    "category": "EKG / funksionale",
+    "examGroup": "cardio",
+    "whatItShows": "Kap aritmi intermitente që nuk dokumentohen në EKG-në e momentit."
+  },
+  {
+    "id": "exam-echo",
+    "formName": "Ehokardiografi",
+    "albanianName": "Ultrazë e zemrës",
+    "englishName": "Echocardiography",
+    "categoryId": "exam-cardio",
+    "category": "EKG / funksionale",
+    "examGroup": "cardio",
+    "whatItShows": "Strukturën dhe funksionin kardiak."
+  },
+  {
+    "id": "exam-holter-bp",
+    "formName": "Holter TA / ABPM",
+    "albanianName": "Monitorim ambulant i tensionit",
+    "englishName": "Ambulatory blood pressure monitoring",
+    "categoryId": "exam-cardio",
+    "category": "EKG / funksionale",
+    "examGroup": "cardio",
+    "whatItShows": "Profilin e tensionit gjatë 24 orëve."
+  },
+  {
+    "id": "exam-spo2",
+    "formName": "SpO₂",
+    "albanianName": "Pulsoksimetria",
+    "englishName": "Pulse oximetry",
+    "categoryId": "exam-cardio",
+    "category": "EKG / funksionale",
+    "examGroup": "cardio",
+    "whatItShows": "Oksigjenimin periferik."
+  },
+  {
+    "id": "exam-spirometry",
+    "formName": "Spirometri",
+    "albanianName": "Spirometria",
+    "englishName": "Spirometry",
+    "categoryId": "exam-cardio",
+    "category": "EKG / funksionale",
+    "examGroup": "cardio",
+    "whatItShows": "Obstruksion ose kufizim ventilator dhe përgjigje bronkodilatuese kur kryhet."
+  },
+  {
+    "id": "exam-orthostatics",
+    "formName": "TA ortostatike",
+    "albanianName": "Tensioni dhe pulsi shtrirë/në këmbë",
+    "englishName": "Orthostatic vital signs",
+    "categoryId": "exam-cardio",
+    "category": "EKG / funksionale",
+    "examGroup": "cardio",
+    "whatItShows": "Hipotension ortostatik ose përgjigje jonormale të pulsit me ngritje."
+  },
+  {
+    "id": "exam-bmi-waist",
+    "formName": "BMI + perimetri i belit",
+    "albanianName": "Matje antropometrike",
+    "englishName": "BMI and waist circumference",
+    "categoryId": "exam-cardio",
+    "category": "EKG / funksionale",
+    "examGroup": "cardio",
+    "whatItShows": "Adipozitetin total dhe qendror."
+  },
+  {
+    "id": "exam-cxr",
+    "formName": "RTG toraksi",
+    "albanianName": "Rentgen i toraksit",
+    "englishName": "Chest X-ray",
+    "categoryId": "exam-imaging",
+    "category": "RTG / CT / MRI",
+    "examGroup": "imaging",
+    "whatItShows": "Patologji pulmonare, pleurale dhe disa shenja kardiake."
+  },
+  {
+    "id": "exam-abdominal-xray",
+    "formName": "RTG abdomeni",
+    "albanianName": "Rentgen i abdomenit",
+    "englishName": "Abdominal X-ray",
+    "categoryId": "exam-imaging",
+    "category": "RTG / CT / MRI",
+    "examGroup": "imaging",
+    "whatItShows": "Ka rol të kufizuar; përdoret vetëm në indikacione të zgjedhura."
+  },
+  {
+    "id": "exam-ct-chest",
+    "formName": "CT toraksi",
+    "albanianName": "Tomografi e toraksit",
+    "englishName": "CT chest",
+    "categoryId": "exam-imaging",
+    "category": "RTG / CT / MRI",
+    "examGroup": "imaging",
+    "whatItShows": "Vlerësim i detajuar i parenkimës pulmonare, mediastinit dhe strukturave torakale."
+  },
+  {
+    "id": "exam-ctpa",
+    "formName": "CTPA",
+    "albanianName": "CT angiografi pulmonare",
+    "englishName": "CT pulmonary angiography",
+    "categoryId": "exam-imaging",
+    "category": "RTG / CT / MRI",
+    "examGroup": "imaging",
+    "whatItShows": "Imazheri për emboli pulmonare kur probabiliteti klinik dhe algoritmi e justifikojnë."
+  },
+  {
+    "id": "exam-ct-abdomen",
+    "formName": "CT abdomen/pelvis",
+    "albanianName": "Tomografi e abdomenit dhe pelvisit",
+    "englishName": "CT abdomen and pelvis",
+    "categoryId": "exam-imaging",
+    "category": "RTG / CT / MRI",
+    "examGroup": "imaging",
+    "whatItShows": "Patologji akute abdominale dhe retroperitoneale kur indikohet."
+  },
+  {
+    "id": "exam-mri-brain",
+    "formName": "MRI truri",
+    "albanianName": "Rezonancë magnetike e trurit",
+    "englishName": "Brain MRI",
+    "categoryId": "exam-imaging",
+    "category": "RTG / CT / MRI",
+    "examGroup": "imaging",
+    "whatItShows": "Patologji neurologjike strukturore; jo rutinë për marramendje pa red flags."
+  },
+  {
+    "id": "exam-us-thyroid",
+    "formName": "Ultrazë tiroide",
+    "albanianName": "Ultrasonografi e tiroides",
+    "englishName": "Thyroid ultrasound",
+    "categoryId": "exam-ultrasound",
+    "category": "Ultrazë",
+    "examGroup": "ultrasound",
+    "whatItShows": "Morfologjinë e tiroides, nodujt dhe karakteristikat që drejtojnë vlerësimin e mëtejshëm."
+  },
+  {
+    "id": "exam-us-abdomen",
+    "formName": "Ultrazë abdomeni",
+    "albanianName": "Ultrasonografi abdominale",
+    "englishName": "Abdominal ultrasound",
+    "categoryId": "exam-ultrasound",
+    "category": "Ultrazë",
+    "examGroup": "ultrasound",
+    "whatItShows": "Organe abdominale, hepatobiliar, veshka dhe lëng të lirë në indikacione të zgjedhura."
+  },
+  {
+    "id": "exam-us-pelvis",
+    "formName": "Ultrazë pelvise",
+    "albanianName": "Ultrasonografi pelvike",
+    "englishName": "Pelvic ultrasound",
+    "categoryId": "exam-ultrasound",
+    "category": "Ultrazë",
+    "examGroup": "ultrasound",
+    "whatItShows": "Struktura pelvike kur simptomat/gjetjet e justifikojnë."
+  },
+  {
+    "id": "exam-venous-doppler",
+    "formName": "Doppler venoz",
+    "albanianName": "Ultrazë Doppler e venave",
+    "englishName": "Venous Doppler ultrasound",
+    "categoryId": "exam-ultrasound",
+    "category": "Ultrazë",
+    "examGroup": "ultrasound",
+    "whatItShows": "DVT ose obstruksion venoz në edemë unilaterale të dyshimtë."
+  },
+  {
+    "id": "exam-endoscopy",
+    "formName": "Gastroskopi",
+    "albanianName": "Endoskopi e sipërme GI",
+    "englishName": "Upper GI endoscopy",
+    "categoryId": "exam-other",
+    "category": "Ekzaminime tjera",
+    "examGroup": "other",
+    "whatItShows": "Mukozën e traktit të sipërm gastrointestinal."
+  },
+  {
+    "id": "exam-colonoscopy",
+    "formName": "Kolonoskopi",
+    "albanianName": "Kolonoskopi",
+    "englishName": "Colonoscopy",
+    "categoryId": "exam-other",
+    "category": "Ekzaminime tjera",
+    "examGroup": "other",
+    "whatItShows": "Kolonin dhe lezione strukturore; përdoret sipas simptomave/riskut."
+  },
+  {
+    "id": "exam-thyroid-fna",
+    "formName": "FNA tiroide",
+    "albanianName": "Aspirim me gjilpërë të hollë",
+    "englishName": "Thyroid fine-needle aspiration",
+    "categoryId": "exam-other",
+    "category": "Ekzaminime tjera",
+    "examGroup": "other",
+    "whatItShows": "Citologji e nodujve tiroide të përzgjedhur sipas karakteristikave të ultrazërit."
+  }
+]);
+
 
   const state = {
     data:null,
@@ -19,6 +511,7 @@
     excludedTestIds:new Set(),
     diseaseTerm:'',
     manualTerm:'',
+    examFilter:'all',
     searchTimer:0,
   };
 
