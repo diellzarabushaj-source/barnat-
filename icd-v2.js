@@ -110,7 +110,7 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view, sv:'instant-v6' });
+    const params = new URLSearchParams({ view, sv:'symptom-v10' });
     if (view === 'suggest' || view === 'seed') params.set('advanced', '1');
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
     return `${API}?${params}`;
