@@ -15,6 +15,7 @@ const {
   blocksOf,
   ancestorsOf,
   nodeMap,
+  LATIN_TITLE_BY_CODE,
 } = require('../lib/icd-full-hierarchy.js');
 
 const PILOT_CHAPTERS = ['IV', 'IX', 'X', 'XI', 'XIII', 'XIV', 'XVIII'];
@@ -60,6 +61,8 @@ assert.equal(chapter.displayTitle, 'Sëmundje të caktuara infektive dhe parazit
 assert.equal(chapter.translationStatus, 'standardized');
 assert.equal(block.parentCode, 'I');
 assert.equal(category.parentCode, 'A00-A09');
+assert.equal(category.latinTitle, 'Cholera');
+assert.equal(LATIN_TITLE_BY_CODE.get('I10'), 'Hypertensio arterialis essentialis (primaria)');
 assert.equal(missing.translationStatus, 'missing');
 assert.equal(missing.displayTitle, 'Cholera due to Vibrio cholerae 01, biovar cholerae');
 assert.equal(translated.displayTitle, 'Kolera për shkak të Vibrio cholerae 01, biovar eltor');
