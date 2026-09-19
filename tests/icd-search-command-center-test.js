@@ -19,20 +19,20 @@ assert.match(html, /Kërko ICD, diagnozë, simptomë, Latin, English/);
 assert.match(html, /id="icdSearchClear"/);
 assert.match(html, /id="clinicalActionPanel"/);
 assert.match(html, /id="clinicalQuickHub"/);
-assert.match(html, /icd-v2\.css\?v=clinical-workspace-v15/);
-assert.match(html, /icd-v2\.js\?v=clinical-workspace-v15/);
+assert.match(html, /icd-v2\.css\?v=clinical-workspace-v16/);
+assert.match(html, /icd-v2\.js\?v=clinical-workspace-v16/);
 assert.match(html, /Mjekësi familjare/);
 assert.match(html, /Urgjenca QKMF/);
-assert.match(html, /45 të shpeshta/);
+assert.match(html, /75 të shpeshta/);
 assert.match(html, /Spondilozë \/ probleme me unaza/);
 assert.match(html, /Diarre/);
 assert.match(html, /Nauze \/ vjellje/);
 const quickButtons = [...html.matchAll(/<button type="button" class="icd-quick-chip([^"]*)" data-search-example="([^"]+)"/g)];
-assert.equal(quickButtons.length, 70, 'QKMF quick rails must contain 45 family-medicine and 25 urgent shortcuts.');
+assert.equal(quickButtons.length, 100, 'QKMF quick rails must contain 75 family-medicine and 25 urgent shortcuts.');
 assert.equal(quickButtons.filter(match => match[1].includes('is-urgent')).length, 25, 'Urgency rail must contain exactly 25 red shortcuts.');
-assert.equal(quickButtons.filter(match => !match[1].includes('is-urgent')).length, 45, 'Family medicine rail must contain exactly 45 shortcuts.');
-assert.equal(new Set(quickButtons.map(match => match[2])).size, 70, 'QKMF shortcut ICD codes must be unique.');
-for (const requiredCode of ['R19.7','R11','R51','R42','R10.4','M54.5','M54.2','M54.3','M47','M51']) {
+assert.equal(quickButtons.filter(match => !match[1].includes('is-urgent')).length, 75, 'Family medicine rail must contain exactly 75 shortcuts.');
+assert.equal(new Set(quickButtons.map(match => match[2])).size, 100, 'QKMF shortcut ICD codes must be unique.');
+for (const requiredCode of ['R19.7','R11','R51','R42','R10.4','M54.5','M54.2','M54.3','M47','M51','J18','J21','B08.4','N30','N76','L03','E66','F32','G47.0','I87.2']) {
   assert.ok(quickButtons.some(match => match[2] === requiredCode), `Family medicine shortcut missing ${requiredCode}`);
 }
 
@@ -70,7 +70,7 @@ assert.match(js, /lang:'LA'/);
 assert.match(js, /icd-suggestion-translation/);
 assert.match(js, /Kategoritë kryesore/);
 assert.match(js, /Nënkategoritë/);
-assert.match(js, /sv:'clinical-workspace-v15'/);
+assert.match(js, /sv:'clinical-workspace-v16'/);
 assert.match(js, /params\.set\('advanced', '1'\)/);
 assert.match(js, /function localCategoryPreview\(query, limit = 8\)/);
 assert.match(js, /function warmHotSearch\(\)/);
@@ -111,6 +111,8 @@ assert.match(js, /function renderClinicalQuickHub\(\)/);
 assert.match(js, /Dermatologji/);
 assert.match(js, /Endokrin \/ Hemato/);
 assert.match(js, /Shëndet mendor/);
+assert.match(js, /Pediatri/);
+assert.match(js, /Gjinekologji/);
 assert.match(js, /Urgjencat QKMF/);
 assert.match(js, /selectedGroup === 'urgent'/);
 assert.match(js, /is-urgent/);
