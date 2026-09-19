@@ -592,8 +592,9 @@
           : field === 'code' ? 'Kodi'
             : field === 'hierarchy' ? 'Hierarki'
               : field === 'local' ? 'Instant'
-                : field === 'alias' ? 'Term klinik'
-                  : '';
+                : field === 'symptom' ? 'Simptomë'
+                  : field === 'alias' ? 'Term klinik'
+                    : '';
     if (!source) return '';
     return type.startsWith('fuzzy-') || type === 'code-fuzzy' ? `Typo · ${source}` : source;
   }
@@ -623,51 +624,69 @@
       ? ` · kuptuar si <strong>${escapeHtml(interpreted)}</strong>`
       : '';
     const head = `<div class="icd-suggestion-head"><span>${state.suggestionLoading ? 'Duke rafinuar…' : `${formatNumber(state.suggestions.length)} sugjerime`}${interpretation}</span><strong>↑ ↓ Enter</strong></div>`;
+    const symptom = state.suggestionMeta?.symptomIntent || null;
+    const symptomTypo = symptom && ['fuzzy-phrase','fuzzy-tokens'].includes(clean(symptom.match_type));
+    const symptomBanner = symptom
+      ? `<div class="icd-symptom-intent ${symptom.ambiguous ? 'is-ambiguous' : ''}" role="note">
+          <span class="icd-symptom-intent-icon" aria-hidden="true">✦</span>
+          <span class="icd-symptom-intent-copy">
+            <strong>E kuptova si: ${escapeHtml(clean(symptom.label_sq))}${symptom.symptom_code ? ` · ${escapeHtml(clean(symptom.symptom_code))}` : ''}</strong>
+            <small>${symptom.ambiguous
+              ? 'Termi është i paqartë; po tregoj kërkimin ICD pa zgjedhur diagnozë.'
+              : `${symptomTypo ? 'Typo i korrigjuar · ' : ''}Kandidatët më poshtë janë orientues nga simptoma, jo diagnozë përfundimtare.`}</small>
+          </span>
+        </div>`
+      : '';
 
     if (!state.suggestions.length) {
-      el.icdSuggestions.innerHTML = head + `<div class="icd-suggestion-empty"><strong>${state.suggestionLoading ? 'Po kërkoj…' : 'Nuk gjeta përputhje të sigurt'}</strong><span>Provo kod, Shqip, English ose Latin — edhe me një typo tjetër.</span></div>`;
+      el.icdSuggestions.innerHTML = head + symptomBanner + `<div class="icd-suggestion-empty"><strong>${state.suggestionLoading ? 'Po kërkoj…' : 'Nuk gjeta përputhje të sigurt'}</strong><span>Provo kod, Shqip, English ose Latin — edhe me një typo tjetër.</span></div>`;
       return;
     }
 
     let previousSection = '';
     const rows = state.suggestions.map((node, index) => {
       const active = index === state.activeSuggestion;
-      const best = index === 0;
+      const isDifferential = clean(node?.searchMatch?.field) === 'symptom';
+      const best = index === 0 && !isDifferential;
       const match = clean(node?.searchMatch?.label) || 'Përputhje';
       const source = matchSourceLabel(node);
       const translations = suggestionTranslationHtml(node, query);
       const parent = node.level === 'subcategory' ? clean(node.parentCode) : '';
       const childCount = Number(node?.childCount || 0);
+      const relationReason = clean(node?.symptomRelation?.reason_sq);
       const hierarchyHint = parent
         ? `<span class="icd-family-hint"><b>${escapeHtml(parent)}</b><span aria-hidden="true">→</span><strong>${escapeHtml(clean(node.code))}</strong></span>`
         : childCount > 0
           ? `<span class="icd-family-hint"><strong>${formatNumber(childCount)}</strong> nënkode</span>`
           : '';
-      const section = node.level === 'category'
-        ? 'Kategoritë kryesore'
-        : node.level === 'subcategory'
-          ? 'Nënkategoritë'
-          : 'Konteksti ICD';
+      const section = isDifferential
+        ? 'Nga simptoma · diagnoza të mundshme'
+        : node.level === 'category'
+          ? 'Kategoritë kryesore'
+          : node.level === 'subcategory'
+            ? 'Nënkategoritë'
+            : 'Konteksti ICD';
       const sectionHead = section !== previousSection
-        ? `<div class="icd-suggestion-section" role="presentation">${escapeHtml(section)}</div>`
+        ? `<div class="icd-suggestion-section ${isDifferential ? 'is-differential' : ''}" role="presentation">${escapeHtml(section)}</div>`
         : '';
       previousSection = section;
-      return `${sectionHead}<button class="icd-suggestion-row is-${escapeHtml(clean(node.level))} ${best ? 'is-best' : ''} ${active ? 'is-active' : ''}" type="button" role="option"
+      return `${sectionHead}<button class="icd-suggestion-row is-${escapeHtml(clean(node.level))} ${isDifferential ? 'is-differential' : ''} ${best ? 'is-best' : ''} ${active ? 'is-active' : ''}" type="button" role="option"
         id="icd-suggestion-${index}" aria-selected="${active}" data-suggestion-index="${index}" data-code="${escapeHtml(clean(node.code))}">
         <span class="icd-suggestion-code">${highlightSearchText(clean(node.code), query)}</span>
         <span class="icd-suggestion-copy">
-          <span class="icd-suggestion-titleline"><strong>${highlightSearchText(nodeTitle(node), query)}</strong>${best ? '<em>Përputhja më e mirë</em>' : ''}</span>
+          <span class="icd-suggestion-titleline"><strong>${highlightSearchText(nodeTitle(node), query)}</strong>${best ? '<em>Përputhja më e mirë</em>' : isDifferential ? '<em class="is-differential">Kandidat diferencial</em>' : ''}</span>
+          ${relationReason ? `<span class="icd-symptom-reason">${escapeHtml(relationReason)}</span>` : ''}
           ${hierarchyHint}
           ${translations}
         </span>
         <span class="icd-suggestion-meta">
-          ${source ? `<span class="icd-match-source">${escapeHtml(source)}</span>` : ''}
+          ${source ? `<span class="icd-match-source ${isDifferential ? 'is-symptom' : ''}">${escapeHtml(source)}</span>` : ''}
           <span class="icd-match-chip">${escapeHtml(match)}</span>
           <span class="icd-level-chip">${escapeHtml(levelLabel(node.level))}</span>
         </span>
       </button>`;
     }).join('');
-    el.icdSuggestions.innerHTML = head + rows;
+    el.icdSuggestions.innerHTML = head + symptomBanner + rows;
     if (state.activeSuggestion >= 0) {
       el.icdSearch?.setAttribute('aria-activedescendant', `icd-suggestion-${state.activeSuggestion}`);
       el.icdSuggestions.querySelector('.icd-suggestion-row.is-active')?.scrollIntoView({ block:'nearest' });
