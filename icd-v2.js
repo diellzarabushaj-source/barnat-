@@ -84,7 +84,7 @@
 
   // --- rrjeti ---------------------------------------------------------------
 
-  async function fetchJson(url, timeoutMs = 9000, externalSignal = null) {
+  async function fetchJson(url, timeoutMs = 9000, externalSignal = null, cacheMode = 'no-store') {
     const controller = new AbortController();
     const abortFromExternal = () => controller.abort();
     if (externalSignal) {
@@ -94,7 +94,7 @@
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const response = await fetch(url, {
-        credentials:'same-origin', cache:'no-store', signal:controller.signal,
+        credentials:'same-origin', cache:cacheMode, signal:controller.signal,
         headers:{ Accept:'application/json' },
       });
       const payload = await response.json().catch(() => ({}));
@@ -484,7 +484,7 @@
     }
 
     try {
-      const { payload } = await fetchJson(endpoint('suggest', { q:value }), 6000, controller.signal);
+      const { payload } = await fetchJson(endpoint('suggest', { q:value }), 6000, controller.signal, 'default');
       if (requestId !== state.requestId) return;
       const data = payload.data || {};
       cacheSuggestions(value, data);
