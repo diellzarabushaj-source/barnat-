@@ -18,12 +18,21 @@ assert.match(html, /aria-autocomplete="list"/);
 assert.match(html, /data-search-example="hypertensio"/);
 assert.match(html, /Kërko ICD, diagnozë, Latin, English/);
 assert.match(html, /id="icdSearchClear"/);
+assert.match(html, /Mjekësi familjare/);
+assert.match(html, /Urgjenca QKMF/);
+const quickButtons = [...html.matchAll(/<button type="button" class="icd-quick-chip([^"]*)" data-search-example="([^"]+)"/g)];
+assert.equal(quickButtons.length, 50, 'QKMF quick rails must contain exactly 50 shortcuts.');
+assert.equal(quickButtons.filter(match => match[1].includes('is-urgent')).length, 25, 'Urgency rail must contain exactly 25 red shortcuts.');
+assert.equal(new Set(quickButtons.map(match => match[2])).size, 50, 'QKMF shortcut ICD codes must be unique.');
 
 assert.match(css, /\.icd-search-stage\{/);
 assert.match(css, /\.icd-suggestions\{/);
 assert.match(css, /\.icd-suggestion-row\.is-active/);
 assert.match(css, /\.icd-suggestion-copy \.icd-suggestion-translation/);
 assert.match(css, /\.icd-search-clear\{/);
+assert.match(css, /\.icd-quick-group\.is-urgent/);
+assert.match(css, /\.icd-quick-chip\.is-urgent/);
+assert.match(css, /\.icd-quick-scroll\{/);
 assert.match(css, /@media\(max-width:760px\)/);
 
 assert.match(js, /const suggestionCache = new Map\(\)/);
