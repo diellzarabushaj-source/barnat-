@@ -17,16 +17,18 @@ assert.match(html, /id="icdSuggestions"[^>]*role="listbox"/);
 assert.match(html, /aria-autocomplete="list"/);
 assert.match(html, /data-search-example="hypertensio"/);
 assert.match(html, /Kërko ICD, diagnozë, Latin, English/);
+assert.match(html, /id="icdSearchClear"/);
 
 assert.match(css, /\.icd-search-stage\{/);
 assert.match(css, /\.icd-suggestions\{/);
 assert.match(css, /\.icd-suggestion-row\.is-active/);
 assert.match(css, /\.icd-suggestion-copy \.icd-suggestion-translation/);
+assert.match(css, /\.icd-search-clear\{/);
 assert.match(css, /@media\(max-width:760px\)/);
 
 assert.match(js, /const suggestionCache = new Map\(\)/);
-assert.match(js, /SUGGESTION_CACHE_LIMIT = 80/);
-assert.match(js, /setTimeout\(\(\) => void runSearch\(value\), 35\)/);
+assert.match(js, /SUGGESTION_CACHE_LIMIT = 120/);
+assert.match(js, /SEARCH_NETWORK_DELAY_MS = 25/);
 assert.match(js, /aria-activedescendant/);
 assert.match(js, /event\.key === 'ArrowDown'/);
 assert.match(js, /event\.key === 'Enter'/);
@@ -38,13 +40,21 @@ assert.match(js, /lang:'LA'/);
 assert.match(js, /icd-suggestion-translation/);
 assert.match(js, /Kategoritë kryesore/);
 assert.match(js, /Nënkategoritë/);
-assert.match(js, /sv:'hierarchy-v5'/);
+assert.match(js, /sv:'instant-v6'/);
+assert.match(js, /params\.set\('advanced', '1'\)/);
+assert.match(js, /function localCategoryPreview\(query, limit = 8\)/);
+assert.match(js, /function warmSearchSeed\(\)/);
+assert.match(js, /requestIdleCallback/);
+assert.match(js, /function setActiveSuggestion\(index\)/);
+assert.match(js, /event\.key === '\/'/);
 
-assert.match(handler, /clinical-ranking-v5/);
+assert.match(handler, /clinical-ranking-v6/);
 assert.match(handler, /trigram-candidate-index/);
 assert.match(handler, /category-first/);
 assert.match(handler, /latin-parent-fallback/);
 assert.match(handler, /MAX_PAYLOAD_CACHE = 240/);
+assert.match(handler, /function seedPayload\(dataset, loaded = \{\}\)/);
+assert.match(handler, /category-seed/);
 
 const target = {
   code:'I10',
