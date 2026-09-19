@@ -816,7 +816,8 @@
           : field === 'code' ? 'Kodi'
             : field === 'hierarchy' ? 'Hierarki'
               : field === 'local' ? 'Instant'
-                : field === 'symptom' ? 'Simptomë'
+                : field === 'hot' ? 'QKMF'
+                  : field === 'symptom' ? 'Simptomë'
                   : field === 'alias' ? 'Term klinik'
                     : '';
     if (!source) return '';
@@ -1066,10 +1067,11 @@
     state.suggestionMeta = null;
 
     const preview = immediatePreview(value);
-    if (preview.length) {
-      state.suggestions = preview;
+    if (preview.rows.length) {
+      state.suggestions = preview.rows;
+      state.suggestionMeta = preview.meta;
       state.activeSuggestion = 0;
-      setStatus(`${formatNumber(preview.length)} kategori instant · duke plotësuar…`, 'busy');
+      setStatus(`${formatNumber(preview.rows.length)} rezultate instant · duke rafinuar…`, 'busy');
     } else {
       setStatus(`Duke kërkuar «${value}»…`, 'busy');
     }
@@ -1272,18 +1274,19 @@
       state.query = value;
       state.suggestionOpen = true;
       const preview = immediatePreview(value);
-      state.suggestionMeta = null;
-      if (preview.length) {
-        state.suggestions = preview;
+      state.suggestionMeta = preview.meta;
+      if (preview.rows.length) {
+        state.suggestions = preview.rows;
         state.activeSuggestion = 0;
         renderSuggestions();
-        prefetchChildren(preview[0]);
+        prefetchChildren(preview.rows[0]);
       }
       updateSearchClear();
       searchTimer = setTimeout(() => void runSearch(value), SEARCH_NETWORK_DELAY_MS);
     });
 
     el.icdSearch.addEventListener('focus', () => {
+      if (!state.hotSearchReady) void warmHotSearch();
       if (!state.searchSeedReady) void warmSearchSeed();
       if (clean(el.icdSearch.value).length >= 2) {
         state.suggestionOpen = true;
@@ -1398,9 +1401,11 @@
     loadSharedSidebarTaxonomy();
     bindElements();
     bindEvents();
+    loadStoredHotSearch();
     render();
     try {
       const authPayload = await ensureAuth();
+      void warmHotSearch();
       await syncProfileChrome(authPayload);
       await loadNav();
       scheduleSearchSeedWarmup();
