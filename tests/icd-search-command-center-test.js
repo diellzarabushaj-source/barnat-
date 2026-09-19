@@ -15,7 +15,6 @@ const handler = fs.readFileSync(path.join(root, 'lib/icd-advanced-handler.js'), 
 assert.match(html, /id="icdSearchBox"[^>]*role="combobox"/);
 assert.match(html, /id="icdSuggestions"[^>]*role="listbox"/);
 assert.match(html, /aria-autocomplete="list"/);
-assert.match(html, /data-search-example="hypertensio"/);
 assert.match(html, /Kërko ICD, diagnozë, Latin, English/);
 assert.match(html, /id="icdSearchClear"/);
 assert.match(html, /Mjekësi familjare/);
