@@ -1,8 +1,8 @@
 {
   "schema": "medindex.icd10.primary-care-action.v1",
-  "version": 5,
+  "version": 6,
   "locale": "sq-XK",
-  "scope": "qkmf-clinical-125",
+  "scope": "qkmf-clinical-125-medications-v1",
   "disclaimer": "Ndihmë për dokumentim dhe orientim klinik. Përshtatet sipas pacientit, protokolleve lokale dhe gjykimit klinik.",
   "entries": [
     {
@@ -26,13 +26,29 @@
         "Kreatininë/eGFR, elektrolite, glukozë/HbA1c, lipide, urinë/albuminuri",
         "EKG; ekzaminime tjera sipas dyshimit"
       ],
-      "management": "Konfirmo matjet; vlerëso riskun kardiovaskular dhe organet target; këshilla për stil jete dhe optimizim terapie sipas profilit klinik. Urgjencë vetëm kur ka dëmtim akut organi.",
+      "management": "Konfirmo HTA me matje të përsëritura/ABPM-HBPM, vlerëso riskun CV dhe organet target. Terapia: ACE‑i (p.sh. ramipril/enalapril) ose ARB kur ACE‑i nuk tolerohet; te shumë pacientë ≥55 vjeç CCB si amlodipina është zgjedhje e zakonshme; në hapin tjetër kombino ACE‑i/ARB + CCB, pastaj shto diuretik thiazide‑like si indapamidi. Mos kombino ACE‑i + ARB. Titro sipas TA, kreatininës/K+ dhe tolerancës.",
       "summary": "TA e përsëritur e rritur pa shkak të qartë sekondar; dokumento riskun, organet target dhe përgjigjen ndaj terapisë.",
       "red_flags": [
         "Deficit neurologjik akut",
         "Dhimbje gjoksi / edemë pulmonare",
         "TA shumë e lartë me dëmtim akut organi"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "ACE‑i (p.sh. ramipril/enalapril) ose ARB sipas profilit",
+          "CCB dihidropiridinik, p.sh. amlodipinë",
+          "Diuretik thiazide‑like, p.sh. indapamid, si hap shtesë"
+        ],
+        "alternatives": [
+          "Kombinim ACE‑i/ARB + CCB; pastaj + thiazide‑like kur nuk kontrollohet"
+        ],
+        "avoid": [
+          "Mos kombino ACE‑i me ARB",
+          "Mos titro pa kontroll të kreatininës/K+ kur përdoret ACE‑i/ARB/diuretik"
+        ],
+        "note": "Zgjedhja varet nga mosha, DM, CKD, shtatzënia, K+, eGFR dhe komorbiditetet.",
+        "evidence": "NICE NG136"
+      }
     },
     {
       "code": "E11",
@@ -55,13 +71,28 @@
         "Lipide; ekzaminim i syrit sipas intervalit",
         "EKG/risk CVD sipas profilit"
       ],
-      "management": "Synime individuale të glikemisë; edukim për ushqim/aktivitet, aderencë dhe hipoglikemi; optimizo terapi duke marrë parasysh CVD/CKD/HF.",
+      "management": "Synim individual i HbA1c dhe kontroll i riskut CV/renal. Në shumicën e të rriturve pa kundërindikacion: metformin MR + SGLT2 inhibitor (p.sh. empagliflozin/dapagliflozin) sipas NICE 2026; nëse metformina nuk tolerohet, SGLT2 inhibitor monoterapi mund të përdoret. GLP‑1 RA/tirzepatide merren në konsideratë sipas obezitetit, riskut CV/renal dhe objektivave. Përshtat sipas eGFR dhe riskut për dehidrim/infeksione gjenitale.",
       "summary": "DM2 kërkon kontroll periodik të glikemisë, veshkave, këmbëve, syrit dhe riskut kardiovaskular.",
       "red_flags": [
         "Hiperglikemi me dehidrim/alterim të vetëdijes",
         "Hipoglikemi e rëndë",
         "Dyshim për ketoacidozë"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Metformin MR + SGLT2 inhibitor (p.sh. empagliflozin ose dapagliflozin) kur përshtatet"
+        ],
+        "alternatives": [
+          "SGLT2 inhibitor vetëm nëse metformina kundërindikohet/nuk tolerohet",
+          "GLP‑1 RA ose tirzepatide në profile të zgjedhura sipas riskut dhe peshës"
+        ],
+        "avoid": [
+          "Mos vazhdo SGLT2 gjatë DKA, dehidrimit të rëndë ose sëmundjes akute pa rivlerësim",
+          "Kujdes me metforminën në insuficiencë renale të avancuar"
+        ],
+        "note": "Doza dhe zgjedhja varen nga eGFR, frailty, HF/CKD/ASCVD, pesha dhe HbA1c.",
+        "evidence": "NICE NG28, update 2026"
+      }
     },
     {
       "code": "J06",
@@ -381,13 +412,27 @@
         "Temperaturë dhe vitalet",
         "Test streptokoku sipas kritereve lokale"
       ],
-      "management": "Shumica virale; analgjezi/hidratim. Antibiotik vetëm kur probabiliteti/konfirmimi për streptokok e justifikon.",
+      "management": "Analgezi me paracetamol ose ibuprofen kur është i përshtatshëm + lëngje. Antibiotik vetëm kur probabiliteti streptokoksik është i mjaftueshëm sipas FeverPAIN/Centor/testimit. Adult: phenoxymethylpenicillin 500 mg PO 4×/ditë ose 1 g 2×/ditë për 5–10 ditë. Në alergji peniciline jo-shtatzënë: clarithromycin 250–500 mg 2×/ditë 5 ditë.",
       "summary": "Dallo faringitin viral nga streptokoku dhe komplikimet lokale.",
       "red_flags": [
         "Stridor / dispne",
         "Pamundësi për të gëlltitur pështymën",
         "Dyshim për absces peritonsilar"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Paracetamol ose ibuprofen për dhimbje/temperaturë",
+          "Phenoxymethylpenicillin 500 mg 4×/ditë ose 1 g 2×/ditë × 5–10 ditë kur antibiotiku indikohet"
+        ],
+        "alternatives": [
+          "Clarithromycin 250–500 mg 2×/ditë × 5 ditë në alergji/intolerancë ndaj penicilinës"
+        ],
+        "avoid": [
+          "Mos përdor antibiotik vetëm sepse ka eksudat pa vlerësim të probabilitetit bakterial"
+        ],
+        "note": "Në shtatzëni me alergji të vërtetë, zgjedhja e makrolidit duhet të ndjekë udhëzimin lokal.",
+        "evidence": "NICE NG84"
+      }
     },
     {
       "code": "J01",
@@ -410,13 +455,28 @@
         "Sytë për komplikime orbitale",
         "Imazheri jo rutinë pa komplikime"
       ],
-      "management": "Shpesh viral; saline/analgjezi dhe trajtim simptomatik. Antibiotik kur tabloja është e fortë, persistente ose me përkeqësim bifazik sipas udhëzimeve.",
+      "management": "Shumica janë virale: saline nazale + analgjezi. Antibiotik vetëm kur pacienti është sistemikisht shumë i sëmurë, me risk komplikimesh, ose sipas kriterit klinik. Regjim adult kur indikohet: phenoxymethylpenicillin 500 mg PO 4×/ditë për 5 ditë; në sëmundje më serioze/risk komplikimesh co‑amoxiclav 500/125 mg PO 3×/ditë për 5 ditë. Në alergji peniciline jo-shtatzënë: doxycycline 200 mg dita 1, pastaj 100 mg/ditë edhe 4 ditë; alternativë clarithromycin 500 mg 2×/ditë 5 ditë.",
       "summary": "Kohëzgjatja dhe modeli klinik janë më të vlefshme se ngjyra e sekrecioneve.",
       "red_flags": [
         "Edemë periorbitale / çrregullim shikimi",
         "Dhimbje koke e rëndë me shenja neurologjike",
         "Toksicitet sistemik"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Phenoxymethylpenicillin 500 mg PO 4×/ditë × 5 ditë — vetëm kur antibiotiku indikohet"
+        ],
+        "alternatives": [
+          "Co‑amoxiclav 500/125 mg PO 3×/ditë × 5 ditë në sëmundje më serioze/risk komplikimesh",
+          "Doxycycline 200 mg dita 1, pastaj 100 mg/ditë ditët 2–5 në alergji peniciline jo-shtatzënë",
+          "Clarithromycin 500 mg PO 2×/ditë × 5 ditë në alergji/intolerancë"
+        ],
+        "avoid": [
+          "Mos jep antibiotik rutinë në sinusit të pakomplikuar me kohëzgjatje të shkurtër"
+        ],
+        "note": "Përshtat për shtatzëni, renal/hepatik dhe alergji; komplikimet orbitale/intrakraniale → spital.",
+        "evidence": "NICE NG79"
+      }
     },
     {
       "code": "J20",
@@ -438,13 +498,28 @@
         "Auskultim pulmonar",
         "CXR vetëm kur dyshohet pneumoni ose gjetjet janë jo tipike"
       ],
-      "management": "Zakonisht viral; terapi simptomatike. Antibiotik rutinë nuk rekomandohet pa indikacion specifik.",
+      "management": "Bronkit akut zakonisht viral: analgjezi, lëngje dhe simptomatikë; bronkodilatator vetëm në wheeze/airflow obstruction. Mos jep antibiotik rutinë te pacienti jo shumë i sëmurë. Në adult sistemikisht shumë të sëmurë ose me risk të lartë kur antibiotiku indikohet: doxycycline 200 mg dita 1, pastaj 100 mg/ditë ditët 2–5; alternativa amoxicillin 500 mg 3×/ditë 5 ditë ose clarithromycin 250–500 mg 2×/ditë 5 ditë.",
       "summary": "Bronkiti akut diagnostikohet pasi të jetë bërë e pamundur pneumoni klinikisht.",
       "red_flags": [
         "Hipoksemi",
         "Takipne e rëndë",
         "Fokalitet auskultator me temperaturë të lartë"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Paracetamol/ibuprofen sipas profilit për simptoma",
+          "SABA vetëm nëse ka wheeze/bronchospasm"
+        ],
+        "alternatives": [
+          "Doxycycline 200 mg dita 1, pastaj 100 mg/ditë ditët 2–5 vetëm kur antibiotiku indikohet",
+          "Amoxicillin 500 mg 3×/ditë × 5 ditë ose clarithromycin 250–500 mg 2×/ditë × 5 ditë si alternativa"
+        ],
+        "avoid": [
+          "Mos jep antibiotik rutinë në bronkit akut të pakomplikuar"
+        ],
+        "note": "Pneumonia, COPD/asthma exacerbation dhe sepsa duhet të përjashtohen kur tabloja nuk është tipike.",
+        "evidence": "NICE NG120"
+      }
     },
     {
       "code": "J45",
@@ -467,13 +542,28 @@
         "Spirometri me reversibilitet kur e mundur",
         "Peak flow sipas planit"
       ],
-      "management": "Konfirmo diagnozën objektivisht kur është e mundur; terapi anti-inflamatore me inhalator sipas kontrollit dhe plan veprimi; kontrollo teknikën/adherencën.",
+      "management": "Mos përdor SABA-only. Për të rritur/adoleshentë, prefero reliever me ICS-formoterol me dozë të ulët sipas nevojës; në simptoma më të shpeshta përdor regjim maintenance-and-reliever me ICS-formoterol sipas hapit. Alternativë: ICS ditor + SABA PRN. Kontrollo teknikën e inhalatorit, adherencën dhe trigger-at para step-up.",
       "summary": "Kontrolli i simptomave dhe risku i exacerbimeve udhëheqin terapinë.",
       "red_flags": [
         "Mungesë e zhurmave respiratore (silent chest)",
         "Hipoksemi / vështirësi në të folur",
         "Përkeqësim pavarësisht bronkodilatatorit"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "ICS‑formoterol dozë e ulët PRN (Track 1) për shumë adultë/adoleshentë",
+          "ICS‑formoterol maintenance + reliever kur nevojitet step‑up"
+        ],
+        "alternatives": [
+          "ICS dozë e ulët ditor + SABA PRN në Track 2"
+        ],
+        "avoid": [
+          "Mos trajto astmën vetëm me SABA pa ICS",
+          "Mos bëj step‑up pa kontrolluar teknikën/adherencën"
+        ],
+        "note": "Forca e inhalatorit dhe maksimumi ditor varen nga preparati; përdor SmPC/GINA për produktin konkret.",
+        "evidence": "GINA 2025"
+      }
     },
     {
       "code": "J44",
@@ -496,13 +586,30 @@
         "Spirometri post-bronkodilatator",
         "CXR dhe hemogramë sipas indikacionit"
       ],
-      "management": "Ndalimi i duhanit, vaksinimi, aktiviteti/rehabilitimi dhe inhalatorët sipas simptomave/exacerbimeve; menaxho exacerbimet veçmas.",
+      "management": "Në eksacerbim: rrit bronkodilatatorin short‑acting (SABA ± SAMA). Në rritje domethënëse të dispnesë që pengon aktivitetet: prednisolone 30 mg PO/ditë për 5 ditë. Antibiotik vetëm kur ka ndryshim të ngjyrës së sputumit me rritje vëllimi/trashësie ose risk tjetër bakterial: amoxicillin 500 mg 3×/ditë 5 ditë, doxycycline 200 mg dita 1 pastaj 100 mg/ditë deri në 5 ditë total, ose clarithromycin 500 mg 2×/ditë 5 ditë.",
       "summary": "Diagnoza duhet të mbështetet në spirometri; vlerëso simptomat dhe frekuencën e exacerbimeve.",
       "red_flags": [
         "Hipoksemi e re",
         "Acidozë/rraskapitje respiratore",
         "Dispne e rëndë që nuk përgjigjet në terapi"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "SABA ± SAMA për bronkodilatacion akut",
+          "Prednisolone 30 mg PO 1×/ditë × 5 ditë kur dispnea është rritur dukshëm"
+        ],
+        "alternatives": [
+          "Amoxicillin 500 mg 3×/ditë × 5 ditë kur antibiotiku indikohet",
+          "Doxycycline 200 mg dita 1, pastaj 100 mg/ditë deri në 5 ditë total",
+          "Clarithromycin 500 mg 2×/ditë × 5 ditë"
+        ],
+        "avoid": [
+          "Mos jep antibiotik rutinë pa tipare që sugjerojnë komponent bakterial",
+          "Mos zgjat steroidin oral pa arsye"
+        ],
+        "note": "Hipoksemia, acidoza/hiperkapnia, sepsa ose dështimi respirator → spital.",
+        "evidence": "NICE NG115 + NG114"
+      }
     },
     {
       "code": "H66",
@@ -525,13 +632,28 @@
         "Dëgjimi sipas rastit",
         "Vitalet te pacienti i sëmurë"
       ],
-      "management": "Analgezia është bazë; antibiotik sipas moshës, ashpërsisë dhe gjetjeve otoskopike. Refero komplikimet/recidivat.",
+      "management": "Prioritet analgjezia. Në shumë fëmijë përdor no-antibiotic ose delayed-antibiotic strategy. Kur antibiotiku indikohet (sëmundje e rëndë, risk komplikimesh, otorre, etj.), amoxicillin është linja e parë; doza pediatrike përcaktohet sipas moshës/peshës dhe formularit. Mos përdor pika me anestetik në perforim/otorre.",
       "summary": "Otoskopia duhet të dokumentojë ndryshimet e membranës timpanike.",
       "red_flags": [
         "Ënjtje retroaurikulare",
         "Paralizë faciale",
         "Toksicitet sistemik"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Paracetamol ose ibuprofen sipas moshës/peshës për dhimbje",
+          "Amoxicillin kur antibiotiku indikohet — dozë pediatrike sipas moshës/peshës"
+        ],
+        "alternatives": [
+          "Macrolid sipas udhëzimit lokal në alergji të vërtetë ndaj penicilinës"
+        ],
+        "avoid": [
+          "Mos jep antibiotik automatikisht në çdo AOM",
+          "Mos përdor pika anestetike në perforim të timpanit/otorre"
+        ],
+        "note": "Në fëmijë 5–17 vjeç NICE jep amoxicillin 500 mg 3×/ditë 5–7 ditë; moshat më të vogla kanë doza më të ulëta.",
+        "evidence": "NICE NG91"
+      }
     },
     {
       "code": "K21",
@@ -554,14 +676,29 @@
         "Hemogramë kur ka dyshim për anemi/gjakderdhje",
         "Endoskopi vetëm kur indikohet"
       ],
-      "management": "Modifikime të stilit të jetesës dhe acid-suppression sipas simptomave; vlerëso shenja alarmi para trajtimit empirik të zgjatur.",
+      "management": "Për GORD: PPI dozë standarde 4–8 javë, pastaj step-down në dozën më të ulët efektive. Shembuj adult: omeprazole 20 mg 1×/ditë, pantoprazole 40 mg 1×/ditë, lansoprazole 30 mg 1×/ditë. Në përgjigje jo të mjaftueshme mund të provohet H2RA; antacid/alginat PRN për lehtësim simptomatik.",
       "summary": "GERD tipik mund të menaxhohet në kujdesin parësor pa endoskopi në mungesë të shenja alarmi.",
       "red_flags": [
         "Disfagi progresive",
         "Humbje peshe",
         "Gjakderdhje/anemi",
         "Dhimbje gjoksi e dyshuar kardiake"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Omeprazole 20 mg 1×/ditë × 4–8 javë ose PPI ekuivalent",
+          "Pantoprazole 40 mg 1×/ditë është dozë standarde alternative"
+        ],
+        "alternatives": [
+          "H2 receptor antagonist në përgjigje të pamjaftueshme ndaj PPI",
+          "Antacid/alginat PRN për simptomat"
+        ],
+        "avoid": [
+          "Mos mbaj PPI me dozë të lartë afatgjatë pa indikacion dhe review"
+        ],
+        "note": "Alarm symptoms (disfagi, gjakderdhje, humbje peshe) → endoskopi/referim.",
+        "evidence": "NICE CG184"
+      }
     },
     {
       "code": "K29",
@@ -584,14 +721,29 @@
         "H. pylori test sipas strategjisë lokale",
         "Gastroskopi kur ka shenja alarmi"
       ],
-      "management": "Ndalo faktorët irritues kur është e mundur; trajto aciditetin dhe H. pylori kur konfirmohet/indikohet.",
+      "management": "Për gastrit/dispepsi: PPI dozë standarde zakonisht 4 javë (p.sh. omeprazole 20 mg/ditë ose pantoprazole 40 mg/ditë). Testo H. pylori pas 2 javësh pa PPI kur është e përshtatshme; në pozitivitet përdor regjim eradikimi sipas rezistencës lokale dhe ekspozimit të mëparshëm ndaj antibiotikëve. Ndal/ul NSAID kur është e mundur.",
       "summary": "Dyspepsia/gastriti kërkon vlerësim për H. pylori, NSAID dhe shenja alarmi.",
       "red_flags": [
         "Gjakderdhje GI",
         "Anemi",
         "Humbje peshe",
         "Dhimbje akute e fortë/perforim i dyshuar"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Omeprazole 20 mg 1×/ditë ose pantoprazole 40 mg 1×/ditë × rreth 4 javë"
+        ],
+        "alternatives": [
+          "H2RA nëse PPI nuk tolerohet ose përgjigja është e pamjaftueshme",
+          "H. pylori eradication sipas protokollit lokal kur testi është pozitiv"
+        ],
+        "avoid": [
+          "Shmang NSAID kur ka gastrit/ulçerë të lidhur me NSAID",
+          "Mos bëj eradikim H. pylori pa diagnozë/testim të përshtatshëm"
+        ],
+        "note": "Rezistenca ndaj clarithromycin ndryshon sipas vendit; përdor protokollin lokal për eradikim.",
+        "evidence": "NICE CG184"
+      }
     },
     {
       "code": "A09",
@@ -644,14 +796,29 @@
         "Urinalizë; kulturë kur e komplikuar, recidive ose sipas protokollit",
         "Kreatininë/imazheri kur dyshohet obstruksion ose komplikim"
       ],
-      "management": "Dallo cystitis nga pyelonephritis; zgjidh antibiotik sipas profilit të pacientit dhe rezistencës lokale; kulturë kur indikohet.",
+      "management": "Për lower UTI të pakomplikuar te femra jo-shtatzënë adult: nitrofurantoin MR 100 mg PO 2×/ditë për 3 ditë nëse eGFR ≥45; ose trimethoprim 200 mg 2×/ditë 3 ditë kur risku i rezistencës është i ulët. Alternativa: fosfomycin 3 g dozë e vetme ose pivmecillinam sipas formularit. Ethe/flank pain → mos e trajto si cistit të thjeshtë.",
       "summary": "Simptomat tipike + urina ndihmojnë; ethet/dhimbje në flank/ijë e ndryshojnë menaxhimin.",
       "red_flags": [
         "Sepsë",
         "Dhimbje flank + ethe",
         "Obstruksion/retencion",
         "Shtatzëni me simptoma sistemike"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Nitrofurantoin MR 100 mg PO 2×/ditë × 3 ditë në femër jo-shtatzënë me eGFR ≥45",
+          "Trimethoprim 200 mg PO 2×/ditë × 3 ditë kur risku i rezistencës është i ulët"
+        ],
+        "alternatives": [
+          "Fosfomycin 3 g PO dozë e vetme",
+          "Pivmecillinam 400 mg fillimisht, pastaj 200 mg 3×/ditë deri 3 ditë total"
+        ],
+        "avoid": [
+          "Mos përdor këtë regjim për pielonefrit, shtatzëni ose UTI të komplikuar pa protokoll përkatës"
+        ],
+        "note": "Zgjedhja duhet të marrë parasysh antibiogramin lokal, kulturat e mëparshme, alergjinë dhe eGFR.",
+        "evidence": "NICE NG109"
+      }
     },
     {
       "code": "M54",
@@ -1145,14 +1312,30 @@
         "Fundoskopi kur ka indikacion",
         "Imazheri vetëm kur ka red flags ose model atipik"
       ],
-      "management": "Trajtim akut i përshtatshëm dhe plan parandalues kur sulmet janë të shpeshta ose me ndikim të madh; identifiko përdorimin e tepërt të barnave dhe faktorët provokues.",
+      "management": "Akut: ofro triptan oral + NSAID, ose triptan + paracetamol; nëse pacienti preferon një bar të vetëm, mund triptan, NSAID, aspirin 900 mg ose paracetamol sipas profilit. Antiemetik mund të shtohet edhe pa nauze. Për parandalim diskuto propranolol, topiramate ose amitriptyline. Mos përdor opioide/ergot rutinë.",
       "summary": "Migrena tipike diagnostikohet klinikisht me ekzaminim neurologjik normal; red flags kërkojnë hetim për dhimbje koke sekondare.",
       "red_flags": [
         "Fillim i papritur që arrin kulmin brenda pak minutash",
         "Deficit neurologjik i ri",
         "Ethe me përkeqësim të kokëdhimbjes",
         "Ndryshim i rëndësishëm/progresiv i modelit"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Triptan oral + NSAID ose triptan + paracetamol për sulmin akut",
+          "Antiemetik si shtesë kur nevojitet"
+        ],
+        "alternatives": [
+          "Monoterapi me triptan, NSAID ose paracetamol sipas profilit",
+          "Parandalim: propranolol, topiramate ose amitriptyline"
+        ],
+        "avoid": [
+          "Mos përdor opioide për migrenë akute",
+          "Topiramate kundërindikohet në shtatzëni dhe kërkon masa të rrepta në potencial fertil"
+        ],
+        "note": "Zgjedh barin sipas CVD, shtatzënisë, riskut GI/renal dhe barnave tjera.",
+        "evidence": "NICE CG150"
+      }
     },
     {
       "code": "R60",
@@ -1262,13 +1445,27 @@
         "Retikulocite dhe strisho periferike kur diagnoza është e paqartë",
         "Hetim i burimit të humbjes së gjakut sipas moshës, seksit dhe riskut"
       ],
-      "management": "Konfirmo mungesën e hekurit dhe gjej shkakun; hekur oral është zakonisht linja e parë kur tolerohet, ndërsa hekur IV përdoret në situata të zgjedhura si intoleranca, malabsorbimi ose nevoja për korrigjim më të shpejtë.",
+      "management": "Konfirmo mungesën e hekurit dhe kërko shkakun. Fillimisht një tabletë në ditë ferrous sulfate, ferrous fumarate ose ferrous gluconate; në intolerancë provo çdo ditë të dytë ose preparat tjetër. Syno rreth 50–100 mg hekur elementar/ditë në regjim oral të zakonshëm. IV iron kur oral nuk tolerohet, nuk absorbohet ose nevojitet korrigjim më i shpejtë.",
       "summary": "Mos trajto vetëm Hb-në: konfirmo mungesën e hekurit dhe kërko burimin e humbjes ose malabsorbimit.",
       "red_flags": [
         "Gjakderdhje aktive me paqëndrueshmëri hemodinamike",
         "Dhimbje gjoksi/sinkopë ose hipoksemi me anemi të rëndë",
         "Rënie e shpejtë e Hb ose melena/hematemezë"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "1 tabletë/ditë ferrous sulfate, ferrous fumarate ose ferrous gluconate (zakonisht 50–100 mg hekur elementar/ditë)"
+        ],
+        "alternatives": [
+          "1 tabletë çdo ditë të dytë në intolerancë",
+          "Hekur IV në malabsorbim, intolerancë ose nevojë për korrigjim më të shpejtë"
+        ],
+        "avoid": [
+          "Mos e trajto aneminë si mungesë hekuri pa ferritinë/konfirmim kur diagnoza është e paqartë"
+        ],
+        "note": "Kontrollo përgjigjen hematologjike pas 2–4 javësh dhe vazhdo për replecion të depove sipas përgjigjes.",
+        "evidence": "BSG IDA guideline, reviewed 2026"
+      }
     },
     {
       "code": "E03",
@@ -1291,13 +1488,26 @@
         "Reflekset, edema dhe shenja të tjera klinike sipas rastit",
         "TSH dhe FT4; TPOAb mund të ndihmojë në etiologjinë e hipotiroidizmit primar"
       ],
-      "management": "Levotiroksina është trajtimi i linjës së parë për hipotiroidizmin primar; monitoro TSH dhe përshtat trajtimin pa shkaktuar supresion të TSH. Liotironina ose ekstrakti natyral tiroide nuk përdoren rutinë.",
+      "management": "Primary hypothyroidism: levothyroxine është linja e parë. Adult <65 vjeç pa CVD: nis rreth 1.6 mikrogram/kg/ditë (rrumbullako në 25 mcg). ≥65 vjeç ose me CVD: nis 25–50 mcg/ditë dhe titro. Syno TSH në interval; mos përdor rutinë liothyronine ose ekstrakt natyral tiroide.",
       "summary": "Diagnoza dhe monitorimi bazohen kryesisht në TSH/FT4 dhe kontekstin klinik; simptomat jo-specifike vetëm nuk mjaftojnë.",
       "red_flags": [
         "Alterim vetëdijeje + hipotermi/bradikardi: myxedema coma e dyshuar",
         "Hiponatremi/hipotension i rëndë me hipotiroidizëm të avancuar",
         "Shtatzëni me hipotiroidizëm të pakontrolluar kërkon menaxhim të shpejtë"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Levothyroxine rreth 1.6 mcg/kg/ditë te adult <65 vjeç pa CVD",
+          "Levothyroxine 25–50 mcg/ditë te ≥65 vjeç ose me CVD, pastaj titrim"
+        ],
+        "alternatives": [],
+        "avoid": [
+          "Mos përdor rutinë liothyronine",
+          "Mos përdor natural thyroid extract"
+        ],
+        "note": "Rikontrollo TSH çdo ~3 muaj derisa stabilizohet, pastaj zakonisht vjetor.",
+        "evidence": "NICE NG145"
+      }
     },
     {
       "code": "F41",
@@ -1320,13 +1530,26 @@
         "GAD-2/GAD-7 ose instrument tjetër si ndihmë, jo si zëvendësim i vlerësimit klinik",
         "TSH, hemogramë, EKG ose teste tjera vetëm kur anamneza sugjeron shkak fizik"
       ],
-      "management": "Psikoedukim dhe ndërhyrje psikologjike si CBT janë trajtime bazë; SSRI-të janë opsion farmakologjik i zakonshëm sipas diagnozës dhe preferencave. Benzodiazepinat nuk rekomandohen për përdorim afatgjatë rutinë.",
+      "management": "Për GAD: CBT/applied relaxation janë trajtime efektive. Nëse zgjidhet farmakoterapia, SSRI është first-line; sertraline është zgjedhje e zakonshme e parë. Titro gradualisht dhe monitoro ankthin fillestar, suicidalitetin dhe ndërveprimet. Benzodiazepinat nuk duhen si trajtim rutinë afatgjatë; vetëm situata të veçanta afatshkurtra sipas riskut.",
       "summary": "Vlerëso jo vetëm simptomat, por edhe dëmtimin funksional, komorbiditetet dhe riskun; përjashto shkak fizik kur historia e sugjeron.",
       "red_flags": [
         "Mendime/plan vetëvrasës ose vetëlëndim",
         "Psikozë, mani ose agjitacion i rëndë",
         "Pamundësi për vetëkujdes ose intoksikim/abstinencë akute"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "SSRI — sertraline shpesh zgjedhja e parë"
+        ],
+        "alternatives": [
+          "SSRI tjetër ose SNRI sipas përgjigjes/tolerancës dhe komorbiditeteve"
+        ],
+        "avoid": [
+          "Mos përdor benzodiazepina si terapi rutinë afatgjatë për GAD"
+        ],
+        "note": "Doza titrohet individualisht; kontrollo bipolaritetin, suicidalitetin dhe ndërveprimet para nisjes.",
+        "evidence": "NICE CG113"
+      }
     },
     {
       "code": "I21",
@@ -2099,13 +2322,27 @@
         "Vlerësim i hidrimit dhe statusit mendor",
         "CXR/laborator sipas ashpërsisë dhe paqartësisë diagnostike"
       ],
-      "management": "Vlerëso ashpërsinë dhe sigurinë e menaxhimit ambulator. Antibiotiku zgjidhet sipas udhëzimit lokal, komorbiditeteve dhe riskut për rezistencë; oksigjen kur ka hipoksemi dhe rivlerësim të hershëm nëse gjendja nuk përmirësohet.",
+      "management": "Vlerëso ashpërsinë dhe CURB/CRB sipas ambientit. CAP me ashpërsi të ulët te adulti: amoxicillin 500 mg PO 3×/ditë për 5 ditë. Në alergji peniciline ose dyshim patogjen atipik: doxycycline 200 mg dita 1, pastaj 100 mg/ditë edhe 4 ditë; ose clarithromycin 500 mg 2×/ditë 5 ditë. Oksigjen kur ka hipoksemi; hospitalizo në instabilitet/sepsë.",
       "summary": "Pneumonia kërkon dallim nga infeksionet virale dhe vlerësim të hipoksemisë/sepsës para vendimit për trajtim në shtëpi.",
       "red_flags": [
         "SpO₂ e ulët ose vështirësi e rëndë respiratore",
         "Hipotension, konfuzion ose sepsë",
         "Përkeqësim pavarësisht trajtimit"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Amoxicillin 500 mg PO 3×/ditë × 5 ditë në CAP me ashpërsi të ulët"
+        ],
+        "alternatives": [
+          "Doxycycline 200 mg dita 1, pastaj 100 mg/ditë ditët 2–5",
+          "Clarithromycin 500 mg 2×/ditë × 5 ditë"
+        ],
+        "avoid": [
+          "Mos zgjat antibiotikun >5 ditë rutinë nëse pacienti është klinikisht stabil"
+        ],
+        "note": "Komorbiditetet, rezistenca lokale, shtatzënia dhe antibiotikët e fundit mund ta ndryshojnë zgjedhjen.",
+        "evidence": "NICE NG250"
+      }
     },
     {
       "code": "J03",
@@ -2128,13 +2365,27 @@
         "Vitalet dhe hidratimi",
         "Test streptokoksik/kulturë sipas kriterit klinik dhe praktikës lokale"
       ],
-      "management": "Shumica e rasteve janë virale dhe trajtohen simptomatikisht. Antibiotikët përdoren kur probabiliteti ose testimi mbështet infeksion bakterial dhe sipas udhëzimit lokal.",
+      "management": "Menaxho si sore throat/tonsilit akut: paracetamol ose ibuprofen + lëngje. Nëse antibiotiku indikohet sipas vlerësimit streptokoksik: phenoxymethylpenicillin 500 mg PO 4×/ditë ose 1 g 2×/ditë për 5–10 ditë; në alergji peniciline jo-shtatzënë clarithromycin 250–500 mg 2×/ditë 5 ditë. Trismus, devijim uvule, drooling ose airway compromise → ORL/urgjencë.",
       "summary": "Tonsiliti akut kërkon vlerësim për absces peritonsilar dhe airway para se të konsiderohet infeksion i pakomplikuar.",
       "red_flags": [
         "Trismus + devijim uvule / absces i dyshuar",
         "Stridor ose vështirësi në frymëmarrje",
         "Pamundësi për të gëlltitur lëngje / dehidrim"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Paracetamol ose ibuprofen për simptomat",
+          "Phenoxymethylpenicillin 500 mg 4×/ditë ose 1 g 2×/ditë × 5–10 ditë kur antibiotiku indikohet"
+        ],
+        "alternatives": [
+          "Clarithromycin 250–500 mg 2×/ditë × 5 ditë në alergji/intolerancë"
+        ],
+        "avoid": [
+          "Mos trajto abscesin peritonsilar vetëm me antibiotik oral pa vlerësim ORL"
+        ],
+        "note": "Pediatria kërkon dozim sipas moshës/peshës.",
+        "evidence": "NICE NG84"
+      }
     },
     {
       "code": "J10",
@@ -2331,13 +2582,28 @@
         "Test H. pylori sipas strategjisë lokale",
         "Endoskopi sipas moshës/riskut dhe shenjat alarmuese"
       ],
-      "management": "Rishiko barnat që irritojnë GI; strategjia 'test-and-treat' për H. pylori dhe/ose terapi me PPI përdoret sipas udhëzimit lokal. Shenjat alarmuese kërkojnë endoskopi/vlerësim specialistik.",
+      "management": "Dispepsi pa shenja alarmi: PPI full-dose 4 javë (p.sh. omeprazole 20 mg/ditë ose pantoprazole 40 mg/ditë) dhe/ose strategji H. pylori test-and-treat. Në përgjigje jo të mjaftueshme mund H2RA. Step-down në dozën më të ulët efektive kur simptomat kontrollohen.",
       "summary": "Dispepsia është sindromë; para menaxhimit empirik kontrollo për shenja alarmi dhe përdorim NSAID.",
       "red_flags": [
         "Gjakderdhje GI/anemi",
         "Disfagi progresive",
         "Humbje peshe ose vjellje persistente"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Omeprazole 20 mg 1×/ditë ose pantoprazole 40 mg 1×/ditë × 4 javë"
+        ],
+        "alternatives": [
+          "H2RA në përgjigje të pamjaftueshme",
+          "Antacid/alginat PRN për lehtësim",
+          "H. pylori eradication kur testi është pozitiv"
+        ],
+        "avoid": [
+          "Mos përdor PPI para testit H. pylori pa bërë washout 2-javor nëse synohet breath/stool test"
+        ],
+        "note": "Disfagia, anemia, gjakderdhja ose humbja e peshës → referim/endoskopi.",
+        "evidence": "NICE CG184"
+      }
     },
     {
       "code": "K52",
@@ -2418,13 +2684,28 @@
         "Urinalizë",
         "Kulturë sipas riskut, seksit, shtatzënisë dhe recidivave"
       ],
-      "management": "Antibiotiku zgjidhet sipas udhëzimit lokal, kulturave dhe rezistencës; hidratim dhe analgjezi sipas nevojës. Temperaturë/dhimbje në flank/ijë sugjerojnë infeksion të sipërm.",
+      "management": "Cistit i pakomplikuar te femra jo-shtatzënë: nitrofurantoin MR 100 mg PO 2×/ditë 3 ditë nëse eGFR ≥45; ose trimethoprim 200 mg 2×/ditë 3 ditë kur risku i rezistencës është i ulët. Alternativë fosfomycin 3 g dozë e vetme. Kulturë/terapi tjetër në meshkuj, shtatzëni, recidiva ose infeksion të komplikuar.",
       "summary": "Cistiti i pakomplikuar mund të menaxhohet në kujdesin parësor, por pielonefriti dhe faktorët komplikues ndryshojnë planin.",
       "red_flags": [
         "Ethe + dhimbje në flank/ijë / pielonefrit",
         "Shtatzëni me simptoma sistemike",
         "Sepsë, retencion ose obstruksion"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Nitrofurantoin MR 100 mg 2×/ditë × 3 ditë (femër jo-shtatzënë, eGFR ≥45)",
+          "Trimethoprim 200 mg 2×/ditë × 3 ditë kur risku i rezistencës është i ulët"
+        ],
+        "alternatives": [
+          "Fosfomycin 3 g dozë e vetme",
+          "Pivmecillinam sipas protokollit lokal"
+        ],
+        "avoid": [
+          "Mos e përdor nitrofurantoin për pielonefrit të dyshuar"
+        ],
+        "note": "Meshkujt, shtatzënia dhe UTI e komplikuar kanë regjim tjetër dhe zakonisht kërkojnë kulturë.",
+        "evidence": "NICE NG109"
+      }
     },
     {
       "code": "R31",
@@ -2563,13 +2844,28 @@
         "Kërko absces/fluktuacion",
         "Ekzamino nyjet dhe perfuzionin"
       ],
-      "management": "Antibiotik oral në rastet e lehta sipas udhëzimit lokal; IV/hospitalizim kur ka ashpërsi sistemike ose komplikime. Trajto faktorët predispozues si edema, eczema ose tinea.",
+      "management": "Cellulitis i lehtë te adulti: flucloxacillin 500 mg–1 g PO 4×/ditë për 5–7 ditë. Në alergji peniciline ose kur flucloxacillin nuk përshtatet: clarithromycin 500 mg 2×/ditë 5–7 ditë ose doxycycline 200 mg dita 1, pastaj 100 mg/ditë për total 5–7 ditë. Abscesi kërkon drenazh; sepsa/nekrotizues → urgjencë.",
       "summary": "Celuliti është diagnozë klinike; abscesi kërkon drenazh dhe dhimbja disproporcionale ngre dyshimin për infeksion nekrotizues.",
       "red_flags": [
         "Dhimbje disproporcionale / nekrozë / bullae",
         "Sepsë",
         "Përfshirje periorbitale ose progres i shpejtë"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Flucloxacillin 500 mg–1 g PO 4×/ditë × 5–7 ditë"
+        ],
+        "alternatives": [
+          "Clarithromycin 500 mg 2×/ditë × 5–7 ditë",
+          "Doxycycline 200 mg dita 1, pastaj 100 mg/ditë deri në 5–7 ditë total"
+        ],
+        "avoid": [
+          "Mos trajto abscesin me antibiotik pa drenazh kur ka koleksion të qartë",
+          "Mos humb kohë me terapi orale në dyshim për fasciitis nekrotizues"
+        ],
+        "note": "Përshtat antibiotikun për lokalizim, kulturë, MRSA risk, shtatzëni dhe alergji.",
+        "evidence": "NICE NG141"
+      }
     },
     {
       "code": "L02",
@@ -2621,13 +2917,28 @@
         "Shenja të infeksionit",
         "Sipërfaqja trupore e përfshirë"
       ],
-      "management": "Emolientët rregullisht dhe kortikosteroid topik me potencë sipas zonës/ashpërsisë janë baza; edukim për barrierën e lëkurës dhe shkaktarët. Infeksionet trajtohen kur ka evidencë klinike.",
+      "management": "Bazë: emollientë liberalisht çdo ditë. Flare: kortikosteroid topik 1–2×/ditë me potencë sipas zonës/ashpërsisë; fytyrë/qafë zakonisht mild potency, zona tjera sipas ashpërsisë. Mos përdor antibiotik topik/systemik rutinë pa shenja infeksioni. Në refraktar mund specialisti të përdorë tacrolimus/pimecrolimus sipas indikacionit.",
       "summary": "Dermatiti atopik është kronik dhe relapsues; menaxhimi i barrierës së lëkurës është po aq i rëndësishëm sa trajtimi i flare-it.",
       "red_flags": [
         "Eczema herpeticum e dyshuar",
         "Infeksion bakterial i përhapur",
         "Përfshirje e rëndë okulare/faciale"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Emollient i yndyrshëm rregullisht",
+          "Kortikosteroid topik 1–2×/ditë në zonat aktive, potencë sipas zonës/ashpërsisë"
+        ],
+        "alternatives": [
+          "Tacrolimus/pimecrolimus në raste të zgjedhura me këshillë specialistike"
+        ],
+        "avoid": [
+          "Mos përdor potent/very potent steroid në fytyrë rutinë",
+          "Mos jep antibiotik për çdo flare pa evidencë infeksioni"
+        ],
+        "note": "Te fëmijët, potenca dhe kohëzgjatja varen fort nga mosha dhe zona.",
+        "evidence": "NICE CG57 / TA81"
+      }
     },
     {
       "code": "E78",
@@ -2737,13 +3048,28 @@
         "PHQ-9 ose instrument tjetër si ndihmë",
         "Ekzaminim/teste fizike vetëm kur sugjerohet shkak organik"
       ],
-      "management": "Zgjedhja mes ndërhyrjeve psikologjike, aktivitetit të strukturuar dhe antidepresivëve varet nga ashpërsia, preferencat dhe historia; planifiko ndjekje dhe monitorim të riskut.",
+      "management": "Depresion më i lehtë: mos ofro rutinë antidepresiv si first-line nëse pacienti nuk e preferon; përdor guided self-help/CBT/aktivizim sipas rastit. Depresion moderate–severe ose preferencë për barna: SSRI zakonisht first-choice (p.sh. sertraline/citalopram sipas ndërveprimeve). Monitoro suicidalitetin dhe efektet anësore; vazhdo zakonisht të paktën 6 muaj pas remisionit kur indikohet.",
       "summary": "Depresioni diagnostikohet klinikisht dhe kërkon vlerësim të suicidalitetit dhe historisë së manisë para trajtimit.",
       "red_flags": [
         "Plan/intencë vetëvrasëse",
         "Psikozë ose katatoni",
         "Pamundësi për vetëkujdes / mani e dyshuar"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "SSRI për depresion moderate–severe ose kur pacienti preferon farmakoterapi",
+          "Sertraline ose citalopram janë zgjedhje të zakonshme sipas ndërveprimeve"
+        ],
+        "alternatives": [
+          "SNRI ose antidepresiv tjetër sipas historisë/tolerancës; kombinim me CBT në rastet e përshtatshme"
+        ],
+        "avoid": [
+          "Mos përdor TCA rutinë te pacient me risk të lartë për mbidozim",
+          "Mos nis antidepresiv pa vlerësuar mani/hipomani dhe suicidalitet"
+        ],
+        "note": "Depresioni i lehtë shpesh fillon me ndërhyrje psikologjike/behaviorale, jo automatikisht me bar.",
+        "evidence": "NICE NG222"
+      }
     },
     {
       "code": "G47.0",
@@ -2998,13 +3324,30 @@
         "Cikatricet",
         "Shenja të hiperandrogjenizmit kur relevant"
       ],
-      "management": "Përdor regjim topik të përshtatshëm sipas ashpërsisë; antibiotikët oralë vetëm në kombinim dhe për periudhë të kufizuar kur indikohen. Rastet e rënda ose me cikatrice kërkojnë dermatolog.",
+      "management": "12 javë terapi e kombinuar. Zgjedhje first-line për shumë raste: adapalene + benzoyl peroxide topik 1×/mbrëmje. Akne moderate-severe: adapalene+BPO + doxycycline/lymecycline oral, ose azelaic acid + tetracycline oral. Mos përdor antibiotik topik/oral si monoterapi dhe mos kombino antibiotik topik + oral pa arsye.",
       "summary": "Trajtimi i akneve kërkon kohë dhe aderencë; syno edhe parandalimin e cikatriceve dhe ndikimit psikologjik.",
       "red_flags": [
         "Noduj/ciste të shumta me cikatrice",
         "Ndikim i rëndë në shëndetin mendor",
         "Përkeqësim i shpejtë atipik"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Adapalene + benzoyl peroxide topik 1×/mbrëmje × 12 javë"
+        ],
+        "alternatives": [
+          "Tretinoin + clindamycin topik",
+          "Benzoyl peroxide + clindamycin për mild–moderate",
+          "Adapalene+BPO + doxycycline/lymecycline për moderate–severe",
+          "Azelaic acid + doxycycline/lymecycline për moderate–severe"
+        ],
+        "avoid": [
+          "Retinoidet topike nuk përdoren në shtatzëni",
+          "Mos përdor antibiotik oral/topik si monoterapi afatgjatë"
+        ],
+        "note": "Nodulokistike/cikatrice → dermatolog për isotretinoin dhe menaxhim specialistik.",
+        "evidence": "NICE NG198"
+      }
     },
     {
       "code": "L01",
@@ -3085,13 +3428,28 @@
         "Veshi/facial nerve kur relevant",
         "Vitalet dhe statusi neurologjik"
       ],
-      "management": "Antivirali merret në konsideratë herët, veçanërisht te të moshuarit, imunokomprometuarit dhe zoster oftalmik; analgjezi dhe kujdes i lezioneve.",
+      "management": "Herpes zoster: analgjezi dhe antiviral sa më herët te pacientët me risk të lartë, zoster të rëndë ose oftalmik; përdoren aciclovir, valaciclovir ose famciclovir sipas formulary/SmPC dhe funksionit renal. Zoster oftalmik → vlerësim urgjent oftalmologjik.",
       "summary": "Zoster oftalmik dhe diseminimi kërkojnë vlerësim urgjent specialistik.",
       "red_flags": [
         "Përfshirje okulare",
         "Dobësi faciale / simptoma neurologjike",
         "Diseminim te imunokomprometuarit"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Aciclovir ose valaciclovir/famciclovir kur antiviral indikohet",
+          "Paracetamol/NSAID sipas profilit për dhimbje"
+        ],
+        "alternatives": [
+          "Trajtim për dhimbje neuropatike nëse zhvillohet post-herpetic neuralgia, sipas profilit"
+        ],
+        "avoid": [
+          "Mos vono referimin në zoster oftalmik",
+          "Përshtat antiviralët në insuficiencë renale"
+        ],
+        "note": "Regjimi antiviral varet nga preparati, mosha, renal function dhe koha nga fillimi i rash-it.",
+        "evidence": "Primary-care antiviral guidance / SmPC; specialist urgency for ophthalmic zoster"
+      }
     },
     {
       "code": "J32",
@@ -3491,13 +3849,27 @@
         "Tremori/reflekset",
         "Sytë për orbitopati"
       ],
-      "management": "Konfirmo biokimikisht dhe përcakto etiologjinë; beta-bllokuesi mund të përdoret për simptoma në pacientë të përshtatshëm, ndërsa trajtimi definitiv kërkon plan endokrinologjik.",
+      "management": "Konfirmo tireotoksikozën me TSH/FT4/FT3 dhe etiologjinë. Për kontroll simptomash mund beta‑bllokues (p.sh. propranolol) kur nuk ka kundërindikacion. Antithyroid drug (p.sh. carbimazole/methimazole) zakonisht iniciohet/monitorohet sipas planit endokrinologjik; këshillo pacientin të ndalojë dhe të bëjë FBC urgjent në ethe/dhimbje fyti për shkak të agranulocitozës së rrallë.",
       "summary": "TSH i ulët kërkon interpretim me FT4/FT3 dhe diferencim mes Graves, nodular dhe thyroiditis.",
       "red_flags": [
         "Temperaturë e lartë + agjitacion/takikardi e rëndë",
         "AF e paqëndrueshme",
         "Insuficiencë kardiake akute"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Beta‑bllokues për simptoma adrenergjike kur përshtatet",
+          "Carbimazole/methimazole sipas etiologjisë dhe planit endokrinologjik"
+        ],
+        "alternatives": [
+          "Radioiodine ose kirurgji sipas etiologjisë dhe specialistit"
+        ],
+        "avoid": [
+          "Mos jep antithyroid pa plan monitorimi dhe pa edukim për agranulocitozën"
+        ],
+        "note": "Shtatzënia, orbitopatia, noduset dhe thyroid storm ndryshojnë urgjencën dhe zgjedhjen.",
+        "evidence": "NICE NG145"
+      }
     },
     {
       "code": "E04",
@@ -3549,13 +3921,26 @@
         "Kërko tophi",
         "Aspirim nëse artrit septik nuk përjashtohet"
       ],
-      "management": "Sulmi akut trajtohet me anti-inflamator të përshtatshëm sipas komorbiditeteve; terapia ulëse e uratit merret në konsideratë për recidiva/tophi/risk të lartë dhe titrohet me monitorim.",
+      "management": "Sulm akut i gutës: një nga NSAID, colchicine ose kurs i shkurtër oral corticosteroid sipas komorbiditeteve dhe barnave tjera. Për sëmundje të përsëritur/tophi/CKD konsidero urate-lowering therapy, zakonisht allopurinol me titrim drejt target urate dhe profilaksi flare sipas planit.",
       "summary": "Një nyje e nxehtë me ethe duhet të konsiderohet artrit septik derisa të përjashtohet.",
       "red_flags": [
         "Dyshim për artrit septik",
         "Sepsë",
         "Imunosupresion me monoartrit akut"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "NSAID ose colchicine ose kurs i shkurtër oral corticosteroid për flare akut"
+        ],
+        "alternatives": [
+          "Allopurinol si ULT afatgjatë në indikacione të përshtatshme, me titrim"
+        ],
+        "avoid": [
+          "Mos e ngatërro monoartritin septik me gutë; aspirim kur dyshohet infeksion"
+        ],
+        "note": "Zgjedhja e NSAID/colchicine/steroid varet nga CKD, GI risk, antikoagulimi dhe ndërveprimet.",
+        "evidence": "NICE NG219"
+      }
     },
     {
       "code": "M06",
