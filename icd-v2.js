@@ -19,14 +19,22 @@
     { id:'resp', label:'Respiratore / ORL' },
     { id:'gastro', label:'Gastro' },
     { id:'neuro', label:'Neuro / MSK' },
-    { id:'uro', label:'Uro' },
+    { id:'uro', label:'Uro / Nefro' },
+    { id:'derm', label:'Dermatologji' },
+    { id:'endo', label:'Endokrin / Hemato' },
+    { id:'mental', label:'Shëndet mendor' },
   ]);
   const CLINICAL_CORE_CODES = new Set(['I10','E11','J06','R05','R50','R51','R10.4','R42','N39.0','M54']);
   const CLINICAL_GROUP_BY_CODE = Object.freeze({
-    R50:'general', R53:'general', I10:'cardio', E11:'cardio', 'R00.2':'cardio',
-    J06:'resp', R05:'resp', J02:'resp', J01:'resp', J20:'resp', J45:'resp', J44:'resp', H66:'resp',
-    'R19.7':'gastro', R11:'gastro', 'R10.4':'gastro', K21:'gastro', K29:'gastro', A09:'gastro',
-    R51:'neuro', R42:'neuro', M54:'neuro', M47:'neuro', M51:'neuro', 'N39.0':'uro',
+    R50:'general', R53:'general',
+    I10:'cardio', E11:'cardio', 'R00.2':'cardio', R60:'cardio',
+    J00:'resp', J06:'resp', R05:'resp', J02:'resp', J01:'resp', J20:'resp', J30:'resp', J45:'resp', J44:'resp', H66:'resp', 'H92.0':'resp', H10:'resp',
+    'R19.7':'gastro', R11:'gastro', 'R10.4':'gastro', R12:'gastro', R14:'gastro', K21:'gastro', K29:'gastro', 'K59.0':'gastro', A09:'gastro',
+    R51:'neuro', R42:'neuro', G43:'neuro', M54:'neuro', 'M54.5':'neuro', 'M54.2':'neuro', 'M54.3':'neuro', M47:'neuro', M51:'neuro', 'M25.5':'neuro', M19:'neuro', 'M79.1':'neuro',
+    'N39.0':'uro',
+    L30:'derm', B35:'derm',
+    D50:'endo', E03:'endo',
+    F41:'mental',
   });
 
   const clean = value => String(value ?? '').trim();
@@ -138,7 +146,7 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view, sv:'clinical-workspace-v13' });
+    const params = new URLSearchParams({ view, sv:'clinical-workspace-v14' });
     if (view === 'suggest' || view === 'seed' || view === 'hot' || view === 'guidance' || view === 'guidance-list') params.set('advanced', '1');
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
     return `${API}?${params}`;
