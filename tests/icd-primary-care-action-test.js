@@ -48,6 +48,14 @@ payload = Handler._test.guidancePayload(dataset, { code:'M54.3' }, {
   sourceRevision:'test', stale:false, loadedAt:Date.now(), csvBytes:1, fetchMs:1, buildMs:1,
 });
 assert.equal(payload.available, true);
+assert.equal(payload.inherited, false);
+assert.equal(payload.inheritedFrom, '');
+assert.equal(payload.guidance.code, 'M54.3');
+
+payload = Handler._test.guidancePayload(dataset, { code:'M54.4' }, {
+  sourceRevision:'test', stale:false, loadedAt:Date.now(), csvBytes:1, fetchMs:1, buildMs:1,
+});
+assert.equal(payload.available, true);
 assert.equal(payload.inherited, true);
 assert.equal(payload.inheritedFrom, 'M54');
 assert.equal(payload.guidance.code, 'M54');
