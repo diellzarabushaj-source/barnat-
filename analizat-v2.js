@@ -2219,12 +2219,21 @@
   function manualSearchResults() {
     const term = normalize(state.manualTerm);
     if (!term || !state.data) return [];
-    const existing = new Set(buildPlanEntries().map(entry => entry.test.id));
+    const planned = buildPlanEntries();
+    const existingIds = new Set(planned.map(entry => entry.test.id));
+    const existingNames = new Set(planned.map(entry => normalize(entry.test.formName)));
+    const seenNames = new Set();
+
     return state.data.tests
-      .filter(test => !existing.has(test.id) && testSearchText(test).includes(term))
+      .filter(test => {
+        const name = normalize(test.formName);
+        if (existingIds.has(test.id) || existingNames.has(name)) return false;
+        if (!testSearchText(test).includes(term) || seenNames.has(name)) return false;
+        seenNames.add(name);
+        return true;
+      })
       .slice(0, 10);
   }
-
   function hideManualResults() {
     const root = $('#labManualResults');
     if (root) root.hidden = true;
