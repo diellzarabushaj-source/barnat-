@@ -24,6 +24,8 @@
     { id:'derm', label:'Dermatologji' },
     { id:'endo', label:'Endokrin / Hemato' },
     { id:'mental', label:'Shëndet mendor' },
+    { id:'peds', label:'Pediatri' },
+    { id:'gyn', label:'Gjinekologji' },
   ]);
   const CLINICAL_CORE_CODES = new Set(['I10','E11','J06','R05','R50','R51','R10.4','R42','N39.0','M54']);
   const CLINICAL_GROUP_BY_CODE = Object.freeze({
@@ -35,7 +37,16 @@
     'N39.0':'uro', N23:'uro',
     L30:'derm', B35:'derm',
     D50:'endo', E03:'endo', 'E16.2':'endo', 'E10.1':'endo',
-    F41:'mental',
+    F41:'mental', F32:'mental', 'G47.0':'mental',
+    J18:'resp', J03:'resp', J10:'resp', J11:'resp', H60:'resp', 'H81.1':'neuro',
+    J21:'peds', 'B08.4':'peds',
+    K30:'gastro', K52:'gastro', K64:'gastro',
+    N30:'uro', R31:'uro', N40:'uro',
+    N76:'gyn',
+    L50:'derm', L03:'derm', L02:'derm', L20:'derm',
+    E78:'endo', E66:'endo', R73:'endo',
+    I95:'cardio', I83:'cardio', 'I87.2':'cardio',
+    M17:'neuro', M75:'neuro', M77:'neuro',
     'T78.2':'general',
     'R04.0':'resp',
   });
@@ -149,7 +160,7 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view, sv:'clinical-workspace-v15' });
+    const params = new URLSearchParams({ view, sv:'clinical-workspace-v16' });
     if (view === 'suggest' || view === 'seed' || view === 'hot' || view === 'guidance' || view === 'guidance-list') params.set('advanced', '1');
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
     return `${API}?${params}`;

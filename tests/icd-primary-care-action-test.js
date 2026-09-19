@@ -5,9 +5,9 @@ const Data = require('../data/icd-primary-care-action-v1.json');
 const Handler = require('../lib/icd-advanced-handler.js');
 const FullIcd = require('../lib/icd-full-hierarchy.js');
 
-assert.equal(Data.version, 3);
-assert.equal(Data.entries.length, 70);
-assert.equal(new Set(Data.entries.map(entry => entry.code)).size, 70);
+assert.equal(Data.version, 4);
+assert.equal(Data.entries.length, 100);
+assert.equal(new Set(Data.entries.map(entry => entry.code)).size, 100);
 
 for (const code of Data.entries.map(entry => entry.code)) {
   const entry = Data.entries.find(item => item.code === code);
@@ -70,14 +70,23 @@ const indexPayload = Handler._test.guidanceListPayload(dataset, {
   sourceRevision:'test', stale:false, loadedAt:Date.now(), csvBytes:1, fetchMs:1, buildMs:1,
 });
 assert.equal(indexPayload.kind, 'primary-care-guidance-index');
-assert.equal(indexPayload.total, 70);
-assert.equal(indexPayload.items.length, 70);
+assert.equal(indexPayload.total, 100);
+assert.equal(indexPayload.items.length, 100);
 assert.ok(indexPayload.items.some(item => item.code === 'I10' && /Kardiolog/.test(item.specialist)));
 assert.ok(indexPayload.items.every(item => item.code && item.title_sq && item.specialist));
 const urgentCodes = ['I21','I20','I63','G45','I26','I47','I48','I50','J81','J46','A41','R57','T78.2','E16.2','E10.1','R56.8','R55','R07.4','R06.0','R04.0','R10.0','K92.2','N23','S06.0','T50.9'];
 assert.equal(Data.entries.filter(entry => entry.urgent).length, 25);
 assert.deepEqual(Data.entries.filter(entry => entry.urgent).map(entry => entry.code).sort(), urgentCodes.slice().sort());
 assert.equal(indexPayload.items.filter(item => item.urgent).length, 25);
+const expansionCodes = ['J18','J03','J10','J11','J21','B08.4','H60','H81.1','K30','K52','K64','N30','R31','N40','N76','L50','L03','L02','L20','E78','E66','R73','F32','G47.0','I95','I83','I87.2','M17','M75','M77'];
+assert.equal(expansionCodes.length, 30);
+for (const code of expansionCodes) {
+  const entry = Data.entries.find(item => item.code === code);
+  assert.ok(entry, `Expanded clinical guidance missing for ${code}`);
+  assert.equal(Boolean(entry.urgent), false);
+  assert.ok(entry.referral?.specialist && entry.management && entry.summary);
+}
+
 for (const code of urgentCodes) {
   const item = indexPayload.items.find(entry => entry.code === code);
   assert.ok(item?.urgent, `Urgent guidance missing for ${code}`);
