@@ -540,7 +540,7 @@
       "referral": {
         "specialist": "Gastroenterolog",
         "goal": "Disfagi, gjakderdhje/anemi, humbje peshe, simptoma refraktare ose nevojë për endoskopi.",
-        "note": "Urth/regurgitim prej ___; shëno alarm symptoms, lidhjen me ushqimin, NSAID-et dhe përgjigjen ndaj terapisë."
+        "note": "Urth/regurgitim prej ___; shëno shenja alarmi, lidhjen me ushqimin, NSAID-et dhe përgjigjen ndaj terapisë."
       },
       "anamnesis": [
         "Urth, regurgitim, lidhja me vakte/pozitë",
@@ -554,8 +554,8 @@
         "Hemogramë kur ka dyshim për anemi/gjakderdhje",
         "Endoskopi vetëm kur indikohet"
       ],
-      "management": "Modifikime të stilit të jetesës dhe acid-suppression sipas simptomave; vlerëso alarm symptoms para trajtimit empirik të zgjatur.",
-      "summary": "GERD tipik mund të menaxhohet në kujdesin parësor pa endoskopi në mungesë të alarm symptoms.",
+      "management": "Modifikime të stilit të jetesës dhe acid-suppression sipas simptomave; vlerëso shenja alarmi para trajtimit empirik të zgjatur.",
+      "summary": "GERD tipik mund të menaxhohet në kujdesin parësor pa endoskopi në mungesë të shenja alarmi.",
       "red_flags": [
         "Disfagi progresive",
         "Humbje peshe",
@@ -569,7 +569,7 @@
       "working_diagnosis": "Gastrit / duodenit – K29",
       "referral": {
         "specialist": "Gastroenterolog",
-        "goal": "Simptoma persistente, alarm symptoms, gjakderdhje ose nevojë për gastroskopi.",
+        "goal": "Simptoma persistente, shenja alarmi, gjakderdhje ose nevojë për gastroskopi.",
         "note": "Dhimbje epigastrike/dyspepsi prej ___; shëno NSAID-et, H. pylori nëse është testuar, melena/hematemezë dhe përgjigjen ndaj terapisë."
       },
       "anamnesis": [
@@ -582,10 +582,10 @@
         "Ekzaminim abdominal",
         "Hemogramë sipas riskut",
         "H. pylori test sipas strategjisë lokale",
-        "Gastroskopi kur ka alarm symptoms"
+        "Gastroskopi kur ka shenja alarmi"
       ],
       "management": "Ndalo faktorët irritues kur është e mundur; trajto aciditetin dhe H. pylori kur konfirmohet/indikohet.",
-      "summary": "Dyspepsia/gastriti kërkon vlerësim për H. pylori, NSAID dhe alarm symptoms.",
+      "summary": "Dyspepsia/gastriti kërkon vlerësim për H. pylori, NSAID dhe shenja alarmi.",
       "red_flags": [
         "Gjakderdhje GI",
         "Anemi",
@@ -805,7 +805,7 @@
       "working_diagnosis": "Otalgji – H92.0; shkaku në vlerësim",
       "referral": {
         "specialist": "ORL",
-        "goal": "Dhimbje persistente/severe, diagnozë e paqartë, humbje dëgjimi, otorre, traumë ose dyshim për mastoidit/komplikim.",
+        "goal": "Dhimbje persistente/e rëndë, diagnozë e paqartë, humbje dëgjimi, otorre, traumë ose dyshim për mastoidit/komplikim.",
         "note": "Otalgji prej ___; shëno anën, temperaturën, otorren, humbjen e dëgjimit, URI/traumën dhe gjetjet në otoskopi."
       },
       "anamnesis": [
@@ -877,10 +877,10 @@
         "Ekzaminim abdominal dhe vitalet sipas tablosë",
         "Vlerësim kardiak kur simptomat mund të jenë ishemike",
         "Hemogramë kur dyshohet anemi/gjakderdhje",
-        "Endoskopi vetëm kur ka alarm symptoms ose indikacion tjetër"
+        "Endoskopi vetëm kur ka shenja alarmi ose indikacion tjetër"
       ],
       "management": "Modifikime të stilit të jetesës dhe terapi për supresion të acidit sipas simptomave; mos e atribuo automatikisht dhimbjen retrosternale refluksit pa përjashtuar shkakun kardiak kur profili e kërkon.",
-      "summary": "Urthi tipik shpesh lidhet me refluksin; alarm symptoms dhe dhimbja e mundshme kardiake ndryshojnë menjëherë menaxhimin.",
+      "summary": "Urthi tipik shpesh lidhet me refluksin; shenja alarmi dhe dhimbja e mundshme kardiake ndryshojnë menjëherë menaxhimin.",
       "red_flags": [
         "Dhimbje gjoksi e dyshuar kardiake",
         "Disfagi progresive",
@@ -907,10 +907,10 @@
         "Inspeksion dhe palpim abdominal",
         "Perkusion/auskultim sipas simptomave",
         "Hemogramë dhe teste të synuara sipas historisë",
-        "Imazheri vetëm kur ka gjetje/alarm symptoms"
+        "Imazheri vetëm kur ka gjetje/shenja alarmi"
       ],
       "management": "Identifiko dhe trajto shkakun e mundshëm si konstipacioni, intolerancat ushqimore ose IBS; shmang dieta shumë restriktive pa arsye dhe planifiko rivlerësim nëse simptomat vazhdojnë.",
-      "summary": "Fryrja është simptomë jo-specifike; historia dietike dhe e jashtëqitjes udhëheqin vlerësimin, ndërsa alarm symptoms kërkojnë hetim më të gjerë.",
+      "summary": "Fryrja është simptomë jo-specifike; historia dietike dhe e jashtëqitjes udhëheqin vlerësimin, ndërsa shenja alarmi kërkojnë hetim më të gjerë.",
       "red_flags": [
         "Distension progresiv me të vjella / obstruksion",
         "Humbje peshe ose anemi",
@@ -924,7 +924,7 @@
       "working_diagnosis": "Konstipacion – K59.0",
       "referral": {
         "specialist": "Gastroenterolog",
-        "goal": "Konstipacion refraktar, alarm symptoms, dyshim për obstruksion/sëmundje strukturore ose nevojë për vlerësim endoskopik.",
+        "goal": "Konstipacion refraktar, shenja alarmi, dyshim për obstruksion/sëmundje strukturore ose nevojë për vlerësim endoskopik.",
         "note": "Konstipacion prej ___; ___ jashtëqitje/javë; shëno konsistencën, sforcimin, gjakun, humbjen në peshë, dietën, barnat dhe ekzaminimin abdominal."
       },
       "anamnesis": [
@@ -937,10 +937,10 @@
         "Ekzaminim abdominal",
         "Ekzaminim rektal kur indikohet",
         "Hemogramë, TSH, kalcium ose teste tjera vetëm sipas tablosë",
-        "Vlerësim kolorektal sipas moshës, riskut dhe alarm symptoms"
+        "Vlerësim kolorektal sipas moshës, riskut dhe shenja alarmi"
       ],
       "management": "Rritje graduale e fibrave/lëngjeve dhe aktivitetit kur është e përshtatshme; rishiko barnat shkaktare dhe përdor laksativë sipas tipit dhe përgjigjes klinike.",
-      "summary": "Konstipacioni kronik shpesh menaxhohet në kujdesin parësor; fillimi i ri me alarm symptoms kërkon hetim të shkakut organik.",
+      "summary": "Konstipacioni kronik shpesh menaxhohet në kujdesin parësor; fillimi i ri me shenja alarmi kërkon hetim të shkakut organik.",
       "red_flags": [
         "Dyshim për obstruksion",
         "Gjakderdhje rektale ose anemi",
@@ -1204,7 +1204,7 @@
         "Lëkura e përgjithshme dhe thonjtë sipas rastit",
         "Patch testing ose teste tjera vetëm kur indikohet"
       ],
-      "management": "Shmang irrituesit/shkaktarët, përdor emolientë rregullisht dhe kortikosteroid topik me potencë të përshtatshme për zonën/as hpërsinë; trajto infeksionin vetëm kur ka evidencë klinike.",
+      "management": "Shmang irrituesit/shkaktarët, përdor emolientë rregullisht dhe kortikosteroid topik me potencë të përshtatshme për zonën/ashpërsinë; trajto infeksionin vetëm kur ka evidencë klinike.",
       "summary": "Dermatiti kërkon përshkrim të morfologjisë dhe ekspozimeve; terapia bazë është restaurimi i barrierës dhe kontrolli i inflamacionit.",
       "red_flags": [
         "Eczema herpeticum e dyshuar",
@@ -1248,7 +1248,7 @@
       "referral": {
         "specialist": "Hematolog / Gastroenterolog / Gjinekolog sipas shkakut",
         "goal": "Anemi e rëndë ose refraktare, shkak i paqartë, gjakderdhje GI/gjinekologjike, malabsorbim ose nevojë për hekur IV/hetim specialistik.",
-        "note": "Anemi mikrocitare/ferritinë e ulët; shëno Hb, MCV, ferritinën, simptomat, menstruacionet/gjakderdhjen, dietën, GI symptoms dhe terapinë me hekur."
+        "note": "Anemi mikrocitare/ferritinë e ulët; shëno Hb, MCV, ferritinën, simptomat, menstruacionet/gjakderdhjen, dietën, simptoma gastrointestinale dhe terapinë me hekur."
       },
       "anamnesis": [
         "Lodhje, dispne me sforcim, palpitacione, marramendje",
@@ -1320,7 +1320,7 @@
         "GAD-2/GAD-7 ose instrument tjetër si ndihmë, jo si zëvendësim i vlerësimit klinik",
         "TSH, hemogramë, EKG ose teste tjera vetëm kur anamneza sugjeron shkak fizik"
       ],
-      "management": "Psychoedukim dhe ndërhyrje psikologjike si CBT janë trajtime bazë; SSRI-të janë opsion farmakologjik i zakonshëm sipas diagnozës dhe preferencave. Benzodiazepinat nuk rekomandohen për përdorim afatgjatë rutinë.",
+      "management": "Psikoedukim dhe ndërhyrje psikologjike si CBT janë trajtime bazë; SSRI-të janë opsion farmakologjik i zakonshëm sipas diagnozës dhe preferencave. Benzodiazepinat nuk rekomandohen për përdorim afatgjatë rutinë.",
       "summary": "Vlerëso jo vetëm simptomat, por edhe dëmtimin funksional, komorbiditetet dhe riskun; përjashto shkak fizik kur historia e sugjeron.",
       "red_flags": [
         "Mendime/plan vetëvrasës ose vetëlëndim",
