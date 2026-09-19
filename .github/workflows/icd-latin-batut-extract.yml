@@ -1,4 +1,4 @@
-name: ICD Latin Terminal Category Extract
+name: ICD Latin Official TSV Extract
 
 on:
   push:
@@ -14,70 +14,107 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install PDF tools
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
-      - name: Download terminal three-character ICD table
-        shell: bash
-        run: |
-          set -euo pipefail
-          curl -fL --retry 3 --retry-delay 2 -A "Mozilla/5.0 MedIndex ICD data audit" \
-            "https://www.zczajecar.com/images/MKB10_terminalne_tri_kodna_mesta.pdf" \
-            -o /tmp/terminal.pdf
-          file /tmp/terminal.pdf | grep -qi pdf
-          pdftotext -layout -enc UTF-8 /tmp/terminal.pdf /tmp/terminal.txt
-          wc -l /tmp/terminal.txt
-          head -40 /tmp/terminal.txt
-      - name: Parse code Serbian Latin table
+      - name: Discover and download official ICD-10-SE TSV
         shell: python
         run: |
-          import json, re, pathlib, hashlib
-          lines = pathlib.Path('/tmp/terminal.txt').read_text(encoding='utf-8', errors='replace').splitlines()
-          rows = []
-          current = None
-          code_re = re.compile(r'^\s*([A-Z][0-9]{2})\s{2,}(.+)$')
+          import html, re, urllib.request, pathlib
+          page_url = "https://samarbetsyta.ehalsomyndigheten.se/spaces/IR2/pages/451267009/Ladda%2Bner%2Bfiler%2Bf%C3%B6r%2Bklassifikationer"
+          req = urllib.request.Request(page_url, headers={"User-Agent":"Mozilla/5.0 MedIndex ICD audit"})
+          body = urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+          pathlib.Path("/tmp/page.html").write_text(body, encoding="utf-8")
+          hrefs = [html.unescape(x) for x in re.findall(r'href=["\']([^"\']+)["\']', body, flags=re.I)]
+          candidates = []
+          for href in hrefs:
+              low = href.lower()
+              if "tsv" in low and ("icd" in low or "klassifikation" in low):
+                  if href.startswith("/"):
+                      href = "https://samarbetsyta.ehalsomyndigheten.se" + href
+                  elif href.startswith("http"):
+                      pass
+                  else:
+                      href = urllib.parse.urljoin(page_url, href)
+                  candidates.append(href)
+          print("TSV candidates:")
+          for x in candidates: print(x)
+          if not candidates:
+              # Confluence attachment URLs may not expose .tsv in href text.
+              for href in hrefs:
+                  if "download/attachments" in href.lower():
+                      if href.startswith("/"):
+                          href = "https://samarbetsyta.ehalsomyndigheten.se" + href
+                      candidates.append(href)
+              print("Attachment candidates:", len(candidates))
+          ok = None
+          for url in candidates:
+              try:
+                  req = urllib.request.Request(url, headers={"User-Agent":"Mozilla/5.0 MedIndex ICD audit"})
+                  data = urllib.request.urlopen(req, timeout=45).read()
+                  sample = data[:5000].decode("utf-8", "replace")
+                  if "\t" in sample and ("Latin" in sample or "LATIN" in sample) and ("Kod" in sample or "KOD" in sample):
+                      pathlib.Path("/tmp/icd10se.tsv").write_bytes(data)
+                      ok = url
+                      print("Selected:", url, "bytes:", len(data))
+                      break
+              except Exception as e:
+                  print("candidate failed", url, e)
+          if not ok:
+              raise SystemExit("No valid ICD-10-SE TSV attachment found")
+          pathlib.Path("/tmp/source_url.txt").write_text(ok, encoding="utf-8")
+      - name: Parse Latin column
+        shell: python
+        run: |
+          import csv, json, pathlib, hashlib, collections
+          raw = pathlib.Path("/tmp/icd10se.tsv").read_bytes()
+          text = raw.decode("utf-8-sig")
+          reader = csv.DictReader(text.splitlines(), delimiter="\t")
+          print("Headers:", reader.fieldnames)
+          fields = {str(h).strip().lower(): h for h in (reader.fieldnames or [])}
+          code_key = next((fields[k] for k in fields if k in {"kod","code"}), None)
+          latin_key = next((fields[k] for k in fields if k == "latin"), None)
+          title_key = next((fields[k] for k in fields if k in {"titel","title"}), None)
+          if not code_key or not latin_key:
+              raise SystemExit(f"Required Kod/Latin columns missing: {reader.fieldnames}")
 
-          # In the fixed-width PDF the first column is code, the second Serbian,
-          # the third Latin. Split on 2+ spaces; wrapped continuations are
-          # appended to the active row by column position.
-          for line_no, raw in enumerate(lines, 1):
-              m = code_re.match(raw)
-              if not m:
+          by_code = {}
+          conflicts = collections.defaultdict(set)
+          for row in reader:
+              code = str(row.get(code_key) or "").strip()
+              latin = str(row.get(latin_key) or "").strip()
+              title = str(row.get(title_key) or "").strip() if title_key else ""
+              if not code or not latin:
                   continue
-              code = m.group(1)
-              parts = [p.strip() for p in re.split(r'\s{2,}', raw.strip()) if p.strip()]
-              if len(parts) < 3:
+              if code in by_code and by_code[code]["title_la"] != latin:
+                  conflicts[code].update([by_code[code]["title_la"], latin])
                   continue
-              # parts[0]=code, parts[1]=Serbian, parts[2]=Latin, optional note after.
-              title_sq = parts[1]
-              title_la = parts[2]
-              if code == 'MKB-10' or title_la.lower().startswith('naziv lat'):
-                  continue
-              rows.append({'code':code,'title_sq_source':title_sq,'title_la':title_la,'source_line':line_no})
+              by_code.setdefault(code, {"code":code, "title_la":latin, "title_sv":title})
 
-          # Keep first row per code; table itself is one row per terminal code.
-          uniq = {}
-          for r in rows:
-              uniq.setdefault(r['code'], r)
-          rows = [uniq[k] for k in sorted(uniq)]
-
+          rows = [by_code[k] for k in sorted(by_code)]
           out = {
-            'schema':'medindex.icd10.latin.terminal-three-char.v1',
-            'source_url':'https://www.zczajecar.com/images/MKB10_terminalne_tri_kodna_mesta.pdf',
-            'sha256_pdf':hashlib.sha256(pathlib.Path('/tmp/terminal.pdf').read_bytes()).hexdigest(),
-            'count':len(rows),
-            'rows':rows,
+            "schema":"medindex.icd10.latin.icd10se-2026.v1",
+            "publisher":"Socialstyrelsen / E-halsomyndigheten",
+            "version":"ICD-10-SE 2026-01-01",
+            "source_url":pathlib.Path("/tmp/source_url.txt").read_text(encoding="utf-8"),
+            "sha256_tsv":hashlib.sha256(raw).hexdigest(),
+            "count":len(rows),
+            "conflict_count":len(conflicts),
+            "rows":rows,
+            "conflicts":[{"code":k,"titles":sorted(v)} for k,v in sorted(conflicts.items())],
           }
-          pathlib.Path('data/icd-latin-batut/terminal-three-char.json').write_text(
-              json.dumps(out, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          pathlib.Path("data/icd-latin-icd10se-2026.json").write_text(
+              json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
           )
-          print(json.dumps({'count':len(rows),'sample':rows[:25]}, ensure_ascii=False, indent=2))
-          assert len(rows) >= 200, f'Only {len(rows)} terminal rows parsed'
-      - name: Commit terminal Latin dataset
+          print(json.dumps({
+            "count":len(rows),
+            "conflicts":len(conflicts),
+            "samples":{k:by_code.get(k) for k in ["A00","A01.0","I10","I21.0","K64","P00.3","T00.1","U07.1","U09.9","W01","Z00.0"]},
+          }, ensure_ascii=False, indent=2))
+          assert len(rows) >= 8000, f"Too few Latin-bearing codes: {len(rows)}"
+      - name: Commit official Latin dataset
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/icd-latin-batut/terminal-three-char.json
+          git add data/icd-latin-icd10se-2026.json
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "data(icd): extract terminal three-character Latin names [skip ci]"
+          git commit -m "data(icd): extract official ICD-10-SE 2026 Latin titles [skip ci]"
           git push
