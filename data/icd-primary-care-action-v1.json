@@ -1,8 +1,8 @@
 {
   "schema": "medindex.icd10.primary-care-action.v1",
-  "version": 4,
+  "version": 5,
   "locale": "sq-XK",
-  "scope": "qkmf-clinical-100",
+  "scope": "qkmf-clinical-125",
   "disclaimer": "Ndihmë për dokumentim dhe orientim klinik. Përshtatet sipas pacientit, protokolleve lokale dhe gjykimit klinik.",
   "entries": [
     {
@@ -2946,6 +2946,731 @@
         "Dyshim për rupture akute",
         "Deficit neurovaskular",
         "Ënjtje/skuqje sistemike e pazakontë"
+      ]
+    },
+    {
+      "code": "B37",
+      "title_sq": "Kandidiazë",
+      "working_diagnosis": "Kandidiazë – B37; lokalizimi dhe faktori predispozues në vlerësim",
+      "referral": {
+        "specialist": "Dermatolog / Gjinekolog / ORL sipas lokalizimit",
+        "goal": "Infeksion i përsëritur, i gjerë, rezistent, imunosupresion ose diagnozë e paqartë.",
+        "note": "Kandidiazë e dyshuar në ___ prej ___; shëno pruritin/djegien, sekrecionin, antibiotikët, diabetin, imunosupresionin dhe trajtimet e mëparshme."
+      },
+      "anamnesis": [
+        "Lokalizimi dhe kohëzgjatja",
+        "Antibiotikë të fundit, diabet dhe imunosupresion",
+        "Recidiva të shpeshta",
+        "Shtatzëni ose faktorë lokalë predispozues"
+      ],
+      "exams": [
+        "Ekzaminim i zonës së prekur",
+        "Kërko infeksion bakterial sekondar",
+        "Glukozë/HbA1c kur ka recidiva ose risk",
+        "Mikologji kur diagnoza është e paqartë ose refraktare"
+      ],
+      "management": "Trajtimi antifungal lokal ose sistemik varet nga lokalizimi, ashpërsia dhe faktorët e riskut; korrigjo faktorët predispozues kur është e mundur.",
+      "summary": "Kandidiaza e përsëritur kërkon vlerësim për faktorë predispozues dhe konfirmim të diagnozës.",
+      "red_flags": [
+        "Imunosupresion me përhapje të gjerë",
+        "Disfagi/odinofagi me kandidiazë orale",
+        "Gjendje sistemike e rënduar"
+      ]
+    },
+    {
+      "code": "L70",
+      "title_sq": "Akne vulgaris",
+      "working_diagnosis": "Akne vulgaris – L70; ashpërsia dhe rreziku për cikatrice në vlerësim",
+      "referral": {
+        "specialist": "Dermatolog",
+        "goal": "Akne nodulokistike, cikatrice, ndikim i madh psikologjik ose dështim i trajtimeve të përshtatshme.",
+        "note": "Akne prej ___; shëno komedonet, papulat/pustulat/nodujt, cikatricet, zonat dhe trajtimet e provuara."
+      },
+      "anamnesis": [
+        "Kohëzgjatja dhe shpërndarja",
+        "Cikatrice dhe hiperpigmentim",
+        "Trajtimet e mëparshme dhe aderenca",
+        "Ndikimi psikologjik dhe barnat/hormonet"
+      ],
+      "exams": [
+        "Numri dhe tipi i lezioneve",
+        "Fytyra, gjoksi dhe shpina",
+        "Cikatricet",
+        "Shenja të hiperandrogjenizmit kur relevant"
+      ],
+      "management": "Përdor regjim topik të përshtatshëm sipas ashpërsisë; antibiotikët oralë vetëm në kombinim dhe për periudhë të kufizuar kur indikohen. Rastet e rënda ose me cikatrice kërkojnë dermatolog.",
+      "summary": "Trajtimi i akneve kërkon kohë dhe aderencë; syno edhe parandalimin e cikatriceve dhe ndikimit psikologjik.",
+      "red_flags": [
+        "Noduj/ciste të shumta me cikatrice",
+        "Ndikim i rëndë në shëndetin mendor",
+        "Përkeqësim i shpejtë atipik"
+      ]
+    },
+    {
+      "code": "L01",
+      "title_sq": "Impetigo",
+      "working_diagnosis": "Impetigo – L01",
+      "referral": {
+        "specialist": "Pediatër / Dermatolog sipas ashpërsisë",
+        "goal": "Infeksion i gjerë, bullous, recidiv, komplikime ose dështim i trajtimit.",
+        "note": "Lezione me krusta mjaltëzuese prej ___; shëno lokalizimin, përhapjen, temperaturën dhe kontaktet."
+      },
+      "anamnesis": [
+        "Fillimi dhe përhapja",
+        "Prurit/dhimbje dhe sekrecion",
+        "Kontakt me persona të prekur",
+        "Eczema/traumë të lëkurës"
+      ],
+      "exams": [
+        "Morfologjia e lezioneve",
+        "Shtrirja e sipërfaqes së prekur",
+        "Vitalet kur ka simptoma sistemike",
+        "Kulturë vetëm në recidiv/refraktar sipas rastit"
+      ],
+      "management": "Higjienë lokale dhe terapi topike për lezione të kufizuara; antibiotik sistemik kur është i gjerë/bullous ose ka shenja sistemike sipas udhëzimit lokal.",
+      "summary": "Impetigo është shumë ngjitëse; higjiena dhe trajtimi adekuat ulin përhapjen.",
+      "red_flags": [
+        "Bullous i gjerë",
+        "Ethe/gjendje sistemike",
+        "Celulit i përhapur"
+      ]
+    },
+    {
+      "code": "B00",
+      "title_sq": "Herpes simplex",
+      "working_diagnosis": "Infeksion herpes simplex – B00; lokalizimi në vlerësim",
+      "referral": {
+        "specialist": "Dermatolog / Infektolog / Oftalmolog sipas lokalizimit",
+        "goal": "Përfshirje okulare, encefalit i dyshuar, imunosupresion ose infeksion i rëndë/diseminuar.",
+        "note": "Vezikula/ulcera të dhimbshme prej ___; shëno lokalizimin, recidivat, simptomat sistemike dhe imunosupresionin."
+      },
+      "anamnesis": [
+        "Prodromë me djegie/prurit",
+        "Vezikula/ulcera dhe recidiva",
+        "Kontakt seksual kur relevant",
+        "Imunosupresion dhe shtatzëni"
+      ],
+      "exams": [
+        "Morfologjia dhe shpërndarja",
+        "Sytë kur ka simptoma okulare",
+        "Ekzaminim neurologjik në simptoma CNS",
+        "PCR/swab kur diagnoza është e paqartë ose e rëndë"
+      ],
+      "management": "Antiviralët janë më efektivë kur nisen herët në episode të zgjedhura; menaxhimi ndryshon sipas lokalizimit dhe frekuencës së recidivave.",
+      "summary": "HSV okulare, neonatale ose neurologjike janë forma me risk të lartë.",
+      "red_flags": [
+        "Dhimbje syri/fotofobi",
+        "Konfuzion/konvulsione",
+        "Infeksion i gjerë te imunokomprometuarit"
+      ]
+    },
+    {
+      "code": "B02",
+      "title_sq": "Herpes zoster",
+      "working_diagnosis": "Herpes zoster – B02",
+      "referral": {
+        "specialist": "Oftalmolog / Infektolog / Neurolog sipas lokalizimit",
+        "goal": "Zoster oftalmik, përhapje e gjerë, imunosupresion, deficit neurologjik ose dhimbje e rëndë.",
+        "note": "Dhimbje/vezikula dermatomale prej ___ orësh/ditësh; shëno syrin, veshin, imunosupresionin dhe kohën nga rash-i."
+      },
+      "anamnesis": [
+        "Dhimbje/djegie para rash-it",
+        "Shpërndarje dermatomale unilaterale",
+        "Simptoma okulare/otike",
+        "Imunosupresion dhe mosha"
+      ],
+      "exams": [
+        "Dermatomi dhe numri i dermatomeve",
+        "Syri në përfshirje V1",
+        "Veshi/facial nerve kur relevant",
+        "Vitalet dhe statusi neurologjik"
+      ],
+      "management": "Antivirali merret në konsideratë herët, veçanërisht te të moshuarit, imunokomprometuarit dhe zoster oftalmik; analgjezi dhe kujdes i lezioneve.",
+      "summary": "Zoster oftalmik dhe diseminimi kërkojnë vlerësim urgjent specialistik.",
+      "red_flags": [
+        "Përfshirje okulare",
+        "Dobësi faciale / simptoma neurologjike",
+        "Diseminim te imunokomprometuarit"
+      ]
+    },
+    {
+      "code": "J32",
+      "title_sq": "Sinusit kronik",
+      "working_diagnosis": "Rinosinusit kronik – J32",
+      "referral": {
+        "specialist": "ORL",
+        "goal": "Simptoma >12 javë, polipe, obstruksion unilateral, recidiva ose dështim i menaxhimit adekuat.",
+        "note": "Bllokim/rinorre/dhimbje faciale/hiposmi prej ___ javësh; shëno unilateralitetin, polipet, alergjinë dhe terapinë."
+      },
+      "anamnesis": [
+        "Bllokim nazal dhe rinorre",
+        "Hiposmi/anosmi",
+        "Dhimbje/presion facial",
+        "Alergji, astmë dhe infeksione të përsëritura"
+      ],
+      "exams": [
+        "Inspeksion nazal",
+        "Orofaringu",
+        "Palpim facial sipas simptomave",
+        "Endoskopi/CT nga ORL kur indikohet"
+      ],
+      "management": "Irrigim me solucion fiziologjik dhe kortikosteroid intranazal janë baza; antibiotikët nuk përdoren rutinë pa indikacion bakterial të qartë.",
+      "summary": "Simptomat >12 javë sugjerojnë rinosinusit kronik dhe kërkojnë vlerësim për polipe/shkaqe anatomike.",
+      "red_flags": [
+        "Obstruksion unilateral me gjakderdhje",
+        "Ënjtje periorbitale / komplikim orbital",
+        "Deficit neurologjik"
+      ]
+    },
+    {
+      "code": "J04",
+      "title_sq": "Laringit akut",
+      "working_diagnosis": "Laringit akut – J04",
+      "referral": {
+        "specialist": "ORL / Urgjenca sipas airway",
+        "goal": "Stridor, dispne, zë i humbur persistent, hemoptizi ose simptoma të zgjatura/atipike.",
+        "note": "Ngjirje zëri prej ___; shëno kollën, temperaturën, stridorin, përdorimin e zërit dhe duhanin."
+      },
+      "anamnesis": [
+        "Ngjirje/afoni",
+        "Kollë dhe URI",
+        "Stridor/dispne",
+        "Duhan, reflux dhe overuse të zërit"
+      ],
+      "exams": [
+        "Vitalet",
+        "Orofaringu",
+        "Dëgjo stridorin",
+        "Laringoskopi në simptoma persistente/atipike"
+      ],
+      "management": "Pushim i zërit, hidratim dhe trajtim simptomatik; antibiotikët nuk indikohen rutinë në laringitin akut viral.",
+      "summary": "Ngjirja e zërit zakonisht është virale; stridori ose dispnea ndryshojnë urgjencën.",
+      "red_flags": [
+        "Stridor",
+        "Dispne / komprometim airway",
+        "Ngjirje persistente me hemoptizi ose risk maligniteti"
+      ]
+    },
+    {
+      "code": "H00",
+      "title_sq": "Hordeolum / elb në sy",
+      "working_diagnosis": "Hordeolum – H00",
+      "referral": {
+        "specialist": "Oftalmolog",
+        "goal": "Përhapje preseptale/orbitale, dhimbje e fortë, recidiv persistent ose diagnozë e paqartë.",
+        "note": "Nodul i dhimbshëm në qepallë prej ___; shëno skuqjen, sekrecionin, shikimin dhe përhapjen."
+      },
+      "anamnesis": [
+        "Fillimi dhe dhimbja lokale",
+        "Sekrecion/crusting",
+        "Ndryshim i shikimit",
+        "Episode të përsëritura"
+      ],
+      "exams": [
+        "Qepalla dhe margjina",
+        "Mprehtësia vizuale",
+        "Lëvizjet okulare",
+        "Kërko cellulitis përreth"
+      ],
+      "management": "Kompresa të ngrohta dhe higjienë e qepallës; antibiotik topik vetëm kur ka blefarokonjunktivit/indikacion. Persistent/recurrent kërkon oftalmolog.",
+      "summary": "Hordeolum është zakonisht lokal; dhimbja me lëvizje okulare ose ulja e shikimit nuk janë tipike.",
+      "red_flags": [
+        "Dhimbje me lëvizje okulare",
+        "Ulje shikimi",
+        "Ënjtje e përhapur me ethe"
+      ]
+    },
+    {
+      "code": "H01",
+      "title_sq": "Blefarit",
+      "working_diagnosis": "Blefarit – H01",
+      "referral": {
+        "specialist": "Oftalmolog",
+        "goal": "Simptoma refraktare, ulje shikimi, dhimbje okulare, keratit ose diagnozë e paqartë.",
+        "note": "Irritim/prurit/crusting qepallash prej ___; shëno thatësinë okulare, rosacea dhe trajtimin."
+      },
+      "anamnesis": [
+        "Prurit/djegie",
+        "Crusting në mëngjes",
+        "Sy i thatë",
+        "Rosacea/seborrhea"
+      ],
+      "exams": [
+        "Margjina e qepallave",
+        "Konjunktiva",
+        "Mprehtësia vizuale",
+        "Kërko keratit"
+      ],
+      "management": "Higjiena e qepallave dhe kompresat e ngrohta janë baza; trajtimet shtesë varen nga tipi dhe komplikimet.",
+      "summary": "Blefariti është kronik dhe kërkon kujdes të vazhdueshëm të margjinës së qepallës.",
+      "red_flags": [
+        "Dhimbje okulare",
+        "Fotofobi",
+        "Ulje shikimi"
+      ]
+    },
+    {
+      "code": "H61.2",
+      "title_sq": "Tapë cerumeni",
+      "working_diagnosis": "Cerumen i impaktuar – H61.2",
+      "referral": {
+        "specialist": "ORL",
+        "goal": "Dështim i heqjes, perforim/tub ventilimi, kirurgji veshi e mëparshme, dhimbje/otorre ose diagnozë e paqartë.",
+        "note": "Bllokim/humbje dëgjimi prej ___; shëno dhimbjen, otorren, kirurgjinë dhe otoskopinë."
+      },
+      "anamnesis": [
+        "Humbje dëgjimi/bllokim",
+        "Dhimbje/otorre",
+        "Përdorim hearing aids",
+        "Kirurgji/perforim i mëparshëm"
+      ],
+      "exams": [
+        "Otoskopi",
+        "Kanali për inflamacion",
+        "Membrana timpanike kur shihet",
+        "Dëgjimi pas heqjes"
+      ],
+      "management": "Cerumenolytic dhe irrigim/manual removal sipas kundërindikacioneve dhe kompetencës; shmang irrigimin kur dyshohet perforim ose kirurgji e caktuar e veshit.",
+      "summary": "Tapë cerumeni trajtohet vetëm kur është simptomatike ose pengon ekzaminimin e nevojshëm.",
+      "red_flags": [
+        "Dhimbje e fortë / otorre",
+        "Marramendje pas manipulimit",
+        "Humbje dëgjimi persistente pas heqjes"
+      ]
+    },
+    {
+      "code": "K58",
+      "title_sq": "Sindromë e zorrës së irrituar",
+      "working_diagnosis": "IBS – K58; tipi sipas jashtëqitjes",
+      "referral": {
+        "specialist": "Gastroenterolog",
+        "goal": "Shenja alarmi, diagnozë e paqartë, simptoma refraktare ose ndikim i madh në funksion.",
+        "note": "Dhimbje barku e lidhur me jashtëqitjen prej ___ muajsh; shëno diarrea/konstipacionin, gjakun, humbjen në peshë dhe testet bazë."
+      },
+      "anamnesis": [
+        "Dhimbje e përsëritur dhe lidhja me defekimin",
+        "Diarre/konstipacion/miks",
+        "Fryrje",
+        "Gjak, humbje peshe, simptoma nate"
+      ],
+      "exams": [
+        "Ekzaminim abdominal",
+        "Hemogramë/CRP sipas profilit",
+        "Celiac testing kur relevant",
+        "Teste tjera vetëm sipas red flags"
+      ],
+      "management": "Edukimi, dietë e individualizuar, aktivitet dhe terapi simptomatike sipas fenotipit; dieta low-FODMAP idealisht me udhëzim profesional.",
+      "summary": "IBS është diagnozë pozitive klinike kur kriteret përputhen dhe nuk ka shenja alarmi.",
+      "red_flags": [
+        "Gjakderdhje",
+        "Humbje peshe/anemi",
+        "Fillim i ri në moshë të madhe ose histori familjare të kancerit/IBD"
+      ]
+    },
+    {
+      "code": "K80",
+      "title_sq": "Kolelitiazë",
+      "working_diagnosis": "Kolelitiazë – K80; kolikë biliare vs komplikim",
+      "referral": {
+        "specialist": "Kirurg / Gastroenterolog",
+        "goal": "Kolecistit, kolangit, pankreatit, ikter obstruktiv ose kolika të përsëritura simptomatike.",
+        "note": "Dhimbje RUQ/epigastrike pas ushqimit prej ___; shëno temperaturën, ikterin, Murphy, laboratorët dhe US."
+      },
+      "anamnesis": [
+        "Dhimbje RUQ/epigastrike dhe rrezatim",
+        "Lidhja me ushqim",
+        "Ethe, të vjella, ikter",
+        "Episode të mëparshme"
+      ],
+      "exams": [
+        "Vitalet",
+        "Abdomeni/Murphy",
+        "LFT, bilirubinë, lipazë sipas simptomave",
+        "Ultrazë abdominale"
+      ],
+      "management": "Gurët asimptomatikë zakonisht nuk kërkojnë trajtim. Simptomatikët referohen për kirurgji sipas tablosë; komplikimet kërkojnë vlerësim urgjent.",
+      "summary": "Dallo kolikën biliare nga kolecistiti, kolangiti dhe pankreatiti.",
+      "red_flags": [
+        "Ethe + RUQ pain",
+        "Ikter",
+        "Hipotension/konfuzion"
+      ]
+    },
+    {
+      "code": "K76.0",
+      "title_sq": "Mëlçi yndyrore",
+      "working_diagnosis": "Steatozë hepatike – K76.0; shkaku metabolik/alkoolik në vlerësim",
+      "referral": {
+        "specialist": "Gastroenterolog / Hepatolog",
+        "goal": "Fibrozë e avancuar e dyshuar, enzima persistente të rritura, diagnozë e paqartë ose sëmundje hepatike e komplikuar.",
+        "note": "Steatozë në US/lab; shëno BMI, DM, lipidet, alkoolin, ALT/AST, trombocitet dhe riskun e fibrozës."
+      },
+      "anamnesis": [
+        "Pesha dhe faktorët metabolikë",
+        "Alkooli",
+        "Barna hepatotoksike",
+        "Histori familjare sëmundje hepatike"
+      ],
+      "exams": [
+        "BMI/waist",
+        "Liver profile",
+        "Trombocite dhe score risku fibrozë",
+        "Ultrazë sipas rastit"
+      ],
+      "management": "Menaxho peshën, aktivitetin, diabetin, lipidet dhe alkoolin; përdor stratifikim të riskut për fibrozë për të përcaktuar referimin.",
+      "summary": "Steatoza nuk duhet të ndalet te US; vlerësimi i fibrozës përcakton riskun afatgjatë.",
+      "red_flags": [
+        "Ikter",
+        "Ascit / shenja dekompensimi",
+        "Trombocitopeni ose fibrozë e avancuar e dyshuar"
+      ]
+    },
+    {
+      "code": "N20",
+      "title_sq": "Gurë në veshka/ureter",
+      "working_diagnosis": "Urolitiazë – N20",
+      "referral": {
+        "specialist": "Urolog",
+        "goal": "Obstruksion, infeksion, veshkë e vetme, insuficiencë renale, gur i madh ose episode të përsëritura.",
+        "note": "Kolikë flank→ijë prej ___; shëno temperaturën, hematurinë, kreatininën, veshkën e vetme dhe imazherinë."
+      },
+      "anamnesis": [
+        "Kolikë flank/ijë",
+        "Hematuri",
+        "Ethe/të dridhura",
+        "Gurë të mëparshëm dhe histori familjare"
+      ],
+      "exams": [
+        "Vitalet",
+        "CVA tenderness",
+        "Urinalizë",
+        "Kreatininë dhe imazheri sipas rastit"
+      ],
+      "management": "Analgjezi dhe hidratim normal sipas nevojës; madhësia/lokalizimi përcaktojnë observim vs urologji. Infeksion + obstruksion është urgjencë.",
+      "summary": "Urolitiaza e pakomplikuar shpesh menaxhohet konservativisht, por obstruksioni i infektuar kërkon dekompresion urgjent.",
+      "red_flags": [
+        "Ethe/sepsë",
+        "Anuri / veshkë e vetme",
+        "Dhimbje të pakontrollueshme"
+      ]
+    },
+    {
+      "code": "N45",
+      "title_sq": "Epididimit / orkit",
+      "working_diagnosis": "Epididimit/orkit – N45; përjashto torsionin testikular",
+      "referral": {
+        "specialist": "Urgjenca / Urolog",
+        "goal": "Përjashtim urgjent i torsionit, abscesit ose infeksionit të rëndë.",
+        "note": "Dhimbje/ënjtje skrotale prej ___; shëno fillimin, temperaturën, dizurinë, risk STI dhe ekzaminimin."
+      },
+      "anamnesis": [
+        "Fillim gradual vs i papritur",
+        "Dizuri/sekrecion uretral",
+        "Temperaturë",
+        "Risk STI dhe UTI"
+      ],
+      "exams": [
+        "Testikujt/epididymis",
+        "Cremasteric reflex sipas vlerësimit",
+        "Abdomeni/inguinal",
+        "US Doppler kur torsioni nuk përjashtohet klinikisht"
+      ],
+      "management": "Antibiotikët zgjidhen sipas moshës/riskut STI dhe udhëzimit lokal; mbështetje skrotale dhe analgjezi. Torsioni i dyshuar kërkon kirurgji urgjente.",
+      "summary": "Çdo dhimbje akute skrotale duhet të vlerësohet për torsion para diagnozës së epididimitit.",
+      "red_flags": [
+        "Fillim i papritur i dhimbjes së fortë",
+        "Testis high-riding / reflex anormal",
+        "Sepsë"
+      ]
+    },
+    {
+      "code": "N92",
+      "title_sq": "Menstruacione të bollshme",
+      "working_diagnosis": "Heavy menstrual bleeding – N92",
+      "referral": {
+        "specialist": "Gjinekolog",
+        "goal": "Anemi, gjakderdhje e rëndë, fibroma/polip/endometriumi i dyshuar, dështim i trajtimit ose ndikim i madh në cilësinë e jetës.",
+        "note": "Gjakderdhje menstruale e bollshme prej ___ ciklesh; shëno ditët, mpiksjet, intermenstrual bleeding, dhimbjen, shtatzëninë dhe Hb."
+      },
+      "anamnesis": [
+        "Kohëzgjatja dhe ndikimi në cilësinë e jetës",
+        "Mpiksje/flooding",
+        "Gjakderdhje intermenstruale/postkoitale",
+        "Dhimbje/presion dhe simptoma anemie"
+      ],
+      "exams": [
+        "Hemogramë",
+        "Ekzaminim pelvik kur ka simptoma shoqëruese",
+        "Test shtatzënie kur relevant",
+        "US/histeroskopi sipas historisë dhe riskut"
+      ],
+      "management": "Trajtimi synon cilësinë e jetës dhe varet nga shkaku, fertiliteti dhe preferencat; korrigjo aneminë dhe refero sipas gjetjeve strukturore.",
+      "summary": "HMB vlerësohet nga ndikimi klinik, jo vetëm nga një sasi e matur gjaku.",
+      "red_flags": [
+        "Paqëndrueshmëri hemodinamike",
+        "Hb shumë e ulët / sinkopë",
+        "Gjakderdhje intermenstruale persistente me risk endometrial"
+      ]
+    },
+    {
+      "code": "N94.6",
+      "title_sq": "Dismenorre",
+      "working_diagnosis": "Dismenorre – N94.6; primare vs sekondare",
+      "referral": {
+        "specialist": "Gjinekolog",
+        "goal": "Dhimbje e re/progresive, infertilitet, dyshim për endometriozë/adenomiozë, masë pelvike ose dështim i trajtimit.",
+        "note": "Dhimbje menstruale prej ___; shëno fillimin në raport me menarkën, ciklin, dyspareuninë, infertilitetin dhe gjakderdhjen."
+      },
+      "anamnesis": [
+        "Koha e dhimbjes ndaj menstruacionit",
+        "Fillim që nga adoleshenca vs fillim i ri",
+        "Dyspareuni, dhimbje kronike pelvike",
+        "Gjakderdhje e bollshme/infertilitet"
+      ],
+      "exams": [
+        "Ekzaminim pelvik kur dyshohet sekondare",
+        "Test shtatzënie kur relevant",
+        "US sipas dyshimit",
+        "Hemogramë në HMB"
+      ],
+      "management": "NSAID dhe/ose terapi hormonale sipas profilit janë opsione të zakonshme për dismenorrenë primare; shenjat për shkak sekondar kërkojnë gjinekolog.",
+      "summary": "Fillimi i ri ose progresiv pas viteve pa simptoma sugjeron shkak sekondar.",
+      "red_flags": [
+        "Dhimbje akute me shtatzëni të mundshme",
+        "Ethe + dhimbje pelvike",
+        "Masë ose gjakderdhje e pazakontë"
+      ]
+    },
+    {
+      "code": "D64",
+      "title_sq": "Anemi e paspecifikuar",
+      "working_diagnosis": "Anemi – D64; tipi dhe shkaku në vlerësim",
+      "referral": {
+        "specialist": "Hematolog / specialist sipas shkakut",
+        "goal": "Anemi e rëndë, pancitopeni, hemolizë, shkak i paqartë ose mos-përgjigje ndaj trajtimit.",
+        "note": "Hb ___, MCV ___; shëno simptomat, gjakderdhjen, ferritinën/B12/folatin, retikulocitet dhe komorbiditetet."
+      },
+      "anamnesis": [
+        "Lodhje, dispne, palpitacione",
+        "Gjakderdhje",
+        "Dietë dhe simptoma GI",
+        "Sëmundje kronike dhe barna"
+      ],
+      "exams": [
+        "Vitalet dhe zbehja",
+        "Hemogramë me indekse",
+        "Retikulocite/strisho sipas rastit",
+        "Ferritinë/B12/folat/renal sipas MCV dhe historisë"
+      ],
+      "management": "Trajtimi drejtohet nga etiologjia; mos jep hekur automatikisht pa konfirmuar mungesën kur diagnoza është e paqartë.",
+      "summary": "Anemia është gjetje, jo etiologji; MCV, retikulocitet dhe historia drejtojnë punën diagnostike.",
+      "red_flags": [
+        "Sinkopë/dhimbje gjoksi",
+        "Rënie e shpejtë e Hb",
+        "Pancitopeni / hemolizë e dyshuar"
+      ]
+    },
+    {
+      "code": "E05",
+      "title_sq": "Hipertiroidizëm / tireotoksikozë",
+      "working_diagnosis": "Hipertiroidizëm / tireotoksikozë – E05",
+      "referral": {
+        "specialist": "Endokrinolog",
+        "goal": "Konfirmim i etiologjisë dhe trajtim; urgjencë në thyroid storm, AF të paqëndrueshme ose simptoma të rënda.",
+        "note": "TSH ___ FT4 ___ FT3 ___; shëno palpitacionet, humbjen në peshë, tremorin, goiterin, sytë dhe barnat."
+      },
+      "anamnesis": [
+        "Palpitacione, intolerancë ndaj nxehtësisë, humbje peshe",
+        "Tremor, ankth, diarre",
+        "Simptoma okulare dhe goiter",
+        "Amiodarone/jod dhe histori tiroide"
+      ],
+      "exams": [
+        "Puls/TA",
+        "Tiroidja",
+        "Tremori/reflekset",
+        "Sytë për orbitopati"
+      ],
+      "management": "Konfirmo biokimikisht dhe përcakto etiologjinë; beta-bllokuesi mund të përdoret për simptoma në pacientë të përshtatshëm, ndërsa trajtimi definitiv kërkon plan endokrinologjik.",
+      "summary": "TSH i ulët kërkon interpretim me FT4/FT3 dhe diferencim mes Graves, nodular dhe thyroiditis.",
+      "red_flags": [
+        "Temperaturë e lartë + agjitacion/takikardi e rëndë",
+        "AF e paqëndrueshme",
+        "Insuficiencë kardiake akute"
+      ]
+    },
+    {
+      "code": "E04",
+      "title_sq": "Strumë / nodus tiroide jo-toksik",
+      "working_diagnosis": "Strumë jo-toksike / nodus tiroide – E04",
+      "referral": {
+        "specialist": "Endokrinolog / ORL",
+        "goal": "Nodul me tipare malinje, kompresion, rritje progresive ose testet tiroide anormale.",
+        "note": "Zmadhim/nodul tiroide prej ___; shëno disfaginë, ngjirjen, rritjen, TSH dhe historinë familjare."
+      },
+      "anamnesis": [
+        "Kohëzgjatja dhe rritja",
+        "Disfagi/dispne/ngjirje",
+        "Rrezatim në qafë në fëmijëri",
+        "Histori familjare kancer tiroide"
+      ],
+      "exams": [
+        "Palpim i tiroides dhe nyjeve",
+        "TSH",
+        "Ultrazë kur indikohet",
+        "FNA sipas riskut ultrasonografik"
+      ],
+      "management": "Vlerësimi bazohet në TSH dhe riskun klinik/ultrasonografik; jo çdo nodul kërkon biopsi.",
+      "summary": "Tiparet kompresive dhe onkologjike kanë prioritet mbi madhësinë vetëm.",
+      "red_flags": [
+        "Ngjirje e re",
+        "Rritje e shpejtë / nyje cervikale",
+        "Stridor/disfagi progresive"
+      ]
+    },
+    {
+      "code": "M10",
+      "title_sq": "Gutë",
+      "working_diagnosis": "Gutë – M10",
+      "referral": {
+        "specialist": "Reumatolog",
+        "goal": "Diagnozë e paqartë, episode të shpeshta, tofi, CKD kompleks ose dështim i trajtimit.",
+        "note": "Artrit akut i nyjës ___ prej ___; shëno eritemën/ënjtjen, temperaturën, uratin, CKD, diuretikët dhe episodet."
+      },
+      "anamnesis": [
+        "Fillim i shpejtë i dhimbjes/ënjtjes",
+        "MTP1 ose nyje tjera",
+        "Episode të mëparshme/tophi",
+        "Alkool, dietë, diuretikë, CKD"
+      ],
+      "exams": [
+        "Nyja për nxehtësi/ënjtje",
+        "Temperatura",
+        "Kërko tophi",
+        "Aspirim nëse artrit septik nuk përjashtohet"
+      ],
+      "management": "Sulmi akut trajtohet me anti-inflamator të përshtatshëm sipas komorbiditeteve; terapia ulëse e uratit merret në konsideratë për recidiva/tophi/risk të lartë dhe titrohet me monitorim.",
+      "summary": "Një nyje e nxehtë me ethe duhet të konsiderohet artrit septik derisa të përjashtohet.",
+      "red_flags": [
+        "Dyshim për artrit septik",
+        "Sepsë",
+        "Imunosupresion me monoartrit akut"
+      ]
+    },
+    {
+      "code": "M06",
+      "title_sq": "Artrit reumatoid",
+      "working_diagnosis": "Artrit reumatoid i dyshuar – M06",
+      "referral": {
+        "specialist": "Reumatolog",
+        "goal": "Referim i hershëm për çdo sinovit persistent, sidomos nyje të vogla, shumë nyje ose simptoma >3 muaj.",
+        "note": "Dhimbje/ënjtje simetrike prej ___; shëno ngurtësinë e mëngjesit, nyjet e përfshira, CRP/ESR, RF/anti-CCP dhe funksionin."
+      },
+      "anamnesis": [
+        "Ngurtësi mëngjesi",
+        "Ënjtje e nyjeve të vogla",
+        "Kohëzgjatja",
+        "Simptoma sistemike/familjare"
+      ],
+      "exams": [
+        "Joint count për sinovit",
+        "ROM/funksioni",
+        "CRP/ESR",
+        "RF/anti-CCP sipas planit"
+      ],
+      "management": "Referimi i hershëm është kyç sepse DMARD-et duhet të nisen nga reumatologjia; analgjezia nuk duhet të vonojë vlerësimin specialistik.",
+      "summary": "Sinoviti persistent është më i rëndësishëm se një RF negativ për vendimin e referimit.",
+      "red_flags": [
+        "Monoartrit akut me ethe",
+        "Vaskulit/neuropati e re",
+        "Komplikime cervikale neurologjike"
+      ]
+    },
+    {
+      "code": "M79.7",
+      "title_sq": "Fibromialgji",
+      "working_diagnosis": "Fibromialgji – M79.7",
+      "referral": {
+        "specialist": "Reumatolog / Fiziatër sipas paqartësisë",
+        "goal": "Diagnozë e pasigurt, shenja inflamatore/neurologjike ose dështim i menaxhimit multidisiplinar.",
+        "note": "Dhimbje difuze >3 muaj; shëno lodhjen, gjumin, kognicionin, funksionin dhe testet për diagnoza alternative."
+      },
+      "anamnesis": [
+        "Dhimbje difuze kronike",
+        "Lodhje",
+        "Gjumë jo-ripërtëritës",
+        "Ankth/depresion dhe funksioni"
+      ],
+      "exams": [
+        "Ekzaminim muskuloskeletal",
+        "Ekzaminim neurologjik",
+        "Teste minimale sipas historisë për alternativa",
+        "Vlerësim funksional"
+      ],
+      "management": "Edukimi, aktiviteti aerob/progresiv, gjumi dhe ndërhyrjet psikologjike janë bazë; barnat individualizohen dhe opioidët afatgjatë zakonisht shmangen.",
+      "summary": "Fibromialgjia është diagnozë klinike dhe nuk kërkon panele të gjera laboratorike pa indikacion.",
+      "red_flags": [
+        "Dobësi objektive",
+        "Nyje të ënjtura / inflamacion objektiv",
+        "Humbje peshe/ethe të pashpjeguara"
+      ]
+    },
+    {
+      "code": "R00.0",
+      "title_sq": "Takikardi",
+      "working_diagnosis": "Takikardi – R00.0; sinusale vs aritmi në vlerësim",
+      "referral": {
+        "specialist": "Urgjenca / Kardiolog sipas simptomave",
+        "goal": "Ritëm i paqëndrueshëm, sinkopë, dhimbje gjoksi, dispne ose tahikardi persistente e pashpjeguar.",
+        "note": "Puls ___/min; shëno ritmin, TA, EKG-në, temperaturën, dhimbjen, stimuluesit dhe simptomat."
+      },
+      "anamnesis": [
+        "Palpitacione",
+        "Dhimbje gjoksi/dispne/sinkopë",
+        "Ethe, dehidrim, anemi",
+        "Kafeinë/stimulues/barna"
+      ],
+      "exams": [
+        "Vitalet",
+        "EKG 12 derivacione",
+        "Auskultim",
+        "Hemogramë/TSH/elektrolite sipas shkakut"
+      ],
+      "management": "Trajto shkakun e takikardisë sinusale; ritmet jo-sinusale menaxhohen sipas EKG-së dhe stabilitetit hemodinamik.",
+      "summary": "Mos trajto vetëm numrin e pulsit pa identifikuar shkakun dhe ritmin.",
+      "red_flags": [
+        "Hipotension",
+        "Dhimbje gjoksi/sinkopë",
+        "Ritëm i gjerë ose shumë i shpejtë"
+      ]
+    },
+    {
+      "code": "R00.1",
+      "title_sq": "Bradikardi",
+      "working_diagnosis": "Bradikardi – R00.1; fiziologjike vs patologjike",
+      "referral": {
+        "specialist": "Urgjenca / Kardiolog",
+        "goal": "Bradikardi simptomatike, bllok AV, sinkopë ose instabilitet hemodinamik.",
+        "note": "Puls ___/min; shëno TA, simptomat, EKG-në, barnat (beta-bllokues/digoxin), elektrolitet dhe historinë kardiake."
+      },
+      "anamnesis": [
+        "Marramendje/sinkopë",
+        "Lodhje/intolerancë në sforcim",
+        "Barna që ulin frekuencën",
+        "Histori sëmundje kardiake"
+      ],
+      "exams": [
+        "Vitalet",
+        "EKG",
+        "Perfuzioni/statusi mendor",
+        "Elektrolite/TSH sipas rastit"
+      ],
+      "management": "Bradikardia asimptomatike fiziologjike mund të kërkojë vetëm observim; simptomatike ose me bllok kërkon algoritëm urgjent dhe vlerësim kardiologjik.",
+      "summary": "Simptomat dhe EKG-ja përcaktojnë urgjencën më shumë se frekuenca e izoluar.",
+      "red_flags": [
+        "Hipotension/alterim vetëdijeje",
+        "Sinkopë",
+        "Bllok AV i avancuar"
       ]
     }
   ]

@@ -5,9 +5,9 @@ const Data = require('../data/icd-primary-care-action-v1.json');
 const Handler = require('../lib/icd-advanced-handler.js');
 const FullIcd = require('../lib/icd-full-hierarchy.js');
 
-assert.equal(Data.version, 4);
-assert.equal(Data.entries.length, 100);
-assert.equal(new Set(Data.entries.map(entry => entry.code)).size, 100);
+assert.equal(Data.version, 5);
+assert.equal(Data.entries.length, 125);
+assert.equal(new Set(Data.entries.map(entry => entry.code)).size, 125);
 
 for (const code of Data.entries.map(entry => entry.code)) {
   const entry = Data.entries.find(item => item.code === code);
@@ -70,8 +70,8 @@ const indexPayload = Handler._test.guidanceListPayload(dataset, {
   sourceRevision:'test', stale:false, loadedAt:Date.now(), csvBytes:1, fetchMs:1, buildMs:1,
 });
 assert.equal(indexPayload.kind, 'primary-care-guidance-index');
-assert.equal(indexPayload.total, 100);
-assert.equal(indexPayload.items.length, 100);
+assert.equal(indexPayload.total, 125);
+assert.equal(indexPayload.items.length, 125);
 assert.ok(indexPayload.items.some(item => item.code === 'I10' && /Kardiolog/.test(item.specialist)));
 assert.ok(indexPayload.items.every(item => item.code && item.title_sq && item.specialist));
 const urgentCodes = ['I21','I20','I63','G45','I26','I47','I48','I50','J81','J46','A41','R57','T78.2','E16.2','E10.1','R56.8','R55','R07.4','R06.0','R04.0','R10.0','K92.2','N23','S06.0','T50.9'];
@@ -85,6 +85,15 @@ for (const code of expansionCodes) {
   assert.ok(entry, `Expanded clinical guidance missing for ${code}`);
   assert.equal(Boolean(entry.urgent), false);
   assert.ok(entry.referral?.specialist && entry.management && entry.summary);
+}
+
+const expansion2Codes = ['B37','L70','L01','B00','B02','J32','J04','H00','H01','H61.2','K58','K80','K76.0','N20','N45','N92','N94.6','D64','E05','E04','M10','M06','M79.7','R00.0','R00.1'];
+assert.equal(expansion2Codes.length, 25);
+for (const code of expansion2Codes) {
+  const entry = Data.entries.find(item => item.code === code);
+  assert.ok(entry, `Second expansion guidance missing for ${code}`);
+  assert.equal(Boolean(entry.urgent), false);
+  assert.ok(entry.referral?.specialist && entry.management && entry.summary && entry.red_flags?.length);
 }
 
 for (const code of urgentCodes) {
