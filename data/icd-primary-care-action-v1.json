@@ -1,8 +1,8 @@
 {
   "schema": "medindex.icd10.primary-care-action.v1",
-  "version": 6,
+  "version": 7,
   "locale": "sq-XK",
-  "scope": "qkmf-clinical-125-medications-v1",
+  "scope": "qkmf-clinical-125-medications-v2",
   "disclaimer": "Ndihmë për dokumentim dhe orientim klinik. Përshtatet sipas pacientit, protokolleve lokale dhe gjykimit klinik.",
   "entries": [
     {
@@ -958,13 +958,27 @@
         "Auskultim pulmonar kur ka wheezing/astmë",
         "Teste alergologjike vetëm kur ndihmojnë diagnozën ose shmangien e alergjenit"
       ],
-      "management": "Redukto ekspozimin kur është e mundur; trajtimi bazohet në antihistaminikë dhe/ose kortikosteroid intranazal sipas ashpërsisë, me teknikë korrekte të aplikimit.",
+      "management": "Rinit alergjik mild/intermittent: antihistaminik jo-sedativ oral ose intranazal. Moderate–severe/persistent: kortikosteroid intranazal është zakonisht më efektiv; kombino me antihistaminik nëse simptomat vazhdojnë. Shembuj: cetirizine 10 mg/ditë ose loratadine 10 mg/ditë te adulti; fluticasone/mometasone intranazal sipas preparatit. Shmang dekongjestivët nazalë për përdorim të zgjatur.",
       "summary": "Simptomat tipike nazale me prurit/teshtima dhe lidhje me alergjenët mbështesin rinitin alergjik; kontrollo edhe astmën.",
       "red_flags": [
         "Obstruksion nazal unilateral persistent",
         "Epistaksis e pashpjeguar / masë nazale",
         "Dispne ose astmë e pakontrolluar"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Antihistaminik jo-sedativ: cetirizine 10 mg 1×/ditë ose loratadine 10 mg 1×/ditë",
+          "Kortikosteroid intranazal (p.sh. fluticasone/mometasone) për simptoma persistent/moderate–severe"
+        ],
+        "alternatives": [
+          "Kombinim intranasal steroid + antihistaminik kur monoterapia nuk mjafton"
+        ],
+        "avoid": [
+          "Mos përdor dekongjestiv nazal për periudha të gjata për shkak të rebound congestion"
+        ],
+        "note": "Teknika e sprejit nazal dhe aderenca janë kyçe; astma e shoqëruar duhet vlerësuar.",
+        "evidence": "BSACI/ARIA; NICE TA1045 clinical management"
+      }
     },
     {
       "code": "H92.0",
@@ -1016,14 +1030,29 @@
         "Konjunktiva/qepallat dhe vlerësim i kornesë",
         "Fluoresceinë sipas rastit kur dyshohet dëmtim korneal"
       ],
-      "management": "Higjienë dhe terapi sipas shkakut; konjunktiviti viral shpesh është vetëkufizues, alergjiku trajtohet si alergji, ndërsa antibiotiku topik përdoret selektivisht kur dyshohet etiologji bakteriale.",
+      "management": "Konjunktivit viral/allergjik: lubricating drops + cold compress; allergic mund të përfitojë nga antihistamine/mast-cell stabiliser eye drops. Bacterial mild shpesh vetëkufizohet; topical chloramphenicol mund të përdoret kur antibiotiku indikohet sipas protokollit lokal. Contact lens wearer, dhimbje/fotofobi/ulje shikimi → oftalmolog.",
       "summary": "Syri i kuq pa dhimbje të fortë, fotofobi ose ulje shikimi shpesh është konjunktivit i pakomplikuar; red flags kërkojnë vlerësim oftalmologjik.",
       "red_flags": [
         "Ulje e shikimit",
         "Dhimbje e fortë ose fotofobi",
         "Opacitet/lezion korneal",
         "Ekspozim kimik akut"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Artificial tears/lubricant drops për viral/irritativ",
+          "Antihistamine/mast-cell stabiliser eye drops për allergic conjunctivitis"
+        ],
+        "alternatives": [
+          "Topical chloramphenicol kur bacterial conjunctivitis dhe antibiotiku indikohet"
+        ],
+        "avoid": [
+          "Mos përdor steroid eye drops pa oftalmolog",
+          "Mos menaxho contact-lens red eye si conjunctivitis rutinë"
+        ],
+        "note": "Dhimbje e fortë, fotofobi ose ulje shikimi sugjerojnë diagnozë tjetër më serioze.",
+        "evidence": "Primary-care conjunctivitis guidance"
+      }
     },
     {
       "code": "R12",
@@ -1046,14 +1075,29 @@
         "Hemogramë kur dyshohet anemi/gjakderdhje",
         "Endoskopi vetëm kur ka shenja alarmi ose indikacion tjetër"
       ],
-      "management": "Modifikime të stilit të jetesës dhe terapi për supresion të acidit sipas simptomave; mos e atribuo automatikisht dhimbjen retrosternale refluksit pa përjashtuar shkakun kardiak kur profili e kërkon.",
+      "management": "Urth/refluks pa shenja alarmi: PPI full-dose 4–8 javë. Shembuj adult: omeprazole 20 mg 1×/ditë, pantoprazole 40 mg 1×/ditë ose lansoprazole 30 mg 1×/ditë. Pastaj step-down në dozën më të ulët efektive; antacid/alginat PRN. Në përgjigje të pamjaftueshme mund H2RA.",
       "summary": "Urthi tipik shpesh lidhet me refluksin; shenja alarmi dhe dhimbja e mundshme kardiake ndryshojnë menjëherë menaxhimin.",
       "red_flags": [
         "Dhimbje gjoksi e dyshuar kardiake",
         "Disfagi progresive",
         "Gjakderdhje/anemi",
         "Humbje peshe e pashpjeguar"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Omeprazole 20 mg 1×/ditë ose pantoprazole 40 mg 1×/ditë × 4–8 javë"
+        ],
+        "alternatives": [
+          "Lansoprazole 30 mg 1×/ditë",
+          "H2RA nëse PPI nuk mjafton/nuk tolerohet",
+          "Antacid/alginat PRN"
+        ],
+        "avoid": [
+          "Mos vazhdo PPI high-dose pa review afatgjatë"
+        ],
+        "note": "Disfagi, anemi/gjakderdhje, humbje peshe → referim/endoskopi.",
+        "evidence": "NICE CG184"
+      }
     },
     {
       "code": "R14",
@@ -1106,14 +1150,28 @@
         "Hemogramë, TSH, kalcium ose teste tjera vetëm sipas tablosë",
         "Vlerësim kolorektal sipas moshës, riskut dhe shenja alarmi"
       ],
-      "management": "Rritje graduale e fibrave/lëngjeve dhe aktivitetit kur është e përshtatshme; rishiko barnat shkaktare dhe përdor laksativë sipas tipit dhe përgjigjes klinike.",
+      "management": "Konstipacion funksional: rregullo lëngjet/fibrat dhe aktivitetin. Farmakologjikisht përdor osmotic laxative si macrogol/PEG si zgjedhje e zakonshme; shto stimulant si senna ose bisacodyl nëse përgjigja është e pamjaftueshme. Lactulose mund të përdoret kur PEG nuk përshtatet, por fryrja mund ta kufizojë. Mos përdor laksativë afatgjatë pa rivlerësuar shkakun.",
       "summary": "Konstipacioni kronik shpesh menaxhohet në kujdesin parësor; fillimi i ri me shenja alarmi kërkon hetim të shkakut organik.",
       "red_flags": [
         "Dyshim për obstruksion",
         "Gjakderdhje rektale ose anemi",
         "Humbje peshe e pashpjeguar",
         "Dhimbje akute e fortë / abdomen i distenduar"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Macrogol / polyethylene glycol (PEG) sipas preparatit"
+        ],
+        "alternatives": [
+          "Senna ose bisacodyl si stimulant nëse osmotic laxative nuk mjafton",
+          "Lactulose kur PEG nuk tolerohet/përshtatet"
+        ],
+        "avoid": [
+          "Mos trajto obstruksionin e dyshuar me laksativ rutinë"
+        ],
+        "note": "Doza varet nga preparati dhe nëse synohet disimpaction apo maintenance.",
+        "evidence": "NICE constipation pathways / BNF"
+      }
     },
     {
       "code": "M54.5",
@@ -1254,13 +1312,27 @@
         "Imazheri jo rutinë për ndjekje kur diagnoza klinike është e qartë",
         "Teste laboratorike vetëm kur dyshohet diagnozë tjetër"
       ],
-      "management": "Edukimi, ushtrimet terapeutike dhe menaxhimi i peshës kur është relevant janë bazë; analgjezia individualizohet. Referimi për zëvendësim të nyjës merret në konsideratë kur simptomat ndikojnë dukshëm cilësinë e jetës dhe menaxhimi jo-kirurgjikal është i pamjaftueshëm.",
+      "management": "Osteoartrit: ushtrime terapeutike dhe menaxhim peshe janë baza. Për dhimbje, topical NSAID është zgjedhja e parë sidomos për gjurin; nëse nuk mjafton, oral NSAID mund të merret në konsideratë me vlerësim GI/renal/CV dhe gastroprotection me PPI. Paracetamol/opioidë të dobët jo rutinë.",
       "summary": "Osteoartriti menaxhohet kryesisht klinikisht; imazheria rutinë nuk është e nevojshme për ndjekjen jo-kirurgjikale.",
       "red_flags": [
         "Nyje akute e nxehtë/ënjtur me ethe",
         "Traumë me deformim ose pamundësi për mbajtje peshe",
         "Dhimbje nate e re me simptoma sistemike"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Topical NSAID, sidomos për OA të gjurit"
+        ],
+        "alternatives": [
+          "Oral NSAID nëse topical nuk mjafton + PPI gastroprotection"
+        ],
+        "avoid": [
+          "Mos përdor opioidë rutinë",
+          "Mos përdor paracetamol rutinë si terapi kryesore kur opsionet tjera janë të përshtatshme"
+        ],
+        "note": "Vlerëso CKD, antikoagulimin, HTA/HF dhe riskun GI para NSAID oral.",
+        "evidence": "NICE NG226"
+      }
     },
     {
       "code": "M79.1",
@@ -1387,13 +1459,28 @@
         "Lëkura e përgjithshme dhe thonjtë sipas rastit",
         "Patch testing ose teste tjera vetëm kur indikohet"
       ],
-      "management": "Shmang irrituesit/shkaktarët, përdor emolientë rregullisht dhe kortikosteroid topik me potencë të përshtatshme për zonën/ashpërsinë; trajto infeksionin vetëm kur ka evidencë klinike.",
+      "management": "Dermatit/ekzemë: emollient çdo ditë + kortikosteroid topik për flare sipas zonës dhe ashpërsisë. Fytyrë/qafë zakonisht mild potency (p.sh. hydrocortisone 1% për periudhë të shkurtër); trupi mund të kërkojë moderate potency sipas ekzaminimit. Antibiotik vetëm kur ka infeksion bakterial të qartë.",
       "summary": "Dermatiti kërkon përshkrim të morfologjisë dhe ekspozimeve; terapia bazë është restaurimi i barrierës dhe kontrolli i inflamacionit.",
       "red_flags": [
         "Eczema herpeticum e dyshuar",
         "Infeksion i përhapur me gjendje sistemike",
         "Përfshirje e rëndë periorbitale/okulare"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Emollient i yndyrshëm rregullisht",
+          "Kortikosteroid topik mild/moderate sipas zonës; p.sh. hydrocortisone 1% në zona të përshtatshme"
+        ],
+        "alternatives": [
+          "Calcineurin inhibitor topik në raste të zgjedhura me dermatolog"
+        ],
+        "avoid": [
+          "Mos përdor steroid potent në fytyrë rutinë",
+          "Mos shto antibiotik pa shenja infeksioni"
+        ],
+        "note": "Zgjidh potenca sipas zonës, moshës dhe ashpërsisë.",
+        "evidence": "NICE eczema principles / TA81"
+      }
     },
     {
       "code": "B35",
@@ -1416,13 +1503,27 @@
         "KOH/mikologji kur diagnoza është e paqartë ose para trajtimit sistemik sipas rastit",
         "Vlerësim për infeksion bakterial sekondar"
       ],
-      "management": "Tinea e kufizuar e lëkurës zakonisht trajtohet me antifungal topik; skalpi, thonjtë ose sëmundja e gjerë mund të kërkojnë terapi sistemike dhe konfirmim mikologjik.",
+      "management": "Tinea e kufizuar e lëkurës: antifungal topik. Clotrimazole 1% aplikohet 2–3×/ditë për 2–4 javë; terbinafine 1% është alternativë më e shkurtër sipas preparatit. Skalpi, thonjtë ose sëmundja e gjerë zakonisht kërkojnë antifungal sistemik dhe konfirmim mikologjik.",
       "summary": "Dermatofitoza është infeksion fungal sipërfaqësor; shmang monoterapinë me steroid që mund ta maskojë dhe përkeqësojë pamjen.",
       "red_flags": [
         "Celulit / infeksion bakterial sekondar i rëndë",
         "Imunosupresion me përhapje të shpejtë",
         "Përfshirje e skalpit me inflamacion të rëndë/kerion"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Clotrimazole 1% krem 2–3×/ditë për 2–4 javë"
+        ],
+        "alternatives": [
+          "Terbinafine 1% topik sipas preparatit",
+          "Antifungal oral për scalp/nails/widespread vetëm me indikacion dhe monitorim"
+        ],
+        "avoid": [
+          "Mos përdor steroid topik si monoterapi mbi tinea"
+        ],
+        "note": "Vazhdo trajtimin për kohën e rekomanduar edhe nëse lezioni përmirësohet më herët.",
+        "evidence": "NHS ringworm/clotrimazole guidance"
+      }
     },
     {
       "code": "D50",
@@ -2815,13 +2916,26 @@
         "Vitalet",
         "Dokumento morfologjinë"
       ],
-      "management": "Antihistaminiku jo-sedativ është bazë për urtikarinë pa anafilaksi; identifiko dhe shmang shkaktarin e qartë. Çdo komprometim airway/breathing/circulation trajtohet si anafilaksi.",
+      "management": "Urtikarie pa anafilaksi: antihistaminik H1 i gjeneratës së dytë, p.sh. cetirizine 10 mg/ditë ose loratadine 10 mg/ditë te adulti. Në urtikarie kronike refraktare mund të kërkohet up-dosing/specialist. Angioedema me airway/breathing/circulation compromise → trajto si anafilaksi me adrenaline IM.",
       "summary": "Urtikaria e izoluar është ndryshe nga anafilaksia; angioedema me simptoma respiratore/kardiovaskulare kërkon urgjencë.",
       "red_flags": [
         "Stridor/wheezing",
         "Hipotension/sinkopë",
         "Angioedemë e gjuhës/fytit"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Cetirizine 10 mg 1×/ditë ose loratadine 10 mg 1×/ditë"
+        ],
+        "alternatives": [
+          "Antihistaminik tjetër jo-sedativ; specialist për urtikarie kronike refraktare"
+        ],
+        "avoid": [
+          "Mos përdor antihistaminikun si zëvendësim të adrenaline IM në anafilaksi"
+        ],
+        "note": "Wheezing, stridor, hipotension ose angioedemë e gjuhës/fytit → urgjencë.",
+        "evidence": "Urticaria/anaphylaxis standard guidance"
+      }
     },
     {
       "code": "L03",
@@ -2961,13 +3075,28 @@
         "Glukozë/HbA1c dhe TSH sipas indikacionit",
         "Transaminaza/renal sipas terapisë dhe komorbiditeteve"
       ],
-      "management": "Menaxhimi bazohet në riskun total kardiovaskular, stilin e jetesës dhe terapi lipid-ulëse kur indikohet. Vlerëso shkaqet sekondare dhe aderencën para eskalimit.",
+      "management": "Dislipidemi: trajto shkaqet sekondare dhe riskun total CV. Primary prevention me QRISK3 ≥10%: atorvastatin 20 mg/ditë. Secondary prevention te personi me CVD: atorvastatin 80 mg/ditë përveçse kur interaksionet/risku/zgjedhja e pacientit kërkon më pak. Në intolerance të vërtetë: ezetimibe është opsion.",
       "summary": "LDL interpretohet në kontekstin e riskut absolut, jo si numër i izoluar.",
       "red_flags": [
         "Trigliceride shumë të larta me dhimbje barku / pankreatit i dyshuar",
         "Dyshim për hiperkolesterolemi familjare",
         "ASCVD aktive me risk shumë të lartë"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Atorvastatin 20 mg/ditë për primary prevention kur risku e justifikon",
+          "Atorvastatin 80 mg/ditë për secondary prevention në CVD kur tolerohet"
+        ],
+        "alternatives": [
+          "Ezetimibe kur statina kundërindikohet/nuk tolerohet",
+          "Dozë më e ulët statine në interaksione/risk adverse effects"
+        ],
+        "avoid": [
+          "Mos nis statinë pa rishikuar interaksionet, shtatzëninë dhe shkaqet sekondare"
+        ],
+        "note": "Kontrollo lipidet dhe ALT sipas protokollit; CK vetëm kur ka simptoma/risk.",
+        "evidence": "NICE NG238"
+      }
     },
     {
       "code": "E66",
@@ -3092,13 +3221,27 @@
         "Mental status",
         "Ekzaminim neurologjik vetëm sipas simptomave"
       ],
-      "management": "CBT-I është trajtimi i linjës së parë për insomninë kronike; higjiena e gjumit është pjesë e planit. Hipnotikët, kur përdoren, duhet të jenë të kufizuar dhe të individualizuar sipas riskut.",
+      "management": "Insomni kronike: CBT-I dhe korrigjimi i shkakut janë first-line. Hipnotik (p.sh. zopiclone ose zolpidem) vetëm për insomnia severe që ndërhyn dukshëm në funksion dhe vetëm për periudhë të shkurtër sipas licencës; mos bëj switching mes hypnotics vetëm për mungesë efekti.",
       "summary": "Insomnia kronike trajtohet më mirë me ndërhyrje të strukturuar të gjumit sesa vetëm me barna sedative.",
       "red_flags": [
         "Suicidalitet / depresion i rëndë",
         "Mani e dyshuar me nevojë minimale për gjumë",
         "Apne e rëndë e dyshuar"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "CBT-I / terapi jo-farmakologjike — first-line"
+        ],
+        "alternatives": [
+          "Zopiclone ose zolpidem vetëm short-term në insomnia severe të zgjedhur"
+        ],
+        "avoid": [
+          "Mos përdor hypnotics afatgjatë rutinë",
+          "Mos kombino me alkool/opioidë/sedativë pa vlerësim të rrezikut"
+        ],
+        "note": "Vlerëso OSA, RLS, depresion/mani, substanca dhe barnat para sedativëve.",
+        "evidence": "NICE TA77"
+      }
     },
     {
       "code": "I95",
@@ -3208,13 +3351,27 @@
         "Ecja/alignment",
         "Imazheri kur diagnoza është e pasigurt ose para intervenimit"
       ],
-      "management": "Ushtrime terapeutike, aktivitet dhe menaxhim peshe kur relevant janë baza; analgjezia individualizohet. Referim për zëvendësim të nyjës kur simptomat ndikojnë rëndë cilësinë e jetës pavarësisht trajtimit konservativ.",
+      "management": "OA e gjurit: ushtrime + humbje peshe kur relevant. Topical NSAID first-line për dhimbjen; oral NSAID vetëm nëse topical është i pamjaftueshëm/jo i përshtatshëm dhe zakonisht me PPI. Intra-articular corticosteroid mund të merret në konsideratë për lehtësim afatshkurtër në raste të zgjedhura.",
       "summary": "OA e gjurit është diagnozë kryesisht klinike; funksioni dhe simptomat drejtojnë trajtimin më shumë se radiografia.",
       "red_flags": [
         "Nyje e nxehtë me ethe",
         "Traumë me pamundësi për të mbajtur peshë",
         "Bllokim akut me deficit funksional të rëndë"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Topical NSAID për dhimbjen e gjurit"
+        ],
+        "alternatives": [
+          "Oral NSAID + PPI gastroprotection kur duhet",
+          "Intra-articular corticosteroid për lehtësim afatshkurtër në raste të zgjedhura"
+        ],
+        "avoid": [
+          "Mos përdor opioidë rutinë për OA"
+        ],
+        "note": "Terapia farmakologjike duhet të shoqërojë rehabilitimin, jo ta zëvendësojë.",
+        "evidence": "NICE NG226"
+      }
     },
     {
       "code": "M75",
@@ -3295,13 +3452,28 @@
         "Glukozë/HbA1c kur ka recidiva ose risk",
         "Mikologji kur diagnoza është e paqartë ose refraktare"
       ],
-      "management": "Trajtimi antifungal lokal ose sistemik varet nga lokalizimi, ashpërsia dhe faktorët e riskut; korrigjo faktorët predispozues kur është e mundur.",
+      "management": "Kandidiazë: trajtimi varet nga lokalizimi. Për skin/intertrigo: clotrimazole topik. Për vaginal thrush të pakomplikuar te adultja jo-shtatzënë, fluconazole 150 mg PO dozë e vetme është një opsion; alternativë clotrimazole intravaginal/topik sipas preparatit. Në shtatzëni prefero terapi lokale dhe shmang fluconazole oral pa indikacion specialistik.",
       "summary": "Kandidiaza e përsëritur kërkon vlerësim për faktorë predispozues dhe konfirmim të diagnozës.",
       "red_flags": [
         "Imunosupresion me përhapje të gjerë",
         "Disfagi/odinofagi me kandidiazë orale",
         "Gjendje sistemike e rënduar"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Clotrimazole topik/intravaginal sipas lokalizimit",
+          "Fluconazole 150 mg PO dozë e vetme për vaginal thrush të pakomplikuar te adultja jo-shtatzënë kur përshtatet"
+        ],
+        "alternatives": [
+          "Regjime lokale me azole sipas preparatit"
+        ],
+        "avoid": [
+          "Shmang fluconazole oral rutinë në shtatzëni",
+          "Mos trajto recidiva të shpeshta pa konfirmuar diagnozën/faktorët predispozues"
+        ],
+        "note": "Oral thrush, recurrent candidiasis dhe immunosuppression kanë regjim tjetër.",
+        "evidence": "NHS clotrimazole/fluconazole guidance"
+      }
     },
     {
       "code": "L70",
@@ -3370,13 +3542,29 @@
         "Vitalet kur ka simptoma sistemike",
         "Kulturë vetëm në recidiv/refraktar sipas rastit"
       ],
-      "management": "Higjienë lokale dhe terapi topike për lezione të kufizuara; antibiotik sistemik kur është i gjerë/bullous ose ka shenja sistemike sipas udhëzimit lokal.",
+      "management": "Impetigo lokal jo-bullous: hydrogen peroxide 1% krem 2–3×/ditë 5 ditë; nëse nuk përshtatet/është joefektiv, fusidic acid 2% 3×/ditë 5 ditë. Widespread/bullous ose sistemikisht i sëmurë: flucloxacillin 500 mg PO 4×/ditë 5 ditë adult; në alergji peniciline clarithromycin 250 mg 2×/ditë 5 ditë (mund 500 mg 2×/ditë në infeksion të rëndë).",
       "summary": "Impetigo është shumë ngjitëse; higjiena dhe trajtimi adekuat ulin përhapjen.",
       "red_flags": [
         "Bullous i gjerë",
         "Ethe/gjendje sistemike",
         "Celulit i përhapur"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Hydrogen peroxide 1% krem 2–3×/ditë × 5 ditë për lokal non-bullous",
+          "Fusidic acid 2% 3×/ditë × 5 ditë nëse antiseptiku nuk përshtatet/është joefektiv"
+        ],
+        "alternatives": [
+          "Flucloxacillin 500 mg 4×/ditë × 5 ditë për widespread/bullous",
+          "Clarithromycin 250 mg 2×/ditë × 5 ditë në alergji peniciline"
+        ],
+        "avoid": [
+          "Mos kombino rutinë antibiotik topik + oral",
+          "Shmang përdorimin e përsëritur të fusidic acid/mupirocin për shkak të rezistencës"
+        ],
+        "note": "Pediatria kërkon doza sipas moshës/peshës.",
+        "evidence": "NICE NG153"
+      }
     },
     {
       "code": "B00",
@@ -3399,13 +3587,27 @@
         "Ekzaminim neurologjik në simptoma CNS",
         "PCR/swab kur diagnoza është e paqartë ose e rëndë"
       ],
-      "management": "Antiviralët janë më efektivë kur nisen herët në episode të zgjedhura; menaxhimi ndryshon sipas lokalizimit dhe frekuencës së recidivave.",
+      "management": "Herpes simplex: episodet e lehta orale mund të trajtohen simptomatikisht; antiviral oral (aciclovir/valaciclovir) përdoret në episode të rënda, të shpeshta, genitale ose te pacientë me risk, idealisht sa më herët. Regjimi varet nga lokalizimi dhe nëse është episod i parë, recurrent apo suppression.",
       "summary": "HSV okulare, neonatale ose neurologjike janë forma me risk të lartë.",
       "red_flags": [
         "Dhimbje syri/fotofobi",
         "Konfuzion/konvulsione",
         "Infeksion i gjerë te imunokomprometuarit"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Aciclovir ose valaciclovir kur antiviral indikohet"
+        ],
+        "alternatives": [
+          "Topical antiviral mund të ketë rol të kufizuar në herpes labialis të hershëm"
+        ],
+        "avoid": [
+          "Mos përdor steroid topik mbi lezion herpetik të pakonfirmuar",
+          "Përfshirja okulare kërkon oftalmolog, jo vetëm terapi empirike"
+        ],
+        "note": "Doza ndryshon shumë sipas oral/genital, episodit të parë, recurrent dhe renal function.",
+        "evidence": "HSV treatment guidance / SmPC"
+      }
     },
     {
       "code": "B02",
@@ -3472,13 +3674,27 @@
         "Palpim facial sipas simptomave",
         "Endoskopi/CT nga ORL kur indikohet"
       ],
-      "management": "Irrigim me solucion fiziologjik dhe kortikosteroid intranazal janë baza; antibiotikët nuk përdoren rutinë pa indikacion bakterial të qartë.",
+      "management": "Rinosinusit kronik: saline irrigation + kortikosteroid intranazal rregullisht; trajto alergjinë shoqëruese. Antibiotik nuk përdoret rutinë për simptomat kronike pa eksacerbim bakterial të dokumentuar. Polipe/obstruksion unilateral/refraktar → ORL.",
       "summary": "Simptomat >12 javë sugjerojnë rinosinusit kronik dhe kërkojnë vlerësim për polipe/shkaqe anatomike.",
       "red_flags": [
         "Obstruksion unilateral me gjakderdhje",
         "Ënjtje periorbitale / komplikim orbital",
         "Deficit neurologjik"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Irrigim nazal me saline",
+          "Kortikosteroid intranazal (p.sh. mometasone/fluticasone) rregullisht"
+        ],
+        "alternatives": [
+          "Antihistaminik nëse ka komponent alergjik"
+        ],
+        "avoid": [
+          "Mos përdor antibiotik afatgjatë rutinë pa indikacion specialistik"
+        ],
+        "note": "Teknika dhe përdorimi i vazhdueshëm i steroidit intranazal janë të rëndësishme.",
+        "evidence": "NICE chronic sinusitis management / CKS"
+      }
     },
     {
       "code": "J04",
@@ -3501,13 +3717,27 @@
         "Dëgjo stridorin",
         "Laringoskopi në simptoma persistente/atipike"
       ],
-      "management": "Pushim i zërit, hidratim dhe trajtim simptomatik; antibiotikët nuk indikohen rutinë në laringitin akut viral.",
+      "management": "Laringit akut zakonisht viral: pushim i zërit, hidratim, paracetamol ose ibuprofen sipas profilit. Antibiotikët nuk indikohen rutinë; steroid sistemik jo rutinë pa indikacion specifik. Stridor/airway compromise → urgjencë.",
       "summary": "Ngjirja e zërit zakonisht është virale; stridori ose dispnea ndryshojnë urgjencën.",
       "red_flags": [
         "Stridor",
         "Dispne / komprometim airway",
         "Ngjirje persistente me hemoptizi ose risk maligniteti"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Paracetamol ose ibuprofen për dhimbje/temperaturë"
+        ],
+        "alternatives": [
+          "Trajtim i refluksit vetëm nëse ka evidencë/diagnozë përkatëse"
+        ],
+        "avoid": [
+          "Mos jep antibiotik rutinë",
+          "Mos përdor steroid sistemik rutinë për laringit të thjeshtë"
+        ],
+        "note": "Ngjirja persistente kërkon laringoskopi/ORL.",
+        "evidence": "Acute laryngitis primary-care guidance"
+      }
     },
     {
       "code": "H00",
@@ -3530,13 +3760,27 @@
         "Lëvizjet okulare",
         "Kërko cellulitis përreth"
       ],
-      "management": "Kompresa të ngrohta dhe higjienë e qepallës; antibiotik topik vetëm kur ka blefarokonjunktivit/indikacion. Persistent/recurrent kërkon oftalmolog.",
+      "management": "Hordeolum: kompresë e ngrohtë 5–10 min, 2–4×/ditë; paracetamol/ibuprofen për dhimbje. Antibiotik topik nuk nevojitet rutinë për stye të pakomplikuar; në cellulitis të qepallës ose infeksion përhapës kërko vlerësim dhe terapi të përshtatshme.",
       "summary": "Hordeolum është zakonisht lokal; dhimbja me lëvizje okulare ose ulja e shikimit nuk janë tipike.",
       "red_flags": [
         "Dhimbje me lëvizje okulare",
         "Ulje shikimi",
         "Ënjtje e përhapur me ethe"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Kompresa të ngrohta 5–10 min, 2–4×/ditë",
+          "Paracetamol ose ibuprofen për dhimbje"
+        ],
+        "alternatives": [
+          "Antibiotik lokal/systemik vetëm në komplikim ose infeksion përhapës sipas oftalmologut"
+        ],
+        "avoid": [
+          "Mos e shtrydh/çaj vetë stye-n"
+        ],
+        "note": "Ndryshim shikimi ose dhimbje me lëvizje okulare → urgjencë oftalmologjike.",
+        "evidence": "NHS / Moorfields stye guidance"
+      }
     },
     {
       "code": "H01",
@@ -3559,13 +3803,28 @@
         "Mprehtësia vizuale",
         "Kërko keratit"
       ],
-      "management": "Higjiena e qepallave dhe kompresat e ngrohta janë baza; trajtimet shtesë varen nga tipi dhe komplikimet.",
+      "management": "Blefarit: lid hygiene 2×/ditë me kompresë të ngrohtë + pastrim të margjinës; artificial tears për dry eye. Në raste persistente bakteriale mund antibiotic ointment/eye drops; oral doxycycline përdoret në raste të zgjedhura me meibomian gland dysfunction/rosacea nën mbikëqyrje.",
       "summary": "Blefariti është kronik dhe kërkon kujdes të vazhdueshëm të margjinës së qepallës.",
       "red_flags": [
         "Dhimbje okulare",
         "Fotofobi",
         "Ulje shikimi"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Lid hygiene + kompresë e ngrohtë",
+          "Artificial tears për simptomat e syrit të thatë"
+        ],
+        "alternatives": [
+          "Antibiotic ointment/eye drops në raste të zgjedhura persistente",
+          "Oral doxycycline në rosacea/MGD të zgjedhur me oftalmolog"
+        ],
+        "avoid": [
+          "Mos përdor steroid eye drops pa oftalmolog"
+        ],
+        "note": "Dhimbje okulare, fotofobi ose ulje shikimi nuk janë tipike për blefarit të thjeshtë.",
+        "evidence": "NHS / Moorfields blepharitis guidance"
+      }
     },
     {
       "code": "H61.2",
@@ -3588,13 +3847,28 @@
         "Membrana timpanike kur shihet",
         "Dëgjimi pas heqjes"
       ],
-      "management": "Cerumenolytic dhe irrigim/manual removal sipas kundërindikacioneve dhe kompetencës; shmang irrigimin kur dyshohet perforim ose kirurgji e caktuar e veshit.",
+      "management": "Cerumen i impaktuar: 2–3 pika olive/almond oil në vesh 3–4×/ditë për 3–5 ditë; alternativë sodium bicarbonate drops sipas preparatit. Nëse nuk zgjidhet, irrigim/microsuction/manual removal nga person i trajnuar. Mos përdor pika/irrigim kur ka perforim të dyshuar pa vlerësim.",
       "summary": "Tapë cerumeni trajtohet vetëm kur është simptomatike ose pengon ekzaminimin e nevojshëm.",
       "red_flags": [
         "Dhimbje e fortë / otorre",
         "Marramendje pas manipulimit",
         "Humbje dëgjimi persistente pas heqjes"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Olive/almond oil 2–3 pika, 3–4×/ditë × 3–5 ditë"
+        ],
+        "alternatives": [
+          "Sodium bicarbonate ear drops sipas preparatit",
+          "Microsuction/irrigim/manual removal kur duhet"
+        ],
+        "avoid": [
+          "Mos përdor cotton buds/objekte në kanal",
+          "Mos përdor drops/irrigim pa vlerësim në perforim të timpanit"
+        ],
+        "note": "Dhimbja/otorrea ose humbja e dëgjimit pas heqjes kërkojnë vlerësim tjetër.",
+        "evidence": "NHS earwax guidance"
+      }
     },
     {
       "code": "K58",
@@ -3617,13 +3891,30 @@
         "Celiac testing kur relevant",
         "Teste tjera vetëm sipas red flags"
       ],
-      "management": "Edukimi, dietë e individualizuar, aktivitet dhe terapi simptomatike sipas fenotipit; dieta low-FODMAP idealisht me udhëzim profesional.",
+      "management": "IBS: medikamenti sipas simptomës dominuese. Dhimbje/spasm: antispasmodic PRN. IBS-D: loperamide është antimotility first-choice. IBS-C: laxative, por shmang lactulose; linaclotide vetëm pas dështimit të laxatives dhe constipation ≥12 muaj. Në dhimbje refraktare: amitriptyline low dose 5–10 mg natën, titro zakonisht jo >30 mg.",
       "summary": "IBS është diagnozë pozitive klinike kur kriteret përputhen dhe nuk ka shenja alarmi.",
       "red_flags": [
         "Gjakderdhje",
         "Humbje peshe/anemi",
         "Fillim i ri në moshë të madhe ose histori familjare të kancerit/IBD"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Antispasmodic PRN për dhimbje/spasm",
+          "Loperamide për IBS-D",
+          "Laxative për IBS-C (jo lactulose)"
+        ],
+        "alternatives": [
+          "Linaclotide në IBS-C të zgjatur pas dështimit të laxatives",
+          "Amitriptyline 5–10 mg natën si second-line për dhimbje, zakonisht jo >30 mg"
+        ],
+        "avoid": [
+          "Mos përdor lactulose si zgjedhje rutinë në IBS-C",
+          "Mos jep loperamide në red flags/dysentery pa diagnozë të qartë"
+        ],
+        "note": "Titra sipas stool consistency; dieta low-FODMAP idealisht me dietolog.",
+        "evidence": "NICE CG61"
+      }
     },
     {
       "code": "K80",
@@ -3646,13 +3937,27 @@
         "LFT, bilirubinë, lipazë sipas simptomave",
         "Ultrazë abdominale"
       ],
-      "management": "Gurët asimptomatikë zakonisht nuk kërkojnë trajtim. Simptomatikët referohen për kirurgji sipas tablosë; komplikimet kërkojnë vlerësim urgjent.",
+      "management": "Biliary colic: NSAID është analgjezik i preferuar kur nuk ka kundërindikacion; paracetamol/opioid mund të përdoren si alternativa sipas ashpërsisë/riskut. Antibiotik nuk duhet për kolikë biliare të pakomplikuar. Kolecistit/kolangit → spital + antibiotik/ndërhyrje sipas protokollit; gurë simptomatikë recidivantë → kirurgji.",
       "summary": "Dallo kolikën biliare nga kolecistiti, kolangiti dhe pankreatiti.",
       "red_flags": [
         "Ethe + RUQ pain",
         "Ikter",
         "Hipotension/konfuzion"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "NSAID për biliary colic kur i sigurt"
+        ],
+        "alternatives": [
+          "Paracetamol; opioid i zgjedhur vetëm kur analgjezia tjetër nuk mjafton dhe me kujdes"
+        ],
+        "avoid": [
+          "Mos jep antibiotik për kolikë biliare pa infeksion",
+          "Mos e menaxho kolangitin si rast ambulator"
+        ],
+        "note": "Zgjedhja e NSAID varet nga renal/GI/CV risk dhe antikoagulimi.",
+        "evidence": "Biliary colic standard management; surgical referral for symptomatic stones"
+      }
     },
     {
       "code": "K76.0",
@@ -3704,13 +4009,28 @@
         "Urinalizë",
         "Kreatininë dhe imazheri sipas rastit"
       ],
-      "management": "Analgjezi dhe hidratim normal sipas nevojës; madhësia/lokalizimi përcaktojnë observim vs urologji. Infeksion + obstruksion është urgjencë.",
+      "management": "Kolikë renale: NSAID by any route first-line. Nëse NSAID kundërindikohet/nuk mjafton, IV paracetamol; opioid vetëm nëse të dyja janë të papërshtatshme/joefektive. Mos jep antispasmodic. Për distal ureteric stone <10 mm mund të konsiderohet alpha-blocker (p.sh. tamsulosin, off-label në disa sisteme).",
       "summary": "Urolitiaza e pakomplikuar shpesh menaxhohet konservativisht, por obstruksioni i infektuar kërkon dekompresion urgjent.",
       "red_flags": [
         "Ethe/sepsë",
         "Anuri / veshkë e vetme",
         "Dhimbje të pakontrollueshme"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "NSAID first-line për renal colic"
+        ],
+        "alternatives": [
+          "IV paracetamol nëse NSAID kundërindikohet/joefektiv",
+          "Opioid vetëm nëse NSAID dhe IV paracetamol nuk mund të përdoren",
+          "Alpha-blocker për distal ureteric stone <10 mm në raste të zgjedhura"
+        ],
+        "avoid": [
+          "Mos përdor antispasmodic rutinë për renal colic"
+        ],
+        "note": "Ethe + obstruksion, anuri ose veshkë e vetme → urgjencë urologjike.",
+        "evidence": "NICE NG118"
+      }
     },
     {
       "code": "N45",
@@ -3733,13 +4053,28 @@
         "Abdomeni/inguinal",
         "US Doppler kur torsioni nuk përjashtohet klinikisht"
       ],
-      "management": "Antibiotikët zgjidhen sipas moshës/riskut STI dhe udhëzimit lokal; mbështetje skrotale dhe analgjezi. Torsioni i dyshuar kërkon kirurgji urgjente.",
+      "management": "Epididimit akut: përjashto torsionin. Në dyshim STI (chlamydia/gonorrhea): ceftriaxone 500 mg IM dozë e vetme + doxycycline 100 mg PO 2×/ditë 10 ditë. Në risk STI + enteric organisms: ceftriaxone 500 mg IM once + levofloxacin 500 mg PO/ditë 10 ditë. Vetëm enteric organisms kur gonorrhea është përjashtuar: levofloxacin 500 mg/ditë 10 ditë.",
       "summary": "Çdo dhimbje akute skrotale duhet të vlerësohet për torsion para diagnozës së epididimitit.",
       "red_flags": [
         "Fillim i papritur i dhimbjes së fortë",
         "Testis high-riding / reflex anormal",
         "Sepsë"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Ceftriaxone 500 mg IM once + doxycycline 100 mg PO 2×/ditë × 10 ditë kur STI likely"
+        ],
+        "alternatives": [
+          "Ceftriaxone 500 mg IM once + levofloxacin 500 mg/ditë × 10 ditë kur STI + enteric risk",
+          "Levofloxacin 500 mg/ditë × 10 ditë kur enteric-only dhe gonorrhea është përjashtuar"
+        ],
+        "avoid": [
+          "Mos jep antibiotic para se të përjashtohet torsioni në acute scrotum",
+          "Fluoroquinolone vetëm kur profili mikrobiologjik e mbështet"
+        ],
+        "note": "Në peshë ≥150 kg CDC përdor ceftriaxone 1 g; merr NAAT/culture sipas rastit.",
+        "evidence": "CDC STI Treatment Guidelines"
+      }
     },
     {
       "code": "N92",
@@ -3762,13 +4097,29 @@
         "Test shtatzënie kur relevant",
         "US/histeroskopi sipas historisë dhe riskut"
       ],
-      "management": "Trajtimi synon cilësinë e jetës dhe varet nga shkaku, fertiliteti dhe preferencat; korrigjo aneminë dhe refero sipas gjetjeve strukturore.",
+      "management": "HMB pa patologji të identifikuar/fibroid <3 cm: LNG-IUS është first treatment kur është i përshtatshëm. Nëse refuzohet/nuk përshtatet: tranexamic acid ose NSAID; opsione hormonale: combined hormonal contraception ose cyclical oral progestogen. Trajto edhe iron deficiency/anemia kur është e pranishme.",
       "summary": "HMB vlerësohet nga ndikimi klinik, jo vetëm nga një sasi e matur gjaku.",
       "red_flags": [
         "Paqëndrueshmëri hemodinamike",
         "Hb shumë e ulët / sinkopë",
         "Gjakderdhje intermenstruale persistente me risk endometrial"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "LNG-IUS kur i përshtatshëm"
+        ],
+        "alternatives": [
+          "Tranexamic acid gjatë menstruacioneve",
+          "NSAID gjatë menstruacioneve",
+          "Combined hormonal contraception",
+          "Cyclical oral progestogen"
+        ],
+        "avoid": [
+          "Mos përdor estrogen-containing contraception kur ka kundërindikacione trombotike/migrenë me aura etj."
+        ],
+        "note": "Zgjedhja varet nga fertiliteti, fibroidet/adenomyosis, risk VTE dhe preferenca.",
+        "evidence": "NICE NG88"
+      }
     },
     {
       "code": "N94.6",
@@ -3791,13 +4142,27 @@
         "US sipas dyshimit",
         "Hemogramë në HMB"
       ],
-      "management": "NSAID dhe/ose terapi hormonale sipas profilit janë opsione të zakonshme për dismenorrenë primare; shenjat për shkak sekondar kërkojnë gjinekolog.",
+      "management": "Dismenorre primare: NSAID first-line, nis në fillim të dhimbjes ose 1 ditë para menstruacionit kur cikli është i parashikueshëm; alternativë/adjunct combined hormonal contraception ose progestogen kur i përshtatshëm. Paracetamol mund të shtohet kur NSAID nuk tolerohet ose si kombinim.",
       "summary": "Fillimi i ri ose progresiv pas viteve pa simptoma sugjeron shkak sekondar.",
       "red_flags": [
         "Dhimbje akute me shtatzëni të mundshme",
         "Ethe + dhimbje pelvike",
         "Masë ose gjakderdhje e pazakontë"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "NSAID për dhimbjen menstruale kur nuk ka kundërindikacion"
+        ],
+        "alternatives": [
+          "Combined hormonal contraception ose progestogen për kontroll afatgjatë",
+          "Paracetamol si alternativë/shtesë"
+        ],
+        "avoid": [
+          "Mos e trajto dhimbjen e re/progresive si dismenorre primare pa vlerësuar endometriozë/shkak sekondar"
+        ],
+        "note": "Dhimbje me infertilitet, dyspareuni ose progresion → gjinekolog.",
+        "evidence": "NICE endometriosis/dysmenorrhea principles"
+      }
     },
     {
       "code": "D64",
