@@ -529,11 +529,80 @@
     return items;
   }
 
-  function suggestionTranslationHtml(node) {
+  function normalizedCharMap(value) {
+    const original = clean(value);
+    let normalized = '';
+    const map = [];
+    for (let index = 0; index < original.length; index += 1) {
+      const folded = original[index].normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      for (const char of folded) {
+        normalized += /[a-z0-9]/.test(char) ? char : ' ';
+        map.push(index);
+      }
+    }
+    return { original, normalized:normalized.replace(/\s+/g, ' '), map };
+  }
+
+  function highlightSearchText(value, query) {
+    const text = clean(value);
+    const tokens = searchNormalize(query).split(' ').filter(token => token.length >= 2).slice(0, 4);
+    if (!text || !tokens.length) return escapeHtml(text);
+
+    const folded = normalizedCharMap(text);
+    const ranges = [];
+    for (const token of tokens) {
+      let from = 0;
+      while (from < folded.normalized.length) {
+        const found = folded.normalized.indexOf(token, from);
+        if (found < 0) break;
+        const start = folded.map[found];
+        const endMapIndex = Math.min(folded.map.length - 1, found + token.length - 1);
+        const end = folded.map[endMapIndex] + 1;
+        if (Number.isInteger(start) && Number.isInteger(end) && end > start) ranges.push([start, end]);
+        from = found + token.length;
+      }
+    }
+    if (!ranges.length) return escapeHtml(text);
+
+    ranges.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const merged = [];
+    for (const range of ranges) {
+      const last = merged[merged.length - 1];
+      if (last && range[0] <= last[1]) last[1] = Math.max(last[1], range[1]);
+      else merged.push([...range]);
+    }
+
+    let html = '';
+    let cursor = 0;
+    for (const [start, end] of merged) {
+      html += escapeHtml(text.slice(cursor, start));
+      html += `<mark>${escapeHtml(text.slice(start, end))}</mark>`;
+      cursor = end;
+    }
+    html += escapeHtml(text.slice(cursor));
+    return html;
+  }
+
+  function matchSourceLabel(node) {
+    const field = clean(node?.searchMatch?.field);
+    const type = clean(node?.searchMatch?.type);
+    const source = field === 'sq' ? 'SQ'
+      : field === 'en' ? 'EN'
+        : field === 'la' ? 'LA'
+          : field === 'code' ? 'Kodi'
+            : field === 'hierarchy' ? 'Hierarki'
+              : field === 'local' ? 'Instant'
+                : field === 'alias' ? 'Term klinik'
+                  : '';
+    if (!source) return '';
+    return type.startsWith('fuzzy-') || type === 'code-fuzzy' ? `Typo · ${source}` : source;
+  }
+
+  function suggestionTranslationHtml(node, query) {
     return suggestionTranslations(node).map(item => `
       <small class="icd-suggestion-translation is-${escapeHtml(item.kind)}"
         ${item.kind === 'parent' ? 'title="Latin i kategorisë prind — jo titull specifik i nënkodit"' : ''}>
-        <b>${escapeHtml(item.lang)}</b><span>${escapeHtml(item.text)}</span>
+        <b>${escapeHtml(item.lang)}</b><span>${highlightSearchText(item.text, query)}</span>
       </small>`).join('');
   }
 
@@ -563,8 +632,17 @@
     let previousSection = '';
     const rows = state.suggestions.map((node, index) => {
       const active = index === state.activeSuggestion;
+      const best = index === 0;
       const match = clean(node?.searchMatch?.label) || 'Përputhje';
-      const translations = suggestionTranslationHtml(node);
+      const source = matchSourceLabel(node);
+      const translations = suggestionTranslationHtml(node, query);
+      const parent = node.level === 'subcategory' ? clean(node.parentCode) : '';
+      const childCount = Number(node?.childCount || 0);
+      const hierarchyHint = parent
+        ? `<span class="icd-family-hint"><b>${escapeHtml(parent)}</b><span aria-hidden="true">→</span><strong>${escapeHtml(clean(node.code))}</strong></span>`
+        : childCount > 0
+          ? `<span class="icd-family-hint"><strong>${formatNumber(childCount)}</strong> nënkode</span>`
+          : '';
       const section = node.level === 'category'
         ? 'Kategoritë kryesore'
         : node.level === 'subcategory'
@@ -574,11 +652,19 @@
         ? `<div class="icd-suggestion-section" role="presentation">${escapeHtml(section)}</div>`
         : '';
       previousSection = section;
-      return `${sectionHead}<button class="icd-suggestion-row is-${escapeHtml(clean(node.level))} ${active ? 'is-active' : ''}" type="button" role="option"
+      return `${sectionHead}<button class="icd-suggestion-row is-${escapeHtml(clean(node.level))} ${best ? 'is-best' : ''} ${active ? 'is-active' : ''}" type="button" role="option"
         id="icd-suggestion-${index}" aria-selected="${active}" data-suggestion-index="${index}" data-code="${escapeHtml(clean(node.code))}">
-        <span class="icd-suggestion-code">${escapeHtml(clean(node.code))}</span>
-        <span class="icd-suggestion-copy"><strong>${escapeHtml(nodeTitle(node))}</strong>${translations}</span>
-        <span class="icd-suggestion-meta"><span class="icd-match-chip">${escapeHtml(match)}</span><span class="icd-level-chip">${escapeHtml(levelLabel(node.level))}</span></span>
+        <span class="icd-suggestion-code">${highlightSearchText(clean(node.code), query)}</span>
+        <span class="icd-suggestion-copy">
+          <span class="icd-suggestion-titleline"><strong>${highlightSearchText(nodeTitle(node), query)}</strong>${best ? '<em>Përputhja më e mirë</em>' : ''}</span>
+          ${hierarchyHint}
+          ${translations}
+        </span>
+        <span class="icd-suggestion-meta">
+          ${source ? `<span class="icd-match-source">${escapeHtml(source)}</span>` : ''}
+          <span class="icd-match-chip">${escapeHtml(match)}</span>
+          <span class="icd-level-chip">${escapeHtml(levelLabel(node.level))}</span>
+        </span>
       </button>`;
     }).join('');
     el.icdSuggestions.innerHTML = head + rows;
