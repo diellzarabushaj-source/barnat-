@@ -390,6 +390,7 @@
     const inherited = payload.inherited && payload.inheritedFrom
       ? `<span class="clinical-action-inherited">Udhëzim nga ${escapeHtml(payload.inheritedFrom)}</span>`
       : '';
+    const actionKicker = guidance.urgent ? 'URGJENCË QKMF · Stabilizim + transfer' : 'QKMF · Clinical Action';
     const redFlags = Array.isArray(guidance.red_flags) && guidance.red_flags.length
       ? `<div class="clinical-red-flags">
           <div class="clinical-card-icon is-danger">!</div>
@@ -400,7 +401,7 @@
     el.clinicalActionPanel.innerHTML = `
       <div class="clinical-action-head">
         <div>
-          <span class="clinical-action-kicker">QKMF · Clinical Action</span>
+          <span class="clinical-action-kicker">${escapeHtml(actionKicker)}</span>
           <h3>${escapeHtml(clean(guidance.title_sq) || 'Orientim praktik klinik')}</h3>
           <p>${escapeHtml(payload.disclaimer || '')}</p>
         </div>
