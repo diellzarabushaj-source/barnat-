@@ -112,6 +112,77 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 .hero-copy p{margin:5px 0 0;color:var(--muted);font-size:12px}
 .hero-actions{display:flex;align-items:center;gap:8px}
 
+.clinical-action-panel{
+  margin:14px 16px 2px;border:1px solid #dfe5ec;border-radius:14px;background:#f8fafc;
+  box-shadow:0 8px 24px rgba(24,51,77,.05);overflow:hidden
+}
+.clinical-action-panel[hidden]{display:none}
+.clinical-action-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:16px 17px 14px;
+  border-bottom:1px solid #e2e7ed;background:linear-gradient(135deg,#ffffff 0%,#f5f8fb 100%)
+}
+.clinical-action-kicker{display:block;margin-bottom:4px;color:#5a4de0;font-size:9.5px;font-weight:800;letter-spacing:.075em;text-transform:uppercase}
+.clinical-action-head h3{margin:0;color:#17324c;font-size:16px;font-weight:650;line-height:1.25}
+.clinical-action-head p{max-width:680px;margin:6px 0 0;color:#718094;font-size:10.5px;line-height:1.45}
+.clinical-action-head-meta{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+.clinical-action-code{
+  display:inline-flex;align-items:center;justify-content:center;min-height:30px;padding:0 9px;border:1px solid #cfc9ff;
+  border-radius:8px;background:#f3f1ff;color:#5545dc;font:700 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace
+}
+.clinical-action-inherited{
+  display:inline-flex;align-items:center;min-height:28px;padding:0 8px;border:1px solid #dce4ec;border-radius:999px;
+  background:#fff;color:#68798c;font-size:9.5px;font-weight:650
+}
+.clinical-working-diagnosis{
+  display:grid;grid-template-columns:150px minmax(0,1fr);align-items:center;gap:12px;padding:13px 17px;
+  border-bottom:1px solid #e4e8ee;background:#eef7f3
+}
+.clinical-working-label{color:#4a7464;font-size:10px;font-weight:800;letter-spacing:.045em;text-transform:uppercase}
+.clinical-working-diagnosis strong{color:#214d3e;font-size:13px;font-weight:650;line-height:1.35}
+.clinical-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:12px}
+.clinical-action-card{
+  min-width:0;padding:12px;border:1px solid #e1e6ec;border-radius:11px;background:#fff;color:#4b5e72
+}
+.clinical-action-card.is-referral{grid-column:1/-1;border-color:#d9d4ff;background:linear-gradient(135deg,#fbfaff 0%,#fff 70%)}
+.clinical-action-card.is-management{background:#fbfcfe}
+.clinical-action-card.is-summary{background:#f8fbff;border-color:#dce8f4}
+.clinical-card-head{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.clinical-card-icon{
+  width:30px;height:30px;display:grid;place-items:center;flex:none;border-radius:8px;background:#f0eeff;color:#5747df;
+  font-size:11px;font-weight:800
+}
+.clinical-card-icon.is-danger{background:#fff0f1;color:#c53140}
+.clinical-card-head>div{min-width:0;display:grid;gap:1px}
+.clinical-card-label{color:#8693a1;font-size:9px;font-weight:800;letter-spacing:.055em;text-transform:uppercase}
+.clinical-card-head strong{color:#273f57;font-size:12px;font-weight:650;line-height:1.25}
+.clinical-action-card p{margin:0;color:#586b7e;font-size:10.7px;line-height:1.48}
+.clinical-action-card ul,.clinical-red-flags ul{margin:0;padding-left:17px}
+.clinical-action-card li,.clinical-red-flags li{margin:0 0 5px;color:#53677a;font-size:10.7px;line-height:1.42}
+.clinical-action-card li:last-child,.clinical-red-flags li:last-child{margin-bottom:0}
+.clinical-referral-purpose,.clinical-referral-note{display:grid;grid-template-columns:135px minmax(0,1fr);gap:9px;padding:8px 0;border-top:1px solid #eceaf9}
+.clinical-referral-purpose>span,.clinical-referral-note>span{color:#7d7197;font-size:9.5px;font-weight:750}
+.clinical-copy-button{
+  margin-top:9px;min-height:30px;padding:0 10px;border:1px solid #d9dfe7;border-radius:8px;background:#fff;
+  color:#52667a;font-size:9.8px;font-weight:700;cursor:pointer
+}
+.clinical-copy-button:hover{border-color:#bfb7ff;background:#f8f7ff;color:#5142d7}
+.clinical-copy-button:focus-visible{outline:2px solid var(--stripe);outline-offset:2px}
+.clinical-red-flags{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;margin:0 12px 12px;padding:11px 12px;
+  border:1px solid #f1cfd3;border-radius:10px;background:#fff8f8
+}
+.clinical-red-flags .clinical-card-label{display:block;margin-bottom:5px;color:#b1414c}
+.clinical-red-flags li{color:#7d4a50}
+.clinical-action-loading{display:flex;align-items:center;gap:10px;padding:14px 16px;background:#fff}
+.clinical-action-loading>span:last-child{display:grid;gap:2px}
+.clinical-action-loading strong{color:#344b61;font-size:11.5px}
+.clinical-action-loading small{color:#8795a3;font-size:10px}
+.clinical-action-spinner{
+  width:18px;height:18px;flex:none;border:2px solid #e0defb;border-top-color:#5a4de0;border-radius:50%;
+  animation:clinicalspin .7s linear infinite
+}
+@keyframes clinicalspin{to{transform:rotate(360deg)}}
+
 .node-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:15px 16px 11px}
 .node-section-head h2{margin:0;color:var(--ink);font-size:15px;font-weight:500}
 .node-list{display:grid;gap:7px;padding:2px 16px 20px}
@@ -175,6 +246,14 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
   .node-hero{grid-template-columns:auto minmax(0,1fr);padding:15px 12px}
   .hero-code{min-width:50px;height:50px;padding:0 9px;font-size:14px}
   .hero-actions{grid-column:1/-1;width:100%}.hero-actions .button{min-height:42px;flex:1}
+  .clinical-action-panel{margin:10px 8px 2px;border-radius:12px}
+  .clinical-action-head{display:grid;gap:10px;padding:13px 12px}
+  .clinical-action-head-meta{justify-content:flex-start}
+  .clinical-working-diagnosis{grid-template-columns:1fr;gap:4px;padding:11px 12px}
+  .clinical-action-grid{grid-template-columns:1fr;padding:9px;gap:8px}
+  .clinical-action-card.is-referral{grid-column:auto}
+  .clinical-referral-purpose,.clinical-referral-note{grid-template-columns:1fr;gap:4px}
+  .clinical-red-flags{margin:0 9px 9px}
   .node-section-head{padding:14px 12px 10px}.node-list{padding:2px 12px 18px}
   .node-row{grid-template-columns:66px minmax(0,1fr);min-height:56px}
   .node-meta{grid-column:1/-1;justify-content:flex-start}
