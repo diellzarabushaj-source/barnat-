@@ -1,7 +1,7 @@
 {
   "schema": "medindex.icd10.qkmf-hot-search.v1",
   "version": 1,
-  "purpose": "Ultra-fast local retrieval seed for common QKMF family-medicine and urgent ICD searches.",
+  "purpose": "Ultra-fast local retrieval seed for common QKMF family-medicine, urgent and high-frequency ICD searches.",
   "rows": [
     {
       "code": "I10",
@@ -805,6 +805,30 @@
         "helmim barna",
         "overdose",
         "poisoning"
+      ]
+    },
+    {
+      "code": "J10",
+      "label_sq": "Gripi nga virus i identifikuar",
+      "urgent": false,
+      "aliases": [
+        "grip",
+        "gripi",
+        "influenza",
+        "flu",
+        "influenza virus identified"
+      ]
+    },
+    {
+      "code": "J11",
+      "label_sq": "Gripi, virusi i paidentifikuar",
+      "urgent": false,
+      "aliases": [
+        "grip",
+        "gripi",
+        "influenza",
+        "flu",
+        "influenza virus not identified"
       ]
     }
   ]
