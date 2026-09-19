@@ -89,7 +89,7 @@ const order = [
   "label:'Protokollet'",
   "label:'Urgjencat'",
   "label:'Recetat'",
-  "label:'Analizat'",
+  "label:'Ekzaminet'",
   "label:'Medical Hub'",
 ];
 let cursor = -1;
@@ -100,6 +100,10 @@ for (const marker of order) {
 }
 assert.match(shellCore, />KLINIKE<\/p>/);
 assert.match(shellCore, />PUNA IME<\/p>/);
+for (const file of ['index.html','klasifikimi.html','icd.html','dozologjia.html','urgjencat.html','analizat.html','protokollet.html','recetat.html','medical-hub.html','sistemi.html']) {
+  const html = read(file);
+  assert.match(html, /href="\/analizat\.html"[\s\S]{0,900}>Ekzaminet<\/span><\/a>/, `${file}: all shared sidebars must label the module Ekzaminet`);
+}
 
 const sidebarVersionForRuntime = file => file === 'recetat-v2.js'
   ? 'sidebar-taxonomy-v5'
@@ -123,7 +127,7 @@ for (const [file, runtime] of [
 for (const [htmlFile, runtime, version] of [
   ['dozologjia.html','dozologjia-v2.js','dynamic-v4+'],
   ['urgjencat.html','urgjencat-v2.js','11'],
-  ['analizat.html','analizat-v2.js','2'],
+  ['analizat.html','analizat-v2.js','3'],
   ['protokollet.html','protokollet-v2.js','2'],
   ['recetat.html','recetat-v2.js','dynamic'],
   ['medical-hub.html','medical-hub-v2.js','dynamic'],
