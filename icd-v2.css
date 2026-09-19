@@ -812,3 +812,34 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
   .clinical-medication-block li{font-size:10.8px}
   .clinical-medication-note{font-size:10.2px}
 }
+
+
+/* Practical management v20 ------------------------------------------------ */
+.clinical-action-card.is-practical{
+  grid-column:1/-1;border-color:#d8def6;background:linear-gradient(135deg,#fafbff 0%,#fff 74%)
+}
+.clinical-action-card.is-practical .clinical-card-icon{
+  background:#eef1ff;color:#4a57a8;font-size:9px;letter-spacing:-.03em
+}
+.clinical-practical-steps{
+  counter-reset:practical;margin:10px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;list-style:none
+}
+.clinical-practical-steps li{
+  position:relative;min-height:48px;padding:9px 10px 9px 34px;border:1px solid #e5e9f8;border-radius:10px;background:#fff;
+  color:#4f5874;font-size:10.2px;line-height:1.42
+}
+.clinical-practical-steps li::before{
+  counter-increment:practical;content:counter(practical);position:absolute;left:9px;top:9px;
+  width:17px;height:17px;border-radius:50%;display:grid;place-items:center;background:#5d68bd;color:#fff;font-size:8.7px;font-weight:850
+}
+.clinical-reassess{
+  margin-top:9px;padding:9px 10px;border:1px solid #eadff3;border-radius:10px;background:#fdfaff
+}
+.clinical-reassess span{
+  display:block;margin-bottom:4px;color:#805a93;font-size:8.8px;font-weight:850;letter-spacing:.045em;text-transform:uppercase
+}
+.clinical-reassess p{margin:0;color:#6d5e76;font-size:9.8px;line-height:1.45}
+@media(max-width:680px){
+  .clinical-practical-steps{grid-template-columns:1fr}
+  .clinical-practical-steps li{font-size:10.7px}
+}
