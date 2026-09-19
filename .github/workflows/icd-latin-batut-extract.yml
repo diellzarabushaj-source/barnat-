@@ -1,4 +1,4 @@
-name: ICD Latin Canonical Category Extract
+name: ICD Latin Terminal Category Extract
 
 on:
   push:
@@ -16,87 +16,68 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install PDF tools
         run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
-      - name: Download official Batut ICD-10 volume
+      - name: Download terminal three-character ICD table
         shell: bash
         run: |
           set -euo pipefail
-          urls=(
-            "https://www.rfzo.rs/download/dsg/MKB102010Knjiga1%281%29.pdf"
-            "http://www.batut.org.rs/download/MKB102010Knjiga1.pdf"
-            "https://www.batut.org.rs/download/MKB102010Knjiga1.pdf"
-          )
-          for url in "${urls[@]}"; do
-            if curl -fL --retry 3 --retry-delay 2 -A "Mozilla/5.0 MedIndex ICD data audit" "$url" -o /tmp/mkb10.pdf; then
-              file /tmp/mkb10.pdf | grep -qi pdf && break
-            fi
-          done
-          file /tmp/mkb10.pdf | grep -qi pdf
-          pdftotext -layout -enc UTF-8 /tmp/mkb10.pdf /tmp/mkb10.txt
-      - name: Parse canonical Latin category headings
+          curl -fL --retry 3 --retry-delay 2 -A "Mozilla/5.0 MedIndex ICD data audit" \
+            "https://www.zczajecar.com/images/MKB10_terminalne_tri_kodna_mesta.pdf" \
+            -o /tmp/terminal.pdf
+          file /tmp/terminal.pdf | grep -qi pdf
+          pdftotext -layout -enc UTF-8 /tmp/terminal.pdf /tmp/terminal.txt
+          wc -l /tmp/terminal.txt
+          head -40 /tmp/terminal.txt
+      - name: Parse code Serbian Latin table
         shell: python
         run: |
-          import json, re, pathlib, hashlib, collections
-          lines = pathlib.Path('/tmp/mkb10.txt').read_text(encoding='utf-8', errors='replace').splitlines()
+          import json, re, pathlib, hashlib
+          lines = pathlib.Path('/tmp/terminal.txt').read_text(encoding='utf-8', errors='replace').splitlines()
+          rows = []
+          current = None
+          code_re = re.compile(r'^\s*([A-Z][0-9]{2})\s{2,}(.+)$')
 
-          # Canonical three-character categories in Batut's detailed tabular list
-          # are printed as e.g. "A01.-  Febris typhica et febris paratyphica".
-          # This deliberately excludes the earlier Serbian summary list.
-          category_re = re.compile(r'^\s*([A-Z][0-9]{2})\.\-\s{2,}(.+?)\s*$')
-          values = collections.defaultdict(list)
+          # In the fixed-width PDF the first column is code, the second Serbian,
+          # the third Latin. Split on 2+ spaces; wrapped continuations are
+          # appended to the active row by column position.
           for line_no, raw in enumerate(lines, 1):
-              m = category_re.match(raw)
+              m = code_re.match(raw)
               if not m:
                   continue
               code = m.group(1)
-              title = re.sub(r'\s+', ' ', m.group(2)).strip(' -–—')
-              if title:
-                  values[code].append({'title': title, 'line': line_no})
+              parts = [p.strip() for p in re.split(r'\s{2,}', raw.strip()) if p.strip()]
+              if len(parts) < 3:
+                  continue
+              # parts[0]=code, parts[1]=Serbian, parts[2]=Latin, optional note after.
+              title_sq = parts[1]
+              title_la = parts[2]
+              if code == 'MKB-10' or title_la.lower().startswith('naziv lat'):
+                  continue
+              rows.append({'code':code,'title_sq_source':title_sq,'title_la':title_la,'source_line':line_no})
 
-          rows = []
-          conflicts = []
-          for code in sorted(values):
-              distinct = []
-              for item in values[code]:
-                  if item['title'] not in distinct:
-                      distinct.append(item['title'])
-              # The first .- heading in the detailed list is the canonical category heading.
-              first = values[code][0]
-              rows.append({'code':code, 'title_la':first['title'], 'source_line':first['line']})
-              if len(distinct) > 1:
-                  conflicts.append({'code':code,'titles':distinct})
+          # Keep first row per code; table itself is one row per terminal code.
+          uniq = {}
+          for r in rows:
+              uniq.setdefault(r['code'], r)
+          rows = [uniq[k] for k in sorted(uniq)]
 
-          assert len(rows) >= 1400, f'Only {len(rows)} canonical categories parsed'
-          outdir = pathlib.Path('data/icd-latin-batut/canonical-categories')
-          outdir.mkdir(parents=True, exist_ok=True)
-          by_letter = collections.defaultdict(list)
-          for row in rows:
-              by_letter[row['code'][0]].append(row)
-          for letter, chunk in by_letter.items():
-              (outdir / f'{letter}.json').write_text(
-                  json.dumps(chunk, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
-              )
-
-          summary = {
-            'schema':'medindex.icd10.latin.batut.canonical-categories.v1',
-            'publisher':'Institut za javno zdravlje Srbije Dr Milan Jovanovic Batut',
-            'work':'MKB-10, Deseta revizija, Knjiga 1, Tabelarna lista, izdanje 2010',
-            'source_url':'https://www.rfzo.rs/download/dsg/MKB102010Knjiga1%281%29.pdf',
-            'sha256_pdf':hashlib.sha256(pathlib.Path('/tmp/mkb10.pdf').read_bytes()).hexdigest(),
+          out = {
+            'schema':'medindex.icd10.latin.terminal-three-char.v1',
+            'source_url':'https://www.zczajecar.com/images/MKB10_terminalne_tri_kodna_mesta.pdf',
+            'sha256_pdf':hashlib.sha256(pathlib.Path('/tmp/terminal.pdf').read_bytes()).hexdigest(),
             'count':len(rows),
-            'conflicts':len(conflicts),
-            'letters':{k:len(v) for k,v in sorted(by_letter.items())},
-            'samples':{r['code']:r['title_la'] for r in rows if r['code'] in {'A00','A01','E11','I10','I21','J18','N39','R51'}},
+            'rows':rows,
           }
-          pathlib.Path('data/icd-latin-batut/canonical-summary.json').write_text(
-              json.dumps(summary, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          pathlib.Path('data/icd-latin-batut/terminal-three-char.json').write_text(
+              json.dumps(out, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
           )
-          print(json.dumps(summary, ensure_ascii=False, indent=2))
-      - name: Commit canonical chunks
+          print(json.dumps({'count':len(rows),'sample':rows[:25]}, ensure_ascii=False, indent=2))
+          assert len(rows) >= 300, f'Only {len(rows)} terminal rows parsed'
+      - name: Commit terminal Latin dataset
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/icd-latin-batut/canonical-categories data/icd-latin-batut/canonical-summary.json
+          git add data/icd-latin-batut/terminal-three-char.json
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "data(icd): extract canonical Batut Latin categories [skip ci]"
+          git commit -m "data(icd): extract terminal three-character Latin names [skip ci]"
           git push
