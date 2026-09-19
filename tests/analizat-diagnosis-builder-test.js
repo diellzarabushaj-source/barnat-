@@ -94,9 +94,25 @@ for (const exam of [
 }
 assert.ok((js.match(/"examGroup":/g) || []).length >= 40, 'multimodal exam catalog is unexpectedly small');
 
-const catalogIds = new Set([...js.matchAll(/"id": "(exam-[^"]+)"/g)].map(match => match[1]));
-const linkedIds = [...js.matchAll(/\[\s*"?(exam-[a-z0-9-]+)"?\s*,\s*"(?:urgent|core|recommended|conditional)"/g)].map(match => match[1]);
-for (const id of linkedIds) assert.ok(catalogIds.has(id), `clinical presentation links missing catalog exam ${id}`);
+const catalogJson = js.match(/const EXAM_CATALOG = Object\.freeze\((\[[\s\S]*?\])\);\n\s*const CLINICAL_PRESENTATIONS/)?.[1];
+const presentationsJson = js.match(/const CLINICAL_PRESENTATIONS = Object\.freeze\((\[[\s\S]*?\])\);\n\n\s*const state/)?.[1];
+assert.ok(catalogJson, 'embedded multimodal exam catalog JSON is missing');
+assert.ok(presentationsJson, 'embedded clinical presentation JSON is missing');
+const parsedCatalog = JSON.parse(catalogJson);
+const parsedPresentations = JSON.parse(presentationsJson);
+assert.equal(parsedPresentations.length, 19);
+assert.ok(parsedCatalog.length >= 40);
+const catalogIds = new Set(parsedCatalog.map(item => item.id));
+for (const presentation of parsedPresentations) {
+  assert.ok(['Shenjë','Simptomë','Gjetje'].includes(presentation.clinicalType), `invalid clinical type for ${presentation.id}`);
+  assert.ok(Array.isArray(presentation.tests) && presentation.tests.length > 0, `empty work-up for ${presentation.id}`);
+  assert.ok(Array.isArray(presentation.redFlags), `red flags missing for ${presentation.id}`);
+  for (const link of presentation.tests) {
+    assert.ok(catalogIds.has(link.testId), `${presentation.id} links missing catalog exam ${link.testId}`);
+    assert.ok(['urgent','core','recommended','conditional'].includes(link.tier), `invalid tier ${link.tier} in ${presentation.id}`);
+    assert.ok(link.rationale, `rationale missing for ${presentation.id} / ${link.testId}`);
+  }
+}
 
 assert.doesNotThrow(() => new Function(js));
 
