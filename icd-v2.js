@@ -168,7 +168,7 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view, sv:'clinical-workspace-v17' });
+    const params = new URLSearchParams({ view, sv:'clinical-workspace-v18' });
     if (view === 'suggest' || view === 'seed' || view === 'hot' || view === 'guidance' || view === 'guidance-list') params.set('advanced', '1');
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
     return `${API}?${params}`;
@@ -345,6 +345,17 @@
     if (kind === 'anamnesis') return `Anamneza: ${(guidance.anamnesis || []).join('; ')}`;
     if (kind === 'exams') return `Ekzaminimet: ${(guidance.exams || []).join('; ')}`;
     if (kind === 'management') return `Menaxhimi: ${clean(guidance.management)}`;
+    if (kind === 'medications') {
+      const meds = guidance.medications || {};
+      return [
+        'Barnat / terapia:',
+        ...(meds.first_line || []).map(item => `Linja e parë: ${item}`),
+        ...(meds.alternatives || []).map(item => `Alternativë: ${item}`),
+        ...(meds.avoid || []).map(item => `Shmang: ${item}`),
+        clean(meds.note) ? `Shënim: ${clean(meds.note)}` : '',
+        clean(meds.evidence) ? `Referencë: ${clean(meds.evidence)}` : '',
+      ].filter(Boolean).join('\n');
+    }
     if (kind === 'referral') {
       return [
         `Diagnoza e punës: ${clean(guidance.working_diagnosis)}`,
@@ -362,6 +373,7 @@
       `Anamneza: ${(guidance.anamnesis || []).join('; ')}`,
       `Ekzaminimet: ${(guidance.exams || []).join('; ')}`,
       `Menaxhimi: ${clean(guidance.management)}`,
+      clinicalCopyText('medications', guidance),
       `Summary: ${clean(guidance.summary)}`,
     ].filter(Boolean).join('\n');
   }
@@ -410,6 +422,26 @@
       ? `<span class="clinical-action-inherited">Udhëzim nga ${escapeHtml(payload.inheritedFrom)}</span>`
       : '';
     const actionKicker = guidance.urgent ? 'URGJENCË QKMF · Stabilizim + transfer' : 'QKMF · Clinical Action';
+    const meds = guidance.medications || null;
+    const medicationCard = meds && (
+      (Array.isArray(meds.first_line) && meds.first_line.length) ||
+      (Array.isArray(meds.alternatives) && meds.alternatives.length) ||
+      (Array.isArray(meds.avoid) && meds.avoid.length)
+    ) ? `
+        <article class="clinical-action-card is-medications">
+          <div class="clinical-card-head">
+            <span class="clinical-card-icon">Rx</span>
+            <div><span class="clinical-card-label">Barnat / terapia</span><strong>Çka përdoret konkretisht</strong></div>
+          </div>
+          ${Array.isArray(meds.first_line) && meds.first_line.length ? `<div class="clinical-medication-block"><span>Linja e parë</span><ul>${listHtml(meds.first_line)}</ul></div>` : ''}
+          ${Array.isArray(meds.alternatives) && meds.alternatives.length ? `<div class="clinical-medication-block"><span>Alternativa</span><ul>${listHtml(meds.alternatives)}</ul></div>` : ''}
+          ${Array.isArray(meds.avoid) && meds.avoid.length ? `<div class="clinical-medication-block is-avoid"><span>Mos përdor / kujdes</span><ul>${listHtml(meds.avoid)}</ul></div>` : ''}
+          ${clean(meds.note) ? `<p class="clinical-medication-note">${escapeHtml(clean(meds.note))}</p>` : ''}
+          ${clean(meds.evidence) ? `<small class="clinical-medication-evidence">Burim: ${escapeHtml(clean(meds.evidence))}</small>` : ''}
+          <button class="clinical-copy-button" type="button" data-clinical-copy="medications">Kopjo terapinë</button>
+        </article>
+      ` : '';
+
     const redFlags = Array.isArray(guidance.red_flags) && guidance.red_flags.length
       ? `<div class="clinical-red-flags">
           <div class="clinical-card-icon is-danger">!</div>
@@ -477,6 +509,8 @@
           </div>
           <p>${escapeHtml(clean(guidance.management))}</p>
         </article>
+
+        ${medicationCard}
 
         <article class="clinical-action-card is-summary">
           <div class="clinical-card-head">
