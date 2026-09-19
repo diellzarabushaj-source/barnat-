@@ -351,7 +351,7 @@
         "TSH, hemogramë, elektrolite sipas rastit",
         "Holter/event monitor kur episodike"
       ],
-      "management": "Dokumento ritmin kur është e mundur; korrigjo trigger-at/metabolikën; refero më shpejt kur ka sinkopë, aritmi të dokumentuar ose sëmundje strukturore.",
+      "management": "Dokumento ritmin kur është e mundur; korrigjo shkaktarët/metabolikën; refero më shpejt kur ka sinkopë, aritmi të dokumentuar ose sëmundje strukturore.",
       "summary": "Palpitacionet kërkojnë korrelacion simptomë–ritëm; EKG është ekzaminimi fillestar kyç.",
       "red_flags": [
         "Sinkopë",
@@ -453,7 +453,7 @@
       "referral": {
         "specialist": "Pulmolog / Alergolog",
         "goal": "Diagnozë e pasigurt, kontroll i dobët, exacerbime të shpeshta ose terapi e nivelit të lartë.",
-        "note": "Astmë me simptoma ___/javë dhe exacerbime ___; shëno përdorimin e reliever-it, inhalatorët, teknikën, trigger-at dhe spirometrinë."
+        "note": "Astmë me simptoma ___/javë dhe exacerbime ___; shëno përdorimin e reliever-it, inhalatorët, teknikën, shkaktarët dhe spirometrinë."
       },
       "anamnesis": [
         "Wheezing, kollë nate, dispne variabile",
@@ -645,7 +645,7 @@
         "Kreatininë/imazheri kur dyshohet obstruksion ose komplikim"
       ],
       "management": "Dallo cystitis nga pyelonephritis; zgjidh antibiotik sipas profilit të pacientit dhe rezistencës lokale; kulturë kur indikohet.",
-      "summary": "Simptomat tipike + urina ndihmojnë; ethet/flank pain e ndryshojnë menaxhimin.",
+      "summary": "Simptomat tipike + urina ndihmojnë; ethet/dhimbje në flank/ijë e ndryshojnë menaxhimin.",
       "red_flags": [
         "Sepsë",
         "Dhimbje flank + ethe",
@@ -2102,7 +2102,7 @@
       "management": "Vlerëso ashpërsinë dhe sigurinë e menaxhimit ambulator. Antibiotiku zgjidhet sipas udhëzimit lokal, komorbiditeteve dhe riskut për rezistencë; oksigjen kur ka hipoksemi dhe rivlerësim të hershëm nëse gjendja nuk përmirësohet.",
       "summary": "Pneumonia kërkon dallim nga infeksionet virale dhe vlerësim të hipoksemisë/sepsës para vendimit për trajtim në shtëpi.",
       "red_flags": [
-        "SpO₂ e ulët ose distress respirator",
+        "SpO₂ e ulët ose vështirësi e rëndë respiratore",
         "Hipotension, konfuzion ose sepsë",
         "Përkeqësim pavarësisht trajtimit"
       ]
@@ -2263,7 +2263,7 @@
       },
       "anamnesis": [
         "Dhimbje, prurit dhe otorre",
-        "Not/ujë, earbuds, cotton buds ose manipulim",
+        "Not/ujë, earbuds, shkopinj pambuku ose manipulim",
         "Diabet/imunosupresion",
         "Humbje dëgjimi ose temperaturë"
       ],
@@ -2316,7 +2316,7 @@
       "working_diagnosis": "Dispepsi – K30; etiologjia në vlerësim",
       "referral": {
         "specialist": "Gastroenterolog",
-        "goal": "Alarm symptoms, anemi/gjakderdhje, humbje peshe, disfagi, vjellje persistente ose simptoma refraktare.",
+        "goal": "Shenjat alarmuese, anemi/gjakderdhje, humbje peshe, disfagi, vjellje persistente ose simptoma refraktare.",
         "note": "Dhimbje/djegie epigastrike, ngopje e hershme ose fryrje prej ___; shëno NSAID, H. pylori, humbjen në peshë dhe përgjigjen ndaj terapisë."
       },
       "anamnesis": [
@@ -2329,9 +2329,9 @@
         "Ekzaminim abdominal",
         "Hemogramë kur dyshohet anemi/gjakderdhje",
         "Test H. pylori sipas strategjisë lokale",
-        "Endoskopi sipas moshës/riskut dhe alarm symptoms"
+        "Endoskopi sipas moshës/riskut dhe shenjat alarmuese"
       ],
-      "management": "Rishiko barnat që irritojnë GI; strategjia 'test-and-treat' për H. pylori dhe/ose terapi me PPI përdoret sipas udhëzimit lokal. Alarm symptoms kërkojnë endoskopi/vlerësim specialistik.",
+      "management": "Rishiko barnat që irritojnë GI; strategjia 'test-and-treat' për H. pylori dhe/ose terapi me PPI përdoret sipas udhëzimit lokal. Shenjat alarmuese kërkojnë endoskopi/vlerësim specialistik.",
       "summary": "Dispepsia është sindromë; para menaxhimit empirik kontrollo për shenja alarmi dhe përdorim NSAID.",
       "red_flags": [
         "Gjakderdhje GI/anemi",
@@ -2404,12 +2404,12 @@
       "referral": {
         "specialist": "Urolog / Urgjenca sipas komplikimeve",
         "goal": "Pielonefrit i dyshuar, shtatzëni me komplikime, meshkuj me infeksion të komplikuar, retencion/obstruksion ose infeksione të përsëritura.",
-        "note": "Dizuri/frekuencë/urgjencë prej ___; shëno temperaturën, flank pain, shtatzëninë, hematurinë, kulturat e mëparshme dhe antibiotikët."
+        "note": "Dizuri/frekuencë/urgjencë prej ___; shëno temperaturën, dhimbje në flank/ijë, shtatzëninë, hematurinë, kulturat e mëparshme dhe antibiotikët."
       },
       "anamnesis": [
         "Dizuri, frekuencë dhe urgjencë",
         "Hematuri dhe dhimbje suprapubike",
-        "Temperaturë, të dridhura dhe flank pain",
+        "Temperaturë, të dridhura dhe dhimbje në flank/ijë",
         "Shtatzëni, diabet, urolitiazë dhe UTI të përsëritura"
       ],
       "exams": [
@@ -2418,10 +2418,10 @@
         "Urinalizë",
         "Kulturë sipas riskut, seksit, shtatzënisë dhe recidivave"
       ],
-      "management": "Antibiotiku zgjidhet sipas udhëzimit lokal, kulturave dhe rezistencës; hidratim dhe analgjezi sipas nevojës. Temperaturë/flank pain sugjerojnë infeksion të sipërm.",
+      "management": "Antibiotiku zgjidhet sipas udhëzimit lokal, kulturave dhe rezistencës; hidratim dhe analgjezi sipas nevojës. Temperaturë/dhimbje në flank/ijë sugjerojnë infeksion të sipërm.",
       "summary": "Cistiti i pakomplikuar mund të menaxhohet në kujdesin parësor, por pielonefriti dhe faktorët komplikues ndryshojnë planin.",
       "red_flags": [
-        "Ethe + flank pain / pielonefrit",
+        "Ethe + dhimbje në flank/ijë / pielonefrit",
         "Shtatzëni me simptoma sistemike",
         "Sepsë, retencion ose obstruksion"
       ]
@@ -2554,7 +2554,7 @@
       "anamnesis": [
         "Fillimi dhe shpejtësia e përhapjes",
         "Dhimbje, temperaturë dhe të dridhura",
-        "Traumë, plagë, tinea pedis, edemë/venous insufficiency",
+        "Traumë, plagë, tinea pedis, edemë/insuficiencë venoze",
         "Diabet/imunosupresion dhe MRSA histori"
       ],
       "exams": [
@@ -2607,7 +2607,7 @@
       "referral": {
         "specialist": "Dermatolog / Pediatër te fëmijët sipas ashpërsisë",
         "goal": "Sëmundje e rëndë, gjumë/jetë e dëmtuar, infeksione të përsëritura, diagnozë e pasigurt ose dështim i terapisë së përshtatshme.",
-        "note": "Ekzemë pruritike kronike prej ___; shëno zonat, trigger-at, atopinë, infeksionin dhe terapitë topike."
+        "note": "Ekzemë pruritike kronike prej ___; shëno zonat, shkaktarët, atopinë, infeksionin dhe terapitë topike."
       },
       "anamnesis": [
         "Prurit, thatësi dhe relapsa",
@@ -2621,7 +2621,7 @@
         "Shenja të infeksionit",
         "Sipërfaqja trupore e përfshirë"
       ],
-      "management": "Emolientët rregullisht dhe kortikosteroid topik me potencë sipas zonës/as hpërsisë janë baza; edukim për barrierën e lëkurës dhe trigger-at. Infeksionet trajtohen kur ka evidencë klinike.",
+      "management": "Emolientët rregullisht dhe kortikosteroid topik me potencë sipas zonës/ashpërsisë janë baza; edukim për barrierën e lëkurës dhe shkaktarët. Infeksionet trajtohen kur ka evidencë klinike.",
       "summary": "Dermatiti atopik është kronik dhe relapsues; menaxhimi i barrierës së lëkurës është po aq i rëndësishëm sa trajtimi i flare-it.",
       "red_flags": [
         "Eczema herpeticum e dyshuar",
@@ -2674,7 +2674,7 @@
         "Barna që rrisin peshën dhe simptoma endokrine"
       ],
       "exams": [
-        "Peshë, gjatësi, BMI dhe circumferencë beli kur e përshtatshme",
+        "Peshë, gjatësi, BMI dhe perimetër të belit kur e përshtatshme",
         "TA",
         "Shenja të komplikimeve metabolike",
         "HbA1c/glukozë, lipide, liver profile sipas riskut"
@@ -2737,7 +2737,7 @@
         "PHQ-9 ose instrument tjetër si ndihmë",
         "Ekzaminim/teste fizike vetëm kur sugjerohet shkak organik"
       ],
-      "management": "Zgjedhja mes ndërhyrjeve psikologjike, aktivitetit të strukturuar dhe antidepresivëve varet nga ashpërsia, preferencat dhe historia; planifiko follow-up dhe monitorim të riskut.",
+      "management": "Zgjedhja mes ndërhyrjeve psikologjike, aktivitetit të strukturuar dhe antidepresivëve varet nga ashpërsia, preferencat dhe historia; planifiko ndjekje dhe monitorim të riskut.",
       "summary": "Depresioni diagnostikohet klinikisht dhe kërkon vlerësim të suicidalitetit dhe historisë së manisë para trajtimit.",
       "red_flags": [
         "Plan/intencë vetëvrasëse",
@@ -2926,10 +2926,10 @@
       "referral": {
         "specialist": "Fiziatër / Ortoped",
         "goal": "Dhimbje persistente, rupture e dyshuar, deficit funksional i rëndë ose diagnozë e paqartë.",
-        "note": "Dhimbje në insercionin tendinoz ___ prej ___; shëno overuse, aktivitetin, dobësinë dhe ekzaminimin provokues."
+        "note": "Dhimbje në insercionin tendinoz ___ prej ___; shëno mbingarkesë, aktivitetin, dobësinë dhe ekzaminimin provokues."
       },
       "anamnesis": [
-        "Aktivitet repetitiv/overuse",
+        "Aktivitet repetitiv/mbingarkesë",
         "Dhimbje e lokalizuar me ngarkesë",
         "Traumë e papritur / 'pop'",
         "Barna dhe sëmundje metabolike"
@@ -2940,7 +2940,7 @@
         "Forca dhe ROM",
         "Ekzaminim neurovaskular"
       ],
-      "management": "Load modification dhe rehabilitim progresiv me ushtrime janë bazë; analgjezia sipas profilit. Imazheri kur ka dyshim për rupture ose diagnoza mbetet e paqartë.",
+      "management": "Modifikimi i ngarkesës dhe rehabilitim progresiv me ushtrime janë bazë; analgjezia sipas profilit. Imazheri kur ka dyshim për rupture ose diagnoza mbetet e paqartë.",
       "summary": "Tendinopatitë zakonisht kërkojnë rehabilitim progresiv, jo imobilizim të zgjatur.",
       "red_flags": [
         "Dyshim për rupture akute",
