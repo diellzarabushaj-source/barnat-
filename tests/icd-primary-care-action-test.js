@@ -5,7 +5,7 @@ const Data = require('../data/icd-primary-care-action-v1.json');
 const Handler = require('../lib/icd-advanced-handler.js');
 const FullIcd = require('../lib/icd-full-hierarchy.js');
 
-assert.equal(Data.version, 6);
+assert.equal(Data.version, 7);
 assert.equal(Data.entries.length, 125);
 assert.equal(new Set(Data.entries.map(entry => entry.code)).size, 125);
 
@@ -73,7 +73,7 @@ assert.equal(indexPayload.kind, 'primary-care-guidance-index');
 assert.equal(indexPayload.total, 125);
 assert.equal(indexPayload.items.length, 125);
 const medicationEntries = Data.entries.filter(entry => entry.medications);
-assert.equal(medicationEntries.length, 26);
+assert.equal(medicationEntries.length, 51);
 for (const entry of medicationEntries) {
   assert.ok(Array.isArray(entry.medications.first_line) && entry.medications.first_line.length >= 1, `Medication first-line missing for ${entry.code}`);
   assert.ok(Array.isArray(entry.medications.alternatives), `Medication alternatives missing for ${entry.code}`);
@@ -81,7 +81,7 @@ for (const entry of medicationEntries) {
   assert.ok(entry.medications.note, `Medication note missing for ${entry.code}`);
   assert.ok(entry.medications.evidence, `Medication evidence missing for ${entry.code}`);
 }
-for (const code of ['I10','E11','J01','J02','J03','J18','J45','J44','H66','K21','K29','K30','N39.0','N30','G43','L03','L20','L70','D50','E03','F41','F32','M10','E05','B02','J20']) {
+for (const code of ['I10','E11','J01','J02','J03','J18','J45','J44','H66','K21','K29','K30','N39.0','N30','G43','L03','L20','L70','D50','E03','F41','F32','M10','E05','B02','J20','J30','R12','K59.0','B35','L30','M19','M17','B37','L01','B00','J32','J04','H00','H01','H61.2','K58','K80','N20','N45','N92','N94.6','G47.0','E78','L50','H10']) {
   assert.ok(Data.entries.find(entry => entry.code === code)?.medications, `Medication detail missing for ${code}`);
 }
 assert.ok(indexPayload.items.some(item => item.code === 'I10' && /Kardiolog/.test(item.specialist)));
