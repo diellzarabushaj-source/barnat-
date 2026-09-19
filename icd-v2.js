@@ -11,6 +11,23 @@
   const ICON = body => `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
   const CHEVRON_RIGHT = ICON('<path d="M9.5 5.5 16 12l-6.5 6.5"/>');
   const SEARCH_GLYPH = ICON('<circle cx="11" cy="11" r="6.6"/><path d="m16 16 4.4 4.4"/>');
+  const CLINICAL_GROUPS = Object.freeze([
+    { id:'core', label:'Kryesore' },
+    { id:'all', label:'Të gjitha' },
+    { id:'general', label:'Të përgjithshme' },
+    { id:'cardio', label:'Kardio / DM' },
+    { id:'resp', label:'Respiratore / ORL' },
+    { id:'gastro', label:'Gastro' },
+    { id:'neuro', label:'Neuro / MSK' },
+    { id:'uro', label:'Uro' },
+  ]);
+  const CLINICAL_CORE_CODES = new Set(['I10','E11','J06','R05','R50','R51','R10.4','R42','N39.0','M54']);
+  const CLINICAL_GROUP_BY_CODE = Object.freeze({
+    R50:'general', R53:'general', I10:'cardio', E11:'cardio', 'R00.2':'cardio',
+    J06:'resp', R05:'resp', J02:'resp', J01:'resp', J20:'resp', J45:'resp', J44:'resp', H66:'resp',
+    'R19.7':'gastro', R11:'gastro', 'R10.4':'gastro', K21:'gastro', K29:'gastro', A09:'gastro',
+    R51:'neuro', R42:'neuro', M54:'neuro', M47:'neuro', M51:'neuro', 'N39.0':'uro',
+  });
 
   const clean = value => String(value ?? '').trim();
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
@@ -41,6 +58,10 @@
     clinicalGuidanceCode: '',
     clinicalGuidanceLoading: false,
     clinicalGuidanceError: '',
+    clinicalIndex: [],
+    clinicalIndexLoading: false,
+    clinicalIndexError: '',
+    clinicalGroup: 'core',
     requestId: 0,
     loading: false,
     reveal: false,     // sill panelin e nyjeve në pamje pasi të mbërrijnë fëmijët (vetëm në celular)
@@ -87,7 +108,7 @@
       'appShell','sidebar','sidebarBackdrop','menuButton','sidebarClose','logoutButton','avatarInitials','sourceStatus','syncText',
       'metricNodes','metricChapters','metricCategories','metricCoverage','metricCoverageNote',
       'icdPath','icdPathItems','icdPathReset','icdSearch','icdSearchBox','icdSearchClear','icdSuggestions','icdStatusText',
-      'chapterList','chapterCount','nodeHero','clinicalActionPanel','nodeList','nodeSectionTitle','nodeCount','nodeKicker','toast',
+      'chapterList','chapterCount','clinicalQuickHub','nodeHero','clinicalActionPanel','nodeList','nodeSectionTitle','nodeCount','nodeKicker','toast',
     ].forEach(id => { el[id] = document.getElementById(id); });
   }
 
@@ -117,8 +138,8 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view, sv:'clinical-action-v12' });
-    if (view === 'suggest' || view === 'seed' || view === 'hot' || view === 'guidance') params.set('advanced', '1');
+    const params = new URLSearchParams({ view, sv:'clinical-workspace-v13' });
+    if (view === 'suggest' || view === 'seed' || view === 'hot' || view === 'guidance' || view === 'guidance-list') params.set('advanced', '1');
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
     return `${API}?${params}`;
   }
@@ -221,6 +242,65 @@
       </span>`;
   }
 
+  function clinicalGroupForCode(code) {
+    return CLINICAL_GROUP_BY_CODE[clean(code).toUpperCase()] || 'general';
+  }
+
+  function renderClinicalQuickHub() {
+    if (!el.clinicalQuickHub) return;
+    const activeCode = clean(state.clinicalGuidanceCode).toUpperCase();
+    const selectedGroup = clean(state.clinicalGroup) || 'core';
+    const groupsHtml = CLINICAL_GROUPS.map(group =>
+      '<button type="button" class="clinical-filter-chip' + (selectedGroup === group.id ? ' is-active' : '') + '" data-clinical-group="' + escapeHtml(group.id) + '" aria-pressed="' + (selectedGroup === group.id ? 'true' : 'false') + '">' + escapeHtml(group.label) + '</button>'
+    ).join('');
+
+    if (state.clinicalIndexLoading && !state.clinicalIndex.length) {
+      el.clinicalQuickHub.innerHTML = '<div class="clinical-hub-head"><div><span class="clinical-hub-kicker">QKMF · ICD praktik</span><h3>Diagnozat klinike të shpeshta</h3><p>Zgjidh diagnozën dhe hap dokumentimin klinik pa përdorur search bar-in.</p></div></div><div class="clinical-hub-loading"><span></span><span></span><span></span><span></span></div>';
+      return;
+    }
+
+    if (state.clinicalIndexError && !state.clinicalIndex.length) {
+      el.clinicalQuickHub.innerHTML = '<div class="clinical-hub-head"><div><span class="clinical-hub-kicker">QKMF · ICD praktik</span><h3>Diagnozat klinike të shpeshta</h3><p class="clinical-hub-error">Lista klinike nuk u ngarkua. Hierarkia ICD mbetet e përdorshme.</p></div></div>';
+      return;
+    }
+
+    const visible = state.clinicalIndex.filter(item => {
+      const code = clean(item.code).toUpperCase();
+      if (selectedGroup === 'all') return true;
+      if (selectedGroup === 'core') return CLINICAL_CORE_CODES.has(code);
+      return clinicalGroupForCode(code) === selectedGroup;
+    });
+    const cardsHtml = visible.map(item => {
+      const code = clean(item.code).toUpperCase();
+      const isActive = activeCode === code;
+      const specialist = clean(item.specialist) || 'Sipas tablosë klinike';
+      return '<button type="button" class="clinical-quick-card' + (isActive ? ' is-active' : '') + '" data-clinical-quick-code="' + escapeHtml(code) + '" aria-pressed="' + (isActive ? 'true' : 'false') + '">' +
+        '<span class="clinical-quick-code">' + escapeHtml(code) + '</span>' +
+        '<span class="clinical-quick-copy"><strong>' + escapeHtml(clean(item.title_sq)) + '</strong><small>' + escapeHtml(specialist) + '</small></span>' +
+        '<span class="clinical-quick-arrow" aria-hidden="true">›</span></button>';
+    }).join('');
+
+    el.clinicalQuickHub.innerHTML = '<div class="clinical-hub-head"><div><span class="clinical-hub-kicker">QKMF · ICD praktik</span><h3>Diagnozat klinike të shpeshta</h3><p>Kliko diagnozën → shfaqen referimi, anamneza, ekzaminimet, menaxhimi dhe diagnoza e punës.</p></div><span class="clinical-hub-count">' + formatNumber(state.clinicalIndex.length) + ' diagnoza</span></div>' +
+      '<div class="clinical-filter-rail" role="group" aria-label="Filtro diagnozat klinike">' + groupsHtml + '</div>' +
+      '<div class="clinical-quick-grid">' + (cardsHtml || '<div class="clinical-hub-empty">Nuk ka diagnoza në këtë grup.</div>') + '</div>';
+  }
+
+  async function loadClinicalIndex() {
+    if (state.clinicalIndexLoading || state.clinicalIndex.length) return;
+    state.clinicalIndexLoading = true;
+    state.clinicalIndexError = '';
+    renderClinicalQuickHub();
+    try {
+      const { payload } = await fetchJson(endpoint('guidance-list'), 5000, null, 'default');
+      const data = payload.data || {};
+      state.clinicalIndex = Array.isArray(data.items) ? data.items : [];
+    } catch (error) {
+      state.clinicalIndexError = clean(error?.message) || 'Lista klinike nuk u ngarkua.';
+    } finally {
+      state.clinicalIndexLoading = false;
+      renderClinicalQuickHub();
+    }
+  }
   function listHtml(items) {
     return (Array.isArray(items) ? items : []).filter(Boolean)
       .map(item => `<li>${escapeHtml(item)}</li>`).join('');
@@ -228,6 +308,10 @@
 
   function clinicalCopyText(kind, guidance) {
     if (!guidance) return '';
+    if (kind === 'diagnosis') return `Diagnoza e punës: ${clean(guidance.working_diagnosis)}`;
+    if (kind === 'anamnesis') return `Anamneza: ${(guidance.anamnesis || []).join('; ')}`;
+    if (kind === 'exams') return `Ekzaminimet: ${(guidance.exams || []).join('; ')}`;
+    if (kind === 'management') return `Menaxhimi: ${clean(guidance.management)}`;
     if (kind === 'referral') {
       return [
         `Diagnoza e punës: ${clean(guidance.working_diagnosis)}`,
@@ -236,8 +320,12 @@
         `Shënim: ${clean(guidance.referral?.note)}`,
       ].filter(Boolean).join('\n');
     }
+    if (kind === 'summary') return `Summary: ${clean(guidance.summary)}`;
     return [
       `Diagnoza e punës: ${clean(guidance.working_diagnosis)}`,
+      `Referim te: ${clean(guidance.referral?.specialist)}`,
+      `Qëllimi i referimit: ${clean(guidance.referral?.goal)}`,
+      `Çka të shënohet: ${clean(guidance.referral?.note)}`,
       `Anamneza: ${(guidance.anamnesis || []).join('; ')}`,
       `Ekzaminimet: ${(guidance.exams || []).join('; ')}`,
       `Menaxhimi: ${clean(guidance.management)}`,
@@ -250,7 +338,13 @@
     const current = currentNode();
     const currentCode = clean(current?.code);
 
-    if (!currentCode || (!state.clinicalGuidanceLoading && state.clinicalGuidanceCode !== currentCode)) {
+    const requestedCode = clean(state.clinicalGuidanceCode);
+    if (!requestedCode && !currentCode) {
+      el.clinicalActionPanel.hidden = true;
+      el.clinicalActionPanel.innerHTML = '';
+      return;
+    }
+    if (!requestedCode && currentCode) {
       el.clinicalActionPanel.hidden = true;
       el.clinicalActionPanel.innerHTML = '';
       return;
@@ -289,12 +383,14 @@
       <div class="clinical-action-head">
         <div>
           <span class="clinical-action-kicker">QKMF · Clinical Action</span>
-          <h3>Orientim praktik pas zgjedhjes së ICD-së</h3>
+          <h3>${escapeHtml(clean(guidance.title_sq) || 'Orientim praktik klinik')}</h3>
           <p>${escapeHtml(payload.disclaimer || '')}</p>
         </div>
         <div class="clinical-action-head-meta">
           ${inherited}
           <span class="clinical-action-code">${escapeHtml(clean(guidance.code))}</span>
+          <button class="clinical-head-button" type="button" data-clinical-copy="all">Kopjo komplet</button>
+          <button class="clinical-head-button is-muted" type="button" data-clinical-clear>Pastro</button>
         </div>
       </div>
 
@@ -307,7 +403,7 @@
         <article class="clinical-action-card is-referral">
           <div class="clinical-card-head">
             <span class="clinical-card-icon">↗</span>
-            <div><span class="clinical-card-label">Referimi</span><strong>${escapeHtml(clean(guidance.referral?.specialist) || 'Sipas tablosë klinike')}</strong></div>
+            <div><span class="clinical-card-label">Te cili specialist referohet</span><strong>${escapeHtml(clean(guidance.referral?.specialist) || 'Sipas tablosë klinike')}</strong></div>
           </div>
           <div class="clinical-referral-purpose">
             <span>Qëllimi i referimit</span>
@@ -377,6 +473,7 @@
       state.clinicalGuidanceLoading = false;
       state.clinicalGuidanceError = '';
       renderClinicalAction();
+      renderClinicalQuickHub();
       return;
     }
 
@@ -384,6 +481,7 @@
     state.clinicalGuidanceLoading = true;
     state.clinicalGuidanceError = '';
     renderClinicalAction();
+    renderClinicalQuickHub();
 
     try {
       const { payload } = await fetchJson(endpoint('guidance', { code:key }), 5000, null, 'default');
@@ -399,6 +497,7 @@
       if (state.clinicalGuidanceCode === key) {
         state.clinicalGuidanceLoading = false;
         renderClinicalAction();
+        renderClinicalQuickHub();
       }
     }
   }
@@ -409,6 +508,7 @@
     state.clinicalGuidanceLoading = false;
     state.clinicalGuidanceError = '';
     renderClinicalAction();
+    renderClinicalQuickHub();
   }
 
   function renderPath() {
@@ -1152,6 +1252,7 @@
   function render() {
     renderMetrics();
     renderChapters();
+    renderClinicalQuickHub();
     renderHero();
     renderClinicalAction();
     renderPath();
@@ -1470,6 +1571,24 @@
 
   let searchTimer = 0;
   function bindEvents() {
+    el.clinicalQuickHub?.addEventListener('click', event => {
+      const groupButton = event.target.closest('[data-clinical-group]');
+      if (groupButton) {
+        state.clinicalGroup = clean(groupButton.dataset.clinicalGroup) || 'core';
+        renderClinicalQuickHub();
+        return;
+      }
+      const diagnosisButton = event.target.closest('[data-clinical-quick-code]');
+      if (diagnosisButton) {
+        const code = clean(diagnosisButton.dataset.clinicalQuickCode).toUpperCase();
+        if (!code) return;
+        void loadClinicalGuidance(code).then(() => {
+          const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+          el.clinicalActionPanel?.scrollIntoView({ block:'start', behavior });
+        });
+      }
+    });
+
     el.chapterList.addEventListener('click', event => {
       const button = event.target.closest('[data-chapter]');
       if (button) selectChapter(button.dataset.chapter, { reveal:true });
@@ -1580,6 +1699,8 @@
     });
 
     el.clinicalActionPanel?.addEventListener('click', async event => {
+      const clearButton = event.target.closest('[data-clinical-clear]');
+      if (clearButton) { clearClinicalGuidance(); return; }
       const button = event.target.closest('[data-clinical-copy]');
       if (!button || !state.clinicalGuidance?.guidance) return;
       const textValue = clinicalCopyText(clean(button.dataset.clinicalCopy), state.clinicalGuidance.guidance);
@@ -1665,6 +1786,7 @@
       void warmHotSearch();
       await syncProfileChrome(authPayload);
       await loadNav();
+      void loadClinicalIndex();
       scheduleSearchSeedWarmup();
       render();
       const hash = readHash();
