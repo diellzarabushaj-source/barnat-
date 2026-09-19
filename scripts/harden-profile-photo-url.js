@@ -45,6 +45,30 @@ if (!runtime.includes(MARKER)) {
 registry = registry.replaceAll('/medindex-brand-runtime.js?v=drx-brand-v7', `/medindex-brand-runtime.js?v=${VERSION}`);
 fs.writeFileSync(registryPath, registry, 'utf8');
 
+const otherBrandRuntimeConsumers = [
+  'classification-v2.js',
+  'icd-v2.js',
+  'dozologjia-v2.js',
+  'protokollet-v2.js',
+  'urgjencat-v2.js',
+  'recetat-v2.js',
+  'analizat-v2.js',
+  'medical-hub-v2.js',
+  'sistemi-v2.js',
+];
+for (const relativePath of otherBrandRuntimeConsumers) {
+  const consumerPath = path.join(root, relativePath);
+  let consumer = fs.readFileSync(consumerPath, 'utf8').replace(/\r\n?/g, '\n');
+  consumer = consumer.replaceAll(
+    '/medindex-brand-runtime.js?v=drx-brand-v7',
+    `/medindex-brand-runtime.js?v=${VERSION}`
+  );
+  if (!consumer.includes(`/medindex-brand-runtime.js?v=${VERSION}`)) {
+    throw new Error(`${relativePath}: brand runtime version was not materialized.`);
+  }
+  fs.writeFileSync(consumerPath, consumer, 'utf8');
+}
+
 if (!runtime.includes(MARKER) || !runtime.includes('safeProfilePhotoUrl(meta?.url)') || !runtime.includes('const photo = safeProfilePhotoUrl(profile.photo);')) {
   throw new Error('Profile photo URL guard was not materialized.');
 }
