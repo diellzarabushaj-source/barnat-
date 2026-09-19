@@ -356,9 +356,42 @@
     }
   }
 
+  function boundedTokenDistance(left, right, maxDistance = 2) {
+    if (left === right) return 0;
+    if (Math.abs(left.length - right.length) > maxDistance) return maxDistance + 1;
+    const rows = Array.from({ length:left.length + 1 }, () => new Array(right.length + 1).fill(0));
+    for (let i = 0; i <= left.length; i += 1) rows[i][0] = i;
+    for (let j = 0; j <= right.length; j += 1) rows[0][j] = j;
+    for (let i = 1; i <= left.length; i += 1) {
+      let rowMin = maxDistance + 1;
+      for (let j = 1; j <= right.length; j += 1) {
+        const cost = left[i - 1] === right[j - 1] ? 0 : 1;
+        let value = Math.min(
+          rows[i - 1][j] + 1,
+          rows[i][j - 1] + 1,
+          rows[i - 1][j - 1] + cost,
+        );
+        if (i > 1 && j > 1 && left[i - 1] === right[j - 2] && left[i - 2] === right[j - 1]) {
+          value = Math.min(value, rows[i - 2][j - 2] + 1);
+        }
+        rows[i][j] = value;
+        rowMin = Math.min(rowMin, value);
+      }
+      if (rowMin > maxDistance) return maxDistance + 1;
+    }
+    return rows[left.length][right.length];
+  }
+
   function tokenSimilarity(left, right) {
     if (left === right) return 1;
     if (!left || !right) return 0;
+    if (left.length >= 3 && right.startsWith(left)) return .9;
+    if (right.length >= 3 && left.startsWith(right)) return .86;
+    if (Math.abs(left.length - right.length) <= 2 && Math.max(left.length, right.length) <= 18) {
+      const distance = boundedTokenDistance(left, right, 2);
+      if (distance === 1) return .82;
+      if (distance === 2 && Math.max(left.length, right.length) >= 6) return .62;
+    }
     if (left.length < 3 || right.length < 3) return left[0] === right[0] ? 0.35 : 0;
     const grams = value => {
       const set = new Set();
