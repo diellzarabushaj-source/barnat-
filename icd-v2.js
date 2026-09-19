@@ -168,7 +168,7 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view, sv:'clinical-workspace-v20' });
+    const params = new URLSearchParams({ view, sv:'clinical-workspace-v21' });
     if (view === 'suggest' || view === 'seed' || view === 'hot' || view === 'guidance' || view === 'guidance-list') params.set('advanced', '1');
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
     return `${API}?${params}`;
@@ -313,7 +313,7 @@
         '<span class="clinical-quick-arrow" aria-hidden="true">›</span></button>';
     }).join('');
 
-    el.clinicalQuickHub.innerHTML = '<div class="clinical-hub-head"><div><span class="clinical-hub-kicker">QKMF · ICD praktik</span><h3>Diagnozat klinike të shpeshta</h3><p>Kliko diagnozën → shfaqen referimi, anamneza, ekzaminimet, menaxhimi dhe diagnoza e punës.</p></div><span class="clinical-hub-count">' + formatNumber(state.clinicalIndex.length) + ' diagnoza</span></div>' +
+    el.clinicalQuickHub.innerHTML = '<div class="clinical-hub-head"><div><span class="clinical-hub-kicker">QKMF · ICD praktik</span><h3>Diagnozat klinike të shpeshta</h3><p>Kliko diagnozën → hap hapat praktikë, terapinë, red flags, ekzaminimet dhe referimin në një panel.</p></div><span class="clinical-hub-count">' + formatNumber(state.clinicalIndex.length) + ' diagnoza</span></div>' +
       '<div class="clinical-filter-rail" role="group" aria-label="Filtro diagnozat klinike">' + groupsHtml + '</div>' +
       '<div class="clinical-quick-grid">' + (cardsHtml || '<div class="clinical-hub-empty">Nuk ka diagnoza në këtë grup.</div>') + '</div>';
   }
@@ -433,7 +433,7 @@
     const actionKicker = guidance.urgent ? 'URGJENCË QKMF · Stabilizim + transfer' : 'QKMF · Clinical Action';
     const practical = guidance.practical || null;
     const practicalCard = practical && Array.isArray(practical.steps) && practical.steps.length ? `
-        <article class="clinical-action-card is-practical">
+        <article class="clinical-action-card is-practical" id="clinicalPractical">
           <div class="clinical-card-head">
             <span class="clinical-card-icon">1→</span>
             <div><span class="clinical-card-label">Si vepron praktikisht</span><strong>Hapat në rend</strong></div>
@@ -450,7 +450,7 @@
       (Array.isArray(meds.alternatives) && meds.alternatives.length) ||
       (Array.isArray(meds.avoid) && meds.avoid.length)
     ) ? `
-        <article class="clinical-action-card is-medications">
+        <article class="clinical-action-card is-medications" id="clinicalMedications">
           <div class="clinical-card-head">
             <span class="clinical-card-icon">Rx</span>
             <div><span class="clinical-card-label">Barnat / terapia</span><strong>Çka përdoret konkretisht</strong></div>
@@ -464,8 +464,23 @@
         </article>
       ` : '';
 
-    const redFlags = Array.isArray(guidance.red_flags) && guidance.red_flags.length
-      ? `<div class="clinical-red-flags">
+    const redFlagCount = Array.isArray(guidance.red_flags) ? guidance.red_flags.filter(Boolean).length : 0;
+    const actionNav = [
+      practicalCard ? '<a href="#clinicalPractical">Hapat</a>' : '',
+      medicationCard ? '<a href="#clinicalMedications">Rx / terapia</a>' : '',
+      '<a href="#clinicalManagement">Menaxhimi</a>',
+      '<a href="#clinicalHistory">Anamneza</a>',
+      '<a href="#clinicalExams">Ekzaminimet</a>',
+      '<a href="#clinicalReferral">Referimi</a>',
+    ].filter(Boolean).join('');
+    const actionStats = [
+      practicalCard ? '<span class="is-practical">4 hapa</span>' : '',
+      medicationCard ? '<span class="is-rx">Rx</span>' : '',
+      redFlagCount ? '<span class="is-danger">' + redFlagCount + ' alarm</span>' : '',
+    ].filter(Boolean).join('');
+
+    const redFlags = redFlagCount
+      ? `<div class="clinical-red-flags" id="clinicalRedFlags">
           <div class="clinical-card-icon is-danger">!</div>
           <div><span class="clinical-card-label">Shenja alarmi</span><ul>${listHtml(guidance.red_flags)}</ul></div>
         </div>`
@@ -491,11 +506,45 @@
         <strong>${escapeHtml(clean(guidance.working_diagnosis))}</strong>
       </div>
 
+      <div class="clinical-action-commandbar">
+        <nav class="clinical-action-nav" aria-label="Kalo te seksioni">${actionNav}</nav>
+        <div class="clinical-action-stats" aria-label="Përmbledhje e panelit">${actionStats}</div>
+      </div>
+
+      ${redFlags}
+
       <div class="clinical-action-grid">
-        <article class="clinical-action-card is-referral">
+        ${practicalCard}
+        ${medicationCard}
+
+        <article class="clinical-action-card is-management" id="clinicalManagement">
+          <div class="clinical-card-head">
+            <span class="clinical-card-icon">M</span>
+            <div><span class="clinical-card-label">Menaxhimi</span><strong>Plan i shkurtër</strong></div>
+          </div>
+          <p>${escapeHtml(clean(guidance.management))}</p>
+        </article>
+
+        <article class="clinical-action-card" id="clinicalHistory">
+          <div class="clinical-card-head">
+            <span class="clinical-card-icon">A</span>
+            <div><span class="clinical-card-label">Anamneza</span><strong>Pikat kryesore</strong></div>
+          </div>
+          <ul>${listHtml(guidance.anamnesis)}</ul>
+        </article>
+
+        <article class="clinical-action-card" id="clinicalExams">
+          <div class="clinical-card-head">
+            <span class="clinical-card-icon">E</span>
+            <div><span class="clinical-card-label">Ekzaminimet</span><strong>Kryesoret</strong></div>
+          </div>
+          <ul>${listHtml(guidance.exams)}</ul>
+        </article>
+
+        <article class="clinical-action-card is-referral" id="clinicalReferral">
           <div class="clinical-card-head">
             <span class="clinical-card-icon">↗</span>
-            <div><span class="clinical-card-label">Te cili specialist referohet</span><strong>${escapeHtml(clean(guidance.referral?.specialist) || 'Sipas tablosë klinike')}</strong></div>
+            <div><span class="clinical-card-label">Referimi</span><strong>${escapeHtml(clean(guidance.referral?.specialist) || 'Sipas tablosë klinike')}</strong></div>
           </div>
           <div class="clinical-referral-purpose">
             <span>Qëllimi i referimit</span>
@@ -508,44 +557,15 @@
           <button class="clinical-copy-button" type="button" data-clinical-copy="referral">Kopjo referimin</button>
         </article>
 
-        <article class="clinical-action-card">
-          <div class="clinical-card-head">
-            <span class="clinical-card-icon">A</span>
-            <div><span class="clinical-card-label">Anamneza</span><strong>Pikat kryesore</strong></div>
-          </div>
-          <ul>${listHtml(guidance.anamnesis)}</ul>
-        </article>
-
-        <article class="clinical-action-card">
-          <div class="clinical-card-head">
-            <span class="clinical-card-icon">E</span>
-            <div><span class="clinical-card-label">Ekzaminimet</span><strong>Kryesoret</strong></div>
-          </div>
-          <ul>${listHtml(guidance.exams)}</ul>
-        </article>
-
-        <article class="clinical-action-card is-management">
-          <div class="clinical-card-head">
-            <span class="clinical-card-icon">M</span>
-            <div><span class="clinical-card-label">Menaxhimi</span><strong>Shkurt</strong></div>
-          </div>
-          <p>${escapeHtml(clean(guidance.management))}</p>
-        </article>
-
-        ${practicalCard}
-        ${medicationCard}
-
         <article class="clinical-action-card is-summary">
           <div class="clinical-card-head">
             <span class="clinical-card-icon">Σ</span>
-            <div><span class="clinical-card-label">Summary</span><strong>Në një paragraf</strong></div>
+            <div><span class="clinical-card-label">Përmbledhja</span><strong>Në një paragraf</strong></div>
           </div>
           <p>${escapeHtml(clean(guidance.summary))}</p>
           <button class="clinical-copy-button" type="button" data-clinical-copy="summary">Kopjo summary</button>
         </article>
       </div>
-
-      ${redFlags}
     `;
   }
 
