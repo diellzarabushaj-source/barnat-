@@ -1,0 +1,142 @@
+name: ICD Latin Batut Extract
+
+on:
+  push:
+    branches:
+      - chore/icd-latin-batut-extract
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PDF tools
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+
+      - name: Download official Batut ICD-10 volume
+        shell: bash
+        run: |
+          set -euo pipefail
+          urls=(
+            "https://www.rfzo.rs/download/dsg/MKB102010Knjiga1%281%29.pdf"
+            "http://www.batut.org.rs/download/MKB102010Knjiga1.pdf"
+            "https://www.batut.org.rs/download/MKB102010Knjiga1.pdf"
+          )
+          ok=0
+          for url in "${urls[@]}"; do
+            echo "Trying: $url"
+            if curl -fL --retry 3 --retry-delay 2 -A "Mozilla/5.0 MedIndex ICD data audit" "$url" -o /tmp/mkb10.pdf; then
+              if file /tmp/mkb10.pdf | grep -qi pdf; then
+                ok=1
+                break
+              fi
+            fi
+          done
+          test "$ok" = "1"
+          ls -lh /tmp/mkb10.pdf
+          pdfinfo /tmp/mkb10.pdf | head -20
+
+      - name: Extract text
+        run: |
+          pdftotext -layout -enc UTF-8 /tmp/mkb10.pdf /tmp/mkb10.txt
+          wc -l /tmp/mkb10.txt
+          head -40 /tmp/mkb10.txt
+
+      - name: Parse ICD code to Latin title
+        shell: python
+        run: |
+          import json, re, hashlib, pathlib, collections
+
+          text = pathlib.Path('/tmp/mkb10.txt').read_text(encoding='utf-8', errors='replace')
+          lines = text.splitlines()
+
+          # Batut prints category rows as A01.-  <Latin title> and leaf rows
+          # as A01.0  <Latin title>. We intentionally capture only a code at
+          # the beginning of a line and require a title on that same line.
+          row_re = re.compile(
+              r'^\s*([A-Z][0-9]{2}(?:\.[0-9A-Z]{1,2})?)'
+              r'(?:\.-)?(?:[†*])?\s{2,}(.+?)\s*$'
+          )
+          code_re = re.compile(r'^[A-Z][0-9]{2}(?:\.[0-9A-Z]{1,2})?$')
+
+          candidates = collections.defaultdict(list)
+          for line_no, raw in enumerate(lines, 1):
+              m = row_re.match(raw)
+              if not m:
+                  continue
+              code = m.group(1).rstrip('.').upper()
+              title = re.sub(r'\s+', ' ', m.group(2)).strip(' -–—')
+              if not code_re.match(code) or not title:
+                  continue
+              # Exclude obvious Serbian prose / cross-reference-only lines.
+              if title.startswith(('Vidi ', 'Videti ', 'Uključuje:', 'Isključuje:', 'Napomena:')):
+                  continue
+              candidates[code].append({'title': title, 'line': line_no})
+
+          # Choose the first occurrence. In the tabular list the canonical
+          # heading precedes later inclusions/exclusions and cross-references.
+          rows = []
+          conflicts = []
+          for code in sorted(candidates):
+              values = candidates[code]
+              title = values[0]['title']
+              distinct = []
+              for item in values:
+                  if item['title'] not in distinct:
+                      distinct.append(item['title'])
+              if len(distinct) > 1:
+                  conflicts.append({'code': code, 'titles': distinct[:10]})
+              rows.append({
+                  'code': code,
+                  'title_la': title,
+                  'source_line': values[0]['line'],
+              })
+
+          categories = [r for r in rows if re.fullmatch(r'[A-Z][0-9]{2}', r['code'])]
+          subcodes = [r for r in rows if '.' in r['code']]
+
+          payload = {
+              'schema': 'medindex.icd10.latin.batut.v1',
+              'source': {
+                  'publisher': 'Institut za javno zdravlje Srbije Dr Milan Jovanovic Batut',
+                  'work': 'MKB-10, Deseta revizija, Knjiga 1, Tabelarna lista, izdanje 2010',
+                  'source_url': 'https://www.rfzo.rs/download/dsg/MKB102010Knjiga1%281%29.pdf',
+                  'sha256_pdf': hashlib.sha256(pathlib.Path('/tmp/mkb10.pdf').read_bytes()).hexdigest(),
+              },
+              'counts': {
+                  'rows': len(rows),
+                  'categories': len(categories),
+                  'subcodes': len(subcodes),
+                  'conflicts': len(conflicts),
+              },
+              'rows': rows,
+              'conflicts': conflicts,
+          }
+
+          out = pathlib.Path('data/icd-latin-batut-2010.json')
+          out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps(payload['counts'], indent=2))
+          # Guardrails: full Batut volume should yield hundreds of categories
+          # and thousands of leaf codes. Fail rather than publish partial data.
+          assert len(categories) >= 600, f'Only {len(categories)} categories parsed'
+          assert len(rows) >= 5000, f'Only {len(rows)} total ICD rows parsed'
+
+      - name: Commit extracted audited dataset
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/icd-latin-batut-2010.json
+          if git diff --cached --quiet; then
+            echo "No dataset change."
+            exit 0
+          fi
+          git commit -m "data(icd): extract Batut Latin terminology [skip ci]"
+          git push
