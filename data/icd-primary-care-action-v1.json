@@ -1,8 +1,8 @@
 {
   "schema": "medindex.icd10.primary-care-action.v1",
-  "version": 7,
+  "version": 8,
   "locale": "sq-XK",
-  "scope": "qkmf-clinical-125-medications-v2",
+  "scope": "qkmf-clinical-125-practical-v1",
   "disclaimer": "Ndihmë për dokumentim dhe orientim klinik. Përshtatet sipas pacientit, protokolleve lokale dhe gjykimit klinik.",
   "entries": [
     {
@@ -115,13 +115,39 @@
         "Auskultim pulmonar",
         "CRP/teste vetëm kur ndryshojnë menaxhimin"
       ],
-      "management": "Shumica virale: hidratim, pushim dhe terapi simptomatike. Antibiotik vetëm kur ka indikacion të qartë bakterial.",
+      "management": "URTI e pakomplikuar është zakonisht virale. Praktikisht: paracetamol ose ibuprofen për dhimbje/temperaturë, saline nazale; dekongjestiv nazal vetëm afatshkurtër te adulti i përshtatshëm. Antibiotik jo rutinë. Rivlerëso nëse simptomat zgjasin >10 ditë, përkeqësohen pas përmirësimit ose shfaqen dispne/dhimbje gjoksi.",
       "summary": "URI akut zakonisht vetëkufizues; dokumento mungesën ose praninë e shenjave për pneumoni/komplikime.",
       "red_flags": [
         "Dispne / hipoksemi",
         "Gjendje e rënduar sistemike",
         "Dyshim për pneumoni ose sepsë"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Paracetamol 500–1000 mg PO çdo 4–6 orë PRN, max 4 g/24 h te adulti pa risk hepatik",
+          "Ibuprofen 200–400 mg PO deri 3×/ditë PRN me ushqim, nëse nuk ka kundërindikacion",
+          "Saline nazale; dekongjestiv nazal afatshkurtër sipas preparatit"
+        ],
+        "alternatives": [
+          "Honey për kollë te personat >1 vjeç; guaifenesin mund të provohet te >12 vjeç"
+        ],
+        "avoid": [
+          "Mos jep antibiotik rutinë",
+          "Mos përdor dekongjestiv nazal >5–7 ditë",
+          "Mos dyfisho paracetamolin nga preparate të kombinuara cold/flu"
+        ],
+        "note": "Kujdes NSAID në CKD, ulçerë, antikoagulim, shtatzëni dhe HF; paracetamol max më i ulët mund të duhet në frailty/liver disease.",
+        "evidence": "NHS Common cold; NICE NG120"
+      },
+      "practical": {
+        "steps": [
+          "1. Mat vitalet dhe SpO₂ nëse ka dispne ose sëmundje respiratore kronike.",
+          "2. Në mungesë të red flags: trajtim simptomatik, jo antibiotik.",
+          "3. Shpjego që simptomat shpesh zgjasin 7–10 ditë dhe kolla deri 3–4 javë.",
+          "4. Safety-net për përkeqësim, dispne, dhimbje gjoksi ose temperaturë persistente."
+        ],
+        "reassess": "Rivlerëso nëse nuk përmirësohet brenda 10 ditëve, përkeqësohet bifazikisht ose kolla zgjat >3–4 javë."
+      }
     },
     {
       "code": "R05",
@@ -144,13 +170,39 @@
         "Orofaringu/hunda",
         "CXR/spirometri kur indikohet nga kohëzgjatja ose gjetjet"
       ],
-      "management": "Trajto shkakun e mundshëm; shmang antibiotik rutinë pa indikacion; vlerëso astmë/COPD/refluks/ACE-I te kolla persistente.",
+      "management": "Kollë akute: identifiko shkakun. Pa astmë/COPD nuk jepet rutinë salbutamol, steroid inhalator/oral apo mucolytic. Për simptomat mund paracetamol/ibuprofen për dhimbje/temperaturë; honey >1 vjeç, guaifenesin ose antitussive jo-codeine te >12 vjeç mund të provohen me përfitim modest. Antibiotik vetëm kur pacienti është sistemikisht shumë i sëmurë ose risk i lartë.",
       "summary": "Kolla është simptomë; përcakto kohëzgjatjen dhe shenjat që sugjerojnë infeksion të poshtëm ose shkak kronik.",
       "red_flags": [
         "Hemoptizi",
         "Hipoksemi / dispne e rëndë",
         "Humbje peshe ose CXR anormale"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Paracetamol/ibuprofen vetëm për dhimbje/temperaturë shoqëruese",
+          "Honey (>1 vjeç) ose guaifenesin (>12 vjeç) mund të provohen"
+        ],
+        "alternatives": [
+          "Dextromethorphan te adulti i përshtatshëm mund të provohet për kollë të thatë afatshkurtër"
+        ],
+        "avoid": [
+          "Mos jep salbutamol pa wheeze/airways disease",
+          "Mos jep steroid për kollë akute pa astmë/COPD",
+          "Mos jep codeine për kollë akute",
+          "Mos jep antibiotik rutinë"
+        ],
+        "note": "Kollë >3–4 javë kërkon rivlerësim për astmë, ACE‑i, GERD, TB, malignitet etj.",
+        "evidence": "NICE NG120"
+      },
+      "practical": {
+        "steps": [
+          "1. Përjashto pneumoni/PE/HF/astmë-COPD exacerbation me vitalet, SpO₂ dhe auskultim.",
+          "2. Në kollë virale të pakomplikuar: simptomatikë; mos përshkruaj antibiotik/bronchodilator rutinë.",
+          "3. Në wheeze të dokumentuar, trajto sëmundjen e rrugëve ajrore, jo 'kollën' si diagnozë.",
+          "4. Në risk të lartë ose shumë i sëmurë, përdor algoritmin e antibiotikut për acute cough."
+        ],
+        "reassess": "Rivlerëso në përkeqësim të shpejtë, hipoksemi, temperaturë persistente ose kollë >3–4 javë."
+      }
     },
     {
       "code": "R50",
@@ -173,13 +225,35 @@
         "Urina/CRP/hemogramë ose teste tjera sipas probabilitetit klinik",
         "Kultura/imazheri vetëm kur indikohet"
       ],
-      "management": "Identifiko fokusin; hidratim dhe antipiretik sipas nevojës; antibiotik vetëm kur ka burim bakterial të mundshëm/konfirmuar.",
+      "management": "Temperatura është simptomë: trajto pacientin dhe shkakun, jo vetëm numrin. Në adultin stabil: paracetamol ose ibuprofen PRN për discomfort; hidratim. Mos alterno antipiretikë pa arsye dhe mos nis antibiotik pa fokus bakterial. Temperaturë + hipotension/konfuzion/takipne → vlerësim për sepsë.",
       "summary": "Temperatura është shenjë; dokumento fokusin e dyshuar dhe shenjat sistemike.",
       "red_flags": [
         "Hipotension / alterim vetëdijeje",
         "Dispne / hipoksemi",
         "Rigjitet meningeal ose sepsë e dyshuar"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Paracetamol 500–1000 mg PO çdo 4–6 orë PRN, max 4 g/24 h te adulti pa risk hepatik",
+          "Ibuprofen 200–400 mg PO deri 3×/ditë PRN nëse NSAID është i sigurt"
+        ],
+        "alternatives": [],
+        "avoid": [
+          "Mos nis antibiotik vetëm për temperaturë pa fokus klinik",
+          "Mos përdor NSAID në dehidrim/AKI risk pa kujdes"
+        ],
+        "note": "Në fëmijë doza është sipas peshës; mos përdor dozat e adultit.",
+        "evidence": "Standard symptomatic fever management; sepsis pathways"
+      },
+      "practical": {
+        "steps": [
+          "1. Vitalet + fokus i infeksionit; kontrollo SpO₂ dhe statusin mendor.",
+          "2. Në stabil: lëngje + antipiretik vetëm nëse pacienti është i parehatshëm.",
+          "3. Kërko UTI/pneumoni/ENT/GI/skin sipas simptomave; testet vetëm të targetuara.",
+          "4. Në qSOFA/NEWS shqetësues ose hipoperfuzion → sepsis pathway."
+        ],
+        "reassess": "Rivlerëso në 24–48 h nëse etiologjia mbetet e paqartë ose më herët në përkeqësim."
+      }
     },
     {
       "code": "R51",
@@ -232,14 +306,38 @@
         "Elektrolite/kreatininë te dehidrimi ose rastet e moderuara-rënda",
         "Analiza feçesh vetëm kur indikohet"
       ],
-      "management": "Rehidrim oral është baza; korrigjo elektrolitet sipas nevojës; antimotilitet vetëm në raste të zgjedhura; antibiotik jo rutinë.",
+      "management": "Diarre akute pa red flags: ORS është baza. Adulti pa gjak/ethe të lartë mund të përdorë loperamide 4 mg fillimisht, pastaj 2 mg pas çdo feçeje të lirshme (mos tejkalo dozën e produktit; zakonisht max 16 mg/24 h me recetë). Antibiotik jo rutinë. Gjak, ethe, udhëtim, imunosupresion ose diarre persistente → analizë feçesh/etiologji specifike.",
       "summary": "Shumica akute janë vetëkufizuese; prioritet është dehidrimi dhe identifikimi i gjakut/etheve/riskut.",
       "red_flags": [
         "Dehidrim i rëndë",
         "Gjak në feçe",
         "Dhimbje e fortë abdominale",
         "Gjendje septike"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "ORS me elektrolite, gllënjka të shpeshta",
+          "Loperamide 4 mg fillimisht, pastaj 2 mg pas çdo feçeje të lirshme te adulti pa dysenteri/red flags"
+        ],
+        "alternatives": [
+          "Paracetamol për dhimbje/temperaturë; shmang NSAID në dehidrim"
+        ],
+        "avoid": [
+          "Mos përdor loperamide në gjak në feçe, kolit akut të rëndë ose temperaturë të lartë me dyshim invaziv",
+          "Mos jep antibiotik empiric rutinë"
+        ],
+        "note": "Në fëmijë gastroenteriti menaxhohet kryesisht me ORS; antidiarrheal nuk rekomandohet rutinë.",
+        "evidence": "NICE CG84 principles; NICE CG49 loperamide cautions"
+      },
+      "practical": {
+        "steps": [
+          "1. Vlerëso dehidrim, TA/puls, diurezë dhe gjakun në feçe.",
+          "2. ORS menjëherë; IV vetëm kur ORS dështon ose ka shok/dehidrim të rëndë.",
+          "3. Loperamide vetëm te adulti afebrile pa gjak dhe për kohë të shkurtër.",
+          "4. Stool tests/antibiotik vetëm sipas epidemiologjisë dhe red flags."
+        ],
+        "reassess": "Rivlerëso në 24–48 h nëse vazhdon, menjëherë në oliguri, gjak, ethe të lartë ose përkeqësim."
+      }
     },
     {
       "code": "R11",
@@ -262,14 +360,38 @@
         "Elektrolite/kreatininë/glukozë sipas gjendjes",
         "Test shtatzënie kur relevant"
       ],
-      "management": "Rehidrim; korrigjo shkakun dhe çrregullimet metabolike; antiemetik sipas profilit dhe kundërindikacioneve.",
+      "management": "Nauze/vjellje: korrigjo shkakun dhe hidratimin. Adult: ondansetron 4 mg PO/ODT çdo 8–12 h PRN është opsion kur QT risk është i ulët; alternativë metoclopramide 10 mg deri 3×/ditë për maksimum 5 ditë kur nuk ka obstruksion/Parkinson/EPS risk. Mos masko abdomenin akut.",
       "summary": "Vlerëso dehidrimin dhe shkaqet abdominale, metabolike, vestibulare ose neurologjike.",
       "red_flags": [
         "Hematemezë",
         "Abdomen akut/obstruksion",
         "Shenja neurologjike",
         "Dehidrim i rëndë"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "ORS/rehidratim",
+          "Ondansetron 4 mg PO/ODT çdo 8–12 h PRN në adult të zgjedhur"
+        ],
+        "alternatives": [
+          "Metoclopramide 10 mg PO deri 3×/ditë, max 5 ditë, kur përshtatet"
+        ],
+        "avoid": [
+          "Mos përdor metoclopramide në obstruksion GI/Parkinson ose histori EPS",
+          "Kujdes ondansetron në QT prolongation/elektrolite të çrregulluara"
+        ],
+        "note": "Shtatzënia, migrena, vertigo dhe gastroenteriti kanë zgjedhje specifike; mos përdor një antiemetik universal.",
+        "evidence": "SmPC-based antiemetic practice; cause-specific guidance"
+      },
+      "practical": {
+        "steps": [
+          "1. Përjashto obstruksion, abdomen akut, DKA, shtatzëni, neuro cause dhe toksicitet.",
+          "2. Rehidro; korrigjo K+/Na+ sipas nevojës.",
+          "3. Zgjidh antiemetik sipas shkakut dhe contraindications.",
+          "4. Në persistencë >24–48 h ose pamundësi për lëngje → analiza/IV/referim."
+        ],
+        "reassess": "Rivlerëso pas 4–6 h në të vjella të shpeshta ose më herët në hipotension/oliguri."
+      }
     },
     {
       "code": "R10.4",
@@ -292,14 +414,38 @@
         "Urina, hemogramë/CRP, lipazë etj. sipas dyshimit",
         "US/CT vetëm sipas indikacionit"
       ],
-      "management": "Përjashto abdomenin akut; hidrimi/analgjezia dhe trajtimi sipas shkakut; ri-vlerësim i hershëm nëse diagnoza mbetet e paqartë.",
+      "management": "Dhimbje barku pa diagnozë: mos jep terapi 'blind'. Për analgjezi mund paracetamol; NSAID është i dobishëm veçanërisht kur dyshohet kolikë renale/biliare dhe është i sigurt. Antispasmodic mund të përdoret vetëm në tablo funksionale/spastike të qartë. Peritonizëm, shtatzëni e mundshme, gjakderdhje ose dhimbje disproporcionale → urgjencë.",
       "summary": "Dhimbja abdominale kërkon lokalizim dhe përjashtim të patologjive kirurgjikale/urinare/gjinekologjike.",
       "red_flags": [
         "Rigiditet / rebound",
         "Hipotension/sinkopë",
         "Gjakderdhje GI",
         "Dhimbje e fortë progresive"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Paracetamol 500–1000 mg PO PRN për analgjezi te adulti pa risk hepatik"
+        ],
+        "alternatives": [
+          "NSAID kur shkaku duket kolikativ dhe nuk ka contraindication",
+          "Antispasmodic vetëm në simptomë funksionale/spastike të zgjedhur"
+        ],
+        "avoid": [
+          "Mos jep NSAID në GI bleed/AKI/dehidrim të rëndë",
+          "Mos mbulo abdomen akut me receta të përsëritura pa diagnozë"
+        ],
+        "note": "Analgjezia nuk e pengon vlerësimin kirurgjikal; mos e vono referimin.",
+        "evidence": "Acute abdominal pain standard practice"
+      },
+      "practical": {
+        "steps": [
+          "1. Vitalet + test shtatzënie kur relevant + ekzaminim për peritonizëm.",
+          "2. Jep analgjezi; mos prit pa nevojë që dhimbja 'të shihet'.",
+          "3. Teste të targetuara sipas lokalizimit: urinë, lipazë, LFT, CBC, US etj.",
+          "4. Në diagnozë të paqartë por stabil → safety-net dhe rivlerësim i hershëm."
+        ],
+        "reassess": "Rivlerëso brenda disa orësh në dhimbje të paqartë, jo 'pas disa ditësh'."
+      }
     },
     {
       "code": "R42",
@@ -322,14 +468,38 @@
         "Dix-Hallpike kur i përshtatshëm",
         "EKG/glukozë sipas dyshimit"
       ],
-      "management": "Klasifiko vestibulare, hemodinamike, metabolike ose neurologjike; trajto shkakun dhe shmang sedativë vestibularë të zgjatur pa nevojë.",
+      "management": "Marramendje/vertigo: mat TA ortostatike dhe glukozën sipas profilit; bëj ekzaminim neurologjik. Në BPPV përdor Dix‑Hallpike dhe Epley, jo vestibulosuppressant kronik. Për acute vestibular syndrome, antiemetik/vestibular suppressant vetëm shumë afatshkurtër kur stroke është përjashtuar.",
       "summary": "Dallimi vertigo vs presinkopë është hapi kryesor; shenjat neurologjike ndryshojnë urgjencën.",
       "red_flags": [
         "Deficit neurologjik",
         "Pamundësi e re për ecje",
         "Sinkopë me aritmi",
         "Dhimbje koke akute e rëndë"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Pa bar rutinë derisa përcaktohet etiologjia",
+          "Në BPPV: Epley manoeuvre është trajtimi kryesor, jo medikamenti"
+        ],
+        "alternatives": [
+          "Antiemetik afatshkurtër në acute vestibular symptoms të zgjedhura"
+        ],
+        "avoid": [
+          "Mos vazhdo betahistine/meclizine/prochlorperazine kronikisht për BPPV pa arsye",
+          "Mos e etiketoni vertigon akute me ataksi/deficit si periferike pa përjashtuar stroke"
+        ],
+        "note": "HINTS vetëm nga person i trajnuar.",
+        "evidence": "NICE NG127"
+      },
+      "practical": {
+        "steps": [
+          "1. Përcakto: presyncope vs vertigo vs imbalance.",
+          "2. Neurologji + gait + nystagmus; TA ortostatike/glukozë kur relevant.",
+          "3. Vertigo sekonda me lëvizje koke → Dix‑Hallpike; pozitiv → Epley.",
+          "4. Acute vestibular syndrome me shenja qendrore → stroke pathway."
+        ],
+        "reassess": "BPPV rivlerësohet pas manoeuvre; persistent/atypical → ORL/neurolog."
+      }
     },
     {
       "code": "R53",
@@ -352,14 +522,36 @@
         "Ekzaminim kardiopulmonar",
         "Teste të tjera vetëm sipas gjetjeve"
       ],
-      "management": "Kërko shkaqe të zakonshme dhe të korrigjueshme; trajto shkakun dhe planifiko ri-vlerësim nëse simptomat vazhdojnë.",
+      "management": "Lodhja nuk ka 'bar standard'. Mos jep vitamina/hek ur/thyroxine pa deficit. Kërko gjumë, depresion/ankth, anemi, TSH, diabet, infeksion, barna dhe mbingarkesë. Terapia është shkak-specifike.",
       "summary": "Lodhja është jo-specifike; anamneza dhe analizat bazë duhet të drejtohen nga probabiliteti klinik.",
       "red_flags": [
         "Dobësi fokale",
         "Humbje peshe e pashpjeguar",
         "Dispne/hipoksemi",
         "Gjakderdhje aktive"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Asnjë bar rutinë pa etiologji",
+          "Hekur vetëm kur konfirmohet iron deficiency; levothyroxine vetëm kur hipotiroidizëm; etj."
+        ],
+        "alternatives": [],
+        "avoid": [
+          "Mos jep vitamina IV/IM rutinë pa deficit ose indikacion",
+          "Mos jep stimulues për lodhje të padiagnostikuar"
+        ],
+        "note": "Qëllimi është të identifikohet shkaku, jo të maskohet lodhja.",
+        "evidence": "Primary-care fatigue work-up principles"
+      },
+      "practical": {
+        "steps": [
+          "1. Pyet për gjumë, punë/stres, humor, dietë dhe barna.",
+          "2. Ekzaminim + CBC, ferritinë, TSH, glukozë/HbA1c dhe teste të tjera vetëm sipas historisë.",
+          "3. Trajto deficitin/shkakun e konfirmuar.",
+          "4. Në humbje peshe, ethe, adenopati ose deficit neurologjik → hetim më i shpejtë."
+        ],
+        "reassess": "Rivlerëso në 2–4 javë ose më herët në red flags."
+      }
     },
     {
       "code": "R00.2",
@@ -382,14 +574,36 @@
         "TSH, hemogramë, elektrolite sipas rastit",
         "Holter/event monitor kur episodike"
       ],
-      "management": "Dokumento ritmin kur është e mundur; korrigjo shkaktarët/metabolikën; refero më shpejt kur ka sinkopë, aritmi të dokumentuar ose sëmundje strukturore.",
+      "management": "Palpitacione: mos nis beta‑bllokues verbërisht pa dokumentuar ritmin, sidomos në sinkopë/pre‑excitation. Korrigjo kafeinë/stimulues, anemi, TSH dhe elektrolite. Në sinus tachycardia trajto shkakun; në SVT/AF përdor pathway specifik.",
       "summary": "Palpitacionet kërkojnë korrelacion simptomë–ritëm; EKG është ekzaminimi fillestar kyç.",
       "red_flags": [
         "Sinkopë",
         "Dhimbje gjoksi",
         "Takikardi e qëndrueshme me instabilitet",
         "Histori familjare vdekjeje të papritur"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Asnjë antiaritmik/beta‑bllokues rutinë pa ritëm/indikacion të qartë"
+        ],
+        "alternatives": [
+          "Beta‑bllokues mund të përdoret në indikacione të dokumentuara sipas ritmit dhe komorbiditeteve"
+        ],
+        "avoid": [
+          "Mos trajto palpitacionin me propranolol vetëm nga simptoma pa vlerësim nëse ka red flags"
+        ],
+        "note": "EKG ose ambulatory monitoring është më i vlefshëm se terapia empirike.",
+        "evidence": "Arrhythmia diagnostic principles"
+      },
+      "practical": {
+        "steps": [
+          "1. EKG 12 derivacione; vitalet.",
+          "2. Nëse episodike dhe EKG normale → Holter/event monitor sipas frekuencës.",
+          "3. CBC, TSH, elektrolite sipas profilit.",
+          "4. Sinkopë, CVD strukturore, WPW pattern ose VT → kardiolog/urgjencë."
+        ],
+        "reassess": "Pas dokumentimit të ritmit, jo me terapi empirike të përsëritur."
+      }
     },
     {
       "code": "J02",
@@ -766,14 +980,38 @@
         "Elektrolite/kreatininë te rastet me dehidrim",
         "Analiza feçesh sipas indikacionit"
       ],
-      "management": "Rehidrim oral/IV sipas gjendjes; terapi simptomatike e kujdesshme; antibiotik vetëm në indikacione të zgjedhura.",
+      "management": "Gastroenterit akut i pakomplikuar: ORS + vazhdim i ushqyerjes sipas tolerancës. Adulti pa dysenteri mund loperamide afatshkurtër; antiemetik vetëm nëse të vjellat pengojnë rehidrimin. Antibiotik jo rutinë; përdor vetëm në etiologji/indikacione specifike.",
       "summary": "Menaxhimi kryesor është hidratimi; testimi etiologjik është selektiv.",
       "red_flags": [
         "Dehidrim i rëndë",
         "Gjak në feçe",
         "Sepsë e dyshuar",
         "Pacient i imunosupresuar me gjendje të rëndë"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "ORS me elektrolite",
+          "Loperamide te adulti pa gjak/ethe të lartë, afatshkurtër"
+        ],
+        "alternatives": [
+          "Ondansetron mund të përdoret në të vjella të rëndësishme që pengojnë ORS, sipas profilit/QT risk"
+        ],
+        "avoid": [
+          "Mos jep antibiotik rutinë",
+          "Mos përdor antimotility në dysenteri/kolit të rëndë"
+        ],
+        "note": "Fëmijët: ORS dhe refeeding; antidiarrheal nuk rekomandohet rutinë.",
+        "evidence": "NICE CG84 gastroenteritis principles"
+      },
+      "practical": {
+        "steps": [
+          "1. Vlerëso dehidrim dhe shok.",
+          "2. ORS; nëse nuk tolerohet, antiemetik i zgjedhur dhe provo sërish ORS.",
+          "3. Mos jep antibiotik pa indikacion të qartë.",
+          "4. Kulturë/PCR feçesh në gjak, epidemi, udhëtim, imunosupresion ose persistencë."
+        ],
+        "reassess": "Rivlerëso në 24–48 h ose menjëherë në shenja dehidrimi/shoku."
+      }
     },
     {
       "code": "N39.0",
@@ -841,14 +1079,38 @@
         "Straight leg raise sipas rastit",
         "Imazheri vetëm kur ka red flags ose persistencë të justifikuar"
       ],
-      "management": "Aktivitet sipas tolerancës, analgjezi e përshtatshme dhe këshilla ergonomike; shmang imazheri rutinë pa red flags.",
+      "management": "Dhimbje shpine jo-specifike: vazhdo aktivitetin, mos rekomando bed rest. Oral NSAID mund të përdoret në dozën më të ulët efektive për kohën më të shkurtër; shto PPI kur ka risk GI. Paracetamol vetëm nuk rekomandohet rutinë. Weak opioid vetëm për acute low back pain kur NSAID kundërindikohet/nuk tolerohet/është joefektiv. Jo gabapentinoid rutinë.",
       "summary": "Shumica mekanike; vlerësimi neurologjik dhe red flags vendosin nevojën për imazheri/referim.",
       "red_flags": [
         "Cauda equina",
         "Dobësi progresive",
         "Ethe/imunosupresion",
         "Traumë e rëndë / frakturë e dyshuar"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Oral NSAID në dozën më të ulët efektive, për kohën më të shkurtër, nëse i sigurt"
+        ],
+        "alternatives": [
+          "Weak opioid vetëm në acute low back pain kur NSAID nuk mund të përdoret/është joefektiv"
+        ],
+        "avoid": [
+          "Mos përdor paracetamol vetëm si terapi kryesore",
+          "Mos përdor gabapentinoid/antiepileptik për low back pain",
+          "Mos përdor opioid për chronic low back pain"
+        ],
+        "note": "Mendo PPI gastroprotection kur NSAID përdoret te pacient me risk GI.",
+        "evidence": "NICE NG59"
+      },
+      "practical": {
+        "steps": [
+          "1. Screen red flags: cauda equina, kancer, infeksion, frakturë.",
+          "2. Pa red flags: aktivitet + NSAID short course kur i sigurt.",
+          "3. Fizioterapi/exercise; jo imazheri rutinë.",
+          "4. Persistent/high-risk → stratifikim dhe referral sipas funksionit."
+        ],
+        "reassess": "Rivlerëso 1–2 javë në akute nëse nuk përmirësohet, menjëherë në deficit neurologjik."
+      }
     },
     {
       "code": "M47",
@@ -871,13 +1133,36 @@
         "Testet radikulare sipas lokalizimit",
         "Imazheri kur simptomat neurologjike/persistenca e justifikojnë"
       ],
-      "management": "Menaxhim konservativ me aktivitet, ushtrime/fizioterapi dhe analgjezi sipas profilit; referim kur ka deficit ose dështim të trajtimit konservativ.",
+      "management": "Spondilozë pa deficit: menaxho si mechanical spine pain: aktivitet, exercise/fizioterapi; NSAID short-term nëse i sigurt, PPI kur risk GI. Mos përdor opioid/gabapentinoid rutinë vetëm për radiografi 'spondilozë'.",
       "summary": "Spondiloza radiologjike duhet të korrelohet me simptomat; jo çdo ndryshim imazherik është shkak i dhimbjes.",
       "red_flags": [
         "Mielopati",
         "Dobësi progresive",
         "Çrregullime sfinkterike"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "NSAID short-term kur ka dhimbje inflamatore/mekanike dhe risku lejon"
+        ],
+        "alternatives": [
+          "Paracetamol si adjunct kur NSAID nuk përshtatet"
+        ],
+        "avoid": [
+          "Mos trajto imazhin radiologjik pa korrelacion klinik",
+          "Mos përdor opioid/gabapentinoid rutinë pa indikacion neuropatik të qartë"
+        ],
+        "note": "Deficit neurologjik ndryshon menaxhimin.",
+        "evidence": "NICE NG59 principles"
+      },
+      "practical": {
+        "steps": [
+          "1. Korrëlo simptomat me ekzaminimin, jo vetëm X-ray.",
+          "2. Activity + rehab.",
+          "3. Short NSAID course nëse duhet.",
+          "4. Deficit/progression → MRI/referral."
+        ],
+        "reassess": "4–6 javë ose më herët në neurologji."
+      }
     },
     {
       "code": "M51",
@@ -900,13 +1185,36 @@
         "Ecja dhe funksioni",
         "MRI kur ka deficit/red flags ose simptomat persistojnë sipas indikacionit"
       ],
-      "management": "Trajtim konservativ fillestar në mungesë të deficitit progresiv; aktivitet, analgjezi, fizioterapi; MRI/referim kur ka indikacion neurologjik.",
+      "management": "Disc disorder pa deficit progresiv: aktivitet + fizioterapi; NSAID short-term kur i sigurt. Në radikulopati ndiq parimet e shiatikut: jo gabapentinoid/oral steroid/benzodiazepinë rutinë; chronic opioid jo. MRI vetëm kur rezultati do ndryshojë menaxhimin ose ka red flags.",
       "summary": "Diskopatia duhet të korrelohet me radikulopatinë klinike dhe ekzaminimin neurologjik.",
       "red_flags": [
         "Cauda equina",
         "Deficit motorik progresiv",
         "Mielopati"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "NSAID short-term nëse i sigurt"
+        ],
+        "alternatives": [],
+        "avoid": [
+          "Jo gabapentinoid rutinë për sciatica",
+          "Jo oral steroid rutinë",
+          "Jo benzodiazepinë",
+          "Jo chronic opioid"
+        ],
+        "note": "Cauda equina/deficit progresiv → urgent MRI/spine service.",
+        "evidence": "NICE NG59"
+      },
+      "practical": {
+        "steps": [
+          "1. Neuro exam + sphincter/saddle symptoms.",
+          "2. Conservative care nëse stabil.",
+          "3. Rehab + review.",
+          "4. MRI/referral në deficit, red flags ose simptoma persistent disabling."
+        ],
+        "reassess": "1–2 javë në radikulopati akute; urgjent në deficit."
+      }
     },
     {
       "code": "J00",
@@ -1194,14 +1502,38 @@
         "Straight-leg raise sipas tablosë",
         "Imazheri vetëm kur ka red flags ose indikacion të qartë"
       ],
-      "management": "Ruaj aktivitetin sipas tolerancës, përdor analgjezi të përshtatshme dhe ushtrime/fizioterapi sipas nevojës; shmang imazherinë rutinë pa red flags.",
+      "management": "Lumbalgji mekanike: aktivitet, heat/exercise dhe oral NSAID në dozën më të ulët efektive për periudhë të shkurtër. PPI në risk GI. Paracetamol vetëm jo rutinë; opioid vetëm si përjashtim për dhimbje akute kur NSAID nuk mund të përdoret. Mos porosit MRI pa indikacion.",
       "summary": "Shumica e lumbalgjive akute janë mekanike; ekzaminimi neurologjik dhe red flags përcaktojnë nevojën për imazheri/referim.",
       "red_flags": [
         "Cauda equina",
         "Deficit motorik progresiv",
         "Ethe/imunosupresion",
         "Traumë e rëndë ose frakturë e dyshuar"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Oral NSAID short-term nëse i sigurt"
+        ],
+        "alternatives": [
+          "Weak opioid vetëm si përjashtim në acute pain kur NSAID nuk mund të përdoret"
+        ],
+        "avoid": [
+          "Jo gabapentinoid për low back pain",
+          "Jo opioid afatgjatë",
+          "Jo paracetamol monoterapi rutinë"
+        ],
+        "note": "NSAID kërkon vlerësim renal/GI/CV dhe antikoagulim.",
+        "evidence": "NICE NG59"
+      },
+      "practical": {
+        "steps": [
+          "1. Red flags.",
+          "2. Keep active + NSAID short course.",
+          "3. Exercise/fizio nëse vazhdon.",
+          "4. MRI vetëm në specialist setting kur do ndryshojë menaxhimin."
+        ],
+        "reassess": "1–2 javë ose menjëherë në red flags."
+      }
     },
     {
       "code": "M54.2",
@@ -1224,14 +1556,36 @@
         "Ecja dhe shenja të mielopatisë kur dyshohet",
         "Imazheri sipas traumës, deficitit neurologjik ose red flags"
       ],
-      "management": "Në mungesë të red flags, menaxhim konservativ me aktivitet, ergonomi, ushtrime/fizioterapi dhe analgjezi sipas profilit të pacientit.",
+      "management": "Cervikalgji mekanike pa red flags: aktivitet/ergonomi + NSAID short-term kur i sigurt; paracetamol mund të përdoret si adjunct nëse NSAID nuk përshtatet, por mos u mbështet vetëm te barna. Fizioterapi/ushtrime janë thelbësore. Deficit neurologjik/myelopathy → referim.",
       "summary": "Dhimbja mekanike e qafës është e zakonshme; deficit neurologjik ose mielopati kërkon vlerësim specialistik.",
       "red_flags": [
         "Mielopati / çrregullim i ecjes",
         "Dobësi progresive",
         "Traumë e rëndë",
         "Ethe me dhimbje të fortë cervikale"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "NSAID oral/topik short-term sipas lokalizimit dhe riskut"
+        ],
+        "alternatives": [
+          "Paracetamol si adjunct/alternativë kur NSAID nuk përshtatet"
+        ],
+        "avoid": [
+          "Mos përdor opioid kronik ose benzodiazepinë për neck pain mekanik"
+        ],
+        "note": "Vlerëso GI/renal/CV risk para NSAID oral.",
+        "evidence": "Musculoskeletal pain conservative care"
+      },
+      "practical": {
+        "steps": [
+          "1. Screen trauma, mielopati, infeksion, malignitet.",
+          "2. Aktivitet/ergonomi + analgjezi e kufizuar.",
+          "3. Fizioterapi/exercise në persistencë.",
+          "4. Dobësi/probleme ecjeje/reflekse patologjike → neuro/ortho."
+        ],
+        "reassess": "1–2 javë në akute ose më herët në neuro signs."
+      }
     },
     {
       "code": "M54.3",
@@ -1254,13 +1608,36 @@
         "Ecja dhe funksioni",
         "MRI kur ka deficit/red flags ose simptomat persistojnë me indikacion"
       ],
-      "management": "Menaxhim konservativ fillestar në mungesë të deficitit progresiv: aktivitet sipas tolerancës, analgjezi dhe fizioterapi/ushtrime; referim i shpejtë kur ka deficit ose cauda equina.",
+      "management": "Shiatik: mos jep gabapentin/pregabalin, benzodiazepinë ose steroid oral rutinë; mos jep opioid për shiatik kronik. NSAID mund të provohet me kujdes, dozë minimale dhe kohë të shkurtër, por përfitimi është i kufizuar. Aktivitet + fizioterapi; deficit progresiv/cauda equina → urgjencë.",
       "summary": "Shiatiku është radikulopati klinike; korrelo simptomat me ekzaminimin neurologjik para imazherisë.",
       "red_flags": [
         "Cauda equina",
         "Deficit motorik progresiv",
         "Humbje e re e kontrollit të sfinkterëve"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "NSAID short-term vetëm pas vlerësimit të riskut dhe me pritshmëri modeste"
+        ],
+        "alternatives": [],
+        "avoid": [
+          "Mos përdor gabapentin/pregabalin",
+          "Mos përdor oral corticosteroid",
+          "Mos përdor benzodiazepinë",
+          "Mos përdor opioid për chronic sciatica"
+        ],
+        "note": "PPI/monitorim sipas riskut nëse NSAID përdoret.",
+        "evidence": "NICE NG59"
+      },
+      "practical": {
+        "steps": [
+          "1. Ekzaminim neurologjik + SLR.",
+          "2. Pa deficit progresiv: aktivitet dhe rehab, jo bed rest.",
+          "3. NSAID vetëm nëse i sigurt dhe me review.",
+          "4. Cauda equina/deficit motorik progresiv → urgjencë."
+        ],
+        "reassess": "Rivlerëso në 1–2 javë; persistent disabling symptoms → specialist."
+      }
     },
     {
       "code": "M25.5",
@@ -1283,13 +1660,36 @@
         "CRP/ESR, hemogramë dhe teste tjera vetëm sipas dyshimit",
         "Aspirim artikular urgjent kur dyshohet artrit septik"
       ],
-      "management": "Dallo mekanike nga inflamatore; trajto shkakun, ruaj lëvizshmërinë dhe përdor analgjezi sipas profilit; mos porosit panele autoimune pa indikacion klinik.",
+      "management": "Artralgji pa sinovit: paracetamol ose NSAID short-term vetëm për simptomë mekanike dhe nëse i sigurt. Në nyje të nxehtë/ënjtur mos 'mbulo' me steroid/NSAID pa përjashtuar artrit septik/gutë. Sinovit persistent → reumatolog.",
       "summary": "Artralgjia është simptomë; sinoviti objektiv, modeli inflamator dhe një nyje e nxehtë ndryshojnë urgjencën dhe referimin.",
       "red_flags": [
         "Nyje e nxehtë/ënjtur + ethe: artrit septik i dyshuar",
         "Deficit neurovaskular pas traume",
         "Pamundësi akute për të mbajtur peshë pas traume"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Topical/oral NSAID short-term për dhimbje mekanike kur i sigurt"
+        ],
+        "alternatives": [
+          "Paracetamol si adjunct kur NSAID nuk përshtatet"
+        ],
+        "avoid": [
+          "Mos jep steroid empiric në monoartrit akut pa përjashtuar infeksion",
+          "Mos porosit panele autoimmune pa indikacion klinik"
+        ],
+        "note": "Trajtimi përfundimtar varet nga etiologjia.",
+        "evidence": "NICE RA/gout/OA principles"
+      },
+      "practical": {
+        "steps": [
+          "1. A ka sinovit objektiv?",
+          "2. Monoartrit akut + ethe → aspirim/urgjencë.",
+          "3. Mekanike → analgjezi + aktivitet.",
+          "4. Inflammatory pattern → CRP/ESR ± RF/anti-CCP dhe rheumatology."
+        ],
+        "reassess": "1–2 javë për artralgji të re; më herët në swelling/fever."
+      }
     },
     {
       "code": "M19",
@@ -1355,13 +1755,34 @@
         "CK, kreatininë, elektrolite, TSH sipas dyshimit",
         "Urinalizë kur dyshohet rabdomiolizë"
       ],
-      "management": "Korrigjo shkakun e identifikueshëm, redukto aktivitetin provokues përkohësisht dhe përdor analgjezi sipas profilit; dobësia objektive ose CK e lartë kërkojnë hetim të mëtejshëm.",
+      "management": "Mialgji: trajto shkakun; për strain/viral myalgia mund paracetamol ose NSAID short-term kur i sigurt. Mos jep steroid empiric. Në statin-associated symptoms kontrollo CK vetëm kur simptomat janë të rëndësishme; urinё e errët/dobësi e rëndë → rhabdomyolysis pathway.",
       "summary": "Mialgjia pa dobësi objektive shpesh është beninje; rabdomioliza dhe miopatia me dobësi kërkojnë vlerësim të shpejtë.",
       "red_flags": [
         "Urinë e errët + dhimbje/dobësi e rëndë",
         "Dobësi progresive",
         "Ethe/rash me gjendje sistemike të rënduar"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Paracetamol ose NSAID short-term për dhimbje beninje/mekanike kur i sigurt"
+        ],
+        "alternatives": [],
+        "avoid": [
+          "Mos jep steroid pa diagnozë",
+          "Mos vazhdo medikament shkaktar të dyshuar pa review"
+        ],
+        "note": "Dobësia objektive është më shqetësuese se dhimbja vetëm.",
+        "evidence": "Myalgia/rhabdomyolysis standard practice"
+      },
+      "practical": {
+        "steps": [
+          "1. Dallo pain vs true weakness.",
+          "2. Pyet për statin, exercise, infection, trauma.",
+          "3. CK/renal/K+ kur mialgjia është e rëndë ose ka weakness/dark urine.",
+          "4. Simptomatikë vetëm në rast benign të qartë."
+        ],
+        "reassess": "48–72 h në acute severe myalgia; 1–2 javë në mild persistent."
+      }
     },
     {
       "code": "G43",
@@ -1430,13 +1851,36 @@
         "Edema, simetria, lëkura dhe pulse periferike",
         "Kreatininë/eGFR, elektrolite, urinë/albuminuri; teste tjera sipas shkakut"
       ],
-      "management": "Trajto shkakun; elevimi/kompresioni përdoren vetëm kur janë të përshtatshme, ndërsa diuretikët indikohen kur ka mbingarkesë volumore dhe jo thjesht për çdo edemë periferike.",
+      "management": "Edema: mos jep furosemide automatikisht. Në volume overload nga HF/renal disease mund loop diuretic (p.sh. furosemide) sipas diagnozës, TA, renal function dhe elektroliteve. Në venous edema përdor compression/elevation kur arterial perfusion është adekuat. Edemë nga amlodipina shpesh menaxhohet duke rishikuar CCB, jo duke shtuar diuretik.",
       "summary": "Edema është shenjë, jo diagnozë etiologjike; dallimi unilateral vs bilateral dhe shenjat e kongjestionit drejtojnë hetimet.",
       "red_flags": [
         "Edemë unilaterale e dhimbshme + dispne/dhimbje gjoksi",
         "Edemë pulmonare / hipoksemi",
         "Anasarkë me oliguri ose insuficiencë renale të rëndë"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Asnjë diuretik rutinë pa vërtetuar volume overload"
+        ],
+        "alternatives": [
+          "Loop diuretic p.sh. furosemide vetëm në kongjestion/volume overload me monitorim renal/K+/Na+"
+        ],
+        "avoid": [
+          "Mos përdor furosemide për çdo edemë periferike",
+          "Mos kompreso pa vlerësuar perfuzionin arterial kur ka risk PAD"
+        ],
+        "note": "Unilateral acute edema → përjashto DVT; bilateral edema kërkon cardiac/renal/hepatic/venous/medication review.",
+        "evidence": "HF/venous oedema management principles"
+      },
+      "practical": {
+        "steps": [
+          "1. Unilateral apo bilateral? akut apo kronik?",
+          "2. JVP/lungs/weight/renal/liver/urine.",
+          "3. Volume overload → diuretic pathway; venous → compression/elevation.",
+          "4. Review amlodipine/NSAID/steroid dhe barna tjera."
+        ],
+        "reassess": "Në diuretik, kontrollo peshën, TA, kreatininën dhe elektrolitet sipas riskut."
+      }
     },
     {
       "code": "L30",
@@ -2625,13 +3069,37 @@
         "Membrana timpanike kur mund të shihet",
         "Mastoidi dhe indet përreth"
       ],
-      "management": "Pastrimi atraumatik kur është i mundur dhe terapi topike sipas gjetjeve; mbaje veshin të thatë. Antibiotik sistemik vetëm kur ka përhapje jashtë kanalit ose indikacion tjetër.",
+      "management": "Otit externa adult: analgjezi + trajtim topik. Mild: acetic acid 2% 1 spray TID 7 ditë. Moderate/inflamed: antibiotic + steroid drops/spray 7 ditë; p.sh. neomycin/steroid vetëm nëse membrana është intakte. Në perforim të dyshuar përdor preparat jo-ototoksik si ciprofloxacin sipas formulary. Oral antibiotic vetëm kur infeksioni shtrihet jashtë kanalit.",
       "summary": "Otit externa zakonisht trajtohet lokalisht; dhimbja disproporcionale te diabetiku kërkon kujdes për otit ekstern malinj.",
       "red_flags": [
         "Diabet/imunosupresion + dhimbje e fortë e vazhdueshme",
         "Përhapje e eritemës/ënjtjes jashtë kanalit",
         "Paralizë faciale ose shenja neurologjike"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Acetic acid 2%: 1 spray TID × 7 ditë në mild OE",
+          "Topical antibiotic + steroid × rreth 7 ditë në moderate OE"
+        ],
+        "alternatives": [
+          "Ciprofloxacin-containing drops kur perforimi dyshohet dhe sipas formulary/local ENT guidance"
+        ],
+        "avoid": [
+          "Mos përdor aminoglycoside ear drops në perforim të dyshuar pa specialist/formulary",
+          "Mos jep oral antibiotic rutinë pa cellulitis/përhapje"
+        ],
+        "note": "Canal shumë i ngushtë mund të kërkojë wick/microsuction.",
+        "evidence": "NHS Highland OE antimicrobial guidance; NHS ENT guidance"
+      },
+      "practical": {
+        "steps": [
+          "1. Otoskopi + tragus tenderness; kontrollo timpanin.",
+          "2. Analgjezi + topical therapy.",
+          "3. Mbaje veshin të thatë; mos fut objekte/cotton buds.",
+          "4. Diabetes/immunosuppression + dhimbje e fortë → përjashto necrotising OE."
+        ],
+        "reassess": "48–72 h nëse dhimbja/sekrecioni nuk përmirësohet."
+      }
     },
     {
       "code": "H81.1",
@@ -2654,13 +3122,35 @@
         "Dix-Hallpike kur është i përshtatshëm",
         "Ecja/balanca"
       ],
-      "management": "Kur tabloja është tipike, manovra e repozicionimit kanalit është trajtimi kryesor. Vestibulosupresantët nuk rekomandohen si zgjidhje afatgjatë rutinë.",
+      "management": "BPPV: Hallpike për diagnozë dhe canalith repositioning (Epley) si trajtim. Barnat vestibulosupresive nuk janë first-line dhe nuk duhen përdorur afatgjatë; antiemetik vetëm shumë shkurt në nauze të rëndë.",
       "summary": "BPPV tipik është vertigo e shkurtër pozicionale pa deficit neurologjik; shenjat qendrore kërkojnë vlerësim neurologjik.",
       "red_flags": [
         "Deficit neurologjik fokal",
         "Ataksi e rëndë / pamundësi ecjeje",
         "Dhimbje koke e re e fortë ose nistagmus atipik"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Asnjë bar rutinë — Epley manoeuvre është first-line"
+        ],
+        "alternatives": [
+          "Antiemetik shumë afatshkurtër vetëm në nauze të rëndë"
+        ],
+        "avoid": [
+          "Mos përdor betahistine/meclizine/prochlorperazine si trajtim kronik të BPPV"
+        ],
+        "note": "Epley vetëm kur personi i trajnuar dhe pa unstable cervical spine.",
+        "evidence": "NICE NG127"
+      },
+      "practical": {
+        "steps": [
+          "1. Dix‑Hallpike në vertigo pozicionale tipike.",
+          "2. Pozitiv → Epley në të njëjtën vizitë kur mundet.",
+          "3. Jep udhëzim për rikthim nëse simptoma persistojnë.",
+          "4. Ataksi/deficit/nystagmus qendror → stroke pathway."
+        ],
+        "reassess": "Rivlerëso pas manoeuvre ose brenda 1–2 javësh në persistencë."
+      }
     },
     {
       "code": "K30",
@@ -2756,13 +3246,37 @@
         "Anoskopi/proktoskopi sipas mundësisë",
         "Hemogramë kur ka gjakderdhje të rëndësishme"
       ],
-      "management": "Rregullo konstipacionin me fibra/lëngje dhe shmang sforcimin; trajtimi simptomatik dhe procedurat varen nga grada dhe simptomat. Mos ia atribuo automatikisht gjakderdhjen hemorroideve pa vlerësuar burime tjera.",
+      "management": "Hemorroidet pa red flags: zbut jashtëqitjen, rrit fibra/lëngje dhe shmang sforcimin. Laksativ osmotic si macrogol/PEG kur ka konstipacion; paracetamol për dhimbje. Topical haemorrhoidal preparation/anesthetic vetëm afatshkurtër për simptomë. Trombosed external haemorrhoid shumë i dhimbshëm brenda rreth 72 orësh, prolaps i inkarceruar ose gjakderdhje e rëndë → kirurg.",
       "summary": "Hemorroidet janë të zakonshme, por gjakderdhja rektale kërkon vlerësim sipas moshës dhe riskut.",
       "red_flags": [
         "Anemi ose gjakderdhje e konsiderueshme",
         "Humbje peshe / ndryshim i ri i jashtëqitjes",
         "Masë rektale ose dhimbje e fortë me ethe"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Macrogol/PEG kur ka konstipacion",
+          "Paracetamol për dhimbje"
+        ],
+        "alternatives": [
+          "Topical haemorrhoidal/anesthetic preparation për lehtësim afatshkurtër"
+        ],
+        "avoid": [
+          "Mos përdor topical steroid/anesthetic për periudha të gjata",
+          "Mos ia atribuo çdo gjakderdhje rektale hemorroideve pa vlerësim"
+        ],
+        "note": "Gjakderdhja, anemia, ndryshimi i habitit dhe humbja e peshës kërkojnë hetim tjetër.",
+        "evidence": "NICE haemorrhoid care pathway / MIB201 current care"
+      },
+      "practical": {
+        "steps": [
+          "1. Konfirmo burimin anorektal dhe kërko red flags.",
+          "2. Trajto konstipacionin dhe sforcimin.",
+          "3. Symptom relief short-term; mos e bëj kremën terapi definitive.",
+          "4. Persistent grade II–IV symptoms → procedural/surgical assessment."
+        ],
+        "reassess": "2–4 javë pas conservative therapy; më herët në gjakderdhje të konsiderueshme."
+      }
     },
     {
       "code": "N30",
@@ -2858,13 +3372,37 @@
         "Urinalizë",
         "Kreatininë/PSA sipas vlerësimit individual"
       ],
-      "management": "Këshilla për lëngjet/kafeinën dhe rishikim të barnave; terapia farmakologjike individualizohet sipas simptomave dhe madhësisë së prostatës. Retencioni akut kërkon menaxhim urgjent.",
+      "management": "LUTS/BPH bothersome: pas masave konservative, alpha‑blocker është zgjedhje standarde, p.sh. tamsulosin 400 mikrogram 1×/ditë. Në prostatë >30 g ose PSA >1.4 ng/mL dhe risk progresioni: finasteride 5 mg/ditë (ose tjetër 5‑ARI); moderate–severe me prostatë të madhe mund kombinim alpha‑blocker + 5‑ARI. Acute retention → catheter + alpha‑blocker para trial without catheter.",
       "summary": "LUTS nuk nënkupton automatikisht BPH; përjashto infeksionin, malignitetin dhe shkaqet neurologjike.",
       "red_flags": [
         "Retencion akut",
         "Hematuri e pashpjeguar",
         "Dëmtim renal ose DRE shqetësues"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Tamsulosin 400 mikrogram PO 1×/ditë për LUTS moderate–severe"
+        ],
+        "alternatives": [
+          "Finasteride 5 mg PO 1×/ditë kur prostata >30 g ose PSA >1.4 ng/mL/risk progresioni",
+          "Kombinim alpha‑blocker + 5‑ARI në LUTS bothersome me prostatë të madhe"
+        ],
+        "avoid": [
+          "Kujdes alpha‑blocker në hipotension/ortostatikë",
+          "Mos përdor PDE5 inhibitor vetëm për LUTS sipas NICE CG97"
+        ],
+        "note": "Review alpha‑blocker pas 4–6 javësh; 5‑ARI pas 3–6 muajsh.",
+        "evidence": "NICE CG97"
+      },
+      "practical": {
+        "steps": [
+          "1. IPSS/symptom burden + DRE + urinalysis; PSA discussion kur relevant.",
+          "2. Mild → lifestyle/watchful waiting.",
+          "3. Moderate–severe → alpha‑blocker; large prostate/risk progression → 5‑ARI ± combination.",
+          "4. Retention, haematuria, recurrent UTI, renal impairment → urology."
+        ],
+        "reassess": "4–6 javë pas alpha‑blocker; 3–6 muaj pas 5‑ARI."
+      }
     },
     {
       "code": "N76",
@@ -2887,13 +3425,38 @@
         "Testim për STI sipas riskut",
         "Test shtatzënie kur relevant"
       ],
-      "management": "Trajtimi varet nga etiologjia (Candida, vaginozë bakteriale, Trichomonas, irritim, etj.); shmang trajtimin empirik të përsëritur pa konfirmim te rastet recidivante.",
+      "management": "Vaginit/vulvovaginit: mos trajto vetëm nga ngjyra e sekrecionit; përcakto BV vs Candida vs Trichomonas/STI. BV simptomatik: metronidazole 500 mg PO 2×/ditë 7 ditë; alternativa metronidazole gel 0.75% 5 g intravaginal 1×/ditë 5 ditë ose clindamycin cream 2% 5 g HS 7 ditë. Trichomonas te femra: metronidazole 500 mg 2×/ditë 7 ditë + trajtim i partnerit. Candida trajtohet sipas pathway B37.",
       "summary": "Simptomat mbivendosen mes etiologjive; historia, pH/testet dhe ekzaminimi ndihmojnë në trajtim të saktë.",
       "red_flags": [
         "Dhimbje pelvike + ethe",
         "Gjakderdhje jo normale",
         "Shtatzëni me simptoma të rënda"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "BV: metronidazole 500 mg PO 2×/ditë × 7 ditë",
+          "Trichomonas te femra: metronidazole 500 mg PO 2×/ditë × 7 ditë"
+        ],
+        "alternatives": [
+          "BV: metronidazole gel 0.75%, 5 g intravaginal 1×/ditë × 5 ditë",
+          "BV: clindamycin cream 2%, 5 g intravaginal HS × 7 ditë"
+        ],
+        "avoid": [
+          "Mos trajto recurrent vaginitis pa testim/diagnozë",
+          "Mos harro partner management dhe STI testing te Trichomonas"
+        ],
+        "note": "Shtatzënia, alergjia dhe recurrent infection kërkojnë pathway specifik; Candida ka regjim tjetër.",
+        "evidence": "CDC STI Treatment Guidelines — BV/Trichomoniasis"
+      },
+      "practical": {
+        "steps": [
+          "1. Pyet për erë/prurit/dhimbje, STI risk, shtatzëni dhe pelvic pain.",
+          "2. pH/mikroskopi/NAAT sipas mundësisë; mos e diagnostiko vetëm vizualisht.",
+          "3. Trajto etiologjinë specifike.",
+          "4. Pelvic pain + fever/cervical motion tenderness → PID pathway, jo simple vaginitis."
+        ],
+        "reassess": "BV: follow-up jo rutinë nëse zgjidhet; rikthim në recidiv. Trichomonas: retesting sipas STI guidance."
+      }
     },
     {
       "code": "L50",
@@ -3119,13 +3682,38 @@
         "Shenja të komplikimeve metabolike",
         "HbA1c/glukozë, lipide, liver profile sipas riskut"
       ],
-      "management": "Përdor qasje jo-stigmatizuese dhe objektiva të përbashkëta; dieta, aktiviteti dhe ndërhyrjet e sjelljes janë bazë. Farmakoterapia dhe kirurgjia merren në konsideratë sipas BMI, komplikimeve, preferencave dhe kritereve lokale.",
+      "management": "Obezitet: lifestyle + behavioural support janë baza; farmakoterapia shtohet kur kriteret BMI/komorbiditetet dhe licenca lokale e lejojnë. Opsione moderne për adultë përfshijnë tirzepatide, semaglutide, liraglutide dhe orlistat. Tirzepatide zakonisht nis 2.5 mg SC 1×/javë për 4 javë, pastaj 5 mg/javë dhe rritet me 2.5 mg jo më shpesh se çdo 4 javë sipas tolerancës; semaglutide për obezitet titrohet gradualisht drejt 2.4 mg/javë. Monitoro efektet GI, shenjat biliare/pankreatike dhe humbjen e peshës.",
       "summary": "Vlerësimi i obezitetit përfshin komplikimet dhe shpërndarjen e yndyrës, jo vetëm BMI.",
       "red_flags": [
         "Simptoma të OSA të rëndë / hipoventilim",
         "Hiperglikemi simptomatike",
         "Çrregullim i të ngrënit ose krizë psikike"
-      ]
+      ],
+      "medications": {
+        "first_line": [
+          "Tirzepatide SC weekly kur kriteret/licenca lokale e lejojnë",
+          "Semaglutide 2.4 mg SC weekly pas titrimit gradual kur kriteret e lejojnë"
+        ],
+        "alternatives": [
+          "Liraglutide 3 mg SC daily pas titrimit",
+          "Orlistat 120 mg PO me vakte që përmbajnë yndyrë"
+        ],
+        "avoid": [
+          "Mos përdor GLP‑1/GIP në shtatzëni",
+          "Mos vazhdo farmakoterapi pa objektiva dhe review të efektit/tolerancës"
+        ],
+        "note": "Kriteret e financimit/indikacionit ndryshojnë sipas vendit. Kontrollo SmPC për titrim, kundërindikacione dhe ndërveprime.",
+        "evidence": "NICE NG246 + TA1026/TA875"
+      },
+      "practical": {
+        "steps": [
+          "1. BMI + waist + komorbiditete + barna që rrisin peshën.",
+          "2. Vendos objektiv peshë dhe plan ushqim/aktivitet/gjumë.",
+          "3. Në kriter: zgjidh farmakoterapi sipas komorbiditeteve, preferencës dhe disponueshmërisë.",
+          "4. Monitoro peshën, efektet GI, glikeminë/TA dhe ndrysho planin nëse nuk ka përfitim të mjaftueshëm."
+        ],
+        "reassess": "Çdo 4–12 javë gjatë titrimit; më pas periodikisht sipas barit dhe përgjigjes."
+      }
     },
     {
       "code": "R73",
