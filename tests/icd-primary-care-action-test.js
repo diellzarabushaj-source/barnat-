@@ -58,4 +58,12 @@ payload = Handler._test.guidancePayload(dataset, { code:'Z99.9' }, {
 assert.equal(payload.available, false);
 assert.equal(payload.guidance, null);
 
+const indexPayload = Handler._test.guidanceListPayload(dataset, {
+  sourceRevision:'test', stale:false, loadedAt:Date.now(), csvBytes:1, fetchMs:1, buildMs:1,
+});
+assert.equal(indexPayload.kind, 'primary-care-guidance-index');
+assert.equal(indexPayload.total, 25);
+assert.equal(indexPayload.items.length, 25);
+assert.ok(indexPayload.items.some(item => item.code === 'I10' && /Kardiolog/.test(item.specialist)));
+assert.ok(indexPayload.items.every(item => item.code && item.title_sq && item.specialist));
 console.log('Primary-care action dataset, exact guidance and parent fallback passed.');
