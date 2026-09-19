@@ -8,10 +8,10 @@
   <title>DRx | ICD-10</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/icd-v2.css?v=exact-link-v5">
+  <link rel="stylesheet" href="/icd-v2.css?v=search-command-v1">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1">
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1" defer></script>
-<script src="/icd-v2.js?v=workspace-v7-polish1" defer></script>
+<script src="/icd-v2.js?v=search-command-v1" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -96,12 +96,41 @@
           <div>
             <p class="eyebrow">International Classification of Diseases</p>
             <h1 id="pageTitle">ICD‑10</h1>
-            <p class="page-subtitle">Shfleto kapitujt, blloqet, kategoritë dhe nënkategoritë. Kërkimi njeh kodin me ose pa pikë, shqipen dhe anglishten.</p>
+            <p class="page-subtitle">Shfleto kapitujt, blloqet, kategoritë dhe nënkategoritë. Kërko me kod ICD, shqip, English ose Latin — edhe me gabime shkrimi.</p>
           </div>
           <div class="heading-actions">
             <a class="button button-secondary" href="/index.html">Hap regjistrin</a>
           </div>
         </div>
+
+        <section class="icd-search-stage" aria-labelledby="icdSearchTitle">
+          <div class="icd-search-stage-copy">
+            <p class="eyebrow">Kërkimi universal ICD‑10</p>
+            <h2 id="icdSearchTitle">Gjej kodin ose diagnozën menjëherë</h2>
+            <p>Shkruaj si të vjen: <strong>I10</strong>, <strong>hipertension</strong>, <strong>hypertension</strong>, <strong>hypertensio</strong> — search-i toleron edhe typo.</p>
+          </div>
+          <div class="icd-search-command">
+            <div class="search-box search-box-primary" id="icdSearchBox" role="combobox" aria-haspopup="listbox" aria-owns="icdSuggestions" aria-expanded="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+              <input id="icdSearch" type="search" autocomplete="off" autocapitalize="off" spellcheck="false"
+                placeholder="Kërko ICD, diagnozë, Latin, English…"
+                aria-label="Kërko ICD-10"
+                aria-autocomplete="list"
+                aria-controls="icdSuggestions">
+              <kbd>Ctrl K</kbd>
+            </div>
+            <div class="icd-suggestions" id="icdSuggestions" role="listbox" aria-label="Sugjerimet ICD-10" hidden></div>
+          </div>
+          <div class="icd-search-foot">
+            <div class="icd-search-examples" aria-label="Shembuj kërkimi">
+              <button type="button" data-search-example="I10">I10</button>
+              <button type="button" data-search-example="hipertension">hipertension</button>
+              <button type="button" data-search-example="hypertension">hypertension</button>
+              <button type="button" data-search-example="hypertensio">hypertensio</button>
+            </div>
+            <p class="icd-status" id="icdStatusText" role="status" aria-live="polite">Duke ngarkuar ICD-10…</p>
+          </div>
+        </section>
 
         <div class="metrics-row" aria-label="Përmbledhje ICD-10">
           <article class="metric-card"><span>Nyje gjithsej</span><strong id="metricNodes">—</strong><small>Hierarkia e plotë</small></article>
@@ -116,15 +145,6 @@
             <div class="icd-path-items" id="icdPathItems"></div>
             <button class="icd-path-reset" id="icdPathReset" type="button">Pastro</button>
           </nav>
-
-          <div class="icd-toolbar">
-            <div class="search-box">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
-              <input id="icdSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko kodin ose diagnozën (p.sh. I10, hipertension, A00)…" aria-label="Kërko ICD-10">
-              <kbd>Ctrl K</kbd>
-            </div>
-            <p class="icd-status" id="icdStatusText" role="status" aria-live="polite">Duke ngarkuar ICD-10…</p>
-          </div>
 
           <div class="icd-workspace">
             <aside class="chapter-panel" aria-label="Kapitujt ICD-10">
