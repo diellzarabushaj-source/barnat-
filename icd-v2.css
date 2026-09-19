@@ -1135,3 +1135,279 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
   .clinical-action-card p,.clinical-action-card li{font-size:11px}
   .clinical-medication-note{font-size:10px}
 }
+
+
+/* Extreme responsive pass v22 --------------------------------------------- */
+/* Universal overflow safety */
+html,body{max-width:100%;overflow-x:hidden}
+.icd-shell,.page-wrap,.icd-card,.icd-workspace,.chapter-panel,.node-panel,
+.clinical-quick-hub,.clinical-action-panel,.clinical-action-grid,.clinical-action-card{min-width:0}
+.clinical-action-card,.clinical-medication-block,.clinical-practical-steps li,
+.clinical-referral-purpose,.clinical-referral-note{overflow-wrap:anywhere}
+img,svg,video,canvas{max-width:100%}
+
+/* Desktop remains deliberately spacious and information-dense. */
+@media(min-width:1181px){
+  .page-wrap{max-width:1440px;padding-left:42px;padding-right:42px}
+  .icd-workspace{grid-template-columns:286px minmax(0,1fr)}
+  .chapter-list{max-height:calc(100vh - 230px);min-height:620px}
+  .clinical-quick-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .clinical-action-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .clinical-practical-steps{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+
+/* Laptop */
+@media(min-width:941px) and (max-width:1180px){
+  .page-wrap{padding-left:22px;padding-right:22px}
+  .icd-workspace{grid-template-columns:238px minmax(0,1fr)}
+  .chapter-list{max-height:calc(100vh - 220px)}
+  .clinical-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* Tablet + phone: chapters become a horizontal navigator instead of a wall. */
+@media(max-width:940px){
+  .page-wrap{width:100%;padding-left:14px;padding-right:14px}
+  .icd-card{overflow:visible}
+  .icd-workspace{display:block;min-height:0;overflow:visible}
+  .chapter-panel{
+    position:relative;border-right:0;border-bottom:1px solid #e5e9ef;
+    background:linear-gradient(180deg,#fbfcfe,#fff)
+  }
+  .chapter-panel .panel-heading{align-items:center;padding:11px 12px 7px;border-bottom:0}
+  .chapter-panel .panel-heading h2{font-size:13.5px}
+  .chapter-panel .panel-kicker{display:none}
+  .chapter-panel .panel-count{height:25px;min-width:28px;font-size:9.5px}
+  .chapter-list{
+    max-height:none!important;display:flex!important;grid-template-columns:none!important;gap:7px;
+    margin:0;padding:4px 11px 11px;overflow-x:auto;overflow-y:hidden;
+    scroll-snap-type:x proximity;scroll-padding-inline:11px;overscroll-behavior-inline:contain;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch
+  }
+  .chapter-list::-webkit-scrollbar{display:none}
+  .chapter-row{
+    flex:0 0 min(260px,72vw);scroll-snap-align:start;grid-template-columns:40px minmax(0,1fr);
+    min-height:52px;height:auto!important;margin:0!important;padding:7px 9px;border:1px solid #e5e9ef;
+    border-radius:11px;background:#fff;box-shadow:0 2px 8px rgba(24,45,70,.025)
+  }
+  .chapter-row.is-active{border-color:#cfc8ff;background:#f8f6ff}
+  .chapter-code{height:30px}
+  .chapter-copy strong{-webkit-line-clamp:1;font-size:11.5px}
+  .chapter-copy small{margin-top:2px;font-size:9.5px}
+  .node-panel{min-height:0}
+}
+
+/* Compact tablet: preserve 2-column clinical cards but reduce empty chrome. */
+@media(min-width:681px) and (max-width:940px){
+  .page-heading{margin-bottom:16px}
+  .metrics-row{margin-bottom:16px}
+  .clinical-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .clinical-action-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .clinical-practical-steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .clinical-action-card.is-management,.clinical-action-card.is-summary,
+  .clinical-action-card.is-referral,.clinical-action-card.is-practical,
+  .clinical-action-card.is-medications{grid-column:1/-1}
+}
+
+/* Phone */
+@media(max-width:680px){
+  body{font-size:16px}
+  .topbar{height:50px;padding-inline:10px}
+  .page-wrap{padding:10px 8px 24px}
+  .page-heading{margin-bottom:11px}
+  .page-heading h1{font-size:23px;line-height:1.08;letter-spacing:-.45px}
+  .page-subtitle{
+    display:-webkit-box;margin-top:5px;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+    font-size:11.5px;line-height:1.45
+  }
+  .heading-actions{margin-top:9px}
+  .heading-actions .button{min-height:44px;border-radius:10px}
+
+  /* Metrics: one horizontal line, not a 2x2 block. */
+  .metrics-row{
+    display:flex;gap:7px;margin:0 -1px 11px;padding:1px 1px 5px;border:0;border-radius:0;background:transparent;
+    box-shadow:none;overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-inline:contain;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch
+  }
+  .metrics-row::-webkit-scrollbar{display:none}
+  .metric-card,.metric-card:nth-child(2),.metric-card:nth-child(-n+2){
+    flex:0 0 138px;min-height:75px;padding:10px 11px;border:1px solid #e2e7ed!important;border-radius:11px;
+    background:#fff;scroll-snap-align:start;box-shadow:0 3px 10px rgba(22,43,67,.025)
+  }
+  .metric-card span{font-size:9.5px}
+  .metric-card strong{margin:6px 0 2px;font-size:20px}
+  .metric-card small{font-size:9px}
+
+  .icd-card{border-radius:13px}
+  .icd-path{min-height:40px;padding:5px 7px}
+  .icd-path-items{gap:2px}
+  .icd-path-node{min-height:34px;padding:5px 7px}
+  .icd-path-node strong{font-size:10px}
+  .icd-path-node.is-current span{max-width:130px;font-size:10px}
+  .icd-path-reset{min-height:34px;padding:0 9px}
+
+  .chapter-panel .panel-heading{padding:9px 9px 5px}
+  .chapter-list{padding:3px 8px 9px;gap:6px;scroll-padding-inline:8px}
+  .chapter-row{flex-basis:min(230px,78vw);min-height:48px;padding:6px 8px}
+  .chapter-code{height:29px;font-size:10px}
+  .chapter-copy strong{font-size:11px}
+  .chapter-copy small{font-size:9px}
+
+  /* Search is touch-first and never triggers iOS input zoom. */
+  .icd-search-stage{margin-bottom:9px;padding:12px 9px 9px;border-radius:12px}
+  .icd-search-stage-copy{margin-bottom:9px}
+  .icd-search-stage-copy .eyebrow{display:none}
+  .icd-search-stage-copy h2{font-size:18px;line-height:1.16}
+  .icd-search-stage-copy p{
+    display:-webkit-box;margin-top:5px;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+    font-size:10.5px;line-height:1.4
+  }
+  .search-box-primary input{
+    height:52px;padding:0 46px 0 45px;border-radius:12px;font-size:16px;box-shadow:0 5px 18px rgba(24,35,75,.065)
+  }
+  .search-box-primary svg{left:14px;width:18px;height:18px}
+  .icd-search-clear{right:8px;width:36px;height:36px}
+  .icd-suggestions{position:fixed;left:8px;right:8px;top:58px;max-height:calc(100dvh - 70px);border-radius:13px}
+  .icd-suggestion-row{min-height:68px;padding:8px}
+  .icd-search-foot{gap:7px}
+  .icd-quick-scroll{scroll-snap-type:x proximity;overscroll-behavior-inline:contain}
+  .icd-quick-chip{min-height:38px;padding-inline:10px;scroll-snap-align:start}
+
+  /* Clinical diagnosis launcher */
+  .clinical-quick-hub{margin:8px 7px 0;padding:10px;border-radius:13px}
+  .clinical-quick-hub::before{width:2px}
+  .clinical-hub-head{margin-bottom:8px}
+  .clinical-hub-kicker{font-size:8px}
+  .clinical-hub-head h3{font-size:15px}
+  .clinical-hub-head p{
+    display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+    font-size:10px;line-height:1.4
+  }
+  .clinical-hub-count{display:none}
+  .clinical-filter-rail{
+    gap:4px;margin:0 -2px 9px;padding:3px;overflow-x:auto;flex-wrap:nowrap;
+    scroll-snap-type:x proximity;overscroll-behavior-inline:contain;scrollbar-width:none
+  }
+  .clinical-filter-rail::-webkit-scrollbar{display:none}
+  .clinical-filter-chip{
+    flex:none;min-height:42px;padding:0 12px;border-radius:9px;font-size:10px;scroll-snap-align:start
+  }
+  .clinical-quick-grid{grid-template-columns:1fr;gap:6px}
+  .clinical-quick-card{
+    min-height:58px;padding:8px 9px;border-radius:11px;grid-template-columns:46px minmax(0,1fr) 18px
+  }
+  .clinical-quick-code{min-width:44px;height:31px;padding-inline:5px;font-size:10px}
+  .clinical-quick-copy strong{font-size:11.4px;-webkit-line-clamp:1}
+  .clinical-quick-copy small{font-size:8.8px;-webkit-line-clamp:1}
+  .clinical-quick-arrow{font-size:18px}
+
+  /* Clinical panel becomes a true mobile reading surface. */
+  .clinical-action-panel{margin:8px 7px 2px;border-radius:13px;overflow:visible}
+  .clinical-action-head{
+    position:relative;display:block;padding:12px 11px 10px;border-radius:13px 13px 0 0
+  }
+  .clinical-action-kicker{font-size:8px}
+  .clinical-action-head h3{font-size:17px;line-height:1.18}
+  .clinical-action-head p{
+    display:-webkit-box;max-width:none;margin-top:4px;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+    font-size:9.5px;line-height:1.4
+  }
+  .clinical-action-head-meta{
+    display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:6px;max-width:none;margin-top:9px
+  }
+  .clinical-action-code{min-height:42px;justify-self:start;padding-inline:10px}
+  .clinical-action-inherited{grid-column:1/-1;justify-self:start}
+  .clinical-head-button{min-height:42px;padding-inline:9px;font-size:9.5px}
+  .clinical-working-diagnosis{display:block;padding:10px 11px}
+  .clinical-working-label{display:block;margin-bottom:4px;font-size:8px}
+  .clinical-working-diagnosis strong{font-size:12.2px;line-height:1.4}
+
+  /* Sticky section nav follows the clinician while reading. */
+  .clinical-action-commandbar{
+    position:sticky;top:50px;z-index:20;display:block;padding:6px 7px;border-top:1px solid #eef0f4;
+    background:rgba(255,255,255,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    box-shadow:0 4px 12px rgba(26,43,64,.045)
+  }
+  .clinical-action-nav{gap:4px;padding-bottom:1px}
+  .clinical-action-nav a{
+    min-height:42px;padding:0 11px;border:1px solid #e6e9ef;border-radius:9px;background:#fff;font-size:9.5px;
+    scroll-snap-align:start
+  }
+  .clinical-action-stats{display:none}
+
+  .clinical-red-flags{margin:7px 7px 0;padding:10px;border-radius:11px}
+  .clinical-red-flags .clinical-card-icon{display:none}
+  .clinical-red-flags ul{grid-template-columns:1fr;gap:5px}
+  .clinical-red-flags li{font-size:10.4px}
+
+  .clinical-action-grid{grid-template-columns:1fr;gap:7px;padding:7px}
+  .clinical-action-card{
+    grid-column:1!important;padding:11px;border-radius:11px;box-shadow:0 2px 8px rgba(21,39,60,.025);
+    scroll-margin-top:104px
+  }
+  .clinical-card-head{gap:8px;margin-bottom:8px}
+  .clinical-card-icon{width:30px;height:30px;border-radius:8px}
+  .clinical-card-label{font-size:8px}
+  .clinical-card-head strong{font-size:11.8px}
+  .clinical-action-card p,.clinical-action-card li{font-size:10.8px;line-height:1.5}
+
+  .clinical-action-card.is-practical,.clinical-action-card.is-medications{padding:11px}
+  .clinical-practical-steps{grid-template-columns:1fr;gap:6px;margin-top:8px}
+  .clinical-practical-steps li{min-height:0;padding:9px 9px 9px 36px;border-radius:10px;font-size:10.5px}
+  .clinical-practical-steps li::before{left:9px;top:9px}
+  .clinical-reassess{margin-top:7px;padding:9px;border-radius:9px}
+  .clinical-reassess p{font-size:9.7px}
+
+  .clinical-medication-block{margin-top:7px;padding:9px 10px;border-radius:9px}
+  .clinical-medication-block>span{margin-bottom:5px;font-size:8px}
+  .clinical-medication-block li{font-size:10.5px;line-height:1.5}
+  .clinical-medication-note{margin-top:7px;padding:9px;font-size:9.7px}
+  .clinical-medication-evidence{max-width:100%;white-space:normal;line-height:1.35}
+  .clinical-copy-button{width:100%;min-height:44px;margin-top:8px;border-radius:9px;font-size:10px}
+  .clinical-referral-purpose,.clinical-referral-note{grid-template-columns:1fr;gap:3px;padding:8px 0}
+
+  .node-section-head{padding:12px 10px 8px}
+  .node-list{padding:2px 8px 16px;gap:6px}
+  .node-row{
+    grid-template-columns:58px minmax(0,1fr);gap:8px;min-height:54px;padding:8px;border-radius:10px
+  }
+  .node-code{min-width:54px;padding-inline:5px;font-size:10px}
+  .node-copy strong{font-size:11.8px}
+  .node-copy small{font-size:9.5px}
+  .node-meta{grid-column:1/-1;gap:5px}
+  .node-level{font-size:9px}
+}
+
+/* Very small phone */
+@media(max-width:390px){
+  .page-wrap{padding-inline:6px}
+  .page-heading h1{font-size:21px}
+  .metric-card{flex-basis:124px}
+  .chapter-row{flex-basis:82vw}
+  .clinical-quick-hub,.clinical-action-panel{margin-left:5px;margin-right:5px}
+  .clinical-action-head-meta{grid-template-columns:auto 1fr}
+  .clinical-action-inherited{grid-column:1/-1}
+  .clinical-action-code{grid-row:1}
+  .clinical-head-button{grid-row:2;width:100%}
+  .clinical-action-nav a{padding-inline:10px}
+}
+
+/* Landscape phone: use horizontal real estate without reintroducing desktop density. */
+@media(max-height:500px) and (orientation:landscape) and (max-width:940px){
+  .page-heading,.metrics-row{display:none}
+  .page-wrap{padding-top:6px}
+  .chapter-panel .panel-heading{display:none}
+  .chapter-list{padding-top:8px}
+  .clinical-action-commandbar{top:50px}
+  .icd-suggestions{top:54px;max-height:calc(100dvh - 60px)}
+}
+
+/* Touch devices get touch affordances without changing mouse desktop. */
+@media(hover:none) and (pointer:coarse){
+  .button,.icon-button,.chapter-row,.icd-quick-chip,.clinical-filter-chip,.clinical-quick-card,
+  .clinical-head-button,.clinical-copy-button,.clinical-action-nav a,.node-row,.icd-path-node,.icd-path-reset{
+    -webkit-tap-highlight-color:transparent
+  }
+  .chapter-row:hover,.clinical-quick-card:hover,.clinical-head-button:hover,.clinical-copy-button:hover{
+    transform:none
+  }
+}
