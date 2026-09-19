@@ -33,7 +33,7 @@
   }
 
   function doseTextForDrug(card, drug, combo=false) {
-    const raw = clean(card.querySelector('.abx-dose-row[data-role="single"] .abx-dose-row-value')?.textContent || '');
+    const raw = clean(card.dataset.exactDoseText || card.querySelector('.abx-dose-row[data-role="single"] .abx-dose-row-value')?.textContent || '');
     if (!combo) return raw;
     const match = new RegExp(`${escapeRegex(drug)}:\\s*([^+]+)`, 'i').exec(raw);
     return match ? clean(match[1].replace(/·\s*\d+\s+herë\/ditë.*$/i, '')) : raw;
@@ -110,6 +110,7 @@
   }
 
   function isWeightBased(card) {
+    if (card.dataset.requiresRealWeight === 'true') return true;
     return /mg\/kg/i.test(clean(card.querySelector('.abx-dose-formula')?.textContent || ''));
   }
 

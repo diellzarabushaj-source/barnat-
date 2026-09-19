@@ -10,7 +10,7 @@
   const fmt = value => {
     const n = Number(value);
     if (!Number.isFinite(n)) return '—';
-    const rounded = Math.round(n * 10) / 10;
+    const rounded = Math.round(n * 100) / 100;
     return String(rounded).replace('.', ',');
   };
 
@@ -247,7 +247,7 @@
   }
 
   function doseTextForDrug(card, drug, comboHeading) {
-    const raw = clean(card.querySelector('.abx-dose-row[data-role="single"] .abx-dose-row-value')?.textContent || '');
+    const raw = clean(card.dataset.exactDoseText || card.querySelector('.abx-dose-row[data-role="single"] .abx-dose-row-value')?.textContent || '');
     if (!comboHeading) return raw;
     const escaped = drug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const match = new RegExp(`${escaped}:\\s*([^+]+)`, 'i').exec(raw);
