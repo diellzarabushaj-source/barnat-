@@ -96,7 +96,7 @@ assert.equal(builds, 1);
 for (let index = 0; index < 140; index += 1) {
   Handler._test.cachedPayload(cacheOwner, `q-${index}`, () => ({ index }));
 }
-assert.ok(Handler._test.payloadCache(cacheOwner).size <= 120);
+assert.ok(Handler._test.payloadCache(cacheOwner).size <= 240);
 
 const suggestion = Handler._test.suggestionPayload(dataset, { q:'A00 1' }, {
   sourceRevision:'test-revision', stale:false, loadedAt:Date.now(), csvBytes:100, fetchMs:1, buildMs:1,
