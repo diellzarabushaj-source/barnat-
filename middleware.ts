@@ -68,6 +68,7 @@ const PUBLIC_PATHS = new Set([
   '/blog-enhance.js',
   '/blog-final.css',
   '/blog-final.js',
+  '/contact.js',
   ...PUBLIC_INFO_PATHS,
   '/theme-preload.js',
   '/tailadmin-medindex.css',

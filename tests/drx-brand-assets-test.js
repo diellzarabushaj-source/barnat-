@@ -50,7 +50,8 @@ assert.match(shell, /\/brand\/drx-horizontal-on-dark\.svg/);
 assert.match(shell, /\/brand\/drx-mark-on-light\.svg/);
 
 const runtime = read('medindex-brand-runtime.js');
-assert.match(runtime, /const VERSION = 'drx-brand-v7'/);
+assert.match(runtime, /const VERSION = 'drx-brand-v8-profileguard1'/,
+  'build:runtime must materialize the profile-photo URL guard brand runtime');
 assert.match(runtime, /function sidebarPicture/);
 assert.match(runtime, /kind === 'full' \? ASSETS\.horizontalOnDark : ASSETS\.markOnDark/);
 assert.match(runtime, /sidebar\.innerHTML = `\$\{sidebarPicture\('full','medindex-brand-full'\)\}\$\{sidebarPicture\('icon','medindex-brand-icon'\)\}`/);
