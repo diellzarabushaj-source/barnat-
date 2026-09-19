@@ -1,8 +1,8 @@
 {
   "schema": "medindex.icd10.primary-care-action.v1",
-  "version": 2,
+  "version": 3,
   "locale": "sq-XK",
-  "scope": "family-medicine-common-45",
+  "scope": "qkmf-family-and-emergency-70",
   "disclaimer": "Ndihmë për dokumentim dhe orientim klinik. Përshtatet sipas pacientit, protokolleve lokale dhe gjykimit klinik.",
   "entries": [
     {
@@ -470,7 +470,7 @@
       "management": "Konfirmo diagnozën objektivisht kur është e mundur; terapi anti-inflamatore me inhalator sipas kontrollit dhe plan veprimi; kontrollo teknikën/adherencën.",
       "summary": "Kontrolli i simptomave dhe risku i exacerbimeve udhëheqin terapinë.",
       "red_flags": [
-        "Silent chest",
+        "Mungesë e zhurmave respiratore (silent chest)",
         "Hipoksemi / vështirësi në të folur",
         "Përkeqësim pavarësisht bronkodilatatorit"
       ]
@@ -1326,6 +1326,756 @@
         "Mendime/plan vetëvrasës ose vetëlëndim",
         "Psikozë, mani ose agjitacion i rëndë",
         "Pamundësi për vetëkujdes ose intoksikim/abstinencë akute"
+      ]
+    },
+    {
+      "code": "I21",
+      "urgent": true,
+      "title_sq": "Infarkt akut i miokardit",
+      "working_diagnosis": "Sindromë koronare akute / infarkt akut i miokardit – I21; STEMI/NSTEMI sipas EKG-së dhe biomarkerëve",
+      "referral": {
+        "specialist": "Urgjenca spitalore / Kardiologji intervente",
+        "goal": "Aktivizim i menjëhershëm i rrugës ACS dhe vlerësim për reperfuzion/revaskularizim urgjent.",
+        "note": "Dhimbje gjoksi prej ___; fillimi ___; shëno EKG-në, TA/pulsin, SpO₂, simptomat shoqëruese, antikoagulantët/antiagregantët dhe kohën e transportit."
+      },
+      "anamnesis": [
+        "Koha e fillimit, karakteri, lokalizimi dhe rrezatimi i dhimbjes",
+        "Dispne, djersitje, nauze/vjellje, sinkopë",
+        "Histori CAD/PCI/CABG, HTA, DM, duhan dhe risk kardiovaskular",
+        "Antikoagulantë/antiagregantë, alergji dhe risk gjakderdhjeje"
+      ],
+      "exams": [
+        "ABCDE, monitorim dhe vitalet",
+        "EKG 12-derivacione sa më shpejt dhe përsëritje sipas tablosë",
+        "SpO₂ dhe ekzaminim kardiopulmonar",
+        "Glukozë; troponinë dhe analiza tjera në ambient spitalor"
+      ],
+      "management": "Aktivizo transportin urgjent dhe protokollin ACS; monitoro ritmin/hemodinamikën. Antiagregimi dhe terapitë tjera jepen sipas protokollit dhe kundërindikacioneve; oksigjen vetëm kur ka hipoksemi. Koha deri te reperfuzioni është kritike.",
+      "summary": "Dyshimi për MI trajtohet si emergjencë kohë-varur; EKG-ja dhe aktivizimi i rrugës së reperfuzionit nuk duhet të vonohen.",
+      "red_flags": [
+        "ST-elevacion / ndryshime dinamike ishemike",
+        "Hipotension, shok ose edemë pulmonare",
+        "Aritmi malinje / arrest kardiak"
+      ]
+    },
+    {
+      "code": "I20",
+      "urgent": true,
+      "title_sq": "Anginë pektoris",
+      "working_diagnosis": "Anginë pektoris – I20; përjashto sindromën koronare akute",
+      "referral": {
+        "specialist": "Urgjenca spitalore / Kardiolog",
+        "goal": "Përjashtim i ACS kur dhimbja është e re, në pushim, në rritje ose me gjetje ishemike.",
+        "note": "Dhimbje retrosternale prej ___; me/pa sforcim; shëno kohëzgjatjen, rrezatimin, EKG-në, vitalet, riskun kardiovaskular dhe përgjigjen ndaj pushimit/terapisë."
+      },
+      "anamnesis": [
+        "Dhimbje me sforcim vs në pushim; frekuenca dhe ndryshimi nga modeli i zakonshëm",
+        "Rrezatim, dispne, djersitje, nauze",
+        "Histori CAD dhe faktorë risku",
+        "Barna kardiake, antikoagulantë dhe aderenca"
+      ],
+      "exams": [
+        "ABCDE dhe vitalet",
+        "EKG 12-derivacione",
+        "Auskultim zemër/mushkëri",
+        "Troponinë nëse dyshohet ACS"
+      ],
+      "management": "Angina e re, progresive ose në pushim menaxhohet si ACS deri në përjashtim. Rastet stabile kërkojnë vlerësim kardiologjik dhe optimizim të riskut/terapisë.",
+      "summary": "Termi anginë nuk duhet të ulë urgjencën kur modeli është i ri ose i paqëndrueshëm.",
+      "red_flags": [
+        "Dhimbje në pushim ose crescendo",
+        "Ndryshime ishemike në EKG",
+        "Hipotension, aritmi, dispne ose sinkopë"
+      ]
+    },
+    {
+      "code": "I63",
+      "urgent": true,
+      "title_sq": "Stroke iskemik",
+      "working_diagnosis": "Stroke akut iskemik i dyshuar – I63",
+      "referral": {
+        "specialist": "Qendër Stroke / Neurologji emergjente",
+        "goal": "Neuroimazheri urgjente dhe vlerësim kohë-varur për trombolizë dhe/ose trombektomi endovaskulare.",
+        "note": "Deficit neurologjik akut; koha e fundit pa deficit ('last known well') ___; shëno deficitin, GCS/NIHSS nëse përdoret, glukozën, TA, antikoagulantët dhe kohën e nisjes për transfer."
+      },
+      "anamnesis": [
+        "Koha e fundit kur pacienti ishte normal dhe koha e zbulimit",
+        "Dobësi/mpirje unilaterale, afazi, devijim fytyre, çrregullim shikimi",
+        "Antikoagulantë, gjakderdhje/operacione të fundit",
+        "Stroke/TIA e mëparshme dhe faktorët vaskularë"
+      ],
+      "exams": [
+        "ABCDE, glukozë kapilare dhe vitalet",
+        "Ekzaminim neurologjik i fokusuar / NIHSS kur i disponueshëm",
+        "EKG dhe monitorim ritmi",
+        "CT kokë pa kontrast + imazheri vaskulare sipas protokollit në spital"
+      ],
+      "management": "Aktivizo kodin stroke dhe transportin urgjent; dokumento saktë kohën. Mos jep ushqim/pije derisa të vlerësohet gëlltitja. Reperfuzioni vendoset nga ekipi stroke sipas imazherisë, kohës dhe kritereve të pacientit.",
+      "summary": "Stroke iskemik është emergjencë kohë-varur; transporti në qendër të aftë për reperfuzion duhet të minimizojë vonesën.",
+      "red_flags": [
+        "Deficit neurologjik persistent ose progresiv",
+        "Ulja e vetëdijes / komprometim i rrugëve të frymëmarrjes",
+        "Dhimbje koke e papritur me shenja neurologjike – përjashto hemorragjinë"
+      ]
+    },
+    {
+      "code": "G45",
+      "urgent": true,
+      "title_sq": "TIA",
+      "working_diagnosis": "Atak iskemik tranzitor i dyshuar – G45",
+      "referral": {
+        "specialist": "Neurologji / Stroke service urgjent",
+        "goal": "Vlerësim i shpejtë i riskut për stroke dhe identifikim i burimit vaskular/kardioembolik.",
+        "note": "Deficit fokal tranzitor nga ___ deri ___; shëno simptomat, kohën, rikuperimin, TA, glukozën, ritmin, AF/antikoagulantët."
+      },
+      "anamnesis": [
+        "Deficiti fokal dhe kohëzgjatja; rikuperimi i plotë apo jo",
+        "Simptoma motorike, të folurit, shikimit",
+        "AF, sëmundje karotide, stroke/TIA e mëparshme",
+        "Antikoagulantë/antiagregantë dhe faktorët vaskularë"
+      ],
+      "exams": [
+        "Ekzaminim neurologjik edhe nëse simptomat janë zhdukur",
+        "TA, puls/ritëm dhe glukozë",
+        "EKG",
+        "Imazheri cerebrale/vaskulare sipas rrugës lokale"
+      ],
+      "management": "TIA është paralajmërim për stroke dhe kërkon vlerësim urgjent; nëse deficiti vazhdon, trajtoje si stroke akut.",
+      "summary": "Mos e konsidero beninje vetëm sepse simptomat u zhdukën; etiologjia dhe parandalimi sekondar duhen adresuar shpejt.",
+      "red_flags": [
+        "Çdo deficit që nuk është zhdukur plotësisht",
+        "Episode të përsëritura në pak kohë",
+        "AF e re, sinkopë ose shenja të tjera të rrezikut të lartë"
+      ]
+    },
+    {
+      "code": "I26",
+      "urgent": true,
+      "title_sq": "Emboli pulmonare",
+      "working_diagnosis": "Emboli pulmonare e dyshuar – I26",
+      "referral": {
+        "specialist": "Urgjenca spitalore / Pulmologji-Kardiologji",
+        "goal": "Konfirmim urgjent me algoritëm diagnostik dhe trajtim sipas riskut hemodinamik.",
+        "note": "Dispne/dhimbje pleuritike prej ___; shëno SpO₂, TA/pulsin, sinkopën, hemoptizinë, shenjat DVT dhe faktorët e riskut VTE."
+      },
+      "anamnesis": [
+        "Fillim akut i dispnesë, dhimbje pleuritike, hemoptizi ose sinkopë",
+        "Dhimbje/ënjtje unilaterale e këmbës",
+        "Imobilizim, kirurgji, kancer, shtatzëni/estrogjen, VTE e mëparshme",
+        "Antikoagulantë dhe risk gjakderdhjeje"
+      ],
+      "exams": [
+        "ABCDE, SpO₂, TA, puls, FR",
+        "Ekzaminim kardiopulmonar dhe i këmbëve",
+        "EKG",
+        "D-dimer/CTPA ose algoritëm tjetër sipas probabilitetit klinik në spital"
+      ],
+      "management": "Transport urgjent; oksigjen kur ka hipoksemi dhe mbështetje hemodinamike sipas nevojës. Antikoagulimi dhe reperfuzioni vendosen sipas probabilitetit, konfirmimit, riskut të gjakderdhjes dhe stabilitetit.",
+      "summary": "PE mund të jetë fatale sidomos me hipotension/shok; probabiliteti klinik dhe stabiliteti drejtojnë urgjencën.",
+      "red_flags": [
+        "Hipotension / shok",
+        "Hipoksemi e rëndë ose vështirësi e rëndë respiratore",
+        "Sinkopë me dyshim PE"
+      ]
+    },
+    {
+      "code": "I47",
+      "urgent": true,
+      "title_sq": "Takikardi paroksizmale",
+      "working_diagnosis": "Takikardi paroksizmale – I47; ritmi në vlerësim",
+      "referral": {
+        "specialist": "Urgjenca / Kardiolog",
+        "goal": "Identifikim i ritmit dhe trajtim urgjent kur ka paqëndrueshmëri hemodinamike ose tahikardi persistente.",
+        "note": "Palpitacione me fillim të papritur prej ___; shëno frekuencën/ritmin, TA, sinkopën, dhimbjen e gjoksit, EKG-në dhe historinë e aritmive/preekscitimit."
+      },
+      "anamnesis": [
+        "Fillim/ndalim i papritur dhe kohëzgjatja",
+        "Dhimbje gjoksi, dispne, presinkopë/sinkopë",
+        "Histori SVT/VT, WPW, sëmundje strukturore",
+        "Stimulues, barna dhe elektrolite të mundshme"
+      ],
+      "exams": [
+        "ABCDE, monitorim, TA dhe SpO₂",
+        "EKG 12-derivacione gjatë episodit nëse mundet",
+        "Vlerësim për shenja të insuficiencës kardiake/ishemisë",
+        "Elektrolite dhe shkaktarë të tjerë në spital"
+      ],
+      "management": "Në tahikardi me paqëndrueshmëri hemodinamike ndiq algoritmin ALS për kardioversion të sinkronizuar. Në ritme stabile, manovrat vagale/terapia farmakologjike varen nga morfologjia e ritmit dhe protokolli; ritmet e gjera ose të parregullta kërkojnë kujdes specialistik.",
+      "summary": "Hapi i parë është stabiliteti hemodinamik dhe EKG-ja, jo vetëm frekuenca e pulsit.",
+      "red_flags": [
+        "Hipotension/shok",
+        "Dhimbje gjoksi ishemike",
+        "Edemë pulmonare, sinkopë ose ndryshim vetëdijeje"
+      ]
+    },
+    {
+      "code": "I48",
+      "urgent": true,
+      "title_sq": "Fibrilacion / flutter atrial",
+      "working_diagnosis": "Fibrilacion/flutter atrial – I48; stabiliteti dhe kohëzgjatja në vlerësim",
+      "referral": {
+        "specialist": "Urgjenca / Kardiolog",
+        "goal": "Kontroll i shpejtë i ritmit/frekuencës te pacienti simptomatik ose i paqëndrueshëm dhe vlerësim i riskut tromboembolik.",
+        "note": "AF/flutter me fillim të njohur/paqartë; shëno frekuencën, TA, simptomat, EKG-në, HF/valvulopatinë, antikoagulimin dhe kohën e fillimit."
+      },
+      "anamnesis": [
+        "Palpitacione, dispne, dhimbje gjoksi, lodhje, sinkopë",
+        "Koha e fillimit dhe episodet e mëparshme",
+        "Stroke/TIA, HF, HTA, DM dhe sëmundje valvulare",
+        "Antikoagulantë, aderenca dhe gjakderdhje"
+      ],
+      "exams": [
+        "ABCDE dhe stabiliteti hemodinamik",
+        "EKG 12-derivacione",
+        "Auskultim kardiopulmonar dhe shenja kongjestioni",
+        "Elektrolite, TSH dhe shkaktarë të tjerë sipas rastit"
+      ],
+      "management": "Në paqëndrueshmëri hemodinamike kërkohet kardioversion i sinkronizuar urgjent. Në pacientin stabil, strategjia e kontrollit të frekuencës/ritmit dhe antikoagulimit individualizohet sipas kohëzgjatjes, simptomave dhe riskut tromboembolik.",
+      "summary": "AF menaxhohet duke adresuar komorbiditetet, parandalimin e stroke dhe kontrollin e simptomave/ritmit; paqëndrueshmëria ndryshon menjëherë planin.",
+      "red_flags": [
+        "Hipotension/shok",
+        "Ishemi akute ose dhimbje gjoksi e rëndë",
+        "Edemë pulmonare / sinkopë"
+      ]
+    },
+    {
+      "code": "I50",
+      "urgent": true,
+      "title_sq": "Insuficiencë kardiake",
+      "working_diagnosis": "Insuficiencë kardiake – I50; dekompensim akut nëse ka kongjestion/hipoperfuzion të ri",
+      "referral": {
+        "specialist": "Urgjenca / Kardiolog",
+        "goal": "Vlerësim dhe trajtim i dekompensimit akut, shkakut precipitues dhe nevojës për hospitalizim.",
+        "note": "Dispne/ortopne/edemë prej ___; shëno TA, puls, SpO₂, peshën, krepitacionet, edemën, EKG-në, terapinë dhe shkakun e mundshëm precipitues."
+      },
+      "anamnesis": [
+        "Dispne, ortopne, PND, edemë dhe shtim në peshë",
+        "Dhimbje gjoksi, palpitacione, infeksion, mosmarrje barnash",
+        "HF e njohur, EF e fundit dhe hospitalizimet",
+        "Diuretikë dhe barna tjera kardiake"
+      ],
+      "exams": [
+        "ABCDE, SpO₂ dhe vitalet",
+        "JVP, auskultim zemër/mushkëri, edema dhe perfuzioni",
+        "EKG",
+        "Kreatininë/elektrolite, natriuretic peptides, CXR/eko sipas ambientit"
+      ],
+      "management": "Transport/hospitalizim sipas ashpërsisë; oksigjen vetëm kur ka hipoksemi. Kongjestioni zakonisht kërkon diuretik, ndërsa vasodilatatorët ose mbështetja hemodinamike varen nga TA dhe fenotipi; kërko dhe trajto shkakun precipitues.",
+      "summary": "Dekompesimi akut ndahet sipas kongjestionit dhe perfuzionit; hipoksemia, hipotensioni dhe edema pulmonare kërkojnë menaxhim urgjent.",
+      "red_flags": [
+        "Edemë pulmonare",
+        "Hipotension/shok / hipoperfuzion",
+        "ACS ose aritmi e paqëndrueshme"
+      ]
+    },
+    {
+      "code": "J81",
+      "urgent": true,
+      "title_sq": "Edemë pulmonare",
+      "working_diagnosis": "Edemë pulmonare akute – J81",
+      "referral": {
+        "specialist": "Urgjenca / Kardiologji-Intensive",
+        "goal": "Stabilizim respirator/hemodinamik dhe trajtim i shkakut, zakonisht insuficiencë kardiake akute/ACS/aritmi.",
+        "note": "Dispne akute/ortopne; shëno SpO₂, TA/pulsin, FR, krepitacionet, EKG-në, edemën, dhimbjen e gjoksit dhe përgjigjen ndaj trajtimit fillestar."
+      },
+      "anamnesis": [
+        "Fillimi i dispnesë dhe ortopnesë",
+        "Dhimbje gjoksi, palpitacione, HTA e rëndë",
+        "HF e njohur dhe aderenca me diuretikët",
+        "Infeksion, insuficiencë renale dhe precipitantë të tjerë"
+      ],
+      "exams": [
+        "ABCDE dhe monitorim kontinu",
+        "SpO₂, FR, TA dhe puls",
+        "Auskultim pulmonar/kardiak, JVP dhe perfuzioni",
+        "EKG; analiza/imazheri në spital"
+      ],
+      "management": "Pozicion i përshtatshëm, oksigjen kur ka hipoksemi dhe mbështetje ventilatore jo-invazive kur indikohet. Diuretikët dhe vasodilatatorët përdoren sipas kongjestionit/TA; aktivizo transport urgjent dhe trajto shkakun precipitues.",
+      "summary": "Edema pulmonare akute është emergjencë respiratore dhe kardiake; respiracioni dhe hemodinamika trajtohen paralelisht.",
+      "red_flags": [
+        "SpO₂ e ulët / lodhje respiratore",
+        "Hipotension/shok",
+        "ACS ose aritmi e paqëndrueshme"
+      ]
+    },
+    {
+      "code": "J46",
+      "urgent": true,
+      "title_sq": "Status asthmaticus",
+      "working_diagnosis": "Eksacerbim i rëndë i astmës / status asthmaticus – J46",
+      "referral": {
+        "specialist": "Urgjenca / Pulmologji-Intensive",
+        "goal": "Trajtim i menjëhershëm i obstruksionit të rëndë dhe mbështetje respiratore nëse ka shenja kërcënuese për jetën.",
+        "note": "Astmë e rëndë prej ___; shëno fjalitë/fjalët, FR, puls, SpO₂, PEF nëse mundet, wheezing/mungesë e zhurmave respiratore (silent chest), trajtimin e marrë dhe përgjigjen."
+      },
+      "anamnesis": [
+        "Fillimi, shkaktari dhe përdorimi i bronkodilatatorit",
+        "Aftësia për të folur, ecje, gjumë dhe dispne në pushim",
+        "ICU/intubim i mëparshëm dhe eksacerbime të rënda",
+        "Alergji, infeksion, aderenca me kontrolluesin"
+      ],
+      "exams": [
+        "ABCDE dhe statusi mendor",
+        "SpO₂, FR, puls dhe PEF kur është i sigurt",
+        "Auskultim: wheezing kundrejt mungesës së zhurmave respiratore (silent chest)",
+        "ABG dhe analiza tjera në rast të rëndë në spital"
+      ],
+      "management": "Eksacerbimi i rëndë trajtohet në ambient akut me SABA të përsëritur, ipratropium në rastet e rënda, kortikosteroid sistemik dhe oksigjen të titruar; kërko mbështetje respiratore urgjente në përgjumje/konfuzion/mungesë e zhurmave respiratore (silent chest) ose përkeqësim.",
+      "summary": "Astma e rëndë është emergjencë; 'mungesë e zhurmave respiratore (silent chest)', lodhja dhe ndryshimi i vetëdijes janë shenja kërcënuese për jetën.",
+      "red_flags": [
+        "Mungesë e zhurmave respiratore (silent chest)",
+        "Përgjumje/konfuzion",
+        "Hipoksemi e rëndë ose shenja lodhjeje respiratore"
+      ]
+    },
+    {
+      "code": "A41",
+      "urgent": true,
+      "title_sq": "Sepsë",
+      "working_diagnosis": "Sepsë e dyshuar – A41; fokus infektiv në vlerësim",
+      "referral": {
+        "specialist": "Urgjenca / Mjekësi intensive",
+        "goal": "Resuscitim i menjëhershëm, identifikim i fokusit, antibiotikë të hershëm kur probabiliteti është i lartë dhe kontroll i burimit.",
+        "note": "Infeksion i dyshuar + disfunksion organi; shëno TA/MAP, puls, FR, SpO₂, temperaturën, vetëdijen, perfuzionin, diurezën, fokusin dhe trajtimin fillestar."
+      },
+      "anamnesis": [
+        "Simptomat e fokusit infektiv dhe koha e fillimit",
+        "Ethe/hipotermi, konfuzion, dispne, oliguri",
+        "Imunosupresion, procedura/kateterë dhe antibiotikë të fundit",
+        "Komorbiditete dhe alergji ndaj antibiotikëve"
+      ],
+      "exams": [
+        "ABCDE, vitalet dhe perfuzioni periferik",
+        "Gjendja mendore dhe diureza kur mund të vlerësohet",
+        "Laktat dhe kultura sipas mundësisë pa vonuar trajtimin",
+        "Hemogramë, renal/hepatic, imazheri dhe analiza fokale në spital"
+      ],
+      "management": "Sepsa dhe shoku septik janë emergjenca: fillo resuscitimin menjëherë dhe transfero. Në shok ose probabilitet të lartë, antibiotikët duhet të jepen sa më shpejt sipas protokollit; kristaloidet janë lëngu i parë, por sasitë pas bolusit fillestar individualizohen sipas përgjigjes dhe komorbiditeteve.",
+      "summary": "Sepsa kërkon trajtim të hershëm paralel me kërkimin e fokusit; mos u mbështet vetëm në një score të vetëm.",
+      "red_flags": [
+        "Hipotension / shok",
+        "Alterim vetëdijeje",
+        "Laktat i rritur, oliguri ose hipoperfuzion"
+      ]
+    },
+    {
+      "code": "R57",
+      "urgent": true,
+      "title_sq": "Shok",
+      "working_diagnosis": "Shok – R57; etiologjia në vlerësim",
+      "referral": {
+        "specialist": "Urgjenca / Mjekësi intensive",
+        "goal": "Stabilizim ABC, identifikim i llojit të shokut dhe trajtim shkakësor urgjent.",
+        "note": "Hipotension/hipoperfuzion; shëno TA/MAP, puls, SpO₂, vetëdijen, kapilar refill, gjakderdhjen, shenjat e sepsës/anafilaksisë/HF dhe përgjigjen ndaj ndërhyrjeve."
+      },
+      "anamnesis": [
+        "Fillimi dhe shkaku i mundshëm: gjakderdhje, infeksion, alergji, MI, PE",
+        "Dhimbje gjoksi, dispne, rash, ethe, humbje lëngjesh",
+        "Barna, antikoagulantë dhe alergji",
+        "Komorbiditete kardiake/renale"
+      ],
+      "exams": [
+        "ABCDE dhe monitorim kontinu",
+        "TA, puls, SpO₂, FR, temperaturë",
+        "Perfuzioni periferik, kapilar refill dhe vetëdija",
+        "Kërko gjakderdhje, kongjestion, wheezing/urtikarie dhe fokus infektiv"
+      ],
+      "management": "Thirr transport urgjent; siguro oksigjenim/ventilim, akses IV/IO dhe trajto shkakun. Lëngjet nuk jepen njësoj në çdo shok: individualizo sipas fenotipit; kontrollo hemorragjinë, jep adrenalinë IM në anafilaksi dhe përdor vasopresorë vetëm në ambient të monitoruar sipas protokollit.",
+      "summary": "Shoku është sindromë e hipoperfuzionit; trajtimi i shkakut dhe transporti janë po aq të rëndësishëm sa rritja e TA.",
+      "red_flags": [
+        "Alterim vetëdijeje",
+        "Hipotension persistent / perfuzion i dobët",
+        "Hipoksemi ose shenja të dështimit multiorgan"
+      ]
+    },
+    {
+      "code": "T78.2",
+      "urgent": true,
+      "title_sq": "Anafilaksi",
+      "working_diagnosis": "Anafilaksi – T78.2",
+      "referral": {
+        "specialist": "Urgjenca / Alergologji pas stabilizimit",
+        "goal": "Trajtim i menjëhershëm i komprometimit rrugëve të frymëmarrjes/frymëmarrjes/qarkullimit dhe monitorim për reaksion të rëndë/refraktar.",
+        "note": "Reaksion akut pas ___; shëno kohën, alergjenin e mundshëm, ABC, TA/pulsin, SpO₂, rash/angioedemën, dozat e adrenalinës IM dhe përgjigjen."
+      },
+      "anamnesis": [
+        "Ekspozimi i mundshëm: ushqim, bar, pickim, latex",
+        "Fillimi i shpejtë i urtikaries/angioedemës",
+        "Wheezing, stridor, zë i ngjirur, dispne",
+        "Marramendje, hipotension, kolaps dhe histori anafilaksie"
+      ],
+      "exams": [
+        "ABCDE pa vonesë",
+        "TA, puls, SpO₂ dhe monitorim",
+        "Rrugët e frymëmarrjes për angioedemë/stridor dhe mushkëritë për wheezing",
+        "Lëkura/mukozat; mungesa e rash-it nuk e përjashton anafilaksinë"
+      ],
+      "management": "Adrenalina intramuskulare është trajtimi i parë për probleme të rrugëve të frymëmarrjes, frymëmarrjes ose qarkullimit; përsërite sipas algoritmit nëse shenjat kërcënuese vazhdojnë. Thirr ambulancën, poziciono sipas gjendjes, jep oksigjen/lëngje sipas nevojës. Adrenalina IV kërkon ekspertizë dhe ambient të përshtatshëm.",
+      "summary": "Në anafilaksi, adrenalina IM nuk duhet të vonohet nga antihistaminikët ose kortikosteroidet.",
+      "red_flags": [
+        "Stridor / komprometim të rrugëve të frymëmarrjes",
+        "Hipotension/kolaps",
+        "Bronkospazëm i rëndë ose reaksion refraktar"
+      ]
+    },
+    {
+      "code": "E16.2",
+      "urgent": true,
+      "title_sq": "Hipoglikemi",
+      "working_diagnosis": "Hipoglikemi – E16.2",
+      "referral": {
+        "specialist": "Urgjenca / Endokrinolog sipas shkakut",
+        "goal": "Korrigjim i menjëhershëm i glukozës dhe identifikim i shkakut, sidomos në hipoglikemi të rëndë/recurrente.",
+        "note": "Glukoza ___ mmol/L; shëno vetëdijen, simptomat, insulinën/sulfonilureat, vaktin e fundit, trajtimin e dhënë dhe glukozën pas trajtimit."
+      },
+      "anamnesis": [
+        "Djersitje, dridhje, uri, palpitacione",
+        "Konfuzion, sjellje e pazakontë, konvulsione, humbje vetëdijeje",
+        "Insulinë/sulfonilurea dhe koha e dozës",
+        "Ushqimi, alkooli, aktiviteti, sëmundja renale/hepatike"
+      ],
+      "exams": [
+        "ABCDE dhe glukozë kapilare menjëherë",
+        "Gjendja neurologjike",
+        "Vitalet",
+        "Rimatje e glukozës pas trajtimit dhe monitorim për rikthim"
+      ],
+      "management": "Nëse pacienti është i vetëdijshëm dhe gëlltit sigurt, jep karbohidrat me veprim të shpejtë dhe rishiko glukozën. Në hipoglikemi të rëndë ose pa aftësi gëlltitjeje përdor glukozë IV ose glukagon sipas protokollit dhe mos jep asgjë nga goja te pacienti i pavetëdijshëm.",
+      "summary": "Hipoglikemia kërkon korrigjim të menjëhershëm dhe parandalim të përsëritjes duke rishikuar shkakun dhe terapinë.",
+      "red_flags": [
+        "Ulja e vetëdijes",
+        "Konvulsione",
+        "Hipoglikemi persistente/recurrente pas trajtimit"
+      ]
+    },
+    {
+      "code": "E10.1",
+      "urgent": true,
+      "title_sq": "Ketoacidozë diabetike",
+      "working_diagnosis": "Ketoacidozë diabetike e dyshuar – E10.1",
+      "referral": {
+        "specialist": "Urgjenca / Endokrinologji-Intensive",
+        "goal": "Konfirmim biokimik dhe trajtim të monitoruar me lëngje, insulinë, kalium dhe trajtim të precipituesit.",
+        "note": "DM + hiperglikemi/ketone; shëno glukozën, ketonet, vitalet, frymëmarrjen Kussmaul, të vjellat, dehidrimin, dozën e insulinës dhe shkakun e mundshëm."
+      },
+      "anamnesis": [
+        "Poliuri/polidipsi, nauze/vjellje, dhimbje barku",
+        "Mosmarrje insulinë, infeksion ose stres akut",
+        "Frymëmarrje e thellë, lodhje, konfuzion",
+        "Histori DKA dhe përdorim i SGLT2 inhibitorëve"
+      ],
+      "exams": [
+        "ABCDE, glukozë dhe ketone",
+        "Vitalet, hidrimi dhe statusi mendor",
+        "Elektrolite, kreatininë dhe gazra/acid-bazë në spital",
+        "EKG sipas kaliumit dhe gjendjes klinike"
+      ],
+      "management": "DKA është emergjencë spitalore. Fillon resuscitimi dhe transferi; trajtimi definitiv kërkon protokoll të monitoruar për lëngje IV, insulinë dhe kalium, me kërkim të precipituesit. Kujto DKA euglikemike te pacientët me SGLT2 inhibitor.",
+      "summary": "Hiperglikemia vetëm nuk e definon DKA; ketonemia dhe acidoza janë thelbësore për diagnozën.",
+      "red_flags": [
+        "Alterim vetëdijeje",
+        "Hipotension/dehidrim i rëndë",
+        "Çrregullime të rënda të kaliumit ose aritmi"
+      ]
+    },
+    {
+      "code": "R56.8",
+      "urgent": true,
+      "title_sq": "Konvulsione",
+      "working_diagnosis": "Konvulsion akut – R56.8; status epilepticus nëse i zgjatur/përsëritur pa rikuperim",
+      "referral": {
+        "specialist": "Urgjenca / Neurolog",
+        "goal": "Ndërprerje e konvulsionit të zgjatur, stabilizim dhe identifikim i shkakut akut.",
+        "note": "Konvulsion prej ___ min; shëno fillimin, tipin, rikuperimin, traumën, glukozën, temperaturën, shtatzëninë, barnat/epilepsinë dhe terapinë e dhënë."
+      },
+      "anamnesis": [
+        "Kohëzgjatja dhe përshkrimi nga dëshmitarët",
+        "Epilepsi e njohur dhe aderenca me antiepileptikët",
+        "Ethe, traumë, shtatzëni, alkool/droga",
+        "Deficit fokal para/pas episodit"
+      ],
+      "exams": [
+        "ABCDE dhe mbrojtje nga dëmtimi",
+        "Glukozë kapilare",
+        "GCS/status neurologjik pas episodit",
+        "Vitalet, temperaturë dhe kërkim i traumës"
+      ],
+      "management": "Mos e restrikto pacientin dhe mos vendos objekte në gojë. Siguro rrugët e frymëmarrjes/oksigjenimin, mat glukozën dhe kohëzgjatjen; konvulsioni i zgjatur/status epilepticus trajtohet me benzodiazepinë sipas protokollit dhe kërkon transfer urgjent.",
+      "summary": "Koha e konvulsionit, rikuperimi dhe glukoza janë informacione kritike për vendimin urgjent.",
+      "red_flags": [
+        "Konvulsion i zgjatur ose përsëritje pa rikuperim",
+        "Shtatzëni / eklampsi e dyshuar",
+        "Deficit neurologjik persistent ose traumë e rëndë"
+      ]
+    },
+    {
+      "code": "R55",
+      "urgent": true,
+      "title_sq": "Sinkopë",
+      "working_diagnosis": "Sinkopë – R55; etiologjia në vlerësim",
+      "referral": {
+        "specialist": "Urgjenca / Kardiolog / Neurolog sipas profilit",
+        "goal": "Përjashtim i aritmisë, ACS, hemorragjisë, PE ose shkakut neurologjik te sinkopa me risk të lartë.",
+        "note": "Humbje vetëdijeje ___ sek/min; shëno rrethanat, prodromën, rikuperimin, EKG-në, TA/pulsin, traumën dhe historinë kardiake."
+      },
+      "anamnesis": [
+        "Gjatë sforcimit, në pushim apo pas qëndrimit në këmbë",
+        "Prodromë vasovagale vs fillim pa paralajmërim",
+        "Dhimbje gjoksi, palpitacione, dispne",
+        "Histori kardiake dhe histori familjare vdekjeje të papritur"
+      ],
+      "exams": [
+        "ABCDE dhe glukozë",
+        "TA/puls; ortostatike kur pacienti është stabil",
+        "EKG 12-derivacione",
+        "Ekzaminim neurologjik dhe për traumë"
+      ],
+      "management": "Trajto shkaqet e menjëhershme dhe refero urgjent kur ka tipare kardiake, EKG anormale, sinkopë me sforcim, gjakderdhje ose dëmtim serioz. Sinkopa tipike vasovagale me vlerësim normal mund të menaxhohet sipas riskut.",
+      "summary": "Sinkopa është humbje kalimtare e vetëdijes; EKG-ja dhe historia e ngjarjes janë thelbësore për stratifikimin e riskut.",
+      "red_flags": [
+        "Sinkopë me sforcim ose pa prodromë te pacient me sëmundje kardiake",
+        "EKG anormale / aritmi",
+        "Dhimbje gjoksi, dispne ose histori familjare vdekjeje të papritur"
+      ]
+    },
+    {
+      "code": "R07.4",
+      "urgent": true,
+      "title_sq": "Dhimbje gjoksi",
+      "working_diagnosis": "Dhimbje gjoksi – R07.4; përjashto ACS dhe shkaqe tjera kërcënuese për jetën",
+      "referral": {
+        "specialist": "Urgjenca / Kardiolog sipas dyshimit",
+        "goal": "Përjashtim urgjent i ACS, diseksionit aortik, PE, pneumotoraksit dhe shkaqeve tjera të rënda.",
+        "note": "Dhimbje gjoksi prej ___; karakter/rrezatim ___; shëno EKG-në, TA/pulsin, SpO₂, dispnenë, sinkopën, faktorët e riskut dhe gjetjet kardiopulmonare."
+      },
+      "anamnesis": [
+        "Fillimi, karakteri, rrezatimi dhe lidhja me sforcimin/frymëmarrjen",
+        "Dispne, djersitje, nauze, sinkopë, hemoptizi",
+        "CAD/VTE/aortë dhe faktorët e riskut",
+        "Traumë, kokainë/stimulues dhe barna"
+      ],
+      "exams": [
+        "ABCDE dhe vitalet",
+        "EKG 12-derivacione",
+        "Auskultim zemër/mushkëri dhe pulse simetrike",
+        "Troponinë/imazheri sipas shkakut të dyshuar në spital"
+      ],
+      "management": "Mos e etiketoni si muskulore/refluks para se të vlerësohen shkaqet kërcënuese për jetën kur historia ose risku i sugjeron. Aktivizo transport urgjent për dyshim ACS/PE/diseksion/pneumotoraks.",
+      "summary": "Dhimbja e gjoksit është simptomë; diagnoza e punës duhet të pasqyrojë rrezikun derisa shkaqet serioze të përjashtohen.",
+      "red_flags": [
+        "EKG ishemike ose instabilitet hemodinamik",
+        "Dispne/hipoksemi, hemoptizi ose sinkopë",
+        "Dhimbje e papritur shumë e fortë me pulse/TA asimetrike"
+      ]
+    },
+    {
+      "code": "R06.0",
+      "urgent": true,
+      "title_sq": "Dispne",
+      "working_diagnosis": "Dispne – R06.0; shkaku në vlerësim",
+      "referral": {
+        "specialist": "Urgjenca / Pulmolog / Kardiolog sipas shkakut",
+        "goal": "Stabilizim dhe përjashtim i shkaqeve urgjente si astma/COPD e rëndë, HF, PE, pneumoni, pneumotoraks ose ACS.",
+        "note": "Dispne prej ___; shëno FR, SpO₂, TA/pulsin, auskultimin, dhimbjen e gjoksit, wheezing, edemën, temperaturën dhe EKG-në."
+      },
+      "anamnesis": [
+        "Fillim akut vs gradual dhe provokuesit",
+        "Dhimbje gjoksi, wheezing, kollë, temperaturë, hemoptizi",
+        "Ortopne/PND/edemë",
+        "Astma/COPD/HF/VTE dhe duhan"
+      ],
+      "exams": [
+        "ABCDE, FR dhe SpO₂",
+        "Auskultim pulmonar/kardiak",
+        "TA, puls, temperaturë dhe perfuzioni",
+        "EKG; CXR/ABG/laborator sipas tablosë"
+      ],
+      "management": "Oksigjen kur ka hipoksemi, monitorim dhe trajtim shkakësor. Dispnea me vështirësi të rëndë respiratore, hipoksemi ose instabilitet kërkon transport urgjent; mos e trajto vetëm si 'ankth' pa përjashtuar shkak organik kur ka shenja objektive.",
+      "summary": "Dispnea është simptomë me spektër të gjerë; SpO₂, FR, auskultimi dhe hemodinamika përcaktojnë urgjencën.",
+      "red_flags": [
+        "Hipoksemi",
+        "Lodhje respiratore / mungesë e zhurmave respiratore (silent chest)",
+        "Hipotension, dhimbje gjoksi ose alterim vetëdijeje"
+      ]
+    },
+    {
+      "code": "R04.0",
+      "urgent": true,
+      "title_sq": "Epistaksis",
+      "working_diagnosis": "Epistaksis – R04.0",
+      "referral": {
+        "specialist": "ORL / Urgjenca",
+        "goal": "Kontroll i gjakderdhjes që nuk ndalet me masa fillestare, gjakderdhje posteriore, paqëndrueshmëri, anemi ose antikoagulim kompleks.",
+        "note": "Epistaksis nga ana ___ prej ___; shëno kohëzgjatjen, TA/pulsin, antikoagulantët, traumën, kompresionin/terapinë e provuar dhe nëse gjakderdhja vazhdon."
+      },
+      "anamnesis": [
+        "Kohëzgjatja, unilateral/bilateral dhe sasia e përafërt",
+        "Traumë/manipulim, thatësi, sprej nazal",
+        "Antikoagulantë/antiagregantë dhe çrregullime koagulimi",
+        "Epistaksis të përsëritura dhe simptoma anemie"
+      ],
+      "exams": [
+        "ABCDE dhe vitalet kur gjakderdhja është e rëndë",
+        "Inspeksion nazal me ndriçim dhe burimi anterior kur shihet",
+        "Orofaringu për rrjedhje posteriore",
+        "Hemogramë/koagulim sipas ashpërsisë dhe terapisë"
+      ],
+      "management": "Ule pacientin përpara dhe apliko kompresion të vazhdueshëm të pjesës së butë të hundës; vazokonstriktori topik/kauterizimi ose tamponada përdoren sipas burimit dhe kompetencës. Gjakderdhja e pakontrolluar ose posteriore kërkon ORL/urgjencë.",
+      "summary": "Kompresioni i saktë është hapi i parë; antikoagulimi dhe gjakderdhja posteriore rrisin nevojën për vlerësim urgjent.",
+      "red_flags": [
+        "Paqëndrueshmëri hemodinamike",
+        "Gjakderdhje që nuk ndalet pas masave fillestare",
+        "Gjakderdhje posteriore / aspirim i gjakut"
+      ]
+    },
+    {
+      "code": "R10.0",
+      "urgent": true,
+      "title_sq": "Abdomen akut",
+      "working_diagnosis": "Abdomen akut – R10.0; etiologjia kirurgjikale/medikale në vlerësim",
+      "referral": {
+        "specialist": "Urgjenca / Kirurg",
+        "goal": "Përjashtim dhe trajtim i patologjisë kirurgjikale, ishemisë, perforimit, obstruksionit, gjakderdhjes ose emergjencës gjinekologjike.",
+        "note": "Dhimbje akute barku prej ___; lokalizim/migrim ___; shëno vitalet, peritonizmin, vjelljet, jashtëqitjen, urinimin, shtatzëninë e mundshme dhe analizat."
+      },
+      "anamnesis": [
+        "Fillimi, lokalizimi, migrimi dhe intensiteti",
+        "Vjellje, hematemezë, melena, diarre/obstipacion",
+        "Simptoma urinare dhe gjinekologjike; shtatzëni e mundshme",
+        "Operacione të mëparshme, hernie, antikoagulantë"
+      ],
+      "exams": [
+        "ABCDE dhe vitalet",
+        "Inspeksion, auskultim dhe palpim për guarding/rebound",
+        "Herniet dhe ekzaminim rektal/gjinekologjik kur indikohet",
+        "Hemogramë, CRP, lipazë, urinë, β-hCG dhe imazheri sipas dyshimit"
+      ],
+      "management": "Pacientin me peritonizëm, shok ose dyshim për urgjencë kirurgjikale transferoje menjëherë; siguro analgjezi, akses IV dhe resuscitim sipas nevojës. Mos vono vlerësimin kirurgjikal për të 'pritur' efektin e analgjezisë.",
+      "summary": "Abdomeni akut është sindromë; prioriteti është identifikimi i instabilitetit dhe patologjive që kërkojnë ndërhyrje të shpejtë.",
+      "red_flags": [
+        "Rigiditet/rebound",
+        "Hipotension/sinkopë",
+        "Gjakderdhje GI ose dhimbje disproporcionale me ekzaminimin"
+      ]
+    },
+    {
+      "code": "K92.2",
+      "urgent": true,
+      "title_sq": "Hemorragji gastrointestinale",
+      "working_diagnosis": "Hemorragji gastrointestinale – K92.2",
+      "referral": {
+        "specialist": "Urgjenca / Gastroenterolog-Kirurg",
+        "goal": "Resuscitim, lokalizim i burimit, menaxhim i antikoagulimit dhe endoskopi/intervenim urgjent sipas stabilitetit.",
+        "note": "Hematemezë/melena/hematochezia prej ___; shëno TA/pulsin, sinkopën, Hb nëse ka, antikoagulantët, sëmundjen hepatike, NSAID-et dhe lëngjet/transfuzionet e dhëna."
+      },
+      "anamnesis": [
+        "Hematemezë, melena ose hematochezia dhe sasia/frekuenca",
+        "Marramendje, sinkopë, dispne, dhimbje gjoksi",
+        "Ulçerë, cirrozë/varice, NSAID, alkool",
+        "Warfarin/DOAC/antiagregantë"
+      ],
+      "exams": [
+        "ABCDE dhe monitorim hemodinamik",
+        "Akses IV i përshtatshëm dhe vitalet seriale",
+        "Abdomeni; shenja të sëmundjes hepatike",
+        "Hemogramë, koagulim, renal/hepatic, grup gjaku/crossmatch në spital"
+      ],
+      "management": "Resuscitimi dhe stabiliteti vijnë para endoskopisë; transfer urgjent. Menaxho antikoagulimin sipas protokollit dhe shkallës së gjakderdhjes. Gjakderdhja e sipërme e rëndë te pacienti i paqëndrueshëm kërkon endoskopi menjëherë pas resuscitimit.",
+      "summary": "Gjakderdhja GI vlerësohet sipas hemodinamikës dhe humbjes së gjakut; sinkopa/hipotensioni e bëjnë rastin emergjent.",
+      "red_flags": [
+        "Hipotension/takikardi me hipoperfuzion",
+        "Hematemezë e vazhdueshme ose melena me sinkopë",
+        "Antikoagulim + gjakderdhje e pakontrolluar"
+      ]
+    },
+    {
+      "code": "N23",
+      "urgent": true,
+      "title_sq": "Kolikë renale",
+      "working_diagnosis": "Kolikë renale – N23; gur ureteral i dyshuar",
+      "referral": {
+        "specialist": "Urgjenca / Urolog",
+        "goal": "Kontroll i dhimbjes, konfirmim me imazheri dhe përjashtim i obstruksionit të infektuar, veshkës së vetme ose insuficiencës renale.",
+        "note": "Dhimbje flank me rrezatim në ijë prej ___; shëno temperaturën, hematurinë, vjelljet, urinimin, kreatininën nëse ka dhe analgjezinë e dhënë."
+      },
+      "anamnesis": [
+        "Dhimbje kolikative flank→ijë dhe hematuri",
+        "Temperaturë/rigor, nauze/vjellje",
+        "Gurë të mëparshëm dhe procedura urologjike",
+        "Veshkë e vetme, shtatzëni, CKD dhe barna"
+      ],
+      "exams": [
+        "Vitalet dhe hidrimi",
+        "Abdomeni/CVA tenderness",
+        "Urinalizë",
+        "Kreatininë dhe imazheri sipas protokollit"
+      ],
+      "management": "NSAID është analgjezik i linjës së parë kur nuk ka kundërindikacion; alternativa përdoren sipas profilit. Obstruksioni me infeksion/sepsë është urgjencë urologjike dhe kërkon dekompresion, jo vetëm antibiotik/analgjezi.",
+      "summary": "Kolika renale e pakomplikuar mund të menaxhohet simptomatikisht, por ethet me obstruksion ndryshojnë urgjencën.",
+      "red_flags": [
+        "Ethe/sepsë me obstruksion të dyshuar",
+        "Anuri / veshkë e vetme me obstruksion",
+        "Dhimbje ose vjellje të pakontrollueshme"
+      ]
+    },
+    {
+      "code": "S06.0",
+      "urgent": true,
+      "title_sq": "Commotio cerebri / concussion",
+      "working_diagnosis": "Concussion / commotio cerebri – S06.0; përjashto dëmtim intrakranial",
+      "referral": {
+        "specialist": "Urgjenca / Neurolog-Neurokirurg sipas gjetjeve",
+        "goal": "Vlerësim për CT/observim kur ka faktorë risku dhe përjashtim të hemorragjisë ose frakturës.",
+        "note": "Traumë koke në ___; shëno GCS, LOC/amnezinë, të vjellat, konvulsionin, deficitin fokal, antikoagulantët, mekanizmin dhe kohën e traumës."
+      },
+      "anamnesis": [
+        "Humbje vetëdijeje, amnezi dhe dhimbje koke",
+        "Të vjella, përgjumje, konvulsione",
+        "Mekanizmi dhe energjia e traumës",
+        "Antikoagulantë/çrregullim koagulimi dhe kirurgji cerebrale e mëparshme"
+      ],
+      "exams": [
+        "ABCDE dhe GCS",
+        "Pupilat dhe ekzaminim neurologjik",
+        "Koka/qafa për frakturë dhe traumë cervikale",
+        "CT kokë sipas kritereve të riskut në urgjencë"
+      ],
+      "management": "Refero urgjent kur ka GCS të ulur, deficit fokal, konvulsion, humbje vetëdijeje/amnezi me faktorë risku, të vjella ose antikoagulim. Concussion pa kriter për imazheri kërkon udhëzime të qarta për rikthim nëse simptomat përkeqësohen.",
+      "summary": "Diagnoza concussion nuk duhet të përdoret për të anashkaluar kriteret e CT dhe observimit pas traumës së kokës.",
+      "red_flags": [
+        "GCS i ulur ose përkeqësim i GCS",
+        "Deficit fokal / konvulsion",
+        "Të vjella të përsëritura, shenja frakture bazale ose antikoagulim"
+      ]
+    },
+    {
+      "code": "T50.9",
+      "urgent": true,
+      "title_sq": "Helmim me barna",
+      "working_diagnosis": "Helmim / mbidozim me barna – T50.9; substanca dhe toksidroma në vlerësim",
+      "referral": {
+        "specialist": "Urgjenca / Toksikologji-Intensive",
+        "goal": "Stabilizim, identifikim i substancës, monitorim për toksicitet të vonuar dhe përdorim i antidotit kur indikohet.",
+        "note": "Substanca ___, dozë e mundshme ___, ora ___; shëno vetëdijen, vitalet, glukozën, EKG-në, bashkë-ingestimet, ambalazhin dhe ndërhyrjet e dhëna."
+      },
+      "anamnesis": [
+        "Emri i barit/substancës, sasia maksimale e mundshme dhe koha",
+        "Bashkë-ingestime: alkool, droga, barna tjera",
+        "Simptoma neurologjike, kardiake, respiratore, GI",
+        "Qëllimi aksidental vs vetëlëndim dhe histori psikiatrike"
+      ],
+      "exams": [
+        "ABCDE dhe monitorim",
+        "Glukozë kapilare",
+        "EKG 12-derivacione",
+        "Temperaturë, pupila, lëkura dhe shenja të toksidromës"
+      ],
+      "management": "Trajtimi fillon me mbështetje ABC dhe transport urgjent; kontakto qendrën toksikologjike/udhëzimin lokal kur është i disponueshëm. Antidotet dhe dekontaminimi përdoren vetëm për indikacione specifike; mos indukto të vjella dhe mos jep qymyr aktiv rutinë pa vlerësuar substancën, kohën dhe sigurinë e rrugëve të frymëmarrjes.",
+      "summary": "Në mbidozim, historia e saktë e substancës/koha dhe EKG-ja mund të jenë po aq të rëndësishme sa simptomat fillestare.",
+      "red_flags": [
+        "Ulja e vetëdijes / depresion respirator",
+        "QRS/QTc i zgjatur ose aritmi",
+        "Hipotension, konvulsione ose substancë me toksicitet të vonuar"
       ]
     }
   ]

@@ -13,6 +13,7 @@
   const SEARCH_GLYPH = ICON('<circle cx="11" cy="11" r="6.6"/><path d="m16 16 4.4 4.4"/>');
   const CLINICAL_GROUPS = Object.freeze([
     { id:'core', label:'Kryesore' },
+    { id:'urgent', label:'Urgjencat QKMF' },
     { id:'all', label:'Të gjitha' },
     { id:'general', label:'Të përgjithshme' },
     { id:'cardio', label:'Kardio / DM' },
@@ -26,15 +27,17 @@
   ]);
   const CLINICAL_CORE_CODES = new Set(['I10','E11','J06','R05','R50','R51','R10.4','R42','N39.0','M54']);
   const CLINICAL_GROUP_BY_CODE = Object.freeze({
-    R50:'general', R53:'general',
-    I10:'cardio', E11:'cardio', 'R00.2':'cardio', R60:'cardio',
-    J00:'resp', J06:'resp', R05:'resp', J02:'resp', J01:'resp', J20:'resp', J30:'resp', J45:'resp', J44:'resp', H66:'resp', 'H92.0':'resp', H10:'resp',
-    'R19.7':'gastro', R11:'gastro', 'R10.4':'gastro', R12:'gastro', R14:'gastro', K21:'gastro', K29:'gastro', 'K59.0':'gastro', A09:'gastro',
-    R51:'neuro', R42:'neuro', G43:'neuro', M54:'neuro', 'M54.5':'neuro', 'M54.2':'neuro', 'M54.3':'neuro', M47:'neuro', M51:'neuro', 'M25.5':'neuro', M19:'neuro', 'M79.1':'neuro',
-    'N39.0':'uro',
+    R50:'general', R53:'general', R55:'general', R57:'general', 'T50.9':'general',
+    I10:'cardio', E11:'cardio', 'R00.2':'cardio', R60:'cardio', I20:'cardio', I21:'cardio', I26:'cardio', I47:'cardio', I48:'cardio', I50:'cardio', J81:'cardio', 'R07.4':'cardio',
+    J00:'resp', J06:'resp', R05:'resp', J02:'resp', J01:'resp', J20:'resp', J30:'resp', J45:'resp', J44:'resp', J46:'resp', H66:'resp', 'H92.0':'resp', H10:'resp', 'R06.0':'resp',
+    'R19.7':'gastro', R11:'gastro', 'R10.4':'gastro', 'R10.0':'gastro', R12:'gastro', R14:'gastro', K21:'gastro', K29:'gastro', 'K59.0':'gastro', 'K92.2':'gastro', A09:'gastro',
+    R51:'neuro', R42:'neuro', G43:'neuro', I63:'neuro', G45:'neuro', 'R56.8':'neuro', 'S06.0':'neuro', M54:'neuro', 'M54.5':'neuro', 'M54.2':'neuro', 'M54.3':'neuro', M47:'neuro', M51:'neuro', 'M25.5':'neuro', M19:'neuro', 'M79.1':'neuro',
+    'N39.0':'uro', N23:'uro',
     L30:'derm', B35:'derm',
-    D50:'endo', E03:'endo',
+    D50:'endo', E03:'endo', 'E16.2':'endo', 'E10.1':'endo',
     F41:'mental',
+    'T78.2':'general',
+    'R04.0':'resp',
   });
 
   const clean = value => String(value ?? '').trim();
@@ -146,7 +149,7 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view, sv:'clinical-workspace-v14' });
+    const params = new URLSearchParams({ view, sv:'clinical-workspace-v15' });
     if (view === 'suggest' || view === 'seed' || view === 'hot' || view === 'guidance' || view === 'guidance-list') params.set('advanced', '1');
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
     return `${API}?${params}`;
@@ -276,15 +279,18 @@
       const code = clean(item.code).toUpperCase();
       if (selectedGroup === 'all') return true;
       if (selectedGroup === 'core') return CLINICAL_CORE_CODES.has(code);
+      if (selectedGroup === 'urgent') return Boolean(item.urgent);
       return clinicalGroupForCode(code) === selectedGroup;
     });
     const cardsHtml = visible.map(item => {
       const code = clean(item.code).toUpperCase();
       const isActive = activeCode === code;
+      const isUrgent = Boolean(item.urgent);
       const specialist = clean(item.specialist) || 'Sipas tablosë klinike';
-      return '<button type="button" class="clinical-quick-card' + (isActive ? ' is-active' : '') + '" data-clinical-quick-code="' + escapeHtml(code) + '" aria-pressed="' + (isActive ? 'true' : 'false') + '">' +
+      const meta = isUrgent ? 'URGJENCË · ' + specialist : specialist;
+      return '<button type="button" class="clinical-quick-card' + (isActive ? ' is-active' : '') + (isUrgent ? ' is-urgent' : '') + '" data-clinical-quick-code="' + escapeHtml(code) + '" aria-pressed="' + (isActive ? 'true' : 'false') + '">' +
         '<span class="clinical-quick-code">' + escapeHtml(code) + '</span>' +
-        '<span class="clinical-quick-copy"><strong>' + escapeHtml(clean(item.title_sq)) + '</strong><small>' + escapeHtml(specialist) + '</small></span>' +
+        '<span class="clinical-quick-copy"><strong>' + escapeHtml(clean(item.title_sq)) + '</strong><small>' + escapeHtml(meta) + '</small></span>' +
         '<span class="clinical-quick-arrow" aria-hidden="true">›</span></button>';
     }).join('');
 
@@ -349,6 +355,7 @@
     const requestedCode = clean(state.clinicalGuidanceCode);
     if (!requestedCode && !currentCode) {
       el.clinicalActionPanel.hidden = true;
+      el.clinicalActionPanel.classList.remove('is-urgent');
       el.clinicalActionPanel.innerHTML = '';
       return;
     }
@@ -373,13 +380,17 @@
     const guidance = payload?.guidance;
     if (!payload?.available || !guidance) {
       el.clinicalActionPanel.hidden = true;
+      el.clinicalActionPanel.classList.remove('is-urgent');
       el.clinicalActionPanel.innerHTML = '';
       return;
     }
 
+    el.clinicalActionPanel.classList.toggle('is-urgent', Boolean(guidance.urgent));
+
     const inherited = payload.inherited && payload.inheritedFrom
       ? `<span class="clinical-action-inherited">Udhëzim nga ${escapeHtml(payload.inheritedFrom)}</span>`
       : '';
+    const actionKicker = guidance.urgent ? 'URGJENCË QKMF · Stabilizim + transfer' : 'QKMF · Clinical Action';
     const redFlags = Array.isArray(guidance.red_flags) && guidance.red_flags.length
       ? `<div class="clinical-red-flags">
           <div class="clinical-card-icon is-danger">!</div>
@@ -390,7 +401,7 @@
     el.clinicalActionPanel.innerHTML = `
       <div class="clinical-action-head">
         <div>
-          <span class="clinical-action-kicker">QKMF · Clinical Action</span>
+          <span class="clinical-action-kicker">${escapeHtml(actionKicker)}</span>
           <h3>${escapeHtml(clean(guidance.title_sq) || 'Orientim praktik klinik')}</h3>
           <p>${escapeHtml(payload.disclaimer || '')}</p>
         </div>
