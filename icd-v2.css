@@ -366,6 +366,21 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
   padding:7px 13px 6px;border-bottom:1px solid #eef0f3;background:#fafbfc;
   color:#6f7f91;font-size:9.5px;font-weight:700;letter-spacing:.055em;text-transform:uppercase
 }
+.icd-suggestion-section.is-differential{background:#f3f8ff;color:#3f6586}
+.icd-symptom-intent{
+  display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border-bottom:1px solid #dbe9f7;
+  background:linear-gradient(90deg,#f5faff 0%,#fbfdff 100%);color:#36556f
+}
+.icd-symptom-intent.is-ambiguous{background:#fffaf0;border-bottom-color:#efe1bf;color:#715d2f}
+.icd-symptom-intent-icon{
+  width:25px;height:25px;display:grid;place-items:center;flex:none;border-radius:8px;
+  background:#e4f1ff;color:#356c9a;font-size:13px;font-weight:800
+}
+.icd-symptom-intent.is-ambiguous .icd-symptom-intent-icon{background:#fff0c9;color:#876814}
+.icd-symptom-intent-copy{min-width:0;display:grid;gap:2px}
+.icd-symptom-intent-copy strong{color:#244760;font-size:11.5px;font-weight:750;line-height:1.35}
+.icd-symptom-intent-copy small{color:#6e8497;font-size:10px;line-height:1.4}
+.icd-symptom-intent.is-ambiguous .icd-symptom-intent-copy strong{color:#665321}
 .icd-suggestion-row{
   width:100%;display:grid;grid-template-columns:76px minmax(0,1fr) auto;align-items:center;gap:12px;
   min-height:76px;padding:10px 12px;border:0;border-bottom:1px solid #f0f2f5;background:#fff;
@@ -376,6 +391,9 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 .icd-suggestion-row.is-active{box-shadow:inset 3px 0 0 var(--stripe)}
 .icd-suggestion-row.is-best{background:linear-gradient(90deg,#f8f7ff 0%,#fff 62%)}
 .icd-suggestion-row.is-best:not(.is-active){box-shadow:inset 3px 0 0 rgba(83,58,253,.45)}
+.icd-suggestion-row.is-differential{background:linear-gradient(90deg,#fbfdff 0%,#fff 70%)}
+.icd-suggestion-row.is-differential:not(.is-active){box-shadow:inset 3px 0 0 rgba(61,118,170,.30)}
+.icd-suggestion-row.is-differential .icd-suggestion-code{border-color:#cddff0;background:#eef6fd;color:#376d99}
 .icd-suggestion-row.is-category{background:#fdfdff}
 .icd-suggestion-row.is-category .icd-suggestion-code{border-color:#c8c2ff;background:#f1efff;font-weight:750}
 .icd-suggestion-row.is-category .icd-suggestion-titleline>strong{font-size:13.5px;font-weight:650}
@@ -391,6 +409,10 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 .icd-suggestion-titleline>em{
   flex:none;padding:3px 6px;border:1px solid #d9d5ff;border-radius:999px;background:#f5f3ff;
   color:#594bd8;font-size:8.5px;font-style:normal;font-weight:750;letter-spacing:.015em;white-space:nowrap
+}
+.icd-suggestion-titleline>em.is-differential{border-color:#cfe1f1;background:#edf6fd;color:#3c6e97}
+.icd-symptom-reason{
+  display:block;margin-top:4px;color:#5f7890;font-size:9.7px;line-height:1.35
 }
 .icd-suggestion-copy mark,.icd-suggestion-code mark{
   padding:0;border-radius:2px;background:#fff2a8;color:inherit;font:inherit
@@ -409,6 +431,7 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
   display:inline-flex;align-items:center;min-height:20px;padding:0 6px;border-radius:999px;
   background:#eef4fb;color:#4b6683;font-size:9px;font-weight:750;white-space:nowrap
 }
+.icd-match-source.is-symptom{background:#e9f5ff;color:#32678f}
 .icd-match-chip{display:inline-flex;align-items:center;min-height:22px;padding:0 7px;border:1px solid #e0defe;border-radius:999px;background:#f8f7ff;color:#6558c9;font-size:9.5px;font-weight:600;white-space:nowrap}
 .icd-level-chip{color:#8793a2;font-size:9.5px;white-space:nowrap}
 .icd-suggestion-empty{padding:18px 16px;color:#67778a;text-align:center;font-size:12px}
@@ -469,6 +492,9 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
   .icd-suggestion-titleline{align-items:flex-start;flex-wrap:wrap;gap:4px 6px}
   .icd-suggestion-titleline>strong{flex:1 1 100%;font-size:12.5px;white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
   .icd-suggestion-titleline>em{font-size:8px}
+  .icd-symptom-intent{padding:10px}
+  .icd-symptom-intent-copy strong{font-size:11px}
+  .icd-symptom-reason{font-size:9.5px}
   .icd-family-hint{margin-top:4px}
   .icd-suggestion-copy .icd-suggestion-translation{align-items:flex-start;white-space:normal}
   .icd-suggestion-copy .icd-suggestion-translation span{display:-webkit-box;white-space:normal;-webkit-box-orient:vertical;-webkit-line-clamp:2}

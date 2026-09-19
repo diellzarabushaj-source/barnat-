@@ -1,0 +1,990 @@
+{
+  "schema": "medindex.icd10.symptom-intents.v1",
+  "version": 1,
+  "locale": "sq-XK",
+  "purpose": "Search-assistance only. Maps symptom language to ICD retrieval candidates; weights are retrieval priors, not diagnostic probabilities.",
+  "policy": {
+    "diagnosticDecision": false,
+    "probability": false,
+    "symptomFirst": true,
+    "requiresClinicalContext": true
+  },
+  "concepts": [
+    {
+      "id": "diarrhea",
+      "label_sq": "Diarre",
+      "symptom_code": "R19.7",
+      "aliases": [
+        "diarre",
+        "diare",
+        "diarrhea",
+        "diarrhoea",
+        "barkqitje",
+        "jashtqitje te shpeshta",
+        "jashtqitje ujore",
+        "diarrhoea"
+      ],
+      "candidates": [
+        {
+          "code": "A09",
+          "weight": 1,
+          "reason_sq": "gastroenterit/diarre me origjinë të dyshuar infektive"
+        },
+        {
+          "code": "K52",
+          "weight": 0.82,
+          "reason_sq": "gastroenterit/kolit jo-infektiv"
+        },
+        {
+          "code": "K58",
+          "weight": 0.55,
+          "reason_sq": "sindromë e zorrës së irrituar kur tabloja është kronike/rekurrente"
+        }
+      ],
+      "red_flags": [
+        "dehidrim i rëndë",
+        "gjak në feçe",
+        "dhimbje e fortë abdominale",
+        "temperaturë e lartë persistente"
+      ]
+    },
+    {
+      "id": "nausea-vomiting",
+      "label_sq": "Nauze / vjellje",
+      "symptom_code": "R11",
+      "aliases": [
+        "vjellje",
+        "te vjella",
+        "të vjella",
+        "vjelje",
+        "vjell",
+        "nauze",
+        "nausea",
+        "vomiting",
+        "emesis",
+        "vomitus"
+      ],
+      "candidates": [
+        {
+          "code": "A09",
+          "weight": 0.92,
+          "reason_sq": "gastroenterit akut"
+        },
+        {
+          "code": "K29",
+          "weight": 0.72,
+          "reason_sq": "gastrit/duodenit"
+        },
+        {
+          "code": "G43",
+          "weight": 0.48,
+          "reason_sq": "migrenë me nauze/vjellje"
+        },
+        {
+          "code": "H81",
+          "weight": 0.38,
+          "reason_sq": "çrregullim vestibular me nauze"
+        }
+      ],
+      "red_flags": [
+        "hematemezë",
+        "dhimbje koke e papritur shumë e fortë",
+        "shenja neurologjike",
+        "dehidrim i rëndë"
+      ]
+    },
+    {
+      "id": "headache",
+      "label_sq": "Dhimbje koke",
+      "symptom_code": "R51",
+      "aliases": [
+        "dhimbje koke",
+        "kokedhimbje",
+        "kokëdhimbje",
+        "koka me dhemb",
+        "dhembje koke",
+        "headache",
+        "cephalalgia",
+        "cefalgji",
+        "cephalgia"
+      ],
+      "candidates": [
+        {
+          "code": "G43",
+          "weight": 0.95,
+          "reason_sq": "migrenë"
+        },
+        {
+          "code": "G44",
+          "weight": 0.8,
+          "reason_sq": "sindroma të tjera të kokëdhimbjes"
+        },
+        {
+          "code": "J01",
+          "weight": 0.42,
+          "reason_sq": "sinusit akut kur ka simptoma sinonazale"
+        }
+      ],
+      "red_flags": [
+        "fillim rrufe / thunderclap",
+        "deficit neurologjik",
+        "temperaturë me rigiditet të qafës",
+        "traumë koke"
+      ]
+    },
+    {
+      "id": "dizziness",
+      "label_sq": "Marramendje / vertigo",
+      "symptom_code": "R42",
+      "aliases": [
+        "marramendje",
+        "maramendje",
+        "marramnetje",
+        "trullim",
+        "trullosje",
+        "vertigo",
+        "dizziness",
+        "lightheadedness"
+      ],
+      "candidates": [
+        {
+          "code": "H81",
+          "weight": 0.9,
+          "reason_sq": "çrregullim i funksionit vestibular"
+        },
+        {
+          "code": "I95",
+          "weight": 0.55,
+          "reason_sq": "hipotension"
+        },
+        {
+          "code": "D50",
+          "weight": 0.38,
+          "reason_sq": "anemi nga mungesa e hekurit"
+        },
+        {
+          "code": "E16.2",
+          "weight": 0.32,
+          "reason_sq": "hipoglikemi"
+        }
+      ],
+      "red_flags": [
+        "deficit neurologjik",
+        "sinkopë",
+        "dhimbje gjoksi",
+        "aritmi e rëndësishme"
+      ]
+    },
+    {
+      "id": "abdominal-pain",
+      "label_sq": "Dhimbje barku",
+      "symptom_code": "R10.4",
+      "aliases": [
+        "dhimbje barku",
+        "dhembje barku",
+        "barku me dhemb",
+        "abdominal pain",
+        "stomach pain",
+        "dolor abdominalis",
+        "kolika barku"
+      ],
+      "candidates": [
+        {
+          "code": "K29",
+          "weight": 0.72,
+          "reason_sq": "gastrit/duodenit"
+        },
+        {
+          "code": "A09",
+          "weight": 0.66,
+          "reason_sq": "gastroenterit akut"
+        },
+        {
+          "code": "K59",
+          "weight": 0.48,
+          "reason_sq": "çrregullime funksionale si konstipacioni"
+        },
+        {
+          "code": "N23",
+          "weight": 0.42,
+          "reason_sq": "kolikë renale kur dhimbja është flank/kolikative"
+        },
+        {
+          "code": "N39.0",
+          "weight": 0.3,
+          "reason_sq": "infeksion urinar kur ka simptoma urinare"
+        }
+      ],
+      "red_flags": [
+        "abdomen rigid",
+        "dhimbje e fortë progresive",
+        "hematemezë/melena",
+        "sinkopë/hipotension"
+      ]
+    },
+    {
+      "id": "cough",
+      "label_sq": "Kollë",
+      "symptom_code": "R05",
+      "aliases": [
+        "kolle",
+        "kollë",
+        "kollitem",
+        "kollitje",
+        "cough",
+        "tussis"
+      ],
+      "candidates": [
+        {
+          "code": "J06",
+          "weight": 0.95,
+          "reason_sq": "infeksion akut i rrugëve të sipërme respiratore"
+        },
+        {
+          "code": "J20",
+          "weight": 0.84,
+          "reason_sq": "bronkit akut"
+        },
+        {
+          "code": "J18",
+          "weight": 0.62,
+          "reason_sq": "pneumoni"
+        },
+        {
+          "code": "J45",
+          "weight": 0.48,
+          "reason_sq": "astmë"
+        },
+        {
+          "code": "J44",
+          "weight": 0.4,
+          "reason_sq": "COPD"
+        }
+      ],
+      "red_flags": [
+        "dispne e rëndë",
+        "hemoptizi",
+        "hipoksemi",
+        "dhimbje gjoksi"
+      ]
+    },
+    {
+      "id": "fever",
+      "label_sq": "Temperaturë / ethe",
+      "symptom_code": "R50",
+      "aliases": [
+        "temperature",
+        "temperaturë",
+        "ethe",
+        "ethe te forta",
+        "fever",
+        "febris",
+        "febrile"
+      ],
+      "candidates": [
+        {
+          "code": "J06",
+          "weight": 0.72,
+          "reason_sq": "infeksion respirator akut"
+        },
+        {
+          "code": "J18",
+          "weight": 0.62,
+          "reason_sq": "pneumoni"
+        },
+        {
+          "code": "N39.0",
+          "weight": 0.45,
+          "reason_sq": "infeksion urinar"
+        },
+        {
+          "code": "A09",
+          "weight": 0.38,
+          "reason_sq": "gastroenterit akut"
+        }
+      ],
+      "red_flags": [
+        "alterim i vetëdijes",
+        "hipotension",
+        "dispne",
+        "shenja meningeale"
+      ]
+    },
+    {
+      "id": "sore-throat",
+      "label_sq": "Dhimbje fyti",
+      "symptom_code": "J02",
+      "aliases": [
+        "dhimbje fyti",
+        "dhembje fyti",
+        "fyt i dhimbshem",
+        "fyt i kuq",
+        "sore throat",
+        "pharyngalgia",
+        "odynophagia"
+      ],
+      "candidates": [
+        {
+          "code": "J02",
+          "weight": 1,
+          "reason_sq": "faringit akut"
+        },
+        {
+          "code": "J03",
+          "weight": 0.76,
+          "reason_sq": "tonsilit akut"
+        },
+        {
+          "code": "J06",
+          "weight": 0.6,
+          "reason_sq": "infeksion akut i rrugëve të sipërme respiratore"
+        }
+      ],
+      "red_flags": [
+        "stridor",
+        "pamundësi për të gëlltitur pështymën",
+        "dispne",
+        "ënjtje e shpejtë cervikale"
+      ]
+    },
+    {
+      "id": "dyspnea",
+      "label_sq": "Dispne / vështirësi në frymëmarrje",
+      "symptom_code": "R06.0",
+      "aliases": [
+        "dispne",
+        "veshtiresi ne frymemarrje",
+        "vështirësi në frymëmarrje",
+        "mungese ajri",
+        "nuk mbushem me fryme",
+        "shortness of breath",
+        "dyspnea",
+        "dyspnoea"
+      ],
+      "candidates": [
+        {
+          "code": "J45",
+          "weight": 0.78,
+          "reason_sq": "astmë"
+        },
+        {
+          "code": "J44",
+          "weight": 0.66,
+          "reason_sq": "COPD"
+        },
+        {
+          "code": "J18",
+          "weight": 0.62,
+          "reason_sq": "pneumoni"
+        },
+        {
+          "code": "I50",
+          "weight": 0.56,
+          "reason_sq": "insuficiencë kardiake",
+          "urgent": true
+        },
+        {
+          "code": "I26",
+          "weight": 0.4,
+          "reason_sq": "emboli pulmonare",
+          "urgent": true
+        },
+        {
+          "code": "J81",
+          "weight": 0.38,
+          "reason_sq": "edemë pulmonare",
+          "urgent": true
+        }
+      ],
+      "red_flags": [
+        "dispne në pushim",
+        "cianozë",
+        "hipoksemi",
+        "dhimbje gjoksi",
+        "hipotension"
+      ]
+    },
+    {
+      "id": "chest-pain",
+      "label_sq": "Dhimbje gjoksi",
+      "symptom_code": "R07.4",
+      "aliases": [
+        "dhimbje gjoksi",
+        "dhembje gjoksi",
+        "shtrengim gjoksi",
+        "shtrëngim gjoksi",
+        "chest pain",
+        "chest tightness",
+        "dolor thoracis"
+      ],
+      "candidates": [
+        {
+          "code": "I20",
+          "weight": 0.66,
+          "reason_sq": "anginë pektoris",
+          "urgent": true
+        },
+        {
+          "code": "I21",
+          "weight": 0.54,
+          "reason_sq": "infarkt akut i miokardit",
+          "urgent": true
+        },
+        {
+          "code": "K21",
+          "weight": 0.42,
+          "reason_sq": "refluks gastroezofageal"
+        },
+        {
+          "code": "I26",
+          "weight": 0.3,
+          "reason_sq": "emboli pulmonare",
+          "urgent": true
+        }
+      ],
+      "red_flags": [
+        "dhimbje me dispne/djersitje/sinkopë",
+        "dhimbje e re e fortë",
+        "instabilitet hemodinamik"
+      ]
+    },
+    {
+      "id": "palpitations",
+      "label_sq": "Palpitacione",
+      "symptom_code": "R00.2",
+      "aliases": [
+        "palpitacione",
+        "rrahje te shpejta",
+        "rrahje të shpejta",
+        "zemra po rreh shpejt",
+        "heart racing",
+        "palpitations",
+        "palpitationes"
+      ],
+      "candidates": [
+        {
+          "code": "I47",
+          "weight": 0.72,
+          "reason_sq": "takikardi paroksizmale"
+        },
+        {
+          "code": "I48",
+          "weight": 0.62,
+          "reason_sq": "fibrilacion/flutter atrial"
+        },
+        {
+          "code": "F41",
+          "weight": 0.44,
+          "reason_sq": "çrregullim ankthi"
+        },
+        {
+          "code": "E05",
+          "weight": 0.28,
+          "reason_sq": "tirotoksikozë"
+        }
+      ],
+      "red_flags": [
+        "sinkopë",
+        "dhimbje gjoksi",
+        "dispne",
+        "hipotension"
+      ]
+    },
+    {
+      "id": "fatigue",
+      "label_sq": "Lodhje / dobësi",
+      "symptom_code": "R53",
+      "aliases": [
+        "lodhje",
+        "jam i lodhur",
+        "jam e lodhur",
+        "dobesi",
+        "dobësi",
+        "fuqi e ulet",
+        "fatigue",
+        "weakness",
+        "asthenia"
+      ],
+      "candidates": [
+        {
+          "code": "D50",
+          "weight": 0.62,
+          "reason_sq": "anemi nga mungesa e hekurit"
+        },
+        {
+          "code": "E03",
+          "weight": 0.52,
+          "reason_sq": "hipotiroidizëm"
+        },
+        {
+          "code": "E11",
+          "weight": 0.36,
+          "reason_sq": "diabet mellitus tip 2"
+        },
+        {
+          "code": "F41",
+          "weight": 0.26,
+          "reason_sq": "çrregullim ankthi"
+        }
+      ],
+      "red_flags": [
+        "dobësi fokale",
+        "alterim i vetëdijes",
+        "dispne",
+        "gjakderdhje"
+      ]
+    },
+    {
+      "id": "dysuria",
+      "label_sq": "Djegie gjatë urinimit",
+      "symptom_code": "R30",
+      "aliases": [
+        "djegie gjate urinimit",
+        "djegie gjatë urinimit",
+        "urinim me djegie",
+        "dysuria",
+        "dizuri",
+        "burning urination"
+      ],
+      "candidates": [
+        {
+          "code": "N39.0",
+          "weight": 0.95,
+          "reason_sq": "infeksion urinar"
+        },
+        {
+          "code": "N30",
+          "weight": 0.82,
+          "reason_sq": "cistit"
+        }
+      ],
+      "red_flags": [
+        "temperaturë me dhimbje flank",
+        "shtatzëni",
+        "retencion urinar",
+        "hematuri e dukshme"
+      ]
+    },
+    {
+      "id": "urinary-frequency",
+      "label_sq": "Urinim i shpeshtë",
+      "symptom_code": "R35",
+      "aliases": [
+        "urinim i shpeshte",
+        "urinim i shpeshtë",
+        "shkoj shpesh ne banjo",
+        "frequent urination",
+        "frequency of micturition",
+        "pollakiuria"
+      ],
+      "candidates": [
+        {
+          "code": "N39.0",
+          "weight": 0.72,
+          "reason_sq": "infeksion urinar"
+        },
+        {
+          "code": "E11",
+          "weight": 0.52,
+          "reason_sq": "diabet mellitus tip 2"
+        },
+        {
+          "code": "N40",
+          "weight": 0.3,
+          "reason_sq": "hiperplazi prostatike te pacientët meshkuj"
+        }
+      ],
+      "red_flags": [
+        "retencion urinar",
+        "ethe me dhimbje flank",
+        "hematuri e dukshme"
+      ]
+    },
+    {
+      "id": "back-pain",
+      "label_sq": "Dhimbje shpine / probleme me unaza",
+      "symptom_code": "M54",
+      "aliases": [
+        "dhimbje shpine",
+        "dhembje shpine",
+        "dhimbje mesi",
+        "dhembje mesi",
+        "probleme me unaza",
+        "unazat",
+        "problem me disqe",
+        "disku",
+        "disqet",
+        "back pain",
+        "low back pain",
+        "lumbago",
+        "dorsalgia"
+      ],
+      "candidates": [
+        {
+          "code": "M54",
+          "weight": 1,
+          "reason_sq": "dorsalgji/dhimbje shpine"
+        },
+        {
+          "code": "M47",
+          "weight": 0.82,
+          "reason_sq": "spondilozë / ndryshime degjenerative"
+        },
+        {
+          "code": "M51",
+          "weight": 0.78,
+          "reason_sq": "çrregullime të disqeve intervertebrale"
+        },
+        {
+          "code": "M54.3",
+          "weight": 0.58,
+          "reason_sq": "ishialgji kur dhimbja rrezaton në këmbë"
+        }
+      ],
+      "red_flags": [
+        "dobësi progresive e këmbëve",
+        "anestezi saddle",
+        "çrregullim i urinimit/defekimit",
+        "traumë e rëndë"
+      ]
+    },
+    {
+      "id": "neck-pain",
+      "label_sq": "Dhimbje qafe",
+      "symptom_code": "M54.2",
+      "aliases": [
+        "dhimbje qafe",
+        "dhembje qafe",
+        "qafa me dhemb",
+        "cervicalgia",
+        "neck pain",
+        "cervical pain"
+      ],
+      "candidates": [
+        {
+          "code": "M54.2",
+          "weight": 1,
+          "reason_sq": "cervicalgji"
+        },
+        {
+          "code": "M47",
+          "weight": 0.7,
+          "reason_sq": "spondilozë"
+        },
+        {
+          "code": "M50",
+          "weight": 0.64,
+          "reason_sq": "çrregullime të disqeve cervikale"
+        }
+      ],
+      "red_flags": [
+        "traumë",
+        "deficit neurologjik",
+        "ethe me rigiditet të qafës"
+      ]
+    },
+    {
+      "id": "sciatica",
+      "label_sq": "Shiatik / dhimbje që rrezaton në këmbë",
+      "symptom_code": "M54.3",
+      "aliases": [
+        "shiatik",
+        "ishialgji",
+        "sciatica",
+        "dhimbje qe shkon ne kembe",
+        "dhimbje që shkon në këmbë",
+        "dhimbje nga shpina ne kembe"
+      ],
+      "candidates": [
+        {
+          "code": "M54.3",
+          "weight": 1,
+          "reason_sq": "ishialgji"
+        },
+        {
+          "code": "M51",
+          "weight": 0.72,
+          "reason_sq": "çrregullim i diskut intervertebral"
+        }
+      ],
+      "red_flags": [
+        "dobësi progresive",
+        "saddle anesthesia",
+        "retencion/inkontinencë urinare"
+      ]
+    },
+    {
+      "id": "joint-pain",
+      "label_sq": "Dhimbje artikulare",
+      "symptom_code": "M25.5",
+      "aliases": [
+        "dhimbje nyjesh",
+        "dhimbje artikulare",
+        "dhembje nyjesh",
+        "joint pain",
+        "arthralgia",
+        "artralgji"
+      ],
+      "candidates": [
+        {
+          "code": "M19",
+          "weight": 0.72,
+          "reason_sq": "artrozë"
+        },
+        {
+          "code": "M06",
+          "weight": 0.42,
+          "reason_sq": "artrit reumatoid"
+        },
+        {
+          "code": "M10",
+          "weight": 0.3,
+          "reason_sq": "gutë"
+        }
+      ],
+      "red_flags": [
+        "nyje e kuqe e nxehtë me temperaturë",
+        "pamundësi e menjëhershme për ngarkesë",
+        "traumë e rëndë"
+      ]
+    },
+    {
+      "id": "myalgia",
+      "label_sq": "Dhimbje muskulore",
+      "symptom_code": "M79.1",
+      "aliases": [
+        "dhimbje muskulore",
+        "dhembje muskujsh",
+        "muskujt me dhembin",
+        "myalgia",
+        "mialgji",
+        "muscle pain"
+      ],
+      "candidates": [
+        {
+          "code": "M79",
+          "weight": 0.76,
+          "reason_sq": "çrregullime të indeve të buta / mialgji"
+        },
+        {
+          "code": "J11",
+          "weight": 0.34,
+          "reason_sq": "grip kur shoqërohet me ethe/simptoma respiratore"
+        }
+      ],
+      "red_flags": [
+        "dobësi e rëndë muskulore",
+        "urinë e errët",
+        "temperaturë e lartë me alterim të gjendjes"
+      ]
+    },
+    {
+      "id": "ear-pain",
+      "label_sq": "Dhimbje veshi",
+      "symptom_code": "H92.0",
+      "aliases": [
+        "dhimbje veshi",
+        "dhembje veshi",
+        "veshi me dhemb",
+        "otalgia",
+        "ear pain",
+        "otalgji"
+      ],
+      "candidates": [
+        {
+          "code": "H66",
+          "weight": 0.88,
+          "reason_sq": "otit media"
+        },
+        {
+          "code": "H60",
+          "weight": 0.7,
+          "reason_sq": "otit externa"
+        }
+      ],
+      "red_flags": [
+        "ënjtje retroaurikulare",
+        "deficit neurologjik",
+        "temperaturë e lartë te pacient i rënduar"
+      ]
+    },
+    {
+      "id": "rash",
+      "label_sq": "Skuqje / rash",
+      "symptom_code": "R21",
+      "aliases": [
+        "rash",
+        "skuqje",
+        "puçrra",
+        "puqrra",
+        "pucrra",
+        "ekzantem",
+        "exanthem",
+        "skin rash"
+      ],
+      "candidates": [
+        {
+          "code": "L30",
+          "weight": 0.7,
+          "reason_sq": "dermatit"
+        },
+        {
+          "code": "L50",
+          "weight": 0.56,
+          "reason_sq": "urtikarie"
+        },
+        {
+          "code": "B35",
+          "weight": 0.42,
+          "reason_sq": "dermatofitozë"
+        },
+        {
+          "code": "B86",
+          "weight": 0.3,
+          "reason_sq": "zgjebe"
+        }
+      ],
+      "red_flags": [
+        "dispne/ënjtje e buzëve-gjuhës",
+        "rash purpurik që nuk zbardhet",
+        "përfshirje mukozale e rëndë"
+      ]
+    },
+    {
+      "id": "itching",
+      "label_sq": "Kruarje",
+      "symptom_code": "L29",
+      "aliases": [
+        "kruarje",
+        "kruajtje",
+        "me kruhet",
+        "pruritus",
+        "itching",
+        "itch"
+      ],
+      "candidates": [
+        {
+          "code": "L30",
+          "weight": 0.66,
+          "reason_sq": "dermatit"
+        },
+        {
+          "code": "L50",
+          "weight": 0.54,
+          "reason_sq": "urtikarie"
+        },
+        {
+          "code": "B86",
+          "weight": 0.44,
+          "reason_sq": "zgjebe"
+        },
+        {
+          "code": "B35",
+          "weight": 0.38,
+          "reason_sq": "dermatofitozë"
+        }
+      ],
+      "red_flags": [
+        "anafilaksi",
+        "rash me përfshirje mukozale",
+        "verdhezë e re me pruritus të rëndë"
+      ]
+    },
+    {
+      "id": "heartburn",
+      "label_sq": "Urth / djegie retrosternale",
+      "symptom_code": "R12",
+      "aliases": [
+        "urth",
+        "djegie ne gjoks pas buke",
+        "djegie retrosternale",
+        "heartburn",
+        "pyrosis"
+      ],
+      "candidates": [
+        {
+          "code": "K21",
+          "weight": 0.96,
+          "reason_sq": "refluks gastroezofageal"
+        },
+        {
+          "code": "K29",
+          "weight": 0.48,
+          "reason_sq": "gastrit/duodenit"
+        }
+      ],
+      "red_flags": [
+        "dhimbje gjoksi me sforcim",
+        "dispne/djersitje",
+        "disfagi progresive",
+        "gjakderdhje gastrointestinale"
+      ]
+    },
+    {
+      "id": "constipation",
+      "label_sq": "Konstipacion",
+      "symptom_code": "K59.0",
+      "aliases": [
+        "konstipacion",
+        "kapsllek",
+        "kapsllëk",
+        "nuk dal jashte",
+        "constipation",
+        "obstipatio"
+      ],
+      "candidates": [
+        {
+          "code": "K59",
+          "weight": 1,
+          "reason_sq": "çrregullim funksional intestinal / konstipacion"
+        }
+      ],
+      "red_flags": [
+        "obstruksion i dyshuar",
+        "dhimbje e fortë me distension",
+        "gjakderdhje",
+        "humbje peshe e pashpjeguar"
+      ]
+    },
+    {
+      "id": "edema",
+      "label_sq": "Ënjtje / edemë",
+      "symptom_code": "R60",
+      "aliases": [
+        "edeme",
+        "edemë",
+        "enjtje",
+        "ënjtje",
+        "kembe te enjtura",
+        "këmbë të ënjtura",
+        "swelling",
+        "oedema",
+        "edema"
+      ],
+      "candidates": [
+        {
+          "code": "I50",
+          "weight": 0.54,
+          "reason_sq": "insuficiencë kardiake"
+        },
+        {
+          "code": "I87",
+          "weight": 0.46,
+          "reason_sq": "sëmundje venoze"
+        },
+        {
+          "code": "I82",
+          "weight": 0.28,
+          "reason_sq": "trombozë venoze kur ënjtja është unilaterale/akute",
+          "urgent": true
+        }
+      ],
+      "red_flags": [
+        "ënjtje unilaterale akute me dhimbje",
+        "dispne",
+        "dhimbje gjoksi",
+        "edemë e shpejtë e fytyrës/gjuhës"
+      ]
+    }
+  ]
+}

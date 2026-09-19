@@ -15,10 +15,10 @@ const handler = fs.readFileSync(path.join(root, 'lib/icd-advanced-handler.js'), 
 assert.match(html, /id="icdSearchBox"[^>]*role="combobox"/);
 assert.match(html, /id="icdSuggestions"[^>]*role="listbox"/);
 assert.match(html, /aria-autocomplete="list"/);
-assert.match(html, /Kërko ICD, diagnozë, Latin, English/);
+assert.match(html, /Kërko ICD, diagnozë, simptomë, Latin, English/);
 assert.match(html, /id="icdSearchClear"/);
-assert.match(html, /icd-v2\.css\?v=family-common-v9/);
-assert.match(html, /icd-v2\.js\?v=family-common-v9/);
+assert.match(html, /icd-v2\.css\?v=symptom-intent-v10/);
+assert.match(html, /icd-v2\.js\?v=symptom-intent-v10/);
 assert.match(html, /Mjekësi familjare/);
 assert.match(html, /Urgjenca QKMF/);
 assert.match(html, /45 të shpeshta/);
@@ -68,7 +68,7 @@ assert.match(js, /lang:'LA'/);
 assert.match(js, /icd-suggestion-translation/);
 assert.match(js, /Kategoritë kryesore/);
 assert.match(js, /Nënkategoritë/);
-assert.match(js, /sv:'instant-v6'/);
+assert.match(js, /sv:'symptom-v10'/);
 assert.match(js, /params\.set\('advanced', '1'\)/);
 assert.match(js, /function localCategoryPreview\(query, limit = 8\)/);
 assert.match(js, /function warmSearchSeed\(\)/);
@@ -76,13 +76,21 @@ assert.match(js, /requestIdleCallback/);
 assert.match(js, /function setActiveSuggestion\(index\)/);
 assert.match(js, /event\.key === '\/'/);
 
-assert.match(handler, /clinical-ranking-v6/);
+assert.match(handler, /clinical-ranking-v7/);
 assert.match(handler, /trigram-candidate-index/);
 assert.match(handler, /category-first/);
 assert.match(handler, /latin-parent-fallback/);
 assert.match(handler, /MAX_PAYLOAD_CACHE = 240/);
 assert.match(handler, /function seedPayload\(dataset, loaded = \{\}\)/);
 assert.match(handler, /category-seed/);
+assert.match(handler, /symptom-intent/);
+assert.match(handler, /symptom-differential-retrieval/);
+assert.match(handler, /symptom-red-flags/);
+assert.match(js, /E kuptova si:/);
+assert.match(js, /Nga simptoma · diagnoza të mundshme/);
+assert.match(js, /Kandidat diferencial/);
+assert.match(css, /\.icd-symptom-intent\{/);
+assert.match(css, /\.icd-suggestion-row\.is-differential/);
 
 const target = {
   code:'I10',
