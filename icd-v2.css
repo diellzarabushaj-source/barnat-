@@ -751,3 +751,35 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
   .clinical-quick-hub,.clinical-action-panel{margin-left:8px;margin-right:8px}
   .clinical-quick-copy small{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1}
 }
+
+
+/* Emergency clinical state v15 -------------------------------------------- */
+.clinical-filter-chip[data-clinical-group="urgent"]{
+  border-color:#efc9ce;background:#fffafa;color:#a63845
+}
+.clinical-filter-chip[data-clinical-group="urgent"]:hover{
+  border-color:#df9ea7;background:#fff5f6;color:#962d39
+}
+.clinical-filter-chip[data-clinical-group="urgent"].is-active{
+  border-color:#b93443;background:#b93443;color:#fff;box-shadow:0 4px 12px rgba(185,52,67,.18)
+}
+.clinical-quick-card.is-urgent{border-color:#edd6d9;background:linear-gradient(135deg,#fffafa,#fff)}
+.clinical-quick-card.is-urgent:hover{border-color:#dfabb2;background:#fff7f8}
+.clinical-quick-card.is-urgent .clinical-quick-code{
+  border-color:#efcbd0;background:#fff0f2;color:#ad3442
+}
+.clinical-quick-card.is-urgent .clinical-quick-copy small{color:#ad4450;font-weight:750}
+.clinical-quick-card.is-urgent.is-active{
+  border-color:#c54b58;background:#fff0f2;box-shadow:0 0 0 2px rgba(197,75,88,.08)
+}
+.clinical-action-panel.is-urgent{border-color:#e7bfc5;box-shadow:0 12px 32px rgba(120,35,47,.08)}
+.clinical-action-panel.is-urgent .clinical-action-head{
+  background:linear-gradient(135deg,#fffafa 0%,#fff 100%);border-bottom-color:#f0d9dc
+}
+.clinical-action-panel.is-urgent .clinical-action-kicker{color:#af3442}
+.clinical-action-panel.is-urgent .clinical-action-code{border-color:#ebc5ca;background:#fff0f2;color:#a8323f}
+.clinical-action-panel.is-urgent .clinical-working-diagnosis{
+  border-bottom-color:#f0d7da;background:linear-gradient(90deg,#fff1f2 0%,#fff8f8 100%)
+}
+.clinical-action-panel.is-urgent .clinical-working-label{color:#a03b47}
+.clinical-action-panel.is-urgent .clinical-working-diagnosis strong{color:#7f2d36}
