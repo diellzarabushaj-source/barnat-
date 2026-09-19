@@ -1,4 +1,4 @@
-name: ICD Latin Dataset Split
+name: ICD Latin Canonical Category Extract
 
 on:
   push:
@@ -9,66 +9,94 @@ permissions:
   contents: write
 
 jobs:
-  split:
+  extract:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Split extracted Batut dataset into reviewable chunks
+      - name: Install PDF tools
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+      - name: Download official Batut ICD-10 volume
+        shell: bash
+        run: |
+          set -euo pipefail
+          urls=(
+            "https://www.rfzo.rs/download/dsg/MKB102010Knjiga1%281%29.pdf"
+            "http://www.batut.org.rs/download/MKB102010Knjiga1.pdf"
+            "https://www.batut.org.rs/download/MKB102010Knjiga1.pdf"
+          )
+          for url in "${urls[@]}"; do
+            if curl -fL --retry 3 --retry-delay 2 -A "Mozilla/5.0 MedIndex ICD data audit" "$url" -o /tmp/mkb10.pdf; then
+              file /tmp/mkb10.pdf | grep -qi pdf && break
+            fi
+          done
+          file /tmp/mkb10.pdf | grep -qi pdf
+          pdftotext -layout -enc UTF-8 /tmp/mkb10.pdf /tmp/mkb10.txt
+      - name: Parse canonical Latin category headings
         shell: python
         run: |
-          import json, pathlib, collections, re
-          src = pathlib.Path('data/icd-latin-batut-2010.json')
-          data = json.loads(src.read_text(encoding='utf-8'))
-          rows = data['rows']
+          import json, re, pathlib, hashlib, collections
+          lines = pathlib.Path('/tmp/mkb10.txt').read_text(encoding='utf-8', errors='replace').splitlines()
 
-          category_dir = pathlib.Path('data/icd-latin-batut/categories')
-          all_dir = pathlib.Path('data/icd-latin-batut/all')
-          category_dir.mkdir(parents=True, exist_ok=True)
-          all_dir.mkdir(parents=True, exist_ok=True)
-
-          categories = collections.defaultdict(list)
-          all_rows = collections.defaultdict(list)
-          for row in rows:
-              code = row['code']
-              if not re.fullmatch(r'[A-Z][0-9]{2}(?:\.[0-9A-Z]{1,2})?', code):
+          # Canonical three-character categories in Batut's detailed tabular list
+          # are printed as e.g. "A01.-  Febris typhica et febris paratyphica".
+          # This deliberately excludes the earlier Serbian summary list.
+          category_re = re.compile(r'^\s*([A-Z][0-9]{2})\.\-\s{2,}(.+?)\s*$')
+          values = collections.defaultdict(list)
+          for line_no, raw in enumerate(lines, 1):
+              m = category_re.match(raw)
+              if not m:
                   continue
-              all_rows[code[0]].append(row)
-              if re.fullmatch(r'[A-Z][0-9]{2}', code):
-                  categories[code[0]].append(row)
+              code = m.group(1)
+              title = re.sub(r'\s+', ' ', m.group(2)).strip(' -–—')
+              if title:
+                  values[code].append({'title': title, 'line': line_no})
 
-          for letter, values in categories.items():
-              (category_dir / f'{letter}.json').write_text(
-                  json.dumps(values, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
-              )
-          for letter, values in all_rows.items():
-              (all_dir / f'{letter}.json').write_text(
-                  json.dumps(values, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          rows = []
+          conflicts = []
+          for code in sorted(values):
+              distinct = []
+              for item in values[code]:
+                  if item['title'] not in distinct:
+                      distinct.append(item['title'])
+              # The first .- heading in the detailed list is the canonical category heading.
+              first = values[code][0]
+              rows.append({'code':code, 'title_la':first['title'], 'source_line':first['line']})
+              if len(distinct) > 1:
+                  conflicts.append({'code':code,'titles':distinct})
+
+          assert len(rows) >= 2000, f'Only {len(rows)} canonical categories parsed'
+          outdir = pathlib.Path('data/icd-latin-batut/canonical-categories')
+          outdir.mkdir(parents=True, exist_ok=True)
+          by_letter = collections.defaultdict(list)
+          for row in rows:
+              by_letter[row['code'][0]].append(row)
+          for letter, chunk in by_letter.items():
+              (outdir / f'{letter}.json').write_text(
+                  json.dumps(chunk, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
               )
 
-          category_conflicts = []
-          for conflict in data.get('conflicts', []):
-              if re.fullmatch(r'[A-Z][0-9]{2}', conflict.get('code','')):
-                  category_conflicts.append(conflict)
-          pathlib.Path('data/icd-latin-batut/category-conflicts.json').write_text(
-              json.dumps(category_conflicts, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
-          )
           summary = {
-              'source': data['source'],
-              'counts': data['counts'],
-              'category_conflicts': len(category_conflicts),
-              'letters': {k: len(v) for k,v in sorted(categories.items())},
+            'schema':'medindex.icd10.latin.batut.canonical-categories.v1',
+            'publisher':'Institut za javno zdravlje Srbije Dr Milan Jovanovic Batut',
+            'work':'MKB-10, Deseta revizija, Knjiga 1, Tabelarna lista, izdanje 2010',
+            'source_url':'https://www.rfzo.rs/download/dsg/MKB102010Knjiga1%281%29.pdf',
+            'sha256_pdf':hashlib.sha256(pathlib.Path('/tmp/mkb10.pdf').read_bytes()).hexdigest(),
+            'count':len(rows),
+            'conflicts':len(conflicts),
+            'letters':{k:len(v) for k,v in sorted(by_letter.items())},
+            'samples':{r['code']:r['title_la'] for r in rows if r['code'] in {'A00','A01','E11','I10','I21','J18','N39','R51'}},
           }
-          pathlib.Path('data/icd-latin-batut/summary.json').write_text(
+          pathlib.Path('data/icd-latin-batut/canonical-summary.json').write_text(
               json.dumps(summary, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
           )
           print(json.dumps(summary, ensure_ascii=False, indent=2))
-      - name: Commit chunks
+      - name: Commit canonical chunks
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/icd-latin-batut/
+          git add data/icd-latin-batut/canonical-categories data/icd-latin-batut/canonical-summary.json
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "data(icd): split Batut Latin dataset for import [skip ci]"
+          git commit -m "data(icd): extract canonical Batut Latin categories [skip ci]"
           git push
