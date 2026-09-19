@@ -540,7 +540,7 @@
         map.push(index);
       }
     }
-    return { original, normalized:normalized.replace(/\s+/g, ' '), map };
+    return { original, normalized, map };
   }
 
   function highlightSearchText(value, query) {
