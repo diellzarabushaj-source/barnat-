@@ -80,7 +80,8 @@ assert.equal(result.rows[0].searchMatch.field, 'la');
 assert.equal(result.rows[0].searchMatch.type, 'fuzzy-la');
 
 const chestCodes = Search.suggestDataset(dataset, 'dhimbje gjoksi', { limit:12 }).rows.map(node => node.code);
-assert.equal(chestCodes[0], 'R07.4');
+assert.equal(chestCodes[0], 'R07', 'Broad text search must orient with the three-character category first.');
+assert.ok(chestCodes.indexOf('R07.4') > chestCodes.indexOf('R07'), 'Specific subcategory must follow its parent category.');
 assert.ok(!chestCodes.includes('I21'), 'Symptom search must not infer myocardial infarction.');
 
 const compact = Handler._test.compactNode(nodes[3], dataset);
@@ -102,9 +103,12 @@ const suggestion = Handler._test.suggestionPayload(dataset, { q:'A00 1' }, {
   sourceRevision:'test-revision', stale:false, loadedAt:Date.now(), csvBytes:100, fetchMs:1, buildMs:1,
 });
 assert.equal(suggestion.rows[0].code, 'A00.1');
-assert.ok(['clinical-ranking-v3','clinical-ranking-v4'].includes(suggestion.meta.search.engine));
+assert.equal(suggestion.meta.search.engine, 'clinical-ranking-v5');
 assert.ok(suggestion.meta.search.supports.includes('normalized-code'));
 assert.ok(suggestion.meta.search.supports.includes('breadcrumbs'));
 assert.ok(suggestion.meta.search.supports.includes('la-title'));
+assert.ok(suggestion.meta.search.supports.includes('category-first'));
+assert.ok(suggestion.meta.search.supports.includes('family-grouping'));
+assert.ok(suggestion.meta.search.supports.includes('latin-parent-fallback'));
 
 console.log('Normalized ICD codes, editorial aliases, breadcrumbs and bounded search cache passed.');

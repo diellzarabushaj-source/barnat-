@@ -1,13 +1,43 @@
 {
   "schema": "medindex.icd10.latin.batut-reviewed-subcodes.v1",
   "generated_date": "2026-09-19",
-  "policy": "Only individually reviewed Batut subcategory rows are included. No bulk raw Latin import is allowed because some raw extraction rows contain Serbian or truncated text.",
+  "policy": "Only individually reviewed Batut subcategory rows are included. No bulk raw Latin import is allowed because some raw extraction rows contain Serbian or truncated text. Influenza and edema subcodes included here were reviewed individually against their extracted detailed headings.",
   "source": {
     "publisher": "Institut za javno zdravlje Srbije Dr Milan Jovanovic Batut",
     "work": "MKB-10, Deseta revizija, Knjiga 1, Tabelarna lista, izdanje 2010",
     "url": "https://www.rfzo.rs/download/dsg/MKB102010Knjiga1%281%29.pdf"
   },
   "rows": [
+    {
+      "code": "J10.0",
+      "title_la": "Influenza cum pneumonia, virus influencae aliud identificatum",
+      "source_line": 24365
+    },
+    {
+      "code": "J10.1",
+      "title_la": "Influenza cum symptomatis respiratoriis aliis, virus influenzae aliud identificatum",
+      "source_line": 24368
+    },
+    {
+      "code": "J10.8",
+      "title_la": "Influenza cum symptomatis aliis, virus influenzae aliud identificatum",
+      "source_line": 24385
+    },
+    {
+      "code": "J11.0",
+      "title_la": "Influenza cum pneumonia, virus non identificatum",
+      "source_line": 24401
+    },
+    {
+      "code": "J11.1",
+      "title_la": "Influenza cum symptomatis respiratoriis aliis, virus non identificatum",
+      "source_line": 24404
+    },
+    {
+      "code": "J11.8",
+      "title_la": "Influenza cum symptomatis aliis, virus non identificatum",
+      "source_line": 24412
+    },
     {
       "code": "J68.1",
       "title_la": "Oedema pulmonis chemicale, gasogenes, fumogenes et vaporogenes",

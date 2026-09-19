@@ -36,9 +36,14 @@ assert.match(js, /function suggestionTranslations\(node\)/);
 assert.match(js, /lang:'EN'/);
 assert.match(js, /lang:'LA'/);
 assert.match(js, /icd-suggestion-translation/);
+assert.match(js, /Kategoritë kryesore/);
+assert.match(js, /Nënkategoritë/);
+assert.match(js, /sv:'hierarchy-v5'/);
 
-assert.match(handler, /clinical-ranking-v4/);
+assert.match(handler, /clinical-ranking-v5/);
 assert.match(handler, /trigram-candidate-index/);
+assert.match(handler, /category-first/);
+assert.match(handler, /latin-parent-fallback/);
 assert.match(handler, /MAX_PAYLOAD_CACHE = 240/);
 
 const target = {
@@ -89,5 +94,42 @@ assert.equal(FullIcd.LATIN_TITLE_BY_CODE.get('J81'), 'Oedema pulmonum');
 assert.equal(FullIcd.LATIN_TITLE_BY_CODE.get('J68.1'), 'Oedema pulmonis chemicale, gasogenes, fumogenes et vaporogenes');
 assert.equal(FullIcd.LATIN_TITLE_BY_CODE.get('S06.1'), 'Oedema cerebri traumaticum');
 assert.equal(FullIcd.LATIN_TITLE_BY_CODE.get('O10-O16'), 'Oedema, proteinuria et hypertonia in graviditate, partu et puerperio');
+assert.equal(FullIcd.LATIN_TITLE_BY_CODE.get('J10.1'), 'Influenza cum symptomatis respiratoriis aliis, virus influenzae aliud identificatum');
+assert.equal(FullIcd.LATIN_TITLE_BY_CODE.get('J11.1'), 'Influenza cum symptomatis respiratoriis aliis, virus non identificatum');
 
-console.log('ICD command-center UI, EN+LA autocomplete, indexed multilingual search and typo correction passed.');
+const fluDataset = {
+  nodes:[
+    { code:'J10', level:'category', chapter:'X', block:'J09-J18', parentCode:'J09-J18', englishTitle:'Influenza due to other identified influenza virus', albanianDraft:'Gripi nga virus tjetër i identifikuar i gripit', latinTitle:'Influenza, virus influencae aliud identificatum', displayTitle:'Gripi nga virus tjetër i identifikuar i gripit', sourceRow:1 },
+    { code:'J11', level:'category', chapter:'X', block:'J09-J18', parentCode:'J09-J18', englishTitle:'Influenza, virus not identified', albanianDraft:'Gripi, virusi i paidentifikuar', latinTitle:'Influenza, virus non identificatum', displayTitle:'Gripi, virusi i paidentifikuar', sourceRow:2 },
+    { code:'J10.0', level:'subcategory', chapter:'X', block:'J09-J18', parentCode:'J10', englishTitle:'Influenza with pneumonia, other influenza virus identified', albanianDraft:'Grip me pneumoni, virus tjetër i gripit i identifikuar', latinTitle:'Influenza cum pneumonia, virus influencae aliud identificatum', displayTitle:'Grip me pneumoni, virus tjetër i gripit i identifikuar', sourceRow:3 },
+    { code:'J10.1', level:'subcategory', chapter:'X', block:'J09-J18', parentCode:'J10', englishTitle:'Influenza with other respiratory manifestations, other influenza virus identified', albanianDraft:'Grip me manifestime të tjera respiratore', latinTitle:'Influenza cum symptomatis respiratoriis aliis, virus influenzae aliud identificatum', displayTitle:'Grip me manifestime të tjera respiratore', sourceRow:4 },
+    { code:'J10.8', level:'subcategory', chapter:'X', block:'J09-J18', parentCode:'J10', englishTitle:'Influenza with other manifestations, other influenza virus identified', albanianDraft:'Grip me manifestime të tjera', latinTitle:'Influenza cum symptomatis aliis, virus influenzae aliud identificatum', displayTitle:'Grip me manifestime të tjera', sourceRow:5 },
+    { code:'J11.0', level:'subcategory', chapter:'X', block:'J09-J18', parentCode:'J11', englishTitle:'Influenza with pneumonia, virus not identified', albanianDraft:'Grip me pneumoni, virus i paidentifikuar', latinTitle:'Influenza cum pneumonia, virus non identificatum', displayTitle:'Grip me pneumoni, virus i paidentifikuar', sourceRow:6 },
+    { code:'J11.1', level:'subcategory', chapter:'X', block:'J09-J18', parentCode:'J11', englishTitle:'Influenza with other respiratory manifestations, virus not identified', albanianDraft:'Grip me manifestime të tjera respiratore, virus i paidentifikuar', latinTitle:'Influenza cum symptomatis respiratoriis aliis, virus non identificatum', displayTitle:'Grip me manifestime të tjera respiratore, virus i paidentifikuar', sourceRow:7 },
+    { code:'J11.8', level:'subcategory', chapter:'X', block:'J09-J18', parentCode:'J11', englishTitle:'Influenza with other manifestations, virus not identified', albanianDraft:'Grip me manifestime të tjera, virus i paidentifikuar', latinTitle:'Influenza cum symptomatis aliis, virus non identificatum', displayTitle:'Grip me manifestime të tjera, virus i paidentifikuar', sourceRow:8 },
+  ],
+};
+FullIcd.attachIndexes(fluDataset);
+const flu = Search.suggestDataset(fluDataset, 'gripi', { limit:10 });
+const fluCodes = flu.rows.map(row => row.code);
+assert.deepEqual(fluCodes.slice(0, 2), ['J10', 'J11'], 'Broad flu search must show the three-character categories first.');
+const firstFluSubcategory = flu.rows.findIndex(row => row.level === 'subcategory');
+assert.ok(firstFluSubcategory >= 2, 'Subcategories must follow the main categories.');
+assert.ok(fluCodes.indexOf('J10.1') > fluCodes.indexOf('J11'), 'J10 subcodes must come after J10/J11 categories.');
+
+const exactChild = Search.suggestDataset(fluDataset, 'J10.1', { limit:10 });
+assert.equal(exactChild.rows[0].code, 'J10.1', 'Exact code intent must still win over category-first text ordering.');
+
+const parentLatinDataset = {
+  nodes:[
+    { code:'Z99', level:'category', chapter:'XXI', block:'Z90-Z99', parentCode:'Z90-Z99', englishTitle:'Parent', albanianDraft:'Prindi', latinTitle:'Categoria Latina', displayTitle:'Prindi', sourceRow:1 },
+    { code:'Z99.1', level:'subcategory', chapter:'XXI', block:'Z90-Z99', parentCode:'Z99', englishTitle:'Child', albanianDraft:'Fëmija', latinTitle:'', displayTitle:'Fëmija', sourceRow:2 },
+  ],
+};
+FullIcd.attachIndexes(parentLatinDataset);
+const parentLatinCompact = require('../lib/icd-advanced-handler.js')._test.compactNode(parentLatinDataset.nodes[1], parentLatinDataset);
+assert.equal(parentLatinCompact.latinTitle, '');
+assert.equal(parentLatinCompact.latinParentCode, 'Z99');
+assert.equal(parentLatinCompact.latinParentTitle, 'Categoria Latina');
+
+console.log('ICD hierarchy-first UI, EN+LA autocomplete, indexed multilingual search and typo correction passed.');

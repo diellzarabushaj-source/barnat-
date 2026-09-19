@@ -108,7 +108,7 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view });
+    const params = new URLSearchParams({ view, sv:'hierarchy-v5' });
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
     return `${API}?${params}`;
   }
@@ -332,15 +332,24 @@
     const sq = clean(node?.albanianDraft);
     const en = clean(node?.englishTitle);
     const la = clean(node?.latinTitle);
-    if (sq && sq !== primary) items.push({ lang:'SQ', text:sq });
-    if (en) items.push({ lang:'EN', text:en });
-    if (la) items.push({ lang:'LA', text:la });
+    const latinParent = clean(node?.latinParentTitle);
+    const latinParentCode = clean(node?.latinParentCode);
+    if (sq && sq !== primary) items.push({ lang:'SQ', text:sq, kind:'exact' });
+    if (en) items.push({ lang:'EN', text:en, kind:'exact' });
+    if (la) {
+      items.push({ lang:'LA', text:la, kind:'exact' });
+    } else if (latinParent) {
+      items.push({ lang:`LA (${latinParentCode})`, text:latinParent, kind:'parent' });
+    } else {
+      items.push({ lang:'LA', text:'—', kind:'missing' });
+    }
     return items;
   }
 
   function suggestionTranslationHtml(node) {
     return suggestionTranslations(node).map(item => `
-      <small class="icd-suggestion-translation">
+      <small class="icd-suggestion-translation is-${escapeHtml(item.kind)}"
+        ${item.kind === 'parent' ? 'title="Latin i kategorisë prind — jo titull specifik i nënkodit"' : ''}>
         <b>${escapeHtml(item.lang)}</b><span>${escapeHtml(item.text)}</span>
       </small>`).join('');
   }
@@ -368,11 +377,21 @@
       return;
     }
 
+    let previousSection = '';
     const rows = state.suggestions.map((node, index) => {
       const active = index === state.activeSuggestion;
       const match = clean(node?.searchMatch?.label) || 'Përputhje';
       const translations = suggestionTranslationHtml(node);
-      return `<button class="icd-suggestion-row ${active ? 'is-active' : ''}" type="button" role="option"
+      const section = node.level === 'category'
+        ? 'Kategoritë kryesore'
+        : node.level === 'subcategory'
+          ? 'Nënkategoritë'
+          : 'Konteksti ICD';
+      const sectionHead = section !== previousSection
+        ? `<div class="icd-suggestion-section" role="presentation">${escapeHtml(section)}</div>`
+        : '';
+      previousSection = section;
+      return `${sectionHead}<button class="icd-suggestion-row is-${escapeHtml(clean(node.level))} ${active ? 'is-active' : ''}" type="button" role="option"
         id="icd-suggestion-${index}" aria-selected="${active}" data-suggestion-index="${index}" data-code="${escapeHtml(clean(node.code))}">
         <span class="icd-suggestion-code">${escapeHtml(clean(node.code))}</span>
         <span class="icd-suggestion-copy"><strong>${escapeHtml(nodeTitle(node))}</strong>${translations}</span>
