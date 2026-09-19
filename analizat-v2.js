@@ -2130,7 +2130,7 @@
           <strong>${esc(indication.title)}</strong>
           <small>${esc(indication.summary || indication.titleEn || '')}</small>
         </span>
-        <span class="lab-disease-icd">${(indication.icdCodes || []).map(code => `<span>${esc(code)}</span>`).join('')}<small>${(indication.tests || []).length} analiza</small></span>
+        <span class="lab-disease-icd"><span>${esc(indication.clinicalType || 'Klinike')}</span><small>${(indication.tests || []).length} ekzaminime</small></span>
       </button>`;
   }
 
@@ -2139,10 +2139,9 @@
     if (!root || !state.data) return;
     const term = normalize(state.diseaseTerm);
     const rows = state.data.indications.filter(indication => !term || diseaseSearchText(indication).includes(term));
-
     root.innerHTML = rows.length
       ? rows.map(diseaseOptionMarkup).join('')
-      : '<div class="lab-picker-empty">Nuk u gjet diagnozë.</div>';
+      : '<div class="lab-picker-empty">Nuk u gjet shenjë ose simptomë.</div>';
   }
 
   function renderSelectedDiseases() {
@@ -2153,10 +2152,10 @@
 
     if (triggerText) {
       triggerText.textContent = indications.length === 0
-        ? 'Zgjidh diagnoza…'
+        ? 'Zgjidh shenja ose simptoma…'
         : indications.length === 1
           ? indications[0].title
-          : `${indications.length} diagnoza të zgjedhura`;
+          : `${indications.length} prezantime të zgjedhura`;
     }
 
     if (root) {
@@ -2164,12 +2163,12 @@
         ? indications.map(indication => `
           <span class="lab-disease-chip">
             <span>${esc(indication.title)}</span>
-            <small>${esc((indication.icdCodes || []).join(' · '))}</small>
+            <small>${esc(indication.clinicalType || 'Prezantim klinik')}</small>
             <button type="button" data-remove-disease="${esc(indication.id)}" aria-label="Hiq ${esc(indication.title)}">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 7l10 10M17 7 7 17"/></svg>
             </button>
           </span>`).join('')
-        : '<span class="lab-selected-empty">Nuk ke zgjedhur ende diagnozë.</span>';
+        : '<span class="lab-selected-empty">Nuk ke zgjedhur ende shenjë ose simptomë.</span>';
     }
 
     if (summary) {
@@ -2177,7 +2176,7 @@
         ? indications.map(indication => `
           <div class="lab-summary-dx-item">
             <strong>${esc(indication.title)}</strong>
-            <span>${esc((indication.icdCodes || []).join(' · '))}</span>
+            <span>${esc(indication.clinicalType || 'Prezantim klinik')}</span>
           </div>`).join('')
         : '<span>—</span>';
     }
@@ -2252,7 +2251,7 @@
           </span>
           <em>Shto +</em>
         </button>`).join('')
-      : '<div class="lab-picker-empty">Nuk u gjet analizë tjetër.</div>';
+      : '<div class="lab-picker-empty">Nuk u gjet ekzaminim tjetër.</div>';
   }
 
   function addManualTest(id) {
@@ -2277,7 +2276,6 @@
   function tierSectionMarkup(tier, entries) {
     if (!entries.length) return '';
     const meta = TIER_META[tier] || TIER_META.recommended;
-
     return `
       <section class="lab-tier-section" data-tier="${esc(tier)}">
         <header class="lab-tier-head">
@@ -2286,7 +2284,7 @@
             <strong>${esc(meta.label)}</strong>
             <small>${esc(meta.description)}</small>
           </div>
-          <span>${entries.length} analiza</span>
+          <span>${entries.length} ekzaminime</span>
         </header>
         <div class="lab-test-list">
           ${entries.map(testRowMarkup).join('')}
@@ -2299,13 +2297,13 @@
     const selected = !state.excludedTestIds.has(test.id);
     const category = state.categoriesById.get(test.categoryId);
     const detailLines = [
-      test.whatItShows ? `<p><strong>Çfarë tregon:</strong> ${esc(test.whatItShows)}</p>` : '',
+      test.whatItShows ? `<p><strong>Çfarë vlerëson:</strong> ${esc(test.whatItShows)}</p>` : '',
       test.highPositiveAbnormal ? `<p><strong>Kur rritet / jonormale:</strong> ${esc(test.highPositiveAbnormal)}</p>` : '',
       test.lowNegativeNormal ? `<p><strong>Kur ulet / normale:</strong> ${esc(test.lowNegativeNormal)}</p>` : '',
     ].filter(Boolean).join('');
 
     return `
-      <article class="lab-test-row" data-test-id="${esc(test.id)}">
+      <article class="lab-test-row" data-test-id="${esc(test.id)}" data-exam-group="${esc(test.examGroup || 'laboratory')}">
         <label class="lab-test-toggle" aria-label="${selected ? 'Hiq' : 'Shto'} ${esc(test.formName)}">
           <input type="checkbox" data-plan-toggle="${esc(test.id)}" ${selected ? 'checked' : ''}>
         </label>
@@ -2313,25 +2311,25 @@
           <div class="lab-test-title">
             <strong>${esc(test.formName)}</strong>
             ${test.albanianName && test.albanianName !== test.formName ? `<small>${esc(test.albanianName)}</small>` : ''}
-            <span class="lab-test-category">${esc(category?.title || test.category || 'Laborator')}</span>
+            <span class="lab-test-category" data-exam-group="${esc(test.examGroup || 'laboratory')}">${esc(category?.title || test.category || 'Laborator')}</span>
           </div>
 
           ${entry.reasons.length ? `
             <div class="lab-test-rationales">
               ${entry.reasons.map(reason => `
                 <div class="lab-rationale">
-                  <span>${esc(reason.disease)}</span>
+                  <span>${esc(reason.presentation)}</span>
                   <div>
-                    <p>${esc(reason.rationale || 'E përfshirë në panelin klinik.')}</p>
+                    <p>${esc(reason.rationale || 'E përfshirë në work-up-in klinik.')}</p>
                     ${reason.contextNote ? `<p class="lab-test-context">${esc(reason.contextNote)}</p>` : ''}
                   </div>
                 </div>`).join('')}
             </div>
-          ` : '<p class="lab-test-context">Shtuar manualisht nga katalogu i analizave.</p>'}
+          ` : '<p class="lab-test-context">Shtuar manualisht nga katalogu i ekzaminimeve.</p>'}
 
           ${detailLines ? `
             <details class="lab-test-details">
-              <summary>Detajet e analizës ↓</summary>
+              <summary>Detajet e ekzaminimit ↓</summary>
               <div class="lab-test-detail-body">${detailLines}</div>
             </details>
           ` : ''}
