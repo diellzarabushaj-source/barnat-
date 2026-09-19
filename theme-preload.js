@@ -10,15 +10,17 @@
 
   const assetUrl = path => new URL(String(path || '').replace(/^\/+/, ''), document.baseURI).href;
 
-  function ensureTailwindUi() {
+  function ensureTailwindUi(moveToEnd = false) {
     let stylesheet = document.querySelector('link[data-medindex-tailwind-ui]');
     if (!stylesheet) {
       stylesheet = document.createElement('link');
       stylesheet.rel = 'stylesheet';
       stylesheet.href = assetUrl('medindex-tailwind-ui.css?v=20260805-1');
       stylesheet.dataset.medindexTailwindUi = '20260805-1';
+      document.head.appendChild(stylesheet);
+    } else if (moveToEnd && stylesheet !== document.head.lastElementChild) {
+      document.head.appendChild(stylesheet);
     }
-    document.head.appendChild(stylesheet);
     document.documentElement.dataset.miTailwindUi = '20260805-1';
   }
 
@@ -143,7 +145,7 @@
     /* The site-wide system is always the last visual layer. It standardizes
        spacing, controls, focus, responsive behaviour and the quiet teal
        Tailwind palette without touching the login or clinical logic. */
-    ensureTailwindUi();
+    ensureTailwindUi(true);
 
     document.documentElement.dataset.miSignature = '20260805-3';
     document.documentElement.dataset.miClinicalPlan = '20260805-3';
