@@ -323,3 +323,105 @@ a{color:inherit}
   .lab-test-row{grid-template-columns:22px minmax(0,1fr)}
   .lab-test-remove{width:100%;justify-content:flex-start}
 }
+
+
+/* ==========================================================================
+   Ekzaminet v3 — symptom/sign driven multimodal work-up
+   ========================================================================== */
+.lab-order-heading .eyebrow{letter-spacing:.075em}
+.lab-builder{
+  border-color:#dde3eb;border-radius:16px;
+  box-shadow:0 14px 36px rgba(28,46,72,.05),0 2px 7px rgba(28,46,72,.025)
+}
+.lab-disease-trigger,.lab-manual-search input{
+  border-radius:11px;background:linear-gradient(180deg,#fff,#fefefe)
+}
+.lab-disease-popover,.lab-manual-results{border-radius:14px}
+.lab-disease-option{border-radius:10px}
+.lab-disease-option.is-selected{
+  border-color:#d1ccfb;background:linear-gradient(135deg,#f8f7ff,#fff);
+  box-shadow:inset 3px 0 0 #6658df
+}
+.lab-disease-icd span{
+  border-color:#dedaf8;background:#f8f7ff;color:#5b4fd1;font-weight:650
+}
+
+.exam-modality-rail{
+  display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid #edf0f4;
+  background:linear-gradient(180deg,#fcfdff,#fafbfc);overflow-x:auto;scrollbar-width:none;
+  overscroll-behavior-inline:contain
+}
+.exam-modality-rail::-webkit-scrollbar{display:none}
+.exam-modality-chip{
+  flex:none;min-height:34px;padding:0 10px;border:1px solid #e2e7ed;border-radius:999px;
+  background:#fff;color:#66788d;font-size:9px;font-weight:600;cursor:pointer;white-space:nowrap;
+  transition:background .14s ease,border-color .14s ease,color .14s ease,box-shadow .14s ease
+}
+.exam-modality-chip:hover{border-color:#cfc9f7;color:#5447cc}
+.exam-modality-chip.is-active{
+  border-color:#cec8f8;background:#f7f5ff;color:#5547cf;
+  box-shadow:0 2px 7px rgba(78,63,169,.06)
+}
+.exam-modality-chip.is-urgent{color:#a63c48}
+.exam-modality-chip.is-urgent.is-active{
+  border-color:#efcbd0;background:#fff5f6;color:#a43744
+}
+
+.lab-tier-section[data-tier="urgent"]{
+  border-top:1px solid #efcfd4;border-bottom-color:#efcfd4;background:#fffafa
+}
+.lab-tier-section[data-tier="urgent"] .lab-tier-head{
+  background:linear-gradient(90deg,#fff2f4,#fff9fa)
+}
+.lab-tier-section[data-tier="urgent"] .lab-tier-marker{
+  width:8px;height:8px;background:#cf5260;box-shadow:0 0 0 4px rgba(207,82,96,.09)
+}
+.lab-tier-section[data-tier="urgent"] .lab-tier-title strong{color:#a33744}
+.lab-tier-section[data-tier="urgent"] .lab-tier-title small,
+.lab-tier-section[data-tier="urgent"] .lab-tier-head>span{color:#a96a72}
+.lab-tier-section[data-tier="urgent"] .lab-test-row{background:rgba(255,250,250,.55)}
+
+.lab-test-category[data-exam-group="laboratory"]{border-color:#d8e9ee;background:#f4fbfd;color:#397287}
+.lab-test-category[data-exam-group="cardio"]{border-color:#dfdaf7;background:#f8f6ff;color:#6250bd}
+.lab-test-category[data-exam-group="imaging"]{border-color:#eee0bd;background:#fffaf0;color:#9a6a16}
+.lab-test-category[data-exam-group="ultrasound"]{border-color:#d5e9e5;background:#f3fbf8;color:#3d7f6c}
+.lab-test-category[data-exam-group="other"]{border-color:#e1e5eb;background:#f7f9fb;color:#607083}
+
+.lab-test-row{
+  transition:background .14s ease,box-shadow .14s ease
+}
+.lab-test-row:hover{background:#fcfdff;box-shadow:inset 3px 0 0 rgba(99,91,255,.12)}
+.lab-rationale span{
+  background:#f3f1ff;color:#5b4ed0;font-weight:600
+}
+
+.lab-gap-item.is-red-flag{
+  border-color:#efcbd0;background:linear-gradient(135deg,#fff5f6,#fffafa);
+  box-shadow:inset 3px 0 0 #d35a67
+}
+.lab-gap-item.is-red-flag strong{color:#a43744;text-transform:uppercase;letter-spacing:.045em}
+.lab-gap-item.is-red-flag p{color:#79474d}
+.lab-gap-item.is-red-flag small{color:#a56f76}
+
+.lab-plan-card,.lab-summary-card{
+  border-radius:16px;border-color:#dfe4eb;
+  box-shadow:0 12px 32px rgba(28,46,72,.045),0 2px 7px rgba(28,46,72,.02)
+}
+.lab-safety-note{
+  border-color:#dcd8f8;border-radius:10px;background:linear-gradient(135deg,#faf9ff,#fff)
+}
+
+@media(max-width:760px){
+  .exam-modality-rail{
+    position:sticky;top:58px;z-index:8;margin:0;padding:7px 9px;background:rgba(255,255,255,.96);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    scroll-snap-type:x proximity
+  }
+  .exam-modality-chip{min-height:42px;padding-inline:12px;scroll-snap-align:start;font-size:9.5px}
+  .lab-tier-title{align-items:flex-start;flex-wrap:wrap}
+  .lab-tier-title small{width:100%;padding-left:15px;line-height:1.35}
+  .lab-test-row{border-radius:0}
+  .lab-test-title strong{font-size:12px}
+  .lab-test-category{font-size:9px}
+  .lab-gap-item.is-red-flag{padding:10px}
+}
