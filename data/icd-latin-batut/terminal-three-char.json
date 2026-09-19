@@ -1,0 +1,1544 @@
+{
+  "schema": "medindex.icd10.latin.terminal-three-char.v1",
+  "source_url": "https://www.zczajecar.com/images/MKB10_terminalne_tri_kodna_mesta.pdf",
+  "sha256_pdf": "91062540bf01fda87fa8bbb55fc45955c3ec79102ca5df7aa976384ac41a8720",
+  "count": 256,
+  "rows": [
+    {
+      "code": "A33",
+      "title_sq_source": "Tetanus novorođenčeta",
+      "title_la": "Tetanus neonati",
+      "source_line": 2
+    },
+    {
+      "code": "A34",
+      "title_sq_source": "Porođajni tetanus",
+      "title_la": "Tetanus puerperalis",
+      "source_line": 3
+    },
+    {
+      "code": "A35",
+      "title_sq_source": "Drugi tetanus",
+      "title_la": "Tetanus alius",
+      "source_line": 4
+    },
+    {
+      "code": "A38",
+      "title_sq_source": "Šarlah",
+      "title_la": "Scarlatina",
+      "source_line": 5
+    },
+    {
+      "code": "A46",
+      "title_sq_source": "Crveni vetar",
+      "title_la": "Erysipelas",
+      "source_line": 6
+    },
+    {
+      "code": "A55",
+      "title_sq_source": "Venerički limfogranulom, uzročnik Chlamydia",
+      "title_la": "Lymphogranuloma per infectionem Chlamydia (venericum)",
+      "source_line": 8
+    },
+    {
+      "code": "A57",
+      "title_sq_source": "Meki šankr",
+      "title_la": "Ulcus mole",
+      "source_line": 9
+    },
+    {
+      "code": "A58",
+      "title_sq_source": "Zrnasti tumor prepone",
+      "title_la": "Granuloma inguinale",
+      "source_line": 10
+    },
+    {
+      "code": "A64",
+      "title_sq_source": "Neoznačena bolest preneta polnim odnosom",
+      "title_la": "Morbus modo sexuali transmissus, non specificatus",
+      "source_line": 11
+    },
+    {
+      "code": "A65",
+      "title_sq_source": "Sifilis van polnih organa",
+      "title_la": "Syphilis non venerica",
+      "source_line": 12
+    },
+    {
+      "code": "A70",
+      "title_sq_source": "Hlamidijaza, uzročnik Chlamydia psittaci",
+      "title_la": "Infectio per Chlamydiam psittaci",
+      "source_line": 13
+    },
+    {
+      "code": "A78",
+      "title_sq_source": "Kju-groznica",
+      "title_la": "Febris Q",
+      "source_line": 14
+    },
+    {
+      "code": "A86",
+      "title_sq_source": "Zapaljenje mozga uzrokovano virusima, neoznačeno",
+      "title_la": "Encephalitis viralis, non specificata",
+      "source_line": 16
+    },
+    {
+      "code": "A89",
+      "title_sq_source": "neoznačena",
+      "title_la": "Infectio systematis nervosi centralis viralis, non specificata",
+      "source_line": 18
+    },
+    {
+      "code": "A90",
+      "title_sq_source": "Denga groznica",
+      "title_la": "Febris dengue",
+      "source_line": 19
+    },
+    {
+      "code": "A91",
+      "title_sq_source": "Hemoragijska denga groznica",
+      "title_la": "Febris dengue haemorrhagica",
+      "source_line": 20
+    },
+    {
+      "code": "A94",
+      "title_sq_source": "neoznačena",
+      "title_la": "Febris viralis arthropodis transmissa, non specificata",
+      "source_line": 22
+    },
+    {
+      "code": "A99",
+      "title_sq_source": "Hemoragijska groznica uzrokovana virusom, neoznačena",
+      "title_la": "Febris haemorrhagica viralis, non specificata",
+      "source_line": 24
+    },
+    {
+      "code": "B03",
+      "title_sq_source": "Velike boginje",
+      "title_la": "Variola vera",
+      "source_line": 25
+    },
+    {
+      "code": "B04",
+      "title_sq_source": "Boginje majmuna",
+      "title_la": "Variola simiaca",
+      "source_line": 26
+    },
+    {
+      "code": "B07",
+      "title_sq_source": "Virusne bradavice",
+      "title_la": "Verrucae virales",
+      "source_line": 27
+    },
+    {
+      "code": "B09",
+      "title_sq_source": "neoznačena",
+      "title_la": "Infectio viralis cum laesionibus mucocutaneis non specificata",
+      "source_line": 29
+    },
+    {
+      "code": "B24",
+      "title_sq_source": "Sida, neoznačena",
+      "title_la": "Morbus HIV, non specificatus",
+      "source_line": 30
+    },
+    {
+      "code": "B49",
+      "title_sq_source": "Mikoza, neoznačena",
+      "title_la": "Mycosis, non specificata",
+      "source_line": 31
+    },
+    {
+      "code": "B54",
+      "title_sq_source": "Malarija, neoznačena",
+      "title_la": "Malaria, non specificata",
+      "source_line": 32
+    },
+    {
+      "code": "B59",
+      "title_sq_source": "Pneumocistoza, uzročnik Pneumocystis carinii",
+      "title_la": "Pneumocystosis",
+      "source_line": 34
+    },
+    {
+      "code": "B64",
+      "title_sq_source": "Bolest uzrokovana protozoama, neoznačena",
+      "title_la": "Morbus protozoicus, non specificatus",
+      "source_line": 35
+    },
+    {
+      "code": "B72",
+      "title_sq_source": "Drakunkulijaza, uzročnik Dracunculus medinensis",
+      "title_la": "Dracunculiasis",
+      "source_line": 37
+    },
+    {
+      "code": "B73",
+      "title_sq_source": "Onkocerkijaza, uzročnik Onchocerca volvulus",
+      "title_la": "Onchocerciasis",
+      "source_line": 39
+    },
+    {
+      "code": "B75",
+      "title_sq_source": "Trihineloza, uzročnik Trichinella species",
+      "title_la": "Trichinellosis",
+      "source_line": 40
+    },
+    {
+      "code": "B79",
+      "title_sq_source": "Trihurijaza, uzročnik Trichuris trichiura",
+      "title_la": "Trichuriasis",
+      "source_line": 41
+    },
+    {
+      "code": "B80",
+      "title_sq_source": "Enterobijaza, uzročnik Enterobius vermicularis",
+      "title_la": "Enterobiasis",
+      "source_line": 43
+    },
+    {
+      "code": "B86",
+      "title_sq_source": "Šuga, uzročnik Sarcoptes scabiei",
+      "title_la": "Scabies",
+      "source_line": 44
+    },
+    {
+      "code": "B89",
+      "title_sq_source": "Parazitarna bolest, neoznačena",
+      "title_la": "Morbus parasitarius, non specificatus",
+      "source_line": 45
+    },
+    {
+      "code": "B91",
+      "title_sq_source": "Posledice zapaljenja sive mase kičmene moždine",
+      "title_la": "Sequelae poliomyelitidis",
+      "source_line": 47
+    },
+    {
+      "code": "B92",
+      "title_sq_source": "Posledice lepre",
+      "title_la": "Sequelae leprae",
+      "source_line": 48
+    },
+    {
+      "code": "B99",
+      "title_sq_source": "Druge i neoznačene zarazne bolesti",
+      "title_la": "Morbi infectivi alii et non specificati",
+      "source_line": 49
+    },
+    {
+      "code": "C01",
+      "title_sq_source": "Zloćudni tumor korena jezika",
+      "title_la": "Neoplasma malignum radicis linguae",
+      "source_line": 50
+    },
+    {
+      "code": "C07",
+      "title_sq_source": "Zloćudni tumor parotidne [doušne] pljuvačne žlezde",
+      "title_la": "Neoplasma malignum glandulae parotideae",
+      "source_line": 52
+    },
+    {
+      "code": "C12",
+      "title_sq_source": "Zloćudni tumor kruškolike jamice",
+      "title_la": "Neoplasma malignum recessus piriformis",
+      "source_line": 53
+    },
+    {
+      "code": "C19",
+      "title_sq_source": "Zloćudni tumor rektosigmoidnog spoja debelog creva",
+      "title_la": "Neoplasma malignum juncturae coli rectosigmoidis",
+      "source_line": 55
+    },
+    {
+      "code": "C20",
+      "title_sq_source": "Zloćudni tumor rektuma",
+      "title_la": "Neoplasma malignum recti",
+      "source_line": 56
+    },
+    {
+      "code": "C23",
+      "title_sq_source": "Zloćudni tumor žučne kese",
+      "title_la": "Neoplasma malignum vesicae felleae",
+      "source_line": 57
+    },
+    {
+      "code": "C33",
+      "title_sq_source": "Zloćudni tumor dušnika",
+      "title_la": "Neoplasma malignum tracheae",
+      "source_line": 58
+    },
+    {
+      "code": "C37",
+      "title_sq_source": "Zloćudni tumor grudne žlezde",
+      "title_la": "Neoplasma malignum thymi",
+      "source_line": 59
+    },
+    {
+      "code": "C52",
+      "title_sq_source": "Zloćudni tumor vagine",
+      "title_la": "Neoplasma malignum vaginae",
+      "source_line": 60
+    },
+    {
+      "code": "C55",
+      "title_sq_source": "Zloćudni tumor materice, neoznačenog dela",
+      "title_la": "Neoplasma malignum uteri, partis non specificatae",
+      "source_line": 61
+    },
+    {
+      "code": "C56",
+      "title_sq_source": "Zloćudni tumor jajnika",
+      "title_la": "Neoplasma malignum ovarii",
+      "source_line": 62
+    },
+    {
+      "code": "C58",
+      "title_sq_source": "Zloćudni tumor posteljice materice",
+      "title_la": "Neoplasma malignum placentae",
+      "source_line": 63
+    },
+    {
+      "code": "C61",
+      "title_sq_source": "Zloćudni tumor prostate",
+      "title_la": "Neoplazma malignum prostatae",
+      "source_line": 64
+    },
+    {
+      "code": "C64",
+      "title_sq_source": "Zloćudni tumor bubrega, izuzev karlice bubrega",
+      "title_la": "Neoplasma malignum renis, pelvem renalem excludens",
+      "source_line": 66
+    },
+    {
+      "code": "C65",
+      "title_sq_source": "Zloćudni tumor karlice bubrega",
+      "title_la": "Neoplasma malignum pelvis renalis",
+      "source_line": 67
+    },
+    {
+      "code": "C66",
+      "title_sq_source": "Zloćudni tumor mokraćovoda bubrega",
+      "title_la": "Neoplasma malignum ureteris",
+      "source_line": 68
+    },
+    {
+      "code": "C73",
+      "title_sq_source": "Zloćudni tumori štitaste žlezde",
+      "title_la": "Neoplasma malignum glandulae thyreoideae",
+      "source_line": 69
+    },
+    {
+      "code": "C97",
+      "title_sq_source": "Zloćudni tumori više nezavisnih primarnih lokalizacija",
+      "title_la": "multiplicium",
+      "source_line": 71
+    },
+    {
+      "code": "D24",
+      "title_sq_source": "Dobroćudni tumor dojke",
+      "title_la": "Neoplasma benignum mammae",
+      "source_line": 72
+    },
+    {
+      "code": "D27",
+      "title_sq_source": "Dobroćudni tumor jajnika",
+      "title_la": "Neoplasma benignum ovarii",
+      "source_line": 73
+    },
+    {
+      "code": "D34",
+      "title_sq_source": "Dobroćudni tumor štitaste žlezde",
+      "title_la": "Neoplasma benignum glandulae thyreoideae",
+      "source_line": 74
+    },
+    {
+      "code": "D45",
+      "title_sq_source": "Povećanje broja ćelija krvi",
+      "title_la": "Polycythaemia vera",
+      "source_line": 75
+    },
+    {
+      "code": "D62",
+      "title_sq_source": "Akutna anemija posle krvarenja",
+      "title_la": "Anaemia posthaemorrhagica acuta",
+      "source_line": 76
+    },
+    {
+      "code": "D65",
+      "title_sq_source": "Rasejano zgrušavanje krvi u krvnim sudovima",
+      "title_la": "Coagulatio intravascularis disseminata [sindrom defibrinacije]",
+      "source_line": 78
+    },
+    {
+      "code": "D66",
+      "title_sq_source": "Nasledni nedostatak faktora VIII",
+      "title_la": "Deficientia hereditaria factoris VIII",
+      "source_line": 79
+    },
+    {
+      "code": "D67",
+      "title_sq_source": "Nasledni nedostatak faktora IX",
+      "title_la": "Deficientia hereditaria factoris IX",
+      "source_line": 80
+    },
+    {
+      "code": "D70",
+      "title_sq_source": "Agranulocitoza – smanjenje broja granulocita",
+      "title_la": "Agranulocytosis",
+      "source_line": 81
+    },
+    {
+      "code": "D71",
+      "title_sq_source": "Funkcionalni poremećaji polimorfonuklearnih neutrofila",
+      "title_la": "polymorphonucleorum",
+      "source_line": 83
+    },
+    {
+      "code": "D77",
+      "title_sq_source": "klasifikovanim na drugom mestu",
+      "title_la": "alibi classificatis",
+      "source_line": 85
+    },
+    {
+      "code": "E02",
+      "title_sq_source": "nedostatka joda",
+      "title_la": "iodi",
+      "source_line": 87
+    },
+    {
+      "code": "E15",
+      "title_sq_source": "bolesti",
+      "title_la": "Coma hypoglycaemicum non diabeticum",
+      "source_line": 89
+    },
+    {
+      "code": "E40",
+      "title_sq_source": "Teška proteinska pothranjenost, „Kwashiorkor“",
+      "title_la": "Morbus kwashiorkor",
+      "source_line": 91
+    },
+    {
+      "code": "E41",
+      "title_sq_source": "Teška energetska pothranjenost",
+      "title_la": "Marasmus malnutritionalis",
+      "source_line": 92
+    },
+    {
+      "code": "E42",
+      "title_sq_source": "Teška proteinsko-energetska pothranjenost",
+      "title_la": "Kwashiorkor marasmaticus",
+      "source_line": 93
+    },
+    {
+      "code": "E43",
+      "title_sq_source": "Teška proteinsko-energetska pothranjenost, neoznačena",
+      "title_la": "Malnutritio proteinoenergetica gravis, non specificata",
+      "source_line": 95
+    },
+    {
+      "code": "E45",
+      "title_sq_source": "Zastoj u razvoju usled proteinsko-energetske pothranjenosti",
+      "title_la": "Retardatio propter malnutritionem proteinoenergeticam",
+      "source_line": 97
+    },
+    {
+      "code": "E46",
+      "title_sq_source": "Proteinsko-energetska pothranjenost, neoznačena",
+      "title_la": "Malnutritio proteinoenergetica, non specificata",
+      "source_line": 99
+    },
+    {
+      "code": "E52",
+      "title_sq_source": "PP]",
+      "title_la": "Deficientia niacini [pellagra]",
+      "source_line": 101
+    },
+    {
+      "code": "E54",
+      "title_sq_source": "Nedostatak vitamina C",
+      "title_la": "Deficientia acidi ascorbici",
+      "source_line": 102
+    },
+    {
+      "code": "E58",
+      "title_sq_source": "Nedostatak kalcijuma u ishrani",
+      "title_la": "Deficientia calcii nutritivi",
+      "source_line": 103
+    },
+    {
+      "code": "E59",
+      "title_sq_source": "Nedostatak selena u ishrani",
+      "title_la": "Deficientia selenii nutritivi",
+      "source_line": 104
+    },
+    {
+      "code": "E60",
+      "title_sq_source": "Nedostatak cinka u ishrani",
+      "title_la": "Deficientia zinci nutritivi",
+      "source_line": 105
+    },
+    {
+      "code": "E65",
+      "title_sq_source": "Lokalizovana gojaznost",
+      "title_la": "Adipositas localisata",
+      "source_line": 106
+    },
+    {
+      "code": "E68",
+      "title_sq_source": "Posledice prekomernog hranjenja",
+      "title_la": "Sequelae hyperalimentationis",
+      "source_line": 107
+    },
+    {
+      "code": "E86",
+      "title_sq_source": "Smanjenje količine vode i zapremine krvi",
+      "title_la": "Dehidratio et hypovolaemia",
+      "source_line": 108
+    },
+    {
+      "code": "E90",
+      "title_sq_source": "klasifikovanim na drugom mestu",
+      "title_la": "classificatis",
+      "source_line": 111
+    },
+    {
+      "code": "F03",
+      "title_sq_source": "Demencija, neoznačena",
+      "title_la": "Dementia non specificata",
+      "source_line": 112
+    },
+    {
+      "code": "F04",
+      "title_sq_source": "psihoaktivnih supstanci",
+      "title_la": "et substantiarum psychoactivarum aliarum",
+      "source_line": 115
+    },
+    {
+      "code": "F09",
+      "title_sq_source": "Organska ili simptomatska duševna bolest, neoznačena",
+      "title_la": "Morbus mentalis organicus sive symptomaticus non specificatus",
+      "source_line": 348
+    },
+    {
+      "code": "F21",
+      "title_sq_source": "Poremećaj sličan shizofreniji",
+      "title_la": "Disordo schizotypicus",
+      "source_line": 116
+    },
+    {
+      "code": "F24",
+      "title_sq_source": "Indukovano sumanuto duševno oboljenje",
+      "title_la": "Psychosis paranoides inducta",
+      "source_line": 117
+    },
+    {
+      "code": "F28",
+      "title_sq_source": "Drugo neorgansko duševno oboljenje",
+      "title_la": "Psychosis non organica, typus alius",
+      "source_line": 118
+    },
+    {
+      "code": "F29",
+      "title_sq_source": "Neorgansko duševno oboljenje, neoznačeno",
+      "title_la": "Psychosis non organica, non specificata",
+      "source_line": 119
+    },
+    {
+      "code": "F39",
+      "title_sq_source": "Poremećaj raspoloženja (afekta), neoznačen",
+      "title_la": "Disordo thymiacus (affectivus), non specificatus",
+      "source_line": 120
+    },
+    {
+      "code": "F54",
+      "title_sq_source": "ili bolestima klasifikovanim na drugom mestu",
+      "title_la": "morbis alibi classificati associati",
+      "source_line": 123
+    },
+    {
+      "code": "F55",
+      "title_sq_source": "Zloupotreba lekova bez uzrokovanja zavisnosti",
+      "title_la": "Abusus supstantiarum non dependiferarum",
+      "source_line": 125
+    },
+    {
+      "code": "F59",
+      "title_sq_source": "faktorima, neoznačeni",
+      "title_la": "physicis, non specificata",
+      "source_line": 127
+    },
+    {
+      "code": "F61",
+      "title_sq_source": "Mešoviti i drugi poremećaji ličnosti",
+      "title_la": "Disordines personae mixti, et alii",
+      "source_line": 128
+    },
+    {
+      "code": "F69",
+      "title_sq_source": "neoznačeni",
+      "title_la": "Disordines personae et disordines morum adulti, non specificati",
+      "source_line": 130
+    },
+    {
+      "code": "F82",
+      "title_sq_source": "Specifičan poremećaj razvoja pokretljivosti",
+      "title_la": "Disordo evolutionis functionis motoricae specificus",
+      "source_line": 131
+    },
+    {
+      "code": "F83",
+      "title_sq_source": "Mešoviti specifični poremećaji razvoja",
+      "title_la": "Disordines evolutionis specifici mixti",
+      "source_line": 132
+    },
+    {
+      "code": "F88",
+      "title_sq_source": "Drugi psihički poremećaji razvoja",
+      "title_la": "Disordines evolutionis psychici alii",
+      "source_line": 133
+    },
+    {
+      "code": "F89",
+      "title_sq_source": "Poremećaj psihičkog razvoja, neoznačen",
+      "title_la": "Disordo evolutionis psychicae, non specificatus",
+      "source_line": 134
+    },
+    {
+      "code": "F99",
+      "title_sq_source": "Duševni poremećaj",
+      "title_la": "Disordo mentalis",
+      "source_line": 135
+    },
+    {
+      "code": "G01",
+      "title_sq_source": "mestu",
+      "title_la": "Meningitis in morbis bacterialibus alibi classificatis",
+      "source_line": 137
+    },
+    {
+      "code": "G07",
+      "title_sq_source": "na drugom mestu",
+      "title_la": "alibi classificatis",
+      "source_line": 139
+    },
+    {
+      "code": "G08",
+      "title_sq_source": "Flebitis i tromboflebitis u lobanji i kičmi",
+      "title_la": "Phlebitis et thrombophlebitis intracranialis et intraspinalis",
+      "source_line": 141
+    },
+    {
+      "code": "G09",
+      "title_sq_source": "Posledice zapaljenjskih bolesti CNS-a",
+      "title_la": "Sequelae morbi inflammatorii systematis nervosi centralis",
+      "source_line": 143
+    },
+    {
+      "code": "G10",
+      "title_sq_source": "Huntingtonova bolest",
+      "title_la": "Morbus Huntington",
+      "source_line": 144
+    },
+    {
+      "code": "G14",
+      "title_sq_source": "Sindrom posle infekcije polio virusom",
+      "title_la": "Postpolio syndroma",
+      "source_line": 145
+    },
+    {
+      "code": "G20",
+      "title_sq_source": "Parkinsonova bolest",
+      "title_la": "Morbus Parkinson",
+      "source_line": 146
+    },
+    {
+      "code": "G22",
+      "title_sq_source": "Parkinsonizam u bolestima klasifikovanim na drugom mestu",
+      "title_la": "Parkinsonismus in morbis alibi classificatis",
+      "source_line": 148
+    },
+    {
+      "code": "G26",
+      "title_sq_source": "klasifikovanim na drugom mestu",
+      "title_la": "alibi classificatis",
+      "source_line": 151
+    },
+    {
+      "code": "G35",
+      "title_sq_source": "Multipla skleroza",
+      "title_la": "Sclerosis multiplex",
+      "source_line": 152
+    },
+    {
+      "code": "G64",
+      "title_sq_source": "Drugi poremećaji perifernog nervnog sistema",
+      "title_la": "Disordines sistematis nervosi peripherici alii",
+      "source_line": 153
+    },
+    {
+      "code": "G92",
+      "title_sq_source": "Toksičko oboljenje mozga",
+      "title_la": "Encephalopathia toxica",
+      "source_line": 154
+    },
+    {
+      "code": "G98",
+      "title_sq_source": "mestu",
+      "title_la": "Disordines systematis nervosi alii non alibi classificati",
+      "source_line": 156
+    },
+    {
+      "code": "H46",
+      "title_sq_source": "Optički neuritis",
+      "title_la": "Neuritis optica",
+      "source_line": 157
+    },
+    {
+      "code": "H55",
+      "title_sq_source": "Spontani i drugi nejednaki pokreti oka",
+      "title_la": "Nystagmus et motus oculi inaequales alii",
+      "source_line": 158
+    },
+    {
+      "code": "H71",
+      "title_sq_source": "Pokožična tvorevina srednjeg uva",
+      "title_la": "Cholesteatoma auris mediae",
+      "source_line": 159
+    },
+    {
+      "code": "H82",
+      "title_sq_source": "mestu",
+      "title_la": "Syndromata vertiginosa in morbis alibi classificatis",
+      "source_line": 161
+    },
+    {
+      "code": "I00",
+      "title_sq_source": "Reumatska groznica bez promena na srcu",
+      "title_la": "Febris rheumatica sine alterationibus cardiacis",
+      "source_line": 162
+    },
+    {
+      "code": "I10",
+      "title_sq_source": "Povišen krvni pritisak, nepoznatog porekla",
+      "title_la": "Hypertensio arterialis essentialis (primaria)",
+      "source_line": 163
+    },
+    {
+      "code": "I38",
+      "title_sq_source": "Endokarditis, neoznačenog zaliska",
+      "title_la": "Endocarditis, valva non specificata",
+      "source_line": 164
+    },
+    {
+      "code": "I48",
+      "title_sq_source": "Treperenje pretkomora i lepršanje pretkomora",
+      "title_la": "Fibrillatio atriorum et fluctuatio atriorum",
+      "source_line": 166
+    },
+    {
+      "code": "I64",
+      "title_sq_source": "mozga",
+      "title_la": "specificata",
+      "source_line": 168
+    },
+    {
+      "code": "I81",
+      "title_sq_source": "Tromboza vene porte",
+      "title_la": "Thrombosis venae portae",
+      "source_line": 169
+    },
+    {
+      "code": "I99",
+      "title_sq_source": "Druge i neoznačene bolesti krvotoka",
+      "title_la": "Morbi systematis circulatorii alii et non specificati",
+      "source_line": 170
+    },
+    {
+      "code": "J00",
+      "title_sq_source": "Akutno zapaljenje nosnog dela ždrela [obična prehlada]",
+      "title_la": "Nasopharyngitis acuta",
+      "source_line": 172
+    },
+    {
+      "code": "J09",
+      "title_sq_source": "Grip, virus dokazan",
+      "title_la": "Influenza, virus identificatum",
+      "source_line": 173
+    },
+    {
+      "code": "J13",
+      "title_sq_source": "(Pneumococcus)",
+      "title_la": "Pneumonia per Streptococcum pneumoniae",
+      "source_line": 175
+    },
+    {
+      "code": "J14",
+      "title_sq_source": "Zapaljenje pluća uzrokovano Haemophilusom influence",
+      "title_la": "Pneumonia per Haemophilum influenzae",
+      "source_line": 177
+    },
+    {
+      "code": "J22",
+      "title_sq_source": "Akutna infekcija donjih respiratornih puteva, neoznačena",
+      "title_la": "Infectio respiratoria systematis inferioris acuta, non specificata",
+      "source_line": 179
+    },
+    {
+      "code": "J36",
+      "title_sq_source": "Apsces oko krajnika",
+      "title_la": "Abscessus peritonsillaris",
+      "source_line": 180
+    },
+    {
+      "code": "J40",
+      "title_sq_source": "Bronhitis, neoznačen kao akutni ili hronični",
+      "title_la": "Bronchitis non specificata ut acuta sive chronica",
+      "source_line": 181
+    },
+    {
+      "code": "J42",
+      "title_sq_source": "Hronični bronhitis, neoznačen",
+      "title_la": "Bronchitis chronica, non specificata",
+      "source_line": 182
+    },
+    {
+      "code": "J46",
+      "title_sq_source": "Astmatični status",
+      "title_la": "Status asthmaticus",
+      "source_line": 183
+    },
+    {
+      "code": "J47",
+      "title_sq_source": "Bronhiektazije",
+      "title_la": "Bronchiectasia",
+      "source_line": 184
+    },
+    {
+      "code": "J60",
+      "title_sq_source": "uzrokovana udisanjem čestica prašine",
+      "title_la": "Pneumoconiosis",
+      "source_line": 187
+    },
+    {
+      "code": "J61",
+      "title_sq_source": "drugih mineralnih vlakana",
+      "title_la": "Pneumoconiosis propter asbestum et fibras minerales alias",
+      "source_line": 189
+    },
+    {
+      "code": "J64",
+      "title_sq_source": "Pneumokonioza, neoznačena",
+      "title_la": "Pneumoconiosis, non specificata",
+      "source_line": 190
+    },
+    {
+      "code": "J65",
+      "title_sq_source": "Pneumokonioza sa tuberkulozom",
+      "title_la": "Pneumoconiosis cum tuberculosi",
+      "source_line": 191
+    },
+    {
+      "code": "J80",
+      "title_sq_source": "Sindrom poremećenog disanja kod odraslih osoba",
+      "title_la": "Syndroma distress respiratorium ad adultum",
+      "source_line": 193
+    },
+    {
+      "code": "J81",
+      "title_sq_source": "Edem pluća",
+      "title_la": "Oedema pulmonum",
+      "source_line": 194
+    },
+    {
+      "code": "J82",
+      "title_sq_source": "Plućna eozinofilija, neklasifikovana na drugom mestu",
+      "title_la": "Eosinophilia pulmonum non alibi classificata",
+      "source_line": 196
+    },
+    {
+      "code": "J90",
+      "title_sq_source": "Pleuralni izliv, neklasifikovan na drugom mestu",
+      "title_la": "Effusio pleurae non alibi classificata",
+      "source_line": 198
+    },
+    {
+      "code": "J91",
+      "title_sq_source": "Pleuralni izliv u stanjima klasifikovanim na drugom mestu",
+      "title_la": "Effusio pleurae in condicionibus alibi classificatis",
+      "source_line": 200
+    },
+    {
+      "code": "K20",
+      "title_sq_source": "Zapaljenje jednjaka",
+      "title_la": "Oesophagitis",
+      "source_line": 201
+    },
+    {
+      "code": "K30",
+      "title_sq_source": "Poremećeno varenje",
+      "title_la": "Dyspepsia",
+      "source_line": 202
+    },
+    {
+      "code": "K36",
+      "title_sq_source": "Drugo zapaljenje slepog creva",
+      "title_la": "Appendicitis alia",
+      "source_line": 203
+    },
+    {
+      "code": "K37",
+      "title_sq_source": "Zapaljenje slepog creva, neoznačeno",
+      "title_la": "Appendicitis, non specificata",
+      "source_line": 204
+    },
+    {
+      "code": "L00",
+      "title_sq_source": "Sindom stafilokoknog ljuštenja kože",
+      "title_la": "Syndroma exfoliationis cutis staphylococica",
+      "source_line": 205
+    },
+    {
+      "code": "L14",
+      "title_sq_source": "mestu",
+      "title_la": "Dermatosis bullosa in morbis alibi classificatis",
+      "source_line": 207
+    },
+    {
+      "code": "L22",
+      "title_sq_source": "Zapaljenje kože izazvano pelenama",
+      "title_la": "Diaper [napkin] dermatitis",
+      "source_line": 208
+    },
+    {
+      "code": "L26",
+      "title_sq_source": "Zapaljenje kože sa ljuštenjem",
+      "title_la": "Dermatitis exfoliativa",
+      "source_line": 209
+    },
+    {
+      "code": "L42",
+      "title_sq_source": "Ružičaste kružne pločice sa perutanjem",
+      "title_la": "Pityriasis rosea",
+      "source_line": 210
+    },
+    {
+      "code": "L45",
+      "title_sq_source": "drugom mestu",
+      "title_la": "Disordines papulosquamosi in morbis alibi classificatis",
+      "source_line": 212
+    },
+    {
+      "code": "L52",
+      "title_sq_source": "Eritem sa nodusima",
+      "title_la": "Erythema nodosum",
+      "source_line": 213
+    },
+    {
+      "code": "L80",
+      "title_sq_source": "Vitiligo - stečene depigmentovane mrlje kože",
+      "title_la": "Vitiligo",
+      "source_line": 215
+    },
+    {
+      "code": "L82",
+      "title_sq_source": "Seboreičko orožavanje kože",
+      "title_la": "Keratosis seborrhoeica",
+      "source_line": 216
+    },
+    {
+      "code": "L83",
+      "title_sq_source": "Crnkasta akantoza kože",
+      "title_la": "Acanthosis nigricans",
+      "source_line": 217
+    },
+    {
+      "code": "L84",
+      "title_sq_source": "Žuljevi i žuljevitost",
+      "title_la": "Clavi et callositates",
+      "source_line": 218
+    },
+    {
+      "code": "L86",
+      "title_sq_source": "Keratodermija u bolestima klasifikovanim na drugom mestu",
+      "title_la": "Keratoderma in morbis alibi classificatis",
+      "source_line": 220
+    },
+    {
+      "code": "L88",
+      "title_sq_source": "Gnojno-gangrenozno zapaljenje kože",
+      "title_la": "Pyoderma gangrenosum",
+      "source_line": 221
+    },
+    {
+      "code": "L97",
+      "title_sq_source": "Grizlica na nozi neklasifikovana na drugom mestu",
+      "title_la": "Ulcus extremitatis inferioris non alibi classificatis",
+      "source_line": 223
+    },
+    {
+      "code": "M45",
+      "title_sq_source": "Zapaljenje pršljena sa ukočenošću",
+      "title_la": "Spondylitis ankylopoietica",
+      "source_line": 224
+    },
+    {
+      "code": "N10",
+      "title_sq_source": "Akutno tubulo-intersticijalno zapaljenje bubrega",
+      "title_la": "Nephritis tubulointerstitialis acuta",
+      "source_line": 226
+    },
+    {
+      "code": "N12",
+      "title_sq_source": "akutno ili hronično",
+      "title_la": "chronica",
+      "source_line": 228
+    },
+    {
+      "code": "N19",
+      "title_sq_source": "Neoznačena bubrežna insuficijencija",
+      "title_la": "Insufficientia renalis non specificata",
+      "source_line": 229
+    },
+    {
+      "code": "N23",
+      "title_sq_source": "Kolika bubrega, neoznačena",
+      "title_la": "Colica renalis, non specificata",
+      "source_line": 230
+    },
+    {
+      "code": "N26",
+      "title_sq_source": "Skrvčen bubreg, neoznačen",
+      "title_la": "Ren contractus, non specificatus",
+      "source_line": 231
+    },
+    {
+      "code": "N40",
+      "title_sq_source": "Povećanje prostate",
+      "title_la": "Hyperplasia prostatae",
+      "source_line": 232
+    },
+    {
+      "code": "N44",
+      "title_sq_source": "Uvrtanje semene vrpce",
+      "title_la": "Torsio testis",
+      "source_line": 233
+    },
+    {
+      "code": "N46",
+      "title_sq_source": "Muška neplodnost",
+      "title_la": "Sterilitas masculina",
+      "source_line": 234
+    },
+    {
+      "code": "N47",
+      "title_sq_source": "Prevelik prepucijum (udna navlaka), fimoza i parafimoza",
+      "title_la": "Praeputium redundans, phimosis et paraphimosis",
+      "source_line": 236
+    },
+    {
+      "code": "N61",
+      "title_sq_source": "Upalni poremećaji dojke",
+      "title_la": "Disordines mammae inflammatorii",
+      "source_line": 237
+    },
+    {
+      "code": "N62",
+      "title_sq_source": "Uvećanje dojke",
+      "title_la": "Hypertophia mammae",
+      "source_line": 238
+    },
+    {
+      "code": "N63",
+      "title_sq_source": "Čvor dojke, neoznačen",
+      "title_la": "Gleba mammae, non specificata",
+      "source_line": 239
+    },
+    {
+      "code": "N72",
+      "title_sq_source": "Zapaljenje grlića marerice",
+      "title_la": "Cervicitis uteri",
+      "source_line": 240
+    },
+    {
+      "code": "N86",
+      "title_sq_source": "Nagriženost i izvrnutost grlića materice",
+      "title_la": "Erosio et ectropio cervicis uteri",
+      "source_line": 241
+    },
+    {
+      "code": "N96",
+      "title_sq_source": "Žena sa ponavljajućim pobačajima",
+      "title_la": "Abortus habitualis",
+      "source_line": 242
+    },
+    {
+      "code": "O11",
+      "title_sq_source": "mokraći",
+      "title_la": "Hypertensio arterialis ante graviditatem cum proteinuria",
+      "source_line": 244
+    },
+    {
+      "code": "O13",
+      "title_sq_source": "mokraći",
+      "title_la": "Hypertensio arterialis in graviditate sine proteinuria",
+      "source_line": 246
+    },
+    {
+      "code": "O16",
+      "title_sq_source": "Povišen krvni pritisak majke, neoznačen",
+      "title_la": "Hypertensio arterialis matris, non specificata",
+      "source_line": 247
+    },
+    {
+      "code": "O25",
+      "title_sq_source": "Nedovoljna ishrana trudnice",
+      "title_la": "Malnutritio gravidae",
+      "source_line": 248
+    },
+    {
+      "code": "O40",
+      "title_sq_source": "Prevelika količina amnionske tečnosti",
+      "title_la": "Polyhydramnion",
+      "source_line": 249
+    },
+    {
+      "code": "O48",
+      "title_sq_source": "Produžena trudnoća",
+      "title_la": "Graviditas prolongata",
+      "source_line": 250
+    },
+    {
+      "code": "O85",
+      "title_sq_source": "Sepsa (trovanje bakterijama) u babinjama",
+      "title_la": "Sepsis puerperalis",
+      "source_line": 251
+    },
+    {
+      "code": "O94",
+      "title_sq_source": "Posledice komplikacija trudnoće, porođaja i babinja",
+      "title_la": "Sequelae complicationis graviditatis, partus et puerperii",
+      "source_line": 253
+    },
+    {
+      "code": "O95",
+      "title_sq_source": "Akušerska smrt neoznačenog uzroka",
+      "title_la": "Mors matris obstetricia, causa ignota",
+      "source_line": 254
+    },
+    {
+      "code": "P38",
+      "title_sq_source": "njega",
+      "title_la": "Omphalitis neonati cum sive sine haemorrhagia miti",
+      "source_line": 256
+    },
+    {
+      "code": "P53",
+      "title_sq_source": "Hemoragijska bolest ploda i novorođenčeta",
+      "title_la": "Morbus haemorrhagicus fetus et neonati",
+      "source_line": 257
+    },
+    {
+      "code": "P60",
+      "title_sq_source": "novorođenčeta",
+      "title_la": "Coagulatio intravascularis fetus et neonati disseminata",
+      "source_line": 259
+    },
+    {
+      "code": "P75",
+      "title_sq_source": "Zavezano crevo uzrokovano mekonijumom u cističnoj fibrozi",
+      "title_la": "Ileus meconialis in fibrosis cystica",
+      "source_line": 261
+    },
+    {
+      "code": "P77",
+      "title_sq_source": "Nekrotizujući enterokolitis ploda i novorođenčeta",
+      "title_la": "Enterocolitis fetus et neonati necroticans",
+      "source_line": 263
+    },
+    {
+      "code": "P90",
+      "title_sq_source": "Konvulzije novorođenčeta",
+      "title_la": "Convulsiones neonati",
+      "source_line": 264
+    },
+    {
+      "code": "P93",
+      "title_sq_source": "Reakcije i trovanja lekovima ploda i novorođenčeta",
+      "title_la": "Reactiones et intoxicationes medicamentosae fetus et neonati",
+      "source_line": 266
+    },
+    {
+      "code": "P95",
+      "title_sq_source": "Smrt ploda zbog neoznačenog uzroka",
+      "title_la": "Mors fetus, non specificata",
+      "source_line": 267
+    },
+    {
+      "code": "Q02",
+      "title_sq_source": "Mala glava",
+      "title_la": "Microcephalia",
+      "source_line": 268
+    },
+    {
+      "code": "R02",
+      "title_sq_source": "Gangrena, neklasifikovana na drugom mestu",
+      "title_la": "Gangraena, non alibi classificata",
+      "source_line": 269
+    },
+    {
+      "code": "R05",
+      "title_sq_source": "Kašalj",
+      "title_la": "Tussis",
+      "source_line": 270
+    },
+    {
+      "code": "R11",
+      "title_sq_source": "Mučnina i povraćanje",
+      "title_la": "Nausea et vomitus",
+      "source_line": 271
+    },
+    {
+      "code": "R12",
+      "title_sq_source": "Gorušica",
+      "title_la": "Pyrosis",
+      "source_line": 272
+    },
+    {
+      "code": "R13",
+      "title_sq_source": "Otežano gutanje",
+      "title_la": "Dysphagia",
+      "source_line": 273
+    },
+    {
+      "code": "R14",
+      "title_sq_source": "Nadutost i slična stanja trbuha",
+      "title_la": "Flatulentia et status similes",
+      "source_line": 274
+    },
+    {
+      "code": "R15",
+      "title_sq_source": "Nevoljno pražnjenje creva",
+      "title_la": "Incontinentia alvi",
+      "source_line": 275
+    },
+    {
+      "code": "R17",
+      "title_sq_source": "Žutica nepoznatog porekla",
+      "title_la": "Icterus non specificatus",
+      "source_line": 276
+    },
+    {
+      "code": "R18",
+      "title_sq_source": "Tečnost u trbuhu",
+      "title_la": "Ascites",
+      "source_line": 277
+    },
+    {
+      "code": "R21",
+      "title_sq_source": "Koprivnjača i drugi osip kože",
+      "title_la": "Urticaria et exanthemata cutis alia",
+      "source_line": 278
+    },
+    {
+      "code": "R31",
+      "title_sq_source": "Krvava mokraća, neoznačena",
+      "title_la": "Haematuria, non specificata",
+      "source_line": 279
+    },
+    {
+      "code": "R32",
+      "title_sq_source": "Neoznačeno nezadržavanje mokraće",
+      "title_la": "Incontinentia urinae, non specificata",
+      "source_line": 280
+    },
+    {
+      "code": "R33",
+      "title_sq_source": "Zadržavanje mokraće",
+      "title_la": "Retentia urinae",
+      "source_line": 281
+    },
+    {
+      "code": "R34",
+      "title_sq_source": "Nemogućnost mokrenja i umanjeno mokrenje",
+      "title_la": "Anuria et oliguria",
+      "source_line": 283
+    },
+    {
+      "code": "R35",
+      "title_sq_source": "Učestalo mokrenje",
+      "title_la": "Polyuria",
+      "source_line": 284
+    },
+    {
+      "code": "R36",
+      "title_sq_source": "Curenje iz mokraćovoda bešike",
+      "title_la": "Urethrorhoea",
+      "source_line": 285
+    },
+    {
+      "code": "R42",
+      "title_sq_source": "Nestabilnost i vrtoglavica",
+      "title_la": "Instabilitas et vertigo",
+      "source_line": 286
+    },
+    {
+      "code": "R51",
+      "title_sq_source": "Glavobolja",
+      "title_la": "Cephalalgia",
+      "source_line": 287
+    },
+    {
+      "code": "R53",
+      "title_sq_source": "Klonulost i umor",
+      "title_la": "Languor et lassitudo",
+      "source_line": 288
+    },
+    {
+      "code": "R54",
+      "title_sq_source": "Starost",
+      "title_la": "Senilitas",
+      "source_line": 289
+    },
+    {
+      "code": "R55",
+      "title_sq_source": "Padanje u nesvest i iznenadna nedovoljna funkcija mozga i srca",
+      "title_la": "Syncopa et collapsus",
+      "source_line": 291
+    },
+    {
+      "code": "R58",
+      "title_sq_source": "Krvarenje, neklasifikovano na drugom mestu",
+      "title_la": "Haemorrhagia, non alibi classificata",
+      "source_line": 292
+    },
+    {
+      "code": "R64",
+      "title_sq_source": "Izrazita mršavost",
+      "title_la": "Cachexia",
+      "source_line": 293
+    },
+    {
+      "code": "R69",
+      "title_sq_source": "Nepoznati i neoznačeni uzroci oboljevanja",
+      "title_la": "Causae morbiditatis incognitae et non specificatae",
+      "source_line": 294
+    },
+    {
+      "code": "R71",
+      "title_sq_source": "Poremećaji crvenih krvnih zrnaca",
+      "title_la": "Disordines erythrocytorum",
+      "source_line": 295
+    },
+    {
+      "code": "R72",
+      "title_sq_source": "mestu",
+      "title_la": "Abnormitas leucocytorum non alibi classificata",
+      "source_line": 297
+    },
+    {
+      "code": "R75",
+      "title_sq_source": "imunodeficijencije (HIV)",
+      "title_la": "(HIV)",
+      "source_line": 300
+    },
+    {
+      "code": "R80",
+      "title_sq_source": "Belančevine u mokraći",
+      "title_la": "Proteinuria isolata",
+      "source_line": 301
+    },
+    {
+      "code": "R81",
+      "title_sq_source": "Šećer u mokraći",
+      "title_la": "Glycosuria",
+      "source_line": 302
+    },
+    {
+      "code": "R91",
+      "title_sq_source": "Nenormalni nalazi kod dijagnostike pluća",
+      "title_la": "Pulmones ad diagnosticam abnormales",
+      "source_line": 303
+    },
+    {
+      "code": "R92",
+      "title_sq_source": "Nenormalni nalazi kod dijagnostike dojke",
+      "title_la": "Mamma ad diagnosticam abnormalis",
+      "source_line": 304
+    },
+    {
+      "code": "R95",
+      "title_sq_source": "Iznenadna smrt odojčeta",
+      "title_la": "Mors infantis subita",
+      "source_line": 305
+    },
+    {
+      "code": "R98",
+      "title_sq_source": "Smrt bez svedoka",
+      "title_la": "Mors sine testibus",
+      "source_line": 306
+    },
+    {
+      "code": "R99",
+      "title_sq_source": "Drugi nedovoljno definisani i neoznačeni uzroci smrti",
+      "title_la": "Causae mortis male definitae et non specificatae, aliae",
+      "source_line": 308
+    },
+    {
+      "code": "S16",
+      "title_sq_source": "Povreda mišića i tetive vrata",
+      "title_la": "Laesio traumatica musculi et tendinis colli",
+      "source_line": 309
+    },
+    {
+      "code": "S18",
+      "title_sq_source": "Traumatska amputacija u nivou vrata",
+      "title_la": "Amputatio traumatica regionis colli",
+      "source_line": 310
+    },
+    {
+      "code": "S47",
+      "title_sq_source": "nadlaktice",
+      "title_la": "Conquassatio regionis deltoideae et brachii",
+      "source_line": 312
+    },
+    {
+      "code": "T07",
+      "title_sq_source": "Višestruke neoznače povrede",
+      "title_la": "Laesiones traumataicae mutiplices, non specificatae",
+      "source_line": 313
+    },
+    {
+      "code": "T08",
+      "title_sq_source": "Prelom kičme, neoznačen",
+      "title_la": "Fractura columnae vertebralis regionis non specificata",
+      "source_line": 315
+    },
+    {
+      "code": "T10",
+      "title_sq_source": "Prelom u neoznačenom predelu ruke",
+      "title_la": "Fractura extremitatis superioris regionis non specificatae",
+      "source_line": 317
+    },
+    {
+      "code": "T12",
+      "title_sq_source": "Prelom u neoznačenom predelu noge",
+      "title_la": "Fractura extremitatis inferioris regionis non specificatae",
+      "source_line": 319
+    },
+    {
+      "code": "T16",
+      "title_sq_source": "Strano telo u uvu",
+      "title_la": "Corpus alienum auris",
+      "source_line": 320
+    },
+    {
+      "code": "T55",
+      "title_sq_source": "Toksičko dejstvo sapuna i deterdženata",
+      "title_la": "Effectus saponum et detergentium toxicus",
+      "source_line": 321
+    },
+    {
+      "code": "T58",
+      "title_sq_source": "Toksičko dejstvo ugljen-monoksida",
+      "title_la": "Effectus carbomonoxidi toxicus",
+      "source_line": 322
+    },
+    {
+      "code": "T64",
+      "title_sq_source": "zagađivača hrane",
+      "title_la": "aliorum toxicus",
+      "source_line": 324
+    },
+    {
+      "code": "T66",
+      "title_sq_source": "Neoznačena dejstva zračenja",
+      "title_la": "Effectus radiationis, non specificatus",
+      "source_line": 325
+    },
+    {
+      "code": "T68",
+      "title_sq_source": "Rashlađenje tela",
+      "title_la": "Hypothermia",
+      "source_line": 326
+    },
+    {
+      "code": "T71",
+      "title_sq_source": "Gušenje",
+      "title_la": "Asphyxia",
+      "source_line": 327
+    },
+    {
+      "code": "T96",
+      "title_sq_source": "supstancama",
+      "title_la": "biologicis",
+      "source_line": 329
+    },
+    {
+      "code": "T97",
+      "title_sq_source": "Posledice toksičkih dejstava uglavnom nemedicinskih supstanci medicinalibus",
+      "title_la": "NE MOŽE BITI OUH",
+      "source_line": 331
+    },
+    {
+      "code": "U88",
+      "title_sq_source": "Agens otporan na više antibiotika",
+      "title_la": "Agens otporan na više antibiotika",
+      "source_line": 346
+    },
+    {
+      "code": "Y66",
+      "title_sq_source": "Nesprovođenje hirurškog i medicinskog lečenja",
+      "title_la": "Nesprovođenje hirurškog i medicinskog lečenja",
+      "source_line": 334
+    },
+    {
+      "code": "Y69",
+      "title_sq_source": "lečenja",
+      "title_la": "lečenja",
+      "source_line": 336
+    },
+    {
+      "code": "Y86",
+      "title_sq_source": "Posledice drugih udesa",
+      "title_la": "Posledice drugih udesa",
+      "source_line": 338
+    },
+    {
+      "code": "Y95",
+      "title_sq_source": "Bolnički uslovi",
+      "title_la": "Bolnički uslovi",
+      "source_line": 339
+    },
+    {
+      "code": "Y96",
+      "title_sq_source": "Uslovi povezani sa radom",
+      "title_la": "Uslovi povezani sa radom",
+      "source_line": 340
+    },
+    {
+      "code": "Y97",
+      "title_sq_source": "Uslovi povezani sa zagađenjem spoljašnje sredine",
+      "title_la": "Uslovi povezani sa zagađenjem spoljašnje sredine",
+      "source_line": 342
+    },
+    {
+      "code": "Y98",
+      "title_sq_source": "Uslovi povezani sa načinom života",
+      "title_la": "Uslovi povezani sa načinom života",
+      "source_line": 343
+    },
+    {
+      "code": "Z21",
+      "title_sq_source": "(HIV)",
+      "title_la": "(HIV)",
+      "source_line": 345
+    },
+    {
+      "code": "Z33",
+      "title_sq_source": "Gravidno stanje, slučajno",
+      "title_la": "Gravidno stanje, slučajno",
+      "source_line": 332
+    }
+  ]
+}
