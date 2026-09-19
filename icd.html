@@ -8,10 +8,10 @@
   <title>DRx | ICD-10</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/icd-v2.css?v=clinical-workspace-v16">
+  <link rel="stylesheet" href="/icd-v2.css?v=clinical-workspace-v17">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1">
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1" defer></script>
-<script src="/icd-v2.js?v=clinical-workspace-v16" defer></script>
+<script src="/icd-v2.js?v=clinical-workspace-v17" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -125,8 +125,8 @@
           <div class="icd-search-foot">
             <div class="icd-quick-diagnoses" aria-label="Shkurtore klinike QKMF">
               <section class="icd-quick-group" aria-labelledby="familyQuickTitle">
-                <div class="icd-quick-label" id="familyQuickTitle"><span class="icd-quick-dot"></span><strong>Mjekësi familjare</strong><small>75 të shpeshta</small></div>
-                <div class="icd-quick-scroll" aria-label="75 diagnoza dhe simptoma të shpeshta në mjekësi familjare">
+                <div class="icd-quick-label" id="familyQuickTitle"><span class="icd-quick-dot"></span><strong>Mjekësi familjare</strong><small>100 të shpeshta</small></div>
+                <div class="icd-quick-scroll" aria-label="100 diagnoza dhe simptoma të shpeshta në mjekësi familjare">
                 <button type="button" class="icd-quick-chip" data-search-example="I10" title="Hipertension"><b>I10</b><span>Hipertension</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="E11" title="Diabet tip 2"><b>E11</b><span>Diabet tip 2</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="J06" title="Infeksion respirator akut"><b>J06</b><span>Infeksion respirator akut</span></button>
@@ -202,6 +202,31 @@
                 <button type="button" class="icd-quick-chip" data-search-example="M17" title="Artrozë e gjurit"><b>M17</b><span>Artrozë e gjurit</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="M75" title="Probleme të shpatullës"><b>M75</b><span>Probleme të shpatullës</span></button>
                 <button type="button" class="icd-quick-chip" data-search-example="M77" title="Entezopati / tendinopati"><b>M77</b><span>Entezopati / tendinopati</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="B37" title="Kandidiazë"><b>B37</b><span>Kandidiazë</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="L70" title="Akne vulgaris"><b>L70</b><span>Akne vulgaris</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="L01" title="Impetigo"><b>L01</b><span>Impetigo</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="B00" title="Herpes simplex"><b>B00</b><span>Herpes simplex</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="B02" title="Herpes zoster"><b>B02</b><span>Herpes zoster</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="J32" title="Sinusit kronik"><b>J32</b><span>Sinusit kronik</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="J04" title="Laringit akut"><b>J04</b><span>Laringit akut</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="H00" title="Hordeolum"><b>H00</b><span>Hordeolum</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="H01" title="Blefarit"><b>H01</b><span>Blefarit</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="H61.2" title="Tapë cerumeni"><b>H61.2</b><span>Tapë cerumeni</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="K58" title="IBS"><b>K58</b><span>IBS</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="K80" title="Kolelitiazë"><b>K80</b><span>Kolelitiazë</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="K76.0" title="Mëlçi yndyrore"><b>K76.0</b><span>Mëlçi yndyrore</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="N20" title="Gurë në veshka/ureter"><b>N20</b><span>Gurë në veshka</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="N45" title="Epididimit / orkit"><b>N45</b><span>Epididimit / orkit</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="N92" title="Menstruacione të bollshme"><b>N92</b><span>Menstruacione të bollshme</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="N94.6" title="Dismenorre"><b>N94.6</b><span>Dismenorre</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="D64" title="Anemi e paspecifikuar"><b>D64</b><span>Anemi</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="E05" title="Hipertiroidizëm"><b>E05</b><span>Hipertiroidizëm</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="E04" title="Strumë / nodus tiroide"><b>E04</b><span>Strumë / nodus tiroide</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="M10" title="Gutë"><b>M10</b><span>Gutë</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="M06" title="Artrit reumatoid"><b>M06</b><span>Artrit reumatoid</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="M79.7" title="Fibromialgji"><b>M79.7</b><span>Fibromialgji</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="R00.0" title="Takikardi"><b>R00.0</b><span>Takikardi</span></button>
+                <button type="button" class="icd-quick-chip" data-search-example="R00.1" title="Bradikardi"><b>R00.1</b><span>Bradikardi</span></button>
                 </div>
               </section>
               <section class="icd-quick-group is-urgent" aria-labelledby="urgentQuickTitle">
