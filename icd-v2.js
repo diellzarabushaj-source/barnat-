@@ -168,7 +168,7 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view, sv:'clinical-workspace-v19' });
+    const params = new URLSearchParams({ view, sv:'clinical-workspace-v20' });
     if (view === 'suggest' || view === 'seed' || view === 'hot' || view === 'guidance' || view === 'guidance-list') params.set('advanced', '1');
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
     return `${API}?${params}`;
@@ -356,6 +356,14 @@
         clean(meds.evidence) ? `Referencë: ${clean(meds.evidence)}` : '',
       ].filter(Boolean).join('\n');
     }
+    if (kind === 'practical') {
+      const practical = guidance.practical || {};
+      return [
+        'Si vepron praktikisht:',
+        ...(practical.steps || []),
+        clean(practical.reassess) ? `Rivlerëso: ${clean(practical.reassess)}` : '',
+      ].filter(Boolean).join('\n');
+    }
     if (kind === 'referral') {
       return [
         `Diagnoza e punës: ${clean(guidance.working_diagnosis)}`,
@@ -373,6 +381,7 @@
       `Anamneza: ${(guidance.anamnesis || []).join('; ')}`,
       `Ekzaminimet: ${(guidance.exams || []).join('; ')}`,
       `Menaxhimi: ${clean(guidance.management)}`,
+      clinicalCopyText('practical', guidance),
       clinicalCopyText('medications', guidance),
       `Summary: ${clean(guidance.summary)}`,
     ].filter(Boolean).join('\n');
@@ -422,6 +431,19 @@
       ? `<span class="clinical-action-inherited">Udhëzim nga ${escapeHtml(payload.inheritedFrom)}</span>`
       : '';
     const actionKicker = guidance.urgent ? 'URGJENCË QKMF · Stabilizim + transfer' : 'QKMF · Clinical Action';
+    const practical = guidance.practical || null;
+    const practicalCard = practical && Array.isArray(practical.steps) && practical.steps.length ? `
+        <article class="clinical-action-card is-practical">
+          <div class="clinical-card-head">
+            <span class="clinical-card-icon">1→</span>
+            <div><span class="clinical-card-label">Si vepron praktikisht</span><strong>Hapat në rend</strong></div>
+          </div>
+          <ol class="clinical-practical-steps">${practical.steps.map(step => '<li>' + escapeHtml(clean(step).replace(/^\d+\.\s*/, '')) + '</li>').join('')}</ol>
+          ${clean(practical.reassess) ? `<div class="clinical-reassess"><span>Rivlerëso</span><p>${escapeHtml(clean(practical.reassess))}</p></div>` : ''}
+          <button class="clinical-copy-button" type="button" data-clinical-copy="practical">Kopjo hapat</button>
+        </article>
+      ` : '';
+
     const meds = guidance.medications || null;
     const medicationCard = meds && (
       (Array.isArray(meds.first_line) && meds.first_line.length) ||
@@ -510,6 +532,7 @@
           <p>${escapeHtml(clean(guidance.management))}</p>
         </article>
 
+        ${practicalCard}
         ${medicationCard}
 
         <article class="clinical-action-card is-summary">
