@@ -2343,7 +2343,18 @@
     if (!root) return;
     const entries = buildPlanEntries();
     const selectedEntries = entries.filter(entry => !state.excludedTestIds.has(entry.test.id));
-    const dxCount = state.selectedIndicationIds.size;
+    const presentationCount = state.selectedIndicationIds.size;
+    const visibleEntries = entries.filter(entry => {
+      if (state.examFilter === 'all') return true;
+      if (state.examFilter === 'urgent') return entry.tier === 'urgent';
+      return (entry.test.examGroup || 'laboratory') === state.examFilter;
+    });
+
+    document.querySelectorAll('[data-exam-filter]').forEach(button => {
+      const active = button.dataset.examFilter === state.examFilter;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
 
     $('#labSelectedTestCount').textContent = String(selectedEntries.length);
     $('#labCopyPlan').disabled = selectedEntries.length === 0;
@@ -2351,11 +2362,12 @@
     const status = $('#labPlanStatus');
     if (status) {
       if (!entries.length) {
-        status.textContent = dxCount
-          ? 'Profilet e zgjedhura nuk kanë analiza të lidhura në katalog.'
-          : 'Zgjidh një diagnozë ose shto analizë manualisht.';
+        status.textContent = presentationCount
+          ? 'Prezantimet e zgjedhura nuk kanë ekzaminime të lidhura.'
+          : 'Zgjidh një shenjë/simptomë ose shto ekzaminim manualisht.';
       } else {
-        status.textContent = `${dxCount} diagnoza · ${entries.length} analiza në panel · ${selectedEntries.length} të zgjedhura`;
+        const filterLabel = state.examFilter === 'all' ? '' : ` · filtër: ${state.examFilter}`;
+        status.textContent = `${presentationCount} prezantime · ${entries.length} ekzaminime në panel · ${selectedEntries.length} të zgjedhura${filterLabel}`;
       }
     }
 
@@ -2363,16 +2375,21 @@
       root.innerHTML = `
         <div class="lab-plan-empty">
           <span class="lab-empty-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 16h9"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>
           </span>
-          <strong>Zgjidh diagnozat sipër.</strong>
-          <span>DRx do t’i bashkojë analizat e nevojshme dhe do ta shpjegojë pse sugjerohet secila.</span>
+          <strong>Zgjidh shenjat ose simptomat sipër.</strong>
+          <span>DRx do të propozojë ekzaminimet fillestare dhe ato “vetëm nëse…”, pa krijuar panel të panevojshëm.</span>
         </div>`;
       return;
     }
 
-    const grouped = new Map(['core','recommended','conditional','manual'].map(tier => [tier, []]));
-    entries.forEach(entry => {
+    if (!visibleEntries.length) {
+      root.innerHTML = '<div class="lab-plan-empty"><strong>Nuk ka ekzaminime në këtë filtër.</strong><span>Zgjidh “Të gjitha” ose një kategori tjetër.</span></div>';
+      return;
+    }
+
+    const grouped = new Map(['urgent','core','recommended','conditional','manual'].map(tier => [tier, []]));
+    visibleEntries.forEach(entry => {
       const tier = grouped.has(entry.tier) ? entry.tier : 'recommended';
       grouped.get(tier).push(entry);
     });
@@ -2385,32 +2402,30 @@
   function renderGaps() {
     const root = $('#labGapList');
     if (!root) return;
+    const merged = [];
 
-    const merged = new Map();
     for (const indication of selectedIndications()) {
-      for (const gap of indication.catalogGaps || []) {
-        const name = clean(gap?.name);
-        if (!name) continue;
-        const key = normalize(name);
-        if (!merged.has(key)) merged.set(key, { name, notes:[], diseases:[] });
-        const item = merged.get(key);
-        const note = clean(gap?.note);
-        if (note && !item.notes.includes(note)) item.notes.push(note);
-        if (!item.diseases.includes(indication.title)) item.diseases.push(indication.title);
+      for (const flag of indication.redFlags || []) {
+        const value = clean(flag);
+        if (!value) continue;
+        const existing = merged.find(item => normalize(item.text) === normalize(value));
+        if (existing) {
+          if (!existing.presentations.includes(indication.title)) existing.presentations.push(indication.title);
+        } else {
+          merged.push({ text:value, presentations:[indication.title] });
+        }
       }
     }
 
-    const gaps = [...merged.values()];
-    $('#labGapCount').textContent = String(gaps.length);
-
-    root.innerHTML = gaps.length
-      ? gaps.map(gap => `
-        <div class="lab-gap-item">
-          <strong>${esc(gap.name)}</strong>
-          ${gap.notes.length ? `<p>${esc(gap.notes.join(' '))}</p>` : ''}
-          <small>${esc(gap.diseases.join(' · '))}</small>
+    $('#labGapCount').textContent = String(merged.length);
+    root.innerHTML = merged.length
+      ? merged.map(item => `
+        <div class="lab-gap-item is-red-flag">
+          <strong>Red flag</strong>
+          <p>${esc(item.text)}</p>
+          <small>${esc(item.presentations.join(' · '))}</small>
         </div>`).join('')
-      : '<p>Nuk ka boshllëqe të identifikuara për diagnozat e zgjedhura.</p>';
+      : '<p>Nuk ka red flags të bashkuara për prezantimet e zgjedhura.</p>';
   }
 
   function renderAll() {
@@ -2427,6 +2442,7 @@
     state.excludedTestIds.clear();
     state.diseaseTerm = '';
     state.manualTerm = '';
+    state.examFilter = 'all';
 
     if ($('#labDiseaseSearch')) $('#labDiseaseSearch').value = '';
     if ($('#labManualSearch')) $('#labManualSearch').value = '';
@@ -2449,29 +2465,32 @@
     const lines = [];
 
     if (indications.length) {
-      lines.push('Diagnozat:');
-      indications.forEach(item => {
-        const codes = (item.icdCodes || []).join(', ');
-        lines.push(`- ${item.title}${codes ? ` (${codes})` : ''}`);
-      });
+      lines.push('Shenja / simptoma / gjetje klinike:');
+      indications.forEach(item => lines.push(`- ${item.title} · ${item.clinicalType || 'Prezantim klinik'}`));
       lines.push('');
     }
 
-    lines.push('Analizat:');
-    entries.forEach(entry => lines.push(`- ${entry.test.formName}`));
+    lines.push('Ekzaminet:');
+    entries.forEach(entry => {
+      const meta = TIER_META[entry.tier] || TIER_META.recommended;
+      lines.push(`- [${meta.label}] ${entry.test.formName} · ${entry.test.category || 'Laborator'}`);
+      entry.reasons.forEach(reason => {
+        if (reason.rationale) lines.push(`  ↳ ${reason.presentation}: ${reason.rationale}`);
+        if (reason.contextNote) lines.push(`     Vetëm nëse/kujdes: ${reason.contextNote}`);
+      });
+    });
 
-    const gaps = [];
-    indications.forEach(item => (item.catalogGaps || []).forEach(gap => {
-      const name = clean(gap?.name);
-      if (name && !gaps.includes(name)) gaps.push(name);
+    const flags = [];
+    indications.forEach(item => (item.redFlags || []).forEach(flag => {
+      const value = clean(flag);
+      if (value && !flags.includes(value)) flags.push(value);
     }));
-
-    if (gaps.length) {
-      lines.push('', 'Mungojnë në katalog:');
-      gaps.forEach(name => lines.push(`- ${name}`));
+    if (flags.length) {
+      lines.push('', 'Red flags:');
+      flags.forEach(flag => lines.push(`- ${flag}`));
     }
 
-    lines.push('', 'Shënim: Panel orientues klinik; përshtate sipas pacientit dhe protokollit lokal.');
+    lines.push('', 'Shënim: Work-up orientues; përshtate sipas pacientit, ekzaminimit fizik, probabilitetit klinik dhe protokollit lokal.');
     return lines.join('\n');
   }
 
@@ -2489,7 +2508,7 @@
     const value = copyPlanText();
     try {
       await navigator.clipboard.writeText(value);
-      showToast('Lista e analizave u kopjua.');
+      showToast('Lista e ekzaminimeve u kopjua.');
     } catch {
       const textarea = document.createElement('textarea');
       textarea.value = value;
@@ -2500,7 +2519,7 @@
       textarea.select();
       const copied = document.execCommand('copy');
       textarea.remove();
-      showToast(copied ? 'Lista e analizave u kopjua.' : 'Kopjimi nuk u krye.');
+      showToast(copied ? 'Lista e ekzaminimeve u kopjua.' : 'Kopjimi nuk u krye.');
     }
   }
 
@@ -2590,6 +2609,13 @@
       if (button) removeManualTest(button.dataset.removeManual);
     });
 
+    $('#examModalityFilters')?.addEventListener('click', event => {
+      const button = event.target.closest('[data-exam-filter]');
+      if (!button) return;
+      state.examFilter = button.dataset.examFilter || 'all';
+      renderPlan();
+    });
+
     $('#labClearPlan')?.addEventListener('click', clearPlan);
     $('#labCopyPlan')?.addEventListener('click', copyPlan);
 
@@ -2611,7 +2637,7 @@
       installDataset(data);
       $('#appShell')?.setAttribute('aria-busy', 'false');
     } catch (error) {
-      console.error('[Analizat v2]', error);
+      console.error('[Ekzaminet v3]', error);
       $('#syncText').textContent = 'Gabim';
       $('#labTestTotal').textContent = '—';
       $('#labIndicationTotal').textContent = '—';
@@ -2620,8 +2646,8 @@
           <span class="lab-empty-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 4.5 3.5 19.5h17L12 4.5Z"/><path d="M12 9v4M12 16.5h.01"/></svg>
           </span>
-          <strong>Analizat nuk u ngarkuan.</strong>
-          <span>Kontrollo lidhjen me Supabase dhe provo përsëri.</span>
+          <strong>Ekzaminet nuk u ngarkuan.</strong>
+          <span>Kontrollo lidhjen me katalogun laboratorik dhe provo përsëri.</span>
           <button class="lab-clear-plan" type="button" data-lab-retry>Provo përsëri</button>
         </div>`;
       $('#labPlanSections')?.querySelector('[data-lab-retry]')?.addEventListener('click', () => window.location.reload());
