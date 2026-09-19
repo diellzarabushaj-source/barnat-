@@ -1,0 +1,40 @@
+name: ICD search command center
+
+on:
+  push:
+    paths:
+      - 'icd.html'
+      - 'icd-v2.css'
+      - 'icd-v2.js'
+      - 'lib/icd-*.js'
+      - 'data/icd-latin-*.json'
+      - 'tests/icd-clinical-search-v3-test.js'
+      - 'tests/icd-search-command-center-test.js'
+  pull_request:
+    paths:
+      - 'icd.html'
+      - 'icd-v2.css'
+      - 'icd-v2.js'
+      - 'lib/icd-*.js'
+      - 'data/icd-latin-*.json'
+      - 'tests/icd-clinical-search-v3-test.js'
+      - 'tests/icd-search-command-center-test.js'
+
+jobs:
+  search-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Syntax
+        run: |
+          node --check icd-v2.js
+          node --check lib/icd-search-engine.js
+          node --check lib/icd-search-engine-v3.js
+          node --check lib/icd-advanced-handler.js
+      - name: Search engine tests
+        run: |
+          node tests/icd-clinical-search-v3-test.js
+          node tests/icd-search-command-center-test.js
