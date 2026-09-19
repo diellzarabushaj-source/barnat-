@@ -783,3 +783,32 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 }
 .clinical-action-panel.is-urgent .clinical-working-label{color:#a03b47}
 .clinical-action-panel.is-urgent .clinical-working-diagnosis strong{color:#7f2d36}
+
+
+/* Medication detail v18 ---------------------------------------------------- */
+.clinical-action-card.is-medications{
+  grid-column:1/-1;border-color:#d8e7df;background:linear-gradient(135deg,#f8fcfa 0%,#fff 74%)
+}
+.clinical-action-card.is-medications .clinical-card-icon{
+  background:#e9f6ef;color:#28704f;font-size:9px;letter-spacing:-.02em
+}
+.clinical-medication-block{margin-top:9px;padding:10px 11px;border:1px solid #e3ebe6;border-radius:10px;background:#fff}
+.clinical-medication-block>span{
+  display:block;margin-bottom:6px;color:#537264;font-size:9px;font-weight:850;letter-spacing:.045em;text-transform:uppercase
+}
+.clinical-medication-block ul{margin:0;padding-left:17px}
+.clinical-medication-block li{margin:4px 0;color:#405b4f;font-size:10.3px;line-height:1.42}
+.clinical-medication-block.is-avoid{border-color:#f0d9dc;background:#fffafa}
+.clinical-medication-block.is-avoid>span{color:#aa3f4a}
+.clinical-medication-block.is-avoid li{color:#7e4b50}
+.clinical-medication-note{
+  margin-top:9px;padding:9px 10px;border-left:3px solid #7f68e8;border-radius:7px;background:#faf9ff;
+  color:#5f6575;font-size:9.7px;line-height:1.45
+}
+.clinical-medication-evidence{display:block;margin-top:8px;color:#87948e;font-size:8.6px;line-height:1.35}
+.clinical-action-card.is-medications .clinical-copy-button{margin-top:10px}
+@media(max-width:680px){
+  .clinical-medication-block{padding:10px}
+  .clinical-medication-block li{font-size:10.8px}
+  .clinical-medication-note{font-size:10.2px}
+}
