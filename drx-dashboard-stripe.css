@@ -2700,9 +2700,9 @@ html[data-drx-app] :is(.button,.icon-button,.nav-item,.drx-profile-chip,.drx-use
   -webkit-tap-highlight-color:transparent;
 }
 
-/* 10–11" tablets should prioritize the clinical workspace instead of keeping
-   a permanent 238px sidebar. This also covers iPad portrait/compact landscape. */
-@media (min-width:761px) and (max-width:1100px){
+/* Compact tablets should prioritize the clinical workspace instead of keeping
+   a permanent 238px sidebar. Use the same 1024px desktop boundary as the navigation controller. */
+@media (min-width:761px) and (max-width:1023px){
   html.drx-unified-sidebar .sidebar{
     width:min(286px,82vw)!important;
     min-width:0!important;
@@ -2794,7 +2794,7 @@ html[data-drx-app] :is(.button,.icon-button,.nav-item,.drx-profile-chip,.drx-use
 
 
 /* Shell height contract: keep the approved Stripe chrome geometry exact. */
-@media (min-width:761px) and (max-width:1100px){
+@media (min-width:761px) and (max-width:1023px){
   html.drx-unified-sidebar .topbar{
     height:58px!important;
     min-height:58px!important;
@@ -2864,4 +2864,30 @@ html.drx-unified-sidebar :is(.detail-drawer,.rx-preview-card,.table-scroll){over
 }
 @media(prefers-reduced-motion:reduce){
  html.drx-unified-sidebar :is(.button,.icon-button,.dz-none,.dz-copy,.rx-tab,.nav-item){transition:none}
+}
+
+/* Responsive interaction: physical targets stay usable on compact screens and
+   touch tablets, while pointer-driven desktop controls retain their density. */
+html.drx-unified-sidebar{scroll-padding-block:76px 24px}
+html.drx-unified-sidebar :is(.page-heading,.dz-head,.rx-page-heading)>div{min-width:0}
+html.drx-unified-sidebar :is(.page-subtitle,.dz-head p){overflow-wrap:break-word}
+html.drx-unified-sidebar :is(.rx-source-guide-nav,.rx-folder-panel){scroll-padding-inline:12px}
+@media(max-width:760px),(pointer:coarse){
+ html.drx-unified-sidebar :is(button,select,input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=range]),summary){min-height:44px!important}
+ html.drx-unified-sidebar :is(button,summary){touch-action:manipulation}
+ html.drx-unified-sidebar :is(.icon-button,.hub-search-clear,.drx-profile-chip,.category-code,.atc-path-node,.icd-path-node,.icd-path-reset){min-width:44px!important}
+ html.drx-unified-sidebar :is(.icd-quick-chip,.atc-path-node,.icd-path-node){white-space:normal;line-height:1.4}
+ html.drx-unified-sidebar :is(input:not([type=checkbox]):not([type=radio]),select,textarea){font-size:16px!important}
+ html.drx-unified-sidebar .rx-tabs{gap:4px}
+ html.drx-unified-sidebar .rx-tab{white-space:normal;line-height:1.4}
+}
+@media(max-width:420px){
+ html.drx-unified-sidebar .dz-head{flex-wrap:wrap;gap:10px}
+ html.drx-unified-sidebar .dz-head>div{flex:1 1 100%}
+ html.drx-unified-sidebar .dz-head p{margin-bottom:0}
+ html.drx-unified-sidebar :is(.rx-source-nav-item,.rx-folder-item){max-width:calc(100vw - 48px)}
+}
+@media(min-width:1024px){
+ html.drx-unified-sidebar .sidebar{transform:none!important}
+ html.drx-unified-sidebar :is(.page-heading .page-subtitle,.dz-head p){max-width:72ch}
 }
