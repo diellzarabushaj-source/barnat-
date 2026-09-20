@@ -61,7 +61,7 @@ assert(stylesheetLinks.length === 3, `Registry v2 must load registry CSS, dose-c
 assert(scriptSources.length === 5, `Registry v2 must load dose core/runtime, shared sidebar taxonomy, registry runtime and calculator runtime; found ${scriptSources.length}.`);
 assert(stylesheetLinks[0].startsWith('/registry-v2.css'), 'Unexpected registry page stylesheet authority.');
 assert(stylesheetLinks[1].startsWith('/registry-v2-dose-calculator.css'), 'Dose calculator stylesheet must remain second.');
-assert(stylesheetLinks[2] === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish3', 'Shared Stripe shell v8 must load last.');
+assert(stylesheetLinks[2] === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-responsive4', 'Shared Stripe shell v8 must load last.');
 assert(scriptSources[0].startsWith('/dose-core.js'), 'Dose core must load first.');
 assert(scriptSources[1].startsWith('/dose-runtime-browser.js'), 'Dose browser runtime must load after dose core.');
 assert(scriptSources[2] === '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish2-lazy', 'Shared sidebar taxonomy v5 must load before the registry runtime.');
@@ -170,7 +170,7 @@ console.log(JSON.stringify({
   architecture:'registry-v2',
   stylesheets:stylesheetLinks,
   scripts:scriptSources,
-  shellVersion:'drx-dashboard-stripe-v8-polish3',
+  shellVersion:'drx-dashboard-stripe-v8-responsive4',
   tableHeaderCount,
   columnPickerStability:'registry-column-picker-stability-v2',
   dosageAutoload:'registry-dose-autoload-retry-v2',
