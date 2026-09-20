@@ -10,6 +10,16 @@ Product names are the exception: they identify a real product and are shown exac
 
 ## The formulation calculator
 
+### Practical workflow update (20 September 2026)
+
+Manual shelf conversions are now limited to oral and rectal routes. Injections and other routes use only the engine's verified product/preparation conversion. Previously, the generic shelf could offer an unverified market strength even when the engine withheld preparation; neither saved products nor copied summaries can take that fallback now.
+
+Regimen choices include their numeric source rule and automatically expand when a choice is still needed. The answer can explain its source coefficients, entered weight, pre-cap amount and final capped amount. These are server-provided calculation operands, not a second clinical calculator in the browser. No numeric dose, indication, age/weight rule or ceiling changed.
+
+The missing-field action focuses the next incomplete control without confirming it. Calculation and catalog requests time out after 12 seconds and offer retry. Request revisions continue to reject stale answers. Custom concentration edits disable copying until saved, and the copied summary retains the selected sequence step, dose period, duration availability, preparation and cautions.
+
+Validation includes the 43-regimen engine suite, workspace and Albanian formulation tests, test:deploy, and `node tests/dozologjia-clarity-browser.js`. The browser test covers catalog recovery, missing-field focus, real mg-to-mL arithmetic, invalid concentrations, stale responses, failed and timed-out requests, route-restricted manual conversions, daily-total copying, patient reset and mobile-to-desktop resizing.
+
 Master binds an exact, audited product to some regimens and converts mg to mL itself; that conversion is shown as the answer and named as source-bound. For every other regimen the clinician still has to turn mg into something a spoon or a blister carries, so `lib/dozologjia-products.js` carries the strengths commonly found on the shelf, per drug. They are **not** read off a verified label: each is flagged `marketTypical`, carries no source, and the page says to check the bottle.
 
 The clinician can always enter their own strength (mg per tablet, or mg per mL) — it is remembered per drug in `localStorage` under `drx.dozologjia.products.v1`, leads the shelf from then on, and is labelled as theirs. That arithmetic happens in the page, on a strength the clinician supplied; no strength or concentration is ever posted to the calculator, and the API's allow-list still rejects one.
