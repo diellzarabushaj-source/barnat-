@@ -197,7 +197,7 @@
       script.defer = true;
       script.dataset.drxAtcSidebarData = '1';
       script.addEventListener('load', resolve, { once:true });
-      script.addEventListener('error', resolve, { once:true });
+      script.addEventListener('error', () => { script.remove(); resolve(); }, { once:true });
       document.head.appendChild(script);
     });
   }
@@ -315,6 +315,7 @@
     if (currentPath() === '/klasifikimi.html') outer.open = true;
     syncAtc(nav);
     document.documentElement.dataset.drxAtcSidebar = 'ready';
+    return true;
   }
 
   function replaceIcdLink(nav) {
@@ -389,7 +390,11 @@
 
   async function loadIcd(details) {
     const cached = readIcdCache();
-    if (cached) renderIcd(details, cached);
+    if (cached) {
+      renderIcd(details, cached);
+      document.documentElement.dataset.drxIcdSidebar = 'ready';
+      return true;
+    }
     try {
       const response = await fetch(ICD_API, {
         credentials:'same-origin',
@@ -403,6 +408,7 @@
       writeIcdCache(chapters);
       renderIcd(details, chapters);
       document.documentElement.dataset.drxIcdSidebar = 'ready';
+      return true;
     } catch (error) {
       if (!cached) {
         const list = details?.querySelector('[data-icd-chapter-list]');
@@ -410,7 +416,25 @@
       }
       document.documentElement.dataset.drxIcdSidebar = 'unavailable';
       console.warn('ICD sidebar unavailable:', error);
+      return false;
     }
+  }
+
+  // Closed navigation groups do not compete with the active clinical page.
+  // Keep native links usable before data arrives; failed loads retry on reopen.
+  function loadWhenOpened(details, load) {
+    if (!details) return;
+    let pending = null;
+    let ready = false;
+    const run = () => {
+      if (!details.open || pending || ready) return;
+      details.setAttribute('aria-busy', 'true');
+      pending = Promise.resolve().then(load).then(ok => { ready = ok === true; })
+        .catch(() => { ready = false; })
+        .finally(() => { pending = null; details.removeAttribute('aria-busy'); });
+    };
+    details.addEventListener('toggle', run);
+    run();
   }
 
   function sidebarCollapsed() {
@@ -708,16 +732,24 @@
     restoreScroll(nav);
     initSidebarCollapse(nav);
     void syncPersonalCounts(nav).finally?.(() => window.DRxSidebarCollapse?.refreshLabels?.());
-    void enhanceAtc(nav).finally?.(() => {
+    const atcDetails = nav.querySelector('#atcNavGroup');
+    if (currentPath() === '/klasifikimi.html' && atcDetails) atcDetails.open = true;
+    loadWhenOpened(atcDetails, async () => {
+      const loaded = await enhanceAtc(nav);
       bindCollapsedGroupExpansion();
       window.DRxSidebarCollapse?.refreshLabels?.();
+      return loaded;
     });
 
-    nav.addEventListener('scroll', () => saveScroll(nav), { passive:true });
+    let scrollSaveTimer;
+    nav.addEventListener('scroll', () => {
+      clearTimeout(scrollSaveTimer);
+      scrollSaveTimer = setTimeout(() => saveScroll(nav), 150);
+    }, { passive:true });
     nav.addEventListener('click', event => {
       if (event.target.closest('a')) saveScroll(nav);
     });
-    window.addEventListener('pagehide', () => saveScroll(nav), { passive:true });
+    window.addEventListener('pagehide', () => { clearTimeout(scrollSaveTimer); saveScroll(nav); }, { passive:true });
     window.addEventListener('drx:phase9-personal-ready', event => adoptPersonalSnapshotCounts(nav, event.detail || {}));
     window.addEventListener('drx:phase9-personal-changed', () => void syncPersonalCounts(nav));
     window.addEventListener('hashchange', () => {
@@ -726,7 +758,7 @@
       if (cached && icdDetails) renderIcd(icdDetails, cached);
     });
 
-    if (icdDetails) void loadIcd(icdDetails);
+    loadWhenOpened(icdDetails, () => loadIcd(icdDetails));
     window.DRxSidebarTaxonomy = Object.freeze({
       syncAtc:() => syncAtc(nav),
       enhanceAtc:() => enhanceAtc(nav),

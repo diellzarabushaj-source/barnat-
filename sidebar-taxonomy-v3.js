@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const CORE_SRC = '/sidebar-taxonomy-core-v3.js?v=sidebar-taxonomy-v5-polish1';
+  const CORE_SRC = '/sidebar-taxonomy-core-v3.js?v=sidebar-taxonomy-v5-polish2-lazy';
   const ANTIBIOTICS_HREF = '/antibiotiket.html';
   const HUB_OVERRIDE_ID = 'medicalhub-dod-ch05-sub07';
   const HUB_SOURCE_OVERRIDES = new Map([

@@ -40,8 +40,8 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
 const pageRuntimes = scripts.filter(src => !/sidebar-taxonomy-v3\.js/.test(src));
 assert.equal(styles.length, 2, 'Recetat V2 must load only page CSS + shared shell CSS');
 assert.equal(styles[0], '/recetat-v2.css?v=20-ui5');
-assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1');
-assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1'));
+assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish3');
+assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish2-lazy'));
 assert.deepEqual(pageRuntimes, ['/recetat-v2.js?v=20-ui5']);
 
 // 2026-09-11 UI reset: the page stylesheet must be a clean authority, not an override stack.
