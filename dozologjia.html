@@ -6,14 +6,14 @@
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#1c1e54">
   <link rel="manifest" href="manifest.webmanifest">
-  <title>DRx | Dozologjia pediatrike</title>
+  <title>DRx | Dozologjia</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/dozologjia-v2.css?v=30">
+  <link rel="stylesheet" href="/dozologjia-v2.css?v=31">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-polish1">
   <script src="/phase9-personal-entities-client.js?v=phase9b" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish1" defer></script>
-<script src="/dozologjia-v2.js?v=30" defer></script>
+<script src="/dozologjia-v2.js?v=31" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#dosageContent">Kalo te kalkulatori pediatrik</a>
@@ -97,10 +97,10 @@
         <div class="dz-column">
           <header class="dz-head">
             <div>
-              <h1>Doza</h1>
-              <p>Zgjidh barin dhe për çka — doza del vetë.</p>
+              <h1>Dozologjia</h1>
+              <p>Bari → indikacioni → pacienti → doza. Rezultati përditësohet automatikisht.</p>
             </div>
-            <span class="scope-pill">DOZOLOGJIA</span>
+            <button type="button" class="dz-none" id="masterReset">Pacient i ri</button>
           </header>
 
           <p class="dz-status" id="masterStatus" role="status">Duke ngarkuar…</p>
@@ -109,10 +109,10 @@
             <div class="dz-block">
               <details class="dz-picker" id="drugPicker" open>
                 <summary class="dz-picker-summary">
-                  <span class="dz-label" id="drugLabel">Bari</span>
+                  <span class="dz-label" id="drugLabel">1 · Bari</span>
                   <b class="dz-picker-current" id="drugCurrent">—</b>
                 </summary>
-                <input class="dz-search" id="dosageSearch" type="search" placeholder="Kërko barin…" autocomplete="off" aria-label="Kërko barin">
+                <input class="dz-search" id="dosageSearch" type="search" placeholder="Kërko barin ose indikacionin…" autocomplete="off" aria-label="Kërko barin ose indikacionin">
                 <div class="dz-chips" id="masterDrugs" role="radiogroup" aria-labelledby="drugLabel"></div>
               </details>
             </div>
@@ -120,7 +120,7 @@
             <div class="dz-block" id="indicationBlock" hidden>
               <details class="dz-picker" id="indicationPicker" open>
                 <summary class="dz-picker-summary">
-                  <span class="dz-label" id="indicationLabel">Për çka</span>
+                  <span class="dz-label" id="indicationLabel">2 · Indikacioni</span>
                   <b class="dz-picker-current" id="indicationCurrent">—</b>
                 </summary>
                 <div class="dz-chips" id="masterIndication" role="radiogroup" aria-labelledby="indicationLabel"></div>
@@ -130,7 +130,7 @@
             <div class="dz-block" id="regimenBlock" hidden>
               <details class="dz-picker" id="regimenPicker" open>
                 <summary class="dz-picker-summary">
-                  <span class="dz-label" id="regimenLabel">Si jepet</span>
+                  <span class="dz-label" id="regimenLabel">3 · Skema dhe mënyra e dhënies</span>
                   <b class="dz-picker-current" id="regimenCurrent">—</b>
                 </summary>
                 <div class="dz-chips" id="masterRegimens" role="radiogroup" aria-labelledby="regimenLabel"></div>

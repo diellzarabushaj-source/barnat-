@@ -710,3 +710,17 @@ button,input,select{font:inherit}
   .dosage-page .dz-editor-sep{text-align:center}
   .dosage-page .dz-copy,.dosage-page .dz-save{width:100%}
 }
+
+/* Dose clarity, consistent with the antibiotic calculator. */
+.dosage-page .dz-head p{font-size:14px;line-height:1.6;max-width:64ch}
+.dosage-page .dz-chip small{font-size:12px;line-height:1.5;color:#475569}
+.dosage-page .dz-chip:has(input:checked){box-shadow:0 0 0 2px #4f46e5;border-color:#4f46e5}
+.dosage-page .dz-chip:focus-within{outline:3px solid #a5b4fc;outline-offset:3px}
+.dosage-page .dz-hint,.dosage-page .dz-dose-note,.dosage-page .dz-fold-body{font-size:13px;line-height:1.65}
+.dosage-page .dz-answer-head p{font-size:13px;line-height:1.6}
+.dosage-page .dz-dose-note{font-weight:700;color:#3730a3}
+.dosage-page .dz-rhythm{font-size:15px;line-height:1.6}
+.dosage-page .dz-safety{padding:12px 14px;border-left:3px solid #b45309;background:#fffbeb;line-height:1.6}
+.dosage-page .dz-provenance a{display:inline-flex;align-items:center;min-height:44px;padding:0 8px}
+.dosage-page .dz-chip,.dosage-page .dz-none,.dosage-page .dz-picker-summary{min-height:44px}
+.dosage-page .dz-answer,.dosage-page .dz-errors{overflow-wrap:anywhere}

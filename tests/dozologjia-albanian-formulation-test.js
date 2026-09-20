@@ -181,10 +181,10 @@ assert.ok(size(css, '.dz-chip', 'min-height') >= 36, 'A chip must be comfortably
 /* The answer is one number, not a stack of paragraphs. */
 assert.equal((client.match(/'dz-dose'/g) || []).length, 1, 'There is exactly one headline dose');
 assert.ok(size(css, '.dz-dose', 'font-size') >= 32, 'The dose must be readable at arm’s length');
-assert.match(client, /'Kopjo recetën'/, 'The finished line must be copyable');
+assert.match(client, /'Kopjo përmbledhjen'/, 'The finished line must be copyable');
 
 /* Plain words, not source shorthand, and no value asked for twice. */
-['Bari', 'Për çka', 'Si jepet', 'Pesha', 'Mosha', 'Sasia për të matur']
+['Bari', 'Indikacioni', 'Skema dhe mënyra e dhënies', 'Pesha', 'Mosha', 'Sasia për të matur']
   .forEach(word => assert.ok(html.includes(word) || client.includes(word), `The page must say "${word}"`));
 assert.equal((client.match(/numberInput\('masterWeight'/g) || []).length, 1, 'Weight is entered once and reused');
 assert.doesNotMatch(client, /Llogarit dozën/, 'The answer arrives on its own, without a submit step');
