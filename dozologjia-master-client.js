@@ -105,7 +105,7 @@
      Templates are what the market usually carries, not a verified label, so
      the clinician's own strength always leads and can always be created. */
   function shelf(regimen) {
-    if (!regimen) return [];
+    if (!regimen || !regimen.manualMeasurementAllowed) return [];
     const mine = savedProduct(regimen.drugId);
     const templates = regimen.templates || [];
     return mine ? [mine, ...templates] : templates;
@@ -153,10 +153,16 @@
     list.forEach(text => box.append(el('p', text)));
     box.hidden = !list.length;
   }
-  function setPending(text) {
+  function setPending(text, guide = false) {
     const box = $('masterResult');
     box.replaceChildren();
     box.append(el('p', text, 'dz-waiting'));
+    if (guide) {
+      const next = el('button', 'Plotëso fushën e radhës', 'dz-none');
+      next.type = 'button';
+      next.addEventListener('click', focusNextMissing);
+      box.append(next);
+    }
     box.hidden = false;
   }
 
@@ -176,6 +182,12 @@
   function pickerCurrent(id, text) {
     const node = $(id);
     if (node) node.textContent = text || '—';
+  }
+  function ruleText(rule) {
+    if (!rule || !positive(rule.min) || !positive(rule.max)) return '';
+    if (!['FIXED_PER_DOSE', 'FIXED_VOLUME', 'WEIGHT_PER_DOSE', 'WEIGHT_DAILY', 'FIXED_DAILY', 'LOCAL_LENGTH'].includes(rule.basis)) return '';
+    const period = ['WEIGHT_DAILY', 'FIXED_DAILY'].includes(rule.basis) ? 'në 24 orë' : 'për marrje';
+    return `${range(rule.min, rule.max, rule.unitLabel)}${rule.basis.startsWith('WEIGHT_') ? '/kg' : ''} ${period}`;
   }
   function fold(id) {
     const picker = $(id);
@@ -203,7 +215,14 @@
     const list = drugs().filter(drug => state.rows.some(row => row.drugId === drug.id && normalize(`${row.drug} ${row.indication}`).includes(query)));
     const box = $('masterDrugs');
     box.replaceChildren();
-    if (!list.length) { box.append(el('p', 'Asnjë bar me këtë emër.', 'dz-empty')); return; }
+    if (!list.length) {
+      box.append(el('p', 'Nuk u gjet bar ose indikacion.', 'dz-empty'));
+      const clear = el('button', 'Shfaq të gjitha barnat', 'dz-none');
+      clear.type = 'button';
+      clear.addEventListener('click', () => { $('dosageSearch').value = ''; renderDrugs(); $('dosageSearch').focus(); });
+      box.append(clear);
+      return;
+    }
     list.forEach(drug => box.append(chip('dz-drug', drug.id, drug.name, '', drug.id === state.drugId, pickDrug)));
     pickerCurrent('drugCurrent', drugs().find(drug => drug.id === state.drugId)?.name || '');
   }
@@ -237,9 +256,11 @@
     list.forEach(item => box.append(chip('dz-indication', item.id, item.name, '', item.id === state.indicationId, pickIndication)));
     pickerCurrent('indicationCurrent', list.find(item => item.id === state.indicationId)?.name || '');
     if (list.length === 1) fold('indicationPicker');
+    else if (!state.indicationId) $('indicationPicker').open = true;
     renderRegimens();
   }
   function pickIndication(id) {
+    state.editing = false;
     state.indicationId = id;
     state.regimen = null;
     state.productId = '';
@@ -260,11 +281,13 @@
     $('regimenBlock').hidden = list.length < 2;
     const box = $('masterRegimens');
     box.replaceChildren();
-    list.forEach(row => box.append(chip('dz-regimen', row.id, row.routeLabel, [row.population, row.frequency].filter(Boolean).join(' · '), row.id === state.regimen?.id, pickRegimen)));
+    list.forEach(row => box.append(chip('dz-regimen', row.id, row.routeLabel, [row.population, ruleText(row.doseRule), row.frequency, row.steps.length ? 'Skemë me hapa' : ''].filter(Boolean).join(' · '), row.id === state.regimen?.id, pickRegimen)));
+    if (list.length > 1 && !state.regimen) $('regimenPicker').open = true;
     pickerCurrent('regimenCurrent', state.regimen ? `${state.regimen.routeLabel}${state.regimen.frequency ? ' · ' + state.regimen.frequency : ''}` : '');
     renderPatient();
   }
   function pickRegimen(id) {
+    state.editing = false;
     state.regimen = regimens().find(row => row.id === id) || null;
     state.productId = '';
     invalidate();
@@ -424,7 +447,7 @@
     const need = [];
     if (regimen.needs.weight && !positive(num($('masterWeight')?.value))) need.push('peshën');
     if (regimen.needs.age && !positive(num($('masterAge')?.value))) need.push('moshën');
-    if (regimen.needs.daily && !(num($('masterDaily')?.value) >= 0)) need.push('sa ka marrë sot');
+    if (regimen.needs.daily && !(num($('masterDaily')?.value) >= 0)) need.push('sa ka marrë në 24 orët e fundit');
     if (regimen.needs.total && !(num($('masterTotal')?.value) >= 0)) need.push('sa ka marrë këtë episod');
     if (regimen.steps.length && !checked('dz-step')) need.push('hapin');
     if (regimen.needs.product && !checked('dz-product')) need.push('produktin');
@@ -432,6 +455,15 @@
     const open = boxes.filter(box => !box.checked).length;
     if (open) need.push(open === 1 ? 'konfirmimin e mbetur' : `${open} konfirmimet e mbetura`);
     return need;
+  }
+  function focusNextMissing() {
+    const regimen = state.regimen;
+    if (!regimen) return;
+    let target = ['masterWeight', 'masterAge', 'masterDaily', 'masterTotal'].map($).find(node => node && (['masterDaily','masterTotal'].includes(node.id) ? !(num(node.value) >= 0) : !positive(num(node.value))));
+    if (!target && regimen.steps.length && !checked('dz-step')) target = document.querySelector('input[name="dz-step"]');
+    if (!target && regimen.needs.product && !checked('dz-product')) target = document.querySelector('input[name="dz-product"]');
+    if (!target) target = document.querySelector('#masterGates input:not(:checked)');
+    if (target) { target.scrollIntoView({block:'center'}); target.focus({preventScroll:true}); }
   }
   function payload() {
     const regimen = state.regimen;
@@ -452,18 +484,21 @@
     clearTimeout(timer);
     if (!state.regimen) return;
     const need = missingBits();
-    if (need.length) { setPending(`Shëno ${need.join(', ')}.`); return; }
+    if (need.length) { setPending(`Shëno ${need.join(', ')}.`, true); return; }
     setPending('Duke llogaritur…');
     timer = setTimeout(calculate, 180);
   }
   async function calculate() {
     const token = state.revision;
-    state.pending = new AbortController();
+    const controller = new AbortController();
+    state.pending = controller;
+    let timedOut = false;
+    const deadline = setTimeout(() => { timedOut = true; controller.abort(); }, 12000);
     try {
       const response = await fetch('/api/dosage?view=master-calculate', {
         method:'POST', credentials:'same-origin', cache:'no-store',
         headers:{ 'Content-Type':'application/json' },
-        body:JSON.stringify(payload()), signal:state.pending.signal,
+        body:JSON.stringify(payload()), signal:controller.signal,
       });
       const result = await response.json();
       if (token !== state.revision) return;
@@ -475,7 +510,7 @@
       state.result = result;
       renderAnswer();
     } catch (error) {
-      if (token === state.revision && error.name !== 'AbortError') {
+      if (token === state.revision && (timedOut || error.name !== 'AbortError')) {
         $('masterResult').hidden = true;
         setErrors(['Llogaritja nuk u krye. Kontrollo lidhjen dhe provo përsëri.']);
         const retry = el('button', 'Provo përsëri', 'dz-copy');
@@ -483,6 +518,9 @@
         retry.addEventListener('click', schedule);
         $('masterErrors').append(retry);
       }
+    } finally {
+      clearTimeout(deadline);
+      if (state.pending === controller) state.pending = null;
     }
   }
 
@@ -511,6 +549,18 @@
     if (!result.durationNote) box.append(el('p', 'Kohëzgjatja nuk është përcaktuar në këtë skemë; verifiko burimin.', 'dz-hint'));
     if (perDay) box.append(el('p', 'Ky është totali për 24 orë. Mos e jep si dozë të vetme; ndarja kërkon skemën e burimit.', 'dz-safety'));
     if (result.dose && result.dose.min !== result.dose.max) box.append(el('p', 'Interval doze: zgjedhja e vlerës kërkon vlerësim klinik.', 'dz-hint'));
+    if (result.calculation && result.dose?.raw) {
+      const calc = result.calculation;
+      const fold = el('details', null, 'dz-fold');
+      fold.append(el('summary', 'Si u llogarit doza'));
+      const body = el('div', null, 'dz-fold-body');
+      const rule = ruleText({...calc, unitLabel:result.dose.unitLabel});
+      body.append(el('p', `Rregulli i skemës: ${rule}.`));
+      if (calc.weight !== null) body.append(el('p', `${range(calc.min, calc.max, result.dose.unitLabel)}/kg × ${exact(calc.weight)} kg = ${range(result.dose.raw.min, result.dose.raw.max, result.dose.unitLabel)}.`));
+      if (result.dose.raw.max !== result.dose.max || result.dose.raw.min !== result.dose.min) body.append(el('p', `Pas zbatimit të kufijve: ${range(result.dose.min, result.dose.max, result.dose.unitLabel)}.`));
+      body.append(el('p', result.dose.period === 'day' ? 'Rezultati është total ditor.' : 'Rezultati është për një marrje.'));
+      fold.append(body); box.append(fold);
+    }
     if (result.step) {
       const parts = [result.step.label];
       if (result.step.startDay) parts.push(`ditët ${result.step.startDay}–${result.step.endDay}`);
@@ -546,6 +596,8 @@
     const copy = el('button', 'Kopjo përmbledhjen', 'dz-copy');
     copy.type = 'button';
     copy.id = 'masterCopy';
+    copy.disabled = state.editing;
+    if (state.editing) copy.textContent = 'Ruaj përqendrimin para kopjimit';
     copy.addEventListener('click', () => copyLine(copy));
     box.append(copy);
 
@@ -563,7 +615,7 @@
   }
   function schedulePlaceholder() {
     const need = missingBits();
-    setPending(need.length ? `Shëno ${need.join(', ')}.` : 'Duke llogaritur…');
+    setPending(need.length ? `Shëno ${need.join(', ')}.` : 'Duke llogaritur…', need.length > 0);
   }
 
   /* -------------------------------------------------- formulation calculator
@@ -575,6 +627,10 @@
     const mg = doseMg(result.dose);
     const regimen = state.regimen;
     if (!mg || !regimen || result.dose.period === 'day') return;
+    if (!regimen.manualMeasurementAllowed) {
+      box.append(el('p', 'Sasia për të matur kërkon produktin dhe përgatitjen e verifikuar për këtë mënyrë dhënieje.', 'dz-safety'));
+      return;
+    }
 
     const items = shelf(regimen);
     if (state.productId && !items.some(item => item.id === state.productId)) state.productId = '';
@@ -617,7 +673,8 @@
     if (!perML) return [el('p', 'Shëno sa mg ka dhe në sa mL.', 'dz-hint')];
     const lo = mg.min / perML, hi = mg.max / perML;
     const nodes = [el('p', `${fmt(lo)}${lo === hi ? '' : '–' + fmt(hi)} mL`, 'dz-volume'),
-      el('p', `nga ${item.label}`, 'dz-hint')];
+      el('p', `nga ${item.label}`, 'dz-hint'),
+      el('p', `${range(mg.min, mg.max, 'mg')} ÷ ${exact(perML)} mg/mL = ${fmt(lo)}${lo === hi ? '' : '–' + fmt(hi)} mL për marrje.`, 'dz-hint')];
     if (hi < MEASURABLE_ML) nodes.push(el('p', 'Vëllim shumë i vogël për t’u matur saktë — merr fuqi më të ulët.', 'dz-hint dz-hint-warn'));
     return nodes;
   }
@@ -630,7 +687,7 @@
     const saved = seed;
 
     const kinds = el('div', null, 'dz-segments');
-    [['liquid', 'Sirup / ampulë'], ['solid', 'Tabletë / kapsulë']].forEach(([value, label]) => {
+    [['liquid', 'Sirup / solucion oral'], ['solid', 'Tabletë / kapsulë']].forEach(([value, label]) => {
       kinds.append(chip('dz-kind', value, label, '', state.kind === value,
         picked => { state.kind = picked; state.kindTouched = true; renderAnswer(); }));
     });
@@ -638,12 +695,14 @@
 
     const line = el('div', null, 'dz-editor-line');
     const mg = numberInput('mineMg', '125', 'mg');
+    mg.input.setAttribute('aria-label', 'Sasia e barit në mg sipas etiketës');
     if (saved && saved.kind === state.kind) mg.input.value = String(saved.mg).replace('.', ',');
     line.append(mg.shell);
     let mL = null;
     if (state.kind === 'liquid') {
       line.append(el('span', 'në', 'dz-editor-sep'));
       mL = numberInput('mineMl', '5', 'mL');
+      mL.input.setAttribute('aria-label', 'Vëllimi në mL sipas etiketës');
       if (saved && saved.kind === 'liquid') mL.input.value = String(saved.mL).replace('.', ',');
       line.append(mL.shell);
     }
@@ -651,10 +710,15 @@
 
     const save = el('button', 'Ruaj për këtë bar', 'dz-save');
     save.type = 'button';
+    const feedback = el('p', '', 'dz-hint dz-hint-warn');
+    feedback.setAttribute('role', 'alert');
     save.addEventListener('click', () => {
       const value = num(mg.input.value);
       const volume = mL ? num(mL.input.value) : 1;
-      if (!positive(value) || !positive(volume)) { mg.input.focus(); return; }
+      if (!positive(value) || !positive(volume)) {
+        feedback.textContent = 'Shëno vlera më të mëdha se zero, saktësisht si në etiketë.';
+        (!positive(value) ? mg.input : mL.input).focus(); return;
+      }
       saveProduct(regimen.drugId, state.kind === 'solid'
         ? { kind:'solid', mg:value, form:'tabletë' }
         : { kind:'liquid', mg:value, mL:volume });
@@ -662,7 +726,7 @@
       state.productId = MINE;
       renderAnswer();
     });
-    wrap.append(save);
+    wrap.append(save, feedback);
     wrap.append(el('p', 'Ruhet vetëm në këtë pajisje dhe vlen si njësia jote për këtë bar.', 'dz-hint'));
     return wrap;
   }
@@ -670,12 +734,13 @@
   /* ------------------------------------------------------------------- copy */
   function copyLine(button) {
     const result = state.result;
-    if (!result) return;
+    if (!result || state.editing) return;
     const parts = [`${result.drug} ${result.dose ? range(result.dose.min, result.dose.max, result.dose.unitLabel) : ''}`.trim()];
     if (result.dose) parts.push(result.dose.period === 'day' ? 'gjithsej në 24 orë, jo për një marrje' : 'për një marrje');
     if (result.instruction) parts.push(result.instruction);
     parts.push(`Indikacioni: ${result.indication}`, result.routeText);
     if (result.frequencyNote) parts.push(result.frequencyNote);
+    if (result.step) parts.push(`Hapi: ${result.step.label}`, result.step.startDay ? `Ditët ${result.step.startDay}–${result.step.endDay}` : '', result.step.note);
     let line = parts.filter(Boolean).join(', ');
     if (result.durationNote) line += ` — ${result.durationNote}`;
     line += '.';
@@ -685,7 +750,13 @@
     else if (mg && chosen && result.dose.period !== 'day') {
       if (chosen.kind === 'solid') line += ` Sasia: ${fmt(mg.min / chosen.mg)}${mg.min === mg.max ? '' : '–' + fmt(mg.max / chosen.mg)} ${chosen.form} nga ${chosen.label}.`;
       else if (mgPerML(chosen)) line += ` Sasia: ${fmt(mg.min / mgPerML(chosen))}${mg.min === mg.max ? '' : '–' + fmt(mg.max / mgPerML(chosen))} mL nga ${chosen.label}.`;
+      line += ' Produkt i zgjedhur manualisht; verifiko etiketën dhe matshmërinë e sasisë.';
     }
+    if (result.dose && result.dose.min !== result.dose.max) line += ' Interval doze: vlera përfundimtare kërkon vlerësim klinik.';
+    if (!result.durationNote) line += ' Kohëzgjatja nuk është përcaktuar në këtë skemë.';
+    if (result.preparation?.instruction) line += ` Përgatitja: ${result.preparation.instruction}.`;
+    const cautions = [...result.maxima.map(item => `Kufiri: ${item.sq}`), ...result.notices, result.safety].filter(Boolean);
+    if (cautions.length) line += `\n${cautions.join('\n')}`;
     if (!navigator.clipboard?.writeText) { button.textContent = 'Kopjimi nuk mbështetet'; return; }
     navigator.clipboard.writeText(line).then(() => {
       button.textContent = 'U kopjua';
@@ -716,16 +787,25 @@
 
   /* ------------------------------------------------------------------- boot */
   async function boot() {
+    $('masterStatus').textContent = 'Duke ngarkuar skemat…';
+    const controller = new AbortController();
+    const deadline = setTimeout(() => controller.abort(), 12000);
     try {
       await window.DRxDosageShell.ensureAuth();
-      const response = await fetch('/api/dosage?view=master-catalog', { credentials:'same-origin', cache:'no-store' });
+      const response = await fetch('/api/dosage?view=master-catalog', { credentials:'same-origin', cache:'no-store', signal:controller.signal });
       if (!response.ok) throw new Error('Master-i nuk mund të ngarkohet.');
       const data = await response.json();
       state.rows = data.regimens;
       $('masterStatus').textContent = `${drugs().length} barna · ${state.rows.length} skema · Master v2.7`;
       renderDrugs();
     } catch (error) {
-      $('masterStatus').textContent = error.message;
+      $('masterStatus').textContent = 'Skemat nuk u ngarkuan. Kontrollo lidhjen ose sesionin.';
+      const retry = el('button', 'Ringarko skemat', 'dz-none');
+      retry.type = 'button';
+      retry.addEventListener('click', () => { void boot(); });
+      $('masterStatus').append(' ', retry);
+    } finally {
+      clearTimeout(deadline);
     }
   }
 
@@ -734,6 +814,7 @@
     if (!compact.matches) ['drugPicker', 'indicationPicker', 'regimenPicker'].forEach(id => { $(id).open = true; });
   });
   $('masterReset').addEventListener('click', () => {
+    state.editing = false;
     ['masterWeight', 'masterAge', 'masterDaily', 'masterTotal'].forEach(id => { if ($(id)) $(id).value = ''; });
     state.patient = {};
     state.ageSource = '';

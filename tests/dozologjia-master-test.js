@@ -37,5 +37,14 @@ for (const id of ['R2-0027','R2-0028']) {
 // SmPC 101465: pediatric postoperative indication, 0.1 mg/kg capped at 4 mg.
 assert.equal(calc('R2-0038',{age:8,ageUnit:'year',weight:25}).dose.max,2.5);
 assert.equal(calc('R2-0038',{age:16,ageUnit:'year',weight:60}).dose.max,4);
+const capped = calc('R2-0038',{age:16,ageUnit:'year',weight:60});
+assert.equal(capped.calculation.min,0.1);
+assert.equal(capped.calculation.weight,60);
+assert.equal(capped.dose.raw.max,6);
+assert.equal(e.catalog().regimens.find(r=>r.id==='R2-0038').doseRule.basis,'WEIGHT_PER_DOSE');
+for (const row of e.catalog().regimens) {
+  assert.equal(row.manualMeasurementAllowed,['PO','RECTAL'].includes(row.route));
+  if (!row.manualMeasurementAllowed) assert.equal(row.templates.length,0);
+}
 assert.equal(calc('R2-0038',{age:0.5,ageUnit:'month',weight:3}).outcome,'BLOCKED');
 console.log('PASS: 43 active regimens, required gates, units, caps, exact bindings and sequence steps');
