@@ -724,3 +724,6 @@ button,input,select{font:inherit}
 .dosage-page .dz-provenance a{display:inline-flex;align-items:center;min-height:44px;padding:0 8px}
 .dosage-page .dz-chip,.dosage-page .dz-none,.dosage-page .dz-picker-summary{min-height:44px}
 .dosage-page .dz-answer,.dosage-page .dz-errors{overflow-wrap:anywhere}
+
+.dosage-page .dz-picker-current{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;text-align:right;line-height:1.5}
+.dosage-page .dz-check{font-size:13px;line-height:1.6}
