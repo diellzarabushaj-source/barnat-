@@ -1,0 +1,40 @@
+'use strict';
+const {chromium,expect}=require('@playwright/test');
+const assert=require('node:assert/strict');
+(async()=>{
+ const browser=await chromium.launch({headless:true});
+ try{
+  const context=await browser.newContext({viewport:{width:1440,height:900},serviceWorkers:'block'});
+  const page=await context.newPage();const requests=[];const errors=[];
+  page.on('request',r=>requests.push(new URL(r.url()).pathname+new URL(r.url()).search));
+  page.on('pageerror',e=>errors.push(e.message));
+  await page.goto('http://127.0.0.1:4190/index.html');
+  await expect(page.locator('html')).toHaveAttribute('data-drx-sidebar-structure','taxonomy-v5');
+  assert.equal(requests.filter(s=>s.startsWith('/sidebar-taxonomy-v3.js')).length,1);
+  assert.equal(requests.filter(s=>s.startsWith('/classification-data.js')).length,0);
+  assert.equal(requests.filter(s=>s==='/api/icd?view=nav').length,0);
+  await page.locator('#atcNavGroup > summary').click();
+  await expect(page.locator('html')).toHaveAttribute('data-drx-atc-sidebar','ready');
+  assert.ok(await page.locator('[data-atc-sub]').count()>0);
+  await page.locator('#atcNavGroup > summary').click();
+  await page.locator('#atcNavGroup > summary').click();
+  assert.equal(requests.filter(s=>s.startsWith('/classification-data.js')).length,1);
+  await page.locator('#icdNavGroup > summary').click();
+  await expect(page.locator('html')).toHaveAttribute('data-drx-icd-sidebar','ready');
+  assert.ok(await page.locator('[data-icd-chapter]').count()>0);
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-drx-icd-sidebar','ready');
+  assert.equal(requests.filter(s=>s==='/api/icd?view=nav').length,1,'Fresh navigation metadata reuses its session cache');
+  await page.setViewportSize({width:390,height:844});
+  await page.locator('#menuButton').click();
+  await expect(page.locator('#menuButton')).toHaveAttribute('aria-expanded','true');
+  assert.equal(await page.locator('.main-shell').evaluate(e=>e.inert),true);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.main-shell')).not.toHaveAttribute('inert','');
+  assert.equal(await page.evaluate(()=>document.activeElement.id),'menuButton');
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
+  assert.deepEqual(errors,[]);
+  await context.close();
+  console.log('PASS: single sidebar runtime, deferred ATC/ICD, one-time expansion, session cache, mobile focus/inert/Escape and geometry');
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1});

@@ -2826,3 +2826,42 @@ html[data-drx-app="registry-v2"] .data-card{border-radius:12px!important}
 @media (max-width:760px){
   html[data-drx-app="registry-v2"] .data-card{border-radius:10px!important}
 }
+
+/* App-wide finish: calm surfaces, readable secondary text, predictable controls.
+   Uses existing owners and fonts; no additional stylesheet or runtime. */
+html.drx-unified-sidebar{
+  --drx-finish-bg:#f7f8fc;--drx-finish-border:#e2e7f0;
+  --drx-finish-muted:#526176;--drx-finish-focus:#4f46e5;
+}
+html.drx-unified-sidebar body{background:var(--drx-finish-bg)}
+html.drx-unified-sidebar .main-shell{background:var(--drx-finish-bg)}
+html.drx-unified-sidebar .topbar{background:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-bottom:1px solid var(--drx-finish-border)!important}
+html.drx-unified-sidebar .page-wrap{scroll-margin-top:76px}
+html.drx-unified-sidebar .page-heading{align-items:center;gap:16px;margin-bottom:24px}
+html.drx-unified-sidebar :is(.page-heading h1,.dz-head h1,.rx-page-heading h1){font-weight:650!important;letter-spacing:-.035em;line-height:1.18!important}
+html.drx-unified-sidebar :is(.page-heading .subtitle,.page-subtitle,.dz-head p,.rx-page-heading p){color:var(--drx-finish-muted)!important;line-height:1.65}
+html.drx-unified-sidebar :is(.data-card,.rx-compose-card,.rx-preview-card,.hub-command,.dz-card){border-color:var(--drx-finish-border);background:#fff;box-shadow:0 2px 8px #14284b05}
+html.drx-unified-sidebar :is(.toolbar,.table-toolbar,.filter-toolbar){gap:10px;align-items:center}
+html.drx-unified-sidebar :is(.button,.icon-button,.dz-none,.dz-copy,.rx-tab,.nav-item){transition:background-color .12s ease,border-color .12s ease,color .12s ease}
+html.drx-unified-sidebar :is(button,a,summary,input,select,textarea):focus-visible{outline:3px solid var(--drx-finish-focus)!important;outline-offset:3px!important}
+html.drx-unified-sidebar .sidebar :is(a,button,summary):focus-visible{outline-color:#c7d2fe!important}
+html.drx-unified-sidebar button:disabled{cursor:not-allowed}
+html.drx-unified-sidebar .nav-stack{scrollbar-gutter:stable;overscroll-behavior:contain}
+html.drx-unified-sidebar .nav-item{font-weight:500}
+html.drx-unified-sidebar .nav-item.is-active{font-weight:650}
+html.drx-unified-sidebar .rx-source-nav-copy{display:grid;gap:5px;min-width:0;flex:1;white-space:normal;overflow-wrap:anywhere;line-height:1.45}
+html.drx-unified-sidebar :is(.rx-source-nav-index,.rx-source-nav-arrow){flex:none}
+html.drx-unified-sidebar :is(.empty-state,.error-state){line-height:1.65;text-wrap:pretty}
+html.drx-unified-sidebar :is(.empty-state p,.dz-hint,.dz-footnote){color:var(--drx-finish-muted)}
+html.drx-unified-sidebar :is(input,select,textarea){scroll-margin-block:90px}
+html.drx-unified-sidebar :is(.detail-drawer,.rx-preview-card,.table-scroll){overscroll-behavior:contain}
+@media(max-width:760px){
+ html.drx-unified-sidebar .page-heading{gap:12px;margin-bottom:18px}
+ html.drx-unified-sidebar :is(.page-heading h1,.dz-head h1,.rx-page-heading h1){font-size:26px!important}
+ html.drx-unified-sidebar :is(.button,.icon-button,.dz-none,.rx-tab){min-height:44px}
+ html.drx-unified-sidebar .page-wrap{padding-top:18px!important}
+ html.drx-unified-sidebar :is(.dz-hint,.dz-footnote){font-size:12px;line-height:1.65}
+}
+@media(prefers-reduced-motion:reduce){
+ html.drx-unified-sidebar :is(.button,.icon-button,.dz-none,.dz-copy,.rx-tab,.nav-item){transition:none}
+}
