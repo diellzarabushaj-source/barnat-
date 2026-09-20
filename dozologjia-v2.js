@@ -390,6 +390,7 @@
     renderRegimens();
   }
   function pickIndication(id) {
+    state.editing = false;
     state.indicationId = id;
     state.regimen = null;
     state.productId = '';
@@ -416,6 +417,7 @@
     renderPatient();
   }
   function pickRegimen(id) {
+    state.editing = false;
     state.regimen = regimens().find(row => row.id === id) || null;
     state.productId = '';
     invalidate();
@@ -942,6 +944,7 @@
     if (!compact.matches) ['drugPicker', 'indicationPicker', 'regimenPicker'].forEach(id => { $(id).open = true; });
   });
   $('masterReset').addEventListener('click', () => {
+    state.editing = false;
     ['masterWeight', 'masterAge', 'masterDaily', 'masterTotal'].forEach(id => { if ($(id)) $(id).value = ''; });
     state.patient = {};
     state.ageSource = '';
