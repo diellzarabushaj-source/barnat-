@@ -60,6 +60,9 @@ const engine = require('../lib/dozologjia-master');
     await page.locator('#masterCopy').click();
     assert.match(await page.evaluate(()=>window.copiedDose),/gjithsej në 24 orë, jo për një marrje/);
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth > innerWidth),false);
+    await page.setViewportSize({width:1440,height:1000});
+    await page.waitForFunction(() => document.getElementById('drugPicker').open);
+    assert.equal(await page.locator('#drugPicker').getAttribute('open'),'');
     assert.deepEqual(errors,[]);
     console.log('PASS: indication search, explicit regimen, blank prior dose, calculation, new patient, mobile overflow and runtime errors');
   } finally { await browser.close(); }

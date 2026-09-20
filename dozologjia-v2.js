@@ -860,6 +860,9 @@
   }
 
   ['drugPicker', 'indicationPicker', 'regimenPicker'].forEach(pinOpen);
+  compact.addEventListener('change', () => {
+    if (!compact.matches) ['drugPicker', 'indicationPicker', 'regimenPicker'].forEach(id => { $(id).open = true; });
+  });
   $('masterReset').addEventListener('click', () => {
     ['masterWeight', 'masterAge', 'masterDaily', 'masterTotal'].forEach(id => { if ($(id)) $(id).value = ''; });
     state.patient = {};
