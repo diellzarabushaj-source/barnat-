@@ -16,9 +16,11 @@
     return String(Math.round(value * factor) / factor).replace('.', ',');
   };
   const exact = value => round(value, 4);
-  const fmt = value => round(value, Math.abs(value) >= 10 ? 1 : 2);
+  const fmt = value => round(value, 2);
   const num = value => {
-    const parsed = Number(String(value ?? '').replace(',', '.').trim());
+    const text = String(value ?? '').replace(',', '.').trim();
+    if (!/^\d+(?:\.\d+)?$/.test(text)) return NaN;
+    const parsed = Number(text);
     return Number.isFinite(parsed) ? parsed : NaN;
   };
   const positive = value => Number.isFinite(value) && value > 0;
@@ -72,6 +74,7 @@
     productId:'',        // the shelf item the volume is measured from
     editing:false,       // the "my own unit" editor is open
     ageSource:'',        // '' | 'weight' (derived) | 'chosen' (the clinician's)
+    patient:{},
     kind:'liquid',       // what that editor is describing
   };
 
@@ -135,6 +138,7 @@
      Any change to any input retires the answer before a new one is asked for,
      so a stale dose can never sit next to fresh patient values. */
   function invalidate() {
+    clearTimeout(timer);
     state.revision += 1;
     state.pending?.abort();
     state.result = null;
@@ -194,8 +198,9 @@
     return [...seen].map(([id, name]) => ({ id, name }));
   }
   function renderDrugs() {
-    const query = $('dosageSearch').value.trim().toLowerCase();
-    const list = drugs().filter(drug => drug.name.toLowerCase().includes(query));
+    const normalize = text => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const query = normalize($('dosageSearch').value.trim());
+    const list = drugs().filter(drug => state.rows.some(row => row.drugId === drug.id && normalize(`${row.drug} ${row.indication}`).includes(query)));
     const box = $('masterDrugs');
     box.replaceChildren();
     if (!list.length) { box.append(el('p', 'Asnjë bar me këtë emër.', 'dz-empty')); return; }
@@ -249,13 +254,13 @@
   }
   function renderRegimens() {
     const list = regimens();
-    if (list.length && !state.regimen) state.regimen = list[0];
-    if (state.regimen && !list.some(row => row.id === state.regimen.id)) state.regimen = list[0] || null;
+    if (list.length === 1 && !state.regimen) state.regimen = list[0];
+    if (state.regimen && !list.some(row => row.id === state.regimen.id)) state.regimen = list.length === 1 ? list[0] : null;
     /* One way to give it is not a choice — do not ask a question with one answer. */
     $('regimenBlock').hidden = list.length < 2;
     const box = $('masterRegimens');
     box.replaceChildren();
-    list.forEach(row => box.append(chip('dz-regimen', row.id, row.routeLabel, row.frequency || row.population, row.id === state.regimen?.id, pickRegimen)));
+    list.forEach(row => box.append(chip('dz-regimen', row.id, row.routeLabel, [row.population, row.frequency].filter(Boolean).join(' · '), row.id === state.regimen?.id, pickRegimen)));
     pickerCurrent('regimenCurrent', state.regimen ? `${state.regimen.routeLabel}${state.regimen.frequency ? ' · ' + state.regimen.frequency : ''}` : '');
     renderPatient();
   }
@@ -294,10 +299,12 @@
     const fields = $('masterFields');
     const gates = $('masterGates');
     form.hidden = !regimen;
-    state.ageSource = '';
+    ['masterWeight', 'masterAge', 'masterAgeUnit'].forEach(id => {
+      if ($(id)) state.patient[id] = $(id).value;
+    });
     fields.replaceChildren();
     gates.replaceChildren();
-    if (!regimen) { renderAnswer(); return; }
+    if (!regimen) { setPending(state.indicationId ? 'Zgjidh skemën sipas grupmoshës dhe mënyrës së dhënies.' : 'Zgjidh indikacionin për të vazhduar.'); return; }
 
     /* Weight leads: it is the number on the scale, and on a child it fills the
        age in too, so the same fact is never typed twice. */
@@ -305,12 +312,13 @@
       const weight = numberInput('masterWeight', '18', 'kg');
       weight.shell.classList.add('dz-number-lead');
       weight.input.addEventListener('input', applyAgeFromWeight);
-      fields.append(fieldRow('Pesha', weight.shell));
+      fields.append(fieldRow('Pesha', weight.shell, 'Pesha aktuale e matur.', weight.input.id));
     }
     if (regimen.needs.age) {
       const age = numberInput('masterAge', '4', '');
       const unit = el('select', null, 'dz-unit');
       unit.id = 'masterAgeUnit';
+      unit.setAttribute('aria-label', 'Njësia e moshës');
       [['year', 'vjeç'], ['month', 'muajsh']].forEach(([value, label]) => {
         const option = el('option', label);
         option.value = value;
@@ -357,7 +365,7 @@
       const only = regimen.products.length === 1;
       const box = el('div', null, 'dz-chips dz-chips-tight');
       regimen.products.forEach(product => box.append(chip('dz-product', product.id, `${product.form} ${product.strength}`, product.name, only, () => schedule())));
-      fields.append(group('Produkti i lidhur në Master', box));
+      fields.append(group('Produkti dhe përqendrimi', box));
     }
 
     const confirmations = [{ id:'masterScope', text:`Pacienti i takon grupit: ${regimen.population}.` },
@@ -371,6 +379,9 @@
       gates.append(wrap);
     });
     if (regimen.safety) gates.append(el('p', regimen.safety, 'dz-safety'));
+    Object.entries(state.patient).forEach(([id, value]) => { if ($(id)) $(id).value = value; });
+    applyAgeFromWeight();
+    markAgeSource();
     renderAnswer();
   }
   function group(labelText, node) {
@@ -464,7 +475,14 @@
       state.result = result;
       renderAnswer();
     } catch (error) {
-      if (token === state.revision && error.name !== 'AbortError') setErrors([error.message]);
+      if (token === state.revision && error.name !== 'AbortError') {
+        $('masterResult').hidden = true;
+        setErrors(['Llogaritja nuk u krye. Kontrollo lidhjen dhe provo përsëri.']);
+        const retry = el('button', 'Provo përsëri', 'dz-copy');
+        retry.type = 'button';
+        retry.addEventListener('click', schedule);
+        $('masterErrors').append(retry);
+      }
     }
   }
 
@@ -490,6 +508,9 @@
 
     const rhythm = [result.frequencyNote, result.durationNote].filter(Boolean).join(' · ');
     if (rhythm) box.append(el('p', rhythm, 'dz-rhythm'));
+    if (!result.durationNote) box.append(el('p', 'Kohëzgjatja nuk është përcaktuar në këtë skemë; verifiko burimin.', 'dz-hint'));
+    if (perDay) box.append(el('p', 'Ky është totali për 24 orë. Mos e jep si dozë të vetme; ndarja kërkon skemën e burimit.', 'dz-safety'));
+    if (result.dose && result.dose.min !== result.dose.max) box.append(el('p', 'Interval doze: zgjedhja e vlerës kërkon vlerësim klinik.', 'dz-hint'));
     if (result.step) {
       const parts = [result.step.label];
       if (result.step.startDay) parts.push(`ditët ${result.step.startDay}–${result.step.endDay}`);
@@ -522,7 +543,7 @@
       box.append(prep);
     }
 
-    const copy = el('button', 'Kopjo recetën', 'dz-copy');
+    const copy = el('button', 'Kopjo përmbledhjen', 'dz-copy');
     copy.type = 'button';
     copy.id = 'masterCopy';
     copy.addEventListener('click', () => copyLine(copy));
@@ -531,6 +552,7 @@
     const limits = [...result.maxima.map(max => `Kufiri: ${max.sq}`), ...result.notices, result.safety].filter(Boolean);
     if (limits.length) {
       const fold = el('details', null, 'dz-fold');
+      fold.open = true;
       fold.append(el('summary', 'Kufijtë dhe kushtet'));
       const body = el('div', null, 'dz-fold-body');
       limits.forEach(text => body.append(el('p', text)));
@@ -650,7 +672,9 @@
     const result = state.result;
     if (!result) return;
     const parts = [`${result.drug} ${result.dose ? range(result.dose.min, result.dose.max, result.dose.unitLabel) : ''}`.trim()];
-    parts.push(result.routeText);
+    if (result.dose) parts.push(result.dose.period === 'day' ? 'gjithsej në 24 orë, jo për një marrje' : 'për një marrje');
+    if (result.instruction) parts.push(result.instruction);
+    parts.push(`Indikacioni: ${result.indication}`, result.routeText);
     if (result.frequencyNote) parts.push(result.frequencyNote);
     let line = parts.filter(Boolean).join(', ');
     if (result.durationNote) line += ` — ${result.durationNote}`;
@@ -662,9 +686,10 @@
       if (chosen.kind === 'solid') line += ` Sasia: ${fmt(mg.min / chosen.mg)}${mg.min === mg.max ? '' : '–' + fmt(mg.max / chosen.mg)} ${chosen.form} nga ${chosen.label}.`;
       else if (mgPerML(chosen)) line += ` Sasia: ${fmt(mg.min / mgPerML(chosen))}${mg.min === mg.max ? '' : '–' + fmt(mg.max / mgPerML(chosen))} mL nga ${chosen.label}.`;
     }
-    navigator.clipboard?.writeText(line).then(() => {
+    if (!navigator.clipboard?.writeText) { button.textContent = 'Kopjimi nuk mbështetet'; return; }
+    navigator.clipboard.writeText(line).then(() => {
       button.textContent = 'U kopjua';
-      setTimeout(() => { button.textContent = 'Kopjo recetën'; }, 1600);
+      setTimeout(() => { button.textContent = 'Kopjo përmbledhjen'; }, 1600);
     }).catch(() => { button.textContent = 'S’u kopjua'; });
   }
 
@@ -677,7 +702,7 @@
       const line = el('p', `${source.Authority || source.Source_ID} — ${source.Title || source.Scope || ''}`.trim());
       const url = Object.values(source).find(value => typeof value === 'string' && /^https:\/\//.test(value));
       if (url) {
-        const link = el('a', 'hap');
+        const link = el('a', 'Hap burimin');
         link.href = url;
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
@@ -705,6 +730,17 @@
   }
 
   ['drugPicker', 'indicationPicker', 'regimenPicker'].forEach(pinOpen);
+  compact.addEventListener('change', () => {
+    if (!compact.matches) ['drugPicker', 'indicationPicker', 'regimenPicker'].forEach(id => { $(id).open = true; });
+  });
+  $('masterReset').addEventListener('click', () => {
+    ['masterWeight', 'masterAge', 'masterDaily', 'masterTotal'].forEach(id => { if ($(id)) $(id).value = ''; });
+    state.patient = {};
+    state.ageSource = '';
+    invalidate();
+    renderPatient();
+    $('masterWeight')?.focus();
+  });
   $('dosageSearch').addEventListener('input', renderDrugs);
   $('masterForm').addEventListener('submit', event => event.preventDefault());
   $('masterForm').addEventListener('input', schedule);

@@ -27,4 +27,15 @@ assert.equal(calc('R2-0054').dose.unit,'tabletë');
 assert.equal(calc('R2-0054',{productId:undefined}).outcome,'BLOCKED');
 assert.equal(calc('R2-0001',{productId:'F2-0001'}).outcome,'BLOCKED');
 assert.equal(calc('R2-0044').conversion.max,50);
+// SmPC 6594: adult metoclopramide must respect BOTH 30 mg/day and 0.5 mg/kg/day.
+for (const id of ['R2-0027','R2-0028']) {
+  assert.equal(calc(id,{weight:40,given24h:10}).dose.max,10);
+  assert.equal(calc(id,{weight:40,given24h:15}).outcome,'BLOCKED');
+  assert.equal(calc(id,{weight:80,given24h:25}).outcome,'BLOCKED');
+  assert.equal(calc(id,{weight:undefined}).outcome,'BLOCKED');
+}
+// SmPC 101465: pediatric postoperative indication, 0.1 mg/kg capped at 4 mg.
+assert.equal(calc('R2-0038',{age:8,ageUnit:'year',weight:25}).dose.max,2.5);
+assert.equal(calc('R2-0038',{age:16,ageUnit:'year',weight:60}).dose.max,4);
+assert.equal(calc('R2-0038',{age:0.5,ageUnit:'month',weight:3}).outcome,'BLOCKED');
 console.log('PASS: 43 active regimens, required gates, units, caps, exact bindings and sequence steps');
