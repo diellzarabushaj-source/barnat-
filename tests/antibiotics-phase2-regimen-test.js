@@ -205,7 +205,7 @@ assert.match(js, /function doseBasis\(\)/);
 assert.match(js, /referenceWeightKg/);
 assert.match(js, /Alergji ndaj alternativës \/ alergji të shumëfishta/);
 assert.match(html, /vetëm orientuese/, 'Age-derived dose must remain marked orientational');
-assert.match(html, /antibiotiket-data\.js\?v=antibiotiket-phase2-v6/, 'Phase 2 data must be cache-busted in the page');
+assert.match(html, /antibiotiket-data\.js\?v=antibiotiket-phase2-v7/, 'Phase 2 data must be cache-busted in the page');
 assert.match(html, /Alergjia ndaj beta-laktameve/, 'The static allergy label must match the A0-A5 model');
 for (const band of guide.ageBands) {
   assert.ok(Number.isFinite(band.referenceWeightKg) && band.referenceWeightKg > 0, `Age band ${band.id} needs a positive reference weight`);

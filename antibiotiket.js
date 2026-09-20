@@ -64,7 +64,7 @@
   const fmt = value => {
     const n = Number(value);
     if (!Number.isFinite(n)) return '—';
-    return Number.isInteger(n) ? String(n) : String(Math.round(n * 10) / 10).replace('.', ',');
+    return Number.isInteger(n) ? String(n) : String(Math.round(n * 100) / 100).replace('.', ',');
   };
 
   function currentIndication() {
@@ -132,12 +132,13 @@
     }
     if (dose.type === 'single') {
       const component = dose.component ? ` · sipas ${dose.component}` : '';
+      if (dose.dailyValue && dose.dividedDoses) return `${fmt(dose.dailyValue)} mg/kg/ditë ÷ ${dose.dividedDoses} doza${component}${frequency ? ` · ${frequency}` : ''}`;
       return `${fmt(dose.value)} ${dose.unit}${component}${frequency ? ` · ${frequency}` : ''}${Number.isFinite(dose.maxDose) ? ` · ${maxText(dose)}` : ''}`;
     }
     if (dose.type === 'sequence') {
       return dose.steps.map(step => `${step.label}: ${fmt(step.value)} ${dose.unit}${Number.isFinite(step.maxDose) ? ` (maks. ${fmt(step.maxDose)} mg)` : ''}`).join(' · ');
     }
-    if (dose.type === 'fixed') return `${dose.text}${frequency ? ` · ${frequency}` : ''}`;
+    if (dose.type === 'fixed' || dose.type === 'weight-bands') return `${dose.text}${frequency ? ` · ${frequency}` : ''}`;
     if (dose.type === 'combo') {
       return dose.parts.map(part => `${part.drug}: ${formulaForDose(part.dose, part.frequency)}`).join(' + ');
     }
@@ -150,6 +151,13 @@
 
   function calculateSimple(dose, weight) {
     if (!weight || !dose) return null;
+    if (dose.type === 'weight-bands') {
+      const value = weight < dose.thresholdKg ? dose.belowMg : dose.atOrAboveMg;
+      return { min:value, max:value, capped:false };
+    }
+    if (dose.type === 'fixed' && Number.isFinite(dose.value)) {
+      return { min:dose.value, max:dose.value, capped:false };
+    }
     if (dose.type === 'single') {
       const result = cap(dose.value * weight, dose.maxDose);
       return { min:result.value, max:result.value, capped:result.capped };
@@ -162,22 +170,22 @@
     return null;
   }
 
-  function rangeText(range, dose, suffix='dozë') {
+  function rangeText(range, dose, suffix='dozë', format=fmt) {
     const component = componentLabel(dose);
-    const value = range.min === range.max ? fmt(range.min) : `${fmt(range.min)}–${fmt(range.max)}`;
+    const value = range.min === range.max ? format(range.min) : `${format(range.min)}–${format(range.max)}`;
     return `${value} mg${component}/${suffix}${range.capped ? ' · kufiri maksimal i burimit' : ''}`;
   }
 
-  function calculatedValue(option, weight) {
+  function calculatedValue(option, weight, format=fmt) {
     if (!weight) return '';
     const dose = option.dose || {};
     const simple = calculateSimple(dose, weight);
-    if (simple) return rangeText(simple, dose);
+    if (simple) return rangeText(simple, dose, 'dozë', format);
 
     if (dose.type === 'sequence') {
       return dose.steps.map(step => {
         const result = cap(step.value * weight, step.maxDose);
-        return `${step.label}: ${fmt(result.value)} mg${result.capped ? ' (maks.)' : ''}`;
+        return `${step.label}: ${format(result.value)} mg${result.capped ? ' (maks.)' : ''}`;
       }).join(' · ');
     }
 
@@ -186,7 +194,7 @@
     if (dose.type === 'combo') {
       return dose.parts.map(part => {
         const result = calculateSimple(part.dose, weight);
-        const text = result ? rangeText(result, part.dose) : formulaForDose(part.dose, part.frequency);
+        const text = result ? rangeText(result, part.dose, 'dozë', format) : formulaForDose(part.dose, part.frequency);
         return `${part.drug}: ${text} · ${part.frequency}`;
       }).join(' + ');
     }
@@ -250,8 +258,10 @@
     if (!weight) return [];
     const dose = option.dose || {};
     const kg = `${fmt(weight)} kg`;
+    if (dose.type === 'weight-bands') return [`${kg} ${weight < dose.thresholdKg ? '<' : '≥'} ${dose.thresholdKg} kg → ${fmt(calculateSimple(dose, weight).min)} mg/dozë. Dozë fikse sipas pragut; nuk shumëzohet me kg.`];
 
     if (dose.type === 'single' || dose.type === 'range') {
+      if (dose.dailyValue && dose.dividedDoses) return [`${fmt(dose.dailyValue)} mg/kg/ditë × ${kg} ÷ ${dose.dividedDoses} = ${fmt(dose.value * weight)} mg/dozë (shfaqje e rrumbullakosur; llogaritja ruan saktësinë).`];
       const values = dose.type === 'single' ? [dose.value] : [dose.min, dose.max];
       const raw = values.map(v => v * weight);
       const source = values.length === 1 ? `${fmt(values[0])} mg/kg × ${kg}` : `${fmt(values[0])}–${fmt(values[1])} mg/kg × ${kg}`;
@@ -557,6 +567,10 @@
 
   function recommendationCard(option, basis) {
     const card = make('article', `abx-option tier-${option.tier || 'option'}`);
+    card.dataset.regimenId = option.id;
+    card.dataset.requiresRealWeight = String(option.dose?.type === 'weight-bands');
+    // Converters consume the unrounded value, never the presentation rounding.
+    card.dataset.exactDoseText = calculatedValue(option, basis.weight, value => String(value));
     const head = make('div', 'abx-option-head');
     head.append(make('h3', '', option.drug), make('span', 'abx-tier', tierLabels[option.tier] || 'Opsion'));
 
@@ -576,8 +590,10 @@
       }
       const rows = make('div', 'abx-dose-rows');
       rows.append(doseRow(option.kind === 'procedure' ? 'Veprimi' : 'Doza e vetme', value, basis.kind, 'single'));
+      if (option.kind !== 'procedure') rows.append(make('span', 'abx-dose-explanation', 'Sasia për një marrje · ' + (option.frequency || 'sipas skemës')));
       const daily = dailyDose(option, basis.weight);
       if (daily) rows.append(doseRow('Doza ditore', daily.text, basis.kind, 'daily'));
+      if (daily) rows.append(make('span', 'abx-daily-explanation', 'Totali i të gjitha marrjeve në 24 orë.'));
       dose.append(rows);
 
       const steps = calculationSteps(option, basis.weight);
@@ -609,6 +625,23 @@
     );
 
     card.append(head, dose, meta);
+    const sourceLink = source?.url ? make('a', 'abx-verify-source', 'Kontrollo skemën në burim ↗') : null;
+    if (sourceLink) {
+      sourceLink.href = source.url;
+      sourceLink.target = '_blank';
+      sourceLink.rel = 'noopener noreferrer';
+      card.append(sourceLink);
+    }
+    if (option.durationSource) {
+      const durationSource = sourceById(option.durationSource);
+      const link = make('a', 'abx-verify-source', `Kohëzgjatja: ${durationText(option)} · ${durationSource.short} ↗`);
+      link.href = durationSource.url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      card.append(link);
+    }
+    if (option.dose?.type === 'range') card.append(make('p', 'abx-option-note', 'Ky është interval doze. Zgjidh një dozë të vetme brenda tij para përshkrimit.'));
+    if (['single','range'].includes(option.dose?.type) && !Number.isFinite(option.dose.maxDose)) card.append(make('p', 'abx-missing-limit', 'Maksimumi nuk jepet nga ky burim. Rezultati është llogaritje sipas kg, pa kufizim automatik të dozës.'));
     if (option.conditional) card.append(make('p', 'abx-option-note', `Kur përdoret: ${option.conditional}`));
     if (option.note) card.append(make('p', 'abx-option-note', option.note));
     if (option.stewardship) card.append(make('p', 'abx-option-note', `Stewardship: ${option.stewardship}`));
@@ -619,7 +652,10 @@
   function renderSources(indication) {
     el.sourceList.replaceChildren();
     const sourceIds = new Set([indication.source, 'chop-allergy-2025', 'carpa']);
-    indication.options.forEach(option => { if (option.source) sourceIds.add(option.source); });
+    indication.options.forEach(option => {
+      if (option.source) sourceIds.add(option.source);
+      if (option.durationSource) sourceIds.add(option.durationSource);
+    });
 
     guide.sources.filter(source => sourceIds.has(source.id)).forEach(source => {
       const row = make('article', `abx-source${source.id === indication.source ? ' is-active' : ''}`);

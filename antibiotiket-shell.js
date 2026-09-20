@@ -12,7 +12,7 @@
     short:'CPS CORE4 2022',
     title:'Managing critical drug shortages in clinical practice — Table 1',
     date:'2022-12',
-    url:'https://www.cps.ca',
+    url:'https://cps.ca/uploads/documents/2022_Dec_1_Antibiotics_Shortage_Tables_FINAL.pdf',
     note:'Burimi kryesor i zgjedhur për katër infeksionet bazë të DRx: CAP, AOM, GAS dhe UTI. Regjimet ruhen siç janë në tabelën e dhjetorit 2022; data e burimit mbetet e dukshme kur udhëzimet më të reja ndryshojnë.'
   });
 
@@ -32,10 +32,10 @@
     gas:{
       source:'cps-core4-2022',
       options:[
-        { id:'core4-penicillin-gas', tier:'first', allergy:['none','a0','a4'], drug:'Penicillin V', route:'PO', frequency:'2 ose 3 herë/ditë', dose:{type:'fixed',text:'<27 kg: 300 mg · ≥27 kg: 600 mg'}, duration:{type:'fixed',text:'10 ditë'}, source:'cps-core4-2022', note:'CORE4: tabletë 300 mg. Regjim me prag peshe; teksti mbahet i plotë që konvertuesi të mos supozojë gabimisht një dozë të vetme.' },
-        { id:'core4-amoxicillin-gas', tier:'first', allergy:['none','a0','a4'], drug:'Amoxicillin', route:'PO', frequency:'1 herë/ditë', dose:{type:'single',value:50,unit:'mg/kg/dozë',maxDose:1000,maxLabel:'maks. 1000 mg/ditë'}, duration:{type:'fixed',text:'Sipas protokollit GAS të cituar nga CPS'}, source:'cps-core4-2022', note:'CORE4: mund të ndahet edhe në 2 doza/ditë. Tabela e upload-uar nuk shtyp kohëzgjatje numerike në këtë rresht, prandaj DRx nuk e shpik.' },
-        { id:'core4-cephalexin-gas', tier:'allergy-low', allergy:['a1'], drug:'Cephalexin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:20,unit:'mg/kg/dozë',maxDose:500}, duration:{type:'fixed',text:'Sipas protokollit GAS të cituar nga CPS'}, source:'cps-core4-2022', note:'CORE4: alergji ndaj penicilinës jo kërcënuese për jetën; tableta 250 mg ose 500 mg.' },
-        { id:'core4-clarithro-gas', tier:'allergy-severe', allergy:['a2','a3'], drug:'Clarithromycin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:7.5,unit:'mg/kg/dozë',maxDose:250}, duration:{type:'fixed',text:'Sipas protokollit GAS të cituar nga CPS'}, source:'cps-core4-2022', note:'CORE4: alergji ndaj penicilinës kërcënuese për jetën; tabletë 250 mg.' },
+        { id:'core4-penicillin-gas', tier:'first', allergy:['none','a0','a4'], drug:'Penicillin V', route:'PO', frequency:'2 ose 3 herë/ditë', dose:{type:'weight-bands',thresholdKg:27,belowMg:300,atOrAboveMg:600,text:'<27 kg: 300 mg/dozë · ≥27 kg: 600 mg/dozë'}, duration:{type:'fixed',text:'10 ditë'}, source:'cps-core4-2022', note:'CORE4: tabletë 300 mg. Pragu 27 kg ndiqet sipas tabelës CORE4 2022; doza nuk shumëzohet me kg.' },
+        { id:'core4-amoxicillin-gas', tier:'first', allergy:['none','a0','a4'], drug:'Amoxicillin', route:'PO', frequency:'1 herë/ditë', dose:{type:'single',value:50,unit:'mg/kg/dozë',maxDose:1000,maxLabel:'maks. 1000 mg/ditë'}, duration:{type:'fixed',text:'10 ditë'}, durationSource:'cps-gas-duration', source:'cps-core4-2022', note:'CORE4: mund të ndahet edhe në 2 doza/ditë. Kohëzgjatja 10 ditë verifikohet te udhëzimi CPS GAS, tabela 1.' },
+        { id:'core4-cephalexin-gas', tier:'allergy-low', allergy:['a1'], drug:'Cephalexin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:20,unit:'mg/kg/dozë',maxDose:500}, duration:{type:'fixed',text:'10 ditë'}, durationSource:'cps-gas-duration', source:'cps-core4-2022', note:'CORE4: alergji ndaj penicilinës jo kërcënuese për jetën; tableta 250 mg ose 500 mg.' },
+        { id:'core4-clarithro-gas', tier:'allergy-severe', allergy:['a2','a3'], drug:'Clarithromycin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:7.5,unit:'mg/kg/dozë',maxDose:250}, duration:{type:'fixed',text:'10 ditë'}, durationSource:'cps-gas-duration', source:'cps-core4-2022', note:'CORE4: alergji ndaj penicilinës kërcënuese për jetën; tabletë 250 mg.' },
         { id:'core4-azithro-gas', tier:'allergy-severe', allergy:['a2','a3'], drug:'Azithromycin', route:'PO', frequency:'1 herë/ditë', dose:{type:'single',value:12,unit:'mg/kg/dozë',maxDose:500}, duration:{type:'fixed',text:'5 ditë'}, source:'cps-core4-2022', note:'CORE4 12/2022: ky regjim është source-pinned; udhëzimet më të reja për GAS mund të japin sekuencë tjetër dhe nuk përzihen në heshtje me këtë kartë.' }
       ]
     },
@@ -80,6 +80,7 @@
   function applyCore4Primary(guide) {
     if (!guide || !Array.isArray(guide.sources) || !Array.isArray(guide.indications)) return;
     if (!guide.sources.some(item => item?.id === core4Source.id)) guide.sources.unshift(core4Source);
+    guide.sources.push({ id:'cps-gas-duration', short:'CPS GAS 2021', title:'Group A streptococcal (GAS) pharyngitis: A practical guide to diagnosis and treatment — Table 1', date:'2021-07-29', url:'https://cps.ca/en/documents/position/group-a-streptococcal', note:'Burimi për kohëzgjatjet e plotësuara të amoxicillin, cephalexin dhe clarithromycin: 10 ditë.' });
     Object.entries(core4).forEach(([id, patch]) => {
       const indication = guide.indications.find(item => item?.id === id);
       if (!indication) return;
@@ -111,12 +112,12 @@
   function applyCore4Solids(solids) {
     const drugs = solids?.drugs;
     if (!drugs) return;
-    addSolid(drugs, 'Penicillin V', { id:'core4-penv-tab-300', label:'Tabletë 300 mg · CORE4', form:'tabletë', componentMg:300, sourceUrl:'https://www.cps.ca', note:'Formë e listuar në CPS CORE4 12/2022.' });
-    addSolid(drugs, 'Amoxicillin / clavulanate', { id:'core4-amoxclav-tab-500-125', label:'Tabletë 500/125 mg · CORE4', form:'tabletë', componentMg:500, composition:'500 mg amoxicillin + 125 mg clavulanate', singleUnitOnly:true, sourceUrl:'https://www.cps.ca', note:'Raporti i produktit është pjesë e regjimit CORE4.' });
-    addSolid(drugs, 'Cefprozil', { id:'core4-cefprozil-tab-250', label:'Tabletë 250 mg · CORE4', form:'tabletë', componentMg:250, sourceUrl:'https://www.cps.ca' });
-    addSolid(drugs, 'Cefprozil', { id:'core4-cefprozil-tab-500', label:'Tabletë 500 mg · CORE4', form:'tabletë', componentMg:500, sourceUrl:'https://www.cps.ca' });
-    addSolid(drugs, 'Cefuroxime', { id:'core4-cefuroxime-tab-250', label:'Tabletë 250 mg · CORE4', form:'tabletë', componentMg:250, sourceUrl:'https://www.cps.ca' });
-    addSolid(drugs, 'Cefuroxime', { id:'core4-cefuroxime-tab-500', label:'Tabletë 500 mg · CORE4', form:'tabletë', componentMg:500, sourceUrl:'https://www.cps.ca' });
+    addSolid(drugs, 'Penicillin V', { id:'core4-penv-tab-300', label:'Tabletë 300 mg · CORE4', form:'tabletë', componentMg:300, sourceUrl:'https://cps.ca/uploads/documents/2022_Dec_1_Antibiotics_Shortage_Tables_FINAL.pdf', note:'Formë e listuar në CPS CORE4 12/2022.' });
+    addSolid(drugs, 'Amoxicillin / clavulanate', { id:'core4-amoxclav-tab-500-125', label:'Tabletë 500/125 mg · CORE4', form:'tabletë', componentMg:500, composition:'500 mg amoxicillin + 125 mg clavulanate', singleUnitOnly:true, sourceUrl:'https://cps.ca/uploads/documents/2022_Dec_1_Antibiotics_Shortage_Tables_FINAL.pdf', note:'Raporti i produktit është pjesë e regjimit CORE4.' });
+    addSolid(drugs, 'Cefprozil', { id:'core4-cefprozil-tab-250', label:'Tabletë 250 mg · CORE4', form:'tabletë', componentMg:250, sourceUrl:'https://cps.ca/uploads/documents/2022_Dec_1_Antibiotics_Shortage_Tables_FINAL.pdf' });
+    addSolid(drugs, 'Cefprozil', { id:'core4-cefprozil-tab-500', label:'Tabletë 500 mg · CORE4', form:'tabletë', componentMg:500, sourceUrl:'https://cps.ca/uploads/documents/2022_Dec_1_Antibiotics_Shortage_Tables_FINAL.pdf' });
+    addSolid(drugs, 'Cefuroxime', { id:'core4-cefuroxime-tab-250', label:'Tabletë 250 mg · CORE4', form:'tabletë', componentMg:250, sourceUrl:'https://cps.ca/uploads/documents/2022_Dec_1_Antibiotics_Shortage_Tables_FINAL.pdf' });
+    addSolid(drugs, 'Cefuroxime', { id:'core4-cefuroxime-tab-500', label:'Tabletë 500 mg · CORE4', form:'tabletë', componentMg:500, sourceUrl:'https://cps.ca/uploads/documents/2022_Dec_1_Antibiotics_Shortage_Tables_FINAL.pdf' });
   }
 
   function installSolidsHook() {
@@ -205,18 +206,18 @@
 
   async function loadAntibioticFormulations() {
     await Promise.all([
-      loadStylesheet('/antibiotiket-formulations.css?v=antibiotiket-formulations-v6', 'data-drx-abx-formulations-css'),
-      loadRuntime('/antibiotiket-formulations-data.js?v=antibiotiket-formulations-v6', 'data-drx-abx-formulations-data'),
+      loadStylesheet('/antibiotiket-formulations.css?v=antibiotiket-formulations-v7', 'data-drx-abx-formulations-css'),
+      loadRuntime('/antibiotiket-formulations-data.js?v=antibiotiket-formulations-v7', 'data-drx-abx-formulations-data'),
     ]);
-    await loadRuntime('/antibiotiket-formulations.js?v=antibiotiket-formulations-v6', 'data-drx-abx-formulations-runtime');
+    await loadRuntime('/antibiotiket-formulations.js?v=antibiotiket-formulations-v7', 'data-drx-abx-formulations-runtime');
   }
 
   async function loadAntibioticPrescription() {
     await Promise.all([
-      loadStylesheet('/antibiotiket-prescription.css?v=antibiotiket-phase4-v3', 'data-drx-abx-prescription-css'),
+      loadStylesheet('/antibiotiket-prescription.css?v=antibiotiket-phase4-v4', 'data-drx-abx-prescription-css'),
       loadRuntime('/antibiotiket-solids-data.js?v=antibiotiket-phase4-v1', 'data-drx-abx-solids-data'),
     ]);
-    await loadRuntime('/antibiotiket-prescription.js?v=antibiotiket-phase4-v3', 'data-drx-abx-prescription-runtime');
+    await loadRuntime('/antibiotiket-prescription.js?v=antibiotiket-phase4-v4', 'data-drx-abx-prescription-runtime');
   }
 
   async function loadAntibioticHospital() {

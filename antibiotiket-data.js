@@ -2,7 +2,7 @@
   'use strict';
 
   window.DRX_ANTIBIOTIC_GUIDE = Object.freeze({
-    version:'2026-09-12-v6-phase2-regimen-engine',
+    version:'2026-09-19-v7-phase2-regimen-engine',
     scope:'paediatric-outpatient',
     sources:[
       {
@@ -24,7 +24,7 @@
       {
         id:'cps-uti-2026',
         short:'CPS UTI 2026',
-        title:'Urinary tract infection in infants and children: Diagnosis and management',
+        title:'Optimizing management of urinary tract infections in children: A need for improved stewardship',
         date:'2026-08-25',
         url:'https://cps.ca/en/documents/position/management-urinary-tract-infections',
         note:'Burimi primar për UTI. Urinokultura merret para antibiotikut kur është e mundur; zgjedhja empirike duhet të marrë parasysh kulturat paraprake dhe rezistencën lokale. DRx nuk shpik maksimum kur CPS nuk e jep.'
@@ -98,7 +98,7 @@
         id:'gas', label:'Faringjit streptokoksik i grupit A (GAS)', short:'Faringjit GAS', source:'cdc-gas', usesAllergy:true,
         warning:'Mos trajto faringjitin viral. Te fëmijët simptomatikë ≥3 vjeç, një RADT negativ duhet konfirmuar me kulturë sipas CDC.',
         options:[
-          { id:'penicillin-gas', tier:'first', allergy:['none','a0','a4'], drug:'Penicillin V', route:'PO', frequency:'2 ose 3 herë/ditë', dose:{type:'fixed',text:'250 mg/dozë'}, duration:{type:'fixed',text:'10 ditë'}, source:'cdc-gas' },
+          { id:'penicillin-gas', tier:'first', allergy:['none','a0','a4'], drug:'Penicillin V', route:'PO', frequency:'2 ose 3 herë/ditë', dose:{type:'fixed',value:250,text:'250 mg/dozë'}, duration:{type:'fixed',text:'10 ditë'}, source:'cdc-gas' },
           { id:'amoxicillin-gas', tier:'first', allergy:['none','a0','a4'], drug:'Amoxicillin', route:'PO', frequency:'1 herë/ditë', dose:{type:'single',value:50,unit:'mg/kg/dozë',maxDose:1000,maxLabel:'maks. 1000 mg/ditë'}, duration:{type:'fixed',text:'10 ditë'}, source:'cdc-gas', note:'Alternativë CDC: 25 mg/kg/dozë 2 herë/ditë, maks. 500 mg/dozë.' },
           { id:'cephalexin-gas', tier:'allergy-low', allergy:['a1'], drug:'Cephalexin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:20,unit:'mg/kg/dozë',maxDose:500}, duration:{type:'fixed',text:'10 ditë'}, source:'cdc-gas', note:'Mos e përdor në reaksion të menjëhershëm/high-risk IgE ndaj penicilinës.' },
           { id:'clinda-gas', tier:'allergy-severe', allergy:['a2','a3'], drug:'Clindamycin', route:'PO', frequency:'3 herë/ditë', dose:{type:'single',value:7,unit:'mg/kg/dozë',maxDose:300}, duration:{type:'fixed',text:'10 ditë'}, source:'cdc-gas', stewardship:'Rezistenca ndaj clindamycin ndryshon gjeografikisht.' },
@@ -131,7 +131,7 @@
         warning:'Merr urinokulturë para antibiotikut kur është e mundur. Terapia empirike duhet të përshtatet me kulturat paraprake, ndjeshmërinë dhe rezistencën lokale; DRx nuk supozon antibiogramë të Kosovës.',
         options:[
           { id:'cephalexin-cystitis', tier:'first', allergy:['none','a0','a1'], drug:'Cephalexin', route:'PO', frequency:'4 herë/ditë', dose:{type:'single',value:12.5,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'3–5 ditë'}, source:'cps-uti-2026', note:'CPS jep 50 mg/kg/ditë në 4 doza; DRx shfaq ekuivalentin 12,5 mg/kg/dozë. Burimi nuk jep maksimum.' },
-          { id:'amoxclav-cystitis', tier:'option', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'3 herë/ditë', dose:{type:'single',value:13.3,unit:'mg/kg/dozë',component:'amoxicillin'}, duration:{type:'fixed',text:'3–5 ditë'}, source:'cps-uti-2026', note:'CPS jep 40 mg/kg/ditë të komponentit amoxicillin në 3 doza; pa maksimum të deklaruar.' },
+          { id:'amoxclav-cystitis', tier:'option', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'3 herë/ditë', dose:{type:'single',value:40/3,dailyValue:40,dividedDoses:3,unit:'mg/kg/dozë',component:'amoxicillin'}, duration:{type:'fixed',text:'3–5 ditë'}, source:'cps-uti-2026', note:'CPS: 40 mg/kg/ditë amoxicillin, ndarë në 3 doza; formulimi amoxicillin:clavulanate 7:1. Pa maksimum të deklaruar.' },
           { id:'cefixime-cystitis', tier:'reserve', allergy:['a1','a2'], drug:'Cefixime', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:4,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'3–5 ditë'}, source:'cps-uti-2026', note:'Rezervë kur rezistenca ndaj barnave të linjës së parë është e lartë; pa maksimum të deklaruar nga CPS.' },
           { id:'nitro-cystitis', tier:'option', allergy:['none','a0','a1','a2','a3','a4'], drug:'Nitrofurantoin', route:'PO', frequency:'4 herë/ditë', dose:{type:'range',min:1.25,max:1.75,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'3–5 ditë'}, source:'cps-uti-2026', note:'Vetëm për cistit; nuk ka penetrim adekuat në indin renal.' },
           { id:'tmpsmx-cystitis', tier:'option', allergy:['none','a0','a1','a2','a3','a4'], drug:'Trimethoprim / sulfamethoxazole', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:4,unit:'mg/kg/dozë',component:'trimethoprim'}, duration:{type:'fixed',text:'3–5 ditë'}, source:'cps-uti-2026', note:'Doza bazohet në komponentin trimethoprim; përdore sipas ndjeshmërisë/rezistencës lokale.' }
@@ -142,7 +142,7 @@
         warning:'Foshnja <2 muaj, pacienti i sëmurë/toksik, vjelljet, marrja e dobët orale, imunosupresioni, obstruksioni ose UTI e komplikuar kërkojnë eskalim/hospitalizim. Merr kulturë para antibiotikut kur është e mundur.',
         options:[
           { id:'cephalexin-pyelo', tier:'first', allergy:['none','a0','a1'], drug:'Cephalexin', route:'PO', frequency:'4 herë/ditë', dose:{type:'single',value:25,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'të paktën 7 ditë'}, source:'cps-uti-2026', note:'CPS jep 100 mg/kg/ditë në 4 doza; burimi nuk jep maksimum.' },
-          { id:'amoxclav-pyelo', tier:'option', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'3 herë/ditë', dose:{type:'single',value:13.3,unit:'mg/kg/dozë',component:'amoxicillin'}, duration:{type:'fixed',text:'të paktën 7 ditë'}, source:'cps-uti-2026', note:'Vetëm kur është i përshtatshëm sipas kulturës/ndjeshmërisë.' },
+          { id:'amoxclav-pyelo', tier:'option', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'3 herë/ditë', dose:{type:'single',value:40/3,dailyValue:40,dividedDoses:3,unit:'mg/kg/dozë',component:'amoxicillin'}, duration:{type:'fixed',text:'të paktën 7 ditë'}, source:'cps-uti-2026', note:'40 mg/kg/ditë amoxicillin në 3 doza, formulimi 7:1; vetëm kur është i përshtatshëm sipas kulturës/ndjeshmërisë.' },
           { id:'cefixime-pyelo', tier:'reserve', allergy:['a1','a2'], drug:'Cefixime', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:4,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'të paktën 7 ditë'}, source:'cps-uti-2026', note:'Rezervë sipas rezistencës lokale; pa maksimum të deklaruar nga CPS.' },
           { id:'tmpsmx-pyelo', tier:'option', allergy:['a2','a3','a4'], drug:'Trimethoprim / sulfamethoxazole', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:4,unit:'mg/kg/dozë',component:'trimethoprim'}, duration:{type:'fixed',text:'të paktën 7 ditë'}, source:'cps-uti-2026', note:'Vetëm kur izolati është i ndjeshëm / rezistenca lokale e lejon.' },
           { id:'cipro-pyelo', tier:'reserve', allergy:['a3','a4'], drug:'Ciprofloxacin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:15,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'të paktën 7 ditë'}, source:'cps-uti-2026', note:'Rezervë për patogjenë rezistentë/MDR ose Pseudomonas; rekomandohet konsultë me infektologun.' }
