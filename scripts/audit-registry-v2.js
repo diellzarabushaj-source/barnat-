@@ -100,7 +100,9 @@ assert(js.includes("response.status === 401 || response.status === 403"), 'Regis
 assert(js.includes('escapeHtml'), 'Registry v2 must escape rendered text.');
 assert(js.includes('AbortController'), 'Registry v2 requests must have bounded timeouts.');
 assert(js.includes('requestId'), 'Registry v2 must discard stale concurrent responses.');
-assert(js.includes('220'), 'Registry v2 search must be debounced.');
+assert(js.includes('const SEARCH_DEBOUNCE_MS = 120'), 'Registry v2 search must use the audited 120 ms mobile debounce.');
+assert(js.includes('SEARCH_CACHE_TTL_MS = 30 * 1000'), 'Registry v2 repeated searches must keep a short client cache.');
+assert(js.includes("DEFAULT_PAGE_SIZE = window.matchMedia?.('(max-width:760px)').matches ? 25 : 50"), 'Phone registry pages must remain bounded at 25 rows.');
 
 assert(js.includes("const COLUMN_PICKER_STABILITY = 'registry-column-picker-stability-v2'"), 'Transactional Registry v2 column picker patch is missing.');
 assert(js.includes('columnPickerDraft: null'), 'Column picker must keep an isolated draft while open.');
