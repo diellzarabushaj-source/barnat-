@@ -41,7 +41,9 @@
 
   function parseSimpleDose(text) {
     const value = clean(text).replace(/,/g, '.');
-    let match = /(\d+(?:\.\d+)?)\s*[–-]\s*(\d+(?:\.\d+)?)\s*mg(?:\s+[\p{L}-]+)?\/dozë/iu.exec(value);
+    let match = /(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*mg(?:\s+[\p{L}-]+)?\/dozë/iu.exec(value);
+    if (match) return { min:Number(match[1]), max:Number(match[1]), combination:true, secondComponent:Number(match[2]) };
+    match = /(\d+(?:\.\d+)?)\s*[–-]\s*(\d+(?:\.\d+)?)\s*mg(?:\s+[\p{L}-]+)?\/dozë/iu.exec(value);
     if (match) return { min:Number(match[1]), max:Number(match[2]) };
     match = /(\d+(?:\.\d+)?)\s*mg(?:\s+[\p{L}-]+)?\/dozë/iu.exec(value);
     if (match) return { min:Number(match[1]), max:Number(match[1]) };
