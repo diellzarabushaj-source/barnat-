@@ -177,8 +177,13 @@
   }
 
   function calculatedValue(option, weight, format=fmt) {
-    if (!weight) return '';
     const dose = option.dose || {};
+    if (dose.type === 'fixed') {
+      if (dose.text) return dose.text;
+      if (Number.isFinite(dose.value)) return `${format(dose.value)} mg/dozë`;
+      return '';
+    }
+    if (!weight) return '';
     const simple = calculateSimple(dose, weight);
     if (simple) return rangeText(simple, dose, 'dozë', format);
 
@@ -339,6 +344,18 @@
   // as breaking the threshold: the first states the limit and still shows the
   // table, the second withholds a regimen the source does not cover.
   function eligibility(indication) {
+    if (Number.isFinite(indication.minWeightKg)) {
+      const state = weightState();
+      if (state.kind === 'invalid') {
+        return { blocks:true, tone:'warn', text:`Shkruaj një peshë reale valide për ta verifikuar pragun ≥${fmt(indication.minWeightKg)} kg të kësaj skeme.` };
+      }
+      if (state.kind === 'empty') {
+        return { blocks:false, tone:'info', text:`Kjo skemë fikse vlen për pacientë ≥${fmt(indication.minWeightKg)} kg. Shkruaj peshën reale para finalizimit të recetës.` };
+      }
+      if (state.value < indication.minWeightKg) {
+        return { blocks:true, tone:'warn', text:`Kjo skemë fikse 875/125 mg kërkon peshë ≥${fmt(indication.minWeightKg)} kg. Pesha e dhënë është ${fmt(state.value)} kg; përdor dozimin pediatrik sipas kg dhe formulimit.` };
+      }
+    }
     if (!Number.isFinite(indication.minAgeMonths)) return null;
     const age = currentAgeBand();
     const threshold = indication.minAgeMonths < 12 ? `${indication.minAgeMonths} muaj` : `${Math.round(indication.minAgeMonths / 12)} vjeç`;
@@ -568,7 +585,7 @@
   function recommendationCard(option, basis) {
     const card = make('article', `abx-option tier-${option.tier || 'option'}`);
     card.dataset.regimenId = option.id;
-    card.dataset.requiresRealWeight = String(option.dose?.type === 'weight-bands');
+    card.dataset.requiresRealWeight = String(option.dose?.type === 'weight-bands' || Number.isFinite(currentIndication()?.minWeightKg));
     // Converters consume the unrounded value, never the presentation rounding.
     card.dataset.exactDoseText = calculatedValue(option, basis.weight, value => String(value));
     const head = make('div', 'abx-option-head');
