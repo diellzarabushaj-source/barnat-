@@ -215,9 +215,9 @@
   async function loadAntibioticPrescription() {
     await Promise.all([
       loadStylesheet('/antibiotiket-prescription.css?v=antibiotiket-phase4-v4', 'data-drx-abx-prescription-css'),
-      loadRuntime('/antibiotiket-solids-data.js?v=antibiotiket-phase4-v1', 'data-drx-abx-solids-data'),
+      loadRuntime('/antibiotiket-solids-data.js?v=antibiotiket-phase4-v2', 'data-drx-abx-solids-data'),
     ]);
-    await loadRuntime('/antibiotiket-prescription.js?v=antibiotiket-phase4-v4', 'data-drx-abx-prescription-runtime');
+    await loadRuntime('/antibiotiket-prescription.js?v=antibiotiket-phase4-v5', 'data-drx-abx-prescription-runtime');
   }
 
   async function loadAntibioticHospital() {
