@@ -933,7 +933,8 @@
   }
 
   function queryUrl() {
-    const rankedSearch = Boolean(state.q && !state.atc && !state.formValue);
+    const searchableQuery = Boolean(state.q && (state.q.length >= 2 || /^\\d+$/.test(state.q)));
+    const rankedSearch = Boolean(searchableQuery && !state.atc && !state.formValue);
     const params = new URLSearchParams(rankedSearch ? {
       view:'registry-search',
       page:'1',
