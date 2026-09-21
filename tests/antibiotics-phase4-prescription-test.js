@@ -34,7 +34,7 @@ assert.equal(solids.drugs['Amoxicillin / clavulanate'].forms[0].singleUnitOnly, 
 for (const indication of ['aom','sinusitis','uti-cystitis','uti-pyelo']) {
   assert.equal(solids.indicationOverrides[`${indication}|Amoxicillin / clavulanate`]?.disabled, true, `${indication}: amox/clav solid auto-match must be disabled`);
 }
-for (const indication of ['cellulitis','preseptal','bite','lymphadenitis']) {
+for (const indication of ['cellulitis','preseptal','bite','lymphadenitis','wound-cut']) {
   assert.deepEqual(solids.indicationOverrides[`${indication}|Amoxicillin / clavulanate`]?.allow, ['amoxclav-tab-875-125']);
 }
 
@@ -53,14 +53,15 @@ assert.match(
   'Solid forms must hard-stop when no exact whole-unit match exists',
 );
 assert.match(runtime, /singleUnitOnly/, 'Combination product solid matching must respect single-unit safety');
+assert.match(runtime, /secondComponent:Number\(match\[2\]\)/, 'Fixed 875/125 mg dose text must be parsed as a combination while matching solids by the amoxicillin component');
 assert.match(runtime, /Sasia matematike e kursit/, 'Course quantity must be labelled as mathematical, not automatic package selection');
 assert.match(runtime, /'abx-rx-copy'/, 'Prescription copy action must be present');
 assert.match(runtime, /navigator\.clipboard/, 'Clipboard copy implementation must exist');
 assert.doesNotMatch(runtime, /Math\.round\([^\n]+componentMg[^\n]+\)\s*\/\s*2/, 'Runtime must not invent half-tablet rounding');
 
 const shell = read('antibiotiket-shell.js');
-assert.match(shell, /antibiotiket-solids-data\.js\?v=antibiotiket-phase4-v1/);
-assert.match(shell, /antibiotiket-prescription\.js\?v=antibiotiket-phase4-v4/);
+assert.match(shell, /antibiotiket-solids-data\.js\?v=antibiotiket-phase4-v2/);
+assert.match(shell, /antibiotiket-prescription\.js\?v=antibiotiket-phase4-v5/);
 // v2: the fold-out summary was restyled to match the other two folds on a card.
 assert.match(shell, /antibiotiket-prescription\.css\?v=antibiotiket-phase4-v4/);
 
