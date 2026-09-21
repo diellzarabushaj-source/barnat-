@@ -2,8 +2,8 @@
   'use strict';
 
   window.DRX_ANTIBIOTIC_GUIDE = Object.freeze({
-    version:'2026-09-19-v7-phase2-regimen-engine',
-    scope:'paediatric-outpatient',
+    version:'2026-09-21-v8-phase2-regimen-engine-wound-cut',
+    scope:'outpatient-antibiotic-guide',
     sources:[
       {
         id:'cm2026',
@@ -44,6 +44,30 @@
         date:'2026-03-03',
         url:'https://cps.ca/en/documents/position/preseptal-orbital-cellulitis',
         note:'Burim për kufirin ambulant dhe red flags. Dyshimi për përfshirje orbitale nuk trajtohet si kalkulator i thjeshtë ambulant.'
+      },
+      {
+        id:'aast-laceration-2024',
+        short:'AAST Lacerations 2024',
+        title:'Antibiotic prophylaxis in injury: an AAST Critical Care Committee clinical consensus document',
+        date:'2024',
+        url:'https://tsaco.bmj.com/content/9/1/e001304',
+        note:'Prerjet e thjeshta të indeve të buta nuk marrin profilaksi sistemike rutinë. Irrigimi, debridimi, heqja e trupave të huaj dhe vlerësimi i tetanusit mbeten parësore; antibiotiku rezervohet për infeksion ose kontekst me rrezik të lartë.'
+      },
+      {
+        id:'emc-coamox-875-125',
+        short:'eMC Co-amoxiclav 875/125',
+        title:'Co-amoxiclav 875mg/125mg film-coated Tablets — SmPC 4.2',
+        date:'2025-12-02',
+        url:'https://www.medicines.org.uk/emc/product/10877/smpc',
+        note:'Burim për produktin 7:1 te të rriturit / pacientët ≥40 kg: 875 mg amoxicillin + 125 mg clavulanic acid, PO dy herë/ditë; merret me vakt.'
+      },
+      {
+        id:'idsa-ssti-2014',
+        short:'IDSA SSTI',
+        title:'IDSA Clinical Practice Guideline for Skin and Soft Tissue Infections',
+        date:'2014',
+        url:'https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/',
+        note:'Për cellulitis që po përmirësohet, kohëzgjatja e rekomanduar është 5 ditë; zgjatet kur përgjigjja klinike nuk është adekuate.'
       },
       {
         id:'chop-allergy-2025',
@@ -165,6 +189,13 @@
           { id:'cephalexin-cellulitis', tier:'first', allergy:['none','a0','a1'], drug:'Cephalexin', route:'PO', frequency:'3 herë/ditë', dose:{type:'single',value:17,unit:'mg/kg/dozë',maxDose:500}, duration:{type:'fixed',text:'5 ditë'}, source:'cm2026' },
           { id:'amoxclav-cellulitis', tier:'option', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:22.5,unit:'mg/kg/dozë',maxDose:875,component:'amoxicillin'}, duration:{type:'fixed',text:'5 ditë'}, source:'cm2026' },
           { id:'clinda-cellulitis', tier:'allergy-severe', allergy:['a2','a3','a4'], drug:'Clindamycin', route:'PO', frequency:'3 herë/ditë', dose:{type:'single',value:10,unit:'mg/kg/dozë',maxDose:450}, duration:{type:'fixed',text:'5 ditë'}, source:'cm2026', note:'Për alergji të përshtatshme ose rrezik MRSA; kontrollo rezistencën lokale ndaj clindamycin.' }
+        ]
+      },
+      {
+        id:'wound-cut', label:'Plagë / prerje — infeksion / indikacion për antibiotik', short:'Plagë / prerje', source:'aast-laceration-2024', usesAllergy:true, minWeightKg:40,
+        warning:'Prerja e pastër, e thjeshtë dhe jo e infektuar nuk kërkon profilaksi sistemike rutinë. Bëj irrigim/debridim sipas nevojës, hiq trupat e huaj dhe vlerëso profilaksinë e tetanusit. Kjo kartë përdoret kur ka infeksion bakterial të plagës / SSTI ose një indikacion klinik të qartë; trauma penetruese, ndotja e rëndë, përfshirja e tendinit/nyjes/kockës, shenjat sistemike ose progresioni i shpejtë kërkojnë vlerësim/eskalim.',
+        options:[
+          { id:'amoxclav-wound-cut-ge40', tier:'option', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'2 herë/ditë', dose:{type:'fixed',text:'875/125 mg/dozë',component:'amoxicillin'}, duration:{type:'fixed',text:'5 ditë'}, source:'emc-coamox-875-125', durationSource:'idsa-ssti-2014', conditional:'Pacient ≥40 kg me infeksion bakterial të plagës / lëkurës dhe indeve të buta ku amoxicillin/clavulanate është zgjedhje e përshtatshme; jo profilaksi rutinë për çdo prerje.', note:'Merre në fillim të vaktit. Ruaj raportin fiks 7:1: 875 mg amoxicillin + 125 mg clavulanic acid; mos e zëvendëso me shënimin e paqartë “1 g”.', stewardship:'Rivlerëso rreth 48–72 orë. Pesë ditë zakonisht mjaftojnë kur ka përmirësim klinik; mos-përmirësimi, progresioni ose dyshimi për infeksion të thellë kërkojnë rivlerësim dhe përshtatje sipas gjetjeve.' }
         ]
       },
       {
