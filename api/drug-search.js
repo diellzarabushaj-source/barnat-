@@ -295,24 +295,24 @@ async function sendDetail(req,res,startedAt) { const path=buildDetailPath(reques
 async function sendSearch(req,res,startedAt) {
   const query=requestQuery(req);
   const request=buildSearchPath(query.q,query.limit);
-  setHeaders(res,startedAt,'supabase-drug-search-v4');
+  setHeaders(res,startedAt,'supabase-drug-search-v5');
   if(!request) return req.method==='HEAD'
     ? res.status(200).end()
-    : res.status(200).json({ok:true,query:'',results:[],meta:{source:'supabase',searchVersion:'v4'}});
-  const {data}=await supabaseRequest(request.path,{method:request.method,body:request.body,timeoutMs:5000,label:'Supabase ranked drug search v4'});
+    : res.status(200).json({ok:true,query:'',results:[],meta:{source:'supabase',searchVersion:'v5'}});
+  const {data}=await supabaseRequest(request.path,{method:request.method,body:request.body,timeoutMs:5000,label:'Supabase ranked drug search v5'});
   const results=Array.isArray(data)?data.map(searchRow):[];
   if(req.method==='HEAD')return res.status(200).end();
-  return res.status(200).json({ok:true,query:request.q,results,meta:{source:'supabase',searchVersion:'v4',limit:request.limit}});
+  return res.status(200).json({ok:true,query:request.q,results,meta:{source:'supabase',searchVersion:'v5',limit:request.limit}});
 }
 async function sendRankedRegistrySearch(req,res,startedAt) {
   const query=requestQuery(req);
   const pageSize=integerInRange(query.pageSize,REGISTRY_DEFAULT_PAGE_SIZE,1,REGISTRY_MAX_PAGE_SIZE);
   const request=buildSearchPath(query.q,pageSize);
-  setHeaders(res,startedAt,'supabase-ranked-registry-search-v4');
+  setHeaders(res,startedAt,'supabase-ranked-registry-search-v5');
   if(!request) return req.method==='HEAD'
     ? res.status(200).end()
-    : res.status(200).json({ok:true,rows:[],pagination:{page:1,pageSize,total:0,totalPages:1,hasPrevious:false,hasNext:false},query:{q:''},meta:{source:'supabase',searchVersion:'v4',ranked:true}});
-  const {data}=await supabaseRequest(request.path,{method:request.method,body:request.body,timeoutMs:5000,label:'Supabase ranked registry search v4'});
+    : res.status(200).json({ok:true,rows:[],pagination:{page:1,pageSize,total:0,totalPages:1,hasPrevious:false,hasNext:false},query:{q:''},meta:{source:'supabase',searchVersion:'v5',ranked:true}});
+  const {data}=await supabaseRequest(request.path,{method:request.method,body:request.body,timeoutMs:5000,label:'Supabase ranked registry search v5'});
   const rows=Array.isArray(data)?data.map(searchRow):[];
   if(req.method==='HEAD')return res.status(200).end();
   return res.status(200).json({
@@ -320,7 +320,7 @@ async function sendRankedRegistrySearch(req,res,startedAt) {
     rows,
     pagination:{page:1,pageSize,total:rows.length,totalPages:1,hasPrevious:false,hasNext:false},
     query:{q:request.q},
-    meta:{source:'supabase',searchVersion:'v4',ranked:true,limit:request.limit},
+    meta:{source:'supabase',searchVersion:'v5',ranked:true,limit:request.limit},
   });
 }
 async function sendPersonalLookup(req,res,startedAt) { const request=buildPersonalLookupPath(requestQuery(req)); setHeaders(res,startedAt,'supabase-personal-drug-lookup'); if(!request.ids.length) return req.method==='HEAD'?res.status(200).end():res.status(200).json({ok:true,rows:[],meta:{source:'supabase',lookup:'personal'}}); const {data}=await supabaseRequest(request.path,{timeoutMs:5000,label:'Supabase personal drug lookup'}); const rows=Array.isArray(data)?data.map(listRow):[]; if(req.method==='HEAD')return res.status(200).end(); return res.status(200).json({ok:true,rows,meta:{source:'supabase',lookup:'personal'}}); }
