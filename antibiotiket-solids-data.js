@@ -110,7 +110,8 @@
       'cellulitis|Amoxicillin / clavulanate':{ allow:['amoxclav-tab-875-125'] },
       'preseptal|Amoxicillin / clavulanate':{ allow:['amoxclav-tab-875-125'] },
       'bite|Amoxicillin / clavulanate':{ allow:['amoxclav-tab-875-125'] },
-      'lymphadenitis|Amoxicillin / clavulanate':{ allow:['amoxclav-tab-875-125'] }
+      'lymphadenitis|Amoxicillin / clavulanate':{ allow:['amoxclav-tab-875-125'] },
+      'wound-cut|Amoxicillin / clavulanate':{ allow:['amoxclav-tab-875-125'] }
     }
   });
 })();
