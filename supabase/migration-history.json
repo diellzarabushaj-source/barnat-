@@ -1117,6 +1117,14 @@
     {
       "name": "icd_hierarchy_active_security_invoker",
       "version": "20260918095839"
+    },
+    {
+      "name": "enable_http_for_icd_latin_import",
+      "version": "20260919150745"
+    },
+    {
+      "name": "registry_search_index_first_v3",
+      "version": "20260921134355"
     }
   ]
 }
