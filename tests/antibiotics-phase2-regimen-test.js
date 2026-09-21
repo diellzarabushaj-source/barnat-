@@ -28,12 +28,13 @@ const EXPECTED = new Set([
   'uti-pyelo',
   'impetigo',
   'cellulitis',
+  'wound-cut',
   'abscess',
   'preseptal',
   'bite',
   'lymphadenitis',
 ]);
-assert.equal(guide.indications.length, 12, 'Phase 2 must expose exactly 12 pediatric outpatient diagnoses');
+assert.equal(guide.indications.length, 13, 'Phase 2 must expose 12 pediatric outpatient diagnoses plus the ≥40 kg wound/cut regimen');
 assert.deepEqual(new Set(guide.indications.map(item => item.id)), EXPECTED, 'Unexpected Phase 2 diagnosis set');
 for (const indication of guide.indications) {
   assert.ok(indication.options.length > 0, `${indication.id}: Phase 2 diagnosis must be linked to at least one verified action/regimen`);
@@ -129,6 +130,22 @@ assert.equal(pyelo.options.find(item => item.id === 'cephalexin-pyelo').frequenc
 assert.equal(pyelo.options.find(item => item.id === 'cephalexin-pyelo').dose.maxDose, undefined, 'Do not invent a CPS maximum for pyelonephritis cephalexin');
 assert.ok(pyelo.options.every(option => /7 ditë/.test(option.duration.text)), 'Uncomplicated pyelonephritis must not be published with <7 days in this dataset');
 
+const woundCut = guide.indications.find(item => item.id === 'wound-cut');
+assert.ok(woundCut, 'Wound/cut indication must exist');
+assert.equal(woundCut.minWeightKg, 40, 'Fixed 875/125 mg wound regimen must be gated to ≥40 kg');
+assert.match(woundCut.warning, /nuk kërkon profilaksi sistemike rutinë/i, 'Simple clean cuts must not receive routine systemic prophylaxis');
+const woundAmoxClav = woundCut.options.find(item => item.id === 'amoxclav-wound-cut-ge40');
+assert.equal(woundAmoxClav.dose.type, 'fixed');
+assert.equal(woundAmoxClav.dose.text, '875/125 mg/dozë');
+assert.equal(woundAmoxClav.dose.component, 'amoxicillin');
+assert.equal(woundAmoxClav.frequency, '2 herë/ditë');
+assert.equal(woundAmoxClav.duration.text, '5 ditë');
+assert.equal(woundAmoxClav.source, 'emc-coamox-875-125');
+assert.equal(woundAmoxClav.durationSource, 'idsa-ssti-2014');
+assert.match(woundAmoxClav.conditional, /≥40 kg/);
+assert.match(js, /Number\.isFinite\(indication\.minWeightKg\)/, 'Weight-gated fixed adult regimens need an explicit eligibility branch');
+assert.match(js, /currentIndication\(\)\?\.minWeightKg/, 'Prescription finalization must require real weight for a weight-gated fixed regimen');
+
 const abscess = guide.indications.find(item => item.id === 'abscess');
 assert.equal(abscess.options[0].kind, 'procedure', 'Abscess must model source control before systemic antibiotics');
 assert.match(abscess.warning, /drenazh/i);
@@ -205,7 +222,7 @@ assert.match(js, /function doseBasis\(\)/);
 assert.match(js, /referenceWeightKg/);
 assert.match(js, /Alergji ndaj alternativës \/ alergji të shumëfishta/);
 assert.match(html, /vetëm orientuese/, 'Age-derived dose must remain marked orientational');
-assert.match(html, /antibiotiket-data\.js\?v=antibiotiket-phase2-v7/, 'Phase 2 data must be cache-busted in the page');
+assert.match(html, /antibiotiket-data\.js\?v=antibiotiket-phase2-v8/, 'Phase 2 data must be cache-busted in the page');
 assert.match(html, /Alergjia ndaj beta-laktameve/, 'The static allergy label must match the A0-A5 model');
 for (const band of guide.ageBands) {
   assert.ok(Number.isFinite(band.referenceWeightKg) && band.referenceWeightKg > 0, `Age band ${band.id} needs a positive reference weight`);
