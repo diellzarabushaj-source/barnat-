@@ -77,6 +77,9 @@
   // state.view, which selects the workspace (registry, favorites, notes).
   const ROW_VIEW_STORAGE_KEY = 'drx_registry_v2_row_view';
   const ROW_VIEWS = ['table', 'list'];
+  const SEARCH_DEBOUNCE_MS = 120;
+  const SEARCH_CACHE_TTL_MS = 30 * 1000;
+  const DEFAULT_PAGE_SIZE = window.matchMedia?.('(max-width:760px)').matches ? 25 : 50;
 
   // The table is the registry's default shape on every screen. A phone would
   // read the list more comfortably, but switching the default there took the
@@ -97,7 +100,7 @@
 
   const state = {
     page: 1,
-    pageSize: 50,
+    pageSize: DEFAULT_PAGE_SIZE,
     total: null,
     totalPages: null,
     q: '',
@@ -113,6 +116,8 @@
     currentDetail: null,
     requestId: 0,
     searchTimer: 0,
+    pageController: null,
+    searchCache: new Map(),
     preferenceOwner: '',
     visibleColumns: new Set(DEFAULT_VISIBLE_COLUMNS),
     preferenceSaveTimer: 0,
@@ -857,13 +862,35 @@
     syncRowFavoriteLabels();
     if (state.view === 'favorites' || state.view === 'notes') renderPersonalWorkspace();
   }
+  function cancelActivePageRequest() {
+    if (!state.pageController) return;
+    state.requestId += 1;
+    state.pageController.abort();
+    state.pageController = null;
+    setBusy(false);
+  }
+
   function debounceSearch() {
     clearTimeout(state.searchTimer);
+    const nextQuery = clean(el.searchInput.value);
+
+    // Invalidate work for the previous keystroke immediately. This prevents a
+    // slow mobile response from repainting stale results while the next query
+    // is already visible in the search field.
+    cancelActivePageRequest();
+    state.q = nextQuery;
+    state.page = 1;
+    updateFilterUi();
+
+    if (nextQuery && nextQuery.length < 2 && !/^\d+$/.test(nextQuery)) {
+      el.resultSummary.textContent = 'Shkruaj të paktën 2 shkronja për kërkim.';
+      el.requestTiming.textContent = '';
+      return;
+    }
+
     state.searchTimer = setTimeout(() => {
-      state.q = clean(el.searchInput.value);
-      state.page = 1;
-      loadPage();
-    }, 220);
+      void loadPage({ preserveRows: Boolean(nextQuery) });
+    }, nextQuery ? SEARCH_DEBOUNCE_MS : 0);
   }
 
   async function fetchJson(url, options = {}, timeoutMs = 9000) {
@@ -956,36 +983,68 @@
     applyColumnVisibility();
   }
 
-  async function loadPage({ preserveScroll = false } = {}) {
+  function applyPageResult(payload, source, durationMs, requestId, preserveScroll) {
+    state.rows = Array.isArray(payload.rows) ? payload.rows : [];
+    state.page = Number(payload.pagination?.page || state.page);
+    state.pageSize = Number(payload.pagination?.pageSize || state.pageSize);
+    state.total = Number.isFinite(Number(payload.pagination?.total)) ? Number(payload.pagination.total) : null;
+    state.totalPages = Number.isFinite(Number(payload.pagination?.totalPages)) ? Number(payload.pagination.totalPages) : null;
+    el.sourceStatus.textContent = `${source || 'Supabase'} · aktiv`;
+    el.syncText.textContent = source || 'Supabase';
+    state.dosageByRegistry.clear();
+    renderRows();
+    updateSummary(durationMs);
+    updateSortHeaders();
+    updateFilterUi();
+    if (!preserveScroll) el.tableScroll.scrollLeft = 0;
+    void loadDosageForVisibleRows(requestId);
+  }
+
+  async function loadPage({ preserveScroll = false, preserveRows = false } = {}) {
     const requestId = ++state.requestId;
     state.pageController?.abort();
-    state.pageController = new AbortController();
+
+    const url = queryUrl();
+    const rankedSearch = url.includes('view=registry-search');
+    const cacheHit = rankedSearch ? state.searchCache.get(url) : null;
+    if (cacheHit && Date.now() - cacheHit.savedAt < SEARCH_CACHE_TTL_MS) {
+      state.pageController = null;
+      applyPageResult(cacheHit.payload, cacheHit.source, 0, requestId, preserveScroll);
+      setBusy(false);
+      return;
+    }
+    if (cacheHit) state.searchCache.delete(url);
+
+    const controller = new AbortController();
+    state.pageController = controller;
     const startedAt = performance.now();
-    renderSkeleton();
+
+    if (!preserveRows || !state.rows.length) {
+      renderSkeleton();
+    } else {
+      el.resultSummary.textContent = `Duke kërkuar “${state.q}”…`;
+      el.requestTiming.textContent = '';
+    }
     setBusy(true);
+
     try {
-      const { payload, response } = await fetchJson(queryUrl(), { signal:state.pageController.signal });
+      const { payload, response } = await fetchJson(url, { signal:controller.signal });
       if (requestId !== state.requestId) return;
-      state.rows = Array.isArray(payload.rows) ? payload.rows : [];
-      state.page = Number(payload.pagination?.page || state.page);
-      state.pageSize = Number(payload.pagination?.pageSize || state.pageSize);
-      state.total = Number.isFinite(Number(payload.pagination?.total)) ? Number(payload.pagination.total) : null;
-      state.totalPages = Number.isFinite(Number(payload.pagination?.totalPages)) ? Number(payload.pagination.totalPages) : null;
-      el.sourceStatus.textContent = `${response.headers.get('X-MedIndex-Data-Source') || 'Supabase'} · aktiv`;
-      el.syncText.textContent = response.headers.get('X-MedIndex-Data-Source') || 'Supabase';
-      state.dosageByRegistry.clear();
-      renderRows();
-      updateSummary(Math.round(performance.now() - startedAt));
-      updateSortHeaders();
-      updateFilterUi();
-      if (!preserveScroll) el.tableScroll.scrollLeft = 0;
-      void loadDosageForVisibleRows(requestId);
+      const source = response.headers.get('X-MedIndex-Data-Source') || 'Supabase';
+      if (rankedSearch) {
+        state.searchCache.set(url, { payload, source, savedAt:Date.now() });
+        while (state.searchCache.size > 24) state.searchCache.delete(state.searchCache.keys().next().value);
+      }
+      applyPageResult(payload, source, Math.round(performance.now() - startedAt), requestId, preserveScroll);
     } catch (error) {
       if (requestId !== state.requestId) return;
       if (error?.name === 'AbortError') renderError('Kërkesa zgjati tepër. Provo përsëri.');
       else renderError(error?.message || 'Regjistri nuk u ngarkua.');
     } finally {
-      if (requestId === state.requestId) setBusy(false);
+      if (requestId === state.requestId) {
+        if (state.pageController === controller) state.pageController = null;
+        setBusy(false);
+      }
     }
   }
 
@@ -1826,15 +1885,26 @@ async function init() {
     syncFormPickerTrigger();
     restoreSelection();
     updateSelectedCount();
+    updateFilterUi();
     try {
       const authPayload = await ensureAuth();
-      await syncProfileChrome(authPayload);
+
+      // The registry is the primary clinical surface: start its bounded request
+      // immediately after authentication instead of waiting for profile chrome
+      // and preference synchronization.
+      const initialPage = loadPage();
+
+      void syncProfileChrome(authPayload).catch(error => {
+        console.debug('Profile chrome hydration skipped:', error);
+      });
+      void loadColumnPreferences(authPayload).catch(error => {
+        console.debug('Column preference hydration skipped:', error);
+      });
       void loadPersonalLibrary().then(api => api?.load?.()).then(syncPersonalUi).catch(() => {
         if (el.personalStatus) el.personalStatus.textContent = 'Supabase · sinkronizimi dështoi';
       });
-      await loadColumnPreferences(authPayload);
-      el.appShell.setAttribute('aria-busy', 'false');
-      await loadPage();
+
+      await initialPage;
     } catch (error) {
       console.error('DRx registry v2 bootstrap failed:', error);
       renderError(error?.message || 'Aplikacioni nuk u inicializua.');
