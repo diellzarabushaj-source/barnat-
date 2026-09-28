@@ -34,6 +34,34 @@ close(amoxVolumes[1].volumeMin, 3.6);
 close(amoxVolumes[2].volumeMin, 1.8);
 
 const coAmox = drug('Amoxicillin + Clavulanic');
+const coAmoxAll = Core.presentationsFor(coAmox, coAmox.calc[0]);
+assert.deepStrictEqual(
+  coAmoxAll.map(item => [item.form,item.mg,item.mL,item.componentBasis]),
+  [
+    ['Shurup',200,5,'amoxicillin'],
+    ['Shurup',400,5,'amoxicillin'],
+    ['Pika',80,1,'amoxicillin'],
+  ]
+);
+
+// Kosovo-curated co-amoxiclav deliberately omits the source-table drops.
+// The core must not synthesize that absent formulation from a hard-coded fallback.
+const coAmoxKosovo = {
+  ...coAmox,
+  formulations:['Syp – 228.5/5, 457/5','Vial – 1.2g (1000 Amox + 200 Clav)'],
+};
+const coAmoxKosovoOral = Core.presentationsFor(coAmoxKosovo, {
+  mode:'clinicalRules', route:'oral', componentBasis:'amoxicillin', rules:[]
+});
+assert.deepStrictEqual(
+  coAmoxKosovoOral.map(item => [item.form,item.mg,item.mL,item.componentBasis]),
+  [
+    ['Shurup',200,5,'amoxicillin'],
+    ['Shurup',400,5,'amoxicillin'],
+  ]
+);
+assert.equal(coAmoxKosovoOral.some(item => item.form === 'Pika'), false);
+
 const coAmoxPresentations = Liquid.presentationsFor(coAmox, coAmox.calc[0]);
 assert.deepStrictEqual(
   coAmoxPresentations.map(item => [item.form, item.mg, item.mL, item.componentBasis]),
