@@ -502,7 +502,17 @@
       return;
     }
 
-    if (!options.length) return;
+    if (!audit || !options.length) {
+      const blocked = node('div', null, 'dz-common-calculator dz-common-calculator-blocked');
+      blocked.append(node('strong', 'AUTO i bllokuar për siguri'));
+      blocked.append(node(
+        'p',
+        'Auditi klinik i verifikuar nuk u ngarkua. Tabela bazë mbetet vetëm për referencë dhe nuk përdoret për llogaritje automatike.',
+        'dz-common-blocked-reason'
+      ));
+      host.append(blocked);
+      return;
+    }
 
     const shell = node('div', null, 'dz-common-calculator');
     const title = node('div', null, 'dz-common-calc-head');
