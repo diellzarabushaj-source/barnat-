@@ -36,31 +36,18 @@
   const PRODUCTS_KEY = 'drx.dozologjia.products.v1';
   const MINE = 'drx-mine';
 
-  /* Reference weight for age, from the CARPA STM / WBM table the antibiotics
-     page already uses. It runs one way here: a real weight is on the scale in
-     front of the clinician, so it fills the age in rather than the reverse.
-     The estimate is marked as derived and is overwritten the moment the
-     clinician types an age of their own. */
-  const REFERENCE_AGES = [
-    { months:0, kg:3.3 }, { months:3, kg:6.2 }, { months:6, kg:7.6 },
-    { months:12, kg:9 }, { months:24, kg:12 }, { months:48, kg:16 },
-    { months:72, kg:20 }, { months:96, kg:25 }, { months:120, kg:32 },
-    { months:144, kg:40 },
-  ];
-  const HEAVIEST_BAND_KG = 40;
+  /* One weight-to-age default system for the whole Dozologjia workspace.
+     The same 14 user-supplied bands are embedded in the shared browser core
+     and persisted in Supabase. A known chronological age always overrides it. */
+  const MASTER_WEIGHT_AGE_CORE = window.DRxPediatricWeightAge || null;
   function ageForWeight(kg) {
-    /* Past the table an age cannot be read off a weight at all, and under the
-       three-month band it turns on days rather than kilograms — both are the
-       clinician's to state. */
-    if (!positive(kg) || kg > HEAVIEST_BAND_KG) return null;
-    const band = REFERENCE_AGES.reduce((best, entry) => {
-      if (!best) return entry;
-      const gap = Math.abs(entry.kg - kg), bestGap = Math.abs(best.kg - kg);
-      if (gap < bestGap) return entry;
-      return gap === bestGap && entry.months < best.months ? entry : best;
-    }, null);
-    if (!band || band.months < 3) return null;
-    return band.months < 12 ? { value:band.months, unit:'month' } : { value:band.months / 12, unit:'year' };
+    if (!positive(kg) || !MASTER_WEIGHT_AGE_CORE?.DEFAULT_MAP) return null;
+    const info = MASTER_WEIGHT_AGE_CORE.infer(kg, MASTER_WEIGHT_AGE_CORE.DEFAULT_MAP);
+    if (!info || !Number.isFinite(info.defaultMonths) || info.kind === 'below-range') return null;
+    const months = info.defaultMonths;
+    return months < 12
+      ? { value:Math.round(months * 10) / 10, unit:'month', label:info.label, ambiguous:Boolean(info.ambiguous) }
+      : { value:Math.round((months / 12) * 100) / 100, unit:'year', label:info.label, ambiguous:Boolean(info.ambiguous) };
   }
 
   const state = {
@@ -74,6 +61,7 @@
     productId:'',        // the shelf item the volume is measured from
     editing:false,       // the "my own unit" editor is open
     ageSource:'',        // '' | 'weight' (derived) | 'chosen' (the clinician's)
+    ageEstimateLabel:'',
     patient:{},
     kind:'liquid',       // what that editor is describing
   };
@@ -419,7 +407,7 @@
     const derived = state.ageSource === 'weight';
     field.dataset.source = derived ? 'weight' : 'chosen';
     const note = field.querySelector('.dz-age-note');
-    if (note) note.textContent = derived ? 'Plotësuar nga pesha — ndryshoje nëse mosha e vërtetë është tjetër.' : '';
+    if (note) note.textContent = derived ? `AUTO nga pesha${state.ageEstimateLabel ? ` · ${state.ageEstimateLabel}` : ''} — ndryshoje vetëm nëse e di moshën e saktë.` : '';
   }
   function applyAgeFromWeight() {
     const age = $('masterAge');
@@ -428,13 +416,14 @@
     if (!derived) {
       /* Clearing or overshooting the table retires an estimate, never an
          age the clinician typed. */
-      if (state.ageSource === 'weight') { age.value = ''; state.ageSource = ''; }
+      if (state.ageSource === 'weight') { age.value = ''; state.ageSource = ''; state.ageEstimateLabel = ''; }
       markAgeSource();
       return;
     }
     age.value = String(derived.value).replace('.', ',');
     $('masterAgeUnit').value = derived.unit;
     state.ageSource = 'weight';
+    state.ageEstimateLabel = derived.label || '';
     markAgeSource();
   }
 
