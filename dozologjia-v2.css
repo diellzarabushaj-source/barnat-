@@ -2023,3 +2023,20 @@ button,input,select{font:inherit}
   background:#f1f3f5;
   color:#6b7280;
 }
+
+.dosage-page .dz-common-calculator-blocked{
+  border:1px solid #e5e7eb;
+  background:#fafafa;
+  box-shadow:none;
+}
+.dosage-page .dz-common-calculator-blocked strong{
+  display:block;
+  color:#5d6470;
+  font-size:13px;
+}
+.dosage-page .dz-common-blocked-reason{
+  margin:6px 0 0;
+  color:#6b7280;
+  font-size:12px;
+  line-height:1.45;
+}
