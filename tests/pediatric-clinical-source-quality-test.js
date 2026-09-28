@@ -54,12 +54,26 @@ function intervalsOverlap(aMin, aMax, aMinInc, aMaxInc, bMin, bMax, bMinInc, bMa
   if (bMax === aMin) return bMaxInc && aMinInc;
   return true;
 }
+function ageIntervalDays(rule) {
+  const lower = [];
+  const upper = [];
+  if (Number.isFinite(rule.minDays)) lower.push([Number(rule.minDays), inclusive(rule,'minDaysInclusive')]);
+  if (Number.isFinite(rule.minMonths)) lower.push([Number(rule.minMonths) * 30.4375, inclusive(rule,'minInclusive')]);
+  if (Number.isFinite(rule.maxDays)) upper.push([Number(rule.maxDays), inclusive(rule,'maxDaysInclusive')]);
+  if (Number.isFinite(rule.maxMonths)) upper.push([Number(rule.maxMonths) * 30.4375, inclusive(rule,'maxInclusive')]);
+
+  const minValue = lower.length ? Math.max(...lower.map(item => item[0])) : -Infinity;
+  const maxValue = upper.length ? Math.min(...upper.map(item => item[0])) : Infinity;
+  const minInclusive = lower.filter(item => item[0] === minValue).every(item => item[1]);
+  const maxInclusive = upper.filter(item => item[0] === maxValue).every(item => item[1]);
+  return {minValue,maxValue,minInclusive,maxInclusive};
+}
 function ruleOverlap(a, b) {
+  const aa=ageIntervalDays(a);
+  const bb=ageIntervalDays(b);
   const age = intervalsOverlap(
-    bound(a,'minMonths',-Infinity), bound(a,'maxMonths',Infinity),
-    inclusive(a,'minInclusive'), inclusive(a,'maxInclusive'),
-    bound(b,'minMonths',-Infinity), bound(b,'maxMonths',Infinity),
-    inclusive(b,'minInclusive'), inclusive(b,'maxInclusive')
+    aa.minValue,aa.maxValue,aa.minInclusive,aa.maxInclusive,
+    bb.minValue,bb.maxValue,bb.minInclusive,bb.maxInclusive
   );
   const weight = intervalsOverlap(
     bound(a,'minKg',-Infinity), bound(a,'maxKg',Infinity),
@@ -124,7 +138,7 @@ assert.equal(audit.drugs.Cefoperazone.calculator.disabled, true);
 assert.equal(audit.drugs.Domperidone.practicalFormulations.length, 0);
 assert.equal(audit.drugs.Ivermectin.calculator.options[0].rules[0].minKg, 15);
 assert.equal(audit.drugs.Ceftriaxone.calculator.options[0].rules[0].minMonths, 1);
-assert.equal(audit.drugs.Linezolid.calculator.options[0].rules[0].minMonths, 0.23);
+assert.equal(audit.drugs.Linezolid.calculator.options[0].rules[0].minDays, 7);
 assert.ok(audit.drugs.Hydroxyzine.calculator.options.every(option => option.rules[0].maxDailyPerKg === 2));
 
 console.log(`PASS: all 50 pediatric audits use approved sources, non-overlapping clinical rules and classified practical formulations (${sourceCount} source links)`);
