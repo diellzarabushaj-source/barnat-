@@ -466,7 +466,9 @@
         ? 'nebulizim'
         : wanted === 'inhaled'
           ? 'MDI'
-          : 'nga goja';
+          : wanted === 'rectal'
+            ? 'rektale'
+            : 'nga goja';
     return {
       ok:false,
       wanted,
