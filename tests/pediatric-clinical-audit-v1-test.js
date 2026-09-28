@@ -23,6 +23,8 @@ assert.equal(audit.wave5?.auditedDrugCount, 50);
 assert.equal(audit.wave5?.addedDrugs?.length, 16);
 assert.equal(audit.wave6?.auditedDrugCount, 50);
 assert.equal(audit.wave6?.kind, 'post-audit-clinical-hardening');
+assert.equal(audit.wave7?.auditedDrugCount, 50);
+assert.equal(audit.wave7?.kind, 'dose-ceiling-hardening');
 
 for (const [name, item] of Object.entries(audit.drugs)) {
   assert.ok(sourceTable.sections.some(section => section.drugs.some(drug => drug.name === name)), `${name}: audit target is not in the 50-drug source table`);
@@ -146,8 +148,30 @@ assert.deepStrictEqual([paracetamol[0].min,paracetamol[0].maxDailyPerKg], [10,40
 assert.deepStrictEqual([paracetamol[1].min,paracetamol[1].maxDailyPerKg,paracetamol[1].maxPerDose], [15,60,1000]);
 assert.deepStrictEqual(D.Paracetamol.practicalFormulations, ['Syp – 120/5, 250/5']);
 
-const ibuprofen = D.Ibuprofen.calculator.options[0].rules[0];
-assert.deepStrictEqual([ibuprofen.minMonths,ibuprofen.minInclusive,ibuprofen.min,ibuprofen.max,ibuprofen.maxDailyPerKg], [3,false,5,10,30]);
+const ibuprofenOptions = D.Ibuprofen.calculator.options;
+assert.equal(ibuprofenOptions.length, 4);
+assert.deepStrictEqual(
+  ibuprofenOptions.slice(0,2).map(option => [
+    option.rules[0].minMonths,option.rules[0].maxMonths,option.rules[0].min,
+    option.rules[0].max,option.rules[0].maxDailyPerKg,option.rules[0].frequency
+  ]),
+  [
+    [3,144,5,10,30,'çdo 8 orë · 3 herë/ditë'],
+    [3,144,5,7.5,30,'çdo 6 orë · 4 herë/ditë'],
+  ]
+);
+assert.deepStrictEqual(
+  ibuprofenOptions.slice(2).map(option => [
+    option.rules[0].minMonths,option.rules[0].min,option.rules[0].max,
+    option.rules[0].maxPerDay,option.rules[0].frequency
+  ]),
+  [
+    [144,200,400,1200,'çdo 8 orë · 3 herë/ditë'],
+    [144,200,300,1200,'çdo 6 orë · 4 herë/ditë'],
+  ]
+);
+assert.match(ibuprofenOptions[1].rules[0].noteSq, /30 mg\/kg\/ditë/);
+assert.match(ibuprofenOptions[3].rules[0].noteSq, /1200 mg\/ditë/);
 
 
 // Wave 2 — high-use/high-risk additions.
@@ -444,4 +468,4 @@ assert.equal(new Set([
 sourceTable.sections.flatMap(section => section.drugs)
   .forEach(drug => assert.ok(D[drug.name], `Missing independent audit: ${drug.name}`));
 
-console.log('PASS: pediatric clinical audit v1-wave6 independently audits all 50 source drugs with hardened route, dose and blocked-AUTO semantics');
+console.log('PASS: pediatric clinical audit v1-wave7 audits all 50 source drugs with hardened routes, dose ceilings and blocked-AUTO semantics');
