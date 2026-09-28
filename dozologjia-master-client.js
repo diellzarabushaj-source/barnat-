@@ -769,10 +769,19 @@
     const summary = node('summary');
     const formula = node('span', null, 'dz-common-summary-dose');
     const audit = auditFor(drug);
+    const autoBlocked = Boolean(audit?.calculator?.disabled);
     formula.append(node(
       'small',
-      audit ? 'Audit klinik · AUTO aktiv' : 'Pa audit klinik · AUTO bllokuar',
-      audit ? 'dz-summary-audit is-verified' : 'dz-summary-audit is-unverified'
+      autoBlocked
+        ? 'Audit klinik · AUTO i bllokuar'
+        : audit
+          ? 'Audit klinik · AUTO aktiv'
+          : 'Pa audit klinik · AUTO bllokuar',
+      autoBlocked
+        ? 'dz-summary-audit is-blocked'
+        : audit
+          ? 'dz-summary-audit is-verified'
+          : 'dz-summary-audit is-unverified'
     ));
     summary.append(node('span', String(drug.no), 'dz-common-no'), node('strong', drug.name), formula);
     card.append(summary);
