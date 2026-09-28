@@ -12,11 +12,13 @@ const sourceTable = JSON.parse(read('data/pediatric-common-drugs-reference.json'
 assert.equal(audit.schemaVersion, 'pediatric-clinical-audit-v1');
 assert.equal(audit.auditedAt, '2026-09-28');
 assert.equal(audit.defaultStatus, 'source-table');
-assert.equal(Object.keys(audit.drugs).length, 29, 'Current audit must contain exactly 29 independently audited drugs');
+assert.equal(Object.keys(audit.drugs).length, 34, 'Current audit must contain exactly 34 independently audited drugs');
 assert.equal(audit.wave2?.auditedDrugCount, 20);
 assert.equal(audit.wave2?.addedDrugs?.length, 9);
 assert.equal(audit.wave3?.auditedDrugCount, 29);
 assert.equal(audit.wave3?.addedDrugs?.length, 9);
+assert.equal(audit.wave4?.auditedDrugCount, 34);
+assert.equal(audit.wave4?.addedDrugs?.length, 5);
 
 for (const [name, item] of Object.entries(audit.drugs)) {
   assert.ok(sourceTable.sections.some(section => section.drugs.some(drug => drug.name === name)), `${name}: audit target is not in the 50-drug source table`);
@@ -264,4 +266,36 @@ const wave3Names = new Set(audit.wave3.addedDrugs);
   'Levocetirizine','Hydroxyzine','Lansoprazole','Ranitidine'
 ].forEach(name => assert.ok(wave3Names.has(name), `Wave 3 manifest missing ${name}`));
 
-console.log('PASS: pediatric clinical audit v1-wave3 pins 29 audited drugs, safety boundaries and Kosovo-market practical forms');
+
+// Wave 4 — common ED/primary-care symptomatic medicines and iron.
+const ondansetron = D.Ondansetron.calculator.options[0].rules[0];
+assert.deepStrictEqual([ondansetron.minMonths,ondansetron.min,ondansetron.maxPerDose], [6,0.15,8]);
+assert.match(ondansetron.frequency, /dozë e vetme/);
+assert.deepStrictEqual(D.Ondansetron.practicalFormulations, ['Syp – 4/5']);
+
+const fexofenadine = D.Fexofenadine.calculator.options;
+assert.deepStrictEqual(fexofenadine.map(option => option.rules[0].min), [30,60,180]);
+assert.deepStrictEqual(D.Fexofenadine.practicalFormulations, []);
+
+const salbutamol = D.Salbutamol.calculator.options;
+assert.deepStrictEqual([salbutamol[0].rules[0].min,salbutamol[0].rules[0].max,salbutamol[0].rules[0].maxPerDose], [0.1,0.15,2.5]);
+assert.equal(salbutamol[0].route, 'nebulized');
+assert.deepStrictEqual(D.Salbutamol.practicalFormulations, ['Respiratory solution – 5mg/1ml','Respules – 2.5mg/2.5ml']);
+
+const prednisolone = D.Prednisolone.calculator.options;
+assert.deepStrictEqual(prednisolone[0].rules.map(rule => [rule.minMonths,rule.maxMonths,rule.min,rule.max]), [
+  [0,24,10,10],[24,72,20,20],[72,216,30,40]
+]);
+assert.equal(prednisolone[1].rules[0].maxPerDose, 60);
+assert.deepStrictEqual(D.Prednisolone.practicalFormulations, ['Syp – 5/5']);
+
+const iron = D.Iron.calculator.options;
+assert.deepStrictEqual(iron.map(option => option.rules[0].min), [3,6]);
+assert.ok(iron.every(option => option.componentBasis === 'elemental iron'));
+assert.deepStrictEqual(D.Iron.practicalFormulations, ['Dps – 20/1']);
+
+const wave4Names = new Set(audit.wave4.addedDrugs);
+['Ondansetron','Fexofenadine','Salbutamol','Prednisolone','Iron']
+  .forEach(name => assert.ok(wave4Names.has(name), `Wave 4 manifest missing ${name}`));
+
+console.log('PASS: pediatric clinical audit v1-wave4 pins 34 audited drugs, safety boundaries and Kosovo-market practical forms');
