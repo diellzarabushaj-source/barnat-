@@ -223,6 +223,29 @@
       return { error:'Shëno vetëm peshën reale në kg. Mosha do të sugjerohet automatikisht.' };
     }
 
+    if (option.mode === 'clinicalRules') {
+      const ageInfo = needsAge(option) ? resolvedAgeInfo(values) : null;
+      if (needsAge(option) && (!ageInfo || !Number.isFinite(ageInfo.defaultMonths))) return ageConfirmation(ageInfo);
+
+      const rule = clinicalRuleFor(option, weight, ageInfo);
+      if (!rule) {
+        if (needsAge(option) && !ageInfo?.manual) return ageConfirmation(ageInfo);
+        return { error:'Nuk ka skemë të verifikuar për këtë kombinim moshe/peshe.' };
+      }
+
+      const min = rule.doseType === 'weight' ? rule.min * weight : rule.min;
+      const max = rule.doseType === 'weight' ? rule.max * weight : rule.max;
+      return doseResult({
+        min, max, unit:rule.unit, period:rule.period || 'dose', split:rule.split,
+        frequency:rule.frequency || '', source:rule.source || option.label,
+        note:[rule.noteSq || '', rule.period === 'day' ? 'në 24 orë' : ''].filter(Boolean).join(' · '),
+        maxPerDose:rule.maxPerDose,
+        maxPerDay:rule.maxPerDay,
+        maxDailyPerKg:rule.maxDailyPerKg,
+        weight,
+      });
+    }
+
     if (option.mode === 'ageBands') {
       if (!ageInfo || !Number.isFinite(ageInfo.defaultMonths)) return ageConfirmation(ageInfo);
       const band = safeAgeBand(ageInfo, option.bands);
