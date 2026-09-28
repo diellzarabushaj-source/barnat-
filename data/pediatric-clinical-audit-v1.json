@@ -1485,6 +1485,663 @@
         "checkedAt": "2026-09-28",
         "summarySq": "Regjistri lokal ka 13 produkte cetirizine, përfshirë solucion/shurup 1 mg/mL, pika dhe tableta 10 mg."
       }
+    },
+    "Clarithromycin": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · DailyMed 2026",
+      "summarySq": "≥6 muaj: 7,5 mg/kg/dozë çdo 12 orë (15 mg/kg/ditë), zakonisht për 10 ditë për indikacionet pediatrike të etiketës; maksimumi 500 mg për dozë.",
+      "warningsSq": [
+        "Mos përdor si antibiotik empirik pa indikacion bakterial të arsyeshëm; rezistenca ndaj makrolideve ndryshon sipas patogjenit.",
+        "Kujdes me QT të zgjatur dhe ndërveprimet CYP3A4; insuficienca renale mund të kërkojë reduktim doze."
+      ],
+      "sources": [
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "Clarithromycin for oral suspension · pediatric dosage",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=fad1e5a3-59f9-4868-9937-d3b061ab8f00"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Infeksione pediatrike të etiketës · ≥6 muaj · 7,5 mg/kg q12h · 10 ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 6,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 7.5,
+                "max": 7.5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · 10 ditë",
+                "maxPerDose": 500,
+                "source": "DailyMed · 15 mg/kg/day divided q12h"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Syp – 250/5"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 12 produkte klaritromicinë; u konfirmua suspension 250 mg/5 mL dhe forma solide 250/500 mg."
+      }
+    },
+    "Cefpodoxime": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · DailyMed 2025",
+      "summarySq": "2 muaj–<12 vjeç: 5 mg/kg/dozë çdo 12 orë. Maksimumi dhe kohëzgjatja varen nga indikacioni; nga 12 vjeç përdoren doza fikse të etiketës.",
+      "warningsSq": [
+        "Në insuficiencë renale të rëndë (CrCl <30 mL/min) intervali zgjatet në çdo 24 orë sipas etiketës.",
+        "Kalkulatori i ndan qartë otitin, faringitin/tonsilitin dhe sinusitin sepse kufijtë maksimalë nuk janë të njëjtë."
+      ],
+      "sources": [
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "Cefpodoxime proxetil oral suspension · pediatric dosage",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=edf589b2-f796-4522-a5e6-2bd0a833922f"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Otit media akut · 2 muaj–<12 vjeç · 5 mg/kg q12h · 5 ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 2,
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 5,
+                "max": 5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · 5 ditë",
+                "maxPerDose": 200,
+                "maxPerDay": 400,
+                "source": "DailyMed · acute otitis media"
+              }
+            ]
+          },
+          {
+            "label": "Faringit / tonsilit",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 2,
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 5,
+                "max": 5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · 5–10 ditë",
+                "maxPerDose": 100,
+                "maxPerDay": 200,
+                "source": "DailyMed · pediatric pharyngitis/tonsillitis"
+              },
+              {
+                "minMonths": 144,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 100,
+                "max": 100,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · 5–10 ditë",
+                "source": "DailyMed · adolescent/adult pharyngitis/tonsillitis"
+              }
+            ]
+          },
+          {
+            "label": "Sinusit maksilar akut",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 2,
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 5,
+                "max": 5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · 10 ditë",
+                "maxPerDose": 200,
+                "maxPerDay": 400,
+                "source": "DailyMed · pediatric acute maxillary sinusitis"
+              },
+              {
+                "minMonths": 144,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 200,
+                "max": 200,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · 10 ditë",
+                "source": "DailyMed · adolescent/adult acute maxillary sinusitis"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Syp – 40/5"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 6 produkte cefpodoxime, përfshirë suspension 40 mg/5 mL dhe tableta 100/200 mg."
+      }
+    },
+    "Ceftazidime": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · DailyMed",
+      "summarySq": "IV: neonat 0–4 javë 30 mg/kg çdo 12 orë; 1 muaj–<12 vjeç zakonisht 30 mg/kg çdo 8 orë, ndërsa 50 mg/kg çdo 8 orë rezervohet për pacientë imunokomprometuar, fibrozë cistike ose meningjit.",
+      "warningsSq": [
+        "Doza duhet përshtatur në insuficiencë renale.",
+        "AUTO për 50 mg/kg q8h shfaqet si skemë e veçantë për indikacionet ku etiketa rezervon dozën e lartë."
+      ],
+      "sources": [
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "Ceftazidime injection · pediatric dosage schedule",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bcc81df2-20e3-4738-bfcf-301da883c1d9"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Neonat 0–4 javë · 30 mg/kg IV q12h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 0,
+                "maxMonths": 1,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 30,
+                "max": 30,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · IV",
+                "source": "DailyMed · neonates 0–4 weeks"
+              }
+            ]
+          },
+          {
+            "label": "1 muaj–<12 vjeç · zakonisht 30 mg/kg IV q8h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 1,
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 30,
+                "max": 30,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 8 orë · IV",
+                "maxPerDose": 2000,
+                "maxPerDay": 6000,
+                "source": "DailyMed · infants and children"
+              }
+            ]
+          },
+          {
+            "label": "Imunokomprometuar / fibrozë cistike / meningjit · 50 mg/kg IV q8h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 1,
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 50,
+                "max": 50,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 8 orë · IV",
+                "maxPerDose": 2000,
+                "maxPerDay": 6000,
+                "source": "DailyMed · higher pediatric dose reserved for severe indications"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Vial – 1g"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal konfirmon ceftazidime të vetme si flakon 1 g; produktet ceftazidime/avibactam nuk përdoren për konvertimin e ceftazidime monoterapi."
+      }
+    },
+    "Albendazole": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · WHO",
+      "summarySq": "Për deworming preventiv kundër helminteve të transmetuara nga toka: 12–23 muaj 200 mg dozë e vetme; nga 2 vjeç 400 mg dozë e vetme në popullatat/zonat ku rekomandohet programi WHO.",
+      "warningsSq": [
+        "Kjo skemë është për preventive chemotherapy/deworming të WHO, jo një dozë universale për çdo helmintozë.",
+        "Diagnoza specifike si strongyloidiasis, neurocysticercosis ose hydatid disease kërkon regjim tjetër."
+      ],
+      "sources": [
+        {
+          "authority": "WHO",
+          "title": "Deworming in children · WHO recommendation",
+          "url": "https://www.who.int/tools/elena/interventions/deworming"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "WHO deworming · 12–23 muaj · 200 mg dozë e vetme",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 12,
+                "maxMonths": 24,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 200,
+                "max": 200,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "dozë e vetme",
+                "source": "WHO · half-dose albendazole below 24 months"
+              }
+            ]
+          },
+          {
+            "label": "WHO deworming · 2–<15 vjeç · 400 mg dozë e vetme",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 24,
+                "maxMonths": 180,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 400,
+                "max": 400,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "dozë e vetme",
+                "source": "WHO · preventive chemotherapy"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Syp – 400/10",
+        "Tab – 400mg"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 4 produkte albendazole, përfshirë suspension 400 mg/10 mL dhe tableta 200/400 mg."
+      }
+    },
+    "Ivermectin": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · DailyMed 2026",
+      "summarySq": "Strongyloidiasis: rreth 200 mcg/kg (=0,2 mg/kg) nga goja si dozë e vetme. Etiketa nuk e ka të vendosur sigurinë/efikasitetin nën 15 kg.",
+      "warningsSq": [
+        "AUTO bllokohet nën 15 kg.",
+        "Onchocerciasis përdor 150 mcg/kg, jo të njëjtën skemë; indikacionet e tjera kërkojnë protokoll specifik.",
+        "Nuk u gjet produkt ivermectin i publikuar në regjistrin lokal në kontrollin e 28.09.2026."
+      ],
+      "sources": [
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "Ivermectin tablets · strongyloidiasis dosage",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2de5ee45-0465-4996-ac00-5bdd352b4ed7"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Strongyloidiasis · ≥15 kg · 0,2 mg/kg dozë e vetme",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minKg": 15,
+                "doseType": "weight",
+                "min": 0.2,
+                "max": 0.2,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "dozë e vetme · esëll me ujë",
+                "source": "DailyMed · 200 mcg/kg single oral dose"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "0 produkte ivermectin të publikuara u gjetën në regjistrin lokal në kontrollin aktual."
+      }
+    },
+    "Levocetirizine": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · DailyMed",
+      "summarySq": "Dozimi është age-based. 6 muaj–5 vjeç: 1,25 mg në mbrëmje; 6–11 vjeç: 2,5 mg në mbrëmje; ≥12 vjeç: 5 mg në mbrëmje. Për rinit perennial, etiketa mbulon 6 muaj–2 vjeç.",
+      "warningsSq": [
+        "Te fëmijët 6 muaj–11 vjeç me insuficiencë renale, etiketa e referuar e kundërindikon përdorimin.",
+        "Për moshat e vogla forma e preferuar është solucion oral; regjistri lokal aktual ka vetëm tableta 5 mg të publikuara."
+      ],
+      "sources": [
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "Levocetirizine oral solution · pediatric dosage",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2965ef46-18db-4615-9dce-bfb0f0b3366a"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Urtikarie idiopatike kronike · sipas moshës",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 6,
+                "maxMonths": 72,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 1.25,
+                "max": 1.25,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë në mbrëmje",
+                "source": "DailyMed · 6 months–5 years"
+              },
+              {
+                "minMonths": 72,
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 2.5,
+                "max": 2.5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë në mbrëmje",
+                "source": "DailyMed · 6–11 years"
+              },
+              {
+                "minMonths": 144,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 5,
+                "max": 5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë në mbrëmje",
+                "source": "DailyMed · ≥12 years"
+              }
+            ]
+          },
+          {
+            "label": "Rinit alergjik perennial · 6 muaj–<2 vjeç",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 6,
+                "maxMonths": 24,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 1.25,
+                "max": 1.25,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë në mbrëmje",
+                "source": "DailyMed · perennial allergic rhinitis"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Tab – 5mg"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 5 produkte levocetirizine, aktualisht forma solide 5 mg; nuk u konfirmua solucion pediatrik i publikuar."
+      }
+    },
+    "Hydroxyzine": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · SmPC/EMA",
+      "summarySq": "Për pruritus: përdor dozën më të ulët efektive dhe sa më shkurt. 6 muaj–6 vjeç 5–15 mg/ditë në doza të ndara; >6 vjeç fillohet 15–25 mg/ditë dhe titrohet sipas përgjigjes. Maksimumi te ≤40 kg është 2 mg/kg/ditë; >40 kg maksimumi 100 mg/ditë.",
+      "warningsSq": [
+        "Hydroxyzina mund të zgjasë QT; shmanget te QT i zgjatur dhe faktorët e njohur të rrezikut për torsades de pointes.",
+        "Skema 0,5 mg/kg q6h nga tabela bazë arrin 2 mg/kg/ditë, pra kufirin maksimal — nuk përdoret si default i automatizuar."
+      ],
+      "sources": [
+        {
+          "authority": "emc SmPC",
+          "title": "Hydroxyzine tablets · pediatric pruritus posology",
+          "url": "https://www.medicines.org.uk/emc/product/101785/smpc"
+        },
+        {
+          "authority": "EMA",
+          "title": "Hydroxyzine referral · QT-risk restrictions",
+          "url": "https://www.ema.europa.eu/en/medicines/human/referrals/hydroxyzine"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Pruritus · 6 muaj–<6 vjeç · 5–15 mg/ditë në doza të ndara",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 6,
+                "maxMonths": 72,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 5,
+                "max": 15,
+                "unit": "mg",
+                "period": "day",
+                "frequency": "në doza të ndara",
+                "maxDailyPerKg": 2,
+                "maxPerDay": 100,
+                "source": "SmPC · 6 months to 6 years",
+                "noteSq": "Përdor dozën më të ulët efektive."
+              }
+            ]
+          },
+          {
+            "label": "Pruritus · 6–<18 vjeç · fillimi 15–25 mg/ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 72,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 15,
+                "max": 25,
+                "unit": "mg",
+                "period": "day",
+                "frequency": "në doza të ndara",
+                "maxDailyPerKg": 2,
+                "maxPerDay": 100,
+                "source": "SmPC · children over 6 years starting dose",
+                "noteSq": "Titrimi më lart kërkon vlerësim klinik; AUTO jep vetëm dozën fillestare."
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Tab – 25mg"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 1 produkt hydroxyzine të publikuar: tabletë 25 mg; nuk u konfirmua shurup/pika pediatrike."
+      }
+    },
+    "Lansoprazole": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · DailyMed 2026",
+      "summarySq": "GERD/ezofagit eroziv: 1–11 vjeç ≤30 kg 15 mg 1 herë/ditë; >30 kg 30 mg 1 herë/ditë, deri 12 javë. 12–17 vjeç: GERD jo-eroziv 15 mg/ditë, ezofagit eroziv 30 mg/ditë, deri 8 javë.",
+      "warningsSq": [
+        "Efikasiteti për GERD simptomatik te foshnjat <1 vjeç nuk u demonstrua në studimet e etiketës; AUTO bllokohet nën 1 vjeç.",
+        "Mos e zgjat terapinë pediatrike përtej kohëzgjatjes së etiketës pa indikacion të qartë dhe rivlerësim."
+      ],
+      "sources": [
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "Lansoprazole delayed release · pediatric dosage by indication",
+          "url": "https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7daa1721-f92b-4096-b19e-4d27fc8acb51"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "GERD / ezofagit eroziv · 1–11 vjeç · sipas peshës",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 12,
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "maxKg": 30,
+                "doseType": "fixed",
+                "min": 15,
+                "max": 15,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë · deri 12 javë",
+                "source": "DailyMed · 1–11 years ≤30 kg"
+              },
+              {
+                "minMonths": 12,
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "minKg": 30,
+                "minKgInclusive": false,
+                "doseType": "fixed",
+                "min": 30,
+                "max": 30,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë · deri 12 javë",
+                "source": "DailyMed · 1–11 years >30 kg"
+              }
+            ]
+          },
+          {
+            "label": "GERD jo-eroziv · 12–17 vjeç · 15 mg/ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 144,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 15,
+                "max": 15,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë · deri 8 javë",
+                "source": "DailyMed · adolescent non-erosive GERD"
+              }
+            ]
+          },
+          {
+            "label": "Ezofagit eroziv · 12–17 vjeç · 30 mg/ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 144,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 30,
+                "max": 30,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë · deri 8 javë",
+                "source": "DailyMed · adolescent erosive esophagitis"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Cap – 15mg",
+        "Cap – 30mg"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 9 produkte lansoprazole, kryesisht kapsula gastro-rezistente 15 mg dhe 30 mg."
+      }
+    },
+    "Ranitidine": {
+      "status": "verified-blocked",
+      "badgeSq": "PEZULLUAR · EMA",
+      "summarySq": "Ranitidina nuk duhet të ketë kalkulator AUTO në këtë modul: EMA konfirmoi pezullimin e barnave me ranitidinë në BE për shkak të papastërtisë NDMA dhe pasigurive rreth formimit të saj.",
+      "warningsSq": [
+        "Tabela bazë ruhet vetëm si artefakt i burimit origjinal; doza e saj nuk përdoret për llogaritje.",
+        "Përdor alternativë të përshtatshme sipas indikacionit dhe udhëzimit aktual."
+      ],
+      "sources": [
+        {
+          "authority": "EMA",
+          "title": "Ranitidine-containing medicinal products · EU suspension",
+          "url": "https://www.ema.europa.eu/en/medicines/human/referrals/ranitidine-containing-medicinal-products"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "disabled": true,
+        "reasonSq": "AUTO i çaktivizuar: ranitidina është e pezulluar në BE sipas EMA."
+      },
+      "practicalFormulations": [],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "0 produkte ranitidine të publikuara u gjetën në regjistrin lokal në kontrollin aktual."
+      }
     }
   },
   "wave2": {
@@ -1501,5 +2158,20 @@
       "Cetirizine"
     ],
     "auditedDrugCount": 20
+  },
+  "wave3": {
+    "completedAt": "2026-09-28",
+    "addedDrugs": [
+      "Clarithromycin",
+      "Cefpodoxime",
+      "Ceftazidime",
+      "Albendazole",
+      "Ivermectin",
+      "Levocetirizine",
+      "Hydroxyzine",
+      "Lansoprazole",
+      "Ranitidine"
+    ],
+    "auditedDrugCount": 29
   }
 }
