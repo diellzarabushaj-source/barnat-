@@ -171,7 +171,11 @@
     const dynamicDailyMax = positiveNumber(maxDailyPerKg) && positiveNumber(weight)
       ? maxDailyPerKg * weight
       : null;
-    const dailyCap = positiveNumber(maxPerDay) ? maxPerDay : dynamicDailyMax;
+    // When both an absolute ceiling and a weight-based ceiling exist, the
+    // stricter one wins. Never let an adult absolute maximum override a lower
+    // pediatric mg/kg/day limit.
+    const dailyCaps = [maxPerDay, dynamicDailyMax].filter(positiveNumber);
+    const dailyCap = dailyCaps.length ? Math.min(...dailyCaps) : null;
 
     if (period === 'dose' && positiveNumber(maxPerDose)) {
       if (doseMin > maxPerDose || doseMax > maxPerDose) caps.push(`maks. ${calcFmt(maxPerDose)} ${unit}/dozë`);
