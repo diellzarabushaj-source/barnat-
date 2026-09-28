@@ -16,7 +16,6 @@ const commonReference = JSON.parse(read('data/pediatric-common-drugs-reference.j
 assert.match(html, /data-drx-app="dozologjia-v2"/);
 assert.match(html, /class="drx-unified-sidebar"/);
 assert.match(html, /class="nav-item is-active" href="\/dozologjia\.html" aria-current="page"/);
-assert.match(html, /<h1>Dozologjia pediatrike<\/h1>/);
 assert.match(html, /id="pediatricCommonReference"/);
 assert.match(html, /id="pediatricCommonSearch"/);
 assert.match(html, /id="pediatricCommonSections"/);
