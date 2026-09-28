@@ -175,9 +175,38 @@
     const info = MASTER_WEIGHT_AGE_CORE.infer(kg, MASTER_WEIGHT_AGE_CORE.DEFAULT_MAP);
     if (!info || !Number.isFinite(info.defaultMonths) || info.kind === 'below-range') return null;
     const months = info.defaultMonths;
+    const base = {
+      minMonths:info.minMonths,
+      maxMonths:info.maxMonths,
+      defaultMonths:months,
+      label:info.label,
+      defaultLabel:info.defaultLabel || MASTER_WEIGHT_AGE_CORE.defaultAgeLabel?.(months) || info.label,
+      ambiguous:Boolean(info.ambiguous),
+    };
     return months < 12
-      ? { value:Math.round(months * 10) / 10, unit:'month', label:info.label, ambiguous:Boolean(info.ambiguous) }
-      : { value:Math.round((months / 12) * 100) / 100, unit:'year', label:info.label, ambiguous:Boolean(info.ambiguous) };
+      ? { ...base, value:Math.round(months * 10) / 10, unit:'month' }
+      : { ...base, value:Math.round((months / 12) * 100) / 100, unit:'year' };
+  }
+
+  function ageBoundMonths(value, unit) {
+    if (!Number.isFinite(Number(value))) return null;
+    return Number(value) * (unit === 'year' ? 12 : 1);
+  }
+  function passesAgeConstraint(months, bound, op) {
+    if (bound == null) return true;
+    if (!Number.isFinite(months)) return false;
+    return ({'>':months > bound,'>=':months >= bound,'<':months < bound,'<=':months <= bound})[op] === true;
+  }
+  function inferredAgeFitsRegimen(regimen, derived) {
+    if (!regimen?.needs?.age) return true;
+    if (!derived || !Number.isFinite(derived.minMonths)) return false;
+    const minMonths = derived.minMonths;
+    const maxMonths = derived.maxMonths == null ? Infinity : derived.maxMonths;
+    const minBound = ageBoundMonths(regimen.age?.minValue, regimen.age?.minUnit);
+    const maxBound = ageBoundMonths(regimen.age?.maxValue, regimen.age?.maxUnit);
+    if (minBound != null && !passesAgeConstraint(minMonths, minBound, regimen.age?.minOp)) return false;
+    if (maxBound != null && !passesAgeConstraint(maxMonths, maxBound, regimen.age?.maxOp)) return false;
+    return true;
   }
 
   const state = {
@@ -190,7 +219,7 @@
     result:null,
     productId:'',        // the shelf item the volume is measured from
     editing:false,       // the "my own unit" editor is open
-    ageSource:'',        // '' | 'weight' (derived) | 'chosen' (the clinician's)
+    ageSource:'',        // '' | 'weight' | 'weight-ambiguous' | 'chosen'
     ageEstimateLabel:'',
     patient:{},
     kind:'liquid',       // what that editor is describing
@@ -429,6 +458,9 @@
     input.type = 'text';
     input.inputMode = 'decimal';
     input.autocomplete = 'off';
+    input.autocapitalize = 'none';
+    input.spellcheck = false;
+    input.enterKeyHint = 'done';
     input.placeholder = placeholder;
     shell.append(input);
     if (suffix) shell.append(el('span', suffix));
@@ -535,25 +567,43 @@
     const field = $('masterAgeField');
     if (!field) return;
     const derived = state.ageSource === 'weight';
-    field.dataset.source = derived ? 'weight' : 'chosen';
+    const ambiguous = state.ageSource === 'weight-ambiguous';
+    field.dataset.source = derived ? 'weight' : ambiguous ? 'weight-ambiguous' : 'chosen';
     const note = field.querySelector('.dz-age-note');
-    if (note) note.textContent = derived ? `AUTO nga pesha${state.ageEstimateLabel ? ` · ${state.ageEstimateLabel}` : ''} — ndryshoje vetëm nëse e di moshën e saktë.` : '';
+    if (!note) return;
+    if (derived) {
+      note.textContent = `AUTO nga pesha${state.ageEstimateLabel ? ` · ${state.ageEstimateLabel}` : ''}. Mosha kronologjike ka përparësi kur dihet.`;
+    } else if (ambiguous) {
+      note.textContent = `Pesha sugjeron ${state.ageEstimateLabel || 'një interval moshe'}, por ky interval prek kufirin e kësaj skeme — shëno moshën e saktë.`;
+    } else {
+      note.textContent = '';
+    }
   }
   function applyAgeFromWeight() {
     const age = $('masterAge');
     if (!age || state.ageSource === 'chosen') return;
     const derived = ageForWeight(num($('masterWeight')?.value));
     if (!derived) {
-      /* Clearing or overshooting the table retires an estimate, never an
-         age the clinician typed. */
-      if (state.ageSource === 'weight') { age.value = ''; state.ageSource = ''; state.ageEstimateLabel = ''; }
+      if (state.ageSource === 'weight' || state.ageSource === 'weight-ambiguous') {
+        age.value = '';
+        state.ageSource = '';
+        state.ageEstimateLabel = '';
+      }
       markAgeSource();
       return;
     }
+
+    state.ageEstimateLabel = derived.defaultLabel || derived.label || '';
+    if (!inferredAgeFitsRegimen(state.regimen, derived)) {
+      age.value = '';
+      state.ageSource = 'weight-ambiguous';
+      markAgeSource();
+      return;
+    }
+
     age.value = String(derived.value).replace('.', ',');
     $('masterAgeUnit').value = derived.unit;
     state.ageSource = 'weight';
-    state.ageEstimateLabel = derived.label || '';
     markAgeSource();
   }
 
@@ -565,7 +615,7 @@
     const regimen = state.regimen;
     const need = [];
     if (regimen.needs.weight && !positive(num($('masterWeight')?.value))) need.push('peshën');
-    if (regimen.needs.age && !positive(num($('masterAge')?.value))) need.push('moshën');
+    if (regimen.needs.age && !(num($('masterAge')?.value) >= 0)) need.push('moshën');
     if (regimen.needs.daily && !(num($('masterDaily')?.value) >= 0)) need.push('sa ka marrë në 24 orët e fundit');
     if (regimen.needs.total && !(num($('masterTotal')?.value) >= 0)) need.push('sa ka marrë këtë episod');
     if (regimen.steps.length && !checked('dz-step')) need.push('hapin');
@@ -578,7 +628,7 @@
   function focusNextMissing() {
     const regimen = state.regimen;
     if (!regimen) return;
-    let target = ['masterWeight', 'masterAge', 'masterDaily', 'masterTotal'].map($).find(node => node && (['masterDaily','masterTotal'].includes(node.id) ? !(num(node.value) >= 0) : !positive(num(node.value))));
+    let target = ['masterWeight', 'masterAge', 'masterDaily', 'masterTotal'].map($).find(node => node && (node.id === 'masterAge' || ['masterDaily','masterTotal'].includes(node.id) ? !(num(node.value) >= 0) : !positive(num(node.value))));
     if (!target && regimen.steps.length && !checked('dz-step')) target = document.querySelector('input[name="dz-step"]');
     if (!target && regimen.needs.product && !checked('dz-product')) target = document.querySelector('input[name="dz-product"]');
     if (!target) target = document.querySelector('#masterGates input:not(:checked)');
@@ -989,9 +1039,10 @@
   }
   function ageMonths(ageValue, ageUnit) {
     const value = numeric(ageValue);
-    if (!positiveNumber(value)) return NaN;
+    if (!Number.isFinite(value) || value < 0) return NaN;
     return ageUnit === 'month' ? value : value * 12;
   }
+  const validAgeMonths = value => Number.isFinite(value) && value >= 0;
   const needsWeight = option => ['weight', 'ageWeight', 'oseltamivirBands'].includes(option?.mode);
   const needsAge = option => ['ageBands', 'ageWeight', 'ageFixed', 'oseltamivirBands'].includes(option?.mode);
   const needsPatientWeight = option => needsWeight(option) || needsAge(option);
@@ -999,7 +1050,7 @@
   function resolvedAgeInfo(values) {
     if (values.ageManual) {
       const months = ageMonths(values.age, values.ageUnit);
-      if (positiveNumber(months)) {
+      if (validAgeMonths(months)) {
         return {
           minMonths:months,
           maxMonths:months,
@@ -1229,7 +1280,7 @@
     const field = node('label', null, 'dz-common-field');
     const box = node('span', null, 'dz-number');
     const input = node('input');
-    input.id = id; input.type = 'text'; input.inputMode = 'decimal'; input.autocomplete = 'off'; input.value = value;
+    input.id = id; input.type = 'text'; input.inputMode = 'decimal'; input.autocomplete = 'off'; input.autocapitalize = 'none'; input.spellcheck = false; input.enterKeyHint = 'done'; input.value = value;
     box.append(input);
     if (suffix) box.append(node('span', suffix));
     field.append(node('span', label, 'dz-label'), box);
@@ -1291,24 +1342,27 @@
       const kicker = node('span', values.ageManual ? 'MOSHA E SAKTË' : 'MOSHA AUTO NGA PESHA', 'dz-common-age-kicker');
       copy.append(kicker);
 
-      if (info?.label) {
-        copy.append(node('strong', info.label, 'dz-common-age-value'));
+      if (info?.defaultLabel || info?.label) {
+        copy.append(node('strong', info.defaultLabel || info.label, 'dz-common-age-value'));
       } else {
         copy.append(node('strong', 'Nuk u përcaktua', 'dz-common-age-value'));
       }
 
       if (!values.ageManual) {
+        const sourceRange = info?.label && info?.defaultLabel && info.label !== info.defaultLabel
+          ? ` · intervali referues ${info.label}`
+          : '';
         copy.append(node('small',
           info?.kind === 'below-range'
             ? 'Pesha është nën intervalin e tabelës; për doza sipas moshës duhet mosha e saktë.'
-            : 'Sugjerim praktik nga tabela peshë–moshë. Mosha reale ka përparësi kur dihet.',
+            : `Default praktik nga pesha${sourceRange}. Mosha kronologjike ka përparësi kur dihet.`,
           'dz-common-age-note'
         ));
       } else {
         copy.append(node('small', 'Vlera që e shënove ti po përdoret në vend të sugjerimit nga pesha.', 'dz-common-age-note'));
       }
 
-      const action = node('button', values.ageManual ? 'Përdor AUTO' : 'Ndrysho');
+      const action = node('button', values.ageManual ? 'Përdor AUTO' : 'Mosha e saktë');
       action.type = 'button';
       action.className = 'dz-common-age-action';
       action.addEventListener('click', () => {
@@ -1384,7 +1438,7 @@
       age.input.placeholder = 'p.sh. 5';
       age.input.addEventListener('input', () => {
         values.age = age.input.value;
-        values.ageManual = positiveNumber(ageMonths(values.age, values.ageUnit));
+        values.ageManual = validAgeMonths(ageMonths(values.age, values.ageUnit));
         update();
       });
 
@@ -1397,7 +1451,7 @@
       });
       unit.addEventListener('change', () => {
         values.ageUnit = unit.value;
-        values.ageManual = positiveNumber(ageMonths(values.age, values.ageUnit));
+        values.ageManual = validAgeMonths(ageMonths(values.age, values.ageUnit));
         update();
       });
 
@@ -1446,8 +1500,9 @@
     return !query || searchText([drug.name, ...drug.dose, ...drug.formulations].join(' ')).includes(query);
   }
 
-  function renderDrug(drug) {
+  function renderDrug(drug, autoOpen = false) {
     const card = node('details', null, 'dz-common-drug');
+    card.open = Boolean(autoOpen);
     const summary = node('summary');
     const formula = node('span', null, 'dz-common-summary-dose');
     drug.dose.forEach(line => formula.append(node('small', line)));
@@ -1476,8 +1531,19 @@
     body.append(sourceDetails);
 
     let built = false;
+    const build = () => {
+      if (!built) { built = true; renderCalculator(drug, calcHost); }
+    };
+    if (card.open) build();
     card.addEventListener('toggle', () => {
-      if (card.open && !built) { built = true; renderCalculator(drug, calcHost); }
+      if (!card.open) return;
+      build();
+      if (window.matchMedia('(max-width:760px)').matches) {
+        const list = card.parentElement;
+        list?.querySelectorAll(':scope > details.dz-common-drug[open]').forEach(other => {
+          if (other !== card) other.open = false;
+        });
+      }
     });
     card.append(body);
     return card;
@@ -1488,6 +1554,11 @@
     if (!target) return;
     const query = searchText(byId('pediatricCommonSearch')?.value.trim());
     target.replaceChildren();
+
+    const allMatches = query
+      ? commonSections.flatMap(section => section.drugs.filter(drug => drugMatches(drug, query)))
+      : [];
+    const uniqueDrug = query && allMatches.length === 1 ? allMatches[0] : null;
     let shown = 0;
 
     commonSections.forEach((section, sectionIndex) => {
@@ -1501,7 +1572,7 @@
       summary.append(node('span', section.roman, 'dz-common-roman'), node('strong', section.title), node('small', String(visible.length)));
       block.append(summary);
       const list = node('div', null, 'dz-common-drug-list');
-      visible.forEach(drug => list.append(renderDrug(drug)));
+      visible.forEach(drug => list.append(renderDrug(drug, uniqueDrug === drug)));
       block.append(list);
       target.append(block);
     });

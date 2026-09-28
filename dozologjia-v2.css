@@ -1424,3 +1424,343 @@ button,input,select{font:inherit}
     font-size:9.5px;
   }
 }
+
+/* ==========================================================================
+   Pediatric phone / iPhone final pass — 2026-09-28
+   ========================================================================== */
+.dosage-page .dz-common-reference :is(button,summary,input,select){
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.dosage-page .dz-common-drug,
+.dosage-page .dz-common-section{
+  scroll-margin-top:16px;
+}
+.dosage-page .dz-common-weight-quick{
+  -webkit-overflow-scrolling:touch;
+  scroll-snap-type:x proximity;
+}
+.dosage-page .dz-common-weight-quick button{
+  scroll-snap-align:start;
+}
+.dosage-page .dz-common-age-auto[data-source="weight-ambiguous"],
+.dosage-page #masterAgeField[data-source="weight-ambiguous"]{
+  border-color:var(--dz-warn-line);
+  background:var(--dz-warn-soft);
+}
+
+@media(max-width:760px){
+  .dosage-page .dz-column{
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
+    padding-bottom:calc(28px + env(safe-area-inset-bottom));
+  }
+
+  .dosage-page .dz-common-reference{
+    margin-top:18px;
+  }
+  .dosage-page .dz-common-head{
+    margin-bottom:10px;
+  }
+  .dosage-page .dz-common-head h2{
+    font-size:23px;
+    line-height:1.12;
+  }
+  .dosage-page .dz-common-head p{
+    max-width:none;
+    font-size:12.5px;
+    line-height:1.55;
+  }
+  .dosage-page .dz-common-head .dz-status{
+    font-size:10px;
+  }
+
+  .dosage-page .dz-common-search{
+    top:max(8px,env(safe-area-inset-top));
+    height:52px;
+    padding-inline:15px;
+    border-radius:14px;
+    font-size:16px;
+    line-height:1.2;
+    -webkit-appearance:none;
+    appearance:none;
+  }
+  .dosage-page .dz-common-search::-webkit-search-cancel-button{
+    width:20px;
+    height:20px;
+  }
+
+  .dosage-page .dz-common-sections{gap:8px}
+  .dosage-page .dz-common-section{
+    border-radius:14px;
+    box-shadow:0 1px 2px rgba(16,24,40,.035);
+  }
+  .dosage-page .dz-common-section>summary{
+    min-height:60px;
+    padding:11px 12px;
+  }
+  .dosage-page .dz-common-roman{
+    width:36px;
+    height:32px;
+    border-radius:9px;
+    font-size:10.5px;
+  }
+  .dosage-page .dz-common-section>summary>strong{
+    font-size:14px;
+    line-height:1.25;
+  }
+  .dosage-page .dz-common-section>summary>small{
+    font-size:10.5px;
+  }
+
+  .dosage-page .dz-common-drug>summary{
+    min-height:60px;
+    padding:10px 11px;
+  }
+  .dosage-page .dz-common-no{
+    width:26px;
+    height:26px;
+    font-size:9.5px;
+  }
+  .dosage-page .dz-common-drug>summary>strong{
+    font-size:13.5px;
+    line-height:1.3;
+  }
+  .dosage-page .dz-common-summary-dose{
+    gap:1px;
+  }
+  .dosage-page .dz-common-summary-dose small{
+    display:-webkit-box;
+    overflow:hidden;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    font-size:10.5px;
+    line-height:1.35;
+  }
+
+  .dosage-page .dz-common-drug-body{
+    padding:0 8px 10px;
+  }
+  .dosage-page .dz-common-calculator{
+    padding:10px;
+    border-radius:12px;
+    box-shadow:0 1px 2px rgba(83,58,253,.04);
+  }
+  .dosage-page .dz-common-calc-head{
+    align-items:center;
+    margin-bottom:9px;
+  }
+  .dosage-page .dz-common-calc-head strong{
+    font-size:13px;
+  }
+  .dosage-page .dz-common-calc-head small{
+    font-size:10px;
+    text-align:right;
+  }
+
+  .dosage-page .dz-common-field .dz-label{
+    font-size:11px;
+    font-weight:720;
+  }
+  .dosage-page .dz-common-field .dz-number input,
+  .dosage-page .dz-common-select,
+  .dosage-page .dz-common-age-row .dz-unit{
+    min-height:52px;
+    font-size:16px;
+  }
+  .dosage-page .dz-common-weight-field .dz-number input{
+    min-height:64px;
+    padding-inline:15px 48px;
+    font-size:30px;
+    font-weight:780;
+    letter-spacing:-.4px;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .dosage-page .dz-common-weight-quick{
+    gap:7px;
+    margin:8px -2px 0;
+    padding:0 2px 3px;
+  }
+  .dosage-page .dz-common-weight-quick button{
+    min-width:56px;
+    min-height:44px;
+    padding:0 13px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:720;
+  }
+
+  .dosage-page .dz-common-age-auto{
+    min-height:78px;
+    padding:11px 12px;
+    border-radius:12px;
+  }
+  .dosage-page .dz-common-age-kicker{
+    font-size:8.5px;
+  }
+  .dosage-page .dz-common-age-value{
+    font-size:24px;
+    line-height:1.05;
+  }
+  .dosage-page .dz-common-age-note{
+    margin-top:2px;
+    font-size:10px;
+    line-height:1.4;
+  }
+  .dosage-page .dz-common-age-action,
+  .dosage-page .dz-common-age-cta{
+    min-height:44px;
+    padding-inline:13px;
+    font-size:10px;
+  }
+  .dosage-page .dz-common-age-exact{
+    padding:10px;
+    border-radius:11px;
+  }
+
+  .dosage-page .dz-common-calc-answer{
+    min-height:64px;
+    margin-top:10px;
+    padding:12px;
+    border-radius:12px;
+  }
+  .dosage-page .dz-common-result-kicker{
+    font-size:9px;
+  }
+  .dosage-page .dz-common-result-dose{
+    font-size:30px;
+    line-height:1.05;
+  }
+  .dosage-page .dz-common-result-note,
+  .dosage-page .dz-common-derived,
+  .dosage-page .dz-common-source-line{
+    font-size:10.5px;
+    line-height:1.45;
+  }
+
+  .dosage-page .dz-common-volume{
+    margin-top:11px;
+    padding:10px;
+    border-radius:12px;
+  }
+  .dosage-page .dz-common-volume-head{
+    margin-bottom:9px;
+  }
+  .dosage-page .dz-common-volume-head strong{
+    font-size:12.5px;
+  }
+  .dosage-page .dz-common-volume-badge{
+    min-height:24px;
+    padding-inline:8px;
+    font-size:8.5px;
+  }
+  .dosage-page .dz-common-volume-card{
+    padding:11px;
+    border-radius:10px;
+  }
+  .dosage-page .dz-common-volume-top{
+    align-items:flex-start;
+  }
+  .dosage-page .dz-common-volume-top b{
+    font-size:11px;
+  }
+  .dosage-page .dz-common-volume-top small{
+    font-size:10px;
+    line-height:1.35;
+  }
+  .dosage-page .dz-common-volume-dose{
+    align-items:flex-end;
+    margin-top:8px;
+  }
+  .dosage-page .dz-common-volume-dose strong{
+    font-size:34px;
+    letter-spacing:-.6px;
+  }
+  .dosage-page .dz-common-volume-dose span{
+    max-width:46%;
+    font-size:10px;
+    line-height:1.35;
+  }
+  .dosage-page .dz-common-volume-source,
+  .dosage-page .dz-common-volume-safety{
+    font-size:9.5px;
+    line-height:1.4;
+  }
+
+  .dosage-page .dz-common-source-details>summary{
+    min-height:44px;
+    padding:9px 11px;
+  }
+  .dosage-page .dz-common-source-details>summary strong{
+    font-size:11px;
+  }
+  .dosage-page .dz-common-source-details>summary small{
+    font-size:9.5px;
+  }
+
+  .rx-toast{
+    left:12px;
+    right:12px;
+    bottom:calc(12px + env(safe-area-inset-bottom));
+    max-width:none;
+  }
+}
+
+@media(max-width:430px){
+  .dosage-page .dz-common-calc-head{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:2px;
+  }
+  .dosage-page .dz-common-calc-head small{
+    text-align:left;
+  }
+  .dosage-page .dz-common-age-auto{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:9px;
+  }
+  .dosage-page .dz-common-age-action{
+    align-self:center;
+  }
+  .dosage-page .dz-common-volume-dose{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:3px;
+  }
+  .dosage-page .dz-common-volume-dose span{
+    max-width:none;
+    text-align:left;
+  }
+}
+
+@media(max-width:370px){
+  .dosage-page .dz-common-section>summary{
+    grid-template-columns:34px minmax(0,1fr) auto;
+    gap:7px;
+  }
+  .dosage-page .dz-common-section>summary>small{
+    display:none;
+  }
+  .dosage-page .dz-common-age-auto{
+    grid-template-columns:1fr;
+  }
+  .dosage-page .dz-common-age-action{
+    width:100%;
+  }
+}
+
+@media(max-width:932px) and (orientation:landscape){
+  .dosage-page .dz-column{
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
+    padding-bottom:calc(20px + env(safe-area-inset-bottom));
+  }
+  .dosage-page .dz-common-weight-quick button,
+  .dosage-page .dz-common-age-action,
+  .dosage-page .dz-common-age-cta,
+  .dosage-page .dz-common-source-details>summary{
+    min-height:44px;
+  }
+}

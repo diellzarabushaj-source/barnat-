@@ -5,12 +5,22 @@ const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
 const runtimePath = path.join(root, 'medindex-brand-runtime.js');
-const registryPath = path.join(root, 'registry-v2.js');
+const workspaceRuntimeFiles = [
+  'registry-v2.js',
+  'classification-v2.js',
+  'icd-v2.js',
+  'dozologjia-v2.js',
+  'protokollet-v2.js',
+  'urgjencat-v2.js',
+  'recetat-v2.js',
+  'analizat-v2.js',
+  'medical-hub-v2.js',
+  'sistemi-v2.js',
+];
 const MARKER = 'profile-photo-url-guard-v1';
 const VERSION = 'drx-brand-v8-profileguard1';
 
 let runtime = fs.readFileSync(runtimePath, 'utf8').replace(/\r\n?/g, '\n');
-let registry = fs.readFileSync(registryPath, 'utf8').replace(/\r\n?/g, '\n');
 
 if (!runtime.includes(MARKER)) {
   const cleanAnchor = "  const clean = (value, max = 120) => String(value ?? '').replace(/\\s+/g, ' ').trim().slice(0, max);";
@@ -42,8 +52,13 @@ if (!runtime.includes(MARKER)) {
   fs.writeFileSync(runtimePath, runtime, 'utf8');
 }
 
-registry = registry.replaceAll('/medindex-brand-runtime.js?v=drx-brand-v7', `/medindex-brand-runtime.js?v=${VERSION}`);
-fs.writeFileSync(registryPath, registry, 'utf8');
+for (const relative of workspaceRuntimeFiles) {
+  const file = path.join(root, relative);
+  if (!fs.existsSync(file)) continue;
+  const before = fs.readFileSync(file, 'utf8').replace(/\r\n?/g, '\n');
+  const after = before.replaceAll('/medindex-brand-runtime.js?v=drx-brand-v7', `/medindex-brand-runtime.js?v=${VERSION}`);
+  if (after !== before) fs.writeFileSync(file, after, 'utf8');
+}
 
 if (!runtime.includes(MARKER) || !runtime.includes('safeProfilePhotoUrl(meta?.url)') || !runtime.includes('const photo = safeProfilePhotoUrl(profile.photo);')) {
   throw new Error('Profile photo URL guard was not materialized.');

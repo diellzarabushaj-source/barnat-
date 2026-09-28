@@ -35,6 +35,7 @@ const newborn = WeightAge.infer(3.35, map);
 assert.equal(newborn.defaultMonths, 0);
 assert.equal(newborn.minMonths, 0);
 assert.equal(newborn.maxMonths, 0);
+assert.equal(newborn.defaultLabel, '≈0 muaj');
 
 const sixMonths = WeightAge.infer(7.2, map);
 assert.equal(sixMonths.defaultMonths, 6);
@@ -49,6 +50,7 @@ assert.equal(fourFive.minMonths, 48);
 assert.equal(fourFive.maxMonths, 60);
 assert.equal(fourFive.defaultMonths, 54);
 assert.equal(fourFive.label, 'rreth 4–5 vjeç');
+assert.equal(fourFive.defaultLabel, '≈4 vjeç 6 muaj');
 
 const overlap20 = WeightAge.infer(20, map);
 assert.equal(overlap20.kind, 'overlap');
@@ -56,6 +58,7 @@ assert.equal(overlap20.minMonths, 48);
 assert.equal(overlap20.maxMonths, 84);
 assert.equal(overlap20.defaultMonths, 66);
 assert.equal(overlap20.label, '≈4–7 vjeç');
+assert.equal(overlap20.defaultLabel, '≈5 vjeç 6 muaj');
 
 const gap24 = WeightAge.infer(24, map);
 assert.equal(gap24.kind, 'interpolated-gap');

@@ -14,7 +14,7 @@ const js = read('sistemi-v2.js');
 assert.match(html, /data-drx-app="sistemi-v2"/);
 assert.match(html, /class="drx-unified-sidebar"/);
 assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/);
-assert.match(html, /sistemi-v2\.css\?v=1/);
+assert.match(html, /sistemi-v2\.css\?v=2/);
 assert.match(html, /sistemi-v2\.js\?v=2/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/);
 
@@ -24,7 +24,7 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
   .map(match => match[1]);
 const pageRuntimes = scripts.filter(src => !/sidebar-taxonomy-v3\.js/.test(src));
 
-assert.deepEqual(styles, ['/sistemi-v2.css?v=1','/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-responsive4']);
+assert.deepEqual(styles, ['/sistemi-v2.css?v=2','/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-responsive4']);
 assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish2-lazy'), 'Sistemi shared sidebar runtime is missing');
 assert.deepEqual(pageRuntimes, ['/sistemi-v2.js?v=2']);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|system-health\.js|media-library\.js|admin-entry\.js/);

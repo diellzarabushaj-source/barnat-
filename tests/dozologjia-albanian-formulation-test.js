@@ -141,7 +141,7 @@ const posted = [...body.matchAll(/input\.([A-Za-z0-9]+) =/g)].map(match => match
   .concat([...body.matchAll(/\{ ([^}]*?) \}/g)].flatMap(match => [...match[1].matchAll(/([A-Za-z0-9]+):/g)].map(k => k[1])));
 const allowed = ['regimenId', 'drugId', 'indicationId', 'age', 'ageUnit', 'weight', 'scope', 'gates', 'productId', 'stepId', 'given24h', 'givenTotal'];
 posted.forEach(key => assert.ok(allowed.includes(key), `The page must not send ${key} to the calculator`));
-assert.ok(!/customStrength|mgPerMl:|concentration/i.test(client.replace(/mgPerML/g, '')), 'No strength may travel to the server');
+assert.ok(!/customStrength|mgPerMl:|concentration/i.test(body.replace(/mgPerML/g, '')), 'No strength may travel to the server payload');
 assert.equal(engine.calculate({ regimenId:'R2-0022', drugId:'D016', indicationId:'IND018', scope:true, mgPerMl:25 }).outcome, 'BLOCKED');
 
 console.log('PASS: Albanian rendering is complete and fail-closed, the shelf is honest, and the default strength is the practical one');
@@ -149,9 +149,10 @@ console.log('PASS: Albanian rendering is complete and fail-closed, the shelf is 
 /* --------------------------------------------------- 5 · the page on a phone */
 const html = fs.readFileSync(path.join(ROOT, 'dozologjia.html'), 'utf8');
 const css = fs.readFileSync(path.join(ROOT, 'dozologjia-v2.css'), 'utf8');
-/* The page's own phone block is the last one in the file; earlier ones belong
-   to the shared shell. */
-const phone = css.slice(css.lastIndexOf('@media(max-width:760px)'));
+/* Dozologjia now has more than one 760px pass: the original Master phone
+   contract plus the final pediatric/iPhone refinement. Audit the complete
+   phone cascade from the first page-owned breakpoint onward. */
+const phone = css.slice(css.indexOf('@media(max-width:760px)'));
 
 /* Three choices, one patient block, one answer — nothing else on the page. */
 ['drugPicker', 'indicationPicker', 'regimenPicker'].forEach(id =>
@@ -192,37 +193,34 @@ assert.doesNotMatch(client, /Llogarit dozën/, 'The answer arrives on its own, w
 console.log('PASS: the page folds, reads and taps like the antibiotics one');
 
 /* ------------------------------------------- 6 · the weight fills the age in */
-/* Re-derive the shipped rule, not a copy of it. */
-const ages = {};
-new Function('exports', `
-  const positive = value => Number.isFinite(value) && value > 0;
-  ${client.match(/const REFERENCE_AGES = \[[\s\S]*?\n  \];/)[0]}
-  ${client.match(/const HEAVIEST_BAND_KG = \d+;/)[0]}
-  ${client.match(/function ageForWeight\(kg\) \{[\s\S]*?\n  \}/)[0]}
-  exports.ageForWeight = ageForWeight;
-`)(ages);
-const { ageForWeight } = ages;
+/* One canonical map is shared by Master and the 50-drug pediatric reference. */
+const WeightAge = require('../pediatric-weight-age-core.js');
+assert.match(client, /const MASTER_WEIGHT_AGE_CORE = window\.DRxPediatricWeightAge \|\| null;/);
+assert.doesNotMatch(client, /const REFERENCE_AGES =/, 'No second hidden weight-age table may return');
+assert.deepStrictEqual(WeightAge.DEFAULT_MAP.bands.length, 14);
 
-assert.deepEqual(ageForWeight(20), { value:6, unit:'year' }, '20 kg is the six-year band');
-assert.deepEqual(ageForWeight(9), { value:1, unit:'year' }, '12 months reads as one year');
-assert.deepEqual(ageForWeight(7), { value:6, unit:'month' }, 'under a year the answer is in months');
-/* A weight between two bands takes the younger one — the same tie-break the
-   antibiotics page uses, and the safer one against a minimum-age gate. */
-assert.deepEqual(ageForWeight(14), { value:2, unit:'year' });
-/* Neither end of the table is guessable: a neonate's age turns on days, and an
-   adult's cannot be read off a weight at all. */
-assert.equal(ageForWeight(3.4), null);
-assert.equal(ageForWeight(70), null);
-assert.equal(ageForWeight(0), null);
-assert.equal(ageForWeight(NaN), null);
-/* The estimate never silently becomes the clinician's own answer. */
+const at20 = WeightAge.infer(20, WeightAge.DEFAULT_MAP);
+assert.equal(at20.defaultMonths, 66, '20 kg uses the midpoint default of the overlapping 4–7 year source interval');
+assert.equal(at20.defaultLabel, '≈5 vjeç 6 muaj');
+const at9 = WeightAge.infer(9, WeightAge.DEFAULT_MAP);
+assert.equal(at9.defaultMonths, 12, '9 kg maps to the one-year source band');
+const at7 = WeightAge.infer(7, WeightAge.DEFAULT_MAP);
+assert.equal(at7.defaultMonths, 6, '7 kg maps to the six-month source band');
+const neonate = WeightAge.infer(3.4, WeightAge.DEFAULT_MAP);
+assert.equal(neonate.defaultMonths, 0, 'The supplied newborn band is a valid default, including age zero');
+assert.equal(WeightAge.infer(0, WeightAge.DEFAULT_MAP), null);
+assert.equal(WeightAge.infer(NaN, WeightAge.DEFAULT_MAP), null);
+
+/* The estimate never silently becomes the clinician's own answer, and an
+   ambiguous source interval may not cross a regimen age gate unchecked. */
 assert.match(client, /state\.ageSource = 'chosen'/);
 assert.match(client, /if \(!age \|\| state\.ageSource === 'chosen'\) return;/,
   'An age the clinician typed is never overwritten by a weight');
-assert.match(client, /Plotësuar nga pesha/);
+assert.match(client, /function inferredAgeFitsRegimen\(/);
+assert.match(client, /state\.ageSource = 'weight-ambiguous'/);
+assert.match(client, /AUTO nga pesha/);
 assert.match(css, /\.dz-field\[data-source="weight"\]/, 'A derived age must look different from a typed one');
-/* Weight is asked first, because it is the number that fills the other in. */
 assert.ok(client.indexOf("numberInput('masterWeight'") < client.indexOf("numberInput('masterAge'"),
   'The weight field must come before the age field');
 
-console.log('PASS: the weight fills the age in, and never overwrites one the clinician typed');
+console.log('PASS: one weight-age source fills the default age, guards age boundaries, and never overwrites a known age');
