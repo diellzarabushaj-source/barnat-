@@ -1409,7 +1409,20 @@
         payload = await fallback.json();
       }
       commonSections = Array.isArray(payload?.sections) ? payload.sections : [];
+      weightAgeDefaults = payload?.weightAgeDefaults && Array.isArray(payload.weightAgeDefaults.bands)
+        ? payload.weightAgeDefaults
+        : null;
+
+      if (!weightAgeDefaults) {
+        const ageFallback = await fetch(STATIC_AGE_DEFAULTS_URL, { cache:'force-cache', credentials:'same-origin' });
+        if (!ageFallback.ok) throw new Error('Weight-age defaults unavailable');
+        weightAgeDefaults = await ageFallback.json();
+      }
+
       if (!commonSections.length) throw new Error('Reference empty');
+      if (!Array.isArray(weightAgeDefaults?.bands) || !weightAgeDefaults.bands.length) {
+        throw new Error('Weight-age defaults empty');
+      }
       renderSections();
       const count = byId('pediatricCommonCount');
       if (count) count.dataset.source = source;
