@@ -62,12 +62,15 @@
       },
       "kosovoMarket": {
         "checkedAt": "2026-09-28",
-        "summarySq": "Regjistri i Kosovës përmban amoksicilinë orale 125 mg/5 mL, 250 mg/5 mL dhe forma solide; verifiko produktin konkret para përshkrimit."
-      }
+        "summarySq": "Regjistri lokal ka suspensione amoksiciline 125 mg/5 mL dhe 250 mg/5 mL, si dhe forma solide; pika 100 mg/mL nga tabela bazë nuk u konfirmuan si produkt i publikuar dhe nuk përdoren për mL AUTO."
+      },
+      "practicalFormulations": [
+        "Syp – 125/5, 250/5"
+      ]
     },
     "Amoxicillin + Clavulanic": {
       "status": "verified-corrected",
-      "badgeSq": "VERIFIKUAR · MSF",
+      "badgeSq": "VERIFIKUAR · MSF / SmPC 2026",
       "summarySq": "Doza shprehet sipas komponentit amoksicilinë; raporti amoksicilinë/klavulanat dhe indikacioni kanë rëndësi.",
       "sources": [
         {
@@ -79,6 +82,11 @@
           "authority": "MSF",
           "title": "Erysipelas and cellulitis",
           "url": "https://medicalguidelines.msf.org/en/viewport/CG/english/erysipelas-and-cellulitis-16689672.html"
+        },
+        {
+          "authority": "emc SmPC 2026",
+          "title": "Co-amoxiclav 1000/200 mg IV · paediatric posology",
+          "url": "https://www.medicines.org.uk/emc/product/11108/smpc"
         }
       ],
       "calculator": {
@@ -121,13 +129,99 @@
                 "source": "MSF · dose expressed as amoxicillin"
               }
             ]
+          },
+          {
+            "label": "IV 1000/200 · <3 muaj ose <4 kg · 25/5 mg/kg q12h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "componentBasis": "amoxicillin",
+            "rules": [
+              {
+                "maxMonths": 3,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 25,
+                "max": 25,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · IV (infuzion te <3 muaj)",
+                "maxPerDose": 1000,
+                "source": "emc SmPC 2026 · <3 months or <4 kg",
+                "noteSq": "Klavulanat 5 mg/kg/dozë."
+              },
+              {
+                "minMonths": 3,
+                "maxKg": 4,
+                "maxKgInclusive": false,
+                "doseType": "weight",
+                "min": 25,
+                "max": 25,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · IV",
+                "maxPerDose": 1000,
+                "source": "emc SmPC 2026 · <4 kg",
+                "noteSq": "Klavulanat 5 mg/kg/dozë."
+              }
+            ]
+          },
+          {
+            "label": "IV 1000/200 · ≥3 muaj, 4–<40 kg · 25/5 mg/kg q8h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "componentBasis": "amoxicillin",
+            "rules": [
+              {
+                "minMonths": 3,
+                "minKg": 4,
+                "maxKg": 40,
+                "maxKgInclusive": false,
+                "doseType": "weight",
+                "min": 25,
+                "max": 25,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 8 orë · IV",
+                "maxPerDose": 1000,
+                "source": "emc SmPC 2026 · children <40 kg, ≥3 months",
+                "noteSq": "Klavulanat 5 mg/kg/dozë."
+              }
+            ]
+          },
+          {
+            "label": "IV 1000/200 · ≥40 kg · 1 g/200 mg q8h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "componentBasis": "amoxicillin",
+            "rules": [
+              {
+                "minKg": 40,
+                "doseType": "fixed",
+                "min": 1000,
+                "max": 1000,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 8 orë · IV",
+                "source": "emc SmPC 2026 · ≥40 kg",
+                "noteSq": "Klavulanat 200 mg/dozë."
+              }
+            ]
           }
         ]
       },
       "kosovoMarket": {
         "checkedAt": "2026-09-28",
-        "summarySq": "Regjistri lokal ka suspensione 400/57 mg për 5 mL dhe formulime të tjera 7:1/8:1, si dhe flakon 1,2 g (1000/200 mg). Zgjidh raportin e saktë të produktit."
-      }
+        "summarySq": "Regjistri lokal konfirmon suspensione 200/28,5 mg/5 mL dhe 400/57 mg/5 mL, si dhe flakon 1,2 g (1000/200 mg). Pikat 91,4 mg/mL nga tabela bazë nuk u konfirmuan si produkt i publikuar."
+      },
+      "warningsSq": [
+        "Doza e kombinimit duhet lexuar sipas komponentit amoksicilinë dhe raportit amoksicilinë/klavulanat.",
+        "Për IV 1000/200 mg: në insuficiencë renale (CrCl ≤30 mL/min) kërkohet skemë e përshtatur; mos përdor automatikisht skemën standarde.",
+        "Kalkulatori i flakonit jep ekuivalentin e barit/flakonit, jo mL pas rikonstituimit. Vëllimi i rikonstituimit duhet marrë nga SmPC/etiketa e produktit konkret në Kosovë."
+      ],
+      "practicalFormulations": [
+        "Syp – 228.5/5, 457/5",
+        "Vial – 1.2g (1000 Amox + 200 Clav)"
+      ]
     },
     "Cephalexin": {
       "status": "verified-corrected",
@@ -3790,6 +3884,17 @@
       "Linezolid: exact day-7 boundary; <7 days remains fail-closed without neonatal prematurity context.",
       "Ampicillin: WHO 2024 young-infant SBI/pneumonia dosing now uses exact 0–6 vs 7–59 day boundaries.",
       "Gentamicin: added current WHO 2024 once-daily 0–59-day SBI regimen and exact day boundaries; conventional DailyMed regimen retained for ≥2 months."
+    ],
+    "auditedDrugCount": 50
+  },
+  "wave10": {
+    "completedAt": "2026-09-28",
+    "kind": "kosovo-formulation-and-coamoxiclav-iv-hardening",
+    "changes": [
+      "Amoxicillin: mL AUTO limited to Kosovo-confirmed 125 mg/5 mL and 250 mg/5 mL; unconfirmed 100 mg/mL drops excluded.",
+      "Co-amoxiclav: mL AUTO limited to Kosovo-confirmed 200/28.5 and 400/57 mg per 5 mL suspensions; unconfirmed drops excluded.",
+      "Co-amoxiclav: added 2026 SmPC-backed IV 1000/200 mg pediatric regimens, including <3 months/<4 kg, 3 months–<40 kg, and ≥40 kg.",
+      "Co-amoxiclav IV shows component-safe vial equivalents only; post-reconstitution mL remains product-specific and fail-closed."
     ],
     "auditedDrugCount": 50
   }
