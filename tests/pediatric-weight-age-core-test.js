@@ -8,6 +8,8 @@ const WeightAge = require('../pediatric-weight-age-core.js');
 const ROOT = path.resolve(__dirname, '..');
 const map = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/pediatric-weight-age-defaults.json'), 'utf8'));
 
+assert.deepStrictEqual(WeightAge.DEFAULT_MAP, map, 'Browser default map must exactly match the committed/database source map');
+
 assert.equal(map.bands.length, 14);
 assert.deepStrictEqual(
   map.bands.map(b => [b.key,b.weightMinKg,b.weightMaxKg,b.ageMinMonths,b.ageMaxMonths]),
