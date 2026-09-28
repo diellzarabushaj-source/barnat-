@@ -25,6 +25,8 @@ assert.equal(audit.wave6?.auditedDrugCount, 50);
 assert.equal(audit.wave6?.kind, 'post-audit-clinical-hardening');
 assert.equal(audit.wave7?.auditedDrugCount, 50);
 assert.equal(audit.wave7?.kind, 'dose-ceiling-hardening');
+assert.equal(audit.wave8?.auditedDrugCount, 50);
+assert.equal(audit.wave8?.kind, 'rule-boundary-hardening');
 
 for (const [name, item] of Object.entries(audit.drugs)) {
   assert.ok(sourceTable.sections.some(section => section.drugs.some(drug => drug.name === name)), `${name}: audit target is not in the 50-drug source table`);
@@ -99,11 +101,11 @@ for (const option of D['Amoxicillin + Clavulanic'].calculator.options) {
 assert.deepStrictEqual(D['Amoxicillin + Clavulanic'].calculator.options.map(option => option.rules[0].min), [25,50]);
 
 const cephalexin = D.Cephalexin.calculator.options[0].rules;
-assert.deepStrictEqual(cephalexin.map(rule => [rule.minMonths ?? null, rule.maxMonths ?? null, rule.min, rule.max, rule.frequency]), [
-  [0,0.23,25,25,'2 herë/ditë'],
-  [0.23,1,25,25,'3 herë/ditë'],
-  [1,144,12.5,25,'2 herë/ditë'],
-  [144,null,1000,1000,'2 herë/ditë'],
+assert.deepStrictEqual(cephalexin.map(rule => [rule.minMonths ?? null, rule.maxMonths ?? null, rule.maxInclusive ?? true, rule.min, rule.max, rule.frequency]), [
+  [0,0.23,false,25,25,'2 herë/ditë'],
+  [0.23,1,false,25,25,'3 herë/ditë'],
+  [1,144,false,12.5,25,'2 herë/ditë'],
+  [144,null,true,1000,1000,'2 herë/ditë'],
 ]);
 assert.deepStrictEqual(D.Cephalexin.practicalFormulations, ['Syp – 250/5']);
 
@@ -473,4 +475,4 @@ assert.equal(new Set([
 sourceTable.sections.flatMap(section => section.drugs)
   .forEach(drug => assert.ok(D[drug.name], `Missing independent audit: ${drug.name}`));
 
-console.log('PASS: pediatric clinical audit v1-wave7 audits all 50 source drugs with hardened routes, dose ceilings and blocked-AUTO semantics');
+console.log('PASS: pediatric clinical audit v1-wave8 audits all 50 source drugs with hardened routes, ceilings, boundaries and blocked-AUTO semantics');
