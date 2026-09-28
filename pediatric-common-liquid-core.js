@@ -267,6 +267,8 @@
   }
 
   function wantedRoute(option) {
+    const explicit = clean(option?.route);
+    if (explicit) return explicit;
     const raw = plain([option?.label, option?.displayLabel].filter(Boolean).join(' '));
     if (/nebul|respir/.test(raw)) return 'nebulized';
     if (/(?:\bi\.?v\.?\b|\bi\.?m\.?\b|infusion)/.test(raw)) return 'injectable';
@@ -278,7 +280,9 @@
   function routeAssessment(drug, option, targetKind) {
     const wanted = wantedRoute(option);
     if (wanted) {
-      const same = wanted === targetKind || (wanted === 'inhaled' && targetKind === 'nebulized');
+      const same = wanted === targetKind
+        || (wanted === 'inhaled' && targetKind === 'nebulized')
+        || (wanted === 'oral_or_injectable' && ['oral','injectable'].includes(targetKind));
       return same
         ? { applicable:true, reason:'' }
         : { applicable:false, reason:'Ky formulim nuk përputhet me rrugën e zgjedhur të administrimit.' };
