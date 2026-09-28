@@ -12,7 +12,9 @@ const sourceTable = JSON.parse(read('data/pediatric-common-drugs-reference.json'
 assert.equal(audit.schemaVersion, 'pediatric-clinical-audit-v1');
 assert.equal(audit.auditedAt, '2026-09-28');
 assert.equal(audit.defaultStatus, 'source-table');
-assert.equal(Object.keys(audit.drugs).length, 11, 'Wave 1 must contain exactly 11 independently verified drugs');
+assert.equal(Object.keys(audit.drugs).length, 20, 'Current audit must contain exactly 20 independently verified drugs');
+assert.equal(audit.wave2?.auditedDrugCount, 20);
+assert.equal(audit.wave2?.addedDrugs?.length, 9);
 
 for (const [name, item] of Object.entries(audit.drugs)) {
   assert.ok(sourceTable.sections.some(section => section.drugs.some(drug => drug.name === name)), `${name}: audit target is not in the 50-drug source table`);
@@ -109,4 +111,86 @@ assert.deepStrictEqual(D.Paracetamol.practicalFormulations, ['Syp – 120/5, 250
 const ibuprofen = D.Ibuprofen.calculator.options[0].rules[0];
 assert.deepStrictEqual([ibuprofen.minMonths,ibuprofen.minInclusive,ibuprofen.min,ibuprofen.max,ibuprofen.maxDailyPerKg], [3,false,5,10,30]);
 
-console.log('PASS: pediatric clinical audit v1 pins authoritative regimens, safety boundaries and Kosovo-market practical forms');
+
+// Wave 2 — high-use/high-risk additions.
+const pipTazo = D['Piperacillin + Tazobactam'].calculator.options;
+assert.equal(pipTazo.length, 2);
+pipTazo.forEach(option => {
+  assert.equal(option.route, 'injectable');
+  assert.equal(option.componentBasis, 'piperacillin');
+  assert.equal(option.rules[0].minMonths, 24);
+  assert.equal(option.rules[0].maxMonths, 144);
+  assert.equal(option.rules[0].maxInclusive, false);
+  assert.equal(option.rules[0].maxPerDose, 4000);
+});
+assert.deepStrictEqual(pipTazo.map(option => option.rules[0].min), [100,80]);
+assert.deepStrictEqual(D['Piperacillin + Tazobactam'].practicalFormulations, ['Vial – 4g piperacillin + 0.5g tazobactam']);
+
+const meropenem = D.Meropenem.calculator.options;
+assert.deepStrictEqual(meropenem.map(option => option.rules[0].min), [10,20,20,40]);
+assert.deepStrictEqual(meropenem.map(option => option.rules[0].maxPerDose), [500,1000,1000,2000]);
+meropenem.forEach(option => assert.equal(option.rules[0].minMonths, 3));
+assert.deepStrictEqual(D.Meropenem.practicalFormulations, ['Vial – 500mg','Vial – 1g']);
+
+const cotrimoxazole = D['Cotrimoxazole (TMP + SMZ)'].calculator.options;
+cotrimoxazole.forEach(option => {
+  assert.equal(option.componentBasis, 'TMP');
+  assert.equal(option.rules[0].minMonths, 2);
+});
+assert.deepStrictEqual(cotrimoxazole.map(option => [option.rules[0].min,option.rules[0].max]), [[4,4],[4,4],[3.75,5]]);
+assert.ok(D['Cotrimoxazole (TMP + SMZ)'].warningsSq.some(text => /BSA|mg\/m²/i.test(text)));
+assert.deepStrictEqual(D['Cotrimoxazole (TMP + SMZ)'].practicalFormulations, ['Syp – 40/5']);
+
+const azithromycin = D.Azithromycin.calculator.options;
+assert.deepStrictEqual(azithromycin.map(option => option.rules[0].min), [10,5,10,12]);
+assert.deepStrictEqual(azithromycin.map(option => option.rules[0].minMonths), [6,6,6,24]);
+assert.deepStrictEqual(D.Azithromycin.practicalFormulations, ['Syp – 100/5','Syp – 200/5']);
+
+const cefixime = D.Cefixime.calculator.options;
+assert.deepStrictEqual(cefixime.map(option => option.rules[0].min), [8,4]);
+assert.deepStrictEqual(cefixime.map(option => option.rules[0].maxPerDose), [400,200]);
+cefixime.forEach(option => assert.equal(option.rules[0].minMonths, 6));
+assert.deepStrictEqual(D.Cefixime.practicalFormulations, ['Syp – 100/5']);
+
+const cefuroxime = D.Cefuroxime.calculator.options;
+assert.deepStrictEqual(cefuroxime.map(option => option.rules[0].min), [10,15]);
+assert.deepStrictEqual(cefuroxime.map(option => option.rules[0].maxPerDose), [125,250]);
+cefuroxime.forEach(option => {
+  assert.equal(option.route, 'oral');
+  assert.equal(option.rules[0].minMonths, 3);
+});
+assert.deepStrictEqual(D.Cefuroxime.practicalFormulations, ['Syp – 125/5']);
+
+const vancomycin = D.Vancomycin.calculator.options[0].rules;
+assert.deepStrictEqual(
+  vancomycin.map(rule => [rule.minMonths,rule.maxMonths ?? null,rule.min,rule.max,rule.frequency]),
+  [
+    [1,144,10,15,'çdo 6 orë · TDM'],
+    [144,null,15,20,'çdo 8–12 orë · TDM'],
+  ]
+);
+assert.equal(vancomycin[1].maxPerDose, 2000);
+assert.ok(D.Vancomycin.warningsSq.some(text => /TDM/i.test(text)));
+assert.deepStrictEqual(D.Vancomycin.practicalFormulations, ['Vial – 500mg','Vial – 1g']);
+
+const acyclovir = D.Acyclovir.calculator.options[0].rules[0];
+assert.deepStrictEqual(
+  [acyclovir.minMonths,acyclovir.min,acyclovir.maxPerDose,acyclovir.frequency],
+  [24,20,800,'4 herë/ditë · 5 ditë']
+);
+assert.equal(D.Acyclovir.calculator.options[0].route, 'oral');
+assert.deepStrictEqual(D.Acyclovir.practicalFormulations, ['Tab – 200mg, 400mg, 800mg']);
+
+const cetirizine = D.Cetirizine.calculator.options;
+assert.deepStrictEqual(cetirizine.map(option => option.rules[0].min), [2.5,2.5,2.5,5,5]);
+assert.deepStrictEqual(cetirizine.map(option => option.rules[0].max), [2.5,2.5,2.5,5,10]);
+assert.deepStrictEqual(cetirizine.map(option => option.rules[0].minMonths), [6,12,24,24,72]);
+assert.deepStrictEqual(D.Cetirizine.practicalFormulations, ['Syp – 5/5']);
+
+const wave2Names = new Set(audit.wave2.addedDrugs);
+[
+  'Piperacillin + Tazobactam','Meropenem','Cotrimoxazole (TMP + SMZ)','Azithromycin',
+  'Cefixime','Cefuroxime','Vancomycin','Acyclovir','Cetirizine'
+].forEach(name => assert.ok(wave2Names.has(name), `Wave 2 manifest missing ${name}`));
+
+console.log('PASS: pediatric clinical audit v1-wave2 pins authoritative regimens, safety boundaries and Kosovo-market practical forms');
