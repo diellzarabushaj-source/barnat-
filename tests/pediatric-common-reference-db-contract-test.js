@@ -15,6 +15,7 @@ const clinicalBaseMigration = read('supabase/migrations/20260928101736_add_pedia
 const clinicalWave2Migration = read('supabase/migrations/20260928104945_expand_pediatric_clinical_audit_wave2.sql');
 const clinicalWave3Migration = read('supabase/migrations/20260928181710_expand_pediatric_clinical_audit_wave3.sql');
 const clinicalWave4Migration = read('supabase/migrations/20260928182553_expand_pediatric_clinical_audit_wave4.sql');
+const clinicalWave5Migration = read('supabase/migrations/20260928183438_expand_pediatric_clinical_audit_wave5.sql');
 
 const api = read('api/dosage.js');
 const handler = read('lib/pediatric-common-reference-handler.js');
@@ -43,23 +44,28 @@ assert.match(clinicalWave2Migration, /'v1-wave2'/);
 assert.match(clinicalWave2Migration, /on conflict \(dataset_key\) do update/);
 
 const embeddedWave3 = clinicalWave3Migration.match(/\$clinical_audit_wave3\$([\s\S]*?)\$clinical_audit_wave3\$::jsonb/);
-assert.ok(embeddedWave3, 'Wave 3 migration must contain the exact current audit JSON');
-assert.deepStrictEqual(JSON.parse(embeddedWave3[1]), clinicalAudit, 'Latest database seed must equal the committed current audit payload');
+assert.ok(embeddedWave3, 'Wave 3 migration must preserve its historical audit payload');
 assert.match(clinicalWave3Migration, /'v1-wave3'/);
 assert.match(clinicalWave3Migration, /on conflict \(dataset_key\) do update/);
 
 const embeddedWave4 = clinicalWave4Migration.match(/\$clinical_audit_wave4\$([\s\S]*?)\$clinical_audit_wave4\$::jsonb/);
-assert.ok(embeddedWave4, 'Wave 4 migration must contain the exact current audit JSON');
-assert.deepStrictEqual(JSON.parse(embeddedWave4[1]), clinicalAudit, 'Latest database seed must equal the committed current audit payload');
+assert.ok(embeddedWave4, 'Wave 4 migration must preserve its historical audit payload');
 assert.match(clinicalWave4Migration, /'v1-wave4'/);
 assert.match(clinicalWave4Migration, /on conflict \(dataset_key\) do update/);
 
+const embeddedWave5 = clinicalWave5Migration.match(/\$clinical_audit_wave5\$([\s\S]*?)\$clinical_audit_wave5\$::jsonb/);
+assert.ok(embeddedWave5, 'Wave 5 migration must contain the exact current 50-drug audit JSON');
+assert.deepStrictEqual(JSON.parse(embeddedWave5[1]), clinicalAudit, 'Latest database seed must equal the committed current audit payload');
+assert.match(clinicalWave5Migration, /'v1-wave5'/);
+assert.match(clinicalWave5Migration, /on conflict \(dataset_key\) do update/);
+
 assert.equal(reference.sections.length, 10);
 assert.equal(reference.sections.reduce((sum, section) => sum + section.drugs.length, 0), 50);
-assert.equal(Object.keys(clinicalAudit.drugs).length, 34);
+assert.equal(Object.keys(clinicalAudit.drugs).length, 50);
 assert.equal(clinicalAudit.wave2?.auditedDrugCount, 20);
 assert.equal(clinicalAudit.wave3?.auditedDrugCount, 29);
 assert.equal(clinicalAudit.wave4?.auditedDrugCount, 34);
+assert.equal(clinicalAudit.wave5?.auditedDrugCount, 50);
 assert.deepStrictEqual(reference.sections.map(section => section.roman), ['I','II','III','IV','V','VI','VII','VIII','IX','X']);
 
 assert.match(referenceMigration, /pediatric_common_reference_snapshots_v1/);
@@ -89,8 +95,8 @@ const cssVersion = html.match(/dozologjia-v2\.css\?v=(\d+)/)?.[1];
 const jsVersion = html.match(/dozologjia-v2\.js\?v=(\d+)/)?.[1];
 assert.ok(cssVersion && jsVersion);
 assert.equal(cssVersion, jsVersion);
-assert.ok(Number(cssVersion) >= 41);
+assert.ok(Number(cssVersion) >= 43);
 assert.match(html, /pediatric-common-liquid-core\.js\?v=6/);
 assert.match(html, /id="pediatricCommonReference"/);
 
-console.log('PASS: source-exact pediatric reference plus additive 34-drug clinical audit are database-backed and wired into Dozologjia');
+console.log('PASS: source-exact pediatric reference plus additive 50-drug clinical audit are database-backed and wired into Dozologjia');
