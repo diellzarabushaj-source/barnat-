@@ -732,6 +732,8 @@
     card.append(summary);
 
     const body = node('div', null, 'dz-common-drug-body');
+    const evidence = renderEvidence(drug);
+    if (evidence) body.append(evidence);
     const calcHost = node('div');
     body.append(calcHost);
 
