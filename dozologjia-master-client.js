@@ -196,6 +196,7 @@
       if (positiveNumber(dailyCap)) {
         result.dailyCap = dailyCap;
         result.dailyCapLabel = `maks. ${calcFmt(dailyCap)} ${unit}/24 orë`;
+        result.note = [result.note, result.dailyCapLabel].filter(Boolean).join(' · ');
       }
     } else if (period === 'day' && Number.isFinite(split) && split > 0) {
       result.perDoseMin = doseMin / split;
