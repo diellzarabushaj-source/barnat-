@@ -34,6 +34,34 @@ close(amoxVolumes[1].volumeMin, 3.6);
 close(amoxVolumes[2].volumeMin, 1.8);
 
 const coAmox = drug('Amoxicillin + Clavulanic');
+const coAmoxAll = Liquid.presentationsFor(coAmox, coAmox.calc[0]);
+assert.deepStrictEqual(
+  coAmoxAll.map(item => [item.form,item.mg,item.mL,item.componentBasis]),
+  [
+    ['Shurup',200,5,'amoxicillin'],
+    ['Shurup',400,5,'amoxicillin'],
+    ['Pika',80,1,'amoxicillin'],
+  ]
+);
+
+// Kosovo-curated co-amoxiclav deliberately omits the source-table drops.
+// The core must not synthesize that absent formulation from a hard-coded fallback.
+const coAmoxKosovo = {
+  ...coAmox,
+  formulations:['Syp – 228.5/5, 457/5','Vial – 1.2g (1000 Amox + 200 Clav)'],
+};
+const coAmoxKosovoOral = Liquid.presentationsFor(coAmoxKosovo, {
+  mode:'clinicalRules', route:'oral', componentBasis:'amoxicillin', rules:[]
+});
+assert.deepStrictEqual(
+  coAmoxKosovoOral.map(item => [item.form,item.mg,item.mL,item.componentBasis]),
+  [
+    ['Shurup',200,5,'amoxicillin'],
+    ['Shurup',400,5,'amoxicillin'],
+  ]
+);
+assert.equal(coAmoxKosovoOral.some(item => item.form === 'Pika'), false);
+
 const coAmoxPresentations = Liquid.presentationsFor(coAmox, coAmox.calc[0]);
 assert.deepStrictEqual(
   coAmoxPresentations.map(item => [item.form, item.mg, item.mL, item.componentBasis]),
@@ -104,5 +132,122 @@ const units = Liquid.volumeConversions({
   perDoseMin:50000, perDoseMax:50000,
 }, [{kind:'injectable',form:'Vial',mg:100,mL:1,source:'x'}]);
 assert.deepStrictEqual(units, []);
+
+
+// Audited piperacillin/tazobactam component strength may be converted only when
+// the piperacillin component is explicit.
+{
+  const audited = {
+    ...drug('Piperacillin + Tazobactam'),
+    formulations:['Vial – 4g piperacillin + 0.5g tazobactam'],
+  };
+  const option = { route:'injectable', componentBasis:'piperacillin', label:'cIAI' };
+  const items = Liquid.vialConversions({
+    doseMin:1200,doseMax:1200,doseUnit:'mg',dosePeriod:'dose',
+    perDoseMin:1200,perDoseMax:1200,frequency:'q8h',
+  }, audited, option);
+  assert.equal(items.length, 1);
+  assert.equal(items[0].componentBasis, 'piperacillin');
+  assert.equal(items[0].amount, 4000);
+  assert.equal(items[0].convertible, true);
+  close(items[0].vialMin, 0.3);
+}
+
+// The legacy total-only 4.5 g notation remains fail-closed.
+{
+  const legacy = drug('Piperacillin + Tazobactam');
+  const item = Liquid.vialConversions({
+    doseMin:1200,doseMax:1200,doseUnit:'mg',dosePeriod:'dose',
+    perDoseMin:1200,perDoseMax:1200,frequency:'q8h',
+  }, legacy, { route:'injectable', label:'cIAI' })[0];
+  assert.equal(item.convertible, false);
+  assert.match(item.reason, /4,5 g total|ndarjen piperacilinë\/tazobaktam/i);
+}
+
+// Infusion is an injectable formulation and oral_or_injectable accepts it.
+{
+  const linezolid = {
+    ...drug('Linezolid'),
+    formulations:['Infusion – 2mg/1ml'],
+  };
+  const option = { route:'oral_or_injectable', label:'Serious infection' };
+  const route = Liquid.optionAudit(linezolid, option);
+  assert.equal(route.ok, true);
+  const presentations = Liquid.presentationsFor(linezolid, option);
+  assert.deepStrictEqual(
+    presentations.map(item => [item.kind,item.form,item.mg,item.mL]),
+    [['injectable','Infuzion',2,1]]
+  );
+  const volumes = Liquid.volumeConversions({
+    doseMin:120,doseMax:120,doseUnit:'mg',dosePeriod:'dose',
+    perDoseMin:120,perDoseMax:120,frequency:'q8h',
+  }, presentations);
+  close(volumes[0].volumeMin, 60);
+}
+
+
+// Audited Penicillin G practical vial uses explicit million-unit notation.
+{
+  const audited = {
+    ...drug('Penicillin G'),
+    formulations:['Vial – 1 million U'],
+  };
+  const items = Liquid.vialConversions({
+    doseMin:500000,doseMax:500000,doseUnit:'U',dosePeriod:'dose',
+    perDoseMin:500000,perDoseMax:500000,frequency:'q6h',
+  }, audited, { route:'injectable', label:'General pediatric dose' });
+  assert.equal(items.length, 1);
+  assert.equal(items[0].amount, 1000000);
+  assert.equal(items[0].unit, 'U');
+  assert.equal(items[0].convertible, true);
+  close(items[0].vialMin, 0.5);
+}
+
+// Explicit IU notation must be parsed safely as units, not milligrams.
+{
+  const audited = {
+    ...drug('Penicillin G'),
+    formulations:['Vial – 1,000,000 IU'],
+  };
+  const items = Liquid.vialConversions({
+    doseMin:250000,doseMax:250000,doseUnit:'U',dosePeriod:'dose',
+    perDoseMin:250000,perDoseMax:250000,
+  }, audited, { route:'injectable' });
+  assert.equal(items[0].amount, 1000000);
+  close(items[0].vialMin, 0.25);
+}
+
+// Colistimethate stays in IU end-to-end; no unsafe mg/CBA conversion.
+{
+  const audited = {
+    ...drug('Colistin'),
+    formulations:['Vial – 1 million U'],
+  };
+  const items = Liquid.vialConversions({
+    doseMin:300000,doseMax:300000,doseUnit:'U',dosePeriod:'dose',
+    perDoseMin:300000,perDoseMax:300000,frequency:'TID',
+  }, audited, { route:'injectable' });
+  assert.equal(items.length, 1);
+  assert.equal(items[0].amount, 1000000);
+  assert.equal(items[0].unit, 'U');
+  close(items[0].vialMin, 0.3);
+}
+
+
+// Rectal diclofenac formulations are classified as solid suppositories and are
+// never converted to mL or fractional suppositories automatically.
+{
+  const rectal = {
+    ...drug('Diclofenac'),
+    formulations:['Supp – 12.5mg','Supp – 25mg'],
+  };
+  const option = { route:'rectal', label:'JIA/JCA' };
+  assert.equal(Liquid.optionAudit(rectal, option).ok, true);
+  assert.deepStrictEqual(Liquid.presentationsFor(rectal, option), []);
+  const audit = Liquid.formulationAudit(rectal, option);
+  assert.deepStrictEqual(audit.map(item => item.status), ['solid','solid']);
+  audit.forEach(item => assert.match(item.reason, /rektale|supozitor/i));
+  assert.match(Liquid.formulationTextSq('Supp – 12.5mg'), /Supozitor/);
+}
 
 console.log('PASS: pediatric liquid conversion safely derives practical mL outputs from source formulations');

@@ -22,7 +22,8 @@
     if (/\b(?:dps|drops?)\b/.test(text)) return 'oral';
     if (/\brespules?\b/.test(text)) return 'nebulized';
     if (/respiratory solution|nebul/.test(text)) return 'nebulized';
-    if (/\b(?:injection|ampoule|vial)\b/.test(text)) return 'injectable';
+    if (/\b(?:injection|ampoule|vial|infusion)\b/.test(text)) return 'injectable';
+    if (/\b(?:supp|suppository|suppositories)\b/.test(text)) return 'rectal';
     return '';
   }
 
@@ -35,6 +36,8 @@
     if (/\bampoule\b/.test(text)) return 'Ampulë';
     if (/\bvial\b/.test(text)) return 'Vial';
     if (/\binjection\b/.test(text)) return 'Injeksion';
+    if (/\binfusion\b/.test(text)) return 'Infuzion';
+    if (/\b(?:supp|suppository|suppositories)\b/.test(text)) return 'Supozitor';
     return kind === 'oral' ? 'Lëng oral' : kind === 'nebulized' ? 'Nebulizim' : 'Preparat';
   }
 
@@ -43,11 +46,14 @@
     const source = Array.isArray(formulations) ? formulations : [];
 
     if (name === 'amoxicillin + clavulanic') {
-      return [
-        { kind:'oral', form:'Shurup', mg:200, mL:5, componentBasis:'amoxicillin', source:source.find(line => /228\.5\s*\/\s*5/i.test(line)) || 'Syp – 228.5/5' },
-        { kind:'oral', form:'Shurup', mg:400, mL:5, componentBasis:'amoxicillin', source:source.find(line => /457\s*\/\s*5/i.test(line)) || 'Syp – 457/5' },
-        { kind:'oral', form:'Pika', mg:80, mL:1, componentBasis:'amoxicillin', source:source.find(line => /91\.4\s*\/\s*1/i.test(line)) || 'Dps – 91.4/1' },
-      ];
+      const presentations = [];
+      const low = source.find(line => /228\.5\s*\/\s*5/i.test(line));
+      const high = source.find(line => /457\s*\/\s*5/i.test(line));
+      const drops = source.find(line => /91\.4\s*\/\s*1/i.test(line));
+      if (low) presentations.push({ kind:'oral', form:'Shurup', mg:200, mL:5, componentBasis:'amoxicillin', source:low });
+      if (high) presentations.push({ kind:'oral', form:'Shurup', mg:400, mL:5, componentBasis:'amoxicillin', source:high });
+      if (drops) presentations.push({ kind:'oral', form:'Pika', mg:80, mL:1, componentBasis:'amoxicillin', source:drops });
+      return presentations;
     }
 
     if (name === 'cloxacillin') {
@@ -87,12 +93,14 @@
   }
 
   function routeFilter(option, items) {
+    const explicit = clean(option?.route);
     const raw = clean([option?.label, option?.displayLabel].filter(Boolean).join(' ')).toLowerCase();
-    let wanted = '';
-    if (/nebul|respir/.test(raw)) wanted = 'nebulized';
-    else if (/(?:\bi\.?v\.?\b|\bi\.?m\.?\b|infusion)/.test(raw)) wanted = 'injectable';
-    else if (/\boral\b/.test(raw)) wanted = 'oral';
+    let wanted = explicit;
+    if (!wanted && /nebul|respir/.test(raw)) wanted = 'nebulized';
+    else if (!wanted && /(?:\bi\.?v\.?\b|\bi\.?m\.?\b|infusion)/.test(raw)) wanted = 'injectable';
+    else if (!wanted && /\boral\b/.test(raw)) wanted = 'oral';
 
+    if (wanted === 'oral_or_injectable') return items.filter(item => item.kind === 'oral' || item.kind === 'injectable');
     if (wanted) return items.filter(item => item.kind === wanted);
     if (items.some(item => item.kind === 'oral')) return items.filter(item => item.kind === 'oral');
     return items;
@@ -164,7 +172,10 @@
     if (key === 'amoxicillin') return 'amoksicilinë';
     if (key === 'clavulanic' || key === 'clavulanate') return 'klavulanat';
     if (key === 'cefoperazone') return 'cefoperazonë';
+    if (key === 'piperacillin') return 'piperacilinë';
+    if (key === 'tazobactam') return 'tazobaktam';
     if (key === 'tmp') return 'TMP (trimetoprim)';
+    if (key === 'elemental iron') return 'hekur elementar';
     return clean(value);
   }
 
@@ -238,6 +249,8 @@
       .replace(/\bSyp\b/gi, 'Shurup')
       .replace(/\bCap\b/gi, 'Kapsulë')
       .replace(/\bTab\b/gi, 'Tabletë')
+      .replace(/\bSupp\b/gi, 'Supozitor')
+      .replace(/\bSuppositor(?:y|ies)\b/gi, 'Supozitor')
       .replace(/\bDps\b/gi, 'Pika')
       .replace(/\bMDI\b/gi, 'Inhalator MDI')
       .replace(/\bVial\b/gi, 'Flakon (vial)')
@@ -262,11 +275,14 @@
     if (kind) return kind;
     const text = plain(line);
     if (/\b(?:tab|tablet|cap|capsule)\b/.test(text)) return 'oral';
+    if (/\b(?:supp|suppository|suppositories)\b/.test(text)) return 'rectal';
     if (/\bmdi\b/.test(text)) return 'inhaled';
     return '';
   }
 
   function wantedRoute(option) {
+    const explicit = clean(option?.route);
+    if (explicit) return explicit;
     const raw = plain([option?.label, option?.displayLabel].filter(Boolean).join(' '));
     if (/nebul|respir/.test(raw)) return 'nebulized';
     if (/(?:\bi\.?v\.?\b|\bi\.?m\.?\b|infusion)/.test(raw)) return 'injectable';
@@ -278,7 +294,9 @@
   function routeAssessment(drug, option, targetKind) {
     const wanted = wantedRoute(option);
     if (wanted) {
-      const same = wanted === targetKind || (wanted === 'inhaled' && targetKind === 'nebulized');
+      const same = wanted === targetKind
+        || (wanted === 'inhaled' && targetKind === 'nebulized')
+        || (wanted === 'oral_or_injectable' && ['oral','injectable'].includes(targetKind));
       return same
         ? { applicable:true, reason:'' }
         : { applicable:false, reason:'Ky formulim nuk përputhet me rrugën e zgjedhur të administrimit.' };
@@ -312,17 +330,52 @@
       return [{ kind:'injectable', form:'Flakon (vial)', amount:1000, unit:'mg', componentBasis:'cefoperazone', source, reconstitutionRequired:true }];
     }
     if (name === 'piperacillin + tazobactam') {
+      const explicit = source.match(/(\d+(?:[.,]\d+)?)\s*g\s*piperacillin\s*\+\s*(\d+(?:[.,]\d+)?)\s*g\s*tazobactam/i);
+      if (explicit) {
+        return [{
+          kind:'injectable',
+          form:'Flakon (vial)',
+          amount:number(explicit[1]) * 1000,
+          unit:'mg',
+          componentBasis:'piperacillin',
+          source,
+          reconstitutionRequired:true,
+        }];
+      }
       return [{
         kind:'injectable', form:'Flakon (vial)', amount:NaN, unit:'mg', componentBasis:'', source,
         reconstitutionRequired:true,
-        reason:'Burimi jep vetëm 4,5 g total; pa ndarjen piperacilinë/tazobaktam nuk llogaritet ekuivalenti i sigurt i flakonit.',
+        reason:'Burimi jep vetëm 4,5 g total pa ndarjen piperacilinë/tazobaktam; ekuivalenti i sigurt i flakonit nuk automatizohet.',
       }];
     }
-    if (name === 'penicillin g' && /5\s*lakhs?/i.test(source)) {
-      return [{ kind:'injectable', form:'Flakon (vial)', amount:500000, unit:'U', componentBasis:'', source, reconstitutionRequired:true }];
+    if (name === 'penicillin g') {
+      if (/5\s*lakhs?/i.test(source)) {
+        return [{ kind:'injectable', form:'Flakon (vial)', amount:500000, unit:'U', componentBasis:'', source, reconstitutionRequired:true }];
+      }
+      const million = source.match(/(\d+(?:[.,]\d+)?)\s*million\s*(?:i?u)\b/i);
+      if (million) {
+        return [{ kind:'injectable', form:'Flakon (vial)', amount:number(million[1]) * 1000000, unit:'U', componentBasis:'', source, reconstitutionRequired:true }];
+      }
+      const explicitUnits = source.match(/([\d\s,.]+)\s*(?:iu|u)\b/i);
+      if (explicitUnits) {
+        const amount = Number(String(explicitUnits[1]).replace(/[\s,.]/g, ''));
+        if (positive(amount)) {
+          return [{ kind:'injectable', form:'Flakon (vial)', amount, unit:'U', componentBasis:'', source, reconstitutionRequired:true }];
+        }
+      }
     }
-    if (name === 'colistin' && /1\s*million\s*u/i.test(source)) {
-      return [{ kind:'injectable', form:'Flakon (vial)', amount:1000000, unit:'U', componentBasis:'', source, reconstitutionRequired:true }];
+    if (name === 'colistin') {
+      const million = source.match(/(\d+(?:[.,]\d+)?)\s*million\s*(?:i?u)\b/i);
+      if (million) {
+        return [{ kind:'injectable', form:'Flakon (vial)', amount:number(million[1]) * 1000000, unit:'U', componentBasis:'', source, reconstitutionRequired:true }];
+      }
+      const explicitUnits = source.match(/([\d\s,.]+)\s*(?:iu|u)\b/i);
+      if (explicitUnits) {
+        const amount = Number(String(explicitUnits[1]).replace(/[\s,.]/g, ''));
+        if (positive(amount)) {
+          return [{ kind:'injectable', form:'Flakon (vial)', amount, unit:'U', componentBasis:'', source, reconstitutionRequired:true }];
+        }
+      }
     }
 
     const items = [];
@@ -406,7 +459,9 @@
     const kinds = new Set((drug?.formulations || []).map(formulationRouteKind).filter(Boolean));
     const matched = wanted === 'inhaled'
       ? kinds.has('inhaled')
-      : kinds.has(wanted);
+      : wanted === 'oral_or_injectable'
+        ? (kinds.has('oral') || kinds.has('injectable'))
+        : kinds.has(wanted);
     if (matched) return { ok:true, wanted, message:'' };
     const routeLabel = wanted === 'injectable'
       ? 'IV/IM'
@@ -414,7 +469,9 @@
         ? 'nebulizim'
         : wanted === 'inhaled'
           ? 'MDI'
-          : 'nga goja';
+          : wanted === 'rectal'
+            ? 'rektale'
+            : 'nga goja';
     return {
       ok:false,
       wanted,
@@ -453,12 +510,16 @@
       }
 
       const text = plain(line);
-      if (/\b(?:tab|tablet|cap|capsule)\b/.test(text)) {
+      if (/\b(?:tab|tablet|cap|capsule|supp|suppository|suppositories)\b/.test(text)) {
+        const solidKind = /\b(?:supp|suppository|suppositories)\b/.test(text) ? 'rectal' : 'oral';
+        const route = routeAssessment(drug, option, solidKind);
         return {
           source:line,
           display:formulationTextSq(line),
-          status:'solid',
-          reason:'Formë solide: doza llogaritet në mg; ndarja e tabletës/kapsulës nuk automatizohet pa verifikuar produktin.',
+          status:route.applicable ? 'solid' : 'route-mismatch',
+          reason:route.reason || (solidKind === 'rectal'
+            ? 'Formë rektale solide: doza llogaritet në mg; ndarja e supozitorit nuk automatizohet.'
+            : 'Formë solide: doza llogaritet në mg; ndarja e tabletës/kapsulës nuk automatizohet pa verifikuar produktin.'),
         };
       }
       if (/\bmdi\b/.test(text)) {

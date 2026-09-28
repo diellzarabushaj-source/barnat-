@@ -29,6 +29,11 @@ const clinicalPages = [
   '/medical-hub.html',
   '/sistemi.html',
 ];
+const pediatricOfflineData = [
+  '/data/pediatric-common-drugs-reference.json',
+  '/data/pediatric-clinical-audit-v1.json',
+  '/data/pediatric-weight-age-defaults.json',
+];
 // Keep offline discovery aligned with the canonical authenticated surface:
 // all ten authenticated standalone workspaces must be discoverable together.
 const generatedStaticSources = new Map([
@@ -104,6 +109,7 @@ function buildOfflineShell(workerSource) {
 
   coreShellSeed(workerSource).forEach(add);
   clinicalPages.forEach(add);
+  pediatricOfflineData.forEach(add);
   clinicalPages.flatMap(htmlAssetReferences).forEach(add);
 
   while (scanQueue.length) {
