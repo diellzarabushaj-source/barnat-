@@ -683,10 +683,15 @@
   function drugMatches(drug, query) {
     if (!query) return true;
     const raw = [drug.name, ...drug.dose, ...drug.formulations].join(' ');
+    const audit = auditFor(drug);
     const translated = [
       drug.name,
       ...drug.dose.map(doseSq),
       ...drug.formulations.map(formulationSq),
+      audit?.badgeSq || '',
+      audit?.summarySq || '',
+      ...(audit?.warningsSq || []),
+      audit?.kosovoMarket?.summarySq || '',
     ].join(' ');
     return searchText(raw).includes(query) || searchText(translated).includes(query);
   }
