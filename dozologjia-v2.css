@@ -1887,3 +1887,107 @@ button,input,select{font:inherit}
     font-size:25px;
   }
 }
+
+/* ==========================================================================
+   Independent pediatric evidence audit — 2026-09-28
+   ========================================================================== */
+.dosage-page .dz-evidence{
+  display:grid;
+  gap:8px;
+  margin:0 0 10px;
+  padding:11px 12px;
+  border:1px solid #c9e8d8;
+  border-radius:12px;
+  background:#f7fffa;
+}
+.dosage-page .dz-evidence-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.dosage-page .dz-evidence-badge{
+  display:inline-flex;
+  align-items:center;
+  min-height:25px;
+  padding:4px 8px;
+  border-radius:999px;
+  background:#e8f8ef;
+  color:#087443;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.045em;
+}
+.dosage-page .dz-evidence-head small{
+  color:#7d8596;
+  font-size:9px;
+}
+.dosage-page .dz-evidence-summary,
+.dosage-page .dz-evidence-market{
+  margin:0;
+  color:#3f4758;
+  font-size:10.5px;
+  line-height:1.5;
+}
+.dosage-page .dz-evidence-market{
+  padding-top:7px;
+  border-top:1px solid #dcefe5;
+  color:#526071;
+}
+.dosage-page .dz-evidence-warnings{
+  display:grid;
+  gap:5px;
+}
+.dosage-page .dz-evidence-warnings p{
+  margin:0;
+  padding:7px 8px;
+  border:1px solid #f5df9b;
+  border-radius:9px;
+  background:#fff9e9;
+  color:#74520d;
+  font-size:10px;
+  line-height:1.45;
+}
+.dosage-page .dz-evidence-sources{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.dosage-page .dz-evidence-sources a{
+  display:inline-flex;
+  align-items:center;
+  min-height:34px;
+  padding:6px 9px;
+  border:1px solid #d8dcf1;
+  border-radius:9px;
+  background:#fff;
+  color:#4f46c8;
+  font-size:9.5px;
+  font-weight:700;
+  line-height:1.3;
+  text-decoration:none;
+}
+.dosage-page .dz-evidence-sources a:hover{
+  border-color:#aaa4ef;
+  background:#faf9ff;
+}
+@media(max-width:760px){
+  .dosage-page .dz-evidence{
+    padding:10px;
+  }
+  .dosage-page .dz-evidence-badge{
+    min-height:27px;
+  }
+  .dosage-page .dz-evidence-summary,
+  .dosage-page .dz-evidence-market{
+    font-size:10px;
+  }
+  .dosage-page .dz-evidence-sources{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+  .dosage-page .dz-evidence-sources a{
+    min-height:44px;
+    font-size:10px;
+  }
+}
