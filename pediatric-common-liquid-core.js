@@ -23,6 +23,7 @@
     if (/\brespules?\b/.test(text)) return 'nebulized';
     if (/respiratory solution|nebul/.test(text)) return 'nebulized';
     if (/\b(?:injection|ampoule|vial|infusion)\b/.test(text)) return 'injectable';
+    if (/\b(?:supp|suppository|suppositories)\b/.test(text)) return 'rectal';
     return '';
   }
 
@@ -36,6 +37,7 @@
     if (/\bvial\b/.test(text)) return 'Vial';
     if (/\binjection\b/.test(text)) return 'Injeksion';
     if (/\binfusion\b/.test(text)) return 'Infuzion';
+    if (/\b(?:supp|suppository|suppositories)\b/.test(text)) return 'Supozitor';
     return kind === 'oral' ? 'Lëng oral' : kind === 'nebulized' ? 'Nebulizim' : 'Preparat';
   }
 
@@ -244,6 +246,8 @@
       .replace(/\bSyp\b/gi, 'Shurup')
       .replace(/\bCap\b/gi, 'Kapsulë')
       .replace(/\bTab\b/gi, 'Tabletë')
+      .replace(/\bSupp\b/gi, 'Supozitor')
+      .replace(/\bSuppositor(?:y|ies)\b/gi, 'Supozitor')
       .replace(/\bDps\b/gi, 'Pika')
       .replace(/\bMDI\b/gi, 'Inhalator MDI')
       .replace(/\bVial\b/gi, 'Flakon (vial)')
@@ -268,6 +272,7 @@
     if (kind) return kind;
     const text = plain(line);
     if (/\b(?:tab|tablet|cap|capsule)\b/.test(text)) return 'oral';
+    if (/\b(?:supp|suppository|suppositories)\b/.test(text)) return 'rectal';
     if (/\bmdi\b/.test(text)) return 'inhaled';
     return '';
   }
@@ -500,12 +505,14 @@
       }
 
       const text = plain(line);
-      if (/\b(?:tab|tablet|cap|capsule)\b/.test(text)) {
+      if (/\b(?:tab|tablet|cap|capsule|supp|suppository|suppositories)\b/.test(text)) {
         return {
           source:line,
           display:formulationTextSq(line),
           status:'solid',
-          reason:'Formë solide: doza llogaritet në mg; ndarja e tabletës/kapsulës nuk automatizohet pa verifikuar produktin.',
+          reason:/\b(?:supp|suppository|suppositories)\b/.test(text)
+            ? 'Formë rektale solide: doza llogaritet në mg; ndarja e supozitorit nuk automatizohet.'
+            : 'Formë solide: doza llogaritet në mg; ndarja e tabletës/kapsulës nuk automatizohet pa verifikuar produktin.',
         };
       }
       if (/\bmdi\b/.test(text)) {
