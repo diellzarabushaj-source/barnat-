@@ -177,9 +177,17 @@
     if (ageUnit === 'month') return value;
     return value * 12;
   }
+  function ageDays(ageValue, ageUnit) {
+    const value = numeric(ageValue);
+    if (!Number.isFinite(value) || value < 0) return NaN;
+    if (ageUnit === 'day') return value;
+    if (ageUnit === 'month') return value * 30.4375;
+    return value * 365.25;
+  }
   const validAgeMonths = value => Number.isFinite(value) && value >= 0;
   const rulesOf = option => Array.isArray(option?.rules) ? option.rules : [];
-  const ruleNeedsAge = rule => Number.isFinite(rule?.minMonths) || Number.isFinite(rule?.maxMonths);
+  const ruleNeedsExactDays = rule => Number.isFinite(rule?.minDays) || Number.isFinite(rule?.maxDays);
+  const ruleNeedsAge = rule => ruleNeedsExactDays(rule) || Number.isFinite(rule?.minMonths) || Number.isFinite(rule?.maxMonths);
   const ruleNeedsWeight = rule => rule?.doseType === 'weight' || Number.isFinite(rule?.minKg) || Number.isFinite(rule?.maxKg);
   const needsWeight = option => ['weight', 'ageWeight', 'oseltamivirBands'].includes(option?.mode)
     || (option?.mode === 'clinicalRules' && rulesOf(option).some(ruleNeedsWeight));
@@ -218,12 +226,20 @@
   function resolvedAgeInfo(values) {
     if (values.ageManual) {
       const months = ageMonths(values.age, values.ageUnit);
-      if (validAgeMonths(months)) {
+      const days = ageDays(values.age, values.ageUnit);
+      if (validAgeMonths(months) && Number.isFinite(days)) {
+        const exactLabel = values.ageUnit === 'day'
+          ? `${calcFmt(numeric(values.age))} ditë`
+          : values.ageUnit === 'month'
+            ? `${calcFmt(numeric(values.age))} muaj`
+            : `${calcFmt(numeric(values.age))} vjeç`;
         return {
           minMonths:months,
           maxMonths:months,
           defaultMonths:months,
-          label:weightAgeCore?.rangeLabel ? weightAgeCore.rangeLabel(months, months) : `≈${calcFmt(months)} muaj`,
+          exactDays:days,
+          exactAgeUnit:values.ageUnit,
+          label:exactLabel,
           kind:'manual',
           manual:true,
           ambiguous:false,
@@ -267,19 +283,36 @@
       && boundPass(weight, Number(rule.maxKg), rule.maxKgInclusive, 'max');
   }
 
-  function exactAgeFitsRule(months, rule) {
+  function exactAgeFitsRule(ageInfo, rule) {
     if (!ruleNeedsAge(rule)) return true;
-    return boundPass(months, Number(rule.minMonths), rule.minInclusive, 'min')
-      && boundPass(months, Number(rule.maxMonths), rule.maxInclusive, 'max');
+    if (!ageInfo || !Number.isFinite(ageInfo.defaultMonths)) return false;
+
+    const monthFits = boundPass(ageInfo.defaultMonths, Number(rule.minMonths), rule.minInclusive, 'min')
+      && boundPass(ageInfo.defaultMonths, Number(rule.maxMonths), rule.maxInclusive, 'max');
+    if (!monthFits) return false;
+
+    if (ruleNeedsExactDays(rule)) {
+      if (!ageInfo.manual || !Number.isFinite(ageInfo.exactDays)) return false;
+      return boundPass(ageInfo.exactDays, Number(rule.minDays), rule.minDaysInclusive, 'min')
+        && boundPass(ageInfo.exactDays, Number(rule.maxDays), rule.maxDaysInclusive, 'max');
+    }
+    return true;
   }
 
   function ageRangeFitsRule(ageInfo, rule) {
     if (!ruleNeedsAge(rule)) return true;
     if (!ageInfo || !Number.isFinite(ageInfo.defaultMonths)) return false;
-    if (ageInfo.manual) return exactAgeFitsRule(ageInfo.defaultMonths, rule);
+    if (ageInfo.manual) return exactAgeFitsRule(ageInfo, rule);
+
+    // Day-level neonatal cutoffs must never be guessed from the weight-derived
+    // age estimate. They require the clinician to enter chronological age.
+    if (ruleNeedsExactDays(rule)) return false;
+
     const lo = Number.isFinite(ageInfo.minMonths) ? ageInfo.minMonths : ageInfo.defaultMonths;
     const hi = Number.isFinite(ageInfo.maxMonths) ? ageInfo.maxMonths : ageInfo.defaultMonths;
-    return exactAgeFitsRule(lo, rule) && exactAgeFitsRule(hi, rule);
+    const loInfo = { defaultMonths:lo, manual:false };
+    const hiInfo = { defaultMonths:hi, manual:false };
+    return exactAgeFitsRule(loInfo, rule) && exactAgeFitsRule(hiInfo, rule);
   }
 
   function clinicalRuleFor(option, weight, ageInfo) {
