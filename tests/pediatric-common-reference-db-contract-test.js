@@ -18,6 +18,7 @@ const clinicalWave4Migration = read('supabase/migrations/20260928182553_expand_p
 const clinicalWave5Migration = read('supabase/migrations/20260928183438_expand_pediatric_clinical_audit_wave5.sql');
 const clinicalWave6Migration = read('supabase/migrations/20260928184229_harden_pediatric_clinical_audit_wave6.sql');
 const clinicalWave7Migration = read('supabase/migrations/20260928185224_harden_pediatric_ibuprofen_wave7.sql');
+const clinicalWave8Migration = read('supabase/migrations/20260928210200_harden_pediatric_rule_boundaries_wave8.sql');
 
 const api = read('api/dosage.js');
 const handler = read('lib/pediatric-common-reference-handler.js');
@@ -67,10 +68,15 @@ assert.match(clinicalWave6Migration, /'v1-wave6'/);
 assert.match(clinicalWave6Migration, /on conflict \(dataset_key\) do update/);
 
 const embeddedWave7 = clinicalWave7Migration.match(/\$clinical_audit_wave7\$([\s\S]*?)\$clinical_audit_wave7\$::jsonb/);
-assert.ok(embeddedWave7, 'Wave 7 migration must contain the exact current hardened 50-drug audit JSON');
-assert.deepStrictEqual(JSON.parse(embeddedWave7[1]), clinicalAudit, 'Latest database seed must equal the committed current audit payload');
+assert.ok(embeddedWave7, 'Wave 7 migration must preserve its historical hardened 50-drug audit payload');
 assert.match(clinicalWave7Migration, /'v1-wave7'/);
 assert.match(clinicalWave7Migration, /on conflict \(dataset_key\) do update/);
+
+const embeddedWave8 = clinicalWave8Migration.match(/\$clinical_audit_wave8\$([\s\S]*?)\$clinical_audit_wave8\$::jsonb/);
+assert.ok(embeddedWave8, 'Wave 8 migration must contain the exact current boundary-hardened 50-drug audit JSON');
+assert.deepStrictEqual(JSON.parse(embeddedWave8[1]), clinicalAudit, 'Latest database seed must equal the committed current audit payload');
+assert.match(clinicalWave8Migration, /'v1-wave8'/);
+assert.match(clinicalWave8Migration, /on conflict \(dataset_key\) do update/);
 
 assert.equal(reference.sections.length, 10);
 assert.equal(reference.sections.reduce((sum, section) => sum + section.drugs.length, 0), 50);
@@ -83,6 +89,8 @@ assert.equal(clinicalAudit.wave6?.auditedDrugCount, 50);
 assert.equal(clinicalAudit.wave6?.kind, 'post-audit-clinical-hardening');
 assert.equal(clinicalAudit.wave7?.auditedDrugCount, 50);
 assert.equal(clinicalAudit.wave7?.kind, 'dose-ceiling-hardening');
+assert.equal(clinicalAudit.wave8?.auditedDrugCount, 50);
+assert.equal(clinicalAudit.wave8?.kind, 'rule-boundary-hardening');
 assert.deepStrictEqual(reference.sections.map(section => section.roman), ['I','II','III','IV','V','VI','VII','VIII','IX','X']);
 
 assert.match(referenceMigration, /pediatric_common_reference_snapshots_v1/);
