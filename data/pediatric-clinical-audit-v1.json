@@ -728,10 +728,11 @@
     "Ibuprofen": {
       "status": "verified-corrected",
       "badgeSq": "VERIFIKUAR · MSF",
-      "summarySq": ">3 muaj: 5–10 mg/kg/dozë 3–4 herë/ditë; maksimum 30 mg/kg/ditë.",
+      "summarySq": ">3 muaj–<12 vjeç: 5–10 mg/kg/dozë, por maksimumi 30 mg/kg/ditë duhet të respektohet. Kalkulatori ndan 3x/ditë nga 4x/ditë që kufiri ditor të mos tejkalohet. ≥12 vjeç përdoret skema fikse 200–400 mg.",
       "warningsSq": [
+        "Kur jepet 4 herë/ditë, 10 mg/kg për dozë do ta tejkalonte maksimumin 30 mg/kg/ditë; prandaj AUTO e kufizon dozën e katërt në maksimum 7,5 mg/kg.",
         "Mos përdor te dehidratimi i rëndë, insuficienca renale, gjakderdhja gastrointestinale ose ethet hemorragjike/dengue.",
-        "Te foshnjat shumë të vogla duhet respektuar kufiri i moshës dhe konteksti klinik."
+        "Përdor dozën më të ulët efektive për kohën më të shkurtër."
       ],
       "sources": [
         {
@@ -744,21 +745,86 @@
         "replace": true,
         "options": [
           {
-            "label": "Dhimbje / temperaturë · >3 muaj · 5–10 mg/kg/dozë",
+            "label": "Dhimbje / temperaturë · >3 muaj–<12 vjeç · 3 herë/ditë",
             "mode": "clinicalRules",
             "route": "oral",
             "rules": [
               {
                 "minMonths": 3,
                 "minInclusive": false,
+                "maxMonths": 144,
+                "maxInclusive": false,
                 "doseType": "weight",
                 "min": 5,
                 "max": 10,
                 "unit": "mg",
                 "period": "dose",
-                "frequency": "3–4 herë/ditë",
+                "frequency": "çdo 8 orë · 3 herë/ditë",
                 "maxDailyPerKg": 30,
-                "source": "MSF · pain/fever"
+                "source": "MSF · 5–10 mg/kg 3–4x/day; max 30 mg/kg/day"
+              }
+            ]
+          },
+          {
+            "label": "Dhimbje / temperaturë · >3 muaj–<12 vjeç · 4 herë/ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 3,
+                "minInclusive": false,
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 5,
+                "max": 7.5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 6 orë · 4 herë/ditë",
+                "maxDailyPerKg": 30,
+                "source": "MSF · max 30 mg/kg/day",
+                "noteSq": "Kufiri 7,5 mg/kg/dozë është derivuar aritmetikisht nga maksimumi 30 mg/kg/ditë kur përdoren 4 doza."
+              }
+            ]
+          },
+          {
+            "label": "≥12 vjeç · 3 herë/ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 144,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 200,
+                "max": 400,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 8 orë · 3 herë/ditë",
+                "maxPerDay": 1200,
+                "source": "MSF · ≥12 years/adult 200–400 mg 3–4x/day; max 1200 mg/day"
+              }
+            ]
+          },
+          {
+            "label": "≥12 vjeç · 4 herë/ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 144,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 200,
+                "max": 300,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 6 orë · 4 herë/ditë",
+                "maxPerDay": 1200,
+                "source": "MSF · max 1200 mg/day",
+                "noteSq": "Kufiri 300 mg/dozë është derivuar aritmetikisht nga maksimumi 1200 mg/ditë kur përdoren 4 doza."
               }
             ]
           }
@@ -3688,6 +3754,15 @@
     "changes": [
       "Diclofenac: route corrected to rectal and Kosovo 12.5/25 mg suppositories exposed without automatic solid-dose splitting",
       "Mefenamic acid: divided-dose wording aligned exactly with SmPC; TID shown explicitly as arithmetic presentation"
+    ],
+    "auditedDrugCount": 50
+  },
+  "wave7": {
+    "completedAt": "2026-09-28",
+    "kind": "dose-ceiling-hardening",
+    "changes": [
+      "Ibuprofen: separated 3-dose and 4-dose schedules so the 30 mg/kg/day ceiling cannot be exceeded",
+      "Ibuprofen: ≥12-year fixed-dose schedules now respect the 1200 mg/day adult ceiling"
     ],
     "auditedDrugCount": 50
   }
