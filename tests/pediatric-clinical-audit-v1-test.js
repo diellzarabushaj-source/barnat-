@@ -81,6 +81,11 @@ assert.deepStrictEqual(
   ['Calcium','Cefoperazone','Ranitidine'],
   'Only clinically ambiguous/suspended source drugs may have AUTO disabled'
 );
+assert.equal(
+  Object.values(D).filter(item => !item.calculator?.disabled).length,
+  47,
+  'Exactly 47 audited drugs must expose AUTO and 3 must remain deliberately blocked'
+);
 
 assert.deepStrictEqual(
   D.Amoxicillin.calculator.options.map(option => [option.rules[0].min, option.rules[0].frequency, option.rules[0].maxPerDose]),
