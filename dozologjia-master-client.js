@@ -859,9 +859,10 @@
   }
   function ageMonths(ageValue, ageUnit) {
     const value = numeric(ageValue);
-    if (!positiveNumber(value)) return NaN;
+    if (!Number.isFinite(value) || value < 0) return NaN;
     return ageUnit === 'month' ? value : value * 12;
   }
+  const validAgeMonths = value => Number.isFinite(value) && value >= 0;
   const needsWeight = option => ['weight', 'ageWeight', 'oseltamivirBands'].includes(option?.mode);
   const needsAge = option => ['ageBands', 'ageWeight', 'ageFixed', 'oseltamivirBands'].includes(option?.mode);
   const needsPatientWeight = option => needsWeight(option) || needsAge(option);
@@ -1161,24 +1162,27 @@
       const kicker = node('span', values.ageManual ? 'MOSHA E SAKTË' : 'MOSHA AUTO NGA PESHA', 'dz-common-age-kicker');
       copy.append(kicker);
 
-      if (info?.label) {
-        copy.append(node('strong', info.label, 'dz-common-age-value'));
+      if (info?.defaultLabel || info?.label) {
+        copy.append(node('strong', info.defaultLabel || info.label, 'dz-common-age-value'));
       } else {
         copy.append(node('strong', 'Nuk u përcaktua', 'dz-common-age-value'));
       }
 
       if (!values.ageManual) {
+        const sourceRange = info?.label && info?.defaultLabel && info.label !== info.defaultLabel
+          ? ` · intervali referues ${info.label}`
+          : '';
         copy.append(node('small',
           info?.kind === 'below-range'
             ? 'Pesha është nën intervalin e tabelës; për doza sipas moshës duhet mosha e saktë.'
-            : 'Sugjerim praktik nga tabela peshë–moshë. Mosha reale ka përparësi kur dihet.',
+            : `Default praktik nga pesha${sourceRange}. Mosha kronologjike ka përparësi kur dihet.`,
           'dz-common-age-note'
         ));
       } else {
         copy.append(node('small', 'Vlera që e shënove ti po përdoret në vend të sugjerimit nga pesha.', 'dz-common-age-note'));
       }
 
-      const action = node('button', values.ageManual ? 'Përdor AUTO' : 'Ndrysho');
+      const action = node('button', values.ageManual ? 'Përdor AUTO' : 'Mosha e saktë');
       action.type = 'button';
       action.className = 'dz-common-age-action';
       action.addEventListener('click', () => {
@@ -1254,7 +1258,7 @@
       age.input.placeholder = 'p.sh. 5';
       age.input.addEventListener('input', () => {
         values.age = age.input.value;
-        values.ageManual = positiveNumber(ageMonths(values.age, values.ageUnit));
+        values.ageManual = validAgeMonths(ageMonths(values.age, values.ageUnit));
         update();
       });
 
@@ -1267,7 +1271,7 @@
       });
       unit.addEventListener('change', () => {
         values.ageUnit = unit.value;
-        values.ageManual = positiveNumber(ageMonths(values.age, values.ageUnit));
+        values.ageManual = validAgeMonths(ageMonths(values.age, values.ageUnit));
         update();
       });
 
