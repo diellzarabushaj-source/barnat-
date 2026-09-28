@@ -691,6 +691,37 @@
     return searchText(raw).includes(query) || searchText(translated).includes(query);
   }
 
+  function renderEvidence(drug) {
+    const audit = auditFor(drug);
+    if (!audit) return null;
+    const panel = node('section', null, 'dz-evidence');
+    const head = node('div', null, 'dz-evidence-head');
+    head.append(node('span', audit.badgeSq || 'AUDIT KLINIK', 'dz-evidence-badge'));
+    if (clinicalAudit.auditedAt) head.append(node('small', 'audit ' + clinicalAudit.auditedAt));
+    panel.append(head);
+    if (audit.summarySq) panel.append(node('p', audit.summarySq, 'dz-evidence-summary'));
+    if (Array.isArray(audit.warningsSq)) {
+      const box = node('div', null, 'dz-evidence-warnings');
+      audit.warningsSq.forEach(value => box.append(node('p', '⚠ ' + value)));
+      if (audit.warningsSq.length) panel.append(box);
+    }
+    if (audit.kosovoMarket && audit.kosovoMarket.summarySq) {
+      panel.append(node('p', 'Kosovë · ' + audit.kosovoMarket.summarySq, 'dz-evidence-market'));
+    }
+    if (Array.isArray(audit.sources) && audit.sources.length) {
+      const links = node('div', null, 'dz-evidence-sources');
+      audit.sources.forEach(source => {
+        const link = node('a', (source.authority || 'Burim') + ' · ' + (source.title || 'Hap burimin'));
+        link.href = source.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        links.append(link);
+      });
+      panel.append(links);
+    }
+    return panel;
+  }
+
   function renderDrug(drug, autoOpen = false) {
     const card = node('details', null, 'dz-common-drug');
     card.open = Boolean(autoOpen);
