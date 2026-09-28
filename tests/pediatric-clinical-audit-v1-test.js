@@ -12,9 +12,11 @@ const sourceTable = JSON.parse(read('data/pediatric-common-drugs-reference.json'
 assert.equal(audit.schemaVersion, 'pediatric-clinical-audit-v1');
 assert.equal(audit.auditedAt, '2026-09-28');
 assert.equal(audit.defaultStatus, 'source-table');
-assert.equal(Object.keys(audit.drugs).length, 20, 'Current audit must contain exactly 20 independently verified drugs');
+assert.equal(Object.keys(audit.drugs).length, 29, 'Current audit must contain exactly 29 independently audited drugs');
 assert.equal(audit.wave2?.auditedDrugCount, 20);
 assert.equal(audit.wave2?.addedDrugs?.length, 9);
+assert.equal(audit.wave3?.auditedDrugCount, 29);
+assert.equal(audit.wave3?.addedDrugs?.length, 9);
 
 for (const [name, item] of Object.entries(audit.drugs)) {
   assert.ok(sourceTable.sections.some(section => section.drugs.some(drug => drug.name === name)), `${name}: audit target is not in the 50-drug source table`);
@@ -25,17 +27,21 @@ for (const [name, item] of Object.entries(audit.drugs)) {
     assert.ok(source.authority && source.title);
     assert.match(source.url, /^https:\/\//, `${name}: source URL must be HTTPS`);
   });
-  assert.equal(item.calculator?.replace, true, `${name}: verified calculator must explicitly replace the source-table calculation`);
-  assert.ok(Array.isArray(item.calculator?.options) && item.calculator.options.length, `${name}: verified calculator options missing`);
-  item.calculator.options.forEach(option => {
-    assert.equal(option.mode, 'clinicalRules', `${name}: verified options must use clinicalRules`);
-    assert.ok(Array.isArray(option.rules) && option.rules.length, `${name}: verified rule set empty`);
-    option.rules.forEach(rule => {
-      assert.ok(['weight','fixed'].includes(rule.doseType), `${name}: bad doseType`);
-      assert.ok(Number.isFinite(rule.min) && Number.isFinite(rule.max));
-      assert.ok(rule.unit && rule.period && rule.frequency && rule.source);
+  assert.equal(item.calculator?.replace, true, `${name}: audited calculator must explicitly replace the source-table calculation`);
+  if (item.calculator?.disabled) {
+    assert.ok(item.calculator.reasonSq, `${name}: disabled calculator must explain why`);
+  } else {
+    assert.ok(Array.isArray(item.calculator?.options) && item.calculator.options.length, `${name}: verified calculator options missing`);
+    item.calculator.options.forEach(option => {
+      assert.equal(option.mode, 'clinicalRules', `${name}: verified options must use clinicalRules`);
+      assert.ok(Array.isArray(option.rules) && option.rules.length, `${name}: verified rule set empty`);
+      option.rules.forEach(rule => {
+        assert.ok(['weight','fixed'].includes(rule.doseType), `${name}: bad doseType`);
+        assert.ok(Number.isFinite(rule.min) && Number.isFinite(rule.max));
+        assert.ok(rule.unit && rule.period && rule.frequency && rule.source);
+      });
     });
-  });
+  }
   assert.ok(item.kosovoMarket?.checkedAt === '2026-09-28', `${name}: Kosovo market check date missing`);
   assert.ok(item.kosovoMarket?.summarySq, `${name}: Kosovo market note missing`);
 }
@@ -193,4 +199,69 @@ const wave2Names = new Set(audit.wave2.addedDrugs);
   'Cefixime','Cefuroxime','Vancomycin','Acyclovir','Cetirizine'
 ].forEach(name => assert.ok(wave2Names.has(name), `Wave 2 manifest missing ${name}`));
 
-console.log('PASS: pediatric clinical audit v1-wave2 pins authoritative regimens, safety boundaries and Kosovo-market practical forms');
+
+// Wave 3 — additional common agents plus one explicit safety block.
+const clarithromycin = D.Clarithromycin.calculator.options[0].rules[0];
+assert.deepStrictEqual(
+  [clarithromycin.minMonths,clarithromycin.min,clarithromycin.frequency,clarithromycin.maxPerDose],
+  [6,7.5,'çdo 12 orë · 10 ditë',500]
+);
+assert.deepStrictEqual(D.Clarithromycin.practicalFormulations, ['Syp – 250/5']);
+
+const cefpodoxime = D.Cefpodoxime.calculator.options;
+assert.equal(cefpodoxime.length, 3);
+assert.deepStrictEqual(
+  cefpodoxime[0].rules.map(rule => [rule.minMonths,rule.min,rule.maxPerDose,rule.frequency]),
+  [[2,5,200,'çdo 12 orë · 5 ditë']]
+);
+assert.deepStrictEqual(D.Cefpodoxime.practicalFormulations, ['Syp – 40/5']);
+
+const ceftazidime = D.Ceftazidime.calculator.options;
+assert.deepStrictEqual(ceftazidime.map(option => option.rules[0].min), [30,30,50]);
+assert.deepStrictEqual(ceftazidime.map(option => option.rules[0].frequency), ['çdo 12 orë · IV','çdo 8 orë · IV','çdo 8 orë · IV']);
+assert.equal(ceftazidime[1].rules[0].maxPerDay, 6000);
+assert.deepStrictEqual(D.Ceftazidime.practicalFormulations, ['Vial – 1g']);
+
+const albendazole = D.Albendazole.calculator.options;
+assert.deepStrictEqual(albendazole.map(option => option.rules[0].min), [200,400]);
+assert.deepStrictEqual(albendazole.map(option => option.rules[0].minMonths), [12,24]);
+assert.deepStrictEqual(D.Albendazole.practicalFormulations, ['Syp – 400/10','Tab – 400mg']);
+
+const ivermectin = D.Ivermectin.calculator.options[0].rules[0];
+assert.deepStrictEqual([ivermectin.minKg,ivermectin.min,ivermectin.frequency], [15,0.2,'dozë e vetme · esëll me ujë']);
+assert.deepStrictEqual(D.Ivermectin.practicalFormulations, []);
+
+const levocetirizine = D.Levocetirizine.calculator.options[0].rules;
+assert.deepStrictEqual(levocetirizine.map(rule => rule.min), [1.25,2.5,5]);
+assert.deepStrictEqual(levocetirizine.map(rule => rule.minMonths), [6,72,144]);
+assert.deepStrictEqual(D.Levocetirizine.practicalFormulations, ['Tab – 5mg']);
+
+const hydroxyzine = D.Hydroxyzine.calculator.options;
+assert.deepStrictEqual(hydroxyzine.map(option => [option.rules[0].min,option.rules[0].max]), [[5,15],[15,25]]);
+hydroxyzine.forEach(option => {
+  assert.equal(option.rules[0].maxDailyPerKg, 2);
+  assert.equal(option.rules[0].maxPerDay, 100);
+});
+assert.ok(D.Hydroxyzine.warningsSq.some(text => /QT/i.test(text)));
+assert.deepStrictEqual(D.Hydroxyzine.practicalFormulations, ['Tab – 25mg']);
+
+const lansoprazole = D.Lansoprazole.calculator.options;
+assert.equal(lansoprazole.length, 3);
+assert.deepStrictEqual(
+  lansoprazole[0].rules.map(rule => [rule.minMonths,rule.maxMonths,rule.minKg ?? null,rule.maxKg ?? null,rule.min]),
+  [[12,144,null,30,15],[12,144,30,null,30]]
+);
+assert.deepStrictEqual(D.Lansoprazole.practicalFormulations, ['Cap – 15mg','Cap – 30mg']);
+
+assert.equal(D.Ranitidine.status, 'verified-blocked');
+assert.equal(D.Ranitidine.calculator.disabled, true);
+assert.match(D.Ranitidine.calculator.reasonSq, /pezulluar/i);
+assert.deepStrictEqual(D.Ranitidine.practicalFormulations, []);
+
+const wave3Names = new Set(audit.wave3.addedDrugs);
+[
+  'Clarithromycin','Cefpodoxime','Ceftazidime','Albendazole','Ivermectin',
+  'Levocetirizine','Hydroxyzine','Lansoprazole','Ranitidine'
+].forEach(name => assert.ok(wave3Names.has(name), `Wave 3 manifest missing ${name}`));
+
+console.log('PASS: pediatric clinical audit v1-wave3 pins 29 audited drugs, safety boundaries and Kosovo-market practical forms');
