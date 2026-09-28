@@ -59,6 +59,8 @@
     return clinicalAudit?.drugs?.[drug?.name] || null;
   }
 
+  const auditedDrugCount = () => Object.keys(clinicalAudit?.drugs || {}).length;
+
   function effectiveOptions(drug) {
     const audit = auditFor(drug);
     if (audit?.calculator?.replace && Array.isArray(audit.calculator.options) && audit.calculator.options.length) {
@@ -807,7 +809,9 @@
     });
 
     const count = byId('pediatricCommonCount');
-    if (count) count.textContent = query ? `${shown} barna të gjetura` : '50 barna · 10 ndarje';
+    if (count) count.textContent = query
+      ? `${shown} barna të gjetura`
+      : `50 barna · 10 ndarje · ${auditedDrugCount()} të verifikuara online`;
     if (!shown) target.append(node('p', 'Nuk u gjet bar në këtë referencë.', 'dz-empty'));
   }
 
@@ -843,14 +847,18 @@
         throw new Error('Weight-age defaults empty');
       }
 
-      try {
-        const auditResponse = await fetch(CLINICAL_AUDIT_URL, { cache:'no-store', credentials:'same-origin' });
-        if (auditResponse.ok) {
-          const auditPayload = await auditResponse.json();
-          if (auditPayload && typeof auditPayload === 'object' && auditPayload.drugs) clinicalAudit = auditPayload;
+      if (payload?.clinicalAudit && typeof payload.clinicalAudit === 'object' && payload.clinicalAudit.drugs) {
+        clinicalAudit = payload.clinicalAudit;
+      } else {
+        try {
+          const auditResponse = await fetch(CLINICAL_AUDIT_URL, { cache:'no-store', credentials:'same-origin' });
+          if (auditResponse.ok) {
+            const auditPayload = await auditResponse.json();
+            if (auditPayload && typeof auditPayload === 'object' && auditPayload.drugs) clinicalAudit = auditPayload;
+          }
+        } catch {
+          /* Source table remains usable if the independent audit layer is temporarily unavailable. */
         }
-      } catch {
-        /* Source table remains usable if the independent audit layer is temporarily unavailable. */
       }
 
       renderSections();
