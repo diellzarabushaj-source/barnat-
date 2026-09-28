@@ -42,14 +42,14 @@ assert.equal(styles.length, 2, 'Dozologjia must keep exactly two stylesheet owne
 assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-responsive4');
 assert.ok(scripts.includes('/phase9-personal-entities-client.js?v=phase9b'));
 assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish2-lazy'));
-assert.ok(scripts.includes('/pediatric-common-liquid-core.js?v=7'));
+assert.ok(scripts.includes('/pediatric-common-liquid-core.js?v=8'));
 assert.ok(scripts.includes('/pediatric-weight-age-core.js?v=1'));
 assert.equal(pageRuntimes.length, 1, 'Dozologjia must own exactly one page runtime');
 
 const cssVersion = styles[0]?.match(/^\/dozologjia-v2\.css\?v=(\d+)$/)?.[1] || '';
 const jsVersion = pageRuntimes[0]?.match(/^\/dozologjia-v2\.js\?v=(\d+)$/)?.[1] || '';
 assert.equal(cssVersion, jsVersion);
-assert.ok(Number(cssVersion) >= 44);
+assert.ok(Number(cssVersion) >= 45);
 
 assert.match(html, /name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/);
 assert.match(html, /id="pediatricCommonSearch"[^>]*autocapitalize="none"[^>]*spellcheck="false"[^>]*enterkeyhint="search"/);
