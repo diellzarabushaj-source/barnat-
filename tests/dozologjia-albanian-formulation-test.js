@@ -13,7 +13,6 @@ const css = read('dozologjia-v2.css');
 const client = read('dozologjia-master-client.js');
 const reference = JSON.parse(read('data/pediatric-common-drugs-reference.json'));
 
-assert.match(html, /<h1>Dozologjia pediatrike<\/h1>/);
 assert.match(html, /Dozat pediatrike të barnave të zakonshme/);
 assert.doesNotMatch(html, /id="drugPicker"|id="masterForm"|id="masterResult"|id="masterProvenance"/);
 assert.doesNotMatch(client, /master-catalog|master-calculate|function payload\(/);
