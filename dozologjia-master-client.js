@@ -1121,9 +1121,10 @@
     host.replaceChildren();
     const options = drug.calc || [];
     if (!options.length) return;
+
     const shell = node('div', null, 'dz-common-calculator');
     const title = node('div', null, 'dz-common-calc-head');
-    title.append(node('strong', 'Kalkulatori'), node('small', 'Përditësohet automatikisht'));
+    title.append(node('strong', 'Kalkulatori'), node('small', 'Pesha → mosha AUTO → doza → mL'));
     shell.append(title);
 
     const selector = node('select', null, 'dz-unit dz-common-select');
@@ -1142,13 +1143,101 @@
     const answer = node('div', null, 'dz-common-calc-answer');
     shell.append(fields, answer);
     host.append(shell);
-    const values = { weight:'', age:'', ageUnit:'year' };
+
+    const values = {
+      weight:'',
+      age:'',
+      ageUnit:'year',
+      ageManual:false,
+      ageManualVisible:false,
+    };
+    let ageSummary = null;
+
+    function currentOption() {
+      return options[Number(selector.value) || 0];
+    }
+
+    function renderAgeSummary() {
+      if (!ageSummary) return;
+      ageSummary.replaceChildren();
+      const weight = numeric(values.weight);
+      if (!positiveNumber(weight)) {
+        ageSummary.hidden = true;
+        return;
+      }
+
+      ageSummary.hidden = false;
+      const info = resolvedAgeInfo(values);
+      const copy = node('div', null, 'dz-common-age-copy');
+      const kicker = node('span', values.ageManual ? 'MOSHA E SAKTË' : 'MOSHA AUTO NGA PESHA', 'dz-common-age-kicker');
+      copy.append(kicker);
+
+      if (info?.label) {
+        copy.append(node('strong', info.label, 'dz-common-age-value'));
+      } else {
+        copy.append(node('strong', 'Nuk u përcaktua', 'dz-common-age-value'));
+      }
+
+      if (!values.ageManual) {
+        copy.append(node('small',
+          info?.kind === 'below-range'
+            ? 'Pesha është nën intervalin e tabelës; për doza sipas moshës duhet mosha e saktë.'
+            : 'Sugjerim praktik nga tabela peshë–moshë. Mosha reale ka përparësi kur dihet.',
+          'dz-common-age-note'
+        ));
+      } else {
+        copy.append(node('small', 'Vlera që e shënove ti po përdoret në vend të sugjerimit nga pesha.', 'dz-common-age-note'));
+      }
+
+      const action = node('button', values.ageManual ? 'Përdor AUTO' : 'Ndrysho');
+      action.type = 'button';
+      action.className = 'dz-common-age-action';
+      action.addEventListener('click', () => {
+        if (values.ageManual) {
+          values.ageManual = false;
+          values.age = '';
+          values.ageManualVisible = false;
+        } else {
+          values.ageManualVisible = true;
+        }
+        rebuildFields();
+        if (values.ageManualVisible) {
+          const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
+          setTimeout(() => byId(`${slug}-common-age`)?.focus(), 0);
+        }
+      });
+
+      ageSummary.append(copy, action);
+    }
+
+    function renderError(result) {
+      const wrap = node('div', null, result.needsAgeConfirmation ? 'dz-common-age-alert' : '');
+      wrap.append(node('p', result.error, 'dz-waiting'));
+      if (result.needsAgeConfirmation) {
+        const button = node('button', 'Shëno moshën e saktë');
+        button.type = 'button';
+        button.className = 'dz-common-age-cta';
+        button.addEventListener('click', () => {
+          values.ageManualVisible = true;
+          rebuildFields();
+          const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
+          setTimeout(() => byId(`${slug}-common-age`)?.focus(), 0);
+        });
+        wrap.append(button);
+      }
+      answer.append(wrap);
+    }
 
     function update() {
-      const option = options[Number(selector.value) || 0];
+      renderAgeSummary();
+      const option = currentOption();
       const result = calculateOption(option, values);
       answer.replaceChildren();
-      if (result.error) { answer.append(node('p', result.error, 'dz-waiting')); return; }
+
+      if (result.error) {
+        renderError(result);
+        return;
+      }
 
       const primary = node('div', null, 'dz-common-result-main');
       primary.append(node('span', 'DOZA', 'dz-common-result-kicker'));
@@ -1165,36 +1254,72 @@
         answer.append(source);
       }
     }
+
+    function appendExactAgeField(option) {
+      if (!needsAge(option) || !values.ageManualVisible) return;
+      const ageField = node('div', null, 'dz-common-field dz-common-age-exact');
+      ageField.append(node('span', 'Mosha e saktë', 'dz-label'));
+      const row = node('span', null, 'dz-common-age-row');
+      const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
+      const age = makeNumberField('', `${slug}-common-age`, '', values.age);
+      age.input.placeholder = 'p.sh. 5';
+      age.input.addEventListener('input', () => {
+        values.age = age.input.value;
+        values.ageManual = positiveNumber(ageMonths(values.age, values.ageUnit));
+        update();
+      });
+
+      const unit = node('select', null, 'dz-unit');
+      [['year','vjeç'],['month','muaj']].forEach(([value, label]) => {
+        const choice = node('option', label);
+        choice.value = value;
+        choice.selected = value === values.ageUnit;
+        unit.append(choice);
+      });
+      unit.addEventListener('change', () => {
+        values.ageUnit = unit.value;
+        values.ageManual = positiveNumber(ageMonths(values.age, values.ageUnit));
+        update();
+      });
+
+      row.append(age.field.lastElementChild, unit);
+      ageField.append(row);
+      fields.append(ageField);
+    }
+
     function rebuildFields() {
       fields.replaceChildren();
-      const option = options[Number(selector.value) || 0];
-      if (needsWeight(option)) {
+      ageSummary = null;
+      const option = currentOption();
+
+      if (needsPatientWeight(option)) {
         const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
-        const weight = makeNumberField('Pesha', `${slug}-common-weight`, 'kg', values.weight);
-        weight.input.addEventListener('input', () => { values.weight = weight.input.value; update(); });
+        const weight = makeNumberField('Pesha e fëmijës', `${slug}-common-weight`, 'kg', values.weight);
+        weight.field.classList.add('dz-common-weight-field');
+        weight.field.lastElementChild?.classList.add('dz-number-lead');
+        weight.input.placeholder = 'p.sh. 12';
+        weight.input.addEventListener('input', () => {
+          values.weight = weight.input.value;
+          update();
+        });
         addWeightShortcuts(weight.field, weight.input, values, update);
         fields.append(weight.field);
+
+        ageSummary = node('div', null, 'dz-common-age-auto');
+        ageSummary.hidden = true;
+        fields.append(ageSummary);
       }
-      if (needsAge(option)) {
-        const ageField = node('label', null, 'dz-common-field');
-        ageField.append(node('span', 'Mosha', 'dz-label'));
-        const row = node('span', null, 'dz-common-age-row');
-        const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
-        const age = makeNumberField('', `${slug}-common-age`, '', values.age);
-        age.input.addEventListener('input', () => { values.age = age.input.value; update(); });
-        const unit = node('select', null, 'dz-unit');
-        [['year','vjeç'],['month','muaj']].forEach(([value, label]) => {
-          const choice = node('option', label);
-          choice.value = value; choice.selected = value === values.ageUnit; unit.append(choice);
-        });
-        unit.addEventListener('change', () => { values.ageUnit = unit.value; update(); });
-        row.append(age.field.lastElementChild, unit);
-        ageField.append(row);
-        fields.append(ageField);
-      }
+
+      appendExactAgeField(option);
       update();
     }
-    selector.addEventListener('change', rebuildFields);
+
+    selector.addEventListener('change', () => {
+      values.ageManualVisible = false;
+      values.ageManual = false;
+      values.age = '';
+      rebuildFields();
+    });
     rebuildFields();
   }
 
