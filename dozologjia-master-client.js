@@ -1093,7 +1093,7 @@
 
   function addWeightShortcuts(field, input, values, update) {
     const row = node('div', null, 'dz-common-weight-quick');
-    [6, 10, 12, 15, 20, 25, 30, 40].forEach(kg => {
+    [3.5, 7, 10, 12, 15, 20, 25, 30, 40, 50, 60].forEach(kg => {
       const button = node('button', `${kg} kg`);
       button.type = 'button';
       button.addEventListener('click', () => {
