@@ -1310,3 +1310,117 @@ button,input,select{font:inherit}
     font-size:10.5px;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Weight-first pediatric default age
+   -------------------------------------------------------------------------- */
+.dosage-page .dz-common-weight-field{
+  grid-column:1/-1;
+}
+.dosage-page .dz-common-weight-field .dz-number input{
+  height:58px;
+  font-size:24px;
+  font-weight:760;
+}
+.dosage-page .dz-common-age-auto{
+  grid-column:1/-1;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  min-height:66px;
+  padding:10px 11px;
+  border:1px solid var(--dz-accent-line);
+  border-radius:11px;
+  background:#faf9ff;
+}
+.dosage-page .dz-common-age-auto[hidden]{display:none!important}
+.dosage-page .dz-common-age-copy{
+  display:grid;
+  min-width:0;
+  gap:2px;
+}
+.dosage-page .dz-common-age-kicker{
+  color:#7a70d6;
+  font-size:8px;
+  font-weight:820;
+  letter-spacing:.11em;
+}
+.dosage-page .dz-common-age-value{
+  color:#3f31b8;
+  font-size:20px;
+  font-weight:780;
+  line-height:1.1;
+  letter-spacing:-.2px;
+}
+.dosage-page .dz-common-age-note{
+  max-width:58ch;
+  color:#667085;
+  font-size:8.8px;
+  line-height:1.35;
+}
+.dosage-page .dz-common-age-action,
+.dosage-page .dz-common-age-cta{
+  flex:none;
+  min-height:36px;
+  padding:0 11px;
+  border:1px solid var(--dz-accent-line);
+  border-radius:999px;
+  background:#fff;
+  color:#5145cd;
+  font-size:9px;
+  font-weight:720;
+  cursor:pointer;
+}
+.dosage-page .dz-common-age-action:hover,
+.dosage-page .dz-common-age-cta:hover{
+  border-color:var(--dz-accent);
+  background:var(--dz-accent-soft);
+}
+.dosage-page .dz-common-age-exact{
+  grid-column:1/-1;
+  padding:10px;
+  border:1px dashed var(--dz-accent-line);
+  border-radius:10px;
+  background:#fff;
+}
+.dosage-page .dz-common-age-alert{
+  display:grid;
+  gap:9px;
+  padding:10px;
+  border:1px solid var(--dz-warn-line);
+  border-radius:10px;
+  background:var(--dz-warn-soft);
+}
+.dosage-page .dz-common-age-alert .dz-waiting{
+  color:#8f3d0a;
+  line-height:1.45;
+}
+.dosage-page .dz-common-age-alert .dz-common-age-cta{
+  justify-self:start;
+  border-color:#f4c36a;
+  color:#8f3d0a;
+}
+
+@media(max-width:760px){
+  .dosage-page .dz-common-weight-field .dz-number input{
+    height:62px;
+    font-size:28px;
+  }
+  .dosage-page .dz-common-age-auto{
+    min-height:72px;
+    padding:10px;
+  }
+  .dosage-page .dz-common-age-value{
+    font-size:23px;
+  }
+  .dosage-page .dz-common-age-note{
+    font-size:9.3px;
+  }
+  .dosage-page .dz-common-age-action,
+  .dosage-page .dz-common-age-cta{
+    min-height:40px;
+    padding-inline:12px;
+    font-size:9.5px;
+  }
+}

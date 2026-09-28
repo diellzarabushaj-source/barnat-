@@ -166,31 +166,18 @@
   const PRODUCTS_KEY = 'drx.dozologjia.products.v1';
   const MINE = 'drx-mine';
 
-  /* Reference weight for age, from the CARPA STM / WBM table the antibiotics
-     page already uses. It runs one way here: a real weight is on the scale in
-     front of the clinician, so it fills the age in rather than the reverse.
-     The estimate is marked as derived and is overwritten the moment the
-     clinician types an age of their own. */
-  const REFERENCE_AGES = [
-    { months:0, kg:3.3 }, { months:3, kg:6.2 }, { months:6, kg:7.6 },
-    { months:12, kg:9 }, { months:24, kg:12 }, { months:48, kg:16 },
-    { months:72, kg:20 }, { months:96, kg:25 }, { months:120, kg:32 },
-    { months:144, kg:40 },
-  ];
-  const HEAVIEST_BAND_KG = 40;
+  /* One weight-to-age default system for the whole Dozologjia workspace.
+     The same 14 user-supplied bands are embedded in the shared browser core
+     and persisted in Supabase. A known chronological age always overrides it. */
+  const MASTER_WEIGHT_AGE_CORE = window.DRxPediatricWeightAge || null;
   function ageForWeight(kg) {
-    /* Past the table an age cannot be read off a weight at all, and under the
-       three-month band it turns on days rather than kilograms — both are the
-       clinician's to state. */
-    if (!positive(kg) || kg > HEAVIEST_BAND_KG) return null;
-    const band = REFERENCE_AGES.reduce((best, entry) => {
-      if (!best) return entry;
-      const gap = Math.abs(entry.kg - kg), bestGap = Math.abs(best.kg - kg);
-      if (gap < bestGap) return entry;
-      return gap === bestGap && entry.months < best.months ? entry : best;
-    }, null);
-    if (!band || band.months < 3) return null;
-    return band.months < 12 ? { value:band.months, unit:'month' } : { value:band.months / 12, unit:'year' };
+    if (!positive(kg) || !MASTER_WEIGHT_AGE_CORE?.DEFAULT_MAP) return null;
+    const info = MASTER_WEIGHT_AGE_CORE.infer(kg, MASTER_WEIGHT_AGE_CORE.DEFAULT_MAP);
+    if (!info || !Number.isFinite(info.defaultMonths) || info.kind === 'below-range') return null;
+    const months = info.defaultMonths;
+    return months < 12
+      ? { value:Math.round(months * 10) / 10, unit:'month', label:info.label, ambiguous:Boolean(info.ambiguous) }
+      : { value:Math.round((months / 12) * 100) / 100, unit:'year', label:info.label, ambiguous:Boolean(info.ambiguous) };
   }
 
   const state = {
@@ -204,6 +191,7 @@
     productId:'',        // the shelf item the volume is measured from
     editing:false,       // the "my own unit" editor is open
     ageSource:'',        // '' | 'weight' (derived) | 'chosen' (the clinician's)
+    ageEstimateLabel:'',
     patient:{},
     kind:'liquid',       // what that editor is describing
   };
@@ -549,7 +537,7 @@
     const derived = state.ageSource === 'weight';
     field.dataset.source = derived ? 'weight' : 'chosen';
     const note = field.querySelector('.dz-age-note');
-    if (note) note.textContent = derived ? 'Plotësuar nga pesha — ndryshoje nëse mosha e vërtetë është tjetër.' : '';
+    if (note) note.textContent = derived ? `AUTO nga pesha${state.ageEstimateLabel ? ` · ${state.ageEstimateLabel}` : ''} — ndryshoje vetëm nëse e di moshën e saktë.` : '';
   }
   function applyAgeFromWeight() {
     const age = $('masterAge');
@@ -558,13 +546,14 @@
     if (!derived) {
       /* Clearing or overshooting the table retires an estimate, never an
          age the clinician typed. */
-      if (state.ageSource === 'weight') { age.value = ''; state.ageSource = ''; }
+      if (state.ageSource === 'weight') { age.value = ''; state.ageSource = ''; state.ageEstimateLabel = ''; }
       markAgeSource();
       return;
     }
     age.value = String(derived.value).replace('.', ',');
     $('masterAgeUnit').value = derived.unit;
     state.ageSource = 'weight';
+    state.ageEstimateLabel = derived.label || '';
     markAgeSource();
   }
 
@@ -966,6 +955,7 @@
 
   const DATA_URL = '/api/dosage?view=pediatric-common-reference';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
+  const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
   const byId = id => document.getElementById(id);
   const node = (tag, text, className) => {
     const item = document.createElement(tag);
@@ -988,6 +978,8 @@
   const doseRange = (lo, hi, unit) => `${calcFmt(lo)}${lo === hi ? '' : '–' + calcFmt(hi)} ${unit}`;
   const searchText = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   let commonSections = [];
+  let weightAgeDefaults = null;
+  const weightAgeCore = window.DRxPediatricWeightAge || null;
 
   function inBand(value, band, minKey, maxKey) {
     const min = band[minKey], max = band[maxKey];
@@ -1002,6 +994,54 @@
   }
   const needsWeight = option => ['weight', 'ageWeight', 'oseltamivirBands'].includes(option?.mode);
   const needsAge = option => ['ageBands', 'ageWeight', 'ageFixed', 'oseltamivirBands'].includes(option?.mode);
+  const needsPatientWeight = option => needsWeight(option) || needsAge(option);
+
+  function resolvedAgeInfo(values) {
+    if (values.ageManual) {
+      const months = ageMonths(values.age, values.ageUnit);
+      if (positiveNumber(months)) {
+        return {
+          minMonths:months,
+          maxMonths:months,
+          defaultMonths:months,
+          label:weightAgeCore?.rangeLabel ? weightAgeCore.rangeLabel(months, months) : `≈${calcFmt(months)} muaj`,
+          kind:'manual',
+          manual:true,
+          ambiguous:false,
+        };
+      }
+    }
+    if (!weightAgeCore || !weightAgeDefaults) return null;
+    const inferred = weightAgeCore.infer(values.weight, weightAgeDefaults);
+    return inferred ? { ...inferred, manual:false } : null;
+  }
+
+  function safeAgeBand(ageInfo, bands) {
+    if (!ageInfo || !Array.isArray(bands)) return null;
+    if (ageInfo.manual || (Number.isFinite(ageInfo.maxMonths) && Math.abs(ageInfo.maxMonths - ageInfo.minMonths) < 0.001)) {
+      return bands.find(item => inBand(ageInfo.defaultMonths, item, 'minMonths', 'maxMonths')) || null;
+    }
+    if (!weightAgeCore?.ageRangeFitsBand) return null;
+    const candidates = bands.filter(item => weightAgeCore.ageRangeFitsBand(ageInfo, item, 'minMonths', 'maxMonths'));
+    return candidates.length === 1 ? candidates[0] : null;
+  }
+
+  function ageInfoFitsOption(ageInfo, option) {
+    if (!ageInfo || !option) return false;
+    if (ageInfo.manual || (Number.isFinite(ageInfo.maxMonths) && Math.abs(ageInfo.maxMonths - ageInfo.minMonths) < 0.001)) {
+      return inBand(ageInfo.defaultMonths, option, 'minMonths', 'maxMonths');
+    }
+    return Boolean(weightAgeCore?.ageRangeFitsBand?.(ageInfo, option, 'minMonths', 'maxMonths'));
+  }
+
+  function ageConfirmation(ageInfo) {
+    return {
+      error:ageInfo?.label
+        ? `Pesha sugjeron moshën ${ageInfo.label}. Për këtë bar mosha e saktë mund ta ndryshojë dozën.`
+        : 'Pesha nuk mjafton për ta përcaktuar moshën për këtë dozë.',
+      needsAgeConfirmation:true,
+    };
+  }
 
   function doseResult({ min, max, unit, period = 'dose', frequency = '', source = '', split = null, note = '' }) {
     const result = {
@@ -1036,30 +1076,44 @@
       });
     }
 
-    const months = needsAge(option) ? ageMonths(values.age, values.ageUnit) : NaN;
-    const weight = needsWeight(option) ? numeric(values.weight) : NaN;
+    const weight = needsPatientWeight(option) ? numeric(values.weight) : NaN;
+    const ageInfo = needsAge(option) ? resolvedAgeInfo(values) : null;
+
+    if (needsPatientWeight(option) && !positiveNumber(weight)) {
+      return { error:'Shëno vetëm peshën reale në kg. Mosha do të sugjerohet automatikisht.' };
+    }
 
     if (option.mode === 'ageBands') {
-      if (!positiveNumber(months)) return { error:'Shëno moshën.' };
-      const band = option.bands.find(item => inBand(months, item, 'minMonths', 'maxMonths'));
-      if (!band) return { error:'Tabela nuk përcakton dozë për këtë moshë.' };
+      if (!ageInfo || !Number.isFinite(ageInfo.defaultMonths)) return ageConfirmation(ageInfo);
+      const band = safeAgeBand(ageInfo, option.bands);
+      if (!band) {
+        if (ageInfo.manual) return { error:'Tabela nuk përcakton dozë për këtë moshë.' };
+        return ageConfirmation(ageInfo);
+      }
       return doseResult({
         min:band.min, max:band.max, unit:band.unit, period:'dose',
         frequency:band.frequency || '', source:band.source, note:band.frequency || '',
       });
     }
+
     if (option.mode === 'ageFixed') {
-      if (!positiveNumber(months)) return { error:'Shëno moshën.' };
-      if (!inBand(months, option, 'minMonths', 'maxMonths')) return { error:'Kjo formulë nuk i përket kësaj moshe.' };
+      if (!ageInfo || !Number.isFinite(ageInfo.defaultMonths)) return ageConfirmation(ageInfo);
+      if (!ageInfoFitsOption(ageInfo, option)) {
+        if (ageInfo.manual) return { error:'Kjo formulë nuk i përket kësaj moshe.' };
+        return ageConfirmation(ageInfo);
+      }
       return doseResult({
         min:option.min, max:option.max, unit:option.unit, period:'dose',
         frequency:option.frequency || '', source:option.label, note:option.frequency || '',
       });
     }
+
     if (option.mode === 'ageWeight') {
-      if (!positiveNumber(months)) return { error:'Shëno moshën.' };
-      if (!inBand(months, option, 'minMonths', 'maxMonths')) return { error:'Kjo formulë nuk i përket kësaj moshe.' };
-      if (!positiveNumber(weight)) return { error:'Shëno peshën reale në kg.' };
+      if (!ageInfo || !Number.isFinite(ageInfo.defaultMonths)) return ageConfirmation(ageInfo);
+      if (!ageInfoFitsOption(ageInfo, option)) {
+        if (ageInfo.manual) return { error:'Kjo formulë nuk i përket kësaj moshe.' };
+        return ageConfirmation(ageInfo);
+      }
       const min = option.min * weight;
       const max = option.max * weight;
       return doseResult({
@@ -1068,17 +1122,24 @@
         note:[option.period === 'day' ? 'në 24 orë' : '', option.frequency].filter(Boolean).join(' · '),
       });
     }
+
     if (option.mode === 'oseltamivirBands') {
-      if (!positiveNumber(months)) return { error:'Shëno moshën.' };
-      const ageBand = option.bands.find(item => inBand(months, item, 'minMonths', 'maxMonths'));
+      if (!ageInfo || !Number.isFinite(ageInfo.defaultMonths)) return ageConfirmation(ageInfo);
+      const ageBand = safeAgeBand(ageInfo, option.bands);
       if (ageBand) {
         return doseResult({
           min:ageBand.min, max:ageBand.max, unit:ageBand.unit, period:'dose',
           frequency:ageBand.frequency || '', source:ageBand.source, note:ageBand.frequency || '',
         });
       }
-      if (months <= 12) return { error:'Tabela nuk përcakton dozë për këtë moshë.' };
-      if (!positiveNumber(weight)) return { error:'Për fëmijën mbi 1 vjeç, shëno peshën reale në kg.' };
+
+      const certainlyOverOneYear = Number.isFinite(ageInfo.minMonths) && ageInfo.minMonths > 12;
+      const manuallyOverOneYear = ageInfo.manual && ageInfo.defaultMonths > 12;
+      if (!certainlyOverOneYear && !manuallyOverOneYear) {
+        if (ageInfo.manual && ageInfo.defaultMonths <= 12) return { error:'Tabela nuk përcakton dozë për këtë moshë.' };
+        return ageConfirmation(ageInfo);
+      }
+
       const weightBand = option.weightBands.find(item => inBand(weight, item, 'minKg', 'maxKg'));
       if (!weightBand) return { error:'Tabela nuk përcakton brez peshe për këtë vlerë.' };
       return doseResult({
@@ -1086,8 +1147,8 @@
         frequency:weightBand.frequency || '', source:weightBand.source, note:weightBand.frequency || '',
       });
     }
+
     if (option.mode === 'weight') {
-      if (!positiveNumber(weight)) return { error:'Shëno peshën reale në kg.' };
       const min = option.min * weight;
       const max = option.max * weight;
       let periodText = 'për një marrje';
@@ -1099,6 +1160,7 @@
         note:[periodText, option.frequency].filter(Boolean).join(' · '),
       });
     }
+
     return { error:'Kjo formulë nuk ka kalkulator numerik.' };
   }
 
@@ -1150,7 +1212,7 @@
 
   function addWeightShortcuts(field, input, values, update) {
     const row = node('div', null, 'dz-common-weight-quick');
-    [6, 10, 12, 15, 20, 25, 30, 40].forEach(kg => {
+    [3.5, 7, 10, 12, 15, 20, 25, 30, 40, 50, 60].forEach(kg => {
       const button = node('button', `${kg} kg`);
       button.type = 'button';
       button.addEventListener('click', () => {
@@ -1178,9 +1240,10 @@
     host.replaceChildren();
     const options = drug.calc || [];
     if (!options.length) return;
+
     const shell = node('div', null, 'dz-common-calculator');
     const title = node('div', null, 'dz-common-calc-head');
-    title.append(node('strong', 'Kalkulatori'), node('small', 'Përditësohet automatikisht'));
+    title.append(node('strong', 'Kalkulatori'), node('small', 'Pesha → mosha AUTO → doza → mL'));
     shell.append(title);
 
     const selector = node('select', null, 'dz-unit dz-common-select');
@@ -1199,13 +1262,101 @@
     const answer = node('div', null, 'dz-common-calc-answer');
     shell.append(fields, answer);
     host.append(shell);
-    const values = { weight:'', age:'', ageUnit:'year' };
+
+    const values = {
+      weight:'',
+      age:'',
+      ageUnit:'year',
+      ageManual:false,
+      ageManualVisible:false,
+    };
+    let ageSummary = null;
+
+    function currentOption() {
+      return options[Number(selector.value) || 0];
+    }
+
+    function renderAgeSummary() {
+      if (!ageSummary) return;
+      ageSummary.replaceChildren();
+      const weight = numeric(values.weight);
+      if (!positiveNumber(weight)) {
+        ageSummary.hidden = true;
+        return;
+      }
+
+      ageSummary.hidden = false;
+      const info = resolvedAgeInfo(values);
+      const copy = node('div', null, 'dz-common-age-copy');
+      const kicker = node('span', values.ageManual ? 'MOSHA E SAKTË' : 'MOSHA AUTO NGA PESHA', 'dz-common-age-kicker');
+      copy.append(kicker);
+
+      if (info?.label) {
+        copy.append(node('strong', info.label, 'dz-common-age-value'));
+      } else {
+        copy.append(node('strong', 'Nuk u përcaktua', 'dz-common-age-value'));
+      }
+
+      if (!values.ageManual) {
+        copy.append(node('small',
+          info?.kind === 'below-range'
+            ? 'Pesha është nën intervalin e tabelës; për doza sipas moshës duhet mosha e saktë.'
+            : 'Sugjerim praktik nga tabela peshë–moshë. Mosha reale ka përparësi kur dihet.',
+          'dz-common-age-note'
+        ));
+      } else {
+        copy.append(node('small', 'Vlera që e shënove ti po përdoret në vend të sugjerimit nga pesha.', 'dz-common-age-note'));
+      }
+
+      const action = node('button', values.ageManual ? 'Përdor AUTO' : 'Ndrysho');
+      action.type = 'button';
+      action.className = 'dz-common-age-action';
+      action.addEventListener('click', () => {
+        if (values.ageManual) {
+          values.ageManual = false;
+          values.age = '';
+          values.ageManualVisible = false;
+        } else {
+          values.ageManualVisible = true;
+        }
+        rebuildFields();
+        if (values.ageManualVisible) {
+          const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
+          setTimeout(() => byId(`${slug}-common-age`)?.focus(), 0);
+        }
+      });
+
+      ageSummary.append(copy, action);
+    }
+
+    function renderError(result) {
+      const wrap = node('div', null, result.needsAgeConfirmation ? 'dz-common-age-alert' : '');
+      wrap.append(node('p', result.error, 'dz-waiting'));
+      if (result.needsAgeConfirmation) {
+        const button = node('button', 'Shëno moshën e saktë');
+        button.type = 'button';
+        button.className = 'dz-common-age-cta';
+        button.addEventListener('click', () => {
+          values.ageManualVisible = true;
+          rebuildFields();
+          const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
+          setTimeout(() => byId(`${slug}-common-age`)?.focus(), 0);
+        });
+        wrap.append(button);
+      }
+      answer.append(wrap);
+    }
 
     function update() {
-      const option = options[Number(selector.value) || 0];
+      renderAgeSummary();
+      const option = currentOption();
       const result = calculateOption(option, values);
       answer.replaceChildren();
-      if (result.error) { answer.append(node('p', result.error, 'dz-waiting')); return; }
+
+      if (result.error) {
+        renderError(result);
+        return;
+      }
 
       const primary = node('div', null, 'dz-common-result-main');
       primary.append(node('span', 'DOZA', 'dz-common-result-kicker'));
@@ -1222,36 +1373,72 @@
         answer.append(source);
       }
     }
+
+    function appendExactAgeField(option) {
+      if (!needsAge(option) || !values.ageManualVisible) return;
+      const ageField = node('div', null, 'dz-common-field dz-common-age-exact');
+      ageField.append(node('span', 'Mosha e saktë', 'dz-label'));
+      const row = node('span', null, 'dz-common-age-row');
+      const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
+      const age = makeNumberField('', `${slug}-common-age`, '', values.age);
+      age.input.placeholder = 'p.sh. 5';
+      age.input.addEventListener('input', () => {
+        values.age = age.input.value;
+        values.ageManual = positiveNumber(ageMonths(values.age, values.ageUnit));
+        update();
+      });
+
+      const unit = node('select', null, 'dz-unit');
+      [['year','vjeç'],['month','muaj']].forEach(([value, label]) => {
+        const choice = node('option', label);
+        choice.value = value;
+        choice.selected = value === values.ageUnit;
+        unit.append(choice);
+      });
+      unit.addEventListener('change', () => {
+        values.ageUnit = unit.value;
+        values.ageManual = positiveNumber(ageMonths(values.age, values.ageUnit));
+        update();
+      });
+
+      row.append(age.field.lastElementChild, unit);
+      ageField.append(row);
+      fields.append(ageField);
+    }
+
     function rebuildFields() {
       fields.replaceChildren();
-      const option = options[Number(selector.value) || 0];
-      if (needsWeight(option)) {
+      ageSummary = null;
+      const option = currentOption();
+
+      if (needsPatientWeight(option)) {
         const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
-        const weight = makeNumberField('Pesha', `${slug}-common-weight`, 'kg', values.weight);
-        weight.input.addEventListener('input', () => { values.weight = weight.input.value; update(); });
+        const weight = makeNumberField('Pesha e fëmijës', `${slug}-common-weight`, 'kg', values.weight);
+        weight.field.classList.add('dz-common-weight-field');
+        weight.field.lastElementChild?.classList.add('dz-number-lead');
+        weight.input.placeholder = 'p.sh. 12';
+        weight.input.addEventListener('input', () => {
+          values.weight = weight.input.value;
+          update();
+        });
         addWeightShortcuts(weight.field, weight.input, values, update);
         fields.append(weight.field);
+
+        ageSummary = node('div', null, 'dz-common-age-auto');
+        ageSummary.hidden = true;
+        fields.append(ageSummary);
       }
-      if (needsAge(option)) {
-        const ageField = node('label', null, 'dz-common-field');
-        ageField.append(node('span', 'Mosha', 'dz-label'));
-        const row = node('span', null, 'dz-common-age-row');
-        const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
-        const age = makeNumberField('', `${slug}-common-age`, '', values.age);
-        age.input.addEventListener('input', () => { values.age = age.input.value; update(); });
-        const unit = node('select', null, 'dz-unit');
-        [['year','vjeç'],['month','muaj']].forEach(([value, label]) => {
-          const choice = node('option', label);
-          choice.value = value; choice.selected = value === values.ageUnit; unit.append(choice);
-        });
-        unit.addEventListener('change', () => { values.ageUnit = unit.value; update(); });
-        row.append(age.field.lastElementChild, unit);
-        ageField.append(row);
-        fields.append(ageField);
-      }
+
+      appendExactAgeField(option);
       update();
     }
-    selector.addEventListener('change', rebuildFields);
+
+    selector.addEventListener('change', () => {
+      values.ageManualVisible = false;
+      values.ageManual = false;
+      values.age = '';
+      rebuildFields();
+    });
     rebuildFields();
   }
 
@@ -1341,7 +1528,20 @@
         payload = await fallback.json();
       }
       commonSections = Array.isArray(payload?.sections) ? payload.sections : [];
+      weightAgeDefaults = payload?.weightAgeDefaults && Array.isArray(payload.weightAgeDefaults.bands)
+        ? payload.weightAgeDefaults
+        : null;
+
+      if (!weightAgeDefaults) {
+        const ageFallback = await fetch(STATIC_AGE_DEFAULTS_URL, { cache:'force-cache', credentials:'same-origin' });
+        if (!ageFallback.ok) throw new Error('Weight-age defaults unavailable');
+        weightAgeDefaults = await ageFallback.json();
+      }
+
       if (!commonSections.length) throw new Error('Reference empty');
+      if (!Array.isArray(weightAgeDefaults?.bands) || !weightAgeDefaults.bands.length) {
+        throw new Error('Weight-age defaults empty');
+      }
       renderSections();
       const count = byId('pediatricCommonCount');
       if (count) count.dataset.source = source;
