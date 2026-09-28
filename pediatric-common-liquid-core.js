@@ -87,12 +87,14 @@
   }
 
   function routeFilter(option, items) {
+    const explicit = clean(option?.route);
     const raw = clean([option?.label, option?.displayLabel].filter(Boolean).join(' ')).toLowerCase();
-    let wanted = '';
-    if (/nebul|respir/.test(raw)) wanted = 'nebulized';
-    else if (/(?:\bi\.?v\.?\b|\bi\.?m\.?\b|infusion)/.test(raw)) wanted = 'injectable';
-    else if (/\boral\b/.test(raw)) wanted = 'oral';
+    let wanted = explicit;
+    if (!wanted && /nebul|respir/.test(raw)) wanted = 'nebulized';
+    else if (!wanted && /(?:\bi\.?v\.?\b|\bi\.?m\.?\b|infusion)/.test(raw)) wanted = 'injectable';
+    else if (!wanted && /\boral\b/.test(raw)) wanted = 'oral';
 
+    if (wanted === 'oral_or_injectable') return items.filter(item => item.kind === 'oral' || item.kind === 'injectable');
     if (wanted) return items.filter(item => item.kind === wanted);
     if (items.some(item => item.kind === 'oral')) return items.filter(item => item.kind === 'oral');
     return items;
