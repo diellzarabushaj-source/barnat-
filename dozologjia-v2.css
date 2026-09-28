@@ -1764,3 +1764,110 @@ button,input,select{font:inherit}
     min-height:44px;
   }
 }
+
+/* ==========================================================================
+   Pediatric formulation audit + vial states — 2026-09-28
+   ========================================================================== */
+.dosage-page .dz-common-route-warning{
+  margin:0 0 10px;
+  padding:9px 10px;
+  border:1px solid #f6d58a;
+  border-radius:10px;
+  background:#fff8e7;
+  color:#7a4f00;
+  font-size:10.5px;
+  font-weight:650;
+  line-height:1.45;
+}
+.dosage-page .dz-common-vial-card{
+  border-color:#c9c4ff;
+  background:#fbfaff;
+}
+.dosage-page .dz-common-vial-card.is-gated{
+  border-color:#e6d9b8;
+  background:#fffdf7;
+}
+.dosage-page .dz-common-vial-card .dz-common-vial-gated{
+  color:#8a5b00;
+  font-size:21px;
+}
+.dosage-page .dz-common-vial-card .dz-common-volume-safety{
+  margin:8px 0 0;
+  padding-top:7px;
+  border-top:1px solid rgba(97,84,198,.12);
+}
+.dosage-page .dz-common-formulation-status{
+  margin-top:10px;
+  overflow:hidden;
+  border:1px solid #e7e8ef;
+  border-radius:10px;
+  background:#fff;
+}
+.dosage-page .dz-common-formulation-status>summary{
+  display:flex;
+  min-height:42px;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:9px 11px;
+  list-style:none;
+  cursor:pointer;
+  user-select:none;
+}
+.dosage-page .dz-common-formulation-status>summary::-webkit-details-marker{display:none}
+.dosage-page .dz-common-formulation-status>summary strong{
+  color:#42465a;
+  font-size:10.5px;
+  font-weight:760;
+}
+.dosage-page .dz-common-formulation-status>summary small{
+  color:#8d92a3;
+  font-size:9.5px;
+}
+.dosage-page .dz-common-formulation-status-list{
+  display:grid;
+  border-top:1px solid #eef0f4;
+}
+.dosage-page .dz-common-formulation-status-row{
+  display:grid;
+  grid-template-columns:minmax(130px,.7fr) minmax(0,1.3fr);
+  gap:10px;
+  padding:9px 11px;
+}
+.dosage-page .dz-common-formulation-status-row+.dz-common-formulation-status-row{
+  border-top:1px solid #f0f1f4;
+}
+.dosage-page .dz-common-formulation-status-row b{
+  color:#303447;
+  font-size:10px;
+  line-height:1.4;
+}
+.dosage-page .dz-common-formulation-status-row span{
+  color:#74798b;
+  font-size:9.5px;
+  line-height:1.45;
+}
+.dosage-page .dz-common-formulation-status-row.is-route-mismatch,
+.dosage-page .dz-common-formulation-status-row.is-needs-product,
+.dosage-page .dz-common-formulation-status-row.is-manual-combination{
+  background:#fffdf8;
+}
+
+@media(max-width:760px){
+  .dosage-page .dz-common-route-warning{
+    font-size:10px;
+    line-height:1.45;
+  }
+  .dosage-page .dz-common-formulation-status>summary{
+    min-height:44px;
+  }
+  .dosage-page .dz-common-formulation-status-row{
+    grid-template-columns:1fr;
+    gap:3px;
+    padding:10px;
+  }
+  .dosage-page .dz-common-vial-card .dz-common-volume-safety{
+    font-size:9px;
+    line-height:1.45;
+  }
+}

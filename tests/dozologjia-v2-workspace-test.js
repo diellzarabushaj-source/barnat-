@@ -34,7 +34,7 @@ assert.equal(styles.length, 2, 'Dozologjia must keep exactly two stylesheet owne
 assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-responsive4');
 assert.ok(scripts.includes('/phase9-personal-entities-client.js?v=phase9b'), 'Dozologjia personal entity runtime is missing');
 assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish2-lazy'), 'Dozologjia shared sidebar runtime is missing');
-assert.ok(scripts.includes('/pediatric-common-liquid-core.js?v=1'), 'Pediatric practical liquid conversion core is missing');
+assert.ok(scripts.includes('/pediatric-common-liquid-core.js?v=2'), 'Pediatric practical formulation conversion core is missing');
 assert.ok(scripts.includes('/pediatric-weight-age-core.js?v=1'), 'Pediatric weight-to-age core is missing');
 assert.equal(pageRuntimes.length, 1, 'Dozologjia must own exactly one page runtime in addition to shared runtimes');
 
@@ -43,7 +43,7 @@ const dosageJsVersion = pageRuntimes[0]?.match(/^\/dozologjia-v2\.js\?v=(\d+)$/)
 assert.ok(dosageCssVersion, 'Dozologjia stylesheet must use a numeric cache version');
 assert.ok(dosageJsVersion, 'Dozologjia runtime must use a numeric cache version');
 assert.equal(dosageCssVersion, dosageJsVersion, 'Dozologjia CSS and JS cache versions must stay synchronized');
-assert.ok(Number(dosageCssVersion) >= 38, 'Dozologjia asset version must not regress below v38');
+assert.ok(Number(dosageCssVersion) >= 39, 'Dozologjia asset version must not regress below v39');
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|dozologjia\.js|dozologjia-deep-audit\.js|style-loader|pediatric-calculator\.css|pediatric-calculator-client\.js/);
 assert.match(html, /phase9-personal-entities-client\.js\?v=phase9b/);
 
@@ -79,6 +79,15 @@ assert.match(css, /\.dz-common-section/);
 assert.match(css, /\.dz-common-volume/);
 assert.match(css, /\.dz-common-weight-quick/);
 assert.match(js, /function renderLiquidConversions\(/);
+assert.match(js, /Format praktike/);
+assert.match(js, /Flakon \(vial\)/);
+assert.match(js, /Format tjera të disponueshme/);
+assert.match(js, /Tabela bazë/);
+assert.match(js, /Formula e dozimit/);
+assert.match(js, /Format e disponueshme/);
+assert.match(js, /sectionSq\(section\.title\)/);
+assert.match(css, /\.dz-common-vial-card/);
+assert.match(css, /\.dz-common-formulation-status/);
 assert.match(js, /function addWeightShortcuts\(/);
 assert.match(js, /function resolvedAgeInfo\(/);
 assert.match(js, /MASTER_WEIGHT_AGE_CORE/);
