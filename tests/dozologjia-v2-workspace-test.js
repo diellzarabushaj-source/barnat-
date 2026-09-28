@@ -49,7 +49,7 @@ assert.equal(pageRuntimes.length, 1, 'Dozologjia must own exactly one page runti
 const cssVersion = styles[0]?.match(/^\/dozologjia-v2\.css\?v=(\d+)$/)?.[1] || '';
 const jsVersion = pageRuntimes[0]?.match(/^\/dozologjia-v2\.js\?v=(\d+)$/)?.[1] || '';
 assert.equal(cssVersion, jsVersion);
-assert.ok(Number(cssVersion) >= 48);
+assert.ok(Number(cssVersion) >= 49);
 
 assert.match(html, /name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/);
 assert.match(html, /id="pediatricCommonSearch"[^>]*autocapitalize="none"[^>]*spellcheck="false"[^>]*enterkeyhint="search"/);
@@ -92,6 +92,8 @@ assert.match(css, /\.dz-summary-audit\.is-blocked/);
 assert.match(css, /\.dz-evidence/);
 assert.match(css, /\.dz-evidence-warnings/);
 assert.match(css, /\.dz-evidence-sources/);
+assert.match(js, /dz-evidence-source-details/);
+assert.match(css, /\.dz-evidence-source-details/);
 assert.match(js, /function renderLiquidConversions\(/);
 assert.match(js, /function resolvedAgeInfo\(/);
 assert.match(js, /ageUnit === 'day'/);
