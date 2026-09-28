@@ -1086,6 +1086,10 @@
   }
 
   const liquidCore = window.DRxPediatricLiquid || null;
+  const doseSq = value => liquidCore?.doseTextSq ? liquidCore.doseTextSq(value) : String(value ?? '');
+  const formulationSq = value => liquidCore?.formulationTextSq ? liquidCore.formulationTextSq(value) : String(value ?? '');
+  const sectionSq = value => liquidCore?.sectionTitleSq ? liquidCore.sectionTitleSq(value) : String(value ?? '');
+  const componentSq = value => liquidCore?.componentSq ? liquidCore.componentSq(value) : String(value ?? '');
   const mlNumber = value => {
     const digits = Math.abs(value) < 1 ? 2 : 1;
     const factor = 10 ** digits;
@@ -1095,39 +1099,100 @@
 
   function renderLiquidConversions(drug, option, result, answer) {
     if (!liquidCore || result.error) return;
+
     const presentations = liquidCore.presentationsFor(drug, option);
     const conversions = liquidCore.volumeConversions(result, presentations);
-    if (!conversions.length) return;
+    const vialItems = liquidCore.vialConversions ? liquidCore.vialConversions(result, drug, option) : [];
+    const audit = liquidCore.formulationAudit ? liquidCore.formulationAudit(drug, option) : [];
+    const vialSources = new Set(vialItems.map(item => String(item.source || '')));
+    const extras = audit.filter(item => item.status !== 'auto-ml' && item.status !== 'vial-equivalent' && !vialSources.has(String(item.source || '')));
+
+    if (!conversions.length && !vialItems.length && !extras.length) return;
 
     const box = node('section', null, 'dz-common-volume');
     const head = node('div', null, 'dz-common-volume-head');
-    head.append(node('strong', 'Matja praktike'));
-    head.append(node('span', 'mL AUTO', 'dz-common-volume-badge'));
+    head.append(node('strong', 'Format praktike'));
+    head.append(node('span', 'AUTO + KONTROLL', 'dz-common-volume-badge'));
     box.append(head);
 
     const list = node('div', null, 'dz-common-volume-list');
+
     conversions.forEach(item => {
       const card = node('article', null, 'dz-common-volume-card');
       const top = node('div', null, 'dz-common-volume-top');
       top.append(node('b', item.form));
-      const concentration = item.componentBasis
-        ? `${calcFmt(item.mg)} mg ${item.componentBasis} / ${calcFmt(item.mL)} mL`
+      const basis = item.componentBasis ? componentSq(item.componentBasis) : '';
+      const concentration = basis
+        ? `${calcFmt(item.mg)} mg ${basis} / ${calcFmt(item.mL)} mL`
         : `${calcFmt(item.mg)} mg / ${calcFmt(item.mL)} mL`;
       top.append(node('small', concentration));
       card.append(top);
 
       const practical = node('div', null, 'dz-common-volume-dose');
       practical.append(node('strong', `≈ ${mlRange(item.volumeMin, item.volumeMax)}`));
-      practical.append(node('span', [item.basisLabel, item.frequency].filter(Boolean).join(' · ')));
+      practical.append(node('span', [item.basisLabel, doseSq(item.frequency)].filter(Boolean).join(' · ')));
       card.append(practical);
 
       const source = node('small', null, 'dz-common-volume-source');
-      source.append(node('span', 'Nga formulimi: '), node('b', item.source));
+      source.append(node('span', 'Nga formulimi: '), node('b', formulationSq(item.source)));
       card.append(source);
       list.append(card);
     });
+
+    vialItems.forEach(item => {
+      const card = node('article', null, `dz-common-volume-card dz-common-vial-card${item.convertible ? '' : ' is-gated'}`);
+      const top = node('div', null, 'dz-common-volume-top');
+      top.append(node('b', 'Flakon (vial)'));
+      const basis = item.componentBasis ? ` ${componentSq(item.componentBasis)}` : '';
+      if (Number.isFinite(item.amount) && item.amount > 0) {
+        top.append(node('small', `${calcFmt(item.amount)} ${item.unit}${basis} / flakon`));
+      } else {
+        top.append(node('small', 'Forca e komponentit duhet verifikuar'));
+      }
+      card.append(top);
+
+      const practical = node('div', null, 'dz-common-volume-dose');
+      if (item.convertible) {
+        const vialRange = `${mlNumber(item.vialMin)}${Math.abs(item.vialMin - item.vialMax) < 1e-9 ? '' : '–' + mlNumber(item.vialMax)} flakon`;
+        practical.append(node('strong', `≈ ${vialRange}`));
+        practical.append(node('span', [item.basisLabel, doseSq(item.frequency)].filter(Boolean).join(' · ')));
+      } else {
+        practical.append(node('strong', 'Pa AUTO', 'dz-common-vial-gated'));
+        practical.append(node('span', item.reason || 'Kërkohet verifikim i produktit dhe rrugës së administrimit.'));
+      }
+      card.append(practical);
+
+      const source = node('small', null, 'dz-common-volume-source');
+      source.append(node('span', 'Formulimi: '), node('b', formulationSq(item.source)));
+      card.append(source);
+      card.append(node('p',
+        item.convertible
+          ? 'Ekuivalenti i flakonit tregon vetëm sasinë e barit para rikonstituimit. mL pas rikonstituimit varen nga etiketa/udhëzimi i produktit.'
+          : 'Flakoni nuk fshihet: sistemi tregon pse nuk lejohet konvertim automatik.',
+        'dz-common-volume-safety'
+      ));
+      list.append(card);
+    });
+
     box.append(list);
-    box.append(node('p', 'Kontrollo përqendrimin në shishe/kuti para administrimit.', 'dz-common-volume-safety'));
+
+    if (extras.length) {
+      const other = node('details', null, 'dz-common-formulation-status');
+      const summary = node('summary');
+      summary.append(node('strong', 'Format tjera të disponueshme'), node('small', `${extras.length} për kontroll`));
+      other.append(summary);
+      const statusList = node('div', null, 'dz-common-formulation-status-list');
+      extras.forEach(item => {
+        const row = node('div', null, `dz-common-formulation-status-row is-${item.status}`);
+        row.append(node('b', item.display || formulationSq(item.source)));
+        row.append(node('span', item.reason || 'Kjo formë nuk kërkon konvertim në mL.'));
+        statusList.append(row);
+      });
+      other.append(statusList);
+      box.append(other);
+    }
+
+    box.append(node('p', 'Gjithmonë verifiko përqendrimin, rrugën dhe mënyrën e rikonstituimit në etiketën/SmPC e produktit para administrimit.', 'dz-common-volume-safety'));
     answer.append(box);
   }
 
@@ -1169,7 +1234,7 @@
 
     const selector = node('select', null, 'dz-unit dz-common-select');
     options.forEach((option, index) => {
-      const choice = node('option', option.displayLabel || option.label);
+      const choice = node('option', doseSq(option.displayLabel || option.label));
       choice.value = String(index);
       selector.append(choice);
     });
@@ -1225,7 +1290,7 @@
         copy.append(node('small',
           info?.kind === 'below-range'
             ? 'Pesha është nën intervalin e tabelës; për doza sipas moshës duhet mosha e saktë.'
-            : `Default praktik nga pesha${sourceRange}. Mosha kronologjike ka përparësi kur dihet.`,
+            : `Sugjerim praktik nga pesha${sourceRange}. Mosha kronologjike ka përparësi kur dihet.`,
           'dz-common-age-note'
         ));
       } else {
@@ -1284,16 +1349,16 @@
 
       const primary = node('div', null, 'dz-common-result-main');
       primary.append(node('span', 'DOZA', 'dz-common-result-kicker'));
-      primary.append(node('p', result.primary, 'dz-common-result-dose'));
-      if (result.note) primary.append(node('p', result.note, 'dz-common-result-note'));
+      primary.append(node('p', doseSq(result.primary), 'dz-common-result-dose'));
+      if (result.note) primary.append(node('p', doseSq(result.note), 'dz-common-result-note'));
       answer.append(primary);
 
-      if (result.secondary) answer.append(node('p', result.secondary, 'dz-common-derived'));
+      if (result.secondary) answer.append(node('p', doseSq(result.secondary), 'dz-common-derived'));
       renderLiquidConversions(drug, option, result, answer);
 
       if (result.source) {
         const source = node('p', null, 'dz-common-source-line');
-        source.append(node('span', 'Formula: '), node('b', result.source));
+        source.append(node('span', 'Formula: '), node('b', doseSq(result.source)));
         answer.append(source);
       }
     }
@@ -1367,7 +1432,14 @@
   }
 
   function drugMatches(drug, query) {
-    return !query || searchText([drug.name, ...drug.dose, ...drug.formulations].join(' ')).includes(query);
+    if (!query) return true;
+    const raw = [drug.name, ...drug.dose, ...drug.formulations].join(' ');
+    const translated = [
+      drug.name,
+      ...drug.dose.map(doseSq),
+      ...drug.formulations.map(formulationSq),
+    ].join(' ');
+    return searchText(raw).includes(query) || searchText(translated).includes(query);
   }
 
   function renderDrug(drug, autoOpen = false) {
@@ -1375,7 +1447,7 @@
     card.open = Boolean(autoOpen);
     const summary = node('summary');
     const formula = node('span', null, 'dz-common-summary-dose');
-    drug.dose.forEach(line => formula.append(node('small', line)));
+    drug.dose.forEach(line => formula.append(node('small', doseSq(line))));
     summary.append(node('span', String(drug.no), 'dz-common-no'), node('strong', drug.name), formula);
     card.append(summary);
 
@@ -1386,16 +1458,16 @@
     const sourceDetails = node('details', null, 'dz-common-source-details');
     sourceDetails.open = !window.matchMedia('(max-width:760px)').matches;
     const sourceSummary = node('summary');
-    sourceSummary.append(node('strong', 'Tabela origjinale'), node('small', 'doza + formulimet'));
+    sourceSummary.append(node('strong', 'Tabela bazë'), node('small', 'doza + format farmaceutike'));
     sourceDetails.append(sourceSummary);
 
     const grid = node('div', null, 'dz-common-source-grid');
     const doseCol = node('div', null, 'dz-common-source-col');
-    doseCol.append(node('h4', 'Formula for dosage'));
-    drug.dose.forEach(line => doseCol.append(node('p', line)));
+    doseCol.append(node('h4', 'Formula e dozimit'));
+    drug.dose.forEach(line => doseCol.append(node('p', doseSq(line))));
     const formCol = node('div', null, 'dz-common-source-col');
-    formCol.append(node('h4', 'Available formulations'));
-    drug.formulations.forEach(line => formCol.append(node('p', line)));
+    formCol.append(node('h4', 'Format e disponueshme'));
+    drug.formulations.forEach(line => formCol.append(node('p', formulationSq(line))));
     grid.append(doseCol, formCol);
     sourceDetails.append(grid);
     body.append(sourceDetails);
@@ -1433,13 +1505,13 @@
 
     commonSections.forEach((section, sectionIndex) => {
       const matching = section.drugs.filter(drug => drugMatches(drug, query));
-      if (query && !matching.length && !searchText(`${section.roman} ${section.title}`).includes(query)) return;
+      if (query && !matching.length && !searchText(`${section.roman} ${section.title} ${sectionSq(section.title)}`).includes(query)) return;
       const visible = matching.length ? matching : section.drugs;
       shown += visible.length;
       const block = node('details', null, 'dz-common-section');
       block.open = sectionIndex === 0 || Boolean(query);
       const summary = node('summary');
-      summary.append(node('span', section.roman, 'dz-common-roman'), node('strong', section.title), node('small', String(visible.length)));
+      summary.append(node('span', section.roman, 'dz-common-roman'), node('strong', sectionSq(section.title)), node('small', String(visible.length)));
       block.append(summary);
       const list = node('div', null, 'dz-common-drug-list');
       visible.forEach(drug => list.append(renderDrug(drug, uniqueDrug === drug)));
