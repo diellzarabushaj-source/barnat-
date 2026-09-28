@@ -8,7 +8,7 @@ const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const map = JSON.parse(read('data/pediatric-weight-age-defaults.json'));
-const migration = read('supabase/migrations/20260928032000_add_pediatric_weight_age_default_v1.sql');
+const migration = read('supabase/migrations/20260928011716_add_pediatric_weight_age_default_v1.sql');
 const handler = read('lib/pediatric-common-reference-handler.js');
 const transport = read('lib/medindex-data-api.js');
 const client = read('dozologjia-master-client.js');
