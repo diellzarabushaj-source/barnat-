@@ -836,6 +836,7 @@
 
   const DATA_URL = '/api/dosage?view=pediatric-common-reference';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
+  const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
   const byId = id => document.getElementById(id);
   const node = (tag, text, className) => {
     const item = document.createElement(tag);
@@ -858,6 +859,8 @@
   const doseRange = (lo, hi, unit) => `${calcFmt(lo)}${lo === hi ? '' : '–' + calcFmt(hi)} ${unit}`;
   const searchText = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   let commonSections = [];
+  let weightAgeDefaults = null;
+  const weightAgeCore = window.DRxPediatricWeightAge || null;
 
   function inBand(value, band, minKey, maxKey) {
     const min = band[minKey], max = band[maxKey];
@@ -872,6 +875,54 @@
   }
   const needsWeight = option => ['weight', 'ageWeight', 'oseltamivirBands'].includes(option?.mode);
   const needsAge = option => ['ageBands', 'ageWeight', 'ageFixed', 'oseltamivirBands'].includes(option?.mode);
+  const needsPatientWeight = option => needsWeight(option) || needsAge(option);
+
+  function resolvedAgeInfo(values) {
+    if (values.ageManual) {
+      const months = ageMonths(values.age, values.ageUnit);
+      if (positiveNumber(months)) {
+        return {
+          minMonths:months,
+          maxMonths:months,
+          defaultMonths:months,
+          label:weightAgeCore?.rangeLabel ? weightAgeCore.rangeLabel(months, months) : `≈${calcFmt(months)} muaj`,
+          kind:'manual',
+          manual:true,
+          ambiguous:false,
+        };
+      }
+    }
+    if (!weightAgeCore || !weightAgeDefaults) return null;
+    const inferred = weightAgeCore.infer(values.weight, weightAgeDefaults);
+    return inferred ? { ...inferred, manual:false } : null;
+  }
+
+  function safeAgeBand(ageInfo, bands) {
+    if (!ageInfo || !Array.isArray(bands)) return null;
+    if (ageInfo.manual || (Number.isFinite(ageInfo.maxMonths) && Math.abs(ageInfo.maxMonths - ageInfo.minMonths) < 0.001)) {
+      return bands.find(item => inBand(ageInfo.defaultMonths, item, 'minMonths', 'maxMonths')) || null;
+    }
+    if (!weightAgeCore?.ageRangeFitsBand) return null;
+    const candidates = bands.filter(item => weightAgeCore.ageRangeFitsBand(ageInfo, item, 'minMonths', 'maxMonths'));
+    return candidates.length === 1 ? candidates[0] : null;
+  }
+
+  function ageInfoFitsOption(ageInfo, option) {
+    if (!ageInfo || !option) return false;
+    if (ageInfo.manual || (Number.isFinite(ageInfo.maxMonths) && Math.abs(ageInfo.maxMonths - ageInfo.minMonths) < 0.001)) {
+      return inBand(ageInfo.defaultMonths, option, 'minMonths', 'maxMonths');
+    }
+    return Boolean(weightAgeCore?.ageRangeFitsBand?.(ageInfo, option, 'minMonths', 'maxMonths'));
+  }
+
+  function ageConfirmation(ageInfo) {
+    return {
+      error:ageInfo?.label
+        ? `Pesha sugjeron moshën ${ageInfo.label}. Për këtë bar mosha e saktë mund ta ndryshojë dozën.`
+        : 'Pesha nuk mjafton për ta përcaktuar moshën për këtë dozë.',
+      needsAgeConfirmation:true,
+    };
+  }
 
   function doseResult({ min, max, unit, period = 'dose', frequency = '', source = '', split = null, note = '' }) {
     const result = {
@@ -906,30 +957,44 @@
       });
     }
 
-    const months = needsAge(option) ? ageMonths(values.age, values.ageUnit) : NaN;
-    const weight = needsWeight(option) ? numeric(values.weight) : NaN;
+    const weight = needsPatientWeight(option) ? numeric(values.weight) : NaN;
+    const ageInfo = needsAge(option) ? resolvedAgeInfo(values) : null;
+
+    if (needsPatientWeight(option) && !positiveNumber(weight)) {
+      return { error:'Shëno vetëm peshën reale në kg. Mosha do të sugjerohet automatikisht.' };
+    }
 
     if (option.mode === 'ageBands') {
-      if (!positiveNumber(months)) return { error:'Shëno moshën.' };
-      const band = option.bands.find(item => inBand(months, item, 'minMonths', 'maxMonths'));
-      if (!band) return { error:'Tabela nuk përcakton dozë për këtë moshë.' };
+      if (!ageInfo || !Number.isFinite(ageInfo.defaultMonths)) return ageConfirmation(ageInfo);
+      const band = safeAgeBand(ageInfo, option.bands);
+      if (!band) {
+        if (ageInfo.manual) return { error:'Tabela nuk përcakton dozë për këtë moshë.' };
+        return ageConfirmation(ageInfo);
+      }
       return doseResult({
         min:band.min, max:band.max, unit:band.unit, period:'dose',
         frequency:band.frequency || '', source:band.source, note:band.frequency || '',
       });
     }
+
     if (option.mode === 'ageFixed') {
-      if (!positiveNumber(months)) return { error:'Shëno moshën.' };
-      if (!inBand(months, option, 'minMonths', 'maxMonths')) return { error:'Kjo formulë nuk i përket kësaj moshe.' };
+      if (!ageInfo || !Number.isFinite(ageInfo.defaultMonths)) return ageConfirmation(ageInfo);
+      if (!ageInfoFitsOption(ageInfo, option)) {
+        if (ageInfo.manual) return { error:'Kjo formulë nuk i përket kësaj moshe.' };
+        return ageConfirmation(ageInfo);
+      }
       return doseResult({
         min:option.min, max:option.max, unit:option.unit, period:'dose',
         frequency:option.frequency || '', source:option.label, note:option.frequency || '',
       });
     }
+
     if (option.mode === 'ageWeight') {
-      if (!positiveNumber(months)) return { error:'Shëno moshën.' };
-      if (!inBand(months, option, 'minMonths', 'maxMonths')) return { error:'Kjo formulë nuk i përket kësaj moshe.' };
-      if (!positiveNumber(weight)) return { error:'Shëno peshën reale në kg.' };
+      if (!ageInfo || !Number.isFinite(ageInfo.defaultMonths)) return ageConfirmation(ageInfo);
+      if (!ageInfoFitsOption(ageInfo, option)) {
+        if (ageInfo.manual) return { error:'Kjo formulë nuk i përket kësaj moshe.' };
+        return ageConfirmation(ageInfo);
+      }
       const min = option.min * weight;
       const max = option.max * weight;
       return doseResult({
@@ -938,17 +1003,24 @@
         note:[option.period === 'day' ? 'në 24 orë' : '', option.frequency].filter(Boolean).join(' · '),
       });
     }
+
     if (option.mode === 'oseltamivirBands') {
-      if (!positiveNumber(months)) return { error:'Shëno moshën.' };
-      const ageBand = option.bands.find(item => inBand(months, item, 'minMonths', 'maxMonths'));
+      if (!ageInfo || !Number.isFinite(ageInfo.defaultMonths)) return ageConfirmation(ageInfo);
+      const ageBand = safeAgeBand(ageInfo, option.bands);
       if (ageBand) {
         return doseResult({
           min:ageBand.min, max:ageBand.max, unit:ageBand.unit, period:'dose',
           frequency:ageBand.frequency || '', source:ageBand.source, note:ageBand.frequency || '',
         });
       }
-      if (months <= 12) return { error:'Tabela nuk përcakton dozë për këtë moshë.' };
-      if (!positiveNumber(weight)) return { error:'Për fëmijën mbi 1 vjeç, shëno peshën reale në kg.' };
+
+      const certainlyOverOneYear = Number.isFinite(ageInfo.minMonths) && ageInfo.minMonths > 12;
+      const manuallyOverOneYear = ageInfo.manual && ageInfo.defaultMonths > 12;
+      if (!certainlyOverOneYear && !manuallyOverOneYear) {
+        if (ageInfo.manual && ageInfo.defaultMonths <= 12) return { error:'Tabela nuk përcakton dozë për këtë moshë.' };
+        return ageConfirmation(ageInfo);
+      }
+
       const weightBand = option.weightBands.find(item => inBand(weight, item, 'minKg', 'maxKg'));
       if (!weightBand) return { error:'Tabela nuk përcakton brez peshe për këtë vlerë.' };
       return doseResult({
@@ -956,8 +1028,8 @@
         frequency:weightBand.frequency || '', source:weightBand.source, note:weightBand.frequency || '',
       });
     }
+
     if (option.mode === 'weight') {
-      if (!positiveNumber(weight)) return { error:'Shëno peshën reale në kg.' };
       const min = option.min * weight;
       const max = option.max * weight;
       let periodText = 'për një marrje';
@@ -969,6 +1041,7 @@
         note:[periodText, option.frequency].filter(Boolean).join(' · '),
       });
     }
+
     return { error:'Kjo formulë nuk ka kalkulator numerik.' };
   }
 
