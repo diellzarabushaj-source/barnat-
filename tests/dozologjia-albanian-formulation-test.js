@@ -1,226 +1,111 @@
 'use strict';
-/*
- * Dozologjia speaks Albanian, and turns mg into something measurable.
- *
- * Two properties are worth pinning. First, the page has no English audience:
- * every string Master publishes must have an Albanian rendering, and the
- * engine must refuse to load rather than leak one. Second, the formulation
- * shelf must stay honest — templates are what the market usually carries, not
- * a verified label, and the volume they produce is arithmetic on a strength
- * the clinician is responsible for.
- */
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const Core = require('../pediatric-common-liquid-core.js');
+const WeightAge = require('../pediatric-weight-age-core.js');
 
 const ROOT = path.resolve(__dirname, '..');
-const engine = require('../lib/dozologjia-master');
-const sq = require('../lib/dozologjia-sq');
-const shelf = require('../lib/dozologjia-products');
-const client = fs.readFileSync(path.join(ROOT, 'dozologjia-master-client.js'), 'utf8');
-const catalog = engine.catalog();
+const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
+const html = read('dozologjia.html');
+const css = read('dozologjia-v2.css');
+const client = read('dozologjia-master-client.js');
+const reference = JSON.parse(read('data/pediatric-common-drugs-reference.json'));
 
-/* ------------------------------------------------------------ 1 · Albanian */
-assert.equal(catalog.regimens.length, 43);
+assert.match(html, /<h1>Dozologjia pediatrike<\/h1>/);
+assert.match(html, /Dozat pediatrike të barnave të zakonshme/);
+assert.doesNotMatch(html, /id="drugPicker"|id="masterForm"|id="masterResult"|id="masterProvenance"/);
+assert.doesNotMatch(client, /master-catalog|master-calculate|function payload\(/);
 
-/* The stored English must not survive into anything the catalog publishes. */
-const ENGLISH = [
-  'Cardiac arrest', 'Anaphylaxis', 'Fever / mild-moderate pain', 'Acute otitis media',
-  'Nausea/vomiting', 'PONV prevention/treatment', 'IV fluid resuscitation', 'Cystitis',
-  'Renal context must be checked before adjustment/output.', 'Hepatic context applies.',
-  'QT-risk review/monitoring applies.', 'Exact product/formulation must be selected.',
-  'Adult', 'Pediatric', 'Pediatric <40 kg', 'Adult/≥40 kg',
-  'Solution for injection', 'Eye ointment', 'Prefilled syringe', 'Film-coated tablet',
-  'q8h', 'q4–6h PRN', 'BID', 'TID', 'Single dose', 'Short course', 'Indication-dependent',
-  'Initial bolus', 'After 3 shocks', 'cm_ribbon', 'application',
-];
-for (const row of catalog.regimens) {
-  const shown = [row.indication, row.population, row.routeLabel, row.routeText, row.frequency,
-    row.duration, row.safety, row.unitLabel, ...row.gates.map(gate => gate.text),
-    ...row.steps.map(step => step.label), ...row.products.map(product => product.form)].filter(Boolean);
-  for (const text of shown) {
-    assert.ok(!ENGLISH.includes(text), `${row.id} still shows the stored English: ${JSON.stringify(text)}`);
-    assert.ok(text.trim(), `${row.id} published an empty label`);
-  }
-  assert.ok(row.indication && row.population && row.routeLabel, `${row.id} is missing a rendered label`);
-  /* Identifiers are for the wire, never for the clinician. */
-  assert.doesNotMatch(shown.join(' '), /R2-\d{4}|F2-\d{4}|IND\d{3}|\bG\d{4}\b|SRC-/, `${row.id} leaks an internal identifier`);
-}
+assert.equal(reference.sections.length, 10);
+assert.equal(reference.sections.reduce((sum, section) => sum + section.drugs.length, 0), 50);
 
-/* Gate text reads as something a clinician can confirm, not as a rule dump. */
-const gateTexts = new Set(catalog.regimens.flatMap(row => row.gates.map(gate => gate.text)));
-assert.ok(gateTexts.size >= 4);
-gateTexts.forEach(text => assert.match(text, /\.$/, `A confirmation must read as a sentence: ${text}`));
+/* Visible clinical wording is Albanian while source JSON remains untouched. */
+for (const section of reference.sections) {
+  const sqTitle = Core.sectionTitleSq(section.title);
+  assert.ok(sqTitle && sqTitle !== section.title, `Section not translated: ${section.title}`);
 
-/* Fail-closed: a published string with no rendering stops the module. */
-const missingTranslation = () => {
-  const kept = sq.INDICATIONS.IND001;
-  delete sq.INDICATIONS.IND001;
-  try {
-    delete require.cache[require.resolve('../lib/dozologjia-master')];
-    require('../lib/dozologjia-master');
-    return null;
-  } catch (error) {
-    return error;
-  } finally {
-    sq.INDICATIONS.IND001 = kept;
-    delete require.cache[require.resolve('../lib/dozologjia-master')];
-    require('../lib/dozologjia-master');
-  }
-};
-const refusal = missingTranslation();
-assert.ok(refusal, 'A missing Albanian rendering must stop the engine, not reach the page');
-assert.match(String(refusal.message), /Missing Albanian indication/);
-
-/* Errors the clinician reads are Albanian too, including the bounds. */
-const cefuroxime = catalog.regimens.find(row => row.drugId === 'D037');
-const overweight = engine.calculate({ regimenId:cefuroxime.id, drugId:cefuroxime.drugId,
-  indicationId:cefuroxime.indicationId, scope:true, weight:70, age:8, ageUnit:'year', given24h:0,
-  gates:Object.fromEntries(cefuroxime.gates.map(gate => [gate.id, 'PASS'])) });
-assert.equal(overweight.outcome, 'BLOCKED');
-assert.deepEqual(overweight.errors, ['Pesha duhet të jetë nën 40 kg.']);
-
-/* ------------------------------------------------------------- 2 · the shelf */
-const templates = Object.entries(shelf.TEMPLATES);
-assert.ok(templates.length >= 10, 'Every drug the source leaves unbound needs a shelf to measure from');
-const ids = new Set();
-for (const [drugId, items] of templates) {
-  assert.ok(catalog.regimens.some(row => row.drugId === drugId), `${drugId} is not a published drug`);
-  assert.ok(items.length, `${drugId} has an empty shelf`);
-  for (const item of items) {
-    assert.ok(!ids.has(item.id), `Duplicate template id ${item.id}`);
-    ids.add(item.id);
-    assert.equal(item.marketTypical, true, `${item.id} must be flagged as a market strength, not a label`);
-    assert.ok(!('sourceUrl' in item) && !('source' in item), `${item.id} must not claim a source`);
-    assert.ok(item.mg > 0, `${item.id} needs a strength`);
-    if (item.kind === 'liquid') assert.ok(item.mL > 0, `${item.id} needs a volume`);
-    else { assert.equal(item.kind, 'solid'); assert.ok(item.form, `${item.id} needs a dosage form`); }
-    assert.match(item.label, /^[\d,]+ mg( \/ [\d,]+ mL)?$/, `${item.id} label reads oddly: ${item.label}`);
+  for (const drug of section.drugs) {
+    for (const line of drug.dose) {
+      const sq = Core.doseTextSq(line);
+      assert.ok(sq.trim());
+      assert.doesNotMatch(sq, /Same as|Pneumonia|Meningitis|Prophylaxis|Can give upto|Half dose of|Nebulisation|single dose|next 4 days/i);
+    }
+    for (const line of drug.formulations) {
+      const sq = Core.formulationTextSq(line);
+      assert.ok(sq.trim());
+      assert.doesNotMatch(sq, /\b(?:Syp|Cap|Dps|Respules?|Injection|Ampoule)\b/i);
+    }
   }
 }
-/* A drug whose dose lands in mg with no bound product is the whole reason the
-   shelf exists, so those drugs must actually have one. */
-const unbound = catalog.regimens.filter(row => !row.products.length && ['mg', 'mcg', 'g'].includes(row.unit));
-const unstocked = [...new Set(unbound.map(row => row.drugId))].filter(id => !shelf.TEMPLATES[id]);
-assert.deepEqual(unstocked, [], `These drugs give mg with nothing to measure it from: ${unstocked}`);
 
-/* The page never presents a market strength as if it were audited. */
-assert.match(client, /Fuqi tipike e tregut, pa etiketë të verifikuar/);
-assert.match(client, /produkt i lidhur në Master/);
+assert.match(client, /Tabela bazë/);
+assert.match(client, /Formula e dozimit/);
+assert.match(client, /Format e disponueshme/);
+assert.match(client, /Format praktike/);
+assert.match(client, /Format tjera të disponueshme/);
 
-/* -------------------------------------------------- 3 · the default strength */
-/* Re-derive the shipped rule rather than a copy of it. */
-const sandbox = {};
-new Function('exports', `
-  ${client.match(/const MEASURABLE_ML = [\d.]+;/)[0]}
-  const positive = value => Number.isFinite(value) && value > 0;
-  ${client.match(/function mgPerML\(item\) \{[\s\S]*?\n  \}/)[0]}
-  ${client.match(/function preferred\(items, mg\) \{[\s\S]*?\n  \}/)[0]}
-  exports.preferred = preferred;
-`)(sandbox);
-const { preferred } = sandbox;
+/* Weight is the only default input. Exact age appears only when clinically needed. */
+assert.match(client, /Pesha e fëmijës/);
+assert.match(client, /MOSHA AUTO NGA PESHA/);
+assert.match(client, /Mosha e saktë/);
+assert.match(client, /function resolvedAgeInfo\(/);
+assert.match(client, /function safeAgeBand\(/);
+assert.doesNotMatch(client, /numberInput\('masterWeight'|numberInput\('masterAge'/);
 
-const paracetamol = shelf.TEMPLATES.D016;
-assert.equal(preferred(paracetamol, 500).id, 'paracetamol-tab-500', 'A dose that is exactly one tablet is a tablet');
-assert.equal(preferred(paracetamol, 210).kind, 'liquid', 'A dose that does not land on a tablet is measured');
-assert.equal(preferred(paracetamol, 210).id, 'paracetamol-250-5', 'Take the smallest volume a syringe can still read');
-const amoxicillin = shelf.TEMPLATES.D031;
-assert.equal(preferred(amoxicillin, 500).id, 'amoxicillin-cap-500', 'One capsule beats ten millilitres');
-assert.equal(preferred(amoxicillin, 875).kind, 'liquid', '3½ capsules is not a prescription');
-/* Nothing measurable: take the largest volume rather than an unreadable one. */
-const tiny = [{ id:'a', kind:'liquid', mg:100, mL:1 }, { id:'b', kind:'liquid', mg:500, mL:1 }];
-assert.equal(preferred(tiny, 20).id, 'a');
-assert.equal(preferred([], 100), null);
+const at10 = WeightAge.infer(10, WeightAge.DEFAULT_MAP);
+assert.equal(at10.defaultMonths, 12);
+const at18 = WeightAge.infer(18, WeightAge.DEFAULT_MAP);
+assert.equal(at18.defaultMonths, 54);
+assert.equal(at18.defaultLabel, '≈4 vjeç 6 muaj');
 
-/* ------------------------------------------------------- 4 · the wire stays shut */
-/* The clinician's own strength is arithmetic in the page; it must never be
-   posted as if the server could be told a concentration. */
-const body = client.match(/function payload\(\) \{[\s\S]*?\n  \}/)[0];
-const posted = [...body.matchAll(/input\.([A-Za-z0-9]+) =/g)].map(match => match[1])
-  .concat([...body.matchAll(/\{ ([^}]*?) \}/g)].flatMap(match => [...match[1].matchAll(/([A-Za-z0-9]+):/g)].map(k => k[1])));
-const allowed = ['regimenId', 'drugId', 'indicationId', 'age', 'ageUnit', 'weight', 'scope', 'gates', 'productId', 'stepId', 'given24h', 'givenTotal'];
-posted.forEach(key => assert.ok(allowed.includes(key), `The page must not send ${key} to the calculator`));
-assert.ok(!/customStrength|mgPerMl:|concentration/i.test(body.replace(/mgPerML/g, '')), 'No strength may travel to the server payload');
-assert.equal(engine.calculate({ regimenId:'R2-0022', drugId:'D016', indicationId:'IND018', scope:true, mgPerMl:25 }).outcome, 'BLOCKED');
-
-console.log('PASS: Albanian rendering is complete and fail-closed, the shelf is honest, and the default strength is the practical one');
-
-/* --------------------------------------------------- 5 · the page on a phone */
-const html = fs.readFileSync(path.join(ROOT, 'dozologjia.html'), 'utf8');
-const css = fs.readFileSync(path.join(ROOT, 'dozologjia-v2.css'), 'utf8');
-/* Dozologjia now has more than one 760px pass: the original Master phone
-   contract plus the final pediatric/iPhone refinement. Audit the complete
-   phone cascade from the first page-owned breakpoint onward. */
-const phone = css.slice(css.indexOf('@media(max-width:760px)'));
-
-/* Three choices, one patient block, one answer — nothing else on the page. */
-['drugPicker', 'indicationPicker', 'regimenPicker'].forEach(id =>
-  assert.match(html, new RegExp(`class="dz-picker" id="${id}"`), `${id} must be a foldable picker`));
-assert.match(client, /const compact = window\.matchMedia\('\(max-width:760px\)'\)/);
-assert.match(client, /function fold\(id\) \{\n\s*const picker = \$\(id\);\n\s*if \(picker && compact\.matches\) picker\.open = false;/,
-  'A picker folds after a choice only when the screen is small');
-/* A folded picker has to say what it is holding. */
-assert.match(phone, /\.dz-picker-current\s*\{[\s\S]*?display\s*:\s*block\s*;/);
-assert.match(css, /\.dz-picker-current\{display:none\}/);
-/* ...and on a wide screen it cannot be clicked shut at all. */
-assert.match(client, /if \(!compact\.matches && !picker\.open\) picker\.open = true;/);
-
-/* Anything a finger has to hit is at least 44px on a phone. */
-const size = (block, selector, property) => {
-  const rule = block.match(new RegExp(`\\${selector}\\{[^}]*`));
-  assert.ok(rule, `${selector} has no rule`);
-  const found = rule[0].match(new RegExp(`${property}:(\\d+)px`));
-  return found ? Number(found[1]) : 0;
+/* Liquids expose mL only from explicit source concentrations. */
+const all = reference.sections.flatMap(section => section.drugs);
+const find = name => {
+  const drug = all.find(item => item.name === name);
+  assert.ok(drug, `Missing ${name}`);
+  return drug;
 };
-assert.ok(size(css, '.dz-check', 'min-height') >= 44, 'A confirmation row must be tappable');
-assert.ok(size(css, '.dz-none', 'height') >= 44, 'The "Asgjë" shortcut must be tappable');
-assert.ok(size(css, '.dz-copy', 'min-height') >= 44, 'The copy button must be tappable');
-assert.ok(size(phone, '.dz-picker>summary', 'min-height') >= 44, 'A folded picker row must be tappable');
-assert.ok(size(css, '.dz-chip', 'min-height') >= 36, 'A chip must be comfortably tappable');
 
-/* The answer is one number, not a stack of paragraphs. */
-assert.equal((client.match(/'dz-dose'/g) || []).length, 1, 'There is exactly one headline dose');
-assert.ok(size(css, '.dz-dose', 'font-size') >= 32, 'The dose must be readable at arm’s length');
-assert.match(client, /'Kopjo përmbledhjen'/, 'The finished line must be copyable');
+const amoxicillin = find('Amoxicillin');
+const amox = Core.presentationsFor(amoxicillin, amoxicillin.calc[0]);
+assert.deepStrictEqual(amox.map(item => [item.form,item.mg,item.mL]), [
+  ['Shurup',125,5],['Shurup',250,5],['Pika',100,1],
+]);
+const amoxMl = Core.volumeConversions({
+  doseMin:180,doseMax:180,doseUnit:'mg',dosePeriod:'dose',
+  perDoseMin:180,perDoseMax:180,frequency:'q8h',
+}, amox);
+assert.equal(amoxMl[0].volumeMin, 7.2);
+assert.equal(amoxMl[1].volumeMin, 3.6);
+assert.equal(amoxMl[2].volumeMin, 1.8);
 
-/* Plain words, not source shorthand, and no value asked for twice. */
-['Bari', 'Indikacioni', 'Skema dhe mënyra e dhënies', 'Pesha', 'Mosha', 'Sasia për të matur']
-  .forEach(word => assert.ok(html.includes(word) || client.includes(word), `The page must say "${word}"`));
-assert.equal((client.match(/numberInput\('masterWeight'/g) || []).length, 1, 'Weight is entered once and reused');
-assert.doesNotMatch(client, /Llogarit dozën/, 'The answer arrives on its own, without a submit step');
+/* Dry vials are visible, but post-reconstitution mL is never invented. */
+const meropenem = find('Meropenem');
+const meroVial = Core.vialConversions({
+  doseMin:400,doseMax:400,doseUnit:'mg',dosePeriod:'dose',
+  perDoseMin:400,perDoseMax:400,frequency:'q8h',
+}, meropenem, meropenem.calc[0])[0];
+assert.equal(meroVial.convertible, true);
+assert.equal(meroVial.vialMin, 0.4);
 
-console.log('PASS: the page folds, reads and taps like the antibiotics one');
+const coAmox = find('Amoxicillin + Clavulanic');
+const coVial = Core.vialConversions({
+  doseMin:800,doseMax:900,doseUnit:'mg',dosePeriod:'day',
+}, coAmox, coAmox.calc[1])[0];
+assert.equal(coVial.convertible, false);
+assert.match(coVial.reason, /nuk e specifikon rrugën IV\/IM/);
 
-/* ------------------------------------------- 6 · the weight fills the age in */
-/* One canonical map is shared by Master and the 50-drug pediatric reference. */
-const WeightAge = require('../pediatric-weight-age-core.js');
-assert.match(client, /const MASTER_WEIGHT_AGE_CORE = window\.DRxPediatricWeightAge \|\| null;/);
-assert.doesNotMatch(client, /const REFERENCE_AGES =/, 'No second hidden weight-age table may return');
-assert.deepStrictEqual(WeightAge.DEFAULT_MAP.bands.length, 14);
+assert.match(client, /Ekuivalenti i flakonit tregon vetëm sasinë e barit para rikonstituimit/);
+assert.match(client, /Gjithmonë verifiko përqendrimin, rrugën dhe mënyrën e rikonstituimit/);
 
-const at20 = WeightAge.infer(20, WeightAge.DEFAULT_MAP);
-assert.equal(at20.defaultMonths, 66, '20 kg uses the midpoint default of the overlapping 4–7 year source interval');
-assert.equal(at20.defaultLabel, '≈5 vjeç 6 muaj');
-const at9 = WeightAge.infer(9, WeightAge.DEFAULT_MAP);
-assert.equal(at9.defaultMonths, 12, '9 kg maps to the one-year source band');
-const at7 = WeightAge.infer(7, WeightAge.DEFAULT_MAP);
-assert.equal(at7.defaultMonths, 6, '7 kg maps to the six-month source band');
-const neonate = WeightAge.infer(3.4, WeightAge.DEFAULT_MAP);
-assert.equal(neonate.defaultMonths, 0, 'The supplied newborn band is a valid default, including age zero');
-assert.equal(WeightAge.infer(0, WeightAge.DEFAULT_MAP), null);
-assert.equal(WeightAge.infer(NaN, WeightAge.DEFAULT_MAP), null);
+/* Phone-first clinical use. */
+assert.match(html, /viewport-fit=cover/);
+assert.match(html, /enterkeyhint="search"/);
+assert.match(css, /env\(safe-area-inset-bottom\)/);
+assert.match(css, /\.dz-common-weight-quick button\{[\s\S]{0,200}?min-height:44px/);
+assert.match(css, /\.dz-common-weight-field \.dz-number input\{[\s\S]{0,200}?font-size:30px/);
+assert.match(css, /\.dz-common-volume-dose strong\{[\s\S]{0,200}?font-size:34px/);
 
-/* The estimate never silently becomes the clinician's own answer, and an
-   ambiguous source interval may not cross a regimen age gate unchecked. */
-assert.match(client, /state\.ageSource = 'chosen'/);
-assert.match(client, /if \(!age \|\| state\.ageSource === 'chosen'\) return;/,
-  'An age the clinician typed is never overwritten by a weight');
-assert.match(client, /function inferredAgeFitsRegimen\(/);
-assert.match(client, /state\.ageSource = 'weight-ambiguous'/);
-assert.match(client, /AUTO nga pesha/);
-assert.match(css, /\.dz-field\[data-source="weight"\]/, 'A derived age must look different from a typed one');
-assert.ok(client.indexOf("numberInput('masterWeight'") < client.indexOf("numberInput('masterAge'"),
-  'The weight field must come before the age field');
-
-console.log('PASS: one weight-age source fills the default age, guards age boundaries, and never overwrites a known age');
+console.log('PASS: pediatric-only Dozologjia is Albanian, weight-first, formulation-aware and mobile-safe');
