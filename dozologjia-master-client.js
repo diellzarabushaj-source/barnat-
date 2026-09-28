@@ -343,10 +343,11 @@
   function renderLiquidConversions(drug, option, result, answer) {
     if (!liquidCore || result.error) return;
 
-    const presentations = liquidCore.presentationsFor(drug, option);
+    const calcDrug = practicalDrug(drug);
+    const presentations = liquidCore.presentationsFor(calcDrug, option);
     const conversions = liquidCore.volumeConversions(result, presentations);
-    const vialItems = liquidCore.vialConversions ? liquidCore.vialConversions(result, drug, option) : [];
-    const audit = liquidCore.formulationAudit ? liquidCore.formulationAudit(drug, option) : [];
+    const vialItems = liquidCore.vialConversions ? liquidCore.vialConversions(result, calcDrug, option) : [];
+    const audit = liquidCore.formulationAudit ? liquidCore.formulationAudit(calcDrug, option) : [];
     const vialSources = new Set(vialItems.map(item => String(item.source || '')));
     const extras = audit.filter(item => item.status !== 'auto-ml' && item.status !== 'vial-equivalent' && !vialSources.has(String(item.source || '')));
 
@@ -472,7 +473,7 @@
 
   function renderCalculator(drug, host) {
     host.replaceChildren();
-    const options = drug.calc || [];
+    const options = effectiveOptions(drug);
     if (!options.length) return;
 
     const shell = node('div', null, 'dz-common-calculator');
