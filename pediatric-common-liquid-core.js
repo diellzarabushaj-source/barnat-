@@ -102,14 +102,10 @@
     const formulations = Array.isArray(drug?.formulations) ? drug.formulations : [];
     const special = specialPresentations(drug?.name, formulations);
     const generic = formulations.flatMap(parseGenericLine);
-    const combined = special.length ? [
-      ...special,
-      ...generic.filter(item => !special.some(specialItem =>
-        specialItem.kind === item.kind
-        && Math.abs(specialItem.mg - item.mg) < 1e-9
-        && Math.abs(specialItem.mL - item.mL) < 1e-9
-      )),
-    ] : generic;
+    /* For component-aware combinations, never mix the total-strength notation
+       back into a component-based dose conversion. The curated special set is
+       the only safe automatic mL path for that drug. */
+    const combined = special.length ? special : generic;
 
     const seen = new Set();
     return routeFilter(option, combined).filter(item => {
