@@ -137,7 +137,7 @@ const jsVersion = html.match(/dozologjia-v2\.js\?v=(\d+)/)?.[1];
 assert.ok(cssVersion && jsVersion);
 assert.equal(cssVersion, jsVersion);
 assert.ok(Number(cssVersion) >= 49);
-assert.match(html, /pediatric-common-liquid-core\.js\?v=9/);
+assert.match(html, /pediatric-common-liquid-core\.js\?v=10/);
 assert.match(html, /id="pediatricCommonReference"/);
 assert.match(staticBuild, /const pediatricOfflineData = \[/);
 assert.match(staticBuild, /\/data\/pediatric-common-drugs-reference\.json/);
