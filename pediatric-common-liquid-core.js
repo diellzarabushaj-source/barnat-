@@ -218,6 +218,10 @@
       .replace(/\bday\b/gi, 'ditë')
       .replace(/\bhrs?\b/gi, 'orë');
 
+    text = text
+      .replace(/(\d)\.(\d)/g, '$1,$2')
+      .replace(/(\d)\s*-\s*(\d)/g, '$1–$2')
+      .replace(/(\d)(mg|mcg|kg|U)\b/g, '$1 $2');
     return clean(text.replace(/\s+([,.;])/g, '$1'));
   }
 
@@ -247,6 +251,9 @@
       .replace(/\bIpravent\b/gi, 'ipratropium')
       .replace(/(\d)\s*ml\b/gi, '$1 mL')
       .replace(/\bml\b/gi, 'mL');
+    text = text
+      .replace(/(\d)\.(\d)/g, '$1,$2')
+      .replace(/(\d)(mg|mcg|kg|g|U)\b/g, '$1 $2');
     return clean(text);
   }
 
