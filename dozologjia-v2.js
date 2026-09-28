@@ -931,6 +931,15 @@
       panel.append(node('p', 'Kosovë · ' + audit.kosovoMarket.summarySq, 'dz-evidence-market'));
     }
     if (Array.isArray(audit.sources) && audit.sources.length) {
+      const details = node('details', null, 'dz-evidence-source-details');
+      details.open = !window.matchMedia('(max-width:760px)').matches;
+      const summary = node('summary');
+      summary.append(
+        node('strong', 'Burimet e auditit'),
+        node('small', `${audit.sources.length} burim${audit.sources.length === 1 ? '' : 'e'}`)
+      );
+      details.append(summary);
+
       const links = node('div', null, 'dz-evidence-sources');
       audit.sources.forEach(source => {
         const link = node('a', (source.authority || 'Burim') + ' · ' + (source.title || 'Hap burimin'));
@@ -939,7 +948,8 @@
         link.rel = 'noopener noreferrer';
         links.append(link);
       });
-      panel.append(links);
+      details.append(links);
+      panel.append(details);
     }
     return panel;
   }
