@@ -3284,7 +3284,7 @@
     "Diclofenac": {
       "status": "verified-corrected",
       "badgeSq": "VERIFIKUAR · SmPC",
-      "summarySq": "Përdorimi pediatrik i verifikuar nuk është '1 mg/kg q8h' për çdo dhimbje. JIA/JCA 1–3 mg/kg/ditë në 2–3 doza te 1–12 vjeç; dhimbje postoperative 1–2 mg/kg/ditë në doza të ndara te 6–12 vjeç, maksimum 4 ditë.",
+      "summarySq": "Përdorimi pediatrik i verifikuar këtu është REKTAL me supozitorë 12,5/25 mg: JIA/JCA 1–3 mg/kg/ditë në 2–3 doza te 1–12 vjeç; dhimbje postoperative 1–2 mg/kg/ditë në doza të ndara te 6–12 vjeç, maksimum 4 ditë.",
       "warningsSq": [
         "Përdor dozën më të ulët efektive për kohën më të shkurtër; rreziku GI, renal dhe reaksionet nga NSAID mbeten relevante.",
         "Formulimet pediatric të SmPC janë supozitorë 12,5/25 mg; mos transfero automatikisht dozën te formulime të tjera pa kontrolluar etiketën."
@@ -3302,7 +3302,7 @@
           {
             "label": "JIA/JCA · 1–12 vjeç · 1–3 mg/kg/ditë",
             "mode": "clinicalRules",
-            "route": "oral",
+            "route": "rectal",
             "rules": [
               {
                 "minMonths": 12,
@@ -3321,7 +3321,7 @@
           {
             "label": "Dhimbje postoperative · 6–12 vjeç · 1–2 mg/kg/ditë",
             "mode": "clinicalRules",
-            "route": "oral",
+            "route": "rectal",
             "rules": [
               {
                 "minMonths": 72,
@@ -3339,7 +3339,10 @@
           }
         ]
       },
-      "practicalFormulations": [],
+      "practicalFormulations": [
+        "Supp – 12.5mg",
+        "Supp – 25mg"
+      ],
       "kosovoMarket": {
         "checkedAt": "2026-09-28",
         "summarySq": "Regjistri lokal ka supozitorë diclofenac 12,5 mg dhe 25 mg, por ky kalkulator nuk automatizon ndarjen e formave solide/rek­tale."
@@ -3364,7 +3367,7 @@
         "replace": true,
         "options": [
           {
-            "label": ">6 muaj · 25 mg/kg/ditë ÷3 · maksimum 7 ditë",
+            "label": ">6 muaj · 25 mg/kg/ditë · doza të ndara (pamje TID)",
             "mode": "clinicalRules",
             "route": "oral",
             "rules": [
@@ -3378,9 +3381,10 @@
                 "max": 25,
                 "unit": "mg",
                 "period": "day",
-                "frequency": "3 doza/ditë · me/pas ushqimit · ≤7 ditë",
+                "frequency": "në doza të ndara · deri 3 herë/ditë · me/pas ushqimit · ≤7 ditë",
                 "split": 3,
-                "source": "SmPC · pediatric suspension"
+                "source": "SmPC · pediatric suspension",
+                "noteSq": "Burimi jep 25 mg/kg/ditë në doza të ndara; ndarja ÷3 paraqitet vetëm si aritmetikë praktike kur përdoret TID."
               }
             ]
           }
@@ -3675,6 +3679,15 @@
       "CPM",
       "Levo salbutamol",
       "Calcium"
+    ],
+    "auditedDrugCount": 50
+  },
+  "wave6": {
+    "completedAt": "2026-09-28",
+    "kind": "post-audit-clinical-hardening",
+    "changes": [
+      "Diclofenac: route corrected to rectal and Kosovo 12.5/25 mg suppositories exposed without automatic solid-dose splitting",
+      "Mefenamic acid: divided-dose wording aligned exactly with SmPC; TID shown explicitly as arithmetic presentation"
     ],
     "auditedDrugCount": 50
   }
