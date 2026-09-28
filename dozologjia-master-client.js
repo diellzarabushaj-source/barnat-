@@ -156,23 +156,50 @@
     };
   }
 
-  function doseResult({ min, max, unit, period = 'dose', frequency = '', source = '', split = null, note = '' }) {
+  function doseResult({
+    min, max, unit, period = 'dose', frequency = '', source = '', split = null, note = '',
+    maxPerDose = null, maxPerDay = null, maxDailyPerKg = null, weight = null,
+  }) {
+    let doseMin = min;
+    let doseMax = max;
+    const caps = [];
+    const dynamicDailyMax = positiveNumber(maxDailyPerKg) && positiveNumber(weight)
+      ? maxDailyPerKg * weight
+      : null;
+    const dailyCap = positiveNumber(maxPerDay) ? maxPerDay : dynamicDailyMax;
+
+    if (period === 'dose' && positiveNumber(maxPerDose)) {
+      if (doseMin > maxPerDose || doseMax > maxPerDose) caps.push(`maks. ${calcFmt(maxPerDose)} ${unit}/dozë`);
+      doseMin = Math.min(doseMin, maxPerDose);
+      doseMax = Math.min(doseMax, maxPerDose);
+    }
+    if (period === 'day' && positiveNumber(dailyCap)) {
+      if (doseMin > dailyCap || doseMax > dailyCap) caps.push(`maks. ${calcFmt(dailyCap)} ${unit}/24 orë`);
+      doseMin = Math.min(doseMin, dailyCap);
+      doseMax = Math.min(doseMax, dailyCap);
+    }
+
     const result = {
-      primary:doseRange(min, max, unit),
-      note,
+      primary:doseRange(doseMin, doseMax, unit),
+      note:[note, ...caps].filter(Boolean).join(' · '),
       source,
-      doseMin:min,
-      doseMax:max,
+      doseMin,
+      doseMax,
       doseUnit:unit,
       dosePeriod:period,
       frequency,
+      capped:caps.length > 0,
     };
     if (period === 'dose') {
-      result.perDoseMin = min;
-      result.perDoseMax = max;
+      result.perDoseMin = doseMin;
+      result.perDoseMax = doseMax;
+      if (positiveNumber(dailyCap)) {
+        result.dailyCap = dailyCap;
+        result.dailyCapLabel = `maks. ${calcFmt(dailyCap)} ${unit}/24 orë`;
+      }
     } else if (period === 'day' && Number.isFinite(split) && split > 0) {
-      result.perDoseMin = min / split;
-      result.perDoseMax = max / split;
+      result.perDoseMin = doseMin / split;
+      result.perDoseMax = doseMax / split;
       if (split > 1) {
         result.secondary = `Aritmetikisht / ${split} marrje: ${doseRange(result.perDoseMin, result.perDoseMax, unit)} për marrje`;
       }
