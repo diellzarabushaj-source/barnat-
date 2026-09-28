@@ -157,7 +157,8 @@
                 "unit": "mg",
                 "period": "dose",
                 "frequency": "2 herë/ditë",
-                "source": "MSF · neonat <7 ditë"
+                "source": "MSF · neonat <7 ditë",
+                "maxInclusive": false
               },
               {
                 "minMonths": 0.23,
@@ -168,7 +169,8 @@
                 "unit": "mg",
                 "period": "dose",
                 "frequency": "3 herë/ditë",
-                "source": "MSF · neonat 7–28 ditë"
+                "source": "MSF · neonat 7–28 ditë",
+                "maxInclusive": false
               },
               {
                 "minMonths": 1,
@@ -179,7 +181,8 @@
                 "unit": "mg",
                 "period": "dose",
                 "frequency": "2 herë/ditë",
-                "source": "MSF · 1 muaj–<12 vjeç"
+                "source": "MSF · 1 muaj–<12 vjeç",
+                "maxInclusive": false
               },
               {
                 "minMonths": 144,
@@ -3763,6 +3766,15 @@
     "changes": [
       "Ibuprofen: separated 3-dose and 4-dose schedules so the 30 mg/kg/day ceiling cannot be exceeded",
       "Ibuprofen: ≥12-year fixed-dose schedules now respect the 1200 mg/day adult ceiling"
+    ],
+    "auditedDrugCount": 50
+  },
+  "wave8": {
+    "completedAt": "2026-09-28",
+    "kind": "rule-boundary-hardening",
+    "changes": [
+      "Cephalexin: neonatal/infant/child age bands made half-open so 7 days, 1 month and 12 years can select exactly one regimen.",
+      "Added exhaustive no-overlap rule gate across all audited clinicalRule options."
     ],
     "auditedDrugCount": 50
   }
