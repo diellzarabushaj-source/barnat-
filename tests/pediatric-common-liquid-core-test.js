@@ -157,4 +157,52 @@ assert.deepStrictEqual(units, []);
   close(volumes[0].volumeMin, 60);
 }
 
+
+// Audited Penicillin G practical vial uses explicit million-unit notation.
+{
+  const audited = {
+    ...drug('Penicillin G'),
+    formulations:['Vial – 1 million U'],
+  };
+  const items = Liquid.vialConversions({
+    doseMin:500000,doseMax:500000,doseUnit:'U',dosePeriod:'dose',
+    perDoseMin:500000,perDoseMax:500000,frequency:'q6h',
+  }, audited, { route:'injectable', label:'General pediatric dose' });
+  assert.equal(items.length, 1);
+  assert.equal(items[0].amount, 1000000);
+  assert.equal(items[0].unit, 'U');
+  assert.equal(items[0].convertible, true);
+  close(items[0].vialMin, 0.5);
+}
+
+// Explicit IU notation must be parsed safely as units, not milligrams.
+{
+  const audited = {
+    ...drug('Penicillin G'),
+    formulations:['Vial – 1,000,000 IU'],
+  };
+  const items = Liquid.vialConversions({
+    doseMin:250000,doseMax:250000,doseUnit:'U',dosePeriod:'dose',
+    perDoseMin:250000,perDoseMax:250000,
+  }, audited, { route:'injectable' });
+  assert.equal(items[0].amount, 1000000);
+  close(items[0].vialMin, 0.25);
+}
+
+// Colistimethate stays in IU end-to-end; no unsafe mg/CBA conversion.
+{
+  const audited = {
+    ...drug('Colistin'),
+    formulations:['Vial – 1 million U'],
+  };
+  const items = Liquid.vialConversions({
+    doseMin:300000,doseMax:300000,doseUnit:'U',dosePeriod:'dose',
+    perDoseMin:300000,perDoseMax:300000,frequency:'TID',
+  }, audited, { route:'injectable' });
+  assert.equal(items.length, 1);
+  assert.equal(items[0].amount, 1000000);
+  assert.equal(items[0].unit, 'U');
+  close(items[0].vialMin, 0.3);
+}
+
 console.log('PASS: pediatric liquid conversion safely derives practical mL outputs from source formulations');
