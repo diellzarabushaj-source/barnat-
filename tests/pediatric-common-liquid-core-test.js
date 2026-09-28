@@ -34,7 +34,7 @@ close(amoxVolumes[1].volumeMin, 3.6);
 close(amoxVolumes[2].volumeMin, 1.8);
 
 const coAmox = drug('Amoxicillin + Clavulanic');
-const coAmoxAll = Core.presentationsFor(coAmox, coAmox.calc[0]);
+const coAmoxAll = Liquid.presentationsFor(coAmox, coAmox.calc[0]);
 assert.deepStrictEqual(
   coAmoxAll.map(item => [item.form,item.mg,item.mL,item.componentBasis]),
   [
@@ -50,7 +50,7 @@ const coAmoxKosovo = {
   ...coAmox,
   formulations:['Syp – 228.5/5, 457/5','Vial – 1.2g (1000 Amox + 200 Clav)'],
 };
-const coAmoxKosovoOral = Core.presentationsFor(coAmoxKosovo, {
+const coAmoxKosovoOral = Liquid.presentationsFor(coAmoxKosovo, {
   mode:'clinicalRules', route:'oral', componentBasis:'amoxicillin', rules:[]
 });
 assert.deepStrictEqual(
