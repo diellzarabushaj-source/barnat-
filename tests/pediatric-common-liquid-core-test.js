@@ -205,4 +205,21 @@ assert.deepStrictEqual(units, []);
   close(items[0].vialMin, 0.3);
 }
 
+
+// Rectal diclofenac formulations are classified as solid suppositories and are
+// never converted to mL or fractional suppositories automatically.
+{
+  const rectal = {
+    ...drug('Diclofenac'),
+    formulations:['Supp – 12.5mg','Supp – 25mg'],
+  };
+  const option = { route:'rectal', label:'JIA/JCA' };
+  assert.equal(Liquid.optionAudit(rectal, option).ok, true);
+  assert.deepStrictEqual(Liquid.presentationsFor(rectal, option), []);
+  const audit = Liquid.formulationAudit(rectal, option);
+  assert.deepStrictEqual(audit.map(item => item.status), ['solid','solid']);
+  audit.forEach(item => assert.match(item.reason, /rektale|supozitor/i));
+  assert.match(Liquid.formulationTextSq('Supp – 12.5mg'), /Supozitor/);
+}
+
 console.log('PASS: pediatric liquid conversion safely derives practical mL outputs from source formulations');
