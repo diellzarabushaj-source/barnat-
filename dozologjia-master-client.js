@@ -113,6 +113,40 @@
     return Boolean(weightAgeCore?.ageRangeFitsBand?.(ageInfo, option, 'minMonths', 'maxMonths'));
   }
 
+  function boundPass(value, bound, inclusive, side) {
+    if (!Number.isFinite(bound)) return true;
+    if (!Number.isFinite(value)) return false;
+    if (side === 'min') return inclusive === false ? value > bound : value >= bound;
+    return inclusive === false ? value < bound : value <= bound;
+  }
+
+  function weightFitsRule(weight, rule) {
+    if (!ruleNeedsWeight(rule)) return true;
+    if (!positiveNumber(weight)) return false;
+    return boundPass(weight, Number(rule.minKg), rule.minKgInclusive, 'min')
+      && boundPass(weight, Number(rule.maxKg), rule.maxKgInclusive, 'max');
+  }
+
+  function exactAgeFitsRule(months, rule) {
+    if (!ruleNeedsAge(rule)) return true;
+    return boundPass(months, Number(rule.minMonths), rule.minInclusive, 'min')
+      && boundPass(months, Number(rule.maxMonths), rule.maxInclusive, 'max');
+  }
+
+  function ageRangeFitsRule(ageInfo, rule) {
+    if (!ruleNeedsAge(rule)) return true;
+    if (!ageInfo || !Number.isFinite(ageInfo.defaultMonths)) return false;
+    if (ageInfo.manual) return exactAgeFitsRule(ageInfo.defaultMonths, rule);
+    const lo = Number.isFinite(ageInfo.minMonths) ? ageInfo.minMonths : ageInfo.defaultMonths;
+    const hi = Number.isFinite(ageInfo.maxMonths) ? ageInfo.maxMonths : ageInfo.defaultMonths;
+    return exactAgeFitsRule(lo, rule) && exactAgeFitsRule(hi, rule);
+  }
+
+  function clinicalRuleFor(option, weight, ageInfo) {
+    const matches = rulesOf(option).filter(rule => weightFitsRule(weight, rule) && ageRangeFitsRule(ageInfo, rule));
+    return matches.length === 1 ? matches[0] : null;
+  }
+
   function ageConfirmation(ageInfo) {
     return {
       error:ageInfo?.label
