@@ -33,6 +33,10 @@
     return `${years} vjeç ${rest} muaj`;
   }
 
+  function defaultAgeLabel(months) {
+    return Number.isFinite(months) ? `≈${monthsLabel(months)}` : '';
+  }
+
   function rangeLabel(minMonths, maxMonths) {
     if (!Number.isFinite(minMonths)) return '';
     if (maxMonths == null) {
@@ -71,6 +75,7 @@
         minMonths,
         maxMonths,
         defaultMonths,
+        defaultLabel:defaultAgeLabel(defaultMonths),
         label:exact.length === 1 ? exact[0].labelSq : rangeLabel(minMonths, maxMonths),
         kind:exact.length > 1 ? 'overlap' : 'band',
         bandKeys:exact.map(band => band.key),
@@ -87,6 +92,7 @@
         minMonths:null,
         maxMonths:null,
         defaultMonths:null,
+        defaultLabel:'',
         label:'Nën intervalin e tabelës',
         kind:'below-range',
         bandKeys:[],
@@ -102,6 +108,7 @@
         minMonths:Number(last.ageMinMonths),
         maxMonths:null,
         defaultMonths:Number(last.representativeMonths),
+        defaultLabel:defaultAgeLabel(Number(last.representativeMonths)),
         label:rangeLabel(Number(last.ageMinMonths), null),
         kind:'open-ended',
         bandKeys:[last.key],
@@ -136,6 +143,7 @@
         minMonths:Number(nearest.months),
         maxMonths:Number(nearest.months),
         defaultMonths:Number(nearest.months),
+        defaultLabel:defaultAgeLabel(Number(nearest.months)),
         label:rangeLabel(Number(nearest.months), Number(nearest.months)),
         kind:'nearest',
         bandKeys:[],
@@ -157,6 +165,7 @@
       minMonths:Number.isFinite(minMonths) ? minMonths : defaultMonths,
       maxMonths:Number.isFinite(maxMonths) ? maxMonths : defaultMonths,
       defaultMonths,
+      defaultLabel:defaultAgeLabel(defaultMonths),
       label:rangeLabel(Number.isFinite(minMonths) ? minMonths : defaultMonths, Number.isFinite(maxMonths) ? maxMonths : defaultMonths),
       kind:'interpolated-gap',
       bandKeys:[lowerBand?.key, upperBand?.key].filter(Boolean),
@@ -182,6 +191,7 @@
     infer,
     rangeLabel,
     monthsLabel,
+    defaultAgeLabel,
     ageRangeFitsBand,
     _test:Object.freeze({ inWeightBand, interpolate }),
   });
