@@ -231,7 +231,8 @@
                 "period": "dose",
                 "frequency": "çdo 12 orë",
                 "maxPerDay": 2000,
-                "source": "DailyMed · serious miscellaneous infections"
+                "source": "DailyMed · serious miscellaneous infections",
+                "maxPerDose": 1000
               }
             ]
           },
@@ -248,7 +249,8 @@
                 "period": "dose",
                 "frequency": "çdo 12 orë",
                 "maxPerDay": 4000,
-                "source": "DailyMed · meningitis"
+                "source": "DailyMed · meningitis",
+                "maxPerDose": 2000
               }
             ]
           },
