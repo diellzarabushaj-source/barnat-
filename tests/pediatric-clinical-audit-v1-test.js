@@ -50,9 +50,35 @@ for (const [name, item] of Object.entries(audit.drugs)) {
   }
   assert.ok(item.kosovoMarket?.checkedAt === '2026-09-28', `${name}: Kosovo market check date missing`);
   assert.ok(item.kosovoMarket?.summarySq, `${name}: Kosovo market note missing`);
+  if (Object.prototype.hasOwnProperty.call(item, 'practicalFormulations')) {
+    assert.ok(Array.isArray(item.practicalFormulations), `${name}: practicalFormulations must be an array when present`);
+  }
+  if (!item.calculator?.disabled) {
+    item.calculator.options.forEach(option => {
+      assert.ok(['oral','injectable','oral_or_injectable','nebulized','rectal'].includes(option.route), `${name}: unsupported audited route ${option.route}`);
+      option.rules.forEach(rule => {
+        if (Number.isFinite(rule.minMonths) && Number.isFinite(rule.maxMonths)) {
+          assert.ok(rule.maxMonths > rule.minMonths, `${name}: invalid age interval`);
+        }
+        if (Number.isFinite(rule.minKg) && Number.isFinite(rule.maxKg)) {
+          assert.ok(rule.maxKg > rule.minKg, `${name}: invalid weight interval`);
+        }
+        assert.ok(rule.max >= rule.min, `${name}: rule max must be >= min`);
+        if (rule.split != null) assert.ok(Number.isInteger(rule.split) && rule.split > 0, `${name}: split must be a positive integer`);
+        if (rule.maxPerDose != null) assert.ok(rule.maxPerDose > 0, `${name}: maxPerDose must be positive`);
+        if (rule.maxPerDay != null) assert.ok(rule.maxPerDay > 0, `${name}: maxPerDay must be positive`);
+        if (rule.maxDailyPerKg != null) assert.ok(rule.maxDailyPerKg > 0, `${name}: maxDailyPerKg must be positive`);
+      });
+    });
+  }
 }
 
 const D = audit.drugs;
+assert.deepStrictEqual(
+  Object.entries(D).filter(([,item]) => item.calculator?.disabled).map(([name]) => name).sort(),
+  ['Calcium','Cefoperazone','Ranitidine'],
+  'Only clinically ambiguous/suspended source drugs may have AUTO disabled'
+);
 
 assert.deepStrictEqual(
   D.Amoxicillin.calculator.options.map(option => [option.rules[0].min, option.rules[0].frequency, option.rules[0].maxPerDose]),
