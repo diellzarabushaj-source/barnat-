@@ -1,0 +1,757 @@
+{
+  "schemaVersion": "pediatric-clinical-audit-v1",
+  "auditedAt": "2026-09-28",
+  "principle": "Tabela origjinale ruhet e pandryshuar; kalkulatori mund të përdorë vetëm override të verifikuar kur ky skedar e specifikon.",
+  "defaultStatus": "source-table",
+  "drugs": {
+    "Amoxicillin": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · MSF",
+      "summarySq": "Doza duhet të lidhet me indikacionin; skema e tabelës bazë 15 mg/kg çdo 8 orë nuk përdoret si default universal.",
+      "sources": [
+        {
+          "authority": "MSF",
+          "title": "Amoxicillin oral",
+          "url": "https://medicalguidelines.msf.org/en/viewport/EssDr/english/amoxicillin-oral-16685094.html"
+        },
+        {
+          "authority": "MSF",
+          "title": "Pneumonia in children",
+          "url": "https://medicalguidelines.msf.org/en/viewport/CG/english/pneumonia-in-children-under-5-years-of-age-16689531.html"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Dozë standarde · 25 mg/kg/dozë · 2 herë/ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "doseType": "weight",
+                "min": 25,
+                "max": 25,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "2 herë/ditë",
+                "maxPerDose": 1000,
+                "source": "MSF · amoxicillin oral"
+              }
+            ]
+          },
+          {
+            "label": "Pneumoni / dozë e lartë · 30 mg/kg/dozë · 3 herë/ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "doseType": "weight",
+                "min": 30,
+                "max": 30,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "3 herë/ditë",
+                "maxPerDose": 1000,
+                "source": "MSF · high-dose amoxicillin",
+                "noteSq": "Pneumoni pa shenja rëndese: zakonisht 5 ditë, me rivlerësim klinik."
+              }
+            ]
+          }
+        ]
+      },
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri i Kosovës përmban amoksicilinë orale 125 mg/5 mL, 250 mg/5 mL dhe forma solide; verifiko produktin konkret para përshkrimit."
+      }
+    },
+    "Amoxicillin + Clavulanic": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · MSF",
+      "summarySq": "Doza shprehet sipas komponentit amoksicilinë; raporti amoksicilinë/klavulanat dhe indikacioni kanë rëndësi.",
+      "sources": [
+        {
+          "authority": "MSF",
+          "title": "Amoxicillin/clavulanic acid oral",
+          "url": "https://medicalguidelines.msf.org/en/viewport/EssDr/english/amoxicillin-clavulanic-acid-co-amoxiclav-oral-16685119.html"
+        },
+        {
+          "authority": "MSF",
+          "title": "Erysipelas and cellulitis",
+          "url": "https://medicalguidelines.msf.org/en/viewport/CG/english/erysipelas-and-cellulitis-16689672.html"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Kafshim / AOM ose sinusit linjë e dytë · 25 mg/kg amoksicilinë · 2 herë/ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "componentBasis": "amoxicillin",
+            "rules": [
+              {
+                "maxKg": 40,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 25,
+                "max": 25,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "2 herë/ditë",
+                "source": "MSF · dose expressed as amoxicillin"
+              }
+            ]
+          },
+          {
+            "label": "Infeksion i rëndë · kalim parenteral→oral · 50 mg/kg amoksicilinë · 2 herë/ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "componentBasis": "amoxicillin",
+            "rules": [
+              {
+                "maxKg": 40,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 50,
+                "max": 50,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "2 herë/ditë",
+                "source": "MSF · dose expressed as amoxicillin"
+              }
+            ]
+          }
+        ]
+      },
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka suspensione 400/57 mg për 5 mL dhe formulime të tjera 7:1/8:1, si dhe flakon 1,2 g (1000/200 mg). Zgjidh raportin e saktë të produktit."
+      }
+    },
+    "Cephalexin": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · MSF",
+      "summarySq": "Për infeksione të lëkurës doza ndryshon te neonati dhe fëmija më i madh.",
+      "sources": [
+        {
+          "authority": "MSF",
+          "title": "Cefalexin oral",
+          "url": "https://medicalguidelines.msf.org/en/viewport/EssDr/english/cefalexin-oral-16683247.html"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Infeksione të lëkurës · sipas moshës",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 0,
+                "maxMonths": 0.23,
+                "doseType": "weight",
+                "min": 25,
+                "max": 25,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "2 herë/ditë",
+                "source": "MSF · neonat <7 ditë"
+              },
+              {
+                "minMonths": 0.23,
+                "maxMonths": 1,
+                "doseType": "weight",
+                "min": 25,
+                "max": 25,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "3 herë/ditë",
+                "source": "MSF · neonat 7–28 ditë"
+              },
+              {
+                "minMonths": 1,
+                "maxMonths": 144,
+                "doseType": "weight",
+                "min": 12.5,
+                "max": 25,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "2 herë/ditë",
+                "source": "MSF · 1 muaj–<12 vjeç"
+              },
+              {
+                "minMonths": 144,
+                "doseType": "fixed",
+                "min": 1000,
+                "max": 1000,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "2 herë/ditë",
+                "source": "MSF · ≥12 vjeç"
+              }
+            ]
+          }
+        ]
+      },
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Në regjistrin lokal u gjetën 6 produkte cefaleksine/cephalexin, përfshirë suspension 250 mg/5 mL dhe forma solide."
+      }
+    },
+    "Ceftriaxone": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · DailyMed 2026",
+      "summarySq": "50 mg/kg dy herë në ditë nuk është default universal. Regjimi varet nga indikacioni dhe ka kufij maksimalë ditorë.",
+      "warningsSq": [
+        "Mos përdor te neonati hiperbilirubinemik/prematur sipas etiketës së referuar.",
+        "Kundërindikohet te neonati ≤28 ditë që kërkon ose pritet të kërkojë solucione IV me kalcium."
+      ],
+      "sources": [
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "Ceftriaxone sodium for injection · pediatric dosage",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=36c07ebf-b091-483e-b2c4-f0fc0c2b4186"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Infeksion serioz jo-meningjit · 50–75 mg/kg/ditë, ndarë çdo 12 orë",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "doseType": "weight",
+                "min": 25,
+                "max": 37.5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë",
+                "maxPerDay": 2000,
+                "source": "DailyMed · serious miscellaneous infections"
+              }
+            ]
+          },
+          {
+            "label": "Meningjit · 100 mg/kg/ditë, ndarë çdo 12 orë",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "doseType": "weight",
+                "min": 50,
+                "max": 50,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë",
+                "maxPerDay": 4000,
+                "source": "DailyMed · meningitis"
+              }
+            ]
+          },
+          {
+            "label": "Otit akut bakterial · 50 mg/kg IM · dozë e vetme",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "doseType": "weight",
+                "min": 50,
+                "max": 50,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "dozë e vetme IM",
+                "maxPerDose": 1000,
+                "source": "DailyMed · acute bacterial otitis media"
+              }
+            ]
+          }
+        ]
+      },
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka shumë formulime ceftriaksoni 0,5 g, 1 g dhe 2 g për injeksion/infuzion. Rikonstituimi është produkt- dhe rrugë-specifik."
+      }
+    },
+    "Oseltamivir": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · CDC 2025–26",
+      "summarySq": "Trajtimi i gripit është 5 ditë. <1 vjeç: 3 mg/kg/dozë dy herë në ditë; ≥1 vjeç: brez peshe.",
+      "warningsSq": [
+        "AAP rekomandon 3,5 mg/kg/dozë dy herë në ditë për moshën 9–11 muaj; CDC/FDA përdor 3 mg/kg/dozë.",
+        "Te prematurët përdoret dozimi sipas moshës postmenstruale; mos përdor automatikisht skemën e foshnjës term."
+      ],
+      "sources": [
+        {
+          "authority": "CDC",
+          "title": "Influenza Antiviral Medications: Summary for Clinicians · 2025–2026",
+          "url": "https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Trajtimi i gripit · 5 ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "maxMonths": 12,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 3,
+                "max": 3,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "2 herë/ditë · 5 ditë",
+                "source": "CDC 2025–26 · <1 vjeç"
+              },
+              {
+                "minMonths": 12,
+                "minKg": 0,
+                "maxKg": 15,
+                "maxKgInclusive": true,
+                "doseType": "fixed",
+                "min": 30,
+                "max": 30,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "2 herë/ditë · 5 ditë",
+                "source": "CDC 2025–26 · ≥1 vjeç, ≤15 kg"
+              },
+              {
+                "minMonths": 12,
+                "minKg": 15,
+                "minKgInclusive": false,
+                "maxKg": 23,
+                "maxKgInclusive": true,
+                "doseType": "fixed",
+                "min": 45,
+                "max": 45,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "2 herë/ditë · 5 ditë",
+                "source": "CDC 2025–26 · >15–23 kg"
+              },
+              {
+                "minMonths": 12,
+                "minKg": 23,
+                "minKgInclusive": false,
+                "maxKg": 40,
+                "maxKgInclusive": true,
+                "doseType": "fixed",
+                "min": 60,
+                "max": 60,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "2 herë/ditë · 5 ditë",
+                "source": "CDC 2025–26 · >23–40 kg"
+              },
+              {
+                "minMonths": 12,
+                "minKg": 40,
+                "minKgInclusive": false,
+                "doseType": "fixed",
+                "min": 75,
+                "max": 75,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "2 herë/ditë · 5 ditë",
+                "source": "CDC 2025–26 · >40 kg"
+              }
+            ]
+          }
+        ]
+      },
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Në kërkimin aktual të regjistrit lokal nuk u gjet produkt i publikuar me substancë 'oseltamivir'; verifiko furnizimin aktual para recetës."
+      }
+    },
+    "Linezolid": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · DailyMed",
+      "summarySq": "Për infeksionet serioze të listuara: lindje–11 vjeç 10 mg/kg çdo 8 orë; ≥12 vjeç 600 mg çdo 12 orë.",
+      "warningsSq": [
+        "Prematur <7 ditë dhe GA <34 javë: etiketa rekomandon nisje 10 mg/kg çdo 12 orë; regjimi neonatal kërkon moshë gestacionale.",
+        "Dozimi ndryshon sipas indikacionit; infeksionet e pakomplikuara të lëkurës kanë skemë tjetër."
+      ],
+      "sources": [
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "ZYVOX (linezolid) · pediatric dosage",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=50630775-7f76-413e-9278-ba298dd7f187"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Infeksione serioze të listuara · sipas moshës",
+            "mode": "clinicalRules",
+            "route": "oral_or_injectable",
+            "rules": [
+              {
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 10,
+                "max": 10,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 8 orë",
+                "maxPerDose": 600,
+                "source": "DailyMed · birth through 11 years"
+              },
+              {
+                "minMonths": 144,
+                "doseType": "fixed",
+                "min": 600,
+                "max": 600,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë",
+                "source": "DailyMed · ≥12 years"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Infusion – 2mg/1ml"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka linezolid 2 mg/mL si solucion për infuzion (p.sh. 600 mg/300 mL)."
+      }
+    },
+    "Pantoprazole": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · DailyMed",
+      "summarySq": "Skema 0,2 mg/kg/orë nuk përdoret për GERD/EE pediatrik. Etiketa aktuale IV përdor dozë 1 herë/ditë sipas moshës dhe peshës.",
+      "sources": [
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "PROTONIX I.V. · pediatric GERD/history of erosive esophagitis",
+          "url": "https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f39b3e7d-39d2-4c8a-9974-4ab885241880"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "GERD / histori e ezofagitit eroziv · IV · deri 7 ditë",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 3,
+                "maxMonths": 12,
+                "maxInclusive": false,
+                "maxKg": 12.5,
+                "maxKgInclusive": false,
+                "doseType": "weight",
+                "min": 0.8,
+                "max": 0.8,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë · infuzion 15 min",
+                "source": "DailyMed · 3m–<1y, <12.5kg"
+              },
+              {
+                "minMonths": 3,
+                "maxMonths": 12,
+                "maxInclusive": false,
+                "minKg": 12.5,
+                "doseType": "fixed",
+                "min": 10,
+                "max": 10,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë · infuzion 15 min",
+                "source": "DailyMed · 3m–<1y, ≥12.5kg"
+              },
+              {
+                "minMonths": 12,
+                "maxMonths": 216,
+                "maxInclusive": true,
+                "maxKg": 15,
+                "maxKgInclusive": true,
+                "doseType": "fixed",
+                "min": 10,
+                "max": 10,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë · infuzion 15 min",
+                "source": "DailyMed · 1–17y, ≤15kg"
+              },
+              {
+                "minMonths": 12,
+                "maxMonths": 216,
+                "maxInclusive": true,
+                "minKg": 15,
+                "minKgInclusive": false,
+                "maxKg": 40,
+                "maxKgInclusive": true,
+                "doseType": "fixed",
+                "min": 20,
+                "max": 20,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë · infuzion 15 min",
+                "source": "DailyMed · 1–17y, >15–40kg"
+              },
+              {
+                "minMonths": 12,
+                "maxMonths": 216,
+                "maxInclusive": true,
+                "minKg": 40,
+                "minKgInclusive": false,
+                "doseType": "fixed",
+                "min": 40,
+                "max": 40,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë · infuzion 15 min",
+                "source": "DailyMed · 1–17y, >40kg"
+              }
+            ]
+          }
+        ]
+      },
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka pantoprazol 20/40 mg oral dhe disa formulime 40 mg për injeksion; rikonstituimi duhet marrë nga produkti konkret."
+      }
+    },
+    "Domperidone": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · EMA",
+      "summarySq": "Kur një produkt pediatrik i përshtatshëm është i licencuar: 0,25 mg/kg/dozë deri 3 herë/ditë; zakonisht jo më gjatë se 1 javë.",
+      "warningsSq": [
+        "Rrezik QT/aritmie: kundërindikohet me çrregullime të përcjelljes kardiake, sëmundje të rëndësishme kardiake, barna që zgjasin QT ose inhibitorë potentë CYP3A4.",
+        "Për <35 kg duhen formulime orale që lejojnë dozë precize; tabletat 10 mg nuk janë formë e përshtatshme për matje pediatrike sipas rekomandimit EMA."
+      ],
+      "sources": [
+        {
+          "authority": "EMA",
+          "title": "Domperidone-containing medicines referral",
+          "url": "https://www.ema.europa.eu/en/medicines/human/referrals/domperidone-containing-medicines"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Nauze/të vjella · <35 kg · 0,25 mg/kg/dozë · deri 3 herë/ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "maxKg": 35,
+                "maxKgInclusive": false,
+                "doseType": "weight",
+                "min": 0.25,
+                "max": 0.25,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "deri 3 herë/ditë · zakonisht ≤1 javë",
+                "maxDailyPerKg": 0.75,
+                "source": "EMA · pediatric oral dose"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Në regjistrin lokal të kontrolluar u gjetën vetëm tableta domperidone 10 mg; nuk u konfirmua suspension/pika pediatrike."
+      }
+    },
+    "Montelukast": {
+      "status": "verified-warning",
+      "badgeSq": "VERIFIKUAR · FDA/DailyMed",
+      "summarySq": "Dozat 4/5/10 mg sipas moshës përputhen me etiketën; nuk është bar për sulm akut të astmës.",
+      "warningsSq": [
+        "FDA ka Boxed Warning për ngjarje serioze neuropsikiatrike.",
+        "Për rinit alergjik duhet rezervuar kur alternativat nuk funksionojnë ose nuk tolerohen."
+      ],
+      "sources": [
+        {
+          "authority": "DailyMed",
+          "title": "Montelukast sodium · pediatric dosage",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=64a3b181-e8d8-4caf-9f1b-e0063d0bd94a"
+        },
+        {
+          "authority": "FDA",
+          "title": "Boxed Warning for serious mental health side effects",
+          "url": "https://www.fda.gov/drugs/drug-safety-communications/fda-requires-boxed-warning-about-serious-mental-health-side-effects-asthma-and-allergy-drug"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Astma · 1 herë në mbrëmje · sipas moshës",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 12,
+                "maxMonths": 24,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 4,
+                "max": 4,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë në mbrëmje",
+                "source": "DailyMed · asthma 12–23m oral granules"
+              },
+              {
+                "minMonths": 24,
+                "maxMonths": 72,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 4,
+                "max": 4,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë në mbrëmje",
+                "source": "DailyMed · asthma 2–5y"
+              },
+              {
+                "minMonths": 72,
+                "maxMonths": 180,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 5,
+                "max": 5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë në mbrëmje",
+                "source": "DailyMed · asthma 6–14y"
+              },
+              {
+                "minMonths": 180,
+                "doseType": "fixed",
+                "min": 10,
+                "max": 10,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë në mbrëmje",
+                "source": "DailyMed · ≥15y"
+              }
+            ]
+          }
+        ]
+      },
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka montelukast 4 mg, 5 mg dhe 10 mg, përfshirë tableta përtypëse dhe granula."
+      }
+    },
+    "Paracetamol": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · MSF",
+      "summarySq": "Neonati kërkon dozë më të ulët se fëmija ≥1 muaj dhe duhet respektuar maksimumi ditor.",
+      "sources": [
+        {
+          "authority": "MSF",
+          "title": "Paracetamol oral",
+          "url": "https://medicalguidelines.msf.org/en/viewport/EssDr/english/paracetamol-acetaminophen-oral-16683025.html"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Dhimbje / temperaturë · oral · sipas moshës",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 0,
+                "maxMonths": 1,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 10,
+                "max": 10,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "3–4 herë/ditë",
+                "maxDailyPerKg": 40,
+                "source": "MSF · <1 muaj"
+              },
+              {
+                "minMonths": 1,
+                "doseType": "weight",
+                "min": 15,
+                "max": 15,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "3–4 herë/ditë",
+                "maxDailyPerKg": 60,
+                "maxPerDose": 1000,
+                "source": "MSF · ≥1 muaj"
+              }
+            ]
+          }
+        ]
+      },
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal përmban shumë forma pediatrike orale, përfshirë 120 mg/5 mL dhe 250 mg/5 mL; zgjidh vetëm produktin mono-substancë."
+      }
+    },
+    "Ibuprofen": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · MSF",
+      "summarySq": ">3 muaj: 5–10 mg/kg/dozë 3–4 herë/ditë; maksimum 30 mg/kg/ditë.",
+      "warningsSq": [
+        "Mos përdor te dehidratimi i rëndë, insuficienca renale, gjakderdhja gastrointestinale ose ethet hemorragjike/dengue.",
+        "Te foshnjat shumë të vogla duhet respektuar kufiri i moshës dhe konteksti klinik."
+      ],
+      "sources": [
+        {
+          "authority": "MSF",
+          "title": "Ibuprofen oral",
+          "url": "https://medicalguidelines.msf.org/en/viewport/EssDr/english/ibuprofen-oral-16683877.html"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Dhimbje / temperaturë · >3 muaj · 5–10 mg/kg/dozë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 3,
+                "minInclusive": false,
+                "doseType": "weight",
+                "min": 5,
+                "max": 10,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "3–4 herë/ditë",
+                "maxDailyPerKg": 30,
+                "source": "MSF · pain/fever"
+              }
+            ]
+          }
+        ]
+      },
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka suspension oral 100 mg/5 mL dhe forma të tjera; për pediatri prefero formulimin e përshtatshëm për dozimin sipas peshës."
+      }
+    }
+  }
+}
