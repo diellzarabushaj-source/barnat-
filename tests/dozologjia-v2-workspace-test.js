@@ -21,6 +21,7 @@ assert.match(html, /id="pediatricCommonReference"/);
 assert.match(html, /id="pediatricCommonSearch"/);
 assert.match(html, /id="pediatricCommonSections"/);
 assert.match(html, /Dozat pediatrike të barnave të zakonshme/);
+assert.doesNotMatch(html, /class="dz-head/);
 
 /* The old Master picker UI is intentionally gone from this page. */
 [
