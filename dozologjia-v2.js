@@ -1003,9 +1003,38 @@
   const needsWeight = option => ['weight', 'ageWeight', 'oseltamivirBands'].includes(option?.mode);
   const needsAge = option => ['ageBands', 'ageWeight', 'ageFixed', 'oseltamivirBands'].includes(option?.mode);
 
+  function doseResult({ min, max, unit, period = 'dose', frequency = '', source = '', split = null, note = '' }) {
+    const result = {
+      primary:doseRange(min, max, unit),
+      note,
+      source,
+      doseMin:min,
+      doseMax:max,
+      doseUnit:unit,
+      dosePeriod:period,
+      frequency,
+    };
+    if (period === 'dose') {
+      result.perDoseMin = min;
+      result.perDoseMax = max;
+    } else if (period === 'day' && Number.isFinite(split) && split > 0) {
+      result.perDoseMin = min / split;
+      result.perDoseMax = max / split;
+      if (split > 1) {
+        result.secondary = `Aritmetikisht / ${split} marrje: ${doseRange(result.perDoseMin, result.perDoseMax, unit)} për marrje`;
+      }
+    }
+    return result;
+  }
+
   function calculateOption(option, values) {
     if (!option) return { error:'Zgjidh formulën.' };
-    if (option.mode === 'fixed') return { primary:doseRange(option.min, option.max, option.unit), note:option.frequency || '', source:option.label };
+    if (option.mode === 'fixed') {
+      return doseResult({
+        min:option.min, max:option.max, unit:option.unit, period:'dose',
+        frequency:option.frequency || '', source:option.label, note:option.frequency || '',
+      });
+    }
 
     const months = needsAge(option) ? ageMonths(values.age, values.ageUnit) : NaN;
     const weight = needsWeight(option) ? numeric(values.weight) : NaN;
@@ -1014,46 +1043,124 @@
       if (!positiveNumber(months)) return { error:'Shëno moshën.' };
       const band = option.bands.find(item => inBand(months, item, 'minMonths', 'maxMonths'));
       if (!band) return { error:'Tabela nuk përcakton dozë për këtë moshë.' };
-      return { primary:doseRange(band.min, band.max, band.unit), note:band.frequency || '', source:band.source };
+      return doseResult({
+        min:band.min, max:band.max, unit:band.unit, period:'dose',
+        frequency:band.frequency || '', source:band.source, note:band.frequency || '',
+      });
     }
     if (option.mode === 'ageFixed') {
       if (!positiveNumber(months)) return { error:'Shëno moshën.' };
       if (!inBand(months, option, 'minMonths', 'maxMonths')) return { error:'Kjo formulë nuk i përket kësaj moshe.' };
-      return { primary:doseRange(option.min, option.max, option.unit), note:option.frequency || '', source:option.label };
+      return doseResult({
+        min:option.min, max:option.max, unit:option.unit, period:'dose',
+        frequency:option.frequency || '', source:option.label, note:option.frequency || '',
+      });
     }
     if (option.mode === 'ageWeight') {
       if (!positiveNumber(months)) return { error:'Shëno moshën.' };
       if (!inBand(months, option, 'minMonths', 'maxMonths')) return { error:'Kjo formulë nuk i përket kësaj moshe.' };
       if (!positiveNumber(weight)) return { error:'Shëno peshën reale në kg.' };
-      return {
-        primary:doseRange(option.min * weight, option.max * weight, option.unit),
+      const min = option.min * weight;
+      const max = option.max * weight;
+      return doseResult({
+        min, max, unit:option.unit, period:option.period || 'day', split:option.split,
+        frequency:option.frequency || '', source:option.label,
         note:[option.period === 'day' ? 'në 24 orë' : '', option.frequency].filter(Boolean).join(' · '),
-        source:option.label,
-      };
+      });
     }
     if (option.mode === 'oseltamivirBands') {
       if (!positiveNumber(months)) return { error:'Shëno moshën.' };
       const ageBand = option.bands.find(item => inBand(months, item, 'minMonths', 'maxMonths'));
-      if (ageBand) return { primary:doseRange(ageBand.min, ageBand.max, ageBand.unit), note:ageBand.frequency || '', source:ageBand.source };
+      if (ageBand) {
+        return doseResult({
+          min:ageBand.min, max:ageBand.max, unit:ageBand.unit, period:'dose',
+          frequency:ageBand.frequency || '', source:ageBand.source, note:ageBand.frequency || '',
+        });
+      }
       if (months <= 12) return { error:'Tabela nuk përcakton dozë për këtë moshë.' };
       if (!positiveNumber(weight)) return { error:'Për fëmijën mbi 1 vjeç, shëno peshën reale në kg.' };
       const weightBand = option.weightBands.find(item => inBand(weight, item, 'minKg', 'maxKg'));
       if (!weightBand) return { error:'Tabela nuk përcakton brez peshe për këtë vlerë.' };
-      return { primary:doseRange(weightBand.min, weightBand.max, weightBand.unit), note:weightBand.frequency || '', source:weightBand.source };
+      return doseResult({
+        min:weightBand.min, max:weightBand.max, unit:weightBand.unit, period:'dose',
+        frequency:weightBand.frequency || '', source:weightBand.source, note:weightBand.frequency || '',
+      });
     }
     if (option.mode === 'weight') {
       if (!positiveNumber(weight)) return { error:'Shëno peshën reale në kg.' };
-      const lo = option.min * weight, hi = option.max * weight;
+      const min = option.min * weight;
+      const max = option.max * weight;
       let periodText = 'për një marrje';
       if (option.period === 'day') periodText = 'në 24 orë';
       else if (option.period === 'hour') periodText = 'në orë';
-      const result = { primary:doseRange(lo, hi, option.unit), note:[periodText, option.frequency].filter(Boolean).join(' · '), source:option.label };
-      if (option.period === 'day' && Number.isFinite(option.split) && option.split > 1) {
-        result.secondary = `Aritmetikisht / ${option.split} marrje: ${doseRange(lo / option.split, hi / option.split, option.unit)} për marrje`;
-      }
-      return result;
+      return doseResult({
+        min, max, unit:option.unit, period:option.period || 'dose', split:option.split,
+        frequency:option.frequency || '', source:option.label,
+        note:[periodText, option.frequency].filter(Boolean).join(' · '),
+      });
     }
     return { error:'Kjo formulë nuk ka kalkulator numerik.' };
+  }
+
+  const liquidCore = window.DRxPediatricLiquid || null;
+  const mlNumber = value => {
+    const digits = Math.abs(value) < 1 ? 2 : 1;
+    const factor = 10 ** digits;
+    return String(Math.round(value * factor) / factor).replace('.', ',');
+  };
+  const mlRange = (lo, hi) => `${mlNumber(lo)}${Math.abs(lo - hi) < 1e-9 ? '' : '–' + mlNumber(hi)} mL`;
+
+  function renderLiquidConversions(drug, option, result, answer) {
+    if (!liquidCore || result.error) return;
+    const presentations = liquidCore.presentationsFor(drug, option);
+    const conversions = liquidCore.volumeConversions(result, presentations);
+    if (!conversions.length) return;
+
+    const box = node('section', null, 'dz-common-volume');
+    const head = node('div', null, 'dz-common-volume-head');
+    head.append(node('strong', 'Matja praktike'));
+    head.append(node('span', 'mL AUTO', 'dz-common-volume-badge'));
+    box.append(head);
+
+    const list = node('div', null, 'dz-common-volume-list');
+    conversions.forEach(item => {
+      const card = node('article', null, 'dz-common-volume-card');
+      const top = node('div', null, 'dz-common-volume-top');
+      top.append(node('b', item.form));
+      const concentration = item.componentBasis
+        ? `${calcFmt(item.mg)} mg ${item.componentBasis} / ${calcFmt(item.mL)} mL`
+        : `${calcFmt(item.mg)} mg / ${calcFmt(item.mL)} mL`;
+      top.append(node('small', concentration));
+      card.append(top);
+
+      const practical = node('div', null, 'dz-common-volume-dose');
+      practical.append(node('strong', `≈ ${mlRange(item.volumeMin, item.volumeMax)}`));
+      practical.append(node('span', [item.basisLabel, item.frequency].filter(Boolean).join(' · ')));
+      card.append(practical);
+
+      const source = node('small', null, 'dz-common-volume-source');
+      source.append(node('span', 'Nga formulimi: '), node('b', item.source));
+      card.append(source);
+      list.append(card);
+    });
+    box.append(list);
+    box.append(node('p', 'Kontrollo përqendrimin në shishe/kuti para administrimit.', 'dz-common-volume-safety'));
+    answer.append(box);
+  }
+
+  function addWeightShortcuts(field, input, values, update) {
+    const row = node('div', null, 'dz-common-weight-quick');
+    [6, 10, 12, 15, 20, 25, 30, 40].forEach(kg => {
+      const button = node('button', `${kg} kg`);
+      button.type = 'button';
+      button.addEventListener('click', () => {
+        input.value = String(kg);
+        values.weight = String(kg);
+        update();
+      });
+      row.append(button);
+    });
+    field.append(row);
   }
 
   function makeNumberField(label, id, suffix, value = '') {
@@ -1095,12 +1202,20 @@
     const values = { weight:'', age:'', ageUnit:'year' };
 
     function update() {
-      const result = calculateOption(options[Number(selector.value) || 0], values);
+      const option = options[Number(selector.value) || 0];
+      const result = calculateOption(option, values);
       answer.replaceChildren();
       if (result.error) { answer.append(node('p', result.error, 'dz-waiting')); return; }
-      answer.append(node('p', result.primary, 'dz-common-result-dose'));
-      if (result.note) answer.append(node('p', result.note, 'dz-common-result-note'));
+
+      const primary = node('div', null, 'dz-common-result-main');
+      primary.append(node('span', 'DOZA', 'dz-common-result-kicker'));
+      primary.append(node('p', result.primary, 'dz-common-result-dose'));
+      if (result.note) primary.append(node('p', result.note, 'dz-common-result-note'));
+      answer.append(primary);
+
       if (result.secondary) answer.append(node('p', result.secondary, 'dz-common-derived'));
+      renderLiquidConversions(drug, option, result, answer);
+
       if (result.source) {
         const source = node('p', null, 'dz-common-source-line');
         source.append(node('span', 'Formula: '), node('b', result.source));
@@ -1114,6 +1229,7 @@
         const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
         const weight = makeNumberField('Pesha', `${slug}-common-weight`, 'kg', values.weight);
         weight.input.addEventListener('input', () => { values.weight = weight.input.value; update(); });
+        addWeightShortcuts(weight.field, weight.input, values, update);
         fields.append(weight.field);
       }
       if (needsAge(option)) {
@@ -1152,6 +1268,15 @@
     card.append(summary);
 
     const body = node('div', null, 'dz-common-drug-body');
+    const calcHost = node('div');
+    body.append(calcHost);
+
+    const sourceDetails = node('details', null, 'dz-common-source-details');
+    sourceDetails.open = !window.matchMedia('(max-width:760px)').matches;
+    const sourceSummary = node('summary');
+    sourceSummary.append(node('strong', 'Tabela origjinale'), node('small', 'doza + formulimet'));
+    sourceDetails.append(sourceSummary);
+
     const grid = node('div', null, 'dz-common-source-grid');
     const doseCol = node('div', null, 'dz-common-source-col');
     doseCol.append(node('h4', 'Formula for dosage'));
@@ -1160,10 +1285,9 @@
     formCol.append(node('h4', 'Available formulations'));
     drug.formulations.forEach(line => formCol.append(node('p', line)));
     grid.append(doseCol, formCol);
-    body.append(grid);
+    sourceDetails.append(grid);
+    body.append(sourceDetails);
 
-    const calcHost = node('div');
-    body.append(calcHost);
     let built = false;
     card.addEventListener('toggle', () => {
       if (card.open && !built) { built = true; renderCalculator(drug, calcHost); }

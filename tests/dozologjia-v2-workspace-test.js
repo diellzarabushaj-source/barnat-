@@ -28,12 +28,13 @@ const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>
   .map(match => match[1]);
 const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)]
   .map(match => match[1]);
-const pageRuntimes = scripts.filter(src => !/(?:phase9-personal-entities-client|sidebar-taxonomy-v3)\.js/.test(src));
+const pageRuntimes = scripts.filter(src => !/(?:phase9-personal-entities-client|sidebar-taxonomy-v3|pediatric-common-liquid-core)\.js/.test(src));
 
 assert.equal(styles.length, 2, 'Dozologjia must keep exactly two stylesheet owners');
 assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-responsive4');
 assert.ok(scripts.includes('/phase9-personal-entities-client.js?v=phase9b'), 'Dozologjia personal entity runtime is missing');
 assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish2-lazy'), 'Dozologjia shared sidebar runtime is missing');
+assert.ok(scripts.includes('/pediatric-common-liquid-core.js?v=1'), 'Pediatric practical liquid conversion core is missing');
 assert.equal(pageRuntimes.length, 1, 'Dozologjia must own exactly one page runtime in addition to shared runtimes');
 
 const dosageCssVersion = styles[0]?.match(/^\/dozologjia-v2\.css\?v=(\d+)$/)?.[1] || '';
@@ -71,6 +72,10 @@ assert.match(html, /id="pediatricCommonSections"/);
 assert.match(js, /pediatric-common-drugs-reference\.json/);
 assert.match(js, /function renderCalculator\(/);
 assert.match(css, /\.dz-common-section/);
+assert.match(css, /\.dz-common-volume/);
+assert.match(css, /\.dz-common-weight-quick/);
+assert.match(js, /function renderLiquidConversions\(/);
+assert.match(js, /function addWeightShortcuts\(/);
 assert.deepStrictEqual(
   commonReference.sections.map(section => [section.roman, section.title, section.drugs.length]),
   [
