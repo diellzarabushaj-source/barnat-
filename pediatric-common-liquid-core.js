@@ -166,6 +166,8 @@
     if (key === 'amoxicillin') return 'amoksicilinë';
     if (key === 'clavulanic' || key === 'clavulanate') return 'klavulanat';
     if (key === 'cefoperazone') return 'cefoperazonë';
+    if (key === 'piperacillin') return 'piperacilinë';
+    if (key === 'tazobactam') return 'tazobaktam';
     if (key === 'tmp') return 'TMP (trimetoprim)';
     return clean(value);
   }
@@ -318,10 +320,22 @@
       return [{ kind:'injectable', form:'Flakon (vial)', amount:1000, unit:'mg', componentBasis:'cefoperazone', source, reconstitutionRequired:true }];
     }
     if (name === 'piperacillin + tazobactam') {
+      const explicit = source.match(/(\d+(?:[.,]\d+)?)\s*g\s*piperacillin\s*\+\s*(\d+(?:[.,]\d+)?)\s*g\s*tazobactam/i);
+      if (explicit) {
+        return [{
+          kind:'injectable',
+          form:'Flakon (vial)',
+          amount:number(explicit[1]) * 1000,
+          unit:'mg',
+          componentBasis:'piperacillin',
+          source,
+          reconstitutionRequired:true,
+        }];
+      }
       return [{
         kind:'injectable', form:'Flakon (vial)', amount:NaN, unit:'mg', componentBasis:'', source,
         reconstitutionRequired:true,
-        reason:'Burimi jep vetëm 4,5 g total; pa ndarjen piperacilinë/tazobaktam nuk llogaritet ekuivalenti i sigurt i flakonit.',
+        reason:'Burimi jep vetëm forcën totale pa ndarjen e verifikuar piperacilinë/tazobaktam; ekuivalenti i flakonit nuk automatizohet.',
       }];
     }
     if (name === 'penicillin g' && /5\s*lakhs?/i.test(source)) {
@@ -412,7 +426,9 @@
     const kinds = new Set((drug?.formulations || []).map(formulationRouteKind).filter(Boolean));
     const matched = wanted === 'inhaled'
       ? kinds.has('inhaled')
-      : kinds.has(wanted);
+      : wanted === 'oral_or_injectable'
+        ? (kinds.has('oral') || kinds.has('injectable'))
+        : kinds.has(wanted);
     if (matched) return { ok:true, wanted, message:'' };
     const routeLabel = wanted === 'injectable'
       ? 'IV/IM'
