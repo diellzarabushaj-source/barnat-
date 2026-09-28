@@ -43,9 +43,12 @@ const dosageJsVersion = pageRuntimes[0]?.match(/^\/dozologjia-v2\.js\?v=(\d+)$/)
 assert.ok(dosageCssVersion, 'Dozologjia stylesheet must use a numeric cache version');
 assert.ok(dosageJsVersion, 'Dozologjia runtime must use a numeric cache version');
 assert.equal(dosageCssVersion, dosageJsVersion, 'Dozologjia CSS and JS cache versions must stay synchronized');
-assert.ok(Number(dosageCssVersion) >= 28, 'Dozologjia asset version must not regress below v28');
+assert.ok(Number(dosageCssVersion) >= 38, 'Dozologjia asset version must not regress below v38');
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|dozologjia\.js|dozologjia-deep-audit\.js|style-loader|pediatric-calculator\.css|pediatric-calculator-client\.js/);
 assert.match(html, /phase9-personal-entities-client\.js\?v=phase9b/);
+
+assert.match(html, /name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/, 'iOS safe-area viewport support is required');
+assert.match(html, /id="pediatricCommonSearch"[^>]*autocapitalize="none"[^>]*spellcheck="false"[^>]*enterkeyhint="search"/, 'Pediatric search must be tuned for phone keyboards');
 
 
 assert.match(js,/master-catalog/);
@@ -82,6 +85,15 @@ assert.match(js, /MASTER_WEIGHT_AGE_CORE/);
 assert.doesNotMatch(js, /const REFERENCE_AGES =/);
 assert.match(js, /MOSHA AUTO NGA PESHA/);
 assert.match(css, /\.dz-common-age-auto/);
+assert.match(js, /function inferredAgeFitsRegimen\(/, 'Master auto-age must respect regimen age boundaries');
+assert.match(js, /validAgeMonths\(/, 'Zero-month newborn age must remain representable');
+assert.match(js, /uniqueDrug === drug/, 'A unique pediatric search result should open directly into its calculator');
+assert.match(js, /querySelectorAll\(':scope > details\.dz-common-drug\[open\]'\)/, 'Phone drug cards must behave as a compact accordion');
+assert.match(css, /env\(safe-area-inset-bottom\)/, 'Phone layout must respect the iPhone home indicator');
+assert.match(css, /env\(safe-area-inset-left\)/, 'Landscape iPhone layout must respect the notch safe area');
+assert.match(css, /\.dz-common-weight-quick button\{[\s\S]{0,180}?min-height:44px/, 'Quick weight chips must meet 44px touch targets on phones');
+assert.match(css, /\.dz-common-weight-field \.dz-number input\{[\s\S]{0,180}?font-size:30px/, 'Weight must be the dominant mobile input');
+assert.match(css, /\.dz-common-volume-dose strong\{[\s\S]{0,180}?font-size:34px/, 'Practical mL output must be visually dominant on phones');
 assert.deepStrictEqual(
   commonReference.sections.map(section => [section.roman, section.title, section.drugs.length]),
   [
