@@ -21,6 +21,8 @@ assert.equal(audit.wave4?.auditedDrugCount, 34);
 assert.equal(audit.wave4?.addedDrugs?.length, 5);
 assert.equal(audit.wave5?.auditedDrugCount, 50);
 assert.equal(audit.wave5?.addedDrugs?.length, 16);
+assert.equal(audit.wave6?.auditedDrugCount, 50);
+assert.equal(audit.wave6?.kind, 'post-audit-clinical-hardening');
 
 for (const [name, item] of Object.entries(audit.drugs)) {
   assert.ok(sourceTable.sections.some(section => section.drugs.some(drug => drug.name === name)), `${name}: audit target is not in the 50-drug source table`);
@@ -378,10 +380,13 @@ assert.deepStrictEqual(D.DEC.practicalFormulations, []);
 const diclofenac = D.Diclofenac.calculator.options;
 assert.deepStrictEqual(diclofenac.map(option => [option.rules[0].min,option.rules[0].max]), [[1,3],[1,2]]);
 assert.ok(diclofenac.every(option => option.rules[0].period === 'day'));
-assert.deepStrictEqual(D.Diclofenac.practicalFormulations, []);
+assert.ok(diclofenac.every(option => option.route === 'rectal'));
+assert.deepStrictEqual(D.Diclofenac.practicalFormulations, ['Supp – 12.5mg','Supp – 25mg']);
 
 const mefenamic = D['Mefenamic acid'].calculator.options[0].rules[0];
 assert.deepStrictEqual([mefenamic.minMonths,mefenamic.minInclusive,mefenamic.min,mefenamic.period,mefenamic.split], [6,false,25,'day',3]);
+assert.match(mefenamic.frequency, /doza të ndara/);
+assert.match(mefenamic.noteSq, /÷3|TID/);
 assert.deepStrictEqual(D['Mefenamic acid'].practicalFormulations, ['Syp – 250/5']);
 
 const cpm = D.CPM.calculator.options[0].rules;
@@ -413,4 +418,4 @@ assert.equal(new Set([
 sourceTable.sections.flatMap(section => section.drugs)
   .forEach(drug => assert.ok(D[drug.name], `Missing independent audit: ${drug.name}`));
 
-console.log('PASS: pediatric clinical audit v1-wave5 independently audits all 50 source drugs with explicit safe/blocked AUTO states');
+console.log('PASS: pediatric clinical audit v1-wave6 independently audits all 50 source drugs with hardened route, dose and blocked-AUTO semantics');
