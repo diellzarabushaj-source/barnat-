@@ -69,7 +69,7 @@
         minMonths,
         maxMonths,
         defaultMonths,
-        label:rangeLabel(minMonths, maxMonths),
+        label:exact.length === 1 ? exact[0].labelSq : rangeLabel(minMonths, maxMonths),
         kind:exact.length > 1 ? 'overlap' : 'band',
         bandKeys:exact.map(band => band.key),
         sourceLabels:exact.map(band => band.labelSq),
