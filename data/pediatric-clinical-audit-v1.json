@@ -2504,6 +2504,1115 @@
         "checkedAt": "2026-09-28",
         "summarySq": "Regjistri lokal ka produkte orale me 20 mg hekur/1 mL; kalkulatori e interpreton këtë vetëm si hekur elementar kur etiketa e produktit e konfirmon."
       }
+    },
+    "Ampicillin": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · WHO",
+      "summarySq": "Ampicilina parenterale është indikacion- dhe moshë-specifike. Për sepsë të dyshuar te 0–59 ditë: 50 mg/kg/dozë q12h në javën e parë dhe q8h pas javës së parë. Për infeksion të rëndë te 2 muaj–<5 vjeç: 50 mg/kg/dozë q6h.",
+      "warningsSq": [
+        "Te neonati mos përdor automatikisht formulën e thjeshtë q6h nga tabela bazë; intervali ndryshon me moshën postnatale.",
+        "Meningjiti, prematuriteti dhe insuficienca renale kërkojnë protokoll specifik."
+      ],
+      "sources": [
+        {
+          "authority": "WHO 2024",
+          "title": "Serious bacterial infections in infants 0–59 days · ampicillin dosing",
+          "url": "https://iris.who.int/bitstream/handle/10665/379727/9789240102903-eng.pdf?sequence=1"
+        },
+        {
+          "authority": "WHO",
+          "title": "Paediatric hospital care drug dosages · ampicillin",
+          "url": "https://iris.who.int/bitstream/handle/10665/42335/1/WHO_FCH_CAH_00.1.pdf"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Sepsë e dyshuar · 0–7 ditë · 50 mg/kg q12h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 0,
+                "maxMonths": 0.23,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 50,
+                "max": 50,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · IM/IV",
+                "source": "WHO 2024 · first week of life"
+              }
+            ]
+          },
+          {
+            "label": "Sepsë e dyshuar · >7–59 ditë · 50 mg/kg q8h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 0.23,
+                "maxMonths": 2,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 50,
+                "max": 50,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 8 orë · IM/IV",
+                "source": "WHO 2024 · after first week to 59 days"
+              }
+            ]
+          },
+          {
+            "label": "Infeksion i rëndë · 2 muaj–<5 vjeç · 50 mg/kg q6h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 2,
+                "maxMonths": 60,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 50,
+                "max": 50,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 6 orë · IM/IV",
+                "source": "WHO paediatric hospital care"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Vial – 500mg",
+        "Vial – 1g"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 12 produkte ampicillin, përfshirë flakonë 500 mg dhe 1 g si dhe suspension oral 250 mg/5 mL."
+      }
+    },
+    "Cloxacillin": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · MSF/WHO",
+      "summarySq": "Për infeksione të rënda stafilokoksike te fëmijët ≥1 muaj: 25–50 mg/kg/dozë IV çdo 6 orë, maksimum 2 g/dozë. Neonati ka intervale të ndryshme sipas ditëve të jetës dhe peshës.",
+      "warningsSq": [
+        "AUTO bllokohet nën 1 muaj në këtë modul sepse regjimi neonatal kërkon ditët e sakta të jetës dhe peshën <2 kg kundrejt ≥2 kg.",
+        "Nuk u konfirmua produkt cloxacillin i publikuar në regjistrin lokal; mos improvizo formulim nga kombinimi ampicillin/cloxacillin i tabelës së vjetër."
+      ],
+      "sources": [
+        {
+          "authority": "MSF Medical Guidelines",
+          "title": "Cloxacillin injectable · severe infections",
+          "url": "https://medicalguidelines.msf.org/en/viewport/EssDr/english/cloxacillin-injectable-16682609.html"
+        },
+        {
+          "authority": "WHO AWaRe",
+          "title": "Cloxacillin pediatric dosing summary",
+          "url": "https://iris.who.int/bitstream/handle/10665/365135/WHO-MHP-HPS-EML-2022.02-eng.pdf"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Infeksion i rëndë stafilokoksik · ≥1 muaj · 25–50 mg/kg IV q6h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 1,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 25,
+                "max": 50,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 6 orë · infuzion IV",
+                "maxPerDose": 2000,
+                "source": "MSF · child ≥1 month"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "0 produkte cloxacillin monoterapi të publikuara u gjetën në regjistrin lokal."
+      }
+    },
+    "Penicillin G": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · WHO/DailyMed",
+      "summarySq": "Benzylpenicillin (Penicillin G): doza e përgjithshme pediatrike 50 000 U/kg/dozë q6h; për meningjit 100 000 U/kg/dozë q6h në udhëzimin WHO. Regjimet ndryshojnë sipas patogjenit dhe indikacionit.",
+      "warningsSq": [
+        "Neonati/prematuri kërkon interval specifik dhe nuk duhet të marrë automatikisht q6h vetëm nga pesha.",
+        "DailyMed jep doza të ndryshme sipas infeksionit; përdor kulturën/sensitivitetin dhe protokollin lokal."
+      ],
+      "sources": [
+        {
+          "authority": "WHO paediatric hospital care",
+          "title": "Benzylpenicillin (penicillin G) pediatric dosage",
+          "url": "https://platform.who.int/docs/default-source/mca-documents/policy-documents/operational-guidance/eth-ch-41-01-operationalguidance-2016-eng-paediatric-hospital-care-guidelines-practitioners.pdf"
+        },
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "Penicillin G potassium · pediatric dosage by indication",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=969a421e-37d8-499e-9e89-67e210bd5d9d"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Dozë e përgjithshme · ≥1 muaj · 50 000 U/kg q6h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 1,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 50000,
+                "max": 50000,
+                "unit": "U",
+                "period": "dose",
+                "frequency": "çdo 6 orë · IV/IM",
+                "source": "WHO paediatric hospital care"
+              }
+            ]
+          },
+          {
+            "label": "Meningjit · ≥1 muaj · 100 000 U/kg q6h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 1,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 100000,
+                "max": 100000,
+                "unit": "U",
+                "period": "dose",
+                "frequency": "çdo 6 orë · IV",
+                "source": "WHO paediatric hospital care"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Vial – 1 million U"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 9 produkte benzylpenicillin/Penicillin G, përfshirë flakonë 1 000 000 IU; disa produkte janë depo/kombinime dhe nuk janë të barasvlershme me Penicillin G IV."
+      }
+    },
+    "Levofloxacin": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · DailyMed",
+      "summarySq": "Pediatrikisht etiketa e referuar e levofloxacin mbulon antraks inhalator post-ekspozim dhe murtajë: ≥6 muaj, <50 kg 8 mg/kg/dozë q12h (maks. 250 mg/dozë); ≥50 kg 500 mg q24h.",
+      "warningsSq": [
+        "Mos e përdor këtë skemë si dozë universale për pneumoni/UTI pediatrike; indikacionet pediatrike të etiketës janë të kufizuara.",
+        "Fluorokinolonet kanë paralajmërime serioze për efekte muskuloskeletale, neurologjike dhe të tjera; përdorimi duhet të jetë i justifikuar."
+      ],
+      "sources": [
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "Levofloxacin · pediatric anthrax and plague dosing",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a894e40b-77e4-439b-b0f8-9a5cc7a1dd90"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Antraks inhalator post-ekspozim · ≥6 muaj",
+            "mode": "clinicalRules",
+            "route": "oral_or_injectable",
+            "rules": [
+              {
+                "minMonths": 6,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "maxKg": 50,
+                "maxKgInclusive": false,
+                "doseType": "weight",
+                "min": 8,
+                "max": 8,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · 60 ditë",
+                "maxPerDose": 250,
+                "source": "DailyMed · inhalational anthrax <50 kg"
+              },
+              {
+                "minMonths": 6,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "minKg": 50,
+                "doseType": "fixed",
+                "min": 500,
+                "max": 500,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 24 orë · 60 ditë",
+                "source": "DailyMed · inhalational anthrax ≥50 kg"
+              }
+            ]
+          },
+          {
+            "label": "Murtajë · ≥6 muaj",
+            "mode": "clinicalRules",
+            "route": "oral_or_injectable",
+            "rules": [
+              {
+                "minMonths": 6,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "maxKg": 50,
+                "maxKgInclusive": false,
+                "doseType": "weight",
+                "min": 8,
+                "max": 8,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · 10–14 ditë",
+                "maxPerDose": 250,
+                "source": "DailyMed · plague <50 kg"
+              },
+              {
+                "minMonths": 6,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "minKg": 50,
+                "doseType": "fixed",
+                "min": 500,
+                "max": 500,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 24 orë · 10–14 ditë",
+                "source": "DailyMed · plague ≥50 kg"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Infusion – 5mg/1ml"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 32 produkte levofloxacin, përfshirë infusion 5 mg/mL dhe tableta 250/500/750 mg."
+      }
+    },
+    "Amikacin": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · DailyMed",
+      "summarySq": "Me funksion renal normal: fëmijë/foshnja më të mëdha 15 mg/kg/ditë, si 7,5 mg/kg q12h ose 5 mg/kg q8h. Te i porsalinduri: loading 10 mg/kg, pastaj 7,5 mg/kg q12h.",
+      "warningsSq": [
+        "Kërkohet vlerësim renal dhe, kur është e mundur, monitorim peak/trough; ototoksiciteti dhe nefrotoksiciteti janë rreziqe kryesore.",
+        "Doza totale ditore nuk duhet të kalojë 15 mg/kg/ditë; në pesha të mëdha etiketa kufizon 1,5 g/ditë."
+      ],
+      "sources": [
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "Amikacin sulfate injection · pediatric dosing and monitoring",
+          "url": "https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7791d3e1-9287-4f75-b4f0-e5d35cacfd6e"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "I porsalindur · loading 10 mg/kg",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 0,
+                "maxMonths": 1,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 10,
+                "max": 10,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "dozë ngarkuese",
+                "source": "DailyMed · newborn loading dose"
+              }
+            ]
+          },
+          {
+            "label": "I porsalindur · mirëmbajtje 7,5 mg/kg q12h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 0,
+                "maxMonths": 1,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 7.5,
+                "max": 7.5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · TDM",
+                "maxDailyPerKg": 15,
+                "source": "DailyMed · newborn maintenance"
+              }
+            ]
+          },
+          {
+            "label": "≥1 muaj · 7,5 mg/kg q12h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 1,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 7.5,
+                "max": 7.5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · TDM",
+                "maxDailyPerKg": 15,
+                "maxPerDay": 1500,
+                "source": "DailyMed · normal renal function"
+              }
+            ]
+          },
+          {
+            "label": "≥1 muaj · 5 mg/kg q8h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 1,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 5,
+                "max": 5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 8 orë · TDM",
+                "maxDailyPerKg": 15,
+                "maxPerDay": 1500,
+                "source": "DailyMed · normal renal function"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Vial – 500mg/2ml"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 5 produkte amikacin injektabile, të gjitha me 500 mg/2 mL të konfirmuar."
+      }
+    },
+    "Gentamicin": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · DailyMed",
+      "summarySq": "Me funksion renal normal: ≤7 ditë 2,5 mg/kg q12h; neonat/foshnja më të mëdha 2,5 mg/kg q8h; fëmijë ≥1 muaj 2–2,5 mg/kg q8h.",
+      "warningsSq": [
+        "Gentamicina kërkon individualizim sipas funksionit renal dhe monitorim peak/trough kur është e mundur.",
+        "Skemat once-daily përdoren në shumë protokolle moderne; ky audit ruan regjimin e etiketës DailyMed dhe nuk e paraqet si universal."
+      ],
+      "sources": [
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "Gentamicin injection · pediatric dosing and serum monitoring",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=8bdeef7f-ad8e-46e0-a872-e945eae51d68"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "0–7 ditë · 2,5 mg/kg q12h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 0,
+                "maxMonths": 0.23,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 2.5,
+                "max": 2.5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · TDM",
+                "source": "DailyMed · premature/full-term neonate ≤1 week"
+              }
+            ]
+          },
+          {
+            "label": ">7 ditë–<1 muaj · 2,5 mg/kg q8h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 0.23,
+                "maxMonths": 1,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 2.5,
+                "max": 2.5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 8 orë · TDM",
+                "source": "DailyMed · infants/neonates"
+              }
+            ]
+          },
+          {
+            "label": "≥1 muaj · 2–2,5 mg/kg q8h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 1,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 2,
+                "max": 2.5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 8 orë · TDM",
+                "source": "DailyMed · children"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Vial – 40mg/1ml"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka forma injektabile gentamicin, përfshirë 40 mg/mL dhe 80 mg/2 mL; format okulare/topike nuk përdoren nga ky kalkulator sistemik."
+      }
+    },
+    "Cefoperazone": {
+      "status": "verified-blocked",
+      "badgeSq": "AUDITUAR · AUTO I BLLOKUAR",
+      "summarySq": "Rreshti bazë përzien emrin 'cefoperazone' me formulim cefoperazone/sulbactam. Doza e kombinimit varet nga raporti 2:1 kundrejt 1:1; regjistri lokal ka produkt 1 g + 1 g, ndërsa tabela bazë shfaq 1 g + 0,5 g.",
+      "warningsSq": [
+        "Mos llogarit dozën e cefoperazone monoterapi mbi një flakon kombinim pa përcaktuar raportin dhe bazën e dozës.",
+        "WHO përshkruan doza pediatrike të ndryshme për raportin 2:1 dhe 1:1; kjo e bën formulën e vetme të tabelës bazë të pasigurt për AUTO."
+      ],
+      "sources": [
+        {
+          "authority": "WHO EML review",
+          "title": "Cefoperazone/sulbactam · dosing differs by 2:1 versus 1:1 formulation",
+          "url": "https://cdn.who.int/media/docs/default-source/2025-eml-expert-committee/other-matters/o.2_cefoperazone-sulbactam.pdf?sfvrsn=3aa8c360_7"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "disabled": true,
+        "reasonSq": "AUTO i bllokuar: së pari duhet zgjedhur produkti dhe raporti cefoperazone:sulbactam (2:1 ose 1:1)."
+      },
+      "practicalFormulations": [],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 1 produkt cefoperazone/sulbactam të publikuar me forcë 1 g + 1 g (raport 1:1), jo formulimin 1 g + 0,5 g të tabelës bazë."
+      }
+    },
+    "Cefotaxime": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · WHO",
+      "summarySq": "Te fëmijët jashtë periudhës neonatale, referenca WHO jep cefotaxime 50 mg/kg/dozë IV çdo 6 orë. Prematurët dhe java e parë e jetës kanë intervale më të gjata.",
+      "warningsSq": [
+        "AUTO bllokohet nën 1 muaj për të mos fshehur dallimet e prematuritetit/javës së parë.",
+        "Funksioni renal dhe indikacioni mund të kërkojnë përshtatje; meningjiti duhet menaxhuar sipas protokollit aktual."
+      ],
+      "sources": [
+        {
+          "authority": "WHO paediatric hospital care",
+          "title": "Cefotaxime pediatric dosage and neonatal interval notes",
+          "url": "https://iris.who.int/bitstream/handle/10665/42335/1/WHO_FCH_CAH_00.1.pdf"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "≥1 muaj · 50 mg/kg IV q6h",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 1,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 50,
+                "max": 50,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 6 orë · IV",
+                "source": "WHO paediatric hospital care"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Vial – 1g"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 2 produkte cefotaxime monoterapi, të dyja flakonë 1 g."
+      }
+    },
+    "Colistin": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · SmPC/EMA",
+      "summarySq": "Colistimethate sodium IV: ≤40 kg 75 000–150 000 IU/kg/ditë në 3 doza; >40 kg mund të merret në konsideratë doza adulte 9 milion IU/ditë në 2–3 doza. Doza duhet shkruar në IU.",
+      "warningsSq": [
+        "Gabimet IU ↔ mg CBA/CMS janë të njohura; ky kalkulator përdor vetëm IU dhe nuk konverton automatikisht në mg colistin base.",
+        "Të dhënat pediatrike janë të kufizuara; maturimi renal dhe insuficienca renale kërkojnë individualizim. Kujdes me nefro- dhe neurotoksicitetin."
+      ],
+      "sources": [
+        {
+          "authority": "emc SmPC",
+          "title": "Colomycin · systemic pediatric dosing in IU",
+          "url": "https://www.medicines.org.uk/emc/product/9664/smpc"
+        },
+        {
+          "authority": "EMA",
+          "title": "Polymyxin-containing medicines · harmonised colistimethate dosing",
+          "url": "https://www.ema.europa.eu/en/medicines/human/referrals/polymyxin-containing-medicines"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "IV sistemik · ≤40 kg · 75 000–150 000 IU/kg/ditë ÷3",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 0,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "maxKg": 40,
+                "doseType": "weight",
+                "min": 75000,
+                "max": 150000,
+                "unit": "U",
+                "period": "day",
+                "frequency": "3 doza/ditë · IV",
+                "split": 3,
+                "source": "SmPC · children ≤40 kg"
+              }
+            ]
+          },
+          {
+            "label": "IV sistemik · >40 kg · 9 milion IU/ditë",
+            "mode": "clinicalRules",
+            "route": "injectable",
+            "rules": [
+              {
+                "minMonths": 0,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "minKg": 40,
+                "minKgInclusive": false,
+                "doseType": "fixed",
+                "min": 9000000,
+                "max": 9000000,
+                "unit": "U",
+                "period": "day",
+                "frequency": "2–3 doza/ditë · IV",
+                "split": 3,
+                "source": "SmPC · adult dose may be considered above 40 kg",
+                "noteSq": "Kalkulatori e ndan në 3 për paraqitje praktike; skema 2–3 doza zgjidhet klinikisht."
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Vial – 1 million U"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 5 produkte colistimethate/colistin, të gjitha të shënuara 1 000 000 IU për flakon; rruga mund të jetë IV ose nebulizim sipas produktit."
+      }
+    },
+    "Doxycycline": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · CDC",
+      "summarySq": "Për infeksione rikeciale të dyshuara: fëmijë <45 kg 2,2 mg/kg/dozë q12h, maksimum 100 mg/dozë; ≥45 kg 100 mg q12h. Doxycycline është terapi e linjës së parë në të gjitha moshat për këto infeksione.",
+      "warningsSq": [
+        "Kjo skemë është specifike për sëmundjet rikeciale/ehrlichiosis, jo dozë universale për çdo indikacion të doxycycline.",
+        "Trajtimi zakonisht vazhdon së paku 5–7 ditë dhe deri ≥72 orë pas zhdukjes së temperaturës me përmirësim klinik."
+      ],
+      "sources": [
+        {
+          "authority": "CDC",
+          "title": "Clinical care of spotted fever rickettsioses · doxycycline in children",
+          "url": "https://cdc.gov/other-spotted-fever/hcp/clinical-care/index.html"
+        },
+        {
+          "authority": "CDC",
+          "title": "Clinical care of ehrlichiosis · pediatric doxycycline dose",
+          "url": "https://www.cdc.gov/ehrlichiosis/hcp/clinical-care/index.html"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Rikeciozë/ehrlichiosis · <45 kg · 2,2 mg/kg q12h",
+            "mode": "clinicalRules",
+            "route": "oral_or_injectable",
+            "rules": [
+              {
+                "minMonths": 0,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "maxKg": 45,
+                "maxKgInclusive": false,
+                "doseType": "weight",
+                "min": 2.2,
+                "max": 2.2,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · së paku 5–7 ditë",
+                "maxPerDose": 100,
+                "source": "CDC · children <45 kg"
+              }
+            ]
+          },
+          {
+            "label": "Rikeciozë/ehrlichiosis · ≥45 kg · 100 mg q12h",
+            "mode": "clinicalRules",
+            "route": "oral_or_injectable",
+            "rules": [
+              {
+                "minMonths": 0,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "minKg": 45,
+                "doseType": "fixed",
+                "min": 100,
+                "max": 100,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë · së paku 5–7 ditë",
+                "source": "CDC · ≥45 kg/adult dose"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Tab – 100mg"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 5 produkte doxycycline, të gjitha forma solide 100 mg; nuk u konfirmua formulim pediatrik likuid."
+      }
+    },
+    "DEC": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · CDC",
+      "summarySq": "Diethylcarbamazine (DEC) për filariazë limfatike te fëmijët >18 muaj: 6 mg/kg/ditë. CDC përshkruan kurs 1-ditor ose 12-ditor sipas protokollit.",
+      "warningsSq": [
+        "DEC nuk është bar antiparazitar 'universal'; diagnoza e filariazës duhet konfirmuar dhe trajtimi shpesh koordinohet me ekspertizë infektologjike/tropikale.",
+        "Nuk u gjet produkt DEC i publikuar në regjistrin lokal."
+      ],
+      "sources": [
+        {
+          "authority": "CDC",
+          "title": "Clinical treatment of lymphatic filariasis",
+          "url": "https://cdc.gov/filarial-worms/hcp/clinical-care/index.html"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Filariazë limfatike · >18 muaj · 6 mg/kg/ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 18,
+                "minInclusive": false,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 6,
+                "max": 6,
+                "unit": "mg",
+                "period": "day",
+                "frequency": "totali në 24 orë · kurs 1 ose 12 ditë sipas protokollit",
+                "source": "CDC · lymphatic filariasis"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "0 produkte diethylcarbamazine të publikuara u gjetën në regjistrin lokal."
+      }
+    },
+    "Diclofenac": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · SmPC",
+      "summarySq": "Përdorimi pediatrik i verifikuar nuk është '1 mg/kg q8h' për çdo dhimbje. JIA/JCA 1–3 mg/kg/ditë në 2–3 doza te 1–12 vjeç; dhimbje postoperative 1–2 mg/kg/ditë në doza të ndara te 6–12 vjeç, maksimum 4 ditë.",
+      "warningsSq": [
+        "Përdor dozën më të ulët efektive për kohën më të shkurtër; rreziku GI, renal dhe reaksionet nga NSAID mbeten relevante.",
+        "Formulimet pediatric të SmPC janë supozitorë 12,5/25 mg; mos transfero automatikisht dozën te formulime të tjera pa kontrolluar etiketën."
+      ],
+      "sources": [
+        {
+          "authority": "emc SmPC",
+          "title": "Voltarol 12.5 mg suppositories · pediatric JIA and postoperative dosing",
+          "url": "https://www.medicines.org.uk/emc/product/1044/smpc"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "JIA/JCA · 1–12 vjeç · 1–3 mg/kg/ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 12,
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 1,
+                "max": 3,
+                "unit": "mg",
+                "period": "day",
+                "frequency": "në 2–3 doza",
+                "source": "SmPC · juvenile chronic arthritis"
+              }
+            ]
+          },
+          {
+            "label": "Dhimbje postoperative · 6–12 vjeç · 1–2 mg/kg/ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 72,
+                "maxMonths": 144,
+                "maxInclusive": true,
+                "doseType": "weight",
+                "min": 1,
+                "max": 2,
+                "unit": "mg",
+                "period": "day",
+                "frequency": "në doza të ndara · maksimum 4 ditë",
+                "source": "SmPC · acute postoperative pain"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka supozitorë diclofenac 12,5 mg dhe 25 mg, por ky kalkulator nuk automatizon ndarjen e formave solide/rek­tale."
+      }
+    },
+    "Mefenamic acid": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · SmPC",
+      "summarySq": "Fëmijë >6 muaj: 25 mg/kg/ditë me mefenamic acid në doza të ndara; suspensioni mund të jepet deri 3 herë/ditë. Për indikacione të tjera përveç Still's disease, terapia pediatrike nuk duhet të kalojë 7 ditë.",
+      "warningsSq": [
+        "Jepet me ose pas ushqimit. Si NSAID, shmanget te ulçera/gjakderdhja GI, insuficienca e rëndë renale dhe reaksionet e mëparshme ndaj NSAID.",
+        "Përqendrimi lokal i konfirmuar 250 mg/5 mL është shumë më i fortë se 50/5 ose 100/5 në tabelën bazë; kalkulatori duhet të përdorë vetëm përqendrimin e zgjedhur."
+      ],
+      "sources": [
+        {
+          "authority": "emc SmPC",
+          "title": "Mefenamic Acid 50 mg/5 mL suspension · pediatric posology",
+          "url": "https://www.medicines.org.uk/emc/product/13316/smpc"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": ">6 muaj · 25 mg/kg/ditë ÷3 · maksimum 7 ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 6,
+                "minInclusive": false,
+                "maxMonths": 144,
+                "maxInclusive": true,
+                "doseType": "weight",
+                "min": 25,
+                "max": 25,
+                "unit": "mg",
+                "period": "day",
+                "frequency": "3 doza/ditë · me/pas ushqimit · ≤7 ditë",
+                "split": 3,
+                "source": "SmPC · pediatric suspension"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Syp – 250/5"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka suspension mefenamic acid 250 mg/5 mL (Rafreda) dhe tableta 500 mg."
+      }
+    },
+    "CPM": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · SmPC",
+      "summarySq": "Chlorphenamine maleate është age-based: 1–2 vjeç 1 mg BID; 2–6 vjeç 1 mg q4–6h; 6–12 vjeç 2 mg q4–6h; ≥12 vjeç 4 mg q4–6h, me maksimumet ditore të etiketës.",
+      "warningsSq": [
+        "Nuk rekomandohet nën 1 vjeç në SmPC e referuar.",
+        "Sedacioni dhe efektet antikolinergjike janë të rëndësishme; mos përdor preparate të kombinuara për kollë/ftohje si zëvendësim automatik të chlorphenamine monoterapi."
+      ],
+      "sources": [
+        {
+          "authority": "emc SmPC",
+          "title": "Piriton syrup 2 mg/5 mL · pediatric posology",
+          "url": "https://www.medicines.org.uk/emc/product/3928/smpc"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Alergji · sipas moshës",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 12,
+                "maxMonths": 24,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 1,
+                "max": 1,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "2 herë/ditë · maks. 2 mg/24 h",
+                "maxPerDay": 2,
+                "source": "SmPC · 1–2 years"
+              },
+              {
+                "minMonths": 24,
+                "maxMonths": 72,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 1,
+                "max": 1,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 4–6 orë · maks. 6 mg/24 h",
+                "maxPerDay": 6,
+                "source": "SmPC · 2–6 years"
+              },
+              {
+                "minMonths": 72,
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 2,
+                "max": 2,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 4–6 orë · maks. 12 mg/24 h",
+                "maxPerDay": 12,
+                "source": "SmPC · 6–12 years"
+              },
+              {
+                "minMonths": 144,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 4,
+                "max": 4,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 4–6 orë · maks. 24 mg/24 h",
+                "maxPerDay": 24,
+                "source": "SmPC · ≥12 years"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Syp – 2/5"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal përmban chlorphenamine 2 mg/5 mL dhe 4 mg tableta, por shumë rezultate janë kombinime me barna të tjera; AUTO përdor vetëm monoterapinë."
+      }
+    },
+    "Levo salbutamol": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · DailyMed",
+      "summarySq": "Levalbuterol nebulized: 6–11 vjeç 0,31 mg TID; rutinë nuk duhet të kalojë 0,63 mg TID. ≥12 vjeç 0,63 mg TID q6–8h; maksimum 1,25 mg TID.",
+      "warningsSq": [
+        "Nuk është thjesht 'gjysma e salbutamolit' për çdo situatë; doza e etiketës është age- dhe formulim-specifike.",
+        "Nuk u konfirmua produkt levalbuterol/levosalbutamol i publikuar në regjistrin lokal; mos konverto automatikisht te preparatet salbutamol racemik."
+      ],
+      "sources": [
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "Levalbuterol inhalation solution · pediatric dosing",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d4080fc5-50d6-49a9-8a63-7769d201968d"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Nebulizim · 6–11 vjeç · 0,31 mg TID",
+            "mode": "clinicalRules",
+            "route": "nebulized",
+            "rules": [
+              {
+                "minMonths": 72,
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 0.31,
+                "max": 0.31,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "3 herë/ditë me nebulizim",
+                "source": "DailyMed · children 6–11 years"
+              }
+            ]
+          },
+          {
+            "label": "Nebulizim · 6–11 vjeç · kufiri rutinë 0,63 mg TID",
+            "mode": "clinicalRules",
+            "route": "nebulized",
+            "rules": [
+              {
+                "minMonths": 72,
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 0.63,
+                "max": 0.63,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "3 herë/ditë · jo mbi këtë rutinë",
+                "source": "DailyMed · routine maximum 6–11 years"
+              }
+            ]
+          },
+          {
+            "label": "Nebulizim · ≥12 vjeç · 0,63 mg q6–8h",
+            "mode": "clinicalRules",
+            "route": "nebulized",
+            "rules": [
+              {
+                "minMonths": 144,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 0.63,
+                "max": 0.63,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "3 herë/ditë · çdo 6–8 orë",
+                "source": "DailyMed · ≥12 years"
+              }
+            ]
+          },
+          {
+            "label": "Nebulizim · ≥12 vjeç · maksimum 1,25 mg TID",
+            "mode": "clinicalRules",
+            "route": "nebulized",
+            "rules": [
+              {
+                "minMonths": 144,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 1.25,
+                "max": 1.25,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "3 herë/ditë · maksimum",
+                "source": "DailyMed · ≥12 years maximum"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "0 produkte levalbuterol/levosalbutamol të publikuara u gjetën në regjistrin lokal; preparatet salbutamol nuk konsiderohen ekuivalente AUTO."
+      }
+    },
+    "Calcium": {
+      "status": "verified-blocked",
+      "badgeSq": "AUDITUAR · AUTO I BLLOKUAR",
+      "summarySq": "Rreshti 'Calcium 50–150 mg/kg/day' është klinikisht i paqartë: nuk përcakton indikacionin, kripën, rrugën apo nëse mg i referohen kalciumit elementar. Këto ndryshojnë dozën në mënyrë thelbësore.",
+      "warningsSq": [
+        "Kalcium gluconate IV për hipokalcemi akute dozohet në mL/kg ose mmol/kg me monitorim; suplementet orale dozojnë kalcium elementar dhe kanë skema krejt të tjera.",
+        "Mos llogarit mL/tableta nga '50–150 mg/kg/day' pa përcaktuar produktin dhe indikacionin."
+      ],
+      "sources": [
+        {
+          "authority": "emc SmPC",
+          "title": "Calcium gluconate 10% injection/infusion · pediatric hypocalcaemia dosing",
+          "url": "https://www.medicines.org.uk/emc/product/6264/smpc"
+        },
+        {
+          "authority": "emc SmPC",
+          "title": "Calvive 1000 · oral elemental calcium supplementation",
+          "url": "https://www.medicines.org.uk/emc/product/1191/smpc"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "disabled": true,
+        "reasonSq": "AUTO i bllokuar: zgjidh indikacionin, rrugën, kripën e kalciumit dhe sasinë e kalciumit elementar para llogaritjes."
+      },
+      "practicalFormulations": [],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka shumë produkte që përmbajnë kalcium në kripëra/kombinime të ndryshme; kërkimi i përgjithshëm nuk është bazë e sigurt për një kalkulator pediatrik unik."
+      }
     }
   },
   "wave2": {
@@ -2546,5 +3655,27 @@
       "Iron"
     ],
     "auditedDrugCount": 34
+  },
+  "wave5": {
+    "completedAt": "2026-09-28",
+    "addedDrugs": [
+      "Ampicillin",
+      "Cloxacillin",
+      "Penicillin G",
+      "Levofloxacin",
+      "Amikacin",
+      "Gentamicin",
+      "Cefoperazone",
+      "Cefotaxime",
+      "Colistin",
+      "Doxycycline",
+      "DEC",
+      "Diclofenac",
+      "Mefenamic acid",
+      "CPM",
+      "Levo salbutamol",
+      "Calcium"
+    ],
+    "auditedDrugCount": 50
   }
 }
