@@ -103,8 +103,8 @@ const cssVersion = html.match(/dozologjia-v2\.css\?v=(\d+)/)?.[1];
 const jsVersion = html.match(/dozologjia-v2\.js\?v=(\d+)/)?.[1];
 assert.ok(cssVersion && jsVersion);
 assert.equal(cssVersion, jsVersion);
-assert.ok(Number(cssVersion) >= 44);
-assert.match(html, /pediatric-common-liquid-core\.js\?v=7/);
+assert.ok(Number(cssVersion) >= 45);
+assert.match(html, /pediatric-common-liquid-core\.js\?v=8/);
 assert.match(html, /id="pediatricCommonReference"/);
 
 console.log('PASS: source-exact pediatric reference plus complete hardened 50-drug clinical audit are database-backed and wired into Dozologjia');
