@@ -43,7 +43,9 @@
   function ageMonths(ageValue, ageUnit) {
     const value = numeric(ageValue);
     if (!Number.isFinite(value) || value < 0) return NaN;
-    return ageUnit === 'month' ? value : value * 12;
+    if (ageUnit === 'day') return value / 30.4375;
+    if (ageUnit === 'month') return value;
+    return value * 12;
   }
   const validAgeMonths = value => Number.isFinite(value) && value >= 0;
   const rulesOf = option => Array.isArray(option?.rules) ? option.rules : [];
@@ -650,7 +652,7 @@
       });
 
       const unit = node('select', null, 'dz-unit');
-      [['year','vjeç'],['month','muaj']].forEach(([value, label]) => {
+      [['year','vjeç'],['month','muaj'],['day','ditë']].forEach(([value, label]) => {
         const choice = node('option', label);
         choice.value = value;
         choice.selected = value === values.ageUnit;
