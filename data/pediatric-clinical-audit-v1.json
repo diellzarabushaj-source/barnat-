@@ -149,8 +149,6 @@
             "route": "oral",
             "rules": [
               {
-                "minMonths": 0,
-                "maxMonths": 0.23,
                 "doseType": "weight",
                 "min": 25,
                 "max": 25,
@@ -158,11 +156,11 @@
                 "period": "dose",
                 "frequency": "2 herë/ditë",
                 "source": "MSF · neonat <7 ditë",
-                "maxInclusive": false
+                "minDays": 0,
+                "maxDays": 7,
+                "maxDaysInclusive": false
               },
               {
-                "minMonths": 0.23,
-                "maxMonths": 1,
                 "doseType": "weight",
                 "min": 25,
                 "max": 25,
@@ -170,7 +168,9 @@
                 "period": "dose",
                 "frequency": "3 herë/ditë",
                 "source": "MSF · neonat 7–28 ditë",
-                "maxInclusive": false
+                "minDays": 7,
+                "maxDays": 29,
+                "maxDaysInclusive": false
               },
               {
                 "minMonths": 1,
@@ -388,7 +388,7 @@
     "Linezolid": {
       "status": "verified-corrected",
       "badgeSq": "VERIFIKUAR · DailyMed",
-      "summarySq": "Për infeksionet serioze të listuara: lindje–11 vjeç 10 mg/kg çdo 8 orë; ≥12 vjeç 600 mg çdo 12 orë.",
+      "summarySq": "Për infeksionet serioze të listuara: nga dita 7 deri në 11 vjeç 10 mg/kg çdo 8 orë; ≥12 vjeç 600 mg çdo 12 orë. Nën 7 ditë kërkohet kontekst neonatal/prematuritet.",
       "warningsSq": [
         "Në 7 ditët e para të jetës kalkulatori nuk jep AUTO pa kontekst neonatal, sepse prematuriteti mund ta ndryshojë intervalin në çdo 12 orë.",
         "Prematur <7 ditë dhe GA <34 javë: etiketa rekomandon nisje 10 mg/kg çdo 12 orë; regjimi neonatal kërkon moshë gestacionale.",
@@ -410,6 +410,20 @@
             "route": "oral_or_injectable",
             "rules": [
               {
+                "minDays": 7,
+                "maxMonths": 1,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 10,
+                "max": 10,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 8 orë",
+                "maxPerDose": 600,
+                "source": "DailyMed · ≥7 ditë deri <1 muaj"
+              },
+              {
+                "minMonths": 1,
                 "maxMonths": 144,
                 "maxInclusive": false,
                 "doseType": "weight",
@@ -419,8 +433,7 @@
                 "period": "dose",
                 "frequency": "çdo 8 orë",
                 "maxPerDose": 600,
-                "source": "DailyMed · birth through 11 years",
-                "minMonths": 0.23
+                "source": "DailyMed · 1 muaj deri 11 vjeç"
               },
               {
                 "minMonths": 144,
@@ -2577,7 +2590,7 @@
     "Ampicillin": {
       "status": "verified-corrected",
       "badgeSq": "VERIFIKUAR · WHO",
-      "summarySq": "Ampicilina parenterale është indikacion- dhe moshë-specifike. Për sepsë të dyshuar te 0–59 ditë: 50 mg/kg/dozë q12h në javën e parë dhe q8h pas javës së parë. Për infeksion të rëndë te 2 muaj–<5 vjeç: 50 mg/kg/dozë q6h.",
+      "summarySq": "Për infeksione bakteriale serioze te 0–59 ditë, WHO 2024: ampicilinë 50 mg/kg/dozë q12h në 7 ditët e para dhe q8h nga dita 7 deri ditën 59. Për infeksion të rëndë te 2 muaj–<5 vjeç: 50 mg/kg/dozë q6h.",
       "warningsSq": [
         "Te neonati mos përdor automatikisht formulën e thjeshtë q6h nga tabela bazë; intervali ndryshon me moshën postnatale.",
         "Meningjiti, prematuriteti dhe insuficienca renale kërkojnë protokoll specifik."
@@ -2598,14 +2611,14 @@
         "replace": true,
         "options": [
           {
-            "label": "Sepsë e dyshuar · 0–7 ditë · 50 mg/kg q12h",
+            "label": "SBI / pneumoni · 0–59 ditë · WHO 2024",
             "mode": "clinicalRules",
             "route": "injectable",
             "rules": [
               {
-                "minMonths": 0,
-                "maxMonths": 0.23,
-                "maxInclusive": false,
+                "minDays": 0,
+                "maxDays": 7,
+                "maxDaysInclusive": false,
                 "doseType": "weight",
                 "min": 50,
                 "max": 50,
@@ -2613,25 +2626,18 @@
                 "period": "dose",
                 "frequency": "çdo 12 orë · IM/IV",
                 "source": "WHO 2024 · first week of life"
-              }
-            ]
-          },
-          {
-            "label": "Sepsë e dyshuar · >7–59 ditë · 50 mg/kg q8h",
-            "mode": "clinicalRules",
-            "route": "injectable",
-            "rules": [
+              },
               {
-                "minMonths": 0.23,
-                "maxMonths": 2,
-                "maxInclusive": false,
+                "minDays": 7,
+                "maxDays": 60,
+                "maxDaysInclusive": false,
                 "doseType": "weight",
                 "min": 50,
                 "max": 50,
                 "unit": "mg",
                 "period": "dose",
                 "frequency": "çdo 8 orë · IM/IV",
-                "source": "WHO 2024 · after first week to 59 days"
+                "source": "WHO 2024 · after first week to day 59"
               }
             ]
           },
@@ -2996,13 +3002,18 @@
     },
     "Gentamicin": {
       "status": "verified-corrected",
-      "badgeSq": "VERIFIKUAR · DailyMed",
-      "summarySq": "Me funksion renal normal: ≤7 ditë 2,5 mg/kg q12h; neonat/foshnja më të mëdha 2,5 mg/kg q8h; fëmijë ≥1 muaj 2–2,5 mg/kg q8h.",
+      "badgeSq": "VERIFIKUAR · WHO 2024 / DailyMed",
+      "summarySq": "Për infeksione bakteriale serioze te 0–59 ditë, WHO 2024 përdor 5 mg/kg 1 herë/ditë në 7 ditët e para dhe 7,5 mg/kg 1 herë/ditë nga dita 7 deri ditën 59. Për fëmijë ≥2 muaj, etiketa DailyMed jep 2–2,5 mg/kg çdo 8 orë.",
       "warningsSq": [
-        "Gentamicina kërkon individualizim sipas funksionit renal dhe monitorim peak/trough kur është e mundur.",
-        "Skemat once-daily përdoren në shumë protokolle moderne; ky audit ruan regjimin e etiketës DailyMed dhe nuk e paraqet si universal."
+        "Gentamicina kërkon individualizim sipas funksionit renal dhe monitorim të niveleve kur është e mundur.",
+        "Mos përziej skemën WHO once-daily për foshnjën 0–59 ditë me regjimet konvencionale q8h/q12h të etiketave të tjera; zgjidh skemën sipas indikacionit dhe protokollit."
       ],
       "sources": [
+        {
+          "authority": "WHO 2024",
+          "title": "Serious bacterial infections in infants 0–59 days · gentamicin dosing",
+          "url": "https://iris.who.int/bitstream/handle/10665/379727/9789240102903-eng.pdf?sequence=1"
+        },
         {
           "authority": "DailyMed/FDA label",
           "title": "Gentamicin injection · pediatric dosing and serum monitoring",
@@ -3013,50 +3024,43 @@
         "replace": true,
         "options": [
           {
-            "label": "0–7 ditë · 2,5 mg/kg q12h",
+            "label": "SBI / pneumoni · 0–59 ditë · WHO 2024",
             "mode": "clinicalRules",
             "route": "injectable",
             "rules": [
               {
-                "minMonths": 0,
-                "maxMonths": 0.23,
-                "maxInclusive": false,
+                "minDays": 0,
+                "maxDays": 7,
+                "maxDaysInclusive": false,
                 "doseType": "weight",
-                "min": 2.5,
-                "max": 2.5,
+                "min": 5,
+                "max": 5,
                 "unit": "mg",
                 "period": "dose",
-                "frequency": "çdo 12 orë · TDM",
-                "source": "DailyMed · premature/full-term neonate ≤1 week"
+                "frequency": "1 herë/ditë · IM/IV · TDM kur mundet",
+                "source": "WHO 2024 · first week of life"
+              },
+              {
+                "minDays": 7,
+                "maxDays": 60,
+                "maxDaysInclusive": false,
+                "doseType": "weight",
+                "min": 7.5,
+                "max": 7.5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë · IM/IV · TDM kur mundet",
+                "source": "WHO 2024 · after first week to day 59"
               }
             ]
           },
           {
-            "label": ">7 ditë–<1 muaj · 2,5 mg/kg q8h",
+            "label": "Fëmijë ≥2 muaj · 2–2,5 mg/kg q8h · DailyMed",
             "mode": "clinicalRules",
             "route": "injectable",
             "rules": [
               {
-                "minMonths": 0.23,
-                "maxMonths": 1,
-                "maxInclusive": false,
-                "doseType": "weight",
-                "min": 2.5,
-                "max": 2.5,
-                "unit": "mg",
-                "period": "dose",
-                "frequency": "çdo 8 orë · TDM",
-                "source": "DailyMed · infants/neonates"
-              }
-            ]
-          },
-          {
-            "label": "≥1 muaj · 2–2,5 mg/kg q8h",
-            "mode": "clinicalRules",
-            "route": "injectable",
-            "rules": [
-              {
-                "minMonths": 1,
+                "minMonths": 2,
                 "maxMonths": 216,
                 "maxInclusive": false,
                 "doseType": "weight",
@@ -3065,7 +3069,7 @@
                 "unit": "mg",
                 "period": "dose",
                 "frequency": "çdo 8 orë · TDM",
-                "source": "DailyMed · children"
+                "source": "DailyMed · children 6–7.5 mg/kg/day"
               }
             ]
           }
@@ -3775,6 +3779,17 @@
     "changes": [
       "Cephalexin: neonatal/infant/child age bands made half-open so 7 days, 1 month and 12 years can select exactly one regimen.",
       "Added exhaustive no-overlap rule gate across all audited clinicalRule options."
+    ],
+    "auditedDrugCount": 50
+  },
+  "wave9": {
+    "completedAt": "2026-09-28",
+    "kind": "exact-neonatal-age-hardening",
+    "changes": [
+      "Cephalexin: replaced decimal-month neonatal cutoffs with exact day boundaries (<7 days; 7–28 days).",
+      "Linezolid: exact day-7 boundary; <7 days remains fail-closed without neonatal prematurity context.",
+      "Ampicillin: WHO 2024 young-infant SBI/pneumonia dosing now uses exact 0–6 vs 7–59 day boundaries.",
+      "Gentamicin: added current WHO 2024 once-daily 0–59-day SBI regimen and exact day boundaries; conventional DailyMed regimen retained for ≥2 months."
     ],
     "auditedDrugCount": 50
   }
