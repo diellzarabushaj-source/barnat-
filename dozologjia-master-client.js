@@ -62,6 +62,9 @@
   }
 
   const auditedDrugCount = () => Object.keys(clinicalAudit?.drugs || {}).length;
+  const blockedAutoCount = () => Object.values(clinicalAudit?.drugs || {})
+    .filter(item => item?.calculator?.disabled).length;
+  const activeAutoCount = () => auditedDrugCount() - blockedAutoCount();
 
   function effectiveOptions(drug) {
     const audit = auditFor(drug);
@@ -861,7 +864,7 @@
     const count = byId('pediatricCommonCount');
     if (count) count.textContent = query
       ? `${shown} barna të gjetura`
-      : `50 barna · 10 ndarje · ${auditedDrugCount()} të audituara`;
+      : `50 barna · 10 ndarje · ${auditedDrugCount()} të audituara · ${activeAutoCount()} AUTO · ${blockedAutoCount()} të bllokuara`;
     if (!shown) target.append(node('p', 'Nuk u gjet bar në këtë referencë.', 'dz-empty'));
   }
 
