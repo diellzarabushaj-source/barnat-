@@ -188,7 +188,8 @@
     "test:recetat-ui-browser": "playwright test tests/recetat-ui-playwright.spec.js --reporter=line",
     "test:antibiotics-dosing": "node tests/antibiotics-daily-dose-test.js",
     "build:dozologjia": "node scripts/build-dozologjia-master.js",
-    "test:dozologjia": "node tests/dozologjia-master-test.js && node tests/dozologjia-albanian-formulation-test.js && node tests/dozologjia-v2-workspace-test.js && node tests/pediatric-common-reference-db-contract-test.js && node tests/pediatric-common-liquid-core-test.js && node tests/pediatric-weight-age-core-test.js && node tests/pediatric-weight-age-db-contract-test.js"
+    "test:dozologjia": "node tests/dozologjia-master-test.js && node tests/dozologjia-albanian-formulation-test.js && node tests/dozologjia-v2-workspace-test.js && node tests/pediatric-common-reference-db-contract-test.js && node tests/pediatric-common-liquid-core-test.js && node tests/pediatric-weight-age-core-test.js && node tests/pediatric-weight-age-db-contract-test.js",
+    "diag:deploy-gate": "pnpm run test:deploy"
   },
   "dependencies": {
     "@vercel/blob": "^2.3.0",
