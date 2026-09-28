@@ -842,6 +842,17 @@
       if (!Array.isArray(weightAgeDefaults?.bands) || !weightAgeDefaults.bands.length) {
         throw new Error('Weight-age defaults empty');
       }
+
+      try {
+        const auditResponse = await fetch(CLINICAL_AUDIT_URL, { cache:'no-store', credentials:'same-origin' });
+        if (auditResponse.ok) {
+          const auditPayload = await auditResponse.json();
+          if (auditPayload && typeof auditPayload === 'object' && auditPayload.drugs) clinicalAudit = auditPayload;
+        }
+      } catch {
+        /* Source table remains usable if the independent audit layer is temporarily unavailable. */
+      }
+
       renderSections();
       const count = byId('pediatricCommonCount');
       if (count) count.dataset.source = source;
