@@ -173,7 +173,9 @@
   function ageMonths(ageValue, ageUnit) {
     const value = numeric(ageValue);
     if (!Number.isFinite(value) || value < 0) return NaN;
-    return ageUnit === 'month' ? value : value * 12;
+    if (ageUnit === 'day') return value / 30.4375;
+    if (ageUnit === 'month') return value;
+    return value * 12;
   }
   const validAgeMonths = value => Number.isFinite(value) && value >= 0;
   const rulesOf = option => Array.isArray(option?.rules) ? option.rules : [];
@@ -190,6 +192,9 @@
   }
 
   const auditedDrugCount = () => Object.keys(clinicalAudit?.drugs || {}).length;
+  const blockedAutoCount = () => Object.values(clinicalAudit?.drugs || {})
+    .filter(item => item?.calculator?.disabled).length;
+  const activeAutoCount = () => auditedDrugCount() - blockedAutoCount();
 
   function effectiveOptions(drug) {
     const audit = auditFor(drug);
@@ -780,7 +785,7 @@
       });
 
       const unit = node('select', null, 'dz-unit');
-      [['year','vjeç'],['month','muaj']].forEach(([value, label]) => {
+      [['year','vjeç'],['month','muaj'],['day','ditë']].forEach(([value, label]) => {
         const choice = node('option', label);
         choice.value = value;
         choice.selected = value === values.ageUnit;
@@ -989,7 +994,7 @@
     const count = byId('pediatricCommonCount');
     if (count) count.textContent = query
       ? `${shown} barna të gjetura`
-      : `50 barna · 10 ndarje · ${auditedDrugCount()} të audituara`;
+      : `50 barna · 10 ndarje · ${auditedDrugCount()} të audituara · ${activeAutoCount()} AUTO · ${blockedAutoCount()} të bllokuara`;
     if (!shown) target.append(node('p', 'Nuk u gjet bar në këtë referencë.', 'dz-empty'));
   }
 
