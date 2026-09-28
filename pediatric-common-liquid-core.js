@@ -46,11 +46,14 @@
     const source = Array.isArray(formulations) ? formulations : [];
 
     if (name === 'amoxicillin + clavulanic') {
-      return [
-        { kind:'oral', form:'Shurup', mg:200, mL:5, componentBasis:'amoxicillin', source:source.find(line => /228\.5\s*\/\s*5/i.test(line)) || 'Syp – 228.5/5' },
-        { kind:'oral', form:'Shurup', mg:400, mL:5, componentBasis:'amoxicillin', source:source.find(line => /457\s*\/\s*5/i.test(line)) || 'Syp – 457/5' },
-        { kind:'oral', form:'Pika', mg:80, mL:1, componentBasis:'amoxicillin', source:source.find(line => /91\.4\s*\/\s*1/i.test(line)) || 'Dps – 91.4/1' },
-      ];
+      const presentations = [];
+      const low = source.find(line => /228\.5\s*\/\s*5/i.test(line));
+      const high = source.find(line => /457\s*\/\s*5/i.test(line));
+      const drops = source.find(line => /91\.4\s*\/\s*1/i.test(line));
+      if (low) presentations.push({ kind:'oral', form:'Shurup', mg:200, mL:5, componentBasis:'amoxicillin', source:low });
+      if (high) presentations.push({ kind:'oral', form:'Shurup', mg:400, mL:5, componentBasis:'amoxicillin', source:high });
+      if (drops) presentations.push({ kind:'oral', form:'Pika', mg:80, mL:1, componentBasis:'amoxicillin', source:drops });
+      return presentations;
     }
 
     if (name === 'cloxacillin') {
