@@ -207,9 +207,13 @@
       .replace(/mg\s*\/\s*kg\s*\/\s*hr/gi, 'mg/kg/orë')
       .replace(/\bq\s*(\d+)\s*-\s*(\d+)\s*h(?:r)?\b/gi, 'çdo $1–$2 orë')
       .replace(/\bq\s*(\d+)\s*h(?:r)?\b/gi, 'çdo $1 orë')
+      .replace(/(\d+(?:[.,]\d+)?)\s*mg\s*BD\b/gi, '$1mg 2 herë/ditë')
       .replace(/\bBD\b/g, '2 herë/ditë')
       .replace(/\bOD\b/g, '1 herë/ditë')
       .replace(/\bHS\b/g, 'para gjumit')
+      .replace(/\bof\s+TMP\b/gi, 'si TMP')
+      .replace(/\bas\s+(?=2 herë\/ditë)/gi, '')
+      .replace(/\bMDI\b/g, 'Inhalator MDI')
       .replace(/\bpuffs?\b/gi, 'spërkatje')
       .replace(/\bday\b/gi, 'ditë')
       .replace(/\bhrs?\b/gi, 'orë');
@@ -241,6 +245,7 @@
       .replace(/\bSulbactam\b/gi, 'sulbaktam')
       .replace(/\bLevosalb\b/gi, 'levosalbutamol')
       .replace(/\bIpravent\b/gi, 'ipratropium')
+      .replace(/(\d)\s*ml\b/gi, '$1 mL')
       .replace(/\bml\b/gi, 'mL');
     return clean(text);
   }
@@ -388,6 +393,28 @@
     });
   }
 
+  function optionAudit(drug, option) {
+    const wanted = wantedRoute(option);
+    if (!wanted) return { ok:true, wanted:'', message:'' };
+    const kinds = new Set((drug?.formulations || []).map(formulationRouteKind).filter(Boolean));
+    const matched = wanted === 'inhaled'
+      ? kinds.has('inhaled')
+      : kinds.has(wanted);
+    if (matched) return { ok:true, wanted, message:'' };
+    const routeLabel = wanted === 'injectable'
+      ? 'IV/IM'
+      : wanted === 'nebulized'
+        ? 'nebulizim'
+        : wanted === 'inhaled'
+          ? 'MDI'
+          : 'nga goja';
+    return {
+      ok:false,
+      wanted,
+      message:`Tabela jep dozë për rrugën ${routeLabel}, por nuk jep një formulim të përputhshëm për atë rrugë. Mos bëj konvertim automatik pa produkt/burim shtesë.`,
+    };
+  }
+
   function formulationAudit(drug, option) {
     const source = Array.isArray(drug?.formulations) ? drug.formulations : [];
     const special = specialPresentations(drug?.name, source);
@@ -476,6 +503,7 @@
     dryVialsFor,
     vialConversions,
     formulationAudit,
+    optionAudit,
     sectionTitleSq,
     doseTextSq,
     formulationTextSq,
