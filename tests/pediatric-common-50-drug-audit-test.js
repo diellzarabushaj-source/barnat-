@@ -146,7 +146,7 @@ function findDrug(name) {
 
   const ranitidine = findDrug('Ranitidine');
   const iv = Core.presentationsFor(ranitidine, ranitidine.calc[1]);
-  assert.deepStrictEqual(iv.map(item => [item.form,item.mg,item.mL]), [['Injeksion',25,1]]);
+  assert.deepStrictEqual(iv.map(item => [item.form,item.mg,item.mL]), [['Ampulë',25,1]]);
 }
 
 console.log('PASS: all 50 pediatric drugs are individually classified, translated and formulation-audited');
