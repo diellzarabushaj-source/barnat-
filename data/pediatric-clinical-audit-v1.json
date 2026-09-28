@@ -2142,6 +2142,368 @@
         "checkedAt": "2026-09-28",
         "summarySq": "0 produkte ranitidine të publikuara u gjetën në regjistrin lokal në kontrollin aktual."
       }
+    },
+    "Ondansetron": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · CPS",
+      "summarySq": "Gastroenterit akut në urgjencë: ≥6 muaj, 0,15 mg/kg nga goja si dozë e vetme, maksimum 8 mg; ORT nis 15–30 minuta më pas. Nuk rekomandohet skemë multidose rutinë.",
+      "warningsSq": [
+        "Përdoret për të mbështetur rehidratimin oral te të vjellat nga gastroenteriti me dehidrim të lehtë–mesatar ose pas dështimit të ORT; jo si zëvendësim i rehidratimit.",
+        "Mos e përdor rutinë kur diarrea mesatare–e rëndë është simptoma dominuese. Kujdes te faktorët e rrezikut për QT të zgjatur."
+      ],
+      "sources": [
+        {
+          "authority": "Canadian Paediatric Society",
+          "title": "Oral ondansetron for acute gastroenteritis-related vomiting",
+          "url": "https://cps.ca/en/documents/position/oral-ondansetron"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Gastroenterit akut · ≥6 muaj · 0,15 mg/kg PO dozë e vetme",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 6,
+                "doseType": "weight",
+                "min": 0.15,
+                "max": 0.15,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "dozë e vetme · ORT pas 15–30 min",
+                "maxPerDose": 8,
+                "source": "CPS · acute gastroenteritis",
+                "noteSq": "Nuk ka përfitim nga multidose rutinë në këtë indikacion."
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Syp – 4/5"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 11 produkte ondansetron; u konfirmua shurup 4 mg/5 mL, ODT 8 mg dhe forma injektabile 2 mg/mL."
+      }
+    },
+    "Fexofenadine": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · DailyMed 2026",
+      "summarySq": "Për rinit alergjik/urtikarie: 6–11 vjeç 30 mg çdo 12 orë; ≥12 vjeç 60 mg çdo 12 orë ose 180 mg një herë/ditë. Doza pediatrike kërkon formulim të përshtatshëm.",
+      "warningsSq": [
+        "Te sëmundja renale doza fillestare reduktohet sipas etiketës.",
+        "Mos e merr me lëng grejpfruti, portokalli ose molle; antacidet me alumin/magnez mund ta ulin përthithjen.",
+        "Regjistri lokal aktual ka vetëm tableta 120 mg; kjo nuk përputhet me dozat 30/60/180 mg të etiketës, prandaj nuk jepet konvertim praktik AUTO."
+      ],
+      "sources": [
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "Fexofenadine hydrochloride tablets · pediatric dosage",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=a3d17e8d-a8ce-4e1a-9ec2-13736af1d7b5"
+        },
+        {
+          "authority": "DailyMed",
+          "title": "Children's fexofenadine oral suspension 30 mg/5 mL",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=84988f6d-85b1-45dd-89be-0333acc6b180"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "6–11 vjeç · 30 mg q12h",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 72,
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 30,
+                "max": 30,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë",
+                "source": "DailyMed · children 6–11 years"
+              }
+            ]
+          },
+          {
+            "label": "≥12 vjeç · 60 mg q12h",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 144,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 60,
+                "max": 60,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "çdo 12 orë",
+                "source": "DailyMed · ≥12 years"
+              }
+            ]
+          },
+          {
+            "label": "≥12 vjeç · 180 mg 1 herë/ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 144,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 180,
+                "max": 180,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë",
+                "source": "DailyMed · ≥12 years once-daily option"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 2 produkte fexofenadine, të dyja tableta 120 mg; nuk u konfirmua suspension pediatrik."
+      }
+    },
+    "Salbutamol": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · DailyMed",
+      "summarySq": "Nebulizim për bronkospazëm: 2–12 vjeç 0,1–0,15 mg/kg/dozë, maksimum 2,5 mg, 3–4 herë/ditë. ≥12 vjeç doza e zakonshme është 2,5 mg 3–4 herë/ditë.",
+      "warningsSq": [
+        "Ky audit automatizon vetëm nebulizimin; doza e MDI duhet të menaxhohet veçmas sipas pajisjes/spacer-it dhe planit të astmës.",
+        "Nevoja për doza më të shpeshta se zakonisht kërkon rivlerësim të kontrollit të astmës; teprimi mund të shkaktojë takikardi, tremor dhe hipokalemi."
+      ],
+      "sources": [
+        {
+          "authority": "DailyMed/FDA label",
+          "title": "Albuterol sulfate inhalation solution 0.5% · pediatric nebulized dosing",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d476c926-4c3d-4c33-b244-3b58e988ecb3"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Nebulizim · 2–<12 vjeç · 0,1–0,15 mg/kg/dozë",
+            "mode": "clinicalRules",
+            "route": "nebulized",
+            "rules": [
+              {
+                "minMonths": 24,
+                "maxMonths": 144,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 0.1,
+                "max": 0.15,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "3–4 herë/ditë me nebulizim",
+                "maxPerDose": 2.5,
+                "source": "DailyMed · children 2–12 years"
+              }
+            ]
+          },
+          {
+            "label": "Nebulizim · ≥12 vjeç · 2,5 mg/dozë",
+            "mode": "clinicalRules",
+            "route": "nebulized",
+            "rules": [
+              {
+                "minMonths": 144,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 2.5,
+                "max": 2.5,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "3–4 herë/ditë me nebulizim",
+                "source": "DailyMed · adults and children over 12 years"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Respiratory solution – 5mg/1ml",
+        "Respules – 2.5mg/2.5ml"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka 27 produkte salbutamol, përfshirë solucion 5 mg/mL dhe respula 2,5 mg/2,5 mL, si dhe MDI 100 mcg/dozë."
+      }
+    },
+    "Prednisolone": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · SmPC",
+      "summarySq": "Asthmë akute: <2 vjeç 10 mg/ditë vetëm në spital; 2–5 vjeç 20 mg/ditë; >5 vjeç 30–40 mg/ditë, zakonisht deri 3 ditë. Te fëmijët që tashmë marrin steroid mirëmbajtës: 2 mg/kg deri 60 mg.",
+      "warningsSq": [
+        "Doza e prednisolonit është shumë indikacion-specifike; ky kalkulator automatizon vetëm skemën e astmës akute nga SmPC.",
+        "Kur fëmija nuk e mban dozën orale për shkak të të vjellave, SmPC këshillon të merret në konsideratë terapi IV; një kurs i shkurtër deri 3 ditë zakonisht nuk kërkon taper."
+      ],
+      "sources": [
+        {
+          "authority": "emc SmPC",
+          "title": "Prednisolone 10 mg/mL oral solution · acute asthma in children",
+          "url": "https://www.medicines.org.uk/emc/product/3370/smpc"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "Asthmë akute · sipas moshës · deri 3 ditë",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 0,
+                "maxMonths": 24,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 10,
+                "max": 10,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë · deri 3 ditë · vetëm në spital",
+                "source": "SmPC · under 2 years"
+              },
+              {
+                "minMonths": 24,
+                "maxMonths": 72,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 20,
+                "max": 20,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë · deri 3 ditë",
+                "source": "SmPC · 2–5 years"
+              },
+              {
+                "minMonths": 72,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "fixed",
+                "min": 30,
+                "max": 40,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë · deri 3 ditë",
+                "source": "SmPC · over 5 years"
+              }
+            ]
+          },
+          {
+            "label": "Asthmë akute · fëmijë në steroid mirëmbajtës · 2 mg/kg",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "rules": [
+              {
+                "minMonths": 0,
+                "maxMonths": 216,
+                "maxInclusive": false,
+                "doseType": "weight",
+                "min": 2,
+                "max": 2,
+                "unit": "mg",
+                "period": "dose",
+                "frequency": "1 herë/ditë · kurs i shkurtër",
+                "maxPerDose": 60,
+                "source": "SmPC · child already receiving maintenance steroid"
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Syp – 5/5"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka shumë produkte prednisolone; u konfirmuan edhe solucione orale 1 mg/mL (ekuivalent 5 mg/5 mL), krahas përqendrimeve të tjera dhe formave parenterale."
+      }
+    },
+    "Iron": {
+      "status": "verified-corrected",
+      "badgeSq": "VERIFIKUAR · RCH CPG",
+      "summarySq": "Dozat llogariten si hekur elementar. Trajtimi i mungesës së hekurit/IDA: 3–6 mg/kg/ditë; për IDA të lehtë–mesatare 3 mg/kg/ditë është referencë praktike. Neonati kërkon udhëzim specifik.",
+      "warningsSq": [
+        "Gjithmonë llogarit sipas HEKURIT ELEMENTAR, jo sipas peshës së kripës së hekurit.",
+        "Për anemi të rëndë (p.sh. Hb <80 g/L në CPG) kërkohet ndjekje e hershme dhe mund të nevojitet 6 mg/kg/ditë; shkaku i anemisë duhet vlerësuar.",
+        "Mos jep hekur oral dhe parenteral njëkohësisht; pas infuzionit oralja zakonisht mbahet të paktën 1 javë sipas CPG."
+      ],
+      "sources": [
+        {
+          "authority": "Royal Children's Hospital Melbourne",
+          "title": "Clinical Practice Guideline · Iron deficiency",
+          "url": "https://www.rch.org.au/clinicalguide/guideline_index/Iron_deficiency/"
+        }
+      ],
+      "calculator": {
+        "replace": true,
+        "options": [
+          {
+            "label": "IDA e lehtë–mesatare · >1 muaj · 3 mg/kg/ditë hekur elementar",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "componentBasis": "elemental iron",
+            "rules": [
+              {
+                "minMonths": 1,
+                "doseType": "weight",
+                "min": 3,
+                "max": 3,
+                "unit": "mg",
+                "period": "day",
+                "frequency": "1 herë/ditë ose sipas tolerancës/protokollit",
+                "source": "RCH CPG · mild–moderate IDA",
+                "noteSq": "Doza është hekur elementar."
+              }
+            ]
+          },
+          {
+            "label": "IDA e rëndë · >1 muaj · 6 mg/kg/ditë hekur elementar",
+            "mode": "clinicalRules",
+            "route": "oral",
+            "componentBasis": "elemental iron",
+            "rules": [
+              {
+                "minMonths": 1,
+                "doseType": "weight",
+                "min": 6,
+                "max": 6,
+                "unit": "mg",
+                "period": "day",
+                "frequency": "sipas planit klinik · ndjekje e hershme",
+                "source": "RCH CPG · severe anaemia",
+                "noteSq": "Doza është hekur elementar; vlerëso shkakun dhe përgjigjen."
+              }
+            ]
+          }
+        ]
+      },
+      "practicalFormulations": [
+        "Dps – 20/1"
+      ],
+      "kosovoMarket": {
+        "checkedAt": "2026-09-28",
+        "summarySq": "Regjistri lokal ka produkte orale me 20 mg hekur/1 mL; kalkulatori e interpreton këtë vetëm si hekur elementar kur etiketa e produktit e konfirmon."
+      }
     }
   },
   "wave2": {
@@ -2173,5 +2535,16 @@
       "Ranitidine"
     ],
     "auditedDrugCount": 29
+  },
+  "wave4": {
+    "completedAt": "2026-09-28",
+    "addedDrugs": [
+      "Ondansetron",
+      "Fexofenadine",
+      "Salbutamol",
+      "Prednisolone",
+      "Iron"
+    ],
+    "auditedDrugCount": 34
   }
 }
