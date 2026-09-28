@@ -78,6 +78,8 @@ assert.match(css, /\.dz-common-weight-quick/);
 assert.match(js, /function renderLiquidConversions\(/);
 assert.match(js, /function addWeightShortcuts\(/);
 assert.match(js, /function resolvedAgeInfo\(/);
+assert.match(js, /MASTER_WEIGHT_AGE_CORE/);
+assert.doesNotMatch(js, /const REFERENCE_AGES =/);
 assert.match(js, /MOSHA AUTO NGA PESHA/);
 assert.match(css, /\.dz-common-age-auto/);
 assert.deepStrictEqual(
