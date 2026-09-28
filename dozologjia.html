@@ -9,13 +9,13 @@
   <title>DRx | Dozologjia</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/dozologjia-v2.css?v=39">
+  <link rel="stylesheet" href="/dozologjia-v2.css?v=40">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-responsive4">
   <script src="/phase9-personal-entities-client.js?v=phase9b" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-polish2-lazy" data-drx-sidebar-taxonomy="1" defer></script>
 <script src="/pediatric-common-liquid-core.js?v=2" defer></script>
 <script src="/pediatric-weight-age-core.js?v=1" defer></script>
-<script src="/dozologjia-v2.js?v=39" defer></script>
+<script src="/dozologjia-v2.js?v=40" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#dosageContent">Kalo te kalkulatori pediatrik</a>
@@ -97,69 +97,11 @@
 
       <div class="page-wrap dosage-page" id="dosageContent">
         <div class="dz-column">
-          <header class="dz-head">
-            <div>
-              <h1>Dozologjia</h1>
-              <p>Bari → indikacioni → pacienti → doza. Rezultati përditësohet automatikisht.</p>
-            </div>
-            <button type="button" class="dz-none" id="masterReset">Pacient i ri</button>
-          </header>
-
-          <p class="dz-status" id="masterStatus" role="status">Duke ngarkuar…</p>
-
-          <section class="dz-card dz-input" aria-label="Zgjedhja klinike">
-            <div class="dz-block">
-              <details class="dz-picker" id="drugPicker" open>
-                <summary class="dz-picker-summary">
-                  <span class="dz-label" id="drugLabel">1 · Bari</span>
-                  <b class="dz-picker-current" id="drugCurrent">—</b>
-                </summary>
-                <input class="dz-search" id="dosageSearch" type="search" placeholder="Kërko barin ose indikacionin…" autocomplete="off" aria-label="Kërko barin ose indikacionin">
-                <div class="dz-chips" id="masterDrugs" role="radiogroup" aria-labelledby="drugLabel"></div>
-              </details>
-            </div>
-
-            <div class="dz-block" id="indicationBlock" hidden>
-              <details class="dz-picker" id="indicationPicker" open>
-                <summary class="dz-picker-summary">
-                  <span class="dz-label" id="indicationLabel">2 · Indikacioni</span>
-                  <b class="dz-picker-current" id="indicationCurrent">—</b>
-                </summary>
-                <div class="dz-chips" id="masterIndication" role="radiogroup" aria-labelledby="indicationLabel"></div>
-              </details>
-            </div>
-
-            <div class="dz-block" id="regimenBlock" hidden>
-              <details class="dz-picker" id="regimenPicker" open>
-                <summary class="dz-picker-summary">
-                  <span class="dz-label" id="regimenLabel">3 · Skema dhe mënyra e dhënies</span>
-                  <b class="dz-picker-current" id="regimenCurrent">—</b>
-                </summary>
-                <div class="dz-chips" id="masterRegimens" role="radiogroup" aria-labelledby="regimenLabel"></div>
-              </details>
-            </div>
-
-            <form class="dz-block dz-patient" id="masterForm" hidden>
-              <div class="dz-fields" id="masterFields"></div>
-              <div class="dz-gates" id="masterGates"></div>
-            </form>
-          </section>
-
-          <section class="dz-answer" id="masterResult" aria-live="polite" hidden></section>
-          <div class="dz-errors" id="masterErrors" role="alert" hidden></div>
-
-          <details class="dz-provenance" id="masterProvenance" hidden>
-            <summary><span>Burimet</span><b id="masterSourceCount">—</b></summary>
-            <div class="dz-provenance-body" id="masterProvenanceBody"></div>
-          </details>
-
-          <p class="dz-footnote">Doza varet nga indikacioni, grupmosha dhe mënyra e dhënies. Kontrollo kufijtë dhe burimet që shfaqen me rezultatin. Sasia për të matur nga një produkt që zgjedh vetë ti është thjesht llogaritje mbi atë fuqi — verifiko gjithmonë shishen ose kutinë.</p>
-
           <section class="dz-common-reference" id="pediatricCommonReference" aria-labelledby="pediatricCommonTitle">
             <header class="dz-common-head">
               <div>
                 <span class="scope-pill">REFERENCË PEDIATRIKE</span>
-                <h2 id="pediatricCommonTitle">Pediatric Doses of Common Drugs</h2>
+                <h2 id="pediatricCommonTitle">Dozat pediatrike të barnave të zakonshme</h2>
                 <p>Shkruaj peshën e fëmijës. Mosha sugjerohet automatikisht si default nga tabela peshë–moshë; vetëm kur mosha mund ta ndryshojë dozën kërkohet konfirmim. Doza dhe mL për shurup/pika llogariten menjëherë.</p>
               </div>
               <span class="dz-status" id="pediatricCommonCount" role="status">Duke ngarkuar…</span>

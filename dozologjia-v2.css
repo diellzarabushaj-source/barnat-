@@ -1871,3 +1871,19 @@ button,input,select{font:inherit}
     line-height:1.45;
   }
 }
+
+/* Pediatric-only Dozologjia: the new 50-drug reference is the whole workspace. */
+.dosage-page .dz-column > .dz-common-reference:first-child{
+  margin-top:0;
+  padding-top:0;
+}
+.dosage-page .dz-column > .dz-common-reference:first-child .dz-common-head h2{
+  font-size:28px;
+  line-height:1.08;
+  letter-spacing:-.55px;
+}
+@media(max-width:760px){
+  .dosage-page .dz-column > .dz-common-reference:first-child .dz-common-head h2{
+    font-size:25px;
+  }
+}
