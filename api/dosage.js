@@ -9,6 +9,7 @@ const prescriptionDosageHandler = require('../lib/prescription-dosage-handler.js
 const prescriptionDosageContextHandler = require('../lib/prescription-dosage-context-handler.js');
 const approvedPopulationHandler = require('../lib/approved-population-handler.js');
 const pediatricDosageHandler = require('../lib/pediatric-dosage-handler.js');
+const pediatricCommonReferenceHandler = require('../lib/pediatric-common-reference-handler.js');
 
 function requestView(req) {
   try {
@@ -62,6 +63,7 @@ function isPediatricRequest(req) {
 }
 
 async function handler(req, res) {
+  if (requestView(req) === pediatricCommonReferenceHandler.VIEW) return pediatricCommonReferenceHandler(req, res);
   if (['master-catalog','master-calculate'].includes(requestView(req))) return require('../lib/dozologjia-master-handler.js')(req,res);
   if (isCalculatorRequest(req)) return doseCalculatorHandler(req, res);
   if (isSafetyRequest(req)) return doseSafetyHandler(req, res);
@@ -93,6 +95,8 @@ handler.isPrescriptionRequest = isPrescriptionRequest;
 handler.isPrescriptionContextRequest = isPrescriptionContextRequest;
 handler.isApprovedPopulationRequest = isApprovedPopulationRequest;
 handler.isPediatricRequest = isPediatricRequest;
+handler.pediatricCommonReferenceView = pediatricCommonReferenceHandler.VIEW;
+handler.loadPediatricCommonReference = pediatricCommonReferenceHandler.loadReference;
 handler.pediatricSearchDrugs = pediatricDosageHandler.searchDrugs;
 handler.pediatricLoadProduct = pediatricDosageHandler.loadProduct;
 handler._pediatricTest = pediatricDosageHandler._test;
