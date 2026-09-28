@@ -58,6 +58,7 @@
   const rulesOf = option => Array.isArray(option?.rules) ? option.rules : [];
   const ruleNeedsExactDays = rule => Number.isFinite(rule?.minDays) || Number.isFinite(rule?.maxDays);
   const ruleNeedsAge = rule => ruleNeedsExactDays(rule) || Number.isFinite(rule?.minMonths) || Number.isFinite(rule?.maxMonths);
+  const optionNeedsExactDays = option => rulesOf(option).some(ruleNeedsExactDays);
   const ruleNeedsWeight = rule => rule?.doseType === 'weight' || Number.isFinite(rule?.minKg) || Number.isFinite(rule?.maxKg);
   const needsWeight = option => ['weight', 'ageWeight', 'oseltamivirBands'].includes(option?.mode)
     || (option?.mode === 'clinicalRules' && rulesOf(option).some(ruleNeedsWeight));
@@ -627,6 +628,7 @@
           values.ageManualVisible = false;
         } else {
           values.ageManualVisible = true;
+          if (optionNeedsExactDays(currentOption())) values.ageUnit = 'day';
         }
         rebuildFields();
         if (values.ageManualVisible) {
@@ -647,6 +649,7 @@
         button.className = 'dz-common-age-cta';
         button.addEventListener('click', () => {
           values.ageManualVisible = true;
+          if (optionNeedsExactDays(currentOption())) values.ageUnit = 'day';
           rebuildFields();
           const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
           setTimeout(() => byId(`${slug}-common-age`)?.focus(), 0);
@@ -690,7 +693,7 @@
       const row = node('span', null, 'dz-common-age-row');
       const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
       const age = makeNumberField('', `${slug}-common-age`, '', values.age);
-      age.input.placeholder = 'p.sh. 5';
+      age.input.placeholder = optionNeedsExactDays(option) ? 'p.sh. 7' : 'p.sh. 5';
       age.input.addEventListener('input', () => {
         values.age = age.input.value;
         values.ageManual = validAgeMonths(ageMonths(values.age, values.ageUnit));
