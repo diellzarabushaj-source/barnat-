@@ -196,7 +196,10 @@
     if (audit?.calculator?.replace && Array.isArray(audit.calculator.options) && audit.calculator.options.length) {
       return audit.calculator.options;
     }
-    return Array.isArray(drug?.calc) ? drug.calc : [];
+    // Clinical safety: the original 50-drug table remains visible as a source
+    // artifact, but it is not allowed to drive automatic calculations until an
+    // independent authoritative audit explicitly promotes that drug.
+    return [];
   }
 
   function practicalDrug(drug) {
@@ -830,8 +833,21 @@
 
   function renderEvidence(drug) {
     const audit = auditFor(drug);
-    if (!audit) return null;
-    const panel = node('section', null, 'dz-evidence');
+    if (!audit) {
+      const panel = node('section', null, 'dz-evidence dz-evidence-unverified');
+      const head = node('div', null, 'dz-evidence-head');
+      head.append(node('span', 'PA AUDIT KLINIK', 'dz-evidence-badge'));
+      panel.append(head);
+      panel.append(node('p',
+        'Tabela bazë ruhet për transparencë, por kjo skemë ende nuk është verifikuar kundrejt një burimi autoritativ të pavarur.',
+        'dz-evidence-summary'
+      ));
+      const warnings = node('div', null, 'dz-evidence-warnings');
+      warnings.append(node('p', '⚠ Kalkulatori AUTO është i bllokuar derisa bari të kalojë auditin klinik.'));
+      panel.append(warnings);
+      return panel;
+    }
+    const panel = node('section', null, 'dz-evidence dz-evidence-verified');
     const head = node('div', null, 'dz-evidence-head');
     head.append(node('span', audit.badgeSq || 'AUDIT KLINIK', 'dz-evidence-badge'));
     if (clinicalAudit.auditedAt) head.append(node('small', 'audit ' + clinicalAudit.auditedAt));
@@ -864,7 +880,12 @@
     card.open = Boolean(autoOpen);
     const summary = node('summary');
     const formula = node('span', null, 'dz-common-summary-dose');
-    drug.dose.forEach(line => formula.append(node('small', doseSq(line))));
+    const audit = auditFor(drug);
+    formula.append(node(
+      'small',
+      audit ? 'Audit klinik · AUTO aktiv' : 'Pa audit klinik · AUTO bllokuar',
+      audit ? 'dz-summary-audit is-verified' : 'dz-summary-audit is-unverified'
+    ));
     summary.append(node('span', String(drug.no), 'dz-common-no'), node('strong', drug.name), formula);
     card.append(summary);
 
@@ -987,7 +1008,7 @@
             if (auditPayload && typeof auditPayload === 'object' && auditPayload.drugs) clinicalAudit = auditPayload;
           }
         } catch {
-          /* Source table remains usable if the independent audit layer is temporarily unavailable. */
+          /* Fail closed: the source table remains visible, but AUTO stays disabled without the audit layer. */
         }
       }
 
