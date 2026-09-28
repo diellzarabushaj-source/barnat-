@@ -45,9 +45,38 @@
     const info = MASTER_WEIGHT_AGE_CORE.infer(kg, MASTER_WEIGHT_AGE_CORE.DEFAULT_MAP);
     if (!info || !Number.isFinite(info.defaultMonths) || info.kind === 'below-range') return null;
     const months = info.defaultMonths;
+    const base = {
+      minMonths:info.minMonths,
+      maxMonths:info.maxMonths,
+      defaultMonths:months,
+      label:info.label,
+      defaultLabel:info.defaultLabel || MASTER_WEIGHT_AGE_CORE.defaultAgeLabel?.(months) || info.label,
+      ambiguous:Boolean(info.ambiguous),
+    };
     return months < 12
-      ? { value:Math.round(months * 10) / 10, unit:'month', label:info.label, ambiguous:Boolean(info.ambiguous) }
-      : { value:Math.round((months / 12) * 100) / 100, unit:'year', label:info.label, ambiguous:Boolean(info.ambiguous) };
+      ? { ...base, value:Math.round(months * 10) / 10, unit:'month' }
+      : { ...base, value:Math.round((months / 12) * 100) / 100, unit:'year' };
+  }
+
+  function ageBoundMonths(value, unit) {
+    if (!Number.isFinite(Number(value))) return null;
+    return Number(value) * (unit === 'year' ? 12 : 1);
+  }
+  function passesAgeConstraint(months, bound, op) {
+    if (bound == null) return true;
+    if (!Number.isFinite(months)) return false;
+    return ({'>':months > bound,'>=':months >= bound,'<':months < bound,'<=':months <= bound})[op] === true;
+  }
+  function inferredAgeFitsRegimen(regimen, derived) {
+    if (!regimen?.needs?.age) return true;
+    if (!derived || !Number.isFinite(derived.minMonths)) return false;
+    const minMonths = derived.minMonths;
+    const maxMonths = derived.maxMonths == null ? Infinity : derived.maxMonths;
+    const minBound = ageBoundMonths(regimen.age?.minValue, regimen.age?.minUnit);
+    const maxBound = ageBoundMonths(regimen.age?.maxValue, regimen.age?.maxUnit);
+    if (minBound != null && !passesAgeConstraint(minMonths, minBound, regimen.age?.minOp)) return false;
+    if (maxBound != null && !passesAgeConstraint(maxMonths, maxBound, regimen.age?.maxOp)) return false;
+    return true;
   }
 
   const state = {
@@ -60,7 +89,7 @@
     result:null,
     productId:'',        // the shelf item the volume is measured from
     editing:false,       // the "my own unit" editor is open
-    ageSource:'',        // '' | 'weight' (derived) | 'chosen' (the clinician's)
+    ageSource:'',        // '' | 'weight' | 'weight-ambiguous' | 'chosen'
     ageEstimateLabel:'',
     patient:{},
     kind:'liquid',       // what that editor is describing
@@ -405,25 +434,43 @@
     const field = $('masterAgeField');
     if (!field) return;
     const derived = state.ageSource === 'weight';
-    field.dataset.source = derived ? 'weight' : 'chosen';
+    const ambiguous = state.ageSource === 'weight-ambiguous';
+    field.dataset.source = derived ? 'weight' : ambiguous ? 'weight-ambiguous' : 'chosen';
     const note = field.querySelector('.dz-age-note');
-    if (note) note.textContent = derived ? `AUTO nga pesha${state.ageEstimateLabel ? ` · ${state.ageEstimateLabel}` : ''} — ndryshoje vetëm nëse e di moshën e saktë.` : '';
+    if (!note) return;
+    if (derived) {
+      note.textContent = `AUTO nga pesha${state.ageEstimateLabel ? ` · ${state.ageEstimateLabel}` : ''}. Mosha kronologjike ka përparësi kur dihet.`;
+    } else if (ambiguous) {
+      note.textContent = `Pesha sugjeron ${state.ageEstimateLabel || 'një interval moshe'}, por ky interval prek kufirin e kësaj skeme — shëno moshën e saktë.`;
+    } else {
+      note.textContent = '';
+    }
   }
   function applyAgeFromWeight() {
     const age = $('masterAge');
     if (!age || state.ageSource === 'chosen') return;
     const derived = ageForWeight(num($('masterWeight')?.value));
     if (!derived) {
-      /* Clearing or overshooting the table retires an estimate, never an
-         age the clinician typed. */
-      if (state.ageSource === 'weight') { age.value = ''; state.ageSource = ''; state.ageEstimateLabel = ''; }
+      if (state.ageSource === 'weight' || state.ageSource === 'weight-ambiguous') {
+        age.value = '';
+        state.ageSource = '';
+        state.ageEstimateLabel = '';
+      }
       markAgeSource();
       return;
     }
+
+    state.ageEstimateLabel = derived.defaultLabel || derived.label || '';
+    if (!inferredAgeFitsRegimen(state.regimen, derived)) {
+      age.value = '';
+      state.ageSource = 'weight-ambiguous';
+      markAgeSource();
+      return;
+    }
+
     age.value = String(derived.value).replace('.', ',');
     $('masterAgeUnit').value = derived.unit;
     state.ageSource = 'weight';
-    state.ageEstimateLabel = derived.label || '';
     markAgeSource();
   }
 
@@ -435,7 +482,7 @@
     const regimen = state.regimen;
     const need = [];
     if (regimen.needs.weight && !positive(num($('masterWeight')?.value))) need.push('peshën');
-    if (regimen.needs.age && !positive(num($('masterAge')?.value))) need.push('moshën');
+    if (regimen.needs.age && !(num($('masterAge')?.value) >= 0)) need.push('moshën');
     if (regimen.needs.daily && !(num($('masterDaily')?.value) >= 0)) need.push('sa ka marrë në 24 orët e fundit');
     if (regimen.needs.total && !(num($('masterTotal')?.value) >= 0)) need.push('sa ka marrë këtë episod');
     if (regimen.steps.length && !checked('dz-step')) need.push('hapin');
@@ -448,7 +495,7 @@
   function focusNextMissing() {
     const regimen = state.regimen;
     if (!regimen) return;
-    let target = ['masterWeight', 'masterAge', 'masterDaily', 'masterTotal'].map($).find(node => node && (['masterDaily','masterTotal'].includes(node.id) ? !(num(node.value) >= 0) : !positive(num(node.value))));
+    let target = ['masterWeight', 'masterAge', 'masterDaily', 'masterTotal'].map($).find(node => node && (node.id === 'masterAge' || ['masterDaily','masterTotal'].includes(node.id) ? !(num(node.value) >= 0) : !positive(num(node.value))));
     if (!target && regimen.steps.length && !checked('dz-step')) target = document.querySelector('input[name="dz-step"]');
     if (!target && regimen.needs.product && !checked('dz-product')) target = document.querySelector('input[name="dz-product"]');
     if (!target) target = document.querySelector('#masterGates input:not(:checked)');
