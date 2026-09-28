@@ -49,7 +49,7 @@ assert.equal(pageRuntimes.length, 1, 'Dozologjia must own exactly one page runti
 const cssVersion = styles[0]?.match(/^\/dozologjia-v2\.css\?v=(\d+)$/)?.[1] || '';
 const jsVersion = pageRuntimes[0]?.match(/^\/dozologjia-v2\.js\?v=(\d+)$/)?.[1] || '';
 assert.equal(cssVersion, jsVersion);
-assert.ok(Number(cssVersion) >= 47);
+assert.ok(Number(cssVersion) >= 48);
 
 assert.match(html, /name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/);
 assert.match(html, /id="pediatricCommonSearch"[^>]*autocapitalize="none"[^>]*spellcheck="false"[^>]*enterkeyhint="search"/);
@@ -97,6 +97,8 @@ assert.match(js, /function resolvedAgeInfo\(/);
 assert.match(js, /ageUnit === 'day'/);
 assert.match(js, /function ageDays\(/);
 assert.match(js, /ruleNeedsExactDays/);
+assert.match(js, /optionNeedsExactDays/);
+assert.match(js, /values\.ageUnit = 'day'/);
 assert.match(js, /Number\.isFinite\(rule\?\.minDays\)/);
 assert.match(js, /if \(ruleNeedsExactDays\(rule\)\) return false;/);
 assert.match(js, /30\.4375/);
