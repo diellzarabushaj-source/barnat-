@@ -7,6 +7,7 @@
   const DATA_URL = '/api/dosage?view=pediatric-common-reference';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
+  const CLINICAL_AUDIT_URL = '/data/pediatric-clinical-audit-v1.json';
   const byId = id => document.getElementById(id);
   const node = (tag, text, className) => {
     const item = document.createElement(tag);
@@ -30,6 +31,7 @@
   const searchText = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   let commonSections = [];
   let weightAgeDefaults = null;
+  let clinicalAudit = { schemaVersion:'', auditedAt:'', defaultStatus:'source-table', drugs:{} };
   const weightAgeCore = window.DRxPediatricWeightAge || null;
 
   function inBand(value, band, minKey, maxKey) {
@@ -44,9 +46,34 @@
     return ageUnit === 'month' ? value : value * 12;
   }
   const validAgeMonths = value => Number.isFinite(value) && value >= 0;
-  const needsWeight = option => ['weight', 'ageWeight', 'oseltamivirBands'].includes(option?.mode);
-  const needsAge = option => ['ageBands', 'ageWeight', 'ageFixed', 'oseltamivirBands'].includes(option?.mode);
+  const rulesOf = option => Array.isArray(option?.rules) ? option.rules : [];
+  const ruleNeedsAge = rule => Number.isFinite(rule?.minMonths) || Number.isFinite(rule?.maxMonths);
+  const ruleNeedsWeight = rule => rule?.doseType === 'weight' || Number.isFinite(rule?.minKg) || Number.isFinite(rule?.maxKg);
+  const needsWeight = option => ['weight', 'ageWeight', 'oseltamivirBands'].includes(option?.mode)
+    || (option?.mode === 'clinicalRules' && rulesOf(option).some(ruleNeedsWeight));
+  const needsAge = option => ['ageBands', 'ageWeight', 'ageFixed', 'oseltamivirBands'].includes(option?.mode)
+    || (option?.mode === 'clinicalRules' && rulesOf(option).some(ruleNeedsAge));
   const needsPatientWeight = option => needsWeight(option) || needsAge(option);
+
+  function auditFor(drug) {
+    return clinicalAudit?.drugs?.[drug?.name] || null;
+  }
+
+  function effectiveOptions(drug) {
+    const audit = auditFor(drug);
+    if (audit?.calculator?.replace && Array.isArray(audit.calculator.options) && audit.calculator.options.length) {
+      return audit.calculator.options;
+    }
+    return Array.isArray(drug?.calc) ? drug.calc : [];
+  }
+
+  function practicalDrug(drug) {
+    const audit = auditFor(drug);
+    if (audit && Object.prototype.hasOwnProperty.call(audit, 'practicalFormulations')) {
+      return { ...drug, formulations:Array.isArray(audit.practicalFormulations) ? audit.practicalFormulations : [] };
+    }
+    return drug;
+  }
 
   function resolvedAgeInfo(values) {
     if (values.ageManual) {
