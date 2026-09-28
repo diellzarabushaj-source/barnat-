@@ -137,6 +137,7 @@
   const DATA_URL = '/api/dosage?view=pediatric-common-reference';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
+  const CLINICAL_AUDIT_URL = '/data/pediatric-clinical-audit-v1.json';
   const byId = id => document.getElementById(id);
   const node = (tag, text, className) => {
     const item = document.createElement(tag);
@@ -160,6 +161,7 @@
   const searchText = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   let commonSections = [];
   let weightAgeDefaults = null;
+  let clinicalAudit = { schemaVersion:'', auditedAt:'', defaultStatus:'source-table', drugs:{} };
   const weightAgeCore = window.DRxPediatricWeightAge || null;
 
   function inBand(value, band, minKey, maxKey) {
@@ -174,9 +176,36 @@
     return ageUnit === 'month' ? value : value * 12;
   }
   const validAgeMonths = value => Number.isFinite(value) && value >= 0;
-  const needsWeight = option => ['weight', 'ageWeight', 'oseltamivirBands'].includes(option?.mode);
-  const needsAge = option => ['ageBands', 'ageWeight', 'ageFixed', 'oseltamivirBands'].includes(option?.mode);
+  const rulesOf = option => Array.isArray(option?.rules) ? option.rules : [];
+  const ruleNeedsAge = rule => Number.isFinite(rule?.minMonths) || Number.isFinite(rule?.maxMonths);
+  const ruleNeedsWeight = rule => rule?.doseType === 'weight' || Number.isFinite(rule?.minKg) || Number.isFinite(rule?.maxKg);
+  const needsWeight = option => ['weight', 'ageWeight', 'oseltamivirBands'].includes(option?.mode)
+    || (option?.mode === 'clinicalRules' && rulesOf(option).some(ruleNeedsWeight));
+  const needsAge = option => ['ageBands', 'ageWeight', 'ageFixed', 'oseltamivirBands'].includes(option?.mode)
+    || (option?.mode === 'clinicalRules' && rulesOf(option).some(ruleNeedsAge));
   const needsPatientWeight = option => needsWeight(option) || needsAge(option);
+
+  function auditFor(drug) {
+    return clinicalAudit?.drugs?.[drug?.name] || null;
+  }
+
+  const auditedDrugCount = () => Object.keys(clinicalAudit?.drugs || {}).length;
+
+  function effectiveOptions(drug) {
+    const audit = auditFor(drug);
+    if (audit?.calculator?.replace && Array.isArray(audit.calculator.options) && audit.calculator.options.length) {
+      return audit.calculator.options;
+    }
+    return Array.isArray(drug?.calc) ? drug.calc : [];
+  }
+
+  function practicalDrug(drug) {
+    const audit = auditFor(drug);
+    if (audit && Object.prototype.hasOwnProperty.call(audit, 'practicalFormulations')) {
+      return { ...drug, formulations:Array.isArray(audit.practicalFormulations) ? audit.practicalFormulations : [] };
+    }
+    return drug;
+  }
 
   function resolvedAgeInfo(values) {
     if (values.ageManual) {
@@ -216,6 +245,40 @@
     return Boolean(weightAgeCore?.ageRangeFitsBand?.(ageInfo, option, 'minMonths', 'maxMonths'));
   }
 
+  function boundPass(value, bound, inclusive, side) {
+    if (!Number.isFinite(bound)) return true;
+    if (!Number.isFinite(value)) return false;
+    if (side === 'min') return inclusive === false ? value > bound : value >= bound;
+    return inclusive === false ? value < bound : value <= bound;
+  }
+
+  function weightFitsRule(weight, rule) {
+    if (!ruleNeedsWeight(rule)) return true;
+    if (!positiveNumber(weight)) return false;
+    return boundPass(weight, Number(rule.minKg), rule.minKgInclusive, 'min')
+      && boundPass(weight, Number(rule.maxKg), rule.maxKgInclusive, 'max');
+  }
+
+  function exactAgeFitsRule(months, rule) {
+    if (!ruleNeedsAge(rule)) return true;
+    return boundPass(months, Number(rule.minMonths), rule.minInclusive, 'min')
+      && boundPass(months, Number(rule.maxMonths), rule.maxInclusive, 'max');
+  }
+
+  function ageRangeFitsRule(ageInfo, rule) {
+    if (!ruleNeedsAge(rule)) return true;
+    if (!ageInfo || !Number.isFinite(ageInfo.defaultMonths)) return false;
+    if (ageInfo.manual) return exactAgeFitsRule(ageInfo.defaultMonths, rule);
+    const lo = Number.isFinite(ageInfo.minMonths) ? ageInfo.minMonths : ageInfo.defaultMonths;
+    const hi = Number.isFinite(ageInfo.maxMonths) ? ageInfo.maxMonths : ageInfo.defaultMonths;
+    return exactAgeFitsRule(lo, rule) && exactAgeFitsRule(hi, rule);
+  }
+
+  function clinicalRuleFor(option, weight, ageInfo) {
+    const matches = rulesOf(option).filter(rule => weightFitsRule(weight, rule) && ageRangeFitsRule(ageInfo, rule));
+    return matches.length === 1 ? matches[0] : null;
+  }
+
   function ageConfirmation(ageInfo) {
     return {
       error:ageInfo?.label
@@ -225,23 +288,51 @@
     };
   }
 
-  function doseResult({ min, max, unit, period = 'dose', frequency = '', source = '', split = null, note = '' }) {
+  function doseResult({
+    min, max, unit, period = 'dose', frequency = '', source = '', split = null, note = '',
+    maxPerDose = null, maxPerDay = null, maxDailyPerKg = null, weight = null,
+  }) {
+    let doseMin = min;
+    let doseMax = max;
+    const caps = [];
+    const dynamicDailyMax = positiveNumber(maxDailyPerKg) && positiveNumber(weight)
+      ? maxDailyPerKg * weight
+      : null;
+    const dailyCap = positiveNumber(maxPerDay) ? maxPerDay : dynamicDailyMax;
+
+    if (period === 'dose' && positiveNumber(maxPerDose)) {
+      if (doseMin > maxPerDose || doseMax > maxPerDose) caps.push(`maks. ${calcFmt(maxPerDose)} ${unit}/dozë`);
+      doseMin = Math.min(doseMin, maxPerDose);
+      doseMax = Math.min(doseMax, maxPerDose);
+    }
+    if (period === 'day' && positiveNumber(dailyCap)) {
+      if (doseMin > dailyCap || doseMax > dailyCap) caps.push(`maks. ${calcFmt(dailyCap)} ${unit}/24 orë`);
+      doseMin = Math.min(doseMin, dailyCap);
+      doseMax = Math.min(doseMax, dailyCap);
+    }
+
     const result = {
-      primary:doseRange(min, max, unit),
-      note,
+      primary:doseRange(doseMin, doseMax, unit),
+      note:[note, ...caps].filter(Boolean).join(' · '),
       source,
-      doseMin:min,
-      doseMax:max,
+      doseMin,
+      doseMax,
       doseUnit:unit,
       dosePeriod:period,
       frequency,
+      capped:caps.length > 0,
     };
     if (period === 'dose') {
-      result.perDoseMin = min;
-      result.perDoseMax = max;
+      result.perDoseMin = doseMin;
+      result.perDoseMax = doseMax;
+      if (positiveNumber(dailyCap)) {
+        result.dailyCap = dailyCap;
+        result.dailyCapLabel = `maks. ${calcFmt(dailyCap)} ${unit}/24 orë`;
+        result.note = [result.note, result.dailyCapLabel].filter(Boolean).join(' · ');
+      }
     } else if (period === 'day' && Number.isFinite(split) && split > 0) {
-      result.perDoseMin = min / split;
-      result.perDoseMax = max / split;
+      result.perDoseMin = doseMin / split;
+      result.perDoseMax = doseMax / split;
       if (split > 1) {
         result.secondary = `Aritmetikisht / ${split} marrje: ${doseRange(result.perDoseMin, result.perDoseMax, unit)} për marrje`;
       }
@@ -263,6 +354,29 @@
 
     if (needsPatientWeight(option) && !positiveNumber(weight)) {
       return { error:'Shëno vetëm peshën reale në kg. Mosha do të sugjerohet automatikisht.' };
+    }
+
+    if (option.mode === 'clinicalRules') {
+      const ageInfo = needsAge(option) ? resolvedAgeInfo(values) : null;
+      if (needsAge(option) && (!ageInfo || !Number.isFinite(ageInfo.defaultMonths))) return ageConfirmation(ageInfo);
+
+      const rule = clinicalRuleFor(option, weight, ageInfo);
+      if (!rule) {
+        if (needsAge(option) && !ageInfo?.manual) return ageConfirmation(ageInfo);
+        return { error:'Nuk ka skemë të verifikuar për këtë kombinim moshe/peshe.' };
+      }
+
+      const min = rule.doseType === 'weight' ? rule.min * weight : rule.min;
+      const max = rule.doseType === 'weight' ? rule.max * weight : rule.max;
+      return doseResult({
+        min, max, unit:rule.unit, period:rule.period || 'dose', split:rule.split,
+        frequency:rule.frequency || '', source:rule.source || option.label,
+        note:[rule.noteSq || '', rule.period === 'day' ? 'në 24 orë' : ''].filter(Boolean).join(' · '),
+        maxPerDose:rule.maxPerDose,
+        maxPerDay:rule.maxPerDay,
+        maxDailyPerKg:rule.maxDailyPerKg,
+        weight,
+      });
     }
 
     if (option.mode === 'ageBands') {
@@ -361,10 +475,11 @@
   function renderLiquidConversions(drug, option, result, answer) {
     if (!liquidCore || result.error) return;
 
-    const presentations = liquidCore.presentationsFor(drug, option);
+    const calcDrug = practicalDrug(drug);
+    const presentations = liquidCore.presentationsFor(calcDrug, option);
     const conversions = liquidCore.volumeConversions(result, presentations);
-    const vialItems = liquidCore.vialConversions ? liquidCore.vialConversions(result, drug, option) : [];
-    const audit = liquidCore.formulationAudit ? liquidCore.formulationAudit(drug, option) : [];
+    const vialItems = liquidCore.vialConversions ? liquidCore.vialConversions(result, calcDrug, option) : [];
+    const audit = liquidCore.formulationAudit ? liquidCore.formulationAudit(calcDrug, option) : [];
     const vialSources = new Set(vialItems.map(item => String(item.source || '')));
     const extras = audit.filter(item => item.status !== 'auto-ml' && item.status !== 'vial-equivalent' && !vialSources.has(String(item.source || '')));
 
@@ -490,7 +605,7 @@
 
   function renderCalculator(drug, host) {
     host.replaceChildren();
-    const options = drug.calc || [];
+    const options = effectiveOptions(drug);
     if (!options.length) return;
 
     const shell = node('div', null, 'dz-common-calculator');
@@ -700,12 +815,48 @@
   function drugMatches(drug, query) {
     if (!query) return true;
     const raw = [drug.name, ...drug.dose, ...drug.formulations].join(' ');
+    const audit = auditFor(drug);
     const translated = [
       drug.name,
       ...drug.dose.map(doseSq),
       ...drug.formulations.map(formulationSq),
+      audit?.badgeSq || '',
+      audit?.summarySq || '',
+      ...(audit?.warningsSq || []),
+      audit?.kosovoMarket?.summarySq || '',
     ].join(' ');
     return searchText(raw).includes(query) || searchText(translated).includes(query);
+  }
+
+  function renderEvidence(drug) {
+    const audit = auditFor(drug);
+    if (!audit) return null;
+    const panel = node('section', null, 'dz-evidence');
+    const head = node('div', null, 'dz-evidence-head');
+    head.append(node('span', audit.badgeSq || 'AUDIT KLINIK', 'dz-evidence-badge'));
+    if (clinicalAudit.auditedAt) head.append(node('small', 'audit ' + clinicalAudit.auditedAt));
+    panel.append(head);
+    if (audit.summarySq) panel.append(node('p', audit.summarySq, 'dz-evidence-summary'));
+    if (Array.isArray(audit.warningsSq)) {
+      const box = node('div', null, 'dz-evidence-warnings');
+      audit.warningsSq.forEach(value => box.append(node('p', '⚠ ' + value)));
+      if (audit.warningsSq.length) panel.append(box);
+    }
+    if (audit.kosovoMarket && audit.kosovoMarket.summarySq) {
+      panel.append(node('p', 'Kosovë · ' + audit.kosovoMarket.summarySq, 'dz-evidence-market'));
+    }
+    if (Array.isArray(audit.sources) && audit.sources.length) {
+      const links = node('div', null, 'dz-evidence-sources');
+      audit.sources.forEach(source => {
+        const link = node('a', (source.authority || 'Burim') + ' · ' + (source.title || 'Hap burimin'));
+        link.href = source.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        links.append(link);
+      });
+      panel.append(links);
+    }
+    return panel;
   }
 
   function renderDrug(drug, autoOpen = false) {
@@ -718,6 +869,8 @@
     card.append(summary);
 
     const body = node('div', null, 'dz-common-drug-body');
+    const evidence = renderEvidence(drug);
+    if (evidence) body.append(evidence);
     const calcHost = node('div');
     body.append(calcHost);
 
@@ -786,7 +939,9 @@
     });
 
     const count = byId('pediatricCommonCount');
-    if (count) count.textContent = query ? `${shown} barna të gjetura` : '50 barna · 10 ndarje';
+    if (count) count.textContent = query
+      ? `${shown} barna të gjetura`
+      : `50 barna · 10 ndarje · ${auditedDrugCount()} të verifikuara online`;
     if (!shown) target.append(node('p', 'Nuk u gjet bar në këtë referencë.', 'dz-empty'));
   }
 
@@ -821,6 +976,21 @@
       if (!Array.isArray(weightAgeDefaults?.bands) || !weightAgeDefaults.bands.length) {
         throw new Error('Weight-age defaults empty');
       }
+
+      if (payload?.clinicalAudit && typeof payload.clinicalAudit === 'object' && payload.clinicalAudit.drugs) {
+        clinicalAudit = payload.clinicalAudit;
+      } else {
+        try {
+          const auditResponse = await fetch(CLINICAL_AUDIT_URL, { cache:'no-store', credentials:'same-origin' });
+          if (auditResponse.ok) {
+            const auditPayload = await auditResponse.json();
+            if (auditPayload && typeof auditPayload === 'object' && auditPayload.drugs) clinicalAudit = auditPayload;
+          }
+        } catch {
+          /* Source table remains usable if the independent audit layer is temporarily unavailable. */
+        }
+      }
+
       renderSections();
       const count = byId('pediatricCommonCount');
       if (count) count.dataset.source = source;
