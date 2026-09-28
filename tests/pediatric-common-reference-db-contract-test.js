@@ -48,6 +48,6 @@ const jsVersion = html.match(/dozologjia-v2\.js\?v=(\d+)/)?.[1];
 assert.ok(cssVersion && jsVersion);
 assert.equal(cssVersion, jsVersion);
 assert.ok(Number(cssVersion) >= 34);
-assert.match(html, /ruhen identikisht në databazë/);
+assert.match(html, /id="pediatricCommonReference"/);
 
 console.log('PASS: pediatric common-dose reference is source-exact in JSON, migration, database route and Dozologjia runtime');
