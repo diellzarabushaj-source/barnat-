@@ -24,6 +24,7 @@ const transport = read('lib/medindex-data-api.js');
 const client = read('dozologjia-master-client.js');
 const bundle = read('dozologjia-v2.js');
 const html = read('dozologjia.html');
+const staticBuild = read('scripts/build-static-runtime.js');
 
 const embeddedReference = referenceMigration.match(/\$pediatric_json\$([\s\S]*?)\$pediatric_json\$::jsonb/);
 assert.ok(embeddedReference, 'Reference migration must contain the exact source JSON');
@@ -103,8 +104,13 @@ const cssVersion = html.match(/dozologjia-v2\.css\?v=(\d+)/)?.[1];
 const jsVersion = html.match(/dozologjia-v2\.js\?v=(\d+)/)?.[1];
 assert.ok(cssVersion && jsVersion);
 assert.equal(cssVersion, jsVersion);
-assert.ok(Number(cssVersion) >= 45);
+assert.ok(Number(cssVersion) >= 46);
 assert.match(html, /pediatric-common-liquid-core\.js\?v=8/);
 assert.match(html, /id="pediatricCommonReference"/);
+assert.match(staticBuild, /const pediatricOfflineData = \[/);
+assert.match(staticBuild, /\/data\/pediatric-common-drugs-reference\.json/);
+assert.match(staticBuild, /\/data\/pediatric-clinical-audit-v1\.json/);
+assert.match(staticBuild, /\/data\/pediatric-weight-age-defaults\.json/);
+assert.match(staticBuild, /pediatricOfflineData\.forEach\(add\)/);
 
 console.log('PASS: source-exact pediatric reference plus complete hardened 50-drug clinical audit are database-backed and wired into Dozologjia');
