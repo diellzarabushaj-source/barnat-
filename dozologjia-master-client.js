@@ -870,7 +870,7 @@
   function resolvedAgeInfo(values) {
     if (values.ageManual) {
       const months = ageMonths(values.age, values.ageUnit);
-      if (positiveNumber(months)) {
+      if (validAgeMonths(months)) {
         return {
           minMonths:months,
           maxMonths:months,
@@ -1100,7 +1100,7 @@
     const field = node('label', null, 'dz-common-field');
     const box = node('span', null, 'dz-number');
     const input = node('input');
-    input.id = id; input.type = 'text'; input.inputMode = 'decimal'; input.autocomplete = 'off'; input.value = value;
+    input.id = id; input.type = 'text'; input.inputMode = 'decimal'; input.autocomplete = 'off'; input.autocapitalize = 'none'; input.spellcheck = false; input.enterKeyHint = 'done'; input.value = value;
     box.append(input);
     if (suffix) box.append(node('span', suffix));
     field.append(node('span', label, 'dz-label'), box);
@@ -1320,8 +1320,9 @@
     return !query || searchText([drug.name, ...drug.dose, ...drug.formulations].join(' ')).includes(query);
   }
 
-  function renderDrug(drug) {
+  function renderDrug(drug, autoOpen = false) {
     const card = node('details', null, 'dz-common-drug');
+    card.open = Boolean(autoOpen);
     const summary = node('summary');
     const formula = node('span', null, 'dz-common-summary-dose');
     drug.dose.forEach(line => formula.append(node('small', line)));
@@ -1350,8 +1351,19 @@
     body.append(sourceDetails);
 
     let built = false;
+    const build = () => {
+      if (!built) { built = true; renderCalculator(drug, calcHost); }
+    };
+    if (card.open) build();
     card.addEventListener('toggle', () => {
-      if (card.open && !built) { built = true; renderCalculator(drug, calcHost); }
+      if (!card.open) return;
+      build();
+      if (window.matchMedia('(max-width:760px)').matches) {
+        const list = card.parentElement;
+        list?.querySelectorAll(':scope > details.dz-common-drug[open]').forEach(other => {
+          if (other !== card) other.open = false;
+        });
+      }
     });
     card.append(body);
     return card;
@@ -1362,6 +1374,11 @@
     if (!target) return;
     const query = searchText(byId('pediatricCommonSearch')?.value.trim());
     target.replaceChildren();
+
+    const allMatches = query
+      ? commonSections.flatMap(section => section.drugs.filter(drug => drugMatches(drug, query)))
+      : [];
+    const uniqueDrug = query && allMatches.length === 1 ? allMatches[0] : null;
     let shown = 0;
 
     commonSections.forEach((section, sectionIndex) => {
@@ -1375,7 +1392,7 @@
       summary.append(node('span', section.roman, 'dz-common-roman'), node('strong', section.title), node('small', String(visible.length)));
       block.append(summary);
       const list = node('div', null, 'dz-common-drug-list');
-      visible.forEach(drug => list.append(renderDrug(drug)));
+      visible.forEach(drug => list.append(renderDrug(drug, uniqueDrug === drug)));
       block.append(list);
       target.append(block);
     });
