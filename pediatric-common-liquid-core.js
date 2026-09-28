@@ -22,7 +22,7 @@
     if (/\b(?:dps|drops?)\b/.test(text)) return 'oral';
     if (/\brespules?\b/.test(text)) return 'nebulized';
     if (/respiratory solution|nebul/.test(text)) return 'nebulized';
-    if (/\b(?:injection|ampoule|vial)\b/.test(text)) return 'injectable';
+    if (/\b(?:injection|ampoule|vial|infusion)\b/.test(text)) return 'injectable';
     return '';
   }
 
@@ -35,6 +35,7 @@
     if (/\bampoule\b/.test(text)) return 'Ampulë';
     if (/\bvial\b/.test(text)) return 'Vial';
     if (/\binjection\b/.test(text)) return 'Injeksion';
+    if (/\binfusion\b/.test(text)) return 'Infuzion';
     return kind === 'oral' ? 'Lëng oral' : kind === 'nebulized' ? 'Nebulizim' : 'Preparat';
   }
 
