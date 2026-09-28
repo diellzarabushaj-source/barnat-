@@ -170,6 +170,7 @@
     if (key === 'piperacillin') return 'piperacilinë';
     if (key === 'tazobactam') return 'tazobaktam';
     if (key === 'tmp') return 'TMP (trimetoprim)';
+    if (key === 'elemental iron') return 'hekur elementar';
     return clean(value);
   }
 
@@ -339,11 +340,34 @@
         reason:'Burimi jep vetëm 4,5 g total pa ndarjen piperacilinë/tazobaktam; ekuivalenti i sigurt i flakonit nuk automatizohet.',
       }];
     }
-    if (name === 'penicillin g' && /5\s*lakhs?/i.test(source)) {
-      return [{ kind:'injectable', form:'Flakon (vial)', amount:500000, unit:'U', componentBasis:'', source, reconstitutionRequired:true }];
+    if (name === 'penicillin g') {
+      if (/5\s*lakhs?/i.test(source)) {
+        return [{ kind:'injectable', form:'Flakon (vial)', amount:500000, unit:'U', componentBasis:'', source, reconstitutionRequired:true }];
+      }
+      const million = source.match(/(\d+(?:[.,]\d+)?)\s*million\s*(?:i?u)\b/i);
+      if (million) {
+        return [{ kind:'injectable', form:'Flakon (vial)', amount:number(million[1]) * 1000000, unit:'U', componentBasis:'', source, reconstitutionRequired:true }];
+      }
+      const explicitUnits = source.match(/([\d\s,.]+)\s*(?:iu|u)\b/i);
+      if (explicitUnits) {
+        const amount = Number(String(explicitUnits[1]).replace(/[\s,.]/g, ''));
+        if (positive(amount)) {
+          return [{ kind:'injectable', form:'Flakon (vial)', amount, unit:'U', componentBasis:'', source, reconstitutionRequired:true }];
+        }
+      }
     }
-    if (name === 'colistin' && /1\s*million\s*u/i.test(source)) {
-      return [{ kind:'injectable', form:'Flakon (vial)', amount:1000000, unit:'U', componentBasis:'', source, reconstitutionRequired:true }];
+    if (name === 'colistin') {
+      const million = source.match(/(\d+(?:[.,]\d+)?)\s*million\s*(?:i?u)\b/i);
+      if (million) {
+        return [{ kind:'injectable', form:'Flakon (vial)', amount:number(million[1]) * 1000000, unit:'U', componentBasis:'', source, reconstitutionRequired:true }];
+      }
+      const explicitUnits = source.match(/([\d\s,.]+)\s*(?:iu|u)\b/i);
+      if (explicitUnits) {
+        const amount = Number(String(explicitUnits[1]).replace(/[\s,.]/g, ''));
+        if (positive(amount)) {
+          return [{ kind:'injectable', form:'Flakon (vial)', amount, unit:'U', componentBasis:'', source, reconstitutionRequired:true }];
+        }
+      }
     }
 
     const items = [];
