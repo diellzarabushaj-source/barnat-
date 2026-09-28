@@ -834,7 +834,8 @@
 (() => {
   'use strict';
 
-  const DATA_URL = '/data/pediatric-common-drugs-reference.json';
+  const DATA_URL = '/api/dosage?view=pediatric-common-reference';
+  const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const byId = id => document.getElementById(id);
   const node = (tag, text, className) => {
     const item = document.createElement(tag);
@@ -1073,12 +1074,23 @@
     const target = byId('pediatricCommonSections');
     if (!target) return;
     try {
-      const response = await fetch(DATA_URL, { cache:'force-cache', credentials:'same-origin' });
-      if (!response.ok) throw new Error('Reference unavailable');
-      const payload = await response.json();
-      commonSections = Array.isArray(payload.sections) ? payload.sections : [];
+      let payload = null;
+      let source = 'database';
+      try {
+        const response = await fetch(DATA_URL, { cache:'no-store', credentials:'same-origin' });
+        if (!response.ok) throw new Error('Database reference unavailable');
+        payload = await response.json();
+      } catch {
+        source = 'static-fallback';
+        const fallback = await fetch(STATIC_FALLBACK_URL, { cache:'force-cache', credentials:'same-origin' });
+        if (!fallback.ok) throw new Error('Static reference unavailable');
+        payload = await fallback.json();
+      }
+      commonSections = Array.isArray(payload?.sections) ? payload.sections : [];
       if (!commonSections.length) throw new Error('Reference empty');
       renderSections();
+      const count = byId('pediatricCommonCount');
+      if (count) count.dataset.source = source;
       byId('pediatricCommonSearch')?.addEventListener('input', renderSections);
     } catch {
       if (byId('pediatricCommonCount')) byId('pediatricCommonCount').textContent = 'Nuk u ngarkua';
