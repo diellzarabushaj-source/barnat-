@@ -105,4 +105,56 @@ const units = Liquid.volumeConversions({
 }, [{kind:'injectable',form:'Vial',mg:100,mL:1,source:'x'}]);
 assert.deepStrictEqual(units, []);
 
+
+// Audited piperacillin/tazobactam component strength may be converted only when
+// the piperacillin component is explicit.
+{
+  const audited = {
+    ...drug('Piperacillin + Tazobactam'),
+    formulations:['Vial – 4g piperacillin + 0.5g tazobactam'],
+  };
+  const option = { route:'injectable', componentBasis:'piperacillin', label:'cIAI' };
+  const items = Liquid.vialConversions({
+    doseMin:1200,doseMax:1200,doseUnit:'mg',dosePeriod:'dose',
+    perDoseMin:1200,perDoseMax:1200,frequency:'q8h',
+  }, audited, option);
+  assert.equal(items.length, 1);
+  assert.equal(items[0].componentBasis, 'piperacillin');
+  assert.equal(items[0].amount, 4000);
+  assert.equal(items[0].convertible, true);
+  close(items[0].vialMin, 0.3);
+}
+
+// The legacy total-only 4.5 g notation remains fail-closed.
+{
+  const legacy = drug('Piperacillin + Tazobactam');
+  const item = Liquid.vialConversions({
+    doseMin:1200,doseMax:1200,doseUnit:'mg',dosePeriod:'dose',
+    perDoseMin:1200,perDoseMax:1200,frequency:'q8h',
+  }, legacy, { route:'injectable', label:'cIAI' })[0];
+  assert.equal(item.convertible, false);
+  assert.match(item.reason, /forcën totale|ndarjen e verifikuar/i);
+}
+
+// Infusion is an injectable formulation and oral_or_injectable accepts it.
+{
+  const linezolid = {
+    ...drug('Linezolid'),
+    formulations:['Infusion – 2mg/1ml'],
+  };
+  const option = { route:'oral_or_injectable', label:'Serious infection' };
+  const route = Liquid.optionAudit(linezolid, option);
+  assert.equal(route.ok, true);
+  const presentations = Liquid.presentationsFor(linezolid, option);
+  assert.deepStrictEqual(
+    presentations.map(item => [item.kind,item.form,item.mg,item.mL]),
+    [['injectable','Infuzion',2,1]]
+  );
+  const volumes = Liquid.volumeConversions({
+    doseMin:120,doseMax:120,doseUnit:'mg',dosePeriod:'dose',
+    perDoseMin:120,perDoseMax:120,frequency:'q8h',
+  }, presentations);
+  close(volumes[0].volumeMin, 60);
+}
+
 console.log('PASS: pediatric liquid conversion safely derives practical mL outputs from source formulations');
