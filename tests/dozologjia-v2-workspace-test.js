@@ -49,7 +49,7 @@ assert.equal(pageRuntimes.length, 1, 'Dozologjia must own exactly one page runti
 const cssVersion = styles[0]?.match(/^\/dozologjia-v2\.css\?v=(\d+)$/)?.[1] || '';
 const jsVersion = pageRuntimes[0]?.match(/^\/dozologjia-v2\.js\?v=(\d+)$/)?.[1] || '';
 assert.equal(cssVersion, jsVersion);
-assert.ok(Number(cssVersion) >= 41);
+assert.ok(Number(cssVersion) >= 42);
 
 assert.match(html, /name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/);
 assert.match(html, /id="pediatricCommonSearch"[^>]*autocapitalize="none"[^>]*spellcheck="false"[^>]*enterkeyhint="search"/);
@@ -71,6 +71,13 @@ assert.match(js, /option\.mode === 'clinicalRules'/);
 assert.match(js, /function renderEvidence\(/);
 assert.match(js, /effectiveOptions\(drug\)/);
 assert.match(js, /practicalDrug\(drug\)/);
+assert.match(js, /return \[\];[\s\S]{0,260}?original 50-drug table|original 50-drug table[\s\S]{0,260}?return \[\];/);
+assert.match(js, /PA AUDIT KLINIK/);
+assert.match(js, /AUTO është i bllokuar/);
+assert.match(js, /Pa audit klinik · AUTO bllokuar/);
+assert.match(html, /llogaritja automatike bllokohet/);
+assert.match(css, /\.dz-evidence-unverified/);
+assert.match(css, /\.dz-summary-audit\.is-unverified/);
 assert.match(css, /\.dz-evidence/);
 assert.match(css, /\.dz-evidence-warnings/);
 assert.match(css, /\.dz-evidence-sources/);
