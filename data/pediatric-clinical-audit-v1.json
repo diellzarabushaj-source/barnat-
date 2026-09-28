@@ -198,7 +198,10 @@
       "kosovoMarket": {
         "checkedAt": "2026-09-28",
         "summarySq": "Në regjistrin lokal u gjetën 6 produkte cefaleksine/cephalexin, përfshirë suspension 250 mg/5 mL dhe forma solide."
-      }
+      },
+      "practicalFormulations": [
+        "Syp – 250/5"
+      ]
     },
     "Ceftriaxone": {
       "status": "verified-corrected",
@@ -376,7 +379,8 @@
       "kosovoMarket": {
         "checkedAt": "2026-09-28",
         "summarySq": "Në kërkimin aktual të regjistrit lokal nuk u gjet produkt i publikuar me substancë 'oseltamivir'; verifiko furnizimin aktual para recetës."
-      }
+      },
+      "practicalFormulations": []
     },
     "Linezolid": {
       "status": "verified-corrected",
@@ -662,7 +666,8 @@
       "kosovoMarket": {
         "checkedAt": "2026-09-28",
         "summarySq": "Regjistri lokal ka montelukast 4 mg, 5 mg dhe 10 mg, përfshirë tableta përtypëse dhe granula."
-      }
+      },
+      "practicalFormulations": []
     },
     "Paracetamol": {
       "status": "verified-corrected",
@@ -715,7 +720,10 @@
       "kosovoMarket": {
         "checkedAt": "2026-09-28",
         "summarySq": "Regjistri lokal përmban shumë forma pediatrike orale, përfshirë 120 mg/5 mL dhe 250 mg/5 mL; zgjidh vetëm produktin mono-substancë."
-      }
+      },
+      "practicalFormulations": [
+        "Syp – 120/5, 250/5"
+      ]
     },
     "Ibuprofen": {
       "status": "verified-corrected",
