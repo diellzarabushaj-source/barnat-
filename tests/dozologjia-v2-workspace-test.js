@@ -49,7 +49,7 @@ assert.equal(pageRuntimes.length, 1, 'Dozologjia must own exactly one page runti
 const cssVersion = styles[0]?.match(/^\/dozologjia-v2\.css\?v=(\d+)$/)?.[1] || '';
 const jsVersion = pageRuntimes[0]?.match(/^\/dozologjia-v2\.js\?v=(\d+)$/)?.[1] || '';
 assert.equal(cssVersion, jsVersion);
-assert.ok(Number(cssVersion) >= 42);
+assert.ok(Number(cssVersion) >= 43);
 
 assert.match(html, /name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/);
 assert.match(html, /id="pediatricCommonSearch"[^>]*autocapitalize="none"[^>]*spellcheck="false"[^>]*enterkeyhint="search"/);
@@ -70,6 +70,11 @@ assert.match(js, /function clinicalRuleFor\(/);
 assert.match(js, /option\.mode === 'clinicalRules'/);
 assert.match(js, /function renderEvidence\(/);
 assert.match(js, /effectiveOptions\(drug\)/);
+assert.match(js, /const dailyCaps = \[maxPerDay, dynamicDailyMax\]\.filter\(positiveNumber\)/);
+assert.match(js, /Math\.min\(\.\.\.dailyCaps\)/);
+assert.match(js, /Kalkulatori AUTO është i çaktivizuar/);
+assert.match(js, /dz-common-calculator-blocked/);
+assert.match(js, /50 barna · 10 ndarje · \$\{auditedDrugCount\(\)\} të audituara/);
 assert.match(js, /practicalDrug\(drug\)/);
 assert.match(js, /return \[\];[\s\S]{0,260}?original 50-drug table|original 50-drug table[\s\S]{0,260}?return \[\];/);
 assert.match(js, /PA AUDIT KLINIK/);
