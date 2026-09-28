@@ -53,7 +53,7 @@
     || (option?.mode === 'clinicalRules' && rulesOf(option).some(ruleNeedsWeight));
   const needsAge = option => ['ageBands', 'ageWeight', 'ageFixed', 'oseltamivirBands'].includes(option?.mode)
     || (option?.mode === 'clinicalRules' && rulesOf(option).some(ruleNeedsAge));
-  const needsPatientWeight = option => needsWeight(option) || needsAge(option);
+  const needsPatientWeight = option => needsWeight(option);
 
   function auditFor(drug) {
     return clinicalAudit?.drugs?.[drug?.name] || null;
@@ -483,7 +483,7 @@
 
     const shell = node('div', null, 'dz-common-calculator');
     const title = node('div', null, 'dz-common-calc-head');
-    title.append(node('strong', 'Kalkulatori'), node('small', 'Pesha → mosha AUTO → doza → forma praktike'));
+    title.append(node('strong', 'Kalkulatori'), node('small', 'Pesha/mosha → doza → forma praktike'));
     shell.append(title);
 
     const selector = node('select', null, 'dz-unit dz-common-select');
@@ -653,6 +653,13 @@
       fields.replaceChildren();
       ageSummary = null;
       const option = currentOption();
+
+      // Age-only verified rules should ask for chronological age directly.
+      // Do not force a weight-derived age estimate when weight is not part of
+      // the regimen or its eligibility bands.
+      if (needsAge(option) && !needsPatientWeight(option)) {
+        values.ageManualVisible = true;
+      }
 
       if (needsPatientWeight(option)) {
         const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
