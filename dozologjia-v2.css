@@ -2059,3 +2059,38 @@ button,input,select{font:inherit}
   color:#9a4a08;
   border:1px solid #fed7aa;
 }
+
+/* Evidence source disclosure: compact on phone, expanded on desktop. */
+.dosage-page .dz-evidence-source-details{
+  overflow:hidden;
+  border-top:1px solid #dcefe5;
+}
+.dosage-page .dz-evidence-source-details>summary{
+  display:flex;
+  min-height:38px;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:7px 0 0;
+  list-style:none;
+  cursor:pointer;
+  color:#445064;
+}
+.dosage-page .dz-evidence-source-details>summary::-webkit-details-marker{display:none}
+.dosage-page .dz-evidence-source-details>summary strong{
+  font-size:10px;
+  font-weight:760;
+}
+.dosage-page .dz-evidence-source-details>summary small{
+  color:#8a91a2;
+  font-size:9px;
+}
+.dosage-page .dz-evidence-source-details[open] .dz-evidence-sources{
+  margin-top:6px;
+}
+@media(max-width:760px){
+  .dosage-page .dz-evidence-source-details>summary{
+    min-height:44px;
+    padding-top:6px;
+  }
+}
