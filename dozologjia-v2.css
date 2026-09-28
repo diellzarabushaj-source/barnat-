@@ -2040,3 +2040,9 @@ button,input,select{font:inherit}
   font-size:12px;
   line-height:1.45;
 }
+
+.dosage-page .dz-summary-audit.is-blocked{
+  background:#fff7ed;
+  color:#9a4a08;
+  border:1px solid #fed7aa;
+}
