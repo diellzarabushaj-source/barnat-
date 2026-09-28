@@ -75,7 +75,7 @@ const jsVersion = html.match(/dozologjia-v2\.js\?v=(\d+)/)?.[1];
 assert.ok(cssVersion && jsVersion);
 assert.equal(cssVersion, jsVersion);
 assert.ok(Number(cssVersion) >= 41);
-assert.match(html, /pediatric-common-liquid-core\.js\?v=4/);
+assert.match(html, /pediatric-common-liquid-core\.js\?v=6/);
 assert.match(html, /id="pediatricCommonReference"/);
 
 console.log('PASS: source-exact pediatric reference plus additive 20-drug clinical audit are database-backed and wired into Dozologjia');
