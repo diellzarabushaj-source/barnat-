@@ -8,7 +8,7 @@ const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const reference = JSON.parse(read('data/pediatric-common-drugs-reference.json'));
-const migration = read('supabase/migrations/20260928023500_add_pediatric_common_reference_v1.sql');
+const migration = read('supabase/migrations/20260928005317_add_pediatric_common_reference_v1.sql');
 const api = read('api/dosage.js');
 const handler = read('lib/pediatric-common-reference-handler.js');
 const transport = read('lib/medindex-data-api.js');
