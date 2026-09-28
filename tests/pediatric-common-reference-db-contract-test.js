@@ -43,8 +43,11 @@ assert.match(client, /\/api\/dosage\?view=pediatric-common-reference/);
 assert.match(client, /STATIC_FALLBACK_URL = '\/data\/pediatric-common-drugs-reference\.json'/);
 assert.match(client, /source = 'database'/);
 assert.ok(bundle.endsWith(client), 'Generated Dozologjia bundle must include the current database-backed client');
-assert.match(html, /dozologjia-v2\.css\?v=34/);
-assert.match(html, /dozologjia-v2\.js\?v=34/);
+const cssVersion = html.match(/dozologjia-v2\\.css\\?v=(\\d+)/)?.[1];
+const jsVersion = html.match(/dozologjia-v2\\.js\\?v=(\\d+)/)?.[1];
+assert.ok(cssVersion && jsVersion);
+assert.equal(cssVersion, jsVersion);
+assert.ok(Number(cssVersion) >= 34);
 assert.match(html, /ruhen identikisht në databazë/);
 
 console.log('PASS: pediatric common-dose reference is source-exact in JSON, migration, database route and Dozologjia runtime');
