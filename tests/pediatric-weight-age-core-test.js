@@ -46,7 +46,7 @@ const fourFive = WeightAge.infer(18, map);
 assert.equal(fourFive.minMonths, 48);
 assert.equal(fourFive.maxMonths, 60);
 assert.equal(fourFive.defaultMonths, 54);
-assert.equal(fourFive.label, '≈4–5 vjeç');
+assert.equal(fourFive.label, 'rreth 4–5 vjeç');
 
 const overlap20 = WeightAge.infer(20, map);
 assert.equal(overlap20.kind, 'overlap');
