@@ -133,7 +133,7 @@ assert.deepStrictEqual(units, []);
     perDoseMin:1200,perDoseMax:1200,frequency:'q8h',
   }, legacy, { route:'injectable', label:'cIAI' })[0];
   assert.equal(item.convertible, false);
-  assert.match(item.reason, /forcën totale|ndarjen e verifikuar/i);
+  assert.match(item.reason, /4,5 g total|ndarjen piperacilinë\/tazobaktam/i);
 }
 
 // Infusion is an injectable formulation and oral_or_injectable accepts it.
