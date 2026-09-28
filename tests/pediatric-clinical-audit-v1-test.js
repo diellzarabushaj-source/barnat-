@@ -12,13 +12,15 @@ const sourceTable = JSON.parse(read('data/pediatric-common-drugs-reference.json'
 assert.equal(audit.schemaVersion, 'pediatric-clinical-audit-v1');
 assert.equal(audit.auditedAt, '2026-09-28');
 assert.equal(audit.defaultStatus, 'source-table');
-assert.equal(Object.keys(audit.drugs).length, 34, 'Current audit must contain exactly 34 independently audited drugs');
+assert.equal(Object.keys(audit.drugs).length, 50, 'Current audit must contain exactly all 50 independently audited source drugs');
 assert.equal(audit.wave2?.auditedDrugCount, 20);
 assert.equal(audit.wave2?.addedDrugs?.length, 9);
 assert.equal(audit.wave3?.auditedDrugCount, 29);
 assert.equal(audit.wave3?.addedDrugs?.length, 9);
 assert.equal(audit.wave4?.auditedDrugCount, 34);
 assert.equal(audit.wave4?.addedDrugs?.length, 5);
+assert.equal(audit.wave5?.auditedDrugCount, 50);
+assert.equal(audit.wave5?.addedDrugs?.length, 16);
 
 for (const [name, item] of Object.entries(audit.drugs)) {
   assert.ok(sourceTable.sections.some(section => section.drugs.some(drug => drug.name === name)), `${name}: audit target is not in the 50-drug source table`);
@@ -298,4 +300,117 @@ const wave4Names = new Set(audit.wave4.addedDrugs);
 ['Ondansetron','Fexofenadine','Salbutamol','Prednisolone','Iron']
   .forEach(name => assert.ok(wave4Names.has(name), `Wave 4 manifest missing ${name}`));
 
-console.log('PASS: pediatric clinical audit v1-wave4 pins 34 audited drugs, safety boundaries and Kosovo-market practical forms');
+
+// Wave 5 — complete the independent audit of every source-table medicine.
+const ampicillin = D.Ampicillin.calculator.options;
+assert.deepStrictEqual(ampicillin.map(option => [option.rules[0].minMonths,option.rules[0].maxMonths,option.rules[0].min,option.rules[0].frequency]), [
+  [0,0.23,50,'çdo 12 orë · IM/IV'],
+  [0.23,2,50,'çdo 8 orë · IM/IV'],
+  [2,60,50,'çdo 6 orë · IM/IV'],
+]);
+assert.deepStrictEqual(D.Ampicillin.practicalFormulations, ['Vial – 500mg','Vial – 1g']);
+
+const cloxacillin = D.Cloxacillin.calculator.options[0].rules[0];
+assert.deepStrictEqual([cloxacillin.minMonths,cloxacillin.min,cloxacillin.max,cloxacillin.maxPerDose], [1,25,50,2000]);
+assert.deepStrictEqual(D.Cloxacillin.practicalFormulations, []);
+
+const penicillinG = D['Penicillin G'].calculator.options;
+assert.deepStrictEqual(penicillinG.map(option => option.rules[0].min), [50000,100000]);
+assert.ok(penicillinG.every(option => option.rules[0].unit === 'U'));
+assert.deepStrictEqual(D['Penicillin G'].practicalFormulations, ['Vial – 1 million U']);
+
+const levofloxacin = D.Levofloxacin.calculator.options;
+assert.equal(levofloxacin.length, 2);
+levofloxacin.forEach(option => {
+  assert.equal(option.route, 'oral_or_injectable');
+  assert.deepStrictEqual(option.rules.map(rule => rule.min), [8,500]);
+  assert.equal(option.rules[0].maxPerDose, 250);
+});
+assert.deepStrictEqual(D.Levofloxacin.practicalFormulations, ['Infusion – 5mg/1ml']);
+
+const amikacin = D.Amikacin.calculator.options;
+assert.deepStrictEqual(amikacin.map(option => option.rules[0].min), [10,7.5,7.5,5]);
+assert.equal(amikacin[1].rules[0].maxDailyPerKg, 15);
+assert.equal(amikacin[2].rules[0].maxDailyPerKg, 15);
+assert.equal(amikacin[2].rules[0].maxPerDay, 1500);
+assert.ok(D.Amikacin.warningsSq.some(text => /peak|trough|TDM/i.test(text)));
+assert.deepStrictEqual(D.Amikacin.practicalFormulations, ['Vial – 500mg/2ml']);
+
+const gentamicin = D.Gentamicin.calculator.options;
+assert.deepStrictEqual(gentamicin.map(option => [option.rules[0].minMonths,option.rules[0].maxMonths,option.rules[0].min,option.rules[0].max]), [
+  [0,0.23,2.5,2.5],
+  [0.23,1,2.5,2.5],
+  [1,216,2,2.5],
+]);
+assert.ok(gentamicin.every(option => /TDM/.test(option.rules[0].frequency)));
+assert.deepStrictEqual(D.Gentamicin.practicalFormulations, ['Vial – 40mg/1ml']);
+
+assert.equal(D.Cefoperazone.status, 'verified-blocked');
+assert.equal(D.Cefoperazone.calculator.disabled, true);
+assert.match(D.Cefoperazone.calculator.reasonSq, /raporti|2:1|1:1/i);
+assert.deepStrictEqual(D.Cefoperazone.practicalFormulations, []);
+
+const cefotaxime = D.Cefotaxime.calculator.options[0].rules[0];
+assert.deepStrictEqual([cefotaxime.minMonths,cefotaxime.min,cefotaxime.frequency], [1,50,'çdo 6 orë · IV']);
+assert.deepStrictEqual(D.Cefotaxime.practicalFormulations, ['Vial – 1g']);
+
+const colistin = D.Colistin.calculator.options;
+assert.deepStrictEqual(
+  [colistin[0].rules[0].min,colistin[0].rules[0].max,colistin[0].rules[0].unit,colistin[0].rules[0].period,colistin[0].rules[0].split],
+  [75000,150000,'U','day',3]
+);
+assert.deepStrictEqual(
+  [colistin[1].rules[0].min,colistin[1].rules[0].unit,colistin[1].rules[0].period,colistin[1].rules[0].split],
+  [9000000,'U','day',3]
+);
+assert.deepStrictEqual(D.Colistin.practicalFormulations, ['Vial – 1 million U']);
+assert.ok(D.Colistin.warningsSq.some(text => /IU|CBA|CMS/i.test(text)));
+
+const doxycycline = D.Doxycycline.calculator.options;
+assert.deepStrictEqual(doxycycline.map(option => option.rules[0].min), [2.2,100]);
+assert.equal(doxycycline[0].rules[0].maxPerDose, 100);
+assert.deepStrictEqual(D.Doxycycline.practicalFormulations, ['Tab – 100mg']);
+
+const dec = D.DEC.calculator.options[0].rules[0];
+assert.deepStrictEqual([dec.minMonths,dec.minInclusive,dec.min,dec.period], [18,false,6,'day']);
+assert.deepStrictEqual(D.DEC.practicalFormulations, []);
+
+const diclofenac = D.Diclofenac.calculator.options;
+assert.deepStrictEqual(diclofenac.map(option => [option.rules[0].min,option.rules[0].max]), [[1,3],[1,2]]);
+assert.ok(diclofenac.every(option => option.rules[0].period === 'day'));
+assert.deepStrictEqual(D.Diclofenac.practicalFormulations, []);
+
+const mefenamic = D['Mefenamic acid'].calculator.options[0].rules[0];
+assert.deepStrictEqual([mefenamic.minMonths,mefenamic.minInclusive,mefenamic.min,mefenamic.period,mefenamic.split], [6,false,25,'day',3]);
+assert.deepStrictEqual(D['Mefenamic acid'].practicalFormulations, ['Syp – 250/5']);
+
+const cpm = D.CPM.calculator.options[0].rules;
+assert.deepStrictEqual(cpm.map(rule => [rule.minMonths,rule.maxMonths,rule.min,rule.maxPerDay]), [
+  [12,24,1,2],[24,72,1,6],[72,144,2,12],[144,216,4,24]
+]);
+assert.deepStrictEqual(D.CPM.practicalFormulations, ['Syp – 2/5']);
+
+const levoSalbutamol = D['Levo salbutamol'].calculator.options;
+assert.deepStrictEqual(levoSalbutamol.map(option => option.rules[0].min), [0.31,0.63,0.63,1.25]);
+assert.ok(levoSalbutamol.every(option => option.route === 'nebulized'));
+assert.deepStrictEqual(D['Levo salbutamol'].practicalFormulations, []);
+
+assert.equal(D.Calcium.status, 'verified-blocked');
+assert.equal(D.Calcium.calculator.disabled, true);
+assert.match(D.Calcium.calculator.reasonSq, /indikacionin|kripën|elementar/i);
+assert.deepStrictEqual(D.Calcium.practicalFormulations, []);
+
+const wave5Names = new Set(audit.wave5.addedDrugs);
+[
+  'Ampicillin','Cloxacillin','Penicillin G','Levofloxacin','Amikacin','Gentamicin',
+  'Cefoperazone','Cefotaxime','Colistin','Doxycycline','DEC','Diclofenac',
+  'Mefenamic acid','CPM','Levo salbutamol','Calcium'
+].forEach(name => assert.ok(wave5Names.has(name), `Wave 5 manifest missing ${name}`));
+
+assert.equal(new Set([
+  ...Object.keys(audit.drugs)
+]).size, 50, 'Every source-table medicine must have exactly one audit record');
+sourceTable.sections.flatMap(section => section.drugs)
+  .forEach(drug => assert.ok(D[drug.name], `Missing independent audit: ${drug.name}`));
+
+console.log('PASS: pediatric clinical audit v1-wave5 independently audits all 50 source drugs with explicit safe/blocked AUTO states');
