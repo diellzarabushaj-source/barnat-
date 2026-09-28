@@ -336,7 +336,7 @@
       return [{
         kind:'injectable', form:'Flakon (vial)', amount:NaN, unit:'mg', componentBasis:'', source,
         reconstitutionRequired:true,
-        reason:'Burimi jep vetëm forcën totale pa ndarjen e verifikuar piperacilinë/tazobaktam; ekuivalenti i flakonit nuk automatizohet.',
+        reason:'Burimi jep vetëm 4,5 g total pa ndarjen piperacilinë/tazobaktam; ekuivalenti i sigurt i flakonit nuk automatizohet.',
       }];
     }
     if (name === 'penicillin g' && /5\s*lakhs?/i.test(source)) {
