@@ -1115,6 +1115,11 @@
     head.append(node('span', 'AUTO + KONTROLL', 'dz-common-volume-badge'));
     box.append(head);
 
+    const routeAudit = liquidCore.optionAudit ? liquidCore.optionAudit(drug, option) : { ok:true };
+    if (!routeAudit.ok && routeAudit.message) {
+      box.append(node('p', routeAudit.message, 'dz-common-route-warning'));
+    }
+
     const list = node('div', null, 'dz-common-volume-list');
 
     conversions.forEach(item => {
@@ -1229,7 +1234,7 @@
 
     const shell = node('div', null, 'dz-common-calculator');
     const title = node('div', null, 'dz-common-calc-head');
-    title.append(node('strong', 'Kalkulatori'), node('small', 'Pesha → mosha AUTO → doza → mL'));
+    title.append(node('strong', 'Kalkulatori'), node('small', 'Pesha → mosha AUTO → doza → forma praktike'));
     shell.append(title);
 
     const selector = node('select', null, 'dz-unit dz-common-select');
