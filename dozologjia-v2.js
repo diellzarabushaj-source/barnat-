@@ -301,7 +301,11 @@
     const dynamicDailyMax = positiveNumber(maxDailyPerKg) && positiveNumber(weight)
       ? maxDailyPerKg * weight
       : null;
-    const dailyCap = positiveNumber(maxPerDay) ? maxPerDay : dynamicDailyMax;
+    // When both an absolute ceiling and a weight-based ceiling exist, the
+    // stricter one wins. Never let an adult absolute maximum override a lower
+    // pediatric mg/kg/day limit.
+    const dailyCaps = [maxPerDay, dynamicDailyMax].filter(positiveNumber);
+    const dailyCap = dailyCaps.length ? Math.min(...dailyCaps) : null;
 
     if (period === 'dose' && positiveNumber(maxPerDose)) {
       if (doseMin > maxPerDose || doseMax > maxPerDose) caps.push(`maks. ${calcFmt(maxPerDose)} ${unit}/dozë`);
@@ -608,7 +612,21 @@
 
   function renderCalculator(drug, host) {
     host.replaceChildren();
+    const audit = auditFor(drug);
     const options = effectiveOptions(drug);
+
+    if (audit?.calculator?.disabled) {
+      const blocked = node('div', null, 'dz-common-calculator dz-common-calculator-blocked');
+      blocked.append(node('strong', 'Kalkulatori AUTO është i çaktivizuar'));
+      blocked.append(node(
+        'p',
+        audit.calculator.reasonSq || 'Ky bar nuk ka skemë automatike të lejuar.',
+        'dz-common-blocked-reason'
+      ));
+      host.append(blocked);
+      return;
+    }
+
     if (!options.length) return;
 
     const shell = node('div', null, 'dz-common-calculator');
@@ -962,7 +980,7 @@
     const count = byId('pediatricCommonCount');
     if (count) count.textContent = query
       ? `${shown} barna të gjetura`
-      : `50 barna · 10 ndarje · ${auditedDrugCount()} të verifikuara online`;
+      : `50 barna · 10 ndarje · ${auditedDrugCount()} të audituara`;
     if (!shown) target.append(node('p', 'Nuk u gjet bar në këtë referencë.', 'dz-empty'));
   }
 
