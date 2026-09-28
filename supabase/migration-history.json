@@ -1161,6 +1161,14 @@
     {
       "name": "harden_pediatric_ibuprofen_wave7",
       "version": "20260928185224"
+    },
+    {
+      "name": "harden_pediatric_rule_boundaries_wave8",
+      "version": "20260928210008"
+    },
+    {
+      "name": "harden_pediatric_exact_days_wave9",
+      "version": "20260928210811"
     }
   ]
 }
