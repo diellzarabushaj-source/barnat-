@@ -508,13 +508,15 @@
 
       const text = plain(line);
       if (/\b(?:tab|tablet|cap|capsule|supp|suppository|suppositories)\b/.test(text)) {
+        const solidKind = /\b(?:supp|suppository|suppositories)\b/.test(text) ? 'rectal' : 'oral';
+        const route = routeAssessment(drug, option, solidKind);
         return {
           source:line,
           display:formulationTextSq(line),
-          status:'solid',
-          reason:/\b(?:supp|suppository|suppositories)\b/.test(text)
+          status:route.applicable ? 'solid' : 'route-mismatch',
+          reason:route.reason || (solidKind === 'rectal'
             ? 'Formë rektale solide: doza llogaritet në mg; ndarja e supozitorit nuk automatizohet.'
-            : 'Formë solide: doza llogaritet në mg; ndarja e tabletës/kapsulës nuk automatizohet pa verifikuar produktin.',
+            : 'Formë solide: doza llogaritet në mg; ndarja e tabletës/kapsulës nuk automatizohet pa verifikuar produktin.'),
         };
       }
       if (/\bmdi\b/.test(text)) {
