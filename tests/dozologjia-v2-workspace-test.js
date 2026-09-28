@@ -49,7 +49,7 @@ assert.equal(pageRuntimes.length, 1, 'Dozologjia must own exactly one page runti
 const cssVersion = styles[0]?.match(/^\/dozologjia-v2\.css\?v=(\d+)$/)?.[1] || '';
 const jsVersion = pageRuntimes[0]?.match(/^\/dozologjia-v2\.js\?v=(\d+)$/)?.[1] || '';
 assert.equal(cssVersion, jsVersion);
-assert.ok(Number(cssVersion) >= 45);
+assert.ok(Number(cssVersion) >= 46);
 
 assert.match(html, /name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/);
 assert.match(html, /id="pediatricCommonSearch"[^>]*autocapitalize="none"[^>]*spellcheck="false"[^>]*enterkeyhint="search"/);
@@ -80,8 +80,11 @@ assert.match(js, /return \[\];[\s\S]{0,260}?original 50-drug table|original 50-d
 assert.match(js, /PA AUDIT KLINIK/);
 assert.match(js, /AUTO është i bllokuar/);
 assert.match(js, /Pa audit klinik · AUTO bllokuar/);
-assert.match(html, /llogaritja automatike bllokohet/);
+assert.match(html, /Të 50 barnat janë audituar klinikisht/);
+assert.match(html, /AUTO bllokohet/);
 assert.match(css, /\.dz-evidence-unverified/);
+assert.match(css, /\.dz-common-head\{[\s\S]{0,260}?flex-direction:column/);
+assert.match(css, /\.dz-common-head \.dz-status\{[\s\S]{0,260}?white-space:normal/);
 assert.match(css, /\.dz-summary-audit\.is-unverified/);
 assert.match(js, /Audit klinik · AUTO i bllokuar/);
 assert.match(js, /dz-summary-audit is-blocked/);
