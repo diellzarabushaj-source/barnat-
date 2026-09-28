@@ -60,4 +60,37 @@ assert.match(css,/@media\(max-width:760px\)/);
 assert.ok(js.endsWith(read('dozologjia-master-client.js')));
 assert.doesNotMatch(js,/innerHTML|mgPerKg/);
 assert.doesNotThrow(()=>new Function(js));
-console.log('PASS: Master frontend ownership, shell, API wiring and invalidation');
+
+/* The user-supplied pediatric reference is additive to Master v2.7. Its table
+   wording stays frozen in JSON while the browser calculator performs arithmetic
+   over those displayed formulas without becoming a second hidden dose source. */
+const commonReference = JSON.parse(read('data/pediatric-common-drugs-reference.json'));
+assert.match(html, /id="pediatricCommonReference"/);
+assert.match(html, /id="pediatricCommonSearch"/);
+assert.match(html, /id="pediatricCommonSections"/);
+assert.match(js, /pediatric-common-drugs-reference\.json/);
+assert.match(js, /function renderCalculator\(/);
+assert.match(css, /\.dz-common-section/);
+assert.deepStrictEqual(
+  commonReference.sections.map(section => [section.roman, section.title, section.drugs.length]),
+  [
+    ['I','Antibiotics',25],
+    ['II','Anti- Helminthics',3],
+    ['III','Analgesics',4],
+    ['IV','Anti emetics',2],
+    ['V','Anti Histaminic',5],
+    ['VI','Antiviral Agents',2],
+    ['VII','Bronchodilators',3],
+    ['VIII','Steroids',1],
+    ['IX','Anti Gastritis',3],
+    ['X','Miscellaneous',2],
+  ]
+);
+assert.equal(commonReference.sections.reduce((sum, section) => sum + section.drugs.length, 0), 50);
+assert.deepStrictEqual(commonReference.sections[0].drugs[0].dose, ['15mg/kg/dose q8h','Pneumonia – 80-90mg/kg/day']);
+assert.deepStrictEqual(commonReference.sections[0].drugs[0].formulations, ['Syp – 125/5, 250/5','Cap – 250mg, 500mg','Dps – 100/1']);
+assert.deepStrictEqual(commonReference.sections[5].drugs[1].dose, ['<3m – 12mg BD','3m -6m – 20mg BD','6m – 1yr – 25mg BD','>1y –','≤ 15kg – 30mgBD','15-23 kg – 45 mg BD','23-40kg – 60mg BD','>40kg – 75mg BD']);
+assert.deepStrictEqual(commonReference.sections[8].drugs[2].formulations, ['Tab 150mg','Syp 75/5','Injection – 25mg/1 , 2ml ampoule']);
+assert.deepStrictEqual(commonReference.sections[9].drugs[1].dose, ['50-150mg/kg/day']);
+
+console.log('PASS: Master frontend ownership, shell, API wiring, pediatric reference and invalidation');
