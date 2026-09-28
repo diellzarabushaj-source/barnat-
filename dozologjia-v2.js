@@ -458,6 +458,9 @@
     input.type = 'text';
     input.inputMode = 'decimal';
     input.autocomplete = 'off';
+    input.autocapitalize = 'none';
+    input.spellcheck = false;
+    input.enterKeyHint = 'done';
     input.placeholder = placeholder;
     shell.append(input);
     if (suffix) shell.append(el('span', suffix));
