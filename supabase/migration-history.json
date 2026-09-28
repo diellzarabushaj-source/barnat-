@@ -1133,6 +1133,14 @@
     {
       "name": "add_pediatric_weight_age_default_v1",
       "version": "20260928011716"
+    },
+    {
+      "name": "add_pediatric_clinical_audit_v1",
+      "version": "20260928101736"
+    },
+    {
+      "name": "expand_pediatric_clinical_audit_wave2",
+      "version": "20260928104945"
     }
   ]
 }
