@@ -18,8 +18,8 @@ const clinicalWave4Migration = read('supabase/migrations/20260928182553_expand_p
 const clinicalWave5Migration = read('supabase/migrations/20260928183438_expand_pediatric_clinical_audit_wave5.sql');
 const clinicalWave6Migration = read('supabase/migrations/20260928184229_harden_pediatric_clinical_audit_wave6.sql');
 const clinicalWave7Migration = read('supabase/migrations/20260928185224_harden_pediatric_ibuprofen_wave7.sql');
-const clinicalWave8Migration = read('supabase/migrations/20260928210200_harden_pediatric_rule_boundaries_wave8.sql');
-const clinicalWave9Migration = read('supabase/migrations/20260928215200_harden_pediatric_exact_days_wave9.sql');
+const clinicalWave8Migration = read('supabase/migrations/20260928210008_harden_pediatric_rule_boundaries_wave8.sql');
+const clinicalWave9Migration = read('supabase/migrations/20260928210811_harden_pediatric_exact_days_wave9.sql');
 
 const api = read('api/dosage.js');
 const handler = read('lib/pediatric-common-reference-handler.js');
