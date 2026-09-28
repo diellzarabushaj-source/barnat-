@@ -29,6 +29,8 @@ assert.equal(audit.wave8?.auditedDrugCount, 50);
 assert.equal(audit.wave8?.kind, 'rule-boundary-hardening');
 assert.equal(audit.wave9?.auditedDrugCount, 50);
 assert.equal(audit.wave9?.kind, 'exact-neonatal-age-hardening');
+assert.equal(audit.wave10?.auditedDrugCount, 50);
+assert.equal(audit.wave10?.kind, 'kosovo-formulation-and-coamoxiclav-iv-hardening');
 
 for (const [name, item] of Object.entries(audit.drugs)) {
   assert.ok(sourceTable.sections.some(section => section.drugs.some(drug => drug.name === name)), `${name}: audit target is not in the 50-drug source table`);
@@ -96,11 +98,42 @@ assert.deepStrictEqual(
   [[25,'2 herë/ditë',1000],[30,'3 herë/ditë',1000]]
 );
 
-for (const option of D['Amoxicillin + Clavulanic'].calculator.options) {
-  assert.equal(option.componentBasis, 'amoxicillin');
-  assert.equal(option.route, 'oral');
-}
-assert.deepStrictEqual(D['Amoxicillin + Clavulanic'].calculator.options.map(option => option.rules[0].min), [25,50]);
+assert.deepStrictEqual(D.Amoxicillin.practicalFormulations, ['Syp – 125/5, 250/5']);
+assert.match(D.Amoxicillin.kosovoMarket.summarySq, /100 mg\/mL.*nuk u konfirmuan/i);
+
+const coAmoxOptions = D['Amoxicillin + Clavulanic'].calculator.options;
+assert.equal(coAmoxOptions.length, 5);
+coAmoxOptions.forEach(option => assert.equal(option.componentBasis, 'amoxicillin'));
+coAmoxOptions.slice(0,2).forEach(option => assert.equal(option.route, 'oral'));
+coAmoxOptions.slice(2).forEach(option => assert.equal(option.route, 'injectable'));
+assert.deepStrictEqual(coAmoxOptions.slice(0,2).map(option => option.rules[0].min), [25,50]);
+
+const coAmoxYoungIv = coAmoxOptions[2].rules;
+assert.deepStrictEqual(
+  coAmoxYoungIv.map(rule => [
+    rule.minMonths ?? null, rule.maxMonths ?? null,
+    rule.minKg ?? null, rule.maxKg ?? null,
+    rule.min, rule.frequency, rule.maxPerDose
+  ]),
+  [
+    [null,3,null,null,25,'çdo 12 orë · IV (infuzion te <3 muaj)',1000],
+    [3,null,null,4,25,'çdo 12 orë · IV',1000],
+  ]
+);
+assert.deepStrictEqual(
+  [coAmoxOptions[3].rules[0].minMonths,coAmoxOptions[3].rules[0].minKg,coAmoxOptions[3].rules[0].maxKg,coAmoxOptions[3].rules[0].min,coAmoxOptions[3].rules[0].frequency],
+  [3,4,40,25,'çdo 8 orë · IV']
+);
+assert.deepStrictEqual(
+  [coAmoxOptions[4].rules[0].minKg,coAmoxOptions[4].rules[0].doseType,coAmoxOptions[4].rules[0].min,coAmoxOptions[4].rules[0].frequency],
+  [40,'fixed',1000,'çdo 8 orë · IV']
+);
+assert.deepStrictEqual(
+  D['Amoxicillin + Clavulanic'].practicalFormulations,
+  ['Syp – 228.5/5, 457/5','Vial – 1.2g (1000 Amox + 200 Clav)']
+);
+assert.match(D['Amoxicillin + Clavulanic'].kosovoMarket.summarySq, /91,4 mg\/mL.*nuk u konfirmuan/i);
+assert.ok(D['Amoxicillin + Clavulanic'].sources.some(source => /2026/.test(source.authority) && /11108/.test(source.url)));
 
 const cephalexin = D.Cephalexin.calculator.options[0].rules;
 assert.deepStrictEqual(cephalexin.map(rule => [
@@ -496,4 +529,4 @@ assert.equal(new Set([
 sourceTable.sections.flatMap(section => section.drugs)
   .forEach(drug => assert.ok(D[drug.name], `Missing independent audit: ${drug.name}`));
 
-console.log('PASS: pediatric clinical audit v1-wave9 audits all 50 source drugs with exact neonatal days, hardened routes, ceilings and blocked-AUTO semantics');
+console.log('PASS: pediatric clinical audit v1-wave10 audits all 50 source drugs with exact neonatal days, Kosovo-confirmed practical formulations and component-safe co-amoxiclav IV');
