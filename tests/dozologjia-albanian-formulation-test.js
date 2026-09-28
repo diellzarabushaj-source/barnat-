@@ -149,9 +149,10 @@ console.log('PASS: Albanian rendering is complete and fail-closed, the shelf is 
 /* --------------------------------------------------- 5 · the page on a phone */
 const html = fs.readFileSync(path.join(ROOT, 'dozologjia.html'), 'utf8');
 const css = fs.readFileSync(path.join(ROOT, 'dozologjia-v2.css'), 'utf8');
-/* The page's own phone block is the last one in the file; earlier ones belong
-   to the shared shell. */
-const phone = css.slice(css.lastIndexOf('@media(max-width:760px)'));
+/* Dozologjia now has more than one 760px pass: the original Master phone
+   contract plus the final pediatric/iPhone refinement. Audit the complete
+   phone cascade from the first page-owned breakpoint onward. */
+const phone = css.slice(css.indexOf('@media(max-width:760px)'));
 
 /* Three choices, one patient block, one answer — nothing else on the page. */
 ['drugPicker', 'indicationPicker', 'regimenPicker'].forEach(id =>
