@@ -205,6 +205,7 @@
       "badgeSq": "VERIFIKUAR · DailyMed 2026",
       "summarySq": "50 mg/kg dy herë në ditë nuk është default universal. Regjimi varet nga indikacioni dhe ka kufij maksimalë ditorë.",
       "warningsSq": [
+        "Në këtë kalkulator doza automatike bllokohet nën 1 muaj; përdorimi neonatal kërkon vlerësim të prematuritetit, bilirubinës dhe ekspozimit ndaj kalciumit IV.",
         "Mos përdor te neonati hiperbilirubinemik/prematur sipas etiketës së referuar.",
         "Kundërindikohet te neonati ≤28 ditë që kërkon ose pritet të kërkojë solucione IV me kalcium."
       ],
@@ -232,7 +233,8 @@
                 "frequency": "çdo 12 orë",
                 "maxPerDay": 2000,
                 "source": "DailyMed · serious miscellaneous infections",
-                "maxPerDose": 1000
+                "maxPerDose": 1000,
+                "minMonths": 1
               }
             ]
           },
@@ -250,7 +252,8 @@
                 "frequency": "çdo 12 orë",
                 "maxPerDay": 4000,
                 "source": "DailyMed · meningitis",
-                "maxPerDose": 2000
+                "maxPerDose": 2000,
+                "minMonths": 1
               }
             ]
           },
@@ -267,7 +270,8 @@
                 "period": "dose",
                 "frequency": "dozë e vetme IM",
                 "maxPerDose": 1000,
-                "source": "DailyMed · acute bacterial otitis media"
+                "source": "DailyMed · acute bacterial otitis media",
+                "minMonths": 1
               }
             ]
           }
@@ -379,6 +383,7 @@
       "badgeSq": "VERIFIKUAR · DailyMed",
       "summarySq": "Për infeksionet serioze të listuara: lindje–11 vjeç 10 mg/kg çdo 8 orë; ≥12 vjeç 600 mg çdo 12 orë.",
       "warningsSq": [
+        "Në 7 ditët e para të jetës kalkulatori nuk jep AUTO pa kontekst neonatal, sepse prematuriteti mund ta ndryshojë intervalin në çdo 12 orë.",
         "Prematur <7 ditë dhe GA <34 javë: etiketa rekomandon nisje 10 mg/kg çdo 12 orë; regjimi neonatal kërkon moshë gestacionale.",
         "Dozimi ndryshon sipas indikacionit; infeksionet e pakomplikuara të lëkurës kanë skemë tjetër."
       ],
@@ -407,7 +412,8 @@
                 "period": "dose",
                 "frequency": "çdo 8 orë",
                 "maxPerDose": 600,
-                "source": "DailyMed · birth through 11 years"
+                "source": "DailyMed · birth through 11 years",
+                "minMonths": 0.23
               },
               {
                 "minMonths": 144,
@@ -480,7 +486,7 @@
               {
                 "minMonths": 12,
                 "maxMonths": 216,
-                "maxInclusive": true,
+                "maxInclusive": false,
                 "maxKg": 15,
                 "maxKgInclusive": true,
                 "doseType": "fixed",
@@ -494,7 +500,7 @@
               {
                 "minMonths": 12,
                 "maxMonths": 216,
-                "maxInclusive": true,
+                "maxInclusive": false,
                 "minKg": 15,
                 "minKgInclusive": false,
                 "maxKg": 40,
@@ -510,7 +516,7 @@
               {
                 "minMonths": 12,
                 "maxMonths": 216,
-                "maxInclusive": true,
+                "maxInclusive": false,
                 "minKg": 40,
                 "minKgInclusive": false,
                 "doseType": "fixed",
