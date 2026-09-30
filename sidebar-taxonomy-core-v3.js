@@ -7,7 +7,7 @@
   const ICD_CACHE_TTL = 10 * 60 * 1000;
   const ICD_API = '/api/icd?view=nav';
   const ATC_DATA_SRC = '/classification-data.js?v=atc-catalog-v2';
-  const CANONICAL_WORKER_URL = '/sw.js?v=drx-workspace-v7';
+  const CANONICAL_WORKER_URL = '/sw.js?v=drx-workspace-v9-app-cache';
   const PERSONAL_SUMMARY_API = '/api/user-library?view=summary';
   const PERSONAL_COUNT_CACHE_KEY = 'drx_personal_sidebar_counts_v1';
   const PERSONAL_COUNT_TTL = 30 * 1000;
@@ -782,6 +782,55 @@
     sync();
   }
 
+  function initDeviceExperience() {
+    const host = document.querySelector('.topbar-actions');
+    if (!host || document.getElementById('drxDeviceStatus')) return;
+    const status = document.createElement('button');
+    status.id = 'drxDeviceStatus'; status.type = 'button'; status.className = 'drx-device-status';
+    const panel = document.createElement('section');
+    panel.id = 'drxDevicePanel'; panel.className = 'drx-device-panel'; panel.hidden = true;
+    panel.innerHTML = '<h2>Ruajtja në këtë pajisje</h2><p data-device-copy>Faqet, rezultatet dhe detajet që hap me internet ruhen automatikisht. Mund t’i hapësh përsëri pa i shkarkuar.</p><p data-device-count></p><p class="drx-device-note">Kërkimet e reja dhe llogaritjet në server kërkojnë lidhje. Për hapje të re pa internet, hyrja duhet të jetë verifikuar gjatë 8 orëve të fundit. Kopja lokale tregon kohën e ruajtjes; për vendime klinike kontrollo burimin dhe përditësimin.</p><button type="button" data-device-close>Mbyll</button>';
+    host.prepend(status); document.querySelector('.main-shell').append(panel);
+    status.setAttribute('aria-controls', panel.id); status.setAttribute('aria-expanded','false');
+    let count = 0, pages = 0, savedAt = 0, preparing = false, storageFull = false;
+    let reachable = window.DRxDeviceReachable !== false;
+    function render() {
+      navigator.serviceWorker?.controller?.postMessage({type:'SET_DEVICE_ONLINE',online:navigator.onLine});
+      status.textContent = !navigator.onLine || !reachable ? 'Pa internet' : storageFull ? 'Hapësira plot' : preparing ? 'Po ruhet' : count ? 'Ruajtur' : 'Online';
+      status.dataset.offline = String(!navigator.onLine || !reachable);
+      status.setAttribute('aria-label', status.textContent + ' · Hap statusin e ruajtjes');
+      panel.querySelector('[data-device-count]').textContent = count ? `${count} përgjigje dhe ${pages} faqe të ruajtura · ${savedAt ? new Date(savedAt).toLocaleString('sq-AL') : ''}` : 'Të dhënat ruhen pasi hapen me internet.';
+    }
+    function close() { panel.hidden = true; status.setAttribute('aria-expanded','false'); status.focus(); }
+    status.addEventListener('click', () => { panel.hidden = !panel.hidden; status.setAttribute('aria-expanded', String(!panel.hidden)); if (!panel.hidden) panel.querySelector('button').focus(); });
+    panel.querySelector('button').addEventListener('click', close);
+    document.addEventListener('keydown', event => { if (event.key === 'Escape' && !panel.hidden) close(); });
+    document.addEventListener('pointerdown', event => { if (!panel.hidden && !panel.contains(event.target) && !status.contains(event.target)) { panel.hidden = true; status.setAttribute('aria-expanded','false'); } });
+    window.addEventListener('online', () => { reachable = true; render(); }); window.addEventListener('offline', render);
+    window.addEventListener('drx:device-network', event => { reachable = event.detail?.online !== false; render(); });
+    navigator.serviceWorker?.addEventListener('message', event => {
+      if (event.data?.type !== 'MEDINDEX_CACHE_STATUS') return;
+      if (typeof event.data.cached === 'number' || event.data.state === 'cleared') count = Number(event.data.cached || 0);
+      pages = Number(event.data.pages || 0); savedAt = Number(event.data.savedAt || 0); preparing = !!event.data.preparing; storageFull = !!event.data.storageFull; render();
+    });
+    navigator.serviceWorker?.ready.then(registration => {
+      const worker = navigator.serviceWorker.controller || registration.active;
+      worker?.postMessage({type:'GET_CACHE_STATUS'});
+      worker?.postMessage({type:'SAVE_WORKSPACE',assets:[...performance.getEntriesByType('resource').map(entry => entry.name),...document.querySelectorAll('script[src],link[href]')].map(entry => typeof entry === 'string' ? entry : entry.src || entry.href)});
+      navigator.storage?.persist?.().catch(() => false);
+    }).catch(() => null);
+    render();
+    if (!document.querySelector('link[rel="apple-touch-icon"]')) {
+      const icon = document.createElement('link'); icon.rel = 'apple-touch-icon'; icon.href = '/brand/drx-apple-touch-180.png'; document.head.append(icon);
+    }
+    if (!document.querySelector('meta[name="apple-mobile-web-app-capable"]')) {
+      const capability = document.createElement('meta'); capability.name = 'apple-mobile-web-app-capable'; capability.content = 'yes'; document.head.append(capability);
+    }
+    if (!document.querySelector('link[rel="manifest"]')) {
+      const manifest = document.createElement('link'); manifest.rel = 'manifest'; manifest.href = '/manifest.webmanifest'; document.head.append(manifest);
+    }
+  }
+
   function initSessionRenewal() {
     if (window.DRX_SESSION_RENEWAL_INSTALLED) return;
     window.DRX_SESSION_RENEWAL_INSTALLED = true;
@@ -829,6 +878,7 @@
 
   function init() {
     initSessionRenewal();
+    initDeviceExperience();
     ensureCanonicalWorker();
     const nav = document.querySelector('.sidebar .nav-stack');
     if (!nav || nav.dataset.sharedTaxonomy === '1') return;

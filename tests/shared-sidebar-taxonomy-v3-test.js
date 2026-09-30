@@ -63,7 +63,7 @@ assert.match(shared, /class="atc-sub-list"/);
 assert.match(shared, /class="atc-sub-link"/);
 assert.match(shared, /other\.open = false/);
 assert.match(shared, /window\.DRxSidebarTaxonomy/);
-assert.match(shared, /CANONICAL_WORKER_URL = '\/sw\.js\?v=drx-workspace-v7'/);
+assert.match(shared, /CANONICAL_WORKER_URL = '\/sw\.js\?v=drx-workspace-v9-app-cache'/);
 assert.match(shared, /navigator\.serviceWorker\.register\(CANONICAL_WORKER_URL/);
 assert.match(shared, /updateViaCache:'none'/);
 assert.match(shared, /dataset\.drxSidebarStructure = 'taxonomy-v5'/);

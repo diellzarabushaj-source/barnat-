@@ -7,7 +7,7 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
-const SHELL_VERSION = 'drx-dashboard-stripe-v8-premium-20260930';
+const SHELL_VERSION = 'drx-dashboard-stripe-v8-mobile-app-20260930';
 const BRAND_RUNTIME_VERSION = 'drx-brand-v8-profileguard1';
 
 const workspaces = [
@@ -66,7 +66,7 @@ for (const [htmlFile, jsFile, sidebarRuntimeVersion] of workspaces) {
 const sharedLoader = read('sidebar-taxonomy-v3.js');
 assert.match(sharedLoader, /CORE_SRC = '\/sidebar-taxonomy-core-v3\.js\?v=/, 'shared sidebar loader must pull in the canonical core');
 const shared = read('sidebar-taxonomy-core-v3.js');
-assert.match(shared, /CANONICAL_WORKER_URL = '\/sw\.js\?v=drx-workspace-v7'/);
+assert.match(shared, /CANONICAL_WORKER_URL = '\/sw\.js\?v=drx-workspace-v9-app-cache'/);
 assert.match(shared, /navigator\.serviceWorker\.register\(CANONICAL_WORKER_URL/);
 assert.match(shared, /updateViaCache:'none'/);
 assert.match(shared, /dataset\.drxSidebarStructure = 'taxonomy-v5'/);
@@ -90,7 +90,7 @@ const canonicalWorkspaceAssets = [
 
 const worker = read('sw.js');
 assert.match(worker, /workspace-cache-cutover-v7/);
-assert.match(worker, /VERSION = 'workspace-coherence-v8-search-freshness'/);
+assert.match(worker, /VERSION = 'workspace-coherence-v9-app-cache'/);
 assert.match(worker, /CACHE_EPOCH = '20260914-registry-search-v1'/);
 for (const [htmlFile] of workspaces) {
   assert.ok(worker.includes(`'/${htmlFile}'`), `sw.js: ${htmlFile} is missing from the clinical shell`);
