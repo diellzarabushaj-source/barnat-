@@ -207,3 +207,20 @@ Teal is rationed. Use it for the primary CTA, active navigation, selection, link
 - Never communicate status by color alone; pair color with text/icon.
 - Never obscure or truncate medicine identity, dose, contraindication/warning, protocol step, or source provenance without an accessible way to read it.
 - Do not change business logic, API calls, authentication, clinical data, storage keys, URL structure, or prescription behavior during the visual redesign.
+
+
+## Mobile and saved workspaces · 30 September 2026
+
+The shared Stripe owner keeps the phone search visible below the topbar, two
+summary metrics, a compact 44px toolbar and 16px medicine identity text. The
+storage button explains saved pages, responses and dates; it is not a second
+navigation or dashboard. PWA/Apple icons export the existing approved DRx mark.
+
+The user explicitly requested working with downloaded data on weak/offline
+connections. `sw.js` owns stable device caches and exact-version static assets.
+Clinical reads are saved on use, bounded, and isolated across account changes
+and logout. Offline boot keeps the existing eight-hour verified-session boundary.
+New searches and server calculations require internet until opened and saved.
+No full registry/dosage warm, forced page reload, patient API caching or write
+replay is introduced. See `docs/device-offline-workspaces.md` and the device
+offline browser/worker tests for behavior and verification.

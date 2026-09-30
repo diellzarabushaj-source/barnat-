@@ -2,18 +2,24 @@
 /* workspace-cache-cutover-v7: purge pre-v6 shell caches after canonical sidebar migration. */
 'use strict';
 
-const VERSION = 'workspace-coherence-v8-search-freshness';
+const VERSION = 'workspace-coherence-v9-app-cache';
 const CACHE_EPOCH = '20260914-registry-search-v1';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
-const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
-const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
-const PRIVATE_CACHE = `medindex-private-${CACHE_NAMESPACE}`;
-const DOCUMENT_CACHE = `medindex-documents-${CACHE_NAMESPACE}`;
-const ALL_CACHES = [STATIC_CACHE, PAGE_CACHE, PRIVATE_CACHE, DOCUMENT_CACHE];
+const STATIC_CACHE = 'medindex-static-device-v1';
+const PAGE_CACHE = 'medindex-pages-device-v1';
+const PRIVATE_CACHE = 'medindex-private-device-v1';
+const AUTH_CACHE = 'medindex-auth-device-v1';
+const QUERY_INFLIGHT = new Map();
+const WORKSPACE_INFLIGHT = new Map();
+const REVALIDATE_MS = 6 * 60 * 60 * 1000;
+let dataGeneration = 0;
+let deviceOnline = true;
+const DOCUMENT_CACHE = 'medindex-documents-device-v1';
+const ALL_CACHES = [STATIC_CACHE, PAGE_CACHE, PRIVATE_CACHE, DOCUMENT_CACHE, AUTH_CACHE];
 const NETWORK_TIMEOUT_MS = 4500;
 const STATIC_NETWORK_TIMEOUT_MS = 3200;
 const MAX_DOCUMENTS = 16;
-const MAX_QUERY_RESPONSES = 40;
+const MAX_QUERY_RESPONSES = 400;
 
 const APP_SHELL = [
   '/', '/index.html', '/klasifikimi.html', '/icd.html', '/analizat.html',
@@ -46,6 +52,7 @@ const APP_SHELL = [
   '/classification-info-v3.js', '/icd-data.js', '/icd.js',
   '/icd-premium-cards.js', '/icd-clinical-workspace.js',
   '/icd-clinical-style-loader.js', '/icd-tailadmin-card-style-loader.js',
+  '/sidebar-taxonomy-core-v3.js', '/protokollet-v2.js', '/recetat-v2.js', '/classification-v2.js',
   '/analizat-v2.js', '/dozologjia-v2.js', '/urgjencat-v2.js', '/sistemi-v2.js', '/sidebar-taxonomy-v3.js', '/medindex-brand-runtime.js',
   '/clinical-dialog.js', '/dosage-engine.js',
   '/sanity-clinical-client.js', '/medical-hub.js', '/protokollet-v2.js', '/recetat-v2.js',
@@ -57,9 +64,7 @@ const APP_SHELL = [
 const PRIVATE_DATA_PATHS = new Set([
   '/api/registry', '/data/registry-data.js', '/api/dosage'
 ]);
-const QUERY_DATA_PATHS = new Set(['/api/drug-search', '/api/icd']);
-const SAFE_AUTO_REFRESH_PATHS = new Set(['/icd.html', '/analizat.html']);
-const REQUIRED_PRIVATE_PATHS = ['/api/registry', '/api/dosage', '/data/protocols.json'];
+const QUERY_DATA_PATHS = new Set(['/api/drug-search', '/api/icd', '/api/medical-hub']);
 
 function sameOrigin(url) {
   return url.origin === self.location.origin;
@@ -86,6 +91,7 @@ function navigationKey(url) {
 
 function normalizedPrivateKey(url) {
   const path = url.pathname === '/data/registry-data.js' ? '/api/registry' : url.pathname;
+  if (path === '/api/dosage') return queryKey(url);
   const accept = path === '/api/registry' ? 'application/javascript' : 'application/json';
   return requestFor(path, { headers:{ Accept:accept } });
 }
@@ -97,7 +103,7 @@ function manifestKey() {
 function queryKey(url) {
   const normalized = new URL(url.href);
   normalized.hash = '';
-  normalized.searchParams.set('__drx_worker', VERSION);
+  normalized.searchParams.delete('__drx_worker');
   normalized.searchParams.sort();
   return requestFor(normalized.href, { headers:{ Accept:'application/json' } });
 }
@@ -121,8 +127,15 @@ async function putIfCacheable(cacheName, request, response, options = {}) {
   if (!response?.ok || response.status === 206) return response;
   if (!['basic', 'default'].includes(response.type)) return response;
   const cache = await caches.open(cacheName);
-  await cache.put(options.key || request, response.clone());
-  if (options.limit) await trimCache(cache, options.limit);
+  const headers = new Headers(response.headers);
+  headers.set('X-DRx-Saved-At', String(Date.now()));
+  try {
+    await cache.put(options.key || request, new Response(response.clone().body, { status:response.status, headers }));
+    if (options.limit) await trimCache(cache, options.limit);
+  } catch {
+    // Storage pressure must never turn a successful online read into an error.
+    await broadcast({type:'MEDINDEX_CACHE_STATUS',state:'limited',storageFull:true});
+  }
   return response;
 }
 
@@ -131,71 +144,99 @@ async function broadcast(message) {
   clients.forEach(client => client.postMessage(message));
 }
 
+// Install only the shared shell. A workspace and its data are saved when opened;
+// no hidden full-registry or full-dosage download competes with the first screen.
 async function precacheShell() {
-  const cache = await caches.open(STATIC_CACHE);
-  const results = await Promise.allSettled(APP_SHELL.map(async path => {
+  const critical = ['/manifest.webmanifest', '/brand/drx-mark-on-light.svg',
+    '/brand/drx-horizontal-on-dark.svg', '/fonts/inter-latin-variable-normal.woff2',
+    '/sidebar-taxonomy-v3.js', '/sidebar-taxonomy-core-v3.js', '/drx-dashboard-stripe.css',
+    '/brand/drx-app-192.png','/brand/drx-app-512.png','/brand/drx-app-maskable-512.png','/brand/drx-apple-touch-180.png'];
+  const results = await Promise.allSettled(critical.map(async path => {
     const request = requestFor(path);
-    const response = await fetch(new Request(request, { cache:'reload' }));
-    if (!response.ok) throw new Error(`${path}: ${response.status}`);
-    await cache.put(request, response.clone());
-    return path;
+    const response = await timeoutFetch(request);
+    if (!response.ok || response.redirected) throw new Error(path);
+    await putIfCacheable(STATIC_CACHE, request, response);
   }));
-  return {
-    cached:results.filter(result => result.status === 'fulfilled').length,
-    failed:results.filter(result => result.status === 'rejected').length,
-  };
+  return { cached:results.filter(result => result.status === 'fulfilled').length,
+    failed:results.filter(result => result.status === 'rejected').length };
+}
+
+async function authSnapshot() {
+  const cache = await caches.open(AUTH_CACHE);
+  const response = await cache.match(requestFor('/api/auth'));
+  if (!response) return null;
+  const snapshot = await response.json();
+  return snapshot.expiresAt > Date.now() ? snapshot : null;
+}
+
+function offlineAuthResponse(saved) {
+  return new Response(JSON.stringify(saved.payload), {headers:{'Content-Type':'application/json','X-MedIndex-Cache':'auth-offline'}});
+}
+
+async function authResponse(request) {
+  if (request.method !== 'GET' || new URL(request.url).search) {
+    const response = await fetch(request);
+    if (request.method === 'DELETE' && response.ok) await clearPrivateData();
+    return response;
+  }
+  const generation = dataGeneration;
+  const localSession = await authSnapshot();
+  if (localSession && !deviceOnline) return offlineAuthResponse(localSession);
+  try {
+    const response = await timeoutFetch(request, localSession ? 1200 : 4200);
+    if (generation !== dataGeneration) return response;
+    if ([401,403].includes(response.status)) await clearPrivateData();
+    if (response.ok) {
+      const payload = await response.clone().json();
+      if (!payload.authenticated) await clearPrivateData();
+      else if (payload.hardened === true && payload.sessionVersion === 3 && (payload.supabaseAuthenticated === true || payload.rollbackSession === true)) {
+        const cache = await caches.open(AUTH_CACHE);
+        const previous = await cache.match(requestFor('/api/auth'));
+        const old = previous ? await previous.json() : null;
+        const owner = String(payload.authUser?.id || payload.user?.email || '');
+        if (old && old.owner !== owner) await clearPrivateData();
+        // Never persist a credential, token, administrative grant or raw response.
+        const safe = { authenticated:true, hardened:true, sessionVersion:3,
+          supabaseAuthenticated:payload.supabaseAuthenticated === true,
+          rollbackSession:payload.rollbackSession === true, offline:true,
+          user:{name:payload.user?.name || '',email:payload.user?.email || ''},
+          authUser:{id:payload.authUser?.id || ''} };
+        const expiresAt = Date.now() + Math.min(8, Number(payload.sessionHours || 8)) * 3600000;
+        const fresh = await caches.open(AUTH_CACHE);
+        try { await fresh.put(requestFor('/api/auth'), new Response(JSON.stringify({ owner,expiresAt,payload:safe }))); } catch {}
+      }
+    }
+    if (response.status >= 500) {
+      const saved = await authSnapshot();
+      if (saved) return offlineAuthResponse(saved);
+    }
+    return response;
+  } catch (error) {
+    const saved = await authSnapshot();
+    if (!saved) throw error;
+    return offlineAuthResponse(saved);
+  }
 }
 
 async function privateCacheStatus() {
   const cache = await caches.open(PRIVATE_CACHE);
-  const checks = await Promise.all([
-    cache.match(normalizedPrivateKey(new URL('/api/registry', self.location.origin))),
-    cache.match(normalizedPrivateKey(new URL('/api/dosage', self.location.origin))),
-    cache.match(manifestKey(), { ignoreSearch:true }),
-  ]);
-  const cached = checks.filter(Boolean).length;
-  return { state:cached === REQUIRED_PRIVATE_PATHS.length ? 'ready' : 'limited', cached, required:REQUIRED_PRIVATE_PATHS.length };
+  const keys = await cache.keys();
+  const pages = await (await caches.open(PAGE_CACHE)).keys();
+  const responses = await Promise.all(keys.map(key => cache.match(key)));
+  const savedAt = Math.max(0, ...responses.map(response => Number(response?.headers.get('X-DRx-Saved-At') || 0)));
+  return {state:keys.length ? 'ready' : 'limited', cached:keys.length, pages:pages.length, savedAt, preparing:WORKSPACE_INFLIGHT.size > 0, required:0};
 }
 
 async function warmPrivateData() {
-  await broadcast({ type:'MEDINDEX_CACHE_STATUS', state:'syncing' });
-  const cache = await caches.open(PRIVATE_CACHE);
-  const required = REQUIRED_PRIVATE_PATHS;
-  const optional = ['/api/icd'];
-  let cached = 0;
-  for (const path of [...required, ...optional]) {
-    try {
-      const isRegistry = path === '/api/registry';
-      const request = requestFor(path, { headers:{ Accept:isRegistry ? 'application/javascript' : 'application/json' } });
-      const response = await fetch(new Request(request, { cache:'no-store' }));
-      if ([401, 403].includes(response.status)) {
-        await broadcast({ type:'MEDINDEX_AUTH_INVALID' });
-        break;
-      }
-      if (!response.ok) continue;
-      const key = path === '/data/protocols.json' ? manifestKey() : normalizedPrivateKey(new URL(request.url));
-      await cache.put(key, response.clone());
-      cached += 1;
-    } catch {}
-  }
-  const status = await privateCacheStatus();
-  await broadcast({ type:'MEDINDEX_CACHE_STATUS', ...status, syncedAt:Date.now() });
-  return cached;
+  // Compatibility with older tabs: report what is already saved, never reload
+  // every dataset on a timer or reconnect.
+  await broadcast({type:'MEDINDEX_CACHE_STATUS', ...await privateCacheStatus()});
 }
 
 async function clearPrivateData() {
-  await Promise.all([caches.delete(PRIVATE_CACHE), caches.delete(DOCUMENT_CACHE)]);
+  dataGeneration += 1;
+  await Promise.all([caches.delete(PRIVATE_CACHE), caches.delete(DOCUMENT_CACHE), caches.delete(AUTH_CACHE), caches.delete(PAGE_CACHE)]);
   await broadcast({ type:'MEDINDEX_CACHE_STATUS', state:'cleared' });
-}
-
-async function refreshSafeClinicalPages() {
-  const clients = await self.clients.matchAll({ type:'window', includeUncontrolled:true });
-  await Promise.all(clients.map(async client => {
-    try {
-      const url = new URL(client.url);
-      if (url.origin === self.location.origin && SAFE_AUTO_REFRESH_PATHS.has(url.pathname)) await client.navigate(client.url);
-    } catch {}
-  }));
 }
 
 self.addEventListener('install', event => {
@@ -203,7 +244,7 @@ self.addEventListener('install', event => {
     const result = await precacheShell();
     await self.skipWaiting();
     await broadcast({
-      type:'MEDINDEX_CACHE_STATUS',
+      type:'MEDINDEX_SHELL_STATUS',
       state:result.failed ? 'shell-limited' : 'shell-ready',
       cached:result.cached,
       failed:result.failed,
@@ -216,14 +257,80 @@ self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const names = await caches.keys();
     await Promise.all(names.filter(name => name.startsWith('medindex-') && !ALL_CACHES.includes(name)).map(name => caches.delete(name)));
+    try { await authResponse(requestFor('/api/auth')); } catch {}
     await self.clients.claim();
+    const windows = await self.clients.matchAll({type:'window'});
+    await Promise.allSettled(windows.map(client => cacheWorkspace(new URL(client.url))));
     await broadcast({ type:'MEDINDEX_SHELL_UPDATED', cacheEpoch:CACHE_EPOCH });
-    await refreshSafeClinicalPages();
+    // Keep active workspaces and scroll position intact during an update.
   })());
 });
 
+async function cacheWorkspace(url, observed = []) {
+  if (WORKSPACE_INFLIGHT.has(url.pathname)) return WORKSPACE_INFLIGHT.get(url.pathname);
+  const pending = cacheWorkspaceFiles(url, observed).finally(async () => {
+    WORKSPACE_INFLIGHT.delete(url.pathname);
+    await broadcast({type:'MEDINDEX_CACHE_STATUS', ...await privateCacheStatus()});
+  });
+  WORKSPACE_INFLIGHT.set(url.pathname, pending);
+  return pending;
+}
+
+async function cacheWorkspaceFiles(url, observed = []) {
+  if (!sameOrigin(url) || !/\.html$/.test(url.pathname) && url.pathname !== '/') return;
+  const response = await timeoutFetch(requestFor(url.href));
+  if (!response.ok || response.redirected || !await authSnapshot()) return;
+  const html = await response.clone().text();
+  await putIfCacheable(PAGE_CACHE, navigationKey(url), response);
+  const assets = [...html.matchAll(/<(?:script|link|img)\b[^>]*?\b(?:src|href)=["']([^"']+)["']/gi)]
+    .map(match => new URL(match[1].replace(/&amp;/g,'&'), url))
+    .concat(observed.slice(0,80).map(value => new URL(value, url)))
+    .filter(asset => sameOrigin(asset) && /\.(?:js|css|woff2|svg|png)$/.test(asset.pathname));
+  // Recover the first page's resources from the HTTP cache; subsequent pages
+  // are observed normally by fetch events. Two at a time protects slow links.
+  for (let i = 0; i < assets.length; i += 2) await Promise.allSettled(assets.slice(i,i+2).map(async asset => {
+    const request = requestFor(asset.href);
+    const cache = await caches.open(STATIC_CACHE);
+    if (await cache.match(request)) return;
+    const result = await fetch(new Request(request,{cache:'force-cache'}));
+    if (result.ok && !result.redirected) {
+      await putIfCacheable(STATIC_CACHE, request, result);
+      // Include explicit dynamic script dependencies (the shared core, profile
+      // and personal-library client) which need not appear in the HTML.
+      if (asset.pathname.endsWith('.js')) {
+        const script = await result.clone().text();
+        const knownPaths = new Set(assets.map(value => value.pathname));
+        for (const match of script.matchAll(/['"](\/[^'"\s]+\.js(?:\?[^'"]*)?)['"]/g)) {
+          const child = new URL(match[1], url);
+          if (sameOrigin(child) && !knownPaths.has(child.pathname) && !child.pathname.startsWith('/sw') && !child.href.includes('$') && assets.length < 80) {
+            knownPaths.add(child.pathname); assets.push(child);
+          }
+        }
+      }
+    }
+  }));
+  await broadcast({type:'MEDINDEX_WORKSPACE_SAVED', path:url.pathname});
+  await broadcast({type:'MEDINDEX_CACHE_STATUS', ...await privateCacheStatus()});
+}
+
+async function rememberFirstRead(message) {
+  const url = new URL(message.url);
+  if (!sameOrigin(url)) return;
+  let snapshot = await authSnapshot();
+  if (!snapshot) { try { await authResponse(requestFor('/api/auth')); snapshot = await authSnapshot(); } catch {} }
+  if (!snapshot || snapshot.owner !== message.owner) return;
+  if (!QUERY_DATA_PATHS.has(url.pathname) && !PRIVATE_DATA_PATHS.has(url.pathname) && url.pathname !== '/data/protocols.json') return;
+  if (typeof message.body !== 'string' || message.body.length > 8 * 1024 * 1024) return;
+  const key = url.pathname === '/data/protocols.json' ? manifestKey() : PRIVATE_DATA_PATHS.has(url.pathname) ? normalizedPrivateKey(url) : queryKey(url);
+  await putIfCacheable(PRIVATE_CACHE, key, new Response(message.body, {headers:{'Content-Type':'application/json'}}), {key,limit:MAX_QUERY_RESPONSES});
+  await broadcast({type:'MEDINDEX_CACHE_STATUS', ...await privateCacheStatus()});
+}
+
 self.addEventListener('message', event => {
   const type = event.data?.type;
+  if (type === 'SET_DEVICE_ONLINE') deviceOnline = event.data.online !== false;
+  if (type === 'SAVE_WORKSPACE' && event.source?.url) event.waitUntil(cacheWorkspace(new URL(event.source.url), event.data.assets || []));
+  if (type === 'REMEMBER_FIRST_READ') event.waitUntil(rememberFirstRead(event.data));
   if (type === 'WARM_PRIVATE_DATA') event.waitUntil(warmPrivateData());
   if (type === 'CLEAR_PRIVATE_DATA') event.waitUntil(clearPrivateData());
   if (type === 'SKIP_WAITING') event.waitUntil(self.skipWaiting());
@@ -237,30 +344,37 @@ self.addEventListener('message', event => {
 async function navigationResponse(event) {
   const request = event.request;
   const key = navigationKey(new URL(request.url));
-  try {
-    const response = await timeoutFetch(new Request(request, { cache:'no-store' }));
-    if (response.ok) event.waitUntil(putIfCacheable(PAGE_CACHE, key, response, { key }));
-    return cloneWithHeader(response, 'X-MedIndex-Cache', 'page-network');
-  } catch {
-    const cache = await caches.open(PAGE_CACHE);
-    const cached = await cache.match(key) || await caches.match(key, { ignoreSearch:true });
-    if (cached) return cloneWithHeader(cached, 'X-MedIndex-Cache', 'page-hit');
-    return await caches.match('/index.html')
-      || await caches.match('/login-v2.html')
-      || await caches.match('/login.html')
-      || Response.error();
+  const cache = await caches.open(PAGE_CACHE);
+  const cached = await cache.match(key);
+  const refresh = async () => {
+    const response = await timeoutFetch(new Request(request, {cache:'no-cache'}), cached ? 1200 : NETWORK_TIMEOUT_MS);
+    const finalPath = new URL(response.url || request.url).pathname;
+    if (response.ok && !response.redirected && finalPath === new URL(request.url).pathname && await authSnapshot())
+      await putIfCacheable(PAGE_CACHE, key, response, {key});
+    return response;
+  };
+  if (cached) {
+    event.waitUntil(refresh().catch(() => null));
+    return cloneWithHeader(cached, 'X-MedIndex-Cache', 'page-hit');
   }
+  try { return await refresh(); }
+  catch { return new Response('<!doctype html><html lang="sq"><meta name="viewport" content="width=device-width"><title>DRx · Pa lidhje</title><body style="font:16px system-ui;padding:24px;color:#1c1e54"><h1>Kjo faqe ende nuk është ruajtur</h1><p>Hape një herë me internet për ta përdorur më vonë pa lidhje.</p><a href="/index.html">Kthehu te Barnat</a></body></html>', {status:503,headers:{'Content-Type':'text/html;charset=utf-8'}}); }
 }
 
 async function staticResponse(event) {
   const request = event.request;
+  const cache = await caches.open(STATIC_CACHE);
+  const cached = await cache.match(request);
+  if (cached) return cloneWithHeader(cached, 'X-MedIndex-Cache', 'static-hit');
   try {
-    const response = await timeoutFetch(new Request(request, { cache:'no-cache' }), STATIC_NETWORK_TIMEOUT_MS);
-    if (response.ok) event.waitUntil(putIfCacheable(STATIC_CACHE, request, response));
-    return cloneWithHeader(response, 'X-MedIndex-Cache', 'static-network');
+    const response = await timeoutFetch(new Request(request, {cache:'no-cache'}), STATIC_NETWORK_TIMEOUT_MS);
+    if (response.ok && !response.redirected) await putIfCacheable(STATIC_CACHE, request, response);
+    return response;
   } catch {
-    const cached = await caches.match(request) || await caches.match(requestFor(new URL(request.url).pathname));
-    return cached ? cloneWithHeader(cached, 'X-MedIndex-Cache', 'static-hit') : Response.error();
+    // Only unversioned assets may use a precached pathname. A new version must
+    // never silently receive older JavaScript or CSS.
+    const fallback = !new URL(request.url).search && await cache.match(requestFor(new URL(request.url).pathname));
+    return fallback || Response.error();
   }
 }
 
@@ -294,58 +408,56 @@ function privateFallback(url) {
   });
 }
 
-async function privateDataResponse(event, url) {
-  const request = event.request;
-  const key = normalizedPrivateKey(url);
+async function queryNetworkOnce(request, key) {
+  let pending = QUERY_INFLIGHT.get(key.url);
+  if (!pending) {
+    const generation = dataGeneration;
+    pending = (async () => {
+      const cache = await caches.open(PRIVATE_CACHE);
+      const previous = await cache.match(key);
+      const headers = new Headers(request.headers);
+      const etag = previous?.headers.get('ETag');
+      const modified = previous?.headers.get('Last-Modified');
+      if (etag) headers.set('If-None-Match', etag);
+      else if (modified) headers.set('If-Modified-Since', modified);
+      let response = await timeoutFetch(new Request(request, {headers}));
+      if (response.status === 304 && previous) response = cloneWithHeader(previous, 'X-MedIndex-Cache', 'query-revalidated');
+      if ([401,403].includes(response.status)) {
+        await clearPrivateData();
+        await broadcast({type:'MEDINDEX_AUTH_INVALID'});
+      } else if (response.ok && generation === dataGeneration && await authSnapshot()) {
+        await putIfCacheable(PRIVATE_CACHE, key, response, {key,limit:MAX_QUERY_RESPONSES});
+        await broadcast({type:'MEDINDEX_CACHE_STATUS', ...await privateCacheStatus()});
+      }
+      return response;
+    })().finally(() => QUERY_INFLIGHT.delete(key.url));
+    QUERY_INFLIGHT.set(key.url, pending);
+  }
+  return (await pending).clone();
+}
+
+async function savedDataResponse(event, key) {
   const cache = await caches.open(PRIVATE_CACHE);
   const cached = await cache.match(key);
-  if (cached) {
-    event.waitUntil(refreshPrivate(request, key));
-    return cloneWithHeader(cached, 'X-MedIndex-Cache', 'private-hit');
+  const snapshot = await authSnapshot();
+  const force = /no-cache/.test(event.request.headers.get('Cache-Control') || '');
+  if (cached && snapshot && !force) {
+    const savedAt = Number(cached.headers.get('X-DRx-Saved-At') || 0);
+    if (deviceOnline && Date.now() - savedAt >= REVALIDATE_MS)
+      event.waitUntil(queryNetworkOnce(event.request, key).catch(() => null));
+    return cloneWithHeader(cached, 'X-MedIndex-Cache', 'query-local-hit');
   }
-  const response = await refreshPrivate(request, key);
-  return response || privateFallback(url);
-}
-
-async function manifestResponse(event) {
-  const request = event.request;
-  const key = manifestKey();
-  const cache = await caches.open(PRIVATE_CACHE);
-  const cached = await cache.match(key, { ignoreSearch:true }) || await caches.match(request, { ignoreSearch:true });
-  if (cached) {
-    event.waitUntil(fetch(new Request(request, { cache:'no-store' })).then(response => response.ok ? cache.put(key, response.clone()) : null).catch(() => null));
-    return cloneWithHeader(cached, 'X-MedIndex-Cache', 'manifest-hit');
-  }
-  try {
-    const response = await timeoutFetch(request);
-    if (response.ok) event.waitUntil(cache.put(key, response.clone()));
-    return response;
-  } catch {
-    return Response.error();
+  try { return await queryNetworkOnce(event.request, key); }
+  catch {
+    if (cached && snapshot) return cloneWithHeader(cached, 'X-MedIndex-Cache', 'query-offline-hit');
+    return new Response(JSON.stringify({error:'Këto të dhëna ende nuk janë ruajtur në këtë pajisje. Hapi një herë me internet.',rows:[],results:[],offline:true}),
+      {status:503,headers:{'Content-Type':'application/json','X-MedIndex-Offline':'1'}});
   }
 }
 
-async function queryDataResponse(event, url) {
-  const request = event.request;
-  const key = queryKey(url);
-  const cache = await caches.open(PRIVATE_CACHE);
-  try {
-    const response = await timeoutFetch(new Request(request, { cache:'no-store' }));
-    if ([401, 403].includes(response.status)) {
-      await broadcast({ type:'MEDINDEX_AUTH_INVALID' });
-      return response;
-    }
-    if (response.ok) return putIfCacheable(PRIVATE_CACHE, key, response, { key, limit:MAX_QUERY_RESPONSES });
-    return response;
-  } catch {
-    const cached = await cache.match(key);
-    if (cached) return cloneWithHeader(cached, 'X-MedIndex-Cache', 'query-offline-hit');
-    return new Response(JSON.stringify({ error:'Kërkimi online nuk është i disponueshëm.', results:[], rows:[], offline:true }), {
-      status:503,
-      headers:{ 'Content-Type':'application/json; charset=utf-8', 'X-MedIndex-Offline':'1' },
-    });
-  }
-}
+async function privateDataResponse(event, url) { return savedDataResponse(event, normalizedPrivateKey(url)); }
+async function manifestResponse(event) { return savedDataResponse(event, manifestKey()); }
+async function queryDataResponse(event, url) { return savedDataResponse(event, queryKey(url)); }
 
 function parseRange(header, size) {
   const match = /^bytes=(\d*)-(\d*)$/i.exec(header || '');
@@ -388,8 +500,8 @@ async function protocolDocumentResponse(event) {
   const fullRequest = requestFor(request.url);
   const rangeHeader = request.headers.get('range');
   const cached = await cache.match(fullRequest);
-  if (cached) {
-    event.waitUntil(refreshDocument(fullRequest));
+  if (cached && await authSnapshot()) {
+    if (Date.now() - Number(cached.headers.get('X-DRx-Saved-At') || 0) >= REVALIDATE_MS) event.waitUntil(refreshDocument(fullRequest));
     return rangeHeader ? rangedResponse(cached.clone(), rangeHeader) : cloneWithHeader(cached, 'X-MedIndex-Cache', 'document-hit');
   }
   if (rangeHeader) {
@@ -424,7 +536,7 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (!sameOrigin(url)) return;
 
-  if (url.pathname === '/api/auth') return event.respondWith(fetch(request));
+  if (url.pathname === '/api/auth') return event.respondWith(authResponse(request));
   if (url.pathname === '/api/gemini-prescription') return event.respondWith(geminiResponse(request));
   if (request.method !== 'GET') return;
 

@@ -3034,3 +3034,64 @@ html.drx-unified-sidebar :is(.toast,.rx-toast){pointer-events:none}
  html[data-drx-app="registry-v2"] .registry-table td[data-col="name"]{width:auto!important;max-width:100%}
  html[data-drx-app="registry-v2"] .registry-table td::before{font-size:11px!important;line-height:1.5}
 }
+
+/* Phone workbench: the primary task comes first, with one quiet storage status. */
+.drx-device-status{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:0 10px;border:1px solid #dfe5ee;border-radius:8px;background:#f8fafc;color:#45556c;font:550 12px/1.2 Inter,system-ui;white-space:nowrap;cursor:pointer;touch-action:manipulation}
+.drx-device-status::before{content:"";width:6px;height:6px;border-radius:50%;background:#16805a;flex:none}
+.drx-device-status[data-offline="true"]{background:#fff8e8;border-color:#e9cd8c;color:#775214}
+.drx-device-status[data-offline="true"]::before{background:#a66d15}
+.drx-device-panel{position:fixed;top:66px;right:24px;z-index:80;width:min(360px,calc(100vw - 28px));padding:20px;border:1px solid #dfe5ee;border-radius:12px;background:#fff;box-shadow:0 8px 40px #1325401c;color:#24344d;font:400 14px/1.65 Inter,system-ui}
+.drx-device-panel[hidden]{display:none}
+.drx-device-panel h2{margin:0 0 8px;font-size:17px;letter-spacing:-.025em}
+.drx-device-panel p{margin:8px 0}
+.drx-device-panel .drx-device-note{font-size:12px;color:#526176}
+.drx-device-panel button{min-height:44px;padding:8px 18px;border:1px solid #d4dce7;border-radius:8px;background:#f8fafc;color:#24344d;font:550 14px Inter,system-ui;cursor:pointer}
+@media(max-width:760px){
+ html.drx-unified-sidebar{scroll-padding-top:76px}
+ html.drx-unified-sidebar .topbar{position:sticky;top:0;z-index:30;background:#fff}
+ html.drx-unified-sidebar .topbar-actions{gap:8px}
+ html.drx-unified-sidebar .sync-pill{display:none}
+ .drx-device-status{min-height:44px;padding:0 8px;font-size:11px}
+ .drx-device-panel{top:calc(66px + env(safe-area-inset-top));right:max(14px,env(safe-area-inset-right));max-height:calc(100dvh - 170px);overflow:auto;overscroll-behavior:contain}
+ html.drx-unified-sidebar :is(.page-heading,.dz-head){gap:14px;margin-bottom:20px}
+ html.drx-unified-sidebar :is(.page-heading h1,.dz-head h1){font-size:28px;line-height:1.2;letter-spacing:-.04em}
+ html.drx-unified-sidebar :is(.page-subtitle,.dz-head p){font-size:14px;line-height:1.6;color:#526176}
+ html.drx-unified-sidebar .heading-actions{width:100%;display:flex;flex-wrap:wrap;gap:8px}
+ html.drx-unified-sidebar .heading-actions .button{flex:1;min-height:44px;white-space:normal}
+ html[data-drx-app="registry-v2"] .metrics-row{display:flex;margin-bottom:14px;background:transparent;border:0;box-shadow:none;gap:12px}
+ html[data-drx-app="registry-v2"] .metric-card{flex:1;padding:10px 12px;border:1px solid #e1e7ef;border-radius:10px;background:#fff}
+ html[data-drx-app="registry-v2"] .metric-card:nth-child(n+3){display:none}
+ html[data-drx-app="registry-v2"] .metric-card strong{font-size:22px}
+ html[data-drx-app="registry-v2"] .metric-card small{font-size:11px}
+ html[data-drx-app="registry-v2"] .data-card-head{position:sticky;top:calc(58px + env(safe-area-inset-top));z-index:18;border-bottom:1px solid #e1e7ef;background:#fff;padding:12px}
+ html[data-drx-app="registry-v2"] .search-box{width:100%}
+ html[data-drx-app="registry-v2"] .search-box input{min-height:48px;font-size:16px!important;padding-right:12px}
+ html[data-drx-app="registry-v2"] .search-box kbd{display:none}
+ html[data-drx-app="registry-v2"] .toolbar-actions{width:100%;gap:8px;justify-content:space-between;flex-wrap:wrap}
+ html[data-drx-app="registry-v2"] :is(.filter-toggle,.view-toggle button,.compact-select select){min-height:44px}
+ html[data-drx-app="registry-v2"] .registry-table td{font-size:13px;line-height:1.65}
+ html[data-drx-app="registry-v2"] .registry-table .drug-name{font-size:16px;font-weight:600;line-height:1.5}
+ html.drx-unified-sidebar :is(.drawer,.clinical-dialog,.rx-picker-dialog){max-height:100dvh;overscroll-behavior:contain}
+ html.drx-unified-sidebar :is(.drawer-body,.clinical-dialog-body){padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+ html.drx-unified-sidebar :is(.icd-workspace-tabs,.dz-tabs,.rx-mode-switch){max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scroll-snap-type:x proximity}
+ html.drx-unified-sidebar :is(.icd-workspace-tabs,.dz-tabs,.rx-mode-switch)>*{flex-shrink:0;min-height:44px;scroll-snap-align:start}
+ html.drx-unified-sidebar :is(.protocol-search,.hub-search,.icd-search) input{font-size:16px!important;min-height:48px}
+}
+@media print{.drx-device-status,.drx-device-panel{display:none!important}}
+@media(max-width:760px){
+ /* Allow the search bar to stick to the viewport instead of the card's hidden
+    overflow box, which otherwise pushes it down by the topbar height. */
+ html[data-drx-app="registry-v2"] .data-card{overflow:visible}
+ html[data-drx-app="registry-v2"] .data-card-head{border-radius:12px 12px 0 0}
+ html[data-drx-app="registry-v2"] .search-box{flex:0 0 auto}
+ html[data-drx-app="registry-v2"] .toolbar-actions{display:grid;grid-template-columns:minmax(100px,1fr) auto 65px;gap:8px}
+ html[data-drx-app="registry-v2"] .toolbar-actions .view-toggle{min-width:0}
+ html[data-drx-app="registry-v2"] .toolbar-actions .view-toggle button{flex:1;padding-inline:8px;font-size:12px}
+ html[data-drx-app="registry-v2"] .compact-select{font-size:0;gap:0;min-width:0}
+ html[data-drx-app="registry-v2"] .compact-select select{width:65px;font-size:13px}
+ html[data-drx-app="registry-v2"] .filter-toggle{padding-inline:10px}
+}
+@media(max-width:760px){
+ html[data-drx-app="registry-v2"] .compact-select{padding:0;border:0;background:transparent}
+ html[data-drx-app="registry-v2"] .compact-select select{padding-left:8px;padding-right:20px;border:1px solid #d4dce7;border-radius:8px;background:#fff}
+}

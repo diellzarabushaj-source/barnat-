@@ -1,7 +1,31 @@
 (() => {
   'use strict';
 
-  const CORE_SRC = '/sidebar-taxonomy-core-v3.js?v=sidebar-taxonomy-v6-device-20260930';
+  const CORE_SRC = '/sidebar-taxonomy-core-v3.js?v=sidebar-taxonomy-v6-mobile-app-20260930';
+  // Observe the initial reads before the asynchronously loaded core is ready.
+  // Store only clinical GET responses; account/patient APIs and writes stay online.
+  let firstReadOwner = '';
+  if ('serviceWorker' in navigator) {
+    const firstFetch = window.fetch.bind(window);
+    window.fetch = async function drxFirstDownload(input, options) {
+      const target = new URL(typeof input === 'string' ? input : input?.url || input?.href || '', location.href);
+      const method = String(options?.method || input?.method || 'GET').toUpperCase();
+      const response = await firstFetch(input, options);
+      if (target.origin !== location.origin || method !== 'GET' || !response.ok) return response;
+      if (target.pathname === '/api/auth' && !target.search) {
+        const auth = await response.clone().json().catch(() => ({}));
+        firstReadOwner = auth.authenticated ? String(auth.authUser?.id || auth.user?.email || '') : '';
+      }
+      if (!navigator.serviceWorker.controller && firstReadOwner && ['/api/drug-search','/api/icd','/api/dosage','/api/medical-hub','/data/protocols.json'].includes(target.pathname)) {
+        const owner = firstReadOwner;
+        void response.clone().text().then(body => navigator.serviceWorker.ready.then(registration => {
+          if (body.length <= 8 * 1024 * 1024) (navigator.serviceWorker.controller || registration.active)?.postMessage({type:'REMEMBER_FIRST_READ',url:target.href,body,owner});
+        })).catch(() => null);
+      }
+      return response;
+    };
+  }
+
   const ANTIBIOTICS_HREF = '/antibiotiket.html';
   const HUB_OVERRIDE_ID = 'medicalhub-dod-ch05-sub07';
   const HUB_SOURCE_OVERRIDES = new Map([

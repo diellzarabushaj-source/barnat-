@@ -80,6 +80,11 @@ jobs:
           DEVICE_SESSION_BROWSER: webkit
         run: node tests/device-session-browser-test.js
 
+      - name: Verify first-download persistence and offline workspaces in WebKit
+        env:
+          OFFLINE_BROWSER: webkit
+        run: node tests/device-offline-browser-test.js
+
       - name: Upload WebKit diagnostics
         if: always()
         uses: actions/upload-artifact@v4

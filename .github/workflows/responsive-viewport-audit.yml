@@ -51,6 +51,7 @@ jobs:
           set -euo pipefail
           node scripts/audit-responsive-viewports.js | tee /tmp/responsive-viewports.log
           pnpm test:premium-ui | tee /tmp/premium-ui.log
+          pnpm test:device-offline | tee /tmp/device-offline.log
 
       - name: Upload measurements
         if: always()
@@ -60,6 +61,7 @@ jobs:
           path: |
             /tmp/responsive-viewports.log
             /tmp/premium-ui.log
+            /tmp/device-offline.log
             /tmp/responsive-playwright-install.log
           if-no-files-found: warn
           retention-days: 7

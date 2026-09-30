@@ -811,7 +811,7 @@
       ? 'Qasje e shpejtë te barnat që i ke ruajtur.'
       : state.view === 'notes'
         ? 'Të gjitha shënimet e tua personale për barnat në një vend.'
-        : 'Kërko, filtro dhe hap detajet klinike pa u larguar nga tabela.';
+        : 'Gjej barin. Hape për dozat dhe detajet, ose përzgjidhe për recetë.';
     syncPersonalNav();
     updatePersonalCounts();
     if (personal) renderPersonalWorkspace();
@@ -1001,14 +1001,14 @@
     void loadDosageForVisibleRows(requestId);
   }
 
-  async function loadPage({ preserveScroll = false, preserveRows = false } = {}) {
+  async function loadPage({ preserveScroll = false, preserveRows = false, forceRefresh = false } = {}) {
     const requestId = ++state.requestId;
     state.pageController?.abort();
 
     const url = queryUrl();
     const rankedSearch = url.includes('view=registry-search');
     const cacheHit = rankedSearch ? state.searchCache.get(url) : null;
-    if (cacheHit && Date.now() - cacheHit.savedAt < SEARCH_CACHE_TTL_MS) {
+    if (!forceRefresh && cacheHit && Date.now() - cacheHit.savedAt < SEARCH_CACHE_TTL_MS) {
       state.pageController = null;
       applyPageResult(cacheHit.payload, cacheHit.source, 0, requestId, preserveScroll);
       setBusy(false);
@@ -1029,9 +1029,11 @@
     setBusy(true);
 
     try {
-      const { payload, response } = await fetchJson(url, { signal:controller.signal });
+      const { payload, response } = await fetchJson(url, { signal:controller.signal, headers:forceRefresh ? {'Cache-Control':'no-cache'} : {} });
       if (requestId !== state.requestId) return;
-      const source = response.headers.get('X-MedIndex-Data-Source') || 'Supabase';
+      const local = response.headers.get('X-MedIndex-Cache')?.includes('hit');
+      const saved = Number(response.headers.get('X-DRx-Saved-At') || 0);
+      const source = local ? `Kopje lokale${saved ? ' · ' + new Date(saved).toLocaleDateString('sq-AL') : ''}` : response.headers.get('X-MedIndex-Data-Source') || 'Supabase';
       if (rankedSearch) {
         state.searchCache.set(url, { payload, source, savedAt:Date.now() });
         while (state.searchCache.size > 24) state.searchCache.delete(state.searchCache.keys().next().value);
@@ -1039,6 +1041,11 @@
       applyPageResult(payload, source, Math.round(performance.now() - startedAt), requestId, preserveScroll);
     } catch (error) {
       if (requestId !== state.requestId) return;
+      if (forceRefresh && preserveRows && state.rows.length) {
+        el.resultSummary.textContent = 'Rifreskimi dështoi · po shfaqen të dhënat e ngarkuara më parë.';
+        showToast('Kopja e hapur u ruajt. Provo rifreskimin kur të rikthehet lidhja.');
+        return;
+      }
       if (error?.name === 'AbortError') renderError('Kërkesa zgjati tepër. Provo përsëri.');
       else renderError(error?.message || 'Regjistri nuk u ngarkua.');
     } finally {
@@ -1813,7 +1820,7 @@
     el.pageSizeSelect.addEventListener('change', () => { state.pageSize = Number(el.pageSizeSelect.value) || 50; state.page = 1; loadPage(); });
     el.clearFiltersButton.addEventListener('click', clearFilters);
     el.emptyClearButton.addEventListener('click', clearFilters);
-    el.refreshButton.addEventListener('click', () => loadPage({ preserveScroll:true }));
+    el.refreshButton.addEventListener('click', () => loadPage({ preserveScroll:true, preserveRows:true, forceRefresh:true }));
     el.prevPageButton.addEventListener('click', () => { if (state.page > 1) { state.page -= 1; loadPage(); } });
     el.nextPageButton.addEventListener('click', () => { if (!el.nextPageButton.disabled) { state.page += 1; loadPage(); } });
     document.querySelectorAll('.sort-head[data-sort]').forEach(button => button.addEventListener('click', () => { const next = button.dataset.sort; if (state.sort === next) state.direction = state.direction === 'asc' ? 'desc' : 'asc'; else { state.sort = next; state.direction = 'asc'; } state.page = 1; loadPage(); }));

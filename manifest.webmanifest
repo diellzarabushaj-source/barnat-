@@ -13,8 +13,8 @@
     "standalone",
     "minimal-ui"
   ],
-  "background_color": "#f6f9f8",
-  "theme_color": "#155f63",
+  "background_color": "#f5f7fb",
+  "theme_color": "#1c1e54",
   "categories": [
     "medical",
     "productivity",
@@ -22,10 +22,22 @@
   ],
   "icons": [
     {
-      "src": "/brand/drx-icon-silver.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "/brand/drx-app-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/drx-app-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/drx-app-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "shortcuts": [
