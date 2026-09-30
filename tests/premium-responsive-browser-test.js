@@ -67,6 +67,14 @@ const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'
     }
     if(name==='urgjencat')await expect(page.locator('#emergencyDetail .ec-detail-inner')).toBeVisible();
     if(name==='analizat')await expect(page.locator('#labTestTotal')).toHaveText('1');
+    if(name==='medical-hub'){
+     await expect(page.locator('.hub-document')).toBeVisible();
+     for(const content of await page.locator('.hub-document,.ck-source-paragraph,.ck-source-panel,.ck-detail-head h2').all()){
+      if(!await content.isVisible())continue;
+      const box=await content.boundingBox();
+      assert.ok(box.x>=-1&&box.x+box.width<=width+1,'Book text and provenance remain inside the viewport');
+     }
+    }
     const geometry=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,body:document.body.innerText.trim().length}));
     if(geometry.scroll>geometry.width+1){
      const offenders=await page.locator('body,body *').evaluateAll(nodes=>nodes.map(el=>{

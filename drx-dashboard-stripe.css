@@ -3023,13 +3023,10 @@ html.drx-unified-sidebar :is(.empty-state h3,.personal-empty h3){letter-spacing:
  html.drx-unified-sidebar .protocol-search-field,
  html.drx-unified-sidebar .protocol-filter-field:has(#protocolCategory){grid-column:1/-1}
 }
-/* WebKit's intrinsic sizing must not make a tablet reader wider than its
-   column. Wide clinical tables keep their own horizontal scroll container. */
+/* Keep the book's off-canvas navigation and paper effects inside the tablet
+   workspace, matching its phone containment. Tables retain local scrolling. */
 @media(max-width:980px){
- html[data-drx-app="medical-hub-v2"] .hub-document{overflow-wrap:anywhere}
- html[data-drx-app="medical-hub-v2"] :is(.ck-modern-content,.ck-modern-block,.ck-medical-table-block,.ck-source-publication,.ck-source-verification){min-width:0;max-width:100%}
- html[data-drx-app="medical-hub-v2"] .ck-medical-table-wrap{max-width:100%;overflow-x:auto}
- html[data-drx-app="medical-hub-v2"] :is(.hub-field select,.hub-search input){min-width:0;max-width:100%}
+ html[data-drx-app="medical-hub-v2"] .hub-page{max-width:100%;overflow-x:hidden}
 }
 
 /* Noninteractive status messages never cover the phone navigation. */
