@@ -174,9 +174,10 @@ const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'
   }
   for(const width of [320,390,1440]){
    const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});
+   await context.route('**/api/auth',route=>route.fulfill({status:401,json:{authenticated:false}}));
    await context.route('https://accounts.google.com/**',route=>route.fulfill({body:'',contentType:'text/javascript'}));
    for(const name of ['landing','login','regjistrimi','admin-login','blog','kontakt','rreth-nesh','admin']){
-    const page=await context.newPage();await page.goto(`http://127.0.0.1:4196/${name}.html`);await page.waitForTimeout(100);
+    const page=await context.newPage();await page.goto(`http://127.0.0.1:4196/${name}.html`,{waitUntil:'domcontentloaded'});await page.waitForTimeout(100);
     await expect.poll(async()=>{
      try{return await page.evaluate(()=>document.body.innerText.trim().length>40&&document.documentElement.scrollWidth<=innerWidth+1);}
      catch(error){if(/Execution context was destroyed/.test(error.message))return false;throw error;}
