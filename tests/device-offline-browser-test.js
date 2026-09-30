@@ -36,7 +36,7 @@ const server=http.createServer(async(req,res)=>{
  const browser=await engine.launch({headless:true});
  try{
   const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
-  const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push({message:e.message,offline:!networkAvailable}));
   await page.goto(base+'/index.html');
   await expect(page.locator('#registryRows')).toContainText(row.tradeName);
   await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
@@ -81,7 +81,14 @@ const server=http.createServer(async(req,res)=>{
   assert.equal(await page.evaluate(async()=> (await(await caches.open('medindex-auth-device-v1')).keys()).length),0);
   networkAvailable=false;if(engine===chromium)await context.setOffline(true);
   assert.equal(await page.evaluate(async()=>{try{await fetch('/api/auth');return'authenticated';}catch{return'offline-no-session';}}),'offline-no-session');
-  assert.deepEqual(errors,[]);
+  // WebKit reports deliberately rejected network-only auth requests as
+  // page errors even when fetch rejection is caught. Keep online/runtime and
+  // asset errors strict; allow only these known errors during disconnection.
+  const unexpected=errors.filter(error=>!(engine===webkit && error.offline && (
+    /^(?:TypeError: Load failed|Response served by service worker is an error|Cannot load \.)$/.test(error.message) ||
+    /(?:https?:\/\/|\/)?127\.0\.0\.1:\d+\/api\/auth(?:\?scope=ui-preferences)?\.?$/.test(error.message)
+  )));
+  assert.deepEqual(unexpected,[]);
   console.log(`PASS ${process.env.OFFLINE_BROWSER||'chromium'}: first-download persistence, <500ms slow-link cache, no duplicate downloads, explicit refresh, offline reload/detail, unknown-data state, revocation and logout.`);
   await context.close();
  }finally{await browser.close();await new Promise(resolve=>server.close(resolve));}

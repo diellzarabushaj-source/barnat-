@@ -3082,7 +3082,7 @@ html.drx-unified-sidebar :is(.toast,.rx-toast){pointer-events:none}
  /* Allow the search bar to stick to the viewport instead of the card's hidden
     overflow box, which otherwise pushes it down by the topbar height. */
  html[data-drx-app="registry-v2"] .data-card{overflow:visible}
- html[data-drx-app="registry-v2"] .data-card-head{border-radius:12px 12px 0 0}
+ html[data-drx-app="registry-v2"] .data-card-head{border-radius:10px}
  html[data-drx-app="registry-v2"] .search-box{flex:0 0 auto}
  html[data-drx-app="registry-v2"] .toolbar-actions{display:grid;grid-template-columns:minmax(100px,1fr) auto 65px;gap:8px}
  html[data-drx-app="registry-v2"] .toolbar-actions .view-toggle{min-width:0}
