@@ -179,7 +179,7 @@ const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'
    for(const name of ['landing','login','regjistrimi','admin-login','blog','kontakt','rreth-nesh','admin']){
     const page=await context.newPage();await page.goto(`http://127.0.0.1:4196/${name}.html`,{waitUntil:'domcontentloaded'});await page.waitForTimeout(100);
     await expect.poll(async()=>{
-     try{return await page.evaluate(()=>document.body.innerText.trim().length>40&&document.documentElement.scrollWidth<=innerWidth+1);}
+     try{return await page.evaluate(()=>(document.body?.innerText||'').trim().length>40&&document.documentElement.scrollWidth<=innerWidth+1);}
      catch(error){if(/Execution context was destroyed/.test(error.message))return false;throw error;}
     },{message:`${name}/${width}: stable populated page without overflow`}).toBe(true);
     checked++;await page.close();
