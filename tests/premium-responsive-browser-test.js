@@ -68,6 +68,13 @@ const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'
     if(name==='urgjencat')await expect(page.locator('#emergencyDetail .ec-detail-inner')).toBeVisible();
     if(name==='analizat')await expect(page.locator('#labTestTotal')).toHaveText('1');
     const geometry=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,body:document.body.innerText.trim().length}));
+    if(geometry.scroll>geometry.width+1){
+     const offenders=await page.locator('.page-wrap *').evaluateAll(nodes=>nodes.map(el=>{
+      const box=el.getBoundingClientRect(),style=getComputedStyle(el);
+      return {tag:el.tagName,id:el.id,class:el.className,x:box.x,right:box.right,width:box.width,min:style.minWidth,overflow:style.overflowX};
+     }).filter(el=>el.width>0&&el.right>innerWidth+1).slice(0,30));
+     console.error(`${name}/${width} overflow diagnostics: ${JSON.stringify(offenders)}`);
+    }
     assert.ok(geometry.body>40,`${name}/${width}: meaningful content`);
     assert.ok(geometry.scroll<=geometry.width+1,`${name}/${width}: page overflow ${geometry.scroll}`);
     const dock=page.locator('#drxMobileNav');
