@@ -793,10 +793,11 @@
     host.prepend(status); document.querySelector('.main-shell').append(panel);
     status.setAttribute('aria-controls', panel.id); status.setAttribute('aria-expanded','false');
     let count = 0, pages = 0, savedAt = 0, preparing = false, storageFull = false;
+    let reachable = window.DRxDeviceReachable !== false;
     function render() {
       navigator.serviceWorker?.controller?.postMessage({type:'SET_DEVICE_ONLINE',online:navigator.onLine});
-      status.textContent = !navigator.onLine ? 'Pa internet' : storageFull ? 'Hapësira plot' : preparing ? 'Po ruhet' : count ? 'Ruajtur' : 'Online';
-      status.dataset.offline = String(!navigator.onLine);
+      status.textContent = !navigator.onLine || !reachable ? 'Pa internet' : storageFull ? 'Hapësira plot' : preparing ? 'Po ruhet' : count ? 'Ruajtur' : 'Online';
+      status.dataset.offline = String(!navigator.onLine || !reachable);
       status.setAttribute('aria-label', status.textContent + ' · Hap statusin e ruajtjes');
       panel.querySelector('[data-device-count]').textContent = count ? `${count} përgjigje dhe ${pages} faqe të ruajtura · ${savedAt ? new Date(savedAt).toLocaleString('sq-AL') : ''}` : 'Të dhënat ruhen pasi hapen me internet.';
     }
@@ -805,7 +806,8 @@
     panel.querySelector('button').addEventListener('click', close);
     document.addEventListener('keydown', event => { if (event.key === 'Escape' && !panel.hidden) close(); });
     document.addEventListener('pointerdown', event => { if (!panel.hidden && !panel.contains(event.target) && !status.contains(event.target)) { panel.hidden = true; status.setAttribute('aria-expanded','false'); } });
-    window.addEventListener('online', render); window.addEventListener('offline', render);
+    window.addEventListener('online', () => { reachable = true; render(); }); window.addEventListener('offline', render);
+    window.addEventListener('drx:device-network', event => { reachable = event.detail?.online !== false; render(); });
     navigator.serviceWorker?.addEventListener('message', event => {
       if (event.data?.type !== 'MEDINDEX_CACHE_STATUS') return;
       if (typeof event.data.cached === 'number' || event.data.state === 'cleared') count = Number(event.data.cached || 0);

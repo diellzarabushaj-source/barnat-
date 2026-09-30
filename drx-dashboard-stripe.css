@@ -3059,7 +3059,7 @@ html.drx-unified-sidebar :is(.toast,.rx-toast){pointer-events:none}
  html.drx-unified-sidebar .heading-actions{width:100%;display:flex;flex-wrap:wrap;gap:8px}
  html.drx-unified-sidebar .heading-actions .button{flex:1;min-height:44px;white-space:normal}
  html[data-drx-app="registry-v2"] .metrics-row{display:flex;margin-bottom:14px;background:transparent;border:0;box-shadow:none;gap:12px}
- html[data-drx-app="registry-v2"] .metric-card{flex:1;padding:10px 12px;border:1px solid #e1e7ef;border-radius:10px;background:#fff}
+ html[data-drx-app="registry-v2"] .metric-card{flex:1;padding:10px 12px;border:1px solid #e1e7ef;border-radius:8px;background:#fff}
  html[data-drx-app="registry-v2"] .metric-card:nth-child(n+3){display:none}
  html[data-drx-app="registry-v2"] .metric-card strong{font-size:22px}
  html[data-drx-app="registry-v2"] .metric-card small{font-size:11px}

@@ -14,6 +14,8 @@
       if (target.origin !== location.origin || method !== 'GET' || !response.ok) return response;
       if (target.pathname === '/api/auth' && !target.search) {
         const auth = await response.clone().json().catch(() => ({}));
+        window.DRxDeviceReachable = auth.offline !== true;
+        window.dispatchEvent(new CustomEvent('drx:device-network', {detail:{online:window.DRxDeviceReachable}}));
         firstReadOwner = auth.authenticated ? String(auth.authUser?.id || auth.user?.email || '') : '';
       }
       if (!navigator.serviceWorker.controller && firstReadOwner && ['/api/drug-search','/api/icd','/api/dosage','/api/medical-hub','/data/protocols.json'].includes(target.pathname)) {

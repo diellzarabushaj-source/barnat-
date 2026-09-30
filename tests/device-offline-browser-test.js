@@ -31,6 +31,7 @@ const server=http.createServer(async(req,res)=>{
 (async()=>{
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const base=`http://127.0.0.1:${server.address().port}`;
+ // Playwright WebKit's setOffline kills SW responses before they run (#42775).
  const engine=process.env.OFFLINE_BROWSER==='webkit'?webkit:chromium;
  const browser=await engine.launch({headless:true});
  try{
@@ -54,17 +55,23 @@ const server=http.createServer(async(req,res)=>{
   await page.locator('#refreshButton').click();
   await expect.poll(()=>registryReads()).toBeGreaterThan(before);
   await page.locator('#registryRows [data-open-row]').first().click();
-  await expect(page.locator('#detailDrawer')).toHaveClass(/is-open/);await page.locator('#drawerClose').click();
-  networkAvailable=false;await context.setOffline(true);await page.reload();
+  await expect(page.locator('#detailDrawer')).toHaveClass(/is-open/);
+  await expect.poll(()=>page.evaluate(async()=>{const c=await caches.open('medindex-private-device-v1');return(await c.keys()).some(key=>key.url.includes('view=registry-detail'));})).toBe(true);
+  await page.locator('#drawerClose').click();
+  await expect(page.locator('#drxDeviceStatus')).toContainText('Ruajtur');
+  networkAvailable=false;if(engine===chromium)await context.setOffline(true);await page.reload();
   await expect(page.locator('#registryRows')).toContainText(row.tradeName);
   await expect(page.locator('#drxDeviceStatus')).toContainText('Pa internet');
   await expect(page.locator('#syncText')).toContainText('Kopje lokale');
+  const detail=await page.evaluate(async id=>{const r=await fetch('/api/drug-search?view=registry-detail&id='+id);return{status:r.status,cache:r.headers.get('X-MedIndex-Cache'),row:(await r.json()).row};},row.id);
+  assert.equal(detail.status,200);assert.equal(detail.row.id,row.id);assert.equal(detail.cache,'query-local-hit');
+  await page.locator('#registryRows [data-open-row]').first().click();await expect(page.locator('#detailDrawer')).toContainText(row.tradeName);await page.locator('#drawerClose').click();
   await page.locator('#drxDeviceStatus').click();await expect(page.locator('#drxDevicePanel')).toBeVisible();await page.keyboard.press('Escape');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   const savedResponse=await page.evaluate(async url=>(await fetch(url)).status,query);assert.equal(savedResponse,200);
   const unknown=await page.evaluate(async()=>{const r=await fetch('/api/drug-search?view=registry-detail&id=never-downloaded');return{status:r.status,body:await r.json()};});
   assert.equal(unknown.status,503);assert.equal(unknown.body.offline,true);
-  networkAvailable=true;await context.setOffline(false);authStatus=403;
+  networkAvailable=true;if(engine===chromium)await context.setOffline(false);authStatus=403;
   assert.equal(await page.evaluate(async()=> (await fetch('/api/auth')).status),403);
   assert.equal(await page.evaluate(async()=> (await(await caches.open('medindex-private-device-v1')).keys()).length),0,'revocation clears saved clinical reads');
   authStatus=200;await page.reload();await expect(page.locator('#registryRows')).toContainText(row.tradeName);
@@ -72,7 +79,7 @@ const server=http.createServer(async(req,res)=>{
   // never turned into an authenticated cached response.
   await page.evaluate(()=>fetch('/api/auth',{method:'DELETE'}));
   assert.equal(await page.evaluate(async()=> (await(await caches.open('medindex-auth-device-v1')).keys()).length),0);
-  networkAvailable=false;await context.setOffline(true);
+  networkAvailable=false;if(engine===chromium)await context.setOffline(true);
   assert.equal(await page.evaluate(async()=>{try{await fetch('/api/auth');return'authenticated';}catch{return'offline-no-session';}}),'offline-no-session');
   assert.deepEqual(errors,[]);
   console.log(`PASS ${process.env.OFFLINE_BROWSER||'chromium'}: first-download persistence, <500ms slow-link cache, no duplicate downloads, explicit refresh, offline reload/detail, unknown-data state, revocation and logout.`);

@@ -47,7 +47,11 @@ logout races and token-free storage. Its real Chromium browser test opens the
 first page, checks a local read under a three-second network delay (<500 ms),
 asserts no duplicate download, explicitly refreshes, disconnects the network,
 reloads the registry, opens saved detail, checks missing-data behavior and clears
-storage on revocation/logout. CI repeats the browser test in WebKit.
+storage on revocation/logout. CI repeats the browser test in WebKit using actual origin disconnection.
+Playwright WebKit offline emulation rejects even literal worker responses
+([upstream #42775](https://github.com/microsoft/playwright/issues/42775)); the
+origin is unreachable in both engines, without bypassing application behavior.
+The storage status also detects a failed connection while Wi-Fi remains on.
 
 `pnpm test:premium-ui` checks 90 route/viewport cases from 320–1920 px, mobile
 navigation, touch targets, long medicine names, drawers, keyboard focus, search
