@@ -20,7 +20,7 @@ for (const page of pages) {
   assert.match(html, /\/sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v6/, `${page}: shared sidebar runtime v5 is missing`);
   assert.equal(
     styles.at(-1),
-    '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-app-20260930',
+    '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930',
     `${page}: canonical shell v8 must remain the final stylesheet`
   );
 }

@@ -26,7 +26,9 @@ The September finish in `drx-dashboard-stripe.css` is the shared visual owner: n
 
 On phones up to 760px, the shared sidebar core adds one 68px bottom navigation inside `.main-shell`, with Barnat, ICD-10, Dozat, Recetat and Më shumë. Its safe-area padding and the page's bottom clearance must stay paired. The drawer continues to own complete navigation, focus trapping and inert state. The dock hides during text entry and printing. Long medicine names have a full-width identity row; selection and row actions sit above it. Empty toasts never capture touches.
 
-Use the existing stylesheet and runtime owners; do not add a competing theme, fonts or icon dependencies. `pnpm test:premium-ui` checks 90 Chromium route/viewport combinations from 320 to 1920px, populated registry search, dock targets and drawer focus behavior. Physical iOS devices and WebKit still require a separate verification environment.
+Use the existing stylesheet and runtime owners; do not add a competing theme, fonts or icon dependencies. `pnpm test:premium-ui` checks 90 Chromium route/viewport combinations from 320 to 1920px, populated registry search, dock targets and drawer focus behavior. The WebKit workflow also runs these cases with `PREMIUM_BROWSER=webkit`; physical iOS devices still require a separate verification environment.
+
+Phone protocol summaries retain all four counts in two rows. Their search and category filter span the card; format and status share a row from 360px upward. Protocol and diagnosis-picker helpers use at least 12px, editable fields remain 16px, and page subtitles wrap fully. The dock hides for keyboard text entry, while checkbox selection leaves navigation available. Populated pediatric and emergency fixtures are required for browser checks, so failed data loading cannot masquerade as a valid layout.
 
 ## Direction
 
