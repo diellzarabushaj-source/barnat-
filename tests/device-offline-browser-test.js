@@ -60,7 +60,12 @@ const server=http.createServer(async(req,res)=>{
   await page.locator('#drawerClose').click();
   await expect(page.locator('#drxDeviceStatus')).toContainText('Ruajtur');
   networkAvailable=false;if(engine===chromium)await context.setOffline(true);await page.reload();
-  await expect(page.locator('#registryRows')).toContainText(row.tradeName);
+  await expect(page.locator('#registryRows')).toContainText(row.tradeName).catch(async error=>{
+   console.log('Offline startup diagnostics',JSON.stringify({errors,reads:[...reads],page:await page.evaluate(async()=>({
+    scripts:[...document.scripts].map(script=>script.src),body:document.body.innerText.slice(0,1600),
+    caches:await Promise.all((await caches.keys()).map(async name=>{const cache=await caches.open(name);return{name,entries:await Promise.all((await cache.keys()).map(async key=>{const response=await cache.match(key);return{url:key.url,bytes:(await response.text()).length};}))};}))
+   }))},null,2));throw error;
+  });
   await expect(page.locator('#drxDeviceStatus')).toContainText('Pa internet');
   await expect(page.locator('#syncText')).toContainText('Kopje lokale');
   const detail=await page.evaluate(async id=>{const r=await fetch('/api/drug-search?view=registry-detail&id='+id);return{status:r.status,cache:r.headers.get('X-MedIndex-Cache'),row:(await r.json()).row};},row.id);
