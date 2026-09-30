@@ -782,7 +782,53 @@
     sync();
   }
 
+  function initSessionRenewal() {
+    if (window.DRX_SESSION_RENEWAL_INSTALLED) return;
+    window.DRX_SESSION_RENEWAL_INSTALLED = true;
+    const originalFetch = window.fetch.bind(window);
+    let renewal = null;
+    let signingOut = false;
+    function renew() {
+      if (!renewal) {
+        renewal = originalFetch('/api/auth', { credentials:'same-origin', cache:'no-store',
+          headers:{ Accept:'application/json' }, signal:AbortSignal.timeout(12000) })
+          .then(async response => response.ok && (await response.json()).authenticated === true)
+          .catch(() => false).finally(() => { renewal = null; });
+      }
+      return renewal;
+    }
+    window.fetch = async (...args) => {
+      const target = new URL(typeof args[0] === 'string' ? args[0] : args[0]?.url || args[0]?.href || '', location.href);
+      const method = String(args[1]?.method || args[0]?.method || 'GET').toUpperCase();
+      if (method === 'DELETE' && target.origin === location.origin && target.pathname === '/api/auth' && !target.search) {
+        signingOut = true;
+        if (renewal) await renewal;
+        try {
+          const response = await originalFetch(...args);
+          if (!response.ok) signingOut = false;
+          return response;
+        } catch (error) { signingOut = false; throw error; }
+      }
+      const response = await originalFetch(...args);
+      // Only safe reads are replayed. A forbidden action never becomes a login
+      // failure, and writes are never duplicated after an uncertain response.
+      if (!signingOut && response.status === 401 && method === 'GET' && target.origin === location.origin
+        && target.pathname.startsWith('/api/') && (target.pathname !== '/api/auth' || target.searchParams.has('scope')) && await renew()) {
+        return originalFetch(...args);
+      }
+      return response;
+    };
+    function resume() {
+      if (!signingOut && navigator.onLine && !document.hidden) void renew();
+    }
+    window.addEventListener('pageshow', resume);
+    window.addEventListener('online', resume);
+    document.addEventListener('visibilitychange', resume);
+    window.setInterval(resume, 15 * 60 * 1000);
+  }
+
   function init() {
+    initSessionRenewal();
     ensureCanonicalWorker();
     const nav = document.querySelector('.sidebar .nav-stack');
     if (!nav || nav.dataset.sharedTaxonomy === '1') return;

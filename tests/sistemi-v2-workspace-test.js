@@ -25,7 +25,7 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
 const pageRuntimes = scripts.filter(src => !/sidebar-taxonomy-v3\.js/.test(src));
 
 assert.deepEqual(styles, ['/sistemi-v2.css?v=2','/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-premium-20260930']);
-assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v5-premium-20260930'), 'Sistemi shared sidebar runtime is missing');
+assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v6-device-20260930'), 'Sistemi shared sidebar runtime is missing');
 assert.deepEqual(pageRuntimes, ['/sistemi-v2.js?v=2']);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|system-health\.js|media-library\.js|admin-entry\.js/);
 

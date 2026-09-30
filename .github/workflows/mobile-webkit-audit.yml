@@ -75,6 +75,11 @@ jobs:
             --config=playwright.registry-v2.config.js \
             --project=webkit 2>&1 | tee -a /tmp/mobile-webkit-audit.log
 
+      - name: Verify remembered-device persistence and logout in WebKit
+        env:
+          DEVICE_SESSION_BROWSER: webkit
+        run: node tests/device-session-browser-test.js
+
       - name: Upload WebKit diagnostics
         if: always()
         uses: actions/upload-artifact@v4

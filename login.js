@@ -434,6 +434,11 @@
     try {
       const response = await timedFetch('/api/auth', { cache:'no-store', credentials:'same-origin', headers:{ Accept:'application/json' } }, 10000, 24000);
       const payload = await response.json().catch(() => ({}));
+      if (response.status === 503 && payload.code === 'AUTH_UPSTREAM_UNAVAILABLE') {
+        setGoogleStatus('Hyrja e ruajtur po rinovohet. Po provohet përsëri…');
+        window.setTimeout(checkExistingSession, 5000);
+        return;
+      }
       if (response.ok && payload.authenticated && phase5Session(payload)) {
         redirecting = true;
         location.replace(destination());
