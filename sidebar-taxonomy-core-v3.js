@@ -652,6 +652,68 @@
   }
 
   // Keep the same mobile navigation behavior in every authenticated workspace.
+  // Reuse the canonical routes and icons; the drawer remains the owner of the
+  // full navigation. Keeping this inside main also inherits its inert state.
+  function initMobileAppNavigation(nav) {
+    const main = document.querySelector('.main-shell');
+    if (!main || document.getElementById('drxMobileNav')) return;
+    const dock = document.createElement('nav');
+    dock.id = 'drxMobileNav';
+    dock.className = 'drx-mobile-nav';
+    dock.setAttribute('aria-label', 'Qasje e shpejtë klinike');
+    const routes = [
+      ['/index.html', 'Barnat'], ['/icd.html', 'ICD‑10'],
+      ['/dozologjia.html', 'Dozat'], ['/recetat.html', 'Recetat'],
+    ];
+    const update = () => {
+      const path = currentPath();
+      const personal = path === '/index.html' && ['#favorites', '#notes'].includes(location.hash);
+      dock.querySelectorAll('a').forEach(link => {
+        const active = link.getAttribute('href') === (path === '/' ? '/index.html' : path) && !personal;
+        if (active) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
+      });
+      dock.querySelector('button').classList.toggle('is-active', personal || !routes.some(([url]) => url === path || (path === '/' && url === '/index.html')));
+    };
+    routes.forEach(([href, label]) => {
+      const link = document.createElement('a');
+      link.href = href;
+      const source = href === '/icd.html' ? nav.querySelector('#icdNavGroup > summary') : nav.querySelector(`a.nav-item[href="${href}"]`);
+      const icon = source?.querySelector('.nav-icon')?.cloneNode(true);
+      if (icon) link.append(icon);
+      const caption = document.createElement('span');
+      caption.textContent = label;
+      link.append(caption);
+      dock.append(link);
+    });
+    const menu = document.createElement('button');
+    menu.type = 'button';
+    menu.setAttribute('aria-label', 'Hap të gjitha seksionet');
+    menu.setAttribute('aria-controls', 'sidebar');
+    menu.innerHTML = '<span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span><span>Më shumë</span>';
+    menu.addEventListener('click', () => document.getElementById('menuButton')?.click());
+    dock.append(menu);
+    main.append(dock);
+    document.documentElement.classList.add('drx-app-navigation');
+    update();
+    window.addEventListener('hashchange', update);
+    window.addEventListener('pageshow', update);
+
+    if (!document.querySelector('.drx-workspace-skip')) {
+      if (!main.id) main.id = 'drxMainContent';
+      const skip = document.createElement('a');
+      skip.className = 'drx-workspace-skip';
+      skip.href = `#${main.id}`;
+      skip.textContent = 'Kalo te përmbajtja';
+      skip.addEventListener('click', event => {
+        event.preventDefault();
+        main.tabIndex = -1;
+        main.focus();
+      });
+      document.body.prepend(skip);
+    }
+  }
+
   function initMobileSidebar() {
     const sidebar = document.getElementById('sidebar');
     const trigger = document.getElementById('menuButton');
@@ -729,6 +791,7 @@
 
     const icdDetails = replaceIcdLink(nav);
     canonicalize(nav);
+    initMobileAppNavigation(nav);
     restoreScroll(nav);
     initSidebarCollapse(nav);
     void syncPersonalCounts(nav).finally?.(() => window.DRxSidebarCollapse?.refreshLabels?.());
