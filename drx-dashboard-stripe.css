@@ -2983,7 +2983,7 @@ html.drx-unified-sidebar :is(.empty-state h3,.personal-empty h3){letter-spacing:
  .drx-mobile-nav .nav-icon{width:22px;height:22px;opacity:1}
  .drx-mobile-nav .nav-icon .icon{width:21px;height:21px}
  .drx-mobile-nav :is(a[aria-current="page"],button.is-active){background:#f1efff;color:#4434d4;font-weight:650}
- html.drx-unified-sidebar:has(input:focus,textarea:focus) .drx-mobile-nav{display:none}
+ html.drx-unified-sidebar:has(input:is(:not([type]),[type=text],[type=search],[type=email],[type=tel],[type=number],[type=url],[type=password]):focus,textarea:focus,[contenteditable="true"]:focus) .drx-mobile-nav{display:none}
  html.drx-unified-sidebar.drx-app-navigation :is(.offline-banner,.app-error-banner){bottom:calc(var(--drx-dock-height) + 12px + env(safe-area-inset-bottom))}
 }
 @media(max-width:350px){
@@ -2995,6 +2995,34 @@ html.drx-unified-sidebar :is(.empty-state h3,.personal-empty h3){letter-spacing:
  html.drx-unified-sidebar *,html.drx-unified-sidebar *::before,html.drx-unified-sidebar *::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
 }
 @media print{.drx-mobile-nav,.drx-workspace-skip{display:none!important}}
+
+/* Phone reading and protocol discovery keep all context without an oversized
+   summary pushing the search below the first screen. */
+@media(max-width:760px){
+ html.drx-unified-sidebar .page-subtitle{display:block;overflow:visible;-webkit-line-clamp:unset;white-space:normal;text-overflow:clip}
+ html.drx-unified-sidebar .protocol-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ html.drx-unified-sidebar .protocol-metric{padding:12px;border-right:0;border-bottom:0}
+ html.drx-unified-sidebar .protocol-metric:nth-child(odd){border-right:1px solid var(--protocol-doc-line)}
+ html.drx-unified-sidebar .protocol-metric:nth-child(-n+2){border-bottom:1px solid var(--protocol-doc-line)}
+ html.drx-unified-sidebar .protocol-metric :is(span,small){color:var(--drx-finish-muted);font-size:12px;line-height:1.4}
+ html.drx-unified-sidebar .protocol-metric strong{font-size:22px;margin:6px 0 4px}
+ html.drx-unified-sidebar .protocol-toolbar-card{padding:12px;backdrop-filter:none;background:#fff}
+ html.drx-unified-sidebar .protocol-toolbar-heading p{font-size:12px;color:var(--drx-finish-muted);line-height:1.5}
+ html.drx-unified-sidebar .protocol-filter-field>span{font-size:12px;color:var(--drx-finish-muted)}
+ html.drx-unified-sidebar :is(.protocol-source-badge small,.protocol-list-head .clinical-status){font-size:12px;color:var(--drx-finish-muted);line-height:1.5}
+ html.drx-unified-sidebar :is(.icd-quick-chip,.clinical-filter-chip){font-size:13px;min-height:44px}
+ html.drx-unified-sidebar :is(.icd-search-stage-copy p,.clinical-hub-head p){display:block;overflow:visible;-webkit-line-clamp:unset;font-size:12px;line-height:1.5}
+ html.drx-unified-sidebar :is(.lab-trigger-copy small,.lab-disease-copy small,.lab-builder-head p,.lab-plan-head p,.lab-summary-dx>span,.lab-gap-list>p){font-size:12px;color:var(--drx-finish-muted);line-height:1.5}
+ html.drx-unified-sidebar :is(.lab-trigger-copy strong,.lab-disease-copy strong){font-size:14px;white-space:normal;overflow:visible;line-height:1.4}
+ html.drx-unified-sidebar .lab-disease-copy small{white-space:normal;overflow:visible}
+ html.drx-unified-sidebar .lab-disease-trigger{height:auto}
+ html.drx-unified-sidebar .lab-safety-note p{font-size:12px;line-height:1.6}
+}
+@media(min-width:360px) and (max-width:760px){
+ html.drx-unified-sidebar .protocol-directory .clinical-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}
+ html.drx-unified-sidebar .protocol-search-field,
+ html.drx-unified-sidebar .protocol-filter-field:has(#protocolCategory){grid-column:1/-1}
+}
 
 /* Noninteractive status messages never cover the phone navigation. */
 html.drx-unified-sidebar :is(.toast,.rx-toast):empty{display:none}

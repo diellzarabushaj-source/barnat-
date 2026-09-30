@@ -39,7 +39,7 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
 const pageRuntimes = scripts.filter(src => !/(?:phase9-personal-entities-client|sidebar-taxonomy-v3|pediatric-common-liquid-core|pediatric-weight-age-core)\.js/.test(src));
 
 assert.equal(styles.length, 2, 'Dozologjia must keep exactly two stylesheet owners');
-assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-app-20260930');
+assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930');
 assert.ok(scripts.includes('/phase9-personal-entities-client.js?v=phase9b'));
 assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v6-mobile-app-20260930'));
 assert.ok(scripts.includes('/pediatric-common-liquid-core.js?v=10'));
