@@ -1,5 +1,5 @@
 import { next } from '@vercel/functions';
-import { sessionFromRequest, verifySessionToken } from './lib/auth-edge.mjs';
+import { sessionFromRequest, verifySessionToken, parseCookies } from './lib/auth-edge.mjs';
 
 const PUBLIC_INFO_PATHS = new Set([
   '/rreth-nesh.html',
@@ -167,6 +167,18 @@ export default async function middleware(request) {
   const url = new URL(request.url);
   const pathname = url.pathname;
   const authenticated = await verifySessionToken(sessionFromRequest(request));
+  const remembered = Boolean(parseCookies(request.headers.get('cookie')).medindex_device);
+
+  // A remembered browser is redirected to the server for renewal. Cookie
+  // presence never authorizes a page or an API: /api/auth verifies and refreshes
+  // the encrypted credential before redirecting back with a new short session.
+  if (!authenticated && remembered && request.method === 'GET'
+    && (LOGIN_PAGES.has(pathname) || (!isPublicPath(pathname) && !pathname.startsWith('/api/')))) {
+    const resume = new URL('/api/auth', request.url);
+    resume.searchParams.set('resume', '1');
+    resume.searchParams.set('return', LOGIN_PAGES.has(pathname) ? (url.searchParams.get('return') || '/index.html') : safeReturnPath(url));
+    return Response.redirect(resume, 302);
+  }
 
   if (isPublicPath(pathname) || isPublicBlogApi(request, url)) {
     if (authenticated && PUBLIC_INFO_PATHS.has(pathname)) {

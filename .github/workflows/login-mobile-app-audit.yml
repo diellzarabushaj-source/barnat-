@@ -8,6 +8,12 @@ on:
       - login-page.css
       - login-mobile-app.css
       - login.js
+      - api/auth.js
+      - lib/device-session.mjs
+      - lib/supabase-auth.js
+      - middleware.ts
+      - tests/device-session-browser-test.js
+      - tests/device-session-fixture.js
       - tests/login-mobile-app-audit.spec.js
       - .github/workflows/login-mobile-app-audit.yml
   pull_request:
@@ -16,6 +22,12 @@ on:
       - login-page.css
       - login-mobile-app.css
       - login.js
+      - api/auth.js
+      - lib/device-session.mjs
+      - lib/supabase-auth.js
+      - middleware.ts
+      - tests/device-session-browser-test.js
+      - tests/device-session-fixture.js
       - tests/login-mobile-app-audit.spec.js
       - .github/workflows/login-mobile-app-audit.yml
   workflow_dispatch:
@@ -69,6 +81,9 @@ jobs:
           done
           test "$READY" = "1" || { echo "Mobile login audit server did not become ready."; exit 1; }
           pnpm exec playwright test tests/login-mobile-app-audit.spec.js --reporter=line --workers=1
+
+      - name: Verify remembered-device persistence and logout in Chromium
+        run: node tests/device-session-browser-test.js
 
       - name: Upload mobile login screenshots
         if: always()

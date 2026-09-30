@@ -183,13 +183,14 @@ function cutoverError(code, message, status = 409) {
 // document, or the administrator's decision.
 async function pendingEnrollment(res, canonicalIdentity) {
   const auth = await import('../lib/auth.mjs');
+  const Device = await import('../lib/device-session.mjs');
   const verificationStatus = String(canonicalIdentity.profile?.verificationStatus || 'missing');
   const verificationRequired = !['submitted', 'verified'].includes(verificationStatus);
   const enrollmentToken = auth.createEnrollmentToken({
     authUid:canonicalIdentity.id,
     email:canonicalIdentity.email,
   });
-  res.setHeader('Set-Cookie', [auth.expiredSessionCookie(), auth.enrollmentCookie(enrollmentToken)]);
+  res.setHeader('Set-Cookie', [auth.expiredSessionCookie(), Device.expiredDeviceCookie(), auth.enrollmentCookie(enrollmentToken)]);
   return res.status(403).json({
     ok:false,
     code:verificationRequired ? 'PROFESSIONAL_VERIFICATION_REQUIRED' : 'ACCOUNT_PENDING_APPROVAL',
@@ -228,6 +229,34 @@ async function approvedSupabaseUser(canonicalIdentity, hints = {}) {
   return user;
 }
 
+async function renewDeviceSession(auth, device) {
+  let canonicalIdentity = null;
+  let refreshToken = '';
+  let user;
+  if (device.provider === 'legacy-password') {
+    if (!auth.accessConfigurationEnabled() || device.email !== UserStore.OWNER_EMAIL) {
+      throw cutoverError('DEVICE_SESSION_REVOKED', 'Hyrja e ruajtur nuk është më e vlefshme.', 401);
+    }
+    user = await ensureLoginUser({ id:device.uid, email:device.email, name:device.name });
+  } else {
+    const refreshed = await SupabaseAuth.refreshSession(device.refreshToken);
+    if (refreshed.userId !== device.authUid || refreshed.email !== device.email) {
+      throw cutoverError('AUTH_IDENTITY_MISMATCH', 'Identiteti i hyrjes së ruajtur nuk përputhet.', 401);
+    }
+    canonicalIdentity = await SupabaseAuth.identityFromRequest({ headers:{ authorization:`Bearer ${refreshed.accessToken}` } });
+    if (canonicalIdentity.id !== device.authUid || canonicalIdentity.email !== device.email) {
+      throw cutoverError('AUTH_IDENTITY_MISMATCH', 'Identiteti i profilit nuk përputhet.', 401);
+    }
+    user = await approvedSupabaseUser(canonicalIdentity, { name:canonicalIdentity.profile?.fullName || device.name });
+    refreshToken = refreshed.refreshToken;
+  }
+  if (String(user.id) !== device.uid) throw cutoverError('LEGACY_OWNER_MAPPING_MISMATCH', 'Pronari i të dhënave nuk përputhet.', 401);
+  const token = auth.createSessionToken({ uid:user.id, authUid:canonicalIdentity?.id || '',
+    email:user.email, role:user.role, name:user.name, sub:user.sub,
+    authRole:canonicalIdentity?.role || '', authStatus:canonicalIdentity?.status || '', provider:device.provider });
+  return { token, refreshToken, session:auth.sessionData(token) };
+}
+
 module.exports = async function handler(req, res) {
   securityHeaders(res);
 
@@ -262,16 +291,53 @@ module.exports = async function handler(req, res) {
   }
 
   const auth = await import('../lib/auth.mjs');
-  const session = auth.sessionData(auth.sessionFromRequest(req));
+  let session = auth.sessionData(auth.sessionFromRequest(req));
+  const Device = await import('../lib/device-session.mjs');
+  const rawDevice = Device.deviceFromRequest(req);
+  const device = Device.deviceData(rawDevice);
 
   if (req.method === 'GET') {
+    if (!sameOrigin(req)) return res.status(403).json({ error:'Origjina e kërkesës nuk lejohet.' });
+    const cookies = [];
+    const resume = String(queryValue(req, 'resume') || '') === '1';
+    const destination = Device.safeResumePath(queryValue(req, 'return'));
+    if (rawDevice && !device) cookies.push(Device.expiredDeviceCookie());
+    if (device && (!session || session.exp * 1000 - Date.now() <= 30 * 60 * 1000)) {
+      try {
+        const renewed = await renewDeviceSession(auth, device);
+        session = renewed.session;
+        cookies.push(auth.sessionCookie(renewed.token),
+          Device.deviceCookie(Device.createDeviceToken(session, renewed.refreshToken)));
+      } catch (error) {
+        const status = ['USER_DISABLED', 'EMAIL_NOT_ALLOWED'].includes(error?.code) ? 403 : (Number(error?.status) || 503);
+        if (status === 401 || status === 403) {
+          session = null;
+          cookies.push(auth.expiredSessionCookie(), Device.expiredDeviceCookie());
+        } else if (!session) {
+          // A temporary outage must not erase the trusted browser credential.
+          res.setHeader('Retry-After', '5');
+          if (resume) {
+            const retry = `/api/auth?resume=1&return=${encodeURIComponent(destination)}`;
+            res.setHeader('Refresh', `5; url=${retry}`);
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            return res.status(503).end('<!doctype html><html lang="sq"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DRx — Hyrja</title><main><h1>DRx</h1><p>Hyrja e ruajtur po rinovohet. Lidhja nuk u përgjigj; po provohet përsëri…</p></main></html>');
+          }
+          return res.status(503).json({ authenticated:false, code:'AUTH_UPSTREAM_UNAVAILABLE', error:'Hyrja po rinovohet. Provo përsëri pas pak.' });
+        }
+      }
+    }
+    if (resume) {
+      if (cookies.length) res.setHeader('Set-Cookie', cookies);
+      res.setHeader('Location', session ? destination : `/landing.html?return=${encodeURIComponent(destination)}`);
+      return res.status(302).end();
+    }
     const csrfToken = auth.createCsrfToken();
     const supabaseAuthenticated = auth.isSupabaseSession(session);
     const rollbackSession = auth.isRollbackSession(session);
     const identityContract = supabaseAuthenticated
       ? 'supabase-v1'
       : (rollbackSession ? 'legacy-password-rollback' : (session ? `legacy-v${session.v}` : ''));
-    res.setHeader('Set-Cookie', auth.csrfCookie(csrfToken));
+    res.setHeader('Set-Cookie', [...cookies, auth.csrfCookie(csrfToken)]);
     return res.status(200).json({
       authenticated:Boolean(session),
       user:publicUser(session),
@@ -291,6 +357,7 @@ module.exports = async function handler(req, res) {
           && AdminAccess.isAdminEmail(session.email),
       } : null,
       sessionHours:auth.SESSION_TTL_SECONDS / 3600,
+      deviceRemembered:Boolean(device && session),
       hardened:auth.secureConfigurationEnabled(),
       accessConfigured:auth.accessConfigurationEnabled(),
       passwordFallbackConfigured:auth.accessConfigurationEnabled(),
@@ -303,7 +370,13 @@ module.exports = async function handler(req, res) {
 
   if (req.method === 'DELETE') {
     if (!sameOrigin(req)) return res.status(403).json({ error:'Origjina e kërkesës nuk lejohet.' });
-    res.setHeader('Set-Cookie', [auth.expiredSessionCookie(), auth.expiredEnrollmentCookie(), auth.expiredCsrfCookie()]);
+    res.setHeader('Set-Cookie', [auth.expiredSessionCookie(), Device.expiredDeviceCookie(), auth.expiredEnrollmentCookie(), auth.expiredCsrfCookie()]);
+    if (device?.refreshToken) {
+      try {
+        const refreshed = await SupabaseAuth.refreshSession(device.refreshToken, { timeoutMs:1500 });
+        await SupabaseAuth.signOutSession(refreshed.accessToken, { timeoutMs:1500 });
+      } catch { /* Always clear this browser, including during an upstream outage. */ }
+    }
     return res.status(200).json({ ok:true });
   }
 
@@ -372,6 +445,7 @@ module.exports = async function handler(req, res) {
     let user;
     let provider;
     let canonicalIdentity = null;
+    let refreshToken = '';
     if (String(body.credential || '').trim()) {
       if (!auth.googleConfigurationEnabled()) return res.status(503).json({ code:'GOOGLE_NOT_CONFIGURED', error:'Hyrja me Google nuk është konfiguruar ende.' });
       const credential = String(body.credential || '').trim();
@@ -380,6 +454,7 @@ module.exports = async function handler(req, res) {
         nonce:sha256Hex(suppliedCsrf),
       });
       const exchanged = await exchangeGoogleIdToken({ credential, nonce:suppliedCsrf });
+      refreshToken = exchanged.refreshToken;
       if (String(exchanged.user.email || '').toLowerCase() !== String(googleIdentity.email || '').toLowerCase()) {
         throw cutoverError('AUTH_IDENTITY_MISMATCH', 'Google dhe Supabase kthyen identitete të ndryshme.');
       }
@@ -405,6 +480,7 @@ module.exports = async function handler(req, res) {
       // identical to Google's: the same profile lookup, the same pending gate,
       // the same approval requirement. Only the proof of identity differs.
       const signedIn = await SupabasePassword.signIn(body);
+      refreshToken = signedIn.refreshToken;
       canonicalIdentity = await SupabaseAuth.identityFromRequest({
         headers:{ authorization:`Bearer ${signedIn.accessToken}` },
       });
@@ -449,11 +525,15 @@ module.exports = async function handler(req, res) {
       provider,
     });
     const nextCsrf = auth.createCsrfToken();
-    res.setHeader('Set-Cookie', [auth.sessionCookie(sessionToken), auth.expiredEnrollmentCookie(), auth.csrfCookie(nextCsrf)]);
+    const deviceToken = Device.createDeviceToken(auth.sessionData(sessionToken), refreshToken);
+    res.setHeader('Set-Cookie', [auth.sessionCookie(sessionToken),
+      deviceToken ? Device.deviceCookie(deviceToken) : Device.expiredDeviceCookie(),
+      auth.expiredEnrollmentCookie(), auth.csrfCookie(nextCsrf)]);
     res.setHeader('RateLimit-Remaining', String(MAX_ATTEMPTS));
     return res.status(200).json({
       ok:true,
       expiresIn:auth.SESSION_TTL_SECONDS,
+      deviceRemembered:Boolean(deviceToken),
       hardened:true,
       provider:{ 'supabase-google':'google', 'supabase-password':'email' }[provider] || 'password',
       sessionVersion:auth.SESSION_VERSION,
