@@ -758,7 +758,7 @@ body[data-registry-view="notes"] #headingActions{display:none}
 .personal-kind{
   display:inline-flex;align-items:center;min-height:19px;padding:0 6px;border-radius:999px;background:#f1f4f7;color:#66788d;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.03em
 }
-.personal-item-meta{color:#7a8a9c;font-size:10.5px;line-height:1.45}
+.personal-item-meta{color:#7a8a9c;font-size:10.5px;line-height:1.45;overflow-wrap:anywhere}
 .personal-note-copy{
   margin:3px 0 0;padding:9px 10px;border-left:2px solid #b7b1ff;border-radius:0 8px 8px 0;background:#faf9ff;color:#415269;font-size:12px;line-height:1.52;
   white-space:pre-wrap;overflow-wrap:anywhere
@@ -775,7 +775,7 @@ body[data-registry-view="notes"] #headingActions{display:none}
 
 @media(max-width:760px){
   .nav-count{min-width:24px;height:22px}
-  .personal-workspace{margin:0 9px 12px;border-radius:12px}
+  .personal-workspace{margin:0 0 12px;border-radius:12px}
   .personal-workspace-head{padding:16px 14px 14px}
   .personal-workspace-head h2{font-size:19px}
   .personal-sync{min-height:30px;padding:0 8px}
@@ -787,7 +787,7 @@ body[data-registry-view="notes"] #headingActions{display:none}
   .personal-item{grid-template-columns:38px minmax(0,1fr);gap:11px;padding:14px 12px}
   .personal-item-icon{width:36px;height:36px}
   .personal-item-actions{grid-column:1/-1;width:100%;display:grid;grid-template-columns:1fr 1fr;padding-top:3px}
-  .personal-item-actions .button{min-height:40px}
+  .personal-item-actions .button{min-height:44px;font-size:13px}
   .personal-item-title strong{font-size:12.5px;white-space:normal}
   .personal-note-copy{font-size:11.5px}
 }
@@ -877,14 +877,18 @@ body[data-registry-view="notes"] #headingActions{display:none}
 .registry-note-actions [aria-busy="true"]{opacity:.6;cursor:wait}
 
 @media(max-width:760px){
+  /* Keep this after the desktop v3 rule: otherwise the tabs consume the search column. */
+  .personal-toolbar{grid-template-columns:minmax(0,1fr)}
+  .personal-tabs{min-width:0}
+  .personal-tab{min-width:0;font-size:14px}
   .personal-toolbar-actions{
     width:100%;
     display:grid;
     grid-template-columns:minmax(0,1fr) 44px;
     gap:8px;
   }
-  .personal-sort{grid-column:1/-1}
-  .personal-sort select{width:100%;height:42px;font-size:16px}
+  .personal-sort{grid-column:1/-1;min-width:0}
+  .personal-sort select{width:100%;min-width:0;height:44px;font-size:16px}
   .personal-toolbar-actions .personal-search{width:100%;max-width:none}
   .personal-refresh{width:44px;height:44px}
   .personal-load-error{padding:28px 16px 32px}
@@ -913,7 +917,10 @@ body[data-registry-view="notes"] .personal-toolbar{
   align-content:start;
 }
 @media(max-width:760px){
-  .personal-item-title strong{max-width:calc(100vw - 110px)}
+  .personal-item-title strong{max-width:100%;font-size:16px;overflow-wrap:anywhere}
+  .personal-item-meta{font-size:12px;line-height:1.55}
+  .personal-item-time{font-size:11px}
+  .personal-note-copy{font-size:13px}
 }
 
 
