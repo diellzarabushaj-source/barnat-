@@ -685,3 +685,24 @@ body.lp.lp-auth{
   .lp-auth .auth-facts div{grid-template-columns:minmax(0,1fr);gap:3px}
   .lp-auth .auth-card__head h2{font-size:25px}
 }
+
+/* Account surfaces share the application's legible controls and clean cards. */
+.lp-auth .au-card,.lp-auth .register-card{background:#fff;border-color:#e1e7ef;box-shadow:0 2px 4px #13254004,0 16px 40px #13254006}
+.lp-auth :is(.auth-card__head h2,.mi-auth-head h2){font-weight:600;letter-spacing:-.035em}
+.lp-auth :is(.auth-field,.mi-field){font-weight:500}
+.lp-auth :is(.au-input,.mi-input,.login-email-input){font-weight:400;border-radius:8px;border-color:#d4dce7;background:#fafbfe}
+.lp-auth :is(.au-input,.mi-input,.login-email-input):focus{background:#fff}
+.lp-auth .auth-password-toggle,.lp-auth .mi-password button{min-height:44px;min-width:50px}
+@media(max-width:620px){
+ .lp-auth :is(.auth-stage,.register-stage){padding-bottom:calc(40px + env(safe-area-inset-bottom))}
+ .lp-auth .auth-card__head h2{font-size:26px}
+ .lp-auth :is(.au-card,.register-card){border-radius:12px}
+ .lp-auth :is(.au-input,.mi-input,.login-email-input){min-height:48px}
+}
+
+/* Every account action stays a dependable physical target, including the
+   compact navigation button and secondary password actions. */
+.lp-auth .auth-nav :is(a,button){min-height:44px;display:inline-flex;align-items:center}
+.lp-auth .auth-card button{min-height:44px}
+.lp-auth .auth-register a{min-height:44px;display:inline-flex;align-items:center}
+.lp.lp-auth .auth-nav__actions .lp-btn{min-height:44px}

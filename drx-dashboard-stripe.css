@@ -2891,3 +2891,146 @@ html.drx-unified-sidebar :is(.rx-source-guide-nav,.rx-folder-panel){scroll-paddi
  html.drx-unified-sidebar .sidebar{transform:none!important}
  html.drx-unified-sidebar :is(.page-heading .page-subtitle,.dz-head p){max-width:72ch}
 }
+
+/* Premium clinical finish · September 2026.
+   One shared owner for every workspace. Clinical colors and data stay local. */
+html.drx-unified-sidebar{
+  --drx-finish-bg:#f5f7fb;
+  --drx-finish-border:#e1e7ef;
+  --drx-finish-muted:#526176;
+  --drx-control-radius:8px;
+  --drx-card-radius:12px;
+  --drx-dock-height:68px;
+  -webkit-text-size-adjust:100%;
+  text-rendering:optimizeLegibility;
+}
+html.drx-unified-sidebar body{font-weight:400;line-height:1.55}
+html.drx-unified-sidebar ::selection{background:#e3dfff;color:#1c1e54}
+html.drx-unified-sidebar .page-wrap{min-width:0}
+html.drx-unified-sidebar .eyebrow{color:#59677d;font-weight:600;letter-spacing:.065em;font-size:11px}
+html.drx-unified-sidebar .page-heading h1{letter-spacing:-.04em}
+html.drx-unified-sidebar .page-subtitle{max-width:70ch}
+html.drx-unified-sidebar .sidebar{border-right:1px solid #ffffff0d!important}
+html.drx-unified-sidebar .nav-item{border-radius:8px!important;color:#d0d2e5!important;font-weight:450!important}
+html.drx-unified-sidebar .nav-item:is(.is-active,[aria-current="page"]){background:#ffffff12!important;color:#fff!important;font-weight:600!important;box-shadow:inset 3px 0 #aaa3ff!important}
+html.drx-unified-sidebar .nav-label{color:#b8bbd2!important;font-size:10px!important;letter-spacing:.09em!important;font-weight:550!important}
+html.drx-unified-sidebar .sidebar-head{margin-bottom:6px}
+html.drx-unified-sidebar .sidebar .nav-icon{opacity:1}
+html.drx-unified-sidebar .topbar{box-shadow:0 1px 3px #13254003}
+html.drx-unified-sidebar .breadcrumbs{font-size:12px}
+html.drx-unified-sidebar .breadcrumbs strong{font-weight:550}
+html.drx-unified-sidebar :is(.data-card,.icd-card,.protocol-toolbar-card,.rx-compose-card,.rx-preview-card,.hub-command,.dz-card){border-color:var(--drx-finish-border);box-shadow:0 1px 2px #13254004,0 6px 20px #13254003}
+html.drx-unified-sidebar .metrics-row{border-color:var(--drx-finish-border);box-shadow:0 1px 2px #13254003}
+html.drx-unified-sidebar .metric-card strong{font-weight:600;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+html.drx-unified-sidebar .metric-card span{font-weight:500;color:#526176}
+html.drx-unified-sidebar .metric-card small{color:#526176;line-height:1.45}
+html.drx-unified-sidebar :is(.button,.icon-button){border-radius:var(--drx-control-radius);font-weight:550}
+html.drx-unified-sidebar .button-primary{box-shadow:0 1px 2px #1c1e5415}
+html.drx-unified-sidebar :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){color:#24344d;caret-color:#533afd}
+html.drx-unified-sidebar :is(.search-box input,.personal-search input){background:#f9fafc;border-color:#d4dce7;font-weight:400}
+html.drx-unified-sidebar :is(.search-box input,.personal-search input):focus{background:#fff;border-color:#8174f0;box-shadow:0 0 0 3px #533afd10}
+html.drx-unified-sidebar .search-box input{height:44px}
+html.drx-unified-sidebar .data-card-head{padding:14px;gap:12px}
+html.drx-unified-sidebar :is(.registry-table,.icd-table) th{background:#f8fafc;font-weight:550;letter-spacing:.01em}
+html.drx-unified-sidebar .registry-table tbody td{line-height:1.55}
+html.drx-unified-sidebar :is(.drawer-head,.drawer-foot){background:#fff}
+html.drx-unified-sidebar .drawer-head{padding-block:20px}
+html.drx-unified-sidebar :is(.empty-state,.personal-empty){padding-block:40px}
+html.drx-unified-sidebar :is(.empty-state h3,.personal-empty h3){letter-spacing:-.02em}
+.drx-workspace-skip{position:fixed;top:8px;left:12px;z-index:5000;transform:translateY(-150%);padding:12px 18px;border-radius:8px;background:#fff;color:#1c1e54;box-shadow:0 3px 16px #13254020;font:600 14px/1.4 Inter,system-ui;text-decoration:none}
+.drx-workspace-skip:focus{transform:none;outline:3px solid #533afd}
+.drx-mobile-nav{display:none}
+@media(hover:hover){
+ html.drx-unified-sidebar .nav-item:hover{background:#ffffff10!important;color:#fff!important}
+ html.drx-unified-sidebar .button-secondary:hover{background:#f5f6ff;border-color:#c6c1ec}
+ html.drx-unified-sidebar .registry-table tbody tr:hover td{background:#fafbfe}
+}
+@media(min-width:761px) and (max-width:1023px){
+ html.drx-unified-sidebar .page-wrap{padding-inline:24px!important}
+}
+@media(max-width:760px){
+ html.drx-unified-sidebar .page-wrap{padding-inline:max(14px,env(safe-area-inset-left)) max(14px,env(safe-area-inset-right))!important}
+ html.drx-unified-sidebar.drx-app-navigation .page-wrap{padding-bottom:calc(var(--drx-dock-height) + 28px + env(safe-area-inset-bottom))!important}
+ html.drx-unified-sidebar.drx-app-navigation{scroll-padding-bottom:calc(var(--drx-dock-height) + 24px + env(safe-area-inset-bottom))}
+ html.drx-unified-sidebar .topbar{height:auto!important;min-height:58px!important;padding-top:env(safe-area-inset-top)!important;padding-inline:max(14px,env(safe-area-inset-left)) max(14px,env(safe-area-inset-right))!important}
+ html.drx-unified-sidebar .breadcrumbs{display:flex;font-size:11px;gap:6px;min-width:0}
+ html.drx-unified-sidebar .breadcrumbs>span:first-child,html.drx-unified-sidebar .crumb-sep{display:none}
+ html.drx-unified-sidebar .page-heading{flex-direction:column;align-items:stretch;gap:16px}
+ html.drx-unified-sidebar .page-heading h1{font-size:28px!important}
+ html.drx-unified-sidebar .page-subtitle{font-size:13px!important;line-height:1.6}
+ html.drx-unified-sidebar .heading-actions{display:flex;flex-wrap:wrap;gap:8px}
+ html.drx-unified-sidebar .heading-actions .button{flex:1;min-width:0;white-space:normal}
+ html.drx-unified-sidebar .metric-card{padding:15px 14px}
+ html.drx-unified-sidebar .metric-card strong{margin-top:8px;font-size:24px}
+ html.drx-unified-sidebar .data-card-head{padding:12px;gap:10px}
+ html.drx-unified-sidebar .search-box{width:100%;max-width:none}
+ html.drx-unified-sidebar .search-box input{height:48px;padding-right:12px}
+ html.drx-unified-sidebar .search-box kbd{display:none}
+ html.drx-unified-sidebar .table-scroll{padding-inline:10px}
+ html.drx-unified-sidebar .registry-table tbody tr{padding:16px;border-color:#dde4ee;box-shadow:0 1px 2px #13254004}
+ html.drx-unified-sidebar .registry-table tbody tr:hover td{background:transparent}
+ html.drx-unified-sidebar .filter-panel{padding:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+ html.drx-unified-sidebar .filter-panel .filter-clear{grid-column:1/-1}
+ html.drx-unified-sidebar .sidebar{padding-top:max(18px,env(safe-area-inset-top))!important;padding-bottom:max(14px,env(safe-area-inset-bottom))!important}
+ html.drx-unified-sidebar :is(.icon-button,.row-action,.button-square){min-width:44px;min-height:44px}
+ html.drx-unified-sidebar .drx-mobile-nav{
+   display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+   position:fixed;inset:auto 0 0;z-index:34;min-height:var(--drx-dock-height);
+   padding:6px max(6px,env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left));
+   border-top:1px solid #dfe5ee;background:#fff;box-shadow:0 -4px 20px #13254005;
+ }
+ .drx-mobile-nav :is(a,button){display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:54px;margin:0 2px;padding:5px 2px;border:0;border-radius:8px;background:transparent;color:#526176;text-decoration:none;font:500 10px/1.3 Inter,system-ui;cursor:pointer;touch-action:manipulation}
+ .drx-mobile-nav .nav-icon{width:22px;height:22px;opacity:1}
+ .drx-mobile-nav .nav-icon .icon{width:21px;height:21px}
+ .drx-mobile-nav :is(a[aria-current="page"],button.is-active){background:#f1efff;color:#4434d4;font-weight:650}
+ html.drx-unified-sidebar:has(input:focus,textarea:focus) .drx-mobile-nav{display:none}
+ html.drx-unified-sidebar.drx-app-navigation :is(.offline-banner,.app-error-banner){bottom:calc(var(--drx-dock-height) + 12px + env(safe-area-inset-bottom))}
+}
+@media(max-width:350px){
+ html.drx-unified-sidebar .page-wrap{padding-inline:10px!important}
+ html.drx-unified-sidebar .breadcrumbs{display:none}
+ html.drx-unified-sidebar .metric-card{padding:12px}
+}
+@media(prefers-reduced-motion:reduce){
+ html.drx-unified-sidebar *,html.drx-unified-sidebar *::before,html.drx-unified-sidebar *::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
+@media print{.drx-mobile-nav,.drx-workspace-skip{display:none!important}}
+
+/* Noninteractive status messages never cover the phone navigation. */
+html.drx-unified-sidebar :is(.toast,.rx-toast):empty{display:none}
+html.drx-unified-sidebar :is(.toast,.rx-toast){pointer-events:none}
+@media(max-width:760px){
+ html.drx-unified-sidebar.drx-app-navigation :is(.toast,.rx-toast){bottom:calc(var(--drx-dock-height) + 12px + env(safe-area-inset-bottom))}
+}
+
+/* A medicine's identity gets the full first row on phones. Actions and
+   selection have a separate row, so long names do not compete with buttons. */
+@media(max-width:760px){
+ html[data-drx-app="registry-v2"] .registry-table tbody tr{position:relative;padding-top:60px;grid-template-columns:repeat(2,minmax(0,1fr))}
+ html[data-drx-app="registry-v2"] .registry-table td[data-col="name"]{grid-column:1/-1;padding-right:0!important}
+ html[data-drx-app="registry-v2"] .registry-table td:first-child{position:absolute;inset:8px auto auto 12px;width:44px;height:44px;display:grid;place-items:center}
+ html[data-drx-app="registry-v2"] .registry-table td:first-child input{width:20px;height:20px;cursor:pointer}
+ html[data-drx-app="registry-v2"] .registry-table td:first-child::before{display:none}
+ html[data-drx-app="registry-v2"] .registry-table .registry-actions-cell{position:absolute;inset:8px 10px auto auto;width:auto;height:44px}
+ html[data-drx-app="registry-v2"] .registry-table .registry-row-actions{display:flex;gap:4px}
+ html[data-drx-app="registry-v2"] .registry-table .drug-name{font-size:14px;line-height:1.5;white-space:normal;overflow-wrap:break-word}
+ html[data-drx-app="registry-v2"] .registry-table :is(.registry-prescription-text,.registry-text-full){min-width:0;max-width:100%}
+}
+
+/* Column widths belong to the desktop table. On phones the semantic table
+   becomes a bounded stack, including its action cells and every clinical field. */
+@media(max-width:760px){
+ html[data-drx-app="registry-v2"] .registry-table{display:block;width:100%!important;min-width:0!important;max-width:100%}
+ html[data-drx-app="registry-v2"] .registry-table colgroup,html[data-drx-app="registry-v2"] .registry-table thead{display:none}
+ html[data-drx-app="registry-v2"] .registry-table tbody{display:grid;width:100%;min-width:0}
+ html[data-drx-app="registry-v2"] .registry-table tbody tr{width:100%;min-width:0;max-width:100%}
+ html[data-drx-app="registry-v2"] .registry-table td:first-child input{width:28px;height:28px}
+ html[data-drx-app="registry-v2"] .registry-more-trigger{width:44px;height:44px}
+ html[data-drx-app="registry-v2"] :is(.registry-more-menu,.column-picker-panel){bottom:calc(var(--drx-dock-height) + 12px + env(safe-area-inset-bottom))}
+ html[data-drx-app="registry-v2"] .registry-table td{font-size:12px}
+ .drx-mobile-nav :is(a,button){font-size:11px}
+}
+@media(max-width:760px){
+ html[data-drx-app="registry-v2"] .registry-table td[data-col="name"]{width:auto!important;max-width:100%}
+ html[data-drx-app="registry-v2"] .registry-table td::before{font-size:11px!important;line-height:1.5}
+}

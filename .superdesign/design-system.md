@@ -20,6 +20,14 @@
 >
 > This contract is guarded by automated dashboard-shell tests. When the Stripe reference and older TailAdmin notes disagree, **this override and `design-md/stripe/DESIGN.md` win**.
 
+## Premium finish · 30 September 2026
+
+The September finish in `drx-dashboard-stripe.css` is the shared visual owner: navy navigation, indigo actions, stronger readable typography, quiet bordered surfaces and 8px control corners. Desktop shell geometry stays 238px/58px/1360px. Phone titles use 28px and the topbar uses a 58px minimum plus the top safe area.
+
+On phones up to 760px, the shared sidebar core adds one 68px bottom navigation inside `.main-shell`, with Barnat, ICD-10, Dozat, Recetat and Më shumë. Its safe-area padding and the page's bottom clearance must stay paired. The drawer continues to own complete navigation, focus trapping and inert state. The dock hides during text entry and printing. Long medicine names have a full-width identity row; selection and row actions sit above it. Empty toasts never capture touches.
+
+Use the existing stylesheet and runtime owners; do not add a competing theme, fonts or icon dependencies. `pnpm test:premium-ui` checks 90 Chromium route/viewport combinations from 320 to 1920px, populated registry search, dock targets and drawer focus behavior. Physical iOS devices and WebKit still require a separate verification environment.
+
 ## Direction
 
 MedIndex is a fast, low-distraction clinical workspace for use while speaking with a patient. The visual language is a faithful TailAdmin-style data workspace adapted to MedIndex: quiet neutral surfaces, crisp borders, restrained teal interaction color, compact but comfortable controls, and strong information hierarchy. It must look deliberate and medically professional, never like an ecommerce dashboard, marketing landing page, PDF viewer, or playful consumer app.

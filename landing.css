@@ -932,3 +932,29 @@ body.lp{
   .lp .lp-nav__links{padding-top:64px}
   .lp .lp-nav__close{top:10px}
 }
+
+/* Public-site finish: the same precise, calm rhythm as the clinical app. */
+body.lp{font-weight:400;-webkit-text-size-adjust:100%}
+.lp :is(h1,h2,h3){text-wrap:balance;letter-spacing:-.035em}
+.lp p{ text-wrap:pretty }
+.lp .lp-nav{border-bottom:1px solid #e5e9f0}
+.lp .lp-nav__link{font-weight:500}
+.lp .lp-btn{font-weight:550;min-height:44px;line-height:1.4}
+.lp .lp-card{border-color:#e1e7ef;box-shadow:0 1px 2px #13254004}
+.lp .lp-card h3{font-weight:600}
+.lp .lp-card p{line-height:1.65}
+.lp .lp-hero__lead{max-width:58ch;line-height:1.7}
+.lp .lp-faq summary{min-height:52px;line-height:1.5}
+.lp .lp-footer a{line-height:1.6}
+.lp :is(a,button,summary,input,select,textarea):focus-visible{outline:3px solid #533afd;outline-offset:3px}
+@media(max-width:620px){
+ .lp .lp-hero__cta{gap:10px}
+ .lp .lp-hero__cta .lp-btn{min-height:48px}
+ .lp .lp-nav__row{padding-top:env(safe-area-inset-top)}
+ .lp .lp-footer{padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+ .lp .lp-nav__links{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+ .lp .lp-nav__link{min-height:44px;display:inline-flex;align-items:center}
+}
+@media(prefers-reduced-motion:reduce){
+ .lp *, .lp *::before, .lp *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}

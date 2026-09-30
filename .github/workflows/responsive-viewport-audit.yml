@@ -50,6 +50,7 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/audit-responsive-viewports.js | tee /tmp/responsive-viewports.log
+          pnpm test:premium-ui | tee /tmp/premium-ui.log
 
       - name: Upload measurements
         if: always()
@@ -58,6 +59,7 @@ jobs:
           name: responsive-viewport-measurements
           path: |
             /tmp/responsive-viewports.log
+            /tmp/premium-ui.log
             /tmp/responsive-playwright-install.log
           if-no-files-found: warn
           retention-days: 7
