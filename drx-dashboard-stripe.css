@@ -3016,3 +3016,21 @@ html.drx-unified-sidebar :is(.toast,.rx-toast){pointer-events:none}
  html[data-drx-app="registry-v2"] .registry-table .drug-name{font-size:14px;line-height:1.5;white-space:normal;overflow-wrap:break-word}
  html[data-drx-app="registry-v2"] .registry-table :is(.registry-prescription-text,.registry-text-full){min-width:0;max-width:100%}
 }
+
+/* Column widths belong to the desktop table. On phones the semantic table
+   becomes a bounded stack, including its action cells and every clinical field. */
+@media(max-width:760px){
+ html[data-drx-app="registry-v2"] .registry-table{display:block;width:100%!important;min-width:0!important;max-width:100%}
+ html[data-drx-app="registry-v2"] .registry-table colgroup,html[data-drx-app="registry-v2"] .registry-table thead{display:none}
+ html[data-drx-app="registry-v2"] .registry-table tbody{display:grid;width:100%;min-width:0}
+ html[data-drx-app="registry-v2"] .registry-table tbody tr{width:100%;min-width:0;max-width:100%}
+ html[data-drx-app="registry-v2"] .registry-table td:first-child input{width:28px;height:28px}
+ html[data-drx-app="registry-v2"] .registry-more-trigger{width:44px;height:44px}
+ html[data-drx-app="registry-v2"] :is(.registry-more-menu,.column-picker-panel){bottom:calc(var(--drx-dock-height) + 12px + env(safe-area-inset-bottom))}
+ html[data-drx-app="registry-v2"] .registry-table td{font-size:12px}
+ .drx-mobile-nav :is(a,button){font-size:11px}
+}
+@media(max-width:760px){
+ html[data-drx-app="registry-v2"] .registry-table td[data-col="name"]{width:auto!important;max-width:100%}
+ html[data-drx-app="registry-v2"] .registry-table td::before{font-size:11px!important;line-height:1.5}
+}

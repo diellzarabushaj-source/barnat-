@@ -56,6 +56,17 @@ const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'
     }else await expect(dock).not.toBeVisible();
     if(name==='index'){
      await expect(page.locator('#registryRows')).toContainText('PRODUKT TESTUES');
+     const action=page.locator('#registryRows [data-open-row]').first();
+     await expect(action).toBeVisible();
+     if(width<761){
+      const box=await action.boundingBox();assert.ok(box.x+box.width<=width+1,`registry/${width}: reachable row actions ${JSON.stringify(box)}`);
+      await action.click();await expect(page.locator('#detailDrawer')).toHaveClass(/is-open/);
+      await page.locator('#drawerClose').click();await expect(page.locator('#detailDrawer')).not.toHaveClass(/is-open/);
+      const more=page.locator('#registryRows .registry-more-trigger').first();await more.click();
+      const menu=page.locator('#registryRows .registry-more[open] .registry-more-menu');
+      await expect(menu).toBeVisible();const menuBox=await menu.boundingBox();const dockBox=await dock.boundingBox();
+      assert.ok(menuBox.y+menuBox.height<=dockBox.y,`registry/${width}: row menu clears navigation`);await more.click();
+     }
      await page.locator('#searchInput').fill('nuk-ekziston');
      await expect(page.locator('#registryRows')).not.toContainText('PRODUKT TESTUES');
      if(width<761)await expect(dock).not.toBeVisible();

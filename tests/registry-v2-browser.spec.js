@@ -194,7 +194,7 @@ test('registry v2 mobile keeps navigation and table overflow contained', async (
   });
   expect(initial.bodyScrollWidth).toBeLessThanOrEqual(initial.innerWidth);
   expect(initial.sidebarRight).toBeLessThanOrEqual(1);
-  expect(initial.tableScrollWidth).toBeGreaterThan(initial.tableClientWidth);
+  expect(initial.tableScrollWidth).toBeLessThanOrEqual(initial.tableClientWidth + 1);
 
   await page.locator('#menuButton').click();
   await expect.poll(

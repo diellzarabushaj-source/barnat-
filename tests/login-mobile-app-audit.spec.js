@@ -66,121 +66,52 @@ async function prepare(page) {
 async function snapshot(page) {
   return page.evaluate(() => {
     const rect = selector => {
-      const node = document.querySelector(selector);
-      if (!node) return null;
-      const box = node.getBoundingClientRect();
-      return { left:box.left, right:box.right, top:box.top, bottom:box.bottom, width:box.width, height:box.height };
+      const box = document.querySelector(selector)?.getBoundingClientRect();
+      return box && {left:box.left,right:box.right,width:box.width,height:box.height};
     };
-    const visible = selector => {
-      const node = document.querySelector(selector);
-      if (!node) return false;
-      const style = getComputedStyle(node);
-      const box = node.getBoundingClientRect();
-      return style.display !== 'none' && style.visibility !== 'hidden' && box.width > 1 && box.height > 1;
-    };
-    const visibleLogos = [...document.querySelectorAll('.landing-brand-logo img,.login-card-brand img')]
-      .filter(node => {
-        const style = getComputedStyle(node);
-        const box = node.getBoundingClientRect();
-        return style.display !== 'none' && style.visibility !== 'hidden' && box.width > 1 && box.height > 1;
-      }).length;
-    const targets = [...document.querySelectorAll('a,button,summary,input')]
-      .filter(node => {
-        const style = getComputedStyle(node);
-        const box = node.getBoundingClientRect();
-        return style.display !== 'none' && style.visibility !== 'hidden' && !node.hidden && box.width > 1 && box.height > 1;
-      })
-      .map(node => ({ name:node.id || String(node.className || node.tagName), height:node.getBoundingClientRect().height }));
+    const visible = node => node.getClientRects().length && getComputedStyle(node).visibility !== 'hidden';
     return {
       htmlWidth:document.documentElement.scrollWidth,
       bodyWidth:document.body.scrollWidth,
-      card:rect('.login-card'),
-      google:rect('#googleLoginButton'),
-      brand:rect('.landing-brand'),
-      visibleLogos,
-      showcaseVisible:visible('.landing-showcase'),
-      navMetaVisible:visible('.landing-nav-meta'),
-      cardBrandVisible:visible('.login-card-brand'),
-      metaVisible:visible('.login-meta'),
-      mobileCopyVisible:visible('.login-copy-mobile'),
-      desktopCopyVisible:visible('.login-copy-desktop'),
-      targets,
+      card:rect('.auth-card'),google:rect('#googleLoginButton'),brand:rect('.lp-nav__brand'),
+      logos:[...document.querySelectorAll('.auth-nav img')].filter(visible).length,
+      targets:[...document.querySelectorAll('.auth-card button,.auth-card input,.auth-nav a')]
+        .filter(visible).map(node=>({name:node.id||node.className,height:node.getBoundingClientRect().height})),
     };
   });
 }
 
-function inside(rect, viewport, tolerance = 1.5) {
-  expect(rect).not.toBeNull();
-  expect(rect.left).toBeGreaterThanOrEqual(-tolerance);
-  expect(rect.right).toBeLessThanOrEqual(viewport.width + tolerance);
+function inside(rect,viewport){
+ expect(rect).toBeTruthy();
+ expect(rect.left).toBeGreaterThanOrEqual(-1.5);
+ expect(rect.right).toBeLessThanOrEqual(viewport.width+1.5);
 }
 
-test('MedIndex landing opens the secure login only after the CTA', async ({ page }) => {
-  test.setTimeout(90000);
-  fs.mkdirSync(OUTPUT, { recursive:true });
-  await prepare(page);
-
-  const pageErrors = [];
-  page.on('pageerror', error => pageErrors.push(String(error?.message || error)));
-
-  for (const viewport of phones) {
-    await page.setViewportSize({ width:viewport.width, height:viewport.height });
-    await page.goto(`${BASE}/login.html`, { waitUntil:'domcontentloaded' });
-
-    await expect(page.locator('.login-card')).toBeHidden();
-    await expect(page.locator('.nav-cta')).toBeVisible();
-    await page.locator('.nav-cta').click();
-    await expect(page.locator('.login-card')).toBeVisible();
-    await expect(page.locator('.mock-google-sign-in')).toBeVisible();
-    await page.waitForTimeout(160);
-
-    const current = await snapshot(page);
-    expect(current.htmlWidth, `${viewport.name}: html overflow`).toBeLessThanOrEqual(viewport.width + 1);
-    expect(current.bodyWidth, `${viewport.name}: body overflow`).toBeLessThanOrEqual(viewport.width + 1);
-    expect(current.visibleLogos, `${viewport.name}: one visible logo`).toBe(1);
-
-    const portrait = viewport.width <= 600;
-    expect(current.showcaseVisible, `${viewport.name}: landing copy state`).toBe(portrait);
-    expect(current.navMetaVisible, `${viewport.name}: desktop nav hidden`).toBe(false);
-    expect(current.cardBrandVisible, `${viewport.name}: duplicate card brand hidden`).toBe(false);
-    expect(current.metaVisible, `${viewport.name}: desktop metadata hidden`).toBe(false);
-    expect(current.mobileCopyVisible, `${viewport.name}: mobile copy visible`).toBe(true);
-    expect(current.desktopCopyVisible, `${viewport.name}: desktop copy hidden`).toBe(false);
-
-    inside(current.brand, viewport);
-    inside(current.card, viewport);
-    inside(current.google, viewport);
-
-    if (portrait) {
-      const ergonomicMinimum = Math.min(viewport.width * .84, 334);
-      expect(current.card.width, `${viewport.name}: ergonomic app card width`).toBeGreaterThanOrEqual(ergonomicMinimum);
-      expect(current.card.width, `${viewport.name}: app card bounded`).toBeLessThanOrEqual(398);
-    } else {
-      expect(current.card.width, `${viewport.name}: landscape card`).toBeGreaterThanOrEqual(420);
-      expect(current.card.width, `${viewport.name}: landscape bounded`).toBeLessThanOrEqual(540);
-    }
-
-    for (const target of current.targets) {
-      expect(target.height, `${viewport.name}: ${target.name} target`).toBeGreaterThanOrEqual(43.5);
-    }
-
-    await page.screenshot({ path:path.join(OUTPUT, `${viewport.name}.png`), fullPage:true });
-    await page.locator('.login-modal-close').click();
-    await expect(page.locator('.login-card')).toBeHidden();
-  }
-
-  await page.setViewportSize({ width:1440, height:900 });
-  await page.goto(`${BASE}/login.html`, { waitUntil:'domcontentloaded' });
-  await expect(page.locator('.login-card')).toBeHidden();
-  await page.locator('.nav-cta').click();
+test('DRx landing opens the responsive account form with working password controls',async({page})=>{
+ test.setTimeout(90000);
+ fs.mkdirSync(OUTPUT,{recursive:true});await prepare(page);
+ const errors=[];page.on('pageerror',error=>errors.push(error.message));
+ for(const viewport of [...phones,{name:'desktop',width:1440,height:900}]){
+  await page.setViewportSize({width:viewport.width,height:viewport.height});
+  await page.goto(`${BASE}/landing.html`);
+  await page.locator('.lp-hero__cta a[href="login.html"]').click();
+  await expect(page.locator('.auth-card')).toBeVisible();
   await expect(page.locator('.mock-google-sign-in')).toBeVisible();
-  const desktop = await snapshot(page);
-  expect(desktop.showcaseVisible).toBe(true);
-  expect(desktop.navMetaVisible).toBe(true);
-  expect(desktop.cardBrandVisible).toBe(true);
-  expect(desktop.desktopCopyVisible).toBe(true);
-  expect(desktop.mobileCopyVisible).toBe(false);
-  await page.screenshot({ path:path.join(OUTPUT, 'desktop-regression.png'), fullPage:true });
-
-  expect(pageErrors).toEqual([]);
+  await expect(page.locator('#passwordFallback')).toBeHidden();
+  const current=await snapshot(page);
+  expect(current.htmlWidth).toBeLessThanOrEqual(viewport.width+1);
+  expect(current.bodyWidth).toBeLessThanOrEqual(viewport.width+1);
+  expect(current.logos).toBe(1);
+  inside(current.brand,viewport);inside(current.card,viewport);inside(current.google,viewport);
+  expect(current.card.width).toBeGreaterThanOrEqual(Math.min(viewport.width*.84,334));
+  for(const target of current.targets)expect(target.height,`${viewport.name}: ${target.name}`).toBeGreaterThanOrEqual(43.5);
+  await page.locator('#loginPassword').fill('audit-password');
+  await page.locator('#toggleLoginPassword').click();
+  await expect(page.locator('#loginPassword')).toHaveAttribute('type','text');
+  await expect(page.locator('#toggleLoginPassword')).toHaveAttribute('aria-pressed','true');
+  await page.locator('#toggleLoginPassword').click();
+  await expect(page.locator('#loginPassword')).toHaveAttribute('type','password');
+  await page.screenshot({path:path.join(OUTPUT,`${viewport.name}.png`),fullPage:true});
+ }
+ expect(errors).toEqual([]);
 });

@@ -699,3 +699,10 @@ body.lp.lp-auth{
  .lp-auth :is(.au-card,.register-card){border-radius:12px}
  .lp-auth :is(.au-input,.mi-input,.login-email-input){min-height:48px}
 }
+
+/* Every account action stays a dependable physical target, including the
+   compact navigation button and secondary password actions. */
+.lp-auth .auth-nav :is(a,button){min-height:44px;display:inline-flex;align-items:center}
+.lp-auth .auth-card button{min-height:44px}
+.lp-auth .auth-register a{min-height:44px;display:inline-flex;align-items:center}
+.lp.lp-auth .auth-nav__actions .lp-btn{min-height:44px}
