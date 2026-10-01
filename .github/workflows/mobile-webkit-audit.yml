@@ -80,6 +80,11 @@ jobs:
           DEVICE_SESSION_BROWSER: webkit
         run: node tests/device-session-browser-test.js
 
+      - name: Verify admin approval and phone user cards in WebKit
+        env:
+          ADMIN_APPROVAL_BROWSER: webkit
+        run: node tests/admin-approval-browser-test.js
+
       - name: Verify populated Favorites and Notes layouts in WebKit
         env:
           PERSONAL_BROWSER: webkit

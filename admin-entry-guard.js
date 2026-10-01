@@ -5,7 +5,7 @@
 
   function loadWorkspace() {
     const script = document.createElement('script');
-    script.src = '/admin-dashboard.js?v=admin-v11';
+    script.src = '/admin-dashboard.js?v=admin-v12-manual-approval-20261001';
     script.defer = true;
     document.body.appendChild(script);
   }

@@ -12,6 +12,7 @@ on:
       - admin-entry-guard.js
       - scripts/audit-admin-mobile-dashboard.js
       - tests/admin-console-routing-test.js
+      - tests/admin-approval-browser-test.js
       - .github/workflows/admin-mobile-dashboard-audit.yml
   pull_request:
     paths:
@@ -21,6 +22,7 @@ on:
       - admin-entry-guard.js
       - scripts/audit-admin-mobile-dashboard.js
       - tests/admin-console-routing-test.js
+      - tests/admin-approval-browser-test.js
       - .github/workflows/admin-mobile-dashboard-audit.yml
   workflow_dispatch:
 
@@ -67,6 +69,7 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/audit-admin-mobile-dashboard.js | tee /tmp/admin-mobile-dialog.log
+          node tests/admin-approval-browser-test.js
 
       - name: Upload admin mobile measurements
         if: always()
