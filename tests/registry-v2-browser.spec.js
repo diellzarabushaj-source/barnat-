@@ -274,7 +274,8 @@ test('registry v2 tablet keeps shell and detail geometry contained', async ({ pa
 for (const width of [320, 390, 430, 600, 760]) {
   test(`registry clinical fields stay readable at ${width}px with unpublished doses`, async ({ page }) => {
     await page.setViewportSize({ width, height:844 });
-    await page.route('**/api/dosage**', route => route.fulfill({ json:{ ok:true, cards:[] } }));
+    await page.route('**/api/dosage**', route => route.fulfill({ json:{ ok:true,
+      cards:rows.map(row => ({ registryNumber:String(row.registryNumber), adultDose:'', pediatricDose:'' })) } }));
     await page.goto('http://127.0.0.1:4173/index.html');
     await expect(page.locator('#registryRows [data-col="adultDose"]').first()).toHaveText('Pa dozë të publikuar');
     await expect(page.locator('#registryRows [data-col="adultDose"]').first()).toBeVisible();
