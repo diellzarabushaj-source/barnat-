@@ -31,6 +31,7 @@ globalThis.fetch = async (value, options = {}) => {
     const grant = url.searchParams.get('grant_type');
     if (grant === 'refresh_token') {
       state.refreshes++;
+      if (state.refreshGate) await state.refreshGate;
       const token = JSON.parse(options.body).refresh_token;
       if (state.transient) { status = 503; body = {}; }
       else if (state.revoked.has(token)) { status = 400; body = { error_code:'refresh_token_not_found' }; }

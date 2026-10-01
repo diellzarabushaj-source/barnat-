@@ -19,12 +19,17 @@ sessions remain compatible. Because earlier sign-ins discarded the Supabase
 refresh token, those browsers acquire persistence on their next sign-in.
 
 When a protected page is opened after expiry, middleware redirects to
-`/api/auth?resume=1`; the cookie alone never authorizes protected HTML or APIs.
+the public `/session-resume.html` page. It paints immediately and requests
+`/api/auth?entry=1` in the background, so a slow renewal cannot block the document
+and leave Safari blank. The cookie alone never authorizes protected HTML or APIs.
 The server decrypts it, refreshes through Supabase, verifies the live user and
 active doctor/admin profile, and checks both Auth UUID and storage-owner UUID
 before issuing another short session. Return destinations are restricted to
 local, non-authentication paths. Temporary upstream failures preserve the device
 credential and retry rather than forcing another login.
+The recovery page shows connection status, retries failures, preserves the local
+return path and offers an explicit sign-in link that bypasses automatic resume.
+Legacy `/api/auth?resume=1` links remain supported.
 
 The shared sidebar runtime checks on return to an active tab and every 15 minutes.
 An expired same-origin API GET is renewed and retried once; writes and forbidden

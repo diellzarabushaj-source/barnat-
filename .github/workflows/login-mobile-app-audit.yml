@@ -12,6 +12,8 @@ on:
       - lib/device-session.mjs
       - lib/supabase-auth.js
       - middleware.ts
+      - session-resume.html
+      - session-resume.js
       - tests/device-session-browser-test.js
       - tests/device-session-fixture.js
       - tests/login-mobile-app-audit.spec.js
@@ -26,6 +28,8 @@ on:
       - lib/device-session.mjs
       - lib/supabase-auth.js
       - middleware.ts
+      - session-resume.html
+      - session-resume.js
       - tests/device-session-browser-test.js
       - tests/device-session-fixture.js
       - tests/login-mobile-app-audit.spec.js
