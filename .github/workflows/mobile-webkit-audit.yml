@@ -16,6 +16,10 @@ concurrency:
 jobs:
   mobile-webkit:
     runs-on: ubuntu-latest
+    container:
+      # Match the pinned Playwright dependency; browsers and native libraries are preinstalled.
+      image: mcr.microsoft.com/playwright:v1.54.1-noble
+      options: --ipc=host
     timeout-minutes: 25
     steps:
       - name: Checkout
@@ -45,12 +49,10 @@ jobs:
           node --check tests/registry-v2-browser.spec.js
           node --check playwright.registry-v2.config.js
 
-      - name: Install Playwright WebKit
+      - name: Verify preinstalled Playwright WebKit
         shell: bash
         run: |
-          set -euo pipefail
-          pnpm exec playwright install --with-deps webkit > /tmp/playwright-webkit-install.log 2>&1 || { tail -200 /tmp/playwright-webkit-install.log; exit 1; }
-          echo "Playwright WebKit installed."
+          node -e 'require("playwright").webkit.launch().then(async browser => { await browser.close(); console.log("Preinstalled WebKit is ready."); }).catch(error => { console.error(error); process.exit(1); })'
 
       - name: Run current Registry V2 phone, tablet and desktop WebKit gates
         shell: bash
