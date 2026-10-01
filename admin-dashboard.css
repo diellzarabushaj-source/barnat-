@@ -316,6 +316,24 @@ body{font-size:15px;line-height:1.4}
 }
 
 /* The administrative workspace uses the same finish as the clinical shell. */
+.mi-users-table td{overflow-wrap:anywhere}
+@media(max-width:900px){
+ .mi-users-table,.mi-users-table tbody{display:block;width:100%;min-width:0}
+ .mi-users-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ .mi-users-table tr{display:grid;grid-template-columns:minmax(0,1fr);width:100%;padding:16px;border-bottom:1px solid #e1e7ef}
+ .mi-users-table tr:last-child{border-bottom:0}
+ .mi-users-table td{display:block;width:100%;min-width:0;border:0;padding:8px 0;white-space:normal}
+ .mi-users-table td::before{content:attr(data-label);display:block;margin-bottom:4px;font-size:11px;font-weight:600;color:#69788d}
+ .mi-users-table td:first-child::before,.mi-users-table td.is-empty::before{display:none}
+ .mi-users-table td:first-child strong{font-size:15px}
+ .mi-users-table .mi-row-actions{display:flex;gap:8px}
+ .mi-users-table .mi-row-btn{min-height:44px}
+ .mi-users-table .mi-row-actions button{flex:1 1 90px;min-height:44px;padding:10px 12px}
+ .mi-user-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .mi-user-stats .mi-stat{padding:18px}
+ .mi-user-stats .mi-stat:nth-child(odd){border-right:1px solid var(--stripe-hairline)}
+ .mi-user-stats .mi-stat:nth-last-child(-n+2){border-bottom:0}
+}
 .mi-admin-shell,.mi-admin-main{background:#f5f7fb}
 .mi-admin{font-weight:400;line-height:1.55}
 .mi-page-head h1{font-weight:650;letter-spacing:-.04em}

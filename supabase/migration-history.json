@@ -1173,6 +1173,10 @@
     {
       "name": "harden_pediatric_kosovo_formulations_wave10",
       "version": "20260928212131"
+    },
+    {
+      "name": "admin_manual_registration_approval",
+      "version": "20261001192452"
     }
   ]
 }
