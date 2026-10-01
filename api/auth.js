@@ -326,6 +326,11 @@ module.exports = async function handler(req, res) {
         }
       }
     }
+    // Migrate already signed-in browsers from Strict cookies without requiring
+    // another password or rotating a healthy upstream refresh token.
+    if (session && device && !cookies.length) {
+      cookies.push(auth.sessionCookie(auth.sessionFromRequest(req)), Device.deviceCookie(rawDevice));
+    }
     if (resume) {
       if (cookies.length) res.setHeader('Set-Cookie', cookies);
       res.setHeader('Location', session ? destination : `/landing.html?return=${encodeURIComponent(destination)}`);
