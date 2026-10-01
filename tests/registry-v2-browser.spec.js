@@ -39,6 +39,9 @@ const rows = [
   },
 ];
 
+const visibleColumns = ['registry', 'name', 'substance', 'strength', 'form', 'prescription',
+  'drugClass', 'use', 'population', 'atc', 'adultDose', 'pediatricDose', 'status', 'price'];
+
 function filteredRows(url) {
   const q = String(url.searchParams.get('q') || '').toLowerCase();
   if (!q) return rows;
@@ -47,6 +50,9 @@ function filteredRows(url) {
 
 async function installApiMocks(page) {
   await page.route('**/api/auth**', async route => {
+    if (new URL(route.request().url()).searchParams.get('scope') === 'ui-preferences') {
+      return route.fulfill({ json:{ ok:true, registryColumns:visibleColumns } });
+    }
     if (route.request().method() === 'DELETE') {
       return route.fulfill({ status:200, contentType:'application/json', body:JSON.stringify({ ok:true }) });
     }
@@ -196,6 +202,14 @@ test('registry v2 mobile keeps navigation and table overflow contained', async (
   expect(initial.sidebarRight).toBeLessThanOrEqual(1);
   expect(initial.tableScrollWidth).toBeLessThanOrEqual(initial.tableClientWidth + 1);
 
+  const doseLayout = await page.locator('#registryRows tr').nth(1).evaluate(row => {
+    const card = row.getBoundingClientRect();
+    const dose = row.querySelector('[data-col="adultDose"]');
+    return { cardWidth:card.width, doseWidth:dose.getBoundingClientRect().width, position:getComputedStyle(dose).position };
+  });
+  expect(doseLayout.position).toBe('static');
+  expect(doseLayout.doseWidth).toBeGreaterThan(doseLayout.cardWidth * 0.8);
+
   await page.locator('#menuButton').click();
   await expect.poll(
     () => page.locator('#sidebar').evaluate(node => Math.abs(node.getBoundingClientRect().left)),
@@ -256,3 +270,50 @@ test('registry v2 tablet keeps shell and detail geometry contained', async ({ pa
 
   await page.screenshot({ path:test.info().outputPath('registry-v2-tablet.png'), fullPage:true });
 });
+
+for (const width of [320, 390, 430, 600, 760]) {
+  test(`registry clinical fields stay readable at ${width}px with unpublished doses`, async ({ page }) => {
+    await page.setViewportSize({ width, height:844 });
+    await page.route('**/api/dosage**', route => route.fulfill({ json:{ ok:true, cards:[] } }));
+    await page.goto('http://127.0.0.1:4173/index.html');
+    await expect(page.locator('#registryRows [data-col="adultDose"]').first()).toHaveText('Pa dozë të publikuar');
+    await expect(page.locator('#registryRows [data-col="adultDose"]').first()).toBeVisible();
+    await expect(page.locator('#registryRows [data-col="pediatricDose"]').first()).toBeVisible();
+
+    async function checkFields(cardSelector, fieldSelector) {
+      const cards = page.locator(cardSelector);
+      await expect(cards).toHaveCount(rows.length);
+      for (const card of await cards.all()) {
+        const layout = await card.evaluate((node, selector) => {
+          const bounds = node.getBoundingClientRect();
+          const fields = [...node.querySelectorAll(selector)].filter(field => !field.hidden && getComputedStyle(field).display !== 'none').map(field => {
+            const rect = field.getBoundingClientRect();
+            return { col:field.dataset.col, width:rect.width, left:rect.left, right:rect.right,
+              top:rect.top, bottom:rect.bottom, scroll:field.scrollWidth, client:field.clientWidth,
+              position:getComputedStyle(field).position };
+          });
+          return { width:bounds.width, left:bounds.left, right:bounds.right, fields };
+        }, fieldSelector);
+        let previousBottom = 0;
+        for (const field of layout.fields) {
+          expect(field.position, `${field.col} belongs inside the card`).toBe('static');
+          expect(field.width, `${field.col} needs readable width`).toBeGreaterThan(layout.width * 0.8);
+          expect(field.left).toBeGreaterThanOrEqual(layout.left);
+          expect(field.right).toBeLessThanOrEqual(layout.right);
+          expect(field.top, `${field.col} must not overlap the previous field`).toBeGreaterThanOrEqual(previousBottom);
+          expect(field.scroll).toBeLessThanOrEqual(field.client + 1);
+          previousBottom = field.bottom;
+        }
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width + 1);
+    }
+
+    await checkFields('#registryRows tr', '[data-col="prescription"], [data-col="drugClass"], [data-col="use"], [data-col="adultDose"], [data-col="pediatricDose"]');
+    await page.locator('[data-view="list"]').click();
+    await expect(page.locator('#registryList [data-dose-adult]').first()).toHaveText('Pa dozë të publikuar');
+    await checkFields('.registry-list-card', '.registry-list-field');
+    await page.locator('[data-view="table"]').click();
+    await checkFields('#registryRows tr', '[data-col="adultDose"], [data-col="pediatricDose"]');
+    await page.screenshot({ path:test.info().outputPath(`registry-clinical-fields-${width}.png`), fullPage:true });
+  });
+}
