@@ -40,6 +40,7 @@ const PUBLIC_PATHS = new Set([
   '/landing.html',
   '/landing.css',
   '/entry-resume.js',
+  '/session-resume.html',
   '/drx-pages.css',
   '/drx-auth.css',
   '/drx-blog.css',
@@ -168,13 +169,13 @@ export default async function middleware(request) {
   const authenticated = await verifySessionToken(sessionFromRequest(request));
   const remembered = Boolean(parseCookies(request.headers.get('cookie')).medindex_device);
 
-  // A remembered browser is redirected to the server for renewal. Cookie
+  // Paint a public recovery page before waiting for server renewal. Cookie
   // presence never authorizes a page or an API: /api/auth verifies and refreshes
   // the encrypted credential before redirecting back with a new short session.
   if (!authenticated && remembered && request.method === 'GET'
+    && !(LOGIN_PAGES.has(pathname) && url.searchParams.get('reauth') === '1')
     && (pathname === ENTRY_PAGE || LOGIN_PAGES.has(pathname) || (!isPublicPath(pathname) && !pathname.startsWith('/api/')))) {
-    const resume = new URL('/api/auth', request.url);
-    resume.searchParams.set('resume', '1');
+    const resume = new URL('/session-resume.html', request.url);
     resume.searchParams.set('return', pathname === ENTRY_PAGE || LOGIN_PAGES.has(pathname) ? (url.searchParams.get('return') || '/index.html') : safeReturnPath(url));
     return Response.redirect(resume, 302);
   }

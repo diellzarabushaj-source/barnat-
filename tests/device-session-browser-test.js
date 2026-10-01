@@ -8,6 +8,12 @@ const { execFileSync } = require('node:child_process');
 const { chromium, webkit } = require('@playwright/test');
 const F = require('./device-session-fixture.js');
 
+async function expectVisibleResume(page) {
+  assert.equal(new URL(page.url()).pathname, '/session-resume.html');
+  assert.ok(await page.getByRole('heading', { name:'Po rikthehet hyrja jote' }).isVisible());
+  assert.ok(await page.getByRole('link', { name:'Hyr në llogari' }).isVisible());
+}
+
 (async () => {
   const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'drx-device-browser-'));
   const realNow = Date.now.bind(Date);
@@ -20,6 +26,7 @@ const F = require('./device-session-fixture.js');
     '-out', path.join(temp, 'cert.pem'), '-days', '1', '-subj', '/CN=localhost'], { stdio:'pipe' });
   let base;
   let externalCookie = '';
+  let releaseRefresh;
   const server = https.createServer({ key:fs.readFileSync(path.join(temp, 'key.pem')), cert:fs.readFileSync(path.join(temp, 'cert.pem')) }, async (req, res) => {
     try {
       res.status = code => { res.statusCode = code; return res; };
@@ -36,6 +43,11 @@ const F = require('./device-session-fixture.js');
         return res.end(await decision.text());
       }
       if (req.url.startsWith('/api/auth')) return await F.handler(req, res);
+      if (req.url.startsWith('/session-resume.')) {
+        const pathname = new URL(req.url, base).pathname;
+        res.setHeader('Content-Type', pathname.endsWith('.js') ? 'text/javascript' : 'text/html');
+        return res.end(fs.readFileSync(path.join(F.ROOT, pathname.slice(1))));
+      }
       if (req.url === '/api/device-data') return res.json({ owner:F.id });
       if (req.url.startsWith('/entry-resume.js')) {
         res.setHeader('Content-Type', 'text/javascript');
@@ -116,6 +128,33 @@ const F = require('./device-session-fixture.js');
     assert.ok(F.state.refreshes > 0);
     assert.ok(auth.sessionData((await context.cookies()).find(c => c.name === 'medindex_session')?.value));
 
+    // An expired remembered login must paint a real page before the upstream
+    // renewal finishes. Direct document navigation to the auth API stays blank.
+    offset += 9 * 3600000;
+    F.state.refreshGate = new Promise(resolve => { releaseRefresh = resolve; });
+    await page.goto(base + '/recetat.html?draft=slow', { waitUntil:'domcontentloaded', timeout:2500 });
+    await expectVisibleResume(page);
+    await page.screenshot({ path:'/tmp/barnat-safari-visible-resume.png' });
+    assert.equal(new URL(await page.getByRole('link', { name:'Hyr në llogari' }).getAttribute('href'), base).searchParams.get('reauth'), '1');
+    assert.ok((await context.cookies()).some(c => c.name === 'medindex_device'));
+    await page.waitForFunction(() => document.getElementById('resumeStatus').textContent.includes('Lidhja po vonon'));
+    releaseRefresh(); F.state.refreshGate = null;
+    await page.waitForURL(url => url.pathname === '/recetat.html' && url.search === '?draft=slow');
+    offset += 9 * 3600000;
+    F.state.transient = true;
+    const failedRecovery = page.waitForResponse(response => response.url() === base + '/api/auth?entry=1' && response.status() === 503);
+    await page.goto(base + '/recetat.html?draft=retry');
+    await failedRecovery;
+    await page.waitForFunction(() => document.getElementById('resumeStatus').textContent.includes('po provojmë përsëri'));
+    assert.ok((await context.cookies()).some(c => c.name === 'medindex_device'));
+    F.state.transient = false;
+    await page.getByRole('button', {name:'Provo përsëri'}).click();
+    await page.waitForURL(url => url.pathname === '/recetat.html' && url.search === '?draft=retry');
+    for (const unsafe of ['//evil.test', '/\\evil.test', '/api/auth', '/session-resume.html', '/%2e%2e/api/auth']) {
+      await page.goto(base + '/session-resume.html?return=' + encodeURIComponent(unsafe));
+      await page.waitForURL(base + '/index.html');
+    }
+
     // A restored old browser can hit a slow auth server. Preserve its credential
     // and resume automatically once the connection recovers.
     await context.addCookies((await context.cookies()).filter(c => ['medindex_device', 'medindex_session'].includes(c.name))
@@ -143,8 +182,15 @@ const F = require('./device-session-fixture.js');
     page = await context.newPage();
     await page.goto(base + '/recetat.html');
     assert.equal(new URL(page.url()).pathname, '/landing.html', 'Logout must survive a browser restart.');
-    console.log(`${browserType.name()} remembered-device browser passed: external entries, landing resume, old-cookie migration, forbidden cross-site POST, HTTPS HttpOnly persistence, profile restart after 9 hours, overnight recovery and persistent logout.`);
+    await context.addCookies([{ name:'medindex_device', value:'forged', url:base, secure:true, httpOnly:true, sameSite:'Lax' }]);
+    await page.goto(base + '/recetat.html');
+    await page.getByRole('status').filter({hasText:'Hyrja e ruajtur nuk është më e vlefshme'}).waitFor();
+    assert.equal((await context.cookies()).some(c => c.name === 'medindex_device'), false);
+    await page.getByRole('link', {name:'Hyr në llogari'}).click();
+    await page.waitForURL(url => url.pathname === '/login.html' && url.searchParams.get('reauth') === '1');
+    console.log(`${browserType.name()} remembered-device browser passed: visible startup during blocked renewal, slow-link status, retry without lost credentials, safe return paths, invalid-device sign-in, external entries, old-cookie migration, forbidden cross-site POST, HTTPS HttpOnly persistence, profile restart after 9 hours, overnight recovery and persistent logout.`);
   } finally {
+    releaseRefresh?.(); F.state.refreshGate = null;
     await context?.close();
     await new Promise(resolve => server.close(resolve));
     Date.now = realNow;

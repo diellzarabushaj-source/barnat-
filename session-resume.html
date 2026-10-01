@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f7f8fc">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>DRx · Po rikthehet hyrja</title>
+  <style>
+    *{box-sizing:border-box}html,body{min-height:100%;margin:0}body{min-height:100svh;display:grid;place-items:center;padding:24px;background:#f7f8fc;color:#152d44;font:16px/1.6 system-ui,-apple-system,sans-serif}main{width:min(440px,100%);padding:32px;border:1px solid #e1e6ef;border-radius:24px;background:#fff;box-shadow:0 12px 48px #1c1e540a}.brand{color:#4f46e5;font-size:30px;font-weight:800;letter-spacing:-1px}h1{margin:22px 0 10px;font-size:26px;line-height:1.25;letter-spacing:-.6px}p{color:#607088;margin:0 0 24px}.progress{height:4px;margin:24px 0;border-radius:8px;background:#eeedff;overflow:hidden}.progress::after{content:"";display:block;width:45%;height:100%;border-radius:inherit;background:#6356e8;animation:move 1.3s ease-in-out infinite alternate}.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}button,a{display:inline-flex;min-height:44px;align-items:center;justify-content:center;border-radius:12px;font:600 14px/1.4 system-ui;text-decoration:none}button{border:0;padding:12px 18px;background:#4f46e5;color:white;cursor:pointer}button:disabled{opacity:.6;cursor:wait}a{padding:10px;color:#4f46e5}button:focus-visible,a:focus-visible{outline:3px solid #b8b0ff;outline-offset:3px}@keyframes move{to{transform:translateX(122%)}}@media(prefers-reduced-motion:reduce){.progress::after{animation:none;width:100%}}@media(max-width:360px){main{padding:24px}h1{font-size:23px}}
+  </style>
+  <script src="/session-resume.js?v=20261001" defer></script>
+</head>
+<body>
+  <main>
+    <div class="brand" aria-label="DRx">DRx</div>
+    <h1>Po rikthehet hyrja jote</h1>
+    <p id="resumeStatus" role="status" aria-live="polite">Po lidhemi me llogarinë tënde. Nuk ke nevojë ta shkruash sërish fjalëkalimin.</p>
+    <div class="progress" id="resumeProgress" aria-hidden="true"></div>
+    <div class="actions">
+      <button id="resumeRetry" type="button">Provo përsëri</button>
+      <a id="resumeLogin" href="/login.html">Hyr në llogari</a>
+    </div>
+    <noscript><p>Aktivizo JavaScript për ta rikthyer hyrjen e ruajtur, ose përdor lidhjen e hyrjes.</p></noscript>
+  </main>
+</body>
+</html>
