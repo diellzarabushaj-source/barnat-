@@ -2,10 +2,17 @@
 
 Normal Google and email sign-in now save a server-set `medindex_device` cookie.
 It contains an AES-256-GCM encrypted Supabase refresh token and the approved
-account/storage identity. It is HttpOnly, Secure, SameSite=Strict and expires
+account/storage identity. It is HttpOnly, Secure, SameSite=Lax and expires
 after 90 days without successful renewal. Each renewal rotates the credential
 and the cookie. Passwords and upstream access/refresh tokens are never returned
 to browser JavaScript or saved in Web Storage.
+
+The Lax login cookies are included on safe top-level navigation, so returning
+from an external link does not look signed out. The CSRF cookie remains Strict;
+unsafe requests retain their origin and CSRF checks. Existing remembered cookies
+are reissued during a successful session check without rotating healthy upstream
+credentials. The public entry page resumes a remembered browser automatically,
+including old Strict cookies recovered by a same-origin check after navigation.
 
 The signed v3 application session still expires after eight hours. Existing
 sessions remain compatible. Because earlier sign-ins discarded the Supabase
@@ -36,6 +43,7 @@ Tests cover cryptographic tampering, expiry, refresh rotation, live account
 gating, identity binding, outage recovery, logout, open redirects and middleware
 authorization. The browser test uses the production handler and middleware,
 mocked upstream services, HTTPS and an actual persistent browser profile. It
-closes/reopens the browser after nine simulated server hours, verifies deep links
+closes/reopens the browser after nine simulated server hours, verifies external
+deep links, entry-page recovery, old-cookie migration, cross-site POST rejection
 and active-tab recovery, then verifies logout survives another restart. CI runs
 it with Chromium and WebKit.

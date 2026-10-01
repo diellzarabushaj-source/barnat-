@@ -22,7 +22,9 @@ const F = require('./device-session-fixture.js');
   assert.equal(auth.verifySessionToken(auth.sessionFromRequest({ headers:{ cookie } }), realNow() + 9 * 3600000), false,
     'The short access session must still expire; persistence must use refresh validation.');
   const deviceHeader = login.headers['set-cookie'].find(x => x.startsWith('medindex_device='));
-  assert.match(deviceHeader, /Max-Age=7776000; HttpOnly; Secure; SameSite=Strict/);
+  assert.match(deviceHeader, /Max-Age=7776000; HttpOnly; Secure; SameSite=Lax/);
+  assert.match(login.headers['set-cookie'].find(x => x.startsWith('medindex_session=')), /SameSite=Lax/);
+  assert.match(login.headers['set-cookie'].find(x => x.startsWith('medindex_csrf=')), /SameSite=Strict/);
   assert.doesNotMatch(JSON.stringify(login.body), /refresh-test|access-test/, 'No upstream credentials in the response body.');
 
   offset = 9 * 3600000;
@@ -34,6 +36,8 @@ const F = require('./device-session-fixture.js');
   const count = F.state.refreshes;
   assert.equal((await F.call('GET', undefined, cookie)).body.authenticated, true);
   assert.equal(F.state.refreshes, count, 'Fresh sessions must not rotate on every page read.');
+  const healthy = await F.call('GET', undefined, cookie);
+  assert.match(healthy.headers['set-cookie'].find(x => x.startsWith('medindex_device=')), /SameSite=Lax/);
   assert.equal((await F.call('GET', undefined, cookie, '?resume=1&return=%2Frecetat.html%3Fid%3Ddemo')).headers.location,
     '/recetat.html?id=demo');
   for (const unsafe of ['//evil.test', '/\\evil.test', '/api/auth?resume=1', '/login.html', '/%2e%2e/api/auth', '/\n/evil.test']) {
@@ -97,6 +101,9 @@ const F = require('./device-session-fixture.js');
   assert.equal(forged.headers.get('x-test-next'), null, 'A device cookie alone must not authorize protected HTML.');
   const deniedApi = await middleware(new Request('https://drx.test/api/registry', { headers:{ cookie:'medindex_device=forged' } }));
   assert.equal(deniedApi.status, 401, 'Device cookies must never bypass API authorization.');
+  const entryResume = await middleware(new Request('https://drx.test/landing.html?return=%2Frecetat.html', { headers:{ cookie:'medindex_device=forged' } }));
+  assert.equal(entryResume.status, 302, 'A remembered browser at the entry page must request server verification.');
+  assert.equal(new URL(entryResume.headers.get('location')).pathname, '/api/auth');
   const invalidResume = await F.call('GET', undefined, 'medindex_device=forged', '?resume=1&return=%2Frecetat.html');
   assert.equal(invalidResume.statusCode, 302);
   assert.ok(invalidResume.headers.location.startsWith('/landing.html'));

@@ -39,6 +39,7 @@ const PUBLIC_PATHS = new Set([
   // Sipërfaqet publike DRx: faqja hyrëse, Journal-i dhe format e llogarisë.
   '/landing.html',
   '/landing.css',
+  '/entry-resume.js',
   '/drx-pages.css',
   '/drx-auth.css',
   '/drx-blog.css',
@@ -126,10 +127,8 @@ export const config = {
    /login.html; ndryshimi i kësaj vlere e kthen atë si faqe hyrëse. */
 const LOGIN_PAGE = '/login-v2.html';
 
-/* Faqja publike ku dërgohet kushdo që nuk ka sesion. Ndryshe nga LOGIN_PAGE,
-   kjo nuk hyn te LOGIN_PAGES: një vizitor i kyçur duhet të mund ta shohë faqen
-   hyrëse pa u kthyer me forcë te regjistri. Duhet të përputhet me ENTRY_PAGE
-   te auth-client.js. */
+/* Vizitorët shohin faqen publike; pajisjet me hyrje të ruajtur rikthehen te
+   hapësira e punës. Duhet të përputhet me ENTRY_PAGE te auth-client.js. */
 const ENTRY_PAGE = '/landing.html';
 
 /* Të dyja faqet sillen njësoj kur përdoruesi është tashmë i kyçur. */
@@ -173,10 +172,10 @@ export default async function middleware(request) {
   // presence never authorizes a page or an API: /api/auth verifies and refreshes
   // the encrypted credential before redirecting back with a new short session.
   if (!authenticated && remembered && request.method === 'GET'
-    && (LOGIN_PAGES.has(pathname) || (!isPublicPath(pathname) && !pathname.startsWith('/api/')))) {
+    && (pathname === ENTRY_PAGE || LOGIN_PAGES.has(pathname) || (!isPublicPath(pathname) && !pathname.startsWith('/api/')))) {
     const resume = new URL('/api/auth', request.url);
     resume.searchParams.set('resume', '1');
-    resume.searchParams.set('return', LOGIN_PAGES.has(pathname) ? (url.searchParams.get('return') || '/index.html') : safeReturnPath(url));
+    resume.searchParams.set('return', pathname === ENTRY_PAGE || LOGIN_PAGES.has(pathname) ? (url.searchParams.get('return') || '/index.html') : safeReturnPath(url));
     return Response.redirect(resume, 302);
   }
 
@@ -185,12 +184,13 @@ export default async function middleware(request) {
       return Response.redirect(new URL('/index.html', request.url), 302);
     }
 
-    if (LOGIN_PAGES.has(pathname) && authenticated) {
+    if ((pathname === ENTRY_PAGE || LOGIN_PAGES.has(pathname)) && authenticated) {
       const target = new URL(url.searchParams.get('return') || '/index.html', request.url);
       if (target.origin !== url.origin
         || target.pathname.startsWith('/api/')
         || target.pathname.startsWith('/login')
         || target.pathname.startsWith('/recovery')
+        || target.pathname === ENTRY_PAGE
         || PUBLIC_INFO_PATHS.has(target.pathname)) {
         return Response.redirect(new URL('/index.html', request.url), 302);
       }
