@@ -52,7 +52,7 @@ jobs:
       - name: Verify preinstalled Playwright WebKit
         shell: bash
         run: |
-          node -e 'require("playwright").webkit.launch().then(async browser => { await browser.close(); console.log("Preinstalled WebKit is ready."); }).catch(error => { console.error(error); process.exit(1); })'
+          node -e 'require("@playwright/test").webkit.launch().then(async browser => { await browser.close(); console.log("Preinstalled WebKit is ready."); }).catch(error => { console.error(error); process.exit(1); })'
 
       - name: Run current Registry V2 phone, tablet and desktop WebKit gates
         shell: bash
