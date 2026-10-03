@@ -1759,7 +1759,7 @@
     const next = currentIndex >= 0 && currentIndex < navigationItems.length - 1 ? navigationItems[currentIndex + 1] : null;
 
     detail.innerHTML = `
-      <div class="ck-document-inner ck-modern-document${[5,6].includes(Number(item.chapterNumber)) ? ' ck-source-faithful-document' : ''}">
+      <div class="ck-document-inner ck-modern-document${[5,6,7].includes(Number(item.chapterNumber)) ? ' ck-source-faithful-document' : ''}">
         <header class="ck-detail-head">
           <div class="ck-detail-title-row">
             <div>
@@ -1801,7 +1801,7 @@
             const visibleIndex = indexedSections.indexOf(section);
             const displayNumber = String(Math.max(visibleIndex + 1, 1)).padStart(2, '0');
             const id = `medical-section-${safeAnchor(section._key || section.title, String(index + 1))}`;
-            const sourceFaithful = [5,6].includes(Number(item.chapterNumber));
+            const sourceFaithful = [5,6,7].includes(Number(item.chapterNumber));
             const sourceRx = sourceFaithful && clean(section?.sectionType).toLowerCase() === 'prescription';
             const sourceRxHeading = /^RX\s*[•:]/i.test(clean(section?.title));
             const content = sourceRx
