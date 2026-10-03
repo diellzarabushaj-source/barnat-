@@ -1646,6 +1646,10 @@
     bindDetailNavigation(detail);
   }
 
+  function isSourceBodySection(section) {
+    return clean(section?.title) === '__SOURCE_BODY__';
+  }
+
   function medicalSectionLabel(section) {
     const labels = {
       general:'Mësimi',
@@ -1673,6 +1677,7 @@
     const review = reviewMeta(item.reviewStatus);
     const procedures = procedureEntries(item);
     const sections = (item.sections || []).filter(Boolean);
+    const indexedSections = sections.filter(section => !isSourceBodySection(section));
     const navigationItems = readerNavigationItems().filter(candidate => !isChapter(candidate));
     const currentIndex = navigationItems.findIndex(candidate => candidate._id === item._id);
     const previous = currentIndex > 0 ? navigationItems[currentIndex - 1] : null;
@@ -1702,11 +1707,11 @@
 
         ${sourcePanelMarkup(item)}
 
-        ${sections.length > 1 ? `
+        ${indexedSections.length > 1 ? `
           <nav class="ck-section-index" aria-label="Përmbajtja e kësaj teme">
-            <div class="ck-section-index-head"><span>Në këtë temë</span><small>${sections.length} seksione</small></div>
+            <div class="ck-section-index-head"><span>Në këtë temë</span><small>${indexedSections.length} seksione</small></div>
             <div class="ck-section-index-list">
-              ${sections.map((section, index) => `
+              ${indexedSections.map((section, index) => `
                 <button type="button" data-hub-section="medical-section-${safeAnchor(section._key || section.title, String(index + 1))}">
                   <span>${String(index + 1).padStart(2, '0')}</span>
                   <strong>${esc(section.title || medicalSectionLabel(section))}</strong>
@@ -1720,6 +1725,12 @@
           ${sections.map((section, index) => {
             const id = `medical-section-${safeAnchor(section._key || section.title, String(index + 1))}`;
             const content = medicalContentMarkup(section.content || []);
+            if (isSourceBodySection(section)) {
+              return `
+                <section class="ck-section ck-modern-section ck-source-body-section" id="${esc(id)}">
+                  <div class="ck-modern-content">${content}</div>
+                </section>`;
+            }
             return `
               <section class="ck-section ck-modern-section" id="${esc(id)}">
                 <div class="ck-modern-section-heading">
