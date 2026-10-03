@@ -1,0 +1,334 @@
+{
+  "schemaVersion": 1,
+  "importId": "chapter-05-full-modern-import-2026-10-03",
+  "importedAt": "2026-10-03",
+  "source": "Libri Doctor on Duty shqip — Kapitulli 5: Sëmundjet infektive",
+  "sanity": {
+    "projectId": "4wdtp8cz",
+    "dataset": "production",
+    "workspace": "medical-hub-authoring"
+  },
+  "frontend": "No frontend code changes required; existing medicalTopic/medicalSection renderer is used.",
+  "clinicalGate": "All chapter-5 medicalTopic documents remain review. Do not mark verified without clinical review.",
+  "totals": {
+    "topics": 31,
+    "sections": 149,
+    "emptySections": 0
+  },
+  "preservedExistingOrders": [
+    1,
+    2,
+    5,
+    6,
+    7
+  ],
+  "importedOrders": [
+    3,
+    4,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "topics": [
+    {
+      "_id": "medical-topic-dod-05-001",
+      "order": 1,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-01-ethet-me-origjine-te-panjohur-fuo",
+      "title": "Ethe me origjinë të panjohur (FUO)",
+      "version": "doctor-on-duty-ch05-lesson01-rebuild-2026-09-14"
+    },
+    {
+      "_id": "medical-topic-dod-05-002",
+      "order": 2,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-02-ethet-me-te-dridhura-dhe-rigor",
+      "title": "Ethe me të dridhura dhe rigor",
+      "version": "doctor-on-duty-ch05-lesson02-rebuild-2026-09-14"
+    },
+    {
+      "_id": "4ec2b65a-cb72-4ec2-85b9-d26fc1268627",
+      "order": 3,
+      "reviewStatus": "review",
+      "sectionCount": 6,
+      "slug": "05-03-sepsa",
+      "title": "Sepsa",
+      "version": "Doctor on Duty 3rd Edition 2024–25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "500abaa7-69f7-44ba-9e60-1202f52b27f5",
+      "order": 4,
+      "reviewStatus": "review",
+      "sectionCount": 5,
+      "slug": "05-04-ethet-tifoide-ethet-enterike",
+      "title": "Ethet tifoide (ethet enterike)",
+      "version": "Doctor on Duty 3rd Edition 2024–25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "56ee7045-812b-4a60-b9a5-599d2f3041cd",
+      "order": 5,
+      "reviewStatus": "review",
+      "sectionCount": 5,
+      "slug": "05-05-malaria",
+      "title": "Malaria",
+      "version": "doctor-on-duty-ch05-malaria-modern-2026-09-15"
+    },
+    {
+      "_id": "3be48e89-2372-47e2-9f9c-a125241f9c90",
+      "order": 6,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-06-ethet-dengue",
+      "title": "Ethet dengue",
+      "version": "doctor-on-duty-ch05-dengue-modern-2026-09-16"
+    },
+    {
+      "_id": "5634e7f7-0f34-46c0-8f57-e254d7778bdc",
+      "order": 7,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-07-bruceloza",
+      "title": "Bruceloza",
+      "version": "doctor-on-duty-ch05-brucellosis-modern-2026-09-16"
+    },
+    {
+      "_id": "df7077be-951e-4bb6-9a4a-9002987bc3cd",
+      "order": 8,
+      "reviewStatus": "review",
+      "sectionCount": 6,
+      "slug": "05-08-leptospiroza-semundja-e-weil",
+      "title": "Leptospiroza / sëmundja e Weil",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · source-faithful 2026-09-16 · full source import 2026-10-03"
+    },
+    {
+      "_id": "edb296b8-4dba-49f4-9572-f50d16eac9c0",
+      "order": 9,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-09-shistosomiaza",
+      "title": "Shistosomiaza",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · source transcription 2026-09-16 · full source import 2026-10-03"
+    },
+    {
+      "_id": "001e9fac-439a-42f9-ad8e-d92399ca2a25",
+      "order": 10,
+      "reviewStatus": "review",
+      "sectionCount": 5,
+      "slug": "05-10-leishmanioza",
+      "title": "Leishmanioza",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · source-faithful update 2026-09-16 · full source import 2026-10-03"
+    },
+    {
+      "_id": "aeeb1622-feab-41bc-8964-668d96da68ec",
+      "order": 11,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-11-tifoja-e-shkurreve-scrub-typhus",
+      "title": "Tifoja e shkurreve (scrub typhus)",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "f0fa44eb-7de4-4ce2-b0cd-3029c83fc28f",
+      "order": 12,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-12-tifoja-epidemike",
+      "title": "Tifoja epidemike",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "8070d244-b549-45e2-8332-0c15a05e5dbb",
+      "order": 13,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-13-tifoja-endemike-murine",
+      "title": "Tifoja endemike (murine / e transmetuar nga pleshtat)",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "5df126d0-826b-41a4-86e7-4783e82a5a9b",
+      "order": 14,
+      "reviewStatus": "review",
+      "sectionCount": 5,
+      "slug": "05-14-ethet-e-njollosura-te-maleve-rocky",
+      "title": "Ethet e njollosura të Maleve Rocky (RMSF)",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "48e332b2-b4e6-460b-8ef2-a3997c829910",
+      "order": 15,
+      "reviewStatus": "review",
+      "sectionCount": 6,
+      "slug": "05-15-ethet-q-coxiella-burnetii",
+      "title": "Ethet Q (Coxiella burnetii)",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "323536ea-c2dc-48b8-8e0f-ed5987b5b6a3",
+      "order": 16,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-16-trichuriasis-infeksioni-me-whipworm",
+      "title": "Trikuriaza (whipworm)",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "6b88a778-c8e8-4493-82d8-285534896a70",
+      "order": 17,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-17-infeksioni-me-shiritin-e-peshkut-diphyllobothrium-latum",
+      "title": "Infeksioni me shiritin e peshkut (Diphyllobothriid)",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "9a2d640e-f382-46e8-8ab8-f0a6efefc848",
+      "order": 18,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-18-infeksioni-me-hookworm-ancylostoma-duodenale",
+      "title": "Infeksioni me hookworm (Ancylostoma / Necator)",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "16f97778-2d73-47be-a7bc-bda6981a2b15",
+      "order": 19,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-19-enterobiaza-pinworm",
+      "title": "Enterobiaza (pinworm)",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "a8ffc053-cdec-46a3-96e3-609bde64e7f8",
+      "order": 20,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-20-askariaza-krimbi-i-rrumbullaket-gjigant",
+      "title": "Askariaza (Ascaris lumbricoides)",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "eb2cc525-1d12-4245-9ce0-43083462feef",
+      "order": 21,
+      "reviewStatus": "review",
+      "sectionCount": 3,
+      "slug": "05-21-larva-migrans-kutane",
+      "title": "Larva migrans kutane",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "d35a906d-c4d3-4288-bba5-f3fe4b0c0181",
+      "order": 22,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-22-filariaza-limfatike",
+      "title": "Filariaza limfatike",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "820b435a-8bff-4be8-87ea-796bf46ed376",
+      "order": 23,
+      "reviewStatus": "review",
+      "sectionCount": 5,
+      "slug": "05-23-limfogranuloma-venerike-lgv",
+      "title": "Limfogranuloma venerike (LGV)",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "4225b288-f55f-4fc5-bcaf-686cae43e90d",
+      "order": 24,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-24-klamidia-gjenitourinare-jo-lgv",
+      "title": "Klamidia gjenitourinare jo-LGV",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "b15a3024-4bb6-46b6-8649-96981185aeba",
+      "order": 25,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-25-granuloma-inguinale-donovanoza",
+      "title": "Granuloma inguinale (donovanoza)",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "4373b391-0247-44ee-b607-260daaab31a7",
+      "order": 26,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-26-chancroid",
+      "title": "Chancroid",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "e47d2402-0e28-4a2f-bd1d-a573e49fd104",
+      "order": 27,
+      "reviewStatus": "review",
+      "sectionCount": 4,
+      "slug": "05-27-herpesi-gjenital",
+      "title": "Herpesi gjenital",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "2d2051a3-0d3e-42fc-86f8-52ac7ea61371",
+      "order": 28,
+      "reviewStatus": "review",
+      "sectionCount": 6,
+      "slug": "05-28-gonorrea-urogjenitale",
+      "title": "Gonorrea urogjenitale",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "96fcb529-30a1-483d-a848-d22866991d93",
+      "order": 29,
+      "reviewStatus": "review",
+      "sectionCount": 5,
+      "slug": "05-29-sifilizi",
+      "title": "Sifilizi",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "b9210ee0-4b99-4379-a874-b577d8d899dc",
+      "order": 30,
+      "reviewStatus": "review",
+      "sectionCount": 5,
+      "slug": "05-30-dizenteria-bacilare-shigeloza",
+      "title": "Dizenteria bacilare (shigeloza)",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    },
+    {
+      "_id": "6e2f9631-e00c-4f0e-a5c1-21302b6e9de6",
+      "order": 31,
+      "reviewStatus": "review",
+      "sectionCount": 15,
+      "slug": "05-31-covid-19",
+      "title": "COVID-19",
+      "version": "Doctor on Duty 3rd Edition 2024-25 · full source import 2026-10-03"
+    }
+  ]
+}
