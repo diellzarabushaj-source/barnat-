@@ -186,8 +186,22 @@ export const medicalTableRow = defineType({
   fields: [
     defineField({name: 'label', title: 'Etiketa e rreshtit', type: 'string'}),
     defineField({name: 'cells', title: 'Qelizat', type: 'array', of: [{type: 'string'}], validation: (rule) => rule.required().min(1)}),
+    defineField({name: 'richCells', title: 'Qelizat me formatimin e burimit', type: 'array', of: [defineArrayMember({type: 'medicalTableCell'})], description: 'Ruan bold, listat dhe qelizat e bashkuara. Qelizat e thjeshta mbeten për kërkim dhe përputhshmëri.'}),
   ],
   preview: {select: {title: 'label'}},
+})
+
+export const medicalTableCell = defineType({
+  name: 'medicalTableCell',
+  title: 'Qelizë tabele',
+  type: 'object',
+  fields: [
+    defineField({name: 'columnIndex', title: 'Indeksi i kolonës', type: 'number', validation: rule => rule.required().integer().min(0)}),
+    defineField({name: 'colSpan', title: 'Kolona të bashkuara', type: 'number', initialValue: 1, validation: rule => rule.integer().min(1)}),
+    defineField({name: 'rowSpan', title: 'Rreshta të bashkuar', type: 'number', initialValue: 1, validation: rule => rule.integer().min(1)}),
+    defineField({name: 'content', title: 'Përmbajtja', type: 'array', of: [portableText]}),
+  ],
+  preview: {select: {title: 'columnIndex'}, prepare: ({title}) => ({title: `Kolona ${Number(title) + 1}`})},
 })
 
 export const medicalTable = defineType({
@@ -202,6 +216,7 @@ export const medicalTable = defineType({
     defineField({name: 'title', title: 'Titulli', type: 'string'}),
     defineField({name: 'rowHeader', title: 'Titulli i kolonës së etiketave', type: 'string'}),
     defineField({name: 'columns', title: 'Kolonat', type: 'array', of: [{type: 'string'}], validation: (rule) => rule.required().min(1)}),
+    defineField({name: 'headerCells', title: 'Titujt me formatimin e burimit', type: 'array', of: [defineArrayMember({type: 'medicalTableCell'})]}),
     defineField({name: 'rows', title: 'Rreshtat', type: 'array', of: [defineArrayMember({type: 'medicalTableRow'})], validation: (rule) => rule.required().min(1)}),
     defineField({name: 'note', title: 'Shënim', type: 'text', rows: 3}),
     defineField({name: 'sourceLocator', title: 'Vendndodhja në burim', type: 'sourceLocator'}),

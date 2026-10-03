@@ -1,0 +1,26 @@
+{
+  "sourceDocumentId": "1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw",
+  "sourceSha256": "742ff64a140cb185c4bc261b86c3e3c6ef6c6655bf224f55248167ea5f1770d7",
+  "counts": {
+    "topics": 79,
+    "paragraphs": 2687,
+    "boldSpans": 2142,
+    "listItems": 2210,
+    "tables": 40
+  },
+  "chapters": [
+    5,
+    6,
+    7
+  ],
+  "exactSourceTextAndTableOrder": true,
+  "draftReadbackVerified": 79,
+  "rendererTestsPassed": true,
+  "clinicalStatus": "review — unchanged",
+  "tablesByChapter": {
+    "5": 4,
+    "6": 13,
+    "7": 23
+  },
+  "verificationLimit": "Local browser preview was blocked by the browser environment; no mobile screenshot audit has been claimed."
+}

@@ -512,10 +512,14 @@
     return token || fallback;
   }
 
-  function portableInlineMarkup(block) {
+  function portableInlineMarkup(block, skipCharacters = 0) {
     const markDefs = Array.isArray(block?.markDefs) ? block.markDefs : [];
     return (block?.children || []).map(child => {
-      let output = esc(String(child?.text ?? '')).replace(/\n/g, '<br>');
+      const raw = String(child?.text ?? '');
+      const text = raw.slice(skipCharacters);
+      skipCharacters = Math.max(0, skipCharacters - raw.length);
+      if (!text) return '';
+      let output = esc(text).replace(/\n/g, '<br>');
       for (const mark of child?.marks || []) {
         if (mark === 'strong') output = `<strong>${output}</strong>`;
         else if (mark === 'em') output = `<em>${output}</em>`;
@@ -707,13 +711,20 @@
     const rows = Array.isArray(block?.rows) ? block.rows : [];
     if (!columns.length && !rows.length) return '';
     const hasLabels = rows.some(row => clean(row?.label));
+    const plainCellMarkup = value => esc(typeof value === 'string' ? value : plainText(value)).replace(/\n/g, '<br>');
+    const cellMarkup = (cell, header = false) => {
+      const tag = header ? 'th' : 'td';
+      const colSpan = Math.max(1, Math.min(100, Number(cell?.colSpan) || 1));
+      const rowSpan = Math.max(1, Math.min(1000, Number(cell?.rowSpan) || 1));
+      return `<${tag}${header ? ' scope="col"' : ''}${colSpan > 1 ? ` colspan="${colSpan}"` : ''}${rowSpan > 1 ? ` rowspan="${rowSpan}"` : ''}>${medicalContentMarkup(cell?.content || [])}</${tag}>`;
+    };
     return `
       <section class="ck-modern-block ck-medical-table-block">
         ${block?.title ? `<h4>${esc(block.title)}</h4>` : ''}
         <div class="ck-medical-table-wrap" tabindex="0" role="region" aria-label="${esc(block?.title || 'Tabelë klinike')}">
           <table class="ck-medical-table">
-            <thead><tr>${hasLabels ? `<th scope="col">${esc(block.rowHeader || 'Kategoria')}</th>` : ''}${columns.map(column => `<th scope="col">${esc(plainText(column))}</th>`).join('')}</tr></thead>
-            <tbody>${rows.map(row => `<tr>${hasLabels ? `<th scope="row">${esc(row?.label || '')}</th>` : ''}${(row?.cells || []).map(cell => `<td>${esc(plainText(cell))}</td>`).join('')}</tr>`).join('')}</tbody>
+            <thead><tr>${hasLabels ? `<th scope="col">${esc(block.rowHeader || 'Kategoria')}</th>` : ''}${Array.isArray(block.headerCells) ? block.headerCells.map(cell => cellMarkup(cell, true)).join('') : columns.map(column => `<th scope="col">${plainCellMarkup(column)}</th>`).join('')}</tr></thead>
+            <tbody>${rows.map(row => `<tr>${hasLabels ? `<th scope="row">${esc(row?.label || '')}</th>` : ''}${Array.isArray(row?.richCells) ? row.richCells.map(cell => cellMarkup(cell)).join('') : (row?.cells || []).map(cell => `<td>${plainCellMarkup(cell)}</td>`).join('')}</tr>`).join('')}</tbody>
           </table>
         </div>
         ${block?.note ? `<p class="ck-section-note">${esc(block.note)}</p>` : ''}
@@ -760,14 +771,29 @@
     const content = Array.isArray(blocks) ? blocks.filter(Boolean) : [];
     let cursor = 0;
     const levelOf = block => Math.max(1, Math.min(6, Number(block?.level) || 1));
+    const boldPrefix = (block, length) => {
+      let seen = false;
+      for (const child of block.children || []) {
+        const prefix = String(child?.text || '').slice(0, length);
+        length -= prefix.length;
+        if (prefix.trim()) {
+          seen = true;
+          if (!(child.marks || []).includes('strong')) return false;
+        }
+        if (length <= 0) break;
+      }
+      return seen;
+    };
     function listMarkup(level) {
       const kind = content[cursor].listItem;
       const tag = kind === 'number' ? 'ol' : 'ul';
-      let html = `<${tag} class="ck-source-list-block">`;
+      const firstNumber = sourceBlockText(content[cursor]).match(/^\s*(\d+)\.\s+/)?.[1];
+      let html = `<${tag} class="ck-source-list-block"${tag === 'ol' && firstNumber && Number(firstNumber) !== 1 ? ` start="${Number(firstNumber)}"` : ''}>`;
       while (cursor < content.length) {
         const block = content[cursor];
         if (block._type !== 'block' || !block.listItem || levelOf(block) < level || block.listItem !== kind) break;
-        html += `<li>${portableInlineMarkup(block)}`;
+        const prefix = sourceBlockText(block).match(kind === 'number' ? /^\s*(\d+)\.\s+/ : /^\s*[•·‣▪◦]\s+/);
+        html += `<li${prefix && boldPrefix(block, prefix[0].length) ? ' class="is-source-marker-strong"' : ''}${kind === 'number' && prefix ? ` value="${Number(prefix[1])}"` : ''}>${portableInlineMarkup(block, prefix?.[0].length || 0)}`;
         cursor += 1;
         while (cursor < content.length && content[cursor]._type === 'block' && content[cursor].listItem && levelOf(content[cursor]) > level) {
           html += listMarkup(levelOf(content[cursor]));
@@ -791,6 +817,23 @@
   }
 
   function sourcePrescriptionMarkup(blocks) {
+    const content = (Array.isArray(blocks) ? blocks : []).filter(Boolean);
+    // Tables, callouts and other non-text blocks stay at their source position.
+    // Never filter them out while creating the prescription cards.
+    if (content.some(block => block._type !== 'block')) {
+      let output = '';
+      let textBlocks = [];
+      const flush = () => {
+        if (textBlocks.length) output += sourcePrescriptionMarkup(textBlocks);
+        textBlocks = [];
+      };
+      content.forEach((block, index) => {
+        if (block._type === 'block') textBlocks.push(block);
+        else { flush(); output += contentBlockMarkup(block, index); }
+      });
+      flush();
+      return output;
+    }
     const sourceBlocks = (Array.isArray(blocks) ? blocks : []).filter(block => block?._type === 'block');
     if (!sourceBlocks.length) return medicalContentMarkup(blocks);
 
@@ -798,12 +841,15 @@
       key:block._key || `rx-source-line-${index}`,
       html:portableInlineMarkup(block),
       text:sourceBlockText(block).trim(),
+      block,
     }));
 
     const lineMarkup = entry => {
       const bullet = /^[•·‣▪◦–-]\s*/.test(entry.text);
       const connector = /^(OSE|OR|PLUS|DHE|AND)\b/i.test(entry.text);
-      return `<div class="ck-source-rx-line${bullet ? ' is-bullet' : ''}${connector ? ' is-connector' : ''}">${entry.html}</div>`;
+      const nested = /^\s{2,}[•·‣▪◦]/.test(sourceBlockText(entry.block));
+      if (entry.block?.style !== 'normal') return portableBlockMarkup(entry.block);
+      return `<div class="ck-source-rx-line${bullet ? ' is-bullet' : ''}${nested ? ' is-source-nested' : ''}${connector ? ' is-connector' : ''}">${entry.html}</div>`;
     };
 
     const numberedCount = entries.filter(entry => /^(\d+)\.\s+(.+)$/.test(entry.text)).length;
@@ -850,7 +896,7 @@
             ${groups.map(group => `
               <article class="ck-source-rx-step">
                 <header class="ck-source-rx-step-head">
-                  <strong>${group.heading.html}</strong>
+                  <div>${group.heading.html}</div>
                 </header>
                 ${group.lines.length ? `<div class="ck-source-rx-step-body">${group.lines.map(lineMarkup).join('')}</div>` : ''}
               </article>
@@ -1725,6 +1771,11 @@
     return clean(section?.title) === '__SOURCE_BODY__';
   }
 
+  function isSourceFaithfulTopic(item) {
+    return /^source-faithful-google-doc/.test(clean(item?.version))
+      || [5,6,7].includes(Number(item?.chapterNumber));
+  }
+
   function medicalSectionLabel(section) {
     const labels = {
       general:'Mësimi',
@@ -1759,7 +1810,7 @@
     const next = currentIndex >= 0 && currentIndex < navigationItems.length - 1 ? navigationItems[currentIndex + 1] : null;
 
     detail.innerHTML = `
-      <div class="ck-document-inner ck-modern-document${[5,6,7].includes(Number(item.chapterNumber)) ? ' ck-source-faithful-document' : ''}">
+      <div class="ck-document-inner ck-modern-document${isSourceFaithfulTopic(item) ? ' ck-source-faithful-document' : ''}">
         <header class="ck-detail-head">
           <div class="ck-detail-title-row">
             <div>
@@ -1801,7 +1852,7 @@
             const visibleIndex = indexedSections.indexOf(section);
             const displayNumber = String(Math.max(visibleIndex + 1, 1)).padStart(2, '0');
             const id = `medical-section-${safeAnchor(section._key || section.title, String(index + 1))}`;
-            const sourceFaithful = [5,6,7].includes(Number(item.chapterNumber));
+            const sourceFaithful = isSourceFaithfulTopic(item);
             const sourceRx = sourceFaithful && clean(section?.sectionType).toLowerCase() === 'prescription';
             const sourceRxHeading = /^RX\s*[•:]/i.test(clean(section?.title));
             const content = sourceRx

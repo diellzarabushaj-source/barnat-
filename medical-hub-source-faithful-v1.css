@@ -1,4 +1,4 @@
-/* Medical Hub — compact source-faithful reader for chapters 5–6.
+/* Medical Hub — compact source-faithful reader for canonical source imports.
    Pure presentation: source text is not rewritten or clinically altered. */
 
 html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-detail-head{
@@ -70,6 +70,65 @@ html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-source-list
   gap:4px;
   margin:0;
   padding-left:19px;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-source-list-block li{
+  margin:3px 0;
+}
+html[data-drx-app="medical-hub-v2"] .is-source-marker-strong::marker{
+  font-weight:700;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-source-list-block .ck-source-list-block{
+  margin:3px 0 0;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-medical-table-block{
+  min-width:0;
+  width:100%;
+  margin:8px 0;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-medical-table-wrap{
+  max-width:100%;
+  border-color:#bfcbd7;
+  background:#fff;
+  overscroll-behavior-x:contain;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-medical-table{
+  width:100%;
+  min-width:480px;
+  border-collapse:collapse;
+  font-size:12px;
+  line-height:1.4;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-medical-table th,
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-medical-table td{
+  padding:6px 8px;
+  border:1px solid #bfcbd7;
+  vertical-align:top;
+  white-space:normal;
+  overflow-wrap:break-word;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-medical-table thead th{
+  background:#1c66ac;
+  color:#fff;
+  font-weight:700;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-medical-table tbody td{
+  background:#fff;
+  color:#1f262e;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-medical-table tbody tr:nth-child(odd) td{
+  background:#f3f5f7;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-medical-table :is(p,ul,ol){
+  margin:0;
+  font-size:inherit;
+  line-height:inherit;
+  color:inherit;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-medical-table p+p{
+  margin-top:2px;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-medical-table strong{
+  color:inherit;
 }
 html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-source-body-section{
   padding:8px 0 12px;
@@ -146,11 +205,11 @@ html[data-drx-app="medical-hub-v2"] .ck-source-rx-step-head{
   border-bottom:1px solid #e7e9ed;
   background:#f8f9fb;
 }
-html[data-drx-app="medical-hub-v2"] .ck-source-rx-step-head strong{
+html[data-drx-app="medical-hub-v2"] .ck-source-rx-step-head>div{
   display:block;
   color:#263e54;
   font-size:12.5px;
-  font-weight:750;
+  font-weight:400;
   line-height:1.35;
 }
 html[data-drx-app="medical-hub-v2"] .ck-source-rx-step-body{
@@ -167,6 +226,9 @@ html[data-drx-app="medical-hub-v2"] .ck-source-rx-line{
 }
 html[data-drx-app="medical-hub-v2"] .ck-source-rx-line.is-bullet{
   padding-left:0;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-rx-line.is-source-nested{
+  padding-left:18px;
 }
 html[data-drx-app="medical-hub-v2"] .ck-source-rx-line.is-connector{
   color:#5146b8;
