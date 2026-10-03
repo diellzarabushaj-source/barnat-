@@ -18,14 +18,14 @@ const MODERN_INDEX_QUERY = `{
     _type == "medicalChapter" &&
     (
       (reviewStatus == "verified" && book->reviewStatus == "verified") ||
-      (number in [5,6] && reviewStatus == "review" && book->reviewStatus in ["review","verified"])
+      (number in [5,6,7] && reviewStatus == "review" && book->reviewStatus in ["review","verified"])
     ) &&
     count(*[
       _type == "medicalTopic" &&
       chapter._ref == ^._id &&
       (
         reviewStatus == "verified" ||
-        (^.number in [5,6] && reviewStatus == "review")
+        (^.number in [5,6,7] && reviewStatus == "review")
       )
     ]) > 0
   ] | order(order asc, number asc) {
@@ -37,7 +37,7 @@ const MODERN_INDEX_QUERY = `{
       chapter._ref == ^._id &&
       (
         reviewStatus == "verified" ||
-        (^.number in [5,6] && reviewStatus == "review")
+        (^.number in [5,6,7] && reviewStatus == "review")
       )
     ]),
     "book": book->{_id,title,shortTitle,edition,publishedYear,publisher,language,reviewStatus,version,sourceFile}
@@ -51,7 +51,7 @@ const MODERN_INDEX_QUERY = `{
         chapter->reviewStatus == "verified"
       ) ||
       (
-        chapter->number in [5,6] &&
+        chapter->number in [5,6,7] &&
         reviewStatus == "review" &&
         chapter->reviewStatus == "review" &&
         book->reviewStatus in ["review","verified"]
@@ -77,7 +77,7 @@ const MODERN_DETAIL_QUERY = `coalesce(
         chapter->reviewStatus == "verified"
       ) ||
       (
-        chapter->number in [5,6] &&
+        chapter->number in [5,6,7] &&
         reviewStatus == "review" &&
         chapter->reviewStatus == "review" &&
         book->reviewStatus in ["review","verified"]
@@ -104,7 +104,7 @@ const MODERN_DETAIL_QUERY = `coalesce(
     _type == "medicalChapter" && _id == $id &&
     (
       (reviewStatus == "verified" && book->reviewStatus == "verified") ||
-      (number in [5,6] && reviewStatus == "review" && book->reviewStatus in ["review","verified"])
+      (number in [5,6,7] && reviewStatus == "review" && book->reviewStatus in ["review","verified"])
     )
   ][0] {
     _id, _type, title, originalTitle, "slug": slug.current, summary,
@@ -116,7 +116,7 @@ const MODERN_DETAIL_QUERY = `coalesce(
       chapter._ref == ^._id &&
       (
         reviewStatus == "verified" ||
-        (^.number in [5,6] && reviewStatus == "review")
+        (^.number in [5,6,7] && reviewStatus == "review")
       )
     ] | order(order asc) {
       _id,_type,title,"slug":slug.current,summary,keywords,icdCodes,procedureCodes,
@@ -135,7 +135,7 @@ const MODERN_SEARCH_INDEX_QUERY = `*[
       chapter->reviewStatus == "verified"
     ) ||
     (
-      chapter->number in [5,6] &&
+      chapter->number in [5,6,7] &&
       reviewStatus == "review" &&
       chapter->reviewStatus == "review" &&
       book->reviewStatus in ["review","verified"]
