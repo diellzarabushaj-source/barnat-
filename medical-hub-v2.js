@@ -794,31 +794,44 @@
     const sourceBlocks = (Array.isArray(blocks) ? blocks : []).filter(block => block?._type === 'block');
     if (!sourceBlocks.length) return medicalContentMarkup(blocks);
 
+    const entries = sourceBlocks.map((block, index) => ({
+      key:block._key || `rx-source-line-${index}`,
+      html:portableInlineMarkup(block),
+      text:sourceBlockText(block).trim(),
+    }));
+
+    const lineMarkup = entry => {
+      const bullet = /^[•·‣▪◦–-]\s*/.test(entry.text);
+      const connector = /^(OSE|OR|PLUS|DHE|AND)\b/i.test(entry.text);
+      return `<div class="ck-source-rx-line${bullet ? ' is-bullet' : ''}${connector ? ' is-connector' : ''}">${entry.html}</div>`;
+    };
+
+    const numberedCount = entries.filter(entry => /^(\d+)\.\s+(.+)$/.test(entry.text)).length;
+    const headingLike = entry => {
+      if (!entry.text || /^[•·‣▪◦–-]\s*/.test(entry.text)) return false;
+      if (/^(OSE|OR|PLUS|DHE|AND)\b/i.test(entry.text)) return false;
+      return entry.text.length <= 150 && /:\s*$/.test(entry.text);
+    };
+
     const intro = [];
     const groups = [];
     let current = null;
-
     const pushCurrent = () => {
       if (!current) return;
       groups.push(current);
       current = null;
     };
 
-    sourceBlocks.forEach((block, index) => {
-      const text = sourceBlockText(block).trim();
-      const numbered = text.match(/^(\d+)\.\s+(.+)$/);
-      const entry = {
-        key:block._key || `rx-source-line-${index}`,
-        html:portableInlineMarkup(block),
-        text,
-      };
+    entries.forEach(entry => {
+      const numbered = entry.text.match(/^(\d+)\.\s+(.+)$/);
+      const beginsGroup = numberedCount > 0 ? Boolean(numbered) : headingLike(entry);
 
-      if (numbered) {
+      if (beginsGroup) {
         pushCurrent();
         current = {
           key:entry.key,
           heading:entry,
-          number:numbered[1],
+          number:numbered?.[1] || '',
           lines:[],
         };
         return;
@@ -828,12 +841,6 @@
       else intro.push(entry);
     });
     pushCurrent();
-
-    const lineMarkup = entry => {
-      const bullet = /^[•·‣▪◦]\s*/.test(entry.text);
-      const connector = /^(OSE|OR|PLUS|DHE|AND)\b/i.test(entry.text);
-      return `<div class="ck-source-rx-line${bullet ? ' is-bullet' : ''}${connector ? ' is-connector' : ''}">${entry.html}</div>`;
-    };
 
     return `
       <div class="ck-source-rx-panel">
@@ -1791,9 +1798,12 @@
 
         <div class="ck-sections ck-modern-sections">
           ${sections.map((section, index) => {
+            const visibleIndex = indexedSections.indexOf(section);
+            const displayNumber = String(Math.max(visibleIndex + 1, 1)).padStart(2, '0');
             const id = `medical-section-${safeAnchor(section._key || section.title, String(index + 1))}`;
             const sourceFaithful = [5,6].includes(Number(item.chapterNumber));
             const sourceRx = sourceFaithful && clean(section?.sectionType).toLowerCase() === 'prescription';
+            const sourceRxHeading = /^RX\s*[•:]/i.test(clean(section?.title));
             const content = sourceRx
               ? sourcePrescriptionMarkup(section.content || [])
               : medicalContentMarkup(section.content || []);
@@ -1806,9 +1816,9 @@
             return `
               <section class="ck-section ck-modern-section${sourceRx ? ' is-source-rx-section' : ''}" id="${esc(id)}">
                 <div class="ck-modern-section-heading">
-                  <span class="ck-modern-section-number">${String(index + 1).padStart(2, '0')}</span>
+                  <span class="ck-modern-section-number">${displayNumber}</span>
                   <div>
-                    <small>${esc(medicalSectionLabel(section))}</small>
+                    <small>${esc(sourceRx && !sourceRxHeading ? 'Trajtim' : medicalSectionLabel(section))}</small>
                     <h3>${esc(section.title || medicalSectionLabel(section))}</h3>
                   </div>
                 </div>
