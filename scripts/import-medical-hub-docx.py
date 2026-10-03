@@ -3,6 +3,8 @@
 
 Usage: python scripts/import-medical-hub-docx.py source.docx existing-topics.json output.json
 Requires python-docx. This script never writes to Sanity.
+Pass --initialize-placeholders to replace migration-only scaffolds with source
+titles and sections. This mode refuses documents containing authored content.
 """
 import copy
 import hashlib
@@ -94,8 +96,39 @@ def table_block(table, ident):
     return result
 
 
-def build(source_path, existing):
+def initialize_placeholders(doc, existing):
+    prepared = copy.deepcopy(existing)
+    lookup = {(int(t['chapter']['_ref'].split('-')[-1]), int(t['order'])): t for t in prepared}
+    for old in prepared:
+        sections = old.get('sections', [])
+        assert len(sections) == 1 and sections[0].get('_key') == 'editorial-start', f'Authored sections at {old["_id"]}; initialize explicitly instead'
+        content = sections[0].get('content', [])
+        assert len(content) == 1 and content[0].get('_key') == 'editorial-note' and content[0].get('_type') == 'clinicalCallout', f'Authored content at {old["_id"]}'
+        note = ''.join(span.get('text', '') for block in content[0].get('body', []) for span in block.get('children', []))
+        assert note == 'Titulli dhe renditja vijnë nga libri kryesor. Përmbajtja klinike duhet të shkruhet dhe verifikohet në Studio para publikimit.', f'Edited migration note at {old["_id"]}; preserve the author edits'
+        old['sections'] = []
+    chapter, topic = 0, None
+    for element in doc.element.body:
+        if element.tag != qn('w:p'):
+            continue
+        p = Paragraph(element, doc)
+        if p.style.name == 'Heading 1':
+            match = re.search(r'KAPITULLI\s+(\d+)', p.text)
+            chapter, topic = (int(match[1]) if match else 0), None
+        elif p.style.name == 'Heading 2':
+            match = re.match(r'^(\d+)\.\s*(.*)', p.text)
+            topic = lookup.get((chapter, int(match[1]))) if match else None
+            if topic:
+                topic.update(originalTitle=p.text, title=match[2])
+        elif topic and p.style.name == 'Heading 3' and not p.text.endswith(':'):
+            topic['sections'].append({'_type': 'medicalSection', '_key': f'source-{chapter}-{topic["order"]}-section-{len(topic["sections"])}', 'title': p.text, 'sectionType': 'prescription' if p.text.startswith('RX') else 'general'})
+    return prepared
+
+
+def build(source_path, existing, initialize=False):
     doc = Document(source_path)
+    if initialize:
+        existing = initialize_placeholders(doc, existing)
     lookup = {(int(t['chapter']['_ref'].split('-')[-1]), int(t['order'])): t for t in existing}
     chapters = {chapter for chapter, _ in lookup}
     output, counts = [], Counter()
@@ -129,6 +162,8 @@ def build(source_path, existing):
                 old = lookup[(chapter, order)]
                 assert old['originalTitle'] == p.text, f'Topic mismatch: {old["_id"]}'
                 topic = {'_id': old['_id'], '_rev': old['_rev'], 'chapterNumber': chapter, 'order': order, 'existing': old, 'sections': []}
+                if initialize:
+                    topic.update(title=old['title'], originalTitle=old['originalTitle'])
                 output.append(topic)
                 section = None
                 counts['topics'] += 1
@@ -167,8 +202,10 @@ def build(source_path, existing):
 
 
 if __name__ == '__main__':
-    source, existing_path, output_path = sys.argv[1:]
-    result = build(source, json.load(open(existing_path)))
+    args = sys.argv[1:]
+    initialize = '--initialize-placeholders' in args
+    source, existing_path, output_path = [arg for arg in args if arg != '--initialize-placeholders']
+    result = build(source, json.load(open(existing_path)), initialize)
     with open(output_path, 'w') as target:
         json.dump(result, target, ensure_ascii=False, indent=2)
     print(json.dumps(result['counts']))

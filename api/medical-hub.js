@@ -11,21 +11,23 @@ const INDEX_CACHE_MS = 20 * 1000;
 const MAX_RESULTS = 120;
 const MAX_QUERY = 120;
 
-// The new authoring model is intentionally book-first. Only verified documents
-// are public; drafts and review copies stay inside the dedicated Studio.
+// The authoring model is book-first. Source imports are exposed only for the
+// explicitly imported chapters; their clinical review status remains unchanged.
 const MODERN_INDEX_QUERY = `{
   "chapters": *[
     _type == "medicalChapter" &&
     (
       (reviewStatus == "verified" && book->reviewStatus == "verified") ||
-      (number in [5,6,7] && reviewStatus == "review" && book->reviewStatus in ["review","verified"])
+      (number in [5,6,7] && reviewStatus == "review" && book->reviewStatus in ["review","verified"]) ||
+      (number == 8 && version match "source-faithful-google-doc*" && reviewStatus in ["draft","review"] && book->reviewStatus in ["review","verified"])
     ) &&
     count(*[
       _type == "medicalTopic" &&
       chapter._ref == ^._id &&
       (
         reviewStatus == "verified" ||
-        (^.number in [5,6,7] && reviewStatus == "review")
+        (^.number in [5,6,7] && reviewStatus == "review") ||
+        (^.number == 8 && version match "source-faithful-google-doc*" && reviewStatus in ["draft","review"])
       )
     ]) > 0
   ] | order(order asc, number asc) {
@@ -37,7 +39,8 @@ const MODERN_INDEX_QUERY = `{
       chapter._ref == ^._id &&
       (
         reviewStatus == "verified" ||
-        (^.number in [5,6,7] && reviewStatus == "review")
+        (^.number in [5,6,7] && reviewStatus == "review") ||
+        (^.number == 8 && version match "source-faithful-google-doc*" && reviewStatus in ["draft","review"])
       )
     ]),
     "book": book->{_id,title,shortTitle,edition,publishedYear,publisher,language,reviewStatus,version,sourceFile}
@@ -54,6 +57,14 @@ const MODERN_INDEX_QUERY = `{
         chapter->number in [5,6,7] &&
         reviewStatus == "review" &&
         chapter->reviewStatus == "review" &&
+        book->reviewStatus in ["review","verified"]
+      ) ||
+      (
+        chapter->number == 8 &&
+        version match "source-faithful-google-doc*" &&
+        chapter->version match "source-faithful-google-doc*" &&
+        reviewStatus in ["draft","review"] &&
+        chapter->reviewStatus in ["draft","review"] &&
         book->reviewStatus in ["review","verified"]
       )
     )
@@ -81,6 +92,14 @@ const MODERN_DETAIL_QUERY = `coalesce(
         reviewStatus == "review" &&
         chapter->reviewStatus == "review" &&
         book->reviewStatus in ["review","verified"]
+      ) ||
+      (
+        chapter->number == 8 &&
+        version match "source-faithful-google-doc*" &&
+        chapter->version match "source-faithful-google-doc*" &&
+        reviewStatus in ["draft","review"] &&
+        chapter->reviewStatus in ["draft","review"] &&
+        book->reviewStatus in ["review","verified"]
       )
     )
   ][0] {
@@ -104,7 +123,8 @@ const MODERN_DETAIL_QUERY = `coalesce(
     _type == "medicalChapter" && _id == $id &&
     (
       (reviewStatus == "verified" && book->reviewStatus == "verified") ||
-      (number in [5,6,7] && reviewStatus == "review" && book->reviewStatus in ["review","verified"])
+      (number in [5,6,7] && reviewStatus == "review" && book->reviewStatus in ["review","verified"]) ||
+      (number == 8 && version match "source-faithful-google-doc*" && reviewStatus in ["draft","review"] && book->reviewStatus in ["review","verified"])
     )
   ][0] {
     _id, _type, title, originalTitle, "slug": slug.current, summary,
@@ -116,7 +136,8 @@ const MODERN_DETAIL_QUERY = `coalesce(
       chapter._ref == ^._id &&
       (
         reviewStatus == "verified" ||
-        (^.number in [5,6,7] && reviewStatus == "review")
+        (^.number in [5,6,7] && reviewStatus == "review") ||
+        (^.number == 8 && version match "source-faithful-google-doc*" && reviewStatus in ["draft","review"])
       )
     ] | order(order asc) {
       _id,_type,title,"slug":slug.current,summary,keywords,icdCodes,procedureCodes,
@@ -138,6 +159,14 @@ const MODERN_SEARCH_INDEX_QUERY = `*[
       chapter->number in [5,6,7] &&
       reviewStatus == "review" &&
       chapter->reviewStatus == "review" &&
+      book->reviewStatus in ["review","verified"]
+    ) ||
+    (
+      chapter->number == 8 &&
+      version match "source-faithful-google-doc*" &&
+      chapter->version match "source-faithful-google-doc*" &&
+      reviewStatus in ["draft","review"] &&
+      chapter->reviewStatus in ["draft","review"] &&
       book->reviewStatus in ["review","verified"]
     )
   )

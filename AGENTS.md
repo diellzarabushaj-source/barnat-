@@ -24,6 +24,8 @@ These requirements apply to corrections and every future chapter import:
 - Build changes with `scripts/import-medical-hub-docx.py` using fresh source and
   existing-document exports. It performs a read-only conversion and checks exact
   source text, table geometry and reading order before preparing any write.
+- For untouched migration placeholders, use `--initialize-placeholders` to build
+  source titles and Rx sections. It refuses authored content or edited notes.
 - Run `node tests/medical-hub-source-fidelity-test.js`, the Medical Hub tests,
   and audit the rendered source for every affected lesson. Check desktop and
   narrow-screen table scrolling and prescription cards before publishing.
