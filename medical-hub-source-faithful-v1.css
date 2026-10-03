@@ -323,3 +323,24 @@ html[data-drx-app="medical-hub-v2"] .ck-source-rx-step-body .ck-source-rx-line +
 html[data-drx-app="medical-hub-v2"] .ck-source-rx-line.is-bullet{
   padding-left:2px;
 }
+
+/* Editorial annotations remain in their original reading position. */
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-modern-content strong{
+  font-weight:700;
+  color:inherit;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-editorial-note,
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .is-editorial-section>.ck-modern-content{
+  padding:9px 11px;
+  margin-block:6px;
+  border:1px solid #ead8aa;
+  border-inline-start:3px solid #c49b43;
+  border-radius:8px;
+  background:#fff8e8;
+  color:#55482d;
+  line-height:1.5;
+  overflow-wrap:anywhere;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-editorial-note.is-source-nested{
+  margin-inline-start:18px;
+}

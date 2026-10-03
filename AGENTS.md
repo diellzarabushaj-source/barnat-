@@ -16,6 +16,9 @@ These requirements apply to corrections and every future chapter import:
   header cells and rich cells, including rowspan/colspan and empty grid cells.
 - Preserve numbered-list values, restarts and nested bullets. Do not add a second
   marker when the source stores its marker as text.
+- Preserve chapter introductions before the first lesson. Render source editorial
+  annotations with a subtle highlight in their original position, retaining all
+  source words, marks and list semantics; never turn them into prescription steps.
 - Prescription cards must preserve source groups and OR/OSE/PLUS connectors.
   Tables and other blocks inside prescription sections must remain at their
   original position; no renderer may discard them when grouping text.

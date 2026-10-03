@@ -1,0 +1,17 @@
+{
+  "renderedTopics": 146,
+  "renderedTables": 72,
+  "renderedFigures": 1,
+  "rxSections": 196,
+  "highlightedEditorialNotes": 9,
+  "readingTextUnchanged": true,
+  "sourceBoldUnchanged": true,
+  "chapter11IntroductionBlocksRestored": 2,
+  "visualBrowserCheck": "Incomplete: Medical Hub redirects this browser to the sign-in landing page.",
+  "date": "2026-10-03",
+  "sourceDocumentId": "1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw",
+  "sourceSha256": "742ff64a140cb185c4bc261b86c3e3c6ef6c6655bf224f55248167ea5f1770d7",
+  "clinicalReviewStatus": "draft",
+  "draftIntroductionReadback": "Exact source text, marks and order; existing five sections unchanged",
+  "importerRegression": "Native lists, source bold, images, chapter introduction and lesson opening keep separate identities; 79 chapter 5–7 lessons unchanged"
+}

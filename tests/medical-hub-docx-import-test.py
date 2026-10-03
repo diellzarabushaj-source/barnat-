@@ -32,7 +32,10 @@ def native(text, num_id):
     return p
 
 doc.add_heading('KAPITULLI 11 • TEST', 1)
+doc.add_paragraph('Chapter introduction')
+doc.add_paragraph('Shënim redaktorial: Source annotation').runs[0].bold = True
 doc.add_heading('1. FIRST', 2)
+doc.add_paragraph('Lesson opening body')
 doc.add_heading('RX • FIRST', 3)
 native('Native bullet', 7001).runs[0].bold = True
 native('First numbered item', 7002)
@@ -61,7 +64,18 @@ with tempfile.TemporaryDirectory() as temp:
     else:
         raise AssertionError('A blank image paragraph was silently dropped')
     result = module.build(path, existing, True, assets)
-    first = result['topics'][0]['sections'][0]['content']
+    intro = result['topics'][0]['sections'][0]
+    assert intro['title'] == '__SOURCE_BODY__' and intro['_key'] == 'source-11-intro'
+    assert [''.join(s['text'] for s in b['children']) for b in intro['content']] == ['Chapter introduction', 'Shënim redaktorial: Source annotation']
+    assert intro['content'][1]['children'][0]['marks'] == ['strong']
+    assert result['counts']['introductionBlocks'] == 2
+    assert len(result['topics'][1]['sections']) == 2, 'Do not repeat the introduction in subsequent lessons'
+    rebuilt = module.build(path, [{**existing[i], 'originalTitle': t['originalTitle'], 'sections': t['sections']} for i, t in enumerate(result['topics'])], False, assets)
+    assert [t['sections'] for t in rebuilt['topics']] == [t['sections'] for t in result['topics']], 'Introduction import must be repeatable'
+    assert result['topics'][0]['sections'][1]['content'][0]['children'][0]['text'] == 'Lesson opening body'
+    keys = [s['_key'] for s in result['topics'][0]['sections']]
+    assert len(keys) == len(set(keys)), 'Chapter introduction and lesson opening need separate identities'
+    first = result['topics'][0]['sections'][2]['content']
     assert [b['_type'] for b in first] == ['block', 'block', 'block', 'medicalFigure', 'block', 'medicalTable']
     assert first[0]['children'][0]['text'] == '● '
     assert first[0]['children'][1]['marks'] == ['strong']

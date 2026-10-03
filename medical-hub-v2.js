@@ -536,16 +536,23 @@
     }).join('');
   }
 
+  function isEditorialNoteText(value) {
+    const text = normalize(value);
+    return /\bshenim(?:e|i|et)?\s+redaktorial(?:e)?\s*[:—–-]/.test(text)
+      || /^shenim(?:e|i|et)?\s+redaktorial(?:e)?$/.test(text);
+  }
+
   function portableBlockMarkup(block) {
     const body = portableInlineMarkup(block);
     if (!body) return '';
     const style = clean(block?.style).toLowerCase();
+    const editorial = isEditorialNoteText(sourceBlockText(block));
     if (/^h[1-6]$/.test(style)) {
       const tag = style === 'h4' ? 'h5' : 'h4';
-      return `<${tag} class="ck-source-subheading">${body}</${tag}>`;
+      return `<${tag} class="ck-source-subheading${editorial ? ' ck-editorial-note' : ''}">${body}</${tag}>`;
     }
     if (style === 'blockquote') return `<blockquote class="ck-source-quote">${body}</blockquote>`;
-    return `<p class="ck-source-paragraph">${body}</p>`;
+    return `<p class="ck-source-paragraph${editorial ? ' ck-editorial-note' : ''}"${editorial ? ' role="note"' : ''}>${body}</p>`;
   }
 
   function sourceLocatorParts(locator) {
@@ -793,7 +800,7 @@
         const block = content[cursor];
         if (block._type !== 'block' || !block.listItem || levelOf(block) < level || block.listItem !== kind) break;
         const prefix = sourceBlockText(block).match(kind === 'number' ? /^\s*(\d+)\.\s+/ : /^\s*[•●·‣▪◦]\s+/);
-        const markerClasses = [prefix && boldPrefix(block, prefix[0].length) ? 'is-source-marker-strong' : '', kind === 'bullet' && prefix?.[0].includes('●') ? 'is-source-solid-bullet' : ''].filter(Boolean).join(' ');
+        const markerClasses = [prefix && boldPrefix(block, prefix[0].length) ? 'is-source-marker-strong' : '', kind === 'bullet' && prefix?.[0].includes('●') ? 'is-source-solid-bullet' : '', isEditorialNoteText(sourceBlockText(block)) ? 'ck-editorial-note' : ''].filter(Boolean).join(' ');
         html += `<li${markerClasses ? ` class="${markerClasses}"` : ''}${kind === 'number' && prefix ? ` value="${Number(prefix[1])}"` : ''}>${portableInlineMarkup(block, prefix?.[0].length || 0)}`;
         cursor += 1;
         while (cursor < content.length && content[cursor]._type === 'block' && content[cursor].listItem && levelOf(content[cursor]) > level) {
@@ -849,8 +856,9 @@
       const bullet = /^[•●·‣▪◦–-]\s*/.test(entry.text);
       const connector = /^(OSE|OR|PLUS|DHE|AND)\b/i.test(entry.text);
       const nested = /^\s{2,}[•●·‣▪◦]/.test(sourceBlockText(entry.block));
+      const editorial = isEditorialNoteText(entry.text);
       if (entry.block?.style !== 'normal') return portableBlockMarkup(entry.block);
-      return `<div class="ck-source-rx-line${bullet ? ' is-bullet' : ''}${nested ? ' is-source-nested' : ''}${connector ? ' is-connector' : ''}">${entry.html}</div>`;
+      return `<div class="ck-source-rx-line${bullet ? ' is-bullet' : ''}${nested ? ' is-source-nested' : ''}${connector ? ' is-connector' : ''}${editorial ? ' ck-editorial-note' : ''}"${editorial ? ' role="note"' : ''}>${entry.html}</div>`;
     };
 
     const numberedCount = entries.filter(entry => /^(\d+)\.\s+(.+)$/.test(entry.text)).length;
@@ -871,7 +879,7 @@
 
     entries.forEach(entry => {
       const numbered = entry.text.match(/^(\d+)\.\s+(.+)$/);
-      const beginsGroup = numberedCount > 0 ? Boolean(numbered) : headingLike(entry);
+      const beginsGroup = !isEditorialNoteText(entry.text) && (numberedCount > 0 ? Boolean(numbered) : headingLike(entry));
 
       if (beginsGroup) {
         pushCurrent();
@@ -1866,7 +1874,7 @@
                 </section>`;
             }
             return `
-              <section class="ck-section ck-modern-section${sourceRx ? ' is-source-rx-section' : ''}" id="${esc(id)}">
+              <section class="ck-section ck-modern-section${sourceRx ? ' is-source-rx-section' : ''}${isEditorialNoteText(section.title) ? ' is-editorial-section' : ''}" id="${esc(id)}">
                 <div class="ck-modern-section-heading">
                   <span class="ck-modern-section-number">${displayNumber}</span>
                   <div>

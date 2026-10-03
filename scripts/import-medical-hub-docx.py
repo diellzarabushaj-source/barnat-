@@ -201,19 +201,35 @@ def build(source_path, existing, initialize=False, image_assets=None):
     topic = section = None
     source_sequence = []
     emitted_sequence = []
+    introduction = []
 
-    def append_section(title):
+    def append_section(title, is_introduction=False):
         nonlocal section
-        old = next((s for s in topic['existing']['sections'] if s['title'] == title), None)
+        intro_key = f'source-{chapter}-intro'
+        old = next((s for s in topic['existing']['sections'] if s['title'] == title and (s['_key'] == intro_key) == is_introduction), None)
         section = copy.deepcopy(old) if old else {'_type': 'medicalSection', '_key': f"source-{chapter}-{topic['order']}-section-{len(topic['sections'])}", 'title': title, 'sectionType': 'general'}
+        if is_introduction:
+            section['_key'] = intro_key
         section['content'] = []
         section.pop('summary', None)
         topic['sections'].append(section)
+
+    def append_block(block, source_value):
+        source_sequence.append(source_value)
+        if topic is None:
+            introduction.append((block, source_value))
+            counts['introductionBlocks'] += 1
+            return
+        if section is None:
+            append_section('__SOURCE_BODY__')
+        section['content'].append(block)
+        emitted_sequence.append(source_value)
 
     for index, element in enumerate(doc.element.body):
         if element.tag == qn('w:p'):
             p = Paragraph(element, doc)
             if p.style.name == 'Heading 1':
+                assert not introduction, 'Chapter introduction has no lesson destination'
                 match = re.search(r'KAPITULLI\s+(\d+)', p.text)
                 chapter = int(match[1]) if match else 0
                 topic = section = None
@@ -231,47 +247,45 @@ def build(source_path, existing, initialize=False, image_assets=None):
                     topic.update(title=old['title'], originalTitle=old['originalTitle'])
                 output.append(topic)
                 section = None
+                if introduction:
+                    append_section('__SOURCE_BODY__', is_introduction=True)
+                    section['content'] = [block for block, _ in introduction]
+                    emitted_sequence.extend(value for _, value in introduction)
+                    introduction.clear()
+                    section = None
                 counts['topics'] += 1
                 continue
-            if not topic:
-                continue
             if p._p.xpath('.//w:drawing | .//w:pict | .//m:oMath'):
-                if section is None:
-                    append_section('__SOURCE_BODY__')
-                block, digest = image_block(p, f'source-image-{index}', image_assets or {}, section['title'])
-                section['content'].append(block)
-                source_sequence.append(('image', digest))
-                emitted_sequence.append(('image', digest))
+                block, digest = image_block(p, f'source-image-{index}', image_assets or {}, section['title'] if section else 'Chapter introduction')
+                append_block(block, ('image', digest))
                 counts['figures'] += 1
                 continue
             if not p.text.strip():
                 continue
             marker = native_marker(p) if not re.match(r'^\s*(?:\d+\.|[•●·‣▪◦])\s+', p.text) else None
-            source_sequence.append(('p', (marker['prefix'] if marker else '') + p.text))
-            if p.style.name == 'Heading 3' and any(s['title'] == p.text for s in topic['existing']['sections']):
+            if topic and p.style.name == 'Heading 3' and any(s['title'] == p.text for s in topic['existing']['sections']):
+                source_sequence.append(('p', p.text))
                 append_section(p.text)
                 emitted_sequence.append(('p', section['title']))
             else:
-                if section is None:
-                    append_section('__SOURCE_BODY__')
                 block = paragraph_block(p, f'source-p{index}')
-                section['content'].append(block)
-                emitted_sequence.append(('p', ''.join(s['text'] for s in block['children'])))
+                source_text = (marker['prefix'] if marker else '') + p.text
+                assert ''.join(s['text'] for s in block['children']) == source_text
+                append_block(block, ('p', source_text))
                 counts['paragraphs'] += 1
                 counts['boldSpans'] += sum('strong' in s['marks'] for s in block['children'])
                 if block.get('listItem'):
                     counts['listItems'] += 1
                 if marker:
                     counts['nativeListItems'] += 1
-        elif element.tag == qn('w:tbl') and chapter in chapters and topic:
+        elif element.tag == qn('w:tbl') and chapter in chapters:
             table = Table(element, doc)
-            if section is None:
-                append_section('__SOURCE_BODY__')
             block = table_block(table, f'source-table-{index}')
-            section['content'].append(block)
-            source_sequence.append(('table', [[c.text for c in row.cells] for row in table.rows]))
-            emitted_sequence.append(('table', [block['columns']] + [row['cells'] for row in block['rows']]))
+            source_value = [[c.text for c in row.cells] for row in table.rows]
+            assert source_value == [block['columns']] + [row['cells'] for row in block['rows']]
+            append_block(block, ('table', source_value))
             counts['tables'] += 1
+    assert not introduction, 'Chapter introduction has no lesson destination'
     assert source_sequence == emitted_sequence, 'Source text/table order changed'
     assert len(output) == len(existing), 'Missing or duplicate lesson'
     for topic in output:
