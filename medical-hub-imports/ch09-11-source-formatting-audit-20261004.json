@@ -1,0 +1,75 @@
+{
+  "sourceDocumentId": "1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw",
+  "sourceSha256": "742ff64a140cb185c4bc261b86c3e3c6ef6c6655bf224f55248167ea5f1770d7",
+  "importedAt": "2026-10-04",
+  "countsByChapter": {
+    "9": {
+      "topics": 12,
+      "paragraphs": 704,
+      "boldSpans": 484,
+      "listItems": 536,
+      "tables": 7
+    },
+    "10": {
+      "topics": 20,
+      "paragraphs": 634,
+      "boldSpans": 497,
+      "listItems": 583,
+      "tables": 13
+    },
+    "11": {
+      "topics": 18,
+      "paragraphs": 209,
+      "boldSpans": 84,
+      "listItems": 116,
+      "nativeListItems": 116,
+      "tables": 6,
+      "figures": 1
+    }
+  },
+  "totals": {
+    "topics": 50,
+    "tables": 26,
+    "figures": 1,
+    "sections": 185,
+    "rxSections": 46,
+    "nativeListItems": 116
+  },
+  "draftReadbackVerified": 50,
+  "publishedReadbackExact": 50,
+  "publicDetailQueriesVerified": 50,
+  "indexAndSearchCounts": {
+    "9": 12,
+    "10": 20,
+    "11": 18
+  },
+  "sourceImage": {
+    "assetId": "image-ca10217bddd97dcd3e5f0059458c7f1128890f09-1071x1516-png",
+    "sha256": "7ea73ff927752d529da66e96a788a17e74a7eb4c4ce91db63513931f06a67a4a",
+    "cdnBytesMatchSource": true,
+    "positionPreserved": true
+  },
+  "clinicalStatus": "draft preserved for all topics and chapters; no clinical verification granted",
+  "rendererAudit": {
+    "renderedTopics": 50,
+    "renderedTables": 26,
+    "renderedFigures": 1,
+    "rxSections": 46,
+    "sourceImagePositionPassed": true,
+    "visualBrowserCheck": "Incomplete: signed-in UI requires login; local browser URL blocked."
+  },
+  "tests": [
+    "npm run test:medical-hub",
+    "node tests/medical-hub-source-rx-standard-test.js",
+    "python tests/medical-hub-docx-import-test.py",
+    "Previous 79 lessons and 40 tables still convert identically"
+  ],
+  "visualVerification": "Desktop/narrow browser verification incomplete: signed-in Medical Hub redirects to login; local browser URL blocked.",
+  "rxTopicClassification": {
+    "topicId": "medical-topic-dod-11-018",
+    "sourceLabel": "RX",
+    "practicalStepsAndPrevention": "prescription",
+    "editorialReferences": "general",
+    "updatedPublishedReadbackPassed": true
+  }
+}

@@ -26,6 +26,12 @@ These requirements apply to corrections and every future chapter import:
   source text, table geometry and reading order before preparing any write.
 - For untouched migration placeholders, use `--initialize-placeholders` to build
   source titles and Rx sections. It refuses authored content or edited notes.
+- Upload source images without alteration and supply `--image-assets` with
+  source SHA-256 hashes and actual Sanity asset IDs. Even an image paragraph
+  without text must be imported in place or fail explicitly.
+- Keep that registry in `medical-hub-imports/source-image-assets.json`. Run
+  `python tests/medical-hub-docx-import-test.py` when changing the importer;
+  unsupported Word numbering patterns must fail rather than lose their markers.
 - Run `node tests/medical-hub-source-fidelity-test.js`, the Medical Hub tests,
   and audit the rendered source for every affected lesson. Check desktop and
   narrow-screen table scrolling and prescription cards before publishing.

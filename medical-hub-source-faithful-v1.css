@@ -77,6 +77,18 @@ html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-source-list
 html[data-drx-app="medical-hub-v2"] .is-source-marker-strong::marker{
   font-weight:700;
 }
+html[data-drx-app="medical-hub-v2"] .is-source-solid-bullet::marker{
+  content:"● ";
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-medical-figure .ck-figure{
+  width:100% !important;
+}
+html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-medical-figure .ck-figure img{
+  width:100%;
+  height:auto;
+  max-height:none !important;
+  filter:none;
+}
 html[data-drx-app="medical-hub-v2"] .ck-source-faithful-document .ck-source-list-block .ck-source-list-block{
   margin:3px 0 0;
 }

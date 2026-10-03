@@ -5,12 +5,14 @@ Usage: python scripts/import-medical-hub-docx.py source.docx existing-topics.jso
 Requires python-docx. This script never writes to Sanity.
 Pass --initialize-placeholders to replace migration-only scaffolds with source
 titles and sections. This mode refuses documents containing authored content.
+Use --image-assets registry.json to map source image SHA-256 hashes to uploaded
+Sanity asset IDs. Missing assets or unsupported drawings stop the import.
 """
 import copy
+import argparse
 import hashlib
 import json
 import re
-import sys
 from collections import Counter
 from docx import Document
 from docx.oxml.ns import qn
@@ -21,6 +23,46 @@ from docx.text.run import Run
 
 def key(prefix, index):
     return f"{prefix}-{index}"
+
+
+def native_marker(p):
+    num_pr = p._p.pPr.numPr if p._p.pPr is not None else None
+    if num_pr is None:
+        return None
+    assert num_pr.numId is not None, 'Unresolved inherited Word list'
+    num_id = num_pr.numId.val
+    if num_id == 0:
+        return None
+    level = num_pr.ilvl.val if num_pr.ilvl is not None else 0
+    numbering = p.part.numbering_part.element
+    nums = numbering.xpath(f'./w:num[@w:numId="{num_id}"]')
+    assert len(nums) == 1, f'Missing numbering definition {num_id}'
+    assert not nums[0].findall(qn('w:lvlOverride')), f'Word list overrides need an explicit resolver: {num_id}'
+    abstract_id = nums[0].find(qn('w:abstractNumId')).get(qn('w:val'))
+    levels = numbering.xpath(f'./w:abstractNum[@w:abstractNumId="{abstract_id}"]/w:lvl[@w:ilvl="{level}"]')
+    assert len(levels) == 1, f'Missing Word list level: {num_id}/{level}'
+    definition = levels[0]
+    fmt = definition.find(qn('w:numFmt')).get(qn('w:val'))
+    pattern = definition.find(qn('w:lvlText')).get(qn('w:val'))
+    if fmt == 'bullet':
+        assert pattern in '•●·‣▪◦', f'Unsupported Word bullet: {pattern}'
+        prefix, kind = pattern + ' ', 'bullet'
+    else:
+        assert fmt == 'decimal' and level == 0 and pattern == '%1.', f'Unsupported Word number pattern: {fmt}/{pattern}'
+        start = definition.find(qn('w:start'))
+        value = int(start.get(qn('w:val'))) if start is not None else 1
+        # Counting the preceding XML paragraphs also handles a list continuing
+        # from another lesson and independent numIds restarting at their start.
+        preceding = p._p.xpath(f'preceding::w:p[w:pPr/w:numPr/w:numId[@w:val="{num_id}"]]')
+        value += sum((prior.pPr.numPr.ilvl.val if prior.pPr.numPr.ilvl is not None else 0) == level for prior in preceding)
+        prefix, kind = f'{value}. ', 'number'
+    marks = []
+    for name, mark in [('b', 'strong'), ('i', 'em')]:
+        props = definition.find(qn('w:rPr'))
+        value = props.find(qn('w:' + name)) if props is not None else None
+        if value is not None and value.get(qn('w:val'), '1') not in ['0', 'false', 'off']:
+            marks.append(mark)
+    return {'prefix': prefix, 'kind': kind, 'level': level + 1, 'marks': marks}
 
 
 def paragraph_block(p, ident):
@@ -54,14 +96,36 @@ def paragraph_block(p, ident):
     # Keep literal source markers in the stored spans; the renderer consumes them
     # once, preserving the original numbering and bold ranges across run boundaries.
     number = re.match(r'^\s*(\d+)\.\s+', p.text)
-    bullet = re.match(r'^(\s*)[•·‣▪◦]\s+', p.text)
+    bullet = re.match(r'^(\s*)[•●·‣▪◦]\s+', p.text)
     if number:
         result.update(listItem='number', level=1)
     elif bullet:
         result.update(listItem='bullet', level=2 if len(bullet[1]) >= 2 else 1)
-    elif p._p.pPr is not None and p._p.pPr.numPr is not None:
-        raise ValueError(f'Native Word numbering at {ident} needs an explicit numbering resolver; do not flatten it')
+    else:
+        marker = native_marker(p)
+        if marker:
+            result['children'].insert(0, {'_type': 'span', '_key': ident + '-native-marker', 'text': marker['prefix'], 'marks': marker['marks']})
+            result.update(listItem=marker['kind'], level=marker['level'])
     return result
+
+
+def image_block(p, ident, assets, alt):
+    assert not p.text.strip(), f'Mixed inline image/text at {ident}; preserve its inline placement explicitly'
+    assert not p._p.xpath('.//w:pict | .//m:oMath'), f'Unsupported drawing/math at {ident}'
+    drawings, blips = p._p.xpath('.//w:drawing'), p._p.xpath('.//a:blip')
+    assert len(drawings) == len(blips) == 1, f'Unsupported drawing group at {ident}'
+    for crop in p._p.xpath('.//a:srcRect'):
+        assert all(int(value) == 0 for value in crop.attrib.values()), f'Cropped source image at {ident}; import the crop explicitly'
+    rid = blips[0].get(qn('r:embed'))
+    assert rid and rid in p.part.rels, f'External/unresolved source image at {ident}'
+    blob = p.part.rels[rid].target_part.blob
+    digest = hashlib.sha256(blob).hexdigest()
+    asset = assets.get(digest)
+    assert asset and asset.get('assetId', '').startswith('image-'), f'Upload source image {digest} and supply --image-assets before importing {ident}'
+    props = p._p.xpath('.//wp:docPr')
+    description = props[0].get('descr') if props else None
+    result = {'_type': 'medicalFigure', '_key': ident, 'image': {'_type': 'image', 'asset': {'_type': 'reference', '_ref': asset['assetId']}, 'alt': description or alt}, 'sourceUrl': 'https://docs.google.com/document/d/1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw/edit'}
+    return result, digest
 
 
 def table_block(table, ident):
@@ -87,7 +151,7 @@ def table_block(table, ident):
             row_span = 1
             while ri + row_span < len(grid) and grid[ri + row_span][ci]._tc is cell._tc:
                 row_span += 1
-            content = [paragraph_block(p, key(f'{ident}-r{ri}-c{ci}', pi)) for pi, p in enumerate(cell.paragraphs) if p.text]
+            content = [paragraph_block(p, key(f'{ident}-r{ri}-c{ci}', pi)) for pi, p in enumerate(cell.paragraphs) if p.text or p._p.xpath('.//w:drawing | .//w:pict | .//m:oMath')]
             rich.append({'_type': 'medicalTableCell', '_key': f'{ident}-r{ri}-c{ci}', 'columnIndex': ci, 'colSpan': col_span, 'rowSpan': row_span, 'content': content})
         if ri == 0:
             result['headerCells'] = rich
@@ -121,11 +185,12 @@ def initialize_placeholders(doc, existing):
             if topic:
                 topic.update(originalTitle=p.text, title=match[2])
         elif topic and p.style.name == 'Heading 3' and not p.text.endswith(':'):
-            topic['sections'].append({'_type': 'medicalSection', '_key': f'source-{chapter}-{topic["order"]}-section-{len(topic["sections"])}', 'title': p.text, 'sectionType': 'prescription' if p.text.startswith('RX') else 'general'})
+            prescription = p.text.startswith('RX') or (topic['title'].startswith('RX') and not p.text.startswith(('BURIME', 'REFERENCA')))
+            topic['sections'].append({'_type': 'medicalSection', '_key': f'source-{chapter}-{topic["order"]}-section-{len(topic["sections"])}', 'title': p.text, 'sectionType': 'prescription' if prescription else 'general'})
     return prepared
 
 
-def build(source_path, existing, initialize=False):
+def build(source_path, existing, initialize=False, image_assets=None):
     doc = Document(source_path)
     if initialize:
         existing = initialize_placeholders(doc, existing)
@@ -168,9 +233,21 @@ def build(source_path, existing, initialize=False):
                 section = None
                 counts['topics'] += 1
                 continue
-            if not topic or not p.text.strip():
+            if not topic:
                 continue
-            source_sequence.append(('p', p.text))
+            if p._p.xpath('.//w:drawing | .//w:pict | .//m:oMath'):
+                if section is None:
+                    append_section('__SOURCE_BODY__')
+                block, digest = image_block(p, f'source-image-{index}', image_assets or {}, section['title'])
+                section['content'].append(block)
+                source_sequence.append(('image', digest))
+                emitted_sequence.append(('image', digest))
+                counts['figures'] += 1
+                continue
+            if not p.text.strip():
+                continue
+            marker = native_marker(p) if not re.match(r'^\s*(?:\d+\.|[•●·‣▪◦])\s+', p.text) else None
+            source_sequence.append(('p', (marker['prefix'] if marker else '') + p.text))
             if p.style.name == 'Heading 3' and any(s['title'] == p.text for s in topic['existing']['sections']):
                 append_section(p.text)
                 emitted_sequence.append(('p', section['title']))
@@ -184,6 +261,8 @@ def build(source_path, existing, initialize=False):
                 counts['boldSpans'] += sum('strong' in s['marks'] for s in block['children'])
                 if block.get('listItem'):
                     counts['listItems'] += 1
+                if marker:
+                    counts['nativeListItems'] += 1
         elif element.tag == qn('w:tbl') and chapter in chapters and topic:
             table = Table(element, doc)
             if section is None:
@@ -202,10 +281,15 @@ def build(source_path, existing, initialize=False):
 
 
 if __name__ == '__main__':
-    args = sys.argv[1:]
-    initialize = '--initialize-placeholders' in args
-    source, existing_path, output_path = [arg for arg in args if arg != '--initialize-placeholders']
-    result = build(source, json.load(open(existing_path)), initialize)
-    with open(output_path, 'w') as target:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('source')
+    parser.add_argument('existing_path')
+    parser.add_argument('output_path')
+    parser.add_argument('--initialize-placeholders', action='store_true')
+    parser.add_argument('--image-assets')
+    args = parser.parse_args()
+    assets = json.load(open(args.image_assets)) if args.image_assets else {}
+    result = build(args.source, json.load(open(args.existing_path)), args.initialize_placeholders, assets)
+    with open(args.output_path, 'w') as target:
         json.dump(result, target, ensure_ascii=False, indent=2)
     print(json.dumps(result['counts']))

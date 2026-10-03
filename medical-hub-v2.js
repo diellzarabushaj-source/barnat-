@@ -792,8 +792,9 @@
       while (cursor < content.length) {
         const block = content[cursor];
         if (block._type !== 'block' || !block.listItem || levelOf(block) < level || block.listItem !== kind) break;
-        const prefix = sourceBlockText(block).match(kind === 'number' ? /^\s*(\d+)\.\s+/ : /^\s*[•·‣▪◦]\s+/);
-        html += `<li${prefix && boldPrefix(block, prefix[0].length) ? ' class="is-source-marker-strong"' : ''}${kind === 'number' && prefix ? ` value="${Number(prefix[1])}"` : ''}>${portableInlineMarkup(block, prefix?.[0].length || 0)}`;
+        const prefix = sourceBlockText(block).match(kind === 'number' ? /^\s*(\d+)\.\s+/ : /^\s*[•●·‣▪◦]\s+/);
+        const markerClasses = [prefix && boldPrefix(block, prefix[0].length) ? 'is-source-marker-strong' : '', kind === 'bullet' && prefix?.[0].includes('●') ? 'is-source-solid-bullet' : ''].filter(Boolean).join(' ');
+        html += `<li${markerClasses ? ` class="${markerClasses}"` : ''}${kind === 'number' && prefix ? ` value="${Number(prefix[1])}"` : ''}>${portableInlineMarkup(block, prefix?.[0].length || 0)}`;
         cursor += 1;
         while (cursor < content.length && content[cursor]._type === 'block' && content[cursor].listItem && levelOf(content[cursor]) > level) {
           html += listMarkup(levelOf(content[cursor]));
@@ -845,16 +846,16 @@
     }));
 
     const lineMarkup = entry => {
-      const bullet = /^[•·‣▪◦–-]\s*/.test(entry.text);
+      const bullet = /^[•●·‣▪◦–-]\s*/.test(entry.text);
       const connector = /^(OSE|OR|PLUS|DHE|AND)\b/i.test(entry.text);
-      const nested = /^\s{2,}[•·‣▪◦]/.test(sourceBlockText(entry.block));
+      const nested = /^\s{2,}[•●·‣▪◦]/.test(sourceBlockText(entry.block));
       if (entry.block?.style !== 'normal') return portableBlockMarkup(entry.block);
       return `<div class="ck-source-rx-line${bullet ? ' is-bullet' : ''}${nested ? ' is-source-nested' : ''}${connector ? ' is-connector' : ''}">${entry.html}</div>`;
     };
 
     const numberedCount = entries.filter(entry => /^(\d+)\.\s+(.+)$/.test(entry.text)).length;
     const headingLike = entry => {
-      if (!entry.text || /^[•·‣▪◦–-]\s*/.test(entry.text)) return false;
+      if (!entry.text || /^[•●·‣▪◦–-]\s*/.test(entry.text)) return false;
       if (/^(OSE|OR|PLUS|DHE|AND)\b/i.test(entry.text)) return false;
       return entry.text.length <= 150 && /:\s*$/.test(entry.text);
     };

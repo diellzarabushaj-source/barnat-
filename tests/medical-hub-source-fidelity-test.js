@@ -22,6 +22,8 @@ assert.ok(html.indexOf('Dose') < html.indexOf('Maximum') && html.indexOf('Maximu
 assert.match(context.render([{_type:'medicalTable',columns:['A'],rows:[{cells:['First\nSecond']}]}]), /First<br>Second/);
 assert.match(context.render([block('3. Third',['strong'],'number'),block('   • Child',[],'bullet',2),block('7. Seventh',[],'number')]), /start="3".*value="3"><strong>Third<\/strong>.*<ul.*Child.*value="7">Seventh/s);
 assert.doesNotMatch(context.render([block('• Bullet',[],'bullet')]), /<li>•/);
+assert.match(context.render([block('● Native bullet',[],'bullet')]), /<li class="is-source-solid-bullet">Native bullet<\/li>/);
+assert.match(context.rx([block('● Native Rx bullet',[],'bullet')]), /● Native Rx bullet/);
 const split = {_type:'block',style:'normal',listItem:'number',children:[{text:'4.',marks:['strong']},{text:' Label:',marks:['strong']},{text:' Body',marks:[]}]};
 assert.match(context.render([split]), /value="4"><strong>Label:<\/strong> Body/);
 const rx = context.rx([block('1. First'),block('• Detail',['strong']),table,block('2. Second'),block('OSE alternative')]);
