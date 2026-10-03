@@ -16,21 +16,47 @@ const MAX_QUERY = 120;
 const MODERN_INDEX_QUERY = `{
   "chapters": *[
     _type == "medicalChapter" &&
-    reviewStatus == "verified" &&
-    book->reviewStatus == "verified" &&
-    count(*[_type == "medicalTopic" && reviewStatus == "verified" && chapter._ref == ^._id]) > 0
+    (
+      (reviewStatus == "verified" && book->reviewStatus == "verified") ||
+      (number in [5,6] && reviewStatus == "review" && book->reviewStatus in ["review","verified"])
+    ) &&
+    count(*[
+      _type == "medicalTopic" &&
+      chapter._ref == ^._id &&
+      (
+        reviewStatus == "verified" ||
+        (^.number in [5,6] && reviewStatus == "review")
+      )
+    ]) > 0
   ] | order(order asc, number asc) {
     _id, _type, title, originalTitle, "slug": slug.current, summary,
     "contentKind": "chapter", "chapterNumber": number, "lessonNumber": 0,
     reviewStatus, version, sourceLocator,
-    "childCount": count(*[_type == "medicalTopic" && reviewStatus == "verified" && chapter._ref == ^._id]),
+    "childCount": count(*[
+      _type == "medicalTopic" &&
+      chapter._ref == ^._id &&
+      (
+        reviewStatus == "verified" ||
+        (^.number in [5,6] && reviewStatus == "review")
+      )
+    ]),
     "book": book->{_id,title,shortTitle,edition,publishedYear,publisher,language,reviewStatus,version,sourceFile}
   },
   "topics": *[
     _type == "medicalTopic" &&
-    reviewStatus == "verified" &&
-    book->reviewStatus == "verified" &&
-    chapter->reviewStatus == "verified"
+    (
+      (
+        reviewStatus == "verified" &&
+        book->reviewStatus == "verified" &&
+        chapter->reviewStatus == "verified"
+      ) ||
+      (
+        chapter->number in [5,6] &&
+        reviewStatus == "review" &&
+        chapter->reviewStatus == "review" &&
+        book->reviewStatus in ["review","verified"]
+      )
+    )
   ] | order(chapter->order asc, order asc) {
     _id, _type, title, originalTitle, "slug": slug.current, summary, keywords, icdCodes, procedureCodes,
     "contentKind": "lesson", "chapterNumber": chapter->number, "lessonNumber": order, topicType,
@@ -44,9 +70,19 @@ const MODERN_INDEX_QUERY = `{
 const MODERN_DETAIL_QUERY = `coalesce(
   *[
     _type == "medicalTopic" && _id == $id &&
-    reviewStatus == "verified" &&
-    book->reviewStatus == "verified" &&
-    chapter->reviewStatus == "verified"
+    (
+      (
+        reviewStatus == "verified" &&
+        book->reviewStatus == "verified" &&
+        chapter->reviewStatus == "verified"
+      ) ||
+      (
+        chapter->number in [5,6] &&
+        reviewStatus == "review" &&
+        chapter->reviewStatus == "review" &&
+        book->reviewStatus in ["review","verified"]
+      )
+    )
   ][0] {
     _id, _type, title, originalTitle, "slug": slug.current, summary, keywords, icdCodes, procedureCodes,
     "contentKind": "lesson", "chapterNumber": chapter->number, "lessonNumber": order, topicType,
@@ -66,14 +102,22 @@ const MODERN_DETAIL_QUERY = `coalesce(
   },
   *[
     _type == "medicalChapter" && _id == $id &&
-    reviewStatus == "verified" && book->reviewStatus == "verified"
+    (
+      (reviewStatus == "verified" && book->reviewStatus == "verified") ||
+      (number in [5,6] && reviewStatus == "review" && book->reviewStatus in ["review","verified"])
+    )
   ][0] {
     _id, _type, title, originalTitle, "slug": slug.current, summary,
     "contentKind": "chapter", "chapterNumber": number, "lessonNumber": 0,
     reviewStatus, version, sourceLocator,
     "book": book->{_id,title,shortTitle,edition,publishedYear,publisher,language,reviewStatus,version,sourceFile},
     "relatedTopics": *[
-      _type == "medicalTopic" && reviewStatus == "verified" && chapter._ref == ^._id
+      _type == "medicalTopic" &&
+      chapter._ref == ^._id &&
+      (
+        reviewStatus == "verified" ||
+        (^.number in [5,6] && reviewStatus == "review")
+      )
     ] | order(order asc) {
       _id,_type,title,"slug":slug.current,summary,keywords,icdCodes,procedureCodes,
       "contentKind":"lesson","chapterNumber":chapter->number,"lessonNumber":order,
@@ -84,9 +128,19 @@ const MODERN_DETAIL_QUERY = `coalesce(
 
 const MODERN_SEARCH_INDEX_QUERY = `*[
   _type == "medicalTopic" &&
-  reviewStatus == "verified" &&
-  book->reviewStatus == "verified" &&
-  chapter->reviewStatus == "verified"
+  (
+    (
+      reviewStatus == "verified" &&
+      book->reviewStatus == "verified" &&
+      chapter->reviewStatus == "verified"
+    ) ||
+    (
+      chapter->number in [5,6] &&
+      reviewStatus == "review" &&
+      chapter->reviewStatus == "review" &&
+      book->reviewStatus in ["review","verified"]
+    )
+  )
 ] | order(chapter->order asc, order asc) {
   _id,_type,title,originalTitle,"slug":slug.current,summary,keywords,icdCodes,procedureCodes,
   "contentKind":"lesson","chapterNumber":chapter->number,"lessonNumber":order,topicType,
@@ -385,15 +439,23 @@ async function querySanity(query, params = {}) {
 
 async function getIndex() {
   if (indexCache.expiresAt > Date.now() && indexCache.items.length) return indexCache.items;
-  const modern = await querySanity(MODERN_INDEX_QUERY);
+  const [modern, legacy] = await Promise.all([
+    querySanity(MODERN_INDEX_QUERY),
+    querySanity(INDEX_QUERY),
+  ]);
   const modernItems = [
     ...(Array.isArray(modern?.chapters) ? modern.chapters : []),
     ...(Array.isArray(modern?.topics) ? modern.topics : []),
   ];
-  const items = modernItems.some(item => item?._type === 'medicalTopic')
-    ? modernItems
-    : await querySanity(INDEX_QUERY);
-  indexCache = { expiresAt:Date.now() + INDEX_CACHE_MS, items:Array.isArray(items) ? items : [] };
+  const modernChapters = new Set(
+    modernItems.map(item => Number(item?.chapterNumber)).filter(Number.isFinite)
+  );
+  const legacyItems = (Array.isArray(legacy) ? legacy : [])
+    .filter(item => !modernChapters.has(Number(item?.chapterNumber)));
+  const items = [...legacyItems, ...modernItems]
+    .sort((a,b) => Number(a?.chapterNumber || 999) - Number(b?.chapterNumber || 999)
+      || Number(a?.lessonNumber || 0) - Number(b?.lessonNumber || 0));
+  indexCache = { expiresAt:Date.now() + INDEX_CACHE_MS, items };
   return indexCache.items;
 }
 
@@ -442,11 +504,17 @@ function searchDocument(item) {
 
 async function getSearchIndex() {
   if (searchCache.expiresAt > Date.now() && searchCache.items.length) return searchCache.items;
-  const modernItems = await querySanity(MODERN_SEARCH_INDEX_QUERY);
-  const items = Array.isArray(modernItems) && modernItems.length
-    ? modernItems
-    : await querySanity(SEARCH_INDEX_QUERY);
-  const docs = (Array.isArray(items) ? items : []).map(searchDocument);
+  const [modernItems, legacyItems] = await Promise.all([
+    querySanity(MODERN_SEARCH_INDEX_QUERY),
+    querySanity(SEARCH_INDEX_QUERY),
+  ]);
+  const modern = Array.isArray(modernItems) ? modernItems : [];
+  const modernChapters = new Set(
+    modern.map(item => Number(item?.chapterNumber)).filter(Number.isFinite)
+  );
+  const legacy = (Array.isArray(legacyItems) ? legacyItems : [])
+    .filter(item => !modernChapters.has(Number(item?.chapterNumber)));
+  const docs = [...legacy, ...modern].map(searchDocument);
   searchCache = { expiresAt:Date.now() + SEARCH_CACHE_MS, items:docs };
   return docs;
 }
