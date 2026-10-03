@@ -785,6 +785,74 @@
     return html;
   }
 
+  function sourceBlockText(block) {
+    if (!block || block._type !== 'block') return '';
+    return (block.children || []).map(child => String(child?.text ?? '')).join('');
+  }
+
+  function sourcePrescriptionMarkup(blocks) {
+    const sourceBlocks = (Array.isArray(blocks) ? blocks : []).filter(block => block?._type === 'block');
+    if (!sourceBlocks.length) return medicalContentMarkup(blocks);
+
+    const intro = [];
+    const groups = [];
+    let current = null;
+
+    const pushCurrent = () => {
+      if (!current) return;
+      groups.push(current);
+      current = null;
+    };
+
+    sourceBlocks.forEach((block, index) => {
+      const text = sourceBlockText(block).trim();
+      const numbered = text.match(/^(\d+)\.\s+(.+)$/);
+      const entry = {
+        key:block._key || `rx-source-line-${index}`,
+        html:portableInlineMarkup(block),
+        text,
+      };
+
+      if (numbered) {
+        pushCurrent();
+        current = {
+          key:entry.key,
+          heading:entry,
+          number:numbered[1],
+          lines:[],
+        };
+        return;
+      }
+
+      if (current) current.lines.push(entry);
+      else intro.push(entry);
+    });
+    pushCurrent();
+
+    const lineMarkup = entry => {
+      const bullet = /^[•·‣▪◦]\s*/.test(entry.text);
+      const connector = /^(OSE|OR|PLUS|DHE|AND)\b/i.test(entry.text);
+      return `<div class="ck-source-rx-line${bullet ? ' is-bullet' : ''}${connector ? ' is-connector' : ''}">${entry.html}</div>`;
+    };
+
+    return `
+      <div class="ck-source-rx-panel">
+        ${intro.length ? `<div class="ck-source-rx-intro">${intro.map(lineMarkup).join('')}</div>` : ''}
+        ${groups.length ? `
+          <div class="ck-source-rx-steps">
+            ${groups.map(group => `
+              <article class="ck-source-rx-step">
+                <header class="ck-source-rx-step-head">
+                  <strong>${group.heading.html}</strong>
+                </header>
+                ${group.lines.length ? `<div class="ck-source-rx-step-body">${group.lines.map(lineMarkup).join('')}</div>` : ''}
+              </article>
+            `).join('')}
+          </div>
+        ` : (intro.length ? '' : medicalContentMarkup(blocks))}
+      </div>`;
+  }
+
   function isMedicalTopic(item) {
     return item?._type === 'medicalTopic' && Array.isArray(item?.sections);
   }
@@ -1684,7 +1752,7 @@
     const next = currentIndex >= 0 && currentIndex < navigationItems.length - 1 ? navigationItems[currentIndex + 1] : null;
 
     detail.innerHTML = `
-      <div class="ck-document-inner ck-modern-document">
+      <div class="ck-document-inner ck-modern-document${[5,6].includes(Number(item.chapterNumber)) ? ' ck-source-faithful-document' : ''}">
         <header class="ck-detail-head">
           <div class="ck-detail-title-row">
             <div>
@@ -1724,7 +1792,11 @@
         <div class="ck-sections ck-modern-sections">
           ${sections.map((section, index) => {
             const id = `medical-section-${safeAnchor(section._key || section.title, String(index + 1))}`;
-            const content = medicalContentMarkup(section.content || []);
+            const sourceFaithful = [5,6].includes(Number(item.chapterNumber));
+            const sourceRx = sourceFaithful && clean(section?.sectionType).toLowerCase() === 'prescription';
+            const content = sourceRx
+              ? sourcePrescriptionMarkup(section.content || [])
+              : medicalContentMarkup(section.content || []);
             if (isSourceBodySection(section)) {
               return `
                 <section class="ck-section ck-modern-section ck-source-body-section" id="${esc(id)}">
@@ -1732,7 +1804,7 @@
                 </section>`;
             }
             return `
-              <section class="ck-section ck-modern-section" id="${esc(id)}">
+              <section class="ck-section ck-modern-section${sourceRx ? ' is-source-rx-section' : ''}" id="${esc(id)}">
                 <div class="ck-modern-section-heading">
                   <span class="ck-modern-section-number">${String(index + 1).padStart(2, '0')}</span>
                   <div>
