@@ -1,0 +1,52 @@
+{
+  "sourceDocumentId": "1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw",
+  "sourceSha256": "0ae17e0561ca49e84091890a5c82908efa1b1db09dc9c518177072ff417b2a69",
+  "counts": {
+    "topics": 39,
+    "paragraphs": 485,
+    "boldSpans": 514,
+    "listItems": 88,
+    "nativeListItems": 88,
+    "tables": 14
+  },
+  "countsByChapter": {
+    "19": {
+      "topics": 24,
+      "tables": 9,
+      "rx": 27
+    },
+    "20": {
+      "topics": 15,
+      "tables": 5,
+      "rx": 28
+    }
+  },
+  "draftReadbackExact": 39,
+  "publishedReadbackExact": 39,
+  "clinicalStatusPreserved": "draft",
+  "editorialHighlights": 84,
+  "trailingReferencesPreserved": true,
+  "sourceTopicMapping": {
+    "chapter19": "Source topic 15 combines the former overview and furunculosis topic; source topics 16–24 retain matching former IDs 17–25.",
+    "chapter20": "Source topic 1 includes the former five degenerative-disc headings; source topics 2–15 retain matching former IDs 6–19.",
+    "unusedMigrationPlaceholdersPreserved": [
+      "drafts.medical-topic-dod-19-016",
+      "drafts.medical-topic-dod-20-002",
+      "drafts.medical-topic-dod-20-003",
+      "drafts.medical-topic-dod-20-004",
+      "drafts.medical-topic-dod-20-005"
+    ]
+  },
+  "visualVerification": {
+    "desktop": 1440,
+    "mobile": 390,
+    "tablesRendered": 14,
+    "mobileScrollableTables": 14,
+    "pageOverflow": false,
+    "liveAuthenticatedPage": "not checked"
+  },
+  "tests": [
+    "Medical Hub reader/schema/composable/source fidelity/Rx checks"
+  ],
+  "sourceImageCount": 0
+}
