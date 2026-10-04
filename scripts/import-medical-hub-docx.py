@@ -124,7 +124,7 @@ def paragraph_block(p, ident):
     return result
 
 
-def image_block(p, ident, assets, alt):
+def image_block(p, ident, assets, alt, source_document_id='1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw'):
     assert not p.text.strip(), f'Mixed inline image/text at {ident}; preserve its inline placement explicitly'
     assert not p._p.xpath('.//w:pict | .//m:oMath'), f'Unsupported drawing/math at {ident}'
     drawings, blips = p._p.xpath('.//w:drawing'), p._p.xpath('.//a:blip')
@@ -139,7 +139,7 @@ def image_block(p, ident, assets, alt):
     assert asset and asset.get('assetId', '').startswith('image-'), f'Upload source image {digest} and supply --image-assets before importing {ident}'
     props = p._p.xpath('.//wp:docPr')
     description = props[0].get('descr') if props else None
-    result = {'_type': 'medicalFigure', '_key': ident, 'image': {'_type': 'image', 'asset': {'_type': 'reference', '_ref': asset['assetId']}, 'alt': description or alt}, 'sourceUrl': 'https://docs.google.com/document/d/1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw/edit'}
+    result = {'_type': 'medicalFigure', '_key': ident, 'image': {'_type': 'image', 'asset': {'_type': 'reference', '_ref': asset['assetId']}, 'alt': description or alt}, 'sourceUrl': f'https://docs.google.com/document/d/{source_document_id}/edit'}
     return result, digest
 
 
@@ -208,7 +208,8 @@ def initialize_placeholders(doc, existing):
     return prepared
 
 
-def build(source_path, existing, initialize=False, image_assets=None):
+def build(source_path, existing, initialize=False, image_assets=None, source_document_id='1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw'):
+    assert re.fullmatch(r'[A-Za-z0-9_-]+', source_document_id), 'Invalid source document ID'
     doc = Document(source_path)
     if initialize:
         existing = initialize_placeholders(doc, existing)
@@ -279,7 +280,7 @@ def build(source_path, existing, initialize=False, image_assets=None):
                 counts['topics'] += 1
                 continue
             if p._p.xpath('.//w:drawing | .//w:pict | .//m:oMath'):
-                block, digest = image_block(p, f'source-image-{index}', image_assets or {}, section['title'] if section else 'Chapter introduction')
+                block, digest = image_block(p, f'source-image-{index}', image_assets or {}, section['title'] if section else 'Chapter introduction', source_document_id)
                 append_block(block, ('image', digest))
                 counts['figures'] += 1
                 continue
@@ -314,7 +315,7 @@ def build(source_path, existing, initialize=False, image_assets=None):
     for topic in output:
         assert all(s['content'] for s in topic['sections']), f'Empty section: {topic["_id"]}'
         topic.pop('existing')
-    return {'sourceSha256': hashlib.sha256(open(source_path, 'rb').read()).hexdigest(), 'sourceDocumentId': '1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw', 'counts': dict(counts), 'topics': output}
+    return {'sourceSha256': hashlib.sha256(open(source_path, 'rb').read()).hexdigest(), 'sourceDocumentId': source_document_id, 'counts': dict(counts), 'topics': output}
 
 
 if __name__ == '__main__':
@@ -324,9 +325,10 @@ if __name__ == '__main__':
     parser.add_argument('output_path')
     parser.add_argument('--initialize-placeholders', action='store_true')
     parser.add_argument('--image-assets')
+    parser.add_argument('--source-document-id', default='1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw', help='Canonical Google Doc ID, including a different volume')
     args = parser.parse_args()
     assets = json.load(open(args.image_assets)) if args.image_assets else {}
-    result = build(args.source, json.load(open(args.existing_path)), args.initialize_placeholders, assets)
+    result = build(args.source, json.load(open(args.existing_path)), args.initialize_placeholders, assets, args.source_document_id)
     with open(args.output_path, 'w') as target:
         json.dump(result, target, ensure_ascii=False, indent=2)
     print(json.dumps(result['counts']))

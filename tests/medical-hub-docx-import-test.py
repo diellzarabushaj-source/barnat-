@@ -80,6 +80,13 @@ with tempfile.TemporaryDirectory() as temp:
     assert first[0]['children'][0]['text'] == '● '
     assert first[0]['children'][1]['marks'] == ['strong']
     assert first[3]['image']['asset']['_ref'] == assets[hashlib.sha256(png).hexdigest()]['assetId']
+    second_volume_id = '1QNVPfGpPp3lghWIcPf3ynT1rrFMTA5IilJuZ1tEtI_M'
+    second_volume = module.build(path, existing, True, assets, second_volume_id)
+    assert second_volume['sourceDocumentId'] == second_volume_id
+    assert second_volume['sourceSha256'] == result['sourceSha256']
+    second_figure = second_volume['topics'][0]['sections'][2]['content'][3]
+    assert second_figure['sourceUrl'] == f'https://docs.google.com/document/d/{second_volume_id}/edit'
+    assert second_figure['image'] == first[3]['image'], 'Changing volume attribution must preserve the source asset'
     second = result['topics'][1]['sections'][0]['content']
     assert [b['children'][0]['text'] for b in second] == ['3. ', '5. ']
     assert [s['sectionType'] for s in result['topics'][1]['sections']] == ['prescription', 'general']

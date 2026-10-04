@@ -4,6 +4,11 @@ For Doctor on Duty content, the canonical source is the Google Doc supplied by
 Dr. Diellza Rabushaj:
 https://docs.google.com/document/d/1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw/edit
 
+Volume II (chapters 22–24) was also supplied by the user:
+https://docs.google.com/document/d/1QNVPfGpPp3lghWIcPf3ynT1rrFMTA5IilJuZ1tEtI_M/edit
+Pass its ID with `--source-document-id` when importing that volume so source
+metadata and figure links point to the actual canonical document.
+
 These requirements apply to corrections and every future chapter import:
 
 - Preserve every source word, punctuation mark, dose, unit and connector. Do not
