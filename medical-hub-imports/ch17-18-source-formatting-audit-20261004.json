@@ -1,0 +1,41 @@
+{
+  "sourceDocumentId": "1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw",
+  "sourceSha256": "0ae17e0561ca49e84091890a5c82908efa1b1db09dc9c518177072ff417b2a69",
+  "counts": {
+    "topics": 44,
+    "paragraphs": 474,
+    "boldSpans": 353,
+    "listItems": 74,
+    "nativeListItems": 53,
+    "tables": 16
+  },
+  "countsByChapter": {
+    "17": {
+      "topics": 29,
+      "tables": 10,
+      "rx": 36
+    },
+    "18": {
+      "topics": 15,
+      "tables": 6,
+      "rx": 19
+    }
+  },
+  "draftReadbackExact": 44,
+  "publishedReadbackExact": 44,
+  "clinicalStatusPreserved": "draft",
+  "editorialHighlights": 65,
+  "trailingReferencesPreserved": true,
+  "visualVerification": {
+    "desktop": 1440,
+    "mobile": 390,
+    "tablesRendered": 16,
+    "mobileScrollableTables": 16,
+    "pageOverflow": false,
+    "liveAuthenticatedPage": "not checked"
+  },
+  "tests": [
+    "Medical Hub reader/schema/composable/source fidelity/Rx checks"
+  ],
+  "sourceImageCount": 0
+}
