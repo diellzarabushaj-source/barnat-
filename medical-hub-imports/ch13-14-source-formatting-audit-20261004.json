@@ -1,0 +1,40 @@
+{
+  "sourceDocumentId": "1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw",
+  "sourceSha256": "0ae17e0561ca49e84091890a5c82908efa1b1db09dc9c518177072ff417b2a69",
+  "counts": {
+    "topics": 38,
+    "paragraphs": 672,
+    "boldSpans": 705,
+    "listItems": 439,
+    "nativeListItems": 439,
+    "tables": 30,
+    "figures": 10
+  },
+  "countsByChapter": {
+    "13": {
+      "topics": 17,
+      "tables": 15,
+      "figures": 10
+    },
+    "14": {
+      "topics": 21,
+      "tables": 15,
+      "figures": 0
+    }
+  },
+  "rxSections": 79,
+  "draftReadbackExact": 38,
+  "publishedReadbackExact": 38,
+  "clinicalStatusPreserved": "draft",
+  "sourceImageUploads": "10 original PNG files uploaded without alteration; position preserved",
+  "editorialHighlightSections": 2,
+  "visualVerification": {
+    "localDesktop": 1440,
+    "localMobile": 390,
+    "tablesVisible": 30,
+    "mobileScrollableTables": 30,
+    "pageOverflow": false,
+    "liveAuthenticatedPage": "not checked"
+  },
+  "activation": "Pending approval for main production push; chapters 12,13,14 not yet exposed by live API"
+}

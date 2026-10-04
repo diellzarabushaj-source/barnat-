@@ -43,4 +43,6 @@ assert.match(context.render([block('● Shënim redaktorial: Kujdes.',[],'bullet
 assert.match(context.render([block('3. Shënim redaktorial: Shpjegim.',[],'number')]), /<li class="ck-editorial-note" value="3">/);
 assert.match(context.render([block('Burimi fillestar. Shënim redaktorial: Plotësim.')]), /ck-editorial-note/);
 assert.doesNotMatch(context.render([block('BURIME PËR SHËNIMET REDAKTORIALE')]), /ck-editorial-note/);
+assert.match(context.render([block('SHËNIME TË VERIFIKIMIT TË DOZIMIT')]), /ck-editorial-note/);
+assert.match(context.render([block('SHËNIME TË VERIFIKIMIT')]), /ck-editorial-note/);
 console.log('Medical Hub source fidelity: rich tables, merged cells, line breaks, source list values, split bold spans, mixed Rx blocks and escaping passed.');

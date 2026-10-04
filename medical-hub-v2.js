@@ -539,7 +539,8 @@
   function isEditorialNoteText(value) {
     const text = normalize(value);
     return /\bshenim(?:e|i|et)?\s+redaktorial(?:e)?\s*[:—–-]/.test(text)
-      || /^shenim(?:e|i|et)?\s+redaktorial(?:e)?$/.test(text);
+      || /^shenim(?:e|i|et)?\s+redaktorial(?:e)?$/.test(text)
+      || /^shenime te verifikimit(?: te dozimit)?$/.test(text);
   }
 
   function portableBlockMarkup(block) {
