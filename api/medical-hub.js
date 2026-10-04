@@ -19,7 +19,7 @@ const MODERN_INDEX_QUERY = `{
     (
       (reviewStatus == "verified" && book->reviewStatus == "verified") ||
       (number in [5,6,7] && reviewStatus == "review" && book->reviewStatus in ["review","verified"]) ||
-      (number in [8,9,10,11,12,13,14,15,16,17,18,19,20] && version match "source-faithful-google-doc*" && reviewStatus in ["draft","review"] && book->reviewStatus in ["review","verified"])
+      (number in [8,9,10,11,12,13,14,15,16,17,18,19,20,21] && version match "source-faithful-google-doc*" && reviewStatus in ["draft","review"] && book->reviewStatus in ["review","verified"])
     ) &&
     count(*[
       _type == "medicalTopic" &&
@@ -27,7 +27,7 @@ const MODERN_INDEX_QUERY = `{
       (
         reviewStatus == "verified" ||
         (^.number in [5,6,7] && reviewStatus == "review") ||
-        (^.number in [8,9,10,11,12,13,14,15,16,17,18,19,20] && version match "source-faithful-google-doc*" && reviewStatus in ["draft","review"])
+        (^.number in [8,9,10,11,12,13,14,15,16,17,18,19,20,21] && version match "source-faithful-google-doc*" && reviewStatus in ["draft","review"])
       )
     ]) > 0
   ] | order(order asc, number asc) {
@@ -40,7 +40,7 @@ const MODERN_INDEX_QUERY = `{
       (
         reviewStatus == "verified" ||
         (^.number in [5,6,7] && reviewStatus == "review") ||
-        (^.number in [8,9,10,11,12,13,14,15,16,17,18,19,20] && version match "source-faithful-google-doc*" && reviewStatus in ["draft","review"])
+        (^.number in [8,9,10,11,12,13,14,15,16,17,18,19,20,21] && version match "source-faithful-google-doc*" && reviewStatus in ["draft","review"])
       )
     ]),
     "book": book->{_id,title,shortTitle,edition,publishedYear,publisher,language,reviewStatus,version,sourceFile}
@@ -60,7 +60,7 @@ const MODERN_INDEX_QUERY = `{
         book->reviewStatus in ["review","verified"]
       ) ||
       (
-        chapter->number in [8,9,10,11,12,13,14,15,16,17,18,19,20] &&
+        chapter->number in [8,9,10,11,12,13,14,15,16,17,18,19,20,21] &&
         version match "source-faithful-google-doc*" &&
         chapter->version match "source-faithful-google-doc*" &&
         reviewStatus in ["draft","review"] &&
@@ -94,7 +94,7 @@ const MODERN_DETAIL_QUERY = `coalesce(
         book->reviewStatus in ["review","verified"]
       ) ||
       (
-        chapter->number in [8,9,10,11,12,13,14,15,16,17,18,19,20] &&
+        chapter->number in [8,9,10,11,12,13,14,15,16,17,18,19,20,21] &&
         version match "source-faithful-google-doc*" &&
         chapter->version match "source-faithful-google-doc*" &&
         reviewStatus in ["draft","review"] &&
@@ -124,7 +124,7 @@ const MODERN_DETAIL_QUERY = `coalesce(
     (
       (reviewStatus == "verified" && book->reviewStatus == "verified") ||
       (number in [5,6,7] && reviewStatus == "review" && book->reviewStatus in ["review","verified"]) ||
-      (number in [8,9,10,11,12,13,14,15,16,17,18,19,20] && version match "source-faithful-google-doc*" && reviewStatus in ["draft","review"] && book->reviewStatus in ["review","verified"])
+      (number in [8,9,10,11,12,13,14,15,16,17,18,19,20,21] && version match "source-faithful-google-doc*" && reviewStatus in ["draft","review"] && book->reviewStatus in ["review","verified"])
     )
   ][0] {
     _id, _type, title, originalTitle, "slug": slug.current, summary,
@@ -137,7 +137,7 @@ const MODERN_DETAIL_QUERY = `coalesce(
       (
         reviewStatus == "verified" ||
         (^.number in [5,6,7] && reviewStatus == "review") ||
-        (^.number in [8,9,10,11,12,13,14,15,16,17,18,19,20] && version match "source-faithful-google-doc*" && reviewStatus in ["draft","review"])
+        (^.number in [8,9,10,11,12,13,14,15,16,17,18,19,20,21] && version match "source-faithful-google-doc*" && reviewStatus in ["draft","review"])
       )
     ] | order(order asc) {
       _id,_type,title,"slug":slug.current,summary,keywords,icdCodes,procedureCodes,
@@ -162,7 +162,7 @@ const MODERN_SEARCH_INDEX_QUERY = `*[
       book->reviewStatus in ["review","verified"]
     ) ||
     (
-      chapter->number in [8,9,10,11,12,13,14,15,16,17,18,19,20] &&
+      chapter->number in [8,9,10,11,12,13,14,15,16,17,18,19,20,21] &&
       version match "source-faithful-google-doc*" &&
       chapter->version match "source-faithful-google-doc*" &&
       reviewStatus in ["draft","review"] &&
