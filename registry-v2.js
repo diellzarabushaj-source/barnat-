@@ -60,13 +60,14 @@
     { id:'atc', label:'ATC', hint:'Kodi ATC' },
     { id:'adultDose', label:'Doza e të rriturit', hint:'Dozologjia e të rriturit' },
     { id:'pediatricDose', label:'Doza pediatrike', hint:'Dozologjia pediatrike' },
+    { id:'updateStatus', label:'Statusi në përditësim', hint:'E re / Ka qenë / S’është më' },
     { id:'status', label:'Statusi', hint:'Gjenerik / origjinator' },
     { id:'price', label:'Çmimi', hint:'Çmimi me pakicë' },
   ]);
   const DEFAULT_VISIBLE_COLUMNS = Object.freeze(COLUMN_DEFS.map(item => item.id));
   const PREFERENCES_API = '/api/auth?scope=ui-preferences';
   const COLUMN_CACHE_PREFIX = 'drx_registry_columns_v2:';
-  const COLUMN_SCHEMA_VERSION = 'registry-columns-v4-prescription';
+  const COLUMN_SCHEMA_VERSION = 'registry-columns-v5-update-status';
   const COLUMN_SCHEMA_PREFIX = 'drx_registry_column_schema:';
   const CLINICAL_COLUMN_IDS = Object.freeze(['drugClass', 'use', 'population', 'prescription']);
   // Column layout is remembered per profile, but the profile id only arrives
@@ -258,7 +259,7 @@
     const widths = {
       registry:68, name:225, substance:190, strength:105, form:145, prescription:260,
       drugClass:180, use:220, population:150, atc:90,
-      adultDose:190, pediatricDose:190, status:105, price:92,
+      adultDose:190, pediatricDose:190, updateStatus:160, status:105, price:92,
     };
     const visibleWidth = COLUMN_DEFS.reduce((sum, item) => {
       return state.visibleColumns.has(item.id) ? sum + (widths[item.id] || 100) : sum;
@@ -975,6 +976,7 @@
         <td data-col="atc"><span class="skeleton sm"></span></td>
         <td data-col="adultDose"><span class="skeleton lg"></span></td>
         <td data-col="pediatricDose"><span class="skeleton lg"></span></td>
+        <td data-col="updateStatus"><span class="skeleton sm"></span></td>
         <td data-col="status"><span class="skeleton sm"></span></td>
         <td data-col="price"><span class="skeleton sm"></span></td>
         <td></td>
@@ -1202,6 +1204,7 @@
         </div>
         <div class="registry-list-tags">
           <span data-col="population">${populationBadge(row.approvedPopulation)}</span>
+          <span data-col="updateStatus">${escapeHtml(row.updateStatus || '—')}</span>
           <span data-col="status">${statusBadge(row.productStatus)}</span>
           ${row.atc ? `<span data-col="atc"><span class="atc-chip">${escapeHtml(row.atc)}</span></span>` : ''}
           <span data-col="registry" class="registry-list-number">Nr. ${escapeHtml(number || '—')}</span>
@@ -1260,6 +1263,7 @@
         <td data-col="atc">${row.atc ? `<span class="atc-chip">${escapeHtml(row.atc)}</span>` : '—'}</td>
         <td data-col="adultDose" data-dose-adult="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></td>
         <td data-col="pediatricDose" data-dose-pediatric="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></td>
+        <td data-col="updateStatus">${escapeHtml(row.updateStatus || '—')}</td>
         <td data-col="status">${statusBadge(row.productStatus)}</td>
         <td data-col="price"><span class="price">${euros(row.retailPrice)}</span></td>
         <td class="registry-actions-cell"><div class="registry-row-actions"><details class="registry-more" data-row-menu-key="${escapeHtml(key)}"><summary class="registry-more-trigger" aria-label="Veprime për ${escapeHtml(row.tradeName)}">${MORE_VERTICAL}</summary><div class="registry-more-menu" role="menu"><button type="button" role="menuitem" data-dose-calculator-open data-registry-number="${escapeHtml(number)}">${CALC_ICON}<span>Kalkulo</span></button><button type="button" role="menuitem" data-row-favorite="${escapeHtml(key)}" class="${favorite ? 'is-favorite' : ''}">${STAR_ICON}<span data-favorite-label>${favorite ? 'Hiq nga favoritët' : 'Shëno si favorit'}</span></button><button type="button" role="menuitem" data-row-note="${escapeHtml(key)}">${NOTE_ICON}<span>Shkruaj shënim</span></button></div></details><button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">${CHEVRON_RIGHT}</button></div></td>
@@ -1655,7 +1659,7 @@
     const info = [
       ['Nr. regjistri', detail.registryNumber], ['PDID', detail.pdid], ['ATC', detail.atc],
       ['Popullata', populationMeta(detail.approvedPopulation).label], ['Forma', detail.form], ['Paketimi', detail.packaging], ['Prodhuesi', detail.manufacturer], ['MAH', detail.marketingAuthorizationHolder],
-      ['Certifikata', detail.maCertificate], ['Vlefshmëria', detail.validity], ['Çmimi me pakicë', euros(detail.retailPrice)],
+      ['Certifikata', detail.maCertificate], ['Vlefshmëria', detail.validity], ['Statusi në përditësim', detail.updateStatus], ['Çmimi me pakicë', euros(detail.retailPrice)],
     ].filter(([,value]) => clean(value) && value !== '—');
     const clinicalBlocks = [
       ['Përmbledhje', profile.summary], ['Indikacionet', profile.indications], ['Kundërindikacionet', profile.contraindications], ['Paralajmërimet', profile.warnings],

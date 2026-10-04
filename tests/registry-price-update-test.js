@@ -1,0 +1,17 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {planUpdate}=require('../lib/registry-price-update');
+const options={sourceSha256:'a'.repeat(64),completeApprovalList:true};
+const old={id:'old',registry_number:1,pdid:'20',trade_name:'Test',active_substance:'A',strength:'5 mg',pharmaceutical_form:'Tablet',manufacturer:'Maker',packaging:'10',retail_price:2,wholesale_price:1,wholesale_with_margin:1.5,use_text:'Protected'};
+const incoming={...old,source_row:1,retail_price:3};
+let p=planUpdate([old],[incoming],options);assert.equal(p.summary.priceChanged,1);assert.equal(p.updates[0].id,'old');assert.equal(p.inserts.length,0);assert.equal(p.updates[0].use_text,undefined);assert.equal(old.use_text,'Protected');
+p=planUpdate([old],[{...incoming,pdid:'30',trade_name:'New'}],options);assert.equal(p.missing.length,1);assert.equal(p.inserts[0].is_published,false);
+p=planUpdate([old],[{...incoming,retail_price:null}],options);assert.equal(p.issues.length,1);assert.equal(p.missing.length,0);
+p=planUpdate([old],[{...incoming,trade_name:'Other'}],options);assert.equal(p.issues.length,1);
+p=planUpdate([old],[incoming,{...incoming,source_row:2}],options);assert(p.issues.length>0);assert.equal(p.missing.length,0);
+p=planUpdate([old],[{...incoming,pdid:'30',trade_name:'New'}],{...options,completeApprovalList:false});assert.equal(p.missing.length,0);
+assert.throws(()=>planUpdate([old],[],options));
+assert.throws(()=>planUpdate([old],[incoming],{}));
+p=planUpdate([{...old,ma_certificate:'MA-123/2026'}],[{...incoming,pdid:'30',ma_certificate:'MA-123/2026',strength:'corrected source strength'}],options);assert.equal(p.updates[0].id,'old');assert.equal(p.inserts.length,0);
+p=planUpdate([old,{...old,id:'archived',editorial_status:'archived'}],[incoming],options);assert.equal(p.updates.length,1);assert.deepEqual(p.ignoredIds,['archived']);assert.equal(p.existingCount,2);
+console.log('Registry price update tests passed');
