@@ -45,7 +45,7 @@ assert.match(context.render([block('Burimi fillestar. Shënim redaktorial: Plot�
 assert.doesNotMatch(context.render([block('BURIME PËR SHËNIMET REDAKTORIALE')]), /ck-editorial-note/);
 assert.match(context.render([block('SHËNIME TË VERIFIKIMIT TË DOZIMIT')]), /ck-editorial-note/);
 assert.match(context.render([block('SHËNIME TË VERIFIKIMIT')]), /ck-editorial-note/);
-for (const note of ['Shënim sipas udhëzimeve aktuale [1]: Teksti.', 'Shënim diagnostik [7]: Teksti.', 'Shënim redaktues: Teksti.', 'Shënim klinik — përditësim: Teksti.', 'Shënim farmaceutik: Teksti.', 'Shënim [14,15]: Teksti.']) {
+for (const note of ['Shënim sipas udhëzimeve aktuale [1]: Teksti.', 'Shënim diagnostik [7]: Teksti.', 'Shënim redaktues: Teksti.', 'Shënim klinik — përditësim: Teksti.', 'Shënim farmaceutik: Teksti.', 'Shënim praktik • Teksti.', 'Shënim [14,15]: Teksti.']) {
   assert.match(context.render([block(note)]), /ck-editorial-note/);
   assert.match(context.rx([block('1. Hapi'),block(note)]), /ck-source-rx-line ck-editorial-note/);
 }

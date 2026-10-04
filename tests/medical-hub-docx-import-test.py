@@ -126,4 +126,27 @@ with tempfile.TemporaryDirectory() as temp:
         pass
     else:
         raise AssertionError('A mismatched dotted chapter was accepted')
-print('DOCX import: source lists, bold, images/order, author guard, dotted lesson numbers and trailing references passed.')
+with tempfile.TemporaryDirectory() as temp:
+    continued = Document()
+    continued.add_heading('KAPITULLI 24 — TEST', 1)
+    continued.add_heading('24.1 — Antibiotikët', 2)
+    continued.add_paragraph('Original opening paragraph')
+    for text in ['First table', 'Second table']:
+        continued.add_heading('Antibiotikët — vijim', 3)
+        table = continued.add_table(rows=2, cols=1)
+        table.cell(0, 0).text = 'Header'
+        table.cell(1, 0).text = text
+    path = Path(temp) / 'continued.docx'
+    continued.save(path)
+    scaffold = copy.deepcopy(existing[0])
+    scaffold.update(_id='fixture-topic-24-1', chapter={'_ref': 'fixture-chapter-24'})
+    result = module.build(path, [scaffold], True)
+    topic = result['topics'][0]
+    assert topic['originalTitle'] == '24.1 — Antibiotikët'
+    assert topic['title'] == 'Antibiotikët'
+    assert [s['title'] for s in topic['sections']] == ['__SOURCE_BODY__', 'Antibiotikët — vijim', 'Antibiotikët — vijim']
+    assert len({s['_key'] for s in topic['sections']}) == 3, 'Repeated continuation headings and opening body need distinct identities'
+    assert [s['content'][0]['rows'][0]['cells'][0] for s in topic['sections'][1:]] == ['First table', 'Second table']
+    rebuilt = module.build(path, [{**scaffold, 'originalTitle': topic['originalTitle'], 'sections': topic['sections']}])
+    assert rebuilt['topics'][0]['sections'] == topic['sections'], 'Repeated source sections must remain distinct on rebuild'
+print('DOCX import: source lists, bold, images/order, author guard, lesson delimiters, repeated continuation sections and trailing references passed.')

@@ -1,0 +1,42 @@
+{
+  "sourceDocumentId": "1QNVPfGpPp3lghWIcPf3ynT1rrFMTA5IilJuZ1tEtI_M",
+  "sourceSha256": "71b9fc9c73996bc4c30f6be1f7835d17f5453cbcc243bbda6e5f36a3396f0691",
+  "sourceVolume": "II",
+  "counts": {
+    "introductionBlocks": 5,
+    "paragraphs": 151,
+    "boldSpans": 176,
+    "topics": 14,
+    "tables": 50
+  },
+  "countsByChapter": {
+    "24": {
+      "topics": 14,
+      "tables": 50,
+      "rx": 14
+    }
+  },
+  "draftReadbackExact": 14,
+  "publishedReadbackExact": 14,
+  "clinicalStatusPreserved": "draft",
+  "editorialHighlights": 83,
+  "chapterIntroductionPreserved": true,
+  "repeatedContinuationHeadingsPreserved": true,
+  "distinctSectionIdentities": true,
+  "trailingReferencesPreserved": true,
+  "visualVerification": {
+    "desktop": 1440,
+    "mobile": 390,
+    "tablesRendered": 50,
+    "mobileScrollableTables": 50,
+    "pageOverflow": false,
+    "sourceBodyHeadingsSuppressed": true,
+    "liveAuthenticatedPage": "not checked"
+  },
+  "tests": [
+    "Medical Hub reader/schema/composable/source fidelity/Rx checks",
+    "DOCX importer: dash lesson delimiters, repeated continuation sections, opening body identity and rebuild fidelity",
+    "Practical source notes highlighted in normal content and prescriptions"
+  ],
+  "sourceImageCount": 0
+}

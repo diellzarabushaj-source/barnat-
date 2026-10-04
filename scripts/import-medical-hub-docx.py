@@ -29,7 +29,7 @@ def lesson_heading(text, chapter):
     match = re.match(r'^(\d+)\.\s+(.*)', text)
     if match:
         return int(match[1]), match[2]
-    match = re.match(r'^(\d+)\.(\d+)\s+•\s+(.*)', text)
+    match = re.match(r'^(\d+)\.(\d+)\s+[•—–]\s+(.*)', text)
     if match:
         assert int(match[1]) == chapter, f'Heading chapter mismatch: {text}'
         return int(match[2]), match[3]
@@ -225,8 +225,10 @@ def build(source_path, existing, initialize=False, image_assets=None, source_doc
     def append_section(title, is_introduction=False):
         nonlocal section
         intro_key = f'source-{chapter}-intro'
-        old = next((s for s in topic['existing']['sections'] if s['title'] == title and (s['_key'] == intro_key) == is_introduction), None)
-        section = copy.deepcopy(old) if old else {'_type': 'medicalSection', '_key': f"source-{chapter}-{topic['order']}-section-{len(topic['sections'])}", 'title': title, 'sectionType': 'general'}
+        matches = [s for s in topic['existing']['sections'] if s['title'] == title and (s['_key'] == intro_key) == is_introduction]
+        occurrence = sum(s['title'] == title and (s['_key'] == intro_key) == is_introduction for s in topic['sections'])
+        old = matches[occurrence] if occurrence < len(matches) else None
+        section = copy.deepcopy(old) if old else {'_type': 'medicalSection', '_key': f"source-{chapter}-{topic['order']}-body-{len(topic['sections'])}", 'title': title, 'sectionType': 'general'}
         if is_introduction:
             section['_key'] = intro_key
         section['content'] = []
@@ -314,6 +316,8 @@ def build(source_path, existing, initialize=False, image_assets=None, source_doc
     assert len(output) == len(existing), 'Missing or duplicate lesson'
     for topic in output:
         assert all(s['content'] for s in topic['sections']), f'Empty section: {topic["_id"]}'
+        keys = [s['_key'] for s in topic['sections']]
+        assert len(keys) == len(set(keys)), f'Duplicate section identity: {topic["_id"]}'
         topic.pop('existing')
     return {'sourceSha256': hashlib.sha256(open(source_path, 'rb').read()).hexdigest(), 'sourceDocumentId': source_document_id, 'counts': dict(counts), 'topics': output}
 
