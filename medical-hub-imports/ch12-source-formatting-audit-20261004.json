@@ -1,0 +1,18 @@
+{
+  "sourceDocumentId": "1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw",
+  "sourceSha256": "0ae17e0561ca49e84091890a5c82908efa1b1db09dc9c518177072ff417b2a69",
+  "counts": {
+    "topics": 14,
+    "paragraphs": 416,
+    "boldSpans": 289,
+    "tables": 19,
+    "listItems": 351,
+    "nativeListItems": 351
+  },
+  "rxSections": 30,
+  "draftReadbackExact": 14,
+  "reviewStatusPreserved": true,
+  "placeholderKept": "medical-topic-dod-12-006: redundant legacy treatment placeholder kept as unpublished draft",
+  "visualVerification": "Local source renderer: desktop 1440 and mobile 390; all 19 tables retained and horizontally scrollable on mobile. Authenticated live page not checked.",
+  "publishedReadbackExact": 14
+}
