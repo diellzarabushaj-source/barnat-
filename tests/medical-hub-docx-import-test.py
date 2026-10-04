@@ -92,4 +92,31 @@ with tempfile.TemporaryDirectory() as temp:
         assert 'Edited migration note' in str(error)
     else:
         raise AssertionError('An authored note was overwritten')
-print('DOCX import: native list values/continuation/restarts, source bold, blank image preservation/order, missing-asset refusal and author-edit guard passed.')
+with tempfile.TemporaryDirectory() as temp:
+    dotted = Document()
+    dotted.add_heading('KAPITULLI 16 • TEST', 1)
+    dotted.add_paragraph('Chapter introduction')
+    dotted.add_heading('16.1 • Lesson title', 2)
+    dotted.add_heading('RX • TREATMENT', 3)
+    dotted.add_paragraph('Original treatment').runs[0].bold = True
+    dotted.add_heading('Referencat e shënimeve klinike — kapitulli 16', 2)
+    dotted.add_paragraph('Original reference')
+    path = Path(temp) / 'dotted.docx'
+    dotted.save(path)
+    scaffold = copy.deepcopy(existing[0])
+    scaffold.update(_id='fixture-topic-16-1', chapter={'_ref': 'fixture-chapter-16'})
+    result = module.build(path, [scaffold], True)
+    topic = result['topics'][0]
+    assert topic['originalTitle'] == '16.1 • Lesson title'
+    assert topic['title'] == 'Lesson title'
+    assert [s['sectionType'] for s in topic['sections']] == ['general', 'prescription', 'general']
+    assert topic['sections'][-1]['title'] == 'Referencat e shënimeve klinike — kapitulli 16'
+    assert topic['sections'][-1]['content'][0]['children'][0]['text'] == 'Original reference'
+    assert topic['sections'][1]['content'][0]['children'][0]['marks'] == ['strong']
+    try:
+        module.lesson_heading('15.1 • Wrong chapter', 16)
+    except AssertionError:
+        pass
+    else:
+        raise AssertionError('A mismatched dotted chapter was accepted')
+print('DOCX import: source lists, bold, images/order, author guard, dotted lesson numbers and trailing references passed.')

@@ -1,0 +1,44 @@
+{
+  "sourceDocumentId": "1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw",
+  "sourceSha256": "0ae17e0561ca49e84091890a5c82908efa1b1db09dc9c518177072ff417b2a69",
+  "counts": {
+    "introductionBlocks": 1,
+    "paragraphs": 580,
+    "boldSpans": 539,
+    "topics": 38,
+    "listItems": 165,
+    "nativeListItems": 165,
+    "tables": 26
+  },
+  "countsByChapter": {
+    "15": {
+      "topics": 11,
+      "tables": 8,
+      "rx": 29
+    },
+    "16": {
+      "topics": 27,
+      "tables": 18,
+      "rx": 48
+    }
+  },
+  "draftReadbackExact": 38,
+  "publishedReadbackExact": 38,
+  "clinicalStatusPreserved": "draft",
+  "editorialHighlights": 86,
+  "sourceIntroductionPreserved": true,
+  "dermatologyDottedNumbersPreserved": true,
+  "trailingReferencesPreserved": true,
+  "visualVerification": {
+    "desktop": 1440,
+    "mobile": 390,
+    "tablesRendered": 26,
+    "mobileScrollableTables": 26,
+    "pageOverflow": false,
+    "liveAuthenticatedPage": "not checked"
+  },
+  "tests": [
+    "Medical Hub reader/schema/composable/source fidelity/Rx checks",
+    "Importer dotted-number, trailing reference, chapter introduction and author guard regression"
+  ]
+}

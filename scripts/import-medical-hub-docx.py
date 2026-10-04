@@ -25,6 +25,21 @@ def key(prefix, index):
     return f"{prefix}-{index}"
 
 
+def lesson_heading(text, chapter):
+    match = re.match(r'^(\d+)\.\s+(.*)', text)
+    if match:
+        return int(match[1]), match[2]
+    match = re.match(r'^(\d+)\.(\d+)\s+•\s+(.*)', text)
+    if match:
+        assert int(match[1]) == chapter, f'Heading chapter mismatch: {text}'
+        return int(match[2]), match[3]
+    return None
+
+
+def reference_heading(text):
+    return text.startswith('Referencat e shënimeve klinike')
+
+
 def native_marker(p):
     num_pr = p._p.pPr.numPr if p._p.pPr is not None else None
     if num_pr is None:
@@ -180,10 +195,13 @@ def initialize_placeholders(doc, existing):
             match = re.search(r'KAPITULLI\s+(\d+)', p.text)
             chapter, topic = (int(match[1]) if match else 0), None
         elif p.style.name == 'Heading 2':
-            match = re.match(r'^(\d+)\.\s*(.*)', p.text)
-            topic = lookup.get((chapter, int(match[1]))) if match else None
+            if reference_heading(p.text) and topic:
+                topic['sections'].append({'_type': 'medicalSection', '_key': f'source-{chapter}-{topic["order"]}-references', 'title': p.text, 'sectionType': 'general'})
+                continue
+            heading = lesson_heading(p.text, chapter)
+            topic = lookup.get((chapter, heading[0])) if heading else None
             if topic:
-                topic.update(originalTitle=p.text, title=match[2])
+                topic.update(originalTitle=p.text, title=heading[1])
         elif topic and p.style.name == 'Heading 3' and not p.text.endswith(':'):
             prescription = p.text.startswith('RX') or (topic['title'].startswith('RX') and not p.text.startswith(('BURIME', 'REFERENCA')))
             topic['sections'].append({'_type': 'medicalSection', '_key': f'source-{chapter}-{topic["order"]}-section-{len(topic["sections"])}', 'title': p.text, 'sectionType': 'prescription' if prescription else 'general'})
@@ -237,9 +255,14 @@ def build(source_path, existing, initialize=False, image_assets=None):
             if chapter not in chapters:
                 continue
             if p.style.name == 'Heading 2':
-                match = re.match(r'^(\d+)\.\s*(.*)', p.text)
-                assert match, f'Unnumbered lesson at {index}'
-                order = int(match[1])
+                if reference_heading(p.text) and topic:
+                    source_sequence.append(('p', p.text))
+                    append_section(p.text)
+                    emitted_sequence.append(('p', section['title']))
+                    continue
+                heading = lesson_heading(p.text, chapter)
+                assert heading, f'Unnumbered lesson at {index}'
+                order = heading[0]
                 old = lookup[(chapter, order)]
                 assert old['originalTitle'] == p.text, f'Topic mismatch: {old["_id"]}'
                 topic = {'_id': old['_id'], '_rev': old['_rev'], 'chapterNumber': chapter, 'order': order, 'existing': old, 'sections': []}
