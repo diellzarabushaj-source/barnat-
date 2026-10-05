@@ -1177,6 +1177,26 @@
     {
       "name": "admin_manual_registration_approval",
       "version": "20261001192452"
+    },
+    {
+      "name": "registry_price_update_status_and_atomic_import_v1",
+      "version": "20261004204148"
+    },
+    {
+      "name": "registry_price_update_archived_identity_guard",
+      "version": "20261004221327"
+    },
+    {
+      "name": "registry_clinical_review_private_queue_v1",
+      "version": "20261005094057"
+    },
+    {
+      "name": "registry_clinical_drafts_unpublished_gate_v1",
+      "version": "20261005094808"
+    },
+    {
+      "name": "registry_clinical_review_null_guards_and_index",
+      "version": "20261005095750"
     }
   ]
 }

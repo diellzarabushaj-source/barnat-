@@ -29,10 +29,12 @@ if (!js.includes(MARKER)) {
     const widths = {
       registry:68, name:235, substance:260, strength:112, form:165, prescription:300,
       drugClass:205, use:215, population:145, atc:94,
-      adultDose:200, pediatricDose:200, status:110, price:96,
+      adultDose:200, pediatricDose:200, updateStatus:160, status:110, price:96,
     };`;
-  if (!js.includes(oldWidths)) throw new Error('Registry table width map anchor missing.');
-  js = js.replace(oldWidths, newWidths);
+  const updateWidths = oldWidths.replace('pediatricDose:190, status:', 'pediatricDose:190, updateStatus:160, status:');
+  const currentWidths = js.includes(updateWidths) ? updateWidths : oldWidths;
+  if (!js.includes(currentWidths)) throw new Error('Registry table width map anchor missing.');
+  js = js.replace(currentWidths, newWidths);
 
   const oldChromeWidth = '    }, 44 + 48);';
   if (!js.includes(oldChromeWidth)) throw new Error('Registry table chrome width anchor missing.');

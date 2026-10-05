@@ -22,14 +22,14 @@ let atcCountsRevisionCheckedAt = 0;
 
 const LIST_SELECT = [
   'id','registry_number','pdid','trade_name','active_substance','atc_code','drug_class','use_text','approved_population',
-  'strength','pharmaceutical_form','product_status','retail_price','editorial_status',
+  'strength','pharmaceutical_form','update_status','product_status','retail_price','editorial_status',
   'prescription_notation:source_payload->>"Si të shënohet në recetë"'
 ].join(',');
 
 const DETAIL_SELECT = [
   'id','registry_number','pdid','protocol_no','trade_name','active_substance','atc_code','drug_class','use_text','approved_population',
   'strength','pharmaceutical_form','packaging','marketing_authorization_holder','manufacturer','ma_certificate',
-  'product_status','wholesale_price','wholesale_with_margin','vat_text','retail_price','validity_text','updated_at',
+  'update_status','product_status','wholesale_price','wholesale_with_margin','vat_text','retail_price','validity_text','updated_at',
   'audit_date','audit_note','pediatric_dose_summary','pediatric_indication','pediatric_use_status',
   'pediatric_min_age_value','pediatric_min_age_unit','pediatric_max_age_value','pediatric_max_age_unit',
   'pediatric_min_weight_kg','pediatric_max_weight_kg','pediatric_dose_min','pediatric_dose_max','pediatric_dose_unit',
@@ -201,7 +201,7 @@ async function neonAtcCounts() {
   return supabaseAtcCounts();
 }
 
-function listRow(row) { return { prescriptionNotation:clean(row.prescription_notation), id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName:clean(row.trade_name), activeSubstance:clean(row.active_substance), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), approvedPopulation:clean(row.approved_population), strength:clean(row.strength), form:clean(row.pharmaceutical_form), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, qualityStatus:clean(row.editorial_status || row.product_status) }; }
+function listRow(row) { return { prescriptionNotation:clean(row.prescription_notation), id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName:clean(row.trade_name), activeSubstance:clean(row.active_substance), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), approvedPopulation:clean(row.approved_population), strength:clean(row.strength), form:clean(row.pharmaceutical_form), updateStatus:clean(row.update_status), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, qualityStatus:clean(row.editorial_status || row.product_status) }; }
 function sourceFields(value) {
   const source=value && typeof value==='object' && !Array.isArray(value) ? value : {};
   return Object.entries(source).flatMap(([label,raw]) => {
@@ -263,7 +263,7 @@ function detailRow(row) {
     updatedAt:row.updated_at || null,
   };
 }
-function searchRow(row) { const substance=clean(row.active_substance), tradeName=clean(row.trade_name), strength=clean(row.strength); return { key:[clean(row.pdid),tradeName,strength].join('|'), id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName, substance, activeSubstance:substance, strength, form:clean(row.pharmaceutical_form), packaging:clean(row.packaging), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), approvedPopulation:clean(row.approved_population), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, packagingSummary:clean(row.packaging), prescriptionLine:'', dispense:'', qualityStatus:clean(row.editorial_status || row.product_status), matchRank:Number.isFinite(Number(row.match_rank)) ? Number(row.match_rank) : null, matchReason:clean(row.match_reason) }; }
+function searchRow(row) { const substance=clean(row.active_substance), tradeName=clean(row.trade_name), strength=clean(row.strength); return { key:[clean(row.pdid),tradeName,strength].join('|'), id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName, substance, activeSubstance:substance, strength, form:clean(row.pharmaceutical_form), packaging:clean(row.packaging), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), approvedPopulation:clean(row.approved_population), updateStatus:clean(row.update_status), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, packagingSummary:clean(row.packaging), prescriptionLine:'', dispense:'', qualityStatus:clean(row.editorial_status || row.product_status), matchRank:Number.isFinite(Number(row.match_rank)) ? Number(row.match_rank) : null, matchReason:clean(row.match_reason) }; }
 
 function buildPageRequest(query={}) {
   const page=integerInRange(query.page,1,1,100000), pageSize=integerInRange(query.pageSize,REGISTRY_DEFAULT_PAGE_SIZE,1,REGISTRY_MAX_PAGE_SIZE);
@@ -292,6 +292,14 @@ function buildPersonalLookupPath(query={}) { const ids=safeUuidList(query.ids); 
 
 async function sendPage(req,res,startedAt) { const request=buildPageRequest(requestQuery(req)); const {data,response}=await supabaseRequest(request.path,{timeoutMs:6500,label:'Supabase registry page',...(request.includeTotal?{prefer:'count=exact'}:{})}); const rows=Array.isArray(data)?data.map(listRow):[]; const total=request.includeTotal?exactCount(response):null; const totalPages=Number.isFinite(total)?Math.max(1,Math.ceil(total/request.pageSize)):null; setHeaders(res,startedAt,'supabase-registry-page'); if(req.method==='HEAD')return res.status(200).end(); return res.status(200).json({ok:true,rows,pagination:{page:request.page,pageSize:request.pageSize,total,totalPages,hasPrevious:request.page>1,hasNext:Number.isFinite(total)?request.page*request.pageSize<total:rows.length===request.pageSize},query:{q:request.q,status:request.status,atc:request.atc,form:request.form,formExact:request.formExact,formCategory:request.formCategory,sort:request.sort,direction:request.direction,includeTotal:request.includeTotal},meta:{source:'supabase'}}); }
 async function sendDetail(req,res,startedAt) { const path=buildDetailPath(requestQuery(req)); if(!path)return res.status(400).json({error:'ID e barit është e pavlefshme.'}); const {data}=await supabaseRequest(path,{timeoutMs:5000,label:'Supabase registry detail'}); const row=Array.isArray(data)&&data.length?detailRow(data[0]):null; setHeaders(res,startedAt,'supabase-registry-detail'); if(req.method==='HEAD')return res.status(row?200:404).end(); return row?res.status(200).json({ok:true,row,meta:{source:'supabase'}}):res.status(404).json({error:'Bari nuk u gjet.'}); }
+async function withUpdateStatuses(data) {
+  const rows=Array.isArray(data)?data:[];
+  const ids=rows.map(row=>clean(row.id)).filter(id=>/^[a-f0-9-]{36}$/i.test(id));
+  if(!ids.length)return rows;
+  const {data:statuses}=await supabaseRequest(`drugs?select=id,update_status&id=in.(${ids.join(',')})&is_published=eq.true&editorial_status=eq.published&limit=${ids.length}`,{timeoutMs:5000,label:'Supabase registry update statuses'});
+  const map=new Map((Array.isArray(statuses)?statuses:[]).map(row=>[row.id,row.update_status]));
+  return rows.map(row=>({...row,update_status:map.get(row.id)||''}));
+}
 async function sendSearch(req,res,startedAt) {
   const query=requestQuery(req);
   const request=buildSearchPath(query.q,query.limit);
@@ -300,7 +308,7 @@ async function sendSearch(req,res,startedAt) {
     ? res.status(200).end()
     : res.status(200).json({ok:true,query:'',results:[],meta:{source:'supabase',searchVersion:'v5'}});
   const {data}=await supabaseRequest(request.path,{method:request.method,body:request.body,timeoutMs:5000,label:'Supabase ranked drug search v5'});
-  const results=Array.isArray(data)?data.map(searchRow):[];
+  const results=(await withUpdateStatuses(data)).map(searchRow);
   if(req.method==='HEAD')return res.status(200).end();
   return res.status(200).json({ok:true,query:request.q,results,meta:{source:'supabase',searchVersion:'v5',limit:request.limit}});
 }
@@ -313,7 +321,7 @@ async function sendRankedRegistrySearch(req,res,startedAt) {
     ? res.status(200).end()
     : res.status(200).json({ok:true,rows:[],pagination:{page:1,pageSize,total:0,totalPages:1,hasPrevious:false,hasNext:false},query:{q:''},meta:{source:'supabase',searchVersion:'v5',ranked:true}});
   const {data}=await supabaseRequest(request.path,{method:request.method,body:request.body,timeoutMs:5000,label:'Supabase ranked registry search v5'});
-  const rows=Array.isArray(data)?data.map(searchRow):[];
+  const rows=(await withUpdateStatuses(data)).map(searchRow);
   if(req.method==='HEAD')return res.status(200).end();
   return res.status(200).json({
     ok:true,
