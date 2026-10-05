@@ -69,7 +69,7 @@
   const COLUMN_CACHE_PREFIX = 'drx_registry_columns_v2:';
   const COLUMN_SCHEMA_VERSION = 'registry-columns-v5-update-status';
   const COLUMN_SCHEMA_PREFIX = 'drx_registry_column_schema:';
-  const CLINICAL_COLUMN_IDS = Object.freeze(['drugClass', 'use', 'population', 'prescription']);
+  const CLINICAL_COLUMN_IDS = Object.freeze(['drugClass', 'use', 'population', 'prescription', 'updateStatus']);
   // Column layout is remembered per profile, but the profile id only arrives
   // once auth resolves. Without a device-scoped fallback nothing is cached in
   // that window and a refresh snaps the table back to the default.

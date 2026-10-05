@@ -165,7 +165,7 @@ assert(css.includes('td.registry-actions-cell:has(.registry-more[open]){z-index:
 assert(!css.includes('!important'), 'Registry v2 stylesheet must not rely on !important overrides.');
 
 const tableHeaderCount = (html.match(/<th\b/g) || []).length;
-assert(tableHeaderCount >= 10 && tableHeaderCount <= 16, `Registry v2 table column count is unexpected: ${tableHeaderCount}.`);
+assert(tableHeaderCount >= 10 && tableHeaderCount <= 17, `Registry v2 table column count is unexpected: ${tableHeaderCount}.`);
 
 console.log(JSON.stringify({
   ok:true,
