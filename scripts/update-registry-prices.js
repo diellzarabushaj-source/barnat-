@@ -24,7 +24,7 @@ async function main(){
   const plan=planUpdate(existing,incoming,{completeApprovalList:args.includes('--complete-approval-list'),sourceSha256:crypto.createHash('sha256').update(bytes).digest('hex')});
   const output=args.includes('--output')?option('--output'):'registry-update-preview.json';
   fs.writeFileSync(output,JSON.stringify(plan,null,2));
-  fs.writeFileSync(output.replace(/\.json$/i,'')+'.new-products.json',JSON.stringify({sourceSha256:plan.sourceSha256,clinicalStatus:'needs_authoritative_source',products:plan.inserts.map(({id,registry_number,...product})=>({...product,needs:['use_text','drug_class','adult_dose','pediatric_dose','source_url'],publicationAllowed:false}))},null,2));
+  fs.writeFileSync(output.replace(/\.json$/i,'')+'.new-products.json',JSON.stringify({sourceSha256:plan.sourceSha256,clinicalStatus:'needs_authoritative_source',products:plan.inserts.map(product=>({...product,needs:['use_text','drug_class','adult_dose','pediatric_dose','source_url'],publicationAllowed:false}))},null,2));
   console.log(JSON.stringify(plan.summary,null,2));
   if(!args.includes('--apply'))return;
   if(plan.issues.length)throw new Error('Kontrollo përputhjet e paqarta në parapamje. Asgjë nuk u aplikua.');

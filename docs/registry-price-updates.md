@@ -34,4 +34,21 @@ Përdoren procesi ekzistues DRx i arkivimit të burimeve, rregullave të dozimit
 - Pesë rreshta të përkohshëm të dyfishuar u ruajtën të arkivuar pas përputhjes me certifikatën dhe paketimin.
 - Kontrolli në databazë vërtetoi ruajtjen e të gjitha fushave ekzistuese përveç çmimeve, statusit dhe datës së përditësimit.
 
-Plotësimi klinik nga interneti mbetet në punë; ky import nuk pretendon se të dhënat e 159 barnave të reja janë verifikuar.
+Radha private e shqyrtimit përmban të gjitha 159 barnat e reja. Për 123 ka referenca nga regjistri ekzistues; për 104 janë arkivuar burime me seksionet 4.1 dhe 4.2. Përputhja me një referencë nuk është verifikim i produktit të ri. 55 produkte ende kërkojnë burim të përshtatshëm.
+
+Përdorimi, klasa dhe propozimet e dozimit për të rritur e fëmijë u plotësuan si drafte për Gluformin, Omnitus, Demetrin, Cortiazem Retard dhe Trodon, nga SmPC i prodhuesit. Të pesë mbeten të papublikuara, me profile `in_review` dhe doza `pending`. Asnjë dozë numerike për kalkulator nuk krijohet. Pjesa tjetër e plotësimeve klinike mbetet në punë.
+
+## Përgatitja dhe ruajtja e shqyrtimit klinik
+
+```sh
+node scripts/prepare-registry-clinical-review.js --candidates candidates.json --archives archives.json --source-sha256 SHA256 --output clinical-review.json
+node scripts/prepare-registry-clinical-review.js --candidates candidates.json --archives archives.json --source-sha256 SHA256 --output clinical-review.json --apply
+node scripts/stage-registry-clinical-drafts.js --queue clinical-review.json --drafts product-specific-drafts.json --archives archives.json --output validated-drafts.json
+node scripts/stage-registry-clinical-drafts.js --queue clinical-review.json --drafts product-specific-drafts.json --archives archives.json --output validated-drafts.json --apply
+```
+
+`candidates.json` përmban produkte të reja të papublikuara dhe referenca ekzistuese. `archives.json` referon skedarët lokalë raw, metadata dhe seksionet e arkivuara. `--discovered-sources mapping.json` lidh dokumentet e reja të gjetura me ID-të përkatëse. Kontrollohen hash-et raw/metadata/4.1/4.2 dhe riparsimi i HTML-së. PDF-të kërkojnë shqyrtim të nxjerrjes dhe të datës/versionit.
+
+Radha ruhet vetëm në `registry_update_private.clinical_review_queue`, me qasje vetëm të serverit. Referencat dhe dozat e tyre janë propozime, pa bartje të statusit të verifikimit. Plotësimi i drafteve pranon vetëm produkte të reja të këtij importi, me fushat klinike ende të paautoruara, identitet të pandryshuar dhe burim të arkivuar që përputhet me propozimin. Nëse një përdorues i ka redaktuar të dhënat, shkrimi bllokohet. Përsëritja e të njëjtit propozim nuk e rishkruan.
+
+Dokumenti Excel, eksportet e databazës, tekstet klinike dhe arkivat e burimeve ruhen lokalisht. Në GitHub vendoset vetëm kodi dhe dokumentimi i procesit.
