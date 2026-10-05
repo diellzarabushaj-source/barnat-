@@ -34,7 +34,7 @@ Përdoren procesi ekzistues DRx i arkivimit të burimeve, rregullave të dozimit
 - Pesë rreshta të përkohshëm të dyfishuar u ruajtën të arkivuar pas përputhjes me certifikatën dhe paketimin.
 - Kontrolli në databazë vërtetoi ruajtjen e të gjitha fushave ekzistuese përveç çmimeve, statusit dhe datës së përditësimit.
 
-Radha private e shqyrtimit përmban të gjitha 159 barnat e reja. Për 123 ka referenca nga regjistri ekzistues; për 104 janë arkivuar burime me seksionet 4.1 dhe 4.2. Përputhja me një referencë nuk është verifikim i produktit të ri. 55 produkte ende kërkojnë burim të përshtatshëm.
+Radha private e shqyrtimit përmban të gjitha 159 barnat e reja. Për 123 ka referenca nga regjistri ekzistues; për 155 janë arkivuar burime me seksionet 4.1 dhe 4.2. Përputhja me një referencë nuk është verifikim i produktit të ri. Katër produkte ende kërkojnë burim të përshtatshëm ose nxjerrje të plotë të tekstit: Sinedol, Oxycort, Fungospor dhe Bromhexine Sopharma. 150 produkte me burime presin kontrollin e përputhjes dhe plotësimin klinik.
 
 Përdorimi, klasa dhe propozimet e dozimit për të rritur e fëmijë u plotësuan si drafte për Gluformin, Omnitus, Demetrin, Cortiazem Retard dhe Trodon, nga SmPC i prodhuesit. Të pesë mbeten të papublikuara, me profile `in_review` dhe doza `pending`. Asnjë dozë numerike për kalkulator nuk krijohet. Pjesa tjetër e plotësimeve klinike mbetet në punë.
 
