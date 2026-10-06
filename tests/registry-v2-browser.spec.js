@@ -46,17 +46,13 @@ const rows = [
 const visibleColumns = ['registry', 'name', 'substance', 'strength', 'form', 'prescription',
   'drugClass', 'use', 'population', 'atc', 'adultDose', 'pediatricDose', 'status', 'price'];
 
-function filteredRows(url) {
-  const q = String(url.searchParams.get('q') || '').toLowerCase();
-  const atc = url.searchParams.get('atc') || '';
-  const form = url.searchParams.get('formExact') || '';
-  return rows.filter(row => `${row.tradeName} ${row.activeSubstance} ${row.atc} ${row.use}`.toLowerCase().includes(q)
-    && (!atc || (atc.length === 7 ? row.atc === atc : row.atc.startsWith(atc)))
-    && (!form || row.form === form)
-    && Object.entries(columnModel.parseFilters(url.searchParams.get('columnFilters'))).every(([id, filter]) => columnModel.matches(row,id,filter)));
+function filteredRows(url, dataset = rows) {
+  return columnData.filterRows(dataset.map(row=>({...row,_search:`${row.tradeName} ${row.activeSubstance} ${row.atc} ${row.use}`})),{
+    q:url.searchParams.get('q'),atc:url.searchParams.get('atc'),formExact:url.searchParams.get('formExact'),columnFilters:url.searchParams.get('columnFilters'),
+  },{});
 }
 
-async function installApiMocks(page) {
+async function installApiMocks(page, dataset = rows) {
   await page.route('**/api/auth**', async route => {
     if (new URL(route.request().url()).searchParams.get('scope') === 'ui-preferences') {
       return route.fulfill({ json:{ ok:true, registryColumns:visibleColumns } });
@@ -75,7 +71,7 @@ async function installApiMocks(page) {
     const url = new URL(route.request().url());
     const view = url.searchParams.get('view');
     if (view === 'registry-detail') {
-      const row = rows.find(item => item.id === url.searchParams.get('id')) || rows[0];
+      const row = dataset.find(item => item.id === url.searchParams.get('id')) || dataset[0];
       return route.fulfill({
         status:200,
         contentType:'application/json',
@@ -86,10 +82,10 @@ async function installApiMocks(page) {
       const column = url.searchParams.get('column'), filters = columnModel.parseFilters(url.searchParams.get('columnFilters'));
       delete filters[column];
       url.searchParams.set('columnFilters',JSON.stringify(filters));
-      return route.fulfill({json:{ok:true,column,...columnData.facets(filteredRows(url),column,url.searchParams.get('valueSearch'),Number(url.searchParams.get('offset')))}});
+      return route.fulfill({json:{ok:true,column,...columnData.facets(filteredRows(url,dataset),column,url.searchParams.get('valueSearch'),Number(url.searchParams.get('offset')))}});
     }
     if (view === 'registry-page' || view === 'registry-search') {
-      const result = columnData.sortRows(filteredRows(url),url.searchParams.get('sort'),url.searchParams.get('direction'));
+      const result = columnData.sortRows(filteredRows(url,dataset),url.searchParams.get('sort'),url.searchParams.get('direction'));
       return route.fulfill({
         status:200,
         headers:{ 'X-MedIndex-Data-Source':'neon-test' },
@@ -110,7 +106,7 @@ async function installApiMocks(page) {
     const view = url.searchParams.get('view');
     if (view === 'cards') {
       const requested = new Set((url.searchParams.get('nrs') || '').split(','));
-      const cards = rows.filter(row => requested.has(String(row.registryNumber))).map(row => ({
+      const cards = dataset.filter(row => requested.has(String(row.registryNumber))).map(row => ({
         registryNumber:String(row.registryNumber),
         drugId:row.id,
         pdid:row.pdid,
@@ -142,6 +138,52 @@ async function installApiMocks(page) {
 
 test.beforeEach(async ({ page }) => {
   await installApiMocks(page);
+});
+
+for (const width of [1440,390]) test(`substance spelling variants share one filter while products and original names remain distinct at ${width}px`, async ({page}) => {
+  const dataset = ['amoxicilin','Amoxicilin','Amoxicillin','Amoxicillin trihydrate','Amoxicillin; Clavulanic acid'].map((activeSubstance,i)=>({
+    ...rows[1],id:`${i+3}${'3'.repeat(7)}-3333-4333-8333-333333333333`,registryNumber:i+3,pdid:String(i+1003),tradeName:'SUBSTANCE PRODUCT '+(i+1),activeSubstance,
+  }));
+  await installApiMocks(page,dataset);
+  await page.setViewportSize({width,height:900});
+  await page.goto('/index.html');
+  await expect(page.locator('#registryRows tr')).toHaveCount(5);
+  if (width < 760) {
+    await page.locator('#filterToggle').click();
+    await page.locator('#columnFilterColumn').selectOption('substance');
+    await page.locator('#columnFilterOpen').click();
+  } else await page.locator('[data-column-filter="substance"]').click();
+  await expect(page.locator('.column-filter-value')).toHaveCount(3);
+  const merged = page.locator('.column-filter-value').filter({has:page.locator('span',{hasText:/^Amoxicillin$/})});
+  await expect(merged.locator('small')).toHaveText('3');
+  await page.locator('#columnFilterSearch').fill('amoxicilin');
+  await expect(merged).toBeVisible();
+  await page.locator('#columnFilterSelectAll').uncheck();
+  await merged.locator('input').check();
+  await page.locator('#registryColumnFilterPanel [data-apply]').click();
+  await expect(page.locator('#registryRows tr')).toHaveCount(3);
+  for (const cell of await page.locator('#registryRows [data-col="substance"]').all()) await expect(cell).toHaveText('Amoxicillin');
+  await page.reload();
+  await expect(page.locator('#registryRows tr')).toHaveCount(3);
+  await page.locator('[data-view="list"]').click();
+  await expect(page.locator('.registry-list-card')).toHaveCount(3);
+  await expect(page.locator('.registry-list-card [data-col="substance"]').first()).toHaveText('Amoxicillin');
+  await page.locator('.registry-list-card [data-open-row]').first().click();
+  await expect(page.locator('#drawerBody')).toContainText('Emërtimi në regjistër');
+  await expect(page.locator('#drawerBody')).toContainText('amoxicilin');
+  await expect(page.locator('#drawerBody .detail-hero')).toContainText('Amoxicillin');
+  await page.locator('#drawerClose').click();
+  await page.locator('[data-remove-column="substance"]').click();
+  await expect(page.locator('.registry-list-card')).toHaveCount(5);
+  const request = page.waitForRequest(req=>req.url().includes('/api/drug-search') && new URL(req.url()).searchParams.get('q')==='amoxicilin');
+  await page.locator('#searchInput').fill('amoxicilin');
+  expect(new URL((await request).url()).searchParams.get('view')).toBe('registry-page');
+  await expect(page.locator('.registry-list-card')).toHaveCount(5);
+  const oldFilter = new URLSearchParams({columnFilters:JSON.stringify({substance:{mode:'include',values:['Amoxicilin']}})});
+  await page.goto('/index.html?'+oldFilter);
+  await expect(page.locator('.registry-list-card')).toHaveCount(3);
+  await page.locator('[data-view="table"]').click();
+  await expect(page.locator('#registryRows tr')).toHaveCount(3);
 });
 
 test('every data column exposes Excel filters, draft cancellation and full-registry values', async ({ page }) => {

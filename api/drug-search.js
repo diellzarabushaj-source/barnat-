@@ -5,6 +5,7 @@ const registryHandler = require('./registry.js');
 const RegistryRevision = require('../lib/registry-revision.js');
 const ColumnData = require('../lib/registry-column-data.js');
 const ColumnModel = require('../registry-column-model.js');
+const Substances = require('../registry-substance-normalization.js');
 
 const REGISTRY_DEFAULT_PAGE_SIZE = 25;
 const REGISTRY_MAX_PAGE_SIZE = 50;
@@ -203,7 +204,7 @@ async function neonAtcCounts() {
   return supabaseAtcCounts();
 }
 
-function listRow(row) { return { prescriptionNotation:clean(row.prescription_notation), id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName:clean(row.trade_name), activeSubstance:clean(row.active_substance), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), approvedPopulation:clean(row.approved_population), strength:clean(row.strength), form:clean(row.pharmaceutical_form), updateStatus:clean(row.update_status), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, qualityStatus:clean(row.editorial_status || row.product_status) }; }
+function listRow(row) { return Substances.normalizeRow({ prescriptionNotation:clean(row.prescription_notation), id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName:clean(row.trade_name), activeSubstance:clean(row.active_substance), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), approvedPopulation:clean(row.approved_population), strength:clean(row.strength), form:clean(row.pharmaceutical_form), updateStatus:clean(row.update_status), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, qualityStatus:clean(row.editorial_status || row.product_status) }); }
 function sourceFields(value) {
   const source=value && typeof value==='object' && !Array.isArray(value) ? value : {};
   return Object.entries(source).flatMap(([label,raw]) => {
@@ -265,7 +266,7 @@ function detailRow(row) {
     updatedAt:row.updated_at || null,
   };
 }
-function searchRow(row) { const substance=clean(row.active_substance), tradeName=clean(row.trade_name), strength=clean(row.strength); return { key:[clean(row.pdid),tradeName,strength].join('|'), id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName, substance, activeSubstance:substance, strength, form:clean(row.pharmaceutical_form), packaging:clean(row.packaging), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), approvedPopulation:clean(row.approved_population), updateStatus:clean(row.update_status), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, packagingSummary:clean(row.packaging), prescriptionLine:'', dispense:'', qualityStatus:clean(row.editorial_status || row.product_status), matchRank:Number.isFinite(Number(row.match_rank)) ? Number(row.match_rank) : null, matchReason:clean(row.match_reason) }; }
+function searchRow(row) { const substance=clean(row.active_substance), tradeName=clean(row.trade_name), strength=clean(row.strength); return Substances.normalizeRow({ key:[clean(row.pdid),tradeName,strength].join('|'), id:clean(row.id), registryNumber:row.registry_number ?? null, pdid:clean(row.pdid), tradeName, substance, activeSubstance:substance, strength, form:clean(row.pharmaceutical_form), packaging:clean(row.packaging), atc:clean(row.atc_code), drugClass:clean(row.drug_class), use:clean(row.use_text), approvedPopulation:clean(row.approved_population), updateStatus:clean(row.update_status), productStatus:clean(row.product_status), retailPrice:row.retail_price ?? null, packagingSummary:clean(row.packaging), prescriptionLine:'', dispense:'', qualityStatus:clean(row.editorial_status || row.product_status), matchRank:Number.isFinite(Number(row.match_rank)) ? Number(row.match_rank) : null, matchReason:clean(row.match_reason) }); }
 
 function buildPageRequest(query={}) {
   const page=integerInRange(query.page,1,1,100000), pageSize=integerInRange(query.pageSize,REGISTRY_DEFAULT_PAGE_SIZE,1,REGISTRY_MAX_PAGE_SIZE);
@@ -284,7 +285,7 @@ function buildPageRequest(query={}) {
 }
 function buildDetailPath(query={}) { const id=safeFilterText(query.id,80); if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) return null; const params=new URLSearchParams(); params.set('select',DETAIL_SELECT); params.set('id',`eq.${id}`); params.set('is_published','eq.true'); params.set('editorial_status','eq.published'); params.set('limit','1'); return `drugs?${params.toString()}`; }
 function buildSearchPath(value, limit=SEARCH_LIMIT) {
-  const q=safeQueryText(value);
+  const q=safeQueryText(Substances.searchText(value));
   if(q.length<2 && !/^\d+$/.test(q)) return null;
   const boundedLimit=integerInRange(limit,SEARCH_LIMIT,1,SEARCH_MAX_LIMIT);
   return { path:'rpc/medindex_search_drugs_v2', q, limit:boundedLimit, method:'POST', body:{ p_query:q, p_limit:boundedLimit } };
@@ -390,7 +391,7 @@ async function handler(req, res) {
 
     const rawQuery = clean(requestQuery(req).q);
     if (view === 'registry-facets') return await sendColumnQuery(req, res, startedAt, true);
-    if (view === 'registry-page' && (requestQuery(req).columnFilters || ['prescription','adultDose','pediatricDose','updateStatus'].includes(clean(requestQuery(req).sort)))) return await sendColumnQuery(req, res, startedAt);
+    if (['registry-page','registry-search'].includes(view) && (Substances.isKnownQuery(rawQuery) || requestQuery(req).columnFilters || ['substance','prescription','adultDose','pediatricDose','updateStatus'].includes(clean(requestQuery(req).sort)))) return await sendColumnQuery(req, res, startedAt);
     if (view === 'registry-page') return await sendPage(req, res, startedAt);
     if (view === 'registry-search') return await sendRankedRegistrySearch(req, res, startedAt);
     if (view === 'registry-detail') return await sendDetail(req, res, startedAt);

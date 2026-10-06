@@ -1,8 +1,8 @@
 (function(root, factory) {
-  const model = factory();
+  const model = factory(typeof module === 'object' && module.exports ? require('./registry-substance-normalization.js') : root.DrxRegistrySubstances);
   if (typeof module === 'object' && module.exports) module.exports = model;
   else root.DrxRegistryColumns = model;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function() {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function(substances) {
   'use strict';
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const fold = value => clean(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -27,6 +27,7 @@
     return line ? 'Rp.: ' + line : '';
   }
   function value(row, id) {
+    if (id === 'substance') return substances.canonicalName(row.activeSubstance);
     if (id === 'population') return populationLabel(row.approvedPopulation);
     if (id === 'prescription') return prescriptionNotation(row);
     const raw = row[fields[id]];
@@ -53,7 +54,7 @@
         if (!Array.isArray(filter.values) || filter.values.length > 100 || !['include','exclude'].includes(filter.mode)) throw new Error('Zgjidh më pak vlera ose përdor një kusht teksti.');
         if (filter.values.some(item => typeof item !== 'string' || item.length > 12000)) throw new Error('Vlerë filtri e pavlefshme.');
         next.mode = filter.mode;
-        next.values = [...new Set(filter.values.map(clean))];
+        next.values = [...new Set(filter.values.map(id === 'substance' ? substances.canonicalName : clean))];
       }
       if (filter.op) {
         if (!operators.includes(filter.op) || (!numeric(id) && ['gt','gte','lt','lte','between'].includes(filter.op))) throw new Error('Kusht filtri i pavlefshëm.');
@@ -74,7 +75,7 @@
     return result;
   }
   function matches(row, id, filter) {
-    const raw = value(row, id), text = fold(raw), test = fold(filter.text);
+    const raw = value(row, id), text = fold(raw), test = fold(id === 'substance' ? substances.searchText(filter.text) : filter.text);
     if (filter.values && (filter.mode === 'include' ? !filter.values.includes(raw) : filter.values.includes(raw))) return false;
     if (!filter.op) return true;
     if (filter.op === 'empty') return raw === '';
