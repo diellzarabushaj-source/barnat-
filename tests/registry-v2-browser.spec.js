@@ -1,6 +1,8 @@
 'use strict';
 
 const { test, expect } = require('@playwright/test');
+const columnModel = require('../registry-column-model.js');
+const columnData = require('../lib/registry-column-data.js');
 
 test.use({ serviceWorkers:'block' });
 
@@ -20,6 +22,7 @@ const rows = [
     prescriptionNotation:'Tab. Paracetamol 500 mg',
     productStatus:'Gjenerik',
     retailPrice:2.45,
+    adultDose:'500 mg çdo 8 orë sipas nevojës', pediatricDose:'15 mg/kg për dozë', updateStatus:'E re',
   },
   {
     id:'22222222-2222-4222-8222-222222222222',
@@ -36,6 +39,7 @@ const rows = [
     prescriptionNotation:'Caps. Amoxicillin 500 mg',
     productStatus:'Gjenerik',
     retailPrice:4.8,
+    adultDose:'500 mg çdo 8 orë', pediatricDose:'20–40 mg/kg/ditë', updateStatus:'Ka qenë',
   },
 ];
 
@@ -48,7 +52,8 @@ function filteredRows(url) {
   const form = url.searchParams.get('formExact') || '';
   return rows.filter(row => `${row.tradeName} ${row.activeSubstance} ${row.atc} ${row.use}`.toLowerCase().includes(q)
     && (!atc || (atc.length === 7 ? row.atc === atc : row.atc.startsWith(atc)))
-    && (!form || row.form === form));
+    && (!form || row.form === form)
+    && Object.entries(columnModel.parseFilters(url.searchParams.get('columnFilters'))).every(([id, filter]) => columnModel.matches(row,id,filter)));
 }
 
 async function installApiMocks(page) {
@@ -77,8 +82,14 @@ async function installApiMocks(page) {
         body:JSON.stringify({ ok:true, row:{ ...row, packaging:'20 tableta', manufacturer:'Test Pharma', marketingAuthorizationHolder:'Test MAH', validity:'2026' } }),
       });
     }
+    if (view === 'registry-facets') {
+      const column = url.searchParams.get('column'), filters = columnModel.parseFilters(url.searchParams.get('columnFilters'));
+      delete filters[column];
+      url.searchParams.set('columnFilters',JSON.stringify(filters));
+      return route.fulfill({json:{ok:true,column,...columnData.facets(filteredRows(url),column,url.searchParams.get('valueSearch'),Number(url.searchParams.get('offset')))}});
+    }
     if (view === 'registry-page' || view === 'registry-search') {
-      const result = filteredRows(url);
+      const result = columnData.sortRows(filteredRows(url),url.searchParams.get('sort'),url.searchParams.get('direction'));
       return route.fulfill({
         status:200,
         headers:{ 'X-MedIndex-Data-Source':'neon-test' },
@@ -98,7 +109,8 @@ async function installApiMocks(page) {
     const url = new URL(route.request().url());
     const view = url.searchParams.get('view');
     if (view === 'cards') {
-      const cards = rows.map(row => ({
+      const requested = new Set((url.searchParams.get('nrs') || '').split(','));
+      const cards = rows.filter(row => requested.has(String(row.registryNumber))).map(row => ({
         registryNumber:String(row.registryNumber),
         drugId:row.id,
         pdid:row.pdid,
@@ -130,6 +142,114 @@ async function installApiMocks(page) {
 
 test.beforeEach(async ({ page }) => {
   await installApiMocks(page);
+});
+
+test('every data column exposes Excel filters, draft cancellation and full-registry values', async ({ page }) => {
+  await page.setViewportSize({width:1440,height:950});
+  await page.goto('/index.html');
+  await expect(page.locator('#registryRows tr')).toHaveCount(2);
+  await expect(page.locator('.column-filter-trigger')).toHaveCount(15);
+  await page.locator('[data-column-filter="substance"]').click();
+  await expect(page.locator('#columnFilterValues')).toContainText('Paracetamol');
+  await page.locator('#columnFilterSelectAll').uncheck();
+  await page.locator('.column-filter-value').filter({hasText:'Paracetamol'}).locator('input').check();
+  await page.locator('[data-cancel]').click();
+  await expect(page.locator('#registryRows tr')).toHaveCount(2);
+  await page.locator('[data-column-filter="substance"]').click();
+  await expect(page.locator('#columnFilterSelectAll')).toBeChecked();
+  await page.screenshot({path:test.info().outputPath('column-filter-desktop.png'),fullPage:true});
+  await page.locator('#columnFilterSelectAll').uncheck();
+  await page.locator('.column-filter-value').filter({hasText:'Paracetamol'}).locator('input').check();
+  await page.locator('#registryColumnFilterPanel [data-apply]').click();
+  await expect(page.locator('#registryRows tr')).toHaveCount(1);
+  await expect(page).toHaveURL(/columnFilters=/);
+  await expect(page.locator('[data-column-filter="substance"]')).toHaveAttribute('data-filtered','true');
+  await page.reload();
+  await expect(page.locator('#registryRows tr')).toHaveCount(1);
+  await expect(page.locator('#registryRows')).toContainText('PARACETAMOL');
+  await page.locator('[data-remove-column="substance"]').click();
+  await expect(page.locator('#registryRows tr')).toHaveCount(2);
+  await page.goBack();
+  await expect(page.locator('#registryRows tr')).toHaveCount(1);
+});
+
+test('column text and numeric conditions combine with ATC and list cards stay pink when selected', async ({ page }) => {
+  await page.setViewportSize({width:1440,height:950});
+  await page.goto('/index.html?atc=N02');
+  await expect(page.locator('#registryRows tr')).toHaveCount(1);
+  await page.locator('#filterToggle').click();
+  await page.locator('#columnFilterColumn').selectOption('price');
+  await page.locator('#columnFilterOpen').click();
+  await page.locator('#columnFilterOperator').selectOption('between');
+  await page.locator('#columnFilterText').fill('2');
+  await page.locator('#columnFilterText2').fill('3');
+  await page.locator('#registryColumnFilterPanel [data-apply]').click();
+  await expect(page.locator('#registryRows tr')).toHaveCount(1);
+  await page.locator('#columnFilterColumn').selectOption('pediatricDose');
+  await page.locator('#columnFilterOpen').click();
+  await page.locator('#columnFilterOperator').selectOption('contains');
+  await page.locator('#columnFilterText').fill('15 mg/kg');
+  await page.locator('#registryColumnFilterPanel [data-apply]').click();
+  await expect(page.locator('#registryRows tr')).toHaveCount(1);
+  await page.locator('[data-view="list"]').click();
+  const card = page.locator('.registry-list-card');
+  await expect(card.locator('[data-dose-pediatric]')).toContainText('15 mg/kg');
+  await expect(card).toHaveClass(/is-pediatric-only/);
+  await expect(card).toHaveCSS('background-color','rgb(255, 243, 248)');
+  await page.screenshot({path:test.info().outputPath('pediatric-list-pink.png'),fullPage:true});
+  await card.locator('[data-select-row]').check();
+  await expect(card).toHaveCSS('background-color','rgb(252, 232, 243)');
+  await page.locator('#clearFiltersButton').click();
+  await expect(page.locator('.registry-list-card')).toHaveCount(2);
+  await expect(page.locator('.registry-list-card').last()).not.toHaveClass(/is-pediatric-only/);
+});
+
+for (const width of [320,390,760]) {
+  test(`column filter menu fits ${width}px and restores keyboard focus`,async ({page}) => {
+    await page.setViewportSize({width,height:844});
+    await page.goto('/index.html');
+    await expect(page.locator('#registryRows tr')).toHaveCount(2);
+    await page.locator('#filterToggle').click();
+    for (const column of Object.keys(columnModel.fields)) {
+      await page.locator('#columnFilterColumn').selectOption(column);
+      await page.locator('#columnFilterOpen').click();
+      await expect(page.locator('#columnFilterSearch')).toBeFocused();
+      await expect(page.locator('.column-filter-value').first()).toBeVisible();
+      const bounds = await page.locator('#registryColumnFilterPanel').boundingBox();
+      expect(bounds.x).toBeGreaterThanOrEqual(0); expect(bounds.x+bounds.width).toBeLessThanOrEqual(width);
+      expect(bounds.y).toBeGreaterThanOrEqual(0); expect(bounds.y+bounds.height).toBeLessThanOrEqual(844);
+      if(column === 'substance' && width === 390) await page.screenshot({path:test.info().outputPath('column-filter-mobile.png'),fullPage:true});
+      await page.keyboard.press('Escape');
+      await expect(page.locator('#registryColumnFilterPanel')).toBeHidden();
+      await expect(page.locator('#columnFilterOpen')).toBeFocused();
+    }
+  });
+}
+
+test('checkbox search preserves selections, empty state and numeric sorting',async ({page}) => {
+  await page.goto('/index.html');
+  await expect(page.locator('#registryRows tr')).toHaveCount(2);
+  await page.locator('[data-column-filter="name"]').click();
+  await page.locator('#columnFilterSelectAll').uncheck();
+  await page.locator('#columnFilterSearch').fill('PARA');
+  await expect(page.locator('.column-filter-value')).toHaveCount(1);
+  await page.locator('.column-filter-value input').check();
+  await page.locator('#columnFilterSearch').fill('AMOX');
+  await expect(page.locator('.column-filter-value')).toContainText('AMOX');
+  await expect(page.locator('.column-filter-value input')).not.toBeChecked();
+  await page.locator('#registryColumnFilterPanel [data-apply]').click();
+  await expect(page.locator('#registryRows')).toContainText('PARACETAMOL');
+  await page.locator('#filterToggle').click();
+  await page.locator('#columnFilterColumn').selectOption('adultDose');
+  await page.locator('#columnFilterOpen').click();
+  await page.locator('#columnFilterOperator').selectOption('empty');
+  await page.locator('#registryColumnFilterPanel [data-apply]').click();
+  await expect(page.locator('#emptyState')).toBeVisible();
+  await page.locator('#emptyClearButton').click();
+  await expect(page.locator('#registryRows tr')).toHaveCount(2);
+  await page.locator('[data-column-filter="price"]').click();
+  await page.locator('#registryColumnFilterPanel [data-direction="desc"]').click();
+  await expect(page.locator('#registryRows tr').first()).toContainText('AMOX');
 });
 
 test('ATC picker narrows through subdivisions and shares filters with list view', async ({ page }) => {

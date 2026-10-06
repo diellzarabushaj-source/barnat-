@@ -3,6 +3,8 @@
 const { supabaseRequest, exactCount } = require('../lib/supabase-data-api.js');
 const registryHandler = require('./registry.js');
 const RegistryRevision = require('../lib/registry-revision.js');
+const ColumnData = require('../lib/registry-column-data.js');
+const ColumnModel = require('../registry-column-model.js');
 
 const REGISTRY_DEFAULT_PAGE_SIZE = 25;
 const REGISTRY_MAX_PAGE_SIZE = 50;
@@ -333,6 +335,30 @@ async function sendRankedRegistrySearch(req,res,startedAt) {
 }
 async function sendPersonalLookup(req,res,startedAt) { const request=buildPersonalLookupPath(requestQuery(req)); setHeaders(res,startedAt,'supabase-personal-drug-lookup'); if(!request.ids.length) return req.method==='HEAD'?res.status(200).end():res.status(200).json({ok:true,rows:[],meta:{source:'supabase',lookup:'personal'}}); const {data}=await supabaseRequest(request.path,{timeoutMs:5000,label:'Supabase personal drug lookup'}); const rows=Array.isArray(data)?data.map(listRow):[]; if(req.method==='HEAD')return res.status(200).end(); return res.status(200).json({ok:true,rows,meta:{source:'supabase',lookup:'personal'}}); }
 
+async function sendColumnQuery(req, res, startedAt, facet = false) {
+  const query = requestQuery(req);
+  let filters;
+  try {
+    filters = ColumnModel.parseFilters(query.columnFilters);
+    if (facet && !Object.hasOwn(ColumnModel.fields, query.column)) throw new Error('Kolonë filtri e pavlefshme.');
+  } catch (error) {
+    res.setHeader('Cache-Control', 'private, no-store');
+    return res.status(400).json({error:error.message});
+  }
+  const request = buildPageRequest(query);
+  const allRows = await ColumnData.snapshot(LIST_SELECT, listRow, query.refresh === 'true');
+  const rows = ColumnData.filterRows(allRows, {...request, columnFilters:filters}, FORM_CATEGORIES, facet ? query.column : '');
+  setHeaders(res, startedAt, 'supabase-registry-columns');
+  if (req.method === 'HEAD') return res.status(200).end();
+  if (facet) {
+    const offset = integerInRange(query.offset, 0, 0, 20000);
+    return res.status(200).json({ok:true, column:query.column, ...ColumnData.facets(rows, query.column, clean(query.valueSearch).slice(0,500), offset), meta:{source:'supabase', completeRegistry:true}});
+  }
+  const sorted = ColumnData.sortRows(rows, clean(query.sort), request.direction);
+  const total = rows.length, start = (request.page - 1) * request.pageSize;
+  return res.status(200).json({ok:true, rows:sorted.slice(start,start + request.pageSize).map(({_search, ...row}) => row), pagination:{page:request.page,pageSize:request.pageSize,total,totalPages:Math.max(1,Math.ceil(total/request.pageSize)),hasPrevious:request.page>1,hasNext:start+request.pageSize<total}, query:{...request, path:undefined, columnFilters:filters},meta:{source:'supabase',completeRegistry:true}});
+}
+
 async function handler(req, res) {
   const startedAt = Date.now();
   try {
@@ -363,6 +389,8 @@ async function handler(req, res) {
     }
 
     const rawQuery = clean(requestQuery(req).q);
+    if (view === 'registry-facets') return await sendColumnQuery(req, res, startedAt, true);
+    if (view === 'registry-page' && (requestQuery(req).columnFilters || ['prescription','adultDose','pediatricDose','updateStatus'].includes(clean(requestQuery(req).sort)))) return await sendColumnQuery(req, res, startedAt);
     if (view === 'registry-page') return await sendPage(req, res, startedAt);
     if (view === 'registry-search') return await sendRankedRegistrySearch(req, res, startedAt);
     if (view === 'registry-detail') return await sendDetail(req, res, startedAt);

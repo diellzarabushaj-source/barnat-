@@ -8,8 +8,9 @@
   <title>DRx | Regjistri i barnave</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-atc-filter-20261006">
+  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-column-filter-20261006">
   <link rel="stylesheet" href="/registry-atc-filter.css?v=20261006">
+  <link rel="stylesheet" href="/registry-column-filter.css?v=20261006">
   <link rel="stylesheet" href="/registry-v2-dose-calculator.css?v=registry-v2-dose-calculator-v1">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930">
   <script src="/dose-core.js?v=drx-dose-core-v1" defer></script>
@@ -17,7 +18,9 @@
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v6-mobile-app-20260930" data-drx-sidebar-taxonomy="1" defer></script>
   <script src="/classification-data.js?v=20261006" defer></script>
   <script src="/registry-atc-filter.js?v=20261006" defer></script>
-<script src="/registry-v2.js?v=registry-v2-atc-filter-20261006&amp;registryUpdates=20261005" defer></script>
+  <script src="/registry-column-model.js?v=20261006" defer></script>
+  <script src="/registry-column-filter.js?v=20261006" defer></script>
+<script src="/registry-v2.js?v=registry-v2-column-filter-20261006&amp;registryUpdates=20261005" defer></script>
   <script src="/registry-v2-dose-calculator.js?v=registry-v2-dose-calculator-v1" defer></script>
 </head>
 <body>
@@ -270,14 +273,14 @@
                   <th data-col="substance"><button class="sort-head" data-sort="substance" type="button">Substanca aktive</button></th>
                   <th data-col="strength"><button class="sort-head" data-sort="strength" type="button">Fortësia</button></th>
                   <th data-col="form"><button class="sort-head" data-sort="form" type="button">Forma</button></th>
-                  <th data-col="prescription">Si shënohet në recetë</th>
+                  <th data-col="prescription"><button class="sort-head" data-sort="prescription" type="button">Si shënohet në recetë</button></th>
                   <th data-col="drugClass"><button class="sort-head" data-sort="class" type="button">Grupi / Klasa</button></th>
                   <th data-col="use"><button class="sort-head" data-sort="use" type="button">Për çka përdoret</button></th>
                   <th data-col="population"><button class="sort-head" data-sort="population" type="button">Popullata</button></th>
                   <th data-col="atc"><button class="sort-head" data-sort="atc" type="button">ATC</button></th>
-                  <th data-col="adultDose">Doza e të rriturit</th>
-                  <th data-col="pediatricDose">Doza pediatrike</th>
-                  <th data-col="updateStatus">Statusi në përditësim</th>
+                  <th data-col="adultDose"><button class="sort-head" data-sort="adultDose" type="button">Doza e të rriturit</button></th>
+                  <th data-col="pediatricDose"><button class="sort-head" data-sort="pediatricDose" type="button">Doza pediatrike</button></th>
+                  <th data-col="updateStatus"><button class="sort-head" data-sort="updateStatus" type="button">Statusi në përditësim</button></th>
                   <th data-col="status"><button class="sort-head" data-sort="status" type="button">Statusi</button></th>
                   <th class="price-col" data-col="price"><button class="sort-head" data-sort="price" type="button">Çmimi</button></th>
                   <th class="actions-col"><span class="sr-only">Veprime</span></th>

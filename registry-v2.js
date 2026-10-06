@@ -1,6 +1,8 @@
 (() => {
   'use strict';
 
+  const COLUMN_PICKER_STABILITY = 'registry-column-picker-stability-v2';
+
 
   const FORM_GROUPS = [
     { source:'Tableta & pilula', label:'TABLETA & PILULA', short:'Tab.', color:'#2f7d5c', icon:'pill', forms:['Chewable tablet','Coated tablet','Compressed lozenge','Dispersible tablet','Effervescent tablet','Film coated tablet','Gastro-resistant coated tablet','Gastro-resistant tablet','Lozenge','Modified-release film-coated tablet','Modified-release tablet','Orodispersible tablet','Pastille','Prolonged-release tablet','Soluble tablet','Sublingual tablet','Tablet'] },
@@ -100,6 +102,7 @@
   const LEGACY_SELECTION_STORAGE_KEY = 'medindexPrescriptionSelection';
 
   let atcPicker = null;
+  let columnFiltersUi = null;
   const state = {
     page: 1,
     pageSize: DEFAULT_PAGE_SIZE,
@@ -107,9 +110,11 @@
     totalPages: null,
     q: '',
     atc: '',
+    columnFilters: {},
     formType: '',
     formValue: '',
     sort: 'registry',
+    columnSort: false,
     direction: 'asc',
     rows: [],
     rowView: storedRowView(),
@@ -122,7 +127,13 @@
     searchCache: new Map(),
     preferenceOwner: '',
     visibleColumns: new Set(DEFAULT_VISIBLE_COLUMNS),
+    columnPickerDraft: null,
+    columnPickerDirty: false,
+    preferenceInteractionVersion: 0,
     preferenceSaveTimer: 0,
+    preferenceRevision: 0,
+    preferenceSaveInFlight: false,
+    preferenceSavePending: false,
     openRowMenuKey: '',
     noteRow: null,
     view: 'registry',
@@ -219,21 +230,43 @@
     catch {}
   }
 
+  function columnPickerSelection() {
+    return state.columnPickerDraft instanceof Set ? state.columnPickerDraft : state.visibleColumns;
+  }
+
+  function sameColumnSelection(left, right) {
+    if (!(left instanceof Set) || !(right instanceof Set) || left.size !== right.size) return false;
+    for (const id of left) if (!right.has(id)) return false;
+    return true;
+  }
+
   function updateColumnPickerSummary() {
-    const visible = COLUMN_DEFS.filter(item => state.visibleColumns.has(item.id)).length;
+    const selection = columnPickerSelection();
+    const visible = COLUMN_DEFS.filter(item => selection.has(item.id)).length;
     if (el.columnPickerSummary) el.columnPickerSummary.textContent = `${visible} nga ${COLUMN_DEFS.length} të dukshme`;
   }
 
   function renderColumnPicker() {
     if (!el.columnPickerList) return;
+    const selection = columnPickerSelection();
     el.columnPickerList.innerHTML = COLUMN_DEFS.map(item => {
-      const checked = state.visibleColumns.has(item.id);
+      const checked = selection.has(item.id);
       return `<label class="column-option${item.required ? ' is-required' : ''}">
         <input type="checkbox" data-column-toggle="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} ${item.required ? 'disabled' : ''}>
         <span class="column-option-check" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="m3.2 8.1 2.8 2.8 6-6"/></svg></span>
         <span class="column-option-copy"><strong>${escapeHtml(item.label)}</strong><small>${item.required ? 'Gjithmonë e dukshme' : escapeHtml(item.hint)}</small></span>
       </label>`;
     }).join('');
+    updateColumnPickerSummary();
+  }
+
+  function syncColumnPickerState() {
+    if (!el.columnPickerList) return;
+    const selection = columnPickerSelection();
+    for (const item of COLUMN_DEFS) {
+      const input = el.columnPickerList.querySelector(`[data-column-toggle="${CSS.escape(item.id)}"]`);
+      if (input) input.checked = selection.has(item.id);
+    }
     updateColumnPickerSummary();
   }
 
@@ -257,17 +290,22 @@
       node.style.left = registryVisible ? '112px' : '44px';
     });
 
+    const REGISTRY_TABLE_LAYOUT = 'registry-table-16-column-layout-v1';
     const widths = {
-      registry:68, name:225, substance:190, strength:105, form:145, prescription:260,
-      drugClass:180, use:220, population:150, atc:90,
-      adultDose:190, pediatricDose:190, updateStatus:160, status:105, price:92,
+      registry:68, name:235, substance:260, strength:112, form:165, prescription:300,
+      drugClass:205, use:215, population:145, atc:94,
+      adultDose:200, pediatricDose:200, updateStatus:160, status:110, price:96,
     };
     const visibleWidth = COLUMN_DEFS.reduce((sum, item) => {
       return state.visibleColumns.has(item.id) ? sum + (widths[item.id] || 100) : sum;
-    }, 44 + 48);
+    }, 44 + 88);
     if (el.registryTable) el.registryTable.style.minWidth = `${Math.max(720, visibleWidth)}px`;
 
-    renderColumnPicker();
+    // Never rebuild the open picker while the doctor is selecting columns.
+    // Rebuilding or changing the table underneath the pointer was the source
+    // of focus loss, scroll jumps and checkmarks that appeared to undo themselves.
+    if (el.columnPickerPanel && !el.columnPickerPanel.hidden) syncColumnPickerState();
+    else updateColumnPickerSummary();
   }
 
   function setColumnSaveStatus(text, tone = '') {
@@ -278,23 +316,49 @@
   }
 
   async function persistColumnPreferences() {
+    if (state.preferenceSaveInFlight) {
+      state.preferenceSavePending = true;
+      return;
+    }
+
+    const revision = state.preferenceRevision;
+    const snapshot = normalizeColumns([...state.visibleColumns]);
+    state.preferenceSaveInFlight = true;
+    state.preferenceSavePending = false;
     cacheColumns();
     setColumnSaveStatus('Duke ruajtur…');
+
     try {
       const { payload } = await fetchJson(PREFERENCES_API, {
         method:'PUT',
-        body:JSON.stringify({ registryColumns:[...state.visibleColumns] }),
+        body:JSON.stringify({ registryColumns:snapshot }),
         headers:{ 'Content-Type':'application/json' },
       }, 6000);
-      const normalized = ensureClinicalColumns(payload.registryColumns);
-      state.visibleColumns = new Set(normalized);
-      cacheColumns();
-      applyColumnVisibility();
-      markClinicalColumnMigration();
-      setColumnSaveStatus('Ruajtur në profil', 'success');
+      if (!Array.isArray(payload.registryColumns)) throw new Error('Invalid registry column preference response');
+
+      // The local committed selection is authoritative for this interaction.
+      // A delayed server acknowledgement may confirm the save, but must never
+      // repaint the checkboxes or roll a newer local selection backwards.
+      if (revision === state.preferenceRevision) {
+        cacheColumns();
+        markClinicalColumnMigration();
+        setColumnSaveStatus('Ruajtur në profil', 'success');
+      }
     } catch (error) {
       console.warn('Column preferences save failed:', error);
-      setColumnSaveStatus('Ruajtur në këtë pajisje', 'local');
+      if (revision === state.preferenceRevision) {
+        setColumnSaveStatus('Ruajtur në këtë pajisje', 'local');
+      }
+    } finally {
+      state.preferenceSaveInFlight = false;
+      if (state.preferenceSavePending || revision !== state.preferenceRevision) {
+        state.preferenceSavePending = false;
+        clearTimeout(state.preferenceSaveTimer);
+        state.preferenceSaveTimer = setTimeout(() => {
+          state.preferenceSaveTimer = 0;
+          void persistColumnPreferences();
+        }, 0);
+      }
     }
   }
 
@@ -302,11 +366,37 @@
     clearTimeout(state.preferenceSaveTimer);
     cacheColumns();
     setColumnSaveStatus('Duke ruajtur…');
-    state.preferenceSaveTimer = setTimeout(() => { void persistColumnPreferences(); }, 260);
+    // Stamp the device cache and the migration marker before the network
+    // call, so a refresh right after a tick still shows the chosen layout
+    // even if the save never lands.
+    markClinicalColumnMigration();
+    state.preferenceSaveTimer = setTimeout(() => {
+      state.preferenceSaveTimer = 0;
+      void persistColumnPreferences();
+    }, 260);
+  }
+
+  // Leaving the page must not drop a tick that is still inside the debounce.
+  function flushColumnSave() {
+    if (!state.preferenceSaveTimer) return;
+    clearTimeout(state.preferenceSaveTimer);
+    state.preferenceSaveTimer = 0;
+    state.preferenceRevision += 1;
+    cacheColumns();
+    try {
+      fetch(PREFERENCES_API, {
+        method:'PUT',
+        body:JSON.stringify({ registryColumns:normalizeColumns([...state.visibleColumns]) }),
+        headers:{ 'Content-Type':'application/json' },
+        credentials:'same-origin',
+        keepalive:true,
+      }).catch(() => {});
+    } catch {}
   }
 
   async function loadColumnPreferences(authPayload) {
     state.preferenceOwner = clean(authPayload?.authUser?.id || authPayload?.user?.email || '').toLowerCase();
+    const interactionVersion = state.preferenceInteractionVersion;
     const cached = readCachedColumns();
     if (cached) state.visibleColumns = new Set(ensureClinicalColumns(cached));
     applyColumnVisibility();
@@ -315,40 +405,89 @@
       const { payload } = await fetchJson(PREFERENCES_API, {}, 6000);
       state.preferenceOwner = clean(payload.userId || state.preferenceOwner).toLowerCase();
       const migrate = needsClinicalColumnMigration();
-      state.visibleColumns = new Set(ensureClinicalColumns(payload.registryColumns));
+
+      // A profile GET can finish after the user has already started clicking.
+      // In that case it is stale relative to the live interaction and is not
+      // allowed to remove a checkmark the doctor just selected.
+      if (interactionVersion !== state.preferenceInteractionVersion || state.columnPickerDirty) {
+        setColumnSaveStatus('Zgjedhjet e tua mbeten aktive', 'local');
+        return;
+      }
+
+      const normalized = ensureClinicalColumns(payload.registryColumns);
+      state.visibleColumns = new Set(normalized);
+      if (state.columnPickerDraft instanceof Set) state.columnPickerDraft = new Set(normalized);
       cacheColumns();
       applyColumnVisibility();
       if (migrate) await persistColumnPreferences();
       else setColumnSaveStatus('Sinkronizuar me profilin', 'success');
     } catch (error) {
       console.warn('Column preferences load failed:', error);
+      cacheColumns();
       setColumnSaveStatus(cached ? 'Nga kjo pajisje' : 'Standardi DRx', cached ? 'local' : '');
     }
+  }
+
+  // "Rivendos standardin" and the save status sit in the footer, so the
+  // panel has to end above the fold wherever the toolbar happens to be.
+  function fitColumnPickerToViewport() {
+    if (!el.columnPickerPanel || el.columnPickerPanel.hidden) return;
+    const top = el.columnPickerPanel.getBoundingClientRect().top;
+    const available = Math.max(240, window.innerHeight - top - 16);
+    el.columnPickerPanel.style.setProperty('--column-picker-max', `${Math.round(available)}px`);
   }
 
   function openColumnPicker() {
     if (!el.columnPickerPanel) return;
     closeFormPicker();
+    state.columnPickerDraft = new Set(state.visibleColumns);
+    state.columnPickerDirty = false;
     el.columnPickerPanel.hidden = false;
     el.columnPickerButton.setAttribute('aria-expanded', 'true');
     renderColumnPicker();
-    requestAnimationFrame(() => el.columnPickerList.querySelector('input:not(:disabled)')?.focus({ preventScroll:true }));
+    // Always open from a deterministic position and keep pointer focus where
+    // the user put it. Auto-focusing a checkbox can make WebKit scroll the
+    // internal list even when preventScroll is requested.
+    el.columnPickerList.scrollTop = 0;
+    fitColumnPickerToViewport();
+    setColumnSaveStatus('Ndryshimet ruhen kur mbyllet');
   }
 
-  function closeColumnPicker({ focusButton = false } = {}) {
+  function closeColumnPicker({ focusButton = false, commit = true } = {}) {
     if (!el.columnPickerPanel || el.columnPickerPanel.hidden) return;
+    const draft = state.columnPickerDraft instanceof Set ? new Set(state.columnPickerDraft) : null;
+    const shouldCommit = Boolean(commit && state.columnPickerDirty && draft);
+
     el.columnPickerPanel.hidden = true;
+    el.columnPickerPanel.style.removeProperty('--column-picker-max');
     el.columnPickerButton.setAttribute('aria-expanded', 'false');
+    state.columnPickerDraft = null;
+    state.columnPickerDirty = false;
+
+    if (shouldCommit) {
+      state.visibleColumns = new Set(normalizeColumns([...draft]));
+      state.preferenceRevision += 1;
+      cacheColumns();
+      applyColumnVisibility();
+      scheduleColumnSave();
+    } else {
+      updateColumnPickerSummary();
+    }
+
     if (focusButton) el.columnPickerButton.focus({ preventScroll:true });
   }
 
   function toggleColumn(id, visible) {
     const item = COLUMN_DEFS.find(entry => entry.id === id);
     if (!item || item.required) return;
-    if (visible) state.visibleColumns.add(id);
-    else state.visibleColumns.delete(id);
-    applyColumnVisibility();
-    scheduleColumnSave();
+    if (!(state.columnPickerDraft instanceof Set)) state.columnPickerDraft = new Set(state.visibleColumns);
+
+    state.preferenceInteractionVersion += 1;
+    if (visible) state.columnPickerDraft.add(id);
+    else state.columnPickerDraft.delete(id);
+    state.columnPickerDirty = !sameColumnSelection(state.columnPickerDraft, state.visibleColumns);
+    syncColumnPickerState();
+    setColumnSaveStatus(state.columnPickerDirty ? 'Ndryshimet ruhen kur mbyllet' : 'Pa ndryshime', state.columnPickerDirty ? 'local' : '');
   }
 
   function loadProfileChrome() {
@@ -363,7 +502,7 @@
     }
     return new Promise(resolve => {
       const script = document.createElement('script');
-      script.src = '/medindex-brand-runtime.js?v=drx-brand-v7';
+      script.src = '/medindex-brand-runtime.js?v=drx-brand-v8-profileguard1';
       script.defer = true;
       script.dataset.drxProfileRuntime = '1';
       script.addEventListener('load', () => resolve(window.MedIndexProfile || null), { once:true });
@@ -936,7 +1075,7 @@
 
   function queryUrl() {
     const searchableQuery = Boolean(state.q && (state.q.length >= 2 || /^\\d+$/.test(state.q)));
-    const rankedSearch = Boolean(searchableQuery && !state.atc && !state.formValue);
+    const rankedSearch = Boolean(searchableQuery && !state.atc && !state.formValue && !Object.keys(state.columnFilters).length && !state.columnSort && !['prescription','adultDose','pediatricDose','updateStatus'].includes(state.sort));
     const params = new URLSearchParams(rankedSearch ? {
       view:'registry-search',
       page:'1',
@@ -954,6 +1093,7 @@
     });
     if (state.q) params.set('q', state.q);
     if (state.atc) params.set('atc', state.atc);
+    if (Object.keys(state.columnFilters).length) params.set('columnFilters', JSON.stringify(state.columnFilters));
     if (state.formType === 'form' && state.formValue) params.set('formExact', state.formValue);
     else if (state.formType === 'category' && state.formValue) params.set('formCategory', state.formValue);
     return `/api/drug-search?${params.toString()}`;
@@ -1008,7 +1148,7 @@
     const requestId = ++state.requestId;
     state.pageController?.abort();
 
-    const url = queryUrl();
+    const url = queryUrl() + (forceRefresh ? '&refresh=true' : '');
     const rankedSearch = url.includes('view=registry-search');
     const cacheHit = rankedSearch ? state.searchCache.get(url) : null;
     if (!forceRefresh && cacheHit && Date.now() - cacheHit.savedAt < SEARCH_CACHE_TTL_MS) {
@@ -1032,7 +1172,8 @@
     setBusy(true);
 
     try {
-      const { payload, response } = await fetchJson(url, { signal:controller.signal, headers:forceRefresh ? {'Cache-Control':'no-cache'} : {} });
+      const columnQuery = Object.keys(state.columnFilters).length || ['prescription','adultDose','pediatricDose','updateStatus'].includes(state.sort);
+      const { payload, response } = await fetchJson(url, { signal:controller.signal, headers:forceRefresh ? {'Cache-Control':'no-cache'} : {} }, columnQuery ? 20000 : 9000);
       if (requestId !== state.requestId) return;
       const local = response.headers.get('X-MedIndex-Cache')?.includes('hit');
       const saved = Number(response.headers.get('X-DRx-Saved-At') || 0);
@@ -1059,19 +1200,94 @@
     }
   }
 
-  async function loadDosageForVisibleRows(requestId) {
-    const numbers = state.rows.map(row => clean(row.registryNumber)).filter(value => /^\d{1,6}$/.test(value));
-    if (!numbers.length) return;
+  const REGISTRY_DOSE_AUTOLOAD = 'registry-dose-autoload-retry-v2';
+  const LEGACY_DOSAGE_CACHE = 'medindex-private-resilient-v2';
+  let dosageWorkerRefreshRequested = false;
+
+  const waitForDoseRetry = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+  function setDoseLoadMessage(text, status = 'loading') {
+    document.querySelectorAll('[data-dose-status="loading"]').forEach(node => {
+      node.innerHTML = `<span class="dose-missing">${escapeHtml(text)}</span>`;
+      node.dataset.doseStatus = status;
+    });
+  }
+
+  async function clearLegacySharedDosageCache() {
+    if (!('caches' in window)) return;
     try {
-      const { payload } = await fetchJson(`/api/dosage?view=cards&nrs=${encodeURIComponent(numbers.join(','))}`, {}, 8000);
-      if (requestId !== state.requestId) return;
-      for (const card of Array.isArray(payload.cards) ? payload.cards : []) state.dosageByRegistry.set(clean(card.registryNumber), card);
-      patchDosageCells();
+      const cache = await caches.open(LEGACY_DOSAGE_CACHE);
+      const keys = await cache.keys();
+      const legacyKeys = keys.filter(request => {
+        try {
+          const cachedUrl = new URL(request.url);
+          return cachedUrl.origin === location.origin && cachedUrl.pathname === '/api/dosage' && !cachedUrl.search;
+        } catch { return false; }
+      });
+      await Promise.all(legacyKeys.map(request => cache.delete(request)));
     } catch (error) {
-      if (requestId !== state.requestId) return;
-      console.warn('Dosage cards unavailable:', error);
-      document.querySelectorAll('[data-dose-status="loading"]').forEach(node => { node.innerHTML = '<span class="dose-missing">Pa dozë të publikuar</span>'; node.dataset.doseStatus = 'missing'; });
+      console.debug('Legacy dosage cache cleanup skipped:', error);
     }
+  }
+
+  async function refreshDosageServiceWorker() {
+    if (dosageWorkerRefreshRequested || !('serviceWorker' in navigator)) return;
+    dosageWorkerRefreshRequested = true;
+    try {
+      const registration = await navigator.serviceWorker.getRegistration();
+      if (registration) await registration.update();
+    } catch (error) {
+      console.debug('Service worker dosage cache refresh skipped:', error);
+    }
+  }
+
+  async function loadDosageForVisibleRows(requestId) {
+    const numbers = [...new Set(state.rows.map(row => clean(row.registryNumber)).filter(value => /^\d{1,6}$/.test(value)))];
+    if (!numbers.length) return;
+
+    // Older service workers cached every /api/dosage request under the same bare
+    // pathname. That could return page 2 dosage cards while page 3 was visible.
+    // Remove that one legacy key before every hydration and ask the registration
+    // to update in the background. Query-specific caches are left untouched.
+    void refreshDosageServiceWorker();
+    await clearLegacySharedDosageCache();
+    if (requestId !== state.requestId) return;
+
+    const requested = new Set(numbers);
+    const url = `/api/dosage?view=cards&nrs=${encodeURIComponent(numbers.join(','))}`;
+    const maxAttempts = 3;
+    let lastError = null;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      if (requestId !== state.requestId) return;
+      try {
+        const { payload } = await fetchJson(url, {}, 14000);
+        if (requestId !== state.requestId) return;
+
+        const cards = Array.isArray(payload.cards) ? payload.cards : [];
+        if (!cards.length) throw new Error('Dosage batch returned no cards');
+        const foreignCards = cards.filter(card => !requested.has(clean(card.registryNumber)));
+        if (foreignCards.length) throw new Error('Stale dosage cache returned cards from another registry page');
+
+        state.dosageByRegistry.clear();
+        for (const card of cards) state.dosageByRegistry.set(clean(card.registryNumber), card);
+        patchDosageCells();
+        return;
+      } catch (error) {
+        if (requestId !== state.requestId) return;
+        lastError = error;
+        if (attempt < maxAttempts) {
+          setDoseLoadMessage('Duke ringarkuar dozën…');
+          await clearLegacySharedDosageCache();
+          await waitForDoseRetry(260 * attempt);
+          continue;
+        }
+      }
+    }
+
+    console.warn('Dosage cards unavailable after cache-safe automatic retry:', lastError);
+    // A transport/cache failure is not the same thing as “no published dose”.
+    setDoseLoadMessage('Doza s’u ngarkua', 'error');
   }
 
   function doseMarkup(dose, route) {
@@ -1213,7 +1429,7 @@
         </div>
         <div class="registry-list-grid">
           ${listField('form', 'Forma', escapeHtml(row.form || '—'))}
-          ${listField('prescription', 'Si shënohet në recetë', escapeHtml(row.prescriptionNotation || 'Nuk është plotësuar në burim'))}
+          ${listField('prescription', 'Si shënohet në recetë', escapeHtml(prescriptionNotationFor(row)))}
           ${listField('drugClass', 'Grupi / Klasa', escapeHtml(row.drugClass || '—'))}
           ${listField('use', 'Për çka përdoret', escapeHtml(row.use || '—'))}
           <div class="registry-list-field" data-col="adultDose"><span>Doza e të rriturit</span><div data-dose-adult="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></div></div>
@@ -1221,6 +1437,43 @@
         </div>
       </article>`;
     }).join('');
+  }
+
+  const PRESCRIPTION_NOTATION_FALLBACK = 'registry-prescription-derived-notation-v1';
+
+  function prescriptionFormPrefix(formValue) {
+    const form = clean(formValue).toLocaleLowerCase('sq');
+    if (!form) return '';
+    if (/vaginal tablet|pessary|ovul/.test(form)) return 'Ov.';
+    if (/lozenge|pastill/.test(form)) return 'Past.';
+    if (/infus|infuz/.test(form) && !/inject/.test(form)) return 'Inf.';
+    if (/inject|ampou?le|ampul/.test(form)) return 'Amp.';
+    if (/tablet|tabletë|tableta/.test(form)) return 'Tab.';
+    if (/capsule|kapsul/.test(form)) return 'Caps.';
+    if (/suppository|supoz/.test(form)) return 'Sup.';
+    if (/ointment|unguent/.test(form)) return 'Ung.';
+    if (/cream|krem/.test(form)) return 'Cr.';
+    if (/gel|xhel|zhel/.test(form)) return 'Gel.';
+    if (/syrup|sirup/.test(form)) return 'Sir.';
+    if (/drops|pika/.test(form)) return 'Gtt.';
+    if (/spray|sprej|spraj/.test(form)) return 'Spr.';
+    if (/inhalation|inhalacion/.test(form)) return 'Inh.';
+    if (/oral suspension|suspension/.test(form)) return 'Susp.';
+    if (/oral solution|solution|solucion/.test(form)) return 'Sol.';
+    if (/powder|pluhur/.test(form)) return 'Pulv.';
+    if (/granule|granula/.test(form)) return 'Gran.';
+    if (/implant/.test(form)) return 'Impl.';
+    if (/shampoo|shampo/.test(form)) return 'Shamp.';
+    return '';
+  }
+
+  function prescriptionNotationFor(row) {
+    const explicit = clean(row?.prescriptionNotation);
+    if (explicit) return explicit;
+    const prefix = prescriptionFormPrefix(row?.form);
+    const identity = [clean(row?.activeSubstance), clean(row?.strength)].filter(Boolean).join(' ');
+    const line = [prefix, identity].filter(Boolean).join(' ');
+    return line ? 'Rp.: ' + line : '—';
   }
 
   function renderRows() {
@@ -1254,10 +1507,10 @@
         <td><input class="row-check" type="checkbox" data-select-row="${escapeHtml(key)}" aria-label="Zgjidh ${escapeHtml(row.tradeName)}" ${selected ? 'checked' : ''}></td>
         <td data-col="registry"><span class="price">${escapeHtml(number || '—')}</span></td>
         <td data-col="name"><span class="drug-name">${escapeHtml(row.tradeName || 'Pa emër')}</span><span class="drug-meta">${escapeHtml(row.pdid || row.productStatus || '')}</span></td>
-        <td data-col="substance"><span class="cell-clamp">${escapeHtml(row.activeSubstance || '—')}</span></td>
+        <td data-col="substance"><span class="cell-clamp registry-substance-text" title="${escapeHtml(row.activeSubstance || '')}">${escapeHtml(row.activeSubstance || '—')}</span></td>
         <td data-col="strength">${escapeHtml(row.strength || '—')}</td>
         <td data-col="form"><span class="cell-clamp">${escapeHtml(row.form || '—')}</span></td>
-        <td data-col="prescription"><span class="registry-prescription-text">${escapeHtml(row.prescriptionNotation || 'Nuk është plotësuar në burim')}</span></td>
+        <td data-col="prescription"><span class="registry-prescription-text">${escapeHtml(prescriptionNotationFor(row))}</span></td>
         <td data-col="drugClass"><span class="cell-clamp">${escapeHtml(row.drugClass || '—')}</span></td>
         <td data-col="use"><span class="cell-clamp">${escapeHtml(row.use || '—')}</span></td>
         <td data-col="population">${populationBadge(row.approvedPopulation)}</td>
@@ -1395,7 +1648,7 @@
     loadPage();
   }
 
-  function activeFilterCount() { return [state.q, state.atc, state.formValue].filter(Boolean).length; }
+  function activeFilterCount() { return [state.q, state.atc, state.formValue].filter(Boolean).length + Object.keys(state.columnFilters).length; }
 
   function updateFilterUi() {
     const count = activeFilterCount();
@@ -1405,6 +1658,7 @@
     el.pageSizeSelect.value = String(state.pageSize);
     el.sortSelect.value = state.sort;
     atcPicker?.setValue(state.atc);
+    columnFiltersUi?.update();
     syncFormPickerTrigger();
   }
 
@@ -1742,16 +1996,26 @@
     });
     el.columnPickerPanel.addEventListener('click', event => {
       event.stopPropagation();
+    });
+    el.columnPickerPanel.addEventListener('change', event => {
       const input = event.target.closest('[data-column-toggle]');
       if (input) toggleColumn(input.dataset.columnToggle, input.checked);
     });
     el.columnPickerPanel.addEventListener('keydown', event => {
       if (event.key === 'Escape') { event.preventDefault(); closeColumnPicker({ focusButton:true }); }
     });
+    window.addEventListener('resize', fitColumnPickerToViewport, { passive:true });
+    window.addEventListener('pagehide', flushColumnSave);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') flushColumnSave();
+    });
     el.resetColumnsButton.addEventListener('click', () => {
-      state.visibleColumns = new Set(DEFAULT_VISIBLE_COLUMNS);
-      applyColumnVisibility();
-      scheduleColumnSave();
+      if (!(state.columnPickerDraft instanceof Set)) state.columnPickerDraft = new Set(state.visibleColumns);
+      state.preferenceInteractionVersion += 1;
+      state.columnPickerDraft = new Set(DEFAULT_VISIBLE_COLUMNS);
+      state.columnPickerDirty = !sameColumnSelection(state.columnPickerDraft, state.visibleColumns);
+      syncColumnPickerState();
+      setColumnSaveStatus(state.columnPickerDirty ? 'Ndryshimet ruhen kur mbyllet' : 'Pa ndryshime', state.columnPickerDirty ? 'local' : '');
     });
     el.formPickerButton.addEventListener('click', event => {
       atcPicker?.close();
@@ -1822,14 +2086,14 @@
       clearTimeout(doseResizeTimer);
       doseResizeTimer = setTimeout(syncAllDoseToggles, 160);
     });
-    el.sortSelect.addEventListener('change', () => { state.sort = el.sortSelect.value; state.page = 1; loadPage(); });
+    el.sortSelect.addEventListener('change', () => { state.sort = el.sortSelect.value; state.columnSort = true; state.page = 1; loadPage(); });
     el.pageSizeSelect.addEventListener('change', () => { state.pageSize = Number(el.pageSizeSelect.value) || 50; state.page = 1; loadPage(); });
     el.clearFiltersButton.addEventListener('click', clearFilters);
     el.emptyClearButton.addEventListener('click', clearFilters);
     el.refreshButton.addEventListener('click', () => loadPage({ preserveScroll:true, preserveRows:true, forceRefresh:true }));
     el.prevPageButton.addEventListener('click', () => { if (state.page > 1) { state.page -= 1; loadPage(); } });
     el.nextPageButton.addEventListener('click', () => { if (!el.nextPageButton.disabled) { state.page += 1; loadPage(); } });
-    document.querySelectorAll('.sort-head[data-sort]').forEach(button => button.addEventListener('click', () => { const next = button.dataset.sort; if (state.sort === next) state.direction = state.direction === 'asc' ? 'desc' : 'asc'; else { state.sort = next; state.direction = 'asc'; } state.page = 1; loadPage(); }));
+    document.querySelectorAll('.sort-head[data-sort]').forEach(button => button.addEventListener('click', () => { const next = button.dataset.sort; if (state.sort === next) state.direction = state.direction === 'asc' ? 'desc' : 'asc'; else { state.sort = next; state.direction = 'asc'; } state.columnSort = true; state.page = 1; loadPage(); }));
     el.registryList.addEventListener('click', event => rowContainerClick(event));
     el.registryList.addEventListener('keydown', event => {
       if (event.key !== 'Enter' && event.key !== ' ') return;
@@ -1871,6 +2135,19 @@
     el.logoutButton.addEventListener('click', logout);
   }
 
+  function readColumnFilterUrl() {
+    try { state.columnFilters = window.DrxRegistryColumns.parseFilters(new URLSearchParams(location.search).get('columnFilters')); }
+    catch { state.columnFilters = {}; showToast('Filtrat e kolonave në këtë lidhje janë të pavlefshëm.'); }
+  }
+
+  function syncColumnFilterUrl(push = false) {
+    const url = new URL(location.href);
+    if (Object.keys(state.columnFilters).length) url.searchParams.set('columnFilters',JSON.stringify(state.columnFilters));
+    else url.searchParams.delete('columnFilters');
+    url.searchParams.delete('page');
+    history[push ? 'pushState' : 'replaceState'](history.state,'',url.pathname + url.search + url.hash);
+  }
+
   function syncAtcUrl({ push = false } = {}) {
     const url = new URL(location.href);
     if (state.atc) url.searchParams.set('atc', state.atc); else url.searchParams.delete('atc');
@@ -1887,6 +2164,9 @@
 
   function clearFilters() {
     state.q = ''; state.atc = ''; state.formType = ''; state.formValue = ''; state.page = 1;
+    state.columnFilters = {};
+    columnFiltersUi?.close(false);
+    syncColumnFilterUrl();
     syncAtcUrl();
     atcPicker?.setValue(''); atcPicker?.close();
     el.searchInput.value = ''; el.formPickerSearch.value = ''; syncFormPickerTrigger(); closeFormPicker();
@@ -1907,12 +2187,37 @@ async function init() {
   void refreshRegistryServiceWorker();
     loadSharedSidebarTaxonomy();
     state.atc = window.DrxRegistryAtc.normalizeCode(new URLSearchParams(location.search).get('atc'));
+    readColumnFilterUrl();
+    columnFiltersUi = window.DrxColumnFilter.create({
+      columns:COLUMN_DEFS,
+      getFilters:() => state.columnFilters,
+      getSort:() => ({sort:state.sort, direction:state.direction}),
+      getFacetUrl:(column, valueSearch, offset) => {
+        const url = new URL(queryUrl(), location.origin);
+        url.searchParams.set('view','registry-facets');
+        url.searchParams.set('column',column);
+        url.searchParams.set('valueSearch',valueSearch);
+        url.searchParams.set('offset',String(offset));
+        return url.pathname + url.search;
+      },
+      fetchJson,
+      onApply:(column, filter) => {
+        const next = {...state.columnFilters};
+        if (filter) next[column] = filter; else delete next[column];
+        state.columnFilters = next; state.page = 1;
+        syncColumnFilterUrl(true); void loadPage();
+      },
+      onSort:(sort, direction) => { state.sort = sort; state.direction = direction; state.columnSort = true; state.page = 1; void loadPage(); },
+      onOpen:() => { atcPicker?.close(); closeFormPicker(); closeColumnPicker(); },
+    });
     atcPicker = window.DrxRegistryAtc.createPicker({
       onChange:selectAtcFilter,
-      onOpen:() => { closeFormPicker(); closeColumnPicker(); },
+      onOpen:() => { columnFiltersUi?.close(false); closeFormPicker(); closeColumnPicker(); },
     });
     window.addEventListener('popstate', () => {
       state.atc = window.DrxRegistryAtc.normalizeCode(new URLSearchParams(location.search).get('atc'));
+      readColumnFilterUrl();
+      columnFiltersUi?.close(false);
       state.page = 1;
       atcPicker?.close();
       loadPage();
