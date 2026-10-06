@@ -58,7 +58,7 @@ const stylesheetLinks = [...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href
 const scriptSources = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map(match => match[1]);
 
 const registryStyles = ['/registry-v2.css','/registry-atc-filter.css','/registry-column-filter.css','/registry-v2-dose-calculator.css','/drx-dashboard-stripe.css'];
-const registryScripts = ['/dose-core.js','/dose-runtime-browser.js','/sidebar-taxonomy-v3.js','/classification-data.js','/registry-atc-filter.js','/registry-column-model.js','/registry-column-filter.js','/registry-v2.js','/registry-v2-dose-calculator.js'];
+const registryScripts = ['/dose-core.js','/dose-runtime-browser.js','/sidebar-taxonomy-v3.js','/classification-data.js','/registry-atc-filter.js','/registry-substance-data.js','/registry-substance-normalization.js','/registry-column-model.js','/registry-column-filter.js','/registry-v2.js','/registry-v2-dose-calculator.js'];
 assert(stylesheetLinks.length === registryStyles.length, `Registry v2 stylesheet inventory differs; found ${stylesheetLinks.length}.`);
 assert(scriptSources.length === registryScripts.length, `Registry v2 script inventory differs; found ${scriptSources.length}.`);
 registryStyles.forEach((asset,index) => assert(stylesheetLinks[index].split('?')[0] === asset, `Registry stylesheet order differs at ${asset}.`));

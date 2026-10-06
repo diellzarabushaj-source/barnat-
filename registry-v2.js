@@ -1,6 +1,8 @@
 (() => {
   'use strict';
 
+  const Substances = window.DrxRegistrySubstances;
+
   const COLUMN_PICKER_STABILITY = 'registry-column-picker-stability-v2';
 
 
@@ -728,7 +730,7 @@
       tradeName:clean(resolved.tradeName || payload.tradeName || payload.label || payload.name || payload.drugName),
       registryNumber:clean(resolved.registryNumber || payload.registryNumber || payload.registry_number),
       pdid:clean(resolved.pdid || payload.pdid),
-      activeSubstance:clean(resolved.activeSubstance || payload.activeSubstance || payload.substance),
+      activeSubstance:Substances.canonicalName(resolved.activeSubstance || payload.activeSubstance || payload.substance),
       strength:clean(resolved.strength || payload.strength),
       form:clean(resolved.form || payload.form || payload.pharmaceuticalForm),
       atc:clean(resolved.atc || payload.atc || payload.atcCode),
@@ -1075,7 +1077,7 @@
 
   function queryUrl() {
     const searchableQuery = Boolean(state.q && (state.q.length >= 2 || /^\\d+$/.test(state.q)));
-    const rankedSearch = Boolean(searchableQuery && !state.atc && !state.formValue && !Object.keys(state.columnFilters).length && !state.columnSort && !['prescription','adultDose','pediatricDose','updateStatus'].includes(state.sort));
+    const rankedSearch = Boolean(searchableQuery && !state.atc && !state.formValue && !Object.keys(state.columnFilters).length && !state.columnSort && !Substances.isKnownQuery(state.q) && !['substance','prescription','adultDose','pediatricDose','updateStatus'].includes(state.sort));
     const params = new URLSearchParams(rankedSearch ? {
       view:'registry-search',
       page:'1',
@@ -1128,7 +1130,7 @@
   }
 
   function applyPageResult(payload, source, durationMs, requestId, preserveScroll) {
-    state.rows = Array.isArray(payload.rows) ? payload.rows : [];
+    state.rows = Array.isArray(payload.rows) ? payload.rows.map(Substances.normalizeRow) : [];
     state.page = Number(payload.pagination?.page || state.page);
     state.pageSize = Number(payload.pagination?.pageSize || state.pageSize);
     state.total = Number.isFinite(Number(payload.pagination?.total)) ? Number(payload.pagination.total) : null;
@@ -1412,7 +1414,7 @@
           <input class="row-check" type="checkbox" data-select-row="${escapeHtml(key)}" aria-label="Zgjidh ${escapeHtml(row.tradeName)}" ${selected ? 'checked' : ''}>
           <div class="registry-list-title">
             <strong class="drug-name">${escapeHtml(row.tradeName || 'Pa emër')}</strong>
-            <span class="registry-list-sub"><span data-col="substance">${escapeHtml(row.activeSubstance || '—')}</span><b data-col="strength">${escapeHtml(row.strength || '—')}</b></span>
+            <span class="registry-list-sub"><span data-col="substance" title="${escapeHtml(row.sourceActiveSubstance || row.activeSubstance)}">${escapeHtml(row.activeSubstance || '—')}</span><b data-col="strength">${escapeHtml(row.strength || '—')}</b></span>
           </div>
           <div class="registry-row-actions">
             <details class="registry-more" data-row-menu-key="${escapeHtml(key)}"><summary class="registry-more-trigger" aria-label="Veprime për ${escapeHtml(row.tradeName)}">${MORE_VERTICAL}</summary><div class="registry-more-menu" role="menu"><button type="button" role="menuitem" data-dose-calculator-open data-registry-number="${escapeHtml(number)}">${CALC_ICON}<span>Kalkulo</span></button><button type="button" role="menuitem" data-row-favorite="${escapeHtml(key)}" class="${favorite ? 'is-favorite' : ''}">${STAR_ICON}<span data-favorite-label>${favorite ? 'Hiq nga favoritët' : 'Shëno si favorit'}</span></button><button type="button" role="menuitem" data-row-note="${escapeHtml(key)}">${NOTE_ICON}<span>Shkruaj shënim</span></button></div></details>
@@ -1507,7 +1509,7 @@
         <td><input class="row-check" type="checkbox" data-select-row="${escapeHtml(key)}" aria-label="Zgjidh ${escapeHtml(row.tradeName)}" ${selected ? 'checked' : ''}></td>
         <td data-col="registry"><span class="price">${escapeHtml(number || '—')}</span></td>
         <td data-col="name"><span class="drug-name">${escapeHtml(row.tradeName || 'Pa emër')}</span><span class="drug-meta">${escapeHtml(row.pdid || row.productStatus || '')}</span></td>
-        <td data-col="substance"><span class="cell-clamp registry-substance-text" title="${escapeHtml(row.activeSubstance || '')}">${escapeHtml(row.activeSubstance || '—')}</span></td>
+        <td data-col="substance"><span class="cell-clamp registry-substance-text" title="${escapeHtml(row.sourceActiveSubstance || row.activeSubstance || '')}">${escapeHtml(row.activeSubstance || '—')}</span></td>
         <td data-col="strength">${escapeHtml(row.strength || '—')}</td>
         <td data-col="form"><span class="cell-clamp">${escapeHtml(row.form || '—')}</span></td>
         <td data-col="prescription"><span class="registry-prescription-text">${escapeHtml(prescriptionNotationFor(row))}</span></td>
@@ -1771,7 +1773,7 @@
 
   async function showDetail(row) {
     if (!row) return;
-    state.currentDetail = row;
+    state.currentDetail = Substances.normalizeRow(row);
     openDrawer();
     el.drawerTitle.textContent = row.tradeName || 'Detajet';
     el.drawerBody.innerHTML = '<div class="drawer-loading">Duke ngarkuar kartelën klinike…</div>';
@@ -1780,7 +1782,7 @@
         fetchJson(`/api/drug-search?view=registry-detail&id=${encodeURIComponent(row.id)}`),
         fetchJson(`/api/dosage?view=card&id=${encodeURIComponent(row.id)}`).catch(() => ({ payload:{ ok:false } })),
       ]);
-      const detail = detailResult.payload.row || row;
+      const detail = Substances.normalizeRow(detailResult.payload.row || row);
       let card = cardResult.payload || {};
 
       const hasAdult = clean(normalizeDetailDose(card?.adult).dose);
@@ -1912,6 +1914,7 @@
     const adult = mergedDose(normalizeDetailDose(card.adult), sourceDose(detail, 'adult'));
     const pediatric = mergedDose(normalizeDetailDose(card.pediatric), sourceDose(detail, 'pediatric'));
     const info = [
+      ...(detail.sourceActiveSubstance && detail.sourceActiveSubstance !== detail.activeSubstance ? [['Emërtimi në regjistër', detail.sourceActiveSubstance]] : []),
       ['Nr. regjistri', detail.registryNumber], ['PDID', detail.pdid], ['ATC', detail.atc],
       ['Popullata', populationMeta(detail.approvedPopulation).label], ['Forma', detail.form], ['Paketimi', detail.packaging], ['Prodhuesi', detail.manufacturer], ['MAH', detail.marketingAuthorizationHolder],
       ['Certifikata', detail.maCertificate], ['Vlefshmëria', detail.validity], ['Statusi në përditësim', detail.updateStatus], ['Çmimi me pakicë', euros(detail.retailPrice)],
