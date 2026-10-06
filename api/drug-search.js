@@ -67,7 +67,7 @@ function requestQuery(req) {
 function integerInRange(value, fallback, min, max) { const parsed=Number.parseInt(String(value ?? ''),10); return Number.isFinite(parsed) ? Math.min(max,Math.max(min,parsed)) : fallback; }
 function safeFilterText(value,max=MAX_QUERY) { return clean(value).slice(0,max).replace(/[,*%()\\]/g,' ').replace(/\s+/g,' ').trim(); }
 function safeQueryText(value) { return clean(value).slice(0, MAX_QUERY).replace(/[,*%()\\]/g,' ').replace(/\s+/g,' ').trim(); }
-function safeAtcPrefix(value) { const code=clean(value).toUpperCase().replace(/\s+/g,''); return /^(?:[A-Z]|[A-Z]\d{2}(?:[A-Z]{1,2})?)$/.test(code) ? code : ''; }
+function safeAtcPrefix(value) { const code=clean(value).toUpperCase().replace(/\s+/g,''); return /^[A-Z](?:\d{2}(?:[A-Z](?:[A-Z](?:\d{2})?)?)?)?$/.test(code) ? code : ''; }
 function safeUuidList(value) { const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i; return [...new Set(clean(value).split(',').map(item=>item.trim()).filter(item=>UUID.test(item)))].slice(0,PERSONAL_LOOKUP_LIMIT); }
 async function authorized(req) { return registryHandler.authorized(req); }
 
@@ -273,7 +273,7 @@ function buildPageRequest(query={}) {
   params.set('select',LIST_SELECT); params.set('is_published','eq.true'); params.set('editorial_status','eq.published'); params.set('order',`${sortColumn}.${direction}.nullslast,registry_number.asc`); params.set('limit',String(pageSize)); params.set('offset',String(offset));
   if(q.length>=2) params.set('registry_search_text',`ilike.*${q}*`);
   if(status) params.set('product_status',`eq.${status}`);
-  if(atc) params.set('atc_code',`ilike.${atc}*`);
+  if(atc) params.set('atc_code',atc.length === 7 ? `ilike.${atc}` : `ilike.${atc}*`);
   const categoryForms=FORM_CATEGORIES[formCategory] || [];
   if(formExact) params.set('pharmaceutical_form',`eq.${formExact}`);
   else if(categoryForms.length) params.set('pharmaceutical_form',`in.(${categoryForms.map(postgrestQuoted).join(',')})`);

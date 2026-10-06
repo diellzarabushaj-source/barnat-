@@ -44,8 +44,11 @@ const visibleColumns = ['registry', 'name', 'substance', 'strength', 'form', 'pr
 
 function filteredRows(url) {
   const q = String(url.searchParams.get('q') || '').toLowerCase();
-  if (!q) return rows;
-  return rows.filter(row => `${row.tradeName} ${row.activeSubstance} ${row.atc} ${row.use}`.toLowerCase().includes(q));
+  const atc = url.searchParams.get('atc') || '';
+  const form = url.searchParams.get('formExact') || '';
+  return rows.filter(row => `${row.tradeName} ${row.activeSubstance} ${row.atc} ${row.use}`.toLowerCase().includes(q)
+    && (!atc || (atc.length === 7 ? row.atc === atc : row.atc.startsWith(atc)))
+    && (!form || row.form === form));
 }
 
 async function installApiMocks(page) {
@@ -128,6 +131,93 @@ async function installApiMocks(page) {
 test.beforeEach(async ({ page }) => {
   await installApiMocks(page);
 });
+
+test('ATC picker narrows through subdivisions and shares filters with list view', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.setViewportSize({ width:1440, height:900 });
+  await page.goto('/index.html');
+  await expect(page.locator('#registryRows tr')).toHaveCount(2);
+  await page.locator('#filterToggle').click();
+  await page.locator('#atcPickerButton').click();
+  const panelBounds = await page.locator('#atcPickerPanel').boundingBox();
+  expect(panelBounds.y).toBeGreaterThanOrEqual(0);
+  expect(panelBounds.y + panelBounds.height).toBeLessThanOrEqual(900);
+  await expect(page.locator('.atc-picker-heading')).toBeVisible();
+  await expect(page.locator('#atcPickerSearch')).toBeVisible();
+  for (const code of ['J', 'J01', 'J01C']) await page.locator(`[data-atc-branch="${code}"] > summary`).click();
+  await page.screenshot({ path:test.info().outputPath('atc-filter-desktop.png'), fullPage:true });
+  await page.locator('[data-atc-select="J01CA"]').click();
+  await expect(page.locator('#atcPickerPanel')).toBeHidden();
+  await expect(page.locator('#atcPickerButton')).toBeFocused();
+  await expect(page).toHaveURL(/atc=J01CA/);
+  await expect(page.locator('#registryRows tr')).toHaveCount(1);
+  await expect(page.locator('#registryRows')).toContainText('AMOXICILLIN TEST');
+  await page.locator('[data-view="list"]').click();
+  await expect(page.locator('.registry-list-card')).toHaveCount(1);
+  await expect(page.locator('#registryList')).toContainText('AMOXICILLIN TEST');
+  await page.locator('#atcPickerButton').click();
+  await page.locator('#atcPickerSearch').fill('N02BE01');
+  await page.locator('[data-atc-select="N02BE01"]').click();
+  await expect(page.locator('#registryList')).toContainText('PARACETAMOL TEST');
+  await page.goBack();
+  await expect(page.locator('#registryList')).toContainText('AMOXICILLIN TEST');
+  await expect(page.locator('#atcPickerValue')).toContainText('J01CA');
+  await page.locator('#searchInput').fill('no matching medicine');
+  await expect(page.locator('#emptyState')).toBeVisible();
+  await page.locator('#clearFiltersButton').click();
+  await expect(page.locator('.registry-list-card')).toHaveCount(2);
+  await expect(page.locator('#atcPickerValue')).toHaveText('Të gjitha grupet');
+  expect(errors).toEqual([]);
+});
+
+test('ATC picker keeps search and pharmaceutical form while clearing ATC alone', async ({ page }) => {
+  await page.goto('/index.html?atc=J01CA04');
+  await expect(page.locator('#registryRows')).toContainText('AMOXICILLIN TEST');
+  await page.locator('#filterToggle').click();
+  await page.locator('#formPickerButton').click();
+  await page.locator('#formPickerSearch').fill('Tablet');
+  await page.locator('[data-form-value="Tablet"]').click();
+  await expect(page.locator('#emptyState')).toBeVisible();
+  await page.locator('#searchInput').fill('para');
+  await page.waitForRequest(req => req.url().includes('/api/drug-search') && new URL(req.url()).searchParams.get('q') === 'para');
+  await page.locator('#atcPickerButton').click();
+  const nextRequest = page.waitForRequest(req => req.url().includes('/api/drug-search') && !new URL(req.url()).searchParams.has('atc') && new URL(req.url()).searchParams.get('q') === 'para');
+  await page.locator('[data-atc-select=""]').click();
+  const request = new URL((await nextRequest).url());
+  expect(request.searchParams.get('formExact')).toBe('Tablet');
+  await expect(page.locator('#searchInput')).toHaveValue('para');
+  await expect(page.locator('#formPickerValue')).toHaveText('Tablet');
+});
+
+for (const width of [320, 390, 760]) {
+  test(`ATC picker is readable and keyboard accessible at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height:844 });
+    await page.goto('/index.html');
+    await expect(page.locator('#registryRows tr')).toHaveCount(2);
+    await page.locator('#filterToggle').click();
+    await page.locator('#atcPickerButton').click();
+    await expect(page.locator('#atcPickerSearch')).toBeFocused();
+    await page.locator('#atcPickerSearch').fill('spekter te gjere');
+    await expect(page.locator('[data-atc-select="J01CA"]')).toBeVisible();
+    const bounds = await page.locator('#atcPickerPanel').boundingBox();
+    expect(bounds.x).toBeGreaterThanOrEqual(0);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+    expect(bounds.y).toBeGreaterThanOrEqual(0);
+    expect(bounds.y + bounds.height).toBeLessThanOrEqual(844);
+    await page.locator('#atcPickerSearch').press('ArrowDown');
+    await expect(page.locator('[data-atc-select=""]').first()).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await expect(page.locator('[data-atc-select="J01CA"]')).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#atcPickerButton')).toBeFocused();
+    await expect(page.locator('#atcPickerPanel')).toBeHidden();
+    await page.locator('#atcPickerButton').click();
+    await page.locator('[data-atc-branch="J"] > summary').click();
+    await page.locator('[data-atc-branch="J01"] > summary').click();
+    await page.screenshot({ path:test.info().outputPath(`atc-filter-${width}.png`), fullPage:true });
+  });
+}
 
 test('registry v2 desktop flow is stable and usable', async ({ page }) => {
   await page.setViewportSize({ width:1440, height:900 });
