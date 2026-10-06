@@ -8,13 +8,16 @@
   <title>DRx | Regjistri i barnave</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-phone-fields-v2-20261001">
+  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-atc-filter-20261006">
+  <link rel="stylesheet" href="/registry-atc-filter.css?v=20261006">
   <link rel="stylesheet" href="/registry-v2-dose-calculator.css?v=registry-v2-dose-calculator-v1">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930">
   <script src="/dose-core.js?v=drx-dose-core-v1" defer></script>
   <script src="/dose-runtime-browser.js?v=drx-dose-runtime-browser-v1" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v6-mobile-app-20260930" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/registry-v2.js?v=registry-v2-phone-fields-v2-20261001&amp;registryUpdates=20261005" defer></script>
+  <script src="/classification-data.js?v=20261006" defer></script>
+  <script src="/registry-atc-filter.js?v=20261006" defer></script>
+<script src="/registry-v2.js?v=registry-v2-atc-filter-20261006&amp;registryUpdates=20261005" defer></script>
   <script src="/registry-v2-dose-calculator.js?v=registry-v2-dose-calculator-v1" defer></script>
 </head>
 <body>
@@ -229,9 +232,25 @@
             <label>Rendit sipas
               <select id="sortSelect"><option value="registry">Nr. regjistri</option><option value="name">Emri</option><option value="substance">Substanca</option><option value="atc">ATC</option><option value="strength">Fortësia</option><option value="form">Forma</option><option value="class">Grupi / Klasa</option><option value="use">Përdorimi</option><option value="population">Popullata</option><option value="status">Statusi</option><option value="price">Çmimi</option></select>
             </label>
-            <label>Drejtimi
-              <select id="directionSelect"><option value="asc">A → Z</option><option value="desc">Z → A</option></select>
-            </label>
+            <div class="filter-field atc-filter-field">
+              <span class="filter-field-label" id="atcPickerLabel">Klasifikimi ATC</span>
+              <div class="atc-picker" id="atcPicker">
+                <button class="form-picker-trigger atc-picker-trigger" id="atcPickerButton" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="atcPickerPanel" aria-labelledby="atcPickerLabel atcPickerValue">
+                  <span class="form-picker-trigger-icon atc-picker-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="5" rx="1"/><path d="M12 8v5M5 13h14M5 13v3M19 13v3"/><rect x="2" y="16" width="6" height="5" rx="1"/><rect x="16" y="16" width="6" height="5" rx="1"/></svg></span>
+                  <span class="form-picker-trigger-copy"><strong id="atcPickerValue">Të gjitha grupet</strong><small id="atcPickerHint">Grupe, kategori dhe nënndarje</small></span>
+                  <span class="form-picker-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m7 10 5 5 5-5"/></svg></span>
+                </button>
+                <div class="atc-picker-panel" id="atcPickerPanel" role="dialog" aria-labelledby="atcPickerLabel" hidden>
+                  <div class="atc-picker-heading"><strong>Zgjidh klasifikimin ATC</strong><button class="atc-picker-close" type="button" data-atc-close aria-label="Mbyll filtrin ATC">×</button></div>
+                  <label class="sr-only" for="atcPickerSearch">Kërko grup, kategori ose kod ATC</label>
+                  <input id="atcPickerSearch" class="atc-picker-search" type="search" placeholder="Kërko emrin ose kodin ATC…" autocomplete="off" spellcheck="false">
+                  <p class="atc-picker-help">Hap grupin për të parë nënndarjet. Zgjidh kategorinë që dëshiron.</p>
+                  <div id="atcPickerSelection" class="atc-picker-selection" hidden></div>
+                  <div class="atc-picker-list" id="atcPickerList"></div>
+                  <p class="atc-picker-status" id="atcPickerStatus" role="status" aria-live="polite"></p>
+                </div>
+              </div>
+            </div>
             <button class="button button-ghost filter-clear" id="clearFiltersButton" type="button">Pastro filtrat</button>
           </div>
 

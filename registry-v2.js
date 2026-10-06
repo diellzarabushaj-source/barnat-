@@ -99,6 +99,7 @@
   const SELECTION_STORAGE_KEY = 'drx_registry_v2_selection';
   const LEGACY_SELECTION_STORAGE_KEY = 'medindexPrescriptionSelection';
 
+  let atcPicker = null;
   const state = {
     page: 1,
     pageSize: DEFAULT_PAGE_SIZE,
@@ -139,7 +140,7 @@
     metricTotal: $('metricTotal'), metricPage: $('metricPage'), metricPageSize: $('metricPageSize'), metricSource: $('metricSource'), metricFilters: $('metricFilters'),
     searchInput: $('searchInput'), filterToggle: $('filterToggle'), filterPanel: $('filterPanel'), filterCountBadge: $('filterCountBadge'),
     columnPicker: $('columnPicker'), columnPickerButton: $('columnPickerButton'), columnPickerPanel: $('columnPickerPanel'), columnPickerList: $('columnPickerList'), columnPickerSummary: $('columnPickerSummary'), columnSaveStatus: $('columnSaveStatus'), resetColumnsButton: $('resetColumnsButton'),
-    formPicker: $('formPicker'), formPickerButton: $('formPickerButton'), formPickerPanel: $('formPickerPanel'), formPickerSearch: $('formPickerSearch'), formPickerList: $('formPickerList'), formPickerValue: $('formPickerValue'), formPickerHint: $('formPickerHint'), sortSelect: $('sortSelect'), directionSelect: $('directionSelect'), clearFiltersButton: $('clearFiltersButton'),
+    formPicker: $('formPicker'), formPickerButton: $('formPickerButton'), formPickerPanel: $('formPickerPanel'), formPickerSearch: $('formPickerSearch'), formPickerList: $('formPickerList'), formPickerValue: $('formPickerValue'), formPickerHint: $('formPickerHint'), sortSelect: $('sortSelect'), clearFiltersButton: $('clearFiltersButton'),
     pageSizeSelect: $('pageSizeSelect'), resultSummary: $('resultSummary'), requestTiming: $('requestTiming'), registryRows: $('registryRows'), registryTable: $('registryTable'), tableScroll: $('tableScroll'),
     registryList: $('registryList'), viewToggle: $('viewToggle'),
     emptyState: $('emptyState'), emptyClearButton: $('emptyClearButton'), selectPageCheckbox: $('selectPageCheckbox'), paginationSummary: $('paginationSummary'), pageIndicator: $('pageIndicator'), prevPageButton: $('prevPageButton'), nextPageButton: $('nextPageButton'),
@@ -1403,7 +1404,7 @@
     el.filterCountBadge.hidden = count === 0;
     el.pageSizeSelect.value = String(state.pageSize);
     el.sortSelect.value = state.sort;
-    el.directionSelect.value = state.direction;
+    atcPicker?.setValue(state.atc);
     syncFormPickerTrigger();
   }
 
@@ -1726,15 +1727,16 @@
     el.searchInput.addEventListener('keydown', event => { if (event.key === 'Escape' && el.searchInput.value) { clearTimeout(state.searchTimer); el.searchInput.value = ''; state.q = ''; state.page = 1; loadPage(); } });
     window.addEventListener('keydown', event => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); el.searchInput.focus(); el.searchInput.select(); }
-      if (event.key === 'Escape') { closeDrawer(); closeSidebar(); closeFormPicker(); closeColumnPicker(); closeRowMenus(); closeNoteDialog(); }
+      if (event.key === 'Escape') { closeDrawer(); closeSidebar(); closeFormPicker(); atcPicker?.close(); closeColumnPicker(); closeRowMenus(); closeNoteDialog(); }
     });
     el.filterToggle.addEventListener('click', () => {
       const open = el.filterPanel.hidden;
-      if (!open) closeFormPicker();
+      if (!open) { closeFormPicker(); atcPicker?.close(); }
       el.filterPanel.hidden = !open;
       el.filterToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
     el.columnPickerButton.addEventListener('click', event => {
+      atcPicker?.close();
       event.stopPropagation();
       if (el.columnPickerPanel.hidden) openColumnPicker(); else closeColumnPicker();
     });
@@ -1752,6 +1754,7 @@
       scheduleColumnSave();
     });
     el.formPickerButton.addEventListener('click', event => {
+      atcPicker?.close();
       event.stopPropagation();
       if (el.formPickerPanel.hidden) openFormPicker(); else closeFormPicker();
     });
@@ -1820,7 +1823,6 @@
       doseResizeTimer = setTimeout(syncAllDoseToggles, 160);
     });
     el.sortSelect.addEventListener('change', () => { state.sort = el.sortSelect.value; state.page = 1; loadPage(); });
-    el.directionSelect.addEventListener('change', () => { state.direction = el.directionSelect.value; state.page = 1; loadPage(); });
     el.pageSizeSelect.addEventListener('change', () => { state.pageSize = Number(el.pageSizeSelect.value) || 50; state.page = 1; loadPage(); });
     el.clearFiltersButton.addEventListener('click', clearFilters);
     el.emptyClearButton.addEventListener('click', clearFilters);
@@ -1869,9 +1871,24 @@
     el.logoutButton.addEventListener('click', logout);
   }
 
+  function syncAtcUrl({ push = false } = {}) {
+    const url = new URL(location.href);
+    if (state.atc) url.searchParams.set('atc', state.atc); else url.searchParams.delete('atc');
+    url.searchParams.delete('page');
+    history[push ? 'pushState' : 'replaceState'](history.state, '', url.pathname + url.search + url.hash);
+  }
+
+  function selectAtcFilter(code) {
+    state.atc = window.DrxRegistryAtc.normalizeCode(code);
+    state.page = 1;
+    syncAtcUrl({ push:true });
+    loadPage();
+  }
+
   function clearFilters() {
     state.q = ''; state.atc = ''; state.formType = ''; state.formValue = ''; state.page = 1;
-    const url = new URL(location.href); url.searchParams.delete('atc'); history.replaceState(history.state, '', url.pathname + url.search + url.hash);
+    syncAtcUrl();
+    atcPicker?.setValue(''); atcPicker?.close();
     el.searchInput.value = ''; el.formPickerSearch.value = ''; syncFormPickerTrigger(); closeFormPicker();
     loadPage();
   }
@@ -1889,8 +1906,17 @@
 async function init() {
   void refreshRegistryServiceWorker();
     loadSharedSidebarTaxonomy();
-    const incomingAtc = clean(new URLSearchParams(location.search).get('atc')).toUpperCase().replace(/\s+/g, '');
-    state.atc = /^(?:[A-Z]|[A-Z]\d{2}(?:[A-Z]{1,2})?)$/.test(incomingAtc) ? incomingAtc : '';
+    state.atc = window.DrxRegistryAtc.normalizeCode(new URLSearchParams(location.search).get('atc'));
+    atcPicker = window.DrxRegistryAtc.createPicker({
+      onChange:selectAtcFilter,
+      onOpen:() => { closeFormPicker(); closeColumnPicker(); },
+    });
+    window.addEventListener('popstate', () => {
+      state.atc = window.DrxRegistryAtc.normalizeCode(new URLSearchParams(location.search).get('atc'));
+      state.page = 1;
+      atcPicker?.close();
+      loadPage();
+    });
     bindEvents();
     applyRegistryView();
     renderFormPicker();
