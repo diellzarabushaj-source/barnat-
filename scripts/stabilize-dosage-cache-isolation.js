@@ -16,7 +16,7 @@ function replaceOnce(source, pattern, replacement, label, file) {
 function patchWorker(file) {
   const target = path.join(root, file);
   if (!fs.existsSync(target)) return false;
-  let source = fs.readFileSync(target, 'utf8');
+  let source = fs.readFileSync(target, 'utf8').replace(/\r\n?/g, '\n');
   if (source.includes(MARKER)) return false;
 
   source = replaceOnce(

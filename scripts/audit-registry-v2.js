@@ -57,16 +57,14 @@ assert(/src="\/registry-v2\.js\?(?:v|build)=[^"]+"/.test(html), 'Registry v2 run
 const stylesheetLinks = [...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"/g)].map(match => match[1]);
 const scriptSources = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map(match => match[1]);
 
-assert(stylesheetLinks.length === 3, `Registry v2 must load registry CSS, dose-calculator CSS and the shared Stripe shell; found ${stylesheetLinks.length}.`);
-assert(scriptSources.length === 5, `Registry v2 must load dose core/runtime, shared sidebar taxonomy, registry runtime and calculator runtime; found ${scriptSources.length}.`);
-assert(stylesheetLinks[0].startsWith('/registry-v2.css'), 'Unexpected registry page stylesheet authority.');
-assert(stylesheetLinks[1].startsWith('/registry-v2-dose-calculator.css'), 'Dose calculator stylesheet must remain second.');
-assert(stylesheetLinks[2] === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930', 'Shared Stripe shell v8 must load last.');
-assert(scriptSources[0].startsWith('/dose-core.js'), 'Dose core must load first.');
-assert(scriptSources[1].startsWith('/dose-runtime-browser.js'), 'Dose browser runtime must load after dose core.');
-assert(scriptSources[2] === '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v6-mobile-app-20260930', 'Shared sidebar taxonomy v5 must load before the registry runtime.');
-assert(scriptSources[3].startsWith('/registry-v2.js'), 'Registry runtime must load after shared sidebar taxonomy.');
-assert(scriptSources[4].startsWith('/registry-v2-dose-calculator.js'), 'Dose calculator runtime must load last.');
+const registryStyles = ['/registry-v2.css','/registry-atc-filter.css','/registry-column-filter.css','/registry-v2-dose-calculator.css','/drx-dashboard-stripe.css'];
+const registryScripts = ['/dose-core.js','/dose-runtime-browser.js','/sidebar-taxonomy-v3.js','/classification-data.js','/registry-atc-filter.js','/registry-column-model.js','/registry-column-filter.js','/registry-v2.js','/registry-v2-dose-calculator.js'];
+assert(stylesheetLinks.length === registryStyles.length, `Registry v2 stylesheet inventory differs; found ${stylesheetLinks.length}.`);
+assert(scriptSources.length === registryScripts.length, `Registry v2 script inventory differs; found ${scriptSources.length}.`);
+registryStyles.forEach((asset,index) => assert(stylesheetLinks[index].split('?')[0] === asset, `Registry stylesheet order differs at ${asset}.`));
+registryScripts.forEach((asset,index) => assert(scriptSources[index].split('?')[0] === asset, `Registry script order differs at ${asset}.`));
+assert(stylesheetLinks.at(-1) === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930', 'Shared Stripe shell v8 must load last.');
+assert(scriptSources[2] === '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v6-mobile-app-20260930', 'Shared sidebar taxonomy must load before registry filters.');
 
 for (const asset of legacyAssets) {
   assert(!html.includes(asset), `Legacy registry asset is still loaded by index.html: ${asset}`);
