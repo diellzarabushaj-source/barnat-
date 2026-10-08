@@ -170,5 +170,6 @@
   "tests/drx-phase2-registry-ledger-test.js",
   "tests/vercel-hobby-function-budget-test.js",
   "tests/registry-search-pagination-test.js",
-  "tests/icd-hierarchy-neon-sync-test.js"
+  "tests/icd-hierarchy-neon-sync-test.js",
+  "tests/dose-row-visual-rules-test.js"
 ]

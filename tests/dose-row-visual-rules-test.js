@@ -10,8 +10,8 @@ const css = read('registry-v2.css');
 const js = read('registry-v2.js');
 
 assert.match(html, /data-drx-app="registry-v2"/);
-assert.match(html, /<th[^>]*data-col="adultDose"[^>]*>Doza e të rriturit<\/th>/);
-assert.match(html, /<th[^>]*data-col="pediatricDose"[^>]*>Doza pediatrike<\/th>/);
+assert.match(html, /<th[^>]*data-col="adultDose"[^>]*>\s*<button[^>]*data-sort="adultDose"[^>]*>Doza e të rriturit<\/button>\s*<\/th>/);
+assert.match(html, /<th[^>]*data-col="pediatricDose"[^>]*>\s*<button[^>]*data-sort="pediatricDose"[^>]*>Doza pediatrike<\/button>\s*<\/th>/);
 assert.match(html, /registry-v2\.css\?v=[^"\s]+/);
 assert.match(html, /registry-v2\.js\?v=[^"\s]+/);
 
