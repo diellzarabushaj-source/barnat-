@@ -52,6 +52,11 @@ const PAGES = [
  * ngjyrë e vendosur vetëm për dritën shpesh mbetet e pandryshuar në errësirë,
  * dhe ajo është pikërisht mënyra si lind teksti i mbyllët mbi sfond të errët. */
 const THEMES = ['light', 'dark'];
+const requestedPages = String(process.env.CONTRAST_PAGES || '').split(',').map(value=>value.trim()).filter(Boolean);
+if (requestedPages.length) {
+  assert.ok(requestedPages.every(name=>PAGES.some(page=>page.name===name)), 'Unknown contrast audit page');
+  for (let index=PAGES.length-1;index>=0;index--) if (!requestedPages.includes(PAGES[index].name)) PAGES.splice(index,1);
+}
 
 const MIN_NORMAL = 4.5;
 const MIN_LARGE = 3;

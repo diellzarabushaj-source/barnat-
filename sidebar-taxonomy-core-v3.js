@@ -691,7 +691,12 @@
     menu.setAttribute('aria-label', 'Hap të gjitha seksionet');
     menu.setAttribute('aria-controls', 'sidebar');
     menu.innerHTML = '<span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span><span>Më shumë</span>';
-    menu.addEventListener('click', () => document.getElementById('menuButton')?.click());
+    menu.addEventListener('click', () => {
+      // Safari touch clicks do not focus buttons automatically. Keep the dock
+      // trigger as the return target before forwarding to the main menu.
+      menu.focus({ preventScroll:true });
+      document.getElementById('menuButton')?.click();
+    });
     dock.append(menu);
     main.append(dock);
     document.documentElement.classList.add('drx-app-navigation');

@@ -50,7 +50,25 @@ async function main() {
     const dataset = table === 'drugs' ? roster : regimens, offset = Number(params.get('offset'));
     return {data:dataset.slice(offset,offset+1000),response:{headers:{get:()=>`0-999/${dataset.length}`}}};
   };
-  const snapshot = await data.loadSnapshot('id,registry_number,trade_name',gateway.listRow,request);
+  const legacy = await data.loadLegacySnapshot('id,registry_number,trade_name',gateway.listRow,request);
+  let rpcCalls = 0;
+  const rpc = async (path,options) => {
+    assert.equal(path,'rpc/drx_registry_filter_snapshot_v1'); assert.equal(options.method,'POST');
+    rpcCalls++; return {data:{ok:true,version:1,counts:{drugs:roster.length,regimens:regimens.length},drugs:roster,regimens}};
+  };
+  const snapshot = await data.loadSnapshot('',gateway.listRow,rpc);
+  assert.deepEqual(snapshot,legacy,'Single-query projection must keep the published dosage and full registry identical');
+  assert.equal(rpcCalls,1);
+  for (const id of Object.keys(model.fields)) assert.equal(data.facetNeedsDoses(id,{}),['adultDose','pediatricDose'].includes(id));
+  assert.equal(data.facetNeedsDoses('name',{pediatricDose:{op:'notEmpty'}}),true);
+  assert.equal(data.facetNeedsDoses('name',{form:{op:'equals',text:'Tablet'}}),false);
+  const light = await data.loadLightFacets(gateway.listRow,async(path,options)=>{
+    assert.equal(path,'rpc/drx_registry_light_facets_v1');assert.equal(options.method,'POST');
+    return {data:{ok:true,version:1,count:roster.length,drugs:roster}};
+  });
+  for (const id of Object.keys(model.fields).filter(id => !data.facetNeedsDoses(id,{}))) assert.deepEqual(data.facets(light,id),data.facets(legacy,id));
+  await assert.rejects(data.loadSnapshot('',gateway.listRow,async()=>({data:{ok:true,version:1,counts:{drugs:1001,regimens:0},drugs:roster.slice(0,1000),regimens:[]}})),/plotë/);
+  await assert.rejects(data.loadSnapshot('',gateway.listRow,async()=>({data:{ok:false,error:'snapshot_too_large'}})),/plotë/);
   assert.equal(snapshot.length,1001);
   assert.equal(snapshot[1000].adultDose,'verified adult');
   assert.equal(snapshot[1000].pediatricDose,'verified pediatric');

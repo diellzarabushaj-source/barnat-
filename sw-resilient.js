@@ -9,6 +9,7 @@ const DOCUMENT_CACHE = 'medindex-documents-resilient-v2';
 const ALL_CACHES = [STATIC_CACHE, PAGE_CACHE, PRIVATE_CACHE, DOCUMENT_CACHE];
 const MAX_QUERY_RESPONSES = 40;
 const MAX_DOCUMENTS = 16;
+const DOSAGE_CACHE_ISOLATION = 'dosage-query-cache-isolation-v1';
 
 const CORE_SHELL = [
   '/login-v2.html', '/login-v2.css', '/login-v2.js', '/login-v2-canvas.js',
@@ -78,6 +79,15 @@ function validHtmlResponse(response, expectedPath) {
 function normalizedPrivateKey(url) {
   const path = url.pathname === '/data/registry-data.js' ? '/api/registry' : url.pathname;
   const accept = path === '/api/registry' ? 'application/javascript' : 'application/json';
+
+  if (path === '/api/dosage') {
+    const normalized = new URL(url.href);
+    normalized.pathname = path;
+    normalized.hash = '';
+    normalized.searchParams.sort();
+    return requestFor(normalized.href, { headers:{ Accept:accept } });
+  }
+
   return requestFor(path, { headers:{ Accept:accept } });
 }
 
@@ -160,6 +170,10 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     await migratePrivateCaches();
+    // Remove the legacy bare /api/dosage entry. Older workers ignored query
+    // parameters, so one registry page could receive dosage cards from another.
+    const privateCache = await caches.open(PRIVATE_CACHE);
+    await privateCache.delete(requestFor('/api/dosage', { headers:{ Accept:'application/json' } }));
     const names = await caches.keys();
     await Promise.all(names
       .filter(name => (name.startsWith('medindex-static-') || name.startsWith('medindex-pages-')) && !ALL_CACHES.includes(name))
@@ -272,6 +286,24 @@ async function privateDataResponse(event, url) {
   }
   const response = await refreshPrivate(request, key);
   return response || privateFallback(url);
+}
+
+async function dosageDataResponse(event, url) {
+  const request = event.request;
+  const key = normalizedPrivateKey(url);
+  const cache = await caches.open(PRIVATE_CACHE);
+
+  // Dosage is clinical data: while online, prefer the exact network request
+  // instead of stale-while-revalidate. The cache is only a fallback for an
+  // actual network failure and is isolated by the complete sorted query.
+  if (networkProfile.online) {
+    const response = await refreshPrivate(request, key);
+    if (response) return cloneWithHeader(response, 'dosage-network');
+  }
+
+  const cached = await cache.match(key);
+  if (cached) return cloneWithHeader(cached, 'dosage-query-hit');
+  return privateFallback(url);
 }
 
 async function manifestResponse(event) {
@@ -415,6 +447,7 @@ self.addEventListener('fetch', event => {
   if (url.pathname === '/api/gemini-prescription') return event.respondWith(geminiResponse(request));
   if (request.method !== 'GET') return;
   if (url.pathname === '/api/protocol-document') return event.respondWith(protocolDocumentResponse(event));
+  if (url.pathname === '/api/dosage') return event.respondWith(dosageDataResponse(event, url));
   if (PRIVATE_DATA_PATHS.has(url.pathname)) return event.respondWith(privateDataResponse(event, url));
   if (QUERY_DATA_PATHS.has(url.pathname)) return event.respondWith(queryDataResponse(event, url));
   if (url.pathname === '/data/protocols.json') return event.respondWith(manifestResponse(event));

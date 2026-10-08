@@ -1197,6 +1197,18 @@
     {
       "name": "registry_clinical_review_null_guards_and_index",
       "version": "20261005095750"
+    },
+    {
+      "name": "registry_filter_snapshot_rpc",
+      "version": "20261008213416"
+    },
+    {
+      "name": "registry_light_facets_rpc",
+      "version": "20261008214043"
+    },
+    {
+      "name": "shared_request_budget",
+      "version": "20261008214741"
     }
   ]
 }

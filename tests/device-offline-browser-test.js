@@ -18,7 +18,7 @@ const server=http.createServer(async(req,res)=>{
  if(delay&&url.pathname==='/api/drug-search')await new Promise(resolve=>setTimeout(resolve,delay));
  if(url.pathname==='/api/drug-search'){
   if(url.searchParams.get('view')==='registry-detail')return json(200,{ok:true,row});
-  return json(200,{ok:true,rows:[row],results:[],pagination:{page:1,pageSize:50,total:1,totalPages:1}});
+  return json(200,{ok:true,rows:[row],results:[],pagination:{page:1,pageSize:Number(url.searchParams.get('pageSize') || 50),total:1,totalPages:1}});
  }
  if(url.pathname==='/api/dosage')return json(200,{ok:true,cards:[],forms:[],adult:[],pediatric:[]});
  if(url.pathname==='/api/user-library')return json(200,{ok:true,items:[],favorites:[],notes:[],counts:{favorites:0,notes:0}});
@@ -38,10 +38,10 @@ const server=http.createServer(async(req,res)=>{
   const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push({message:e.message,offline:!networkAvailable}));
   await page.goto(base+'/index.html');
-  await expect(page.locator('#registryRows')).toContainText(row.tradeName);
+  await expect(page.locator('#registryList')).toContainText(row.tradeName);
   await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
   await expect.poll(()=>page.evaluate(async()=>{const c=await caches.open('medindex-private-device-v1');return(await c.keys()).some(k=>k.url.includes('view=registry-page'));}),{timeout:10000}).toBe(true);
-  await expect.poll(()=>page.evaluate(async()=>{const cache=await caches.open('medindex-static-device-v1');return !!await cache.match(location.origin+'/sidebar-taxonomy-core-v3.js?v=sidebar-taxonomy-v6-mobile-app-20260930');}),{timeout:10000}).toBe(true).catch(async error=>{console.log(JSON.stringify(await page.evaluate(async()=>await Promise.all((await caches.keys()).map(async name=>({name,keys:(await(await caches.open(name)).keys()).map(k=>k.url)})))),null,2));throw error;});
+  await expect.poll(()=>page.evaluate(async()=>{const cache=await caches.open('medindex-static-device-v1');return !!await cache.match(location.origin+'/sidebar-taxonomy-core-v3.js?v=sidebar-taxonomy-v7-focus-20261009');}),{timeout:10000}).toBe(true).catch(async error=>{console.log(JSON.stringify(await page.evaluate(async()=>await Promise.all((await caches.keys()).map(async name=>({name,keys:(await(await caches.open(name)).keys()).map(k=>k.url)})))),null,2));throw error;});
   const query=await page.evaluate(async()=>{const c=await caches.open('medindex-private-device-v1');return(await c.keys()).find(k=>k.url.includes('view=registry-page')).url;});
   const registryReads=()=>[...reads].filter(([key])=>key.startsWith('/api/drug-search?')&&key.includes('view=registry-page')).reduce((sum,[,value])=>sum+value,0);
   const before=registryReads();
@@ -54,13 +54,13 @@ const server=http.createServer(async(req,res)=>{
 
   await page.locator('#refreshButton').click();
   await expect.poll(()=>registryReads()).toBeGreaterThan(before);
-  await page.locator('#registryRows [data-open-row]').first().click();
+  await page.locator('#registryList [data-open-row]').first().click();
   await expect(page.locator('#detailDrawer')).toHaveClass(/is-open/);
   await expect.poll(()=>page.evaluate(async()=>{const c=await caches.open('medindex-private-device-v1');return(await c.keys()).some(key=>key.url.includes('view=registry-detail'));})).toBe(true);
   await page.locator('#drawerClose').click();
   await expect(page.locator('#drxDeviceStatus')).toContainText('Ruajtur');
   networkAvailable=false;if(engine===chromium)await context.setOffline(true);await page.reload();
-  await expect(page.locator('#registryRows')).toContainText(row.tradeName).catch(async error=>{
+  await expect(page.locator('#registryList')).toContainText(row.tradeName).catch(async error=>{
    console.log('Offline startup diagnostics',JSON.stringify({errors,reads:[...reads],page:await page.evaluate(async()=>({
     scripts:[...document.scripts].map(script=>script.src),body:document.body.innerText.slice(0,1600),
     caches:await Promise.all((await caches.keys()).map(async name=>{const cache=await caches.open(name);return{name,entries:await Promise.all((await cache.keys()).map(async key=>{const response=await cache.match(key);return{url:key.url,bytes:(await response.text()).length};}))};}))
@@ -70,7 +70,7 @@ const server=http.createServer(async(req,res)=>{
   await expect(page.locator('#syncText')).toContainText('Kopje lokale');
   const detail=await page.evaluate(async id=>{const r=await fetch('/api/drug-search?view=registry-detail&id='+id);return{status:r.status,cache:r.headers.get('X-MedIndex-Cache'),row:(await r.json()).row};},row.id);
   assert.equal(detail.status,200);assert.equal(detail.row.id,row.id);assert.equal(detail.cache,'query-local-hit');
-  await page.locator('#registryRows [data-open-row]').first().click();await expect(page.locator('#detailDrawer')).toContainText(row.tradeName);await page.locator('#drawerClose').click();
+  await page.locator('#registryList [data-open-row]').first().click();await expect(page.locator('#detailDrawer')).toContainText(row.tradeName);await page.locator('#drawerClose').click();
   await page.locator('#drxDeviceStatus').click();await expect(page.locator('#drxDevicePanel')).toBeVisible();await page.keyboard.press('Escape');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   const savedResponse=await page.evaluate(async url=>(await fetch(url)).status,query);assert.equal(savedResponse,200);
@@ -79,7 +79,7 @@ const server=http.createServer(async(req,res)=>{
   networkAvailable=true;if(engine===chromium)await context.setOffline(false);authStatus=403;
   assert.equal(await page.evaluate(async()=> (await fetch('/api/auth')).status),403);
   assert.equal(await page.evaluate(async()=> (await(await caches.open('medindex-private-device-v1')).keys()).length),0,'revocation clears saved clinical reads');
-  authStatus=200;await page.reload();await expect(page.locator('#registryRows')).toContainText(row.tradeName);
+  authStatus=200;await page.reload();await expect(page.locator('#registryList')).toContainText(row.tradeName);
   // Explicit logout clears data and the offline session. Failed online auth is
   // never turned into an authenticated cached response.
   await page.evaluate(()=>fetch('/api/auth',{method:'DELETE'}));

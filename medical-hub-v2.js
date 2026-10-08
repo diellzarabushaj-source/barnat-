@@ -197,7 +197,7 @@
   }
 
   async function syncProfileChrome(payload) {
-    await loadRuntime('/medindex-brand-runtime.js?v=drx-brand-v7', 'data-drx-profile-runtime').catch(() => null);
+    await loadRuntime('/medindex-brand-runtime.js?v=drx-brand-v8-profileguard1', 'data-drx-profile-runtime').catch(() => null);
     window.MedIndexProfile?.adoptAccount?.(payload);
     window.dispatchEvent(new CustomEvent('medindex:auth-ready', { detail:payload }));
   }
@@ -623,11 +623,11 @@
       : '';
     const isVerified = clean(item?.reviewStatus).toLowerCase() === 'verified';
     return `
-      <aside class="ck-source-panel" aria-label="Burimi dhe verifikimi">
+      <details class="ck-source-disclosure"><summary>Burimi dhe botimi</summary><aside class="ck-source-panel" aria-label="Burimi dhe verifikimi">
         <div class="ck-source-publication">
           <span>Burimi i librit</span>
           <strong>${esc(meta.title)}</strong>
-          <small>${esc([meta.edition, sourceFile].filter(Boolean).join(' · '))}</small>
+          <small>${esc(meta.edition)}</small><details class="ck-technical-source"><summary>Detaje teknike</summary><small>${esc([sourceFile,item.version].filter(Boolean).join(' · '))}</small></details>
         </div>
         <div class="ck-source-verification">
           <span class="ck-review-badge ${review.className}"><span class="ck-review-dot" aria-hidden="true"></span><strong>${esc(review.label)}</strong></span>
@@ -635,7 +635,7 @@
           ${reviewedAt ? `<span class="ck-source-date">Rishikuar ${esc(reviewedAt)}</span>` : ''}
           ${sourceHref ? `<a href="${esc(sourceHref)}" target="_blank" rel="noopener noreferrer">Hap dokumentin burimor ↗</a>` : ''}
         </div>
-      </aside>
+      </aside></details>
       ${isVerified ? '' : `
         <aside class="ck-review-warning" role="note">
           <strong>Përmbajtje në proces editorial</strong>
@@ -1437,6 +1437,21 @@
 
   function bindDetailNavigation(detail) {
     bindFigureFallbacks(detail);
+    if (!bindDetailNavigation.printBound) {
+      bindDetailNavigation.printBound = true;
+      let closed = [];
+      window.addEventListener('beforeprint', () => {
+        closed = [...document.querySelectorAll('.ck-source-disclosure:not([open]),.ck-index-disclosure:not([open]),.ck-technical-source:not([open])')];
+        closed.forEach(node => { node.open = true; });
+      });
+      window.addEventListener('afterprint', () => { closed.forEach(node => { node.open = false; }); closed = []; });
+    }
+    detail.querySelectorAll('.ck-section-index').forEach(nav => {
+      const disclosure = document.createElement('details'); disclosure.className = 'ck-index-disclosure';
+      disclosure.open = !window.matchMedia('(max-width:760px)').matches;
+      const summary = document.createElement('summary'); summary.textContent = 'Në këtë mësim';
+      nav.before(disclosure); disclosure.append(summary,nav);
+    });
     bindRailsToggle();
     bindSectionFolding(detail);
     detail.querySelectorAll('[data-hub-section]').forEach(button => {
@@ -1504,7 +1519,7 @@
             ${chip(children.length === 1 ? '1 mësim' : `${children.length} mësime`)}
             ${icdLessons ? chip(`${icdLessons} me ICD‑10`, 'is-code-count') : ''}
             ${procedureLessons ? chip(`${procedureLessons} procedura`, 'is-procedure-count') : ''}
-            ${item.version ? chip(item.version) : ''}
+
           </div>
           ${item.summary ? `<div class="ck-quick-summary"><span>Përmbledhja e kapitullit</span><p>${esc(item.summary)}</p></div>` : ''}
         </header>
@@ -1626,7 +1641,7 @@
           <div class="ck-meta">
             ${(item.icdCodes || []).map(icdChip).join('')}
             ${procedures.map(procedureChip).join('')}
-            ${item.version ? chip(item.version) : ''}
+
             ${item.reviewedBy ? chip(item.reviewedBy) : ''}
           </div>
           ${item.summary ? `<div class="ck-quick-summary"><span>Në 20 sekonda</span><p>${esc(item.summary)}</p></div>` : ''}
@@ -1836,7 +1851,7 @@
           <div class="ck-meta">
             ${(item.icdCodes || []).map(icdChip).join('')}
             ${procedures.map(procedureChip).join('')}
-            ${item.version ? chip(item.version) : ''}
+
             ${item.reviewedBy ? chip(item.reviewedBy) : ''}
           </div>
           ${item.summary ? `<div class="ck-quick-summary"><span>Në 20 sekonda</span><p>${esc(item.summary)}</p></div>` : ''}

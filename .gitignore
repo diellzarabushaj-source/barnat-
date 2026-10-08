@@ -1,4 +1,5 @@
 node_modules/
+supabase/.temp/
 .vercel/
 .env
 .env.*
@@ -9,6 +10,7 @@ offline-runtime-performance.js
 sw-resilient-v3.js
 .superdesign/tmp/
 test-results/
+test-results-*/
 playwright-report/
 studio/dist/
 studio/.sanity/

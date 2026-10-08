@@ -80,10 +80,13 @@ jobs:
       - name: Verify runtime cache versions
         run: node scripts/sync-runtime-asset-manifest.js --check
 
+      - name: Verify builds leave tracked source unchanged
+        run: git diff --exit-code
+
       - name: Install browser engines
         run: pnpm exec playwright install --with-deps chromium webkit
 
-      - name: Verify P1 mobile, desktop and clinical workflows
+      - name: Verify P1 and P2 mobile, desktop and clinical workflows
         run: pnpm exec playwright test tests/audit-p1-browser.spec.js --config=playwright.registry-v2.config.js
 
       - name: Verify the Recetat V2 prescription workspace

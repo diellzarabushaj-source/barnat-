@@ -53,6 +53,8 @@ function filteredRows(url, dataset = rows) {
 }
 
 async function installApiMocks(page, dataset = rows) {
+  // Table scenarios explicitly opt in; first-visit phone defaults have separate coverage.
+  await page.addInitScript(() => { if (!localStorage.getItem("drx_registry_v2_row_view")) localStorage.setItem("drx_registry_v2_row_view","table"); });
   await page.route('**/api/auth**', async route => {
     if (new URL(route.request().url()).searchParams.get('scope') === 'ui-preferences') {
       return route.fulfill({ json:{ ok:true, registryColumns:visibleColumns } });
@@ -248,6 +250,7 @@ test('column text and numeric conditions combine with ATC and list cards stay pi
 
 for (const width of [320,390,760]) {
   test(`column filter menu fits ${width}px and restores keyboard focus`,async ({page}) => {
+    test.setTimeout(90_000); // Fifteen complete open/fetch/Escape cycles in both engines.
     await page.setViewportSize({width,height:844});
     await page.goto('/index.html');
     await expect(page.locator('#registryRows tr')).toHaveCount(2);
