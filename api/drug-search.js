@@ -334,7 +334,9 @@ async function sendColumnQuery(req, res, startedAt, facet = false) {
     return res.status(400).json({error:error.message});
   }
   const request = buildPageRequest(query);
-  const allRows = await ColumnData.snapshot(LIST_SELECT, listRow, query.refresh === 'true');
+  const allRows = facet
+    ? await ColumnData.facetSnapshot(LIST_SELECT,listRow,query.column,filters,query.refresh === 'true')
+    : await ColumnData.snapshot(LIST_SELECT, listRow, query.refresh === 'true');
   const rows = ColumnData.filterRows(allRows, {...request, columnFilters:filters}, FORM_CATEGORIES, facet ? query.column : '');
   setHeaders(res, startedAt, 'supabase-registry-columns');
   if (req.method === 'HEAD') return res.status(200).end();

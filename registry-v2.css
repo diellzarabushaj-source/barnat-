@@ -1484,3 +1484,39 @@ body{max-width:100%;overflow-x:hidden}
   .registry-table th[data-col="substance"],.registry-table td[data-col="substance"]{width:240px}
   .registry-table th[data-col="prescription"],.registry-table td[data-col="prescription"]{width:280px}
 }
+
+/* Audit P2: compact identities, explicit criteria and readable detail copy. */
+.registry-active-filters{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.registry-active-filters[hidden]{display:none}
+.registry-active-filters button{max-width:100%;min-height:36px;border:1px solid #c7d6e8;border-radius:8px;padding:6px 10px;background:#f3f7fc;color:#24476a;font:inherit;font-size:13px;text-align:left;overflow-wrap:anywhere}
+.registry-list-details{margin-top:8px}
+.registry-list-details>summary{cursor:pointer;color:#315b93;font-size:14px;min-height:44px;display:flex;align-items:center;gap:8px}
+.registry-list-details>summary::after{content:'+';margin-inline-start:auto}
+.registry-list-details[open]>summary::after{content:'−'}
+.toast button{min-height:44px;margin-left:12px;border:0;background:#eef4fb;color:#24476a;border-radius:6px;font:inherit;padding:8px 12px}
+.detail-hero p,.detail-grid dd,.clinical-copy,.dose-card p{font-size:14px;line-height:1.6;color:#34475c}
+.detail-section h4,.detail-section-head span{font-size:12px}
+@media(max-width:760px){
+ html[data-drx-app="registry-v2"] body .metrics-row{display:none}
+ .page-heading{margin-bottom:10px}
+ html[data-drx-app="registry-v2"] body .page-heading .page-subtitle{display:none}
+ html[data-drx-app="registry-v2"] .heading-actions{grid-template-columns:minmax(0,1fr)}
+ .registry-list-card{padding:12px 14px}
+ .registry-list-sub{font-size:14px;line-height:1.45;color:#465b72}
+ .registry-list-title .drug-name{font-size:16px;line-height:1.35}
+ .registry-list-tags{margin-top:8px;gap:6px}
+ .registry-list-details{margin-top:0}
+ .registry-row-actions .row-action,.registry-more-trigger{min-width:44px;min-height:44px}
+ .registry-active-filters button{min-height:44px}
+ .compact-select{padding:0 4px}
+ .compact-select select{width:60px;min-width:60px;min-height:44px;padding:0 20px 0 6px;font-size:14px}
+ .registry-note-undo{bottom:calc(76px + env(safe-area-inset-bottom))}
+ .detail-grid dd,.clinical-copy,.dose-card p,.detail-hero p{font-size:16px}
+ .heading-actions #openPrescriptionButton{display:none}
+ body.has-registry-selection .heading-actions #openPrescriptionButton{display:inline-flex;position:fixed;bottom:calc(76px + env(safe-area-inset-bottom));left:16px;right:16px;z-index:45;justify-content:center;min-height:48px;box-shadow:0 5px 20px #173c6426}
+ body.has-registry-selection .page-wrap{padding-bottom:160px}
+}
+.registry-note-undo{position:fixed;z-index:220;bottom:calc(20px + env(safe-area-inset-bottom));right:20px;display:grid;gap:8px;max-width:min(420px,calc(100vw - 32px))}
+.registry-note-undo>div{display:flex;align-items:center;gap:12px;background:#173653;color:#fff;border-radius:12px;padding:8px 16px;box-shadow:0 6px 24px #10243b24;font-size:14px}
+.registry-note-undo button{min-width:64px;min-height:44px;border:1px solid #fff8;border-radius:8px;background:transparent;color:#fff;font:inherit;cursor:pointer}
+.registry-note-undo button:focus-visible{outline:2px solid #fff;outline-offset:2px}

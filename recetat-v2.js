@@ -6727,6 +6727,14 @@
 
   const WORKSPACE_DRAFT_PREFIX = 'medindex_rx_workspace_v2:';
   const DRAFT_MAX_BYTES = 250000;
+  try {
+    const saved = JSON.parse(sessionStorage.getItem('drx_registry_return_v1') || 'null');
+    if (saved?.url?.startsWith('/index.html?') && !saved.url.includes('//')) {
+      document.querySelectorAll('a[href="/index.html"]').forEach(link => { link.href = saved.url; });
+    }
+  } catch {}
+
+
   function draftStatus(message) {
     const node = $('#rxDraftPersistence');
     if (node) node.textContent = message;

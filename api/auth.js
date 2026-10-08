@@ -14,6 +14,7 @@ const AdminUsers = require('../lib/admin-users.js');
 const AdminAccess = require('../lib/admin-access.js');
 const ProfessionalVerification = require('../lib/professional-verification.js');
 const Phase4AuthBootstrap = require('../lib/phase4-auth-bootstrap-route.js');
+const SharedBudget = require('../lib/shared-request-budget.js');
 
 const attempts = new Map();
 const WINDOW_MS = 15 * 60 * 1000;
@@ -413,6 +414,9 @@ module.exports = async function handler(req, res) {
 
   try {
     const body = await readBody(req);
+    const budgets = [['auth-ip',ip,60,900]];
+    if (body.email) budgets.push(['auth-email',String(body.email).trim().toLowerCase(),10,900]);
+    if (!await SharedBudget.enforce(res,budgets)) return;
     const suppliedCsrf = String(req.headers['x-csrf-token'] || body.csrfToken || '');
     if (!auth.verifyCsrfToken(req, suppliedCsrf)) {
       state.count += 1;

@@ -1,4 +1,5 @@
 const handler = require('../lib/gemini-prescription.js');
+const SharedBudget = require('../lib/shared-request-budget.js');
 
 const WINDOW_MS = 60 * 1000;
 const MAX_REQUESTS = 8;
@@ -64,6 +65,12 @@ module.exports = async function secureGeminiPrescription(req, res) {
     return res.status(413).json({ error:'Kërkesa është tepër e madhe.' });
   }
   if (!rateLimit(req, res)) return;
+  if (SharedBudget.enabled()) {
+    const auth = await import('../lib/auth.mjs');
+    const session = auth.sessionData(auth.sessionFromRequest(req));
+    if (!session) return res.status(401).json({error:'Kërkohet autentikim.'});
+    if (!await SharedBudget.enforce(res,[['ai-ip',clientKey(req),40,60],['ai-user',session.authUid || session.uid || session.sub,MAX_REQUESTS,60]])) return;
+  }
   return handler(req, res);
 };
 

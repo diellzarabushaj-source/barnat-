@@ -86,18 +86,12 @@
   const SEARCH_CACHE_TTL_MS = 30 * 1000;
   const DEFAULT_PAGE_SIZE = window.matchMedia?.('(max-width:760px)').matches ? 25 : 50;
 
-  // The table is the registry's default shape on every screen. A phone would
-  // read the list more comfortably, but switching the default there took the
-  // table off the page for anyone who never opens the toggle — and the mobile
-  // browser audits, which measure the table's own horizontal scroll and row
-  // count, are right to insist it is still there. The list stays one tap away,
-  // and once chosen it is remembered on that device.
   function storedRowView() {
     try {
       const value = localStorage.getItem(ROW_VIEW_STORAGE_KEY);
       if (ROW_VIEWS.includes(value)) return value;
     } catch {}
-    return 'table';
+    return window.matchMedia?.('(max-width:760px)').matches ? 'list' : 'table';
   }
 
   const SELECTION_STORAGE_KEY = 'drx_registry_v2_selection';
@@ -276,8 +270,10 @@
     for (const item of COLUMN_DEFS) {
       const visible = state.visibleColumns.has(item.id);
       document.querySelectorAll(`[data-col="${CSS.escape(item.id)}"]`).forEach(node => {
-        node.hidden = !visible;
-        node.setAttribute('aria-hidden', visible ? 'false' : 'true');
+        const identity = node.closest('.registry-list-head,.registry-list-tags') && ['substance','strength','form','population'].includes(item.id);
+        const shown = visible || Boolean(identity);
+        node.hidden = !shown;
+        node.setAttribute('aria-hidden', shown ? 'false' : 'true');
       });
     }
 
@@ -642,7 +638,7 @@
     const deleteButton = document.querySelector('#registryNoteDialog [data-note-delete]');
     deleteButton?.setAttribute('aria-busy','true');
     if (deleteButton) deleteButton.disabled = true;
-    try { await api.deleteNote('product', key); showToast('Shënimi u fshi.'); closeNoteDialog(); }
+    try { await deleteNoteWithUndo(api,key); closeNoteDialog(); }
     catch (error) { showToast(error?.message || 'Shënimi nuk u fshi.'); }
     finally { deleteButton?.removeAttribute('aria-busy'); if (deleteButton) deleteButton.disabled = false; }
   }
@@ -1144,11 +1140,13 @@
     updateSummary(durationMs);
     updateSortHeaders();
     updateFilterUi();
+    restoreRegistryPosition();
     if (!preserveScroll) el.tableScroll.scrollLeft = 0;
     void loadDosageForVisibleRows(requestId);
   }
 
   async function loadPage({ preserveScroll = false, preserveRows = false, forceRefresh = false } = {}) {
+    syncRegistryUrl();
     const requestId = ++state.requestId;
     state.pageController?.abort();
 
@@ -1416,15 +1414,16 @@
           <input class="row-check" type="checkbox" data-select-row="${escapeHtml(key)}" aria-label="Zgjidh ${escapeHtml(row.tradeName)}" ${selected ? 'checked' : ''}>
           <div class="registry-list-title">
             <strong class="drug-name">${escapeHtml(row.tradeName || 'Pa emër')}</strong>
-            <span class="registry-list-sub"><span data-col="substance" title="${escapeHtml(row.sourceActiveSubstance || row.activeSubstance)}">${escapeHtml(row.activeSubstance || '—')}</span><b data-col="strength">${escapeHtml(row.strength || '—')}</b></span>
+            <span class="registry-list-sub"><span data-col="substance" title="${escapeHtml(row.sourceActiveSubstance || row.activeSubstance)}">${escapeHtml(row.activeSubstance || '—')}</span><b data-col="strength">${escapeHtml(row.strength || '—')}</b><span data-col="form">${escapeHtml(row.form || '—')}</span></span>
           </div>
           <div class="registry-row-actions">
             <details class="registry-more" data-row-menu-key="${escapeHtml(key)}"><summary class="registry-more-trigger" aria-label="Veprime për ${escapeHtml(row.tradeName)}">${MORE_VERTICAL}</summary><div class="registry-more-menu" role="menu"><button type="button" role="menuitem" data-dose-calculator-open data-registry-number="${escapeHtml(number)}">${CALC_ICON}<span>Kalkulo</span></button><button type="button" role="menuitem" data-row-favorite="${escapeHtml(key)}" class="${favorite ? 'is-favorite' : ''}">${STAR_ICON}<span data-favorite-label>${favorite ? 'Hiq nga favoritët' : 'Shëno si favorit'}</span></button><button type="button" role="menuitem" data-row-note="${escapeHtml(key)}">${NOTE_ICON}<span>Shkruaj shënim</span></button></div></details>
             <button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">${CHEVRON_RIGHT}</button>
           </div>
         </div>
+        <div class="registry-list-tags"><span data-col="population">${populationBadge(row.approvedPopulation)}</span></div>
+        <details class="registry-list-details"><summary>Fushat e tjera</summary>
         <div class="registry-list-tags">
-          <span data-col="population">${populationBadge(row.approvedPopulation)}</span>
           <span data-col="updateStatus">${escapeHtml(row.updateStatus || '—')}</span>
           <span data-col="status">${statusBadge(row.productStatus)}</span>
           ${row.atc ? `<span data-col="atc"><span class="atc-chip">${escapeHtml(row.atc)}</span></span>` : ''}
@@ -1432,13 +1431,12 @@
           <span data-col="price" class="price">${euros(row.retailPrice)}</span>
         </div>
         <div class="registry-list-grid">
-          ${listField('form', 'Forma', escapeHtml(row.form || '—'))}
           ${listField('prescription', 'Si shënohet në recetë', escapeHtml(prescriptionNotationFor(row)))}
           ${listField('drugClass', 'Grupi / Klasa', escapeHtml(row.drugClass || '—'))}
           ${listField('use', 'Për çka përdoret', escapeHtml(row.use || '—'))}
           <div class="registry-list-field" data-col="adultDose"><span>Doza e të rriturit</span><div data-dose-adult="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></div></div>
           <div class="registry-list-field" data-col="pediatricDose"><span>Doza pediatrike</span><div data-dose-pediatric="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></div></div>
-        </div>
+        </div></details>
       </article>`;
     }).join('');
   }
@@ -1537,7 +1535,8 @@
     const last = state.rows.length ? first + state.rows.length - 1 : 0;
     const totalText = Number.isFinite(state.total) ? state.total.toLocaleString('sq-XK') : '—';
     el.resultSummary.textContent = state.rows.length ? `${state.atc ? `ATC ${state.atc} · ` : ''}${first.toLocaleString('sq-XK')}–${last.toLocaleString('sq-XK')} nga ${totalText} rezultate` : `${state.atc ? `ATC ${state.atc} · ` : ''}0 rezultate`;
-    el.requestTiming.textContent = `${durationMs} ms`;
+    el.requestTiming.textContent = '';
+    el.requestTiming.dataset.durationMs = String(durationMs);
     el.metricTotal.textContent = totalText;
     el.metricPage.textContent = String(state.page);
     el.metricPageSize.textContent = `${state.pageSize} për faqe`;
@@ -1664,6 +1663,7 @@
     atcPicker?.setValue(state.atc);
     columnFiltersUi?.update();
     syncFormPickerTrigger();
+    renderActiveFilters();
   }
 
   function updateSortHeaders() {
@@ -1671,6 +1671,7 @@
       const active = button.dataset.sort === state.sort;
       button.dataset.active = active ? 'true' : 'false';
       button.dataset.direction = active ? state.direction : '';
+      button.closest('th')?.setAttribute('aria-sort', active ? (state.direction === 'asc' ? 'ascending' : 'descending') : 'none');
     });
   }
 
@@ -1745,6 +1746,7 @@
     const count = state.selected.size;
     el.selectedCount.textContent = String(count);
     el.openPrescriptionButton.disabled = count === 0;
+    document.body.classList.toggle('has-registry-selection', count > 0);
   }
 
   function syncPageSelection() {
@@ -1756,6 +1758,7 @@
 
   function storePrescriptionSelection() {
     persistSelection();
+    try { sessionStorage.setItem('drx_registry_return_v1', JSON.stringify({url:location.pathname + location.search,key:[...state.selected.keys()][0],scroll:scrollY})); } catch {}
     location.href = '/recetat.html';
   }
 
@@ -1974,6 +1977,37 @@
       ${sources.length ? `<section class="detail-section"><h4>Burimet</h4>${sources.map(url => `<a class="source-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(url)}</a>`).join('')}</section>` : ''}`;
   }
 
+  const pendingNoteDeletes = new Set();
+  async function deleteNoteWithUndo(api,key) {
+    if (!api) throw new Error('Shënimet nuk u ngarkuan.');
+    if (pendingNoteDeletes.has(key)) return;
+    const owner = state.preferenceOwner;
+    const libraryOwner = clean(api.state()?.user?.id || api.state()?.user?.email);
+    const sameOwner = () => owner === state.preferenceOwner && libraryOwner === clean(api.state()?.user?.id || api.state()?.user?.email);
+    const previous = api.note('product',key);
+    pendingNoteDeletes.add(key);
+    try { await api.deleteNote('product',key); }
+    finally { pendingNoteDeletes.delete(key); }
+    if (!sameOwner()) return;
+    if (!previous) return;
+    let region = document.getElementById('registryNoteUndo');
+    if (!region) { region = document.createElement('div'); region.id = 'registryNoteUndo'; region.className = 'registry-note-undo'; region.setAttribute('aria-live','polite'); document.body.append(region); }
+    const message = document.createElement('div');
+    const copy = document.createElement('span'); copy.textContent = 'Shënimi u fshi. ';
+    const undo = document.createElement('button'); undo.type = 'button'; undo.textContent = 'Zhbëj';
+    message.append(copy,undo); region.append(message);
+    undo.addEventListener('click',async () => {
+      if (!sameOwner()) { message.remove(); return; }
+      undo.disabled = true;
+      try {
+        await api.load({force:true});
+        if (!sameOwner()) { message.remove(); return; }
+        if (api.note('product',key)) throw new Error('Shënimi ka ndryshuar; rikthimi nuk e mbishkruan.');
+        await api.saveNote('product',key,previous); message.remove(); showToast('Shënimi u rikthye.');
+      } catch(error) { undo.disabled = false; copy.textContent = error.message + ' '; }
+    });
+    setTimeout(() => { if (!message.contains(document.activeElement) && !undo.disabled) message.remove(); },15000);
+  }
   function showToast(message) {
     el.toast.textContent = message;
     el.toast.hidden = false;
@@ -2098,7 +2132,7 @@
       if (edit) { void editPersonalNote(edit.dataset.personalEditNote); return; }
       const removeNote = event.target.closest('[data-personal-delete-note]');
       if (removeNote) {
-        void loadPersonalLibrary().then(api => api?.deleteNote?.('product', removeNote.dataset.personalDeleteNote)).then(() => showToast('Shënimi u fshi.')).catch(error => showToast(error?.message || 'Shënimi nuk u fshi.'));
+        void loadPersonalLibrary().then(api => deleteNoteWithUndo(api,removeNote.dataset.personalDeleteNote)).catch(error => showToast(error?.message || 'Shënimi nuk u fshi.'));
       }
     });
     el.registryRows.addEventListener('toggle', event => {
@@ -2142,6 +2176,7 @@
       if (favorite) { event.stopPropagation(); closeRowMenus(); void toggleFavoriteRow(findRow(favorite.dataset.rowFavorite), favorite); return; }
       const note = event.target.closest('[data-row-note]');
       if (note) { event.stopPropagation(); closeRowMenus(); void openNoteDialog(findRow(note.dataset.rowNote), note); return; }
+      if (event.target.closest('.registry-list-details summary')) { event.stopPropagation(); return; }
       if (event.target.closest('.registry-more')) { event.stopPropagation(); return; }
       const checkbox = event.target.closest('[data-select-row]');
       if (checkbox) { event.stopPropagation(); const row = findRow(checkbox.dataset.selectRow); toggleSelection(row, checkbox.checked); return; }
@@ -2164,19 +2199,47 @@
     catch { state.columnFilters = {}; showToast('Filtrat e kolonave në këtë lidhje janë të pavlefshëm.'); }
   }
 
-  function syncColumnFilterUrl(push = false) {
+  function readRegistryUrl() {
+    const p = new URLSearchParams(location.search);
+    state.q = (p.get('q') || '').slice(0,200);
+    state.atc = window.DrxRegistryAtc.normalizeCode(p.get('atc'));
+    state.page = Math.max(1, Math.min(10000, parseInt(p.get('page'),10) || 1));
+    state.pageSize = [25,50,100,200].includes(Number(p.get('pageSize'))) ? Number(p.get('pageSize')) : DEFAULT_PAGE_SIZE;
+    state.sort = [...COLUMN_DEFS.map(c => c.id),'class'].includes(p.get('sort')) ? p.get('sort') : 'registry';
+    state.columnSort = p.get('columnSort') === '1';
+    state.direction = p.get('direction') === 'desc' ? 'desc' : 'asc';
+    state.formType = ['category','form'].includes(p.get('formType')) ? p.get('formType') : '';
+    state.formValue = state.formType ? (p.get('formValue') || '').slice(0,200) : '';
+    el.searchInput.value = state.q;
+  }
+  function syncRegistryUrl(push = false) {
     const url = new URL(location.href);
-    if (Object.keys(state.columnFilters).length) url.searchParams.set('columnFilters',JSON.stringify(state.columnFilters));
-    else url.searchParams.delete('columnFilters');
-    url.searchParams.delete('page');
+    const values = {q:state.q,atc:state.atc,page:state.page > 1 ? state.page : '',pageSize:state.pageSize,sort:state.sort === 'registry' ? '' : state.sort,direction:state.direction === 'desc' ? 'desc' : '',columnSort:state.columnSort ? '1' : '',formType:state.formType,formValue:state.formValue,columnFilters:Object.keys(state.columnFilters).length ? JSON.stringify(state.columnFilters) : ''};
+    for (const [key,value] of Object.entries(values)) { if (value !== '') url.searchParams.set(key,String(value)); else url.searchParams.delete(key); }
     history[push ? 'pushState' : 'replaceState'](history.state,'',url.pathname + url.search + url.hash);
   }
-
-  function syncAtcUrl({ push = false } = {}) {
-    const url = new URL(location.href);
-    if (state.atc) url.searchParams.set('atc', state.atc); else url.searchParams.delete('atc');
-    url.searchParams.delete('page');
-    history[push ? 'pushState' : 'replaceState'](history.state, '', url.pathname + url.search + url.hash);
+  function syncColumnFilterUrl(push = false) { syncRegistryUrl(push); }
+  function syncAtcUrl({push = false} = {}) { syncRegistryUrl(push); }
+  function restoreRegistryPosition() {
+    let saved; try { saved = JSON.parse(sessionStorage.getItem('drx_registry_return_v1') || 'null'); } catch {}
+    if (!saved || saved.url !== location.pathname + location.search) return;
+    sessionStorage.removeItem('drx_registry_return_v1');
+    requestAnimationFrame(() => { window.scrollTo(0, Math.max(0,Number(saved.scroll)||0)); document.querySelector(`[data-row-id="${CSS.escape(saved.key || '')}"]`)?.focus({preventScroll:true}); });
+  }
+  function renderActiveFilters() {
+    const root = document.getElementById('registryActiveFilters'); if (!root) return;
+    const items = [];
+    if (state.q) items.push(['query',`Kërkimi: ${state.q}`]);
+    if (state.atc) items.push(['atc-scope',`ATC: ${state.atc}`]);
+    if (state.formValue) items.push(['form-scope',`Forma: ${state.formValue}`]);
+    for (const [id,f] of Object.entries(state.columnFilters)) {
+      const label = COLUMN_DEFS.find(c => c.id === id)?.label || id;
+      const values = f.values?.map(v => window.DrxRegistryColumns.label(id,v)) || [];
+      const description = values.length ? `${f.mode === 'exclude' ? 'Përjashto: ' : ''}${values.slice(0,2).join(', ')}${values.length > 2 ? ` +${values.length-2}` : ''}` : f.values ? (f.mode === 'exclude' ? 'Të gjitha vlerat' : 'Asnjë vlerë') : `${({contains:'përmban',notContains:'nuk përmban',equals:'është',notEquals:'nuk është',startsWith:'fillon me',endsWith:'mbaron me',empty:'bosh',notEmpty:'jo bosh',gt:'>',gte:'≥',lt:'<',lte:'≤',between:'mes'})[f.op] || ''} ${f.text || ''}${f.text2 ? ' – '+f.text2 : ''}`;
+      items.push(['column:'+id,`${label}: ${description}`]);
+    }
+    root.hidden = !items.length;
+    root.innerHTML = items.map(([id,label]) => `<button type="button" data-remove-filter="${escapeHtml(id)}" aria-label="Hiq filtrin ${escapeHtml(label)}">${escapeHtml(label)} <span aria-hidden="true">×</span></button>`).join('');
   }
 
   function selectAtcFilter(code) {
@@ -2210,7 +2273,7 @@
 async function init() {
   void refreshRegistryServiceWorker();
     loadSharedSidebarTaxonomy();
-    state.atc = window.DrxRegistryAtc.normalizeCode(new URLSearchParams(location.search).get('atc'));
+    readRegistryUrl();
     readColumnFilterUrl();
     columnFiltersUi = window.DrxColumnFilter.create({
       columns:COLUMN_DEFS,
@@ -2239,12 +2302,19 @@ async function init() {
       onOpen:() => { columnFiltersUi?.close(false); closeFormPicker(); closeColumnPicker(); },
     });
     window.addEventListener('popstate', () => {
-      state.atc = window.DrxRegistryAtc.normalizeCode(new URLSearchParams(location.search).get('atc'));
+      readRegistryUrl();
       readColumnFilterUrl();
       columnFiltersUi?.close(false);
-      state.page = 1;
       atcPicker?.close();
       loadPage();
+    });
+    document.getElementById('registryActiveFilters')?.addEventListener('click',event => {
+      const id = event.target.closest('[data-remove-filter]')?.dataset.removeFilter; if (!id) return;
+      if (id === 'query') { state.q = ''; el.searchInput.value = ''; }
+      else if (id === 'atc-scope') state.atc = '';
+      else if (id === 'form-scope') { state.formType = ''; state.formValue = ''; }
+      else if (id.startsWith('column:')) delete state.columnFilters[id.slice(7)];
+      state.page = 1; syncRegistryUrl(true); void loadPage();
     });
     bindEvents();
     applyRegistryView();

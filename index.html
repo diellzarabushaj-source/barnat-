@@ -8,7 +8,7 @@
   <title>DRx | Regjistri i barnave</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-p1-20261008">
+  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-p2-20261008">
   <link rel="stylesheet" href="/registry-atc-filter.css?v=20261006">
   <link rel="stylesheet" href="/registry-column-filter.css?v=20261006">
   <link rel="stylesheet" href="/registry-v2-dose-calculator.css?v=registry-v2-dose-calculator-p1-20261008">
@@ -23,7 +23,7 @@
   <script src="/registry-substance-normalization.js?v=20261006" defer></script>
   <script src="/registry-column-model.js?v=20261006-substances" defer></script>
   <script src="/registry-column-filter.js?v=20261006" defer></script>
-<script src="/registry-v2.js?v=registry-v2-p1-20261008&amp;registryUpdates=20261005" defer></script>
+<script src="/registry-v2.js?v=registry-v2-p2-20261008&amp;registryUpdates=20261005" defer></script>
   <script src="/registry-v2-dose-calculator.js?v=registry-v2-dose-calculator-p1-20261008" defer></script>
 </head>
 <body>
@@ -191,13 +191,13 @@
 
           <div class="filter-panel" id="filterPanel" hidden>
             <div class="filter-field column-filter-field">
-              <span class="filter-field-label">Kolonat</span>
+              <span class="filter-field-label">Fushat e dukshme</span>
               <div class="column-picker" id="columnPicker">
                 <button class="column-picker-trigger" id="columnPickerButton" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="columnPickerPanel">
                   <span class="column-picker-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 12h16M4 19h16"/><path d="M8 3v18M16 3v18"/></svg>
                   </span>
-                  <span class="column-picker-copy"><strong>Kolonat</strong><small id="columnPickerSummary">Duke ngarkuar…</small></span>
+                  <span class="column-picker-copy"><strong>Kolonat e dukshme</strong><small id="columnPickerSummary">Duke ngarkuar…</small></span>
                   <span class="column-picker-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m7 10 5 5 5-5"/></svg></span>
                 </button>
                 <div class="column-picker-panel" id="columnPickerPanel" role="dialog" aria-label="Zgjidh kolonat e tabelës" hidden>
@@ -260,6 +260,7 @@
             <button class="button button-ghost filter-clear" id="clearFiltersButton" type="button">Pastro filtrat</button>
           </div>
 
+          <div id="registryActiveFilters" class="registry-active-filters" aria-label="Filtrat aktivë" hidden></div>
           <div class="table-status" id="tableStatus" role="status" aria-live="polite">
             <span id="resultSummary">Duke ngarkuar regjistrin…</span>
             <span id="requestTiming"></span>

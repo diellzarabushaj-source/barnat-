@@ -8,7 +8,7 @@ on:
       - .github/workflows/add-pediatric-core-reference.yml
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   patch:
@@ -20,14 +20,5 @@ jobs:
         run: python scripts/add-pediatric-core-reference.py
       - name: Verify Dozologjia
         run: node tests/dozologjia-v2-workspace-test.js
-      - name: Commit change
-        run: |
-          if git diff --quiet -- dozologjia.html; then
-            echo "No change needed"
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add dozologjia.html
-          git commit -m "feat: add verified pediatric core substance dosing reference"
-          git push origin HEAD:main
+      - name: Require an explicit reviewed source change
+        run: git diff --exit-code -- dozologjia.html

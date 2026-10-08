@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'drx-brand-v7';
+  const VERSION = 'drx-brand-v8-profileguard1';
   const PROFILE_VERSION = 'profile-portal-v2';
   // Legacy per-device photos are retained only as a one-time migration source.
   // The canonical photo lives behind the authenticated same-origin profile API.
@@ -28,6 +28,17 @@
   let faviconsInstalled = false;
 
   const clean = (value, max = 120) => String(value ?? '').replace(/\s+/g, ' ').trim().slice(0, max);
+  const PROFILE_PHOTO_URL_GUARD = 'profile-photo-url-guard-v1';
+  function safeProfilePhotoUrl(value) {
+    const raw = String(value ?? '').trim();
+    if (!raw || /^(?:undefined|null|false|nan)$/i.test(raw)) return '';
+    if (/^data:image\/(?:png|jpe?g|webp);base64,/i.test(raw)) return raw;
+    try {
+      const parsed = new URL(raw, location.origin);
+      if (parsed.origin === location.origin || parsed.protocol === 'https:') return parsed.href;
+    } catch {}
+    return '';
+  }
   const initials = name => {
     const parts = clean(name, 80).split(' ').filter(Boolean);
     return (parts.length > 1 ? `${parts[0][0]}${parts.at(-1)[0]}` : parts[0]?.slice(0, 2) || 'DR').toUpperCase();
@@ -117,9 +128,10 @@
     try {
       const meta = await profileApi(`${PROFILE_API}?meta=1`);
       if (!account || accountKey(account) !== owner) return;
-      if (meta.exists && meta.url) {
+      const remotePhoto = safeProfilePhotoUrl(meta?.url);
+      if (meta.exists && remotePhoto) {
         clearLocalPhoto();
-        profile = { ...profile, photo:String(meta.url) };
+        profile = { ...profile, photo:remotePhoto };
         applyProfile();
         return;
       }
@@ -130,7 +142,7 @@
         });
         if (!account || accountKey(account) !== owner) return;
         clearLocalPhoto();
-        profile = { ...profile, photo:String(saved.url || '') };
+        profile = { ...profile, photo:safeProfilePhotoUrl(saved?.url) };
         applyProfile();
       } else if (!local) {
         profile = { ...profile, photo:'' };
@@ -149,7 +161,7 @@
       body:JSON.stringify({ dataUrl:safe }),
     });
     clearLocalPhoto();
-    profile = { ...profile, photo:String(saved.url || '') };
+    profile = { ...profile, photo:safeProfilePhotoUrl(saved?.url) };
     applyProfile();
   }
 
@@ -231,9 +243,10 @@
 
   function setAvatar(node) {
     if (!node) return;
-    node.dataset.hasPhoto = String(Boolean(profile.photo));
-    node.style.backgroundImage = profile.photo ? `url("${profile.photo}")` : '';
-    node.textContent = profile.photo ? '' : initials(profile.name);
+    const photo = safeProfilePhotoUrl(profile.photo);
+    node.dataset.hasPhoto = String(Boolean(photo));
+    node.style.backgroundImage = photo ? `url("${photo}")` : '';
+    node.textContent = photo ? '' : initials(profile.name);
   }
 
   function applyProfile() {

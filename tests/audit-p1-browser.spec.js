@@ -26,7 +26,9 @@ async function api(page, identity = {id:'doctor-a',email:'a@example.test'}) {
   await page.route('**/api/**',async route => {
     const url = new URL(route.request().url());
     let payload = {ok:true,items:[],adult:[],pediatric:[],cards:[],forms:[]};
-    if (url.pathname === '/api/auth') payload = {authenticated:true,user:{...identity,name:'Test Doctor'}};
+    if (url.pathname === '/api/auth') payload = url.searchParams.get('scope') === 'ui-preferences'
+      ? {ok:true,userId:identity.id,registryColumns:Object.keys(require('../registry-column-model.js').fields)}
+      : {authenticated:true,user:{...identity,name:'Test Doctor'}};
     if (url.pathname === '/api/user-library') payload = {ok:true,user:identity,prescriptions:[],favorites:[],drugs:[],notes:{},tombstones:{prescriptions:[],favorites:[],drugs:[]}};
     if (url.pathname === '/api/drug-search') {
       if (url.searchParams.get('view') === 'registry-detail') payload = {ok:true,row:drugs.find(drug => drug.id === url.searchParams.get('id'))};
@@ -195,4 +197,121 @@ test('Prescription regimen chooser owns keyboard focus without applying a dose',
   await expect(page.locator('#rxDosageChooser')).toBeHidden();
   await expect(page.locator('.rx-order-card')).toHaveCount(0);
   await expect(page.locator('#rxAddDrugButton')).toBeFocused();
+});
+
+// P2 regressions: first-visit phone layout, reversible filters and note recovery.
+for (const width of [390,1440]) test(`Registry first visit and explicit preference at ${width}px`,async ({page}) => {
+  await page.setViewportSize({width,height:844}); await api(page);
+  await page.goto(`${baseURL}/index.html`);
+  await expect(page.locator('[data-open-row]')).toHaveCount(2);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  if (width === 390) {
+    const cards=page.locator('.registry-list-card'); await expect(cards).toHaveCount(2);
+    for (const field of ['substance','strength','form','population']) await expect(cards.first().locator(`[data-col="${field}"]`)).toBeVisible();
+    expect((await cards.nth(1).locator('.drug-name').boundingBox()).y).toBeLessThan(844);
+    await expect(page.locator('.metrics-row')).toBeHidden();
+    await page.screenshot({path:`../../outputs/p2-registry-${width}.png`,fullPage:false});
+    await expect(cards.first().locator('.registry-list-details')).not.toHaveAttribute('open','');
+    await cards.first().locator('.registry-list-details summary').click();
+    await expect(page.locator('#detailDrawer')).toHaveAttribute('aria-hidden','true');
+    await expect(cards.first().locator('[data-col="adultDose"]')).toBeVisible();
+    await page.locator('[data-view="table"]').click();
+    await page.reload(); await expect(page.locator('#registryRows tr')).toHaveCount(2);
+  } else {
+    await expect(page.locator('#registryRows tr')).toHaveCount(2);
+    await page.locator('[data-sort="name"]').click();
+    await expect(page.locator('th[data-col="name"]')).toHaveAttribute('aria-sort','ascending');
+    await page.locator('[data-sort="name"]').click();
+    await expect(page.locator('th[data-col="name"]')).toHaveAttribute('aria-sort','descending');
+  }
+  if (width === 1440) await page.screenshot({path:`../../outputs/p2-registry-${width}.png`,fullPage:false});
+});
+
+test('URL restores page, form, sort and filters; removing a column preserves other criteria',async ({page}) => {
+  await api(page);
+  const seen=[];
+  await page.route('**/api/drug-search**',async route => {
+    const u=new URL(route.request().url()); if (u.searchParams.get('view') !== 'registry-page') return route.fallback();
+    seen.push(Object.fromEntries(u.searchParams));
+    const number=Number(u.searchParams.get('page') || 1),size=Number(u.searchParams.get('pageSize') || 50);
+    await route.fulfill({json:{ok:true,rows:drugs,pagination:{page:number,pageSize:size,total:100,totalPages:4,hasNext:number<4},query:{}}});
+  });
+  const params=new URLSearchParams({q:'amox',page:'2',pageSize:'25',sort:'name',columnSort:'1',direction:'desc',formType:'form',formValue:'Kapsulë',atc:'J01',columnFilters:JSON.stringify({form:{mode:'include',values:['Kapsulë']},price:{op:'between',text:'2',text2:'8'}})});
+  await page.goto(`${baseURL}/index.html?${params}`);
+  await expect(page.locator('#registryActiveFilters')).toContainText('Çmimi: mes 2 – 8');
+  await expect(page.locator('#searchInput')).toHaveValue('amox');
+  await page.locator('[data-remove-filter="column:form"]').click();
+  await expect(page.locator('[data-remove-filter="form-scope"]')).toBeVisible();
+  const saved=page.url(); await page.reload(); await expect(page.locator('#registryRows tr')).toHaveCount(2);
+  expect(new URL(page.url()).searchParams.get('formValue')).toBe('Kapsulë');
+  expect(seen.at(-1).formExact).toBe('Kapsulë'); expect(seen.at(-1).sort).toBe('name'); expect(seen.at(-1).direction).toBe('desc');
+  await page.locator('[data-select-row]').first().check();
+  await page.locator('#openPrescriptionButton').click();
+  await expect(page).toHaveURL(/recetat\.html/);
+  const back=page.locator(`a[href="${new URL(saved).pathname + new URL(saved).search}"]`).first();
+  await expect(back).toHaveCount(1); await back.click();
+  await expect(page.locator('#searchInput')).toHaveValue('amox');
+  expect(new URL(page.url()).searchParams.get('formValue')).toBe('Kapsulë');
+});
+
+for (const mode of ['restore','conflict','failure','account change']) test(`Note delete and undo: ${mode}`,async ({page}) => {
+  await api(page);
+  const original='  Shënim i saktë\nMe rresht të dytë dhe ë.  ';
+  let content=original; const writes=[]; let switched=false;
+  await page.route('**/api/user-library**',async route => {
+    const body=route.request().postDataJSON();
+    if (body?.tombstones?.entityNotes?.length) {
+      if (mode === 'failure') return route.fulfill({status:503,json:{error:'Ruajtja dështoi'}});
+      content='';
+    }
+    if (body?.entityNotes?.length) { content=body.entityNotes[0].content; writes.push(content); }
+    await route.fulfill({json:{ok:true,user:switched ? {id:'doctor-b',email:'b@example.test'} : {id:'doctor-a',email:'a@example.test'},favorites:[],entityNotes:content ? [{entityType:'product',entityKey:drugs[0].id,content}] : [],prescriptions:[],drugs:[],notes:{}}});
+  });
+  await page.goto(`${baseURL}/index.html`);
+  await page.locator(`[data-row-menu-key="${drugs[0].id}"] summary`).click();
+  await page.locator(`[data-row-note="${drugs[0].id}"]`).click();
+  await expect(page.locator('#registryNoteText')).toHaveValue(original);
+  await page.locator('[data-note-delete]').click();
+  if (mode === 'failure') {
+    await expect(page.locator('#registryNoteText')).toHaveValue(original);
+    await expect(page.locator('#registryNoteUndo')).toHaveCount(0); expect(content).toBe(original); return;
+  }
+  await expect(page.locator('#registryNoteUndo button')).toBeVisible();
+  if (mode === 'conflict') content='Shënimi nga një pajisje tjetër';
+  if (mode === 'account change') switched=true;
+  await page.locator('#registryNoteUndo button').click();
+  if (mode === 'conflict') {
+    await expect(page.locator('#registryNoteUndo')).toContainText('nuk e mbishkruan'); expect(writes).toEqual([]);
+  } else if (mode === 'account change') {
+    await expect(page.locator('#registryNoteUndo button')).toHaveCount(0); expect(writes).toEqual([]);
+  } else { await expect(page.locator('#toast')).toContainText('u rikthye'); expect(content).toBe(original); expect(writes).toEqual([original]); }
+});
+
+for (const width of [390,1440]) test(`Medical Hub source details, review and print stay accessible at ${width}px`,async ({page}) => {
+  const {medicalHubFixtureResponse}=require('./medical-hub-browser-fixture.js');
+  await api(page); await page.setViewportSize({width,height:844});
+  await page.route('**/api/medical-hub**',route => {
+    const response=medicalHubFixtureResponse(new URL(route.request().url()));
+    if (response.payload.item) {
+      const text=value=>({_type:'block',style:'normal',children:[{_type:'span',text:value,marks:[]}]});
+      const cell=(value,columnIndex,extra={})=>({_type:'medicalTableCell',columnIndex,content:[text(value)],...extra});
+      const table={_type:'medicalTable',title:'Tabelë provuese',columns:['Kolona e parë','Kolona e dytë','Kolona e tretë'],rows:[{richCells:[cell('Përmbajtja e parë e gjatë për të provuar tabelën',0),cell('Qelizë e bashkuar',1,{rowSpan:2}),cell('Përmbajtja e tretë e gjatë',2)]},{richCells:[cell('Rreshti tjetër',0),cell('Vlera tjetër',2)]}]};
+      Object.assign(response.payload.item,{_type:'medicalTopic',version:'source-faithful-google-doc-test',sections:[{_key:'reading',title:'Përmbajtja provuese',sectionType:'general',content:[table]},{_key:'rx',title:'Rx provuese',sectionType:'prescription',content:[text('1. Hapi provues'),text('OSE alternativa provuese'),table,text('2. Hapi tjetër provues')]}]});
+    }
+    return route.fulfill({status:response.status,json:response.payload});
+  });
+  await page.goto(`${baseURL}/medical-hub.html`);
+  const source=page.locator('.ck-source-disclosure').first(); await expect(source).toBeVisible();
+  await expect(source).not.toHaveAttribute('open','');
+  await expect(page.locator('.ck-detail-head .ck-review-badge').first()).toBeVisible();
+  await source.locator('summary').first().click(); await expect(source.locator('.ck-source-publication')).toContainText('Doctor on Duty');
+  await source.locator('summary').first().click();
+  await page.evaluate(()=>window.dispatchEvent(new Event('beforeprint'))); await expect(source).toHaveAttribute('open','');
+  await page.evaluate(()=>window.dispatchEvent(new Event('afterprint'))); await expect(source).not.toHaveAttribute('open','');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await expect(page.locator('.ck-medical-table')).toHaveCount(2);
+  await expect(page.locator('.ck-medical-table [rowspan="2"]')).toHaveCount(2);
+  await expect(page.locator('.is-source-rx-section')).toContainText('OSE alternativa provuese');
+  expect(await page.locator('.ck-medical-table-wrap').evaluateAll(nodes=>nodes.every(node=>getComputedStyle(node).overflowX==='auto' && node.getBoundingClientRect().width<=innerWidth))).toBe(true);
+  await page.screenshot({path:`../../outputs/p2-medical-hub-${width}.png`,fullPage:false});
 });

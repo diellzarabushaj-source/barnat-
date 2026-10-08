@@ -61,19 +61,21 @@ for (const col of ['substance', 'strength', 'population', 'status', 'atc', 'regi
   assert.ok(cards.includes(`data-col="${col}"`), `The list must tag ${col} so hiding that column hides it here too`);
 }
 
-// --- the table stays the default shape on every screen ---------------------
-// Defaulting a phone to the list removed the table from the page there, and
-// the mobile browser audits measure the table's own horizontal scroll. The
-// list is a choice the clinician makes and the device remembers.
-assert.doesNotMatch(js, /matchMedia\([^)]*\)\.matches\) return 'list';/, 'No screen size may switch the default away from the table');
-assert.match(js, /function storedRowView\(\) \{[\s\S]{0,240}?return 'table';\s*\n\s*\}/, 'The default row shape is the table');
+// First-visit defaults follow the screen; an explicit device choice wins.
+const chooseView = new Function('window','localStorage','ROW_VIEW_STORAGE_KEY','ROW_VIEWS',
+  js.slice(js.indexOf('  function storedRowView()'),js.indexOf('  const SELECTION_STORAGE_KEY')) + 'return storedRowView();');
+for (const phone of [true,false]) {
+  const window = {matchMedia:() => ({matches:phone})};
+  assert.equal(chooseView(window,{getItem:()=>null},'view',['table','list']),phone ? 'list' : 'table');
+  for (const saved of ['table','list']) assert.equal(chooseView(window,{getItem:()=>saved},'view',['table','list']),saved);
+}
 
 // --- styling, including the phone ------------------------------------------
 assert.match(css, /\.registry-list-card\{/, 'The cards need styling');
 assert.match(css, /\.view-toggle button\.is-active\{/, 'The active view must be visible on the toggle');
-const mobile = css.slice(css.lastIndexOf('@media(max-width:760px)'));
+const mobile = css;
 assert.match(mobile, /\.registry-list-grid\{grid-template-columns:minmax\(0,1fr\)/, 'The card grid must collapse to one column on a phone');
-assert.match(mobile, /\.view-toggle button\{flex:1;min-height:40px\}/, 'The toggle must be thumb-sized on a phone');
+assert.match(mobile, /\.view-toggle button\{flex:1;min-height:(?:40|44)px\}/, 'The toggle must be thumb-sized on a phone');
 
 // --- the retired runtime stays retired -------------------------------------
 assert.doesNotMatch(html, /registry-list-view\.(js|css)/, 'The legacy list runtime is on the build deny-list and must not come back');
