@@ -1486,7 +1486,7 @@ body{max-width:100%;overflow-x:hidden}
 }
 
 /* Audit P2: compact identities, explicit criteria and readable detail copy. */
-html[data-drx-app="registry-v2"] body .crumb-sep{color:#53677b!important}
+html[data-drx-app="registry-v2"] body .crumb-sep{color:#53677b}
 .registry-active-filters{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line)}
 .registry-active-filters[hidden]{display:none}
 .registry-active-filters button{max-width:100%;min-height:36px;border:1px solid #c7d6e8;border-radius:8px;padding:6px 10px;background:#f3f7fc;color:#24476a;font:inherit;font-size:13px;text-align:left;overflow-wrap:anywhere}

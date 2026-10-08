@@ -64,7 +64,7 @@ assert(stylesheetLinks.length === registryStyles.length, `Registry v2 stylesheet
 assert(scriptSources.length === registryScripts.length, `Registry v2 script inventory differs; found ${scriptSources.length}.`);
 registryStyles.forEach((asset,index) => assert(stylesheetLinks[index].split('?')[0] === asset, `Registry stylesheet order differs at ${asset}.`));
 registryScripts.forEach((asset,index) => assert(scriptSources[index].split('?')[0] === asset, `Registry script order differs at ${asset}.`));
-assert(stylesheetLinks.at(-1) === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930', 'Shared Stripe shell v8 must load last.');
+assert(stylesheetLinks.at(-1) === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-p2', 'Shared Stripe shell v8 must load last.');
 assert(scriptSources[3] === '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v7-focus-20261009', 'Shared sidebar taxonomy must load before registry filters.');
 
 for (const asset of legacyAssets) {
@@ -171,7 +171,7 @@ console.log(JSON.stringify({
   architecture:'registry-v2',
   stylesheets:stylesheetLinks,
   scripts:scriptSources,
-  shellVersion:'drx-dashboard-stripe-v8-mobile-finish-20260930',
+  shellVersion:'drx-dashboard-stripe-v8-mobile-finish-20260930-p2',
   tableHeaderCount,
   columnPickerStability:'registry-column-picker-stability-v2',
   dosageAutoload:'registry-dose-autoload-retry-v2',
