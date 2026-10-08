@@ -46,7 +46,7 @@
   }
 
   async function syncProfile(payload) {
-    await loadRuntime('/medindex-brand-runtime.js?v=drx-brand-v7', 'data-drx-profile-runtime').catch(() => null);
+    await loadRuntime('/medindex-brand-runtime.js?v=drx-brand-v8-profileguard1', 'data-drx-profile-runtime').catch(() => null);
     window.MedIndexProfile?.adoptAccount?.(payload);
     window.dispatchEvent(new CustomEvent('medindex:auth-ready', { detail:payload }));
   }
@@ -2524,13 +2524,13 @@
   const SAVED_KEY = 'regjistriBarnave_protokollet_v1';
   const { CATEGORIES, CATEGORY_ORDER, ROUTE_LABELS } = Administration;
   const SVG = Object.freeze({
-    enteral:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v4a4 4 0 0 1-4 4H9v4a4 4 0 0 0 4 4h3"/><path d="M8 7h8M7 3h10"/></svg>',
-    parenteral:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 4.5 5 5M13 6l5 5M4 20l5.5-5.5m0 0 5-5 2 2-5 5m-2-2 2 2M3 21l3-1-2-2-1 3Z"/><path d="m16.5 2.5 5 5"/></svg>',
-    topical:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17c4-2 6-6 8-12 3 2 6 5 8 9-2 4-5 6-9 6-3 0-5-1-7-3Z"/><path d="M7 16c3 0 6-2 8-6"/></svg>',
-    inhalation:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4v7c0 3-2 5-5 5M16 4v7c0 3 2 5 5 5"/><path d="M8 9c2-2 3-3 4-3s2 1 4 3M12 6v14"/></svg>',
-    child:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M8 8H6a3 3 0 0 0-3 3v1m13-4h2a3 3 0 0 1 3 3v1M7 14c.8 4 2.5 6 5 6s4.2-2 5-6M9 12h6"/></svg>',
-    shield:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>',
-    info:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg>',
+    enteral:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M8 3h8v4a4 4 0 0 1-4 4H9v4a4 4 0 0 0 4 4h3"/><path d="M8 7h8M7 3h10"/></svg>',
+    parenteral:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="m14.5 4.5 5 5M13 6l5 5M4 20l5.5-5.5m0 0 5-5 2 2-5 5m-2-2 2 2M3 21l3-1-2-2-1 3Z"/><path d="m16.5 2.5 5 5"/></svg>',
+    topical:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M4 17c4-2 6-6 8-12 3 2 6 5 8 9-2 4-5 6-9 6-3 0-5-1-7-3Z"/><path d="M7 16c3 0 6-2 8-6"/></svg>',
+    inhalation:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M8 4v7c0 3-2 5-5 5M16 4v7c0 3 2 5 5 5"/><path d="M8 9c2-2 3-3 4-3s2 1 4 3M12 6v14"/></svg>',
+    child:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M8 8H6a3 3 0 0 0-3 3v1m13-4h2a3 3 0 0 1 3 3v1M7 14c.8 4 2.5 6 5 6s4.2-2 5-6M9 12h6"/></svg>',
+    shield:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>',
+    info:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg>',
   });
   const CATEGORY_ICONS = Object.freeze({ ENTERAL:SVG.enteral, PARENTERAL:SVG.parenteral, TOPICAL_LOCAL:SVG.topical, INHALATION:SVG.inhalation });
 
@@ -4312,25 +4312,10 @@
   }
 
   function readDraft() {
-    try {
-      const draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
-      if (!draft || draft.version !== 1) return null;
-      const savedAt = Number(draft.savedAt);
-      const composer = String(draft.composer ?? '');
-      const diagnosis = String(draft.diagnosis ?? '');
-      if (!Number.isFinite(savedAt) || savedAt > Date.now() + 5 * 60 * 1000 || Date.now() - savedAt > DRAFT_MAX_AGE) {
-        clearDraft();
-        return null;
-      }
-      if (composer.length > MAX_DRAFT_CHARS || diagnosis.length > 1000) {
-        clearDraft();
-        return null;
-      }
-      return { ...draft, composer, diagnosis };
-    } catch {
-      clearDraft();
-      return null;
-    }
+    // Legacy drafts have no account identity. Only the authenticated workspace
+    // may restore its complete, account-bound draft after the library is ready.
+    clearDraft();
+    return null;
   }
 
   function normalizeDiagnosisContext(value, { allowHistorical = false } = {}) {
@@ -4782,22 +4767,7 @@
   }
 
   function savePrescriptionDraft() {
-    const composer = document.getElementById('rxComposer');
-    const diagnosis = document.getElementById('rxDiagnosis');
-    if (!composer || !diagnosis) return false;
-    const payload = {
-      version:1,
-      savedAt:Date.now(),
-      composer:String(composer.value || '').slice(0, 20000),
-      diagnosis:String(diagnosis.value || '').slice(0, 1000),
-    };
-    try {
-      if (!payload.composer && !payload.diagnosis) localStorage.removeItem(DRAFT_KEY);
-      else localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
-      return true;
-    } catch {
-      return false;
-    }
+    return window.MedIndexRecetaWorkspace?.saveDraft?.() || false;
   }
 
   function icdHref(code, { returnToPrescription = true } = {}) {
@@ -5112,6 +5082,10 @@
     composerOrigin: 'structured',
     pendingDosageChoice: null,
     chooserReturnFocus: null,
+    chooserFocusRelease: null,
+    draftOwner: '',
+    draftReady: false,
+    draftTimer: 0,
     activeChapter: 'all',
     chapters: [],
     chapterManuallySelected: false,
@@ -5593,7 +5567,7 @@
     const rows = Array.isArray(matches) ? matches.filter(Boolean) : [];
     if (!rows.length) return addSelectedDrug({ ...drug, dosageStatus:'manual' }, options);
     state.pendingDosageChoice = { drug, matches:rows, options };
-    state.chooserReturnFocus = document.activeElement;
+    state.chooserReturnFocus = options?.returnFocus || document.activeElement;
     const select = $('#rxDosageChoice');
     const optionsHtml = rows.map(item => `<option value="${esc(item.regimenId)}">${esc(item.indication || 'Pa indikacion të shënuar')} · ${esc(item.frequency || 'shpeshtësia e pashënuar')} · ${esc(item.duration || 'kohëzgjatja e pashënuar')}</option>`).join('');
     select.innerHTML = rows.length > 1
@@ -5608,8 +5582,9 @@
     const overlay = $('#rxDosageChooser');
     overlay.hidden = false;
     overlay.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    select.focus();
+    state.chooserFocusRelease = window.DRxModalFocus.open(overlay.querySelector('[role="dialog"]'), {
+      initialFocus:select, returnFocus:state.chooserReturnFocus, fallbackFocus:$('#rxAddDrugButton'), onEscape:() => closeDosageChooser(),
+    });
   }
 
   function closeDosageChooser({ mode = 'cancel' } = {}) {
@@ -5637,8 +5612,8 @@
     const overlay = $('#rxDosageChooser');
     overlay.hidden = true;
     overlay.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    state.chooserReturnFocus?.focus?.({ preventScroll:true });
+    state.chooserFocusRelease?.();
+    state.chooserFocusRelease = null;
     state.chooserReturnFocus = null;
   }
 
@@ -5686,6 +5661,7 @@
   }
 
   function renderSelectedDrugs() {
+    scheduleDraftSave();
     const holder = $('#rxSelectedDrugs');
     if (!holder) return;
     if (!state.selectedDrugs.length) {
@@ -6475,6 +6451,20 @@
   }
 
   function bindEvents() {
+    document.addEventListener('input', scheduleDraftSave);
+    document.addEventListener('change', scheduleDraftSave);
+    window.addEventListener('medindex:prescription-context-change', scheduleDraftSave);
+    window.addEventListener('medindex:prescription-icd-context', scheduleDraftSave);
+    window.addEventListener('pagehide', saveWorkspaceDraft);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) saveWorkspaceDraft(); });
+    window.addEventListener('medindex:library-owner-changed', event => {
+      if (event.detail?.owner && event.detail.owner !== state.draftOwner) {
+        clearTimeout(state.draftTimer);
+        state.draftReady = false;
+        resetComposer();
+        window.MedIndexPrescriptionContext?.resetContext?.({ refresh:false });
+      }
+    });
     window.addEventListener('medindex:prescription-context-change', event => {
       const pending = state.pendingRouteDrug;
       if (!pending || !event.detail?.valid) return;
@@ -6550,7 +6540,7 @@
       if (!button) return;
       try {
         const drug = JSON.parse(decodeURIComponent(button.dataset.drugResult));
-        void addDrugWithDosage(drug).catch(() => setStatus('Bari nuk u shtua. Provo përsëri.', 'error'));
+        void addDrugWithDosage(drug, { returnFocus: $('#rxAddDrugButton') }).catch(() => setStatus('Bari nuk u shtua. Provo përsëri.', 'error'));
       } catch {
         setStatus('Të dhënat e barit nuk u lexuan.', 'error');
       }
@@ -6735,12 +6725,94 @@
     return { ok:true };
   }
 
-  window.MedIndexRecetaWorkspace = Object.freeze({ beginSourceGuideDraft });
+  const WORKSPACE_DRAFT_PREFIX = 'medindex_rx_workspace_v2:';
+  const DRAFT_MAX_BYTES = 250000;
+  function draftStatus(message) {
+    const node = $('#rxDraftPersistence');
+    if (node) node.textContent = message;
+  }
+  function scheduleDraftSave() {
+    if (!state.draftReady) return;
+    draftStatus('Po ruhet drafti…');
+    clearTimeout(state.draftTimer);
+    state.draftTimer = setTimeout(saveWorkspaceDraft, 400);
+  }
+  function saveWorkspaceDraft() {
+    if (!state.draftReady || !state.draftOwner) return false;
+    clearTimeout(state.draftTimer);
+    const payload = {
+      version:2, owner:state.draftOwner, savedAt:Date.now(),
+      composer:$('#rxComposer')?.value || '', diagnosis:$('#rxDiagnosis')?.value || '',
+      selectedDrugs:state.selectedDrugs,
+      clinicalContext:window.MedIndexPrescriptionContext?.getContext?.() || null,
+      diagnosisCoding:window.MedIndexPrescriptionIcdContext?.current?.() || null,
+      chapter:$('#rxChapterSelect')?.value || 'te-tjera',
+      chapterManuallySelected:state.chapterManuallySelected,
+      composerOrigin:state.composerOrigin, editingId:state.editingId,
+    };
+    try {
+      const serialized = JSON.stringify(payload);
+      if (serialized.length > DRAFT_MAX_BYTES || payload.selectedDrugs.length > 50) throw new Error('Draft too large');
+      localStorage.setItem(WORKSPACE_DRAFT_PREFIX + state.draftOwner, serialized);
+      draftStatus('Drafti u ruajt në këtë pajisje.');
+      return true;
+    } catch {
+      draftStatus('Drafti nuk u ruajt në këtë pajisje. Mbaje faqen hapur ose kopjo recetën.');
+      return false;
+    }
+  }
+  function restoreWorkspaceDraft() {
+    window.MedIndexPrescriptionContext?.resetContext?.({ refresh:false });
+    if (!state.draftOwner) return;
+    const key = WORKSPACE_DRAFT_PREFIX + state.draftOwner;
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return;
+      const draft = JSON.parse(raw);
+      if (raw.length > DRAFT_MAX_BYTES || draft?.version !== 2 || draft.owner !== state.draftOwner
+        || !Number.isFinite(draft.savedAt) || draft.savedAt > Date.now() + 300000
+        || Date.now() - draft.savedAt > 7 * 86400000
+        || typeof draft.composer !== 'string' || typeof draft.diagnosis !== 'string'
+        || !Array.isArray(draft.selectedDrugs) || draft.selectedDrugs.length > 50
+        || draft.selectedDrugs.some(drug => !drug || typeof drug !== 'object' || Array.isArray(drug))) {
+        localStorage.removeItem(key);
+        return;
+      }
+      const incomingDiagnosis = window.MedIndexPrescriptionIcdContext?.current?.();
+      const incomingText = $('#rxDiagnosis')?.value || '';
+      state.selectedDrugs = draft.selectedDrugs.map(drug => ({ ...drug, ...normalizeDrug(drug) }));
+      state.composerOrigin = draft.composerOrigin === 'manual' ? 'manual' : 'structured';
+      state.chapterManuallySelected = Boolean(draft.chapterManuallySelected);
+      state.editingId = getSaved().some(item => item.id === draft.editingId) ? draft.editingId : '';
+      state.generatedReviewConfirmed = state.dosageReviewConfirmed = state.clinicalReviewConfirmed = false;
+      if ($('#rxClinicalReview input')) $('#rxClinicalReview input').checked = false;
+      window.MedIndexPrescriptionContext?.setContext?.(draft.clinicalContext, { refresh:false });
+      if (incomingDiagnosis || draft.diagnosisCoding) window.MedIndexPrescriptionIcdContext?.apply?.(incomingDiagnosis || draft.diagnosisCoding);
+      if (draft.diagnosisCoding && !window.MedIndexPrescriptionIcdContext) {
+        window.addEventListener('medindex:prescription-context-ready', () => {
+          const coding = window.MedIndexPrescriptionIcdContext;
+          if (state.draftOwner !== draft.owner || $('#rxDiagnosis')?.value !== draft.diagnosis || coding?.current?.()) return;
+          coding?.apply?.(draft.diagnosisCoding);
+          $('#rxDiagnosis').value = draft.diagnosis;
+        }, { once:true });
+      }
+      $('#rxComposer').value = draft.composer;
+      $('#rxDiagnosis').value = incomingDiagnosis ? incomingText : draft.diagnosis;
+      if ([...$('#rxChapterSelect').options].some(option => option.value === draft.chapter)) $('#rxChapterSelect').value = draft.chapter;
+      renderSelectedDrugs();
+      scheduleLocalPreview();
+      draftStatus('Drafti u rikthye. Verifiko sërish të dhënat klinike para ruajtjes.');
+    } catch {
+      draftStatus('Drafti i ruajtur nuk u rikthye.');
+    }
+  }
+  window.MedIndexRecetaWorkspace = Object.freeze({ beginSourceGuideDraft, saveDraft:saveWorkspaceDraft });
 
   async function init() {
     window.DRxRxShell?.init();
     try {
       const authPayload = await window.DRxRxShell?.ensureAuth();
+      state.draftOwner = text(authPayload?.authUser?.id || authPayload?.user?.id || authPayload?.user?.email).toLowerCase();
       await window.DRxRxShell?.syncProfile(authPayload);
     } catch {
       return;
@@ -6756,8 +6828,10 @@
     bindEvents();
     migrateLegacyChapterAssignments();
     renderSaved();
+    restoreWorkspaceDraft();
+    state.draftReady = Boolean(state.draftOwner);
     loadSelection();
-    syncChapterSuggestion({ force:true });
+    syncChapterSuggestion({ force:!state.chapterManuallySelected });
     updateActionState();
     const synced = window.MedIndexUserLibrary?.diagnostics?.();
     if ($('#rxLibraryState')) $('#rxLibraryState').textContent = synced && !synced.dirty ? 'Sinkronizuar' : 'Lokale';

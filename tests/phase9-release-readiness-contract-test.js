@@ -9,7 +9,8 @@ const read = rel => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 const exists = rel => fs.existsSync(path.join(ROOT, rel));
 
 const pkg = JSON.parse(read('package.json'));
-const fullTest = String(pkg.scripts?.test || '');
+assert.equal(pkg.scripts.test, 'node scripts/run-test-suite.js');
+const fullTest = require('./test-suite.json').join('\n');
 
 for (const required of [
   'phase1-public-security-contract-test.js',

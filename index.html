@@ -8,12 +8,13 @@
   <title>DRx | Regjistri i barnave</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-column-filter-20261006">
+  <link rel="stylesheet" href="/registry-v2.css?v=registry-v2-p1-20261008">
   <link rel="stylesheet" href="/registry-atc-filter.css?v=20261006">
   <link rel="stylesheet" href="/registry-column-filter.css?v=20261006">
-  <link rel="stylesheet" href="/registry-v2-dose-calculator.css?v=registry-v2-dose-calculator-v1">
+  <link rel="stylesheet" href="/registry-v2-dose-calculator.css?v=registry-v2-dose-calculator-p1-20261008">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930">
   <script src="/dose-core.js?v=drx-dose-core-v1" defer></script>
+  <script src="/drx-modal-focus.js?v=p1-20261008" defer></script>
   <script src="/dose-runtime-browser.js?v=drx-dose-runtime-browser-v1" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v6-mobile-app-20260930" data-drx-sidebar-taxonomy="1" defer></script>
   <script src="/classification-data.js?v=20261006" defer></script>
@@ -22,8 +23,8 @@
   <script src="/registry-substance-normalization.js?v=20261006" defer></script>
   <script src="/registry-column-model.js?v=20261006-substances" defer></script>
   <script src="/registry-column-filter.js?v=20261006" defer></script>
-<script src="/registry-v2.js?v=registry-v2-substances-20261006&amp;registryUpdates=20261005" defer></script>
-  <script src="/registry-v2-dose-calculator.js?v=registry-v2-dose-calculator-v1" defer></script>
+<script src="/registry-v2.js?v=registry-v2-p1-20261008&amp;registryUpdates=20261005" defer></script>
+  <script src="/registry-v2-dose-calculator.js?v=registry-v2-dose-calculator-p1-20261008" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -315,7 +316,7 @@
   </div>
 
   <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
-  <aside class="detail-drawer" id="detailDrawer" aria-hidden="true" aria-labelledby="drawerTitle">
+  <aside class="detail-drawer" id="detailDrawer" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="drawerTitle" tabindex="-1" inert>
     <div class="drawer-head">
       <div><p class="eyebrow">Kartela e barit</p><h2 id="drawerTitle">Detajet</h2></div>
       <button class="icon-button" id="drawerClose" type="button" aria-label="Mbyll detajet"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.4 6.4 17.6 17.6M17.6 6.4 6.4 17.6"/></svg></button>

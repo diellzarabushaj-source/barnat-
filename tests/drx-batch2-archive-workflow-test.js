@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
-const yml=fs.readFileSync(path.join(__dirname,'..','.github','workflows','drx-batch2-source-archive.yml'),'utf8');
+const yml=fs.readFileSync(path.join(__dirname,'..','.github','workflows','drx-batch2-source-archive.yml'),'utf8').replace(/\r\n/g,'\n');
 const builder=fs.readFileSync(path.join(__dirname,'..','scripts','build-drx-batch2-extraction-index.js'),'utf8');
 assert.match(yml,/workflow_dispatch:/);
 assert.match(yml,/permissions:\s*\n\s*contents: read/);

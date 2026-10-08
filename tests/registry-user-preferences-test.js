@@ -6,7 +6,7 @@ const path = require('node:path');
 const prefs = require('../lib/user-ui-preferences.js');
 
 const ROOT = path.resolve(__dirname, '..');
-const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
+const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\n/g, '\n');
 
 const html = read('index.html');
 const js = read('registry-v2.js');

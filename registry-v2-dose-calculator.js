@@ -22,6 +22,8 @@
   const Runtime = () => window.DRxDoseRuntime;
 
   let modal = null;
+  let focusRelease = null;
+  let openSequence = 0;
   const state = {
     product:null,
     payload:null,
@@ -614,12 +616,13 @@
 
   function close() {
     if (!modal) return;
+    openSequence += 1;
     modal.root.hidden = true;
     document.body.classList.remove('drx-dose-modal-open');
-    const trigger = state.trigger;
     state.product = null;
     state.payload = null;
-    if (trigger?.isConnected) trigger.focus({ preventScroll:true });
+    focusRelease?.();
+    focusRelease = null;
   }
 
   function copyResult() {
@@ -636,6 +639,7 @@
     const nr = clean(registryNumber);
     if (!nr) return;
     ensureModal();
+    const sequence = ++openSequence;
     state.trigger = trigger;
     state.registryNumber = nr;
     modal.root.hidden = false;
@@ -645,17 +649,22 @@
     modal.runtime.textContent = 'loading';
     modal.cutover.textContent = '';
     clearResult();
+    focusRelease = window.DRxModalFocus.open(modal.root.querySelector('[role="dialog"]'), {
+      returnFocus:trigger || document.activeElement, onEscape:close,
+    });
 
     try {
       const loaded = await fetchProduct(nr);
+      if (sequence !== openSequence || modal.root.hidden) return;
       state.payload = loaded.payload;
       state.product = loaded.payload.product;
       state.runtimeServed = loaded.runtimeServed;
       state.cutoverMode = loaded.cutoverMode;
       state.selectedForV3 = loaded.selectedForV3;
       populateProduct();
-      requestAnimationFrame(() => modal.indication.focus());
+      requestAnimationFrame(() => { if (sequence === openSequence && !modal.root.hidden) modal.indication.focus(); });
     } catch (error) {
+      if (sequence !== openSequence || modal.root.hidden) return;
       state.product = null;
       modal.productName.textContent = 'Kalkulatori nuk u hap';
       modal.productMeta.textContent = '';
