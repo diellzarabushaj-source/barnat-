@@ -108,6 +108,7 @@ const design = read('.superdesign/design-system.md');
 assert.match(design, /Urgjencat is the canonical content-density reference/);
 
 const pkg = JSON.parse(read('package.json'));
-assert.match(pkg.scripts.test, /workspace-coherence-v7-test\.js/);
+assert.equal(pkg.scripts.test, 'node scripts/run-test-suite.js');
+assert.ok(require('./test-suite.json').includes('tests/workspace-coherence-v7-test.js'));
 
 console.log('Workspace coherence v7: 10/10 pages share one shell, strict sidebar runtime versions, one typography contract and current search-freshness worker epoch.');

@@ -273,8 +273,9 @@ function buildPageRequest(query={}) {
   const q=safeQueryText(query.q), status=safeFilterText(query.status,80), atc=safeAtcPrefix(query.atc), form=safeFilterText(query.form,120), formExact=safeExactForm(query.formExact), formCategory=safeExactForm(query.formCategory), sortKey=clean(query.sort).toLowerCase();
   const sortColumn=SORTS[sortKey] || SORTS.registry, direction=clean(query.direction).toLowerCase()==='desc'?'desc':'asc', includeTotal=['1','true','yes'].includes(clean(query.includeTotal).toLowerCase()), offset=(page-1)*pageSize;
   const params=new URLSearchParams();
-  params.set('select',LIST_SELECT); params.set('is_published','eq.true'); params.set('editorial_status','eq.published'); params.set('order',`${sortColumn}.${direction}.nullslast,registry_number.asc`); params.set('limit',String(pageSize)); params.set('offset',String(offset));
+  params.set('select',LIST_SELECT); params.set('is_published','eq.true'); params.set('editorial_status','eq.published'); params.set('order',`${sortColumn}.${direction}.nullslast,registry_number.asc,id.asc`); params.set('limit',String(pageSize)); params.set('offset',String(offset));
   if(q.length>=2) params.set('registry_search_text',`ilike.*${q}*`);
+  else if(/^\d$/.test(q)) params.set('or',`(registry_number.eq.${q},pdid.eq.${q})`);
   if(status) params.set('product_status',`eq.${status}`);
   if(atc) params.set('atc_code',atc.length === 7 ? `ilike.${atc}` : `ilike.${atc}*`);
   const categoryForms=FORM_CATEGORIES[formCategory] || [];
@@ -316,23 +317,9 @@ async function sendSearch(req,res,startedAt) {
   return res.status(200).json({ok:true,query:request.q,results,meta:{source:'supabase',searchVersion:'v5',limit:request.limit}});
 }
 async function sendRankedRegistrySearch(req,res,startedAt) {
-  const query=requestQuery(req);
-  const pageSize=integerInRange(query.pageSize,REGISTRY_DEFAULT_PAGE_SIZE,1,REGISTRY_MAX_PAGE_SIZE);
-  const request=buildSearchPath(query.q,pageSize);
-  setHeaders(res,startedAt,'supabase-ranked-registry-search-v5');
-  if(!request) return req.method==='HEAD'
-    ? res.status(200).end()
-    : res.status(200).json({ok:true,rows:[],pagination:{page:1,pageSize,total:0,totalPages:1,hasPrevious:false,hasNext:false},query:{q:''},meta:{source:'supabase',searchVersion:'v5',ranked:true}});
-  const {data}=await supabaseRequest(request.path,{method:request.method,body:request.body,timeoutMs:5000,label:'Supabase ranked registry search v5'});
-  const rows=(await withUpdateStatuses(data)).map(searchRow);
-  if(req.method==='HEAD')return res.status(200).end();
-  return res.status(200).json({
-    ok:true,
-    rows,
-    pagination:{page:1,pageSize,total:rows.length,totalPages:1,hasPrevious:false,hasNext:false},
-    query:{q:request.q},
-    meta:{source:'supabase',searchVersion:'v5',ranked:true,limit:request.limit},
-  });
+  // The ranked RPC is a bounded suggestion list. The registry is a complete,
+  // pageable result set with the same fields and ordering as an ordinary page.
+  return sendPage({...req,query:{...requestQuery(req),includeTotal:'true'}},res,startedAt);
 }
 async function sendPersonalLookup(req,res,startedAt) { const request=buildPersonalLookupPath(requestQuery(req)); setHeaders(res,startedAt,'supabase-personal-drug-lookup'); if(!request.ids.length) return req.method==='HEAD'?res.status(200).end():res.status(200).json({ok:true,rows:[],meta:{source:'supabase',lookup:'personal'}}); const {data}=await supabaseRequest(request.path,{timeoutMs:5000,label:'Supabase personal drug lookup'}); const rows=Array.isArray(data)?data.map(listRow):[]; if(req.method==='HEAD')return res.status(200).end(); return res.status(200).json({ok:true,rows,meta:{source:'supabase',lookup:'personal'}}); }
 

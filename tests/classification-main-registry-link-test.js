@@ -70,7 +70,10 @@ const subdivision = drugSearch.buildPageRequest({ atc:'N02BE' });
 assert.equal(subdivision.atc, 'N02BE');
 assert.match(decodeURIComponent(subdivision.path), /atc_code=ilike\.N02BE\*/);
 
-const rejected = drugSearch.buildPageRequest({ atc:'N02BE01' });
+const substance = drugSearch.buildPageRequest({ atc:'N02BE01' });
+assert.equal(substance.atc, 'N02BE01');
+assert.equal(new URLSearchParams(substance.path.split('?')[1]).get('atc_code'), 'ilike.N02BE01');
+const rejected = drugSearch.buildPageRequest({ atc:'invalid-code' });
 assert.equal(rejected.atc, '');
 assert.doesNotMatch(decodeURIComponent(rejected.path), /atc_code=/);
 

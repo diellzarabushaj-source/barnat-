@@ -10,6 +10,8 @@ on:
       - 'lib/icd-hierarchy-validation.js'
       - 'lib/icd-hierarchy-neon-reader.js'
       - 'lib/neon-data-api.js'
+      - 'lib/medindex-data-api.js'
+      - 'tests/icd-hierarchy-neon-sync-test.js'
       - 'scripts/sync-icd-hierarchy-to-neon.js'
       - 'sql/icd-hierarchy-neon.sql'
       - '.github/workflows/icd-hierarchy-neon-sync.yml'
@@ -60,7 +62,9 @@ jobs:
 
       - name: Supabase write credentials unavailable
         if: ${{ env.MEDINDEX_SUPABASE_SECRET_KEY == '' }}
-        run: echo "::notice::ICD hierarchy validation passed; sync skipped because MEDINDEX_SUPABASE_SECRET_KEY is not configured."
+        run: |
+          echo "::error::ICD sync cannot run without MEDINDEX_SUPABASE_SECRET_KEY."
+          exit 1
 
       - name: Import and atomically activate hierarchy revision
         if: ${{ env.MEDINDEX_SUPABASE_SECRET_KEY != '' }}

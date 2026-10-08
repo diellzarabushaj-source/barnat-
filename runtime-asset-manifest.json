@@ -1,0 +1,14 @@
+{
+  "index.html": {
+    "registry-v2.css": "registry-v2-p1-20261008",
+    "registry-v2.js": "registry-v2-p1-20261008",
+    "registry-v2-dose-calculator.css": "registry-v2-dose-calculator-p1-20261008",
+    "registry-v2-dose-calculator.js": "registry-v2-dose-calculator-p1-20261008",
+    "drx-modal-focus.js": "p1-20261008"
+  },
+  "recetat.html": {
+    "recetat-v2.css": "20-p1-20261008",
+    "recetat-v2.js": "20-p1-20261008",
+    "drx-modal-focus.js": "p1-20261008"
+  }
+}

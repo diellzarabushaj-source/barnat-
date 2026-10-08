@@ -592,7 +592,8 @@
     return root;
   }
 
-  async function openNoteDialog(row) {
+  async function openNoteDialog(row, trigger = document.activeElement) {
+    const returnFocus = trigger?.closest('details')?.querySelector('summary') || trigger;
     const api = await loadPersonalLibrary();
     if (!api) { showToast('Shënimet nuk u ngarkuan. Provo përsëri.'); return; }
     await api.load().catch(() => null);
@@ -607,10 +608,11 @@
     updateNoteCounter(root);
     root.hidden = false;
     document.body.classList.add('registry-note-open');
-    setTimeout(() => root.querySelector('#registryNoteText')?.focus(), 0);
+    noteFocusRelease = window.DRxModalFocus.open(root.querySelector('[role="dialog"]'), {initialFocus:root.querySelector('#registryNoteText'),returnFocus,fallbackFocus:el.searchInput,onEscape:closeNoteDialog});
   }
 
   function closeNoteDialog() {
+    noteFocusRelease?.(); noteFocusRelease = null;
     const root = document.getElementById('registryNoteDialog');
     if (root) root.hidden = true;
     document.body.classList.remove('registry-note-open');
@@ -1080,7 +1082,7 @@
     const rankedSearch = Boolean(searchableQuery && !state.atc && !state.formValue && !Object.keys(state.columnFilters).length && !state.columnSort && !Substances.isKnownQuery(state.q) && !['substance','prescription','adultDose','pediatricDose','updateStatus'].includes(state.sort));
     const params = new URLSearchParams(rankedSearch ? {
       view:'registry-search',
-      page:'1',
+      page:String(state.page),
       pageSize:String(state.pageSize),
       includeTotal:'true',
       sort:state.sort,
@@ -1757,32 +1759,47 @@
     location.href = '/recetat.html';
   }
 
-  function openDrawer() {
+  let detailSequence = 0, detailController = null, drawerFocusRelease = null, noteFocusRelease = null;
+
+  function openDrawer(returnFocus = document.activeElement) {
     el.drawerBackdrop.hidden = false;
     el.detailDrawer.classList.add('is-open');
     el.detailDrawer.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    el.detailDrawer.inert = false;
+    drawerFocusRelease = window.DRxModalFocus.open(el.detailDrawer, {except:[el.drawerBackdrop],initialFocus:el.drawerClose,returnFocus,fallbackFocus:el.searchInput,onEscape:closeDrawer});
   }
 
   function closeDrawer() {
+    detailSequence += 1;
+    detailController?.abort(); detailController = null;
+    state.currentDetail = null;
+    el.drawerPrescriptionButton.disabled = true;
     el.detailDrawer.classList.remove('is-open');
     el.detailDrawer.setAttribute('aria-hidden', 'true');
     el.drawerBackdrop.hidden = true;
-    document.body.style.overflow = '';
+    drawerFocusRelease?.(); drawerFocusRelease = null;
+    el.detailDrawer.inert = true;
   }
 
-  async function showDetail(row) {
+  async function showDetail(row, trigger = document.activeElement) {
     if (!row) return;
-    state.currentDetail = Substances.normalizeRow(row);
-    openDrawer();
+    detailController?.abort();
+    const controller = new AbortController(), sequence = ++detailSequence;
+    detailController = controller;
+    const current = () => sequence === detailSequence && !controller.signal.aborted;
+    state.currentDetail = null;
+    el.drawerPrescriptionButton.disabled = true;
+    openDrawer(trigger);
     el.drawerTitle.textContent = row.tradeName || 'Detajet';
     el.drawerBody.innerHTML = '<div class="drawer-loading">Duke ngarkuar kartelën klinike…</div>';
     try {
       const [detailResult, cardResult] = await Promise.all([
-        fetchJson(`/api/drug-search?view=registry-detail&id=${encodeURIComponent(row.id)}`),
-        fetchJson(`/api/dosage?view=card&id=${encodeURIComponent(row.id)}`).catch(() => ({ payload:{ ok:false } })),
+        fetchJson(`/api/drug-search?view=registry-detail&id=${encodeURIComponent(row.id)}`, {signal:controller.signal}),
+        fetchJson(`/api/dosage?view=card&id=${encodeURIComponent(row.id)}`, {signal:controller.signal}).catch(() => ({ payload:{ ok:false } })),
       ]);
+      if (!current()) return;
       const detail = Substances.normalizeRow(detailResult.payload.row || row);
+      if (clean(detail.id) !== clean(row.id)) throw new Error('Identiteti i kartelës nuk përputhet. Provo përsëri.');
       let card = cardResult.payload || {};
 
       const hasAdult = clean(normalizeDetailDose(card?.adult).dose);
@@ -1790,7 +1807,7 @@
       if ((!hasAdult || !hasPediatric) && /^\d{1,6}$/.test(clean(detail.registryNumber))) {
         const batch = await fetchJson(
           `/api/dosage?view=cards&nrs=${encodeURIComponent(clean(detail.registryNumber))}`,
-          {},
+          {signal:controller.signal},
           6500
         ).catch(() => ({ payload:{ cards:[] } }));
         const fallback = Array.isArray(batch.payload?.cards)
@@ -1815,8 +1832,12 @@
         }
       }
 
+      if (!current()) return;
+      state.currentDetail = detail;
       el.drawerBody.innerHTML = detailMarkup(detail, card);
+      el.drawerPrescriptionButton.disabled = false;
     } catch (error) {
+      if (!current()) return;
       el.drawerBody.innerHTML = `<div class="drawer-loading">${escapeHtml(error?.message || 'Detajet nuk u ngarkuan.')}</div>`;
     }
   }
@@ -2120,14 +2141,14 @@
       const favorite = event.target.closest('[data-row-favorite]');
       if (favorite) { event.stopPropagation(); closeRowMenus(); void toggleFavoriteRow(findRow(favorite.dataset.rowFavorite), favorite); return; }
       const note = event.target.closest('[data-row-note]');
-      if (note) { event.stopPropagation(); closeRowMenus(); void openNoteDialog(findRow(note.dataset.rowNote)); return; }
+      if (note) { event.stopPropagation(); closeRowMenus(); void openNoteDialog(findRow(note.dataset.rowNote), note); return; }
       if (event.target.closest('.registry-more')) { event.stopPropagation(); return; }
       const checkbox = event.target.closest('[data-select-row]');
       if (checkbox) { event.stopPropagation(); const row = findRow(checkbox.dataset.selectRow); toggleSelection(row, checkbox.checked); return; }
       const button = event.target.closest('[data-open-row]');
-      if (button) { event.stopPropagation(); showDetail(findRow(button.dataset.openRow)); return; }
+      if (button) { event.stopPropagation(); showDetail(findRow(button.dataset.openRow), button); return; }
       const rowNode = event.target.closest('[data-row-id]');
-      if (rowNode) showDetail(findRow(rowNode.dataset.rowId));
+      if (rowNode) showDetail(findRow(rowNode.dataset.rowId), rowNode);
     }
     el.registryRows.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { const tr = event.target.closest('tr[data-row-id]'); if (tr && event.target === tr) { event.preventDefault(); showDetail(findRow(tr.dataset.rowId)); } } });
     el.selectPageCheckbox.addEventListener('change', () => state.rows.forEach(row => toggleSelection(row, el.selectPageCheckbox.checked)));

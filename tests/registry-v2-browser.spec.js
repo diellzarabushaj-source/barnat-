@@ -4,7 +4,7 @@ const { test, expect } = require('@playwright/test');
 const columnModel = require('../registry-column-model.js');
 const columnData = require('../lib/registry-column-data.js');
 
-test.use({ serviceWorkers:'block' });
+test.use({ serviceWorkers:'block', baseURL:'http://127.0.0.1:4173' });
 
 const rows = [
   {
@@ -473,7 +473,7 @@ test('registry v2 mobile keeps navigation and table overflow contained', async (
   await page.getByText('PARACETAMOL TEST').click();
   await expect(page.locator('#detailDrawer')).toHaveClass(/is-open/);
   const drawerWidth = await page.locator('#detailDrawer').evaluate(node => node.getBoundingClientRect().width);
-  expect(drawerWidth).toBeLessThanOrEqual(390);
+  expect(drawerWidth).toBeLessThanOrEqual(390.5); // Allow subpixel layout rounding.
   await page.locator('#drawerClose').click();
 
   await page.screenshot({ path:test.info().outputPath('registry-v2-mobile.png'), fullPage:true });

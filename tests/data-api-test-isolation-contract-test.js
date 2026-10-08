@@ -7,7 +7,10 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
 const fullSuite = String(pkg.scripts?.test || '');
-const testFiles = [...fullSuite.matchAll(/node\s+(tests\/[^\s&]+\.js)/g)].map(match => match[1]);
+const testFiles = fullSuite.includes('scripts/run-test-suite.js')
+  ? require('./test-suite.json')
+  : [...fullSuite.matchAll(/node\s+(tests\/[^\s&]+\.js)/g)].map(match => match[1]);
+assert.ok(testFiles.length > 100, 'The complete suite must include the active test inventory.');
 
 const badCacheMocks = [];
 const canonicalMocks = [];

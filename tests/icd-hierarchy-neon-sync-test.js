@@ -122,8 +122,11 @@ assert.match(schema, /icd_hierarchy_one_active_revision/);
 assert.match(reader, /status=eq\.active/);
 assert.match(reader, /FullIcd\.attachIndexes\(data\)/);
 assert.match(dataApi, /Runtime database traffic is Supabase-only/);
-assert.match(dataApi, /function readProvider\(\) \{ return 'supabase'; \}/);
-assert.match(dataApi, /function writeProvider\(\) \{ return 'supabase'; \}/);
+const compatibilityApi = require('../lib/neon-data-api.js');
+const canonicalApi = require('../lib/medindex-data-api.js');
+assert.equal(compatibilityApi, canonicalApi, 'The compatibility entry point exports the canonical Supabase implementation.');
+assert.equal(compatibilityApi.readProvider(), 'supabase');
+assert.equal(compatibilityApi.writeProvider(), 'supabase');
 assert.doesNotMatch(dataApi, /process\.env\.MEDINDEX_NEON_DATA_API_TOKEN/);
 assert.match(publicSource, /NeonHierarchy\.load/); // legacy module name only
 assert.match(publicSource, /sheetOnly/);
