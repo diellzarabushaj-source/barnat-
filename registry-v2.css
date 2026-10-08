@@ -1486,6 +1486,7 @@ body{max-width:100%;overflow-x:hidden}
 }
 
 /* Audit P2: compact identities, explicit criteria and readable detail copy. */
+html[data-drx-app="registry-v2"] .crumb-sep{color:#64748b}
 .registry-active-filters{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line)}
 .registry-active-filters[hidden]{display:none}
 .registry-active-filters button{max-width:100%;min-height:36px;border:1px solid #c7d6e8;border-radius:8px;padding:6px 10px;background:#f3f7fc;color:#24476a;font:inherit;font-size:13px;text-align:left;overflow-wrap:anywhere}
@@ -1510,6 +1511,7 @@ body{max-width:100%;overflow-x:hidden}
  .registry-active-filters button{min-height:44px}
  .compact-select{padding:0 4px}
  .compact-select select{width:60px;min-width:60px;min-height:44px;padding:0 20px 0 6px;font-size:14px}
+ html[data-drx-app="registry-v2"] body .compact-select select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='m3 4 3 3 3-3' fill='none' stroke='%2334475c' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;background-size:12px}
  .registry-note-undo{bottom:calc(76px + env(safe-area-inset-bottom))}
  .detail-grid dd,.clinical-copy,.dose-card p,.detail-hero p{font-size:16px}
  .heading-actions #openPrescriptionButton{display:none}

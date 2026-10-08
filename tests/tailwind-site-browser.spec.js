@@ -54,6 +54,9 @@ async function mockPhase5AuthenticatedSession(page) {
 }
 
 async function mockRegistryV2Data(page) {
+  // This site-wide comparison audits the explicit table view on each screen.
+  // First-visit phone/list behavior is covered by audit-p1-browser.spec.js.
+  await page.addInitScript(() => localStorage.setItem('drx_registry_v2_row_view','table'));
   await page.route('**/api/drug-search?**', async route => {
     const url = new URL(route.request().url());
     if (url.searchParams.get('view') !== 'registry-page') return route.continue();
