@@ -88,7 +88,7 @@ for (const [htmlFile, cssFile, jsFile, markerName] of [
   assert.match(html, new RegExp(`data-drx-app="${markerName}"`));
   assert.equal(styles.length, 2, `${htmlFile}: standalone V2 must load page CSS plus shared Stripe shell CSS`);
   assert.match(html, /drx-unified-sidebar/, `${htmlFile}: unified sidebar marker missing`);
-  assert.ok(sharedRuntimes.some(src => /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v6/.test(src)), `${htmlFile}: shared sidebar taxonomy runtime is missing`);
+  assert.ok(sharedRuntimes.some(src => /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v7/.test(src)), `${htmlFile}: shared sidebar taxonomy runtime is missing`);
   assert.equal(pageRuntimes.length, 1, `${htmlFile}: standalone V2 must own one page runtime in addition to shared runtimes`);
   assert.ok(styles[0].includes(cssFile), `${htmlFile}: unexpected page stylesheet owner`);
   assert.ok(/drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/.test(styles[1]), `${htmlFile}: shared Stripe shell must load last`);

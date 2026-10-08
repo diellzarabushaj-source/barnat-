@@ -102,7 +102,7 @@ const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'
      assert.equal(await page.locator('.main-shell').evaluate(el=>el.inert),true);
      await page.keyboard.press('Escape');
      assert.equal(await page.locator('.main-shell').evaluate(el=>el.inert),false);
-     assert.equal(await page.evaluate(()=>document.activeElement.closest('#drxMobileNav')?.id),'drxMobileNav');
+     await expect.poll(()=>page.evaluate(()=>document.activeElement.closest('#drxMobileNav')?.id)).toBe('drxMobileNav');
     }else await expect(dock).not.toBeVisible();
     if(name==='index'){
      await expect(page.locator('#registryRows')).toContainText('PRODUKT TESTUES');

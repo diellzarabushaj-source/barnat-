@@ -65,7 +65,7 @@ assert(scriptSources.length === registryScripts.length, `Registry v2 script inve
 registryStyles.forEach((asset,index) => assert(stylesheetLinks[index].split('?')[0] === asset, `Registry stylesheet order differs at ${asset}.`));
 registryScripts.forEach((asset,index) => assert(scriptSources[index].split('?')[0] === asset, `Registry script order differs at ${asset}.`));
 assert(stylesheetLinks.at(-1) === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930', 'Shared Stripe shell v8 must load last.');
-assert(scriptSources[3] === '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v6-mobile-app-20260930', 'Shared sidebar taxonomy must load before registry filters.');
+assert(scriptSources[3] === '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v7-focus-20261009', 'Shared sidebar taxonomy must load before registry filters.');
 
 for (const asset of legacyAssets) {
   assert(!html.includes(asset), `Legacy registry asset is still loaded by index.html: ${asset}`);
