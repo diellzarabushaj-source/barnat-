@@ -5,6 +5,7 @@ const SyncOutbox = require('../lib/sync-outbox.js');
 const IcdPublicSource = require('../lib/icd-public-source.js');
 const IcdHealth = require('../lib/icd-health-audit.js');
 const SystemHealthSnapshot = require('../lib/system-health-snapshot.js');
+const RuntimeTelemetry = require('../lib/runtime-telemetry.js');
 
 const CURRENT_DOSAGE_SPREADSHEET_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
 const REQUIRED_DOSAGE_SHEETS = Object.freeze(['KARTELA_BARNAVE', 'DOZA_TE_RRITUR', 'DOZA_PEDIATRIKE']);
@@ -286,6 +287,7 @@ async function pediatricMasterExport(req, res) {
 module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 'private, no-store, max-age=0');
   res.setHeader('X-Content-Type-Options', 'nosniff');
+  if (String(req.query?.view || '') === 'telemetry') return RuntimeTelemetry.readSummary(req, res);
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ error:'Lejohet vetëm GET.' });

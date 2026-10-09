@@ -59,13 +59,14 @@ const stylesheetLinks = [...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href
 const scriptSources = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map(match => match[1]);
 
 const registryStyles = ['/registry-v2.css','/registry-atc-filter.css','/registry-column-filter.css','/registry-v2-dose-calculator.css','/drx-dashboard-stripe.css'];
-const registryScripts = ['/dose-core.js','/drx-modal-focus.js','/dose-runtime-browser.js','/sidebar-taxonomy-v3.js','/classification-data.js','/registry-atc-filter.js','/registry-substance-data.js','/registry-substance-normalization.js','/registry-column-model.js','/registry-column-filter.js','/registry-v2.js','/registry-v2-dose-calculator.js'];
+const registryScripts = ['/drx-runtime-telemetry.js','/dose-core.js','/drx-modal-focus.js','/dose-runtime-browser.js','/sidebar-taxonomy-v3.js','/classification-data.js','/registry-atc-filter.js','/registry-substance-data.js','/registry-substance-normalization.js','/registry-column-model.js','/registry-column-filter.js','/registry-v2.js','/registry-v2-dose-calculator.js'];
 assert(stylesheetLinks.length === registryStyles.length, `Registry v2 stylesheet inventory differs; found ${stylesheetLinks.length}.`);
 assert(scriptSources.length === registryScripts.length, `Registry v2 script inventory differs; found ${scriptSources.length}.`);
 registryStyles.forEach((asset,index) => assert(stylesheetLinks[index].split('?')[0] === asset, `Registry stylesheet order differs at ${asset}.`));
 registryScripts.forEach((asset,index) => assert(scriptSources[index].split('?')[0] === asset, `Registry script order differs at ${asset}.`));
-assert(stylesheetLinks.at(-1) === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-p2', 'Shared Stripe shell v8 must load last.');
-assert(scriptSources[3] === '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v7-focus-20261009', 'Shared sidebar taxonomy must load before registry filters.');
+assert(stylesheetLinks.at(-1) === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009', 'Shared Stripe shell v8 must load last.');
+assert(scriptSources[4] === '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v7-focus-20261009', 'Shared sidebar taxonomy must load before registry filters.');
+assert(/<script type="module" src="\/drx-runtime-telemetry\.js\?v=20261009-rum-v1"><\/script>/.test(html), 'The bounded telemetry observer must use its own module entry.');
 
 for (const asset of legacyAssets) {
   assert(!html.includes(asset), `Legacy registry asset is still loaded by index.html: ${asset}`);
@@ -171,7 +172,7 @@ console.log(JSON.stringify({
   architecture:'registry-v2',
   stylesheets:stylesheetLinks,
   scripts:scriptSources,
-  shellVersion:'drx-dashboard-stripe-v8-mobile-finish-20260930-p2',
+  shellVersion:'drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009',
   tableHeaderCount,
   columnPickerStability:'registry-column-picker-stability-v2',
   dosageAutoload:'registry-dose-autoload-retry-v2',

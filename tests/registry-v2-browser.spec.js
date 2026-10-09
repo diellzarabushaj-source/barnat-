@@ -142,6 +142,65 @@ test.beforeEach(async ({ page }) => {
   await installApiMocks(page);
 });
 
+for (const width of [390,1440]) test(`light result pages hydrate only visible product doses and ignore old pages at ${width}px`,async ({page}) => {
+  await page.setViewportSize({width,height:900});
+  const dataset = Array.from({length:26},(_,index) => ({...rows[index%2],
+    id:`${String(index+1).padStart(8,'0')}-3333-4333-8333-333333333333`,registryNumber:index+1,tradeName:`PRODUCT ${index+1}`}));
+  await page.route('**/api/drug-search**',async route => {
+    const url = new URL(route.request().url()), currentPage = Number(url.searchParams.get('page') || 1);
+    const result = dataset.slice((currentPage-1)*25,currentPage*25).map(({adultDose,pediatricDose,...row}) => row);
+    return route.fulfill({json:{ok:true,rows:result,pagination:{page:currentPage,pageSize:25,total:26,totalPages:2,hasPrevious:currentPage>1,hasNext:currentPage<2},meta:{completeRegistry:true,doseHydrationRequired:true}}});
+  });
+  let firstBatch, firstArrived;
+  const firstRequest = new Promise(resolve => {firstArrived=resolve;});
+  const batches = [];
+  await page.route('**/api/dosage**',async route => {
+    const requested = new URL(route.request().url()).searchParams.get('nrs').split(',').map(Number);
+    batches.push(requested);
+    if (requested[0] === 1) {firstBatch=route;firstArrived();return;}
+    return route.fulfill({json:{ok:true,cards:requested.map(number => ({registryNumber:String(number),drugId:dataset[number-1].id,adultDose:'PAGE TWO EXACT',pediatricDose:''}))}});
+  });
+  await page.goto('/index.html?sort=substance&pageSize=25');
+  await firstRequest;
+  await expect(page.locator('#registryRows tr')).toHaveCount(25);
+  await expect(page.locator('[data-dose-adult="1"]')).toHaveAttribute('data-dose-status','loading');
+  await page.locator('[data-view="list"]').click();
+  await expect(page.locator('[data-dose-adult="1"]')).toHaveAttribute('data-dose-status','loading');
+  await expect(page.locator('[data-dose-adult="1"]')).not.toContainText('Pa dozë');
+  await page.locator('#nextPageButton').click();
+  await expect(page.locator('.registry-list-card')).toHaveCount(1);
+  await expect(page.locator('[data-dose-adult="26"]')).toContainText('PAGE TWO EXACT');
+  await firstBatch.fulfill({json:{ok:true,cards:dataset.slice(0,25).map(row => ({registryNumber:String(row.registryNumber),drugId:row.id,adultDose:'STALE PAGE ONE',pediatricDose:''}))}});
+  await expect(page.locator('[data-dose-adult="26"]')).toContainText('PAGE TWO EXACT');
+  await expect(page.locator('#registryList')).not.toContainText('STALE PAGE ONE');
+  expect(batches).toEqual([Array.from({length:25},(_,index)=>index+1),[26]]);
+  await page.locator('[data-view="table"]').click();
+  await expect(page.locator('#registryRows tr')).toHaveCount(1);
+  await expect(page.locator('[data-dose-adult="26"]')).toContainText('PAGE TWO EXACT');
+  await page.locator('[data-select-row]').check();
+  await expect.poll(()=>page.evaluate(()=>JSON.parse(sessionStorage.getItem('medindexPrescriptionSelection'))?.[0]?.id)).toBe(dataset[25].id);
+});
+
+test('light result dose batches reject wrong product IDs and recover without a false no-dose state',async ({page}) => {
+  await page.route('**/api/drug-search**',route => route.fulfill({json:{ok:true,rows:rows.map(({adultDose,pediatricDose,...row})=>row),pagination:{page:1,pageSize:25,total:2,totalPages:1},meta:{completeRegistry:true,doseHydrationRequired:true}}}));
+  let attempts = 0, releaseCorrect, correctArrived;
+  const correctRequest = new Promise(resolve=>{correctArrived=resolve;});
+  await page.route('**/api/dosage**',async route => {
+    attempts++;
+    if (attempts === 1) return route.fulfill({json:{ok:true,cards:rows.map(row=>({registryNumber:String(row.registryNumber),drugId:'33333333-3333-4333-8333-333333333333',adultDose:'WRONG PRODUCT',pediatricDose:''}))}});
+    releaseCorrect=route;correctArrived();
+  });
+  await page.goto('/index.html?sort=substance');
+  await correctRequest;
+  await expect(page.locator('[data-dose-adult="1"]')).toHaveAttribute('data-dose-status','loading');
+  await expect(page.locator('#registryRows')).not.toContainText('WRONG PRODUCT');
+  await expect(page.locator('#registryRows')).not.toContainText('Pa dozë të publikuar');
+  await releaseCorrect.fulfill({json:{ok:true,cards:rows.map(row=>({registryNumber:String(row.registryNumber),drugId:row.id,adultDose:'IDENTIFIED DOSE',pediatricDose:''}))}});
+  await expect(page.locator('[data-dose-adult="1"]')).toContainText('IDENTIFIED DOSE');
+  await expect(page.locator('[data-dose-pediatric="1"]')).toContainText('Pa dozë të publikuar');
+  expect(attempts).toBe(2);
+});
+
 for (const width of [1440,390]) test(`substance spelling variants share one filter while products and original names remain distinct at ${width}px`, async ({page}) => {
   const dataset = ['amoxicilin','Amoxicilin','Amoxicillin','Amoxicillin trihydrate','Amoxicillin; Clavulanic acid'].map((activeSubstance,i)=>({
     ...rows[1],id:`${i+3}${'3'.repeat(7)}-3333-4333-8333-333333333333`,registryNumber:i+3,pdid:String(i+1003),tradeName:'SUBSTANCE PRODUCT '+(i+1),activeSubstance,

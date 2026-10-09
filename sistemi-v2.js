@@ -59,6 +59,10 @@
   async function syncProfile(payload){
     await loadRuntime('/medindex-brand-runtime.js?v=drx-brand-v8-profileguard1','data-drx-profile-runtime').catch(()=>null);
     window.MedIndexProfile?.adoptAccount?.(payload);
+    if(payload.authenticated===true && payload.authUser?.adminConsole===true){
+      await loadRuntime('/runtime-metrics-panel.js?v=20261009','data-drx-runtime-metrics-panel').catch(()=>null);
+      window.DRxRuntimeMetrics?.mount?.(payload);
+    }
     window.dispatchEvent(new CustomEvent('medindex:auth-ready',{detail:payload}));
   }
 

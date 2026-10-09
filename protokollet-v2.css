@@ -2870,7 +2870,7 @@ body{background:#f7f8fb;color:var(--clinical-text)}
   --protocol-doc-ink:#0d253d;
   --protocol-doc-copy:#42566b;
   --protocol-doc-muted:#66788d;
-  --protocol-doc-muted-2:#8795a7;
+  --protocol-doc-muted-2:#5c6e82;
   --protocol-doc-line:#e3e8ee;
   --protocol-doc-soft:#f6f9fc;
   --protocol-doc-accent:#635bff;
@@ -2894,7 +2894,7 @@ html.drx-unified-sidebar body{background:#fff!important}
   height:30px;
   border-radius:7px;
   background:#f0efff;
-  color:#635bff;
+  color:#5144cf;
   font-size:9px;
   font-weight:600;
 }
@@ -2904,7 +2904,7 @@ html.drx-unified-sidebar body{background:#fff!important}
   font-weight:500;
 }
 .protocol-source-badge small{
-  color:#8795a7;
+  color:#5c6e82;
   font-size:9.5px;
   font-weight:300;
 }
@@ -2980,19 +2980,19 @@ html.drx-unified-sidebar body{background:#fff!important}
 }
 .protocol-toolbar-heading p{
   margin:0;
-  color:#66788d;
+  color:#5c6e82;
   font-size:10.5px;
   font-weight:300;
   line-height:1.5;
 }
-.protocol-toolbar-shortcut{color:#8795a7}
+.protocol-toolbar-shortcut{color:#5c6e82}
 .protocol-toolbar-shortcut kbd{
   min-width:21px;
   height:21px;
   border-color:var(--protocol-doc-line);
   border-radius:5px;
   background:#f8fafc;
-  color:#8795a7;
+  color:#5c6e82;
   font:500 9px/1 Inter,system-ui,sans-serif;
 }
 .clinical-toolbar{
@@ -3014,7 +3014,7 @@ html.drx-unified-sidebar body{background:#fff!important}
 }
 .protocol-filter-field>span{
   padding:0 2px;
-  color:#66788d;
+  color:#5c6e82;
   font-size:10px;
   font-weight:400;
   line-height:1.2;
@@ -3029,7 +3029,7 @@ html.drx-unified-sidebar body{background:#fff!important}
   width:15px;
   height:15px;
   transform:translateY(-50%);
-  color:#8795a7;
+  color:#5c6e82;
   pointer-events:none;
 }
 .clinical-toolbar .protocol-search-field input,
@@ -3070,7 +3070,7 @@ html.drx-unified-sidebar body{background:#fff!important}
 .protocol-list-head .clinical-status{
   min-height:0;
   margin:3px 0 0;
-  color:#8795a7;
+  color:#5c6e82;
   font-size:9.5px;
   font-weight:300;
 }
@@ -3079,7 +3079,7 @@ html.drx-unified-sidebar body{background:#fff!important}
   padding:0 9px;
   border-color:var(--protocol-doc-line);
   background:#fff;
-  color:#8795a7;
+  color:#5c6e82;
   font-size:9.5px;
 }
 .protocol-list-count span{color:#42566b;font-weight:500}
@@ -3101,7 +3101,7 @@ html.drx-unified-sidebar body{background:#fff!important}
   border:1px solid #e5e8ec;
   border-radius:7px;
   background:#f8fafc;
-  color:#8795a7;
+  color:#5c6e82;
   font-size:9.5px;
   font-weight:600;
 }
@@ -3115,7 +3115,7 @@ html.drx-unified-sidebar body{background:#fff!important}
 }
 .clinical-row p{
   margin:5px 0 0;
-  color:#66788d;
+  color:#5c6e82;
   font-size:10.5px;
   font-weight:300;
   line-height:1.5;
@@ -3127,7 +3127,7 @@ html.drx-unified-sidebar body{background:#fff!important}
   border:1px solid #e6e8ec;
   border-radius:999px;
   background:#f8fafc;
-  color:#66788d;
+  color:#5c6e82;
   font-size:8.5px;
   font-weight:500;
 }
@@ -3318,12 +3318,12 @@ html.drx-unified-sidebar body{background:#fff!important}
 }
 .protocol-source-panel p{
   margin:0 0 9px;
-  color:#8795a7;
+  color:#5c6e82;
   font-size:9.5px;
   line-height:1.5;
 }
 .protocol-source-facts dt{
-  color:#8795a7;
+  color:#5c6e82;
   font-size:8px;
   font-weight:600;
 }
@@ -3336,7 +3336,7 @@ html.drx-unified-sidebar body{background:#fff!important}
 .protocol-contents a{
   padding:6px 7px;
   border-radius:6px;
-  color:#66788d;
+  color:#5c6e82;
   font-size:9px;
   line-height:1.35;
 }
@@ -3430,7 +3430,7 @@ html.drx-unified-sidebar body{background:#fff!important}
   margin-top:20px;
   padding-top:13px;
   border-top:1px solid var(--protocol-doc-line);
-  color:#8795a7;
+  color:#5c6e82;
 }
 
 @media(max-width:1100px){

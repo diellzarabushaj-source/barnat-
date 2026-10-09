@@ -36,20 +36,20 @@ const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>
   .map(match => match[1]);
 const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)]
   .map(match => match[1]);
-const pageRuntimes = scripts.filter(src => !/(?:phase9-personal-entities-client|sidebar-taxonomy-v3|pediatric-common-liquid-core|pediatric-weight-age-core)\.js/.test(src));
+const pageRuntimes = scripts.filter(src => !/(?:phase9-personal-entities-client|sidebar-taxonomy-v3|pediatric-common-liquid-core|pediatric-weight-age-core|drx-runtime-telemetry)\.js/.test(src));
 
 assert.equal(styles.length, 2, 'Dozologjia must keep exactly two stylesheet owners');
-assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-p2');
+assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009');
 assert.ok(scripts.includes('/phase9-personal-entities-client.js?v=phase9b'));
 assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v7-focus-20261009'));
 assert.ok(scripts.includes('/pediatric-common-liquid-core.js?v=10'));
 assert.ok(scripts.includes('/pediatric-weight-age-core.js?v=1'));
 assert.equal(pageRuntimes.length, 1, 'Dozologjia must own exactly one page runtime');
 
-const cssVersion = styles[0]?.match(/^\/dozologjia-v2\.css\?v=(\d+)$/)?.[1] || '';
-const jsVersion = pageRuntimes[0]?.match(/^\/dozologjia-v2\.js\?v=(\d+)$/)?.[1] || '';
+const cssVersion = styles[0]?.match(/^\/dozologjia-v2\.css\?v=(\d+(?:-audit-20261009)?)$/)?.[1] || '';
+const jsVersion = pageRuntimes[0]?.match(/^\/dozologjia-v2\.js\?v=(\d+(?:-audit-20261009)?)$/)?.[1] || '';
 assert.equal(cssVersion, jsVersion);
-assert.ok(Number(cssVersion) >= 49);
+assert.ok(Number(cssVersion.split('-')[0]) >= 49);
 
 assert.match(html, /name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/);
 assert.match(html, /id="pediatricCommonSearch"[^>]*autocapitalize="none"[^>]*spellcheck="false"[^>]*enterkeyhint="search"/);

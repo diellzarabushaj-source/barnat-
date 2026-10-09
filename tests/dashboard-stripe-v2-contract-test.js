@@ -84,7 +84,8 @@ for (const [htmlFile, cssFile, jsFile, markerName] of [
   const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)].map(match => match[1]);
   const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map(match => match[1]);
   const sharedRuntimes = scripts.filter(src => /(?:drx-modal-focus|phase9-personal-entities-client|sidebar-taxonomy-v3|pediatric-common-liquid-core|pediatric-weight-age-core)\.js/.test(src));
-  const pageRuntimes = scripts.filter(src => !/(?:drx-modal-focus|phase9-personal-entities-client|sidebar-taxonomy-v3|pediatric-common-liquid-core|pediatric-weight-age-core)\.js/.test(src));
+  const pageRuntimes = scripts.filter(src => !/(?:drx-runtime-telemetry|drx-modal-focus|phase9-personal-entities-client|sidebar-taxonomy-v3|pediatric-common-liquid-core|pediatric-weight-age-core)\.js/.test(src));
+  assert.equal(scripts.filter(src => /drx-runtime-telemetry\.js/.test(src)).length, 1, `${htmlFile}: shared telemetry must load once`);
   assert.match(html, new RegExp(`data-drx-app="${markerName}"`));
   assert.equal(styles.length, 2, `${htmlFile}: standalone V2 must load page CSS plus shared Stripe shell CSS`);
   assert.match(html, /drx-unified-sidebar/, `${htmlFile}: unified sidebar marker missing`);

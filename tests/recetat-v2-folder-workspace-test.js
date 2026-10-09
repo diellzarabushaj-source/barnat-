@@ -37,10 +37,10 @@ assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/);
 
 const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)].map(match => match[1]);
 const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map(match => match[1]);
-const pageRuntimes = scripts.filter(src => !/sidebar-taxonomy-v3\.js|drx-modal-focus\.js/.test(src));
+const pageRuntimes = scripts.filter(src => !/sidebar-taxonomy-v3\.js|drx-modal-focus\.js|drx-runtime-telemetry\.js/.test(src));
 assert.equal(styles.length, 2, 'Recetat V2 must load only page CSS + shared shell CSS');
 assert.equal(styles[0], '/recetat-v2.css?v=' + require('../runtime-asset-manifest.json')['recetat.html']['recetat-v2.css']);
-assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-p2');
+assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009');
 assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v7-focus-20261009'));
 assert.deepEqual(pageRuntimes, ['/recetat-v2.js?v=' + require('../runtime-asset-manifest.json')['recetat.html']['recetat-v2.js']]);
 assert.ok(scripts.indexOf('/drx-modal-focus.js?v=p1-20261008') < scripts.indexOf(pageRuntimes[0]));

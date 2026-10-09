@@ -1,5 +1,20 @@
 /* Sistemi V2 — consolidated operational dashboard. */
 
+.runtime-metric-cohorts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px;margin-top:16px}
+.runtime-metric-card{min-width:0;padding:18px;border:1px solid #dce4ee;border-radius:12px;background:#fff;color:#263a50}
+.runtime-metric-card header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.runtime-metric-card h3{margin:0;font-size:16px;line-height:1.5}
+.runtime-metric-card p,.runtime-metric-card dt{font-size:14px;color:#5c6e82;line-height:1.6}
+.runtime-metric-card dl{display:grid;gap:12px;margin:18px 0}
+.runtime-metric-card dd{margin:3px 0 0;font-size:15px;line-height:1.5;font-weight:600;color:#263a50;overflow-wrap:anywhere}
+.runtime-metric-state{padding:5px 9px;border:1px solid #dce4ee;border-radius:7px;font-size:13px;line-height:1.5;color:#40566d}
+.runtime-metric-state[data-state="warning"],.runtime-metric-card .runtime-metric-alert{color:#9c3542}
+.runtime-metric-state[data-state="healthy"]{color:#246445}
+.runtime-metric-explanation{margin-top:18px;color:#40566d;font-size:14px;line-height:1.7}
+.runtime-metric-explanation summary{display:flex;align-items:center;min-height:44px;cursor:pointer;font-weight:600}
+.runtime-metric-explanation summary:focus-visible{outline:3px solid #533afd;outline-offset:3px;border-radius:4px}
+#systemTelemetryRefresh{min-height:44px}
+
 @font-face{font-family:Inter;src:url('/fonts/inter-latin-variable-normal.woff2') format('woff2');font-style:normal;font-weight:100 900;font-display:swap}
 :root{
   --ink:#0d253d;--ink-2:#34475c;--muted:#66788d;--muted-2:#8795a7;
@@ -178,7 +193,7 @@ body{background:#f7f8fb;color:var(--system-ink)}
 .system-metrics article{padding:15px 17px;border:0;border-right:1px solid #e4e7ec;border-radius:0;box-shadow:none}
 .system-metrics article:last-child{border-right:0}
 .system-metrics span{font-size:10px;font-weight:450}.system-metrics strong{font-size:23px;font-weight:330;color:#0d253d}
-.system-metrics small{font-size:9px;color:#98a2b3}
+.system-metrics small{font-size:9px;color:#5c6e82}
 .system-grid{gap:12px}
 .system-panel{padding:16px;border-radius:12px}
 .system-panel>header{margin-bottom:13px}
@@ -219,6 +234,10 @@ html.dark .system-hero,html.dark .system-panel,html.dark .system-metrics article
 html.dark .system-source,html.dark .system-event,html.dark .system-icd-metrics article,html.dark .system-probe{
   background:#fff;border-color:#e4e7ec;color:#0d253d
 }
+/* The operational console keeps white panels in both shell themes. Its text
+   tokens and metric values must follow that actual surface. */
+html.dark .system-health{--system-ink:#0d253d;--system-muted:#5c6e82;--system-border:#e4e7ec;--system-soft:#f2f0ff}
+html.dark .system-metrics strong,html.dark .system-icd-metrics strong{color:#0d253d}
 @media(max-width:900px){
   .system-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
   .system-metrics article:nth-child(2){border-right:0}

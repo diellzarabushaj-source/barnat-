@@ -65,9 +65,9 @@ async function main() {
   assert.equal(context.DrxRegistryColumns.value({activeSubstance:'Amoxicilin'},'substance'),'Amoxicillin');
 
   // Exercise the actual authenticated gateway routing and complete pagination.
-  const authorized = registry.authorized, snapshot = data.snapshot;
+  const authorized = registry.authorized, snapshot = data.resultSnapshot;
   registry.authorized = async () => true;
-  data.snapshot = async () => Array.from({length:61},(_,i)=>({...rows[i%rows.length],id:String(i),registryNumber:i+1}));
+  data.resultSnapshot = async () => Array.from({length:61},(_,i)=>({...rows[i%rows.length],id:String(i),registryNumber:i+1}));
   try {
     for (const view of ['registry-page','registry-search']) {
       const res = {setHeader(){},status(code){this.statusCode=code;return this;},json(body){this.body=body;return this;}};
@@ -80,7 +80,7 @@ async function main() {
       assert.equal(res.body.meta.completeRegistry,true);
       assert.ok(res.body.rows.every(row=>row.activeSubstance==='Amoxicillin' && !Object.hasOwn(row,'_search')));
     }
-  } finally { registry.authorized=authorized; data.snapshot=snapshot; }
+  } finally { registry.authorized=authorized; data.resultSnapshot=snapshot; }
   console.log('Substance names: reviewed spelling/case merges, clinical distinctions, raw source preservation, browser/server parity and complete API pagination passed.');
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});

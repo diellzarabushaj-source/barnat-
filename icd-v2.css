@@ -520,7 +520,7 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 .icd-quick-group{display:grid;grid-template-columns:126px minmax(0,1fr);align-items:center;gap:8px;min-width:0}
 .icd-quick-label{display:flex;align-items:center;gap:5px;min-width:0;color:#627286;white-space:nowrap}
 .icd-quick-label strong{font-size:10.5px;font-weight:700;color:#40546b}
-.icd-quick-label small{font-size:9px;color:#97a2af}
+.icd-quick-label small{font-size:9px;color:#5c6e82}
 .icd-quick-dot{width:6px;height:6px;flex:none;border-radius:999px;background:#6255ef;box-shadow:0 0 0 3px rgba(98,85,239,.09)}
 .icd-quick-scroll{
   display:flex;gap:6px;min-width:0;overflow-x:auto;padding:1px 2px 3px;
@@ -540,7 +540,7 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 .icd-quick-chip:active{transform:translateY(1px)}
 .icd-quick-chip:focus-visible{outline:2px solid var(--stripe);outline-offset:2px}
 .icd-quick-group.is-urgent .icd-quick-label strong{color:#a22f39}
-.icd-quick-group.is-urgent .icd-quick-label small{color:#bd7178}
+.icd-quick-group.is-urgent .icd-quick-label small{color:#9c3542}
 .icd-quick-group.is-urgent .icd-quick-dot{background:#d6424f;box-shadow:0 0 0 3px rgba(214,66,79,.1)}
 .icd-quick-chip.is-urgent{border-color:#f0cdd1;background:#fffafa;color:#9b3640}
 .icd-quick-chip.is-urgent b{color:#c92f3d}
@@ -649,7 +649,7 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 .clinical-quick-card.is-active .clinical-quick-arrow{color:#5a49da}
 .clinical-hub-loading{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
 .clinical-hub-loading span{height:60px;border-radius:11px;background:linear-gradient(90deg,#eef1f4 20%,#f8f9fb 45%,#eef1f4 70%);background-size:200% 100%;animation:icdskel 1.25s linear infinite}
-.clinical-hub-empty{grid-column:1/-1;padding:16px;border:1px dashed #dde3e9;border-radius:10px;color:#81909f;font-size:10.5px;text-align:center}
+.clinical-hub-empty{grid-column:1/-1;padding:16px;border:1px dashed #dde3e9;border-radius:10px;color:#5c6e82;font-size:10.5px;text-align:center}
 
 .clinical-action-panel{
   margin:12px 16px 3px;border:1px solid #dce3e9;border-radius:16px;background:#f8fafc;
@@ -889,7 +889,7 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
   gap:5px;margin:0 0 12px;padding:4px;border:1px solid #e7eaf0;border-radius:13px;background:#f7f8fb
 }
 .clinical-filter-chip{
-  min-height:32px;padding:0 10px;border-color:transparent;border-radius:9px;background:transparent;color:#6e7b8c;
+  min-height:32px;padding:0 10px;border-color:transparent;border-radius:9px;background:transparent;color:#5c6e82;
   font-size:9.8px;font-weight:720
 }
 .clinical-filter-chip:hover{border-color:#e0dcff;background:#fff;color:#5143cf}
@@ -1483,7 +1483,7 @@ img,svg,video,canvas{max-width:100%}
   box-shadow:0 22px 60px rgba(52,43,120,.075),0 3px 10px rgba(52,43,120,.03)
 }
 .icd-search-stage-copy h2{color:#172f49;font-weight:670;letter-spacing:-.035em}
-.icd-search-stage-copy p{color:#7b8797}
+.icd-search-stage-copy p{color:#5c6e82}
 .search-box-primary input{
   border-color:#c9c5ee;border-radius:16px;background:rgba(255,255,255,.985);
   box-shadow:0 14px 34px rgba(31,43,76,.07),inset 0 1px 0 #fff
@@ -1526,7 +1526,7 @@ img,svg,video,canvas{max-width:100%}
   border-color:#d9d4f7;background:#f7f5ff;color:#5243ce
 }
 .chapter-copy strong{color:#2e455b;font-weight:620}
-.chapter-copy small{color:#8490a0}
+.chapter-copy small{color:#5c6e82}
 
 /* Node hero */
 .node-hero{
@@ -1540,7 +1540,7 @@ img,svg,video,canvas{max-width:100%}
   color:#5141d0;box-shadow:inset 0 1px 0 #fff
 }
 .hero-copy h2{color:#19334d;font-weight:620;letter-spacing:-.02em}
-.hero-copy p{color:#7d8997}
+.hero-copy p{color:#5c6e82}
 
 /* Diagnosis launcher */
 .clinical-quick-hub{
@@ -1556,7 +1556,7 @@ img,svg,video,canvas{max-width:100%}
 }
 .clinical-hub-kicker{color:#6457d5}
 .clinical-hub-head h3{color:#18334d;font-weight:760;letter-spacing:-.025em}
-.clinical-hub-head p{color:#7c8999}
+.clinical-hub-head p{color:#5c6e82}
 .clinical-hub-count{
   border-color:#dfdcf8;background:linear-gradient(180deg,#fbfaff,#f6f4ff);
   color:#5e50d2;box-shadow:inset 0 1px 0 #fff

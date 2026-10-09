@@ -9,10 +9,11 @@
   <title>DRx | Sistemi</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/sistemi-v2.css?v=2">
-  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-p2">
+  <link rel="stylesheet" href="/sistemi-v2.css?v=2-audit-20261009">
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
+  <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v7-focus-20261009" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/sistemi-v2.js?v=2" defer></script>
+<script src="/sistemi-v2.js?v=2-audit-20261009" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#systemHealth">Kalo te statusi i sistemit</a>
@@ -211,6 +212,21 @@
       </header>
       <p class="system-panel-copy" id="systemUsersSummary">Aprovimi i llogarive, titujt profesionalë dhe dokumentet e verifikimit janë në panelin e administrimit.</p>
       <p><a class="system-refresh" id="systemUsersLink" href="/admin">Hap panelin e administrimit</a></p>
+    </section>
+
+    <section class="system-panel" id="systemTelemetryPanel" aria-labelledby="systemTelemetryTitle" hidden>
+      <header>
+        <div><p class="system-kicker">Përvoja në website</p><h2 id="systemTelemetryTitle">Matjet e përdorimit</h2></div>
+        <button type="button" class="system-refresh" id="systemTelemetryRefresh">Rifresko matjet</button>
+      </header>
+      <p class="system-panel-copy" id="systemTelemetrySummary" role="status" aria-live="polite">Duke ngarkuar matjet…</p>
+      <div class="runtime-metric-cohorts" id="systemTelemetryCohorts"></div>
+      <details class="runtime-metric-explanation">
+        <summary>Si lexohen këto matje</summary>
+        <p>Matjet përmbledhin një kampion prej 10% të hapjeve. Vlerësimi kërkon të paktën 20 kampione për çdo tregues; të dhënat që mungojnë nuk quhen zero.</p>
+        <p>Shfaqet kufiri i sipërm i p75: koha ose vlera që mbulon afërsisht 75% të kampioneve. Objektivat janë hapje deri në 2.5 sekonda, reagim deri në 200 ms dhe zhvendosje deri në 0.1.</p>
+        <p>Gabimet tregojnë klasa teknike të vërejtura në kampion. Paneli nuk përmban tekst recetash, shënimesh ose kërkimesh klinike.</p>
+      </details>
     </section>
 
     <section class="system-panel system-audit-panel">

@@ -1,14 +1,40 @@
 {
   "index.html": {
-    "registry-v2.css": "registry-v2-p2-20261008",
-    "registry-v2.js": "registry-v2-p2-20261008",
+    "registry-v2.css": "registry-v2-remaining-20261009",
+    "registry-v2.js": "registry-v2-remaining-20261009",
     "registry-v2-dose-calculator.css": "registry-v2-dose-calculator-p1-20261008",
     "registry-v2-dose-calculator.js": "registry-v2-dose-calculator-p1-20261008",
-    "drx-modal-focus.js": "p1-20261008"
+    "drx-modal-focus.js": "p1-20261008",
+    "drx-runtime-telemetry.js": "20261009-rum-v1"
   },
   "recetat.html": {
     "recetat-v2.css": "20-p2-20261008",
     "recetat-v2.js": "20-p2-20261008",
-    "drx-modal-focus.js": "p1-20261008"
+    "drx-modal-focus.js": "p1-20261008",
+    "drx-runtime-telemetry.js": "20261009-rum-v1"
+  },
+  "klasifikimi.html": {
+    "drx-runtime-telemetry.js": "20261009-rum-v1"
+  },
+  "icd.html": {
+    "drx-runtime-telemetry.js": "20261009-rum-v1"
+  },
+  "dozologjia.html": {
+    "drx-runtime-telemetry.js": "20261009-rum-v1"
+  },
+  "protokollet.html": {
+    "drx-runtime-telemetry.js": "20261009-rum-v1"
+  },
+  "urgjencat.html": {
+    "drx-runtime-telemetry.js": "20261009-rum-v1"
+  },
+  "analizat.html": {
+    "drx-runtime-telemetry.js": "20261009-rum-v1"
+  },
+  "medical-hub.html": {
+    "drx-runtime-telemetry.js": "20261009-rum-v1"
+  },
+  "sistemi.html": {
+    "drx-runtime-telemetry.js": "20261009-rum-v1"
   }
 }

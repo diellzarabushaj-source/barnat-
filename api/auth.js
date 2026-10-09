@@ -15,6 +15,7 @@ const AdminAccess = require('../lib/admin-access.js');
 const ProfessionalVerification = require('../lib/professional-verification.js');
 const Phase4AuthBootstrap = require('../lib/phase4-auth-bootstrap-route.js');
 const SharedBudget = require('../lib/shared-request-budget.js');
+const RuntimeTelemetry = require('../lib/runtime-telemetry.js');
 
 const attempts = new Map();
 const WINDOW_MS = 15 * 60 * 1000;
@@ -260,6 +261,8 @@ async function renewDeviceSession(auth, device) {
 
 module.exports = async function handler(req, res) {
   securityHeaders(res);
+
+  if (queryValue(req, 'scope') === 'telemetry') return RuntimeTelemetry.ingest(req, res);
 
   if (Phase4AuthBootstrap.requested(req)) return Phase4AuthBootstrap.handle(req, res);
 
