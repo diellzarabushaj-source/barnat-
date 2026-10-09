@@ -17,3 +17,5 @@ studio/.sanity/
 
 # Repomix packs the repo into a single file for AI tools; the output is a build artifact.
 repomix-output.*
+drx-phase9-browser-*.png
+drx-phase9-browser-evidence.json

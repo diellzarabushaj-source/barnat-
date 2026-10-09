@@ -174,5 +174,7 @@
   "tests/dose-row-visual-rules-test.js",
   "tests/user-data-key-rotation-test.js",
   "tests/shared-request-budget-test.js",
-  "tests/runtime-telemetry-test.js"
+  "tests/runtime-telemetry-test.js",
+  "tests/drx-phase9-personal-entity-sync-test.js",
+  "tests/drx-phase10-pediatric-v3-calculator-test.js"
 ]

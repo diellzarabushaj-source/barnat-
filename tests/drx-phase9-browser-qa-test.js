@@ -127,6 +127,12 @@ async function inspectViewport(browser,entry){
   page.on('console',message=>{ if(message.type()==='error') errors.push('console: '+message.text()); });
   await installRoutes(page,library);
 
+  // This is the archived Phase 9 pilot, not the current 50-drug workspace.
+  // Its existing tab/identity/prescription assertions remain intact.
+  for(const [file,type] of [['dozologjia.html','text/html'],['dozologjia-v2.js','text/javascript'],['dozologjia-v2.css','text/css']]){
+    await page.route('**/'+file+'*',route=>route.fulfill({contentType:type,body:fs.readFileSync(path.join(ROOT,'docs/archive/dozologjia-before-v27',file+'.txt'),'utf8')}));
+  }
+
   await page.goto(BASE+'/dozologjia.html',{waitUntil:'domcontentloaded'});
   await page.locator('#dosageSearch').waitFor({state:'visible',timeout:10000});
   await page.locator('#dosageSearch').fill('para');
@@ -233,8 +239,8 @@ async function main(){
         {name:'tablet-768',viewport:{width:768,height:1024}},
         {name:'desktop-1440',viewport:{width:1440,height:1000}},
       ]) results.push(await inspectViewport(browser,entry));
-      fs.writeFileSync(path.join(ROOT,'drx-phase9-browser-evidence.json'),JSON.stringify({evidenceVersion:'drx-phase9-browser-qa-v1',generatedAt:new Date().toISOString(),viewports:results,serverErrors:stderr.trim()},null,2)+'\n');
-      console.log('DRx Phase 9 browser QA: PASS');
+      fs.writeFileSync(path.join(ROOT,'drx-phase9-browser-evidence.json'),JSON.stringify({evidenceVersion:'drx-phase9-browser-qa-v1',surface:'archived-pre-v27-pilot',generatedAt:new Date().toISOString(),viewports:results,serverErrors:stderr.trim()},null,2)+'\n');
+      console.log('DRx historical Phase 9 pilot browser QA: PASS');
     }finally{ await browser.close(); }
   }finally{ server.kill('SIGTERM'); }
 }

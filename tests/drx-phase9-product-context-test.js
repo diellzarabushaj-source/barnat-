@@ -7,7 +7,8 @@ const cp=require('node:child_process');
 const migration=fs.readFileSync('supabase/migrations/20260830220957_drx_phase9d_product_context.sql','utf8');
 const rollback=fs.readFileSync('supabase/drx-phase9d-product-context-rollback.sql','utf8');
 const handler=fs.readFileSync('lib/pediatric-dosage-handler-core.js','utf8');
-const ui=fs.readFileSync('dozologjia-v2.js','utf8');
+// Retain the historical pilot integration alongside the live backend contract.
+const ui=fs.readFileSync('docs/archive/dozologjia-before-v27/dozologjia-v2.js.txt','utf8');
 const history=JSON.parse(fs.readFileSync('supabase/migration-history.json','utf8'));
 
 assert.match(migration,/drx_phase9_product_context_v1/);

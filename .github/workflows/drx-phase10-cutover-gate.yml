@@ -2,6 +2,14 @@ name: DRx Phase 10 cutover gate
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/drx-phase10-cutover-gate.yml'
+      - 'tests/drx-phase10*.js'
+      - 'lib/pediatric-v3-runtime.js'
+      - 'lib/pediatric-dosage-handler-core.js'
+      - 'registry-v2-dose-calculator.js'
+      - 'dozologjia*'
   push:
     branches:
       - main
@@ -75,7 +83,7 @@ jobs:
     timeout-minutes: 15
     env:
       MEDINDEX_SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co
-      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+      SUPABASE_SECRET_KEY: ${{ github.event_name != 'pull_request' && secrets.SUPABASE_SECRET_KEY || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -122,12 +130,16 @@ jobs:
       - name: Phase 10K current restore test evidence
         run: node tests/drx-phase10k-restore-test-evidence-test.js
       - name: Live Phase 10 controlled canary
+        if: github.event_name != 'pull_request'
         run: node scripts/drx-phase10-controlled-canary.js
       - name: Live Phase 10 pediatric V3 calculator
+        if: github.event_name != 'pull_request'
         run: node scripts/drx-phase10-pediatric-v3-live.js
       - name: Live Phase 10 legacy retirement preflight
+        if: github.event_name != 'pull_request'
         run: node scripts/drx-phase10-legacy-retirement-preflight.js
       - name: Live Phase 10 status
+        if: github.event_name != 'pull_request'
         run: node scripts/drx-phase10-status.js
       - name: Upload Phase 10A evidence
         uses: actions/upload-artifact@v4
