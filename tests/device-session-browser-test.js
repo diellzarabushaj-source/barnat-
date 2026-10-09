@@ -182,6 +182,12 @@ async function expectVisibleResume(page) {
     page = await context.newPage();
     await page.goto(base + '/recetat.html');
     assert.equal(new URL(page.url()).pathname, '/landing.html', 'Logout must survive a browser restart.');
+    // End the landing page's background entry checks before injecting the
+    // invalid credential. They can otherwise consume/clear it before the
+    // protected navigation under test, hiding the invalid-device message.
+    await context.close(); context = null;
+    context = await launch();
+    page = await context.newPage();
     await context.addCookies([{ name:'medindex_device', value:'forged', url:base, secure:true, httpOnly:true, sameSite:'Lax' }]);
     await page.goto(base + '/recetat.html');
     await page.getByRole('status').filter({hasText:'Hyrja e ruajtur nuk është më e vlefshme'}).waitFor();
