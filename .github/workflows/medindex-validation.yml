@@ -87,7 +87,9 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium webkit
 
       - name: Verify P1 and P2 mobile, desktop and clinical workflows
-        run: pnpm exec playwright test tests/audit-p1-browser.spec.js --config=playwright.registry-v2.config.js
+        run: |
+          pnpm exec playwright test tests/audit-p1-browser.spec.js tests/runtime-metrics-panel-browser.spec.js --config=playwright.registry-v2.config.js
+          node tests/runtime-telemetry-browser-test.js
 
       - name: Verify the Recetat V2 prescription workspace
         shell: bash

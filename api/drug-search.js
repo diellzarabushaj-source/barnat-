@@ -336,7 +336,7 @@ async function sendColumnQuery(req, res, startedAt, facet = false) {
   const request = buildPageRequest(query);
   const allRows = facet
     ? await ColumnData.facetSnapshot(LIST_SELECT,listRow,query.column,filters,query.refresh === 'true')
-    : await ColumnData.snapshot(LIST_SELECT, listRow, query.refresh === 'true');
+    : await ColumnData.resultSnapshot(LIST_SELECT,listRow,clean(query.sort),filters,query.refresh === 'true');
   const rows = ColumnData.filterRows(allRows, {...request, columnFilters:filters}, FORM_CATEGORIES, facet ? query.column : '');
   setHeaders(res, startedAt, 'supabase-registry-columns');
   if (req.method === 'HEAD') return res.status(200).end();
@@ -346,7 +346,12 @@ async function sendColumnQuery(req, res, startedAt, facet = false) {
   }
   const sorted = ColumnData.sortRows(rows, clean(query.sort), request.direction);
   const total = rows.length, start = (request.page - 1) * request.pageSize;
-  return res.status(200).json({ok:true, rows:sorted.slice(start,start + request.pageSize).map(({_search, ...row}) => row), pagination:{page:request.page,pageSize:request.pageSize,total,totalPages:Math.max(1,Math.ceil(total/request.pageSize)),hasPrevious:request.page>1,hasNext:start+request.pageSize<total}, query:{...request, path:undefined, columnFilters:filters},meta:{source:'supabase',completeRegistry:true}});
+  const doseHydrationRequired = !ColumnData.facetNeedsDoses(clean(query.sort),filters);
+  const pageRows = sorted.slice(start,start + request.pageSize).map(({_search,...row}) => {
+    if (doseHydrationRequired) { delete row.adultDose; delete row.pediatricDose; }
+    return row;
+  });
+  return res.status(200).json({ok:true,rows:pageRows,pagination:{page:request.page,pageSize:request.pageSize,total,totalPages:Math.max(1,Math.ceil(total/request.pageSize)),hasPrevious:request.page>1,hasNext:start+request.pageSize<total},query:{...request,path:undefined,columnFilters:filters},meta:{source:'supabase',completeRegistry:true,doseHydrationRequired}});
 }
 
 async function handler(req, res) {

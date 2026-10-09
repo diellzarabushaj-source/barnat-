@@ -1,0 +1,7 @@
+{
+  "package": "web-vitals",
+  "version": "6.2.3",
+  "source": "https://github.com/GoogleChrome/web-vitals",
+  "license": "Apache-2.0",
+  "sha256": "bdf421fcbd62c2572c8b09096572262496e2bc54289bcae80c9fe94f6ca6769d"
+}

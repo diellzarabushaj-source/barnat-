@@ -35,10 +35,10 @@ const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>
   .map(match => match[1]);
 const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)]
   .map(match => match[1]);
-const pageRuntimes = scripts.filter(src => !/sidebar-taxonomy-v3\.js/.test(src));
+const pageRuntimes = scripts.filter(src => !/(?:drx-runtime-telemetry|sidebar-taxonomy-v3)\.js/.test(src));
 
 assert.equal(styles.length, 2, 'Protokollet V2 must load only page CSS + canonical Stripe shell');
-assert.ok(styles[0].includes('protokollet-v2.css?v=2'));
+assert.ok(styles[0].includes('protokollet-v2.css?v=2-audit-20261009'));
 assert.ok(styles[1].includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8'));
 assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v7-focus-20261009'), 'Protokollet shared sidebar runtime is missing');
 assert.equal(pageRuntimes.length, 1, 'Protokollet V2 must own one bundled runtime in addition to the shared sidebar runtime');

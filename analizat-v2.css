@@ -82,7 +82,7 @@ a{color:inherit}
 .lab-builder{position:relative;z-index:20;margin-bottom:18px;padding:14px;border:1px solid #dfe4eb;border-radius:12px;background:#fff;box-shadow:var(--shadow-sm)}
 .lab-builder-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:12px}
 .lab-builder-head h2,.lab-plan-head h2,.lab-summary-head h2{margin:3px 0 0;color:#263d54;font-size:16px;font-weight:500;letter-spacing:-.1px}
-.lab-builder-head p,.lab-plan-head p{margin:5px 0 0;color:#7b8999;font-size:10.5px;line-height:1.45}
+.lab-builder-head p,.lab-plan-head p{margin:5px 0 0;color:#5c6e82;font-size:10.5px;line-height:1.45}
 .lab-builder-kicker{color:#635bff;font-size:9px;font-weight:600;letter-spacing:.055em;text-transform:uppercase}
 .lab-clear-plan{min-height:34px;padding:0 11px;border:1px solid #dfe4eb;border-radius:7px;background:#fff;color:#66788d;font-size:10px;font-weight:500;cursor:pointer}
 .lab-clear-plan:hover{border-color:#cbd4df;background:#f8fafc;color:#34475c}
@@ -96,13 +96,13 @@ a{color:inherit}
 .lab-trigger-icon{width:30px;height:30px;display:grid;place-items:center;border:1px solid #dddafe;border-radius:7px;background:#f7f6ff;color:#635bff}
 .lab-trigger-icon svg{width:16px;height:16px}
 .lab-trigger-copy{min-width:0;display:grid;gap:2px}
-.lab-trigger-copy small{color:#8795a7;font-size:9px;font-weight:400}
+.lab-trigger-copy small{color:#5c6e82;font-size:9px;font-weight:400}
 .lab-trigger-copy strong{overflow:hidden;color:#34475c;font-size:11.5px;font-weight:500;text-overflow:ellipsis;white-space:nowrap}
-.lab-trigger-chevron{width:15px;height:15px;color:#8795a7;transition:transform .14s}
+.lab-trigger-chevron{width:15px;height:15px;color:#5c6e82;transition:transform .14s}
 .lab-disease-trigger[aria-expanded="true"] .lab-trigger-chevron{transform:rotate(180deg)}
 .lab-disease-popover{position:absolute;top:calc(100% + 7px);left:0;z-index:60;width:min(460px,calc(100vw - 44px));padding:8px;border:1px solid #dfe4eb;border-radius:12px;background:#fff;box-shadow:var(--shadow-lg)}
 .lab-picker-search{position:relative;margin-bottom:7px}
-.lab-picker-search svg,.lab-manual-search>svg{position:absolute;left:11px;top:50%;width:15px;height:15px;transform:translateY(-50%);color:#8795a7}
+.lab-picker-search svg,.lab-manual-search>svg{position:absolute;left:11px;top:50%;width:15px;height:15px;transform:translateY(-50%);color:#5c6e82}
 .lab-picker-search input,.lab-manual-search input{width:100%;height:40px;padding:0 11px 0 34px;border:1px solid var(--line-strong);border-radius:8px;background:#fff;color:#34475c;font-size:11.5px;font-weight:400;outline:0}
 .lab-picker-search input:focus,.lab-manual-search input:focus{border-color:#635bff;box-shadow:0 0 0 3px rgba(83,58,253,.10)}
 .lab-disease-list{max-height:min(390px,calc(100vh - 260px));display:grid;gap:4px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
@@ -115,25 +115,25 @@ a{color:inherit}
 .lab-disease-check svg{width:13px;height:13px}
 .lab-disease-copy{min-width:0;display:grid;gap:3px}
 .lab-disease-copy strong{overflow:hidden;color:#34475c;font-size:11px;font-weight:500;text-overflow:ellipsis;white-space:nowrap}
-.lab-disease-copy small{overflow:hidden;color:#8795a7;font-size:9.5px;text-overflow:ellipsis;white-space:nowrap}
+.lab-disease-copy small{overflow:hidden;color:#5c6e82;font-size:9.5px;text-overflow:ellipsis;white-space:nowrap}
 .lab-disease-icd{display:flex;gap:4px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
 .lab-disease-icd span{padding:3px 6px;border:1px solid #e0e5eb;border-radius:999px;background:#fff;color:#66788d;font:500 8.5px/1 Inter}
-.lab-disease-icd small{width:100%;color:#98a2b3;font-size:8.5px;text-align:right}
-.lab-picker-empty{padding:18px 12px;color:#8795a7;font-size:10.5px;text-align:center}
+.lab-disease-icd small{width:100%;color:#5c6e82;font-size:8.5px;text-align:right}
+.lab-picker-empty{padding:18px 12px;color:#5c6e82;font-size:10.5px;text-align:center}
 
 .lab-manual-search{position:relative}
 .lab-manual-search input{height:52px;padding-right:54px;border-radius:9px}
-.lab-manual-search kbd{position:absolute;right:9px;top:50%;transform:translateY(-50%);padding:4px 6px;border:1px solid var(--line);border-radius:5px;background:#f8fafc;color:#8795a7;font:500 8.5px/1 Inter}
+.lab-manual-search kbd{position:absolute;right:9px;top:50%;transform:translateY(-50%);padding:4px 6px;border:1px solid var(--line);border-radius:5px;background:#f8fafc;color:#5c6e82;font:500 8.5px/1 Inter}
 .lab-manual-results{position:absolute;top:calc(100% + 7px);right:0;z-index:55;width:min(440px,calc(100vw - 44px));max-height:min(380px,calc(100vh - 260px));padding:7px;border:1px solid #dfe4eb;border-radius:12px;background:#fff;box-shadow:var(--shadow-lg);overflow:auto;overscroll-behavior:contain}
 .lab-manual-option{width:100%;min-height:46px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 8px;border:0;border-radius:7px;background:#fff;text-align:left;cursor:pointer}
 .lab-manual-option:hover{background:#f8fafc}
 .lab-manual-option>span{min-width:0;display:grid;gap:2px}
 .lab-manual-option strong{overflow:hidden;color:#34475c;font-size:10.5px;font-weight:500;text-overflow:ellipsis;white-space:nowrap}
-.lab-manual-option small{overflow:hidden;color:#8795a7;font-size:9px;text-overflow:ellipsis;white-space:nowrap}
+.lab-manual-option small{overflow:hidden;color:#5c6e82;font-size:9px;text-overflow:ellipsis;white-space:nowrap}
 .lab-manual-option>em{font-style:normal;color:#635bff;font-size:9px;font-weight:500}
 
 .lab-selected-diseases{display:flex;gap:6px;flex-wrap:wrap;min-height:32px;margin-top:10px;padding-top:10px;border-top:1px solid #edf0f4}
-.lab-selected-empty{display:flex;align-items:center;color:#98a2b3;font-size:10px}
+.lab-selected-empty{display:flex;align-items:center;color:#5c6e82;font-size:10px}
 .lab-disease-chip{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:4px 5px 4px 8px;border:1px solid #dddafe;border-radius:999px;background:#faf9ff;color:#4f46b8;font-size:9.5px;font-weight:500}
 .lab-disease-chip small{color:#8b84d7;font-size:8.5px}
 .lab-disease-chip button{width:20px;height:20px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:transparent;color:#7770c8;cursor:pointer}
@@ -144,14 +144,14 @@ a{color:inherit}
 .lab-plan-card,.lab-summary-card{border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:var(--shadow-xs)}
 .lab-plan-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:15px 16px;border-bottom:1px solid #edf0f4}
 .lab-plan-actions{display:flex;align-items:center;gap:7px;flex:none}
-.lab-plan-count{min-height:32px;display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border:1px solid #e1e6ed;border-radius:999px;background:#fafbfc;color:#7b8999;font-size:9.5px}
+.lab-plan-count{min-height:32px;display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border:1px solid #e1e6ed;border-radius:999px;background:#fafbfc;color:#5c6e82;font-size:9.5px}
 .lab-plan-count strong{color:#34475c;font-size:10.5px;font-weight:600}
 #labCopyPlan{min-height:32px;padding:0 10px;border:1px solid #dfe4eb;border-radius:7px;background:#fff;color:#526579;font-size:9.5px;font-weight:500;cursor:pointer}
 #labCopyPlan:hover:not(:disabled){border-color:#c8d1dc;background:#f8fafc;color:#263d54}
 #labCopyPlan:disabled{opacity:.45;cursor:default}
 .lab-plan-sections{min-height:420px}
-.lab-plan-empty{min-height:420px;display:grid;place-content:center;justify-items:center;gap:6px;padding:34px;color:#8795a7;text-align:center}
-.lab-empty-icon{width:42px;height:42px;display:grid;place-items:center;margin-bottom:4px;border:1px solid #e2e7ed;border-radius:10px;background:#f8fafc;color:#7b8999}
+.lab-plan-empty{min-height:420px;display:grid;place-content:center;justify-items:center;gap:6px;padding:34px;color:#5c6e82;text-align:center}
+.lab-empty-icon{width:42px;height:42px;display:grid;place-items:center;margin-bottom:4px;border:1px solid #e2e7ed;border-radius:10px;background:#f8fafc;color:#5c6e82}
 .lab-empty-icon svg{width:20px;height:20px}
 .lab-plan-empty strong{color:#34475c;font-size:13px;font-weight:500}
 .lab-plan-empty>span:last-child{max-width:390px;font-size:10.5px;line-height:1.5}
@@ -165,8 +165,8 @@ a{color:inherit}
 .lab-tier-section[data-tier="conditional"] .lab-tier-marker{background:#d99b23}
 .lab-tier-section[data-tier="manual"] .lab-tier-marker{background:#8795a7}
 .lab-tier-title strong{color:#526579;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.045em}
-.lab-tier-title small{color:#98a2b3;font-size:9px}
-.lab-tier-head>span{color:#8795a7;font-size:9px;font-variant-numeric:tabular-nums}
+.lab-tier-title small{color:#5c6e82;font-size:9px}
+.lab-tier-head>span{color:#5c6e82;font-size:9px;font-variant-numeric:tabular-nums}
 
 .lab-test-list{display:grid}
 .lab-test-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:start;padding:12px 15px;border-top:1px solid #f0f2f5}
@@ -177,20 +177,20 @@ a{color:inherit}
 .lab-test-main{min-width:0;display:grid;gap:5px}
 .lab-test-title{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .lab-test-title strong{color:#263d54;font-size:11.5px;font-weight:500}
-.lab-test-title small{color:#8795a7;font-size:9px}
-.lab-test-category{padding:3px 6px;border:1px solid #e3e8ee;border-radius:999px;background:#fafbfc;color:#7b8999;font-size:8.5px}
+.lab-test-title small{color:#5c6e82;font-size:9px}
+.lab-test-category{padding:3px 6px;border:1px solid #e3e8ee;border-radius:999px;background:#fafbfc;color:#5c6e82;font-size:8.5px}
 .lab-test-rationales{display:grid;gap:4px}
 .lab-rationale{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px;align-items:start;color:#66788d;font-size:9.5px;line-height:1.45}
 .lab-rationale span{max-width:155px;overflow:hidden;padding:2px 5px;border-radius:5px;background:#f0efff;color:#635bff;font-size:8.5px;font-weight:500;text-overflow:ellipsis;white-space:nowrap}
 .lab-rationale p{margin:0}
-.lab-test-context{margin:0;color:#98a2b3;font-size:9px;line-height:1.45}
+.lab-test-context{margin:0;color:#5c6e82;font-size:9px;line-height:1.45}
 .lab-test-details{margin-top:1px}
-.lab-test-details summary{display:inline-flex;align-items:center;gap:4px;color:#7b8999;font-size:9px;cursor:pointer;list-style:none}
+.lab-test-details summary{display:inline-flex;align-items:center;gap:4px;color:#5c6e82;font-size:9px;cursor:pointer;list-style:none}
 .lab-test-details summary::-webkit-details-marker{display:none}
 .lab-test-details[open] summary{color:#635bff}
 .lab-test-detail-body{display:grid;gap:5px;margin-top:6px;padding:8px 9px;border:1px solid #e6eaf0;border-radius:7px;background:#fbfcfe;color:#66788d;font-size:9.5px;line-height:1.45}
 .lab-test-detail-body p{margin:0}
-.lab-test-remove{min-height:28px;padding:0 7px;border:0;border-radius:6px;background:transparent;color:#98a2b3;font-size:9px;cursor:pointer}
+.lab-test-remove{min-height:28px;padding:0 7px;border:0;border-radius:6px;background:transparent;color:#5c6e82;font-size:9px;cursor:pointer}
 .lab-test-remove:hover{background:#f2f4f7;color:#526579}
 .lab-test-remove:focus-visible,.lab-disease-chip button:focus-visible,#labCopyPlan:focus-visible{outline:0;box-shadow:0 0 0 3px rgba(83,58,253,.12)}
 
@@ -201,19 +201,19 @@ a{color:inherit}
 .lab-summary-label span{color:#66788d;font-size:9.5px;font-weight:500}
 .lab-summary-label strong{min-width:24px;height:22px;display:grid;place-items:center;padding:0 6px;border:1px solid #e1e6ed;border-radius:999px;background:#fafbfc;color:#526579;font-size:9px;font-weight:600}
 .lab-summary-dx{display:grid;gap:5px}
-.lab-summary-dx>span{color:#98a2b3;font-size:9.5px}
+.lab-summary-dx>span{color:#5c6e82;font-size:9.5px}
 .lab-summary-dx-item{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
 .lab-summary-dx-item strong{color:#42566b;font-size:9.5px;font-weight:500;line-height:1.35}
-.lab-summary-dx-item span{color:#8795a7;font-size:8.5px;white-space:nowrap}
+.lab-summary-dx-item span{color:#5c6e82;font-size:8.5px;white-space:nowrap}
 .lab-gap-list{display:grid;gap:7px}
-.lab-gap-list>p{margin:0;color:#98a2b3;font-size:9.5px;line-height:1.45}
+.lab-gap-list>p{margin:0;color:#5c6e82;font-size:9.5px;line-height:1.45}
 .lab-gap-item{padding:8px 9px;border:1px solid #f0dfb8;border-radius:8px;background:#fffaf1}
 .lab-gap-item strong{display:block;color:#8a6200;font-size:9.5px;font-weight:600}
 .lab-gap-item p{margin:3px 0 0;color:#8c7a50;font-size:9px;line-height:1.4}
 .lab-gap-item small{display:block;margin-top:4px;color:#a08d63;font-size:8.5px}
 .lab-safety-note{margin:12px;padding:10px 11px;border:1px solid #dddafe;border-radius:8px;background:#faf9ff}
 .lab-safety-note strong{display:block;color:#4f46b8;font-size:9.5px;font-weight:600}
-.lab-safety-note p{margin:4px 0 0;color:#746fa6;font-size:9px;line-height:1.5}
+.lab-safety-note p{margin:4px 0 0;color:#625c94;font-size:9px;line-height:1.5}
 
 .lab-toast{position:fixed;right:18px;bottom:18px;z-index:100;max-width:min(360px,calc(100vw - 36px));padding:9px 12px;border:1px solid #dfe4eb;border-radius:8px;background:#fff;color:#526579;box-shadow:var(--shadow-lg);font-size:10px}
 

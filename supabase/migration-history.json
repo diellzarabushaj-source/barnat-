@@ -1209,6 +1209,10 @@
     {
       "name": "shared_request_budget",
       "version": "20261008214741"
+    },
+    {
+      "name": "runtime_telemetry_aggregates",
+      "version": "20261008225352"
     }
   ]
 }

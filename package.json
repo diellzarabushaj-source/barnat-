@@ -13,7 +13,7 @@
     "studio:schema": "pnpm --dir studio schema:extract",
     "test:medical-hub": "node tests/medical-hub-doctor-workspace-test.js && node tests/medical-hub-authoring-schema-test.js && node tests/medical-hub-composable-test.js && node tests/medical-hub-source-fidelity-test.js",
     "repomix": "npx --yes repomix",
-    "build:runtime": "node scripts/build-registry-substance-data.js && node scripts/build-dozologjia-master.js && node scripts/build-static-runtime.js && node scripts/materialize-official-brand-assets.js && node scripts/seed-horizontal-brand-assets.js && node scripts/audit-registry-v2.js",
+    "build:runtime": "node scripts/build-runtime-telemetry.js && node scripts/build-registry-substance-data.js && node scripts/build-dozologjia-master.js && node scripts/build-static-runtime.js && node scripts/materialize-official-brand-assets.js && node scripts/seed-horizontal-brand-assets.js && node scripts/audit-registry-v2.js",
     "build:icd-snapshot": "node scripts/build-icd-hierarchy-snapshot.js",
     "audit:clinical-accents": "node scripts/audit-clinical-accents.js",
     "audit:contrast": "node scripts/audit-contrast.js",
@@ -200,6 +200,7 @@
   "dependencies": {
     "@vercel/blob": "^2.3.0",
     "@vercel/functions": "3.7.5",
+    "web-vitals": "6.2.3",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {

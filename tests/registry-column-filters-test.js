@@ -4,6 +4,7 @@ const model = require('../registry-column-model.js');
 const data = require('../lib/registry-column-data.js');
 const {publicBatchCard} = require('../lib/dosage-card-handler.js');
 const gateway = require('../api/drug-search.js');
+const registry = require('../api/registry.js');
 
 async function main() {
   const rows = [
@@ -62,6 +63,8 @@ async function main() {
   for (const id of Object.keys(model.fields)) assert.equal(data.facetNeedsDoses(id,{}),['adultDose','pediatricDose'].includes(id));
   assert.equal(data.facetNeedsDoses('name',{pediatricDose:{op:'notEmpty'}}),true);
   assert.equal(data.facetNeedsDoses('name',{form:{op:'equals',text:'Tablet'}}),false);
+  assert.equal(data.facetNeedsDoses('pediatricDose',{}),true,'Dose sorting must retain the full verified projection');
+  assert.equal(data.facetNeedsDoses('substance',{adultDose:{op:'contains',text:'500'}}),true);
   const light = await data.loadLightFacets(gateway.listRow,async(path,options)=>{
     assert.equal(path,'rpc/drx_registry_light_facets_v1');assert.equal(options.method,'POST');
     return {data:{ok:true,version:1,count:roster.length,drugs:roster}};
@@ -79,8 +82,49 @@ async function main() {
   assert.equal(snapshot[1000].pediatricDose,canonical.pediatricDose);
   assert.equal(data.filterRows(snapshot,{columnFilters:{name:{op:'equals',text:'Drug 1000'}}},{}).length,1,'must include records beyond the first 1000/page');
   assert.equal(calls.length,3);
+  const stripDoses = ({adultDose,pediatricDose,_search,...row}) => row;
+  for (const query of [{},{q:'Drug 1000'},{q:'drug',columnFilters:{registry:{op:'gt',text:'999'}}}]) {
+    const fullRows = data.filterRows(legacy,query,{}), lightRows = data.filterRows(light,query,{});
+    for (const sort of Object.keys(model.fields).filter(id => !data.facetNeedsDoses(id,{}))) {
+      for (const direction of ['asc','desc']) {
+        const fullSorted = data.sortRows(fullRows,sort,direction).map(stripDoses);
+        const lightSorted = data.sortRows(lightRows,sort,direction).map(stripDoses);
+        for (const page of [1,2,3]) assert.deepEqual(lightSorted.slice((page-1)*25,page*25),fullSorted.slice((page-1)*25,page*25),`${sort}/${direction}/${page} result parity`);
+      }
+    }
+  }
+  // Exercise authenticated result routing. Light rows must never claim an empty
+  // dose; the browser fetches a product-identified batch for just this page.
+  const authorized = registry.authorized, resultSnapshot = data.resultSnapshot;
+  registry.authorized = async () => true;
+  data.resultSnapshot = async (_select,_row,sort,filters,force) => {
+    assert.equal(force,true);
+    return data.facetNeedsDoses(sort,filters) ? legacy : light;
+  };
+  try {
+    for (const query of [
+      {sort:'substance',columnFilters:{name:{op:'contains',text:'Drug'}}},
+      {sort:'adultDose',columnFilters:{name:{op:'contains',text:'Drug'}}},
+      {sort:'name',columnFilters:{pediatricDose:{op:'notEmpty'}}},
+    ]) {
+      const response = {setHeader(){},status(code){this.statusCode=code;return this;},json(body){this.body=body;return this;}};
+      await gateway({method:'GET',query:{view:'registry-page',...query,page:'2',pageSize:'25',direction:'desc',refresh:'true'}},response);
+      assert.equal(response.statusCode,200);
+      const needsDoses = data.facetNeedsDoses(query.sort,query.columnFilters);
+      assert.equal(response.body.meta.doseHydrationRequired,!needsDoses);
+      assert.equal(response.body.pagination.total,1001);
+      assert.equal(response.body.rows.length,25);
+      const expected = data.sortRows(data.filterRows(needsDoses ? legacy : light,query,{}),query.sort,'desc').slice(25,50);
+      assert.deepEqual(response.body.rows.map(stripDoses),expected.map(stripDoses),'Exact IDs and product fields stay identical');
+      for (const row of response.body.rows) {
+        assert.equal(Object.hasOwn(row,'adultDose'),needsDoses);
+        assert.equal(Object.hasOwn(row,'pediatricDose'),needsDoses);
+        assert.equal(Object.hasOwn(row,'_search'),false);
+      }
+    }
+  } finally {registry.authorized=authorized;data.resultSnapshot=resultSnapshot;}
   await assert.rejects(data.readComplete('drugs',new URLSearchParams(),100,async()=>({data:[],response:{headers:{get:()=> '*/1001'}}})),/tepër i madh/);
   await assert.rejects(data.readComplete('drugs',new URLSearchParams(),2000,async()=>({data:[],response:{headers:{get:()=> '*/1001'}}})),/ndryshoi/);
-  console.log('All 15 column filters, complete facets, null/numeric/text matching and published dosage parity passed.');
+  console.log('All 15 column filters, light result pagination, product identities, complete facets and published dosage parity passed.');
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});

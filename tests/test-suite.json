@@ -173,5 +173,6 @@
   "tests/icd-hierarchy-neon-sync-test.js",
   "tests/dose-row-visual-rules-test.js",
   "tests/user-data-key-rotation-test.js",
-  "tests/shared-request-budget-test.js"
+  "tests/shared-request-budget-test.js",
+  "tests/runtime-telemetry-test.js"
 ]

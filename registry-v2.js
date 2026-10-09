@@ -115,6 +115,7 @@
     rows: [],
     rowView: storedRowView(),
     dosageByRegistry: new Map(),
+    dosageIdentityRequired: false,
     selected: new Map(),
     currentDetail: null,
     requestId: 0,
@@ -1136,6 +1137,7 @@
     el.sourceStatus.textContent = `${source || 'Supabase'} · aktiv`;
     el.syncText.textContent = source || 'Supabase';
     state.dosageByRegistry.clear();
+    state.dosageIdentityRequired = payload.meta?.doseHydrationRequired === true;
     renderRows();
     updateSummary(durationMs);
     updateSortHeaders();
@@ -1256,6 +1258,8 @@
     if (requestId !== state.requestId) return;
 
     const requested = new Set(numbers);
+    const productIds = new Map(state.rows.map(row => [clean(row.registryNumber),clean(row.id)]));
+    const requireProductIdentity = state.dosageIdentityRequired;
     const url = `/api/dosage?view=cards&nrs=${encodeURIComponent(numbers.join(','))}`;
     const maxAttempts = 3;
     let lastError = null;
@@ -1270,6 +1274,11 @@
         if (!cards.length) throw new Error('Dosage batch returned no cards');
         const foreignCards = cards.filter(card => !requested.has(clean(card.registryNumber)));
         if (foreignCards.length) throw new Error('Stale dosage cache returned cards from another registry page');
+        if (requireProductIdentity && (cards.length !== requested.size
+          || new Set(cards.map(card => clean(card.registryNumber))).size !== requested.size
+          || cards.some(card => !clean(card.drugId) || productIds.get(clean(card.registryNumber)) !== clean(card.drugId)))) {
+          throw new Error('Dosage batch did not match the visible product identities');
+        }
 
         state.dosageByRegistry.clear();
         for (const card of cards) state.dosageByRegistry.set(clean(card.registryNumber), card);
@@ -1324,6 +1333,9 @@
     for (const row of state.rows) {
       const number = clean(row.registryNumber);
       const card = state.dosageByRegistry.get(number);
+      // Changing between table/list while the batch is pending must retain its
+      // loading state. Only an identified returned card can declare no dose.
+      if (!card) continue;
       const adults = document.querySelectorAll(`[data-dose-adult="${CSS.escape(number)}"]`);
       const pediatrics = document.querySelectorAll(`[data-dose-pediatric="${CSS.escape(number)}"]`);
       for (const adult of adults) { adult.innerHTML = doseMarkup(card?.adultDose, card?.adultRoute); adult.dataset.doseStatus = 'ready'; }
