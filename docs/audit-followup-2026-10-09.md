@@ -12,7 +12,7 @@ Kjo paketë përmirëson lexueshmërinë në modulet e tjera, lehtëson kërkimi
 
 ## Evidenca
 
-176 skedarët e suitës aktive kaluan. Pariteti real krahasoi 4,177 produkte dhe 2,340 kombinime kërkimi/renditjeje/faqeje. Në një provë të ftohtë, leximi i plotë bëri 13 kërkesa në 2,488ms; leximi i lehtë një kërkesë në 959ms. Ky kampion nuk është p95 i prodhimit.
+178 skedarët e suitës aktive kaluan. Pariteti real krahasoi 4,177 produkte dhe 2,340 kombinime kërkimi/renditjeje/faqeje. Në një provë të ftohtë, leximi i plotë bëri 13 kërkesa në 2,488ms; leximi i lehtë një kërkesë në 959ms. Ky kampion nuk është p95 i prodhimit.
 
 Chromium dhe WebKit kontrolluan ngarkimin e dozave, ndryshimin e faqes, refuzimin e kartelës së gabuar dhe panelin privat në 390/1440px. Prova me bibliotekën reale verifikoi LCP/INP/CLS në Chromium dhe mungesën e matjeve të pambështetura në WebKit-in e instaluar. Importi i bibliotekës dhe paneli janë në shell-in offline. Rikthimi offline, revokimi dhe dalja kaluan në të dy shfletuesit. Provat sintetike nuk janë matje reale të trafikut të prodhimit.
 
@@ -20,7 +20,7 @@ Chromium dhe WebKit kontrolluan ngarkimin e dozave, ndryshimin e faqes, refuzimi
 
 | Fusha | Puna e mbetur |
 |---|---|
-| Main dhe ICD | Konfirmimi i identitetit në GitHub për mbrojtjen e main dhe sekreti privat i Actions për importin ICD mbeten detyra të pronarit. |
+| Main | Konfirmimi i identitetit në GitHub për mbrojtjen e main mbetet detyrë e pronarit. |
 | Siguria e fjalëkalimeve | Mbrojtja e fjalëkalimeve të rrjedhura kërkon planin përkatës të Supabase; nuk u ble plan i ri. |
 | Backup dhe çelësat | Rotacioni i çelësit në prodhim dhe rikthimi nga një backup real në mjedis të izoluar mbeten për t'u kryer. Provat sintetike kanë kaluar. |
 | Shënimet | Zhbëj trajton konfliktet e lexuara, por çdo shkrues duhet të përdorë versionim atomik për garanci ndaj redaktimeve njëkohësisht. |
@@ -29,3 +29,9 @@ Chromium dhe WebKit kontrolluan ngarkimin e dozave, ndryshimin e faqes, refuzimi
 | Matjet reale | Duhet trafik dhe kampionë të mjaftueshëm. Nuk deklarohet një p75/p95 real ose përvojë e shëndetshme pa të dhëna. Pastrimi i matjeve është oportunistik; 26h/14d janë pragje pastrimi, jo afate të garantuara fshirjeje. |
 
 [Mbrojtja e fjalëkalimeve](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection), [RLS pa policy](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy).
+
+## Kontrollet e vazhdimësisë
+
+Dy prova që ekzekutoheshin vetëm pas bashkimit në main kishin fixtures nga ndërfaqja para v27. Kontratat e pilotit historik tani lexojnë arkivin përkatës dhe mbajnë të gjitha pohimet e burimeve/dozave. Kontrolli i kalkulatorit aktual verifikon veçmas indikacionin, CrCl, eGFR, dializën, Child-Pugh dhe gjendjen hepatike. Favoritët/shënimet e produktit provojnë UUID kanonik dhe refuzimin e identitetit të pavlefshëm. Prova e vjetër e shfletuesit mbetet për pilotin historik; workflow provon edhe Favoritët dhe Shënimet aktuale në 320–1440px.
+
+Këto porta tani kontrollohen edhe para bashkimit. Çelësi privat dhe kontrollet në databazën reale lejohen vetëm në main/manual, ndërsa pull requests përdorin prova pa sekret. Importi ICD përdor sekretin ekzistues SUPABASE_SECRET_KEY si alternativë të emrit MEDINDEX_SUPABASE_SECRET_KEY; importi real duhet të përfundojë në workflow para se kjo të quhet e verifikuar.

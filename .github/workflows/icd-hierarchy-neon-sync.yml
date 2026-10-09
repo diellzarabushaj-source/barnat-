@@ -1,6 +1,11 @@
 name: ICD hierarchy Supabase sync
 
 on:
+  pull_request:
+    paths:
+      - '.github/workflows/icd-hierarchy-neon-sync.yml'
+      - 'scripts/sync-icd-hierarchy-to-neon.js'
+      - 'tests/icd-hierarchy-neon-sync-test.js'
   push:
     branches: [main]
     paths:
@@ -24,9 +29,9 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-  MEDINDEX_SUPABASE_URL: ${{ secrets.MEDINDEX_SUPABASE_URL }}
+  MEDINDEX_SUPABASE_URL: ${{ secrets.MEDINDEX_SUPABASE_URL || 'https://ftuchtmolddhhsdcwnqe.supabase.co' }}
   MEDINDEX_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.MEDINDEX_SUPABASE_PUBLISHABLE_KEY }}
-  MEDINDEX_SUPABASE_SECRET_KEY: ${{ secrets.MEDINDEX_SUPABASE_SECRET_KEY }}
+  MEDINDEX_SUPABASE_SECRET_KEY: ${{ github.event_name != 'pull_request' && (secrets.MEDINDEX_SUPABASE_SECRET_KEY || secrets.SUPABASE_SECRET_KEY) || '' }}
 
 concurrency:
   group: icd-hierarchy-supabase-sync
@@ -61,11 +66,11 @@ jobs:
           node tests/icd-hierarchy-neon-sync-test.js
 
       - name: Supabase write credentials unavailable
-        if: ${{ env.MEDINDEX_SUPABASE_SECRET_KEY == '' }}
+        if: ${{ github.event_name != 'pull_request' && env.MEDINDEX_SUPABASE_SECRET_KEY == '' }}
         run: |
           echo "::error::ICD sync cannot run without MEDINDEX_SUPABASE_SECRET_KEY."
           exit 1
 
       - name: Import and atomically activate hierarchy revision
-        if: ${{ env.MEDINDEX_SUPABASE_SECRET_KEY != '' }}
+        if: ${{ github.event_name != 'pull_request' && env.MEDINDEX_SUPABASE_SECRET_KEY != '' }}
         run: node scripts/sync-icd-hierarchy-to-neon.js

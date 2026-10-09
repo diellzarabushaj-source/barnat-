@@ -2,6 +2,13 @@ name: DRx Phase 9 frontend gate
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/drx-phase9-frontend-gate.yml'
+      - 'tests/drx-phase9-*.js'
+      - 'lib/user-library.js'
+      - 'dozologjia*'
+      - 'phase9-personal-entities-client.js'
   push:
     branches:
       - main
@@ -51,7 +58,7 @@ jobs:
     timeout-minutes: 20
     env:
       MEDINDEX_SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co
-      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+      SUPABASE_SECRET_KEY: ${{ github.event_name != 'pull_request' && secrets.SUPABASE_SECRET_KEY || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -80,14 +87,17 @@ jobs:
       - name: Phase 9 prescription context
         run: node tests/drx-phase9-prescription-context-test.js
       - name: Live Phase 9 foundation gate
+        if: github.event_name != 'pull_request'
         run: node scripts/drx-phase9-status.js
       - name: Install Phase 9 browser QA
         run: |
           corepack enable
           pnpm install --frozen-lockfile --ignore-scripts
           pnpm exec playwright install --with-deps chromium
-      - name: Phase 9 browser QA — 390, 768, 1440
+      - name: Historical Phase 9 pilot browser QA — 390, 768, 1440
         run: node tests/drx-phase9-browser-qa-test.js
+      - name: Current populated Favorites and Notes — 320 to 1440
+        run: node tests/personal-workspace-responsive-browser-test.js
       - name: Upload Phase 9 evidence
         uses: actions/upload-artifact@v4
         with:

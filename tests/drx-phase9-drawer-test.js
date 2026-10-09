@@ -4,8 +4,9 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const cp=require('node:child_process');
 
-const js=fs.readFileSync('dozologjia-v2.js','utf8');
-const css=fs.readFileSync('dozologjia-v2.css','utf8');
+// Phase 9 pilot UI was archived at v27. Current workspaces have separate gates.
+const js=fs.readFileSync('docs/archive/dozologjia-before-v27/dozologjia-v2.js.txt','utf8');
+const css=fs.readFileSync('docs/archive/dozologjia-before-v27/dozologjia-v2.css.txt','utf8');
 const flow=JSON.parse(fs.readFileSync('data/drx-frontend-flow-contract-v1.json','utf8'));
 
 for(const label of ['Përmbledhje','Përdorimi','Dozimi','Siguria','Produktet','Shënime','Burime']){

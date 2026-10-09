@@ -4,8 +4,9 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const cp=require('node:child_process');
 
-const js=fs.readFileSync('dozologjia-v2.js','utf8');
-const html=fs.readFileSync('dozologjia.html','utf8');
+// Historical Phase 9 preview; current Recetat/Registry are gated independently.
+const js=fs.readFileSync('docs/archive/dozologjia-before-v27/dozologjia-v2.js.txt','utf8');
+const html=fs.readFileSync('docs/archive/dozologjia-before-v27/dozologjia.html.txt','utf8');
 
 assert.match(js,/Rx — DRx/);
 assert.match(js,/Indikacioni:/);

@@ -93,16 +93,31 @@ assert.match(
 assert.match(handler,/function calculatorTelemetryOutcome\(/);
 assert.match(handler,/Cutover\.recordEvent\(/);
 
-const html=fs.readFileSync('dozologjia.html','utf8');
+// The controlled server V3 pilot belongs to the pre-v27 archived UI.
+// Keep its contracts and also validate the current registry calculator below.
+const html=fs.readFileSync('docs/archive/dozologjia-before-v27/dozologjia.html.txt','utf8');
 for(const id of ['patientIndication','patientCrCl','patientEgfr','patientDialysisStatus','patientChildPugh','patientHepaticImpairment']){
   assert.ok(html.includes('id="'+id+'"'),id+' missing from dosage UI');
 }
 
-const ui=fs.readFileSync('dozologjia-v2.js','utf8');
+const ui=fs.readFileSync('docs/archive/dozologjia-before-v27/dozologjia-v2.js.txt','utf8');
 assert.match(ui,/product\.runtime === 'v3' \? 'V3 live'/);
 assert.match(ui,/if \(!options\.length\) \{[\s\S]*?return;/,
   'legacy products must bypass the V3 indication selector without mutating their regimen');
 assert.match(ui,/payload\.crClMlMin/);
 assert.match(ui,/payload\.hepaticImpairment/);
+
+const current=fs.readFileSync('registry-v2-dose-calculator.js','utf8');
+const currentHtml=fs.readFileSync('index.html','utf8');
+assert.match(currentHtml,/registry-v2-dose-calculator\.js/);
+for(const field of ['indication','crcl','egfr','dialysis','child-pugh','hepatic']){
+  assert.ok(current.includes('data-dose-'+field),field+' missing from current calculator');
+}
+for(const key of ['crClMlMin','eGfrMlMin173m2','dialysisStatus','childPughClass','hepaticImpairment']){
+  assert.match(current,new RegExp(key+':'),'current patient payload must retain '+key);
+}
+assert.match(current,/CrCl kërkohet si input i veçantë; eGFR nuk përdoret si zëvendësim/);
+assert.match(current,/required\.has\('manual_clinical_review'\)/);
+assert.match(current,/core\.OUTCOME\.INVALID_RULE/);
 
 console.log('DRx Phase 10 pediatric V3 calculator consumer contract: PASS');
