@@ -136,3 +136,53 @@ new Function(dataApi);
 new Function(publicSource);
 
 console.log('Bounded ICD hierarchy compatibility and Supabase-only runtime contract passed.');
+
+const vm = require('node:vm');
+const activationFile = path.join(root, 'supabase/migrations/20261009221820_restore_icd_hierarchy_atomic_activation.sql');
+const activationSql = fs.readFileSync(activationFile, 'utf8');
+assert.match(activationSql, /SECURITY INVOKER[\s\S]*SET search_path = ''/);
+assert.match(activationSql, /REVOKE ALL[\s\S]*FROM PUBLIC, anon, authenticated/);
+assert.match(activationSql, /GRANT EXECUTE[\s\S]*TO service_role/);
+assert.ok(activationSql.indexOf('LOCK TABLE public.icd_hierarchy_revisions') < activationSql.indexOf('LOCK TABLE public.icd_hierarchy_nodes'));
+assert.doesNotMatch(activationSql, /(?:UPDATE|DELETE FROM|INSERT INTO) public\.icd_hierarchy_nodes/i);
+assert.equal(schema.slice(schema.indexOf('CREATE OR REPLACE FUNCTION public.activate_icd_hierarchy_revision')), activationSql.slice(activationSql.indexOf('CREATE OR REPLACE FUNCTION public.activate_icd_hierarchy_revision')));
+
+async function activationResponseLossDoesNotUnpublish() {
+  for (const filename of ['sync-icd-hierarchy-to-neon.js', 'sync-icd-hierarchy-to-supabase.js']) {
+    let status = 'staging';
+    let failureMarkers = 0;
+    const module = {exports:{}};
+    const fakeRequest = async (url, options = {}) => {
+      if (url.startsWith('/rpc/activate_')) {
+        status = 'active'; // The database committed, but the client lost its response.
+        throw new Error('Synthetic lost activation response');
+      }
+      if (options.method === 'PATCH') {
+        failureMarkers++;
+        if (!url.includes('status=eq.staging') || status === 'staging') status = options.body.status;
+      }
+      if (!options.method) return {data:[{revision:'revision-1',status}]};
+      return {data:[]};
+    };
+    vm.runInNewContext(fs.readFileSync(path.join(root, 'scripts', filename), 'utf8'), {
+      module, exports:module.exports, process:{stdout:{write(){}},stderr:{write(){}}},
+      require(name) {
+        if (name === '../lib/medindex-data-api.js') return {neonRequest:fakeRequest,dataOf:value=>value.data};
+        if (name === '../lib/icd-public-source.js') return {...require('../lib/icd-public-source.js'),load:async()=>({sourceRevision:'revision-1',sourceType:'google-sheet',data:sampleDataset})};
+        if (name === '../lib/icd-hierarchy-validation.js') return {validate:()=>FullIcd.EXPECTED_COUNTS};
+        return require(name);
+      },
+    }, {filename});
+    await assert.rejects(module.exports.sync(), /lost activation response/);
+    assert.equal(failureMarkers, 1);
+    assert.equal(status, 'active', filename + ': response loss must preserve the committed revision');
+    await module.exports.markFailed('revision-1', new Error('Late error'));
+    assert.equal(status, 'active', filename + ': late failure must preserve active revision');
+    status = 'staging';
+    await module.exports.markFailed('revision-1', new Error('Batch import failed'));
+    assert.equal(status, 'failed', filename + ': genuinely failed staging import is marked');
+  }
+}
+activationResponseLossDoesNotUnpublish().then(() => {
+  console.log('Atomic activation permissions and lost-response recovery passed.');
+}).catch(error => { console.error(error); process.exitCode = 1; });

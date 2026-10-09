@@ -35,3 +35,13 @@ Chromium dhe WebKit kontrolluan ngarkimin e dozave, ndryshimin e faqes, refuzimi
 Dy prova që ekzekutoheshin vetëm pas bashkimit në main kishin fixtures nga ndërfaqja para v27. Kontratat e pilotit historik tani lexojnë arkivin përkatës dhe mbajnë të gjitha pohimet e burimeve/dozave. Kontrolli i kalkulatorit aktual verifikon veçmas indikacionin, CrCl, eGFR, dializën, Child-Pugh dhe gjendjen hepatike. Favoritët/shënimet e produktit provojnë UUID kanonik dhe refuzimin e identitetit të pavlefshëm. Prova e vjetër e shfletuesit mbetet për pilotin historik; workflow provon edhe Favoritët dhe Shënimet aktuale në 320–1440px.
 
 Këto porta tani kontrollohen edhe para bashkimit. Çelësi privat dhe kontrollet në databazën reale lejohen vetëm në main/manual, ndërsa pull requests përdorin prova pa sekret. Importi ICD përdor sekretin ekzistues SUPABASE_SECRET_KEY si alternativë të emrit MEDINDEX_SUPABASE_SECRET_KEY; importi real duhet të përfundojë në workflow para se kjo të quhet e verifikuar.
+
+## Aktivizimi ICD
+
+Importi real ngarkoi 12,542 rreshta, por zbuloi RPC-në e munguar të aktivizimit. Migrimi `20261009221820_restore_icd_hierarchy_atomic_activation.sql` e rikthen vetëm për service_role, me SECURITY INVOKER dhe search_path bosh. Aktivizimet serializohen; gjatë verifikimit bllokohen shkruesit e versioneve dhe nyjeve, ndërsa lexuesit vazhdojnë. Numrat e plotë, metadata, publikimi dhe lidhjet kapitull/bllok/kategori/nënkategori verifikohen para ndërrimit atomik të versionit të dukshëm.
+
+Prova reale me service_role dhe ROLLBACK refuzoi versionin failed, numrat e gabuar, rreshtin e munguar, prindin e munguar, nivelin e gabuar, kapitullin e gabuar, prindin e papublikuar dhe titullin zyrtar bosh. Refuzimet ruajtën versionin e vjetër aktiv; aktivizimi i vlefshëm dha vetëm një version aktiv dhe 12,542 nyje. Fingerprint-i i çdo fushe të nyjeve mbeti identik. Prova nuk la ndryshime sintetike në databazë.
+
+Të dy hyrjet e importuesit e shënojnë failed vetëm versionin ende staging. Humbja e përgjigjes pas një aktivizimi të kryer nuk mund ta çaktivizojë atë; kjo provohet në testin e importit. SQL-ja e bootstrap-it përdor të njëjtin funksion. Përputhja lokale me historikun real tani përmban 304 migrime.
+
+Kufijtë: workflow serializon importet e zakonshme, por shkrues të pavarur kërkojnë gardh të veçantë për pandryshueshmërinë e versioneve aktive. Lexuesi me faqe dhe cache deri në gjashtë orë nuk garanton freskim të menjëhershëm të çdo instance; validimi i plotë dhe alternativa nga burimi mbeten aktive. Importi/aktivizimi i workflow në main duhet të kalojë pas këtij riparimi.

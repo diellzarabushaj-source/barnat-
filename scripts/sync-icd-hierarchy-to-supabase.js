@@ -153,7 +153,8 @@ async function activateRevision(revision) {
 async function markFailed(revision, error) {
   const reason = clean(error?.message || error).slice(0, 1000);
   try {
-    await neonRequest(`/${REVISION_TABLE}?revision=eq.${encodeURIComponent(revision)}`, {
+    // A lost activation response must never demote a committed active revision.
+    await neonRequest(`/${REVISION_TABLE}?revision=eq.${encodeURIComponent(revision)}&status=eq.staging`, {
       method:'PATCH',
       prefer:'return=minimal',
       body:{ status:'failed', error_summary:reason },
