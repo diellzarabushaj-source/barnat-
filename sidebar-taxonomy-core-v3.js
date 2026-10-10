@@ -800,9 +800,10 @@
     let count = 0, pages = 0, savedAt = 0, preparing = false, storageFull = false;
     let reachable = window.DRxDeviceReachable !== false;
     function render() {
-      navigator.serviceWorker?.controller?.postMessage({type:'SET_DEVICE_ONLINE',online:navigator.onLine});
-      status.textContent = !navigator.onLine || !reachable ? 'Pa internet' : storageFull ? 'Hapësira plot' : preparing ? 'Po ruhet' : count ? 'Ruajtur' : 'Online';
-      status.dataset.offline = String(!navigator.onLine || !reachable);
+      const online = navigator.onLine && reachable;
+      navigator.serviceWorker?.controller?.postMessage({type:'SET_DEVICE_ONLINE',online});
+      status.textContent = !online ? 'Pa internet' : storageFull ? 'Hapësira plot' : preparing ? 'Po ruhet' : count ? 'Ruajtur' : 'Online';
+      status.dataset.offline = String(!online);
       status.setAttribute('aria-label', status.textContent + ' · Hap statusin e ruajtjes');
       panel.querySelector('[data-device-count]').textContent = count ? `${count} përgjigje dhe ${pages} faqe të ruajtura · ${savedAt ? new Date(savedAt).toLocaleString('sq-AL') : ''}` : 'Të dhënat ruhen pasi hapen me internet.';
     }
@@ -844,9 +845,20 @@
     let signingOut = false;
     function renew() {
       if (!renewal) {
-        renewal = originalFetch('/api/auth', { credentials:'same-origin', cache:'no-store',
+        // An unreachable origin can recover while Wi-Fi stays connected. A
+        // query-scoped auth read reaches the network even when the worker is
+        // preserving the offline lease; no cached response can prove recovery.
+        const probing = window.DRxDeviceReachable === false;
+        renewal = originalFetch(probing ? '/api/auth?offline_probe=1' : '/api/auth', { credentials:'same-origin', cache:'no-store',
           headers:{ Accept:'application/json' }, signal:AbortSignal.timeout(12000) })
-          .then(async response => response.ok && (await response.json()).authenticated === true)
+          .then(async response => {
+            const payload = await response.json().catch(() => ({}));
+            if (probing) {
+              window.DRxDeviceReachable = response.status < 500 && payload.offline !== true;
+              window.dispatchEvent(new CustomEvent('drx:device-network', { detail:{ online:window.DRxDeviceReachable } }));
+            }
+            return response.ok && payload.authenticated === true;
+          })
           .catch(() => false).finally(() => { renewal = null; });
       }
       return renewal;

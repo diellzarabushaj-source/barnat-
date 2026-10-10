@@ -1,7 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict');
 const fs=require('node:fs');const vm=require('node:vm');
-const origin='https://device.example';let clock=Date.now(),owner='account-a',authStatus=200,reads=0,bodies=0,gate=null,fail=false;
+const origin='https://device.example';let clock=Date.now(),owner='account-a',authStatus=200,authReads=0,reads=0,bodies=0,gate=null,fail=false;
 const buckets=new Map(),listeners={};
 const storage={async open(name){if(!buckets.has(name))buckets.set(name,new Map());const bucket=buckets.get(name);return{
  async match(key){return bucket.get(typeof key==='string'?new URL(key,origin).href:key.url)?.clone();},
@@ -13,7 +13,7 @@ const sandbox={Request,Response,Headers,URL,AbortController,setTimeout,clearTime
  Date:class extends Date{static now(){return clock;}},
  self:{location:{origin},addEventListener(type,fn){listeners[type]=fn;},clients:{async matchAll(){return[];}}},
  async fetch(request){const url=new URL(request.url);if(fail)throw new TypeError('Network unavailable');
-  if(url.pathname==='/api/auth')return new Response(JSON.stringify(authStatus===200?{authenticated:true,hardened:true,sessionVersion:3,supabaseAuthenticated:true,sessionHours:8,authUser:{id:owner},user:{name:'Test',email:owner+'@example.test'},refreshToken:'must-not-persist',token:'must-not-persist'}:{authenticated:false}),{status:authStatus,headers:{'Content-Type':'application/json'}});
+  if(url.pathname==='/api/auth'){authReads++;return new Response(JSON.stringify(authStatus===200?{authenticated:true,hardened:true,sessionVersion:3,supabaseAuthenticated:true,sessionHours:8,authUser:{id:owner},user:{name:'Test',email:owner+'@example.test'},refreshToken:'must-not-persist',token:'must-not-persist'}:{authenticated:false}),{status:authStatus,headers:{'Content-Type':'application/json'}});}
   reads++;if(gate)await gate;const etag=`"${owner}:${url.search}"`;if(request.headers.get('If-None-Match')===etag)return new Response(null,{status:304});
   bodies++;return new Response(JSON.stringify({ok:true,rows:[{id:owner}],request:url.search}),{headers:{'Content-Type':'application/json','ETag':etag}});
  }};
@@ -24,6 +24,17 @@ const event=path=>({request:req(path),waitUntil(p){this.pending.push(p);},pendin
  await sandbox.authResponse(req('/api/auth'));
  const snapshot=await(await storage.open('medindex-auth-device-v1')).match(req('/api/auth'));
  const serialized=await snapshot.text();assert.ok(!serialized.includes('must-not-persist'));assert.ok(!serialized.includes('refreshToken'));
+ listeners.message({data:{type:'SET_DEVICE_ONLINE',online:false}});
+ const beforeOfflineAuth=authReads;
+ assert.equal((await sandbox.authResponse(req('/api/auth'))).headers.get('X-MedIndex-Cache'),'auth-offline');
+ assert.equal(authReads,beforeOfflineAuth,'Effective offline mode must reuse the lease without an unnecessary auth read');
+ const beforeProbeLease=JSON.parse(serialized);
+ clock+=1000;
+ const probe=await sandbox.authResponse(req('/api/auth?offline_probe=1'));
+ assert.equal(probe.headers.get('X-MedIndex-Cache'),null,'A reconnect probe must never be fulfilled from the offline lease');
+ assert.equal(authReads,beforeOfflineAuth+1,'Same-Wi-Fi reconnect probes must reach the origin while worker is offline');
+ assert.deepEqual(await(await(await storage.open('medindex-auth-device-v1')).match(req('/api/auth'))).json(),beforeProbeLease,'A connectivity probe must not extend the offline lease');
+ listeners.message({data:{type:'SET_DEVICE_ONLINE',online:true}});
  const url='/api/drug-search?view=registry-page&page=1';
  let release;gate=new Promise(resolve=>release=resolve);
  const one=sandbox.queryDataResponse(event(url),new URL(origin+url));const two=sandbox.queryDataResponse(event(url),new URL(origin+url));

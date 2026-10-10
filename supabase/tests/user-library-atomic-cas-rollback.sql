@@ -1,6 +1,8 @@
 -- Only generated fixture owners are queried. No real personal row is accessed.
 -- Changes to rows, receipts and rollout flags are discarded by ROLLBACK.
 begin;
+select pg_catalog.set_config('drx.synthetic.original_fence',
+  (select fence_enabled::text from prescription_write_private.control where singleton),true);
 update prescription_write_private.control set fence_enabled=false where singleton;
 do $fixture$
 declare
@@ -215,6 +217,105 @@ begin
   if answer->'ok' is distinct from 'true'::jsonb then raise exception 'Synthetic library check: service RPC refused active fence'; end if;
 end;
 $fence$;
+do $fenced_outer$
+declare
+  owner_a uuid := pg_catalog.current_setting('drx.synthetic.library_storage_a')::uuid;
+  auth_a uuid := pg_catalog.current_setting('drx.synthetic.library_auth_a')::uuid;
+  ciphertext jsonb := '{"v":1,"alg":"A256GCM","iv":"abcdefghijklmnop","tag":"abcdefghijklmnopqrstuv","ciphertext":"YQ"}'::jsonb;
+  note jsonb;
+  rx jsonb;
+  bad jsonb;
+  answer jsonb;
+  acknowledged jsonb;
+  rejected boolean := false;
+begin
+  if (select fence_enabled from prescription_write_private.control where singleton) is distinct from true
+    or exists (select 1 from (values ('SELECT'),('INSERT'),('UPDATE'),('DELETE')) permissions(privilege)
+      where not pg_catalog.has_table_privilege('service_role','public.user_prescriptions',privilege))
+    or not pg_catalog.has_function_privilege('service_role','public.write_user_library_cas(uuid,uuid,jsonb,jsonb,jsonb,jsonb)','EXECUTE') then
+    raise exception 'Synthetic library check: fenced effective service permissions failed';
+  end if;
+  if pg_catalog.current_setting('drx.synthetic.original_fence')='true'
+    and (pg_catalog.has_table_privilege('service_role','public.user_prescriptions','TRUNCATE')
+      or pg_catalog.has_table_privilege('anon','public.user_prescriptions','INSERT,UPDATE,DELETE,TRUNCATE')
+      or pg_catalog.has_table_privilege('authenticated','public.user_prescriptions','INSERT,UPDATE,DELETE,TRUNCATE')) then
+    raise exception 'Synthetic library check: deployed fence grants permit bypass';
+  end if;
+  note := pg_catalog.jsonb_build_object('storage','native','entityType','variant','entityKey','synthetic-fenced-note',
+    'expectedVersion',0,'operationId',pg_catalog.gen_random_uuid(),'content',E'  Ë / 🧪\nexact fenced source  ',
+    'deleted',false,'restore',false,'clientUpdatedAt','2026-10-10T11:00:00.000Z');
+  rx := pg_catalog.jsonb_build_object('clientId','synthetic-fenced-outer','expectedVersion',0,
+    'operationId',pg_catalog.gen_random_uuid(),'payload',ciphertext,'payloadDigest',pg_catalog.repeat('a',64),
+    'chapterKey',null,'deleted',false,'restore',false,'clientUpdatedAt','2026-10-10T11:00:00.000Z');
+  answer := public.write_user_library_cas(auth_a,owner_a,pg_catalog.jsonb_build_array(note),pg_catalog.jsonb_build_array(rx),'[]','[]');
+  if answer->'ok' is distinct from 'true'::jsonb or answer#>>'{prescriptions,operations,0,rowVersion}' is distinct from '1' then
+    raise exception 'Synthetic library check: fenced outer create failed';
+  end if;
+  note := note || pg_catalog.jsonb_build_object('expectedVersion',1,'operationId',pg_catalog.gen_random_uuid(),'content',E'  changed Ë / 🧪\nexact source  ');
+  rx := rx || pg_catalog.jsonb_build_object('expectedVersion',1,'operationId',pg_catalog.gen_random_uuid(),'payloadDigest',pg_catalog.repeat('b',64));
+  acknowledged := public.write_user_library_cas(auth_a,owner_a,pg_catalog.jsonb_build_array(note),pg_catalog.jsonb_build_array(rx),'[]','[]');
+  answer := public.write_user_library_cas(auth_a,owner_a,pg_catalog.jsonb_build_array(note),pg_catalog.jsonb_build_array(rx),'[]','[]');
+  if acknowledged->'ok' is distinct from 'true'::jsonb or answer is distinct from acknowledged
+    or (select row_version from public.user_prescriptions where user_id=owner_a and client_id='synthetic-fenced-outer') is distinct from 2 then
+    raise exception 'Synthetic library check: fenced outer update or receipt retry failed';
+  end if;
+  rx := rx || pg_catalog.jsonb_build_object('expectedVersion',2,'operationId',pg_catalog.gen_random_uuid(),'deleted',true);
+  answer := public.write_user_library_cas(auth_a,owner_a,'[]',pg_catalog.jsonb_build_array(rx),'[]','[]');
+  if answer->'ok' is distinct from 'true'::jsonb
+    or answer#>>'{prescriptions,operations,0,rowVersion}' is distinct from '3'
+    or answer#>>'{prescriptions,operations,0,deleted}' is distinct from 'true' then
+    raise exception 'Synthetic library check: fenced outer tombstone failed';
+  end if;
+  rx := rx || pg_catalog.jsonb_build_object('expectedVersion',3,'operationId',pg_catalog.gen_random_uuid(),'deleted',false,'restore',true);
+  answer := public.write_user_library_cas(auth_a,owner_a,'[]',pg_catalog.jsonb_build_array(rx),'[]','[]');
+  if answer->'ok' is distinct from 'true'::jsonb
+    or answer#>>'{prescriptions,operations,0,rowVersion}' is distinct from '4'
+    or answer#>>'{prescriptions,operations,0,deleted}' is distinct from 'false'
+    or (select payload from public.user_prescriptions where user_id=owner_a and client_id='synthetic-fenced-outer') is distinct from ciphertext then
+    raise exception 'Synthetic library check: fenced outer exact restore failed';
+  end if;
+  note := note || pg_catalog.jsonb_build_object('expectedVersion',2,'operationId',pg_catalog.gen_random_uuid(),'content','fenced successor');
+  rx := rx || pg_catalog.jsonb_build_object('expectedVersion',3,'operationId',pg_catalog.gen_random_uuid(),'restore',false);
+  answer := public.write_user_library_cas(auth_a,owner_a,pg_catalog.jsonb_build_array(note),pg_catalog.jsonb_build_array(rx),'[]','[]');
+  if answer->'ok' is distinct from 'false'::jsonb
+    or answer->>'code' is distinct from 'PRESCRIPTION_VERSION_CONFLICT'
+    or answer->>'source' is distinct from 'prescriptions'
+    or (select row_version from public.user_notes where user_id=auth_a and entity_key='synthetic-fenced-note') is distinct from 2
+    or exists(select 1 from note_write_private.receipts where storage_uid=owner_a and operation_id=(note->>'operationId')::uuid) then
+    raise exception 'Synthetic library check: fenced later Rx conflict retained note or receipt';
+  end if;
+  rx := rx || pg_catalog.jsonb_build_object('expectedVersion',4);
+  bad := pg_catalog.jsonb_build_object('user_id',owner_a,'drug_id',pg_catalog.gen_random_uuid(),'entity_type','drug',
+    'entity_key','synthetic-fenced-missing-product','payload','{}'::jsonb,'client_updated_at','2026-10-10T11:00:00.000Z',
+    'deleted_at',null,'updated_at','2026-10-10T11:00:00.000Z');
+  begin
+    perform public.write_user_library_cas(auth_a,owner_a,pg_catalog.jsonb_build_array(note),pg_catalog.jsonb_build_array(rx),pg_catalog.jsonb_build_array(bad),'[]');
+  exception when foreign_key_violation or check_violation then rejected := true; end;
+  if not rejected or (select row_version from public.user_notes where user_id=auth_a and entity_key='synthetic-fenced-note') is distinct from 2
+    or (select row_version from public.user_prescriptions where user_id=owner_a and client_id='synthetic-fenced-outer') is distinct from 4
+    or exists(select 1 from note_write_private.receipts where storage_uid=owner_a and operation_id=(note->>'operationId')::uuid)
+    or exists(select 1 from prescription_write_private.receipts where storage_uid=owner_a and operation_id=(rx->>'operationId')::uuid) then
+    raise exception 'Synthetic library check: fenced ordinary failure retained protected write';
+  end if;
+  answer := public.write_user_library_cas(auth_a,owner_a,pg_catalog.jsonb_build_array(note),pg_catalog.jsonb_build_array(rx),'[]','[]');
+  if answer->'ok' is distinct from 'true'::jsonb or answer#>>'{prescriptions,operations,0,rowVersion}' is distinct from '5'
+    or (select content from public.user_notes where user_id=auth_a and entity_key='synthetic-fenced-note') is distinct from note->>'content' then
+    raise exception 'Synthetic library check: fenced rollback poisoned exact retry';
+  end if;
+  rejected := false;
+  begin insert into public.user_prescriptions(user_id,client_id,payload) values(owner_a,'synthetic-forbidden-direct',ciphertext);
+  exception when insufficient_privilege then rejected := true; end;
+  if not rejected then raise exception 'Synthetic library check: fenced direct insert accepted'; end if;
+  rejected := false;
+  begin update public.user_prescriptions set payload=ciphertext where user_id=owner_a and client_id='synthetic-fenced-outer';
+  exception when insufficient_privilege then rejected := true; end;
+  if not rejected then raise exception 'Synthetic library check: fenced direct update accepted'; end if;
+  rejected := false;
+  begin delete from public.user_prescriptions where user_id=owner_a and client_id='synthetic-fenced-outer';
+  exception when insufficient_privilege then rejected := true; end;
+  if not rejected then raise exception 'Synthetic library check: fenced direct delete accepted'; end if;
+end;
+$fenced_outer$;
 set local role authenticated;
 do $untrusted$
 declare rejected boolean := false;

@@ -7,40 +7,51 @@
     "registry-v2-dose-calculator.css": "registry-v2-dose-calculator-p1-20261008",
     "registry-v2-dose-calculator.js": "registry-v2-dose-calculator-p1-20261008",
     "drx-modal-focus.js": "p1-20261008",
-    "drx-runtime-telemetry.js": "20261009-rum-v1"
+    "drx-runtime-telemetry.js": "20261009-rum-v1",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v8-reachability-20261010"
   },
   "recetat.html": {
     "recetat-v2.css": "20-prescription-cas-20261010",
     "recetat-v2.js": "20-prescription-cas-20261010",
     "drx-modal-focus.js": "p1-20261008",
-    "drx-runtime-telemetry.js": "20261009-rum-v1"
+    "drx-runtime-telemetry.js": "20261009-rum-v1",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v8-reachability-20261010"
   },
   "klasifikimi.html": {
-    "drx-runtime-telemetry.js": "20261009-rum-v1"
+    "drx-runtime-telemetry.js": "20261009-rum-v1",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v8-reachability-20261010"
   },
   "icd.html": {
-    "drx-runtime-telemetry.js": "20261009-rum-v1"
+    "drx-runtime-telemetry.js": "20261009-rum-v1",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v8-reachability-20261010"
   },
   "dozologjia.html": {
     "drx-runtime-telemetry.js": "20261009-rum-v1",
-    "phase9-personal-entities-client.js": "drx-phase9-personal-v4"
+    "phase9-personal-entities-client.js": "drx-phase9-personal-v4",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v8-reachability-20261010"
   },
   "antibiotiket.html": {
-    "phase9-personal-entities-client.js": "drx-phase9-personal-v4"
+    "phase9-personal-entities-client.js": "drx-phase9-personal-v4",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v8-reachability-20261010"
   },
   "protokollet.html": {
-    "drx-runtime-telemetry.js": "20261009-rum-v1"
+    "drx-runtime-telemetry.js": "20261009-rum-v1",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v8-reachability-20261010"
   },
   "urgjencat.html": {
-    "drx-runtime-telemetry.js": "20261009-rum-v1"
+    "drx-runtime-telemetry.js": "20261009-rum-v1",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v8-reachability-20261010"
   },
   "analizat.html": {
-    "drx-runtime-telemetry.js": "20261009-rum-v1"
+    "drx-runtime-telemetry.js": "20261009-rum-v1",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v8-reachability-20261010"
   },
   "medical-hub.html": {
-    "drx-runtime-telemetry.js": "20261009-rum-v1"
+    "drx-runtime-telemetry.js": "20261009-rum-v1",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v8-reachability-20261010"
   },
   "sistemi.html": {
-    "drx-runtime-telemetry.js": "20261009-rum-v1"
+    "drx-runtime-telemetry.js": "20261009-rum-v1",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v8-reachability-20261010"
   }
 }
