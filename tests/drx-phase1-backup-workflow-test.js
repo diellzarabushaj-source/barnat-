@@ -103,7 +103,13 @@ assert.match(workflow,/pg_dump "\$SOURCE_DATABASE_URL" --schema-only --table=aut
 assert.match(workflow,/> "\$BACKUP_DIR\/auth_recovery_schema\.sql" 2> "\$RUNNER_TEMP\/drx-restore-auth-schema-dump\.log"/);
 assert.match(workflow,/public\.ecr\.aws\/supabase\/postgres:\$SOURCE_POSTGRES_VERSION/);
 assert.match(restore,/restore_sql managed_auth --file "\$BACKUP_DIR\/auth_recovery_schema\.sql"/);
-assert.match(restore,/psql "\$DB_URL" -X --quiet --set ON_ERROR_STOP=1 --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never "\$@" > "\$RUNNER_TEMP\/drx-restore-\$\{stage\}\.log" 2>&1/);
+assert.match(restore,/psql "\$DB_URL" -X --quiet --set ON_ERROR_STOP=1 --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never "\$@"[\s\\]*> "\$RUNNER_TEMP\/drx-restore-\$\{stage\}\.log" 2>&1/);
+assert.match(restore,/project_id = "drx-isolated-restore"/);
+assert.match(restore,/RESTORE_CONTAINER='supabase_db_drx-isolated-restore'/);
+assert.match(restore,/docker inspect "\$RESTORE_CONTAINER" --format '\{\{\.Name\}\}'/);
+assert.match(restore,/if \[ "\$stage" = "managed_auth" \] \|\| \[ "\$stage" = "auth_triggers" \]; then[\s\S]*?docker exec -i "\$RESTORE_CONTAINER" psql -U supabase_admin -d postgres/);
+assert.doesNotMatch(restore,/GRANT\s+(?:supabase_admin|supabase_auth_admin|CREATE)/i);
+assert.match(restore,/docker exec -i "\$RESTORE_CONTAINER" psql -U supabase_admin -d postgres -X --quiet --single-transaction/);
 assert.match(restore,/supabase start > "\$RUNNER_TEMP\/drx-restore-start\.log" 2>&1/);
 assert.ok(restore.indexOf('--file "$RUNNER_TEMP/drx-restore-security-manifest.sql"')>restore.indexOf('restore_sql auth_triggers'));
 assert.equal((workflow.match(/--file "\$RUNNER_TEMP\/drx-restore-security-manifest\.sql" >> "\$RUNNER_TEMP\/drx-(?:source|restore)-manifest\.txt"/g)||[]).length,2);
@@ -233,6 +239,73 @@ const linked=resolveAliases([neon],{ACCESS_TOKEN_1:'synthetic-management-token'}
 assert.deepEqual(linked.outputs,{available:'true',mode:'linked',source:'ACCESS_TOKEN_1'});
 assert.ok(!linked.environment.includes(neon),'Linked fallback never retains the rejected database URL.');
 console.log(`Source-project backup resolver: ${resolverCases} synthetic direct/session-pooler, routing override, alias fallback and fail-closed cases passed without database access.`);
+
+// Execute the literal restore function with synthetic command stand-ins. Only
+// managed Auth stages may use the verified local admin container, and both must
+// remain transactional. Schema/data/history must keep the local postgres path.
+const restoreFunctionMatch=restore.match(/          restore_sql\(\) \{\r?\n[\s\S]*?\r?\n          \}/);
+assert.ok(restoreFunctionMatch,'The real restore dispatcher must remain executable.');
+const restoreFunction=restoreFunctionMatch[0].replace(/\r\n/g,'\n').replace(/^ {10}/gm,'');
+const restoreDispatchDir=fs.mkdtempSync(path.join(os.tmpdir(),'drx-restore-dispatch-'));
+assert.equal(path.dirname(path.resolve(restoreDispatchDir)),path.resolve(os.tmpdir()));
+const restoreContainer='supabase_db_drx-isolated-restore';
+const localRestoreUrl='postgresql://postgres:postgres@127.0.0.1:54322/postgres';
+const restorePrivateMarker='SYNTHETIC_RESTORE_CONTEXT_MUST_NOT_APPEAR';
+let restoreDispatchCases=0;
+try {
+  const sourceFile=path.join(restoreDispatchDir,'synthetic.sql').replace(/\\/g,'/');
+  const historyFile=path.join(restoreDispatchDir,'synthetic-history.sql').replace(/\\/g,'/');
+  const sourceSql='-- synthetic schema/trigger statement only\nSELECT 1;\n';
+  fs.writeFileSync(sourceFile,sourceSql); fs.writeFileSync(historyFile,'SELECT 2;\n');
+  function bashLiteral(value){return "'"+value.replace(/'/g,"'\"'\"'")+"'";}
+  function invokeRestore(stage,args,failAdmin=false){
+    const capture=path.join(restoreDispatchDir,`capture-${++restoreDispatchCases}`).replace(/\\/g,'/');
+    const standIns=`
+      docker() {
+        printf '%s\\0' docker "$@" > "$DRX_RESTORE_CAPTURE"
+        cat > "$DRX_RESTORE_CAPTURE.stdin"
+        if [ "$DRX_RESTORE_FAIL_ADMIN" = "1" ]; then
+          printf '%s\\n' 'psql:<stdin>:1: ERROR:  42501' 'CONTEXT: ${restorePrivateMarker}' >&2
+          return 3
+        fi
+      }
+      psql() { printf '%s\\0' psql "$@" > "$DRX_RESTORE_CAPTURE"; }
+    `;
+    const command=`set -euo pipefail\n${standIns}\n${restoreFunction.replace(/\bpython3\b/g,'"${DRX_TEST_PYTHON}"')}\nrestore_sql ${[stage,...args].map(bashLiteral).join(' ')}\n`;
+    const environment={PATH:process.env.PATH,SYSTEMROOT:process.env.SYSTEMROOT || '',WINDIR:process.env.WINDIR || '',
+      RUNNER_TEMP:restoreDispatchDir.replace(/\\/g,'/'),GITHUB_WORKSPACE:ROOT.replace(/\\/g,'/'),
+      RESTORE_CONTAINER:restoreContainer,DB_URL:localRestoreUrl,DRX_RESTORE_CAPTURE:capture,
+      DRX_RESTORE_FAIL_ADMIN:failAdmin ? '1' : '0',DRX_TEST_PYTHON:python};
+    const result=spawnSync(bash,['-c',command],{env:environment,encoding:'utf8',timeout:15000});
+    assert.equal(result.error,undefined,'The synthetic restore dispatcher must execute.');
+    assert.equal(result.stderr,'','Raw database diagnostics must remain private.');
+    assert.ok(!result.stdout.includes(restorePrivateMarker),'Synthetic private context cannot leak from admin restoration.');
+    return {result,args:fs.readFileSync(capture,'utf8').split('\0').slice(0,-1),capture};
+  }
+  const adminArgs=['docker','exec','-i',restoreContainer,'psql','-U','supabase_admin','-d','postgres','-X','--quiet',
+    '--single-transaction','--set','ON_ERROR_STOP=1','--set','VERBOSITY=sqlstate','--set','SHOW_CONTEXT=never','--file=-'];
+  for(const [stage,args] of [['managed_auth',['--file',sourceFile]],['auth_triggers',['--single-transaction','--file',sourceFile]]]){
+    const invocation=invokeRestore(stage,args);
+    assert.equal(invocation.result.status,0);
+    assert.deepEqual(invocation.args,adminArgs,'Each managed stage streams only into the explicitly local admin in one transaction.');
+    assert.equal(fs.readFileSync(invocation.capture+'.stdin','utf8'),sourceSql,'Managed restoration must replay the captured source file exactly.');
+  }
+  const postgresArgs=['psql',localRestoreUrl,'-X','--quiet','--set','ON_ERROR_STOP=1','--set','VERBOSITY=sqlstate','--set','SHOW_CONTEXT=never'];
+  for(const [stage,args] of [['schema',['--file',sourceFile]],
+    ['data',['--command','SET session_replication_role = replica','--file',sourceFile]],
+    ['history',['--single-transaction','--command','DROP SCHEMA IF EXISTS supabase_migrations CASCADE','--file',sourceFile,'--file',historyFile]]]){
+    const invocation=invokeRestore(stage,args);
+    assert.equal(invocation.result.status,0);
+    assert.deepEqual(invocation.args,[...postgresArgs,...args],'Ordinary restoration must keep its original local postgres arguments.');
+    assert.equal(fs.existsSync(invocation.capture+'.stdin'),false,'Ordinary restoration must not enter the admin streaming path.');
+  }
+  const failed=invokeRestore('auth_triggers',['--single-transaction','--file',sourceFile],true);
+  assert.equal(failed.result.status,1,'Managed restoration failure must stop the workflow.');
+  const failureMatch=failed.result.stdout.match(/Isolated restore failed: (\{.*\}); raw database diagnostics are not published\./);
+  assert.ok(failureMatch,'Admin failure must emit only the bounded safe diagnostic.');
+  assert.deepEqual(JSON.parse(failureMatch[1]),{failedStage:'auth_triggers',sqlstate:'42501',copyRelation:null});
+} finally {fs.rmSync(restoreDispatchDir,{recursive:true,force:true});}
+console.log(`Isolated restore dispatcher: ${restoreDispatchCases} executable managed-admin, transaction, ordinary-postgres and private failure cases passed without database access.`);
 
 // Execute diagnostics against synthetic SQL/logs. Even a row that resembles a
 // COPY statement, a verbose error, or a malformed identifier must not leak text.
