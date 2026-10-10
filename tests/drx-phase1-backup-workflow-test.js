@@ -103,7 +103,12 @@ assert.match(workflow,/pg_dump "\$SOURCE_DATABASE_URL" --schema-only --table=aut
 assert.match(workflow,/> "\$BACKUP_DIR\/auth_recovery_schema\.sql" 2> "\$RUNNER_TEMP\/drx-restore-auth-schema-dump\.log"/);
 assert.match(workflow,/public\.ecr\.aws\/supabase\/postgres:\$SOURCE_POSTGRES_VERSION/);
 assert.match(restore,/restore_sql managed_auth --file "\$BACKUP_DIR\/auth_recovery_schema\.sql"/);
-assert.match(restore,/psql "\$DB_URL" -X --quiet --set ON_ERROR_STOP=1 --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never "\$@" > "\$RUNNER_TEMP\/drx-restore-\$\{stage\}\.log" 2>&1/);
+assert.match(restore,/psql "\$DB_URL" -X --quiet --set ON_ERROR_STOP=1 --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never "\$@"[\s\\]*> "\$RUNNER_TEMP\/drx-restore-\$\{stage\}\.log" 2>&1/);
+assert.match(restore,/project_id = "drx-isolated-restore"/);
+assert.match(restore,/RESTORE_CONTAINER='supabase_db_drx-isolated-restore'/);
+assert.match(restore,/docker inspect "\$RESTORE_CONTAINER" --format '\{\{\.Name\}\}'/);
+assert.match(restore,/if \[ "\$stage" = "managed_auth" \]; then[\s\S]*?docker exec -i "\$RESTORE_CONTAINER" psql -U supabase_admin -d postgres/);
+assert.doesNotMatch(restore,/GRANT\s+(?:supabase_admin|supabase_auth_admin|CREATE)/i);
 assert.match(restore,/supabase start > "\$RUNNER_TEMP\/drx-restore-start\.log" 2>&1/);
 assert.ok(restore.indexOf('--file "$RUNNER_TEMP/drx-restore-security-manifest.sql"')>restore.indexOf('restore_sql auth_triggers'));
 assert.equal((workflow.match(/--file "\$RUNNER_TEMP\/drx-restore-security-manifest\.sql" >> "\$RUNNER_TEMP\/drx-(?:source|restore)-manifest\.txt"/g)||[]).length,2);
