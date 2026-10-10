@@ -4,9 +4,9 @@
   const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const icon = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 5h16l-6 7v6l-4 2v-8z"/></svg>';
   window.DrxColumnFilter = Object.freeze({ create({columns, getFilters, getSort, getFacetUrl, fetchJson, onApply, onSort, onOpen}) {
-    let active = '', anchor = null, draft = {}, values = [], offset = 0, hasMore = false, requestId = 0, controller = null, timer = 0, search = '';
+    let active = '', anchor = null, draft = {}, values = [], offset = 0, hasMore = false, requestId = 0, controller = null, timer = 0, search = '', releaseModal = null;
     const panel = document.createElement('section');
-    panel.id = 'registryColumnFilterPanel'; panel.className = 'registry-column-filter'; panel.hidden = true;
+    panel.id = 'registryColumnFilterPanel'; panel.className = 'registry-column-filter'; panel.hidden = true; panel.inert = true;
     panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-modal','true'); panel.setAttribute('aria-labelledby','columnFilterTitle');
     panel.innerHTML = `<header><div><small>FILTËR I KOLONËS</small><h2 id="columnFilterTitle"></h2></div><button type="button" data-close aria-label="Mbyll filtrin">×</button></header>
       <div class="column-sort-actions"><button type="button" data-direction="asc">↑ Rendit A → Z</button><button type="button" data-direction="desc">↓ Rendit Z → A</button></div>
@@ -90,6 +90,7 @@
       if (panel.hidden) return;
       ++requestId; controller?.abort(); clearTimeout(timer); panel.hidden = true; backdrop.hidden = true;
       anchor?.setAttribute('aria-expanded','false');
+      releaseModal?.(); releaseModal = null; panel.inert = true;
       if (focus) anchor?.focus({preventScroll:true});
     }
     function open(id, button) {
@@ -106,14 +107,16 @@
         action.textContent = model.numeric(id) ? direction === 'asc' ? '↑ Nga më e vogla te më e madhja' : '↓ Nga më e madhja te më e vogla' : direction === 'asc' ? '↑ Rendit A → Z' : '↓ Rendit Z → A';
         action.setAttribute('aria-pressed',String(sort.sort === model.sortKey(id) && sort.direction === direction));
       }
-      syncCondition(); syncAll(); panel.hidden = false; backdrop.hidden = false; button.setAttribute('aria-expanded','true'); position();
+      syncCondition(); syncAll(); panel.hidden = false; panel.inert = false; backdrop.hidden = false; button.setAttribute('aria-expanded','true'); position();
+      releaseModal = window.DRxModalFocus?.open(panel,{initialFocus:searchInput,returnFocus:button,fallbackFocus:toolbar.querySelector('button'),except:[backdrop],onEscape:close});
       searchInput.focus({preventScroll:true}); void loadValues();
     }
     function update() {
       const filters = getFilters();
       buttons.forEach(button => { const set = Boolean(filters[button.dataset.columnFilter]); button.classList.toggle('is-filtered',set); button.dataset.filtered = String(set); });
-      chips.hidden = !Object.keys(filters).length;
-      chips.innerHTML = columns.filter(col => filters[col.id]).map(col => `<button type="button" data-remove-column="${col.id}" aria-label="Pastro filtrin: ${escape(col.label)}">${icon}${escape(col.label)} <b>×</b></button>`).join('');
+      const hasCombinedChips = Boolean(document.getElementById('registryActiveFilters'));
+      chips.hidden = hasCombinedChips || !Object.keys(filters).length;
+      chips.innerHTML = hasCombinedChips ? '' : columns.filter(col => filters[col.id]).map(col => `<button type="button" data-remove-column="${col.id}" aria-label="Pastro filtrin: ${escape(col.label)}">${icon}${escape(col.label)} <b>×</b></button>`).join('');
     }
     toolbar.querySelector('button').addEventListener('click', event => open(toolbar.querySelector('select').value,event.currentTarget));
     chips.addEventListener('click', event => { const button = event.target.closest('[data-remove-column]'); if (button) onApply(button.dataset.removeColumn,null); });
@@ -138,6 +141,7 @@
     });
     document.addEventListener('keydown', event => {
       if (panel.hidden) return;
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); event.stopImmediatePropagation(); searchInput.focus(); searchInput.select(); return; }
       if (event.key === 'Escape') { event.preventDefault(); event.stopImmediatePropagation(); close(); }
       if (event.key === 'Tab') {
         const nodes = [...panel.querySelectorAll('button,input,select')].filter(node => !node.disabled && !node.hidden && node.getClientRects().length);

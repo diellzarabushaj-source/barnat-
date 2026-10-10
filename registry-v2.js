@@ -540,7 +540,7 @@
     }
     await new Promise(resolve => {
       const script = document.createElement('script');
-      script.src = '/phase9-personal-entities-client.js?v=drx-phase9-personal-v3';
+      script.src = '/phase9-personal-entities-client.js?v=drx-phase9-personal-v4';
       script.defer = true;
       script.dataset.drxPersonalLibrary = '1';
       script.addEventListener('load', resolve, { once:true });
@@ -2339,6 +2339,9 @@
   }
   function renderActiveFilters() {
     const root = document.getElementById('registryActiveFilters'); if (!root) return;
+    const focused = document.activeElement?.closest('[data-remove-filter]');
+    const focusedId = root.contains(focused) ? focused.dataset.removeFilter : '';
+    const focusIndex = focusedId ? [...root.querySelectorAll('[data-remove-filter]')].indexOf(focused) : -1;
     const items = [];
     if (state.q) items.push(['query',`Kërkimi: ${state.q}`]);
     if (state.atc) items.push(['atc-scope',`ATC: ${state.atc}`]);
@@ -2346,11 +2349,22 @@
     for (const [id,f] of Object.entries(state.columnFilters)) {
       const label = COLUMN_DEFS.find(c => c.id === id)?.label || id;
       const values = f.values?.map(v => window.DrxRegistryColumns.label(id,v)) || [];
-      const description = values.length ? `${f.mode === 'exclude' ? 'Përjashto: ' : ''}${values.slice(0,2).join(', ')}${values.length > 2 ? ` +${values.length-2}` : ''}` : f.values ? (f.mode === 'exclude' ? 'Të gjitha vlerat' : 'Asnjë vlerë') : `${({contains:'përmban',notContains:'nuk përmban',equals:'është',notEquals:'nuk është',startsWith:'fillon me',endsWith:'mbaron me',empty:'bosh',notEmpty:'jo bosh',gt:'>',gte:'≥',lt:'<',lte:'≤',between:'mes'})[f.op] || ''} ${f.text || ''}${f.text2 ? ' – '+f.text2 : ''}`;
-      items.push(['column:'+id,`${label}: ${description}`]);
+      const descriptions = [];
+      if (values.length) descriptions.push(`${f.mode === 'exclude' ? 'Përjashto: ' : ''}${values.slice(0,2).join(', ')}${values.length > 2 ? ` +${values.length-2}` : ''}`);
+      else if (f.values && f.mode === 'include') descriptions.push('Asnjë vlerë');
+      if (f.op) {
+        const operator = ({contains:'përmban',notContains:'nuk përmban',equals:'është',notEquals:'nuk është',startsWith:'fillon me',endsWith:'mbaron me',empty:'është bosh',notEmpty:'nuk është bosh',gt:'>',gte:'≥',lt:'<',lte:'≤',between:'mes'})[f.op] || '';
+        descriptions.push(`${operator}${f.text !== undefined ? ' '+f.text : ''}${f.op === 'between' ? ' – '+(f.text2 ?? '') : ''}`);
+      }
+      items.push(['column:'+id,`${label}: ${descriptions.join(' · ') || 'Të gjitha vlerat'}`]);
     }
     root.hidden = !items.length;
-    root.innerHTML = items.map(([id,label]) => `<button type="button" data-remove-filter="${escapeHtml(id)}" aria-label="Hiq filtrin ${escapeHtml(label)}">${escapeHtml(label)} <span aria-hidden="true">×</span></button>`).join('');
+    root.innerHTML = items.map(([id,label]) => `<button type="button" data-remove-filter="${escapeHtml(id)}"${id.startsWith('column:') ? ` data-remove-column="${escapeHtml(id.slice(7))}"` : ''} aria-label="Hiq filtrin ${escapeHtml(label)}">${escapeHtml(label)} <span aria-hidden="true">×</span></button>`).join('');
+    if (focusedId) {
+      const buttons = [...root.querySelectorAll('[data-remove-filter]')];
+      const next = buttons.find(button => button.dataset.removeFilter === focusedId) || buttons[Math.min(focusIndex,buttons.length-1)] || el.filterToggle;
+      next?.focus({preventScroll:true});
+    }
   }
 
   function selectAtcFilter(code) {

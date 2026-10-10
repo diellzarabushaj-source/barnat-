@@ -114,7 +114,7 @@ const reader = fs.readFileSync(path.join(root, 'lib/icd-hierarchy-neon-reader.js
 const dataApi = fs.readFileSync(path.join(root, 'lib/neon-data-api.js'), 'utf8');
 const publicSource = fs.readFileSync(path.join(root, 'lib/icd-public-source.js'), 'utf8');
 
-assert.match(script, /sheetOnly:true/);
+assert.match(script, /IcdPublicSource\.loadForSync\(\)/);
 assert.match(script, /BATCH_SIZE = 100/);
 assert.match(script, /BATCH_TIMEOUT_MS = 60000/);
 assert.match(script, /prefer:'resolution=merge-duplicates,return=minimal'/);
@@ -168,7 +168,7 @@ async function activationResponseLossDoesNotUnpublish() {
       module, exports:module.exports, process:{stdout:{write(){}},stderr:{write(){}}},
       require(name) {
         if (name === '../lib/medindex-data-api.js') return {neonRequest:fakeRequest,dataOf:value=>value.data};
-        if (name === '../lib/icd-public-source.js') return {...require('../lib/icd-public-source.js'),load:async()=>({sourceRevision:'revision-1',sourceType:'google-sheet',data:sampleDataset})};
+        if (name === '../lib/icd-public-source.js') return {...require('../lib/icd-public-source.js'),loadForSync:async()=>({sourceRevision:'revision-1',sourceType:'google-sheet',data:sampleDataset})};
         if (name === '../lib/icd-hierarchy-validation.js') return {validate:()=>FullIcd.EXPECTED_COUNTS};
         return require(name);
       },
@@ -183,6 +183,53 @@ async function activationResponseLossDoesNotUnpublish() {
     assert.equal(status, 'failed', filename + ': genuinely failed staging import is marked');
   }
 }
-activationResponseLossDoesNotUnpublish().then(() => {
+async function sourceFailureNeverTouchesDatabase() {
+  const Source = require('../lib/icd-public-source.js');
+  const validHeaderIncompleteHierarchy = [
+    'Niveli,Kapitulli,Blloku,Kodi ICD-10,Titulli zyrtar — English,Titulli — Shqip,Kodi prind',
+    'KAPITULL,I,,I,Certain infectious and parasitic diseases,Sëmundje infektive,',
+  ].join('\n');
+  for (const filename of ['sync-icd-hierarchy-to-neon.js', 'sync-icd-hierarchy-to-supabase.js']) {
+    for (const failure of ['exhausted-fetch', 'partial-csv', 'invalid-parent-hierarchy']) {
+      let databaseCalls = 0;
+      let sourceCalls = 0;
+      const originalFetch = global.fetch;
+      const module = { exports:{} };
+      const source = failure === 'partial-csv' ? Source : {
+        ...Source,
+        loadForSync:async () => {
+          sourceCalls++;
+          if (failure === 'exhausted-fetch') throw new Error('Synthetic source retry budget exhausted');
+          return {sourceRevision:'revision-1',sourceType:'google-sheet',data:{nodes:sampleNodes.map(node=>node.level==='subcategory'?{...node,parentCode:'A00-A09'}:node)}};
+        },
+      };
+      global.fetch = async () => {
+        sourceCalls++;
+        return {ok:true,headers:{get:()=>'text/csv'},text:async()=>validHeaderIncompleteHierarchy};
+      };
+      try {
+        vm.runInNewContext(fs.readFileSync(path.join(root, 'scripts', filename), 'utf8'), {
+          module, exports:module.exports, process:{stdout:{write(){}},stderr:{write(){}}},
+          require(name) {
+            if (name === '../lib/medindex-data-api.js') return {
+              neonRequest:async () => { databaseCalls++; throw new Error('Database must remain untouched'); },
+              dataOf:value=>value.data,
+            };
+            if (name === '../lib/icd-public-source.js') return source;
+            return require(name);
+          },
+        }, {filename});
+        await assert.rejects(module.exports.sync(), /source retry budget exhausted|full hierarchy validation failed/);
+        assert.equal(databaseCalls, 0, `${filename}: ${failure} must fail before any database read, staging, cleanup or activation.`);
+        assert.equal(sourceCalls, 1, `${filename}: hierarchy validation failures cannot trigger source retries.`);
+      } finally {
+        global.fetch = originalFetch;
+      }
+    }
+  }
+  console.log('Both standalone ICD sync entry points reject exhausted or incomplete sources before database traffic.');
+}
+
+activationResponseLossDoesNotUnpublish().then(sourceFailureNeverTouchesDatabase).then(() => {
   console.log('Atomic activation permissions and lost-response recovery passed.');
 }).catch(error => { console.error(error); process.exitCode = 1; });

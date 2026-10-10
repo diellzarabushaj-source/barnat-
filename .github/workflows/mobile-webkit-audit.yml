@@ -105,6 +105,9 @@ jobs:
       - name: Verify note conflicts, exact Undo and account changes on phone and desktop
         run: pnpm exec playwright test tests/native-note-concurrency-browser.spec.js --config=playwright.registry-v2.config.js --project=webkit
 
+      - name: Verify prescription conflicts and detailed column filters on phone and desktop
+        run: pnpm exec playwright test tests/user-prescriptions-cas-browser.spec.js tests/registry-filter-usability-browser.spec.js --config=playwright.registry-v2.config.js --project=webkit
+
       - name: Upload WebKit diagnostics
         if: always()
         uses: actions/upload-artifact@v4

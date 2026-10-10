@@ -50,6 +50,7 @@
 
   async function request(body=null,epoch=scopeEpoch) {
     if(epoch!==scopeEpoch) throw ownerChanged();
+    if(body && (!body.libraryOwner || body.libraryOwner!==owner())) throw ownerChanged();
     const controller=new AbortController(); requests.add(controller);
     try {
     const response=await fetch(API,{
@@ -67,7 +68,7 @@
       error.status=response.status; error.code=payload.code || ''; error.data=payload;
       throw error;
     }
-    if(body?.noteOwner && text(payload.user?.id)!==body.noteOwner) throw ownerChanged();
+    if(body?.libraryOwner && text(payload.user?.id)!==body.libraryOwner) throw ownerChanged();
     return payload;
     } catch(error) {
       if(epoch!==scopeEpoch) throw ownerChanged();
@@ -193,11 +194,15 @@
 
   async function setFavorite(type,key,favorite=true,payload={}) {
     const entity=validate(type,key);
+    const epoch=scopeEpoch;
+    if(!state.loaded) await load();
+    if(epoch!==scopeEpoch || !owner()) throw ownerChanged();
+    const libraryOwner=owner();
     const stamp=new Date().toISOString();
     const body=favorite
-      ? {version:1,favorites:[{...entity,payload:payload && typeof payload==='object' ? payload : {},clientUpdatedAt:stamp}]}
-      : {version:1,tombstones:{favorites:[{...entity,deletedAt:stamp}]}};
-    const snapshot=await request(body);
+      ? {version:1,libraryOwner,favorites:[{...entity,payload:payload && typeof payload==='object' ? payload : {},clientUpdatedAt:stamp}]}
+      : {version:1,libraryOwner,tombstones:{favorites:[{...entity,deletedAt:stamp}]}};
+    const snapshot=await request(body,epoch);
     adopt(snapshot);
     window.dispatchEvent(new CustomEvent('drx:phase9-personal-changed',{
       detail:{kind:'favorite',...entity,favorite:Boolean(favorite)}
@@ -235,7 +240,7 @@
       const operationId=options.operationId || window.crypto.randomUUID();
       const stamp=new Date().toISOString();
       const row={...entity,expectedVersion,operationId,...(deleted ? {deletedAt:stamp} : {content:value,clientUpdatedAt:stamp,...(options.restore ? {restore:true} : {})})};
-      operation={operationId,body:deleted ? {version:1,noteOwner,tombstones:{entityNotes:[row]}} : {version:1,noteOwner,entityNotes:[row]}};
+      operation={operationId,body:deleted ? {version:1,libraryOwner:noteOwner,noteOwner,tombstones:{entityNotes:[row]}} : {version:1,libraryOwner:noteOwner,noteOwner,entityNotes:[row]}};
       pendingNotes.set(retryKey,operation);
     }
     noteInFlight.add(keyId);
@@ -278,7 +283,7 @@
     saveNote,
     deleteNote,
     entityTypes:Object.freeze([...TYPES]),
-    version:'drx-phase9-personal-v3',
+    version:'drx-phase9-personal-v4',
   });
 
   const start=event=>{
