@@ -251,6 +251,21 @@ jobs:
           test -s "$BACKUP_DIR/history_schema.sql"
           test -s "$BACKUP_DIR/history_data.sql"
 
+          # The pinned local Auth service predates the source's MFA recovery
+          # tables. Capture their actual schema, ownership and constraints;
+          # never synthesize a replacement or omit their backed-up data.
+          if [ "${{ steps.credential.outputs.mode }}" = "db_url" ]; then
+            if ! docker run --rm --network host \
+              -e SOURCE_DATABASE_URL="$SUPABASE_DB_URL" \
+              "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" \
+              sh -c 'exec pg_dump "$SOURCE_DATABASE_URL" --schema-only --table=auth.mfa_recovery_code_sets --table=auth.mfa_recovery_codes' \
+              > "$BACKUP_DIR/auth_recovery_schema.sql" 2> "$RUNNER_TEMP/drx-restore-auth-schema-dump.log"; then
+              echo "::error::Source MFA recovery schema capture failed; raw diagnostics are not published."
+              exit 1
+            fi
+            test -s "$BACKUP_DIR/auth_recovery_schema.sql"
+          fi
+
 
       - name: Capture custom auth triggers and restore security manifest
         if: steps.credential.outputs.available == 'true' && steps.credential.outputs.mode == 'db_url'
@@ -424,6 +439,7 @@ jobs:
               exit 1
             fi
           }
+          restore_sql managed_auth --file "$BACKUP_DIR/auth_recovery_schema.sql"
           restore_sql schema --file "$BACKUP_DIR/schema.sql"
           restore_sql data \
             --command 'SET session_replication_role = replica' \

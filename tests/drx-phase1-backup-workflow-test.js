@@ -89,7 +89,7 @@ assert.doesNotMatch(triggerSql,/\b(?:from|join)\s+auth\.users\b/i);
 const restore=workflow.slice(workflow.indexOf('- name: Restore into disposable local Supabase'),workflow.indexOf('- name: Write failure evidence'));
 assert.ok(restore.includes("DB_URL='postgresql://postgres:postgres@127.0.0.1:54322/postgres'"));
 assert.doesNotMatch(restore,/psql "\$SUPABASE_DB_URL"/);
-const restoreOrder=['restore_sql schema','restore_sql data','restore_sql history','restore_sql auth_triggers'];
+const restoreOrder=['restore_sql managed_auth','restore_sql schema','restore_sql data','restore_sql history','restore_sql auth_triggers'];
 let previous=-1;
 for (const stage of restoreOrder) {
   const position=restore.indexOf(stage);
@@ -99,6 +99,10 @@ for (const stage of restoreOrder) {
 assert.match(restore,/restore_sql history --single-transaction[\s\S]*?DROP SCHEMA IF EXISTS supabase_migrations CASCADE[\s\S]*?--file "\$BACKUP_DIR\/history_schema\.sql"[\s\S]*?--file "\$BACKUP_DIR\/history_data\.sql"/);
 assert.match(restore,/restore_sql auth_triggers --single-transaction --file "\$BACKUP_DIR\/auth_custom_triggers\.sql"/);
 assert.match(restore,/SET session_replication_role = replica/);
+assert.match(workflow,/pg_dump "\$SOURCE_DATABASE_URL" --schema-only --table=auth\.mfa_recovery_code_sets --table=auth\.mfa_recovery_codes/);
+assert.match(workflow,/> "\$BACKUP_DIR\/auth_recovery_schema\.sql" 2> "\$RUNNER_TEMP\/drx-restore-auth-schema-dump\.log"/);
+assert.match(workflow,/public\.ecr\.aws\/supabase\/postgres:\$SOURCE_POSTGRES_VERSION/);
+assert.match(restore,/restore_sql managed_auth --file "\$BACKUP_DIR\/auth_recovery_schema\.sql"/);
 assert.match(restore,/psql "\$DB_URL" -X --quiet --set ON_ERROR_STOP=1 --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never "\$@" > "\$RUNNER_TEMP\/drx-restore-\$\{stage\}\.log" 2>&1/);
 assert.match(restore,/supabase start > "\$RUNNER_TEMP\/drx-restore-start\.log" 2>&1/);
 assert.ok(restore.indexOf('--file "$RUNNER_TEMP/drx-restore-security-manifest.sql"')>restore.indexOf('restore_sql auth_triggers'));
