@@ -87,7 +87,7 @@ const { pathToFileURL } = require('node:url');
 
   assert.match(library, /prescriptionContext\(storageUid, item\.clientId\)/, 'Prescription encryption must still use the resolved storage/AAD uid in Phase 5');
   assert.doesNotMatch(library, /prescriptionContext\(authUid[,)]/, 'Phase 5 must not silently re-key prescription AAD to the Auth UUID');
-  assert.match(library, /user_id:authUid/, 'Auth UUID may be used only for auth-bound native user_notes persistence');
+  assert.match(library, /p_auth_uid:authUid/, 'Auth UUID may be used only for auth-bound native user_notes persistence');
 
   console.log('Phase 5 Supabase session cutover invariants passed.');
 })().catch(error => {

@@ -257,15 +257,19 @@ test('URL restores page, form, sort and filters; removing a column preserves oth
 for (const mode of ['restore','conflict','failure','account change']) test(`Note delete and undo: ${mode}`,async ({page}) => {
   await api(page);
   const original='  Shënim i saktë\nMe rresht të dytë dhe ë.  ';
-  let content=original; const writes=[]; let switched=false;
+  let content=original,version=1; const writes=[]; let switched=false;
   await page.route('**/api/user-library**',async route => {
     const body=route.request().postDataJSON();
+    const operation=body?.entityNotes?.[0] || body?.tombstones?.entityNotes?.[0];
+    if(operation && body.noteOwner!==(switched ? 'doctor-b' : 'doctor-a')) return route.fulfill({status:409,json:{code:'NOTE_OWNER_CHANGED',error:'Llogaria ka ndryshuar.'}});
+    if(operation && operation.expectedVersion!==version) return route.fulfill({status:409,json:{code:'NOTE_VERSION_CONFLICT',error:'Shënimi ka ndryshuar; rikthimi nuk e mbishkruan.'}});
     if (body?.tombstones?.entityNotes?.length) {
       if (mode === 'failure') return route.fulfill({status:503,json:{error:'Ruajtja dështoi'}});
-      content='';
+      content=''; version++;
     }
-    if (body?.entityNotes?.length) { content=body.entityNotes[0].content; writes.push(content); }
-    await route.fulfill({json:{ok:true,user:switched ? {id:'doctor-b',email:'b@example.test'} : {id:'doctor-a',email:'a@example.test'},favorites:[],entityNotes:content ? [{entityType:'product',entityKey:drugs[0].id,content}] : [],prescriptions:[],drugs:[],notes:{}}});
+    if (body?.entityNotes?.length) { content=body.entityNotes[0].content; writes.push(content); version++; }
+    const identity={entityType:'product',entityKey:drugs[0].id,rowVersion:version};
+    await route.fulfill({json:{ok:true,user:switched ? {id:'doctor-b',email:'b@example.test'} : {id:'doctor-a',email:'a@example.test'},favorites:[],entityNotes:content ? [{...identity,content}] : [],tombstones:{entityNotes:content ? [] : [{...identity,deletedAt:new Date().toISOString()}]},noteVersions:[{...identity,deleted:!content}],noteOperations:operation ? [{...identity,operationId:operation.operationId,deleted:!content}] : [],prescriptions:[],drugs:[],notes:{}}});
   });
   await page.goto(`${baseURL}/index.html`);
   await page.locator(`[data-row-menu-key="${drugs[0].id}"] summary`).click();
@@ -277,7 +281,7 @@ for (const mode of ['restore','conflict','failure','account change']) test(`Note
     await expect(page.locator('#registryNoteUndo')).toHaveCount(0); expect(content).toBe(original); return;
   }
   await expect(page.locator('#registryNoteUndo button')).toBeVisible();
-  if (mode === 'conflict') content='Shënimi nga një pajisje tjetër';
+  if (mode === 'conflict') { content='Shënimi nga një pajisje tjetër'; version++; }
   if (mode === 'account change') switched=true;
   await page.locator('#registryNoteUndo button').click();
   if (mode === 'conflict') {

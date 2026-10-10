@@ -176,5 +176,9 @@
   "tests/shared-request-budget-test.js",
   "tests/runtime-telemetry-test.js",
   "tests/drx-phase9-personal-entity-sync-test.js",
-  "tests/drx-phase10-pediatric-v3-calculator-test.js"
+  "tests/drx-phase10-pediatric-v3-calculator-test.js",
+  "tests/user-notes-cas-api-test.js",
+  "tests/native-note-concurrency-test.js",
+  "tests/user-library-note-cas-client-test.js",
+  "tests/user-notes-cas-database-contract-test.js"
 ]

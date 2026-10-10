@@ -748,6 +748,8 @@
     return panel;
   }
 
+  const phase9NoteDrafts=new Map();
+  const phase9NoteDraftKey=(owner,type,key)=>`${owner}|${type}|${key}`;
   function buildNotesPanel(product) {
     const panel=tabPanel('notes');
     const personal=phase9Personal();
@@ -770,8 +772,42 @@
       area.maxLength=2000;
       area.rows=4;
       area.placeholder='Shkruaj shënim personal…';
-      try{ area.value=personal?.note(entity.type,entity.key) || ''; }catch{ area.value=''; }
+      let base=null;
+      try{ base=personal?.noteBase(entity.type,entity.key); }catch{}
+      const draftKey=base ? phase9NoteDraftKey(base.owner,entity.type,entity.key) : '';
+      let draft=draftKey ? phase9NoteDrafts.get(draftKey) : null;
+      if(base && (!draft || (!draft.dirty && !draft.busy && !draft.conflict))) {
+        draft={base,content:base.content,dirty:false,busy:false,conflict:false,latest:null,error:''};
+        phase9NoteDrafts.set(draftKey,draft);
+      }
+      area.value=draft?.content || '';
+      area.disabled=!draft;
+      area.readOnly=Boolean(draft?.busy);
+      area.addEventListener('input',()=>{
+        if(!draft) return;
+        draft.content=area.value;
+        draft.dirty=area.value!==draft.base.content;
+      });
       card.append(area);
+
+      if(draft?.error) card.append(element('p','phase9-inline-note',draft.error));
+      if(draft?.conflict){
+        const notice=element('p','phase9-inline-note',draft.latest
+          ? 'Krahasoje versionin e ruajtur më poshtë me draftin tënd sipër. Ruajtja e draftit kërkon zgjedhjen tënde.'
+          : 'Versioni i shënimit ka ndryshuar. Drafti yt mbetet këtu. Lexo versionin e fundit para se ta ruash.');
+        notice.setAttribute('role','status'); card.append(notice);
+        if(draft.latest){
+          const latest=element('details','phase9-note-latest'); latest.open=true;
+          latest.append(element('summary','','Versioni i ruajtur'));
+          const content=element('pre','',draft.latest.content || '(Shënimi është fshirë.)');
+          content.style.whiteSpace='pre-wrap'; content.style.overflowWrap='anywhere'; content.style.font='inherit';
+          latest.append(content); card.append(latest);
+        }
+        const resolve=element('button','phase9-save-note',draft.latest ? 'Ruaj draftin si version të ri' : 'Lexo versionin e fundit');
+        resolve.type='button'; resolve.disabled=Boolean(draft.busy);
+        resolve.dataset.action='resolve-phase9-note'; resolve.dataset.entityType=entity.type;
+        card.append(resolve);
+      }
 
       const actions=element('div','phase9-note-actions');
       const save=element('button','phase9-save-note','Ruaj');
@@ -782,6 +818,7 @@
       remove.type='button';
       remove.dataset.action='delete-phase9-note';
       remove.dataset.entityType=entity.type;
+      save.disabled=remove.disabled=!draft || Boolean(draft.busy || draft.conflict);
       actions.append(save,remove);
       card.append(actions);
       panel.append(card);
@@ -844,21 +881,56 @@
     }
   }
 
-  async function savePhase9Note(type,{remove=false}={}) {
+  async function savePhase9Note(type,{remove=false,rebase=null}={}) {
     const product=state.product;
     const key=personalEntityKey(type,product);
     const personal=phase9Personal();
     if(!product || !key || !personal) return;
-    const area=elements.productBody.querySelector(`[data-phase9-note-entity="${type}"]`);
+    const owner=text(personal.state()?.user?.id);
+    const draftKey=phase9NoteDraftKey(owner,type,key);
+    const draft=phase9NoteDrafts.get(draftKey);
+    if(!draft || draft.busy || (draft.conflict && !rebase) || draft.base.owner!==owner) return;
+    const base=rebase || draft.base;
+    draft.busy=true; draft.error='';
+    renderProduct();
     try{
-      if(!personal.state().loaded) await personal.load();
-      if(remove) await personal.deleteNote(type,key);
-      else await personal.saveNote(type,key,area?.value || '');
+      const options={owner:base.owner,expectedVersion:base.rowVersion};
+      if(remove) await personal.deleteNote(type,key,options);
+      else await personal.saveNote(type,key,draft.content,options);
+      if(owner!==text(personal.state()?.user?.id)) return;
+      phase9NoteDrafts.delete(draftKey);
+      if(state.product!==product) return;
       renderProduct();
       setProductTab('notes');
       setStatus(remove ? 'Shënimi personal u fshi.' : 'Shënimi personal u ruajt.','success');
     }catch(error){
+      if(owner!==text(personal.state()?.user?.id) || phase9NoteDrafts.get(draftKey)!==draft) return;
+      if(error?.status===409 && /^NOTE_/.test(error?.code || '')) {
+        draft.conflict=true; draft.latest=null;
+      } else draft.error=error?.message || 'Shënimi nuk u sinkronizua.';
       setStatus(error?.message || 'Shënimi nuk u sinkronizua.','error');
+    }finally{
+      draft.busy=false;
+      if(state.product===product && phase9NoteDrafts.get(draftKey)===draft) renderProduct();
+    }
+  }
+
+  async function resolvePhase9Note(type){
+    const product=state.product,personal=phase9Personal();
+    const key=personalEntityKey(type,product),owner=text(personal?.state()?.user?.id);
+    const draftKey=phase9NoteDraftKey(owner,type,key),draft=phase9NoteDrafts.get(draftKey);
+    if(!product || !personal || !draft || draft.busy || draft.base.owner!==owner) return;
+    if(draft.latest) return savePhase9Note(type,{rebase:draft.latest});
+    draft.busy=true; draft.error=''; renderProduct();
+    try{
+      await personal.load({force:true});
+      if(owner!==text(personal.state()?.user?.id) || phase9NoteDrafts.get(draftKey)!==draft) return;
+      draft.latest=personal.noteBase(type,key);
+    }catch(error){
+      if(owner===text(personal.state()?.user?.id) && phase9NoteDrafts.get(draftKey)===draft) draft.error=error?.message || 'Versioni i fundit nuk u lexua.';
+    }finally{
+      draft.busy=false;
+      if(state.product===product && phase9NoteDrafts.get(draftKey)===draft) renderProduct();
     }
   }
 
@@ -1793,6 +1865,11 @@
         void savePhase9Note(deleteNote.dataset.entityType,{remove:true});
         return;
       }
+      const resolveNote=event.target.closest('[data-action="resolve-phase9-note"]');
+      if(resolveNote){
+        void resolvePhase9Note(resolveNote.dataset.entityType);
+        return;
+      }
       if (event.target.closest('[data-action="close-product"]')) {
         clearSelectedProduct();
         return;
@@ -1831,6 +1908,7 @@
     elements.toPrescription?.addEventListener('click', handoffToPrescription);
     window.addEventListener('drx:phase9-personal-ready',()=>{ if(state.product) renderProduct(); });
     window.addEventListener('drx:phase9-personal-changed',()=>{ if(state.product) renderProduct(); });
+    window.addEventListener('drx:phase9-personal-owner-changed',()=>{ phase9NoteDrafts.clear(); if(state.product) renderProduct(); });
   }
 
   async function restoreFromUrl() {

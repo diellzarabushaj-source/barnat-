@@ -18,6 +18,7 @@
   const NOTE_KEY_MAX = 290;
   const EVENT_SYNC_VERSION = 'user-library-event-sync-v1';
   const RECOVERY_VERSION = 'user-library-recovery-v1';
+  const NOTE_SYNC_VERSION = 'user-library-note-cas-v1';
   const API_TIMEOUT_MS = 15_000;
   const NETWORK_RETRY_MS = 15_000;
   const MAX_SYNC_ROUNDS = 3;
@@ -57,6 +58,8 @@
   let localRevision = 0;
   let syncedRevision = 0;
   let resolveReady;
+  let noteSnapshotLoaded = false;
+  let ownerEpoch = 0;
 
   window.MEDINDEX_LIBRARY_READY = new Promise(resolve => { resolveReady = resolve; });
 
@@ -135,6 +138,7 @@
         deletedDrugs:value.deletedDrugs && typeof value.deletedDrugs === 'object' ? value.deletedDrugs : {},
         deletedPrescriptions:value.deletedPrescriptions && typeof value.deletedPrescriptions === 'object' ? value.deletedPrescriptions : {},
         deletedFavorites:value.deletedFavorites && typeof value.deletedFavorites === 'object' ? value.deletedFavorites : {},
+        noteStates:value.noteStates && typeof value.noteStates === 'object' && !Array.isArray(value.noteStates) ? value.noteStates : {},
         lastSyncedAt:text(value.lastSyncedAt),
         owner:text(value.owner),
       } : emptyMeta();
@@ -144,7 +148,7 @@
   }
 
   function emptyMeta() {
-    return { prescriptions:{}, favorites:{}, drugs:{}, deletedPrescriptions:{}, deletedFavorites:{}, deletedDrugs:{}, lastSyncedAt:'', owner:'' };
+    return { prescriptions:{}, favorites:{}, drugs:{}, deletedPrescriptions:{}, deletedFavorites:{}, deletedDrugs:{}, noteStates:{}, lastSyncedAt:'', owner:'' };
   }
 
   function writeMeta(meta) {
@@ -193,6 +197,216 @@
 
   function noteMetaId(key) {
     return favoriteId(NOTE_ENTITY_TYPE, noteEntityKey(key));
+  }
+
+  const noteVersion = value => Number.isSafeInteger(Number(value)) && Number(value) >= 0
+    && value !== null && value !== undefined && value !== '' ? Number(value) : null;
+  const noteContent = entry => entry && String(entry.text ?? '').trim() ? String(entry.text).slice(0, NOTE_MAX) : null;
+  const sameNoteTarget = (left, right) => !left || !right
+    || (left.storage === right.storage && left.entityType === right.entityType && left.entityKey === right.entityKey);
+
+  function operationId() {
+    if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+    // Operation identifiers only deduplicate a write; they never authorize it.
+    const bytes = new Uint8Array(16);
+    if (window.crypto?.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (let index = 0; index < bytes.length; index += 1) bytes[index] = Math.floor(Math.random() * 256);
+    bytes[6] = (bytes[6] & 15) | 64;
+    bytes[8] = (bytes[8] & 63) | 128;
+    const hex = [...bytes].map(value => value.toString(16).padStart(2, '0')).join('');
+    return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
+  }
+
+  function newNoteOperation(rowVersion, content, stamp = nowIso(), noteTarget = null) {
+    return { expectedVersion:rowVersion, operationId:operationId(), content, clientUpdatedAt:stamp,
+      ...(noteTarget ? { noteTarget } : {}),
+      ...(content === null ? { deletedAt:stamp } : {}) };
+  }
+
+  function queueNoteChange(meta, localKey, entry, stamp = nowIso()) {
+    const state = meta.noteStates[localKey] || (noteSnapshotLoaded
+      ? (meta.noteStates[localKey] = { rowVersion:0, content:null, pending:null, queued:null, conflict:null }) : null);
+    if (!state) return; // The initial GET must establish the version first.
+    const content = noteContent(entry);
+    if (state.conflict) return; // A draft stays local until its author resolves it.
+    if (state.pending) {
+      state.queued = state.pending.content === content ? null : { content, clientUpdatedAt:stamp };
+    } else if (state.content !== content && noteVersion(state.rowVersion) !== null) {
+      state.pending = newNoteOperation(state.rowVersion, content, stamp, state.noteTarget);
+    }
+  }
+
+  function remoteNotes(snapshot) {
+    const rows = new Map();
+    (snapshot.noteVersions || []).forEach(row => {
+      if (row.entityType !== NOTE_ENTITY_TYPE || !String(row.entityKey || '').startsWith(NOTE_ENTITY_PREFIX)) return;
+      const key = noteLocalKey(row.entityKey.slice(NOTE_ENTITY_PREFIX.length));
+      if (key) rows.set(key, { rowVersion:noteVersion(row.rowVersion), content:null, deleted:Boolean(row.deleted), noteTarget:row.noteTarget, updatedAt:nowIso() });
+    });
+    (snapshot.favorites || []).forEach(row => {
+      if (!isNoteEntity(row.entityType, row.entityKey, row.payload)) return;
+      const key = noteLocalKey(row.entityKey.slice(NOTE_ENTITY_PREFIX.length));
+      if (key) rows.set(key, { rowVersion:noteVersion(row.rowVersion), content:noteContent(row.payload), deleted:false, noteTarget:row.noteTarget,
+        updatedAt:row.clientUpdatedAt || row.serverUpdatedAt || nowIso() });
+    });
+    (snapshot.tombstones?.favorites || []).forEach(row => {
+      if (row.entityType !== NOTE_ENTITY_TYPE || !String(row.entityKey || '').startsWith(NOTE_ENTITY_PREFIX)) return;
+      const key = noteLocalKey(row.entityKey.slice(NOTE_ENTITY_PREFIX.length));
+      if (key) rows.set(key, { rowVersion:noteVersion(row.rowVersion), content:null, deleted:true, noteTarget:row.noteTarget, updatedAt:row.deletedAt || nowIso() });
+    });
+    return rows;
+  }
+
+  function submittedNoteOperations(body) {
+    return [...(body.favorites || []), ...(body.tombstones?.favorites || [])]
+      .filter(row => row.entityType === NOTE_ENTITY_TYPE && String(row.entityKey || '').startsWith(NOTE_ENTITY_PREFIX) && row.operationId);
+  }
+
+  function acknowledgeNoteOperations(meta, snapshot, submitted = []) {
+    const receipts = new Map((snapshot.noteOperations || []).map(row => [row.operationId, row]));
+    submitted.forEach(row => {
+      const key = noteLocalKey(row.entityKey.slice(NOTE_ENTITY_PREFIX.length));
+      const state = meta.noteStates[key];
+      const receipt = receipts.get(row.operationId);
+      const version = noteVersion(receipt?.rowVersion);
+      if (!state?.pending || state.pending.operationId !== row.operationId || version === null
+        || version <= state.pending.expectedVersion || receipt.entityType !== row.entityType || receipt.entityKey !== row.entityKey
+        || receipt.deleted !== (state.pending.content === null)) return;
+      const completed = state.pending;
+      state.rowVersion = version;
+      state.noteTarget = receipt.noteTarget || completed.noteTarget || state.noteTarget;
+      state.content = completed.content;
+      state.pending = null;
+      state.conflict = null;
+      if (state.queued && state.queued.content !== completed.content) {
+        state.pending = newNoteOperation(version, state.queued.content, state.queued.clientUpdatedAt, state.noteTarget);
+      }
+      state.queued = null;
+    });
+  }
+
+  function reconcileNotes(local, meta, snapshot, submitted = []) {
+    acknowledgeNoteOperations(meta, snapshot, submitted);
+    const remote = remoteNotes(snapshot);
+    const notes = { ...(local.notes || {}) };
+    const keys = new Set([...Object.keys(notes), ...Object.keys(meta.noteStates), ...remote.keys()]);
+    keys.forEach(key => {
+      const row = remote.get(key);
+      let state = meta.noteStates[key];
+      const localText = noteContent(notes[key]);
+      if (!state) {
+        const baseline = row || { rowVersion:0, content:null, updatedAt:nowIso() };
+        state = meta.noteStates[key] = { rowVersion:baseline.rowVersion, content:baseline.content, noteTarget:baseline.noteTarget, pending:null, queued:null, conflict:null };
+        if (meta.deletedFavorites[noteMetaId(key)] && row && !row.deleted) state.conflict = baseline;
+        else if (localText !== null && localText !== baseline.content) {
+          if ((!row || (row.content === null && !row.deleted)) && baseline.rowVersion !== null) {
+            state.pending = newNoteOperation(baseline.rowVersion, localText, notes[key]?.updatedAt || nowIso(), state.noteTarget);
+          }
+          else state.conflict = baseline;
+        }
+      } else if (!state.pending && !state.conflict) {
+        // A closed/offline tab may have changed the stored draft without a
+        // running event listener. Compare exact text against its saved base.
+        queueNoteChange(meta, key, notes[key], notes[key]?.updatedAt || nowIso());
+      }
+      // Version counters belong to their storage identity. A native alias can
+      // replace a legacy fallback with a numerically lower or higher counter;
+      // neither permits silently adopting the other note or ignoring it forever.
+      if (row && !sameNoteTarget(state.noteTarget, row.noteTarget)) {
+        if (!state.conflict || !sameNoteTarget(state.conflict.noteTarget, row.noteTarget)
+          || row.rowVersion === null || state.conflict.rowVersion === null || row.rowVersion >= state.conflict.rowVersion) state.conflict = row;
+        return;
+      }
+      if (row && state.conflict) {
+        if (row.rowVersion === null || state.conflict.rowVersion === null || row.rowVersion >= state.conflict.rowVersion) state.conflict = row;
+      }
+      if (state.pending || state.conflict) return;
+      if (!row) return;
+      if (state.rowVersion !== null && row.rowVersion !== null && row.rowVersion < state.rowVersion) return;
+      state.rowVersion = row.rowVersion;
+      if (row.noteTarget) state.noteTarget = row.noteTarget;
+      state.content = row.content;
+      const id = noteMetaId(key);
+      if (row.content === null) {
+        delete notes[key];
+        delete meta.favorites[id];
+        meta.deletedFavorites[id] = row.updatedAt;
+      } else {
+        notes[key] = { text:row.content, updatedAt:row.updatedAt };
+        meta.favorites[id] = row.updatedAt;
+        delete meta.deletedFavorites[id];
+      }
+    });
+    return notes;
+  }
+
+  function noteConflicts() {
+    const meta = readMeta();
+    const notes = parseNotes();
+    return Object.entries(meta.noteStates).flatMap(([localKey, state]) => state?.conflict ? [{
+      localKey, entityType:NOTE_ENTITY_TYPE, entityKey:noteEntityKey(localKey),
+      localText:noteContent(notes[localKey]), remoteText:state.conflict.content,
+      remoteDeleted:state.conflict.content === null, rowVersion:state.conflict.rowVersion,
+    }] : []);
+  }
+
+  function announceNoteConflicts() {
+    const conflicts = noteConflicts();
+    if (!conflicts.length) return;
+    const detail = { conflict:true, noteKeys:conflicts.map(row => row.localKey), localRevision, syncedRevision };
+    dispatch('medindex:library-note-conflict', detail);
+    dispatch('medindex:library-pending', detail);
+  }
+
+  function captureNoteConflicts(payload, submitted) {
+    const meta = readMeta();
+    const remote = remoteNotes(payload.snapshot || payload);
+    const named = new Set((payload.conflicts || []).map(row => `${row.entityType}|${row.entityKey}`));
+    submitted.forEach(row => {
+      if (named.size && !named.has(`${row.entityType}|${row.entityKey}`)) return;
+      const key = noteLocalKey(row.entityKey.slice(NOTE_ENTITY_PREFIX.length));
+      const state = meta.noteStates[key];
+      if (!state?.pending || state.pending.operationId !== row.operationId) return;
+      const conflict = (payload.conflicts || []).find(item => item.entityType === row.entityType && item.entityKey === row.entityKey);
+      const contentKnown = conflict?.deleted === true || typeof conflict?.content === 'string';
+      state.conflict = remote.get(key) || { rowVersion:contentKnown ? noteVersion(conflict?.rowVersion) : null,
+        noteTarget:conflict?.noteTarget,
+        content:conflict?.deleted ? null : typeof conflict?.content === 'string' ? conflict.content : null,
+        updatedAt:conflict?.deletedAt || conflict?.serverUpdatedAt || nowIso() };
+    });
+    writeMeta(meta);
+    announceNoteConflicts();
+  }
+
+  function hasPendingNotes() {
+    return Object.values(readMeta().noteStates).some(state => state?.pending || state?.conflict);
+  }
+
+  function resolveNoteConflict(localKey, keepLocal) {
+    const key = noteLocalKey(localKey);
+    const meta = readMeta();
+    const state = meta.noteStates[key];
+    const remote = state?.conflict;
+    if (!remote || noteVersion(remote.rowVersion) === null) return false;
+    state.rowVersion = remote.rowVersion;
+    state.noteTarget = remote.noteTarget;
+    state.content = remote.content;
+    state.pending = null;
+    state.queued = null;
+    state.conflict = null;
+    if (keepLocal) queueNoteChange(meta, key, parseNotes()[key]);
+    else {
+      const notes = parseNotes();
+      if (remote.content === null) delete notes[key];
+      else notes[key] = { text:remote.content, updatedAt:remote.updatedAt || nowIso() };
+      try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); } catch { return false; }
+    }
+    writeMeta(meta);
+    lastState = readState();
+    localRevision += 1;
+    dispatch('medindex:library-reconciled', { noteConflictResolved:true, localKey:key });
+    scheduleSync(EVENT_SYNC_DELAY_MS);
+    return true;
   }
 
   function ensureMetaForState(state, meta, stamp = nowIso()) {
@@ -263,6 +477,7 @@
       const id = noteMetaId(key);
       meta.deletedFavorites[id] = stamp;
       delete meta.favorites[id];
+      queueNoteChange(meta, key, null, stamp);
     });
     Object.entries(currentNotes).forEach(([key, entry]) => {
       const before = previousNotes[key];
@@ -270,6 +485,7 @@
         const id = noteMetaId(key);
         meta.favorites[id] = entry.updatedAt || stamp;
         delete meta.deletedFavorites[id];
+        queueNoteChange(meta, key, entry, entry.updatedAt || stamp);
       }
     });
 
@@ -300,17 +516,31 @@
       payload:{},
       clientUpdatedAt:meta.favorites[favoriteId('drug', entityKey)] || nowIso(),
     }));
-    const noteRows = Object.entries(state.notes || {}).map(([localKey, entry]) => {
+    const noteRows = Object.entries(meta.noteStates).flatMap(([localKey, noteState]) => {
+      const operation = noteState?.pending;
+      if (!operation || noteState.conflict || operation.content === null) return [];
       const entityKey = noteEntityKey(localKey);
-      return {
+      return [{
         entityType:NOTE_ENTITY_TYPE,
         entityKey,
-        payload:{ kind:'drug-note', text:String(entry.text || '').slice(0, NOTE_MAX) },
-        clientUpdatedAt:meta.favorites[favoriteId(NOTE_ENTITY_TYPE, entityKey)] || entry.updatedAt || nowIso(),
-      };
+        payload:{ kind:'drug-note', text:operation.content },
+        clientUpdatedAt:operation.clientUpdatedAt,
+        expectedVersion:operation.expectedVersion,
+        operationId:operation.operationId,
+        ...(operation.noteTarget ? { noteTarget:operation.noteTarget } : {}),
+      }];
+    });
+    const noteTombstones = Object.entries(meta.noteStates).flatMap(([localKey, noteState]) => {
+      const operation = noteState?.pending;
+      return operation && !noteState.conflict && operation.content === null ? [{
+        entityType:NOTE_ENTITY_TYPE, entityKey:noteEntityKey(localKey), deletedAt:operation.deletedAt,
+        expectedVersion:operation.expectedVersion, operationId:operation.operationId,
+        ...(operation.noteTarget ? { noteTarget:operation.noteTarget } : {}),
+      }] : [];
     });
     return {
       version:1,
+      noteOwner:meta.owner,
       prescriptions:state.prescriptions.flatMap(payload => {
         const clientId = protocolId(payload);
         return clientId ? [{ clientId, payload, clientUpdatedAt:meta.prescriptions[clientId] || payload.updatedAt || nowIso() }] : [];
@@ -325,15 +555,15 @@
       tombstones:{
         drugs:Object.entries(meta.deletedDrugs).map(([clientId, deletedAt]) => ({ clientId, deletedAt })),
         prescriptions:Object.entries(meta.deletedPrescriptions).map(([clientId, deletedAt]) => ({ clientId, deletedAt })),
-        favorites:Object.entries(meta.deletedFavorites).map(([id, deletedAt]) => {
+        favorites:[...Object.entries(meta.deletedFavorites).map(([id, deletedAt]) => {
           const separator = id.indexOf('|');
           return { entityType:id.slice(0, separator) || 'drug', entityKey:id.slice(separator + 1), deletedAt };
-        }).filter(item => item.entityKey),
+        }).filter(item => item.entityKey && !(item.entityType === NOTE_ENTITY_TYPE && item.entityKey.startsWith(NOTE_ENTITY_PREFIX))), ...noteTombstones],
       },
     };
   }
 
-  function mergeRemote(snapshot) {
+  function mergeRemote(snapshot, submitted = []) {
     const local = readState();
     const meta = ensureMetaForState(local, readMeta());
     const prescriptions = new Map(local.prescriptions.map(item => [protocolId(item), item]).filter(([id]) => id));
@@ -366,11 +596,13 @@
     });
 
     const favorites = new Set(local.favorites);
-    const notes = { ...(local.notes || {}) };
+    const notes = reconcileNotes(local, meta, snapshot, submitted);
+    noteSnapshotLoaded = true;
     (snapshot.favorites || []).forEach(row => {
       const type = text(row.entityType) || 'drug';
       const key = text(row.entityKey);
       if (!key) return;
+      if (isNoteEntity(type, key, row.payload)) return;
       const id = favoriteId(type, key);
       const remoteUpdated = time(row.clientUpdatedAt || row.serverUpdatedAt);
       const localDeleted = time(meta.deletedFavorites[id]);
@@ -383,23 +615,13 @@
         delete meta.deletedFavorites[id];
         return;
       }
-      if (isNoteEntity(type, key, row.payload)) {
-        const localKey = noteLocalKey(key.slice(NOTE_ENTITY_PREFIX.length));
-        if (!localKey) return;
-        const remoteText = String(row.payload?.text ?? '').slice(0, NOTE_MAX);
-        const localUpdated = time(meta.favorites[id] || notes[localKey]?.updatedAt);
-        if (remoteText.trim() && (!notes[localKey] || remoteUpdated > localUpdated)) {
-          notes[localKey] = { text:remoteText, updatedAt:row.clientUpdatedAt || row.serverUpdatedAt || nowIso() };
-          meta.favorites[id] = row.clientUpdatedAt || row.serverUpdatedAt || nowIso();
-        }
-        delete meta.deletedFavorites[id];
-      }
     });
 
     (snapshot.tombstones?.favorites || []).forEach(row => {
       const type = text(row.entityType) || 'drug';
       const key = text(row.entityKey);
       const id = favoriteId(type, key);
+      if (type === NOTE_ENTITY_TYPE && key.startsWith(NOTE_ENTITY_PREFIX)) return;
       if (!key || time(row.deletedAt) < time(meta.favorites[id])) return;
       if (type === 'drug') {
         favorites.delete(key);
@@ -472,6 +694,7 @@
         const retryHeader = Number(response.headers.get('retry-after') || payload.retryAfter || 0);
         throw Object.assign(new Error(payload.error || `Library API ${response.status}`), {
           status:response.status,
+          payload,
           retryAfterMs:Number.isFinite(retryHeader) && retryHeader > 0 ? retryHeader * 1000 : 0,
         });
       }
@@ -516,29 +739,53 @@
     if (!online || !navigator.onLine || Date.now() < retryUntil) return false;
     if (syncPromise) return syncPromise;
     clearTimeout(syncTimer);
-    const revisionAtStart = localRevision;
-    const payloadBody = JSON.stringify(buildBody());
     syncPromise = (async () => {
       let success = false;
+      let submitted = [];
+      let revisionAtStart = localRevision;
+      const epoch = ownerEpoch;
       try {
+        if (!noteSnapshotLoaded) {
+          const snapshot = await api(API_URL);
+          if (epoch !== ownerEpoch) return false;
+          if (adoptOwner(snapshot.user)) {
+            mergeRemote(snapshot);
+            dispatch('medindex:library-reconciled', { ownerChanged:true });
+            return false;
+          }
+          mergeRemote(snapshot);
+        }
+        captureLocalChanges({ schedule:false });
+        revisionAtStart = localRevision;
+        const requestOwner = text(readMeta().owner);
+        const body = buildBody();
+        submitted = submittedNoteOperations(body);
         const payload = await api(API_URL, {
           method:'PUT',
-          body:payloadBody,
+          body:JSON.stringify(body),
           keepalive,
         });
+        if (epoch !== ownerEpoch || requestOwner !== text(readMeta().owner)
+          || (ownerKey(payload.user) && requestOwner && ownerKey(payload.user) !== requestOwner)) return false;
+        captureLocalChanges({ schedule:false });
         if (Array.isArray(payload.prescriptionChapters)) prescriptionChapters = payload.prescriptionChapters;
-        const reconciled = mergeRemote(payload);
+        const reconciled = mergeRemote(payload, submitted);
         const meta = readMeta();
         meta.lastSyncedAt = payload.generatedAt || nowIso();
         writeMeta(meta);
         success = true;
         syncedRevision = Math.max(syncedRevision, revisionAtStart);
-        if (!resyncAfterFlight && syncedRevision >= localRevision) dirty = false;
-        dispatch('medindex:library-synced', { generatedAt:meta.lastSyncedAt, reconciled, syncedRevision, localRevision });
+        const notesPending = hasPendingNotes();
+        dirty = notesPending || resyncAfterFlight || syncedRevision < localRevision;
+        if (!notesPending) dispatch('medindex:library-synced', { generatedAt:meta.lastSyncedAt, reconciled, syncedRevision, localRevision });
+        else dispatch('medindex:library-pending', { offline:false, conflict:noteConflicts().length > 0, localRevision, syncedRevision });
+        announceNoteConflicts();
         if (reconciled) dispatch('medindex:library-reconciled', { generatedAt:meta.lastSyncedAt });
-        return true;
+        return !notesPending;
       } catch (error) {
+        if (epoch !== ownerEpoch) return false;
         if (error.status === 401 || error.status === 403) return false;
+        if (error.status === 409 && submitted.length) captureNoteConflicts(error.payload || {}, submitted);
         if ([408, 429, 503].includes(Number(error.status))) {
           retryUntil = Date.now() + Math.max(NETWORK_RETRY_MS, Number(error.retryAfterMs || 0));
           scheduleRecoveryRetry(retryUntil);
@@ -548,7 +795,7 @@
         return false;
       } finally {
         syncPromise = null;
-        if (success && resyncAfterFlight && online && navigator.onLine) {
+        if ((success || epoch !== ownerEpoch) && resyncAfterFlight && online && navigator.onLine) {
           resyncAfterFlight = false;
           scheduleSync(EVENT_SYNC_DELAY_MS);
         }
@@ -564,7 +811,7 @@
       rounds += 1;
       const synced = await flush();
       if (!synced) return false;
-      if (syncedRevision >= target) return true;
+      if (syncedRevision >= target && !hasPendingNotes()) return true;
     } while (rounds < MAX_SYNC_ROUNDS);
     scheduleSync(EVENT_SYNC_DELAY_MS);
     return false;
@@ -601,6 +848,14 @@
     localRevision = 0;
     syncedRevision = 0;
     dirty = false;
+    resyncAfterFlight = false;
+    retryUntil = 0;
+    clearTimeout(syncTimer);
+    clearTimeout(retryTimer);
+    syncTimer = 0;
+    retryTimer = 0;
+    noteSnapshotLoaded = false;
+    ownerEpoch += 1;
   }
 
   // Returns true when the device copy belonged to a different account and was
@@ -626,6 +881,7 @@
   }
 
   async function initialize() {
+    const epoch = ownerEpoch;
     const local = readState();
     const meta = ensureMetaForState(local, readMeta());
     writeMeta(meta);
@@ -637,12 +893,17 @@
     }
     try {
       const snapshot = await api(API_URL);
+      if (epoch !== ownerEpoch) {
+        resolveReady?.({ local:true, pending:true, ownerChanged:true });
+        return;
+      }
       if (Array.isArray(snapshot.prescriptionChapters)) prescriptionChapters = snapshot.prescriptionChapters;
       // Before a single item is merged or pushed: does this device copy belong
       // to the account that just answered?
       if (adoptOwner(snapshot.user)) lastState = readState();
       const changed = mergeRemote(snapshot);
       await flush();
+      announceNoteConflicts();
       dispatch('medindex:library-ready', { offline:false, local:false, user:snapshot.user });
       resolveReady?.({ offline:false, local:false, user:snapshot.user });
       if (changed) window.setTimeout(reloadForRemoteChange, 40);
@@ -738,13 +999,9 @@
       captureLocalChanges({ schedule:false });
       await Promise.race([flush(), new Promise(resolve => setTimeout(resolve, 1500))]);
       const response = await nativeFetch(...args);
-      try {
-        localStorage.removeItem(PRESCRIPTIONS_KEY);
-        localStorage.removeItem(FAVORITES_KEY);
-        localStorage.removeItem(NOTES_KEY);
-        localStorage.removeItem(DRUGS_KEY);
-        localStorage.removeItem(META_KEY);
-      } catch {}
+      // Invalidate reads that began before logout as well as clearing storage;
+      // otherwise a late initial GET can repopulate the signed-out device.
+      wipeLocalLibrary();
       return response;
     }
     return nativeFetch(...args);
@@ -769,6 +1026,10 @@
     version:EVENT_SYNC_VERSION,
     recoveryVersion:RECOVERY_VERSION,
     longSessionVersion:LONG_SESSION_VERSION,
+    noteSyncVersion:NOTE_SYNC_VERSION,
+    noteConflicts,
+    acceptRemoteNote:localKey => resolveNoteConflict(localKey, false),
+    retryLocalNote:localKey => resolveNoteConflict(localKey, true),
     diagnostics:() => ({
       localRevision,
       syncedRevision,
@@ -776,6 +1037,8 @@
       syncInFlight:Boolean(syncPromise),
       retryUntil,
       legacyPrescriptionPollActive:Boolean(legacyPrescriptionPollTimer),
+      noteConflicts:noteConflicts().length,
+      pendingNotes:Object.values(readMeta().noteStates).filter(state => state?.pending || state?.conflict).length,
     }),
   };
 

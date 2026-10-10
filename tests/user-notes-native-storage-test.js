@@ -22,7 +22,8 @@ assert.equal(library._test.isDrugNoteKey('drug', 'drug-note:registry:3'), false)
 assert.match(gateway, /'user_notes'/);
 assert.match(gateway, /PRIVATE_SERVER_RELATIONS/);
 assert.match(server, /fetchRows\('user_notes'/);
-assert.match(server, /upsert\('user_notes', 'user_id,entity_type,entity_key'/);
+assert.match(server, /rpc\/write_user_notes_cas/);
+assert.doesNotMatch(server, /upsert\('user_notes'/);
 assert.match(server, /authUidFromRequest/);
 assert.match(resolver, /nativeNoteKeysForUser/);
 assert.match(resolver, /user_notes\?\$\{params\.toString\(\)\}/);
@@ -31,10 +32,7 @@ assert.match(migration, /add column if not exists deleted_at timestamptz/i);
 assert.match(migration, /char_length\(content\) <= 2000/i);
 
 assert.match(polymorphicMigration, /drop constraint if exists user_notes_user_id_drug_id_key/i);
-assert.equal(
-  server.split('noteMap.get(`drug|\${drugId}`)').length - 1,
-  2,
-  'Active notes and tombstones must use the same canonical noteMap key',
-);
+assert.match(server,/const target=legacyNoteTarget\(item,drugId\)/);
+assert.match(server,/if \(isDrugNoteKey\(item.entityType,item.entityKey\)\) addLegacyWrite\(item,true\)/);
 
 console.log('Native user_notes persistence contract passed (Supabase runtime).');

@@ -220,12 +220,15 @@ const META_KEY = 'medindex_user_library_meta_v1';
 // --- logging out clears personal drugs from the browser -----------------
 
 {
-  const { storage } = bootClient();
-  assert.ok(
-    source.includes('localStorage.removeItem(DRUGS_KEY)'),
-    'personal drugs must be wiped from the device on logout, like every other private collection',
-  );
-  assert.ok(storage);
+  const { storage, sandbox, api } = bootClient();
+  await sandbox.window.MEDINDEX_LIBRARY_READY;
+  api.savePersonalDrug({ clientId:'logout-fixture', name:'Bari i pastrimit', fields:{ notes:'Shënim sintetik për kontrollin e daljes.' } });
+  assert.equal(api.personalDrugs().length, 1, 'the logout check must start with a populated private collection');
+  await sandbox.window.fetch('/api/auth', { method:'DELETE' });
+  assert.equal(storage.getItem(DRUGS_KEY), null, 'logout must clear personal drugs from browser storage');
+  assert.equal(storage.getItem(META_KEY), null, 'logout must also clear the private collection owner and pending metadata');
+  assert.equal(api.personalDrugs().length, 0, 'the public client must no longer return the signed-out doctor\'s drugs');
+  assert.equal(api.diagnostics().dirty, false, 'a cleared workspace must not remain queued for another account');
 }
 
 // --- meta tracks drugs separately from favorites ------------------------

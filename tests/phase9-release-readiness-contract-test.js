@@ -63,7 +63,7 @@ const identity = read('lib/user-identity.js');
 assert.match(identity, /Never fall back to session\.uid/);
 assert.match(identity, /SUPABASE_AUTH_UUID_REQUIRED/);
 assert.match(read('lib/user-library.js'), /storageUidFromUser\(user\)/);
-assert.match(read('lib/user-library.js'), /user_id:authUid/);
+assert.match(read('lib/user-library.js'), /p_auth_uid:authUid/);
 
 // Drive sync must stage first and fail closed before marking a source synced.
 const drive = read('lib/drive-supabase-sync.js');

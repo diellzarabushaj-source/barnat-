@@ -32,7 +32,8 @@ assert.throws(()=>server._test.normalizedEntityNote({
 assert.match(source,/user_id,entity_type,entity_key/);
 assert.match(source,/entityNotes/);
 assert.match(source,/PHASE9_NOTE_ENTITY_TYPES/);
-assert.match(source,/upsert\('user_notes', 'user_id,entity_type,entity_key'/);
+assert.match(source,/rpc\/write_user_notes_cas/);
+assert.doesNotMatch(source,/upsert\('user_notes'/);
 
 assert.match(client,/const TYPES=new Set\(\['drug','substance','variant','product'\]\)/);
 assert.match(client,/tombstones:\{entityNotes:/);
