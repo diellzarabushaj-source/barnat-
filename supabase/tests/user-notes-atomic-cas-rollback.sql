@@ -3,6 +3,12 @@
 -- All generated rows, flags and receipts are discarded by the final ROLLBACK.
 begin;
 
+-- The deployed fence may already be ON. This admin transaction sees its own
+-- temporary OFF flag so it can exercise old direct-write versioning too;
+-- concurrent app sessions continue seeing the committed ON flag through MVCC.
+-- The final ROLLBACK restores the committed flag and removes every fixture row.
+update note_write_private.control set fence_enabled=false where singleton;
+
 do $fixture$
 declare
   auth_a uuid := pg_catalog.gen_random_uuid();
@@ -46,6 +52,10 @@ declare
   delete_write jsonb;
   answer jsonb;
   initial_answer jsonb;
+  accepted_product_write jsonb;
+  accepted_product_answer jsonb;
+  accepted_legacy_write jsonb;
+  accepted_legacy_answer jsonb;
   exact_text text := E'  Synthetic line 1\n\tline 2; Ë / ç / 🧪  ';
   version bigint;
   receipt_count bigint;
@@ -64,6 +74,7 @@ begin
   end if;
 
   -- While Phase A remains additive, old writers cannot forge/backdate versions.
+  if not (select fence_enabled from note_write_private.control where singleton) then
   insert into public.user_notes(user_id,entity_type,entity_key,content,row_version)
     values(auth_a,'variant','synthetic-direct','old direct',999);
   update public.user_notes set content='old direct changed',row_version=999
@@ -78,6 +89,24 @@ begin
   select row_version into version from public.user_favorites
     where user_id=storage_a and entity_type='protocol' and entity_key='drug-note:synthetic-direct';
   if version<>2 then raise exception 'Synthetic CAS check: direct legacy versions did not increment'; end if;
+  else
+    -- After Phase B the fixture creates these same rows through the authorized
+    -- RPC, then the later fence section proves that direct DML is refused.
+    w := pg_catalog.jsonb_build_object('storage','native','entityType','variant','entityKey','synthetic-direct',
+      'expectedVersion',0,'operationId',pg_catalog.gen_random_uuid(),'content','old direct changed','deleted',false);
+    answer := public.write_user_notes_cas(auth_a,storage_a,pg_catalog.jsonb_build_array(w));
+    w := pg_catalog.jsonb_set(pg_catalog.jsonb_set(w,'{expectedVersion}','1'::jsonb),
+      '{operationId}',pg_catalog.to_jsonb(pg_catalog.gen_random_uuid()));
+    answer := public.write_user_notes_cas(auth_a,storage_a,pg_catalog.jsonb_build_array(w));
+    if answer#>>'{operations,0,rowVersion}'<>'2' then raise exception 'Synthetic CAS check: native fenced fixture creation failed'; end if;
+    w := pg_catalog.jsonb_build_object('storage','legacy','entityType','protocol','entityKey','drug-note:synthetic-direct',
+      'expectedVersion',0,'operationId',pg_catalog.gen_random_uuid(),'content','changed','deleted',false);
+    answer := public.write_user_notes_cas(auth_a,storage_a,pg_catalog.jsonb_build_array(w));
+    w := pg_catalog.jsonb_set(pg_catalog.jsonb_set(w,'{expectedVersion}','1'::jsonb),
+      '{operationId}',pg_catalog.to_jsonb(pg_catalog.gen_random_uuid()));
+    answer := public.write_user_notes_cas(auth_a,storage_a,pg_catalog.jsonb_build_array(w));
+    if answer#>>'{operations,0,rowVersion}'<>'2' then raise exception 'Synthetic CAS check: legacy fenced fixture creation failed'; end if;
+  end if;
 
   w := pg_catalog.jsonb_build_object('storage','native','entityType','variant','entityKey','synthetic-main',
     'expectedVersion',0,'operationId',pg_catalog.gen_random_uuid(),'content',exact_text,'deleted',false,'restore',false,
@@ -198,6 +227,8 @@ begin
     where user_id=auth_a and entity_type='product' and entity_key=product_a::text and drug_id=product_a) then
     raise exception 'Synthetic CAS check: canonical product identity lost';
   end if;
+  accepted_product_write := w;
+  accepted_product_answer := answer;
   rejected := false;
   begin
     perform public.write_user_notes_cas(auth_a,storage_a,pg_catalog.jsonb_build_array(
@@ -230,6 +261,64 @@ begin
   exception when invalid_parameter_value then rejected := true;
   end;
   if not rejected then raise exception 'Synthetic CAS check: overlong note accepted'; end if;
+
+  -- Phase B adds publication checks for legacy native 'drug' rows as well as
+  -- the existing generic 'product' check. No receipt retry issues a row write.
+  if pg_catalog.to_regprocedure('note_write_private.validate_live_drug_note_product()') is not null then
+    w := pg_catalog.jsonb_set(accepted_product_write,'{entityType}','"drug"'::jsonb);
+    w := pg_catalog.jsonb_set(w,'{operationId}',pg_catalog.to_jsonb(pg_catalog.gen_random_uuid()));
+    accepted_legacy_write := w;
+    accepted_legacy_answer := public.write_user_notes_cas(auth_a,storage_a,pg_catalog.jsonb_build_array(w));
+    if accepted_legacy_answer->>'ok'<>'true' then
+      raise exception 'Synthetic CAS check: active legacy native product note was rejected';
+    end if;
+    update public.drugs set is_published=false,editorial_status='draft' where id=product_a;
+    answer := public.write_user_notes_cas(auth_a,storage_a,pg_catalog.jsonb_build_array(accepted_legacy_write));
+    if answer is distinct from accepted_legacy_answer then
+      raise exception 'Synthetic CAS check: accepted legacy retry after unpublish was rejected';
+    end if;
+    answer := public.write_user_notes_cas(auth_a,storage_a,pg_catalog.jsonb_build_array(accepted_product_write));
+    if answer is distinct from accepted_product_answer then
+      raise exception 'Synthetic CAS check: accepted product retry after unpublish was rejected';
+    end if;
+    rejected := false;
+    begin
+      perform public.write_user_notes_cas(auth_b,storage_b,pg_catalog.jsonb_build_array(
+        pg_catalog.jsonb_set(accepted_legacy_write,'{operationId}',pg_catalog.to_jsonb(pg_catalog.gen_random_uuid()))));
+    exception when check_violation then
+      if sqlerrm<>'Canonical legacy note product is not active' then raise; end if;
+      rejected := true;
+    end;
+    if not rejected or exists(select 1 from public.user_notes where user_id=auth_b and entity_type='drug' and entity_key=product_a::text) then
+      raise exception 'Synthetic CAS check: fresh legacy native inactive creation accepted';
+    end if;
+    rejected := false;
+    w := pg_catalog.jsonb_set(accepted_legacy_write,'{expectedVersion}','1'::jsonb);
+    w := pg_catalog.jsonb_set(w,'{operationId}',pg_catalog.to_jsonb(pg_catalog.gen_random_uuid()));
+    w := pg_catalog.jsonb_set(w,'{content}','"fresh legacy edit"'::jsonb);
+    begin
+      perform public.write_user_notes_cas(auth_a,storage_a,pg_catalog.jsonb_build_array(
+        pg_catalog.jsonb_set(pg_catalog.jsonb_set(initial_write,'{entityKey}','"synthetic-inactive-legacy-batch"'::jsonb),
+          '{operationId}',pg_catalog.to_jsonb(pg_catalog.gen_random_uuid())),w));
+    exception when check_violation then
+      if sqlerrm<>'Canonical legacy note product is not active' then raise; end if;
+      rejected := true;
+    end;
+    if not rejected or exists(select 1 from public.user_notes where user_id=auth_a and entity_key='synthetic-inactive-legacy-batch')
+      or not exists(select 1 from public.user_notes where user_id=auth_a and entity_type='drug'
+        and entity_key=product_a::text and row_version=1 and content=exact_text) then
+      raise exception 'Synthetic CAS check: fresh legacy native inactive edit or partial batch accepted';
+    end if;
+    -- Deletion remains allowed for an unpublished product; it preserves history.
+    w := pg_catalog.jsonb_set(w,'{deleted}','true'::jsonb);
+    w := pg_catalog.jsonb_set(w,'{content}','""'::jsonb);
+    answer := public.write_user_notes_cas(auth_a,storage_a,pg_catalog.jsonb_build_array(w));
+    if answer#>>'{operations,0,rowVersion}'<>'2' or answer#>>'{operations,0,deleted}'<>'true' then
+      raise exception 'Synthetic CAS check: inactive legacy native tombstone was rejected';
+    end if;
+  elsif (select fence_enabled from note_write_private.control where singleton) then
+    raise exception 'Synthetic CAS check: enabled deployment fence is missing legacy publication guard';
+  end if;
   if coalesce(pg_catalog.current_setting('medindex.note_cas_write',true),'')='on' then
     raise exception 'Synthetic CAS check: function leaked its write fence';
   end if;
