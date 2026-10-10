@@ -8,6 +8,7 @@ on:
       - ".github/workflows/drx-phase1-backup-restore.yml"
       - "data/drx-phase1-baseline-v1.json"
       - "tests/drx-phase1-backup-workflow-test.js"
+      - "scripts/backup-restore-diagnostic.py"
 
 permissions:
   contents: read
@@ -217,6 +218,7 @@ jobs:
           version: 2.116.0
 
       - name: Create logical backup set
+        id: backup
         if: steps.credential.outputs.available == 'true'
         shell: bash
         run: |
@@ -382,6 +384,7 @@ jobs:
           exit 1
 
       - name: Restore into disposable local Supabase
+        id: restore
         if: steps.credential.outputs.available == 'true'
         shell: bash
         run: |
@@ -409,8 +412,15 @@ jobs:
           restore_sql() {
             local stage="$1"
             shift
-            if ! psql "$DB_URL" -X --quiet --set ON_ERROR_STOP=1 "$@" > "$RUNNER_TEMP/drx-restore-${stage}.log" 2>&1; then
-              echo "::error::Isolated restore failed at stage ${stage}; raw database diagnostics are not published."
+            if ! psql "$DB_URL" -X --quiet --set ON_ERROR_STOP=1 --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never "$@" > "$RUNNER_TEMP/drx-restore-${stage}.log" 2>&1; then
+              local source_file="" previous_argument="" argument
+              for argument in "$@"; do
+                if [ "$previous_argument" = "--file" ]; then source_file="$argument"; break; fi
+                previous_argument="$argument"
+              done
+              python3 "$GITHUB_WORKSPACE/scripts/backup-restore-diagnostic.py" "$stage" \
+                "$RUNNER_TEMP/drx-restore-${stage}.log" "$source_file" > "$RUNNER_TEMP/drx-restore-failure.json"
+              echo "::error::Isolated restore failed: $(cat "$RUNNER_TEMP/drx-restore-failure.json"); raw database diagnostics are not published."
               exit 1
             fi
           }
@@ -459,16 +469,18 @@ jobs:
         if: steps.credential.outputs.available == 'true' && failure()
         shell: bash
         run: |
-          cat > drx-phase1-backup-restore-evidence.json <<'JSON'
-          {
-            "schemaVersion": "drx-phase1-backup-restore-evidence-v1",
-            "status": "FAILED_AFTER_CREDENTIAL_RESOLUTION",
-            "backupCreated": false,
-            "restoreExecuted": false,
-            "restoreVerified": false,
-            "publicationAllowed": false
-          }
-          JSON
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          detail=Path(os.environ['RUNNER_TEMP']) / 'drx-restore-failure.json'
+          evidence={"schemaVersion":"drx-phase1-backup-restore-evidence-v2",
+              "status":"FAILED_AFTER_CREDENTIAL_RESOLUTION",
+              "backupCreated":"${{ steps.backup.outcome }}" == "success",
+              "restoreAttempted":"${{ steps.restore.outcome }}" in {"success","failure"},
+              "restoreExecuted":False,"restoreVerified":False,"publicationAllowed":False}
+          if detail.exists(): evidence['failureDiagnostic']=json.loads(detail.read_text())
+          Path('drx-phase1-backup-restore-evidence.json').write_text(json.dumps(evidence,indent=2)+'\n')
+          PY
 
       - name: Write successful evidence
         if: steps.credential.outputs.available == 'true' && success()
@@ -537,7 +549,7 @@ jobs:
           rm -rf -- "${RUNNER_TEMP:?}/drx-phase1-backup" "$RESTORE_DIR"
           rm -f -- "$RUNNER_TEMP"/drx-restore-*.log "$RUNNER_TEMP/drx-source-manifest.txt" \
             "$RUNNER_TEMP/drx-restore-manifest.txt" "$RUNNER_TEMP/drx-restore-security-manifest.sql" \
-            "$RUNNER_TEMP/drx-validate-backup-source-url.py"
+            "$RUNNER_TEMP/drx-validate-backup-source-url.py" "$RUNNER_TEMP/drx-restore-failure.json"
 
       - name: Upload evidence only
         if: always()
