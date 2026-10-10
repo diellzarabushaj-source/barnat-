@@ -335,6 +335,42 @@ jobs:
             fi
             cat "$RUNNER_TEMP/drx-restore-auth-factor.sql" >> "$BACKUP_DIR/auth_recovery_schema.sql"
             # END exact source Auth factor compatibility
+            # CLI 2.116.0 pins Storage v1.70.3 through tenant migration 0062.
+            # Source catalogs through 0072 add only these two data columns (0068).
+            # Native Storage functions/indexes remain outside application parity.
+            # Keep the historical Auth file/stage name; this hashed replay contains
+            # only bounded managed-schema additions, applied by isolated admin.
+            # BEGIN exact source Storage lifecycle compatibility
+            if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 \
+              --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never --tuples-only --no-align \
+              <<'SQL' > "$RUNNER_TEMP/drx-restore-storage-lifecycle.sql" 2> "$RUNNER_TEMP/drx-restore-storage-lifecycle-catalog.log"; then
+          select case when count(*)=2
+            and array_agg(a.attname::text order by a.attname)=array['lifecycle_configuration','lifecycle_configuration_generation']
+            and bool_and(c.relkind='r' and pg_catalog.pg_get_userbyid(c.relowner)='supabase_storage_admin'
+              and c.relrowsecurity and not c.relforcerowsecurity
+              and ((a.attname='lifecycle_configuration' and a.atttypid='pg_catalog.jsonb'::pg_catalog.regtype)
+                or (a.attname='lifecycle_configuration_generation' and a.atttypid='pg_catalog.uuid'::pg_catalog.regtype))
+              and a.atttypmod=-1 and not a.attnotnull and not a.atthasdef
+              and d.oid is null and a.attidentity='' and a.attgenerated='')
+            then 'ALTER TABLE storage.buckets ADD COLUMN IF NOT EXISTS lifecycle_configuration jsonb, ADD COLUMN IF NOT EXISTS lifecycle_configuration_generation uuid;'
+            else 'SOURCE_STORAGE_LIFECYCLE_SCHEMA_MISMATCH' end
+          from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid=c.relnamespace
+          join pg_catalog.pg_attribute a on a.attrelid=c.oid
+          left join pg_catalog.pg_attrdef d on d.adrelid=a.attrelid and d.adnum=a.attnum
+          where n.nspname='storage' and c.relname='buckets'
+            and a.attname in ('lifecycle_configuration','lifecycle_configuration_generation')
+            and a.attnum>0 and not a.attisdropped;
+          SQL
+              echo "::error::Source Storage lifecycle catalog capture failed; raw diagnostics are not published."
+              exit 1
+            fi
+            if ! printf '%s\n' 'ALTER TABLE storage.buckets ADD COLUMN IF NOT EXISTS lifecycle_configuration jsonb, ADD COLUMN IF NOT EXISTS lifecycle_configuration_generation uuid;' \
+              | cmp --silent - "$RUNNER_TEMP/drx-restore-storage-lifecycle.sql"; then
+              echo "::error::Source Storage lifecycle columns are absent or incompatible; exact isolated compatibility is required."
+              exit 1
+            fi
+            cat "$RUNNER_TEMP/drx-restore-storage-lifecycle.sql" >> "$BACKUP_DIR/auth_recovery_schema.sql"
+            # END exact source Storage lifecycle compatibility
           fi
 
 
@@ -649,7 +685,8 @@ jobs:
           rm -rf -- "${RUNNER_TEMP:?}/drx-phase1-backup" "$RESTORE_DIR"
           rm -f -- "$RUNNER_TEMP"/drx-restore-*.log "$RUNNER_TEMP/drx-source-manifest.txt" \
             "$RUNNER_TEMP/drx-restore-manifest.txt" "$RUNNER_TEMP/drx-restore-security-manifest.sql" \
-            "$RUNNER_TEMP/drx-validate-backup-source-url.py" "$RUNNER_TEMP/drx-restore-failure.json" "$RUNNER_TEMP/drx-restore-auth-expiry.sql" "$RUNNER_TEMP/drx-restore-auth-factor.sql" "$RUNNER_TEMP/drx-restore-auth-tables.txt"
+            "$RUNNER_TEMP/drx-validate-backup-source-url.py" "$RUNNER_TEMP/drx-restore-failure.json" "$RUNNER_TEMP/drx-restore-auth-expiry.sql" "$RUNNER_TEMP/drx-restore-auth-factor.sql" "$RUNNER_TEMP/drx-restore-auth-tables.txt" \
+            "$RUNNER_TEMP/drx-restore-storage-lifecycle.sql"
 
       - name: Upload evidence only
         if: always()

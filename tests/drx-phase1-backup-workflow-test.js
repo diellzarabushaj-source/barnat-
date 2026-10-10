@@ -322,9 +322,9 @@ try {
 } finally {fs.rmSync(authExpiryDir,{recursive:true,force:true});}
 console.log(`Bounded Auth expiry capture: ${authExpiryCases.length} executable exact, missing, incompatible, multiple and private failure output cases passed without database access.`);
 
-// All remaining Auth additions were confirmed against source catalogs and
-// official migrations after pinned Auth v2.196.0. Execute both exact metadata
-// guards with synthetic output; none of these stand-ins can access a database.
+// Auth additions and both Storage lifecycle columns were confirmed against
+// source catalogs and official migrations after the exact pinned images. Execute
+// every metadata guard with synthetic output without accessing a database.
 const boundedAuthSpecs=[
   {name:'tables',label:'table allowlist',expected:'AUTH_RECOVERY_TABLES_CONFIRMED',append:false,
     requirements:["count(*)=4","array['mfa_recovery_code_sets','mfa_recovery_codes','scim_tokens','scim_users']",
@@ -332,14 +332,23 @@ const boundedAuthSpecs=[
   {name:'factor',label:'factor compatibility',expected:"ALTER TYPE auth.factor_type ADD VALUE IF NOT EXISTS 'recovery_code' AFTER 'phone';",append:true,
     requirements:["array_agg(e.enumlabel::text order by e.enumsortorder)=array['totp','webauthn','phone','recovery_code']",
       "n.nspname='auth' and t.typname='factor_type' and t.typtype='e'"]},
+  {name:'lifecycle',platform:'Storage',prefix:'storage',label:'lifecycle compatibility',
+    expected:'ALTER TABLE storage.buckets ADD COLUMN IF NOT EXISTS lifecycle_configuration jsonb, ADD COLUMN IF NOT EXISTS lifecycle_configuration_generation uuid;',append:true,
+    requirements:['count(*)=2',"array['lifecycle_configuration','lifecycle_configuration_generation']",
+      "c.relkind='r'","pg_catalog.pg_get_userbyid(c.relowner)='supabase_storage_admin'",'c.relrowsecurity','not c.relforcerowsecurity',
+      "a.attname='lifecycle_configuration' and a.atttypid='pg_catalog.jsonb'::pg_catalog.regtype",
+      "a.attname='lifecycle_configuration_generation' and a.atttypid='pg_catalog.uuid'::pg_catalog.regtype",
+      'a.atttypmod=-1','not a.attnotnull','not a.atthasdef','d.oid is null',"a.attidentity=''","a.attgenerated=''",
+      "n.nspname='storage' and c.relname='buckets'","a.attname in ('lifecycle_configuration','lifecycle_configuration_generation')",
+      'a.attnum>0','not a.attisdropped']},
 ];
 const boundedAuthDir=fs.mkdtempSync(path.join(os.tmpdir(),'drx-bounded-auth-capture-'));
 assert.equal(path.dirname(path.resolve(boundedAuthDir)),path.resolve(os.tmpdir()));
 let boundedAuthCases=0;
 try{
   for(const spec of boundedAuthSpecs){
-    const begin=`# BEGIN exact source Auth ${spec.label}`;
-    const end=`# END exact source Auth ${spec.label}`;
+    const begin=`# BEGIN exact source ${spec.platform || 'Auth'} ${spec.label}`;
+    const end=`# END exact source ${spec.platform || 'Auth'} ${spec.label}`;
     const start=workflow.indexOf(begin);
     const finish=workflow.indexOf(end,start);
     assert.ok(start>=0 && finish>start,`Missing bounded source guard: ${spec.name}`);
@@ -347,15 +356,15 @@ try{
     const queryMatch=capture.match(/<<'SQL'[^\n]*\n([\s\S]*?)^SQL$/m);
     assert.ok(queryMatch,`Missing source catalog SELECT: ${spec.name}`);
     for(const condition of spec.requirements)assert.ok(queryMatch[1].includes(condition),`Missing bounded ${spec.name} requirement: ${condition}`);
-    assert.doesNotMatch(queryMatch[1],/\b(?:from|join)\s+auth\./i,'Compatibility guards may read only PostgreSQL catalogs.');
+    assert.doesNotMatch(queryMatch[1],/\b(?:from|join)\s+(?:auth|storage)\./i,'Compatibility guards may read only PostgreSQL catalogs.');
     assert.doesNotMatch(queryMatch[1],/^\s*(?:alter|drop|create|insert|update|delete)\b/im,'No source DDL or DML may execute.');
-    assert.ok(finish<workflow.indexOf('sha256sum "$BACKUP_DIR"/*.sql'),'Confirmed Auth additions must precede backup hashing.');
-    const compatibilityPath=`"$RUNNER_TEMP/drx-restore-auth-${spec.name}.${spec.append ? 'sql' : 'txt'}"`;
+    assert.ok(finish<workflow.indexOf('sha256sum "$BACKUP_DIR"/*.sql'),'Every bounded managed-schema addition must precede backup hashing.');
+    const compatibilityPath=`"$RUNNER_TEMP/drx-restore-${spec.prefix || 'auth'}-${spec.name}.${spec.append ? 'sql' : 'txt'}"`;
     assert.ok(cleanup.includes(compatibilityPath),'Every temporary compatibility capture must be cleaned.');
-    if(spec.append)assert.ok(capture.includes('>> "$BACKUP_DIR/auth_recovery_schema.sql"'),'The bounded enum must replay in the existing isolated admin transaction.');
+    if(spec.append)assert.ok(capture.includes('>> "$BACKUP_DIR/auth_recovery_schema.sql"'),'Bounded managed-schema additions must replay in the existing isolated admin transaction.');
     for(const [name,output,captureFails,accepted] of [
       ['matching',spec.expected+'\n',false,true],['missing','',false,false],
-      ['incompatible','SOURCE_AUTH_SCHEMA_MISMATCH\n',false,false],
+      ['incompatible','SOURCE_PLATFORM_SCHEMA_MISMATCH\n',false,false],
       ['multiple',spec.expected+'\n'+spec.expected+'\n',false,false],['capture-error','',true,false]]){
       boundedAuthCases++;
       const temporary=path.join(boundedAuthDir,`${spec.name}-${name}`); fs.mkdirSync(temporary);
@@ -384,7 +393,7 @@ try{
     }
   }
 }finally{fs.rmSync(boundedAuthDir,{recursive:true,force:true});}
-console.log(`Bounded MFA/SCIM tables and factor enum: ${boundedAuthCases} executable exact, missing, incompatible, repeated and private failure capture cases passed without database access.`);
+console.log(`Bounded MFA/SCIM tables, factor enum and Storage lifecycle columns: ${boundedAuthCases} executable exact, missing, incompatible, repeated and private failure capture cases passed without database access.`);
 
 // Execute the literal restore function with synthetic command stand-ins. Only
 // managed Auth stages may use the verified local admin container, and both must
