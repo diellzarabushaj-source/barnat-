@@ -240,6 +240,77 @@ assert.deepEqual(linked.outputs,{available:'true',mode:'linked',source:'ACCESS_T
 assert.ok(!linked.environment.includes(neon),'Linked fallback never retains the rejected database URL.');
 console.log(`Source-project backup resolver: ${resolverCases} synthetic direct/session-pooler, routing override, alias fallback and fail-closed cases passed without database access.`);
 
+// The compatibility replay may contain only this catalog-proven, additive
+// column statement. Missing, incompatible, repeated or failed output is closed
+// before appending anything to the managed schema that will be hashed/replayed.
+const authExpiryMatch=workflow.match(/^ {12}# BEGIN exact source Auth expiry compatibility\r?\n[\s\S]*?^ {12}# END exact source Auth expiry compatibility/m);
+assert.ok(authExpiryMatch,'Auth compatibility must be a bounded source-catalog extraction.');
+const authExpiryCapture=authExpiryMatch[0].replace(/\r\n/g,'\n').replace(/^ {10}/gm,'');
+const authExpirySqlMatch=authExpiryCapture.match(/<<'SQL'[^\n]*\n([\s\S]*?)^SQL$/m);
+assert.ok(authExpirySqlMatch,'The catalog extraction query must remain independently inspectable.');
+const authExpirySql=authExpirySqlMatch[1];
+for(const condition of ["a.atttypid='pg_catalog.timestamptz'::pg_catalog.regtype",'a.atttypmod=-1',
+  'not a.attnotnull','not a.atthasdef','d.oid is null',"a.attidentity=''","a.attgenerated=''",
+  "a.attrelid='auth.one_time_tokens'::pg_catalog.regclass","a.attname='expires_at'",'a.attnum>0','not a.attisdropped']){
+  assert.ok(authExpirySql.includes(condition),`Missing exact source-column requirement: ${condition}`);
+}
+assert.match(authExpirySql,/from pg_catalog\.pg_attribute a[\s\S]*left join pg_catalog\.pg_attrdef d/);
+assert.doesNotMatch(authExpirySql,/\b(?:from|join)\s+auth\./i,'Only metadata may be read from the source.');
+assert.doesNotMatch(authExpirySql,/^\s*(?:alter|drop|create|insert|update|delete)\b/im,'The source query must not execute DDL or DML.');
+assert.match(authExpiryCapture,/cmp --silent - "\$RUNNER_TEMP\/drx-restore-auth-expiry\.sql"/);
+assert.match(authExpiryCapture,/cat "\$RUNNER_TEMP\/drx-restore-auth-expiry\.sql" >> "\$BACKUP_DIR\/auth_recovery_schema\.sql"/);
+assert.ok(workflow.indexOf('# END exact source Auth expiry compatibility')<workflow.indexOf('sha256sum "$BACKUP_DIR"/*.sql'),
+  'The compatibility addition must be covered by the existing managed Auth backup hash.');
+const cleanup=workflow.slice(workflow.indexOf('- name: Remove disposable database and raw backup files'));
+assert.ok(cleanup.includes('"$RUNNER_TEMP/drx-restore-auth-expiry.sql"'),'Temporary compatibility SQL must be removed with raw backup diagnostics.');
+const authExpiryDir=fs.mkdtempSync(path.join(os.tmpdir(),'drx-auth-expiry-capture-'));
+assert.equal(path.dirname(path.resolve(authExpiryDir)),path.resolve(os.tmpdir()));
+const authExpiryStatement='ALTER TABLE auth.one_time_tokens ADD COLUMN IF NOT EXISTS expires_at timestamp with time zone;';
+const authExpiryPrivateMarker='SYNTHETIC_AUTH_CATALOG_CONTEXT_MUST_NOT_APPEAR';
+const authExpiryCases=[
+  ['matching',authExpiryStatement+'\n',false,true],
+  ['missing','',false,false],
+  ['incompatible','SOURCE_AUTH_EXPIRY_SCHEMA_MISMATCH\n',false,false],
+  ['multiple',authExpiryStatement+'\n'+authExpiryStatement+'\n',false,false],
+  ['capture-error','',true,false],
+];
+try {
+  for(const [name,output,captureFails,accepted] of authExpiryCases){
+    const temporary=path.join(authExpiryDir,name);
+    fs.mkdirSync(temporary);
+    const portable=temporary.replace(/\\/g,'/');
+    const schemaFile=path.join(temporary,'auth_recovery_schema.sql');
+    const originalSchema='-- captured source MFA schema only\n';
+    fs.writeFileSync(schemaFile,originalSchema);
+    const standIn=`psql() {
+      printf '%s\\0' "$@" > "$RUNNER_TEMP/catalog-args"
+      cat > "$RUNNER_TEMP/catalog-query.sql"
+      if [ "$DRX_AUTH_CAPTURE_FAILS" = "1" ]; then
+        printf '%s\\n' '${authExpiryPrivateMarker}' >&2
+        return 3
+      fi
+      printf '%s' "$DRX_AUTH_CATALOG_OUTPUT"
+    }`;
+    const command=`set -euo pipefail\n${standIn}\n${authExpiryCapture}\n`;
+    const result=spawnSync(bash,['-c',command],{encoding:'utf8',timeout:15000,env:{
+      PATH:process.env.PATH,SYSTEMROOT:process.env.SYSTEMROOT || '',WINDIR:process.env.WINDIR || '',
+      RUNNER_TEMP:portable,BACKUP_DIR:portable,SUPABASE_DB_URL:direct,
+      DRX_AUTH_CATALOG_OUTPUT:output,DRX_AUTH_CAPTURE_FAILS:captureFails ? '1' : '0'}});
+    assert.equal(result.error,undefined,`Catalog compatibility fixture must execute: ${name}`);
+    assert.equal(result.status,accepted ? 0 : 1,`Catalog compatibility acceptance is bounded: ${name}`);
+    assert.equal(result.stderr,'','Raw source diagnostics must stay in ephemeral files.');
+    assert.ok(!result.stdout.includes(authExpiryPrivateMarker),'Source capture failures must not leak raw context.');
+    assert.ok(!result.stdout.includes(authExpiryStatement),'Generated source DDL must not be printed.');
+    assert.equal(fs.readFileSync(schemaFile,'utf8'),accepted ? originalSchema+'\n'+authExpiryStatement+'\n' : originalSchema,
+      `Only one exact validated statement may enter the managed Auth backup: ${name}`);
+    assert.deepEqual(fs.readFileSync(path.join(temporary,'catalog-args'),'utf8').split('\0').slice(0,-1),
+      [direct,'-X','--quiet','--set','ON_ERROR_STOP=1','--set','VERBOSITY=sqlstate','--set','SHOW_CONTEXT=never','--tuples-only','--no-align']);
+    assert.equal(fs.readFileSync(path.join(temporary,'catalog-query.sql'),'utf8'),authExpirySql,
+      'Only the real catalog SELECT is sent to the source connection.');
+  }
+} finally {fs.rmSync(authExpiryDir,{recursive:true,force:true});}
+console.log(`Bounded Auth expiry capture: ${authExpiryCases.length} executable exact, missing, incompatible, multiple and private failure output cases passed without database access.`);
+
 // Execute the literal restore function with synthetic command stand-ins. Only
 // managed Auth stages may use the verified local admin container, and both must
 // remain transactional. Schema/data/history must keep the local postgres path.
