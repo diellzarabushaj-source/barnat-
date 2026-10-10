@@ -464,6 +464,62 @@ jobs:
           end,'' order by schema_name)) from (values ('note_write_private'),('prescription_write_private')) controls(schema_name);
           SQL
 
+          # BEGIN safe catalog component builder
+          python3 - <<'PY'
+          import os, re
+          from pathlib import Path
+          directory=Path(os.environ['RUNNER_TEMP'])
+          sql=(directory / 'drx-restore-security-manifest.sql').read_text()
+          functions=re.search(r"(with functions as \(.*?\n\))\nselect 'application_functions_fingerprint=",sql,re.S)
+          relations=re.search(r"(with relations as \(.*?\n\))\nselect 'personal_write_tables_fingerprint=",sql,re.S)
+          if functions is None or relations is None:
+              raise SystemExit('Catalog component extraction requires the exact fingerprint entries')
+          function_output="""
+          select jsonb_build_object('kind','function','identity',identity,'components',jsonb_build_object(
+            'owner',entry->'owner','definitionHash',md5((entry->'definition')::text),
+            'configHash',md5((entry->'config')::text),'aclHash',md5((entry->'acl')::text),
+            'effective',entry->'effective'))::text from entries order by identity;
+          """
+          table_output="""
+          select jsonb_build_object('kind','table','identity',identity,'components',jsonb_build_object(
+            'owner',entry->'owner','rls',entry->'rls','forceRls',entry->'force_rls','privileges',entry->'privileges',
+            'columnsHash',md5((entry->'columns')::text),
+            'columnsCount',case when jsonb_typeof(entry->'columns')='array' then jsonb_array_length(entry->'columns') else 0 end,
+            'constraintsHash',md5((entry->'constraints')::text),
+            'constraintsCount',case when jsonb_typeof(entry->'constraints')='array' then jsonb_array_length(entry->'constraints') else 0 end,
+            'policiesHash',md5((entry->'policies')::text),
+            'policiesCount',case when jsonb_typeof(entry->'policies')='array' then jsonb_array_length(entry->'policies') else 0 end
+          ))::text from entries order by identity;
+          """
+          default_output="""
+          with creators as (select oid,rolname from pg_catalog.pg_roles where rolname in ('postgres','supabase_admin')),
+          scopes(schema_name) as (values ('GLOBAL'),('public'),('private'),('note_write_private'),('prescription_write_private')),
+          kinds(object_type) as (values ('r'),('f'),('S')),
+          defaults as (
+            select c.rolname,s.schema_name,k.object_type,coalesce(d.defaclacl,case when s.schema_name='GLOBAL'
+              then pg_catalog.acldefault(k.object_type::"char",c.oid) else '{}'::pg_catalog.aclitem[] end) as acl
+            from creators c cross join scopes s cross join kinds k
+            left join pg_catalog.pg_namespace n on n.nspname=s.schema_name
+            left join pg_catalog.pg_default_acl d on d.defaclrole=c.oid and d.defaclobjtype=k.object_type::"char"
+              and d.defaclnamespace=case when s.schema_name='GLOBAL' then 0 else n.oid end
+          )
+          select jsonb_build_object('kind','defaultAcl','identity',rolname || ':' || schema_name || ':' || object_type,
+            'components',jsonb_build_object('grants',(select jsonb_agg(jsonb_build_array(role_name,privilege,exists (
+              select 1 from pg_catalog.aclexplode(case when cardinality(acl)=0 then null::pg_catalog.aclitem[] else acl end) a where a.privilege_type=privilege
+                and (case when a.grantee=0 then 'PUBLIC' else pg_catalog.pg_get_userbyid(a.grantee) end)=role_name
+            )) order by role_name,privilege)
+            from (values ('PUBLIC'),('anon'),('authenticated'),('postgres'),('service_role')) roles(role_name)
+            cross join (values ('SELECT'),('INSERT'),('UPDATE'),('DELETE'),('TRUNCATE'),('REFERENCES'),('TRIGGER'),('MAINTAIN'),('EXECUTE'),('USAGE')) privs(privilege)
+            where (object_type='f' and privilege='EXECUTE')
+              or (object_type='r' and privilege in ('SELECT','INSERT','UPDATE','DELETE','TRUNCATE','REFERENCES','TRIGGER','MAINTAIN'))
+              or (object_type='S' and privilege in ('SELECT','UPDATE','USAGE'))
+          )))::text from defaults order by rolname,schema_name,object_type;
+          """
+          (directory / 'drx-restore-security-components.sql').write_text(
+              "set search_path = '';\n"+functions.group(1)+function_output+relations.group(1)+table_output+default_output)
+          PY
+          # END safe catalog component builder
+
       - name: Capture source restore manifest
         if: steps.credential.outputs.available == 'true' && steps.credential.outputs.mode == 'db_url'
         shell: bash
@@ -497,6 +553,13 @@ jobs:
           psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
             --file "$RUNNER_TEMP/drx-restore-security-manifest.sql" >> "$RUNNER_TEMP/drx-source-manifest.txt"
           test -s "$RUNNER_TEMP/drx-source-manifest.txt"
+          if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 \
+            --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never --tuples-only --no-align \
+            --file "$RUNNER_TEMP/drx-restore-security-components.sql" \
+            > "$RUNNER_TEMP/drx-source-security-components.ndjson" 2> "$RUNNER_TEMP/drx-restore-source-components.log"; then
+            echo "::error::Source catalog component capture failed; raw diagnostics are not published."
+            exit 1
+          fi
 
       - name: Require independent source manifest
         if: steps.credential.outputs.available == 'true' && steps.credential.outputs.mode != 'db_url'
@@ -599,7 +662,80 @@ jobs:
           psql "$DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
             --file "$RUNNER_TEMP/drx-restore-security-manifest.sql" >> "$RUNNER_TEMP/drx-restore-manifest.txt"
           test -s "$RUNNER_TEMP/drx-restore-manifest.txt"
-          diff -u "$RUNNER_TEMP/drx-source-manifest.txt" "$RUNNER_TEMP/drx-restore-manifest.txt"
+          if ! diff -u "$RUNNER_TEMP/drx-source-manifest.txt" "$RUNNER_TEMP/drx-restore-manifest.txt"; then
+            if ! psql "$DB_URL" -X --quiet --set ON_ERROR_STOP=1 \
+              --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never --tuples-only --no-align \
+              --file "$RUNNER_TEMP/drx-restore-security-components.sql" \
+              > "$RUNNER_TEMP/drx-restore-security-components.ndjson" 2> "$RUNNER_TEMP/drx-restore-target-components.log"; then
+              echo "::error::Isolated catalog component capture failed; raw diagnostics are not published."
+              exit 1
+            fi
+            # BEGIN safe catalog mismatch comparison
+            python3 - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          directory=Path(os.environ['RUNNER_TEMP'])
+          fields={
+              'function':{'owner','definitionHash','configHash','aclHash','effective'},
+              'defaultAcl':{'grants'},
+              'table':{'owner','rls','forceRls','privileges','columnsHash','columnsCount','constraintsHash','constraintsCount','policiesHash','policiesCount'}}
+          roles={'anon','authenticated','service_role'}
+          privileges={'SELECT','INSERT','UPDATE','DELETE','TRUNCATE','REFERENCES','TRIGGER'}
+          def valid(component,value):
+              if component.endswith('Hash'): return isinstance(value,str) and re.fullmatch(r'[0-9a-f]{32}',value) is not None
+              if component.endswith('Count'): return type(value) is int and value>=0
+              if component=='owner': return isinstance(value,str) and re.fullmatch(r'[a-z_][a-z0-9_]{0,63}',value) is not None
+              if component in {'rls','forceRls'}: return type(value) is bool
+              if component=='effective': return isinstance(value,list) and len(value)==3 and all(
+                  isinstance(row,list) and len(row)==2 and row[0] in roles and type(row[1]) is bool for row in value) and len({row[0] for row in value})==3
+              if component=='privileges': return isinstance(value,list) and len(value)==21 and all(
+                  isinstance(row,list) and len(row)==3 and row[0] in roles and row[1] in privileges and type(row[2]) is bool for row in value) and len({(row[0],row[1]) for row in value})==21
+              if component=='grants': return isinstance(value,list) and len(value) in {5,15,40} and all(
+                  isinstance(row,list) and len(row)==3 and row[0] in roles | {'PUBLIC','postgres'} and row[1] in privileges | {'MAINTAIN','EXECUTE','USAGE'} and type(row[2]) is bool for row in value) and len({(row[0],row[1]) for row in value})==len(value)
+              return False
+          def load(name):
+              entries={}
+              for line in (directory / name).read_text().splitlines():
+                  row=json.loads(line); kind=row['kind']; identity=row['identity']; values=row['components']
+                  if kind not in fields or not isinstance(identity,str) or not identity or len(identity)>1024:
+                      raise ValueError('Invalid catalog identity')
+                  if not isinstance(values,dict) or not fields[kind].issubset(values) or not all(valid(key,values[key]) for key in fields[kind]):
+                      raise ValueError('Invalid catalog components')
+                  key=(kind,identity)
+                  if key in entries: raise ValueError('Repeated catalog identity')
+                  entries[key]={key:values[key] for key in fields[kind]}
+              return entries
+          try:
+              source=load('drx-source-security-components.ndjson'); restored=load('drx-restore-security-components.ndjson')
+              differences=[]
+              for kind,identity in sorted(source.keys() | restored.keys()):
+                  before=source.get((kind,identity)); after=restored.get((kind,identity))
+                  if before is None or after is None:
+                      differences.append({'kind':kind,'identity':identity,'component':'present','source':before is not None,'restored':after is not None})
+                      continue
+                  for component in sorted(fields[kind]):
+                      if before[component]!=after[component]:
+                          before_value=before[component]; after_value=after[component]
+                          if component in {'effective','privileges','grants'}:
+                              before_rows={tuple(row[:-1]):row for row in before_value}; after_rows={tuple(row[:-1]):row for row in after_value}
+                              changed=[key for key in sorted(before_rows.keys() | after_rows.keys()) if before_rows.get(key)!=after_rows.get(key)]
+                              before_value=[before_rows[key] for key in changed if key in before_rows]
+                              after_value=[after_rows[key] for key in changed if key in after_rows]
+                          differences.append({'kind':kind,'identity':identity,'component':component,'source':before_value,'restored':after_value})
+              bounded=[item for kind in fields for item in [row for row in differences if row['kind']==kind][:25]]
+              diagnostic={'status':'DIFFERENCES' if differences else 'NO_COMPONENT_DIFFERENCE',
+                  'sourceCounts':{kind:sum(key[0]==kind for key in source) for kind in fields},
+                  'restoredCounts':{kind:sum(key[0]==kind for key in restored) for kind in fields},
+                  'differenceCount':len(differences),'differences':bounded,'truncated':len(differences)>len(bounded)}
+          except (OSError,ValueError,KeyError,TypeError):
+              diagnostic={'status':'UNAVAILABLE','reason':'Invalid or absent bounded catalog component capture'}
+          failure={'failedStage':'manifest_comparison','catalogDiagnostic':diagnostic}
+          (directory / 'drx-restore-failure.json').write_text(json.dumps(failure)+'\n')
+          print('::error::Restore manifest differs from source: '+json.dumps(failure)+'; raw catalog expressions are not published.')
+          PY
+            # END safe catalog mismatch comparison
+            exit 1
+          fi
 
       - name: Write failure evidence
         if: steps.credential.outputs.available == 'true' && failure()
@@ -686,7 +822,9 @@ jobs:
           rm -f -- "$RUNNER_TEMP"/drx-restore-*.log "$RUNNER_TEMP/drx-source-manifest.txt" \
             "$RUNNER_TEMP/drx-restore-manifest.txt" "$RUNNER_TEMP/drx-restore-security-manifest.sql" \
             "$RUNNER_TEMP/drx-validate-backup-source-url.py" "$RUNNER_TEMP/drx-restore-failure.json" "$RUNNER_TEMP/drx-restore-auth-expiry.sql" "$RUNNER_TEMP/drx-restore-auth-factor.sql" "$RUNNER_TEMP/drx-restore-auth-tables.txt" \
-            "$RUNNER_TEMP/drx-restore-storage-lifecycle.sql"
+            "$RUNNER_TEMP/drx-restore-storage-lifecycle.sql" \
+            "$RUNNER_TEMP/drx-restore-security-components.sql" "$RUNNER_TEMP/drx-source-security-components.ndjson" \
+            "$RUNNER_TEMP/drx-restore-security-components.ndjson"
 
       - name: Upload evidence only
         if: always()

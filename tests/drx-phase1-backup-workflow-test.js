@@ -490,3 +490,95 @@ try {
   assert.deepEqual(diagnostic('connection failure '+secret,sql),{failedStage:'data',sqlstate:'unavailable',copyRelation:null});
 } finally {fs.rmSync(diagnosticDir,{recursive:true,force:true});}
 console.log('Seven executable restore-diagnostic privacy and SQLSTATE cases passed.');
+
+
+// Execute the actual bounded catalog builder and comparison. Fingerprint equality
+// stays strict, while only names, privilege booleans, counts and hashes can leave
+// the disposable runner; raw definitions/config/default/policy text cannot.
+function catalogPython(marker){
+  const start=workflow.indexOf(`# BEGIN ${marker}`); const end=workflow.indexOf(`# END ${marker}`,start);
+  assert.ok(start>=0 && end>start,`Missing actual catalog diagnostic: ${marker}`);
+  const block=workflow.slice(start,end).replace(/\r\n/g,'\n').replace(/^ {10}/gm,'');
+  const match=block.match(/<<'PY'\n([\s\S]*?)^PY$/m);
+  assert.ok(match,`Missing executable catalog Python: ${marker}`); return match[1];
+}
+const catalogBuilder=catalogPython('safe catalog component builder');
+const catalogComparison=catalogPython('safe catalog mismatch comparison');
+const catalogDir=fs.mkdtempSync(path.join(os.tmpdir(),'drx-catalog-component-diagnostic-'));
+assert.equal(path.dirname(path.resolve(catalogDir)),path.resolve(os.tmpdir()));
+for(const file of ['drx-restore-security-components.sql','drx-source-security-components.ndjson','drx-restore-security-components.ndjson']){
+  assert.ok(cleanup.includes(`"$RUNNER_TEMP/${file}"`),'Ephemeral component diagnostics must be cleaned.');
+}
+assert.match(restore,/if ! diff -u "\$RUNNER_TEMP\/drx-source-manifest\.txt" "\$RUNNER_TEMP\/drx-restore-manifest\.txt"; then[\s\S]*?safe catalog mismatch comparison[\s\S]*?exit 1\s*fi/);
+assert.match(workflow,/--file "\$RUNNER_TEMP\/drx-restore-security-components\.sql"[\s\\]*> "\$RUNNER_TEMP\/drx-source-security-components\.ndjson" 2> "\$RUNNER_TEMP\/drx-restore-source-components\.log"/);
+assert.match(restore,/--file "\$RUNNER_TEMP\/drx-restore-security-components\.sql"[\s\\]*> "\$RUNNER_TEMP\/drx-restore-security-components\.ndjson" 2> "\$RUNNER_TEMP\/drx-restore-target-components\.log"/);
+let catalogCases=0;
+try{
+  const catalogEnv={...process.env,RUNNER_TEMP:catalogDir};
+  const exactSql=securitySql.replace(/\r\n/g,'\n').replace(/^ {10}/gm,'');
+  fs.writeFileSync(path.join(catalogDir,'drx-restore-security-manifest.sql'),exactSql);
+  const built=spawnSync(python,['-c',catalogBuilder],{encoding:'utf8',env:catalogEnv});
+  assert.equal(built.status,0,built.stderr); assert.equal(built.stdout,''); assert.equal(built.stderr,'');
+  const componentsSql=fs.readFileSync(path.join(catalogDir,'drx-restore-security-components.sql'),'utf8').replace(/\r\n/g,'\n');
+  for(const [cte,label] of [['functions','application_functions'],['relations','personal_write_tables']]){
+    const entry=exactSql.match(new RegExp(`(with ${cte} as \\([\\s\\S]*?\\n\\))\\nselect '${label}_fingerprint=`));
+    assert.ok(entry); assert.ok(componentsSql.includes(entry[1]),'Diagnostics must derive the exact existing fingerprint entry definitions.');
+  }
+  assert.match(componentsSql,/md5\(\(entry->'definition'\)::text\)/);
+  assert.match(componentsSql,/md5\(\(entry->'config'\)::text\)/);
+  assert.match(componentsSql,/md5\(\(entry->'acl'\)::text\)/);
+  assert.doesNotMatch(componentsSql,/^\s*(?:alter|drop|create|insert|update|delete)\b/im);
+  assert.match(componentsSql,/pg_catalog\.pg_default_acl/);
+  assert.match(componentsSql,/rolname in \('postgres','supabase_admin'\)/);
+  assert.match(componentsSql,/values \('GLOBAL'\),\('public'\),\('private'\),\('note_write_private'\),\('prescription_write_private'\)/);
+  assert.match(componentsSql,/pg_catalog\.acldefault\(k\.object_type::"char",c\.oid\)/);
+  assert.match(componentsSql,/case when cardinality\(acl\)=0 then null::pg_catalog\.aclitem\[\] else acl end/);
+  assert.doesNotMatch(componentsSql,/\b(?:from|join)\s+(?:auth\.users|public\.(?:user_notes|user_favorites|user_prescriptions|medindex_users)|(?:note_write_private|prescription_write_private)\.receipts)\b/i);
+  const roleNames=['anon','authenticated','service_role'];
+  const privilegeNames=['SELECT','INSERT','UPDATE','DELETE','TRUNCATE','REFERENCES','TRIGGER'];
+  const fn={kind:'function',identity:'public.synthetic_rpc()',components:{owner:'postgres',definitionHash:'a'.repeat(32),configHash:'b'.repeat(32),aclHash:'c'.repeat(32),effective:roleNames.map(role=>[role,false])}};
+  const table={kind:'table',identity:'public.user_prescriptions',components:{owner:'postgres',rls:true,forceRls:false,
+    privileges:roleNames.flatMap(role=>privilegeNames.map(privilege=>[role,privilege,false])),
+    columnsHash:'d'.repeat(32),columnsCount:3,constraintsHash:'e'.repeat(32),constraintsCount:2,policiesHash:'f'.repeat(32),policiesCount:1}};
+  const secret='SYNTHETIC_PRIVATE_CATALOG_EXPRESSION_MUST_NOT_APPEAR';
+  function compare(source,restored){
+    catalogCases++;
+    for(const [name,rows] of [['drx-source-security-components.ndjson',source],['drx-restore-security-components.ndjson',restored]]){
+      fs.writeFileSync(path.join(catalogDir,name),typeof rows==='string' ? rows : rows.map(row=>JSON.stringify(row)).join('\n')+(rows.length ? '\n' : ''));
+    }
+    const result=spawnSync(python,['-c',catalogComparison],{encoding:'utf8',env:catalogEnv});
+    assert.equal(result.status,0,result.stderr); assert.equal(result.stderr,''); assert.ok(!result.stdout.includes(secret));
+    const failureText=fs.readFileSync(path.join(catalogDir,'drx-restore-failure.json'),'utf8');
+    assert.ok(!failureText.includes(secret)); const failure=JSON.parse(failureText);
+    assert.equal(failure.failedStage,'manifest_comparison');
+    assert.equal(failure.restoreVerified,undefined,'Diagnostics cannot convert any manifest mismatch into verification.');
+    return failure.catalogDiagnostic;
+  }
+  const same=compare([fn,table],[fn,table]);
+  assert.equal(same.status,'NO_COMPONENT_DIFFERENCE'); assert.equal(same.differenceCount,0);
+  assert.deepEqual(same.sourceCounts,{function:1,defaultAcl:0,table:1});
+  const changedFn=structuredClone(fn); changedFn.components.definitionHash='1'.repeat(32); changedFn.components.aclHash='2'.repeat(32); changedFn.components.effective[0][1]=true;
+  const changedTable=structuredClone(table); changedTable.components.privileges[0][2]=true; changedTable.components.constraintsHash='3'.repeat(32);
+  const changed=compare([fn,table],[changedFn,changedTable]);
+  assert.equal(changed.status,'DIFFERENCES'); assert.equal(changed.differenceCount,5);
+  assert.deepEqual(changed.differences.map(item=>item.component).sort(),['aclHash','constraintsHash','definitionHash','effective','privileges']);
+  assert.deepEqual(changed.differences.find(item=>item.component==='effective').source,[['anon',false]]);
+  assert.deepEqual(changed.differences.find(item=>item.component==='privileges').restored,[['anon','SELECT',true]]);
+  const defaults={kind:'defaultAcl',identity:'postgres:public:f',components:{grants:['PUBLIC',...roleNames,'postgres'].map(role=>[role,'EXECUTE',false])}};
+  const changedDefaults=structuredClone(defaults); changedDefaults.components.grants[1][2]=true;
+  const aclDifference=compare([defaults],[changedDefaults]);
+  assert.equal(aclDifference.differenceCount,1); assert.equal(aclDifference.differences[0].component,'grants');
+  assert.deepEqual(aclDifference.differences[0].source,[['anon','EXECUTE',false]]);
+  assert.deepEqual(aclDifference.differences[0].restored,[['anon','EXECUTE',true]]);
+  const absent=compare([fn],[table]); assert.equal(absent.differenceCount,2);
+  assert.ok(absent.differences.every(item=>item.component==='present' && typeof item.source==='boolean' && typeof item.restored==='boolean'));
+  const injected=structuredClone(fn); injected.rawDefinition=secret; injected.components.unapprovedRawConfig=secret;
+  assert.equal(compare([injected],[fn]).differenceCount,0,'Only approved component fields may be emitted.');
+  const invalid=structuredClone(fn); invalid.components.definitionHash=secret;
+  assert.equal(compare([invalid],[fn]).status,'UNAVAILABLE','Invalid hashes must produce only a generic safe diagnostic.');
+  assert.equal(compare(secret,[fn]).status,'UNAVAILABLE','Malformed input must not appear in a traceback or evidence.');
+  assert.equal(compare([fn,fn],[fn]).status,'UNAVAILABLE','Duplicate identities cannot silently replace an entry.');
+  const many=Array.from({length:51},(_,index)=>({...structuredClone(fn),identity:`public.synthetic_${index}()`}));
+  const bounded=compare(many,[]); assert.equal(bounded.differenceCount,51); assert.equal(bounded.differences.length,25); assert.equal(bounded.truncated,true);
+}finally{fs.rmSync(catalogDir,{recursive:true,force:true});}
+console.log(`Safe catalog component diagnostic: exact fingerprint builder and ${catalogCases} executable mismatch, missing, privacy, invalid and bounded-output cases passed.`);

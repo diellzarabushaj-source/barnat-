@@ -132,7 +132,9 @@
 .rx-context-source,.rx-category-button small,.rx-pediatric-toggle small,.rx-context-guidance{font-size:12px;line-height:1.5}
 .rx-context-field>label,.rx-context-field>legend{font-size:13px}
 .rx-context-heading{flex-wrap:wrap}
-#rxDraftPersistence{margin:6px 0 0;color:var(--med-muted,#64748b);font-size:12px;line-height:1.5}
+.rx-compose-card>.rx-card-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 12px}
+.rx-compose-card>.rx-card-head>div{min-width:0}
+#rxDraftPersistence{grid-column:1/-1;min-height:3em;margin:6px 0 0;color:var(--med-muted,#64748b);font-size:12px;line-height:1.5}
 .rx-prescription-conflicts,.rx-undo-delete{margin:0 0 16px;padding:14px 16px;border:1px solid #b9cce7;border-radius:12px;background:#f5f8fd;color:#203e65}
 .rx-prescription-conflicts[hidden],.rx-undo-delete[hidden],#rxPrescriptionConflict[hidden]{display:none}
 .rx-prescription-conflict-item,.rx-undo-delete{display:flex;align-items:center;justify-content:space-between;gap:12px}
