@@ -13,6 +13,11 @@ const evidence=require('../data/drx-phase1-backup-restore-evidence-v1.json');
 assert.match(workflow,/secrets\.SUPABASE_DB_URL/);
 assert.match(workflow,/supabase\/setup-cli@v1/);
 assert.match(workflow,/version: 2\.116\.0/);
+const pushMatch=workflow.match(/^  push:\r?\n([\s\S]*?)^permissions:/m);
+assert.ok(pushMatch,'Actual main push configuration must remain inspectable.');
+assert.match(pushMatch[1],/branches: \[main\]/);
+assert.match(pushMatch[1],/^      - "supabase\/migrations\/\*\*"$/m,
+  'Every main migration, including the committed fence activation, must rerun actual backup/restore automatically.');
 assert.match(workflow,/supabase db dump --db-url "\$SUPABASE_DB_URL"/);
 assert.match(workflow,/--role-only/);
 assert.match(workflow,/--use-copy --data-only/);
@@ -100,6 +105,12 @@ assert.match(restore,/restore_sql history --single-transaction[\s\S]*?DROP SCHEM
 assert.match(restore,/restore_sql auth_triggers --single-transaction --file "\$BACKUP_DIR\/auth_custom_triggers\.sql"/);
 assert.match(restore,/SET session_replication_role = replica/);
 assert.match(workflow,/pg_dump "\$SOURCE_DATABASE_URL" --schema-only --table=auth\.mfa_recovery_code_sets --table=auth\.mfa_recovery_codes/);
+const boundedAuthDump=workflow.match(/sh -c 'exec pg_dump "\$SOURCE_DATABASE_URL" --schema-only ([^']+)'/);
+assert.ok(boundedAuthDump,'Managed Auth restoration must capture only confirmed absent table definitions.');
+assert.deepEqual([...boundedAuthDump[1].matchAll(/--table=([a-z_.]+)/g)].map(match=>match[1]).sort(),
+  ['auth.mfa_recovery_code_sets','auth.mfa_recovery_codes','auth.scim_tokens','auth.scim_users']);
+assert.doesNotMatch(boundedAuthDump[1],/--schema\b|\*|--clean|--data-only/,
+  'Managed Auth compatibility must not become an unrestricted or destructive schema/data capture.');
 assert.match(workflow,/> "\$BACKUP_DIR\/auth_recovery_schema\.sql" 2> "\$RUNNER_TEMP\/drx-restore-auth-schema-dump\.log"/);
 assert.match(workflow,/public\.ecr\.aws\/supabase\/postgres:\$SOURCE_POSTGRES_VERSION/);
 assert.match(restore,/restore_sql managed_auth --file "\$BACKUP_DIR\/auth_recovery_schema\.sql"/);
@@ -310,6 +321,70 @@ try {
   }
 } finally {fs.rmSync(authExpiryDir,{recursive:true,force:true});}
 console.log(`Bounded Auth expiry capture: ${authExpiryCases.length} executable exact, missing, incompatible, multiple and private failure output cases passed without database access.`);
+
+// All remaining Auth additions were confirmed against source catalogs and
+// official migrations after pinned Auth v2.196.0. Execute both exact metadata
+// guards with synthetic output; none of these stand-ins can access a database.
+const boundedAuthSpecs=[
+  {name:'tables',label:'table allowlist',expected:'AUTH_RECOVERY_TABLES_CONFIRMED',append:false,
+    requirements:["count(*)=4","array['mfa_recovery_code_sets','mfa_recovery_codes','scim_tokens','scim_users']",
+      "c.relkind='r'","pg_catalog.pg_get_userbyid(c.relowner)='supabase_auth_admin'",'not c.relrowsecurity','not c.relforcerowsecurity']},
+  {name:'factor',label:'factor compatibility',expected:"ALTER TYPE auth.factor_type ADD VALUE IF NOT EXISTS 'recovery_code' AFTER 'phone';",append:true,
+    requirements:["array_agg(e.enumlabel::text order by e.enumsortorder)=array['totp','webauthn','phone','recovery_code']",
+      "n.nspname='auth' and t.typname='factor_type' and t.typtype='e'"]},
+];
+const boundedAuthDir=fs.mkdtempSync(path.join(os.tmpdir(),'drx-bounded-auth-capture-'));
+assert.equal(path.dirname(path.resolve(boundedAuthDir)),path.resolve(os.tmpdir()));
+let boundedAuthCases=0;
+try{
+  for(const spec of boundedAuthSpecs){
+    const begin=`# BEGIN exact source Auth ${spec.label}`;
+    const end=`# END exact source Auth ${spec.label}`;
+    const start=workflow.indexOf(begin);
+    const finish=workflow.indexOf(end,start);
+    assert.ok(start>=0 && finish>start,`Missing bounded source guard: ${spec.name}`);
+    const capture=workflow.slice(start-12,finish+end.length).replace(/\r\n/g,'\n').replace(/^ {10}/gm,'');
+    const queryMatch=capture.match(/<<'SQL'[^\n]*\n([\s\S]*?)^SQL$/m);
+    assert.ok(queryMatch,`Missing source catalog SELECT: ${spec.name}`);
+    for(const condition of spec.requirements)assert.ok(queryMatch[1].includes(condition),`Missing bounded ${spec.name} requirement: ${condition}`);
+    assert.doesNotMatch(queryMatch[1],/\b(?:from|join)\s+auth\./i,'Compatibility guards may read only PostgreSQL catalogs.');
+    assert.doesNotMatch(queryMatch[1],/^\s*(?:alter|drop|create|insert|update|delete)\b/im,'No source DDL or DML may execute.');
+    assert.ok(finish<workflow.indexOf('sha256sum "$BACKUP_DIR"/*.sql'),'Confirmed Auth additions must precede backup hashing.');
+    const compatibilityPath=`"$RUNNER_TEMP/drx-restore-auth-${spec.name}.${spec.append ? 'sql' : 'txt'}"`;
+    assert.ok(cleanup.includes(compatibilityPath),'Every temporary compatibility capture must be cleaned.');
+    if(spec.append)assert.ok(capture.includes('>> "$BACKUP_DIR/auth_recovery_schema.sql"'),'The bounded enum must replay in the existing isolated admin transaction.');
+    for(const [name,output,captureFails,accepted] of [
+      ['matching',spec.expected+'\n',false,true],['missing','',false,false],
+      ['incompatible','SOURCE_AUTH_SCHEMA_MISMATCH\n',false,false],
+      ['multiple',spec.expected+'\n'+spec.expected+'\n',false,false],['capture-error','',true,false]]){
+      boundedAuthCases++;
+      const temporary=path.join(boundedAuthDir,`${spec.name}-${name}`); fs.mkdirSync(temporary);
+      const portable=temporary.replace(/\\/g,'/');
+      const schemaFile=path.join(temporary,'auth_recovery_schema.sql');
+      const originalSchema='-- exact captured MFA/SCIM schema and expiry addition\n';
+      fs.writeFileSync(schemaFile,originalSchema);
+      const privateMarker='SYNTHETIC_BOUNDED_AUTH_CONTEXT_MUST_NOT_APPEAR';
+      const standIn=`psql() {
+        cat > "$RUNNER_TEMP/catalog-query.sql"
+        if [ "$DRX_AUTH_CAPTURE_FAILS" = "1" ]; then printf '%s\\n' '${privateMarker}' >&2; return 3; fi
+        printf '%s' "$DRX_AUTH_CATALOG_OUTPUT"
+      }`;
+      const result=spawnSync(bash,['-c',`set -euo pipefail\n${standIn}\n${capture}\n`],{encoding:'utf8',timeout:15000,env:{
+        PATH:process.env.PATH,SYSTEMROOT:process.env.SYSTEMROOT || '',WINDIR:process.env.WINDIR || '',
+        RUNNER_TEMP:portable,BACKUP_DIR:portable,SUPABASE_DB_URL:direct,
+        DRX_AUTH_CATALOG_OUTPUT:output,DRX_AUTH_CAPTURE_FAILS:captureFails ? '1' : '0'}});
+      assert.equal(result.error,undefined,`Bounded catalog guard must execute: ${spec.name}/${name}`);
+      assert.equal(result.status,accepted ? 0 : 1,`Only exact compatible source metadata is accepted: ${spec.name}/${name}`);
+      assert.equal(result.stderr,'');
+      assert.ok(!result.stdout.includes(privateMarker),'Raw source diagnostics cannot appear in public output.');
+      assert.ok(!result.stdout.includes(spec.expected),'Catalog guard/output DDL cannot appear in public output.');
+      assert.equal(fs.readFileSync(schemaFile,'utf8'),accepted && spec.append ? originalSchema+spec.expected+'\n' : originalSchema,
+        'Unvalidated or repeated compatibility must never alter the hashed schema replay.');
+      assert.equal(fs.readFileSync(path.join(temporary,'catalog-query.sql'),'utf8'),queryMatch[1]);
+    }
+  }
+}finally{fs.rmSync(boundedAuthDir,{recursive:true,force:true});}
+console.log(`Bounded MFA/SCIM tables and factor enum: ${boundedAuthCases} executable exact, missing, incompatible, repeated and private failure capture cases passed without database access.`);
 
 // Execute the literal restore function with synthetic command stand-ins. Only
 // managed Auth stages may use the verified local admin container, and both must

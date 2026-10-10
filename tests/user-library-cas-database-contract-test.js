@@ -8,6 +8,20 @@ const migrations = fs.readdirSync(path.join(root, 'supabase/migrations'))
 assert.equal(migrations.length, 1);
 const sql = fs.readFileSync(path.join(root, 'supabase/migrations', migrations[0]), 'utf8').replace(/\r\n/g,'\n');
 const fixture = fs.readFileSync(path.join(root, 'supabase/tests/user-library-atomic-cas-rollback.sql'), 'utf8').replace(/\r\n/g,'\n');
+const activations = fs.readdirSync(path.join(root, 'supabase/migrations'))
+  .filter(name => /^\d+_activate_user_prescriptions_atomic_cas_fence\.sql$/.test(name));
+assert.deepEqual(activations, ['20261010215812_activate_user_prescriptions_atomic_cas_fence.sql']);
+const activation = fs.readFileSync(path.join(root, 'supabase/migrations', activations[0]), 'utf8')
+  .replace(/\r\n/g,'\n').replace(/^\s*--.*$/gm,'');
+assert.match(activation, /update prescription_write_private\.control set fence_enabled=true where singleton;/);
+assert.match(activation, /revoke insert,update,delete on public\.user_prescriptions from public,anon,authenticated;/);
+assert.match(activation, /revoke truncate on public\.user_prescriptions from public,anon,authenticated,service_role;/);
+assert.equal(activation.split(';').filter(statement => statement.trim()).length, 3,
+  'Activation must only enable the fence and close direct write/TRUNCATE grants.');
+assert.doesNotMatch(activation, /\b(?:grant|alter|drop|create|insert\s+into|delete\s+from)\b/i,
+  'Activation cannot replace guards/RPCs, modify prescription contents or add privileges.');
+assert.doesNotMatch(activation, /revoke\s+(?:select|all)\b/i,
+  'The protected RPC still needs service-role SELECT and DML.');
 assert.match(sql, /security invoker set search_path = ''/);
 assert.doesNotMatch(sql, /security definer/);
 assert.match(sql, /current_user <> 'service_role'/);
