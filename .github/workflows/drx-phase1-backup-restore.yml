@@ -264,6 +264,33 @@ jobs:
               exit 1
             fi
             test -s "$BACKUP_DIR/auth_recovery_schema.sql"
+            # BEGIN exact source Auth expiry compatibility
+            # The pinned isolated Auth schema lacks this source column. Read
+            # catalogs only and accept one exact nullable/default-free shape.
+            if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 \
+              --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never --tuples-only --no-align \
+              <<'SQL' > "$RUNNER_TEMP/drx-restore-auth-expiry.sql" 2> "$RUNNER_TEMP/drx-restore-auth-expiry-catalog.log"; then
+          select case when a.atttypid='pg_catalog.timestamptz'::pg_catalog.regtype
+            and a.atttypmod=-1 and not a.attnotnull and not a.atthasdef
+            and d.oid is null and a.attidentity='' and a.attgenerated=''
+            then 'ALTER TABLE auth.one_time_tokens ADD COLUMN IF NOT EXISTS expires_at timestamp with time zone;'
+            else 'SOURCE_AUTH_EXPIRY_SCHEMA_MISMATCH' end
+          from pg_catalog.pg_attribute a
+          left join pg_catalog.pg_attrdef d on d.adrelid=a.attrelid and d.adnum=a.attnum
+          where a.attrelid='auth.one_time_tokens'::pg_catalog.regclass
+            and a.attname='expires_at' and a.attnum>0 and not a.attisdropped;
+          SQL
+              echo "::error::Source Auth expiry catalog capture failed; raw diagnostics are not published."
+              exit 1
+            fi
+            if ! printf '%s\n' 'ALTER TABLE auth.one_time_tokens ADD COLUMN IF NOT EXISTS expires_at timestamp with time zone;' \
+              | cmp --silent - "$RUNNER_TEMP/drx-restore-auth-expiry.sql"; then
+              echo "::error::Source Auth expiry schema is absent or incompatible; exact isolated compatibility is required."
+              exit 1
+            fi
+            printf '\n' >> "$BACKUP_DIR/auth_recovery_schema.sql"
+            cat "$RUNNER_TEMP/drx-restore-auth-expiry.sql" >> "$BACKUP_DIR/auth_recovery_schema.sql"
+            # END exact source Auth expiry compatibility
           fi
 
 
@@ -578,7 +605,7 @@ jobs:
           rm -rf -- "${RUNNER_TEMP:?}/drx-phase1-backup" "$RESTORE_DIR"
           rm -f -- "$RUNNER_TEMP"/drx-restore-*.log "$RUNNER_TEMP/drx-source-manifest.txt" \
             "$RUNNER_TEMP/drx-restore-manifest.txt" "$RUNNER_TEMP/drx-restore-security-manifest.sql" \
-            "$RUNNER_TEMP/drx-validate-backup-source-url.py" "$RUNNER_TEMP/drx-restore-failure.json"
+            "$RUNNER_TEMP/drx-validate-backup-source-url.py" "$RUNNER_TEMP/drx-restore-failure.json" "$RUNNER_TEMP/drx-restore-auth-expiry.sql"
 
       - name: Upload evidence only
         if: always()
