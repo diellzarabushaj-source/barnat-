@@ -5,6 +5,23 @@ const fs = require('node:fs');
 const path = require('node:path');
 const {chromium, webkit, expect} = require('@playwright/test');
 const ROOT=path.resolve(__dirname,'..');
+async function offlineState(page) {
+ return page.evaluate(async()=>{
+  const worker=value=>value?{scriptURL:value.scriptURL,state:value.state}:null;
+  return{
+   url:location.href,online:navigator.onLine,readyState:document.readyState,workerMode:document.documentElement.dataset.drxWorker,
+   controller:worker(navigator.serviceWorker.controller),
+   registrations:(await navigator.serviceWorker.getRegistrations()).map(registration=>({scope:registration.scope,active:worker(registration.active),waiting:worker(registration.waiting),installing:worker(registration.installing)})),
+   caches:await Promise.all((await caches.keys()).map(async name=>{
+    const cache=await caches.open(name);
+    return{name,entries:await Promise.all((await cache.keys()).map(async key=>{
+     const response=await cache.match(key);
+     return{url:key.url,status:response?.status,savedAt:response?.headers.get('X-DRx-Saved-At'),contentType:response?.headers.get('Content-Type')};
+    }))};
+   }))
+  };
+ });
+}
 const mime={'.html':'text/html','.js':'application/javascript','.css':'text/css','.svg':'image/svg+xml','.woff2':'font/woff2','.webmanifest':'application/manifest+json','.json':'application/json'};
 const row={id:'11111111-1111-4111-8111-111111111111',registryNumber:'1',pdid:'1001',tradeName:'BAR TESTUES PËR RUAJTJEN LOKALE',activeSubstance:'Substancë testuese',atc:'N02BE01',strength:'500 mg',form:'Tabletë',drugClass:'Produkt testues',use:'Vetëm për verifikimin e ndërfaqes',productStatus:'Gjenerik',retailPrice:2.45};
 const reads=new Map();let authStatus=200,owner='account-a',delay=0,networkAvailable=true;
@@ -37,6 +54,23 @@ const server=http.createServer(async(req,res)=>{
  try{
   const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push({message:e.message,offline:!networkAvailable}));
+  // Keep metadata outside the document so an offline reload cannot erase the
+  // controller/cache evidence or the worker's cleanup/lifecycle messages.
+  let phase='online';const workerEvents=[],failedRequests=[];
+  page.on('requestfailed',request=>{if(failedRequests.length<100)failedRequests.push({phase,url:request.url(),method:request.method(),error:request.failure()?.errorText});});
+  await page.exposeFunction('__recordOfflineWorkerEvent',event=>{if(workerEvents.length<100)workerEvents.push({phase,...event});});
+  await page.addInitScript(()=>{
+   const worker=value=>value?{scriptURL:value.scriptURL,state:value.state}:null;
+   const emit=event=>{void window.__recordOfflineWorkerEvent(event).catch(()=>null);};
+   emit({type:'document-start',url:location.href,controller:worker(navigator.serviceWorker.controller)});
+   navigator.serviceWorker.addEventListener('controllerchange',()=>emit({type:'controllerchange',controller:worker(navigator.serviceWorker.controller)}));
+   navigator.serviceWorker.addEventListener('message',event=>{
+    if(!String(event.data?.type||'').startsWith('MEDINDEX_'))return;
+    const message={};
+    for(const key of ['type','state','cached','pages','savedAt','preparing','storageFull','path','cacheEpoch','version'])if(event.data[key]!==undefined)message[key]=event.data[key];
+    emit({type:'worker-message',worker:worker(event.source),message});
+   });
+  });
   await page.goto(base+'/index.html');
   await expect(page.locator('#registryList')).toContainText(row.tradeName);
   await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
@@ -59,11 +93,11 @@ const server=http.createServer(async(req,res)=>{
   await expect.poll(()=>page.evaluate(async()=>{const c=await caches.open('medindex-private-device-v1');return(await c.keys()).some(key=>key.url.includes('view=registry-detail'));})).toBe(true);
   await page.locator('#drawerClose').click();
   await expect(page.locator('#drxDeviceStatus')).toContainText('Ruajtur');
+  const beforeOffline=await offlineState(page);phase='offline-reload';
   networkAvailable=false;if(engine===chromium)await context.setOffline(true);await page.reload();
   await expect(page.locator('#registryList')).toContainText(row.tradeName).catch(async error=>{
-   console.log('Offline startup diagnostics',JSON.stringify({errors,reads:[...reads],page:await page.evaluate(async()=>({
-    scripts:[...document.scripts].map(script=>script.src),body:document.body.innerText.slice(0,1600),
-    caches:await Promise.all((await caches.keys()).map(async name=>{const cache=await caches.open(name);return{name,entries:await Promise.all((await cache.keys()).map(async key=>{const response=await cache.match(key);return{url:key.url,bytes:(await response.text()).length};}))};}))
+   console.log('Offline startup diagnostics',JSON.stringify({errors,reads:[...reads],beforeOffline,afterOffline:await offlineState(page),workerEvents,failedRequests,page:await page.evaluate(()=>({
+    scripts:[...document.scripts].map(script=>script.src),body:document.body.innerText.slice(0,1600)
    }))},null,2));throw error;
   });
   await expect(page.locator('#drxDeviceStatus')).toContainText('Pa internet');
