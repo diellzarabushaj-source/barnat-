@@ -183,5 +183,7 @@
   "tests/user-notes-cas-database-contract-test.js",
   "tests/user-prescriptions-cas-api-test.js",
   "tests/user-prescriptions-cas-client-test.js",
-  "tests/user-library-cas-database-contract-test.js"
+  "tests/user-library-cas-database-contract-test.js",
+  "tests/user-notes-native-storage-test.js",
+  "tests/phase5-session-cutover-test.js"
 ]

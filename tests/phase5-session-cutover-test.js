@@ -85,7 +85,35 @@ const { pathToFileURL } = require('node:url');
   assert.match(supabaseAuth, /legacy_user_id/, 'Trusted profile lookup must expose legacy_user_id server-side');
   assert.match(supabaseAuth, /legacyUserId:String\(profile\.legacy_user_id/, 'Legacy mapping must be normalized explicitly');
 
-  assert.match(library, /prescriptionContext\(storageUid, item\.clientId\)/, 'Prescription encryption must still use the resolved storage/AAD uid in Phase 5');
+  // Exercise the current CAS writer with the resolved dual-identity session.
+  // Auth and storage UUIDs differ here, so changing the AAD to authUid fails the
+  // round trip even if the encrypted clinical payload otherwise looks valid.
+  const UserIdentity = require('../lib/user-identity.js');
+  const libraryModule = require('../lib/user-library.js');
+  const { decryptJson } = require('../lib/user-data-crypto.js');
+  const user = UserIdentity.attachSessionIdentity({id:session.uid},session);
+  const storageUid = UserIdentity.storageUidFromUser(user);
+  assert.equal(storageUid,legacyUserId,'The prescription writer must receive the resolved storage owner');
+  assert.equal(user.authUid,authUserId,'Resolving storage must retain the separate Auth owner');
+  process.env.MEDINDEX_USER_DATA_KEY = 'phase5-synthetic-library-encryption-key-at-least-32-characters';
+  process.env.MEDINDEX_USER_DATA_KEY_ID = 'phase5-synthetic';
+  process.env.MEDINDEX_USER_DATA_PREVIOUS_KEYS = '{}';
+  const clientId = 'rx_phase5_aad';
+  const payload = {id:clientId,patientName:'  Pacient sintetik\në  ',diagnosis:'Diagnozë sintetikë',
+    items:[{substance:'Test Substance',strength:'500 mg',directions:'  Rreshti i parë\nRreshti i dytë.  '}]};
+  const normalized = libraryModule._test.normalizedPrescription({clientId,payload,expectedVersion:0,
+    operationId:'7b4b3501-becd-4f53-8adf-6fdbce32fd72',clientUpdatedAt:'2026-10-10T00:00:00.000Z'});
+  const write = libraryModule._test.atomicPrescriptionWrite(normalized,storageUid);
+  assert.deepEqual(decryptJson(write.payload,`${legacyUserId}:prescription:${clientId}`),payload,
+    'Atomic prescription encryption must preserve exact content using the existing storage/AAD uid');
+  assert.throws(()=>decryptJson(write.payload,`${authUserId}:prescription:${clientId}`),
+    'Auth UUID must not decrypt a prescription encrypted for the distinct storage owner');
+  assert.throws(()=>decryptJson(write.payload,`${legacyUserId}:prescription:other-prescription`),
+    'Encrypted content must remain bound to its exact prescription identity');
+  assert.doesNotMatch(JSON.stringify(write.payload),/Pacient sintetik|Diagnozë sintetikë|Test Substance/,
+    'Clinical content must not appear in the encrypted envelope');
+  assert.match(library,/atomicPrescriptionWrite\(item,\s*storageUid[,)]/,
+    'The sync path must pass its resolved storage owner into the tested atomic writer');
   assert.doesNotMatch(library, /prescriptionContext\(authUid[,)]/, 'Phase 5 must not silently re-key prescription AAD to the Auth UUID');
   assert.match(library, /p_auth_uid:authUid/, 'Auth UUID may be used only for auth-bound native user_notes persistence');
 
