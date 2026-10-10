@@ -99,7 +99,7 @@ for (const stage of restoreOrder) {
 assert.match(restore,/restore_sql history --single-transaction[\s\S]*?DROP SCHEMA IF EXISTS supabase_migrations CASCADE[\s\S]*?--file "\$BACKUP_DIR\/history_schema\.sql"[\s\S]*?--file "\$BACKUP_DIR\/history_data\.sql"/);
 assert.match(restore,/restore_sql auth_triggers --single-transaction --file "\$BACKUP_DIR\/auth_custom_triggers\.sql"/);
 assert.match(restore,/SET session_replication_role = replica/);
-assert.match(restore,/psql "\$DB_URL" -X --quiet --set ON_ERROR_STOP=1 "\$@" > "\$RUNNER_TEMP\/drx-restore-\$\{stage\}\.log" 2>&1/);
+assert.match(restore,/psql "\$DB_URL" -X --quiet --set ON_ERROR_STOP=1 --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never "\$@" > "\$RUNNER_TEMP\/drx-restore-\$\{stage\}\.log" 2>&1/);
 assert.match(restore,/supabase start > "\$RUNNER_TEMP\/drx-restore-start\.log" 2>&1/);
 assert.ok(restore.indexOf('--file "$RUNNER_TEMP/drx-restore-security-manifest.sql"')>restore.indexOf('restore_sql auth_triggers'));
 assert.equal((workflow.match(/--file "\$RUNNER_TEMP\/drx-restore-security-manifest\.sql" >> "\$RUNNER_TEMP\/drx-(?:source|restore)-manifest\.txt"/g)||[]).length,2);
@@ -229,3 +229,32 @@ const linked=resolveAliases([neon],{ACCESS_TOKEN_1:'synthetic-management-token'}
 assert.deepEqual(linked.outputs,{available:'true',mode:'linked',source:'ACCESS_TOKEN_1'});
 assert.ok(!linked.environment.includes(neon),'Linked fallback never retains the rejected database URL.');
 console.log(`Source-project backup resolver: ${resolverCases} synthetic direct/session-pooler, routing override, alias fallback and fail-closed cases passed without database access.`);
+
+// Execute diagnostics against synthetic SQL/logs. Even a row that resembles a
+// COPY statement, a verbose error, or a malformed identifier must not leak text.
+assert.match(restore,/backup-restore-diagnostic\.py/);
+assert.match(workflow,/drx-restore-failure\.json/);
+const diagnosticDir=fs.mkdtempSync(path.join(os.tmpdir(),'drx-backup-diagnostic-'));
+assert.equal(path.dirname(path.resolve(diagnosticDir)),path.resolve(os.tmpdir()));
+try {
+  const logFile=path.join(diagnosticDir,'restore.log');
+  const sqlFile=path.join(diagnosticDir,'data.sql');
+  const secret='SYNTHETIC_PRIVATE_CONTENT_MUST_NOT_APPEAR';
+  function diagnostic(log,sql,stage='data') {
+    fs.writeFileSync(logFile,log); fs.writeFileSync(sqlFile,sql);
+    const result=spawnSync(python,[path.join(ROOT,'scripts/backup-restore-diagnostic.py'),stage,logFile,sqlFile],{encoding:'utf8'});
+    assert.equal(result.status,0); assert.equal(result.stderr,'');
+    assert.ok(!result.stdout.includes(secret));
+    return JSON.parse(result.stdout);
+  }
+  const sql=`COPY auth.schema_migrations (version) FROM stdin;\n${secret}\nCOPY public.private_name (value) FROM stdin;\n\\.\n`;
+  const log=`psql:/tmp/data.sql:4: ERROR:  23505\nCONTEXT: ${secret}\n`;
+  assert.deepEqual(diagnostic(log,sql),{failedStage:'data',sqlstate:'23505',copyRelation:'auth.schema_migrations'});
+  assert.deepEqual(diagnostic(log.replace('23505','22P02'),sql),{failedStage:'data',sqlstate:'22P02',copyRelation:'auth.schema_migrations'});
+  assert.deepEqual(diagnostic(`psql:/tmp/data.sql:2: ERROR: private ${secret}\n`,sql),{failedStage:'data',sqlstate:'unavailable',copyRelation:null});
+  assert.deepEqual(diagnostic(log,`COPY "auth"."users" (id) FROM stdin;\n${secret}\n\\.\n`,secret),{failedStage:'unknown',sqlstate:'23505',copyRelation:null});
+  assert.deepEqual(diagnostic('psql:/tmp/data.sql:3: ERROR:  23502\n',`COPY "public"."user_notes" (id) FROM stdin;\n${secret}\n\\.\n`),{failedStage:'data',sqlstate:'23502',copyRelation:'public.user_notes'});
+  assert.deepEqual(diagnostic('psql:/tmp/data.sql:3: ERROR:  23514\n',`COPY "private ${secret}".x (id) FROM stdin;\n${secret}\n\\.\n`),{failedStage:'data',sqlstate:'23514',copyRelation:null});
+  assert.deepEqual(diagnostic('connection failure '+secret,sql),{failedStage:'data',sqlstate:'unavailable',copyRelation:null});
+} finally {fs.rmSync(diagnosticDir,{recursive:true,force:true});}
+console.log('Seven executable restore-diagnostic privacy and SQLSTATE cases passed.');
