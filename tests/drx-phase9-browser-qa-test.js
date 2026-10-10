@@ -99,6 +99,7 @@ async function installRoutes(page,library){
     const request=route.request();
     if(request.method()==='PUT'){
       const body=request.postDataJSON() || {};
+      assert.equal(body.libraryOwner,library.user.id,'Every personal mutation carries the owner captured from GET');
       for(const item of body.favorites || []){
         upsertBy(library.favorites,{entityType:item.entityType,entityKey:item.entityKey,payload:item.payload || {},clientUpdatedAt:item.clientUpdatedAt || new Date().toISOString(),serverUpdatedAt:new Date().toISOString()},row=>`${row.entityType}|${row.entityKey}`);
       }

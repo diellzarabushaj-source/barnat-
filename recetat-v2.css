@@ -133,4 +133,16 @@
 .rx-context-field>label,.rx-context-field>legend{font-size:13px}
 .rx-context-heading{flex-wrap:wrap}
 #rxDraftPersistence{margin:6px 0 0;color:var(--med-muted,#64748b);font-size:12px;line-height:1.5}
+.rx-prescription-conflicts,.rx-undo-delete{margin:0 0 16px;padding:14px 16px;border:1px solid #b9cce7;border-radius:12px;background:#f5f8fd;color:#203e65}
+.rx-prescription-conflicts[hidden],.rx-undo-delete[hidden],#rxPrescriptionConflict[hidden]{display:none}
+.rx-prescription-conflict-item,.rx-undo-delete{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.rx-prescription-conflict-item+ .rx-prescription-conflict-item{margin-top:12px;padding-top:12px;border-top:1px solid #d6e1ef}
+.rx-prescription-conflict-item strong{display:block;font-size:14px}.rx-prescription-conflict-item p{margin:3px 0 0;font-size:13px}
+.rx-prescription-compare{width:min(940px,100%);max-height:calc(100dvh - 36px);overflow:auto}
+.rx-prescription-compare .rx-prescription-versions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:16px 0}
+.rx-prescription-versions section{min-width:0}.rx-prescription-versions h3{margin:0 0 8px;font-size:14px}
+.rx-prescription-versions pre{max-height:40dvh;min-height:120px;margin:0;padding:14px;border:1px solid var(--rx-line);border-radius:10px;background:var(--rx-soft);white-space:pre-wrap;overflow:auto;overflow-wrap:anywhere;font-family:inherit;font-size:14px;line-height:1.55}
+.rx-prescription-compare button,.rx-prescription-conflicts button,.rx-undo-delete button{min-height:44px;white-space:normal}
+.rx-prescription-compare .rx-prescription-compare-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px}
+@media(max-width:640px){.rx-prescription-conflict-item,.rx-undo-delete{align-items:stretch;flex-direction:column}.rx-prescription-compare .rx-prescription-versions{grid-template-columns:minmax(0,1fr)}.rx-prescription-versions pre{max-height:28dvh}.rx-prescription-compare .rx-prescription-compare-actions{display:grid;grid-template-columns:minmax(0,1fr)}.rx-prescription-compare button{width:100%}}
 @media(max-width:720px){.rx-input-combo input,.rx-input-combo select{font-size:16px}.rx-context-readiness{white-space:normal}}

@@ -42,6 +42,7 @@ function server(initial = { content:'Versioni fillestar', rowVersion:1, deleted:
         ? [{ entityType:'protocol', entityKey:name, rowVersion:row.rowVersion, noteTarget:row.noteTarget, deletedAt:row.updatedAt || iso }] : []) }, generatedAt:iso };
   };
   async function apply(who, body) {
+    assert.equal(body.libraryOwner,who.id,'Every immutable note/favorite envelope must carry its confirmed owner.');
     const db = account(who);
     const operations = [...(body.favorites || []), ...(body.tombstones?.favorites || [])]
       .filter(row => row.entityType === 'protocol' && row.entityKey.startsWith('drug-note:'));
@@ -145,6 +146,18 @@ const ops = request => [...(request.body.favorites || []), ...(request.body.tomb
   .filter(row => row.entityType === 'protocol' && row.entityKey.startsWith('drug-note:'));
 
 (async () => {
+  // Historical Unicode text remains intact even when the browser's write limit
+  // counts UTF-16 units differently from the database's character count.
+  {
+    const exact='a'.repeat(1999)+'🧪';const db=server({content:exact,rowVersion:1,deleted:false}),client=await boot(db);
+    assert.equal(getText(client.device),exact);await client.api.syncNow();assert.equal(getText(client.device),exact);
+    assert.ok(puts(client).every(row=>ops(row).length===0),'Reading an oversized historical note must not rewrite or truncate it');
+    const draft='  '+exact+'\nDraft exact  ';const before=puts(client).length;client.setNote(draft);
+    assert.equal(await client.api.syncNow(),false);assert.equal(getText(client.device),draft);assert.equal(puts(client).length,before);
+    assert.equal(client.api.diagnostics().oversizedNotes,1);assert.equal(client.api.meta().libraryEnvelope,null,'An invalid unsent draft must not freeze an unretryable envelope');
+    assert.ok(client.events.some(event=>event.detail?.code==='NOTE_TOO_LONG' && event.detail?.message.includes('Drafti i plotë')));
+    client.setNote('  Corrected exact\në 🧪  ');assert.equal(await client.api.syncNow(),true);assert.equal(db.account(owner).rows.get(entityKey).content,'  Corrected exact\në 🧪  ');
+  }
   // Read/echo cannot replay an unchanged note as an unrelated full-envelope write.
   {
     const db = server();
@@ -302,6 +315,7 @@ const ops = request => [...(request.body.favorites || []), ...(request.body.tomb
     client.setNote('A në fluturim');
     client.control.pauseNext = true;
     const firstFlush = client.api.syncNow();
+    for (let i=0;i<20 && !client.control.pending;i++) await Promise.resolve();
     assert.equal(typeof client.control.pending, 'function');
     client.setNote('B gjatë fluturimit');
     client.control.pending();
@@ -324,6 +338,7 @@ const ops = request => [...(request.body.favorites || []), ...(request.body.tomb
     client.setNote('Në ruajtje');
     client.control.pauseNext = true;
     const inFlight = client.api.syncNow();
+    for (let i=0;i<20 && !client.control.pending;i++) await Promise.resolve();
     client.setNote(null);
     client.control.pending();
     await inFlight;
@@ -375,6 +390,7 @@ const ops = request => [...(request.body.favorites || []), ...(request.body.tomb
     client.setNote('Vetëm për pronarin e parë');
     client.control.pauseNext = true;
     const request = client.api.syncNow();
+    for (let i=0;i<20 && !client.control.pending;i++) await Promise.resolve();
     client.api.adoptOwner(otherOwner);
     client.control.who = otherOwner;
     client.control.pending();

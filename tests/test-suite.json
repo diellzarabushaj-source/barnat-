@@ -180,5 +180,8 @@
   "tests/user-notes-cas-api-test.js",
   "tests/native-note-concurrency-test.js",
   "tests/user-library-note-cas-client-test.js",
-  "tests/user-notes-cas-database-contract-test.js"
+  "tests/user-notes-cas-database-contract-test.js",
+  "tests/user-prescriptions-cas-api-test.js",
+  "tests/user-prescriptions-cas-client-test.js",
+  "tests/user-library-cas-database-contract-test.js"
 ]

@@ -76,14 +76,60 @@ jobs:
           resolved_url=""
           resolved_source=""
 
+          # Validate locally before any database connection or dump. libpq query
+          # parameters can override URI routing, so accept only non-routing options.
+          cat > "$RUNNER_TEMP/drx-validate-backup-source-url.py" <<'PY'
+          import os
+          import re
+          from urllib.parse import parse_qsl, unquote, urlsplit
+
+          def approved_source_url(value, project):
+              try:
+                  if not re.fullmatch(r"[a-z0-9]{20}", project):
+                      return False
+                  if not value or any(ord(char) <= 32 or ord(char) == 127 for char in value):
+                      return False
+                  url = urlsplit(value)
+                  if url.scheme not in {"postgres", "postgresql"} or url.fragment:
+                      return False
+                  if url.port != 5432 or url.path != "/postgres":
+                      return False
+                  username = unquote(url.username or "")
+                  if not username or any(ord(char) <= 32 or ord(char) == 127 for char in username):
+                      return False
+                  direct = url.hostname == f"db.{project}.supabase.co"
+                  pooler = bool(re.fullmatch(r"[a-z0-9-]+(?:\.[a-z0-9-]+)*\.pooler\.supabase\.com", url.hostname or ""))
+                  if not direct and not (pooler and username.endswith("." + project) and len(username) > len(project) + 1):
+                      return False
+                  parameters = parse_qsl(url.query, keep_blank_values=True, strict_parsing=True)
+                  allowed = {"sslmode", "connect_timeout", "application_name"}
+                  if len({key for key, _ in parameters}) != len(parameters):
+                      return False
+                  for key, option in parameters:
+                      if key not in allowed or any(ord(char) <= 32 or ord(char) == 127 for char in option):
+                          return False
+                      if key == "sslmode" and option not in {"require", "verify-ca", "verify-full"}:
+                          return False
+                      if key == "connect_timeout" and not re.fullmatch(r"[1-9][0-9]{0,2}", option):
+                          return False
+                  return True
+              except (ValueError, UnicodeError):
+                  return False
+
+          raise SystemExit(0 if approved_source_url(os.environ.get("DB_SOURCE_CANDIDATE", ""), os.environ.get("SUPABASE_PROJECT_REF", "")) else 1)
+          PY
+
           for n in {1..20}; do
             key="DB_URL_${n}"
             value="${!key:-}"
             case "$value" in
               postgres://*|postgresql://*)
-                resolved_url="$value"
-                resolved_source="$key"
-                break
+                if DB_SOURCE_CANDIDATE="$value" python3 "$RUNNER_TEMP/drx-validate-backup-source-url.py" > /dev/null 2>&1; then
+                  resolved_url="$value"
+                  resolved_source="$key"
+                  break
+                fi
+                echo "::notice::Configured alias $key is not an approved connection for the source Supabase project; trying the next alias."
                 ;;
               "")
                 ;;
@@ -145,7 +191,7 @@ jobs:
               echo "available=false" >> "$GITHUB_OUTPUT"
               echo "mode=none" >> "$GITHUB_OUTPUT"
               echo "source=none" >> "$GITHUB_OUTPUT"
-              echo "::notice::No PostgreSQL URL/database-password or Supabase management access-token secret was found; backup/restore gate remains fail-closed."
+              echo "::notice::No approved source-project PostgreSQL URL/database-password or Supabase management access-token secret was found; backup/restore gate remains fail-closed."
             fi
           fi
 
@@ -156,7 +202,7 @@ jobs:
           cat > drx-phase1-backup-restore-evidence.json <<'JSON'
           {
             "schemaVersion": "drx-phase1-backup-restore-evidence-v1",
-            "status": "BLOCKED_MISSING_DATABASE_CREDENTIAL_ALIAS",
+            "status": "BLOCKED_NO_APPROVED_SOURCE_DATABASE_CONNECTION",
             "backupCreated": false,
             "restoreExecuted": false,
             "restoreVerified": false,
@@ -203,7 +249,96 @@ jobs:
           test -s "$BACKUP_DIR/history_schema.sql"
           test -s "$BACKUP_DIR/history_data.sql"
 
+
+      - name: Capture custom auth triggers and restore security manifest
+        if: steps.credential.outputs.available == 'true' && steps.credential.outputs.mode == 'db_url'
+        shell: bash
+        run: |
+          set -euo pipefail
+          BACKUP_DIR="$RUNNER_TEMP/drx-phase1-backup"
+          # Supabase logical dumps skip application triggers in managed auth/storage.
+          # Query only catalogs; auth.users and all personal tables remain unread.
+          psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align <<'SQL' > "$BACKUP_DIR/auth_custom_triggers.sql"
+          set search_path = '';
+          select pg_catalog.format('DROP TRIGGER IF EXISTS %I ON %I.%I;%s%s;%sALTER TABLE %I.%I %s TRIGGER %I;',
+            t.tgname,rn.nspname,c.relname,E'\n',pg_catalog.pg_get_triggerdef(t.oid,false),E'\n',
+            rn.nspname,c.relname,
+            case t.tgenabled when 'D' then 'DISABLE' when 'R' then 'ENABLE REPLICA' when 'A' then 'ENABLE ALWAYS' else 'ENABLE' end,
+            t.tgname)
+          from pg_catalog.pg_trigger t
+          join pg_catalog.pg_class c on c.oid=t.tgrelid
+          join pg_catalog.pg_namespace rn on rn.oid=c.relnamespace
+          join pg_catalog.pg_proc p on p.oid=t.tgfoid
+          join pg_catalog.pg_namespace fn on fn.oid=p.pronamespace
+          where rn.nspname='auth' and c.relname='users' and not t.tgisinternal
+            and fn.nspname not in ('auth','storage')
+          order by t.tgname;
+          SQL
+          test -f "$BACKUP_DIR/auth_custom_triggers.sql"
           sha256sum "$BACKUP_DIR"/*.sql > "$BACKUP_DIR/sha256.txt"
+
+          cat > "$RUNNER_TEMP/drx-restore-security-manifest.sql" <<'SQL'
+          set search_path = '';
+          select 'migration_history_count=' || count(*) from supabase_migrations.schema_migrations;
+          select 'migration_history_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by version)),md5('')) from supabase_migrations.schema_migrations t;
+
+          -- Only application catalogs and rollout booleans below: no personal row probes.
+          with functions as (
+            select p.*,n.nspname from pg_catalog.pg_proc p join pg_catalog.pg_namespace n on n.oid=p.pronamespace
+            where p.prokind in ('f','p','w') and (
+              n.nspname in ('public','note_write_private','prescription_write_private') or exists (
+                select 1 from pg_catalog.pg_trigger t join pg_catalog.pg_class c on c.oid=t.tgrelid
+                join pg_catalog.pg_namespace rn on rn.oid=c.relnamespace
+                where t.tgfoid=p.oid and not t.tgisinternal and (
+                  (rn.nspname='auth' and c.relname='users' and n.nspname not in ('auth','storage')) or
+                  (rn.nspname='public' and c.relname in ('user_notes','user_favorites','user_prescriptions','medindex_users'))
+                )
+              )
+            ) and not exists (select 1 from pg_catalog.pg_depend d where d.classid='pg_catalog.pg_proc'::regclass and d.objid=p.oid and d.deptype='e')
+          ), entries as (
+            select nspname || '.' || proname || '(' || pg_catalog.pg_get_function_identity_arguments(oid) || ')' as identity,
+              jsonb_build_object(
+                'definition',pg_catalog.pg_get_functiondef(oid),'owner',pg_catalog.pg_get_userbyid(proowner),'config',proconfig,
+                'acl',(select jsonb_agg(jsonb_build_array(pg_catalog.pg_get_userbyid(a.grantor),case when a.grantee=0 then 'PUBLIC' else pg_catalog.pg_get_userbyid(a.grantee) end,a.privilege_type,a.is_grantable) order by a.grantor::regrole::text,a.grantee::regrole::text,a.privilege_type,a.is_grantable) from pg_catalog.aclexplode(coalesce(proacl,pg_catalog.acldefault('f',proowner))) a),
+                'effective',(select jsonb_agg(jsonb_build_array(role_name,pg_catalog.has_function_privilege(role_name,oid,'EXECUTE')) order by role_name) from (values ('anon'),('authenticated'),('service_role')) roles(role_name))
+              ) as entry from functions
+          )
+          select 'application_functions_fingerprint=' || coalesce(md5(string_agg(identity || entry::text,'' order by identity)),md5('')) from entries;
+
+          with relations as (
+            select c.*,n.nspname from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid=c.relnamespace
+            where (n.nspname='public' and c.relname in ('user_notes','user_favorites','user_prescriptions','medindex_users'))
+              or (n.nspname in ('note_write_private','prescription_write_private') and c.relname in ('control','receipts'))
+          ), entries as (
+            select nspname || '.' || relname as identity,jsonb_build_object(
+              'owner',pg_catalog.pg_get_userbyid(relowner),'rls',relrowsecurity,'force_rls',relforcerowsecurity,
+              'privileges',(select jsonb_agg(jsonb_build_array(role_name,privilege,pg_catalog.has_table_privilege(role_name,oid,privilege)) order by role_name,privilege) from (values ('anon'),('authenticated'),('service_role')) roles(role_name) cross join (values ('SELECT'),('INSERT'),('UPDATE'),('DELETE'),('TRUNCATE'),('REFERENCES'),('TRIGGER')) privs(privilege)),
+              'columns',(select jsonb_agg(jsonb_build_array(a.attname,pg_catalog.format_type(a.atttypid,a.atttypmod),a.attnotnull,a.attidentity,a.attgenerated,pg_catalog.pg_get_expr(d.adbin,d.adrelid)) order by a.attnum) from pg_catalog.pg_attribute a left join pg_catalog.pg_attrdef d on d.adrelid=a.attrelid and d.adnum=a.attnum where a.attrelid=relations.oid and a.attnum>0 and not a.attisdropped),
+              'constraints',(select jsonb_agg(jsonb_build_array(k.conname,k.convalidated,pg_catalog.pg_get_constraintdef(k.oid,false)) order by k.conname) from pg_catalog.pg_constraint k where k.conrelid=relations.oid),
+              'policies',(select jsonb_agg(jsonb_build_array(q.polname,q.polpermissive,q.polcmd,(select jsonb_agg(case when role_oid=0 then 'PUBLIC' else pg_catalog.pg_get_userbyid(role_oid) end order by case when role_oid=0 then 'PUBLIC' else pg_catalog.pg_get_userbyid(role_oid) end) from unnest(q.polroles) role_oid),pg_catalog.pg_get_expr(q.polqual,q.polrelid),pg_catalog.pg_get_expr(q.polwithcheck,q.polrelid)) order by q.polname) from pg_catalog.pg_policy q where q.polrelid=relations.oid)
+            ) as entry from relations
+          )
+          select 'personal_write_tables_fingerprint=' || coalesce(md5(string_agg(identity || entry::text,'' order by identity)),md5('')) from entries;
+
+          select 'personal_write_triggers_fingerprint=' || coalesce(md5(string_agg(pg_catalog.pg_get_triggerdef(t.oid,false) || ':' || t.tgenabled::text,'' order by rn.nspname,c.relname,t.tgname)),md5(''))
+          from pg_catalog.pg_trigger t join pg_catalog.pg_class c on c.oid=t.tgrelid
+          join pg_catalog.pg_namespace rn on rn.oid=c.relnamespace
+          join pg_catalog.pg_proc p on p.oid=t.tgfoid join pg_catalog.pg_namespace fn on fn.oid=p.pronamespace
+          where not t.tgisinternal and (
+            (rn.nspname='auth' and c.relname='users' and fn.nspname not in ('auth','storage')) or
+            (rn.nspname='public' and c.relname in ('user_notes','user_favorites','user_prescriptions','medindex_users'))
+          );
+
+          select 'personal_write_schemas_fingerprint=' || coalesce(md5(string_agg(n.nspname || jsonb_build_object(
+            'owner',pg_catalog.pg_get_userbyid(n.nspowner),
+            'privileges',(select jsonb_agg(jsonb_build_array(role_name,pg_catalog.has_schema_privilege(role_name,n.oid,'USAGE'),pg_catalog.has_schema_privilege(role_name,n.oid,'CREATE')) order by role_name) from (values ('anon'),('authenticated'),('service_role')) roles(role_name))
+          )::text,'' order by n.nspname)),md5('')) from pg_catalog.pg_namespace n where n.nspname in ('public','note_write_private','prescription_write_private');
+
+          select 'personal_write_controls_fingerprint=' || md5(string_agg(schema_name || ':' || case
+            when pg_catalog.to_regclass(pg_catalog.format('%I.control',schema_name)) is null then 'absent'
+            else pg_catalog.query_to_xml(pg_catalog.format('select singleton,fence_enabled from %I.control order by singleton',schema_name),false,true,'')::text
+          end,'' order by schema_name)) from (values ('note_write_private'),('prescription_write_private')) controls(schema_name);
+          SQL
 
       - name: Capture source restore manifest
         if: steps.credential.outputs.available == 'true' && steps.credential.outputs.mode == 'db_url'
@@ -235,6 +370,8 @@ jobs:
           select 'published_rules_count=' || count(*) from public.dose_rules_v3 where editorial_status='published';
           SQL
 
+          psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
+            --file "$RUNNER_TEMP/drx-restore-security-manifest.sql" >> "$RUNNER_TEMP/drx-source-manifest.txt"
           test -s "$RUNNER_TEMP/drx-source-manifest.txt"
 
       - name: Require independent source manifest
@@ -257,17 +394,37 @@ jobs:
           supabase init
           mkdir -p supabase/.temp
           printf '%s\n' "$SOURCE_POSTGRES_VERSION" > supabase/.temp/postgres-version
-          supabase start
+          if ! supabase start > "$RUNNER_TEMP/drx-restore-start.log" 2>&1; then
+            echo "::error::Disposable Supabase startup failed; local keys and raw diagnostics are not published."
+            exit 1
+          fi
 
           DB_URL='postgresql://postgres:postgres@127.0.0.1:54322/postgres'
 
           # Platform roles are provisioned by the local Supabase stack. The
           # role dump remains part of the backup set and is hashed, while
           # application schema/data are replayed into this isolated target.
-          psql "$DB_URL" --set ON_ERROR_STOP=1 --file "$BACKUP_DIR/schema.sql"
-          psql "$DB_URL" --set ON_ERROR_STOP=1 \
+          # Raw COPY error context can contain personal content. Keep diagnostics
+          # ephemeral and print only the failed stage; never upload raw SQL/logs.
+          restore_sql() {
+            local stage="$1"
+            shift
+            if ! psql "$DB_URL" -X --quiet --set ON_ERROR_STOP=1 "$@" > "$RUNNER_TEMP/drx-restore-${stage}.log" 2>&1; then
+              echo "::error::Isolated restore failed at stage ${stage}; raw database diagnostics are not published."
+              exit 1
+            fi
+          }
+          restore_sql schema --file "$BACKUP_DIR/schema.sql"
+          restore_sql data \
             --command 'SET session_replication_role = replica' \
             --file "$BACKUP_DIR/data.sql"
+          # Reset migration history only in the hard-coded disposable local target.
+          restore_sql history --single-transaction \
+            --command 'DROP SCHEMA IF EXISTS supabase_migrations CASCADE' \
+            --file "$BACKUP_DIR/history_schema.sql" \
+            --file "$BACKUP_DIR/history_data.sql"
+          # Functions and data exist before recreating managed-schema triggers.
+          restore_sql auth_triggers --single-transaction --file "$BACKUP_DIR/auth_custom_triggers.sql"
 
           psql "$DB_URL" --set ON_ERROR_STOP=1 --tuples-only --no-align <<'SQL' > "$RUNNER_TEMP/drx-restore-manifest.txt"
           select 'drugs_count=' || count(*) from public.drugs;
@@ -293,10 +450,10 @@ jobs:
           select 'published_rules_count=' || count(*) from public.dose_rules_v3 where editorial_status='published';
           SQL
 
+          psql "$DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
+            --file "$RUNNER_TEMP/drx-restore-security-manifest.sql" >> "$RUNNER_TEMP/drx-restore-manifest.txt"
           test -s "$RUNNER_TEMP/drx-restore-manifest.txt"
           diff -u "$RUNNER_TEMP/drx-source-manifest.txt" "$RUNNER_TEMP/drx-restore-manifest.txt"
-
-          supabase stop --no-backup
 
       - name: Write failure evidence
         if: steps.credential.outputs.available == 'true' && failure()
@@ -334,8 +491,11 @@ jobs:
               return out
           source_manifest=manifest(__import__('os').environ['RUNNER_TEMP'] + '/drx-source-manifest.txt')
           restored_manifest=manifest(__import__('os').environ['RUNNER_TEMP'] + '/drx-restore-manifest.txt')
+          required={'migration_history_count','migration_history_fingerprint','application_functions_fingerprint','personal_write_tables_fingerprint','personal_write_triggers_fingerprint','personal_write_schemas_fingerprint','personal_write_controls_fingerprint'}
+          if not required.issubset(source_manifest) or source_manifest!=restored_manifest:
+              raise SystemExit('Restore manifest is incomplete or differs from source')
           evidence={
-              "schemaVersion":"drx-phase1-backup-restore-evidence-v2",
+              "schemaVersion":"drx-phase1-backup-restore-evidence-v3",
               "status":"PASS",
               "credentialAliasResolved":True,
               "credentialMode":"db_url",
@@ -343,7 +503,14 @@ jobs:
               "backupSha256":hashes,
               "restoreExecuted":True,
               "restoreVerified":True,
-              "sourceRestoreParity":source_manifest==restored_manifest,
+              "sourceRestoreParity":True,
+              "migrationHistoryVerified":True,
+              "personalWriteCatalogParity":True,
+              "customAuthTriggersVerified":True,
+              "verifiedScope":["clinical_manifest","migration_history","application_security_catalogs_and_control_fences"],
+              "privateContentParityVerified":False,
+              "decryptionVerified":False,
+              "encryptionKeyRecoveryVerified":False,
               "sourceManifest":source_manifest,
               "restoredManifest":restored_manifest,
               "backupRetention":"runner_ephemeral_only_no_database_payload_uploaded",
@@ -357,6 +524,20 @@ jobs:
         shell: bash
         run: |
           cat drx-phase1-backup-restore-evidence.json
+
+      - name: Remove disposable database and raw backup files
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          RESTORE_DIR="${RUNNER_TEMP:?}/drx-phase1-restore"
+          if [ -f "$RESTORE_DIR/supabase/config.toml" ]; then
+            (cd "$RESTORE_DIR" && supabase stop --no-backup) > "$RUNNER_TEMP/drx-restore-cleanup.log" 2>&1 || true
+          fi
+          rm -rf -- "${RUNNER_TEMP:?}/drx-phase1-backup" "$RESTORE_DIR"
+          rm -f -- "$RUNNER_TEMP"/drx-restore-*.log "$RUNNER_TEMP/drx-source-manifest.txt" \
+            "$RUNNER_TEMP/drx-restore-manifest.txt" "$RUNNER_TEMP/drx-restore-security-manifest.sql" \
+            "$RUNNER_TEMP/drx-validate-backup-source-url.py"
 
       - name: Upload evidence only
         if: always()

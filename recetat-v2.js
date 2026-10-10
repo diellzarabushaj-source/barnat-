@@ -290,6 +290,8 @@
   let resolveReady;
   let noteSnapshotLoaded = false;
   let ownerEpoch = 0;
+  let metadataStoragePending = false;
+  let metadataRecovery = null;
 
   window.MEDINDEX_LIBRARY_READY = new Promise(resolve => { resolveReady = resolve; });
 
@@ -324,7 +326,7 @@
         if (!entityKey) return;
         const raw = typeof entry === 'string' ? { text:entry, updatedAt:'' } : entry;
         if (!raw || typeof raw !== 'object') return;
-        const noteText = String(raw.text ?? '').slice(0, NOTE_MAX);
+        const noteText = String(raw.text ?? '');
         if (!noteText.trim()) return;
         output[entityKey] = { text:noteText, updatedAt:text(raw.updatedAt) };
       });
@@ -359,6 +361,7 @@
   }
 
   function readMeta() {
+    if (metadataRecovery) return JSON.parse(JSON.stringify(metadataRecovery));
     try {
       const value = JSON.parse(localStorage.getItem(META_KEY) || '{}');
       return value && typeof value === 'object' ? {
@@ -369,6 +372,8 @@
         deletedPrescriptions:value.deletedPrescriptions && typeof value.deletedPrescriptions === 'object' ? value.deletedPrescriptions : {},
         deletedFavorites:value.deletedFavorites && typeof value.deletedFavorites === 'object' ? value.deletedFavorites : {},
         noteStates:value.noteStates && typeof value.noteStates === 'object' && !Array.isArray(value.noteStates) ? value.noteStates : {},
+        prescriptionStates:value.prescriptionStates && typeof value.prescriptionStates === 'object' && !Array.isArray(value.prescriptionStates) ? value.prescriptionStates : {},
+        libraryEnvelope:value.libraryEnvelope && typeof value.libraryEnvelope === 'object' ? value.libraryEnvelope : null,
         lastSyncedAt:text(value.lastSyncedAt),
         owner:text(value.owner),
       } : emptyMeta();
@@ -378,11 +383,20 @@
   }
 
   function emptyMeta() {
-    return { prescriptions:{}, favorites:{}, drugs:{}, deletedPrescriptions:{}, deletedFavorites:{}, deletedDrugs:{}, noteStates:{}, lastSyncedAt:'', owner:'' };
+    return { prescriptions:{}, favorites:{}, drugs:{}, deletedPrescriptions:{}, deletedFavorites:{}, deletedDrugs:{}, noteStates:{}, prescriptionStates:{}, libraryEnvelope:null, lastSyncedAt:'', owner:'' };
   }
 
   function writeMeta(meta) {
-    try { localStorage.setItem(META_KEY, JSON.stringify(pruneMeta(meta))); } catch {}
+    try {
+      localStorage.setItem(META_KEY, JSON.stringify(pruneMeta(meta)));
+      metadataStoragePending=false;
+      metadataRecovery=null;
+      return true;
+    } catch {
+      metadataStoragePending=true;
+      metadataRecovery=JSON.parse(JSON.stringify(meta));
+      return false;
+    }
   }
 
   function pruneMeta(meta) {
@@ -431,7 +445,7 @@
 
   const noteVersion = value => Number.isSafeInteger(Number(value)) && Number(value) >= 0
     && value !== null && value !== undefined && value !== '' ? Number(value) : null;
-  const noteContent = entry => entry && String(entry.text ?? '').trim() ? String(entry.text).slice(0, NOTE_MAX) : null;
+  const noteContent = entry => entry && String(entry.text ?? '').trim() ? String(entry.text) : null;
   const sameNoteTarget = (left, right) => !left || !right
     || (left.storage === right.storage && left.entityType === right.entityType && left.entityKey === right.entityKey);
 
@@ -459,6 +473,11 @@
     if (!state) return; // The initial GET must establish the version first.
     const content = noteContent(entry);
     if (state.conflict) return; // A draft stays local until its author resolves it.
+    // An oversized draft cannot have committed through this protocol. Once its
+    // author edits it, capture a new operation against the unchanged base.
+    if (typeof state.pending?.content==='string' && state.pending.content.length>NOTE_MAX) {
+      state.pending=null;state.queued=null;
+    }
     if (state.pending) {
       state.queued = state.pending.content === content ? null : { content, clientUpdatedAt:stamp };
     } else if (state.content !== content && noteVersion(state.rowVersion) !== null) {
@@ -490,6 +509,16 @@
   function submittedNoteOperations(body) {
     return [...(body.favorites || []), ...(body.tombstones?.favorites || [])]
       .filter(row => row.entityType === NOTE_ENTITY_TYPE && String(row.entityKey || '').startsWith(NOTE_ENTITY_PREFIX) && row.operationId);
+  }
+
+  function oversizedNoteOperations(body) {
+    return submittedNoteOperations(body).filter(row => typeof row.payload?.text==='string' && row.payload.text.length>NOTE_MAX);
+  }
+
+  function announceOversizedNotes(rows) {
+    dirty=true;
+    dispatch('medindex:library-pending',{code:'NOTE_TOO_LONG',noteTooLong:true,noteKeys:rows.map(row => row.entityKey),
+      message:`Shënimi lejon maksimum ${NOTE_MAX} karaktere. Drafti i plotë mbetet në këtë pajisje; shkurtoje para ruajtjes.`});
   }
 
   function acknowledgeNoteOperations(meta, snapshot, submitted = []) {
@@ -639,6 +668,205 @@
     return true;
   }
 
+  // Preserve prescription objects exactly. Version metadata never enters the
+  // clinical payload; a pending operation captures an immutable source copy.
+  const copyPrescription = value => value === null ? null : JSON.parse(JSON.stringify(value));
+  const samePrescription = (left,right) => JSON.stringify(left) === JSON.stringify(right);
+
+  function newPrescriptionOperation(rowVersion,payload,stamp=nowIso(),restore=false) {
+    return {expectedVersion:rowVersion,operationId:operationId(),payload:copyPrescription(payload),clientUpdatedAt:stamp,
+      restore:payload !== null && restore,...(payload === null ? {deletedAt:stamp} : {})};
+  }
+
+  function queuePrescriptionChange(meta,id,payload,stamp=nowIso()) {
+    const state=meta.prescriptionStates[id] || (noteSnapshotLoaded
+      ? (meta.prescriptionStates[id]={rowVersion:0,payload:null,deleted:false,available:true,pending:null,queued:null,conflict:null}) : null);
+    if (!state || state.conflict) return;
+    if (state.pending) state.queued=samePrescription(state.pending.payload,payload) ? null : {payload:copyPrescription(payload),clientUpdatedAt:stamp};
+    else if (!samePrescription(state.payload,payload)) {
+      if (state.available!==false && noteVersion(state.rowVersion)!==null) state.pending=newPrescriptionOperation(state.rowVersion,payload,stamp,state.deleted);
+      else state.conflict={rowVersion:state.rowVersion,payload:state.payload,deleted:state.deleted,available:false};
+    }
+  }
+
+  function remotePrescriptions(snapshot) {
+    const rows=new Map();
+    (snapshot.prescriptionVersions || []).forEach(row => {
+      const id=text(row.clientId);
+      if (id) rows.set(id,{rowVersion:noteVersion(row.rowVersion),payload:null,deleted:Boolean(row.deleted),available:Boolean(row.deleted),updatedAt:nowIso()});
+    });
+    (snapshot.prescriptions || []).forEach(row => {
+      const id=text(row.clientId || row.payload?.id);
+      if (id && row.payload && typeof row.payload==='object' && !Array.isArray(row.payload)) rows.set(id,
+        {rowVersion:noteVersion(row.rowVersion),payload:copyPrescription(row.payload),deleted:false,
+          available:typeof row.payload.id==='string' && row.payload.id===id,updatedAt:row.clientUpdatedAt || row.serverUpdatedAt || nowIso()});
+    });
+    (snapshot.tombstones?.prescriptions || []).forEach(row => {
+      const id=text(row.clientId);
+      if (id) rows.set(id,{rowVersion:noteVersion(row.rowVersion),payload:null,deleted:true,available:true,updatedAt:row.deletedAt || nowIso()});
+    });
+    return rows;
+  }
+
+  function submittedPrescriptionOperations(body) {
+    return [...(body.prescriptions || []),...(body.tombstones?.prescriptions || [])].filter(row => row.operationId);
+  }
+
+  function acknowledgePrescriptionOperations(meta,snapshot,submitted=[]) {
+    const receipts=new Map((snapshot.prescriptionOperations || []).map(row => [row.operationId,row]));
+    submitted.forEach(row => {
+      const state=meta.prescriptionStates[row.clientId],receipt=receipts.get(row.operationId),version=noteVersion(receipt?.rowVersion);
+      if (!state?.pending || state.pending.operationId!==row.operationId || receipt?.clientId!==row.clientId
+        || version===null || version<=state.pending.expectedVersion || receipt.deleted!==(state.pending.payload===null)) return;
+      const completed=state.pending;
+      state.rowVersion=version;state.payload=copyPrescription(completed.payload);state.deleted=completed.payload===null;state.available=true;
+      state.lastAcknowledgedId=completed.operationId;state.lastAcknowledgedVersion=version;state.pending=null;
+      // An editor can discover a stale base while this earlier operation is in
+      // flight. Its conflict stays visible; acknowledging it must not rebase it.
+      if (!state.conflict && state.queued && !samePrescription(state.queued.payload,completed.payload)) {
+        state.pending=newPrescriptionOperation(version,state.queued.payload,state.queued.clientUpdatedAt,state.deleted);
+      }
+      state.queued=null;
+    });
+  }
+
+  function reconcilePrescriptions(local,meta,snapshot,submitted=[]) {
+    acknowledgePrescriptionOperations(meta,snapshot,submitted);
+    const remote=remotePrescriptions(snapshot);
+    const prescriptions=new Map((local.prescriptions || []).map(item => [protocolId(item),item]).filter(([id]) => id));
+    const keys=new Set([...prescriptions.keys(),...Object.keys(meta.prescriptionStates),...remote.keys()]);
+    keys.forEach(id => {
+      const row=remote.get(id),localPayload=prescriptions.get(id) || null;
+      let state=meta.prescriptionStates[id];
+      if (!state) {
+        const baseline=row || {rowVersion:0,payload:null,deleted:false,available:true,updatedAt:nowIso()};
+        state=meta.prescriptionStates[id]={...baseline,pending:null,queued:null,conflict:null};
+        if (row && !row.available) state.conflict=baseline;
+        else if (meta.deletedPrescriptions[id] && row && !row.deleted) state.conflict=baseline;
+        else if (localPayload!==null && !samePrescription(localPayload,baseline.payload)) {
+          if (!row && baseline.rowVersion!==null) state.pending=newPrescriptionOperation(0,localPayload,meta.prescriptions[id] || nowIso());
+          else state.conflict=baseline;
+        }
+      } else if (!state.pending && !state.conflict) queuePrescriptionChange(meta,id,localPayload,meta.prescriptions[id] || meta.deletedPrescriptions[id] || nowIso());
+      if (row && state.conflict && (row.rowVersion===null || state.conflict.rowVersion===null || row.rowVersion>=state.conflict.rowVersion)) state.conflict=row;
+      if (state.pending || state.conflict || !row) return;
+      if (state.rowVersion!==null && row.rowVersion!==null && row.rowVersion<state.rowVersion) return;
+      state.rowVersion=row.rowVersion;state.payload=row.payload;state.deleted=row.deleted;state.available=row.available;
+      if (!row.available) return; // An unreadable encrypted row is never a blank recipe.
+      if (row.payload===null) {
+        prescriptions.delete(id);delete meta.prescriptions[id];meta.deletedPrescriptions[id]=row.updatedAt;
+      } else {
+        prescriptions.set(id,row.payload);meta.prescriptions[id]=row.updatedAt;delete meta.deletedPrescriptions[id];
+      }
+    });
+    return prescriptions;
+  }
+
+  function prescriptionConflicts() {
+    const local=new Map(parseArray(PRESCRIPTIONS_KEY).map(item => [protocolId(item),item]));
+    return Object.entries(readMeta().prescriptionStates).flatMap(([clientId,state]) => state?.conflict ? [{clientId,
+      localPayload:copyPrescription(local.get(clientId) || null),remotePayload:copyPrescription(state.conflict.payload || null),
+      remoteDeleted:Boolean(state.conflict.deleted),remoteAvailable:state.conflict.available!==false,rowVersion:state.conflict.rowVersion}] : []);
+  }
+
+  function announcePrescriptionConflicts() {
+    const conflicts=prescriptionConflicts();
+    if (!conflicts.length) return;
+    const detail={conflict:true,prescriptionIds:conflicts.map(row => row.clientId),localRevision,syncedRevision};
+    dispatch('medindex:library-prescription-conflict',detail);dispatch('medindex:library-pending',detail);
+  }
+
+  function capturePrescriptionConflicts(payload,submitted) {
+    const meta=readMeta(),remote=remotePrescriptions(payload.snapshot || payload);
+    const named=new Set((payload.conflicts || []).map(row => row.clientId).filter(Boolean));
+    submitted.forEach(row => {
+      if (named.size && !named.has(row.clientId)) return;
+      const state=meta.prescriptionStates[row.clientId];
+      if (!state?.pending || state.pending.operationId!==row.operationId) return;
+      const conflict=(payload.conflicts || []).find(item => item.clientId===row.clientId);
+      state.conflict=remote.get(row.clientId) || {rowVersion:conflict?.deleted===true ? noteVersion(conflict.rowVersion) : null,
+        payload:null,deleted:conflict?.deleted===true,available:conflict?.deleted===true};
+    });
+    writeMeta(meta);announcePrescriptionConflicts();
+  }
+
+  function hasPendingPrescriptions() {
+    return Object.values(readMeta().prescriptionStates).some(state => state?.pending || state?.conflict);
+  }
+
+  function capturePrescriptionBase(clientId) {
+    const meta=readMeta(),id=text(clientId),state=meta.prescriptionStates[id];
+    const payload=parseArray(PRESCRIPTIONS_KEY).find(item => protocolId(item)===id) || null;
+    return {owner:meta.owner,clientId:id,rowVersion:state ? noteVersion(state.rowVersion) : noteSnapshotLoaded ? 0 : null,
+      payload:copyPrescription(payload),...(state?.pending ? {pendingOperationId:state.pending.operationId} : {})};
+  }
+
+  function writePrescriptionDraft(payload,base) {
+    const id=payload ? protocolId(payload) : text(base?.clientId),meta=readMeta();
+    if (!id || (base?.owner && base.owner!==meta.owner) || (base?.clientId && base.clientId!==id)) return {ok:false,ownerChanged:true};
+    if (payload!==null) {
+      try {
+        const serialized=JSON.stringify(payload);
+        const bytes=typeof TextEncoder==='function' ? new TextEncoder().encode(serialized).length : encodeURIComponent(serialized).replace(/%[0-9A-F]{2}|./g,'x').length;
+        if (bytes>160*1024) return {ok:false,tooLarge:true};
+      } catch {return {ok:false,invalidPayload:true};}
+    }
+    const all=parseArray(PRESCRIPTIONS_KEY),index=all.findIndex(item => protocolId(item)===id),state=meta.prescriptionStates[id];
+    const matchesOwnAcknowledgement=base?.pendingOperationId && state?.lastAcknowledgedId===base.pendingOperationId
+      && state.lastAcknowledgedVersion===state.rowVersion && samePrescription(base.payload,state.payload);
+    const stale=base && state && ((noteVersion(base.rowVersion)===null && state.rowVersion>0)
+      || (noteVersion(base.rowVersion)!==null && base.rowVersion!==state.rowVersion && !matchesOwnAcknowledgement));
+    if (payload===null) { if (index>=0) all.splice(index,1); }
+    else if (index>=0) all[index]=copyPrescription(payload);
+    else all.unshift(copyPrescription(payload));
+    try {localStorage.setItem(PRESCRIPTIONS_KEY,JSON.stringify(all));} catch {return {ok:false,storageError:true};}
+    const stamp=payload?.updatedAt || nowIso();
+    if (payload===null) {meta.deletedPrescriptions[id]=stamp;delete meta.prescriptions[id];}
+    else {meta.prescriptions[id]=stamp;delete meta.deletedPrescriptions[id];}
+    if (stale) state.conflict={rowVersion:state.rowVersion,payload:state.payload,deleted:state.deleted,available:state.available};
+    else queuePrescriptionChange(meta,id,payload,stamp);
+    if (!writeMeta(meta)) {
+      dirty=true;dispatch('medindex:library-pending',{storage:true,localRevision,syncedRevision});
+      return {ok:false,storageError:true,draftStored:true};
+    }
+    lastState=readState();localRevision+=1;
+    dispatch('medindex:prescriptions-changed',{count:all.length});
+    announcePrescriptionConflicts();scheduleSync(EVENT_SYNC_DELAY_MS);
+    return {ok:true,conflict:Boolean(meta.prescriptionStates[id]?.conflict),base:capturePrescriptionBase(id)};
+  }
+
+  async function resolvePrescriptionConflict(clientId,keepLocal) {
+    // Refresh before presenting a rebase. The owner's current version may have
+    // moved again since the conflict arrived; never resolve against an old view.
+    const epoch=ownerEpoch,owner=readMeta().owner;
+    try {
+      if (readMeta().libraryEnvelope) {
+        await flush();
+        if (epoch!==ownerEpoch || owner!==readMeta().owner || readMeta().libraryEnvelope) return false;
+      }
+      const snapshot=await api(API_URL);
+      if (epoch!==ownerEpoch || owner!==readMeta().owner || ownerKey(snapshot.user)!==owner) return false;
+      const meta=readMeta(),id=text(clientId),state=meta.prescriptionStates[id],remote=remotePrescriptions(snapshot).get(id);
+      if (!state?.conflict || !remote || remote.available===false || noteVersion(remote.rowVersion)===null) return false;
+      // If it changed after comparison, update the comparison and require a new
+      // explicit choice. A click cannot silently approve an unseen recipe.
+      if (state.conflict.rowVersion!==remote.rowVersion || !samePrescription(state.conflict.payload,remote.payload)) {
+        state.conflict=remote;writeMeta(meta);announcePrescriptionConflicts();return false;
+      }
+      state.rowVersion=remote.rowVersion;state.payload=remote.payload;state.deleted=remote.deleted;state.available=true;
+      state.pending=null;state.queued=null;state.conflict=null;
+      if (keepLocal) queuePrescriptionChange(meta,id,parseArray(PRESCRIPTIONS_KEY).find(item => protocolId(item)===id) || null);
+      else {
+        const all=parseArray(PRESCRIPTIONS_KEY).filter(item => protocolId(item)!==id);
+        if (remote.payload!==null) all.unshift(copyPrescription(remote.payload));
+        localStorage.setItem(PRESCRIPTIONS_KEY,JSON.stringify(all));
+      }
+      writeMeta(meta);lastState=readState();localRevision+=1;
+      dispatch('medindex:library-reconciled',{prescriptionConflictResolved:true,clientId:id,acceptedRemote:!keepLocal});
+      scheduleSync(EVENT_SYNC_DELAY_MS);return true;
+    } catch {return false;}
+  }
+
   function ensureMetaForState(state, meta, stamp = nowIso()) {
     state.prescriptions.forEach(item => {
       const id = protocolId(item);
@@ -675,6 +903,7 @@
       if (!id || currentPrescriptions.has(id)) return;
       meta.deletedPrescriptions[id] = stamp;
       delete meta.prescriptions[id];
+      queuePrescriptionChange(meta,id,null,stamp);
     });
     currentPrescriptions.forEach((item, id) => {
       if (!id) return;
@@ -682,6 +911,7 @@
       if (!before || JSON.stringify(before) !== JSON.stringify(item)) {
         meta.prescriptions[id] = item.updatedAt || stamp;
         delete meta.deletedPrescriptions[id];
+        queuePrescriptionChange(meta,id,item,item.updatedAt || stamp);
       }
     });
 
@@ -733,7 +963,7 @@
         delete meta.deletedDrugs[id];
       }
     });
-    writeMeta(meta);
+    return writeMeta(meta);
   }
 
   function buildBody() {
@@ -768,13 +998,22 @@
         ...(operation.noteTarget ? { noteTarget:operation.noteTarget } : {}),
       }] : [];
     });
+    const prescriptionRows=Object.entries(meta.prescriptionStates).flatMap(([clientId,entry]) => {
+      const operation=entry?.pending;
+      return operation && !entry.conflict && operation.payload!==null ? [{clientId,payload:copyPrescription(operation.payload),
+        clientUpdatedAt:operation.clientUpdatedAt,expectedVersion:operation.expectedVersion,operationId:operation.operationId,restore:operation.restore}] : [];
+    });
+    const prescriptionTombstones=Object.entries(meta.prescriptionStates).flatMap(([clientId,entry]) => {
+      const operation=entry?.pending;
+      return operation && !entry.conflict && operation.payload===null ? [{clientId,deletedAt:operation.deletedAt,
+        expectedVersion:operation.expectedVersion,operationId:operation.operationId}] : [];
+    });
     return {
       version:1,
+      libraryOwner:meta.owner,
       noteOwner:meta.owner,
-      prescriptions:state.prescriptions.flatMap(payload => {
-        const clientId = protocolId(payload);
-        return clientId ? [{ clientId, payload, clientUpdatedAt:meta.prescriptions[clientId] || payload.updatedAt || nowIso() }] : [];
-      }),
+      prescriptionOwner:meta.owner,
+      prescriptions:prescriptionRows,
       favorites:[...favoriteRows, ...noteRows],
       drugs:state.drugs.map(item => ({
         clientId:item.clientId,
@@ -784,7 +1023,7 @@
       })),
       tombstones:{
         drugs:Object.entries(meta.deletedDrugs).map(([clientId, deletedAt]) => ({ clientId, deletedAt })),
-        prescriptions:Object.entries(meta.deletedPrescriptions).map(([clientId, deletedAt]) => ({ clientId, deletedAt })),
+        prescriptions:prescriptionTombstones,
         favorites:[...Object.entries(meta.deletedFavorites).map(([id, deletedAt]) => {
           const separator = id.indexOf('|');
           return { entityType:id.slice(0, separator) || 'drug', entityKey:id.slice(separator + 1), deletedAt };
@@ -793,37 +1032,10 @@
     };
   }
 
-  function mergeRemote(snapshot, submitted = []) {
+  function mergeRemote(snapshot, submitted = [],submittedPrescriptions=[]) {
     const local = readState();
     const meta = ensureMetaForState(local, readMeta());
-    const prescriptions = new Map(local.prescriptions.map(item => [protocolId(item), item]).filter(([id]) => id));
-
-    (snapshot.prescriptions || []).forEach(row => {
-      const id = text(row.clientId || row.payload?.id);
-      if (!id || !row.payload || typeof row.payload !== 'object') return;
-      const localItem = prescriptions.get(id);
-      const localUpdated = time(meta.prescriptions[id] || localItem?.updatedAt || localItem?.createdAt);
-      const remoteUpdated = time(row.clientUpdatedAt || row.serverUpdatedAt);
-      const localDeleted = time(meta.deletedPrescriptions[id]);
-      if (localDeleted && localDeleted >= remoteUpdated) return;
-      if (!localItem || remoteUpdated > localUpdated) {
-        prescriptions.set(id, row.payload);
-        meta.prescriptions[id] = row.clientUpdatedAt || row.serverUpdatedAt || nowIso();
-      }
-      delete meta.deletedPrescriptions[id];
-    });
-
-    (snapshot.tombstones?.prescriptions || []).forEach(row => {
-      const id = text(row.clientId);
-      if (!id) return;
-      const localItem = prescriptions.get(id);
-      const localUpdated = time(meta.prescriptions[id] || localItem?.updatedAt || localItem?.createdAt);
-      if (time(row.deletedAt) >= localUpdated) {
-        prescriptions.delete(id);
-        delete meta.prescriptions[id];
-        meta.deletedPrescriptions[id] = row.deletedAt;
-      }
-    });
+    const prescriptions = reconcilePrescriptions(local,meta,snapshot,submittedPrescriptions);
 
     const favorites = new Set(local.favorites);
     const notes = reconcileNotes(local, meta, snapshot, submitted);
@@ -969,9 +1181,11 @@
     if (!online || !navigator.onLine || Date.now() < retryUntil) return false;
     if (syncPromise) return syncPromise;
     clearTimeout(syncTimer);
-    syncPromise = (async () => {
+    syncPromise = Promise.resolve().then(async () => {
       let success = false;
       let submitted = [];
+      let submittedPrescriptions = [];
+      let requestOwner = '';
       let revisionAtStart = localRevision;
       const epoch = ownerEpoch;
       try {
@@ -985,11 +1199,35 @@
           }
           mergeRemote(snapshot);
         }
+        // Retain the exact failed metadata, including operation IDs or received
+        // receipts, until storage recovers. A reload still retries the durable
+        // earlier envelope; this tab can safely finish persisting its receipt.
+        if (metadataStoragePending && !writeMeta(readMeta())) {dirty=true;dispatch('medindex:library-pending',{storage:true});return false;}
         captureLocalChanges({ schedule:false });
+        if (metadataStoragePending) {dirty=true;dispatch('medindex:library-pending',{storage:true});return false;}
         revisionAtStart = localRevision;
-        const requestOwner = text(readMeta().owner);
-        const body = buildBody();
+        requestOwner = text(readMeta().owner);
+        let envelope=readMeta().libraryEnvelope;
+        if (!envelope || envelope.owner!==requestOwner) {
+          const body=buildBody(),oversized=oversizedNoteOperations(body);
+          if (oversized.length) {announceOversizedNotes(oversized);return false;}
+          envelope={owner:requestOwner,body,revision:revisionAtStart};
+          const meta=readMeta();meta.libraryEnvelope=envelope;
+          if (!writeMeta(meta)) {dirty=true;dispatch('medindex:library-pending',{storage:true});return false;}
+        }
+        // Upgrade only the owner metadata of an older durable envelope. Its
+        // original captured owner remains authoritative, never a new session.
+        if (envelope.body.libraryOwner===undefined) {
+          envelope.body.libraryOwner=envelope.owner;
+          const meta=readMeta();meta.libraryEnvelope=envelope;
+          if (!writeMeta(meta)) {dirty=true;dispatch('medindex:library-pending',{storage:true});return false;}
+        }
+        const body=envelope.body;
+        const oversized=oversizedNoteOperations(body);
+        if (oversized.length) {announceOversizedNotes(oversized);return false;}
+        revisionAtStart=Number(envelope.revision || 0);
         submitted = submittedNoteOperations(body);
+        submittedPrescriptions=submittedPrescriptionOperations(body);
         const payload = await api(API_URL, {
           method:'PUT',
           body:JSON.stringify(body),
@@ -999,23 +1237,41 @@
           || (ownerKey(payload.user) && requestOwner && ownerKey(payload.user) !== requestOwner)) return false;
         captureLocalChanges({ schedule:false });
         if (Array.isArray(payload.prescriptionChapters)) prescriptionChapters = payload.prescriptionChapters;
-        const reconciled = mergeRemote(payload, submitted);
+        const reconciled = mergeRemote(payload, submitted,submittedPrescriptions);
         const meta = readMeta();
         meta.lastSyncedAt = payload.generatedAt || nowIso();
-        writeMeta(meta);
-        success = true;
-        syncedRevision = Math.max(syncedRevision, revisionAtStart);
-        const notesPending = hasPendingNotes();
-        dirty = notesPending || resyncAfterFlight || syncedRevision < localRevision;
-        if (!notesPending) dispatch('medindex:library-synced', { generatedAt:meta.lastSyncedAt, reconciled, syncedRevision, localRevision });
-        else dispatch('medindex:library-pending', { offline:false, conflict:noteConflicts().length > 0, localRevision, syncedRevision });
+        const allReceipts=[...(payload.noteOperations || []),...(payload.prescriptionOperations || [])];
+        const envelopeConfirmed=[...submitted,...submittedPrescriptions].every(row => allReceipts.some(ack =>
+          ack.operationId===row.operationId && noteVersion(ack.rowVersion)!==null && ack.rowVersion>row.expectedVersion
+          && (row.clientId ? ack.clientId===row.clientId && ack.deleted===!row.payload : ack.entityType===row.entityType && ack.entityKey===row.entityKey && ack.deleted===!row.payload)));
+        if (envelopeConfirmed) meta.libraryEnvelope=null;
+        if (!writeMeta(meta)) {dirty=true;dispatch('medindex:library-pending',{storage:true});return false;}
+        success = envelopeConfirmed;
+        if (envelopeConfirmed) syncedRevision = Math.max(syncedRevision, revisionAtStart);
+        const mutationsPending = hasPendingNotes() || hasPendingPrescriptions() || !envelopeConfirmed;
+        dirty = mutationsPending || resyncAfterFlight || syncedRevision < localRevision;
+        if (!mutationsPending) dispatch('medindex:library-synced', { generatedAt:meta.lastSyncedAt, reconciled, syncedRevision, localRevision });
+        else dispatch('medindex:library-pending', { offline:false, conflict:noteConflicts().length > 0 || prescriptionConflicts().length > 0, localRevision, syncedRevision });
         announceNoteConflicts();
+        announcePrescriptionConflicts();
         if (reconciled) dispatch('medindex:library-reconciled', { generatedAt:meta.lastSyncedAt });
-        return !notesPending;
+        return !mutationsPending;
       } catch (error) {
         if (epoch !== ownerEpoch) return false;
         if (error.status === 401 || error.status === 403) return false;
-        if (error.status === 409 && submitted.length) captureNoteConflicts(error.payload || {}, submitted);
+        if (requestOwner && requestOwner!==readMeta().owner) return false;
+        if (error.status===409 && error.payload?.code==='LIBRARY_OWNER_CHANGED') {
+          dirty=true;
+          dispatch('medindex:library-pending',{ownerChanged:true,localRevision,syncedRevision});
+          return false;
+        }
+        if (error.status===409 && ownerKey(error.payload?.snapshot?.user) && ownerKey(error.payload.snapshot.user)!==requestOwner) return false;
+        if (error.status === 409) {
+          captureLocalChanges({schedule:false});
+          const meta=readMeta();meta.libraryEnvelope=null;writeMeta(meta);
+          if (String(error.payload?.code || '').startsWith('PRESCRIPTION_') && submittedPrescriptions.length) capturePrescriptionConflicts(error.payload || {},submittedPrescriptions);
+          else if (submitted.length) captureNoteConflicts(error.payload || {}, submitted);
+        }
         if ([408, 429, 503].includes(Number(error.status))) {
           retryUntil = Date.now() + Math.max(NETWORK_RETRY_MS, Number(error.retryAfterMs || 0));
           scheduleRecoveryRetry(retryUntil);
@@ -1030,7 +1286,7 @@
           scheduleSync(EVENT_SYNC_DELAY_MS);
         }
       }
-    })();
+    });
     return syncPromise;
   }
 
@@ -1041,7 +1297,7 @@
       rounds += 1;
       const synced = await flush();
       if (!synced) return false;
-      if (syncedRevision >= target && !hasPendingNotes()) return true;
+      if (syncedRevision >= target && !hasPendingNotes() && !hasPendingPrescriptions()) return true;
     } while (rounds < MAX_SYNC_ROUNDS);
     scheduleSync(EVENT_SYNC_DELAY_MS);
     return false;
@@ -1085,6 +1341,8 @@
     syncTimer = 0;
     retryTimer = 0;
     noteSnapshotLoaded = false;
+    metadataStoragePending=false;
+    metadataRecovery=null;
     ownerEpoch += 1;
   }
 
@@ -1134,6 +1392,7 @@
       const changed = mergeRemote(snapshot);
       await flush();
       announceNoteConflicts();
+      announcePrescriptionConflicts();
       dispatch('medindex:library-ready', { offline:false, local:false, user:snapshot.user });
       resolveReady?.({ offline:false, local:false, user:snapshot.user });
       if (changed) window.setTimeout(reloadForRemoteChange, 40);
@@ -1154,7 +1413,9 @@
       return false;
     }
     if (stableState(lastState) === stableState(current)) return false;
-    recordLocalChanges(lastState, current);
+    if (recordLocalChanges(lastState, current)===false) {
+      dirty=true;dispatch('medindex:library-pending',{storage:true,localRevision,syncedRevision});return false;
+    }
     lastState = current;
     localRevision += 1;
     if (syncPromise) resyncAfterFlight = true;
@@ -1260,6 +1521,14 @@
     noteConflicts,
     acceptRemoteNote:localKey => resolveNoteConflict(localKey, false),
     retryLocalNote:localKey => resolveNoteConflict(localKey, true),
+    prescriptionSyncVersion:'prescription-cas-v1',
+    prescriptionConflicts,
+    capturePrescriptionBase,
+    savePrescriptionDraft:writePrescriptionDraft,
+    deletePrescription:(id,base=capturePrescriptionBase(id)) => writePrescriptionDraft(null,base),
+    restorePrescription:(payload,base=capturePrescriptionBase(protocolId(payload))) => writePrescriptionDraft(payload,base),
+    acceptRemotePrescription:id => resolvePrescriptionConflict(id,false),
+    retryLocalPrescription:id => resolvePrescriptionConflict(id,true),
     diagnostics:() => ({
       localRevision,
       syncedRevision,
@@ -1269,6 +1538,10 @@
       legacyPrescriptionPollActive:Boolean(legacyPrescriptionPollTimer),
       noteConflicts:noteConflicts().length,
       pendingNotes:Object.values(readMeta().noteStates).filter(state => state?.pending || state?.conflict).length,
+      oversizedNotes:Object.values(readMeta().noteStates).filter(state => typeof state?.pending?.content==='string' && state.pending.content.length>NOTE_MAX).length,
+      prescriptionConflicts:prescriptionConflicts().length,
+      pendingPrescriptions:Object.values(readMeta().prescriptionStates).filter(state => state?.pending || state?.conflict).length,
+      metadataStoragePending,
     }),
   };
 
@@ -5330,6 +5603,11 @@
     selectedDrugs: [],
     result: null,
     editingId: '',
+    editingBase:null,
+    renderedPrescriptionBases:new Map(),
+    lastDeletedPrescription:null,
+    prescriptionConflictId:'',
+    prescriptionConflictFocusRelease:null,
     source: '',
     searchTimer: 0,
     searchController: null,
@@ -6347,7 +6625,7 @@
 
   function protocolFromResult(result) {
     const now = new Date().toISOString();
-    const existing = state.editingId ? getSaved().find(item => String(item.id) === String(state.editingId)) : null;
+    const existing = state.editingId ? (state.editingBase?.payload || getSaved().find(item => String(item.id) === String(state.editingId))) : null;
     const normalized = Core.normalizeResult(result);
     const items = normalized.sections.flatMap((section, sectionIndex) => section.medications.map((item, itemIndex) => {
       const selectedDrug = state.selectedDrugs.find(drug =>
@@ -6391,6 +6669,7 @@
 
     const context = window.MedIndexPrescriptionContext?.getContext?.() || {};
     return {
+      ...(existing || {}),
       id:state.editingId || uid(),
       chapterKey:text($('#rxChapterSelect')?.value) || classifyChapter({ diagnosis:normalized.diagnosis }),
       name:normalized.title || `Recetë – ${new Date().toLocaleDateString('sq-AL')}`,
@@ -6448,15 +6727,24 @@
   function saveCurrent() {
     if (!ensureActionAllowed()) return;
     const protocol = protocolFromResult(state.result);
-    const all = getSaved();
-    const index = all.findIndex(item => String(item.id) === String(protocol.id));
-    if (index >= 0) all[index] = protocol;
-    else all.unshift(protocol);
+    const library=window.MedIndexUserLibrary;
+    const saved=library?.savePrescriptionDraft?.(protocol,state.editingBase || library.capturePrescriptionBase(protocol.id));
+    if (!saved?.ok) {
+      saveWorkspaceDraft();
+      setStatus(saved?.ownerChanged ? 'Llogaria ka ndryshuar. Drafti nuk u ruajt në llogarinë tjetër.' : 'Receta nuk u ruajt. Drafti mbetet këtu; kontrollo hapësirën e pajisjes dhe provo përsëri.','error');
+      return;
+    }
     state.editingId = protocol.id;
-    setSaved(all);
-    toast('Receta u ruajt në dosje.');
+    state.editingBase=saved.base;
+    renderSaved();saveWorkspaceDraft();
+    if (saved.conflict) {
+      setStatus('Receta ka ndryshuar në një pajisje tjetër. Drafti yt u mbajt; krahaso versionet para ruajtjes.','error');
+      openPrescriptionConflict(protocol.id);
+      return;
+    }
+    toast('Drafti u ruajt në këtë pajisje.');
     const chapter = chapterByKey(protocol.chapterKey);
-    setStatus(`Receta u ruajt te dosja “${chapter.title}” dhe do të sinkronizohet me bibliotekën personale.`, 'success');
+    setStatus(`Drafti u ruajt te dosja “${chapter.title}”. Ruajtja në llogari pret konfirmimin.`, 'success');
   }
 
   async function copyCurrent() {
@@ -6485,6 +6773,7 @@
 
   function resetComposer() {
     state.editingId = '';
+    state.editingBase=null;
     state.selectedDrugs = [];
     state.generatedReviewConfirmed = false;
     state.dosageReviewConfirmed = false;
@@ -6509,12 +6798,13 @@
     const protocol = getSaved().find(item => String(item.id) === String(id));
     if (!protocol) return;
     state.editingId = protocol.id;
+    state.editingBase=window.MedIndexUserLibrary?.capturePrescriptionBase?.(protocol.id) || null;
     state.selectedDrugs = Array.isArray(protocol.selectedDrugs) ? protocol.selectedDrugs.map(normalizeDrug) : [];
     state.composerOrigin = 'manual';
     renderSelectedDrugs();
     const result = resultFromProtocol(protocol);
     $('#rxDiagnosis').value = result?.diagnosis || '';
-    $('#rxComposer').value = text(protocol.sourceText) || resultToText(result);
+    $('#rxComposer').value = typeof protocol.sourceText==='string' && protocol.sourceText.length ? protocol.sourceText : resultToText(result);
     const storedChapter = chapterByKey(protocol.chapterKey || classifyChapter({ diagnosis:result?.diagnosis || '', selectedDrugs:state.selectedDrugs })).slug;
     if ($('#rxChapterSelect')) $('#rxChapterSelect').value = storedChapter;
     state.chapterManuallySelected = true;
@@ -6526,6 +6816,7 @@
     state.clinicalReviewConfirmed = false;
     updateActionState();
     window.scrollTo({ top:0, behavior:'smooth' });
+    saveWorkspaceDraft();
     setStatus('Receta e ruajtur u hap për editim. Kërkohet kontroll i ri para ruajtjes së ndryshimeve.', 'success');
   }
 
@@ -6548,9 +6839,15 @@
   }
 
   function deleteSaved(id) {
-    setSaved(getSaved().filter(item => String(item.id) !== String(id)));
-    if (state.editingId === id) state.editingId = '';
-    toast('Receta u fshi.');
+    const protocol=getSaved().find(item => String(item.id)===String(id));
+    if (!protocol) return;
+    const library=window.MedIndexUserLibrary;
+    const deleted=library?.deletePrescription?.(id,state.renderedPrescriptionBases.get(String(id)) || library.capturePrescriptionBase(id));
+    if (!deleted?.ok) {toast('Receta nuk u fshi. Drafti mbetet në këtë pajisje.');return;}
+    state.lastDeletedPrescription={payload:JSON.parse(JSON.stringify(protocol)),base:deleted.base};
+    if (state.editingId === id) {state.editingId = '';state.editingBase=null;saveWorkspaceDraft();}
+    const undo=$('#rxUndoDelete');if(undo) undo.hidden=false;
+    renderSaved();toast(deleted.conflict ? 'Fshirja pret krahasimin e versioneve.' : 'Fshirja pret konfirmimin. Mund ta kthesh.');
   }
 
   function moveSavedToChapter(id, chapterKey) {
@@ -6558,15 +6855,87 @@
     const all = getSaved();
     const item = all.find(protocol => String(protocol.id) === String(id));
     if (!item) return;
-    item.chapterKey = chapter.slug;
-    item.updatedAt = new Date().toISOString();
-    setSaved(all);
-    toast(`Receta u zhvendos te “${chapter.title}”.`);
+    const moved={...item,chapterKey:chapter.slug,updatedAt:new Date().toISOString()};
+    const library=window.MedIndexUserLibrary;
+    const saved=library?.savePrescriptionDraft?.(moved,state.renderedPrescriptionBases.get(String(id)) || library.capturePrescriptionBase(id));
+    if(!saved?.ok){toast('Receta nuk u zhvendos. Provo përsëri.');return;}
+    renderSaved();toast(saved.conflict ? 'Zhvendosja pret krahasimin e versioneve.' : `Zhvendosja te “${chapter.title}” pret konfirmimin.`);
+  }
+
+  function renderPrescriptionConflicts() {
+    const holder=$('#rxPrescriptionConflicts');
+    if (!holder) return;
+    const conflicts=window.MedIndexUserLibrary?.prescriptionConflicts?.() || [];
+    holder.hidden=!conflicts.length;
+    holder.innerHTML=conflicts.map(conflict => `<div class="rx-prescription-conflict-item"><div><strong>${esc(conflict.localPayload?.name || conflict.remotePayload?.name || 'Recetë që kërkon krahasim')}</strong><p>${conflict.localPayload===null ? 'Fshirja pret krahasimin me versionin e fundit.' : 'Drafti yt u mbajt në këtë pajisje. Ruajtja në llogari kërkon zgjedhjen tënde.'}</p></div><button class="rx-secondary" type="button" data-compare-prescription="${esc(conflict.clientId)}">Krahaso versionet</button></div>`).join('');
+    if ($('#rxLibraryState') && conflicts.length) $('#rxLibraryState').textContent='Kërkon krahasim';
+  }
+
+  function prescriptionComparisonText(payload,deleted=false,available=true) {
+    if (!available) return 'Versioni i fundit nuk u lexua. Provo përsëri; drafti yt mbetet këtu.';
+    if (payload===null) return deleted ? 'Receta është fshirë.' : 'Kërkesë për fshirjen e recetës.';
+    const patient=[payload.patientName,payload.patientId,payload.birthDate].filter(Boolean).join(' · ');
+    const source=typeof payload.sourceText==='string' ? payload.sourceText : resultToText(resultFromProtocol(payload));
+    return `${patient ? `Pacienti: ${patient}\n\n` : ''}${source}`;
+  }
+
+  function openPrescriptionConflict(id,returnFocus=document.activeElement) {
+    const conflict=window.MedIndexUserLibrary?.prescriptionConflicts?.().find(item => item.clientId===String(id));
+    const overlay=$('#rxPrescriptionConflict');
+    if (!conflict || !overlay) return;
+    const alreadyOpen=!overlay.hidden;
+    state.prescriptionConflictId=conflict.clientId;
+    $('#rxPrescriptionLocalVersion').textContent=prescriptionComparisonText(conflict.localPayload);
+    $('#rxPrescriptionRemoteVersion').textContent=prescriptionComparisonText(conflict.remotePayload,conflict.remoteDeleted,conflict.remoteAvailable);
+    $('#rxPrescriptionKeepDraft').textContent=conflict.localPayload===null ? 'Konfirmo fshirjen e versionit të fundit' : conflict.remoteDeleted ? 'Rikthe recetën nga drafti im' : 'Ruaj draftin si version të ri';
+    const unavailable=!conflict.remoteAvailable || !Number.isSafeInteger(conflict.rowVersion);
+    $('#rxPrescriptionKeepDraft').disabled=unavailable;
+    $('#rxPrescriptionUseLatest').disabled=unavailable;
+    $('#rxPrescriptionConflictStatus').textContent=unavailable ? 'Versioni i fundit nuk u verifikua. Mbaje draftin dhe provo përsëri kur lidhja të jetë gati.' : '';
+    overlay.hidden=false;overlay.setAttribute('aria-hidden','false');
+    if (!alreadyOpen) state.prescriptionConflictFocusRelease=window.DRxModalFocus.open(overlay.querySelector('[role="dialog"]'),{
+      initialFocus:$('#rxPrescriptionConflictClose'),returnFocus,fallbackFocus:$('#rxNew'),onEscape:closePrescriptionConflict});
+  }
+
+  function closePrescriptionConflict() {
+    const overlay=$('#rxPrescriptionConflict');
+    if (overlay) {overlay.hidden=true;overlay.setAttribute('aria-hidden','true');}
+    state.prescriptionConflictFocusRelease?.();state.prescriptionConflictFocusRelease=null;state.prescriptionConflictId='';
+  }
+
+  async function choosePrescriptionVersion(keepLocal) {
+    const id=state.prescriptionConflictId,library=window.MedIndexUserLibrary;
+    $('#rxPrescriptionKeepDraft').disabled=true;$('#rxPrescriptionUseLatest').disabled=true;
+    $('#rxPrescriptionConflictStatus').textContent='Po kontrollohet versioni i fundit…';
+    const resolved=await (keepLocal ? library.retryLocalPrescription(id) : library.acceptRemotePrescription(id));
+    if (!resolved) {
+      openPrescriptionConflict(id);
+      $('#rxPrescriptionConflictStatus').textContent='Versioni i fundit nuk u konfirmua ose ndryshoi sërish. Krahasoje përsëri; drafti yt mbetet këtu.';
+      return;
+    }
+    closePrescriptionConflict();renderSaved();
+    if (state.editingId===id) {
+      if (keepLocal) state.editingBase=library.capturePrescriptionBase(id);
+      else if (getSaved().some(item => String(item.id)===id)) openSaved(id);
+      else resetComposer();
+      saveWorkspaceDraft();
+    }
+    toast(keepLocal ? 'Zgjedhja jote pret konfirmimin e ruajtjes.' : 'U përdor versioni i fundit.');
+  }
+
+  function undoPrescriptionDelete() {
+    const deleted=state.lastDeletedPrescription;
+    if (!deleted) return;
+    const restored=window.MedIndexUserLibrary?.restorePrescription?.(deleted.payload,deleted.base);
+    if (!restored?.ok) {toast('Receta nuk u rikthye. Llogaria ose ruajtja ka ndryshuar.');return;}
+    state.lastDeletedPrescription=null;if ($('#rxUndoDelete')) $('#rxUndoDelete').hidden=true;
+    renderSaved();toast(restored.conflict ? 'Rikthimi kërkon krahasimin e versioneve.' : 'Rikthimi i recetës pret konfirmimin.');
   }
 
   function renderSaved() {
     const list = $('#rxSavedList');
     if (!list) return;
+    renderPrescriptionConflicts();
     const query = fold($('#rxSavedSearch')?.value);
     const all = getSaved().map(protocol => ({
       ...protocol,
@@ -6575,6 +6944,7 @@
         selectedDrugs:Array.isArray(protocol.selectedDrugs) ? protocol.selectedDrugs : [],
       })).slug,
     }));
+    state.renderedPrescriptionBases=new Map(all.map(item => [String(item.id),window.MedIndexUserLibrary?.capturePrescriptionBase?.(item.id)]));
     $('#rxSavedCount').textContent = all.length;
     renderChapterNav(all);
 
@@ -6714,6 +7084,19 @@
   }
 
   function bindEvents() {
+    $('#rxPrescriptionConflicts')?.addEventListener('click',event => {
+      const button=event.target.closest('[data-compare-prescription]');
+      if(button) openPrescriptionConflict(button.dataset.comparePrescription,button);
+    });
+    $('#rxPrescriptionConflictClose')?.addEventListener('click',closePrescriptionConflict);
+    $('#rxPrescriptionKeepDraft')?.addEventListener('click',() => {void choosePrescriptionVersion(true);});
+    $('#rxPrescriptionUseLatest')?.addEventListener('click',() => {void choosePrescriptionVersion(false);});
+    $('#rxPrescriptionConflict')?.addEventListener('click',event => {if(event.target.id==='rxPrescriptionConflict') closePrescriptionConflict();});
+    $('#rxUndoDeleteButton')?.addEventListener('click',undoPrescriptionDelete);
+    window.addEventListener('medindex:library-prescription-conflict',() => {
+      renderSaved();
+      if(state.prescriptionConflictId) openPrescriptionConflict(state.prescriptionConflictId);
+    });
     document.addEventListener('input', scheduleDraftSave);
     document.addEventListener('change', scheduleDraftSave);
     window.addEventListener('medindex:prescription-context-change', scheduleDraftSave);
@@ -6724,7 +7107,12 @@
       if (event.detail?.owner && event.detail.owner !== state.draftOwner) {
         clearTimeout(state.draftTimer);
         state.draftReady = false;
+        state.lastDeletedPrescription=null;if ($('#rxUndoDelete')) $('#rxUndoDelete').hidden=true;
+        closePrescriptionConflict();
+        if ($('#rxPrescriptionLocalVersion')) $('#rxPrescriptionLocalVersion').textContent='';
+        if ($('#rxPrescriptionRemoteVersion')) $('#rxPrescriptionRemoteVersion').textContent='';
         resetComposer();
+        renderSaved();
         window.MedIndexPrescriptionContext?.resetContext?.({ refresh:false });
       }
     });
@@ -6966,6 +7354,7 @@
     }
 
     state.editingId = '';
+    state.editingBase=null;
     state.selectedDrugs = [];
     state.generatedReviewConfirmed = false;
     state.dosageReviewConfirmed = false;
@@ -7020,6 +7409,7 @@
       chapter:$('#rxChapterSelect')?.value || 'te-tjera',
       chapterManuallySelected:state.chapterManuallySelected,
       composerOrigin:state.composerOrigin, editingId:state.editingId,
+      editingBase:state.editingBase,
     };
     try {
       const serialized = JSON.stringify(payload);
@@ -7040,12 +7430,14 @@
       const raw = localStorage.getItem(key);
       if (!raw) return;
       const draft = JSON.parse(raw);
+      const libraryOwner=window.MedIndexUserLibrary?.meta?.().owner || '';
       if (raw.length > DRAFT_MAX_BYTES || draft?.version !== 2 || draft.owner !== state.draftOwner
         || !Number.isFinite(draft.savedAt) || draft.savedAt > Date.now() + 300000
         || Date.now() - draft.savedAt > 7 * 86400000
         || typeof draft.composer !== 'string' || typeof draft.diagnosis !== 'string'
         || !Array.isArray(draft.selectedDrugs) || draft.selectedDrugs.length > 50
-        || draft.selectedDrugs.some(drug => !drug || typeof drug !== 'object' || Array.isArray(drug))) {
+        || draft.selectedDrugs.some(drug => !drug || typeof drug !== 'object' || Array.isArray(drug))
+        || (draft.editingBase?.owner && libraryOwner && draft.editingBase.owner!==libraryOwner)) {
         localStorage.removeItem(key);
         return;
       }
@@ -7054,7 +7446,12 @@
       state.selectedDrugs = draft.selectedDrugs.map(drug => ({ ...drug, ...normalizeDrug(drug) }));
       state.composerOrigin = draft.composerOrigin === 'manual' ? 'manual' : 'structured';
       state.chapterManuallySelected = Boolean(draft.chapterManuallySelected);
-      state.editingId = getSaved().some(item => item.id === draft.editingId) ? draft.editingId : '';
+      // Keep the editor's original version even if another device deleted the
+      // row. Converting it into a new recipe would silently lose its identity.
+      state.editingId = typeof draft.editingId==='string' ? draft.editingId : '';
+      state.editingBase=draft.editingBase && typeof draft.editingBase==='object'
+        && draft.editingBase.clientId===state.editingId ? draft.editingBase : state.editingId
+          ? {owner:window.MedIndexUserLibrary?.meta?.().owner || '',clientId:state.editingId,rowVersion:null,payload:null} : null;
       state.generatedReviewConfirmed = state.dosageReviewConfirmed = state.clinicalReviewConfirmed = false;
       if ($('#rxClinicalReview input')) $('#rxClinicalReview input').checked = false;
       window.MedIndexPrescriptionContext?.setContext?.(draft.clinicalContext, { refresh:false });

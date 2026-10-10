@@ -9,14 +9,21 @@ const product='11111111-1111-4111-8111-111111111111';
 const initial='  Shënim me ë\nDhe hapësira.  ';
 
 function database(){
-  let account={id:'owner-a',email:'a@example.test'},version=1,content=initial,deleted=false;
+  let account={id:'owner-a',email:'a@example.test'},version=1,content=initial,deleted=false,favorites=[];
   const requests=[],receipts=new Map();
   let failAfterCommit=false;
-  const snapshot=()=>({user:{...account},favorites:[],entityNotes:deleted ? [] : [{entityType:'product',entityKey:product,content,rowVersion:version}],tombstones:{entityNotes:deleted ? [{entityType:'product',entityKey:product,rowVersion:version,deletedAt:'2026-10-10T00:00:00Z'}] : []},noteVersions:[{entityType:'product',entityKey:product,rowVersion:version,deleted}]});
+  const snapshot=()=>({user:{...account},favorites:[...favorites],entityNotes:deleted ? [] : [{entityType:'product',entityKey:product,content,rowVersion:version}],tombstones:{entityNotes:deleted ? [{entityType:'product',entityKey:product,rowVersion:version,deletedAt:'2026-10-10T00:00:00Z'}] : []},noteVersions:[{entityType:'product',entityKey:product,rowVersion:version,deleted}]});
   const response=(data,status=200)=>({ok:status<400,status,json:async()=>data});
   async function fetch(_url,options){
     if(options.method==='GET') return response(snapshot());
     const body=JSON.parse(options.body); requests.push(body);
+    if(body.libraryOwner!==account.id) return response({code:'LIBRARY_OWNER_CHANGED',error:'Llogaria ndryshoi.'},409);
+    if(body.favorites || body.tombstones?.favorites){
+      const favorite=body.favorites?.[0] || body.tombstones.favorites[0];
+      favorites=favorites.filter(row=>row.entityType!==favorite.entityType || row.entityKey!==favorite.entityKey);
+      if(body.favorites) favorites.push(favorite);
+      return response(snapshot());
+    }
     const item=body.entityNotes?.[0] || body.tombstones?.entityNotes?.[0];
     if(body.noteOwner!==account.id) return response({code:'NOTE_OWNER_CHANGED',error:'Llogaria ndryshoi.'},409);
     const existing=receipts.get(item.operationId);
@@ -33,7 +40,7 @@ function database(){
     if(failAfterCommit){failAfterCommit=false;throw new Error('Connection lost after commit');}
     return response({...snapshot(),noteOperations:[ack]});
   }
-  return {fetch,snapshot,requests,loseReply:()=>{failAfterCommit=true;},switchOwner:()=>{account={id:'owner-b',email:'b@example.test'};version=0;content='';deleted=true;}};
+  return {fetch,snapshot,requests,loseReply:()=>{failAfterCommit=true;},switchOwner:()=>{account={id:'owner-b',email:'b@example.test'};version=0;content='';deleted=true;favorites=[];}};
 }
 
 function client(fetch){
@@ -102,9 +109,37 @@ const watchdog=setTimeout(()=>{console.error('Native note concurrency test did n
   assert.equal(c.api.note('product',product),'');
   assert.equal(scopeDb.requests.length,0,'no draft from A may be submitted under B');
 
+  // Ordinary favorite writes also carry the snapshot owner. A response that
+  // crossed an account switch cannot populate the new account's collection.
+  const favoriteDb=database(),favoriteClient=client(favoriteDb.fetch);
+  await favoriteClient.api.load();
+  assert.equal(await favoriteClient.api.setFavorite('product',product,true),true);
+  assert.equal(favoriteDb.requests.at(-1).libraryOwner,'owner-a');
+  assert.equal(await favoriteClient.api.setFavorite('product',product,false),false);
+  assert.equal(favoriteDb.requests.at(-1).libraryOwner,'owner-a','Deletion-only favorites retain the captured owner');
+  let releaseFavorite;
+  const favoriteReply=new Promise(resolve=>{releaseFavorite=resolve;});
+  const crossing=client(async(url,options)=>{
+    const response=await favoriteDb.fetch(url,options);
+    if(options.method==='PUT') await favoriteReply;
+    return response;
+  });
+  await crossing.api.load();
+  const pendingFavorite=crossing.api.setFavorite('product',product,true);
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(favoriteDb.requests.at(-1).libraryOwner,'owner-a');
+  favoriteDb.switchOwner();
+  crossing.auth({user:{id:'owner-b',email:'b@example.test'},authUser:{id:'owner-b'}});
+  await crossing.api.load();
+  releaseFavorite();
+  await assert.rejects(pendingFavorite,error=>error.code==='NOTE_OWNER_CHANGED');
+  assert.equal(crossing.api.state().user.id,'owner-b');
+  assert.equal(crossing.api.isFavorite('product',product),false,'An old-account favorite reply never repopulates the new account');
+  assert.equal(favoriteDb.snapshot().favorites.length,0);
+
   // Missing version on an existing note never masquerades as known absence.
   const unknown=client(async()=>({ok:true,status:200,json:async()=>({user:{id:'owner-a'},favorites:[],entityNotes:[{entityType:'product',entityKey:product,content:initial}]})}));
   await unknown.api.load();
   await assert.rejects(unknown.api.saveNote('product',product,'Edited'),error=>error.code==='NOTE_VERSION_REQUIRED');
-  console.log('PASS: native note CAS, immutable editor base, exact tombstone/ABA restore, idempotent retries, missing-version rejection and account epoch isolation.');
+  console.log('PASS: native note CAS, immutable editor base, exact tombstone/ABA restore, idempotent retries, missing-version rejection and account epoch isolation for notes and ordinary favorites.');
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>clearTimeout(watchdog));

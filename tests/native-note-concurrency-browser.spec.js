@@ -36,6 +36,7 @@ function library(){
     const body=route.request().postDataJSON();
     const row=body.entityNotes?.[0] || body.tombstones?.entityNotes?.[0];
     db.writes.push(body);
+    if(body.libraryOwner!==db.owner.id) return route.fulfill({status:409,json:{code:'LIBRARY_OWNER_CHANGED',error:'Llogaria ka ndryshuar.'}});
     if(body.noteOwner!==db.owner.id) return route.fulfill({status:409,json:{code:'NOTE_OWNER_CHANGED',error:'Llogaria ka ndryshuar.'}});
     const receipt=receipts.get(row.operationId);
     if(receipt){

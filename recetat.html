@@ -10,12 +10,12 @@
   <title>DRx | Recetat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/recetat-v2.css?v=20-p2-20261008">
+  <link rel="stylesheet" href="/recetat-v2.css?v=20-prescription-cas-20261010">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v7-focus-20261009" data-drx-sidebar-taxonomy="1" defer></script>
   <script src="/drx-modal-focus.js?v=p1-20261008" defer></script>
-<script src="/recetat-v2.js?v=20-atomic-notes-20261010" defer></script>
+<script src="/recetat-v2.js?v=20-prescription-cas-20261010" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#rxWorkspace">Kalo te krijimi i recetës</a>
@@ -111,6 +111,9 @@
             Recetë e re
           </button>
         </header>
+
+        <section class="rx-prescription-conflicts" id="rxPrescriptionConflicts" aria-label="Receta që kërkojnë krahasim" aria-live="polite" hidden></section>
+        <div class="rx-undo-delete" id="rxUndoDelete" role="status" hidden><span>Fshirja e fundit mund të kthehet.</span><button class="rx-secondary" id="rxUndoDeleteButton" type="button">Kthe recetën</button></div>
 
         <nav class="rx-tabs" id="rxTabs" role="tablist" aria-label="Seksionet e recetave">
           <button class="rx-tab is-active" type="button" role="tab" id="rxTabBtnSource" data-rx-tab="source" aria-controls="rxTabSource" aria-selected="true" tabindex="0">
@@ -360,5 +363,21 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
     </section>
   </div>
   <div class="rx-toast" id="rxToast" role="status" aria-live="polite"></div>
+  <div class="rx-dialog-overlay" id="rxPrescriptionConflict" hidden aria-hidden="true">
+    <section class="rx-dialog rx-prescription-compare" role="dialog" aria-modal="true" aria-labelledby="rxPrescriptionConflictTitle" aria-describedby="rxPrescriptionConflictCopy">
+      <h2 id="rxPrescriptionConflictTitle">Receta ka ndryshuar</h2>
+      <p id="rxPrescriptionConflictCopy">Drafti yt mbetet në këtë pajisje. Krahasoje me versionin e fundit para se të zgjedhësh cilin do të mbash.</p>
+      <div class="rx-prescription-versions">
+        <section><h3>Drafti yt</h3><pre id="rxPrescriptionLocalVersion" tabindex="0"></pre></section>
+        <section><h3>Versioni i fundit në llogari</h3><pre id="rxPrescriptionRemoteVersion" tabindex="0"></pre></section>
+      </div>
+      <p id="rxPrescriptionConflictStatus" role="status" aria-live="polite"></p>
+      <div class="rx-prescription-compare-actions">
+        <button class="rx-ghost" id="rxPrescriptionConflictClose" type="button">Vendos më vonë</button>
+        <button class="rx-secondary" id="rxPrescriptionUseLatest" type="button">Përdor versionin e fundit</button>
+        <button class="rx-primary" id="rxPrescriptionKeepDraft" type="button">Ruaj draftin si version të ri</button>
+      </div>
+    </section>
+  </div>
 </body>
 </html>

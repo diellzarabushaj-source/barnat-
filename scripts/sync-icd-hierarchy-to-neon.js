@@ -165,7 +165,7 @@ async function markFailed(revision, error) {
 }
 
 async function sync(options = {}) {
-  const loaded = await IcdPublicSource.load({ force:true, sheetOnly:true });
+  const loaded = await IcdPublicSource.loadForSync();
   const validation = validateLoaded(loaded);
   const revision = clean(loaded.sourceRevision);
   const current = await existingRevision(revision);

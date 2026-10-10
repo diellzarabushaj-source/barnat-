@@ -48,4 +48,5 @@
 .registry-column-filter footer button{min-height:36px;min-width:76px;padding:8px 15px;border:1px solid #d5deec;border-radius:7px;background:#fff;color:#304863;cursor:pointer}
 .registry-column-filter footer [data-apply]{background:#635bff;border-color:#635bff;color:white}
 .registry-column-filter button:disabled{opacity:.5;cursor:default}
+@media(max-width:760px),(pointer:coarse){.column-filter-value,.column-select-all{min-height:44px}}
 @media(max-width:760px){.registry-column-tools{display:block}.registry-column-tools>label{display:block;margin-bottom:7px}.registry-column-tools>div{width:100%}.registry-column-tools select{flex:1;min-width:0}.registry-column-tools button{padding:0 9px}.registry-column-filter{padding:14px}.column-filter-backdrop{background:rgba(24,39,64,.28)}.column-filter-trigger{min-height:34px}.registry-column-filter-chips{padding:10px}}
