@@ -1,7 +1,7 @@
 {
   "index.html": {
-    "registry-v2.css": "registry-v2-remaining-20261009",
-    "registry-v2.js": "registry-v2-remaining-20261009",
+    "registry-v2.css": "registry-v2-atomic-notes-20261010",
+    "registry-v2.js": "registry-v2-atomic-notes-20261010",
     "registry-v2-dose-calculator.css": "registry-v2-dose-calculator-p1-20261008",
     "registry-v2-dose-calculator.js": "registry-v2-dose-calculator-p1-20261008",
     "drx-modal-focus.js": "p1-20261008",
@@ -9,7 +9,7 @@
   },
   "recetat.html": {
     "recetat-v2.css": "20-p2-20261008",
-    "recetat-v2.js": "20-p2-20261008",
+    "recetat-v2.js": "20-atomic-notes-20261010",
     "drx-modal-focus.js": "p1-20261008",
     "drx-runtime-telemetry.js": "20261009-rum-v1"
   },
@@ -20,7 +20,8 @@
     "drx-runtime-telemetry.js": "20261009-rum-v1"
   },
   "dozologjia.html": {
-    "drx-runtime-telemetry.js": "20261009-rum-v1"
+    "drx-runtime-telemetry.js": "20261009-rum-v1",
+    "phase9-personal-entities-client.js": "drx-phase9-personal-v3"
   },
   "protokollet.html": {
     "drx-runtime-telemetry.js": "20261009-rum-v1"

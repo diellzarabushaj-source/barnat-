@@ -72,6 +72,9 @@ jobs:
             --reporter=line --workers=1 --retries=1 >> /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; printf '\n===== FAILURE DETAIL (last blocks) =====\n'; grep -E -A 30 '[0-9]+\) tests/' /tmp/physician-flow.log | tail -500; exit 1; }
           cat /tmp/physician-flow.log
 
+      - name: Verify note conflicts, exact Undo and account changes on phone and desktop
+        run: pnpm exec playwright test tests/native-note-concurrency-browser.spec.js --config=playwright.registry-v2.config.js --project=chromium
+
       - name: Upload physician diagnostics
         if: always()
         uses: actions/upload-artifact@v4

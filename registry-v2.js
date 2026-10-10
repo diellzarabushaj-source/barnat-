@@ -133,6 +133,7 @@
     preferenceSavePending: false,
     openRowMenuKey: '',
     noteRow: null,
+    noteEdit: null,
     view: 'registry',
     personalQuery: '',
     personalSort: 'recent',
@@ -539,7 +540,7 @@
     }
     await new Promise(resolve => {
       const script = document.createElement('script');
-      script.src = '/phase9-personal-entities-client.js?v=drx-phase9-personal-v2';
+      script.src = '/phase9-personal-entities-client.js?v=drx-phase9-personal-v3';
       script.defer = true;
       script.dataset.drxPersonalLibrary = '1';
       script.addEventListener('load', resolve, { once:true });
@@ -575,11 +576,15 @@
     root.className = 'registry-note-overlay';
     root.hidden = true;
     root.innerHTML = '<section class="registry-note-dialog" role="dialog" aria-modal="true" aria-labelledby="registryNoteTitle"><div class="registry-note-head"><div><p class="eyebrow">Shënim personal</p><h2 id="registryNoteTitle">Shënim për barin</h2></div><button class="registry-note-close" type="button" data-note-close aria-label="Mbyll shënimin">×</button></div><label class="registry-note-field"><span class="registry-note-field-head"><span>Shënimi</span><span class="registry-note-count" id="registryNoteCount">0 / 2000</span></span><textarea id="registryNoteText" maxlength="2000" rows="8" placeholder="Shkruaj shënimin tënd…"></textarea></label><div class="registry-note-actions"><button class="button button-ghost" type="button" data-note-delete>Fshi shënimin</button><div><button class="button button-secondary" type="button" data-note-close>Anulo</button><button class="button button-primary" type="button" data-note-save>Ruaj</button></div></div></section>';
+    const conflict = document.createElement('div'); conflict.id = 'registryNoteConflict'; conflict.className = 'registry-note-conflict'; conflict.hidden = true;
+    conflict.innerHTML = '<p role="status" id="registryNoteConflictStatus"></p><details id="registryNoteLatest" hidden><summary>Versioni i ruajtur</summary><pre id="registryNoteLatestText"></pre></details><button class="button button-secondary" type="button" data-note-conflict-action>Lexo versionin e fundit</button>';
+    root.querySelector('.registry-note-actions').before(conflict);
     document.body.appendChild(root);
     root.addEventListener('click', async event => {
       if (event.target === root || event.target.closest('[data-note-close]')) { closeNoteDialog(); return; }
       if (event.target.closest('[data-note-save]')) { await saveCurrentNote(); return; }
       if (event.target.closest('[data-note-delete]')) { await deleteCurrentNote(); }
+      if (event.target.closest('[data-note-conflict-action]')) { await resolveCurrentNoteConflict(); }
     });
     root.querySelector('#registryNoteText')?.addEventListener('input', () => updateNoteCounter(root));
     root.addEventListener('keydown', event => {
@@ -589,19 +594,34 @@
     return root;
   }
 
+  let noteOpenSequence = 0;
   async function openNoteDialog(row, trigger = document.activeElement) {
+    const sequence = ++noteOpenSequence;
     const returnFocus = trigger?.closest('details')?.querySelector('summary') || trigger;
     const api = await loadPersonalLibrary();
+    if (sequence !== noteOpenSequence) return;
     if (!api) { showToast('Shënimet nuk u ngarkuan. Provo përsëri.'); return; }
     await api.load().catch(() => null);
+    if (sequence !== noteOpenSequence) return;
+    let base;
+    try { base = api.noteBase('product', personalEntityKey(row)); }
+    catch(error) { showToast(error.message); return; }
     state.noteRow = row;
+    const edit = {base,latest:null,conflict:false,busy:false};
+    state.noteEdit = edit;
     const root = ensureNoteDialog();
     const key = personalEntityKey(row);
     root.querySelector('#registryNoteTitle').textContent = row.tradeName || 'Shënim për barin';
     const existing = key ? api.note('product', key) : '';
     root.querySelector('#registryNoteText').value = existing;
+    root.querySelector('#registryNoteText').readOnly = false;
     const deleteButton = root.querySelector('[data-note-delete]');
     if (deleteButton) deleteButton.hidden = !existing.trim();
+    root.querySelector('#registryNoteConflict').hidden = true;
+    root.querySelector('#registryNoteLatest').hidden = true;
+    root.querySelector('[data-note-conflict-action]').textContent = 'Lexo versionin e fundit';
+    root.querySelector('[data-note-save]').disabled = false;
+    if (deleteButton) deleteButton.disabled = false;
     updateNoteCounter(root);
     root.hidden = false;
     document.body.classList.add('registry-note-open');
@@ -609,39 +629,111 @@
   }
 
   function closeNoteDialog() {
+    noteOpenSequence += 1;
     noteFocusRelease?.(); noteFocusRelease = null;
     const root = document.getElementById('registryNoteDialog');
     if (root) root.hidden = true;
     document.body.classList.remove('registry-note-open');
     state.noteRow = null;
+    state.noteEdit = null;
   }
 
-  async function saveCurrentNote() {
+  window.addEventListener('drx:phase9-personal-owner-changed', () => {
+    closeNoteDialog();
+    const textarea = document.getElementById('registryNoteText');
+    if (textarea) textarea.value = '';
+    const latest = document.getElementById('registryNoteLatestText');
+    if (latest) latest.textContent = '';
+    document.getElementById('registryNoteUndo')?.remove();
+    state.personalResolved.clear(); state.personalMisses.clear();
+  });
+
+  function noteEditorCurrent(api,edit) {
+    return state.noteEdit === edit && edit?.base?.owner === clean(api?.state()?.user?.id);
+  }
+
+  function setNoteEditorBusy(edit,busy) {
+    if (state.noteEdit !== edit) return;
+    edit.busy = busy;
+    const root = document.getElementById('registryNoteDialog');
+    root.querySelector('#registryNoteText').readOnly = busy;
+    root.querySelectorAll('[data-note-save],[data-note-delete]').forEach(button => { button.disabled = busy || edit.conflict; });
+    root.querySelector('[data-note-conflict-action]').disabled = busy;
+  }
+
+  function noteEditorFailure(error,api,edit) {
+    if (!noteEditorCurrent(api,edit)) return;
+    if (error?.code === 'NOTE_OWNER_CHANGED') { closeNoteDialog(); showToast(error.message); return; }
+    if (error?.status === 409 && /^NOTE_/.test(error?.code || '')) {
+      edit.conflict = true; edit.latest = null;
+      const root = document.getElementById('registryNoteDialog');
+      root.querySelector('#registryNoteConflict').hidden = false;
+      root.querySelector('#registryNoteLatest').hidden = true;
+      root.querySelector('#registryNoteConflictStatus').textContent = 'Versioni i shënimit ka ndryshuar. Drafti yt mbetet këtu. Lexo versionin e fundit dhe krahasoje para se ta ruash.';
+      root.querySelector('[data-note-conflict-action]').textContent = 'Lexo versionin e fundit';
+      root.querySelector('[data-note-save]').disabled = true;
+      root.querySelector('[data-note-delete]').disabled = true;
+      return;
+    }
+    showToast(error?.message || 'Shënimi nuk u ruajt.');
+  }
+
+  async function resolveCurrentNoteConflict() {
+    const edit = state.noteEdit, row = state.noteRow;
+    const api = await loadPersonalLibrary();
+    if (!row || !edit || edit.busy || !noteEditorCurrent(api,edit)) return;
+    if (edit.latest) return saveCurrentNote({rebase:edit.latest});
+    const button = document.querySelector('[data-note-conflict-action]');
+    button.disabled = true; edit.busy = true;
+    try {
+      await api.load({force:true});
+      if (!noteEditorCurrent(api,edit)) return;
+      edit.latest = api.noteBase('product',personalEntityKey(row));
+      const root = document.getElementById('registryNoteDialog');
+      root.querySelector('#registryNoteLatestText').textContent = edit.latest.content || '(Shënimi është fshirë.)';
+      root.querySelector('#registryNoteLatest').hidden = false;
+      root.querySelector('#registryNoteLatest').open = true;
+      root.querySelector('#registryNoteConflictStatus').textContent = 'Versioni i fundit është më poshtë. Drafti yt është ruajtur në fushën sipër. Mund ta ndryshosh dhe ta ruash si version të ri.';
+      button.textContent = 'Ruaj draftin si version të ri';
+    } catch(error) { noteEditorFailure(error,api,edit); }
+    finally { if (state.noteEdit === edit) { edit.busy = false; button.disabled = false; } }
+  }
+
+  async function saveCurrentNote({rebase=null}={}) {
     const row = state.noteRow;
-    if (!row) return;
+    const edit = state.noteEdit;
+    if (!row || !edit || edit.busy || (edit.conflict && !rebase)) return;
     const api = await loadPersonalLibrary();
     const key = personalEntityKey(row);
     const value = document.getElementById('registryNoteText')?.value || '';
-    if (!api || !key) return showToast('Shënimi nuk mund të ruhet.');
+    if (!api || !key || !noteEditorCurrent(api,edit)) return;
+    const base = rebase || edit.base;
+    setNoteEditorBusy(edit,true);
     const saveButton = document.querySelector('#registryNoteDialog [data-note-save]');
     saveButton?.setAttribute('aria-busy','true');
     if (saveButton) saveButton.disabled = true;
-    try { await api.saveNote('product', key, value); showToast(value.trim() ? 'Shënimi u ruajt.' : 'Shënimi u fshi.'); closeNoteDialog(); }
-    catch (error) { showToast(error?.message || 'Shënimi nuk u ruajt.'); }
-    finally { saveButton?.removeAttribute('aria-busy'); if (saveButton) saveButton.disabled = false; }
+    try {
+      await api.saveNote('product', key, value, {owner:base.owner,expectedVersion:base.rowVersion});
+      if (noteEditorCurrent(api,edit)) { showToast(value.trim() ? 'Shënimi u ruajt.' : 'Shënimi u fshi.'); closeNoteDialog(); }
+    }
+    catch (error) { noteEditorFailure(error,api,edit); }
+    finally { if (state.noteEdit === edit) { setNoteEditorBusy(edit,false); saveButton?.removeAttribute('aria-busy'); } }
   }
 
   async function deleteCurrentNote() {
     const row = state.noteRow;
+    const edit = state.noteEdit;
+    if (!row || !edit || edit.busy || edit.conflict) return;
     const api = await loadPersonalLibrary();
     const key = personalEntityKey(row);
-    if (!api || !key) return showToast('Shënimi nuk mund të fshihet.');
+    if (!api || !key || !noteEditorCurrent(api,edit)) return;
+    setNoteEditorBusy(edit,true);
     const deleteButton = document.querySelector('#registryNoteDialog [data-note-delete]');
     deleteButton?.setAttribute('aria-busy','true');
     if (deleteButton) deleteButton.disabled = true;
-    try { await deleteNoteWithUndo(api,key); closeNoteDialog(); }
-    catch (error) { showToast(error?.message || 'Shënimi nuk u fshi.'); }
-    finally { deleteButton?.removeAttribute('aria-busy'); if (deleteButton) deleteButton.disabled = false; }
+    try { await deleteNoteWithUndo(api,key,edit.base); if (noteEditorCurrent(api,edit)) closeNoteDialog(); }
+    catch (error) { noteEditorFailure(error,api,edit); }
+    finally { if (state.noteEdit === edit) { setNoteEditorBusy(edit,false); deleteButton?.removeAttribute('aria-busy'); } }
   }
 
   function favoriteRecordForProductKey(key, snapshot = personalSnapshot()) {
@@ -898,7 +990,7 @@
           ? 'Rifresko bibliotekën personale para se të vazhdosh.'
           : [meta.activeSubstance && meta.activeSubstance !== name ? meta.activeSubstance : '', meta.strength, meta.form].filter(Boolean).join(' · ');
         const registry = meta.registryNumber ? `Nr. regjistri ${meta.registryNumber}` : '';
-        const note = view === 'notes' ? String(item.content || '').slice(0, 2000) : '';
+        const note = view === 'notes' ? String(item.content || '') : '';
         const timeLabel = personalTimeLabel(item, view);
         return `<article class="personal-item" data-personal-key="${escapeHtml(meta.id)}">
           <span class="personal-item-icon" aria-hidden="true">${view === 'notes' ? NOTE_ICON : STAR_ICON}</span>
@@ -1990,16 +2082,18 @@
   }
 
   const pendingNoteDeletes = new Set();
-  async function deleteNoteWithUndo(api,key) {
+  async function deleteNoteWithUndo(api,key,base=api?.noteBase('product',key)) {
     if (!api) throw new Error('Shënimet nuk u ngarkuan.');
-    if (pendingNoteDeletes.has(key)) return;
+    const pendingKey = `${base.owner}|${key}`;
+    if (pendingNoteDeletes.has(pendingKey)) return;
     const owner = state.preferenceOwner;
     const libraryOwner = clean(api.state()?.user?.id || api.state()?.user?.email);
     const sameOwner = () => owner === state.preferenceOwner && libraryOwner === clean(api.state()?.user?.id || api.state()?.user?.email);
-    const previous = api.note('product',key);
-    pendingNoteDeletes.add(key);
-    try { await api.deleteNote('product',key); }
-    finally { pendingNoteDeletes.delete(key); }
+    const previous = base.content;
+    let acknowledged;
+    pendingNoteDeletes.add(pendingKey);
+    try { acknowledged = await api.deleteNote('product',key,{owner:base.owner,expectedVersion:base.rowVersion}); }
+    finally { pendingNoteDeletes.delete(pendingKey); }
     if (!sameOwner()) return;
     if (!previous) return;
     let region = document.getElementById('registryNoteUndo');
@@ -2014,11 +2108,16 @@
       try {
         await api.load({force:true});
         if (!sameOwner()) { message.remove(); return; }
-        if (api.note('product',key)) throw new Error('Shënimi ka ndryshuar; rikthimi nuk e mbishkruan.');
-        await api.saveNote('product',key,previous); message.remove(); showToast('Shënimi u rikthye.');
-      } catch(error) { undo.disabled = false; copy.textContent = error.message + ' '; }
+        await api.saveNote('product',key,previous,{owner:acknowledged.owner,expectedVersion:acknowledged.rowVersion,restore:true});
+        if (!sameOwner()) { message.remove(); return; }
+        message.remove(); showToast('Shënimi u rikthye.');
+      } catch(error) {
+        if (!sameOwner() || error?.code === 'NOTE_OWNER_CHANGED') { message.remove(); return; }
+        undo.disabled = error?.status === 409;
+        copy.textContent = error?.status === 409 ? 'Shënimi ka ndryshuar; rikthimi nuk e mbishkruan. ' : error.message + ' ';
+      }
     });
-    setTimeout(() => { if (!message.contains(document.activeElement) && !undo.disabled) message.remove(); },15000);
+    setTimeout(() => { if (!message.contains(document.activeElement)) message.remove(); },15000);
   }
   function showToast(message) {
     el.toast.textContent = message;

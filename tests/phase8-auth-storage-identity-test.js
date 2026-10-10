@@ -72,7 +72,7 @@ assert.match(userStore, /UserIdentity\.attachSessionIdentity/);
 
 const library = read('lib/user-library.js');
 assert.match(library, /UserIdentity\.storageUidFromUser\(user\)/);
-assert.match(library, /user_id:authUid/);
+assert.match(library, /p_auth_uid:authUid/);
 assert.match(library, /prescriptionContext\(storageUid,/);
 
 const personalRegistry = read('lib/personal-registry-supabase.js');

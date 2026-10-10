@@ -66,7 +66,7 @@ function emptyLibrary(){
   return {
     ok:true,version:1,
     user:{id:'phase9-browser-user',email:'phase9@example.test',role:'editor',name:'Phase 9 QA'},
-    prescriptions:[],prescriptionChapters:[],favorites:[],entityNotes:[],drugs:[],
+    prescriptions:[],prescriptionChapters:[],favorites:[],entityNotes:[],noteVersions:[],drugs:[],
     tombstones:{prescriptions:[],favorites:[],entityNotes:[],drugs:[]},
     generatedAt:new Date().toISOString(),
   };
@@ -106,13 +106,24 @@ async function installRoutes(page,library){
         const key=`${item.entityType}|${item.entityKey}`;
         library.favorites=library.favorites.filter(row=>`${row.entityType}|${row.entityKey}`!==key);
       }
-      for(const item of body.entityNotes || []){
-        upsertBy(library.entityNotes,{entityType:item.entityType,entityKey:item.entityKey,content:item.content,clientUpdatedAt:item.clientUpdatedAt || new Date().toISOString(),serverUpdatedAt:new Date().toISOString()},row=>`${row.entityType}|${row.entityKey}`);
+      const noteOperations=[];
+      for(const [items,deleted] of [[body.entityNotes || [],false],[body.tombstones?.entityNotes || [],true]]){
+        for(const item of items){
+          const key=`${item.entityType}|${item.entityKey}`;
+          assert.equal(body.noteOwner,library.user.id,'The note owner comes from the current snapshot');
+          const current=library.noteVersions.find(row=>`${row.entityType}|${row.entityKey}`===key);
+          assert.equal(item.expectedVersion,current?.rowVersion || 0,'Fixture enforces the captured note version');
+          assert.match(item.operationId,/^[0-9a-f-]{36}$/i);
+          const rowVersion=(current?.rowVersion || 0)+1;
+          upsertBy(library.noteVersions,{entityType:item.entityType,entityKey:item.entityKey,rowVersion,deleted},row=>`${row.entityType}|${row.entityKey}`);
+          library.entityNotes=library.entityNotes.filter(row=>`${row.entityType}|${row.entityKey}`!==key);
+          library.tombstones.entityNotes=library.tombstones.entityNotes.filter(row=>`${row.entityType}|${row.entityKey}`!==key);
+          if(deleted)library.tombstones.entityNotes.push({entityType:item.entityType,entityKey:item.entityKey,rowVersion,deletedAt:item.deletedAt});
+          else library.entityNotes.push({entityType:item.entityType,entityKey:item.entityKey,content:item.content,rowVersion,clientUpdatedAt:item.clientUpdatedAt,serverUpdatedAt:new Date().toISOString()});
+          noteOperations.push({operationId:item.operationId,entityType:item.entityType,entityKey:item.entityKey,rowVersion,deleted});
+        }
       }
-      for(const item of body.tombstones?.entityNotes || []){
-        const key=`${item.entityType}|${item.entityKey}`;
-        library.entityNotes=library.entityNotes.filter(row=>`${row.entityType}|${row.entityKey}`!==key);
-      }
+      library.noteOperations=noteOperations;
       library.generatedAt=new Date().toISOString();
     }
     await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(library)});

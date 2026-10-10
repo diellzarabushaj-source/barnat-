@@ -40,7 +40,7 @@ const pageRuntimes = scripts.filter(src => !/(?:phase9-personal-entities-client|
 
 assert.equal(styles.length, 2, 'Dozologjia must keep exactly two stylesheet owners');
 assert.equal(styles[1], '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009');
-assert.ok(scripts.includes('/phase9-personal-entities-client.js?v=phase9b'));
+assert.ok(scripts.includes('/phase9-personal-entities-client.js?v=drx-phase9-personal-v3'));
 assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v7-focus-20261009'));
 assert.ok(scripts.includes('/pediatric-common-liquid-core.js?v=10'));
 assert.ok(scripts.includes('/pediatric-weight-age-core.js?v=1'));

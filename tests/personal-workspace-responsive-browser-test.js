@@ -15,7 +15,7 @@ const products = [
   {id:'33333333-3333-4333-8333-333333333333',tradeName:'PRODUKTTESTUESMEIDENTITETSHUMËTËGJATËPATËNDARËDHEPAHAPËSIRAPËRKONTROLL',activeSubstance:'Substancë testuese',strength:'500 mg',form:'Tabletë',registryNumber:101},
 ];
 const favorites = products.map((row,index)=>({entityType:'product',entityKey:row.id,payload:{...row,drugId:row.id},serverUpdatedAt:`2026-09-30T0${9-index}:00:00Z`}));
-const snapshot = emptyUserLibrarySnapshot({favorites,entityNotes:favorites.slice(0,2).map(row=>({...row,content:'Shënim testues me tekst të gjatë. '+ 'https://example.test/'.repeat(12)}))});
+const snapshot = emptyUserLibrarySnapshot({favorites,entityNotes:favorites.slice(0,2).map(row=>({...row,rowVersion:1,content:'Shënim testues me tekst të gjatë. '+ 'https://example.test/'.repeat(12)})),noteVersions:favorites.slice(0,2).map(row=>({entityType:row.entityType,entityKey:row.entityKey,rowVersion:1,deleted:false}))});
 (async()=>{
   const server = spawn(process.execPath,['tests/clinical-smoke-server.js'],{cwd:ROOT,env:{...process.env,PORT:'4197'},stdio:['ignore','pipe','pipe']});
   let browser,checked=0;

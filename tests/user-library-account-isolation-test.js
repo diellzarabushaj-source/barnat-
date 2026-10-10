@@ -27,7 +27,8 @@ assert.match(backend,/fetchRows\('user_favorites'/);
 assert.match(backend,/fetchRows\('user_notes'/);
 assert.match(backend,/const storageUid = UserIdentity\.storageUidFromUser\(user\)/);
 assert.match(backend,/user_id:storageUid/);
-assert.match(backend,/user_id:authUid/);
+assert.match(backend,/p_auth_uid:authUid/);
+assert.match(backend,/NOTE_OWNER_CHANGED/);
 
 // Favorites/notes are private server relations and therefore use the server
 // credential path rather than a public browser table read.

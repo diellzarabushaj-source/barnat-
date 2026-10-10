@@ -114,7 +114,7 @@ assert.match(js, /registryNoteCount/);
 assert.match(js, /data-personal-retry/);
 assert.match(js, /payload\.tradeName \|\| payload\.label \|\| payload\.name \|\| payload\.drugName/);
 assert.match(js, /breadcrumbCurrent/);
-assert.match(js, /drx-phase9-personal-v2/);
+assert.match(js, /drx-phase9-personal-v3/);
 assert.match(js, /entityType === 'product' \|\| entityType === 'drug'/);
 assert.match(js, /data-personal-type/);
 assert.match(js, /meta\.productId \|\| meta\.id/);
