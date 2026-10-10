@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const CORE_SRC = '/sidebar-taxonomy-core-v3.js?v=sidebar-taxonomy-v7-focus-20261009';
+  const CORE_SRC = '/sidebar-taxonomy-core-v3.js?v=sidebar-taxonomy-v8-reachability-20261010';
   // Observe the initial reads before the asynchronously loaded core is ready.
   // Store only clinical GET responses; account/patient APIs and writes stay online.
   let firstReadOwner = '';

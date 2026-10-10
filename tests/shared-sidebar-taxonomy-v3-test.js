@@ -3,6 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
@@ -11,6 +12,13 @@ const sharedLoader = read('sidebar-taxonomy-v3.js');
 // The loader owns the Antibiotikët nav entry and pulls in the canonical core,
 // which owns the taxonomy, the worker cutover and the personal counts.
 const shared = read('sidebar-taxonomy-core-v3.js');
+const runtimeAssetManifest = JSON.parse(read('runtime-asset-manifest.json'));
+const sidebarRelease = 'sidebar-taxonomy-v8-reachability-20261010';
+for (const [page, assets] of Object.entries(runtimeAssetManifest)) {
+  assert.equal(assets['sidebar-taxonomy-v3.js'], sidebarRelease, `${page}: the manifest must preserve the new shared sidebar release during build`);
+  assert.ok(read(page).includes(`/sidebar-taxonomy-v3.js?v=${sidebarRelease}`), `${page}: the versioned sidebar loader is missing`);
+}
+assert.ok(sharedLoader.includes(`/sidebar-taxonomy-core-v3.js?v=${sidebarRelease}`), 'The loader must use the corresponding exact-url core release');
 const icdSidebar = read('icd-sidebar-v3.js');
 const shell = read('tailadmin-shell.js');
 const shellCore = read('tailadmin-shell-core.js');
@@ -166,4 +174,112 @@ assert.doesNotMatch(classificationCss, /\.group-panel|\.group-list|\.group-row/)
 assert.match(classificationJs, /window\.DRxSidebarTaxonomy\?\.syncAtc\?\.\(\)/);
 assert.match(classificationJs, /if \(!hadGroup\) writeHash/);
 
-console.log('Shared sidebar taxonomy v3: ATC + ICD nesting, strict runtime versions, Brucellosis source override and canonical page order passed.');
+async function verifyDeviceReachability() {
+  // Execute the real device and renewal owners together. Wi-Fi can remain
+  // connected while the origin is unreachable, and return without an online
+  // event; a cached session must never stand in for a reconnect probe.
+  const start = shared.indexOf('  function initDeviceExperience() {');
+  const end = shared.indexOf('\n  function init() {', start);
+  assert.ok(start >= 0 && end > start, 'Device owners must remain available for the behavior fixture');
+  const listeners = new Map();
+  const listen = (type, listener) => {
+    if (!listeners.has(type)) listeners.set(type, []);
+    listeners.get(type).push(listener);
+  };
+  const nodes = [];
+  const element = () => {
+    const children = new Map();
+    const node = { dataset:{}, hidden:false, textContent:'', attributes:{},
+      setAttribute(name, value) { this.attributes[name] = value; },
+      addEventListener() {}, focus() {}, prepend() {}, append() {}, contains() { return false; },
+      querySelector(selector) {
+        if (!children.has(selector)) children.set(selector, element());
+        return children.get(selector);
+      },
+    };
+    nodes.push(node);
+    return node;
+  };
+  const host = element();
+  const messages = [], requests = [];
+  let available = false, responseStatus = 200, responseOffline = false;
+  const scope = {
+    AbortSignal, CustomEvent:class { constructor(type, options) { this.type = type; this.detail = options.detail; } },
+    navigator:{ onLine:true, serviceWorker:{ controller:{ postMessage(message) { messages.push(message); } }, addEventListener() {}, ready:new Promise(() => {}) } },
+    document:{ hidden:false, createElement:element,
+      getElementById(id) { return nodes.find(node => node.id === id); },
+      querySelector() { return host; }, addEventListener:listen,
+    },
+    location:{ href:'https://device.example/index.html', origin:'https://device.example' }, URL,
+    window:{ DRxDeviceReachable:false, addEventListener:listen, setInterval() {},
+      dispatchEvent(event) { for (const listener of listeners.get(event.type) || []) listener(event); },
+      async fetch(url, options) {
+        requests.push({url, options});
+        if (!available) throw new TypeError('Origin unreachable');
+        return { ok:responseStatus === 200, status:responseStatus, async json() { return { authenticated:responseStatus === 200, offline:responseOffline }; } };
+      },
+    },
+  };
+  vm.runInNewContext(shared.slice(start, end) + '\ninitSessionRenewal(); initDeviceExperience();', scope);
+  const status = nodes.find(node => node.id === 'drxDeviceStatus');
+  const latestOnline = () => messages.at(-1)?.online;
+  assert.equal(status.textContent, 'Pa internet');
+  assert.equal(status.dataset.offline, 'true');
+  assert.equal(latestOnline(), false, 'An unreachable origin must also put the worker offline while navigator.onLine is true');
+  const emit = type => scope.window.dispatchEvent({type});
+  const settle = () => new Promise(resolve => setImmediate(resolve));
+  emit('pageshow'); emit('pageshow'); emit('visibilitychange');
+  await settle();
+  assert.equal(requests.length, 1, 'Concurrent resume signals must share one bounded probe');
+  assert.equal(requests[0].url, '/api/auth?offline_probe=1');
+  assert.equal(requests[0].options.cache, 'no-store');
+  assert.equal(requests[0].options.credentials, 'same-origin');
+  assert.ok(requests[0].options.signal instanceof AbortSignal, 'Reconnect requests retain their timeout');
+  assert.equal(status.textContent, 'Pa internet', 'A failed probe must keep the offline copy available');
+  assert.equal(latestOnline(), false);
+
+  available = true;
+  responseOffline = true;
+  emit('pageshow');
+  await settle();
+  assert.equal(latestOnline(), false, 'A sanitized offline session must never prove network recovery');
+  assert.equal(status.textContent, 'Pa internet');
+  responseOffline = false;
+  emit('pageshow');
+  await settle();
+  assert.equal(requests.at(-1).url, '/api/auth?offline_probe=1', 'Same-Wi-Fi recovery must bypass the offline auth lease');
+  assert.equal(scope.window.DRxDeviceReachable, true);
+  assert.equal(status.textContent, 'Online');
+  assert.equal(status.dataset.offline, 'false');
+  assert.equal(latestOnline(), true, 'Recovered UI and worker must share their effective online state');
+  emit('pageshow');
+  await settle();
+  assert.equal(requests.at(-1).url, '/api/auth', 'Normal renewal must resume after a confirmed reconnect');
+
+  scope.navigator.onLine = false;
+  emit('offline');
+  assert.equal(status.textContent, 'Pa internet');
+  assert.equal(latestOnline(), false);
+  scope.navigator.onLine = true;
+  emit('online');
+  await settle();
+  assert.equal(status.textContent, 'Online', 'Explicit physical reconnect remains available');
+  assert.equal(latestOnline(), true);
+
+  scope.window.DRxDeviceReachable = false;
+  scope.window.dispatchEvent(new scope.CustomEvent('drx:device-network', {detail:{online:false}}));
+  responseStatus = 503;
+  emit('pageshow');
+  await settle();
+  assert.equal(status.textContent, 'Pa internet', 'An unavailable auth server must not confirm recovery');
+  assert.equal(latestOnline(), false);
+  responseStatus = 403;
+  emit('pageshow');
+  await settle();
+  assert.equal(latestOnline(), true, 'A reachable but forbidden auth response confirms connectivity without authentication');
+  assert.equal(status.textContent, 'Online');
+}
+
+verifyDeviceReachability().then(() => {
+  console.log('Shared sidebar taxonomy v3: ATC + ICD nesting, strict runtime versions, Brucellosis source override, canonical page order and offline/reconnect behavior passed.');
+}).catch(error => { console.error(error); process.exitCode = 1; });

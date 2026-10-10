@@ -6,8 +6,8 @@ const root = path.resolve(__dirname, '..');
 const migrations = fs.readdirSync(path.join(root, 'supabase/migrations'))
   .filter(name => /^\d+_user_library_atomic_cas\.sql$/.test(name));
 assert.equal(migrations.length, 1);
-const sql = fs.readFileSync(path.join(root, 'supabase/migrations', migrations[0]), 'utf8');
-const fixture = fs.readFileSync(path.join(root, 'supabase/tests/user-library-atomic-cas-rollback.sql'), 'utf8');
+const sql = fs.readFileSync(path.join(root, 'supabase/migrations', migrations[0]), 'utf8').replace(/\r\n/g,'\n');
+const fixture = fs.readFileSync(path.join(root, 'supabase/tests/user-library-atomic-cas-rollback.sql'), 'utf8').replace(/\r\n/g,'\n');
 assert.match(sql, /security invoker set search_path = ''/);
 assert.doesNotMatch(sql, /security definer/);
 assert.match(sql, /current_user <> 'service_role'/);
@@ -43,5 +43,11 @@ for (const phrase of [
   'RPC leaked write fence', 'direct update bypassed active fence',
   'direct delete bypassed active fence', 'service RPC refused active fence',
   'untrusted role spoofed protected RPC', 'auth-owner receipt cleanup failed',
+  'fenced outer create failed', 'fenced outer update or receipt retry failed',
+  'fenced outer tombstone failed', 'fenced outer exact restore failed',
+  'fenced later Rx conflict retained note or receipt',
+  'fenced ordinary failure retained protected write', 'fenced rollback poisoned exact retry',
+  'fenced effective service permissions failed', 'deployed fence grants permit bypass',
+  'fenced direct insert accepted', 'fenced direct update accepted', 'fenced direct delete accepted',
 ]) assert.ok(fixture.includes(phrase), `Missing generated PostgreSQL scenario: ${phrase}`);
 console.log('Whole-library transaction, rollback, ownership and generated SQL fixture contracts passed.');
