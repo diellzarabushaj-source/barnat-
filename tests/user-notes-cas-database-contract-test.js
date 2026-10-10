@@ -11,14 +11,14 @@ assert.equal(migrations.length, 1, 'Atomic notes must have one authoritative add
 const sql = fs.readFileSync(path.join(migrationDirectory, migrations[0]), 'utf8');
 const rollback = fs.readFileSync(path.join(root, 'supabase', 'tests', 'user-notes-atomic-cas-rollback.sql'), 'utf8');
 
-function body(name) {
+function body(name, source = sql) {
   const declaration = `create function ${name}(`;
-  const start = sql.indexOf(declaration);
+  const start = source.indexOf(declaration);
   assert.ok(start >= 0, `${name} must exist.`);
-  const begin = sql.indexOf('as $function$', start);
-  const end = sql.indexOf('$function$;', begin + 14);
+  const begin = source.indexOf('as $function$', start);
+  const end = source.indexOf('$function$;', begin + 14);
   assert.ok(begin > start && end > begin, `${name} must have a bounded function body.`);
-  return { declaration:sql.slice(start, begin), body:sql.slice(begin, end) };
+  return { declaration:source.slice(start, begin), body:source.slice(begin, end) };
 }
 
 const rpc = body('public.write_user_notes_cas');
@@ -75,9 +75,30 @@ assert.match(sql, /revoke all on function note_write_private\.guard_note_write\(
 assert.match(sql, /after delete on auth\.users/);
 assert.match(sql, /after delete on public\.medindex_users/);
 
+// The additive migration is immutable. Once Phase B exists in migration
+// history, its narrower legacy publication check must accompany activation.
+const phaseBNames = fs.readdirSync(migrationDirectory).filter(name => /^\d+_activate_user_notes_atomic_cas_fence\.sql$/.test(name));
+assert.ok(phaseBNames.length <= 1, 'The activation migration must be authoritative.');
+if (phaseBNames.length) {
+  const activation = fs.readFileSync(path.join(migrationDirectory, phaseBNames[0]), 'utf8');
+  const publication = body('note_write_private.validate_live_drug_note_product', activation);
+  assert.match(publication.declaration, /security invoker set search_path = ''/);
+  assert.doesNotMatch(publication.declaration, /security definer/);
+  assert.match(publication.body, /new\.entity_type='drug' and new\.deleted_at is null/);
+  assert.match(publication.body, /from public\.drugs[\s\S]*id=new\.drug_id[\s\S]*is_published=true[\s\S]*editorial_status='published'/);
+  assert.match(publication.body, /'Canonical legacy note product is not active' using errcode='23514'/);
+  assert.match(activation, /revoke all on function note_write_private\.validate_live_drug_note_product\(\)[\s\S]*from public,anon,authenticated,service_role;/);
+  assert.match(activation, /before insert or update on public\.user_notes/);
+  assert.match(activation, /update note_write_private\.control set fence_enabled=true/);
+  assert.match(activation, /revoke insert,update,delete on public\.user_notes from public,anon,authenticated/);
+  assert.match(activation, /revoke truncate on public\.user_notes,public\.user_favorites from public,anon,authenticated,service_role/);
+  assert.ok(activation.indexOf('create trigger validate_live_legacy_note_product') < activation.indexOf('set fence_enabled=true'), 'Install the publication guard before activating the fence.');
+}
+
 // SQL evidence is a generated fixture, not an inspection of a user's notes.
 assert.match(rollback, /\bbegin;/);
 assert.match(rollback, /set local role service_role;/);
+assert.match(rollback, /begin;[\s\S]*update note_write_private\.control set fence_enabled=false where singleton;[\s\S]*do \$fixture\$/);
 assert.match(rollback, /\brollback;[\s\S]*deployed_fence_enabled/);
 assert.match(rollback, /auth_a uuid := pg_catalog\.gen_random_uuid\(\)/);
 for (const scenario of [
@@ -89,6 +110,11 @@ for (const scenario of [
   'direct native versions did not increment', 'direct legacy versions did not increment',
   'direct native write bypassed active fence', 'direct legacy write bypassed active fence',
   'untrusted role spoofed fence', 'auth-owner cascade or receipt cleanup failed',
+  'fresh legacy native inactive creation accepted',
+  'fresh legacy native inactive edit or partial batch accepted',
+  'accepted legacy retry after unpublish was rejected',
+  'accepted product retry after unpublish was rejected',
+  'inactive legacy native tombstone was rejected',
 ]) assert.ok(rollback.includes(scenario), `Missing SQL evidence: ${scenario}`);
 
 console.log('Atomic note database security, preflight and rollout contracts passed.');

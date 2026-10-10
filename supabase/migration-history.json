@@ -1221,6 +1221,10 @@
     {
       "name": "user_notes_atomic_cas",
       "version": "20261009230022"
+    },
+    {
+      "name": "activate_user_notes_atomic_cas_fence",
+      "version": "20261010094917"
     }
   ]
 }
