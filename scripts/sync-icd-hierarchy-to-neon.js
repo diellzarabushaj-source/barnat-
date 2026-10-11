@@ -30,7 +30,7 @@ function nodeRecord(node, dataset, revision) {
   const pathText = breadcrumb
     .map(item => `${clean(item.code)} ${clean(item.displayTitle || item.albanianDraft || item.englishTitle)}`.trim())
     .filter(Boolean)
-    .join(' › ');
+    .join(' â€º ');
   const record = {
     revision,
     code:clean(node.code),
@@ -95,7 +95,7 @@ function validateLoaded(loaded) {
   const nodes = loaded?.data?.nodes;
   const validation = HierarchyValidation.validate(Array.isArray(nodes) ? nodes : [], { strictCounts:true });
   if (!clean(loaded?.sourceRevision)) throw new Error('Revision-i i Google Sheet-it ICD mungon.');
-  if (loaded?.sourceType !== 'google-sheet') throw new Error('Importi duhet të lexojë drejtpërdrejt Google Sheet-in editorial.');
+  if (loaded?.sourceType !== 'google-sheet') throw new Error('Importi duhet tÃ« lexojÃ« drejtpÃ«rdrejt Google Sheet-in editorial.');
   return validation;
 }
 
@@ -175,8 +175,19 @@ async function sync(options = {}) {
       skipped:true,
       revision,
       counts:validation,
-      reason:'Revision-i i Google Sheet-it është tashmë aktiv në Neon.',
+      reason:'Revision-i i Google Sheet-it Ã«shtÃ« tashmÃ« aktiv nÃ« Neon.',
     };
+  }
+
+  if (current?.activated_at || current?.status === 'superseded') {
+    if (current.status !== 'superseded' || !current.activated_at) {
+      throw new Error('Published ICD revision metadata is inconsistent; maintenance review is required.');
+    }
+    if (options.dryRun) return {ok:true,dryRun:true,reused:true,revision,counts:validation,records:0,batches:0};
+    // Published snapshots stay immutable. Revalidate and reuse them in one
+    // atomic switch, including a safe retry after a lost activation response.
+    const activation = await activateRevision(revision);
+    return {ok:true,skipped:false,reused:true,revision,counts:validation,records:0,batches:0,activation};
   }
 
   const records = loaded.data.nodes.map(node => nodeRecord(node, loaded.data, revision));

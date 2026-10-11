@@ -415,7 +415,7 @@ jobs:
                 join pg_catalog.pg_namespace rn on rn.oid=c.relnamespace
                 where t.tgfoid=p.oid and not t.tgisinternal and (
                   (rn.nspname='auth' and c.relname='users' and n.nspname not in ('auth','storage')) or
-                  (rn.nspname='public' and c.relname in ('user_notes','user_favorites','user_prescriptions','medindex_users'))
+                  (rn.nspname='public' and c.relname in ('user_notes','user_favorites','user_prescriptions','medindex_users','icd_hierarchy_nodes','icd_hierarchy_revisions'))
                 )
               )
             ) and not exists (select 1 from pg_catalog.pg_depend d where d.classid='pg_catalog.pg_proc'::regclass and d.objid=p.oid and d.deptype='e')
@@ -431,7 +431,7 @@ jobs:
 
           with relations as (
             select c.*,n.nspname from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid=c.relnamespace
-            where (n.nspname='public' and c.relname in ('user_notes','user_favorites','user_prescriptions','medindex_users'))
+            where (n.nspname='public' and c.relname in ('user_notes','user_favorites','user_prescriptions','medindex_users','icd_hierarchy_nodes','icd_hierarchy_revisions'))
               or (n.nspname in ('note_write_private','prescription_write_private') and c.relname in ('control','receipts'))
           ), entries as (
             select nspname || '.' || relname as identity,jsonb_build_object(
@@ -450,7 +450,7 @@ jobs:
           join pg_catalog.pg_proc p on p.oid=t.tgfoid join pg_catalog.pg_namespace fn on fn.oid=p.pronamespace
           where not t.tgisinternal and (
             (rn.nspname='auth' and c.relname='users' and fn.nspname not in ('auth','storage')) or
-            (rn.nspname='public' and c.relname in ('user_notes','user_favorites','user_prescriptions','medindex_users'))
+            (rn.nspname='public' and c.relname in ('user_notes','user_favorites','user_prescriptions','medindex_users','icd_hierarchy_nodes','icd_hierarchy_revisions'))
           );
 
           select 'personal_write_schemas_fingerprint=' || coalesce(md5(string_agg(n.nspname || jsonb_build_object(
@@ -548,6 +548,10 @@ jobs:
           select 'v3_bindings_count=' || count(*) from public.dose_rule_products_v3;
           select 'v3_bindings_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.dose_rule_products_v3 t;
           select 'published_rules_count=' || count(*) from public.dose_rules_v3 where editorial_status='published';
+          select 'icd_nodes_count=' || count(*) from public.icd_hierarchy_nodes;
+          select 'icd_nodes_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by revision,code)),md5('')) from public.icd_hierarchy_nodes t;
+          select 'icd_revisions_count=' || count(*) from public.icd_hierarchy_revisions;
+          select 'icd_revisions_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by revision)),md5('')) from public.icd_hierarchy_revisions t;
           SQL
 
           psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
@@ -742,6 +746,10 @@ jobs:
           select 'v3_bindings_count=' || count(*) from public.dose_rule_products_v3;
           select 'v3_bindings_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text))),md5('')) from public.dose_rule_products_v3 t;
           select 'published_rules_count=' || count(*) from public.dose_rules_v3 where editorial_status='published';
+          select 'icd_nodes_count=' || count(*) from public.icd_hierarchy_nodes;
+          select 'icd_nodes_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by revision,code)),md5('')) from public.icd_hierarchy_nodes t;
+          select 'icd_revisions_count=' || count(*) from public.icd_hierarchy_revisions;
+          select 'icd_revisions_fingerprint=' || coalesce(md5(string_agg(md5(to_jsonb(t)::text),'' order by revision)),md5('')) from public.icd_hierarchy_revisions t;
           SQL
 
           psql "$DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
@@ -863,7 +871,7 @@ jobs:
               return out
           source_manifest=manifest(__import__('os').environ['RUNNER_TEMP'] + '/drx-source-manifest.txt')
           restored_manifest=manifest(__import__('os').environ['RUNNER_TEMP'] + '/drx-restore-manifest.txt')
-          required={'migration_history_count','migration_history_fingerprint','application_functions_fingerprint','personal_write_tables_fingerprint','personal_write_triggers_fingerprint','personal_write_schemas_fingerprint','personal_write_controls_fingerprint'}
+          required={'icd_nodes_count','icd_nodes_fingerprint','icd_revisions_count','icd_revisions_fingerprint','migration_history_count','migration_history_fingerprint','application_functions_fingerprint','personal_write_tables_fingerprint','personal_write_triggers_fingerprint','personal_write_schemas_fingerprint','personal_write_controls_fingerprint'}
           if not required.issubset(source_manifest) or source_manifest!=restored_manifest:
               raise SystemExit('Restore manifest is incomplete or differs from source')
           evidence={
@@ -879,7 +887,7 @@ jobs:
               "migrationHistoryVerified":True,
               "personalWriteCatalogParity":True,
               "customAuthTriggersVerified":True,
-              "verifiedScope":["clinical_manifest","migration_history","application_security_catalogs_and_control_fences"],
+              "verifiedScope":["clinical_manifest","migration_history","application_security_catalogs_and_control_fences","immutable_icd_snapshots_and_guards"],
               "privateContentParityVerified":False,
               "decryptionVerified":False,
               "encryptionKeyRecoveryVerified":False,
