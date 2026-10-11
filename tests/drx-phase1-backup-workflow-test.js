@@ -13,6 +13,11 @@ const evidence=require('../data/drx-phase1-backup-restore-evidence-v1.json');
 assert.match(workflow,/secrets\.SUPABASE_DB_URL/);
 assert.match(workflow,/supabase\/setup-cli@v1/);
 assert.match(workflow,/version: 2\.116\.0/);
+const pushMatch=workflow.match(/^  push:\r?\n([\s\S]*?)^permissions:/m);
+assert.ok(pushMatch,'Actual main push configuration must remain inspectable.');
+assert.match(pushMatch[1],/branches: \[main\]/);
+assert.match(pushMatch[1],/^      - "supabase\/migrations\/\*\*"$/m,
+  'Every main migration, including the committed fence activation, must rerun actual backup/restore automatically.');
 assert.match(workflow,/supabase db dump --db-url "\$SUPABASE_DB_URL"/);
 assert.match(workflow,/--role-only/);
 assert.match(workflow,/--use-copy --data-only/);
@@ -100,6 +105,12 @@ assert.match(restore,/restore_sql history --single-transaction[\s\S]*?DROP SCHEM
 assert.match(restore,/restore_sql auth_triggers --single-transaction --file "\$BACKUP_DIR\/auth_custom_triggers\.sql"/);
 assert.match(restore,/SET session_replication_role = replica/);
 assert.match(workflow,/pg_dump "\$SOURCE_DATABASE_URL" --schema-only --table=auth\.mfa_recovery_code_sets --table=auth\.mfa_recovery_codes/);
+const boundedAuthDump=workflow.match(/sh -c 'exec pg_dump "\$SOURCE_DATABASE_URL" --schema-only ([^']+)'/);
+assert.ok(boundedAuthDump,'Managed Auth restoration must capture only confirmed absent table definitions.');
+assert.deepEqual([...boundedAuthDump[1].matchAll(/--table=([a-z_.]+)/g)].map(match=>match[1]).sort(),
+  ['auth.mfa_recovery_code_sets','auth.mfa_recovery_codes','auth.scim_tokens','auth.scim_users']);
+assert.doesNotMatch(boundedAuthDump[1],/--schema\b|\*|--clean|--data-only/,
+  'Managed Auth compatibility must not become an unrestricted or destructive schema/data capture.');
 assert.match(workflow,/> "\$BACKUP_DIR\/auth_recovery_schema\.sql" 2> "\$RUNNER_TEMP\/drx-restore-auth-schema-dump\.log"/);
 assert.match(workflow,/public\.ecr\.aws\/supabase\/postgres:\$SOURCE_POSTGRES_VERSION/);
 assert.match(restore,/restore_sql managed_auth --file "\$BACKUP_DIR\/auth_recovery_schema\.sql"/);
@@ -311,6 +322,79 @@ try {
 } finally {fs.rmSync(authExpiryDir,{recursive:true,force:true});}
 console.log(`Bounded Auth expiry capture: ${authExpiryCases.length} executable exact, missing, incompatible, multiple and private failure output cases passed without database access.`);
 
+// Auth additions and both Storage lifecycle columns were confirmed against
+// source catalogs and official migrations after the exact pinned images. Execute
+// every metadata guard with synthetic output without accessing a database.
+const boundedAuthSpecs=[
+  {name:'tables',label:'table allowlist',expected:'AUTH_RECOVERY_TABLES_CONFIRMED',append:false,
+    requirements:["count(*)=4","array['mfa_recovery_code_sets','mfa_recovery_codes','scim_tokens','scim_users']",
+      "c.relkind='r'","pg_catalog.pg_get_userbyid(c.relowner)='supabase_auth_admin'",'not c.relrowsecurity','not c.relforcerowsecurity']},
+  {name:'factor',label:'factor compatibility',expected:"ALTER TYPE auth.factor_type ADD VALUE IF NOT EXISTS 'recovery_code' AFTER 'phone';",append:true,
+    requirements:["array_agg(e.enumlabel::text order by e.enumsortorder)=array['totp','webauthn','phone','recovery_code']",
+      "n.nspname='auth' and t.typname='factor_type' and t.typtype='e'"]},
+  {name:'lifecycle',platform:'Storage',prefix:'storage',label:'lifecycle compatibility',
+    expected:'ALTER TABLE storage.buckets ADD COLUMN IF NOT EXISTS lifecycle_configuration jsonb, ADD COLUMN IF NOT EXISTS lifecycle_configuration_generation uuid;',append:true,
+    requirements:['count(*)=2',"array['lifecycle_configuration','lifecycle_configuration_generation']",
+      "c.relkind='r'","pg_catalog.pg_get_userbyid(c.relowner)='supabase_storage_admin'",'c.relrowsecurity','not c.relforcerowsecurity',
+      "a.attname='lifecycle_configuration' and a.atttypid='pg_catalog.jsonb'::pg_catalog.regtype",
+      "a.attname='lifecycle_configuration_generation' and a.atttypid='pg_catalog.uuid'::pg_catalog.regtype",
+      'a.atttypmod=-1','not a.attnotnull','not a.atthasdef','d.oid is null',"a.attidentity=''","a.attgenerated=''",
+      "n.nspname='storage' and c.relname='buckets'","a.attname in ('lifecycle_configuration','lifecycle_configuration_generation')",
+      'a.attnum>0','not a.attisdropped']},
+];
+const boundedAuthDir=fs.mkdtempSync(path.join(os.tmpdir(),'drx-bounded-auth-capture-'));
+assert.equal(path.dirname(path.resolve(boundedAuthDir)),path.resolve(os.tmpdir()));
+let boundedAuthCases=0;
+try{
+  for(const spec of boundedAuthSpecs){
+    const begin=`# BEGIN exact source ${spec.platform || 'Auth'} ${spec.label}`;
+    const end=`# END exact source ${spec.platform || 'Auth'} ${spec.label}`;
+    const start=workflow.indexOf(begin);
+    const finish=workflow.indexOf(end,start);
+    assert.ok(start>=0 && finish>start,`Missing bounded source guard: ${spec.name}`);
+    const capture=workflow.slice(start-12,finish+end.length).replace(/\r\n/g,'\n').replace(/^ {10}/gm,'');
+    const queryMatch=capture.match(/<<'SQL'[^\n]*\n([\s\S]*?)^SQL$/m);
+    assert.ok(queryMatch,`Missing source catalog SELECT: ${spec.name}`);
+    for(const condition of spec.requirements)assert.ok(queryMatch[1].includes(condition),`Missing bounded ${spec.name} requirement: ${condition}`);
+    assert.doesNotMatch(queryMatch[1],/\b(?:from|join)\s+(?:auth|storage)\./i,'Compatibility guards may read only PostgreSQL catalogs.');
+    assert.doesNotMatch(queryMatch[1],/^\s*(?:alter|drop|create|insert|update|delete)\b/im,'No source DDL or DML may execute.');
+    assert.ok(finish<workflow.indexOf('sha256sum "$BACKUP_DIR"/*.sql'),'Every bounded managed-schema addition must precede backup hashing.');
+    const compatibilityPath=`"$RUNNER_TEMP/drx-restore-${spec.prefix || 'auth'}-${spec.name}.${spec.append ? 'sql' : 'txt'}"`;
+    assert.ok(cleanup.includes(compatibilityPath),'Every temporary compatibility capture must be cleaned.');
+    if(spec.append)assert.ok(capture.includes('>> "$BACKUP_DIR/auth_recovery_schema.sql"'),'Bounded managed-schema additions must replay in the existing isolated admin transaction.');
+    for(const [name,output,captureFails,accepted] of [
+      ['matching',spec.expected+'\n',false,true],['missing','',false,false],
+      ['incompatible','SOURCE_PLATFORM_SCHEMA_MISMATCH\n',false,false],
+      ['multiple',spec.expected+'\n'+spec.expected+'\n',false,false],['capture-error','',true,false]]){
+      boundedAuthCases++;
+      const temporary=path.join(boundedAuthDir,`${spec.name}-${name}`); fs.mkdirSync(temporary);
+      const portable=temporary.replace(/\\/g,'/');
+      const schemaFile=path.join(temporary,'auth_recovery_schema.sql');
+      const originalSchema='-- exact captured MFA/SCIM schema and expiry addition\n';
+      fs.writeFileSync(schemaFile,originalSchema);
+      const privateMarker='SYNTHETIC_BOUNDED_AUTH_CONTEXT_MUST_NOT_APPEAR';
+      const standIn=`psql() {
+        cat > "$RUNNER_TEMP/catalog-query.sql"
+        if [ "$DRX_AUTH_CAPTURE_FAILS" = "1" ]; then printf '%s\\n' '${privateMarker}' >&2; return 3; fi
+        printf '%s' "$DRX_AUTH_CATALOG_OUTPUT"
+      }`;
+      const result=spawnSync(bash,['-c',`set -euo pipefail\n${standIn}\n${capture}\n`],{encoding:'utf8',timeout:15000,env:{
+        PATH:process.env.PATH,SYSTEMROOT:process.env.SYSTEMROOT || '',WINDIR:process.env.WINDIR || '',
+        RUNNER_TEMP:portable,BACKUP_DIR:portable,SUPABASE_DB_URL:direct,
+        DRX_AUTH_CATALOG_OUTPUT:output,DRX_AUTH_CAPTURE_FAILS:captureFails ? '1' : '0'}});
+      assert.equal(result.error,undefined,`Bounded catalog guard must execute: ${spec.name}/${name}`);
+      assert.equal(result.status,accepted ? 0 : 1,`Only exact compatible source metadata is accepted: ${spec.name}/${name}`);
+      assert.equal(result.stderr,'');
+      assert.ok(!result.stdout.includes(privateMarker),'Raw source diagnostics cannot appear in public output.');
+      assert.ok(!result.stdout.includes(spec.expected),'Catalog guard/output DDL cannot appear in public output.');
+      assert.equal(fs.readFileSync(schemaFile,'utf8'),accepted && spec.append ? originalSchema+spec.expected+'\n' : originalSchema,
+        'Unvalidated or repeated compatibility must never alter the hashed schema replay.');
+      assert.equal(fs.readFileSync(path.join(temporary,'catalog-query.sql'),'utf8'),queryMatch[1]);
+    }
+  }
+}finally{fs.rmSync(boundedAuthDir,{recursive:true,force:true});}
+console.log(`Bounded MFA/SCIM tables, factor enum and Storage lifecycle columns: ${boundedAuthCases} executable exact, missing, incompatible, repeated and private failure capture cases passed without database access.`);
+
 // Execute the literal restore function with synthetic command stand-ins. Only
 // managed Auth stages may use the verified local admin container, and both must
 // remain transactional. Schema/data/history must keep the local postgres path.
@@ -406,3 +490,154 @@ try {
   assert.deepEqual(diagnostic('connection failure '+secret,sql),{failedStage:'data',sqlstate:'unavailable',copyRelation:null});
 } finally {fs.rmSync(diagnosticDir,{recursive:true,force:true});}
 console.log('Seven executable restore-diagnostic privacy and SQLSTATE cases passed.');
+
+
+// Execute the actual bounded catalog builder and comparison. Fingerprint equality
+// stays strict, while only names, privilege booleans, counts and hashes can leave
+// the disposable runner; raw definitions/config/default/policy text cannot.
+function catalogPython(marker){
+  const start=workflow.indexOf(`# BEGIN ${marker}`); const end=workflow.indexOf(`# END ${marker}`,start);
+  assert.ok(start>=0 && end>start,`Missing actual catalog diagnostic: ${marker}`);
+  const block=workflow.slice(start,end).replace(/\r\n/g,'\n').replace(/^ {10}/gm,'');
+  const match=block.match(/<<'PY'\n([\s\S]*?)^PY$/m);
+  assert.ok(match,`Missing executable catalog Python: ${marker}`); return match[1];
+}
+const catalogBuilder=catalogPython('safe catalog component builder');
+const catalogComparison=catalogPython('safe catalog mismatch comparison');
+const catalogDir=fs.mkdtempSync(path.join(os.tmpdir(),'drx-catalog-component-diagnostic-'));
+assert.equal(path.dirname(path.resolve(catalogDir)),path.resolve(os.tmpdir()));
+for(const file of ['drx-restore-security-components.sql','drx-source-security-components.ndjson','drx-restore-security-components.ndjson']){
+  assert.ok(cleanup.includes(`"$RUNNER_TEMP/${file}"`),'Ephemeral component diagnostics must be cleaned.');
+}
+assert.match(restore,/if ! diff -u "\$RUNNER_TEMP\/drx-source-manifest\.txt" "\$RUNNER_TEMP\/drx-restore-manifest\.txt"; then[\s\S]*?safe catalog mismatch comparison[\s\S]*?exit 1\s*fi/);
+assert.match(workflow,/--file "\$RUNNER_TEMP\/drx-restore-security-components\.sql"[\s\\]*> "\$RUNNER_TEMP\/drx-source-security-components\.ndjson" 2> "\$RUNNER_TEMP\/drx-restore-source-components\.log"/);
+assert.match(restore,/--file "\$RUNNER_TEMP\/drx-restore-security-components\.sql"[\s\\]*> "\$RUNNER_TEMP\/drx-restore-security-components\.ndjson" 2> "\$RUNNER_TEMP\/drx-restore-target-components\.log"/);
+let catalogCases=0;
+try{
+  const catalogEnv={...process.env,RUNNER_TEMP:catalogDir};
+  const exactSql=securitySql.replace(/\r\n/g,'\n').replace(/^ {10}/gm,'');
+  fs.writeFileSync(path.join(catalogDir,'drx-restore-security-manifest.sql'),exactSql);
+  const built=spawnSync(python,['-c',catalogBuilder],{encoding:'utf8',env:catalogEnv});
+  assert.equal(built.status,0,built.stderr); assert.equal(built.stdout,''); assert.equal(built.stderr,'');
+  const componentsSql=fs.readFileSync(path.join(catalogDir,'drx-restore-security-components.sql'),'utf8').replace(/\r\n/g,'\n');
+  for(const [cte,label] of [['functions','application_functions'],['relations','personal_write_tables']]){
+    const entry=exactSql.match(new RegExp(`(with ${cte} as \\([\\s\\S]*?\\n\\))\\nselect '${label}_fingerprint=`));
+    assert.ok(entry); assert.ok(componentsSql.includes(entry[1]),'Diagnostics must derive the exact existing fingerprint entry definitions.');
+  }
+  assert.match(componentsSql,/md5\(\(entry->'definition'\)::text\)/);
+  assert.match(componentsSql,/md5\(\(entry->'config'\)::text\)/);
+  assert.match(componentsSql,/md5\(\(entry->'acl'\)::text\)/);
+  assert.doesNotMatch(componentsSql,/^\s*(?:alter|drop|create|insert|update|delete)\b/im);
+  assert.match(componentsSql,/pg_catalog\.pg_default_acl/);
+  assert.match(componentsSql,/rolname in \('postgres','supabase_admin'\)/);
+  assert.match(componentsSql,/values \('GLOBAL'\),\('public'\),\('private'\),\('note_write_private'\),\('prescription_write_private'\)/);
+  assert.match(componentsSql,/pg_catalog\.acldefault\(k\.object_type::"char",c\.oid\)/);
+  assert.match(componentsSql,/case when cardinality\(acl\)=0 then null::pg_catalog\.aclitem\[\] else acl end/);
+  assert.doesNotMatch(componentsSql,/\b(?:from|join)\s+(?:auth\.users|public\.(?:user_notes|user_favorites|user_prescriptions|medindex_users)|(?:note_write_private|prescription_write_private)\.receipts)\b/i);
+  const roleNames=['anon','authenticated','service_role'];
+  const privilegeNames=['SELECT','INSERT','UPDATE','DELETE','TRUNCATE','REFERENCES','TRIGGER'];
+  const fn={kind:'function',identity:'public.synthetic_rpc()',components:{owner:'postgres',definitionHash:'a'.repeat(32),configHash:'b'.repeat(32),aclHash:'c'.repeat(32),effective:roleNames.map(role=>[role,false])}};
+  const table={kind:'table',identity:'public.user_prescriptions',components:{owner:'postgres',rls:true,forceRls:false,
+    privileges:roleNames.flatMap(role=>privilegeNames.map(privilege=>[role,privilege,false])),
+    columnsHash:'d'.repeat(32),columnsCount:3,constraintsHash:'e'.repeat(32),constraintsCount:2,policiesHash:'f'.repeat(32),policiesCount:1}};
+  const secret='SYNTHETIC_PRIVATE_CATALOG_EXPRESSION_MUST_NOT_APPEAR';
+  function compare(source,restored){
+    catalogCases++;
+    for(const [name,rows] of [['drx-source-security-components.ndjson',source],['drx-restore-security-components.ndjson',restored]]){
+      fs.writeFileSync(path.join(catalogDir,name),typeof rows==='string' ? rows : rows.map(row=>JSON.stringify(row)).join('\n')+(rows.length ? '\n' : ''));
+    }
+    const result=spawnSync(python,['-c',catalogComparison],{encoding:'utf8',env:catalogEnv});
+    assert.equal(result.status,0,result.stderr); assert.equal(result.stderr,''); assert.ok(!result.stdout.includes(secret));
+    const failureText=fs.readFileSync(path.join(catalogDir,'drx-restore-failure.json'),'utf8');
+    assert.ok(!failureText.includes(secret)); const failure=JSON.parse(failureText);
+    assert.equal(failure.failedStage,'manifest_comparison');
+    assert.equal(failure.restoreVerified,undefined,'Diagnostics cannot convert any manifest mismatch into verification.');
+    return failure.catalogDiagnostic;
+  }
+  const same=compare([fn,table],[fn,table]);
+  assert.equal(same.status,'NO_COMPONENT_DIFFERENCE'); assert.equal(same.differenceCount,0);
+  assert.deepEqual(same.sourceCounts,{function:1,defaultAcl:0,table:1});
+  const changedFn=structuredClone(fn); changedFn.components.definitionHash='1'.repeat(32); changedFn.components.aclHash='2'.repeat(32); changedFn.components.effective[0][1]=true;
+  const changedTable=structuredClone(table); changedTable.components.privileges[0][2]=true; changedTable.components.constraintsHash='3'.repeat(32);
+  const changed=compare([fn,table],[changedFn,changedTable]);
+  assert.equal(changed.status,'DIFFERENCES'); assert.equal(changed.differenceCount,5);
+  assert.deepEqual(changed.differenceCountsByKindAndComponent,{function:{aclHash:1,definitionHash:1,effective:1},defaultAcl:{},table:{constraintsHash:1,privileges:1}});
+  assert.deepEqual(changed.differences.map(item=>item.component).sort(),['aclHash','constraintsHash','definitionHash','effective','privileges']);
+  assert.deepEqual(changed.differences.find(item=>item.component==='effective').source,[['anon',false]]);
+  assert.deepEqual(changed.differences.find(item=>item.component==='privileges').restored,[['anon','SELECT',true]]);
+  const defaults={kind:'defaultAcl',identity:'postgres:public:f',components:{grants:['PUBLIC',...roleNames,'postgres'].map(role=>[role,'EXECUTE',false])}};
+  const changedDefaults=structuredClone(defaults); changedDefaults.components.grants[1][2]=true;
+  const aclDifference=compare([defaults],[changedDefaults]);
+  assert.equal(aclDifference.differenceCount,1); assert.equal(aclDifference.differences[0].component,'grants');
+  assert.deepEqual(aclDifference.differences[0].source,[['anon','EXECUTE',false]]);
+  assert.deepEqual(aclDifference.differences[0].restored,[['anon','EXECUTE',true]]);
+  const absent=compare([fn],[table]); assert.equal(absent.differenceCount,2);
+  assert.ok(absent.differences.every(item=>item.component==='present' && typeof item.source==='boolean' && typeof item.restored==='boolean'));
+  const injected=structuredClone(fn); injected.rawDefinition=secret; injected.components.unapprovedRawConfig=secret;
+  assert.equal(compare([injected],[fn]).differenceCount,0,'Only approved component fields may be emitted.');
+  const invalid=structuredClone(fn); invalid.components.definitionHash=secret;
+  assert.equal(compare([invalid],[fn]).status,'UNAVAILABLE','Invalid hashes must produce only a generic safe diagnostic.');
+  assert.equal(compare(secret,[fn]).status,'UNAVAILABLE','Malformed input must not appear in a traceback or evidence.');
+  assert.equal(compare([fn,fn],[fn]).status,'UNAVAILABLE','Duplicate identities cannot silently replace an entry.');
+  const many=Array.from({length:51},(_,index)=>({...structuredClone(fn),identity:`public.synthetic_${index}()`}));
+  const bounded=compare(many,[]); assert.equal(bounded.differenceCount,51); assert.equal(bounded.differences.length,25); assert.equal(bounded.truncated,true);
+  assert.deepEqual(bounded.differenceCountsByKindAndComponent,{function:{present:51},defaultAcl:{},table:{}},'Complete kind/component counts must survive individual diagnostic truncation.');
+}finally{fs.rmSync(catalogDir,{recursive:true,force:true});}
+console.log(`Safe catalog component diagnostic: exact fingerprint builder and ${catalogCases} executable mismatch, missing, privacy, invalid and bounded-output cases passed.`);
+
+
+// Execute local schema preparation through the real dispatcher. These fixtures
+// verify caller/transaction/privacy wiring; actual PostgreSQL guard/rollback
+// semantics are recorded separately by the outputs-only embedded PG verifier.
+const defaultsMatch=restore.match(/          # BEGIN guarded local default ACL preparation\r?\n([\s\S]*?)          # END guarded local default ACL preparation/);
+assert.ok(defaultsMatch);
+const defaultsCapture=defaultsMatch[1].replace(/\r\n/g,'\n').replace(/^ {10}/gm,'');
+const defaultsSqlMatch=defaultsCapture.match(/<<'SQL'\n([\s\S]*?)^SQL$/m);
+assert.ok(defaultsSqlMatch);const defaultsSql=defaultsSqlMatch[1];
+assert.deepEqual([...defaultsSql.matchAll(/^ALTER DEFAULT PRIVILEGES (.+);$/gm)].map(match=>match[1]),
+  ['TABLES','FUNCTIONS','SEQUENCES'].map(kind=>`FOR ROLE postgres IN SCHEMA public REVOKE ALL ON ${kind} FROM anon, authenticated, service_role`));
+for(const condition of ["current_user IS DISTINCT FROM 'postgres'","cardinality(allowed_recipients) IS DISTINCT FROM 4",
+  "d.defaclnamespace=0 OR n.nspname IN ('private','note_write_private','prescription_write_private')",
+  "defaclobjtype NOT IN ('r','f','S')",'a.grantee<>ALL(allowed_recipients)','a.grantor<>creator','OR a.is_grantable',
+  'jsonb_build_array(creator,creator,privilege,false)',"('S','SELECT'),('S','UPDATE'),('S','USAGE')",'d.oid IS NULL','IS DISTINCT FROM e.acl',"pg_catalog.acldefault('f',creator)","a.grantee=0 AND a.privilege_type='EXECUTE' AND NOT a.is_grantable"]){
+  assert.ok(defaultsSql.includes(condition),`Missing fail-closed local default ACL requirement: ${condition}`);
+}
+assert.doesNotMatch(defaultsSql,/\b(?:GRANT|CASCADE)\b/,'Preparation may not add privileges or delete objects.');
+assert.doesNotMatch(defaultsCapture,/SUPABASE_DB_URL|BACKUP_DIR|supabase_admin/,'Preparation must use only the current_user postgres local path.');
+assert.match(defaultsCapture,/restore_sql schema --single-transaction --file "\$RUNNER_TEMP\/drx-restore-postgres-defaults\.sql"/);
+assert.ok(restore.indexOf('# BEGIN guarded local default ACL preparation')>restore.indexOf('docker inspect "$RESTORE_CONTAINER"'));
+assert.ok(restore.indexOf('# END guarded local default ACL preparation')<restore.indexOf('restore_sql schema --file "$BACKUP_DIR/schema.sql"'),
+  'Default grants must be removed before source application objects are created, preserving source capture/replay ordering.');
+assert.ok(cleanup.includes('"$RUNNER_TEMP/drx-restore-postgres-defaults.sql"'));
+const localAssignment=restore.match(/DB_URL='postgresql:\/\/postgres:postgres@127\.0\.0\.1:54322\/postgres'/);
+assert.ok(localAssignment);
+const defaultsDir=fs.mkdtempSync(path.join(os.tmpdir(),'drx-local-default-transaction-'));
+assert.equal(path.dirname(path.resolve(defaultsDir)),path.resolve(os.tmpdir()));
+try{
+  for(const fails of [false,true]){
+    const directory=path.join(defaultsDir,fails ? 'reject' : 'accept');fs.mkdirSync(directory);
+    const portable=directory.replace(/\\/g,'/');const privateMarker='SYNTHETIC_DEFAULT_GUARD_CONTEXT_MUST_NOT_APPEAR';
+    const standIn=`psql() {
+      printf '%s\\0' "$@" > "$RUNNER_TEMP/observed-args"
+      local previous="" argument
+      for argument in "$@"; do
+        if [ "$previous" = "--file" ]; then cat "$argument" > "$RUNNER_TEMP/observed.sql"; fi
+        previous="$argument"
+      done
+      if [ "$DRX_DEFAULTS_FAIL" = "1" ]; then printf '%s\\n' 'psql:/tmp/defaults.sql:1: ERROR:  P0001' 'CONTEXT: ${privateMarker}' >&2; return 3; fi
+    }
+    python3() { command "${python.replace(/\\/g,'/')}" "$@"; }`;
+    const result=spawnSync(bash,['-c',`set -euo pipefail\n${standIn}\n${restoreFunction}\n${localAssignment[0]}\n${defaultsCapture}`],
+      {encoding:'utf8',timeout:15000,env:{...process.env,RUNNER_TEMP:portable,GITHUB_WORKSPACE:ROOT.replace(/\\/g,'/'),DRX_DEFAULTS_FAIL:fails ? '1' : '0'}});
+    assert.equal(result.error,undefined);assert.equal(result.status,fails ? 1 : 0);assert.equal(result.stderr,'');
+    assert.ok(!result.stdout.includes(privateMarker));
+    assert.equal(fs.readFileSync(path.join(directory,'observed.sql'),'utf8'),defaultsSql,'The bounded guard SQL must be replayed exactly.');
+    const args=fs.readFileSync(path.join(directory,'observed-args'),'utf8').split('\0').slice(0,-1);
+    assert.equal(args[0],'postgresql://postgres:postgres@127.0.0.1:54322/postgres');
+    assert.ok(args.includes('--single-transaction'));assert.ok(args.includes('ON_ERROR_STOP=1'));
+    if(fails){
+      assert.deepEqual(JSON.parse(fs.readFileSync(path.join(directory,'drx-restore-failure.json'),'utf8')),{failedStage:'schema',sqlstate:'P0001',copyRelation:null});
+    }
+  }
+}finally{fs.rmSync(defaultsDir,{recursive:true,force:true});}
+console.log('Guarded local default ACL preparation: exact three revokes, safe preconditions/order and two executable local transaction/privacy dispatcher cases passed.');

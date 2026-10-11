@@ -53,6 +53,20 @@ for(const width of [320,390,760,1440])test(`Prescription editor preserves drafts
  await page.locator('#rxTabBtnLibrary').click();await expect(page.locator('[data-open-saved="rx-browser"]')).toBeVisible();
  await page.locator('[data-open-saved="rx-browser"]').click();await page.locator('#rxTabBtnCompose').click();
  await expect(page.locator('#rxComposer')).toHaveValue(initial.sourceText);
+ if(width===320){
+  const reviewPositions=await page.locator('#rxDraftPersistence').evaluate(status=>{
+   const original=status.textContent,review=document.querySelector('#rxClinicalReview input');
+   try{return ['Po ruhet drafti…','Drafti u ruajt në këtë pajisje.','',
+    'Drafti nuk u ruajt në këtë pajisje. Mbaje faqen hapur ose kopjo recetën.',
+    'Drafti u rikthye. Verifiko sërish të dhënat klinike para ruajtjes.'].map(message=>{
+     status.textContent=message;const box=review.getBoundingClientRect();return {message,x:box.x,y:box.y};
+    });}finally{status.textContent=original;}
+  });
+  for(const position of reviewPositions){
+   expect(position.x,position.message+' must not move the review checkbox horizontally').toBe(reviewPositions[0].x);
+   expect(position.y,position.message+' must not move the review checkbox vertically').toBe(reviewPositions[0].y);
+  }
+ }
  store.payload={...clone(initial),sourceText:'Versioni i fundit nga pajisja tjetër'};store.rowVersion=2;
  await page.locator('#rxClinicalReview input').check();await page.locator('#rxSave').click();
  await expect(page.locator('#rxPrescriptionConflicts')).toBeVisible();

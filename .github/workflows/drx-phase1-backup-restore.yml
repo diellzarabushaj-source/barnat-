@@ -9,6 +9,7 @@ on:
       - "data/drx-phase1-baseline-v1.json"
       - "tests/drx-phase1-backup-workflow-test.js"
       - "scripts/backup-restore-diagnostic.py"
+      - "supabase/migrations/**"
 
 permissions:
   contents: read
@@ -251,16 +252,38 @@ jobs:
           test -s "$BACKUP_DIR/history_schema.sql"
           test -s "$BACKUP_DIR/history_data.sql"
 
-          # The pinned local Auth service predates the source's MFA recovery
-          # tables. Capture their actual schema, ownership and constraints;
-          # never synthesize a replacement or omit their backed-up data.
+          # CLI 2.116.0 pins Auth v2.196.0, through migration 20260625000000.
+          # Source catalogs and official later migrations confirm four new
+          # MFA/SCIM tables, one expiry column and one factor enum value. Capture
+          # only those exact additions; never omit their backed-up data.
           if [ "${{ steps.credential.outputs.mode }}" = "db_url" ]; then
+            # BEGIN exact source Auth table allowlist
+            if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 \
+              --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never --tuples-only --no-align \
+              <<'SQL' > "$RUNNER_TEMP/drx-restore-auth-tables.txt" 2> "$RUNNER_TEMP/drx-restore-auth-tables-catalog.log"; then
+          select case when count(*)=4
+            and array_agg(c.relname::text order by c.relname)=array['mfa_recovery_code_sets','mfa_recovery_codes','scim_tokens','scim_users']
+            and bool_and(c.relkind='r' and pg_catalog.pg_get_userbyid(c.relowner)='supabase_auth_admin'
+              and not c.relrowsecurity and not c.relforcerowsecurity)
+            then 'AUTH_RECOVERY_TABLES_CONFIRMED' else 'SOURCE_AUTH_TABLE_SCHEMA_MISMATCH' end
+          from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid=c.relnamespace
+          where n.nspname='auth' and c.relname in ('mfa_recovery_code_sets','mfa_recovery_codes','scim_tokens','scim_users');
+          SQL
+              echo "::error::Source Auth table catalog capture failed; raw diagnostics are not published."
+              exit 1
+            fi
+            if ! printf '%s\n' 'AUTH_RECOVERY_TABLES_CONFIRMED' \
+              | cmp --silent - "$RUNNER_TEMP/drx-restore-auth-tables.txt"; then
+              echo "::error::Source Auth table allowlist is absent or incompatible; exact isolated compatibility is required."
+              exit 1
+            fi
+            # END exact source Auth table allowlist
             if ! docker run --rm --network host \
               -e SOURCE_DATABASE_URL="$SUPABASE_DB_URL" \
               "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" \
-              sh -c 'exec pg_dump "$SOURCE_DATABASE_URL" --schema-only --table=auth.mfa_recovery_code_sets --table=auth.mfa_recovery_codes' \
+              sh -c 'exec pg_dump "$SOURCE_DATABASE_URL" --schema-only --table=auth.mfa_recovery_code_sets --table=auth.mfa_recovery_codes --table=auth.scim_tokens --table=auth.scim_users' \
               > "$BACKUP_DIR/auth_recovery_schema.sql" 2> "$RUNNER_TEMP/drx-restore-auth-schema-dump.log"; then
-              echo "::error::Source MFA recovery schema capture failed; raw diagnostics are not published."
+              echo "::error::Source allowlisted Auth schema capture failed; raw diagnostics are not published."
               exit 1
             fi
             test -s "$BACKUP_DIR/auth_recovery_schema.sql"
@@ -291,6 +314,63 @@ jobs:
             printf '\n' >> "$BACKUP_DIR/auth_recovery_schema.sql"
             cat "$RUNNER_TEMP/drx-restore-auth-expiry.sql" >> "$BACKUP_DIR/auth_recovery_schema.sql"
             # END exact source Auth expiry compatibility
+            # BEGIN exact source Auth factor compatibility
+            if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 \
+              --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never --tuples-only --no-align \
+              <<'SQL' > "$RUNNER_TEMP/drx-restore-auth-factor.sql" 2> "$RUNNER_TEMP/drx-restore-auth-factor-catalog.log"; then
+          select case when array_agg(e.enumlabel::text order by e.enumsortorder)=array['totp','webauthn','phone','recovery_code']
+            then 'ALTER TYPE auth.factor_type ADD VALUE IF NOT EXISTS ''recovery_code'' AFTER ''phone'';'
+            else 'SOURCE_AUTH_FACTOR_SCHEMA_MISMATCH' end
+          from pg_catalog.pg_type t join pg_catalog.pg_namespace n on n.oid=t.typnamespace
+          join pg_catalog.pg_enum e on e.enumtypid=t.oid
+          where n.nspname='auth' and t.typname='factor_type' and t.typtype='e';
+          SQL
+              echo "::error::Source Auth factor catalog capture failed; raw diagnostics are not published."
+              exit 1
+            fi
+            if ! printf '%s\n' "ALTER TYPE auth.factor_type ADD VALUE IF NOT EXISTS 'recovery_code' AFTER 'phone';" \
+              | cmp --silent - "$RUNNER_TEMP/drx-restore-auth-factor.sql"; then
+              echo "::error::Source Auth factor enum is absent or incompatible; exact isolated compatibility is required."
+              exit 1
+            fi
+            cat "$RUNNER_TEMP/drx-restore-auth-factor.sql" >> "$BACKUP_DIR/auth_recovery_schema.sql"
+            # END exact source Auth factor compatibility
+            # CLI 2.116.0 pins Storage v1.70.3 through tenant migration 0062.
+            # Source catalogs through 0072 add only these two data columns (0068).
+            # Native Storage functions/indexes remain outside application parity.
+            # Keep the historical Auth file/stage name; this hashed replay contains
+            # only bounded managed-schema additions, applied by isolated admin.
+            # BEGIN exact source Storage lifecycle compatibility
+            if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 \
+              --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never --tuples-only --no-align \
+              <<'SQL' > "$RUNNER_TEMP/drx-restore-storage-lifecycle.sql" 2> "$RUNNER_TEMP/drx-restore-storage-lifecycle-catalog.log"; then
+          select case when count(*)=2
+            and array_agg(a.attname::text order by a.attname)=array['lifecycle_configuration','lifecycle_configuration_generation']
+            and bool_and(c.relkind='r' and pg_catalog.pg_get_userbyid(c.relowner)='supabase_storage_admin'
+              and c.relrowsecurity and not c.relforcerowsecurity
+              and ((a.attname='lifecycle_configuration' and a.atttypid='pg_catalog.jsonb'::pg_catalog.regtype)
+                or (a.attname='lifecycle_configuration_generation' and a.atttypid='pg_catalog.uuid'::pg_catalog.regtype))
+              and a.atttypmod=-1 and not a.attnotnull and not a.atthasdef
+              and d.oid is null and a.attidentity='' and a.attgenerated='')
+            then 'ALTER TABLE storage.buckets ADD COLUMN IF NOT EXISTS lifecycle_configuration jsonb, ADD COLUMN IF NOT EXISTS lifecycle_configuration_generation uuid;'
+            else 'SOURCE_STORAGE_LIFECYCLE_SCHEMA_MISMATCH' end
+          from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid=c.relnamespace
+          join pg_catalog.pg_attribute a on a.attrelid=c.oid
+          left join pg_catalog.pg_attrdef d on d.adrelid=a.attrelid and d.adnum=a.attnum
+          where n.nspname='storage' and c.relname='buckets'
+            and a.attname in ('lifecycle_configuration','lifecycle_configuration_generation')
+            and a.attnum>0 and not a.attisdropped;
+          SQL
+              echo "::error::Source Storage lifecycle catalog capture failed; raw diagnostics are not published."
+              exit 1
+            fi
+            if ! printf '%s\n' 'ALTER TABLE storage.buckets ADD COLUMN IF NOT EXISTS lifecycle_configuration jsonb, ADD COLUMN IF NOT EXISTS lifecycle_configuration_generation uuid;' \
+              | cmp --silent - "$RUNNER_TEMP/drx-restore-storage-lifecycle.sql"; then
+              echo "::error::Source Storage lifecycle columns are absent or incompatible; exact isolated compatibility is required."
+              exit 1
+            fi
+            cat "$RUNNER_TEMP/drx-restore-storage-lifecycle.sql" >> "$BACKUP_DIR/auth_recovery_schema.sql"
+            # END exact source Storage lifecycle compatibility
           fi
 
 
@@ -384,6 +464,62 @@ jobs:
           end,'' order by schema_name)) from (values ('note_write_private'),('prescription_write_private')) controls(schema_name);
           SQL
 
+          # BEGIN safe catalog component builder
+          python3 - <<'PY'
+          import os, re
+          from pathlib import Path
+          directory=Path(os.environ['RUNNER_TEMP'])
+          sql=(directory / 'drx-restore-security-manifest.sql').read_text()
+          functions=re.search(r"(with functions as \(.*?\n\))\nselect 'application_functions_fingerprint=",sql,re.S)
+          relations=re.search(r"(with relations as \(.*?\n\))\nselect 'personal_write_tables_fingerprint=",sql,re.S)
+          if functions is None or relations is None:
+              raise SystemExit('Catalog component extraction requires the exact fingerprint entries')
+          function_output="""
+          select jsonb_build_object('kind','function','identity',identity,'components',jsonb_build_object(
+            'owner',entry->'owner','definitionHash',md5((entry->'definition')::text),
+            'configHash',md5((entry->'config')::text),'aclHash',md5((entry->'acl')::text),
+            'effective',entry->'effective'))::text from entries order by identity;
+          """
+          table_output="""
+          select jsonb_build_object('kind','table','identity',identity,'components',jsonb_build_object(
+            'owner',entry->'owner','rls',entry->'rls','forceRls',entry->'force_rls','privileges',entry->'privileges',
+            'columnsHash',md5((entry->'columns')::text),
+            'columnsCount',case when jsonb_typeof(entry->'columns')='array' then jsonb_array_length(entry->'columns') else 0 end,
+            'constraintsHash',md5((entry->'constraints')::text),
+            'constraintsCount',case when jsonb_typeof(entry->'constraints')='array' then jsonb_array_length(entry->'constraints') else 0 end,
+            'policiesHash',md5((entry->'policies')::text),
+            'policiesCount',case when jsonb_typeof(entry->'policies')='array' then jsonb_array_length(entry->'policies') else 0 end
+          ))::text from entries order by identity;
+          """
+          default_output="""
+          with creators as (select oid,rolname from pg_catalog.pg_roles where rolname in ('postgres','supabase_admin')),
+          scopes(schema_name) as (values ('GLOBAL'),('public'),('private'),('note_write_private'),('prescription_write_private')),
+          kinds(object_type) as (values ('r'),('f'),('S')),
+          defaults as (
+            select c.rolname,s.schema_name,k.object_type,coalesce(d.defaclacl,case when s.schema_name='GLOBAL'
+              then pg_catalog.acldefault(k.object_type::"char",c.oid) else '{}'::pg_catalog.aclitem[] end) as acl
+            from creators c cross join scopes s cross join kinds k
+            left join pg_catalog.pg_namespace n on n.nspname=s.schema_name
+            left join pg_catalog.pg_default_acl d on d.defaclrole=c.oid and d.defaclobjtype=k.object_type::"char"
+              and d.defaclnamespace=case when s.schema_name='GLOBAL' then 0 else n.oid end
+          )
+          select jsonb_build_object('kind','defaultAcl','identity',rolname || ':' || schema_name || ':' || object_type,
+            'components',jsonb_build_object('grants',(select jsonb_agg(jsonb_build_array(role_name,privilege,exists (
+              select 1 from pg_catalog.aclexplode(case when cardinality(acl)=0 then null::pg_catalog.aclitem[] else acl end) a where a.privilege_type=privilege
+                and (case when a.grantee=0 then 'PUBLIC' else pg_catalog.pg_get_userbyid(a.grantee) end)=role_name
+            )) order by role_name,privilege)
+            from (values ('PUBLIC'),('anon'),('authenticated'),('postgres'),('service_role')) roles(role_name)
+            cross join (values ('SELECT'),('INSERT'),('UPDATE'),('DELETE'),('TRUNCATE'),('REFERENCES'),('TRIGGER'),('MAINTAIN'),('EXECUTE'),('USAGE')) privs(privilege)
+            where (object_type='f' and privilege='EXECUTE')
+              or (object_type='r' and privilege in ('SELECT','INSERT','UPDATE','DELETE','TRUNCATE','REFERENCES','TRIGGER','MAINTAIN'))
+              or (object_type='S' and privilege in ('SELECT','UPDATE','USAGE'))
+          )))::text from defaults order by rolname,schema_name,object_type;
+          """
+          (directory / 'drx-restore-security-components.sql').write_text(
+              "set search_path = '';\n"+functions.group(1)+function_output+relations.group(1)+table_output+default_output)
+          PY
+          # END safe catalog component builder
+
       - name: Capture source restore manifest
         if: steps.credential.outputs.available == 'true' && steps.credential.outputs.mode == 'db_url'
         shell: bash
@@ -417,6 +553,13 @@ jobs:
           psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
             --file "$RUNNER_TEMP/drx-restore-security-manifest.sql" >> "$RUNNER_TEMP/drx-source-manifest.txt"
           test -s "$RUNNER_TEMP/drx-source-manifest.txt"
+          if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 \
+            --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never --tuples-only --no-align \
+            --file "$RUNNER_TEMP/drx-restore-security-components.sql" \
+            > "$RUNNER_TEMP/drx-source-security-components.ndjson" 2> "$RUNNER_TEMP/drx-restore-source-components.log"; then
+            echo "::error::Source catalog component capture failed; raw diagnostics are not published."
+            exit 1
+          fi
 
       - name: Require independent source manifest
         if: steps.credential.outputs.available == 'true' && steps.credential.outputs.mode != 'db_url'
@@ -480,6 +623,91 @@ jobs:
             fi
           }
           restore_sql managed_auth --file "$BACKUP_DIR/auth_recovery_schema.sql"
+          # Run8 proved inherited local public defaults added unintended grants.
+          # Prepare only the verified hard-coded local DB before captured app objects
+          # are created; all three revokes/postconditions roll back on any failure.
+          # BEGIN guarded local default ACL preparation
+          cat > "$RUNNER_TEMP/drx-restore-postgres-defaults.sql" <<'SQL'
+          -- Candidate/local preparation only; run with psql --single-transaction.
+          -- Changes exactly three postgres/public default ACLs before application creation.
+          DO $guard$
+          DECLARE
+            creator oid;
+            public_schema oid;
+            allowed_recipients oid[];
+          BEGIN
+            IF current_user IS DISTINCT FROM 'postgres' THEN
+              RAISE EXCEPTION 'Local default ACL preparation requires current_user postgres' USING ERRCODE='42501';
+            END IF;
+            SELECT oid INTO creator FROM pg_catalog.pg_roles WHERE rolname='postgres';
+            SELECT oid INTO public_schema FROM pg_catalog.pg_namespace WHERE nspname='public';
+            SELECT array_agg(oid) INTO allowed_recipients FROM pg_catalog.pg_roles
+              WHERE rolname IN ('postgres','anon','authenticated','service_role');
+            IF creator IS NULL OR public_schema IS NULL OR cardinality(allowed_recipients) IS DISTINCT FROM 4 THEN
+              RAISE EXCEPTION 'Local default ACL preparation requires exact platform roles/public schema' USING ERRCODE='P0001';
+            END IF;
+            IF EXISTS (
+              SELECT 1 FROM pg_catalog.pg_default_acl d LEFT JOIN pg_catalog.pg_namespace n ON n.oid=d.defaclnamespace
+              WHERE d.defaclrole=creator AND (d.defaclnamespace=0 OR n.nspname IN ('private','note_write_private','prescription_write_private'))
+            ) THEN
+              RAISE EXCEPTION 'Unexpected postgres global/private defaults; local preparation refused' USING ERRCODE='P0001';
+            END IF;
+            IF (SELECT count(*) FROM pg_catalog.pg_default_acl WHERE defaclrole=creator AND defaclnamespace=public_schema) IS DISTINCT FROM 3
+              OR EXISTS (SELECT 1 FROM pg_catalog.pg_default_acl WHERE defaclrole=creator AND defaclnamespace=public_schema AND defaclobjtype NOT IN ('r','f','S')) THEN
+              RAISE EXCEPTION 'Unexpected postgres/public default object types; local preparation refused' USING ERRCODE='P0001';
+            END IF;
+            IF EXISTS (
+              SELECT 1 FROM pg_catalog.pg_default_acl d
+              CROSS JOIN LATERAL pg_catalog.aclexplode(CASE WHEN cardinality(d.defaclacl)=0 THEN NULL::pg_catalog.aclitem[] ELSE d.defaclacl END) a
+              WHERE d.defaclrole=creator AND d.defaclnamespace=public_schema
+                AND (a.grantee<>ALL(allowed_recipients) OR a.grantor<>creator OR a.is_grantable)
+            ) THEN
+              RAISE EXCEPTION 'Unknown postgres/public default recipient or grantor; local preparation refused' USING ERRCODE='P0001';
+            END IF;
+          END;
+          $guard$;
+
+          ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON TABLES FROM anon, authenticated, service_role;
+          ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON FUNCTIONS FROM anon, authenticated, service_role;
+          ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON SEQUENCES FROM anon, authenticated, service_role;
+
+          DO $verify$
+          DECLARE
+            creator oid;
+            public_schema oid;
+          BEGIN
+            SELECT oid INTO creator FROM pg_catalog.pg_roles WHERE rolname='postgres';
+            SELECT oid INTO public_schema FROM pg_catalog.pg_namespace WHERE nspname='public';
+            IF EXISTS (
+              WITH expected AS (
+                -- Match the observed owner grants, including all three sequence
+                -- privileges; acldefault('S', creator) contains only USAGE.
+                SELECT kind,jsonb_agg(jsonb_build_array(creator,creator,privilege,false)
+                  ORDER BY privilege) AS acl
+                FROM (VALUES ('r','SELECT'),('r','INSERT'),('r','UPDATE'),('r','DELETE'),
+                  ('r','TRUNCATE'),('r','REFERENCES'),('r','TRIGGER'),('r','MAINTAIN'),
+                  ('f','EXECUTE'),('S','SELECT'),('S','UPDATE'),('S','USAGE')) kinds(kind,privilege)
+                GROUP BY kind
+              )
+              SELECT 1 FROM expected e LEFT JOIN pg_catalog.pg_default_acl d
+                ON d.defaclrole=creator AND d.defaclnamespace=public_schema AND d.defaclobjtype=e.kind::"char"
+              WHERE d.oid IS NULL OR (SELECT jsonb_agg(jsonb_build_array(a.grantor,a.grantee,a.privilege_type,a.is_grantable)
+                ORDER BY a.grantor,a.grantee,a.privilege_type,a.is_grantable)
+                FROM pg_catalog.aclexplode(CASE WHEN cardinality(d.defaclacl)=0 THEN NULL::pg_catalog.aclitem[] ELSE d.defaclacl END) a
+              ) IS DISTINCT FROM e.acl
+            ) THEN
+              RAISE EXCEPTION 'Local postgres/public defaults are not exact owner-only ACLs' USING ERRCODE='P0001';
+            END IF;
+            IF EXISTS (SELECT 1 FROM pg_catalog.pg_default_acl WHERE defaclrole=creator AND defaclnamespace=0)
+              OR NOT EXISTS (SELECT 1 FROM pg_catalog.aclexplode(pg_catalog.acldefault('f',creator)) a
+                WHERE a.grantee=0 AND a.privilege_type='EXECUTE' AND NOT a.is_grantable) THEN
+              RAISE EXCEPTION 'Standard global PUBLIC function EXECUTE was not preserved' USING ERRCODE='P0001';
+            END IF;
+          END;
+          $verify$;
+          SQL
+          restore_sql schema --single-transaction --file "$RUNNER_TEMP/drx-restore-postgres-defaults.sql"
+          # END guarded local default ACL preparation
           restore_sql schema --file "$BACKUP_DIR/schema.sql"
           restore_sql data \
             --command 'SET session_replication_role = replica' \
@@ -519,7 +747,83 @@ jobs:
           psql "$DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
             --file "$RUNNER_TEMP/drx-restore-security-manifest.sql" >> "$RUNNER_TEMP/drx-restore-manifest.txt"
           test -s "$RUNNER_TEMP/drx-restore-manifest.txt"
-          diff -u "$RUNNER_TEMP/drx-source-manifest.txt" "$RUNNER_TEMP/drx-restore-manifest.txt"
+          if ! diff -u "$RUNNER_TEMP/drx-source-manifest.txt" "$RUNNER_TEMP/drx-restore-manifest.txt"; then
+            if ! psql "$DB_URL" -X --quiet --set ON_ERROR_STOP=1 \
+              --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never --tuples-only --no-align \
+              --file "$RUNNER_TEMP/drx-restore-security-components.sql" \
+              > "$RUNNER_TEMP/drx-restore-security-components.ndjson" 2> "$RUNNER_TEMP/drx-restore-target-components.log"; then
+              echo "::error::Isolated catalog component capture failed; raw diagnostics are not published."
+              exit 1
+            fi
+            # BEGIN safe catalog mismatch comparison
+            python3 - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          directory=Path(os.environ['RUNNER_TEMP'])
+          fields={
+              'function':{'owner','definitionHash','configHash','aclHash','effective'},
+              'defaultAcl':{'grants'},
+              'table':{'owner','rls','forceRls','privileges','columnsHash','columnsCount','constraintsHash','constraintsCount','policiesHash','policiesCount'}}
+          roles={'anon','authenticated','service_role'}
+          privileges={'SELECT','INSERT','UPDATE','DELETE','TRUNCATE','REFERENCES','TRIGGER'}
+          def valid(component,value):
+              if component.endswith('Hash'): return isinstance(value,str) and re.fullmatch(r'[0-9a-f]{32}',value) is not None
+              if component.endswith('Count'): return type(value) is int and value>=0
+              if component=='owner': return isinstance(value,str) and re.fullmatch(r'[a-z_][a-z0-9_]{0,63}',value) is not None
+              if component in {'rls','forceRls'}: return type(value) is bool
+              if component=='effective': return isinstance(value,list) and len(value)==3 and all(
+                  isinstance(row,list) and len(row)==2 and row[0] in roles and type(row[1]) is bool for row in value) and len({row[0] for row in value})==3
+              if component=='privileges': return isinstance(value,list) and len(value)==21 and all(
+                  isinstance(row,list) and len(row)==3 and row[0] in roles and row[1] in privileges and type(row[2]) is bool for row in value) and len({(row[0],row[1]) for row in value})==21
+              if component=='grants': return isinstance(value,list) and len(value) in {5,15,40} and all(
+                  isinstance(row,list) and len(row)==3 and row[0] in roles | {'PUBLIC','postgres'} and row[1] in privileges | {'MAINTAIN','EXECUTE','USAGE'} and type(row[2]) is bool for row in value) and len({(row[0],row[1]) for row in value})==len(value)
+              return False
+          def load(name):
+              entries={}
+              for line in (directory / name).read_text().splitlines():
+                  row=json.loads(line); kind=row['kind']; identity=row['identity']; values=row['components']
+                  if kind not in fields or not isinstance(identity,str) or not identity or len(identity)>1024:
+                      raise ValueError('Invalid catalog identity')
+                  if not isinstance(values,dict) or not fields[kind].issubset(values) or not all(valid(key,values[key]) for key in fields[kind]):
+                      raise ValueError('Invalid catalog components')
+                  key=(kind,identity)
+                  if key in entries: raise ValueError('Repeated catalog identity')
+                  entries[key]={key:values[key] for key in fields[kind]}
+              return entries
+          try:
+              source=load('drx-source-security-components.ndjson'); restored=load('drx-restore-security-components.ndjson')
+              differences=[]
+              for kind,identity in sorted(source.keys() | restored.keys()):
+                  before=source.get((kind,identity)); after=restored.get((kind,identity))
+                  if before is None or after is None:
+                      differences.append({'kind':kind,'identity':identity,'component':'present','source':before is not None,'restored':after is not None})
+                      continue
+                  for component in sorted(fields[kind]):
+                      if before[component]!=after[component]:
+                          before_value=before[component]; after_value=after[component]
+                          if component in {'effective','privileges','grants'}:
+                              before_rows={tuple(row[:-1]):row for row in before_value}; after_rows={tuple(row[:-1]):row for row in after_value}
+                              changed=[key for key in sorted(before_rows.keys() | after_rows.keys()) if before_rows.get(key)!=after_rows.get(key)]
+                              before_value=[before_rows[key] for key in changed if key in before_rows]
+                              after_value=[after_rows[key] for key in changed if key in after_rows]
+                          differences.append({'kind':kind,'identity':identity,'component':component,'source':before_value,'restored':after_value})
+              bounded=[item for kind in fields for item in [row for row in differences if row['kind']==kind][:25]]
+              diagnostic={'status':'DIFFERENCES' if differences else 'NO_COMPONENT_DIFFERENCE',
+                  'sourceCounts':{kind:sum(key[0]==kind for key in source) for kind in fields},
+                  'restoredCounts':{kind:sum(key[0]==kind for key in restored) for kind in fields},
+                  'differenceCount':len(differences),
+                  'differenceCountsByKindAndComponent':{kind:{component:sum(row['kind']==kind and row['component']==component for row in differences)
+                      for component in sorted({row['component'] for row in differences if row['kind']==kind})} for kind in fields},
+                  'differences':bounded,'truncated':len(differences)>len(bounded)}
+          except (OSError,ValueError,KeyError,TypeError):
+              diagnostic={'status':'UNAVAILABLE','reason':'Invalid or absent bounded catalog component capture'}
+          failure={'failedStage':'manifest_comparison','catalogDiagnostic':diagnostic}
+          (directory / 'drx-restore-failure.json').write_text(json.dumps(failure)+'\n')
+          print('::error::Restore manifest differs from source: '+json.dumps(failure)+'; raw catalog expressions are not published.')
+          PY
+            # END safe catalog mismatch comparison
+            exit 1
+          fi
 
       - name: Write failure evidence
         if: steps.credential.outputs.available == 'true' && failure()
@@ -605,7 +909,10 @@ jobs:
           rm -rf -- "${RUNNER_TEMP:?}/drx-phase1-backup" "$RESTORE_DIR"
           rm -f -- "$RUNNER_TEMP"/drx-restore-*.log "$RUNNER_TEMP/drx-source-manifest.txt" \
             "$RUNNER_TEMP/drx-restore-manifest.txt" "$RUNNER_TEMP/drx-restore-security-manifest.sql" \
-            "$RUNNER_TEMP/drx-validate-backup-source-url.py" "$RUNNER_TEMP/drx-restore-failure.json" "$RUNNER_TEMP/drx-restore-auth-expiry.sql"
+            "$RUNNER_TEMP/drx-validate-backup-source-url.py" "$RUNNER_TEMP/drx-restore-failure.json" "$RUNNER_TEMP/drx-restore-auth-expiry.sql" "$RUNNER_TEMP/drx-restore-auth-factor.sql" "$RUNNER_TEMP/drx-restore-auth-tables.txt" \
+            "$RUNNER_TEMP/drx-restore-storage-lifecycle.sql" \
+            "$RUNNER_TEMP/drx-restore-security-components.sql" "$RUNNER_TEMP/drx-source-security-components.ndjson" \
+            "$RUNNER_TEMP/drx-restore-security-components.ndjson" "$RUNNER_TEMP/drx-restore-postgres-defaults.sql"
 
       - name: Upload evidence only
         if: always()
