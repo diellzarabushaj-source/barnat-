@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       # Match the pinned Playwright dependency; browsers and native libraries are preinstalled.
-      image: mcr.microsoft.com/playwright:v1.54.1-noble
+      image: mcr.microsoft.com/playwright:v1.64.0-noble
       options: --ipc=host
     timeout-minutes: 25
     steps:
@@ -93,9 +93,17 @@ jobs:
         run: node tests/personal-workspace-responsive-browser-test.js
 
       - name: Verify first-download persistence and offline workspaces in WebKit
+        shell: bash
         env:
           OFFLINE_BROWSER: webkit
-        run: node tests/device-offline-browser-test.js
+        run: |
+          set -euo pipefail
+          # Each run starts a fresh browser/context/origin. Fail on any failure;
+          # repeated passes exercise the formerly intermittent storage loss.
+          for sample in 1 2 3; do
+            echo "Fresh WebKit offline sample ${sample}/3"
+            node tests/device-offline-browser-test.js
+          done
 
       - name: Verify all workspaces and public pages in WebKit
         env:

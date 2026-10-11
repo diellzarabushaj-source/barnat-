@@ -230,6 +230,45 @@ async function sourceFailureNeverTouchesDatabase() {
   console.log('Both standalone ICD sync entry points reject exhausted or incomplete sources before database traffic.');
 }
 
-activationResponseLossDoesNotUnpublish().then(sourceFailureNeverTouchesDatabase).then(() => {
+async function publishedSnapshotsAreReused() {
+  for (const filename of ['sync-icd-hierarchy-to-neon.js','sync-icd-hierarchy-to-supabase.js']) {
+    for (const mode of ['reactivate','dry-run','lost-response','missing-marker','wrong-status']) {
+      const calls=[];const module={exports:{}};
+      const current={revision:'revision-1',status:mode==='wrong-status'?'staging':'superseded',activated_at:mode==='missing-marker'?null:'2026-01-01T00:00:00Z'};
+      vm.runInNewContext(fs.readFileSync(path.join(root,'scripts',filename),'utf8'), {
+        module,exports:module.exports,process:{stdout:{write(){}},stderr:{write(){}}},
+        require(name) {
+          if(name==='../lib/medindex-data-api.js')return {
+            dataOf:value=>value.data,
+            neonRequest:async(url,options={})=>{
+              calls.push({url,method:options.method||'GET'});
+              if(!options.method)return {data:[current]};
+              assert.equal(url,'/rpc/activate_icd_hierarchy_revision');
+              assert.equal(options.method,'POST');
+              if(mode==='lost-response'){current.status='active';throw new Error('Synthetic response loss');}
+              return {data:{revision:'revision-1'}};
+            }
+          };
+          if(name==='../lib/icd-public-source.js')return {...require('../lib/icd-public-source.js'),loadForSync:async()=>({sourceRevision:'revision-1',sourceType:'google-sheet',data:sampleDataset})};
+          if(name==='../lib/icd-hierarchy-validation.js')return {validate:()=>FullIcd.EXPECTED_COUNTS};
+          return require(name);
+        }
+      },{filename});
+      if(mode==='missing-marker'||mode==='wrong-status'){
+        await assert.rejects(module.exports.sync(),/metadata is inconsistent/);assert.equal(calls.length,1);
+      }else if(mode==='lost-response'){
+        await assert.rejects(module.exports.sync(),/response loss/);assert.equal(current.status,'active');assert.equal(calls.length,2);
+      }else{
+        const result=await module.exports.sync({dryRun:mode==='dry-run'});
+        assert.equal(result.reused,true);assert.equal(result.records,0);assert.equal(result.batches,0);
+        assert.equal(calls.length,mode==='dry-run'?1:2);
+      }
+      assert.ok(calls.every(call=>call.method==='GET'||call.url==='/rpc/activate_icd_hierarchy_revision'),filename+': published snapshots must never be restaged, deleted, upserted or marked failed.');
+    }
+  }
+  console.log('Ten immutable snapshot reuse, dry-run, lost-response and inconsistent-marker cases passed.');
+}
+
+activationResponseLossDoesNotUnpublish().then(sourceFailureNeverTouchesDatabase).then(publishedSnapshotsAreReused).then(() => {
   console.log('Atomic activation permissions and lost-response recovery passed.');
 }).catch(error => { console.error(error); process.exitCode = 1; });

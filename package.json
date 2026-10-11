@@ -34,6 +34,7 @@
     "test:icd-phase15": "node tests/icd-coding-workspace-test.js",
     "test:icd-phase16": "node tests/icd-code-comparison-test.js",
     "test:icd-phase17": "node tests/icd-clinical-guidance-test.js",
+    "test:icd-immutability": "node tests/icd-published-immutability-test.js && node tests/icd-hierarchy-neon-sync-test.js",
     "test:icd-hierarchy-neon": "node tests/icd-public-source-test.js && node tests/icd-hierarchy-neon-sync-test.js",
     "audit:icd-source": "node scripts/audit-icd-public-source.js",
     "sync:protocols": "node scripts/sync-protocols.js",
@@ -204,7 +205,8 @@
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
-    "@playwright/test": "1.54.1"
+    "@electric-sql/pglite": "0.5.8",
+    "@playwright/test": "1.64.0"
   },
   "engines": {
     "node": "24.x"

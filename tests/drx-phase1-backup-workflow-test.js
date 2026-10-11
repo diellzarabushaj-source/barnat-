@@ -79,6 +79,14 @@ assert.ok(triggerMatch, 'Managed auth triggers require an independent catalog ex
 assert.ok(securityMatch, 'Source and target must execute the same security manifest SQL.');
 const triggerSql=triggerMatch[1];
 const securitySql=securityMatch[1];
+for(const table of ['icd_hierarchy_nodes','icd_hierarchy_revisions']){
+  assert.ok(securitySql.includes("'"+table+"'"),'Restore catalogs must include immutable ICD tables and triggers.');
+}
+for(const key of ['icd_nodes_count','icd_nodes_fingerprint','icd_revisions_count','icd_revisions_fingerprint']){
+  assert.equal((workflow.match(new RegExp("select '"+key+"=",'g'))||[]).length,2,'Both independently captured manifests must cover '+key);
+  assert.ok(workflow.includes("'"+key+"'"),'Restore completion requires '+key);
+}
+assert.ok(workflow.includes('immutable_icd_snapshots_and_guards'));
 assert.match(triggerSql,/set search_path = ''/);
 assert.match(triggerSql,/pg_catalog\.format\('DROP TRIGGER IF EXISTS %I ON %I\.%I;/);
 assert.match(triggerSql,/ALTER TABLE %I\.%I %s TRIGGER %I/);
