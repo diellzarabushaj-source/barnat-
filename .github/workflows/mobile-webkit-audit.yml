@@ -93,6 +93,7 @@ jobs:
         run: node tests/personal-workspace-responsive-browser-test.js
 
       - name: Verify first-download persistence and offline workspaces in WebKit
+        shell: bash
         env:
           OFFLINE_BROWSER: webkit
         run: |
