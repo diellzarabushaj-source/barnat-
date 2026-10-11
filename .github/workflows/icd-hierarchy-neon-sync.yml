@@ -6,6 +6,7 @@ on:
       - '.github/workflows/icd-hierarchy-neon-sync.yml'
       - 'scripts/sync-icd-hierarchy-to-neon.js'
       - 'tests/icd-hierarchy-neon-sync-test.js'
+      - 'supabase/migrations/*_bound_icd_snapshot_validation.sql'
   push:
     branches: [main]
     paths:
@@ -19,10 +20,17 @@ on:
       - 'tests/icd-hierarchy-neon-sync-test.js'
       - 'scripts/sync-icd-hierarchy-to-neon.js'
       - 'sql/icd-hierarchy-neon.sql'
+      - 'supabase/migrations/*_bound_icd_snapshot_validation.sql'
       - '.github/workflows/icd-hierarchy-neon-sync.yml'
   schedule:
     - cron: '17 3 * * *'
   workflow_dispatch:
+    inputs:
+      inspect_revision:
+        description: 'Read-only validation plan for an existing revision; leaves the active snapshot unchanged'
+        required: false
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -71,6 +79,12 @@ jobs:
           echo "::error::ICD sync cannot run without MEDINDEX_SUPABASE_SECRET_KEY."
           exit 1
 
+      - name: Inspect validation plan without importing or activating
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.inspect_revision != '' && env.MEDINDEX_SUPABASE_SECRET_KEY != '' }}
+        env:
+          ICD_INSPECT_REVISION: ${{ inputs.inspect_revision }}
+        run: node scripts/inspect-icd-validation.js "$ICD_INSPECT_REVISION"
+
       - name: Import and atomically activate hierarchy revision
-        if: ${{ github.event_name != 'pull_request' && env.MEDINDEX_SUPABASE_SECRET_KEY != '' }}
+        if: ${{ github.event_name != 'pull_request' && env.MEDINDEX_SUPABASE_SECRET_KEY != '' && (github.event_name != 'workflow_dispatch' || inputs.inspect_revision == '') }}
         run: node scripts/sync-icd-hierarchy-to-neon.js
