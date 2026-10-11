@@ -561,6 +561,7 @@ try{
   const changedTable=structuredClone(table); changedTable.components.privileges[0][2]=true; changedTable.components.constraintsHash='3'.repeat(32);
   const changed=compare([fn,table],[changedFn,changedTable]);
   assert.equal(changed.status,'DIFFERENCES'); assert.equal(changed.differenceCount,5);
+  assert.deepEqual(changed.differenceCountsByKindAndComponent,{function:{aclHash:1,definitionHash:1,effective:1},defaultAcl:{},table:{constraintsHash:1,privileges:1}});
   assert.deepEqual(changed.differences.map(item=>item.component).sort(),['aclHash','constraintsHash','definitionHash','effective','privileges']);
   assert.deepEqual(changed.differences.find(item=>item.component==='effective').source,[['anon',false]]);
   assert.deepEqual(changed.differences.find(item=>item.component==='privileges').restored,[['anon','SELECT',true]]);
@@ -580,5 +581,63 @@ try{
   assert.equal(compare([fn,fn],[fn]).status,'UNAVAILABLE','Duplicate identities cannot silently replace an entry.');
   const many=Array.from({length:51},(_,index)=>({...structuredClone(fn),identity:`public.synthetic_${index}()`}));
   const bounded=compare(many,[]); assert.equal(bounded.differenceCount,51); assert.equal(bounded.differences.length,25); assert.equal(bounded.truncated,true);
+  assert.deepEqual(bounded.differenceCountsByKindAndComponent,{function:{present:51},defaultAcl:{},table:{}},'Complete kind/component counts must survive individual diagnostic truncation.');
 }finally{fs.rmSync(catalogDir,{recursive:true,force:true});}
 console.log(`Safe catalog component diagnostic: exact fingerprint builder and ${catalogCases} executable mismatch, missing, privacy, invalid and bounded-output cases passed.`);
+
+
+// Execute local schema preparation through the real dispatcher. These fixtures
+// verify caller/transaction/privacy wiring; actual PostgreSQL guard/rollback
+// semantics are recorded separately by the outputs-only embedded PG verifier.
+const defaultsMatch=restore.match(/          # BEGIN guarded local default ACL preparation\r?\n([\s\S]*?)          # END guarded local default ACL preparation/);
+assert.ok(defaultsMatch);
+const defaultsCapture=defaultsMatch[1].replace(/\r\n/g,'\n').replace(/^ {10}/gm,'');
+const defaultsSqlMatch=defaultsCapture.match(/<<'SQL'\n([\s\S]*?)^SQL$/m);
+assert.ok(defaultsSqlMatch);const defaultsSql=defaultsSqlMatch[1];
+assert.deepEqual([...defaultsSql.matchAll(/^ALTER DEFAULT PRIVILEGES (.+);$/gm)].map(match=>match[1]),
+  ['TABLES','FUNCTIONS','SEQUENCES'].map(kind=>`FOR ROLE postgres IN SCHEMA public REVOKE ALL ON ${kind} FROM anon, authenticated, service_role`));
+for(const condition of ["current_user IS DISTINCT FROM 'postgres'","cardinality(allowed_recipients) IS DISTINCT FROM 4",
+  "d.defaclnamespace=0 OR n.nspname IN ('private','note_write_private','prescription_write_private')",
+  "defaclobjtype NOT IN ('r','f','S')",'a.grantee<>ALL(allowed_recipients)','a.grantor<>creator','OR a.is_grantable',
+  'jsonb_build_array(creator,creator,privilege,false)',"('S','SELECT'),('S','UPDATE'),('S','USAGE')",'d.oid IS NULL','IS DISTINCT FROM e.acl',"pg_catalog.acldefault('f',creator)","a.grantee=0 AND a.privilege_type='EXECUTE' AND NOT a.is_grantable"]){
+  assert.ok(defaultsSql.includes(condition),`Missing fail-closed local default ACL requirement: ${condition}`);
+}
+assert.doesNotMatch(defaultsSql,/\b(?:GRANT|CASCADE)\b/,'Preparation may not add privileges or delete objects.');
+assert.doesNotMatch(defaultsCapture,/SUPABASE_DB_URL|BACKUP_DIR|supabase_admin/,'Preparation must use only the current_user postgres local path.');
+assert.match(defaultsCapture,/restore_sql schema --single-transaction --file "\$RUNNER_TEMP\/drx-restore-postgres-defaults\.sql"/);
+assert.ok(restore.indexOf('# BEGIN guarded local default ACL preparation')>restore.indexOf('docker inspect "$RESTORE_CONTAINER"'));
+assert.ok(restore.indexOf('# END guarded local default ACL preparation')<restore.indexOf('restore_sql schema --file "$BACKUP_DIR/schema.sql"'),
+  'Default grants must be removed before source application objects are created, preserving source capture/replay ordering.');
+assert.ok(cleanup.includes('"$RUNNER_TEMP/drx-restore-postgres-defaults.sql"'));
+const localAssignment=restore.match(/DB_URL='postgresql:\/\/postgres:postgres@127\.0\.0\.1:54322\/postgres'/);
+assert.ok(localAssignment);
+const defaultsDir=fs.mkdtempSync(path.join(os.tmpdir(),'drx-local-default-transaction-'));
+assert.equal(path.dirname(path.resolve(defaultsDir)),path.resolve(os.tmpdir()));
+try{
+  for(const fails of [false,true]){
+    const directory=path.join(defaultsDir,fails ? 'reject' : 'accept');fs.mkdirSync(directory);
+    const portable=directory.replace(/\\/g,'/');const privateMarker='SYNTHETIC_DEFAULT_GUARD_CONTEXT_MUST_NOT_APPEAR';
+    const standIn=`psql() {
+      printf '%s\\0' "$@" > "$RUNNER_TEMP/observed-args"
+      local previous="" argument
+      for argument in "$@"; do
+        if [ "$previous" = "--file" ]; then cat "$argument" > "$RUNNER_TEMP/observed.sql"; fi
+        previous="$argument"
+      done
+      if [ "$DRX_DEFAULTS_FAIL" = "1" ]; then printf '%s\\n' 'psql:/tmp/defaults.sql:1: ERROR:  P0001' 'CONTEXT: ${privateMarker}' >&2; return 3; fi
+    }
+    python3() { "${python.replace(/\\/g,'/')}" "$@"; }`;
+    const result=spawnSync(bash,['-c',`set -euo pipefail\n${standIn}\n${restoreFunction}\n${localAssignment[0]}\n${defaultsCapture}`],
+      {encoding:'utf8',timeout:15000,env:{...process.env,RUNNER_TEMP:portable,GITHUB_WORKSPACE:ROOT.replace(/\\/g,'/'),DRX_DEFAULTS_FAIL:fails ? '1' : '0'}});
+    assert.equal(result.error,undefined);assert.equal(result.status,fails ? 1 : 0);assert.equal(result.stderr,'');
+    assert.ok(!result.stdout.includes(privateMarker));
+    assert.equal(fs.readFileSync(path.join(directory,'observed.sql'),'utf8'),defaultsSql,'The bounded guard SQL must be replayed exactly.');
+    const args=fs.readFileSync(path.join(directory,'observed-args'),'utf8').split('\0').slice(0,-1);
+    assert.equal(args[0],'postgresql://postgres:postgres@127.0.0.1:54322/postgres');
+    assert.ok(args.includes('--single-transaction'));assert.ok(args.includes('ON_ERROR_STOP=1'));
+    if(fails){
+      assert.deepEqual(JSON.parse(fs.readFileSync(path.join(directory,'drx-restore-failure.json'),'utf8')),{failedStage:'schema',sqlstate:'P0001',copyRelation:null});
+    }
+  }
+}finally{fs.rmSync(defaultsDir,{recursive:true,force:true});}
+console.log('Guarded local default ACL preparation: exact three revokes, safe preconditions/order and two executable local transaction/privacy dispatcher cases passed.');

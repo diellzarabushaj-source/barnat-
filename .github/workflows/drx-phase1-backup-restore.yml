@@ -623,6 +623,91 @@ jobs:
             fi
           }
           restore_sql managed_auth --file "$BACKUP_DIR/auth_recovery_schema.sql"
+          # Run8 proved inherited local public defaults added unintended grants.
+          # Prepare only the verified hard-coded local DB before captured app objects
+          # are created; all three revokes/postconditions roll back on any failure.
+          # BEGIN guarded local default ACL preparation
+          cat > "$RUNNER_TEMP/drx-restore-postgres-defaults.sql" <<'SQL'
+          -- Candidate/local preparation only; run with psql --single-transaction.
+          -- Changes exactly three postgres/public default ACLs before application creation.
+          DO $guard$
+          DECLARE
+            creator oid;
+            public_schema oid;
+            allowed_recipients oid[];
+          BEGIN
+            IF current_user IS DISTINCT FROM 'postgres' THEN
+              RAISE EXCEPTION 'Local default ACL preparation requires current_user postgres' USING ERRCODE='42501';
+            END IF;
+            SELECT oid INTO creator FROM pg_catalog.pg_roles WHERE rolname='postgres';
+            SELECT oid INTO public_schema FROM pg_catalog.pg_namespace WHERE nspname='public';
+            SELECT array_agg(oid) INTO allowed_recipients FROM pg_catalog.pg_roles
+              WHERE rolname IN ('postgres','anon','authenticated','service_role');
+            IF creator IS NULL OR public_schema IS NULL OR cardinality(allowed_recipients) IS DISTINCT FROM 4 THEN
+              RAISE EXCEPTION 'Local default ACL preparation requires exact platform roles/public schema' USING ERRCODE='P0001';
+            END IF;
+            IF EXISTS (
+              SELECT 1 FROM pg_catalog.pg_default_acl d LEFT JOIN pg_catalog.pg_namespace n ON n.oid=d.defaclnamespace
+              WHERE d.defaclrole=creator AND (d.defaclnamespace=0 OR n.nspname IN ('private','note_write_private','prescription_write_private'))
+            ) THEN
+              RAISE EXCEPTION 'Unexpected postgres global/private defaults; local preparation refused' USING ERRCODE='P0001';
+            END IF;
+            IF (SELECT count(*) FROM pg_catalog.pg_default_acl WHERE defaclrole=creator AND defaclnamespace=public_schema) IS DISTINCT FROM 3
+              OR EXISTS (SELECT 1 FROM pg_catalog.pg_default_acl WHERE defaclrole=creator AND defaclnamespace=public_schema AND defaclobjtype NOT IN ('r','f','S')) THEN
+              RAISE EXCEPTION 'Unexpected postgres/public default object types; local preparation refused' USING ERRCODE='P0001';
+            END IF;
+            IF EXISTS (
+              SELECT 1 FROM pg_catalog.pg_default_acl d
+              CROSS JOIN LATERAL pg_catalog.aclexplode(CASE WHEN cardinality(d.defaclacl)=0 THEN NULL::pg_catalog.aclitem[] ELSE d.defaclacl END) a
+              WHERE d.defaclrole=creator AND d.defaclnamespace=public_schema
+                AND (a.grantee<>ALL(allowed_recipients) OR a.grantor<>creator OR a.is_grantable)
+            ) THEN
+              RAISE EXCEPTION 'Unknown postgres/public default recipient or grantor; local preparation refused' USING ERRCODE='P0001';
+            END IF;
+          END;
+          $guard$;
+
+          ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON TABLES FROM anon, authenticated, service_role;
+          ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON FUNCTIONS FROM anon, authenticated, service_role;
+          ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON SEQUENCES FROM anon, authenticated, service_role;
+
+          DO $verify$
+          DECLARE
+            creator oid;
+            public_schema oid;
+          BEGIN
+            SELECT oid INTO creator FROM pg_catalog.pg_roles WHERE rolname='postgres';
+            SELECT oid INTO public_schema FROM pg_catalog.pg_namespace WHERE nspname='public';
+            IF EXISTS (
+              WITH expected AS (
+                -- Match the observed owner grants, including all three sequence
+                -- privileges; acldefault('S', creator) contains only USAGE.
+                SELECT kind,jsonb_agg(jsonb_build_array(creator,creator,privilege,false)
+                  ORDER BY privilege) AS acl
+                FROM (VALUES ('r','SELECT'),('r','INSERT'),('r','UPDATE'),('r','DELETE'),
+                  ('r','TRUNCATE'),('r','REFERENCES'),('r','TRIGGER'),('r','MAINTAIN'),
+                  ('f','EXECUTE'),('S','SELECT'),('S','UPDATE'),('S','USAGE')) kinds(kind,privilege)
+                GROUP BY kind
+              )
+              SELECT 1 FROM expected e LEFT JOIN pg_catalog.pg_default_acl d
+                ON d.defaclrole=creator AND d.defaclnamespace=public_schema AND d.defaclobjtype=e.kind::"char"
+              WHERE d.oid IS NULL OR (SELECT jsonb_agg(jsonb_build_array(a.grantor,a.grantee,a.privilege_type,a.is_grantable)
+                ORDER BY a.grantor,a.grantee,a.privilege_type,a.is_grantable)
+                FROM pg_catalog.aclexplode(CASE WHEN cardinality(d.defaclacl)=0 THEN NULL::pg_catalog.aclitem[] ELSE d.defaclacl END) a
+              ) IS DISTINCT FROM e.acl
+            ) THEN
+              RAISE EXCEPTION 'Local postgres/public defaults are not exact owner-only ACLs' USING ERRCODE='P0001';
+            END IF;
+            IF EXISTS (SELECT 1 FROM pg_catalog.pg_default_acl WHERE defaclrole=creator AND defaclnamespace=0)
+              OR NOT EXISTS (SELECT 1 FROM pg_catalog.aclexplode(pg_catalog.acldefault('f',creator)) a
+                WHERE a.grantee=0 AND a.privilege_type='EXECUTE' AND NOT a.is_grantable) THEN
+              RAISE EXCEPTION 'Standard global PUBLIC function EXECUTE was not preserved' USING ERRCODE='P0001';
+            END IF;
+          END;
+          $verify$;
+          SQL
+          restore_sql schema --single-transaction --file "$RUNNER_TEMP/drx-restore-postgres-defaults.sql"
+          # END guarded local default ACL preparation
           restore_sql schema --file "$BACKUP_DIR/schema.sql"
           restore_sql data \
             --command 'SET session_replication_role = replica' \
@@ -726,7 +811,10 @@ jobs:
               diagnostic={'status':'DIFFERENCES' if differences else 'NO_COMPONENT_DIFFERENCE',
                   'sourceCounts':{kind:sum(key[0]==kind for key in source) for kind in fields},
                   'restoredCounts':{kind:sum(key[0]==kind for key in restored) for kind in fields},
-                  'differenceCount':len(differences),'differences':bounded,'truncated':len(differences)>len(bounded)}
+                  'differenceCount':len(differences),
+                  'differenceCountsByKindAndComponent':{kind:{component:sum(row['kind']==kind and row['component']==component for row in differences)
+                      for component in sorted({row['component'] for row in differences if row['kind']==kind})} for kind in fields},
+                  'differences':bounded,'truncated':len(differences)>len(bounded)}
           except (OSError,ValueError,KeyError,TypeError):
               diagnostic={'status':'UNAVAILABLE','reason':'Invalid or absent bounded catalog component capture'}
           failure={'failedStage':'manifest_comparison','catalogDiagnostic':diagnostic}
@@ -824,7 +912,7 @@ jobs:
             "$RUNNER_TEMP/drx-validate-backup-source-url.py" "$RUNNER_TEMP/drx-restore-failure.json" "$RUNNER_TEMP/drx-restore-auth-expiry.sql" "$RUNNER_TEMP/drx-restore-auth-factor.sql" "$RUNNER_TEMP/drx-restore-auth-tables.txt" \
             "$RUNNER_TEMP/drx-restore-storage-lifecycle.sql" \
             "$RUNNER_TEMP/drx-restore-security-components.sql" "$RUNNER_TEMP/drx-source-security-components.ndjson" \
-            "$RUNNER_TEMP/drx-restore-security-components.ndjson"
+            "$RUNNER_TEMP/drx-restore-security-components.ndjson" "$RUNNER_TEMP/drx-restore-postgres-defaults.sql"
 
       - name: Upload evidence only
         if: always()
