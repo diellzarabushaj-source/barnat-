@@ -626,7 +626,7 @@ try{
       done
       if [ "$DRX_DEFAULTS_FAIL" = "1" ]; then printf '%s\\n' 'psql:/tmp/defaults.sql:1: ERROR:  P0001' 'CONTEXT: ${privateMarker}' >&2; return 3; fi
     }
-    python3() { "${python.replace(/\\/g,'/')}" "$@"; }`;
+    python3() { command "${python.replace(/\\/g,'/')}" "$@"; }`;
     const result=spawnSync(bash,['-c',`set -euo pipefail\n${standIn}\n${restoreFunction}\n${localAssignment[0]}\n${defaultsCapture}`],
       {encoding:'utf8',timeout:15000,env:{...process.env,RUNNER_TEMP:portable,GITHUB_WORKSPACE:ROOT.replace(/\\/g,'/'),DRX_DEFAULTS_FAIL:fails ? '1' : '0'}});
     assert.equal(result.error,undefined);assert.equal(result.status,fails ? 1 : 0);assert.equal(result.stderr,'');
