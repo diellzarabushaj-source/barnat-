@@ -6,6 +6,7 @@ on:
       - '.github/workflows/icd-hierarchy-neon-sync.yml'
       - 'scripts/sync-icd-hierarchy-to-neon.js'
       - 'tests/icd-hierarchy-neon-sync-test.js'
+      - 'supabase/migrations/*_bound_icd_snapshot_validation.sql'
   push:
     branches: [main]
     paths:
@@ -19,6 +20,7 @@ on:
       - 'tests/icd-hierarchy-neon-sync-test.js'
       - 'scripts/sync-icd-hierarchy-to-neon.js'
       - 'sql/icd-hierarchy-neon.sql'
+      - 'supabase/migrations/*_bound_icd_snapshot_validation.sql'
       - '.github/workflows/icd-hierarchy-neon-sync.yml'
   schedule:
     - cron: '17 3 * * *'
