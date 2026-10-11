@@ -17,6 +17,9 @@ const bounded=fs.readFileSync(path.join(directory,boundedCandidates[0]),'utf8');
 const inspectionCandidates=fs.readdirSync(directory).filter(name=>name.endsWith('_inspect_icd_snapshot_validation.sql'));
 assert.equal(inspectionCandidates.length,1,'One service-only plan inspection migration is required.');
 const inspection=fs.readFileSync(path.join(directory,inspectionCandidates[0]),'utf8');
+const replanCandidates=fs.readdirSync(directory).filter(name=>name.endsWith('_replan_icd_snapshot_validation.sql'));
+assert.equal(replanCandidates.length,1,'One publication-specific planning migration is required.');
+const replan=fs.readFileSync(path.join(directory,replanCandidates[0]),'utf8');
 async function main(){
 const counts=`'{"total":12542,"chapter":22,"block":274,"category":2050,"subcategory":10196}'::jsonb`;
 const revision=(name,status='staging')=>`INSERT INTO public.icd_hierarchy_revisions(revision,spreadsheet_id,sheet_name,sheet_gid,source_hash,source_bytes,counts,status,activated_at)
@@ -42,10 +45,10 @@ try{
  await db.exec('CREATE ROLE anon; CREATE ROLE authenticated; CREATE ROLE service_role BYPASSRLS; '+schema.slice(0,schema.indexOf('CREATE OR REPLACE FUNCTION public.activate_icd_hierarchy_revision')));
  await db.exec("ALTER TABLE public.icd_hierarchy_nodes ADD COLUMN title_la text; GRANT ALL ON public.icd_hierarchy_nodes,public.icd_hierarchy_revisions TO service_role; GRANT SELECT ON public.icd_hierarchy_nodes,public.icd_hierarchy_revisions TO anon,authenticated;");
  await db.exec(revision('first','active')+nodes('first'));
- await db.exec('BEGIN;'+candidate+bounded+inspection+'COMMIT;');
+ await db.exec('BEGIN;'+candidate+bounded+inspection+replan+'COMMIT;');
  const version=(await db.query('SELECT version() AS version')).rows[0].version;
  const snapshot=(await db.query("SELECT md5(string_agg(to_jsonb(n)::text,'' ORDER BY code)) AS hash FROM public.icd_hierarchy_nodes n WHERE revision='first'")).rows[0].hash;
- await db.exec('SET ROLE service_role;'+revision('second')+nodes('second')+"SELECT public.activate_icd_hierarchy_revision('second'); RESET ROLE;");
+ await db.exec('SET ROLE service_role; SET plan_cache_mode=force_generic_plan;'+revision('second')+nodes('second')+"SELECT public.activate_icd_hierarchy_revision('second'); RESET plan_cache_mode; RESET ROLE;");
  cases.push({name:'complete-staging-activation',status:'PASS'});
  const firstDate=String((await db.query("SELECT activated_at FROM public.icd_hierarchy_revisions WHERE revision='first'")).rows[0].activated_at);
  await db.exec("SET ROLE service_role; SELECT public.activate_icd_hierarchy_revision('first'); SELECT public.activate_icd_hierarchy_revision('first'); RESET ROLE;");
