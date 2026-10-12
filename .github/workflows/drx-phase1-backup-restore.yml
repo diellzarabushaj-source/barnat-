@@ -2,6 +2,18 @@ name: DRx Phase 1 Backup Restore Gate
 
 on:
   workflow_dispatch:
+    inputs:
+      postgres_version:
+        description: PostgreSQL image for the disposable restore only
+        required: false
+        type: choice
+        default: '17.6.1.155'
+        options: ['17.6.1.155', '17.11.0.003']
+      native_probe:
+        description: Require exact source and restored native Auth/Storage catalogs
+        required: false
+        type: boolean
+        default: false
   schedule:
     - cron: "0 3 * * *"
   push:
@@ -21,6 +33,8 @@ on:
       - "scripts/library-recovery-vault.js"
       - "scripts/verify-library-archive.py"
       - "scripts/verify-library-archive.js"
+      - "scripts/backup-native-catalog.sql"
+      - "scripts/native-recovery-catalog.py"
       - "data/library-key-recovery-config.json"
       - "data/backup-retention.json"
       - "supabase/migrations/**"
@@ -38,6 +52,8 @@ jobs:
     timeout-minutes: 35
     env:
       SOURCE_POSTGRES_VERSION: "17.6.1.155"
+      DRX_RESTORE_POSTGRES_VERSION: ${{ inputs.postgres_version || '17.6.1.155' }}
+      DRX_NATIVE_RECOVERY_PROBE: ${{ inputs.native_probe && '1' || '0' }}
       SUPABASE_PROJECT_REF: "ftuchtmolddhhsdcwnqe"
       SUPABASE_POOLER_REGION: "eu-west-2"
       DRX_BACKUP_RETENTION_ENABLED: ${{ vars.DRX_BACKUP_RETENTION_ENABLED }}
@@ -635,6 +651,10 @@ jobs:
           sed -i 's/^project_id = .*/project_id = "drx-isolated-restore"/' supabase/config.toml
           mkdir -p supabase/.temp
           printf '%s\n' "$SOURCE_POSTGRES_VERSION" > supabase/.temp/postgres-version
+          case "$DRX_RESTORE_POSTGRES_VERSION" in
+            '17.6.1.155'|'17.11.0.003') printf '%s\n' "$DRX_RESTORE_POSTGRES_VERSION" > supabase/.temp/postgres-version ;;
+            *) echo '::error::Unapproved isolated PostgreSQL image'; exit 1 ;;
+          esac
           if ! supabase start > "$RUNNER_TEMP/drx-restore-start.log" 2>&1; then
             echo "::error::Disposable Supabase startup failed; local keys and raw diagnostics are not published."
             exit 1
@@ -888,6 +908,26 @@ jobs:
             exit 1
           fi
 
+      - name: Compare full native Auth and Storage catalogs
+        id: native
+        if: env.DRX_NATIVE_RECOVERY_PROBE == '1' && steps.credential.outputs.available == 'true' && success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          python3 scripts/native-recovery-catalog.py build scripts/backup-native-catalog.sql "$RUNNER_TEMP/drx-restore-native-catalog.sql"
+          if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
+            --file "$RUNNER_TEMP/drx-restore-native-catalog.sql" > "$RUNNER_TEMP/drx-restore-native-source.ndjson" 2> "$RUNNER_TEMP/drx-restore-native-source.log"; then
+            echo '::error::Native source catalog capture failed; private diagnostics are not published.'
+            exit 1
+          fi
+          if ! psql 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
+            --file "$RUNNER_TEMP/drx-restore-native-catalog.sql" > "$RUNNER_TEMP/drx-restore-native-target.ndjson" 2> "$RUNNER_TEMP/drx-restore-native-target.log"; then
+            echo '::error::Native isolated catalog capture failed; private diagnostics are not published.'
+            exit 1
+          fi
+          python3 scripts/native-recovery-catalog.py compare "$RUNNER_TEMP/drx-restore-native-source.ndjson" "$RUNNER_TEMP/drx-restore-native-target.ndjson" drx-native-recovery-proof.json
+
       - name: Write failure evidence
         if: steps.credential.outputs.available == 'true' && failure()
         shell: bash
@@ -1066,6 +1106,7 @@ jobs:
             "$RUNNER_TEMP/drx-restore-security-components.sql" "$RUNNER_TEMP/drx-source-security-components.ndjson" \
             "$RUNNER_TEMP/drx-restore-security-components.ndjson" "$RUNNER_TEMP/drx-restore-postgres-defaults.sql"
           rm -f -- "$RUNNER_TEMP/drx-restore-private-manifest.sql"
+          rm -f -- "$RUNNER_TEMP/drx-restore-native-catalog.sql" "$RUNNER_TEMP/drx-restore-native-source.ndjson" "$RUNNER_TEMP/drx-restore-native-target.ndjson"
 
       - name: Upload evidence only
         if: always()
@@ -1074,4 +1115,13 @@ jobs:
           name: drx-phase1-backup-restore-evidence
           path: drx-phase1-backup-restore-evidence.json
           if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload native aggregate evidence only
+        if: always() && env.DRX_NATIVE_RECOVERY_PROBE == '1'
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-native-recovery-proof
+          path: drx-native-recovery-proof.json
+          if-no-files-found: warn
           retention-days: 30

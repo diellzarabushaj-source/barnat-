@@ -112,7 +112,7 @@ for (const [state,command] of [['D','DISABLE'],['R','ENABLE REPLICA'],['A','ENAB
 assert.match(triggerSql,/else 'ENABLE'/); // original O state
 assert.doesNotMatch(triggerSql,/\b(?:from|join)\s+auth\.users\b/i);
 
-const restore=workflow.slice(workflow.indexOf('- name: Restore into disposable local Supabase'),workflow.indexOf('- name: Write failure evidence'));
+const restore=workflow.slice(workflow.indexOf('- name: Restore into disposable local Supabase'),workflow.indexOf('- name: Compare full native Auth and Storage catalogs'));
 assert.ok(restore.includes("DB_URL='postgresql://postgres:postgres@127.0.0.1:54322/postgres'"));
 assert.doesNotMatch(restore,/psql "\$SUPABASE_DB_URL"/);
 const restoreOrder=['restore_sql managed_auth','restore_sql schema','restore_sql data','restore_sql history','restore_sql auth_triggers'];
