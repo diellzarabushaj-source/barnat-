@@ -17,6 +17,11 @@ on:
       - "scripts/retain-private-backup.js"
       - "scripts/export-storage-bodies.js"
       - "scripts/verify-storage-archive.py"
+      - "scripts/private-backup-inventory.js"
+      - "scripts/library-recovery-vault.js"
+      - "scripts/verify-library-archive.py"
+      - "scripts/verify-library-archive.js"
+      - "data/library-key-recovery-config.json"
       - "data/backup-retention.json"
       - "supabase/migrations/**"
 
@@ -24,7 +29,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: drx-phase1-backup-restore-${{ github.ref }}
+  group: drx-private-backup-store
   cancel-in-progress: false
 
 jobs:
@@ -40,6 +45,7 @@ jobs:
       DRX_BACKUP_ARCHIVE_KEY: ${{ secrets.DRX_BACKUP_ARCHIVE_KEY }}
       DRX_BACKUP_ARCHIVE_KEY_ID: ${{ vars.DRX_BACKUP_ARCHIVE_KEY_ID }}
       DRX_BACKUP_STORAGE_BODIES_REQUIRED: "1"
+      DRX_BACKUP_LIBRARY_RECOVERY_ENABLED: ${{ vars.DRX_BACKUP_LIBRARY_RECOVERY_ENABLED }}
       # The Storage HTTPS endpoint is public; database credential aliases may hold PostgreSQL URLs.
       SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co
       SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
@@ -1002,10 +1008,22 @@ jobs:
           PY
           cp "$RUNNER_TEMP/drx-source-manifest.txt" "$BACKUP_DIR/source-manifest.txt"
           printf '%s' "${DRX_BACKUP_FINGERPRINT_SALT:?}" > "$BACKUP_DIR/private-fingerprint-salt"
+          RECOVERY_FILES=()
+          if [ "${DRX_BACKUP_LIBRARY_RECOVERY_ENABLED:-0}" = '1' ]; then
+            if ! psql 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
+              -c "select coalesce(jsonb_agg(jsonb_build_object('user_id',user_id,'client_id',client_id,'payload',payload) order by id),'[]'::jsonb) from public.user_prescriptions" \
+              > "$BACKUP_DIR/library-recovery-prescriptions.json" 2> "$RUNNER_TEMP/drx-restore-library-recovery.log"; then
+              echo "::error::Isolated prescription recovery capture failed; private diagnostics are not published."
+              exit 1
+            fi
+            node scripts/library-recovery-vault.js capture "$BACKUP_DIR/library-recovery-prescriptions.json" "$BACKUP_DIR/library-recovery-vault.enc" drx-phase1-backup-restore-evidence.json
+            cp data/library-key-recovery-config.json "$BACKUP_DIR/library-recovery-config.json"
+            RECOVERY_FILES=(library-recovery-prescriptions.json library-recovery-vault.enc library-recovery-config.json)
+          fi
           tar -cJf "$BACKUP_DIR/retained.tar.xz" -C "$BACKUP_DIR" \
             roles.sql schema.sql data.sql history_schema.sql history_data.sql \
             auth_recovery_schema.sql auth_custom_triggers.sql sha256.txt \
-            source-manifest.txt private-fingerprint-salt storage-body-manifest.json storage-objects
+            source-manifest.txt private-fingerprint-salt storage-body-manifest.json storage-objects "${RECOVERY_FILES[@]}"
           node scripts/backup-archive-crypto.js encrypt "$BACKUP_DIR/retained.tar.xz" "$BACKUP_DIR/retained.enc"
           node scripts/retain-private-backup.js "$BACKUP_DIR/retained.enc" "$BACKUP_DIR/retained.tar.xz" drx-phase1-backup-restore-evidence.json
 

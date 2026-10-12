@@ -9,17 +9,14 @@ const {isDeepStrictEqual} = require('node:util');
 const {execFileSync} = require('node:child_process');
 const {decryptFile} = require('./backup-archive-crypto.js');
 const policy = require('../data/backup-retention.json');
+const privateInventory=require('./private-backup-inventory.js');
 async function sha256(file) {
   const digest = crypto.createHash('sha256');
   for await (const chunk of fs.createReadStream(file)) digest.update(chunk);
   return digest.digest('hex');
 }
 function ownedBlob(blob) {
-  const host = policy.storeId.slice(6).toLowerCase() + '.private.blob.vercel-storage.com';
-  const url = new URL(blob.url);
-  return url.protocol === 'https:' && !url.port && !url.username && !url.password && !url.search && !url.hash && url.hostname === host && blob.pathname.startsWith(policy.prefix)
-    && /^[0-9]{8}T[0-9]{6}Z_[a-f0-9]{40}_[A-Za-z0-9_-]{1,64}\.(enc|verified\.json)$/.test(blob.pathname.slice(policy.prefix.length))
-    && decodeURIComponent(url.pathname.slice(1)) === blob.pathname;
+  return privateInventory.owned(blob,'backup');
 }
 async function retain({archive, original, evidenceFile, token, key, keyId, commit, sdk, fetcher = fetch, now = new Date(), requireStorageBodies=false}) {
   if (!token || !/^[a-f0-9]{64}$/.test(key || '') || !/^[A-Za-z0-9_-]{1,64}$/.test(keyId || '') || !/^[a-f0-9]{40}$/.test(commit || '')) throw new Error('Retention configuration is incomplete');
@@ -30,19 +27,7 @@ async function retain({archive, original, evidenceFile, token, key, keyId, commi
   const header = Buffer.alloc(8), handle = await fsp.open(archive, 'r');
   try { await handle.read(header, 0, 8, 0); } finally { await handle.close(); }
   if (!header.equals(Buffer.from('DRXBAK01')) || size <= 36 || size > policy.maxArchiveBytes) throw new Error('Only bounded encrypted archives can be retained');
-  const stored = [];
-  let cursor;
-  for (let page = 0; page < 20; page++) {
-    const result = await sdk.list({prefix:policy.prefix, limit:100, cursor, token});
-    for (const item of result.blobs) {
-      if (!ownedBlob(item) || !Number.isSafeInteger(item.size) || item.size < 0) throw new Error('Unexpected backup inventory');
-      stored.push(item);
-    }
-    if (!result.hasMore) break;
-    if (!result.cursor || result.cursor === cursor || page === 19) throw new Error('Backup inventory is incomplete');
-    cursor = result.cursor;
-  }
-  if (stored.reduce((total, item) => total + item.size + 4096, size) > policy.maxStoredBytes) throw new Error('Backup capacity guard exceeded; retained backups were preserved');
+  const stored=(await privateInventory.inventory(sdk,token,size)).filter(item=>ownedBlob(item));
   const stamp = now.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
   const pathname = policy.prefix + stamp + '_' + commit + '_' + keyId + '.enc';
   const archiveFormat = original.endsWith('.tar.xz') ? 'tar.xz' : 'tar.gz';
@@ -72,6 +57,13 @@ async function retain({archive, original, evidenceFile, token, key, keyId, commi
       evidence.storageObjectByteRecoveryVerified=true;
       evidence.nativeStorageApiReplayVerified=false;
       evidence.verifiedScope.push('physical_storage_object_bytes');
+    }
+    if(evidence.prescriptionKeyRecovery) {
+      const recovered=JSON.parse(execFileSync('python3',[path.join(__dirname,'verify-library-archive.py'),decrypted],{encoding:'utf8',stdio:['pipe','pipe','pipe'],timeout:45000}));
+      const expected=evidence.prescriptionKeyRecovery;
+      if(recovered.status!=='PASS'||!recovered.independentCipherKeyRecoveryVerified||recovered.prescriptionRows!==expected.prescriptionRows||recovered.ownerCount!==expected.ownerCount||recovered.encryptedVaultSha256!==expected.encryptedVaultSha256)throw new Error('Retained prescription key recovery differs');
+      evidence.prescriptionKeyRecovery.retainedArchiveIndependentDecryptionVerified=true;
+      evidence.verifiedScope.push('prescription_cipher_key_recovery_and_existing_envelope_decryption');
     }
   } finally {
     await fsp.unlink(downloaded).catch(error => { if (error.code !== 'ENOENT') throw error; });

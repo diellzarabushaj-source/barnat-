@@ -1,0 +1,49 @@
+name: DRx Private Library Key Recovery
+on:
+  workflow_dispatch:
+    inputs:
+      sealed_packet:
+        description: RSA sealed derived cipher key packet; no plaintext secrets
+        required: true
+        type: string
+      wrapped_private_key:
+        description: Base64 of the AES encrypted RSA private key; no plaintext secrets
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: drx-private-backup-store
+  cancel-in-progress: false
+jobs:
+  register:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+      DRX_BACKUP_BLOB_TOKEN: ${{ secrets.DRX_BACKUP_BLOB_TOKEN }}
+      DRX_BACKUP_ARCHIVE_KEY: ${{ secrets.DRX_BACKUP_ARCHIVE_KEY }}
+      DRX_RECOVERY_SEALED_PACKET: ${{ inputs.sealed_packet }}
+      DRX_RECOVERY_WRAPPED_PRIVATE_KEY: ${{ inputs.wrapped_private_key }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '10.28.0'
+      - name: Install private storage client
+        run: pnpm install --prod --frozen-lockfile --ignore-scripts
+      - name: Recover actual envelopes and retain encrypted keys
+        run: node scripts/library-recovery-vault.js register
+      - name: Upload aggregate evidence only
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-library-key-recovery-evidence
+          path: drx-library-key-recovery-evidence.json
+          if-no-files-found: error
+          retention-days: 30

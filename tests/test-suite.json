@@ -1,4 +1,6 @@
 [
+  "tests/library-recovery-vault-test.js",
+  "tests/library-key-recovery-test.js",
   "tests/canonical-worker-readiness-test.js",
   "tests/device-offline-worker-test.js",
   "tests/device-session-test.js",

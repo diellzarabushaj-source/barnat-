@@ -36,7 +36,9 @@ Only a passing backup is compressed with XZ and encrypted with AES-256-GCM, a fr
 and an authenticated version header. The archive contains the seven SQL dumps,
 their hash list, the source manifest and its private fingerprint salt. The salt
 is inside the encrypted archive so an isolated future restore can recompute the
-manifest. Encryption keys are never placed inside that archive.
+manifest. Plaintext encryption keys and the archive key are never placed inside
+that archive. Optional library recovery material contains only authenticated
+ciphertext, as described below.
 
 The job uploads privately, requires anonymous access to fail, downloads without
 cache, compares encrypted hashes, decrypts and compares the recovered archive
@@ -93,3 +95,50 @@ copies and a real library-decryption drill. Full native Auth/Storage catalog
 parity and a replay through a fresh Storage API remain unverified. Physical
 object bodies are included separately because [database backups alone do not
 include Storage file bodies](https://supabase.com/docs/guides/platform/backups).
+
+## Independent prescription cipher-key recovery
+
+This repository encrypts `public.user_prescriptions.payload`. The other personal
+library scopes are checked through complete stored-row parity. Recovery of this
+ciphertext must not export `SESSION_SECRET`, which also signs login sessions.
+
+The gated production/main build audit derives only the library AES keys using the
+existing HKDF and seals them with a public RSA-3072 key. The RSA private key is
+already wrapped with the separate archive AES-256-GCM key. The source credentials
+are neither rotated nor printed. Only aggregate counts and a sealed packet enter
+authenticated build logs. Preview and local builds skip the audit. Enable
+`DRX_LIBRARY_KEY_RECOVERY_ENABLED=library_recovery_20261012` only for this production
+audit, and remove that nonsecret flag after capturing the packet.
+
+The main-only `DRx Private Library Key Recovery` workflow accepts the sealed
+packet and the encrypted RSA private-key bytes; its inputs must never contain
+plaintext credentials. It verifies the RSA public-key and wrapped-key hashes,
+recovers the derived cipher keys in memory, and decrypts every current stored
+prescription with its original owner/client context. Empty data, missing keys,
+unknown key IDs, a wrong owner and changed ciphertext fail closed. It publishes
+an immutable encrypted vault to `drx-key-recovery/ftuchtmolddhhsdcwnqe/` in the
+existing private store, downloads it, repeats independent decryption, and
+requires anonymous access to fail before marking it verified. The capacity
+guard counts both archives and recovery vaults. Archive pruning never deletes
+vaults; registration and backup writes share one concurrency group.
+
+After that workflow passes, set repository variable
+`DRX_BACKUP_LIBRARY_RECOVERY_ENABLED=1`. Subsequent backups must download the
+private vault and decrypt all restored prescription envelopes without the
+original source session secret. The encrypted archive also includes the encrypted
+vault, public recovery config and restored encrypted envelopes. After the archive
+is downloaded and decrypted, a separate in-memory reader repeats that envelope
+recovery before retention succeeds. Aggregate evidence appears under
+`prescriptionKeyRecovery`; this scoped proof does not claim full native Auth or
+Storage API recovery. Do not enable the flag before the private vault is verified.
+
+For an offline drill, supply the retained archive's archive key privately and run
+`python3 scripts/verify-library-archive.py recovered.archive`. This reads bounded
+members in memory, verifies every envelope, and prints only counts and ciphertext
+hashes. It does not depend on the original Vercel signing secret. Preserve every
+historical vault and archive-key recovery copy while dependent backups exist.
+
+## Paid features
+
+Paid-plan activation is explicitly deferred by the owner. Do not start billing,
+upgrade compute, or enable paid password features as part of these recovery jobs.
