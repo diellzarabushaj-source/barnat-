@@ -4,6 +4,7 @@
   "keyId": "library_recovery_20261012",
   "publicKey": "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAuBUoNosDCB2soxEs7wCE\nMzn7OL8NFGNw4nyIuyNvqY7aJbgYSSel8Fkili6VET1so7mCnA/QIWN2wDpOveUY\nrpNHAqnSCakv9n9KczYuxc5mVAIUJoSjCUOeUTGLiQJ1FethZx/EbUJRiNkygQYA\nSp8o388++jjCRukpsHSb2wOF4LYzwQ31Pxgdj9L8wl8Wd3APD/TEEmiEtnUghozW\nTkx9bwhTYV107vkFD4dO4XRr7QTjAawmYX4Nt6ISZwOUGIksfASa/8Iz9kO9h73/\nwhbQCswkvPYz2Z3g2pCnyZMZJPaZ+h82bPA1HvEj7uMK9I5xp2/QvBubimAei+Qe\nsWo+w9zMIDoiocoe1UnwKdvf9TmA06cNB1gQERy21/MTK5tXlDFVILzqDAHPbY8B\nlGOjXv9AjnOtZ8lGB6j0nuLMQadJ9H8rRccAKDIIHcE6uMNAjH+JDIymhmYK+iXM\nGZU/uHFvYa8HCXbCOx8qg0jLWsITRLlZAQ6eSmbnnWKJAgMBAAE=\n-----END PUBLIC KEY-----\n",
   "publicKeySha256": "3c480fe153dbc3353d803078e68a94142b0c2825da76c3f34f2710ea2c456af7",
-  "wrappedPrivateKeySha256": "78d5aac6a870169ed08b719b9eb37af02dca85f1fb2f5ea7ff720898983241b8",
-  "wrapperArchiveKeyId": "archive_20261012"
+  "wrappedPrivateKeySha256": "16b74c30fc468ea1dd3e8d619858332f02758bd58fff2e56869e316e55513f2c",
+  "wrapperArchiveKeyId": "archive_20261012",
+  "wrappedPrivateKeyFormat": "DRXBAK01-header-aad-v1"
 }
