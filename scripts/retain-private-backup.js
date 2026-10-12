@@ -43,12 +43,13 @@ async function retain({archive, original, evidenceFile, token, key, keyId, commi
   if (stored.reduce((total, item) => total + item.size + 4096, size) > policy.maxStoredBytes) throw new Error('Backup capacity guard exceeded; retained backups were preserved');
   const stamp = now.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
   const pathname = policy.prefix + stamp + '_' + commit + '_' + keyId + '.enc';
+  const archiveFormat = original.endsWith('.tar.xz') ? 'tar.xz' : 'tar.gz';
   const blob = await sdk.put(pathname, fs.createReadStream(archive), {access:'private', token, addRandomSuffix:false, allowOverwrite:false, contentType:'application/octet-stream'});
   if (blob.pathname !== pathname || !ownedBlob(blob)) throw new Error('Private backup destination differs');
   const anonymous = await fetcher(blob.url, {cache:'no-store', redirect:'error', signal:AbortSignal.timeout(30000)});
   if (![401,403,404].includes(anonymous.status)) throw new Error('Private backup anonymous boundary failed');
   const downloaded = path.join(path.dirname(archive), 'download-' + crypto.randomBytes(12).toString('hex') + '.enc');
-  const decrypted = downloaded + '.tgz';
+  const decrypted = downloaded + '.archive';
   let encryptedHash;
   try {
     const response = await sdk.get(blob.url, {access:'private', token, useCache:false, abortSignal:AbortSignal.timeout(120000)});
@@ -68,7 +69,7 @@ async function retain({archive, original, evidenceFile, token, key, keyId, commi
     await fsp.unlink(decrypted).catch(error => { if (error.code !== 'ENOENT') throw error; });
   }
   const proofPath = pathname.replace(/\.enc$/, '.verified.json');
-  const proofBody = JSON.stringify({schemaVersion:'drx-retained-archive-proof-v1', pathname, encryptedSha256:encryptedHash, keyId, archiveDecryptionVerified:true, anonymousReadRejected:true});
+  const proofBody = JSON.stringify({schemaVersion:'drx-retained-archive-proof-v1', pathname, encryptedSha256:encryptedHash, keyId, archiveFormat, archiveDecryptionVerified:true, anonymousReadRejected:true});
   const proof = await sdk.put(proofPath, proofBody, {access:'private', token, addRandomSuffix:false, allowOverwrite:false, contentType:'application/json'});
   if (proof.pathname !== proofPath || !ownedBlob(proof)) throw new Error('Private backup proof destination differs');
   // A failed download/decryption leaves no verification marker and cannot push
@@ -84,7 +85,7 @@ async function retain({archive, original, evidenceFile, token, key, keyId, commi
   }
   evidence.backupRetention = 'private_blob_encrypted_latest_14_capacity_guarded';
   evidence.retentionStatus = 'PASS';
-  evidence.retainedBackup = {storeId:policy.storeId, pathname, bytes:size, encryptedSha256:encryptedHash, keyId, downloadVerified:true, archiveDecryptionVerified:true, anonymousReadRejected:true, retainedCount:all.length-obsolete.length, prunedCount:obsolete.length, unverifiedArchivesCount:stored.filter(item => item.pathname.endsWith('.enc')).length-verified.length, maxStoredBytes:policy.maxStoredBytes};
+  evidence.retainedBackup = {storeId:policy.storeId, pathname, bytes:size, encryptedSha256:encryptedHash, keyId, archiveFormat, downloadVerified:true, archiveDecryptionVerified:true, anonymousReadRejected:true, retainedCount:all.length-obsolete.length, prunedCount:obsolete.length, unverifiedArchivesCount:stored.filter(item => item.pathname.endsWith('.enc')).length-verified.length, maxStoredBytes:policy.maxStoredBytes};
   await fsp.writeFile(evidenceFile, JSON.stringify(evidence, null, 2) + '\n');
   return evidence.retainedBackup;
 }

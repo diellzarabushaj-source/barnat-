@@ -969,12 +969,12 @@ jobs:
           BACKUP_DIR="${RUNNER_TEMP:?}/drx-phase1-backup"
           cp "$RUNNER_TEMP/drx-source-manifest.txt" "$BACKUP_DIR/source-manifest.txt"
           printf '%s' "${DRX_BACKUP_FINGERPRINT_SALT:?}" > "$BACKUP_DIR/private-fingerprint-salt"
-          tar -czf "$BACKUP_DIR/retained.tgz" -C "$BACKUP_DIR" \
+          tar -cJf "$BACKUP_DIR/retained.tar.xz" -C "$BACKUP_DIR" \
             roles.sql schema.sql data.sql history_schema.sql history_data.sql \
             auth_recovery_schema.sql auth_custom_triggers.sql sha256.txt \
             source-manifest.txt private-fingerprint-salt
-          node scripts/backup-archive-crypto.js encrypt "$BACKUP_DIR/retained.tgz" "$BACKUP_DIR/retained.enc"
-          node scripts/retain-private-backup.js "$BACKUP_DIR/retained.enc" "$BACKUP_DIR/retained.tgz" drx-phase1-backup-restore-evidence.json
+          node scripts/backup-archive-crypto.js encrypt "$BACKUP_DIR/retained.tar.xz" "$BACKUP_DIR/retained.enc"
+          node scripts/retain-private-backup.js "$BACKUP_DIR/retained.enc" "$BACKUP_DIR/retained.tar.xz" drx-phase1-backup-restore-evidence.json
 
       - name: Mark failed private retention
         if: env.DRX_BACKUP_RETENTION_ENABLED == '1' && failure()

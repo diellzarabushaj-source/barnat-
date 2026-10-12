@@ -32,7 +32,7 @@ Their SHA-256 fingerprints use a fresh private salt, absent from public evidence
 This verifies stored bytes and metadata, including encrypted payloads; it does
 not decrypt users' library records.
 
-Only a passing backup is compressed and encrypted with AES-256-GCM, a fresh IV
+Only a passing backup is compressed with XZ and encrypted with AES-256-GCM, a fresh IV
 and an authenticated version header. The archive contains the seven SQL dumps,
 their hash list, the source manifest and its private fingerprint salt. The salt
 is inside the encrypted archive so an isolated future restore can recompute the
@@ -62,11 +62,13 @@ and [private access behavior](https://vercel.com/docs/vercel-blob/private-storag
    directory. Verify its encrypted SHA-256 against that evidence.
 2. In an isolated environment, supply the corresponding recovery key through
    `DRX_BACKUP_ARCHIVE_KEY`, without printing it. Run
-   `node scripts/backup-archive-crypto.js decrypt archive.enc recovered.tgz`.
+   `node scripts/backup-archive-crypto.js decrypt archive.enc recovered.archive`.
    Authentication failure publishes no recovered file. Existing outputs are
    never overwritten.
 3. Inspect and extract the authenticated archive only into a new disposable
    directory. Verify every SQL file against `sha256.txt` before execution.
+   GNU tar detects the compression format when reading a file (`tar -tf` / `tar -xf`);
+   the initial pilot archive uses gzip, while subsequent archives use XZ.
 4. Use the canonical workflow's source-version compatibility and isolated
    restore dispatcher. Preserve custom Auth triggers, migration history, RLS,
    write fences and default privileges. Recompute the manifests with the

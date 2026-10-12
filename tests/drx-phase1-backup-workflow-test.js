@@ -40,6 +40,7 @@ assert.match(workflow,/runner_ephemeral_only_no_database_payload_uploaded/);
 assert.match(workflow,/name: Require complete private retention configuration/);
 assert.match(workflow,/name: Retain and recover verified encrypted backup/);
 assert.match(workflow,/node scripts\/backup-archive-crypto\.js encrypt/);
+assert.match(workflow,/tar -cJf "\$BACKUP_DIR\/retained\.tar\.xz"/);
 assert.match(workflow,/node scripts\/retain-private-backup\.js/);
 assert.match(workflow,/"personalLibraryRowParityVerified":True/);
 assert.match(workflow,/echo "::add-mask::\$DRX_BACKUP_FINGERPRINT_SALT"/);
