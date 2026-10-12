@@ -13,7 +13,7 @@ const sharedLoader = read('sidebar-taxonomy-v3.js');
 // which owns the taxonomy, the worker cutover and the personal counts.
 const shared = read('sidebar-taxonomy-core-v3.js');
 const runtimeAssetManifest = JSON.parse(read('runtime-asset-manifest.json'));
-const sidebarRelease = 'sidebar-taxonomy-v8-reachability-20261010';
+const sidebarRelease = 'sidebar-taxonomy-v9-worker-ready-20261012';
 for (const [page, assets] of Object.entries(runtimeAssetManifest)) {
   assert.equal(assets['sidebar-taxonomy-v3.js'], sidebarRelease, `${page}: the manifest must preserve the new shared sidebar release during build`);
   assert.ok(read(page).includes(`/sidebar-taxonomy-v3.js?v=${sidebarRelease}`), `${page}: the versioned sidebar loader is missing`);

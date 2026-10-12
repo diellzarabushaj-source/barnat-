@@ -638,7 +638,9 @@
           scope:'/',
           updateViaCache:'none',
         });
-        registration.update?.().catch(() => null);
+        // Readiness includes the update check; an active controller alone can
+        // precede its completion, especially when connectivity changes.
+        await registration.update?.().catch(() => null);
         document.documentElement.dataset.drxWorker = 'canonical';
       } catch {
         document.documentElement.dataset.drxWorker = 'unavailable';

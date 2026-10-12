@@ -65,7 +65,7 @@ assert(scriptSources.length === registryScripts.length, `Registry v2 script inve
 registryStyles.forEach((asset,index) => assert(stylesheetLinks[index].split('?')[0] === asset, `Registry stylesheet order differs at ${asset}.`));
 registryScripts.forEach((asset,index) => assert(scriptSources[index].split('?')[0] === asset, `Registry script order differs at ${asset}.`));
 assert(stylesheetLinks.at(-1) === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009', 'Shared Stripe shell v8 must load last.');
-assert(scriptSources[4] === '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v8-reachability-20261010', 'Shared sidebar taxonomy must load before registry filters.');
+assert(scriptSources[4] === '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012', 'Shared sidebar taxonomy must load before registry filters.');
 assert(/<script type="module" src="\/drx-runtime-telemetry\.js\?v=20261009-rum-v1"><\/script>/.test(html), 'The bounded telemetry observer must use its own module entry.');
 
 for (const asset of legacyAssets) {
