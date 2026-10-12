@@ -6,6 +6,7 @@ const crypto = require('node:crypto');
 const {pipeline} = require('node:stream/promises');
 const {Transform} = require('node:stream');
 const {isDeepStrictEqual} = require('node:util');
+const {execFileSync} = require('node:child_process');
 const {decryptFile} = require('./backup-archive-crypto.js');
 const policy = require('../data/backup-retention.json');
 async function sha256(file) {
@@ -20,10 +21,11 @@ function ownedBlob(blob) {
     && /^[0-9]{8}T[0-9]{6}Z_[a-f0-9]{40}_[A-Za-z0-9_-]{1,64}\.(enc|verified\.json)$/.test(blob.pathname.slice(policy.prefix.length))
     && decodeURIComponent(url.pathname.slice(1)) === blob.pathname;
 }
-async function retain({archive, original, evidenceFile, token, key, keyId, commit, sdk, fetcher = fetch, now = new Date()}) {
+async function retain({archive, original, evidenceFile, token, key, keyId, commit, sdk, fetcher = fetch, now = new Date(), requireStorageBodies=false}) {
   if (!token || !/^[a-f0-9]{64}$/.test(key || '') || !/^[A-Za-z0-9_-]{1,64}$/.test(keyId || '') || !/^[a-f0-9]{40}$/.test(commit || '')) throw new Error('Retention configuration is incomplete');
   const evidence = JSON.parse(await fsp.readFile(evidenceFile, 'utf8'));
   if (evidence.status !== 'PASS' || evidence.restoreVerified !== true || evidence.personalLibraryRowParityVerified !== true || !isDeepStrictEqual(evidence.sourceManifest, evidence.restoredManifest)) throw new Error('Unverified backups cannot be retained');
+  if(requireStorageBodies && evidence.storageBodies?.completeInventoryCaptured!==true) throw new Error('Storage body inventory is missing');
   const size = (await fsp.stat(archive)).size;
   const header = Buffer.alloc(8), handle = await fsp.open(archive, 'r');
   try { await handle.read(header, 0, 8, 0); } finally { await handle.close(); }
@@ -64,6 +66,13 @@ async function retain({archive, original, evidenceFile, token, key, keyId, commi
     if (await sha256(downloaded) !== encryptedHash) throw new Error('Retained backup bytes differ');
     await decryptFile(downloaded, decrypted, key);
     if (await sha256(decrypted) !== await sha256(original)) throw new Error('Retained backup recovery differs');
+    if(evidence.storageBodies) {
+      const recovered = JSON.parse(execFileSync('python3',[path.join(__dirname,'verify-storage-archive.py'),decrypted],{encoding:'utf8',stdio:['pipe','pipe','pipe'],timeout:30000}));
+      if(!recovered.completeInventoryRecovered || recovered.objectCount!==evidence.storageBodies.objectCount || recovered.objectBytes!==evidence.storageBodies.objectBytes || recovered.manifestFingerprint!==evidence.storageBodies.manifestFingerprint) throw new Error('Retained Storage bodies differ');
+      evidence.storageObjectByteRecoveryVerified=true;
+      evidence.nativeStorageApiReplayVerified=false;
+      evidence.verifiedScope.push('physical_storage_object_bytes');
+    }
   } finally {
     await fsp.unlink(downloaded).catch(error => { if (error.code !== 'ENOENT') throw error; });
     await fsp.unlink(decrypted).catch(error => { if (error.code !== 'ENOENT') throw error; });
@@ -91,7 +100,7 @@ async function retain({archive, original, evidenceFile, token, key, keyId, commi
 }
 if (require.main === module) {
   const [archive, original, evidenceFile] = process.argv.slice(2);
-  retain({archive, original, evidenceFile, token:process.env.DRX_BACKUP_BLOB_TOKEN, key:process.env.DRX_BACKUP_ARCHIVE_KEY, keyId:process.env.DRX_BACKUP_ARCHIVE_KEY_ID, commit:process.env.GITHUB_SHA, sdk:require('@vercel/blob')})
+  retain({archive, original, evidenceFile, token:process.env.DRX_BACKUP_BLOB_TOKEN, key:process.env.DRX_BACKUP_ARCHIVE_KEY, keyId:process.env.DRX_BACKUP_ARCHIVE_KEY_ID, commit:process.env.GITHUB_SHA, sdk:require('@vercel/blob'),requireStorageBodies:process.env.DRX_BACKUP_STORAGE_BODIES_REQUIRED==='1'})
     .then(result => console.log(JSON.stringify(result)))
     .catch(() => { console.error('Private backup retention failed; credentials and private diagnostics are not published.'); process.exitCode=1; });
 }
