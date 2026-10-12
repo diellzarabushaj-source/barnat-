@@ -5,12 +5,14 @@ const fs=require('node:fs/promises'),path=require('node:path'),os=require('node:
 const {fetchRows}=require('../scripts/fetch-recovery-prescriptions.js'),{inventory,keyPrefix}=require('../scripts/private-backup-inventory.js'),policy=require('../data/backup-retention.json');
 async function main(){
  const pair=crypto.generateKeyPairSync('rsa',{modulusLength:3072,publicKeyEncoding:{type:'spki',format:'pem'},privateKeyEncoding:{type:'pkcs8',format:'pem'}}),key='ab'.repeat(32);
- const wrapped=vault.wrap(Buffer.from(pair.privateKey),key),config={schemaVersion:'drx-library-key-recovery-config-v1',projectRef:'ftuchtmolddhhsdcwnqe',keyId:'synthetic_recovery',publicKey:pair.publicKey,publicKeySha256:vault.hash(pair.publicKey),wrappedPrivateKeySha256:vault.hash(wrapped)};
+ const wrapped=vault.wrap(Buffer.from(pair.privateKey),key),config={schemaVersion:'drx-library-key-recovery-config-v1',projectRef:'ftuchtmolddhhsdcwnqe',keyId:'synthetic_recovery',publicKey:pair.publicKey,publicKeySha256:vault.hash(pair.publicKey),wrappedPrivateKeySha256:vault.hash(wrapped),wrappedPrivateKeyFormat:'DRXBAK01-header-aad-v1'};
  const sourceSecret='synthetic-source-session-key-that-must-not-leave-the-server';
  const saved=process.env.SESSION_SECRET;process.env.SESSION_SECRET=sourceSecret;
  let rows,bundle;try{bundle=recovery.keyBundle();rows=[{user_id:'synthetic-owner',client_id:'synthetic-item',payload:dataCrypto.encryptJson({text:'SYNTHETIC_ONLY ë\nç'},'synthetic-owner:prescription:synthetic-item')}];}finally{if(saved===undefined)delete process.env.SESSION_SECRET;else process.env.SESSION_SECRET=saved;}
  const candidate={schemaVersion:'drx-library-recovery-vault-v1',projectRef:config.projectRef,keyId:config.keyId,wrappedPrivateKey:wrapped.toString('base64'),packet:recovery.seal(bundle,config)};
  assert.equal(recovery.auditRecoveredRows(rows,vault.recover(candidate,key,config)).prescriptionRows,1);
+ assert.throws(()=>vault.recover(candidate,key,{...config,wrappedPrivateKeyFormat:'legacy-magic-only'}));
+ const shippedConfig=require('../data/library-key-recovery-config.json');assert.equal(shippedConfig.wrappedPrivateKeyFormat,'DRXBAK01-header-aad-v1');assert.equal(shippedConfig.wrappedPrivateKeySha256.length,64);
  assert.ok(!JSON.stringify(candidate).includes(sourceSecret));
  async function run({anonymous=404,corrupt=false,stored=[],failMarker=false,sourceRows=rows}={}){
   const memory=new Map(),calls=[],urlFor=name=>'https://'+policy.storeId.slice(6).toLowerCase()+'.private.blob.vercel-storage.com/'+name;

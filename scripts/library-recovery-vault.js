@@ -19,6 +19,7 @@ function unwrap(bytes,key){
  return Buffer.concat([decipher.update(bytes.subarray(20,-16)),decipher.final()]);
 }
 function recover(candidate,key,expected=config){
+ if(expected.wrappedPrivateKeyFormat!=='DRXBAK01-header-aad-v1')fail();
  if(candidate?.schemaVersion!=='drx-library-recovery-vault-v1'||candidate.projectRef!==expected.projectRef||candidate.keyId!==expected.keyId||typeof candidate.wrappedPrivateKey!=='string')fail();
  const wrapped=Buffer.from(candidate.wrappedPrivateKey,'base64');
  if(wrapped.toString('base64')!==candidate.wrappedPrivateKey||hash(wrapped)!==expected.wrappedPrivateKeySha256)fail();
