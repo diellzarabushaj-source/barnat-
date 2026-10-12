@@ -38,7 +38,14 @@ const snapshot = emptyUserLibrarySnapshot({favorites,entityNotes:favorites.slice
       });
       const page=await context.newPage(),errors=[];
       page.on('pageerror',error=>errors.push(error.message));
+      const pending=new Set();
+      page.on('request',request=>pending.add(request));
+      page.on('requestfinished',request=>pending.delete(request));
+      page.on('requestfailed',request=>pending.delete(request));
       for(const view of ['favorites','notes']){
+        // Finish the preceding fixture's background reads before replacing its
+        // document. Keep runtime errors strict, including API/asset failures.
+        await expect.poll(()=>pending.size,{timeout:10000}).toBe(0);
         await page.goto(`http://127.0.0.1:4197/index.html#${view}`);
         await expect(page.locator('html')).toHaveAttribute('data-drx-sidebar-structure','taxonomy-v5');
         await expect(page.locator('#personalList .personal-item')).toHaveCount(view==='favorites'?3:2);
@@ -81,6 +88,7 @@ const snapshot = emptyUserLibrarySnapshot({favorites,entityNotes:favorites.slice
         await page.locator('#personalRefreshButton').click();
         await expect(page.locator('#personalRefreshButton')).toBeEnabled();
         assert.ok(libraryReads>before,`${view}/${width}: explicit refresh reads library`);
+        await expect.poll(()=>pending.size,{timeout:10000}).toBe(0);
         assert.deepEqual(errors,[],`${view}/${width}: runtime errors`);
         checked++;
       }

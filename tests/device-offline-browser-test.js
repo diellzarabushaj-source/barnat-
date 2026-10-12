@@ -74,8 +74,9 @@ const server=http.createServer(async(req,res)=>{
   await page.goto(base+'/index.html');
   await expect(page.locator('#registryList')).toContainText(row.tradeName);
   await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
+  await expect(page.locator('html')).toHaveAttribute('data-drx-worker','canonical');
   await expect.poll(()=>page.evaluate(async()=>{const c=await caches.open('medindex-private-device-v1');return(await c.keys()).some(k=>k.url.includes('view=registry-page'));}),{timeout:10000}).toBe(true);
-  await expect.poll(()=>page.evaluate(async()=>{const cache=await caches.open('medindex-static-device-v1');return !!await cache.match(location.origin+'/sidebar-taxonomy-core-v3.js?v=sidebar-taxonomy-v8-reachability-20261010');}),{timeout:10000}).toBe(true).catch(async error=>{console.log(JSON.stringify(await page.evaluate(async()=>await Promise.all((await caches.keys()).map(async name=>({name,keys:(await(await caches.open(name)).keys()).map(k=>k.url)})))),null,2));throw error;});
+  await expect.poll(()=>page.evaluate(async()=>{const cache=await caches.open('medindex-static-device-v1');return !!await cache.match(location.origin+'/sidebar-taxonomy-core-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012');}),{timeout:10000}).toBe(true).catch(async error=>{console.log(JSON.stringify(await page.evaluate(async()=>await Promise.all((await caches.keys()).map(async name=>({name,keys:(await(await caches.open(name)).keys()).map(k=>k.url)})))),null,2));throw error;});
   const query=await page.evaluate(async()=>{const c=await caches.open('medindex-private-device-v1');return(await c.keys()).find(k=>k.url.includes('view=registry-page')).url;});
   const registryReads=()=>[...reads].filter(([key])=>key.startsWith('/api/drug-search?')&&key.includes('view=registry-page')).reduce((sum,[,value])=>sum+value,0);
   const before=registryReads();
@@ -114,6 +115,10 @@ const server=http.createServer(async(req,res)=>{
   // resume signal must bypass the offline auth lease before normal reads and
   // revocation resume; changing navigator.onLine is not required.
   if(engine===webkit)assert.equal(await page.evaluate(()=>navigator.onLine&&window.DRxDeviceReachable===false),true);
+  // Wait for this document's registration/update attempt while the origin is
+  // still unavailable. WebKit can report its caught rejection asynchronously;
+  // switching the fixture online first incorrectly labels it as an online error.
+  await expect.poll(()=>page.evaluate(()=>document.documentElement.dataset.drxWorker),{timeout:10000}).toMatch(/^(canonical|unavailable)$/);
   networkAvailable=true;if(engine===chromium)await context.setOffline(false);
   await page.evaluate(()=>window.dispatchEvent(new Event('pageshow')));
   await expect.poll(()=>page.evaluate(()=>window.DRxDeviceReachable===true)).toBe(true);

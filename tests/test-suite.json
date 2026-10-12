@@ -1,4 +1,5 @@
 [
+  "tests/canonical-worker-readiness-test.js",
   "tests/device-offline-worker-test.js",
   "tests/device-session-test.js",
   "tests/registry-v2-contract-test.js",
