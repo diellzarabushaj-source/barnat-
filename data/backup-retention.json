@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "drx-private-backup-retention-v1",
+  "provider": "vercel_private_blob",
+  "storeId": "store_5eil8JGWW3uU4KQo",
+  "region": "lhr1",
+  "prefix": "drx-backups/ftuchtmolddhhsdcwnqe/",
+  "keepLatest": 14,
+  "maxStoredBytes": 402653184,
+  "maxArchiveBytes": 67108900,
+  "scheduleUtc": "0 3 * * *"
+}

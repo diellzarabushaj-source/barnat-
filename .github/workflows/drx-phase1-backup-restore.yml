@@ -2,6 +2,8 @@ name: DRx Phase 1 Backup Restore Gate
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"
   push:
     branches: [main]
     paths:
@@ -9,6 +11,11 @@ on:
       - "data/drx-phase1-baseline-v1.json"
       - "tests/drx-phase1-backup-workflow-test.js"
       - "scripts/backup-restore-diagnostic.py"
+      - "scripts/backup-private-manifest.sql"
+      - "tests/backup-private-parity-test.js"
+      - "scripts/backup-archive-crypto.js"
+      - "scripts/retain-private-backup.js"
+      - "data/backup-retention.json"
       - "supabase/migrations/**"
 
 permissions:
@@ -16,7 +23,7 @@ permissions:
 
 concurrency:
   group: drx-phase1-backup-restore-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   backup-restore:
@@ -26,6 +33,10 @@ jobs:
       SOURCE_POSTGRES_VERSION: "17.6.1.155"
       SUPABASE_PROJECT_REF: "ftuchtmolddhhsdcwnqe"
       SUPABASE_POOLER_REGION: "eu-west-2"
+      DRX_BACKUP_RETENTION_ENABLED: ${{ vars.DRX_BACKUP_RETENTION_ENABLED }}
+      DRX_BACKUP_BLOB_TOKEN: ${{ secrets.DRX_BACKUP_BLOB_TOKEN }}
+      DRX_BACKUP_ARCHIVE_KEY: ${{ secrets.DRX_BACKUP_ARCHIVE_KEY }}
+      DRX_BACKUP_ARCHIVE_KEY_ID: ${{ vars.DRX_BACKUP_ARCHIVE_KEY_ID }}
 
       # Accept the existing repository secret without requiring a rename.
       DB_URL_1: ${{ secrets.SUPABASE_DB_URL }}
@@ -68,6 +79,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Require complete private retention configuration
+        if: env.DRX_BACKUP_RETENTION_ENABLED == '1'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "$DRX_BACKUP_BLOB_TOKEN" ] || [[ ! "$DRX_BACKUP_ARCHIVE_KEY" =~ ^[a-f0-9]{64}$ ]] || [[ ! "$DRX_BACKUP_ARCHIVE_KEY_ID" =~ ^[A-Za-z0-9_-]{1,64}$ ]]; then
+            echo "::error::Private backup retention configuration is incomplete."
+            exit 1
+          fi
 
       - name: Resolve backup credential safely
         id: credential
@@ -556,6 +577,21 @@ jobs:
 
           psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
             --file "$RUNNER_TEMP/drx-restore-security-manifest.sql" >> "$RUNNER_TEMP/drx-source-manifest.txt"
+          # Aggregate only; a fresh private salt prevents cross-run fingerprints.
+          DRX_BACKUP_FINGERPRINT_SALT="$(python3 -c 'import secrets; print(secrets.token_hex(32))')"
+          echo "::add-mask::$DRX_BACKUP_FINGERPRINT_SALT"
+          echo "DRX_BACKUP_FINGERPRINT_SALT=$DRX_BACKUP_FINGERPRINT_SALT" >> "$GITHUB_ENV"
+          cat > "$RUNNER_TEMP/drx-restore-private-manifest.sql" <<'SQL'
+          select set_config('drx.backup_fingerprint_salt', :'private_fingerprint_salt', false) \g /dev/null
+          SQL
+          cat scripts/backup-private-manifest.sql >> "$RUNNER_TEMP/drx-restore-private-manifest.sql"
+          if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
+            --set private_fingerprint_salt="$DRX_BACKUP_FINGERPRINT_SALT" \
+            --file "$RUNNER_TEMP/drx-restore-private-manifest.sql" >> "$RUNNER_TEMP/drx-source-manifest.txt" \
+            2> "$RUNNER_TEMP/drx-restore-source-private.log"; then
+            echo "::error::Private source parity capture failed; raw diagnostics are not published."
+            exit 1
+          fi
           test -s "$RUNNER_TEMP/drx-source-manifest.txt"
           if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 \
             --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never --tuples-only --no-align \
@@ -754,6 +790,13 @@ jobs:
 
           psql "$DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
             --file "$RUNNER_TEMP/drx-restore-security-manifest.sql" >> "$RUNNER_TEMP/drx-restore-manifest.txt"
+          if ! psql "$DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
+            --set private_fingerprint_salt="${DRX_BACKUP_FINGERPRINT_SALT:?}" \
+            --file "$RUNNER_TEMP/drx-restore-private-manifest.sql" >> "$RUNNER_TEMP/drx-restore-manifest.txt" \
+            2> "$RUNNER_TEMP/drx-restore-target-private.log"; then
+            echo "::error::Private restore parity capture failed; raw diagnostics are not published."
+            exit 1
+          fi
           test -s "$RUNNER_TEMP/drx-restore-manifest.txt"
           if ! diff -u "$RUNNER_TEMP/drx-source-manifest.txt" "$RUNNER_TEMP/drx-restore-manifest.txt"; then
             if ! psql "$DB_URL" -X --quiet --set ON_ERROR_STOP=1 \
@@ -872,6 +915,8 @@ jobs:
           source_manifest=manifest(__import__('os').environ['RUNNER_TEMP'] + '/drx-source-manifest.txt')
           restored_manifest=manifest(__import__('os').environ['RUNNER_TEMP'] + '/drx-restore-manifest.txt')
           required={'icd_nodes_count','icd_nodes_fingerprint','icd_revisions_count','icd_revisions_fingerprint','migration_history_count','migration_history_fingerprint','application_functions_fingerprint','personal_write_tables_fingerprint','personal_write_triggers_fingerprint','personal_write_schemas_fingerprint','personal_write_controls_fingerprint'}
+          private_tables=['user_notes','user_favorites','user_prescriptions','medindex_users','note_receipts','prescription_receipts','note_control','prescription_control']
+          required.update(f'{table}_private_{field}' for table in private_tables for field in ['count','fingerprint'])
           if not required.issubset(source_manifest) or source_manifest!=restored_manifest:
               raise SystemExit('Restore manifest is incomplete or differs from source')
           evidence={
@@ -887,7 +932,10 @@ jobs:
               "migrationHistoryVerified":True,
               "personalWriteCatalogParity":True,
               "customAuthTriggersVerified":True,
-              "verifiedScope":["clinical_manifest","migration_history","application_security_catalogs_and_control_fences","immutable_icd_snapshots_and_guards"],
+              "verifiedScope":["clinical_manifest","migration_history","application_security_catalogs_and_control_fences","immutable_icd_snapshots_and_guards","personal_library_complete_stored_rows"],
+              "personalLibraryRowParityVerified":True,
+              "personalLibraryRowParityScope":private_tables,
+              "privateFingerprintMode":"sha256_with_private_salt_never_in_public_evidence",
               "privateContentParityVerified":False,
               "decryptionVerified":False,
               "encryptionKeyRecoveryVerified":False,
@@ -897,6 +945,51 @@ jobs:
               "publicationAllowed":False
           }
           Path('drx-phase1-backup-restore-evidence.json').write_text(json.dumps(evidence,indent=2)+"\n")
+          PY
+
+      - name: Setup Node for private retention
+        if: env.DRX_BACKUP_RETENTION_ENABLED == '1' && steps.credential.outputs.available == 'true' && success()
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Setup pnpm for private retention
+        if: env.DRX_BACKUP_RETENTION_ENABLED == '1' && steps.credential.outputs.available == 'true' && success()
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10.28.0"
+
+      - name: Retain and recover verified encrypted backup
+        if: env.DRX_BACKUP_RETENTION_ENABLED == '1' && steps.credential.outputs.available == 'true' && success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          pnpm install --prod --frozen-lockfile --ignore-scripts > "$RUNNER_TEMP/drx-restore-retention-install.log" 2>&1
+          BACKUP_DIR="${RUNNER_TEMP:?}/drx-phase1-backup"
+          cp "$RUNNER_TEMP/drx-source-manifest.txt" "$BACKUP_DIR/source-manifest.txt"
+          printf '%s' "${DRX_BACKUP_FINGERPRINT_SALT:?}" > "$BACKUP_DIR/private-fingerprint-salt"
+          tar -cJf "$BACKUP_DIR/retained.tar.xz" -C "$BACKUP_DIR" \
+            roles.sql schema.sql data.sql history_schema.sql history_data.sql \
+            auth_recovery_schema.sql auth_custom_triggers.sql sha256.txt \
+            source-manifest.txt private-fingerprint-salt
+          node scripts/backup-archive-crypto.js encrypt "$BACKUP_DIR/retained.tar.xz" "$BACKUP_DIR/retained.enc"
+          node scripts/retain-private-backup.js "$BACKUP_DIR/retained.enc" "$BACKUP_DIR/retained.tar.xz" drx-phase1-backup-restore-evidence.json
+
+      - name: Mark failed private retention
+        if: env.DRX_BACKUP_RETENTION_ENABLED == '1' && failure()
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          evidence_file=Path('drx-phase1-backup-restore-evidence.json')
+          if evidence_file.exists():
+              evidence=json.loads(evidence_file.read_text())
+              if evidence.get('status')=='PASS':
+                  evidence['status']='FAILED_RETENTION'
+                  evidence['retentionStatus']='FAILED'
+                  evidence_file.write_text(json.dumps(evidence,indent=2)+'\n')
           PY
 
       - name: Show restore evidence summary
@@ -921,6 +1014,7 @@ jobs:
             "$RUNNER_TEMP/drx-restore-storage-lifecycle.sql" \
             "$RUNNER_TEMP/drx-restore-security-components.sql" "$RUNNER_TEMP/drx-source-security-components.ndjson" \
             "$RUNNER_TEMP/drx-restore-security-components.ndjson" "$RUNNER_TEMP/drx-restore-postgres-defaults.sql"
+          rm -f -- "$RUNNER_TEMP/drx-restore-private-manifest.sql"
 
       - name: Upload evidence only
         if: always()
