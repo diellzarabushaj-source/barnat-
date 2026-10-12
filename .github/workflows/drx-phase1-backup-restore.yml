@@ -15,6 +15,8 @@ on:
       - "tests/backup-private-parity-test.js"
       - "scripts/backup-archive-crypto.js"
       - "scripts/retain-private-backup.js"
+      - "scripts/export-storage-bodies.js"
+      - "scripts/verify-storage-archive.py"
       - "data/backup-retention.json"
       - "supabase/migrations/**"
 
@@ -37,6 +39,10 @@ jobs:
       DRX_BACKUP_BLOB_TOKEN: ${{ secrets.DRX_BACKUP_BLOB_TOKEN }}
       DRX_BACKUP_ARCHIVE_KEY: ${{ secrets.DRX_BACKUP_ARCHIVE_KEY }}
       DRX_BACKUP_ARCHIVE_KEY_ID: ${{ vars.DRX_BACKUP_ARCHIVE_KEY_ID }}
+      DRX_BACKUP_STORAGE_BODIES_REQUIRED: "1"
+      # The Storage HTTPS endpoint is public; database credential aliases may hold PostgreSQL URLs.
+      SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
 
       # Accept the existing repository secret without requiring a rename.
       DB_URL_1: ${{ secrets.SUPABASE_DB_URL }}
@@ -967,12 +973,39 @@ jobs:
           umask 077
           pnpm install --prod --frozen-lockfile --ignore-scripts > "$RUNNER_TEMP/drx-restore-retention-install.log" 2>&1
           BACKUP_DIR="${RUNNER_TEMP:?}/drx-phase1-backup"
+          if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
+            -c "select coalesce(jsonb_agg(to_jsonb(t)-'last_accessed_at' order by bucket_id,name),'[]'::jsonb) from storage.objects t" \
+            > "$BACKUP_DIR/storage-object-inventory.json" 2> "$RUNNER_TEMP/drx-restore-storage-inventory.log"; then
+            echo "::error::Storage object inventory capture failed; private diagnostics are not published."
+            exit 1
+          fi
+          node scripts/export-storage-bodies.js "$BACKUP_DIR/storage-object-inventory.json" "$BACKUP_DIR"
+          if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
+            -c "select coalesce(jsonb_agg(to_jsonb(t)-'last_accessed_at' order by bucket_id,name),'[]'::jsonb) from storage.objects t" \
+            > "$BACKUP_DIR/storage-object-inventory-after.json" 2> "$RUNNER_TEMP/drx-restore-storage-inventory-after.log"; then
+            echo "::error::Storage object version verification failed; private diagnostics are not published."
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          directory=Path(os.environ['RUNNER_TEMP'])/'drx-phase1-backup'
+          before=json.loads((directory/'storage-object-inventory.json').read_text())
+          after=json.loads((directory/'storage-object-inventory-after.json').read_text())
+          if before!=after:
+              raise SystemExit('Storage object inventory changed during capture; preserve previous retained backups')
+          evidence_file=Path('drx-phase1-backup-restore-evidence.json')
+          evidence=json.loads(evidence_file.read_text())
+          evidence['storageBodies']=json.loads((directory/'storage-bodies-proof.json').read_text())
+          evidence['storageBodies']['versionInventoryStable']=True
+          evidence_file.write_text(json.dumps(evidence,indent=2)+'\n')
+          PY
           cp "$RUNNER_TEMP/drx-source-manifest.txt" "$BACKUP_DIR/source-manifest.txt"
           printf '%s' "${DRX_BACKUP_FINGERPRINT_SALT:?}" > "$BACKUP_DIR/private-fingerprint-salt"
           tar -cJf "$BACKUP_DIR/retained.tar.xz" -C "$BACKUP_DIR" \
             roles.sql schema.sql data.sql history_schema.sql history_data.sql \
             auth_recovery_schema.sql auth_custom_triggers.sql sha256.txt \
-            source-manifest.txt private-fingerprint-salt
+            source-manifest.txt private-fingerprint-salt storage-body-manifest.json storage-objects
           node scripts/backup-archive-crypto.js encrypt "$BACKUP_DIR/retained.tar.xz" "$BACKUP_DIR/retained.enc"
           node scripts/retain-private-backup.js "$BACKUP_DIR/retained.enc" "$BACKUP_DIR/retained.tar.xz" drx-phase1-backup-restore-evidence.json
 

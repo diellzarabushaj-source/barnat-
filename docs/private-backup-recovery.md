@@ -76,9 +76,20 @@ and [private access behavior](https://vercel.com/docs/vercel-blob/private-storag
 5. Verify application reads and writes with synthetic accounts before planning
    any live cutover. Never run these restore commands against production.
 
+The workflow also captures the complete Storage object inventory and reads every
+object body through the existing privileged source API key. Individual objects
+are bounded to 16 MiB, the complete body set to 32 MiB and the object count to 256.
+Missing objects, changed metadata or byte lengths/checksums fail the backup;
+an unchanged version inventory is required before and after capture. Paths and
+object metadata remain inside the encrypted archive. Only counts and a salted
+manifest fingerprint enter public evidence. After downloading and decrypting
+the retained archive, every archived object body is verified against its hash
+and length. No source bucket, permission or object is changed by this capture.
+
 The automatic round trip verifies the archive key configured in GitHub. A
 separate recovery-copy drill is required to prove recovery outside GitHub.
 Users' library keys and historical keys require their own protected recovery
 copies and a real library-decryption drill. Full native Auth/Storage catalog
-parity and physical Storage objects remain outside the declared restore scope;
-[database backups do not include Storage file bodies](https://supabase.com/docs/guides/platform/backups).
+parity and a replay through a fresh Storage API remain unverified. Physical
+object bodies are included separately because [database backups alone do not
+include Storage file bodies](https://supabase.com/docs/guides/platform/backups).
