@@ -40,7 +40,8 @@ jobs:
       DRX_BACKUP_ARCHIVE_KEY: ${{ secrets.DRX_BACKUP_ARCHIVE_KEY }}
       DRX_BACKUP_ARCHIVE_KEY_ID: ${{ vars.DRX_BACKUP_ARCHIVE_KEY_ID }}
       DRX_BACKUP_STORAGE_BODIES_REQUIRED: "1"
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      # The Storage HTTPS endpoint is public; database credential aliases may hold PostgreSQL URLs.
+      SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co
       SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
 
       # Accept the existing repository secret without requiring a rename.
