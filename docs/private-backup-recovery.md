@@ -97,6 +97,28 @@ include Storage file bodies](https://supabase.com/docs/guides/platform/backups).
 
 ## Complete native Auth and Storage recovery
 
+All database dumps and source parity queries share one exported, read-only
+REPEATABLE READ snapshot. A bounded keeper holds the snapshot until capture and
+verification finish, then rolls back. Ordinary profile, favorite, note, prescription
+and Auth writes remain available; later committed rows do not enter that backup.
+Invalid or expired snapshots fail closed instead of falling back to a newer live view.
+The CLI's pinned dry-run templates preserve its managed-schema filters; credentials
+are passed as Docker environment values, never evaluated as generated shell exports.
+
+Sequence values are not MVCC. The sequence audit compares the checkpoint actually
+retained in the native dump with the replay, rather than a later value advanced by
+another sign-in. Global role exports remain separate from row snapshots. Concurrent
+role/schema administration can still require retrying a capture. Storage file bodies
+retain their existing size, checksum and fresh inventory/version guard; a changed or
+unrecoverable file must not be published as verified.
+
+Every full drill also updates/inserts synthetic rows in a separate named loopback
+database after exporting a snapshot, dumps and replays it, and requires the frozen
+manifest to match despite those writes. It also advances the live sequence again
+and verifies the retained checkpoint. No concurrency fixture writes to production.
+Successful evidence includes `sourceTransactionSnapshotVerified` and
+`sourceSnapshotConcurrencyProof`; snapshot IDs and private SQL are not artifacts.
+
 Scheduled runs and relevant main pushes require native recovery. Manual dispatch
 defaults to `native_probe=true`; explicitly disabling it produces only the
 earlier limited recovery scope and must not be reported as complete native recovery.
