@@ -9,8 +9,12 @@ async function main(){
   execFileSync(python,['scripts/native-recovery-catalog.py','build','scripts/backup-native-catalog.sql',generated]);
   const sql=await fs.readFile(generated,'utf8');
   await db.exec("CREATE ROLE anon; CREATE ROLE authenticated; CREATE ROLE service_role BYPASSRLS; CREATE ROLE supabase_auth_admin; CREATE ROLE supabase_storage_admin; CREATE SCHEMA auth; CREATE SCHEMA storage; CREATE TYPE auth.kind AS ENUM ('A'); CREATE TABLE auth.users(id uuid primary key,payload text default 'DRX_SYNTHETIC_SECRET'); CREATE TABLE storage.objects(id int primary key,body text); CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT null::uuid $$;");
+  // Managed Storage functions have signatures longer than 256 characters.
+  const argumentsList=Array.from({length:24},(_,i)=>`argument_${i} text`).join(',');
+  await db.exec(`CREATE FUNCTION storage.long_native_signature(${argumentsList}) RETURNS text LANGUAGE sql AS $$ SELECT null::text $$;`);
   const capture=async file=>{const rows=(await db.exec(sql)).flatMap(result=>result.rows.map(row=>Object.values(row)[0]));await fs.writeFile(file,rows.map(row=>JSON.stringify(row)).join('\n')+'\n');return rows;};
   const baseline=await capture(before);assert.ok(!JSON.stringify(baseline).includes('DRX_SYNTHETIC_SECRET'));
+  assert.ok(baseline.some(row=>row.kind==='function'&&row.identity.length>256));
   async function compare(){await capture(after);const r=spawnSync(python,['scripts/native-recovery-catalog.py','compare',before,after,proof],{encoding:'utf8'});return{r,proof:JSON.parse(await fs.readFile(proof,'utf8'))};}
   const identical=await compare();assert.equal(identical.r.status,0);assert.equal(identical.proof.nativeCatalogParityVerified,true);
   const scenarios=[

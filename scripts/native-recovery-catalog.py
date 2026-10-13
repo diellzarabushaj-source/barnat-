@@ -23,7 +23,7 @@ def capture(filename):
         if set(row)!={'kind','identity','components'} or row['kind'] not in KINDS.values():
             raise ValueError('Invalid catalog entry')
         identity=row['identity']
-        if not isinstance(identity,str) or len(identity)>256 or not re.fullmatch(r'[A-Za-z0-9_ .(),"\[\]]+',identity):
+        if not isinstance(identity,str) or len(identity)>1024 or not re.fullmatch(r'[A-Za-z0-9_ .(),"\[\]]+',identity):
             raise ValueError('Invalid native identity')
         fields=row['components']
         if not isinstance(fields,dict) or not 1<=len(fields)<=32 or any(not re.fullmatch(r'[A-Za-z][A-Za-z0-9_]*',name) or not isinstance(value,str) or not re.fullmatch(r'[a-f0-9]{64}',value) for name,value in fields.items()):
@@ -56,6 +56,8 @@ if __name__=='__main__':
             print(json.dumps(proof))
             if proof['status']!='PASS':sys.exit(1)
         else:raise ValueError('Unknown operation')
-    except Exception:
-        print('Native catalog verification failed; raw definitions and private diagnostics were not printed.',file=sys.stderr)
+    except Exception as error:
+        allowed={'Exact native catalog sections are required','Native catalog exceeds bound','Invalid catalog entry','Invalid native identity','Only component hashes are accepted','Duplicate native identity','Incomplete source native catalogs','Unknown operation'}
+        reason=str(error) if str(error) in allowed else 'Invalid catalog encoding'
+        print('Native catalog verification failed: '+reason+'; raw definitions and private diagnostics were not printed.',file=sys.stderr)
         sys.exit(1)
