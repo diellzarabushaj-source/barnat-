@@ -34,6 +34,8 @@ on:
       - "scripts/verify-library-archive.py"
       - "scripts/verify-library-archive.js"
       - "scripts/backup-native-catalog.sql"
+      - "scripts/backup-source-snapshot.py"
+      - "scripts/verify-backup-snapshot-concurrency.py"
       - "scripts/native-recovery-catalog.py"
       - "data/library-key-recovery-config.json"
       - "data/backup-retention.json"
@@ -281,6 +283,27 @@ jobs:
           done
           if [ -z "$SOURCE_DUMP_IMAGE" ]; then echo '::error::Pinned source PostgreSQL client image unavailable from official registries.'; exit 1; fi
           echo "SOURCE_DUMP_IMAGE=$SOURCE_DUMP_IMAGE" >> "$GITHUB_ENV"
+          export SOURCE_DUMP_IMAGE
+          if [ "${{ steps.credential.outputs.mode }}" = 'db_url' ]; then
+            export DRX_REAL_PSQL="$(command -v psql)"
+            export DRX_SOURCE_SNAPSHOT_HELPER="$GITHUB_WORKSPACE/scripts/backup-source-snapshot.py"
+            echo "DRX_REAL_PSQL=$DRX_REAL_PSQL" >> "$GITHUB_ENV"
+            echo "DRX_SOURCE_SNAPSHOT_HELPER=$DRX_SOURCE_SNAPSHOT_HELPER" >> "$GITHUB_ENV"
+            nohup python3 "$DRX_SOURCE_SNAPSHOT_HELPER" serve > "$RUNNER_TEMP/drx-restore-snapshot.log" 2>&1 < /dev/null &
+            for attempt in $(seq 1 30); do
+              if [ -f "$RUNNER_TEMP/drx-source-snapshot/ready" ]; then break; fi
+              sleep 1
+            done
+            test -f "$RUNNER_TEMP/drx-source-snapshot/ready"
+            DRX_BACKUP_SOURCE_SNAPSHOT="$(cat "$RUNNER_TEMP/drx-source-snapshot/snapshot")"
+            echo "::add-mask::$DRX_BACKUP_SOURCE_SNAPSHOT"
+            echo "DRX_BACKUP_SOURCE_SNAPSHOT=$DRX_BACKUP_SOURCE_SNAPSHOT" >> "$GITHUB_ENV"
+            export DRX_BACKUP_SOURCE_SNAPSHOT
+            mkdir -p "$RUNNER_TEMP/drx-source-snapshot/bin"
+            printf '#!/bin/sh\nexec python3 "$DRX_SOURCE_SNAPSHOT_HELPER" psql "$@"\n' > "$RUNNER_TEMP/drx-source-snapshot/bin/psql"
+            chmod 700 "$RUNNER_TEMP/drx-source-snapshot/bin/psql"
+            echo "$RUNNER_TEMP/drx-source-snapshot/bin" >> "$GITHUB_PATH"
+          fi
           EXTRA_DATA_EXCLUDES=()
           if [ "$DRX_NATIVE_RECOVERY_PROBE" = '1' ]; then
             EXTRA_DATA_EXCLUDES=(-x 'auth.*' -x 'storage.*')
@@ -297,12 +320,12 @@ jobs:
             supabase db dump --linked -f "$BACKUP_DIR/history_schema.sql" --schema supabase_migrations
             supabase db dump --linked -f "$BACKUP_DIR/history_data.sql" --use-copy --data-only --schema supabase_migrations
           else
-            supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/roles.sql" --role-only
-            supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/schema.sql"
-            supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/data.sql" --use-copy --data-only \
+            python3 scripts/backup-source-snapshot.py dump supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/roles.sql" --role-only
+            python3 scripts/backup-source-snapshot.py dump supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/schema.sql"
+            python3 scripts/backup-source-snapshot.py dump supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/data.sql" --use-copy --data-only \
               -x "storage.buckets_vectors" -x "storage.vector_indexes" "${EXTRA_DATA_EXCLUDES[@]}"
-            supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/history_schema.sql" --schema supabase_migrations
-            supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/history_data.sql" --use-copy --data-only --schema supabase_migrations
+            python3 scripts/backup-source-snapshot.py dump supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/history_schema.sql" --schema supabase_migrations
+            python3 scripts/backup-source-snapshot.py dump supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/history_data.sql" --use-copy --data-only --schema supabase_migrations
           fi
 
           test -s "$BACKUP_DIR/roles.sql"
@@ -467,9 +490,9 @@ jobs:
               echo '::error::Native Storage schema requires a reviewed compatible service release.'; exit 1
             fi
             # One snapshot includes all native tables, managed migration histories and sequence states.
-            docker run --rm --network host -e SOURCE_DATABASE_URL="$SUPABASE_DB_URL" \
+            docker run --rm --network host -e SOURCE_DATABASE_URL="$SUPABASE_DB_URL" -e DRX_BACKUP_SOURCE_SNAPSHOT \
               "$SOURCE_DUMP_IMAGE" \
-              sh -c 'exec pg_dump "$SOURCE_DATABASE_URL" --format=custom --schema=auth --schema=storage' \
+              sh -c 'exec pg_dump "$SOURCE_DATABASE_URL" --snapshot="$DRX_BACKUP_SOURCE_SNAPSHOT" --format=custom --schema=auth --schema=storage' \
               > "$BACKUP_DIR/native-full.dump" 2> "$RUNNER_TEMP/drx-restore-native-dump.log"
             docker run --rm -v "$BACKUP_DIR:/backup:ro" "$SOURCE_DUMP_IMAGE" \
               pg_restore --list /backup/native-full.dump > "$BACKUP_DIR/native-full.toc"
@@ -702,6 +725,7 @@ jobs:
           DB_URL='postgresql://postgres:postgres@127.0.0.1:54322/postgres'
           RESTORE_CONTAINER='supabase_db_drx-isolated-restore'
           test "$(docker inspect "$RESTORE_CONTAINER" --format '{{.Name}}')" = '/supabase_db_drx-isolated-restore'
+          (cd "$GITHUB_WORKSPACE" && python3 scripts/verify-backup-snapshot-concurrency.py)
 
           # Platform roles are provisioned by the local Supabase stack. The
           # role dump remains part of the backup set and is hashed, while
@@ -972,8 +996,12 @@ jobs:
           python3 scripts/native-recovery-catalog.py build scripts/backup-native-catalog.sql "$RUNNER_TEMP/drx-restore-native-catalog.sql"
           printf "select set_config('drx.backup_fingerprint_salt', :'private_fingerprint_salt', false) \\g /dev/null\n" >> "$RUNNER_TEMP/drx-restore-native-catalog.sql"
           cat scripts/backup-native-rows.sql >> "$RUNNER_TEMP/drx-restore-native-catalog.sql"
+          python3 scripts/backup-source-snapshot.py sequence "$RUNNER_TEMP/drx-phase1-backup/native-data.sql" scripts/backup-native-rows.sql "$RUNNER_TEMP/drx-restore-native-source-rows.sql"
+          python3 scripts/native-recovery-catalog.py build scripts/backup-native-catalog.sql "$RUNNER_TEMP/drx-restore-native-source-catalog.sql"
+          printf "select set_config('drx.backup_fingerprint_salt', :'private_fingerprint_salt', false) \\g /dev/null\n" >> "$RUNNER_TEMP/drx-restore-native-source-catalog.sql"
+          cat "$RUNNER_TEMP/drx-restore-native-source-rows.sql" >> "$RUNNER_TEMP/drx-restore-native-source-catalog.sql"
           if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
-            --set private_fingerprint_salt="${DRX_BACKUP_FINGERPRINT_SALT:?}" --file "$RUNNER_TEMP/drx-restore-native-catalog.sql" > "$RUNNER_TEMP/drx-restore-native-source.ndjson" 2> "$RUNNER_TEMP/drx-restore-native-source.log"; then
+            --set private_fingerprint_salt="${DRX_BACKUP_FINGERPRINT_SALT:?}" --file "$RUNNER_TEMP/drx-restore-native-source-catalog.sql" > "$RUNNER_TEMP/drx-restore-native-source.ndjson" 2> "$RUNNER_TEMP/drx-restore-native-source.log"; then
             echo '::error::Native source catalog capture failed; private diagnostics are not published.'
             exit 1
           fi
@@ -1066,6 +1094,8 @@ jobs:
               "restoreExecuted":True,
               "restoreVerified":True,
               "sourceRestoreParity":True,
+              "sourceTransactionSnapshotVerified":True,
+              "sourceSnapshotConcurrencyProof":json.loads(Path('drx-source-snapshot-concurrency-proof.json').read_text()),
               "migrationHistoryVerified":True,
               "personalWriteCatalogParity":True,
               "customAuthTriggersVerified":True,
@@ -1118,7 +1148,7 @@ jobs:
             exit 1
           fi
           node scripts/export-storage-bodies.js "$BACKUP_DIR/storage-object-inventory.json" "$BACKUP_DIR"
-          if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
+          if ! DRX_SNAPSHOT_LIVE_CHECK=1 psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
             -c "select coalesce(jsonb_agg(to_jsonb(t)-'last_accessed_at' order by bucket_id,name),'[]'::jsonb) from storage.objects t" \
             > "$BACKUP_DIR/storage-object-inventory-after.json" 2> "$RUNNER_TEMP/drx-restore-storage-inventory-after.log"; then
             echo "::error::Storage object version verification failed; private diagnostics are not published."
@@ -1228,6 +1258,11 @@ jobs:
         run: |
           set -euo pipefail
           RESTORE_DIR="${RUNNER_TEMP:?}/drx-phase1-restore"
+          python3 scripts/backup-source-snapshot.py stop || true
+          for attempt in $(seq 1 20); do
+            if [ ! -f "$RUNNER_TEMP/drx-source-snapshot/ready" ]; then break; fi
+            sleep 0.25
+          done
           if [ -f "$RESTORE_DIR/supabase/config.toml" ]; then
             (cd "$RESTORE_DIR" && supabase stop --no-backup) > "$RUNNER_TEMP/drx-restore-cleanup.log" 2>&1 || true
           fi
@@ -1242,6 +1277,8 @@ jobs:
           rm -f -- "$RUNNER_TEMP/drx-restore-native-catalog.sql" "$RUNNER_TEMP/drx-restore-native-source.ndjson" "$RUNNER_TEMP/drx-restore-native-target.ndjson"
           rm -f -- "$RUNNER_TEMP/drx-restore-native-schema.sql" "$RUNNER_TEMP/drx-restore-native-data.sql" "$RUNNER_TEMP/drx-restore-native-status.json" "$RUNNER_TEMP/drx-restore-native-restarted.ndjson"
           rm -f -- "$RUNNER_TEMP/drx-restore-native-application-data.sql"
+          rm -f -- "$RUNNER_TEMP/drx-restore-native-source-rows.sql" "$RUNNER_TEMP/drx-restore-native-source-catalog.sql"
+          if [ ! -f "$RUNNER_TEMP/drx-source-snapshot/ready" ]; then rm -rf -- "${RUNNER_TEMP:?}/drx-source-snapshot"; fi
           rm -f -- "$RUNNER_TEMP/drx-restore-native-image.txt" "$RUNNER_TEMP/drx-restore-native-version.txt"
           rm -f -- "$RUNNER_TEMP/drx-restore-storage-image.txt" "$RUNNER_TEMP/drx-restore-storage-migration.txt"
 

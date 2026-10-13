@@ -1,4 +1,5 @@
 [
+  "tests/backup-source-snapshot-test.js",
   "tests/native-recovery-catalog-test.js",
   "tests/library-recovery-vault-test.js",
   "tests/library-key-recovery-test.js",
