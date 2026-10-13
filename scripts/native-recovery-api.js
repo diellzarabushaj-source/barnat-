@@ -47,13 +47,15 @@ async function run({statusFile,bodyDirectory,proofFile}){
    const id=created.data?.id;check(created.ok&&/^[a-f0-9-]{36}$/i.test(id||''),'auth_create_failed');
    const profile=await request('/rest/v1/profiles?select=id,role,status&id=eq.'+id);
    check(profile.ok&&profile.data?.length===1&&profile.data[0].id===id&&profile.data[0].role!=='admin','profile_bootstrap_or_privilege_escalation');
-   const approval=await request('/rest/v1/profiles?id=eq.'+id,{method:'PATCH',json:{role:'doctor',status:'active'}});
+   const premature=await request('/rest/v1/profiles?id=eq.'+id,{method:'PATCH',json:{role:'doctor',status:'active'}});
+   check(!premature.ok,'unverified_profile_activation_allowed');
+   const approval=await request('/rest/v1/profiles?id=eq.'+id,{method:'PATCH',json:{role:'doctor',status:'active',verification_status:'admin_approved'}});
    check(approval.ok,'synthetic_profile_approval_failed');
    const signed=await request('/auth/v1/token?grant_type=password',{key:keys.anon,method:'POST',json:{email,password}});
    check(signed.ok&&signed.data?.user?.id===id&&signed.data.access_token&&signed.data.refresh_token,'password_signin_failed');
    users.push({id,email,...signed.data});
   }
-  proof.profileBootstrapVerified=true;proof.userMetadataCannotGrantAdmin=true;proof.passwordSignInVerified=true;
+  proof.profileBootstrapVerified=true;proof.userMetadataCannotGrantAdmin=true;proof.unverifiedProfileActivationDenied=true;proof.passwordSignInVerified=true;
   stage='auth_refresh_and_identity';
   const refreshed=await request('/auth/v1/token?grant_type=refresh_token',{key:keys.anon,method:'POST',json:{refresh_token:users[0].refresh_token}});
   check(refreshed.ok&&refreshed.data?.user?.id===users[0].id,'refresh_failed');Object.assign(users[0],refreshed.data);

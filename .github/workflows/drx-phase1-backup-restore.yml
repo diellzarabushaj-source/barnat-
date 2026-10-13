@@ -1157,6 +1157,7 @@ jobs:
           PY
 
       - name: Verify isolated native Auth Storage and application APIs
+        id: native_api
         if: env.DRX_NATIVE_RECOVERY_PROBE == '1' && success()
         shell: bash
         run: |
@@ -1175,6 +1176,22 @@ jobs:
           evidence['storageBodies']['nativeStorageApiReplayVerified']=True
           evidence['verifiedScope'].append('native_auth_storage_and_application_api_recovery')
           evidence_file.write_text(json.dumps(evidence,indent=2)+'\n')
+          PY
+
+      - name: Mark failed native API scope
+        if: always() && steps.native_api.outcome == 'failure'
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          evidence_file=Path('drx-phase1-backup-restore-evidence.json')
+          if evidence_file.exists():
+              evidence=json.loads(evidence_file.read_text());evidence['status']='FAILED_NATIVE_API_RECOVERY'
+              api_file=Path('drx-native-api-proof.json')
+              evidence.setdefault('nativeRecovery',{})['api']=json.loads(api_file.read_text()) if api_file.exists() else {'status':'FAIL','failedStage':'configuration'}
+              evidence['nativeRecovery']['completeNativeRecoveryVerified']=False
+              evidence_file.write_text(json.dumps(evidence,indent=2)+'\n')
           PY
 
       - name: Show restore evidence summary
