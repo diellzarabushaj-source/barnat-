@@ -12,6 +12,7 @@ WITH relations AS (
   'indexes',(SELECT jsonb_agg(jsonb_build_array(ic.relname,i.indisvalid,i.indisready,pg_catalog.pg_get_indexdef(i.indexrelid,0,false)) ORDER BY ic.relname) FROM pg_catalog.pg_index i JOIN pg_catalog.pg_class ic ON ic.oid=i.indexrelid WHERE i.indrelid=relations.oid),
   'triggers',(SELECT jsonb_agg(jsonb_build_array(t.tgname,t.tgenabled,pg_catalog.pg_get_triggerdef(t.oid,false)) ORDER BY t.tgname) FROM pg_catalog.pg_trigger t WHERE t.tgrelid=relations.oid AND NOT t.tgisinternal),
   'policies',(SELECT jsonb_agg(jsonb_build_array(q.polname,q.polpermissive,q.polcmd,(SELECT jsonb_agg(CASE WHEN role_oid=0 THEN 'PUBLIC' ELSE pg_catalog.pg_get_userbyid(role_oid) END ORDER BY CASE WHEN role_oid=0 THEN 'PUBLIC' ELSE pg_catalog.pg_get_userbyid(role_oid) END) FROM unnest(q.polroles) role_oid),pg_catalog.pg_get_expr(q.polqual,q.polrelid),pg_catalog.pg_get_expr(q.polwithcheck,q.polrelid)) ORDER BY q.polname) FROM pg_catalog.pg_policy q WHERE q.polrelid=relations.oid),
+  'sequence',(SELECT jsonb_build_array(seqtypid::pg_catalog.regtype::text,seqstart,seqincrement,seqmax,seqmin,seqcache,seqcycle) FROM pg_catalog.pg_sequence WHERE seqrelid=relations.oid),
   'view',CASE WHEN relkind IN ('v','m') THEN pg_catalog.pg_get_viewdef(oid,false) ELSE NULL END
  ) AS value FROM relations
 )
@@ -45,7 +46,9 @@ WITH entries AS (
 SELECT 'native_schemas_count='||count(*) AS entry FROM entries
 UNION ALL SELECT 'native_schemas_fingerprint='||encode(sha256(convert_to(coalesce(string_agg(identity||value::text,'' ORDER BY identity),''),'UTF8')),'hex') FROM entries;
 WITH entries AS (
- SELECT rolname AS identity,jsonb_build_object('superuser',rolsuper,'inherit',rolinherit,'createRole',rolcreaterole,'createDb',rolcreatedb,'login',rolcanlogin,'replication',rolreplication,'bypassRls',rolbypassrls) AS value
+ SELECT rolname AS identity,jsonb_build_object('superuser',rolsuper,'inherit',rolinherit,'createRole',rolcreaterole,'createDb',rolcreatedb,'login',rolcanlogin,'replication',rolreplication,'bypassRls',rolbypassrls,
+ 'config',rolconfig,'connectionLimit',rolconnlimit,
+ 'memberOf',(SELECT jsonb_agg(jsonb_build_array(pg_catalog.pg_get_userbyid(m.roleid),pg_catalog.pg_get_userbyid(m.grantor),m.admin_option,m.inherit_option,m.set_option) ORDER BY pg_catalog.pg_get_userbyid(m.roleid),pg_catalog.pg_get_userbyid(m.grantor)) FROM pg_catalog.pg_auth_members m WHERE m.member=pg_roles.oid)) AS value
  FROM pg_catalog.pg_roles WHERE rolname IN ('anon','authenticated','service_role','supabase_auth_admin','supabase_storage_admin')
 )
 SELECT 'native_roles_count='||count(*) AS entry FROM entries

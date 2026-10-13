@@ -33,6 +33,10 @@ async function run({statusFile,bodyDirectory,proofFile}){
   for(const name of ['MEDINDEX_SUPABASE_SECRET_KEY','SUPABASE_SECRET_KEY','MEDINDEX_SUPABASE_SERVICE_ROLE_KEY','SUPABASE_SERVICE_ROLE_KEY'])process.env[name]=keys.service;
   for(const name of ['MEDINDEX_SUPABASE_PUBLISHABLE_KEY','SUPABASE_PUBLISHABLE_KEY'])process.env[name]=keys.anon;
   process.env.SESSION_SECRET=crypto.randomBytes(48).toString('hex');
+  process.env.MEDINDEX_SESSION_SECRET=process.env.SESSION_SECRET;
+  process.env.MEDINDEX_USER_DATA_KEY=process.env.SESSION_SECRET;
+  process.env.MEDINDEX_USER_DATA_KEY_ID='synthetic_native_recovery';
+  process.env.MEDINDEX_USER_DATA_PREVIOUS_KEYS='{}';
   delete process.env.SESSION_SECRET_PREVIOUS;delete process.env.SESSION_SECRET_KEY_ID;
   // Library probes create and decrypt only synthetic prescriptions under a synthetic key.
   const users=[];

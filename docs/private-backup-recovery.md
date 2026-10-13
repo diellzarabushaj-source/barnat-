@@ -30,7 +30,8 @@ source/target manifest equality. Complete stored rows in four personal-library
 tables, both write-receipt tables and both rollout controls are included.
 Their SHA-256 fingerprints use a fresh private salt, absent from public evidence.
 This verifies stored bytes and metadata, including encrypted payloads; it does
-not decrypt users' library records.
+not by itself decrypt users' library records. With library recovery enabled,
+the independently recovered prescription keys are verified as described below.
 
 Only a passing backup is compressed with XZ and encrypted with AES-256-GCM, a fresh IV
 and an authenticated version header. The archive contains the seven SQL dumps,
@@ -88,13 +89,63 @@ manifest fingerprint enter public evidence. After downloading and decrypting
 the retained archive, every archived object body is verified against its hash
 and length. No source bucket, permission or object is changed by this capture.
 
-The automatic round trip verifies the archive key configured in GitHub. A
-separate recovery-copy drill is required to prove recovery outside GitHub.
-Users' library keys and historical keys require their own protected recovery
-copies and a real library-decryption drill. Full native Auth/Storage catalog
-parity and a replay through a fresh Storage API remain unverified. Physical
+The automatic round trip verifies the archive key configured in GitHub. Keep
+the separate protected recovery copy outside GitHub available for a disaster.
+Historical library vaults remain necessary while their dependent backups exist. Physical
 object bodies are included separately because [database backups alone do not
 include Storage file bodies](https://supabase.com/docs/guides/platform/backups).
+
+## Complete native Auth and Storage recovery
+
+Scheduled runs and relevant main pushes require native recovery. Manual dispatch
+defaults to `native_probe=true`; explicitly disabling it produces only the
+earlier limited recovery scope and must not be reported as complete native recovery.
+
+The source image stays pinned to `17.6.1.155`. The disposable restore accepts
+only `17.6.1.155` or `17.11.0.003`, and checks both the actual container tag and
+the running PostgreSQL version. This choice never upgrades the hosted project.
+
+A single private custom-format dump captures both entire managed schemas,
+all their rows, managed migration histories and sequence states. Precisely the
+three known application Auth triggers are deferred until their application
+functions exist. Native triggers, owners and ACLs are preserved. Only the named
+disposable loopback database may drop/recreate these schemas. The earlier partial
+Auth compatibility additions remain available only for the explicitly limited mode.
+
+The full native archive is retained encrypted alongside the generated native SQL
+and trigger selection. Complete source/restore catalogs cover relations, column
+definitions, constraints, indexes, triggers, policies, functions, enum/domain types,
+schemas, default ACLs, role privilege attributes/configuration/membership and
+sequence parameters. All native table rows and sequence states are compared with
+private salted digests. No native user values, passwords, tokens or file paths
+are published. Auth, Storage and REST services are restarted, and parity is
+required again before any synthetic API mutations.
+
+The isolated API proof creates two confirmed `example.invalid` accounts, checks
+profile bootstrapping and rejection of a metadata-based admin claim, password
+sign-in, refresh, identity, cross-owner profile access and logout refresh revocation.
+It replays every captured private file through Storage and requires identical bytes
+on readback and denial for anonymous/unrelated callers. The actual avatar handler
+is exercised for upload, read, delete and rejection of another owner's path.
+The actual personal-library code tests encrypted synthetic prescriptions, native
+notes, CAS receipts/replay/conflicts, account binding and the direct-delete fence.
+All probe traffic is hard-pinned to `http://127.0.0.1:54321`; source secrets are
+replaced before application imports. There are no production API mutations or
+emails sent to real users.
+
+Successful aggregate evidence includes `nativeRecovery`, its actual PostgreSQL
+version, restart proof and `api` result, plus `nativeStorageApiReplayVerified`.
+The native row parity is taken before file replay and synthetic users change
+local timestamps/version IDs. Existing source prescriptions are independently
+decrypted from the retained archive; synthetic application tests use a separate
+throwaway cipher key. These are distinct checks.
+
+External OAuth provider credentials, hosted Auth signing configuration, deployment
+secrets and dashboard settings must be supplied securely when rebuilding a hosted
+project. This database/API drill does not export or test those control-plane secrets,
+Google OAuth against real accounts, existing users' passwords, or immediate expiry
+of already-issued access JWTs. It proves native database recovery and the isolated
+service/application flows; a live cutover still needs a maintenance decision.
 
 ## Independent prescription cipher-key recovery
 

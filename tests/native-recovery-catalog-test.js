@@ -37,6 +37,9 @@ async function main(){
    ["CREATE OR REPLACE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT '11111111-1111-4111-8111-111111111111'::uuid $$",'function','definition'],
    ["ALTER TYPE auth.kind ADD VALUE 'B'",'type','enum'],
    ['ALTER ROLE service_role NOBYPASSRLS','role','bypassRls'],
+   ['ALTER ROLE authenticated SET statement_timeout=1000','role','config'],
+   ['GRANT anon TO authenticated','role','memberOf'],
+   ['ALTER SEQUENCE auth.refresh_counter INCREMENT BY 2','relation','sequence'],
    ['GRANT USAGE ON SCHEMA auth TO anon','schema','acl'],
    ["INSERT INTO auth.users VALUES ('22222222-2222-4222-8222-222222222222','DRX_SYNTHETIC_SECRET')",'rows','fingerprint'],
    ['ALTER DEFAULT PRIVILEGES IN SCHEMA storage GRANT SELECT ON TABLES TO anon','defaultAcl','missingSource']

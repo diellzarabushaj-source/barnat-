@@ -10,10 +10,10 @@ on:
         default: '17.6.1.155'
         options: ['17.6.1.155', '17.11.0.003']
       native_probe:
-        description: Require exact source and restored native Auth/Storage catalogs
+        description: Require complete native Auth Storage data and isolated API recovery
         required: false
         type: boolean
-        default: false
+        default: true
   schedule:
     - cron: "0 3 * * *"
   push:
@@ -53,7 +53,7 @@ jobs:
     env:
       SOURCE_POSTGRES_VERSION: "17.6.1.155"
       DRX_RESTORE_POSTGRES_VERSION: ${{ inputs.postgres_version || '17.6.1.155' }}
-      DRX_NATIVE_RECOVERY_PROBE: ${{ inputs.native_probe && '1' || '0' }}
+      DRX_NATIVE_RECOVERY_PROBE: ${{ (github.event_name != 'workflow_dispatch' || inputs.native_probe) && '1' || '0' }}
       SUPABASE_PROJECT_REF: "ftuchtmolddhhsdcwnqe"
       SUPABASE_POOLER_REGION: "eu-west-2"
       DRX_BACKUP_RETENTION_ENABLED: ${{ vars.DRX_BACKUP_RETENTION_ENABLED }}
@@ -466,6 +466,9 @@ jobs:
               pg_restore --schema-only --file=- --use-list=/backup/native-restore.toc /backup/native-full.dump > "$BACKUP_DIR/native-schema.sql"
             docker run --rm -v "$BACKUP_DIR:/backup:ro" "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" \
               pg_restore --data-only --file=- /backup/native-full.dump > "$BACKUP_DIR/native-data.sql"
+            # CLI's managed Auth export can be appended independently of -x patterns.
+            # Preserve original data.sql, but replay only application blocks after full native data.
+            python3 scripts/native-recovery-app-data.py "$BACKUP_DIR/data.sql" "$BACKUP_DIR/native-application-data.sql"
           fi
           sha256sum "$BACKUP_DIR"/*.sql > "$BACKUP_DIR/sha256.txt"
 
@@ -813,9 +816,11 @@ jobs:
           restore_sql schema --single-transaction --file "$RUNNER_TEMP/drx-restore-postgres-defaults.sql"
           # END guarded local default ACL preparation
           restore_sql schema --file "$BACKUP_DIR/schema.sql"
+          APPLICATION_DATA_FILE="$BACKUP_DIR/data.sql"
+          if [ "$DRX_NATIVE_RECOVERY_PROBE" = '1' ]; then APPLICATION_DATA_FILE="$BACKUP_DIR/native-application-data.sql"; fi
           restore_sql data \
             --command 'SET session_replication_role = replica' \
-            --file "$BACKUP_DIR/data.sql"
+            --file "$APPLICATION_DATA_FILE"
           # Reset migration history only in the hard-coded disposable local target.
           restore_sql history --single-transaction \
             --command 'DROP SCHEMA IF EXISTS supabase_migrations CASCADE' \
@@ -1056,6 +1061,13 @@ jobs:
               "publicationAllowed":False
           }
           Path('drx-phase1-backup-restore-evidence.json').write_text(json.dumps(evidence,indent=2)+"\n")
+          if __import__('os').environ['DRX_NATIVE_RECOVERY_PROBE']=='1':
+              native=json.loads(Path('drx-native-recovery-proof.json').read_text())
+              if native.get('status')!='PASS' or not all(native.get(field) for field in ['nativeCatalogParityVerified','completeNativeRowParityVerified','nativeSequenceStateVerified','exactImageVerified','serviceRestartParityVerified']):
+                  raise SystemExit('Complete native recovery proof is required')
+              evidence['nativeRecovery']=native
+              evidence['verifiedScope'].extend(['complete_native_auth_storage_catalogs','complete_native_auth_storage_stored_rows','native_sequence_state','native_service_restart'])
+              Path('drx-phase1-backup-restore-evidence.json').write_text(json.dumps(evidence,indent=2)+'\n')
           PY
 
       - name: Setup Node for private retention
@@ -1109,7 +1121,7 @@ jobs:
           printf '%s' "${DRX_BACKUP_FINGERPRINT_SALT:?}" > "$BACKUP_DIR/private-fingerprint-salt"
           RECOVERY_FILES=()
           NATIVE_FILES=()
-          if [ "$DRX_NATIVE_RECOVERY_PROBE" = '1' ]; then NATIVE_FILES=(native-full.dump native-full.toc native-restore.toc native-schema.sql native-data.sql); fi
+          if [ "$DRX_NATIVE_RECOVERY_PROBE" = '1' ]; then NATIVE_FILES=(native-full.dump native-full.toc native-restore.toc native-schema.sql native-data.sql native-application-data.sql); fi
           if [ "${DRX_BACKUP_LIBRARY_RECOVERY_ENABLED:-0}" = '1' ]; then
             if ! psql 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
               -c "select coalesce(jsonb_agg(jsonb_build_object('user_id',user_id,'client_id',client_id,'payload',payload) order by id),'[]'::jsonb) from public.user_prescriptions" \
@@ -1152,6 +1164,18 @@ jobs:
           umask 077
           (cd "$RUNNER_TEMP/drx-phase1-restore" && supabase status -o json) > "$RUNNER_TEMP/drx-restore-native-status.json" 2> "$RUNNER_TEMP/drx-restore-native-status.log"
           node scripts/native-recovery-api.js "$RUNNER_TEMP/drx-restore-native-status.json" "$RUNNER_TEMP/drx-phase1-backup" drx-native-api-proof.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          api=json.loads(Path('drx-native-api-proof.json').read_text())
+          if api.get('status')!='PASS':raise SystemExit('Native API recovery must pass')
+          evidence_file=Path('drx-phase1-backup-restore-evidence.json');evidence=json.loads(evidence_file.read_text())
+          evidence['nativeRecovery']['api']=api
+          evidence['nativeRecovery']['completeNativeRecoveryVerified']=True
+          evidence['storageBodies']['nativeStorageApiReplayVerified']=True
+          evidence['verifiedScope'].append('native_auth_storage_and_application_api_recovery')
+          evidence_file.write_text(json.dumps(evidence,indent=2)+'\n')
+          PY
 
       - name: Show restore evidence summary
         if: steps.credential.outputs.available == 'true' && success()
