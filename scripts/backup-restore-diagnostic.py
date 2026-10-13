@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 def diagnose(stage, log_file, sql_file):
-    result = {"failedStage": stage if stage in {"managed_auth", "schema", "data", "history", "auth_triggers"} else "unknown",
+    result = {"failedStage": stage if stage in {"managed_auth", "managed_native", "native_data", "schema", "data", "history", "auth_triggers"} else "unknown",
               "sqlstate": "unavailable", "copyRelation": None}
     error_line = None
     try:

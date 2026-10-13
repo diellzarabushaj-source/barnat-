@@ -1,4 +1,5 @@
 [
+  "tests/native-recovery-catalog-test.js",
   "tests/library-recovery-vault-test.js",
   "tests/library-key-recovery-test.js",
   "tests/canonical-worker-readiness-test.js",
@@ -193,5 +194,6 @@
   "tests/user-prescriptions-cas-client-test.js",
   "tests/user-library-cas-database-contract-test.js",
   "tests/user-notes-native-storage-test.js",
-  "tests/phase5-session-cutover-test.js"
+  "tests/phase5-session-cutover-test.js",
+  "tests/native-recovery-guards-test.js"
 ]
