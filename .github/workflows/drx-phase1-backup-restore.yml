@@ -463,9 +463,9 @@ jobs:
               pg_restore --list /backup/native-full.dump > "$BACKUP_DIR/native-full.toc"
             python3 scripts/native-recovery-toc.py "$BACKUP_DIR/native-full.toc" "$BACKUP_DIR/native-restore.toc"
             docker run --rm -v "$BACKUP_DIR:/backup:ro" "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" \
-              pg_restore --schema-only --use-list=/backup/native-restore.toc /backup/native-full.dump > "$BACKUP_DIR/native-schema.sql"
+              pg_restore --schema-only --file=- --use-list=/backup/native-restore.toc /backup/native-full.dump > "$BACKUP_DIR/native-schema.sql"
             docker run --rm -v "$BACKUP_DIR:/backup:ro" "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" \
-              pg_restore --data-only /backup/native-full.dump > "$BACKUP_DIR/native-data.sql"
+              pg_restore --data-only --file=- /backup/native-full.dump > "$BACKUP_DIR/native-data.sql"
           fi
           sha256sum "$BACKUP_DIR"/*.sql > "$BACKUP_DIR/sha256.txt"
 
@@ -971,6 +971,21 @@ jobs:
             --set private_fingerprint_salt="${DRX_BACKUP_FINGERPRINT_SALT:?}" --file "$RUNNER_TEMP/drx-restore-native-catalog.sql" \
             > "$RUNNER_TEMP/drx-restore-native-restarted.ndjson" 2> "$RUNNER_TEMP/drx-restore-native-restarted.log"
           python3 scripts/native-recovery-catalog.py compare "$RUNNER_TEMP/drx-restore-native-source.ndjson" "$RUNNER_TEMP/drx-restore-native-restarted.ndjson" drx-native-recovery-proof.json
+          docker inspect supabase_db_drx-isolated-restore --format '{{.Config.Image}}' > "$RUNNER_TEMP/drx-restore-native-image.txt"
+          psql 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' -X --quiet --tuples-only --no-align -c 'show server_version' > "$RUNNER_TEMP/drx-restore-native-version.txt"
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          directory=Path(os.environ['RUNNER_TEMP'])
+          image=(directory/'drx-restore-native-image.txt').read_text().strip()
+          version=(directory/'drx-restore-native-version.txt').read_text().strip().split(' ')[0]
+          expected=os.environ['DRX_RESTORE_POSTGRES_VERSION']
+          if not image.endswith('/postgres:'+expected) or version!='.'.join(expected.split('.')[:2]):
+              raise SystemExit('Disposable database did not run the requested PostgreSQL image')
+          proof_file=Path('drx-native-recovery-proof.json');proof=json.loads(proof_file.read_text())
+          proof.update({'requestedPostgresImage':expected,'actualPostgresVersion':version,'exactImageVerified':True,'serviceRestartParityVerified':True})
+          proof_file.write_text(json.dumps(proof,indent=2)+'\n')
+          PY
 
       - name: Write failure evidence
         if: steps.credential.outputs.available == 'true' && failure()
@@ -1163,6 +1178,7 @@ jobs:
           rm -f -- "$RUNNER_TEMP/drx-restore-private-manifest.sql"
           rm -f -- "$RUNNER_TEMP/drx-restore-native-catalog.sql" "$RUNNER_TEMP/drx-restore-native-source.ndjson" "$RUNNER_TEMP/drx-restore-native-target.ndjson"
           rm -f -- "$RUNNER_TEMP/drx-restore-native-schema.sql" "$RUNNER_TEMP/drx-restore-native-data.sql" "$RUNNER_TEMP/drx-restore-native-status.json" "$RUNNER_TEMP/drx-restore-native-restarted.ndjson"
+          rm -f -- "$RUNNER_TEMP/drx-restore-native-image.txt" "$RUNNER_TEMP/drx-restore-native-version.txt"
 
       - name: Upload evidence only
         if: always()

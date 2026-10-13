@@ -110,7 +110,7 @@ async function run({statusFile,bodyDirectory,proofFile}){
   const revoked=await request('/auth/v1/token?grant_type=refresh_token',{key:keys.anon,method:'POST',json:{refresh_token:users[0].refresh_token}});check(!revoked.ok,'refresh_revocation_failed');proof.logoutRefreshRevocationVerified=true;
   // JWT access tokens expire naturally; no claim of immediate JWT invalidation.
   proof.syntheticAccounts=2;proof.status='PASS';
- }catch{proof.status='FAIL';proof.failedStage=stage;}
+ }catch(error){proof.status='FAIL';proof.failedStage=stage;proof.failureCode=error.message==='Isolated recovery proof failed'?error.code:'application_probe_failed';}
  finally{global.fetch=nativeFetch;await fs.writeFile(proofFile,JSON.stringify(proof,null,2)+'\n');}
  console.log(JSON.stringify(proof));if(proof.status!=='PASS')process.exitCode=1;return proof;
 }
