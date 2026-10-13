@@ -134,6 +134,10 @@
 (() => {
   'use strict';
 
+  const CALCULATE_URL = '/api/dosage?view=pediatric-common-calculate';
+  let sharedWeight = '';
+  let referenceRevision = '';
+  let referenceActive = false;
   const DATA_URL = '/api/dosage?view=pediatric-common-reference';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
@@ -512,9 +516,7 @@
   const sectionSq = value => liquidCore?.sectionTitleSq ? liquidCore.sectionTitleSq(value) : String(value ?? '');
   const componentSq = value => liquidCore?.componentSq ? liquidCore.componentSq(value) : String(value ?? '');
   const mlNumber = value => {
-    const digits = Math.abs(value) < 1 ? 2 : 1;
-    const factor = 10 ** digits;
-    return String(Math.round(value * factor) / factor).replace('.', ',');
+    return String(Number(Number(value).toPrecision(4))).replace('.', ',');
   };
   const mlRange = (lo, hi) => `${mlNumber(lo)}${Math.abs(lo - hi) < 1e-9 ? '' : '–' + mlNumber(hi)} mL`;
 
@@ -522,10 +524,9 @@
     if (!liquidCore || result.error) return;
 
     const calcDrug = practicalDrug(drug);
-    const presentations = liquidCore.presentationsFor(calcDrug, option);
-    const conversions = liquidCore.volumeConversions(result, presentations);
-    const vialItems = liquidCore.vialConversions ? liquidCore.vialConversions(result, calcDrug, option) : [];
-    const audit = liquidCore.formulationAudit ? liquidCore.formulationAudit(calcDrug, option) : [];
+    const conversions = result.conversions || [];
+    const vialItems = result.vialItems || [];
+    const audit = result.formulationAudit || [];
     const vialSources = new Set(vialItems.map(item => String(item.source || '')));
     const extras = audit.filter(item => item.status !== 'auto-ml' && item.status !== 'vial-equivalent' && !vialSources.has(String(item.source || '')));
 
@@ -601,6 +602,21 @@
       list.append(card);
     });
 
+    if (list.children.length) {
+      const field = node('label',null,'dz-common-field');
+      field.append(node('span','Përqendrimi në etiketën e produktit','dz-label'));
+      const select = node('select',null,'dz-unit dz-common-select');
+      const empty = node('option','Zgjidh formulimin / përqendrimin…'); empty.value=''; select.append(empty);
+      Array.from(list.children).forEach((card,index) => {
+        const item = conversions[index] || vialItems[index-conversions.length];
+        const label = index<conversions.length ? `${item.form} · ${calcFmt(item.mg)} mg${item.componentBasis ? ' '+componentSq(item.componentBasis) : ''} / ${calcFmt(item.mL)} mL` : `${formulationSq(item.source)}${item.amount ? ' · '+calcFmt(item.amount)+' '+item.unit+' / flakon' : ''}`;
+        const choice = node('option',label); choice.value=String(index); select.append(choice); card.hidden=true;
+      });
+      select.addEventListener('change',() => {
+        Array.from(list.children).forEach((card,index) => { card.hidden=select.value!==String(index); });
+      });
+      field.append(select); box.append(field);
+    }
     box.append(list);
 
     if (extras.length) {
@@ -653,234 +669,97 @@
     host.replaceChildren();
     const audit = auditFor(drug);
     const options = effectiveOptions(drug);
-
-    if (audit?.calculator?.disabled) {
-      const blocked = node('div', null, 'dz-common-calculator dz-common-calculator-blocked');
-      blocked.append(node('strong', 'Kalkulatori AUTO është i çaktivizuar'));
-      blocked.append(node(
-        'p',
-        audit.calculator.reasonSq || 'Ky bar nuk ka skemë automatike të lejuar.',
-        'dz-common-blocked-reason'
-      ));
-      host.append(blocked);
-      return;
+    if (!referenceActive || audit?.calculator?.disabled || !audit || !options.length) {
+      const blocked=node('div',null,'dz-common-calculator dz-common-calculator-blocked');
+      blocked.append(node('strong','Llogaritja automatike nuk është e lejuar'),node('p',!referenceActive ? 'Lidhja me databazën aktive mungon. Tabela mund të lexohet; llogaritja kërkon lidhje dhe referencën aktuale.' : audit?.calculator?.reasonSq || 'Mungon skema e verifikuar. Tabela ruhet vetëm për referencë.'));
+      host.append(blocked); return;
     }
-
-    if (!audit || !options.length) {
-      const blocked = node('div', null, 'dz-common-calculator dz-common-calculator-blocked');
-      blocked.append(node('strong', 'AUTO i bllokuar për siguri'));
-      blocked.append(node(
-        'p',
-        'Auditi klinik i verifikuar nuk u ngarkua. Tabela bazë mbetet vetëm për referencë dhe nuk përdoret për llogaritje automatike.',
-        'dz-common-blocked-reason'
-      ));
-      host.append(blocked);
-      return;
+    const shell=node('div',null,'dz-common-calculator');
+    const head=node('div',null,'dz-common-calc-head');
+    head.append(node('strong','Llogarit dozën'),node('small','Pesha → mosha AUTO → doza → forma praktike')); shell.append(head);
+    const selector=node('select',null,'dz-unit dz-common-select');
+    options.forEach((option,index) => {const choice=node('option',doseSq(option.displayLabel || option.label));choice.value=String(index);selector.append(choice);});
+    const scheme=node('label',null,'dz-common-field dz-common-field-wide');
+    scheme.append(node('span','Skema / indikacioni','dz-label'),selector); shell.append(scheme);
+    const fields=node('div',null,'dz-common-calc-fields');
+    const answer=node('div',null,'dz-common-calc-answer'); answer.setAttribute('role','status'); answer.setAttribute('aria-live','polite');
+    shell.append(fields,answer); host.append(shell);
+    const slug=searchText(drug.name).replace(/[^a-z0-9]+/g,'-');
+    const values={weight:sharedWeight,age:'',ageUnit:'month',ageManual:false,ageConfirmed:false};
+    let timer=null,controller=null,requestId=0,ageInput=null,ageUnit=null,confirm=null,ageSummary=null;
+    const currentOption=()=>options[Number(selector.value)||0];
+    function syncSuggestion() {
+      if(values.ageManual)return;
+      const info=weightAgeCore?.infer(values.weight,weightAgeDefaults);
+      const neonatal=optionNeedsExactDays(currentOption()) && (!info || info.defaultMonths<2);
+      values.age=neonatal || !Number.isFinite(info?.defaultMonths) ? '' : String(Number(info.defaultMonths.toFixed(2)));
+      values.ageUnit=neonatal ? 'day' : 'month'; values.ageConfirmed=false;
+      if(ageInput)ageInput.value=values.age; if(ageUnit)ageUnit.value=values.ageUnit; if(confirm)confirm.checked=false;
+      if(ageSummary)ageSummary.textContent=info?.defaultLabel ? `MOSHA AUTO NGA PESHA · ${info.defaultLabel}. Sugjerim; mund ta ndryshosh.` : 'Pesha nuk përcakton moshën e saktë. Mund ta shkruash vetë.';
     }
-
-    const shell = node('div', null, 'dz-common-calculator');
-    const title = node('div', null, 'dz-common-calc-head');
-    title.append(node('strong', 'Kalkulatori'), node('small', 'Pesha → mosha AUTO → doza → forma praktike'));
-    shell.append(title);
-
-    const selector = node('select', null, 'dz-unit dz-common-select');
-    options.forEach((option, index) => {
-      const choice = node('option', doseSq(option.displayLabel || option.label));
-      choice.value = String(index);
-      selector.append(choice);
-    });
-    if (options.length > 1) {
-      const wrap = node('label', null, 'dz-common-field dz-common-field-wide');
-      wrap.append(node('span', 'Formula', 'dz-label'), selector);
-      shell.append(wrap);
-    }
-
-    const fields = node('div', null, 'dz-common-calc-fields');
-    const answer = node('div', null, 'dz-common-calc-answer');
-    shell.append(fields, answer);
-    host.append(shell);
-
-    const values = {
-      weight:'',
-      age:'',
-      ageUnit:'year',
-      ageManual:false,
-      ageManualVisible:false,
-    };
-    let ageSummary = null;
-
-    function currentOption() {
-      return options[Number(selector.value) || 0];
-    }
-
-    function renderAgeSummary() {
-      if (!ageSummary) return;
-      ageSummary.replaceChildren();
-      const weight = numeric(values.weight);
-      if (!positiveNumber(weight)) {
-        ageSummary.hidden = true;
-        return;
-      }
-
-      ageSummary.hidden = false;
-      const info = resolvedAgeInfo(values);
-      const copy = node('div', null, 'dz-common-age-copy');
-      const kicker = node('span', values.ageManual ? 'MOSHA E SAKTË' : 'MOSHA AUTO NGA PESHA', 'dz-common-age-kicker');
-      copy.append(kicker);
-
-      if (info?.defaultLabel || info?.label) {
-        copy.append(node('strong', info.defaultLabel || info.label, 'dz-common-age-value'));
-      } else {
-        copy.append(node('strong', 'Nuk u përcaktua', 'dz-common-age-value'));
-      }
-
-      if (!values.ageManual) {
-        const sourceRange = info?.label && info?.defaultLabel && info.label !== info.defaultLabel
-          ? ` · intervali referues ${info.label}`
-          : '';
-        copy.append(node('small',
-          info?.kind === 'below-range'
-            ? 'Pesha është nën intervalin e tabelës; për doza sipas moshës duhet mosha e saktë.'
-            : `Sugjerim praktik nga pesha${sourceRange}. Mosha kronologjike ka përparësi kur dihet.`,
-          'dz-common-age-note'
-        ));
-      } else {
-        copy.append(node('small', 'Vlera që e shënove ti po përdoret në vend të sugjerimit nga pesha.', 'dz-common-age-note'));
-      }
-
-      const action = node('button', values.ageManual ? 'Përdor AUTO' : 'Mosha e saktë');
-      action.type = 'button';
-      action.className = 'dz-common-age-action';
-      action.addEventListener('click', () => {
-        if (values.ageManual) {
-          values.ageManual = false;
-          values.age = '';
-          values.ageManualVisible = false;
-        } else {
-          values.ageManualVisible = true;
-          if (optionNeedsExactDays(currentOption())) values.ageUnit = 'day';
-        }
-        rebuildFields();
-        if (values.ageManualVisible) {
-          const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
-          setTimeout(() => byId(`${slug}-common-age`)?.focus(), 0);
-        }
-      });
-
-      ageSummary.append(copy, action);
-    }
-
     function renderError(result) {
-      const wrap = node('div', null, result.needsAgeConfirmation ? 'dz-common-age-alert' : '');
-      wrap.append(node('p', result.error, 'dz-waiting'));
-      if (result.needsAgeConfirmation) {
-        const button = node('button', 'Shëno moshën e saktë');
-        button.type = 'button';
-        button.className = 'dz-common-age-cta';
-        button.addEventListener('click', () => {
-          values.ageManualVisible = true;
-          if (optionNeedsExactDays(currentOption())) values.ageUnit = 'day';
-          rebuildFields();
-          const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
-          setTimeout(() => byId(`${slug}-common-age`)?.focus(), 0);
-        });
-        wrap.append(button);
+      answer.append(node('p',result.error,'dz-waiting'));
+      if(result.needsAgeConfirmation) {
+        const button=node('button',result.exactDaysRequired && !values.age ? 'Shëno moshën në ditë' : 'Konfirmo / ndrysho moshën','dz-common-age-cta'); button.type='button';
+        button.addEventListener('click',()=> {ageInput?.focus();ageInput?.select();});answer.append(button);
       }
-      answer.append(wrap);
     }
-
+    function renderResult(result) {
+      answer.replaceChildren(); if(result.error){renderError(result);return;}
+      const primary=node('div',null,'dz-common-result-main');
+      primary.append(node('span',result.dosePeriod==='day' ? 'DOZA NË 24 ORË' : 'DOZA PËR NJË MARRJE','dz-common-result-kicker'));
+      primary.append(node('p',doseSq(result.primary),'dz-common-result-dose'));
+      if(result.frequency)primary.append(node('p',doseSq(result.frequency),'dz-common-result-frequency'));
+      if(result.note)primary.append(node('p',doseSq(result.note),'dz-common-result-note'));answer.append(primary);
+      if(result.secondary)answer.append(node('p',doseSq(result.secondary),'dz-common-derived'));
+      renderLiquidConversions(drug,currentOption(),result,answer);
+      if(result.source)answer.append(node('p','Skema: '+doseSq(result.source),'dz-common-source-line'));
+    }
     function update() {
-      renderAgeSummary();
-      const option = currentOption();
-      const result = calculateOption(option, values);
-      answer.replaceChildren();
-
-      if (result.error) {
-        renderError(result);
-        return;
-      }
-
-      const primary = node('div', null, 'dz-common-result-main');
-      primary.append(node('span', 'DOZA', 'dz-common-result-kicker'));
-      primary.append(node('p', doseSq(result.primary), 'dz-common-result-dose'));
-      if (result.note) primary.append(node('p', doseSq(result.note), 'dz-common-result-note'));
-      answer.append(primary);
-
-      if (result.secondary) answer.append(node('p', doseSq(result.secondary), 'dz-common-derived'));
-      renderLiquidConversions(drug, option, result, answer);
-
-      if (result.source) {
-        const source = node('p', null, 'dz-common-source-line');
-        source.append(node('span', 'Formula: '), node('b', doseSq(result.source)));
-        answer.append(source);
-      }
+      clearTimeout(timer); controller?.abort(); const id=++requestId; answer.replaceChildren();
+      if(needsPatientWeight(currentOption()) && !positiveNumber(numeric(values.weight))) {answer.append(node('p','Shkruaj peshën në kg për ta llogaritur dozën.','dz-waiting'));return;}
+      answer.append(node('p','Duke llogaritur…','dz-waiting'));
+      timer=setTimeout(async()=> {
+        controller=new AbortController();const active=controller;
+        const timeout=setTimeout(()=>active.abort(),8000);
+        try {
+          const response=await fetch(CALCULATE_URL,{method:'POST',credentials:'same-origin',cache:'no-store',signal:active.signal,headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({referenceRevision,drugName:drug.name,optionIndex:Number(selector.value),weight:values.weight,age:values.age,ageUnit:values.ageUnit,ageConfirmed:values.ageConfirmed})});
+          const result=await response.json(); if(id!==requestId)return;
+          if(response.status===401 || response.status===403)throw Error('Sesioni ka përfunduar. Hyr përsëri.');
+          if(!response.ok && !result.error)throw Error('Llogaritja nuk u krye.');
+          renderResult(result);
+        } catch(error) {if(id!==requestId)return;answer.replaceChildren();renderError({error:error.name==='AbortError' ? 'Llogaritja vonoi. Provo përsëri.' : error.message || 'Llogaritja nuk u krye.'});
+          const retry=node('button','Provo përsëri','dz-common-age-cta');retry.type='button';retry.addEventListener('click',update);answer.append(retry);
+        } finally {clearTimeout(timeout);}
+      },180);
     }
-
-    function appendExactAgeField(option) {
-      if (!needsAge(option) || !values.ageManualVisible) return;
-      const ageField = node('div', null, 'dz-common-field dz-common-age-exact');
-      ageField.append(node('span', 'Mosha e saktë', 'dz-label'));
-      const row = node('span', null, 'dz-common-age-row');
-      const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
-      const age = makeNumberField('', `${slug}-common-age`, '', values.age);
-      age.input.placeholder = optionNeedsExactDays(option) ? 'p.sh. 7' : 'p.sh. 5';
-      age.input.addEventListener('input', () => {
-        values.age = age.input.value;
-        values.ageManual = validAgeMonths(ageMonths(values.age, values.ageUnit));
-        update();
-      });
-
-      const unit = node('select', null, 'dz-unit');
-      [['year','vjeç'],['month','muaj'],['day','ditë']].forEach(([value, label]) => {
-        const choice = node('option', label);
-        choice.value = value;
-        choice.selected = value === values.ageUnit;
-        unit.append(choice);
-      });
-      unit.addEventListener('change', () => {
-        values.ageUnit = unit.value;
-        values.ageManual = validAgeMonths(ageMonths(values.age, values.ageUnit));
-        update();
-      });
-
-      row.append(age.field.lastElementChild, unit);
-      ageField.append(row);
-      fields.append(ageField);
-    }
-
     function rebuildFields() {
-      fields.replaceChildren();
-      ageSummary = null;
-      const option = currentOption();
-
-      if (needsPatientWeight(option)) {
-        const slug = searchText(drug.name).replace(/[^a-z0-9]+/g, '-');
-        const weight = makeNumberField('Pesha e fëmijës', `${slug}-common-weight`, 'kg', values.weight);
-        weight.field.classList.add('dz-common-weight-field');
-        weight.field.lastElementChild?.classList.add('dz-number-lead');
-        weight.input.placeholder = 'p.sh. 12';
-        weight.input.addEventListener('input', () => {
-          values.weight = weight.input.value;
-          update();
-        });
-        addWeightShortcuts(weight.field, weight.input, values, update);
-        fields.append(weight.field);
-
-        ageSummary = node('div', null, 'dz-common-age-auto');
-        ageSummary.hidden = true;
-        fields.append(ageSummary);
+      fields.replaceChildren();ageInput=null;ageUnit=null;confirm=null;ageSummary=null;
+      const option=currentOption();
+      if(needsPatientWeight(option)) {
+        const weight=makeNumberField('Pesha e fëmijës',`${slug}-common-weight`,'kg',values.weight);weight.field.classList.add('dz-common-weight-field');
+        weight.input.placeholder='p.sh. 12';weight.input.addEventListener('input',()=>{values.weight=weight.input.value;sharedWeight=values.weight;syncSuggestion();update();});fields.append(weight.field);
+        const age=makeNumberField('Mosha e sugjeruar · e ndryshueshme',`${slug}-common-age`,'',values.age);ageInput=age.input;
+        const row=node('div',null,'dz-common-age-row');ageUnit=node('select',null,'dz-unit');ageUnit.setAttribute('aria-label','Njësia e moshës');
+        [['month','muaj'],['year','vjeç'],['day','ditë']].forEach(([value,label])=>{const item=node('option',label);item.value=value;ageUnit.append(item);});ageUnit.value=values.ageUnit;
+        const manual=()=>{values.age=ageInput.value;values.ageUnit=ageUnit.value;values.ageManual=true;values.ageConfirmed=false;if(confirm)confirm.checked=false;if(ageSummary)ageSummary.textContent='Moshë e ndryshuar nga ti. Konfirmoje nëse skema varet nga mosha.';update();};
+        ageInput.addEventListener('input',manual);ageUnit.addEventListener('change',manual);
+        row.append(age.field.lastElementChild,ageUnit);age.field.append(row);fields.append(age.field);
+        ageSummary=node('p',null,'dz-common-age-note');fields.append(ageSummary);
+        if(needsAge(option)) {
+          const label=node('label',null,'dz-common-age-confirm');confirm=node('input');confirm.type='checkbox';
+          confirm.addEventListener('change',()=>{values.ageConfirmed=confirm.checked;update();});
+          label.append(confirm,node('span','Konfirmoj që kjo është mosha e saktë e fëmijës'));fields.append(label);
+        }
+        const reset=node('button','Rikthe sugjerimin nga pesha','dz-common-age-action');reset.type='button';reset.addEventListener('click',()=>{values.ageManual=false;syncSuggestion();update();});fields.append(reset);
+        syncSuggestion();
       }
-
-      appendExactAgeField(option);
       update();
     }
-
-    selector.addEventListener('change', () => {
-      values.ageManualVisible = false;
-      values.ageManual = false;
-      values.age = '';
-      rebuildFields();
-    });
+    selector.addEventListener('change',()=> {values.ageConfirmed=false;values.ageManual=false;rebuildFields();});
+    host.addEventListener('dz-patient-refresh',()=>{if(values.weight!==sharedWeight){values.weight=sharedWeight;values.ageManual=false;values.ageConfirmed=false;rebuildFields();}else update();});
+    host.addEventListener('dz-calculation-close',()=>{clearTimeout(timer);controller?.abort();++requestId;});
     rebuildFields();
   }
 
@@ -932,7 +811,7 @@
     }
     if (Array.isArray(audit.sources) && audit.sources.length) {
       const details = node('details', null, 'dz-evidence-source-details');
-      details.open = !window.matchMedia('(max-width:760px)').matches;
+      details.open = false;
       const summary = node('summary');
       summary.append(
         node('strong', 'Burimet e auditit'),
@@ -960,7 +839,7 @@
     const summary = node('summary');
     const formula = node('span', null, 'dz-common-summary-dose');
     const audit = auditFor(drug);
-    const autoBlocked = Boolean(audit?.calculator?.disabled);
+    const autoBlocked = !referenceActive || Boolean(audit?.calculator?.disabled);
     formula.append(node(
       'small',
       autoBlocked
@@ -979,12 +858,12 @@
 
     const body = node('div', null, 'dz-common-drug-body');
     const evidence = renderEvidence(drug);
-    if (evidence) body.append(evidence);
     const calcHost = node('div');
     body.append(calcHost);
+    if (evidence) body.append(evidence);
 
     const sourceDetails = node('details', null, 'dz-common-source-details');
-    sourceDetails.open = !window.matchMedia('(max-width:760px)').matches;
+    sourceDetails.open = false;
     const sourceSummary = node('summary');
     sourceSummary.append(node('strong', 'Tabela bazë'), node('small', 'doza + format farmaceutike'));
     sourceDetails.append(sourceSummary);
@@ -1006,8 +885,9 @@
     };
     if (card.open) build();
     card.addEventListener('toggle', () => {
-      if (!card.open) return;
+      if (!card.open) {calcHost.dispatchEvent(new Event('dz-calculation-close'));return;}
       build();
+      calcHost.dispatchEvent(new Event('dz-patient-refresh'));
       if (window.matchMedia('(max-width:760px)').matches) {
         const list = card.parentElement;
         list?.querySelectorAll(':scope > details.dz-common-drug[open]').forEach(other => {
@@ -1023,18 +903,23 @@
     const target = byId('pediatricCommonSections');
     if (!target) return;
     const query = searchText(byId('pediatricCommonSearch')?.value.trim());
+    const category=byId('pediatricCommonCategory')?.value || '';
+    const form=byId('pediatricCommonForm')?.value || '';
+    const status=byId('pediatricCommonStatus')?.value || '';
+    const matches=drug=>drugMatches(drug,query) && (!form || (form==='inj' ? /\b(inj|vial|amp)/i.test(practicalDrug(drug).formulations.join(' ')) : searchText(practicalDrug(drug).formulations.join(' ')).includes(form))) && (!status || (status==='auto' ? effectiveOptions(drug).length && !auditFor(drug)?.calculator?.disabled : auditFor(drug)?.calculator?.disabled));
     target.replaceChildren();
 
     const allMatches = query
-      ? commonSections.flatMap(section => section.drugs.filter(drug => drugMatches(drug, query)))
+      ? commonSections.flatMap(section => section.drugs.filter(matches))
       : [];
     const uniqueDrug = query && allMatches.length === 1 ? allMatches[0] : null;
     let shown = 0;
 
     commonSections.forEach((section, sectionIndex) => {
-      const matching = section.drugs.filter(drug => drugMatches(drug, query));
-      if (query && !matching.length && !searchText(`${section.roman} ${section.title} ${sectionSq(section.title)}`).includes(query)) return;
-      const visible = matching.length ? matching : section.drugs;
+      const matching = section.drugs.filter(matches);
+      if (category && category!==section.roman) return;
+      if (!matching.length) return;
+      const visible = matching;
       shown += visible.length;
       const block = node('details', null, 'dz-common-section');
       block.open = sectionIndex === 0 || Boolean(query);
@@ -1048,7 +933,7 @@
     });
 
     const count = byId('pediatricCommonCount');
-    if (count) count.textContent = query
+    if (count) count.textContent = query || category || form || status
       ? `${shown} barna të gjetura`
       : `50 barna · 10 ndarje · ${auditedDrugCount()} të audituara · ${activeAutoCount()} AUTO · ${blockedAutoCount()} të bllokuara`;
     if (!shown) target.append(node('p', 'Nuk u gjet bar në këtë referencë.', 'dz-empty'));
@@ -1100,10 +985,17 @@
         }
       }
 
+      referenceActive=source==='database';
+      referenceRevision=JSON.stringify([payload?.database?.clinicalAudit?.version || clinicalAudit.schemaVersion || '',payload?.database?.clinicalAudit?.updatedAt || clinicalAudit.auditedAt || '',payload?.database?.payloadSha256 || '']);
       renderSections();
       const count = byId('pediatricCommonCount');
       if (count) count.dataset.source = source;
-      byId('pediatricCommonSearch')?.addEventListener('input', renderSections);
+      const category=byId('pediatricCommonCategory');
+      commonSections.forEach(section=>{const item=node('option',sectionSq(section.title));item.value=section.roman;category?.append(item);});
+      let searchTimer;
+      byId('pediatricCommonSearch')?.addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(renderSections,120);});
+      ['pediatricCommonCategory','pediatricCommonForm','pediatricCommonStatus'].forEach(id=>byId(id)?.addEventListener('change',renderSections));
+      byId('pediatricCommonReset')?.addEventListener('click',()=>{['pediatricCommonSearch','pediatricCommonCategory','pediatricCommonForm','pediatricCommonStatus'].forEach(id=>{if(byId(id))byId(id).value='';});renderSections();});
     } catch {
       if (byId('pediatricCommonCount')) byId('pediatricCommonCount').textContent = 'Nuk u ngarkua';
       target.replaceChildren(node('p', 'Referenca pediatrike nuk u ngarkua. Ringarko faqen.', 'dz-empty'));

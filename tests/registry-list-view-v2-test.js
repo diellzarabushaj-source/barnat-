@@ -46,8 +46,9 @@ assert.match(js, /el\.registryList\.innerHTML = '';\s*\n\s*el\.registryRows\.inn
 assert.match(js, /const node = document\.querySelector\(`\[data-row-id="\$\{CSS\.escape\(key\)\}"\]`\);/, 'Selection must address a row in either shape');
 
 // --- the list keeps every action the table row has -------------------------
+assert.doesNotMatch(js,/data-dose-calculator-open/,'Calculators belong only to Dozologjia');
 const cards = js.slice(js.indexOf('function renderListCards()'), js.indexOf('function renderRows()'));
-for (const hook of ['data-select-row', 'data-open-row', 'data-row-favorite', 'data-row-note', 'data-dose-calculator-open', 'data-dose-adult', 'data-dose-pediatric']) {
+for (const hook of ['data-select-row', 'data-open-row', 'data-row-favorite', 'data-row-note', 'data-dose-adult', 'data-dose-pediatric']) {
   assert.ok(cards.includes(hook), `A list card must keep ${hook}, so the existing handlers reach it`);
 }
 assert.match(js, /el\.registryList\.addEventListener\('click', event => rowContainerClick\(event\)\);/, 'The list must share the row click handler');

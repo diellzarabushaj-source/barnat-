@@ -48,7 +48,7 @@ assert.match(client, /Format tjera të disponueshme/);
 /* Weight is the only default input. Exact age appears only when clinically needed. */
 assert.match(client, /Pesha e fëmijës/);
 assert.match(client, /MOSHA AUTO NGA PESHA/);
-assert.match(client, /Mosha e saktë/);
+assert.match(client, /Mosha e sugjeruar · e ndryshueshme/);
 assert.match(client, /function resolvedAgeInfo\(/);
 assert.match(client, /function safeAgeBand\(/);
 assert.doesNotMatch(client, /numberInput\('masterWeight'|numberInput\('masterAge'/);

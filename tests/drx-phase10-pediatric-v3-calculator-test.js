@@ -109,7 +109,7 @@ assert.match(ui,/payload\.hepaticImpairment/);
 
 const current=fs.readFileSync('registry-v2-dose-calculator.js','utf8');
 const currentHtml=fs.readFileSync('index.html','utf8');
-assert.match(currentHtml,/registry-v2-dose-calculator\.js/);
+assert.doesNotMatch(currentHtml,/registry-v2-dose-calculator\.js/);
 for(const field of ['indication','crcl','egfr','dialysis','child-pugh','hepatic']){
   assert.ok(current.includes('data-dose-'+field),field+' missing from current calculator');
 }

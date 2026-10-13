@@ -587,7 +587,7 @@
         credentials:'same-origin', cache:'no-store', headers:{ Accept:'application/json' },
       });
       const payload = await response.json().catch(() => ({}));
-      if (payload.authUser?.role !== 'admin') return;
+      if (payload.authUser?.adminConsole !== true) return;
       panel.hidden = false;
     } catch {
       // Offline or refused: leave the panel hidden.

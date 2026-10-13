@@ -130,7 +130,7 @@ test('Drawer ignores late responses and keeps keyboard focus inside',async ({pag
   await expect(b).toBeFocused();
   expect(await page.locator('#appShell').evaluate(node => node.inert)).toBe(false);
 });
-test('Note and calculator dialogs trap focus, close with Escape and restore their trigger',async ({page}) => {
+test('Note dialog traps focus and restores its trigger; registry calculators are absent',async ({page}) => {
   await api(page);
   await page.goto(`${baseURL}/index.html`);
   const menu=page.locator(`[data-row-menu-key="${drugs[0].id}"] summary`);
@@ -146,16 +146,8 @@ test('Note and calculator dialogs trap focus, close with Escape and restore thei
   await expect(page.locator('#registryNoteDialog')).toBeHidden();
   await expect(menu).toBeFocused();
   await menu.click();
-  const calc=page.locator(`[data-row-menu-key="${drugs[0].id}"] [data-dose-calculator-open]`);
-  await calc.click();
-  await expect(page.locator('.drx-dose-dialog')).toBeVisible();
-  for (let i=0;i<15;i++) {
-    await page.keyboard.press('Tab');
-    expect(await page.evaluate(() => document.querySelector('.drx-dose-dialog').contains(document.activeElement))).toBe(true);
-  }
-  await page.keyboard.press('Escape');
-  await expect(page.locator('.drx-dose-dialog')).toBeHidden();
-  await expect(calc).toBeFocused();
+  await expect(page.locator('[data-dose-calculator-open]')).toHaveCount(0);
+  await expect(page.locator('.drx-dose-dialog')).toHaveCount(0);
 });
 test('Search advances to page two and retains population information',async ({page}) => {
   await api(page);
@@ -318,4 +310,40 @@ for (const width of [390,1440]) test(`Medical Hub source details, review and pri
   await expect(page.locator('.is-source-rx-section')).toContainText('OSE alternativa provuese');
   expect(await page.locator('.ck-medical-table-wrap').evaluateAll(nodes=>nodes.every(node=>getComputedStyle(node).overflowX==='auto' && node.getBoundingClientRect().width<=innerWidth))).toBe(true);
   await page.screenshot({path:`../../outputs/p2-medical-hub-${width}.png`,fullPage:false});
+});
+
+const pediatricReference={...require('../data/pediatric-common-drugs-reference.json'),weightAgeDefaults:require('../data/pediatric-weight-age-defaults.json'),clinicalAudit:require('../data/pediatric-clinical-audit-v1.json')};
+for(const width of [320,390,1440])test(`Pediatric weight-first server flow and formulation selection at ${width}px`,async({page})=>{
+  await page.setViewportSize({width,height:900});await api(page);
+  await page.route('**/api/dosage?view=pediatric-common-reference',route=>route.fulfill({json:pediatricReference}));
+  await page.route('**/api/dosage?view=pediatric-common-calculate',async route=>{
+    const result=require('../lib/pediatric-common-calculate-handler.js').calculate(pediatricReference,route.request().postDataJSON());
+    await route.fulfill({status:result.error?422:200,json:result});
+  });
+  await page.goto(`${baseURL}/dozologjia.html`);
+  await page.getByText('Amoxicillin',{exact:true}).click();
+  await page.locator('#amoxicillin-common-weight').fill('12');
+  await expect(page.locator('#amoxicillin-common-age')).toHaveValue('24');
+  await expect(page.locator('.dz-common-result-dose')).toHaveText('300 mg');
+  const formulation=page.getByLabel('Përqendrimi në etiketën e produktit');
+  await expect(formulation.locator('option')).toHaveCount(3);
+  await expect(formulation.locator('option').nth(1)).toContainText('125 mg / 5 mL');
+  await expect(formulation.locator('option').nth(2)).toContainText('250 mg / 5 mL');
+  await expect(page.locator('.dz-common-volume-card:visible')).toHaveCount(0);
+  await formulation.selectOption('1');await expect(page.locator('.dz-common-volume-card:visible')).toContainText('6 mL');
+  await page.locator('#amoxicillin-common-weight').fill('20');
+  await page.locator('#amoxicillin-common-weight').fill('10');
+  await expect(page.locator('.dz-common-result-dose')).toHaveText('250 mg');
+  await page.locator('#pediatricCommonSearch').fill('Paracetamol');
+  await expect(page.locator('#paracetamol-common-weight')).toHaveValue('10');
+  await expect(page.locator('.dz-common-calc-answer')).toContainText('Konfirmo ose ndrysho');
+  await expect(page.locator('.dz-common-result-dose')).toHaveCount(0);
+  await page.getByLabel('Konfirmoj që kjo është mosha e saktë e fëmijës').check();
+  await expect(page.locator('.dz-common-result-dose')).toHaveText('150 mg');
+  await page.locator('#paracetamol-common-age').fill('0.5');
+  await expect(page.locator('.dz-common-result-dose')).toHaveCount(0);
+  await page.getByLabel('Konfirmoj që kjo është mosha e saktë e fëmijës').check();
+  await expect(page.locator('.dz-common-result-dose')).toHaveText('100 mg');
+  const geometry=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth}));
+  expect(geometry.scroll).toBeLessThanOrEqual(geometry.width+1);
 });
