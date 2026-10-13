@@ -309,7 +309,8 @@ jobs:
           # Source catalogs and official later migrations confirm four new
           # MFA/SCIM tables, one expiry column and one factor enum value. Capture
           # only those exact additions; never omit their backed-up data.
-          if [ "${{ steps.credential.outputs.mode }}" = "db_url" ]; then
+          printf '%s\n' '-- Legacy partial native additions are unused for complete native recovery.' > "$BACKUP_DIR/auth_recovery_schema.sql"
+          if [ "${{ steps.credential.outputs.mode }}" = "db_url" ] && [ "$DRX_NATIVE_RECOVERY_PROBE" != '1' ]; then
             # BEGIN exact source Auth table allowlist
             if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 \
               --set VERBOSITY=sqlstate --set SHOW_CONTEXT=never --tuples-only --no-align \
@@ -454,6 +455,11 @@ jobs:
           test -f "$BACKUP_DIR/auth_custom_triggers.sql"
           if [ "$DRX_NATIVE_RECOVERY_PROBE" = '1' ]; then
             umask 077
+            psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
+              -c 'select name from storage.migrations order by id desc limit 1' > "$RUNNER_TEMP/drx-restore-storage-migration.txt" 2> "$RUNNER_TEMP/drx-restore-storage-migration.log"
+            if ! grep -Exq 'revoke-grants-to-unused-operations|unlock-object-versioning' "$RUNNER_TEMP/drx-restore-storage-migration.txt"; then
+              echo '::error::Native Storage schema requires a reviewed compatible service release.'; exit 1
+            fi
             # One snapshot includes all native tables, managed migration histories and sequence states.
             docker run --rm --network host -e SOURCE_DATABASE_URL="$SUPABASE_DB_URL" \
               "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" \
@@ -672,6 +678,11 @@ jobs:
           supabase init
           sed -i 's/^project_id = .*/project_id = "drx-isolated-restore"/' supabase/config.toml
           mkdir -p supabase/.temp
+          if [ "$DRX_NATIVE_RECOVERY_PROBE" = '1' ]; then
+            # Source uses versioned-object indexes introduced after the CLI default Storage binary.
+            printf '%s\n' 'v1.81.3' > supabase/.temp/storage-version
+            cp "$RUNNER_TEMP/drx-restore-storage-migration.txt" supabase/.temp/storage-migration
+          fi
           printf '%s\n' "$SOURCE_POSTGRES_VERSION" > supabase/.temp/postgres-version
           case "$DRX_RESTORE_POSTGRES_VERSION" in
             '17.6.1.155'|'17.11.0.003') printf '%s\n' "$DRX_RESTORE_POSTGRES_VERSION" > supabase/.temp/postgres-version ;;
@@ -977,6 +988,7 @@ jobs:
             > "$RUNNER_TEMP/drx-restore-native-restarted.ndjson" 2> "$RUNNER_TEMP/drx-restore-native-restarted.log"
           python3 scripts/native-recovery-catalog.py compare "$RUNNER_TEMP/drx-restore-native-source.ndjson" "$RUNNER_TEMP/drx-restore-native-restarted.ndjson" drx-native-recovery-proof.json
           docker inspect supabase_db_drx-isolated-restore --format '{{.Config.Image}}' > "$RUNNER_TEMP/drx-restore-native-image.txt"
+          docker inspect supabase_storage_drx-isolated-restore --format '{{.Config.Image}}' > "$RUNNER_TEMP/drx-restore-storage-image.txt"
           psql 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' -X --quiet --tuples-only --no-align -c 'show server_version' > "$RUNNER_TEMP/drx-restore-native-version.txt"
           python3 - <<'PY'
           import json,os
@@ -985,10 +997,13 @@ jobs:
           image=(directory/'drx-restore-native-image.txt').read_text().strip()
           version=(directory/'drx-restore-native-version.txt').read_text().strip().split(' ')[0]
           expected=os.environ['DRX_RESTORE_POSTGRES_VERSION']
+          storage_image=(directory/'drx-restore-storage-image.txt').read_text().strip()
+          if not storage_image.endswith('/storage-api:v1.81.3'):
+              raise SystemExit('Disposable Storage did not run the compatible pinned service release')
           if not image.endswith('/postgres:'+expected) or version!='.'.join(expected.split('.')[:2]):
               raise SystemExit('Disposable database did not run the requested PostgreSQL image')
           proof_file=Path('drx-native-recovery-proof.json');proof=json.loads(proof_file.read_text())
-          proof.update({'requestedPostgresImage':expected,'actualPostgresVersion':version,'exactImageVerified':True,'serviceRestartParityVerified':True})
+          proof.update({'requestedPostgresImage':expected,'actualPostgresVersion':version,'exactImageVerified':True,'serviceRestartParityVerified':True,'storageServiceVersion':'v1.81.3','storageMigrationsFrozenToSource':True})
           proof_file.write_text(json.dumps(proof,indent=2)+'\n')
           PY
 
@@ -1220,6 +1235,7 @@ jobs:
           rm -f -- "$RUNNER_TEMP/drx-restore-native-catalog.sql" "$RUNNER_TEMP/drx-restore-native-source.ndjson" "$RUNNER_TEMP/drx-restore-native-target.ndjson"
           rm -f -- "$RUNNER_TEMP/drx-restore-native-schema.sql" "$RUNNER_TEMP/drx-restore-native-data.sql" "$RUNNER_TEMP/drx-restore-native-status.json" "$RUNNER_TEMP/drx-restore-native-restarted.ndjson"
           rm -f -- "$RUNNER_TEMP/drx-restore-native-image.txt" "$RUNNER_TEMP/drx-restore-native-version.txt"
+          rm -f -- "$RUNNER_TEMP/drx-restore-storage-image.txt" "$RUNNER_TEMP/drx-restore-storage-migration.txt"
 
       - name: Upload evidence only
         if: always()
