@@ -3,6 +3,7 @@ import json, re, sys
 from pathlib import Path
 
 KINDS={'relations':'relation','functions':'function','types':'type','schemas':'schema','roles':'role'}
+CAPTURE_KINDS=set(KINDS.values())|{'defaultAcl','rows','sequenceState'}
 def component_sql(source):
     pattern=r"SELECT 'native_(relations|functions|types|schemas|roles)_count='\|\|count\(\*\) AS entry FROM entries\nUNION ALL SELECT 'native_\1_fingerprint='[^;]+;"
     def replace(match):
@@ -20,7 +21,7 @@ def capture(filename):
     result={}
     for line in path.read_text().splitlines():
         row=json.loads(line)
-        if set(row)!={'kind','identity','components'} or row['kind'] not in KINDS.values():
+        if set(row)!={'kind','identity','components'} or row['kind'] not in CAPTURE_KINDS:
             raise ValueError('Invalid catalog entry')
         identity=row['identity']
         if not isinstance(identity,str) or len(identity)>1024 or not re.fullmatch(r'[A-Za-z0-9_ .(),"\[\]]+',identity):
@@ -35,7 +36,7 @@ def capture(filename):
     return result
 
 def compare(source,target):
-    counts=lambda rows:{kind:sum(key[0]==kind for key in rows) for kind in KINDS.values()}
+    counts=lambda rows:{kind:sum(key[0]==kind for key in rows) for kind in sorted(CAPTURE_KINDS) if kind in KINDS.values() or any(key[0]==kind for key in rows)}
     before,after=counts(source),counts(target)
     if before['schema']!=2 or before['role']!=5 or min(before[k] for k in ['relation','function','type'])<1:
         raise ValueError('Incomplete source native catalogs')
@@ -45,7 +46,7 @@ def compare(source,target):
         if left!=right:
             fields=['missingSource' if left is None else 'missingTarget'] if left is None or right is None else [name for name in sorted(set(left)|set(right)) if left.get(name)!=right.get(name)]
             differences.append({'kind':key[0],'identity':key[1],'fields':fields})
-    return {'schemaVersion':'drx-native-catalog-parity-v1','status':'PASS' if not differences else 'MISMATCH','nativeCatalogParityVerified':not differences,'sourceCounts':before,'restoredCounts':after,'differenceCount':len(differences),'differences':differences[:40],'differencesTruncated':len(differences)>40,'rawDefinitionsPublished':False}
+    return {'schemaVersion':'drx-native-catalog-parity-v2','status':'PASS' if not differences else 'MISMATCH','nativeCatalogParityVerified':not differences,'completeNativeRowParityVerified':not differences and before.get('rows',0)>0,'nativeSequenceStateVerified':not differences and before.get('sequenceState',0)>0,'sourceCounts':before,'restoredCounts':after,'differenceCount':len(differences),'differences':differences[:40],'differencesTruncated':len(differences)>40,'rawDefinitionsPublished':False}
 
 if __name__=='__main__':
     try:

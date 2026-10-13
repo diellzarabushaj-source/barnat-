@@ -275,6 +275,10 @@ jobs:
           set -euo pipefail
           BACKUP_DIR="$RUNNER_TEMP/drx-phase1-backup"
           mkdir -p "$BACKUP_DIR"
+          EXTRA_DATA_EXCLUDES=()
+          if [ "$DRX_NATIVE_RECOVERY_PROBE" = '1' ]; then
+            EXTRA_DATA_EXCLUDES=(-x 'auth.*' -x 'storage.*')
+          fi
 
           if [ "${{ steps.credential.outputs.mode }}" = "linked" ]; then
             supabase init
@@ -283,14 +287,14 @@ jobs:
             supabase db dump --linked -f "$BACKUP_DIR/roles.sql" --role-only
             supabase db dump --linked -f "$BACKUP_DIR/schema.sql"
             supabase db dump --linked -f "$BACKUP_DIR/data.sql" --use-copy --data-only \
-              -x "storage.buckets_vectors" -x "storage.vector_indexes"
+              -x "storage.buckets_vectors" -x "storage.vector_indexes" "${EXTRA_DATA_EXCLUDES[@]}"
             supabase db dump --linked -f "$BACKUP_DIR/history_schema.sql" --schema supabase_migrations
             supabase db dump --linked -f "$BACKUP_DIR/history_data.sql" --use-copy --data-only --schema supabase_migrations
           else
             supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/roles.sql" --role-only
             supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/schema.sql"
             supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/data.sql" --use-copy --data-only \
-              -x "storage.buckets_vectors" -x "storage.vector_indexes"
+              -x "storage.buckets_vectors" -x "storage.vector_indexes" "${EXTRA_DATA_EXCLUDES[@]}"
             supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/history_schema.sql" --schema supabase_migrations
             supabase db dump --db-url "$SUPABASE_DB_URL" -f "$BACKUP_DIR/history_data.sql" --use-copy --data-only --schema supabase_migrations
           fi
@@ -448,6 +452,21 @@ jobs:
           order by t.tgname;
           SQL
           test -f "$BACKUP_DIR/auth_custom_triggers.sql"
+          if [ "$DRX_NATIVE_RECOVERY_PROBE" = '1' ]; then
+            umask 077
+            # One snapshot includes all native tables, managed migration histories and sequence states.
+            docker run --rm --network host -e SOURCE_DATABASE_URL="$SUPABASE_DB_URL" \
+              "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" \
+              sh -c 'exec pg_dump "$SOURCE_DATABASE_URL" --format=custom --schema=auth --schema=storage' \
+              > "$BACKUP_DIR/native-full.dump" 2> "$RUNNER_TEMP/drx-restore-native-dump.log"
+            docker run --rm -v "$BACKUP_DIR:/backup:ro" "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" \
+              pg_restore --list /backup/native-full.dump > "$BACKUP_DIR/native-full.toc"
+            python3 scripts/native-recovery-toc.py "$BACKUP_DIR/native-full.toc" "$BACKUP_DIR/native-restore.toc"
+            docker run --rm -v "$BACKUP_DIR:/backup:ro" "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" \
+              pg_restore --schema-only --use-list=/backup/native-restore.toc /backup/native-full.dump > "$BACKUP_DIR/native-schema.sql"
+            docker run --rm -v "$BACKUP_DIR:/backup:ro" "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" \
+              pg_restore --data-only /backup/native-full.dump > "$BACKUP_DIR/native-data.sql"
+          fi
           sha256sum "$BACKUP_DIR"/*.sql > "$BACKUP_DIR/sha256.txt"
 
           cat > "$RUNNER_TEMP/drx-restore-security-manifest.sql" <<'SQL'
@@ -677,7 +696,7 @@ jobs:
               if [ "$previous_argument" = "--file" ]; then source_file="$argument"; break; fi
               previous_argument="$argument"
             done
-            if [ "$stage" = "managed_auth" ] || [ "$stage" = "auth_triggers" ]; then
+            if [ "$stage" = "managed_auth" ] || [ "$stage" = "auth_triggers" ] || [ "$stage" = "managed_native" ] || [ "$stage" = "native_data" ]; then
               # Only the disposable, explicitly named local stack's admin may
               # create managed Auth tables and restore their trigger states.
               docker exec -i "$RESTORE_CONTAINER" psql -U supabase_admin -d postgres -X --quiet --single-transaction \
@@ -694,7 +713,20 @@ jobs:
               exit 1
             fi
           }
-          restore_sql managed_auth --file "$BACKUP_DIR/auth_recovery_schema.sql"
+          if [ "$DRX_NATIVE_RECOVERY_PROBE" = '1' ]; then
+            # Stop only the named disposable services before replacing managed catalogs.
+            for service in auth storage rest; do
+              container="supabase_${service}_drx-isolated-restore"
+              test "$(docker inspect "$container" --format '{{.Name}}')" = "/$container"
+              docker stop "$container" > /dev/null
+            done
+            { printf '%s\n' 'DROP SCHEMA auth CASCADE; DROP SCHEMA storage CASCADE;'; cat "$BACKUP_DIR/native-schema.sql"; } > "$RUNNER_TEMP/drx-restore-native-schema.sql"
+            restore_sql managed_native --file "$RUNNER_TEMP/drx-restore-native-schema.sql"
+            { printf '%s\n' 'SET session_replication_role=replica;'; cat "$BACKUP_DIR/native-data.sql"; } > "$RUNNER_TEMP/drx-restore-native-data.sql"
+            restore_sql native_data --file "$RUNNER_TEMP/drx-restore-native-data.sql"
+          else
+            restore_sql managed_auth --file "$BACKUP_DIR/auth_recovery_schema.sql"
+          fi
           # Run8 proved inherited local public defaults added unintended grants.
           # Prepare only the verified hard-coded local DB before captured app objects
           # are created; all three revokes/postconditions roll back on any failure.
@@ -916,17 +948,29 @@ jobs:
           set -euo pipefail
           umask 077
           python3 scripts/native-recovery-catalog.py build scripts/backup-native-catalog.sql "$RUNNER_TEMP/drx-restore-native-catalog.sql"
+          printf "select set_config('drx.backup_fingerprint_salt', :'private_fingerprint_salt', false) \\g /dev/null\n" >> "$RUNNER_TEMP/drx-restore-native-catalog.sql"
+          cat scripts/backup-native-rows.sql >> "$RUNNER_TEMP/drx-restore-native-catalog.sql"
           if ! psql "$SUPABASE_DB_URL" -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
-            --file "$RUNNER_TEMP/drx-restore-native-catalog.sql" > "$RUNNER_TEMP/drx-restore-native-source.ndjson" 2> "$RUNNER_TEMP/drx-restore-native-source.log"; then
+            --set private_fingerprint_salt="${DRX_BACKUP_FINGERPRINT_SALT:?}" --file "$RUNNER_TEMP/drx-restore-native-catalog.sql" > "$RUNNER_TEMP/drx-restore-native-source.ndjson" 2> "$RUNNER_TEMP/drx-restore-native-source.log"; then
             echo '::error::Native source catalog capture failed; private diagnostics are not published.'
             exit 1
           fi
           if ! psql 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
-            --file "$RUNNER_TEMP/drx-restore-native-catalog.sql" > "$RUNNER_TEMP/drx-restore-native-target.ndjson" 2> "$RUNNER_TEMP/drx-restore-native-target.log"; then
+            --set private_fingerprint_salt="${DRX_BACKUP_FINGERPRINT_SALT:?}" --file "$RUNNER_TEMP/drx-restore-native-catalog.sql" > "$RUNNER_TEMP/drx-restore-native-target.ndjson" 2> "$RUNNER_TEMP/drx-restore-native-target.log"; then
             echo '::error::Native isolated catalog capture failed; private diagnostics are not published.'
             exit 1
           fi
           python3 scripts/native-recovery-catalog.py compare "$RUNNER_TEMP/drx-restore-native-source.ndjson" "$RUNNER_TEMP/drx-restore-native-target.ndjson" drx-native-recovery-proof.json
+          for service in auth storage rest; do docker start "supabase_${service}_drx-isolated-restore" > /dev/null; done
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:54321/auth/v1/health > /dev/null; then break; fi
+            sleep 2
+          done
+          curl --fail --silent http://127.0.0.1:54321/auth/v1/health > /dev/null
+          psql 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
+            --set private_fingerprint_salt="${DRX_BACKUP_FINGERPRINT_SALT:?}" --file "$RUNNER_TEMP/drx-restore-native-catalog.sql" \
+            > "$RUNNER_TEMP/drx-restore-native-restarted.ndjson" 2> "$RUNNER_TEMP/drx-restore-native-restarted.log"
+          python3 scripts/native-recovery-catalog.py compare "$RUNNER_TEMP/drx-restore-native-source.ndjson" "$RUNNER_TEMP/drx-restore-native-restarted.ndjson" drx-native-recovery-proof.json
 
       - name: Write failure evidence
         if: steps.credential.outputs.available == 'true' && failure()
@@ -1049,6 +1093,8 @@ jobs:
           cp "$RUNNER_TEMP/drx-source-manifest.txt" "$BACKUP_DIR/source-manifest.txt"
           printf '%s' "${DRX_BACKUP_FINGERPRINT_SALT:?}" > "$BACKUP_DIR/private-fingerprint-salt"
           RECOVERY_FILES=()
+          NATIVE_FILES=()
+          if [ "$DRX_NATIVE_RECOVERY_PROBE" = '1' ]; then NATIVE_FILES=(native-full.dump native-full.toc native-restore.toc native-schema.sql native-data.sql); fi
           if [ "${DRX_BACKUP_LIBRARY_RECOVERY_ENABLED:-0}" = '1' ]; then
             if ! psql 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
               -c "select coalesce(jsonb_agg(jsonb_build_object('user_id',user_id,'client_id',client_id,'payload',payload) order by id),'[]'::jsonb) from public.user_prescriptions" \
@@ -1063,7 +1109,7 @@ jobs:
           tar -cJf "$BACKUP_DIR/retained.tar.xz" -C "$BACKUP_DIR" \
             roles.sql schema.sql data.sql history_schema.sql history_data.sql \
             auth_recovery_schema.sql auth_custom_triggers.sql sha256.txt \
-            source-manifest.txt private-fingerprint-salt storage-body-manifest.json storage-objects "${RECOVERY_FILES[@]}"
+            source-manifest.txt private-fingerprint-salt storage-body-manifest.json storage-objects "${RECOVERY_FILES[@]}" "${NATIVE_FILES[@]}"
           node scripts/backup-archive-crypto.js encrypt "$BACKUP_DIR/retained.tar.xz" "$BACKUP_DIR/retained.enc"
           node scripts/retain-private-backup.js "$BACKUP_DIR/retained.enc" "$BACKUP_DIR/retained.tar.xz" drx-phase1-backup-restore-evidence.json
 
@@ -1082,6 +1128,15 @@ jobs:
                   evidence['retentionStatus']='FAILED'
                   evidence_file.write_text(json.dumps(evidence,indent=2)+'\n')
           PY
+
+      - name: Verify isolated native Auth Storage and application APIs
+        if: env.DRX_NATIVE_RECOVERY_PROBE == '1' && success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          (cd "$RUNNER_TEMP/drx-phase1-restore" && supabase status -o json) > "$RUNNER_TEMP/drx-restore-native-status.json" 2> "$RUNNER_TEMP/drx-restore-native-status.log"
+          node scripts/native-recovery-api.js "$RUNNER_TEMP/drx-restore-native-status.json" "$RUNNER_TEMP/drx-phase1-backup" drx-native-api-proof.json
 
       - name: Show restore evidence summary
         if: steps.credential.outputs.available == 'true' && success()
@@ -1107,6 +1162,7 @@ jobs:
             "$RUNNER_TEMP/drx-restore-security-components.ndjson" "$RUNNER_TEMP/drx-restore-postgres-defaults.sql"
           rm -f -- "$RUNNER_TEMP/drx-restore-private-manifest.sql"
           rm -f -- "$RUNNER_TEMP/drx-restore-native-catalog.sql" "$RUNNER_TEMP/drx-restore-native-source.ndjson" "$RUNNER_TEMP/drx-restore-native-target.ndjson"
+          rm -f -- "$RUNNER_TEMP/drx-restore-native-schema.sql" "$RUNNER_TEMP/drx-restore-native-data.sql" "$RUNNER_TEMP/drx-restore-native-status.json" "$RUNNER_TEMP/drx-restore-native-restarted.ndjson"
 
       - name: Upload evidence only
         if: always()
@@ -1122,6 +1178,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: drx-native-recovery-proof
-          path: drx-native-recovery-proof.json
+          path: |
+            drx-native-recovery-proof.json
+            drx-native-api-proof.json
           if-no-files-found: warn
           retention-days: 30

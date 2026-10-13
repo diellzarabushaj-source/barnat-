@@ -48,7 +48,8 @@ assert.match(workflow,/if before!=after:/);
 assert.match(workflow,/node scripts\/retain-private-backup\.js/);
 assert.match(workflow,/"personalLibraryRowParityVerified":True/);
 assert.match(workflow,/echo "::add-mask::\$DRX_BACKUP_FINGERPRINT_SALT"/);
-assert.equal((workflow.match(/--set private_fingerprint_salt=/g)||[]).length,2);
+assert.equal((workflow.match(/--set private_fingerprint_salt=/g)||[]).length,5,
+  'Private library source/target and native source/target/restarted captures require the same private salt.');
 assert.match(workflow,/rm -f -- "\$RUNNER_TEMP\/drx-restore-private-manifest\.sql"/);
 assert.doesNotMatch(workflow,/path:\s*[|>]?[\s\S]{0,120}(roles\.sql|schema\.sql|data\.sql)/);
 
@@ -139,7 +140,7 @@ assert.match(restore,/psql "\$DB_URL" -X --quiet --set ON_ERROR_STOP=1 --set VER
 assert.match(restore,/project_id = "drx-isolated-restore"/);
 assert.match(restore,/RESTORE_CONTAINER='supabase_db_drx-isolated-restore'/);
 assert.match(restore,/docker inspect "\$RESTORE_CONTAINER" --format '\{\{\.Name\}\}'/);
-assert.match(restore,/if \[ "\$stage" = "managed_auth" \] \|\| \[ "\$stage" = "auth_triggers" \]; then[\s\S]*?docker exec -i "\$RESTORE_CONTAINER" psql -U supabase_admin -d postgres/);
+assert.match(restore,/if \[ "\$stage" = "managed_auth" \] \|\| \[ "\$stage" = "auth_triggers" \] \|\| \[ "\$stage" = "managed_native" \] \|\| \[ "\$stage" = "native_data" \]; then[\s\S]*?docker exec -i "\$RESTORE_CONTAINER" psql -U supabase_admin -d postgres/);
 assert.doesNotMatch(restore,/GRANT\s+(?:supabase_admin|supabase_auth_admin|CREATE)/i);
 assert.match(restore,/docker exec -i "\$RESTORE_CONTAINER" psql -U supabase_admin -d postgres -X --quiet --single-transaction/);
 assert.match(restore,/supabase start > "\$RUNNER_TEMP\/drx-restore-start\.log" 2>&1/);
@@ -460,7 +461,7 @@ try {
   }
   const adminArgs=['docker','exec','-i',restoreContainer,'psql','-U','supabase_admin','-d','postgres','-X','--quiet',
     '--single-transaction','--set','ON_ERROR_STOP=1','--set','VERBOSITY=sqlstate','--set','SHOW_CONTEXT=never','--file=-'];
-  for(const [stage,args] of [['managed_auth',['--file',sourceFile]],['auth_triggers',['--single-transaction','--file',sourceFile]]]){
+  for(const [stage,args] of [['managed_auth',['--file',sourceFile]],['auth_triggers',['--single-transaction','--file',sourceFile]],['managed_native',['--file',sourceFile]],['native_data',['--file',sourceFile]]]){
     const invocation=invokeRestore(stage,args);
     assert.equal(invocation.result.status,0);
     assert.deepEqual(invocation.args,adminArgs,'Each managed stage streams only into the explicitly local admin in one transaction.');

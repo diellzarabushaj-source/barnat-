@@ -50,3 +50,11 @@ WITH entries AS (
 )
 SELECT 'native_roles_count='||count(*) AS entry FROM entries
 UNION ALL SELECT 'native_roles_fingerprint='||encode(sha256(convert_to(coalesce(string_agg(identity||value::text,'' ORDER BY identity),''),'UTF8')),'hex') FROM entries;
+WITH entries AS (
+ SELECT pg_catalog.pg_get_userbyid(d.defaclrole)||' '||n.nspname||' '||d.defaclobjtype::text AS identity,
+ jsonb_build_object('acl',(SELECT jsonb_agg(jsonb_build_array(pg_catalog.pg_get_userbyid(a.grantor),CASE WHEN a.grantee=0 THEN 'PUBLIC' ELSE pg_catalog.pg_get_userbyid(a.grantee) END,a.privilege_type,a.is_grantable)
+ ORDER BY pg_catalog.pg_get_userbyid(a.grantor),CASE WHEN a.grantee=0 THEN 'PUBLIC' ELSE pg_catalog.pg_get_userbyid(a.grantee) END,a.privilege_type,a.is_grantable)
+ FROM pg_catalog.aclexplode(d.defaclacl) a)) AS value
+ FROM pg_catalog.pg_default_acl d JOIN pg_catalog.pg_namespace n ON n.oid=d.defaclnamespace WHERE n.nspname IN ('auth','storage')
+)
+SELECT jsonb_build_object('kind','defaultAcl','identity',identity,'components',jsonb_build_object('acl',encode(sha256(convert_to(value::text,'UTF8')),'hex'))) FROM entries ORDER BY identity;
