@@ -7,7 +7,7 @@ on:
         description: PostgreSQL image for the disposable restore only
         required: false
         type: choice
-        default: '17.6.1.155'
+        default: '17.11.0.003'
         options: ['17.6.1.155', '17.11.0.003']
       native_probe:
         description: Require complete native Auth Storage data and isolated API recovery
@@ -51,8 +51,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
-      SOURCE_POSTGRES_VERSION: "17.6.1.155"
-      DRX_RESTORE_POSTGRES_VERSION: ${{ inputs.postgres_version || '17.6.1.155' }}
+      SOURCE_POSTGRES_VERSION: "17.11.0.003"
+      DRX_RESTORE_POSTGRES_VERSION: ${{ inputs.postgres_version || '17.11.0.003' }}
       DRX_NATIVE_RECOVERY_PROBE: ${{ (github.event_name != 'workflow_dispatch' || inputs.native_probe) && '1' || '0' }}
       SUPABASE_PROJECT_REF: "ftuchtmolddhhsdcwnqe"
       SUPABASE_POOLER_REGION: "eu-west-2"

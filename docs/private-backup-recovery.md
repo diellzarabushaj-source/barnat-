@@ -101,7 +101,9 @@ Scheduled runs and relevant main pushes require native recovery. Manual dispatch
 defaults to `native_probe=true`; explicitly disabling it produces only the
 earlier limited recovery scope and must not be reported as complete native recovery.
 
-The source image stays pinned to `17.6.1.155`. The disposable restore accepts
+After the owner's approved hosted upgrade, the source image is pinned to
+`17.11.0.003`, which is also the scheduled and manual restore default.
+The disposable restore accepts
 only `17.6.1.155` or `17.11.0.003`, and checks both the actual container tag and
 the running PostgreSQL version. This choice never upgrades the hosted project.
 
