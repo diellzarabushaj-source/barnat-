@@ -275,6 +275,12 @@ jobs:
           set -euo pipefail
           BACKUP_DIR="$RUNNER_TEMP/drx-phase1-backup"
           mkdir -p "$BACKUP_DIR"
+          SOURCE_DUMP_IMAGE=''
+          for candidate in "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" "ghcr.io/supabase/postgres:$SOURCE_POSTGRES_VERSION" "supabase/postgres:$SOURCE_POSTGRES_VERSION"; do
+            if docker pull "$candidate" > "$RUNNER_TEMP/drx-restore-source-image.log" 2>&1; then SOURCE_DUMP_IMAGE="$candidate"; break; fi
+          done
+          if [ -z "$SOURCE_DUMP_IMAGE" ]; then echo '::error::Pinned source PostgreSQL client image unavailable from official registries.'; exit 1; fi
+          echo "SOURCE_DUMP_IMAGE=$SOURCE_DUMP_IMAGE" >> "$GITHUB_ENV"
           EXTRA_DATA_EXCLUDES=()
           if [ "$DRX_NATIVE_RECOVERY_PROBE" = '1' ]; then
             EXTRA_DATA_EXCLUDES=(-x 'auth.*' -x 'storage.*')
@@ -334,7 +340,7 @@ jobs:
             # END exact source Auth table allowlist
             if ! docker run --rm --network host \
               -e SOURCE_DATABASE_URL="$SUPABASE_DB_URL" \
-              "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" \
+              "$SOURCE_DUMP_IMAGE" \
               sh -c 'exec pg_dump "$SOURCE_DATABASE_URL" --schema-only --table=auth.mfa_recovery_code_sets --table=auth.mfa_recovery_codes --table=auth.scim_tokens --table=auth.scim_users' \
               > "$BACKUP_DIR/auth_recovery_schema.sql" 2> "$RUNNER_TEMP/drx-restore-auth-schema-dump.log"; then
               echo "::error::Source allowlisted Auth schema capture failed; raw diagnostics are not published."
@@ -462,15 +468,15 @@ jobs:
             fi
             # One snapshot includes all native tables, managed migration histories and sequence states.
             docker run --rm --network host -e SOURCE_DATABASE_URL="$SUPABASE_DB_URL" \
-              "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" \
+              "$SOURCE_DUMP_IMAGE" \
               sh -c 'exec pg_dump "$SOURCE_DATABASE_URL" --format=custom --schema=auth --schema=storage' \
               > "$BACKUP_DIR/native-full.dump" 2> "$RUNNER_TEMP/drx-restore-native-dump.log"
-            docker run --rm -v "$BACKUP_DIR:/backup:ro" "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" \
+            docker run --rm -v "$BACKUP_DIR:/backup:ro" "$SOURCE_DUMP_IMAGE" \
               pg_restore --list /backup/native-full.dump > "$BACKUP_DIR/native-full.toc"
             python3 scripts/native-recovery-toc.py "$BACKUP_DIR/native-full.toc" "$BACKUP_DIR/native-restore.toc"
-            docker run --rm -v "$BACKUP_DIR:/backup:ro" "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" \
+            docker run --rm -v "$BACKUP_DIR:/backup:ro" "$SOURCE_DUMP_IMAGE" \
               pg_restore --schema-only --file=- --use-list=/backup/native-restore.toc /backup/native-full.dump > "$BACKUP_DIR/native-schema.sql"
-            docker run --rm -v "$BACKUP_DIR:/backup:ro" "public.ecr.aws/supabase/postgres:$SOURCE_POSTGRES_VERSION" \
+            docker run --rm -v "$BACKUP_DIR:/backup:ro" "$SOURCE_DUMP_IMAGE" \
               pg_restore --data-only --file=- /backup/native-full.dump > "$BACKUP_DIR/native-data.sql"
             # CLI's managed Auth export can be appended independently of -x patterns.
             # Preserve original data.sql, but replay only application blocks after full native data.
