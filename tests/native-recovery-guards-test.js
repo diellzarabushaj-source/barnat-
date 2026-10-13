@@ -9,6 +9,7 @@ for(const API_URL of ['https://ftuchtmolddhhsdcwnqe.supabase.co','http://localho
 assert.throws(()=>configuration({API_URL:'http://127.0.0.1:54321',ANON_KEY:jwt('anon'),SERVICE_ROLE_KEY:jwt('anon')}));
 const python=process.platform==='win32'?'C:/Users/Admin/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe':'python3';
 const folder=fs.mkdtempSync(path.join(os.tmpdir(),'drx-native-guards-'));
+assert.equal(path.dirname(path.resolve(folder)),path.resolve(os.tmpdir()));
 try{
  const toc=['cleanup_atomic_note_receipts_auth_owner','cleanup_atomic_prescription_receipts_auth_owner','medindex_auth_user_profile_created'].map((name,i)=>`${i+1}; 0 123 TRIGGER auth users ${name} supabase_auth_admin`);
  const native='4; 0 124 TRIGGER storage buckets protect_bucket_control_columns supabase_storage_admin';

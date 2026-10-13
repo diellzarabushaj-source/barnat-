@@ -112,6 +112,14 @@ functions exist. Native triggers, owners and ACLs are preserved. Only the named
 disposable loopback database may drop/recreate these schemas. The earlier partial
 Auth compatibility additions remain available only for the explicitly limited mode.
 
+Storage is pinned to `v1.81.3` and its migration ceiling to the captured source
+level (`revoke-grants-to-unused-operations` or `unlock-object-versioning`). This
+supports the source's versioned-object indexes while restart parity prevents any
+schema drift. The PostgreSQL dump client is resolved from official ECR, GHCR or
+Docker Hub mirrors at the same pinned version. The filtered application COPY file
+is a disposable intermediate, regenerated from the retained original `data.sql`
+with `scripts/native-recovery-app-data.py`; it is not stored twice in the archive.
+
 The full native archive is retained encrypted alongside the generated native SQL
 and trigger selection. Complete source/restore catalogs cover relations, column
 definitions, constraints, indexes, triggers, policies, functions, enum/domain types,

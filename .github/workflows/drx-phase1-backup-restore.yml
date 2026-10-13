@@ -480,7 +480,7 @@ jobs:
               pg_restore --data-only --file=- /backup/native-full.dump > "$BACKUP_DIR/native-data.sql"
             # CLI's managed Auth export can be appended independently of -x patterns.
             # Preserve original data.sql, but replay only application blocks after full native data.
-            python3 scripts/native-recovery-app-data.py "$BACKUP_DIR/data.sql" "$BACKUP_DIR/native-application-data.sql"
+            python3 scripts/native-recovery-app-data.py "$BACKUP_DIR/data.sql" "$RUNNER_TEMP/drx-restore-native-application-data.sql"
           fi
           sha256sum "$BACKUP_DIR"/*.sql > "$BACKUP_DIR/sha256.txt"
 
@@ -834,7 +834,7 @@ jobs:
           # END guarded local default ACL preparation
           restore_sql schema --file "$BACKUP_DIR/schema.sql"
           APPLICATION_DATA_FILE="$BACKUP_DIR/data.sql"
-          if [ "$DRX_NATIVE_RECOVERY_PROBE" = '1' ]; then APPLICATION_DATA_FILE="$BACKUP_DIR/native-application-data.sql"; fi
+          if [ "$DRX_NATIVE_RECOVERY_PROBE" = '1' ]; then APPLICATION_DATA_FILE="$RUNNER_TEMP/drx-restore-native-application-data.sql"; fi
           restore_sql data \
             --command 'SET session_replication_role = replica' \
             --file "$APPLICATION_DATA_FILE"
@@ -1142,7 +1142,7 @@ jobs:
           printf '%s' "${DRX_BACKUP_FINGERPRINT_SALT:?}" > "$BACKUP_DIR/private-fingerprint-salt"
           RECOVERY_FILES=()
           NATIVE_FILES=()
-          if [ "$DRX_NATIVE_RECOVERY_PROBE" = '1' ]; then NATIVE_FILES=(native-full.dump native-full.toc native-restore.toc native-schema.sql native-data.sql native-application-data.sql); fi
+          if [ "$DRX_NATIVE_RECOVERY_PROBE" = '1' ]; then NATIVE_FILES=(native-full.dump native-full.toc native-restore.toc native-schema.sql native-data.sql); fi
           if [ "${DRX_BACKUP_LIBRARY_RECOVERY_ENABLED:-0}" = '1' ]; then
             if ! psql 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' -X --quiet --set ON_ERROR_STOP=1 --tuples-only --no-align \
               -c "select coalesce(jsonb_agg(jsonb_build_object('user_id',user_id,'client_id',client_id,'payload',payload) order by id),'[]'::jsonb) from public.user_prescriptions" \
@@ -1195,6 +1195,7 @@ jobs:
           evidence['nativeRecovery']['api']=api
           evidence['nativeRecovery']['completeNativeRecoveryVerified']=True
           evidence['storageBodies']['nativeStorageApiReplayVerified']=True
+          evidence['nativeStorageApiReplayVerified']=True
           evidence['verifiedScope'].append('native_auth_storage_and_application_api_recovery')
           evidence_file.write_text(json.dumps(evidence,indent=2)+'\n')
           PY
@@ -1240,6 +1241,7 @@ jobs:
           rm -f -- "$RUNNER_TEMP/drx-restore-private-manifest.sql"
           rm -f -- "$RUNNER_TEMP/drx-restore-native-catalog.sql" "$RUNNER_TEMP/drx-restore-native-source.ndjson" "$RUNNER_TEMP/drx-restore-native-target.ndjson"
           rm -f -- "$RUNNER_TEMP/drx-restore-native-schema.sql" "$RUNNER_TEMP/drx-restore-native-data.sql" "$RUNNER_TEMP/drx-restore-native-status.json" "$RUNNER_TEMP/drx-restore-native-restarted.ndjson"
+          rm -f -- "$RUNNER_TEMP/drx-restore-native-application-data.sql"
           rm -f -- "$RUNNER_TEMP/drx-restore-native-image.txt" "$RUNNER_TEMP/drx-restore-native-version.txt"
           rm -f -- "$RUNNER_TEMP/drx-restore-storage-image.txt" "$RUNNER_TEMP/drx-restore-storage-migration.txt"
 

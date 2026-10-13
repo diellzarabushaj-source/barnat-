@@ -46,6 +46,10 @@ assert.match(workflow,/node scripts\/export-storage-bodies\.js/);
 assert.match(workflow,/source-manifest\.txt private-fingerprint-salt storage-body-manifest\.json storage-objects/);
 assert.match(workflow,/if before!=after:/);
 assert.match(workflow,/node scripts\/retain-private-backup\.js/);
+const nativeFiles=workflow.match(/NATIVE_FILES=\(([^\n]+)\)/);
+assert.ok(nativeFiles&&nativeFiles[1].includes('native-data.sql')&&nativeFiles[1].includes('native-schema.sql'));
+assert.ok(!nativeFiles[1].includes('native-application-data.sql'),'Retain the original COPY data once; regenerate the filtered intermediate to preserve the capacity bound.');
+assert.match(workflow,/evidence\['nativeStorageApiReplayVerified'\]=True/,'Successful API recovery must update the explicit root proof as well as the nested scope.');
 assert.match(workflow,/"personalLibraryRowParityVerified":True/);
 assert.match(workflow,/echo "::add-mask::\$DRX_BACKUP_FINGERPRINT_SALT"/);
 assert.equal((workflow.match(/--set private_fingerprint_salt=/g)||[]).length,5,
