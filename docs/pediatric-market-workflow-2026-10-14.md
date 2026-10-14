@@ -100,3 +100,9 @@ Production build and the full 203-file suite passed during implementation; focus
 - https://www.uni-pharma.gr/en/nonprescriptive/hemafer-6/
 - https://www.ndf.gov.sg/about-drugs/active-ingredient/m00471/
 - https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=50630775-7f76-413e-9278-ba298dd7f187
+
+## Live reference permission repair
+
+Production verification exposed missing SELECT privileges for the existing server-only service role on the reference snapshot and weight-age tables. Migration `20261014210426_pediatric_reference_server_read_grants.sql` grants only SELECT on those two tables. It preserves RLS and keeps anon/authenticated without SELECT; no write privilege or clinical data was changed. A real service_role read returned exactly one expected row from each of the three datasets, and the authenticated live page then loaded all 737 products. The security-advisor output was unchanged (72 informational private-table/no-policy notices and the existing password-protection warning). `scripts/verify-pediatric-reference-access.sql` repeats the read-only operational proof. See the [Supabase grants/RLS documentation](https://supabase.com/docs/guides/api/securing-your-api).
+
+The live browser also exposed an older catalog retained under the same service-worker query key. The active reference request now includes the client build and an explicit no-cache header, so an online refresh cannot silently reuse another release’s option catalog. This was diagnosed by comparing the ordinary live response with a fresh build-specific query.

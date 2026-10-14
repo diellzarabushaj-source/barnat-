@@ -7,7 +7,7 @@
   const CALCULATE_URL = '/api/dosage?view=pediatric-common-calculate';
   let referenceRevision = '';
   let referenceActive = false;
-  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1';
+  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=55-market-20261014';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
   const CLINICAL_AUDIT_URL = '/data/pediatric-clinical-audit-v1.json';
@@ -588,7 +588,7 @@
     if(!byId('pediatricDrug'))return;
     try{
       let payload=null;let source = 'database';
-      try{const response=await fetch(DATA_URL,{credentials:'same-origin',cache:'no-store'});if(!response.ok)throw Error();payload=await response.json();}
+      try{const response=await fetch(DATA_URL,{credentials:'same-origin',cache:'no-store',headers:{'Cache-Control':'no-cache'}});if(!response.ok)throw Error();payload=await response.json();}
       catch{
         source='static-fallback';
         const responses=await Promise.all([STATIC_FALLBACK_URL,STATIC_AGE_DEFAULTS_URL,CLINICAL_AUDIT_URL].map(url=>fetch(url,{credentials:'same-origin',cache:'no-store'})));

@@ -395,7 +395,7 @@ test('AKKPM ampoule workflow requires actual age and IV safety, and clears stale
 
 test('AKKPM concise indications follow actual age and verified oral product',async({page})=>{
  await page.setViewportSize({width:390,height:900});await api(page);
- await page.route('**/api/dosage?view=pediatric-common-reference*',route=>route.fulfill({json:pediatricReference}));
+ await page.route('**/api/dosage?view=pediatric-common-reference*',route=>{expect(route.request().url()).toMatch(/build=\d+-market-/);expect(route.request().headers()['cache-control']).toBe('no-cache');return route.fulfill({json:pediatricReference});});
  await page.route('**/api/dosage?view=pediatric-common-calculate',async route=>{const result=require('../lib/pediatric-common-calculate-handler').calculate(pediatricReference,route.request().postDataJSON());await route.fulfill({status:result.error?422:200,json:result});});
  await page.goto(`${baseURL}/dozologjia.html`);
  await page.locator('#pediatricDrug').selectOption('Cetirizine');
