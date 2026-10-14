@@ -2146,6 +2146,7 @@ button,input,select{font:inherit}
 @media(max-width:350px){.dz-market-patient{grid-template-columns:1fr}.dz-market-patient>small,.dz-market-confirm{grid-column:auto}}
 
 /* Keep the verified result legible and usable without losing its product context. */
+.dz-market-eligibility{margin:12px 0 0;color:#536478;font-size:13px;line-height:1.6}
 .dz-result-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:12px;margin-bottom:2px;border-bottom:1px solid #d5e1f1}
 .dz-result-context{display:grid;gap:4px;min-width:0}
 .dz-result-context strong{font-size:16px;font-weight:700;color:#18334e}

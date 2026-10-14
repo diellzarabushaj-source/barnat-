@@ -7,7 +7,7 @@
   const CALCULATE_URL = '/api/dosage?view=pediatric-common-calculate';
   let referenceRevision = '';
   let referenceActive = false;
-  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=56-market-20261014';
+  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=57-market-20261015';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
   const CLINICAL_AUDIT_URL = '/data/pediatric-clinical-audit-v1.json';
@@ -486,6 +486,7 @@
   function renderProducts(variant){
     const details=byId('pediatricProductDetails');details.hidden=!variant;details.open=false;
     const host=byId('pediatricProducts');host.replaceChildren();if(!variant)return;
+    if(variant.populationNoteSq)host.append(node('p',variant.populationNoteSq));
     variant.products.forEach(product=>{
       const row=node('article',null,'dz-market-product');row.append(node('strong',product.name),node('span',product.strength+' · '+product.form),node('small',product.packaging));host.append(row);
     });
@@ -493,7 +494,7 @@
   function drugChanged(){
     clearResult('Zgjidh formën dhe fortësinë.');
     choices('pediatricForm',[],'Zgjidh barin më parë');choices('pediatricStrength',[],'Zgjidh formën më parë');
-    byId('pediatricSchemeField').hidden=true;showPatient(false);
+    byId('pediatricSchemeField').hidden=true;byId('pediatricSchemeNote').hidden=true;showPatient(false);
     byId('pediatricAgeConfirmed').checked=false;byId('pediatricSafetyConfirmed').checked=false;
     const {drug,entry}=selection();renderSources(drug);renderProducts(null);
     if(!drug)return;
@@ -502,7 +503,7 @@
   }
   function formChanged(){
     clearResult('Zgjidh fortësinë / përqendrimin.');
-    showPatient(false);byId('pediatricSchemeField').hidden=true;renderProducts(null);
+    showPatient(false);byId('pediatricSchemeField').hidden=true;byId('pediatricSchemeNote').hidden=true;renderProducts(null);
     const {form}=selection();
     choices('pediatricStrength',[],'Zgjidh fortësinë…');
     const select=byId('pediatricStrength');
@@ -526,6 +527,8 @@
     clearResult();
     byId('pediatricSafetyConfirmed').checked=false;
     const {variant,scheme}=selection();
+    byId('pediatricSchemeNote').textContent=scheme?.eligibilitySq||'';
+    byId('pediatricSchemeNote').hidden=!scheme?.eligibilitySq;
     showPatient(Boolean(variant?.schemes.length));
     byId('pediatricAgeGate').hidden=!scheme?.needsAge;
     byId('pediatricSafetyGate').hidden=!scheme?.safetyConfirmation;
