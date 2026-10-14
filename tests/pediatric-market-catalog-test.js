@@ -1,0 +1,52 @@
+'use strict';
+const assert=require('node:assert/strict');
+const market=require('../lib/pediatric-market-catalog');
+const server=require('../lib/pediatric-common-calculate-handler');
+const products=require('./fixtures/pediatric-akkpm-products-20261014.json');
+const reference=market.withMarket({...require('../data/pediatric-common-drugs-reference.json'),clinicalAudit:require('../data/pediatric-clinical-audit-v1.json'),weightAgeDefaults:require('../data/pediatric-weight-age-defaults.json')},products);
+const entry=name=>reference.marketCatalog.drugs.find(d=>d.name===name);
+const variants=name=>entry(name).forms.flatMap(f=>f.variants);
+const find=(name,predicate)=>variants(name).find(predicate);
+function dose(name,variant,weight,extra={}){return server.calculate(reference,{drugName:name,variantId:variant.id,optionIndex:variant.schemes[0]?.index,weight,referenceRevision:server.revisionOf(reference),...extra});}
+assert.equal(reference.marketCatalog.productCount,737);
+assert.equal(reference.marketCatalog.drugs.length,50);
+for(const drug of reference.marketCatalog.drugs)for(const form of drug.forms){
+ assert.deepEqual(form.variants.map(v=>v.products.length),form.variants.map(v=>v.products.length).sort((a,b)=>b-a));
+ for(const variant of form.variants){assert.ok(variant.products.every(p=>products.some(r=>r.id===p.id)));if(variant.schemes.length)assert.ok(variant.products.every(p=>p.approvedPopulation!=='Adult only'));}
+}
+const amox=find('Amoxicillin',v=>v.form.measure==='liquid'&&v.concentration.value/v.concentration.perML===50&&v.schemes.length);
+assert.equal(dose('Amoxicillin',amox,12).selectedMeasure.min,6);
+assert.ok(server.calculate(reference,{drugName:'Amoxicillin',optionIndex:0,weight:12,referenceRevision:server.revisionOf(reference)}).error);
+assert.deepEqual(dose('Amoxicillin',amox,12,{strength:1,concentration:1,formula:1000}),dose('Amoxicillin',amox,12));
+const injection=find('Amoxicillin',v=>v.form.route==='injectable');
+assert.ok(dose('Amoxicillin',injection,12,{optionIndex:0}).error,'Oral dose cannot be applied to an injection');
+const solid=find('Amoxicillin',v=>v.form.measure==='whole'&&v.concentration.value===500&&v.schemes.length);
+assert.ok(dose('Amoxicillin',solid,12).selectedMeasure.error,'Never round 300 mg into a 500 mg capsule');
+assert.equal(dose('Amoxicillin',solid,20).selectedMeasure.min,1);
+const paraIV=find('Paracetamol',v=>v.form.route==='injectable'&&v.concentration.containerML===10&&v.schemes.length);
+assert.ok(paraIV,'Published B. Braun ampoule, not an invented strength');
+assert.equal(dose('Paracetamol',paraIV,8).needsSafetyConfirmation,true);
+assert.equal(dose('Paracetamol',paraIV,8,{safetyConfirmed:true}).selectedMeasure.min,6);
+assert.ok(dose('Paracetamol',paraIV,12,{safetyConfirmed:true}).error,'Wrong package weight group is blocked');
+const ondans=find('Ondansetron',v=>v.form.route==='injectable'&&v.schemes.length);
+assert.equal(dose('Ondansetron',ondans,20,{safetyConfirmed:true}).needsAgeConfirmation,true);
+const ondansResult=dose('Ondansetron',ondans,20,{safetyConfirmed:true,ageConfirmed:true,age:5,ageUnit:'year'});
+assert.equal(ondansResult.selectedMeasure.min,1);assert.equal(ondansResult.perDoseMax,2);
+assert.equal(dose('Ondansetron',ondans,60,{safetyConfirmed:true,ageConfirmed:true,age:16,ageUnit:'year'}).perDoseMax,4);
+const parse=(strength,name='Amoxicillin',form='Oral suspension',active_substance='Amoxicillin')=>market.parseStrength({strength,active_substance},name,market.classifyForm(form));
+assert.equal(parse('250 mg/5 ml').perML,5);
+assert.ok(parse('250 mg').reason);
+assert.equal(parse('1g','Ceftriaxone','Powder for injection').value,1000);
+assert.equal(parse('1 MIU','Colistin','Powder for injection').value,1000000);
+assert.equal(parse('1 MIU','Colistin','Powder for injection').unit,'IU');
+assert.equal(parse('0.1 mg/g').value,0.1);assert.ok(parse('0.1 mg/g').reason);
+assert.equal(parse('(400 mg+57 mg)/5 ml','Amoxicillin + Clavulanic').value,400);
+assert.equal(parse('160 mg+800 mg','Cotrimoxazole (TMP + SMZ)','Tablet','Trimethoprim; Sulfamethoxazole').value,160);
+assert.equal(parse('400 mg+80 mg','Cotrimoxazole (TMP + SMZ)','Tablet','Sulfamethoxazole; Trimethoprim').value,80);
+assert.equal(parse('200 mg+40 mg','Amoxicillin').value,null);
+for(const ambiguous of ['1e3 mg/5 ml','-100 mg/5 ml','12.5.0 mg/5 ml','250-500 mg/5 ml','10%'])assert.ok(parse(ambiguous).reason,ambiguous);
+assert.ok(market.classifyForm('Modified-release capsule').modified);
+const badRows=[{...products.find(r=>r.atc_code==='N02BE01'),active_substance:'Paracetamol; Codeine',strength:'500 mg',pharmaceutical_form:'Tablet'}];
+assert.ok(market.withMarket(reference,badRows).marketCatalog.drugs.find(d=>d.name==='Paracetamol').forms[0].variants.every(v=>!v.schemes.length));
+for(const name of ['Iron','Calcium','Cefoperazone'])assert.ok(variants(name).every(v=>!v.schemes.length));
+console.log('PASS: 737 AKKPM products, real choices, prevalence ranking, component/route/age gates, IV package bands, mg/mL and whole-unit safety');

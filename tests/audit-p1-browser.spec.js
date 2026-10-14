@@ -21,6 +21,8 @@ test.beforeAll(async () => {
   await new Promise(resolve => server.listen(0,'127.0.0.1',resolve));
   baseURL = `http://127.0.0.1:${server.address().port}`;
 });
+
+
 test.afterAll(async () => {await new Promise(resolve => server.close(resolve));});
 async function api(page, identity = {id:'doctor-a',email:'a@example.test'}) {
   await page.route('**/api/**',async route => {
@@ -312,8 +314,9 @@ for (const width of [390,1440]) test(`Medical Hub source details, review and pri
   await page.screenshot({path:`../../outputs/p2-medical-hub-${width}.png`,fullPage:false});
 });
 
-const pediatricReference={...require('../data/pediatric-common-drugs-reference.json'),weightAgeDefaults:require('../data/pediatric-weight-age-defaults.json'),clinicalAudit:require('../data/pediatric-clinical-audit-v1.json')};
-for(const width of [320,390,1440])test(`Pediatric weight-first server flow and formulation selection at ${width}px`,async({page})=>{
+const pediatricReference=require('../lib/pediatric-market-catalog').withMarket({...require('../data/pediatric-common-drugs-reference.json'),weightAgeDefaults:require('../data/pediatric-weight-age-defaults.json'),clinicalAudit:require('../data/pediatric-clinical-audit-v1.json')},require('./fixtures/pediatric-akkpm-products-20261014.json'));
+const marketVariant=(name,predicate)=>pediatricReference.marketCatalog.drugs.find(d=>d.name===name).forms.flatMap(f=>f.variants).find(predicate);
+for(const width of [320,390,1440])test(`Pediatric AKKPM drug-form-strength-weight flow at ${width}px`,async({page})=>{
   await page.setViewportSize({width,height:900});await api(page);
   await page.route('**/api/dosage?view=pediatric-common-reference',route=>route.fulfill({json:pediatricReference}));
   await page.route('**/api/dosage?view=pediatric-common-calculate',async route=>{
@@ -321,29 +324,65 @@ for(const width of [320,390,1440])test(`Pediatric weight-first server flow and f
     await route.fulfill({status:result.error?422:200,json:result});
   });
   await page.goto(`${baseURL}/dozologjia.html`);
-  await page.getByText('Amoxicillin',{exact:true}).click();
-  await page.locator('#amoxicillin-common-weight').fill('12');
-  await expect(page.locator('#amoxicillin-common-age')).toHaveValue('24');
+  await expect(page.locator('#pediatricDrug option')).toHaveCount(51);
+  await expect(page.locator('#pediatricWeight')).toBeHidden();
+  await page.locator('#pediatricDrug').selectOption('Amoxicillin');
+  await page.locator('#pediatricForm').selectOption('oral-liquid');
+  const amox=marketVariant('Amoxicillin',v=>v.form.key==='oral-liquid'&&v.concentration.value/v.concentration.perML===50&&v.schemes.length);
+  await page.locator('#pediatricStrength').selectOption(amox.id);
+  await page.locator('#pediatricScheme').selectOption('0');
+  await page.locator('#pediatricWeight').fill('12');
+  await expect(page.locator('#pediatricAge')).toHaveValue('24');
   await expect(page.locator('.dz-common-result-dose')).toHaveText('300 mg');
-  const formulation=page.getByLabel('Përqendrimi në etiketën e produktit');
-  await expect(formulation.locator('option')).toHaveCount(3);
-  await expect(formulation.locator('option').nth(1)).toContainText('125 mg / 5 mL');
-  await expect(formulation.locator('option').nth(2)).toContainText('250 mg / 5 mL');
-  await expect(page.locator('.dz-common-volume-card:visible')).toHaveCount(0);
-  await formulation.selectOption('1');await expect(page.locator('.dz-common-volume-card:visible')).toContainText('6 mL');
-  await page.locator('#amoxicillin-common-weight').fill('20');
-  await page.locator('#amoxicillin-common-weight').fill('10');
+  await expect(page.locator('.dz-market-measure')).toHaveText('6 mL');
+  await page.locator('#pediatricWeight').fill('20');await page.locator('#pediatricWeight').fill('10');
   await expect(page.locator('.dz-common-result-dose')).toHaveText('250 mg');
-  await page.locator('#pediatricCommonSearch').fill('Paracetamol');
-  await expect(page.locator('#paracetamol-common-weight')).toHaveValue('10');
-  await expect(page.locator('.dz-common-calc-answer')).toContainText('Konfirmo ose ndrysho');
+  await expect(page.locator('.dz-market-measure')).toHaveText('5 mL');
+  await page.locator('#pediatricDrug').selectOption('Paracetamol');
   await expect(page.locator('.dz-common-result-dose')).toHaveCount(0);
-  await page.getByLabel('Konfirmoj që kjo është mosha e saktë e fëmijës').check();
+  await page.locator('#pediatricForm').selectOption('oral-liquid');
+  const para=marketVariant('Paracetamol',v=>v.form.key==='oral-liquid'&&v.concentration.value/v.concentration.perML===24&&v.schemes.length);
+  await page.locator('#pediatricStrength').selectOption(para.id);
+  await expect(page.locator('#pediatricWeight')).toHaveValue('10');
+  await expect(page.locator('#pediatricAnswer')).toContainText('Konfirmo ose ndrysho');
+  await page.locator('#pediatricAgeConfirmed').check();
   await expect(page.locator('.dz-common-result-dose')).toHaveText('150 mg');
-  await page.locator('#paracetamol-common-age').fill('0.5');
+  await expect(page.locator('.dz-market-measure')).toHaveText('6,25 mL');
+  await page.locator('#pediatricAge').fill('0.5');
   await expect(page.locator('.dz-common-result-dose')).toHaveCount(0);
-  await page.getByLabel('Konfirmoj që kjo është mosha e saktë e fëmijës').check();
+  await page.locator('#pediatricAgeConfirmed').check();
   await expect(page.locator('.dz-common-result-dose')).toHaveText('100 mg');
+  await page.locator('#pediatricReset').click();
+  await expect(page.locator('#pediatricWeight')).toHaveValue('');
+  await expect(page.locator('.dz-common-result-dose')).toHaveCount(0);
   const geometry=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth}));
   expect(geometry.scroll).toBeLessThanOrEqual(geometry.width+1);
+});
+
+test('AKKPM ampoule workflow requires actual age and IV safety, and clears stale results',async({page})=>{
+  await page.setViewportSize({width:390,height:900});await api(page);
+  await page.route('**/api/dosage?view=pediatric-common-reference',route=>route.fulfill({json:pediatricReference}));
+  await page.route('**/api/dosage?view=pediatric-common-calculate',async route=>{const result=require('../lib/pediatric-common-calculate-handler').calculate(pediatricReference,route.request().postDataJSON());await route.fulfill({status:result.error?422:200,json:result});});
+  await page.goto(`${baseURL}/dozologjia.html`);
+  await page.locator('#pediatricDrug').selectOption('Ondansetron');
+  const amp=marketVariant('Ondansetron',v=>v.form.route==='injectable'&&v.concentration.containerML===2&&v.schemes.length);
+  await page.locator('#pediatricForm').selectOption(amp.form.key);
+  await page.locator('#pediatricStrength').selectOption(amp.id);
+  await page.locator('#pediatricWeight').fill('20');
+  await expect(page.locator('.dz-market-measure')).toHaveCount(0);
+  await page.locator('#pediatricSafetyConfirmed').check();
+  await expect(page.locator('#pediatricAnswer')).toContainText('Konfirmo ose ndrysho');
+  await page.locator('#pediatricAgeConfirmed').check();
+  await expect(page.locator('.dz-market-measure')).toHaveText('1 mL');
+  await expect(page.locator('.dz-common-result-dose')).toHaveText('2 mg');
+  await expect(page.locator('#pediatricAnswer')).toContainText('≥30 sekonda');
+  await page.locator('#pediatricForm').selectOption('oral-liquid');
+  await expect(page.locator('.dz-market-measure')).toHaveCount(0);
+  const liquid=marketVariant('Ondansetron',v=>v.form.key==='oral-liquid'&&v.schemes.length);
+  await page.locator('#pediatricStrength').selectOption(liquid.id);
+  if(liquid.schemes.length>1)await page.locator('#pediatricScheme').selectOption(String(liquid.schemes[0].index));
+  await page.locator('#pediatricAgeConfirmed').check();
+  await expect(page.locator('.dz-market-measure')).toBeVisible();
+  await page.locator('#pediatricWeight').fill('');
+  await expect(page.locator('.dz-market-measure')).toHaveCount(0);
 });

@@ -8,11 +8,11 @@ const path = require('node:path');
 const { chromium, webkit, expect } = require('@playwright/test');
 const master = require('../lib/dozologjia-master');
 const emergencyFixture = require('./urgjencat-browser-fixture');
-const pediatricReference = {
+const pediatricReference = require('../lib/pediatric-market-catalog').withMarket({
  ...require('../data/pediatric-common-drugs-reference.json'),
  weightAgeDefaults:require('../data/pediatric-weight-age-defaults.json'),
  clinicalAudit:require('../data/pediatric-clinical-audit-v1.json'),
-};
+},require('./fixtures/pediatric-akkpm-products-20261014.json'));
 // Synthetic interface data only; no medical recommendation or live API access.
 const labFixture = {ok:true,data:{source:'QA fixture',
  categories:[{id:'qa-category',title:'Kategori testuese'}],
@@ -65,7 +65,7 @@ const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'
     await page.waitForTimeout(180);
     if(name==='dozologjia'){
      await expect(page.locator('#pediatricCommonCount')).not.toContainText('Nuk u ngarkua');
-     await expect(page.locator('#pediatricCommonSections')).toContainText('Paracetamol');
+     await expect(page.locator('#pediatricDrug')).toContainText('Paracetamol');
     }
     if(name==='urgjencat')await expect(page.locator('#emergencyDetail .ec-detail-inner')).toBeVisible();
     if(name==='analizat')await expect(page.locator('#labTestTotal')).toHaveText('1');

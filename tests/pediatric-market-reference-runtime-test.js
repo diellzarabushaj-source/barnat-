@@ -1,0 +1,36 @@
+'use strict';
+const assert=require('node:assert/strict');
+const products=require('./fixtures/pediatric-akkpm-products-20261014.json');
+const base=require('../data/pediatric-common-drugs-reference.json');
+const ages=require('../data/pediatric-weight-age-defaults.json');
+const audit=require('../data/pediatric-clinical-audit-v1.json');
+const transportPath=require.resolve('../lib/medindex-data-api.js');
+require(transportPath);
+let calls=0,mutation=null;
+require.cache[transportPath].exports={neonRequest:async path=>{
+ calls++;
+ const url=new URL('https://fixture.invalid/'+path);
+ if(url.pathname.includes('pediatric_common_reference'))return {data:[{payload:base,payload_sha256:'qa-reference'}]};
+ if(url.pathname.includes('pediatric_weight_age'))return {data:[{payload:ages}]};
+ if(url.pathname.includes('pediatric_clinical_audits'))return {data:[{payload:audit,version:'qa-audit',updated_at:'2026-10-14'}]};
+ assert.equal(url.searchParams.get('is_published'),'eq.true');assert.equal(url.searchParams.get('editorial_status'),'eq.published');
+ assert.equal(url.searchParams.get('order'),'id.asc');assert.ok(Number(url.searchParams.get('limit'))<=250);
+ const ids=url.searchParams.get('id');
+ let rows=ids?products.filter(r=>ids.includes(r.id)):products.slice(Number(url.searchParams.get('offset')),Number(url.searchParams.get('offset'))+250);
+ if(ids&&mutation==='unpublished')rows=rows.slice(1);
+ if(ids&&mutation==='strength')rows=rows.map((row,index)=>index?row:{...row,strength:'500 mg/5 ml'});
+ return {data:rows};
+}};
+(async()=>{
+ const handler=require('../lib/pediatric-common-reference-handler');
+ const [a,b]=await Promise.all([handler.loadReference(),handler.loadReference()]);
+ assert.equal(a,b);assert.equal(calls,6,'Three reference reads and three bounded registry pages, shared by concurrent requests');
+ assert.equal(a.marketCatalog.productCount,737);assert.equal(await handler.loadReference(),a);assert.equal(calls,6);
+ const server=require('../lib/pediatric-common-calculate-handler');
+ const variant=a.marketCatalog.drugs.find(d=>d.name==='Amoxicillin').forms.flatMap(f=>f.variants).find(v=>v.form.measure==='liquid'&&v.schemes.length);
+ const input={drugName:'Amoxicillin',variantId:variant.id};
+ assert.equal(await server.verifySelectedProducts(a,input),true);
+ mutation='unpublished';assert.equal(await server.verifySelectedProducts(a,input),false,'Removal from publication invalidates the exact selected variant');
+ mutation='strength';assert.equal(await server.verifySelectedProducts(a,input),false,'A changed product cannot use a cached concentration');
+ console.log('PASS: bounded AKKPM loading, one shared reference, cache, and current publication/strength verification');
+})().catch(error=>{console.error(error);process.exitCode=1;});

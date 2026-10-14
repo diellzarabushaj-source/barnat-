@@ -42,13 +42,13 @@ for (const section of reference.sections) {
 assert.match(client, /Tabela bazë/);
 assert.match(client, /Formula e dozimit/);
 assert.match(client, /Format e disponueshme/);
-assert.match(client, /Format praktike/);
-assert.match(client, /Format tjera të disponueshme/);
+assert.match(html, /Produktet në AKKPM/);
+assert.match(html, /Fortësia \/ përqendrimi/);
 
 /* Weight is the only default input. Exact age appears only when clinically needed. */
-assert.match(client, /Pesha e fëmijës/);
-assert.match(client, /MOSHA AUTO NGA PESHA/);
-assert.match(client, /Mosha e sugjeruar · e ndryshueshme/);
+assert.match(html, /Pesha e fëmijës/);
+assert.match(html, /Mosha nga pesha është vetëm sugjerim/);
+assert.match(html, /Mosha · e ndryshueshme/);
 assert.match(client, /function resolvedAgeInfo\(/);
 assert.match(client, /function safeAgeBand\(/);
 assert.doesNotMatch(client, /numberInput\('masterWeight'|numberInput\('masterAge'/);
@@ -96,12 +96,12 @@ const coVial = Core.vialConversions({
 assert.equal(coVial.convertible, false);
 assert.match(coVial.reason, /nuk e specifikon rrugën IV\/IM/);
 
-assert.match(client, /Ekuivalenti i flakonit tregon vetëm sasinë e barit para rikonstituimit/);
-assert.match(client, /Gjithmonë verifiko përqendrimin, rrugën dhe mënyrën e rikonstituimit/);
+assert.match(read('lib/pediatric-common-calculate-handler.js'), /Vëllimi pas rikonstituimit kërkon udhëzimin e produktit/);
+assert.match(client, /Kontrollo etiketën dhe udhëzimin e produktit/);
 
 /* Phone-first clinical use. */
 assert.match(html, /viewport-fit=cover/);
-assert.match(html, /enterkeyhint="search"/);
+assert.match(html, /enterkeyhint="done"/);
 assert.match(css, /env\(safe-area-inset-bottom\)/);
 assert.match(css, /\.dz-common-weight-quick button\{[\s\S]{0,200}?min-height:44px/);
 assert.match(css, /\.dz-common-weight-field \.dz-number input\{[\s\S]{0,200}?font-size:30px/);

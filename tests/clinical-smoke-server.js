@@ -182,7 +182,7 @@ const server = http.createServer((req, res) => {
     return send(res, 200, registryBody, 'application/javascript; charset=utf-8', { ETag:'"browser-registry"' });
   }
   if (url.pathname === '/api/dosage' && ['pediatric-common-reference','pediatric-common-calculate'].includes(url.searchParams.get('view'))) {
-    const reference={...require('../data/pediatric-common-drugs-reference.json'),weightAgeDefaults:require('../data/pediatric-weight-age-defaults.json'),clinicalAudit:require('../data/pediatric-clinical-audit-v1.json')};
+    const reference=require('../lib/pediatric-market-catalog').withMarket({...require('../data/pediatric-common-drugs-reference.json'),weightAgeDefaults:require('../data/pediatric-weight-age-defaults.json'),clinicalAudit:require('../data/pediatric-clinical-audit-v1.json')},require('./fixtures/pediatric-akkpm-products-20261014.json'));
     if(url.searchParams.get('view')==='pediatric-common-reference')return send(res,200,JSON.stringify(reference),'application/json; charset=utf-8');
     let body='';req.on('data',chunk=>{body+=chunk;});req.on('end',()=>{try{const result=require('../lib/pediatric-common-calculate-handler.js').calculate(reference,JSON.parse(body));send(res,result.error?422:200,JSON.stringify(result),'application/json; charset=utf-8');}catch{send(res,400,'{}','application/json');}});return;
   }

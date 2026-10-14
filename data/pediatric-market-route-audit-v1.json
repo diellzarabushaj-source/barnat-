@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "pediatric-market-routes-v1",
+  "auditedAt": "2026-10-14",
+  "drugs": {
+    "Paracetamol": [
+      {
+        "label": "Rektal · dhimbje / ethe · 125 mg",
+        "mode": "clinicalRules", "route": "rectal", "marketStrengthMg": 125,
+        "sourceUrl": "https://www.medicines.org.uk/emc/product/15385/smpc",
+        "safetyConfirmation": "Pa paracetamol tjetër dhe pa insuficiencë të rëndë hepatike / renale.",
+        "rules": [{"minMonths":12,"doseType":"weight","min":15,"max":15,"unit":"mg","period":"dose","frequency":"deri 4 herë/24 orë · interval ≥4 orë","maxDailyPerKg":60,"source":"SmPC · paracetamol rektal 125 mg","noteSq":"Vetëm supozitorë të plotë; mos i ndaj. Jo mbi 3 ditë pa rivlerësim. Kontrollo fletëudhëzimin e produktit."}]
+      },
+      {
+        "label": "IV · B. Braun 10 mg/mL · dhimbje / ethe",
+        "mode":"clinicalRules", "route":"injectable", "marketMgPerML":10, "marketProductPattern":"b.?braun",
+        "sourceUrl":"https://www.medicines.org.uk/emc/product/15148/smpc",
+        "safetyConfirmation":"Jo prematur; pa insuficiencë të rëndë hepatike / renale dhe pa paracetamol tjetër.",
+        "containerWeightBands":[{"mL":10,"maxKg":10},{"mL":50,"minKg":10,"minInclusive":false,"maxKg":33},{"mL":100,"minKg":33,"minInclusive":false,"maxKg":50}],
+        "rules":[
+          {"maxKg":10,"doseType":"weight","min":7.5,"max":7.5,"unit":"mg","period":"dose","frequency":"deri 4 herë/24 orë · interval ≥4 orë","maxDailyPerKg":30,"source":"SmPC · B. Braun IV","noteSq":"Infuzion 15 minuta. Te ≤10 kg përdor ampulën 10 mL, tërhiq vetëm dozën dhe hollo sipas SmPC; mL këtu është vëllimi para hollimit."},
+          {"minKg":10,"minKgInclusive":false,"maxKg":33,"doseType":"weight","min":15,"max":15,"unit":"mg","period":"dose","frequency":"deri 4 herë/24 orë · interval ≥4 orë","maxDailyPerKg":60,"maxPerDay":2000,"source":"SmPC · B. Braun IV","noteSq":"Infuzion 15 minuta; flakon 50 mL. Shfaqet vëllimi para hollimit."},
+          {"minKg":33,"minKgInclusive":false,"maxKg":50,"doseType":"weight","min":15,"max":15,"unit":"mg","period":"dose","frequency":"deri 4 herë/24 orë · interval ≥4 orë","maxDailyPerKg":60,"maxPerDay":3000,"source":"SmPC · B. Braun IV","noteSq":"Infuzion 15 minuta; flakon 100 mL. Shfaqet vëllimi para hollimit."}
+        ]
+      }
+    ],
+    "Ondansetron":[
+      {
+        "label":"IV · nauze / të vjella pas operacionit · një dozë",
+        "mode":"clinicalRules", "route":"injectable", "marketMgPerML":2,
+        "sourceUrl":"https://www.medicines.org.uk/emc/product/101465/smpc",
+        "safetyConfirmation":"Pa QT të zgjatur kongjenital, apomorfinë ose insuficiencë hepatike të rëndë; elektrolitet janë korrigjuar.",
+        "rules":[{"minMonths":1,"maxMonths":216,"maxInclusive":false,"doseType":"weight","min":0.1,"max":0.1,"unit":"mg","period":"dose","maxPerDose":4,"frequency":"një dozë IV · ngadalë ≥30 sekonda","source":"SmPC · ondansetron PONV pediatrik","noteSq":"Vetëm për nauze / të vjella pas operacionit. Kjo skemë nuk është për kimioterapi ose gastroenterit. Vlerëso QT dhe barnat shoqëruese."}]
+      }
+    ]
+  }
+}
