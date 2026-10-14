@@ -416,3 +416,41 @@ test('AKKPM concise indications follow actual age and verified oral product',asy
  await page.locator('#pediatricAge').fill('11');await page.locator('#pediatricAgeConfirmed').check();await expect(page.locator('.dz-market-measure')).toHaveCount(0);await expect(page.locator('#pediatricAnswer')).toContainText('Nuk ka skemë');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
+
+for(const width of [390,1440])test(`AKKPM polished result copy, retry, age suggestion and layout at ${width}px`,async({page})=>{
+ await page.setViewportSize({width,height:900});await api(page);
+ await page.addInitScript(()=>{window.__copiedDosing=[];Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.__copiedDosing.push(text);}}});});
+ let calls=0;
+ await page.route('**/api/dosage?view=pediatric-common-reference*',route=>route.fulfill({json:pediatricReference}));
+ await page.route('**/api/dosage?view=pediatric-common-calculate',async route=>{
+  calls++;if(calls===1)return route.fulfill({status:503,json:{error:'Temporary fixture failure'}});
+  const result=require('../lib/pediatric-common-calculate-handler').calculate(pediatricReference,route.request().postDataJSON());await route.fulfill({status:result.error?422:200,json:result});
+ });
+ await page.goto(`${baseURL}/dozologjia.html`);
+ const cet=marketVariant('Cetirizine',v=>v.form.key==='oral-liquid'&&v.concentration.value/v.concentration.perML===1&&v.schemes.length);
+ await page.locator('#pediatricDrug').selectOption('Cetirizine');await page.locator('#pediatricForm').selectOption(cet.form.key);await page.locator('#pediatricStrength').selectOption(cet.id);await page.locator('#pediatricScheme').selectOption({label:'Alergji · dozë standarde'});
+ await page.locator('#pediatricWeight').fill('abc');await expect(page.locator('#pediatricAnswer')).toContainText('0,4 dhe 150');
+ await page.locator('#pediatricWeight').fill('12');await page.locator('#pediatricAgeUnit').selectOption('year');await page.locator('#pediatricAge').fill('4');
+ await expect(page.locator('#pediatricAnswer')).toContainText('Konfirmo ose ndrysho');expect(calls).toBe(0);
+ await page.locator('#pediatricAgeConfirmed').check();await expect(page.getByRole('button',{name:'Provo përsëri',exact:true})).toBeVisible();await expect(page.locator('#pediatricAnswer')).toHaveAttribute('aria-busy','false');
+ await page.getByRole('button',{name:'Provo përsëri',exact:true}).click();await expect(page.locator('.dz-market-measure')).toHaveText('2,5 mL');
+ await expect(page.locator('.dz-result-context')).toContainText('Cetirizine');await expect(page.locator('.dz-result-context')).toContainText('1 mg/1 ml');
+ const patient=await page.locator('#pediatricPatient').boundingBox(),answer=await page.locator('#pediatricAnswer').boundingBox();
+ if(width>1100){expect(answer.x).toBeGreaterThan(patient.x+patient.width);expect(Math.abs(answer.y-patient.y)).toBeLessThan(2);}else expect(answer.y).toBeGreaterThan(patient.y+patient.height);
+ await page.getByRole('button',{name:'Kopjo rezultatin e llogaritur'}).click();await expect(page.locator('.dz-result-copy')).toHaveText('Kopjuar');
+ const copied=await page.evaluate(()=>window.__copiedDosing[0]);for(const text of ['Cetirizine','Shurup / suspension oral','1 mg/1 ml','2,5 mL','Pesha: 12 kg','Mosha: 4 vjeç'])expect(copied).toContain(text);expect(copied).not.toContain('Kopjo');expect(calls).toBe(2);
+ await page.locator('#pediatricWeight').fill('');await expect(page.locator('.dz-result-copy')).toHaveCount(0);await expect(page.locator('.dz-market-measure')).toHaveCount(0);await expect(page.locator('#pediatricAge')).toHaveValue('');
+ await page.locator('#pediatricWeight').fill('20');await page.locator('#pediatricAge').fill('4');await page.locator('#pediatricAgeUnit').selectOption('year');await expect(page.locator('#pediatricAgeSuggest')).toBeVisible();
+ await page.getByRole('button',{name:'Sugjero përsëri moshën nga pesha'}).click();await expect(page.locator('#pediatricAge')).toHaveValue('66');await expect(page.locator('#pediatricAgeUnit')).toHaveValue('month');await expect(page.locator('#pediatricAgeConfirmed')).not.toBeChecked();await expect(page.locator('#pediatricAgeSuggest')).toBeHidden();
+ await page.locator('#pediatricAgeConfirmed').check();await expect(page.locator('.dz-market-measure')).toHaveText('2,5 mL');expect(calls).toBe(3);
+ await page.locator('#pediatricForm').selectOption('tablet');await expect(page.locator('.dz-result-copy')).toHaveCount(0);await expect(page.locator('.dz-market-measure')).toHaveCount(0);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+
+test('AKKPM powder result gives prominent mass and retains reconstitution limit',async({page})=>{
+ await api(page);await page.route('**/api/dosage?view=pediatric-common-reference*',route=>route.fulfill({json:pediatricReference}));
+ await page.route('**/api/dosage?view=pediatric-common-calculate',async route=>{const result=require('../lib/pediatric-common-calculate-handler').calculate(pediatricReference,route.request().postDataJSON());await route.fulfill({status:result.error?422:200,json:result});});
+ await page.goto(`${baseURL}/dozologjia.html`);const vial=marketVariant('Amoxicillin',v=>v.form.route==='injectable'&&v.schemes.length);
+ await page.locator('#pediatricDrug').selectOption('Amoxicillin');await page.locator('#pediatricForm').selectOption(vial.form.key);await page.locator('#pediatricStrength').selectOption(vial.id);await page.locator('#pediatricWeight').fill('20');await page.locator('#pediatricAgeUnit').selectOption('year');await page.locator('#pediatricAge').fill('5');await page.locator('#pediatricAgeConfirmed').check();await page.locator('#pediatricSafetyConfirmed').check();
+ await expect(page.locator('.dz-market-measure')).toHaveText('100–1000 mg');await expect(page.locator('#pediatricAnswer')).toContainText('nuk hamendësohet');await expect(page.locator('.dz-common-result-dose')).toHaveCount(1);
+});

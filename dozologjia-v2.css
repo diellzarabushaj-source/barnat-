@@ -2144,3 +2144,26 @@ button,input,select{font:inherit}
  .dz-market-answer{padding:16px;margin-top:20px}.dz-market-confirm{font-size:12px}
 }
 @media(max-width:350px){.dz-market-patient{grid-template-columns:1fr}.dz-market-patient>small,.dz-market-confirm{grid-column:auto}}
+
+/* Keep the verified result legible and usable without losing its product context. */
+.dz-result-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:12px;margin-bottom:2px;border-bottom:1px solid #d5e1f1}
+.dz-result-context{display:grid;gap:4px;min-width:0}
+.dz-result-context strong{font-size:16px;font-weight:700;color:#18334e}
+.dz-result-context span,.dz-result-context small{font-size:12px;line-height:1.5;color:#536478}
+.dz-result-copy,.dz-result-retry,.dz-market-age-hint button{min-height:44px;border:1px solid #cbd7e4;border-radius:8px;background:#fff;color:#395c9a;font:inherit;font-size:12px;font-weight:650;padding:8px 12px;cursor:pointer}
+.dz-result-copy{flex:none}.dz-result-copy:disabled{cursor:default}.dz-result-retry{justify-self:start}
+.dz-market-age-hint{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:-8px}
+.dz-market-age-hint small{font-size:12px;line-height:1.5;color:#64758a}
+.dz-market-age-hint button{flex:none;padding:8px 10px;background:transparent}
+.dz-market-answer strong.dz-common-result-dose{font-size:clamp(28px,3vw,38px);line-height:1.2}
+@media(min-width:1100px){
+ .dz-market-calculation.has-patient{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;gap:24px;margin-top:24px;padding-top:24px;border-top:1px solid #e3eaf2}
+ .dz-market-calculation.has-patient .dz-market-patient{margin:0;padding:0;border:0;gap:14px}
+ .dz-market-calculation.has-patient .dz-market-answer{margin:0}
+}
+@media(min-width:520px) and (max-width:760px){.dz-market-pickers{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.dz-market-drug,.dz-market-scheme{grid-column:1/-1}}
+@media(max-width:760px){
+ .dz-market-pickers{gap:14px}.dz-market-workspace select{min-height:48px}
+ .dz-market-age input[type=text],.dz-market-age select,.dz-market-number input[type=text]{min-height:52px}
+ .dz-market-patient{margin-top:18px;padding-top:18px}.dz-market-details{margin-top:12px}
+}
