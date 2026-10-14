@@ -35,7 +35,6 @@
   const MORE_VERTICAL = '<svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg>';
   const STAR_ICON = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg>';
   const NOTE_ICON = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>';
-  const CALC_ICON = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2"/></svg>';
 
   const FORM_ICONS = {
     all:'<rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/>',
@@ -1521,7 +1520,7 @@
             <span class="registry-list-sub"><span data-col="substance" title="${escapeHtml(row.sourceActiveSubstance || row.activeSubstance)}">${escapeHtml(row.activeSubstance || '—')}</span><b data-col="strength">${escapeHtml(row.strength || '—')}</b><span data-col="form">${escapeHtml(row.form || '—')}</span></span>
           </div>
           <div class="registry-row-actions">
-            <details class="registry-more" data-row-menu-key="${escapeHtml(key)}"><summary class="registry-more-trigger" aria-label="Veprime për ${escapeHtml(row.tradeName)}">${MORE_VERTICAL}</summary><div class="registry-more-menu" role="menu"><button type="button" role="menuitem" data-dose-calculator-open data-registry-number="${escapeHtml(number)}">${CALC_ICON}<span>Kalkulo</span></button><button type="button" role="menuitem" data-row-favorite="${escapeHtml(key)}" class="${favorite ? 'is-favorite' : ''}">${STAR_ICON}<span data-favorite-label>${favorite ? 'Hiq nga favoritët' : 'Shëno si favorit'}</span></button><button type="button" role="menuitem" data-row-note="${escapeHtml(key)}">${NOTE_ICON}<span>Shkruaj shënim</span></button></div></details>
+            <details class="registry-more" data-row-menu-key="${escapeHtml(key)}"><summary class="registry-more-trigger" aria-label="Veprime për ${escapeHtml(row.tradeName)}">${MORE_VERTICAL}</summary><div class="registry-more-menu" role="menu"><button type="button" role="menuitem" data-row-favorite="${escapeHtml(key)}" class="${favorite ? 'is-favorite' : ''}">${STAR_ICON}<span data-favorite-label>${favorite ? 'Hiq nga favoritët' : 'Shëno si favorit'}</span></button><button type="button" role="menuitem" data-row-note="${escapeHtml(key)}">${NOTE_ICON}<span>Shkruaj shënim</span></button></div></details>
             <button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">${CHEVRON_RIGHT}</button>
           </div>
         </div>
@@ -1626,7 +1625,7 @@
         <td data-col="updateStatus">${escapeHtml(row.updateStatus || '—')}</td>
         <td data-col="status">${statusBadge(row.productStatus)}</td>
         <td data-col="price"><span class="price">${euros(row.retailPrice)}</span></td>
-        <td class="registry-actions-cell"><div class="registry-row-actions"><details class="registry-more" data-row-menu-key="${escapeHtml(key)}"><summary class="registry-more-trigger" aria-label="Veprime për ${escapeHtml(row.tradeName)}">${MORE_VERTICAL}</summary><div class="registry-more-menu" role="menu"><button type="button" role="menuitem" data-dose-calculator-open data-registry-number="${escapeHtml(number)}">${CALC_ICON}<span>Kalkulo</span></button><button type="button" role="menuitem" data-row-favorite="${escapeHtml(key)}" class="${favorite ? 'is-favorite' : ''}">${STAR_ICON}<span data-favorite-label>${favorite ? 'Hiq nga favoritët' : 'Shëno si favorit'}</span></button><button type="button" role="menuitem" data-row-note="${escapeHtml(key)}">${NOTE_ICON}<span>Shkruaj shënim</span></button></div></details><button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">${CHEVRON_RIGHT}</button></div></td>
+        <td class="registry-actions-cell"><div class="registry-row-actions"><details class="registry-more" data-row-menu-key="${escapeHtml(key)}"><summary class="registry-more-trigger" aria-label="Veprime për ${escapeHtml(row.tradeName)}">${MORE_VERTICAL}</summary><div class="registry-more-menu" role="menu"><button type="button" role="menuitem" data-row-favorite="${escapeHtml(key)}" class="${favorite ? 'is-favorite' : ''}">${STAR_ICON}<span data-favorite-label>${favorite ? 'Hiq nga favoritët' : 'Shëno si favorit'}</span></button><button type="button" role="menuitem" data-row-note="${escapeHtml(key)}">${NOTE_ICON}<span>Shkruaj shënim</span></button></div></details><button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">${CHEVRON_RIGHT}</button></div></td>
       </tr>`;
     }).join('');
     applyRowView();
@@ -2281,8 +2280,6 @@
     function rowContainerClick(event) {
       const doseToggle = event.target.closest('[data-dose-toggle]');
       if (doseToggle) { event.stopPropagation(); toggleDose(doseToggle); return; }
-      const calculatorAction = event.target.closest('[data-dose-calculator-open]');
-      if (calculatorAction) { closeRowMenus(); return; }
       const favorite = event.target.closest('[data-row-favorite]');
       if (favorite) { event.stopPropagation(); closeRowMenus(); void toggleFavoriteRow(findRow(favorite.dataset.rowFavorite), favorite); return; }
       const note = event.target.closest('[data-row-note]');

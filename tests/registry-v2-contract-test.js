@@ -16,10 +16,10 @@ const doseRuntime = fs.readFileSync(path.join(root, 'dose-runtime-browser.js'), 
 assert.match(html, /data-drx-app="registry-v2"/);
 assert.match(html, /\/registry-v2\.css\?(?:v|build)=[^"\s]+/);
 assert.match(html, /\/registry-v2\.js\?(?:v|build)=[^"\s]+/);
-assert.match(html, /\/registry-v2-dose-calculator\.css\?v=[^"\s]+/);
+assert.doesNotMatch(html, /registry-v2-dose-calculator/);
 assert.match(html, /\/dose-core\.js\?v=drx-dose-core-v1/);
 assert.match(html, /\/dose-runtime-browser\.js\?v=drx-dose-runtime-browser-v1/);
-assert.match(html, /\/registry-v2-dose-calculator\.js\?v=[^"\s]+/);
+
 assert.match(html, /\/drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/);
 assert.match(html, /\/sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v9-worker-ready-20261012(?=["'&])/);
 
@@ -27,7 +27,7 @@ const corePos=html.indexOf('/dose-core.js');
 const runtimePos=html.indexOf('/dose-runtime-browser.js');
 const registryPos=html.indexOf('/registry-v2.js');
 const calculatorPos=html.indexOf('/registry-v2-dose-calculator.js');
-assert.ok(corePos>=0 && runtimePos>corePos && registryPos>runtimePos && calculatorPos>registryPos);
+assert.ok(corePos>=0 && runtimePos>corePos && registryPos>runtimePos);
 assert.doesNotMatch(html, /registry-mobile-|registry-ux-phase|registry-unified-table|registry-table-tools|tailadmin-/);
 
 [
@@ -85,8 +85,8 @@ assert.match(js, /Grupi \/ Klasa/);
 assert.match(js, /Për çka përdoret/);
 assert.match(js, /Popullata/);
 assert.match(js, /Vetëm pediatrik/);
-assert.match(js, /data-dose-calculator-open/);
-assert.match(js, /data-registry-number/);
+assert.doesNotMatch(js, /data-dose-calculator-open/);
+assert.match(js, /doseCard\('Pediatrike'/);
 assert.match(js, /data-row-favorite/);
 assert.match(js, /data-row-note/);
 assert.match(js, /loadPersonalLibrary/);

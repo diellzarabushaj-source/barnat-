@@ -63,6 +63,7 @@ function isPediatricRequest(req) {
 }
 
 async function handler(req, res) {
+  if (requestView(req) === 'pediatric-common-calculate') return require('../lib/pediatric-common-calculate-handler.js')(req,res);
   if (requestView(req) === pediatricCommonReferenceHandler.VIEW) return pediatricCommonReferenceHandler(req, res);
   if (['master-catalog','master-calculate'].includes(requestView(req))) return require('../lib/dozologjia-master-handler.js')(req,res);
   if (isCalculatorRequest(req)) return doseCalculatorHandler(req, res);

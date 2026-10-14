@@ -246,7 +246,14 @@ for (const viewport of viewports) {
 
       if (file === 'icd.html') {
         await expect(page.locator('#icdSearch')).toBeVisible();
-        await expect(page.locator('#chapterList')).toBeVisible();
+        if(viewport.width>940) await expect(page.locator('#chapterList')).toBeVisible();
+        else {
+          await expect(page.locator('#chapterList')).toBeHidden();
+          await expect(page.locator('#icdFilterChapter')).toBeVisible();
+          await expect.poll(()=>page.locator('#icdFilterChapter option').count()).toBeGreaterThan(1);
+          await page.locator('#icdFilterChapter').selectOption({index:1});
+          await expect(page.locator('#nodeHero')).toBeVisible();
+        }
       }
     }
 

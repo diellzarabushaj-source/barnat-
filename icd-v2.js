@@ -70,6 +70,7 @@
     blocks: [],
     meta: null,
     chapter: '',
+    filterChapter:'', filterBlock:'', filterLevel:'',
     path: [],          // nyjet e hapura nën kapitull
     rows: [],
     query: '',
@@ -138,7 +139,7 @@
       'appShell','sidebar','sidebarBackdrop','menuButton','sidebarClose','logoutButton','avatarInitials','sourceStatus','syncText',
       'metricNodes','metricChapters','metricCategories','metricCoverage','metricCoverageNote',
       'icdPath','icdPathItems','icdPathReset','icdSearch','icdSearchBox','icdSearchClear','icdSuggestions','icdStatusText',
-      'chapterList','chapterCount','clinicalQuickHub','nodeHero','clinicalActionPanel','nodeList','nodeSectionTitle','nodeCount','nodeKicker','toast',
+      'icdFilterChapter','icdFilterBlock','icdFilterLevel','icdFilterReset','chapterList','chapterCount','clinicalQuickHub','nodeHero','clinicalActionPanel','nodeList','nodeSectionTitle','nodeCount','nodeKicker','toast',
     ].forEach(id => { el[id] = document.getElementById(id); });
   }
 
@@ -170,6 +171,7 @@
   function endpoint(view, values = {}) {
     const params = new URLSearchParams({ view, sv:'clinical-workspace-v23' });
     if (view === 'suggest' || view === 'seed' || view === 'hot' || view === 'guidance' || view === 'guidance-list') params.set('advanced', '1');
+    if (view==='suggest') Object.assign(values,{chapter:state.filterChapter,block:state.filterBlock,levels:state.filterLevel});
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
     return `${API}?${params}`;
   }
@@ -234,6 +236,7 @@
   }
 
   function renderChapters() {
+    renderFilterOptions();
     el.chapterCount.textContent = formatNumber(state.chapters.length);
     if (!state.chapters.length) {
       el.chapterList.innerHTML = '<div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div>';
@@ -248,6 +251,15 @@
         <span class="chapter-copy"><strong>${escapeHtml(title)}</strong><small>${escapeHtml(range || levelLabel('chapter'))}</small></span>
       </button>`;
     }).join('');
+  }
+
+  function renderFilterOptions() {
+    if(!el.icdFilterChapter)return;
+    el.icdFilterChapter.innerHTML='<option value="">Të gjithë kapitujt</option>'+state.chapters.map(item=>`<option value="${escapeHtml(item.code)}">${escapeHtml(item.code+' · '+splitRange(item).title)}</option>`).join('');
+    el.icdFilterChapter.value=state.filterChapter;
+    const blocks=state.blocks.filter(item=>!state.filterChapter || clean(item.chapter)===state.filterChapter);
+    el.icdFilterBlock.innerHTML='<option value="">Të gjithë blloqet</option>'+blocks.map(item=>`<option value="${escapeHtml(item.code)}">${escapeHtml(item.code+' · '+nodeTitle(item))}</option>`).join('');
+    el.icdFilterBlock.value=state.filterBlock;
   }
 
   function currentNode() {
@@ -711,15 +723,15 @@
   const SEARCH_NETWORK_DELAY_MS = 14;
 
   function cacheSuggestions(query, data) {
-    const key = searchNormalize(query);
+    const key = [searchNormalize(query),state.filterChapter,state.filterBlock,state.filterLevel].join('|');
     if (!key) return;
     if (suggestionCache.has(key)) suggestionCache.delete(key);
-    suggestionCache.set(key, { data, at:Date.now() });
+    suggestionCache.set(key, { data, query:searchNormalize(query),scope:[state.filterChapter,state.filterBlock,state.filterLevel].join('|'), at:Date.now() });
     while (suggestionCache.size > SUGGESTION_CACHE_LIMIT) suggestionCache.delete(suggestionCache.keys().next().value);
   }
 
   function cachedSuggestions(query, { allowExpired = false } = {}) {
-    const key = searchNormalize(query);
+    const key = [searchNormalize(query),state.filterChapter,state.filterBlock,state.filterLevel].join('|');
     if (!key || !suggestionCache.has(key)) return null;
     const entry = suggestionCache.get(key);
     if (!allowExpired && Date.now() - Number(entry?.at || 0) > SUGGESTION_CACHE_TTL_MS) {
@@ -1144,6 +1156,7 @@
   function immediatePreview(query) {
     const normalized = searchNormalize(query);
     if (!normalized) return { rows:[], meta:null };
+    if(state.filterChapter || state.filterBlock || state.filterLevel)return {rows:[],meta:null};
     const direct = cachedSuggestions(query);
     if (direct?.rows?.length) return { rows:direct.rows, meta:direct };
 
@@ -1161,7 +1174,7 @@
     let best = null;
     for (const [key, entry] of [...suggestionCache.entries()].reverse()) {
       const value = entry?.data;
-      if (!normalized.startsWith(key) || !value?.rows?.length) continue;
+      if (entry.scope!==[state.filterChapter,state.filterBlock,state.filterLevel].join('|') || !normalized.startsWith(entry.query || '') || !value?.rows?.length) continue;
       best = value.rows;
       break;
     }
@@ -1563,6 +1576,7 @@
   }
 
   function clearSearch({ preserveInput = false } = {}) {
+    ++state.requestId;
     searchAbortController?.abort();
     searchAbortController = null;
     state.searching = false;
@@ -1591,6 +1605,7 @@
   function selectChapter(code, options = {}) {
     clearSearch();
     state.chapter = clean(code);
+    if(options.filterScope){state.filterChapter=state.chapter;state.filterBlock='';}
     state.path = [];
     clearClinicalGuidance();
     writeHash(state.chapter);
@@ -1686,6 +1701,19 @@
 
   let searchTimer = 0;
   function bindEvents() {
+    const changeFilters=()=> {
+      clearTimeout(searchTimer); clearSearch({preserveInput:true});
+      state.filterChapter=el.icdFilterChapter.value;state.filterBlock=el.icdFilterBlock.value;state.filterLevel=el.icdFilterLevel.value;
+      const query=clean(el.icdSearch.value);
+      if(query.length>=2){void runSearch(query);return;}
+      if(state.filterBlock){const block=state.blocks.find(item=>clean(item.code)===state.filterBlock);if(block){state.chapter=clean(block.chapter);state.path=[block];render();void loadChildren(block.code);}return;}
+      selectChapter(state.filterChapter);
+    };
+    el.icdFilterChapter?.addEventListener('change',()=>{el.icdFilterBlock.value='';state.filterChapter=el.icdFilterChapter.value;state.filterBlock='';renderFilterOptions();changeFilters();});
+    el.icdFilterBlock?.addEventListener('change',changeFilters);
+    el.icdFilterLevel?.addEventListener('change',changeFilters);
+    el.icdFilterReset?.addEventListener('click',()=>{state.filterChapter='';state.filterBlock='';state.filterLevel='';el.icdFilterLevel.value='';renderFilterOptions();changeFilters();});
+
     el.clinicalQuickHub?.addEventListener('click', event => {
       const groupButton = event.target.closest('[data-clinical-group]');
       if (groupButton) {
@@ -1706,7 +1734,7 @@
 
     el.chapterList.addEventListener('click', event => {
       const button = event.target.closest('[data-chapter]');
-      if (button) selectChapter(button.dataset.chapter, { reveal:true });
+      if (button) selectChapter(button.dataset.chapter, { reveal:true,filterScope:true });
     });
 
     el.nodeList.addEventListener('click', event => {

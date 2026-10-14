@@ -51,6 +51,7 @@ const legacyAssets = [
   'offline-runtime.js',
 ];
 
+assert(!html.includes('registry-v2-dose-calculator') && !js.includes('data-dose-calculator-open'), 'Calculators belong only to Dozologjia.');
 assert(/data-drx-app="registry-v2"/.test(html), 'Registry v2 document marker is missing.');
 assert(/href="\/registry-v2\.css\?(?:v|build)=[^"]+"/.test(html), 'Registry v2 stylesheet is not published.');
 assert(/src="\/registry-v2\.js\?(?:v|build)=[^"]+"/.test(html), 'Registry v2 runtime is not published.');
@@ -58,8 +59,8 @@ assert(/src="\/registry-v2\.js\?(?:v|build)=[^"]+"/.test(html), 'Registry v2 run
 const stylesheetLinks = [...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"/g)].map(match => match[1]);
 const scriptSources = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map(match => match[1]);
 
-const registryStyles = ['/registry-v2.css','/registry-atc-filter.css','/registry-column-filter.css','/registry-v2-dose-calculator.css','/drx-dashboard-stripe.css'];
-const registryScripts = ['/drx-runtime-telemetry.js','/dose-core.js','/drx-modal-focus.js','/dose-runtime-browser.js','/sidebar-taxonomy-v3.js','/classification-data.js','/registry-atc-filter.js','/registry-substance-data.js','/registry-substance-normalization.js','/registry-column-model.js','/registry-column-filter.js','/registry-v2.js','/registry-v2-dose-calculator.js'];
+const registryStyles = ['/registry-v2.css','/registry-atc-filter.css','/registry-column-filter.css','/drx-dashboard-stripe.css'];
+const registryScripts = ['/drx-runtime-telemetry.js','/dose-core.js','/drx-modal-focus.js','/dose-runtime-browser.js','/sidebar-taxonomy-v3.js','/classification-data.js','/registry-atc-filter.js','/registry-substance-data.js','/registry-substance-normalization.js','/registry-column-model.js','/registry-column-filter.js','/registry-v2.js'];
 assert(stylesheetLinks.length === registryStyles.length, `Registry v2 stylesheet inventory differs; found ${stylesheetLinks.length}.`);
 assert(scriptSources.length === registryScripts.length, `Registry v2 script inventory differs; found ${scriptSources.length}.`);
 registryStyles.forEach((asset,index) => assert(stylesheetLinks[index].split('?')[0] === asset, `Registry stylesheet order differs at ${asset}.`));

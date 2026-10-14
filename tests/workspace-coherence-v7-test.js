@@ -78,10 +78,10 @@ assert.match(stripe, /--drx-type-page-title:32px/);
 assert.match(stripe, /--drx-type-subtitle:14px/);
 
 const canonicalWorkspaceAssets = [
-  '/registry-v2.css','/registry-v2-dose-calculator.css','/classification-v2.css','/icd-v2.css',
+  '/registry-v2.css','/classification-v2.css','/icd-v2.css',
   '/dozologjia-v2.css','/protokollet-v2.css','/urgjencat-v2.css','/recetat-v2.css',
   '/analizat-v2.css','/medical-hub-v2.css','/sistemi-v2.css','/drx-dashboard-stripe.css',
-  '/dose-core.js','/dose-runtime-browser.js','/registry-v2.js','/registry-v2-dose-calculator.js',
+  '/dose-core.js','/dose-runtime-browser.js','/registry-v2.js',
   '/classification-data.js','/classification-v2.js','/icd-v2.js','/phase9-personal-entities-client.js',
   '/dozologjia-v2.js','/protokollet-v2.js','/urgjencat-v2.js','/recetat-v2.js',
   '/analizat-v2.js','/medical-hub-v2.js','/sistemi-v2.js','/sidebar-taxonomy-v3.js',

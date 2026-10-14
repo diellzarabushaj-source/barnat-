@@ -196,5 +196,9 @@
   "tests/user-library-cas-database-contract-test.js",
   "tests/user-notes-native-storage-test.js",
   "tests/phase5-session-cutover-test.js",
-  "tests/native-recovery-guards-test.js"
+  "tests/native-recovery-guards-test.js",
+  "tests/pediatric-common-server-calculation-test.js",
+  "tests/pediatric-market-catalog-test.js",
+  "tests/pediatric-market-reference-runtime-test.js",
+  "tests/icd-scoped-filter-test.js"
 ]

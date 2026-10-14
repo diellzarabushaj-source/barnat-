@@ -2094,3 +2094,53 @@ button,input,select{font:inherit}
     padding-top:6px;
   }
 }
+/* AKKPM workspace: one product selection and one patient. */
+.dosage-page .dz-common-reference{max-width:1040px;margin:auto;background:transparent;border:0;box-shadow:none}
+.dosage-page .dz-common-head{align-items:start;padding:0 0 22px;gap:16px}
+.dosage-page .dz-common-head h2{font-size:clamp(24px,2.2vw,32px);line-height:1.2;letter-spacing:-.7px;color:#18334e}
+.dosage-page .dz-common-head p{max-width:620px;font-size:14px;line-height:1.6;color:#536478}
+.dosage-page .dz-common-head .dz-status{font-size:12px;white-space:normal;color:#536478}
+.dz-market-workspace{padding:28px;border:1px solid #d8e2ed;background:#fff;border-radius:16px;box-shadow:0 8px 32px #18334e05}
+.dz-market-workspace [hidden]{display:none!important}
+.dz-market-pickers,.dz-market-patient{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.dz-market-pickers label,.dz-market-patient>label:not(.dz-market-confirm){display:grid;gap:8px;color:#536478;font-size:12px;font-weight:650;min-width:0}
+.dz-market-drug,.dz-market-scheme{grid-column:1/-1}
+.dz-market-workspace select,.dz-market-workspace input[type=text]{width:100%;min-width:0;min-height:52px;padding:12px 14px;border:1px solid #cbd7e4;background:#fff;border-radius:10px;font:inherit;font-size:16px;color:#18334e}
+.dz-market-workspace select{padding-right:30px;text-overflow:ellipsis}
+.dz-market-workspace select:disabled{background:#f6f8fb;color:#748296}
+.dz-market-workspace :is(select,input,button,summary):focus-visible{outline:2px solid #4964d8;outline-offset:3px}
+.dz-market-patient{margin-top:24px;padding-top:24px;border-top:1px solid #e3eaf2}
+.dz-market-number{display:flex;align-items:center;border:1px solid #cbd7e4;border-radius:10px;min-width:0}
+.dz-market-number input[type=text]{font-size:28px;font-weight:650;border:0;background:transparent;min-height:60px}
+.dz-market-number>span{font-size:14px;padding-right:16px;color:#748296}
+.dz-market-age{display:grid;grid-template-columns:minmax(0,1fr) 90px;gap:8px}
+.dz-market-age input[type=text],.dz-market-age select{min-height:62px}
+.dz-market-workspace #pediatricAgeUnit{padding:10px 22px 10px 8px;font-size:14px}
+.dz-market-patient>small{grid-column:1/-1;font-size:12px;line-height:1.5;color:#64758a;margin-top:-8px}
+.dz-market-confirm{grid-column:1/-1;display:flex;align-items:center;gap:10px;min-height:44px;padding:10px 12px;border-radius:10px;background:#eef4ff;color:#274d79;font-size:13px;line-height:1.5;cursor:pointer}
+.dz-market-confirm input{width:20px;height:20px;flex:0 0 20px;accent-color:#4964d8}
+.dz-market-answer{margin:24px 0 0;padding:18px 20px;background:#f6f9fc;border:1px solid #e0e8f0;border-radius:12px;min-height:68px;display:grid;gap:8px;color:#18334e;overflow-wrap:anywhere}
+.dz-market-answer.has-result{background:#eff5ff;border-color:#cfddf3}
+.dz-market-kicker{font-size:11px;letter-spacing:.8px;color:#395c9a}
+.dz-market-measure{font-size:clamp(32px,3vw,42px);font-weight:750;letter-spacing:-.9px;line-height:1.2}
+.dz-market-answer .dz-common-result-dose{font-size:17px;font-weight:650;margin:0;color:#274d79}
+.dz-market-message,.dz-market-frequency,.dz-market-note{margin:0;font-size:13px;line-height:1.6}
+.dz-market-frequency{font-weight:650;font-size:15px}
+.dz-market-note{color:#536478}
+.dz-market-details{margin-top:16px;border-top:1px solid #e3eaf2;padding-top:4px}
+.dz-market-details>summary{min-height:44px;display:flex;align-items:center;gap:8px;font-size:13px;color:#395c9a;cursor:pointer}
+.dz-market-details>summary::after{content:'+';margin-left:auto;font-size:18px}.dz-market-details[open]>summary::after{content:'−'}
+.dz-market-details p,.dz-market-details h4{font-size:13px;line-height:1.6}
+.dz-market-product{display:grid;gap:5px;padding:12px 0;border-top:1px solid #e3eaf2;overflow-wrap:anywhere;font-size:13px;color:#536478}
+.dz-market-product strong{color:#18334e}.dz-market-product small{font-size:12px}
+.dz-market-reset{margin-top:20px;min-height:44px;border:0;background:transparent;padding:8px 0;color:#395c9a;font:inherit;font-size:13px;cursor:pointer}
+.dz-market-source{font-size:12px;color:#64758a;line-height:1.6;margin-top:14px}
+.dosage-page .dz-market-details .dz-evidence{background:transparent;border:0;box-shadow:none;padding:12px 0}
+@media(max-width:760px){
+ .dosage-page .dz-common-head{display:block;padding-bottom:16px}.dosage-page .dz-common-head .dz-status{display:block;margin-top:12px;max-width:none}
+ .dz-market-workspace{padding:18px 16px;border-radius:13px}.dz-market-pickers{gap:16px;grid-template-columns:1fr}.dz-market-drug,.dz-market-scheme{grid-column:auto}
+ .dz-market-patient{gap:12px;margin-top:20px;padding-top:20px}.dz-market-age{grid-template-columns:minmax(0,1fr) 68px;gap:5px}.dz-market-age select{padding:10px 4px}
+ .dz-market-age input[type=text]{padding:10px}.dz-market-number input[type=text]{padding:10px;font-size:26px}.dz-market-number>span{padding-right:10px}
+ .dz-market-answer{padding:16px;margin-top:20px}.dz-market-confirm{font-size:12px}
+}
+@media(max-width:350px){.dz-market-patient{grid-template-columns:1fr}.dz-market-patient>small,.dz-market-confirm{grid-column:auto}}

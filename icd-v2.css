@@ -1810,3 +1810,55 @@ img,svg,video,canvas{max-width:100%}
 .clinical-copy-button:focus-visible,.search-box-primary input:focus-visible{
   outline:2px solid #7568df;outline-offset:2px
 }
+/* Compact clinical search workspace. */
+.icd-filter-bar{display:grid;grid-template-columns:1.3fr 1.3fr 1fr auto;gap:12px;align-items:end}
+.icd-filter-bar label{display:grid;gap:6px;color:#536478;font-size:12px;font-weight:650;min-width:0}
+.icd-filter-bar select,.icd-filter-bar button{height:44px;max-width:100%;min-width:0;border:1px solid #cbd7e4;border-radius:9px;background:#fff;color:#18334e;padding:0 12px;font:inherit}
+.icd-quick-disclosure>summary,.icd-clinical-disclosure>summary{min-height:44px;padding:12px 0;color:#395c9a;font-size:13px;font-weight:600;cursor:pointer}
+.icd-quick-disclosure .icd-quick-diagnoses{margin-top:8px}
+.icd-clinical-disclosure{margin-bottom:12px}
+.page-heading{margin-bottom:20px}
+.page-heading h1{font-size:32px;color:#18334e;letter-spacing:-.7px}
+.page-subtitle{max-width:680px;font-size:14px;line-height:1.6;color:#536478}
+.icd-search-stage{display:block;padding:22px;border:1px solid #d8e2ed;background:#fff;border-radius:14px;box-shadow:0 4px 16px #18334e06}
+.icd-search-stage-copy{margin-bottom:16px}
+.icd-search-stage-copy h2{font-size:20px;letter-spacing:-.3px;color:#18334e}
+.icd-search-stage-copy p{font-size:13px;color:#536478;line-height:1.6}
+.icd-search-command{margin-bottom:14px}
+.search-box-primary{min-height:54px;border-radius:10px;background:#f8fafc;border-color:#cbd7e4;box-shadow:none}
+.search-box-primary input{font-size:16px}
+.icd-search-foot{margin-top:4px}
+.metrics-row{display:flex;gap:20px;padding:12px 4px;margin:0 0 14px;flex-wrap:wrap}
+.metric-card{display:flex;align-items:center;gap:8px;border:0;background:transparent;padding:0;box-shadow:none;min-height:0}
+.metric-card strong{font-size:16px;color:#18334e}
+.metric-card span{font-size:12px;color:#536478}
+.metric-card small{display:none}
+.metric-card:nth-child(n+3){display:none}
+.icd-workspace{grid-template-columns:280px minmax(0,1fr)}
+.chapter-panel{background:#f8fafc}
+.chapter-row{box-shadow:none;border-radius:9px}
+.chapter-row.is-active{background:#eef3ff;border-color:#cbd7f4;box-shadow:inset 3px 0 0 #4964d8}
+.node-hero{box-shadow:none;background:#f6f9fc;border:1px solid #d8e2ed;border-radius:12px}
+.node-panel{min-width:0}
+.icd-filter-bar select:focus-visible,.icd-filter-bar button:focus-visible,.icd-quick-disclosure>summary:focus-visible,.icd-clinical-disclosure>summary:focus-visible{outline:2px solid #4964d8;outline-offset:2px}
+@media(max-width:940px){
+  .icd-workspace{grid-template-columns:minmax(0,1fr)}
+  .chapter-panel{display:none}
+  .icd-filter-bar{grid-template-columns:1fr 1fr}
+  .icd-filter-bar select{font-size:16px}
+  .icd-search-stage{padding:16px}
+  .icd-search-stage-copy h2{font-size:19px}
+  .icd-search-stage-copy .eyebrow{display:none}
+  .icd-search-stage-copy{margin-bottom:12px}
+  .page-heading .page-subtitle{display:none}
+  .page-heading h1{font-size:26px}
+  .page-heading .eyebrow{font-size:10px}
+  .node-panel{padding:16px}
+  .node-hero h2{font-size:21px;line-height:1.4}
+  .icd-suggestions{max-height:55dvh;overscroll-behavior:contain}
+}
+
+html.drx-unified-sidebar .icd-suggestions{position:relative;inset:auto;width:100%;margin-top:14px;max-height:min(480px,55dvh);box-shadow:none;border-color:#cbd7e4}
+html.drx-unified-sidebar .metrics-row{background:transparent;border:0;box-shadow:none}
+html.drx-unified-sidebar .metric-card{border:0;box-shadow:none;background:transparent}
+html.drx-unified-sidebar .metric-card strong{margin:0;font-size:16px}

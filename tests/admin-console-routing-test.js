@@ -77,7 +77,7 @@ const rewriteFor = source => vercel.rewrites.find(rule => rule.source === source
   assert.match(api, /adminConsole:session\.authRole === 'admin'[\s\S]{0,200}AdminAccess\.isAdminEmail\(session\.email\)/,
     'the session response must say whether this account may open the console');
 
-  for (const file of ['admin-entry-guard.js', 'admin-dashboard.js']) {
+  for (const file of ['admin-entry-guard.js', 'admin-dashboard.js', 'admin-entry.js', 'sistemi-v2.js']) {
     const source = read(file);
     assert.match(source, /adminConsole\s*!==\s*true/,
       `${file} must read the server's verdict rather than deciding for itself`);

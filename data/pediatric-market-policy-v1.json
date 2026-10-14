@@ -1,0 +1,189 @@
+{
+  "schemaVersion": "pediatric-market-policy-v1",
+  "source": "Published Kosovo registry drugs; exact ATC scopes, route and component checks",
+  "drugScopes": {
+    "Amoxicillin": [
+      "J01CA04"
+    ],
+    "Amoxicillin + Clavulanic": [
+      "J01CR02"
+    ],
+    "Ampicillin": [
+      "J01CA01"
+    ],
+    "Cloxacillin": [
+      "J01CF02"
+    ],
+    "Penicillin G": [
+      "J01CE01"
+    ],
+    "Piperacillin + Tazobactam": [
+      "J01CR05"
+    ],
+    "Meropenem": [
+      "J01DH02"
+    ],
+    "Cotrimoxazole (TMP + SMZ)": [
+      "J01EE01"
+    ],
+    "Azithromycin": [
+      "J01FA10"
+    ],
+    "Clarithromycin": [
+      "J01FA09"
+    ],
+    "Levofloxacin": [
+      "J01MA12"
+    ],
+    "Amikacin": [
+      "J01GB06"
+    ],
+    "Gentamicin": [
+      "J01GB03"
+    ],
+    "Cefixime": [
+      "J01DD08"
+    ],
+    "Cefpodoxime": [
+      "J01DD13"
+    ],
+    "Cefoperazone": [
+      "J01DD12",
+      "J01DD62"
+    ],
+    "Cefotaxime": [
+      "J01DD01"
+    ],
+    "Ceftazidime": [
+      "J01DD02"
+    ],
+    "Ceftriaxone": [
+      "J01DD04"
+    ],
+    "Cefuroxime": [
+      "J01DC02"
+    ],
+    "Cephalexin": [
+      "J01DB01"
+    ],
+    "Colistin": [
+      "J01XB01"
+    ],
+    "Doxycycline": [
+      "J01AA02"
+    ],
+    "Linezolid": [
+      "J01XX08"
+    ],
+    "Vancomycin": [
+      "J01XA01"
+    ],
+    "Albendazole": [
+      "P02CA03"
+    ],
+    "DEC": [
+      "P02CB02"
+    ],
+    "Ivermectin": [
+      "P02CF01"
+    ],
+    "Diclofenac": [
+      "M01AB05"
+    ],
+    "Ibuprofen": [
+      "M01AE01"
+    ],
+    "Mefenamic acid": [
+      "M01AG01"
+    ],
+    "Paracetamol": [
+      "N02BE01"
+    ],
+    "Domperidone": [
+      "A03FA03"
+    ],
+    "Ondansetron": [
+      "A04AA01"
+    ],
+    "Cetirizine": [
+      "R06AE07"
+    ],
+    "CPM": [
+      "R06AB04"
+    ],
+    "Fexofenadine": [
+      "R06AX26"
+    ],
+    "Levocetirizine": [
+      "R06AE09"
+    ],
+    "Hydroxyzine": [
+      "N05BB01"
+    ],
+    "Acyclovir": [
+      "J05AB01"
+    ],
+    "Oseltamivir": [
+      "J05AH02"
+    ],
+    "Salbutamol": [
+      "R03AC02",
+      "R03CC02"
+    ],
+    "Levo salbutamol": [],
+    "Montelukast": [
+      "R03DC03"
+    ],
+    "Prednisolone": [
+      "H02AB06"
+    ],
+    "Pantoprazole": [
+      "A02BC02"
+    ],
+    "Lansoprazole": [
+      "A02BC03"
+    ],
+    "Ranitidine": [
+      "A02BA02"
+    ],
+    "Iron": [
+      "B03AA01",
+      "B03AA02",
+      "B03AA03",
+      "B03AA04",
+      "B03AA05",
+      "B03AA06",
+      "B03AA07",
+      "B03AA08",
+      "B03AA09",
+      "B03AA10",
+      "B03AA11",
+      "B03AB01",
+      "B03AB02",
+      "B03AB03",
+      "B03AB04",
+      "B03AB05",
+      "B03AB06",
+      "B03AB07",
+      "B03AB08",
+      "B03AB09",
+      "B03AB10"
+    ],
+    "Calcium": [
+      "A12AA01",
+      "A12AA02",
+      "A12AA03",
+      "A12AA04",
+      "A12AA05",
+      "A12AA06",
+      "A12AA07",
+      "A12AA08",
+      "A12AA09",
+      "A12AA10",
+      "A12AA11",
+      "A12AA12",
+      "A12AA13",
+      "A12AA20"
+    ]
+  }
+}

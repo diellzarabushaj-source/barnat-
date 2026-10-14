@@ -37,8 +37,8 @@ assert.match(transport, /PRIVATE_SERVER_RELATIONS/);
 assert.match(client, /STATIC_AGE_DEFAULTS_URL = '\/data\/pediatric-weight-age-defaults\.json'/);
 assert.match(client, /function resolvedAgeInfo\(/);
 assert.match(client, /function safeAgeBand\(/);
-assert.match(client, /Pesha → mosha AUTO → doza → forma praktike/);
-assert.match(client, /MOSHA AUTO NGA PESHA/);
+assert.match(client, /weightAgeCore\?\.infer\(byId\('pediatricWeight'\)\.value,weightAgeDefaults\)/);
+assert.match(html, /Mosha nga pesha është vetëm sugjerim/);
 assert.match(html, /pediatric-weight-age-core\.js\?v=1/);
 
 console.log('PASS: pediatric weight-age defaults are exact in JSON/database and wired into the weight-first calculator');

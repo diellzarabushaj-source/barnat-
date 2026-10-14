@@ -8,11 +8,11 @@
   <title>DRx | ICD-10</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/icd-v2.css?v=clinical-workspace-v23-audit-20261009">
+  <link rel="stylesheet" href="/icd-v2.css?v=workspace-20261014">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/icd-v2.js?v=clinical-workspace-v23" defer></script>
+<script src="/icd-v2.js?v=workspace-20261014" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -107,8 +107,8 @@
         <section class="icd-search-stage" aria-labelledby="icdSearchTitle">
           <div class="icd-search-stage-copy">
             <p class="eyebrow">Kërkimi universal ICD‑10</p>
-            <h2 id="icdSearchTitle">Gjej kodin ose diagnozën menjëherë</h2>
-            <p>Shkruaj si të vjen: <strong>I10</strong>, <strong>hipertension</strong>, <strong>hypertension</strong>, <strong>hypertensio</strong> — search-i toleron edhe typo.</p>
+            <h2 id="icdSearchTitle">Kërko diagnozën ose kodin</h2>
+            <p>Kërkim në shqip, anglisht dhe latinisht, edhe me gabime shkrimi.</p>
           </div>
           <div class="icd-search-command">
             <div class="search-box search-box-primary" id="icdSearchBox" role="combobox" aria-haspopup="listbox" aria-owns="icdSuggestions" aria-expanded="false">
@@ -121,10 +121,16 @@
               <button class="icd-search-clear" id="icdSearchClear" type="button" aria-label="Pastro kërkimin" title="Pastro" hidden>×</button>
               <kbd>Ctrl K</kbd>
             </div>
-            <div class="icd-suggestions" id="icdSuggestions" role="listbox" aria-label="Sugjerimet ICD-10" hidden></div>
           </div>
+          <div class="icd-filter-bar" aria-label="Filtrat ICD-10">
+            <label>Kapitulli<select id="icdFilterChapter"><option value="">Të gjithë kapitujt</option></select></label>
+            <label>Blloku<select id="icdFilterBlock"><option value="">Të gjithë blloqet</option></select></label>
+            <label>Niveli në kërkim<select id="icdFilterLevel"><option value="">Të gjitha nivelet</option><option value="category">Kategori · kod 3 shenja</option><option value="subcategory">Nënkategori · kod specifik</option><option value="block">Blloqe</option><option value="chapter">Kapituj</option></select></label>
+            <button type="button" id="icdFilterReset">Pastro filtrat</button>
+          </div>
+            <div class="icd-suggestions" id="icdSuggestions" role="listbox" aria-label="Sugjerimet ICD-10" hidden></div>
           <div class="icd-search-foot">
-            <div class="icd-quick-diagnoses" aria-label="Shkurtore klinike QKMF">
+            <details class="icd-quick-disclosure"><summary>Shkurtore klinike · mjekësi familjare dhe urgjenca</summary><div class="icd-quick-diagnoses" aria-label="Shkurtore klinike QKMF">
               <section class="icd-quick-group" aria-labelledby="familyQuickTitle">
                 <div class="icd-quick-label" id="familyQuickTitle"><span class="icd-quick-dot"></span><strong>Mjekësi familjare</strong><small>100 të shpeshta</small></div>
                 <div class="icd-quick-scroll" aria-label="100 diagnoza dhe simptoma të shpeshta në mjekësi familjare">
@@ -261,12 +267,13 @@
                 </div>
               </section>
             </div>
+            </details>
             <p class="icd-status" id="icdStatusText" role="status" aria-live="polite">Duke ngarkuar ICD-10…</p>
           </div>
         </section>
 
         <div class="metrics-row" aria-label="Përmbledhje ICD-10">
-          <article class="metric-card"><span>Nyje gjithsej</span><strong id="metricNodes">—</strong><small>Hierarkia e plotë</small></article>
+          <article class="metric-card"><span>Nyje të ngarkuara</span><strong id="metricNodes">—</strong><small>Kapituj dhe blloqe në këtë pamje</small></article>
           <article class="metric-card"><span>Kapituj</span><strong id="metricChapters">—</strong><small>Niveli kryesor</small></article>
           <article class="metric-card"><span>Kategori</span><strong id="metricCategories">—</strong><small>Kode me tre karaktere</small></article>
           <article class="metric-card"><span>Në shqip</span><strong id="metricCoverage">—</strong><small id="metricCoverageNote">Mbulimi i përkthimit</small></article>
@@ -289,7 +296,7 @@
             </aside>
 
             <section class="node-panel" aria-labelledby="nodeSectionTitle">
-              <section class="clinical-quick-hub" id="clinicalQuickHub" aria-label="Diagnozat klinike të shpeshta"></section>
+              <details class="icd-clinical-disclosure"><summary>Udhëzime për diagnozat e shpeshta</summary><section class="clinical-quick-hub" id="clinicalQuickHub" aria-label="Diagnozat klinike të shpeshta"></section></details>
               <div class="node-hero" id="nodeHero" hidden></div>
               <section class="clinical-action-panel" id="clinicalActionPanel" aria-live="polite" hidden></section>
               <div class="node-section-head">
