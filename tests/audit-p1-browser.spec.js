@@ -318,7 +318,7 @@ const pediatricReference=require('../lib/pediatric-market-catalog').withMarket({
 const marketVariant=(name,predicate)=>pediatricReference.marketCatalog.drugs.find(d=>d.name===name).forms.flatMap(f=>f.variants).find(predicate);
 for(const width of [320,390,1440])test(`Pediatric AKKPM drug-form-strength-weight flow at ${width}px`,async({page})=>{
   await page.setViewportSize({width,height:900});await api(page);
-  await page.route('**/api/dosage?view=pediatric-common-reference',route=>route.fulfill({json:pediatricReference}));
+  await page.route('**/api/dosage?view=pediatric-common-reference*',route=>route.fulfill({json:pediatricReference}));
   await page.route('**/api/dosage?view=pediatric-common-calculate',async route=>{
     const result=require('../lib/pediatric-common-calculate-handler.js').calculate(pediatricReference,route.request().postDataJSON());
     await route.fulfill({status:result.error?422:200,json:result});
@@ -352,6 +352,12 @@ for(const width of [320,390,1440])test(`Pediatric AKKPM drug-form-strength-weigh
   await expect(page.locator('.dz-common-result-dose')).toHaveCount(0);
   await page.locator('#pediatricAgeConfirmed').check();
   await expect(page.locator('.dz-common-result-dose')).toHaveText('100 mg');
+  await page.locator('#pediatricWeight').fill('');
+  await expect(page.locator('#pediatricAge')).toHaveValue('');
+  await expect(page.locator('.dz-common-result-dose')).toHaveCount(0);
+  await page.locator('#pediatricWeight').fill('12');
+  await expect(page.locator('#pediatricAge')).toHaveValue('24');
+  await expect(page.locator('#pediatricAgeConfirmed')).not.toBeChecked();
   await page.locator('#pediatricReset').click();
   await expect(page.locator('#pediatricWeight')).toHaveValue('');
   await expect(page.locator('.dz-common-result-dose')).toHaveCount(0);
@@ -361,7 +367,7 @@ for(const width of [320,390,1440])test(`Pediatric AKKPM drug-form-strength-weigh
 
 test('AKKPM ampoule workflow requires actual age and IV safety, and clears stale results',async({page})=>{
   await page.setViewportSize({width:390,height:900});await api(page);
-  await page.route('**/api/dosage?view=pediatric-common-reference',route=>route.fulfill({json:pediatricReference}));
+  await page.route('**/api/dosage?view=pediatric-common-reference*',route=>route.fulfill({json:pediatricReference}));
   await page.route('**/api/dosage?view=pediatric-common-calculate',async route=>{const result=require('../lib/pediatric-common-calculate-handler').calculate(pediatricReference,route.request().postDataJSON());await route.fulfill({status:result.error?422:200,json:result});});
   await page.goto(`${baseURL}/dozologjia.html`);
   await page.locator('#pediatricDrug').selectOption('Ondansetron');
