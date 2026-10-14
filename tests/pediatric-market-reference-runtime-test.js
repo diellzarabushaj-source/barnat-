@@ -26,6 +26,10 @@ require.cache[transportPath].exports={neonRequest:async path=>{
  const [a,b]=await Promise.all([handler.loadReference(),handler.loadReference()]);
  assert.equal(a,b);assert.equal(calls,6,'Three reference reads and three bounded registry pages, shared by concurrent requests');
  assert.equal(a.marketCatalog.productCount,737);assert.equal(await handler.loadReference(),a);assert.equal(calls,6);
+ assert.equal(handler.clientReference(a,'market-v1'),a);
+ const legacy=handler.clientReference(a,undefined);
+ assert.equal(legacy.marketCatalog,undefined);assert.ok(Object.values(legacy.clinicalAudit.drugs).every(d=>d.calculator.disabled&&d.calculator.options.length===0));
+ assert.ok(Object.values(a.clinicalAudit.drugs).some(d=>!d.calculator.disabled),'Legacy protection cannot poison the current cached reference');
  const server=require('../lib/pediatric-common-calculate-handler');
  const variant=a.marketCatalog.drugs.find(d=>d.name==='Amoxicillin').forms.flatMap(f=>f.variants).find(v=>v.form.measure==='liquid'&&v.schemes.length);
  const input={drugName:'Amoxicillin',variantId:variant.id};

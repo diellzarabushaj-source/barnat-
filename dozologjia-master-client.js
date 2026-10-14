@@ -7,7 +7,7 @@
   const CALCULATE_URL = '/api/dosage?view=pediatric-common-calculate';
   let referenceRevision = '';
   let referenceActive = false;
-  const DATA_URL = '/api/dosage?view=pediatric-common-reference';
+  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
   const CLINICAL_AUDIT_URL = '/data/pediatric-clinical-audit-v1.json';
@@ -600,9 +600,9 @@
       byId('pediatricCommonCount').dataset.source=source;
       picker.addEventListener('change',drugChanged);byId('pediatricForm').addEventListener('change',formChanged);
       byId('pediatricStrength').addEventListener('change',strengthChanged);byId('pediatricScheme').addEventListener('change',schemeChanged);
-      byId('pediatricWeight').addEventListener('input',()=>{byId('pediatricAgeConfirmed').checked=false;suggestAge();schedule();});
-      byId('pediatricAge').addEventListener('input',()=>{ageEdited=true;byId('pediatricAgeConfirmed').checked=false;schedule();});
-      byId('pediatricAgeUnit').addEventListener('change',()=>{ageEdited=true;byId('pediatricAgeConfirmed').checked=false;schedule();});
+      byId('pediatricWeight').addEventListener('input',()=>{byId('pediatricAgeConfirmed').checked=false;if(!byId('pediatricWeight').value.trim()){ageEdited=false;byId('pediatricAge').value='';byId('pediatricAgeUnit').value='month';byId('pediatricSafetyConfirmed').checked=false;}suggestAge();schedule();});
+      byId('pediatricAge').addEventListener('input',()=>{ageEdited=true;byId('pediatricAgeNote').textContent='Mosha e shënuar manualisht · konfirmo moshën reale.';byId('pediatricAgeConfirmed').checked=false;schedule();});
+      byId('pediatricAgeUnit').addEventListener('change',()=>{ageEdited=true;byId('pediatricAgeNote').textContent='Mosha e shënuar manualisht · konfirmo moshën reale.';byId('pediatricAgeConfirmed').checked=false;schedule();});
       ['pediatricAgeConfirmed','pediatricSafetyConfirmed'].forEach(id=>byId(id).addEventListener('change',schedule));
       byId('pediatricReset').addEventListener('click',()=>{
         ageEdited=false;byId('pediatricWeight').value='';byId('pediatricAge').value='';byId('pediatricAgeConfirmed').checked=false;byId('pediatricSafetyConfirmed').checked=false;clearResult();suggestAge();byId('pediatricWeight').focus();
