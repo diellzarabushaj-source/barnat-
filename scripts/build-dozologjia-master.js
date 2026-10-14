@@ -3,7 +3,8 @@ const fs=require('node:fs');const path=require('node:path');const root=path.reso
 const bundle=path.join(root,'dozologjia-v2.js');const shell=fs.readFileSync(bundle,'utf8');const end=shell.indexOf('})();')+5;
 if(end<5)throw Error('Missing shared shell');
 const client=fs.readFileSync(path.join(root,'dozologjia-master-client.js'),'utf8');
-fs.writeFileSync(bundle,shell.slice(0,end)+'\n\n'+client);
+const searchSelect=fs.readFileSync(path.join(root,'pediatric-search-select.js'),'utf8');
+fs.writeFileSync(bundle,shell.slice(0,end)+'\n\n'+searchSelect+'\n\n'+client);
 // The server and browser reference the same audited arithmetic source.
 const start=client.indexOf('  const numeric =');const stop=client.indexOf('  const liquidCore =');
 if(start<0||stop<start)throw Error('Missing common calculation engine');

@@ -7,7 +7,7 @@
   const CALCULATE_URL = '/api/dosage?view=pediatric-common-calculate';
   let referenceRevision = '';
   let referenceActive = false;
-  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=57-market-20261015';
+  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=58-market-20261015';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
   const CLINICAL_AUDIT_URL = '/data/pediatric-clinical-audit-v1.json';
@@ -642,6 +642,8 @@
       byId('pediatricCommonCount').textContent=referenceActive?`${marketCatalog.productCount} produkte · AKKPM`:'Referencë pa lidhje aktive';
       byId('pediatricCommonCount').dataset.source=source;
       picker.addEventListener('change',drugChanged);byId('pediatricForm').addEventListener('change',formChanged);
+      document.addEventListener('pediatric:choice-editing',()=>clearResult('Zgjidh një rezultat nga lista.'));
+      document.addEventListener('pediatric:choice-cancel',()=>{const {variant,scheme}=selection();if(scheme)schedule();else clearResult(variant?.reason||'Zgjidh barin, formën dhe skemën.');});
       byId('pediatricStrength').addEventListener('change',strengthChanged);byId('pediatricScheme').addEventListener('change',schemeChanged);
       byId('pediatricWeight').addEventListener('input',()=>{byId('pediatricAgeConfirmed').checked=false;if(!byId('pediatricWeight').value.trim()){ageEdited=false;byId('pediatricAge').value='';byId('pediatricAgeUnit').value='month';byId('pediatricSafetyConfirmed').checked=false;}suggestAge();schedule();});
       byId('pediatricAge').addEventListener('input',()=>{ageEdited=true;suggestAge();byId('pediatricAgeConfirmed').checked=false;schedule();});
