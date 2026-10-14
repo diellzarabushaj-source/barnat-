@@ -1,6 +1,6 @@
 {
-  "schemaVersion": "pediatric-market-routes-v2",
-  "auditedAt": "2026-10-14",
+  "schemaVersion": "pediatric-market-routes-v3",
+  "auditedAt": "2026-10-15",
   "drugs": {
     "Paracetamol": [
       {
@@ -620,6 +620,87 @@
           }
         ]
       }
+    ],
+    "Diclofenac": [
+      {
+        "label": "Dhimbje me inflamacion · Voltaren · 2–5 vjeç",
+        "eligibilitySq": "Vetëm Voltaren 12,5 mg rektal · 2 deri nën 6 vjeç dhe 13 deri nën 20 kg.",
+        "mode": "clinicalRules",
+        "route": "rectal",
+        "marketStrengthMg": 12.5,
+        "marketEvidenceKey": "voltaren-12.5mg-acute",
+        "marketProductLabel": "Voltaren",
+        "sourceUrl": "https://medicinesauthority.gov.mt/file.ashx?f=3D8AF585FC0135353842E97B262BC199B2BFC8669CFDD15C",
+        "safetyConfirmation": "Janë përjashtuar alergjia ndaj AINS, ulçera / gjakderdhja, insuficienca renale / hepatike dhe përdorimi i AINS të tjera; përdorimi rektal nuk ka proktit.",
+        "rules": [
+          {
+            "minMonths": 24,
+            "maxMonths": 72,
+            "minKg": 13,
+            "maxKg": 18.75,
+            "maxInclusive": false,
+            "doseType": "fixed",
+            "min": 12.5,
+            "max": 12.5,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "deri 2 herë/ditë",
+            "maxDailyPerKg": 2,
+            "source": "Voltaren SmPC Malta 06/2024 · tabela POP / ENT · 13–19 kg",
+            "noteSq": "Vetëm supozitor i plotë. Trajtim afatshkurtër për dhimbje me inflamacion pas operacionit ose në ORL; trajto shkakun. Vetëm ethet nuk janë indikacion. Mos e kombino me ibuprofen ose AINS tjetër.",
+            "maxPerDay": 25,
+            "maxKgInclusive": false
+          },
+          {
+            "minMonths": 24,
+            "maxMonths": 72,
+            "minKg": 18.75,
+            "maxKg": 20,
+            "maxInclusive": false,
+            "doseType": "fixed",
+            "min": 12.5,
+            "max": 12.5,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "deri 3 herë/ditë",
+            "maxDailyPerKg": 2,
+            "source": "Voltaren SmPC Malta 06/2024 · tabela POP / ENT · 13–19 kg",
+            "noteSq": "Vetëm supozitor i plotë. Trajtim afatshkurtër për dhimbje me inflamacion pas operacionit ose në ORL; trajto shkakun. Vetëm ethet nuk janë indikacion. Mos e kombino me ibuprofen ose AINS tjetër.",
+            "maxPerDay": 37.5,
+            "maxKgInclusive": false
+          }
+        ],
+        "marketFormPattern": "^Suppository$"
+      },
+      {
+        "label": "Dhimbje me inflamacion · Voltfast · ≥14 vjeç",
+        "eligibilitySq": "Vetëm Voltfast 50 mg në qese · nga 14 deri në 18 vjeç. Jo për migrenë te të miturit.",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "marketStrengthMg": 50,
+        "marketEvidenceKey": "voltfast-50mg-adolescent",
+        "marketProductLabel": "Voltfast",
+        "sourceUrl": "https://prod1.novartis.com/sg-en/sites/novartis_sg/files/Voltfast-Aug2025.SIN-app281125-pdf.pdf",
+        "safetyConfirmation": "Mosha reale është ≥14 vjeç; pa alergji ndaj AINS, ulçerë / gjakderdhje, insuficiencë renale / hepatike ose AINS tjetër. Ndiq SmPC-në e produktit.",
+        "rules": [
+          {
+            "minMonths": 168,
+            "maxMonths": 216,
+            "maxInclusive": true,
+            "doseType": "fixed",
+            "min": 50,
+            "max": 50,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "1–2 herë/ditë · maksimum 100 mg/24 orë",
+            "maxPerDose": 50,
+            "source": "VOLTFAST prescribing information Aug 2025 · adolescents ≥14 years",
+            "noteSq": "1 qese e plotë në një gotë ujë; trete para marrjes. Mos llogarit mL ose pjesë qeseje. Doza më e ulët efektive, për kohën më të shkurtër; deri 1 javë sipas burimit. Skema nuk përfshin migrenën te të miturit.",
+            "maxPerDay": 100
+          }
+        ],
+        "marketFormPattern": "^Powder for oral solution$"
+      }
     ]
   },
   "replaceBase": [
@@ -635,7 +716,8 @@
     "Ampicillin": "Skemat orale lidhen me infeksionin respirator ose urinar/gastrointestinal. Skemat IV/IM të infeksionit të rëndë mbeten veçmas, me kufijtë përkatës të moshës.",
     "Cefuroxime": "Doza orale dhe IV zgjidhen veçmas. Skema standarde IV këtu përfshin >21 ditë dhe <40 kg, me funksion renal pa nevojë për përshtatje.",
     "Acyclovir": "Varicela orale dhe infeksionet HSV/VZV me infuzion IV kanë skema të ndara. IV kërkon funksion renal normal, hidratim dhe ≥3 muaj; trajtimi neonatal kërkon protokoll tjetër.",
-    "Amoxicillin": "Skemat orale lidhen me indikacionin. Për produktin injektues 1 g, diapazoni i infuzionit IV për >3 muaj dhe <40 kg zgjidhet veçmas; nuk përdoret si skemë IM ose bolus."
+    "Amoxicillin": "Skemat orale lidhen me indikacionin. Për produktin injektues 1 g, diapazoni i infuzionit IV për >3 muaj dhe <40 kg zgjidhet veçmas; nuk përdoret si skemë IM ose bolus.",
+    "Diclofenac": "Skemat rektale varen nga indikacioni, mosha dhe produkti. Për Voltaren 12,5 mg ka skemë të veçantë për dhimbje me inflamacion te 2–5 vjeç dhe 13–<20 kg; për Voltfast 50 mg në qese ka skemë orale vetëm nga 14 vjeç. Mos transfero skemën midis formave ose produkteve."
   },
   "currentWarnings": {
     "Domperidone": [
@@ -677,5 +759,41 @@
         "safetyConfirmation": "Indikacioni dhe antibiogrami janë kontrolluar; janë vlerësuar hemograma, barnat serotonergjike dhe inhibitorët MAO."
       }
     }
-  }
+  },
+  "productEvidence": [
+    {
+      "key": "voltaren-12.5mg-acute",
+      "drugName": "Diclofenac",
+      "id": "210dc4c9-c4d2-4de1-9c0b-75eddc2d9587",
+      "fields": {
+        "registry_number": "2489",
+        "trade_name": "Voltaren",
+        "active_substance": "Diclofenac sodium",
+        "atc_code": "M01AB05",
+        "strength": "12.5 mg",
+        "pharmaceutical_form": "Suppository",
+        "packaging": "10 suppositories",
+        "approved_population": "Pediatric only"
+      },
+      "sourceUrl": "https://medicinesauthority.gov.mt/file.ashx?f=3D8AF585FC0135353842E97B262BC199B2BFC8669CFDD15C",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "voltfast-50mg-adolescent",
+      "drugName": "Diclofenac",
+      "id": "23bc3fce-378b-4f56-969b-c1ffd88e2af6",
+      "fields": {
+        "registry_number": "2492",
+        "trade_name": "VOLTFAST",
+        "active_substance": "Diclofenac potassium",
+        "atc_code": "M01AB05",
+        "strength": "50 mg",
+        "pharmaceutical_form": "Powder for oral solution",
+        "packaging": "30 sachets/pack",
+        "approved_population": "Adult only"
+      },
+      "sourceUrl": "https://prod1.novartis.com/sg-en/sites/novartis_sg/files/Voltfast-Aug2025.SIN-app281125-pdf.pdf",
+      "populationNoteSq": "Etiketa e përgjithshme në regjistër është “Adult only”; burimi specifik i VOLTFAST 50 mg përfshin adoleshentët ≥14 vjeç. Kjo skemë vlen vetëm për këtë produkt."
+    }
+  ]
 }

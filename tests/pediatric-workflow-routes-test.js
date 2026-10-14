@@ -60,7 +60,27 @@ const cef=variant('Cefuroxime',v=>v.form.route==='injectable'&&v.schemes.length)
 assert.ok(dose('Cefuroxime',cef,3,21,{ageUnit:'day'}).error);assert.equal(dose('Cefuroxime',cef,3,22,{ageUnit:'day'}).perDoseMax,60);
 const cet=variant('Cetirizine',v=>v.form.key==='oral-liquid'&&v.schemes.length);
 const c=dose('Cetirizine',cet,12,4);assert.equal(c.perDoseMax,2.5);assert.ok(c.resultWarnings.every(w=>!w.includes('12–23')));
-assert.ok(variants('Diclofenac').filter(v=>v.schemes.length).every(v=>[12.5,25].includes(v.concentration.value)));
+assert.ok(variants('Diclofenac').filter(v=>v.schemes.length&&v.form.route==='rectal').every(v=>[12.5,25].includes(v.concentration.value)));
+const diclo=variant('Diclofenac',v=>v.products.some(p=>p.id==='210dc4c9-c4d2-4de1-9c0b-75eddc2d9587'));
+const acute=diclo.schemes.find(s=>s.label.includes('2–5'));assert.ok(acute);assert.match(acute.eligibilitySq,/13/);
+const acuteDose=(weight,age=2,extra={})=>dose('Diclofenac',diclo,weight,age,{optionIndex:acute.index,...extra});
+assert.match(acuteDose(12).error,/13 deri nën 20 kg/);
+assert.ok(acuteDose(13,1.999).error);assert.ok(acuteDose(13,6).error);assert.ok(acuteDose(20,5).error);
+assert.equal(acuteDose(13).selectedMeasure.min,1);assert.equal(acuteDose(13).perDoseMax,12.5);assert.equal(acuteDose(13).dailyCap,25);
+assert.match(acuteDose(18.749).frequency,/2 herë/);assert.match(acuteDose(18.75).frequency,/3 herë/);assert.equal(acuteDose(18.75).dailyCap,37.5);
+for(let weight=13;weight<20;weight+=.01){const r=acuteDose(weight);assert.ok(r.dailyCap<=2*weight+1e-8);assert.equal(r.selectedMeasure.min,1);}
+assert.equal(acuteDose(13,2,{ageConfirmed:false}).needsAgeConfirmation,true);assert.equal(acuteDose(13,2,{safetyConfirmed:false}).needsSafetyConfirmation,true);
+assert.match(dose('Diclofenac',diclo,12,2,{optionIndex:1}).error,/6–12 vjeç/);
+assert.ok(!dose('Diclofenac',diclo,12,2,{optionIndex:0}).error,'JIA is a separate indication, not a postoperative workaround');
+const voltfast=variant('Diclofenac',v=>v.products.some(p=>p.id==='23bc3fce-378b-4f56-969b-c1ffd88e2af6'));
+assert.equal(voltfast.form.key,'oral-granules');assert.equal(voltfast.form.measure,'whole');assert.equal(voltfast.schemes.length,1);
+assert.ok(dose('Diclofenac',voltfast,50,13.999).error);assert.equal(dose('Diclofenac',voltfast,50,14).selectedMeasure.min,1);assert.equal(dose('Diclofenac',voltfast,50,14).dailyCap,100);
+assert.match(dose('Diclofenac',voltfast,50,14).note,/migren/);assert.ok(dose('Diclofenac',voltfast,50,14,{optionIndex:0}).error);
+assert.ok(variants('Diclofenac').filter(v=>v.form.route==='oral'&&v.schemes.length).every(v=>v.products.every(p=>p.name==='VOLTFAST')),'No syrup, tablet or different sachet brand inherits the adolescent product audit');
+for(const field of ['trade_name','strength','active_substance','pharmaceutical_form','packaging','approved_population','registry_number']){
+ const changed=products.map(p=>p.id===voltfast.products[0].id?{...p,[field]:field==='registry_number'?0:'changed'}:p);
+ assert.ok(market.withMarket(original,changed).marketCatalog.drugs.find(d=>d.name==='Diclofenac').forms.flatMap(f=>f.variants).filter(v=>v.products.some(p=>p.id===voltfast.products[0].id)).every(v=>!v.schemes.length),'Exact product audit invalidated by '+field);
+}
 const lin=variant('Linezolid',v=>v.schemes.length);assert.equal(dose('Linezolid',lin,20,5).selectedMeasure.max,100);assert.equal(dose('Linezolid',lin,20,5,{safetyConfirmed:false}).needsSafetyConfirmation,true);assert.match(dose('Linezolid',lin,20,5).administrationNote,/30–120/);
 const wrongBag=products.map(p=>p.id===lin.products[0].id?{...p,strength:'2 mg/mL; bag 300 mL = 500 mg'}:p);assert.ok(market.withMarket(original,wrongBag).marketCatalog.drugs.find(d=>d.name==='Linezolid').forms.flatMap(f=>f.variants).every(v=>!v.schemes.length));
 assert.equal(JSON.stringify(original),snapshot);

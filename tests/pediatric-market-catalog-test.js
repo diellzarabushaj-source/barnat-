@@ -12,7 +12,7 @@ assert.equal(reference.marketCatalog.productCount,737);
 assert.equal(reference.marketCatalog.drugs.length,50);
 for(const drug of reference.marketCatalog.drugs)for(const form of drug.forms){
  assert.deepEqual(form.variants.map(v=>v.products.length),form.variants.map(v=>v.products.length).sort((a,b)=>b-a));
- for(const variant of form.variants){assert.ok(variant.products.every(p=>products.some(r=>r.id===p.id)));if(variant.schemes.length)assert.ok(variant.products.every(p=>p.approvedPopulation!=='Adult only'));}
+ for(const variant of form.variants){assert.ok(variant.products.every(p=>products.some(r=>r.id===p.id)));if(variant.schemes.length)for(const product of variant.products.filter(p=>p.approvedPopulation==='Adult only')){assert.equal(product.id,'23bc3fce-378b-4f56-969b-c1ffd88e2af6');assert.match(variant.populationNoteSq,/≥14/);assert.equal(variant.schemes.length,1);}}
 }
 const amox=find('Amoxicillin',v=>v.form.measure==='liquid'&&v.concentration.value/v.concentration.perML===50&&v.schemes.length);
 assert.equal(dose('Amoxicillin',amox,12).selectedMeasure.min,6);
@@ -46,6 +46,9 @@ assert.equal(parse('400 mg+80 mg','Cotrimoxazole (TMP + SMZ)','Tablet','Sulfamet
 assert.equal(parse('200 mg+40 mg','Amoxicillin').value,null);
 for(const ambiguous of ['1e3 mg/5 ml','-100 mg/5 ml','12.5.0 mg/5 ml','250-500 mg/5 ml','10%'])assert.ok(parse(ambiguous).reason,ambiguous);
 assert.ok(market.classifyForm('Modified-release capsule').modified);
+assert.equal(market.classifyForm('Powder for oral solution',{packaging:'30 sachets/pack',strength:'50 mg'}).measure,'whole');
+assert.equal(market.classifyForm('Powder for oral suspension',{packaging:'bottle 100 ml',strength:'250 mg/5 ml'}).measure,'liquid');
+assert.equal(market.classifyForm('Powder for oral solution',{packaging:'bottle 100 ml',strength:'50 mg/ml'}).measure,'liquid');
 const badRows=[{...products.find(r=>r.atc_code==='N02BE01'),active_substance:'Paracetamol; Codeine',strength:'500 mg',pharmaceutical_form:'Tablet'}];
 assert.ok(market.withMarket(reference,badRows).marketCatalog.drugs.find(d=>d.name==='Paracetamol').forms[0].variants.every(v=>!v.schemes.length));
 for(const name of ['Calcium'])assert.ok(variants(name).every(v=>!v.schemes.length));

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "pediatric-workflow-v1",
+  "schemaVersion": "pediatric-workflow-v2",
   "sourceAudit": "pediatric-clinical-audit-v1",
   "drugs": {
     "Amoxicillin": {
@@ -694,13 +694,15 @@
           "label": "Artrit juvenil · rektal",
           "sourceIndexes": [
             0
-          ]
+          ],
+          "eligibilitySq": "Supozitor 12,5 / 25 mg · artrit juvenil · nga 1 deri nën 12 vjeç."
         },
         {
           "label": "Dhimbje pas operacionit · rektal",
           "sourceIndexes": [
             1
-          ]
+          ],
+          "eligibilitySq": "Supozitor 12,5 / 25 mg · dhimbje postoperative · 6–12 vjeç · maksimum 4 ditë."
         }
       ]
     },
