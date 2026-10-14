@@ -1,0 +1,753 @@
+{
+  "schemaVersion": "pediatric-workflow-v1",
+  "sourceAudit": "pediatric-clinical-audit-v1",
+  "drugs": {
+    "Amoxicillin": {
+      "sourceOptionsSha256": "b1004c2f66d4a6f75e4bd6d38264e2f025723bebbee2c5a399246d5d7eb915d1",
+      "groups": [
+        {
+          "label": "Infeksion i zakonshëm",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Pneumoni",
+          "sourceIndexes": [
+            1
+          ]
+        }
+      ]
+    },
+    "Amoxicillin + Clavulanic": {
+      "sourceOptionsSha256": "051bf4bc512560e174a39c76b1db535ace5d2fed07b2d9aca1a872b2cb17e3f8",
+      "groups": [
+        {
+          "label": "Kafshim / otit / sinusit",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Infeksion i rëndë · oral",
+          "sourceIndexes": [
+            1
+          ]
+        },
+        {
+          "label": "Infeksion · IV · sipas peshës",
+          "sourceIndexes": [
+            2,
+            3
+          ]
+        },
+        {
+          "label": "Infeksion · IV · ≥40 kg",
+          "sourceIndexes": [
+            4
+          ]
+        }
+      ]
+    },
+    "Cephalexin": {
+      "sourceOptionsSha256": "1ff1798a233bc78d344e4660c51bed607940efaf81d0d0055e00f352928fd600",
+      "groups": [
+        {
+          "label": "Infeksion i lëkurës",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Ceftriaxone": {
+      "sourceOptionsSha256": "a68bc3c9afa480929209218e5c89d3a880355ecc92bdc89403884ea4ea2b1155",
+      "groups": [
+        {
+          "label": "Infeksion serioz",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Meningjit · IV",
+          "sourceIndexes": [
+            1
+          ]
+        },
+        {
+          "label": "Otit · një dozë IM",
+          "sourceIndexes": [
+            2
+          ]
+        }
+      ]
+    },
+    "Oseltamivir": {
+      "sourceOptionsSha256": "6ef3320211814736be0900b81939d3913ffe72e4a57fbf99236b5faa69666de0",
+      "groups": [
+        {
+          "label": "Trajtimi i gripit",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Linezolid": {
+      "sourceOptionsSha256": "15591f02b9550a37ff378f2296586516ead30e4b188dd09493f98bf3c6278c8d",
+      "groups": [
+        {
+          "label": "Infeksion serioz sipas antibiogramit",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Pantoprazole": {
+      "sourceOptionsSha256": "a41df737af5b03ce27143e37f5a682c7f267ddbffe51fee29233b2ade74a64dc",
+      "groups": [
+        {
+          "label": "Refluks / ezofagit · IV",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Domperidone": {
+      "sourceOptionsSha256": "3b3121025edc676650e514915ce43ab9fa9158195bf24df53d52ead94df6506b",
+      "groups": [
+        {
+          "label": "Nauze / të vjella",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Montelukast": {
+      "sourceOptionsSha256": "3bc10f00efbe6544849bc0c1069d3d01a73bfa96539ca99f118f501ca0d13fcb",
+      "groups": [
+        {
+          "label": "Astma · mirëmbajtje",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Paracetamol": {
+      "sourceOptionsSha256": "34f3bff296abdde984ac59e1e93bf18f23b56795476ba217c5683a957cbc34d0",
+      "groups": [
+        {
+          "label": "Dhimbje / ethe · oral",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Ibuprofen": {
+      "sourceOptionsSha256": "d8fc08155a729ae029555765f382c0fcbad6e275961256f130132fb38851665c",
+      "groups": [
+        {
+          "label": "Dhimbje / ethe · çdo 8 orë",
+          "sourceIndexes": [
+            0,
+            2
+          ]
+        },
+        {
+          "label": "Dhimbje / ethe · çdo 6 orë",
+          "sourceIndexes": [
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    "Piperacillin + Tazobactam": {
+      "sourceOptionsSha256": "421846b5de8f362f9cec481d5ef3a27135e9c96f6316710711f939aa3535ca97",
+      "groups": [
+        {
+          "label": "Infeksion intraabdominal",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Neutropeni febrile",
+          "sourceIndexes": [
+            1
+          ]
+        }
+      ]
+    },
+    "Meropenem": {
+      "sourceOptionsSha256": "4d938edf14b69492871d210d66da8f17a38b5da058c67b54a8267af8ffde4a86",
+      "groups": [
+        {
+          "label": "Infeksion i lëkurës / indeve",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Infeksion i lëkurës · Pseudomonas",
+          "sourceIndexes": [
+            1
+          ]
+        },
+        {
+          "label": "Infeksion intraabdominal",
+          "sourceIndexes": [
+            2
+          ]
+        },
+        {
+          "label": "Meningjit",
+          "sourceIndexes": [
+            3
+          ]
+        }
+      ]
+    },
+    "Cotrimoxazole (TMP + SMZ)": {
+      "sourceOptionsSha256": "a14910f8f443f511d0f5eab47a0355c72344efae2a2931b0f847035034e41b2b",
+      "groups": [
+        {
+          "label": "Infeksion urinar / otit",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Shigellozë",
+          "sourceIndexes": [
+            1
+          ]
+        },
+        {
+          "label": "Pneumoni nga Pneumocystis",
+          "sourceIndexes": [
+            2
+          ]
+        }
+      ]
+    },
+    "Azithromycin": {
+      "sourceOptionsSha256": "9e7e088f0e5b1862a2eb77d80cebe9e05e869a23e94e4085d9074b38eb030d3b",
+      "groups": [
+        {
+          "label": "Pneumoni · dita 1",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Pneumoni · ditët 2–5",
+          "sourceIndexes": [
+            1
+          ]
+        },
+        {
+          "label": "Sinusit",
+          "sourceIndexes": [
+            2
+          ]
+        },
+        {
+          "label": "Faringit / tonsilit",
+          "sourceIndexes": [
+            3
+          ]
+        }
+      ]
+    },
+    "Cefixime": {
+      "sourceOptionsSha256": "c84d4082ca2a30cf3f9a5c151bdf327fb51741df3799f15a1ca79e3f8ee9cdcd",
+      "groups": [
+        {
+          "label": "Infeksion · një herë në ditë",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Infeksion · çdo 12 orë",
+          "sourceIndexes": [
+            1
+          ]
+        }
+      ]
+    },
+    "Cefuroxime": {
+      "sourceOptionsSha256": "ab445b38f87f124127fd3c140b75ea68d2e7be86baedc123e213ac7f3285a468",
+      "groups": [
+        {
+          "label": "Infeksion i zakonshëm · oral",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Otit / infeksion më i rëndë · oral",
+          "sourceIndexes": [
+            1
+          ]
+        }
+      ]
+    },
+    "Vancomycin": {
+      "sourceOptionsSha256": "c1df9f29a35f2c3f0f0e556664c4bb6ec4950cf2139d059764ad6efa6bea818f",
+      "groups": [
+        {
+          "label": "Infeksion sistemik · IV",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Acyclovir": {
+      "sourceOptionsSha256": "a9486710505cb0431b28b89a363f0f5233aee87bd941ae82281a73304c0a80a4",
+      "groups": [
+        {
+          "label": "Varicelë · oral",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Cetirizine": {
+      "sourceOptionsSha256": "3f23fa9115f5605cf3c061f6018db03db00df7483dbf0f85fec73a5db3f1df34",
+      "groups": [
+        {
+          "label": "Alergji · dozë standarde",
+          "sourceIndexes": [
+            0,
+            2,
+            4
+          ]
+        },
+        {
+          "label": "Alergji · dozë e rritur",
+          "sourceIndexes": [
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    "Clarithromycin": {
+      "sourceOptionsSha256": "3d24346488fad95a7100624b024260c33f47845ce89ea765b9e95105d1c09c02",
+      "groups": [
+        {
+          "label": "Infeksion i zakonshëm",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Cefpodoxime": {
+      "sourceOptionsSha256": "f20a85495bd29d9f0a643bf21b59dc62769184d28ac825544a83d438ebe77c4b",
+      "groups": [
+        {
+          "label": "Otit",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Faringit / tonsilit",
+          "sourceIndexes": [
+            1
+          ]
+        },
+        {
+          "label": "Sinusit",
+          "sourceIndexes": [
+            2
+          ]
+        }
+      ]
+    },
+    "Ceftazidime": {
+      "sourceOptionsSha256": "d2a4e42e1144ae6d0080f9f1340e10b8f86bb293f15fe6f61ecfcd8678b9c832",
+      "groups": [
+        {
+          "label": "Infeksion · IV",
+          "sourceIndexes": [
+            0,
+            1
+          ]
+        },
+        {
+          "label": "Infeksion i rëndë / meningjit · IV",
+          "sourceIndexes": [
+            2
+          ]
+        }
+      ]
+    },
+    "Albendazole": {
+      "sourceOptionsSha256": "986728e9f7beee07bcb2fdb1675734c8d0f03f99a7635c1f067dcd2f16e1c8f5",
+      "groups": [
+        {
+          "label": "Deworming · parandalim sipas WHO",
+          "sourceIndexes": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "Ivermectin": {
+      "sourceOptionsSha256": "741ae0cf684fc4421d0904df9abc06f242ddab8d8c70876719e12b141cdb0838",
+      "groups": [
+        {
+          "label": "Strongiloidiazë",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Levocetirizine": {
+      "sourceOptionsSha256": "c0510b60ce047f033c7b8c0ace07674157ff7a6cc437f1220aa7ee453ec43d9d",
+      "groups": [
+        {
+          "label": "Urtikarie kronike",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Rinit alergjik perennial",
+          "sourceIndexes": [
+            1
+          ]
+        }
+      ]
+    },
+    "Hydroxyzine": {
+      "sourceOptionsSha256": "1ad5a1eec0d181765d9a6882baa059f56a39c902a6853414f549edded9e6a541",
+      "groups": [
+        {
+          "label": "Kruarje",
+          "sourceIndexes": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "Lansoprazole": {
+      "sourceOptionsSha256": "2d88c26f47cbc7ec8bf10978616c9adca8b0f3b91852074dad7eedd0a1a3182f",
+      "groups": [
+        {
+          "label": "Refluks pa erozione",
+          "sourceIndexes": [
+            0,
+            1
+          ]
+        },
+        {
+          "label": "Ezofagit eroziv",
+          "sourceIndexes": [
+            0,
+            2
+          ]
+        }
+      ]
+    },
+    "Ranitidine": {
+      "sourceOptionsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "groups": []
+    },
+    "Ondansetron": {
+      "sourceOptionsSha256": "5af4f2ef872d5b47c621f7781ccce696bb31878340b4271d435e603cffaf220f",
+      "groups": [
+        {
+          "label": "Gastroenterit · një dozë orale",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Fexofenadine": {
+      "sourceOptionsSha256": "6a3dacec9f82956ded472268d2451f17aa79560e75112b15b4481a17df20e71b",
+      "groups": [
+        {
+          "label": "Alergji · çdo 12 orë",
+          "sourceIndexes": [
+            0,
+            1
+          ]
+        },
+        {
+          "label": "Alergji · një herë në ditë",
+          "sourceIndexes": [
+            2
+          ]
+        }
+      ]
+    },
+    "Salbutamol": {
+      "sourceOptionsSha256": "b232f95652925fff663810c49fcf13217db1a5c94e2fd16096805bb181755937",
+      "groups": [
+        {
+          "label": "Bronkospazëm · nebulizim",
+          "sourceIndexes": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "Prednisolone": {
+      "sourceOptionsSha256": "65d37fcb19d340ad8483ed1b7e89ce9dc87651ff19804378b8cf0b8c1315d750",
+      "groups": [
+        {
+          "label": "Astma akute",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Astma akute · në steroid mirëmbajtës",
+          "sourceIndexes": [
+            1
+          ]
+        }
+      ]
+    },
+    "Iron": {
+      "sourceOptionsSha256": "aabe621284ebb03f43446e169e5de74297ad8cf7e0110aa2e55f7cca0e90a3f8",
+      "groups": [
+        {
+          "label": "Anemi · e lehtë / mesatare",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Anemi e rëndë",
+          "sourceIndexes": [
+            1
+          ]
+        }
+      ]
+    },
+    "Ampicillin": {
+      "sourceOptionsSha256": "e878b363199ac9015ae0a54aea8ffc982318ec0ae654e8cfaff72bd523dbdd3f",
+      "groups": [
+        {
+          "label": "Infeksion i rëndë · IV / IM",
+          "sourceIndexes": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "Cloxacillin": {
+      "sourceOptionsSha256": "3712a08ff624a6296f701c306ee6cbc129ae93ebe1d6fa4fce71e721e014161c",
+      "groups": [
+        {
+          "label": "Infeksion stafilokoksik · IV",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Penicillin G": {
+      "sourceOptionsSha256": "ced99af520cf3020a2efc4c0999aa085e39471e07430886e8376408ebf615382",
+      "groups": [
+        {
+          "label": "Infeksion i zakonshëm · IV / IM",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Meningjit · IV",
+          "sourceIndexes": [
+            1
+          ]
+        }
+      ]
+    },
+    "Levofloxacin": {
+      "sourceOptionsSha256": "43821e909fc4e900fddd1c43d8f9416224da8a02212c9794a70caad1024e9afb",
+      "groups": [
+        {
+          "label": "Antraks · pas ekspozimit",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Murtajë",
+          "sourceIndexes": [
+            1
+          ]
+        }
+      ]
+    },
+    "Amikacin": {
+      "sourceOptionsSha256": "09c531ce9179b826a8dff6b4a220511e754dad078e6947af785b78733dfbf6ee",
+      "groups": [
+        {
+          "label": "Dozë ngarkuese · neonat",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Mirëmbajtje · çdo 12 orë",
+          "sourceIndexes": [
+            1,
+            2
+          ]
+        },
+        {
+          "label": "Alternativë · çdo 8 orë",
+          "sourceIndexes": [
+            3
+          ]
+        }
+      ]
+    },
+    "Gentamicin": {
+      "sourceOptionsSha256": "7324efc91ef15cee60969a5a80c0c188316e47ae41db5a27674ac69e93dd77da",
+      "groups": [
+        {
+          "label": "Infeksion i rëndë · IV / IM",
+          "sourceIndexes": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "Cefoperazone": {
+      "sourceOptionsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "groups": []
+    },
+    "Cefotaxime": {
+      "sourceOptionsSha256": "e2b4d344732649077749e12487a2e02cc4d7a9b2d825492fb14e5daf244da91c",
+      "groups": [
+        {
+          "label": "Infeksion · IV",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Colistin": {
+      "sourceOptionsSha256": "341a4a7739f13f70025fbf26b5b4d5b2a9d174e7d47ab3e9b465cc92727bb94f",
+      "groups": [
+        {
+          "label": "Infeksion sistemik · IV",
+          "sourceIndexes": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "Doxycycline": {
+      "sourceOptionsSha256": "d4c6ffe6357775bd707ffa3db4efbaea7ad2f8638f2e6bcd8d3ccf5bb3c1ba5f",
+      "groups": [
+        {
+          "label": "Rikeciozë / ehrlichiosis",
+          "sourceIndexes": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "DEC": {
+      "sourceOptionsSha256": "e1c6d7364b51bc6c8bb7b141c866ada1db9c029cecc9613d280bc53419a7463e",
+      "groups": [
+        {
+          "label": "Filariazë limfatike",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Diclofenac": {
+      "sourceOptionsSha256": "68b3526221bce5c41685860085eec26b9ffeadfe6084940609f85f77c2c461f1",
+      "groups": [
+        {
+          "label": "Artrit juvenil · rektal",
+          "sourceIndexes": [
+            0
+          ]
+        },
+        {
+          "label": "Dhimbje pas operacionit · rektal",
+          "sourceIndexes": [
+            1
+          ]
+        }
+      ]
+    },
+    "Mefenamic acid": {
+      "sourceOptionsSha256": "85a3880905d90fd6840cf2d261ddc08bc9bb11d0b54fca97c77c11692fc285d2",
+      "groups": [
+        {
+          "label": "Dhimbje / ethe",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "CPM": {
+      "sourceOptionsSha256": "239e9cf0c6a16ce1dafff4abd0b37439cfde9c145e75c8d80f5f78b822f1254f",
+      "groups": [
+        {
+          "label": "Alergji",
+          "sourceIndexes": [
+            0
+          ]
+        }
+      ]
+    },
+    "Levo salbutamol": {
+      "sourceOptionsSha256": "e5b5308581944cca8eed4210d84845c442bc0dd85c8db57fa39bc427948fcf63",
+      "groups": [
+        {
+          "label": "Nebulizim · dozë fillestare",
+          "sourceIndexes": [
+            0,
+            2
+          ]
+        },
+        {
+          "label": "Nebulizim · dozë e rritur",
+          "sourceIndexes": [
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    "Calcium": {
+      "sourceOptionsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "groups": []
+    }
+  }
+}

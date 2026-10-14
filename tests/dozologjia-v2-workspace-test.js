@@ -19,7 +19,7 @@ assert.match(html, /class="nav-item is-active" href="\/dozologjia\.html" aria-cu
 assert.match(html, /id="pediatricCommonReference"/);
 for(const id of ['pediatricDrug','pediatricForm','pediatricStrength','pediatricWeight','pediatricAge','pediatricAgeUnit','pediatricAnswer'])assert.match(html,new RegExp(`id="${id}"`));
 assert.doesNotMatch(html,/id="pediatricCommonSearch"|id="pediatricCommonSections"/);
-assert.match(html, /Dozat pediatrike të barnave të zakonshme/);
+assert.match(html, /Dozologjia pediatrike/);
 assert.doesNotMatch(html, /class="dz-head/);
 
 /* The old Master picker UI is intentionally gone from this page. */
@@ -68,7 +68,7 @@ assert.match(js,/referenceActive=source==='database' && Boolean\(marketCatalog\?
 assert.match(js,/variantId:variant\.id/);assert.match(js,/ageConfirmed:byId\('pediatricAgeConfirmed'\)\.checked/);
 assert.match(js,/result\.selectedMeasure/);assert.match(js,/id!==requestId/);
 assert.match(js,/function renderEvidence\(/);assert.match(js,/Tabela bazë/);
-assert.match(html,/AKKPM/);assert.match(html,/Mosha sugjerohet|mosha sugjerohet/);
+assert.match(html,/AKKPM/);assert.match(html,/Mosha[^<]*sugjerim/);
 
 assert.deepStrictEqual(
   commonReference.sections.map(section => [section.roman, section.title, section.drugs.length]),

@@ -383,7 +383,7 @@
   const doseSq = value => liquidCore?.doseTextSq ? liquidCore.doseTextSq(value) : String(value ?? '');
   const formulationSq = value => liquidCore?.formulationTextSq ? liquidCore.formulationTextSq(value) : String(value ?? '');
   const sectionSq = value => liquidCore?.sectionTitleSq ? liquidCore.sectionTitleSq(value) : String(value ?? '');
-  const componentSq = value => liquidCore?.componentSq ? liquidCore.componentSq(value) : String(value ?? '');
+  const componentSq = value => ({'elemental-iron':'hekur elementar','trimethoprim':'TMP (trimetoprim)','cefoperazone+sulbactam-total':'shuma cefoperazonë + sulbaktam (1:1)'}[value] || (liquidCore?.componentSq ? liquidCore.componentSq(value) : String(value ?? '')));
   const mlNumber = value => {
     return String(Number(Number(value).toPrecision(4))).replace('.', ',');
   };
@@ -499,14 +499,20 @@
     clearResult('Zgjidh fortësinë / përqendrimin.');
     byId('pediatricPatient').hidden=true;byId('pediatricSchemeField').hidden=true;renderProducts(null);
     const {form}=selection();
-    choices('pediatricStrength',(form?.variants||[]).map(v=>({id:v.id,label:v.label})),'Zgjidh fortësinë…');
+    choices('pediatricStrength',[],'Zgjidh fortësinë…');
+    const select=byId('pediatricStrength');
+    for(const [active,title] of [[true,'Me skemë të verifikuar'],[false,'Kërkon verifikim']]){
+      const variants=(form?.variants||[]).filter(v=>Boolean(v.schemes.length)===active);if(!variants.length)continue;
+      const group=node('optgroup');group.label=title;variants.forEach(v=>{const option=node('option',v.label);option.value=v.id;group.append(option);});select.append(group);
+    }
+    select.disabled=!form?.variants.length;
   }
   function strengthChanged(){
     clearResult();
     byId('pediatricAgeConfirmed').checked=false;byId('pediatricSafetyConfirmed').checked=false;
     const {variant}=selection();renderProducts(variant);
     choices('pediatricScheme',(variant?.schemes||[]).map(s=>({id:s.index,label:s.label})),'Zgjidh skemën…');
-    byId('pediatricSchemeField').hidden=!(variant?.schemes.length);
+    byId('pediatricSchemeField').hidden=!(variant?.schemes.length>1);
     // A single verified scheme is unambiguous; several indications require a choice.
     if(variant?.schemes.length===1)byId('pediatricScheme').value=String(variant.schemes[0].index);
     schemeChanged();
@@ -539,21 +545,22 @@
     host.classList.add('has-result');
     const measure=result.selectedMeasure;
     const per=result.perDoseMin!=null?'PËR DOZË':result.dosePeriod==='day'?'NË 24 ORË':'DOZA';
-    host.append(node('small',per,'dz-market-kicker'));
+    const routeLabels={oral:'Nga goja',rectal:'Rektal',injectable:'Parenteral',nebulized:'Nebulizim',inhaled:'Inhalim'};
+    host.append(node('small',[routeLabels[result.route],per].filter(Boolean).join(' · '),'dz-market-kicker'));
     if(measure && !measure.error){
       const range=`${mlNumber(measure.min)}${Math.abs(measure.min-measure.max)>1e-9?'–'+mlNumber(measure.max):''} ${measure.unit}`;
       // Integer solids are never split or rounded by the interface.
       host.append(node('strong',range,'dz-market-measure'));
     }
-    host.append(node('span',doseRange(result.perDoseMin??result.doseMin,result.perDoseMax??result.doseMax,result.doseUnit),'dz-common-result-dose'));
+    host.append(node('span',doseRange(measure?.actualMin??result.perDoseMin??result.doseMin,measure?.actualMax??result.perDoseMax??result.doseMax,measure?.actualUnit||result.doseUnit),'dz-common-result-dose'));
+    if(result.administrationNote)host.append(node('p',result.administrationNote,'dz-market-frequency'));
     if(result.frequency)host.append(node('p',doseSq(result.frequency),'dz-market-frequency'));
     const note=(result.note||'').replace(result.frequency||'\u0000','').replace(/^\s*·\s*/, '').trim();
     if(note)host.append(node('p',doseSq(note),'dz-market-note'));
     if(measure?.basis)host.append(node('p','Sipas komponentit: '+componentSq(measure.basis.split('|')[0]),'dz-market-note'));
     if(measure?.preparation)host.append(node('p',measure.preparation,'dz-market-note'));
     if(measure?.error)host.append(node('p',measure.error,'dz-market-message'));
-    const warning=selection().drug && auditFor(selection().drug)?.warningsSq?.[0];
-    if(warning)host.append(node('p',warning,'dz-market-note'));
+    (result.resultWarnings||[]).forEach(warning=>host.append(node('p',warning,'dz-market-note')));
     host.append(node('small','Kontrollo etiketën dhe udhëzimin e produktit para administrimit.','dz-market-note'));
   }
   function schedule(){
