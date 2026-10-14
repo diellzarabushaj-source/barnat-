@@ -48,5 +48,5 @@ for(const ambiguous of ['1e3 mg/5 ml','-100 mg/5 ml','12.5.0 mg/5 ml','250-500 m
 assert.ok(market.classifyForm('Modified-release capsule').modified);
 const badRows=[{...products.find(r=>r.atc_code==='N02BE01'),active_substance:'Paracetamol; Codeine',strength:'500 mg',pharmaceutical_form:'Tablet'}];
 assert.ok(market.withMarket(reference,badRows).marketCatalog.drugs.find(d=>d.name==='Paracetamol').forms[0].variants.every(v=>!v.schemes.length));
-for(const name of ['Iron','Calcium','Cefoperazone'])assert.ok(variants(name).every(v=>!v.schemes.length));
+for(const name of ['Calcium'])assert.ok(variants(name).every(v=>!v.schemes.length));
 console.log('PASS: 737 AKKPM products, real choices, prevalence ranking, component/route/age gates, IV package bands, mg/mL and whole-unit safety');

@@ -1,36 +1,681 @@
 {
-  "schemaVersion": "pediatric-market-routes-v1",
+  "schemaVersion": "pediatric-market-routes-v2",
   "auditedAt": "2026-10-14",
   "drugs": {
     "Paracetamol": [
       {
         "label": "Rektal · dhimbje / ethe · 125 mg",
-        "mode": "clinicalRules", "route": "rectal", "marketStrengthMg": 125,
+        "mode": "clinicalRules",
+        "route": "rectal",
+        "marketStrengthMg": 125,
         "sourceUrl": "https://www.medicines.org.uk/emc/product/15385/smpc",
         "safetyConfirmation": "Pa paracetamol tjetër dhe pa insuficiencë të rëndë hepatike / renale.",
-        "rules": [{"minMonths":12,"doseType":"weight","min":15,"max":15,"unit":"mg","period":"dose","frequency":"deri 4 herë/24 orë · interval ≥4 orë","maxDailyPerKg":60,"source":"SmPC · paracetamol rektal 125 mg","noteSq":"Vetëm supozitorë të plotë; mos i ndaj. Jo mbi 3 ditë pa rivlerësim. Kontrollo fletëudhëzimin e produktit."}]
+        "rules": [
+          {
+            "minMonths": 12,
+            "doseType": "weight",
+            "min": 15,
+            "max": 15,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "deri 4 herë/24 orë · interval ≥4 orë",
+            "maxDailyPerKg": 60,
+            "source": "SmPC · paracetamol rektal 125 mg",
+            "noteSq": "Vetëm supozitorë të plotë; mos i ndaj. Jo mbi 3 ditë pa rivlerësim. Kontrollo fletëudhëzimin e produktit."
+          }
+        ]
       },
       {
         "label": "IV · B. Braun 10 mg/mL · dhimbje / ethe",
-        "mode":"clinicalRules", "route":"injectable", "marketMgPerML":10, "marketProductPattern":"b.?braun",
-        "sourceUrl":"https://www.medicines.org.uk/emc/product/15148/smpc",
-        "safetyConfirmation":"Jo prematur; pa insuficiencë të rëndë hepatike / renale dhe pa paracetamol tjetër.",
-        "containerWeightBands":[{"mL":10,"maxKg":10},{"mL":50,"minKg":10,"minInclusive":false,"maxKg":33},{"mL":100,"minKg":33,"minInclusive":false,"maxKg":50}],
-        "rules":[
-          {"maxKg":10,"doseType":"weight","min":7.5,"max":7.5,"unit":"mg","period":"dose","frequency":"deri 4 herë/24 orë · interval ≥4 orë","maxDailyPerKg":30,"source":"SmPC · B. Braun IV","noteSq":"Infuzion 15 minuta. Te ≤10 kg përdor ampulën 10 mL, tërhiq vetëm dozën dhe hollo sipas SmPC; mL këtu është vëllimi para hollimit."},
-          {"minKg":10,"minKgInclusive":false,"maxKg":33,"doseType":"weight","min":15,"max":15,"unit":"mg","period":"dose","frequency":"deri 4 herë/24 orë · interval ≥4 orë","maxDailyPerKg":60,"maxPerDay":2000,"source":"SmPC · B. Braun IV","noteSq":"Infuzion 15 minuta; flakon 50 mL. Shfaqet vëllimi para hollimit."},
-          {"minKg":33,"minKgInclusive":false,"maxKg":50,"doseType":"weight","min":15,"max":15,"unit":"mg","period":"dose","frequency":"deri 4 herë/24 orë · interval ≥4 orë","maxDailyPerKg":60,"maxPerDay":3000,"source":"SmPC · B. Braun IV","noteSq":"Infuzion 15 minuta; flakon 100 mL. Shfaqet vëllimi para hollimit."}
+        "mode": "clinicalRules",
+        "route": "injectable",
+        "marketMgPerML": 10,
+        "marketProductPattern": "b[.\\s-]*braun",
+        "sourceUrl": "https://www.medicines.org.uk/emc/product/15148/smpc",
+        "safetyConfirmation": "Jo prematur; pa insuficiencë të rëndë hepatike / renale dhe pa paracetamol tjetër.",
+        "containerWeightBands": [
+          {
+            "mL": 10,
+            "maxKg": 10
+          },
+          {
+            "mL": 50,
+            "minKg": 10,
+            "minInclusive": false,
+            "maxKg": 33
+          },
+          {
+            "mL": 100,
+            "minKg": 33,
+            "minInclusive": false,
+            "maxKg": 50
+          }
+        ],
+        "rules": [
+          {
+            "maxKg": 10,
+            "doseType": "weight",
+            "min": 7.5,
+            "max": 7.5,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "deri 4 herë/24 orë · interval ≥4 orë",
+            "maxDailyPerKg": 30,
+            "source": "SmPC · B. Braun IV",
+            "noteSq": "Infuzion 15 minuta. Te ≤10 kg përdor ampulën 10 mL, tërhiq vetëm dozën dhe hollo sipas SmPC; mL këtu është vëllimi para hollimit."
+          },
+          {
+            "minKg": 10,
+            "minKgInclusive": false,
+            "maxKg": 33,
+            "doseType": "weight",
+            "min": 15,
+            "max": 15,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "deri 4 herë/24 orë · interval ≥4 orë",
+            "maxDailyPerKg": 60,
+            "maxPerDay": 2000,
+            "source": "SmPC · B. Braun IV",
+            "noteSq": "Infuzion 15 minuta; flakon 50 mL. Shfaqet vëllimi para hollimit."
+          },
+          {
+            "minKg": 33,
+            "minKgInclusive": false,
+            "maxKg": 50,
+            "doseType": "weight",
+            "min": 15,
+            "max": 15,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "deri 4 herë/24 orë · interval ≥4 orë",
+            "maxDailyPerKg": 60,
+            "maxPerDay": 3000,
+            "source": "SmPC · B. Braun IV",
+            "noteSq": "Infuzion 15 minuta; flakon 100 mL. Shfaqet vëllimi para hollimit."
+          }
         ]
       }
     ],
-    "Ondansetron":[
+    "Ondansetron": [
       {
-        "label":"IV · nauze / të vjella pas operacionit · një dozë",
-        "mode":"clinicalRules", "route":"injectable", "marketMgPerML":2,
-        "sourceUrl":"https://www.medicines.org.uk/emc/product/101465/smpc",
-        "safetyConfirmation":"Pa QT të zgjatur kongjenital, apomorfinë ose insuficiencë hepatike të rëndë; elektrolitet janë korrigjuar.",
-        "rules":[{"minMonths":1,"maxMonths":216,"maxInclusive":false,"doseType":"weight","min":0.1,"max":0.1,"unit":"mg","period":"dose","maxPerDose":4,"frequency":"një dozë IV · ngadalë ≥30 sekonda","source":"SmPC · ondansetron PONV pediatrik","noteSq":"Vetëm për nauze / të vjella pas operacionit. Kjo skemë nuk është për kimioterapi ose gastroenterit. Vlerëso QT dhe barnat shoqëruese."}]
+        "label": "IV · nauze / të vjella pas operacionit · një dozë",
+        "mode": "clinicalRules",
+        "route": "injectable",
+        "marketMgPerML": 2,
+        "sourceUrl": "https://www.medicines.org.uk/emc/product/101465/smpc",
+        "safetyConfirmation": "Pa QT të zgjatur kongjenital, apomorfinë ose insuficiencë hepatike të rëndë; elektrolitet janë korrigjuar.",
+        "rules": [
+          {
+            "minMonths": 1,
+            "maxMonths": 216,
+            "maxInclusive": false,
+            "doseType": "weight",
+            "min": 0.1,
+            "max": 0.1,
+            "unit": "mg",
+            "period": "dose",
+            "maxPerDose": 4,
+            "frequency": "një dozë IV · ngadalë ≥30 sekonda",
+            "source": "SmPC · ondansetron PONV pediatrik",
+            "noteSq": "Vetëm për nauze / të vjella pas operacionit. Kjo skemë nuk është për kimioterapi ose gastroenterit. Vlerëso QT dhe barnat shoqëruese."
+          }
+        ]
+      }
+    ],
+    "Pantoprazole": [
+      {
+        "label": "Refluks gastroezofageal",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/71299/FichaTecnica_71299.html",
+        "rules": [
+          {
+            "doseType": "fixed",
+            "min": 20,
+            "max": 20,
+            "unit": "mg",
+            "period": "dose",
+            "minMonths": 144,
+            "frequency": "1 herë/ditë",
+            "maxPerDay": 20,
+            "source": "SmPC · NORMON",
+            "noteSq": "Zakonisht 2–4 javë; rivlerëso para zgjatjes. Gëlltite të plotë, 1 orë para ushqimit; mos e ndaj, përtyp ose shtyp."
+          }
+        ],
+        "marketStrengthMg": 20,
+        "marketWholeOnly": true,
+        "marketFormPattern": "gastro.resistant",
+        "marketProductPattern": "^Pantoprazol NORMON$",
+        "marketProductLabel": "NORMON",
+        "safetyConfirmation": "Janë kontrolluar ndërveprimet dhe funksioni hepatik; pa shenja alarmi që kërkojnë hetim."
+      },
+      {
+        "label": "Mirëmbajtje e ezofagitit",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/71299/FichaTecnica_71299.html",
+        "rules": [
+          {
+            "doseType": "fixed",
+            "min": 20,
+            "max": 20,
+            "unit": "mg",
+            "period": "dose",
+            "minMonths": 144,
+            "frequency": "1 herë/ditë",
+            "maxPerDay": 20,
+            "source": "SmPC · NORMON",
+            "noteSq": "Rivlerëso rregullisht nevojën për trajtim. Gëlltite të plotë, 1 orë para ushqimit; mos e ndaj, përtyp ose shtyp."
+          }
+        ],
+        "marketStrengthMg": 20,
+        "marketWholeOnly": true,
+        "marketFormPattern": "gastro.resistant",
+        "marketProductPattern": "^Pantoprazol NORMON$",
+        "marketProductLabel": "NORMON",
+        "safetyConfirmation": "Janë kontrolluar ndërveprimet dhe funksioni hepatik; pa shenja alarmi që kërkojnë hetim."
+      },
+      {
+        "label": "Ezofagit nga refluksi",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/69548/FT_69548.html",
+        "rules": [
+          {
+            "doseType": "fixed",
+            "min": 40,
+            "max": 40,
+            "unit": "mg",
+            "period": "dose",
+            "minMonths": 144,
+            "frequency": "1 herë/ditë",
+            "maxPerDay": 40,
+            "source": "SmPC · NORMON",
+            "noteSq": "Zakonisht 4 javë; rivlerëso para zgjatjes. Gëlltite të plotë, 1 orë para ushqimit; mos e ndaj, përtyp ose shtyp."
+          }
+        ],
+        "marketStrengthMg": 40,
+        "marketWholeOnly": true,
+        "marketFormPattern": "gastro.resistant",
+        "marketProductPattern": "^Pantoprazol NORMON$",
+        "marketProductLabel": "NORMON",
+        "safetyConfirmation": "Pa insuficiencë të rëndë hepatike; ndërveprimet dhe shenjat e alarmit janë kontrolluar."
+      },
+      {
+        "label": "Refluks gastroezofageal",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "sourceUrl": "https://www.halmed.hr/upl/lijekovi/SPC/Nolpaza-20-mg-SPC.pdf",
+        "rules": [
+          {
+            "doseType": "fixed",
+            "min": 20,
+            "max": 20,
+            "unit": "mg",
+            "period": "dose",
+            "minMonths": 144,
+            "frequency": "1 herë/ditë",
+            "maxPerDay": 20,
+            "source": "SmPC · Nolpaza",
+            "noteSq": "Zakonisht 2–4 javë; rivlerëso para zgjatjes. Gëlltite të plotë, 1 orë para ushqimit; mos e ndaj, përtyp ose shtyp."
+          }
+        ],
+        "marketStrengthMg": 20,
+        "marketWholeOnly": true,
+        "marketFormPattern": "gastro.resistant",
+        "marketProductPattern": "^Nolpaza(?:\\u00ae)?$",
+        "marketProductLabel": "Nolpaza",
+        "safetyConfirmation": "Janë kontrolluar ndërveprimet dhe funksioni hepatik; pa shenja alarmi që kërkojnë hetim."
+      },
+      {
+        "label": "Mirëmbajtje e ezofagitit",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "sourceUrl": "https://www.halmed.hr/upl/lijekovi/SPC/Nolpaza-20-mg-SPC.pdf",
+        "rules": [
+          {
+            "doseType": "fixed",
+            "min": 20,
+            "max": 20,
+            "unit": "mg",
+            "period": "dose",
+            "minMonths": 144,
+            "frequency": "1 herë/ditë",
+            "maxPerDay": 20,
+            "source": "SmPC · Nolpaza",
+            "noteSq": "Rivlerëso rregullisht nevojën për trajtim. Gëlltite të plotë, 1 orë para ushqimit; mos e ndaj, përtyp ose shtyp."
+          }
+        ],
+        "marketStrengthMg": 20,
+        "marketWholeOnly": true,
+        "marketFormPattern": "gastro.resistant",
+        "marketProductPattern": "^Nolpaza(?:\\u00ae)?$",
+        "marketProductLabel": "Nolpaza",
+        "safetyConfirmation": "Janë kontrolluar ndërveprimet dhe funksioni hepatik; pa shenja alarmi që kërkojnë hetim."
+      },
+      {
+        "label": "Ezofagit nga refluksi",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "sourceUrl": "https://www.krka-farma.hr/_assets/Nolpaza_40_mg_uputa_17_02_2022.cleaned.pdf",
+        "rules": [
+          {
+            "doseType": "fixed",
+            "min": 40,
+            "max": 40,
+            "unit": "mg",
+            "period": "dose",
+            "minMonths": 144,
+            "frequency": "1 herë/ditë",
+            "maxPerDay": 40,
+            "source": "KRKA · Nolpaza 40 mg",
+            "noteSq": "Zakonisht 4 javë; rivlerëso para zgjatjes. Gëlltite të plotë, 1 orë para ushqimit; mos e ndaj, përtyp ose shtyp."
+          }
+        ],
+        "marketStrengthMg": 40,
+        "marketWholeOnly": true,
+        "marketFormPattern": "gastro.resistant",
+        "marketProductPattern": "^Nolpaza(?:\\u00ae)?$",
+        "marketProductLabel": "Nolpaza",
+        "safetyConfirmation": "Pa insuficiencë të rëndë hepatike; ndërveprimet dhe shenjat e alarmit janë kontrolluar."
+      }
+    ],
+    "Domperidone": [
+      {
+        "label": "Nauze / të vjella",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "sourceUrl": "https://www.gov.uk/drug-safety-update/domperidone-for-nausea-and-vomiting-lack-of-efficacy-in-children-reminder-of-contraindications-in-adults-and-adolescents",
+        "rules": [
+          {
+            "doseType": "fixed",
+            "min": 10,
+            "max": 10,
+            "unit": "mg",
+            "period": "dose",
+            "minMonths": 144,
+            "minKg": 35,
+            "frequency": "deri 3 herë/ditë",
+            "maxPerDay": 30,
+            "noteSq": "Vetëm ≥12 vjeç dhe ≥35 kg. Doza më e ulët efektive; zakonisht jo më shumë se 7 ditë.",
+            "source": "MHRA · kufijtë e përditësuar"
+          }
+        ],
+        "safetyConfirmation": "Pa QT të zgjatur, sëmundje kardiake, çrregullime elektrolitike, insuficiencë hepatike të moderuar/rëndë, pengesë ose gjakderdhje gastrointestinale; pa barna që zgjasin QT ose inhibitorë potentë CYP3A4."
+      }
+    ],
+    "Ampicillin": [
+      {
+        "label": "Infeksion respirator",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "sourceUrl": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=116d482a-f6e8-6130-e054-00144ff88e88",
+        "rules": [
+          {
+            "doseType": "weight",
+            "min": 12.5,
+            "max": 12.5,
+            "unit": "mg",
+            "period": "dose",
+            "maxKg": 20,
+            "maxPerDose": 250,
+            "frequency": "çdo 6 orë",
+            "source": "DailyMed · ampicillin oral",
+            "noteSq": "30 minuta para ose 2 orë pas ushqimit."
+          },
+          {
+            "doseType": "fixed",
+            "min": 250,
+            "max": 250,
+            "unit": "mg",
+            "period": "dose",
+            "minKg": 20,
+            "minKgInclusive": false,
+            "frequency": "çdo 6 orë",
+            "source": "DailyMed · ampicillin oral",
+            "noteSq": "30 minuta para ose 2 orë pas ushqimit."
+          }
+        ],
+        "safetyConfirmation": "Pa alergji të rëndë ndaj beta-laktamëve; funksioni renal dhe përshtatshmëria e trajtimit oral janë kontrolluar."
+      },
+      {
+        "label": "Infeksion urinar / gastrointestinal",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "sourceUrl": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=116d482a-f6e8-6130-e054-00144ff88e88",
+        "rules": [
+          {
+            "doseType": "weight",
+            "min": 25,
+            "max": 25,
+            "unit": "mg",
+            "period": "dose",
+            "maxKg": 20,
+            "maxPerDose": 500,
+            "frequency": "çdo 6 orë",
+            "source": "DailyMed · ampicillin oral",
+            "noteSq": "30 minuta para ose 2 orë pas ushqimit."
+          },
+          {
+            "doseType": "fixed",
+            "min": 500,
+            "max": 500,
+            "unit": "mg",
+            "period": "dose",
+            "minKg": 20,
+            "minKgInclusive": false,
+            "frequency": "çdo 6 orë",
+            "source": "DailyMed · ampicillin oral",
+            "noteSq": "30 minuta para ose 2 orë pas ushqimit."
+          }
+        ],
+        "safetyConfirmation": "Pa alergji të rëndë ndaj beta-laktamëve; funksioni renal dhe përshtatshmëria e trajtimit oral janë kontrolluar."
+      }
+    ],
+    "Cefuroxime": [
+      {
+        "label": "Infeksion · IV",
+        "mode": "clinicalRules",
+        "route": "injectable",
+        "sourceUrl": "https://www.medicines.org.uk/emc/product/9423/smpc",
+        "rules": [
+          {
+            "doseType": "weight",
+            "min": 20,
+            "max": 20,
+            "unit": "mg",
+            "period": "dose",
+            "minDays": 21,
+            "minDaysInclusive": false,
+            "maxKg": 40,
+            "maxKgInclusive": false,
+            "frequency": "çdo 8 orë",
+            "source": "SmPC · cefuroxime IV",
+            "noteSq": "60 mg/kg/24 orë, në 3 doza. Injeksion IV 3–5 minuta ose infuzion 30–60 minuta; jo skemë IM."
+          }
+        ],
+        "safetyConfirmation": "Pa alergji të rëndë ndaj beta-laktamëve; funksion renal pa nevojë për përshtatje dhe indikacion i përshtatshëm (pneumoni, infeksion urinar i komplikuar, inde të buta ose intraabdominal)."
+      }
+    ],
+    "Amoxicillin": [
+      {
+        "label": "Infeksion i rëndë · infuzion IV",
+        "mode": "clinicalRules",
+        "route": "injectable",
+        "sourceUrl": "https://www.medicines.org.uk/emc/product/102596/smpc",
+        "rules": [
+          {
+            "doseType": "weight",
+            "min": 20,
+            "max": 200,
+            "unit": "mg",
+            "period": "day",
+            "split": 4,
+            "minMonths": 3,
+            "minInclusive": false,
+            "maxKg": 40,
+            "maxKgInclusive": false,
+            "frequency": "çdo 6 orë · infuzion IV",
+            "source": "SmPC · amoxicillin IV",
+            "noteSq": "Diapazon 20–200 mg/kg/24 orë në 4 doza; zgjedhja brenda diapazonit varet nga infeksioni. Infuzion 20–30 minuta, maksimum 50 mg/kg për infuzion. Nuk është skemë për bolus IV, IM ose neonatë."
+          }
+        ],
+        "marketStrengthMg": 1000,
+        "safetyConfirmation": "Pa alergji të rëndë ndaj beta-laktamëve; funksion renal pa nevojë për përshtatje. Indikacioni dhe doza brenda diapazonit janë vlerësuar nga mjeku."
+      }
+    ],
+    "Acyclovir": [
+      {
+        "label": "HSV mukokutan · imunokomprometuar · IV",
+        "mode": "clinicalRules",
+        "route": "injectable",
+        "sourceUrl": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=cb64dfab-52ee-4312-bc9c-c3d04efe9109",
+        "rules": [
+          {
+            "doseType": "weight",
+            "min": 10,
+            "max": 10,
+            "unit": "mg",
+            "period": "dose",
+            "minMonths": 3,
+            "maxMonths": 144,
+            "maxInclusive": false,
+            "frequency": "çdo 8 orë · infuzion IV",
+            "source": "DailyMed · acyclovir IV",
+            "noteSq": "Infuzion të paktën 1 orë; 7 ditë sipas kësaj etikete. Jo IM, jo bolus. Vlerëso kohëzgjatjen sipas protokollit klinik."
+          },
+          {
+            "doseType": "weight",
+            "min": 5,
+            "max": 5,
+            "unit": "mg",
+            "period": "dose",
+            "minMonths": 144,
+            "frequency": "çdo 8 orë · infuzion IV",
+            "source": "DailyMed · acyclovir IV",
+            "noteSq": "Infuzion të paktën 1 orë; 7 ditë sipas kësaj etikete. Jo IM, jo bolus. Vlerëso kohëzgjatjen sipas protokollit klinik."
+          }
+        ],
+        "marketStrengthMg": 250,
+        "safetyConfirmation": "Funksion renal normal, hidratim i përshtatshëm; pesha reale është e përshtatshme për dozimin (në obezitet kërkohet pesha ideale). Jo për neonatë."
+      },
+      {
+        "label": "Encefalit HSV · IV",
+        "mode": "clinicalRules",
+        "route": "injectable",
+        "sourceUrl": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=cb64dfab-52ee-4312-bc9c-c3d04efe9109",
+        "rules": [
+          {
+            "doseType": "weight",
+            "min": 20,
+            "max": 20,
+            "unit": "mg",
+            "period": "dose",
+            "minMonths": 3,
+            "maxMonths": 144,
+            "maxInclusive": false,
+            "frequency": "çdo 8 orë · infuzion IV",
+            "source": "DailyMed · acyclovir IV",
+            "noteSq": "Infuzion të paktën 1 orë; 10 ditë sipas kësaj etikete. Jo IM, jo bolus. Vlerëso kohëzgjatjen sipas protokollit klinik."
+          },
+          {
+            "doseType": "weight",
+            "min": 10,
+            "max": 10,
+            "unit": "mg",
+            "period": "dose",
+            "minMonths": 144,
+            "frequency": "çdo 8 orë · infuzion IV",
+            "source": "DailyMed · acyclovir IV",
+            "noteSq": "Infuzion të paktën 1 orë; 10 ditë sipas kësaj etikete. Jo IM, jo bolus. Vlerëso kohëzgjatjen sipas protokollit klinik."
+          }
+        ],
+        "marketStrengthMg": 250,
+        "safetyConfirmation": "Funksion renal normal, hidratim i përshtatshëm; pesha reale është e përshtatshme për dozimin (në obezitet kërkohet pesha ideale). Jo për neonatë."
+      },
+      {
+        "label": "VZV · imunokomprometuar · IV",
+        "mode": "clinicalRules",
+        "route": "injectable",
+        "sourceUrl": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=cb64dfab-52ee-4312-bc9c-c3d04efe9109",
+        "rules": [
+          {
+            "doseType": "weight",
+            "min": 20,
+            "max": 20,
+            "unit": "mg",
+            "period": "dose",
+            "minMonths": 3,
+            "maxMonths": 144,
+            "maxInclusive": false,
+            "frequency": "çdo 8 orë · infuzion IV",
+            "source": "DailyMed · acyclovir IV",
+            "noteSq": "Infuzion të paktën 1 orë; 7 ditë sipas kësaj etikete. Jo IM, jo bolus. Vlerëso kohëzgjatjen sipas protokollit klinik."
+          },
+          {
+            "doseType": "weight",
+            "min": 10,
+            "max": 10,
+            "unit": "mg",
+            "period": "dose",
+            "minMonths": 144,
+            "frequency": "çdo 8 orë · infuzion IV",
+            "source": "DailyMed · acyclovir IV",
+            "noteSq": "Infuzion të paktën 1 orë; 7 ditë sipas kësaj etikete. Jo IM, jo bolus. Vlerëso kohëzgjatjen sipas protokollit klinik."
+          }
+        ],
+        "marketStrengthMg": 250,
+        "safetyConfirmation": "Funksion renal normal, hidratim i përshtatshëm; pesha reale është e përshtatshme për dozimin (në obezitet kërkohet pesha ideale). Jo për neonatë."
+      }
+    ],
+    "Cefoperazone": [
+      {
+        "label": "Infeksion · Sulcef 1:1 · IV",
+        "mode": "clinicalRules",
+        "route": "injectable",
+        "sourceUrl": "https://www.anm.ro/_/_PRO/PRO_8729_21.03.16.pdf",
+        "rules": [
+          {
+            "doseType": "weight",
+            "min": 40,
+            "max": 80,
+            "unit": "mg",
+            "period": "day",
+            "split": 2,
+            "maxDays": 7,
+            "frequency": "çdo 12 orë · infuzion IV",
+            "maxDailyPerKg": 80,
+            "source": "ANMDMR · Sulcef 1:1",
+            "noteSq": "mg janë shuma cefoperazone + sulbactam, jo vetëm cefoperazone. Në 0–7 ditë: maksimum 40 mg sulbactam/kg/24 orë."
+          },
+          {
+            "doseType": "weight",
+            "min": 40,
+            "max": 80,
+            "unit": "mg",
+            "period": "day",
+            "split": 2,
+            "minDays": 7,
+            "minDaysInclusive": false,
+            "maxMonths": 144,
+            "maxInclusive": false,
+            "frequency": "çdo 12 orë · infuzion IV",
+            "source": "ANMDMR · Sulcef 1:1",
+            "noteSq": "mg janë shuma cefoperazone + sulbactam. Frekuenca e zgjedhur: 2 doza/ditë nga 2–4 të lejuara në burim."
+          }
+        ],
+        "marketProductPattern": "^Sulcef 1g/1g$",
+        "componentBasis": "cefoperazone+sulbactam-total",
+        "marketStrengthMg": 2000,
+        "safetyConfirmation": "Vetëm Sulcef 1 g + 1 g (1:1). Pa nevojë për përshtatje renale/hepatike; alergjia beta-laktame dhe rreziku i gjakderdhjes janë kontrolluar."
+      }
+    ],
+    "Iron": [
+      {
+        "label": "IDA e lehtë / mesatare",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "componentBasis": "elemental-iron",
+        "marketProductPattern": "^HEMAFER$",
+        "sourceUrl": "https://www.rch.org.au/clinicalguide/guideline_index/Iron_deficiency/",
+        "safetyConfirmation": "Anemia dhe mungesa e hekurit janë konfirmuar. Pa hekur parenteral njëkohësisht; kontrollo përmbajtjen elementare të etiketës.",
+        "rules": [
+          {
+            "doseType": "weight",
+            "min": 3,
+            "max": 3,
+            "unit": "mg",
+            "period": "day",
+            "minMonths": 1,
+            "minInclusive": false,
+            "maxKg": 40,
+            "frequency": "gjithsej në 24 orë · ndarja sipas planit klinik",
+            "source": "RCH CPG · elemental iron",
+            "noteSq": "Hekur elementar; ndarja e dozës ditore sipas tolerancës dhe etiketës. Për >40 kg ose neonatë kërkohet plan individual."
+          }
+        ]
+      },
+      {
+        "label": "IDA e rëndë",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "componentBasis": "elemental-iron",
+        "marketProductPattern": "^HEMAFER$",
+        "sourceUrl": "https://www.rch.org.au/clinicalguide/guideline_index/Iron_deficiency/",
+        "safetyConfirmation": "Anemia e rëndë është konfirmuar (Hb ≤80 g/L) dhe është planifikuar ndjekje e hershme. Pa hekur parenteral njëkohësisht; kontrollo përmbajtjen elementare të etiketës.",
+        "rules": [
+          {
+            "doseType": "weight",
+            "min": 6,
+            "max": 6,
+            "unit": "mg",
+            "period": "day",
+            "minMonths": 1,
+            "minInclusive": false,
+            "maxKg": 40,
+            "frequency": "gjithsej në 24 orë · ndarja sipas planit klinik",
+            "source": "RCH CPG · elemental iron",
+            "noteSq": "Hekur elementar; ndarja e dozës ditore sipas tolerancës dhe etiketës. Për >40 kg ose neonatë kërkohet plan individual."
+          }
+        ]
       }
     ]
+  },
+  "replaceBase": [
+    "Domperidone",
+    "Cefoperazone",
+    "Iron"
+  ],
+  "summaries": {
+    "Domperidone": "Vetëm ≥12 vjeç DHE ≥35 kg: deri 10 mg për dozë, deri 3 herë/ditë; zakonisht ≤7 ditë. Skema e vjetër për <35 kg nuk përdoret.",
+    "Cefoperazone": "Vetëm produkti i zgjedhur Sulcef 1 g + 1 g (1:1). Doza shprehet si shuma e të dy komponentëve; formulime të tjera nuk marrin këtë skemë.",
+    "Iron": "Doza është hekur elementar. HEMAFER 50 mg/mL lidhet me deklarimin e qartë IRON (III) në regjistër dhe burimet e produktit. Për >40 kg kërkohet plan individual; neonatët nuk përfshihen.",
+    "Pantoprazole": "Skema orale për tabletat gastrorezistente NORMON / Nolpaza lidhet me produktin dhe kërkon moshë reale ≥12 vjeç. Skema IV nuk kalohet te tabletat.",
+    "Ampicillin": "Skemat orale lidhen me infeksionin respirator ose urinar/gastrointestinal. Skemat IV/IM të infeksionit të rëndë mbeten veçmas, me kufijtë përkatës të moshës.",
+    "Cefuroxime": "Doza orale dhe IV zgjidhen veçmas. Skema standarde IV këtu përfshin >21 ditë dhe <40 kg, me funksion renal pa nevojë për përshtatje.",
+    "Acyclovir": "Varicela orale dhe infeksionet HSV/VZV me infuzion IV kanë skema të ndara. IV kërkon funksion renal normal, hidratim dhe ≥3 muaj; trajtimi neonatal kërkon protokoll tjetër.",
+    "Amoxicillin": "Skemat orale lidhen me indikacionin. Për produktin injektues 1 g, diapazoni i infuzionit IV për >3 muaj dhe <40 kg zgjidhet veçmas; nuk përdoret si skemë IM ose bolus."
+  },
+  "currentWarnings": {
+    "Domperidone": [
+      "Rrezik QT/aritmie dhe ndërveprime serioze; kontrollo kundërindikacionet para përdorimit."
+    ],
+    "Cefoperazone": [
+      "Doza është për kombinimin TOTAL 1:1; mos e trajto si dozë të cefoperazone vetëm."
+    ],
+    "Iron": [
+      "Doza dhe mL shprehen NË 24 ORË, jo për një marrje. Mos jep hekur oral dhe parenteral bashkë; kërko ndjekje të Hb/ferritinës."
+    ]
+  },
+  "componentProducts": [
+    {
+      "id": "778f9037-3db3-462a-bb1b-91cb31d8f084",
+      "fields": {
+        "trade_name": "HEMAFER",
+        "atc_code": "B03AB05",
+        "active_substance": "Ferric hydroxide polymaltose complex Correspond to IRON (III) 50 mg",
+        "strength": "50 mg/1 ml",
+        "pharmaceutical_form": "Oral drops, solution",
+        "packaging": "Bottle containing 30ml of solution"
+      },
+      "value": 50,
+      "unit": "mg",
+      "perML": 1,
+      "basis": "elemental-iron",
+      "sources": [
+        "https://www.uni-pharma.gr/en/nonprescriptive/hemafer-6/",
+        "https://www.ndf.gov.sg/about-drugs/active-ingredient/m00471/"
+      ]
+    }
+  ],
+  "routeInstructions": {
+    "Linezolid": {
+      "injectable": {
+        "noteSq": "Vetëm infuzion IV, 30–120 minuta. Jo IM ose bolus.",
+        "sourceUrl": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=50630775-7f76-413e-9278-ba298dd7f187",
+        "safetyConfirmation": "Indikacioni dhe antibiogrami janë kontrolluar; janë vlerësuar hemograma, barnat serotonergjike dhe inhibitorët MAO."
+      }
+    }
   }
 }

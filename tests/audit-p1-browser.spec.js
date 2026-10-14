@@ -392,3 +392,27 @@ test('AKKPM ampoule workflow requires actual age and IV safety, and clears stale
   await page.locator('#pediatricWeight').fill('');
   await expect(page.locator('.dz-market-measure')).toHaveCount(0);
 });
+
+test('AKKPM concise indications follow actual age and verified oral product',async({page})=>{
+ await page.setViewportSize({width:390,height:900});await api(page);
+ await page.route('**/api/dosage?view=pediatric-common-reference*',route=>route.fulfill({json:pediatricReference}));
+ await page.route('**/api/dosage?view=pediatric-common-calculate',async route=>{const result=require('../lib/pediatric-common-calculate-handler').calculate(pediatricReference,route.request().postDataJSON());await route.fulfill({status:result.error?422:200,json:result});});
+ await page.goto(`${baseURL}/dozologjia.html`);
+ await page.locator('#pediatricDrug').selectOption('Cetirizine');
+ const cet=marketVariant('Cetirizine',v=>v.form.key==='oral-liquid'&&v.concentration.value/v.concentration.perML===1&&v.schemes.length);
+ await page.locator('#pediatricForm').selectOption(cet.form.key);await page.locator('#pediatricStrength').selectOption(cet.id);
+ await page.locator('#pediatricScheme').selectOption({label:'Alergji · dozë standarde'});
+ await page.locator('#pediatricWeight').fill('12');await page.locator('#pediatricAgeUnit').selectOption('year');await page.locator('#pediatricAge').fill('4');await page.locator('#pediatricAgeConfirmed').check();
+ await expect(page.locator('.dz-market-measure')).toHaveText('2,5 mL');await expect(page.locator('#pediatricAnswer')).not.toContainText('12–23');
+ await page.locator('#pediatricWeight').fill('');await expect(page.locator('#pediatricAge')).toHaveValue('');await expect(page.locator('.dz-market-measure')).toHaveCount(0);
+ await page.locator('#pediatricWeight').fill('20');await expect(page.locator('#pediatricAge')).toHaveValue('66');await page.locator('#pediatricAgeConfirmed').check();await expect(page.locator('.dz-common-result-dose')).toHaveText('2,5 mg');
+ await page.locator('#pediatricAge').fill('72');await page.locator('#pediatricAgeConfirmed').check();await expect(page.locator('.dz-common-result-dose')).toHaveText('5–10 mg');
+ await page.locator('#pediatricDrug').selectOption('Pantoprazole');
+ const panto=marketVariant('Pantoprazole',v=>v.label.includes('NORMON')&&v.concentration.value===20);
+ await page.locator('#pediatricForm').selectOption(panto.form.key);await page.locator('#pediatricStrength').selectOption(panto.id);
+ await page.locator('#pediatricScheme').selectOption({label:'Refluks gastroezofageal'});
+ await page.locator('#pediatricWeight').fill('40');await page.locator('#pediatricAgeUnit').selectOption('year');await page.locator('#pediatricAge').fill('12');await page.locator('#pediatricAgeConfirmed').check();await page.locator('#pediatricSafetyConfirmed').check();
+ await expect(page.locator('.dz-market-measure')).toHaveText('1 tabletë');await expect(page.locator('#pediatricAnswer')).toContainText('Nga goja');await expect(page.locator('#pediatricAnswer')).toContainText('mos e ndaj');
+ await page.locator('#pediatricAge').fill('11');await page.locator('#pediatricAgeConfirmed').check();await expect(page.locator('.dz-market-measure')).toHaveCount(0);await expect(page.locator('#pediatricAnswer')).toContainText('Nuk ka skemë');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});

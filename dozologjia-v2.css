@@ -2139,7 +2139,7 @@ button,input,select{font:inherit}
 @media(max-width:760px){
  .dosage-page .dz-common-head{display:block;padding-bottom:16px}.dosage-page .dz-common-head .dz-status{display:block;margin-top:12px;max-width:none}
  .dz-market-workspace{padding:18px 16px;border-radius:13px}.dz-market-pickers{gap:16px;grid-template-columns:1fr}.dz-market-drug,.dz-market-scheme{grid-column:auto}
- .dz-market-patient{gap:12px;margin-top:20px;padding-top:20px}.dz-market-age{grid-template-columns:minmax(0,1fr) 68px;gap:5px}.dz-market-age select{padding:10px 4px}
+ .dz-market-patient{gap:12px;margin-top:20px;padding-top:20px}.dz-market-age{grid-template-columns:minmax(0,1fr) 88px;gap:5px}.dz-market-age select{padding:10px 4px}
  .dz-market-age input[type=text]{padding:10px}.dz-market-number input[type=text]{padding:10px;font-size:26px}.dz-market-number>span{padding-right:10px}
  .dz-market-answer{padding:16px;margin-top:20px}.dz-market-confirm{font-size:12px}
 }
