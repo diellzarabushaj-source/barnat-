@@ -1,0 +1,1126 @@
+{
+  "schemaVersion": "pediatric-market-additions-v1",
+  "auditedAt": "2026-10-15",
+  "registryCheckedAt": "2026-10-15",
+  "drugs": [
+    {
+      "name": "Loratadine",
+      "section": "Anti Histaminic",
+      "atcCodes": [
+        "R06AX13"
+      ],
+      "componentPattern": "^loratadin",
+      "summarySq": "Rinit alergjik / urtikarie: forma e lëngshme nga 2 vjeç; tabletë e plotë nga 6 vjeç dhe >30 kg.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Loratadine",
+          "url": "https://www.medicines.org.uk/emc/product/4567/smpc"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Loratadine",
+          "url": "https://www.medicines.org.uk/emc/product/14580/smpc"
+        }
+      ],
+      "options": [
+        {
+          "label": "Rinit alergjik / urtikarie · shurup",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.medicines.org.uk/emc/product/4567/smpc",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 5,
+              "max": 5,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 144,
+              "maxInclusive": true,
+              "minMonths": 24,
+              "maxKg": 30,
+              "frequency": "1 herë/ditë",
+              "maxPerDay": 5,
+              "source": "Loratadine syrup SmPC",
+              "noteSq": "Për rinit alergjik / urtikarie. Dëmtimi i rëndë hepatik kërkon regjim tjetër, jo këtë llogaritje standarde."
+            },
+            {
+              "doseType": "fixed",
+              "min": 10,
+              "max": 10,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 144,
+              "maxInclusive": true,
+              "minMonths": 24,
+              "minKg": 30,
+              "minKgInclusive": false,
+              "frequency": "1 herë/ditë",
+              "maxPerDay": 10,
+              "source": "Loratadine syrup SmPC",
+              "noteSq": "Për rinit alergjik / urtikarie. Dëmtimi i rëndë hepatik kërkon regjim tjetër, jo këtë llogaritje standarde."
+            },
+            {
+              "doseType": "fixed",
+              "min": 10,
+              "max": 10,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "minMonths": 144,
+              "frequency": "1 herë/ditë",
+              "maxPerDay": 10,
+              "source": "Loratadine syrup SmPC",
+              "noteSq": "Për rinit alergjik / urtikarie. Dëmtimi i rëndë hepatik kërkon regjim tjetër, jo këtë llogaritje standarde.",
+              "minInclusive": false
+            }
+          ],
+          "marketMgPerML": 1,
+          "marketFormPattern": "syrup|oral (?:solution|suspension)",
+          "safetyConfirmation": "Pa dëmtim të rëndë hepatik dhe pa antihistaminik tjetër; janë kontrolluar kundërindikacionet / ndërveprimet.",
+          "eligibilitySq": "Nga 2 vjeç. Doza e shurupit varet nga mosha dhe kufiri 30 kg.",
+          "marketRequirePediatricPopulation": true
+        },
+        {
+          "label": "Rinit alergjik / urtikarie · tabletë 10 mg",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.medicines.org.uk/emc/product/14580/smpc",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 10,
+              "max": 10,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "minMonths": 72,
+              "minKg": 30,
+              "minKgInclusive": false,
+              "frequency": "1 herë/ditë",
+              "maxPerDay": 10,
+              "source": "Loratadine tablet SmPC",
+              "noteSq": "Vetëm tabletë e plotë, nga 6 vjeç dhe mbi 30 kg; për peshë më të vogël zgjidh formën e lëngshme."
+            }
+          ],
+          "marketStrengthMg": 10,
+          "marketFormPattern": "^Tablet$",
+          "safetyConfirmation": "Pa dëmtim të rëndë hepatik dhe pa antihistaminik tjetër; janë kontrolluar kundërindikacionet / ndërveprimet.",
+          "eligibilitySq": "Nga 6 vjeç dhe mbi 30 kg. Një tabletë e plotë; mos e ndaj automatikisht.",
+          "marketRequirePediatricPopulation": true
+        }
+      ],
+      "searchTerms": "loratidine loratadin flonidan alerdin"
+    },
+    {
+      "name": "Dexamethasone",
+      "section": "Steroids",
+      "atcCodes": [
+        "H02AB02"
+      ],
+      "componentPattern": "^dexamethasone",
+      "summarySq": "Skema të veçanta për krup. Doza shprehet si bazë; ampulat e fosfatit kërkojnë ekuivalencë të konfirmuar për produktin.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Dexamethasone",
+          "url": "https://www.rch.org.au/clinicalguide/guideline_index/Croup_Laryngotracheobronchitis/"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Dexamethasone",
+          "url": "https://www.medicines.org.uk/emc/product/11015/smpc"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Dexamethasone",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/67455/FT_67455.html"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Dexamethasone",
+          "url": "https://www.alims.gov.rs/doc_file/lekovi/pil/000010495%202024%2059010%20007%20000%20515%20002%2004%20001.pdf"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Dexamethasone",
+          "url": "https://www.leedsformulary.nhs.uk/docs/Dexamethasone%20Medusa%20Poster%20-%20paediatric%20oncology.pdf"
+        }
+      ],
+      "options": [
+        {
+          "label": "Krup i lehtë / mesatar · oral · lëng",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.rch.org.au/clinicalguide/guideline_index/Croup_Laryngotracheobronchitis/",
+          "rules": [
+            {
+              "doseType": "weight",
+              "min": 0.15,
+              "max": 0.15,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 72,
+              "maxInclusive": true,
+              "minMonths": 6,
+              "maxPerDose": 12,
+              "frequency": "Një dozë e vetme",
+              "source": "RCH · croup",
+              "noteSq": "Vetëm krup, 6 muaj–6 vjeç. Nuk është dozë e përgjithshme për alergji / astmë. Krupi i rëndë kërkon trajtim urgjent; kortikosteroidi nuk vonon adrenalinën e nebulizuar dhe menaxhimin e rrugëve të frymëmarrjes."
+            }
+          ],
+          "safetyConfirmation": "Diagnoza e krupit dhe rëndësia janë vlerësuar; jo kundërindikacione / ndërveprime me kortikosteroide. Doza shprehet si deksametazon bazë.",
+          "eligibilitySq": "6 muaj–6 vjeç; një dozë. Për doza që nuk përputhen me tableta të plota, zgjidh solucionin 2 mg/5 mL.",
+          "marketMgPerML": 0.4,
+          "marketFormPattern": "^Oral solution$",
+          "marketRequirePediatricPopulation": true
+        },
+        {
+          "label": "Krup i lehtë / mesatar · oral · tableta",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.rch.org.au/clinicalguide/guideline_index/Croup_Laryngotracheobronchitis/",
+          "rules": [
+            {
+              "doseType": "weight",
+              "min": 0.15,
+              "max": 0.15,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 72,
+              "maxInclusive": true,
+              "minMonths": 6,
+              "maxPerDose": 12,
+              "frequency": "Një dozë e vetme",
+              "source": "RCH · croup",
+              "noteSq": "Vetëm krup, 6 muaj–6 vjeç. Nuk është dozë e përgjithshme për alergji / astmë. Krupi i rëndë kërkon trajtim urgjent; kortikosteroidi nuk vonon adrenalinën e nebulizuar dhe menaxhimin e rrugëve të frymëmarrjes."
+            }
+          ],
+          "safetyConfirmation": "Diagnoza e krupit dhe rëndësia janë vlerësuar; jo kundërindikacione / ndërveprime me kortikosteroide. Doza shprehet si deksametazon bazë.",
+          "eligibilitySq": "6 muaj–6 vjeç; një dozë. Për doza që nuk përputhen me tableta të plota, zgjidh solucionin 2 mg/5 mL.",
+          "marketFormPattern": "^Tablet$",
+          "marketActivePattern": "^Dexamethasone(?: \\(micronised\\))?$",
+          "marketRequirePediatricPopulation": true
+        },
+        {
+          "label": "Krup i rëndë · oral · lëng",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.rch.org.au/clinicalguide/guideline_index/Croup_Laryngotracheobronchitis/",
+          "rules": [
+            {
+              "doseType": "weight",
+              "min": 0.6,
+              "max": 0.6,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 72,
+              "maxInclusive": true,
+              "minMonths": 6,
+              "maxPerDose": 12,
+              "frequency": "Një dozë e vetme",
+              "source": "RCH · croup",
+              "noteSq": "Vetëm krup, 6 muaj–6 vjeç. Nuk është dozë e përgjithshme për alergji / astmë. Krupi i rëndë kërkon trajtim urgjent; kortikosteroidi nuk vonon adrenalinën e nebulizuar dhe menaxhimin e rrugëve të frymëmarrjes."
+            }
+          ],
+          "safetyConfirmation": "Diagnoza e krupit dhe rëndësia janë vlerësuar; jo kundërindikacione / ndërveprime me kortikosteroide. Doza shprehet si deksametazon bazë.",
+          "eligibilitySq": "6 muaj–6 vjeç; një dozë. Për doza që nuk përputhen me tableta të plota, zgjidh solucionin 2 mg/5 mL.",
+          "marketMgPerML": 0.4,
+          "marketFormPattern": "^Oral solution$",
+          "marketRequirePediatricPopulation": true
+        },
+        {
+          "label": "Krup i rëndë · oral · tableta",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.rch.org.au/clinicalguide/guideline_index/Croup_Laryngotracheobronchitis/",
+          "rules": [
+            {
+              "doseType": "weight",
+              "min": 0.6,
+              "max": 0.6,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 72,
+              "maxInclusive": true,
+              "minMonths": 6,
+              "maxPerDose": 12,
+              "frequency": "Një dozë e vetme",
+              "source": "RCH · croup",
+              "noteSq": "Vetëm krup, 6 muaj–6 vjeç. Nuk është dozë e përgjithshme për alergji / astmë. Krupi i rëndë kërkon trajtim urgjent; kortikosteroidi nuk vonon adrenalinën e nebulizuar dhe menaxhimin e rrugëve të frymëmarrjes."
+            }
+          ],
+          "safetyConfirmation": "Diagnoza e krupit dhe rëndësia janë vlerësuar; jo kundërindikacione / ndërveprime me kortikosteroide. Doza shprehet si deksametazon bazë.",
+          "eligibilitySq": "6 muaj–6 vjeç; një dozë. Për doza që nuk përputhen me tableta të plota, zgjidh solucionin 2 mg/5 mL.",
+          "marketFormPattern": "^Tablet$",
+          "marketActivePattern": "^Dexamethasone(?: \\(micronised\\))?$",
+          "marketRequirePediatricPopulation": true
+        },
+        {
+          "label": "Krup i rëndë · IM / IV · Kern Pharma",
+          "mode": "clinicalRules",
+          "route": "injectable",
+          "sourceUrl": "https://www.rch.org.au/clinicalguide/guideline_index/Croup_Laryngotracheobronchitis/",
+          "rules": [
+            {
+              "doseType": "weight",
+              "min": 0.6,
+              "max": 0.6,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 72,
+              "maxInclusive": true,
+              "minMonths": 6,
+              "maxPerDose": 12,
+              "frequency": "Një dozë e vetme",
+              "source": "RCH · croup",
+              "noteSq": "Vetëm krup, 6 muaj–6 vjeç. Nuk është dozë e përgjithshme për alergji / astmë. Krupi i rëndë kërkon trajtim urgjent; kortikosteroidi nuk vonon adrenalinën e nebulizuar dhe menaxhimin e rrugëve të frymëmarrjes."
+            }
+          ],
+          "marketEvidenceKey": "dexamethasone-kern-base",
+          "marketProductLabel": "Kern Pharma",
+          "marketMgPerML": 3.33,
+          "marketFormPattern": "^Solution for injection(?:/infusion)?$",
+          "safetyConfirmation": "Diagnoza e krupit dhe rëndësia janë vlerësuar; jo kundërindikacione / ndërveprime me kortikosteroide. Doza shprehet si deksametazon bazë. Administrim nga personeli në urgjencë, me konfirmim të përgatitjes / rrugës sipas SmPC.",
+          "eligibilitySq": "Vetëm ky produkt i kontrolluar; 4 mg fosfat për mL = 3,33 mg bazë për mL. Jo transferim te ampulat e markave të tjera."
+        },
+        {
+          "label": "Krup i rëndë · IM / IV · Dexason",
+          "mode": "clinicalRules",
+          "route": "injectable",
+          "sourceUrl": "https://www.rch.org.au/clinicalguide/guideline_index/Croup_Laryngotracheobronchitis/",
+          "rules": [
+            {
+              "doseType": "weight",
+              "min": 0.6,
+              "max": 0.6,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 72,
+              "maxInclusive": true,
+              "minMonths": 6,
+              "maxPerDose": 12,
+              "frequency": "Një dozë e vetme",
+              "source": "RCH · croup",
+              "noteSq": "Vetëm krup, 6 muaj–6 vjeç. Nuk është dozë e përgjithshme për alergji / astmë. Krupi i rëndë kërkon trajtim urgjent; kortikosteroidi nuk vonon adrenalinën e nebulizuar dhe menaxhimin e rrugëve të frymëmarrjes."
+            }
+          ],
+          "marketEvidenceKey": "dexason-base",
+          "marketProductLabel": "Dexason",
+          "marketMgPerML": 3.32,
+          "marketFormPattern": "^Solution for injection(?:/infusion)?$",
+          "safetyConfirmation": "Diagnoza e krupit dhe rëndësia janë vlerësuar; jo kundërindikacione / ndërveprime me kortikosteroide. Doza shprehet si deksametazon bazë. Administrim nga personeli në urgjencë, me konfirmim të përgatitjes / rrugës sipas SmPC.",
+          "eligibilitySq": "Vetëm ky produkt i kontrolluar; 4 mg fosfat për mL = 3,32 mg bazë për mL. Jo transferim te ampulat e markave të tjera."
+        }
+      ],
+      "searchTerms": "deksametazon dexason dekort"
+    },
+    {
+      "name": "Methylprednisolone",
+      "section": "Steroids",
+      "atcCodes": [
+        "H02AB04"
+      ],
+      "componentPattern": "^methylprednisolone",
+      "summarySq": "Astmë: kurs oral i shkurtër dhe dozë fillestare IV janë skema të ndara; sodium succinate nuk zëvendësohet me acetate / depot.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Methylprednisolone",
+          "url": "https://www.nhlbi.nih.gov/sites/default/files/media/docs/asthgdln_1.pdf"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Methylprednisolone",
+          "url": "https://cps.ca/uploads/documents/Table_2._Medications_and_dosages_for_acute_asthma_treatments_by_health_care_providers_in_children_older_than_1_year_.docx_.pdf"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Methylprednisolone",
+          "url": "https://labeling.pfizer.com/showlabeling.aspx?id=648"
+        }
+      ],
+      "options": [
+        {
+          "label": "Përkeqësim i astmës · kurs i shkurtër oral",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.nhlbi.nih.gov/sites/default/files/media/docs/asthgdln_1.pdf",
+          "rules": [
+            {
+              "doseType": "weight",
+              "min": 1,
+              "max": 2,
+              "unit": "mg",
+              "period": "day",
+              "maxMonths": 144,
+              "maxInclusive": false,
+              "minMonths": 12,
+              "split": 1,
+              "maxPerDay": 60,
+              "frequency": "1 herë/ditë · në mëngjes",
+              "source": "NHLBI EPR-3 · systemic corticosteroid burst",
+              "noteSq": "Kurs i shkurtër, zakonisht 3–10 ditë sipas përgjigjes / protokollit. Tableta të plota; mos përdor për sëmundje të tjera ose ndërprerje të terapisë kronike pa plan."
+            },
+            {
+              "doseType": "fixed",
+              "min": 40,
+              "max": 60,
+              "unit": "mg",
+              "period": "day",
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "minMonths": 144,
+              "split": 1,
+              "maxPerDay": 60,
+              "frequency": "1 herë/ditë · në mëngjes",
+              "source": "NHLBI EPR-3 · systemic corticosteroids ≥12 years",
+              "noteSq": "40–60 mg/ditë për kurs të shkurtër sipas vlerësimit klinik. Nuk është skemë pulsi ose skemë për alergji / sëmundje autoimune."
+            }
+          ],
+          "marketFormPattern": "^Tablet$",
+          "safetyConfirmation": "Astmë e diagnostikuar, indikacion sistemik dhe terapi bronkodilatatore të vlerësuara; pa infeksion fungal sistemik / kundërindikacione, ndërveprimet dhe steroidet e mëparshme janë kontrolluar.",
+          "eligibilitySq": "Nga 1 vjeç; 1–2 mg/kg/ditë deri në 60 mg nën 12 vjeç, pastaj 40–60 mg/ditë. Vetëm tableta të plota.",
+          "marketRequirePediatricPopulation": true
+        },
+        {
+          "label": "Astmë e rëndë · dozë fillestare IV",
+          "mode": "clinicalRules",
+          "route": "injectable",
+          "sourceUrl": "https://cps.ca/uploads/documents/Table_2._Medications_and_dosages_for_acute_asthma_treatments_by_health_care_providers_in_children_older_than_1_year_.docx_.pdf",
+          "rules": [
+            {
+              "doseType": "weight",
+              "min": 1,
+              "max": 2,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "minMonths": 12,
+              "minInclusive": false,
+              "maxPerDose": 80,
+              "frequency": "Dozë fillestare · përsëritja sipas protokollit spitalor",
+              "source": "CPS · acute asthma, children older than 1 year",
+              "noteSq": "Për astmë të rëndë kur rruga orale nuk tolerohet / terapia fillestare nuk mjafton. Kufiri automatik 80 mg është kufiri i poshtëm i intervalit 80–125 mg të burimit. Nuk cakton automatikisht përsëritje çdo 6 orë. Doza në mg; përgatitja / hollimi dhe ritmi sipas produktit. Kontrollo laktozën / alergjinë ndaj proteinave të qumështit dhe konservuesit e formulimit."
+            }
+          ],
+          "marketFormPattern": "powder|lyophili",
+          "marketActivePattern": "sodium succinate",
+          "safetyConfirmation": "Astmë e diagnostikuar, indikacion sistemik dhe terapi bronkodilatatore të vlerësuara; pa infeksion fungal sistemik / kundërindikacione, ndërveprimet dhe steroidet e mëparshme janë kontrolluar. Vetëm IV në spital; produkti sodium succinate, përgatitja, konservuesit dhe alergjenët janë kontrolluar.",
+          "eligibilitySq": "Mbi 1 vjeç; vetëm pluhur methylprednisolone sodium succinate. Mos e ngatërro me methylprednisolone acetate / injeksion depot.",
+          "marketRequirePediatricPopulation": true
+        }
+      ],
+      "searchTerms": "metilprednizolon solu-medrol prednol"
+    },
+    {
+      "name": "Chloropyramine hydrochloride",
+      "section": "Anti Histaminic",
+      "atcCodes": [
+        "R06AC03"
+      ],
+      "componentPattern": "^chlor(?:o)?pyramine",
+      "summarySq": "Suprastin dhe Synopen kanë përqendrime dhe skema të veçanta. Nuk është chlorphenamine / CPM; nuk është trajtimi i parë i anafilaksisë.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Chloropyramine hydrochloride",
+          "url": "https://ogyei.gov.hu/kiseroirat/ah/ah_0000010622_20240129155938.doc"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Chloropyramine hydrochloride",
+          "url": "https://halmed.hr/upl/lijekovi/SPC/SPC_UP-I-530-09-17-02-197.pdf"
+        }
+      ],
+      "options": [
+        {
+          "label": "Alergji akute · Suprastin · fillestare IM",
+          "mode": "clinicalRules",
+          "route": "injectable",
+          "sourceUrl": "https://ogyei.gov.hu/kiseroirat/ah/ah_0000010622_20240129155938.doc",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 5,
+              "max": 5,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 12,
+              "maxInclusive": false,
+              "minMonths": 1,
+              "minKg": 2.5,
+              "frequency": "Një dozë fillestare IM · rivlerëso para përsëritjes",
+              "maxDailyPerKg": 2,
+              "source": "NNGYK / EGIS · Suprastin SmPC January 2024",
+              "noteSq": "Vetëm Suprastin 20 mg/mL dhe vetëm doza fillestare IM. Rritja / përsëritja caktohen nga mjeku; totali nuk kalon 2 mg/kg. Nuk përdor formulën 0,2 mg/kg të Synopen. Kufijtë minimalë të peshës ruajnë kufirin 2 mg/kg; nuk janë kufij moshe të etiketës."
+            },
+            {
+              "doseType": "fixed",
+              "min": 10,
+              "max": 10,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 72,
+              "maxInclusive": false,
+              "minMonths": 12,
+              "minKg": 5,
+              "frequency": "Një dozë fillestare IM · rivlerëso para përsëritjes",
+              "maxDailyPerKg": 2,
+              "source": "NNGYK / EGIS · Suprastin SmPC January 2024",
+              "noteSq": "Vetëm Suprastin 20 mg/mL dhe vetëm doza fillestare IM. Rritja / përsëritja caktohen nga mjeku; totali nuk kalon 2 mg/kg. Nuk përdor formulën 0,2 mg/kg të Synopen. Kufijtë minimalë të peshës ruajnë kufirin 2 mg/kg; nuk janë kufij moshe të etiketës."
+            },
+            {
+              "doseType": "fixed",
+              "min": 10,
+              "max": 10,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 168,
+              "maxInclusive": true,
+              "minMonths": 72,
+              "minKg": 5,
+              "maxKg": 10,
+              "maxKgInclusive": false,
+              "frequency": "Një dozë fillestare IM · rivlerëso para përsëritjes",
+              "maxDailyPerKg": 2,
+              "source": "NNGYK / EGIS · Suprastin SmPC January 2024",
+              "noteSq": "Vetëm Suprastin 20 mg/mL dhe vetëm doza fillestare IM. Rritja / përsëritja caktohen nga mjeku; totali nuk kalon 2 mg/kg. Nuk përdor formulën 0,2 mg/kg të Synopen. Kufijtë minimalë të peshës ruajnë kufirin 2 mg/kg; nuk janë kufij moshe të etiketës."
+            },
+            {
+              "doseType": "fixed",
+              "min": 10,
+              "max": 20,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 168,
+              "maxInclusive": true,
+              "minMonths": 72,
+              "minKg": 10,
+              "frequency": "Një dozë fillestare IM · rivlerëso para përsëritjes",
+              "maxDailyPerKg": 2,
+              "source": "NNGYK / EGIS · Suprastin SmPC January 2024",
+              "noteSq": "Vetëm Suprastin 20 mg/mL dhe vetëm doza fillestare IM. Rritja / përsëritja caktohen nga mjeku; totali nuk kalon 2 mg/kg. Nuk përdor formulën 0,2 mg/kg të Synopen. Kufijtë minimalë të peshës ruajnë kufirin 2 mg/kg; nuk janë kufij moshe të etiketës."
+            }
+          ],
+          "marketEvidenceKey": "suprastin-20mgml",
+          "marketProductLabel": "Suprastin",
+          "marketMgPerML": 20,
+          "safetyConfirmation": "Jo prematur / neonat; pa MAOI në 14 ditët e fundit, astmë akute, dëmtim renal / hepatik ose kundërindikacione. Vetëm personeli shëndetësor me monitorim; nuk vonon adrenalinën IM në anafilaksi.",
+          "eligibilitySq": "Nga 1 muaj deri në 14 vjeç; doza fillestare sipas moshës dhe kufirit të sigurisë sipas peshës."
+        },
+        {
+          "label": "Alergji akute · Synopen · një administrim",
+          "mode": "clinicalRules",
+          "route": "injectable",
+          "sourceUrl": "https://halmed.hr/upl/lijekovi/SPC/SPC_UP-I-530-09-17-02-197.pdf",
+          "rules": [
+            {
+              "doseType": "weight",
+              "min": 0.2,
+              "max": 0.2,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "minMonths": 12,
+              "maxPerDose": 20,
+              "frequency": "Një administrim · përsëritja vetëm sipas mjekut",
+              "source": "HALMED · Synopen 20 mg/2 mL",
+              "noteSq": "0,2 mg/kg për administrim. Vetëm Synopen 20 mg/2 mL; IM i thellë ose IV i ngadalshëm sipas SmPC dhe ekipit klinik. Automatizimi kufizohet nga 1 vjeç; dozat e foshnjave kërkojnë vlerësim të veçantë. Nuk zëvendëson adrenalinën në anafilaksi."
+            }
+          ],
+          "marketEvidenceKey": "synopen-20mg2ml",
+          "marketProductLabel": "Synopen",
+          "marketMgPerML": 10,
+          "safetyConfirmation": "Jo prematur / neonat; pa MAOI në 14 ditët e fundit, astmë akute, dëmtim renal / hepatik ose kundërindikacione. Vetëm personeli shëndetësor me monitorim; nuk vonon adrenalinën IM në anafilaksi.",
+          "eligibilitySq": "Nga 1 vjeç; vetëm Synopen 20 mg/2 mL. Kjo formulë nuk transferohet te Suprastin ose chlorphenamine (CPM)."
+        }
+      ],
+      "searchTerms": "chloropyramine kloropiramin suprastin synopen allergosan"
+    },
+    {
+      "name": "Ketoprofen",
+      "section": "Analgesics",
+      "atcCodes": [
+        "M01AE03"
+      ],
+      "componentPattern": "^ketoprofen",
+      "summarySq": "Ketonal forte 100 mg ka skemë për të rritur; vetëm në 18 vjeç këtu. Fortësitë e kripës lysine dhe produktet e tjera nuk marrin automatikisht këtë skemë.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Ketoprofen",
+          "url": "https://halmed.hr/upl/lijekovi/SPC/Ketonal-forte-SPC.pdf"
+        }
+      ],
+      "options": [
+        {
+          "label": "Dhimbje / inflamacion · Ketonal forte · vetëm ≥18 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://halmed.hr/upl/lijekovi/SPC/Ketonal-forte-SPC.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 100,
+              "max": 100,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "minMonths": 216,
+              "frequency": "1–2 herë/ditë · kohëzgjatja më e shkurtër e nevojshme",
+              "maxPerDay": 200,
+              "source": "HALMED · Ketonal forte 100 mg adult posology",
+              "noteSq": "Kjo skemë e produktit është për të rritur; kalkulatori e shfaq vetëm në moshën 18 vjeç. Nuk është skemë pediatrike mg/kg. Ketoprofen lysine salt nuk barazohet automatikisht mg për mg me ketoprofen bazë."
+            }
+          ],
+          "marketEvidenceKey": "ketonal-forte-100mg",
+          "marketProductLabel": "Ketonal forte",
+          "marketStrengthMg": 100,
+          "marketFormPattern": "^Film coated tablet$",
+          "safetyConfirmation": "Jo NSAID tjetër, gjakderdhje / ulçerë gastrointestinale, insuficiencë renale / hepatike / kardiake e rëndë, dehidrim, shtatzëni ose alergji ndaj NSAID-ve; ndërveprimet janë kontrolluar.",
+          "eligibilitySq": "Vetëm mosha 18 vjeç në këtë kalkulator. Për moshë më të vogël ky produkt nuk ka skemë aktive."
+        }
+      ],
+      "searchTerms": "ketoprofen ketonal oki okitask"
+    },
+    {
+      "name": "Ketorolac",
+      "section": "Analgesics",
+      "atcCodes": [
+        "M01AB15"
+      ],
+      "componentPattern": "^ketorolac",
+      "summarySq": "Dozë fillestare parenterale pas operacionit nga 16 vjeç, në spital. Jo përdorim rutinë pediatrik ose transferim te forma orale.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Ketorolac",
+          "url": "https://www.medicines.org.uk/emc/files/pil.11547.pdf"
+        }
+      ],
+      "options": [
+        {
+          "label": "Dhimbje pas operacionit · dozë fillestare IM / IV · ≥16 vjeç",
+          "mode": "clinicalRules",
+          "route": "injectable",
+          "sourceUrl": "https://www.medicines.org.uk/emc/files/pil.11547.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 10,
+              "max": 10,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "minMonths": 192,
+              "maxPerDay": 60,
+              "frequency": "Dozë fillestare · jo mbi 2 ditë trajtim parenteral",
+              "source": "Ketorolac injection product information · ≥16 years",
+              "noteSq": "Doza fillestare 10 mg; dozat pasuese / intervalet caktohen sipas përgjigjes dhe protokollit spitalor, jo automatikisht këtu. IV bolus jo më shpejt se 15 sekonda ose IM sipas SmPC. Jo epidural / intratekal. Nuk transferohet te pikat orale ose tabletat.",
+              "maxKg": 50,
+              "maxKgInclusive": false
+            },
+            {
+              "doseType": "fixed",
+              "min": 10,
+              "max": 10,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "minMonths": 192,
+              "maxPerDay": 90,
+              "frequency": "Dozë fillestare · jo mbi 2 ditë trajtim parenteral",
+              "source": "Ketorolac injection product information · ≥16 years",
+              "noteSq": "Doza fillestare 10 mg; dozat pasuese / intervalet caktohen sipas përgjigjes dhe protokollit spitalor, jo automatikisht këtu. IV bolus jo më shpejt se 15 sekonda ose IM sipas SmPC. Jo epidural / intratekal. Nuk transferohet te pikat orale ose tabletat.",
+              "minKg": 50
+            }
+          ],
+          "marketMgPerML": 30,
+          "marketFormPattern": "^Solution for injection$",
+          "safetyConfirmation": "Jo NSAID tjetër, gjakderdhje / ulçerë gastrointestinale, insuficiencë renale / hepatike / kardiake e rëndë, dehidrim, shtatzëni ose alergji ndaj NSAID-ve; ndërveprimet janë kontrolluar. Vetëm pas operacionit në spital, pa hipovolemi / rrezik hemorragjie, me funksion renal normal dhe konfirmim të SmPC të produktit lokal.",
+          "eligibilitySq": "Nga 16 vjeç; vetëm injeksion 30 mg/mL me popullatë pediatrike të publikuar. Jo skemë rutinë për fëmijë më të vegjël.",
+          "marketRequirePediatricPopulation": true
+        }
+      ],
+      "searchTerms": "ketorolac ketorol zodol"
+    },
+    {
+      "name": "Multivitamins + minerals",
+      "section": "Miscellaneous",
+      "atcCodes": [
+        "A11AA03"
+      ],
+      "componentPattern": "(?!)",
+      "summarySq": "Multivitamina me / pa minerale; produktet kanë përbërje të ndryshme, prandaj doza është specifike për produktin.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst ushqyes, jo SmPC e produktit",
+          "title": "Multivitamin/mineral supplements",
+          "url": "https://ods.od.nih.gov/factsheets/MVMS-HealthProfessional/"
+        }
+      ],
+      "options": [],
+      "searchTerms": "PIKOVIT ® DUOVIT®"
+    },
+    {
+      "name": "Vitamin D3 · Cholecalciferol",
+      "section": "Miscellaneous",
+      "atcCodes": [
+        "A11CC05"
+      ],
+      "componentPattern": "^(?:cholecalciferol|colecalciferol|vitamind3)",
+      "summarySq": "D3: profilaksia dhe trajtimi i mungesës janë skema të ndryshme. Vetëm pikatori i produktit të konfirmuar jep numër pikash.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Vitamin D3 · Cholecalciferol",
+          "url": "https://medikamente.basg.gv.at/documents/10989__DOTC_GEBR_INFO.pdf"
+        },
+        {
+          "authority": "NIH ODS · kontekst ushqyes",
+          "title": "Vitamin D",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/"
+        }
+      ],
+      "options": [
+        {
+          "label": "Profilaksi D3 · Oleovit · pikator i konfirmuar",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://medikamente.basg.gv.at/documents/10989__DOTC_GEBR_INFO.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 400,
+              "max": 800,
+              "unit": "IU",
+              "period": "dose",
+              "maxMonths": 48,
+              "maxInclusive": false,
+              "minDays": 7,
+              "frequency": "1 herë/ditë",
+              "maxPerDay": 800,
+              "source": "BASG · Oleovit D3 · prophylaxis",
+              "noteSq": "Vetëm Oleovit D3 14 400 IU/mL: 1 pikë = 400 IU. Fillon nga java e dytë e jetës; te foshnjat dhe në periudhat me pak diell gjatë 2 viteve pasuese sipas vlerësimit. Nuk është trajtim i mungesës / rakitit dhe nuk transferohet te pikatorë të tjerë."
+            }
+          ],
+          "marketEvidenceKey": "oleovit-d3-400iu-drop",
+          "marketProductLabel": "Oleovit · 400 IU/pikë",
+          "safetyConfirmation": "Jo prematur; pa hiperkalcemi, hiperkalciuri, gurë / dëmtim të rëndë renal ose tepricë vitamine D. Janë llogaritur burimet e tjera të D3 dhe është kontrolluar pikatori origjinal.",
+          "eligibilitySq": "Nga dita 7 deri nën 4 vjeç; vetëm ky produkt / pikator. Jo ampula ose doza të larta trajtimi."
+        }
+      ],
+      "searchTerms": "DEVIT-3 Devit-3 Oleovit D3 -Tropfen ANNISTER ANNISTER ANNISTER CONTRESOL CONTRESOL CONTRESOL CONTRESOL LECALCIF Coledan Dipront DEVIT-3 DEVIT-3 DEVIT-3 DEVIT-3 DEVIT-3 CONTRESOL VITAMINA D3 VITAMINA D3 VITAMINA D3 MEDIVID"
+    },
+    {
+      "name": "Calcitriol · vitamin D active",
+      "section": "Miscellaneous",
+      "atcCodes": [
+        "A11CC04"
+      ],
+      "componentPattern": "(?!)",
+      "summarySq": "Kalcitrioli është vitaminë D aktive, jo suplement D3; kërkon kalcium / fosfat, funksion renal dhe monitorim specialistik.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Calcitriol · vitamin D active",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/"
+        }
+      ],
+      "options": [],
+      "searchTerms": "OSTRIOL OSTRIOL Qalyviz Qalyviz"
+    },
+    {
+      "name": "Vitamin B1 · Thiamine",
+      "section": "Miscellaneous",
+      "atcCodes": [
+        "A11DA01"
+      ],
+      "componentPattern": "(?!)",
+      "summarySq": "Tiamina: mungesa ushqyese dhe indikacionet neurologjike kanë skema të ndryshme. Injeksioni kërkon protokoll specifik.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamin B1 · Thiamine",
+          "url": "https://ods.od.nih.gov/factsheets/Thiamin-HealthProfessional/"
+        }
+      ],
+      "options": [],
+      "searchTerms": "VITAMINE B1"
+    },
+    {
+      "name": "Vitamins B1 + B6 + B12",
+      "section": "Miscellaneous",
+      "atcCodes": [
+        "A11DB"
+      ],
+      "componentPattern": "(?!)",
+      "summarySq": "Kombinime me doza të larta; jo të këmbyeshme me vitamina individuale. Disa ampula përmbajnë edhe lidokainë.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamins B1 + B6 + B12",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminB6-HealthProfessional/"
+        }
+      ],
+      "options": [],
+      "searchTerms": "Ancopir Ancopir Neuromultivit VITAGOBENS 3BE"
+    },
+    {
+      "name": "Vitamin B complex",
+      "section": "Miscellaneous",
+      "atcCodes": [
+        "A11BA",
+        "A11EA",
+        "A11EX"
+      ],
+      "componentPattern": "(?!)",
+      "summarySq": "B-kompleks: përbërja ndryshon sipas produktit; mL ose numri i ampulave nuk llogaritet nga një vitaminë e vetme.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamin B complex",
+          "url": "https://ods.od.nih.gov/factsheets/Thiamin-HealthProfessional/"
+        }
+      ],
+      "options": [],
+      "searchTerms": "Evaton-B Vitamin B Complex Injection Multivit-B-forte Multivit-B Beviplex B-complex Combivit Injection Vitamin B Complex Vitamin B Kompleks"
+    },
+    {
+      "name": "Vitamin C · Ascorbic acid",
+      "section": "Miscellaneous",
+      "atcCodes": [
+        "A11GA01"
+      ],
+      "componentPattern": "(?!)",
+      "summarySq": "Vitamina C: doza varet nga indikacioni dhe rruga; mos e barazo nevojën ditore ushqyese me dozën terapeutike IV.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamin C · Ascorbic acid",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminC-HealthProfessional/"
+        }
+      ],
+      "options": [],
+      "searchTerms": "Cevital Vitamin C Acmel 500 mg/5 ml IM/IV VitCCare VITAMINE C VITAMINE C VITAMIN C VITAMIN C VITAMIN C vitamin c Brucee-500"
+    },
+    {
+      "name": "Vitamin B6 · Pyridoxine",
+      "section": "Miscellaneous",
+      "atcCodes": [
+        "A11HA02"
+      ],
+      "componentPattern": "(?!)",
+      "summarySq": "B6: doza varet nga shkaku i mungesës dhe terapia shoqëruese; përdorimi i lartë / afatgjatë mund të shkaktojë neuropati.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamin B6 · Pyridoxine",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminB6-HealthProfessional/"
+        }
+      ],
+      "options": [],
+      "searchTerms": "Bedoxin Bedoxin VITAMINA B6 VITAMINA B6"
+    },
+    {
+      "name": "Calcium + vitamin D3",
+      "section": "Miscellaneous",
+      "atcCodes": [
+        "A12AX"
+      ],
+      "componentPattern": "(?!)",
+      "summarySq": "Kombinim kalciumi / D3 me popullatë për të rritur në regjistër; jo skemë pediatrike e përgjithshme sipas peshës.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Calcium + vitamin D3",
+          "url": "https://ods.od.nih.gov/factsheets/Calcium-HealthProfessional/"
+        }
+      ],
+      "options": [],
+      "searchTerms": "Calci D3-Denk 1000 mg / 880 I.E. Brausetabletten IDEOS"
+    },
+    {
+      "name": "Vitamin K1 · Phytomenadione",
+      "section": "Miscellaneous",
+      "atcCodes": [
+        "B02BA01"
+      ],
+      "componentPattern": "(?!)",
+      "summarySq": "K1: profilaksia neonatale, gjakderdhja dhe antagonizimi i antikoagulantëve janë protokolle të ndryshme; kërkohet formulimi / rruga e saktë.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamin K1 · Phytomenadione",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminK-HealthProfessional/"
+        }
+      ],
+      "options": [],
+      "searchTerms": "Synervita"
+    },
+    {
+      "name": "Vitamin B12 · Cyanocobalamin",
+      "section": "Miscellaneous",
+      "atcCodes": [
+        "B03BA01"
+      ],
+      "componentPattern": "(?!)",
+      "summarySq": "B12: trajtimi varet nga diagnoza, shkaku, neurologjia dhe skema e mirëmbajtjes; nuk përcaktohet vetëm nga pesha.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamin B12 · Cyanocobalamin",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/"
+        }
+      ],
+      "options": [],
+      "searchTerms": "VITAMIN B12 ALKALOID® VITAMINE B12 VITAMIN B12"
+    },
+    {
+      "name": "Vitamin B12 · Hydroxocobalamin",
+      "section": "Miscellaneous",
+      "atcCodes": [
+        "B03BA03"
+      ],
+      "componentPattern": "(?!)",
+      "summarySq": "Hidroksokobalamina nuk merr automatikisht skemën e cianokobalaminës; kërkohet diagnoza dhe protokolli i produktit.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamin B12 · Hydroxocobalamin",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/"
+        }
+      ],
+      "options": [],
+      "searchTerms": "OHB12"
+    },
+    {
+      "name": "Vitamin B9 · Folic acid",
+      "section": "Miscellaneous",
+      "atcCodes": [
+        "B03BB01"
+      ],
+      "componentPattern": "^folicacid",
+      "summarySq": "Acidi folik: skemë për mungesë të konfirmuar, pasi është vlerësuar mungesa e vitaminës B12; jo dozë e përgjithshme suplementimi.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Vitamin B9 · Folic acid",
+          "url": "https://www.medicines.org.uk/emc/product/6998/smpc"
+        }
+      ],
+      "options": [
+        {
+          "label": "Anemi nga mungesa e folatit · >1 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.medicines.org.uk/emc/product/6998/smpc",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 5,
+              "max": 5,
+              "unit": "mg",
+              "period": "dose",
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "minMonths": 12,
+              "minInclusive": false,
+              "frequency": "1 herë/ditë · zakonisht 4 muaj",
+              "maxPerDay": 5,
+              "source": "Folic acid 5 mg tablet SmPC",
+              "noteSq": "Vetëm mungesë e diagnostikuar e folatit; nuk trajton mungesën e B12. Doza të tjera në malabsorbim, dializë ose indikacione të tjera kërkojnë regjim të veçantë."
+            }
+          ],
+          "marketStrengthMg": 5,
+          "marketFormPattern": "^Tablet$",
+          "safetyConfirmation": "Diagnoza e mungesës së folatit është konfirmuar dhe B12 është vlerësuar / trajtuar; janë kontrolluar maligniteti dhe ndërveprimet (p.sh. methotrexate / antiepileptikë).",
+          "eligibilitySq": "Mbi 1 vjeç; vetëm tabletë e plotë 5 mg. Nuk është profilaksi rutinë për çdo fëmijë.",
+          "marketRequirePediatricPopulation": true
+        }
+      ],
+      "searchTerms": "Folicil FOLACIN FOLIC ACID"
+    }
+  ],
+  "productEvidence": [
+    {
+      "key": "dexamethasone-kern-base",
+      "id": "eb0ca769-5f0f-479c-aad0-bb2390e43eee",
+      "drugName": "Dexamethasone",
+      "fields": {
+        "registry_number": "1843",
+        "trade_name": "Dexametasona Kern Pharma",
+        "active_substance": "DEXAMETHASONE SODIUM PHOSPHATE",
+        "atc_code": "H02AB02",
+        "strength": "4 mg/ml",
+        "pharmaceutical_form": "Solution for injection",
+        "packaging": "Carton box containing 3 type-I glass ampoules containing 1 ml of solution",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/67455/FT_67455.html",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "dexason-base",
+      "id": "9efef3a0-d866-4e96-a588-76f46bd2e5cd",
+      "drugName": "Dexamethasone",
+      "fields": {
+        "registry_number": "1474",
+        "trade_name": "Dexason",
+        "active_substance": "Dexamethasone phosphate",
+        "atc_code": "H02AB02",
+        "strength": "4 mg/ml",
+        "pharmaceutical_form": "Solution for injection",
+        "packaging": "Box containing 25 ampoules of 1 mL",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://www.alims.gov.rs/doc_file/lekovi/pil/000010495%202024%2059010%20007%20000%20515%20002%2004%20001.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "suprastin-20mgml",
+      "id": "a4bf5af7-068c-494a-a759-a3dc6ae0f8fa",
+      "drugName": "Chloropyramine hydrochloride",
+      "fields": {
+        "registry_number": "1256",
+        "trade_name": "Suprastin",
+        "active_substance": "Chloropyramine hydrochloride",
+        "atc_code": "R06AC03",
+        "strength": "20mg/ml",
+        "pharmaceutical_form": "Solution for injection",
+        "packaging": "5 x 1ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://ogyei.gov.hu/kiseroirat/ah/ah_0000010622_20240129155938.doc",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "synopen-20mg2ml",
+      "id": "1e5d8731-2432-434a-97b8-35109d15fa74",
+      "drugName": "Chloropyramine hydrochloride",
+      "fields": {
+        "registry_number": "58334",
+        "trade_name": "SYNOPEN",
+        "active_substance": "Chloropyramine hydrochloride",
+        "atc_code": "R06AC03",
+        "strength": "20 mg/2 mL",
+        "pharmaceutical_form": "Solution for injection",
+        "packaging": "10 ampoules x 2 mL",
+        "approved_population": ""
+      },
+      "sourceUrl": "https://halmed.hr/upl/lijekovi/SPC/SPC_UP-I-530-09-17-02-197.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "ketonal-forte-100mg",
+      "id": "49e0196d-a4e8-4282-8b43-a016c4a8ccac",
+      "drugName": "Ketoprofen",
+      "fields": {
+        "registry_number": "2182",
+        "trade_name": "Ketonal® forte",
+        "active_substance": "ketoprofen",
+        "atc_code": "M01AE03",
+        "strength": "100 mg",
+        "pharmaceutical_form": "Film coated tablet",
+        "packaging": "20 film coated tablet/box",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://halmed.hr/upl/lijekovi/SPC/Ketonal-forte-SPC.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "oleovit-d3-400iu-drop",
+      "id": "12e50e92-e8fd-4a2e-9c89-a4eed3f8b1fa",
+      "drugName": "Vitamin D3 · Cholecalciferol",
+      "fields": {
+        "registry_number": "1367",
+        "trade_name": "Oleovit D3 -Tropfen",
+        "active_substance": "Colecalciferol",
+        "atc_code": "A11CC05",
+        "strength": "14400 IU/1 ml",
+        "pharmaceutical_form": "Oral drops, solution",
+        "packaging": "1x12,5 ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://medikamente.basg.gv.at/documents/10989__DOTC_GEBR_INFO.pdf",
+      "populationNoteSq": ""
+    }
+  ],
+  "componentProducts": [
+    {
+      "drugName": "Dexamethasone",
+      "id": "eb0ca769-5f0f-479c-aad0-bb2390e43eee",
+      "fields": {
+        "registry_number": "1843",
+        "trade_name": "Dexametasona Kern Pharma",
+        "active_substance": "DEXAMETHASONE SODIUM PHOSPHATE",
+        "atc_code": "H02AB02",
+        "strength": "4 mg/ml",
+        "pharmaceutical_form": "Solution for injection",
+        "packaging": "Carton box containing 3 type-I glass ampoules containing 1 ml of solution",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 3.33,
+      "unit": "mg",
+      "perML": 1,
+      "basis": "dexamethasone-base",
+      "sources": [
+        "https://cima.aemps.es/cima/dochtml/ft/67455/FT_67455.html",
+        "https://www.leedsformulary.nhs.uk/docs/Dexamethasone%20Medusa%20Poster%20-%20paediatric%20oncology.pdf"
+      ]
+    },
+    {
+      "drugName": "Dexamethasone",
+      "id": "9efef3a0-d866-4e96-a588-76f46bd2e5cd",
+      "fields": {
+        "registry_number": "1474",
+        "trade_name": "Dexason",
+        "active_substance": "Dexamethasone phosphate",
+        "atc_code": "H02AB02",
+        "strength": "4 mg/ml",
+        "pharmaceutical_form": "Solution for injection",
+        "packaging": "Box containing 25 ampoules of 1 mL",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 3.32,
+      "unit": "mg",
+      "perML": 1,
+      "basis": "dexamethasone-base",
+      "sources": [
+        "https://www.alims.gov.rs/doc_file/lekovi/pil/000010495%202024%2059010%20007%20000%20515%20002%2004%20001.pdf",
+        "https://www.leedsformulary.nhs.uk/docs/Dexamethasone%20Medusa%20Poster%20-%20paediatric%20oncology.pdf"
+      ]
+    },
+    {
+      "drugName": "Vitamin D3 · Cholecalciferol",
+      "id": "12e50e92-e8fd-4a2e-9c89-a4eed3f8b1fa",
+      "fields": {
+        "registry_number": "1367",
+        "trade_name": "Oleovit D3 -Tropfen",
+        "active_substance": "Colecalciferol",
+        "atc_code": "A11CC05",
+        "strength": "14400 IU/1 ml",
+        "pharmaceutical_form": "Oral drops, solution",
+        "packaging": "1x12,5 ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 14400,
+      "unit": "IU",
+      "perML": 1,
+      "perDrop": 400,
+      "basis": "cholecalciferol",
+      "sources": [
+        "https://medikamente.basg.gv.at/documents/10989__DOTC_GEBR_INFO.pdf"
+      ]
+    }
+  ]
+}

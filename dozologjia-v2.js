@@ -185,7 +185,7 @@
     }
     function render(query = '') {
       const terms = normalize(query).split(' ').filter(Boolean);
-      matches = [...select.options].filter(option => !option.disabled && terms.every(term => normalize(option.textContent + ' ' + (option.parentElement?.label || '')).includes(term)));
+      matches = [...select.options].filter(option => !option.disabled && terms.every(term => normalize(option.textContent + ' ' + (option.parentElement?.label || '')+' '+(option.dataset.searchTerms||'')).includes(term)));
       list.replaceChildren(); active = -1; input.removeAttribute('aria-activedescendant');
       let previousGroup = '';
       matches.forEach((option, index) => {
@@ -195,7 +195,8 @@
         const row = make('span', 'dz-select-option', option.textContent);
         row.id = select.id + 'Option' + index; row.setAttribute('role', 'option'); row.setAttribute('aria-selected', String(option.value === select.value));
         row.addEventListener('pointerdown', event => event.preventDefault());
-        row.addEventListener('click', () => choose(option));
+        // Cancel the enclosing label's synthetic input click after a choice.
+        row.addEventListener('click', event => {event.preventDefault();event.stopPropagation();choose(option);});
         list.append(row);
       });
       if (!matches.length) { const empty = make('span', 'dz-select-empty', 'Nuk u gjet asnjë rezultat.'); empty.setAttribute('role', 'status'); list.append(empty); }
@@ -249,7 +250,7 @@
   const CALCULATE_URL = '/api/dosage?view=pediatric-common-calculate';
   let referenceRevision = '';
   let referenceActive = false;
-  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=58-market-20261015';
+  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=60-market-20261015';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
   const CLINICAL_AUDIT_URL = '/data/pediatric-clinical-audit-v1.json';
@@ -625,7 +626,7 @@
   const doseSq = value => liquidCore?.doseTextSq ? liquidCore.doseTextSq(value) : String(value ?? '');
   const formulationSq = value => liquidCore?.formulationTextSq ? liquidCore.formulationTextSq(value) : String(value ?? '');
   const sectionSq = value => liquidCore?.sectionTitleSq ? liquidCore.sectionTitleSq(value) : String(value ?? '');
-  const componentSq = value => ({'elemental-iron':'hekur elementar','trimethoprim':'TMP (trimetoprim)','cefoperazone+sulbactam-total':'shuma cefoperazonë + sulbaktam (1:1)'}[value] || (liquidCore?.componentSq ? liquidCore.componentSq(value) : String(value ?? '')));
+  const componentSq = value => ({'dexamethasone-base':'deksametazon bazë','cholecalciferol':'vitaminë D3','elemental-iron':'hekur elementar','trimethoprim':'TMP (trimetoprim)','cefoperazone+sulbactam-total':'shuma cefoperazonë + sulbaktam (1:1)'}[value] || (liquidCore?.componentSq ? liquidCore.componentSq(value) : String(value ?? '')));
   const mlNumber = value => {
     return String(Number(Number(value).toPrecision(4))).replace('.', ',');
   };
@@ -714,16 +715,28 @@
     byId('pediatricAnswer').classList.remove('has-result');
     byId('pediatricAnswer').setAttribute('aria-busy','false');
   }
+  function showVariantReview(variant){
+    clearResult(variant.reason||'Për këtë produkt nuk ka skemë pediatrike aktive.');
+    if(!variant.review)return;
+    const details=node('details',null,'dz-variant-review');
+    details.append(node('summary','Burimet e kontrolluara · '+variant.review.reviewedAt));
+    details.append(node('p',variant.review.scopeSq,'dz-market-note'));
+    for(const source of variant.review.sources){
+      const link=node('a',source.title);link.href=source.url;link.target='_blank';link.rel='noopener noreferrer';details.append(link);
+    }
+    byId('pediatricAnswer').append(details);
+  }
   function renderSources(drug){
     ['pediatricReferenceDetails','pediatricSourceDetails'].forEach(id=>{byId(id).hidden=!drug;byId(id).open=false;});
     byId('pediatricEvidence').replaceChildren();byId('pediatricSourceTable').replaceChildren();
     if(!drug)return;
     byId('pediatricEvidence').append(renderEvidence(drug));
     const table=byId('pediatricSourceTable');
+    byId('pediatricSourceDetails').querySelector('summary').textContent=drug.marketAdditionVersion?'Referenca dhe format në AKKPM':'Tabela bazë e referencës';
     table.append(node('h4','Formula e dozimit'));drug.dose.forEach(line=>table.append(node('p',doseSq(line))));
-    table.append(node('h4','Format e disponueshme · tabela bazë'));
+    table.append(node('h4',drug.marketAdditionVersion?'Format e publikuara në AKKPM':'Format e disponueshme · tabela bazë'));
     drug.formulations.forEach(line=>table.append(node('p',formulationSq(line))));
-    table.append(node('p','Zgjedhjet e kalkulatorit merren nga regjistri aktiv i AKKPM-së; tabela bazë ruhet për transparencë.'));
+    table.append(node('p',drug.marketAdditionVersion?'Format merren nga regjistri aktiv i AKKPM-së; skemat e llogaritjes lidhen me burimet klinike përkatëse.':'Zgjedhjet e kalkulatorit merren nga regjistri aktiv i AKKPM-së; tabela bazë ruhet për transparencë.'));
   }
   function renderProducts(variant){
     const details=byId('pediatricProductDetails');details.hidden=!variant;details.open=false;
@@ -749,7 +762,7 @@
     const {form}=selection();
     choices('pediatricStrength',[],'Zgjidh fortësinë…');
     const select=byId('pediatricStrength');
-    for(const [active,title] of [[true,'Me skemë të verifikuar'],[false,'Kërkon verifikim']]){
+    for(const [active,title] of [[true,'Me skemë të verifikuar'],[false,'Pa llogaritje automatike']]){
       const variants=(form?.variants||[]).filter(v=>Boolean(v.schemes.length)===active);if(!variants.length)continue;
       const group=node('optgroup');group.label=title;variants.forEach(v=>{const option=node('option',v.label);option.value=v.id;group.append(option);});select.append(group);
     }
@@ -775,7 +788,7 @@
     byId('pediatricAgeGate').hidden=!scheme?.needsAge;
     byId('pediatricSafetyGate').hidden=!scheme?.safetyConfirmation;
     byId('pediatricSafetyText').textContent=scheme?.safetyConfirmation||'';
-    if(variant && !variant.schemes.length){clearResult(variant.reason||'Kjo formë kërkon verifikim klinik para llogaritjes.');return;}
+    if(variant && !variant.schemes.length){showVariantReview(variant);return;}
     if(variant && !scheme){clearResult('Zgjidh indikacionin / skemën.');return;}
     suggestAge();schedule();
   }
@@ -878,14 +891,14 @@
       referenceRevision=JSON.stringify([payload.database?.clinicalAudit?.version||clinicalAudit.schemaVersion||'',payload.database?.clinicalAudit?.updatedAt||clinicalAudit.auditedAt||'',payload.database?.payloadSha256||'',...(marketCatalog?[marketCatalog.revision]:[])]);
       const picker=byId('pediatricDrug');picker.replaceChildren(node('option','Zgjidh barin…'));picker.firstChild.value='';
       commonSections.forEach(section=>{
-        const group=node('optgroup');group.label=sectionSq(section.title);
-        section.drugs.forEach(drug=>{const option=node('option',drug.name);option.value=drug.name;group.append(option);});picker.append(group);
+        const group=node('optgroup');group.label=section.title==='Miscellaneous'?'Të tjerat':sectionSq(section.title);
+        section.drugs.forEach(drug=>{const option=node('option',drug.name);option.value=drug.name;option.dataset.searchTerms=[drug.searchTerms||'',...(marketCatalog?.drugs.find(d=>d.name===drug.name)?.forms.flatMap(f=>f.variants.flatMap(v=>v.products.map(p=>p.name)))||[])].join(' ');group.append(option);});picker.append(group);
       });picker.disabled=false;
       byId('pediatricCommonCount').textContent=referenceActive?`${marketCatalog.productCount} produkte · AKKPM`:'Referencë pa lidhje aktive';
       byId('pediatricCommonCount').dataset.source=source;
       picker.addEventListener('change',drugChanged);byId('pediatricForm').addEventListener('change',formChanged);
       document.addEventListener('pediatric:choice-editing',()=>clearResult('Zgjidh një rezultat nga lista.'));
-      document.addEventListener('pediatric:choice-cancel',()=>{const {variant,scheme}=selection();if(scheme)schedule();else clearResult(variant?.reason||'Zgjidh barin, formën dhe skemën.');});
+      document.addEventListener('pediatric:choice-cancel',()=>{const {variant,scheme}=selection();if(scheme)schedule();else if(variant&&!variant.schemes.length)showVariantReview(variant);else clearResult('Zgjidh barin, formën dhe skemën.');});
       byId('pediatricStrength').addEventListener('change',strengthChanged);byId('pediatricScheme').addEventListener('change',schemeChanged);
       byId('pediatricWeight').addEventListener('input',()=>{byId('pediatricAgeConfirmed').checked=false;if(!byId('pediatricWeight').value.trim()){ageEdited=false;byId('pediatricAge').value='';byId('pediatricAgeUnit').value='month';byId('pediatricSafetyConfirmed').checked=false;}suggestAge();schedule();});
       byId('pediatricAge').addEventListener('input',()=>{ageEdited=true;suggestAge();byId('pediatricAgeConfirmed').checked=false;schedule();});

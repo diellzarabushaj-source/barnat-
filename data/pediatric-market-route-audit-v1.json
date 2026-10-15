@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "pediatric-market-routes-v3",
+  "schemaVersion": "pediatric-market-routes-v4",
   "auditedAt": "2026-10-15",
   "drugs": {
     "Paracetamol": [
@@ -93,6 +93,118 @@
             "maxPerDay": 3000,
             "source": "SmPC · B. Braun IV",
             "noteSq": "Infuzion 15 minuta; flakon 100 mL. Shfaqet vëllimi para hollimit."
+          }
+        ]
+      },
+      {
+        "label": "Rektal · Efferalgan 150 mg · 8–12 kg",
+        "eligibilitySq": "Vetëm EFFERALGAN 150 mg rektal, 8–12 kg. Automatizimi këtu fillon nga 3 muaj; pesha reale përcakton përshtatshmërinë.",
+        "mode": "clinicalRules",
+        "route": "rectal",
+        "marketStrengthMg": 150,
+        "marketFormPattern": "^Suppository$",
+        "marketEvidenceKey": "efferalgan-150mg-rectal",
+        "marketProductLabel": "Efferalgan",
+        "sourceUrl": "https://base-donnees-publique.medicaments.gouv.fr/medicament/64675665/extrait",
+        "safetyConfirmation": "Pa paracetamol tjetër, alergji ndaj paracetamolit / sojës / kikirikëve, insuficiencë hepatike / renale ose dëmtime / gjakderdhje rektale; pesha reale është konfirmuar.",
+        "rules": [
+          {
+            "minMonths": 3,
+            "minKg": 8,
+            "maxKg": 10,
+            "maxKgInclusive": false,
+            "doseType": "fixed",
+            "min": 150,
+            "max": 150,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "deri 3 herë/24 orë · interval ≥8 orë",
+            "maxPerDay": 450,
+            "maxDailyPerKg": 60,
+            "source": "ANSM EFFERALGAN 150 mg suppositoire · 8–12 kg",
+            "noteSq": "Vetëm 1 supozitor i plotë për marrje; mos e ndaj. Llogarit paracetamolin nga të gjitha rrugët së bashku. Pa diarre ose dëmtime / gjakderdhje rektale. Nën 10 kg shpeshtësia kufizohet që totali të mbetet ≤60 mg/kg/24 orë; mos e tejkalo. Përdorimi rektal sa më i shkurtër; rivlerësim pas 3 ditëve të etheve ose 5 ditëve të dhimbjes."
+          },
+          {
+            "minMonths": 3,
+            "minKg": 10,
+            "maxKg": 12,
+            "maxKgInclusive": true,
+            "doseType": "fixed",
+            "min": 150,
+            "max": 150,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "deri 4 herë/24 orë · interval ≥6 orë",
+            "maxPerDay": 600,
+            "maxDailyPerKg": 60,
+            "source": "ANSM EFFERALGAN 150 mg suppositoire · 8–12 kg",
+            "noteSq": "Vetëm 1 supozitor i plotë për marrje; mos e ndaj. Llogarit paracetamolin nga të gjitha rrugët së bashku. Pa diarre ose dëmtime / gjakderdhje rektale. Nën 10 kg shpeshtësia kufizohet që totali të mbetet ≤60 mg/kg/24 orë; mos e tejkalo. Përdorimi rektal sa më i shkurtër; rivlerësim pas 3 ditëve të etheve ose 5 ditëve të dhimbjes."
+          }
+        ]
+      },
+      {
+        "label": "Rektal · paracetamol 250 mg · 6–12 vjeç",
+        "eligibilitySq": "Supozitorë 250 mg: 6–9 vjeç / 20–30 kg; 10–12 vjeç / 30–40 kg. Mos i ndaj; zgjidh formë tjetër jashtë këtyre grupeve.",
+        "mode": "clinicalRules",
+        "route": "rectal",
+        "marketStrengthMg": 250,
+        "marketFormPattern": "^Suppository$",
+        "sourceUrl": "https://www.medicines.org.uk/emc/product/15386/smpc",
+        "safetyConfirmation": "Pa paracetamol tjetër, insuficiencë hepatike / renale ose dëmtime / gjakderdhje rektale. Mosha dhe pesha reale janë kontrolluar.",
+        "rules": [
+          {
+            "minMonths": 72,
+            "maxMonths": 120,
+            "maxInclusive": false,
+            "minKg": 20,
+            "maxKg": 30,
+            "maxKgInclusive": true,
+            "doseType": "fixed",
+            "min": 250,
+            "max": 250,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "deri 4 herë/24 orë · interval ≥6 orë",
+            "maxPerDay": 1000,
+            "maxDailyPerKg": 60,
+            "source": "SmPC paracetamol 250 mg suppositories · age/weight table",
+            "noteSq": "Vetëm supozitorë të plotë; mos i ndaj. Maksimumi ditor përfshin paracetamolin nga të gjitha rrugët. Nën 33⅓ kg, kjo skemë kufizohet në 1 supozitor për marrje që totali të mbetet ≤60 mg/kg/24 orë. Jo mbi 3 ditë pa rivlerësim."
+          },
+          {
+            "minMonths": 120,
+            "maxMonths": 156,
+            "maxInclusive": false,
+            "minKg": 30,
+            "maxKg": 33.333333333333336,
+            "maxKgInclusive": false,
+            "doseType": "fixed",
+            "min": 250,
+            "max": 250,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "deri 4 herë/24 orë · interval ≥6 orë",
+            "maxPerDay": 1000,
+            "maxDailyPerKg": 60,
+            "source": "SmPC paracetamol 250 mg suppositories · age/weight table",
+            "noteSq": "Vetëm supozitorë të plotë; mos i ndaj. Maksimumi ditor përfshin paracetamolin nga të gjitha rrugët. Nën 33⅓ kg, kjo skemë kufizohet në 1 supozitor për marrje që totali të mbetet ≤60 mg/kg/24 orë. Jo mbi 3 ditë pa rivlerësim."
+          },
+          {
+            "minMonths": 120,
+            "maxMonths": 156,
+            "maxInclusive": false,
+            "minKg": 33.333333333333336,
+            "maxKg": 40,
+            "maxKgInclusive": true,
+            "doseType": "fixed",
+            "min": 250,
+            "max": 500,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "deri 4 herë/24 orë · interval ≥6 orë",
+            "maxPerDay": 2000,
+            "maxDailyPerKg": 60,
+            "source": "SmPC paracetamol 250 mg suppositories · age/weight table",
+            "noteSq": "Vetëm supozitorë të plotë; mos i ndaj. Maksimumi ditor përfshin paracetamolin nga të gjitha rrugët. Nën 33⅓ kg, kjo skemë kufizohet në 1 supozitor për marrje që totali të mbetet ≤60 mg/kg/24 orë. Jo mbi 3 ditë pa rivlerësim."
           }
         ]
       }
@@ -701,6 +813,290 @@
         ],
         "marketFormPattern": "^Powder for oral solution$"
       }
+    ],
+    "Amoxicillin + Clavulanic": [
+      {
+        "mode": "clinicalRules",
+        "route": "oral",
+        "marketComponentRatio": 4,
+        "marketFormPattern": "(?:oral (?:suspension|solution)|syrup)",
+        "sourceUrl": "https://www.medicines.org.uk/emc/product/6671/smpc",
+        "safetyConfirmation": "Indikacion bakterial; pa alergji ndaj beta-laktamëve, pa verdhëz hepatike nga ko-amoksiklavi dhe funksion renal normal / CrCl >30 mL/min.",
+        "label": "Infeksione · raport 4:1 · dozë e ulët",
+        "eligibilitySq": "Vetëm suspension oral me raport 4:1; nga 3 muaj dhe 2 deri nën 40 kg. Doza i referohet amoksicilinës.",
+        "componentBasis": "amoxicillin",
+        "rules": [
+          {
+            "minMonths": 3,
+            "maxMonths": 216,
+            "minKg": 2,
+            "maxKg": 40,
+            "maxKgInclusive": false,
+            "doseType": "weight",
+            "min": 20,
+            "max": 40,
+            "unit": "mg",
+            "period": "day",
+            "split": 3,
+            "frequency": "3 herë/ditë · afërsisht çdo 8 orë",
+            "maxPerDay": 2400,
+            "maxDailyPerKg": 40,
+            "source": "SmPC · co-amoxiclav 4:1 oral suspension",
+            "noteSq": "Doza në mg i referohet vetëm amoksicilinës, jo shumës së përbërësve. Fortësitë 4:1 nuk përdorin automatikisht skemën 7:1 ose ES 14:1. Merre me ushqim; tund suspensionin. Përgatitja dhe ruajtja sipas etiketës së produktit. Nën 3 muaj kërkohet skemë e veçantë; rivlerëso terapinë para 14 ditëve."
+          }
+        ]
+      },
+      {
+        "mode": "clinicalRules",
+        "route": "oral",
+        "marketComponentRatio": 4,
+        "marketFormPattern": "(?:oral (?:suspension|solution)|syrup)",
+        "sourceUrl": "https://www.medicines.org.uk/emc/product/6671/smpc",
+        "safetyConfirmation": "Indikacion bakterial; pa alergji ndaj beta-laktamëve, pa verdhëz hepatike nga ko-amoksiklavi dhe funksion renal normal / CrCl >30 mL/min.",
+        "label": "Infeksione · raport 4:1 · dozë e lartë",
+        "eligibilitySq": "Vetëm suspension oral me raport 4:1; nga 24 muaj dhe 2 deri nën 40 kg. Doza i referohet amoksicilinës.",
+        "componentBasis": "amoxicillin",
+        "rules": [
+          {
+            "minMonths": 24,
+            "maxMonths": 216,
+            "minKg": 2,
+            "maxKg": 40,
+            "maxKgInclusive": false,
+            "doseType": "weight",
+            "min": 40,
+            "max": 60,
+            "unit": "mg",
+            "period": "day",
+            "split": 3,
+            "frequency": "3 herë/ditë · afërsisht çdo 8 orë",
+            "maxPerDay": 2400,
+            "maxDailyPerKg": 60,
+            "source": "SmPC · co-amoxiclav 4:1 oral suspension",
+            "noteSq": "Doza në mg i referohet vetëm amoksicilinës, jo shumës së përbërësve. Fortësitë 4:1 nuk përdorin automatikisht skemën 7:1 ose ES 14:1. Merre me ushqim; tund suspensionin. Përgatitja dhe ruajtja sipas etiketës së produktit. Nën 3 muaj kërkohet skemë e veçantë; rivlerëso terapinë para 14 ditëve."
+          }
+        ]
+      },
+      {
+        "label": "Otit akut i përsëritur / persistent · ES 14:1",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "marketComponentRatio": 14,
+        "marketFormPattern": "(?:oral (?:suspension|solution)|syrup)",
+        "sourceUrl": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=59979859-8c9b-4173-a5e3-2e6312fd9d79",
+        "eligibilitySq": "Vetëm 600 mg + 42,9 mg / 5 mL; nga 3 muaj deri në 12 vjeç dhe ≤40 kg. Për otit të përsëritur / persistent sipas kritereve të burimit.",
+        "safetyConfirmation": "Otit akut i përsëritur / persistent: antibiotik për otit brenda 3 muajve dhe moshë ≤2 vjeç ose çerdhe; pa alergji beta-laktamike, pa verdhëz hepatike nga ko-amoksiklavi dhe pa dëmtim renal.",
+        "componentBasis": "amoxicillin",
+        "rules": [
+          {
+            "minMonths": 3,
+            "maxMonths": 156,
+            "maxInclusive": false,
+            "minKg": 2,
+            "maxKg": 40,
+            "doseType": "weight",
+            "min": 90,
+            "max": 90,
+            "unit": "mg",
+            "period": "day",
+            "split": 2,
+            "frequency": "2 herë/ditë · çdo 12 orë · 10 ditë",
+            "maxDailyPerKg": 90,
+            "maxPerDay": 3600,
+            "source": "FDA / DailyMed · AUGMENTIN ES-600 600/42,9 mg për 5 mL",
+            "noteSq": "Doza llogaritet sipas amoksicilinës. Vetëm raporti ES 14:1; mos e zëvendëso mL për mL me 4:1 ose 7:1. Merret në fillim të ushqimit. Referencë ndërkombëtare për formulimin; verifiko udhëzimin e produktit lokal."
+          }
+        ]
+      }
+    ],
+    "CPM": [
+      {
+        "label": "Alergji · tabletë 4 mg · mbi 12 vjeç",
+        "eligibilitySq": "Vetëm tableta 4 mg; mbi 12 deri në 18 vjeç. Mos ndaj automatikisht tableta për fëmijë më të vegjël.",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "marketStrengthMg": 4,
+        "marketFormPattern": "^Tablet$",
+        "sourceUrl": "https://www.medicines.org.uk/emc/product/3927/smpc",
+        "safetyConfirmation": "Pa antihistaminik tjetër sedativ ose MAOI në 14 ditët e fundit; janë kontrolluar kundërindikacionet dhe ndërveprimet.",
+        "rules": [
+          {
+            "minMonths": 144,
+            "minInclusive": false,
+            "maxMonths": 216,
+            "maxInclusive": true,
+            "doseType": "fixed",
+            "min": 4,
+            "max": 4,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "çdo 4–6 orë · interval ≥4 orë",
+            "maxPerDay": 24,
+            "source": "SmPC · chlorphenamine 4 mg tablets · over 12 years",
+            "noteSq": "Maksimum 6 tableta (24 mg) në 24 orë. Mund të shkaktojë përgjumje; jo vazhdimisht mbi 2 javë pa rivlerësim."
+          }
+        ]
+      }
+    ],
+    "Salbutamol": [
+      {
+        "label": "Oral · dozë fillestare · kur inhalatori nuk përdoret",
+        "eligibilitySq": "Vetëm shurup / solucion oral 2 mg/5 mL; nga 2 deri në 18 vjeç. Skemë fillestare, jo skemë nebulizimi.",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "marketMgPerML": 0.4,
+        "marketFormPattern": "syrup|oral solution",
+        "sourceUrl": "https://www.medicines.org.uk/emc/product/854/smpc",
+        "safetyConfirmation": "Forma orale është zgjedhur klinikisht sepse inhalatori nuk mund të përdoret; nuk zëvendëson trajtimin urgjent të krizës ose terapinë antiinflamatore të astmës.",
+        "rules": [
+          {
+            "minMonths": 24,
+            "maxMonths": 72,
+            "maxInclusive": false,
+            "doseType": "fixed",
+            "min": 1,
+            "max": 1,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "3 herë/ditë · dozë fillestare",
+            "maxPerDay": 3,
+            "source": "Ventolin syrup SmPC · minimum starting dose 2–6 years",
+            "noteSq": "Dozë fillestare orale. Rritja e dozës / shpeshtësisë kërkon rivlerësim klinik; mos përdor dozën e nebulizimit për këtë shurup."
+          },
+          {
+            "minMonths": 72,
+            "maxMonths": 216,
+            "maxInclusive": true,
+            "doseType": "fixed",
+            "min": 2,
+            "max": 2,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "3 herë/ditë · dozë fillestare",
+            "maxPerDay": 6,
+            "source": "Ventolin syrup SmPC · minimum starting dose ≥6 years",
+            "noteSq": "Dozë fillestare orale. Rritja e dozës / shpeshtësisë kërkon rivlerësim klinik. Në astmë, bronkodilatatori nuk është terapi e vetme; kontrollo planin antiinflamator."
+          }
+        ]
+      },
+      {
+        "label": "Bronkospazëm · inhalator Aldo-Unión · ≥4 vjeç",
+        "eligibilitySq": "Vetëm SALBUTAMOL ALDO-UNION 100 mcg/dose; 4–18 vjeç. Një inhalim për marrje; maksimum 4 inhalime/24 orë sipas SmPC-së së këtij produkti.",
+        "mode": "clinicalRules",
+        "route": "inhaled",
+        "marketStrengthMg": 0.1,
+        "marketFormPattern": "^Pressurised inhalation, suspension$",
+        "marketEvidenceKey": "salbutamol-aldo-union-100mcg",
+        "marketProductLabel": "Aldo-Unión",
+        "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65850/FichaTecnica_65850.html",
+        "safetyConfirmation": "Teknika e inhalimit / spaceri janë kontrolluar; është vlerësuar kontrolli i astmës dhe trajtimi antiinflamator. Përkeqësimi kërkon vlerësim urgjent.",
+        "rules": [
+          {
+            "minMonths": 48,
+            "maxMonths": 216,
+            "maxInclusive": true,
+            "doseType": "fixed",
+            "min": 100,
+            "max": 100,
+            "unit": "mcg",
+            "period": "dose",
+            "frequency": "sipas nevojës · maksimum 4 inhalime/24 orë",
+            "maxPerDay": 400,
+            "source": "AEMPS · Salbutamol Aldo-Unión 100 microgramos/dosis · pediatric posology",
+            "noteSq": "Vetëm inhalim oral me pajisjen përkatëse; përdor spacer kur koordinimi është i vështirë. Rritja e nevojës për inhalime tregon kontroll të pamjaftueshëm; mos e rrit automatikisht dozën. Skema nën 4 vjeç nuk automatizohet këtu."
+          }
+        ]
+      },
+      {
+        "label": "Bronkospazëm · inhalator SALRES · ≥2 vjeç",
+        "eligibilitySq": "Vetëm SALRES 100 mcg; nga 2 deri në 18 vjeç. Maksimum 4 përdorime / 8 inhalime në 24 orë; te fëmijët e vegjël kontrollo spacer-in dhe maskën.",
+        "mode": "clinicalRules",
+        "route": "inhaled",
+        "marketStrengthMg": 0.1,
+        "marketFormPattern": "^Pressurised inhalation, suspension$",
+        "marketEvidenceKey": "salres-100mcg",
+        "marketProductLabel": "SALRES",
+        "sourceUrl": "https://devacomtr.s3.eu-west-2.amazonaws.com/urunler/kub/salres-100-mcg-spc.pdf",
+        "safetyConfirmation": "Teknika e inhalimit dhe spaceri / maska sipas moshës janë kontrolluar; është vlerësuar trajtimi antiinflamator dhe nuk ka shenja që kërkojnë trajtim urgjent.",
+        "rules": [
+          {
+            "minMonths": 24,
+            "maxMonths": 216,
+            "maxInclusive": true,
+            "doseType": "fixed",
+            "min": 100,
+            "max": 200,
+            "unit": "mcg",
+            "period": "dose",
+            "frequency": "sipas nevojës · jo mbi 4 përdorime/24 orë",
+            "maxPerDay": 800,
+            "source": "SALRES 100 mcg SmPC · paediatric population",
+            "noteSq": "Fillo me 1 inhalim (100 mcg); 2 inhalime vetëm kur kërkohet sipas përgjigjes / planit klinik. Jo mbi 8 inhalime në 24 orë. Te fëmijët nën 5 vjeç përdor spacer me maskë sipas vlerësimit. Skema nuk transferohet te pajisje të tjera."
+          }
+        ]
+      }
+    ],
+    "Clarithromycin": [
+      {
+        "label": "Infeksione · Klacid LA · dozë e zakonshme",
+        "eligibilitySq": "Vetëm KLACID LA 500 mg me çlirim të modifikuar; mbi 12 deri në 18 vjeç. Merret një herë në ditë me ushqim; nuk ndahet / shtypet.",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "marketWholeOnly": true,
+        "marketFormPattern": "^Modified-release tablet$",
+        "marketStrengthMg": 500,
+        "marketEvidenceKey": "klacid-la-500mg",
+        "marketProductLabel": "Klacid LA",
+        "sourceUrl": "https://assets.hpra.ie/products/Human/30069/Licence_PA23355-013-004_18072024151857.pdf",
+        "safetyConfirmation": "CrCl ≥30 mL/min; pa zgjatje QT / hipokalemi, alergji ndaj makrolideve ose ndërveprime të kundërindikuara. Indikacioni dhe rëndësia e infeksionit janë vlerësuar.",
+        "rules": [
+          {
+            "minMonths": 144,
+            "minInclusive": false,
+            "maxMonths": 216,
+            "maxInclusive": true,
+            "doseType": "fixed",
+            "min": 500,
+            "max": 500,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "1 herë/ditë · në të njëjtën orë me ushqim",
+            "maxPerDay": 500,
+            "source": "HPRA Klacid LA SmPC 18 July 2024 · modified release",
+            "noteSq": "Gëlltit tabletën të plotë. Mos e ndaj, përtyp ose shtyp. Nuk përdor skemën dy herë/ditë të klaritromicinës me çlirim të zakonshëm. Kohëzgjatja sipas indikacionit; SmPC zakonisht 6–14 ditë."
+          }
+        ]
+      },
+      {
+        "label": "Infeksione të rënda · Klacid LA",
+        "eligibilitySq": "Vetëm KLACID LA 500 mg me çlirim të modifikuar; mbi 12 deri në 18 vjeç. Merret një herë në ditë me ushqim; nuk ndahet / shtypet.",
+        "mode": "clinicalRules",
+        "route": "oral",
+        "marketWholeOnly": true,
+        "marketFormPattern": "^Modified-release tablet$",
+        "marketStrengthMg": 500,
+        "marketEvidenceKey": "klacid-la-500mg",
+        "marketProductLabel": "Klacid LA",
+        "sourceUrl": "https://assets.hpra.ie/products/Human/30069/Licence_PA23355-013-004_18072024151857.pdf",
+        "safetyConfirmation": "CrCl ≥30 mL/min; pa zgjatje QT / hipokalemi, alergji ndaj makrolideve ose ndërveprime të kundërindikuara. Indikacioni dhe rëndësia e infeksionit janë vlerësuar.",
+        "rules": [
+          {
+            "minMonths": 144,
+            "minInclusive": false,
+            "maxMonths": 216,
+            "maxInclusive": true,
+            "doseType": "fixed",
+            "min": 1000,
+            "max": 1000,
+            "unit": "mg",
+            "period": "dose",
+            "frequency": "1 herë/ditë · në të njëjtën orë me ushqim",
+            "maxPerDay": 1000,
+            "source": "HPRA Klacid LA SmPC 18 July 2024 · modified release",
+            "noteSq": "Gëlltit tabletën të plotë. Mos e ndaj, përtyp ose shtyp. Nuk përdor skemën dy herë/ditë të klaritromicinës me çlirim të zakonshëm. Kohëzgjatja sipas indikacionit; SmPC zakonisht 6–14 ditë."
+          }
+        ]
+      }
     ]
   },
   "replaceBase": [
@@ -717,7 +1113,12 @@
     "Cefuroxime": "Doza orale dhe IV zgjidhen veçmas. Skema standarde IV këtu përfshin >21 ditë dhe <40 kg, me funksion renal pa nevojë për përshtatje.",
     "Acyclovir": "Varicela orale dhe infeksionet HSV/VZV me infuzion IV kanë skema të ndara. IV kërkon funksion renal normal, hidratim dhe ≥3 muaj; trajtimi neonatal kërkon protokoll tjetër.",
     "Amoxicillin": "Skemat orale lidhen me indikacionin. Për produktin injektues 1 g, diapazoni i infuzionit IV për >3 muaj dhe <40 kg zgjidhet veçmas; nuk përdoret si skemë IM ose bolus.",
-    "Diclofenac": "Skemat rektale varen nga indikacioni, mosha dhe produkti. Për Voltaren 12,5 mg ka skemë të veçantë për dhimbje me inflamacion te 2–5 vjeç dhe 13–<20 kg; për Voltfast 50 mg në qese ka skemë orale vetëm nga 14 vjeç. Mos transfero skemën midis formave ose produkteve."
+    "Diclofenac": "Skemat rektale varen nga indikacioni, mosha dhe produkti. Për Voltaren 12,5 mg ka skemë të veçantë për dhimbje me inflamacion te 2–5 vjeç dhe 13–<20 kg; për Voltfast 50 mg në qese ka skemë orale vetëm nga 14 vjeç. Mos transfero skemën midis formave ose produkteve.",
+    "Salbutamol": "Skema të ndara për nebulizim, dozën fillestare orale kur inhalatori nuk përdoret dhe inhalatorët e verifikuar SALRES / Aldo-Unión 100 mcg. Kufiri ditor ndryshon sipas produktit; mos transfero dozën ose frekuencën midis rrugëve / pajisjeve.",
+    "CPM": "Dozimi oral varet nga mosha dhe forma: shurupi ka skemën e vet; tableta e plotë 4 mg përdoret vetëm sipas skemës së veçantë mbi 12 vjeç. Ndarja e tabletave nuk automatizohet.",
+    "Amoxicillin + Clavulanic": "Dozat i referohen përbërësit amoksicilinë. Raporti oral 4:1 ka skemë të ndarë në 3 marrje; raporti 7:1 dhe preparati IV 1000/200 mg ruajnë skemat e tyre. Raporti ES 14:1 nuk merr automatikisht dozën e tyre.",
+    "Clarithromycin": "Forma me çlirim të zakonshëm dhe KLACID LA me çlirim të modifikuar kanë skema të ndryshme. KLACID LA gëlltitet i plotë, me ushqim, një herë në ditë; skema automatike këtu kufizohet mbi 12 vjeç dhe CrCl ≥30 mL/min.",
+    "Paracetamol": "Skema të ndara për formën orale, supozitorët dhe infuzionin IV. EFFERALGAN 150 mg lidhet me produktin dhe 8–12 kg; supozitorët 250 mg kanë tabelë moshe/peshe. Doza / kufiri ditor përfshin paracetamolin nga të gjitha rrugët së bashku."
   },
   "currentWarnings": {
     "Domperidone": [
@@ -728,6 +1129,10 @@
     ],
     "Iron": [
       "Doza dhe mL shprehen NË 24 ORË, jo për një marrje. Mos jep hekur oral dhe parenteral bashkë; kërko ndjekje të Hb/ferritinës."
+    ],
+    "Salbutamol": [
+      "Nebulizimi, shurupi dhe inhalatori kanë skema të ndara; mos transfero doza, mL ose kufirin ditor midis tyre.",
+      "Rritja e nevojës për bronkodilatator kërkon rivlerësimin e astmës; nuk është terapia e vetme. Teprimi mund të shkaktojë takikardi, tremor dhe hipokalemi."
     ]
   },
   "componentProducts": [
@@ -794,6 +1199,74 @@
       },
       "sourceUrl": "https://prod1.novartis.com/sg-en/sites/novartis_sg/files/Voltfast-Aug2025.SIN-app281125-pdf.pdf",
       "populationNoteSq": "Etiketa e përgjithshme në regjistër është “Adult only”; burimi specifik i VOLTFAST 50 mg përfshin adoleshentët ≥14 vjeç. Kjo skemë vlen vetëm për këtë produkt."
+    },
+    {
+      "key": "salbutamol-aldo-union-100mcg",
+      "drugName": "Salbutamol",
+      "id": "4d8871a6-bf43-420a-95b8-85eb06125879",
+      "fields": {
+        "registry_number": "2052",
+        "trade_name": "SALBUTAMOL ALDO-UNION 100",
+        "active_substance": "Salbutamol (as sulphate)",
+        "atc_code": "R03AC02",
+        "strength": "100 mcg/dose",
+        "pharmaceutical_form": "Pressurised inhalation, suspension",
+        "packaging": "10 ml of suspension",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65850/FichaTecnica_65850.html",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "salres-100mcg",
+      "drugName": "Salbutamol",
+      "id": "0c0a36c0-9167-43c5-aac1-b6e5451a05bf",
+      "fields": {
+        "registry_number": "1079",
+        "trade_name": "SALRES",
+        "active_substance": "Salbutamol sulphate",
+        "atc_code": "R03AC02",
+        "strength": "100 mcg",
+        "pharmaceutical_form": "Pressurised inhalation, suspension",
+        "packaging": "200 doses",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://devacomtr.s3.eu-west-2.amazonaws.com/urunler/kub/salres-100-mcg-spc.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "klacid-la-500mg",
+      "drugName": "Clarithromycin",
+      "id": "151d0b8c-b23e-456f-a6f5-52582972f42b",
+      "fields": {
+        "registry_number": "2391",
+        "trade_name": "KLACID LA 500mg",
+        "active_substance": "Clarythromycinum",
+        "atc_code": "J01FA09",
+        "strength": "500 mg",
+        "pharmaceutical_form": "Modified-release tablet",
+        "packaging": "Box containing 7 modified release tablets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://assets.hpra.ie/products/Human/30069/Licence_PA23355-013-004_18072024151857.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "efferalgan-150mg-rectal",
+      "drugName": "Paracetamol",
+      "id": "fa21a4b2-38c2-4b3c-96a2-81ce3e95672e",
+      "fields": {
+        "registry_number": "3288",
+        "trade_name": "EFFERALGAN",
+        "active_substance": "paracetamol",
+        "atc_code": "N02BE01",
+        "strength": "150 mg",
+        "pharmaceutical_form": "Suppository",
+        "packaging": "Box containing 10 suppositories",
+        "approved_population": "Pediatric only"
+      },
+      "sourceUrl": "https://base-donnees-publique.medicaments.gouv.fr/medicament/64675665/extrait",
+      "populationNoteSq": ""
     }
   ]
 }

@@ -55,7 +55,7 @@
     }
     function render(query = '') {
       const terms = normalize(query).split(' ').filter(Boolean);
-      matches = [...select.options].filter(option => !option.disabled && terms.every(term => normalize(option.textContent + ' ' + (option.parentElement?.label || '')).includes(term)));
+      matches = [...select.options].filter(option => !option.disabled && terms.every(term => normalize(option.textContent + ' ' + (option.parentElement?.label || '')+' '+(option.dataset.searchTerms||'')).includes(term)));
       list.replaceChildren(); active = -1; input.removeAttribute('aria-activedescendant');
       let previousGroup = '';
       matches.forEach((option, index) => {
@@ -65,7 +65,8 @@
         const row = make('span', 'dz-select-option', option.textContent);
         row.id = select.id + 'Option' + index; row.setAttribute('role', 'option'); row.setAttribute('aria-selected', String(option.value === select.value));
         row.addEventListener('pointerdown', event => event.preventDefault());
-        row.addEventListener('click', () => choose(option));
+        // Cancel the enclosing label's synthetic input click after a choice.
+        row.addEventListener('click', event => {event.preventDefault();event.stopPropagation();choose(option);});
         list.append(row);
       });
       if (!matches.length) { const empty = make('span', 'dz-select-empty', 'Nuk u gjet asnjë rezultat.'); empty.setAttribute('role', 'status'); list.append(empty); }

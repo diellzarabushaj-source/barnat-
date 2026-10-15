@@ -6,6 +6,9 @@ const makeEngine=require('../lib/pediatric-common-dose-engine.generated');
 const server=require('../lib/pediatric-common-calculate-handler');
 const products=require('./fixtures/pediatric-akkpm-products-20261014.json');
 const original={...require('../data/pediatric-common-drugs-reference.json'),clinicalAudit:require('../data/pediatric-clinical-audit-v1.json'),weightAgeDefaults:require('../data/pediatric-weight-age-defaults.json')};
+const auditedRoutes=require('../data/pediatric-market-route-audit-v1.json');
+assert.equal(new Set(auditedRoutes.productEvidence.map(p=>p.key)).size,auditedRoutes.productEvidence.length,'Product audit keys are unique');
+for(const options of Object.values(auditedRoutes.drugs))assert.equal(new Set(options.map(o=>JSON.stringify(o))).size,options.length,'Exact indication entries are not duplicated');
 const snapshot=JSON.stringify(original),normalized=workflowAudit(original),engine=makeEngine(original);
 assert.equal(workflowAudit(normalized),normalized);
 let comparisons=0;
@@ -83,5 +86,44 @@ for(const field of ['trade_name','strength','active_substance','pharmaceutical_f
 }
 const lin=variant('Linezolid',v=>v.schemes.length);assert.equal(dose('Linezolid',lin,20,5).selectedMeasure.max,100);assert.equal(dose('Linezolid',lin,20,5,{safetyConfirmed:false}).needsSafetyConfirmation,true);assert.match(dose('Linezolid',lin,20,5).administrationNote,/30–120/);
 const wrongBag=products.map(p=>p.id===lin.products[0].id?{...p,strength:'2 mg/mL; bag 300 mL = 500 mg'}:p);assert.ok(market.withMarket(original,wrongBag).marketCatalog.drugs.find(d=>d.name==='Linezolid').forms.flatMap(f=>f.variants).every(v=>!v.schemes.length));
+const co4=variant('Amoxicillin + Clavulanic',v=>v.form.route==='oral'&&v.concentration.basis==='amoxicillin|ratio:4'&&v.concentration.value===125&&v.concentration.perML===5&&v.schemes.length);
+const coLow=co4.schemes.find(s=>s.label.includes('ulët')),coHigh=co4.schemes.find(s=>s.label.includes('lartë'));assert.ok(coLow&&coHigh);
+const coDose=(age,index,extra={})=>dose('Amoxicillin + Clavulanic',co4,12,age,{optionIndex:index,...extra});
+assert.equal(coDose(1,coLow.index).selectedMeasure.min,3.2);assert.equal(coDose(1,coLow.index).selectedMeasure.max,6.4);
+assert.ok(coDose(1.999,coHigh.index).error);assert.equal(coDose(2,coHigh.index).selectedMeasure.max,9.6);assert.ok(coDose(.249,coLow.index).error);
+assert.equal(coDose(2,coLow.index,{safetyConfirmed:false}).needsSafetyConfirmation,true);assert.ok(coDose(2,0).error,'4:1 never uses the twice-daily 7:1 option');
+assert.ok(dose('Amoxicillin + Clavulanic',co4,40,10,{optionIndex:coLow.index}).error);
+const cpmTab=variant('CPM',v=>v.form.key==='tablet'&&v.schemes.length);assert.ok(dose('CPM',cpmTab,40,12).error);assert.equal(dose('CPM',cpmTab,40,13).selectedMeasure.min,1);assert.equal(dose('CPM',cpmTab,40,13).dailyCap,24);assert.ok(dose('CPM',cpmTab,40,13,{optionIndex:0}).error);
+const salbOral=variant('Salbutamol',v=>v.form.key==='oral-liquid'&&v.schemes.length);assert.ok(dose('Salbutamol',salbOral,12,1.99).error);assert.equal(dose('Salbutamol',salbOral,12,2).selectedMeasure.min,2.5);assert.equal(dose('Salbutamol',salbOral,20,6).selectedMeasure.min,5);assert.ok(dose('Salbutamol',salbOral,20,6,{optionIndex:0}).error,'Nebulized dose is not oral');
+const mdi=variant('Salbutamol',v=>v.form.route==='inhaled'&&v.products.some(p=>p.name==='SALBUTAMOL ALDO-UNION 100')&&v.schemes.length);assert.ok(mdi.products.every(p=>p.name==='SALBUTAMOL ALDO-UNION 100'));assert.ok(dose('Salbutamol',mdi,20,3.999).error);assert.equal(dose('Salbutamol',mdi,20,4).selectedMeasure.min,1);assert.equal(dose('Salbutamol',mdi,20,4).selectedMeasure.actualMin,100);assert.equal(dose('Salbutamol',mdi,20,4).selectedMeasure.actualUnit,'mcg');assert.equal(dose('Salbutamol',mdi,20,4).dailyCap,400,'Exact Aldo-Unión label has a 4-puff pediatric limit, not the 8-puff limit of another brand');
+const changedMdi=products.map(p=>p.id===mdi.products[0].id?{...p,strength:'200 mcg/dose'}:p);assert.ok(market.withMarket(original,changedMdi).marketCatalog.drugs.find(d=>d.name==='Salbutamol').forms.flatMap(f=>f.variants).filter(v=>v.products.some(p=>p.id===mdi.products[0].id)).every(v=>!v.schemes.length));
+const gent=variant('Gentamicin',v=>v.products.some(p=>p.id==='ee57fce2-1dbe-4c89-b2f8-e6dddf3832ae'));assert.equal(dose('Gentamicin',gent,20,5).selectedMeasure.min,1);assert.equal(dose('Gentamicin',gent,20,5).selectedMeasure.max,1.25);
+const salbuair=variant('Salbutamol',v=>v.products.some(p=>p.id==='f75c5c03-795a-4bb1-a0ff-fc5c101a60a3'));assert.equal(dose('Salbutamol',salbuair,20,5).selectedMeasure.min,2);assert.equal(dose('Salbutamol',salbuair,20,5).selectedMeasure.max,2.5);
+const salres=variant('Salbutamol',v=>v.products.some(p=>p.id==='0c0a36c0-9167-43c5-aac1-b6e5451a05bf'));assert.ok(dose('Salbutamol',salres,12,1.999).error);const sr=dose('Salbutamol',salres,12,2);assert.equal(sr.selectedMeasure.min,1);assert.equal(sr.selectedMeasure.max,2);assert.equal(sr.selectedMeasure.actualMax,200);assert.equal(sr.dailyCap,800);
+assert.notEqual(sr.dailyCap,dose('Salbutamol',mdi,20,4).dailyCap,'Two 100 mcg inhalers retain their own manufacturer daily limits');
+const klacid=variant('Clarithromycin',v=>v.products.some(p=>p.id==='151d0b8c-b23e-456f-a6f5-52582972f42b'));assert.ok(dose('Clarithromycin',klacid,45,12).error);assert.equal(dose('Clarithromycin',klacid,45,13).selectedMeasure.min,1);assert.equal(dose('Clarithromycin',klacid,45,13).dailyCap,500);assert.match(dose('Clarithromycin',klacid,45,13).frequency,/1 herë/);assert.equal(dose('Clarithromycin',klacid,45,13,{optionIndex:klacid.schemes[1].index}).selectedMeasure.max,2);assert.ok(dose('Clarithromycin',klacid,45,13,{optionIndex:0}).error,'Modified-release tablets never borrow immediate-release twice-daily dosing');
+const effer=variant('Paracetamol',v=>v.products.some(p=>p.id==='fa21a4b2-38c2-4b3c-96a2-81ce3e95672e'));assert.ok(dose('Paracetamol',effer,7.999,1).error);assert.ok(dose('Paracetamol',effer,12.001,2).error);assert.equal(dose('Paracetamol',effer,8,1).selectedMeasure.min,1);assert.equal(dose('Paracetamol',effer,8,1).dailyCap,450);assert.equal(dose('Paracetamol',effer,10,1).dailyCap,600);assert.equal(dose('Paracetamol',effer,12,2).selectedMeasure.actualMax,150);assert.ok(dose('Paracetamol',effer,8,2.99,{ageUnit:'month'}).error);
+const para250=variant('Paracetamol',v=>v.form.route==='rectal'&&v.concentration.value===250&&v.schemes.length);assert.ok(dose('Paracetamol',para250,20,5.999).error);assert.equal(dose('Paracetamol',para250,20,6).selectedMeasure.min,1);assert.equal(dose('Paracetamol',para250,30,10).selectedMeasure.max,1);assert.equal(dose('Paracetamol',para250,100/3,10).selectedMeasure.max,2);assert.equal(dose('Paracetamol',para250,40,12.99).selectedMeasure.max,2);assert.ok(dose('Paracetamol',para250,40,13).error);
+for(let w=30;w<=40;w+=.01){const r=dose('Paracetamol',para250,w,10);assert.ok(r.selectedMeasure.actualMax*4<=60*w+1e-8,'Whole suppositories and 4-dose frequency stay within daily ceiling');}
 assert.equal(JSON.stringify(original),snapshot);
+const coES=variant('Amoxicillin + Clavulanic',v=>v.concentration.value===600&&v.concentration.perML===5&&v.schemes.length);
+const esDose=(w,a,extra={})=>dose('Amoxicillin + Clavulanic',coES,w,a,extra);
+assert.equal(esDose(12,2).selectedMeasure.min,4.5);assert.equal(esDose(40,12).selectedMeasure.min,15);
+assert.match(esDose(12,2).frequency,/10 ditë/);assert.equal(esDose(12,2).doseMax,1080);assert.equal(esDose(40,12).doseMax,3600);
+assert.ok(esDose(40.001,12).error);assert.ok(esDose(12,13).error);assert.ok(esDose(12,.249).error);
+assert.equal(esDose(12,2,{ageConfirmed:false}).needsAgeConfirmation,true);assert.equal(esDose(12,2,{safetyConfirmed:false}).needsSafetyConfirmation,true);
+assert.ok(esDose(12,2,{optionIndex:coLow.index}).error,'ES never borrows 4:1 or 7:1 dosing');
+for(const entry of reference.marketCatalog.drugs)for(const v of entry.forms.flatMap(f=>f.variants).filter(v=>!v.schemes.length)){
+ assert.ok(v.review?.reviewedAt&&v.review?.sources.length,entry.name+' inactive variant has a source review');
+ assert.equal(v.reason,v.review.reasonSq);assert.ok(dose(entry.name,v,20,5,{optionIndex:0}).error,'Source review cannot authorize calculation');
+ for(const source of v.review.sources)assert.equal(new URL(source.url).protocol,'https:');
+}
+const wrongDiclo=variant('Diclofenac',v=>v.concentration.raw==='100 g');assert.equal(wrongDiclo.review.status,'data-inconsistent');assert.match(wrongDiclo.reason,/g në mg/);
+for(const evidence of auditedRoutes.productEvidence)for(const field of Object.keys(evidence.fields)){
+ const changed=products.map(p=>p.id===evidence.id?{...p,[field]:field==='registry_number'?0:'changed'}:p);
+ const changedRef=market.withMarket(original,changed);const options=changedRef.clinicalAudit.drugs[evidence.drugName].calculator.options;
+ const revoked=new Set(options.map((o,index)=>o.marketEvidenceKey===evidence.key?index:-1).filter(index=>index>=0));
+ const choices=changedRef.marketCatalog.drugs.find(d=>d.name===evidence.drugName).forms.flatMap(f=>f.variants).filter(v=>v.products.some(p=>p.id===evidence.id));
+ assert.ok(choices.every(v=>v.schemes.every(s=>!revoked.has(s.index))),evidence.key+' exact source invalidated by '+field);
+}
 console.log(`PASS: ${comparisons} original-rule parity points; new route, age, product, component, daily-volume and contraindication gates`);

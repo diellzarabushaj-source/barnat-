@@ -1,0 +1,481 @@
+{
+  "schemaVersion": "pediatric-formulation-review-v1",
+  "reviewedAt": "2026-10-15",
+  "scopeSq": "Kontroll i burimeve ndërkombëtare për formulimin; nuk zëvendëson SmPC e produktit të autorizuar në Kosovë.",
+  "drugs": {
+    "Amoxicillin + Clavulanic": {
+      "noteSq": "Raporti amoksicilinë/klavulanat ndryshon skemën. Fortësia pa vëllim dhe tabletat pa udhëzim të produktit nuk marrin skemën e suspensionit.",
+      "sources": [
+        {
+          "title": "Burim për Amoxicillin + Clavulanic",
+          "url": "https://www.medicines.org.uk/emc/product/6671/smpc"
+        },
+        {
+          "title": "Burim për Amoxicillin + Clavulanic",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=59979859-8c9b-4173-a5e3-2e6312fd9d79"
+        }
+      ]
+    },
+    "Penicillin G": {
+      "noteSq": "Prokainë / benzatinë dhe benzilpenicilina e tretshme nuk ndërrohen. Produkti i kombinuar kërkon skemë specifike dhe rrugë IM të konfirmuar.",
+      "sources": [
+        {
+          "title": "Burim për Penicillin G",
+          "url": "https://sps.nhs.uk/articles/managing-the-risk-of-confusion-between-injectable-penicillin-salts/"
+        }
+      ]
+    },
+    "Piperacillin + Tazobactam": {
+      "noteSq": "Totali 2,25 g ose 4,5 g nuk përdoret si masë piperaciline. Duhet konfirmuar përmbajtja e secilit komponent në produktin konkret dhe indikacioni / funksioni renal.",
+      "sources": [
+        {
+          "title": "Burim për Piperacillin + Tazobactam",
+          "url": "https://labeling.pfizer.com/ShowLabeling.aspx?id=16374"
+        }
+      ]
+    },
+    "Azithromycin": {
+      "noteSq": "SmPC i azitromicinës IV nuk përcakton efikasitet / siguri pediatrike. Skema orale nuk transferohet te flakoni IV.",
+      "sources": [
+        {
+          "title": "Burim për Azithromycin",
+          "url": "https://www.medicines.org.uk/emc/product/1276/smpc"
+        }
+      ]
+    },
+    "Clarithromycin": {
+      "noteSq": "Çlirimi i modifikuar ka skemë të veçantë, me ushqim dhe tabletë të plotë; nuk përdoret skema dy herë në ditë e formës së zakonshme.",
+      "sources": [
+        {
+          "title": "Burim për Clarithromycin",
+          "url": "https://assets.hpra.ie/products/Human/30069/Licence_PA23355-013-004_18072024151857.pdf"
+        }
+      ]
+    },
+    "Levofloxacin": {
+      "noteSq": "SmPC evropian e kundërindikon te fëmijët dhe adoleshentët në rritje. Përdorimet e posaçme në udhëzime të tjera nuk janë skemë rutinë pediatrike për këto produkte.",
+      "sources": [
+        {
+          "title": "Burim për Levofloxacin",
+          "url": "https://www.medicines.org.uk/emc/product/12130/smpc"
+        }
+      ]
+    },
+    "Gentamicin": {
+      "noteSq": "Injeksioni kërkon konfirmim përqendrimi, funksioni renal dhe monitorim terapeutik; deklarimet e dyfishta të fortësisë duhet të jenë ekuivalente.",
+      "sources": [
+        {
+          "title": "FDA / DailyMed · gentamicin injection",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=8bdeef7f-ad8e-46e0-a872-e945eae51d68"
+        }
+      ]
+    },
+    "Cefixime": {
+      "noteSq": "400 mg mund të përdoret në grupmoshë / peshë të caktuar në etiketën FDA. Etiketa e NEOCEF në regjistër është për të rritur; fletëudhëzimi i këtij produkti nuk është konfirmuar.",
+      "sources": [
+        {
+          "title": "Burim për Cefixime",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b5a3c547-3bc7-4856-af9c-1bead294f5d9"
+        }
+      ]
+    },
+    "Ceftriaxone": {
+      "noteSq": "Tretësi me lidokainë përdoret vetëm për IM, asnjëherë IV. Kompleti, përqendrimi pas përgatitjes dhe rruga kërkojnë udhëzimin e produktit.",
+      "sources": [
+        {
+          "title": "Burim për Ceftriaxone",
+          "url": "https://www.medicines.org.uk/emc/product/15101/smpc"
+        }
+      ]
+    },
+    "Colistin": {
+      "noteSq": "Nebulizimi dhe IV kanë skema dhe përgatitje të ndryshme. IU për flakon nuk përcakton mL pas rikonstituimit për produktin e inhaluar.",
+      "sources": [
+        {
+          "title": "Burim për Colistin",
+          "url": "https://www.medicines.org.uk/emc/product/1094/smpc"
+        },
+        {
+          "title": "Burim për Colistin",
+          "url": "https://www.medicines.org.uk/emc/product/4/smpc"
+        }
+      ]
+    },
+    "Linezolid": {
+      "noteSq": "Ekziston skemë pediatrike IV në etiketën FDA; kjo nuk konfirmon automatikisht fletëudhëzimin e çdo marke lokale të etiketuar për të rritur.",
+      "sources": [
+        {
+          "title": "Burim për Linezolid",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=870c9600-04d5-4b44-a5b5-02252a310f22"
+        }
+      ]
+    },
+    "Diclofenac": {
+      "noteSq": "Kufijtë ndryshojnë sipas produktit, rrugës, moshës dhe indikacionit. Skema e supozitorit 12,5 / 25 mg nuk transferohet te 50 / 100 mg, tableta gastrorezistente ose ampula.",
+      "sources": [
+        {
+          "title": "Burim për Diclofenac",
+          "url": "https://www.medicines.org.uk/emc/product/1044/smpc"
+        },
+        {
+          "title": "Burim për Diclofenac",
+          "url": "https://medicinesauthority.gov.mt/file.ashx?f=3D8AF585FC0135353842E97B262BC199B2BFC8669CFDD15C"
+        }
+      ]
+    },
+    "Ibuprofen": {
+      "noteSq": "Formulimi dhe fortësia përcaktojnë kufijtë. Skema e shurupit nuk konfirmon automatikisht tabletën 800 mg ose kapsulën 600 mg; duhet SmPC i produktit.",
+      "sources": [
+        {
+          "title": "Burim për Ibuprofen",
+          "url": "https://www.medicines.org.uk/emc/product/1730/smpc"
+        }
+      ]
+    },
+    "Paracetamol": {
+      "noteSq": "Supozitorët kanë kufij të veçantë peshe dhe përdoren të plotë. Paketimet IV kanë kufij të veçantë; një përqendrim i njëjtë nuk konfirmon çdo markë / paketim.",
+      "sources": [
+        {
+          "title": "Burim për Paracetamol",
+          "url": "https://www.medicines.org.uk/emc/product/15386/smpc"
+        },
+        {
+          "title": "Burim për Paracetamol",
+          "url": "https://base-donnees-publique.medicaments.gouv.fr/medicament/64675665/extrait"
+        },
+        {
+          "title": "Burim për Paracetamol",
+          "url": "https://www.medicines.org.uk/emc/product/15148/smpc"
+        }
+      ]
+    },
+    "Domperidone": {
+      "noteSq": "Përdorimi kërkon njëkohësisht moshën ≥12 vjeç dhe peshën ≥35 kg, me kufizime kardiake / ndërveprimesh. Fletëudhëzimi i PEPTOMET duhet konfirmuar veçmas.",
+      "sources": [
+        {
+          "title": "Burim për Domperidone",
+          "url": "https://www.gov.uk/drug-safety-update/domperidone-for-nausea-and-vomiting-lack-of-efficacy-in-children-reminder-of-contraindications-in-adults-and-adolescents"
+        }
+      ]
+    },
+    "CPM": {
+      "noteSq": "Tableta 4 mg ka kufij të veçantë moshe. Nuk ndahet automatikisht në gjysmë pa konfirmuar produktin; skema e shurupit nuk transferohet te tableta.",
+      "sources": [
+        {
+          "title": "Burim për CPM",
+          "url": "https://www.medicines.org.uk/emc/product/3927/smpc"
+        }
+      ]
+    },
+    "Acyclovir": {
+      "noteSq": "Etiketa FDA përfshin variçelën nga 2 vjeç. Produkti HERPEX 400 mg mbetet pa fletëudhëzim të konfirmuar; rruga, indikacioni, njësitë e plota dhe funksioni renal duhen verifikuar.",
+      "sources": [
+        {
+          "title": "Burim për Acyclovir",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=37a51d9c-1f39-4065-8c7d-6528ac6de91c"
+        }
+      ]
+    },
+    "Salbutamol": {
+      "noteSq": "Shurupi, tableta, nebulizimi dhe inhalatori nuk ndërrohen. Pajisja duhet identifikuar saktë; dy inhalatorë 100 mcg mund të kenë kufij të ndryshëm ditorë.",
+      "sources": [
+        {
+          "title": "Burim për Salbutamol",
+          "url": "https://www.medicines.org.uk/emc/product/854/smpc"
+        },
+        {
+          "title": "Burim për Salbutamol",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/65850/FichaTecnica_65850.html"
+        },
+        {
+          "title": "Burim për Salbutamol",
+          "url": "https://devacomtr.s3.eu-west-2.amazonaws.com/urunler/kub/salres-100-mcg-spc.pdf"
+        }
+      ]
+    },
+    "Montelukast": {
+      "noteSq": "Etiketa e kontrolluar për 10 mg është nga 15 vjeç dhe përfshin paralajmërime neuropsikiatrike. Fletëudhëzimi i MONTOL 10 mg nuk është konfirmuar; nuk përdoret për krizë akute.",
+      "sources": [
+        {
+          "title": "Burim për Montelukast",
+          "url": "https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6d69e73a-76cb-4ece-9cf9-e9adb4f523b4"
+        }
+      ]
+    },
+    "Pantoprazole": {
+      "noteSq": "Tableta gastrorezistente dhe IV kanë kufij të ndryshëm. Për IV nuk është përcaktuar skemë pediatrike në SmPC e kontrolluar; tabletat kërkojnë udhëzimin e produktit.",
+      "sources": [
+        {
+          "title": "Burim për Pantoprazole",
+          "url": "https://www.medicines.org.uk/emc/product/11068/smpc"
+        }
+      ]
+    },
+    "Lansoprazole": {
+      "noteSq": "SmPC evropian i kontrolluar nuk e rekomandon te fëmijët për mungesë të dhënash. Etiketat ndërkombëtare të produkteve të tjera nuk autorizojnë automatikisht këto kapsula ose IV.",
+      "sources": [
+        {
+          "title": "Burim për Lansoprazole",
+          "url": "https://www.medicines.org.uk/emc/product/14550/smpc"
+        }
+      ]
+    },
+    "Iron": {
+      "noteSq": "Doza llogaritet me hekurin elementar. HEFEROL 350 mg përmban 115 mg Fe; kjo përmbajtje nuk transferohet te markat, kripërat ose kombinimet e tjera.",
+      "sources": [
+        {
+          "title": "Burim për Iron",
+          "url": "https://www.halmed.hr/upl/lijekovi/SPC/Heferol-SPC.pdf"
+        },
+        {
+          "title": "Burim për Iron",
+          "url": "https://www.uni-pharma.gr/en/nonprescriptive/hemafer-5/"
+        }
+      ]
+    },
+    "Calcium": {
+      "noteSq": "Kalciumi glukonat nuk barazohet me kalciumin elementar. Doza IV kërkon indikacion, analiza, hollim, ritëm dhe monitorim EKG; pesha e vetme nuk mjafton.",
+      "sources": [
+        {
+          "title": "Burim për Calcium",
+          "url": "https://www.medicines.org.uk/emc/product/6264/smpc"
+        }
+      ]
+    },
+    "Loratadine": {
+      "noteSq": "Rinit alergjik / urtikarie: forma e lëngshme nga 2 vjeç; tabletë e plotë nga 6 vjeç dhe >30 kg. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Loratadine",
+          "url": "https://www.medicines.org.uk/emc/product/4567/smpc"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Loratadine",
+          "url": "https://www.medicines.org.uk/emc/product/14580/smpc"
+        }
+      ]
+    },
+    "Dexamethasone": {
+      "noteSq": "Skema të veçanta për krup. Doza shprehet si bazë; ampulat e fosfatit kërkojnë ekuivalencë të konfirmuar për produktin. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Dexamethasone",
+          "url": "https://www.rch.org.au/clinicalguide/guideline_index/Croup_Laryngotracheobronchitis/"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Dexamethasone",
+          "url": "https://www.medicines.org.uk/emc/product/11015/smpc"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Dexamethasone",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/67455/FT_67455.html"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Dexamethasone",
+          "url": "https://www.alims.gov.rs/doc_file/lekovi/pil/000010495%202024%2059010%20007%20000%20515%20002%2004%20001.pdf"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Dexamethasone",
+          "url": "https://www.leedsformulary.nhs.uk/docs/Dexamethasone%20Medusa%20Poster%20-%20paediatric%20oncology.pdf"
+        }
+      ]
+    },
+    "Methylprednisolone": {
+      "noteSq": "Astmë: kurs oral i shkurtër dhe dozë fillestare IV janë skema të ndara; sodium succinate nuk zëvendësohet me acetate / depot. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Methylprednisolone",
+          "url": "https://www.nhlbi.nih.gov/sites/default/files/media/docs/asthgdln_1.pdf"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Methylprednisolone",
+          "url": "https://cps.ca/uploads/documents/Table_2._Medications_and_dosages_for_acute_asthma_treatments_by_health_care_providers_in_children_older_than_1_year_.docx_.pdf"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Methylprednisolone",
+          "url": "https://labeling.pfizer.com/showlabeling.aspx?id=648"
+        }
+      ]
+    },
+    "Chloropyramine hydrochloride": {
+      "noteSq": "Suprastin dhe Synopen kanë përqendrime dhe skema të veçanta. Nuk është chlorphenamine / CPM; nuk është trajtimi i parë i anafilaksisë. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Chloropyramine hydrochloride",
+          "url": "https://ogyei.gov.hu/kiseroirat/ah/ah_0000010622_20240129155938.doc"
+        },
+        {
+          "authority": "Burim zyrtar",
+          "title": "Chloropyramine hydrochloride",
+          "url": "https://halmed.hr/upl/lijekovi/SPC/SPC_UP-I-530-09-17-02-197.pdf"
+        }
+      ]
+    },
+    "Ketoprofen": {
+      "noteSq": "Ketonal forte 100 mg ka skemë për të rritur; vetëm në 18 vjeç këtu. Fortësitë e kripës lysine dhe produktet e tjera nuk marrin automatikisht këtë skemë. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Ketoprofen",
+          "url": "https://halmed.hr/upl/lijekovi/SPC/Ketonal-forte-SPC.pdf"
+        }
+      ]
+    },
+    "Ketorolac": {
+      "noteSq": "Dozë fillestare parenterale pas operacionit nga 16 vjeç, në spital. Jo përdorim rutinë pediatrik ose transferim te forma orale. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Ketorolac",
+          "url": "https://www.medicines.org.uk/emc/files/pil.11547.pdf"
+        }
+      ]
+    },
+    "Multivitamins + minerals": {
+      "noteSq": "Multivitamina me / pa minerale; produktet kanë përbërje të ndryshme, prandaj doza është specifike për produktin. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst ushqyes, jo SmPC e produktit",
+          "title": "Multivitamin/mineral supplements",
+          "url": "https://ods.od.nih.gov/factsheets/MVMS-HealthProfessional/"
+        }
+      ]
+    },
+    "Vitamin D3 · Cholecalciferol": {
+      "noteSq": "D3: profilaksia dhe trajtimi i mungesës janë skema të ndryshme. Vetëm pikatori i produktit të konfirmuar jep numër pikash. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Vitamin D3 · Cholecalciferol",
+          "url": "https://medikamente.basg.gv.at/documents/10989__DOTC_GEBR_INFO.pdf"
+        },
+        {
+          "authority": "NIH ODS · kontekst ushqyes",
+          "title": "Vitamin D",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/"
+        }
+      ]
+    },
+    "Calcitriol · vitamin D active": {
+      "noteSq": "Kalcitrioli është vitaminë D aktive, jo suplement D3; kërkon kalcium / fosfat, funksion renal dhe monitorim specialistik. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Calcitriol · vitamin D active",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/"
+        }
+      ]
+    },
+    "Vitamin B1 · Thiamine": {
+      "noteSq": "Tiamina: mungesa ushqyese dhe indikacionet neurologjike kanë skema të ndryshme. Injeksioni kërkon protokoll specifik. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamin B1 · Thiamine",
+          "url": "https://ods.od.nih.gov/factsheets/Thiamin-HealthProfessional/"
+        }
+      ]
+    },
+    "Vitamins B1 + B6 + B12": {
+      "noteSq": "Kombinime me doza të larta; jo të këmbyeshme me vitamina individuale. Disa ampula përmbajnë edhe lidokainë. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamins B1 + B6 + B12",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminB6-HealthProfessional/"
+        }
+      ]
+    },
+    "Vitamin B complex": {
+      "noteSq": "B-kompleks: përbërja ndryshon sipas produktit; mL ose numri i ampulave nuk llogaritet nga një vitaminë e vetme. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamin B complex",
+          "url": "https://ods.od.nih.gov/factsheets/Thiamin-HealthProfessional/"
+        }
+      ]
+    },
+    "Vitamin C · Ascorbic acid": {
+      "noteSq": "Vitamina C: doza varet nga indikacioni dhe rruga; mos e barazo nevojën ditore ushqyese me dozën terapeutike IV. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamin C · Ascorbic acid",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminC-HealthProfessional/"
+        }
+      ]
+    },
+    "Vitamin B6 · Pyridoxine": {
+      "noteSq": "B6: doza varet nga shkaku i mungesës dhe terapia shoqëruese; përdorimi i lartë / afatgjatë mund të shkaktojë neuropati. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamin B6 · Pyridoxine",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminB6-HealthProfessional/"
+        }
+      ]
+    },
+    "Calcium + vitamin D3": {
+      "noteSq": "Kombinim kalciumi / D3 me popullatë për të rritur në regjistër; jo skemë pediatrike e përgjithshme sipas peshës. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Calcium + vitamin D3",
+          "url": "https://ods.od.nih.gov/factsheets/Calcium-HealthProfessional/"
+        }
+      ]
+    },
+    "Vitamin K1 · Phytomenadione": {
+      "noteSq": "K1: profilaksia neonatale, gjakderdhja dhe antagonizimi i antikoagulantëve janë protokolle të ndryshme; kërkohet formulimi / rruga e saktë. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamin K1 · Phytomenadione",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminK-HealthProfessional/"
+        }
+      ]
+    },
+    "Vitamin B12 · Cyanocobalamin": {
+      "noteSq": "B12: trajtimi varet nga diagnoza, shkaku, neurologjia dhe skema e mirëmbajtjes; nuk përcaktohet vetëm nga pesha. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamin B12 · Cyanocobalamin",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/"
+        }
+      ]
+    },
+    "Vitamin B12 · Hydroxocobalamin": {
+      "noteSq": "Hidroksokobalamina nuk merr automatikisht skemën e cianokobalaminës; kërkohet diagnoza dhe protokolli i produktit. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "NIH ODS · kontekst klinik, jo SmPC e produktit",
+          "title": "Vitamin B12 · Hydroxocobalamin",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/"
+        }
+      ]
+    },
+    "Vitamin B9 · Folic acid": {
+      "noteSq": "Acidi folik: skemë për mungesë të konfirmuar, pasi është vlerësuar mungesa e vitaminës B12; jo dozë e përgjithshme suplementimi. Për variantet pa skemë aktive kërkohet udhëzimi i produktit dhe konteksti klinik; nuk jepet një dozë e hamendësuar.",
+      "sources": [
+        {
+          "authority": "Burim zyrtar",
+          "title": "Vitamin B9 · Folic acid",
+          "url": "https://www.medicines.org.uk/emc/product/6998/smpc"
+        }
+      ]
+    }
+  }
+}

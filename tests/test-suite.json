@@ -201,5 +201,6 @@
   "tests/pediatric-market-catalog-test.js",
   "tests/pediatric-workflow-routes-test.js",
   "tests/pediatric-market-reference-runtime-test.js",
-  "tests/icd-scoped-filter-test.js"
+  "tests/icd-scoped-filter-test.js",
+  "tests/pediatric-market-additions-test.js"
 ]
