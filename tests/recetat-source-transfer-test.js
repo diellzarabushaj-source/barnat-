@@ -46,8 +46,10 @@ assert.equal(sourceClinicalIssues({...guide,logicBlocks:[{items:[{title:'Plazmë
 state.loading=false;state.chapter=2;state.chapters=[{number:2,sourceNote:'Pa Rx në dokumentin burimor.'}];
 render();assert.match(node('#rxSourceGuideList').innerHTML,/Pa Rx në dokumentin burimor/);
 (async()=>{
-  state.query='test';context.fetch=async()=>{throw new Error('network');};
+  let searchOptions;
+  state.query='test';context.fetch=async(url,options)=>{searchOptions=options;throw new Error('network');};
   await runSmartSearch('test');assert.equal(state.searchError,true);
+  assert.equal(searchOptions.headers['Cache-Control'],'no-cache','Search revalidates published source content');
   assert.match(node('#rxSourceGuideList').innerHTML,/Kërkimi nuk u krye/);
   assert.doesNotMatch(node('#rxSourceGuideList').innerHTML,/Nuk u gjet/);
   assert.equal(node('#rxSourceRetry').hidden,false);

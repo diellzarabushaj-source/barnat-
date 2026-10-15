@@ -31,7 +31,7 @@ assert.match(node('#rxSourceChapterSelect').innerHTML,/4 në verifikim/);
 state.error=true;render();assert.equal(node('#rxSourceRetry').hidden,false);
 assert.match(node('#rxSourceGuideList').innerHTML,/nuk u ngarkuan/);
 (async()=>{
- context.fetch=async()=>({ok:true,status:200,json:async()=>({ok:true,chapters,chapter:1,items:[]})});
+ context.fetch=async(url,options)=>{assert.equal(options.headers['Cache-Control'],'no-cache','Published source corrections bypass the saved query while online');return {ok:true,status:200,json:async()=>({ok:true,chapters,chapter:1,items:[]})};};
  await load();assert.equal(state.error,false);assert.equal(state.loading,false);assert.equal(node('#rxSourceRetry').hidden,true);
  context.fetch=async()=>({ok:false,status:401,json:async()=>({})});
  await load();assert.equal(state.error,true);assert.equal(state.loading,false);

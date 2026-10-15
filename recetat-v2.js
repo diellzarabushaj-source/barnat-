@@ -8093,7 +8093,7 @@
         credentials:'same-origin',
         cache:'no-store',
         signal:state.searchController.signal,
-        headers:{ Accept:'application/json' },
+        headers:{ Accept:'application/json', 'Cache-Control':'no-cache' },
       });
       const payload = await response.json().catch(() => ({}));
       if (requestId !== state.searchRequestId || normalize(state.query) !== normalized) return;
@@ -8151,7 +8151,7 @@
         credentials:'same-origin',
         cache:'no-store',
         signal:state.controller.signal,
-        headers:{ Accept:'application/json' },
+        headers:{ Accept:'application/json', 'Cache-Control':'no-cache' },
       });
       const payload = await response.json().catch(() => ({}));
       if (requestId !== state.requestId) return;
