@@ -7549,6 +7549,8 @@
     items:[],
     query:'',
     searchResults:[],
+    filter:'all',
+    searchScope:'all',
     searching:false,
     searchError:false,
     activeGuideId:'',
@@ -7707,8 +7709,21 @@
 
   function filteredItems() {
     const query = normalize(state.query);
-    if (!query || query.length >= 2) return state.items;
-    return state.items.filter(guide => guideSearchText(guide).includes(query));
+    return state.items.filter(guide => {
+      const stats = guideStats(guide);
+      const matches = state.filter === 'medication' ? stats.activeCount > 0
+        : state.filter === 'alternatives' ? stats.alternativeCount > 0
+        : state.filter === 'conditional' ? stats.conditionalCount > 0 : true;
+      return matches && (!query || query.length >= 2 || guideSearchText(guide).includes(query));
+    });
+  }
+
+  function searchSignature() {
+    return [normalize(state.query), state.filter, state.searchScope, state.searchScope === 'chapter' ? state.chapter : ''].join('|');
+  }
+
+  function searchScopeLabel() {
+    return state.searchScope === 'chapter' ? `Kapitulli ${state.chapter}` : 'të gjithë kapitujt';
   }
 
   function isGlobalSearchActive() {
@@ -7777,25 +7792,13 @@
     </div>`;
   }
 
-  /* The step marker already says whether a row is a drug or a plain step
-     (filled vs outlined). Sequence is the second thing the eye needs, so the
-     marker also carries the step's position as a depth: 1 is the accent, and
-     each following step sits a shade deeper. Six stops cycle, because a
-     nine-step scheme should still read as a rhythm rather than a rainbow —
-     adjacent steps always differ, which is what the reader is scanning for.
-     The number itself stays the authority; the tint is only a cue. */
-  function stepTintIndex(smartLabel) {
-    const n = Number(String(smartLabel || '').match(/^\d+/)?.[0] || 0);
-    return n > 0 ? ((n - 1) % 6) + 1 : 1;
-  }
-
   function renderItem(item, block) {
     const meta = itemMeta(item);
     const active = item?.kind === 'active-substance';
     const query = [text(item?.genericName || item?.title), text(item?.strength)].filter(Boolean).join(' ');
     const sourceNote = item?.kind === 'source-note';
     const typeLabel = active ? 'BAR' : sourceNote ? 'SHËNIM' : item?.kind === 'oxygen' ? 'O₂' : 'HAP';
-    return `<article class="rx-source-item${active ? ' is-active-substance' : ''}${sourceNote ? ' is-source-note' : ''}${block?.relation === 'conditional' && !isEditorialBlock(block) ? ' is-conditional' : ''}" data-rx-step="${stepTintIndex(item?.smartLabel)}">
+    return `<article class="rx-source-item${active ? ' is-active-substance' : ''}${sourceNote ? ' is-source-note' : ''}${block?.relation === 'conditional' && !isEditorialBlock(block) ? ' is-conditional' : ''}">
       <div class="rx-source-step-rail" aria-label="Hapi ${esc(item.smartLabel)}">
         <span class="rx-source-item-number">${esc(item.smartLabel)}</span>
         <small>${esc(typeLabel)}</small>
@@ -7806,7 +7809,7 @@
             <span class="rx-source-kind">${esc(KIND_LABELS[item?.kind] || 'Element i skemës')}</span>
             <h4>${esc(itemTitle(item))}</h4>
           </div>
-          ${active && query ? `<button class="rx-source-find-drug" type="button" data-rx-source-drug="${esc(query)}"><span>Zgjidh preparatin</span><b aria-hidden="true">→</b></button>` : ''}
+          ${active && query ? `<button class="rx-source-find-drug" type="button" data-rx-source-drug="${esc(query)}" aria-label="Zgjidh preparatin: ${esc(itemTitle(item))}" title="Zgjidh preparatin"><span>Zgjidh preparatin</span><b aria-hidden="true">↗</b></button>` : ''}
         </div>
         ${meta.length ? `<div class="rx-source-meta">${meta.map(value => `<span>${esc(value)}</span>`).join('')}</div>` : ''}
         ${text(item?.sig) ? `<div class="rx-source-sig"><span>S.</span><p>${esc(item.sig)}</p></div>` : ''}
@@ -7939,7 +7942,7 @@
     }
     const global = isGlobalSearchActive();
     const entries = global ? state.searchResults : filteredItems();
-    const current = activeGuide();
+    const current = global ? activeGuide() : ensureActiveGuide(entries);
     const count = $('#rxSourceResultCount');
     const label = $('#rxSourceResultLabel');
     const hint = $('#rxSourceIndexHint');
@@ -7947,21 +7950,24 @@
     const clear = $('#rxSourceClearSearch');
 
     if (count) count.textContent = state.searching ? '…' : String(entries.length);
-    if (label) label.textContent = global ? 'rezultate në të gjithë kapitujt' : 'mësime në kapitull';
+    if (label) label.textContent = global ? `rezultate · ${searchScopeLabel()}` : `nga ${state.items.length} skema · Kapitulli ${state.chapter}`;
     const indexTitle = $('#rxSourceIndexTitle');
     if (indexTitle) indexTitle.textContent = global ? 'Rezultatet e kërkimit' : 'Skemat e kapitullit';
     if (hint) hint.textContent = global
-      ? (state.searching ? 'Duke kërkuar në të gjithë burimin…' : `${entries.length} rezultate globale`)
-      : (currentChapterMeta()?.pendingCount ? `${currentChapterMeta().pendingCount} në verifikim` : `${state.items.length} ${state.items.length === 1 ? 'skemë' : 'skema'}`);
-    const currentIndex = state.items.findIndex(item => String(item?._id) === String(current?._id));
-    if (activeTitle) activeTitle.textContent = current ? `Skema ${currentIndex + 1} nga ${state.items.length} · Kapitulli ${state.chapter}` : (global ? 'Zgjidh një rezultat' : 'Zgjidh një mësim');
+      ? (state.searching ? `Duke kërkuar · ${searchScopeLabel()}` : `${entries.length} rezultate`)
+      : (currentChapterMeta()?.pendingCount ? `${currentChapterMeta().pendingCount} në verifikim` : `${entries.length} ${entries.length === 1 ? 'skemë' : 'skema'}`);
+    const currentIndex = entries.findIndex(item => String(item?._id) === String(current?._id));
+    if (activeTitle) activeTitle.textContent = current && currentIndex >= 0 ? `Skema ${currentIndex + 1} nga ${entries.length} · Kapitulli ${state.chapter}` : (global ? 'Zgjidh një rezultat' : 'Zgjidh një mësim');
     const previous = $('#rxSourcePrevious');
     const next = $('#rxSourceNext');
     if (previous) previous.disabled = global || currentIndex <= 0;
-    if (next) next.disabled = global || currentIndex < 0 || currentIndex >= state.items.length - 1;
+    if (next) next.disabled = global || currentIndex < 0 || currentIndex >= entries.length - 1;
     const disclosure = $('#rxSourceIndexDisclosure');
     if (disclosure && global) disclosure.open = true;
-    if (clear) clear.hidden = !state.query;
+    if (clear) clear.hidden = !state.query && state.filter === 'all' && state.searchScope === 'all';
+    const resultMeta = $('.rx-source-result-meta');
+    if (resultMeta) resultMeta.hidden = !state.query && state.filter === 'all' && state.searchScope === 'all';
+    syncLessonPicker();
 
     if (!global && currentChapterMeta()?.pendingCount && !state.items.length && activeTitle) activeTitle.textContent = 'Në pritje të verifikimit';
     renderNav(entries, current);
@@ -7972,7 +7978,7 @@
         return;
       }
       if (state.searching) {
-        renderEmptyDetail('Po kërkoj në të gjithë burimin…', 'Diagnoza, substanca, doza, rruga, S. dhe kushtet po analizohen.');
+        renderEmptyDetail(`Po kërkoj · ${searchScopeLabel()}…`, 'Diagnoza, substanca, doza, rruga, S. dhe kushtet po analizohen.');
         return;
       }
       if (!entries.length) {
@@ -7980,7 +7986,7 @@
         return;
       }
       if (!current || !entries.some(entry => String(entry?._id) === String(current?._id))) {
-        renderEmptyDetail('Zgjidh një rezultat nga lista.', 'Search-i është global; klikimi e hap automatikisht kapitullin dhe mësimin e duhur.');
+        renderEmptyDetail('Zgjidh një rezultat nga lista.', 'Klikimi hap kapitullin dhe skemën përkatëse.');
         return;
       }
       list.innerHTML = renderGuide(current);
@@ -8001,7 +8007,7 @@
 
     const active = ensureActiveGuide(filteredItems());
     if (!active) {
-      renderEmptyDetail('Nuk u gjet asnjë mësim.', 'Provo një term tjetër.');
+      renderEmptyDetail('Nuk ka skema me këta filtra.', 'Ndrysho llojin e skemës ose pastro filtrat.');
       return;
     }
     list.innerHTML = renderGuide(active);
@@ -8025,13 +8031,19 @@
   function syncLessonPicker() {
     const select = $('#rxSourceLessonSelect');
     if (!select) return;
-    if (!state.items.length) {
-      select.innerHTML = `<option value="">${currentChapterMeta()?.pendingCount ? 'Skemat presin verifikim' : 'Nuk ka skema të disponueshme'}</option>`;
+    if (isGlobalSearchActive()) {
+      select.innerHTML = '<option value="">Zgjidh nga rezultatet më poshtë</option>';
+      select.disabled = true;
+      return;
+    }
+    const items = filteredItems();
+    if (!items.length) {
+      select.innerHTML = `<option value="">${state.items.length ? 'Asnjë skemë me këtë filtër' : currentChapterMeta()?.pendingCount ? 'Skemat presin verifikim' : 'Nuk ka skema të disponueshme'}</option>`;
       select.disabled = true;
       return;
     }
     select.disabled = false;
-    select.innerHTML = state.items.map(guide =>
+    select.innerHTML = items.map(guide =>
       `<option value="${esc(guide?._id)}">${esc(lessonLabel(guide))} — ${esc(guide?.title || guide?.sourceHeading || 'Skemë Rx')}</option>`
     ).join('');
     if (state.activeGuideId && state.items.some(item => String(item?._id) === String(state.activeGuideId))) {
@@ -8081,27 +8093,29 @@
     const normalized = normalize(query);
     if (normalized.length < 2 || normalize(state.query) !== normalized) return;
     const requestId = ++state.searchRequestId;
+    const signature = searchSignature();
     state.searchController?.abort();
     state.searchController = new AbortController();
     state.searching = true;
     state.searchError = false;
     render();
-    sourceStatus('Duke kërkuar inteligjent në të gjitha kapitujt…');
+    sourceStatus(`Duke kërkuar · ${searchScopeLabel()}…`);
 
     try {
-      const response = await fetch(`${SEARCH_API}&q=${encodeURIComponent(query)}&limit=60`, {
+      const chapterParam = state.searchScope === 'chapter' ? `&chapter=${encodeURIComponent(state.chapter)}` : '';
+      const response = await fetch(`${SEARCH_API}&q=${encodeURIComponent(query)}&limit=60&filter=${encodeURIComponent(state.filter)}${chapterParam}`, {
         credentials:'same-origin',
         cache:'no-store',
         signal:state.searchController.signal,
         headers:{ Accept:'application/json', 'Cache-Control':'no-cache' },
       });
       const payload = await response.json().catch(() => ({}));
-      if (requestId !== state.searchRequestId || normalize(state.query) !== normalized) return;
+      if (requestId !== state.searchRequestId || searchSignature() !== signature) return;
       if (response.status === 401 || response.status === 403) throw new Error('Kërkohet autentikim.');
       if (!response.ok || payload?.ok !== true) throw new Error(payload?.error || 'Kërkimi nuk u krye.');
       state.searchResults = Array.isArray(payload.results) ? payload.results : [];
       state.searching = false;
-      sourceStatus(`${state.searchResults.length} rezultate · kërkim global me tolerancë ndaj typo-ve`, 'success');
+      sourceStatus(`${state.searchResults.length} rezultate · ${searchScopeLabel()}`, 'success');
       render();
     } catch(error) {
       if (error?.name === 'AbortError') return;
@@ -8236,8 +8250,9 @@
     for (const [selector,direction] of [['#rxSourcePrevious',-1],['#rxSourceNext',1]]) {
       $(selector)?.addEventListener('click', () => {
         if (isGlobalSearchActive()) return;
-        const index = state.items.findIndex(item => String(item?._id) === state.activeGuideId);
-        const guide = state.items[index + direction];
+        const entries = filteredItems();
+        const index = entries.findIndex(item => String(item?._id) === state.activeGuideId);
+        const guide = entries[index + direction];
         if (index >= 0 && guide) selectGuide(guide._id);
       });
     }
@@ -8263,9 +8278,25 @@
     });
 
     $('#rxSourceSearch')?.addEventListener('input', event => setSearch(event.target.value), { passive:true });
+    $('#rxSourceFilter')?.addEventListener('change', event => {
+      state.filter = event.target.value;
+      setSearch(state.query);
+      if (!isGlobalSearchActive()) {
+        const disclosure = $('#rxSourceIndexDisclosure');
+        if (disclosure) disclosure.open = state.filter !== 'all';
+      }
+    });
+    $('#rxSourceSearchScope')?.addEventListener('change', event => {
+      state.searchScope = event.target.value;
+      setSearch(state.query);
+    });
     $('#rxSourceClearSearch')?.addEventListener('click', () => {
       const search = $('#rxSourceSearch');
       if (search) search.value = '';
+      state.filter = 'all';
+      state.searchScope = 'all';
+      if ($('#rxSourceFilter')) $('#rxSourceFilter').value = 'all';
+      if ($('#rxSourceSearchScope')) $('#rxSourceSearchScope').value = 'all';
       setSearch('');
       search?.focus();
     });

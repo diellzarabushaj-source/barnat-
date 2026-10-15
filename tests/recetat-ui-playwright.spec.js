@@ -132,6 +132,13 @@ for (const width of [390,1440]) {
     await expect(page.locator('.rx-source-choice-label')).toContainText('Zgjidh vetëm një');
     await expect(page.locator('.rx-source-item.is-source-note')).toContainText('Shënim burimor QA');
     await expect(page.locator('.rx-source-connector.is-conditional')).toHaveCount(1);
+    const spacing = await page.locator('.rx-source-item').evaluateAll(elements => {
+      const sig=elements[0].querySelector('.rx-source-sig');
+      const connector=elements[1].parentElement.previousElementSibling;
+      return {connectorHeight:connector.getBoundingClientRect().height,sameLine:Math.abs(sig.querySelector('span').getBoundingClientRect().top-sig.querySelector('p').getBoundingClientRect().top)};
+    });
+    expect(spacing.connectorHeight).toBeLessThanOrEqual(24);
+    expect(spacing.sameLine).toBeLessThanOrEqual(4);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
     if (width === 390) {
       expect(await lesson.evaluate(el=>el.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
@@ -144,6 +151,36 @@ for (const width of [390,1440]) {
     await expect(page.locator('#rxSave')).toBeDisabled();
   });
 }
+
+for(const width of [390,1440]) test(`source filters and search scope stay consistent at ${width}px`,async({page})=>{
+  await page.setViewportSize({width,height:900});
+  await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#rxSourceGuideList h3')).toBeVisible();
+  await page.locator('#rxSourceChapterSelect').selectOption('3');
+  await expect(page.locator('#rxSourceGuideList h3')).toHaveText('Skema QA 3.1');
+  await page.locator('#rxSourceFilter').selectOption('alternatives');
+  await expect(page.locator('#rxSourceResultCount')).toHaveText('2');
+  await expect(page.locator('#rxSourceIndexDisclosure')).toHaveAttribute('open','');
+  await page.locator('#rxSourceSearchScope').selectOption('chapter');
+  await page.locator('#rxSourceSearch').fill('QA');
+  await expect(page.locator('#rxSourceGuideNav [role=option]')).toHaveCount(2);
+  await expect(page.locator('#rxSourceResultLabel')).toContainText('Kapitulli 3');
+  await expect(page.locator('#rxSourceLessonSelect')).toBeDisabled();
+  await page.locator('#rxSourceSearchScope').selectOption('all');
+  await expect(page.locator('#rxSourceGuideNav [role=option]')).toHaveCount(5);
+  await page.locator('#rxSourceGuideNav [role=option]').last().click();
+  await expect(page.locator('#rxSourceGuideList h3')).toHaveText('Skema QA 5.2');
+  await page.locator('#rxSourceClearSearch').click();
+  await expect(page.locator('#rxSourceSearch')).toHaveValue('');
+  await expect(page.locator('#rxSourceFilter')).toHaveValue('all');
+  await expect(page.locator('#rxSourceSearchScope')).toHaveValue('all');
+  await expect(page.locator('#rxSourceGuideList h3')).toHaveText('Skema QA 5.2');
+  await expect(page.locator('#rxSourceLessonSelect')).toBeEnabled();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  if(width===390) for(const selector of ['#rxSourceSearchScope','#rxSourceFilter','.rx-source-find-drug']) {
+    expect(await page.locator(selector).first().evaluate(el=>el.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
+  }
+});
 
 test('source global search recovers from a failed request without false empty results',async({page})=>{
   await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});

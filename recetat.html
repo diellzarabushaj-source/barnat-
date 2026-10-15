@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v22">
+<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v23">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -10,12 +10,12 @@
   <title>DRx | Recetat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/recetat-v2.css?v=21-source-chapters-20261016">
+  <link rel="stylesheet" href="/recetat-v2.css?v=23-compact-filters-20261016">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
   <script src="/drx-modal-focus.js?v=p1-20261008" defer></script>
-<script src="/recetat-v2.js?v=22-source-freshness-20261016" defer></script>
+<script src="/recetat-v2.js?v=23-compact-filters-20261016" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#rxWorkspace">Kalo te krijimi i recetës</a>
@@ -146,12 +146,18 @@
           <div class="rx-source-browser">
             <aside class="rx-source-index" aria-label="Skemat e kapitullit">
           <div class="rx-source-commandbar">
-            <div class="rx-search-intro"><strong>Kërko një skemë</strong><span id="rxSearchHelp">Kërkon në të gjithë kapitujt, pavarësisht kapitullit të zgjedhur.</span></div>
+            <div class="rx-search-intro"><strong>Kërko një skemë</strong><span id="rxSearchHelp">Kërko diagnozën, substancën ose udhëzimin. Zgjidh ku të kërkosh dhe llojin e skemës.</span></div>
+            <div class="rx-source-search-row">
             <label class="rx-source-search">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
-              <input id="rxSourceSearch" type="search" autocomplete="off" placeholder="Shkruaj diagnozën ose substancën…" aria-label="Kërko diagnozën ose substancën" aria-describedby="rxSearchHelp">
+              <input id="rxSourceSearch" type="search" autocomplete="off" placeholder="Kërko skemën…" aria-label="Kërko diagnozën ose substancën" aria-describedby="rxSearchHelp">
               <kbd aria-hidden="true">/</kbd>
             </label>
+            <select id="rxSourceSearchScope" aria-label="Ku të kërkoj" title="Kërko në të gjithë kapitujt ose në kapitullin e zgjedhur">
+              <option value="all">Të gjithë</option>
+              <option value="chapter">Ky kapitull</option>
+            </select>
+            </div>
             <div class="rx-browse-divider"><span>ose shfleto sipas kapitullit</span></div>
             <label class="rx-source-chapter-picker">
               <span>Kapitulli klinik</span>
@@ -165,10 +171,19 @@
                 <option value="">Zgjidh kapitullin…</option>
               </select>
             </label>
-            <button class="rx-source-clear-search" id="rxSourceClearSearch" type="button" hidden>Pastro</button>
-            <div class="rx-source-result-meta" aria-live="polite">
+            <label class="rx-source-filter-picker">
+              <span>Lloji i skemës</span>
+              <select id="rxSourceFilter" aria-label="Filtro skemat">
+                <option value="all">Të gjitha</option>
+                <option value="medication">Me barna</option>
+                <option value="alternatives">Alternativa</option>
+                <option value="conditional">Me kushte</option>
+              </select>
+            </label>
+            <div class="rx-source-result-meta" aria-live="polite" hidden>
               <strong id="rxSourceResultCount">—</strong>
               <span id="rxSourceResultLabel">skema në kapitull</span>
+              <button class="rx-source-clear-search" id="rxSourceClearSearch" type="button" hidden>Pastro filtrat</button>
             </div>
           </div>
 
