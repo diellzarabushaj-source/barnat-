@@ -2187,3 +2187,18 @@ button,input,select{font:inherit}
 .dz-variant-review a{display:block;padding:10px 0;color:#254a75;overflow-wrap:anywhere;text-decoration:underline;text-underline-offset:3px}
 
 .dz-select-group{position:sticky;top:0;z-index:1;background:#e9effb;color:#173d68;font-size:13px;font-weight:800;letter-spacing:.035em;line-height:1.4;padding:12px 14px;border-top:1px solid #cfdbed;border-bottom:1px solid #cfdbed;margin:8px -3px 5px;border-radius:7px;box-shadow:0 2px 4px rgba(23,61,104,.05)}
+
+/* Keep the next action and patient controls within easy reach. */
+.dz-market-patient-head{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;color:#18334e;font-size:13px;font-weight:700}
+.dz-market-patient-head .dz-market-reset{margin:0;padding:8px 10px;border:1px solid #d8e2ed;border-radius:8px;background:#fff;font-size:12px;font-weight:600}
+.dz-result-next{justify-self:start;min-height:44px;max-width:100%;padding:10px 14px;border:1px solid #cbd7e4;border-radius:8px;background:#fff;color:#254790;font:inherit;font-size:13px;font-weight:650;cursor:pointer}
+.dz-result-next:hover,.dz-market-patient-head .dz-market-reset:hover{border-color:#8199cc;background:#f3f6ff}
+.dz-search-select.is-editing input.dz-select-search{padding-right:88px}
+.dz-search-select .dz-select-clear{position:absolute;right:43px;top:1px;bottom:1px;width:44px;min-height:44px;border:0;border-radius:8px;background:#fff;color:#536478;font:inherit;font-size:23px;line-height:1;cursor:pointer}
+.dz-search-select .dz-select-clear:hover{background:#f2f5ff;color:#254790}
+.dz-market-workspace :is(input,select,button,summary){scroll-margin-top:90px;scroll-margin-bottom:100px}
+@media(max-width:520px){
+ .dz-market-patient{grid-template-columns:minmax(0,1fr)}
+ .dz-market-age{grid-template-columns:minmax(0,1fr) 108px}
+ .dz-market-workspace #pediatricAgeUnit{font-size:15px}
+}

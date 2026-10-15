@@ -145,11 +145,17 @@
     const host = make('span', 'dz-search-select');
     const input = make('input', 'dz-select-search');
     input.id = select.id + 'Search'; input.type = 'text'; input.autocomplete = 'off'; input.spellcheck = false;
+    input.enterKeyHint = 'search'; input.autocapitalize = 'none';
     input.setAttribute('role', 'combobox'); input.setAttribute('aria-label', title);
     input.setAttribute('aria-autocomplete', 'list'); input.setAttribute('aria-expanded', 'false');
     if (select.getAttribute('aria-describedby')) input.setAttribute('aria-describedby', select.getAttribute('aria-describedby'));
     const arrow = make('button', 'dz-select-arrow', '⌄'); arrow.type = 'button'; arrow.tabIndex = -1;
     arrow.setAttribute('aria-label', 'Hap zgjedhjet për ' + title);
+    const clear = make('button', 'dz-select-clear', '×'); clear.type = 'button'; clear.hidden = true;
+    clear.setAttribute('aria-label', 'Pastro kërkimin për ' + title);
+    const status = make('span', 'sr-only'); status.id = select.id + 'SearchStatus';
+    status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
+    input.setAttribute('aria-describedby', [input.getAttribute('aria-describedby'), status.id].filter(Boolean).join(' '));
     const list = make('span', 'dz-select-options'); list.id = select.id + 'Options'; list.hidden = true;
     list.setAttribute('role', 'listbox'); list.setAttribute('aria-label', title);
     input.setAttribute('aria-controls', list.id);
@@ -158,6 +164,7 @@
     function close(committed = false) {
       const cancelled = editing && !committed; editing = false;
       open = false; list.hidden = true; input.value = selectedText();
+      clear.hidden = true; host.classList.remove('is-editing'); status.textContent = '';
       input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant');
       if (cancelled) host.dispatchEvent(new CustomEvent('pediatric:choice-cancel', {bubbles:true}));
     }
@@ -179,12 +186,16 @@
     }
     function choose(option) {
       if (!option || option.disabled || select.disabled) return;
+      const unchanged = option.value === select.value, wasEditing = editing;
       select.value = option.value; lastValue = select.value; close(true);
-      select.dispatchEvent(new Event('change', {bubbles:true}));
+      // A search for the already-selected value must not reset patient confirmations.
+      if (!unchanged) select.dispatchEvent(new Event('change', {bubbles:true}));
+      else if (wasEditing) host.dispatchEvent(new CustomEvent('pediatric:choice-cancel', {bubbles:true}));
       input.focus({preventScroll:true});
     }
     function render(query = '') {
       const terms = normalize(query).split(' ').filter(Boolean);
+      clear.hidden = !terms.length; host.classList.toggle('is-editing', Boolean(terms.length));
       matches = [...select.options].filter(option => !option.disabled && terms.every(term => normalize(option.textContent + ' ' + (option.parentElement?.label || '')+' '+(option.dataset.searchTerms||'')).includes(term)));
       list.replaceChildren(); active = -1; input.removeAttribute('aria-activedescendant');
       let previousGroup = '';
@@ -200,6 +211,8 @@
         list.append(row);
       });
       if (!matches.length) { const empty = make('span', 'dz-select-empty', 'Nuk u gjet asnjë rezultat.'); empty.setAttribute('role', 'status'); list.append(empty); }
+      const count = matches.filter(option => option.value).length;
+      status.textContent = count === 1 ? '1 rezultat. Shtyp Enter për ta zgjedhur.' : `${count} rezultate. Përdor shigjetat për të zgjedhur.`;
       position();
     }
     function show(query = '') {
@@ -221,15 +234,22 @@
       else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
         event.preventDefault(); if (!open) show();
         if (matches.length) highlight(active < 0 ? (event.key === 'ArrowDown' ? 0 : matches.length - 1) : (active + (event.key === 'ArrowDown' ? 1 : -1) + matches.length) % matches.length);
-      } else if (event.key === 'Enter' && open) { event.preventDefault(); if (active >= 0) choose(matches[active]); }
+      } else if (event.key === 'Enter' && open) { event.preventDefault(); if (active >= 0) choose(matches[active]); else if (matches.length === 1) choose(matches[0]); }
     });
-    arrow.addEventListener('click', () => { if (open) close(); else { show(); input.focus({preventScroll:true}); input.select(); } });
+    // Keep text focus while tapping controls, including on narrow WebKit viewports.
+    [arrow,clear].forEach(button=>button.addEventListener('pointerdown',event=>event.preventDefault()));
+    arrow.addEventListener('click', event => { event.preventDefault(); event.stopPropagation(); if (open) close(); else { show(); input.focus({preventScroll:true}); input.select(); } });
+    clear.addEventListener('click', event => {
+      event.preventDefault(); event.stopPropagation(); input.value = ''; editing = true;
+      host.dispatchEvent(new CustomEvent('pediatric:choice-editing', {bubbles:true}));
+      show(); input.focus({preventScroll:true});
+    });
     host.addEventListener('focusout', () => setTimeout(() => { if (!host.contains(document.activeElement)) close(); }, 0));
     document.addEventListener('pointerdown', event => { if (open && !host.contains(event.target)) close(); });
     window.addEventListener('resize', () => { if (open) position(); });
     window.visualViewport?.addEventListener('resize', () => { if (open) position(); });
     select.addEventListener('change', () => { close(true); sync(); });
-    select.before(host); host.append(select, input, arrow, list);
+    select.before(host); host.append(select, input, clear, arrow, list, status);
     if (label) label.htmlFor = input.id;
     select.tabIndex = -1; select.setAttribute('aria-hidden', 'true'); select.dataset.searchEnhanced = 'true';
     select.classList.add('dz-select-native');
@@ -250,7 +270,7 @@
   const CALCULATE_URL = '/api/dosage?view=pediatric-common-calculate';
   let referenceRevision = '';
   let referenceActive = false;
-  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=60-market-20261015';
+  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=62-market-20261015';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
   const CLINICAL_AUDIT_URL = '/data/pediatric-clinical-audit-v1.json';
@@ -709,12 +729,23 @@
     byId('pediatricPatient').hidden=!visible;
     byId('pediatricCalculation').classList.toggle('has-patient',Boolean(visible));
   }
-  function clearResult(message='Shkruaj peshën për të llogaritur.'){
+  function clearResult(message='Shkruaj peshën për të llogaritur.',action=null){
     clearTimeout(timer);controller?.abort();requestId++;
     byId('pediatricAnswer').replaceChildren(node('p',message,'dz-market-message'));
     byId('pediatricAnswer').classList.remove('has-result');
     byId('pediatricAnswer').setAttribute('aria-busy','false');
+    if(action){
+      const button=node('button',action.label,'dz-result-next');button.type='button';
+      button.addEventListener('click',()=>{
+        const target=byId(action.target+'Search')||byId(action.target);
+        if(!target||target.disabled)return;
+        target.focus();if(target.getAttribute('role')==='combobox')target.click();
+      });
+      byId('pediatricAnswer').append(button);
+    }
   }
+  function patientResetState(){byId('pediatricReset').hidden=!byId('pediatricWeight').value.trim()&&!byId('pediatricAge').value.trim();}
+  function nextChoice(target,label,message){clearResult(message,{target,label});}
   function showVariantReview(variant){
     clearResult(variant.reason||'Për këtë produkt nuk ka skemë pediatrike aktive.');
     if(!variant.review)return;
@@ -752,9 +783,11 @@
     byId('pediatricSchemeField').hidden=true;byId('pediatricSchemeNote').hidden=true;showPatient(false);
     byId('pediatricAgeConfirmed').checked=false;byId('pediatricSafetyConfirmed').checked=false;
     const {drug,entry}=selection();renderSources(drug);renderProducts(null);
-    if(!drug)return;
+    if(!drug){nextChoice('pediatricDrug','Zgjidh barin','Zgjidh barin për të filluar.');return;}
     choices('pediatricForm',(entry?.forms||[]).map(f=>({id:f.id,label:f.label})),'Zgjidh formën…');
     if(!entry?.forms.length)clearResult(referenceActive?'Nuk ka formë të konfirmuar në regjistrin e publikuar për këtë bar.':'Lidhja aktive mungon. Llogaritja nuk është e disponueshme.');
+    else if(entry.forms.length===1){byId('pediatricForm').value=entry.forms[0].id;formChanged();}
+    else nextChoice('pediatricForm','Zgjidh formën','Zgjidh formën e produktit që do të përdorësh.');
   }
   function formChanged(){
     clearResult('Zgjidh fortësinë / përqendrimin.');
@@ -767,6 +800,8 @@
       const group=node('optgroup');group.label=title;variants.forEach(v=>{const option=node('option',v.label);option.value=v.id;group.append(option);});select.append(group);
     }
     select.disabled=!form?.variants.length;
+    if(form?.variants.length===1){select.value=form.variants[0].id;strengthChanged();}
+    else if(form)nextChoice('pediatricStrength','Zgjidh fortësinë','Zgjidh fortësinë / përqendrimin e produktit.');
   }
   function strengthChanged(){
     clearResult();
@@ -789,10 +824,11 @@
     byId('pediatricSafetyGate').hidden=!scheme?.safetyConfirmation;
     byId('pediatricSafetyText').textContent=scheme?.safetyConfirmation||'';
     if(variant && !variant.schemes.length){showVariantReview(variant);return;}
-    if(variant && !scheme){clearResult('Zgjidh indikacionin / skemën.');return;}
+    if(variant && !scheme){nextChoice('pediatricScheme','Zgjidh skemën','Zgjidh indikacionin / skemën.');return;}
     suggestAge();schedule();
   }
   function suggestAge(){
+    patientResetState();
     byId('pediatricAgeSuggest').hidden=!ageEdited||!byId('pediatricWeight').value.trim();
     if(ageEdited){byId('pediatricAgeNote').textContent='Mosha e shënuar manualisht · konfirmo moshën reale.';return;}
     const {scheme}=selection();
@@ -801,6 +837,7 @@
     byId('pediatricAgeUnit').value='month';
     byId('pediatricAge').value=inferred&&!neonatal?String(Math.round(inferred.defaultMonths)):'';
     if(neonatal)byId('pediatricAgeUnit').value='day';
+    patientResetState();
     byId('pediatricAgeNote').textContent=neonatal?'Shëno moshën reale në ditë; ajo nuk përcaktohet nga pesha.':inferred?'Mosha e sugjeruar nga pesha · ndryshoje kur duhet.':'Mosha nga pesha është vetëm sugjerim.';
   }
   function displayResult(result){
@@ -850,10 +887,10 @@
     const {drug,variant,scheme}=selection();
     if(!referenceActive||!variant||!scheme)return;
     const weight=byId('pediatricWeight').value.trim().replace(',','.');
-    if(!weight)return;
+    if(!weight){nextChoice('pediatricWeight','Shkruaj peshën','Shkruaj peshën për të llogaritur.');return;}
     if(!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(weight)||Number(weight)<0.4||Number(weight)>150){displayResult({error:'Shëno peshën reale ndërmjet 0,4 dhe 150 kg.'});return;}
-    if(scheme.safetyConfirmation&&!byId('pediatricSafetyConfirmed').checked){displayResult({error:scheme.safetyConfirmation});return;}
-    if(scheme.needsAge&&!byId('pediatricAgeConfirmed').checked){displayResult({error:'Konfirmo ose ndrysho moshën e sugjeruar.'});return;}
+    if(scheme.needsAge&&!byId('pediatricAgeConfirmed').checked){nextChoice('pediatricAgeConfirmed','Kontrollo moshën','Konfirmo ose ndrysho moshën e sugjeruar.');return;}
+    if(scheme.safetyConfirmation&&!byId('pediatricSafetyConfirmed').checked){nextChoice('pediatricSafetyConfirmed','Kontrollo kushtet','Konfirmo kontrollin e sigurisë për skemën e zgjedhur.');return;}
     const id=requestId;
     timer=setTimeout(async()=>{
       controller=new AbortController();const active=controller;const timeout=setTimeout(()=>active.abort(),10000);
@@ -906,8 +943,10 @@
       ['pediatricAgeConfirmed','pediatricSafetyConfirmed'].forEach(id=>byId(id).addEventListener('change',schedule));
       byId('pediatricAgeSuggest').addEventListener('click',()=>{ageEdited=false;byId('pediatricAgeConfirmed').checked=false;suggestAge();schedule();byId('pediatricAge').focus({preventScroll:true});});
       byId('pediatricReset').addEventListener('click',()=>{
-        ageEdited=false;byId('pediatricWeight').value='';byId('pediatricAge').value='';byId('pediatricAgeConfirmed').checked=false;byId('pediatricSafetyConfirmed').checked=false;clearResult();suggestAge();byId('pediatricWeight').focus();
+        ageEdited=false;byId('pediatricWeight').value='';byId('pediatricAge').value='';byId('pediatricAgeConfirmed').checked=false;byId('pediatricSafetyConfirmed').checked=false;suggestAge();schedule();byId('pediatricWeight').focus();
       });
+      ['pediatricWeight','pediatricAge'].forEach(id=>byId(id).addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();byId(id).blur();}}));
+      drugChanged();
       window.addEventListener('pagehide',()=>{clearTimeout(timer);controller?.abort();requestId++;});
     }catch{byId('pediatricCommonCount').textContent='Nuk u ngarkua';clearResult('Referenca nuk u ngarkua. Ringarko faqen.');}
   }
