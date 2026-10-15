@@ -40,6 +40,11 @@ assert.equal(node('#rxSourceNext').disabled,true);
 assert.doesNotMatch(node('#rxSourceLessonSelect').innerHTML,/value="plain"/);
 state.filter='conditional';state.items=[guides[4]];render();
 assert.match(node('#rxSourceGuideList').innerHTML,/Nuk ka skema me këta filtra/);
+assert.match(node('#rxSourceGuideNav').innerHTML,/Ndrysho ose pastro filtrat/);
+assert.doesNotMatch(node('#rxSourceGuideNav').innerHTML,/nuk ka mësime Rx/);
+state.searching=true;state.query='QA';state.searchScope='chapter';render();
+assert.match(node('#rxSourceGuideNav').innerHTML,/Po kërkojmë · Kapitulli 1/);
+assert.doesNotMatch(node('#rxSourceGuideNav').innerHTML,/të gjithë kapitujt/);
 
 (async()=>{
   state.items=guides;state.query='QA';state.filter='medication';state.searchScope='chapter';state.chapter=1;

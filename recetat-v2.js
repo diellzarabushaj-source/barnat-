@@ -7893,7 +7893,7 @@
     const nav = $('#rxSourceGuideNav');
     if (!nav) return;
     if (!entries.length) {
-      nav.innerHTML = `<div class="rx-source-index-empty"><strong>${state.searching ? 'Duke kërkuar…' : state.searchError ? 'Kërkimi nuk u krye' : 'Asnjë rezultat'}</strong><span>${state.searching ? 'Po kontrollojmë të gjithë kapitujt.' : state.searchError ? 'Provo përsëri.' : isGlobalSearchActive() ? 'Provo një term tjetër.' : 'Ky kapitull nuk ka mësime Rx në burim.'}</span></div>`;
+      nav.innerHTML = `<div class="rx-source-index-empty"><strong>${state.searching ? 'Duke kërkuar…' : state.searchError ? 'Kërkimi nuk u krye' : 'Asnjë rezultat'}</strong><span>${state.searching ? `Po kërkojmë · ${searchScopeLabel()}.` : state.searchError ? 'Provo përsëri.' : isGlobalSearchActive() ? 'Provo një term tjetër.' : state.items.length ? 'Ndrysho ose pastro filtrat.' : 'Ky kapitull nuk ka mësime Rx në burim.'}</span></div>`;
       return;
     }
 
@@ -8298,6 +8298,8 @@
       if ($('#rxSourceFilter')) $('#rxSourceFilter').value = 'all';
       if ($('#rxSourceSearchScope')) $('#rxSourceSearchScope').value = 'all';
       setSearch('');
+      const disclosure = $('#rxSourceIndexDisclosure');
+      if (disclosure) disclosure.open = false;
       search?.focus();
     });
 
