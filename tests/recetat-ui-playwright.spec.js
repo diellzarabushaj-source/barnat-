@@ -6,6 +6,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
+// Fault injection must reach Playwright routes; service-worker recovery has its
+// own integration suite and otherwise serves requests outside these routes.
+test.use({serviceWorkers:'block'});
 let server;
 let baseURL;
 
@@ -22,6 +25,13 @@ const mime = file => ({
 test.beforeAll(async () => {
   server = http.createServer((req, res) => {
     const url = new URL(req.url, 'http://127.0.0.1');
+    if (url.pathname === '/api/medical-hub') {
+      const fixture = require('./recetat-source-browser-fixture.js')(url);
+      if (fixture) {
+        res.writeHead(200, {'content-type':'application/json'});
+        return res.end(JSON.stringify(fixture));
+      }
+    }
     if (url.pathname === '/api/auth') {
       res.writeHead(200, {'content-type':'application/json'});
       return res.end(JSON.stringify({
@@ -92,4 +102,84 @@ test('mobile workspace: touch sizing and search sheet', async ({ page }) => {
   await page.locator('#rxAddDrugButton').click();
   await expect(page.locator('#rxDrugPopover')).toBeVisible();
   await expect(page.locator('#rxDrugSearch')).toHaveCSS('font-size','16px');
+});
+
+for (const width of [390,1440]) {
+  test(`source chapters 1–5: readable controls, complete fields and draft handoff at ${width}px`, async ({page}) => {
+    await page.setViewportSize({width,height:900});
+    await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
+    const chapter = page.locator('#rxSourceChapterSelect');
+    const lesson = page.locator('#rxSourceLessonSelect');
+    await expect(lesson).toBeVisible();
+    await expect(page.locator('#rxSourceGuideList h3')).toHaveText('Skema QA 1.1');
+    await expect(page.locator('#rxSourcePrevious')).toBeDisabled();
+    for (const number of [2,4]) {
+      await chapter.selectOption(String(number));
+      await expect(page.locator('#rxSourceGuideList')).toContainText('nuk ka receta në burim');
+      await expect(page.locator('#rxSourceGuideList')).toContainText('dokumentin burimor');
+      await expect(lesson).toBeDisabled();
+    }
+    for (const number of [3,5]) {
+      await chapter.selectOption(String(number));
+      await expect(page.locator('#rxSourceGuideList h3')).toHaveText(`Skema QA ${number}.1`);
+      await page.getByRole('button',{name:'Skema e ardhshme',exact:true}).click();
+      await expect(page.locator('#rxSourceGuideList h3')).toHaveText(`Skema QA ${number}.2`);
+      await expect(page.locator('#rxSourceNext')).toBeDisabled();
+      await page.getByRole('button',{name:'Skema e mëparshme',exact:true}).click();
+      await expect(page.locator('#rxSourceGuideList h3')).toHaveText(`Skema QA ${number}.1`);
+    }
+    await expect(page.locator('#rxSourceGuideList h4').first()).toHaveText('Inj. QA 40 mg / 60 mg / 80 mg');
+    await expect(page.locator('.rx-source-choice-label')).toContainText('Zgjidh vetëm një');
+    await expect(page.locator('.rx-source-item.is-source-note')).toContainText('Shënim burimor QA');
+    await expect(page.locator('.rx-source-connector.is-conditional')).toHaveCount(1);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+    if (width === 390) {
+      expect(await lesson.evaluate(el=>el.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
+      expect(await page.locator('#rxSourceGuideList h3').evaluate(el=>el.getBoundingClientRect().top)).toBeLessThan(850);
+    }
+    await page.getByRole('button',{name:'Vendose si draft',exact:true}).click();
+    await expect(page.locator('#rxTabBtnCompose')).toHaveAttribute('aria-selected','true');
+    for (const value of ['Doza: doza QA','Rruga: PO','Shpeshtësia: shpeshtësia QA','Kohëzgjatja: kohëzgjatja QA','Shënim elementi QA','Shënim grupi QA','OSE','≤10,000','Zgjidh vetëm një']) await expect(page.locator('#rxComposer')).toHaveValue(new RegExp(value));
+    await expect(page.locator('#rxClinicalReview')).toBeVisible();
+    await expect(page.locator('#rxSave')).toBeDisabled();
+  });
+}
+
+test('source global search recovers from a failed request without false empty results',async({page})=>{
+  await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#rxSourceGuideList h3')).toBeVisible();
+  let failed = true;
+  await page.route('**/api/medical-hub?*',async route=>{
+    const url = new URL(route.request().url());
+    if (url.searchParams.get('_route') !== 'prescription-search') return route.continue();
+    if (failed) return route.fulfill({status:503,json:{ok:false}});
+    return route.fulfill({json:require('./recetat-source-browser-fixture.js')(url)});
+  });
+  await page.locator('#rxSourceSearch').fill('QA');
+  await expect(page.locator('#rxSourceGuideList')).toContainText('Kërkimi nuk u krye');
+  await expect(page.locator('#rxSourceGuideList')).not.toContainText('Nuk u gjet');
+  failed=false;
+  await page.locator('#rxSourceRetry').click();
+  await expect(page.locator('#rxSourceGuideNav [role=option]')).toHaveCount(5);
+  await page.locator('#rxSourceGuideNav [role=option]').last().click();
+  await expect(page.locator('#rxSourceGuideList h3')).toHaveText('Skema QA 5.2');
+  await page.locator('#rxSourceClearSearch').click();
+  await expect(page.locator('#rxSourceGuideList h3')).toHaveText('Skema QA 5.2');
+});
+
+test('confirmed source conflicts stay readable and cannot start a prescription draft',async({page})=>{
+  await page.route('**/api/medical-hub?*',async route=>{
+    const url=new URL(route.request().url());
+    const data=require('./recetat-source-browser-fixture.js')(url);
+    if (!data || url.searchParams.get('_route') !== 'prescription-library') return route.continue();
+    data.chapter=5;
+    data.items=[{_id:'qa-conflict',title:'QA source conflict',chapterNumber:5,orderInChapter:1,reviewStatus:'verified',logicBlocks:[{order:1,relation:'start',items:[{kind:'active-substance',title:'Inj. Enoxaparin sodium',genericName:'Enoxaparin sodium',sig:'100 IU/kg (1.5 mg/kg), SC, OD.'}]}]}];
+    await route.fulfill({json:data});
+  });
+  await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#rxSourceClinicalIssue')).toBeVisible();
+  await expect(page.locator('#rxSourceClinicalIssue a')).toHaveAttribute('href','https://www.medicines.org.uk/emc/product/4499/smpc');
+  await expect(page.locator('[data-rx-source-use]')).toBeDisabled();
+  await expect(page.locator('#rxSourceGuideList')).toContainText('100 IU/kg (1.5 mg/kg), SC, OD.');
+  await expect(page.locator('#rxSourceGuideList .rx-source-import-badge')).toHaveText('Kërkon rishikim klinik');
 });

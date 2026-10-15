@@ -196,6 +196,9 @@ const server = http.createServer((req, res) => {
     if (req.method !== 'GET') {
       return send(res, 405, JSON.stringify({ ok:false, error:'Method not allowed in browser fixture' }), 'application/json; charset=utf-8', { Allow:'GET' });
     }
+    const rxGuides = process.env.RX_SOURCE_FIXTURE ? JSON.parse(fs.readFileSync(process.env.RX_SOURCE_FIXTURE,'utf8')).correctedGuides : undefined;
+    const rxFixture = require('./recetat-source-browser-fixture.js')(url,rxGuides);
+    if (rxFixture) return send(res,200,JSON.stringify(rxFixture),'application/json; charset=utf-8');
     const fixture = process.env.MEDICAL_HUB_COMPOSABLE_FIXTURE === '1'
       ? require('./medical-hub-composable-fixture.js')(url) : medicalHubFixtureResponse(url);
     return send(res, fixture.status, JSON.stringify(fixture.payload), 'application/json; charset=utf-8');

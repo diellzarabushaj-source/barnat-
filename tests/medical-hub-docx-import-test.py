@@ -150,3 +150,62 @@ with tempfile.TemporaryDirectory() as temp:
     rebuilt = module.build(path, [{**scaffold, 'originalTitle': topic['originalTitle'], 'sections': topic['sections']}])
     assert rebuilt['topics'][0]['sections'] == topic['sections'], 'Repeated source sections must remain distinct on rebuild'
 print('DOCX import: source lists, bold, images/order, author guard, lesson delimiters, repeated continuation sections and trailing references passed.')
+
+# The prescription mode uses its own canonical document and fails closed when
+# the source paragraphs change. No clinical content is inferred from fragments.
+repair_spec = importlib.util.spec_from_file_location('rx_repairs', Path(__file__).parents[1] / 'scripts/repair-prescription-source.py')
+repairs = importlib.util.module_from_spec(repair_spec)
+repair_spec.loader.exec_module(repairs)
+with tempfile.TemporaryDirectory() as temp:
+    rx_source = Document()
+    rx_source.add_heading('KAPITULLI 5 - QA',2)
+    sample = []
+    for index,ident in enumerate([repairs.DENGUE,repairs.COVID,repairs.PLEURAL]+[f'qa-{i}' for i in range(71)]):
+        heading = f'SOURCE QA {index}'
+        rx_source.add_heading(heading,4)
+        sample.append({'_id':ident,'_rev':'qa-rev','reviewStatus':'verified','sourceHeading':heading,'logicBlocks':[]})
+    by_id = {g['_id']:g for g in sample}
+    def b(key,sig='',title='QA'):
+        return {'_key':key,'_type':'prescriptionLogicBlock','order':int(key[1:]),'items':[{'_key':'i'+key[1:],'title':title,'sig':sig}]}
+    vitamin = '2 mL/ampulë, IV ngadalë, OD.'
+    remdesivir = 'Infuzion IV në 100 mL 0.9% NaCl si dozë ngarkuese; pastaj remdesivir 100 mg IV në 100 mL 0.9% NaCl, OD, për 45 minuta deri 1 orë. Gjithsej 4-9 doza nga 100 mg OD.'
+    eno = '100 IU/kg (1.5 mg/kg), SC, OD.'
+    support = 'Hidratim adekuat, ushqyerje dhe pushim; burimi udhëzon shtrim në ICU dhe intubim nëse ka shenja të dështimit respirator, dispne me hipoksemi ose takipne RR >30/min.'
+    by_id[repairs.DENGUE]['logicBlocks'] = [b('b9',vitamin+' NËSE TROMBOCITET JANË 10,000 OSE KA GJAKDERDHJE: ≤'),b('b10')]
+    by_id[repairs.COVID]['logicBlocks'] = [b('b9',remdesivir.split(' 100 mL 0.9% NaCl, OD,')[0]),b('b10',title='mL 0.9% NaCl, OD, për 45 minuta deri 1 orë. Gjithsej 4-9 doza nga 100 mg OD.'),b('b13',eno+' '+support),b('b14')]
+    by_id[repairs.PLEURAL]['logicBlocks'] = [{**b('b2'),'note':'KAPITULLI 4 - PËRSHKRIMI I BARNAVE, AFTËSITË ADMINISTRATIVE'}]
+    # Recreate the exact relevant paragraphs under their matching source headings.
+    for paragraph in list(rx_source.paragraphs):
+        if paragraph.text == 'SOURCE QA 0':
+            for value in ['S. '+vitamin,'NËSE TROMBOCITET JANË ≤10,000 OSE KA GJAKDERDHJE:']:
+                p = rx_source.add_paragraph(value); paragraph._p.addnext(p._p)
+        if paragraph.text == 'SOURCE QA 1':
+            for value in ['S. '+remdesivir,'S. '+eno,'S. '+support,'9️⃣ Inj. Enoxaparin sodium 40 mg / 60 mg / 80 mg','🔟 Kujdes mbështetës']:
+                p = rx_source.add_paragraph(value); paragraph._p.addnext(p._p)
+    rx_path = Path(temp)/'rx.docx';rx_source.save(rx_path)
+    result = repairs.build(rx_path,sample,repairs.SOURCE_ID)
+    assert result['counts']['changedGuides'] == 3
+    fixed = {g['_id']:g for g in result['correctedGuides']}
+    dengue_blocks = fixed[repairs.DENGUE]['logicBlocks']
+    assert dengue_blocks[0]['items'][0]['sig'] == vitamin
+    assert dengue_blocks[1]['condition'] == 'TROMBOCITET JANË ≤10,000 OSE KA GJAKDERDHJE:'
+    covid_blocks = fixed[repairs.COVID]['logicBlocks']
+    assert covid_blocks[0]['items'][0]['sig'] == remdesivir
+    assert not any(x['_key']=='b10' for x in covid_blocks)
+    assert next(x for x in covid_blocks if x['_key']=='b13-support')['items'][0]['sig'] == support
+    assert repairs.build(rx_path,result['correctedGuides'],repairs.SOURCE_ID)['counts']['changedGuides'] == 0
+    try:
+        repairs.build(rx_path,sample,'wrong-document')
+        raise AssertionError('Wrong source must fail')
+    except AssertionError as error:
+        assert 'canonical prescription' in str(error)
+    for p in rx_source.paragraphs:
+        if p.text == 'NËSE TROMBOCITET JANË ≤10,000 OSE KA GJAKDERDHJE:':
+            p.text = p.text.replace('≤','≥')
+    rx_source.save(rx_path)
+    try:
+        repairs.build(rx_path,sample,repairs.SOURCE_ID)
+        raise AssertionError('Changed source must fail')
+    except AssertionError as error:
+        assert 'Source paragraph differs' in str(error)
+print('Prescription repairs: 74 source headings, exact conditions, complete infusions, separate support, unchanged review status, rollback and idempotence passed.')

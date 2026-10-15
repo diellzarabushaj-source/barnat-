@@ -7550,6 +7550,7 @@
     query:'',
     searchResults:[],
     searching:false,
+    searchError:false,
     activeGuideId:'',
     controller:null,
     searchController:null,
@@ -7572,7 +7573,7 @@
     if (!node) return;
     node.textContent = message;
     node.className = `rx-source-status${type ? ` is-${type}` : ''}`;
-    node.hidden = !message;
+    node.hidden = !message || type === 'success';
   }
 
   function currentChapterMeta() {
@@ -7593,11 +7594,16 @@
 
   function itemTitle(item) {
     if (item?.kind !== 'active-substance') return text(item?.title);
+    // Imported titles can contain ranges, denominators and combination strengths
+    // that the separate parsed fields do not capture. Keep the complete source.
+    const title = text(item?.title);
+    if (title && normalize(title) !== normalize(item?.genericName)) return title;
     return [text(item?.form), text(item?.genericName || item?.title), text(item?.strength)].filter(Boolean).join(' ');
   }
 
   function itemMeta(item) {
     return [
+      text(item?.dose),
       item?.route === 'PO' ? 'Nga goja' : text(item?.route),
       text(item?.frequency),
       text(item?.duration),
@@ -7676,9 +7682,10 @@
       blocks,
       items,
       activeCount:items.filter(item => item?.kind === 'active-substance').length,
-      supportCount:items.filter(item => item?.kind !== 'active-substance').length,
+      supportCount:items.filter(item => item?.kind !== 'active-substance' && item?.kind !== 'source-note').length,
+      noteCount:items.filter(item => item?.kind === 'source-note').length,
       alternativeCount:blocks.filter(block => block?.relation === 'or' || block?.selection === 'choose-one').length,
-      conditionalCount:blocks.filter(block => block?.relation === 'conditional').length,
+      conditionalCount:blocks.filter(block => block?.relation === 'conditional' && !isEditorialBlock(block)).length,
     };
   }
 
@@ -7723,7 +7730,34 @@
     return items[0] || null;
   }
 
+  function isEditorialBlock(block) {
+    const items = Array.isArray(block?.items) ? block.items : [];
+    return items.length > 0 && items.every(item => item?.kind === 'source-note')
+      && /^(UDHËZIM|NDËRVEPRIM)/iu.test(text(block?.condition))
+      && normalize(block?.condition) === normalize(items[0]?.title);
+  }
+
+  function sourceClinicalIssues(guide) {
+    // Keep the book verbatim, but do not turn a confirmed source conflict into
+    // a prescription draft. These checks do not select a replacement regimen.
+    if (Number(guide?.chapterNumber) < 1 || Number(guide?.chapterNumber) > 5) return [];
+    const items = (guide?.logicBlocks || []).flatMap(block => block?.items || []);
+    const issues = [];
+    for (const item of items) {
+      const identity = normalize(`${item?.genericName || ''} ${item?.title || ''}`);
+      const sig = text(item?.sig);
+      if (identity.includes('enoxaparin') && /100\s*IU\s*\/\s*kg\s*\(\s*1[.,]5\s*mg\s*\/\s*kg\s*\)/i.test(sig)) {
+        issues.push({code:'enoxaparin-unit-conflict',message:'Enoxaparin: burimi barazon 100 IU/kg me 1,5 mg/kg. Këto vlera nuk janë ekuivalente sipas SmPC. Skema kërkon rishikim klinik.',url:'https://www.medicines.org.uk/emc/product/4499/smpc',source:'SmPC Clexane · seksionet 2 dhe 4.2'});
+      }
+      if (/\bffp\b|plazme e fresket/.test(identity) && /\bnj[eë]\s+nj[eë]si\s+rrit\s+Hb\b/iu.test(sig)) {
+        issues.push({code:'ffp-haemoglobin-conflict',message:'FFP: pohimi i burimit për rritjen e hemoglobinës kërkon korrigjim klinik. Referenca e transfuzionit e përdor FFP për zëvendësimin e faktorëve të koagulimit.',url:'https://www.lifeblood.com.au/health-professionals/clinical-practice/use-of-blood-components/use-of-fresh-frozen-plasma',source:'Australian Red Cross Lifeblood · FFP'});
+      }
+    }
+    return issues.filter((issue,index) => issues.findIndex(entry => entry.code === issue.code) === index);
+  }
+
   function renderConnector(block) {
+    if (isEditorialBlock(block)) return '';
     const label = relationLabel(block);
     if (!label || block?.relation === 'start') return '';
     const condition = text(block?.condition);
@@ -7739,7 +7773,7 @@
       <span class="rx-source-connector-line"></span>
       <div class="rx-source-connector-pill"><b>${esc(label)}</b><small>${esc(selection || helper)}</small></div>
       <span class="rx-source-connector-line"></span>
-      ${condition ? `<p><strong>Kushti:</strong> ${esc(condition)}</p>` : ''}
+      ${condition ? `<p><strong>${block?.relation === 'conditional' ? 'Kushti:' : 'Në burim:'}</strong> ${esc(condition)}</p>` : ''}
     </div>`;
   }
 
@@ -7759,8 +7793,9 @@
     const meta = itemMeta(item);
     const active = item?.kind === 'active-substance';
     const query = [text(item?.genericName || item?.title), text(item?.strength)].filter(Boolean).join(' ');
-    const typeLabel = active ? 'BAR' : item?.kind === 'oxygen' ? 'O₂' : 'HAP';
-    return `<article class="rx-source-item${active ? ' is-active-substance' : ''}${block?.relation === 'conditional' ? ' is-conditional' : ''}" data-rx-step="${stepTintIndex(item?.smartLabel)}">
+    const sourceNote = item?.kind === 'source-note';
+    const typeLabel = active ? 'BAR' : sourceNote ? 'SHËNIM' : item?.kind === 'oxygen' ? 'O₂' : 'HAP';
+    return `<article class="rx-source-item${active ? ' is-active-substance' : ''}${sourceNote ? ' is-source-note' : ''}${block?.relation === 'conditional' && !isEditorialBlock(block) ? ' is-conditional' : ''}" data-rx-step="${stepTintIndex(item?.smartLabel)}">
       <div class="rx-source-step-rail" aria-label="Hapi ${esc(item.smartLabel)}">
         <span class="rx-source-item-number">${esc(item.smartLabel)}</span>
         <small>${esc(typeLabel)}</small>
@@ -7781,57 +7816,67 @@
   }
 
   function sourceDraftText(guide) {
+    if (sourceClinicalIssues(guide).length) return '';
     const lines = ['Rp:'];
     const blocks = [...(Array.isArray(guide?.logicBlocks) ? guide.logicBlocks : [])]
       .sort((a,b) => Number(a?.order || 0) - Number(b?.order || 0));
     blocks.forEach((block, blockIndex) => {
       const connector = relationLabel(block);
-      if (blockIndex > 0 && connector) lines.push('', connector);
-      if (text(block?.condition)) lines.push(text(block.condition));
+      if (blockIndex > 0 && connector && !isEditorialBlock(block)) lines.push('', connector);
+      if (text(block?.condition) && !isEditorialBlock(block)) lines.push(text(block.condition));
+      if (block?.selection === 'choose-one') lines.push('[Zgjidh vetëm një alternativë nga ky grup]');
       const items = [...(Array.isArray(block?.items) ? block.items : [])]
         .sort((a,b) => Number(a?.order || 0) - Number(b?.order || 0));
       items.forEach(item => {
         const number = item?.sourceNumber || item?.order || '';
         lines.push(`${number ? `${number}. ` : ''}${itemTitle(item)}`.trim());
+        const fields = [['Doza',item?.dose],['Rruga',item?.route],['Shpeshtësia',item?.frequency],['Kohëzgjatja',item?.duration]];
+        fields.forEach(([label,value]) => { if (text(value)) lines.push(`${label}: ${text(value)}`); });
         if (text(item?.sig)) lines.push(`S. ${text(item.sig)}`);
+        if (text(item?.note)) lines.push(`Shënim: ${text(item.note)}`);
       });
+      if (text(block?.note)) lines.push(`Shënim i grupit: ${text(block.note)}`);
     });
     return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
   }
 
   function renderGuide(guide) {
-    const { blocks, items, activeCount, supportCount, alternativeCount, conditionalCount } = guideStats(guide);
+    const { blocks, items, activeCount, supportCount, noteCount, alternativeCount, conditionalCount } = guideStats(guide);
     const startPage = Number(guide?.sourcePageStart);
     const endPage = Number(guide?.sourcePageEnd);
     const pages = Number.isFinite(startPage) && startPage > 0
       ? (Number.isFinite(endPage) && endPage > 0 && endPage !== startPage ? `Faqe ${startPage}–${endPage}` : `Faqe ${startPage}`)
       : '';
     const imported = guide?.reviewStatus === 'source-imported';
+    const issues = sourceClinicalIssues(guide);
 
     return `<article class="rx-source-guide" data-source-guide-id="${esc(guide?._id)}">
       <header class="rx-source-guide-head">
         <div class="rx-source-guide-heading">
           <div class="rx-source-guide-kicker">
             <span>Kapitulli ${esc(guide?.chapterNumber || '')} · ${esc(lessonLabel(guide))}</span>
-            <span class="rx-source-import-badge">${imported ? 'Burim i importuar' : guide?.reviewStatus === 'verified' ? 'E verifikuar' : 'Burim'}</span>
+            <span class="rx-source-import-badge">${issues.length ? 'Kërkon rishikim klinik' : imported ? 'Burim i importuar' : guide?.reviewStatus === 'verified' ? 'E verifikuar' : 'Burim'}</span>
           </div>
           <h3>${esc(guide?.title || guide?.sourceHeading || 'Skemë Rx')}</h3>
           <div class="rx-source-guide-stats" aria-label="Përmbledhja e skemës">
-            <span><b>${items.length}</b> hapa</span>
-            <span><b>${activeCount}</b> barna</span>
-            ${supportCount ? `<span><b>${supportCount}</b> hapa tjerë</span>` : ''}
-            ${alternativeCount ? `<span><b>${alternativeCount}</b> alternativa</span>` : ''}
-            ${conditionalCount ? `<span><b>${conditionalCount}</b> kushte</span>` : ''}
+            <span><b>${items.length - noteCount}</b> ${items.length - noteCount === 1 ? 'hap' : 'hapa'}</span>
+            <span><b>${activeCount}</b> ${activeCount === 1 ? 'bar' : 'barna'}</span>
+            ${supportCount ? `<span><b>${supportCount}</b> ${supportCount === 1 ? 'hap mbështetës' : 'hapa mbështetës'}</span>` : ''}
+            ${noteCount ? `<span><b>${noteCount}</b> ${noteCount === 1 ? 'shënim burimor' : 'shënime burimore'}</span>` : ''}
+            ${alternativeCount ? `<span><b>${alternativeCount}</b> ${alternativeCount === 1 ? 'alternativë' : 'alternativa'}</span>` : ''}
+            ${conditionalCount ? `<span><b>${conditionalCount}</b> ${conditionalCount === 1 ? 'kusht' : 'kushte'}</span>` : ''}
             ${pages ? `<span>${esc(pages)}</span>` : ''}
           </div>
         </div>
-        <button class="rx-source-use" type="button" data-rx-source-use="${esc(guide?._id)}">
-          <span>Nis recetën nga kjo skemë</span><b aria-hidden="true">→</b>
+        <button class="rx-source-use" type="button" data-rx-source-use="${esc(guide?._id)}"${issues.length ? ' disabled aria-describedby="rxSourceClinicalIssue"' : ''}>
+          <span>${issues.length ? 'Drafti kërkon rishikim' : 'Vendose si draft'}</span><b aria-hidden="true">→</b>
         </button>
       </header>
+      ${issues.length ? `<aside class="rx-source-clinical-issue" id="rxSourceClinicalIssue"><strong>Mospërputhje në burim</strong>${issues.map(issue => `<p>${esc(issue.message)} <a href="${esc(issue.url)}" target="_blank" rel="noopener noreferrer">${esc(issue.source)} ↗</a></p>`).join('')}<p>Teksti origjinal ruhet më poshtë. Kalimi i kësaj skeme në draft është ndalur deri në rishikim.</p></aside>` : ''}
+      ${alternativeCount || conditionalCount ? '<p class="rx-source-draft-help">Drafti përfshin gjithë skemën. Zgjidh alternativat dhe kontrollo kushtet para përdorimit.</p>' : ''}
       <div class="rx-source-flow" aria-label="Rrjedha e recetës">
         <div class="rx-source-flow-title"><span>Rrjedha klinike</span><small>Lexo nga lart poshtë · numrat tregojnë rendin</small></div>
-        ${blocks.map((block,index) => `${index ? renderConnector(block) : ''}<div class="rx-source-block${block?.selection === 'choose-one' ? ' is-choice' : ''}" data-smart-step="${esc(block.smartLabel)}">${(block.smartItems || []).map(item => renderItem(item, block)).join('')}</div>`).join('')}
+        ${blocks.map((block,index) => `${index ? renderConnector(block) : ''}<div class="rx-source-block${block?.selection === 'choose-one' ? ' is-choice' : ''}" data-smart-step="${esc(block.smartLabel)}">${!index && text(block?.condition) && !isEditorialBlock(block) ? `<p class="rx-source-block-condition">${esc(block.condition)}</p>` : ''}${block?.selection === 'choose-one' ? '<p class="rx-source-choice-label">Zgjidh vetëm një alternativë nga ky grup</p>' : ''}${(block.smartItems || []).map(item => renderItem(item, block)).join('')}${text(block?.note) ? `<p class="rx-source-note rx-source-block-note">${esc(block.note)}</p>` : ''}</div>`).join('')}
       </div>
       <footer class="rx-source-guide-foot">
         <span><b>Burimi</b> ${esc(guide?.sourceDocument || 'Doctor on Duty')}</span>
@@ -7845,15 +7890,16 @@
     const nav = $('#rxSourceGuideNav');
     if (!nav) return;
     if (!entries.length) {
-      nav.innerHTML = `<div class="rx-source-index-empty"><strong>Asnjë rezultat</strong><span>${isGlobalSearchActive() ? 'Provo një term tjetër; search-i toleron edhe typo të vogla.' : 'Ky kapitull nuk ka mësime Rx në burim.'}</span></div>`;
+      nav.innerHTML = `<div class="rx-source-index-empty"><strong>${state.searching ? 'Duke kërkuar…' : state.searchError ? 'Kërkimi nuk u krye' : 'Asnjë rezultat'}</strong><span>${state.searching ? 'Po kontrollojmë të gjithë kapitujt.' : state.searchError ? 'Provo përsëri.' : isGlobalSearchActive() ? 'Provo një term tjetër.' : 'Ky kapitull nuk ka mësime Rx në burim.'}</span></div>`;
       return;
     }
 
     const global = isGlobalSearchActive();
+    const hasActiveChoice = entries.some(entry => String(entry?._id) === String(active?._id));
     nav.innerHTML = entries.map((entry,index) => {
       const selected = String(entry?._id) === String(active?._id);
       if (global) {
-        return `<button class="rx-source-nav-item is-search-result${selected ? ' is-active' : ''}" type="button" role="option" aria-selected="${selected}" data-rx-source-search-result="${esc(entry?._id)}">
+        return `<button class="rx-source-nav-item is-search-result${selected ? ' is-active' : ''}" type="button" role="option" tabindex="${selected || (!hasActiveChoice && index === 0) ? 0 : -1}" aria-selected="${selected}" data-rx-source-search-result="${esc(entry?._id)}">
           <span class="rx-source-nav-index">${String(index + 1).padStart(2,'0')}</span>
           <span class="rx-source-nav-copy"><strong>${esc(entry?.title || 'Skemë Rx')}</strong><small>Kapitulli ${esc(entry?.chapterNumber)} · Mësimi ${esc(entry?.lessonNumber || entry?.orderInChapter || 1)}</small></span>
           <span class="rx-source-nav-arrow" aria-hidden="true">›</span>
@@ -7861,9 +7907,9 @@
       }
 
       const stats = guideStats(entry);
-      return `<button class="rx-source-nav-item${selected ? ' is-active' : ''}" type="button" role="option" aria-selected="${selected}" data-rx-source-select="${esc(entry?._id)}">
+      return `<button class="rx-source-nav-item${selected ? ' is-active' : ''}" type="button" role="option" tabindex="${selected ? 0 : -1}" aria-selected="${selected}" data-rx-source-select="${esc(entry?._id)}">
         <span class="rx-source-nav-index">${String(lessonNumber(entry)).padStart(2,'0')}</span>
-        <span class="rx-source-nav-copy"><strong>${esc(entry?.title || entry?.sourceHeading || 'Skemë Rx')}</strong><small>${lessonLabel(entry)} · ${stats.activeCount ? `${stats.activeCount} barna · ` : ''}${stats.items.length} hapa${stats.alternativeCount ? ` · ${stats.alternativeCount} alt.` : ''}</small></span>
+        <span class="rx-source-nav-copy"><strong>${esc(entry?.title || entry?.sourceHeading || 'Skemë Rx')}</strong><small>${lessonLabel(entry)} · ${stats.activeCount ? `${stats.activeCount} ${stats.activeCount === 1 ? 'bar' : 'barna'} · ` : ''}${stats.items.length - stats.noteCount} hapa${stats.alternativeCount ? ` · ${stats.alternativeCount} alt.` : ''}</small></span>
         <span class="rx-source-nav-arrow" aria-hidden="true">›</span>
       </button>`;
     }).join('');
@@ -7882,7 +7928,9 @@
     const connection = $('#rxSourceConnection');
     if (connection) connection.textContent = state.loading ? 'Duke u lidhur…' : state.error ? 'Lidhja dështoi' : 'Burimi u lidh';
     const retry = $('#rxSourceRetry');
-    if (retry) retry.hidden = !state.error;
+    if (retry) retry.hidden = !state.error && !state.searchError;
+    const recovery = $('#rxSourceRecovery');
+    if (recovery) recovery.hidden = !state.error && !state.searchError;
     $('#rxPrescriptionLibrary')?.setAttribute('aria-busy', String(state.loading));
     if (state.loading || state.error) {
       $('#rxSourceGuideNav').innerHTML = '';
@@ -7904,14 +7952,25 @@
     if (indexTitle) indexTitle.textContent = global ? 'Rezultatet e kërkimit' : 'Skemat e kapitullit';
     if (hint) hint.textContent = global
       ? (state.searching ? 'Duke kërkuar në të gjithë burimin…' : `${entries.length} rezultate globale`)
-      : (currentChapterMeta()?.pendingCount ? `${currentChapterMeta().pendingCount} në verifikim` : `${state.items.length} mësime të verifikuara`);
-    if (activeTitle) activeTitle.textContent = current?.title || (global ? 'Zgjidh një rezultat' : 'Zgjidh një mësim');
+      : (currentChapterMeta()?.pendingCount ? `${currentChapterMeta().pendingCount} në verifikim` : `${state.items.length} ${state.items.length === 1 ? 'skemë' : 'skema'}`);
+    const currentIndex = state.items.findIndex(item => String(item?._id) === String(current?._id));
+    if (activeTitle) activeTitle.textContent = current ? `Skema ${currentIndex + 1} nga ${state.items.length} · Kapitulli ${state.chapter}` : (global ? 'Zgjidh një rezultat' : 'Zgjidh një mësim');
+    const previous = $('#rxSourcePrevious');
+    const next = $('#rxSourceNext');
+    if (previous) previous.disabled = global || currentIndex <= 0;
+    if (next) next.disabled = global || currentIndex < 0 || currentIndex >= state.items.length - 1;
+    const disclosure = $('#rxSourceIndexDisclosure');
+    if (disclosure && global) disclosure.open = true;
     if (clear) clear.hidden = !state.query;
 
     if (!global && currentChapterMeta()?.pendingCount && !state.items.length && activeTitle) activeTitle.textContent = 'Në pritje të verifikimit';
     renderNav(entries, current);
 
     if (global) {
+      if (state.searchError) {
+        renderEmptyDetail('Kërkimi nuk u krye', 'Lidhja dështoi. Provo përsëri ose pastro kërkimin për të shfletuar kapitullin.');
+        return;
+      }
       if (state.searching) {
         renderEmptyDetail('Po kërkoj në të gjithë burimin…', 'Diagnoza, substanca, doza, rruga, S. dhe kushtet po analizohen.');
         return;
@@ -7935,7 +7994,7 @@
         $('#rxSourceGuideNav').innerHTML = `<div class="rx-source-index-empty"><strong>${pending} skema në verifikim</strong><span>Do të shfaqen pas miratimit klinik.</span></div>`;
         renderEmptyDetail('Skemat presin verifikimin klinik', `${pending} skema janë importuar për këtë kapitull. Publikimi në burim nuk është verifikim klinik. Ndërkohë mund ta ndërtosh recetën vetë.`);
       } else {
-        renderEmptyDetail(state.chapters.length ? 'Nuk ka skema në këtë kapitull' : 'Ende nuk ka kapituj të disponueshëm', 'Mund të vazhdosh me një recetë të re.');
+        renderEmptyDetail(state.chapters.length ? 'Ky kapitull nuk ka receta në burim' : 'Ende nuk ka kapituj të disponueshëm', text(chapter?.sourceNote) || 'Mund të zgjedhësh një kapitull tjetër ose ta ndërtosh recetën vetë.');
       }
       return;
     }
@@ -7953,7 +8012,7 @@
     if (!select) return;
     select.innerHTML = state.chapters.map(chapter => {
       const count = Number(chapter?.count || 0);
-      return `<option value="${chapter.number}">Kapitulli ${chapter.number} — ${esc(chapter.title)} · ${count} të verifikuara${chapter.pendingCount ? ` · ${chapter.pendingCount} në verifikim` : ''}</option>`;
+      return `<option value="${chapter.number}">${chapter.number}. ${esc(chapter.title)} · ${count} ${count === 1 ? 'skemë' : 'skema'}${chapter.pendingCount ? ` · ${chapter.pendingCount} në verifikim` : ''}</option>`;
     }).join('');
     if (state.chapter) select.value = String(state.chapter);
     select.disabled = state.chapters.length < 2;
@@ -7986,6 +8045,7 @@
     syncLessonPicker();
     render();
     if (focusDetail) {
+      $('#rxSourceGuideList')?.focus?.({ preventScroll:true });
       $('#rxSourceGuideList')?.scrollIntoView({ behavior:'smooth', block:'nearest' });
     }
     return true;
@@ -8024,6 +8084,7 @@
     state.searchController?.abort();
     state.searchController = new AbortController();
     state.searching = true;
+    state.searchError = false;
     render();
     sourceStatus('Duke kërkuar inteligjent në të gjitha kapitujt…');
 
@@ -8047,6 +8108,7 @@
       if (requestId !== state.searchRequestId) return;
       state.searching = false;
       state.searchResults = [];
+      state.searchError = true;
       sourceStatus('Kërkimi inteligjent nuk u krye. Provo përsëri.', 'error');
       render();
     }
@@ -8054,6 +8116,7 @@
 
   function setSearch(value) {
     state.query = text(value);
+    state.searchError = false;
     const normalized = normalize(state.query);
     cancelSearchRequest();
     ++state.searchRequestId;
@@ -8068,6 +8131,7 @@
     state.searchTimer = window.setTimeout(() => {
       void runSmartSearch(state.query);
     }, 180);
+    state.searching = true;
     render();
   }
 
@@ -8076,6 +8140,7 @@
     const requestId = ++state.requestId;
     state.loading = true;
     state.error = false;
+    state.searchError = false;
     render();
     state.controller?.abort();
     state.controller = new AbortController();
@@ -8130,6 +8195,10 @@
   }
 
   function beginGuide(guide) {
+    if (sourceClinicalIssues(guide).length) {
+      sourceStatus('Kjo skemë ka mospërputhje burimore dhe kërkon rishikim klinik para përdorimit.', 'error');
+      return false;
+    }
     const workspace = window.MedIndexRecetaWorkspace;
     if (!workspace?.beginSourceGuideDraft) return;
     const result = workspace.beginSourceGuideDraft({
@@ -8164,13 +8233,18 @@
   }
 
   function bind() {
-    $('#rxReadingToggle')?.addEventListener('click', event => {
-      const library = $('#rxPrescriptionLibrary');
-      const focused = library.classList.toggle('rx-reading-focused');
-      event.currentTarget.setAttribute('aria-pressed', String(focused));
-      event.currentTarget.textContent = focused ? 'Shfaq listën' : 'Vetëm skema';
+    for (const [selector,direction] of [['#rxSourcePrevious',-1],['#rxSourceNext',1]]) {
+      $(selector)?.addEventListener('click', () => {
+        if (isGlobalSearchActive()) return;
+        const index = state.items.findIndex(item => String(item?._id) === state.activeGuideId);
+        const guide = state.items[index + direction];
+        if (index >= 0 && guide) selectGuide(guide._id);
+      });
+    }
+    $('#rxSourceRetry')?.addEventListener('click', () => {
+      if (state.searchError && isGlobalSearchActive()) void runSmartSearch(state.query);
+      else void load(state.chapter);
     });
-    $('#rxSourceRetry')?.addEventListener('click', () => void load(state.chapter));
     $('#rxSourceManual')?.addEventListener('click', () => window.DRxRecetatTabs?.show?.('compose'));
     $('#rxSourceChapterSelect')?.addEventListener('change', event => {
       const chapter = Number(event.target.value);
@@ -8203,14 +8277,14 @@
         return;
       }
       const button = event.target.closest('[data-rx-source-select]');
-      if (button) selectGuide(button.dataset.rxSourceSelect);
+      if (button) selectGuide(button.dataset.rxSourceSelect, { focusDetail:true });
     });
 
     $('#rxSourceGuideNav')?.addEventListener('keydown', event => {
-      if (event.key === 'ArrowDown') {
+      if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
         event.preventDefault();
         moveNavFocus(1);
-      } else if (event.key === 'ArrowUp') {
+      } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
         event.preventDefault();
         moveNavFocus(-1);
       } else if ((event.key === 'Enter' || event.key === ' ') && event.target.closest('[data-rx-source-select],[data-rx-source-search-result]')) {

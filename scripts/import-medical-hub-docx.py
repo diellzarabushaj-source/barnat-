@@ -329,10 +329,20 @@ if __name__ == '__main__':
     parser.add_argument('output_path')
     parser.add_argument('--initialize-placeholders', action='store_true')
     parser.add_argument('--image-assets')
+    parser.add_argument('--prescription-repairs', action='store_true', help='Read-only, source-asserted prescriptionGuide repairs for chapters 1–5')
     parser.add_argument('--source-document-id', default='1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw', help='Canonical Google Doc ID, including a different volume')
     args = parser.parse_args()
     assets = json.load(open(args.image_assets)) if args.image_assets else {}
-    result = build(args.source, json.load(open(args.existing_path)), args.initialize_placeholders, assets, args.source_document_id)
-    with open(args.output_path, 'w') as target:
+    existing = json.load(open(args.existing_path, encoding='utf-8'))
+    if args.prescription_repairs:
+        import importlib.util
+        from pathlib import Path
+        spec = importlib.util.spec_from_file_location('prescription_repairs', Path(__file__).with_name('repair-prescription-source.py'))
+        repairs = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(repairs)
+        result = repairs.build(args.source, existing, args.source_document_id)
+    else:
+        result = build(args.source, existing, args.initialize_placeholders, assets, args.source_document_id)
+    with open(args.output_path, 'w', encoding='utf-8') as target:
         json.dump(result, target, ensure_ascii=False, indent=2)
     print(json.dumps(result['counts']))
