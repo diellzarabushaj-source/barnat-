@@ -23,7 +23,7 @@ assert.match(html, /id="rxSourceSearch"/);
 assert.match(js, /RELATION_LABELS = Object\.freeze\(\{ and:'DHE', or:'OSE', plus:'PLUS', conditional:'NËSE' \}\)/);
 assert.doesNotMatch(html, /rx-source-legend/, 'the notation legend strip stays removed');
 assert.match(html, /recetat-v2\.css\?v=23/);
-assert.match(html, /recetat-v2\.js\?v=23/);
+assert.match(html, /recetat-v2\.js\?v=24/);
 
 assert.match(api, /PRESCRIPTION_CHAPTER_QUERY/);
 assert.match(api, /PRESCRIPTION_GUIDE_QUERY/);

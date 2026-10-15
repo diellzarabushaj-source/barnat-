@@ -174,6 +174,7 @@ for(const width of [390,1440]) test(`source filters and search scope stay consis
   await expect(page.locator('#rxSourceSearch')).toHaveValue('');
   await expect(page.locator('#rxSourceFilter')).toHaveValue('all');
   await expect(page.locator('#rxSourceSearchScope')).toHaveValue('all');
+  await expect(page.locator('#rxSourceIndexDisclosure')).not.toHaveAttribute('open','');
   await expect(page.locator('#rxSourceGuideList h3')).toHaveText('Skema QA 5.2');
   await expect(page.locator('#rxSourceLessonSelect')).toBeEnabled();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
