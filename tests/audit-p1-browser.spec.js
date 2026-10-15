@@ -316,6 +316,40 @@ for (const width of [390,1440]) test(`Medical Hub source details, review and pri
 
 const pediatricReference=require('../lib/pediatric-market-catalog').withMarket({...require('../data/pediatric-common-drugs-reference.json'),weightAgeDefaults:require('../data/pediatric-weight-age-defaults.json'),clinicalAudit:require('../data/pediatric-clinical-audit-v1.json')},require('./fixtures/pediatric-market-products-20261015.js'));
 const marketVariant=(name,predicate)=>pediatricReference.marketCatalog.drugs.find(d=>d.name===name).forms.flatMap(f=>f.variants).find(predicate);
+for(const width of [320,390,1440])test(`AKKPM easy next actions, search cancellation and patient reset at ${width}px`,async({page})=>{
+ await page.setViewportSize({width,height:900});await api(page);let calls=0;
+ await page.route('**/api/dosage?view=pediatric-common-reference*',route=>route.fulfill({json:pediatricReference}));
+ await page.route('**/api/dosage?view=pediatric-common-calculate',async route=>{calls++;const result=require('../lib/pediatric-common-calculate-handler').calculate(pediatricReference,route.request().postDataJSON());await route.fulfill({status:result.error?422:200,json:result});});
+ await page.goto(`${baseURL}/dozologjia.html`);
+ await expect(page.locator('#pediatricReset')).toBeHidden();
+ await page.getByRole('button',{name:'Zgjidh barin',exact:true}).click();
+ const search=page.locator('#pediatricDrugSearch');await expect(search).toBeFocused();await expect(search).toHaveAttribute('aria-expanded','true');
+ await search.fill('zzznothing');await expect(page.locator('#pediatricDrugOptions')).toContainText('Nuk u gjet');
+ await page.getByRole('button',{name:'Pastro kërkimin për Bari',exact:true}).click();await expect(search).toHaveValue('');await expect(page.locator('#pediatricDrug')).toHaveValue('');
+ await page.getByRole('button',{name:'Hap zgjedhjet për Bari',exact:true}).click();await expect(search).toHaveAttribute('aria-expanded','false');
+ await search.fill('loratidine');await expect(page.locator('#pediatricDrugSearchStatus')).toContainText('1 rezultat');await search.press('Enter');
+ await expect(page.locator('#pediatricDrug')).toHaveValue('Loratadine');await expect(search).toHaveAttribute('aria-expanded','false');
+ await page.getByRole('button',{name:'Zgjidh formën',exact:true}).click();await expect(page.locator('#pediatricFormSearch')).toBeFocused();
+ await page.locator('#pediatricFormOptions').getByRole('option',{name:'Shurup / suspension oral',exact:true}).click();
+ const lora=marketVariant('Loratadine',v=>v.form.key==='oral-liquid'&&v.schemes.length);await page.locator('#pediatricStrength').selectOption(lora.id);
+ await page.getByRole('button',{name:'Shkruaj peshën',exact:true}).click();await expect(page.locator('#pediatricWeight')).toBeFocused();await page.locator('#pediatricWeight').fill('12');await page.locator('#pediatricWeight').press('Enter');await expect(page.locator('#pediatricWeight')).not.toBeFocused();
+ await page.getByRole('button',{name:'Kontrollo moshën',exact:true}).click();await expect(page.locator('#pediatricAgeConfirmed')).toBeFocused();await expect(page.locator('#pediatricAgeConfirmed')).not.toBeChecked();expect(calls).toBe(0);
+ await page.locator('#pediatricAgeConfirmed').check();await page.getByRole('button',{name:'Kontrollo kushtet',exact:true}).click();await expect(page.locator('#pediatricSafetyConfirmed')).toBeFocused();await expect(page.locator('#pediatricSafetyConfirmed')).not.toBeChecked();expect(calls).toBe(0);
+ await page.locator('#pediatricSafetyConfirmed').check();await expect(page.locator('.dz-market-measure')).toHaveText('5 mL');
+ await search.fill('loratidine');await expect(page.locator('.dz-market-measure')).toHaveCount(0);await search.press('Enter');
+ await expect(page.locator('#pediatricAgeConfirmed')).toBeChecked();await expect(page.locator('#pediatricSafetyConfirmed')).toBeChecked();await expect(page.locator('.dz-market-measure')).toHaveText('5 mL');
+ const reset=await page.locator('#pediatricReset').boundingBox(),weight=await page.locator('#pediatricWeight').boundingBox();expect(reset.y).toBeLessThan(weight.y);
+ if(width<=520){const age=await page.locator('#pediatricAge').boundingBox(),unit=await page.locator('#pediatricAgeUnit').boundingBox();expect(age.y).toBeGreaterThan(weight.y+weight.height);expect(unit.width).toBeGreaterThanOrEqual(100);expect(age.width).toBeGreaterThan(100);}
+ await page.locator('#pediatricReset').click();await expect(page.locator('#pediatricWeight')).toHaveValue('');await expect(page.locator('#pediatricWeight')).toBeFocused();await expect(page.locator('#pediatricAge')).toHaveValue('');await expect(page.locator('#pediatricAgeConfirmed')).not.toBeChecked();await expect(page.locator('#pediatricSafetyConfirmed')).not.toBeChecked();await expect(page.locator('#pediatricDrug')).toHaveValue('Loratadine');await expect(page.locator('.dz-market-measure')).toHaveCount(0);await expect(page.locator('#pediatricReset')).toBeHidden();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+test('AKKPM only unambiguous choices advance; an unverified sole product never calculates',async({page})=>{
+ await api(page);let calls=0;await page.route('**/api/dosage?view=pediatric-common-reference*',route=>route.fulfill({json:pediatricReference}));await page.route('**/api/dosage?view=pediatric-common-calculate',route=>{calls++;return route.fulfill({json:{error:'Unexpected calculation'}});});
+ await page.goto(`${baseURL}/dozologjia.html`);await page.locator('#pediatricDrugSearch').fill('Fexofenadine');await page.locator('#pediatricDrugSearch').press('Enter');
+ await expect(page.locator('#pediatricForm')).toHaveValue('tablet');await expect(page.locator('#pediatricStrength')).not.toHaveValue('');await expect(page.locator('#pediatricScheme')).toHaveValue('');await expect(page.locator('#pediatricSchemeField')).toBeVisible();
+ await page.getByRole('button',{name:'Zgjidh skemën',exact:true}).click();await expect(page.locator('#pediatricSchemeSearch')).toBeFocused();
+ await page.locator('#pediatricDrugSearch').fill('Vitamin K1');await page.locator('#pediatricDrugSearch').press('Enter');await expect(page.locator('#pediatricForm')).toHaveValue('injection');await expect(page.locator('#pediatricStrength')).not.toHaveValue('');await expect(page.locator('#pediatricPatient')).toBeHidden();await expect(page.locator('.dz-variant-review')).toBeVisible();expect(calls).toBe(0);
+});
 for(const width of [320,390,1440])test(`Pediatric AKKPM drug-form-strength-weight flow at ${width}px`,async({page})=>{
   await page.setViewportSize({width,height:900});await api(page);
   await page.route('**/api/dosage?view=pediatric-common-reference*',route=>route.fulfill({json:pediatricReference}));

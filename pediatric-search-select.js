@@ -15,11 +15,17 @@
     const host = make('span', 'dz-search-select');
     const input = make('input', 'dz-select-search');
     input.id = select.id + 'Search'; input.type = 'text'; input.autocomplete = 'off'; input.spellcheck = false;
+    input.enterKeyHint = 'search'; input.autocapitalize = 'none';
     input.setAttribute('role', 'combobox'); input.setAttribute('aria-label', title);
     input.setAttribute('aria-autocomplete', 'list'); input.setAttribute('aria-expanded', 'false');
     if (select.getAttribute('aria-describedby')) input.setAttribute('aria-describedby', select.getAttribute('aria-describedby'));
     const arrow = make('button', 'dz-select-arrow', '⌄'); arrow.type = 'button'; arrow.tabIndex = -1;
     arrow.setAttribute('aria-label', 'Hap zgjedhjet për ' + title);
+    const clear = make('button', 'dz-select-clear', '×'); clear.type = 'button'; clear.hidden = true;
+    clear.setAttribute('aria-label', 'Pastro kërkimin për ' + title);
+    const status = make('span', 'sr-only'); status.id = select.id + 'SearchStatus';
+    status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
+    input.setAttribute('aria-describedby', [input.getAttribute('aria-describedby'), status.id].filter(Boolean).join(' '));
     const list = make('span', 'dz-select-options'); list.id = select.id + 'Options'; list.hidden = true;
     list.setAttribute('role', 'listbox'); list.setAttribute('aria-label', title);
     input.setAttribute('aria-controls', list.id);
@@ -28,6 +34,7 @@
     function close(committed = false) {
       const cancelled = editing && !committed; editing = false;
       open = false; list.hidden = true; input.value = selectedText();
+      clear.hidden = true; host.classList.remove('is-editing'); status.textContent = '';
       input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant');
       if (cancelled) host.dispatchEvent(new CustomEvent('pediatric:choice-cancel', {bubbles:true}));
     }
@@ -49,12 +56,16 @@
     }
     function choose(option) {
       if (!option || option.disabled || select.disabled) return;
+      const unchanged = option.value === select.value, wasEditing = editing;
       select.value = option.value; lastValue = select.value; close(true);
-      select.dispatchEvent(new Event('change', {bubbles:true}));
+      // A search for the already-selected value must not reset patient confirmations.
+      if (!unchanged) select.dispatchEvent(new Event('change', {bubbles:true}));
+      else if (wasEditing) host.dispatchEvent(new CustomEvent('pediatric:choice-cancel', {bubbles:true}));
       input.focus({preventScroll:true});
     }
     function render(query = '') {
       const terms = normalize(query).split(' ').filter(Boolean);
+      clear.hidden = !terms.length; host.classList.toggle('is-editing', Boolean(terms.length));
       matches = [...select.options].filter(option => !option.disabled && terms.every(term => normalize(option.textContent + ' ' + (option.parentElement?.label || '')+' '+(option.dataset.searchTerms||'')).includes(term)));
       list.replaceChildren(); active = -1; input.removeAttribute('aria-activedescendant');
       let previousGroup = '';
@@ -70,6 +81,8 @@
         list.append(row);
       });
       if (!matches.length) { const empty = make('span', 'dz-select-empty', 'Nuk u gjet asnjë rezultat.'); empty.setAttribute('role', 'status'); list.append(empty); }
+      const count = matches.filter(option => option.value).length;
+      status.textContent = count === 1 ? '1 rezultat. Shtyp Enter për ta zgjedhur.' : `${count} rezultate. Përdor shigjetat për të zgjedhur.`;
       position();
     }
     function show(query = '') {
@@ -91,15 +104,22 @@
       else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
         event.preventDefault(); if (!open) show();
         if (matches.length) highlight(active < 0 ? (event.key === 'ArrowDown' ? 0 : matches.length - 1) : (active + (event.key === 'ArrowDown' ? 1 : -1) + matches.length) % matches.length);
-      } else if (event.key === 'Enter' && open) { event.preventDefault(); if (active >= 0) choose(matches[active]); }
+      } else if (event.key === 'Enter' && open) { event.preventDefault(); if (active >= 0) choose(matches[active]); else if (matches.length === 1) choose(matches[0]); }
     });
-    arrow.addEventListener('click', () => { if (open) close(); else { show(); input.focus({preventScroll:true}); input.select(); } });
+    // Keep text focus while tapping controls, including on narrow WebKit viewports.
+    [arrow,clear].forEach(button=>button.addEventListener('pointerdown',event=>event.preventDefault()));
+    arrow.addEventListener('click', event => { event.preventDefault(); event.stopPropagation(); if (open) close(); else { show(); input.focus({preventScroll:true}); input.select(); } });
+    clear.addEventListener('click', event => {
+      event.preventDefault(); event.stopPropagation(); input.value = ''; editing = true;
+      host.dispatchEvent(new CustomEvent('pediatric:choice-editing', {bubbles:true}));
+      show(); input.focus({preventScroll:true});
+    });
     host.addEventListener('focusout', () => setTimeout(() => { if (!host.contains(document.activeElement)) close(); }, 0));
     document.addEventListener('pointerdown', event => { if (open && !host.contains(event.target)) close(); });
     window.addEventListener('resize', () => { if (open) position(); });
     window.visualViewport?.addEventListener('resize', () => { if (open) position(); });
     select.addEventListener('change', () => { close(true); sync(); });
-    select.before(host); host.append(select, input, arrow, list);
+    select.before(host); host.append(select, input, clear, arrow, list, status);
     if (label) label.htmlFor = input.id;
     select.tabIndex = -1; select.setAttribute('aria-hidden', 'true'); select.dataset.searchEnhanced = 'true';
     select.classList.add('dz-select-native');
