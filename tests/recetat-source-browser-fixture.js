@@ -16,7 +16,10 @@ module.exports = function sourceFixture(url,customGuides) {
   if (!['prescription-library','prescription-search'].includes(route)) return null;
   const items = customGuides || guides;
   const chapters = Array.from({length:5},(_,index)=>({number:index+1,title:`Kapitulli QA ${index+1}`,reviewStatus:'verified',count:items.filter(g=>g.chapterNumber===index+1).length,totalCount:items.filter(g=>g.chapterNumber===index+1).length,pendingCount:0,sourceNote:index===1 || index===3 ? 'Ky kapitull nuk përmban receta në dokumentin burimor.' : ''}));
-  if (route === 'prescription-search') return {ok:true,results:items.map(({_id,title,chapterNumber,orderInChapter})=>({_id,title,chapterNumber,orderInChapter}))};
+  if (route === 'prescription-search') {
+    const {prescriptionSearchDocument,rankPrescriptionGuides} = require('../api/medical-hub.js')._test;
+    return {ok:true,results:rankPrescriptionGuides(items.map(prescriptionSearchDocument),url.searchParams.get('q'),url.searchParams.get('limit'),{chapter:url.searchParams.get('chapter'),filter:url.searchParams.get('filter')})};
+  }
   const chapter = Number(url.searchParams.get('chapter')||1);
   return {ok:true,chapters,chapter,items:items.filter(g=>g.chapterNumber===chapter)};
 };

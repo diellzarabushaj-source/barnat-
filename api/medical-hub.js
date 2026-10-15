@@ -246,7 +246,7 @@ const PRESCRIPTION_GUIDE_QUERY = `*[_type == "prescriptionGuide" && reviewStatus
 const PRESCRIPTION_SEARCH_INDEX_QUERY = `*[_type == "prescriptionGuide" && reviewStatus == "verified" && chapterNumber in *[_type == "prescriptionChapter" && reviewStatus == "verified"].chapterNumber] | order(chapterNumber asc, orderInChapter asc) {
   _id, title, chapterNumber, chapterTitle, orderInChapter, keywords, sourceHeading,
   logicBlocks[]{
-    relation, sourceConnectorLabel, condition, note,
+    relation, selection, sourceConnectorLabel, condition, note,
     items[]{kind,title,genericName,form,strength,dose,route,frequency,duration,sig,note}
   }
 }`;
@@ -254,6 +254,16 @@ const PRESCRIPTION_SEARCH_INDEX_QUERY = `*[_type == "prescriptionGuide" && revie
 let prescriptionSearchCache = { expiresAt:0, docs:[] };
 
 function prescriptionSearchDocument(item) {
+  const blocks = Array.isArray(item?.logicBlocks) ? item.logicBlocks : [];
+  const facets = {
+    medication:blocks.some(block => (block.items || []).some(entry => entry.kind === 'active-substance')),
+    alternatives:blocks.some(block => block.relation === 'or' || block.selection === 'choose-one'),
+    conditional:blocks.some(block => block.relation === 'conditional' && !(
+      block.items?.length && block.items.every(entry => entry.kind === 'source-note')
+      && /^(UDHËZIM|NDËRVEPRIM)/iu.test(clean(block.condition))
+      && normalize(block.condition) === normalize(block.items[0]?.title)
+    )),
+  };
   const title = normalize([item?.title, item?.sourceHeading].filter(Boolean).join(' '));
   const chapter = normalize(item?.chapterTitle);
   const keywords = normalize(flattenStrings(item?.keywords).join(' '));
@@ -273,6 +283,7 @@ function prescriptionSearchDocument(item) {
       chapterNumber:Number(item?.chapterNumber) || 0,
       chapterTitle:clean(item?.chapterTitle),
       orderInChapter:Number(item?.orderInChapter) || 0,
+      facets,
     },
     title,
     chapter,
@@ -373,13 +384,14 @@ function scorePrescriptionSearch(doc, term, tokens) {
   return score;
 }
 
-async function searchPrescriptionGuides(rawQuery, limit = 40) {
+function rankPrescriptionGuides(docs, rawQuery, limit = 40, filters = {}) {
   const term = normalize(rawQuery).slice(0, MAX_QUERY);
   if (!term || term.length < 2) return [];
   const tokens = term.split(/\s+/).filter(Boolean).slice(0, 8);
-  const docs = await getPrescriptionSearchIndex();
-
+  const chapter = Number(filters.chapter) || 0;
+  const facet = ['medication','alternatives','conditional'].includes(filters.filter) ? filters.filter : '';
   return docs
+    .filter(doc => (!chapter || doc.item.chapterNumber === chapter) && (!facet || doc.item.facets[facet]))
     .map(doc => ({ doc, score:scorePrescriptionSearch(doc, term, tokens) }))
     .filter(entry => entry.score > 0)
     .sort((a,b) => b.score - a.score
@@ -392,6 +404,11 @@ async function searchPrescriptionGuides(rawQuery, limit = 40) {
       lessonNumber:entry.doc.item.orderInChapter,
       label:`Kapitulli ${entry.doc.item.chapterNumber} · Mësimi ${entry.doc.item.orderInChapter}`,
     }));
+}
+
+async function searchPrescriptionGuides(rawQuery, limit = 40, filters = {}) {
+  if (normalize(rawQuery).length < 2) return [];
+  return rankPrescriptionGuides(await getPrescriptionSearchIndex(), rawQuery, limit, filters);
 }
 
 
@@ -614,7 +631,9 @@ module.exports = async function handler(req, res) {
       if (q.length < 2) {
         return res.status(200).json({ ok:true, query:q, results:[], count:0, source:'sanity-prescription-smart-search' });
       }
-      const results = await searchPrescriptionGuides(q, queryValue(req, 'limit'));
+      const results = await searchPrescriptionGuides(q, queryValue(req, 'limit'), {
+        chapter:queryValue(req, 'chapter'), filter:queryValue(req, 'filter'),
+      });
       return res.status(200).json({
         ok:true,
         query:q,
@@ -699,4 +718,6 @@ module.exports._test = {
   scoreDocument,
   publicItem,
   prescriptionChapters,
+  prescriptionSearchDocument,
+  rankPrescriptionGuides,
 };
