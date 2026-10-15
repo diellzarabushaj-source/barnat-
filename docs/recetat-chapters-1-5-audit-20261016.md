@@ -45,6 +45,12 @@ klinike. Importi i skemës nuk ruan, kopjon ose printon recetë automatikisht.
 Gabimi i kërkimit shfaq mundësinë e riprovimit, pa e paraqitur dështimin e
 lidhjes si mungesë rezultatesh.
 
+Kontrolli live zbuloi se ruajtja lokale e përgjigjeve mund të vononte deri në
+gjashtë orë shfaqjen e korrigjimeve. Ngarkimi dhe kërkimi i skemave dërgojnë
+tani kërkesë për rivërtetim në rrjet; mekanizmi ekzistues përdor kopjen lokale
+kur rrjeti nuk përgjigjet. Kështu korrigjimi i publikuar lexohet edhe në pajisje
+që kishin ruajtur më parë versionin e gabuar.
+
 ## Dy mospërputhje klinike në vetë burimin
 
 1. Sepsis/profilaksia e VTE dhe COVID-19 ICU/HDU, enoxaparina: burimi ka një ekuivalencë të papajtueshme
