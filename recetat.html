@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v20">
+<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v21">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -10,12 +10,12 @@
   <title>DRx | Recetat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/recetat-v2.css?v=20-prescription-cas-draft-status-20261010">
+  <link rel="stylesheet" href="/recetat-v2.css?v=21-source-chapters-20261016">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
   <script src="/drx-modal-focus.js?v=p1-20261008" defer></script>
-<script src="/recetat-v2.js?v=20-prescription-cas-20261010" defer></script>
+<script src="/recetat-v2.js?v=21-source-chapters-20261016" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#rxWorkspace">Kalo te krijimi i recetës</a>
@@ -101,10 +101,9 @@
       </header>
 
       <div class="page-wrap rx-page" id="rxWorkspace">
-        <header class="page-heading rx-page-heading">
+        <header class="rx-page-heading">
           <div>
             <h1>Recetat</h1>
-            <p class="page-subtitle">Zgjidh një skemë, përshtat recetën dhe ruaje për përdorim të mëvonshëm.</p>
           </div>
           <button class="rx-new-top" id="rxNew" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -133,8 +132,7 @@
         <section class="rx-source-library rx19-source-library" id="rxPrescriptionLibrary" aria-labelledby="rxSourceLibraryTitle">
           <header class="rx-source-library-head">
             <div class="rx-source-heading-copy">
-              <span class="rx-source-eyebrow">Biblioteka · Doctor on Duty</span><h2 id="rxSourceLibraryTitle">Gjej skemën që të duhet</h2>
-              <p>Kërko sipas diagnozës ose zgjidh kapitullin. Hape skemën dhe përdore si draft për recetën tënde.</p>
+              <h2 id="rxSourceLibraryTitle">Doctor on Duty</h2>
             </div>
             <div class="rx-source-head-actions">
               <div class="rx-source-total" aria-label="Skema në burim">
@@ -161,14 +159,12 @@
                 <option value="">Duke ngarkuar…</option>
               </select>
             </label>
-            <details class="rx-lesson-jump"><summary>Kalimi i shpejtë te mësimi</summary>
             <label class="rx-source-lesson-picker">
               <span>Mësimi / skema</span>
               <select id="rxSourceLessonSelect" aria-label="Zgjidh mësimin ose skemën">
                 <option value="">Zgjidh kapitullin…</option>
               </select>
             </label>
-            </details>
             <button class="rx-source-clear-search" id="rxSourceClearSearch" type="button" hidden>Pastro</button>
             <div class="rx-source-result-meta" aria-live="polite">
               <strong id="rxSourceResultCount">—</strong>
@@ -178,22 +174,24 @@
 
           <div class="rx-source-status" id="rxSourceGuideStatus" role="status" aria-live="polite">Duke ngarkuar skemat…</div>
 
-          <div class="rx-source-recovery"><button type="button" id="rxSourceRetry" hidden>Provo përsëri</button><button type="button" id="rxSourceManual">Ndërto recetën vetë</button></div>
+          <div class="rx-source-recovery" id="rxSourceRecovery" hidden><button type="button" id="rxSourceRetry" hidden>Provo përsëri</button><button type="button" id="rxSourceManual">Ndërto recetën vetë</button></div>
 
-              <div class="rx-source-index-head">
+              <details class="rx-source-index-disclosure" id="rxSourceIndexDisclosure">
+              <summary class="rx-source-index-head">
                 <span id="rxSourceIndexTitle">Skemat e kapitullit</span>
                 <small id="rxSourceIndexHint">—</small>
-              </div>
+              </summary>
               <div class="rx-source-guide-nav" id="rxSourceGuideNav" tabindex="-1" role="listbox" aria-label="Lista e skemave"></div>
+              </details>
             </aside>
 
             <div class="rx-source-detail">
               <a class="rx-back-to-list" href="#rxSourceGuideNav">↑ Kthehu te lista e skemave</a>
               <div class="rx-source-detail-toolbar">
                 <strong id="rxSourceActiveTitle">Zgjidh një mësim</strong>
-                <button type="button" class="rx-reading-toggle" id="rxReadingToggle" aria-pressed="false">Vetëm skema</button>
+                <div class="rx-source-pagination"><button type="button" id="rxSourcePrevious" aria-label="Skema e mëparshme">←</button><button type="button" id="rxSourceNext" aria-label="Skema e ardhshme">→</button></div>
               </div>
-              <div class="rx-source-guide-list" id="rxSourceGuideList" aria-live="polite"></div>
+              <div class="rx-source-guide-list" id="rxSourceGuideList" tabindex="-1" aria-live="polite"></div>
             </div>
           </div>
         </section>
