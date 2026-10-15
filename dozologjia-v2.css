@@ -2181,3 +2181,9 @@ button,input,select{font:inherit}
  .dz-market-age input[type=text],.dz-market-age select,.dz-market-number input[type=text]{min-height:52px}
  .dz-market-patient{margin-top:18px;padding-top:18px}.dz-market-details{margin-top:12px}
 }
+
+.dz-variant-review{margin-top:16px;font-size:13px;line-height:1.6}
+.dz-variant-review summary{cursor:pointer;color:#254a75;min-height:44px;display:flex;align-items:center}
+.dz-variant-review a{display:block;padding:10px 0;color:#254a75;overflow-wrap:anywhere;text-decoration:underline;text-underline-offset:3px}
+
+.dz-select-group{position:sticky;top:0;z-index:1;background:#e9effb;color:#173d68;font-size:13px;font-weight:800;letter-spacing:.035em;line-height:1.4;padding:12px 14px;border-top:1px solid #cfdbed;border-bottom:1px solid #cfdbed;margin:8px -3px 5px;border-radius:7px;box-shadow:0 2px 4px rgba(23,61,104,.05)}
