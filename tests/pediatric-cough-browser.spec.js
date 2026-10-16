@@ -1,0 +1,32 @@
+'use strict';
+const {test,expect}=require('@playwright/test');
+const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const reference=require('../lib/pediatric-market-catalog').withMarket({...require('../data/pediatric-common-drugs-reference.json'),weightAgeDefaults:require('../data/pediatric-weight-age-defaults.json'),clinicalAudit:require('../data/pediatric-clinical-audit-v1.json')},require('./fixtures/pediatric-market-products-20261016'));
+const variant=(name,predicate)=>reference.marketCatalog.drugs.find(d=>d.name===name).forms.flatMap(f=>f.variants).find(predicate);
+let server,baseURL;
+test.use({serviceWorkers:'block'});
+test.beforeAll(async()=>{
+ server=http.createServer((req,res)=>{const url=new URL(req.url,'http://localhost'),file=path.resolve(root,'.'+url.pathname);if(!file.startsWith(root+path.sep)||!fs.existsSync(file)||!fs.statSync(file).isFile()){res.writeHead(404);return res.end();}res.writeHead(200,{'content-type':({'.html':'text/html','.js':'application/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.woff2':'font/woff2'})[path.extname(file)]||'application/octet-stream'});fs.createReadStream(file).pipe(res);});
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));baseURL=`http://127.0.0.1:${server.address().port}`;
+});
+test.afterAll(async()=>{await new Promise(resolve=>server.close(resolve));});
+for(const width of [320,390,1440])test(`Cough registry groups, brand search, patient reset and isolated routes at ${width}px`,async({page})=>{
+ await page.setViewportSize({width,height:1000});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.route('**/api/**',async route=>{const u=new URL(route.request().url());let payload={ok:true,items:[],prescriptions:[],favorites:[],drugs:[],notes:{},tombstones:{prescriptions:[],favorites:[],drugs:[]}};if(u.pathname==='/api/auth')payload={authenticated:true,user:{id:'cough-test',email:'doctor@example.test',name:'Test Doctor'}};if(u.pathname==='/api/dosage')payload=u.searchParams.get('view')==='pediatric-common-reference'?reference:require('../lib/pediatric-common-calculate-handler').calculate(reference,route.request().postDataJSON());await route.fulfill({status:payload.error?422:200,json:payload});});
+ await page.goto(`${baseURL}/dozologjia.html`);await expect(page.locator('#pediatricDrug option')).toHaveCount(102);await expect(page.locator('#pediatricCommonCount')).toContainText('977');
+ const search=page.locator('#pediatricDrugSearch');await search.fill('kolle');
+ const groups=page.locator('#pediatricDrugOptions .dz-select-group');await expect(groups).toHaveCount(5);await expect(groups).toContainText(['Kollë me sekrecione','Kollë e thatë','Preparate bimore','Kombinime','Referenca të veçanta']);
+ await expect(page.locator('#pediatricDrugOptions [role="option"]')).toHaveCount(32);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.screenshot({path:`../../outputs/pediatric-cough-groups-${width}.png`,fullPage:false});
+ await search.fill('levotuss');await page.locator('#pediatricDrugOptions').getByRole('option',{name:'Levodropropizine',exact:true}).click();
+ const levo=variant('Levodropropizine',v=>v.schemes.length);await page.locator('#pediatricForm').selectOption(levo.form.key);await page.locator('#pediatricStrength').selectOption(levo.id);
+ await page.locator('#pediatricWeight').fill('12');await page.locator('#pediatricAgeUnit').selectOption('year');await page.locator('#pediatricAge').fill('2');await page.locator('#pediatricAgeConfirmed').check();await page.locator('#pediatricSafetyConfirmed').check();await expect(page.locator('.dz-market-measure')).toHaveText('2 mL');
+ await page.locator('#pediatricWeight').fill('');await expect(page.locator('#pediatricAge')).toHaveValue('');await expect(page.locator('.dz-market-measure')).toHaveCount(0);
+ await page.locator('#pediatricWeight').fill('12');await expect(page.locator('#pediatricAge')).not.toHaveValue('');await expect(page.locator('#pediatricAgeConfirmed')).not.toBeChecked();
+ await page.locator('#pediatricAgeUnit').selectOption('year');await page.locator('#pediatricAge').fill('1');await page.locator('#pediatricAgeConfirmed').check();await expect(page.locator('.dz-market-measure')).toHaveCount(0);
+ await search.fill('Omnitus');await page.locator('#pediatricDrugOptions').getByRole('option',{name:'Butamirate citrate',exact:true}).click();const omni=variant('Butamirate citrate',v=>v.products.some(p=>p.name==='Omnitus')&&v.schemes.length);await page.locator('#pediatricForm').selectOption(omni.form.key);await page.locator('#pediatricStrength').selectOption(omni.id);await page.locator('#pediatricWeight').fill('30');await page.locator('#pediatricAgeUnit').selectOption('year');await page.locator('#pediatricAge').fill('9');await page.locator('#pediatricAgeConfirmed').check();await page.locator('#pediatricSafetyConfirmed').check();await expect(page.locator('.dz-market-measure')).toHaveText('15 mL');await expect(page.locator('#pediatricAnswer')).toContainText('4 herë/ditë');
+ await search.fill('ambroxol');await page.locator('#pediatricDrugOptions').getByRole('option',{name:'Ambroxol',exact:true}).click();const dual=variant('Ambroxol',v=>v.form.key==='oral-nebulizer');await page.locator('#pediatricForm').selectOption(dual.form.key);await page.locator('#pediatricStrength').selectOption(dual.id);await expect(page.locator('#pediatricPatient')).toBeHidden();await expect(page.locator('.dz-market-measure')).toHaveCount(0);await expect(page.locator('.dz-variant-review')).toBeVisible();
+ await search.fill('codeine');await page.locator('#pediatricDrugOptions').getByRole('option',{name:'Codeine phosphate',exact:true}).click();const codeine=variant('Codeine phosphate',()=>true);await page.locator('#pediatricForm').selectOption(codeine.form.key);await page.locator('#pediatricStrength').selectOption(codeine.id);await expect(page.locator('#pediatricPatient')).toBeHidden();await expect(page.locator('#pediatricAnswer')).toContainText('Nuk ofrohet llogaritje automatike pediatrike');await expect(page.locator('.dz-variant-review')).toContainText('EMA');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect(errors).toEqual([]);
+});
