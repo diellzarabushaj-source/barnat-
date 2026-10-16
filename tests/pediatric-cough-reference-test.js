@@ -17,6 +17,10 @@ assert.equal(cough.drugs.length,32);assert.equal(inventory.length,80);
 assert.equal(new Set(cough.drugs.map(d=>d.section)).size,5);
 assert.equal(reference.marketCatalog.productCount,977);assert.equal(reference.marketCatalog.drugs.length,101);
 assert.equal(new Set(products.map(p=>p.id)).size,products.length);
+const unrelated={...inventory.find(p=>p.atc_code==='N02BE51'),id:'11111111-1111-4111-8111-111111111111',active_substance:'Paracetamol; Caffeine; Codeine phosphate',trade_name:'Unrelated shared-ATC combination'};
+const widerAtcLoad=market.withMarket(source,[...products,unrelated]);
+assert.equal(widerAtcLoad.marketCatalog.productCount,977,'Counter includes only products actually represented by the catalog, not unrelated shared-ATC rows');
+assert.ok(widerAtcLoad.marketCatalog.drugs.every(d=>d.forms.every(f=>f.variants.every(v=>v.products.every(p=>p.id!==unrelated.id)))));
 for(const row of inventory){
  const matching=cough.drugs.filter(d=>additions.matchesDrug(d,row));assert.equal(matching.length,1,'No missing/duplicated shared ATC product: '+row.trade_name);
  const catalogProducts=variants(matching[0].name).flatMap(v=>v.products);assert.equal(catalogProducts.filter(p=>p.id===row.id).length,1);
