@@ -7,7 +7,7 @@
   const CALCULATE_URL = '/api/dosage?view=pediatric-common-calculate';
   let referenceRevision = '';
   let referenceActive = false;
-  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=62-market-20261015';
+  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=63-market-clarity-20261017';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
   const CLINICAL_AUDIT_URL = '/data/pediatric-clinical-audit-v1.json';
@@ -405,10 +405,11 @@
       panel.append(warnings);
       return panel;
     }
-    const panel = node('section', null, 'dz-evidence dz-evidence-verified');
+    const panel = node('section', null, 'dz-evidence ' + (audit.calculator?.disabled ? 'dz-evidence-limited' : 'dz-evidence-verified'));
     const head = node('div', null, 'dz-evidence-head');
     head.append(node('span', audit.badgeSq || 'AUDIT KLINIK', 'dz-evidence-badge'));
-    if (clinicalAudit.auditedAt) head.append(node('small', 'audit ' + clinicalAudit.auditedAt));
+    const auditedAt = audit.auditedAt || clinicalAudit.auditedAt;
+    if (auditedAt) head.append(node('small', 'audit ' + auditedAt));
     panel.append(head);
     if (audit.summarySq) panel.append(node('p', audit.summarySq, 'dz-evidence-summary'));
     if (Array.isArray(audit.warningsSq)) {
@@ -486,6 +487,7 @@
   function showVariantReview(variant){
     clearResult(variant.reason||'Për këtë produkt nuk ka skemë pediatrike aktive.');
     if(!variant.review)return;
+    byId('pediatricAnswer').prepend(node('strong',variant.review.labelSq,'dz-review-heading'));
     const details=node('details',null,'dz-variant-review');
     details.append(node('summary','Burimet e kontrolluara · '+variant.review.reviewedAt));
     details.append(node('p',variant.review.scopeSq,'dz-market-note'));
@@ -666,7 +668,14 @@
       const picker=byId('pediatricDrug');picker.replaceChildren(node('option','Zgjidh barin…'));picker.firstChild.value='';
       commonSections.forEach(section=>{
         const group=node('optgroup');group.label=section.title==='Miscellaneous'?'Të tjerat':sectionSq(section.title);
-        section.drugs.forEach(drug=>{const option=node('option',drug.name);option.value=drug.name;option.dataset.searchTerms=[drug.searchTerms||'',...(marketCatalog?.drugs.find(d=>d.name===drug.name)?.forms.flatMap(f=>f.variants.flatMap(v=>v.products.map(p=>p.name)))||[])].join(' ');group.append(option);});picker.append(group);
+        section.drugs.forEach(drug=>{
+          const entry=marketCatalog?.drugs.find(d=>d.name===drug.name);
+          const brands=[...new Set(entry?.forms.flatMap(f=>f.variants.flatMap(v=>v.products.map(p=>p.name)))||[])];
+          const option=node('option',drug.name);option.value=drug.name;
+          option.dataset.searchTerms=[drug.searchTerms||'',...brands].join(' ');option.dataset.brands=JSON.stringify(brands);
+          if(entry&&!entry.forms.some(f=>f.variants.some(v=>v.schemes.length)))option.dataset.referenceOnly='true';
+          group.append(option);
+        });picker.append(group);
       });picker.disabled=false;
       byId('pediatricCommonCount').textContent=referenceActive?`${marketCatalog.productCount} produkte · AKKPM`:'Referencë pa lidhje aktive';
       byId('pediatricCommonCount').dataset.source=source;

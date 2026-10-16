@@ -26,12 +26,14 @@ for(const row of inventory){
  const catalogProducts=variants(matching[0].name).flatMap(v=>v.products);assert.equal(catalogProducts.filter(p=>p.id===row.id).length,1);
 }
 for(const drug of cough.drugs){
+ assert.equal(reference.clinicalAudit.drugs[drug.name].auditedAt,cough.auditedAt,'Each added reference reports its own source-review date');
  assert.equal(reference.sections.find(s=>s.drugs.some(d=>d.name===drug.name)).title,drug.section);
  assert.ok(drug.sources.every(s=>/^https:\/\//.test(s.url)));
  for(const v of variants(drug.name).filter(v=>!v.schemes.length)){
   assert.ok(v.review?.reasonSq);assert.ok(v.review.sources.length);assert.ok(dose(drug.name,v,10,30,{optionIndex:0}).error,'Reference-only product never inherits a dose');
  }
 }
+assert.equal(reference.clinicalAudit.drugs.Loratadine.auditedAt,'2026-10-15','Earlier additions keep their original audit date');
 const nac=active('Acetylcysteine',20);
 assert.ok(dose('Acetylcysteine',nac,1.999).error);measure('Acetylcysteine',nac,2,5);measure('Acetylcysteine',nac,7,5);measure('Acetylcysteine',nac,7.001,10);measure('Acetylcysteine',nac,18,10);assert.ok(dose('Acetylcysteine',nac,18.001).error);
 const normon=variant('Acetylcysteine',v=>v.products.some(p=>p.name==='ACETILCISTEINA NORMON'));
