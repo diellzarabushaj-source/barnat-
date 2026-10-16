@@ -1,3 +1,5 @@
+> Historical release record. Current coverage and follow-up decisions: [17 October source review](pediatric-cough-source-review-20261017.md).
+
 # Cough references — 16 October 2026
 
 The additive market overlay includes every **published** registry row with an R05 ATC code, plus the theophylline/guaifenesin combination R03DA54 and the paracetamol/guaifenesin cold combination N02BE51. The read-only production inventory returned 80 distinct products. Each belongs to exactly one of 32 entries in five separate groups. The snapshot is `tests/fixtures/pediatric-cough-akkpm-products-20261016.json`; unpublished products and supplements outside this registry are outside this coverage claim.

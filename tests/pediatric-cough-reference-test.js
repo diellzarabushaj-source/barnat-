@@ -16,6 +16,11 @@ const measure=(name,v,age,expected,weight=20)=>{const r=dose(name,v,age,weight);
 assert.equal(cough.drugs.length,32);assert.equal(inventory.length,80);
 assert.equal(new Set(cough.drugs.map(d=>d.section)).size,5);
 assert.equal(reference.marketCatalog.productCount,977);assert.equal(reference.marketCatalog.drugs.length,101);
+assert.equal(cough.drugs.reduce((n,d)=>n+d.options.length,0),33);
+const coughNames=new Set(cough.drugs.map(d=>d.name)),coughVariants=reference.marketCatalog.drugs.filter(d=>coughNames.has(d.name)).flatMap(d=>d.forms.flatMap(f=>f.variants));
+assert.equal(new Set(coughVariants.filter(v=>v.schemes.length).flatMap(v=>v.products.map(p=>p.id))).size,50);
+const referenceIds=new Set(coughVariants.filter(v=>!v.schemes.length).flatMap(v=>v.products.map(p=>p.id)));
+assert.equal(referenceIds.size,30);assert.equal(cough.productReviews.length,30);assert.ok(cough.productReviews.every(r=>referenceIds.has(r.id)));
 assert.equal(new Set(products.map(p=>p.id)).size,products.length);
 const unrelated={...inventory.find(p=>p.atc_code==='N02BE51'),id:'11111111-1111-4111-8111-111111111111',active_substance:'Paracetamol; Caffeine; Codeine phosphate',trade_name:'Unrelated shared-ATC combination'};
 const widerAtcLoad=market.withMarket(source,[...products,unrelated]);
@@ -23,10 +28,10 @@ assert.equal(widerAtcLoad.marketCatalog.productCount,977,'Counter includes only 
 assert.ok(widerAtcLoad.marketCatalog.drugs.every(d=>d.forms.every(f=>f.variants.every(v=>v.products.every(p=>p.id!==unrelated.id)))));
 for(const row of inventory){
  const matching=cough.drugs.filter(d=>additions.matchesDrug(d,row));assert.equal(matching.length,1,'No missing/duplicated shared ATC product: '+row.trade_name);
- const catalogProducts=variants(matching[0].name).flatMap(v=>v.products);assert.equal(catalogProducts.filter(p=>p.id===row.id).length,1);
+ const catalogProducts=variants(matching[0].name).flatMap(v=>v.products);assert.equal(catalogProducts.filter(p=>p.id===row.id).length,row.trade_name==='Ambroxol Aldo-Unión'?2:1);
 }
 for(const drug of cough.drugs){
- assert.equal(reference.clinicalAudit.drugs[drug.name].auditedAt,cough.auditedAt,'Each added reference reports its own source-review date');
+ assert.equal(reference.clinicalAudit.drugs[drug.name].auditedAt,drug.auditedAt||cough.auditedAt,'Each added reference reports its own source-review date');
  assert.equal(reference.sections.find(s=>s.drugs.some(d=>d.name===drug.name)).title,drug.section);
  assert.ok(drug.sources.every(s=>/^https:\/\//.test(s.url)));
  for(const v of variants(drug.name).filter(v=>!v.schemes.length)){
@@ -38,16 +43,34 @@ const nac=active('Acetylcysteine',20);
 assert.ok(dose('Acetylcysteine',nac,1.999).error);measure('Acetylcysteine',nac,2,5);measure('Acetylcysteine',nac,7,5);measure('Acetylcysteine',nac,7.001,10);measure('Acetylcysteine',nac,18,10);assert.ok(dose('Acetylcysteine',nac,18.001).error);
 const normon=variant('Acetylcysteine',v=>v.products.some(p=>p.name==='ACETILCISTEINA NORMON'));
 assert.ok(dose('Acetylcysteine',normon,7).error);measure('Acetylcysteine',normon,7.001,1);
-assert.ok(variants('Acetylcysteine').filter(v=>v.concentration.value===1200||v.concentration.perML&&v.concentration.value/v.concentration.perML===40).every(v=>!v.schemes.length));
+assert.ok(variants('Acetylcysteine').filter(v=>v.concentration.perML&&v.concentration.value/v.concentration.perML===40).every(v=>!v.schemes.length));
+for(const brand of ['ACC® 600','Mukozero'])for(const v of variants('Acetylcysteine').filter(v=>v.products.some(p=>p.name===brand))){assert.ok(dose('Acetylcysteine',v,14).error);measure('Acetylcysteine',v,14.001,1);assert.equal(dose('Acetylcysteine',v,16).dailyCap,brand==='Mukozero'?1200:600);}
 const amb3=active('Ambroxol',3),amb6=active('Ambroxol',6);
 measure('Ambroxol',amb3,2,2.5);measure('Ambroxol',amb3,6,5);measure('Ambroxol',amb3,12,10);
 measure('Ambroxol',amb6,2,1.25);measure('Ambroxol',amb6,6,2.5);measure('Ambroxol',amb6,12,2.5);const ambTeen=measure('Ambroxol',amb6,12.001,5);assert.equal(ambTeen.selectedMeasure.max,7.5);
 assert.ok(dose('Ambroxol',amb3,1.999).error);assert.ok(dose('Ambroxol',amb6,5,20,{optionIndex:amb3.schemes[0].index}).error);
-const ambDual=variant('Ambroxol',v=>v.form.key==='oral-nebulizer');assert.equal(ambDual.form.route,'product-specific');assert.equal(ambDual.schemes.length,0);
+const ambOral=variant('Ambroxol',v=>v.form.key==='aldo-oral'),ambNeb=variant('Ambroxol',v=>v.form.key==='aldo-nebulized');
+assert.equal(ambOral.form.route,'oral');assert.equal(ambNeb.form.route,'nebulized');measure('Ambroxol',ambOral,2,1);measure('Ambroxol',ambOral,5,1);assert.equal(measure('Ambroxol',ambOral,5.001,1).selectedMeasure.max,2);
+assert.equal(measure('Ambroxol',ambNeb,2,1).selectedMeasure.max,2);measure('Ambroxol',ambNeb,5.001,2);assert.ok(dose('Ambroxol',ambNeb,1.999).error);assert.ok(dose('Ambroxol',ambNeb,5,20,{optionIndex:ambOral.schemes[0].index}).error);assert.ok(dose('Ambroxol',ambOral,5,20,{optionIndex:ambNeb.schemes[0].index}).error);
 const brom=active('Bromhexine',.8);measure('Bromhexine',brom,2,2.5);measure('Bromhexine',brom,6,5);measure('Bromhexine',brom,12,5);assert.ok(dose('Bromhexine',brom,12.001).error);
-assert.ok(variants('Bromhexine').filter(v=>v.form.route==='injectable'||v.form.key==='oral-drops').every(v=>!v.schemes.length));
+assert.ok(variants('Bromhexine').filter(v=>v.form.route==='injectable').every(v=>!v.schemes.length));
+const liso=variant('Bromhexine',v=>v.products.some(p=>p.name==='Lisomucin'));measure('Bromhexine',liso,2,1);measure('Bromhexine',liso,5,1);assert.ok(dose('Bromhexine',liso,1.999).error);assert.ok(dose('Bromhexine',liso,5.001).error);
+const bisolvon=variant('Bromhexine',v=>v.products.some(p=>p.name==='BISOLVON')&&v.concentration.value===2);assert.ok(dose('Bromhexine',bisolvon,5.999).error);assert.equal(measure('Bromhexine',bisolvon,6,2).selectedMeasure.max,4);measure('Bromhexine',bisolvon,12.001,8);
 const carbo=active('Carbocisteine',50);assert.ok(dose('Carbocisteine',carbo,5.999).error);measure('Carbocisteine',carbo,6,5);measure('Carbocisteine',carbo,12,5);measure('Carbocisteine',carbo,12.001,15);
-assert.ok(variants('Carbocisteine · kripë lizine').every(v=>!v.schemes.length));assert.ok(!variants('Carbocisteine').some(v=>v.products.some(p=>/FLUIFORT/.test(p.name))));
+assert.ok(!variants('Carbocisteine').some(v=>v.products.some(p=>/FLUIFORT/.test(p.name))));
+const lysine='Carbocisteine · kripë lizine',fluifort=active(lysine,90),fluigran=variant(lysine,v=>v.form.key==='oral-granules');assert.equal(fluifort.label,'90 mg/1 ml · FLUIFORT','Keep concentration rather than total bottle mass');
+assert.equal(fluigran.products.length,2,'Identical sachet regimens share one choice across pack sizes');assert.ok(dose(lysine,fluifort,1.999).error);measure(lysine,fluifort,2,2.5);measure(lysine,fluifort,5,2.5);measure(lysine,fluifort,5.001,5);assert.equal(dose(lysine,fluifort,5).perDoseMax,225);assert.equal(dose(lysine,fluifort,6).perDoseMax,450);assert.ok(dose(lysine,fluifort,18).error);assert.ok(dose(lysine,fluigran,10.999).error);measure(lysine,fluigran,11,1);assert.ok(dose(lysine,fluifort,12,20,{optionIndex:fluigran.schemes[0].index}).error);
+const bronles=active('Carbocisteine',25);assert.ok(dose('Carbocisteine',bronles,1.999).error);assert.equal(measure('Carbocisteine',bronles,2,2.5).selectedMeasure.max,5);measure('Carbocisteine',bronles,5,2.5);measure('Carbocisteine',bronles,5.001,10);measure('Carbocisteine',bronles,12,10);assert.ok(dose('Carbocisteine',bronles,12.001).error);
+const priv=active('Cloperastine fendizoate',7.08);assert.ok(dose('Cloperastine fendizoate',priv,1.999).error);measure('Cloperastine fendizoate',priv,2,2);measure('Cloperastine fendizoate',priv,4,3);measure('Cloperastine fendizoate',priv,7,5);measure('Cloperastine fendizoate',priv,15,5);assert.ok(dose('Cloperastine fendizoate',priv,15.001).error);assert.equal(dose('Cloperastine fendizoate',priv,4).perDoseMax,21.24);
+const oxol=active('Oxolamine citrate',10);assert.ok(dose('Oxolamine citrate',oxol,.999).error);measure('Oxolamine citrate',oxol,1,5);measure('Oxolamine citrate',oxol,4,10);assert.equal(dose('Oxolamine citrate',oxol,4).dailyCap,400);
+const dextro=active('Dextromethorphan hydrobromide',1.8);assert.ok(dose('Dextromethorphan hydrobromide',dextro,12).error);measure('Dextromethorphan hydrobromide',dextro,12.001,15);assert.equal(dose('Dextromethorphan hydrobromide',dextro,16).dailyCap,108);
+const ice='Cetraria islandica · liken islandez',icev=active(ice,6);assert.ok(dose(ice,icev,1.999).error);for(const [a,ml]of [[2,2.5],[4,5],[10,10],[16,10],[16.001,15]])measure(ice,icev,a,ml);
+const cowslip=active('Primula + Thymus',616);assert.ok(dose('Primula + Thymus',cowslip,12).error);measure('Primula + Thymus',cowslip,12.001,5);
+const plant='Plantago + Malva + Vitamin C',plantv=active(plant,500);assert.ok(dose(plant,plantv,3.999).error);measure(plant,plantv,4,5);assert.equal(measure(plant,plantv,7,5).selectedMeasure.max,10);measure(plant,plantv,14.001,10);
+for(const [name,minAge,minKg]of [['Paracetamol + Guaifenesin + Phenylephrine',16,50],['Paracetamol + Pheniramine + Vitamin C',15,50]]){const v=active(name);assert.equal(v.concentration.unit,'unit');assert.ok(dose(name,v,minAge-.001,minKg).error);assert.ok(dose(name,v,minAge,minKg-.001).error);measure(name,v,minAge,1,minKg);assert.equal(dose(name,v,minAge,minKg).dailyCap,3);}
+const tylol='Paracetamol + Chlorpheniramine + Pseudoephedrine',tyv=variant(tylol,v=>v.products.some(p=>p.name==='Tylol Hot Pediatric'));assert.ok(dose(tylol,tyv,5.999).error);measure(tylol,tyv,6,1);measure(tylol,tyv,12,1);assert.ok(dose(tylol,tyv,12.001).error);assert.equal(dose(tylol,tyv,9).dailyCap,4);assert.ok(variants(tylol).filter(v=>!v.products.some(p=>p.name==='Tylol Hot Pediatric')).every(v=>!v.schemes.length));
+for(const name of ['Paracetamol + Phenylephrine + Chlorpheniramine','Paracetamol + Caffeine + Chlorpheniramine + Vitamin C'])for(const v of variants(name)){assert.ok(dose(name,v,12).error);measure(name,v,12.001,1);assert.ok(dose(name,v,12.001).dailyCap<=4);}
+assert.equal(variant('Paracetamol + Acetylcysteine',()=>true).review.status,'source-conflict');assert.equal(variant('Paracetamol + Chlorpheniramine + Phenylephrine + Oxolamine',()=>true).review.status,'data-inconsistent');
 const butam=active('Butamirate citrate',1.5),omni=active('Butamirate citrate',.8);
 assert.ok(dose('Butamirate citrate',butam,2.999).error);measure('Butamirate citrate',butam,3,5);measure('Butamirate citrate',butam,6,10);measure('Butamirate citrate',butam,12,10);measure('Butamirate citrate',butam,12.001,15);
 measure('Butamirate citrate',omni,3,10);measure('Butamirate citrate',omni,6,15);assert.match(dose('Butamirate citrate',omni,8.999).frequency,/3 herë/);assert.match(dose('Butamirate citrate',omni,9).frequency,/4 herë/);
@@ -63,7 +86,7 @@ for(const name of ['Codeine phosphate','Codeine + Ephedrine','Dornase alfa · fi
 assert.equal(dose('Levodropropizine',levo,5,20,{ageConfirmed:false}).needsAgeConfirmation,true);assert.equal(dose('Levodropropizine',levo,5,20,{safetyConfirmed:false}).needsSafetyConfirmation,true);assert.ok(dose('Levodropropizine',levo,5,20,{referenceRevision:'stale'}).error);
 for(const evidence of cough.productEvidence)for(const key of Object.keys(evidence.fields)){
  const changed=products.map(p=>p.id===evidence.id?{...p,[key]:key==='registry_number'?0:'changed'}:p),after=market.withMarket(source,changed);
- const options=after.clinicalAudit.drugs[evidence.drugName].calculator.options,indices=new Set(options.map((o,i)=>o.marketEvidenceKey===evidence.key?i:-1));
+ const options=after.clinicalAudit.drugs[evidence.drugName]?.calculator.options||[],indices=new Set(options.map((o,i)=>o.marketEvidenceKey===evidence.key?i:-1));
  const choices=after.marketCatalog.drugs.find(d=>d.name===evidence.drugName)?.forms.flatMap(f=>f.variants).filter(v=>v.products.some(p=>p.id===evidence.id))||[];
  assert.ok(choices.every(v=>v.schemes.every(s=>!indices.has(s.index))),evidence.key+' is revoked when '+key+' changes');
 }
@@ -72,4 +95,4 @@ assert.equal(market.withMarket(reference,products).marketCatalog.revision,refere
 const legacy=require('../lib/pediatric-common-reference-handler').clientReference(reference);
 assert.ok(!legacy.marketCatalog);for(const drug of cough.drugs)assert.ok(legacy.clinicalAudit.drugs[drug.name].calculator.disabled);
 assert.equal(JSON.stringify(source),before,'Original 50-drug source and clinical audit are immutable');
-console.log('PASS: all 80 published cough products / 32 entries / 5 groups, 11 scoped schemes, age/weight/daily ceilings, exact extract/product identities, route and combination isolation, confirmations and legacy safety');
+console.log('PASS: all 80 published cough products / 32 entries / 5 groups, 33 scoped schemes, age/weight/daily ceilings, exact salt/extract/product identities, dual-route isolation, whole combination sachets, source conflicts, confirmations and legacy safety');

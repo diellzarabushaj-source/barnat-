@@ -295,7 +295,7 @@
   const CALCULATE_URL = '/api/dosage?view=pediatric-common-calculate';
   let referenceRevision = '';
   let referenceActive = false;
-  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=63-market-clarity-20261017';
+  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=64-market-cough-schemes-20261017';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
   const CLINICAL_AUDIT_URL = '/data/pediatric-clinical-audit-v1.json';
@@ -671,7 +671,7 @@
   const doseSq = value => liquidCore?.doseTextSq ? liquidCore.doseTextSq(value) : String(value ?? '');
   const formulationSq = value => liquidCore?.formulationTextSq ? liquidCore.formulationTextSq(value) : String(value ?? '');
   const sectionSq = value => liquidCore?.sectionTitleSq ? liquidCore.sectionTitleSq(value) : String(value ?? '');
-  const componentSq = value => ({'dexamethasone-base':'deksametazon bazë','cholecalciferol':'vitaminë D3','elemental-iron':'hekur elementar','trimethoprim':'TMP (trimetoprim)','cefoperazone+sulbactam-total':'shuma cefoperazonë + sulbaktam (1:1)'}[value] || (liquidCore?.componentSq ? liquidCore.componentSq(value) : String(value ?? '')));
+  const componentSq = value => ({'carbocisteine-lysine-salt':'kripë lizine e karbocisteinës','levocloperastine-fendizoate':'levokloperastinë fendizoat','cetraria-thick-extract':'ekstrakt i dendur i likenit islandez','primula-thyme-aqueous-extract':'ekstrakt ujor Primula + Thymus','plantago-mallow-aqueous-extract':'ekstrakt ujor Plantago + Malva','ambroxol-hydrochloride':'ambroksol hidroklorid','oxolamine-citrate':'oksolaminë citrat','dexamethasone-base':'deksametazon bazë','cholecalciferol':'vitaminë D3','elemental-iron':'hekur elementar','trimethoprim':'TMP (trimetoprim)','cefoperazone+sulbactam-total':'shuma cefoperazonë + sulbaktam (1:1)'}[value] || (liquidCore?.componentSq ? liquidCore.componentSq(value) : String(value ?? '')));
   const mlNumber = value => {
     return String(Number(Number(value).toPrecision(4))).replace('.', ',');
   };
@@ -888,10 +888,10 @@
       host.append(node('strong',range,'dz-market-measure'));
     }
     const mass=doseRange(measure?.actualMin??result.perDoseMin??result.doseMin,measure?.actualMax??result.perDoseMax??result.doseMax,measure?.actualUnit||result.doseUnit);
-    host.append(node(measured?'span':'strong',mass,measured?'dz-common-result-dose':'dz-market-measure dz-common-result-dose'));
+    if(!measured||result.doseUnit!=='unit')host.append(node(measured?'span':'strong',mass,measured?'dz-common-result-dose':'dz-market-measure dz-common-result-dose'));
     if(result.administrationNote)host.append(node('p',result.administrationNote,'dz-market-frequency'));
     if(result.frequency)host.append(node('p',doseSq(result.frequency),'dz-market-frequency'));
-    const note=(result.note||'').replace(result.frequency||'\u0000','').replace(/^\s*·\s*/, '').trim();
+    const note=(result.note||'').replace(/\bunit\b/g,variant?.form?.unit||'njësi').replace(result.frequency||'\u0000','').replace(/^\s*·\s*/, '').trim();
     if(note)host.append(node('p',doseSq(note),'dz-market-note'));
     if(measure?.basis)host.append(node('p','Sipas komponentit: '+componentSq(measure.basis.split('|')[0]),'dz-market-note'));
     if(measure?.preparation)host.append(node('p',measure.preparation,'dz-market-note'));

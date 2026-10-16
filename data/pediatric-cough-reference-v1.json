@@ -1,7 +1,7 @@
 {
-  "schemaVersion": "pediatric-cough-reference-v1-20261016",
+  "schemaVersion": "pediatric-cough-reference-v2-20261017",
   "auditedAt": "2026-10-16",
-  "registryCheckedAt": "2026-10-16",
+  "registryCheckedAt": "2026-10-17",
   "registryProductCount": 80,
   "drugs": [
     {
@@ -11,7 +11,7 @@
         "R05CB01"
       ],
       "componentPattern": "^acetylcysteine$",
-      "summarySq": "Mukolitik oral; skema e lëngshme 20 mg/mL nga 2 vjeç. Fortësitë dhe format e tjera kërkojnë lidhjen e tyre me burimin.",
+      "summarySq": "Skema të ndara për lëngun 20 mg/mL, Normon 600 mg, ACC 600 mg dhe Mukozero 600/1200 mg. Kufijtë e moshës dhe ditorë varen nga produkti; nuk transferohen ndërmjet markave.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
@@ -27,6 +27,21 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "Trepharm · format ACT të prodhuesit",
           "url": "https://trepharm.com/otc-products/"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "ANMDMR · ACC 600 mg",
+          "url": "https://www.anm.ro/_/_RCP/RCP_11450_27.02.19.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Humanis · Mukozero 600 mg",
+          "url": "https://humanis.com.tr/assets/pdf/94544201767590.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Humanis · Mukozero 1200 mg",
+          "url": "https://humanis.com.tr/assets/pdf/8035398733363.pdf"
         }
       ],
       "options": [
@@ -102,9 +117,103 @@
           "eligibilitySq": "Vetëm Acetilcisteína Normon 600 mg; mbi 7 vjeç. Një tabletë e plotë sipas përgatitjes së etiketës.",
           "marketEvidenceKey": "cough-normon600",
           "marketProductLabel": "ACETILCISTEINA NORMON"
+        },
+        {
+          "label": "ACC 600 mg · një tabletë e plotë",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.anm.ro/_/_RCP/RCP_11450_27.02.19.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 600,
+              "max": 600,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 168,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "frequency": "1 herë/ditë",
+              "maxPerDay": 600,
+              "minInclusive": false,
+              "source": "ACC 600 mg · një tabletë e plotë",
+              "noteSq": "Tret tabletën në një gotë ujë pas ushqimit. Nuk ndahet automatikisht. Pa antitusiv paralel; kontrollo astmën dhe ulçerën. Jo më gjatë se 4–5 ditë pa rivlerësim."
+            }
+          ],
+          "marketRequirePediatricPopulation": true,
+          "marketEvidenceKey": "cough-acc600",
+          "marketProductLabel": "ACC® 600",
+          "safetyConfirmation": "Mosha reale dhe produkti janë konfirmuar. Është vlerësuar shkaku i kollës, aftësia për nxjerrjen e sekrecioneve, kundërindikacionet dhe ndërveprimet sipas fletëudhëzimit. Nuk ka dublim të përbërësve me preparate të tjera.",
+          "eligibilitySq": "Mbi 14 vjeç; një tabletë e plotë 600 mg në ditë.",
+          "marketStrengthMg": 600,
+          "marketFormPattern": "^effervescent tablet$",
+          "marketWholeOnly": true
+        },
+        {
+          "label": "Mukozero 600 mg · mbi 14 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://humanis.com.tr/assets/pdf/94544201767590.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 600,
+              "max": 600,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 168,
+              "maxMonths": 216,
+              "minInclusive": false,
+              "maxInclusive": true,
+              "frequency": "1–2 herë/ditë",
+              "maxPerDay": 1200,
+              "source": "Mukozero 600 mg · mbi 14 vjeç",
+              "noteSq": "Skemë specifike e Mukozero, me kufi të vetin ditor; nuk transferohet te markat e tjera. Tret në një gotë ujë pas ushqimit. Pa antitusiv paralel; 2 orë nga antibiotikët. Jo më gjatë se 4–5 ditë pa rivlerësim."
+            }
+          ],
+          "marketEvidenceKey": "cough-mukozero600",
+          "marketProductLabel": "Mukozero",
+          "marketRequirePediatricPopulation": true,
+          "eligibilitySq": "Mbi 14 vjeç; vetëm Mukozero 600 mg, një tabletë e plotë për marrje.",
+          "safetyConfirmation": "Produkti, mosha reale dhe indikacioni janë konfirmuar. Janë kontrolluar kundërindikacionet dhe ndërveprimet e fletëudhëzimit, funksioni renal/hepatik dhe të gjitha barnat e tjera; nuk ka dublim të përbërësve.",
+          "marketStrengthMg": 600,
+          "marketFormPattern": "^effervescent tablet$",
+          "marketWholeOnly": true
+        },
+        {
+          "label": "Mukozero 1200 mg · mbi 14 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://humanis.com.tr/assets/pdf/8035398733363.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 1200,
+              "max": 1200,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 168,
+              "maxMonths": 216,
+              "minInclusive": false,
+              "maxInclusive": true,
+              "frequency": "1 herë/ditë",
+              "maxPerDay": 1200,
+              "source": "Mukozero 1200 mg · mbi 14 vjeç",
+              "noteSq": "Vetëm formulimi i lidhur me fletëudhëzimin e prodhuesit. Tret në një gotë ujë pas ushqimit dhe pi menjëherë; mos e gëlltit/typ tabletën. Jo në sëmundje renale/hepatike pa vendim specialistik. Pa antitusiv paralel; 2 orë nga antibiotikët; rivlerësim pas 4–5 ditësh."
+            }
+          ],
+          "marketEvidenceKey": "cough-mukozero1200",
+          "marketProductLabel": "Mukozero",
+          "marketRequirePediatricPopulation": true,
+          "eligibilitySq": "Mbi 14 vjeç; vetëm Mukozero 1200 mg, një tabletë e plotë në ditë.",
+          "safetyConfirmation": "Produkti, mosha reale dhe indikacioni janë konfirmuar. Janë kontrolluar kundërindikacionet dhe ndërveprimet e fletëudhëzimit, funksioni renal/hepatik dhe të gjitha barnat e tjera; nuk ka dublim të përbërësve.",
+          "marketStrengthMg": 1200,
+          "marketFormPattern": "^effervescent tablet$",
+          "marketWholeOnly": true
         }
       ],
-      "searchTerms": "kollë kolle cough sekrecione mukolitik mucolytic Acetylcysteine"
+      "searchTerms": "kollë kolle cough sekrecione mukolitik mucolytic Acetylcysteine",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Ambroxol",
@@ -113,7 +222,7 @@
         "R05CB06"
       ],
       "componentPattern": "^ambroxol",
-      "summarySq": "Mukolitik oral nga 2 vjeç. Solucioni për nebulizim nuk merr dozën e shurupit.",
+      "summarySq": "Shurupet 3/6 mg/mL ruajnë skemat orale. Aldo-Unión 15 mg/2 mL ka dy zgjedhje të ndara: nga goja dhe nebulizim; nuk është injeksion.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
@@ -124,6 +233,11 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "AEMPS · Mucibrón forte 6 mg/mL",
           "url": "https://cima.aemps.es/cima/dochtml/ft/83276/FT_83276.html"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "AEMPS · Ambroxol Aldo-Unión 15 mg/2 mL",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/85305/FT_85305.html"
         }
       ],
       "options": [
@@ -239,9 +353,98 @@
           "marketMgPerML": 6,
           "marketActivePattern": "hydrochloride|HCL",
           "eligibilitySq": "Nga 2 vjeç; 30 mg/5 mL ose 6 mg/mL. Mbi 12 vjeç përdoret skema e veçantë e këtij përqendrimi."
+        },
+        {
+          "label": "Aldo-Unión · nga goja",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/85305/FT_85305.html",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 7.5,
+              "max": 7.5,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 24,
+              "maxMonths": 60,
+              "maxInclusive": true,
+              "frequency": "2–3 herë/ditë",
+              "maxPerDay": 22.5,
+              "source": "Aldo-Unión · nga goja",
+              "noteSq": "Hollo në pak ujë, çaj, qumësht ose lëng frutash dhe jep me ushqim. Një ampulë ka 2 mL; gjysma është e shënuar 1 mL. Pjesa e mbetur ruhet 2–8 °C për jo më shumë se 12 orë. Jo në dëmtim të rëndë renal/hepatik."
+            },
+            {
+              "doseType": "fixed",
+              "min": 7.5,
+              "max": 15,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 60,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "frequency": "2–3 herë/ditë",
+              "maxPerDay": 45,
+              "minInclusive": false,
+              "source": "Aldo-Unión · nga goja",
+              "noteSq": "Hollo në pak ujë, çaj, qumësht ose lëng frutash dhe jep me ushqim. Një ampulë ka 2 mL; gjysma është e shënuar 1 mL. Pjesa e mbetur ruhet 2–8 °C për jo më shumë se 12 orë. Jo në dëmtim të rëndë renal/hepatik."
+            }
+          ],
+          "marketRequirePediatricPopulation": true,
+          "marketEvidenceKey": "cough-ambroxol-aldo15",
+          "marketProductLabel": "Ambroxol Aldo-Unión",
+          "safetyConfirmation": "Mosha reale dhe produkti janë konfirmuar. Është vlerësuar shkaku i kollës, aftësia për nxjerrjen e sekrecioneve, kundërindikacionet dhe ndërveprimet sipas fletëudhëzimit. Nuk ka dublim të përbërësve me preparate të tjera.",
+          "eligibilitySq": "Nga 2 vjeç. Vetëm nga goja; nuk përdoret doza e nebulizimit.",
+          "marketMgPerML": 7.5,
+          "marketFormPattern": "^oral solution/concentrate for nebuliser solution$"
+        },
+        {
+          "label": "Aldo-Unión · nebulizim",
+          "mode": "clinicalRules",
+          "route": "nebulized",
+          "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/85305/FT_85305.html",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 7.5,
+              "max": 15,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 24,
+              "maxMonths": 60,
+              "maxInclusive": true,
+              "frequency": "1–2 herë/ditë",
+              "maxPerDay": 30,
+              "source": "Aldo-Unión · nebulizim",
+              "noteSq": "Vëllimi i barit para hollimit. Sipas SmPC mund të hollohet 1:1 me ujë të distiluar; përdor pajisjen e përshtatshme. Frymëmarrje normale; te astma vlerëso bronkodilatatorin paraprak. Jo në dëmtim të rëndë renal/hepatik."
+            },
+            {
+              "doseType": "fixed",
+              "min": 15,
+              "max": 15,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 60,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "frequency": "2 herë/ditë",
+              "maxPerDay": 30,
+              "minInclusive": false,
+              "source": "Aldo-Unión · nebulizim",
+              "noteSq": "Vëllimi i barit para hollimit. Sipas SmPC mund të hollohet 1:1 me ujë të distiluar; përdor pajisjen e përshtatshme. Frymëmarrje normale; te astma vlerëso bronkodilatatorin paraprak. Jo në dëmtim të rëndë renal/hepatik."
+            }
+          ],
+          "marketRequirePediatricPopulation": true,
+          "marketEvidenceKey": "cough-ambroxol-aldo15",
+          "marketProductLabel": "Ambroxol Aldo-Unión",
+          "safetyConfirmation": "Mosha reale dhe produkti janë konfirmuar. Është vlerësuar shkaku i kollës, aftësia për nxjerrjen e sekrecioneve, kundërindikacionet dhe ndërveprimet sipas fletëudhëzimit. Nuk ka dublim të përbërësve me preparate të tjera.",
+          "eligibilitySq": "Nga 2 vjeç. Vetëm për nebulizim; nuk injektohet.",
+          "marketMgPerML": 7.5,
+          "marketFormPattern": "^oral solution/concentrate for nebuliser solution$"
         }
       ],
-      "searchTerms": "kollë kolle cough sekrecione mukolitik mucolytic Ambroxol"
+      "searchTerms": "kollë kolle cough sekrecione mukolitik mucolytic Ambroxol",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Bromhexine",
@@ -250,12 +453,22 @@
         "R05CB02"
       ],
       "componentPattern": "^bromhexin",
-      "summarySq": "Mukolitik: skemë e shurupit 4 mg/5 mL për moshën 2–12 vjeç. Pikat 2 mg/mL dhe injeksioni kanë udhëzim të veçantë.",
+      "summarySq": "Shurupi 0,8 mg/mL: 2–12 vjeç. Solucioni Bisolvon 2 mg/mL dhe pikat Lisomucin 2 mg/mL kanë skema orale të veçanta; injeksioni nuk merr dozën e tyre.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
           "title": "AEMPS · Bisolvon Mucolítico Infantil 0,8 mg/mL",
           "url": "https://cima.aemps.es/cima/dochtml/ft/78348/FT_78348.html"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Atral / INFARMED · Lisomucin, maj 2022",
+          "url": "https://atral.pt/wp-content/uploads/2023/05/Lisomucin-16-mg-ml-2mg-ml-gotas.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Opella · Bisolvon 2 mg/mL, shkurt 2023",
+          "url": "https://assets.ctfassets.net/i5oh5hzamkwo/77TljNKTUnsZaIWWYJU3XK/553b0f1e13ca33238c1d0ff507252de3/0874800_1.pdf"
         }
       ],
       "options": [
@@ -299,9 +512,85 @@
           "safetyConfirmation": "Kollë me sekrecione dhe aftësi për t’i nxjerrë; pa antitusiv paralel. Janë kontrolluar astma/bronko-spazma, ulçera, funksioni renal/hepatik dhe fletëudhëzimi i produktit.",
           "marketMgPerML": 0.8,
           "eligibilitySq": "Vetëm shurup 0,8 mg/mL, nga 2 deri 12 vjeç. Jo injeksioni ose pikat orale 2 mg/mL."
+        },
+        {
+          "label": "Lisomucin 2 mg/mL · vetëm oral 2–5 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://atral.pt/wp-content/uploads/2023/05/Lisomucin-16-mg-ml-2mg-ml-gotas.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 2,
+              "max": 2,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 24,
+              "maxMonths": 60,
+              "minInclusive": true,
+              "maxInclusive": true,
+              "frequency": "3 herë/ditë",
+              "maxPerDay": 6,
+              "source": "Lisomucin 2 mg/mL · vetëm oral 2–5 vjeç",
+              "noteSq": "Fletëudhëzimi përcakton 80 pika = 4 mL vetëm për këtë pikator. Mat 1 mL ose 20 pika origjinale; mos huazo pikator nga produkt tjetër. Kufiri minimal 2 vjeç ruhet në kalkulator. Kontrollo sulfite/bronko-spazmë; jo përdorim inhalator."
+            }
+          ],
+          "marketEvidenceKey": "cough-lisomucin2",
+          "marketProductLabel": "Lisomucin",
+          "marketRequirePediatricPopulation": true,
+          "eligibilitySq": "Vetëm 2–5 vjeç: 1 mL (20 pika të pikatorit origjinal), tri herë/ditë. Jo doza e inhalimit.",
+          "safetyConfirmation": "Produkti, mosha reale dhe indikacioni janë konfirmuar. Janë kontrolluar kundërindikacionet dhe ndërveprimet e fletëudhëzimit, funksioni renal/hepatik dhe të gjitha barnat e tjera; nuk ka dublim të përbërësve.",
+          "marketMgPerML": 2,
+          "marketFormPattern": "^oral drops, solution$"
+        },
+        {
+          "label": "Bisolvon 2 mg/mL · oral nga 6 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://assets.ctfassets.net/i5oh5hzamkwo/77TljNKTUnsZaIWWYJU3XK/553b0f1e13ca33238c1d0ff507252de3/0874800_1.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 4,
+              "max": 8,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 72,
+              "maxMonths": 144,
+              "minInclusive": true,
+              "maxInclusive": true,
+              "frequency": "3 herë/ditë",
+              "maxPerDay": 24,
+              "source": "Bisolvon 2 mg/mL · oral nga 6 vjeç",
+              "noteSq": "Vetëm solucioni oral Bisolvon 2 mg/mL; mat me kupën e graduar origjinale. Dozat e pikave dhe inhalimit nuk huazohen. Jep pas ushqimit; përdor për periudhë të shkurtër dhe rivlerëso në mungesë përmirësimi."
+            },
+            {
+              "doseType": "fixed",
+              "min": 16,
+              "max": 16,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 144,
+              "maxMonths": 216,
+              "minInclusive": false,
+              "maxInclusive": true,
+              "frequency": "3 herë/ditë",
+              "maxPerDay": 48,
+              "source": "Bisolvon 2 mg/mL · oral nga 6 vjeç",
+              "noteSq": "Vetëm solucioni oral Bisolvon 2 mg/mL; mat me kupën e graduar origjinale. Dozat e pikave dhe inhalimit nuk huazohen. Jep pas ushqimit; përdor për periudhë të shkurtër dhe rivlerëso në mungesë përmirësimi."
+            }
+          ],
+          "marketEvidenceKey": "cough-bisolvon2",
+          "marketProductLabel": "BISOLVON",
+          "marketRequirePediatricPopulation": true,
+          "eligibilitySq": "Nga 6 deri në 12 vjeç: 2–4 mL; mbi 12 vjeç: 8 mL. Për 2–<6 vjeç fletëudhëzimi përdor pika; nuk rrumbullakohet automatikisht në mL.",
+          "safetyConfirmation": "Produkti, mosha reale dhe indikacioni janë konfirmuar. Janë kontrolluar kundërindikacionet dhe ndërveprimet e fletëudhëzimit, funksioni renal/hepatik dhe të gjitha barnat e tjera; nuk ka dublim të përbërësve.",
+          "marketMgPerML": 2,
+          "marketFormPattern": "^oral solution$"
         }
       ],
-      "searchTerms": "kollë kolle cough sekrecione mukolitik mucolytic Bromhexine"
+      "searchTerms": "kollë kolle cough sekrecione mukolitik mucolytic Bromhexine",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Carbocisteine",
@@ -310,7 +599,7 @@
         "R05CB03"
       ],
       "componentPattern": "^carboc[iy]stein",
-      "summarySq": "Mukolitik; skemë e lëngshme 250 mg/5 mL nga 6 vjeç. Kripa e lizinës nuk llogaritet si e njëjta masë.",
+      "summarySq": "Karbocisteina e lirë: BRONLES 125 mg/5 mL ka skemë specifike 2–12 vjeç; 250 mg/5 mL ruan referencën e lidhur nga 6 vjeç. FLUIFORT është kripë lizine dhe ka skemë tjetër.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
@@ -326,6 +615,21 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "Alkaloid · BRONLES 125 mg/5 mL",
           "url": "https://alkaloid.com.mk/product/bronles-for-children"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Regjistri zyrtar i RMV · BRONLES për fëmijë 125 mg/5 mL",
+          "url": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/51440"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "ALIMS · BRONLES 375 mg",
+          "url": "https://www.alims.gov.rs/doc_file/lekovi/pil/002140007%202024%2059010%20007%20000%20515%20021%2004%20001.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Gentipharm · produktet e regjistruara",
+          "url": "https://www.gentipharm.com/registered-drugs"
         }
       ],
       "options": [
@@ -370,10 +674,55 @@
           "safetyConfirmation": "Kollë me sekrecione dhe aftësi për t’i nxjerrë; pa antitusiv paralel. Janë kontrolluar astma/bronko-spazma, ulçera, funksioni renal/hepatik dhe fletëudhëzimi i produktit.",
           "marketMgPerML": 50,
           "eligibilitySq": "Nga 6 vjeç. SmPC dhe PIL kanë kufij parashkollorë të ndryshëm; mosha nën 6 nuk automatizohet. Doza fillestare mbi 12 vjeç kërkon rivlerësim para uljes sipas përgjigjes."
+        },
+        {
+          "label": "BRONLES 125 mg/5 mL · 2–12 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/51440",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 62.5,
+              "max": 125,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 24,
+              "maxMonths": 60,
+              "maxInclusive": true,
+              "frequency": "4 herë/ditë",
+              "maxPerDay": 500,
+              "source": "BRONLES 125 mg/5 mL · 2–12 vjeç",
+              "noteSq": "Burim: regjistri zyrtar i RMV për produktin 125 mg/5 mL. Kontrollo fletëudhëzimin lokal; jo nën 2 vjeç, në ulçerë aktive ose bashkë me antitusiv."
+            },
+            {
+              "doseType": "fixed",
+              "min": 250,
+              "max": 250,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 60,
+              "maxMonths": 144,
+              "maxInclusive": true,
+              "frequency": "3 herë/ditë",
+              "maxPerDay": 750,
+              "source": "BRONLES 125 mg/5 mL · 2–12 vjeç",
+              "noteSq": "Burim: regjistri zyrtar i RMV për produktin 125 mg/5 mL. Kontrollo fletëudhëzimin lokal; jo nën 2 vjeç, në ulçerë aktive ose bashkë me antitusiv.",
+              "minInclusive": false
+            }
+          ],
+          "marketRequirePediatricPopulation": true,
+          "marketEvidenceKey": "cough-bronles125",
+          "marketProductLabel": "BRONLES ®",
+          "safetyConfirmation": "Mosha reale dhe produkti janë konfirmuar. Është vlerësuar shkaku i kollës, aftësia për nxjerrjen e sekrecioneve, kundërindikacionet dhe ndërveprimet sipas fletëudhëzimit. Nuk ka dublim të përbërësve me preparate të tjera.",
+          "eligibilitySq": "Vetëm BRONLES për fëmijë: 2–5 vjeç 2,5–5 mL katër herë/ditë; mbi 5 deri 12 vjeç 10 mL tri herë/ditë. Në kufirin e përbashkët 5 vjeç ruhet grupi me dozë më të ulët.",
+          "marketMgPerML": 25,
+          "marketFormPattern": "^syrup$"
         }
       ],
       "searchTerms": "kollë kolle cough sekrecione mukolitik mucolytic Carbocisteine",
-      "registryActivePattern": "^(?!.*lysin)carboc[iy]stein"
+      "registryActivePattern": "^(?!.*lysin)carboc[iy]stein",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Carbocisteine · kripë lizine",
@@ -382,17 +731,103 @@
         "R05CB03"
       ],
       "componentPattern": "carboc.*lysin",
-      "summarySq": "FLUIFORT: kripa monohidrate e lizinës ka bazë mase të veçantë. Nuk konvertohet në dozën e karbocisteinës së lirë pa SmPC të produktit.",
+      "summarySq": "FLUIFORT: shurupi 90 mg/mL ka skemë nga 2 vjeç; granulat 2,7 g nga 11 vjeç. Dozat i referohen kripës së lizinës; nuk ndërrohen me karbocisteinën e lirë.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
           "title": "SmPC · karbocisteinë e lirë, jo ekuivalencë me kripën",
           "url": "https://www.medicines.org.uk/emc/product/13091/smpc"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Dompé · FLUIFORT 90 mg/mL, dhjetor 2024",
+          "url": "https://tosseraffreddore.it/app/uploads/2025/09/IT_FLUIFORT-syrup-90mg_ml_PIL_dec2024.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Dompé · FLUIFORT 2,7 g, qershor 2023",
+          "url": "https://tosseraffreddore.it/app/uploads/2025/09/IT_FLUIFORT-gran_FI_Giugno23.pdf"
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "label": "FLUIFORT 90 mg/mL · shurup",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://tosseraffreddore.it/app/uploads/2025/09/IT_FLUIFORT-syrup-90mg_ml_PIL_dec2024.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 225,
+              "max": 225,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 24,
+              "maxMonths": 60,
+              "maxInclusive": true,
+              "frequency": "2–3 herë/ditë",
+              "maxPerDay": 675,
+              "source": "FLUIFORT 90 mg/mL · shurup",
+              "noteSq": "Masa në mg është kripë lizine e karbocisteinës, jo karbocisteinë e lirë. Pa antitusiv paralel; kundërindikuar në ulçerë gastroduodenale. Nëse kolla vazhdon pas 7 ditësh te fëmija, rivlerësoje."
+            },
+            {
+              "doseType": "fixed",
+              "min": 450,
+              "max": 450,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 60,
+              "maxMonths": 216,
+              "maxInclusive": false,
+              "frequency": "2–3 herë/ditë",
+              "maxPerDay": 1350,
+              "minInclusive": false,
+              "source": "FLUIFORT 90 mg/mL · shurup",
+              "noteSq": "Masa në mg është kripë lizine e karbocisteinës, jo karbocisteinë e lirë. Pa antitusiv paralel; kundërindikuar në ulçerë gastroduodenale. Nëse kolla vazhdon pas 7 ditësh te fëmija, rivlerësoje."
+            }
+          ],
+          "marketRequirePediatricPopulation": true,
+          "marketEvidenceKey": "cough-fluifort90",
+          "marketProductLabel": "FLUIFORT",
+          "safetyConfirmation": "Mosha reale dhe produkti janë konfirmuar. Është vlerësuar shkaku i kollës, aftësia për nxjerrjen e sekrecioneve, kundërindikacionet dhe ndërveprimet sipas fletëudhëzimit. Nuk ka dublim të përbërësve me preparate të tjera.",
+          "eligibilitySq": "Nga 2 deri në 5 vjeç: 2,5 mL; mbi 5 vjeç deri para 18 vjeç: 5 mL. Jo nën 2 vjeç.",
+          "marketMgPerML": 90,
+          "marketFormPattern": "^syrup$"
+        },
+        {
+          "label": "FLUIFORT 2,7 g · qese e plotë",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://tosseraffreddore.it/app/uploads/2025/09/IT_FLUIFORT-gran_FI_Giugno23.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 2700,
+              "max": 2700,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 132,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "frequency": "1 herë/ditë",
+              "maxPerDay": 2700,
+              "source": "FLUIFORT 2,7 g · qese e plotë",
+              "noteSq": "Tret një qese të plotë në rreth gjysmë gote ujë. Përmban aspartam: jo në fenilketonuri. Pa antitusiv paralel; jo në ulçerë. Rivlerësim nëse simptomat vazhdojnë pas 14 ditësh."
+            }
+          ],
+          "marketRequirePediatricPopulation": true,
+          "marketEvidenceKey": "cough-fluifort-gran",
+          "marketProductLabel": "FLUIFORT",
+          "safetyConfirmation": "Mosha reale dhe produkti janë konfirmuar. Është vlerësuar shkaku i kollës, aftësia për nxjerrjen e sekrecioneve, kundërindikacionet dhe ndërveprimet sipas fletëudhëzimit. Nuk ka dublim të përbërësve me preparate të tjera.",
+          "eligibilitySq": "Nga 11 vjeç; vetëm granulat 2,7 g në qese. Jo shurupi në qese 2,7 g/10 mL.",
+          "marketStrengthMg": 2700,
+          "marketFormPattern": "^granules for oral solution$",
+          "marketWholeOnly": true
+        }
+      ],
       "searchTerms": "kollë kolle cough sekrecione mukolitik mucolytic Carbocisteine · kripë lizine",
-      "registryActivePattern": "carboc.*lysin"
+      "registryActivePattern": "carboc.*lysin",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Butamirate citrate",
@@ -586,7 +1021,7 @@
         "R05DA09"
       ],
       "componentPattern": "^dextromethorphan",
-      "summarySq": "Diacol 27 mg/15 mL: për kollë të thatë. Pa dozë automatike pediatrike pa fletëudhëzimin aktual të produktit; kontrollo ndërveprimet serotoninergjike.",
+      "summarySq": "DIACOL 27 mg/15 mL: skema automatike vetëm mbi 12 vjeç. Për 2–12 vjeç, RCM kërkon dozë individuale nga mjeku dhe jep vetëm kufij ditorë; këta nuk kthehen në dozë për marrje.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
@@ -597,10 +1032,47 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "MHRA · kufizimet pediatrike për barna të kollës",
           "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Bial · DIACOL, RCM i lidhur nga prodhuesi",
+          "url": "https://bial.com/files/3MSfrkdJhJdp5wXlmH9vxj/dace26a6c06d344f79a041074531b11f/202601_RCM_Diacol_Portugal.pdf"
         }
       ],
-      "options": [],
-      "searchTerms": "kollë kolle cough thatë thate antitusiv suppressant Dextromethorphan hydrobromide"
+      "options": [
+        {
+          "label": "DIACOL · vetëm mbi 12 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://bial.com/files/3MSfrkdJhJdp5wXlmH9vxj/dace26a6c06d344f79a041074531b11f/202601_RCM_Diacol_Portugal.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 27,
+              "max": 27,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 144,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "frequency": "3–4 herë/ditë · çdo 6–8 orë",
+              "maxPerDay": 108,
+              "minInclusive": false,
+              "source": "DIACOL · vetëm mbi 12 vjeç",
+              "noteSq": "Vetëm kollë jo produktive. Jo me IMAO ose brenda 14 ditëve nga ndërprerja; kontrollo barnat serotoninergjike dhe frenuesit CYP2D6. Përmban etanol/saharozë. Rivlerësim nëse kolla zgjat mbi një javë."
+            }
+          ],
+          "marketRequirePediatricPopulation": true,
+          "marketEvidenceKey": "cough-diacol27",
+          "marketProductLabel": "Diacol",
+          "safetyConfirmation": "Mosha reale dhe produkti janë konfirmuar. Është vlerësuar shkaku i kollës, aftësia për nxjerrjen e sekrecioneve, kundërindikacionet dhe ndërveprimet sipas fletëudhëzimit. Nuk ka dublim të përbërësve me preparate të tjera.",
+          "eligibilitySq": "Vetëm mbi 12 vjeç: 15 mL çdo 6–8 orë; maksimumi 60 mL/24 orë. 2–12 vjeç: dozë individuale, pa automatizim.",
+          "marketMgPerML": 1.8,
+          "marketFormPattern": "^syrup$"
+        }
+      ],
+      "searchTerms": "kollë kolle cough thatë thate antitusiv suppressant Dextromethorphan hydrobromide",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Oxolamine citrate",
@@ -609,16 +1081,71 @@
         "R05DB07"
       ],
       "componentPattern": "^oxolamin",
-      "summarySq": "TUSSIBRON 1%: përqindja nuk shndërrohet në mg/mL pa bazën e deklaruar nga SmPC. Pa formulë të hamendësuar.",
+      "summarySq": "TUSSIBRON 1%: fletëudhëzimi përcakton 1 g oksolaminë citrat në 100 mL. Skema lidhet vetëm me këtë produkt; përqindjet e tjera nuk konvertohen automatikisht.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
           "title": "MHRA · siguria e preparateve pediatrike të kollës, referencë konteksti",
           "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Sella · TUSSIBRON 1%, fletëudhëzimi",
+          "url": "https://assets.ctfassets.net/i5oh5hzamkwo/6E7Sfjz42ludiQyX63WbO0/e1511a4b0485ac17beff08c8d5bc239a/4811019_1.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Sella · produkti TUSSIBRON shurup",
+          "url": "https://www.sellafarmaceutici.it/farmaci/tussibron-sciroppo/"
         }
       ],
-      "options": [],
-      "searchTerms": "kollë kolle cough thatë thate antitusiv suppressant Oxolamine citrate"
+      "options": [
+        {
+          "label": "TUSSIBRON 1% · shurup",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://assets.ctfassets.net/i5oh5hzamkwo/6E7Sfjz42ludiQyX63WbO0/e1511a4b0485ac17beff08c8d5bc239a/4811019_1.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 50,
+              "max": 50,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 12,
+              "maxMonths": 48,
+              "maxInclusive": false,
+              "frequency": "4 herë/ditë",
+              "maxPerDay": 200,
+              "source": "TUSSIBRON 1% · shurup",
+              "noteSq": "Vetëm pas vlerësimit mjekësor te fëmija, veçanërisht 1–2 vjeç. Mos përdor për kohë të zgjatur; rivlerëso nëse nuk ka përmirësim pas një periudhe të shkurtër. Kontrollo antikoagulantët dhe përmbajtjen e sheqerit."
+            },
+            {
+              "doseType": "fixed",
+              "min": 100,
+              "max": 100,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 48,
+              "maxMonths": 216,
+              "maxInclusive": false,
+              "frequency": "4 herë/ditë",
+              "maxPerDay": 400,
+              "source": "TUSSIBRON 1% · shurup",
+              "noteSq": "Vetëm pas vlerësimit mjekësor te fëmija, veçanërisht 1–2 vjeç. Mos përdor për kohë të zgjatur; rivlerëso nëse nuk ka përmirësim pas një periudhe të shkurtër. Kontrollo antikoagulantët dhe përmbajtjen e sheqerit."
+            }
+          ],
+          "marketRequirePediatricPopulation": true,
+          "marketEvidenceKey": "cough-tussibron1",
+          "marketProductLabel": "TUSSIBRON",
+          "safetyConfirmation": "Mosha reale dhe produkti janë konfirmuar. Është vlerësuar shkaku i kollës, aftësia për nxjerrjen e sekrecioneve, kundërindikacionet dhe ndërveprimet sipas fletëudhëzimit. Nuk ka dublim të përbërësve me preparate të tjera.",
+          "eligibilitySq": "Nga 1 vjeç sipas fletëudhëzimit të këtij produkti: 1–<4 vjeç 5 mL; nga 4 vjeç 10 mL.",
+          "marketMgPerML": 10,
+          "marketFormPattern": "^syrup$"
+        }
+      ],
+      "searchTerms": "kollë kolle cough thatë thate antitusiv suppressant Oxolamine citrate",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Cloperastine fendizoate",
@@ -627,16 +1154,80 @@
         "R05DB21"
       ],
       "componentPattern": "cloperastin",
-      "summarySq": "Privituss: levokloperastinë fendizoat 708 mg/100 mL. Kripa nuk barazohet me kloperastinë bazë ose hidroklorur; pa automatizim pa skemën specifike.",
+      "summarySq": "Privituss 708 mg/100 mL përmban levokloperastinë fendizoat. Skemë specifike për moshën 2–15 vjeç; nuk përdoret masa e kloperastinës hidroklorid si e njëjta fortësi.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
           "title": "AIFA / Gazzetta Ufficiale · Privituss 708 mg/100 mL",
           "url": "https://www.gazzettaufficiale.it/atto/vediMenuHTML?atto.codiceRedazionale=23A02131&atto.dataPubblicazioneGazzetta=2023-04-07&tipoSerie=serie_generale&tipoVigenza=originario"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Aesculapius · Privituss, shkurt 2025",
+          "url": "https://www.aesculapius.it/media/privituss/download/it/174015337467b8a21e578dc.pdf"
         }
       ],
-      "options": [],
-      "searchTerms": "kollë kolle cough thatë thate antitusiv suppressant Cloperastine fendizoate"
+      "options": [
+        {
+          "label": "Privituss · 2–15 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.aesculapius.it/media/privituss/download/it/174015337467b8a21e578dc.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 14.16,
+              "max": 14.16,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 24,
+              "maxMonths": 48,
+              "maxInclusive": false,
+              "frequency": "2 herë/ditë",
+              "maxPerDay": 28.32,
+              "source": "Privituss · 2–15 vjeç",
+              "noteSq": "Shkunde suspensionin; përdor masën origjinale 2/3/5 mL. Masa në mg është levokloperastinë fendizoat. Kontrollo sedativët, antihistaminikët dhe barnat antikolinergjike. Trajtimi 7 ditë; rivlerëso nëse nuk përmirësohet."
+            },
+            {
+              "doseType": "fixed",
+              "min": 21.24,
+              "max": 21.24,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 48,
+              "maxMonths": 84,
+              "maxInclusive": false,
+              "frequency": "2 herë/ditë",
+              "maxPerDay": 42.48,
+              "source": "Privituss · 2–15 vjeç",
+              "noteSq": "Shkunde suspensionin; përdor masën origjinale 2/3/5 mL. Masa në mg është levokloperastinë fendizoat. Kontrollo sedativët, antihistaminikët dhe barnat antikolinergjike. Trajtimi 7 ditë; rivlerëso nëse nuk përmirësohet."
+            },
+            {
+              "doseType": "fixed",
+              "min": 35.4,
+              "max": 35.4,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 84,
+              "maxMonths": 180,
+              "maxInclusive": true,
+              "frequency": "2 herë/ditë",
+              "maxPerDay": 70.8,
+              "source": "Privituss · 2–15 vjeç",
+              "noteSq": "Shkunde suspensionin; përdor masën origjinale 2/3/5 mL. Masa në mg është levokloperastinë fendizoat. Kontrollo sedativët, antihistaminikët dhe barnat antikolinergjike. Trajtimi 7 ditë; rivlerëso nëse nuk përmirësohet."
+            }
+          ],
+          "marketRequirePediatricPopulation": true,
+          "marketEvidenceKey": "cough-privituss708",
+          "marketProductLabel": "Privituss",
+          "safetyConfirmation": "Mosha reale dhe produkti janë konfirmuar. Është vlerësuar shkaku i kollës, aftësia për nxjerrjen e sekrecioneve, kundërindikacionet dhe ndërveprimet sipas fletëudhëzimit. Nuk ka dublim të përbërësve me preparate të tjera.",
+          "eligibilitySq": "2–<4 vjeç: 2 mL; 4–<7: 3 mL; 7–15: 5 mL, dy herë/ditë. Jo nën 2 vjeç.",
+          "marketMgPerML": 7.08,
+          "marketFormPattern": "^oral suspension$"
+        }
+      ],
+      "searchTerms": "kollë kolle cough thatë thate antitusiv suppressant Cloperastine fendizoate",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Codeine phosphate",
@@ -680,6 +1271,21 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "Engelhard · Prospan Cough Syrup",
           "url": "https://www.prospan.com/fileadmin/prospan/de/leaflets/Hustensaft/Prospan-Hustensaft-Packungsbeilage-englisch.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Engelhard · Prospan 65 mg eferveshent",
+          "url": "https://www.prospan.com/fileadmin/prospan/de/leaflets/Brausetabletten/Prospan-Packungsbeilage-Brause-PB1602102.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Gentipharm · produktet e regjistruara",
+          "url": "https://www.gentipharm.com/registered-drugs"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "MSH Kosovë · identiteti i Hederol",
+          "url": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Lista43135045.0711.pdf"
         }
       ],
       "options": [
@@ -798,7 +1404,8 @@
           "marketProductLabel": "Prospan cough syrup"
         }
       ],
-      "searchTerms": "kollë kolle cough  Hedera helix · gjethe urthi"
+      "searchTerms": "kollë kolle cough  Hedera helix · gjethe urthi",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Primula + Thymus",
@@ -807,16 +1414,53 @@
         "R05C"
       ],
       "componentPattern": "primula|thyme",
-      "summarySq": "Herbion Cowslip: ekstrakt i përzier specifik; gramët e ekstraktit nuk japin formulë pediatrike të një substance të vetme.",
+      "summarySq": "Herbion Cowslip: ekstrakt ujor i përzier 3,08 g/5 mL; skemë vetëm mbi 12 vjeç sipas fletëudhëzimit të lidhur. Jo doza e një ekstrakti tjetër.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
           "title": "Krka · llojet e Herbion për kollë, referencë identiteti",
           "url": "https://www.krka.biz/_assets/KRKA_Annual-Report-2024.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Krka / HALMED · Herbion Cowslip, prill 2021",
+          "url": "https://www.krka-farma.hr/_assets/Herbion-sirup-od-jaglaca_uputa_12.04.2021.pdf"
         }
       ],
-      "options": [],
-      "searchTerms": "kollë kolle cough  Primula + Thymus"
+      "options": [
+        {
+          "label": "Herbion Cowslip · mbi 12 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.krka-farma.hr/_assets/Herbion-sirup-od-jaglaca_uputa_12.04.2021.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 3080,
+              "max": 3080,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 144,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "frequency": "4 herë/ditë",
+              "maxPerDay": 12320,
+              "minInclusive": false,
+              "source": "Herbion Cowslip · mbi 12 vjeç",
+              "noteSq": "Masa në mg i referohet ekstraktit të përzier Primula + Thymus. Preparat bimor tradicional; kontrollo alergjitë dhe sheqernat. Përdor masën origjinale dhe rivlerëso nëse nuk përmirësohet brenda një jave."
+            }
+          ],
+          "marketRequirePediatricPopulation": true,
+          "marketEvidenceKey": "cough-herbion-cowslip",
+          "marketProductLabel": "HERBION® COWSLIP SYRUP",
+          "safetyConfirmation": "Preparati dhe ekstrakti i saktë janë konfirmuar. Janë kontrolluar mosha reale, alergjitë, intoleranca ndaj sheqernave dhe shenjat që kërkojnë vlerësim të shkakut të kollës.",
+          "eligibilitySq": "Vetëm mbi 12 vjeç; 5 mL katër herë/ditë.",
+          "marketMgPerML": 616,
+          "marketFormPattern": "^syrup$"
+        }
+      ],
+      "searchTerms": "kollë kolle cough  Primula + Thymus",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Primula + Thymus + Vitamin C",
@@ -831,11 +1475,17 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "EMA · Primulae radix / Thymi herba",
           "url": "https://www.ema.europa.eu/en/medicines/herbal/thymi-herba-primulae-radix"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Gentipharm · produktet e regjistruara",
+          "url": "https://www.gentipharm.com/registered-drugs"
         }
       ],
       "options": [],
       "searchTerms": "kollë kolle cough  Primula + Thymus + Vitamin C",
-      "registryActivePattern": "^Primulae"
+      "registryActivePattern": "^Primulae",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Thymus + Althaea + mjaltë",
@@ -850,11 +1500,17 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "NHS · kolla te fëmijët dhe kufiri për mjaltin",
           "url": "https://www.nhs.uk/baby/health/colds-coughs-and-ear-infections-in-children/"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Gentipharm · produktet e regjistruara",
+          "url": "https://www.gentipharm.com/registered-drugs"
         }
       ],
       "options": [],
       "searchTerms": "kollë kolle cough  Thymus + Althaea + mjaltë",
-      "registryActivePattern": "^Thyme"
+      "registryActivePattern": "^Thyme",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Cetraria islandica · liken islandez",
@@ -863,17 +1519,96 @@
         "R05D"
       ],
       "componentPattern": "cetraria",
-      "summarySq": "Herbion Iceland Moss: preparat bimor për kollë irrituese. Ekstrakti specifik kërkon skemën e produktit, jo formulë të supozuar mg/kg.",
+      "summarySq": "Herbion Iceland Moss 6 mg/mL: skemë sipas moshës nga 2 vjeç. Preparat bimor tradicional për irritim të gojës/fytit dhe kollë të thatë.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
           "title": "Krka · Herbion Iceland Moss, referencë identiteti",
           "url": "https://www.krka.biz/_assets/KRKA_Annual-Report-2024.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "HALMED · Herbion Iceland Moss 6 mg/mL",
+          "url": "https://halmed.hr/upl/lijekovi/SPC/SPC_UP-I-530-09-18-02-137.pdf"
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "label": "Herbion Iceland Moss · oral",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://halmed.hr/upl/lijekovi/SPC/SPC_UP-I-530-09-18-02-137.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 15,
+              "max": 15,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 24,
+              "maxMonths": 48,
+              "maxInclusive": false,
+              "frequency": "Deri në 4 herë/ditë",
+              "maxPerDay": 60,
+              "source": "Herbion Iceland Moss · oral",
+              "noteSq": "2–4 vjeç vetëm pas vlerësimit mjekësor. Mbaje pak në gojë para gëlltitjes; mos ha/pi menjëherë pas dozës. Lër 2 orë nga barna të tjera. Kontrollo intolerancën ndaj fruktozës; rivlerëso pas 7 ditësh ose më herët në përkeqësim."
+            },
+            {
+              "doseType": "fixed",
+              "min": 30,
+              "max": 30,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 48,
+              "maxMonths": 120,
+              "maxInclusive": false,
+              "frequency": "Deri në 4 herë/ditë",
+              "maxPerDay": 120,
+              "source": "Herbion Iceland Moss · oral",
+              "noteSq": "2–4 vjeç vetëm pas vlerësimit mjekësor. Mbaje pak në gojë para gëlltitjes; mos ha/pi menjëherë pas dozës. Lër 2 orë nga barna të tjera. Kontrollo intolerancën ndaj fruktozës; rivlerëso pas 7 ditësh ose më herët në përkeqësim."
+            },
+            {
+              "doseType": "fixed",
+              "min": 60,
+              "max": 60,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 120,
+              "maxMonths": 192,
+              "maxInclusive": true,
+              "frequency": "Deri në 4 herë/ditë",
+              "maxPerDay": 240,
+              "source": "Herbion Iceland Moss · oral",
+              "noteSq": "2–4 vjeç vetëm pas vlerësimit mjekësor. Mbaje pak në gojë para gëlltitjes; mos ha/pi menjëherë pas dozës. Lër 2 orë nga barna të tjera. Kontrollo intolerancën ndaj fruktozës; rivlerëso pas 7 ditësh ose më herët në përkeqësim."
+            },
+            {
+              "doseType": "fixed",
+              "min": 90,
+              "max": 90,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 192,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "frequency": "Deri në 4 herë/ditë",
+              "maxPerDay": 360,
+              "minInclusive": false,
+              "source": "Herbion Iceland Moss · oral",
+              "noteSq": "2–4 vjeç vetëm pas vlerësimit mjekësor. Mbaje pak në gojë para gëlltitjes; mos ha/pi menjëherë pas dozës. Lër 2 orë nga barna të tjera. Kontrollo intolerancën ndaj fruktozës; rivlerëso pas 7 ditësh ose më herët në përkeqësim."
+            }
+          ],
+          "marketRequirePediatricPopulation": true,
+          "marketEvidenceKey": "cough-herbion-iceland6",
+          "marketProductLabel": "HERBION® Iceland moss syrup",
+          "safetyConfirmation": "Mosha reale dhe produkti janë konfirmuar. Është vlerësuar shkaku i kollës, aftësia për nxjerrjen e sekrecioneve, kundërindikacionet dhe ndërveprimet sipas fletëudhëzimit. Nuk ka dublim të përbërësve me preparate të tjera.",
+          "eligibilitySq": "Nga 2 vjeç; 2–<4: 2,5 mL, 4–<10: 5 mL, 10–16: 10 mL, mbi 16: 15 mL.",
+          "marketMgPerML": 6,
+          "marketFormPattern": "^syrup$"
+        }
+      ],
       "searchTerms": "kollë kolle cough  Cetraria islandica · liken islandez",
-      "registryActivePattern": "^Cetraria"
+      "registryActivePattern": "^Cetraria",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Plantago + Malva + Vitamin C",
@@ -882,17 +1617,82 @@
         "R05D"
       ],
       "componentPattern": "plantagin|ascorbic|malva",
-      "summarySq": "Herbion Plantain: përzierje për kollë të thatë irrituese; nuk trashëgon dozimin e urthit ose mukolitikëve.",
+      "summarySq": "Herbion Plantain: 2,5 g ekstrakt ujor të përzier dhe 65 mg vitaminë C në 5 mL. Skemë specifike nga 4 vjeç.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
           "title": "Krka · Herbion Plantain, referencë identiteti",
           "url": "https://www.krka.biz/_assets/KRKA_Annual-Report-2024.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Krka / HALMED · Herbion Plantain, shkurt 2020",
+          "url": "https://www.krka-farma.hr/_assets/Herbion-sirup-od-trputca_uputa_10.02.2020.pdf"
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "label": "Herbion Plantain · nga 4 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.krka-farma.hr/_assets/Herbion-sirup-od-trputca_uputa_10.02.2020.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 2500,
+              "max": 2500,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 48,
+              "maxMonths": 84,
+              "maxInclusive": false,
+              "frequency": "3 herë/ditë",
+              "maxPerDay": 7500,
+              "source": "Herbion Plantain · nga 4 vjeç",
+              "noteSq": "Masa në mg i referohet ekstraktit Plantago + Malva, jo vitaminës C. Shkunde shurupin; përdor masën 5 mL. Mos ha/pi menjëherë pas dozës. Përmban saharozë; rivlerëso pas një jave nëse simptomat vazhdojnë."
+            },
+            {
+              "doseType": "fixed",
+              "min": 2500,
+              "max": 5000,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 84,
+              "maxMonths": 168,
+              "maxInclusive": true,
+              "frequency": "3 herë/ditë",
+              "maxPerDay": 15000,
+              "source": "Herbion Plantain · nga 4 vjeç",
+              "noteSq": "Masa në mg i referohet ekstraktit Plantago + Malva, jo vitaminës C. Shkunde shurupin; përdor masën 5 mL. Mos ha/pi menjëherë pas dozës. Përmban saharozë; rivlerëso pas një jave nëse simptomat vazhdojnë."
+            },
+            {
+              "doseType": "fixed",
+              "min": 5000,
+              "max": 5000,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 168,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "frequency": "3–5 herë/ditë",
+              "maxPerDay": 25000,
+              "minInclusive": false,
+              "source": "Herbion Plantain · nga 4 vjeç",
+              "noteSq": "Masa në mg i referohet ekstraktit Plantago + Malva, jo vitaminës C. Shkunde shurupin; përdor masën 5 mL. Mos ha/pi menjëherë pas dozës. Përmban saharozë; rivlerëso pas një jave nëse simptomat vazhdojnë."
+            }
+          ],
+          "marketRequirePediatricPopulation": true,
+          "marketEvidenceKey": "cough-herbion-plantain",
+          "marketProductLabel": "HERBION® PLANTAIN SYRUP",
+          "safetyConfirmation": "Preparati dhe ekstrakti i saktë janë konfirmuar. Janë kontrolluar mosha reale, alergjitë, intoleranca ndaj sheqernave dhe shenjat që kërkojnë vlerësim të shkakut të kollës.",
+          "eligibilitySq": "4–<7 vjeç: 5 mL tri herë/ditë; 7–14: 5–10 mL tri herë/ditë; mbi 14: 10 mL 3–5 herë/ditë.",
+          "marketMgPerML": 500,
+          "marketFormPattern": "^syrup$"
+        }
+      ],
       "searchTerms": "kollë kolle cough  Plantago + Malva + Vitamin C",
-      "registryActivePattern": "^Plantagin"
+      "registryActivePattern": "^Plantagin",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Grindelia + Gelsemium · Coquelusédal",
@@ -911,7 +1711,8 @@
       ],
       "options": [],
       "searchTerms": "kollë kolle cough  Grindelia + Gelsemium · Coquelusédal",
-      "registryActivePattern": "^grindelia"
+      "registryActivePattern": "^grindelia",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Codeine + Ephedrine",
@@ -969,11 +1770,17 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
           "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Aflofarm · Baladex",
+          "url": "https://aflofarm.com.pl/media/produkt_zalaczniki/baladex-ulotka-6t.pdf"
         }
       ],
       "options": [],
       "searchTerms": "kollë kolle cough  Theophylline + Guaifenesin",
-      "registryActivePattern": "^Theophylline"
+      "registryActivePattern": "^Theophylline",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Paracetamol + Guaifenesin + Phenylephrine",
@@ -982,17 +1789,54 @@
         "N02BE51"
       ],
       "componentPattern": "^Paracetamol; Guaifenesin",
-      "summarySq": "Kombinim i regjistruar; nuk përdoret doza e një substance të vetme. Pa automatizim pediatrik pa skemën e plotë të produktit; kontrollo moshën, përbërësit dhe dublimin me barna të tjera.",
+      "summarySq": "Lupocet Trio: vetëm nga 16 vjeç dhe të paktën 50 kg, kur ka njëkohësisht dhimbje/ethe, hundë të zëna dhe kollë produktive. Skema është për qesen e plotë, jo për paracetamolin veçmas.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
           "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
           "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "HALMED · Lupocet Trio, prill 2025",
+          "url": "https://halmed.hr/upl/lijekovi/PIL/Lupocet-Trio-PIL.pdf"
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "label": "Lupocet Trio · ≥16 vjeç dhe ≥50 kg",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://halmed.hr/upl/lijekovi/PIL/Lupocet-Trio-PIL.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 1,
+              "max": 1,
+              "unit": "unit",
+              "period": "dose",
+              "minMonths": 192,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "frequency": "Deri në 3 herë/ditë",
+              "maxPerDay": 3,
+              "minKg": 50,
+              "source": "Lupocet Trio · ≥16 vjeç dhe ≥50 kg",
+              "noteSq": "Të paktën 4 orë ndërmjet dozave. Çdo qese: paracetamol 1000 mg + gvaifenezinë 200 mg + fenilefrinë HCl 12,2 mg. Mos e kombino me preparate me përbërës të njëjtë. Jo më gjatë se 3 ditë; kontrollo të gjitha kundërindikacionet e SmPC."
+            }
+          ],
+          "marketRequirePediatricPopulation": true,
+          "marketEvidenceKey": "cough-lupocet-trio",
+          "marketProductLabel": "Lupocet Trio",
+          "safetyConfirmation": "Ka indikacion për të gjithë përbërësit e kombinimit. Janë kontrolluar mosha/pesha reale, fletëudhëzimi, funksioni renal/hepatik, sëmundjet kardiovaskulare dhe ndërveprimet. Nuk merr paracetamol, dekongjestant ose antihistaminik tjetër.",
+          "eligibilitySq": "Nga 16 vjeç dhe ≥50 kg. Një qese sipas nevojës; të paktën 4 orë ndërmjet dozave, maksimumi 3 qese/24 orë.",
+          "marketFormPattern": "^powder for oral solution$",
+          "marketWholeOnly": true
+        }
+      ],
       "searchTerms": "kollë kolle cough  Paracetamol + Guaifenesin + Phenylephrine",
-      "registryActivePattern": "^Paracetamol; Guaifenesin"
+      "registryActivePattern": "^Paracetamol; Guaifenesin",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Paracetamol + Acetylcysteine",
@@ -1001,7 +1845,7 @@
         "R05X"
       ],
       "componentPattern": "^Paracetamol; Acetylcysteine",
-      "summarySq": "Kombinim i regjistruar; nuk përdoret doza e një substance të vetme. Pa automatizim pediatrik pa skemën e plotë të produktit; kontrollo moshën, përbërësit dhe dublimin me barna të tjera.",
+      "summarySq": "Mucosoft Complex: ≥12 vjeç sipas prodhuesit, por fletëudhëzimi ka mospërputhje mes shpeshtësisë dhe kufijve ditorë. Pa skemë automatike deri në sqarim të dozimit të plotë.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
@@ -1012,11 +1856,17 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
           "url": "https://cima.aemps.es/cima/pdfs/es/ft/63512/63512_ft.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Adipharm · Mucosoft Complex",
+          "url": "https://www.adipharm.com/storage/app/media/Products/2021/Leaflet_EN/Mucosoft%20Complex.pdf"
         }
       ],
       "options": [],
       "searchTerms": "kollë kolle cough  Paracetamol + Acetylcysteine",
-      "registryActivePattern": "^Paracetamol; Acetylcysteine"
+      "registryActivePattern": "^Paracetamol; Acetylcysteine",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Paracetamol + Pheniramine + Vitamin C",
@@ -1025,17 +1875,54 @@
         "R05X"
       ],
       "componentPattern": "^Paracetamol; Ascorbic acid; Pheniramine",
-      "summarySq": "Kombinim i regjistruar; nuk përdoret doza e një substance të vetme. Pa automatizim pediatrik pa skemën e plotë të produktit; kontrollo moshën, përbërësit dhe dublimin me barna të tjera.",
+      "summarySq": "Fervex Adultes: qese e plotë vetëm nga 50 kg (rreth 15 vjeç). Kalkulatori kërkon edhe moshë ≥15 vjeç; nuk është preparat për fëmijë më të vegjël.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
           "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
           "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "UPSA · Fervex Adultes",
+          "url": "https://www.fervex.fr/"
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "label": "Fervex Adultes · ≥15 vjeç dhe ≥50 kg",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.fervex.fr/",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 1,
+              "max": 1,
+              "unit": "unit",
+              "period": "dose",
+              "minMonths": 180,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "frequency": "Deri në 3 herë/ditë",
+              "maxPerDay": 3,
+              "minKg": 50,
+              "source": "Fervex Adultes · ≥15 vjeç dhe ≥50 kg",
+              "noteSq": "Të paktën 4 orë ndërmjet dozave. Përbërja sipas prodhuesit: paracetamol 500 mg + feniraminë maleat 25 mg + vitaminë C 200 mg; rendi i vlerave në regjistër nuk përdoret për konvertim. Shmang dublimin e paracetamolit; mund të shkaktojë përgjumje. Rivlerëso ethet pas 3 ditësh dhe dhimbjen pas 5 ditësh."
+            }
+          ],
+          "marketRequirePediatricPopulation": true,
+          "marketEvidenceKey": "cough-fervex-adults",
+          "marketProductLabel": "FERVEX FOR ADULTS",
+          "safetyConfirmation": "Ka indikacion për të gjithë përbërësit e kombinimit. Janë kontrolluar mosha/pesha reale, fletëudhëzimi, funksioni renal/hepatik, sëmundjet kardiovaskulare dhe ndërveprimet. Nuk merr paracetamol, dekongjestant ose antihistaminik tjetër.",
+          "eligibilitySq": "Nga 15 vjeç dhe ≥50 kg. Një qese, jo më shumë se 3/24 orë; të paktën 4 orë ndërmjet dozave.",
+          "marketFormPattern": "^granules for oral solution$",
+          "marketWholeOnly": true
+        }
+      ],
       "searchTerms": "kollë kolle cough  Paracetamol + Pheniramine + Vitamin C",
-      "registryActivePattern": "^Paracetamol; Ascorbic acid; Pheniramine"
+      "registryActivePattern": "^Paracetamol; Ascorbic acid; Pheniramine",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Paracetamol + Chlorpheniramine + Pseudoephedrine",
@@ -1044,17 +1931,53 @@
         "R05X"
       ],
       "componentPattern": "^Paracetamol; (?:Chlorpheniramine|Pseudoephedrine)",
-      "summarySq": "Kombinim i regjistruar; nuk përdoret doza e një substance të vetme. Pa automatizim pediatrik pa skemën e plotë të produktit; kontrollo moshën, përbërësit dhe dublimin me barna të tjera.",
+      "summarySq": "Tylol Hot Pediatric 250/2/30 mg ka skemë për moshën 6–12 vjeç. A-Ferin Plus dhe PAROL Hot kanë doza/forma të ndryshme; nuk marrin automatikisht skemën e Tylol-it.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
           "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
           "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Nobel · Tylol Hot Pediatric, qershor 2023",
+          "url": "https://tylolhot.ba/site/wp-content/uploads/2025/02/Tylol-Hot-pediatric_uputstvo-za-pacijenta.pdf"
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "label": "Tylol Hot Pediatric · 6–12 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://tylolhot.ba/site/wp-content/uploads/2025/02/Tylol-Hot-pediatric_uputstvo-za-pacijenta.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 1,
+              "max": 1,
+              "unit": "unit",
+              "period": "dose",
+              "minMonths": 72,
+              "maxMonths": 144,
+              "maxInclusive": true,
+              "frequency": "Deri në 4 herë/ditë · çdo 6 orë",
+              "maxPerDay": 4,
+              "source": "Tylol Hot Pediatric · 6–12 vjeç",
+              "noteSq": "Çdo qese: paracetamol 250 mg + klorfeniraminë maleat 2 mg + pseudoefedrinë HCl 30 mg. Tret në 80 mL ujë sipas fletëudhëzimit. Mos e kombino me përbërës të njëjtë; kontrollo kundërindikacionet e pseudoefedrinës dhe rrezikun e përgjumjes."
+            }
+          ],
+          "marketRequirePediatricPopulation": true,
+          "marketEvidenceKey": "cough-tylol-hot-pediatric",
+          "marketProductLabel": "Tylol Hot Pediatric",
+          "safetyConfirmation": "Ka indikacion për të gjithë përbërësit e kombinimit. Janë kontrolluar mosha/pesha reale, fletëudhëzimi, funksioni renal/hepatik, sëmundjet kardiovaskulare dhe ndërveprimet. Nuk merr paracetamol, dekongjestant ose antihistaminik tjetër.",
+          "eligibilitySq": "Vetëm 6–12 vjeç; një qese 250/2/30 mg sipas nevojës, çdo 6 orë, maksimumi 4 qese/24 orë.",
+          "marketFormPattern": "^effervescent powder$",
+          "marketWholeOnly": true
+        }
+      ],
       "searchTerms": "kollë kolle cough  Paracetamol + Chlorpheniramine + Pseudoephedrine",
-      "registryActivePattern": "^Paracetamol; (?:Chlorpheniramine|Pseudoephedrine)"
+      "registryActivePattern": "^Paracetamol; (?:Chlorpheniramine|Pseudoephedrine)",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Paracetamol + Oxolamine + Chlorpheniramine",
@@ -1088,11 +2011,17 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
           "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Regjistri zyrtar i RMV · Nogrippin Forte",
+          "url": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/939245831"
         }
       ],
       "options": [],
       "searchTerms": "kollë kolle cough  Paracetamol + Oxolamine + Pseudoephedrine + Chlorpheniramine",
-      "registryActivePattern": "^Paracetamol; Oxolamine Citrate; Pseudoephedrine"
+      "registryActivePattern": "^Paracetamol; Oxolamine Citrate; Pseudoephedrine",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Paracetamol + Phenylephrine + Chlorpheniramine",
@@ -1101,17 +2030,89 @@
         "R05X"
       ],
       "componentPattern": "^Paracetamol; Phenylephrine",
-      "summarySq": "Kombinim i regjistruar; nuk përdoret doza e një substance të vetme. Pa automatizim pediatrik pa skemën e plotë të produktit; kontrollo moshën, përbërësit dhe dublimin me barna të tjera.",
+      "summarySq": "Cetaflu Forte dhe Teragrip 650/10/4 mg kanë skema të zakonshme të ndara për produktin, vetëm mbi 12 vjeç. Skema nuk transferohet te preparate të tjera me përbërje të ngjashme.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
           "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
           "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "CETAFLU FORTE 650 mg/10 mg/ 4 mg Film tablets · fletëudhëzimi i prodhuesit",
+          "url": "https://www.atabay.com/wp-content/uploads/2022/02/Cetaflu-Fort-KT.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Teragrip · fletëudhëzimi i prodhuesit",
+          "url": "https://humanis.com.tr/assets/pdf/6113809153761538.pdf"
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "label": "Cetaflu Forte · mbi 12 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.atabay.com/wp-content/uploads/2022/02/Cetaflu-Fort-KT.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 1,
+              "max": 1,
+              "unit": "unit",
+              "period": "dose",
+              "minMonths": 144,
+              "maxMonths": 216,
+              "minInclusive": false,
+              "maxInclusive": true,
+              "frequency": "Deri në 4 herë/ditë · çdo 6 orë",
+              "maxPerDay": 4,
+              "source": "Cetaflu Forte · mbi 12 vjeç",
+              "noteSq": "Çdo tabletë: paracetamol 650 mg + fenilefrinë HCl 10 mg + klorfeniraminë maleat 4 mg. Mos e kombino me paracetamol, dekongjestant ose antihistaminik tjetër. Kontrollo IMAO, tensionin/ritmin, glaukomën dhe funksionin renal/hepatik. Maksimumi 5 ditë. Skema më e shpeshtë e etiketës nuk aktivizohet si parazgjedhje."
+            }
+          ],
+          "marketEvidenceKey": "cough-cetaflu-forte",
+          "marketProductLabel": "CETAFLU FORTE 650 mg/10 mg/ 4 mg Film tablets",
+          "marketRequirePediatricPopulation": true,
+          "eligibilitySq": "Mbi 12 vjeç. Skema e zakonshme: një tabletë çdo 6 orë; rritja e shpeshtësisë kërkon vendim individual mjekësor.",
+          "safetyConfirmation": "Produkti, mosha reale dhe indikacioni janë konfirmuar. Janë kontrolluar kundërindikacionet dhe ndërveprimet e fletëudhëzimit, funksioni renal/hepatik dhe të gjitha barnat e tjera; nuk ka dublim të përbërësve.",
+          "marketFormPattern": "^film coated tablet$",
+          "marketWholeOnly": true
+        },
+        {
+          "label": "Teragrip · mbi 12 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://humanis.com.tr/assets/pdf/6113809153761538.pdf",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 1,
+              "max": 1,
+              "unit": "unit",
+              "period": "dose",
+              "minMonths": 144,
+              "maxMonths": 216,
+              "minInclusive": false,
+              "maxInclusive": true,
+              "frequency": "Deri në 4 herë/ditë · çdo 6 orë",
+              "maxPerDay": 4,
+              "source": "Teragrip · mbi 12 vjeç",
+              "noteSq": "Çdo tabletë: paracetamol 650 mg + fenilefrinë HCl 10 mg + klorfeniraminë maleat 4 mg. Mos e kombino me paracetamol, dekongjestant ose antihistaminik tjetër. Kontrollo IMAO, tensionin/ritmin, glaukomën dhe funksionin renal/hepatik. Maksimumi 5 ditë. Skema më e shpeshtë e etiketës nuk aktivizohet si parazgjedhje."
+            }
+          ],
+          "marketEvidenceKey": "cough-teragrip",
+          "marketProductLabel": "Teragrip",
+          "marketRequirePediatricPopulation": true,
+          "eligibilitySq": "Mbi 12 vjeç. Skema e zakonshme: një tabletë çdo 6 orë; rritja e shpeshtësisë kërkon vendim individual mjekësor.",
+          "safetyConfirmation": "Produkti, mosha reale dhe indikacioni janë konfirmuar. Janë kontrolluar kundërindikacionet dhe ndërveprimet e fletëudhëzimit, funksioni renal/hepatik dhe të gjitha barnat e tjera; nuk ka dublim të përbërësve.",
+          "marketFormPattern": "^film coated tablet$",
+          "marketWholeOnly": true
+        }
+      ],
       "searchTerms": "kollë kolle cough  Paracetamol + Phenylephrine + Chlorpheniramine",
-      "registryActivePattern": "^Paracetamol; Phenylephrine"
+      "registryActivePattern": "^Paracetamol; Phenylephrine",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Paracetamol + Chlorpheniramine + Phenylephrine + Oxolamine",
@@ -1126,11 +2127,17 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
           "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Drogsan · Oledro Hot",
+          "url": "https://www.drogsan.com.tr/images/kub_kt/solsu/PIL_OledroHotEff.pdf"
         }
       ],
       "options": [],
       "searchTerms": "kollë kolle cough  Paracetamol + Chlorpheniramine + Phenylephrine + Oxolamine",
-      "registryActivePattern": "^paracetamol; chlorpheniramine"
+      "registryActivePattern": "^paracetamol; chlorpheniramine",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Paracetamol + Caffeine + Chlorpheniramine + Vitamin C",
@@ -1139,17 +2146,54 @@
         "R05XA01"
       ],
       "componentPattern": "^Paracetamol; Caffeine",
-      "summarySq": "Kombinim i regjistruar; nuk përdoret doza e një substance të vetme. Pa automatizim pediatrik pa skemën e plotë të produktit; kontrollo moshën, përbërësit dhe dublimin me barna të tjera.",
+      "summarySq": "Tylol Hot C 400/50/5/300 mg: skemë e qeses së plotë vetëm mbi 12 vjeç. Përmban kafeinë dhe antihistaminik; nuk ndërrohet me Tylol Hot Pediatric.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
           "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
           "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Nobel · Tylol Hot C, KÜB aktual",
+          "url": "https://www.nobel.com.tr/cmsfiles/turkey/products/tylol-hot-c-12-poset-short-product-info-1.pdf?v=42"
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "label": "Tylol Hot C · mbi 12 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.nobel.com.tr/cmsfiles/turkey/products/tylol-hot-c-12-poset-short-product-info-1.pdf?v=42",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 1,
+              "max": 1,
+              "unit": "unit",
+              "period": "dose",
+              "minMonths": 144,
+              "maxMonths": 216,
+              "minInclusive": false,
+              "maxInclusive": true,
+              "frequency": "3 herë/ditë · të paktën 6 orë ndërmjet dozave",
+              "maxPerDay": 3,
+              "source": "Tylol Hot C · mbi 12 vjeç",
+              "noteSq": "Çdo qese: paracetamol 400 mg + kafeinë 50 mg + klorfeniraminë maleat 5 mg + vitaminë C 300 mg. Tret në 160 mL ujë sipas etiketës. Shmang dublimin, alkoolin dhe kafeinën shtesë; kontrollo ndërveprimet/kundërindikacionet. Jo më shumë se 5 ditë."
+            }
+          ],
+          "marketEvidenceKey": "cough-tylol-hot-c",
+          "marketProductLabel": "TYLOL HOT C",
+          "marketRequirePediatricPopulation": true,
+          "eligibilitySq": "Mbi 12 vjeç; një qese tri herë/ditë, me të paktën 6 orë ndërmjet dozave.",
+          "safetyConfirmation": "Produkti, mosha reale dhe indikacioni janë konfirmuar. Janë kontrolluar kundërindikacionet dhe ndërveprimet e fletëudhëzimit, funksioni renal/hepatik dhe të gjitha barnat e tjera; nuk ka dublim të përbërësve.",
+          "marketFormPattern": "^powder for oral solution$",
+          "marketWholeOnly": true
+        }
+      ],
       "searchTerms": "kollë kolle cough  Paracetamol + Caffeine + Chlorpheniramine + Vitamin C",
-      "registryActivePattern": "^Paracetamol; Caffeine"
+      "registryActivePattern": "^Paracetamol; Caffeine",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Dornase alfa · fibrozë cistike",
@@ -1167,7 +2211,8 @@
         }
       ],
       "options": [],
-      "searchTerms": "kollë kolle cough  Dornase alfa · fibrozë cistike"
+      "searchTerms": "kollë kolle cough  Dornase alfa · fibrozë cistike",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Viburcol N · homeopatik",
@@ -1256,7 +2301,1680 @@
       },
       "sourceUrl": "https://www.prospan.com/fileadmin/prospan/de/leaflets/Hustensaft/Prospan-Hustensaft-Packungsbeilage-englisch.pdf",
       "populationNoteSq": ""
+    },
+    {
+      "key": "cough-fluifort90",
+      "drugName": "Carbocisteine · kripë lizine",
+      "id": "dd979494-912f-44f6-8d6c-75c06e83aa4d",
+      "fields": {
+        "registry_number": "1205",
+        "trade_name": "FLUIFORT",
+        "active_substance": "CARBOCYSTEINE LYSINE SALT",
+        "atc_code": "R05CB03",
+        "strength": "90 mg/1 ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "Bottle of 200ml",
+        "approved_population": "Pediatric only"
+      },
+      "sourceUrl": "https://tosseraffreddore.it/app/uploads/2025/09/IT_FLUIFORT-syrup-90mg_ml_PIL_dec2024.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-fluifort-gran",
+      "drugName": "Carbocisteine · kripë lizine",
+      "id": "722e651b-faed-4304-aa4b-4707840acea3",
+      "fields": {
+        "registry_number": "1207",
+        "trade_name": "FLUIFORT",
+        "active_substance": "Carbocysteine monohydrate lysine salt equal to SCMC-LS",
+        "atc_code": "R05CB03",
+        "strength": "2.7 g",
+        "pharmaceutical_form": "Granules for oral solution",
+        "packaging": "pack of 10 x 5 g sachets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://tosseraffreddore.it/app/uploads/2025/09/IT_FLUIFORT-gran_FI_Giugno23.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-fluifort-gran",
+      "drugName": "Carbocisteine · kripë lizine",
+      "id": "f8a4d476-34be-4cf4-9c6b-62effd03650b",
+      "fields": {
+        "registry_number": "1206",
+        "trade_name": "FLUIFORT",
+        "active_substance": "Carbocysteine monohydrate lysine salt equal to SCMC-LS",
+        "atc_code": "R05CB03",
+        "strength": "2.7 g",
+        "pharmaceutical_form": "Granules for oral solution",
+        "packaging": "Box x 30 bags",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://tosseraffreddore.it/app/uploads/2025/09/IT_FLUIFORT-gran_FI_Giugno23.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-privituss708",
+      "drugName": "Cloperastine fendizoate",
+      "id": "106a56ae-0d19-4a1a-aaa2-75a0f5aa91f8",
+      "fields": {
+        "registry_number": "104",
+        "trade_name": "Privituss",
+        "active_substance": "L-Cloperastine Fendizoate",
+        "atc_code": "R05DB21",
+        "strength": "708 mg/100 ml",
+        "pharmaceutical_form": "Oral suspension",
+        "packaging": "Box containing 1 bottle of 200ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://www.aesculapius.it/media/privituss/download/it/174015337467b8a21e578dc.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-herbion-iceland6",
+      "drugName": "Cetraria islandica · liken islandez",
+      "id": "c30f0ecd-79fc-419e-9f77-a570862c607c",
+      "fields": {
+        "registry_number": "1867",
+        "trade_name": "HERBION® Iceland moss syrup",
+        "active_substance": "Cetraria islandica tallus extractum spissum",
+        "atc_code": "R05D",
+        "strength": "6 mg/ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "Bottle containing 150ml of syrup",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://halmed.hr/upl/lijekovi/SPC/SPC_UP-I-530-09-18-02-137.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-bronles125",
+      "drugName": "Carbocisteine",
+      "id": "881866e7-09cd-4c60-8727-df87cf5498b1",
+      "fields": {
+        "registry_number": "302",
+        "trade_name": "BRONLES ®",
+        "active_substance": "Carbocisteine",
+        "atc_code": "R05CB03",
+        "strength": "125 mg/5 ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "1-one bottle with 150 ml syrup",
+        "approved_population": "Pediatric only"
+      },
+      "sourceUrl": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/51440",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-acc600",
+      "drugName": "Acetylcysteine",
+      "id": "20127315-43fb-4489-b7f5-e91ba8462984",
+      "fields": {
+        "registry_number": "2207",
+        "trade_name": "ACC® 600",
+        "active_substance": "Acetylcysteine",
+        "atc_code": "R05CB01",
+        "strength": "600 mg",
+        "pharmaceutical_form": "Effervescent tablet",
+        "packaging": "PACKAGES CONTAINING 10 EFFERVESCENTTABLETS",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://www.anm.ro/_/_RCP/RCP_11450_27.02.19.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-ambroxol-aldo15",
+      "drugName": "Ambroxol",
+      "id": "cac1fb03-15c8-41d8-a078-9c2db5107172",
+      "fields": {
+        "registry_number": "2058",
+        "trade_name": "Ambroxol Aldo-Unión",
+        "active_substance": "Ambroxol hydrochloride",
+        "atc_code": "R05CB06",
+        "strength": "15 mg/2 ml",
+        "pharmaceutical_form": "Oral solution/concentrate for nebuliser solution",
+        "packaging": "Carton box with 3 aluminium sachets each containing 5 low-density polyethylene 2 ml single-dose ampoules",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/85305/FT_85305.html",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-diacol27",
+      "drugName": "Dextromethorphan hydrobromide",
+      "id": "97682152-d8ae-4190-9342-9710068bd2b5",
+      "fields": {
+        "registry_number": "675",
+        "trade_name": "Diacol",
+        "active_substance": "Dextromethorphan hydrobromide",
+        "atc_code": "R05DA09",
+        "strength": "27 mg/15 ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "Bottle containing 200ml of syrup",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://bial.com/files/3MSfrkdJhJdp5wXlmH9vxj/dace26a6c06d344f79a041074531b11f/202601_RCM_Diacol_Portugal.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-tussibron1",
+      "drugName": "Oxolamine citrate",
+      "id": "4b0c53b3-8e9d-4a48-9ee5-4e45325baa99",
+      "fields": {
+        "registry_number": "2062",
+        "trade_name": "TUSSIBRON",
+        "active_substance": "Oxolamine citrate",
+        "atc_code": "R05DB07",
+        "strength": "1%",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "190 ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://assets.ctfassets.net/i5oh5hzamkwo/6E7Sfjz42ludiQyX63WbO0/e1511a4b0485ac17beff08c8d5bc239a/4811019_1.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-herbion-cowslip",
+      "drugName": "Primula + Thymus",
+      "id": "541592d4-915e-4701-bdcf-2c9831702657",
+      "fields": {
+        "registry_number": "1865",
+        "trade_name": "HERBION® COWSLIP SYRUP",
+        "active_substance": "Primula root and Thyme mixture liquid extract aqueous",
+        "atc_code": "R05C",
+        "strength": "5 ml of syrup contains 3.08 g of an aqueous extract of the mixture of cowslip root  and garden thyme herb",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "bottle containing 150ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://www.krka-farma.hr/_assets/Herbion-sirup-od-jaglaca_uputa_12.04.2021.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-herbion-plantain",
+      "drugName": "Plantago + Malva + Vitamin C",
+      "id": "38ebfd0e-38a8-4f53-93e8-4dddbb55a7ac",
+      "fields": {
+        "registry_number": "1866",
+        "trade_name": "HERBION® PLANTAIN SYRUP",
+        "active_substance": "Plantaginis lanceolatae herbae extractum; Ascorbic acid (vitamin C); Malvae sylvestris floris extractum",
+        "atc_code": "R05D",
+        "strength": "Each 5 ml of syrup (1 measuring spoon) contains 2.5 g of liquid extract of the mixture of ribwort plantain leaves and common mallow flowers and 65 mg of ascorbic acid",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "Bottle containing 150ml of syrup",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://www.krka-farma.hr/_assets/Herbion-sirup-od-trputca_uputa_10.02.2020.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-lupocet-trio",
+      "drugName": "Paracetamol + Guaifenesin + Phenylephrine",
+      "id": "014af94d-3d16-4d6f-b83a-9b1836450e59",
+      "fields": {
+        "registry_number": "573",
+        "trade_name": "Lupocet Trio",
+        "active_substance": "Paracetamol; Guaifenesin; Phenylephrine hydrochloride",
+        "atc_code": "N02BE51",
+        "strength": "1000 mg/200 mg/12.2 mg",
+        "pharmaceutical_form": "Powder for oral solution",
+        "packaging": "Carton box containing 10 individual sachets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://halmed.hr/upl/lijekovi/PIL/Lupocet-Trio-PIL.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-tylol-hot-pediatric",
+      "drugName": "Paracetamol + Chlorpheniramine + Pseudoephedrine",
+      "id": "3359b079-5f68-4970-8497-be684eeb1953",
+      "fields": {
+        "registry_number": "2420",
+        "trade_name": "Tylol Hot Pediatric",
+        "active_substance": "Paracetamol; Chlorpheniramine maleate; Pseudoephedrine HCl",
+        "atc_code": "R05X",
+        "strength": "250mg/2mg/30mg",
+        "pharmaceutical_form": "Effervescent powder",
+        "packaging": "12 packets",
+        "approved_population": "Pediatric only"
+      },
+      "sourceUrl": "https://tylolhot.ba/site/wp-content/uploads/2025/02/Tylol-Hot-pediatric_uputstvo-za-pacijenta.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-fervex-adults",
+      "drugName": "Paracetamol + Pheniramine + Vitamin C",
+      "id": "80428db7-c633-42b0-bb2a-c07a11797a94",
+      "fields": {
+        "registry_number": "3284",
+        "trade_name": "FERVEX FOR ADULTS",
+        "active_substance": "Paracetamol; Ascorbic acid; Pheniramine maleate",
+        "atc_code": "R05X",
+        "strength": "25 mg+500 mg+200 mg",
+        "pharmaceutical_form": "Granules for oral solution",
+        "packaging": "Box containing 8 sachets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://www.fervex.fr/",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-mukozero600",
+      "drugName": "Acetylcysteine",
+      "id": "196eb436-5cfb-4a22-99ec-541c05a4f85e",
+      "fields": {
+        "registry_number": "3760",
+        "trade_name": "Mukozero",
+        "active_substance": "Acetylcysteine",
+        "atc_code": "R05CB01",
+        "strength": "600 mg",
+        "pharmaceutical_form": "Effervescent tablet",
+        "packaging": "Box containing 20 effervescent tablets in tube",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://humanis.com.tr/assets/pdf/94544201767590.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-mukozero1200",
+      "drugName": "Acetylcysteine",
+      "id": "7425a4d1-cd83-493e-a748-5599c83b7649",
+      "fields": {
+        "registry_number": "3759",
+        "trade_name": "Mukozero",
+        "active_substance": "Acetylcysteine",
+        "atc_code": "R05CB01",
+        "strength": "1200 mg",
+        "pharmaceutical_form": "Effervescent tablet",
+        "packaging": "Box containing 20 efervescecnt tablets in tube",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://humanis.com.tr/assets/pdf/8035398733363.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-lisomucin2",
+      "drugName": "Bromhexine",
+      "id": "24189f03-ae63-4b0e-8aaf-c15da8c2c83e",
+      "fields": {
+        "registry_number": "2036",
+        "trade_name": "Lisomucin",
+        "active_substance": "Bromhexine hydrochloride",
+        "atc_code": "R05CB02",
+        "strength": "2 mg/1 ml",
+        "pharmaceutical_form": "Oral drops, solution",
+        "packaging": "15 ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://atral.pt/wp-content/uploads/2023/05/Lisomucin-16-mg-ml-2mg-ml-gotas.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-bisolvon2",
+      "drugName": "Bromhexine",
+      "id": "38c3a5f2-bb4f-46c1-913d-71d6fd256e8e",
+      "fields": {
+        "registry_number": "6",
+        "trade_name": "BISOLVON",
+        "active_substance": "Bromhexine-HCL",
+        "atc_code": "R05CB02",
+        "strength": "2 mg/1 ml",
+        "pharmaceutical_form": "Oral solution",
+        "packaging": "40 ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://assets.ctfassets.net/i5oh5hzamkwo/77TljNKTUnsZaIWWYJU3XK/553b0f1e13ca33238c1d0ff507252de3/0874800_1.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-cetaflu-forte",
+      "drugName": "Paracetamol + Phenylephrine + Chlorpheniramine",
+      "id": "b4a50b1b-de46-4eff-b237-747ccdf9c218",
+      "fields": {
+        "registry_number": "459",
+        "trade_name": "CETAFLU FORTE 650 mg/10 mg/ 4 mg Film tablets",
+        "active_substance": "Paracetamol; Phenylephrine HCl; Chlorpheniramine Maleate",
+        "atc_code": "R05X",
+        "strength": "650 mg+10 mg+4 mg",
+        "pharmaceutical_form": "Film coated tablet",
+        "packaging": "Box containing 20 tablets (10 tablets in PVC/Alu blister, 2 blisters in a box)",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://www.atabay.com/wp-content/uploads/2022/02/Cetaflu-Fort-KT.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-teragrip",
+      "drugName": "Paracetamol + Phenylephrine + Chlorpheniramine",
+      "id": "4655f4b1-101e-4197-872d-0c63e3fe5740",
+      "fields": {
+        "registry_number": "3766",
+        "trade_name": "Teragrip",
+        "active_substance": "Paracetamol; Phenylephrine Hydrochloride; Chlorpheniramine Maleate",
+        "atc_code": "R05X",
+        "strength": "650 mg+10 mg+4 mg",
+        "pharmaceutical_form": "Film coated tablet",
+        "packaging": "Box containing 20 tablets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://humanis.com.tr/assets/pdf/6113809153761538.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-tylol-hot-c",
+      "drugName": "Paracetamol + Caffeine + Chlorpheniramine + Vitamin C",
+      "id": "369aabb6-4dfe-4f01-84eb-edcc1a1a9a8f",
+      "fields": {
+        "registry_number": "2441",
+        "trade_name": "TYLOL HOT C",
+        "active_substance": "Paracetamol; Caffeine, anhydrous; Chlorpheniramine maleate; Ascorbic acid",
+        "atc_code": "R05XA01",
+        "strength": "400 mg+50 mg+5 mg+300 mg",
+        "pharmaceutical_form": "Powder for oral solution",
+        "packaging": "Carton box, PET/Al/ PE film packet, 12 packets powder for oral solution",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://www.nobel.com.tr/cmsfiles/turkey/products/tylol-hot-c-12-poset-short-product-info-1.pdf?v=42",
+      "populationNoteSq": ""
     }
   ],
-  "componentProducts": []
+  "componentProducts": [
+    {
+      "drugName": "Carbocisteine · kripë lizine",
+      "id": "dd979494-912f-44f6-8d6c-75c06e83aa4d",
+      "fields": {
+        "registry_number": "1205",
+        "trade_name": "FLUIFORT",
+        "active_substance": "CARBOCYSTEINE LYSINE SALT",
+        "atc_code": "R05CB03",
+        "strength": "90 mg/1 ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "Bottle of 200ml",
+        "approved_population": "Pediatric only"
+      },
+      "value": 90,
+      "unit": "mg",
+      "perML": 1,
+      "basis": "carbocisteine-lysine-salt",
+      "sources": [
+        "https://tosseraffreddore.it/app/uploads/2025/09/IT_FLUIFORT-syrup-90mg_ml_PIL_dec2024.pdf"
+      ]
+    },
+    {
+      "drugName": "Carbocisteine · kripë lizine",
+      "id": "722e651b-faed-4304-aa4b-4707840acea3",
+      "fields": {
+        "registry_number": "1207",
+        "trade_name": "FLUIFORT",
+        "active_substance": "Carbocysteine monohydrate lysine salt equal to SCMC-LS",
+        "atc_code": "R05CB03",
+        "strength": "2.7 g",
+        "pharmaceutical_form": "Granules for oral solution",
+        "packaging": "pack of 10 x 5 g sachets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 2700,
+      "unit": "mg",
+      "perML": null,
+      "basis": "carbocisteine-lysine-salt",
+      "sources": [
+        "https://tosseraffreddore.it/app/uploads/2025/09/IT_FLUIFORT-gran_FI_Giugno23.pdf"
+      ]
+    },
+    {
+      "drugName": "Carbocisteine · kripë lizine",
+      "id": "f8a4d476-34be-4cf4-9c6b-62effd03650b",
+      "fields": {
+        "registry_number": "1206",
+        "trade_name": "FLUIFORT",
+        "active_substance": "Carbocysteine monohydrate lysine salt equal to SCMC-LS",
+        "atc_code": "R05CB03",
+        "strength": "2.7 g",
+        "pharmaceutical_form": "Granules for oral solution",
+        "packaging": "Box x 30 bags",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 2700,
+      "unit": "mg",
+      "perML": null,
+      "basis": "carbocisteine-lysine-salt",
+      "sources": [
+        "https://tosseraffreddore.it/app/uploads/2025/09/IT_FLUIFORT-gran_FI_Giugno23.pdf"
+      ]
+    },
+    {
+      "drugName": "Cloperastine fendizoate",
+      "id": "106a56ae-0d19-4a1a-aaa2-75a0f5aa91f8",
+      "fields": {
+        "registry_number": "104",
+        "trade_name": "Privituss",
+        "active_substance": "L-Cloperastine Fendizoate",
+        "atc_code": "R05DB21",
+        "strength": "708 mg/100 ml",
+        "pharmaceutical_form": "Oral suspension",
+        "packaging": "Box containing 1 bottle of 200ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 708,
+      "unit": "mg",
+      "perML": 100,
+      "basis": "levocloperastine-fendizoate",
+      "sources": [
+        "https://www.aesculapius.it/media/privituss/download/it/174015337467b8a21e578dc.pdf"
+      ]
+    },
+    {
+      "drugName": "Cetraria islandica · liken islandez",
+      "id": "c30f0ecd-79fc-419e-9f77-a570862c607c",
+      "fields": {
+        "registry_number": "1867",
+        "trade_name": "HERBION® Iceland moss syrup",
+        "active_substance": "Cetraria islandica tallus extractum spissum",
+        "atc_code": "R05D",
+        "strength": "6 mg/ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "Bottle containing 150ml of syrup",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 6,
+      "unit": "mg",
+      "perML": 1,
+      "basis": "cetraria-thick-extract",
+      "sources": [
+        "https://halmed.hr/upl/lijekovi/SPC/SPC_UP-I-530-09-18-02-137.pdf"
+      ]
+    },
+    {
+      "drugName": "Ambroxol",
+      "id": "cac1fb03-15c8-41d8-a078-9c2db5107172",
+      "fields": {
+        "registry_number": "2058",
+        "trade_name": "Ambroxol Aldo-Unión",
+        "active_substance": "Ambroxol hydrochloride",
+        "atc_code": "R05CB06",
+        "strength": "15 mg/2 ml",
+        "pharmaceutical_form": "Oral solution/concentrate for nebuliser solution",
+        "packaging": "Carton box with 3 aluminium sachets each containing 5 low-density polyethylene 2 ml single-dose ampoules",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 15,
+      "unit": "mg",
+      "perML": 2,
+      "basis": "ambroxol-hydrochloride",
+      "forms": [
+        {
+          "key": "aldo-oral",
+          "label": "Solucion oral · Aldo-Unión",
+          "route": "oral",
+          "measure": "liquid",
+          "unit": "mL"
+        },
+        {
+          "key": "aldo-nebulized",
+          "label": "Solucion për nebulizim · Aldo-Unión",
+          "route": "nebulized",
+          "measure": "liquid",
+          "unit": "mL"
+        }
+      ],
+      "sources": [
+        "https://cima.aemps.es/cima/dochtml/ft/85305/FT_85305.html"
+      ]
+    },
+    {
+      "drugName": "Oxolamine citrate",
+      "id": "4b0c53b3-8e9d-4a48-9ee5-4e45325baa99",
+      "fields": {
+        "registry_number": "2062",
+        "trade_name": "TUSSIBRON",
+        "active_substance": "Oxolamine citrate",
+        "atc_code": "R05DB07",
+        "strength": "1%",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "190 ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 1000,
+      "unit": "mg",
+      "perML": 100,
+      "basis": "oxolamine-citrate",
+      "sources": [
+        "https://assets.ctfassets.net/i5oh5hzamkwo/6E7Sfjz42ludiQyX63WbO0/e1511a4b0485ac17beff08c8d5bc239a/4811019_1.pdf"
+      ]
+    },
+    {
+      "drugName": "Primula + Thymus",
+      "id": "541592d4-915e-4701-bdcf-2c9831702657",
+      "fields": {
+        "registry_number": "1865",
+        "trade_name": "HERBION® COWSLIP SYRUP",
+        "active_substance": "Primula root and Thyme mixture liquid extract aqueous",
+        "atc_code": "R05C",
+        "strength": "5 ml of syrup contains 3.08 g of an aqueous extract of the mixture of cowslip root  and garden thyme herb",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "bottle containing 150ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 3080,
+      "unit": "mg",
+      "perML": 5,
+      "basis": "primula-thyme-aqueous-extract",
+      "verifiedCombination": true,
+      "sources": [
+        "https://www.krka-farma.hr/_assets/Herbion-sirup-od-jaglaca_uputa_12.04.2021.pdf"
+      ]
+    },
+    {
+      "drugName": "Plantago + Malva + Vitamin C",
+      "id": "38ebfd0e-38a8-4f53-93e8-4dddbb55a7ac",
+      "fields": {
+        "registry_number": "1866",
+        "trade_name": "HERBION® PLANTAIN SYRUP",
+        "active_substance": "Plantaginis lanceolatae herbae extractum; Ascorbic acid (vitamin C); Malvae sylvestris floris extractum",
+        "atc_code": "R05D",
+        "strength": "Each 5 ml of syrup (1 measuring spoon) contains 2.5 g of liquid extract of the mixture of ribwort plantain leaves and common mallow flowers and 65 mg of ascorbic acid",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "Bottle containing 150ml of syrup",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 2500,
+      "unit": "mg",
+      "perML": 5,
+      "basis": "plantago-mallow-aqueous-extract",
+      "verifiedCombination": true,
+      "sources": [
+        "https://www.krka-farma.hr/_assets/Herbion-sirup-od-trputca_uputa_10.02.2020.pdf"
+      ]
+    },
+    {
+      "drugName": "Paracetamol + Guaifenesin + Phenylephrine",
+      "id": "014af94d-3d16-4d6f-b83a-9b1836450e59",
+      "fields": {
+        "registry_number": "573",
+        "trade_name": "Lupocet Trio",
+        "active_substance": "Paracetamol; Guaifenesin; Phenylephrine hydrochloride",
+        "atc_code": "N02BE51",
+        "strength": "1000 mg/200 mg/12.2 mg",
+        "pharmaceutical_form": "Powder for oral solution",
+        "packaging": "Carton box containing 10 individual sachets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 1,
+      "unit": "unit",
+      "perML": null,
+      "basis": "",
+      "verifiedCombination": true,
+      "sources": [
+        "https://halmed.hr/upl/lijekovi/PIL/Lupocet-Trio-PIL.pdf"
+      ]
+    },
+    {
+      "drugName": "Paracetamol + Chlorpheniramine + Pseudoephedrine",
+      "id": "3359b079-5f68-4970-8497-be684eeb1953",
+      "fields": {
+        "registry_number": "2420",
+        "trade_name": "Tylol Hot Pediatric",
+        "active_substance": "Paracetamol; Chlorpheniramine maleate; Pseudoephedrine HCl",
+        "atc_code": "R05X",
+        "strength": "250mg/2mg/30mg",
+        "pharmaceutical_form": "Effervescent powder",
+        "packaging": "12 packets",
+        "approved_population": "Pediatric only"
+      },
+      "value": 1,
+      "unit": "unit",
+      "perML": null,
+      "basis": "",
+      "verifiedCombination": true,
+      "sources": [
+        "https://tylolhot.ba/site/wp-content/uploads/2025/02/Tylol-Hot-pediatric_uputstvo-za-pacijenta.pdf"
+      ]
+    },
+    {
+      "drugName": "Paracetamol + Pheniramine + Vitamin C",
+      "id": "80428db7-c633-42b0-bb2a-c07a11797a94",
+      "fields": {
+        "registry_number": "3284",
+        "trade_name": "FERVEX FOR ADULTS",
+        "active_substance": "Paracetamol; Ascorbic acid; Pheniramine maleate",
+        "atc_code": "R05X",
+        "strength": "25 mg+500 mg+200 mg",
+        "pharmaceutical_form": "Granules for oral solution",
+        "packaging": "Box containing 8 sachets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 1,
+      "unit": "unit",
+      "perML": null,
+      "basis": "",
+      "verifiedCombination": true,
+      "sources": [
+        "https://www.fervex.fr/"
+      ]
+    },
+    {
+      "drugName": "Paracetamol + Phenylephrine + Chlorpheniramine",
+      "id": "b4a50b1b-de46-4eff-b237-747ccdf9c218",
+      "fields": {
+        "registry_number": "459",
+        "trade_name": "CETAFLU FORTE 650 mg/10 mg/ 4 mg Film tablets",
+        "active_substance": "Paracetamol; Phenylephrine HCl; Chlorpheniramine Maleate",
+        "atc_code": "R05X",
+        "strength": "650 mg+10 mg+4 mg",
+        "pharmaceutical_form": "Film coated tablet",
+        "packaging": "Box containing 20 tablets (10 tablets in PVC/Alu blister, 2 blisters in a box)",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 1,
+      "unit": "unit",
+      "perML": null,
+      "basis": "",
+      "verifiedCombination": true,
+      "sources": [
+        "https://www.atabay.com/wp-content/uploads/2022/02/Cetaflu-Fort-KT.pdf"
+      ]
+    },
+    {
+      "drugName": "Paracetamol + Phenylephrine + Chlorpheniramine",
+      "id": "4655f4b1-101e-4197-872d-0c63e3fe5740",
+      "fields": {
+        "registry_number": "3766",
+        "trade_name": "Teragrip",
+        "active_substance": "Paracetamol; Phenylephrine Hydrochloride; Chlorpheniramine Maleate",
+        "atc_code": "R05X",
+        "strength": "650 mg+10 mg+4 mg",
+        "pharmaceutical_form": "Film coated tablet",
+        "packaging": "Box containing 20 tablets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 1,
+      "unit": "unit",
+      "perML": null,
+      "basis": "",
+      "verifiedCombination": true,
+      "sources": [
+        "https://humanis.com.tr/assets/pdf/6113809153761538.pdf"
+      ]
+    },
+    {
+      "drugName": "Paracetamol + Caffeine + Chlorpheniramine + Vitamin C",
+      "id": "369aabb6-4dfe-4f01-84eb-edcc1a1a9a8f",
+      "fields": {
+        "registry_number": "2441",
+        "trade_name": "TYLOL HOT C",
+        "active_substance": "Paracetamol; Caffeine, anhydrous; Chlorpheniramine maleate; Ascorbic acid",
+        "atc_code": "R05XA01",
+        "strength": "400 mg+50 mg+5 mg+300 mg",
+        "pharmaceutical_form": "Powder for oral solution",
+        "packaging": "Carton box, PET/Al/ PE film packet, 12 packets powder for oral solution",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 1,
+      "unit": "unit",
+      "perML": null,
+      "basis": "",
+      "verifiedCombination": true,
+      "sources": [
+        "https://www.nobel.com.tr/cmsfiles/turkey/products/tylol-hot-c-12-poset-short-product-info-1.pdf?v=42"
+      ]
+    }
+  ],
+  "productReviews": [
+    {
+      "id": "e696f8f4-3104-4130-bc04-1bfb136f64f0",
+      "drugName": "Paracetamol + Acetylcysteine",
+      "fields": {
+        "registry_number": "95",
+        "trade_name": "Mucosoft complex",
+        "active_substance": "Paracetamol; Acetylcysteine",
+        "atc_code": "R05X",
+        "strength": "500 mg+200 mg",
+        "pharmaceutical_form": "Powder for oral solution",
+        "packaging": "Each pack contains 10 sachets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "status": "source-conflict",
+      "labelSq": "Kufij ditorë në mospërputhje",
+      "reasonSq": "Fletëudhëzimi i prodhuesit lejon moshën ≥12 vjeç dhe përmend 3–4 qese/ditë, por kufizon acetilcisteinën në 600 mg/ditë; 4 qese japin 800 mg. Kufiri pediatrik i paracetamolit është 1,8 g/ditë. Nuk gjenerohet automatikisht skemë që tejkalon njërin kufi. Kërko konfirmim të skemës së plotë nga burimi/produktit; mos përdor dozën e paracetamolit veçmas.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Adipharm · Mucosoft Complex",
+          "url": "https://www.adipharm.com/storage/app/media/Products/2021/Leaflet_EN/Mucosoft%20Complex.pdf"
+        }
+      ]
+    },
+    {
+      "id": "a8a4b149-b8ca-4380-b907-e6a761391c2b",
+      "drugName": "Theophylline + Guaifenesin",
+      "fields": {
+        "registry_number": "107",
+        "trade_name": "Baladex",
+        "active_substance": "Theophylline; Guaifenesine",
+        "atc_code": "R03DA54",
+        "strength": "(50 mg+30 mg)/5 ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "150ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "status": "specialist-context",
+      "labelSq": "Dozim individual · monitorim",
+      "reasonSq": "Baladex nuk përdoret nën 6 vjeç. Dozimi i teofilinës përcaktohet individualisht sipas përgjigjes klinike; duhen kontrolluar ndërveprimet, faktorët që ndryshojnë pastrimin dhe nevoja për monitorim. Nuk është shurup i thjeshtë kundër kollës dhe nuk aktivizohet vetëm nga pesha.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Aflofarm · Baladex",
+          "url": "https://aflofarm.com.pl/media/produkt_zalaczniki/baladex-ulotka-6t.pdf"
+        }
+      ]
+    },
+    {
+      "id": "8e160616-cf6f-4ca3-aca9-062847992c54",
+      "drugName": "Hedera helix · gjethe urthi",
+      "fields": {
+        "registry_number": "1266",
+        "trade_name": "PROSPAN ® AKUT effervescent tab",
+        "active_substance": "Ivy leaf dry extract (Hedera helix)",
+        "atc_code": "R05CA12",
+        "strength": "65 mg",
+        "pharmaceutical_form": "Effervescent tablet",
+        "packaging": "10 tablets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "status": "schedule-specific",
+      "labelSq": "Skemë me orar të veçantë",
+      "reasonSq": "Prospan 65 mg eferveshent: fletëudhëzimi jep gjysmë tablete dy herë/ditë për 6–<12 vjeç; nga 12 vjeç një tabletë në mëngjes dhe gjysmë në mbrëmje. Tableta është e ndashme sipas prodhuesit, por kjo skemë me dy doza të ndryshme nuk paraqitet si një dozë e vetme ose si tabletë e plotë dy herë/ditë. Tretet në ujë; kontrollo fletëudhëzimin konkret.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Engelhard · Prospan 65 mg eferveshent",
+          "url": "https://www.prospan.com/fileadmin/prospan/de/leaflets/Brausetabletten/Prospan-Packungsbeilage-Brause-PB1602102.pdf"
+        }
+      ]
+    },
+    {
+      "id": "85c72951-7460-4ab6-9e4d-866edcd18a5d",
+      "drugName": "Carbocisteine",
+      "fields": {
+        "registry_number": "301",
+        "trade_name": "BRONLES",
+        "active_substance": "Carbocisteine Micronized",
+        "atc_code": "R05CB03",
+        "strength": "375 mg",
+        "pharmaceutical_form": "Capsule, hard",
+        "packaging": "30 capsules (blister 3x 10)/box",
+        "approved_population": "Adult only"
+      },
+      "status": "pediatric-restriction",
+      "labelSq": "Jo skemë pediatrike për kapsulën",
+      "reasonSq": "BRONLES 375 mg kapsulë: fletëudhëzimi ALIMS nuk rekomandon përdorimin te fëmijët. Kjo vlen për kapsulën; shurupi BRONLES për fëmijë ka zgjedhjen e tij me skemë aktive.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "ALIMS · BRONLES 375 mg",
+          "url": "https://www.alims.gov.rs/doc_file/lekovi/pil/002140007%202024%2059010%20007%20000%20515%20021%2004%20001.pdf"
+        }
+      ]
+    },
+    {
+      "id": "1557aa66-d22c-4d42-add7-4f199c2af561",
+      "drugName": "Primula + Thymus + Vitamin C",
+      "fields": {
+        "registry_number": "1574",
+        "trade_name": "Primulex C",
+        "active_substance": "Primulae radix liquid extract; Thyme tincture; Vitamin C",
+        "atc_code": "R05CA10",
+        "strength": "2 %+3 %+ 0.1 %",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "Carton box, amber glass bottle, 1x100ml, syrup.",
+        "approved_population": "Pediatric only"
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "Primulex C: lista e prodhuesit konfirmon produktin dhe përbërjen, por nuk jep skemë të plotë pediatrike. Nuk huazohet doza e një marke/ekstrakti tjetër. Nevojitet fletëudhëzimi i këtij produkti për aktivizim automatik.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Gentipharm · produktet e regjistruara",
+          "url": "https://www.gentipharm.com/registered-drugs"
+        }
+      ]
+    },
+    {
+      "id": "758b777a-ac54-4529-b747-7b8a55c9d26c",
+      "drugName": "Thymus + Althaea + mjaltë",
+      "fields": {
+        "registry_number": "1573",
+        "trade_name": "Proappi",
+        "active_substance": "Thyme tincture; Althea macerate; Honey",
+        "atc_code": "R05CA10",
+        "strength": "2 g+6 g+35 g",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "Carton box, amber glass bottle, 1x100ml, syrup.",
+        "approved_population": "Pediatric only"
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "Proappi: lista e prodhuesit konfirmon produktin dhe përbërjen, por nuk jep skemë të plotë pediatrike. Nuk huazohet doza e një marke/ekstrakti tjetër. Përmban mjaltë: jo nën 1 vjeç.Nevojitet fletëudhëzimi i këtij produkti për aktivizim automatik.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Gentipharm · produktet e regjistruara",
+          "url": "https://www.gentipharm.com/registered-drugs"
+        }
+      ]
+    },
+    {
+      "id": "642ef95c-c883-4d49-a5c9-e3896624570c",
+      "drugName": "Hedera helix · gjethe urthi",
+      "fields": {
+        "registry_number": "1622",
+        "trade_name": "Hederpan",
+        "active_substance": "Ivy 10% dry exctract (Hedera helix L.)",
+        "atc_code": "R05CA12",
+        "strength": "7 mg/1 ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "Carton box, amber glass bottle, 1x100ml, syrup.",
+        "approved_population": "Pediatric only"
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "Hederpan: lista e prodhuesit konfirmon produktin dhe përbërjen, por nuk jep skemë të plotë pediatrike. Nuk huazohet doza e një marke/ekstrakti tjetër. Nevojitet fletëudhëzimi i këtij produkti për aktivizim automatik.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Gentipharm · produktet e regjistruara",
+          "url": "https://www.gentipharm.com/registered-drugs"
+        }
+      ]
+    },
+    {
+      "id": "9309e392-87da-4bff-b2c1-3fbff1c33acb",
+      "drugName": "Carbocisteine",
+      "fields": {
+        "registry_number": "1615",
+        "trade_name": "MUCUSYN",
+        "active_substance": "Carbocisteine",
+        "atc_code": "R05CB03",
+        "strength": "125 mg/5 ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "Box containing one amber glass bottle with 150ml syrup",
+        "approved_population": "Pediatric only"
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "MUCUSYN: lista e prodhuesit konfirmon produktin dhe përbërjen, por nuk jep skemë të plotë pediatrike. Nuk huazohet doza e një marke/ekstrakti tjetër. Nevojitet fletëudhëzimi i këtij produkti për aktivizim automatik.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Gentipharm · produktet e regjistruara",
+          "url": "https://www.gentipharm.com/registered-drugs"
+        }
+      ]
+    },
+    {
+      "id": "e736bb1b-a00c-4b7e-9a44-836441c95699",
+      "drugName": "Hedera helix · gjethe urthi",
+      "fields": {
+        "registry_number": "3297",
+        "trade_name": "Hederol",
+        "active_substance": "Ivy Leaves Dry Extract  (Hedera helix L. folium extract)",
+        "atc_code": "R05CA12",
+        "strength": "7 mg/1 ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "Box containing amber type 3 glass bottle with white PE seal with safety ring x 100ml syrup",
+        "approved_population": "Pediatric and adult both"
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Ekstrakti kërkon udhëzimin e vet",
+      "reasonSq": "Hederol 7 mg/mL është në regjistër, por nuk u gjet fletëudhëzim zyrtar publik që lidh ekstraktin dhe këtë produkt me një skemë pediatrike. Përqendrimi 7 mg/mL nuk mjafton për të huazuar dozën e Prospan ose Herbion.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "MSH Kosovë · identiteti i Hederol",
+          "url": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Lista43135045.0711.pdf"
+        }
+      ]
+    },
+    {
+      "id": "822fb756-7a36-4997-86ec-0cfe2d07a9cf",
+      "drugName": "Paracetamol + Chlorpheniramine + Phenylephrine + Oxolamine",
+      "fields": {
+        "registry_number": "1229",
+        "trade_name": "Oledro Hot",
+        "active_substance": "paracetamol; chlorpheniramine maleate; phenylephrine hydrochloride; oxolamine citrate",
+        "atc_code": "R05XA01",
+        "strength": "500 mg+10 mg+2 mg+100 mg",
+        "pharmaceutical_form": "Effervescent granules",
+        "packaging": "pack sizes of oldero is 12 effervescent granule sachets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "status": "data-inconsistent",
+      "labelSq": "Rendi i përbërësve kërkon sqarim",
+      "reasonSq": "Oledro Hot: prodhuesi deklaron paracetamol 500 mg, fenilefrinë HCl 10 mg, klorfeniraminë maleat 2 mg dhe oksolaminë citrat 100 mg. Rendi i substancave dhe vlerave në rekord nuk përputhet; nuk llogaritet dozë nga komponenti i gabuar. Fletëudhëzimi është për moshë mbi 12 vjeç; jo për fëmijë më të vegjël.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Drogsan · Oledro Hot",
+          "url": "https://www.drogsan.com.tr/images/kub_kt/solsu/PIL_OledroHotEff.pdf"
+        }
+      ]
+    },
+    {
+      "id": "798a626c-32af-41a2-8c40-ac662eadf8bf",
+      "drugName": "Paracetamol + Oxolamine + Pseudoephedrine + Chlorpheniramine",
+      "fields": {
+        "registry_number": "737",
+        "trade_name": "NOGRIPPIN Forte",
+        "active_substance": "Paracetamol; Oxolamine Citrate; Pseudoephedrine HCL; Chlorpheniramine Maleate",
+        "atc_code": "R05X",
+        "strength": "650 mg + 200 mg + 60 mg +4 mg",
+        "pharmaceutical_form": "Film coated tablet",
+        "packaging": "10 film coated tablets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "Regjistri zyrtar i RMV konfirmon përbërjen 650/200/60/4 mg, por fusha e dozimit nuk përmban skemë. Nuk huazohet doza nga Nogrippin shurup ose nga kombinime me përbërës të tjerë.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Regjistri zyrtar i RMV · Nogrippin Forte",
+          "url": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/939245831"
+        }
+      ]
+    },
+    {
+      "id": "5224d226-1870-415f-8306-69caa6bc3b45",
+      "drugName": "Grindelia + Gelsemium · Coquelusédal",
+      "fields": {
+        "registry_number": "1989",
+        "trade_name": "Coquelusédal nourrisson",
+        "active_substance": "grindelia; gelsemium",
+        "atc_code": "R05CA10",
+        "strength": "10 mg+5 mg",
+        "pharmaceutical_form": "Suppository",
+        "packaging": "10 suppositories",
+        "approved_population": "Pediatric only"
+      },
+      "status": "specialist-context",
+      "labelSq": "Referencë rektale · jo mg/kg",
+      "reasonSq": "Coquelusédal nourrisson është produkt rektal i veçantë për foshnja deri 30 muaj sipas burimit francez. Nuk është shurup dhe nuk merret doza sipas shumës 10+5 mg/kg; nuk aktivizohet si antitusiv i zakonshëm sipas peshës.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "ANSM · Coquelusédal nourrisson",
+          "url": "https://base-donnees-publique.medicaments.gouv.fr/medicament/68685009/extrait"
+        }
+      ]
+    },
+    {
+      "id": "891e5b2c-303b-4571-84eb-ec899f4fc6c0",
+      "drugName": "Dornase alfa · fibrozë cistike",
+      "fields": {
+        "registry_number": "1328",
+        "trade_name": "Pulmozyme",
+        "active_substance": "dornase alfa",
+        "atc_code": "R05CB13",
+        "strength": "2.5 mg/2.5 ml",
+        "pharmaceutical_form": "Nebuliser solution",
+        "packaging": "30 x 2.5 ml solution for inhalation",
+        "approved_population": "Pediatric and adult both"
+      },
+      "status": "specialist-context",
+      "labelSq": "Vetëm protokoll i fibrozës cistike",
+      "reasonSq": "Pulmozyme: SmPC për pacientë me fibrozë cistike mbi 5 vjeç dhe FVC >40% të parashikuar; doza e referencës është 2,5 mg me nebulizim një herë/ditë. Mosha/pesha nuk provojnë këto kritere. Kërkohet protokoll specialistik; nuk përdoret si antitusiv për kollë të zakonshme.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Roche · Pulmozyme SmPC",
+          "url": "https://www.medicines.org.uk/emc/product/1112/smpc"
+        }
+      ]
+    },
+    {
+      "id": "f64745ab-a66d-4df3-8de7-61b771cd6bce",
+      "drugName": "Acetylcysteine",
+      "fields": {
+        "registry_number": "3108",
+        "trade_name": "Extal",
+        "active_substance": "Acetylcysteine",
+        "atc_code": "R05CB01",
+        "strength": "600 mg",
+        "pharmaceutical_form": "Effervescent tablet",
+        "packaging": "In Polypropylene Tube With Polyethylene Stopper,cardboard box,10 effervescent tablet",
+        "approved_population": "Adult only"
+      },
+      "status": "registry-adult-only",
+      "labelSq": "Për të rritur në regjistër",
+      "reasonSq": "Extal 600 mg, Effervescent tablet: regjistri e shënon për të rritur dhe nuk u konfirmua përjashtim pediatrik për këtë formulim. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "AEMPS · Fluimucil pediátrico 20 mg/mL",
+          "url": "https://cima.aemps.es/cima/pdfs/es/ft/63512/63512_ft.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "AEMPS · Acetilcisteína Normon 600 mg",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/85923/FT_85923.html"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Trepharm · format ACT të prodhuesit",
+          "url": "https://trepharm.com/otc-products/"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "ANMDMR · ACC 600 mg",
+          "url": "https://www.anm.ro/_/_RCP/RCP_11450_27.02.19.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Humanis · Mukozero 600 mg",
+          "url": "https://humanis.com.tr/assets/pdf/94544201767590.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Humanis · Mukozero 1200 mg",
+          "url": "https://humanis.com.tr/assets/pdf/8035398733363.pdf"
+        }
+      ],
+      "verificationOutcome": "restricted-reference"
+    },
+    {
+      "id": "de0a5710-84f4-4a6f-aa6a-722806861ff4",
+      "drugName": "Acetylcysteine",
+      "fields": {
+        "registry_number": "3247",
+        "trade_name": "ACT®",
+        "active_substance": "Acetylcysteine",
+        "atc_code": "R05CB01",
+        "strength": "200 mg/5 ml",
+        "pharmaceutical_form": "Powder for oral suspension",
+        "packaging": "Box x 1 bottle x 100 ml",
+        "approved_population": "Pediatric only"
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "ACT® 200 mg/5 ml, Powder for oral suspension: nuk u gjet skemë e plotë pediatrike e lidhur me këtë produkt/formë në burimet publike të kontrolluara. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "AEMPS · Fluimucil pediátrico 20 mg/mL",
+          "url": "https://cima.aemps.es/cima/pdfs/es/ft/63512/63512_ft.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "AEMPS · Acetilcisteína Normon 600 mg",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/85923/FT_85923.html"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Trepharm · format ACT të prodhuesit",
+          "url": "https://trepharm.com/otc-products/"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "ANMDMR · ACC 600 mg",
+          "url": "https://www.anm.ro/_/_RCP/RCP_11450_27.02.19.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Humanis · Mukozero 600 mg",
+          "url": "https://humanis.com.tr/assets/pdf/94544201767590.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Humanis · Mukozero 1200 mg",
+          "url": "https://humanis.com.tr/assets/pdf/8035398733363.pdf"
+        }
+      ],
+      "verificationOutcome": "product-leaflet-not-confirmed"
+    },
+    {
+      "id": "a463f220-6a64-418f-872c-a38db81ca04b",
+      "drugName": "Acetylcysteine",
+      "fields": {
+        "registry_number": "3246",
+        "trade_name": "ACT®",
+        "active_substance": "Acetylcysteine",
+        "atc_code": "R05CB01",
+        "strength": "600 mg",
+        "pharmaceutical_form": "Powder for oral use",
+        "packaging": "Box x 10 sachets",
+        "approved_population": "Adult only"
+      },
+      "status": "registry-adult-only",
+      "labelSq": "Për të rritur në regjistër",
+      "reasonSq": "ACT® 600 mg, Powder for oral use: regjistri e shënon për të rritur dhe nuk u konfirmua përjashtim pediatrik për këtë formulim. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "AEMPS · Fluimucil pediátrico 20 mg/mL",
+          "url": "https://cima.aemps.es/cima/pdfs/es/ft/63512/63512_ft.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "AEMPS · Acetilcisteína Normon 600 mg",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/85923/FT_85923.html"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Trepharm · format ACT të prodhuesit",
+          "url": "https://trepharm.com/otc-products/"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "ANMDMR · ACC 600 mg",
+          "url": "https://www.anm.ro/_/_RCP/RCP_11450_27.02.19.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Humanis · Mukozero 600 mg",
+          "url": "https://humanis.com.tr/assets/pdf/94544201767590.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Humanis · Mukozero 1200 mg",
+          "url": "https://humanis.com.tr/assets/pdf/8035398733363.pdf"
+        }
+      ],
+      "verificationOutcome": "restricted-reference"
+    },
+    {
+      "id": "ceabca16-6404-43c9-b7a6-be2c42570995",
+      "drugName": "Acetylcysteine",
+      "fields": {
+        "registry_number": "3249",
+        "trade_name": "ACT®",
+        "active_substance": "Acetylcysteine",
+        "atc_code": "R05CB01",
+        "strength": "200 mg",
+        "pharmaceutical_form": "Capsule",
+        "packaging": "Box x 20 capsules",
+        "approved_population": "Pediatric and adult both"
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "ACT® 200 mg, Capsule: nuk u gjet skemë e plotë pediatrike e lidhur me këtë produkt/formë në burimet publike të kontrolluara. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "AEMPS · Fluimucil pediátrico 20 mg/mL",
+          "url": "https://cima.aemps.es/cima/pdfs/es/ft/63512/63512_ft.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "AEMPS · Acetilcisteína Normon 600 mg",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/85923/FT_85923.html"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Trepharm · format ACT të prodhuesit",
+          "url": "https://trepharm.com/otc-products/"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "ANMDMR · ACC 600 mg",
+          "url": "https://www.anm.ro/_/_RCP/RCP_11450_27.02.19.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Humanis · Mukozero 600 mg",
+          "url": "https://humanis.com.tr/assets/pdf/94544201767590.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Humanis · Mukozero 1200 mg",
+          "url": "https://humanis.com.tr/assets/pdf/8035398733363.pdf"
+        }
+      ],
+      "verificationOutcome": "product-leaflet-not-confirmed"
+    },
+    {
+      "id": "c10b8f00-7e79-4070-811a-f9c50df28721",
+      "drugName": "Ambroxol",
+      "fields": {
+        "registry_number": "1279",
+        "trade_name": "AMBROTUS",
+        "active_substance": "Ambroxol",
+        "atc_code": "R05CB06",
+        "strength": "30 mg/10 ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "200 ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "AMBROTUS 30 mg/10 ml, Syrup: nuk u gjet skemë e plotë pediatrike e lidhur me këtë produkt/formë në burimet publike të kontrolluara. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "AEMPS · Mucibrón 3 mg/mL",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/56538/FichaTecnica_56538.html"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "AEMPS · Mucibrón forte 6 mg/mL",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/83276/FT_83276.html"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "AEMPS · Ambroxol Aldo-Unión 15 mg/2 mL",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/85305/FT_85305.html"
+        }
+      ],
+      "verificationOutcome": "product-leaflet-not-confirmed"
+    },
+    {
+      "id": "0a2c4c52-2da0-4abb-a037-b3daa672dff6",
+      "drugName": "Bromhexine",
+      "fields": {
+        "registry_number": "58449",
+        "trade_name": "Bromhexine Sopharma",
+        "active_substance": "bromhexine",
+        "atc_code": "R05CB02",
+        "strength": "2mg/ml",
+        "pharmaceutical_form": "Solution for injection",
+        "packaging": "solution for injection2mg/ml, 2ml x10ampoules",
+        "approved_population": ""
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "Bromhexine Sopharma 2mg/ml, Solution for injection: nuk u gjet skemë e plotë pediatrike e lidhur me këtë produkt/formë në burimet publike të kontrolluara. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "AEMPS · Bisolvon Mucolítico Infantil 0,8 mg/mL",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/78348/FT_78348.html"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Atral / INFARMED · Lisomucin, maj 2022",
+          "url": "https://atral.pt/wp-content/uploads/2023/05/Lisomucin-16-mg-ml-2mg-ml-gotas.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Opella · Bisolvon 2 mg/mL, shkurt 2023",
+          "url": "https://assets.ctfassets.net/i5oh5hzamkwo/77TljNKTUnsZaIWWYJU3XK/553b0f1e13ca33238c1d0ff507252de3/0874800_1.pdf"
+        }
+      ],
+      "verificationOutcome": "product-leaflet-not-confirmed"
+    },
+    {
+      "id": "3d1c0117-a9b7-4af3-91cf-1fc10ba631cf",
+      "drugName": "Carbocisteine",
+      "fields": {
+        "registry_number": "3663",
+        "trade_name": "Mukol",
+        "active_substance": "Carbocisteine",
+        "atc_code": "R05CB03",
+        "strength": "100 mg/5 ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "Bottle containing 150 ml of syrup",
+        "approved_population": "Pediatric only"
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "Mukol 100 mg/5 ml, Syrup: nuk u gjet skemë e plotë pediatrike e lidhur me këtë produkt/formë në burimet publike të kontrolluara. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "SmPC · Carbocisteine 250 mg/5 mL",
+          "url": "https://www.medicines.org.uk/emc/product/13091/smpc"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "PIL · kufijtë sipas moshës",
+          "url": "https://www.medicines.org.uk/emc/product/13091/pil"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Alkaloid · BRONLES 125 mg/5 mL",
+          "url": "https://alkaloid.com.mk/product/bronles-for-children"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Regjistri zyrtar i RMV · BRONLES për fëmijë 125 mg/5 mL",
+          "url": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/51440"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "ALIMS · BRONLES 375 mg",
+          "url": "https://www.alims.gov.rs/doc_file/lekovi/pil/002140007%202024%2059010%20007%20000%20515%20021%2004%20001.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Gentipharm · produktet e regjistruara",
+          "url": "https://www.gentipharm.com/registered-drugs"
+        }
+      ],
+      "verificationOutcome": "product-leaflet-not-confirmed"
+    },
+    {
+      "id": "19376890-c3e8-45d6-be45-2605d245a79b",
+      "drugName": "Carbocisteine",
+      "fields": {
+        "registry_number": "105",
+        "trade_name": "Mucostar",
+        "active_substance": "Carbocisteine",
+        "atc_code": "R05CB03",
+        "strength": "1.5 g",
+        "pharmaceutical_form": "Granules for oral suspension",
+        "packaging": "Carton box containing 20 triple heat-sealed lamination of aluminium and polythene sachets contains 1.5g granules for oral suspension each sachet.",
+        "approved_population": "Adult only"
+      },
+      "status": "registry-adult-only",
+      "labelSq": "Për të rritur në regjistër",
+      "reasonSq": "Mucostar 1.5 g, Granules for oral suspension: regjistri e shënon për të rritur dhe nuk u konfirmua përjashtim pediatrik për këtë formulim. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "SmPC · Carbocisteine 250 mg/5 mL",
+          "url": "https://www.medicines.org.uk/emc/product/13091/smpc"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "PIL · kufijtë sipas moshës",
+          "url": "https://www.medicines.org.uk/emc/product/13091/pil"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Alkaloid · BRONLES 125 mg/5 mL",
+          "url": "https://alkaloid.com.mk/product/bronles-for-children"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Regjistri zyrtar i RMV · BRONLES për fëmijë 125 mg/5 mL",
+          "url": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/51440"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "ALIMS · BRONLES 375 mg",
+          "url": "https://www.alims.gov.rs/doc_file/lekovi/pil/002140007%202024%2059010%20007%20000%20515%20021%2004%20001.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Gentipharm · produktet e regjistruara",
+          "url": "https://www.gentipharm.com/registered-drugs"
+        }
+      ],
+      "verificationOutcome": "restricted-reference"
+    },
+    {
+      "id": "a9eebe5c-00f5-44bc-9765-6ca8fb992b2f",
+      "drugName": "Butamirate citrate",
+      "fields": {
+        "registry_number": "58420",
+        "trade_name": "Omnitus",
+        "active_substance": "butamirate citrate",
+        "atc_code": "R05DB13",
+        "strength": "50 mg",
+        "pharmaceutical_form": "Modified-release film-coated tablet",
+        "packaging": "1 x 10 pcs",
+        "approved_population": ""
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "Omnitus 50 mg, Modified-release film-coated tablet: nuk u gjet skemë e plotë pediatrike e lidhur me këtë produkt/formë në burimet publike të kontrolluara. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "HALMED · butamirat citrat 7,5 mg/5 mL",
+          "url": "https://halmed.hr/upl/lijekovi/SPC/Sinecod-75-mg-5-ml-sirup-SPC.pdf"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "ALIMS · Omnitus 4 mg/5 mL, PIL i përditësuar",
+          "url": "https://www.alims.gov.rs/doc_file/lekovi/pil/001115263%202024%2059010%20007%20000%20515%20021%2004%20001.pdf"
+        }
+      ],
+      "verificationOutcome": "product-leaflet-not-confirmed"
+    },
+    {
+      "id": "b7d817e3-a7ff-422c-86be-c0ca5e485ff4",
+      "drugName": "Codeine phosphate",
+      "fields": {
+        "registry_number": "2719",
+        "trade_name": "KODEINE FOSFAT",
+        "active_substance": "codeine phosphate",
+        "atc_code": "R05DA04",
+        "strength": "15 mg",
+        "pharmaceutical_form": "Tablet",
+        "packaging": "30 tablets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "status": "pediatric-restriction",
+      "labelSq": "Pa dozë pediatrike automatike",
+      "reasonSq": "Kodeina për kollë është e kundërindikuar nën 12 vjeç dhe ka kufizime të tjera te adoleshentët me probleme të frymëmarrjes. Nuk gjenerohet dozë pediatrike automatike; nuk huazohet skema e një opioidi tjetër.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "EMA · kodeina për kollë/ftohje te fëmijët",
+          "url": "https://www.ema.europa.eu/en/medicines/human/referrals/codeine-containing-medicinal-products-treatment-cough-or-cold-paediatric-patients"
+        }
+      ],
+      "verificationOutcome": "restricted-reference"
+    },
+    {
+      "id": "3836b0e2-95bd-4cc0-922c-0eca3b3ffa14",
+      "drugName": "Codeine + Ephedrine",
+      "fields": {
+        "registry_number": "87",
+        "trade_name": "SIVAL-B",
+        "active_substance": "Codeine Phosphate; Ephedrine Hydrochloride",
+        "atc_code": "R05DA20",
+        "strength": "(7.5 mg+5 mg)/5 ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "Flacon x 120ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "status": "pediatric-restriction",
+      "labelSq": "Pa dozë pediatrike automatike",
+      "reasonSq": "Kodeina për kollë është e kundërindikuar nën 12 vjeç dhe ka kufizime të tjera te adoleshentët me probleme të frymëmarrjes. Nuk gjenerohet dozë pediatrike automatike; nuk huazohet skema e një opioidi tjetër.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "EMA · kufizimet e kodeinës",
+          "url": "https://www.ema.europa.eu/en/medicines/human/referrals/codeine-containing-medicinal-products-treatment-cough-or-cold-paediatric-patients"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
+          "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        }
+      ],
+      "verificationOutcome": "restricted-reference"
+    },
+    {
+      "id": "05ae6c8a-f76f-4068-b820-c068faa60ae8",
+      "drugName": "Glaucine + Ephedrine",
+      "fields": {
+        "registry_number": "3031",
+        "trade_name": "BRONCHOLYTIN",
+        "active_substance": "Glaucine hydrobromide; Ephedrine hydrochloride",
+        "atc_code": "R05DB20",
+        "strength": "(5.75 mg+4.6 mg)/5 ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "1 (one) bottle x 125 g syrup",
+        "approved_population": "Pediatric and adult both"
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "BRONCHOLYTIN (5.75 mg+4.6 mg)/5 ml, Syrup: nuk u gjet skemë e plotë pediatrike e lidhur me këtë produkt/formë në burimet publike të kontrolluara. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
+          "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        }
+      ],
+      "verificationOutcome": "product-leaflet-not-confirmed"
+    },
+    {
+      "id": "151db35d-9b90-4b46-8801-81f20c20e454",
+      "drugName": "Paracetamol + Chlorpheniramine + Pseudoephedrine",
+      "fields": {
+        "registry_number": "465",
+        "trade_name": "PAROL Hot 500 mg/60 mg/4 mg Powder Sachet for Single-Use",
+        "active_substance": "Paracetamol; Pseudoephedrine HCl; Chlorpheniramine Maleat",
+        "atc_code": "R05X",
+        "strength": "500 mg+60 mg+4 mg",
+        "pharmaceutical_form": "Powder for oral solution",
+        "packaging": "12 sachets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "PAROL Hot 500 mg/60 mg/4 mg Powder Sachet for Single-Use 500 mg+60 mg+4 mg, Powder for oral solution: nuk u gjet skemë e plotë pediatrike e lidhur me këtë produkt/formë në burimet publike të kontrolluara. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
+          "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Nobel · Tylol Hot Pediatric, qershor 2023",
+          "url": "https://tylolhot.ba/site/wp-content/uploads/2025/02/Tylol-Hot-pediatric_uputstvo-za-pacijenta.pdf"
+        }
+      ],
+      "verificationOutcome": "product-leaflet-not-confirmed"
+    },
+    {
+      "id": "748de5cc-6e72-4e9b-835a-4cfbf07a512e",
+      "drugName": "Paracetamol + Chlorpheniramine + Pseudoephedrine",
+      "fields": {
+        "registry_number": "699",
+        "trade_name": "A-Ferin Plus",
+        "active_substance": "Paracetamol; Chlorpheniramine maleate; Pseudoephedrine HCl",
+        "atc_code": "R05X",
+        "strength": "(160 mg+1 mg+15 mg)/5 mL",
+        "pharmaceutical_form": "Oral solution",
+        "packaging": "Bottle of 100ml",
+        "approved_population": "Pediatric only"
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "A-Ferin Plus (160 mg+1 mg+15 mg)/5 mL, Oral solution: nuk u gjet skemë e plotë pediatrike e lidhur me këtë produkt/formë në burimet publike të kontrolluara. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
+          "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        },
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "Nobel · Tylol Hot Pediatric, qershor 2023",
+          "url": "https://tylolhot.ba/site/wp-content/uploads/2025/02/Tylol-Hot-pediatric_uputstvo-za-pacijenta.pdf"
+        }
+      ],
+      "verificationOutcome": "product-leaflet-not-confirmed"
+    },
+    {
+      "id": "cfd0ef24-50ca-4504-ab70-718d35784aca",
+      "drugName": "Paracetamol + Oxolamine + Chlorpheniramine",
+      "fields": {
+        "registry_number": "738",
+        "trade_name": "NOGRIPPIN capsule",
+        "active_substance": "Paracetamol; Oxolamine Citrate; Chlorpheniramine Maleate",
+        "atc_code": "R05X",
+        "strength": "250 mg+100 mg+2 mg",
+        "pharmaceutical_form": "Capsule",
+        "packaging": "15 capsules",
+        "approved_population": "Pediatric and adult both"
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "NOGRIPPIN capsule 250 mg+100 mg+2 mg, Capsule: nuk u gjet skemë e plotë pediatrike e lidhur me këtë produkt/formë në burimet publike të kontrolluara. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
+          "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        }
+      ],
+      "verificationOutcome": "product-leaflet-not-confirmed"
+    },
+    {
+      "id": "9ca69e1a-c019-4f0e-9731-063cbcc1bafe",
+      "drugName": "Paracetamol + Oxolamine + Chlorpheniramine",
+      "fields": {
+        "registry_number": "736",
+        "trade_name": "NOGRIPPIN Pediatric syrup",
+        "active_substance": "Paracetamol; Oxolamine Citrate; Chlorpheniramine Maleate",
+        "atc_code": "R05X",
+        "strength": "(120 mg+50 mg+1 mg)/5 ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "100 ml",
+        "approved_population": "Pediatric only"
+      },
+      "status": "product-unconfirmed",
+      "labelSq": "Udhëzimi i produktit mungon",
+      "reasonSq": "NOGRIPPIN Pediatric syrup (120 mg+50 mg+1 mg)/5 ml, Syrup: nuk u gjet skemë e plotë pediatrike e lidhur me këtë produkt/formë në burimet publike të kontrolluara. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
+          "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        }
+      ],
+      "verificationOutcome": "product-leaflet-not-confirmed"
+    },
+    {
+      "id": "0f28f743-5348-4082-90f6-4becf1b602f6",
+      "drugName": "Viburcol N · homeopatik",
+      "fields": {
+        "registry_number": "761",
+        "trade_name": "Viburcol N",
+        "active_substance": "Atropa bella-donna D2; Calcium carbonicum Hahnemanni D8; Matricaria recutita D1; Plantago major D3; Pulsatilla pratensis D2",
+        "atc_code": "R05XH20",
+        "strength": "(1.1 mg+4.4 mg+1.1 mg+1.1 mg+2.2mg)/1.1 g",
+        "pharmaceutical_form": "Suppository",
+        "packaging": "Cardboardbox containing 12 suppositories of 1.1 g. in polyvinylchloride / polyethylene moulded strip packs",
+        "approved_population": "Pediatric only"
+      },
+      "status": "no-validated-regimen",
+      "labelSq": "Pa skemë të vërtetuar",
+      "reasonSq": "Referencë e regjistrit: produkt homeopatik. Nuk ka skemë antitusive pediatrike të vërtetuar në këtë kalkulator dhe nuk jepet dozë sipas peshës.",
+      "reviewedAt": "2026-10-17",
+      "sources": [
+        {
+          "authority": "Burim zyrtar / prodhues",
+          "title": "NHS · homeopatia dhe evidenca",
+          "url": "https://www.nhs.uk/conditions/homeopathy/"
+        }
+      ],
+      "verificationOutcome": "restricted-reference"
+    }
+  ]
 }
