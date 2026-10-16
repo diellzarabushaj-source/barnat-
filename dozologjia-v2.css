@@ -2158,6 +2158,15 @@ button,input,select{font:inherit}
 .dz-select-option{display:flex;align-items:center;min-height:44px;padding:10px 12px;border-radius:8px;color:#18334e;line-height:1.5;cursor:pointer;overflow-wrap:anywhere}
 .dz-select-option[aria-selected=true]{font-weight:700;background:#f2f5ff}
 .dz-select-option:hover,.dz-select-option.is-active{background:#eaf0ff;color:#254790}
+.dz-select-section{display:block}
+.dz-select-option{gap:10px;justify-content:space-between}
+.dz-select-option-text{display:grid;gap:3px;min-width:0}
+.dz-select-option-name{overflow-wrap:anywhere}
+.dz-select-brand{font-size:12px;font-weight:500;line-height:1.45;color:#536478;overflow-wrap:anywhere}
+.dz-select-reference{flex:none;padding:3px 7px;border:1px solid #d7e0ec;border-radius:6px;background:#f5f7fb;color:#465d77;font-size:11px;font-weight:650;line-height:1.4;letter-spacing:0}
+.dz-evidence-limited .dz-evidence-badge{background:#eef2f7;color:#465d77;border-color:#d7e0ec}
+.dz-review-heading{font-size:14px;color:#274d79;line-height:1.5}
+.dz-select-options{scroll-padding-block:58px 8px}
 .dz-select-group,.dz-select-empty{display:block;padding:10px 12px;font-size:12px;color:#64758a;line-height:1.5}
 .dz-select-group{font-weight:700}
 .dz-result-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:12px;margin-bottom:2px;border-bottom:1px solid #d5e1f1}

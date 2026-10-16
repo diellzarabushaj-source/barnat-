@@ -68,17 +68,41 @@
       clear.hidden = !terms.length; host.classList.toggle('is-editing', Boolean(terms.length));
       matches = [...select.options].filter(option => !option.disabled && terms.every(term => normalize(option.textContent + ' ' + (option.parentElement?.label || '')+' '+(option.dataset.searchTerms||'')).includes(term)));
       list.replaceChildren(); active = -1; input.removeAttribute('aria-activedescendant');
-      let previousGroup = '';
+      let previousGroup = '', groupHost = list;
       matches.forEach((option, index) => {
         const group = option.parentElement?.tagName === 'OPTGROUP' ? option.parentElement.label : '';
-        if (group && group !== previousGroup) { const heading = make('span', 'dz-select-group', group); heading.setAttribute('role', 'presentation'); list.append(heading); }
+        if (group !== previousGroup || index === 0) {
+          groupHost = list;
+          if (group) {
+            groupHost = make('span', 'dz-select-section'); groupHost.setAttribute('role', 'group');
+            const heading = make('span', 'dz-select-group', group); heading.id = select.id + 'Group' + index;
+            heading.setAttribute('role', 'presentation'); groupHost.setAttribute('aria-labelledby', heading.id);
+            groupHost.append(heading); list.append(groupHost);
+          }
+        }
         previousGroup = group;
-        const row = make('span', 'dz-select-option', option.textContent);
+        const row = make('span', 'dz-select-option');
         row.id = select.id + 'Option' + index; row.setAttribute('role', 'option'); row.setAttribute('aria-selected', String(option.value === select.value));
+        row.setAttribute('aria-label', option.textContent);
+        const text = make('span', 'dz-select-option-text'); text.append(make('span', 'dz-select-option-name', option.textContent)); row.append(text);
+        const descriptions = [];
+        let brands = [];
+        try { const value = JSON.parse(option.dataset.brands || '[]'); if (Array.isArray(value)) brands = value.filter(value => typeof value === 'string'); } catch {}
+        const brandMatches = terms.length && !terms.every(term => normalize(option.textContent).includes(term))
+          ? brands.filter(brand => terms.every(term => normalize(brand).includes(term))) : [];
+        if (brandMatches.length) {
+          const note = make('span', 'dz-select-brand', brandMatches.slice(0, 2).join(' · ') + (brandMatches.length > 2 ? ' +' + (brandMatches.length - 2) : ''));
+          note.id = row.id + 'Brand'; text.append(note); descriptions.push(note.id);
+        }
+        if (option.dataset.referenceOnly === 'true') {
+          const badge = make('span', 'dz-select-reference', 'Referencë'); badge.id = row.id + 'Status';
+          row.append(badge); descriptions.push(badge.id);
+        }
+        if (descriptions.length) row.setAttribute('aria-describedby', descriptions.join(' '));
         row.addEventListener('pointerdown', event => event.preventDefault());
         // Cancel the enclosing label's synthetic input click after a choice.
         row.addEventListener('click', event => {event.preventDefault();event.stopPropagation();choose(option);});
-        list.append(row);
+        groupHost.append(row);
       });
       if (!matches.length) { const empty = make('span', 'dz-select-empty', 'Nuk u gjet asnjë rezultat.'); empty.setAttribute('role', 'status'); list.append(empty); }
       const count = matches.filter(option => option.value).length;
@@ -99,6 +123,7 @@
     input.addEventListener('focus', () => input.select());
     input.addEventListener('input', () => { editing = true; host.dispatchEvent(new CustomEvent('pediatric:choice-editing', {bubbles:true})); show(input.value); });
     input.addEventListener('keydown', event => {
+      if (event.isComposing) return;
       if (event.key === 'Escape') { event.preventDefault(); close(); }
       else if (event.key === 'Tab') close();
       else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {

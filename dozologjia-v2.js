@@ -198,17 +198,41 @@
       clear.hidden = !terms.length; host.classList.toggle('is-editing', Boolean(terms.length));
       matches = [...select.options].filter(option => !option.disabled && terms.every(term => normalize(option.textContent + ' ' + (option.parentElement?.label || '')+' '+(option.dataset.searchTerms||'')).includes(term)));
       list.replaceChildren(); active = -1; input.removeAttribute('aria-activedescendant');
-      let previousGroup = '';
+      let previousGroup = '', groupHost = list;
       matches.forEach((option, index) => {
         const group = option.parentElement?.tagName === 'OPTGROUP' ? option.parentElement.label : '';
-        if (group && group !== previousGroup) { const heading = make('span', 'dz-select-group', group); heading.setAttribute('role', 'presentation'); list.append(heading); }
+        if (group !== previousGroup || index === 0) {
+          groupHost = list;
+          if (group) {
+            groupHost = make('span', 'dz-select-section'); groupHost.setAttribute('role', 'group');
+            const heading = make('span', 'dz-select-group', group); heading.id = select.id + 'Group' + index;
+            heading.setAttribute('role', 'presentation'); groupHost.setAttribute('aria-labelledby', heading.id);
+            groupHost.append(heading); list.append(groupHost);
+          }
+        }
         previousGroup = group;
-        const row = make('span', 'dz-select-option', option.textContent);
+        const row = make('span', 'dz-select-option');
         row.id = select.id + 'Option' + index; row.setAttribute('role', 'option'); row.setAttribute('aria-selected', String(option.value === select.value));
+        row.setAttribute('aria-label', option.textContent);
+        const text = make('span', 'dz-select-option-text'); text.append(make('span', 'dz-select-option-name', option.textContent)); row.append(text);
+        const descriptions = [];
+        let brands = [];
+        try { const value = JSON.parse(option.dataset.brands || '[]'); if (Array.isArray(value)) brands = value.filter(value => typeof value === 'string'); } catch {}
+        const brandMatches = terms.length && !terms.every(term => normalize(option.textContent).includes(term))
+          ? brands.filter(brand => terms.every(term => normalize(brand).includes(term))) : [];
+        if (brandMatches.length) {
+          const note = make('span', 'dz-select-brand', brandMatches.slice(0, 2).join(' · ') + (brandMatches.length > 2 ? ' +' + (brandMatches.length - 2) : ''));
+          note.id = row.id + 'Brand'; text.append(note); descriptions.push(note.id);
+        }
+        if (option.dataset.referenceOnly === 'true') {
+          const badge = make('span', 'dz-select-reference', 'Referencë'); badge.id = row.id + 'Status';
+          row.append(badge); descriptions.push(badge.id);
+        }
+        if (descriptions.length) row.setAttribute('aria-describedby', descriptions.join(' '));
         row.addEventListener('pointerdown', event => event.preventDefault());
         // Cancel the enclosing label's synthetic input click after a choice.
         row.addEventListener('click', event => {event.preventDefault();event.stopPropagation();choose(option);});
-        list.append(row);
+        groupHost.append(row);
       });
       if (!matches.length) { const empty = make('span', 'dz-select-empty', 'Nuk u gjet asnjë rezultat.'); empty.setAttribute('role', 'status'); list.append(empty); }
       const count = matches.filter(option => option.value).length;
@@ -229,6 +253,7 @@
     input.addEventListener('focus', () => input.select());
     input.addEventListener('input', () => { editing = true; host.dispatchEvent(new CustomEvent('pediatric:choice-editing', {bubbles:true})); show(input.value); });
     input.addEventListener('keydown', event => {
+      if (event.isComposing) return;
       if (event.key === 'Escape') { event.preventDefault(); close(); }
       else if (event.key === 'Tab') close();
       else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
@@ -270,7 +295,7 @@
   const CALCULATE_URL = '/api/dosage?view=pediatric-common-calculate';
   let referenceRevision = '';
   let referenceActive = false;
-  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=62-market-20261015';
+  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=63-market-clarity-20261017';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
   const CLINICAL_AUDIT_URL = '/data/pediatric-clinical-audit-v1.json';
@@ -668,10 +693,11 @@
       panel.append(warnings);
       return panel;
     }
-    const panel = node('section', null, 'dz-evidence dz-evidence-verified');
+    const panel = node('section', null, 'dz-evidence ' + (audit.calculator?.disabled ? 'dz-evidence-limited' : 'dz-evidence-verified'));
     const head = node('div', null, 'dz-evidence-head');
     head.append(node('span', audit.badgeSq || 'AUDIT KLINIK', 'dz-evidence-badge'));
-    if (clinicalAudit.auditedAt) head.append(node('small', 'audit ' + clinicalAudit.auditedAt));
+    const auditedAt = audit.auditedAt || clinicalAudit.auditedAt;
+    if (auditedAt) head.append(node('small', 'audit ' + auditedAt));
     panel.append(head);
     if (audit.summarySq) panel.append(node('p', audit.summarySq, 'dz-evidence-summary'));
     if (Array.isArray(audit.warningsSq)) {
@@ -749,6 +775,7 @@
   function showVariantReview(variant){
     clearResult(variant.reason||'Për këtë produkt nuk ka skemë pediatrike aktive.');
     if(!variant.review)return;
+    byId('pediatricAnswer').prepend(node('strong',variant.review.labelSq,'dz-review-heading'));
     const details=node('details',null,'dz-variant-review');
     details.append(node('summary','Burimet e kontrolluara · '+variant.review.reviewedAt));
     details.append(node('p',variant.review.scopeSq,'dz-market-note'));
@@ -929,7 +956,14 @@
       const picker=byId('pediatricDrug');picker.replaceChildren(node('option','Zgjidh barin…'));picker.firstChild.value='';
       commonSections.forEach(section=>{
         const group=node('optgroup');group.label=section.title==='Miscellaneous'?'Të tjerat':sectionSq(section.title);
-        section.drugs.forEach(drug=>{const option=node('option',drug.name);option.value=drug.name;option.dataset.searchTerms=[drug.searchTerms||'',...(marketCatalog?.drugs.find(d=>d.name===drug.name)?.forms.flatMap(f=>f.variants.flatMap(v=>v.products.map(p=>p.name)))||[])].join(' ');group.append(option);});picker.append(group);
+        section.drugs.forEach(drug=>{
+          const entry=marketCatalog?.drugs.find(d=>d.name===drug.name);
+          const brands=[...new Set(entry?.forms.flatMap(f=>f.variants.flatMap(v=>v.products.map(p=>p.name)))||[])];
+          const option=node('option',drug.name);option.value=drug.name;
+          option.dataset.searchTerms=[drug.searchTerms||'',...brands].join(' ');option.dataset.brands=JSON.stringify(brands);
+          if(entry&&!entry.forms.some(f=>f.variants.some(v=>v.schemes.length)))option.dataset.referenceOnly='true';
+          group.append(option);
+        });picker.append(group);
       });picker.disabled=false;
       byId('pediatricCommonCount').textContent=referenceActive?`${marketCatalog.productCount} produkte · AKKPM`:'Referencë pa lidhje aktive';
       byId('pediatricCommonCount').dataset.source=source;
