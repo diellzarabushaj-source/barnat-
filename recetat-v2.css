@@ -186,3 +186,115 @@ html[data-drx-app="recetat-v2"] .rx-source-guide .rx-source-item-body{line-heigh
 
 .rx-source-result-meta[hidden]{display:none}
 .rx-source-detail-toolbar{padding-block:6px}
+
+/* Source reader: one compact scan path; clinical text and connectors stay intact. */
+.rx-source-library .rx-source-commandbar{
+  gap:12px;padding:16px 20px 12px;background:#f8fafc;
+}
+.rx-source-commandbar .rx-source-search-row{gap:10px}
+.rx-source-commandbar .rx-source-search input{min-height:46px;background:#fff}
+.rx-source-commandbar :is(.rx-source-chapter-picker,.rx-source-lesson-picker,.rx-source-filter-picker){gap:7px}
+.rx-source-commandbar label>span{font-size:12px;font-weight:600;color:#475467}
+.rx-source-commandbar select{min-height:44px;border-color:#d6deea;cursor:pointer}
+.rx-source-commandbar :is(input,select):hover{border-color:#9aaac1}
+.rx-source-commandbar #rxSourceFilter:has(option:checked:not([value="all"])){border-color:#7e98cb;background:#eef3ff;color:#24468b}
+.rx-source-index .rx-source-index-head{min-height:44px;padding-block:8px}
+.rx-source-library .rx-source-detail-toolbar{min-height:54px;padding:5px 20px;background:#fafbfe}
+.rx-source-detail-toolbar .rx-source-pagination button{width:40px;min-height:40px;background:#fff}
+.rx-source-guide{padding:4px 0 0}
+.rx-source-guide .rx-source-guide-head{gap:18px;padding:20px 24px 16px}
+.rx-source-guide .rx-source-guide-kicker{align-items:center;gap:8px 12px;margin-bottom:10px;font-size:12px;color:#526176}
+.rx-source-guide .rx-source-import-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border:1px solid #e1e7ef;border-radius:6px;background:#f8fafc;color:#526176;font-size:11px;font-weight:600;line-height:1.4}
+.rx-source-guide .rx-source-import-badge.is-verified{border-color:#b7e2cd;background:#ecfdf3;color:#067647}
+.rx-source-guide .rx-source-import-badge.is-verified::before{content:'';width:6px;height:6px;flex:none;border-radius:50%;background:currentColor}
+.rx-source-guide .rx-source-import-badge.is-review{border-color:#fecdca;background:#fff5f4;color:#912018}
+.rx-source-guide .rx-source-guide-head h3{font-size:25px;font-weight:650;line-height:1.3;letter-spacing:-.025em;overflow-wrap:anywhere;text-wrap:pretty}
+.rx-source-guide .rx-source-guide-stats{gap:6px;margin-top:12px;font-size:12px;color:#526176}
+.rx-source-guide-stats>span{display:inline-flex;align-items:center;gap:4px;min-height:26px;padding:3px 8px;border:1px solid #e6ebf2;border-radius:6px;background:#f8fafc}
+.rx-source-guide-stats b{font-weight:650;font-variant-numeric:tabular-nums}
+.rx-source-guide .rx-source-use{min-height:44px;gap:12px;padding:10px 14px;border-radius:8px;box-shadow:0 1px 2px #17255412}
+.rx-source-use:not(:disabled):hover{background:var(--rx-blue-hover);border-color:var(--rx-blue-hover)}
+.rx-source-guide .rx-source-flow{padding:0 24px 20px}
+.rx-source-guide .rx-source-flow-title{align-items:center;gap:10px;margin:0 0 10px;padding:12px 0 0;border-top:1px solid #e6ebf2;font-size:12px;color:#344054}
+.rx-source-flow-title small{font-size:11px;line-height:1.4;color:#526176}
+.rx-source-guide .rx-source-block{gap:6px;margin-top:0}
+.rx-source-guide .rx-source-item{
+  grid-template-columns:46px minmax(0,1fr);border-color:#dce3ed;
+  border-radius:10px;background:#f8fafc;box-shadow:none;
+}
+.rx-source-guide .rx-source-step-rail{justify-content:flex-start;gap:4px;padding:11px 4px 8px 8px;border-right:0;background:transparent}
+.rx-source-guide .rx-source-item-number{min-width:30px;min-height:30px;width:auto;height:auto;padding:2px 5px;border-color:#c5cfdd;border-radius:8px;background:#fff;color:#34465f;font-size:13px;font-weight:700;line-height:1.4}
+.rx-source-guide .rx-source-step-rail small{display:none}
+.rx-source-guide .rx-source-item.is-active-substance{border-color:#a9bee4;background:#fff;box-shadow:inset 3px 0 #3558a3}
+.rx-source-guide .is-active-substance .rx-source-step-rail{border-right:0;background:transparent}
+.rx-source-guide .is-active-substance .rx-source-item-number{border-color:#3558a3;background:#3558a3;color:#fff}
+.rx-source-guide .rx-source-item.is-conditional{border-color:#e6c16c}
+.rx-source-guide .rx-source-item-body{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;align-content:start;
+  gap:6px 14px;min-width:0;padding:11px 14px 11px 6px;line-height:1.5;
+}
+.rx-source-item-body>:is(.rx-source-item-title,.rx-source-meta,.rx-source-sig,.rx-source-note){grid-column:1;min-width:0}
+.rx-source-guide .rx-source-item-title{display:block}
+.rx-source-guide .rx-source-kind{margin-bottom:2px;color:#526176;font-size:11px;font-weight:550;line-height:1.35;letter-spacing:0;text-transform:none}
+.rx-source-guide .is-active-substance .rx-source-kind{color:#3156a4;font-weight:650}
+.rx-source-guide .rx-source-item-title h4{font-size:15px;font-weight:650;line-height:1.4;letter-spacing:-.012em;overflow-wrap:anywhere}
+.rx-source-guide .is-active-substance .rx-source-item-title h4{font-size:17px}
+.rx-source-guide .rx-source-meta{gap:5px 8px;margin:0;font-size:12px;color:#34465f}
+.rx-source-meta>span{max-width:100%;padding:3px 7px;border:1px solid #e1e7ef;border-radius:5px;background:#f8fafc;line-height:1.4;overflow-wrap:anywhere}
+.rx-source-guide .rx-source-sig{gap:6px;margin:0;line-height:1.5}
+.rx-source-guide .rx-source-sig>span{font-size:12px;line-height:1.75;color:#526176}
+.rx-source-guide .rx-source-sig>p{margin:0;font-size:13px;line-height:1.6;color:#34465f}
+.rx-source-guide .rx-source-item-body>.rx-source-note{margin:0;font-size:13px;line-height:1.6}
+.rx-source-guide .rx-source-find-drug{grid-column:2;grid-row:1/4;align-self:start;min-height:40px;padding:8px 10px;gap:8px;border-radius:7px;border-color:#c3d0e7;font-size:12px;line-height:1.4;color:#24468b;white-space:normal}
+.rx-source-guide .rx-source-find-drug b{font-size:15px;font-weight:500}
+.rx-source-guide .rx-source-connector{
+  grid-template-columns:46px auto minmax(0,1fr);gap:0 6px;margin:2px 0;
+}
+.rx-source-guide .rx-source-connector-line:first-child{justify-self:center;width:1px;height:16px;background:#cbd5e1}
+.rx-source-guide .rx-source-connector-line:nth-of-type(2){background:#e6ebf2}
+.rx-source-guide .rx-source-connector-pill{gap:6px;min-height:20px;padding:1px 6px;border:0;border-radius:4px;background:transparent;font-size:10px;line-height:1.5}
+.rx-source-guide .rx-source-connector.is-and .rx-source-connector-pill small{display:none}
+.rx-source-guide .rx-source-connector.is-and .rx-source-connector-pill b{color:#526176;font-weight:600}
+.rx-source-guide .rx-source-connector:is(.is-or,.is-plus) .rx-source-connector-pill{background:#eef3ff;color:#24468b}
+.rx-source-guide .rx-source-connector.is-conditional .rx-source-connector-pill{background:#fffaeb;color:#8b4c08}
+.rx-source-guide .rx-source-connector p{margin:3px 0 6px 46px;font-size:12px;line-height:1.5}
+.rx-source-guide .rx-source-item.is-source-note{border-style:dashed;background:#fafbfe;box-shadow:none}
+.rx-source-guide .is-source-note .rx-source-item-body{grid-template-columns:minmax(0,1fr)}
+.rx-source-guide .is-source-note .rx-source-sig>span{display:none}
+.rx-source-guide .rx-source-guide-foot{justify-content:flex-start;gap:6px 18px;padding:12px 24px 18px;font-size:11px;line-height:1.6;color:#526176}
+.rx-source-guide-foot b{font-weight:600;color:#34465f}
+@media(max-width:900px){
+  .rx-source-guide .rx-source-guide-head{padding:18px 20px 14px}
+  .rx-source-guide .rx-source-flow{padding-inline:20px}
+}
+@media(max-width:640px){
+  .rx-source-library .rx-source-commandbar{gap:10px;padding:12px}
+  .rx-source-commandbar .rx-source-search-row{grid-template-columns:minmax(0,1fr) 108px;gap:6px}
+  .rx-source-commandbar .rx-source-search input{min-height:46px}
+  .rx-source-commandbar #rxSourceSearchScope{padding-inline:8px;font-size:12px}
+  .rx-source-library .rx-source-detail-toolbar{padding-inline:12px;gap:8px}
+  .rx-source-detail-toolbar strong{font-size:11px;line-height:1.5}
+  .rx-source-detail-toolbar .rx-source-pagination{gap:5px}
+  .rx-source-detail-toolbar .rx-source-pagination button{width:44px;min-height:44px}
+  .rx-source-guide .rx-source-guide-head{gap:12px;padding:16px 12px 14px}
+  .rx-source-guide .rx-source-guide-head h3{font-size:21px;line-height:1.3}
+  .rx-source-guide .rx-source-guide-kicker{margin-bottom:8px;font-size:11px}
+  .rx-source-guide .rx-source-guide-stats{margin-top:10px;font-size:11px}
+  .rx-source-guide .rx-source-use{width:100%;justify-content:center;gap:10px}
+  .rx-source-guide .rx-source-flow{padding:0 10px 16px}
+  .rx-source-guide .rx-source-flow-title{display:flex;flex-wrap:wrap;gap:3px 10px;padding-top:10px}
+  .rx-source-flow-title small{font-size:11px}
+  .rx-source-guide .rx-source-item{grid-template-columns:38px minmax(0,1fr)}
+  .rx-source-guide .rx-source-step-rail{padding:10px 2px 8px 5px}
+  .rx-source-guide .rx-source-item-number{min-width:28px;min-height:28px;padding-inline:3px;font-size:12px}
+  .rx-source-guide .rx-source-item-body{grid-template-columns:minmax(0,1fr);gap:6px;padding:10px 10px 10px 5px}
+  .rx-source-guide .rx-source-item-title h4{font-size:15px}
+  .rx-source-guide .is-active-substance .rx-source-item-title h4{font-size:16px}
+  .rx-source-guide .rx-source-meta{font-size:12px;gap:5px}
+  .rx-source-meta>span{padding:3px 6px}
+  .rx-source-guide .rx-source-find-drug{grid-column:1;grid-row:auto;min-width:0;width:100%;min-height:44px;margin-top:2px;justify-content:space-between;font-size:12px;padding:10px;background:#f5f8ff}
+  .rx-source-guide .rx-source-find-drug>span{position:static;width:auto;height:auto;overflow:visible;clip-path:none;white-space:normal}
+  .rx-source-guide .rx-source-connector{grid-template-columns:38px auto minmax(0,1fr)}
+  .rx-source-guide .rx-source-connector p{margin-left:38px}
+  .rx-source-guide .rx-source-guide-foot{padding:12px;font-size:11px}
+}
