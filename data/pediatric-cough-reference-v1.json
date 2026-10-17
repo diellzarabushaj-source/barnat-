@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "pediatric-cough-reference-v3-20261017",
+  "schemaVersion": "pediatric-cough-reference-v4-nogrippin-20261017",
   "auditedAt": "2026-10-16",
   "registryCheckedAt": "2026-10-17",
   "registryProductCount": 80,
@@ -2159,7 +2159,7 @@
         "R05X"
       ],
       "componentPattern": "^Paracetamol; Oxolamine Citrate; Chlorpheniramine",
-      "summarySq": "Kombinim i regjistruar; nuk përdoret doza e një substance të vetme. Pa automatizim pediatrik pa skemën e plotë të produktit; kontrollo moshën, përbërësit dhe dublimin me barna të tjera.",
+      "summarySq": "NOGRIPPIN kapsula 250/100/2 mg: skemë sipas fletëudhëzimit AEM 2023. Nga 6 deri në 12 vjeç: një kapsulë çdo 8 orë; mbi 12 vjeç: 1–2 kapsula tri herë/ditë. Nën 6 vjeç nuk përdoret. Shurupi kërkon fletëudhëzimin e vet; nuk konvertohet doza e kapsulave në mL.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
@@ -2175,11 +2175,68 @@
           "authority": "Autoritet rregullator / prodhues",
           "title": "Regjistri zyrtar i RMV · NOGRIPPIN Pediatric syrup",
           "url": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/939100641"
+        },
+        {
+          "authority": "Autoritet rregullator · AEM / Ministria e Shëndetësisë, Azerbajxhan",
+          "title": "NOGRIPPIN kapsula · fletëudhëzimi i miratuar 2023, dozimi dhe kundërindikacionet",
+          "url": "https://pharma.az/wp-content/themes/jnews/master/files/noqrippin-dv-23-00230.docx"
+        },
+        {
+          "authority": "Autoritet rregullator · AEM",
+          "title": "NOGRIPPIN kapsula · regjistrimi DV №23-00230, Biofarma",
+          "url": "https://pharma.az/medicines/?id=388181"
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "label": "NOGRIPPIN kapsula · nga 6 vjeç",
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://pharma.az/wp-content/themes/jnews/master/files/noqrippin-dv-23-00230.docx",
+          "marketEvidenceKey": "cough-nogrippin-capsule",
+          "marketProductLabel": "NOGRIPPIN capsule",
+          "marketRequirePediatricPopulation": true,
+          "marketFormPattern": "^Capsule$",
+          "marketWholeOnly": true,
+          "eligibilitySq": "Vetëm kapsulat 250/100/2 mg. Nën 6 vjeç nuk përdoret; 6–12 vjeç: 1 kapsulë çdo 8 orë, maksimumi 3/24 orë; mbi 12 vjeç: 1–2 kapsula tri herë/ditë, maksimumi 6/24 orë. Nuk është skema e shurupit ose e Forte-s.",
+          "safetyConfirmation": "Mosha reale, produkti dhe aftësia për të gëlltitur kapsula të plota janë konfirmuar. Janë kontrolluar fletëudhëzimi, kundërindikacionet (përfshirë epilepsinë, astmën akute, glaukomën dhe dëmtimin e rëndë renal/hepatik), MAOI dhe ndërveprimet. Nuk ka dublim të përbërësve me barna të tjera.",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 1,
+              "max": 1,
+              "unit": "unit",
+              "period": "dose",
+              "minMonths": 72,
+              "maxMonths": 144,
+              "minInclusive": true,
+              "maxInclusive": true,
+              "frequency": "çdo 8 orë · 3 herë/ditë",
+              "maxPerDay": 3,
+              "source": "NOGRIPPIN kapsula · nga 6 vjeç",
+              "noteSq": "Vetëm kapsula të plota 250 mg paracetamol + 100 mg oksolaminë citrat + 2 mg klorfeniraminë maleat. Mos përdor me barna të tjera që dublojnë këta përbërës. Mund të shkaktojë përgjumje. Nëse dhimbja/temperatura vazhdon ose shfaqen simptoma të reja brenda 3–5 ditësh, ndërprit dhe rivlerëso. Burimi është fletëudhëzimi AEM 2023; kontrollo edhe fletëudhëzimin e paketimit që përdoret."
+            },
+            {
+              "doseType": "fixed",
+              "min": 1,
+              "max": 2,
+              "unit": "unit",
+              "period": "dose",
+              "minMonths": 144,
+              "maxMonths": 216,
+              "minInclusive": false,
+              "maxInclusive": true,
+              "frequency": "3 herë/ditë",
+              "maxPerDay": 6,
+              "source": "NOGRIPPIN kapsula · nga 6 vjeç",
+              "noteSq": "Vetëm kapsula të plota 250 mg paracetamol + 100 mg oksolaminë citrat + 2 mg klorfeniraminë maleat. Mos përdor me barna të tjera që dublojnë këta përbërës. Mund të shkaktojë përgjumje. Nëse dhimbja/temperatura vazhdon ose shfaqen simptoma të reja brenda 3–5 ditësh, ndërprit dhe rivlerëso. Burimi është fletëudhëzimi AEM 2023; kontrollo edhe fletëudhëzimin e paketimit që përdoret."
+            }
+          ]
+        }
+      ],
       "searchTerms": "kollë kolle cough  Paracetamol + Oxolamine + Chlorpheniramine",
-      "registryActivePattern": "^Paracetamol; Oxolamine Citrate; Chlorpheniramine"
+      "registryActivePattern": "^Paracetamol; Oxolamine Citrate; Chlorpheniramine",
+      "auditedAt": "2026-10-17"
     },
     {
       "name": "Paracetamol + Oxolamine + Pseudoephedrine + Chlorpheniramine",
@@ -2962,6 +3019,23 @@
       },
       "sourceUrl": "https://rejestry.ezdrowie.gov.pl/api/rpl/medicinal-products/8747/characteristic",
       "populationNoteSq": ""
+    },
+    {
+      "key": "cough-nogrippin-capsule",
+      "drugName": "Paracetamol + Oxolamine + Chlorpheniramine",
+      "id": "cfd0ef24-50ca-4504-ab70-718d35784aca",
+      "fields": {
+        "registry_number": "738",
+        "trade_name": "NOGRIPPIN capsule",
+        "active_substance": "Paracetamol; Oxolamine Citrate; Chlorpheniramine Maleate",
+        "atc_code": "R05X",
+        "strength": "250 mg+100 mg+2 mg",
+        "pharmaceutical_form": "Capsule",
+        "packaging": "15 capsules",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://pharma.az/wp-content/themes/jnews/master/files/noqrippin-dv-23-00230.docx",
+      "populationNoteSq": "Fletëudhëzim AEM 2023 për NOGRIPPIN Biofarma 250/100/2 mg, 2 blistera × 15 kapsula. Regjistri AKKPM paraqet 15 kapsula; kontrollo fletëudhëzimin e paketimit lokal. Vetëm kapsula të plota, nga 6 vjeç."
     }
   ],
   "componentProducts": [
@@ -3391,6 +3465,28 @@
       "sources": [
         "https://rejestry.ezdrowie.gov.pl/api/rpl/medicinal-products/8747/characteristic"
       ]
+    },
+    {
+      "drugName": "Paracetamol + Oxolamine + Chlorpheniramine",
+      "id": "cfd0ef24-50ca-4504-ab70-718d35784aca",
+      "fields": {
+        "registry_number": "738",
+        "trade_name": "NOGRIPPIN capsule",
+        "active_substance": "Paracetamol; Oxolamine Citrate; Chlorpheniramine Maleate",
+        "atc_code": "R05X",
+        "strength": "250 mg+100 mg+2 mg",
+        "pharmaceutical_form": "Capsule",
+        "packaging": "15 capsules",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 1,
+      "unit": "unit",
+      "perML": null,
+      "basis": "",
+      "verifiedCombination": true,
+      "sources": [
+        "https://pharma.az/wp-content/themes/jnews/master/files/noqrippin-dv-23-00230.docx"
+      ]
     }
   ],
   "productReviews": [
@@ -3609,7 +3705,7 @@
       },
       "status": "product-unconfirmed",
       "labelSq": "Fletëudhëzimi i dozimit mungon",
-      "reasonSq": "NOGRIPPIN Forte: regjistri zyrtar konfirmon formën dhe përbërjen, por fusha e dozimit është e paplotësuar dhe nuk ka fletëudhëzim të lidhur. Nuk u konfirmua skemë pediatrike e plotë për këtë produkt. Nevojitet fletëudhëzimi i autorizuar i paketimit; nuk merret doza nga PAROL, Oledro ose një formulim tjetër.",
+      "reasonSq": "NOGRIPPIN Forte: regjistri zyrtar konfirmon formën dhe përbërjen, por fusha e dozimit është e paplotësuar dhe nuk ka fletëudhëzim të lidhur. Nuk u konfirmua skemë pediatrike e plotë për këtë produkt. Nevojitet fletëudhëzimi i autorizuar i paketimit; nuk merret doza nga PAROL, Oledro ose një formulim tjetër. Kapsulat 250/100/2 mg kanë fletëudhëzim zyrtar AEM, por ai nuk autorizon këtë formë ose përqendrim.",
       "reviewedAt": "2026-10-17",
       "sources": [
         {
@@ -4163,32 +4259,6 @@
       "verificationOutcome": "product-leaflet-not-confirmed"
     },
     {
-      "id": "cfd0ef24-50ca-4504-ab70-718d35784aca",
-      "drugName": "Paracetamol + Oxolamine + Chlorpheniramine",
-      "fields": {
-        "registry_number": "738",
-        "trade_name": "NOGRIPPIN capsule",
-        "active_substance": "Paracetamol; Oxolamine Citrate; Chlorpheniramine Maleate",
-        "atc_code": "R05X",
-        "strength": "250 mg+100 mg+2 mg",
-        "pharmaceutical_form": "Capsule",
-        "packaging": "15 capsules",
-        "approved_population": "Pediatric and adult both"
-      },
-      "status": "product-unconfirmed",
-      "labelSq": "Fletëudhëzimi i dozimit mungon",
-      "reasonSq": "NOGRIPPIN capsule: regjistri zyrtar konfirmon formën dhe përbërjen, por fusha e dozimit është e paplotësuar dhe nuk ka fletëudhëzim të lidhur. Nuk u konfirmua skemë pediatrike e plotë për këtë produkt. Nevojitet fletëudhëzimi i autorizuar i paketimit; nuk merret doza nga PAROL, Oledro ose një formulim tjetër.",
-      "reviewedAt": "2026-10-17",
-      "sources": [
-        {
-          "authority": "Autoritet rregullator / prodhues",
-          "title": "Regjistri zyrtar i RMV · NOGRIPPIN capsule",
-          "url": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/939245830"
-        }
-      ],
-      "verificationOutcome": "product-leaflet-not-confirmed"
-    },
-    {
       "id": "9ca69e1a-c019-4f0e-9731-063cbcc1bafe",
       "drugName": "Paracetamol + Oxolamine + Chlorpheniramine",
       "fields": {
@@ -4203,7 +4273,7 @@
       },
       "status": "product-unconfirmed",
       "labelSq": "Fletëudhëzimi i dozimit mungon",
-      "reasonSq": "NOGRIPPIN Pediatric syrup: regjistri zyrtar konfirmon formën dhe përbërjen, por fusha e dozimit është e paplotësuar dhe nuk ka fletëudhëzim të lidhur. Nuk u konfirmua skemë pediatrike e plotë për këtë produkt. Nevojitet fletëudhëzimi i autorizuar i paketimit; nuk merret doza nga PAROL, Oledro ose një formulim tjetër.",
+      "reasonSq": "NOGRIPPIN Pediatric syrup: regjistri zyrtar konfirmon formën dhe përbërjen, por fusha e dozimit është e paplotësuar dhe nuk ka fletëudhëzim të lidhur. Nuk u konfirmua skemë pediatrike e plotë për këtë produkt. Nevojitet fletëudhëzimi i autorizuar i paketimit; nuk merret doza nga PAROL, Oledro ose një formulim tjetër. Kapsulat 250/100/2 mg kanë fletëudhëzim zyrtar AEM, por ai nuk autorizon këtë formë ose përqendrim.",
       "reviewedAt": "2026-10-17",
       "sources": [
         {
