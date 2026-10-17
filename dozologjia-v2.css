@@ -2163,7 +2163,7 @@ button,input,select{font:inherit}
 .dz-select-option-text{display:grid;gap:3px;min-width:0}
 .dz-select-option-name{overflow-wrap:anywhere}
 .dz-select-brand{font-size:12px;font-weight:500;line-height:1.45;color:#536478;overflow-wrap:anywhere}
-.dz-select-reference{flex:none;padding:3px 7px;border:1px solid #d7e0ec;border-radius:6px;background:#f5f7fb;color:#465d77;font-size:11px;font-weight:650;line-height:1.4;letter-spacing:0}
+.dz-select-reference{flex:none;max-width:40%;padding:4px 7px;border:1px solid #c4d0e0;border-radius:6px;background:#edf2f8;color:#354d6b;font-size:11px;font-weight:650;line-height:1.4;letter-spacing:0;white-space:normal;overflow-wrap:anywhere;text-align:center}
 .dz-evidence-limited .dz-evidence-badge{background:#eef2f7;color:#465d77;border-color:#d7e0ec}
 .dz-review-heading{font-size:14px;color:#274d79;line-height:1.5}
 .dz-select-options{scroll-padding-block:58px 8px}

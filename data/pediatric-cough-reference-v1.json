@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "pediatric-cough-reference-v2-20261017",
+  "schemaVersion": "pediatric-cough-reference-v3-20261017",
   "auditedAt": "2026-10-16",
   "registryCheckedAt": "2026-10-17",
   "registryProductCount": 80,
@@ -1764,7 +1764,7 @@
         "R03DA54"
       ],
       "componentPattern": "^Theophylline",
-      "summarySq": "Baladex: kombinim me teofilinë, jo shurup i thjeshtë për kollë. Dozimi kërkon indikacion të saktë, kontroll ndërveprimesh dhe monitorim sipas produktit; pa formulë automatike.",
+      "summarySq": "Baladex: teofilinë 50 mg + guaifenezinë 30 mg/5 mL. SmPC jep interval dozimi për moshën mbi 6 vjeç sipas peshës, në 2 ose 3 marrje. Mjeku zgjedh shpeshtësinë dhe dozën brenda intervalit, pas vlerësimit dhe monitorimit; nuk është shurup për kollë të zakonshme.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
@@ -1775,9 +1775,113 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "Aflofarm · Baladex",
           "url": "https://aflofarm.com.pl/media/produkt_zalaczniki/baladex-ulotka-6t.pdf"
+        },
+        {
+          "authority": "Autoritet rregullator / prodhues",
+          "title": "Baladex · fletëudhëzimi / SmPC",
+          "url": "https://rejestry.ezdrowie.gov.pl/api/rpl/medicinal-products/8747/characteristic"
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "label": "Baladex · 2 marrje/ditë",
+          "eligibilitySq": "Vetëm mbi 6 vjeç. Nën 40 kg: 11–16,5 mg/kg/24 orë teofilinë, ndarë në 2 marrje. Mbi 40 kg: 5–10 mL për marrje. Pikërisht 6 vjeç ose 40 kg: burimi nuk përcakton grup të qartë; vendim individual.",
+          "safetyConfirmation": "Kam përcaktuar indikacionin dhe planin individual të teofilinës. Janë kontrolluar kundërindikacionet, ndërveprimet, faktorët që ndryshojnë pastrimin dhe monitorimi i përqendrimit të teofilinës. Intervali i shfaqur është referencë; doza brenda tij zgjidhet nga mjeku.",
+          "rules": [
+            {
+              "doseType": "weight",
+              "min": 5.5,
+              "max": 8.25,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 72,
+              "minInclusive": false,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "minKg": 0.4,
+              "maxKg": 40,
+              "maxKgInclusive": false,
+              "frequency": "2 herë/ditë",
+              "maxDailyPerKg": 16.5,
+              "source": "Baladex · SmPC §4.2",
+              "noteSq": "Interval i referencës për teofilinën, jo dozë e zgjedhur automatikisht. Doza përcaktohet individualisht dhe rekomandohet monitorimi i teofilinës. Jo për kollë të zakonshme; kontrollo ndërveprimet dhe përmbajtjen e etanolit."
+            },
+            {
+              "doseType": "fixed",
+              "min": 50,
+              "max": 100,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 72,
+              "minInclusive": false,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "minKg": 40,
+              "minKgInclusive": false,
+              "frequency": "2 herë/ditë",
+              "maxPerDay": 200,
+              "source": "Baladex · SmPC §4.2",
+              "noteSq": "Interval 5–10 mL i referencës; doza brenda tij përcaktohet individualisht nga mjeku. Rekomandohet monitorimi i teofilinës. Kontrollo ndërveprimet, kundërindikacionet dhe etanolin."
+            }
+          ],
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://rejestry.ezdrowie.gov.pl/api/rpl/medicinal-products/8747/characteristic",
+          "marketEvidenceKey": "cough-baladex",
+          "marketProductLabel": "Baladex",
+          "marketRequirePediatricPopulation": true,
+          "marketFormPattern": "^Syrup$"
+        },
+        {
+          "label": "Baladex · 3 marrje/ditë",
+          "eligibilitySq": "Vetëm mbi 6 vjeç. Nën 40 kg: 11–16,5 mg/kg/24 orë teofilinë, ndarë në 3 marrje. Mbi 40 kg: 5–10 mL për marrje. Pikërisht 6 vjeç ose 40 kg: burimi nuk përcakton grup të qartë; vendim individual.",
+          "safetyConfirmation": "Kam përcaktuar indikacionin dhe planin individual të teofilinës. Janë kontrolluar kundërindikacionet, ndërveprimet, faktorët që ndryshojnë pastrimin dhe monitorimi i përqendrimit të teofilinës. Intervali i shfaqur është referencë; doza brenda tij zgjidhet nga mjeku.",
+          "rules": [
+            {
+              "doseType": "weight",
+              "min": 3.6666666666666665,
+              "max": 5.5,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 72,
+              "minInclusive": false,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "minKg": 0.4,
+              "maxKg": 40,
+              "maxKgInclusive": false,
+              "frequency": "3 herë/ditë",
+              "maxDailyPerKg": 16.5,
+              "source": "Baladex · SmPC §4.2",
+              "noteSq": "Interval i referencës për teofilinën, jo dozë e zgjedhur automatikisht. Doza përcaktohet individualisht dhe rekomandohet monitorimi i teofilinës. Jo për kollë të zakonshme; kontrollo ndërveprimet dhe përmbajtjen e etanolit."
+            },
+            {
+              "doseType": "fixed",
+              "min": 50,
+              "max": 100,
+              "unit": "mg",
+              "period": "dose",
+              "minMonths": 72,
+              "minInclusive": false,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "minKg": 40,
+              "minKgInclusive": false,
+              "frequency": "3 herë/ditë",
+              "maxPerDay": 300,
+              "source": "Baladex · SmPC §4.2",
+              "noteSq": "Interval 5–10 mL i referencës; doza brenda tij përcaktohet individualisht nga mjeku. Rekomandohet monitorimi i teofilinës. Kontrollo ndërveprimet, kundërindikacionet dhe etanolin."
+            }
+          ],
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://rejestry.ezdrowie.gov.pl/api/rpl/medicinal-products/8747/characteristic",
+          "marketEvidenceKey": "cough-baladex",
+          "marketProductLabel": "Baladex",
+          "marketRequirePediatricPopulation": true,
+          "marketFormPattern": "^Syrup$"
+        }
+      ],
       "searchTerms": "kollë kolle cough  Theophylline + Guaifenesin",
       "registryActivePattern": "^Theophylline",
       "auditedAt": "2026-10-17"
@@ -1931,7 +2035,7 @@
         "R05X"
       ],
       "componentPattern": "^Paracetamol; (?:Chlorpheniramine|Pseudoephedrine)",
-      "summarySq": "Tylol Hot Pediatric 250/2/30 mg ka skemë për moshën 6–12 vjeç. A-Ferin Plus dhe PAROL Hot kanë doza/forma të ndryshme; nuk marrin automatikisht skemën e Tylol-it.",
+      "summarySq": "Tylol Hot Pediatric: 6–12 vjeç; PAROL HOT: mbi 12 vjeç. A-Ferin Plus: vetëm skema mbi 12 vjeç, 20 mL çdo 6 orë, maksimumi 4 marrje/24 orë. Për 6–12 vjeç dokumenti TİTCK jep dozë, por nuk rekomandon përdorimin; kjo pjesë nuk automatizohet.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
@@ -1942,6 +2046,16 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "Nobel · Tylol Hot Pediatric, qershor 2023",
           "url": "https://tylolhot.ba/site/wp-content/uploads/2025/02/Tylol-Hot-pediatric_uputstvo-za-pacijenta.pdf"
+        },
+        {
+          "authority": "Autoritet rregullator / prodhues",
+          "title": "PAROL Hot 500 mg/60 mg/4 mg Powder Sachet for Single-Use · fletëudhëzimi / SmPC",
+          "url": "https://www.atabay.com/wp-content/uploads/2022/02/parol-hot-kt.pdf"
+        },
+        {
+          "authority": "Autoritet rregullator / prodhues",
+          "title": "A-Ferin Plus · fletëudhëzimi / SmPC",
+          "url": "https://titck.gov.tr/storage/Archive/2024/kubKtAttachments/aferinplusonerilenkullanmatalimatitemiz_d49ea622-03db-42b6-b756-9e180aaae9a9.pdf"
         }
       ],
       "options": [
@@ -1973,6 +2087,65 @@
           "eligibilitySq": "Vetëm 6–12 vjeç; një qese 250/2/30 mg sipas nevojës, çdo 6 orë, maksimumi 4 qese/24 orë.",
           "marketFormPattern": "^effervescent powder$",
           "marketWholeOnly": true
+        },
+        {
+          "label": "PAROL HOT · mbi 12 vjeç",
+          "eligibilitySq": "Vetëm mbi 12 vjeç. Një qese e plotë për marrje; maksimumi 4 qese/24 orë.",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 1,
+              "max": 1,
+              "unit": "unit",
+              "period": "dose",
+              "minMonths": 144,
+              "minInclusive": false,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "frequency": "çdo 6–8 orë · maksimumi 4 marrje/24 orë",
+              "maxPerDay": 4,
+              "source": "PAROL HOT · mbi 12 vjeç",
+              "noteSq": "Një qese: paracetamol 500 mg + pseudoefedrinë HCl 60 mg + klorfeniraminë maleat 4 mg. Tret në 160 mL ujë sipas fletëudhëzimit. Pa preparat tjetër me këta përbërës. Nëse simptomat vazhdojnë 3–5 ditë, rivlerësoje."
+            }
+          ],
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.atabay.com/wp-content/uploads/2022/02/parol-hot-kt.pdf",
+          "marketEvidenceKey": "cough-parol-hot",
+          "marketProductLabel": "PAROL Hot 500 mg/60 mg/4 mg Powder Sachet for Single-Use",
+          "marketRequirePediatricPopulation": true,
+          "safetyConfirmation": "Produkti, mosha reale dhe indikacioni janë konfirmuar. Janë kontrolluar kundërindikacionet, ndërveprimet dhe funksioni renal/hepatik. Nuk ka dublim të përbërësve me barna të tjera.",
+          "marketFormPattern": "^Powder for oral solution$",
+          "marketWholeOnly": true
+        },
+        {
+          "label": "A-Ferin Plus · mbi 12 vjeç",
+          "eligibilitySq": "Vetëm mbi 12 vjeç: 20 mL çdo 6 orë; maksimumi 80 mL/24 orë. Dokumenti jep edhe dozë për 6–12 vjeç, por po aty nuk e rekomandon këtë grup; nuk automatizohet.",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 20,
+              "max": 20,
+              "unit": "mL",
+              "period": "dose",
+              "minMonths": 144,
+              "minInclusive": false,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "frequency": "çdo 6 orë · maksimumi 4 marrje/24 orë",
+              "maxPerDay": 80,
+              "source": "A-Ferin Plus · TİTCK 2024",
+              "noteSq": "Çdo 5 mL: paracetamol 160 mg + klorfeniraminë maleat 1 mg + pseudoefedrinë HCl 15 mg. Llogaritet vëllimi i preparatit të plotë. Pa dublim të përbërësve; jo më shumë se 5 ditë. Për 6–12 vjeç burimi ka udhëzime të papërputhshme; kërko sqarim të produktit."
+            }
+          ],
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://titck.gov.tr/storage/Archive/2024/kubKtAttachments/aferinplusonerilenkullanmatalimatitemiz_d49ea622-03db-42b6-b756-9e180aaae9a9.pdf",
+          "marketEvidenceKey": "cough-aferin-plus",
+          "marketProductLabel": "A-Ferin Plus",
+          "marketRequirePediatricPopulation": true,
+          "safetyConfirmation": "Produkti, mosha reale dhe indikacioni janë konfirmuar. Janë kontrolluar kundërindikacionet, ndërveprimet dhe funksioni renal/hepatik. Nuk ka dublim të përbërësve me barna të tjera.",
+          "marketFormPattern": "^Oral solution$"
         }
       ],
       "searchTerms": "kollë kolle cough  Paracetamol + Chlorpheniramine + Pseudoephedrine",
@@ -1992,6 +2165,16 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
           "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+        },
+        {
+          "authority": "Autoritet rregullator / prodhues",
+          "title": "Regjistri zyrtar i RMV · NOGRIPPIN capsule",
+          "url": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/939245830"
+        },
+        {
+          "authority": "Autoritet rregullator / prodhues",
+          "title": "Regjistri zyrtar i RMV · NOGRIPPIN Pediatric syrup",
+          "url": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/939100641"
         }
       ],
       "options": [],
@@ -2016,6 +2199,11 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "Regjistri zyrtar i RMV · Nogrippin Forte",
           "url": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/939245831"
+        },
+        {
+          "authority": "Autoritet rregullator / prodhues",
+          "title": "Regjistri zyrtar i RMV · NOGRIPPIN Forte",
+          "url": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/939245832"
         }
       ],
       "options": [],
@@ -2121,7 +2309,7 @@
         "R05XA01"
       ],
       "componentPattern": "^paracetamol; chlorpheniramine",
-      "summarySq": "Kombinim i regjistruar; nuk përdoret doza e një substance të vetme. Pa automatizim pediatrik pa skemën e plotë të produktit; kontrollo moshën, përbërësit dhe dublimin me barna të tjera.",
+      "summarySq": "Oledro Hot: mbi 12 vjeç, një qese e plotë çdo 6 orë, maksimumi 4/24 orë dhe jo më shumë se 5 ditë. Përbërja merret nga prodhuesi; rendi i papërputhur i komponentëve në regjistër nuk kthehet në dozë mg/kg.",
       "sources": [
         {
           "authority": "Burim zyrtar / prodhues",
@@ -2134,7 +2322,38 @@
           "url": "https://www.drogsan.com.tr/images/kub_kt/solsu/PIL_OledroHotEff.pdf"
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "label": "Oledro Hot · mbi 12 vjeç",
+          "eligibilitySq": "Vetëm mbi 12 vjeç. Një qese e plotë për marrje; maksimumi 4 qese/24 orë.",
+          "rules": [
+            {
+              "doseType": "fixed",
+              "min": 1,
+              "max": 1,
+              "unit": "unit",
+              "period": "dose",
+              "minMonths": 144,
+              "minInclusive": false,
+              "maxMonths": 216,
+              "maxInclusive": true,
+              "frequency": "çdo 6 orë · maksimumi 4 marrje/24 orë",
+              "maxPerDay": 4,
+              "source": "Oledro Hot · mbi 12 vjeç",
+              "noteSq": "Një qese e plotë: paracetamol 500 mg + fenilefrinë HCl 10 mg + klorfeniraminë maleat 2 mg + oksolaminë citrat 100 mg, sipas prodhuesit. Rendi i komponentëve në regjistër nuk përdoret për llogaritje. Tret në 2/3 gote ujë sipas fletëudhëzimit; jo më shumë se 5 ditë. Pa paracetamol ose preparate të ngjashme paralelisht."
+            }
+          ],
+          "mode": "clinicalRules",
+          "route": "oral",
+          "sourceUrl": "https://www.drogsan.com.tr/images/kub_kt/solsu/PIL_OledroHotEff.pdf",
+          "marketEvidenceKey": "cough-oledro-hot",
+          "marketProductLabel": "Oledro Hot",
+          "marketRequirePediatricPopulation": true,
+          "safetyConfirmation": "Produkti, mosha reale dhe indikacioni janë konfirmuar. Janë kontrolluar kundërindikacionet, ndërveprimet dhe funksioni renal/hepatik. Nuk ka dublim të përbërësve me barna të tjera.",
+          "marketFormPattern": "^Effervescent granules$",
+          "marketWholeOnly": true
+        }
+      ],
       "searchTerms": "kollë kolle cough  Paracetamol + Chlorpheniramine + Phenylephrine + Oxolamine",
       "registryActivePattern": "^paracetamol; chlorpheniramine",
       "auditedAt": "2026-10-17"
@@ -2675,6 +2894,74 @@
       },
       "sourceUrl": "https://www.nobel.com.tr/cmsfiles/turkey/products/tylol-hot-c-12-poset-short-product-info-1.pdf?v=42",
       "populationNoteSq": ""
+    },
+    {
+      "key": "cough-parol-hot",
+      "drugName": "Paracetamol + Chlorpheniramine + Pseudoephedrine",
+      "id": "151db35d-9b90-4b46-8801-81f20c20e454",
+      "fields": {
+        "registry_number": "465",
+        "trade_name": "PAROL Hot 500 mg/60 mg/4 mg Powder Sachet for Single-Use",
+        "active_substance": "Paracetamol; Pseudoephedrine HCl; Chlorpheniramine Maleat",
+        "atc_code": "R05X",
+        "strength": "500 mg+60 mg+4 mg",
+        "pharmaceutical_form": "Powder for oral solution",
+        "packaging": "12 sachets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://www.atabay.com/wp-content/uploads/2022/02/parol-hot-kt.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-oledro-hot",
+      "drugName": "Paracetamol + Chlorpheniramine + Phenylephrine + Oxolamine",
+      "id": "822fb756-7a36-4997-86ec-0cfe2d07a9cf",
+      "fields": {
+        "registry_number": "1229",
+        "trade_name": "Oledro Hot",
+        "active_substance": "paracetamol; chlorpheniramine maleate; phenylephrine hydrochloride; oxolamine citrate",
+        "atc_code": "R05XA01",
+        "strength": "500 mg+10 mg+2 mg+100 mg",
+        "pharmaceutical_form": "Effervescent granules",
+        "packaging": "pack sizes of oldero is 12 effervescent granule sachets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://www.drogsan.com.tr/images/kub_kt/solsu/PIL_OledroHotEff.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-aferin-plus",
+      "drugName": "Paracetamol + Chlorpheniramine + Pseudoephedrine",
+      "id": "748de5cc-6e72-4e9b-835a-4cfbf07a512e",
+      "fields": {
+        "registry_number": "699",
+        "trade_name": "A-Ferin Plus",
+        "active_substance": "Paracetamol; Chlorpheniramine maleate; Pseudoephedrine HCl",
+        "atc_code": "R05X",
+        "strength": "(160 mg+1 mg+15 mg)/5 mL",
+        "pharmaceutical_form": "Oral solution",
+        "packaging": "Bottle of 100ml",
+        "approved_population": "Pediatric only"
+      },
+      "sourceUrl": "https://titck.gov.tr/storage/Archive/2024/kubKtAttachments/aferinplusonerilenkullanmatalimatitemiz_d49ea622-03db-42b6-b756-9e180aaae9a9.pdf",
+      "populationNoteSq": ""
+    },
+    {
+      "key": "cough-baladex",
+      "drugName": "Theophylline + Guaifenesin",
+      "id": "a8a4b149-b8ca-4380-b907-e6a761391c2b",
+      "fields": {
+        "registry_number": "107",
+        "trade_name": "Baladex",
+        "active_substance": "Theophylline; Guaifenesine",
+        "atc_code": "R03DA54",
+        "strength": "(50 mg+30 mg)/5 ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "150ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "sourceUrl": "https://rejestry.ezdrowie.gov.pl/api/rpl/medicinal-products/8747/characteristic",
+      "populationNoteSq": ""
     }
   ],
   "componentProducts": [
@@ -3016,6 +3303,94 @@
       "sources": [
         "https://www.nobel.com.tr/cmsfiles/turkey/products/tylol-hot-c-12-poset-short-product-info-1.pdf?v=42"
       ]
+    },
+    {
+      "drugName": "Paracetamol + Chlorpheniramine + Pseudoephedrine",
+      "id": "151db35d-9b90-4b46-8801-81f20c20e454",
+      "fields": {
+        "registry_number": "465",
+        "trade_name": "PAROL Hot 500 mg/60 mg/4 mg Powder Sachet for Single-Use",
+        "active_substance": "Paracetamol; Pseudoephedrine HCl; Chlorpheniramine Maleat",
+        "atc_code": "R05X",
+        "strength": "500 mg+60 mg+4 mg",
+        "pharmaceutical_form": "Powder for oral solution",
+        "packaging": "12 sachets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 1,
+      "unit": "unit",
+      "perML": null,
+      "basis": "",
+      "verifiedCombination": true,
+      "sources": [
+        "https://www.atabay.com/wp-content/uploads/2022/02/parol-hot-kt.pdf"
+      ]
+    },
+    {
+      "drugName": "Paracetamol + Chlorpheniramine + Phenylephrine + Oxolamine",
+      "id": "822fb756-7a36-4997-86ec-0cfe2d07a9cf",
+      "fields": {
+        "registry_number": "1229",
+        "trade_name": "Oledro Hot",
+        "active_substance": "paracetamol; chlorpheniramine maleate; phenylephrine hydrochloride; oxolamine citrate",
+        "atc_code": "R05XA01",
+        "strength": "500 mg+10 mg+2 mg+100 mg",
+        "pharmaceutical_form": "Effervescent granules",
+        "packaging": "pack sizes of oldero is 12 effervescent granule sachets",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 1,
+      "unit": "unit",
+      "perML": null,
+      "basis": "",
+      "verifiedCombination": true,
+      "sources": [
+        "https://www.drogsan.com.tr/images/kub_kt/solsu/PIL_OledroHotEff.pdf"
+      ]
+    },
+    {
+      "drugName": "Paracetamol + Chlorpheniramine + Pseudoephedrine",
+      "id": "748de5cc-6e72-4e9b-835a-4cfbf07a512e",
+      "fields": {
+        "registry_number": "699",
+        "trade_name": "A-Ferin Plus",
+        "active_substance": "Paracetamol; Chlorpheniramine maleate; Pseudoephedrine HCl",
+        "atc_code": "R05X",
+        "strength": "(160 mg+1 mg+15 mg)/5 mL",
+        "pharmaceutical_form": "Oral solution",
+        "packaging": "Bottle of 100ml",
+        "approved_population": "Pediatric only"
+      },
+      "value": 1,
+      "unit": "mL",
+      "perML": 1,
+      "basis": "",
+      "verifiedCombination": true,
+      "sources": [
+        "https://titck.gov.tr/storage/Archive/2024/kubKtAttachments/aferinplusonerilenkullanmatalimatitemiz_d49ea622-03db-42b6-b756-9e180aaae9a9.pdf"
+      ]
+    },
+    {
+      "drugName": "Theophylline + Guaifenesin",
+      "id": "a8a4b149-b8ca-4380-b907-e6a761391c2b",
+      "fields": {
+        "registry_number": "107",
+        "trade_name": "Baladex",
+        "active_substance": "Theophylline; Guaifenesine",
+        "atc_code": "R03DA54",
+        "strength": "(50 mg+30 mg)/5 ml",
+        "pharmaceutical_form": "Syrup",
+        "packaging": "150ml",
+        "approved_population": "Pediatric and adult both"
+      },
+      "value": 50,
+      "unit": "mg",
+      "perML": 5,
+      "basis": "theophylline",
+      "verifiedCombination": true,
+      "sources": [
+        "https://rejestry.ezdrowie.gov.pl/api/rpl/medicinal-products/8747/characteristic"
+      ]
     }
   ],
   "productReviews": [
@@ -3041,31 +3416,6 @@
           "authority": "Burim zyrtar / prodhues",
           "title": "Adipharm · Mucosoft Complex",
           "url": "https://www.adipharm.com/storage/app/media/Products/2021/Leaflet_EN/Mucosoft%20Complex.pdf"
-        }
-      ]
-    },
-    {
-      "id": "a8a4b149-b8ca-4380-b907-e6a761391c2b",
-      "drugName": "Theophylline + Guaifenesin",
-      "fields": {
-        "registry_number": "107",
-        "trade_name": "Baladex",
-        "active_substance": "Theophylline; Guaifenesine",
-        "atc_code": "R03DA54",
-        "strength": "(50 mg+30 mg)/5 ml",
-        "pharmaceutical_form": "Syrup",
-        "packaging": "150ml",
-        "approved_population": "Pediatric and adult both"
-      },
-      "status": "specialist-context",
-      "labelSq": "Dozim individual · monitorim",
-      "reasonSq": "Baladex nuk përdoret nën 6 vjeç. Dozimi i teofilinës përcaktohet individualisht sipas përgjigjes klinike; duhen kontrolluar ndërveprimet, faktorët që ndryshojnë pastrimin dhe nevoja për monitorim. Nuk është shurup i thjeshtë kundër kollës dhe nuk aktivizohet vetëm nga pesha.",
-      "reviewedAt": "2026-10-17",
-      "sources": [
-        {
-          "authority": "Burim zyrtar / prodhues",
-          "title": "Aflofarm · Baladex",
-          "url": "https://aflofarm.com.pl/media/produkt_zalaczniki/baladex-ulotka-6t.pdf"
         }
       ]
     },
@@ -3245,31 +3595,6 @@
       ]
     },
     {
-      "id": "822fb756-7a36-4997-86ec-0cfe2d07a9cf",
-      "drugName": "Paracetamol + Chlorpheniramine + Phenylephrine + Oxolamine",
-      "fields": {
-        "registry_number": "1229",
-        "trade_name": "Oledro Hot",
-        "active_substance": "paracetamol; chlorpheniramine maleate; phenylephrine hydrochloride; oxolamine citrate",
-        "atc_code": "R05XA01",
-        "strength": "500 mg+10 mg+2 mg+100 mg",
-        "pharmaceutical_form": "Effervescent granules",
-        "packaging": "pack sizes of oldero is 12 effervescent granule sachets",
-        "approved_population": "Pediatric and adult both"
-      },
-      "status": "data-inconsistent",
-      "labelSq": "Rendi i përbërësve kërkon sqarim",
-      "reasonSq": "Oledro Hot: prodhuesi deklaron paracetamol 500 mg, fenilefrinë HCl 10 mg, klorfeniraminë maleat 2 mg dhe oksolaminë citrat 100 mg. Rendi i substancave dhe vlerave në rekord nuk përputhet; nuk llogaritet dozë nga komponenti i gabuar. Fletëudhëzimi është për moshë mbi 12 vjeç; jo për fëmijë më të vegjël.",
-      "reviewedAt": "2026-10-17",
-      "sources": [
-        {
-          "authority": "Burim zyrtar / prodhues",
-          "title": "Drogsan · Oledro Hot",
-          "url": "https://www.drogsan.com.tr/images/kub_kt/solsu/PIL_OledroHotEff.pdf"
-        }
-      ]
-    },
-    {
       "id": "798a626c-32af-41a2-8c40-ac662eadf8bf",
       "drugName": "Paracetamol + Oxolamine + Pseudoephedrine + Chlorpheniramine",
       "fields": {
@@ -3283,16 +3608,17 @@
         "approved_population": "Pediatric and adult both"
       },
       "status": "product-unconfirmed",
-      "labelSq": "Udhëzimi i produktit mungon",
-      "reasonSq": "Regjistri zyrtar i RMV konfirmon përbërjen 650/200/60/4 mg, por fusha e dozimit nuk përmban skemë. Nuk huazohet doza nga Nogrippin shurup ose nga kombinime me përbërës të tjerë.",
+      "labelSq": "Fletëudhëzimi i dozimit mungon",
+      "reasonSq": "NOGRIPPIN Forte: regjistri zyrtar konfirmon formën dhe përbërjen, por fusha e dozimit është e paplotësuar dhe nuk ka fletëudhëzim të lidhur. Nuk u konfirmua skemë pediatrike e plotë për këtë produkt. Nevojitet fletëudhëzimi i autorizuar i paketimit; nuk merret doza nga PAROL, Oledro ose një formulim tjetër.",
       "reviewedAt": "2026-10-17",
       "sources": [
         {
-          "authority": "Burim zyrtar / prodhues",
-          "title": "Regjistri zyrtar i RMV · Nogrippin Forte",
-          "url": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/939245831"
+          "authority": "Autoritet rregullator / prodhues",
+          "title": "Regjistri zyrtar i RMV · NOGRIPPIN Forte",
+          "url": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/939245832"
         }
-      ]
+      ],
+      "verificationOutcome": "product-leaflet-not-confirmed"
     },
     {
       "id": "5224d226-1870-415f-8306-69caa6bc3b45",
@@ -3837,68 +4163,6 @@
       "verificationOutcome": "product-leaflet-not-confirmed"
     },
     {
-      "id": "151db35d-9b90-4b46-8801-81f20c20e454",
-      "drugName": "Paracetamol + Chlorpheniramine + Pseudoephedrine",
-      "fields": {
-        "registry_number": "465",
-        "trade_name": "PAROL Hot 500 mg/60 mg/4 mg Powder Sachet for Single-Use",
-        "active_substance": "Paracetamol; Pseudoephedrine HCl; Chlorpheniramine Maleat",
-        "atc_code": "R05X",
-        "strength": "500 mg+60 mg+4 mg",
-        "pharmaceutical_form": "Powder for oral solution",
-        "packaging": "12 sachets",
-        "approved_population": "Pediatric and adult both"
-      },
-      "status": "product-unconfirmed",
-      "labelSq": "Udhëzimi i produktit mungon",
-      "reasonSq": "PAROL Hot 500 mg/60 mg/4 mg Powder Sachet for Single-Use 500 mg+60 mg+4 mg, Powder for oral solution: nuk u gjet skemë e plotë pediatrike e lidhur me këtë produkt/formë në burimet publike të kontrolluara. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
-      "reviewedAt": "2026-10-17",
-      "sources": [
-        {
-          "authority": "Burim zyrtar / prodhues",
-          "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
-          "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
-        },
-        {
-          "authority": "Burim zyrtar / prodhues",
-          "title": "Nobel · Tylol Hot Pediatric, qershor 2023",
-          "url": "https://tylolhot.ba/site/wp-content/uploads/2025/02/Tylol-Hot-pediatric_uputstvo-za-pacijenta.pdf"
-        }
-      ],
-      "verificationOutcome": "product-leaflet-not-confirmed"
-    },
-    {
-      "id": "748de5cc-6e72-4e9b-835a-4cfbf07a512e",
-      "drugName": "Paracetamol + Chlorpheniramine + Pseudoephedrine",
-      "fields": {
-        "registry_number": "699",
-        "trade_name": "A-Ferin Plus",
-        "active_substance": "Paracetamol; Chlorpheniramine maleate; Pseudoephedrine HCl",
-        "atc_code": "R05X",
-        "strength": "(160 mg+1 mg+15 mg)/5 mL",
-        "pharmaceutical_form": "Oral solution",
-        "packaging": "Bottle of 100ml",
-        "approved_population": "Pediatric only"
-      },
-      "status": "product-unconfirmed",
-      "labelSq": "Udhëzimi i produktit mungon",
-      "reasonSq": "A-Ferin Plus (160 mg+1 mg+15 mg)/5 mL, Oral solution: nuk u gjet skemë e plotë pediatrike e lidhur me këtë produkt/formë në burimet publike të kontrolluara. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
-      "reviewedAt": "2026-10-17",
-      "sources": [
-        {
-          "authority": "Burim zyrtar / prodhues",
-          "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
-          "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
-        },
-        {
-          "authority": "Burim zyrtar / prodhues",
-          "title": "Nobel · Tylol Hot Pediatric, qershor 2023",
-          "url": "https://tylolhot.ba/site/wp-content/uploads/2025/02/Tylol-Hot-pediatric_uputstvo-za-pacijenta.pdf"
-        }
-      ],
-      "verificationOutcome": "product-leaflet-not-confirmed"
-    },
-    {
       "id": "cfd0ef24-50ca-4504-ab70-718d35784aca",
       "drugName": "Paracetamol + Oxolamine + Chlorpheniramine",
       "fields": {
@@ -3912,14 +4176,14 @@
         "approved_population": "Pediatric and adult both"
       },
       "status": "product-unconfirmed",
-      "labelSq": "Udhëzimi i produktit mungon",
-      "reasonSq": "NOGRIPPIN capsule 250 mg+100 mg+2 mg, Capsule: nuk u gjet skemë e plotë pediatrike e lidhur me këtë produkt/formë në burimet publike të kontrolluara. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "labelSq": "Fletëudhëzimi i dozimit mungon",
+      "reasonSq": "NOGRIPPIN capsule: regjistri zyrtar konfirmon formën dhe përbërjen, por fusha e dozimit është e paplotësuar dhe nuk ka fletëudhëzim të lidhur. Nuk u konfirmua skemë pediatrike e plotë për këtë produkt. Nevojitet fletëudhëzimi i autorizuar i paketimit; nuk merret doza nga PAROL, Oledro ose një formulim tjetër.",
       "reviewedAt": "2026-10-17",
       "sources": [
         {
-          "authority": "Burim zyrtar / prodhues",
-          "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
-          "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+          "authority": "Autoritet rregullator / prodhues",
+          "title": "Regjistri zyrtar i RMV · NOGRIPPIN capsule",
+          "url": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/939245830"
         }
       ],
       "verificationOutcome": "product-leaflet-not-confirmed"
@@ -3938,14 +4202,14 @@
         "approved_population": "Pediatric only"
       },
       "status": "product-unconfirmed",
-      "labelSq": "Udhëzimi i produktit mungon",
-      "reasonSq": "NOGRIPPIN Pediatric syrup (120 mg+50 mg+1 mg)/5 ml, Syrup: nuk u gjet skemë e plotë pediatrike e lidhur me këtë produkt/formë në burimet publike të kontrolluara. Nuk huazohet doza e një marke, përqendrimi, ekstrakti ose rruge tjetër. Nevojitet fletëudhëzimi i produktit para automatizimit.",
+      "labelSq": "Fletëudhëzimi i dozimit mungon",
+      "reasonSq": "NOGRIPPIN Pediatric syrup: regjistri zyrtar konfirmon formën dhe përbërjen, por fusha e dozimit është e paplotësuar dhe nuk ka fletëudhëzim të lidhur. Nuk u konfirmua skemë pediatrike e plotë për këtë produkt. Nevojitet fletëudhëzimi i autorizuar i paketimit; nuk merret doza nga PAROL, Oledro ose një formulim tjetër.",
       "reviewedAt": "2026-10-17",
       "sources": [
         {
-          "authority": "Burim zyrtar / prodhues",
-          "title": "MHRA · preparatet e kombinuara për kollë/ftohje",
-          "url": "https://www.gov.uk/drug-safety-update/over-the-counter-cough-and-cold-medicines-for-children"
+          "authority": "Autoritet rregullator / prodhues",
+          "title": "Regjistri zyrtar i RMV · NOGRIPPIN Pediatric syrup",
+          "url": "https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/939100641"
         }
       ],
       "verificationOutcome": "product-leaflet-not-confirmed"
