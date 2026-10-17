@@ -2164,6 +2164,8 @@ button,input,select{font:inherit}
 .dz-select-option-name{overflow-wrap:anywhere}
 .dz-select-brand{font-size:12px;font-weight:500;line-height:1.45;color:#536478;overflow-wrap:anywhere}
 .dz-select-reference{flex:none;max-width:40%;padding:4px 7px;border:1px solid #c4d0e0;border-radius:6px;background:#edf2f8;color:#354d6b;font-size:11px;font-weight:650;line-height:1.4;letter-spacing:0;white-space:normal;overflow-wrap:anywhere;text-align:center}
+.dz-select-availability{flex:none;max-width:40%;padding:4px 7px;border:1px solid #c4d0e0;border-radius:6px;background:#f3f5f8;color:#43556a;font-size:11px;font-weight:650;line-height:1.4;text-align:center;overflow-wrap:anywhere}
+.dz-select-availability.is-available{background:#edf3ff;color:#274d79;border-color:#c3d4ed}
 .dz-evidence-limited .dz-evidence-badge{background:#eef2f7;color:#465d77;border-color:#d7e0ec}
 .dz-review-heading{font-size:14px;color:#274d79;line-height:1.5}
 .dz-select-options{scroll-padding-block:58px 8px}
@@ -2175,6 +2177,8 @@ button,input,select{font:inherit}
 .dz-result-context span,.dz-result-context small{font-size:12px;line-height:1.5;color:#536478}
 .dz-result-copy,.dz-result-retry,.dz-market-age-hint button{min-height:44px;border:1px solid #cbd7e4;border-radius:8px;background:#fff;color:#395c9a;font:inherit;font-size:12px;font-weight:650;padding:8px 12px;cursor:pointer}
 .dz-result-copy{flex:none}.dz-result-copy:disabled{cursor:default}.dz-result-retry{justify-self:start}
+.dz-result-limit{margin:2px 0;padding:8px 10px;border:1px solid #c5d6ed;border-radius:8px;background:#e4edfb;color:#274d79;font-size:13px;font-weight:700;line-height:1.5}
+.dz-result-source{justify-self:start;min-height:44px;display:inline-flex;align-items:center;color:#254790;font-size:12px;font-weight:650;text-decoration:underline;text-underline-offset:3px}
 .dz-market-age-hint{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:-8px}
 .dz-market-age-hint small{font-size:12px;line-height:1.5;color:#64758a}
 .dz-market-age-hint button{flex:none;padding:8px 10px;background:transparent}
