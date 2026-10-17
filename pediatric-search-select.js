@@ -90,12 +90,13 @@
         try { const value = JSON.parse(option.dataset.brands || '[]'); if (Array.isArray(value)) brands = value.filter(value => typeof value === 'string'); } catch {}
         const brandMatches = terms.length && !terms.every(term => normalize(option.textContent).includes(term))
           ? brands.filter(brand => terms.every(term => normalize(brand).includes(term))) : [];
-        if (brandMatches.length) {
-          const note = make('span', 'dz-select-brand', brandMatches.slice(0, 2).join(' · ') + (brandMatches.length > 2 ? ' +' + (brandMatches.length - 2) : ''));
+        const brandNotes = brandMatches.length ? brandMatches : option.dataset.referenceOnly === 'true' ? brands : [];
+        if (brandNotes.length) {
+          const note = make('span', 'dz-select-brand', brandNotes.slice(0, 2).join(' · ') + (brandNotes.length > 2 ? ' +' + (brandNotes.length - 2) : ''));
           note.id = row.id + 'Brand'; text.append(note); descriptions.push(note.id);
         }
         if (option.dataset.referenceOnly === 'true') {
-          const badge = make('span', 'dz-select-reference', 'Referencë'); badge.id = row.id + 'Status';
+          const badge = make('span', 'dz-select-reference', option.dataset.referenceLabel || 'Pa llogaritje'); badge.id = row.id + 'Status';
           row.append(badge); descriptions.push(badge.id);
         }
         if (descriptions.length) row.setAttribute('aria-describedby', descriptions.join(' '));

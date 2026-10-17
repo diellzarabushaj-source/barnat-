@@ -1,5 +1,7 @@
 # Dozologjia: kontrolli i preparateve të kollës — 17 tetor 2026
 
+> Raport historik para plotësimit të kombinimeve. Gjendja aktuale dhe kufizimet pasuese janë te [plotësimi i 17 tetorit](pediatric-cough-combinations-20261017.md).
+
 ## Rezultati
 
 U rikontrolluan identitetet e 80 produkteve të publikuara në AKKPM kundrejt inventarit ekzistues. Katalogu ruan 977 produkte gjithsej dhe 32 hyrje për kollën. Ka 33 skema sipas produktit/formës; 50 produkte kanë të paktën një skemë automatike, kundrejt 28 më parë. Një produkt mund të ketë kufi moshe edhe kur ka skemë aktive.

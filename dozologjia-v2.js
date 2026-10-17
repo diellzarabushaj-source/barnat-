@@ -220,12 +220,13 @@
         try { const value = JSON.parse(option.dataset.brands || '[]'); if (Array.isArray(value)) brands = value.filter(value => typeof value === 'string'); } catch {}
         const brandMatches = terms.length && !terms.every(term => normalize(option.textContent).includes(term))
           ? brands.filter(brand => terms.every(term => normalize(brand).includes(term))) : [];
-        if (brandMatches.length) {
-          const note = make('span', 'dz-select-brand', brandMatches.slice(0, 2).join(' · ') + (brandMatches.length > 2 ? ' +' + (brandMatches.length - 2) : ''));
+        const brandNotes = brandMatches.length ? brandMatches : option.dataset.referenceOnly === 'true' ? brands : [];
+        if (brandNotes.length) {
+          const note = make('span', 'dz-select-brand', brandNotes.slice(0, 2).join(' · ') + (brandNotes.length > 2 ? ' +' + (brandNotes.length - 2) : ''));
           note.id = row.id + 'Brand'; text.append(note); descriptions.push(note.id);
         }
         if (option.dataset.referenceOnly === 'true') {
-          const badge = make('span', 'dz-select-reference', 'Referencë'); badge.id = row.id + 'Status';
+          const badge = make('span', 'dz-select-reference', option.dataset.referenceLabel || 'Pa llogaritje'); badge.id = row.id + 'Status';
           row.append(badge); descriptions.push(badge.id);
         }
         if (descriptions.length) row.setAttribute('aria-describedby', descriptions.join(' '));
@@ -295,7 +296,7 @@
   const CALCULATE_URL = '/api/dosage?view=pediatric-common-calculate';
   let referenceRevision = '';
   let referenceActive = false;
-  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=64-market-cough-schemes-20261017';
+  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=65-market-cough-combinations-20261017';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
   const CLINICAL_AUDIT_URL = '/data/pediatric-clinical-audit-v1.json';
@@ -671,7 +672,7 @@
   const doseSq = value => liquidCore?.doseTextSq ? liquidCore.doseTextSq(value) : String(value ?? '');
   const formulationSq = value => liquidCore?.formulationTextSq ? liquidCore.formulationTextSq(value) : String(value ?? '');
   const sectionSq = value => liquidCore?.sectionTitleSq ? liquidCore.sectionTitleSq(value) : String(value ?? '');
-  const componentSq = value => ({'carbocisteine-lysine-salt':'kripë lizine e karbocisteinës','levocloperastine-fendizoate':'levokloperastinë fendizoat','cetraria-thick-extract':'ekstrakt i dendur i likenit islandez','primula-thyme-aqueous-extract':'ekstrakt ujor Primula + Thymus','plantago-mallow-aqueous-extract':'ekstrakt ujor Plantago + Malva','ambroxol-hydrochloride':'ambroksol hidroklorid','oxolamine-citrate':'oksolaminë citrat','dexamethasone-base':'deksametazon bazë','cholecalciferol':'vitaminë D3','elemental-iron':'hekur elementar','trimethoprim':'TMP (trimetoprim)','cefoperazone+sulbactam-total':'shuma cefoperazonë + sulbaktam (1:1)'}[value] || (liquidCore?.componentSq ? liquidCore.componentSq(value) : String(value ?? '')));
+  const componentSq = value => ({'theophylline':'teofilinë','carbocisteine-lysine-salt':'kripë lizine e karbocisteinës','levocloperastine-fendizoate':'levokloperastinë fendizoat','cetraria-thick-extract':'ekstrakt i dendur i likenit islandez','primula-thyme-aqueous-extract':'ekstrakt ujor Primula + Thymus','plantago-mallow-aqueous-extract':'ekstrakt ujor Plantago + Malva','ambroxol-hydrochloride':'ambroksol hidroklorid','oxolamine-citrate':'oksolaminë citrat','dexamethasone-base':'deksametazon bazë','cholecalciferol':'vitaminë D3','elemental-iron':'hekur elementar','trimethoprim':'TMP (trimetoprim)','cefoperazone+sulbactam-total':'shuma cefoperazonë + sulbaktam (1:1)'}[value] || (liquidCore?.componentSq ? liquidCore.componentSq(value) : String(value ?? '')));
   const mlNumber = value => {
     return String(Number(Number(value).toPrecision(4))).replace('.', ',');
   };
@@ -888,7 +889,7 @@
       host.append(node('strong',range,'dz-market-measure'));
     }
     const mass=doseRange(measure?.actualMin??result.perDoseMin??result.doseMin,measure?.actualMax??result.perDoseMax??result.doseMax,measure?.actualUnit||result.doseUnit);
-    if(!measured||result.doseUnit!=='unit')host.append(node(measured?'span':'strong',mass,measured?'dz-common-result-dose':'dz-market-measure dz-common-result-dose'));
+    if(!measured||result.doseUnit!=='unit'&&!(result.doseUnit==='mL'&&measure.unit==='mL'))host.append(node(measured?'span':'strong',mass,measured?'dz-common-result-dose':'dz-market-measure dz-common-result-dose'));
     if(result.administrationNote)host.append(node('p',result.administrationNote,'dz-market-frequency'));
     if(result.frequency)host.append(node('p',doseSq(result.frequency),'dz-market-frequency'));
     const note=(result.note||'').replace(/\bunit\b/g,variant?.form?.unit||'njësi').replace(result.frequency||'\u0000','').replace(/^\s*·\s*/, '').trim();
@@ -961,7 +962,12 @@
           const brands=[...new Set(entry?.forms.flatMap(f=>f.variants.flatMap(v=>v.products.map(p=>p.name)))||[])];
           const option=node('option',drug.name);option.value=drug.name;
           option.dataset.searchTerms=[drug.searchTerms||'',...brands].join(' ');option.dataset.brands=JSON.stringify(brands);
-          if(entry&&!entry.forms.some(f=>f.variants.some(v=>v.schemes.length)))option.dataset.referenceOnly='true';
+          if(entry&&!entry.forms.some(f=>f.variants.some(v=>v.schemes.length))){
+            option.dataset.referenceOnly='true';
+            const statuses=new Set(entry.forms.flatMap(f=>f.variants.map(v=>v.review?.status)).filter(Boolean));
+            const labels={'product-unconfirmed':'Udhëzimi mungon','data-incomplete':'Të dhëna të paplota','specialist-context':'Protokoll specifik','pediatric-restriction':'Kufizim pediatrik','data-inconsistent':'Të dhëna në konflikt','source-conflict':'Burime në konflikt','schedule-specific':'Skemë e veçantë','no-validated-regimen':'Pa skemë të vërtetuar'};
+            option.dataset.referenceLabel=statuses.size===1?labels[[...statuses][0]]||'Pa llogaritje':'Pa llogaritje';
+          }
           group.append(option);
         });picker.append(group);
       });picker.disabled=false;
