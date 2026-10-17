@@ -99,6 +99,11 @@
           const badge = make('span', 'dz-select-reference', option.dataset.referenceLabel || 'Pa llogaritje'); badge.id = row.id + 'Status';
           row.append(badge); descriptions.push(badge.id);
         }
+        if(option.dataset.availability){
+          const available=option.dataset.availability==='active';
+          const badge=make('span','dz-select-availability'+(available?' is-available':''),available?'Me skemë':'Pa llogaritje');
+          badge.id=row.id+'Availability';row.append(badge);descriptions.push(badge.id);
+        }
         if (descriptions.length) row.setAttribute('aria-describedby', descriptions.join(' '));
         row.addEventListener('pointerdown', event => event.preventDefault());
         // Cancel the enclosing label's synthetic input click after a choice.

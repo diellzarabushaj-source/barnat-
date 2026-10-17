@@ -229,6 +229,11 @@
           const badge = make('span', 'dz-select-reference', option.dataset.referenceLabel || 'Pa llogaritje'); badge.id = row.id + 'Status';
           row.append(badge); descriptions.push(badge.id);
         }
+        if(option.dataset.availability){
+          const available=option.dataset.availability==='active';
+          const badge=make('span','dz-select-availability'+(available?' is-available':''),available?'Me skemë':'Pa llogaritje');
+          badge.id=row.id+'Availability';row.append(badge);descriptions.push(badge.id);
+        }
         if (descriptions.length) row.setAttribute('aria-describedby', descriptions.join(' '));
         row.addEventListener('pointerdown', event => event.preventDefault());
         // Cancel the enclosing label's synthetic input click after a choice.
@@ -296,7 +301,7 @@
   const CALCULATE_URL = '/api/dosage?view=pediatric-common-calculate';
   let referenceRevision = '';
   let referenceActive = false;
-  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=66-market-nogrippin-20261017';
+  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=67-market-dose-clarity-20261017';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
   const CLINICAL_AUDIT_URL = '/data/pediatric-clinical-audit-v1.json';
@@ -749,7 +754,7 @@
   function choices(id,items,placeholder){
     const select=byId(id);select.replaceChildren();
     const empty=node('option',placeholder);empty.value='';select.append(empty);
-    items.forEach(item=>{const option=node('option',item.label);option.value=String(item.id);select.append(option);});
+    items.forEach(item=>{const option=node('option',item.label);option.value=String(item.id);if(item.availability)option.dataset.availability=item.availability;select.append(option);});
     select.disabled=!items.length;
   }
   function showPatient(visible){
@@ -812,7 +817,7 @@
     byId('pediatricAgeConfirmed').checked=false;byId('pediatricSafetyConfirmed').checked=false;
     const {drug,entry}=selection();renderSources(drug);renderProducts(null);
     if(!drug){nextChoice('pediatricDrug','Zgjidh barin','Zgjidh barin për të filluar.');return;}
-    choices('pediatricForm',(entry?.forms||[]).map(f=>({id:f.id,label:f.label})),'Zgjidh formën…');
+    choices('pediatricForm',(entry?.forms||[]).map(f=>({id:f.id,label:f.label,availability:f.variants.some(v=>v.schemes.length)?'active':'reference'})),'Zgjidh formën…');
     if(!entry?.forms.length)clearResult(referenceActive?'Nuk ka formë të konfirmuar në regjistrin e publikuar për këtë bar.':'Lidhja aktive mungon. Llogaritja nuk është e disponueshme.');
     else if(entry.forms.length===1){byId('pediatricForm').value=entry.forms[0].id;formChanged();}
     else nextChoice('pediatricForm','Zgjidh formën','Zgjidh formën e produktit që do të përdorësh.');
@@ -868,23 +873,39 @@
     patientResetState();
     byId('pediatricAgeNote').textContent=neonatal?'Shëno moshën reale në ditë; ajo nuk përcaktohet nga pesha.':inferred?'Mosha e sugjeruar nga pesha · ndryshoje kur duhet.':'Mosha nga pesha është vetëm sugjerim.';
   }
+  function quantityUnit(unit,value){
+    if(value===1)return unit;
+    return ({'kapsulë':'kapsula','tabletë':'tableta','supozitor':'supozitorë','ampulë':'ampula','flakon':'flakone','inhalim':'inhalime','pikë':'pika'})[unit]||unit;
+  }
   function displayResult(result){
     const host=byId('pediatricAnswer');host.replaceChildren();host.setAttribute('aria-busy','false');
+    host.classList.remove('has-result');
     if(result.error){host.append(node('p',result.error,'dz-market-message'));return;}
-    host.classList.add('has-result');
     const {drug,form,variant,scheme}=selection();
+    const measure=result.selectedMeasure;
+    if(measure?.error&&['whole','device'].includes(variant?.form?.measure)){
+      nextChoice('pediatricStrength','Ndrysho fortësinë / formën',measure.error);return;
+    }
+    host.classList.add('has-result');
     const heading=node('div',null,'dz-result-heading');
     const context=node('div',null,'dz-result-context');
-    context.append(node('strong',drug?.name||result.drugName),node('span',[form?.label,variant?.label].filter(Boolean).join(' · ')));
+    const names=[...new Set(variant?.products.map(p=>p.name)||[])];
+    const productTitle=names.length===1?names[0]:drug?.name||result.drugName;
+    context.append(node('strong',productTitle));
+    if(productTitle!==(drug?.name||result.drugName))context.append(node('span',drug?.name||result.drugName));
+    // The reviewed label can carry base/salt equivalence and must not be
+    // replaced by the registry's raw strength when simplifying the heading.
+    const brandSuffix=names.length===1?' · '+names[0]:'';
+    const strengthLabel=brandSuffix&&variant.label.endsWith(brandSuffix)?variant.label.slice(0,-brandSuffix.length):variant?.label;
+    context.append(node('span',[form?.label,strengthLabel].filter(Boolean).join(' · ')));
     if(scheme?.label)context.append(node('small',scheme.label));
     heading.append(context);host.append(heading);
-    const measure=result.selectedMeasure;
     const per=result.perDoseMin!=null?'PËR DOZË':result.dosePeriod==='day'?'NË 24 ORË':'DOZA';
     const routeLabels={oral:'Nga goja',rectal:'Rektal',injectable:'Parenteral',nebulized:'Nebulizim',inhaled:'Inhalim'};
     host.append(node('small',[routeLabels[result.route],per].filter(Boolean).join(' · '),'dz-market-kicker'));
     const measured=measure && !measure.error;
     if(measured){
-      const range=`${mlNumber(measure.min)}${Math.abs(measure.min-measure.max)>1e-9?'–'+mlNumber(measure.max):''} ${measure.unit}`;
+      const range=`${mlNumber(measure.min)}${Math.abs(measure.min-measure.max)>1e-9?'–'+mlNumber(measure.max):''} ${quantityUnit(measure.unit,measure.max)}`;
       // Integer solids are never split or rounded by the interface.
       host.append(node('strong',range,'dz-market-measure'));
     }
@@ -892,17 +913,23 @@
     if(!measured||result.doseUnit!=='unit'&&!(result.doseUnit==='mL'&&measure.unit==='mL'))host.append(node(measured?'span':'strong',mass,measured?'dz-common-result-dose':'dz-market-measure dz-common-result-dose'));
     if(result.administrationNote)host.append(node('p',result.administrationNote,'dz-market-frequency'));
     if(result.frequency)host.append(node('p',doseSq(result.frequency),'dz-market-frequency'));
-    const note=(result.note||'').replace(/\bunit\b/g,variant?.form?.unit||'njësi').replace(result.frequency||'\u0000','').replace(/^\s*·\s*/, '').trim();
+    const capShown=positiveNumber(result.dailyCap)&&Boolean(result.doseUnit);
+    if(capShown){const unit=result.doseUnit==='unit'?quantityUnit(variant?.form?.unit||'njësi',result.dailyCap):result.doseUnit;host.append(node('p',`Maksimumi ${calcFmt(result.dailyCap)} ${unit}/24 orë`,'dz-result-limit'));}
+    let rawNote=result.note||'';
+    if(capShown&&result.dailyCapLabel&&rawNote.endsWith(result.dailyCapLabel))rawNote=rawNote.slice(0,-result.dailyCapLabel.length).replace(/\s*·\s*$/,'');
+    const note=rawNote.replace(/\bunit\b/g,variant?.form?.unit||'njësi').replace(result.frequency||'\u0000','').replace(/^\s*·\s*/, '').trim();
     if(note)host.append(node('p',doseSq(note),'dz-market-note'));
     if(measure?.basis)host.append(node('p','Sipas komponentit: '+componentSq(measure.basis.split('|')[0]),'dz-market-note'));
     if(measure?.preparation)host.append(node('p',measure.preparation,'dz-market-note'));
     if(measure?.error)host.append(node('p',measure.error,'dz-market-message'));
     (result.resultWarnings||[]).forEach(warning=>host.append(node('p',warning,'dz-market-note')));
     host.append(node('small','Kontrollo etiketën dhe udhëzimin e produktit para administrimit.','dz-market-note'));
+    const sourceUrl=effectiveOptions(drug)[scheme?.index]?.sourceUrl;
+    if(typeof sourceUrl==='string'&&/^https:\/\//.test(sourceUrl)){const link=node('a','Burimi i skemës ↗','dz-result-source');link.href=sourceUrl;link.target='_blank';link.rel='noopener noreferrer';host.append(link);}
     if(navigator.clipboard?.writeText){
       const copy=node('button','Kopjo','dz-result-copy');copy.type='button';copy.setAttribute('aria-label','Kopjo rezultatin e llogaritur');
       const patient='Pesha: '+byId('pediatricWeight').value+' kg'+(result.ageInfo?.manual?' · Mosha: '+result.ageInfo.label:' · Mosha e pakonfirmuar');
-      const text=[host.innerText,patient].join('\n');const current=requestId;let copyError=null;
+      const text=[host.innerText,patient,typeof sourceUrl==='string'&&/^https:\/\//.test(sourceUrl)?'Burimi: '+sourceUrl:''].filter(Boolean).join('\n');const current=requestId;let copyError=null;
       copy.addEventListener('click',async()=>{
         copy.disabled=true;
         try{await navigator.clipboard.writeText(text);if(current===requestId&&copy.isConnected){copyError?.remove();copyError=null;copy.textContent='Kopjuar';setTimeout(()=>{if(copy.isConnected){copy.textContent='Kopjo';copy.disabled=false;}},1800);}}
