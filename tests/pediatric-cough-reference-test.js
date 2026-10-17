@@ -16,11 +16,11 @@ const measure=(name,v,age,expected,weight=20)=>{const r=dose(name,v,age,weight);
 assert.equal(cough.drugs.length,32);assert.equal(inventory.length,80);
 assert.equal(new Set(cough.drugs.map(d=>d.section)).size,5);
 assert.equal(reference.marketCatalog.productCount,977);assert.equal(reference.marketCatalog.drugs.length,101);
-assert.equal(cough.drugs.reduce((n,d)=>n+d.options.length,0),38);
+assert.equal(cough.drugs.reduce((n,d)=>n+d.options.length,0),39);
 const coughNames=new Set(cough.drugs.map(d=>d.name)),coughVariants=reference.marketCatalog.drugs.filter(d=>coughNames.has(d.name)).flatMap(d=>d.forms.flatMap(f=>f.variants));
-assert.equal(new Set(coughVariants.filter(v=>v.schemes.length).flatMap(v=>v.products.map(p=>p.id))).size,54);
+assert.equal(new Set(coughVariants.filter(v=>v.schemes.length).flatMap(v=>v.products.map(p=>p.id))).size,55);
 const referenceIds=new Set(coughVariants.filter(v=>!v.schemes.length).flatMap(v=>v.products.map(p=>p.id)));
-assert.equal(referenceIds.size,26);assert.equal(cough.productReviews.length,26);assert.ok(cough.productReviews.every(r=>referenceIds.has(r.id)));
+assert.equal(referenceIds.size,25);assert.equal(cough.productReviews.length,25);assert.ok(cough.productReviews.every(r=>referenceIds.has(r.id)));
 assert.equal(new Set(products.map(p=>p.id)).size,products.length);
 const unrelated={...inventory.find(p=>p.atc_code==='N02BE51'),id:'11111111-1111-4111-8111-111111111111',active_substance:'Paracetamol; Caffeine; Codeine phosphate',trade_name:'Unrelated shared-ATC combination'};
 const widerAtcLoad=market.withMarket(source,[...products,unrelated]);
@@ -84,7 +84,18 @@ for(const s of balv.schemes){const n=s.label.includes('2 marrje')?2:3;
 const oledroName='Paracetamol + Chlorpheniramine + Phenylephrine + Oxolamine',oledro=variant(oledroName,()=>true);assert.equal(oledro.concentration.unit,'unit');assert.ok(dose(oledroName,oledro,12).error);measure(oledroName,oledro,12.001,1);assert.equal(dose(oledroName,oledro,16).dailyCap,4);
 for(const name of ['Paracetamol + Phenylephrine + Chlorpheniramine','Paracetamol + Caffeine + Chlorpheniramine + Vitamin C'])for(const v of variants(name)){assert.ok(dose(name,v,12).error);measure(name,v,12.001,1);assert.ok(dose(name,v,12.001).dailyCap<=4);}
 assert.equal(variant('Paracetamol + Acetylcysteine',()=>true).review.status,'source-conflict');
-for(const name of ['Paracetamol + Oxolamine + Chlorpheniramine','Paracetamol + Oxolamine + Pseudoephedrine + Chlorpheniramine'])for(const v of variants(name)){assert.equal(v.schemes.length,0);assert.equal(v.review.status,'product-unconfirmed');assert.ok(v.review.sources.every(s=>s.url.startsWith('https://lekovi.zdravstvo.gov.mk/')));}
+const nogName='Paracetamol + Oxolamine + Chlorpheniramine';
+const nogCaps=variant(nogName,v=>v.products.some(p=>p.id==='cfd0ef24-50ca-4504-ab70-718d35784aca'));
+const nogSyrup=variant(nogName,v=>v.form.measure==='liquid');
+const nogOption=reference.clinicalAudit.drugs[nogName].calculator.options[nogCaps.schemes[0].index];
+assert.equal(nogCaps.concentration.unit,'unit');assert.equal(nogCaps.schemes.length,1);assert.match(nogOption.sourceUrl,/^https:\/\/pharma\.az\/.*noqrippin-dv-23-00230\.docx$/);
+assert.ok(dose(nogName,nogCaps,5.999).error);assert.ok(dose(nogName,nogCaps,18.001).error);
+for(const age of [6,8,11.999,12]){const r=measure(nogName,nogCaps,age,1);assert.equal(r.selectedMeasure.max,1);assert.equal(r.selectedMeasure.unit,'kapsulë');assert.equal(r.dailyCap,3);assert.match(r.frequency,/8 orë/);}
+for(const age of [12.001,13,18]){const r=measure(nogName,nogCaps,age,1);assert.equal(r.selectedMeasure.max,2);assert.equal(r.dailyCap,6);assert.match(r.frequency,/3 herë/);}
+for(const weight of [10,30,80])assert.equal(dose(nogName,nogCaps,8,weight).selectedMeasure.max,1,'Product age dose must not scale by weight');
+assert.equal(dose(nogName,nogCaps,8,20,{ageConfirmed:false}).needsAgeConfirmation,true);assert.equal(dose(nogName,nogCaps,8,20,{safetyConfirmed:false}).needsSafetyConfirmation,true);
+assert.ok(dose(nogName,nogSyrup,8,20,{optionIndex:nogCaps.schemes[0].index}).error,'A capsule regimen never authorizes the syrup');
+for(const [name,v] of [[nogName,nogSyrup],...variants('Paracetamol + Oxolamine + Pseudoephedrine + Chlorpheniramine').map(v=>['Paracetamol + Oxolamine + Pseudoephedrine + Chlorpheniramine',v])]){assert.equal(v.schemes.length,0);assert.equal(v.review.status,'product-unconfirmed');assert.ok(v.review.sources.every(s=>s.url.startsWith('https://lekovi.zdravstvo.gov.mk/')));}
 const butam=active('Butamirate citrate',1.5),omni=active('Butamirate citrate',.8);
 assert.ok(dose('Butamirate citrate',butam,2.999).error);measure('Butamirate citrate',butam,3,5);measure('Butamirate citrate',butam,6,10);measure('Butamirate citrate',butam,12,10);measure('Butamirate citrate',butam,12.001,15);
 measure('Butamirate citrate',omni,3,10);measure('Butamirate citrate',omni,6,15);assert.match(dose('Butamirate citrate',omni,8.999).frequency,/3 herë/);assert.match(dose('Butamirate citrate',omni,9).frequency,/4 herë/);
@@ -109,4 +120,4 @@ assert.equal(market.withMarket(reference,products).marketCatalog.revision,refere
 const legacy=require('../lib/pediatric-common-reference-handler').clientReference(reference);
 assert.ok(!legacy.marketCatalog);for(const drug of cough.drugs)assert.ok(legacy.clinicalAudit.drugs[drug.name].calculator.disabled);
 assert.equal(JSON.stringify(source),before,'Original 50-drug source and clinical audit are immutable');
-console.log('PASS: 80 cough products / 32 entries / 38 scoped schemes for 54 products, individual theophylline ranges, exact combination volumes, age/weight/daily limits, identities, routes, unresolved sources and legacy safety');
+console.log('PASS: 80 cough products / 32 entries / 39 scoped schemes for 55 products, official Nogrippin capsule age bands, isolated syrup/Forte, individual theophylline ranges, exact combinations, limits, identities and legacy safety');

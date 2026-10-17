@@ -7,7 +7,7 @@
   const CALCULATE_URL = '/api/dosage?view=pediatric-common-calculate';
   let referenceRevision = '';
   let referenceActive = false;
-  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=65-market-cough-combinations-20261017';
+  const DATA_URL = '/api/dosage?view=pediatric-common-reference&workspace=market-v1&build=66-market-nogrippin-20261017';
   const STATIC_FALLBACK_URL = '/data/pediatric-common-drugs-reference.json';
   const STATIC_AGE_DEFAULTS_URL = '/data/pediatric-weight-age-defaults.json';
   const CLINICAL_AUDIT_URL = '/data/pediatric-clinical-audit-v1.json';

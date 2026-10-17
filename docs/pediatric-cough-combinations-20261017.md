@@ -1,5 +1,7 @@
 # Dozologjia: plotësimi i kombinimeve — 17 tetor 2026
 
+> Gjendja e këtij raporti paraprin gjetjen e fletëudhëzimit zyrtar për kapsulat Nogrippin. Për gjendjen aktuale shih [kontrollin e Nogrippin](pediatric-nogrippin-source-review-20261017.md).
+
 Ky kontroll pason [raportin fillestar](pediatric-cough-source-review-20261017.md). Nga 80 produkte të kollës, tani 54 kanë të paktën një skemë: 38 zgjedhje sipas produktit/formës. 26 mbeten referencë pa automatizim; 15 prej tyre nuk kanë fletëudhëzim të plotë publik të konfirmuar. Katalogu i përgjithshëm ka 977 produkte; burimi bazë me 50 barna nuk ndryshon.
 
 ## Produktet e plotësuara
