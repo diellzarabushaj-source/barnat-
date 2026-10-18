@@ -307,3 +307,49 @@ test.describe('touch step emphasis',()=>{
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
   });
 });
+
+for (const width of [390,1440]) {
+  test(`chapters 6–10 preserve full instructions, separate source paragraphs and alternatives at ${width}px`,async({page})=>{
+    const items=Array.from({length:5},(_,i)=>({
+      _id:`qa-later-${i+6}`,chapterNumber:i+6,orderInChapter:1,title:`Later QA ${i+6}`,reviewStatus:'verified',
+      logicBlocks:[
+        {_key:'first',order:1,relation:'start',items:[{kind:'active-substance',title:'Tab. QA 10 mg',sig:'Complete QA instruction; ≥30 mL/min; 4 javë.'}],note:'S. Support paragraph one.\n\nS. Support paragraph two.'},
+        {_key:'alternative',order:2,relation:'or',sourceConnectorLabel:'OSE',selection:'choose-one',items:[{kind:'active-substance',title:'Inh. Alternative QA',sig:'Separate route QA.'}]},
+        {_key:'last',order:3,relation:'conditional',sourceConnectorLabel:'NËSE',condition:'QA condition ≥3',items:[{kind:'procedure',title:'QA last step'}]},
+      ],
+    }));
+    await page.route('**/api/medical-hub?**',async route=>{
+      const payload=require('./recetat-source-browser-fixture.js')(new URL(route.request().url()),items);
+      await route.fulfill({json:payload});
+    });
+    await page.setViewportSize({width,height:900});
+    await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
+    for (const chapter of [6,7,8,9,10]) {
+      await page.locator('#rxSourceChapterSelect').selectOption(String(chapter));
+      await expect(page.locator('#rxSourceGuideList h3')).toHaveText(`Later QA ${chapter}`);
+      await expect(page.locator('.rx-source-sig').first()).toContainText('≥30 mL/min; 4 javë.');
+      await expect(page.locator('.rx-source-block-note')).toHaveCSS('white-space','pre-line');
+      await expect(page.locator('.rx-source-block-note')).toContainText('Support paragraph two.');
+      await expect(page.locator('.rx-source-connector.is-or')).toHaveCount(1);
+      await expect(page.locator('.rx-source-connector.is-conditional')).toContainText('QA condition ≥3');
+      expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+    }
+    await page.locator('[data-rx-source-use]').click();
+    await expect(page.locator('#rxTabBtnCompose')).toHaveAttribute('aria-selected','true');
+    const text=await page.locator('#rxComposer').inputValue();
+    for(const value of ['≥30 mL/min; 4 javë.','Support paragraph one.','Support paragraph two.','OSE','Separate route QA.','QA condition ≥3'])expect(text).toContain(value);
+  });
+  test(`a confirmed chapter 6 clinical source conflict stays readable and cannot enter a draft at ${width}px`,async({page})=>{
+    const items=[{_id:'qa-unit-conflict',chapterNumber:6,orderInChapter:1,title:'QA concentration conflict',reviewStatus:'verified',logicBlocks:[{order:1,relation:'start',items:[{kind:'active-substance',title:'Inj. Vancomycin',sig:'QA target 15-20 mg/mL.'}]}]}];
+    await page.route('**/api/medical-hub?**',async route=>route.fulfill({json:require('./recetat-source-browser-fixture.js')(new URL(route.request().url()),items)}));
+    await page.setViewportSize({width,height:900});
+    await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
+    await page.locator('#rxSourceChapterSelect').selectOption('6');
+    await expect(page.locator('.rx-source-clinical-issue')).toContainText('mg/L');
+    await expect(page.locator('[data-rx-source-use]')).toBeDisabled();
+    await expect(page.locator('.rx-source-sig')).toContainText('QA target 15-20 mg/mL.');
+    await expect(page.locator('.rx-source-clinical-issue a')).toHaveAttribute('href','https://www.idsociety.org/practice-guideline/vancomycin/');
+    await expect(page.locator('#rxComposer')).toHaveValue('');
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  });
+}

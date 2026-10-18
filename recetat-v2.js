@@ -7755,7 +7755,8 @@
   function sourceClinicalIssues(guide) {
     // Keep the book verbatim, but do not turn a confirmed source conflict into
     // a prescription draft. These checks do not select a replacement regimen.
-    if (Number(guide?.chapterNumber) < 1 || Number(guide?.chapterNumber) > 5) return [];
+    const chapter = Number(guide?.chapterNumber);
+    if (chapter < 1 || chapter > 10) return [];
     const items = (guide?.logicBlocks || []).flatMap(block => block?.items || []);
     const issues = [];
     for (const item of items) {
@@ -7766,6 +7767,58 @@
       }
       if (/\bffp\b|plazme e fresket/.test(identity) && /\bnj[eë]\s+nj[eë]si\s+rrit\s+Hb\b/iu.test(sig)) {
         issues.push({code:'ffp-haemoglobin-conflict',message:'FFP: pohimi i burimit për rritjen e hemoglobinës kërkon korrigjim klinik. Referenca e transfuzionit e përdor FFP për zëvendësimin e faktorëve të koagulimit.',url:'https://www.lifeblood.com.au/health-professionals/clinical-practice/use-of-blood-components/use-of-fresh-frozen-plasma',source:'Australian Red Cross Lifeblood · FFP'});
+      }
+    }
+    if (chapter >= 6) {
+      const add = (code,message,url,source) => issues.push({code,message,url,source});
+      const blocks = guide?.logicBlocks || [];
+      const all = normalize(blocks.map(block => [block?.condition,block?.note,...(block?.items || []).flatMap(item => [item?.title,item?.sig,item?.note])].join(' ')).join(' '));
+      let group = '';
+      for (const block of blocks) {
+        if (block?.relation !== 'or') group = normalize(block?.condition);
+        for (const item of block?.items || []) {
+          const identity = normalize(`${item?.genericName || ''} ${item?.title || ''}`);
+          const sig = text(item?.sig);
+          if (identity.includes('doxycycline') && /\b200\s*mg\b/i.test(item?.title || '') && /2 her[eë] n[eë] dit[eë]|\bBD\b/i.test(sig) && /pneumoni|\bcap\b/.test(normalize(guide?.title))) {
+            add('doxycycline-cap-dose-conflict','Doxycycline: titulli 200 mg me udhëzimin BD nënkupton 400 mg/ditë. Kjo nuk përputhet me skemën e CAP në NICE; doza dhe kohëzgjatja kërkojnë sqarim.','https://www.nice.org.uk/guidance/NG250/chapter/recommendations','NICE NG250 · pneumonia');
+          }
+          if (identity.includes('vancomycin') && /15\s*[-–]\s*20\s*mg\s*\/\s*mL\b/i.test(sig)) {
+            add('vancomycin-concentration-unit-conflict','Vancomycin: njësia mg/mL në targetin 15–20 është e pasaktë. Referenca historike përdor mg/L; udhëzimi IDSA për infeksione serioze MRSA rekomandon monitorim sipas AUC.','https://www.idsociety.org/practice-guideline/vancomycin/','IDSA/ASHP · monitorimi i vancomycinës');
+          }
+          if (group.includes('tromboprofilaksi') && identity.includes('enoxaparin') && /1[.,]5\s*mg\s*\/\s*kg/i.test(sig)) {
+            add('enoxaparin-prophylaxis-treatment-conflict','Enoxaparin: skema shënohet si tromboprofilaksi, por përmban dozë sipas peshës për trajtim. SmPC dallon profilaksinë nga trajtimi; duhet sqaruar indikacioni dhe doza.','https://www.medicines.org.uk/emc/product/4499/smpc','SmPC Clexane · seksioni 4.2');
+          }
+          if (group.includes('tromboprofilaksi') && identity.includes('fondaparinux') && /5\s*[-–]\s*10\s*mg/i.test(item?.title || '')) {
+            add('fondaparinux-prophylaxis-treatment-conflict','Fondaparinux: 5–10 mg i përket dozimit për trajtim sipas peshës, ndërsa skema këtu etiketohet tromboprofilaksi. Duhet ndarë indikacioni dhe kontrolluar funksioni renal.','https://www.medicines.org.uk/emc/product/3335/smpc','SmPC Arixtra · seksioni 4.2');
+          }
+          if (identity.includes('tirofiban') && /\b0[.,]25\s*(?:mcg|microgram|µg|μg)\s*\/\s*kg/i.test(sig)) {
+            add('tirofiban-bolus-unit-conflict','Tirofiban: bolusi 0,25 mcg/kg i burimit nuk përputhet me bolusin 25 mcg/kg të regjimit PCI në SmPC. Regjimi, koha e administrimit dhe përshtatja renale kërkojnë rishikim specialistik.','https://www.medicines.org.uk/emc/product/8842/smpc','SmPC Tirofiban · seksioni 4.2');
+          }
+          if (identity.includes('ivabradine') && /\bOD\b/.test(sig) && !/\bBD\b|2 her[eë] n[eë] dit[eë]/i.test(sig)) {
+            add('ivabradine-frequency-conflict','Ivabradine: burimi jep OD, ndërsa SmPC për anginë dhe insuficiencë kardiake përshkruan administrim dy herë në ditë, me titrim sipas frekuencës kardiake. Shpeshtësia kërkon rishikim.','https://www.medicines.org.uk/emc/product/101787/smpc','SmPC Ivabradine · seksioni 4.2');
+          }
+          if (identity.includes('obeticholic')) {
+            add('obeticholic-regulatory-conflict','Obeticholic acid: skema përfshin përdorim në cirrozë të avancuar dhe kërkon rivlerësim. EMA ka revokuar autorizimin e Ocaliva në BE. Kjo referencë nuk përcakton statusin e regjistrimit në Kosovë.','https://www.ema.europa.eu/en/medicines/human/EPAR/ocaliva','EMA · Ocaliva');
+          }
+          if (identity.includes('insulin regular') && /\bBD\b/.test(sig) && /para m[eë]ngjesit/.test(sig) && /para drek[eë]s/.test(sig) && /para dark[eë]s/.test(sig)) {
+            add('insulin-frequency-source-conflict','Insulin regular: burimi shënon BD, por përshkruan administrim para mëngjesit, drekës dhe darkës. Ky konflikt i brendshëm duhet zgjidhur para kalimit në draft.','https://docs.google.com/document/d/119EyMzSHYV2SVYXLo6_P2EgkI_8Hukw_uNDvGuewyNg/edit','Dokumenti origjinal · skema e insulinës');
+          }
+          if (identity.includes('insulin') && /\bmg\s*\/\s*kg\b/i.test(sig)) {
+            add('insulin-dose-unit-conflict','Insulina: burimi përmban mg/kg në vend të njësive të insulinës për kg. Ky gabim njësie në protokollin DKA/HHS kërkon korrigjim të dokumentuar; nuk konvertohet automatikisht.','https://doi.org/10.2337/dci24-0032','ADA/EASD/JBDS/AACE/DTS · njësitë e insulinës');
+          }
+        }
+      }
+      if (chapter === 9 && /imunoglobulin[eë]?\s+0[.,]01\s*mL\s*\/\s*kg/i.test(all)) {
+        add('hav-immunoglobulin-dose-conflict','HAV: doza 0,01 mL/kg e imunoglobulinës nuk përputhet me dozën 0,1 mL/kg të GamaSTAN në udhëzimin aktual CDC. Duhet verifikuar produkti, indikacioni dhe grupi i pacientit.','https://www.cdc.gov/hepatitis-a/hcp/clinical-care/','CDC · profilaksia pas ekspozimit ndaj HAV');
+      }
+      if (chapter === 9 && /glecaprevir/.test(all) && /pibrentasvir/.test(all) && /100\s*mg/.test(all) && !/3\s*(?:tableta|tablete)|tri\s+tableta|300\s*mg/.test(all)) {
+        add('hcv-combination-source-conflict','Glecaprevir/pibrentasvir: burimi shënon 100/40 mg OD pa numrin e tabletave dhe e quan kapsulë. Udhëzimi AASLD/IDSA për të rriturit përdor tri tableta 100/40 mg bashkë një herë në ditë. Kufizimi i përgjithshëm i sofosbuvir/velpatasvir për gjenotipin 3 në këtë skemë kërkon gjithashtu rishikim.','https://www.hcvguidelines.org/guidance/treatment-naive-genotype-3-with-compensated-cirrhosis/','AASLD/IDSA · HCV gjenotipi 3');
+      }
+      if (chapter === 10 && /\b3[.,]3\s*mEq\s*\/\s*L/i.test(all) && /kalium|k⁺/.test(all) && /ketoacidosis|hyperosmolar/.test(normalize(guide?.title))) {
+        add('hyperglycemic-crisis-potassium-review','DKA/HHS: pragu i kaliumit 3,3 mEq/L i burimit kërkon përditësim kundrejt konsensusit 2024, i cili e shtyn insulinën kur K⁺ është <3,5 mmol/L. I gjithë protokolli i lëngjeve, kaliumit dhe insulinës duhet rishikuar bashkë.','https://doi.org/10.2337/dci24-0032','ADA/EASD/JBDS/AACE/DTS · konsensusi 2024');
+      }
+      if (chapter === 7 && /profilaksi/.test(all) && /clindamycin/.test(all)) {
+        add('endocarditis-prophylaxis-review','Profilaksia e endokarditit: burimi liston clindamycin si alternativë. AHA nuk e rekomandon më për profilaksinë para procedurave dentare; duhen verifikuar procedura dhe grupi me rrezik të lartë.','https://www.heart.org/-/media/Files/Health-Topics/Infective-Endocarditis/Infective-Endocarditis-Wallet-Card.pdf','American Heart Association · profilaksia e endokarditit');
       }
     }
     return issues.filter((issue,index) => issues.findIndex(entry => entry.code === issue.code) === index);

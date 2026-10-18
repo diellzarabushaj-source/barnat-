@@ -41,6 +41,42 @@ for (const item of [{genericName:'Enoxaparin sodium',title:'Inj. Enoxaparin',sig
   assert.ok(renderGuide(conflict).includes(item.sig), 'Original source remains visible');
 }
 assert.equal(bridgeCalls,0,'Source conflicts cannot reach the prescription bridge');
+const laterConflicts = [
+  ['doxycycline-cap-dose-conflict',6,{title:'Cap. Doxycycline 200 mg',sig:'Të merret 2 herë në ditë (BD).'},'', 'CAP / PNEUMONI'],
+  ['vancomycin-concentration-unit-conflict',6,{title:'Inj. Vancomycin',sig:'Target trough 15-20 mg/mL.'}],
+  ['enoxaparin-prophylaxis-treatment-conflict',6,{title:'Inj. Enoxaparin',sig:'1.5 mg/kg, SC, OD.'},'TROMBOPROFILAKSI'],
+  ['fondaparinux-prophylaxis-treatment-conflict',6,{title:'Inj. Fondaparinux 5-10 mg',sig:'SC, OD.'},'TROMBOPROFILAKSI'],
+  ['tirofiban-bolus-unit-conflict',7,{title:'Inj. Tirofiban',sig:'0.25 mcg/kg brenda 5 minutave.'}],
+  ['ivabradine-frequency-conflict',7,{title:'Tab. Ivabradine 5 mg',sig:'5 mg, OD; titro 7.5 mg, OD.'}],
+  ['obeticholic-regulatory-conflict',9,{title:'Tab. Obeticholic acid',sig:'5 mg, OD.'}],
+  ['insulin-frequency-source-conflict',10,{title:'Inj. Insulin regular',sig:'BD; para mëngjesit, para drekës dhe para darkës.'}],
+  ['insulin-dose-unit-conflict',10,{title:'Inj. Insulin regular',sig:'0.1 mg/kg/orë IV.'}],
+  ['hav-immunoglobulin-dose-conflict',9,{title:'Profilaksi HAV',sig:'Imunoglobulinë 0.01 mL/kg.'}],
+  ['hcv-combination-source-conflict',9,{title:'Cap. Glecaprevir 100 mg + Pibrentasvir 40 mg',sig:'0-0-1 (OD).'}],
+  ['hyperglycemic-crisis-potassium-review',10,{title:'Kalium',sig:'K⁺ <3.3 mEq/L.'},'','DIABETIC KETOACIDOSIS (DKA)'],
+  ['endocarditis-prophylaxis-review',7,{title:'ALTERNATIVA',sig:'Clindamycin.'},'PROFILAKSIA E ENDOKARDITIT'],
+];
+for (const [code,chapterNumber,item,condition='',title='Source QA'] of laterConflicts) {
+  const conflict={...guide,title,chapterNumber,logicBlocks:[{relation:'start',condition,items:[item]}]};
+  assert.ok(sourceClinicalIssues(conflict).some(issue=>issue.code===code),code);
+  assert.equal(sourceDraftText(conflict),'',code+' blocks source-to-draft transfer');
+  assert.equal(beginGuide(conflict),false,code+' blocks the bridge');
+  const rendered=renderGuide(conflict);
+  assert.match(rendered,/Drafti kërkon rishikim/);
+  assert.ok(rendered.includes(item.sig.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')),'Original source remains visible for '+code);
+}
+assert.equal(bridgeCalls,0);
+for (const [chapterNumber,item] of [
+  [6,{title:'Cap. Doxycycline 100 mg',sig:'BD.'}],
+  [6,{title:'Inj. Vancomycin',sig:'Target trough 15-20 mg/L.'}],
+  [7,{title:'Inj. Tirofiban',sig:'25 mcg/kg.'}],
+  [7,{title:'Tab. Ivabradine',sig:'5 mg, BD.'}],
+  [9,{title:'HAV',sig:'Imunoglobulinë 0.1 mL/kg.'}],
+  [9,{title:'Glecaprevir 100 mg + Pibrentasvir 40 mg',sig:'3 tableta OD.'}],
+  [10,{title:'Insulin regular',sig:'Para mëngjesit, drekës dhe darkës.'}],
+]) assert.equal(sourceClinicalIssues({...guide,chapterNumber,logicBlocks:[{items:[item]}]}).length,0,'Updated source must not retain an obsolete warning');
+const orProphylaxis={...guide,chapterNumber:6,logicBlocks:[{relation:'conditional',condition:'TROMBOPROFILAKSI',items:[]},{relation:'or',items:[{title:'Fondaparinux 5-10 mg',sig:'OD.'}]}]};
+assert.ok(sourceClinicalIssues(orProphylaxis).some(issue=>issue.code==='fondaparinux-prophylaxis-treatment-conflict'),'Alternatives inherit their group indication');
 assert.equal(sourceClinicalIssues({...guide,logicBlocks:[{items:[{genericName:'Enoxaparin',sig:'100 IU/kg (1 mg/kg), SC.'}]}]}).length,0);
 assert.equal(sourceClinicalIssues({...guide,logicBlocks:[{items:[{title:'Plazmë e freskët e ngrirë (FFP)',sig:'FFP nuk rrit Hb.'}]}]}).length,0,'A corrected negation must not trigger the old source conflict');
 state.loading=false;state.chapter=2;state.chapters=[{number:2,sourceNote:'Pa Rx në dokumentin burimor.'}];

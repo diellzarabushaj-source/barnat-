@@ -15,7 +15,8 @@ module.exports = function sourceFixture(url,customGuides) {
   const route = url.searchParams.get('_route');
   if (!['prescription-library','prescription-search'].includes(route)) return null;
   const items = customGuides || guides;
-  const chapters = Array.from({length:5},(_,index)=>({number:index+1,title:`Kapitulli QA ${index+1}`,reviewStatus:'verified',count:items.filter(g=>g.chapterNumber===index+1).length,totalCount:items.filter(g=>g.chapterNumber===index+1).length,pendingCount:0,sourceNote:index===1 || index===3 ? 'Ky kapitull nuk përmban receta në dokumentin burimor.' : ''}));
+  const lastChapter = Math.max(5,...items.map(item=>Number(item.chapterNumber)||0));
+  const chapters = Array.from({length:lastChapter},(_,index)=>({number:index+1,title:`Kapitulli QA ${index+1}`,reviewStatus:'verified',count:items.filter(g=>g.chapterNumber===index+1).length,totalCount:items.filter(g=>g.chapterNumber===index+1).length,pendingCount:0,sourceNote:index===1 || index===3 ? 'Ky kapitull nuk përmban receta në dokumentin burimor.' : ''}));
   if (route === 'prescription-search') {
     const {prescriptionSearchDocument,rankPrescriptionGuides} = require('../api/medical-hub.js')._test;
     return {ok:true,results:rankPrescriptionGuides(items.map(prescriptionSearchDocument),url.searchParams.get('q'),url.searchParams.get('limit'),{chapter:url.searchParams.get('chapter'),filter:url.searchParams.get('filter')})};
