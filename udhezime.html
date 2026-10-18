@@ -22,6 +22,29 @@
     <div class="eyebrow">DRX / MJETET KLINIKE / UDHËZIME</div>
     <div class="intro"><span class="micro">DOKUMENTACION MJEKËSOR</span><h1>Udhëzim për konsultim<span class="dot">.</span></h1><p>Shkruaj simptomën. Asistenti të kujton çfarë duhet të dokumentosh dhe krijon një draft vetëm nga të dhënat që fut.</p></div>
     <div class="mobile-tabs"><button type="button" data-tab="edit" class="active">✎ Formulari</button><button type="button" data-tab="preview">▤ Dokumenti</button></div>
+    <section class="quick-builder no-print" aria-labelledby="quickTitle">
+      <div class="quick-topline"><span class="quick-icon" aria-hidden="true">✳</span><span>AUTOMATIZIMI I UDHËZIMIT</span><span class="quick-step">1 fjali → draft i strukturuar</span></div>
+      <h2 id="quickTitle">Shkruaj pak. Përgatite pothuajse krejt udhëzimin.</h2>
+      <p>Shkruaj vetëm arsyen e konsultës me fjalët e tua dhe zgjidh specialitetin. DRX i vendos të dhënat që ke dhënë në rubrikat përkatëse, shton strukturën profesionale dhe shënon çfarë mbetet për t'u verifikuar.</p>
+      <label class="quick-entry">Shënimi yt i shkurtër
+        <textarea id="quickNote" rows="3" placeholder="p.sh. Pacienti raporton palpitacione dhe marramendje prej 3 ditësh. Kërkohet konsultë kardiologjike."></textarea>
+      </label>
+      <div class="quick-controls">
+        <label>Specialiteti / modeli
+          <select id="quickSpecialty"><option value="">Konsultë e përgjithshme</option><option>Kardiologji</option><option>Neurologji</option><option>ORL</option><option>Pediatri</option><option>Kirurgji</option><option>Pulmologji</option><option>Gastroenterologji</option><option>Urologji</option><option>Gjinekologji</option><option>Ortopedi</option></select>
+        </label>
+        <button id="quickGenerate" class="btn primary quick-generate" type="button">✧ Përgatit udhëzimin automatikisht</button>
+      </div>
+      <div id="quickDraft" class="quick-draft" hidden>
+        <div class="quick-draft-head"><div><strong>Parapamja e shabllonit</strong><small>Asgjë nuk zëvendësohet pa miratimin tënd.</small></div><span id="quickDraftCount"></span></div>
+        <div id="quickDraftFields" class="quick-draft-fields"></div>
+        <div class="quick-draft-actions">
+          <label class="quick-checkbox"><input type="checkbox" id="quickOverwrite"> Zëvendëso edhe rubrikat që i ke plotësuar më herët</label>
+          <div class="actions"><button type="button" id="quickCancel" class="btn outline">Anulo</button><button type="button" id="quickAccept" class="btn primary">✓ Plotëso formularin me këtë shabllon</button></div>
+        </div>
+      </div>
+      <div class="quick-foot">✳ Shablloni nuk supozon ekzaminime normale, analiza të kryera, barna apo diagnoza. Fushat e panjohura shënohen për plotësim, jo si fakte klinike.</div>
+    </section>
     <form id="refForm" autocomplete="off" novalidate>
       <section class="panel">
         <header class="section-header"><span class="num">01</span><div><h2>Institucioni dhe pacienti</h2><p>Rubrikat themelore për udhëzimin.</p></div></header>
@@ -107,7 +130,7 @@
 <div id="status" class="toast no-print" role="status" aria-live="polite"></div>
 <section id="printPage" class="print-page" aria-label="Dokumenti për printim">
   <div class="paper-top"><strong>UDHËZIM PËR KONSULTIM</strong><small>Dokument klinik – model i përgatitur në DRX (jo formular zyrtar)</small></div>
-  <div class="paper-meta" id="paperMeta"></div><div class="paper-divider"></div><div id="paperDetails" class="paper-details"></div>
+  <div id="paperPending" class="paper-pending"></div><div class="paper-meta" id="paperMeta"></div><div class="paper-divider"></div><div id="paperDetails" class="paper-details"></div>
   <div class="paper-footer"><span id="paperDate"></span><span><span id="paperPhysician"></span><br>Nënshkrimi / vula: ______________________</span></div>
 </section>
 </body>
