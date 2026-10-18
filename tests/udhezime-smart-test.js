@@ -28,15 +28,43 @@ assert.deepEqual(E.warnNumbers({spo2:'140'}),['Kontrollo vlerën e futur: SpO₂
 assert.deepEqual(E.warnNumbers({spo2:'97'}),[]);
 assert.match(E.plain({patientName:'Pacient testues',reason:'kollë'}),/Pacient testues/);
 assert(!E.plain({patientName:'Pacient testues'}).includes('EKZAMINIMI OBJEKTIV'));
+
+const shortNote = 'Pacienti raporton palpitacione dhe marramendje prej 3 ditësh.';
+const suggested = E.automaticTemplate(shortNote,'Kardiologji');
+assert(suggested,'Nonempty note should make a draft');
+assert.equal(suggested.specialty,'Kardiologji');
+assert(suggested.reason.includes(shortNote),'Original clinical note must be kept verbatim');
+assert(suggested.history.includes(shortNote),'Anamnesis must retain source note');
+assert(suggested.question.includes('Kardiologji'),'Consultation specialty must match selection');
+assert.equal(suggested.diagnosis.startsWith("[PËR T'U PLOTËSUAR:"),true,'No AI-invented diagnosis');
+assert.equal(suggested.exam.startsWith("[PËR T'U PLOTËSUAR:"),true,'No fabricated normal exam');
+assert.equal(suggested.medications.startsWith("[PËR T'U PLOTËSUAR:"),true,'No fictional medication');
+assert.equal(suggested.allergies.startsWith("[PËR T'U PLOTËSUAR:"),true,'No presumed negative allergies');
+assert(E.templatePending(suggested).length>=5,'Draft must be explicitly flagged as incomplete');
+assert.equal(E.automaticTemplate('', 'Kardiologji'),null,'Empty note never makes a clinical referral');
+assert(!Object.prototype.hasOwnProperty.call(suggested,'patientName'),'Do not generate patient identity');
+assert(!Object.prototype.hasOwnProperty.call(suggested,'priority'),'Do not infer urgency');
+assert(!Object.prototype.hasOwnProperty.call(suggested,'icdCode'),'Do not infer ICD-10');
+const dangerous = E.automaticTemplate('Dhimbje gjoksi', 'Kardiologji');
+assert(!/ekg normale|120\/80|pa dispne|negativ/i.test(dangerous.exam));
+assert.equal(E.guidance(dangerous.reason,'Kardiologji').danger,true);
+
 const html=file('udhezime.html');
 assert(html.includes('/udhezime-smart.css'));
 assert(html.includes('/udhezime-smart.js'));
 assert(html.includes('id="paperDetails"'));
 assert(html.includes('id="icdResults"'));
+assert(html.includes('id="quickNote"'));
+assert(html.includes('id="quickGenerate"'));
+assert(html.includes('id="quickDraftFields"'));
+assert(html.includes('id="quickAccept"'));
+assert(html.includes('id="paperPending"'));
+assert(html.includes('<option value="">Zgjidh prioritetin</option>'),'Urgency must not default to routine');
+
 assert(!/script[^>]+src=["']https?:/i.test(html));
 const js=file('udhezime-smart.js');
 assert(!/localStorage|sessionStorage|sendBeacon|XMLHttpRequest/.test(js),'No browser persistence or telemetry');
 assert(js.includes("'/data/icd-qkmf-hot-search-v1.json'"));
 const shell=file('index.html');
 assert(shell.includes('href="/udhezime.html"'),'Main navigation should link to smart referrals');
-console.log('DRX Udhëzime: katalogu, siguria, drafti, udhëzimet dhe lidhja e menusë OK.');
+console.log('DRX Udhëzime: shablloni nga 1 fjali, përmbajtja vetëm nga mjeku, ICD, siguria dhe lidhja e menusë OK.');
