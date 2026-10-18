@@ -7336,7 +7336,7 @@
     });
 
     document.addEventListener('click', event => {
-      if (!event.target.closest('.rx-command-bar,.rx-popover,#rxAddDrugButton')) {
+      if (!event.target.closest('.rx-command-bar,.rx-popover,#rxAddDrugButton,[data-rx-source-drug]')) {
         closePopovers();
         $('#rxAddDrugButton')?.setAttribute('aria-expanded', 'false');
       }
@@ -7809,11 +7809,11 @@
             <span class="rx-source-kind">${esc(KIND_LABELS[item?.kind] || 'Element i skemës')}</span>
             <h4>${esc(itemTitle(item))}</h4>
           </div>
-          ${active && query ? `<button class="rx-source-find-drug" type="button" data-rx-source-drug="${esc(query)}" aria-label="Zgjidh preparatin: ${esc(itemTitle(item))}" title="Zgjidh preparatin"><span>Zgjidh preparatin</span><b aria-hidden="true">↗</b></button>` : ''}
         </div>
         ${meta.length ? `<div class="rx-source-meta">${meta.map(value => `<span>${esc(value)}</span>`).join('')}</div>` : ''}
         ${text(item?.sig) ? `<div class="rx-source-sig"><span>S.</span><p>${esc(item.sig)}</p></div>` : ''}
         ${text(item?.note) ? `<p class="rx-source-note">${esc(item.note)}</p>` : ''}
+        ${active && query ? `<button class="rx-source-find-drug" type="button" data-rx-source-drug="${esc(query)}" aria-label="Zgjidh preparatin: ${esc(itemTitle(item))}" title="Zgjidh preparatin"><span>Zgjidh preparatin</span><b aria-hidden="true">↗</b></button>` : ''}
       </div>
     </article>`;
   }
@@ -7858,7 +7858,7 @@
         <div class="rx-source-guide-heading">
           <div class="rx-source-guide-kicker">
             <span>Kapitulli ${esc(guide?.chapterNumber || '')} · ${esc(lessonLabel(guide))}</span>
-            <span class="rx-source-import-badge">${issues.length ? 'Kërkon rishikim klinik' : imported ? 'Burim i importuar' : guide?.reviewStatus === 'verified' ? 'E verifikuar' : 'Burim'}</span>
+            <span class="rx-source-import-badge${issues.length ? ' is-review' : guide?.reviewStatus === 'verified' ? ' is-verified' : ''}">${issues.length ? 'Kërkon rishikim klinik' : imported ? 'Burim i importuar' : guide?.reviewStatus === 'verified' ? 'E verifikuar' : 'Burim'}</span>
           </div>
           <h3>${esc(guide?.title || guide?.sourceHeading || 'Skemë Rx')}</h3>
           <div class="rx-source-guide-stats" aria-label="Përmbledhja e skemës">
@@ -8228,9 +8228,10 @@
   function searchActiveSubstance(query) {
     const add = $('#rxAddDrugButton');
     const input = $('#rxDrugSearch');
-    if (!add || !input || !query) return;
+    const picker = $('#rxDrugPopover');
+    if (!add || !input || !picker || !query) return;
     window.DRxRecetatTabs?.show?.('compose');
-    add.click();
+    if (picker.hidden) add.click();
     input.value = query;
     input.dispatchEvent(new Event('input', { bubbles:true }));
     $('#rxComposerWorkspace')?.scrollIntoView({ behavior:'smooth', block:'start' });

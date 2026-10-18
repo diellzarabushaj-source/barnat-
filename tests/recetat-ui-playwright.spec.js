@@ -220,4 +220,42 @@ test('confirmed source conflicts stay readable and cannot start a prescription d
   await expect(page.locator('[data-rx-source-use]')).toBeDisabled();
   await expect(page.locator('#rxSourceGuideList')).toContainText('100 IU/kg (1.5 mg/kg), SC, OD.');
   await expect(page.locator('#rxSourceGuideList .rx-source-import-badge')).toHaveText('Kërkon rishikim klinik');
+  await expect(page.locator('#rxSourceGuideList .rx-source-import-badge')).not.toHaveClass(/is-verified/);
+});
+
+for (const width of [320,390,768,1440]) test(`source reader keeps full medicine actions and clinical detail at ${width}px`,async({page})=>{
+  await page.setViewportSize({width,height:1000});
+  await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
+  const guide=page.locator('.rx-source-guide');
+  const medicine=guide.locator('.rx-source-item.is-active-substance').first();
+  const action=medicine.getByRole('button',{name:'Zgjidh preparatin: Inj. QA 40 mg / 60 mg / 80 mg',exact:true});
+  await expect(action.getByText('Zgjidh preparatin',{exact:true})).toBeVisible();
+  await expect(medicine.locator('.rx-source-meta')).toHaveText('doza QANga gojashpeshtësia QAkohëzgjatja QA');
+  await expect(medicine.locator('.rx-source-sig')).toContainText('Udhëzimi QA');
+  await expect(guide.locator('.rx-source-import-badge')).toHaveText('E verifikuar');
+  await expect(guide.locator('.rx-source-choice-label')).toBeVisible();
+  await expect(guide.locator('.rx-source-connector.is-or')).toContainText('OSE');
+  const geometry=await guide.evaluate(el=>{
+    const button=el.querySelector('.rx-source-find-drug');
+    const label=button.querySelector('span');
+    const rect=label.getBoundingClientRect();
+    const buttonRect=button.getBoundingClientRect();
+    return {overflow:document.documentElement.scrollWidth>innerWidth+1,buttonHeight:buttonRect.height,labelWidth:rect.width,labelHeight:rect.height,inside:rect.left>=buttonRect.left && rect.right<=buttonRect.right};
+  });
+  expect(geometry.overflow).toBe(false);
+  expect(geometry.labelWidth).toBeGreaterThan(50);
+  expect(geometry.labelHeight).toBeGreaterThan(12);
+  expect(geometry.inside).toBe(true);
+  if(width<768) expect(geometry.buttonHeight).toBeGreaterThanOrEqual(44);
+  await action.press('Enter');
+  await expect(page.locator('#rxDrugPopover')).toBeVisible();
+  await expect(page.locator('#rxDrugSearch')).toHaveValue('QA 40 mg / 60 mg');
+  await expect(page.locator('#rxTabBtnCompose')).toHaveAttribute('aria-selected','true');
+  // A second source lookup also opens reliably when the existing picker was open.
+  await page.locator('#rxTabBtnSource').click();
+  await action.click();
+  await expect(page.locator('#rxDrugPopover')).toBeVisible();
+  await expect(page.locator('#rxDrugSearch')).toHaveValue('QA 40 mg / 60 mg');
+  await page.locator('#rxDiagnosis').click();
+  await expect(page.locator('#rxDrugPopover')).toBeHidden();
 });
