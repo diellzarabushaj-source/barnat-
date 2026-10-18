@@ -138,9 +138,9 @@
     return out;
   }
   function completeness(f) {
-    const required=[['destination','Institucioni pritës'],['patientName','Pacienti'],['reason','Arsyeja e konsultës'],['question','Pyetja për specialistin'],['physician','Mjeku dërgues']];
+    const required=[['destination','Institucioni pritës'],['patientName','Pacienti'],['reason','Arsyeja e konsultës'],['priority','Prioriteti i vlerësuar nga mjeku'],['question','Pyetja për specialistin'],['physician','Mjeku dërgues']];
     const missing=required.filter(([id])=>!f[id]);const root=$('checklist');root.replaceChildren();
-    if(!missing.length){const d=document.createElement('div');d.className='check-item check-ok';d.textContent='✓ Pesë rubrikat kryesore janë plotësuar. Verifiko përmbajtjen klinike para lëshimit.';root.append(d);}
+    if(!missing.length){const d=document.createElement('div');d.className='check-item check-ok';d.textContent='✓ Rubrikat kryesore janë plotësuar. Verifiko përmbajtjen klinike para lëshimit.';root.append(d);}
     missing.forEach(([id,title])=>{
       const d=document.createElement('div');d.className='check-item';
       const text=document.createElement('span');text.textContent='○ '+title;
@@ -249,6 +249,12 @@
   function acceptQuickTemplate(){
     if(!stagedTemplate){notify('Së pari përgatite shabllonin.');return;}
     const overwrite=$('quickOverwrite').checked;
+    if(!overwrite && $('reason').value.trim() && $('reason').value.trim()!==stagedTemplate.reason){
+      notify('Ekziston një arsye e mëparshme. Për të shmangur mospërputhjet, zgjidh “Zëvendëso” ose pastro arsyen ekzistuese.');return;
+    }
+    if(!overwrite && stagedTemplate.specialty && $('specialty').value.trim() && $('specialty').value.trim()!==stagedTemplate.specialty){
+      notify('Specialiteti në formular ndryshon nga modeli. Për të vazhduar, përputhi specialitetet ose aktivizo zëvendësimin.');return;
+    }
     let inserted=0,skipped=0;
     Object.entries(stagedTemplate).forEach(([key,value])=>{
       const control=$(key);if(!control||!value)return;
@@ -276,7 +282,7 @@
   function reset() {
     if(!confirm('Të pastrohen të gjitha të dhënat e këtij formulari?'))return;
     keys.forEach(k=>{if($(k))$(k).value='';});
-    $('priority').value='Rutinë';$('date').value=localDate();$('icdSearch').value='';$('icdResults').replaceChildren();
+    $('priority').value='';$('date').value=localDate();$('icdSearch').value='';$('icdResults').replaceChildren();
     $('draftBox').hidden=true;priorHistory=null;stagedTemplate=null;$('quickNote').value='';$('quickSpecialty').value='';$('quickOverwrite').checked=false;$('quickDraft').hidden=true;updateAll();notify('Formulari u pastrua.');
   }
   function localDate(){const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');}
