@@ -212,8 +212,9 @@ html[data-drx-app="recetat-v2"] .rx-source-guide .rx-source-item-body{line-heigh
 .rx-source-guide .rx-source-guide-stats{gap:6px;margin-top:12px;font-size:12px;color:#526176}
 .rx-source-guide-stats>span{display:inline-flex;align-items:center;gap:4px;min-height:26px;padding:3px 8px;border:1px solid #e6ebf2;border-radius:6px;background:#f8fafc}
 .rx-source-guide-stats b{font-weight:650;font-variant-numeric:tabular-nums}
-.rx-source-guide .rx-source-use{min-height:44px;gap:12px;padding:10px 14px;border-radius:8px;box-shadow:0 1px 2px #17255412}
-.rx-source-use:not(:disabled):hover{background:var(--rx-blue-hover);border-color:var(--rx-blue-hover)}
+.rx-source-guide .rx-source-use{min-height:44px;gap:12px;padding:8px 12px;border-color:#263b72;border-radius:10px;background:#263b72;box-shadow:0 1px 2px #17255416,0 4px 10px #17255409}
+.rx-source-guide .rx-source-use b{display:grid;place-items:center;width:24px;height:24px;border-radius:6px;background:#ffffff18;font-size:15px;font-weight:500}
+.rx-source-guide .rx-source-use:not(:disabled):hover{background:#1c2c58;border-color:#1c2c58}
 .rx-source-guide .rx-source-flow{padding:0 24px 20px}
 .rx-source-guide .rx-source-flow-title{align-items:center;gap:10px;margin:0 0 10px;padding:12px 0 0;border-top:1px solid #e6ebf2;font-size:12px;color:#344054}
 .rx-source-flow-title small{font-size:11px;line-height:1.4;color:#526176}
@@ -245,8 +246,8 @@ html[data-drx-app="recetat-v2"] .rx-source-guide .rx-source-item-body{line-heigh
 .rx-source-guide .rx-source-sig>span{font-size:12px;line-height:1.75;color:#526176}
 .rx-source-guide .rx-source-sig>p{margin:0;font-size:13px;line-height:1.6;color:#34465f}
 .rx-source-guide .rx-source-item-body>.rx-source-note{margin:0;font-size:13px;line-height:1.6}
-.rx-source-guide .rx-source-find-drug{grid-column:2;grid-row:1/4;align-self:start;min-height:40px;padding:8px 10px;gap:8px;border-radius:7px;border-color:#c3d0e7;font-size:12px;line-height:1.4;color:#24468b;white-space:normal}
-.rx-source-guide .rx-source-find-drug b{font-size:15px;font-weight:500}
+.rx-source-guide .rx-source-find-drug{grid-column:2;grid-row:1/4;align-self:start;min-height:40px;padding:6px 8px 6px 11px;gap:10px;border-radius:9px;border-color:#cfdaeb;background:#fff;box-shadow:0 1px 2px #17255406;font-size:12px;line-height:1.4;color:#263b72;white-space:normal}
+.rx-source-guide .rx-source-find-drug b{display:grid;place-items:center;flex:none;width:22px;height:22px;border-radius:6px;background:#f0f4fa;color:#415b86;font-size:14px;font-weight:500}
 .rx-source-guide .rx-source-connector{
   grid-template-columns:46px auto minmax(0,1fr);gap:0 6px;margin:2px 0;
 }
@@ -267,24 +268,46 @@ html[data-drx-app="recetat-v2"] .rx-source-guide .rx-source-item-body{line-heigh
    Alternatives retain their shared major-step tone; source notes stay neutral. */
 .rx-source-guide .rx-source-item[data-rx-step-tone]{
   --rx-step-accent:#3558a3;--rx-step-line:#b7c8e9;--rx-step-soft:#edf3ff;--rx-step-pressed:#e0eaff;
-  border-color:var(--rx-step-line);box-shadow:inset 3px 0 var(--rx-step-accent);
-  transition:background-color .14s ease,border-color .14s ease,box-shadow .14s ease;
+  border-color:var(--rx-step-line);border-radius:14px;background:#fff;
+  box-shadow:inset 3px 0 var(--rx-step-accent),0 1px 2px #17255406;
+  transition:background-color .16s ease,border-color .16s ease,box-shadow .16s ease;
 }
 .rx-source-guide .rx-source-item[data-rx-step-tone="2"]{--rx-step-accent:#256b70;--rx-step-line:#b4d7d6;--rx-step-soft:#edf8f7;--rx-step-pressed:#dcefed}
 .rx-source-guide .rx-source-item[data-rx-step-tone="3"]{--rx-step-accent:#6951a5;--rx-step-line:#cec2e7;--rx-step-soft:#f4effc;--rx-step-pressed:#eae1f8}
 .rx-source-guide .rx-source-item[data-rx-step-tone="4"]{--rx-step-accent:#316c94;--rx-step-line:#b9d3e5;--rx-step-soft:#eef7fc;--rx-step-pressed:#dfedf7}
 .rx-source-guide .rx-source-item[data-rx-step-tone="5"]{--rx-step-accent:#86537d;--rx-step-line:#dbc4d7;--rx-step-soft:#faf0f7;--rx-step-pressed:#f2e1ee}
 .rx-source-guide .rx-source-item[data-rx-step-tone] .rx-source-item-number{
-  border-color:var(--rx-step-accent);background:var(--rx-step-accent);color:#fff;
+  border-color:var(--rx-step-accent);border-radius:10px;background:var(--rx-step-accent);color:#fff;
+  box-shadow:inset 0 1px 0 #ffffff26,0 2px 4px #17255412;letter-spacing:-.02em;
+}
+.rx-source-guide .rx-source-item[data-rx-step-tone] .rx-source-kind{
+  display:inline-flex;align-items:center;gap:6px;color:var(--rx-step-accent);font-weight:600;
+}
+.rx-source-guide .rx-source-item[data-rx-step-tone] .rx-source-kind::before{
+  content:'';flex:none;width:4px;height:4px;border-radius:50%;background:currentColor;
+}
+.rx-source-guide .rx-source-item[data-rx-step-tone] .rx-source-item-title h4{font-size:16px;letter-spacing:-.02em}
+.rx-source-guide .rx-source-item.is-active-substance[data-rx-step-tone] .rx-source-item-title h4{font-size:18px}
+.rx-source-guide .rx-source-item[data-rx-step-tone] .rx-source-sig>p{font-size:14px;line-height:1.55}
+.rx-source-guide .rx-source-item[data-rx-step-tone] .rx-source-sig>span{color:var(--rx-step-accent)}
+.rx-source-guide .rx-source-meta>span{
+  border-color:#e2e8f1;border-radius:6px;background:#fff;box-shadow:0 1px 2px #17255404;font-variant-numeric:tabular-nums;
+}
+.rx-source-guide .rx-source-guide-stats>span{padding:4px 9px;border-color:#e8edf4;border-radius:7px;background:#fafbfe}
+.rx-tabs .rx-tab.is-active{color:#233b6c;box-shadow:0 1px 3px #15284d0d,inset 0 0 0 1px #dbe4f0}
+.rx-source-guide .rx-source-connector-line:first-child{height:12px;border-radius:2px;background:#d8e1ed}
+.rx-source-guide .rx-source-connector-line:nth-of-type(2){background:#edf1f7}
+.rx-source-guide .rx-source-connector.is-and .rx-source-connector-pill{
+  padding:1px 7px;border:1px solid #e6ebf2;border-radius:6px;background:#fff;
 }
 .rx-source-guide .rx-source-item[data-rx-step-tone]:is(:focus,:focus-within){
   border-color:var(--rx-step-accent);background:var(--rx-step-soft);
-  box-shadow:inset 4px 0 var(--rx-step-accent),0 2px 8px #1725540a;
+  box-shadow:inset 4px 0 var(--rx-step-accent),0 4px 16px #1725540d;
 }
 @media(hover:hover) and (pointer:fine){
   .rx-source-guide .rx-source-item[data-rx-step-tone]:hover{
     border-color:var(--rx-step-accent);background:var(--rx-step-soft);
-    box-shadow:inset 4px 0 var(--rx-step-accent),0 2px 8px #1725540a;
+    box-shadow:inset 4px 0 var(--rx-step-accent),0 4px 16px #1725540d;
   }
 }
 .rx-source-guide .rx-source-item[data-rx-step-tone]:active{background:var(--rx-step-pressed)}
@@ -319,6 +342,9 @@ html[data-drx-app="recetat-v2"] .rx-source-guide .rx-source-item-body{line-heigh
   .rx-source-guide .rx-source-item-body{grid-template-columns:minmax(0,1fr);gap:6px;padding:10px 10px 10px 5px}
   .rx-source-guide .rx-source-item-title h4{font-size:15px}
   .rx-source-guide .is-active-substance .rx-source-item-title h4{font-size:16px}
+  .rx-source-guide .rx-source-item[data-rx-step-tone] .rx-source-item-title h4{font-size:15px}
+  .rx-source-guide .rx-source-item.is-active-substance[data-rx-step-tone] .rx-source-item-title h4{font-size:16px}
+  .rx-source-guide .rx-source-item[data-rx-step-tone] .rx-source-sig>p{font-size:13px;line-height:1.6}
   .rx-source-guide .rx-source-meta{font-size:12px;gap:5px}
   .rx-source-meta>span{padding:3px 6px}
   .rx-source-guide .rx-source-find-drug{grid-column:1;grid-row:auto;min-width:0;width:100%;min-height:44px;margin-top:2px;justify-content:space-between;font-size:12px;padding:10px;background:#f5f8ff}

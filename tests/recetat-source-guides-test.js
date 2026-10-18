@@ -22,7 +22,7 @@ assert.match(html, /id="rxSourceSearch"/);
 // connectors between steps, which is where the reader actually meets it.
 assert.match(js, /RELATION_LABELS = Object\.freeze\(\{ and:'DHE', or:'OSE', plus:'PLUS', conditional:'NËSE' \}\)/);
 assert.doesNotMatch(html, /rx-source-legend/, 'the notation legend strip stays removed');
-assert.match(html, /recetat-v2\.css\?v=26/);
+assert.match(html, /recetat-v2\.css\?v=27/);
 assert.match(html, /recetat-v2\.js\?v=26/);
 
 assert.match(api, /PRESCRIPTION_CHAPTER_QUERY/);

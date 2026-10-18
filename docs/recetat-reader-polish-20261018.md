@@ -49,3 +49,16 @@ actions and keyboard behavior. Reduced-motion preferences disable transitions.
 The five number backgrounds have white-text contrast ratios of 6.83, 6.15,
 6.32, 5.67 and 5.92. Browser cases cover hover, Tab focus, touch transfer and
 unchanged source text/draft state in both Chromium and WebKit.
+
+## Premium surface refinement
+
+The same five accent colors remain on step numbers, edges and interaction
+states. Resting cards now use white surfaces, 14 px corners and a restrained
+shadow; filled number badges have a subtle highlight. Clinical kind labels
+inherit each step's accent. Desktop medicine titles and instructions have a
+clearer reading scale while phone text and touch geometry remain compact.
+
+Preparation actions have a separate arrow inset, and the draft action uses a
+navy primary treatment. Summary chips and AND connectors use consistent small
+corners. No runtime script or clinical/source behavior changed. The production
+build and all 28 Chromium/WebKit Recetat browser cases passed again.
