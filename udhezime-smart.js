@@ -77,6 +77,43 @@
       d.append(title,body,button);root.append(d);
     });
   }
+  // Every clinical observation in an automatic template is either copied
+  // verbatim from the clinician's short note or an unmistakable edit prompt.
+  // Do not infer vital signs, allergies, medication, diagnosis, tests or negatives.
+  const PLACEHOLDER = "[PËR T'U PLOTËSUAR: ";
+  function templatePending(f) {
+    const ids=['history','allergies','exam','investigations','medications','diagnosis','question'];
+    return ids.filter(id=>String(f[id]||'').includes(PLACEHOLDER));
+  }
+  function automaticTemplate(note,specialty) {
+    const source=clean(note);
+    if (!source) return null;
+    const s=clean(specialty);
+    const g=guidance(source,s);
+    const questions=g.items.map(x=>x.title).filter((x,i,a)=>a.indexOf(x)===i).slice(0,4);
+    const h=[
+      "Ankesa dhe historia e raportuar nga mjeku:",
+      source,
+      "",
+      PLACEHOLDER+"plotëso kohën e fillimit, ecurinë dhe anamnezën relevante sipas informacionit të konfirmuar]",
+    ];
+    if(questions.length) {
+      h.push("Pika për sqarim gjatë anamnezës (NUK janë gjetje të konfirmuara):");
+      questions.forEach(x=>h.push("• "+x+" — [për t'u konfirmuar]"));
+    }
+    const label=s?"në "+s:"specialistike";
+    return {
+      specialty:s,
+      reason:"Referim për vlerësim "+label+".\nShënimi i mjekut: "+source,
+      history:h.join("\n"),
+      allergies:PLACEHOLDER+"pyet dhe dokumento alergjitë; mos supozo se mungojnë]",
+      exam:PLACEHOLDER+"shkruaj vetëm gjetjet e ekzaminimit objektiv të kryer; mos supozo gjetje normale]",
+      investigations:PLACEHOLDER+"shëno vetëm analizat, EKG-në ose imazherinë e kryer dhe rezultatet e disponueshme]",
+      medications:PLACEHOLDER+"verifiko terapinë aktuale, dozën, formën, rrugën dhe shpeshtësinë]",
+      diagnosis:PLACEHOLDER+"diagnoza e punës përcaktohet dhe konfirmohet nga mjeku]",
+      question:"Kërkohet konsultë "+(s?"në "+s:"specialistike")+" për vlerësimin e shënimit klinik të raportuar dhe rekomandimet e mëtejshme sipas vlerësimit të specialistit."
+    };
+  }
   function createDraft(f) {
     const parts = [];
     const add = (label,value) => {if(clean(value))parts.push(label + ': ' + clean(value).replace(/[.\s]+$/,'') + '.');};
@@ -110,6 +147,12 @@
       const btn=document.createElement('button');btn.type='button';btn.textContent='Plotëso →';btn.addEventListener('click',()=>$(id).focus());
       d.append(text,btn);root.append(d);
     });
+    const pending=templatePending(f);
+    if(pending.length){
+      const warning=document.createElement('div');warning.className='check-item check-pending';
+      warning.textContent='⚠ Draft automatik: '+pending.length+' rubrika kanë shënime që duhet t’i plotësosh para lëshimit.';
+      root.append(warning);
+    }
     const extras=['exam','investigations','medications','allergies'].filter(k=>!f[k]).length;
     const note=document.createElement('div');note.className='check-note';note.textContent=extras+' rubrika klinike shtesë ende pa të dhëna. Mungesa e dokumentimit nuk nënkupton gjetje normale.';root.append(note);
     $('numericWarnings').textContent=warnNumbers(f).join(' ');
@@ -162,8 +205,16 @@
     const head=document.createElement('strong');head.textContent=label;
     const body=document.createElement('span');body.textContent=clean(value);block.append(head,body);container.append(block);
   }
+  function updatePendingWarning(f) {
+    const pending = templatePending(f);
+    const paper = $('paperPending');
+    if(!paper)return;
+    paper.textContent=pending.length ? 'DRAFT I PAPLOTË — '+pending.length+' rubrika përmbajnë shënime [PËR T\'U PLOTËSUAR]. Kërkohet verifikimi klinik para lëshimit.' : '';
+    paper.hidden = !pending.length;
+  }
   function render(f) {
     const text=plain(f);
+    updatePendingWarning(f);
     $('miniText').textContent=text;
     const meta=$('paperMeta'),details=$('paperDetails');meta.replaceChildren();details.replaceChildren();
     [['Data',normalizeDisplayDate(f.date)],['Institucioni dërgues',f.institution],['Reparti',f.department],['Drejtuar',f.destination],['Specialiteti',f.specialty],['Prioriteti',f.priority],['Pacienti',f.patientName],['Mosha / datëlindja',f.age]].forEach(([label,value])=>printLine(meta,label,value));
@@ -172,6 +223,44 @@
     $('paperPhysician').textContent=f.physician+(f.license?' · Licenca: '+f.license:'');
   }
   function updateAll() {const f=fields();contextUpdate(f);completeness(f);render(f);}
+  let stagedTemplate = null;
+  const quickLabels={specialty:'Specialiteti',reason:'Arsyeja e konsultës',history:'Anamneza',allergies:'Alergjitë',exam:'Ekzaminimi objektiv',investigations:'Analizat / EKG / imazheria',medications:'Trajtimi aktual',diagnosis:'Diagnoza e punës',question:'Pyetja për specialistin'};
+  function quickPreview(){
+    const note=$('quickNote').value;
+    const specialty=$('quickSpecialty').value||$('specialty').value;
+    const proposal=automaticTemplate(note,specialty);
+    if(!proposal){notify('Shkruaj të paktën një fjali me arsyen e konsultës.');return;}
+    stagedTemplate=proposal;
+    const area=$('quickDraftFields');area.replaceChildren();
+    let shown=0;
+    Object.entries(quickLabels).forEach(([key,label])=>{
+      if(!proposal[key])return;
+      shown++;
+      const box=document.createElement('div');box.className='quick-field';
+      const title=document.createElement('strong');title.textContent=label;
+      const value=document.createElement('p');value.textContent=proposal[key];
+      box.append(title,value);area.append(box);
+    });
+    $('quickDraftCount').textContent=shown+' rubrika të përgatitura';
+    $('quickDraft').hidden=false;
+    $('quickDraft').scrollIntoView({block:'nearest',behavior:'smooth'});
+    if(guidance(note,specialty).danger)notify('Kujdes: për simptoma potencialisht urgjente, ndiq vlerësimin emergjent, jo udhëzimin rutinë.');
+  }
+  function acceptQuickTemplate(){
+    if(!stagedTemplate){notify('Së pari përgatite shabllonin.');return;}
+    const overwrite=$('quickOverwrite').checked;
+    let inserted=0,skipped=0;
+    Object.entries(stagedTemplate).forEach(([key,value])=>{
+      const control=$(key);if(!control||!value)return;
+      if(!overwrite&&control.value.trim()){skipped++;return;}
+      control.value=value;inserted++;
+    });
+    $('quickDraft').hidden=true;
+    stagedTemplate=null;
+    updateAll();
+    notify(inserted+' rubrika të plotësuara. '+(skipped?skipped+' rubrika ekzistuese u ruajtën. ':'')+'Kontrollo të gjitha shënimet [PËR T’U PLOTËSUAR].');
+    $('refForm').scrollIntoView({behavior:'smooth',block:'start'});
+  }
   function applyDraft(append) {
     const proposed=$('draftPreview').textContent;
     if(!proposed)return;
@@ -188,7 +277,7 @@
     if(!confirm('Të pastrohen të gjitha të dhënat e këtij formulari?'))return;
     keys.forEach(k=>{if($(k))$(k).value='';});
     $('priority').value='Rutinë';$('date').value=localDate();$('icdSearch').value='';$('icdResults').replaceChildren();
-    $('draftBox').hidden=true;priorHistory=null;updateAll();notify('Formulari u pastrua.');
+    $('draftBox').hidden=true;priorHistory=null;stagedTemplate=null;$('quickNote').value='';$('quickSpecialty').value='';$('quickOverwrite').checked=false;$('quickDraft').hidden=true;updateAll();notify('Formulari u pastrua.');
   }
   function localDate(){const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');}
   function mount(){
@@ -197,6 +286,11 @@
     $('date').value=localDate();
     keys.forEach(id=>{$(id)?.addEventListener('input',updateAll);$(id)?.addEventListener('change',updateAll);});
     $('icdSearch').addEventListener('input',icdUpdate);
+    $('quickGenerate').addEventListener('click', quickPreview);
+    $('quickAccept').addEventListener('click',acceptQuickTemplate);
+    $('quickCancel').addEventListener('click',()=>{$('quickDraft').hidden=true;stagedTemplate=null;});
+    $('quickNote').addEventListener('input',()=>{stagedTemplate=null;$('quickDraft').hidden=true;});
+    $('quickSpecialty').addEventListener('change',()=>{stagedTemplate=null;$('quickDraft').hidden=true;});
     $('draftButton').addEventListener('click',()=>{
       const draft=createDraft(fields());
       if(!draft){notify('Së pari shkruaj ankesën, kohëzgjatjen ose një parametër të matur.');return;}
@@ -223,6 +317,6 @@
       .then(d=>{catalog=Array.isArray(d.rows)?d.rows:[];$('catalogStatus').textContent='Burimi: DRX / katalogu lokal QKMF · '+catalog.length+' terma orientues. Kodet duhen verifikuar nga mjeku.';icdUpdate();})
       .catch(()=>{$('catalogStatus').textContent='Katalogu orientues ICD-10 nuk u ngarkua. Shkruaj kodin manualisht.';});
   }
-  if(typeof module==='object' && module.exports)module.exports={norm,guidance,createDraft,searchICD,warnNumbers,plain};
+  if(typeof module==='object' && module.exports)module.exports={norm,guidance,createDraft,automaticTemplate,templatePending,searchICD,warnNumbers,plain};
   if(typeof document!=='undefined')document.addEventListener('DOMContentLoaded',mount);
 })();
