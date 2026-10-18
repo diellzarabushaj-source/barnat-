@@ -319,7 +319,7 @@
       document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b===button));
     }));
     updateAll();
-    fetch(catalogSource,{credentials:'omit',cache:'force-cache'}).then(r=>{if(!r.ok)throw Error('Katalogu i padisponueshëm');return r.json();})
+    fetch(catalogSource,{credentials:'same-origin',cache:'force-cache'}).then(r=>{if(!r.ok)throw Error('Katalogu i padisponueshëm');return r.json();})
       .then(d=>{catalog=Array.isArray(d.rows)?d.rows:[];$('catalogStatus').textContent='Burimi: DRX / katalogu lokal QKMF · '+catalog.length+' terma orientues. Kodet duhen verifikuar nga mjeku.';icdUpdate();})
       .catch(()=>{$('catalogStatus').textContent='Katalogu orientues ICD-10 nuk u ngarkua. Shkruaj kodin manualisht.';});
   }
