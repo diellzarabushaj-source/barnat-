@@ -263,6 +263,35 @@ html[data-drx-app="recetat-v2"] .rx-source-guide .rx-source-item-body{line-heigh
 .rx-source-guide .is-source-note .rx-source-sig>span{display:none}
 .rx-source-guide .rx-source-guide-foot{justify-content:flex-start;gap:6px 18px;padding:12px 24px 18px;font-size:11px;line-height:1.6;color:#526176}
 .rx-source-guide-foot b{font-weight:600;color:#34465f}
+/* Step colors mark reading position, never completion or clinical status.
+   Alternatives retain their shared major-step tone; source notes stay neutral. */
+.rx-source-guide .rx-source-item[data-rx-step-tone]{
+  --rx-step-accent:#3558a3;--rx-step-line:#b7c8e9;--rx-step-soft:#edf3ff;--rx-step-pressed:#e0eaff;
+  border-color:var(--rx-step-line);box-shadow:inset 3px 0 var(--rx-step-accent);
+  transition:background-color .14s ease,border-color .14s ease,box-shadow .14s ease;
+}
+.rx-source-guide .rx-source-item[data-rx-step-tone="2"]{--rx-step-accent:#256b70;--rx-step-line:#b4d7d6;--rx-step-soft:#edf8f7;--rx-step-pressed:#dcefed}
+.rx-source-guide .rx-source-item[data-rx-step-tone="3"]{--rx-step-accent:#6951a5;--rx-step-line:#cec2e7;--rx-step-soft:#f4effc;--rx-step-pressed:#eae1f8}
+.rx-source-guide .rx-source-item[data-rx-step-tone="4"]{--rx-step-accent:#316c94;--rx-step-line:#b9d3e5;--rx-step-soft:#eef7fc;--rx-step-pressed:#dfedf7}
+.rx-source-guide .rx-source-item[data-rx-step-tone="5"]{--rx-step-accent:#86537d;--rx-step-line:#dbc4d7;--rx-step-soft:#faf0f7;--rx-step-pressed:#f2e1ee}
+.rx-source-guide .rx-source-item[data-rx-step-tone] .rx-source-item-number{
+  border-color:var(--rx-step-accent);background:var(--rx-step-accent);color:#fff;
+}
+.rx-source-guide .rx-source-item[data-rx-step-tone]:is(:focus,:focus-within){
+  border-color:var(--rx-step-accent);background:var(--rx-step-soft);
+  box-shadow:inset 4px 0 var(--rx-step-accent),0 2px 8px #1725540a;
+}
+@media(hover:hover) and (pointer:fine){
+  .rx-source-guide .rx-source-item[data-rx-step-tone]:hover{
+    border-color:var(--rx-step-accent);background:var(--rx-step-soft);
+    box-shadow:inset 4px 0 var(--rx-step-accent),0 2px 8px #1725540a;
+  }
+}
+.rx-source-guide .rx-source-item[data-rx-step-tone]:active{background:var(--rx-step-pressed)}
+.rx-source-guide .rx-source-item[data-rx-step-tone].is-conditional{border-color:#e6c16c}
+@media(prefers-reduced-motion:reduce){
+  .rx-source-guide .rx-source-item[data-rx-step-tone]{transition:none}
+}
 @media(max-width:900px){
   .rx-source-guide .rx-source-guide-head{padding:18px 20px 14px}
   .rx-source-guide .rx-source-flow{padding-inline:20px}
