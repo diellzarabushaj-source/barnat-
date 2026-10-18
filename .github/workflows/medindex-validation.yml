@@ -31,6 +31,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
+      - name: Setup Python for source import checks
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify source-preserving prescription conversion
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -m pip install python-docx==1.2.0
+          python tests/medical-hub-docx-import-test.py
+          python tests/prescription-chapters-6-10-import-test.py
+
       - name: Validate JavaScript syntax
         shell: bash
         run: |
