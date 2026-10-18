@@ -7798,7 +7798,8 @@
     const query = [text(item?.genericName || item?.title), text(item?.strength)].filter(Boolean).join(' ');
     const sourceNote = item?.kind === 'source-note';
     const typeLabel = active ? 'BAR' : sourceNote ? 'SHËNIM' : item?.kind === 'oxygen' ? 'O₂' : 'HAP';
-    return `<article class="rx-source-item${active ? ' is-active-substance' : ''}${sourceNote ? ' is-source-note' : ''}${block?.relation === 'conditional' && !isEditorialBlock(block) ? ' is-conditional' : ''}">
+    const stepTone = ((Math.max(1, Number(block?.smartBase) || 1) - 1) % 5) + 1;
+    return `<article class="rx-source-item${active ? ' is-active-substance' : ''}${sourceNote ? ' is-source-note' : ''}${block?.relation === 'conditional' && !isEditorialBlock(block) ? ' is-conditional' : ''}"${sourceNote ? '' : ` data-rx-step-tone="${stepTone}" tabindex="0"`}>
       <div class="rx-source-step-rail" aria-label="Hapi ${esc(item.smartLabel)}">
         <span class="rx-source-item-number">${esc(item.smartLabel)}</span>
         <small>${esc(typeLabel)}</small>
@@ -8335,7 +8336,13 @@
         return;
       }
       const drug = event.target.closest('[data-rx-source-drug]');
-      if (drug) searchActiveSubstance(drug.dataset.rxSourceDrug);
+      if (drug) {
+        searchActiveSubstance(drug.dataset.rxSourceDrug);
+        return;
+      }
+      if (!event.target.closest('a,button,input,select,textarea,summary')) {
+        event.target.closest('.rx-source-item[data-rx-step-tone]')?.focus({ preventScroll:true });
+      }
     });
 
     document.addEventListener('keydown', event => {

@@ -259,3 +259,51 @@ for (const width of [320,390,768,1440]) test(`source reader keeps full medicine 
   await page.locator('#rxDiagnosis').click();
   await expect(page.locator('#rxDrugPopover')).toBeHidden();
 });
+
+test('step hover and keyboard emphasis distinguish major steps without changing the source',async({page})=>{
+  await page.setViewportSize({width:1440,height:1000});
+  await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
+  const first=page.locator('.rx-source-item[data-rx-step-tone]').first();
+  const second=page.locator('.rx-source-item[data-rx-step-tone="2"]').first();
+  await expect(first).toBeVisible();
+  const original=await page.locator('.rx-source-flow').textContent();
+  const initial=await first.evaluate(el=>getComputedStyle(el).backgroundColor);
+  await first.hover();
+  await expect.poll(()=>first.evaluate(el=>getComputedStyle(el).backgroundColor)).not.toBe(initial);
+  const firstHover=await first.evaluate(el=>getComputedStyle(el).backgroundColor);
+  await second.hover();
+  await expect.poll(()=>second.evaluate(el=>getComputedStyle(el).backgroundColor)).not.toBe(firstHover);
+  // Alternative 1A/1B share a reading group; editorial notes are not steps.
+  await expect(page.locator('.rx-source-item[data-rx-step-tone="1"]')).toHaveCount(2);
+  await expect(page.locator('.rx-source-item.is-source-note')).not.toHaveAttribute('tabindex','0');
+  await page.mouse.move(0,0);
+  await page.locator('[data-rx-source-use]').focus();
+  await page.keyboard.press('Tab');
+  await expect(first).toBeFocused();
+  await expect.poll(()=>first.evaluate(el=>getComputedStyle(el).backgroundColor)).not.toBe(initial);
+  await expect(page.locator('.rx-source-flow')).toHaveText(original);
+  await expect(page.locator('#rxComposer')).toHaveValue('');
+});
+
+test.describe('touch step emphasis',()=>{
+  test.use({hasTouch:true});
+  test('tapping a step highlights it and moving to another clears the previous emphasis',async({page})=>{
+    await page.setViewportSize({width:390,height:844});
+    await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
+    const first=page.locator('.rx-source-item[data-rx-step-tone]').first();
+    const second=page.locator('.rx-source-item[data-rx-step-tone="2"]').first();
+    await expect(first).toBeVisible();
+    const original=await first.textContent();
+    const initial=await first.evaluate(el=>getComputedStyle(el).backgroundColor);
+    await first.locator('h4').tap();
+    await expect(first).toBeFocused();
+    await expect.poll(()=>first.evaluate(el=>getComputedStyle(el).backgroundColor)).not.toBe(initial);
+    await second.locator('h4').tap();
+    await expect(second).toBeFocused();
+    await expect.poll(()=>first.evaluate(el=>getComputedStyle(el).backgroundColor)).toBe(initial);
+    await expect(first).toHaveText(original);
+    await expect(page.locator('#rxTabBtnSource')).toHaveAttribute('aria-selected','true');
+    await expect(page.locator('#rxComposer')).toHaveValue('');
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  });
+});
