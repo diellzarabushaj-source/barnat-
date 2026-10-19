@@ -11,6 +11,12 @@ module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 def block(key,title,sig='Truncated',relation='start'):
     return {'_key':key,'_type':'prescriptionLogicBlock','order':1,'relation':relation,'selection':'all','sourceConnectorLabel':'','items':[{'_key':key+'-item','_type':'sourcePrescriptionItem','kind':'source-note','title':title,'sig':sig,'order':1}]}
 
+assert module.connector(['PASTAJ'],{'relation':'conditional','sourceConnectorLabel':'NËSE'}) == {'sourceConnectorLabel':'PASTAJ','condition':'','relation':'and'}
+for word,relation in [('DHE','and'),('OSE','or'),('PLUS','plus'),('NËSE','conditional'),('PËR','conditional'),('KUR','conditional')]:
+    fixed=module.connector([word+', QA condition:'],{'relation':'conditional','sourceConnectorLabel':'NËSE'})
+    assert fixed['relation']==relation and fixed['sourceConnectorLabel']==word and fixed['condition']=='QA condition:'
+    if word=='OSE':assert fixed['selection']=='choose-one'
+
 with tempfile.TemporaryDirectory() as temp:
     doc=Document();guides=[]
     for chapter,count in module.EXPECTED.items():

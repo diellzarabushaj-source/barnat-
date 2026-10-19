@@ -35,6 +35,12 @@ patched, guarded by the revision that was read. Prior field values are kept in
 the local repair artifact for rollback. Draft readback must match the prepared
 fields before publication. Re-running conversion produces no further changes.
 
+A final connector audit corrects 19 blocks across 17 of those guides. Exact
+source connectors determine their semantics: DHE means conjunction, OSE means
+an alternative, and NËSE/PËR/KUR introduce conditions. PASTAJ remains a
+sequential step instead of inheriting an obsolete condition. Regression checks
+cover both the displayed connector and its underlying relationship.
+
 The reader uses a structured prescription model with text fields. This audit
 checks source text, signs, paragraph boundaries and reading order; it is not a
 claim that all DOCX typographic styling is represented by that model.
