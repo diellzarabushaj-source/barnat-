@@ -64,7 +64,10 @@ def clean_title(value):
 def normalized(value):
     return re.sub(r'[^\w<>≤≥]+', '', unicodedata.normalize('NFKC', clean_title(value)).casefold())
 
-def source_sections(source_path):
+def source_sections(source_path, expected=None, embedded_headings=None):
+    expected = EXPECTED if expected is None else expected
+    embedded_headings = embedded_headings or {}
+    embedded_seen = Counter()
     doc = Document(source_path)
     sections, chapter, current = [], 0, None
     for index, element in enumerate(doc.element.body):
@@ -73,17 +76,21 @@ def source_sections(source_path):
             value = p.text.strip()
             if p.style.name == 'Heading 2' and (match := re.match(r'KAPITULLI\s+(\d+)', value)):
                 chapter, current = int(match[1]), None
-            if chapter not in EXPECTED:
+            if chapter not in expected:
                 continue
             assert not p._p.xpath('.//w:drawing | .//w:pict | .//m:oMath'), 'Unsupported rich source structure'
-            if p.style.name == 'Heading 4':
+            embedded = p.style.name == 'Heading 4' and (chapter,value) in embedded_headings
+            if embedded:
+                embedded_seen[(chapter,value)] += 1
+            if p.style.name == 'Heading 4' and not embedded:
                 current = {'chapter':chapter, 'title':value, 'paragraphs':[]}
                 sections.append(current)
             elif current and value:
                 current['paragraphs'].append({'index':index, 'text':value})
-        elif element.tag == qn('w:tbl') and chapter in EXPECTED:
+        elif element.tag == qn('w:tbl') and chapter in expected:
             raise AssertionError('Prescription tables require a rich table conversion')
-    assert Counter(s['chapter'] for s in sections) == EXPECTED
+    assert Counter(s['chapter'] for s in sections) == expected
+    assert embedded_seen == embedded_headings, 'Embedded source heading structure changed'
     return sections
 
 def connector(prelude, old):
@@ -103,12 +110,17 @@ def connector(prelude, old):
         label=''
     return {'sourceConnectorLabel':label, 'condition':raw}
 
-def build(source_path, existing, source_document_id=SOURCE_ID):
+def build(source_path, existing, source_document_id=SOURCE_ID, profile=None):
+    profile = profile or {}
+    expected = profile.get('expected',EXPECTED)
+    fragments = profile.get('fragments',FRAGMENTS)
+    title_fixes = profile.get('title_fixes',TITLE_FIXES)
+    missing_items = profile.get('missing_items',MISSING_ITEMS)
     assert source_document_id == SOURCE_ID, 'Use the canonical prescription document'
-    assert len(existing) == 136 and len({g['_id'] for g in existing}) == 136
-    assert Counter(g['chapterNumber'] for g in existing) == EXPECTED
-    sections = source_sections(source_path)
-    by_chapter = {c:[s for s in sections if s['chapter']==c] for c in EXPECTED}
+    assert len(existing) == sum(expected.values()) and len({g['_id'] for g in existing}) == len(existing)
+    assert Counter(g['chapterNumber'] for g in existing) == expected
+    sections = source_sections(source_path,expected,profile.get('embedded_headings'))
+    by_chapter = {c:[s for s in sections if s['chapter']==c] for c in expected}
     corrected, changes, coverage = [], [], []
     for original in existing:
         guide = copy.deepcopy(original)
@@ -122,11 +134,11 @@ def build(source_path, existing, source_document_id=SOURCE_ID):
         for old in original['logicBlocks']:
             assert len(old.get('items',[])) == 1, 'Unexpected multi-item source block'
             item = old['items'][0]
-            artifact = FRAGMENTS.get((chapter,order),{}).get(old['_key'])
+            artifact = fragments.get((chapter,order),{}).get(old['_key'])
             if artifact is not None:
                 assert item['title'] == artifact, 'Split artifact changed'
                 continue
-            title = TITLE_FIXES.get((chapter,order,old['_key']),item['title'])
+            title = title_fixes.get((chapter,order,old['_key']),item['title'])
             matches = [i for i,p in enumerate(paragraphs) if normalized(p)==normalized(title) and i not in used and (not anchors or i>anchors[-1])]
             synthetic = item['title'] == 'Shënim i burimit'
             if synthetic:
@@ -143,7 +155,7 @@ def build(source_path, existing, source_document_id=SOURCE_ID):
                 block['items'][0]['title'] = clean_title(paragraphs[anchor])
             blocks.append(block)
             anchors.append(anchor)
-        for title,relation,kind,generic,form,strength in MISSING_ITEMS.get((chapter,order),[]):
+        for title,relation,kind,generic,form,strength in missing_items.get((chapter,order),[]):
             matches=[i for i,p in enumerate(paragraphs) if normalized(p)==normalized(title)]
             assert len(matches)==1, f'Missing-item source changed: {title}'
             anchor=matches[0]
@@ -198,7 +210,7 @@ def build(source_path, existing, source_document_id=SOURCE_ID):
         fields = {k:guide[k] for k in ('title','sourceHeading','logicBlocks') if guide[k]!=original[k]}
         if fields:
             changes.append({'id':guide['_id'],'ifRevisionId':original['_rev'],'set':fields,'rollback':{k:original[k] for k in fields}})
-    return {'sourceDocumentId':SOURCE_ID,'sourceSha256':hashlib.sha256(open(source_path,'rb').read()).hexdigest(),'counts':{'guidesCompared':136,'changedGuides':len(changes),'paragraphs':sum(c['paragraphs'] for c in coverage),'removedSplitArtifacts':sum(len(v) for v in FRAGMENTS.values())},'changes':changes,'coverage':coverage,'correctedGuides':corrected}
+    return {'sourceDocumentId':SOURCE_ID,'sourceSha256':hashlib.sha256(open(source_path,'rb').read()).hexdigest(),'counts':{'guidesCompared':len(existing),'changedGuides':len(changes),'paragraphs':sum(c['paragraphs'] for c in coverage),'removedSplitArtifacts':sum(len(v) for v in fragments.values())},'changes':changes,'coverage':coverage,'correctedGuides':corrected}
 
 if __name__=='__main__':
     import argparse

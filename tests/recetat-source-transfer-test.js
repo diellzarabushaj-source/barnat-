@@ -42,6 +42,12 @@ for (const item of [{genericName:'Enoxaparin sodium',title:'Inj. Enoxaparin',sig
 }
 assert.equal(bridgeCalls,0,'Source conflicts cannot reach the prescription bridge');
 const laterConflicts = [
+  ['ketorolac-iv-dose-conflict',14,{title:'Inj. Ketorolac 30 mg/mL',sig:'30-60 mg IV, një herë.'}],
+  ['colchicine-gout-interval-conflict',13,{title:'Tab. Colchicine 0.5 mg',sig:'0.5 mg çdo 2-3 orë.'}],
+  ['infliximab-source-schedule-conflict',13,{title:'Inj. Infliximab',sig:'Përsëritet pas 2, 6, 10 dhe 14 javësh.'}],
+  ['aducanumab-product-status-review',14,{title:'Inf. Aducanumab 100 mg/mL',sig:'IV çdo 4 javë.'}],
+  ['diazepam-injection-dilution-conflict',15,{title:'Inj. Diazepam 10 mg/2 mL',sig:'Të hollohet në 8 mL 0.9% NaCl; 4-10 mg IV.'}],
+  ['lamotrigine-mania-source-conflict',15,{title:'Shënim i burimit',sig:'Ndrysho Lithium në Lamotrigine.'},'', 'MANI E RËNDË'],
   ['doxycycline-cap-dose-conflict',6,{title:'Cap. Doxycycline 200 mg',sig:'Të merret 2 herë në ditë (BD).'},'', 'CAP / PNEUMONI'],
   ['vancomycin-concentration-unit-conflict',6,{title:'Inj. Vancomycin',sig:'Target trough 15-20 mg/mL.'}],
   ['enoxaparin-prophylaxis-treatment-conflict',6,{title:'Inj. Enoxaparin',sig:'1.5 mg/kg, SC, OD.'},'TROMBOPROFILAKSI'],
@@ -67,6 +73,11 @@ for (const [code,chapterNumber,item,condition='',title='Source QA'] of laterConf
 }
 assert.equal(bridgeCalls,0);
 for (const [chapterNumber,item] of [
+  [14,{title:'Inj. Ketorolac',sig:'60 mg IM, një herë.'}],
+  [14,{title:'Inj. Ketorolac',sig:'30 mg IV, një herë.'}],
+  [13,{title:'Tab. Colchicine',sig:'500 microgram çdo 8 orë; sipas produktit.'}],
+  [13,{title:'Inj. Infliximab',sig:'Javët 0, 2, 6, pastaj çdo 8 javë.'}],
+  [15,{title:'Inj. Diazepam',sig:'Injeksion pa hollim sipas SmPC.'}],
   [6,{title:'Cap. Doxycycline 100 mg',sig:'BD.'}],
   [6,{title:'Inj. Vancomycin',sig:'Target trough 15-20 mg/L.'}],
   [7,{title:'Inj. Tirofiban',sig:'25 mcg/kg.'}],
@@ -75,6 +86,7 @@ for (const [chapterNumber,item] of [
   [9,{title:'Glecaprevir 100 mg + Pibrentasvir 40 mg',sig:'3 tableta OD.'}],
   [10,{title:'Insulin regular',sig:'Para mëngjesit, drekës dhe darkës.'}],
 ]) assert.equal(sourceClinicalIssues({...guide,chapterNumber,logicBlocks:[{items:[item]}]}).length,0,'Updated source must not retain an obsolete warning');
+assert.equal(sourceClinicalIssues({...guide,chapterNumber:15,title:'Depresion bipolar',logicBlocks:[{items:[{title:'Lamotrigine',sig:'Titrim sipas SmPC.'}]}]}).length,0,'A mania warning must not block the distinct depression indication');
 const orProphylaxis={...guide,chapterNumber:6,logicBlocks:[{relation:'conditional',condition:'TROMBOPROFILAKSI',items:[]},{relation:'or',items:[{title:'Fondaparinux 5-10 mg',sig:'OD.'}]}]};
 assert.ok(sourceClinicalIssues(orProphylaxis).some(issue=>issue.code==='fondaparinux-prophylaxis-treatment-conflict'),'Alternatives inherit their group indication');
 assert.equal(sourceClinicalIssues({...guide,logicBlocks:[{items:[{genericName:'Enoxaparin',sig:'100 IU/kg (1 mg/kg), SC.'}]}]}).length,0);
