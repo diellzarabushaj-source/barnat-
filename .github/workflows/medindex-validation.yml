@@ -44,6 +44,7 @@ jobs:
           python tests/medical-hub-docx-import-test.py
           python tests/prescription-chapters-6-10-import-test.py
           python tests/prescription-chapters-10-15-import-test.py
+          python tests/prescription-chapters-15-20-import-test.py
 
       - name: Validate JavaScript syntax
         shell: bash

@@ -330,7 +330,7 @@ if __name__ == '__main__':
     parser.add_argument('--initialize-placeholders', action='store_true')
     parser.add_argument('--image-assets')
     parser.add_argument('--prescription-repairs', action='store_true', help='Read-only, source-asserted prescriptionGuide repairs')
-    parser.add_argument('--prescription-chapters', choices=['1-5','6-10','10-15'], default='1-5', help='Explicit prescription repair scope; requires --prescription-repairs')
+    parser.add_argument('--prescription-chapters', choices=['1-5','6-10','10-15','15-20'], default='1-5', help='Explicit prescription repair scope; requires --prescription-repairs')
     parser.add_argument('--source-document-id', default='1QN0U5sWSj9GdyNV5oZoZIobmjV0TmCwJD937xzzPgVw', help='Canonical Google Doc ID, including a different volume')
     args = parser.parse_args()
     assets = json.load(open(args.image_assets)) if args.image_assets else {}
@@ -338,7 +338,7 @@ if __name__ == '__main__':
     if args.prescription_repairs:
         import importlib.util
         from pathlib import Path
-        repair_script = {'1-5':'repair-prescription-source.py','6-10':'repair-prescription-chapters-6-10.py','10-15':'repair-prescription-chapters-10-15.py'}[args.prescription_chapters]
+        repair_script = {'1-5':'repair-prescription-source.py','6-10':'repair-prescription-chapters-6-10.py','10-15':'repair-prescription-chapters-10-15.py','15-20':'repair-prescription-chapters-15-20.py'}[args.prescription_chapters]
         spec = importlib.util.spec_from_file_location('prescription_repairs', Path(__file__).with_name(repair_script))
         repairs = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(repairs)

@@ -7756,13 +7756,14 @@
     // Keep the book verbatim, but do not turn a confirmed source conflict into
     // a prescription draft. These checks do not select a replacement regimen.
     const chapter = Number(guide?.chapterNumber);
-    if (chapter < 1 || chapter > 15) return [];
+    if (guide?.reviewStatus === 'source-imported') return [{code:'source-awaiting-clinical-review',message:'Kjo referencë është importuar nga burimi dhe pret rishikim klinik. Nuk kalohet në draft para miratimit.',url:'https://docs.google.com/document/d/119EyMzSHYV2SVYXLo6_P2EgkI_8Hukw_uNDvGuewyNg/edit',source:'Dokumenti burimor · pret rishikim'}];
+    if (chapter < 1 || chapter > 20) return [];
     const items = (guide?.logicBlocks || []).flatMap(block => block?.items || []);
     const issues = [];
     for (const item of items) {
       const identity = normalize(`${item?.genericName || ''} ${item?.title || ''}`);
       const sig = text(item?.sig);
-      if (identity.includes('enoxaparin') && /100\s*IU\s*\/\s*kg\s*\(\s*1[.,]5\s*mg\s*\/\s*kg\s*\)/i.test(sig)) {
+      if (identity.includes('enoxaparin') && /100\s*IU\s*\/\s*kg\s*\(\s*(?:ose\s+)?1[.,]5\s*mg\s*\/\s*kg\s*\)/i.test(sig)) {
         issues.push({code:'enoxaparin-unit-conflict',message:'Enoxaparin: burimi barazon 100 IU/kg me 1,5 mg/kg. Këto vlera nuk janë ekuivalente sipas SmPC. Skema kërkon rishikim klinik.',url:'https://www.medicines.org.uk/emc/product/4499/smpc',source:'SmPC Clexane · seksionet 2 dhe 4.2'});
       }
       if (/\bffp\b|plazme e fresket/.test(identity) && /\bnj[eë]\s+nj[eë]si\s+rrit\s+Hb\b/iu.test(sig)) {
@@ -7791,8 +7792,26 @@
           if (chapter === 14 && identity.includes('aducanumab')) {
             add('aducanumab-product-status-review','Aducanumab: Biogen ka ndërprerë zhvillimin dhe komercializimin e ADUHELM. Kjo skemë historike kërkon rivlerësim specialistik të produktit dhe indikacionit para draftit; njoftimi nuk përcakton statusin e regjistrimit në Kosovë.','https://investors.biogen.com/news-releases/news-release-details/biogen-realign-resources-alzheimers-disease-franchise','Biogen · statusi i ADUHELM');
           }
-          if (chapter === 15 && identity.includes('diazepam') && /8\s*mL\s*0[.,]9%\s*NaCl/i.test(sig)) {
+          if (chapter >= 15 && identity.includes('diazepam') && /8\s*mL\s*(?:0[.,]9%\s*NaCl|Sodium chloride\s*0[.,]9%)/i.test(sig)) {
             add('diazepam-injection-dilution-conflict','Diazepam: hollimi në 8 mL NaCl për injeksion kërkon verifikim të produktit. SmPC i Diazepam Injection BP ndalon hollimin për injeksion IV/IM dhe e dallon nga hollimi për infuzion të madh.','https://www.medicines.org.uk/emc/product/6274/smpc','SmPC Diazepam Injection BP · hollimi');
+          }
+          if (chapter >= 16 && /enoxaparin/i.test(`${identity} ${sig}`) && /\bIM\b/i.test(sig)) {
+            add('enoxaparin-im-route-conflict','Enoxaparin: burimi shënon rrugën IM. SmPC ndalon administrimin intramuskular; rruga dhe indikacioni kërkojnë korrigjim të dokumentuar para draftit.','https://www.medicines.org.uk/emc/product/4499/smpc','SmPC Clexane · rruga e administrimit');
+          }
+          if (chapter === 18 && identity.includes('brinzolamide') && /0[.,]1\s*%/.test(`${item?.title || ''} ${item?.strength || ''}`)) {
+            add('brinzolamide-strength-conflict','Brinzolamide: burimi jep 0,1%, ndërsa AZOPT përmban 10 mg/mL (1%). Fortësia e produktit dhe përdorimi në kënd të mbyllur kërkojnë verifikim oftalmologjik; përqendrimi nuk ndryshohet automatikisht.','https://www.medicines.org.uk/emc/product/3819/smpc','SmPC AZOPT · përqendrimi');
+          }
+          if (chapter === 16 && identity.includes('prednisolone') && /(?:^|\s)5\s*mg\s*[-–]\s*1\s*mg\b/i.test(sig)) {
+            add('prednisolone-source-range-conflict','Prednisolone: shënimi 5 mg–1 mg në burim është një interval i paqartë. Doza, njësia dhe kohëzgjatja duhen sqaruar me dermatologun; nuk supozohet se burimi ka dashur të shkruajë mg/kg.','https://docs.google.com/document/d/119EyMzSHYV2SVYXLo6_P2EgkI_8Hukw_uNDvGuewyNg/edit','Dokumenti burimor · intervali i prednisolone');
+          }
+          if (chapter === 16 && /hirsutism/.test(normalize(guide?.title)) && identity.includes('ketoconazole') && /\b(?:Cap|Tab)\./i.test(item?.title || '')) {
+            add('ketoconazole-hirsutism-review','Ketoconazole oral për hirsutizëm kërkon rishikim specialistik të indikacionit dhe rrezikut hepatik. Produkti i referencës është i autorizuar për Cushing endogjen dhe kërkon monitorim; preparatet topike janë përdorim tjetër.','https://www.medicines.org.uk/emc/product/101076/smpc','SmPC Ketoconazole Esteve · indikacioni dhe mëlçia');
+          }
+          if (chapter === 19 && /\bcsom\b/.test(normalize(guide?.title)) && identity.includes('tobramycin') && /ear drops|pika.*vesh/i.test(item?.title || '')) {
+            add('aminoglycoside-ear-perforation-review','Tobramycin otik në skemën CSOM kërkon kontroll të membranës timpanike dhe rrezikut ototoksik. Udhëzimi AAO-HNS kërkon preparat jo-ototoksik kur perforimi është i njohur ose dyshohet; zgjedhjen duhet ta rishikojë ORL.','https://aao-hnsfjournals.onlinelibrary.wiley.com/doi/10.1177/0194599813517083','AAO-HNS · membrana timpanike');
+          }
+          if (chapter === 19 && /\bbppv\b/.test(normalize(guide?.title)) && identity.includes('diazepam')) {
+            add('bppv-vestibular-suppressant-review','BPPV: burimi përfshin diazepam si terapi rutinë. AAO-HNS nuk rekomandon rutinë supresorë vestibularë për BPPV; duhen rishikuar manovrat e ripozicionimit dhe indikacioni individual.','https://www.entnet.org/resource/aao-hnsf-updated-cpg-bppv-press-release-fact-sheet/','AAO-HNS · BPPV');
           }
           if (identity.includes('doxycycline') && /\b200\s*mg\b/i.test(item?.title || '') && /2 her[eë] n[eë] dit[eë]|\bBD\b/i.test(sig) && /pneumoni|\bcap\b/.test(normalize(guide?.title))) {
             add('doxycycline-cap-dose-conflict','Doxycycline: titulli 200 mg me udhëzimin BD nënkupton 400 mg/ditë. Kjo nuk përputhet me skemën e CAP në NICE; doza dhe kohëzgjatja kërkojnë sqarim.','https://www.nice.org.uk/guidance/NG250/chapter/recommendations','NICE NG250 · pneumonia');
