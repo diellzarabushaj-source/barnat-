@@ -42,6 +42,14 @@ for (const item of [{genericName:'Enoxaparin sodium',title:'Inj. Enoxaparin',sig
 }
 assert.equal(bridgeCalls,0,'Source conflicts cannot reach the prescription bridge');
 const laterConflicts = [
+  ['enoxaparin-unit-conflict',16,{title:'Enoxaparin',sig:'100 IU/kg (ose 1.5 mg/kg), SC, OD.'}],
+  ['enoxaparin-im-route-conflict',17,{title:'VTE PROPHYLAXIS',sig:'Inj. Enoxaparin; rruga paraqitet si IM.'}],
+  ['brinzolamide-strength-conflict',18,{title:'Pika okulare Brinzolamide 0.1%',sig:'Alternativë.'}],
+  ['prednisolone-source-range-conflict',16,{title:'Tab. Prednisolone 5 mg',sig:'5 mg - 1 mg, PO, OD.'}],
+  ['ketoconazole-hirsutism-review',16,{title:'Cap. Ketoconazole',sig:'400 mg OD.'},'', 'HIRSUTISM'],
+  ['aminoglycoside-ear-perforation-review',19,{title:'Ear drops Tobramycin + Dexamethasone',sig:'BD.'},'', 'CSOM'],
+  ['bppv-vestibular-suppressant-review',19,{title:'Tab. Diazepam',sig:'HS.'},'', 'BPPV'],
+  ['diazepam-injection-dilution-conflict',20,{title:'Inj. Diazepam',sig:'Në 8 mL Sodium chloride 0.9%; 5-10 mg IV.'}],
   ['ketorolac-iv-dose-conflict',14,{title:'Inj. Ketorolac 30 mg/mL',sig:'30-60 mg IV, një herë.'}],
   ['colchicine-gout-interval-conflict',13,{title:'Tab. Colchicine 0.5 mg',sig:'0.5 mg çdo 2-3 orë.'}],
   ['infliximab-source-schedule-conflict',13,{title:'Inj. Infliximab',sig:'Përsëritet pas 2, 6, 10 dhe 14 javësh.'}],
@@ -72,7 +80,15 @@ for (const [code,chapterNumber,item,condition='',title='Source QA'] of laterConf
   assert.ok(rendered.includes(item.sig.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')),'Original source remains visible for '+code);
 }
 assert.equal(bridgeCalls,0);
+const unapproved={...guide,chapterNumber:16,reviewStatus:'source-imported'};
+assert.equal(sourceDraftText(unapproved),'');
+assert.equal(beginGuide(unapproved),false);
+assert.ok(sourceClinicalIssues(unapproved).some(i=>i.code==='source-awaiting-clinical-review'));
+assert.match(renderGuide(unapproved),/Drafti kërkon rishikim/);
 for (const [chapterNumber,item] of [
+  [17,{title:'Enoxaparin',sig:'SC sipas produktit.'}],
+  [18,{title:'Brinzolamide 1%',sig:'Sipas SmPC.'}],
+  [16,{title:'Prednisolone',sig:'0.5 mg - 1 mg/kg/ditë.'}],
   [14,{title:'Inj. Ketorolac',sig:'60 mg IM, një herë.'}],
   [14,{title:'Inj. Ketorolac',sig:'30 mg IV, një herë.'}],
   [13,{title:'Tab. Colchicine',sig:'500 microgram çdo 8 orë; sipas produktit.'}],

@@ -93,10 +93,12 @@ def source_sections(source_path, expected=None, embedded_headings=None):
     assert embedded_seen == embedded_headings, 'Embedded source heading structure changed'
     return sections
 
-def connector(prelude, old):
+def connector(prelude, old, overrides=None):
     if not prelude:
         return {'condition':'', 'sourceConnectorLabel':'' if old['relation']=='start' else old.get('sourceConnectorLabel','')}
     raw = '\n\n'.join(prelude)
+    if overrides and raw in overrides:
+        return copy.deepcopy(overrides[raw])
     if raw == 'PASTAJ':
         return {'sourceConnectorLabel':'PASTAJ', 'condition':'', 'relation':'and', 'selection':'all'}
     match = re.match(r'^(DHE/OSE|OSE|DHE|PLUS|NËSE|PËR|KUR)(?=\b|[, :])[, :]*', raw)
@@ -174,7 +176,7 @@ def build(source_path, existing, source_document_id=SOURCE_ID, profile=None):
         for i,(block,anchor) in enumerate(zip(blocks,anchors)):
             synthetic = block['items'][0]['title']=='Shënim i burimit'
             end = anchors[i+1] if i+1<len(anchors) else len(paragraphs)
-            block.update(connector(pending,block))
+            block.update(connector(pending,block,profile.get('connector_overrides')))
             consumed.extend(pending)
             if not synthetic:
                 consumed.append(paragraphs[anchor])
