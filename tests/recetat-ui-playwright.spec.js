@@ -105,12 +105,14 @@ test('mobile workspace: touch sizing and search sheet', async ({ page }) => {
 });
 
 for (const width of [390,1440]) {
-  test(`chapters 14–16 preserve note headings and block unapproved references and route conflicts at ${width}px`,async({page})=>{
+  test(`chapters 14–22 preserve note headings and block unapproved references and clinical conflicts at ${width}px`,async({page})=>{
     const items=[
       {_id:'qa-note-header',chapterNumber:14,orderInChapter:1,title:'QA complete note heading',reviewStatus:'verified',logicBlocks:[{relation:'start',selection:'all',items:[{kind:'source-note',title:'PËR QA CONDITION:',sig:'Full QA support instruction.'}],note:'S. Separate QA note.'}]},
       {_id:'qa-iv-route',chapterNumber:14,orderInChapter:2,title:'QA IV route conflict',reviewStatus:'verified',logicBlocks:[{relation:'start',items:[{kind:'active-substance',title:'Inj. Ketorolac 30 mg/mL',sig:'30-60 mg IV, një herë.'}]}]},
       {_id:'qa-mania-indication',chapterNumber:15,orderInChapter:1,title:'QA MANI E RËNDË',reviewStatus:'verified',logicBlocks:[{relation:'start',items:[{kind:'source-note',title:'QA source note',sig:'Ndrysho Lithium në Lamotrigine.'}]}]},
       {_id:'qa-unapproved-reference',chapterNumber:16,orderInChapter:1,title:'QA unapproved source reference',reviewStatus:'source-imported',logicBlocks:[{relation:'start',items:[{kind:'source-note',title:'QA source note',sig:'Full QA reference text.'}]}]},
+      {_id:'qa-pregnancy',chapterNumber:21,orderInChapter:1,title:'QA KANDIDIAZË NË SHTATZËNI',reviewStatus:'verified',logicBlocks:[{relation:'start',items:[{kind:'active-substance',title:'Cap. Fluconazole 150 mg',sig:'Dozë e vetme.'}]}]},
+      {_id:'qa-pediatric-units',chapterNumber:22,orderInChapter:1,title:'QA neonatal infusion',reviewStatus:'verified',logicBlocks:[{relation:'start',items:[{kind:'active-substance',title:'Dextrose 10%',sig:'Maintenance 6-8 mL/kg/minutë.'}]}]},
     ];
     await page.route('**/api/medical-hub?**',async route=>route.fulfill({json:require('./recetat-source-browser-fixture.js')(new URL(route.request().url()),items)}));
     await page.setViewportSize({width,height:900});
@@ -131,6 +133,14 @@ for (const width of [390,1440]) {
     await expect(page.locator('.rx-source-clinical-issue')).toContainText('pret rishikim klinik');
     await expect(page.locator('[data-rx-source-use]')).toBeDisabled();
     await expect(page.locator('.rx-source-sig')).toContainText('Full QA reference text.');
+    await page.locator('#rxSourceChapterSelect').selectOption('21');
+    await expect(page.locator('.rx-source-clinical-issue')).toContainText('shtatzëni');
+    await expect(page.locator('[data-rx-source-use]')).toBeDisabled();
+    await page.locator('#rxSourceChapterSelect').selectOption('22');
+    await expect(page.locator('.rx-source-clinical-issue')).toContainText('GIR');
+    await expect(page.locator('.rx-source-sig')).toContainText('6-8 mL/kg/minutë');
+    await expect(page.locator('[data-rx-source-use]')).toBeDisabled();
+    await expect(page.locator('#rxComposer')).toHaveValue('');
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
   });
   test(`source chapters 1–5: readable controls, complete fields and draft handoff at ${width}px`, async ({page}) => {
@@ -337,8 +347,8 @@ test.describe('touch step emphasis',()=>{
 });
 
 for (const width of [390,1440]) {
-  test(`chapters 6–20 preserve full instructions, separate source paragraphs and alternatives at ${width}px`,async({page})=>{
-    const items=Array.from({length:15},(_,i)=>({
+  test(`chapters 6–22 preserve full instructions, separate source paragraphs and alternatives at ${width}px`,async({page})=>{
+    const items=Array.from({length:17},(_,i)=>({
       _id:`qa-later-${i+6}`,chapterNumber:i+6,orderInChapter:1,title:`Later QA ${i+6}`,reviewStatus:'verified',
       logicBlocks:[
         {_key:'first',order:1,relation:'start',items:[{kind:'active-substance',title:'Tab. QA 10 mg',sig:'Complete QA instruction; ≥30 mL/min; 4 javë.'}],note:'S. Support paragraph one.\n\nS. Support paragraph two.'},
@@ -352,7 +362,7 @@ for (const width of [390,1440]) {
     });
     await page.setViewportSize({width,height:900});
     await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
-    for (const chapter of [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]) {
+    for (const chapter of [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]) {
       await page.locator('#rxSourceChapterSelect').selectOption(String(chapter));
       await expect(page.locator('#rxSourceGuideList h3')).toHaveText(`Later QA ${chapter}`);
       await expect(page.locator('.rx-source-sig').first()).toContainText('≥30 mL/min; 4 javë.');

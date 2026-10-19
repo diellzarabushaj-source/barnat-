@@ -42,6 +42,29 @@ for (const item of [{genericName:'Enoxaparin sodium',title:'Inj. Enoxaparin',sig
 }
 assert.equal(bridgeCalls,0,'Source conflicts cannot reach the prescription bridge');
 const laterConflicts = [
+  ["source-liquid-strength-missing",22,{"title":"Syp. Iron polymaltose","sig":"5 mL PO BD."}],
+  ["fluconazole-pregnancy-review",21,{"title":"Cap. Fluconazole 150 mg","sig":"Dozë e vetme."},"","KANDIDIAZË NË SHTATZËNI"],
+  ["source-bd-tds-conflict",21,{"title":"Ciprofloxacin","sig":"1-0-1 (TDS)."}],
+  ["ulipristal-fibroid-status-review",21,{"title":"Ulipristal acetate 5 mg","sig":"OD."}],
+  ["leuprorelin-endometriosis-product-review",21,{"title":"Inj. Leuprolide acetate 22.5 mg","sig":"Çdo 3 muaj."},"","ENDOMETRIOSIS"],
+  ["dextrose-infusion-unit-conflict",22,{"title":"Dextrose 10%","sig":"Maintenance 6-8 mL/kg/minutë."}],
+  ["neonatal-adrenaline-route-review",22,{"title":"Inj. Adrenaline","sig":"0.1-0.3 mL/kg, IV OSE endotrakeale."},"","REANIMIMI NEONATAL"],
+  ["pediatric-paracetamol-iv-weight-review",22,{"title":"Inj. Paracetamol 1 g/100 mL","sig":"10-15 mg/kg/dozë IV."}],
+  ["pediatric-paracetamol-daily-limit-review",22,{"title":"Paracetamol","sig":"15 mg/kg çdo 6 orë. Maksimumi 90 mg/kg/ditë."}],
+  ["pediatric-vancomycin-daily-dose-review",22,{"title":"Vancomycin","sig":"7.5 mg/kg/ditë IV."}],
+  ["pediatric-antihistamine-dose-review",22,{"title":"Desloratadine","sig":"2-5 vjeç = 5 mg OD; >5 vjeç = 5 mg BD."}],
+  ["pediatric-cefaclor-dose-unit-review",22,{"title":"Cefaclor","sig":"30-40 mg/kg/dozë, PO, BD/TDS."}],
+  ["pediatric-cefuroxime-oral-dose-review",22,{"title":"Syp. Cefuroxime 125 mg/5 mL","sig":"150 mg/kg/ditë PO BD."}],
+  ["pediatric-nitrofurantoin-treatment-review",22,{"title":"Nitrofurantoin","sig":"1-2 mg/kg PO OD bedtime."},"","UTI E PAKOMPLIKUAR"],
+  ["lactulose-strength-unit-conflict",22,{"title":"Syp. Lactulose 10 mg/15 mL","sig":"1 mL/kg."}],
+  ["pediatric-lamotrigine-titration-review",22,{"title":"Lamotrigine","sig":"Fillimisht 1-5 mg/kg PO BD."}],
+  ["phenytoin-liquid-strength-review",22,{"title":"Syp. Phenytoin 125 mg/mL","sig":"10 mg/kg/ditë."}],
+  ["pediatric-furosemide-adult-regimen-review",22,{"title":"Furosemide","sig":"Maksimumi 600 mg/ditë."}],
+  ["source-form-route-conflict",22,{"title":"Inj. Ciprofloxacin","sig":"15 mg/kg orally BD."}],
+  ["tetanus-treatment-prophylaxis-dose-review",22,{"title":"Human tetanus immunoglobulin 250 IU","sig":"IM."},"","TETANUS TE FËMIJËT - TRAJTIMI"],
+  ["rabies-vaccine-product-volume-review",22,{"title":"Inj. Rabies vaccine 0.5 mL","sig":"ACIP: IM në ditët 0,3,7,14."}],
+  ["hbv-pregnancy-source-contradiction",21,{"title":"Tenofovir","sig":"Tenofovir janë të kundërindikuara në shtatzëni."},"","HBV NË SHTATZËNI"],
+  ["trichomoniasis-regimen-review",21,{"title":"Clindamycin","sig":"BD."},"","TRICHOMONIASIS"],
   ['enoxaparin-unit-conflict',16,{title:'Enoxaparin',sig:'100 IU/kg (ose 1.5 mg/kg), SC, OD.'}],
   ['enoxaparin-im-route-conflict',17,{title:'VTE PROPHYLAXIS',sig:'Inj. Enoxaparin; rruga paraqitet si IM.'}],
   ['brinzolamide-strength-conflict',18,{title:'Pika okulare Brinzolamide 0.1%',sig:'Alternativë.'}],
@@ -86,6 +109,24 @@ assert.equal(beginGuide(unapproved),false);
 assert.ok(sourceClinicalIssues(unapproved).some(i=>i.code==='source-awaiting-clinical-review'));
 assert.match(renderGuide(unapproved),/Drafti kërkon rishikim/);
 for (const [chapterNumber,item] of [
+  [21,{title:'Fluconazole 150 mg',sig:'PO sipas produktit.'}],
+  [22,{title:'Inj. Rabies vaccine 1 mL',sig:'ACIP: IM.'}],
+  [22,{"title":"Syp. Iron 50 mg/5 mL","sig":"5 mL PO BD."}],
+  [22,{"title":"Dextrose 10%","sig":"Maintenance 6-8 mg/kg/min."}],
+  [22,{"title":"Inj. Paracetamol","sig":"≤10 kg: 7.5 mg/kg; >10 kg: 15 mg/kg."}],
+  [22,{"title":"Paracetamol","sig":"15 mg/kg çdo 6 orë, maksimumi 60 mg/kg/ditë."}],
+  [22,{"title":"Vancomycin","sig":"15 mg/kg/dozë çdo 6 orë."}],
+  [22,{"title":"Desloratadine","sig":"1.25 mg OD te 2-5 vjeç."}],
+  [22,{"title":"Cefaclor","sig":"40 mg/kg/ditë e ndarë në 3 doza."}],
+  [22,{"title":"Syp. Cefuroxime 125 mg/5 mL","sig":"15 mg/kg/dozë BD."}],
+  [22,{"title":"Nitrofurantoin","sig":"750 microgram/kg katër herë/ditë."}],
+  [22,{"title":"Syp. Lactulose 10 g/15 mL","sig":"1 mL/kg."}],
+  [22,{"title":"Lamotrigine","sig":"0.15 mg/kg/ditë sipas titrimit me valproate."}],
+  [22,{"title":"Syp. Phenytoin 125 mg/5 mL","sig":"5 mg/kg/ditë."}],
+  [22,{"title":"Furosemide","sig":"Sipas peshës dhe veshkave."}],
+  [22,{"title":"Inj. Ciprofloxacin","sig":"IV sipas produktit."}],
+  [21,{"title":"Leuprolide acetate 11.25 mg","sig":"Çdo 3 muaj."}],
+  [21,{"title":"Ciprofloxacin","sig":"1-0-1 (BD)."}],
   [17,{title:'Enoxaparin',sig:'SC sipas produktit.'}],
   [18,{title:'Brinzolamide 1%',sig:'Sipas SmPC.'}],
   [16,{title:'Prednisolone',sig:'0.5 mg - 1 mg/kg/ditë.'}],
@@ -103,6 +144,7 @@ for (const [chapterNumber,item] of [
   [10,{title:'Insulin regular',sig:'Para mëngjesit, drekës dhe darkës.'}],
 ]) assert.equal(sourceClinicalIssues({...guide,chapterNumber,logicBlocks:[{items:[item]}]}).length,0,'Updated source must not retain an obsolete warning');
 assert.equal(sourceClinicalIssues({...guide,chapterNumber:15,title:'Depresion bipolar',logicBlocks:[{items:[{title:'Lamotrigine',sig:'Titrim sipas SmPC.'}]}]}).length,0,'A mania warning must not block the distinct depression indication');
+assert.equal(sourceClinicalIssues({...guide,chapterNumber:22,title:'PROFILAKSIA E TETANUSIT PAS LËNDIMIT',logicBlocks:[{items:[{title:'Human tetanus immunoglobulin 250 IU',sig:'IM.'}]}]}).length,0,'TIG treatment review must not block the separate wound prophylaxis indication');
 const orProphylaxis={...guide,chapterNumber:6,logicBlocks:[{relation:'conditional',condition:'TROMBOPROFILAKSI',items:[]},{relation:'or',items:[{title:'Fondaparinux 5-10 mg',sig:'OD.'}]}]};
 assert.ok(sourceClinicalIssues(orProphylaxis).some(issue=>issue.code==='fondaparinux-prophylaxis-treatment-conflict'),'Alternatives inherit their group indication');
 assert.equal(sourceClinicalIssues({...guide,logicBlocks:[{items:[{genericName:'Enoxaparin',sig:'100 IU/kg (1 mg/kg), SC.'}]}]}).length,0);

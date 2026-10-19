@@ -7757,7 +7757,7 @@
     // a prescription draft. These checks do not select a replacement regimen.
     const chapter = Number(guide?.chapterNumber);
     if (guide?.reviewStatus === 'source-imported') return [{code:'source-awaiting-clinical-review',message:'Kjo referencë është importuar nga burimi dhe pret rishikim klinik. Nuk kalohet në draft para miratimit.',url:'https://docs.google.com/document/d/119EyMzSHYV2SVYXLo6_P2EgkI_8Hukw_uNDvGuewyNg/edit',source:'Dokumenti burimor · pret rishikim'}];
-    if (chapter < 1 || chapter > 20) return [];
+    if (chapter < 1 || chapter > 22) return [];
     const items = (guide?.logicBlocks || []).flatMap(block => block?.items || []);
     const issues = [];
     for (const item of items) {
@@ -7780,6 +7780,70 @@
         for (const item of block?.items || []) {
           const identity = normalize(`${item?.genericName || ''} ${item?.title || ''}`);
           const sig = text(item?.sig);
+          const formulation = `${item?.title || ''} ${item?.strength || ''}`;
+          if (chapter >= 21 && /Syp\.|syrup|shurup|drops/i.test(formulation) && /\bmL\b|lug[eë]/i.test(sig) && !/(?:mg|mcg|g|IU|units)\s*\/\s*(?:\d+(?:[.,]\d+)?\s*)?mL|IU\s*\/\s*pik/i.test(formulation)) {
+            add('source-liquid-strength-missing','Burimi jep vëllim ose lugë pa përqendrim të mjaftueshëm të preparatit. Duhet identifikuar produkti dhe sasia e substancës aktive para draftit; vëllimi nuk shndërrohet automatikisht në dozë.','https://docs.google.com/document/d/119EyMzSHYV2SVYXLo6_P2EgkI_8Hukw_uNDvGuewyNg/edit','Dokumenti burimor · përqendrimi mungon');
+          }
+          if (chapter === 21 && identity.includes('fluconazole') && /shtatzeni/.test(normalize(guide?.title))) {
+            add('fluconazole-pregnancy-review','Kandidiazë në shtatzëni: burimi përfshin fluconazole oral. CDC rekomandon azole topike dhe këshillon kundër fluconazole oral në këtë situatë; skema kërkon rishikim obstetrik.','https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm','CDC · kandidiaza në shtatzëni');
+          }
+          if (chapter === 21 && /1\s*-\s*0\s*-\s*1\s*\(TDS\)/i.test(sig)) {
+            add('source-bd-tds-conflict','Burimi shkruan njëkohësisht 1-0-1 dhe TDS. Numri i administrimeve nuk përputhet dhe duhet sqaruar para draftit.','https://docs.google.com/document/d/119EyMzSHYV2SVYXLo6_P2EgkI_8Hukw_uNDvGuewyNg/edit','Dokumenti burimor · shpeshtësia');
+          }
+          if (chapter === 21 && identity.includes('ulipristal')) {
+            add('ulipristal-fibroid-status-review','Ulipristal për fibroidet: EMA ka tërhequr autorizimin e Esmya në BE me kërkesë të mbajtësit. Produkti, indikacioni dhe monitorimi hepatik kërkojnë rishikim; kjo nuk përcakton regjistrimin në Kosovë ose përdorimin për kontracepsion emergjent.','https://www.ema.europa.eu/en/medicines/human/EPAR/esmya','EMA · Esmya');
+          }
+          if (chapter === 21 && /endometriosis/.test(normalize(guide?.title)) && /leuprolide|leuprorelin/.test(identity) && /22[.,]5\s*mg/i.test(formulation)) {
+            add('leuprorelin-endometriosis-product-review','Leuprorelin/leuprolide: burimi liston depot 22,5 mg për endometriozë. SmPC i PROSTAP 3 për këtë indikacion përshkruan formulim tjetër; duhet verifikuar produkti dhe intervali, pa zëvendësim automatik.','https://www.medicines.org.uk/emc/product/4651/smpc','SmPC PROSTAP 3 · endometrioza');
+          }
+          if (chapter === 22 && /dextrose/.test(identity) && /6\s*[-–]\s*8\s*mL\s*\/\s*kg\s*\/\s*min/i.test(sig)) {
+            add('dextrose-infusion-unit-conflict','Glukoza: burimi shtyp 6–8 mL/kg/minutë për mirëmbajtje. GIR shprehet në mg/kg/min; njësia dhe shpejtësia kërkojnë korrigjim të dokumentuar. Nuk bëhet konvertim automatik.','https://www.rch.org.au/rchcpg/hospital_clinical_guideline_index/Neonatal_hypoglycaemia/','RCH · njësitë e GIR');
+          }
+          if (chapter === 22 && /reanimimi neonatal/.test(normalize(guide?.title)) && /adrenaline|epinephrine/.test(identity) && /IV\s+OSE\s+endotrakeale/i.test(sig)) {
+            add('neonatal-adrenaline-route-review','Adrenalina në reanimimin neonatal: burimi bashkon dozën IV me rrugën endotrakeale. AHA/AAP i dallon këto doza; protokolli dhe rruga kërkojnë rishikim neonatal para draftit.','https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/neonatal-resuscitation','AHA/AAP · reanimimi neonatal');
+          }
+          if (chapter === 22 && identity.includes('paracetamol') && /Inj\.|Inf\./i.test(formulation) && /(?:10\s*[-–]\s*)?15\s*mg\s*\/\s*kg/i.test(sig) && !/7[.,]5\s*mg\s*\/\s*kg/i.test(sig)) {
+            add('pediatric-paracetamol-iv-weight-review','Paracetamol IV: skema nuk dallon grupin ≤10 kg nga fëmijët me peshë më të madhe. Doza, vëllimi dhe maksimumi ditor varen nga pesha dhe preparati; kjo skemë nuk zbatohet njësoj për çdo fëmijë.','https://www.medicines.org.uk/emc/product/100803/smpc','SmPC Paracetamol IV · grupet e peshës');
+          }
+          if (chapter === 22 && identity.includes('paracetamol') && /90\s*mg\s*\/\s*kg/i.test(sig)) {
+            add('pediatric-paracetamol-daily-limit-review','Paracetamol: kufiri 90 mg/kg/ditë i shtypur nuk përputhet me katër doza nga 15 mg/kg çdo 6 orë. Duhet sqaruar kufiri sipas moshës, peshës dhe produktit para draftit.','https://docs.google.com/document/d/119EyMzSHYV2SVYXLo6_P2EgkI_8Hukw_uNDvGuewyNg/edit','Dokumenti burimor · kufiri ditor');
+          }
+          if (chapter === 22 && identity.includes('vancomycin') && /7[.,]5\s*mg\s*\/\s*kg\s*\/\s*dit[eë]/i.test(sig)) {
+            add('pediatric-vancomycin-daily-dose-review','Vancomycin: burimi shtyp 7,5 mg/kg/ditë në pneumoni. Kjo duhet dalluar nga mg/kg për dozë dhe përshtatur sipas moshës, veshkave dhe monitorimit; kërkohet rishikim specialistik.','https://www.medicines.org.uk/emc/product/15736/smpc','SmPC Vancomycin · pediatria');
+          }
+          if (chapter === 22 && /desloratadine|levocetirizine/.test(identity) && /2\s*[-–]\s*5\s*vjeç\s*=\s*5\s*mg/i.test(sig)) {
+            add('pediatric-antihistamine-dose-review','Antihistaminat: burimi përsërit të njëjtën dozë për substanca të ndryshme dhe grupmosha pediatrike. Këto skema nuk janë të këmbyeshme; doza dhe përqendrimi kërkojnë kontroll sipas produktit.','https://www.ema.europa.eu/en/medicines/human/EPAR/neoclarityn','EMA · desloratadine; kontroll sipas produktit');
+          }
+          if (chapter === 22 && identity.includes('cefaclor') && /30\s*[-–]\s*40\s*mg\s*\/\s*kg\s*\/\s*doz[eë]/i.test(sig)) {
+            add('pediatric-cefaclor-dose-unit-review','Cefaclor: burimi jep 30–40 mg/kg për dozë, ndërsa SmPC i referencës e përshkruan dozën pediatrike si total ditor të ndarë. Njësia për dozë/ditë dhe mosha kërkojnë verifikim.','https://www.medicines.org.uk/emc/product/15786/smpc','SmPC Cefaclor · doza ditore');
+          }
+          if (chapter === 22 && identity.includes('cefuroxime') && /Syp\./i.test(formulation) && /150\s*mg\s*\/\s*kg|20\s*[-–]\s*30\s*mg\s*\/\s*kg\s*\/\s*doz[eë]/i.test(sig)) {
+            add('pediatric-cefuroxime-oral-dose-review','Cefuroxime: doza e shurupit në burim kërkon rishikim kundrejt cefuroxime axetil oral. Regjimet orale dhe IV nuk këmbehen; duhet kontrolluar doza për administrim, kufiri dhe pesha.','https://www.medicines.org.uk/emc/product/3814/smpc','SmPC Zinnat suspension · rruga orale');
+          }
+          if (chapter === 22 && /uti e pakomplikuar/.test(normalize(guide?.title)) && identity.includes('nitrofurantoin') && /\bOD\b|bedtime/i.test(sig)) {
+            add('pediatric-nitrofurantoin-treatment-review','Nitrofurantoin: skema e burimit jep një administrim në mbrëmje për trajtim të UTI akute. Trajtimi duhet dalluar nga profilaksia; kontrollohen formulimi, funksioni renal dhe shpeshtësia.','https://www.nice.org.uk/guidance/ng109/chapter/Recommendations','NICE NG109 · UTI te fëmijët');
+          }
+          if (chapter === 22 && identity.includes('lactulose') && /10\s*mg\s*\/\s*15\s*mL/i.test(formulation)) {
+            add('lactulose-strength-unit-conflict','Lactulose: burimi shtyp 10 mg/15 mL, ndërsa produkti i referencës përmban 10 g/15 mL. Njësia dhe preparati duhen verifikuar para draftit; nuk bëhet korrigjim i heshtur.','https://www.medicines.org.uk/emc/product/2796/smpc','SmPC Lactulose · përqendrimi');
+          }
+          if (chapter === 22 && identity.includes('lamotrigine') && /Fillimisht\s+1\s*[-–]\s*5\s*mg\s*\/\s*kg/i.test(sig)) {
+            add('pediatric-lamotrigine-titration-review','Lamotrigine: doza fillestare e burimit duhet dalluar nga mirëmbajtja. SmPC kërkon titrim të ngadaltë sipas moshës dhe barnave shoqëruese, veçanërisht valproate, për shkak të rrezikut të reaksioneve të rënda të lëkurës.','https://www.medicines.org.uk/emc/product/1286/smpc','SmPC Lamictal · titrimi pediatrik');
+          }
+          if (chapter === 22 && identity.includes('phenytoin') && /Syp\./i.test(formulation) && /125\s*mg\s*\/\s*mL/i.test(formulation)) {
+            add('phenytoin-liquid-strength-review','Phenytoin: burimi shtyp shurup 125 mg/mL. DILANTIN-125 i referencës është 125 mg/5 mL; produkti dhe doza fillestare kërkojnë verifikim. Përqendrimet nuk këmbehen automatikisht.','https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f339f9e4-b289-4efe-82b9-46c57d1dc277','DailyMed · DILANTIN-125');
+          }
+          if (chapter === 22 && identity.includes('furosemide') && /600\s*mg\s*\/\s*dit[eë]/i.test(sig)) {
+            add('pediatric-furosemide-adult-regimen-review','Furosemide: në kapitullin pediatrik janë shtypur doza fikse dhe kufi 600 mg/ditë. Skema duhet përshtatur sipas peshës, moshës dhe funksionit renal nga pediatri; nuk bartet regjimi i të rriturit.','https://www.medicines.org.uk/emc/product/100580/smpc','SmPC Furosemide · pediatria');
+          }
+          if (chapter === 22 && /Inj\./i.test(formulation) && (/IV\/IG/.test(sig) || (identity.includes('ciprofloxacin') && /\borally\b/i.test(sig)))) {
+            add('source-form-route-conflict','Burimi ka rrugë të paqartë ose udhëzim oral pranë një forme injektabile. Preparati dhe rruga duhen sqaruar para draftit; rrugët nuk këmbehen automatikisht.','https://docs.google.com/document/d/119EyMzSHYV2SVYXLo6_P2EgkI_8Hukw_uNDvGuewyNg/edit','Dokumenti burimor · forma dhe rruga');
+          }
+          if (chapter === 22 && /tetanus.*trajtimi/.test(normalize(guide?.title)) && /tetanus immunoglobulin/.test(identity) && /250\s*IU/i.test(formulation)) {
+            add('tetanus-treatment-prophylaxis-dose-review','TIG: trajtimi i tetanusit duhet dalluar nga profilaksia e plagës. Burimi liston 250 IU për trajtim, ndërsa CDC rekomandon regjim tjetër; kërkohet rishikim infektologjik.','https://www.cdc.gov/tetanus/hcp/clinical-care/index.html','CDC · trajtimi i tetanusit');
+          }
+          if (chapter === 22 && identity.includes('rabies vaccine') && /0[.,]5\s*mL/i.test(formulation) && /ACIP/i.test(sig)) {
+            add('rabies-vaccine-product-volume-review','Vaksina rabies: ACIP në burim lidhet me 0,5 mL, ndërsa CDC për HDCV/PCECV përdor vëllim tjetër. Duhet verifikuar vaksina konkrete dhe rruga; produktet WHO/ACIP nuk këmbehen nga vëllimi.','https://www.cdc.gov/rabies/hcp/clinical-care/post-exposure-prophylaxis.html','CDC · rabies PEP');
+          }
           if (chapter >= 11 && identity.includes('ketorolac') && /\b(?:30\s*[-–]\s*60|60)\s*mg\b[^.]*\bIV\b/i.test(sig)) {
             add('ketorolac-iv-dose-conflict','Ketorolac: burimi lejon 60 mg IV për dozë. SmPC i Toradol 30 mg/mL përshkruan doza deri 30 mg; rruga IV, produkti dhe kufijtë sipas pacientit kërkojnë rishikim. Doza IM nuk përdoret si dozë IV.','https://www.medicines.org.uk/emc/product/14193/smpc','SmPC Toradol · doza dhe rruga');
           }
@@ -7856,6 +7920,12 @@
       }
       if (chapter === 15 && /mani/.test(normalize(guide?.title)) && /lamotrigine/.test(all)) {
         add('lamotrigine-mania-source-conflict','Lamotrigine: burimi e përmend si kalim gjatë trajtimit të manisë. NICE CG185 nuk e rekomandon për trajtimin e manisë; kjo duhet dalluar nga përdorimi në depresionin bipolar dhe mirëmbajtje.','https://www.nice.org.uk/guidance/cg185/chapter/recommendations','NICE CG185 · mania');
+      }
+      if (chapter === 21 && /hbv/.test(normalize(guide?.title)) && /tenofovir/.test(all) && /kund[eë]rindikuara/.test(all)) {
+        add('hbv-pregnancy-source-contradiction','HBV në shtatzëni: burimi liston tenofovir dhe më poshtë e quan të kundërindikuar. Ky konflikt kërkon rishikim; WHO e rekomandon TDF për profilaksi kur plotësohen kriteret.','https://www.who.int/publications/i/item/9789240090903','WHO 2024 · HBV dhe shtatzënia');
+      }
+      if (chapter === 21 && /trichomoniasis/.test(normalize(guide?.title)) && /clindamycin|metronidazole.*vaginal/.test(all)) {
+        add('trichomoniasis-regimen-review','Trichomoniasis: alternativat e burimit me clindamycin ose metronidazole vaginal kërkojnë rishikim. CDC rekomandon nitroimidazole sistemike dhe nuk rekomandon gel metronidazole për këtë infeksion.','https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm','CDC · trichomoniasis');
       }
     }
     return issues.filter((issue,index) => issues.findIndex(entry => entry.code === issue.code) === index);
