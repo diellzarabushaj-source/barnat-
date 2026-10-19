@@ -7756,7 +7756,7 @@
     // Keep the book verbatim, but do not turn a confirmed source conflict into
     // a prescription draft. These checks do not select a replacement regimen.
     const chapter = Number(guide?.chapterNumber);
-    if (chapter < 1 || chapter > 10) return [];
+    if (chapter < 1 || chapter > 15) return [];
     const items = (guide?.logicBlocks || []).flatMap(block => block?.items || []);
     const issues = [];
     for (const item of items) {
@@ -7779,6 +7779,21 @@
         for (const item of block?.items || []) {
           const identity = normalize(`${item?.genericName || ''} ${item?.title || ''}`);
           const sig = text(item?.sig);
+          if (chapter >= 11 && identity.includes('ketorolac') && /\b(?:30\s*[-–]\s*60|60)\s*mg\b[^.]*\bIV\b/i.test(sig)) {
+            add('ketorolac-iv-dose-conflict','Ketorolac: burimi lejon 60 mg IV për dozë. SmPC i Toradol 30 mg/mL përshkruan doza deri 30 mg; rruga IV, produkti dhe kufijtë sipas pacientit kërkojnë rishikim. Doza IM nuk përdoret si dozë IV.','https://www.medicines.org.uk/emc/product/14193/smpc','SmPC Toradol · doza dhe rruga');
+          }
+          if (chapter === 13 && identity.includes('colchicine') && /0[.,]5\s*mg\s*çdo\s*2\s*[-–]\s*3\s*or/i.test(sig)) {
+            add('colchicine-gout-interval-conflict','Colchicine: përsëritja çdo 2–3 orë e burimit kërkon rishikim. SmPC aktual përdor një skemë me dozë të ulët, pushim 12-orësh dhe kufi total për kursin; duhen kontrolluar edhe veshkat dhe ndërveprimet.','https://www.medicines.org.uk/emc/product/100968/smpc','SmPC Colchicine · gout akut');
+          }
+          if (chapter === 13 && identity.includes('infliximab') && /2,\s*6,\s*10\s*dhe\s*14\s*jav/i.test(sig)) {
+            add('infliximab-source-schedule-conflict','Infliximab: kalendari 2, 6, 10 dhe 14 javë i burimit kërkon sqarim. SmPC për artritin reumatoid dallon induksionin në javët 0, 2, 6 nga mirëmbajtja çdo 8 javë dhe nga intensifikimi i individualizuar.','https://www.medicines.org.uk/emc/product/3831/smpc','SmPC Remicade · artriti reumatoid');
+          }
+          if (chapter === 14 && identity.includes('aducanumab')) {
+            add('aducanumab-product-status-review','Aducanumab: Biogen ka ndërprerë zhvillimin dhe komercializimin e ADUHELM. Kjo skemë historike kërkon rivlerësim specialistik të produktit dhe indikacionit para draftit; njoftimi nuk përcakton statusin e regjistrimit në Kosovë.','https://investors.biogen.com/news-releases/news-release-details/biogen-realign-resources-alzheimers-disease-franchise','Biogen · statusi i ADUHELM');
+          }
+          if (chapter === 15 && identity.includes('diazepam') && /8\s*mL\s*0[.,]9%\s*NaCl/i.test(sig)) {
+            add('diazepam-injection-dilution-conflict','Diazepam: hollimi në 8 mL NaCl për injeksion kërkon verifikim të produktit. SmPC i Diazepam Injection BP ndalon hollimin për injeksion IV/IM dhe e dallon nga hollimi për infuzion të madh.','https://www.medicines.org.uk/emc/product/6274/smpc','SmPC Diazepam Injection BP · hollimi');
+          }
           if (identity.includes('doxycycline') && /\b200\s*mg\b/i.test(item?.title || '') && /2 her[eë] n[eë] dit[eë]|\bBD\b/i.test(sig) && /pneumoni|\bcap\b/.test(normalize(guide?.title))) {
             add('doxycycline-cap-dose-conflict','Doxycycline: titulli 200 mg me udhëzimin BD nënkupton 400 mg/ditë. Kjo nuk përputhet me skemën e CAP në NICE; doza dhe kohëzgjatja kërkojnë sqarim.','https://www.nice.org.uk/guidance/NG250/chapter/recommendations','NICE NG250 · pneumonia');
           }
@@ -7819,6 +7834,9 @@
       }
       if (chapter === 7 && /profilaksi/.test(all) && /clindamycin/.test(all)) {
         add('endocarditis-prophylaxis-review','Profilaksia e endokarditit: burimi liston clindamycin si alternativë. AHA nuk e rekomandon më për profilaksinë para procedurave dentare; duhen verifikuar procedura dhe grupi me rrezik të lartë.','https://www.heart.org/-/media/Files/Health-Topics/Infective-Endocarditis/Infective-Endocarditis-Wallet-Card.pdf','American Heart Association · profilaksia e endokarditit');
+      }
+      if (chapter === 15 && /mani/.test(normalize(guide?.title)) && /lamotrigine/.test(all)) {
+        add('lamotrigine-mania-source-conflict','Lamotrigine: burimi e përmend si kalim gjatë trajtimit të manisë. NICE CG185 nuk e rekomandon për trajtimin e manisë; kjo duhet dalluar nga përdorimi në depresionin bipolar dhe mirëmbajtje.','https://www.nice.org.uk/guidance/cg185/chapter/recommendations','NICE CG185 · mania');
       }
     }
     return issues.filter((issue,index) => issues.findIndex(entry => entry.code === issue.code) === index);

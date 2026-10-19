@@ -105,6 +105,29 @@ test('mobile workspace: touch sizing and search sheet', async ({ page }) => {
 });
 
 for (const width of [390,1440]) {
+  test(`chapters 14–15 preserve note headings and block route/indication conflicts at ${width}px`,async({page})=>{
+    const items=[
+      {_id:'qa-note-header',chapterNumber:14,orderInChapter:1,title:'QA complete note heading',reviewStatus:'verified',logicBlocks:[{relation:'start',selection:'all',items:[{kind:'source-note',title:'PËR QA CONDITION:',sig:'Full QA support instruction.'}],note:'S. Separate QA note.'}]},
+      {_id:'qa-iv-route',chapterNumber:14,orderInChapter:2,title:'QA IV route conflict',reviewStatus:'verified',logicBlocks:[{relation:'start',items:[{kind:'active-substance',title:'Inj. Ketorolac 30 mg/mL',sig:'30-60 mg IV, një herë.'}]}]},
+      {_id:'qa-mania-indication',chapterNumber:15,orderInChapter:1,title:'QA MANI E RËNDË',reviewStatus:'verified',logicBlocks:[{relation:'start',items:[{kind:'source-note',title:'QA source note',sig:'Ndrysho Lithium në Lamotrigine.'}]}]},
+    ];
+    await page.route('**/api/medical-hub?**',async route=>route.fulfill({json:require('./recetat-source-browser-fixture.js')(new URL(route.request().url()),items)}));
+    await page.setViewportSize({width,height:900});
+    await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
+    await page.locator('#rxSourceChapterSelect').selectOption('14');
+    await expect(page.locator('#rxSourceGuideList h4')).toHaveText('PËR QA CONDITION:');
+    await expect(page.locator('.rx-source-block-note')).toContainText('Separate QA note.');
+    await expect(page.locator('[data-rx-source-use]')).toBeEnabled();
+    await page.locator('#rxSourceLessonSelect').selectOption('qa-iv-route');
+    await expect(page.locator('.rx-source-clinical-issue')).toContainText('Doza IM nuk përdoret si dozë IV');
+    await expect(page.locator('[data-rx-source-use]')).toBeDisabled();
+    await expect(page.locator('.rx-source-sig')).toContainText('30-60 mg IV');
+    await page.locator('#rxSourceChapterSelect').selectOption('15');
+    await expect(page.locator('.rx-source-clinical-issue')).toContainText('Lamotrigine');
+    await expect(page.locator('[data-rx-source-use]')).toBeDisabled();
+    await expect(page.locator('#rxComposer')).toHaveValue('');
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  });
   test(`source chapters 1–5: readable controls, complete fields and draft handoff at ${width}px`, async ({page}) => {
     await page.setViewportSize({width,height:900});
     await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
@@ -309,8 +332,8 @@ test.describe('touch step emphasis',()=>{
 });
 
 for (const width of [390,1440]) {
-  test(`chapters 6–10 preserve full instructions, separate source paragraphs and alternatives at ${width}px`,async({page})=>{
-    const items=Array.from({length:5},(_,i)=>({
+  test(`chapters 6–15 preserve full instructions, separate source paragraphs and alternatives at ${width}px`,async({page})=>{
+    const items=Array.from({length:10},(_,i)=>({
       _id:`qa-later-${i+6}`,chapterNumber:i+6,orderInChapter:1,title:`Later QA ${i+6}`,reviewStatus:'verified',
       logicBlocks:[
         {_key:'first',order:1,relation:'start',items:[{kind:'active-substance',title:'Tab. QA 10 mg',sig:'Complete QA instruction; ≥30 mL/min; 4 javë.'}],note:'S. Support paragraph one.\n\nS. Support paragraph two.'},
@@ -324,7 +347,7 @@ for (const width of [390,1440]) {
     });
     await page.setViewportSize({width,height:900});
     await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
-    for (const chapter of [6,7,8,9,10]) {
+    for (const chapter of [6,7,8,9,10,11,12,13,14,15]) {
       await page.locator('#rxSourceChapterSelect').selectOption(String(chapter));
       await expect(page.locator('#rxSourceGuideList h3')).toHaveText(`Later QA ${chapter}`);
       await expect(page.locator('.rx-source-sig').first()).toContainText('≥30 mL/min; 4 javë.');
