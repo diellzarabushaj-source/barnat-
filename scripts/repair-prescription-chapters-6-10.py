@@ -91,12 +91,12 @@ def connector(prelude, old):
         return {'condition':'', 'sourceConnectorLabel':'' if old['relation']=='start' else old.get('sourceConnectorLabel','')}
     raw = '\n\n'.join(prelude)
     if raw == 'PASTAJ':
-        return {'sourceConnectorLabel':'PASTAJ', 'condition':'', 'relation':'and'}
+        return {'sourceConnectorLabel':'PASTAJ', 'condition':'', 'relation':'and', 'selection':'all'}
     match = re.match(r'^(DHE/OSE|OSE|DHE|PLUS|NËSE|PËR|KUR)(?=\b|[, :])[, :]*', raw)
     if match:
         relation={'OSE':'or','DHE':'and','PLUS':'plus','NËSE':'conditional','PËR':'conditional','KUR':'conditional'}.get(match[1],old['relation'])
         fields={'sourceConnectorLabel':match[1], 'condition':raw[match.end():].strip(), 'relation':relation}
-        if relation=='or':fields['selection']='choose-one'
+        fields['selection']='choose-one' if relation=='or' else 'all'
         return fields
     label=old.get('sourceConnectorLabel','')
     if label==raw or label.rstrip(':')==raw.rstrip(':'):

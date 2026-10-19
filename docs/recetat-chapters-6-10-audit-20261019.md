@@ -35,11 +35,14 @@ patched, guarded by the revision that was read. Prior field values are kept in
 the local repair artifact for rollback. Draft readback must match the prepared
 fields before publication. Re-running conversion produces no further changes.
 
-A final connector audit corrects 19 blocks across 17 of those guides. Exact
+A final connector audit corrects relationships and selection metadata across
+33 of those guides: 19 relationship/label changes and 33 stale selection flags.
+Exact
 source connectors determine their semantics: DHE means conjunction, OSE means
 an alternative, and NËSE/PËR/KUR introduce conditions. PASTAJ remains a
-sequential step instead of inheriting an obsolete condition. Regression checks
-cover both the displayed connector and its underlying relationship.
+sequential step instead of inheriting an obsolete condition. Conjunctions and
+conditions clear stale "choose one" flags. Regression checks cover the displayed
+connector, underlying relationship and selection behavior.
 
 The reader uses a structured prescription model with text fields. This audit
 checks source text, signs, paragraph boundaries and reading order; it is not a
