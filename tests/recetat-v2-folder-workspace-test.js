@@ -23,8 +23,8 @@ const worker = read('sw.js');
 assert.match(html, /data-drx-app="recetat-v2"/);
 assert.match(html, /class="drx-unified-sidebar"/);
 assert.match(html, /class="nav-item is-active" href="\/recetat\.html" aria-current="page"/);
-assert.match(html, /recetat-v2\.css\?v=32/);
-assert.match(html, /recetat-v2\.js\?v=32/);
+assert.match(html, /recetat-v2\.css\?v=33/);
+assert.match(html, /recetat-v2\.js\?v=33/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/);
 
 [

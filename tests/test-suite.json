@@ -1,5 +1,6 @@
 [
   "tests/recetat-source-transfer-test.js",
+  "tests/prescription-clinical-plan-test.js",
   "tests/backup-source-snapshot-test.js",
   "tests/native-recovery-catalog-test.js",
   "tests/library-recovery-vault-test.js",

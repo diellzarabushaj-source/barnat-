@@ -366,3 +366,38 @@ html[data-drx-app="recetat-v2"] .rx-source-guide .rx-source-item-body{line-heigh
   .rx-source-guide .rx-source-connector p{margin-left:38px}
   .rx-source-guide .rx-source-guide-foot{padding:12px;font-size:11px}
 }
+/* Clinical content first; provenance is disclosed only through the ? control. */
+.rx-source-guide{position:relative}.rx-source-guide .rx-source-guide-head{padding-right:82px}
+.rx-source-information{margin:0 24px 10px;border:0;color:#51657e;font-size:12px}
+.rx-source-information>summary{position:absolute;right:24px;top:17px;display:flex;align-items:center;justify-content:center;width:44px;min-height:44px;margin-left:auto;border:1px solid #d6e0ee;border-radius:50%;background:#fff;color:#435d7d;font:600 15px/1 Inter,system-ui,sans-serif;cursor:pointer;list-style:none}
+.rx-source-information>summary::-webkit-details-marker{display:none}
+.rx-source-information>summary:hover,.rx-source-information>summary:focus-visible{border-color:#6478d1;background:#f3f5ff;outline:2px solid #5669c5;outline-offset:3px}
+.rx-source-information-body{margin-top:12px;padding:18px;border:1px solid #d8e1ed;border-radius:12px;background:#f8faff;overflow-wrap:anywhere}
+.rx-source-information-title{display:block;margin:0 0 10px;font-size:14px;color:#18334f}
+.rx-source-information-body p{margin:8px 0;line-height:1.6}
+.rx-source-original>summary{padding:10px 0;cursor:pointer;color:#284f88;font-weight:600}
+.rx-clinical-context{margin:0 24px 14px;padding:12px 16px;border-left:3px solid #8294b8;background:#f6f8fc;border-radius:0 8px 8px 0;color:#344c68;font-size:13px;line-height:1.6}
+.rx-clinical-context p{margin:0}.rx-clinical-context p+p{margin-top:7px}
+.rx-clinical-reference{margin:12px 24px;color:#6c4a17;font-size:13px}
+.rx-clinical-flow .rx-source-step-group-heading{justify-content:flex-start;gap:12px;align-items:center;flex-wrap:wrap}
+.rx-clinical-flow .rx-source-step-group-heading strong{font-size:13px;color:var(--rx-step-accent)}
+.rx-clinical-options{min-width:0;margin:0;padding:0;border:0}
+.rx-clinical-option{min-width:0;padding:6px;border:1px solid transparent;border-radius:10px;transition:border-color .15s,background .15s}
+.rx-clinical-option.is-selected{border-color:var(--rx-step-line);background:var(--rx-step-soft)}
+.rx-clinical-option-choice,.rx-clinical-condition{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:0 0 6px;min-height:44px;border-radius:8px;font-size:13px;line-height:1.5;cursor:pointer;color:#233d59}
+.rx-clinical-option-choice:hover,.rx-clinical-condition:hover{background:#edf2ff}
+.rx-clinical-option-choice span,.rx-clinical-condition span{flex:1;min-width:0;overflow-wrap:anywhere;font-weight:600}
+.rx-clinical-option-choice small,.rx-clinical-condition small{flex:none;font-size:11px;color:#4b6080}
+.rx-clinical-option-choice input,.rx-clinical-condition input{flex:none;width:19px;height:19px;margin:0;accent-color:#4c5fc2}
+.rx-clinical-option-choice:focus-within,.rx-clinical-condition:focus-within{outline:2px solid #536bd1;outline-offset:2px}
+.rx-clinical-between,.rx-clinical-or,.rx-clinical-together{display:flex;align-items:center;justify-content:center;gap:10px;margin:5px 0;color:#3e5678;font-size:10px;font-weight:750;letter-spacing:.06em}
+.rx-clinical-between:before,.rx-clinical-between:after,.rx-clinical-or:before,.rx-clinical-or:after,.rx-clinical-together:before,.rx-clinical-together:after{content:'';height:1px;flex:1;background:#dce4f0}
+.rx-clinical-or{color:var(--rx-step-accent);margin:6px 14px}
+.rx-clinical-together{margin:4px 14px}
+.rx-clinical-dose-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:10px 0 2px;padding-top:10px;border-top:1px solid #e3e9f3}
+.rx-clinical-dose-grid div{min-width:0}.rx-clinical-dose-grid dt{font-size:10px;font-weight:550;color:#63738a;margin:0 0 4px}
+.rx-clinical-dose-grid dd{margin:0;font-size:13px;font-weight:600;line-height:1.5;color:#173654;overflow-wrap:anywhere}
+.rx-clinical-flow .rx-source-sig>span{display:none}
+.rx-clinical-flow .rx-source-sig{font-size:12px;line-height:1.6}
+@media(max-width:760px){.rx-source-guide .rx-source-guide-head{padding-right:66px}.rx-source-information>summary{right:12px;top:13px}.rx-source-information{margin:0 12px 10px}.rx-clinical-context{margin:0 12px 12px;padding:10px 12px;font-size:12px}.rx-clinical-dose-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.rx-clinical-option{padding:4px}.rx-clinical-option-choice,.rx-clinical-condition{padding:10px 7px}.rx-clinical-option-choice small{display:none}.rx-source-information-body{padding:12px}.rx-clinical-reference{margin:12px}}
+@media(prefers-reduced-motion:reduce){.rx-clinical-option{transition:none}}

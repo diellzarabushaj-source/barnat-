@@ -122,22 +122,32 @@ for (const width of [390,1440]) {
     await expect(page.locator('.rx-source-block-note')).toContainText('Separate QA note.');
     await expect(page.locator('[data-rx-source-use]')).toBeEnabled();
     await page.locator('#rxSourceLessonSelect').selectOption('qa-iv-route');
-    await expect(page.locator('.rx-source-clinical-issue')).toContainText('Doza IM nuk përdoret si dozë IV');
+    await expect(page.locator('.rx-source-clinical-issue')).toBeVisible();
+    await page.getByLabel('Informacion për skemën',{exact:true}).click();
+    await expect(page.locator('.rx-source-information-body')).toContainText('Doza IM nuk përdoret si dozë IV');
     await expect(page.locator('[data-rx-source-use]')).toBeDisabled();
     await expect(page.locator('.rx-source-sig')).toContainText('30-60 mg IV');
     await page.locator('#rxSourceChapterSelect').selectOption('15');
-    await expect(page.locator('.rx-source-clinical-issue')).toContainText('Lamotrigine');
+    await expect(page.locator('.rx-source-clinical-issue')).toBeVisible();
+    await page.getByLabel('Informacion për skemën',{exact:true}).click();
+    await expect(page.locator('.rx-source-information-body')).toContainText('Lamotrigine');
     await expect(page.locator('[data-rx-source-use]')).toBeDisabled();
     await expect(page.locator('#rxComposer')).toHaveValue('');
     await page.locator('#rxSourceChapterSelect').selectOption('16');
-    await expect(page.locator('.rx-source-clinical-issue')).toContainText('pret rishikim klinik');
+    await expect(page.locator('.rx-source-clinical-issue')).toBeVisible();
+    await page.getByLabel('Informacion për skemën',{exact:true}).click();
+    await expect(page.locator('.rx-source-information-body')).toContainText('pret rishikim klinik');
     await expect(page.locator('[data-rx-source-use]')).toBeDisabled();
     await expect(page.locator('.rx-source-sig')).toContainText('Full QA reference text.');
     await page.locator('#rxSourceChapterSelect').selectOption('21');
-    await expect(page.locator('.rx-source-clinical-issue')).toContainText('shtatzëni');
+    await expect(page.locator('.rx-source-clinical-issue')).toBeVisible();
+    await page.getByLabel('Informacion për skemën',{exact:true}).click();
+    await expect(page.locator('.rx-source-information-body')).toContainText('shtatzëni');
     await expect(page.locator('[data-rx-source-use]')).toBeDisabled();
     await page.locator('#rxSourceChapterSelect').selectOption('22');
-    await expect(page.locator('.rx-source-clinical-issue')).toContainText('GIR');
+    await expect(page.locator('.rx-source-clinical-issue')).toBeVisible();
+    await page.getByLabel('Informacion për skemën',{exact:true}).click();
+    await expect(page.locator('.rx-source-information-body')).toContainText('GIR');
     await expect(page.locator('.rx-source-sig')).toContainText('6-8 mL/kg/minutë');
     await expect(page.locator('[data-rx-source-use]')).toBeDisabled();
     await expect(page.locator('#rxComposer')).toHaveValue('');
@@ -254,11 +264,50 @@ test('confirmed source conflicts stay readable and cannot start a prescription d
   });
   await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
   await expect(page.locator('#rxSourceClinicalIssue')).toBeVisible();
-  await expect(page.locator('#rxSourceClinicalIssue a')).toHaveAttribute('href','https://www.medicines.org.uk/emc/product/4499/smpc');
+  await expect(page.getByLabel('Informacion për skemën',{exact:true})).toBeVisible();
+  await expect(page.locator('.rx-source-information-body')).toBeHidden();
+  await page.getByLabel('Informacion për skemën',{exact:true}).click();
+  await expect(page.locator('.rx-source-information-body a')).toHaveAttribute('href','https://www.medicines.org.uk/emc/product/4499/smpc');
   await expect(page.locator('[data-rx-source-use]')).toBeDisabled();
   await expect(page.locator('#rxSourceGuideList')).toContainText('100 IU/kg (1.5 mg/kg), SC, OD.');
-  await expect(page.locator('#rxSourceGuideList .rx-source-import-badge')).toHaveText('Kërkon rishikim klinik');
-  await expect(page.locator('#rxSourceGuideList .rx-source-import-badge')).not.toHaveClass(/is-verified/);
+  await expect(page.locator('#rxSourceGuideList .rx-source-import-badge')).toHaveCount(0);
+});
+
+for (const width of [320,390,1440]) test(`clinical plan selects complete alternatives and discloses technical information at ${width}px`,async({page},testInfo)=>{
+  const revisions=require('../data/recetat-clinical-revisions-1-5.json');
+  const [id,plan]=Object.entries(revisions.guides).find(([,entry])=>entry.key==='5.45');
+  const custom={_id:id,title:'Gonorre · QA',chapterNumber:5,orderInChapter:45,reviewStatus:'verified',version:'qa',logicBlocks:[{relation:'start',items:[{kind:'source-note',title:'Original QA',sig:'Original clinical record QA'}]}],clinicalPlan:{...plan,version:revisions.version,checkedAt:revisions.checkedAt}};
+  await page.route('**/api/medical-hub?*',async route=>{
+    const data=require('./recetat-source-browser-fixture.js')(new URL(route.request().url()),[custom]);
+    if(!data)return route.continue();
+    data.chapter=5;data.items=[custom];await route.fulfill({json:data});
+  });
+  await page.setViewportSize({width,height:900});
+  await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
+  const guide=page.locator('.is-clinical-plan');
+  await expect(guide).toBeVisible();
+  await expect(guide.locator('.rx-source-information-body')).toBeHidden();
+  await expect(guide.getByRole('button',{name:/Zgjidh opsionet/})).toBeDisabled();
+  await expect(guide.locator('.rx-clinical-flow .rx-clinical-dose-grid').first()).toContainText('Shpeshtësia');
+  await guide.getByRole('radio',{name:/Alternativë në alergji ndaj cefalosporinave/}).check();
+  await expect(guide.locator('.rx-clinical-option.is-selected .rx-source-item')).toHaveCount(2);
+  expect(await guide.evaluate(el=>{
+    const info=el.querySelector('.rx-source-information>summary').getBoundingClientRect();
+    const use=el.querySelector('.rx-source-use').getBoundingClientRect();
+    return info.width>=44 && info.height>=44 && (info.left>=use.right || info.right<=use.left || info.top>=use.bottom || info.bottom<=use.top);
+  })).toBe(true);
+  const geometry=await guide.evaluate(el=>({client:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth,items:[...el.querySelectorAll('.rx-clinical-flow .rx-source-item')].map(node=>({left:node.getBoundingClientRect().left,right:node.getBoundingClientRect().right}))}));
+  expect(geometry.scroll).toBeLessThanOrEqual(geometry.client+1);
+  for(const item of geometry.items){expect(item.left).toBeGreaterThanOrEqual(0);expect(item.right).toBeLessThanOrEqual(width+1);}
+  await page.screenshot({path:testInfo.outputPath(`clinical-plan-${width}.png`),fullPage:true});
+  await guide.getByLabel('Informacion për skemën',{exact:true}).click();
+  await expect(guide.locator('.rx-source-information-body')).toBeVisible();
+  await guide.getByText('Teksti origjinal',{exact:true}).click();
+  await expect(guide.getByText('Original clinical record QA',{exact:true})).toBeVisible();
+  await guide.getByLabel('Informacion për skemën',{exact:true}).click();
+  await guide.getByRole('button',{name:/Vendose si draft/}).click();
+  await expect(page.locator('#rxComposer')).toHaveValue(/Gentamicin[\s\S]*EDHE[\s\S]*Azithromycin/);
+  await expect(page.locator('#rxComposer')).not.toHaveValue(/Ceftriaxone|Doxycycline|Original clinical record QA/);
 });
 
 for (const width of [320,390,768,1440]) test(`source reader keeps full medicine actions and clinical detail at ${width}px`,async({page})=>{
@@ -270,7 +319,9 @@ for (const width of [320,390,768,1440]) test(`source reader keeps full medicine 
   await expect(action.getByText('Zgjidh preparatin',{exact:true})).toBeVisible();
   await expect(medicine.locator('.rx-source-meta')).toHaveText('doza QANga gojashpeshtësia QAkohëzgjatja QA');
   await expect(medicine.locator('.rx-source-sig')).toContainText('Udhëzimi QA');
-  await expect(guide.locator('.rx-source-import-badge')).toHaveText('E verifikuar');
+  await expect(guide.locator('.rx-source-import-badge')).toHaveCount(0);
+  await expect(guide.getByLabel('Informacion për skemën',{exact:true})).toBeVisible();
+  await expect(guide.locator('.rx-source-information-body')).toBeHidden();
   await expect(guide.locator('.rx-source-choice-label')).toBeVisible();
   await expect(guide.locator('.rx-source-connector.is-or')).toContainText('OSE');
   const geometry=await guide.evaluate(el=>{
@@ -355,6 +406,8 @@ test('step hover and keyboard emphasis distinguish major steps without changing 
   await page.mouse.move(0,0);
   await page.locator('[data-rx-source-use]').focus();
   await page.keyboard.press('Tab');
+  await expect(page.getByLabel('Informacion për skemën',{exact:true})).toBeFocused();
+  await page.keyboard.press('Tab');
   await expect(first).toBeFocused();
   await expect.poll(()=>first.evaluate(el=>getComputedStyle(el).backgroundColor)).not.toBe(initial);
   await expect(page.locator('.rx-source-flow')).toHaveText(original);
@@ -421,10 +474,13 @@ for (const width of [390,1440]) {
     await page.setViewportSize({width,height:900});
     await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
     await page.locator('#rxSourceChapterSelect').selectOption('6');
-    await expect(page.locator('.rx-source-clinical-issue')).toContainText('mg/L');
+    await expect(page.locator('.rx-source-clinical-issue')).toContainText('kërkon rishikim');
+    await expect(page.locator('.rx-source-information-body')).toBeHidden();
+    await page.getByLabel('Informacion për skemën',{exact:true}).click();
+    await expect(page.locator('.rx-source-information-body')).toContainText('mg/L');
     await expect(page.locator('[data-rx-source-use]')).toBeDisabled();
     await expect(page.locator('.rx-source-sig')).toContainText('QA target 15-20 mg/mL.');
-    await expect(page.locator('.rx-source-clinical-issue a')).toHaveAttribute('href','https://www.idsociety.org/practice-guideline/vancomycin/');
+    await expect(page.locator('.rx-source-information-body a')).toHaveAttribute('href','https://www.idsociety.org/practice-guideline/vancomycin/');
     await expect(page.locator('#rxComposer')).toHaveValue('');
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
   });
