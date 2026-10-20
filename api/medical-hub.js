@@ -1,6 +1,7 @@
 'use strict';
 
 const medicalHubImageHandler = require('../lib/medical-hub-image-handler.js');
+const {withPrescriptionClinicalPlan,forPrescriptionReader} = require('../lib/prescription-clinical-plan.js');
 
 const PROJECT_ID = '4wdtp8cz';
 const DATASET = 'production';
@@ -246,19 +247,22 @@ const PRESCRIPTION_GUIDE_QUERY = `*[_type == "prescriptionGuide" && reviewStatus
 const PRESCRIPTION_SEARCH_INDEX_QUERY = `*[_type == "prescriptionGuide" && reviewStatus == "verified" && chapterNumber in *[_type == "prescriptionChapter" && reviewStatus == "verified"].chapterNumber] | order(chapterNumber asc, orderInChapter asc) {
   _id, title, chapterNumber, chapterTitle, orderInChapter, keywords, sourceHeading,
   logicBlocks[]{
-    relation, selection, sourceConnectorLabel, condition, note,
-    items[]{kind,title,genericName,form,strength,dose,route,frequency,duration,sig,note}
+    order, relation, selection, sourceConnectorLabel, condition, note,
+    items[]{order,kind,title,genericName,form,strength,dose,route,frequency,duration,sig,note}
   }
 }`;
 
 let prescriptionSearchCache = { expiresAt:0, docs:[] };
 
 function prescriptionSearchDocument(item) {
-  const blocks = Array.isArray(item?.logicBlocks) ? item.logicBlocks : [];
+  const plan = item?.clinicalPlan;
+  const blocks = plan?.status === 'ready'
+    ? plan.groups.flatMap(group => group.options.map((option,index) => ({relation:index ? 'or' : group.condition ? 'conditional' : 'and',condition:group.condition,selection:group.options.length > 1 ? 'choose-one' : 'all',items:option.items})))
+    : Array.isArray(item?.logicBlocks) ? item.logicBlocks : [];
   const facets = {
     medication:blocks.some(block => (block.items || []).some(entry => entry.kind === 'active-substance')),
     alternatives:blocks.some(block => block.relation === 'or' || block.selection === 'choose-one'),
-    conditional:blocks.some(block => block.relation === 'conditional' && !(
+    conditional:blocks.some(block => (block.items || []).some(entry=>entry.condition) || block.relation === 'conditional' && !(
       block.items?.length && block.items.every(entry => entry.kind === 'source-note')
       && /^(UDHËZIM|NDËRVEPRIM)/iu.test(clean(block.condition))
       && normalize(block.condition) === normalize(block.items[0]?.title)
@@ -267,13 +271,13 @@ function prescriptionSearchDocument(item) {
   const title = normalize([item?.title, item?.sourceHeading].filter(Boolean).join(' '));
   const chapter = normalize(item?.chapterTitle);
   const keywords = normalize(flattenStrings(item?.keywords).join(' '));
-  const substances = normalize(flattenStrings((item?.logicBlocks || []).flatMap(block =>
+  const substances = normalize(flattenStrings(blocks.flatMap(block =>
     (block?.items || []).flatMap(entry => [entry?.genericName, entry?.title, entry?.form, entry?.strength])
   )).join(' '));
-  const clinical = normalize(flattenStrings((item?.logicBlocks || []).flatMap(block => [
+  const clinical = normalize(flattenStrings(blocks.flatMap(block => [
     block?.condition, block?.sourceConnectorLabel, block?.note,
     ...(block?.items || []).flatMap(entry => [
-      entry?.dose, entry?.route, entry?.frequency, entry?.duration, entry?.sig, entry?.note,
+      entry?.dose, entry?.route, entry?.frequency, entry?.duration, entry?.sig, entry?.note, entry?.condition,
     ]),
   ])).join(' '));
   return {
@@ -299,7 +303,7 @@ async function getPrescriptionSearchIndex() {
     return prescriptionSearchCache.docs;
   }
   const items = await querySanity(PRESCRIPTION_SEARCH_INDEX_QUERY);
-  const docs = (Array.isArray(items) ? items : []).map(prescriptionSearchDocument);
+  const docs = (Array.isArray(items) ? items : []).map(withPrescriptionClinicalPlan).map(prescriptionSearchDocument);
   prescriptionSearchCache = {
     expiresAt:Date.now() + SEARCH_CACHE_MS,
     docs,
@@ -661,7 +665,7 @@ module.exports = async function handler(req, res) {
         chapter:selectedChapter,
         chapterMeta,
         availability:chapters.some(item => item.count > 0) ? 'ready' : chapters.some(item => item.pendingCount > 0) ? 'awaiting-review' : 'empty',
-        items:Array.isArray(items) ? items : [],
+        items:Array.isArray(items) ? items.map(item=>forPrescriptionReader(item,queryValue(req,'reader'))) : [],
         count:Array.isArray(items) ? items.length : 0,
         source:'sanity-prescription-guides',
       });

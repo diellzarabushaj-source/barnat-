@@ -1,0 +1,3129 @@
+{
+  "version": "clinical-1-5-20261020-v1",
+  "checkedAt": "2026-10-20",
+  "sourceSnapshotSha256": "4294f6dde8a4131326418b44acedc9e0353f6af086d6ab8cf3aae8cac8c37c9d",
+  "guides": {
+    "afb809dc-602b-44b7-add6-c981fb98a1e6": {
+      "key": "3.4",
+      "sourceFingerprint": "d5656906ac240a2a4006f415834232798d195b4a54a7e7c84bbae0ca1321a67a",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Zëvendësimi i faktorëve të koagulimit",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "blood-product",
+                  "title": "Plazmë e freskët e ngrirë (FFP)",
+                  "dose": "10–15 mL/kg",
+                  "route": "IV",
+                  "frequency": "Një dozë fillestare; rivlerësim",
+                  "duration": "Sipas përgjigjes klinike dhe koagulimit",
+                  "sig": "Përdor plazmë ABO-kompatibile. Rivlerëso gjakderdhjen, koagulimin dhe mbingarkesën me lëngje; administrimi dhe ruajtja sipas bankës së gjakut.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Për mungesë faktorësh koagulimi me indikacion transfuzioni. FFP nuk përdoret për rritjen e hemoglobinës."
+      ],
+      "changes": [
+        {
+          "id": "F07",
+          "title": "FFP nuk është produkti për rritjen e hemoglobinës",
+          "explanation": "Duhet korrigjim i dokumentuar për qëllimin e produktit, kompatibilitetin dhe protokollin lokal të transfuzionit. FFP zëvendëson faktorë koagulimi; rritja e Hb lidhet me eritrocitet. Skema tashmë bllokohet në draft."
+        }
+      ],
+      "references": [
+        {
+          "key": "ffp",
+          "url": "https://www.lifeblood.com.au/health-professionals/clinical-practice/use-of-blood-components/use-of-fresh-frozen-plasma"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "e56418ac-9351-44fb-b213-08451f934e8c": {
+      "key": "3.5",
+      "sourceFingerprint": "a5ce07051a0a98c628b3f763ffd7818f55b0d9682b7fe585bbe0e67512928b18",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Një dozë terapeutike për të rritur",
+          "options": [
+            {
+              "label": "Aferezë",
+              "items": [
+                {
+                  "kind": "blood-product",
+                  "title": "Trombocite nga afereza",
+                  "dose": "1 dozë terapeutike për të rritur",
+                  "route": "IV",
+                  "frequency": "Një transfuzion; rivlerësim",
+                  "duration": "Sipas indikacionit",
+                  "sig": "Rritja e pritshme: rreth 20–40 × 10⁹/L te i rrituri 70 kg pa konsumim të shtuar.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Paketë e bashkuar",
+              "items": [
+                {
+                  "kind": "blood-product",
+                  "title": "Trombocite të bashkuara (pooled)",
+                  "dose": "1 dozë terapeutike për të rritur",
+                  "route": "IV",
+                  "frequency": "Një transfuzion; rivlerësim",
+                  "duration": "Sipas indikacionit",
+                  "sig": "Doza e të rriturit është paketa terapeutike e plotë; nuk barazohet me një qese të vetme 50–70 mL.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Konfirmo produktin, indikacionin dhe përputhshmërinë me bankën e gjakut."
+      ],
+      "changes": [
+        {
+          "id": "F24",
+          "title": "Trombocitet: një njësi e vogël kundrejt një doze për të rritur",
+          "explanation": "Lifeblood e lidh rritjen e pritshme me një dozë për të rritur nga afereza ose pool. Duhet përkufizuar produkti dhe njësia terapeutike; mos trajto automatikisht një qese të vogël si një dozë të plotë."
+        }
+      ],
+      "references": [
+        {
+          "key": "platelets",
+          "url": "https://prod2.lifeblood.com.au/health-professionals/clinical-practice/use-of-blood-components/use-of-platelets"
+        },
+        {
+          "key": "additional-primary",
+          "url": "https://www.lifeblood.com.au/health-professionals/clinical-practice/use-of-blood-components/use-of-platelets"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "a8543fca-5c1e-437e-b9fd-8718e1ce5110": {
+      "key": "3.12",
+      "sourceFingerprint": "49abdce2b118737bf16bd15371c4c84fccd111877cbf06cea5a92f2e37d0a2d6",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Albumina pas paracentezës",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Albuminë humane",
+                  "genericName": "Albuminë humane",
+                  "dose": "8 g për çdo litër asciti të hequr",
+                  "frequency": "Pas përfundimit të paracentezës",
+                  "duration": "Një administrim",
+                  "route": "IV",
+                  "sig": "Për paracentezë >5 L te cirroza. Llogaritja bazohet në vëllimin e ascitit të drenazhuar, jo në vëllimin e albuminës.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "Cirrozë dhe paracentezë >5 L",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Anestezia lokale dhe përgatitja e procedurës individualizohen veçmas. Për vëllime <5 L, albumina kërkon vlerësim individual në insuficiencë hepatike akute mbi kronike ose rrezik të lartë dëmtimi renal."
+      ],
+      "changes": [
+        {
+          "id": "F01",
+          "title": "Albumina: emëruesi i dozës është ndryshuar",
+          "explanation": "Rikthe emëruesin sipas librit të plotë në një korrigjim të dokumentuar. BSG e lidh dozën me litrat e ascitit të hequr, me kriteret përkatëse të paracentezës; litri i albuminës së infuzuar nuk është i njëjti vëllim."
+        }
+      ],
+      "references": [
+        {
+          "key": "ascites",
+          "url": "https://gut.bmj.com/content/70/1/9"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "7a0e3ca3-5178-4e1c-a69a-2ad6ebdbcc5e": {
+      "key": "5.1",
+      "sourceFingerprint": "0fe68d6b48d7daec482f7e2d024b04e1f77f81e7b59c08c26e717b29446ed8df",
+      "status": "reference",
+      "groups": [
+        {
+          "label": "Vlerësimi fillestar",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "supportive-care",
+                  "title": "Përcakto shkakun e etheve",
+                  "sig": "Vlerëso shenjat e sepsisit dhe ekspozimin ndaj malaries. Kryej testim të shpejtë/mikroskopi për malarie kur indikohet; antibiotiku dhe antimalariku nuk janë automatikisht një kombinim.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Kalo te skema e diagnozës së konfirmuar. Ethet me të dridhura nuk përcaktojnë një regjim unik."
+      ],
+      "changes": [
+        {
+          "id": "F08",
+          "title": "Malaria: skemat e artemether/lumefantrine dhe piperaquine kërkojnë rishikim",
+          "explanation": "Skema AL kërkon orare dhe doza sipas peshës; referenca CDC përshkruan gjashtë administrime, me dozën e dytë pas tetë orësh. EMA për Eurartesim përshkruan një dozë ditore për tri ditë. Fortësitë dhe produktet duhet identifikuar para përzgjedhjes së regjimit."
+        }
+      ],
+      "references": [
+        {
+          "key": "al",
+          "url": "https://www.cdc.gov/immigrant-refugee-health/hcp/domestic-guidance/malaria.html"
+        },
+        {
+          "key": "dha",
+          "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/eurartesim"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "771ec666-f0fb-494f-9db7-159089f113cf": {
+      "key": "5.2",
+      "sourceFingerprint": "6c2d241593e390cc46e1a77ba58e6d50aa0536583133c896e3719e49830e423f",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Reanimimi fillestar",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "supportive-care",
+                  "title": "Kristaloid IV",
+                  "sig": "Në hipoperfuzion nga sepsisi ose shok septik: fillimisht të paktën 30 mL/kg gjatë 3 orëve të para, me rivlerësim të shpeshtë dhe përshtatje për rrezikun e mbingarkesës.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        },
+        {
+          "label": "Vazopresori i parë",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Noradrenaline",
+                  "genericName": "Noradrenaline",
+                  "dose": "Fillimisht 0,05–0,15 mikrogram/kg/min, si bazë",
+                  "frequency": "Infuzion i vazhdueshëm; titrim",
+                  "duration": "Sipas përgjigjes hemodinamike",
+                  "route": "IV me pompë",
+                  "sig": "Monitorim hemodinamik. Objektiv fillestar MAP rreth 65 mmHg; individualizo. Verifiko në etiketë nëse përqendrimi shpreh bazën apo kripën para programimit të pompës.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "Hipotension që vazhdon gjatë/pas reanimimit; në shok të paqëndrueshëm mund të fillojë njëkohësisht",
+          "id": "g2"
+        },
+        {
+          "label": "Shtesë inotrope",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Dobutamine",
+                  "genericName": "Dobutamine",
+                  "dose": "2,5–20 mikrogram/kg/min",
+                  "frequency": "Infuzion i vazhdueshëm; titrim",
+                  "duration": "Sipas perfuzionit dhe tolerancës",
+                  "route": "IV me pompë",
+                  "sig": "Shtohet mbi mbështetjen vazopresore; nuk është zëvendësim i barabartë i noradrenalinës.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "Disfunksion kardiak dhe hipoperfuzion persistent pavarësisht vëllimit dhe presionit adekuat",
+          "id": "g3",
+          "requiresGroup": "g2"
+        }
+      ],
+      "notes": [
+        "Menaxhim urgjent spitalor. Merr hemokultura pa vonuar antibiotikët dhe trajto burimin e infeksionit."
+      ],
+      "changes": [
+        {
+          "id": "F04",
+          "title": "Noradrenalina: intervali 2.5–0.3 është i papajtueshëm",
+          "explanation": "Ndalimi i këtij rreshti për draft duhet shtuar deri në sqarim. Mos hamendëso vendin e presjes dhjetore. SmPC i preparatit të konsultuar përdor titrim sipas përgjigjes dhe fillim tjetër; duhet verifikuar edhe nëse fortësia shpreh bazën apo kripën."
+        },
+        {
+          "id": "F05",
+          "title": "Dobutamina është vendosur si alternativë e thjeshtë e vazopresorit",
+          "explanation": "Ndaj degët sipas indikacionit. SSC 2026 e lidh dobutaminën me disfunksion kardiak dhe hipoperfuzion të vazhdueshëm pas reanimimit adekuat, si shtesë ndaj noradrenalinës ose në një strategji tjetër të përcaktuar; zgjedhjet nuk janë të këmbyeshme pa kushte."
+        }
+      ],
+      "references": [
+        {
+          "key": "norad",
+          "url": "https://www.medicines.org.uk/emc/product/102170/smpc"
+        },
+        {
+          "key": "sepsis",
+          "url": "https://sccm.org/survivingsepsiscampaign/guidelines-and-resources/surviving-sepsis-campaign-adult-guidelines"
+        },
+        {
+          "key": "additional-primary",
+          "url": "https://cec.health.nsw.gov.au/therapeutics-safety/continuous-infusions/adult/dobutamine"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "b0cc9529-0587-4079-82a2-2c0cde69e138": {
+      "key": "5.4",
+      "sourceFingerprint": "edc6b6e1e5ca8d89148e955000f82d3327c1201713d1d4f5bd5aa13e618a77b5",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Profilaksia VTE te pacienti mjekësor me imobilizim",
+          "options": [
+            {
+              "label": "Heparinë me peshë të ulët molekulare",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Enoxaparin sodium",
+                  "genericName": "Enoxaparin sodium",
+                  "dose": "40 mg = 4000 IU anti-Xa",
+                  "frequency": "1 herë në ditë",
+                  "duration": "Zakonisht 6–14 ditë; rivlerëso",
+                  "route": "Nënlëkurë",
+                  "sig": "Regjim profilaktik i të rriturit. Në CrCl 15–30 mL/min: 20 mg një herë/ditë; në CrCl <15 mL/min nuk rekomandohet jashtë indikacionit të dializës.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Alternativë e përzgjedhur",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Fondaparinux",
+                  "genericName": "Fondaparinux",
+                  "dose": "2,5 mg",
+                  "frequency": "1 herë në ditë",
+                  "duration": "Zakonisht 6–14 ditë; rivlerëso",
+                  "route": "Nënlëkurë",
+                  "sig": "Vetëm kur indikohet. CrCl 20–50 mL/min: 1,5 mg një herë/ditë; CrCl <20 mL/min: mos e përdor. Kujdes në peshë <50 kg.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Vlerëso gjakderdhjen, trombocitet, funksionin renal, peshën dhe historinë e HIT. Dozat e trajtimit të VTE nuk janë doza profilaksie."
+      ],
+      "changes": [
+        {
+          "id": "F06",
+          "title": "Antikoagulimi: profilaksia është ngatërruar me trajtimin",
+          "explanation": "Ekuivalenca e enoxaparinës është e pasaktë. Dozat e fondaparinux për profilaksi dhe trajtim janë të ndryshme. Të rishikohen së bashku indikacioni, doza, pesha, veshkat dhe rreziku i gjakderdhjes. Të dyja skemat aktualisht bllokohen në draft nga konflikti i enoxaparinës."
+        }
+      ],
+      "references": [
+        {
+          "key": "clexane",
+          "url": "https://www.medicines.org.uk/emc/product/4499/smpc"
+        },
+        {
+          "key": "arixtra",
+          "url": "https://www.medicines.org.uk/emc/product/3335/smpc"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "37beb658-fb00-4304-a5ce-10b27fded59b": {
+      "key": "5.5",
+      "sourceFingerprint": "da5633597a340fe62d92975ca1390590d0580a38718e28905f5eac5bd3d09101",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Një antibiotik oral",
+          "options": [
+            {
+              "label": "Azithromycin",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Azithromycin",
+                  "genericName": "Azithromycin",
+                  "dose": "1 g në ditën 1, pastaj 500 mg/ditë",
+                  "frequency": "1 herë në ditë",
+                  "duration": "7 ditë gjithsej",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Cefixime kur shtami është i ndjeshëm",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Cefixime",
+                  "genericName": "Cefixime",
+                  "dose": "200 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "10–14 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "I rritur me ethe enterike të pakomplikuara. Përshtat sipas udhëtimit, kulturave dhe antibiogramit; cefixime nuk përdoret në rezistencë ndaj cefalosporinave të gjeneratës III ose XDR."
+      ],
+      "changes": [
+        {
+          "id": "F22",
+          "title": "Tifo/shigellosis: lista e antibiotikëve nuk përmban kushtet e rezistencës",
+          "explanation": "CDC e kushtëzon zgjedhjen me historinë e udhëtimit dhe ndjeshmërinë antimikrobike. Duhet kriter për trajtimin empirik dhe të drejtuar, përfshirë TMP/SMX vetëm kur ndjeshmëria është e dokumentuar për shigellosis."
+        }
+      ],
+      "references": [
+        {
+          "key": "typhoid",
+          "url": "https://www.cdc.gov/typhoid-fever/hcp/clinical-guidance/index.html"
+        },
+        {
+          "key": "shigella",
+          "url": "https://www.cdc.gov/shigella/hcp/clinical-overview/index.html"
+        },
+        {
+          "key": "additional-primary",
+          "url": "https://medicalguidelines.msf.org/en/viewport/CG/english/enteric-typhoid-and-paratyphoid-fevers-16689926.html"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "12a2c3ea-af52-4e65-952b-f06bf1831f6c": {
+      "key": "5.6",
+      "sourceFingerprint": "e0e330c07ea38c13c6a31c75d97ba828b1bc8ed1dbee8b9df09bb90cfea3cd7e",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Antibiotik parenteral fillestar",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Ceftriaxone",
+                  "genericName": "Ceftriaxone",
+                  "dose": "2 g",
+                  "frequency": "1–2 herë në ditë",
+                  "duration": "Pastaj kalo në azithromycin për të plotësuar të paktën 7 ditë gjithsej",
+                  "route": "IV",
+                  "sig": "Kalo në trajtim oral kur ethet ulen, gjendja përmirësohet dhe pacienti toleron marrjen nga goja.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Hospitalizim dhe monitorim. Në rezistencë të dyshuar/konfirmuar ndaj ceftriaxone ose XDR kërko meropenem dhe dozë të individualizuar nga specialisti."
+      ],
+      "changes": [
+        {
+          "id": "F22",
+          "title": "Tifo/shigellosis: lista e antibiotikëve nuk përmban kushtet e rezistencës",
+          "explanation": "CDC e kushtëzon zgjedhjen me historinë e udhëtimit dhe ndjeshmërinë antimikrobike. Duhet kriter për trajtimin empirik dhe të drejtuar, përfshirë TMP/SMX vetëm kur ndjeshmëria është e dokumentuar për shigellosis."
+        }
+      ],
+      "references": [
+        {
+          "key": "typhoid",
+          "url": "https://www.cdc.gov/typhoid-fever/hcp/clinical-guidance/index.html"
+        },
+        {
+          "key": "shigella",
+          "url": "https://www.cdc.gov/shigella/hcp/clinical-overview/index.html"
+        },
+        {
+          "key": "additional-primary",
+          "url": "https://medicalguidelines.msf.org/en/viewport/CG/english/enteric-typhoid-and-paratyphoid-fevers-16689926.html"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "e7463ba7-9a8b-4d46-a29c-52453c2e5753": {
+      "key": "5.7",
+      "sourceFingerprint": "55fd2328149be370695c4b5d8b6066da54e3b78d27aa5d8c4af1f3ff83ebc5c5",
+      "status": "reference",
+      "groups": [
+        {
+          "label": "",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "_key": "i1",
+                  "_type": "sourcePrescriptionItem",
+                  "form": "Tab.",
+                  "genericName": "Ciprofloxacin",
+                  "kind": "active-substance",
+                  "order": 1,
+                  "sig": "BD për 4 javë.",
+                  "sourceNumber": 1,
+                  "strength": "500-750 mg",
+                  "title": "Tab. Ciprofloxacin 500-750 mg",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Bartja kronike kërkon kulturë, antibiogram dhe specialist. Mos përshkruaj fluorokinolon pa ndjeshmëri të dokumentuar."
+      ],
+      "changes": [
+        {
+          "id": "F22",
+          "title": "Tifo/shigellosis: lista e antibiotikëve nuk përmban kushtet e rezistencës",
+          "explanation": "CDC e kushtëzon zgjedhjen me historinë e udhëtimit dhe ndjeshmërinë antimikrobike. Duhet kriter për trajtimin empirik dhe të drejtuar, përfshirë TMP/SMX vetëm kur ndjeshmëria është e dokumentuar për shigellosis."
+        }
+      ],
+      "references": [
+        {
+          "key": "typhoid",
+          "url": "https://www.cdc.gov/typhoid-fever/hcp/clinical-guidance/index.html"
+        },
+        {
+          "key": "shigella",
+          "url": "https://www.cdc.gov/shigella/hcp/clinical-overview/index.html"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "bc06cb33-08dc-4f64-9ddd-64608c855e31": {
+      "key": "5.8",
+      "sourceFingerprint": "eeaf579cd996258605d9dd5ed7e6545bd140df91f71745c33d69d6b2a27a3b8f",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Trajtimi i fazës së gjakut",
+          "options": [
+            {
+              "label": "Chloroquine",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Chloroquine phosphate",
+                  "genericName": "Chloroquine phosphate",
+                  "dose": "1000 mg kripë (=600 mg bazë), pastaj 500 mg kripë (=300 mg bazë)",
+                  "frequency": "Doza e parë; pastaj në 6, 24 dhe 48 orë",
+                  "duration": "4 doza gjithsej",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Hydroxychloroquine",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Hydroxychloroquine sulfate",
+                  "genericName": "Hydroxychloroquine sulfate",
+                  "dose": "800 mg kripë (=620 mg bazë), pastaj 400 mg kripë (=310 mg bazë)",
+                  "frequency": "Doza e parë; pastaj në 6, 24 dhe 48 orë",
+                  "duration": "4 doza gjithsej",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        },
+        {
+          "label": "Parandalimi i rikthimit",
+          "options": [
+            {
+              "label": "Primaquine",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Primaquine",
+                  "genericName": "Primaquine",
+                  "dose": "30 mg BAZË",
+                  "frequency": "1 herë në ditë",
+                  "duration": "14 ditë",
+                  "route": "Nga goja",
+                  "sig": "Kërko G6PD sasior normal. Për peshë ≥70 kg, përshtat dozën totale në 6 mg bazë/kg pa kaluar 30 mg/ditë. Kundërindikohet në shtatzëni; në gjidhënie duhet edhe G6PD normal i foshnjës.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Tafenoquine · vetëm me chloroquine",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Tafenoquine",
+                  "genericName": "Tafenoquine",
+                  "dose": "300 mg",
+                  "frequency": "Një herë",
+                  "duration": "Dozë e vetme",
+                  "route": "Nga goja",
+                  "sig": "Vetëm me chloroquine, moshë ≥16 vjeç dhe aktivitet G6PD ≥70%. Jo në shtatzëni; vlerëso gjidhënien dhe historinë psikiatrike.",
+                  "id": "i1"
+                }
+              ],
+              "requiresOption": {
+                "group": "g1",
+                "option": "o1"
+              },
+              "id": "o2"
+            }
+          ],
+          "condition": "",
+          "id": "g2"
+        }
+      ],
+      "notes": [
+        "P. vivax / P. ovale i ndjeshëm ndaj chloroquine; malarie e pakomplikuar te i rrituri. Konfirmo G6PD përpara terapisë kundër rikthimit."
+      ],
+      "changes": [
+        {
+          "id": "F09",
+          "title": "Primaquine/tafenoquine: frekuenca, G6PD dhe përputhja me terapinë bazë",
+          "explanation": "CDC dallon dozën ditore bazë të primaquine, testimin sasior G6PD, shtatzëninë/gjidhënien dhe kufizimet e tafenoquine. Sipas kësaj reference, tafenoquine lidhet me chloroquine dhe moshën përkatëse. Duhet sqaruar edhe bazë kundrejt kripës për antimalarikët."
+        }
+      ],
+      "references": [
+        {
+          "key": "malaria",
+          "url": "https://www.cdc.gov/malaria/hcp/clinical-guidance/treatment-of-uncomplicated-malaria.html"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "6121097b-3ebe-4d20-89d2-dfa4346363ee": {
+      "key": "5.9",
+      "sourceFingerprint": "250dbc8f26c76dd7159c58109310d64a7ed1710ec79caa8b7eb2b032026baa93",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Trajtimi i fazës së gjakut",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Artemether + Lumefantrine",
+                  "genericName": "Artemether + Lumefantrine",
+                  "dose": "80 mg + 480 mg për dozë (4 tableta nga 20/120 mg)",
+                  "frequency": "Në orët 0, 8, 24, 36, 48 dhe 60",
+                  "duration": "6 doza në 3 ditë",
+                  "route": "Nga goja",
+                  "sig": "Regjimi i të rriturit / peshë ≥35 kg. Merret me ushqim ose pije që përmban yndyrë. Pesha <35 kg kërkon dozë tjetër.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        },
+        {
+          "label": "Parandalimi i rikthimit",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Primaquine",
+                  "genericName": "Primaquine",
+                  "dose": "30 mg BAZË",
+                  "frequency": "1 herë në ditë",
+                  "duration": "14 ditë",
+                  "route": "Nga goja",
+                  "sig": "Kërko G6PD sasior normal. Për peshë ≥70 kg, përshtat dozën totale në 6 mg bazë/kg pa kaluar 30 mg/ditë. Kundërindikohet në shtatzëni; në gjidhënie duhet edhe G6PD normal i foshnjës.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g2"
+        }
+      ],
+      "notes": [
+        "P. vivax / P. ovale rezistent ndaj chloroquine; i rritur ≥35 kg, pa malarie të rëndë. Tafenoquine nuk lidhet automatikisht me një ACT."
+      ],
+      "changes": [
+        {
+          "id": "F08",
+          "title": "Malaria: skemat e artemether/lumefantrine dhe piperaquine kërkojnë rishikim",
+          "explanation": "Skema AL kërkon orare dhe doza sipas peshës; referenca CDC përshkruan gjashtë administrime, me dozën e dytë pas tetë orësh. EMA për Eurartesim përshkruan një dozë ditore për tri ditë. Fortësitë dhe produktet duhet identifikuar para përzgjedhjes së regjimit."
+        },
+        {
+          "id": "F09",
+          "title": "Primaquine/tafenoquine: frekuenca, G6PD dhe përputhja me terapinë bazë",
+          "explanation": "CDC dallon dozën ditore bazë të primaquine, testimin sasior G6PD, shtatzëninë/gjidhënien dhe kufizimet e tafenoquine. Sipas kësaj reference, tafenoquine lidhet me chloroquine dhe moshën përkatëse. Duhet sqaruar edhe bazë kundrejt kripës për antimalarikët."
+        }
+      ],
+      "references": [
+        {
+          "key": "al",
+          "url": "https://www.cdc.gov/immigrant-refugee-health/hcp/domestic-guidance/malaria.html"
+        },
+        {
+          "key": "dha",
+          "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/eurartesim"
+        },
+        {
+          "key": "malaria",
+          "url": "https://www.cdc.gov/malaria/hcp/clinical-guidance/treatment-of-uncomplicated-malaria.html"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "0f7ace64-e73f-43cb-a9de-4c8940e23033": {
+      "key": "5.10",
+      "sourceFingerprint": "6ca6b8a4c8fa2868eebea008b8e8f932959bf9930a7dff9e07e176211c0cf60b",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Trajtimi antimalarik",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Artemether + Lumefantrine",
+                  "genericName": "Artemether + Lumefantrine",
+                  "dose": "80 mg + 480 mg për dozë (4 tableta nga 20/120 mg)",
+                  "frequency": "Në orët 0, 8, 24, 36, 48 dhe 60",
+                  "duration": "6 doza në 3 ditë",
+                  "route": "Nga goja",
+                  "sig": "Regjimi i të rriturit / peshë ≥35 kg. Merret me ushqim ose pije që përmban yndyrë. Pesha <35 kg kërkon dozë tjetër.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "P. falciparum i pakomplikuar; i rritur ≥35 kg. Malarie e rëndë, shtatzëni dhe pesha më e ulët kërkojnë rrugë të posaçme trajtimi."
+      ],
+      "changes": [
+        {
+          "id": "F08",
+          "title": "Malaria: skemat e artemether/lumefantrine dhe piperaquine kërkojnë rishikim",
+          "explanation": "Skema AL kërkon orare dhe doza sipas peshës; referenca CDC përshkruan gjashtë administrime, me dozën e dytë pas tetë orësh. EMA për Eurartesim përshkruan një dozë ditore për tri ditë. Fortësitë dhe produktet duhet identifikuar para përzgjedhjes së regjimit."
+        }
+      ],
+      "references": [
+        {
+          "key": "al",
+          "url": "https://www.cdc.gov/immigrant-refugee-health/hcp/domestic-guidance/malaria.html"
+        },
+        {
+          "key": "dha",
+          "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/eurartesim"
+        }
+      ],
+      "technicalNotes": [
+        "Varianti historik dihydroartemisinin/piperaquine 2-0-2 është hequr nga zgjedhja operative. Eurartesim përdoret një herë në ditë për 3 ditë, sipas peshës, me vlerësim QT dhe kufizime ushqimi; nuk konvertohet si alternativë e barabartë këtu."
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "d4632dab-fb59-4567-be31-15e80761b108": {
+      "key": "5.12",
+      "sourceFingerprint": "9feca80d298eade0a9d6ebd83239b7d6fad08b1eaf653ae0baf86d970067df98",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Kristaloid izotonik",
+          "options": [
+            {
+              "label": "NaCl",
+              "items": [
+                {
+                  "kind": "supportive-care",
+                  "title": "Sodium chloride 0,9% IV",
+                  "sig": "Përshtat shpejtësinë sipas perfuzionit, hematokritit, diurezës dhe rivlerësimit të shpeshtë.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Ringer lactate",
+              "items": [
+                {
+                  "kind": "supportive-care",
+                  "title": "Ringer lactate IV",
+                  "sig": "Përshtat shpejtësinë sipas perfuzionit, hematokritit, diurezës dhe rivlerësimit të shpeshtë.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        },
+        {
+          "label": "Ethe / dhimbje",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Paracetamol",
+                  "genericName": "Paracetamol",
+                  "dose": "500–1000 mg",
+                  "frequency": "Çdo 6–8 orë, nëse nevojitet",
+                  "duration": "Sa më shkurt; rivlerësim sipas simptomave",
+                  "route": "Nga goja",
+                  "sig": "Maksimumi 4 g në 24 orë te i rrituri ≥50 kg pa faktorë rreziku; ul kufirin në sëmundje hepatike, peshë të ulët ose faktorë të tjerë rreziku.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "Nëse nevojitet",
+          "id": "g2"
+        }
+      ],
+      "notes": [
+        "Hospitalizim sipas shenjave paralajmëruese. Pa transfuzion profilaktik trombocitesh vetëm nga numri i ulët, kur mungon gjakderdhja aktive. Gjakderdhja, procedurat dhe shoku kërkojnë vendim specialistik. Shmang NSAID dhe aspirinën."
+      ],
+      "changes": [
+        {
+          "id": "F17",
+          "title": "Dengue: transfuzioni i trombociteve nuk duhet aktivizuar vetëm nga numri",
+          "explanation": "WHO 2025 sugjeron kundër transfuzionit profilaktik rutinë te pacientët pa gjakderdhje aktive, me përjashtime që kërkojnë vlerësim. Numri i vetëm nuk mjafton si rregull universal; duhen ndarë gjakderdhja, procedurat dhe rrethanat individuale."
+        }
+      ],
+      "references": [
+        {
+          "key": "dengue",
+          "url": "https://www.who.int/publications/i/item/9789240111110"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "988eaff4-6329-4f15-98a5-1c41af03d656": {
+      "key": "5.13",
+      "sourceFingerprint": "7e32164a593c75e84ab289a6c50dd2e65fb2aad1c8361e29c456e95f47b4d7b4",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Kombinimi antibiotik",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Doxycycline",
+                  "genericName": "Doxycycline",
+                  "dose": "100 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "Të paktën 6 javë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        },
+        {
+          "label": "EDHE një nga këto",
+          "options": [
+            {
+              "label": "Rifampicin",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Rifampicin",
+                  "genericName": "Rifampicin",
+                  "dose": "600–900 mg",
+                  "frequency": "1 herë në ditë",
+                  "duration": "Të paktën 6 javë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Streptomycin",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Streptomycin",
+                  "genericName": "Streptomycin",
+                  "dose": "1 g",
+                  "frequency": "1 herë në ditë",
+                  "duration": "14–21 ditë",
+                  "route": "IM",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            },
+            {
+              "label": "Gentamicin",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Gentamicin",
+                  "genericName": "Gentamicin",
+                  "dose": "5 mg/kg",
+                  "frequency": "1 herë në ditë",
+                  "duration": "7–10 ditë",
+                  "route": "IV ose IM",
+                  "sig": "Monitoro funksionin renal dhe nivelet kur indikohet.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o3"
+            }
+          ],
+          "condition": "",
+          "id": "g2"
+        }
+      ],
+      "notes": [
+        "Brucelozë e pakomplikuar te i rrituri. Shtatzënia, fëmijët dhe infeksioni fokal kërkojnë regjim tjetër; verifiko specien, rezistencën dhe ndërveprimet."
+      ],
+      "changes": [
+        {
+          "id": "F21",
+          "title": "Kohëzgjatja ose përsëritja mund të humbet gjatë përzgjedhjes",
+          "explanation": "Udhëzimet e përbashkëta të vendosen në nivel regjimi dhe të ruhen kur hiqen alternativat e pazgjedhura. CDC për enterobiasis e kërkon dozën e dytë pas dy javësh për të tre barnat e listuara."
+        }
+      ],
+      "references": [
+        {
+          "key": "brucella",
+          "url": "https://www.cdc.gov/brucellosis/hcp/clinical-overview/"
+        },
+        {
+          "key": "pinworm",
+          "url": "https://www.cdc.gov/pinworm/hcp/clinical-overview/"
+        },
+        {
+          "key": "donov",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/donovanosis.htm"
+        },
+        {
+          "key": "herpes",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "f52266cd-0a43-4c11-862e-f565687e7ff7": {
+      "key": "5.18",
+      "sourceFingerprint": "4e4ea2ddeef68ee32b2d5dd41f1a4d93d94a79279db74eaa73141458bf248f4f",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Zgjidh sipas species",
+          "options": [
+            {
+              "label": "S. mansoni / haematobium / intercalatum",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Praziquantel",
+                  "genericName": "Praziquantel",
+                  "dose": "20 mg/kg për dozë (40 mg/kg/ditë gjithsej)",
+                  "frequency": "2 doza të ndara gjatë ditës",
+                  "duration": "1 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "S. japonicum / mekongi",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Praziquantel",
+                  "genericName": "Praziquantel",
+                  "dose": "20 mg/kg për dozë (60 mg/kg/ditë gjithsej)",
+                  "frequency": "3 doza të ndara gjatë ditës",
+                  "duration": "1 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Në disa infeksione të lehta mund të duhet përsëritje pas 2–4 javësh. Nëse vezët janë dokumentuar para trajtimit, kontrollo feçet/urinën pas 1–2 muajsh."
+      ],
+      "changes": [
+        {
+          "id": "F10",
+          "title": "Praziquantel: doza totale dhe ndarja e saj nuk përputhen",
+          "explanation": "Ndaj speciet dhe numrin e administrimeve pa alternativa të paqarta. CDC jep 40 mg/kg/ditë në dy doza ose 60 mg/kg/ditë në tri doza, sipas species. Koha e ritrajtimit kërkon gjithashtu rishikim individual."
+        }
+      ],
+      "references": [
+        {
+          "key": "schisto",
+          "url": "https://www.cdc.gov/schistosomiasis/hcp/treatment/"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "ad40ace6-509d-4c2a-92c4-91164efc8578": {
+      "key": "5.21",
+      "sourceFingerprint": "22dd8421e14cd24a575916a5fc9d9c271646d8de7fa9077b65b1fea3e07935cf",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Regjimi sipas zonës dhe pacientit",
+          "options": [
+            {
+              "label": "Liposomal amphotericin B",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Liposomal amphotericin B",
+                  "genericName": "Liposomal amphotericin B",
+                  "dose": "3 mg/kg për dozë",
+                  "frequency": "Ditët 1–5, 14 dhe 21",
+                  "duration": "7 doza gjithsej",
+                  "route": "IV",
+                  "sig": "Regjim për pacientin imunokompetent; jo i këmbyeshëm mg-për-mg me amphotericin B deoxycholate.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Afrika Lindore · kur paromomycin + miltefosine përjashtohet",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Sodium stibogluconate",
+                  "genericName": "Sodium stibogluconate",
+                  "dose": "20 mg Sb⁵⁺/kg/ditë",
+                  "frequency": "1 herë në ditë",
+                  "duration": "17 ditë",
+                  "route": "IV ose IM",
+                  "sig": "",
+                  "id": "i1"
+                },
+                {
+                  "kind": "active-substance",
+                  "title": "Paromomycin sulfate",
+                  "genericName": "Paromomycin sulfate",
+                  "dose": "15 mg/kg/ditë (afërsisht 11 mg bazë/kg/ditë)",
+                  "frequency": "1 herë në ditë",
+                  "duration": "17 ditë",
+                  "route": "IM",
+                  "sig": "",
+                  "id": "i2"
+                }
+              ],
+              "id": "o2"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Leishmaniaza viscerale kërkon specialist dhe zgjedhje sipas rajonit, statusit imunitar dhe rezistencës. Për Afrikën Lindore, parapëlqehet paromomycin + miltefosine; ky regjim kërkon dozimin përkatës sipas peshës dhe nuk zëvendësohet me regjimin historik 17-ditor."
+      ],
+      "changes": [
+        {
+          "id": "F02",
+          "title": "Leishmaniaza: kohëzgjatja 17 ditë është këputur",
+          "explanation": "Ribashko fjalinë e saktë burimore me 17 ditë dhe hiq vetëm hapin e rremë. Libri i plotë e ka të qartë 17 ditë. Dokumenti i recetave ka edhe një “E” fundore; kjo mbetje editoriale duhet evidentuar, jo interpretuar si bar."
+        }
+      ],
+      "references": [
+        {
+          "key": "additional-primary",
+          "url": "https://www.cdc.gov/leishmaniasis/hcp/clinical-care/index.html"
+        },
+        {
+          "key": "additional-primary",
+          "url": "https://www.who.int/news/item/29-07-2026-who-updates-treatment-guidelines-on-visceral-and-post-kala-azar-dermal-leishmaniasis"
+        },
+        {
+          "key": "additional-primary",
+          "url": "https://www.afro.who.int/sites/default/files/2026-08/WHO%20guidelines%20on%20leishmaniasis%20treatment-VL%20and%20PKDL-July%202026.pdf"
+        }
+      ],
+      "technicalNotes": [
+        "Ribashkimi i fjalisë historike: sodium stibogluconate 20 mg Sb⁵⁺/kg/ditë IV/IM EDHE paromomycin sulfate 15 mg/kg/ditë IM, të dyja për 17 ditë. Nuk paraqitet si zgjedhja e parapëlqyer aktuale për Afrikën Lindore."
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "7cdb2bda-12f2-4a3a-8c43-4b91f4f14a41": {
+      "key": "5.22",
+      "sourceFingerprint": "cfe59dbb84e2d8ee73a369775c9fbb6506f88dda82096a10ffefcd968b3d4dce",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Antibiotiku i parë",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Doxycycline",
+                  "genericName": "Doxycycline",
+                  "dose": "100 mg te i rrituri / fëmija ≥45 kg; 2,2 mg/kg për dozë te fëmija <45 kg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "Të paktën 3 ditë pas uljes së etheve dhe deri në përmirësim klinik",
+                  "route": "Nga goja",
+                  "sig": "Përdoret në të gjitha moshat për scrub typhus. Shtatzënia ose alergjia e rëndë kërkon konsultë për alternativë.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Mos e ndal vetëm për shkak të moshës pediatrike. Kursi shumë i shkurtër mund të shkaktojë rikthim."
+      ],
+      "changes": [
+        {
+          "id": "F20",
+          "title": "Scrub typhus: fëmijët janë shënuar si kundërindikacion i doxycycline",
+          "explanation": "CDC lejon doxycycline për scrub typhus në çdo moshë. Kategoritë duhet ndarë dhe të vlerësohen sipas indikacionit, jo me një kundërindikacion të përgjithshëm për të gjithë fëmijët."
+        }
+      ],
+      "references": [
+        {
+          "key": "scrub",
+          "url": "https://www.cdc.gov/typhus/about/scrub.html"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "edd2caa3-414f-49b3-9eee-c12270432b20": {
+      "key": "5.30",
+      "sourceFingerprint": "d1f47154ba09898f91ee21b3ea60edcca4cf6346baafe0ddfe29c8575292ae8f",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Trajtimi intestinal",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Praziquantel",
+                  "genericName": "Praziquantel",
+                  "dose": "5–10 mg/kg",
+                  "frequency": "Një herë",
+                  "duration": "Dozë e vetme",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Vlerëso aneminë dhe mungesën e vitaminës B12. Simptomat neurologjike kërkojnë diagnozë tjetër të veçantë; dexamethasone dhe antikonvulsantët nuk janë shtesë rutinë për këtë infeksion intestinal."
+      ],
+      "changes": [
+        {
+          "id": "F25",
+          "title": "Fish tapeworm: pjesa për SNQ dhe dexamethasone kërkon rishikim",
+          "explanation": "CDC e dallon infeksionin intestinal me diphyllobothriid nga neurocisticerkoza. Kjo është inferencë për një përzierje të mundshme temash, jo diagnozë e vendosur: burimi duhet sqaruar përpara përdorimit të kësaj dege."
+        }
+      ],
+      "references": [
+        {
+          "key": "fish",
+          "url": "https://www.cdc.gov/diphyllobothrium/index.html"
+        },
+        {
+          "key": "cyst",
+          "url": "https://www.cdc.gov/cysticercosis/hcp/clinical-care/index.html"
+        },
+        {
+          "key": "additional-primary",
+          "url": "https://www.cdc.gov/diphyllobothrium/hcp/clinical-care/index.html"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "fd0e1ad1-ac78-4a9f-9148-00bc159c7b22": {
+      "key": "5.32",
+      "sourceFingerprint": "06414a9359c51757152510698d4be0954c13862e57ac559bd9e40eedc71d87f2",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Zgjidh një antihelmintik",
+          "options": [
+            {
+              "label": "Mebendazole",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Mebendazole",
+                  "genericName": "Mebendazole",
+                  "dose": "100 mg",
+                  "frequency": "Një herë; përsërite pas 2 javësh",
+                  "duration": "2 doza gjithsej",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Pyrantel",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Pyrantel pamoate",
+                  "genericName": "Pyrantel pamoate",
+                  "dose": "11 mg/kg si bazë pyrantel; maksimumi 1 g",
+                  "frequency": "Një herë; përsërite pas 2 javësh",
+                  "duration": "2 doza gjithsej",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            },
+            {
+              "label": "Albendazole",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Albendazole",
+                  "genericName": "Albendazole",
+                  "dose": "400 mg",
+                  "frequency": "Një herë; përsërite pas 2 javësh",
+                  "duration": "2 doza gjithsej",
+                  "route": "Nga goja",
+                  "sig": "Merret në stomak bosh.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o3"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Higjiena dhe trajtimi i njëkohshëm i kontakteve familjare kur indikohet. Shtatzënia dhe fëmijët <2 vjeç kërkojnë vlerësim individual të përfitimit dhe rrezikut."
+      ],
+      "changes": [
+        {
+          "id": "F21",
+          "title": "Kohëzgjatja ose përsëritja mund të humbet gjatë përzgjedhjes",
+          "explanation": "Udhëzimet e përbashkëta të vendosen në nivel regjimi dhe të ruhen kur hiqen alternativat e pazgjedhura. CDC për enterobiasis e kërkon dozën e dytë pas dy javësh për të tre barnat e listuara."
+        }
+      ],
+      "references": [
+        {
+          "key": "brucella",
+          "url": "https://www.cdc.gov/brucellosis/hcp/clinical-overview/"
+        },
+        {
+          "key": "pinworm",
+          "url": "https://www.cdc.gov/pinworm/hcp/clinical-overview/"
+        },
+        {
+          "key": "donov",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/donovanosis.htm"
+        },
+        {
+          "key": "herpes",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "79cd818e-1264-44a6-80bb-cc51f15da475": {
+      "key": "5.35",
+      "sourceFingerprint": "1cd159e026affc5b1509ca9aff22c4172b6edc76a38d591587fb857f9c17e2c2",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Trajtimi individual",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Diethylcarbamazine (DEC)",
+                  "genericName": "Diethylcarbamazine (DEC)",
+                  "dose": "6 mg/kg/ditë gjithsej",
+                  "frequency": "Në 3 doza të ndara",
+                  "duration": "12 ditë",
+                  "route": "Nga goja",
+                  "sig": "Para trajtimit përjashto onchocerciasis dhe vlerëso ekspozimin ndaj Loa loa.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Filarioza kërkon konfirmim dhe specialist. Programi vjetor MDA nuk është i njëjtë me trajtimin individual."
+      ],
+      "changes": [
+        {
+          "id": "F11",
+          "title": "Filarioza: DEC në dozën e trefishtë vjetore",
+          "explanation": "WHO për regjimin IDA jep DEC 6 mg/kg dhe e kushtëzon përdorimin me bashkë-endemicitetin dhe kriteret programatike. Mos përziej dozën për administrim nga një regjim ditor me dozën e vetme të një fushate MDA."
+        }
+      ],
+      "references": [
+        {
+          "key": "lf",
+          "url": "https://www.who.int/news-room/fact-sheets/detail/lymphatic-filariasis"
+        },
+        {
+          "key": "additional-primary",
+          "url": "https://www.cdc.gov/filarial-worms/hcp/clinical-care/index.html"
+        }
+      ],
+      "technicalNotes": [
+        "WHO: IDA në programet e përshtatshme = ivermectin 200 mikrogram/kg + DEC 6 mg/kg + albendazole 400 mg, një dozë vjetore; varet nga bashkë-endemiciteti dhe kushtet programore. Jo DEC 2 mg/kg si dozë e vetme. CDC përmend edhe kurs 1-ditor si mundësi; nuk përzihet me kursin 12-ditor të paraqitur."
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "d6da72e9-d67d-43e2-a4b1-e4dbe2dcf7f7": {
+      "key": "5.38",
+      "sourceFingerprint": "ce3a1573b852392a9b47cfed3ad4147bddfcb5e861f1c43b38885ebf3ef22ebf",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Zgjidh një regjim",
+          "options": [
+            {
+              "label": "Zgjedhja e parë, jo shtatzënë",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Doxycycline",
+                  "genericName": "Doxycycline",
+                  "dose": "100 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "7 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Alternativë / shtatzëni",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Azithromycin",
+                  "genericName": "Azithromycin",
+                  "dose": "1 g",
+                  "frequency": "Një herë",
+                  "duration": "Dozë e vetme",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            },
+            {
+              "label": "Alternativë në shtatzëni",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Amoxicillin",
+                  "genericName": "Amoxicillin",
+                  "dose": "500 mg",
+                  "frequency": "3 herë në ditë",
+                  "duration": "7 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o3"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Në shtatzëni: test shërimi rreth 4 javë pas trajtimit. Menaxho partnerët dhe ritesto pas 3 muajsh; shmang kontaktet seksuale për 7 ditë pas dozës së vetme ose deri në përfundimin e kursit dhe trajtimin e partnerëve."
+      ],
+      "changes": [
+        {
+          "id": "F12",
+          "title": "Klamidia jo-LGV: azithromycin 1 g çdo javë për tri javë",
+          "explanation": "CDC për klamidia jo-LGV liston azithromycin 1 g një herë si alternativë. Duhet ndarë qartë jo-LGV nga LGV dhe të ruhen veçmas shtatzënia, ndjekja dhe trajtimi i partnerëve."
+        }
+      ],
+      "references": [
+        {
+          "key": "chlamydia",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "8bc1f705-847e-40d5-8aa5-0054c19bc505": {
+      "key": "5.39",
+      "sourceFingerprint": "582dfa0b7495fedcc43846298feb38ab4f0b2669ec24b3c2759b2e59dd574f57",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Zgjidh një regjim",
+          "options": [
+            {
+              "label": "Azithromycin",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Azithromycin",
+                  "genericName": "Azithromycin",
+                  "dose": "1 g",
+                  "frequency": "1 herë në javë",
+                  "duration": "Të paktën 3 javë dhe deri në shërimin e të gjitha lezioneve",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Doxycycline",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Doxycycline",
+                  "genericName": "Doxycycline",
+                  "dose": "100 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "Të paktën 3 javë dhe deri në shërimin e të gjitha lezioneve",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            },
+            {
+              "label": "Erythromycin",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Erythromycin base",
+                  "genericName": "Erythromycin base",
+                  "dose": "500 mg",
+                  "frequency": "4 herë në ditë",
+                  "duration": "Të paktën 3 javë dhe deri në shërimin e të gjitha lezioneve",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o3"
+            },
+            {
+              "label": "Trimethoprim / Sulfamethoxazole",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Trimethoprim + Sulfamethoxazole",
+                  "genericName": "Trimethoprim + Sulfamethoxazole",
+                  "dose": "160 mg + 800 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "Të paktën 3 javë dhe deri në shërimin e të gjitha lezioneve",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o4"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Në shtatzëni ose gjidhënie zgjidh makrolid; vlerëso HIV dhe ndiq pacientin deri në shërim."
+      ],
+      "changes": [
+        {
+          "id": "F21",
+          "title": "Kohëzgjatja ose përsëritja mund të humbet gjatë përzgjedhjes",
+          "explanation": "Udhëzimet e përbashkëta të vendosen në nivel regjimi dhe të ruhen kur hiqen alternativat e pazgjedhura. CDC për enterobiasis e kërkon dozën e dytë pas dy javësh për të tre barnat e listuara."
+        }
+      ],
+      "references": [
+        {
+          "key": "brucella",
+          "url": "https://www.cdc.gov/brucellosis/hcp/clinical-overview/"
+        },
+        {
+          "key": "pinworm",
+          "url": "https://www.cdc.gov/pinworm/hcp/clinical-overview/"
+        },
+        {
+          "key": "donov",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/donovanosis.htm"
+        },
+        {
+          "key": "herpes",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "2806138f-81fc-419a-ba7e-c7a6ec2f0197": {
+      "key": "5.41",
+      "sourceFingerprint": "53742351e94915a9679b4cd4e138d292b8a2af39d9c2a0050e89d68b10ba781b",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Zgjidh një antiviral",
+          "options": [
+            {
+              "label": "Acyclovir",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Acyclovir",
+                  "genericName": "Acyclovir",
+                  "dose": "400 mg",
+                  "frequency": "3 herë në ditë",
+                  "duration": "7–10 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Famciclovir",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Famciclovir",
+                  "genericName": "Famciclovir",
+                  "dose": "250 mg",
+                  "frequency": "3 herë në ditë",
+                  "duration": "7–10 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            },
+            {
+              "label": "Valacyclovir",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Valacyclovir",
+                  "genericName": "Valacyclovir",
+                  "dose": "1 g",
+                  "frequency": "2 herë në ditë",
+                  "duration": "7–10 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o3"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Zgjate nëse shërimi nuk është i plotë pas 10 ditësh. Përshtat dozën për funksionin renal."
+      ],
+      "changes": [
+        {
+          "id": "F15",
+          "title": "Herpesi: episodi i parë, përsëritja dhe supresioni janë përzier",
+          "explanation": "Këto duhen krahasuar me regjimet e veçanta CDC, përfshirë gjendjen imunitare dhe veshkat. Për episodin e parë CDC liston acyclovir 400 mg tri herë/ditë; supresioni i përditshëm nuk duhet trajtuar si kursi i shkurtër episodik. Nuk po shpallen të pavlefshme të gjitha alternativat e këtyre skemave."
+        }
+      ],
+      "references": [
+        {
+          "key": "herpes",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "bcd1291f-25ac-4d36-96c0-dcd3abdbf5e6": {
+      "key": "5.42",
+      "sourceFingerprint": "cc824942cc6ad0e26ef298b040260e0c7b600bd17fe6fbc4f2130df077ae10ac",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Zgjidh një regjim episodik",
+          "options": [
+            {
+              "label": "Acyclovir · 5 ditë",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Acyclovir",
+                  "genericName": "Acyclovir",
+                  "dose": "800 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "5 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Acyclovir · 2 ditë",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Acyclovir",
+                  "genericName": "Acyclovir",
+                  "dose": "800 mg",
+                  "frequency": "3 herë në ditë",
+                  "duration": "2 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            },
+            {
+              "label": "Famciclovir",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Famciclovir",
+                  "genericName": "Famciclovir",
+                  "dose": "1 g",
+                  "frequency": "2 herë në ditë",
+                  "duration": "1 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o3"
+            },
+            {
+              "label": "Valacyclovir · 3 ditë",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Valacyclovir",
+                  "genericName": "Valacyclovir",
+                  "dose": "500 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "3 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o4"
+            },
+            {
+              "label": "Valacyclovir · 5 ditë",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Valacyclovir",
+                  "genericName": "Valacyclovir",
+                  "dose": "1 g",
+                  "frequency": "1 herë në ditë",
+                  "duration": "5 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o5"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Fillo brenda 1 dite nga lezionet ose gjatë prodromës. Përshtat dozën për funksionin renal."
+      ],
+      "changes": [
+        {
+          "id": "F15",
+          "title": "Herpesi: episodi i parë, përsëritja dhe supresioni janë përzier",
+          "explanation": "Këto duhen krahasuar me regjimet e veçanta CDC, përfshirë gjendjen imunitare dhe veshkat. Për episodin e parë CDC liston acyclovir 400 mg tri herë/ditë; supresioni i përditshëm nuk duhet trajtuar si kursi i shkurtër episodik. Nuk po shpallen të pavlefshme të gjitha alternativat e këtyre skemave."
+        }
+      ],
+      "references": [
+        {
+          "key": "herpes",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "52126e96-39c9-4aad-b767-85154567e1c6": {
+      "key": "5.43",
+      "sourceFingerprint": "93b29e981a14ec99b4bf050ae4181296d14004b9f259969bb249182cd4cbc591",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Zgjidh një terapi supresive",
+          "options": [
+            {
+              "label": "Acyclovir",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Acyclovir",
+                  "genericName": "Acyclovir",
+                  "dose": "400 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "Terapi e vazhdueshme; rivlerësim periodik",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Famciclovir",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Famciclovir",
+                  "genericName": "Famciclovir",
+                  "dose": "500 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "Terapi e vazhdueshme; rivlerësim periodik",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            },
+            {
+              "label": "Valacyclovir",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Valacyclovir",
+                  "genericName": "Valacyclovir",
+                  "dose": "500 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "Terapi e vazhdueshme; rivlerësim periodik",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o3"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Supresioni nuk është kurs episodik 7–10-ditor. Përshtat dozën për funksionin renal."
+      ],
+      "changes": [
+        {
+          "id": "F15",
+          "title": "Herpesi: episodi i parë, përsëritja dhe supresioni janë përzier",
+          "explanation": "Këto duhen krahasuar me regjimet e veçanta CDC, përfshirë gjendjen imunitare dhe veshkat. Për episodin e parë CDC liston acyclovir 400 mg tri herë/ditë; supresioni i përditshëm nuk duhet trajtuar si kursi i shkurtër episodik. Nuk po shpallen të pavlefshme të gjitha alternativat e këtyre skemave."
+        }
+      ],
+      "references": [
+        {
+          "key": "herpes",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "63c09266-290d-4c48-b46c-a48c031eda26": {
+      "key": "5.44",
+      "sourceFingerprint": "d464963bda5be1e3553a900e63b83cb14db9cf69e4b5f24c2911e6d1627654be",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Zgjidh një regjim episodik",
+          "options": [
+            {
+              "label": "Acyclovir",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Acyclovir",
+                  "genericName": "Acyclovir",
+                  "dose": "400 mg",
+                  "frequency": "3 herë në ditë",
+                  "duration": "5–10 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Famciclovir",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Famciclovir",
+                  "genericName": "Famciclovir",
+                  "dose": "500 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "5–10 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            },
+            {
+              "label": "Valacyclovir",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Valacyclovir",
+                  "genericName": "Valacyclovir",
+                  "dose": "1 g",
+                  "frequency": "2 herë në ditë",
+                  "duration": "5–10 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o3"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Përshtat dozën për funksionin renal; sëmundja e rëndë kërkon trajtim IV të veçantë."
+      ],
+      "changes": [
+        {
+          "id": "F21",
+          "title": "Kohëzgjatja ose përsëritja mund të humbet gjatë përzgjedhjes",
+          "explanation": "Udhëzimet e përbashkëta të vendosen në nivel regjimi dhe të ruhen kur hiqen alternativat e pazgjedhura. CDC për enterobiasis e kërkon dozën e dytë pas dy javësh për të tre barnat e listuara."
+        }
+      ],
+      "references": [
+        {
+          "key": "brucella",
+          "url": "https://www.cdc.gov/brucellosis/hcp/clinical-overview/"
+        },
+        {
+          "key": "pinworm",
+          "url": "https://www.cdc.gov/pinworm/hcp/clinical-overview/"
+        },
+        {
+          "key": "donov",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/donovanosis.htm"
+        },
+        {
+          "key": "herpes",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "c559904d-289b-4c99-86c7-62fae3c9bb18": {
+      "key": "5.45",
+      "sourceFingerprint": "6266a87df6a130d8630891bb2d60e30eb5b7044dcd9afe1a9bd415f9802a357e",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Zgjidh një regjim të plotë",
+          "options": [
+            {
+              "label": "Regjimi i parë",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Ceftriaxone",
+                  "genericName": "Ceftriaxone",
+                  "dose": "500 mg në peshë <150 kg; 1 g në peshë ≥150 kg",
+                  "frequency": "Një herë",
+                  "duration": "Dozë e vetme",
+                  "route": "IM",
+                  "sig": "",
+                  "id": "i1"
+                },
+                {
+                  "kind": "active-substance",
+                  "title": "Doxycycline",
+                  "genericName": "Doxycycline",
+                  "dose": "100 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "7 ditë",
+                  "route": "Nga goja",
+                  "sig": "Jo si zgjedhje në shtatzëni.",
+                  "condition": "Chlamydia nuk është përjashtuar",
+                  "id": "i2"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Alternativë në alergji ndaj cefalosporinave",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Gentamicin",
+                  "genericName": "Gentamicin",
+                  "dose": "240 mg",
+                  "frequency": "Një herë",
+                  "duration": "Dozë e vetme",
+                  "route": "IM",
+                  "sig": "",
+                  "id": "i1"
+                },
+                {
+                  "kind": "active-substance",
+                  "title": "Azithromycin",
+                  "genericName": "Azithromycin",
+                  "dose": "2 g",
+                  "frequency": "Një herë",
+                  "duration": "Dozë e vetme",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i2"
+                }
+              ],
+              "id": "o2"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Për gonorre urogjenitale/rektale të pakomplikuar. Për infeksion faringeal, shtatzëni ose alergji të rëndë kërko regjim/konsultë të përshtatshme. Menaxho partnerët dhe ritesto pas 3 muajsh."
+      ],
+      "changes": [
+        {
+          "id": "F16",
+          "title": "Gonorrea: OSE/PLUS nuk kufizon dy regjimet e plota",
+          "explanation": "Duhet një alternativë mes regjimeve të plota. CDC e lidh gentamicin me azithromycin; doxycycline shtohet kur klamidia nuk është përjashtuar. Pamja e re vetëm e tregon strukturën ekzistuese: kutitë nuk e korrigjojnë këtë logjikë klinike."
+        },
+        {
+          "id": "F26",
+          "title": "Pragu i peshës: >150 kg kundrejt ≥150 kg",
+          "explanation": "CDC për këto dy skema e përfshin edhe peshën saktësisht 150 kg. PID duhet trajtuar veçmas: teksti CDC për PID ka kriter tjetër të shkruar, ndaj nuk duhet bërë zëvendësim global i shenjës."
+        }
+      ],
+      "references": [
+        {
+          "key": "gonorrhea",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm"
+        },
+        {
+          "key": "epididymitis",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/epididymitis.htm"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "338e61f4-7305-476c-b322-52229ccea0b1": {
+      "key": "5.46",
+      "sourceFingerprint": "fa453188cebb19b678e4408630dd51d634c656dc67485bb3d074ea38f12892e6",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Zgjidh sipas shkakut të dyshuar",
+          "options": [
+            {
+              "label": "Gonorre / chlamydia",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Ceftriaxone",
+                  "genericName": "Ceftriaxone",
+                  "dose": "500 mg në peshë <150 kg; 1 g në peshë ≥150 kg",
+                  "frequency": "Një herë",
+                  "duration": "Dozë e vetme",
+                  "route": "IM",
+                  "sig": "",
+                  "id": "i1"
+                },
+                {
+                  "kind": "active-substance",
+                  "title": "Doxycycline",
+                  "genericName": "Doxycycline",
+                  "dose": "100 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "10 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i2"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Gonorre / chlamydia dhe patogjenë enterikë",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Ceftriaxone",
+                  "genericName": "Ceftriaxone",
+                  "dose": "500 mg në peshë <150 kg; 1 g në peshë ≥150 kg",
+                  "frequency": "Një herë",
+                  "duration": "Dozë e vetme",
+                  "route": "IM",
+                  "sig": "",
+                  "id": "i1"
+                },
+                {
+                  "kind": "active-substance",
+                  "title": "Levofloxacin",
+                  "genericName": "Levofloxacin",
+                  "dose": "500 mg",
+                  "frequency": "1 herë në ditë",
+                  "duration": "10 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i2"
+                }
+              ],
+              "id": "o2"
+            },
+            {
+              "label": "Vetëm patogjenë enterikë; gonorrea e përjashtuar",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Levofloxacin",
+                  "genericName": "Levofloxacin",
+                  "dose": "500 mg",
+                  "frequency": "1 herë në ditë",
+                  "duration": "10 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o3"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Përjashto torsionin testikular urgjentisht kur dyshohet. Përshtat sipas kulturave, funksionit renal dhe kundërindikacioneve; rivlerëso në mungesë përmirësimi brenda 72 orëve."
+      ],
+      "changes": [
+        {
+          "id": "F26",
+          "title": "Pragu i peshës: >150 kg kundrejt ≥150 kg",
+          "explanation": "CDC për këto dy skema e përfshin edhe peshën saktësisht 150 kg. PID duhet trajtuar veçmas: teksti CDC për PID ka kriter tjetër të shkruar, ndaj nuk duhet bërë zëvendësim global i shenjës."
+        }
+      ],
+      "references": [
+        {
+          "key": "gonorrhea",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm"
+        },
+        {
+          "key": "epididymitis",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/epididymitis.htm"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "e2ee9152-7236-427b-bada-587ba8aaeaeb": {
+      "key": "5.48",
+      "sourceFingerprint": "b490ba897888c3c45ac0373375f746fa15133e4f6d1d5e30c06c57be37658ed1",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Zgjidh një regjim",
+          "options": [
+            {
+              "label": "Penicillin",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Benzathine penicillin G",
+                  "genericName": "Benzathine penicillin G",
+                  "dose": "2,4 milion njësi",
+                  "frequency": "Një herë",
+                  "duration": "Dozë e vetme",
+                  "route": "IM",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Alergji ndaj penicilinës, jo shtatzënë",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Doxycycline",
+                  "genericName": "Doxycycline",
+                  "dose": "100 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "14 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Shtatzënia kërkon penicillin pas desensibilizimit kur ka alergji. Simptomat neurologjike/okulare/otike kërkojnë vlerësim për neurosifilis. Metronidazole nuk është pjesë e trajtimit rutinë të sifilisit."
+      ],
+      "changes": [
+        {
+          "id": "F13",
+          "title": "Metronidazole është bashkangjitur në trajtimin e sifilizit",
+          "explanation": "Kjo shtesë nuk mbështetet si pjesë rutinë e regjimeve CDC për sifiliz. Duhet hequr nga protokolli aktiv pas korrigjimit të dokumentuar ose të lidhet me një indikacion tjetër të shprehur qartë; fjalia ekziston edhe në librin origjinal."
+        }
+      ],
+      "references": [
+        {
+          "key": "syphilis",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/p-and-s-syphilis.htm"
+        },
+        {
+          "key": "latent",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/latent-syphilis.htm"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "add4fc29-fe9f-43c3-93f7-d7144ef283a6": {
+      "key": "5.49",
+      "sourceFingerprint": "cbd34f750332c6836b4822e85a3cfdea685acb053aeaa2e71e94ab41e103dfb0",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Zgjidh një regjim",
+          "options": [
+            {
+              "label": "Penicillin",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Benzathine penicillin G",
+                  "genericName": "Benzathine penicillin G",
+                  "dose": "2,4 milion njësi",
+                  "frequency": "1 herë në javë",
+                  "duration": "3 javë; 7,2 milion njësi gjithsej",
+                  "route": "IM",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Alergji ndaj penicilinës, jo shtatzënë",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Doxycycline",
+                  "genericName": "Doxycycline",
+                  "dose": "100 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "28 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Shtatzënia kërkon penicillin pas desensibilizimit kur ka alergji. Simptomat neurologjike/okulare/otike kërkojnë vlerësim për neurosifilis. Metronidazole nuk është pjesë e trajtimit rutinë të sifilisit."
+      ],
+      "changes": [
+        {
+          "id": "F13",
+          "title": "Metronidazole është bashkangjitur në trajtimin e sifilizit",
+          "explanation": "Kjo shtesë nuk mbështetet si pjesë rutinë e regjimeve CDC për sifiliz. Duhet hequr nga protokolli aktiv pas korrigjimit të dokumentuar ose të lidhet me një indikacion tjetër të shprehur qartë; fjalia ekziston edhe në librin origjinal."
+        }
+      ],
+      "references": [
+        {
+          "key": "syphilis",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/p-and-s-syphilis.htm"
+        },
+        {
+          "key": "latent",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/latent-syphilis.htm"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "f1b7b72c-3b43-49f6-89ce-f133326710f8": {
+      "key": "5.50",
+      "sourceFingerprint": "80fa235c00d984fa6eba3ce5a09c7f59ea7034c133682605c66805c322cedfd7",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Zgjidh një regjim të plotë",
+          "options": [
+            {
+              "label": "Penicillin G IV",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Aqueous crystalline penicillin G",
+                  "genericName": "Aqueous crystalline penicillin G",
+                  "dose": "18–24 milion njësi GJITHSEJ në 24 orë",
+                  "frequency": "3–4 milion njësi çdo 4 orë OSE infuzion i vazhdueshëm",
+                  "duration": "10–14 ditë",
+                  "route": "IV",
+                  "sig": "Doza 18–24 milion njësi nuk përsëritet çdo 4 orë.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Alternativë kur respektimi i trajtimit sigurohet",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Procaine penicillin G",
+                  "genericName": "Procaine penicillin G",
+                  "dose": "2,4 milion njësi",
+                  "frequency": "1 herë në ditë",
+                  "duration": "10–14 ditë",
+                  "route": "IM",
+                  "sig": "",
+                  "id": "i1"
+                },
+                {
+                  "kind": "active-substance",
+                  "title": "Probenecid",
+                  "genericName": "Probenecid",
+                  "dose": "500 mg",
+                  "frequency": "4 herë në ditë",
+                  "duration": "10–14 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i2"
+                }
+              ],
+              "id": "o2"
+            },
+            {
+              "label": "Alternativë pas vlerësimit të alergjisë / specialistit",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Ceftriaxone",
+                  "genericName": "Ceftriaxone",
+                  "dose": "1–2 g",
+                  "frequency": "1 herë në ditë",
+                  "duration": "10–14 ditë",
+                  "route": "IV ose IM",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o3"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Menaxhim specialistik. Alergjia dhe shtatzënia kërkojnë vlerësim të posaçëm; në shtatzëni përdoret penicillin pas desensibilizimit kur indikohet."
+      ],
+      "changes": [
+        {
+          "id": "F14",
+          "title": "Neurosifilizi: 18–24 MU duhet dalluar nga doza çdo katër orë",
+          "explanation": "CDC e përcakton këtë si total ditor, të ndarë në administrime IV çdo katër orë ose infuzion të vazhdueshëm. Totalin ditor dhe sasinë për administrim duhet t’i ketë të ndara skema e strukturuar."
+        }
+      ],
+      "references": [
+        {
+          "key": "neuro",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/neurosyphilis.htm"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "a959ebba-d462-4e19-b5f7-304b4708279e": {
+      "key": "5.51",
+      "sourceFingerprint": "70cbfc6edcc70af17305806496d9e6d10826040adefcd5712c1c48d7e4364645",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Rehidrimi",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "supportive-care",
+                  "title": "ORS",
+                  "sig": "Rehidrim oral sipas humbjeve dhe gjendjes klinike.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        },
+        {
+          "label": "Një antibiotik kur indikohet",
+          "options": [
+            {
+              "label": "Ciprofloxacin kur është i përshtatshëm",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Ciprofloxacin",
+                  "genericName": "Ciprofloxacin",
+                  "dose": "500 mg",
+                  "frequency": "2 herë në ditë",
+                  "duration": "3 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Rezistencë / kundërindikacion ndaj ciprofloxacin",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Azithromycin",
+                  "genericName": "Azithromycin",
+                  "dose": "500 mg në ditën 1, pastaj 250 mg/ditë",
+                  "frequency": "1 herë në ditë",
+                  "duration": "5 ditë gjithsej",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            },
+            {
+              "label": "Alternativë kur shtami është i ndjeshëm",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Cefixime",
+                  "genericName": "Cefixime",
+                  "dose": "400 mg",
+                  "frequency": "1 herë në ditë",
+                  "duration": "5 ditë",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o3"
+            }
+          ],
+          "condition": "Infeksion që kërkon antibiotik; zgjedhje sipas antibiogramit",
+          "id": "g2"
+        }
+      ],
+      "notes": [
+        "I rritur. Merr kulturë dhe antibiogram; rivlerëso pas 48 orësh në mungesë përmirësimi. Mos përdor loperamide në dizenteri."
+      ],
+      "changes": [
+        {
+          "id": "F22",
+          "title": "Tifo/shigellosis: lista e antibiotikëve nuk përmban kushtet e rezistencës",
+          "explanation": "CDC e kushtëzon zgjedhjen me historinë e udhëtimit dhe ndjeshmërinë antimikrobike. Duhet kriter për trajtimin empirik dhe të drejtuar, përfshirë TMP/SMX vetëm kur ndjeshmëria është e dokumentuar për shigellosis."
+        }
+      ],
+      "references": [
+        {
+          "key": "typhoid",
+          "url": "https://www.cdc.gov/typhoid-fever/hcp/clinical-guidance/index.html"
+        },
+        {
+          "key": "shigella",
+          "url": "https://www.cdc.gov/shigella/hcp/clinical-overview/index.html"
+        },
+        {
+          "key": "additional-primary",
+          "url": "https://medicalguidelines.msf.org/en/viewport/CG/english/shigellosis-16689596.html"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "a25265e3-9c89-45b5-887d-ee55f6ec84c5": {
+      "key": "5.52",
+      "sourceFingerprint": "7937b52ccfccf84bcbe5f950e0aee702513f665faf1906188f944bd066bd15e1",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Rehidrimi dhe monitorimi",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "supportive-care",
+                  "title": "Kristaloid IV dhe pastaj ORS",
+                  "sig": "Rivlerëso perfuzionin, elektrolitet dhe diurezën. Kalo në ORS kur tolerohet.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        },
+        {
+          "label": "Antibiotiku",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Ceftriaxone",
+                  "genericName": "Ceftriaxone",
+                  "dose": "1–2 g",
+                  "frequency": "1 herë në ditë",
+                  "duration": "3 ditë; rivlerëso sipas kulturave",
+                  "route": "IM",
+                  "sig": "Zgjedhje për infeksion të rëndë ose pamundësi të trajtimit oral.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g2"
+        }
+      ],
+      "notes": [
+        "Hospitalizim. I rritur; kultura dhe antibiogrami përcaktojnë trajtimin përfundimtar. Rezistenca mund të kërkojë regjim tjetër specialistik."
+      ],
+      "changes": [
+        {
+          "id": "F22",
+          "title": "Tifo/shigellosis: lista e antibiotikëve nuk përmban kushtet e rezistencës",
+          "explanation": "CDC e kushtëzon zgjedhjen me historinë e udhëtimit dhe ndjeshmërinë antimikrobike. Duhet kriter për trajtimin empirik dhe të drejtuar, përfshirë TMP/SMX vetëm kur ndjeshmëria është e dokumentuar për shigellosis."
+        }
+      ],
+      "references": [
+        {
+          "key": "typhoid",
+          "url": "https://www.cdc.gov/typhoid-fever/hcp/clinical-guidance/index.html"
+        },
+        {
+          "key": "shigella",
+          "url": "https://www.cdc.gov/shigella/hcp/clinical-overview/index.html"
+        },
+        {
+          "key": "additional-primary",
+          "url": "https://medicalguidelines.msf.org/en/viewport/CG/english/shigellosis-16689596.html"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "af1b271c-6788-44cc-a3fb-65cb1f19ccfc": {
+      "key": "5.53",
+      "sourceFingerprint": "858bdf2f86a1c02232fd6f9e767e629938a3d9e8ea37324adc7cde8133364f08",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Mbështetja respiratore",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "supportive-care",
+                  "title": "Oksigjen",
+                  "sig": "Titrim sipas oksigjenimit, rrezikut të hiperkapnisë dhe protokollit të njësisë; eskalo mbështetjen kur nevojitet.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        },
+        {
+          "label": "Kortikosteroid",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Dexamethasone",
+                  "genericName": "Dexamethasone",
+                  "dose": "6 mg",
+                  "frequency": "1 herë në ditë",
+                  "duration": "Deri në 10 ditë ose deri në dalje nga spitali",
+                  "route": "Nga goja ose IV",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "COVID-19 i rëndë/kritik me nevojë për oksigjen",
+          "id": "g2"
+        }
+      ],
+      "notes": [
+        "Vlerëso veçmas antiviralët, rrezikun VTE dhe infeksionin bakterial. Antibiotikët dhe vëllimet fikse të lëngjeve nuk jepen automatikisht për çdo pacient."
+      ],
+      "changes": [
+        {
+          "id": "F19",
+          "title": "COVID-19: përmbajtje historike e paraqitur si skemë aktuale",
+          "explanation": "Ndaj materialin historik nga protokolli aktual. IDSA e përditësuar më 23 shtator 2026 e lidh trajtimin me rëndesën; kortikosteroidet për një sëmundje tjetër duhet të dallohen nga trajtimi i COVID pa hipoksemi. Nuk konkludohet vetëm nga kjo listë se një bar është i paregjistruar në Kosovë."
+        }
+      ],
+      "references": [
+        {
+          "key": "covid",
+          "url": "https://www.idsociety.org/practice-guideline/covid-19-guideline-treatment-and-management/"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "c1fb4d9a-719a-4c7a-a0f9-df7b7d780f09": {
+      "key": "5.54",
+      "sourceFingerprint": "f9fb07f3e26c9d00acf264a2d0297b4393273333bed71c0020e13b93cd510fc9",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Antivirali",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Remdesivir",
+                  "genericName": "Remdesivir",
+                  "dose": "200 mg në ditën 1, pastaj 100 mg/ditë",
+                  "frequency": "1 herë në ditë",
+                  "duration": "5 ditë; deri në 10 në ventilim invaziv/ECMO ose pa përmirësim",
+                  "route": "IV",
+                  "sig": "Infuzion 30–120 minuta; përgatitja/hollimi sipas produktit. Kontrollo funksionin hepatik dhe reaksionet e infuzionit. Mos e bashkadministro me chloroquine/hydroxychloroquine.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Pacient i hospitalizuar i përzgjedhur sipas fazës së sëmundjes dhe nevojës për oksigjen; nuk është trajtim universal për çdo COVID-19."
+      ],
+      "changes": [
+        {
+          "id": "F03",
+          "title": "Remdesiviri: humbje e 100 mL dhe hap i rremë",
+          "explanation": "Ribashko paragrafin pa humbur signaturën e dytë për dozën e të rriturit. Ky është një gabim tjetër nga skema 5.59, e cila ishte korrigjuar më parë."
+        }
+      ],
+      "references": [
+        {
+          "key": "additional-primary",
+          "url": "https://www.medicines.org.uk/emc/product/11597/smpc"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "f811a1d4-f2a4-4770-8564-497d52540405": {
+      "key": "5.55",
+      "sourceFingerprint": "984f276cda222a0729d27fdb3fd1038ff2b771f04f2e5b4e9e1ee182cae345bf",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Imunomodulatori",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Tocilizumab",
+                  "genericName": "Tocilizumab",
+                  "dose": "8 mg/kg; maksimumi 800 mg",
+                  "frequency": "Një infuzion; rivlerësim",
+                  "duration": "Dozë e vetme fillestare",
+                  "route": "IV gjatë 60 minutave",
+                  "sig": "Vetëm me kortikosteroid sistemik dhe nevojë për oksigjen/ventilim. Një dozë e dytë mund të merret në konsideratë pas ≥8 orësh vetëm nëse nuk ka përmirësim ose ka përkeqësim; jo përsëritje automatike. Kontrollo infeksionet aktive, neutrofilet, trombocitet dhe transaminazat.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Për COVID-19 të rëndë/kritik, me vlerësim specialistik të inflamacionit dhe kundërindikacioneve."
+      ],
+      "changes": [
+        {
+          "id": "F18",
+          "title": "Tocilizumab: 400 mg për të gjithë me përsëritje automatike",
+          "explanation": "SmPC i konsultuar për COVID-19 jep dozë sipas peshës me kufi maksimal dhe përsëritje vetëm kur simptomat nuk përmirësohen ose përkeqësohen. Skema kërkon indikacion, trajtim bashkëshoqërues dhe kontrolle laboratorike; jo përsëritje automatike."
+        }
+      ],
+      "references": [
+        {
+          "key": "tocilizumab",
+          "url": "https://www.medicines.org.uk/emc/product/102375/smpc"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "5860dee3-e13a-4710-911d-158df00977e4": {
+      "key": "5.56",
+      "sourceFingerprint": "57ea1b33fd5a7545e9b06977207aa15fe03bfed61ba184e5dde614e4fcc44169",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Favipiravir nuk paraqitet si recetë aktive standarde për COVID-19. Skema historike për influenza mbetet vetëm në informacionin e zgjeruar."
+      ],
+      "changes": [
+        {
+          "id": "F19",
+          "title": "COVID-19: përmbajtje historike e paraqitur si skemë aktuale",
+          "explanation": "Ndaj materialin historik nga protokolli aktual. IDSA e përditësuar më 23 shtator 2026 e lidh trajtimin me rëndesën; kortikosteroidet për një sëmundje tjetër duhet të dallohen nga trajtimi i COVID pa hipoksemi. Nuk konkludohet vetëm nga kjo listë se një bar është i paregjistruar në Kosovë."
+        }
+      ],
+      "references": [
+        {
+          "key": "covid",
+          "url": "https://www.idsociety.org/practice-guideline/covid-19-guideline-treatment-and-management/"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "daf22afd-f860-4496-a6c9-a56f35d8a164": {
+      "key": "5.57",
+      "sourceFingerprint": "7b8598ffa0096509a81ff6567f0762df374038d0e86bd9765c002ccf30c85594",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Imunomodulatori",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Baricitinib",
+                  "genericName": "Baricitinib",
+                  "dose": "4 mg",
+                  "frequency": "1 herë në ditë",
+                  "duration": "Deri në 14 ditë ose deri në dalje nga spitali",
+                  "route": "Nga goja ose tub enteral",
+                  "sig": "Me kortikosteroid sistemik kur indikohet. eGFR 30–<60: 2 mg/ditë; 15–<30: 1 mg/ditë. Jo në eGFR <15, dializë ose dëmtim akut renal. Kontrollo citopenitë, infeksionet dhe funksionin hepatik.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        }
+      ],
+      "notes": [
+        "Pacient i hospitalizuar i përzgjedhur me COVID-19 të rëndë/kritik. Baricitinib dhe tocilizumab nuk shtohen rutinë të dyja bashkë."
+      ],
+      "changes": [
+        {
+          "id": "F19",
+          "title": "COVID-19: përmbajtje historike e paraqitur si skemë aktuale",
+          "explanation": "Ndaj materialin historik nga protokolli aktual. IDSA e përditësuar më 23 shtator 2026 e lidh trajtimin me rëndesën; kortikosteroidet për një sëmundje tjetër duhet të dallohen nga trajtimi i COVID pa hipoksemi. Nuk konkludohet vetëm nga kjo listë se një bar është i paregjistruar në Kosovë."
+        }
+      ],
+      "references": [
+        {
+          "key": "covid",
+          "url": "https://www.idsociety.org/practice-guideline/covid-19-guideline-treatment-and-management/"
+        },
+        {
+          "key": "additional-primary",
+          "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2022/207924s006lbl.pdf"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "32fae326-2aa1-4e88-92d7-3f333da04e66": {
+      "key": "5.58",
+      "sourceFingerprint": "c7784b3ede1b81031775111b5bfc9f1073cbe31b64b6c50930100193987a1bb4",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Ethe / dhimbje",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Paracetamol",
+                  "genericName": "Paracetamol",
+                  "dose": "500–1000 mg",
+                  "frequency": "Çdo 6–8 orë, nëse nevojitet",
+                  "duration": "Sa më shkurt; rivlerësim sipas simptomave",
+                  "route": "Nga goja",
+                  "sig": "Maksimumi 4 g në 24 orë te i rrituri ≥50 kg pa faktorë rreziku; ul kufirin në sëmundje hepatike, peshë të ulët ose faktorë të tjerë rreziku.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "Nëse nevojitet",
+          "id": "g1"
+        },
+        {
+          "label": "Kujdesi në shtëpi",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "supportive-care",
+                  "title": "Hidratim dhe monitorim",
+                  "sig": "Monitoro frymëmarrjen dhe gjendjen e përgjithshme; kërko vlerësim urgjent në dispne, dhimbje gjoksi, konfuzion ose hipoksemi.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g2"
+        }
+      ],
+      "notes": [
+        "Pa kortikosteroid sistemik ose antibiotik rutinë kur nuk ka hipoksemi apo indikacion tjetër të veçantë. Pacientët me rrezik të lartë duhen vlerësuar herët për antiviral specifik."
+      ],
+      "changes": [
+        {
+          "id": "F19",
+          "title": "COVID-19: përmbajtje historike e paraqitur si skemë aktuale",
+          "explanation": "Ndaj materialin historik nga protokolli aktual. IDSA e përditësuar më 23 shtator 2026 e lidh trajtimin me rëndesën; kortikosteroidet për një sëmundje tjetër duhet të dallohen nga trajtimi i COVID pa hipoksemi. Nuk konkludohet vetëm nga kjo listë se një bar është i paregjistruar në Kosovë."
+        }
+      ],
+      "references": [
+        {
+          "key": "covid",
+          "url": "https://www.idsociety.org/practice-guideline/covid-19-guideline-treatment-and-management/"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "9a740ccb-7eb4-4080-b0ea-5c98b3030fac": {
+      "key": "5.59",
+      "sourceFingerprint": "f39f831d8b89b97601ee165bf94c3a710347e52246df6475939c809fbf99b55b",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Kujdes intensiv",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "supportive-care",
+                  "title": "Mbështetje respiratore dhe hemodinamike",
+                  "sig": "Monitorim në ICU/HDU; titrim i oksigjenit dhe eskalim i mbështetjes sipas nevojës. Lëngje sipas perfuzionit dhe bilancit, jo bolus universal.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        },
+        {
+          "label": "Një kortikosteroid",
+          "options": [
+            {
+              "label": "Dexamethasone",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Dexamethasone",
+                  "genericName": "Dexamethasone",
+                  "dose": "6 mg",
+                  "frequency": "1 herë në ditë",
+                  "duration": "Deri në 10 ditë ose deri në dalje nga spitali",
+                  "route": "Nga goja ose IV",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Methylprednisolone",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Methylprednisolone",
+                  "genericName": "Methylprednisolone",
+                  "dose": "32 mg/ditë gjithsej",
+                  "frequency": "1 herë në ditë ose në doza të ndara",
+                  "duration": "Deri në 10 ditë ose deri në dalje nga spitali",
+                  "route": "IV ose nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            },
+            {
+              "label": "Prednisone",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Prednisone",
+                  "genericName": "Prednisone",
+                  "dose": "40 mg",
+                  "frequency": "1 herë në ditë",
+                  "duration": "Deri në 10 ditë ose deri në dalje nga spitali",
+                  "route": "Nga goja",
+                  "sig": "",
+                  "id": "i1"
+                }
+              ],
+              "id": "o3"
+            }
+          ],
+          "condition": "",
+          "id": "g2"
+        },
+        {
+          "label": "Një imunomodulator nëse indikohet",
+          "options": [
+            {
+              "label": "Tocilizumab",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Tocilizumab",
+                  "genericName": "Tocilizumab",
+                  "dose": "8 mg/kg; maksimumi 800 mg",
+                  "frequency": "Një infuzion; rivlerësim",
+                  "duration": "Dozë e vetme fillestare",
+                  "route": "IV gjatë 60 minutave",
+                  "sig": "Vetëm me kortikosteroid sistemik dhe nevojë për oksigjen/ventilim. Një dozë e dytë mund të merret në konsideratë pas ≥8 orësh vetëm nëse nuk ka përmirësim ose ka përkeqësim; jo përsëritje automatike. Kontrollo infeksionet aktive, neutrofilet, trombocitet dhe transaminazat.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Baricitinib",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Baricitinib",
+                  "genericName": "Baricitinib",
+                  "dose": "4 mg",
+                  "frequency": "1 herë në ditë",
+                  "duration": "Deri në 14 ditë ose dalje nga spitali",
+                  "route": "Nga goja / tub enteral",
+                  "sig": "eGFR 30–<60: 2 mg; 15–<30: 1 mg/ditë. Jo në eGFR <15, dializë ose dëmtim akut renal.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            }
+          ],
+          "condition": "Indikacion specialistik për imunomodulim; kontrollo kundërindikacionet",
+          "id": "g3"
+        },
+        {
+          "label": "Antiviral",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Remdesivir",
+                  "genericName": "Remdesivir",
+                  "dose": "200 mg në ditën 1, pastaj 100 mg/ditë",
+                  "frequency": "1 herë në ditë",
+                  "duration": "5 ditë; deri në 10 në ventilim invaziv/ECMO ose pa përmirësim",
+                  "route": "IV",
+                  "sig": "Infuzion 30–120 minuta; përgatitja/hollimi sipas produktit. Kontrollo funksionin hepatik dhe reaksionet e infuzionit. Mos e bashkadministro me chloroquine/hydroxychloroquine.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "Pacient i përzgjedhur sipas fazës klinike; vendim specialistik",
+          "id": "g4"
+        },
+        {
+          "label": "Profilaksi VTE",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Enoxaparin sodium",
+                  "genericName": "Enoxaparin sodium",
+                  "dose": "40 mg = 4000 IU anti-Xa",
+                  "frequency": "1 herë në ditë",
+                  "duration": "Gjatë indikacionit spitalor; rivlerësim",
+                  "route": "Nënlëkurë",
+                  "sig": "Regjim profilaktik, jo trajtim i trombozës. CrCl 15–30 mL/min: 20 mg/ditë; CrCl <15 kërkon alternativë/protokoll specialistik. Individualizo për peshë dhe rrezik gjakderdhjeje.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "Pa kundërindikacion për profilaksi; tromboza e dokumentuar ka regjim tjetër",
+          "id": "g5"
+        }
+      ],
+      "notes": [
+        "Antibiotik vetëm kur dyshohet ose konfirmohet bashkëinfeksion bakterial. Kontrollo funksionin renal/hepatik, gjakderdhjen dhe ndërveprimet para zgjedhjes së regjimit."
+      ],
+      "changes": [
+        {
+          "id": "F06",
+          "title": "Antikoagulimi: profilaksia është ngatërruar me trajtimin",
+          "explanation": "Ekuivalenca e enoxaparinës është e pasaktë. Dozat e fondaparinux për profilaksi dhe trajtim janë të ndryshme. Të rishikohen së bashku indikacioni, doza, pesha, veshkat dhe rreziku i gjakderdhjes. Të dyja skemat aktualisht bllokohen në draft nga konflikti i enoxaparinës."
+        },
+        {
+          "id": "F18",
+          "title": "Tocilizumab: 400 mg për të gjithë me përsëritje automatike",
+          "explanation": "SmPC i konsultuar për COVID-19 jep dozë sipas peshës me kufi maksimal dhe përsëritje vetëm kur simptomat nuk përmirësohen ose përkeqësohen. Skema kërkon indikacion, trajtim bashkëshoqërues dhe kontrolle laboratorike; jo përsëritje automatike."
+        },
+        {
+          "id": "F19",
+          "title": "COVID-19: përmbajtje historike e paraqitur si skemë aktuale",
+          "explanation": "Ndaj materialin historik nga protokolli aktual. IDSA e përditësuar më 23 shtator 2026 e lidh trajtimin me rëndesën; kortikosteroidet për një sëmundje tjetër duhet të dallohen nga trajtimi i COVID pa hipoksemi. Nuk konkludohet vetëm nga kjo listë se një bar është i paregjistruar në Kosovë."
+        }
+      ],
+      "references": [
+        {
+          "key": "clexane",
+          "url": "https://www.medicines.org.uk/emc/product/4499/smpc"
+        },
+        {
+          "key": "arixtra",
+          "url": "https://www.medicines.org.uk/emc/product/3335/smpc"
+        },
+        {
+          "key": "tocilizumab",
+          "url": "https://www.medicines.org.uk/emc/product/102375/smpc"
+        },
+        {
+          "key": "covid",
+          "url": "https://www.idsociety.org/practice-guideline/covid-19-guideline-treatment-and-management/"
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    }
+  }
+}

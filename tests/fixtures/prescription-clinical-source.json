@@ -1,0 +1,252 @@
+[
+  {
+    "_id": "afb809dc-602b-44b7-add6-c981fb98a1e6",
+    "chapterNumber": 3,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "kind": "blood-product",
+            "order": 1,
+            "sig": "Doza: 15 mL/kg peshë trupore. Të merret në konsideratë kontrolli i përputhshmërisë ABO. Cross-match nuk nevojitet; transfuzioni të përfundojë brenda 30 minutave. Shkrirja: 30°C-37°C. Plazma e shkrirë të ruhet në 2°C-6°C. Sipas burimit, një njësi rrit Hb me rreth 1.0 g/dL. Të përdoret brenda 6 orëve nga shkrirja; të mos ringrihet.",
+            "sourceNumber": 1,
+            "strength": "200-250 mL",
+            "title": "Plazmë e freskët e ngrirë (FFP), 200-250 mL për njësi"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      }
+    ],
+    "orderInChapter": 4,
+    "reviewStatus": "verified",
+    "title": "PLAZMË E FRESKËT E NGRIRË (FFP)"
+  },
+  {
+    "_id": "c559904d-289b-4c99-86c7-62fae3c9bb18",
+    "chapterNumber": 5,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Ceftriaxone",
+            "kind": "active-substance",
+            "order": 1,
+            "sig": "IM, dozë e vetme; nëse pesha trupore >150 kg: 1 g IM si dozë e vetme.",
+            "sourceNumber": 1,
+            "strength": "500 mg",
+            "title": "Inj. Ceftriaxone 500 mg"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Doxycycline",
+            "kind": "active-substance",
+            "order": 2,
+            "sig": "BD për 7 ditë.",
+            "sourceNumber": 1,
+            "strength": "100 mg",
+            "title": "Cap. Doxycycline 100 mg"
+          }
+        ],
+        "order": 2,
+        "relation": "plus",
+        "selection": "all",
+        "sourceConnectorLabel": "PLUS"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "LINJA E DYTË",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Gentamicin",
+            "kind": "active-substance",
+            "order": 3,
+            "sig": "IM, dozë e vetme.",
+            "sourceNumber": 1,
+            "strength": "240 mg",
+            "title": "Inj. Gentamicin 240 mg"
+          }
+        ],
+        "order": 3,
+        "relation": "or",
+        "selection": "all",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Azithromycin",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "Doza 2 g, një herë.",
+            "sourceNumber": 2,
+            "strength": "500 mg",
+            "title": "Cap. Azithromycin 500 mg"
+          }
+        ],
+        "order": 4,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b5",
+        "_type": "prescriptionLogicBlock",
+        "condition": "UDHËZIME PARANDALUESE TË RX",
+        "items": [
+          {
+            "_key": "i5",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 5,
+            "sig": "Partnerët seksualë nga 60 ditët paraprake duhet të identifikohen dhe të trajtohen me të njëjtin regjim. Pacienti të shmangë çdo kontakt seksual deri 7 ditë pas trajtimit të pacientit dhe partnerëve seksualë dhe/ose derisa simptomat të jenë zgjidhur. Të gjithë pacientët: ritestim në 3 muaj.",
+            "title": "UDHËZIME PARANDALUESE TË RX"
+          }
+        ],
+        "order": 5,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      }
+    ],
+    "orderInChapter": 45,
+    "reviewStatus": "verified",
+    "title": "GONORRHEA GJENITALE E PAKOMPLIKUAR"
+  },
+  {
+    "_id": "f1b7b72c-3b43-49f6-89ce-f133326710f8",
+    "chapterNumber": 5,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Aqueous penicillin G",
+            "kind": "active-substance",
+            "order": 1,
+            "sig": "IV; të jepet çdo 4 orë ose si infuzion i vazhdueshëm për 10-14 ditë.",
+            "sourceNumber": 1,
+            "strength": "18-24 MU",
+            "title": "Inj. Aqueous penicillin G 18-24 MU"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "ALTERNATIVË",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Procaine penicillin 2.4 milion njësi",
+            "kind": "active-substance",
+            "order": 2,
+            "sig": "IM çdo ditë.",
+            "sourceNumber": 1,
+            "title": "Inj. Procaine penicillin 2.4 milion njësi"
+          }
+        ],
+        "order": 2,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Probenecid",
+            "kind": "active-substance",
+            "order": 3,
+            "sig": "Nga goja, QID për 10-14 ditë.",
+            "sourceNumber": 2,
+            "strength": "500 mg",
+            "title": "Tab. Probenecid 500 mg"
+          }
+        ],
+        "order": 3,
+        "relation": "plus",
+        "selection": "all",
+        "sourceConnectorLabel": "PLUS"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Ceftriaxone",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "IM/IV infuzion, çdo ditë për 10-14 ditë.",
+            "sourceNumber": 1,
+            "strength": "2 g",
+            "title": "Inj. Ceftriaxone 2 g"
+          }
+        ],
+        "order": 4,
+        "relation": "or",
+        "selection": "all",
+        "sourceConnectorLabel": "OSE"
+      }
+    ],
+    "orderInChapter": 50,
+    "reviewStatus": "verified",
+    "title": "NEUROSIFILIS SIMPTOMATIK OSE ASIMPTOMATIK"
+  }
+]

@@ -7530,7 +7530,7 @@
 (() => {
   'use strict';
 
-  const API = '/api/medical-hub?_route=prescription-library';
+  const API = '/api/medical-hub?_route=prescription-library' + '&reader=clinical-v1';
   const SEARCH_API = '/api/medical-hub?_route=prescription-search';
   const RELATION_LABELS = Object.freeze({ and:'DHE', or:'OSE', plus:'PLUS', conditional:'NËSE' });
   const KIND_LABELS = Object.freeze({
@@ -7559,6 +7559,7 @@
     requestId:0,
     searchRequestId:0,
     searchTimer:0,
+    clinicalChoices:Object.create(null),
   };
   const $ = selector => document.querySelector(selector);
   const text = value => String(value ?? '').replace(/\s+/g, ' ').trim();
@@ -7683,11 +7684,11 @@
     return {
       blocks,
       items,
-      activeCount:items.filter(item => item?.kind === 'active-substance').length,
+      activeCount:guide?.clinicalPlan?.status === 'ready' ? guide.clinicalPlan.groups.flatMap(group=>group.options.flatMap(option=>option.items)).filter(item=>item.kind==='active-substance').length : items.filter(item => item?.kind === 'active-substance').length,
       supportCount:items.filter(item => item?.kind !== 'active-substance' && item?.kind !== 'source-note').length,
       noteCount:items.filter(item => item?.kind === 'source-note').length,
-      alternativeCount:blocks.filter(block => block?.relation === 'or' || block?.selection === 'choose-one').length,
-      conditionalCount:blocks.filter(block => block?.relation === 'conditional' && !isEditorialBlock(block)).length,
+      alternativeCount:guide?.clinicalPlan?.status === 'ready' ? guide.clinicalPlan.groups.filter(group=>group.options.length>1).length : blocks.filter(block => block?.relation === 'or' || block?.selection === 'choose-one').length,
+      conditionalCount:guide?.clinicalPlan?.status === 'ready' ? guide.clinicalPlan.groups.filter(group=>group.condition || group.options.some(option=>option.items.some(item=>item.condition))).length : blocks.filter(block => block?.relation === 'conditional' && !isEditorialBlock(block)).length,
     };
   }
 
@@ -7704,6 +7705,7 @@
         values.push(item?.title, item?.genericName, item?.form, item?.strength, item?.dose, item?.route, item?.frequency, item?.duration, item?.sig, item?.note);
       });
     });
+    (guide?.clinicalPlan?.groups || []).forEach(group=>group.options.forEach(option=>option.items.forEach(item=>values.push(item.title,item.genericName,item.dose,item.frequency,item.duration,item.sig))));
     return normalize(values.filter(Boolean).join(' '));
   }
 
@@ -7753,6 +7755,7 @@
   }
 
   function sourceClinicalIssues(guide) {
+    if (guide?.clinicalPlan) return guide.clinicalPlan.status === 'ready' ? [] : [{code:'clinical-plan-reference',message:(guide.clinicalPlan.notes || []).join(' '),source:'Informacioni i skemës',url:''}];
     // Keep the book verbatim, but do not turn a confirmed source conflict into
     // a prescription draft. These checks do not select a replacement regimen.
     const chapter = Number(guide?.chapterNumber);
@@ -7971,7 +7974,7 @@
             <h4>${esc(itemTitle(item))}</h4>
           </div>
         </div>
-        ${meta.length ? `<div class="rx-source-meta">${meta.map(value => `<span>${esc(value)}</span>`).join('')}</div>` : ''}
+        ${item?.clinical ? `<dl class="rx-clinical-dose-grid">${[['Doza',item.dose],['Rruga',item.route],['Shpeshtësia',item.frequency],['Kohëzgjatja',item.duration]].filter(([,value])=>text(value)).map(([label,value])=>`<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl>` : meta.length ? `<div class="rx-source-meta">${meta.map(value => `<span>${esc(value)}</span>`).join('')}</div>` : ''}
         ${text(item?.sig) ? `<div class="rx-source-sig"><span>S.</span><p>${esc(item.sig)}</p></div>` : ''}
         ${text(item?.note) ? `<p class="rx-source-note">${esc(item.note)}</p>` : ''}
         ${active && query ? `<button class="rx-source-find-drug" type="button" data-rx-source-drug="${esc(query)}" aria-label="Zgjidh preparatin: ${esc(itemTitle(item))}" title="Zgjidh preparatin"><span>Zgjidh preparatin</span><b aria-hidden="true">↗</b></button>` : ''}
@@ -7980,6 +7983,7 @@
   }
 
   function sourceDraftText(guide) {
+    if (guide?.clinicalPlan) return clinicalPlanDraft(guide);
     if (sourceClinicalIssues(guide).length) return '';
     const lines = ['Rp:'];
     const blocks = [...(Array.isArray(guide?.logicBlocks) ? guide.logicBlocks : [])]
@@ -8021,7 +8025,92 @@
     }).join('');
   }
 
+  function clinicalChoiceState(guide) {
+    const key = `${guide._id}:${guide.clinicalPlan?.version || ''}`;
+    return state.clinicalChoices[key] || (state.clinicalChoices[key] = {options:{},groups:{},items:{}});
+  }
+
+  function clinicalPlanDraft(guide) {
+    const plan = guide?.clinicalPlan;
+    if (plan?.status !== 'ready' || !Array.isArray(plan.groups) || !plan.groups.length) return '';
+    const choices = clinicalChoiceState(guide);
+    const lines = ['Rp:'];
+    let count = 0;
+    for (const group of plan.groups) {
+      if (group.condition && !choices.groups[group.id]) continue;
+      if (group.requiresGroup && !choices.groups[group.requiresGroup]) return '';
+      const selected = group.options.length === 1 ? group.options[0] : group.options.find(option => option.id === choices.options[group.id]);
+      if (!selected) return '';
+      if (selected.requiresOption && choices.options[selected.requiresOption.group] !== selected.requiresOption.option) return '';
+      const items = selected.items.filter(item => !item.condition || choices.items[`${group.id}:${selected.id}:${item.id}`]);
+      if (!items.length) continue;
+      if (count) lines.push('', 'EDHE');
+      if (group.condition) lines.push(`Vetëm nëse: ${group.condition}`);
+      if (selected.label) lines.push(selected.label);
+      items.forEach((item,index) => {
+        if (index) lines.push('EDHE');
+        if (item.condition) lines.push(`Vetëm nëse: ${item.condition}`);
+        lines.push(`${++count}. ${itemTitle(item)}`);
+        for (const [label,value] of [['Doza',item.dose],['Rruga',item.route],['Shpeshtësia',item.frequency],['Kohëzgjatja',item.duration]]) {
+          if (text(value)) lines.push(`${label}: ${text(value)}`);
+        }
+        if (text(item.sig)) lines.push(text(item.sig));
+      });
+    }
+    if (!count) return '';
+    if (plan.notes?.length) lines.push('', ...plan.notes.map(note => `Kujdes: ${text(note)}`));
+    return lines.join('\n');
+  }
+
+  function renderGuideInformation(guide, original = '') {
+    const plan = guide?.clinicalPlan;
+    const issues = plan ? [] : sourceClinicalIssues(guide);
+    return `<details class="rx-source-information"><summary aria-label="Informacion për skemën" title="Informacion për skemën">?</summary><div class="rx-source-information-body">
+      <strong class="rx-source-information-title">Informacion për skemën</strong>
+      <p>Burimi: ${esc(guide?.sourceDocument || 'Doctor on Duty')} · Versioni: ${esc(guide?.version || '—')} · Statusi i dokumentit: ${esc(guide?.reviewStatus || '—')}</p>
+      ${plan ? `<p>Kontrolli i referencave: ${esc(plan.checkedAt || '')}. Versioni i korrigjimeve: ${esc(plan.version)}. Ky kontroll nuk përfaqëson miratim të pavarur mjekësor.</p>${(plan.technicalNotes || []).map(note=>`<p>${esc(note)}</p>`).join('')}${(plan.references || []).map(ref=>`<p><a href="${esc(ref.url)}" target="_blank" rel="noopener noreferrer">${esc(new URL(ref.url).hostname)} ↗</a></p>`).join('')}${(plan.changes || []).map(change=>`<p><strong>${esc(change.title)}</strong> ${esc(change.explanation)}</p>`).join('')}` : ''}
+      ${issues.map(issue=>`<p>${esc(issue.message)} ${issue.url ? `<a href="${esc(issue.url)}" target="_blank" rel="noopener noreferrer">${esc(issue.source)} ↗</a>` : ''}</p>`).join('')}
+      ${original ? `<details class="rx-source-original"><summary>Teksti origjinal</summary>${original}</details>` : ''}
+    </div></details>`;
+  }
+
+  function renderClinicalGuide(guide) {
+    const plan = guide.clinicalPlan;
+    const choices = clinicalChoiceState(guide);
+    const ready = plan.status === 'ready';
+    const draft = ready && Boolean(clinicalPlanDraft(guide));
+    return `<article class="rx-source-guide is-clinical-plan" data-source-guide-id="${esc(guide._id)}">
+      <header class="rx-source-guide-head"><div class="rx-source-guide-heading"><div class="rx-source-guide-kicker">Kapitulli ${esc(guide.chapterNumber)} · ${esc(lessonLabel(guide))}</div><h3>${esc(guide.title)}</h3></div>
+        <button class="rx-source-use" type="button" data-rx-source-use="${esc(guide._id)}"${draft ? '' : ' disabled'}><span>${!ready ? 'Vetëm referencë' : draft ? 'Vendose si draft' : 'Zgjidh opsionet'}</span><b aria-hidden="true">→</b></button>
+      </header>
+      ${renderGuideInformation(guide,`<div class="rx-source-flow">${renderStepGroups(guideStats(guide).blocks)}</div>`)}
+      ${(plan.notes || []).length ? `<div class="rx-clinical-context">${plan.notes.map(note=>`<p>${esc(note)}</p>`).join('')}</div>` : ''}
+      ${!ready ? '<p class="rx-clinical-reference">Kjo skemë nuk kalohet automatikisht në recetë.</p>' : ''}
+      <div class="rx-source-flow rx-clinical-flow" aria-label="Rrjedha e recetës">${(plan.groups || []).map((group,gi) => {
+        const tone = gi % 5 + 1;
+        const enabled = !group.condition || choices.groups[group.id];
+        const groupAvailable = !group.requiresGroup || choices.groups[group.requiresGroup];
+        return `${gi ? `<div class="rx-clinical-between">${group.condition ? 'NËSE' : 'EDHE'}</div>` : ''}<section class="rx-source-step-group rx-clinical-group" data-rx-step-group="${gi+1}" data-rx-group-tone="${tone}" aria-label="Hapi ${gi+1}">
+          <div class="rx-source-step-group-heading"><span>Hapi ${gi+1}</span>${group.label ? `<strong>${esc(group.label)}</strong>` : ''}</div>
+          ${group.condition ? `<label class="rx-clinical-condition"><input type="checkbox" data-rx-clinical-guide="${esc(guide._id)}" data-rx-clinical-group="${esc(group.id)}"${enabled ? ' checked' : ''}${groupAvailable ? '' : ' disabled'}><span>${esc(group.condition)}</span><small>Opsionale</small></label>` : ''}
+          <fieldset class="rx-clinical-options"><legend class="sr-only">${group.options.length > 1 ? 'Zgjidh vetëm një alternativë' : 'Barnat e këtij hapi'}</legend>${group.options.map((option,oi) => {
+            const selected = group.options.length === 1 || choices.options[group.id] === option.id;
+            const compatible = !option.requiresOption || choices.options[option.requiresOption.group] === option.requiresOption.option;
+            return `${oi ? '<div class="rx-clinical-or">OSE</div>' : ''}<div class="rx-clinical-option${selected && enabled ? ' is-selected' : ''}">
+              ${group.options.length > 1 ? `<label class="rx-clinical-option-choice"><input type="radio" name="rx-clinical-${esc(guide._id)}-${esc(group.id)}" value="${esc(option.id)}" data-rx-clinical-guide="${esc(guide._id)}" data-rx-clinical-option="${esc(group.id)}"${selected ? ' checked' : ''}${compatible ? '' : ' disabled'}><span>${esc(option.label || `Alternativa ${oi+1}`)}</span><small>${selected ? 'E zgjedhur' : 'Zgjidhe'}</small></label>` : ''}
+              ${option.items.map((item,ii) => {
+                const itemKey = `${group.id}:${option.id}:${item.id}`;
+                return `${ii ? '<div class="rx-clinical-together">EDHE</div>' : ''}${item.condition ? `<label class="rx-clinical-condition is-item"><input type="checkbox" data-rx-clinical-guide="${esc(guide._id)}" data-rx-clinical-item="${esc(itemKey)}"${choices.items[itemKey] ? ' checked' : ''}><span>${esc(item.condition)}</span><small>Vetëm nëse</small></label>` : ''}${renderItem({...item,clinical:true,smartLabel:`${gi+1}${group.options.length > 1 ? String.fromCharCode(65+oi) : ''}${option.items.length > 1 ? `.${ii+1}` : ''}`},{smartBase:gi+1})}`;
+              }).join('')}
+            </div>`;
+          }).join('')}</fieldset>
+        </section>`;
+      }).join('')}</div>
+    </article>`;
+  }
+
   function renderGuide(guide) {
+    if (guide?.clinicalPlan) return renderClinicalGuide(guide);
     const { blocks, items, activeCount, supportCount, noteCount, alternativeCount, conditionalCount } = guideStats(guide);
     const startPage = Number(guide?.sourcePageStart);
     const endPage = Number(guide?.sourcePageEnd);
@@ -8036,7 +8125,6 @@
         <div class="rx-source-guide-heading">
           <div class="rx-source-guide-kicker">
             <span>Kapitulli ${esc(guide?.chapterNumber || '')} · ${esc(lessonLabel(guide))}</span>
-            <span class="rx-source-import-badge${issues.length ? ' is-review' : guide?.reviewStatus === 'verified' ? ' is-verified' : ''}">${issues.length ? 'Kërkon rishikim klinik' : imported ? 'Burim i importuar' : guide?.reviewStatus === 'verified' ? 'E verifikuar' : 'Burim'}</span>
           </div>
           <h3>${esc(guide?.title || guide?.sourceHeading || 'Skemë Rx')}</h3>
           <div class="rx-source-guide-stats" aria-label="Përmbledhja e skemës">
@@ -8053,17 +8141,13 @@
           <span>${issues.length ? 'Drafti kërkon rishikim' : 'Vendose si draft'}</span><b aria-hidden="true">→</b>
         </button>
       </header>
-      ${issues.length ? `<aside class="rx-source-clinical-issue" id="rxSourceClinicalIssue"><strong>Mospërputhje në burim</strong>${issues.map(issue => `<p>${esc(issue.message)} <a href="${esc(issue.url)}" target="_blank" rel="noopener noreferrer">${esc(issue.source)} ↗</a></p>`).join('')}<p>Teksti origjinal ruhet më poshtë. Kalimi i kësaj skeme në draft është ndalur deri në rishikim.</p></aside>` : ''}
+      ${renderGuideInformation(guide)}
+      ${issues.length ? '<aside class="rx-source-clinical-issue" id="rxSourceClinicalIssue"><strong>Kjo skemë kërkon rishikim para përdorimit.</strong></aside>' : ''}
       ${alternativeCount || conditionalCount ? '<p class="rx-source-draft-help">Drafti përfshin gjithë skemën. Zgjidh alternativat dhe kontrollo kushtet para përdorimit.</p>' : ''}
       <div class="rx-source-flow" aria-label="Rrjedha e recetës">
         <div class="rx-source-flow-title"><span>Rrjedha klinike</span><small>Lexo nga lart poshtë · numrat tregojnë rendin</small></div>
         ${renderStepGroups(blocks)}
       </div>
-      <footer class="rx-source-guide-foot">
-        <span><b>Burimi</b> ${esc(guide?.sourceDocument || 'Doctor on Duty')}</span>
-        <span><b>Statusi</b> ${imported ? 'source-imported · kërkon kontroll klinik' : esc(guide?.reviewStatus || '—')}</span>
-        <span><b>Versioni</b> ${esc(guide?.version || '—')}</span>
-      </footer>
     </article>`;
   }
 
@@ -8393,6 +8477,10 @@
     }
     const workspace = window.MedIndexRecetaWorkspace;
     if (!workspace?.beginSourceGuideDraft) return;
+    if (guide?.clinicalPlan && !clinicalPlanDraft(guide)) {
+      sourceStatus('Zgjidh një opsion në secilin grup përpara se ta vendosësh si draft.', 'error');
+      return false;
+    }
     const result = workspace.beginSourceGuideDraft({
       diagnosis:text(guide?.title),
       sourceText:sourceDraftText(guide),
@@ -8503,6 +8591,26 @@
         event.preventDefault();
         event.target.closest('[data-rx-source-select],[data-rx-source-search-result]').click();
       }
+    });
+
+    $('#rxSourceGuideList')?.addEventListener('change', event => {
+      const input = event.target.closest('[data-rx-clinical-guide]');
+      if (!input) return;
+      const guide = state.items.find(item => String(item._id) === input.dataset.rxClinicalGuide);
+      if (!guide?.clinicalPlan) return;
+      const choices = clinicalChoiceState(guide);
+      if (input.dataset.rxClinicalOption) choices.options[input.dataset.rxClinicalOption] = input.value;
+      if (input.dataset.rxClinicalGroup) choices.groups[input.dataset.rxClinicalGroup] = input.checked;
+      if (input.dataset.rxClinicalItem) choices.items[input.dataset.rxClinicalItem] = input.checked;
+      for (const group of guide.clinicalPlan.groups) {
+        if (group.requiresGroup && !choices.groups[group.requiresGroup]) choices.groups[group.id] = false;
+        const selected = group.options.find(option=>option.id===choices.options[group.id]);
+        if (selected?.requiresOption && choices.options[selected.requiresOption.group] !== selected.requiresOption.option) delete choices.options[group.id];
+      }
+      const identity = {...input.dataset}, value = input.value;
+      render();
+      const replacement = [...document.querySelectorAll('[data-rx-clinical-guide]')].find(node => node.value === value && Object.keys(identity).every(key => node.dataset[key] === identity[key]));
+      replacement?.focus({preventScroll:true});
     });
 
     $('#rxSourceGuideList')?.addEventListener('click', event => {
