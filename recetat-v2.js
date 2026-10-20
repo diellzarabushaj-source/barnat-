@@ -8004,6 +8004,23 @@
     return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
   }
 
+  function renderStepGroups(blocks) {
+    const groups = [];
+    blocks.forEach((block,index) => {
+      const previous = groups[groups.length - 1];
+      if (previous?.base === block.smartBase) previous.entries.push({block,index});
+      else groups.push({base:block.smartBase,entries:[{block,index}]});
+    });
+    return groups.map(({base,entries}) => {
+      const first = entries[0];
+      const tone = ((Math.max(1, Number(base) || 1) - 1) % 5) + 1;
+      return `${first.index ? renderConnector(first.block) : ''}<section class="rx-source-step-group" data-rx-step-group="${esc(base)}" data-rx-group-tone="${tone}" aria-label="Hapi ${esc(base)}">
+        <div class="rx-source-step-group-heading"><span>Hapi ${esc(base)}</span></div>
+        ${entries.map(({block,index},groupIndex) => `${groupIndex ? renderConnector(block) : ''}<div class="rx-source-block${block?.selection === 'choose-one' ? ' is-choice' : ''}" data-smart-step="${esc(block.smartLabel)}">${!index && text(block?.condition) && !isEditorialBlock(block) ? `<p class="rx-source-block-condition">${esc(block.condition)}</p>` : ''}${block?.selection === 'choose-one' ? '<p class="rx-source-choice-label">Zgjidh vetëm një alternativë nga ky grup</p>' : ''}${(block.smartItems || []).map(item => renderItem(item, block)).join('')}${text(block?.note) ? `<p class="rx-source-note rx-source-block-note">${esc(block.note)}</p>` : ''}</div>`).join('')}
+      </section>`;
+    }).join('');
+  }
+
   function renderGuide(guide) {
     const { blocks, items, activeCount, supportCount, noteCount, alternativeCount, conditionalCount } = guideStats(guide);
     const startPage = Number(guide?.sourcePageStart);
@@ -8040,7 +8057,7 @@
       ${alternativeCount || conditionalCount ? '<p class="rx-source-draft-help">Drafti përfshin gjithë skemën. Zgjidh alternativat dhe kontrollo kushtet para përdorimit.</p>' : ''}
       <div class="rx-source-flow" aria-label="Rrjedha e recetës">
         <div class="rx-source-flow-title"><span>Rrjedha klinike</span><small>Lexo nga lart poshtë · numrat tregojnë rendin</small></div>
-        ${blocks.map((block,index) => `${index ? renderConnector(block) : ''}<div class="rx-source-block${block?.selection === 'choose-one' ? ' is-choice' : ''}" data-smart-step="${esc(block.smartLabel)}">${!index && text(block?.condition) && !isEditorialBlock(block) ? `<p class="rx-source-block-condition">${esc(block.condition)}</p>` : ''}${block?.selection === 'choose-one' ? '<p class="rx-source-choice-label">Zgjidh vetëm një alternativë nga ky grup</p>' : ''}${(block.smartItems || []).map(item => renderItem(item, block)).join('')}${text(block?.note) ? `<p class="rx-source-note rx-source-block-note">${esc(block.note)}</p>` : ''}</div>`).join('')}
+        ${renderStepGroups(blocks)}
       </div>
       <footer class="rx-source-guide-foot">
         <span><b>Burimi</b> ${esc(guide?.sourceDocument || 'Doctor on Duty')}</span>
