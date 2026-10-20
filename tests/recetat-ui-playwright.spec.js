@@ -298,6 +298,44 @@ for (const width of [320,390,768,1440]) test(`source reader keeps full medicine 
   await expect(page.locator('#rxDrugPopover')).toBeHidden();
 });
 
+for (const width of [320,1440]) {
+  test(`shared step frames keep separate cards and connectors at ${width}px`,async({page},testInfo)=>{
+    const step=(order,relation,title,kind='active-substance')=>({order,relation,items:[{title,kind,sig:`Udhëzimi QA ${order}.`}]});
+    const guide={_id:'qa-shared-frames',chapterNumber:1,orderInChapter:1,title:'QA grouped prescription',reviewStatus:'verified',logicBlocks:[
+      step(1,'start','Shënim QA A','source-note'),
+      {...step(2,'or','Shënim QA B','source-note'),condition:'Kushti burimor QA'},
+      {...step(3,'and','Alternativa QA A'),selection:'choose-one'},
+      step(4,'or','Alternativa QA B'),step(5,'or','Alternativa QA C'),step(6,'or','Alternativa QA D'),
+      step(7,'and','Hapi i tretë QA'),step(8,'and','Shënimi i fundit QA','source-note'),
+    ]};
+    await page.route('**/api/medical-hub?**',async route=>route.fulfill({json:require('./recetat-source-browser-fixture.js')(new URL(route.request().url()),[guide])}));
+    await page.setViewportSize({width,height:1000});
+    await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
+    const groups=page.locator('.rx-source-step-group');
+    await expect(groups).toHaveCount(4);
+    const colors=[];
+    for (const [index,count] of [2,4,1,1].entries()) {
+      const group=groups.nth(index);
+      await expect(group).toHaveAttribute('aria-label',`Hapi ${index+1}`);
+      await expect(group.locator('.rx-source-item')).toHaveCount(count);
+      expect(await group.locator('.rx-source-item').evaluateAll(cards=>cards.every(card=>getComputedStyle(card).borderTopStyle!=='none'))).toBe(true);
+      colors.push(await group.evaluate(el=>getComputedStyle(el).backgroundColor));
+    }
+    expect(new Set(colors).size).toBe(4);
+    await expect(groups.nth(0).locator('.rx-source-connector.is-or')).toHaveCount(1);
+    await expect(groups.nth(1).locator('.rx-source-connector.is-or')).toHaveCount(3);
+    await expect(page.locator('.rx-source-flow > .rx-source-connector.is-and')).toHaveCount(3);
+    await expect(page.locator('.rx-source-item h4')).toHaveText(guide.logicBlocks.map(block=>block.items[0].title));
+    await expect(page.locator('.rx-source-item-number')).toHaveText(['1A','1B','2A','2B','2C','2D','3','4']);
+    await expect(groups.first()).toContainText('Kushti burimor QA');
+    await expect(groups.nth(1)).toContainText('Zgjidh vetëm një alternativë nga ky grup');
+    await expect(page.locator('#rxComposer')).toHaveValue('');
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+    await page.locator('.rx-source-flow-title').scrollIntoViewIfNeeded();
+    await page.screenshot({path:testInfo.outputPath(`step-frames-${width}.png`),fullPage:true});
+  });
+}
+
 test('step hover and keyboard emphasis distinguish major steps without changing the source',async({page})=>{
   await page.setViewportSize({width:1440,height:1000});
   await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});

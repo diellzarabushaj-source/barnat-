@@ -265,17 +265,28 @@ html[data-drx-app="recetat-v2"] .rx-source-guide .rx-source-item-body{line-heigh
 .rx-source-guide .rx-source-guide-foot{justify-content:flex-start;gap:6px 18px;padding:12px 24px 18px;font-size:11px;line-height:1.6;color:#526176}
 .rx-source-guide-foot b{font-weight:600;color:#34465f}
 /* Step colors mark reading position, never completion or clinical status.
-   Alternatives retain their shared major-step tone; source notes stay neutral. */
-.rx-source-guide .rx-source-item[data-rx-step-tone]{
+   Alternatives retain their separate cards inside a shared major-step frame. */
+.rx-source-guide :is(.rx-source-step-group,.rx-source-item[data-rx-step-tone]){
   --rx-step-accent:#3558a3;--rx-step-line:#b7c8e9;--rx-step-soft:#edf3ff;--rx-step-pressed:#e0eaff;
+}
+.rx-source-guide .rx-source-item[data-rx-step-tone]{
   border-color:var(--rx-step-line);border-radius:14px;background:#fff;
   box-shadow:inset 3px 0 var(--rx-step-accent),0 1px 2px #17255406;
   transition:background-color .16s ease,border-color .16s ease,box-shadow .16s ease;
 }
-.rx-source-guide .rx-source-item[data-rx-step-tone="2"]{--rx-step-accent:#256b70;--rx-step-line:#b4d7d6;--rx-step-soft:#edf8f7;--rx-step-pressed:#dcefed}
-.rx-source-guide .rx-source-item[data-rx-step-tone="3"]{--rx-step-accent:#6951a5;--rx-step-line:#cec2e7;--rx-step-soft:#f4effc;--rx-step-pressed:#eae1f8}
-.rx-source-guide .rx-source-item[data-rx-step-tone="4"]{--rx-step-accent:#316c94;--rx-step-line:#b9d3e5;--rx-step-soft:#eef7fc;--rx-step-pressed:#dfedf7}
-.rx-source-guide .rx-source-item[data-rx-step-tone="5"]{--rx-step-accent:#86537d;--rx-step-line:#dbc4d7;--rx-step-soft:#faf0f7;--rx-step-pressed:#f2e1ee}
+.rx-source-guide :is(.rx-source-item,.rx-source-step-group):is([data-rx-step-tone="2"],[data-rx-group-tone="2"]){--rx-step-accent:#256b70;--rx-step-line:#b4d7d6;--rx-step-soft:#edf8f7;--rx-step-pressed:#dcefed}
+.rx-source-guide :is(.rx-source-item,.rx-source-step-group):is([data-rx-step-tone="3"],[data-rx-group-tone="3"]){--rx-step-accent:#6951a5;--rx-step-line:#cec2e7;--rx-step-soft:#f4effc;--rx-step-pressed:#eae1f8}
+.rx-source-guide :is(.rx-source-item,.rx-source-step-group):is([data-rx-step-tone="4"],[data-rx-group-tone="4"]){--rx-step-accent:#316c94;--rx-step-line:#b9d3e5;--rx-step-soft:#eef7fc;--rx-step-pressed:#dfedf7}
+.rx-source-guide :is(.rx-source-item,.rx-source-step-group):is([data-rx-step-tone="5"],[data-rx-group-tone="5"]){--rx-step-accent:#86537d;--rx-step-line:#dbc4d7;--rx-step-soft:#faf0f7;--rx-step-pressed:#f2e1ee}
+.rx-source-guide .rx-source-step-group{
+  min-width:0;padding:10px;border:1px solid var(--rx-step-line);border-radius:18px;
+  background:var(--rx-step-soft);box-shadow:0 2px 6px #17255405;
+}
+.rx-source-step-group-heading{display:flex;align-items:center;margin:0 2px 8px;color:var(--rx-step-accent);font-size:11px;font-weight:700;line-height:1.5;letter-spacing:.02em}
+.rx-source-step-group-heading::before{content:'';width:4px;height:14px;flex:none;margin-right:7px;border-radius:3px;background:currentColor}
+.rx-source-guide .rx-source-step-group .rx-source-item.is-source-note{border-color:var(--rx-step-line);background:#fff}
+.rx-source-guide .rx-source-step-group .rx-source-connector-line:nth-of-type(2){background:var(--rx-step-line)}
+.rx-source-guide .rx-source-step-group .rx-source-choice-label{margin-top:0;background:#fff;color:var(--rx-step-accent)}
 .rx-source-guide .rx-source-item[data-rx-step-tone] .rx-source-item-number{
   border-color:var(--rx-step-accent);border-radius:10px;background:var(--rx-step-accent);color:#fff;
   box-shadow:inset 0 1px 0 #ffffff26,0 2px 4px #17255412;letter-spacing:-.02em;
@@ -334,6 +345,8 @@ html[data-drx-app="recetat-v2"] .rx-source-guide .rx-source-item-body{line-heigh
   .rx-source-guide .rx-source-guide-stats{margin-top:10px;font-size:11px}
   .rx-source-guide .rx-source-use{width:100%;justify-content:center;gap:10px}
   .rx-source-guide .rx-source-flow{padding:0 10px 16px}
+  .rx-source-guide .rx-source-step-group{padding:6px;border-radius:14px}
+  .rx-source-step-group-heading{margin:1px 3px 6px}
   .rx-source-guide .rx-source-flow-title{display:flex;flex-wrap:wrap;gap:3px 10px;padding-top:10px}
   .rx-source-flow-title small{font-size:11px}
   .rx-source-guide .rx-source-item{grid-template-columns:38px minmax(0,1fr)}
