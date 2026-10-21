@@ -20,8 +20,8 @@ const choose=(g,n,o)=>clinicalChoiceState(g).options['g'+n]='o'+o;
 assert.equal(revisions.coverage.length,136);
 assert.equal(Object.keys(revisions.guides).length,115);
 assert.equal(new Set(revisions.coverage.map(x=>x.id)).size,136);
-assert.equal(Object.values(revisions.guides).filter(x=>x.status==='ready').length,52);
-assert.equal(Object.values(revisions.guides).filter(x=>x.status==='reference').length,63);
+assert.equal(Object.values(revisions.guides).filter(x=>x.status==='ready').length,56);
+assert.equal(Object.values(revisions.guides).filter(x=>x.status==='reference').length,59);
 for(const p of Object.values(revisions.guides)){
  assert.match(p.sourceFingerprint,/^[a-f0-9]{64}$/);assert.ok(p.references.length);
  assert.equal(p.reviewState,'evidence-reconciled');
@@ -36,7 +36,8 @@ for(const raw of fixtures){
  assert.equal(g.logicBlocks,raw.logicBlocks);
  assert.equal(sourceFingerprint(raw),g.clinicalPlan.sourceFingerprint);
  assert.equal(JSON.stringify(raw),before);
- assert.equal(forPrescriptionReader(raw,'clinical-v2').reviewStatus,raw.reviewStatus);
+ assert.equal(forPrescriptionReader(raw,'clinical-v3').reviewStatus,raw.reviewStatus);
+ if(g.clinicalPlan.doseInputs?.length){assert.equal(forPrescriptionReader(raw,'clinical-v2').clinicalPlan,undefined);}
  const legacy=forPrescriptionReader(raw,'');
  assert.equal(legacy.reviewStatus,'source-imported');assert.equal(legacy.clinicalPlan,undefined);
  if(g.clinicalPlan.confirmation){

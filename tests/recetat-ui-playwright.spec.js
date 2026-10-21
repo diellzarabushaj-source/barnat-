@@ -200,6 +200,69 @@ for (const width of [390,1440]) {
   });
 }
 
+for(const width of [320,390,1440]){
+ test('individual insulin doses update, clear and transfer without losing focus at '+width+'px',async({page},testInfo)=>{
+  const data=require('../data/recetat-clinical-revisions-6-10.json');
+  const [id,plan]=Object.entries(data.guides).find(([,p])=>p.key==='10.2');
+  const guide={_id:id,title:'QA MDI',chapterNumber:10,orderInChapter:2,reviewStatus:'verified',logicBlocks:[],clinicalPlan:{...plan,version:data.version,checkedAt:data.checkedAt}};
+  await page.route('**/api/medical-hub?**',async route=>{
+   const url=new URL(route.request().url()),payload=require('./recetat-source-browser-fixture')(url,[guide]);
+   if(payload?.items&&!url.searchParams.get('chapter')){payload.chapter=10;payload.items=[guide];}
+   await route.fulfill({json:payload});
+  });
+  await page.setViewportSize({width,height:900});await page.goto(baseURL+'/recetat.html',{waitUntil:'domcontentloaded'});
+  const article=page.locator('.is-clinical-plan'),use=article.locator('[data-rx-source-use]');
+  await expect(article.locator('[data-rx-clinical-dose]')).toHaveCount(4);
+  await expect(use).toBeDisabled();await article.locator('[data-rx-clinical-confirmation]').check();
+  for(const [id,value]of Object.entries({basal:'16',breakfast:'5',lunch:'4',dinner:'6'}))await article.locator('[data-rx-clinical-dose="'+id+'"]').fill(value);
+  const lunch=article.locator('[data-rx-clinical-dose="lunch"]');
+  await lunch.focus();
+  await expect(lunch).toBeFocused();await expect(use).toBeEnabled();
+  await expect(article.locator('[data-rx-dose-fields="basal"] .rx-clinical-dose-grid')).toContainText('16 NJËSI');
+  await expect(article.locator('[data-rx-dose-fields="breakfast lunch dinner"] .rx-clinical-dose-grid')).toContainText('5 NJËSI · para mëngjesit; 4 NJËSI · para drekës; 6 NJËSI · para darkës');
+  await lunch.fill('');await expect(use).toBeDisabled();await expect(lunch).toBeFocused();
+  await expect(article.locator('[data-rx-dose-fields="breakfast lunch dinner"] .rx-clinical-dose-grid')).toContainText('Plotëso veçmas');
+  for(const value of ['61','5.5','0','-1']){await lunch.fill(value);await expect(use).toBeDisabled();await expect(lunch).toHaveAttribute('aria-invalid','true');}
+  await lunch.fill('4');await expect(use).toBeEnabled();
+  await expect(article.locator('.rx-source-information-body')).toBeHidden();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  await article.screenshot({path:testInfo.outputPath('individual-insulin-'+width+'.png')});
+  await use.click();const draft=await page.locator('#rxComposer').inputValue();
+  expect(draft).toMatch(/Doza: 16 NJËSI[\s\S]*EDHE[\s\S]*5 NJËSI · para mëngjesit; 4 NJËSI · para drekës; 6 NJËSI · para darkës/);
+  expect(draft).not.toMatch(/Doza: Plotëso|Doza:.*mg|Human insulin isophane/);
+ });
+ test('individual planning remains usable across chapters and preserves an occupied draft at '+width+'px',async({page},testInfo)=>{
+  const previous=require('./fixtures/prescription-clinical-plan-11-15').filter(g=>g.chapterNumber===15&&g.orderInChapter===13);
+  const data=require('../data/recetat-clinical-revisions-16-22.json');
+  const docs=previous.concat(Object.entries(data.guides).filter(([,p])=>['16.40','22.90'].includes(p.key)).map(([id,p])=>({_id:id,title:'QA '+p.key,chapterNumber:+p.key.split('.')[0],orderInChapter:+p.key.split('.')[1],reviewStatus:'verified',logicBlocks:[],clinicalPlan:{...p,version:data.version,checkedAt:data.checkedAt}})));
+  await page.route('**/api/medical-hub?**',async route=>{
+   const url=new URL(route.request().url()),payload=require('./recetat-source-browser-fixture')(url,docs);
+   if(payload?.items&&!url.searchParams.get('chapter')){payload.chapter=15;payload.items=previous;}
+   await route.fulfill({json:payload});
+  });
+  await page.setViewportSize({width,height:900});await page.goto(baseURL+'/recetat.html',{waitUntil:'domcontentloaded'});
+  const article=page.locator('.is-clinical-plan');
+  for(const chapter of [15,16,22]){
+   await page.locator('#rxSourceChapterSelect').selectOption(String(chapter));
+   await expect(article.locator('[data-rx-source-custom]')).toBeEnabled();
+   await expect(article.locator('.rx-individual-pathway')).toBeVisible();
+   await expect(article.locator('.rx-source-information-body')).toBeHidden();
+   await expect(article).not.toContainText('Vetëm referencë');
+   await expect(article).not.toContainText('Kjo skemë nuk kalohet automatikisht');
+  }
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  await article.screenshot({path:testInfo.outputPath('individual-pathway-'+width+'.png')});
+  await article.locator('[data-rx-source-custom]').click();
+  await expect(page.locator('#rxComposer')).toBeVisible();await expect(page.locator('#rxComposer')).toHaveValue('');
+  await expect(page.locator('#rxDiagnosis')).toHaveValue('QA 22.90');
+  await page.locator('#rxComposer').fill('QA existing physician draft');
+  await page.locator('#rxTabBtnSource').click();await page.locator('#rxSourceChapterSelect').selectOption('16');
+  await article.locator('[data-rx-source-custom]').click();
+  await expect(page.locator('#rxComposer')).toHaveValue('QA existing physician draft');
+  await expect(page.locator('#rxDiagnosis')).toHaveValue('QA 22.90');
+ });
+}
+
 for(const width of [390,1440]) test(`source filters and search scope stay consistent at ${width}px`,async({page})=>{
   await page.setViewportSize({width,height:900});
   await page.goto(`${baseURL}/recetat.html`,{waitUntil:'domcontentloaded'});
@@ -610,8 +673,8 @@ for(const width of [320,390,1440]) {
   await expect(article.locator('.rx-clinical-option.is-selected')).toContainText('IV');
   await page.locator('#rxSourceChapterSelect').selectOption('15');
   await page.locator('#rxSourceLessonSelect').selectOption(id(15,13));
-  await expect(article.locator('[data-rx-source-use]')).toBeDisabled();
-  await expect(article.locator('.rx-clinical-reference')).toContainText('nuk kalohet automatikisht');
+  await expect(article.locator('[data-rx-source-custom]')).toBeEnabled();
+  await expect(article.locator('.rx-individual-pathway')).toBeVisible();
   await page.locator('#rxSourceLessonSelect').selectOption(id(15,9));
   await article.locator('[data-rx-clinical-option="g1"][value="o2"]').check();
   await expect(article.locator('[data-rx-source-use]')).toBeDisabled();

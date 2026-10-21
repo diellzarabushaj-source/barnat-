@@ -1,6 +1,6 @@
 {
-  "version": "clinical-6-10-20261020-v1",
-  "checkedAt": "2026-10-20",
+  "version": "clinical-6-10-20261021-v2",
+  "checkedAt": "2026-10-21",
   "sourceSnapshotSha256": "0baec47ebbc7d0aa75667a832e8fe05fb69ae76c1099e3134d06ef17232cf7f3",
   "guides": {
     "f5b3fd78-439b-4172-9d86-2a92b7002d16": {
@@ -5150,89 +5150,557 @@
     "73038065-d56b-4298-ad55-94259e4850ed": {
       "key": "10.1",
       "sourceFingerprint": "13eb6df59e713c652fb5a92bf23757b05670373164b4063727be97570b4499fb",
-      "status": "reference",
-      "groups": [],
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Insulina bazale",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Insulin glargine",
+                  "genericName": "Insulin glargine",
+                  "dose": "Plotëso dozën bazale në NJËSI",
+                  "frequency": "1 herë në ditë, në të njëjtën orë",
+                  "duration": "Afatgjatë; rivlerësim dhe titrim",
+                  "route": "Nënlëkurë",
+                  "sig": "Model për pen SoloStar 100 NJËSI/mL. Jo konvertim automatik nga 300 NJËSI/mL; mos nxirr insulinë nga peni me shiringë.",
+                  "doseFields": [
+                    "basal"
+                  ],
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        },
+        {
+          "label": "Insulina e vakteve · EDHE bazalja",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Insulin aspart",
+                  "genericName": "Insulin aspart",
+                  "dose": "Plotëso veçmas dozën e çdo vakti",
+                  "frequency": "Menjëherë para mëngjesit, drekës dhe darkës",
+                  "duration": "Afatgjatë; rivlerësim dhe titrim",
+                  "route": "Nënlëkurë",
+                  "sig": "Model për FlexPen 100 NJËSI/mL. Dozat e vakteve nuk kërkohen të jenë të barabarta. Kapaciteti i pen-it është 60 NJËSI për injeksion; për plan tjetër përdor përshkrim individual.",
+                  "doseFields": [
+                    "breakfast",
+                    "lunch",
+                    "dinner"
+                  ],
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g2"
+        },
+        {
+          "label": "Ndjekja",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "supportive-care",
+                  "title": "Monitorimi dhe titrimi",
+                  "sig": "CGM ose matje të glukozës sipas planit; cakto objektivat, kontrollin pas ndryshimit dhe planin për hipoglikemi/ditët e sëmundjes. Mos ndërprit insulinën bazale në T1DM.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g3"
+        }
+      ],
       "notes": [
-        "Insulina bazale dhe ajo prandiale kanë role të ndryshme. Doza kërkon peshën, glukozën/CGM, karbohidratet, ndjeshmërinë dhe funksionin renal; shembulli i tabelës nuk është dozë universale.",
-        "Insulin regular merret para vakteve dhe nuk është premix 70/30. Premix NPH/regular është regjim alternativ i planifikuar; nuk shtohet mbi tre doza regular vetëm sepse glukoza nuk kontrollohet.",
-        "Në T1DM mos ndërprit insulinën bazale. Verifiko llojin, përqendrimin dhe pajisjen; të gjitha dozat e insulinës shprehen në NJËSI."
+        "I rritur me plan MDI të përcaktuar: shkruaj dozat e përshkruara për këtë pacient. Ky model përdor glargine 100 NJËSI/mL EDHE aspart 100 NJËSI/mL; nuk llogarit doza fillestare nga pesha.",
+        "Për pompë, shtatzëni, pediatri, DKA, mosushqyerje ose dozë që kërkon disa injeksione përdor planin përkatës. Mos bashko këtë MDI me premix."
       ],
       "changes": [
         {
           "id": "C10.1",
           "title": "Sqarimi i skemës",
-          "explanation": "Ndan basal/bolus nga premix dhe korrigjon konfliktin BD/tre vakte."
+          "explanation": "Zëvendëson kutinë pa regjim me bazale EDHE prandiale; dozat plotësohen nga mjeku, pa kopjuar shembullin e librit."
         }
       ],
       "references": [
         {
-          "key": "https://diabetesjournals.org/care/issue/49/Supplement_1",
-          "url": "https://diabetesjournals.org/care/issue/49/Supplement_1"
+          "key": "https://www.nice.org.uk/guidance/ng17/chapter/Recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng17/chapter/Recommendations"
         },
         {
-          "key": "dka",
-          "url": "https://link.springer.com/article/10.1007/s00125-024-06183-8"
+          "key": "https://www.medicines.org.uk/emc/product/8098/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/8098/smpc"
+        },
+        {
+          "key": "https://www.medicines.org.uk/emc/product/7920/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/7920/smpc"
+        },
+        {
+          "key": "https://www.ema.europa.eu/en/documents/product-information/lantus-epar-product-information_en.pdf",
+          "url": "https://www.ema.europa.eu/en/documents/product-information/lantus-epar-product-information_en.pdf"
+        },
+        {
+          "key": "https://www.ema.europa.eu/en/documents/product-information/novorapid-epar-product-information_en.pdf",
+          "url": "https://www.ema.europa.eu/en/documents/product-information/novorapid-epar-product-information_en.pdf"
         }
       ],
-      "reviewState": "evidence-reconciled"
+      "reviewState": "evidence-reconciled",
+      "title": "T1DM · bazale dhe insulina e vakteve",
+      "doseInputs": [
+        {
+          "id": "basal",
+          "label": "Bazalja · 1 herë në ditë",
+          "min": 1,
+          "max": 80,
+          "step": 1,
+          "unit": "NJËSI"
+        },
+        {
+          "id": "breakfast",
+          "label": "Para mëngjesit",
+          "min": 1,
+          "max": 60,
+          "step": 1,
+          "unit": "NJËSI"
+        },
+        {
+          "id": "lunch",
+          "label": "Para drekës",
+          "min": 1,
+          "max": 60,
+          "step": 1,
+          "unit": "NJËSI"
+        },
+        {
+          "id": "dinner",
+          "label": "Para darkës",
+          "min": 1,
+          "max": 60,
+          "step": 1,
+          "unit": "NJËSI"
+        }
+      ],
+      "confirmation": "Plani individual për të rriturin dhe produktet 100 NJËSI/mL janë konfirmuar; dozat janë përcaktuar klinikisht."
     },
     "d79f213c-7726-4aac-b438-dfba1ce9e38d": {
       "key": "10.2",
       "sourceFingerprint": "3736eb2b544c1333ff2594478f7d3a2fad6b05b44e652c8a7ce69c79d4ee8d31",
-      "status": "reference",
-      "groups": [],
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Insulina bazale",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Insulin glargine",
+                  "genericName": "Insulin glargine",
+                  "dose": "Plotëso dozën bazale në NJËSI",
+                  "frequency": "1 herë në ditë, në të njëjtën orë",
+                  "duration": "Afatgjatë; rivlerësim dhe titrim",
+                  "route": "Nënlëkurë",
+                  "sig": "Model për pen SoloStar 100 NJËSI/mL. Jo konvertim automatik nga 300 NJËSI/mL; mos nxirr insulinë nga peni me shiringë.",
+                  "doseFields": [
+                    "basal"
+                  ],
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        },
+        {
+          "label": "Insulina e vakteve · EDHE bazalja",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Insulin aspart",
+                  "genericName": "Insulin aspart",
+                  "dose": "Plotëso veçmas dozën e çdo vakti",
+                  "frequency": "Menjëherë para mëngjesit, drekës dhe darkës",
+                  "duration": "Afatgjatë; rivlerësim dhe titrim",
+                  "route": "Nënlëkurë",
+                  "sig": "Model për FlexPen 100 NJËSI/mL. Dozat e vakteve nuk kërkohen të jenë të barabarta. Kapaciteti i pen-it është 60 NJËSI për injeksion; për plan tjetër përdor përshkrim individual.",
+                  "doseFields": [
+                    "breakfast",
+                    "lunch",
+                    "dinner"
+                  ],
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g2"
+        },
+        {
+          "label": "Ndjekja",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "supportive-care",
+                  "title": "Monitorimi dhe titrimi",
+                  "sig": "CGM ose matje të glukozës sipas planit; cakto objektivat, kontrollin pas ndryshimit dhe planin për hipoglikemi/ditët e sëmundjes. Mos ndërprit insulinën bazale në T1DM.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g3"
+        }
+      ],
       "notes": [
-        "Insulina bazale dhe ajo prandiale kanë role të ndryshme. Doza kërkon peshën, glukozën/CGM, karbohidratet, ndjeshmërinë dhe funksionin renal; shembulli i tabelës nuk është dozë universale.",
-        "Insulin regular merret para vakteve dhe nuk është premix 70/30. Premix NPH/regular është regjim alternativ i planifikuar; nuk shtohet mbi tre doza regular vetëm sepse glukoza nuk kontrollohet.",
-        "Në T1DM mos ndërprit insulinën bazale. Verifiko llojin, përqendrimin dhe pajisjen; të gjitha dozat e insulinës shprehen në NJËSI."
+        "I rritur me plan MDI të përcaktuar: shkruaj dozat e përshkruara për këtë pacient. Ky model përdor glargine 100 NJËSI/mL EDHE aspart 100 NJËSI/mL; nuk llogarit doza fillestare nga pesha.",
+        "Për pompë, shtatzëni, pediatri, DKA, mosushqyerje ose dozë që kërkon disa injeksione përdor planin përkatës. Mos bashko këtë MDI me premix."
       ],
       "changes": [
         {
           "id": "C10.2",
           "title": "Sqarimi i skemës",
-          "explanation": "Ndan basal/bolus nga premix dhe korrigjon konfliktin BD/tre vakte."
+          "explanation": "Zëvendëson kutinë pa regjim me bazale EDHE prandiale; dozat plotësohen nga mjeku, pa kopjuar shembullin e librit."
         }
       ],
       "references": [
         {
-          "key": "https://diabetesjournals.org/care/issue/49/Supplement_1",
-          "url": "https://diabetesjournals.org/care/issue/49/Supplement_1"
+          "key": "https://www.nice.org.uk/guidance/ng17/chapter/Recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng17/chapter/Recommendations"
         },
         {
-          "key": "dka",
-          "url": "https://link.springer.com/article/10.1007/s00125-024-06183-8"
+          "key": "https://www.medicines.org.uk/emc/product/8098/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/8098/smpc"
+        },
+        {
+          "key": "https://www.medicines.org.uk/emc/product/7920/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/7920/smpc"
+        },
+        {
+          "key": "https://www.ema.europa.eu/en/documents/product-information/lantus-epar-product-information_en.pdf",
+          "url": "https://www.ema.europa.eu/en/documents/product-information/lantus-epar-product-information_en.pdf"
+        },
+        {
+          "key": "https://www.ema.europa.eu/en/documents/product-information/novorapid-epar-product-information_en.pdf",
+          "url": "https://www.ema.europa.eu/en/documents/product-information/novorapid-epar-product-information_en.pdf"
         }
       ],
-      "reviewState": "evidence-reconciled"
+      "reviewState": "evidence-reconciled",
+      "title": "T1DM · bazale dhe insulina e vakteve",
+      "doseInputs": [
+        {
+          "id": "basal",
+          "label": "Bazalja · 1 herë në ditë",
+          "min": 1,
+          "max": 80,
+          "step": 1,
+          "unit": "NJËSI"
+        },
+        {
+          "id": "breakfast",
+          "label": "Para mëngjesit",
+          "min": 1,
+          "max": 60,
+          "step": 1,
+          "unit": "NJËSI"
+        },
+        {
+          "id": "lunch",
+          "label": "Para drekës",
+          "min": 1,
+          "max": 60,
+          "step": 1,
+          "unit": "NJËSI"
+        },
+        {
+          "id": "dinner",
+          "label": "Para darkës",
+          "min": 1,
+          "max": 60,
+          "step": 1,
+          "unit": "NJËSI"
+        }
+      ],
+      "confirmation": "Plani individual për të rriturin dhe produktet 100 NJËSI/mL janë konfirmuar; dozat janë përcaktuar klinikisht."
     },
     "b4fb5486-d0a5-4e9a-83f1-37675371c44e": {
       "key": "10.3",
       "sourceFingerprint": "d67231b2b3547b3a7f9cb6aeabb1305d62de2a14db19c53aa04b44d9bdcc9416",
-      "status": "reference",
-      "groups": [],
+      "status": "ready",
+      "groups": [
+        {
+          "label": "Premix · i vetmi regjim insulinik i këtij modeli",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Human insulin isophane 70% + Human insulin soluble 30%",
+                  "genericName": "Human insulin isophane 70% + Human insulin soluble 30%",
+                  "dose": "Plotëso dozën e mëngjesit dhe mbrëmjes",
+                  "frequency": "Zakonisht rreth 30 minuta para mëngjesit dhe vaktit të mbrëmjes",
+                  "duration": "Afatgjatë; rivlerësim dhe titrim",
+                  "route": "Nënlëkurë",
+                  "sig": "Humulin M3 KwikPen 100 NJËSI/mL: risuspendo sipas produktit; jo IV. Nuk shtohet mbi insulinë regular tri herë/ditë ose mbi MDI.",
+                  "doseFields": [
+                    "mixMorning",
+                    "mixEvening"
+                  ],
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        },
+        {
+          "label": "Ndjekja",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "supportive-care",
+                  "title": "Monitorimi dhe titrimi",
+                  "sig": "CGM ose matje të glukozës sipas planit; cakto objektivat, kontrollin pas ndryshimit dhe planin për hipoglikemi/ditët e sëmundjes. Mos ndërprit insulinën bazale në T1DM.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g2"
+        }
+      ],
       "notes": [
-        "Insulina bazale dhe ajo prandiale kanë role të ndryshme. Doza kërkon peshën, glukozën/CGM, karbohidratet, ndjeshmërinë dhe funksionin renal; shembulli i tabelës nuk është dozë universale.",
-        "Insulin regular merret para vakteve dhe nuk është premix 70/30. Premix NPH/regular është regjim alternativ i planifikuar; nuk shtohet mbi tre doza regular vetëm sepse glukoza nuk kontrollohet.",
-        "Në T1DM mos ndërprit insulinën bazale. Verifiko llojin, përqendrimin dhe pajisjen; të gjitha dozat e insulinës shprehen në NJËSI."
+        "Vetëm për të rriturin te i cili MDI nuk është i mundur dhe është zgjedhur regjim premix dy herë/ditë. Dozat përcaktohen sipas vakteve dhe monitorimit; ky nuk është regjim fillestar universal për T1DM."
       ],
       "changes": [
         {
           "id": "C10.3",
           "title": "Sqarimi i skemës",
-          "explanation": "Ndan basal/bolus nga premix dhe korrigjon konfliktin BD/tre vakte."
+          "explanation": "Ndan premix nga regular dhe MDI; heq shtimin automatik mbi tre doza regular."
         }
       ],
       "references": [
         {
-          "key": "https://diabetesjournals.org/care/issue/49/Supplement_1",
-          "url": "https://diabetesjournals.org/care/issue/49/Supplement_1"
+          "key": "https://www.nice.org.uk/guidance/ng17/chapter/Recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng17/chapter/Recommendations"
         },
         {
-          "key": "dka",
-          "url": "https://link.springer.com/article/10.1007/s00125-024-06183-8"
+          "key": "https://www.medicines.org.uk/emc/product/8191/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/8191/smpc"
+        },
+        {
+          "key": "https://www.nhs.uk/medicines/insulin/biphasic-insulin/how-and-when-to-take-biphasic-insulin/",
+          "url": "https://www.nhs.uk/medicines/insulin/biphasic-insulin/how-and-when-to-take-biphasic-insulin/"
         }
       ],
-      "reviewState": "evidence-reconciled"
+      "reviewState": "evidence-reconciled",
+      "title": "T1DM · premix dy herë në ditë",
+      "doseInputs": [
+        {
+          "id": "mixMorning",
+          "label": "Para mëngjesit",
+          "min": 1,
+          "max": 60,
+          "step": 1,
+          "unit": "NJËSI"
+        },
+        {
+          "id": "mixEvening",
+          "label": "Para vaktit të mbrëmjes",
+          "min": 1,
+          "max": 60,
+          "step": 1,
+          "unit": "NJËSI"
+        }
+      ],
+      "confirmation": "Premix dy herë/ditë është zgjedhur për këtë të rritur, me plan vaktesh, monitorimi dhe doza individuale."
+    },
+    "83602032-6aa0-4817-a22a-1ce229e6008b": {
+      "key": "10.5",
+      "sourceFingerprint": "d753219733e23e4193e751de79e2d788a4fa070182cace413f4fa94a03fc3c1f",
+      "status": "ready",
+      "groups": [
+        {
+          "label": "NJË bar shtesë · sipas profilit dhe veshkave",
+          "options": [
+            {
+              "label": "Empagliflozin · kur SGLT2 është zgjedhja e duhur",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Empagliflozin",
+                  "genericName": "Empagliflozin",
+                  "dose": "10 mg",
+                  "frequency": "1 herë në ditë",
+                  "duration": "Afatgjatë; rivlerësim dhe titrim",
+                  "route": "Nga goja",
+                  "sig": "Për këtë rrugë të kontrollit glicemik eGFR ≥45 mL/min/1,73 m²; efekti ulet nën 45. Rritja në 25 mg vetëm nëse tolerohet, duhet kontroll shtesë dhe eGFR ≥60. Indikacioni HF/CKD ka algoritëm tjetër. Kontrollo ketoacidozën, hidratimin dhe ndërprerjen e përkohshme në sëmundje/agjërim.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            },
+            {
+              "label": "Sitagliptin · eGFR ≥45",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Sitagliptin",
+                  "genericName": "Sitagliptin",
+                  "dose": "100 mg",
+                  "frequency": "1 herë në ditë",
+                  "duration": "Afatgjatë; rivlerësim dhe titrim",
+                  "route": "Nga goja",
+                  "sig": "Vetëm formulimi me një substancë. Jo shtesë me GLP-1 agonist/tirzepatide; kontrollo barnat ekzistuese.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o2"
+            },
+            {
+              "label": "Sitagliptin · eGFR 30–44",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Sitagliptin",
+                  "genericName": "Sitagliptin",
+                  "dose": "50 mg",
+                  "frequency": "1 herë në ditë",
+                  "duration": "Afatgjatë; rivlerësim dhe titrim",
+                  "route": "Nga goja",
+                  "sig": "Mos rrit në 100 mg për shkak të glukozës. Kontrollo veshkat në vijim.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o3"
+            },
+            {
+              "label": "Glimepiride · kur alternativat janë të papërshtatshme",
+              "items": [
+                {
+                  "kind": "active-substance",
+                  "title": "Glimepiride",
+                  "genericName": "Glimepiride",
+                  "dose": "Fillimisht 1 mg",
+                  "frequency": "1 herë në ditë, pak para ose me vaktin e parë kryesor",
+                  "duration": "Afatgjatë; rivlerësim dhe titrim",
+                  "route": "Nga goja",
+                  "sig": "eGFR >30 dhe pa dëmtim të rëndë renal/hepatik për këtë rrugë. Titro në 2, 3 ose 4 mg në intervale 1–2 javë, sipas glukozës/tolerancës; maksimumi 6 mg/ditë për SmPC e cituar. Vlerëso hipoglikeminë dhe mos e shto mbi sulfonylurea tjetër.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o4"
+            }
+          ],
+          "condition": "",
+          "id": "g1"
+        },
+        {
+          "label": "Terapia ekzistuese",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "supportive-care",
+                  "title": "Metformin · vazhdo dozën e përshtatshme ekzistuese",
+                  "sig": "Kontrollo dozën aktuale dhe formulimin; mos shto një produkt të dytë me metformin. Në eGFR 30–44 maksimumi total 1000 mg/ditë; në eGFR <30 metformin ndalohet dhe kjo rrugë e dyfishtë nuk zbatohet.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g2"
+        },
+        {
+          "label": "Kontrolli",
+          "options": [
+            {
+              "label": "",
+              "items": [
+                {
+                  "kind": "supportive-care",
+                  "title": "Rishiko tolerancën dhe objektivin individual",
+                  "sig": "Monitoro glukozën/hipoglikeminë; rivlerëso HbA1c zakonisht pas rreth 3 muajve. Mos intensifiko vetëm nga një prag universal 7,5%.",
+                  "id": "i1"
+                }
+              ],
+              "id": "o1"
+            }
+          ],
+          "condition": "",
+          "id": "g3"
+        }
+      ],
+      "notes": [
+        "Për të rriturin që merr metformin, kur është zgjedhur një bar shtesë pas vlerësimit të ASCVD, HF, CKD, obezitetit dhe hipoglikemisë. Këto opsione nuk e zëvendësojnë algoritmin sipas komorbiditetit.",
+        "Sitagliptin 25 mg/ditë përdoret në eGFR <30 sipas produktit, por jo si kjo skemë bashkë me metformin. DPP-4 dhe GLP-1/tirzepatide nuk kombinohen."
+      ],
+      "changes": [
+        {
+          "id": "C10.5",
+          "title": "Sqarimi i skemës",
+          "explanation": "Paraqet alternativat konkrete dhe dozat renale; dallon sitagliptin e vetme nga Janumet dhe e heq HbA1c 7,5% si prag universal."
+        }
+      ],
+      "references": [
+        {
+          "key": "https://www.nice.org.uk/guidance/ng28/resources/visual-summary-choosing-medicines-for-further-treatment-pdf-10956472093",
+          "url": "https://www.nice.org.uk/guidance/ng28/resources/visual-summary-choosing-medicines-for-further-treatment-pdf-10956472093"
+        },
+        {
+          "key": "https://www.medicines.org.uk/emc/product/14073/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/14073/smpc"
+        },
+        {
+          "key": "https://www.medicines.org.uk/emc/product/10742/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/10742/smpc"
+        },
+        {
+          "key": "https://www.ema.europa.eu/en/documents/product-information/jardiance-epar-product-information_en.pdf",
+          "url": "https://www.ema.europa.eu/en/documents/product-information/jardiance-epar-product-information_en.pdf"
+        }
+      ],
+      "reviewState": "evidence-reconciled",
+      "title": "T2DM · një bar shtesë mbi Metformin",
+      "confirmation": "T2DM te i rrituri: eGFR dhe metformin janë vlerësuar, është zgjedhur klasa e përshtatshme dhe nuk ka dyfishim të trajtimit."
     },
     "e9dbfd20-5680-41c0-a78c-bbf3ab1019f2": {
       "key": "10.4",
@@ -5304,35 +5772,6 @@
         {
           "key": "https://www.medicines.org.uk/emc/product/14339/smpc",
           "url": "https://www.medicines.org.uk/emc/product/14339/smpc"
-        }
-      ],
-      "reviewState": "evidence-reconciled"
-    },
-    "83602032-6aa0-4817-a22a-1ce229e6008b": {
-      "key": "10.5",
-      "sourceFingerprint": "d753219733e23e4193e751de79e2d788a4fa070182cace413f4fa94a03fc3c1f",
-      "status": "reference",
-      "groups": [],
-      "notes": [
-        "Zgjedhja e barit të shtuar varet nga ASCVD/HF/CKD, hipoglikemia, pesha dhe doza aktuale.",
-        "Sitagliptin: zakonisht 100 mg/ditë kur eGFR ≥45; 50 mg/ditë në eGFR 30–44; 25 mg/ditë në eGFR <30. Nuk titrohet nga 50 në 100 mg vetëm sipas glukozës kur veshkat kërkojnë kufizim.",
-        "Glimepiride fillohet me dozë të ulët; maksimumet ndryshojnë sipas SmPC. Mos kopjo 1–4 mg si dozë fillestare për të gjithë."
-      ],
-      "changes": [
-        {
-          "id": "C10.5",
-          "title": "Sqarimi i skemës",
-          "explanation": "Korrigjon sitagliptin dhe fillimin e sulfonylurea; kërkon plan individual."
-        }
-      ],
-      "references": [
-        {
-          "key": "https://www.medicines.org.uk/emc/product/564/smpc",
-          "url": "https://www.medicines.org.uk/emc/product/564/smpc"
-        },
-        {
-          "key": "ckd",
-          "url": "https://kdigo.org/wp-content/uploads/2023/12/KDIGO-2022-Diabetes-Guideline.pdf"
         }
       ],
       "reviewState": "evidence-reconciled"
@@ -7328,21 +7767,21 @@
       "key": "10.1",
       "id": "73038065-d56b-4298-ad55-94259e4850ed",
       "sourceFingerprint": "13eb6df59e713c652fb5a92bf23757b05670373164b4063727be97570b4499fb",
-      "disposition": "reference",
+      "disposition": "ready",
       "sourceRevision": "9rkS9uGAiuxfht9g4gHjqV"
     },
     {
       "key": "10.2",
       "id": "d79f213c-7726-4aac-b438-dfba1ce9e38d",
       "sourceFingerprint": "3736eb2b544c1333ff2594478f7d3a2fad6b05b44e652c8a7ce69c79d4ee8d31",
-      "disposition": "reference",
+      "disposition": "ready",
       "sourceRevision": "XvHEtE7wDfwx7JSLWPbGo7"
     },
     {
       "key": "10.3",
       "id": "b4fb5486-d0a5-4e9a-83f1-37675371c44e",
       "sourceFingerprint": "d67231b2b3547b3a7f9cb6aeabb1305d62de2a14db19c53aa04b44d9bdcc9416",
-      "disposition": "reference",
+      "disposition": "ready",
       "sourceRevision": "XvHEtE7wDfwx7JSLWPbGo7"
     },
     {
@@ -7356,7 +7795,7 @@
       "key": "10.5",
       "id": "83602032-6aa0-4817-a22a-1ce229e6008b",
       "sourceFingerprint": "d753219733e23e4193e751de79e2d788a4fa070182cace413f4fa94a03fc3c1f",
-      "disposition": "reference",
+      "disposition": "ready",
       "sourceRevision": "XvHEtE7wDfwx7JSLWPbGo7"
     },
     {

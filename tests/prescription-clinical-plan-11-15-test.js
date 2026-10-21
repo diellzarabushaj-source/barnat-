@@ -33,7 +33,7 @@ for(const raw of fixtures){
  assert.equal(forPrescriptionReader(sourceGuide,'clinical-v2').clinicalPlan.status,'source-changed');
  const changed=structuredClone(sourceGuide);changed.title+=' EDIT';assert.equal(withPrescriptionClinicalPlan(changed).clinicalPlan.status,'source-changed');
  const unverified={...sourceGuide,reviewStatus:'source-imported'};assert.equal(withPrescriptionClinicalPlan(unverified),unverified);
- if(p.status==='reference'){assert.equal(sourceDraftText(g),'');assert.match(html,/Kjo skemë nuk kalohet automatikisht/);continue;}
+ if(p.status==='reference'){assert.equal(sourceDraftText(g),'');assert.match(html,/data-rx-source-custom=/);assert.doesNotMatch(html,/Vetëm referencë|Kjo skemë nuk kalohet automatikisht/);continue;}
  for(const gr of p.groups){assert.ok(gr.id&&gr.options.length);for(const op of gr.options)for(const it of op.items)if(it.kind==='active-substance')for(const f of ['genericName','dose','frequency','duration','route'])assert.ok(it[f],p.key+' '+f);if(!gr.condition&&gr.options.length>1)clinicalChoiceState(g).options[gr.id]=gr.options[0].id;}
  if(p.confirmation){assert.equal(sourceDraftText(g),'');confirm(g);}
  assert.ok(sourceDraftText(g).startsWith('Rp:'),p.key);
