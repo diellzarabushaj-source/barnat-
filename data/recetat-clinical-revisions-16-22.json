@@ -1,0 +1,1793 @@
+{
+  "version": "clinical-16-22-20261021-v1",
+  "checkedAt": "2026-10-21",
+  "guides": {
+    "eef26207-b7f7-4277-8b4b-05715edeebd4": {
+      "key": "16.4",
+      "sourceFingerprint": "b5df495aa055a6c83e109d801e7620b86f5c975c8fd6f488825178f664f7bf77",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Dermatiti atopik: emolientët dhe trajtimi lokal me fuqi/kohëzgjatje sipas vendit dhe ashpërsisë janë baza. Steroidi sistemik nuk është mirëmbajtje rutinë; intervali i paqartë 5 mg–1 mg i burimit nuk interpretohet si mg/kg. Dermatologu cakton preparatin dhe kursin kur ka indikacion."
+      ],
+      "references": [
+        {
+          "key": "https://www.aad.org/member/clinical-quality/guidelines/atopic-dermatitis",
+          "url": "https://www.aad.org/member/clinical-quality/guidelines/atopic-dermatitis"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C16.4",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "5b38a8b6-e848-490b-be37-9b9d113c6106": {
+      "key": "16.31",
+      "sourceFingerprint": "d9754471148d349f4f61096df3815ef55d78b37501e576fe5e71462fba29b7b5",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Mos përdor ketoconazole oral si terapi rutinë për hirsutizëm. Trajtimi i hirsutizmit zgjidhet sipas shkakut, dëshirës për shtatzëni dhe kundërindikacioneve; antiandrogjeni kërkon kontracepsion të përshtatshëm. Ketoconazole oral për Cushing është indikacion tjetër me monitorim hepatik."
+      ],
+      "references": [
+        {
+          "key": "https://www.endocrine.org/clinical-practice-guidelines/hirsutism",
+          "url": "https://www.endocrine.org/clinical-practice-guidelines/hirsutism"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C16.31",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "9497da01-c7cf-41aa-b211-4f4f5481b666": {
+      "key": "16.40",
+      "sourceFingerprint": "689f1ded54bd1d986ec025b9dbc75fd5ab55a3653cdff723a2c3c30b1c00617d",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Enoxaparin: 100 IU anti-Xa = 1 mg; 100 IU/kg = 1 mg/kg, jo 1,5 mg/kg. Dallo profilaksinë nga trajtimi i trombozës. Për profilaksi të pacientit mjekësor të përzgjedhur: zakonisht 40 mg SC një herë/ditë; në CrCl 15–30 mL/min 20 mg/ditë sipas produktit. Pesha, gjakderdhja dhe indikacioni përcaktojnë planin."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/4499/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/4499/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C16.40",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "b8f4b568-db21-4dc4-b1b0-855531ca6119": {
+      "key": "17.13",
+      "sourceFingerprint": "6d76827df729d725abdd76fa5956bc05656237e7f7c0348addfbf8d2c81bf029",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Enoxaparin nuk injektohet IM. Regjimi i zakonshëm i profilaksisë/trajtimit jepet SC; bolusi IV i disa protokolleve ACS është indikacion tjetër. Doza dhe koha rreth ndërhyrjes, anestezisë neuraksiale dhe funksionit renal përcaktohen para përshkrimit."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/4499/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/4499/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C17.13",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "597a3a0a-2835-4a51-8bc2-4d423d756c88": {
+      "key": "17.14",
+      "sourceFingerprint": "20f69d4f32e0bb974594e70281049a52c1be3fad7445f88336a38880d7727303",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Enoxaparin nuk injektohet IM. Regjimi i zakonshëm i profilaksisë/trajtimit jepet SC; bolusi IV i disa protokolleve ACS është indikacion tjetër. Doza dhe koha rreth ndërhyrjes, anestezisë neuraksiale dhe funksionit renal përcaktohen para përshkrimit."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/4499/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/4499/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C17.14",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "5de93f9a-6e41-4314-af69-87282ad9bfe0": {
+      "key": "18.15",
+      "sourceFingerprint": "7b8b4391ff221a7f39f8060efc918bd8d244500f22602f336adcc779433ffcfa",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Brinzolamide për produktin AZOPT është 10 mg/mL = 1%, jo 0,1%. Për hipertension okular/glaukomë me kënd të hapur: zakonisht 1 pikë në syrin e prekur dy herë/ditë; disa pacientë marrin tri herë/ditë. Këndi akut i mbyllur është urgjencë oftalmologjike dhe nuk trajtohet duke kopjuar këtë skemë si terapi të vetme."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/3819/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/3819/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C18.15",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "558bb1c1-d6b4-4cda-b1f1-252b1dcb65da": {
+      "key": "19.15",
+      "sourceFingerprint": "e94a6e85451e9b34ef2243387cdf816bb109a2ffd804d15779187277b86686fa",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Me perforim të njohur/dyshuar të timpanit zgjidh preparat jo-ototoksik. Mos përdor automatikisht aminoglikozid otik; ORL përcakton produktin, dozën dhe kohëzgjatjen sipas ekzaminimit/kulturës. Rekomandimi për jo-ototoksicitet nuk e kthen çdo pikë për sy në preparat otik të këmbyeshëm."
+      ],
+      "references": [
+        {
+          "key": "https://aao-hnsfjournals.onlinelibrary.wiley.com/doi/10.1177/0194599813517083",
+          "url": "https://aao-hnsfjournals.onlinelibrary.wiley.com/doi/10.1177/0194599813517083"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C19.15",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "130188a2-9127-4fa8-b100-ecf806c59890": {
+      "key": "19.26",
+      "sourceFingerprint": "636be56da755cdd4e99c62155122b250b78f0a024b6fd392c238722a81402fe0",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "BPPV i kanalit posterior: pasi konfirmohet diagnoza, ofro manovër ripozicionimi të kanalit, si Epley, ose refero te profesionisti i trajnuar. Diazepam dhe supresorët vestibularë nuk jepen rutinë. Simptomat atipike/neurologjike kërkojnë diagnozë tjetër."
+      ],
+      "references": [
+        {
+          "key": "https://www.entnet.org/resource/aao-hnsf-updated-cpg-bppv-press-release-fact-sheet/",
+          "url": "https://www.entnet.org/resource/aao-hnsf-updated-cpg-bppv-press-release-fact-sheet/"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C19.26",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "1883655b-6b95-4e20-841d-fd34a72e31b0": {
+      "key": "20.10",
+      "sourceFingerprint": "352715b7be16c5a0e1726002714b4830ce5650be235387dbcbd507d959843772",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Diazepam Injection BP i cituar nuk hollohet për injeksion IV ose IM. Hollimi për infuzion të madh ka udhëzim tjetër të produktit; mos përdor 8 mL NaCl si rregull universal. Cakto dozën sipas indikacionit/moshës dhe monitorimin respirator; protokolli i krizës konvulsive nuk është ai i sedacionit rutinë."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/6274/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/6274/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C20.10",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "f10a6991-c41f-42ed-b9c8-f3a0119fb517": {
+      "key": "20.11",
+      "sourceFingerprint": "74bbc4913c06436aab6561822d6c8e6095d29431b5e864e0ed78f4e343481f14",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Diazepam Injection BP i cituar nuk hollohet për injeksion IV ose IM. Hollimi për infuzion të madh ka udhëzim tjetër të produktit; mos përdor 8 mL NaCl si rregull universal. Cakto dozën sipas indikacionit/moshës dhe monitorimin respirator; protokolli i krizës konvulsive nuk është ai i sedacionit rutinë."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/6274/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/6274/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C20.11",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "f71c8302-c35b-4ed5-bbb5-da54496ea551": {
+      "key": "20.12",
+      "sourceFingerprint": "37232f228e4c3a65f06aaf23a6dcabc1c254ef5dcfd0dab6b040ac7c275c33a8",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Diazepam Injection BP i cituar nuk hollohet për injeksion IV ose IM. Hollimi për infuzion të madh ka udhëzim tjetër të produktit; mos përdor 8 mL NaCl si rregull universal. Cakto dozën sipas indikacionit/moshës dhe monitorimin respirator; protokolli i krizës konvulsive nuk është ai i sedacionit rutinë."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/6274/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/6274/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C20.12",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "84e32ea4-bfd9-4559-8404-f55fe13fa9c2": {
+      "key": "20.13",
+      "sourceFingerprint": "371714abcfd232a6ed050c0e88070f776506c2e5087a62336ac92438c63a9e60",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Diazepam Injection BP i cituar nuk hollohet për injeksion IV ose IM. Hollimi për infuzion të madh ka udhëzim tjetër të produktit; mos përdor 8 mL NaCl si rregull universal. Cakto dozën sipas indikacionit/moshës dhe monitorimin respirator; protokolli i krizës konvulsive nuk është ai i sedacionit rutinë."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/6274/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/6274/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C20.13",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "82358bda-4327-48ec-bf0d-635af1f19597": {
+      "key": "20.16",
+      "sourceFingerprint": "617bf2935105530cd270e7737aba9968333088292bd51dcf8a973762bbb30938",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Diazepam Injection BP i cituar nuk hollohet për injeksion IV ose IM. Hollimi për infuzion të madh ka udhëzim tjetër të produktit; mos përdor 8 mL NaCl si rregull universal. Cakto dozën sipas indikacionit/moshës dhe monitorimin respirator; protokolli i krizës konvulsive nuk është ai i sedacionit rutinë."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/6274/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/6274/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C20.16",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "26d065a7-802b-4c6e-867b-15471575802e": {
+      "key": "20.17",
+      "sourceFingerprint": "c5c5187859b3261801320541ceb2918d0c708f4b2c0244930118bfdcbc3b5c01",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Diazepam Injection BP i cituar nuk hollohet për injeksion IV ose IM. Hollimi për infuzion të madh ka udhëzim tjetër të produktit; mos përdor 8 mL NaCl si rregull universal. Cakto dozën sipas indikacionit/moshës dhe monitorimin respirator; protokolli i krizës konvulsive nuk është ai i sedacionit rutinë."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/6274/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/6274/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C20.17",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "352ff043-d3ef-43c3-a197-6ceca06178da": {
+      "key": "21.1",
+      "sourceFingerprint": "2844b5fe6baf1d2645a92795f60dd57a0a44145f2012cda623144ad1253cccbf",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Identifiko substancën, produktin, përqendrimin (mg/mL ose mg/5 mL) dhe rrugën. Shkruaj fillimisht dozën në mg; pastaj vëllimi = doza mg ÷ përqendrimi mg/mL. Një lugë ose vëllim pa përqendrim nuk mjafton për të zgjedhur preparatin. Plotëso produktin konkret në recetë."
+      ],
+      "references": [
+        {
+          "key": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C21.1",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "90a95db4-782d-460c-9491-9081c693ffd3": {
+      "key": "21.2",
+      "sourceFingerprint": "f3be3e3534e6fe803843f7b197c82a2277bf6da9240607a41bb8cfffe6cc3d50",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Identifiko substancën, produktin, përqendrimin (mg/mL ose mg/5 mL) dhe rrugën. Shkruaj fillimisht dozën në mg; pastaj vëllimi = doza mg ÷ përqendrimi mg/mL. Një lugë ose vëllim pa përqendrim nuk mjafton për të zgjedhur preparatin. Plotëso produktin konkret në recetë."
+      ],
+      "references": [
+        {
+          "key": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C21.2",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "6eaa6f86-5555-439b-8da8-a81169d0ddfc": {
+      "key": "21.13",
+      "sourceFingerprint": "f443f16cdec61ca902941b6eb26a7df69f6ef3b919ac814f3c81b1ad02d5c047",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Identifiko substancën, produktin, përqendrimin (mg/mL ose mg/5 mL) dhe rrugën. Shkruaj fillimisht dozën në mg; pastaj vëllimi = doza mg ÷ përqendrimi mg/mL. Një lugë ose vëllim pa përqendrim nuk mjafton për të zgjedhur preparatin. Plotëso produktin konkret në recetë.",
+        "Tenofovir disoproxil fumarate (TDF) nuk është i kundërindikuar në mënyrë universale në shtatzëni. WHO rekomandon profilaksi te HBsAg-pozitivet me HBV DNA ≥200 000 IU/mL ose HBeAg pozitiv, me fillim/kohëzgjatje sipas udhëzimit dhe ndjekjes obstetrike/hepatologjike. Vaksina e foshnjës, përfshirë dozën brenda 24 orëve nga lindja, mbetet e domosdoshme."
+      ],
+      "references": [
+        {
+          "key": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations"
+        },
+        {
+          "key": "https://www.ncbi.nlm.nih.gov/books/NBK615001/table/fm-ch2.tab4/",
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK615001/table/fm-ch2.tab4/"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C21.13",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "d12f4096-60a0-43c8-a150-294ab772fba1": {
+      "key": "21.14",
+      "sourceFingerprint": "9eae9ea33ecfe9ad2c9fb397ae095896058c3d593349d0bc61b653d6fab66fe6",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Kandidiazë vulvovaginale në shtatzëni: azol TOPIK për 7 ditë sipas preparatit. Mos përdor fluconazole oral 150 mg si zëvendësim. Konfirmo diagnozën dhe vlerëso simptomat që kërkojnë kontroll obstetrik."
+      ],
+      "references": [
+        {
+          "key": "https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C21.14",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "9a828a24-c640-4546-9733-7b2c449b64ec": {
+      "key": "21.17",
+      "sourceFingerprint": "91cdebd81a00ef25d75e312797c78e7ef2a802cedca1133ecd517909549b889e",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "PID i lehtë–mesatar, jashtë shtatzënisë, kur trajtimi ambulator është i përshtatshëm: ceftriaxone 500 mg IM një herë EDHE doxycycline 100 mg nga goja çdo 12 orë për 14 ditë EDHE metronidazole 500 mg nga goja çdo 12 orë për 14 ditë sipas CDC. Me gonorre të dokumentuar dhe peshë >150 kg: ceftriaxone 1 g. Ciprofloxacin dhe clindamycin vaginal nuk shtohen rutinë mbi këtë kombinim. Shtatzënia, abscesi, sëmundja e rëndë ose mungesa e përmirësimit brenda 72 orëve kërkojnë vlerësim spitalor."
+      ],
+      "references": [
+        {
+          "key": "https://www.cdc.gov/std/treatment-guidelines/pid.htm",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/pid.htm"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C21.17",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "847a7738-b6b2-44fa-80b9-579ac174dde6": {
+      "key": "21.20",
+      "sourceFingerprint": "55894cbae5fc73958981a0f3022743f8fb659350d805f1b6f37a52ba60251678",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Trichomoniasis te gruaja: metronidazole 500 mg nga goja çdo 12 orë për 7 ditë sipas CDC. Gel metronidazole vaginal dhe clindamycin nuk e zëvendësojnë këtë trajtim. Trajto partnerët, shmang marrëdhëniet deri në përfundimin e trajtimit dhe ritesto gruan rreth 3 muaj më vonë. Shtatzënia, alergjia dhe infeksioni persistent kërkojnë planin përkatës."
+      ],
+      "references": [
+        {
+          "key": "https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C21.20",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "b09beaa4-272f-4464-a004-66e9881943a1": {
+      "key": "21.33",
+      "sourceFingerprint": "aed141665910a8d69db3a0834ffc2f2b1b86a9efd1dcc003c48652be1289a35e",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Për endometriozë, PROSTAP 3 DCS: leuprorelin acetate 11,25 mg IM çdo 3 muaj, jo më gjatë se 6 muaj sipas SmPC; nisja në 5 ditët e para të ciklit. Depot 22,5 mg nuk e zëvendëson këtë produkt. Gjinekologu vlerëson add-back, shtatzëninë, densitetin kockor dhe kundërindikacionet."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/4651/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/4651/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C21.33",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "2e54edff-acfd-47d9-a64b-f290524c7cb5": {
+      "key": "21.35",
+      "sourceFingerprint": "9db56ed3a645a49e3edab2e0c95776294432527585c197700249ddc192c75813",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Esmya 5 mg për fibroidet nuk paraqitet si terapi aktive standarde: autorizimi në BE është tërhequr. Vlerëso alternativat sipas gjakderdhjes, madhësisë dhe planit riprodhues. Ulipristal 30 mg për kontracepsion emergjent është produkt/indikacion tjetër; ky sqarim nuk përcakton regjistrimin në Kosovë."
+      ],
+      "references": [
+        {
+          "key": "https://www.ema.europa.eu/en/medicines/human/EPAR/esmya",
+          "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/esmya"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C21.35",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "cb847a2b-d567-495d-b41c-5f1532439a3c": {
+      "key": "22.1",
+      "sourceFingerprint": "fecf51e9d45ae82746810e70369dc88d3c2ffa9b43cddf16d8182f41561ee79e",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Reanimimi neonatal kërkon ventilim efektiv, vlerësim të ritmit dhe ekip të trajnuar. Doza e adrenalinës intravaskulare dhe ajo endotrakeale janë të ndryshme; prefero aksesin vaskular sipas algoritmit AHA/AAP. Përshkruaj dozën në mg/kg DHE përqendrimin mg/mL; mos bart të njëjtin vëllim nga një rrugë te tjetra."
+      ],
+      "references": [
+        {
+          "key": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/neonatal-resuscitation",
+          "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/neonatal-resuscitation"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.1",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "f619ca5b-99ff-4f73-aa68-5c3599264d2e": {
+      "key": "22.14",
+      "sourceFingerprint": "3a93204644eccaacec137a4b29c6f8df688a58dace21ee3e43352a410b3d28fc",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "GIR shprehet në mg/kg/min, jo mL/kg/min. Shpejtësia mL/orë = GIR × pesha kg × 60 ÷ përqendrimi mg/mL. Glukoza 10% përmban 100 mg/mL. Objektivi GIR, aksesi venoz dhe ndryshimet përcaktohen sipas moshës dhe matjeve të përsëritura të glukozës; kjo formulë nuk cakton vetë dozën fillestare."
+      ],
+      "references": [
+        {
+          "key": "https://www.rch.org.au/rchcpg/hospital_clinical_guideline_index/Neonatal_hypoglycaemia/",
+          "url": "https://www.rch.org.au/rchcpg/hospital_clinical_guideline_index/Neonatal_hypoglycaemia/"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.14",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "73b86d5b-edef-48a5-bcb1-65c1254d50cb": {
+      "key": "22.16",
+      "sourceFingerprint": "d41e3fb861965a0619f09046f9869750c92e54702d2d2abcf3c556a6c3014584",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Konfirmo nëse produkti është oral, rektal apo injektues. Përdor vetëm formulimin e destinuar për atë rrugë dhe dozimin e tij; një ampulë dhe një shurup nuk këmbehen nga i njëjti vëllim. Për IV kontrollo përqendrimin, hollimin dhe kohën e infuzionit.",
+        "Paracetamol IV 10 mg/mL: ≤10 kg, 7,5 mg/kg për dozë = 0,75 mL/kg, maksimumi 30 mg/kg/ditë; >10 deri 33 kg, 15 mg/kg = 1,5 mL/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 2 g; >33 deri 50 kg, 15 mg/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 3 g. Të paktën 4 orë ndërmjet dozave, jo mbi 4 doza/24 orë; në insuficiencë renale të rëndë intervali zgjatet sipas produktit. Infuzion 15 minuta. Përfshi paracetamolin nga çdo rrugë dhe ul kufijtë kur ka faktorë hepatikë; neonati prematur kërkon protokoll tjetër."
+      ],
+      "references": [
+        {
+          "key": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations"
+        },
+        {
+          "key": "https://www.medicines.org.uk/emc/product/100803/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/100803/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.16",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "a70e2a85-eee0-46d9-8d31-96954334c49b": {
+      "key": "22.17",
+      "sourceFingerprint": "e63b46b7018268eccc9b1e99edd81fb52764b73335de872e5c833932caed5fc6",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Identifiko substancën, produktin, përqendrimin (mg/mL ose mg/5 mL) dhe rrugën. Shkruaj fillimisht dozën në mg; pastaj vëllimi = doza mg ÷ përqendrimi mg/mL. Një lugë ose vëllim pa përqendrim nuk mjafton për të zgjedhur preparatin. Plotëso produktin konkret në recetë."
+      ],
+      "references": [
+        {
+          "key": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.17",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "d71c43c8-5536-4706-9aec-479ade9a0f69": {
+      "key": "22.18",
+      "sourceFingerprint": "01d121efae8535fb39618c36863e26f1b229e386c4861da779e5264027924c1f",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Paracetamol IV 10 mg/mL: ≤10 kg, 7,5 mg/kg për dozë = 0,75 mL/kg, maksimumi 30 mg/kg/ditë; >10 deri 33 kg, 15 mg/kg = 1,5 mL/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 2 g; >33 deri 50 kg, 15 mg/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 3 g. Të paktën 4 orë ndërmjet dozave, jo mbi 4 doza/24 orë; në insuficiencë renale të rëndë intervali zgjatet sipas produktit. Infuzion 15 minuta. Përfshi paracetamolin nga çdo rrugë dhe ul kufijtë kur ka faktorë hepatikë; neonati prematur kërkon protokoll tjetër."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/100803/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/100803/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.18",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "42d21eb3-63c5-4b72-a7ea-afbd417ec0f3": {
+      "key": "22.19",
+      "sourceFingerprint": "b2b6d512fc0e53472d561d7a1fbd2cdaf104bc9aed93d5059b2b08c3de3f7838",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Paracetamol IV 10 mg/mL: ≤10 kg, 7,5 mg/kg për dozë = 0,75 mL/kg, maksimumi 30 mg/kg/ditë; >10 deri 33 kg, 15 mg/kg = 1,5 mL/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 2 g; >33 deri 50 kg, 15 mg/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 3 g. Të paktën 4 orë ndërmjet dozave, jo mbi 4 doza/24 orë; në insuficiencë renale të rëndë intervali zgjatet sipas produktit. Infuzion 15 minuta. Përfshi paracetamolin nga çdo rrugë dhe ul kufijtë kur ka faktorë hepatikë; neonati prematur kërkon protokoll tjetër."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/100803/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/100803/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.19",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "ec126710-7ae8-4565-8e24-4e15222cbe7d": {
+      "key": "22.20",
+      "sourceFingerprint": "28019f21722af3ce41257ddb86b8a9883307822b09c47516c10da2d6019b810f",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Identifiko substancën, produktin, përqendrimin (mg/mL ose mg/5 mL) dhe rrugën. Shkruaj fillimisht dozën në mg; pastaj vëllimi = doza mg ÷ përqendrimi mg/mL. Një lugë ose vëllim pa përqendrim nuk mjafton për të zgjedhur preparatin. Plotëso produktin konkret në recetë.",
+        "Mos barazo dozat e antihistaminave. Për desloratadine në grupmoshën 1–5 vjeç, doza e produktit të EMA është 1,25 mg një herë/ditë; mos e zëvendëso me 5 mg. Për levocetirizine përdor skemën e produktit sipas moshës/veshkave, jo dozën e desloratadine. Vëllimi llogaritet vetëm pas zgjedhjes së përqendrimit."
+      ],
+      "references": [
+        {
+          "key": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations"
+        },
+        {
+          "key": "https://www.ema.europa.eu/en/medicines/human/EPAR/neoclarityn",
+          "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/neoclarityn"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.20",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "d42eb47c-d65b-4b27-8e68-738636921547": {
+      "key": "22.22",
+      "sourceFingerprint": "d1131347c0af1f7f05a05dc18452035df7ae2b58b38673ebe3de89055bbe8284",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Cefuroxime axetil oral: te fëmijët ≥3 muaj dhe <40 kg, shumë infeksione përdorin 10 mg/kg për dozë çdo 12 orë (maksimumi 125 mg/dozë); otitis media dhe infeksione më të rënda mund të kërkojnë 15 mg/kg/dozë çdo 12 orë (maksimumi 250 mg/dozë), sipas indikacionit. Këto janë mg/kg PËR DOZË, jo doza IV. Merret pas ushqimit; tableta dhe suspensioni nuk ndërrohen mg-për-mg pa SmPC."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/3814/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/3814/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.22",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "af9c733e-884e-4cb6-9bc5-61591e87c4f5": {
+      "key": "22.24",
+      "sourceFingerprint": "590eff2c29f52db36b6cfe95008f80370fc2412ff84c038bf3f3c5f8508f345e",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Cefaclor oral, zakonisht nga mosha ≥1 muaj: 20 mg/kg/DITË gjithsej, në doza të ndara çdo 8 orë; në infeksione më të rënda sipas produktit 40 mg/kg/DITË gjithsej, maksimumi 1 g/ditë. Disa indikacione lejojnë ndarje çdo 12 orë. Mos përdor 30–40 mg/kg si secilën dozë. Kohëzgjatja varet nga infeksioni; streptokoku beta-hemolitik kërkon të paktën 10 ditë sipas SmPC."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/15786/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/15786/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.24",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "9b64f03e-e565-42b5-a3ef-d342e880e2c0": {
+      "key": "22.26",
+      "sourceFingerprint": "45f6d895d1ccc40a9c2e78e6c3a059df172f539ea42efc8375fbd5251778701c",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Cefuroxime axetil oral: te fëmijët ≥3 muaj dhe <40 kg, shumë infeksione përdorin 10 mg/kg për dozë çdo 12 orë (maksimumi 125 mg/dozë); otitis media dhe infeksione më të rënda mund të kërkojnë 15 mg/kg/dozë çdo 12 orë (maksimumi 250 mg/dozë), sipas indikacionit. Këto janë mg/kg PËR DOZË, jo doza IV. Merret pas ushqimit; tableta dhe suspensioni nuk ndërrohen mg-për-mg pa SmPC."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/3814/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/3814/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.26",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "a6a08fd1-5a6f-4620-b90e-38c004a32410": {
+      "key": "22.27",
+      "sourceFingerprint": "f586c0037bd3428d8ca405b410656d660b32ce6f212f7bde5d736427186eb11c",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Vancomycin IV: për moshën 1 muaj deri <12 vjeç, SmPC i cituar jep fillimisht 10–15 mg/kg PËR DOZË çdo 6 orë, me përshtatje nga nivelet/AUC dhe veshkat. 7,5 mg/kg/ditë nuk është e njëjta skemë. Neonatët dhe fëmijët me dëmtim renal kërkojnë interval tjetër të përcaktuar nga specialisti; doza orale për CDI është indikacion tjetër.",
+        "Paracetamol IV 10 mg/mL: ≤10 kg, 7,5 mg/kg për dozë = 0,75 mL/kg, maksimumi 30 mg/kg/ditë; >10 deri 33 kg, 15 mg/kg = 1,5 mL/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 2 g; >33 deri 50 kg, 15 mg/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 3 g. Të paktën 4 orë ndërmjet dozave, jo mbi 4 doza/24 orë; në insuficiencë renale të rëndë intervali zgjatet sipas produktit. Infuzion 15 minuta. Përfshi paracetamolin nga çdo rrugë dhe ul kufijtë kur ka faktorë hepatikë; neonati prematur kërkon protokoll tjetër."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/15736/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/15736/smpc"
+        },
+        {
+          "key": "https://www.medicines.org.uk/emc/product/100803/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/100803/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.27",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "cf338b69-8129-41bf-a6cc-5669cc0bc09d": {
+      "key": "22.31",
+      "sourceFingerprint": "6dc05171e3ce5c5f250318dbcc7d4a88dd925a002491b551a599dc139b78ef48",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Mos barazo dozat e antihistaminave. Për desloratadine në grupmoshën 1–5 vjeç, doza e produktit të EMA është 1,25 mg një herë/ditë; mos e zëvendëso me 5 mg. Për levocetirizine përdor skemën e produktit sipas moshës/veshkave, jo dozën e desloratadine. Vëllimi llogaritet vetëm pas zgjedhjes së përqendrimit."
+      ],
+      "references": [
+        {
+          "key": "https://www.ema.europa.eu/en/medicines/human/EPAR/neoclarityn",
+          "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/neoclarityn"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.31",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "4dd9e9c1-f39a-471e-9c6d-cb6f0cf44a91": {
+      "key": "22.38",
+      "sourceFingerprint": "46781f6c96036317390f3bab296cb9ac65d13a8c163e5314bfa62e04b569fd96",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Paracetamol 15 mg/kg për dozë çdo 6 orë jep maksimumi 60 mg/kg/ditë në katër doza, jo 90 mg/kg/ditë. Para recetës kontrollo moshën, peshën, rrugën dhe kufirin e produktit; ky barazim aritmetik nuk cakton një regjim universal për neonatin ose për çdo formulim."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/100803/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/100803/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.38",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "4b730baf-a3b5-4884-bc13-b24f0f184acb": {
+      "key": "22.39",
+      "sourceFingerprint": "ca16f038dc53915cd8e5f529de8add058f11f37eb2bcec1ed4903111b2e30ebb",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Paracetamol IV 10 mg/mL: ≤10 kg, 7,5 mg/kg për dozë = 0,75 mL/kg, maksimumi 30 mg/kg/ditë; >10 deri 33 kg, 15 mg/kg = 1,5 mL/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 2 g; >33 deri 50 kg, 15 mg/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 3 g. Të paktën 4 orë ndërmjet dozave, jo mbi 4 doza/24 orë; në insuficiencë renale të rëndë intervali zgjatet sipas produktit. Infuzion 15 minuta. Përfshi paracetamolin nga çdo rrugë dhe ul kufijtë kur ka faktorë hepatikë; neonati prematur kërkon protokoll tjetër."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/100803/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/100803/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.39",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "6c49be12-5d4f-498b-a8dc-74f3f5c0255f": {
+      "key": "22.41",
+      "sourceFingerprint": "c04b66cb083a5036e4fe4fa0cb6cb3ee6fceffcaeb1dd1da1f3001fffd38eed0",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Paracetamol IV 10 mg/mL: ≤10 kg, 7,5 mg/kg për dozë = 0,75 mL/kg, maksimumi 30 mg/kg/ditë; >10 deri 33 kg, 15 mg/kg = 1,5 mL/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 2 g; >33 deri 50 kg, 15 mg/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 3 g. Të paktën 4 orë ndërmjet dozave, jo mbi 4 doza/24 orë; në insuficiencë renale të rëndë intervali zgjatet sipas produktit. Infuzion 15 minuta. Përfshi paracetamolin nga çdo rrugë dhe ul kufijtë kur ka faktorë hepatikë; neonati prematur kërkon protokoll tjetër."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/100803/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/100803/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.41",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "f9185e8d-22fd-4b82-bf44-96f4094ad16b": {
+      "key": "22.47",
+      "sourceFingerprint": "c1cf8ecaa6c049179f7492f3385073a0ea9bbd898d8d1fc5627fd410b754ed5a",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Identifiko substancën, produktin, përqendrimin (mg/mL ose mg/5 mL) dhe rrugën. Shkruaj fillimisht dozën në mg; pastaj vëllimi = doza mg ÷ përqendrimi mg/mL. Një lugë ose vëllim pa përqendrim nuk mjafton për të zgjedhur preparatin. Plotëso produktin konkret në recetë."
+      ],
+      "references": [
+        {
+          "key": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.47",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "b30e7bca-1c68-49c5-9011-d6a10b130595": {
+      "key": "22.51",
+      "sourceFingerprint": "21e4471968796241da05f8d52f24c98a298574eddd235340e37f83966ed9fa21",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "UTI e poshtme e pakomplikuar: NICE jep për 3 muaj–11 vjeç nitrofurantoin IR 750 mikrogram/kg për dozë, katër herë/ditë për 3 ditë; 12–15 vjeç 50 mg katër herë/ditë OSE 100 mg me çlirim të modifikuar dy herë/ditë për 3 ditë. eGFR zakonisht ≥45. Nën 3 muaj, ethe/pielonefrit ose UTI e komplikuar kërkojnë rrugë tjetër; doza vetëm në mbrëmje për profilaksi nuk zëvendëson trajtimin akut."
+      ],
+      "references": [
+        {
+          "key": "https://www.nice.org.uk/guidance/ng109/chapter/Recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng109/chapter/Recommendations"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.51",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "4b4eafc1-5488-4001-9925-f112bc1664b5": {
+      "key": "22.52",
+      "sourceFingerprint": "9f6c4f7507a2a04a53f20c4aa8a9e8366138a0c1362a9e845c44df21d536eb4f",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Paracetamol IV 10 mg/mL: ≤10 kg, 7,5 mg/kg për dozë = 0,75 mL/kg, maksimumi 30 mg/kg/ditë; >10 deri 33 kg, 15 mg/kg = 1,5 mL/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 2 g; >33 deri 50 kg, 15 mg/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 3 g. Të paktën 4 orë ndërmjet dozave, jo mbi 4 doza/24 orë; në insuficiencë renale të rëndë intervali zgjatet sipas produktit. Infuzion 15 minuta. Përfshi paracetamolin nga çdo rrugë dhe ul kufijtë kur ka faktorë hepatikë; neonati prematur kërkon protokoll tjetër."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/100803/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/100803/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.52",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "a70b941c-405e-4a75-9f91-e63988026c63": {
+      "key": "22.53",
+      "sourceFingerprint": "e1c5f80174f4be2a77fffd18fb4545724508d9b9efda50a8788c58547e86739d",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Identifiko substancën, produktin, përqendrimin (mg/mL ose mg/5 mL) dhe rrugën. Shkruaj fillimisht dozën në mg; pastaj vëllimi = doza mg ÷ përqendrimi mg/mL. Një lugë ose vëllim pa përqendrim nuk mjafton për të zgjedhur preparatin. Plotëso produktin konkret në recetë."
+      ],
+      "references": [
+        {
+          "key": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.53",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "f31ab14a-8e65-4873-96d2-9d8bb18e0a10": {
+      "key": "22.54",
+      "sourceFingerprint": "c90f5574b671ca3bcc8a81ac347a80719b3ea3b9be6c1de5e8bdaad9bcae38be",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Identifiko substancën, produktin, përqendrimin (mg/mL ose mg/5 mL) dhe rrugën. Shkruaj fillimisht dozën në mg; pastaj vëllimi = doza mg ÷ përqendrimi mg/mL. Një lugë ose vëllim pa përqendrim nuk mjafton për të zgjedhur preparatin. Plotëso produktin konkret në recetë."
+      ],
+      "references": [
+        {
+          "key": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.54",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "229448dc-80fb-48b1-b190-a363689e0784": {
+      "key": "22.55",
+      "sourceFingerprint": "fae6755e2fdf41860ebaff245a2338190c9338feaf2b414073cacb97ca0dbb8c",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Identifiko substancën, produktin, përqendrimin (mg/mL ose mg/5 mL) dhe rrugën. Shkruaj fillimisht dozën në mg; pastaj vëllimi = doza mg ÷ përqendrimi mg/mL. Një lugë ose vëllim pa përqendrim nuk mjafton për të zgjedhur preparatin. Plotëso produktin konkret në recetë."
+      ],
+      "references": [
+        {
+          "key": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.55",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "99087323-1b26-4e95-9569-ba16b55abf76": {
+      "key": "22.57",
+      "sourceFingerprint": "c4f81afe197810bb16726f109d71a158ba3c667ed80f70e9a160bb1fde71f728",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Lactulose i produktit të cituar përmban 10 g/15 mL, rreth 667 mg/mL, jo 10 mg/15 mL. Kapsllëku dhe encefalopatia hepatike kanë skema të ndryshme; për fëmijën zgjidh dozën sipas moshës dhe përgjigjes. Mos konverto lugën e burimit në mg pa përqendrimin e produktit.",
+        "Identifiko substancën, produktin, përqendrimin (mg/mL ose mg/5 mL) dhe rrugën. Shkruaj fillimisht dozën në mg; pastaj vëllimi = doza mg ÷ përqendrimi mg/mL. Një lugë ose vëllim pa përqendrim nuk mjafton për të zgjedhur preparatin. Plotëso produktin konkret në recetë."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/2796/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/2796/smpc"
+        },
+        {
+          "key": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.57",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "8c952372-3fcc-4e08-85af-09995d4d913f": {
+      "key": "22.64",
+      "sourceFingerprint": "37c1ddc33f9da1b3103c25042d6f31a842cb6cf91523a66b327a87b023ffd47b",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Konfirmo nëse produkti është oral, rektal apo injektues. Përdor vetëm formulimin e destinuar për atë rrugë dhe dozimin e tij; një ampulë dhe një shurup nuk këmbehen nga i njëjti vëllim. Për IV kontrollo përqendrimin, hollimin dhe kohën e infuzionit.",
+        "Paracetamol IV 10 mg/mL: ≤10 kg, 7,5 mg/kg për dozë = 0,75 mL/kg, maksimumi 30 mg/kg/ditë; >10 deri 33 kg, 15 mg/kg = 1,5 mL/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 2 g; >33 deri 50 kg, 15 mg/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 3 g. Të paktën 4 orë ndërmjet dozave, jo mbi 4 doza/24 orë; në insuficiencë renale të rëndë intervali zgjatet sipas produktit. Infuzion 15 minuta. Përfshi paracetamolin nga çdo rrugë dhe ul kufijtë kur ka faktorë hepatikë; neonati prematur kërkon protokoll tjetër."
+      ],
+      "references": [
+        {
+          "key": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations"
+        },
+        {
+          "key": "https://www.medicines.org.uk/emc/product/100803/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/100803/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.64",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "08946d98-9e79-4106-bd86-436abf72f741": {
+      "key": "22.65",
+      "sourceFingerprint": "3034f61695b79de87d4ad6348f923e5071b0d55f846ac46d5b96f69ed3fcbadf",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Identifiko substancën, produktin, përqendrimin (mg/mL ose mg/5 mL) dhe rrugën. Shkruaj fillimisht dozën në mg; pastaj vëllimi = doza mg ÷ përqendrimi mg/mL. Një lugë ose vëllim pa përqendrim nuk mjafton për të zgjedhur preparatin. Plotëso produktin konkret në recetë."
+      ],
+      "references": [
+        {
+          "key": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.65",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "c46af86e-4314-4d3d-b940-b7fcb6844f93": {
+      "key": "22.68",
+      "sourceFingerprint": "0177e37c68466c5623122555930878641d70a46d49f3928eb1acfceaa529f5d7",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "GIR shprehet në mg/kg/min, jo mL/kg/min. Shpejtësia mL/orë = GIR × pesha kg × 60 ÷ përqendrimi mg/mL. Glukoza 10% përmban 100 mg/mL. Objektivi GIR, aksesi venoz dhe ndryshimet përcaktohen sipas moshës dhe matjeve të përsëritura të glukozës; kjo formulë nuk cakton vetë dozën fillestare.",
+        "Diazepam Injection BP i cituar nuk hollohet për injeksion IV ose IM. Hollimi për infuzion të madh ka udhëzim tjetër të produktit; mos përdor 8 mL NaCl si rregull universal. Cakto dozën sipas indikacionit/moshës dhe monitorimin respirator; protokolli i krizës konvulsive nuk është ai i sedacionit rutinë."
+      ],
+      "references": [
+        {
+          "key": "https://www.rch.org.au/rchcpg/hospital_clinical_guideline_index/Neonatal_hypoglycaemia/",
+          "url": "https://www.rch.org.au/rchcpg/hospital_clinical_guideline_index/Neonatal_hypoglycaemia/"
+        },
+        {
+          "key": "https://www.medicines.org.uk/emc/product/6274/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/6274/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.68",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "ade7c6bc-21e4-4d42-82b4-caa1ce9471de": {
+      "key": "22.69",
+      "sourceFingerprint": "b551f79d4f5da9d9a0a5db0f016626e7e09b956887ac67ba5b00d8a3a52b5a6f",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "GIR shprehet në mg/kg/min, jo mL/kg/min. Shpejtësia mL/orë = GIR × pesha kg × 60 ÷ përqendrimi mg/mL. Glukoza 10% përmban 100 mg/mL. Objektivi GIR, aksesi venoz dhe ndryshimet përcaktohen sipas moshës dhe matjeve të përsëritura të glukozës; kjo formulë nuk cakton vetë dozën fillestare.",
+        "Paracetamol IV 10 mg/mL: ≤10 kg, 7,5 mg/kg për dozë = 0,75 mL/kg, maksimumi 30 mg/kg/ditë; >10 deri 33 kg, 15 mg/kg = 1,5 mL/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 2 g; >33 deri 50 kg, 15 mg/kg, maksimumi 60 mg/kg/ditë dhe jo mbi 3 g. Të paktën 4 orë ndërmjet dozave, jo mbi 4 doza/24 orë; në insuficiencë renale të rëndë intervali zgjatet sipas produktit. Infuzion 15 minuta. Përfshi paracetamolin nga çdo rrugë dhe ul kufijtë kur ka faktorë hepatikë; neonati prematur kërkon protokoll tjetër."
+      ],
+      "references": [
+        {
+          "key": "https://www.rch.org.au/rchcpg/hospital_clinical_guideline_index/Neonatal_hypoglycaemia/",
+          "url": "https://www.rch.org.au/rchcpg/hospital_clinical_guideline_index/Neonatal_hypoglycaemia/"
+        },
+        {
+          "key": "https://www.medicines.org.uk/emc/product/100803/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/100803/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.69",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "551a1068-709a-4717-9cf3-450370e66a9d": {
+      "key": "22.70",
+      "sourceFingerprint": "b22348017760cf21433dd3258f112c6c1364335d1075579efe5b760a6b82b51c",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Diazepam Injection BP i cituar nuk hollohet për injeksion IV ose IM. Hollimi për infuzion të madh ka udhëzim tjetër të produktit; mos përdor 8 mL NaCl si rregull universal. Cakto dozën sipas indikacionit/moshës dhe monitorimin respirator; protokolli i krizës konvulsive nuk është ai i sedacionit rutinë."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/6274/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/6274/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.70",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "c8ddeaad-428c-4436-86cc-20d669ac5a45": {
+      "key": "22.73",
+      "sourceFingerprint": "f41df2a1e904c985940a6d4aa4bdca96ba6ec884b615ba61232d2de4591c5ba8",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "DILANTIN-125 suspension oral përmban 125 mg/5 mL = 25 mg/mL, jo 125 mg/mL. Doza fillestare pediatrike e këtij produkti është 5 mg/kg/DITË gjithsej, në 2–3 doza të barabarta, me titrim/monitorim; jo 5 mg/kg çdo marrje. Kufiri fillestar i etiketës është 300 mg/ditë. Kripa, preparati, ushqimi me sondë dhe nivelet serike ndikojnë planin."
+      ],
+      "references": [
+        {
+          "key": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f339f9e4-b289-4efe-82b9-46c57d1dc277",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f339f9e4-b289-4efe-82b9-46c57d1dc277"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.73",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "e34a023a-c0e4-41a3-90f3-1c253d900599": {
+      "key": "22.74",
+      "sourceFingerprint": "b99cf1a9dfec4d116d78d4a0d6e999882f80746d649a15695798ae1d96b62905",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Lamotrigine nis me titrim sipas tabelës së moshës DHE bashkëterapisë. Valproate e ul dozën fillestare dhe ngadalëson titrimin; induktorët enzimatikë kanë skemë tjetër. Mos kopjo një dozë mirëmbajtjeje si dozë nisjeje dhe mos rifillo dozën e vjetër pas ndërprerjes pa vlerësim. Cakto tabletën/dispersibilin që e realizon dozën; rash i ri kërkon vlerësim të menjëhershëm."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/1286/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/1286/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.74",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "e40d44b6-aa91-4857-8e35-6e9ee464ce9b": {
+      "key": "22.75",
+      "sourceFingerprint": "e2bdf2906f29a6d404eff752cecc811c7da3be0e20e46d973f990abd8f46e06e",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Lamotrigine nis me titrim sipas tabelës së moshës DHE bashkëterapisë. Valproate e ul dozën fillestare dhe ngadalëson titrimin; induktorët enzimatikë kanë skemë tjetër. Mos kopjo një dozë mirëmbajtjeje si dozë nisjeje dhe mos rifillo dozën e vjetër pas ndërprerjes pa vlerësim. Cakto tabletën/dispersibilin që e realizon dozën; rash i ri kërkon vlerësim të menjëhershëm."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/1286/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/1286/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.75",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "902ee121-b88c-40ed-af0d-398a35b2e6ca": {
+      "key": "22.77",
+      "sourceFingerprint": "2f475c46ddea8703b898d10b8de84d6867e69579d2dffb0354eb2858b2f2988d",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Lamotrigine nis me titrim sipas tabelës së moshës DHE bashkëterapisë. Valproate e ul dozën fillestare dhe ngadalëson titrimin; induktorët enzimatikë kanë skemë tjetër. Mos kopjo një dozë mirëmbajtjeje si dozë nisjeje dhe mos rifillo dozën e vjetër pas ndërprerjes pa vlerësim. Cakto tabletën/dispersibilin që e realizon dozën; rash i ri kërkon vlerësim të menjëhershëm."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/1286/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/1286/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.77",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "b3abd442-aad7-42fc-ba72-730eae017c52": {
+      "key": "22.78",
+      "sourceFingerprint": "4b313e7e23e445fb5defa4e01231f8ebad9746194b2f7c5e767355df04706bd4",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "GIR shprehet në mg/kg/min, jo mL/kg/min. Shpejtësia mL/orë = GIR × pesha kg × 60 ÷ përqendrimi mg/mL. Glukoza 10% përmban 100 mg/mL. Objektivi GIR, aksesi venoz dhe ndryshimet përcaktohen sipas moshës dhe matjeve të përsëritura të glukozës; kjo formulë nuk cakton vetë dozën fillestare.",
+        "Diazepam Injection BP i cituar nuk hollohet për injeksion IV ose IM. Hollimi për infuzion të madh ka udhëzim tjetër të produktit; mos përdor 8 mL NaCl si rregull universal. Cakto dozën sipas indikacionit/moshës dhe monitorimin respirator; protokolli i krizës konvulsive nuk është ai i sedacionit rutinë."
+      ],
+      "references": [
+        {
+          "key": "https://www.rch.org.au/rchcpg/hospital_clinical_guideline_index/Neonatal_hypoglycaemia/",
+          "url": "https://www.rch.org.au/rchcpg/hospital_clinical_guideline_index/Neonatal_hypoglycaemia/"
+        },
+        {
+          "key": "https://www.medicines.org.uk/emc/product/6274/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/6274/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.78",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "4d0b5083-5f92-4e17-8e06-bf9fb55e5bca": {
+      "key": "22.84",
+      "sourceFingerprint": "93a40ed4f74f94ecdc1db6b9d5dce2847546cabce86787a05448c4a1c78d2f6e",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Identifiko substancën, produktin, përqendrimin (mg/mL ose mg/5 mL) dhe rrugën. Shkruaj fillimisht dozën në mg; pastaj vëllimi = doza mg ÷ përqendrimi mg/mL. Një lugë ose vëllim pa përqendrim nuk mjafton për të zgjedhur preparatin. Plotëso produktin konkret në recetë."
+      ],
+      "references": [
+        {
+          "key": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations",
+          "url": "https://www.nice.org.uk/guidance/ng5/chapter/recommendations"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.84",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "d70ff276-8ba8-4e78-a2ef-78e5f1481f36": {
+      "key": "22.86",
+      "sourceFingerprint": "726d3f48c1b95414456417f82b73150156e27f986b159b4272d4bad7e7a0945f",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Furosemide pediatrik dozohet nga pesha, rruga, indikacioni dhe përgjigjja, me kontrolle të vëllimit, elektroliteve dhe veshkave. Dozat fikse 80 mg dhe kufiri 600 mg/ditë i të rriturit nuk përdoren si skemë pediatrike. Doza orale dhe IV përcaktohen veçmas; mos barazo vëllimet e ampulës dhe shurupit."
+      ],
+      "references": [
+        {
+          "key": "https://www.medicines.org.uk/emc/product/100580/smpc",
+          "url": "https://www.medicines.org.uk/emc/product/100580/smpc"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.86",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "c8079cb1-4c93-43a6-a986-9f91144d0799": {
+      "key": "22.89",
+      "sourceFingerprint": "1b412cfd90b14d479e6082f797cfaba2c2915b8bdf97f37e6ca714e6a1cb337d",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Për PEP sipas CDC me HDCV/PCECV: vaksinë 1 mL IM në ditët 0, 3, 7 dhe 14 te i pavaksinuari; imunosupresioni kërkon edhe ditën 28 dhe kontrollin përkatës. Injeksioni nuk jepet gluteal. HRIG dhe kujdesi i plagës kanë rol veçmas; i vaksinuari më parë ka skemë tjetër. Preparatet/rrugët WHO me vëllim tjetër nuk konvertohen nga kjo skemë."
+      ],
+      "references": [
+        {
+          "key": "https://www.cdc.gov/rabies/hcp/clinical-care/post-exposure-prophylaxis.html",
+          "url": "https://www.cdc.gov/rabies/hcp/clinical-care/post-exposure-prophylaxis.html"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.89",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    },
+    "60fa7c5d-8133-4519-a45f-807e094d2165": {
+      "key": "22.90",
+      "sourceFingerprint": "ac46552b3b488eca47aa11d3d0e2cf220beb845db9e27098343fe73da17a37ac",
+      "status": "reference",
+      "groups": [],
+      "notes": [
+        "Tetanusi klinik është urgjencë spitalore: CDC rekomandon TIG 500 IU IM një herë për trajtim, jo dozën 250 IU të profilaksisë së plagës. Menaxho rrugën e frymëmarrjes, spazmat, plagën dhe infeksionin; planifiko vaksinimin pasi sëmundja nuk jep imunitet. Produkti TIG nuk jepet automatikisht IV ose intratekal."
+      ],
+      "references": [
+        {
+          "key": "https://www.cdc.gov/tetanus/hcp/clinical-care/index.html",
+          "url": "https://www.cdc.gov/tetanus/hcp/clinical-care/index.html"
+        }
+      ],
+      "changes": [
+        {
+          "id": "C22.90",
+          "title": "Planifikimi klinik",
+          "explanation": "Sqarim i dokumentuar i njësive, produktit, rrugës ose indikacionit; receta ndërtohet për pacientin dhe nuk kopjon automatikisht burimin."
+        }
+      ],
+      "reviewState": "evidence-reconciled"
+    }
+  },
+  "coverage": [
+    {
+      "key": "16.4",
+      "id": "eef26207-b7f7-4277-8b4b-05715edeebd4",
+      "sourceFingerprint": "b5df495aa055a6c83e109d801e7620b86f5c975c8fd6f488825178f664f7bf77",
+      "sourceRevision": "aTPfn5cU2g0RG82YaWrNCE",
+      "disposition": "reference"
+    },
+    {
+      "key": "16.31",
+      "id": "5b38a8b6-e848-490b-be37-9b9d113c6106",
+      "sourceFingerprint": "d9754471148d349f4f61096df3815ef55d78b37501e576fe5e71462fba29b7b5",
+      "sourceRevision": "oPId114d56QRX3c7nVDdHs",
+      "disposition": "reference"
+    },
+    {
+      "key": "16.40",
+      "id": "9497da01-c7cf-41aa-b211-4f4f5481b666",
+      "sourceFingerprint": "689f1ded54bd1d986ec025b9dbc75fd5ab55a3653cdff723a2c3c30b1c00617d",
+      "sourceRevision": "LA81F8OCd3ddLnxHuYKhU4",
+      "disposition": "reference"
+    },
+    {
+      "key": "17.13",
+      "id": "b8f4b568-db21-4dc4-b1b0-855531ca6119",
+      "sourceFingerprint": "6d76827df729d725abdd76fa5956bc05656237e7f7c0348addfbf8d2c81bf029",
+      "sourceRevision": "aTPfn5cU2g0RG82YaWrURb",
+      "disposition": "reference"
+    },
+    {
+      "key": "17.14",
+      "id": "597a3a0a-2835-4a51-8bc2-4d423d756c88",
+      "sourceFingerprint": "20f69d4f32e0bb974594e70281049a52c1be3fad7445f88336a38880d7727303",
+      "sourceRevision": "aTPfn5cU2g0RG82YaWrURb",
+      "disposition": "reference"
+    },
+    {
+      "key": "18.15",
+      "id": "5de93f9a-6e41-4314-af69-87282ad9bfe0",
+      "sourceFingerprint": "7b8b4391ff221a7f39f8060efc918bd8d244500f22602f336adcc779433ffcfa",
+      "sourceRevision": "oPId114d56QRX3c7nVEEJQ",
+      "disposition": "reference"
+    },
+    {
+      "key": "19.15",
+      "id": "558bb1c1-d6b4-4cda-b1f1-252b1dcb65da",
+      "sourceFingerprint": "e94a6e85451e9b34ef2243387cdf816bb109a2ffd804d15779187277b86686fa",
+      "sourceRevision": "LA81F8OCd3ddLnxHuYKsvK",
+      "disposition": "reference"
+    },
+    {
+      "key": "19.26",
+      "id": "130188a2-9127-4fa8-b100-ecf806c59890",
+      "sourceFingerprint": "636be56da755cdd4e99c62155122b250b78f0a024b6fd392c238722a81402fe0",
+      "sourceRevision": "aTPfn5cU2g0RG82YaWrl5w",
+      "disposition": "reference"
+    },
+    {
+      "key": "20.10",
+      "id": "1883655b-6b95-4e20-841d-fd34a72e31b0",
+      "sourceFingerprint": "352715b7be16c5a0e1726002714b4830ce5650be235387dbcbd507d959843772",
+      "sourceRevision": "LA81F8OCd3ddLnxHuYKtmA",
+      "disposition": "reference"
+    },
+    {
+      "key": "20.11",
+      "id": "f10a6991-c41f-42ed-b9c8-f3a0119fb517",
+      "sourceFingerprint": "74bbc4913c06436aab6561822d6c8e6095d29431b5e864e0ed78f4e343481f14",
+      "sourceRevision": "LA81F8OCd3ddLnxHuYKtmA",
+      "disposition": "reference"
+    },
+    {
+      "key": "20.12",
+      "id": "f71c8302-c35b-4ed5-bbb5-da54496ea551",
+      "sourceFingerprint": "37232f228e4c3a65f06aaf23a6dcabc1c254ef5dcfd0dab6b040ac7c275c33a8",
+      "sourceRevision": "aTPfn5cU2g0RG82YaWrnBU",
+      "disposition": "reference"
+    },
+    {
+      "key": "20.13",
+      "id": "84e32ea4-bfd9-4559-8404-f55fe13fa9c2",
+      "sourceFingerprint": "371714abcfd232a6ed050c0e88070f776506c2e5087a62336ac92438c63a9e60",
+      "sourceRevision": "aTPfn5cU2g0RG82YaWrnBU",
+      "disposition": "reference"
+    },
+    {
+      "key": "20.16",
+      "id": "82358bda-4327-48ec-bf0d-635af1f19597",
+      "sourceFingerprint": "617bf2935105530cd270e7737aba9968333088292bd51dcf8a973762bbb30938",
+      "sourceRevision": "aTPfn5cU2g0RG82YaWrnBU",
+      "disposition": "reference"
+    },
+    {
+      "key": "20.17",
+      "id": "26d065a7-802b-4c6e-867b-15471575802e",
+      "sourceFingerprint": "c5c5187859b3261801320541ceb2918d0c708f4b2c0244930118bfdcbc3b5c01",
+      "sourceRevision": "aTPfn5cU2g0RG82YaWrnBU",
+      "disposition": "reference"
+    },
+    {
+      "key": "21.1",
+      "id": "352ff043-d3ef-43c3-a197-6ceca06178da",
+      "sourceFingerprint": "2844b5fe6baf1d2645a92795f60dd57a0a44145f2012cda623144ad1253cccbf",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9Fww2",
+      "disposition": "reference"
+    },
+    {
+      "key": "21.2",
+      "id": "90a95db4-782d-460c-9491-9081c693ffd3",
+      "sourceFingerprint": "f3be3e3534e6fe803843f7b197c82a2277bf6da9240607a41bb8cfffe6cc3d50",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9Fww2",
+      "disposition": "reference"
+    },
+    {
+      "key": "21.13",
+      "id": "6eaa6f86-5555-439b-8da8-a81169d0ddfc",
+      "sourceFingerprint": "f443f16cdec61ca902941b6eb26a7df69f6ef3b919ac814f3c81b1ad02d5c047",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9Fy8C",
+      "disposition": "reference"
+    },
+    {
+      "key": "21.14",
+      "id": "d12f4096-60a0-43c8-a150-294ab772fba1",
+      "sourceFingerprint": "9eae9ea33ecfe9ad2c9fb397ae095896058c3d593349d0bc61b653d6fab66fe6",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9Fy8C",
+      "disposition": "reference"
+    },
+    {
+      "key": "21.17",
+      "id": "9a828a24-c640-4546-9733-7b2c449b64ec",
+      "sourceFingerprint": "91cdebd81a00ef25d75e312797c78e7ef2a802cedca1133ecd517909549b889e",
+      "sourceRevision": "T1mP9WZGn5lsyE10UcCoK1",
+      "disposition": "reference"
+    },
+    {
+      "key": "21.20",
+      "id": "847a7738-b6b2-44fa-80b9-579ac174dde6",
+      "sourceFingerprint": "55894cbae5fc73958981a0f3022743f8fb659350d805f1b6f37a52ba60251678",
+      "sourceRevision": "FxGM0KNnmXvDH2nFsTQTPS",
+      "disposition": "reference"
+    },
+    {
+      "key": "21.33",
+      "id": "b09beaa4-272f-4464-a004-66e9881943a1",
+      "sourceFingerprint": "aed141665910a8d69db3a0834ffc2f2b1b86a9efd1dcc003c48652be1289a35e",
+      "sourceRevision": "FxGM0KNnmXvDH2nFsTQTaU",
+      "disposition": "reference"
+    },
+    {
+      "key": "21.35",
+      "id": "2e54edff-acfd-47d9-a64b-f290524c7cb5",
+      "sourceFingerprint": "9db56ed3a645a49e3edab2e0c95776294432527585c197700249ddc192c75813",
+      "sourceRevision": "FxGM0KNnmXvDH2nFsTQTaU",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.1",
+      "id": "cb847a2b-d567-495d-b41c-5f1532439a3c",
+      "sourceFingerprint": "fecf51e9d45ae82746810e70369dc88d3c2ffa9b43cddf16d8182f41561ee79e",
+      "sourceRevision": "FxGM0KNnmXvDH2nFsTQTmg",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.14",
+      "id": "f619ca5b-99ff-4f73-aa68-5c3599264d2e",
+      "sourceFingerprint": "3a93204644eccaacec137a4b29c6f8df688a58dace21ee3e43352a410b3d28fc",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9Fzds",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.16",
+      "id": "73b86d5b-edef-48a5-bcb1-65c1254d50cb",
+      "sourceFingerprint": "d41e3fb861965a0619f09046f9869750c92e54702d2d2abcf3c556a6c3014584",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9Fzds",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.17",
+      "id": "a70e2a85-eee0-46d9-8d31-96954334c49b",
+      "sourceFingerprint": "e63b46b7018268eccc9b1e99edd81fb52764b73335de872e5c833932caed5fc6",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9Fzds",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.18",
+      "id": "d71c43c8-5536-4706-9aec-479ade9a0f69",
+      "sourceFingerprint": "01d121efae8535fb39618c36863e26f1b229e386c4861da779e5264027924c1f",
+      "sourceRevision": "FxGM0KNnmXvDH2nFsTQTxi",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.19",
+      "id": "42d21eb3-63c5-4b72-a7ea-afbd417ec0f3",
+      "sourceFingerprint": "b2b6d512fc0e53472d561d7a1fbd2cdaf104bc9aed93d5059b2b08c3de3f7838",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9Fzds",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.20",
+      "id": "ec126710-7ae8-4565-8e24-4e15222cbe7d",
+      "sourceFingerprint": "28019f21722af3ce41257ddb86b8a9883307822b09c47516c10da2d6019b810f",
+      "sourceRevision": "FxGM0KNnmXvDH2nFsTQTxi",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.22",
+      "id": "d42eb47c-d65b-4b27-8e68-738636921547",
+      "sourceFingerprint": "d1131347c0af1f7f05a05dc18452035df7ae2b58b38673ebe3de89055bbe8284",
+      "sourceRevision": "FxGM0KNnmXvDH2nFsTQTxi",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.24",
+      "id": "af9c733e-884e-4cb6-9bc5-61591e87c4f5",
+      "sourceFingerprint": "590eff2c29f52db36b6cfe95008f80370fc2412ff84c038bf3f3c5f8508f345e",
+      "sourceRevision": "FxGM0KNnmXvDH2nFsTQTxi",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.26",
+      "id": "9b64f03e-e565-42b5-a3ef-d342e880e2c0",
+      "sourceFingerprint": "45f6d895d1ccc40a9c2e78e6c3a059df172f539ea42efc8375fbd5251778701c",
+      "sourceRevision": "FxGM0KNnmXvDH2nFsTQTxi",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.27",
+      "id": "a6a08fd1-5a6f-4620-b90e-38c004a32410",
+      "sourceFingerprint": "f586c0037bd3428d8ca405b410656d660b32ce6f212f7bde5d736427186eb11c",
+      "sourceRevision": "FxGM0KNnmXvDH2nFsTQTxi",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.31",
+      "id": "cf338b69-8129-41bf-a6cc-5669cc0bc09d",
+      "sourceFingerprint": "6dc05171e3ce5c5f250318dbcc7d4a88dd925a002491b551a599dc139b78ef48",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G0q2",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.38",
+      "id": "4dd9e9c1-f39a-471e-9c6d-cb6f0cf44a91",
+      "sourceFingerprint": "46781f6c96036317390f3bab296cb9ac65d13a8c163e5314bfa62e04b569fd96",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G22C",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.39",
+      "id": "4b730baf-a3b5-4884-bc13-b24f0f184acb",
+      "sourceFingerprint": "ca16f038dc53915cd8e5f529de8add058f11f37eb2bcec1ed4903111b2e30ebb",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G22C",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.41",
+      "id": "6c49be12-5d4f-498b-a8dc-74f3f5c0255f",
+      "sourceFingerprint": "c04b66cb083a5036e4fe4fa0cb6cb3ee6fceffcaeb1dd1da1f3001fffd38eed0",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G22C",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.47",
+      "id": "f9185e8d-22fd-4b82-bf44-96f4094ad16b",
+      "sourceFingerprint": "c1cf8ecaa6c049179f7492f3385073a0ea9bbd898d8d1fc5627fd410b754ed5a",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G3AS",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.51",
+      "id": "b30e7bca-1c68-49c5-9011-d6a10b130595",
+      "sourceFingerprint": "21e4471968796241da05f8d52f24c98a298574eddd235340e37f83966ed9fa21",
+      "sourceRevision": "CVamaBKVm4AM9cc17xiDVX",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.52",
+      "id": "4b4eafc1-5488-4001-9925-f112bc1664b5",
+      "sourceFingerprint": "9f6c4f7507a2a04a53f20c4aa8a9e8366138a0c1362a9e845c44df21d536eb4f",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G3AS",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.53",
+      "id": "a70b941c-405e-4a75-9f91-e63988026c63",
+      "sourceFingerprint": "e1c5f80174f4be2a77fffd18fb4545724508d9b9efda50a8788c58547e86739d",
+      "sourceRevision": "T1mP9WZGn5lsyE10UcCseP",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.54",
+      "id": "f31ab14a-8e65-4873-96d2-9d8bb18e0a10",
+      "sourceFingerprint": "c90f5574b671ca3bcc8a81ac347a80719b3ea3b9be6c1de5e8bdaad9bcae38be",
+      "sourceRevision": "CVamaBKVm4AM9cc17xiDVX",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.55",
+      "id": "229448dc-80fb-48b1-b190-a363689e0784",
+      "sourceFingerprint": "fae6755e2fdf41860ebaff245a2338190c9338feaf2b414073cacb97ca0dbb8c",
+      "sourceRevision": "CVamaBKVm4AM9cc17xiDVX",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.57",
+      "id": "99087323-1b26-4e95-9569-ba16b55abf76",
+      "sourceFingerprint": "c4f81afe197810bb16726f109d71a158ba3c667ed80f70e9a160bb1fde71f728",
+      "sourceRevision": "CVamaBKVm4AM9cc17xiDVX",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.64",
+      "id": "8c952372-3fcc-4e08-85af-09995d4d913f",
+      "sourceFingerprint": "37c1ddc33f9da1b3103c25042d6f31a842cb6cf91523a66b327a87b023ffd47b",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G4UQ",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.65",
+      "id": "08946d98-9e79-4106-bd86-436abf72f741",
+      "sourceFingerprint": "3034f61695b79de87d4ad6348f923e5071b0d55f846ac46d5b96f69ed3fcbadf",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G4UQ",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.68",
+      "id": "c46af86e-4314-4d3d-b940-b7fcb6844f93",
+      "sourceFingerprint": "0177e37c68466c5623122555930878641d70a46d49f3928eb1acfceaa529f5d7",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G5cg",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.69",
+      "id": "ade7c6bc-21e4-4d42-82b4-caa1ce9471de",
+      "sourceFingerprint": "b551f79d4f5da9d9a0a5db0f016626e7e09b956887ac67ba5b00d8a3a52b5a6f",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G4UQ",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.70",
+      "id": "551a1068-709a-4717-9cf3-450370e66a9d",
+      "sourceFingerprint": "b22348017760cf21433dd3258f112c6c1364335d1075579efe5b760a6b82b51c",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G4UQ",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.73",
+      "id": "c8ddeaad-428c-4436-86cc-20d669ac5a45",
+      "sourceFingerprint": "f41df2a1e904c985940a6d4aa4bdca96ba6ec884b615ba61232d2de4591c5ba8",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G5cg",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.74",
+      "id": "e34a023a-c0e4-41a3-90f3-1c253d900599",
+      "sourceFingerprint": "b99cf1a9dfec4d116d78d4a0d6e999882f80746d649a15695798ae1d96b62905",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G5cg",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.75",
+      "id": "e40d44b6-aa91-4857-8e35-6e9ee464ce9b",
+      "sourceFingerprint": "e2bdf2906f29a6d404eff752cecc811c7da3be0e20e46d973f990abd8f46e06e",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G5cg",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.77",
+      "id": "902ee121-b88c-40ed-af0d-398a35b2e6ca",
+      "sourceFingerprint": "2f475c46ddea8703b898d10b8de84d6867e69579d2dffb0354eb2858b2f2988d",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G5cg",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.78",
+      "id": "b3abd442-aad7-42fc-ba72-730eae017c52",
+      "sourceFingerprint": "4b313e7e23e445fb5defa4e01231f8ebad9746194b2f7c5e767355df04706bd4",
+      "sourceRevision": "pU6aXkIQgs3HfIlUQ9G5cg",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.84",
+      "id": "4d0b5083-5f92-4e17-8e06-bf9fb55e5bca",
+      "sourceFingerprint": "93a40ed4f74f94ecdc1db6b9d5dce2847546cabce86787a05448c4a1c78d2f6e",
+      "sourceRevision": "CVamaBKVm4AM9cc17xiE8d",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.86",
+      "id": "d70ff276-8ba8-4e78-a2ef-78e5f1481f36",
+      "sourceFingerprint": "726d3f48c1b95414456417f82b73150156e27f986b159b4272d4bad7e7a0945f",
+      "sourceRevision": "CVamaBKVm4AM9cc17xiEbx",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.89",
+      "id": "c8079cb1-4c93-43a6-a986-9f91144d0799",
+      "sourceFingerprint": "1b412cfd90b14d479e6082f797cfaba2c2915b8bdf97f37e6ca714e6a1cb337d",
+      "sourceRevision": "CVamaBKVm4AM9cc17xiEbx",
+      "disposition": "reference"
+    },
+    {
+      "key": "22.90",
+      "id": "60fa7c5d-8133-4519-a45f-807e094d2165",
+      "sourceFingerprint": "ac46552b3b488eca47aa11d3d0e2cf220beb845db9e27098343fe73da17a37ac",
+      "sourceRevision": "CVamaBKVm4AM9cc17xiEbx",
+      "disposition": "reference"
+    }
+  ]
+}

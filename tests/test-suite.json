@@ -3,6 +3,7 @@
   "tests/prescription-clinical-plan-test.js",
   "tests/prescription-clinical-plan-6-10-test.js",
   "tests/prescription-clinical-plan-11-15-test.js",
+  "tests/prescription-individual-dose-test.js",
   "tests/backup-source-snapshot-test.js",
   "tests/native-recovery-catalog-test.js",
   "tests/library-recovery-vault-test.js",

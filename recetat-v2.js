@@ -7364,13 +7364,13 @@
     diagnosis.value = text(payload.diagnosis);
     composer.value = String(payload.sourceText || '').trim();
     if ($('#rxFreeTextPanel')) $('#rxFreeTextPanel').open = true;
-    if ($('#rxDraftLabel')) $('#rxDraftLabel').textContent = 'Draft nga burimi';
+    if ($('#rxDraftLabel')) $('#rxDraftLabel').textContent = payload.individual ? 'Draft individual' : 'Draft nga burimi';
     renderSelectedDrugs();
     state.chapterManuallySelected = false;
     syncChapterSuggestion({ force:true });
     scheduleLocalPreview();
     updateActionState();
-    setStatus('Skema nga Doctor on Duty u vendos vetëm si draft. Kontrolloje klinikisht para ruajtjes, kopjimit ose printimit.', 'success');
+    setStatus(payload.individual ? 'Plotëso barnat dhe dozat për pacientin. Nuk u kopjua terapi automatike.' : 'Skema nga Doctor on Duty u vendos vetëm si draft. Kontrolloje klinikisht para ruajtjes, kopjimit ose printimit.', 'success');
     window.DRxRecetatTabs?.show?.('compose');
     composer.focus({ preventScroll:true });
     composer.scrollIntoView({ behavior:'smooth', block:'center' });
@@ -7530,7 +7530,7 @@
 (() => {
   'use strict';
 
-  const API = '/api/medical-hub?_route=prescription-library' + '&reader=clinical-v2';
+  const API = '/api/medical-hub?_route=prescription-library' + '&reader=clinical-v3';
   const SEARCH_API = '/api/medical-hub?_route=prescription-search';
   const RELATION_LABELS = Object.freeze({ and:'DHE', or:'OSE', plus:'PLUS', conditional:'NËSE' });
   const KIND_LABELS = Object.freeze({
@@ -7962,7 +7962,7 @@
     const sourceNote = item?.kind === 'source-note';
     const typeLabel = active ? 'BAR' : sourceNote ? 'SHËNIM' : item?.kind === 'oxygen' ? 'O₂' : 'HAP';
     const stepTone = ((Math.max(1, Number(block?.smartBase) || 1) - 1) % 5) + 1;
-    return `<article class="rx-source-item${active ? ' is-active-substance' : ''}${sourceNote ? ' is-source-note' : ''}${block?.relation === 'conditional' && !isEditorialBlock(block) ? ' is-conditional' : ''}"${sourceNote ? '' : ` data-rx-step-tone="${stepTone}" tabindex="0"`}>
+    return `<article class="rx-source-item${active ? ' is-active-substance' : ''}${sourceNote ? ' is-source-note' : ''}${block?.relation === 'conditional' && !isEditorialBlock(block) ? ' is-conditional' : ''}"${item?.clinical && item.doseFields?.length ? ` data-rx-dose-fields="${esc(item.doseFields.join(' '))}"` : ''}${sourceNote ? '' : ` data-rx-step-tone="${stepTone}" tabindex="0"`}>
       <div class="rx-source-step-rail" aria-label="Hapi ${esc(item.smartLabel)}">
         <span class="rx-source-item-number">${esc(item.smartLabel)}</span>
         <small>${esc(typeLabel)}</small>
@@ -8030,11 +8030,33 @@
     return state.clinicalChoices[key] || (state.clinicalChoices[key] = {options:{},groups:{},items:{}});
   }
 
+  function clinicalDoseText(plan, item, choices) {
+    if (!item.doseFields?.length) return text(item.dose);
+    const values=[];
+    for (const id of item.doseFields) {
+      const spec=plan.doseInputs?.find(field=>field.id===id);
+      const raw=String(choices.doses?.[id] ?? '').trim();
+      if (!spec || !/^\d+(?:[.,]\d+)?$/.test(raw)) return '';
+      const value=Number(raw.replace(',','.'));
+      if (!Number.isFinite(value) || value<spec.min || value>spec.max || Math.abs(value/spec.step-Math.round(value/spec.step))>1e-8) return '';
+      values.push(value+' '+spec.unit+(item.doseFields.length>1?' · '+spec.label.toLocaleLowerCase('sq'):''));
+    }
+    return values.join('; ');
+  }
+
+  function renderClinicalDoseInputs(guide) {
+    const fields=guide.clinicalPlan?.doseInputs || [];
+    if (!fields.length) return '';
+    const doses=clinicalChoiceState(guide).doses || {};
+    return '<fieldset class="rx-clinical-dose-inputs"><legend>Dozat e përcaktuara për pacientin</legend><p>Plotëso secilën dozë në njësi. Pa llogaritje automatike nga pesha.</p><div>'+fields.map(field=>'<label><span>'+esc(field.label)+'</span><div><input type="text" inputmode="numeric" autocomplete="off" aria-label="'+esc(field.label+' · '+field.unit)+'" data-rx-clinical-dose="'+esc(field.id)+'" data-rx-clinical-guide="'+esc(guide._id)+'" value="'+esc(doses[field.id] || '')+'" aria-describedby="rxDoseHint-'+esc(field.id)+'"><b>'+esc(field.unit)+'</b></div><small id="rxDoseHint-'+esc(field.id)+'">'+esc(field.min+'–'+field.max+' '+field.unit+' · hapi '+field.step)+'</small></label>').join('')+'</div><span class="rx-clinical-dose-status" role="status">'+(clinicalPlanDraft(guide)?'Dozat janë plotësuar.':'Plotëso dozat dhe konfirmo planin për të vazhduar.')+'</span></fieldset>';
+  }
+
   function clinicalPlanDraft(guide) {
     const plan = guide?.clinicalPlan;
     if (plan?.status !== 'ready' || !Array.isArray(plan.groups) || !plan.groups.length) return '';
     const choices = clinicalChoiceState(guide);
     if (plan.confirmation && !choices.confirmed) return '';
+    if ((plan.doseInputs || []).some(spec=>!clinicalDoseText(plan,{doseFields:[spec.id]},choices))) return '';
     const lines = ['Rp:'];
     let count = 0;
     for (const group of plan.groups) {
@@ -8052,7 +8074,7 @@
         if (index) lines.push('EDHE');
         if (item.condition) lines.push(`Vetëm nëse: ${item.condition}`);
         lines.push(`${++count}. ${itemTitle(item)}`);
-        for (const [label,value] of [['Doza',item.dose],['Rruga',item.route],['Shpeshtësia',item.frequency],['Kohëzgjatja',item.duration]]) {
+        for (const [label,value] of [['Doza',clinicalDoseText(plan,item,choices)],['Rruga',item.route],['Shpeshtësia',item.frequency],['Kohëzgjatja',item.duration]]) {
           if (text(value)) lines.push(`${label}: ${text(value)}`);
         }
         if (text(item.sig)) lines.push(text(item.sig));
@@ -8080,13 +8102,14 @@
     const choices = clinicalChoiceState(guide);
     const ready = plan.status === 'ready';
     const draft = ready && Boolean(clinicalPlanDraft(guide));
+    const individual = plan.status === 'reference';
     return `<article class="rx-source-guide is-clinical-plan" data-source-guide-id="${esc(guide._id)}">
       <header class="rx-source-guide-head"><div class="rx-source-guide-heading"><div class="rx-source-guide-kicker">Kapitulli ${esc(guide.chapterNumber)} · ${esc(lessonLabel(guide))}</div><h3>${esc(plan.title || guide.title)}</h3></div>
-        <button class="rx-source-use" type="button" data-rx-source-use="${esc(guide._id)}"${draft ? '' : ' disabled'}><span>${!ready ? 'Vetëm referencë' : draft ? 'Vendose si draft' : 'Zgjidh opsionet'}</span><b aria-hidden="true">→</b></button>
+        <button class="rx-source-use" type="button" ${individual ? `data-rx-source-custom="${esc(guide._id)}"` : `data-rx-source-use="${esc(guide._id)}"`}${individual || draft ? '' : ' disabled'}><span>${individual ? 'Ndërto recetën' : !ready ? 'Duhet rikontrolluar' : draft ? 'Vendose si draft' : plan.doseInputs?.length ? 'Plotëso dozat' : 'Zgjidh opsionet'}</span><b aria-hidden="true">→</b></button>
       </header>
       ${renderGuideInformation(guide,`<div class="rx-source-flow">${renderStepGroups(guideStats(guide).blocks)}</div>`)}
-      ${(plan.notes || []).length ? `<div class="rx-clinical-context">${plan.notes.map(note=>`<p>${esc(note)}</p>`).join('')}</div>` : ''}
-      ${!ready ? '<p class="rx-clinical-reference">Kjo skemë nuk kalohet automatikisht në recetë.</p>' : ''}
+      ${individual ? `<div class="rx-individual-intro"><span>Plan sipas pacientit</span><p>Ndërto terapinë dhe dozat në recetë, sipas vlerësimit klinik.</p></div><div class="rx-individual-pathway">${(plan.notes || []).map((note,index)=>`<section class="rx-individual-step" data-rx-group-tone="${index%5+1}"><span class="rx-individual-number">${String(index+1).padStart(2,'0')}</span><p>${esc(note)}</p></section>`).join('')}</div>` : (plan.notes || []).length ? `<div class="rx-clinical-context">${plan.notes.map(note=>`<p>${esc(note)}</p>`).join('')}</div>` : ''}
+      ${renderClinicalDoseInputs(guide)}
       ${ready && plan.confirmation ? `<label class="rx-clinical-condition rx-clinical-confirmation"><input type="checkbox" data-rx-clinical-guide="${esc(guide._id)}" data-rx-clinical-confirmation="true"${choices.confirmed ? ' checked' : ''}><span>${esc(plan.confirmation)}</span><small>Konfirmo</small></label>` : ''}
       <div class="rx-source-flow rx-clinical-flow" aria-label="Rrjedha e recetës">${(plan.groups || []).map((group,gi) => {
         const tone = gi % 5 + 1;
@@ -8102,7 +8125,7 @@
               ${group.options.length > 1 ? `<label class="rx-clinical-option-choice"><input type="radio" name="rx-clinical-${esc(guide._id)}-${esc(group.id)}" value="${esc(option.id)}" data-rx-clinical-guide="${esc(guide._id)}" data-rx-clinical-option="${esc(group.id)}"${selected ? ' checked' : ''}${compatible ? '' : ' disabled'}><span>${esc(option.label || `Alternativa ${oi+1}`)}</span><small>${selected ? 'E zgjedhur' : 'Zgjidhe'}</small></label>` : ''}
               ${option.items.map((item,ii) => {
                 const itemKey = `${group.id}:${option.id}:${item.id}`;
-                return `${ii ? '<div class="rx-clinical-together">EDHE</div>' : ''}${item.condition ? `<label class="rx-clinical-condition is-item"><input type="checkbox" data-rx-clinical-guide="${esc(guide._id)}" data-rx-clinical-item="${esc(itemKey)}"${choices.items[itemKey] ? ' checked' : ''}><span>${esc(item.condition)}</span><small>Vetëm nëse</small></label>` : ''}${renderItem({...item,clinical:true,smartLabel:`${gi+1}${group.options.length > 1 ? String.fromCharCode(65+oi) : ''}${option.items.length > 1 ? `.${ii+1}` : ''}`},{smartBase:gi+1})}`;
+                return `${ii ? '<div class="rx-clinical-together">EDHE</div>' : ''}${item.condition ? `<label class="rx-clinical-condition is-item"><input type="checkbox" data-rx-clinical-guide="${esc(guide._id)}" data-rx-clinical-item="${esc(itemKey)}"${choices.items[itemKey] ? ' checked' : ''}><span>${esc(item.condition)}</span><small>Vetëm nëse</small></label>` : ''}${renderItem({...item,dose:item.doseFields?.length ? (clinicalDoseText(plan,item,choices) || item.dose) : item.dose,clinical:true,smartLabel:`${gi+1}${group.options.length > 1 ? String.fromCharCode(65+oi) : ''}${option.items.length > 1 ? `.${ii+1}` : ''}`},{smartBase:gi+1})}`;
               }).join('')}
             </div>`;
           }).join('')}</fieldset>
@@ -8472,22 +8495,24 @@
     }
   }
 
-  function beginGuide(guide) {
-    if (sourceClinicalIssues(guide).length) {
+  function beginGuide(guide, individual = false) {
+    if (individual && guide?.clinicalPlan?.status !== 'reference') return false;
+    if (!individual && sourceClinicalIssues(guide).length) {
       sourceStatus('Kjo skemë ka mospërputhje burimore dhe kërkon rishikim klinik para përdorimit.', 'error');
       return false;
     }
     const workspace = window.MedIndexRecetaWorkspace;
     if (!workspace?.beginSourceGuideDraft) return;
-    if (guide?.clinicalPlan && !clinicalPlanDraft(guide)) {
+    if (!individual && guide?.clinicalPlan && !clinicalPlanDraft(guide)) {
       sourceStatus('Zgjidh një opsion në secilin grup përpara se ta vendosësh si draft.', 'error');
       return false;
     }
     const result = workspace.beginSourceGuideDraft({
-      diagnosis:text(guide?.title),
-      sourceText:sourceDraftText(guide),
+      diagnosis:text(guide?.clinicalPlan?.title || guide?.title),
+      sourceText:individual ? '' : sourceDraftText(guide),
+      individual,
     });
-    if (result?.ok) {
+    if (result?.ok || (individual && result?.reason === 'draft-not-empty')) {
       window.DRxRecetatTabs?.show?.('compose');
       $('#rxComposerWorkspace')?.scrollIntoView({ behavior:'smooth', block:'start' });
     }
@@ -8595,9 +8620,28 @@
       }
     });
 
+    $('#rxSourceGuideList')?.addEventListener('input', event => {
+      const input=event.target.closest('[data-rx-clinical-dose]');
+      if (!input) return;
+      const guide=state.items.find(item=>String(item._id)===input.dataset.rxClinicalGuide);
+      if (!guide?.clinicalPlan?.doseInputs?.some(field=>field.id===input.dataset.rxClinicalDose)) return;
+      const choices=clinicalChoiceState(guide);choices.doses ||= {};choices.doses[input.dataset.rxClinicalDose]=input.value;
+      const valid=Boolean(clinicalDoseText(guide.clinicalPlan,{doseFields:[input.dataset.rxClinicalDose]},choices));
+      input.setAttribute('aria-invalid',String(!valid));
+      const draft=Boolean(clinicalPlanDraft(guide)),article=input.closest('.rx-source-guide'),button=article?.querySelector('[data-rx-source-use]');
+      const doseItems=guide.clinicalPlan.groups.flatMap(group=>group.options.flatMap(option=>option.items)).filter(item=>item.doseFields?.length);
+      article?.querySelectorAll('[data-rx-dose-fields]').forEach(node=>{
+        const item=doseItems.find(item=>item.doseFields.join(' ')===node.dataset.rxDoseFields);
+        const value=node.querySelector('.rx-clinical-dose-grid dd');
+        if(item && value)value.textContent=clinicalDoseText(guide.clinicalPlan,item,choices)||item.dose;
+      });
+      if(button){button.disabled=!draft;button.querySelector('span').textContent=draft?'Vendose si draft':'Plotëso dozat';}
+      const status=article?.querySelector('.rx-clinical-dose-status');if(status)status.textContent=draft?'Dozat janë plotësuar.':'Plotëso dozat dhe konfirmo planin për të vazhduar.';
+    });
+
     $('#rxSourceGuideList')?.addEventListener('change', event => {
       const input = event.target.closest('[data-rx-clinical-guide]');
-      if (!input) return;
+      if (!input || input.dataset.rxClinicalDose) return;
       const guide = state.items.find(item => String(item._id) === input.dataset.rxClinicalGuide);
       if (!guide?.clinicalPlan) return;
       const choices = clinicalChoiceState(guide);
@@ -8617,6 +8661,8 @@
     });
 
     $('#rxSourceGuideList')?.addEventListener('click', event => {
+      const custom=event.target.closest('[data-rx-source-custom]');
+      if(custom){const guide=state.items.find(item=>String(item._id)===custom.dataset.rxSourceCustom);if(guide)beginGuide(guide,true);return;}
       const use = event.target.closest('[data-rx-source-use]');
       if (use) {
         const guide = state.items.find(item => String(item?._id) === String(use.dataset.rxSourceUse));

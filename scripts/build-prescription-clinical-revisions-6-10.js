@@ -9,7 +9,7 @@ if(!input)throw Error('Supply the audited published chapters 6–10 snapshot.');
 const source=JSON.parse(fs.readFileSync(input,'utf8'));
 const byKey=new Map(source.map(g=>[g.chapterNumber+'.'+g.orderInChapter,g]));
 if(source.length!==136)throw Error('Expected all 136 source guides');
-const result={version:'clinical-6-10-20261020-v1',checkedAt:'2026-10-20',sourceSnapshotSha256:createHash('sha256').update(fs.readFileSync(input)).digest('hex'),guides:{}};
+const result={version:'clinical-6-10-20261021-v2',checkedAt:'2026-10-21',sourceSnapshotSha256:createHash('sha256').update(fs.readFileSync(input)).digest('hex'),guides:{}};
 const R={
  cough:'https://www.nice.org.uk/guidance/ng120/chapter/Recommendations',
  cap:'https://www.nice.org.uk/guidance/ng250/resources/pneumonia-diagnosis-and-management-pdf-66144010347205',
