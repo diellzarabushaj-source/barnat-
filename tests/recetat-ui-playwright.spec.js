@@ -550,3 +550,77 @@ for(const width of [390,1440])test('chapters 6 and 8 keep complete combinations 
  await article.locator('[data-rx-source-use]').click();
  await expect(page.locator('#rxComposer')).toHaveValue(/Nga goja ose tub nazogastrik[\s\S]*Metronidazole[\s\S]*Rruga: IV[\s\S]*Rektalisht, klizmë mbajtëse/);
 });
+for(const width of [320,390,1440]) {
+ test('rheumatology monthly and weekly schedules stay distinct at '+width+'px',async({page},testInfo)=>{
+  const {withPrescriptionClinicalPlan}=require('../lib/prescription-clinical-plan');
+  const docs=require('./fixtures/prescription-clinical-plan-11-15').filter(g=>g.chapterNumber===13&&[3,11].includes(g.orderInChapter));
+  await page.route('**/api/medical-hub?**',async route=>{
+   const url=new URL(route.request().url()),payload=require('./recetat-source-browser-fixture')(url,docs);
+   if(payload?.items&&!url.searchParams.get('chapter')){payload.chapter=13;payload.items=docs;}
+   await route.fulfill({json:payload});
+  });
+  await page.setViewportSize({width,height:900});
+  await page.goto(baseURL+'/recetat.html',{waitUntil:'domcontentloaded'});
+  const article=page.locator('.is-clinical-plan');
+  await expect(article.locator('h3')).toContainText('Ibandronate mujore');
+  await expect(article.locator('.rx-clinical-flow')).toContainText('Një herë në MUAJ');
+  await expect(article.locator('.rx-source-information-body')).toBeHidden();
+  await page.locator('#rxSourceLessonSelect').selectOption(docs[1]._id);
+  await expect(article.locator('h3')).toContainText('Methotrexate javore');
+  const confirmation=article.locator('[data-rx-clinical-confirmation]'),use=article.locator('[data-rx-source-use]');
+  await expect(confirmation).not.toBeChecked();await expect(use).toBeDisabled();
+  await confirmation.check();await expect(use).toBeEnabled();
+  await confirmation.uncheck();await expect(use).toBeDisabled();await confirmation.check();
+  await expect(article.locator('.rx-clinical-flow')).toContainText('Vetëm një herë në JAVË');
+  await expect(article.locator('.rx-clinical-flow')).toContainText('ditë tjetër nga methotrexate');
+  expect(await confirmation.evaluate(e=>e.closest('label').getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  await article.screenshot({path:testInfo.outputPath('mtx-weekly-'+width+'.png')});
+  await use.click();const draft=await page.locator('#rxComposer').inputValue();
+  expect(draft).toMatch(/Methotrexate[\s\S]*Vetëm një herë në JAVË[\s\S]*EDHE[\s\S]*Folic acid[\s\S]*ditë tjetër/);
+  expect(draft).not.toMatch(/Ibandronic|Prednisolone|Diclofenac/);
+ });
+ test('neurology routes and psychiatry alternatives require explicit choices at '+width+'px',async({page},testInfo)=>{
+  const {withPrescriptionClinicalPlan}=require('../lib/prescription-clinical-plan');
+  const docs=require('./fixtures/prescription-clinical-plan-11-15').filter(g=>(g.chapterNumber===14&&[1,29,30].includes(g.orderInChapter))||(g.chapterNumber===15&&[9,13].includes(g.orderInChapter)));
+  const id=(ch,n)=>docs.find(g=>g.chapterNumber===ch&&g.orderInChapter===n)._id;
+  await page.route('**/api/medical-hub?**',async route=>{
+   const url=new URL(route.request().url()),payload=require('./recetat-source-browser-fixture')(url,docs);
+   if(payload?.items&&!url.searchParams.get('chapter')){payload.chapter=14;payload.items=docs.filter(g=>g.chapterNumber===14);}
+   await route.fulfill({json:payload});
+  });
+  await page.setViewportSize({width,height:900});
+  await page.goto(baseURL+'/recetat.html',{waitUntil:'domcontentloaded'});
+  const article=page.locator('.is-clinical-plan');
+  await article.locator('[data-rx-clinical-option="g1"][value="o1"]').check();
+  await expect(article.locator('.rx-clinical-option.is-selected .rx-source-item')).toHaveCount(2);
+  await expect(article.locator('.rx-clinical-option.is-selected')).toContainText('Naproxen');
+  await article.locator('[data-rx-clinical-option="g1"][value="o3"]').check();
+  await expect(article.locator('.rx-clinical-option.is-selected .rx-source-item')).toHaveCount(1);
+  await expect(article.locator('.rx-clinical-option.is-selected')).toContainText('Intranazalisht');
+  await page.locator('#rxSourceLessonSelect').selectOption(id(14,29));
+  await article.locator('[data-rx-clinical-option="g1"][value="o1"]').check();
+  await expect(article.locator('[data-rx-source-use]')).toBeDisabled();
+  await expect(article.locator('[data-rx-clinical-group="g3"]')).not.toBeChecked();
+  await article.locator('[data-rx-clinical-confirmation]').check();
+  await expect(article.locator('[data-rx-source-use]')).toBeEnabled();
+  await page.locator('#rxSourceLessonSelect').selectOption(id(14,30));
+  await article.locator('[data-rx-clinical-option="g1"][value="o2"]').check();
+  await expect(article.locator('.rx-clinical-option.is-selected')).toContainText('1000 mg');
+  await expect(article.locator('.rx-clinical-option.is-selected')).toContainText('IV');
+  await page.locator('#rxSourceChapterSelect').selectOption('15');
+  await page.locator('#rxSourceLessonSelect').selectOption(id(15,13));
+  await expect(article.locator('[data-rx-source-use]')).toBeDisabled();
+  await expect(article.locator('.rx-clinical-reference')).toContainText('nuk kalohet automatikisht');
+  await page.locator('#rxSourceLessonSelect').selectOption(id(15,9));
+  await article.locator('[data-rx-clinical-option="g1"][value="o2"]').check();
+  await expect(article.locator('[data-rx-source-use]')).toBeDisabled();
+  await article.locator('[data-rx-clinical-confirmation]').check();
+  await expect(article.locator('.rx-source-information-body')).toBeHidden();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  await article.screenshot({path:testInfo.outputPath('mdd-one-ssri-'+width+'.png')});
+  await article.locator('[data-rx-source-use]').click();const draft=await page.locator('#rxComposer').inputValue();
+  expect(draft).toMatch(/Sertraline[\s\S]*Doza: Fillimisht 50 mg[\s\S]*6 muaj/);
+  expect(draft).not.toMatch(/Escitalopram|Clonazepam|Methylprednisolone|Immunoglobulin/);
+ });
+}
