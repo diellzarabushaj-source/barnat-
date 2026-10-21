@@ -399,5 +399,7 @@ html[data-drx-app="recetat-v2"] .rx-source-guide .rx-source-item-body{line-heigh
 .rx-clinical-dose-grid dd{margin:0;font-size:13px;font-weight:600;line-height:1.5;color:#173654;overflow-wrap:anywhere}
 .rx-clinical-flow .rx-source-sig>span{display:none}
 .rx-clinical-flow .rx-source-sig{font-size:12px;line-height:1.6}
+.rx-clinical-confirmation{margin:0 22px 14px;border:1px solid #ced9ed;background:#f3f6fc}
+@media(max-width:760px){.rx-clinical-confirmation{margin:0 12px 12px}.rx-clinical-confirmation small{display:none}}
 @media(max-width:760px){.rx-source-guide .rx-source-guide-head{padding-right:66px}.rx-source-information>summary{right:12px;top:13px}.rx-source-information{margin:0 12px 10px}.rx-clinical-context{margin:0 12px 12px;padding:10px 12px;font-size:12px}.rx-clinical-dose-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.rx-clinical-option{padding:4px}.rx-clinical-option-choice,.rx-clinical-condition{padding:10px 7px}.rx-clinical-option-choice small{display:none}.rx-source-information-body{padding:12px}.rx-clinical-reference{margin:12px}}
 @media(prefers-reduced-motion:reduce){.rx-clinical-option{transition:none}}
