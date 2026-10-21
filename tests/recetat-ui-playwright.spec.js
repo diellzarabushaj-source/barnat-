@@ -485,3 +485,68 @@ for (const width of [390,1440]) {
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
   });
 }
+
+for(const width of [320,390,1440])test('chapter 10 HHS requires confirmation and copies exactly one protocol at '+width+'px',async({page},testInfo)=>{
+ const {withPrescriptionClinicalPlan}=require('../lib/prescription-clinical-plan');
+ const raw=require('./fixtures/prescription-clinical-source-6-10.json').find(g=>g.chapterNumber===10&&g.orderInChapter===25);
+ const guide=withPrescriptionClinicalPlan(raw);
+ await page.route('**/api/medical-hub?**',async route=>{
+  const payload=require('./recetat-source-browser-fixture')(new URL(route.request().url()),[guide]);
+  if(payload?.items){payload.chapter=10;payload.items=[guide];}
+  await route.fulfill({json:payload});
+ });
+ await page.setViewportSize({width,height:900});
+ await page.goto(baseURL+'/recetat.html',{waitUntil:'domcontentloaded'});
+ const article=page.locator('.is-clinical-plan');
+ await expect(article).toBeVisible();
+ const use=article.locator('[data-rx-source-use]');
+ const confirmation=article.locator('[data-rx-clinical-confirmation]');
+ await expect(confirmation).not.toBeChecked();await expect(use).toBeDisabled();
+ await article.locator('[data-rx-clinical-option="g1"][value="o1"]').check();
+ await article.locator('[data-rx-clinical-option="g3"][value="o1"]').check();
+ await expect(use).toBeDisabled();
+ await confirmation.check();await expect(confirmation).toBeFocused();await expect(use).toBeEnabled();
+ await confirmation.uncheck();await expect(use).toBeDisabled();
+ await confirmation.check();
+ await expect(article.locator('.rx-source-information-body')).toBeHidden();
+ const colors=await article.locator('.rx-clinical-group').evaluateAll(groups=>groups.map(g=>getComputedStyle(g).backgroundColor));
+ expect(new Set(colors).size).toBeGreaterThan(1);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ expect(await confirmation.evaluate(e=>e.closest('label').getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
+ await article.screenshot({path:testInfo.outputPath('hhs-'+width+'.png')});
+ await use.click();
+ await expect(page.locator('#rxComposer')).toHaveValue(/0,05 NJËSI\/kg\/orë/);
+ await expect(page.locator('#rxComposer')).not.toHaveValue(/0,1 NJËSI\/kg\/orë|microdrops|0\.1 mg\/kg/);
+});
+for(const width of [390,1440])test('chapters 6 and 8 keep complete combinations and separate routes at '+width+'px',async({page},testInfo)=>{
+ const {withPrescriptionClinicalPlan}=require('../lib/prescription-clinical-plan');
+ const docs=require('./fixtures/prescription-clinical-source-6-10.json').filter(g=>(g.chapterNumber===6&&g.orderInChapter===5)||(g.chapterNumber===8&&g.orderInChapter===20)).map(withPrescriptionClinicalPlan);
+ await page.route('**/api/medical-hub?**',async route=>{
+  const url=new URL(route.request().url());const payload=require('./recetat-source-browser-fixture')(url,docs);
+  if(payload?.items&&!url.searchParams.get('chapter')){payload.chapter=6;payload.items=docs.filter(g=>g.chapterNumber===6);}
+  await route.fulfill({json:payload});
+ });
+ await page.setViewportSize({width,height:900});
+ await page.goto(baseURL+'/recetat.html',{waitUntil:'domcontentloaded'});
+ let article=page.locator('.is-clinical-plan');
+ await expect(article).toBeVisible();
+ await article.locator('[data-rx-clinical-option="g1"][value="o1"]').check();
+ await expect(article.locator('.rx-clinical-option.is-selected .rx-source-item')).toHaveCount(2);
+ await expect(article.locator('.rx-clinical-option.is-selected')).toContainText('875 mg + 125 mg');
+ await article.locator('[data-rx-clinical-option="g1"][value="o10"]').check();
+ await expect(article.locator('.rx-clinical-option.is-selected .rx-source-item')).toHaveCount(1);
+ await expect(article.locator('.rx-clinical-option.is-selected')).toContainText('Levofloxacin');
+ await page.locator('#rxSourceChapterSelect').selectOption('8');
+ article=page.locator('.is-clinical-plan');
+ await expect(article).toContainText('Metronidazole IV EDHE vancomycin');
+ await expect(article.locator('[data-rx-clinical-group="g3"]')).not.toBeChecked();
+ await article.locator('[data-rx-clinical-confirmation]').check();
+ await article.locator('[data-rx-clinical-group="g3"]').check();
+ await expect(article.locator('[data-rx-clinical-confirmation]')).toBeChecked();
+ await expect(article.locator('[data-rx-source-use]')).toBeEnabled();
+ await expect(article.locator('.rx-source-information-body')).toBeHidden();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ await article.screenshot({path:testInfo.outputPath('cdi-routes-'+width+'.png')});
+ await article.locator('[data-rx-source-use]').click();
+ await expect(page.locator('#rxComposer')).toHaveValue(/Nga goja ose tub nazogastrik[\s\S]*Metronidazole[\s\S]*Rruga: IV[\s\S]*Rektalisht, klizmë mbajtëse/);
+});

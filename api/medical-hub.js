@@ -268,7 +268,7 @@ function prescriptionSearchDocument(item) {
       && normalize(block.condition) === normalize(block.items[0]?.title)
     )),
   };
-  const title = normalize([item?.title, item?.sourceHeading].filter(Boolean).join(' '));
+  const title = normalize([plan?.title, item?.title, item?.sourceHeading].filter(Boolean).join(' '));
   const chapter = normalize(item?.chapterTitle);
   const keywords = normalize(flattenStrings(item?.keywords).join(' '));
   const substances = normalize(flattenStrings(blocks.flatMap(block =>
@@ -283,7 +283,7 @@ function prescriptionSearchDocument(item) {
   return {
     item:{
       _id:item?._id,
-      title:clean(item?.title || item?.sourceHeading),
+      title:clean(plan?.title || item?.title || item?.sourceHeading),
       chapterNumber:Number(item?.chapterNumber) || 0,
       chapterTitle:clean(item?.chapterTitle),
       orderInChapter:Number(item?.orderInChapter) || 0,

@@ -1,0 +1,4276 @@
+[
+  {
+    "_id": "3016afe0-593c-43aa-9134-414226cd2ae1",
+    "_rev": "XvHEtE7wDfwx7JSLWPbCV6",
+    "_type": "prescriptionGuide",
+    "chapterNumber": 6,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "CURB-65 0-1, ASHPËRSI E ULËT:",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Amoxicillin",
+            "kind": "active-substance",
+            "order": 1,
+            "sig": "Të merret 3 herë në ditë (TDS).",
+            "sourceNumber": 1,
+            "strength": "500 mg",
+            "title": "Cap. Amoxicillin 500 mg"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NË ALERGJI NDAJ PENICILINËS - OSE:",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Doxycycline",
+            "kind": "active-substance",
+            "order": 2,
+            "sig": "Të merret 2 herë në ditë (BD), siç shkruhet në burim.",
+            "sourceNumber": 1,
+            "strength": "200 mg",
+            "title": "Cap. Doxycycline 200 mg"
+          }
+        ],
+        "order": 2,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 3,
+            "sig": "Frekuenca nuk specifikohet në këtë rresht të burimit.",
+            "strength": "500 mg",
+            "title": "SHËNIM I BURIMIT – Tab. Azithromycin 500 mg:"
+          }
+        ],
+        "order": 3,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Clarithromycin",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "Të merret 2 herë në ditë (BD).",
+            "sourceNumber": 1,
+            "strength": "500 mg",
+            "title": "Tab. Clarithromycin 500 mg"
+          }
+        ],
+        "order": 4,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b5",
+        "_type": "prescriptionLogicBlock",
+        "condition": "CURB-65 = 2, ASHPËRSI E MODERUAR:",
+        "items": [
+          {
+            "_key": "i5",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Amoxicillin",
+            "kind": "active-substance",
+            "order": 5,
+            "sig": "Të merret 3 herë në ditë (TDS). Nëse mjekimi oral nuk është i mundur, burimi udhëzon trajtim si pacient i shtruar.",
+            "sourceNumber": 1,
+            "strength": "500 mg",
+            "title": "Cap. Amoxicillin 500 mg-1 g"
+          }
+        ],
+        "order": 5,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b6",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NË ALERGJI NDAJ PENICILINËS - OSE:",
+        "items": [
+          {
+            "_key": "i6",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Levofloxacin",
+            "kind": "active-substance",
+            "order": 6,
+            "sig": "Të merret 1 herë në ditë (OD).",
+            "sourceNumber": 1,
+            "strength": "500 mg",
+            "title": "Tab. Levofloxacin 500 mg"
+          }
+        ],
+        "order": 6,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b7",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i7",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Moxifloxacin",
+            "kind": "active-substance",
+            "order": 7,
+            "sig": "Të merret 1 herë në ditë (OD).",
+            "sourceNumber": 1,
+            "strength": "400 mg",
+            "title": "Tab. Moxifloxacin 400 mg"
+          }
+        ],
+        "order": 7,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b8",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i8",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 8,
+            "sig": "Trajtohet si pacient i shtruar/ICU. Kohëzgjatja e trajtimit e shënuar në burim: 5-7 ditë.",
+            "title": "CURB-65 3-5, CAP E RËNDË:"
+          }
+        ],
+        "order": 8,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      }
+    ],
+    "orderInChapter": 3,
+    "reviewStatus": "verified",
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "PNEUMONI E FITUAR NË KOMUNITET (CAP) - PACIENT AMBULATOR, SIPAS CURB-65",
+    "title": "PNEUMONI E FITUAR NË KOMUNITET (CAP) - PACIENT AMBULATOR, SIPAS CURB-65",
+    "version": "1.0-source"
+  },
+  {
+    "_createdAt": "2026-09-03T18:18:00Z",
+    "_id": "9112fd71-60a3-4a08-b814-0338063d2b30",
+    "_rev": "6D5Q0ryhDWsgNOj1CRZYHZ",
+    "_system": {
+      "base": {
+        "id": "9112fd71-60a3-4a08-b814-0338063d2b30",
+        "rev": "XvHEtE7wDfwx7JSLWPbCV6"
+      }
+    },
+    "_type": "prescriptionGuide",
+    "_updatedAt": "2026-10-19T10:07:54Z",
+    "chapterNumber": 6,
+    "chapterTitle": "Pulmonologjia",
+    "externalId": "dod-rx-ch06-005-cap-ambulatore-komorbiditete-ose-rrezik-per-patogjene-rezistente",
+    "keywords": [
+      "CAP AMBULATORE - KOMORBIDITETE OSE RREZIK PËR PATOGJENË REZISTENTË"
+    ],
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "MONOTERAPI - OSE:",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Levofloxacin",
+            "kind": "active-substance",
+            "order": 1,
+            "sig": "Të merret 1 herë në ditë.",
+            "sourceNumber": 1,
+            "strength": "750 mg",
+            "title": "Tab. Levofloxacin 750 mg"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Moxifloxacin",
+            "kind": "active-substance",
+            "order": 2,
+            "sig": "Të merret 1 herë në ditë.",
+            "sourceNumber": 1,
+            "strength": "400 mg",
+            "title": "Tab. Moxifloxacin 400 mg"
+          }
+        ],
+        "order": 2,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Gemifloxacin",
+            "kind": "active-substance",
+            "order": 3,
+            "sig": "Të merret 1 herë në ditë.",
+            "sourceNumber": 1,
+            "strength": "320 mg",
+            "title": "Tab. Gemifloxacin 320 mg"
+          }
+        ],
+        "order": 3,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "TERAPI E KOMBINUAR: ZGJIDH NJË NGA GRUPI A",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Amoxicillin + Clavulanic acid",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "Të merret 2 herë në ditë (BD).",
+            "sourceNumber": 1,
+            "strength": "1 g",
+            "title": "Tab. Amoxicillin + Clavulanic acid 1 g"
+          }
+        ],
+        "order": 4,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b5",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i5",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Cefuroxime",
+            "kind": "active-substance",
+            "order": 5,
+            "sig": "Në të njëjtin rresht burimi shënon më tej \"500 mg × BD\". Nuk është korrigjuar në heshtje.",
+            "sourceNumber": 1,
+            "strength": "250 mg",
+            "title": "Cap. Cefuroxime 250 mg"
+          }
+        ],
+        "order": 5,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b6",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i6",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Cefpodoxime",
+            "kind": "active-substance",
+            "order": 6,
+            "sig": "Të merret 2 herë në ditë (BD).",
+            "sourceNumber": 1,
+            "strength": "200 mg",
+            "title": "Tab. Cefpodoxime 200 mg"
+          }
+        ],
+        "order": 6,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b7",
+        "_type": "prescriptionLogicBlock",
+        "condition": "ZGJIDH NJË NGA GRUPI B:",
+        "items": [
+          {
+            "_key": "i7",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Doxycycline",
+            "kind": "active-substance",
+            "order": 7,
+            "sig": "Të merret 2 herë në ditë.",
+            "sourceNumber": 1,
+            "strength": "100 mg",
+            "title": "Cap. Doxycycline 100 mg"
+          }
+        ],
+        "order": 7,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b8",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i8",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Azithromycin",
+            "kind": "active-substance",
+            "order": 8,
+            "sig": "500 mg në ditën 1, pastaj 250 mg 1 herë në ditë për 4 ditë; OSE 500 mg 1 herë në ditë për 3 ditë.",
+            "sourceNumber": 1,
+            "strength": "500 mg",
+            "title": "Tab. Azithromycin 500 mg"
+          }
+        ],
+        "order": 8,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b9",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i9",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Clarithromycin",
+            "kind": "active-substance",
+            "order": 9,
+            "sig": "Të merret 2 herë në ditë (BD).",
+            "sourceNumber": 1,
+            "strength": "500 mg",
+            "title": "Tab. Clarithromycin 500 mg"
+          }
+        ],
+        "order": 9,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b10",
+        "_type": "prescriptionLogicBlock",
+        "condition": "TRAJTIM MBËSHTETËS:",
+        "items": [
+          {
+            "_key": "i10",
+            "_type": "sourcePrescriptionItem",
+            "form": "Syp.",
+            "genericName": "Chlorpheniramine maleate + Ephedrine + Dextromethorphan + Sodium citrate",
+            "kind": "active-substance",
+            "order": 10,
+            "sig": "2 lugë çaji, 3 herë në ditë (TDS).",
+            "sourceNumber": 3,
+            "title": "Syp. Chlorpheniramine maleate + Ephedrine + Dextromethorphan + Sodium citrate"
+          }
+        ],
+        "order": 10,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b11",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i11",
+            "_type": "sourcePrescriptionItem",
+            "form": "Syp.",
+            "genericName": "Aminophylline + Ammonium chloride + Diphenhydramine + Menthol",
+            "kind": "active-substance",
+            "order": 11,
+            "sig": "2 lugë çaji, 3 herë në ditë (TDS).",
+            "sourceNumber": 3,
+            "title": "Syp. Aminophylline + Ammonium chloride + Diphenhydramine + Menthol"
+          }
+        ],
+        "order": 11,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b12",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i12",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Paracetamol",
+            "kind": "active-substance",
+            "order": 12,
+            "sig": "Të merren 1-2 tableta, 3 herë në ditë (TDS).",
+            "sourceNumber": 4,
+            "strength": "500 mg",
+            "title": "Tab. Paracetamol 500 mg"
+          }
+        ],
+        "order": 12,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b13",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i13",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 13,
+            "sig": "1 herë në ditë; substancat aktive/fortësia nuk specifikohen nga emërtimi gjenerik i këtij rreshti në burim.",
+            "title": "SHËNIM I BURIMIT – Suplement kalciumi/vitaminash:"
+          }
+        ],
+        "order": 13,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b14",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i14",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Loratadine",
+            "kind": "active-substance",
+            "order": 14,
+            "sig": "Të merret 1 herë në ditë (OD).",
+            "sourceNumber": 3,
+            "strength": "10 mg",
+            "title": "Tab. Loratadine 10 mg"
+          }
+        ],
+        "note": "S. Kujdes mbështetës: hidratim adekuat, ushqyerje dhe pushim.",
+        "order": 14,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      }
+    ],
+    "orderInChapter": 5,
+    "reviewStatus": "verified",
+    "slug": {
+      "_type": "slug",
+      "current": "kapitulli-6-cap-ambulatore-komorbiditete-ose-rrezik-per-patogjene-rezistente"
+    },
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "CAP AMBULATORE - KOMORBIDITETE OSE RREZIK PËR PATOGJENË REZISTENTË",
+    "title": "CAP AMBULATORE - KOMORBIDITETE OSE RREZIK PËR PATOGJENË REZISTENTË",
+    "version": "1.0-source"
+  },
+  {
+    "_createdAt": "2026-09-03T18:18:00Z",
+    "_id": "14754f43-25de-4aa0-8f1c-a0e0881d7429",
+    "_rev": "6D5Q0ryhDWsgNOj1CRZYHZ",
+    "_system": {
+      "base": {
+        "id": "14754f43-25de-4aa0-8f1c-a0e0881d7429",
+        "rev": "XvHEtE7wDfwx7JSLWPbCV6"
+      }
+    },
+    "_type": "prescriptionGuide",
+    "_updatedAt": "2026-10-19T10:07:54Z",
+    "chapterNumber": 6,
+    "chapterTitle": "Pulmonologjia",
+    "externalId": "dod-rx-ch06-006-cap-pacient-i-shtruar-ne-repart",
+    "keywords": [
+      "CAP - PACIENT I SHTRUAR NË REPART"
+    ],
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 1,
+            "sig": "Stabilizo pacientin me qasjen ABCD&E; vendos akses IV me lumen të madh; monitoro BP, PR, RR dhe temperaturën.",
+            "title": "Shënim i burimit"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "kind": "oxygen",
+            "order": 2,
+            "sig": "Nëse SpO₂ <94%, administrohet me kanulë nazale 1-6 L/min.",
+            "sourceNumber": 1,
+            "title": "Oksigjen suplementar"
+          }
+        ],
+        "order": 2,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 3,
+            "sourceNumber": 2,
+            "title": "Lëngje PO"
+          }
+        ],
+        "order": 3,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 4,
+            "sourceNumber": 2,
+            "title": "IV: Ringer lactate"
+          }
+        ],
+        "order": 4,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b5",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i5",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 5,
+            "sig": "Për hidratim.",
+            "sourceNumber": 2,
+            "strength": "0.9%",
+            "title": "0.9% NaCl"
+          }
+        ],
+        "order": 5,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b6",
+        "_type": "prescriptionLogicBlock",
+        "condition": "TERAPI EMPIRIKE 5-7 DITË - KOMBINIM PËR NON-ICU/NON-SEVERE DHE ICU/SEVERE: ZGJIDH NJË β-LAKTAM",
+        "items": [
+          {
+            "_key": "i6",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Ampicillin + Sulbactam",
+            "kind": "active-substance",
+            "order": 6,
+            "sig": "IV, 4 herë në ditë (QID), çdo 6 orë.",
+            "sourceNumber": 3,
+            "strength": "1.5-3 g",
+            "title": "Inj. Ampicillin + Sulbactam 1.5-3 g"
+          }
+        ],
+        "order": 6,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b7",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i7",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Amoxicillin + Sulbactam",
+            "kind": "active-substance",
+            "order": 7,
+            "sig": "IV, 4 herë në ditë (QID), çdo 6 orë, siç shkruhet në burim.",
+            "sourceNumber": 3,
+            "strength": "1.5-3 g",
+            "title": "Inj. Amoxicillin + Sulbactam 1.5-3 g"
+          }
+        ],
+        "order": 7,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b8",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i8",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Ceftriaxone",
+            "kind": "active-substance",
+            "order": 8,
+            "sig": "IV, 1 herë në ditë (OD), çdo 24 orë.",
+            "sourceNumber": 3,
+            "strength": "2 g",
+            "title": "Inj. Ceftriaxone 2 g"
+          }
+        ],
+        "order": 8,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b9",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i9",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Cefotaxime",
+            "kind": "active-substance",
+            "order": 9,
+            "sig": "IV, TDS/BD, çdo 8-12 orë.",
+            "sourceNumber": 3,
+            "strength": "1-2 g",
+            "title": "Inj. Cefotaxime 1-2 g"
+          }
+        ],
+        "order": 9,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b10",
+        "_type": "prescriptionLogicBlock",
+        "condition": "ZGJIDH NJË:",
+        "items": [
+          {
+            "_key": "i10",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Azithromycin",
+            "kind": "active-substance",
+            "order": 10,
+            "sig": "IV, 1 herë në ditë (OD); burimi shënon se mund të jepet edhe nga goja në formë tablete.",
+            "sourceNumber": 4,
+            "strength": "500 mg",
+            "title": "Inj. Azithromycin 500 mg/vial"
+          }
+        ],
+        "order": 10,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b11",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i11",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Clarithromycin",
+            "kind": "active-substance",
+            "order": 11,
+            "sig": "IV, 2 herë në ditë (BD); burimi shënon se mund të jepet edhe nga goja në formë tablete.",
+            "sourceNumber": 4,
+            "strength": "500 mg",
+            "title": "Inj. Clarithromycin 500 mg/vial"
+          }
+        ],
+        "order": 11,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b12",
+        "_type": "prescriptionLogicBlock",
+        "condition": "MONOTERAPI PËR NON-ICU/NON-SEVERE:",
+        "items": [
+          {
+            "_key": "i12",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Levofloxacin",
+            "kind": "active-substance",
+            "order": 12,
+            "sig": "IV, 1 herë në ditë (OD).",
+            "sourceNumber": 3,
+            "strength": "500 mg/100 mL",
+            "title": "Inj. Levofloxacin 500 mg/100 mL / 750 mg/150 mL"
+          }
+        ],
+        "order": 12,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b13",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i13",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Moxifloxacin",
+            "kind": "active-substance",
+            "order": 13,
+            "sig": "IV, 1 herë në ditë (OD).",
+            "sourceNumber": 3,
+            "strength": "400 mg/250 mL",
+            "title": "Inj. Moxifloxacin 400 mg/250 mL"
+          }
+        ],
+        "order": 13,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b14",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NË RREZIK PËR PSEUDOMONAS AERUGINOSA - ZGJIDH NJË:",
+        "items": [
+          {
+            "_key": "i14",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Piperacillin + Tazobactam",
+            "kind": "active-substance",
+            "order": 14,
+            "sig": "IV, 3 herë në ditë (TDS); në sëmundje të rëndë çdo 6 orë.",
+            "sourceNumber": 5,
+            "strength": "4.5 g",
+            "title": "Inj. Piperacillin + Tazobactam 4.5 g"
+          }
+        ],
+        "order": 14,
+        "relation": "conditional",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b15",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i15",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Ceftazidime",
+            "kind": "active-substance",
+            "order": 15,
+            "sig": "IV, çdo 8 orë.",
+            "sourceNumber": 5,
+            "strength": "1-2 g",
+            "title": "Inj. Ceftazidime 1-2 g"
+          }
+        ],
+        "order": 15,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b16",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i16",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Cefepime",
+            "kind": "active-substance",
+            "order": 16,
+            "sig": "IV, 3 herë në ditë (TDS), çdo 8 orë.",
+            "sourceNumber": 5,
+            "strength": "1-2 g",
+            "title": "Inj. Cefepime 1-2 g"
+          }
+        ],
+        "order": 16,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b17",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i17",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Meropenem",
+            "kind": "active-substance",
+            "order": 17,
+            "sig": "IV, 3 herë në ditë (TDS), çdo 8 orë.",
+            "sourceNumber": 5,
+            "strength": "0.5-1 g",
+            "title": "Inj. Meropenem 0.5-1 g"
+          }
+        ],
+        "order": 17,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b18",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i18",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Imipenem + Cilastatin",
+            "kind": "active-substance",
+            "order": 18,
+            "sig": "IV, 4 herë në ditë (QID), çdo 6 orë.",
+            "sourceNumber": 5,
+            "strength": "500 mg",
+            "title": "Inj. Imipenem + Cilastatin 500 mg-1 g"
+          }
+        ],
+        "order": 18,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b19",
+        "_type": "prescriptionLogicBlock",
+        "condition": "ZGJIDH NJË:",
+        "items": [
+          {
+            "_key": "i19",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Azithromycin",
+            "kind": "active-substance",
+            "order": 19,
+            "sig": "IV, 1 herë në ditë (OD).",
+            "sourceNumber": 6,
+            "strength": "500 mg",
+            "title": "Inj. Azithromycin 500 mg/vial"
+          }
+        ],
+        "order": 19,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b20",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i20",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Clarithromycin",
+            "kind": "active-substance",
+            "order": 20,
+            "sig": "IV, 2 herë në ditë (BD).",
+            "sourceNumber": 6,
+            "strength": "500 mg",
+            "title": "Inj. Clarithromycin 500 mg/vial"
+          }
+        ],
+        "order": 20,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b21",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i21",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Levofloxacin",
+            "kind": "active-substance",
+            "order": 21,
+            "sig": "IV, 1 herë në ditë (OD).",
+            "sourceNumber": 6,
+            "strength": "500 mg/100 mL",
+            "title": "Inj. Levofloxacin 500 mg/100 mL"
+          }
+        ],
+        "order": 21,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b22",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i22",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Moxifloxacin",
+            "kind": "active-substance",
+            "order": 22,
+            "sig": "IV, 1 herë në ditë (OD).",
+            "sourceNumber": 3,
+            "strength": "400 mg/250 mL",
+            "title": "Inj. Moxifloxacin 400 mg/250 mL"
+          }
+        ],
+        "order": 22,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b23",
+        "_type": "prescriptionLogicBlock",
+        "condition": "INDIKOHET:",
+        "items": [
+          {
+            "_key": "i23",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Dexamethasone",
+            "kind": "active-substance",
+            "order": 23,
+            "sig": "Doza 4-6 mg IV, 2 herë në ditë (BD), për 5-7 ditë.",
+            "sourceNumber": 7,
+            "strength": "4 mg/1 mL",
+            "title": "Inj. Dexamethasone 4 mg/1 mL"
+          }
+        ],
+        "order": 23,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b24",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i24",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Paracetamol",
+            "kind": "active-substance",
+            "order": 24,
+            "sig": "IV, 3 herë në ditë (TDS) / SOS.",
+            "sourceNumber": 8,
+            "strength": "1 g/100 mL",
+            "title": "Inj. Paracetamol 1 g/100 mL"
+          }
+        ],
+        "order": 24,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b25",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i25",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Omeprazole",
+            "kind": "active-substance",
+            "order": 25,
+            "sig": "IV, 1 herë në ditë (OD).",
+            "sourceNumber": 9,
+            "strength": "40 mg",
+            "title": "Inj. Omeprazole 40 mg"
+          }
+        ],
+        "order": 25,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b26",
+        "_type": "prescriptionLogicBlock",
+        "condition": "TROMBOPROFILAKSI NË PACIENT ME RREZIK TË LARTË - OSE:",
+        "items": [
+          {
+            "_key": "i26",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Enoxaparin sodium",
+            "kind": "active-substance",
+            "order": 26,
+            "sig": "100 IU/kg (1.5 mg/kg), SC, 1 herë në ditë (OD), siç shënohet në burim.",
+            "sourceNumber": 10,
+            "strength": "40 mg / 60 mg",
+            "title": "Inj. Enoxaparin sodium 40 mg / 60 mg / 80 mg"
+          }
+        ],
+        "order": 26,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b27",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i27",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Fondaparinux",
+            "kind": "active-substance",
+            "order": 27,
+            "sig": "SC, 1 herë në ditë (OD).",
+            "sourceNumber": 10,
+            "strength": "5-10 mg",
+            "title": "Inj. Fondaparinux 5-10 mg"
+          }
+        ],
+        "note": "S. Burimi udhëzon pranim në ICU dhe intubim në shenja të dështimit respirator, dispne me hipoksemi ose takipne >30/min; monitorim të reflekseve pupilare, GCS dhe urinës; hidratim, ushqyerje, pushim të mjaftueshëm dhe fizioterapi.",
+        "order": 27,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      }
+    ],
+    "orderInChapter": 6,
+    "reviewStatus": "verified",
+    "slug": {
+      "_type": "slug",
+      "current": "kapitulli-6-cap-pacient-i-shtruar-ne-repart"
+    },
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "CAP - PACIENT I SHTRUAR NË REPART",
+    "title": "CAP - PACIENT I SHTRUAR NË REPART",
+    "version": "1.0-source"
+  },
+  {
+    "_createdAt": "2026-09-03T18:18:00Z",
+    "_id": "4e354955-9759-4d85-b017-a4101ddf9865",
+    "_rev": "6D5Q0ryhDWsgNOj1CRZYHZ",
+    "_system": {
+      "base": {
+        "id": "4e354955-9759-4d85-b017-a4101ddf9865",
+        "rev": "XvHEtE7wDfwx7JSLWPbCV6"
+      }
+    },
+    "_type": "prescriptionGuide",
+    "_updatedAt": "2026-10-19T10:07:54Z",
+    "chapterNumber": 6,
+    "chapterTitle": "Pulmonologjia",
+    "externalId": "dod-rx-ch06-007-pneumoni-nosokomiale-hospital-acquired-pneumonia-hap",
+    "keywords": [
+      "PNEUMONI NOSOKOMIALE / HOSPITAL-ACQUIRED PNEUMONIA (HAP)"
+    ],
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 1,
+            "sig": "Stabilizo me ABCD&E; akses IV; monitoro BP, PR, RR, temperaturën; nëse SpO₂ <94% jep O₂ 1-6 L/min; hidratim PO ose IV me Ringer lactate OSE 0.9% NaCl. Kohëzgjatja e antibiotikëve e shënuar: 7 ditë.",
+            "title": "Shënim i burimit"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "JO RREZIK I LARTË PËR VDEKSHMËRI DHE PA RREZIK MRSA - MONOTERAPI, OSE:",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Imipenem + Cilastatin",
+            "kind": "active-substance",
+            "order": 2,
+            "sig": "IV, QID, çdo 6 orë.",
+            "sourceNumber": 1,
+            "strength": "500 mg",
+            "title": "Inj. Imipenem + Cilastatin 500 mg"
+          }
+        ],
+        "order": 2,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Cefepime",
+            "kind": "active-substance",
+            "order": 3,
+            "sig": "IV, TDS, çdo 8 orë.",
+            "sourceNumber": 1,
+            "strength": "2 g",
+            "title": "Inj. Cefepime 2 g"
+          }
+        ],
+        "order": 3,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Piperacillin + Tazobactam",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "IV, QID, çdo 6 orë.",
+            "sourceNumber": 1,
+            "strength": "4.5 g",
+            "title": "Inj. Piperacillin + Tazobactam 4.5 g"
+          }
+        ],
+        "order": 4,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b5",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i5",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Meropenem",
+            "kind": "active-substance",
+            "order": 5,
+            "sig": "IV, TDS, çdo 8 orë.",
+            "sourceNumber": 1,
+            "strength": "1 g",
+            "title": "Inj. Meropenem 1 g"
+          }
+        ],
+        "order": 5,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b6",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i6",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Levofloxacin",
+            "kind": "active-substance",
+            "order": 6,
+            "sig": "IV, 1 herë në ditë (OD).",
+            "sourceNumber": 1,
+            "strength": "750 mg/150 mL",
+            "title": "Inj. Levofloxacin 750 mg/150 mL"
+          }
+        ],
+        "order": 6,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b7",
+        "_type": "prescriptionLogicBlock",
+        "condition": "RREZIK MRSA PA RREZIK TË LARTË VDEKSHMËRIE - ZGJIDH NJË:",
+        "items": [
+          {
+            "_key": "i7",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Linezolid",
+            "kind": "active-substance",
+            "order": 7,
+            "sig": "IV, çdo 12 orë.",
+            "sourceNumber": 1,
+            "strength": "600 mg/300 mL",
+            "title": "Inj. Linezolid 600 mg/300 mL"
+          }
+        ],
+        "order": 7,
+        "relation": "conditional",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b8",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i8",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Vancomycin",
+            "kind": "active-substance",
+            "order": 8,
+            "sig": "IV, 15 mg/kg, TDS ose BD, e rregulluar sipas përqendrimit serik me target trough 15-20 mcg/mL. Për pacientë shumë të sëmurë: konsidero dozë ngarkuese 25-30 mg/kg një herë. Maksimumi: 2 g/dozë.",
+            "sourceNumber": 1,
+            "strength": "500 mg / 1 g",
+            "title": "Inj. Vancomycin 500 mg / 1 g"
+          }
+        ],
+        "order": 8,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b9",
+        "_type": "prescriptionLogicBlock",
+        "condition": "ZGJIDH NJË:",
+        "items": [
+          {
+            "_key": "i9",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Piperacillin + Tazobactam",
+            "kind": "active-substance",
+            "order": 9,
+            "sig": "IV, TDS; në sëmundje të rëndë çdo 6 orë.",
+            "sourceNumber": 2,
+            "strength": "4.5 g",
+            "title": "Inj. Piperacillin + Tazobactam 4.5 g"
+          }
+        ],
+        "order": 9,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b10",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i10",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Cefepime",
+            "kind": "active-substance",
+            "order": 10,
+            "sig": "IV, TDS, çdo 8 orë.",
+            "sourceNumber": 1,
+            "strength": "2 g",
+            "title": "Inj. Cefepime 2 g"
+          }
+        ],
+        "order": 10,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b11",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i11",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Ceftazidime",
+            "kind": "active-substance",
+            "order": 11,
+            "sig": "IV, TDS, çdo 8 orë.",
+            "sourceNumber": 2,
+            "strength": "2 g",
+            "title": "Inj. Ceftazidime 2 g"
+          }
+        ],
+        "order": 11,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b12",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i12",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Imipenem + Cilastatin",
+            "kind": "active-substance",
+            "order": 12,
+            "sig": "IV, TDS, çdo 8 orë.",
+            "sourceNumber": 2,
+            "strength": "500 mg",
+            "title": "Inj. Imipenem + Cilastatin 500 mg"
+          }
+        ],
+        "order": 12,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b13",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i13",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Meropenem",
+            "kind": "active-substance",
+            "order": 13,
+            "sig": "IV, TDS, çdo 8 orë.",
+            "sourceNumber": 2,
+            "strength": "0.5-1 g",
+            "title": "Inj. Meropenem 0.5-1 g"
+          }
+        ],
+        "order": 13,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b14",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i14",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 14,
+            "sig": "Kombino Linezolid OSE Vancomycin DHE cilatdo dy nga: Piperacillin/Tazobactam, Cefepime, Ceftazidime, Meropenem, Imipenem/Cilastatin. Burimi udhëzon të shmanget kombinimi i dy β-laktamëve.",
+            "title": "RREZIK I LARTË VDEKSHMËRIE OSE SËMUNDJE STRUKTURORE E MUSHKËRIVE:"
+          }
+        ],
+        "order": 14,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b15",
+        "_type": "prescriptionLogicBlock",
+        "condition": "INDIKOHET:",
+        "items": [
+          {
+            "_key": "i15",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Dexamethasone",
+            "kind": "active-substance",
+            "order": 15,
+            "sig": "4-6 mg IV, 2 herë në ditë, për 5-7 ditë.",
+            "sourceNumber": 3,
+            "strength": "4 mg/1 mL",
+            "title": "Inj. Dexamethasone 4 mg/1 mL"
+          }
+        ],
+        "order": 15,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b16",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i16",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Paracetamol",
+            "kind": "active-substance",
+            "order": 16,
+            "sig": "IV, TDS.",
+            "sourceNumber": 3,
+            "strength": "1 g/100 mL",
+            "title": "Inj. Paracetamol 1 g/100 mL"
+          }
+        ],
+        "order": 16,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b17",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i17",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Omeprazole",
+            "kind": "active-substance",
+            "order": 17,
+            "sig": "IV, 1 herë në ditë.",
+            "sourceNumber": 5,
+            "strength": "40 mg",
+            "title": "Inj. Omeprazole 40 mg"
+          }
+        ],
+        "order": 17,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b18",
+        "_type": "prescriptionLogicBlock",
+        "condition": "TROMBOPROFILAKSI - OSE:",
+        "items": [
+          {
+            "_key": "i18",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Enoxaparin sodium",
+            "kind": "active-substance",
+            "order": 18,
+            "sig": "100 IU/kg (1.5 mg/kg), SC, 1 herë në ditë.",
+            "sourceNumber": 6,
+            "strength": "40 mg / 60 mg",
+            "title": "Inj. Enoxaparin sodium 40 mg / 60 mg / 80 mg"
+          }
+        ],
+        "order": 18,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b19",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i19",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Fondaparinux",
+            "kind": "active-substance",
+            "order": 19,
+            "sig": "SC, 1 herë në ditë.",
+            "sourceNumber": 6,
+            "strength": "5-10 mg",
+            "title": "Inj. Fondaparinux 5-10 mg"
+          }
+        ],
+        "order": 19,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      }
+    ],
+    "orderInChapter": 7,
+    "reviewStatus": "verified",
+    "slug": {
+      "_type": "slug",
+      "current": "kapitulli-6-pneumoni-nosokomiale-hospital-acquired-pneumonia-hap"
+    },
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "PNEUMONI NOSOKOMIALE / HOSPITAL-ACQUIRED PNEUMONIA (HAP)",
+    "title": "PNEUMONI NOSOKOMIALE / HOSPITAL-ACQUIRED PNEUMONIA (HAP)",
+    "version": "1.0-source"
+  },
+  {
+    "_createdAt": "2026-09-03T18:19:17Z",
+    "_id": "d900f874-7886-4ff7-83b3-0b1784ec44f0",
+    "_rev": "je4mLbVT9eSrRnsOiglkue",
+    "_system": {
+      "base": {
+        "id": "d900f874-7886-4ff7-83b3-0b1784ec44f0",
+        "rev": "zqLfcoy8mxASt7PpwcT1P0"
+      }
+    },
+    "_type": "prescriptionGuide",
+    "_updatedAt": "2026-10-19T10:07:56Z",
+    "chapterNumber": 7,
+    "chapterTitle": "Sëmundjet kardiovaskulare (CVS)",
+    "externalId": "dod-rx-ch07-010-angine-e-paqendrueshme-nstemi",
+    "keywords": [
+      "ANGINË E PAQËNDRUESHME / NSTEMI"
+    ],
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 1,
+            "sig": "Stabilizo me ABCD&E dhe bëj vlerësim të menjëhershëm të simptomave dhe faktorëve të rrezikut.",
+            "title": "Shënim i burimit"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "kind": "oxygen",
+            "order": 2,
+            "sig": "Vetëm në cyanosis ose hypoxemia me SpO₂ <94%; kanulë nazale 2 L/min.",
+            "sourceNumber": 1,
+            "title": "Oksigjen suplementar"
+          }
+        ],
+        "order": 2,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "DUAL ANTIPLATELET THERAPY:",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Aspirin",
+            "kind": "active-substance",
+            "order": 3,
+            "sig": "PO, një herë.",
+            "sourceNumber": 2,
+            "strength": "300 mg",
+            "title": "Tab. Aspirin 300 mg"
+          }
+        ],
+        "order": 3,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "E NJËJTA SUBSTANCË - DOZË ALTERNATIVE NGARKUESE:",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Aspirin",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "4 tableta PO një herë; pastaj aspirin 75 mg ose 150 mg në dozë 75-150 mg, OD.",
+            "sourceNumber": 2,
+            "strength": "75 mg",
+            "title": "Tab. Aspirin 75 mg"
+          }
+        ],
+        "order": 4,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b5",
+        "_type": "prescriptionLogicBlock",
+        "condition": "SHTO NJË:",
+        "items": [
+          {
+            "_key": "i5",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Prasugrel",
+            "kind": "active-substance",
+            "order": 5,
+            "sig": "Loading dose 60 mg, PO, një herë në ditën 1; pastaj 10 mg, OD.",
+            "sourceNumber": 2,
+            "strength": "10 mg",
+            "title": "Tab. Prasugrel 10 mg"
+          }
+        ],
+        "order": 5,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b6",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i6",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Ticagrelor",
+            "kind": "active-substance",
+            "order": 6,
+            "sig": "Loading dose 180 mg, PO, një herë në ditën 1; pastaj 90 mg, BD.",
+            "sourceNumber": 2,
+            "strength": "90 mg",
+            "title": "Tab. Ticagrelor 90 mg"
+          }
+        ],
+        "order": 6,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b7",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i7",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Clopidogrel",
+            "kind": "active-substance",
+            "order": 7,
+            "sig": "Loading dose 300-600 mg; pastaj 75 mg, OD.",
+            "sourceNumber": 2,
+            "strength": "75 mg",
+            "title": "Tab. Clopidogrel 75 mg"
+          }
+        ],
+        "order": 7,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b8",
+        "_type": "prescriptionLogicBlock",
+        "condition": "ANTIKOAGULIM - ZGJIDH NJË:",
+        "items": [
+          {
+            "_key": "i8",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Enoxaparin",
+            "kind": "active-substance",
+            "order": 8,
+            "sig": "1 mg/kg, BD; OD nëse GFR <30 mL/min.",
+            "sourceNumber": 4,
+            "title": "Inj. Enoxaparin"
+          }
+        ],
+        "order": 8,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b9",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i9",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Heparin",
+            "kind": "active-substance",
+            "order": 9,
+            "sig": "60 units/kg, maksimumi 4000 units, IV bolus fillestar; pastaj infusion 12 units/kg/orë, maksimumi 1000 units/orë; rregullo për target aPTT 1.5-2.0 (rreth 50-70 sekonda) deri në dalje.",
+            "sourceNumber": 4,
+            "title": "Inj. Heparin"
+          }
+        ],
+        "order": 9,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b11",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NITRAT - ZGJIDH NJË:",
+        "items": [
+          {
+            "_key": "i11",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 10,
+            "sig": "SL. Jep lehtësim të shpejtë. Mos përdor nëse SBP <90 mmHg.",
+            "sourceNumber": 5,
+            "strength": "0.4 mg",
+            "title": "Glyceryl trinitrate 0.4 mg/dose spray"
+          }
+        ],
+        "order": 10,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b12",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i12",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Glyceryl trinitrate",
+            "kind": "active-substance",
+            "order": 11,
+            "sig": "1-2 tableta, SL. Mos përdor nëse SBP <90 mmHg.",
+            "sourceNumber": 1,
+            "strength": "0.5 mg",
+            "title": "Tab. Glyceryl trinitrate 0.5 mg"
+          }
+        ],
+        "order": 11,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b13",
+        "_type": "prescriptionLogicBlock",
+        "condition": "ANALGJEZI - ZGJIDH NJË:",
+        "items": [
+          {
+            "_key": "i13",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Morphine sulfate",
+            "kind": "active-substance",
+            "order": 12,
+            "sig": "4-8 mg IV.",
+            "sourceNumber": 6,
+            "strength": "10 mg",
+            "title": "Inj. Morphine sulfate 10 mg/mL"
+          }
+        ],
+        "order": 12,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b14",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i14",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Nalbuphine",
+            "kind": "active-substance",
+            "order": 13,
+            "sig": "10-20 mg të holluara në 0.9% NS, IV; doza të vogla pasuese mund të jepen çdo 15 minuta deri sa të arrihet kontroll adekuat i dhimbjes.",
+            "sourceNumber": 6,
+            "strength": "20 mg",
+            "title": "Inj. Nalbuphine 20 mg/mL"
+          }
+        ],
+        "order": 13,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b15",
+        "_type": "prescriptionLogicBlock",
+        "condition": "ANTIEMETIK ME OPIOIDIN - ZGJIDH NJË:",
+        "items": [
+          {
+            "_key": "i15",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Metoclopramide",
+            "kind": "active-substance",
+            "order": 14,
+            "sig": "IV.",
+            "sourceNumber": 7,
+            "strength": "10 mg/2 mL",
+            "title": "Inj. Metoclopramide 10 mg/2 mL"
+          }
+        ],
+        "order": 14,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b16",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i16",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Dimenhydrinate",
+            "kind": "active-substance",
+            "order": 15,
+            "sig": "IV.",
+            "sourceNumber": 7,
+            "strength": "50 mg/1 mL",
+            "title": "Inj. Dimenhydrinate 50 mg/1 mL"
+          }
+        ],
+        "order": 15,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b17",
+        "_type": "prescriptionLogicBlock",
+        "condition": "STATINË E DOZËS SË LARTË - ZGJIDH NJË:",
+        "items": [
+          {
+            "_key": "i17",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Atorvastatin",
+            "kind": "active-substance",
+            "order": 16,
+            "sig": "OD; doza e përmendur ≥40 mg deri 80 mg/ditë.",
+            "sourceNumber": 8,
+            "strength": "40 mg",
+            "title": "Tab. Atorvastatin 40 mg"
+          }
+        ],
+        "order": 16,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b18",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i18",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Rosuvastatin",
+            "kind": "active-substance",
+            "order": 17,
+            "sig": "OD; doza e përmendur ≥20 mg deri 40 mg/ditë.",
+            "sourceNumber": 8,
+            "strength": "20 mg",
+            "title": "Tab. Rosuvastatin 20 mg"
+          }
+        ],
+        "order": 17,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b19",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NË RREZIK INTERMEDIAR/TË LARTË ME STRATEGJI TË HERSHME INVAZIVE:",
+        "items": [
+          {
+            "_key": "i19",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Tirofiban",
+            "kind": "active-substance",
+            "order": 18,
+            "sig": "0.25 mcg/kg brenda 5 minutave, pastaj 0.15 mcg/kg/min deri në 18 orë.",
+            "sourceNumber": 9,
+            "strength": "12.5 mg/50 mL",
+            "title": "Inj. Tirofiban 12.5 mg/50 mL"
+          }
+        ],
+        "note": "S. Burimi gjithashtu thotë të konsiderohen beta-blockers, ACE inhibitors ose ARBs dhe aldosterone antagonists sipas indikacionit.",
+        "order": 18,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      }
+    ],
+    "orderInChapter": 10,
+    "reviewStatus": "verified",
+    "slug": {
+      "_type": "slug",
+      "current": "kapitulli-7-angine-e-paqendrueshme-nstemi"
+    },
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "ANGINË E PAQËNDRUESHME / NSTEMI",
+    "title": "ANGINË E PAQËNDRUESHME / NSTEMI",
+    "version": "1.0-source"
+  },
+  {
+    "_createdAt": "2026-09-03T18:19:45Z",
+    "_id": "b17de129-0577-4c04-9220-3c281b7538c1",
+    "_rev": "je4mLbVT9eSrRnsOiglkue",
+    "_system": {
+      "base": {
+        "id": "b17de129-0577-4c04-9220-3c281b7538c1",
+        "rev": "je4mLbVT9eSrRnsOiglB1t"
+      }
+    },
+    "_type": "prescriptionGuide",
+    "_updatedAt": "2026-10-19T10:07:56Z",
+    "chapterNumber": 7,
+    "chapterTitle": "Sëmundjet kardiovaskulare (CVS)",
+    "externalId": "dod-rx-ch07-012-insuficience-kardiake-me-fraksion-te-reduktuar-te-ejeksionit-hfref",
+    "keywords": [
+      "INSUFICIENCË KARDIAKE ME FRAKSION TË REDUKTUAR TË EJEKSIONIT (HFrEF)"
+    ],
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 1,
+            "sig": "Hospitalizo pacientin; poziciono të ngritur; monitoro shenjat vitale dhe jep 100% oxygen supplementation sipas burimit; korrigjo etiologjinë e kthyeshme.",
+            "title": "Shënim i burimit"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "DIURETIKË:",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Furosemide",
+            "kind": "active-substance",
+            "order": 2,
+            "sig": "20-120 mg IV, STAT, pastaj BD. Maksimumi i shkruar në burim: 20-320 mg/ditë. Monitoro serum electrolytes dhe titro sipas peshës/volume status.",
+            "sourceNumber": 1,
+            "strength": "20 mg/2 mL",
+            "title": "Inj. Furosemide 20 mg/2 mL"
+          }
+        ],
+        "order": 2,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "/ OSE",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Spironolactone",
+            "kind": "active-substance",
+            "order": 3,
+            "sig": "OD ose në ditë alternative. Maksimumi: 25-50 mg/ditë.",
+            "sourceNumber": 2,
+            "strength": "25 mg",
+            "title": "Tab. Spironolactone 25 mg"
+          }
+        ],
+        "order": 3,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "KOMBINIM FIKS:",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Furosemide",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "½ tabletë, OD; nis me gjysmë tabletë OD dhe titro. Target: 1 tabletë, OD.",
+            "sourceNumber": 2,
+            "strength": "20 mg",
+            "title": "Tab. Furosemide 20 mg + Spironolactone 50 mg"
+          }
+        ],
+        "order": 4,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b5",
+        "_type": "prescriptionLogicBlock",
+        "condition": "BETA-BLOCKER - ZGJIDH NJË:",
+        "items": [
+          {
+            "_key": "i5",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Carvedilol",
+            "kind": "active-substance",
+            "order": 5,
+            "sig": "Nis 3.125 mg, BD; mund të rritet në 6.25 mg, 12.5 mg dhe 25 mg, BD, në intervale afërsisht 2-javore.",
+            "sourceNumber": 3,
+            "strength": "3.125 mg",
+            "title": "Tab. Carvedilol 3.125 mg, 6.25 mg, 12.5 mg ose 25 mg"
+          }
+        ],
+        "order": 5,
+        "relation": "conditional",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b6",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i6",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Metoprolol succinate",
+            "kind": "active-substance",
+            "order": 6,
+            "sig": "Burimi e jep 12.5 mg ose 25 mg (¼ tabletë) OD; nis 12.5 ose 25 mg, OD, dyfishohet çdo 2 javë deri në target 200 mg, OD.",
+            "sourceNumber": 3,
+            "strength": "100 mg",
+            "title": "Tab. Metoprolol succinate 100 mg"
+          }
+        ],
+        "order": 6,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b7",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i7",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Bisoprolol",
+            "kind": "active-substance",
+            "order": 7,
+            "sig": "Burimi e jep 1.25 mg (½ tabletë), OD; titrim i përmendur: 1.25, 2.5, 3.75, 5, 7.5 dhe 10 mg nga goja çdo ditë, me rritje në intervale 1-4 javë.",
+            "sourceNumber": 3,
+            "strength": "2.5 mg",
+            "title": "Tab. Bisoprolol 2.5 mg"
+          }
+        ],
+        "order": 7,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b9",
+        "_type": "prescriptionLogicBlock",
+        "condition": "ACEI - ZGJIDH NJË:",
+        "items": [
+          {
+            "_key": "i9",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Captopril",
+            "kind": "active-substance",
+            "order": 8,
+            "sig": "Fillimisht 6.25 mg, TDS; titro deri në target 50 mg, TDS.",
+            "sourceNumber": 4,
+            "strength": "25 mg",
+            "title": "Tab. Captopril 25 mg ose 50 mg"
+          }
+        ],
+        "order": 8,
+        "relation": "conditional",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b10",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i10",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Lisinopril",
+            "kind": "active-substance",
+            "order": 9,
+            "sig": "2.5 mg deri 5 mg, OD; titro deri në target 20 mg, OD.",
+            "sourceNumber": 4,
+            "strength": "5 mg",
+            "title": "Tab. Lisinopril 5 mg ose 10 mg"
+          }
+        ],
+        "order": 9,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b11",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i11",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Enalapril",
+            "kind": "active-substance",
+            "order": 10,
+            "sig": "2.5 mg, BD; titro deri në target 10 mg, BD.",
+            "sourceNumber": 4,
+            "strength": "5 mg",
+            "title": "Tab. Enalapril 5 mg ose 10 mg"
+          }
+        ],
+        "order": 10,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b12",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i12",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Ramipril",
+            "kind": "active-substance",
+            "order": 11,
+            "sig": "2.5 mg deri 5 mg, OD; titro deri në target 10 mg, OD.",
+            "sourceNumber": 4,
+            "strength": "2.5 mg",
+            "title": "Tab. Ramipril 2.5 mg"
+          }
+        ],
+        "order": 11,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b13",
+        "_type": "prescriptionLogicBlock",
+        "condition": "ACEI NUK TOLEROHET PËR SHKAK TË KOLLËS SË THATË - ARB:",
+        "items": [
+          {
+            "_key": "i13",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Candesartan",
+            "kind": "active-substance",
+            "order": 12,
+            "sig": "Fillimisht 4-8 mg, OD; titro deri në target 32 mg, OD.",
+            "sourceNumber": 5,
+            "strength": "8 mg",
+            "title": "Tab. Candesartan 8 mg ose 16 mg"
+          }
+        ],
+        "order": 12,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b14",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i14",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Losartan",
+            "kind": "active-substance",
+            "order": 13,
+            "sig": "Fillimisht 50 mg, OD; titro deri në target 150 mg, OD.",
+            "sourceNumber": 5,
+            "strength": "50 mg",
+            "title": "Tab. Losartan 50 mg ose 100 mg"
+          }
+        ],
+        "order": 13,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b15",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i15",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Valsartan",
+            "kind": "active-substance",
+            "order": 14,
+            "sig": "40 mg (½ tabletë), BD; titro deri në target 160 mg, BD.",
+            "sourceNumber": 5,
+            "strength": "80 mg",
+            "title": "Tab. Valsartan 80 mg ose 160 mg"
+          }
+        ],
+        "order": 14,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b16",
+        "_type": "prescriptionLogicBlock",
+        "condition": "ARNI, SI ZËVENDËSIM I TERAPISË SË LINJËS SË PARË NË HFrEF ME SIMPTOMA PERSISTENTE:",
+        "items": [
+          {
+            "_key": "i16",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Sacubitril",
+            "kind": "active-substance",
+            "order": 15,
+            "sig": "Burimi e jep fillimisht 49/51 mg, BD. Fortësitë e përmendura: 24/26 mg (50 mg), 49/51 mg (100 mg), 97/103 mg (200 mg). Titro deri në target 97/103 mg, BD. ACEI duhet të ndalet 36 orë para ARNI.",
+            "sourceNumber": 6,
+            "strength": "49 mg",
+            "title": "Tab. Sacubitril 49 mg + Valsartan 51 mg"
+          }
+        ],
+        "order": 15,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b17",
+        "_type": "prescriptionLogicBlock",
+        "condition": "SGLT2 - ZGJIDH NJË:",
+        "items": [
+          {
+            "_key": "i17",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Dapagliflozin",
+            "kind": "active-substance",
+            "order": 16,
+            "sig": "OD.",
+            "sourceNumber": 7,
+            "strength": "10 mg",
+            "title": "Tab. Dapagliflozin 10 mg"
+          }
+        ],
+        "order": 16,
+        "relation": "conditional",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b18",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i18",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Empagliflozin",
+            "kind": "active-substance",
+            "order": 17,
+            "sig": "OD.",
+            "sourceNumber": 7,
+            "strength": "10 mg",
+            "title": "Tab. Empagliflozin 10 mg"
+          }
+        ],
+        "order": 17,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b19",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NË SINUS RHYTHM ME HR ≥70/min DHE SIMPTOMA PERSISTENTE:",
+        "items": [
+          {
+            "_key": "i19",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Ivabradine",
+            "kind": "active-substance",
+            "order": 18,
+            "sig": "Burimi shkruan nisje 5 mg, OD dhe titrim në 7.5 mg, OD; ruajtur pa korrigjim të heshtur.",
+            "sourceNumber": 8,
+            "strength": "5 mg",
+            "title": "Tab. Ivabradine 5 mg ose 7.5 mg"
+          }
+        ],
+        "order": 18,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b20",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NË HFrEF ME SIMPTOMA PERSISTENTE PAVARËSISHT TERAPISË SË LINJËS SË PARË:",
+        "items": [
+          {
+            "_key": "i20",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Digoxin",
+            "kind": "active-substance",
+            "order": 19,
+            "sig": "Nis 0.125 mg ose 0.25 mg, OD në çdo ditë alternative. Burimi rekomandon monitorim të serum digoxin concentration për shkak të dritares së ngushtë terapeutike.",
+            "sourceNumber": 9,
+            "strength": "0.25 mg",
+            "title": "Tab. Digoxin 0.25 mg"
+          }
+        ],
+        "order": 19,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      }
+    ],
+    "orderInChapter": 12,
+    "reviewStatus": "verified",
+    "slug": {
+      "_type": "slug",
+      "current": "kapitulli-7-insuficience-kardiake-me-fraksion-te-reduktuar-te-ejeksionit-hfref"
+    },
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "INSUFICIENCË KARDIAKE ME FRAKSION TË REDUKTUAR TË EJEKSIONIT (HFrEF)",
+    "title": "INSUFICIENCË KARDIAKE ME FRAKSION TË REDUKTUAR TË EJEKSIONIT (HFrEF)",
+    "version": "1.0-source"
+  },
+  {
+    "_id": "b804da85-aa69-4eb1-96e7-35034112f287",
+    "_rev": "zqLfcoy8mxASt7PpwcT1P0",
+    "_type": "prescriptionGuide",
+    "chapterNumber": 7,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 1,
+            "sig": "Në pacient hemodynamically unstable: ICU/CCU, konsultë urgjente cardiology dhe konsidero invasive blood-pressure monitoring. Në respiratory failure, konsidero HFNC, NIPPV (BiPAP preferohet ndaj CPAP) ose invasive mechanical ventilation sipas kritereve të burimit.",
+            "title": "Shënim i burimit"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 2,
+            "sig": "Vlerëso fluid responsiveness. Mund të bëhet small fluid challenge dhe rivlerësim. Në volume overload shmang lëngjet.",
+            "title": "DRY AND COLD AHF:"
+          }
+        ],
+        "order": 2,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NË SHOCK REFRAKTAR NDAJ LËNGJEVE:",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Norepinephrine",
+            "kind": "active-substance",
+            "order": 3,
+            "sig": "0.05-0.4 mcg/kg/min, IV infusion, titro sipas nevojës.",
+            "sourceNumber": 1,
+            "title": "Inj. Norepinephrine"
+          }
+        ],
+        "order": 3,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "HYPOPERFUSION VAZHDON PAVARËSISHT LËNGJEVE DHE VAZOPRESORIT:",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Dobutamine",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "2.5-20 mcg/kg/min, IV infusion, titro sipas nevojës.",
+            "sourceNumber": 2,
+            "title": "Inj. Dobutamine"
+          }
+        ],
+        "order": 4,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b5",
+        "_type": "prescriptionLogicBlock",
+        "condition": "WET AND COLD AHF - INOTROPIC SUPPORT, ZGJIDH NJË:",
+        "items": [
+          {
+            "_key": "i5",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Dobutamine",
+            "kind": "active-substance",
+            "order": 5,
+            "sig": "2.5-20 mcg/kg/min, IV infusion, titro sipas nevojës. Maksimumi i shkruar: 40 mcg/kg/min.",
+            "sourceNumber": 1,
+            "title": "Inj. Dobutamine"
+          }
+        ],
+        "order": 5,
+        "relation": "conditional",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b6",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i6",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Dopamine",
+            "kind": "active-substance",
+            "order": 6,
+            "sig": "5-15 mcg/kg/min, IV infusion, titro sipas nevojës. Maksimumi i shkruar: 50 mcg/kg/min.",
+            "sourceNumber": 1,
+            "title": "Inj. Dopamine"
+          }
+        ],
+        "order": 6,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b7",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i7",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Milrinone",
+            "kind": "active-substance",
+            "order": 7,
+            "sig": "0.125-0.75 mcg/kg/min, IV infusion, titro sipas nevojës. Maksimumi: 0.75 mcg/kg/min.",
+            "sourceNumber": 1,
+            "title": "Inj. Milrinone"
+          }
+        ],
+        "order": 7,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b8",
+        "_type": "prescriptionLogicBlock",
+        "condition": "SHOCK ËSHTË REFRAKTAR NDAJ INOTROPEVE:",
+        "items": [
+          {
+            "_key": "i8",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Norepinephrine",
+            "kind": "active-substance",
+            "order": 8,
+            "sig": "Shto vazopresor; Norepinephrine përdoret me dozën e dhënë më sipër në të njëjtin seksion.",
+            "sourceNumber": 2,
+            "title": "Inj. Norepinephrine"
+          }
+        ],
+        "order": 8,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b9",
+        "_type": "prescriptionLogicBlock",
+        "condition": "ENDOKARDIT INFEKTIV - TERAPI EMPIRIKE\n\nTABELË REGJIMESH – BURIMI NUK JEP DOZAT NË KËTË TABELË",
+        "items": [
+          {
+            "_key": "i9",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 9,
+            "sig": "Vancomycin PLUS Cefepime.",
+            "sourceNumber": 1,
+            "title": "Endokardit bakterial akut i valvulës native"
+          }
+        ],
+        "order": 9,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b10",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i10",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 10,
+            "sig": "Vancomycin PLUS Ampicillin/Sulbactam.",
+            "sourceNumber": 2,
+            "title": "Endokardit bakterial subakut i valvulës native"
+          }
+        ],
+        "order": 10,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b11",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i11",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 11,
+            "sig": "Vancomycin PLUS Gentamicin PLUS Rifampin PLUS Cefepime.",
+            "sourceNumber": 3,
+            "title": "Valvulë protetike ≤1 vit pas vendosjes"
+          }
+        ],
+        "order": 11,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b12",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i12",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 12,
+            "sig": "Vancomycin PLUS Ceftriaxone.",
+            "sourceNumber": 4,
+            "title": "Valvulë protetike >1 vit pas vendosjes"
+          }
+        ],
+        "order": 12,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE",
+        "note": "ENDOKARDIT INFEKTIV - TERAPI E TARGETUAR\n\nTABELË REGJIMESH – DOZAT JANË TË PAPLOTA NË KËTË PJESË TË BURIMIT\n\nS. Rekomandohet për të gjithë pacientët. Kohëzgjatja është variabël dhe mund të jetë ≥2-6 javë pas kulturës së parë sterile të gjakut."
+      },
+      {
+        "_key": "b13",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i13",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 13,
+            "sig": "Oxacillin OSE Nafcillin OSE Cefazolin.",
+            "sourceNumber": 1,
+            "title": "MSSA - valvulë native"
+          }
+        ],
+        "order": 13,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b14",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i14",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 14,
+            "sig": "Nafcillin OSE Oxacillin PLUS Rifampin PLUS Gentamicin.",
+            "sourceNumber": 2,
+            "title": "MSSA - valvulë protetike"
+          }
+        ],
+        "order": 14,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b15",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i15",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 15,
+            "sig": "Vancomycin.",
+            "sourceNumber": 3,
+            "title": "MRSA - valvulë native"
+          }
+        ],
+        "order": 15,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b16",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i16",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 16,
+            "sig": "Vancomycin PLUS Rifampin PLUS Gentamicin.",
+            "sourceNumber": 4,
+            "title": "MRSA - valvulë protetike"
+          }
+        ],
+        "order": 16,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b17",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i17",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 17,
+            "sig": "Aqueous crystalline Penicillin G OSE Ceftriaxone; nëse resistant to penicillin, PLUS Gentamicin. Alternativë: Vancomycin 15-20 mg/kg IV çdo 8-12 orë për 6 javë.",
+            "sourceNumber": 5,
+            "title": "Viridans group streptococci / S. gallolyticus"
+          }
+        ],
+        "order": 17,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b18",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i18",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 18,
+            "sig": "Ampicillin OSE Aqueous crystalline Penicillin G PLUS Gentamicin; OSE double beta-lactam therapy: Ampicillin PLUS Ceftriaxone.",
+            "sourceNumber": 6,
+            "title": "Enterococcus spp. penicillin-sensitive"
+          }
+        ],
+        "order": 18,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b19",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i19",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 19,
+            "sig": "Vancomycin PLUS Gentamicin.",
+            "sourceNumber": 7,
+            "title": "Enterococcus spp. penicillin-resistant"
+          }
+        ],
+        "order": 19,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b20",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i20",
+            "_type": "sourcePrescriptionItem",
+            "kind": "supportive-care",
+            "order": 20,
+            "sig": "Ceftriaxone OSE Ampicillin/Sulbactam.",
+            "sourceNumber": 8,
+            "title": "HACEK"
+          }
+        ],
+        "order": 20,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE",
+        "note": "ENDOKARDIT INFEKTIV - PROFILAKSIA\n\nTABELË PROFILAKSIE – BURIMI NUK JEP FORMË/DOZË TË PLOTË PËR ÇDO AGJENT\n\nS. Regjimet e zakonshme zakonisht jepen 30-60 minuta para procedurës."
+      },
+      {
+        "_key": "b21",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i21",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 21,
+            "sig": "Burimi e liston Cefazolin para implantimit të cardiac device, zakonisht 30-60 minuta para procedurës, por në këtë tabelë nuk jep formën ose dozën.",
+            "title": "SHËNIM I BURIMIT – CEFazolin PARA IMPLANTIMIT TË CARDIAC DEVICE:"
+          }
+        ],
+        "order": 21,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b22",
+        "_type": "prescriptionLogicBlock",
+        "condition": "PARA PROCEDURAVE DENTARE, PA ALERGJI NDAJ PENICILINËS:",
+        "items": [
+          {
+            "_key": "i22",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 22,
+            "sig": "Burimi liston Amoxicillin OSE Ampicillin, zakonisht 30-60 minuta para procedurës, por në këtë tabelë nuk jep formën ose dozën.",
+            "title": "ALTERNATIVA:"
+          }
+        ],
+        "order": 22,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b23",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NË ALERGJI NDAJ PENICILINËS:",
+        "items": [
+          {
+            "_key": "i23",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 23,
+            "sig": "Burimi liston Azithromycin OSE Clindamycin, por në këtë tabelë nuk jep formën ose dozën.",
+            "title": "ALTERNATIVA:"
+          }
+        ],
+        "order": 23,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      }
+    ],
+    "orderInChapter": 15,
+    "reviewStatus": "verified",
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "INSUFICIENCË KARDIAKE AKUTE - SUPPORT HEMODINAMIK",
+    "title": "INSUFICIENCË KARDIAKE AKUTE - SUPPORT HEMODINAMIK",
+    "version": "1.0-source"
+  },
+  {
+    "_id": "bfb530e7-4c96-4464-884d-c6fa89faf03a",
+    "_rev": "cOIkTjSjlPYEaZYMl7xhzQ",
+    "_type": "prescriptionGuide",
+    "chapterNumber": 8,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Omeprazole",
+            "kind": "active-substance",
+            "order": 1,
+            "sig": "BD, në stomak bosh, 30 minuta para ushqimit.",
+            "sourceNumber": 1,
+            "strength": "20-40 mg",
+            "title": "Cap. Omeprazole 20-40 mg"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Esomeprazole",
+            "kind": "active-substance",
+            "order": 2,
+            "sig": "BD, në stomak bosh, 30 minuta para ushqimit.",
+            "sourceNumber": 1,
+            "strength": "20-40 mg",
+            "title": "Cap. Esomeprazole 20-40 mg"
+          }
+        ],
+        "order": 2,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Bismuth subsalicylate",
+            "kind": "active-substance",
+            "order": 3,
+            "sig": "2 tableta, QID.",
+            "sourceNumber": 2,
+            "strength": "265 mg",
+            "title": "Tab. Bismuth subsalicylate 265 mg"
+          }
+        ],
+        "order": 3,
+        "relation": "plus",
+        "selection": "all",
+        "sourceConnectorLabel": "PLUS"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Tetracycline",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "1 kapsulë, QID.",
+            "sourceNumber": 3,
+            "strength": "500 mg",
+            "title": "Cap. Tetracycline 500 mg"
+          }
+        ],
+        "order": 4,
+        "relation": "plus",
+        "selection": "all",
+        "sourceConnectorLabel": "PLUS"
+      },
+      {
+        "_key": "b5",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i5",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Metronidazole",
+            "kind": "active-substance",
+            "order": 5,
+            "sig": "TDS.",
+            "sourceNumber": 4,
+            "strength": "400 mg",
+            "title": "Tab. Metronidazole 400 mg"
+          }
+        ],
+        "order": 5,
+        "relation": "plus",
+        "selection": "all",
+        "sourceConnectorLabel": "PLUS"
+      }
+    ],
+    "orderInChapter": 10,
+    "reviewStatus": "verified",
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "H. PYLORI - TERAPI KATËRFISHE ME BISMUTH, 14 DITË",
+    "title": "H. PYLORI - TERAPI KATËRFISHE ME BISMUTH, 14 DITË",
+    "version": "1.0-source"
+  },
+  {
+    "_id": "073c81f2-b4d3-4847-b160-3b16b89ca693",
+    "_rev": "zqLfcoy8mxASt7PpwcT2rP",
+    "_type": "prescriptionGuide",
+    "chapterNumber": 8,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Omeprazole",
+            "kind": "active-substance",
+            "order": 1,
+            "sig": "Çdo 8 orë.",
+            "sourceNumber": 1,
+            "strength": "40 mg",
+            "title": "Cap. Omeprazole 40 mg"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Esomeprazole",
+            "kind": "active-substance",
+            "order": 2,
+            "sig": "Çdo 8 orë.",
+            "sourceNumber": 1,
+            "strength": "40 mg",
+            "title": "Cap. Esomeprazole 40 mg"
+          }
+        ],
+        "order": 2,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Rifabutin",
+            "kind": "active-substance",
+            "order": 3,
+            "sig": "Çdo 8 orë, TDS.",
+            "sourceNumber": 2,
+            "strength": "50 mg",
+            "title": "Tab. Rifabutin 50 mg"
+          }
+        ],
+        "order": 3,
+        "relation": "plus",
+        "selection": "all",
+        "sourceConnectorLabel": "PLUS"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Amoxicillin",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "BD.",
+            "sourceNumber": 3,
+            "strength": "1 g",
+            "title": "Tab. Amoxicillin 1 g"
+          }
+        ],
+        "order": 4,
+        "relation": "plus",
+        "selection": "all",
+        "sourceConnectorLabel": "PLUS"
+      },
+      {
+        "_key": "b5",
+        "_type": "prescriptionLogicBlock",
+        "condition": "E NJËJTA SUBSTANCË - FORMË 500 mg:",
+        "items": [
+          {
+            "_key": "i5",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Amoxicillin",
+            "kind": "active-substance",
+            "order": 5,
+            "sig": "2 kapsula, BD.",
+            "sourceNumber": 3,
+            "strength": "500 mg",
+            "title": "Cap. Amoxicillin 500 mg"
+          }
+        ],
+        "order": 5,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b6",
+        "_type": "prescriptionLogicBlock",
+        "condition": "FIXED-DOSE COMBINATION E PËRSHKRUAR NË BURIM:",
+        "items": [
+          {
+            "_key": "i6",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Omeprazole",
+            "kind": "active-substance",
+            "order": 6,
+            "sig": "4 kapsula, TDS.",
+            "sourceNumber": 1,
+            "strength": "10 mg",
+            "title": "Cap. Omeprazole 10 mg + Rifabutin 12.5 mg + Amoxicillin 250 mg"
+          }
+        ],
+        "order": 6,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      }
+    ],
+    "orderInChapter": 11,
+    "reviewStatus": "verified",
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "H. PYLORI - TRIPLE THERAPY ME RIFABUTIN",
+    "title": "H. PYLORI - TRIPLE THERAPY ME RIFABUTIN",
+    "version": "1.0-source"
+  },
+  {
+    "_id": "468b249e-d7c2-44d1-b174-32517c11a59d",
+    "_rev": "zqLfcoy8mxASt7PpwcT4F3",
+    "_type": "prescriptionGuide",
+    "chapterNumber": 8,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Vancomycin",
+            "kind": "active-substance",
+            "order": 1,
+            "sig": "Doza 500 mg PO ose përmes tubit enteral, QID (çdo 6 orë), për 48-72 orë; pastaj reduktohet në 125 mg QID dhe vazhdohet edhe 10 ditë nëse ka përmirësim klinik.",
+            "sourceNumber": 1,
+            "strength": "125 mg",
+            "title": "Cap. Vancomycin 125 mg"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Metronidazole",
+            "kind": "active-substance",
+            "order": 2,
+            "sig": "PO, TDS, për 10 ditë.",
+            "sourceNumber": 2,
+            "strength": "500 mg",
+            "title": "Tab. Metronidazole 500 mg"
+          }
+        ],
+        "order": 2,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "E NJËJTA SUBSTANCË - FORMË INJEKTABLE:",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Metronidazole",
+            "kind": "active-substance",
+            "order": 3,
+            "sig": "IV, TDS, për 10 ditë.",
+            "sourceNumber": 2,
+            "strength": "500 mg",
+            "title": "Inj. Metronidazole 500 mg"
+          }
+        ],
+        "order": 3,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NË PARALYTIC ILEUS:",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Vancomycin",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "Të hollohet në 100 mL 0.9% NaCl dhe të administrohet PR, QID.",
+            "sourceNumber": 3,
+            "strength": "500 mg",
+            "title": "Inj. Vancomycin 500 mg"
+          }
+        ],
+        "order": 4,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      }
+    ],
+    "orderInChapter": 20,
+    "reviewStatus": "verified",
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "C. DIFFICILE - SËMUNDJE FULMINANTE",
+    "title": "C. DIFFICILE - SËMUNDJE FULMINANTE",
+    "version": "1.0-source"
+  },
+  {
+    "_id": "39de8c43-27e2-414f-af30-d49b59d04a3f",
+    "_rev": "zqLfcoy8mxASt7PpwcT4F3",
+    "_type": "prescriptionGuide",
+    "chapterNumber": 8,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Methylprednisolone",
+            "kind": "active-substance",
+            "order": 1,
+            "sig": "IV, 1 mg/kg; maksimumi 60-80 mg/ditë, OD, deri 7 ditë.",
+            "sourceNumber": 1,
+            "title": "Inj. Methylprednisolone"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NUK KA REMISION PAS 3-5 DITËSH - OSE:",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 2,
+            "sig": "2 mg/kg, IV, OD. Burimi jep rrugën dhe dozën, por nuk emërton formën farmaceutike në këtë rresht; prandaj nuk paraqitet si Rx i plotë.",
+            "title": "CYCLOSPORINE IV:"
+          }
+        ],
+        "order": 2,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Infliximab",
+            "kind": "active-substance",
+            "order": 3,
+            "sig": "5 mg/kg, IV infusion, në javët 0, 2 dhe 6; pastaj 5 mg/kg çdo 8 javë.",
+            "sourceNumber": 2,
+            "title": "Inj. Infliximab"
+          }
+        ],
+        "order": 3,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "DVT PROPHYLAXIS:",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Enoxaparin sodium",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "100 IU/kg (1.5 mg/kg), SC, OD, siç është shkruar në burim.",
+            "sourceNumber": 3,
+            "strength": "60 mg",
+            "title": "Inj. Enoxaparin sodium 60 mg ose 80 mg"
+          }
+        ],
+        "order": 4,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      }
+    ],
+    "orderInChapter": 26,
+    "reviewStatus": "verified",
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "KOLIT ULCEROZ AKUT I RËNDË (ASUC)",
+    "title": "KOLIT ULCEROZ AKUT I RËNDË (ASUC)",
+    "version": "1.0-source"
+  },
+  {
+    "_id": "e18638f8-e287-4287-add8-aedc7b144e7c",
+    "_rev": "1ApuGVBnxXXmlJRyXTWRqt",
+    "_type": "prescriptionGuide",
+    "chapterNumber": 9,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 1,
+            "sig": "Burimi rekomandon një dozë vaksine kundër HAV OSE imunoglobulinë 0.01 mL/kg, OSE të dyja sipas rastit, brenda 2 javëve nga ekspozimi. Në këtë seksion nuk jepen forma/fortësi të vaksinës dhe as rruga e imunoglobulinës; prandaj nuk paraqiten si Rx të plota.",
+            "title": "PROFILAKSI PAS EKSPOZIMIT –"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "KA NAUZE/TË VJELLA OSE MARRJA ORALE ËSHTË NDJESHËM E ULËT:",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 2,
+            "sig": "Burimi e përmend IV për mbështetje kur marrja orale është dukshëm e ulët, por nuk jep vëllimin/dozën në këtë faqe; prandaj nuk paraqitet si Rx i plotë.",
+            "strength": "10%",
+            "title": "SHËNIM I BURIMIT – INF. DEXTROSE/GLUCOSE 10%:"
+          }
+        ],
+        "order": 2,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE",
+        "note": "S. Udhëzime të tjera të Rx: pushim në shtrat vetëm nëse simptomat janë të theksuara; shmang sforcimin e rëndë, alkoolin dhe agjentët hepatotoksikë. Burimi thotë se doza të vogla të Oxazepam janë të sigurta sepse metabolizmi nuk është hepatik; Morphine sulfate duhet shmangur. Kortikosteroidet nuk kanë përfitim dhe nuk ka rol për barna antivirale në HAV."
+      }
+    ],
+    "orderInChapter": 1,
+    "reviewStatus": "verified",
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "HEPATIT A (HAV) - TRAJTIMI DHE PROFILAKSIA PAS EKSPOZIMIT",
+    "title": "HEPATIT A (HAV) - TRAJTIMI DHE PROFILAKSIA PAS EKSPOZIMIT",
+    "version": "1.0-source"
+  },
+  {
+    "_id": "31dbd086-ebcc-4bb5-b7ca-cb1ffcb6203a",
+    "_rev": "9rkS9uGAiuxfht9g4gGuY1",
+    "_type": "prescriptionGuide",
+    "chapterNumber": 9,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Sofosbuvir",
+            "kind": "active-substance",
+            "order": 1,
+            "sig": "OD. Tabela e burimit e jep për të 6 gjenotipet për 12 javë.",
+            "sourceNumber": 1,
+            "strength": "400 mg",
+            "title": "Cap. Sofosbuvir 400 mg + Velpatasvir 100 mg"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": "",
+        "note": "S. Nuk rekomandohet te pacientët me cirrozë të kompensuar me HCV gjenotip 3, sipas formulimit të shtypur në faqe."
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Sofosbuvir",
+            "kind": "active-substance",
+            "order": 2,
+            "sig": "OD; për gjenotipet 1, 4, 5 dhe 6, për 8-12 javë.",
+            "sourceNumber": 1,
+            "strength": "400 mg",
+            "title": "Cap. Sofosbuvir 400 mg + Ledipasvir 90 mg"
+          }
+        ],
+        "order": 2,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Glecaprevir",
+            "kind": "active-substance",
+            "order": 3,
+            "sig": "0-0-1 (OD); për të 6 gjenotipet, për 8 javë.",
+            "sourceNumber": 1,
+            "strength": "100 mg",
+            "title": "Cap. Glecaprevir 100 mg + Pibrentasvir 40 mg"
+          }
+        ],
+        "order": 3,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Sofosbuvir",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "OD; për gjenotipet 1, 3 dhe 4, për 12 javë; burimi shënon 24 javë te pacientët cirrotikë.",
+            "sourceNumber": 1,
+            "strength": "400 mg",
+            "title": "Cap. Sofosbuvir 400 mg + Cap. Daclatasvir 60 mg"
+          }
+        ],
+        "order": 4,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b5",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i5",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 5,
+            "sig": "OD për të 6 gjenotipet, për 12 javë. Tabela nuk jep fortësitë e tre komponentëve në këtë rresht; prandaj nuk paraqitet si Rx i plotë.",
+            "title": "ALTERNATIVË E PËRMENDUR NË TABELË – SOFOSBUVIR + VELPATASVIR + VOXILAPREVIR:"
+          }
+        ],
+        "order": 5,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b6",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NË RECETËN 2:",
+        "items": [
+          {
+            "_key": "i6",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "L-Methylfolate",
+            "kind": "active-substance",
+            "order": 6,
+            "sig": "0-0-1 (OD).",
+            "sourceNumber": 2,
+            "strength": "400 mcg",
+            "title": "Tab. L-Methylfolate 400 mcg"
+          }
+        ],
+        "order": 6,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      }
+    ],
+    "orderInChapter": 6,
+    "reviewStatus": "verified",
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "HEPATIT C KRONIK - RECETA 2 DHE REGJIMET DAA TË PREFERUARA",
+    "title": "HEPATIT C KRONIK - RECETA 2 DHE REGJIMET DAA TË PREFERUARA",
+    "version": "1.0-source"
+  },
+  {
+    "_id": "6aa2ea4c-e8b3-408c-ade7-3e0e062df512",
+    "_rev": "XvHEtE7wDfwx7JSLWPbFOj",
+    "_type": "prescriptionGuide",
+    "chapterNumber": 9,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "form": "Cap.",
+            "genericName": "Ursodeoxycholic acid",
+            "kind": "active-substance",
+            "order": 1,
+            "sig": "13-15 mg/kg/ditë, në 1 ose 2 doza të ndara (OD/BD).",
+            "sourceNumber": 1,
+            "strength": "250 mg",
+            "title": "Cap. Ursodeoxycholic acid 250 mg ose 500 mg"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NË PËRGJIGJE TË PAPLOTË OSE INTOLERANCË NDAJ URSODEOXYCHOLIC ACID:",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Obeticholic acid",
+            "kind": "active-substance",
+            "order": 2,
+            "sig": "Fillohet me 5 mg OD dhe rritet në 10 mg/ditë pas 6 muajsh nëse tolerohet, sipas rënies së ALP dhe bilirubinës.",
+            "sourceNumber": 2,
+            "strength": "5 mg",
+            "title": "Tab. Obeticholic acid 5 mg ose 10 mg"
+          }
+        ],
+        "order": 2,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "",
+        "note": "S. Në Child-Pugh B ose C, burimi shënon dozë fillestare 5 mg një herë në javë dhe paralajmëron për dëmtim serioz të mëlçisë në cirrozë të avancuar."
+      }
+    ],
+    "orderInChapter": 13,
+    "reviewStatus": "verified",
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "PRIMARY BILIARY CHOLANGITIS (PBC) - LINJA E PARË",
+    "title": "PRIMARY BILIARY CHOLANGITIS (PBC) - LINJA E PARË",
+    "version": "1.0-source"
+  },
+  {
+    "_id": "b4fb5486-d0a5-4e9a-83f1-37675371c44e",
+    "_rev": "XvHEtE7wDfwx7JSLWPbGo7",
+    "_type": "prescriptionGuide",
+    "chapterNumber": 10,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Insulin regular",
+            "kind": "active-substance",
+            "order": 1,
+            "sig": "SC; në tekst shënohet BD, ndërsa skema e shtypur jep 8-12 njësi para mëngjesit, 8-12 njësi para drekës dhe 6-8 njësi para darkës. Kjo mospërputhje është ruajtur pa u korrigjuar në heshtje.",
+            "sourceNumber": 1,
+            "strength": "100 units",
+            "title": "Inj. Insulin regular 100 units/mL"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NUK KONTROLLOHET, SHTOHET:",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Human insulin isophane",
+            "kind": "active-substance",
+            "order": 2,
+            "sig": "4-6 njësi para darkës.",
+            "sourceNumber": 2,
+            "strength": "70%",
+            "title": "Inj. Human insulin isophane 70% + Human insulin 30%, 100 units/mL"
+          }
+        ],
+        "order": 2,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "NËSE"
+      }
+    ],
+    "orderInChapter": 3,
+    "reviewStatus": "verified",
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "T1DM - REGJIMI PREMIX / RECETA 2",
+    "title": "T1DM - REGJIMI PREMIX / RECETA 2",
+    "version": "1.0-source"
+  },
+  {
+    "_id": "249c67c9-dda9-4d7e-9cb1-a2dd5a4b2fd4",
+    "_rev": "9rkS9uGAiuxfht9g4gGuY1",
+    "_type": "prescriptionGuide",
+    "chapterNumber": 10,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Insulin regular",
+            "kind": "active-substance",
+            "order": 1,
+            "sig": "Burimi shkruan: 5-10 njësi IV (0.14 mg/kg) PLUS 5-10 njësi SC (0.4 mg/kg), STAT. Njësitë mg/kg janë ruajtur identikisht siç janë shtypur në burim.",
+            "sourceNumber": 1,
+            "title": "Inj. Insulin regular"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Insulin regular",
+            "kind": "active-substance",
+            "order": 2,
+            "sig": "60 njësi në 100 mL 0.9% NaCl, IV, me 10 microdrops/minutë. Në tekst është shtypur 0.1 mg/kg/orë; kjo njësi ruhet pa u korrigjuar në heshtje. Fillimi vetëm nëse K⁺ >3.5; nëse K⁺ <3.3, insulinë IV nuk fillohet. Syno K⁺ 4-5 mEq/L.",
+            "sourceNumber": 2,
+            "title": "Inj. Insulin regular"
+          }
+        ],
+        "order": 2,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "PASTAJ"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inf.",
+            "genericName": "Sodium chloride",
+            "kind": "active-substance",
+            "order": 3,
+            "sig": "1 L/orë gjatë 1-2 orëve të para; më pas 1 L në 2 orë, 1 L në 4 orë, 1 L në 6 orë dhe 1 L në 8 orë. Gjatë 24-48 orëve të ardhshme, shpejtësia dhe përbërja përshtaten sipas CVP, diurezës, glukozës dhe natriumit të korrigjuar.",
+            "sourceNumber": 3,
+            "strength": "0.9%",
+            "title": "Inf. Sodium chloride 0.9%"
+          }
+        ],
+        "order": 3,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "GLUKOZA BIE <200-250 mg/dL:",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inf.",
+            "genericName": "Dextrose",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "Ndërrohet në Dextrose 5% për të ruajtur glukozën <200-250 mg/dL dhe për të ulur rrezikun e hipoglikemisë/edemës cerebrale.",
+            "sourceNumber": 4,
+            "strength": "5%",
+            "title": "Inf. Dextrose 5%"
+          }
+        ],
+        "order": 4,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "KUR"
+      },
+      {
+        "_key": "b5",
+        "_type": "prescriptionLogicBlock",
+        "condition": "POTASIUM - SIPAS PROTOKOLLIT TË BURIMIT:",
+        "items": [
+          {
+            "_key": "i5",
+            "_type": "sourcePrescriptionItem",
+            "form": "Sol.",
+            "genericName": "Potassium chloride (KCl)",
+            "kind": "active-substance",
+            "order": 5,
+            "sig": "Shto 20 mL (20-40 mEq/L) në çdo litër 0.9% NaCl sapo K⁺ të jetë <5.5. Protokolli i dhënë: drip-i i 4-të 1 L 0.9% NaCl + KCl 20 mL me 88 pika/min; i 5-ti me 33 pika/min; i 6-ti me 22 pika/min.",
+            "sourceNumber": 5,
+            "title": "Sol. Potassium chloride (KCl)"
+          }
+        ],
+        "order": 5,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b6",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NË pH =7.0 OSE <7.0 PAVARËSISHT REANIMIMIT ADEKUAT ME LËNGJE:",
+        "items": [
+          {
+            "_key": "i6",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Sodium bicarbonate",
+            "kind": "active-substance",
+            "order": 6,
+            "sig": "2 vial (50 mL/cc) në 500 mL 0.45% NaCl, IV, gjatë 1 ore. Burimi gjithashtu shënon se studimet aktuale sugjerojnë shmangien e bicarbonate.",
+            "sourceNumber": 6,
+            "title": "Inj. Sodium bicarbonate"
+          }
+        ],
+        "order": 6,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      }
+    ],
+    "orderInChapter": 23,
+    "reviewStatus": "verified",
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "DIABETIC KETOACIDOSIS (DKA) - INSULINË DHE LËNGJE",
+    "title": "DIABETIC KETOACIDOSIS (DKA) - INSULINË DHE LËNGJE",
+    "version": "1.0-source"
+  },
+  {
+    "_id": "193b9390-be7c-4b34-8c80-063f6be412db",
+    "_rev": "9rkS9uGAiuxfht9g4gGwG2",
+    "_type": "prescriptionGuide",
+    "chapterNumber": 10,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inf.",
+            "genericName": "Sodium chloride",
+            "kind": "active-substance",
+            "order": 1,
+            "sig": "Lëngu i zgjedhur para insulinës. Fillimisht 15-20 mL/kg/orë gjatë orës së parë, pastaj 4-14 mL/kg/orë. Burimi jep edhe: 1-2 L në orën e parë, pastaj 1 L gjatë 4-5 orëve në vijim; më pas 1 L në 2, 4, 6, 8 dhe 12 orë, sipas gjendjes.",
+            "sourceNumber": 1,
+            "strength": "0.9%",
+            "title": "Inf. Sodium chloride 0.9%"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "HIPOTENSIONI/TAKIKARDIA/HIPONATREMIA DHE DIUREZA PËRMIRËSOHEN:",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inf.",
+            "genericName": "Sodium chloride",
+            "kind": "active-substance",
+            "order": 2,
+            "sig": "Mund të përdoret për zëvendësimin e deficitit të mbetur të ujit të lirë.",
+            "sourceNumber": 2,
+            "strength": "0.45%",
+            "title": "Inf. Sodium chloride 0.45%"
+          }
+        ],
+        "order": 2,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "KUR"
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Insulin regular",
+            "kind": "active-substance",
+            "order": 3,
+            "sig": "Burimi shkruan 0.1-0.14 mg/kg si infuzion IV; formulimi është ruajtur identikisht. Synimi: ulje e glukozës rreth 50 mg/dL/orë. Nëse glukoza bie >70 mg/dL/orë, ulet insulina në 0.05 njësi/kg/orë; nëse bie <50 mg/dL/orë, rritet në 0.14-0.20 njësi/kg/orë.",
+            "sourceNumber": 3,
+            "title": "Inj. Insulin regular"
+          }
+        ],
+        "order": 3,
+        "relation": "and",
+        "selection": "all",
+        "sourceConnectorLabel": "DHE"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "INFUZIONI I SHEMBULLIT:",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Insulin regular",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "10-12 njësi për një person 80 kg në 50 mL 0.9% NaCl, në IV chamber, 10 microdrops/minutë.",
+            "sourceNumber": 4,
+            "title": "Inj. Insulin regular"
+          }
+        ],
+        "order": 4,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b5",
+        "_type": "prescriptionLogicBlock",
+        "condition": "RBS <250-300 mg/dL:",
+        "items": [
+          {
+            "_key": "i5",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inf.",
+            "genericName": "Dextrose",
+            "kind": "active-substance",
+            "order": 5,
+            "sig": "125 mL/orë IV dhe redukto infuzionin e insulinës në 0.02-0.05 njësi/kg/orë derisa serum osmolality <315 mOsm/kg.",
+            "sourceNumber": 5,
+            "strength": "5%",
+            "title": "Inf. Dextrose 5%"
+          }
+        ],
+        "order": 5,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "KUR"
+      },
+      {
+        "_key": "b6",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i6",
+            "_type": "sourcePrescriptionItem",
+            "kind": "source-note",
+            "order": 6,
+            "sig": "Në deficit të magnezit: 1-2 g magnez IV gjatë 1 ore.",
+            "title": "KORRIGJIM ELEKTROLITIK:"
+          }
+        ],
+        "order": 6,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": "KORRIGJIM ELEKTROLITIK",
+        "note": "S. Në K⁺ <3.3 mEq/L: jepen 40 mEq kalium derisa K⁺ ≥3.3 mEq/L."
+      }
+    ],
+    "orderInChapter": 25,
+    "reviewStatus": "verified",
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "HYPEROSMOLAR HYPERGLYCEMIC STATE (HHS) - LËNGJE DHE INSULINË",
+    "title": "HYPEROSMOLAR HYPERGLYCEMIC STATE (HHS) - LËNGJE DHE INSULINË",
+    "version": "1.0-source"
+  },
+  {
+    "_id": "0b44dd47-bf30-425a-a381-3f458eec95f2",
+    "_rev": "1ApuGVBnxXXmlJRyXTWTAB",
+    "_type": "prescriptionGuide",
+    "chapterNumber": 10,
+    "logicBlocks": [
+      {
+        "_key": "b1",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i1",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Hydrocortisone",
+            "kind": "active-substance",
+            "order": 1,
+            "sig": "10-25 mg/kg/ditë në 2-3 doza të ndara; doza e zakonshme është më e madhe në mëngjes (10-15 mg) dhe më e vogël pasdite vonë (5-10 mg). Rruga e shkruar në tekst është jokonsistente me formën Inj., prandaj nuk po ndryshohet në heshtje.",
+            "sourceNumber": 1,
+            "strength": "250 mg",
+            "title": "Inj. Hydrocortisone 250 mg/vial"
+          }
+        ],
+        "order": 1,
+        "relation": "start",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b2",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NË ZËVENDËSIM HORMONAL HIPOFIZAR - SIPAS NEVOJËS:",
+        "items": [
+          {
+            "_key": "i2",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Levothyroxine",
+            "kind": "active-substance",
+            "order": 2,
+            "sig": "1.8 mcg/kg/ditë, PO.",
+            "sourceNumber": 2,
+            "title": "Tab. Levothyroxine"
+          }
+        ],
+        "order": 2,
+        "relation": "conditional",
+        "selection": "all",
+        "sourceConnectorLabel": ""
+      },
+      {
+        "_key": "b3",
+        "_type": "prescriptionLogicBlock",
+        "condition": "TE MESHKUJT:",
+        "items": [
+          {
+            "_key": "i3",
+            "_type": "sourcePrescriptionItem",
+            "form": "Inj.",
+            "genericName": "Testosterone cypionate",
+            "kind": "active-substance",
+            "order": 3,
+            "sig": "200 mg IM çdo 2 javë; titrohet sipas përgjigjes.",
+            "sourceNumber": 3,
+            "strength": "200 mg",
+            "title": "Inj. Testosterone cypionate 200 mg/mL"
+          }
+        ],
+        "order": 3,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "DHE/OSE"
+      },
+      {
+        "_key": "b4",
+        "_type": "prescriptionLogicBlock",
+        "condition": "TE GRATË:",
+        "items": [
+          {
+            "_key": "i4",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Estradiol",
+            "kind": "active-substance",
+            "order": 4,
+            "sig": "2 mg, PO, OD.",
+            "sourceNumber": 4,
+            "strength": "2 mg",
+            "title": "Tab. Estradiol 2 mg"
+          }
+        ],
+        "order": 4,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "DHE/OSE"
+      },
+      {
+        "_key": "b5",
+        "_type": "prescriptionLogicBlock",
+        "condition": "",
+        "items": [
+          {
+            "_key": "i5",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Conjugated estrogens",
+            "kind": "active-substance",
+            "order": 5,
+            "sig": "0.625-1.25 mg, PO, OD.",
+            "sourceNumber": 4,
+            "strength": "0.625 mg",
+            "title": "Tab. Conjugated estrogens 0.625 mg"
+          }
+        ],
+        "order": 5,
+        "relation": "or",
+        "selection": "choose-one",
+        "sourceConnectorLabel": "OSE"
+      },
+      {
+        "_key": "b6",
+        "_type": "prescriptionLogicBlock",
+        "condition": "NËSE MITRA ËSHTË INTAKTE:",
+        "items": [
+          {
+            "_key": "i6",
+            "_type": "sourcePrescriptionItem",
+            "form": "Tab.",
+            "genericName": "Medroxyprogesterone",
+            "kind": "active-substance",
+            "order": 6,
+            "sig": "5-10 mg, PO, OD, për 10 ditë të çdo muaji.",
+            "sourceNumber": 5,
+            "strength": "10 mg",
+            "title": "Tab. Medroxyprogesterone 10 mg"
+          }
+        ],
+        "order": 6,
+        "relation": "plus",
+        "selection": "all",
+        "sourceConnectorLabel": "PLUS"
+      }
+    ],
+    "orderInChapter": 32,
+    "reviewStatus": "verified",
+    "sourceDocument": "Doctor on Duty – Recetat sipas kapitujve – vetëm substanca aktive",
+    "sourceHeading": "CUSHING SYNDROME - ZËVENDËSIMI POSTOPERATIV ME KORTIKOSTEROID / HORMONE",
+    "title": "CUSHING SYNDROME - ZËVENDËSIMI POSTOPERATIV ME KORTIKOSTEROID / HORMONE",
+    "version": "1.0-source"
+  }
+]

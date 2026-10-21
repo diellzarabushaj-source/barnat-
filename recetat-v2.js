@@ -7530,7 +7530,7 @@
 (() => {
   'use strict';
 
-  const API = '/api/medical-hub?_route=prescription-library' + '&reader=clinical-v1';
+  const API = '/api/medical-hub?_route=prescription-library' + '&reader=clinical-v2';
   const SEARCH_API = '/api/medical-hub?_route=prescription-search';
   const RELATION_LABELS = Object.freeze({ and:'DHE', or:'OSE', plus:'PLUS', conditional:'NËSE' });
   const KIND_LABELS = Object.freeze({
@@ -8034,6 +8034,7 @@
     const plan = guide?.clinicalPlan;
     if (plan?.status !== 'ready' || !Array.isArray(plan.groups) || !plan.groups.length) return '';
     const choices = clinicalChoiceState(guide);
+    if (plan.confirmation && !choices.confirmed) return '';
     const lines = ['Rp:'];
     let count = 0;
     for (const group of plan.groups) {
@@ -8080,12 +8081,13 @@
     const ready = plan.status === 'ready';
     const draft = ready && Boolean(clinicalPlanDraft(guide));
     return `<article class="rx-source-guide is-clinical-plan" data-source-guide-id="${esc(guide._id)}">
-      <header class="rx-source-guide-head"><div class="rx-source-guide-heading"><div class="rx-source-guide-kicker">Kapitulli ${esc(guide.chapterNumber)} · ${esc(lessonLabel(guide))}</div><h3>${esc(guide.title)}</h3></div>
+      <header class="rx-source-guide-head"><div class="rx-source-guide-heading"><div class="rx-source-guide-kicker">Kapitulli ${esc(guide.chapterNumber)} · ${esc(lessonLabel(guide))}</div><h3>${esc(plan.title || guide.title)}</h3></div>
         <button class="rx-source-use" type="button" data-rx-source-use="${esc(guide._id)}"${draft ? '' : ' disabled'}><span>${!ready ? 'Vetëm referencë' : draft ? 'Vendose si draft' : 'Zgjidh opsionet'}</span><b aria-hidden="true">→</b></button>
       </header>
       ${renderGuideInformation(guide,`<div class="rx-source-flow">${renderStepGroups(guideStats(guide).blocks)}</div>`)}
       ${(plan.notes || []).length ? `<div class="rx-clinical-context">${plan.notes.map(note=>`<p>${esc(note)}</p>`).join('')}</div>` : ''}
       ${!ready ? '<p class="rx-clinical-reference">Kjo skemë nuk kalohet automatikisht në recetë.</p>' : ''}
+      ${ready && plan.confirmation ? `<label class="rx-clinical-condition rx-clinical-confirmation"><input type="checkbox" data-rx-clinical-guide="${esc(guide._id)}" data-rx-clinical-confirmation="true"${choices.confirmed ? ' checked' : ''}><span>${esc(plan.confirmation)}</span><small>Konfirmo</small></label>` : ''}
       <div class="rx-source-flow rx-clinical-flow" aria-label="Rrjedha e recetës">${(plan.groups || []).map((group,gi) => {
         const tone = gi % 5 + 1;
         const enabled = !group.condition || choices.groups[group.id];
@@ -8306,7 +8308,7 @@
     }
     select.disabled = false;
     select.innerHTML = items.map(guide =>
-      `<option value="${esc(guide?._id)}">${esc(lessonLabel(guide))} — ${esc(guide?.title || guide?.sourceHeading || 'Skemë Rx')}</option>`
+      `<option value="${esc(guide?._id)}">${esc(lessonLabel(guide))} — ${esc(guide?.clinicalPlan?.title || guide?.title || guide?.sourceHeading || 'Skemë Rx')}</option>`
     ).join('');
     if (state.activeGuideId && state.items.some(item => String(item?._id) === String(state.activeGuideId))) {
       select.value = String(state.activeGuideId);
@@ -8599,6 +8601,7 @@
       const guide = state.items.find(item => String(item._id) === input.dataset.rxClinicalGuide);
       if (!guide?.clinicalPlan) return;
       const choices = clinicalChoiceState(guide);
+      if (input.dataset.rxClinicalConfirmation) choices.confirmed = input.checked;
       if (input.dataset.rxClinicalOption) choices.options[input.dataset.rxClinicalOption] = input.value;
       if (input.dataset.rxClinicalGroup) choices.groups[input.dataset.rxClinicalGroup] = input.checked;
       if (input.dataset.rxClinicalItem) choices.items[input.dataset.rxClinicalItem] = input.checked;
