@@ -1,0 +1,30 @@
+name: Recetat chapters 21–22
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  clinical-and-browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Check clinical alternatives, combined regimens and source gates
+        run: node tests/prescription-clinical-plan-21-22-test.js
+      - run: pnpm exec playwright install --with-deps chromium webkit
+      - name: Check mobile and desktop chapter workflows
+        run: pnpm exec playwright test tests/recetat-21-22-playwright.spec.js --config=playwright.registry-v2.config.js
