@@ -15,10 +15,10 @@ const gemini = read('lib/gemini-prescription.js');
 for (const id of ['rxOrderBuilder','rxAddDrugButton','rxSelectedDrugs','rxFreeTextPanel','rxClinicalReview','rxDosageChooser','rxDosageManual','rxDosageCancel']) {
   assert.match(html, new RegExp(`id="${id}"`), `Missing structured eRx node #${id}`);
 }
-assert.match(html, /Barnat e recetës/);
-assert.match(html, /Asnjë dozë nuk aplikohet pa veprimin tënd/);
-assert.match(html, /Tekst i lirë \/ import manual/);
-assert.match(html, /Formulo Signaturën me Gemini/);
+assert.match(html, /Barnat dhe udhëzimet/);
+assert.match(html, /Zgjidh barin dhe plotëso fushat e tij/);
+assert.match(html, /Shkruaj ose ngjit tekstin e recetës/);
+assert.match(html, /Ndihmë me Signaturën · Gemini/);
 
 assert.match(css, /Recetat V2 — consolidated prescription workspace/);
 assert.match(css, /\.rx-order-card/);

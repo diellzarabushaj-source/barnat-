@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v38">
+<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v39">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -10,12 +10,12 @@
   <title>DRx | Recetat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/recetat-v2.css?v=38-chapters-21-22-20261022">
+  <link rel="stylesheet" href="/recetat-v2.css?v=39-composer-library-20261024">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
   <script src="/drx-modal-focus.js?v=p1-20261008" defer></script>
-<script src="/recetat-v2.js?v=38-chapters-21-22-20261022" defer></script>
+<script src="/recetat-v2.js?v=39-composer-library-20261024" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#rxWorkspace">Kalo te krijimi i recetës</a>
@@ -216,30 +216,36 @@
         <section class="rx-dashboard" id="rxComposerWorkspace" aria-label="Krijuesi i recetës">
           <article class="rx-compose-card">
             <header class="rx-card-head">
-              <div><span class="rx-step">01</span><h2>Barnat dhe udhëzimi</h2></div>
+              <div><span class="rx-step">01</span><h2>Diagnoza</h2></div>
               <span class="rx-draft-label" id="rxDraftLabel">Draft i ri</span>
               <p id="rxDraftPersistence" role="status" aria-live="polite"></p>
             </header>
 
-            <p class="rx-section-guidance">Shëno diagnozën, shto barnat dhe plotëso udhëzimet për pacientin.</p>
+            <p class="rx-section-guidance">Shkruaj diagnozën, pastaj shto barnat.</p>
             <div class="rx-context-row">
               <label class="rx-diagnosis">
                 <span>Diagnoza / indikacioni</span>
                 <input id="rxDiagnosis" type="text" autocomplete="off" placeholder="p.sh. J18.9 — Pneumoni">
               </label>
+            </div>
+            <details class="rx-context-disclosure" id="rxContextPanel">
+              <summary><span>Dosja, rruga dhe pediatria</span><small id="rxContextBrief">Sipas nevojës</small></summary>
+              <div class="rx-context-disclosure-body">
               <label class="rx-chapter-field">
                 <span>Dosja klinike <small id="rxChapterSuggestion">sugjerohet automatikisht</small></span>
                 <select id="rxChapterSelect" aria-label="Dosja klinike">
                   <option value="te-tjera">Të tjera</option>
                 </select>
               </label>
-            </div>
+                <div id="rxClinicalContextHost"></div>
+              </div>
+            </details>
 
             <section class="rx-order-builder" id="rxOrderBuilder" aria-labelledby="rxOrderBuilderTitle">
               <header class="rx-order-builder-head">
                 <div>
-                  <h3 id="rxOrderBuilderTitle">Barnat e recetës</h3>
-                  <p>Asnjë dozë nuk aplikohet pa veprimin tënd.</p>
+                  <h3 id="rxOrderBuilderTitle"><span class="rx-step">02</span> Barnat dhe udhëzimet</h3>
+                  <p>Zgjidh barin dhe plotëso fushat e tij.</p>
                 </div>
                 <button class="rx-secondary rx-add-drug" id="rxAddDrugButton" type="button" aria-controls="rxDrugPopover" aria-expanded="false">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -247,13 +253,13 @@
                 </button>
               </header>
               <div class="rx-selected rx-order-list" id="rxSelectedDrugs" aria-live="polite" aria-label="Barnat e zgjedhura">
-                <div class="rx-order-empty"><strong>Ende nuk ka barna</strong><span>Shto barin e parë nga regjistri i verifikuar.</span></div>
+                <div class="rx-order-empty"><strong>Shto barin e parë</strong><span>Kërko emrin ose substancën, pastaj plotëso dozën dhe udhëzimin.</span></div>
               </div>
             </section>
 
             <details class="rx-free-text-panel" id="rxFreeTextPanel">
               <summary>
-                <span><strong>Tekst i lirë / import manual</strong><small>Përdore vetëm kur receta nuk ndërtohet nga fushat e strukturuara.</small></span>
+                <span><strong>Shkruaj ose ngjit tekstin e recetës</strong><small>Për receta të shkruara manualisht.</small></span>
                 <span aria-hidden="true">⌄</span>
               </summary>
               <div class="rx-command-bar" aria-label="Fusha të shpejta">
@@ -286,8 +292,10 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
             </div>
 
             <div class="rx-compose-actions">
-              <button class="rx-primary" id="rxFormatLocal" type="button">Formato lokalisht</button>
-              <button class="rx-secondary" id="rxGenerate" type="button"><span class="rx-ai-mark" aria-hidden="true">✦</span><span>Formulo Signaturën me Gemini · online</span></button>
+              <button class="rx-secondary" id="rxFormatLocal" type="button">Përditëso parapamjen</button>
+              <details class="rx-writing-tools"><summary>Ndihmë për shkrimin</summary>
+              <button class="rx-secondary" id="rxGenerate" type="button"><span class="rx-ai-mark" aria-hidden="true">✦</span><span>Ndihmë me Signaturën · Gemini</span></button>
+              </details>
               <button class="rx-ghost" id="rxClear" type="button">Pastro</button>
             </div>
             <p class="rx-status" id="rxStatus" role="status" aria-live="polite"></p>
@@ -295,11 +303,12 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
 
           <article class="rx-preview-card">
             <header class="rx-card-head">
-              <div><span class="rx-step">02</span><h2>Parapamja &amp; kontrolli</h2></div>
+              <div><span class="rx-step">03</span><h2>Kontrollo dhe ruaj</h2></div>
               <span class="rx-state is-draft" id="rxState">Draft</span>
             </header>
 
             <p class="rx-section-guidance">Kontrollo pamjen përfundimtare para ruajtjes, kopjimit ose printimit.</p>
+            <div class="rx-next-step" id="rxNextStep" role="status" aria-live="polite"><div><strong id="rxNextTitle">Hapi i radhës</strong><p id="rxNextHint">Shto barin e parë ose shkruaj recetën.</p></div><button type="button" class="rx-text-button" id="rxNextAction">Shto bar</button></div>
             <div class="rx-preview" id="rxPreview" aria-live="polite">
               <div class="rx-preview-empty">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M9 5h6M9 3h6v4H9V3ZM6 5H4v16h16V5h-2M8 12h8M8 16h6"/></svg>
@@ -308,12 +317,12 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
               </div>
             </div>
 
-            <label class="rx-generated-review" id="rxGeneratedReview" hidden><input type="checkbox"><span>Kam kontrolluar klinikisht çdo Signaturë të propozuar nga AI.</span></label>
-            <label class="rx-generated-review" id="rxDosageReview" hidden><input type="checkbox"><span>Kam verifikuar dozën, rrugën, shpeshtësinë, kohëzgjatjen dhe kufijtë e skemës së aplikuar.</span></label>
-            <label class="rx-generated-review rx-final-review" id="rxClinicalReview" hidden><input type="checkbox"><span>Kam kontrolluar recetën përfundimtare: barin, dozën, rrugën, shpeshtësinë, sasinë dhe udhëzimet.</span></label>
+            <label class="rx-generated-review" id="rxGeneratedReview" hidden><input type="checkbox" tabindex="0"><span>Kam kontrolluar klinikisht çdo Signaturë të propozuar nga AI.</span></label>
+            <label class="rx-generated-review" id="rxDosageReview" hidden><input type="checkbox" tabindex="0"><span>Kam verifikuar dozën, rrugën, shpeshtësinë, kohëzgjatjen dhe kufijtë e skemës së aplikuar.</span></label>
+            <label class="rx-generated-review rx-final-review" id="rxClinicalReview" hidden><input type="checkbox" tabindex="0"><span>Kam kontrolluar recetën përfundimtare: barin, dozën, rrugën, shpeshtësinë, sasinë dhe udhëzimet.</span></label>
 
             <div class="rx-preview-actions">
-              <button class="rx-primary" id="rxSave" type="button" disabled>Ruaje në dosje</button>
+              <button class="rx-primary" id="rxSave" type="button" disabled>Ruaj recetën</button>
               <button class="rx-secondary" id="rxCopy" type="button" disabled>Kopjo</button>
               <button class="rx-secondary" id="rxPrint" type="button" disabled>Printo</button>
             </div>
@@ -330,16 +339,22 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
         <section class="rx-library" aria-labelledby="rxSavedTitle">
           <header class="rx-library-head">
             <div>
-              <h2 id="rxSavedTitle">Dosjet e recetave</h2>
+              <h2 id="rxSavedTitle">Recetat e mia</h2>
+              <p class="rx-library-intro">Gjej recetën dhe hape për ta përshtatur.</p>
               <p class="rx-library-totals">
                 <span><strong id="rxSavedCount">0</strong> receta</span>
-                <span><strong id="rxFolderCount">—</strong> dosje</span>
-                <span><strong id="rxActiveChapterCount">0</strong> në <em id="rxActiveChapterMetric">të gjitha recetat</em></span>
+                <span hidden><strong id="rxFolderCount">—</strong> dosje</span>
+                <span hidden><strong id="rxActiveChapterCount">0</strong> në <em id="rxActiveChapterMetric">të gjitha recetat</em></span>
                 <span class="rx-sync-metric" id="rxLibraryState">Local</span>
               </p>
             </div>
-            <label class="rx-saved-search"><span class="sr-only">Kërko recetat</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg><input id="rxSavedSearch" type="search" autocomplete="off" placeholder="Kërko recetën, diagnozën ose barin…"></label>
           </header>
+          <div class="rx-library-searchbar">
+            <label class="rx-saved-search"><span class="sr-only">Kërko recetat</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg><input id="rxSavedSearch" type="search" autocomplete="off" placeholder="Kërko recetën, diagnozën ose barin…"></label>
+            <label class="rx-sort-field"><span>Rendit</span><select id="rxSavedSort" aria-label="Rendit recetat"><option value="recent">Të fundit</option><option value="oldest">Më të vjetrat</option><option value="title">Emri A–Z</option></select></label>
+            <label class="rx-folder-picker"><span>Dosja</span><select id="rxFolderSelect" aria-label="Filtro recetat sipas dosjes"><option value="all">Të gjitha dosjet</option></select></label>
+            <button type="button" class="rx-text-button" id="rxLibraryReset" hidden>Hiq filtrat</button>
+          </div>
 
           <div class="rx-library-layout">
             <aside class="rx-folder-panel" aria-label="Dosjet e recetave">

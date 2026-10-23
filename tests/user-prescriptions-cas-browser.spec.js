@@ -92,7 +92,7 @@ for(const width of [320,390,760,1440])test(`Prescription editor preserves drafts
  if(!await page.locator('#rxPrescriptionConflict').isVisible())await page.locator('[data-compare-prescription="rx-browser"]').click();
  await page.locator('#rxPrescriptionUseLatest').click();
  await expect(page.locator('#rxComposer')).toHaveValue('Latest accepted version');await expect(page.locator('#rxPrescriptionConflicts')).toBeHidden();
- await page.locator('#rxTabBtnLibrary').click();await page.locator('[data-delete-saved="rx-browser"]').click();await expect(page.locator('#rxUndoDelete')).toBeVisible();await expect.poll(()=>store.deleted).toBe(true);await page.locator('#rxUndoDeleteButton').click();await expect.poll(()=>store.deleted).toBe(false);expect(store.payload.sourceText).toBe('Latest accepted version');expect(store.payload.custom).toEqual(initial.custom);
+ await page.locator('#rxTabBtnLibrary').click();await page.locator('[data-saved-id="rx-browser"] .rx-saved-more > summary').click();await page.locator('[data-delete-saved="rx-browser"]').click();await expect(page.locator('#rxUndoDelete')).toBeVisible();await expect.poll(()=>store.deleted).toBe(true);await page.locator('#rxUndoDeleteButton').click();await expect.poll(()=>store.deleted).toBe(false);expect(store.payload.sourceText).toBe('Latest accepted version');expect(store.payload.custom).toEqual(initial.custom);
  await expect.poll(()=>page.evaluate(()=>window.MedIndexUserLibrary.diagnostics().pendingPrescriptions)).toBe(0);
  await page.locator('[data-open-saved="rx-browser"]').click();await page.locator('#rxTabBtnCompose').click();
  if(!await page.locator('#rxFreeTextPanel').evaluate(node=>node.open))await page.locator('#rxFreeTextPanel > summary').click();

@@ -1,0 +1,26 @@
+name: Recetat workspace
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  composer-and-library:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: node tests/recetat-v2-folder-workspace-test.js && node tests/recetat-electronic-workflow-test.js && node tests/user-prescriptions-cas-client-test.js
+      - run: pnpm exec playwright install --with-deps chromium webkit
+      - name: Check composer, personal library and multi-device persistence
+        run: pnpm exec playwright test tests/recetat-workspace-clarity.spec.js tests/user-prescriptions-cas-browser.spec.js --config=playwright.registry-v2.config.js
