@@ -23,4 +23,4 @@ jobs:
       - run: node tests/recetat-v2-folder-workspace-test.js && node tests/recetat-electronic-workflow-test.js && node tests/user-prescriptions-cas-client-test.js
       - run: pnpm exec playwright install --with-deps chromium webkit
       - name: Check composer, personal library and multi-device persistence
-        run: pnpm exec playwright test tests/recetat-workspace-clarity.spec.js tests/user-prescriptions-cas-browser.spec.js --config=playwright.registry-v2.config.js
+        run: pnpm exec playwright test tests/recetat-workspace-clarity.spec.js tests/recetat-print-layout.spec.js tests/user-prescriptions-cas-browser.spec.js --config=playwright.registry-v2.config.js
