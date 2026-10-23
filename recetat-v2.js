@@ -3323,9 +3323,9 @@
 
   function createUi() {
     if (state.document.getElementById('rxClinicalContext')) return;
-    const anchor = state.document.getElementById('rxOrderBuilder') || state.document.querySelector('.rx-command-bar');
+    const anchor = state.document.getElementById('rxClinicalContextHost') || state.document.getElementById('rxOrderBuilder') || state.document.querySelector('.rx-command-bar');
     if (!anchor) return;
-    anchor.insertAdjacentHTML(anchor.id === 'rxOrderBuilder' ? 'beforebegin' : 'afterend', `
+    anchor.insertAdjacentHTML(anchor.id === 'rxClinicalContextHost' ? 'beforeend' : anchor.id === 'rxOrderBuilder' ? 'beforebegin' : 'afterend', `
       <section class="rx-clinical-context" id="rxClinicalContext" aria-labelledby="rxClinicalContextTitle">
         <div class="rx-context-heading">
           <div><span class="rx-context-kicker">Konteksti klinik</span><strong id="rxClinicalContextTitle">Rruga e administrimit</strong><small class="rx-context-source" id="rxContextSource">Zgjidhet automatikisht pasi zgjedh barin</small></div>
@@ -3483,6 +3483,12 @@
     }
     const summary = state.document.querySelector('[data-context-summary]');
     if (summary) summary.textContent = contextSummary(context);
+    const brief = state.document.getElementById('rxContextBrief');
+    if (brief) brief.textContent = [context.route, context.pediatric ? 'Pediatrike' : 'Të rritur'].filter(Boolean).join(' · ');
+    if (context.pediatric && !validation.valid) {
+      const disclosure = state.document.getElementById('rxContextPanel');
+      if (disclosure) disclosure.open = true;
+    }
     state.document.getElementById('rxContextSummary')?.classList.toggle('is-incomplete', !validation.valid);
     renderPreviewContext();
   }
@@ -5602,6 +5608,7 @@
   const state = {
     selectedDrugs: [],
     result: null,
+    previewPending: false,
     editingId: '',
     editingBase:null,
     renderedPrescriptionBases:new Map(),
@@ -5785,7 +5792,12 @@
     if (!root) return;
     const counts = chapterCounts(items);
     $('#rxChapterAllCount').textContent = String(items.length);
-    root.innerHTML = chapterCatalog().map(chapter => {
+    const picker = $('#rxFolderSelect');
+    if (picker) {
+      picker.innerHTML = '<option value="all">Të gjitha dosjet</option>' + chapterCatalog().map(chapter => `<option value="${esc(chapter.slug)}">${esc(chapter.title)} · ${counts.get(chapter.slug) || 0}</option>`).join('');
+      picker.value = state.activeChapter;
+    }
+    root.innerHTML = chapterCatalog().filter(chapter => counts.get(chapter.slug) || state.activeChapter === chapter.slug).map(chapter => {
       const active = state.activeChapter === chapter.slug;
       return `<button class="rx-folder-item${active ? ' is-active' : ''}" type="button" data-rx-chapter="${esc(chapter.slug)}" aria-pressed="${active}">
         <span class="rx-folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3.5 7.5h6l1.8 2h9.2v9.5a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 19Z"/><path d="M3.5 7.5V5A1.5 1.5 0 0 1 5 3.5h4l1.7 2H19a1.5 1.5 0 0 1 1.5 1.5v2.5"/></svg></span>
@@ -5793,7 +5805,9 @@
         <b>${counts.get(chapter.slug) || 0}</b>
       </button>`;
     }).join('');
-    document.querySelector('[data-rx-chapter="all"]')?.classList.toggle('is-active', state.activeChapter === 'all');
+    const allButton = document.querySelector('[data-rx-chapter="all"]');
+    allButton?.classList.toggle('is-active', state.activeChapter === 'all');
+    allButton?.setAttribute('aria-pressed', String(state.activeChapter === 'all'));
   }
 
   function normalizeDrug(item) {
@@ -6048,6 +6062,7 @@
       state.pendingRouteDrug = { raw:hydrated, options:{ ...options, skipRegistryHydration:true }, manualAdministration:true };
       setStatus('Rruga nuk u identifikua në mënyrë të sigurt nga kartela e produktit. Zgjidh kategorinë dhe rrugën; pastaj DRx vazhdon me dozologjinë.', 'error');
       setTimeout(() => {
+        if (document.getElementById('rxContextPanel')) document.getElementById('rxContextPanel').open = true;
         document.getElementById('rxClinicalContext')?.scrollIntoView?.({ block:'center', behavior:'smooth' });
         document.querySelector('[data-context-category]')?.focus?.({ preventScroll:true });
       }, 0);
@@ -6060,6 +6075,7 @@
         ? `Ky preparat lejon ${routes.join(' / ')}. Zgjidh rrugën e saktë; vazhdimi bëhet automatikisht.`
         : `${window.MedIndexAdministrationRoutes?.categoryLabel?.(synced.administration.category) || synced.administration.category} u identifikua. Zgjidh rrugën e saktë për këtë preparat.`, 'error');
       setTimeout(() => {
+        if (document.getElementById('rxContextPanel')) document.getElementById('rxContextPanel').open = true;
         const holder = document.getElementById('rxRouteSegments');
         holder?.scrollIntoView?.({ block:'center', behavior:'smooth' });
         holder?.querySelector?.('button')?.focus?.({ preventScroll:true });
@@ -6173,6 +6189,9 @@
   function updateOrderField(key, field, value) {
     const index = state.selectedDrugs.findIndex(item => item.key === key);
     if (index < 0) return;
+    // Input and blur/change can report the same edit. A duplicate event must
+    // not rebuild the preview or invalidate a confirmation already in progress.
+    if (String(state.selectedDrugs[index][field] ?? '') === String(value ?? '')) return;
     const current = { ...state.selectedDrugs[index] };
     current[field] = value;
     if (field === 'signatura') current.signaturaManual = true;
@@ -6206,7 +6225,7 @@
     const holder = $('#rxSelectedDrugs');
     if (!holder) return;
     if (!state.selectedDrugs.length) {
-      holder.innerHTML = '<div class="rx-order-empty"><strong>Ende nuk ka barna</strong><span>Shto barin e parë nga regjistri i verifikuar.</span></div>';
+      holder.innerHTML = '<div class="rx-order-empty"><strong>Shto barin e parë</strong><span>Kërko emrin ose substancën, pastaj plotëso dozën dhe udhëzimin.</span></div>';
       updateActionState();
       return;
     }
@@ -6335,8 +6354,40 @@
     return state.selectedDrugs.some(drug => ['auto-filled', 'requires-review', 'edited'].includes(drug.dosageStatus));
   }
 
+  function syncNextStep() {
+    const title = $('#rxNextTitle'), hint = $('#rxNextHint'), action = $('#rxNextAction');
+    if (!title || !hint || !action) return;
+    let heading = 'Hapi i radhës', message = 'Shto barin e parë ose shkruaj recetën.', target = 'add', label = 'Shto bar';
+    const issues = structuredOrderIssues();
+    if (state.previewPending) { heading = 'Po përditësohet'; message = 'Parapamja po merr ndryshimet e fundit.'; target = ''; }
+    else if (issues.length) { message = 'Plotëso '+issues[0].drug.substance+': '+issues[0].issues.join(', ')+'.'; target = 'order'; label = 'Plotëso fushat'; }
+    else if (!state.result && text($('#rxComposer')?.value)) { message = 'Përditëso parapamjen për të kontrolluar tekstin.'; target = 'format'; label = 'Shfaq parapamjen'; }
+    else if (state.result) {
+      if (reviewRequired() && !state.generatedReviewConfirmed) { message = 'Kontrollo dhe konfirmo Signaturën e formuluar me AI.'; target = 'ai'; label = 'Shko te kontrolli'; }
+      else if (dosageReviewRequired() && !state.dosageReviewConfirmed) { message = 'Kontrollo dhe konfirmo skemën e dozologjisë.'; target = 'dose'; label = 'Shko te kontrolli'; }
+      else if (!state.clinicalReviewConfirmed) { message = 'Lexo parapamjen dhe konfirmo kontrollin përfundimtar.'; target = 'review'; label = 'Shko te konfirmimi'; }
+      else { heading = 'Gati për ruajtje'; message = 'Recetën mund ta ruash, kopjosh ose printosh.'; target = ''; }
+    }
+    title.textContent = heading; hint.textContent = message;
+    action.textContent = label; action.hidden = !target; action.dataset.nextTarget = target;
+    $('#rxNextStep').classList.toggle('is-ready', !target && !state.previewPending);
+  }
+
+  function focusNextStep() {
+    const target = $('#rxNextAction')?.dataset.nextTarget;
+    if (target === 'add') { $('#rxAddDrugButton')?.click(); return; }
+    if (target === 'format') { formatLocally(); return; }
+    const first = structuredOrderIssues()[0];
+    let node;
+    if (target === 'order' && first) {
+      const card = document.querySelector('[data-order-key="'+CSS.escape(first.key)+'"]');
+      node = [...(card?.querySelectorAll('[data-order-field]') || [])].find(input => input.required && !text(input.value)) || card?.querySelector('[data-order-field]');
+    } else node = $(target === 'ai' ? '#rxGeneratedReview input' : target === 'dose' ? '#rxDosageReview input' : '#rxClinicalReview input');
+    if (node) { node.closest('details')?.setAttribute('open',''); node.scrollIntoView({block:'center',behavior:window.matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth'}); node.focus({preventScroll:true}); }
+  }
+
   function updateActionState() {
-    const hasResult = Boolean(state.result);
+    const hasResult = Boolean(state.result) && !state.previewPending;
     const ordersReady = structuredOrdersReady();
     const allowed = hasResult
       && ordersReady
@@ -6374,6 +6425,7 @@
       clinicalReview.classList.toggle('is-blocked', !ordersReady);
     }
 
+    syncNextStep();
     const status = $('#rxState');
     if (status && hasResult) {
       status.className = `rx-state ${allowed ? 'is-ready' : 'is-review'}`;
@@ -6396,6 +6448,8 @@
   }
 
   function showResult(rawResult, source = 'local') {
+    clearTimeout(state.renderTimer);
+    state.previewPending = false;
     const result = Core.normalizeResult(rawResult);
     if (!result) {
       clearResult();
@@ -6411,6 +6465,8 @@
   }
 
   function clearResult() {
+    clearTimeout(state.renderTimer);
+    state.previewPending = false;
     state.result = null;
     state.source = '';
     state.generatedReviewConfirmed = false;
@@ -6425,7 +6481,11 @@
 
   function scheduleLocalPreview() {
     clearTimeout(state.renderTimer);
+    state.previewPending = true;
+    state.clinicalReviewConfirmed = false;
+    updateActionState();
     state.renderTimer = setTimeout(() => {
+      state.previewPending = false;
       const result = localParse();
       if (result) showResult(result, 'local');
       else clearResult();
@@ -6699,6 +6759,10 @@
   }
 
   function ensureActionAllowed() {
+    if (state.previewPending) {
+      setStatus('Prit përditësimin e parapamjes para kontrollit përfundimtar.');
+      return false;
+    }
     if (!state.result) return false;
     const issues = structuredOrderIssues();
     if (issues.length) {
@@ -6815,7 +6879,7 @@
     state.dosageReviewConfirmed = Boolean(protocol.dosageReviewed && dosageReviewRequired());
     state.clinicalReviewConfirmed = false;
     updateActionState();
-    window.scrollTo({ top:0, behavior:'smooth' });
+    window.DRxRecetatTabs?.show('compose', { scroll:true });
     saveWorkspaceDraft();
     setStatus('Receta e ruajtur u hap për editim. Kërkohet kontroll i ri para ruajtjes së ndryshimeve.', 'success');
   }
@@ -6932,11 +6996,23 @@
     renderSaved();toast(restored.conflict ? 'Rikthimi kërkon krahasimin e versioneve.' : 'Rikthimi i recetës pret konfirmimin.');
   }
 
+  function clearLibraryFilters() {
+    if ($('#rxSavedSearch')) $('#rxSavedSearch').value = '';
+    state.activeChapter = 'all';
+    renderSaved();
+  }
+
+  function savedTimestamp(protocol) {
+    const stamp = Date.parse(protocol.updatedAt || protocol.createdAt || '');
+    return Number.isFinite(stamp) ? stamp : 0;
+  }
+
   function renderSaved() {
     const list = $('#rxSavedList');
     if (!list) return;
     renderPrescriptionConflicts();
     const query = fold($('#rxSavedSearch')?.value);
+    const terms = query.split(/\s+/).filter(Boolean);
     const all = getSaved().map(protocol => ({
       ...protocol,
       chapterKey:chapterByKey(protocol.chapterKey || classifyChapter({
@@ -6944,46 +7020,51 @@
         selectedDrugs:Array.isArray(protocol.selectedDrugs) ? protocol.selectedDrugs : [],
       })).slug,
     }));
-    state.renderedPrescriptionBases=new Map(all.map(item => [String(item.id),window.MedIndexUserLibrary?.capturePrescriptionBase?.(item.id)]));
+    state.renderedPrescriptionBases = new Map(all.map(item => [String(item.id),window.MedIndexUserLibrary?.capturePrescriptionBase?.(item.id)]));
     $('#rxSavedCount').textContent = all.length;
     renderChapterNav(all);
-
     const active = state.activeChapter === 'all' ? null : chapterByKey(state.activeChapter);
     if ($('#rxActiveChapterTitle')) $('#rxActiveChapterTitle').textContent = active?.title || 'Të gjitha recetat';
-    if ($('#rxActiveChapterDescription')) $('#rxActiveChapterDescription').textContent = active?.description || 'Biblioteka e plotë';
+    if ($('#rxActiveChapterDescription')) $('#rxActiveChapterDescription').textContent = active ? 'Recetat në këtë dosje' : 'Hape një recetë për ta përshtatur';
     if ($('#rxActiveChapterMetric')) $('#rxActiveChapterMetric').textContent = active?.title || 'Të gjitha recetat';
-
+    const reset = $('#rxLibraryReset');
+    if (reset) reset.hidden = !query && !active;
     const filtered = all.filter(protocol => {
       if (active && protocol.chapterKey !== active.slug) return false;
       const result = resultFromProtocol(protocol);
       const meds = (result?.sections || []).flatMap(section => section.medications || []).map(item => item.name).join(' ');
-      return !query || fold(`${protocol.name || ''} ${protocol.indication || ''} ${meds}`).includes(query);
+      const haystack = fold([protocol.name,protocol.indication,protocol.diagnosis,result?.title,result?.diagnosis,meds].filter(Boolean).join(' '));
+      return terms.every(term => haystack.includes(term));
     });
+    const sort = $('#rxSavedSort')?.value || 'recent';
+    filtered.sort((a,b) => sort === 'title'
+      ? text(resultFromProtocol(a)?.diagnosis || resultFromProtocol(a)?.title || a.name).localeCompare(text(resultFromProtocol(b)?.diagnosis || resultFromProtocol(b)?.title || b.name),'sq') || String(a.id).localeCompare(String(b.id))
+      : (sort === 'oldest' ? 1 : -1) * (savedTimestamp(a)-savedTimestamp(b)) || String(a.id).localeCompare(String(b.id)));
     $('#rxVisibleSavedCount').textContent = String(filtered.length);
     $('#rxActiveChapterCount').textContent = String(filtered.length);
-
     if (!filtered.length) {
-      list.innerHTML = `<div class="rx-saved-empty">${all.length ? 'Nuk u gjet asnjë recetë në këtë dosje për kërkimin aktual.' : 'Ende nuk ka receta të ruajtura.'}</div>`;
+      list.innerHTML = all.length
+        ? '<div class="rx-saved-empty"><strong>Nuk u gjet asnjë recetë</strong><p>Provo një fjalë tjetër ose hiq filtrat.</p><button type="button" class="rx-secondary" data-rx-reset-library>Hiq filtrat</button></div>'
+        : '<div class="rx-saved-empty"><strong>Recetat e tua ruhen këtu</strong><p>Krijo recetën, kontrolloje dhe zgjidh “Ruaj recetën”.</p><button type="button" class="rx-primary" data-rx-show-compose>Ndërto recetën e parë</button></div>';
       return;
     }
-
-    const chapterOptions = chapterCatalog().map(chapter => `<option value="${esc(chapter.slug)}">${esc(chapter.title)}</option>`).join('');
+    const chapterOptions = chapterCatalog().map(chapter => '<option value="'+esc(chapter.slug)+'">'+esc(chapter.title)+'</option>').join('');
     list.innerHTML = filtered.map(protocol => {
       const result = resultFromProtocol(protocol);
-      const medicationCount = result?.sections.reduce((sum, section) => sum + section.medications.length, 0) || 0;
+      const medications = (result?.sections || []).flatMap(section => section.medications || []);
+      const medicationCount = medications.length;
       const chapter = chapterByKey(protocol.chapterKey);
-      const options = chapterOptions.replace(`value="${esc(chapter.slug)}"`, `value="${esc(chapter.slug)}" selected`);
-      return `<article class="rx-saved-card" data-saved-id="${esc(protocol.id)}">
-        <div class="rx-saved-card-head"><h3>${esc(result?.title || 'Recetë')}</h3><time>${new Date(protocol.updatedAt || Date.now()).toLocaleDateString('sq-AL')}</time></div>
-        <p>${esc(result?.diagnosis || 'Pa diagnozë të shënuar')}</p>
-        <div class="rx-saved-tags"><span class="rx-saved-chapter">${esc(chapter.title)}</span><span>${result?.sections.length || 0} grupe</span><span>${medicationCount} barna</span>${protocol.aiStructured ? '<span>AI</span>' : ''}</div>
-        <div class="rx-saved-actions">
-          <button type="button" data-open-saved="${esc(protocol.id)}">Hape</button>
-          <button type="button" data-duplicate-saved="${esc(protocol.id)}">Dupliko</button>
-          <select data-move-saved="${esc(protocol.id)}" aria-label="Zhvendose recetën në dosje">${options}</select>
-          <button class="danger" type="button" data-delete-saved="${esc(protocol.id)}" aria-label="Fshije recetën">×</button>
-        </div>
-      </article>`;
+      const options = chapterOptions.replace('value="'+esc(chapter.slug)+'"', 'value="'+esc(chapter.slug)+'" selected');
+      const title = result?.diagnosis || result?.title || protocol.name || 'Recetë';
+      const stamp = savedTimestamp(protocol);
+      const date = stamp ? new Date(stamp).toLocaleDateString('sq-AL') : 'Pa datë';
+      const medicationNames = medications.slice(0,3).map(item => text(item.name)).filter(Boolean).join(' · ');
+      return '<article class="rx-saved-card" data-saved-id="'+esc(protocol.id)+'">'+
+        '<div class="rx-saved-card-head"><span class="rx-saved-chapter">'+esc(chapter.title)+'</span><time'+(stamp ? ' datetime="'+new Date(stamp).toISOString()+'"' : '')+'>'+esc(date)+'</time></div>'+
+        '<h3>'+esc(title)+'</h3><p class="rx-saved-medications">'+esc(medicationNames || 'Udhëzime të ruajtura')+(medicationCount>3 ? ' · +'+(medicationCount-3)+' të tjera' : '')+'</p>'+
+        '<div class="rx-saved-tags"><span>'+medicationCount+' '+(medicationCount===1 ? 'bar' : 'barna')+'</span>'+(protocol.aiStructured ? '<span>Me ndihmë AI</span>' : '')+'</div>'+
+        '<div class="rx-saved-actions"><button class="rx-saved-open" type="button" data-open-saved="'+esc(protocol.id)+'" aria-label="Hap recetën: '+esc(title)+'">Hap recetën <span aria-hidden="true">→</span></button>'+
+        '<details class="rx-saved-more"><summary>Veprime</summary><div class="rx-saved-more-body"><button type="button" data-duplicate-saved="'+esc(protocol.id)+'">Dupliko</button><label><span>Zhvendos në dosje</span><select data-move-saved="'+esc(protocol.id)+'" aria-label="Zhvendose recetën në dosje">'+options+'</select></label><button class="danger" type="button" data-delete-saved="'+esc(protocol.id)+'">Fshi recetën</button></div></details></div></article>';
     }).join('');
   }
 
@@ -7315,14 +7396,25 @@
       if (event.key === 'Escape' && !$('#rxDosageChooser')?.hidden) closeDosageChooser({ mode:'cancel' });
     });
 
+    $('#rxNextAction')?.addEventListener('click', focusNextStep);
+    $('#rxSavedSort')?.addEventListener('change', renderSaved);
+    $('#rxFolderSelect')?.addEventListener('change', event => { state.activeChapter = event.target.value || 'all'; renderSaved(); });
+    $('#rxLibraryReset')?.addEventListener('click', clearLibraryFilters);
     $('#rxSavedSearch')?.addEventListener('input', renderSaved, { passive:true });
     $('#rxSavedList')?.addEventListener('click', event => {
+      if (event.target.closest('[data-rx-reset-library]')) clearLibraryFilters();
+      if (event.target.closest('[data-rx-show-compose]')) window.DRxRecetatTabs?.show('compose',{scroll:true});
       const open = event.target.closest('[data-open-saved]');
       const duplicate = event.target.closest('[data-duplicate-saved]');
       const remove = event.target.closest('[data-delete-saved]');
       if (open) openSaved(open.dataset.openSaved);
       if (duplicate) duplicateSaved(duplicate.dataset.duplicateSaved);
       if (remove) deleteSaved(remove.dataset.deleteSaved);
+    });
+    $('#rxSavedList')?.addEventListener('keydown', event => {
+      if (event.key !== 'Escape') return;
+      const disclosure = event.target.closest('.rx-saved-more[open]');
+      if (disclosure) { disclosure.open = false; disclosure.querySelector('summary')?.focus(); event.preventDefault(); }
     });
     $('#rxSavedList')?.addEventListener('change', event => {
       const select = event.target.closest('[data-move-saved]');
