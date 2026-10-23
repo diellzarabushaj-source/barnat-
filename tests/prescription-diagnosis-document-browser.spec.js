@@ -95,7 +95,7 @@ test('preview, copy, TXT export and print share the same diagnosis document', as
   await expect(popup.locator('.document-head h1')).toHaveText('Recetë');
   await expect(popup.locator('.diagnosis-group.primary')).toContainText('I10');
   await expect(popup.locator('.diagnosis-group.secondary li')).toHaveCount(2);
-  await expect(popup.locator('pre')).toContainText('Tab. Enalapril 10 mg');
+  await expect(popup.locator('.prescription-content')).toContainText('Tab. Enalapril 10 mg');
   const printBody = await popup.locator('body').innerText();
   expect(printBody).not.toContain('machine-draft');
   expect(printBody).not.toContain('medindex-icd-browser');

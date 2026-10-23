@@ -1,0 +1,9 @@
+# Compact prescription PDF and print layout
+
+The PDF/print action now opens a compact A4 document with the official embedded DRx mark, a local date in DD.MM.YYYY format, diagnoses and a clear prescription body. Numbered items have distinct headings; instructions use compact lines and the literal DHE/OSE connectors remain visible. The layout works in monochrome and keeps ordinary medication blocks together across pages. The print date is the export date, not a replacement for the saved prescription timestamp.
+
+Select **PDF / Printo**, then choose **Save as PDF / Ruaj si PDF** in the browser or system print dialog. A preview toolbar lets the user reopen that dialog after cancelling; the toolbar is excluded from print. The browser controls the final destination and filename. This change does not automatically upload a PDF or replace the editable saved prescription in the personal library.
+
+The renderer takes the reviewed canonical preview and preserves every non-empty line in its original order. Labels and spacing change, with no recalculation, clinical correction or omission. Text is inserted using DOM text nodes, including literal HTML characters. The popup severs its opener. Existing dosage, patient-context and final-review gates continue to control the print action. No external PDF service, font or new dependency is introduced. The same renderer is kept in the standalone legacy script and active V2 bundle.
+
+Validation: Chromium and WebKit cover canonical text parity, diagnoses, DHE/OSE order, literal HTML safety, disabled review gates, the phone preview, and a 24-item document. Rendered PDF artifacts include a one-page compact example and a four-page long example, checked visually for clipping and page breaks. Existing composer/library cases and targeted contracts plus the production build also pass. The examples use synthetic placeholders and are not patient prescriptions.
