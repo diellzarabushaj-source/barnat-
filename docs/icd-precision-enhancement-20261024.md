@@ -17,6 +17,7 @@ The active hierarchy had 12,542 nodes. Immediately before and after the additive
 - `data/icd-symptom-intents-v1.json` adds only four aliases to the existing chest-pain concept: `pom dhemb gjoksi`, `po me dhemb gjoksi`, `dhimbje kraherori`, `dhimbje kraharori`. Its existing symptom code, differential candidates and red flags are preserved.
 - `icd.html`, `icd-v2.js` and `icd-v2.css` refine the existing interface: Latin first when available, Albanian below, code, verification/proposal labels, symptom-versus-clinical-concept distinction, ambiguity note, one-click copy and the existing Recetat diagnosis-context contract. A closed “Fjalori i kërkimit” disclosure contains explicit memory actions; administrator review is separate. Client aliases stay in memory, refresh after five minutes on focus, and clear when a newly checked account changes. Existing sidebar, autocomplete, keyboard navigation and local hot-search caches remain.
 - `runtime-asset-manifest.json` and page asset versions advance together. `.github/workflows/medindex-validation.yml` runs the new browser cases inside the existing Chromium/WebKit workflow; `tests/test-suite.json` registers the three new server/database tests.
+- The existing command-center asset contract now verifies exact page/manifest agreement rather than freezing the October 14 asset version; all its search, hierarchy and clinical assertions remain in place.
 - `lib/medindex-data-api.js` adds only the two new relations to its server-private relation list.
 
 ## Persistent memory and approval

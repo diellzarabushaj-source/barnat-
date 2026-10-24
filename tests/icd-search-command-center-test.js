@@ -19,8 +19,11 @@ assert.match(html, /Kërko ICD, diagnozë, simptomë, Latin, English/);
 assert.match(html, /id="icdSearchClear"/);
 assert.match(html, /id="clinicalActionPanel"/);
 assert.match(html, /id="clinicalQuickHub"/);
-assert.match(html, /icd-v2\.css\?v=workspace-20261014/);
-assert.match(html, /icd-v2\.js\?v=workspace-20261014/);
+const assets=JSON.parse(fs.readFileSync(path.join(root,'runtime-asset-manifest.json'),'utf8'))['icd.html'];
+for(const asset of ['icd-v2.css','icd-v2.js']){
+  assert.ok(assets[asset],`${asset} must be versioned in the runtime manifest`);
+  assert.ok(html.includes(`/${asset}?v=${assets[asset]}`),`${asset} must match the current tested asset version`);
+}
 assert.match(html, /Mjekësi familjare/);
 assert.match(html, /Urgjenca QKMF/);
 assert.match(html, /100 të shpeshta/);
