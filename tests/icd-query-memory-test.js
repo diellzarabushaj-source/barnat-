@@ -47,7 +47,7 @@ async function main(){
  try{
   Memory.clearCache();Intelligence.answers.clear();
   const request=async(path,options)=>{if(path.startsWith('rpc/')){submitted++;return {data:{id:'synthetic',duplicate:false}};}return {data:[]};};
-  const generate=async()=>{generated++;return {data:{intent:'symptom',candidates:[{code:'R07.4'},{code:'I21'},{code:'R07.89'}]}};};
+  const generate=async options=>{assert.equal(options.thinkingLevel,'low');generated++;return {data:{intent:'symptom',candidates:[{code:'R07.4'},{code:'I21'},{code:'R07.89'}]}};};
   const query='pom ne majte djathte';
   const a=await Intelligence.resolve({dataset,query,actor:OWNER,request,generate});
   const b=await Intelligence.resolve({dataset,query,actor:OWNER,request,generate});
