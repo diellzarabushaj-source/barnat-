@@ -16,17 +16,18 @@ test.beforeAll(async()=>{
 });
 test.afterAll(async()=>new Promise(resolve=>server.close(resolve)));
 
-async function setup(page,admin=false){
- const mutations=[],records=[{expression:'shtypja nalt',normalized:'shtypja nalt',code:'I10',kind:'alias',scope:'global',verification:'verified',node:Advanced.compactNode(Memory.codeNode(dataset,'I10'),dataset)}];let reads=0;
+async function setup(page,admin=false,rotateCsrf=false){
+ const mutations=[],records=[{expression:'shtypja nalt',normalized:'shtypja nalt',code:'I10',kind:'alias',scope:'global',verification:'verified',node:Advanced.compactNode(Memory.codeNode(dataset,'I10'),dataset)}];let reads=0,authReads=0,csrfReads=0,csrfRejected=false;
  await page.addInitScript(owner=>{
   localStorage.setItem('medindex_prescription_starter_seed_v1','1');localStorage.setItem('regjistriBarnave_protokollet_v1','[]');localStorage.setItem('medindex_user_library_meta_v1',JSON.stringify({owner}));
   Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async value=>{window.__qaCopied=value;}}});
  },OWNER);
  await page.route('**/api/**',async route=>{
   const url=new URL(route.request().url()),json=async body=>route.fulfill({json:body});
-  if(url.pathname==='/api/auth')return json({authenticated:true,authUser:{id:OWNER},user:{id:OWNER,email:'qa@example.test',name:'QA',role:admin?'admin':'doctor'},csrfToken:'synthetic'});
+  if(url.pathname==='/api/auth'){authReads++;if(url.searchParams.get('csrf')==='icd-memory')csrfReads++;return json({authenticated:true,authUser:{id:OWNER},user:{id:OWNER,email:'qa@example.test',name:'QA',role:admin?'admin':'doctor'},csrfToken:'synthetic-'+authReads});}
   if(url.searchParams.has('icdMemory')){
    if(route.request().method()==='POST'){
+    if(rotateCsrf&&!csrfRejected){csrfRejected=true;return route.fulfill({status:403,json:{ok:false,code:'ICD_CSRF_EXPIRED'}});}
     const body=route.request().postDataJSON();mutations.push(body);
     if(body.action==='remember')records.push({expression:body.expression,normalized:Memory.normalize(body.expression),code:body.code,kind:'alias',scope:'personal',verification:'personal',node:Advanced.compactNode(Memory.codeNode(dataset,body.code),dataset)});
     if(body.action==='resolve')return json({ok:true,rows:[{...Advanced.compactNode(Memory.codeNode(dataset,'R07.4'),dataset),memoryVerification:'pending'}],ambiguous:true,clarification:'Zgjidh kuptimin e saktë; propozimi pret verifikim.'});
@@ -49,7 +50,7 @@ async function setup(page,admin=false){
   return json({ok:true,items:[],adult:[],pediatric:[],cards:[]});
  });
  await page.goto(baseURL+'/icd.html');await expect(page.locator('#appShell')).toHaveAttribute('aria-busy','false');
- return {mutations,records,reads:()=>reads};
+ return {mutations,records,reads:()=>reads,csrfReads:()=>csrfReads};
 }
 
 for(const width of [390,1440]){
@@ -81,6 +82,13 @@ test('active filters constrain remembered aliases and warm search survives offli
  await page.locator('#icdSearch').fill('I10');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');
  await page.locator('#icdSearch').fill('pom dhemb gjoksi');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','R07.4');
  expect(api.mutations).toEqual([]);
+});
+
+test('rotated CSRF renews automatically without duplicate writes',async({page})=>{
+ const api=await setup(page,false,true);
+ await page.locator('#icdSearch').fill('pom ne majte');await page.locator('#icdMemoryTools>summary').click();
+ await page.locator('#icdMemoryCode').fill('R07.4');await page.locator('#icdTermOnly').check();await page.locator('#icdRememberTerm').click();
+ await expect(page.locator('#icdMemoryStatus')).toContainText('vetëm në fjalorin tënd');expect(api.mutations).toHaveLength(1);expect(api.csrfReads()).toBe(2);
 });
 
 test('explicit personal mapping survives reload and AI proposals remain unverified',async({page})=>{
