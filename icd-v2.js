@@ -1532,10 +1532,23 @@
   }
 
   async function postTerminology(body) {
-    const response=await fetch('/api/clinical-editor?icdMemory=1',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','x-csrf-token':terminologyCsrf},body:JSON.stringify(body)});
-    const payload=await response.json();
-    if(!response.ok||!payload.ok)throw new Error(payload.error||'Veprimi nuk u krye.');
-    return payload;
+    // A queried auth URL bypasses the worker's token-free offline snapshot.
+    // Other tabs may rotate the HttpOnly CSRF cookie; refresh only on explicit actions.
+    for(let attempt=0;attempt<2;attempt++){
+      const {payload:auth}=await fetchJson('/api/auth?csrf=icd-memory',5000);
+      const owner=clean(auth.authUser?.id||auth.user?.id||auth.user?.email);
+      if(!auth.authenticated||!auth.csrfToken||auth.offline)throw new Error('Për ruajtje kërkohet lidhje aktive dhe hyrje e verifikuar.');
+      if(owner!==terminologyOwner){
+        terminologyAliases=[];suggestionCache.clear();terminologyEpoch++;
+        throw new Error('Llogaria ndryshoi. Rifresko faqen përpara se të ruash shprehjen.');
+      }
+      terminologyCsrf=clean(auth.csrfToken);
+      const response=await fetch('/api/clinical-editor?icdMemory=1',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','x-csrf-token':terminologyCsrf},body:JSON.stringify(body)});
+      const payload=await response.json();
+      if(response.status===403&&payload.code==='ICD_CSRF_EXPIRED'&&attempt===0)continue;
+      if(!response.ok||!payload.ok)throw new Error(payload.error||'Veprimi nuk u krye.');
+      return payload;
+    }
   }
 
   function installTerminologyTools() {

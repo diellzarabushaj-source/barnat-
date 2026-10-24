@@ -27,7 +27,7 @@ async function main(){
   assert.equal((await call({headers:{}})).statusCode,401);
   assert.equal((await call({method:'DELETE'})).statusCode,405);
   const headers={cookie:`medindex_session=${token('supabase-google')}; medindex_csrf=${csrf}`,'x-csrf-token':csrf,host:'example.test',origin:'https://example.test'};
-  assert.equal((await call({headers:{...headers,'x-csrf-token':'wrong'}})).statusCode,403);
+  const expired=await call({headers:{...headers,'x-csrf-token':'wrong'}});assert.equal(expired.statusCode,403);assert.equal(expired.body.code,'ICD_CSRF_EXPIRED');
   assert.equal((await call({headers:{...headers,origin:'https://attacker.example'}})).statusCode,403);
   assert.equal((await call({headers:{...headers,origin:'not a URL'}})).statusCode,403);
   assert.equal((await call({headers:{...headers,cookie:`medindex_session=${token('legacy-password')}; medindex_csrf=${csrf}`}})).statusCode,403);
