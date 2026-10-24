@@ -47,7 +47,7 @@ async function main(){
  try{
   Memory.clearCache();Intelligence.answers.clear();
   const request=async(path,options)=>{if(path.startsWith('rpc/')){submitted++;return {data:{id:'synthetic',duplicate:false}};}return {data:[]};};
-  const generate=async options=>{assert.equal(options.thinkingLevel,'low');generated++;return {data:{intent:'symptom',candidates:[{code:'R07.4'},{code:'I21'},{code:'R07.89'}]}};};
+  const generate=async options=>{assert.equal(options.thinkingLevel,'low');assert.equal(options.endpointTimeoutMs,10000);generated++;return {data:{intent:'symptom',candidates:[{code:'R07.4'},{code:'I21'},{code:'R07.89'}]}};};
   const query='pom ne majte djathte';
   const a=await Intelligence.resolve({dataset,query,actor:OWNER,request,generate});
   const b=await Intelligence.resolve({dataset,query,actor:OWNER,request,generate});
@@ -56,6 +56,30 @@ async function main(){
   await assert.rejects(()=>Intelligence.resolve({dataset,query,actor:OWNER,request,generate:async()=>{throw Object.assign(new Error('synthetic timeout'),{name:'AbortError'});}}),error=>error.name==='AbortError'&&error.memoryStage==='gemini');
   assert.equal(Intelligence.answers.size,0,'A failed assistance request does not poison the retry cache');
  }finally{if(beforeKey===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=beforeKey;Memory.clearCache();Intelligence.answers.clear();}
- console.log('ICD semantic memory: canonical identity, privacy, owner isolation, cache, AI validation, review-only proposals and symptom-first retrieval passed.');
+ const Gemini=require('../lib/gemini-prescription'),originalFetch=global.fetch,originalError=console.error,logs=[];
+ const success=()=>({ok:true,json:async()=>({output_text:JSON.stringify({intent:'ambiguous',candidates:[]})})});
+ console.error=(...args)=>logs.push(args.join(' '));
+ try {
+  for(const stallBody of [false,true]){
+   const calls=[],parent=new AbortController();
+   global.fetch=async(url,options)=>{
+    calls.push(url);const body=JSON.parse(options.body);assert.equal(body.store,false);assert.equal(body.generation_config.thinking_level,'low');
+    if(calls.length>1)return success();
+    const stalled=()=>new Promise((resolve,reject)=>{const keepAlive=setTimeout(()=>reject(new Error('Endpoint deadline was ignored')),500);options.signal.addEventListener('abort',()=>{clearTimeout(keepAlive);reject(options.signal.reason);},{once:true});});
+    return stallBody?{ok:true,json:stalled}:await stalled();
+   };
+   const result=await Gemini.structuredJson({apiKey:'synthetic',prompt:'PRIVATE_SENTINEL',thinkingLevel:'low',endpointTimeoutMs:15,signal:parent.signal});
+   assert.equal(result.data.intent,'ambiguous');assert.equal(calls.length,2,'A stalled endpoint permits the existing alternate endpoint');assert.match(calls[0],/\/v1\//);assert.match(calls[1],/\/v1beta\//);
+  }
+  const parent=new AbortController();parent.abort();let calls=0;
+  global.fetch=async()=>{calls++;throw parent.signal.reason;};
+  await assert.rejects(()=>Gemini.structuredJson({apiKey:'synthetic',prompt:'PRIVATE_SENTINEL',endpointTimeoutMs:15,signal:parent.signal}),error=>error.name==='AbortError');
+  assert.equal(calls,1,'Global cancellation never starts another endpoint');
+  const defaultSignal=new AbortController().signal;
+  global.fetch=async(url,options)=>{assert.equal(options.signal,defaultSignal,'Prescription transport keeps its original signal');assert.equal(JSON.parse(options.body).generation_config.thinking_level,Gemini._test.THINKING_LEVEL);return success();};
+  await Gemini.structuredJson({apiKey:'synthetic',prompt:'PRIVATE_SENTINEL',signal:defaultSignal});
+  assert.ok(!logs.join(' ').includes('PRIVATE_SENTINEL'),'Endpoint diagnostics exclude the prompt');
+ } finally {global.fetch=originalFetch;console.error=originalError;}
+ console.log('ICD semantic memory: canonical identity, privacy, owner isolation, cache, AI validation, endpoint fallback, review-only proposals and symptom-first retrieval passed.');
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});
