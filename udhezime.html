@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="sq">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="theme-color" content="#132d37">
+<title>DRX | Udhëzime inteligjente</title>
+<link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/udhezime-smart.css">
+<script src="/udhezime-smart.js" defer></script>
+</head>
+<body>
+<header class="topbar no-print">
+  <a class="brand" href="/index.html"><img src="/brand/drx-horizontal-on-dark.svg" alt="DRX" width="102" height="30"></a>
+  <div class="brand-suffix">/ Udhëzime inteligjente</div>
+  <div class="top-actions"><span class="local">● Privat · në këtë shfletues</span><button type="button" id="reset" class="btn outline">Pastro formularin</button><button type="button" id="printTop" class="btn primary">Printo / PDF ↗</button></div>
+</header>
+<div class="privacy no-print" role="note"><strong>Prototip për testim.</strong> Mos vendos të dhëna reale të pacientëve derisa të verifikohet siguria dhe përputhshmëria institucionale. Të dhënat e futura nuk ruhen në databazë dhe nuk i dërgohen asnjë shërbimi AI.</div>
+<div class="shell">
+  <main class="editor no-print">
+    <div class="eyebrow">DRX / MJETET KLINIKE / UDHËZIME</div>
+    <div class="intro"><span class="micro">DOKUMENTACION MJEKËSOR</span><h1>Udhëzim për konsultim<span class="dot">.</span></h1><p>Shkruaj simptomën. Asistenti të kujton çfarë duhet të dokumentosh dhe krijon një draft vetëm nga të dhënat që fut.</p></div>
+    <div class="mobile-tabs"><button type="button" data-tab="edit" class="active">✎ Formulari</button><button type="button" data-tab="preview">▤ Dokumenti</button></div>
+    <section class="quick-builder no-print" aria-labelledby="quickTitle">
+      <div class="quick-topline"><span class="quick-icon" aria-hidden="true">✳</span><span>AUTOMATIZIMI I UDHËZIMIT</span><span class="quick-step">1 fjali → draft i strukturuar</span></div>
+      <h2 id="quickTitle">Shkruaj pak. Përgatite pothuajse krejt udhëzimin.</h2>
+      <p>Shkruaj vetëm arsyen e konsultës me fjalët e tua dhe zgjidh specialitetin. DRX i vendos të dhënat që ke dhënë në rubrikat përkatëse, shton strukturën profesionale dhe shënon çfarë mbetet për t'u verifikuar.</p>
+      <label class="quick-entry">Shënimi yt i shkurtër
+        <textarea id="quickNote" rows="3" placeholder="p.sh. Pacienti raporton palpitacione dhe marramendje prej 3 ditësh. Kërkohet konsultë kardiologjike."></textarea>
+      </label>
+      <div class="quick-controls">
+        <label>Specialiteti / modeli
+          <select id="quickSpecialty"><option value="">Konsultë e përgjithshme</option><option>Kardiologji</option><option>Neurologji</option><option>ORL</option><option>Pediatri</option><option>Kirurgji</option><option>Pulmologji</option><option>Gastroenterologji</option><option>Urologji</option><option>Gjinekologji</option><option>Ortopedi</option></select>
+        </label>
+        <button id="quickGenerate" class="btn primary quick-generate" type="button">✧ Përgatit udhëzimin automatikisht</button>
+      </div>
+      <div id="quickDraft" class="quick-draft" hidden>
+        <div class="quick-draft-head"><div><strong>Parapamja e shabllonit</strong><small>Asgjë nuk zëvendësohet pa miratimin tënd.</small></div><span id="quickDraftCount"></span></div>
+        <div id="quickDraftFields" class="quick-draft-fields"></div>
+        <div class="quick-draft-actions">
+          <label class="quick-checkbox"><input type="checkbox" id="quickOverwrite"> Zëvendëso edhe rubrikat që i ke plotësuar më herët</label>
+          <div class="actions"><button type="button" id="quickCancel" class="btn outline">Anulo</button><button type="button" id="quickAccept" class="btn primary">✓ Plotëso formularin me këtë shabllon</button></div>
+        </div>
+      </div>
+      <div class="quick-foot">✳ Shablloni nuk supozon ekzaminime normale, analiza të kryera, barna apo diagnoza. Fushat e panjohura shënohen për plotësim, jo si fakte klinike.</div>
+    </section>
+    <form id="refForm" autocomplete="off" novalidate>
+      <section class="panel">
+        <header class="section-header"><span class="num">01</span><div><h2>Institucioni dhe pacienti</h2><p>Rubrikat themelore për udhëzimin.</p></div></header>
+        <div class="fields two">
+          <label>Institucioni dërgues<input id="institution" placeholder="p.sh. QKMF — [institucioni]"></label>
+          <label>Shërbimi / reparti<input id="department" placeholder="Mjekësi familjare"></label>
+          <label>Institucioni / klinika pritëse <em>*</em><input id="destination" placeholder="p.sh. Klinika e Kardiologjisë"></label>
+          <label>Specialiteti<select id="specialty"><option value="">Zgjidh specialitetin</option><option>Kardiologji</option><option>Neurologji</option><option>ORL</option><option>Pediatri</option><option>Kirurgji</option><option>Pulmologji</option><option>Gastroenterologji</option><option>Urologji</option><option>Gjinekologji</option><option>Ortopedi</option><option>Specialitet tjetër</option></select></label>
+          <label>Pacienti <em>*</em><input id="patientName" placeholder="Pacient testues — jo emër real"></label>
+          <label>Mosha / datëlindja<input id="age" placeholder="p.sh. 45 vjeç"></label>
+          <label>Data<input type="date" id="date"></label>
+          <label>Prioriteti<select id="priority"><option value="">Zgjidh prioritetin</option><option>Rutinë</option><option>Prioritar</option><option>Urgjent</option></select></label>
+        </div>
+      </section>
+      <section class="panel featured">
+        <header class="section-header"><span class="num smart">✳</span><div><h2>Shkrim i shpejtë</h2><p>Fillo me një fjali. Sugjerimet përshtaten me atë që shkruan.</p></div><span class="smart-tag">SMART INPUT</span></header>
+        <div class="fields">
+          <label>Arsyeja e konsultës <em>*</em><textarea id="reason" rows="3" placeholder="p.sh. Pacienti paraqitet me palpitacione dhe marramendje episodike..."></textarea></label>
+        </div>
+        <div class="fields two">
+          <label>Fillimi i simptomave<input id="onset" placeholder="p.sh. para 3 ditësh"></label>
+          <label>Kohëzgjatja / shpeshtësia<input id="duration" placeholder="Vetëm informacion i raportuar"></label>
+          <label class="full">Simptomat shoqëruese të raportuara<input id="associated" placeholder="Shkruaj vetëm gjetjet e raportuara"></label>
+        </div>
+        <div class="microline"><strong>SHENJAT VITALE</strong><span>Plotëso vetëm vlerat e matura</span></div>
+        <div class="vitals">
+          <label>TA sist. <span>mmHg</span><input id="sbp" type="number" min="0" placeholder="—"></label>
+          <label>TA diast. <span>mmHg</span><input id="dbp" type="number" min="0" placeholder="—"></label>
+          <label>Pulse <span>/min</span><input id="pulse" type="number" min="0" placeholder="—"></label>
+          <label>Temp. <span>°C</span><input id="temp" type="number" step="0.1" placeholder="—"></label>
+          <label>SpO₂ <span>%</span><input id="spo2" type="number" min="0" max="100" placeholder="—"></label>
+          <label>FR <span>/min</span><input id="rr" type="number" min="0" placeholder="—"></label>
+          <label>Peshë <span>kg</span><input id="weight" type="number" step="0.1" min="0" placeholder="—"></label>
+        </div>
+        <div id="numericWarnings" class="warnings" role="status" aria-live="polite"></div>
+        <div class="draft-cta"><div><strong>✧ Hartuesi i anamnezës</strong><small>Vetëm fakte të shkruara nga ti; pa diagnoza të shpikura.</small></div><button id="draftButton" type="button" class="btn primary">Krijo draftin →</button></div>
+        <div id="draftBox" class="draft-box" hidden><div class="draft-label">PARAPAMJE PARA PRANIMIT</div><pre id="draftPreview"></pre><div class="actions"><button type="button" id="discardDraft" class="btn outline">Anulo</button><button type="button" id="appendDraft" class="btn outline">Shto në anamnezë</button><button type="button" id="applyDraft" class="btn primary">Prano ndryshimin</button></div></div>
+      </section>
+      <section class="panel">
+        <header class="section-header"><span class="num">02</span><div><h2>Dokumentimi klinik</h2><p>Anamneza, ekzaminimi dhe trajtimi i konfirmuar.</p></div></header>
+        <div class="fields">
+          <label>Anamneza / historia e sëmundjes<textarea id="history" rows="4" placeholder="Kronologjia, sëmundjet e mëparshme dhe historiku relevant..."></textarea></label>
+          <div class="micro-actions"><button type="button" id="undoDraft" class="link-button">↶ Rikthe anamnezën e mëparshme</button></div>
+          <label>Alergjitë<input id="allergies" placeholder="Shëno nëse dihen; mos supozo mungesë alergjish"></label>
+          <label>Ekzaminimi objektiv<textarea id="exam" rows="3" placeholder="Vetëm gjetjet e dokumentuara gjatë ekzaminimit"></textarea></label>
+          <label>Analizat / EKG / imazheria<textarea id="investigations" rows="3" placeholder="Vetëm ekzaminimet e kryera dhe rezultatet e disponueshme"></textarea></label>
+          <label>Trajtimi aktual / barnat<textarea id="medications" rows="3" placeholder="Emri, doza, forma, rruga dhe shpeshtësia nëse janë verifikuar"></textarea><span class="hint">Regjistri i barnave nuk është lidhur në këtë version; barnat plotësohen manualisht.</span></label>
+        </div>
+      </section>
+      <section class="panel">
+        <header class="section-header"><span class="num">03</span><div><h2>Diagnoza dhe ICD-10</h2><p>Kërkim lokal në katalogun orientues të DRX.</p></div></header>
+        <label class="search-label">Kërko sipas kodit ose emrit<input id="icdSearch" role="combobox" aria-autocomplete="list" aria-controls="icdResults" aria-expanded="false" placeholder="p.sh. I10, hipertension, palpitacione"></label>
+        <div class="icd-results" id="icdResults" role="listbox" aria-label="Rezultatet ICD-10"></div>
+        <p class="provenance" id="catalogStatus">Duke ngarkuar katalogun lokal DRX…</p>
+        <div class="fields two">
+          <label>Diagnoza e punës<input id="diagnosis" placeholder="Sipas vlerësimit të mjekut"></label>
+          <label>Kodi ICD-10<input id="icdCode" placeholder="Përzgjedhje manuale / e konfirmuar"></label>
+        </div>
+        <p class="hint">Përzgjedhja e kodit është vendim i mjekut. Katalogu nuk e përcakton diagnozën nga simptomat.</p>
+        <label class="field-block">Pyetja klinike për specialistin <em>*</em><textarea id="question" rows="3" placeholder="Çfarë kërkohet nga konsultimi?"></textarea></label>
+      </section>
+      <section class="panel">
+        <header class="section-header"><span class="num">04</span><div><h2>Vlerësimi para lëshimit</h2><p>Shqyrto fushat që mungojnë.</p></div></header>
+        <div class="fields two"><label>Mjeku dërgues <em>*</em><input id="physician" placeholder="Emri, mbiemri dhe titulli"></label><label>Nr. i licencës (opsional)<input id="license" placeholder="Nëse kërkohet"></label></div>
+        <div id="checklist" class="checklist"></div>
+      </section>
+    </form>
+  </main>
+  <aside class="right-rail no-print">
+    <section class="assistant-card">
+      <div class="side-title"><span class="asterisk">✳</span><div><small>ASISTENTI KLINIK</small><h2>Çfarë të plotësosh?</h2></div></div>
+      <p class="side-description">Pyetje orientuese që ndryshojnë kur shkruan. Asgjë nuk futet automatikisht si gjetje klinike.</p>
+      <div id="danger" class="danger" hidden>⚠ Nëse dyshohet emergjencë, ndiq protokollin e urgjencës; mos e vono vlerësimin me udhëzim rutinë.</div>
+      <div id="suggestions" class="suggestions" aria-live="polite"></div>
+    </section>
+    <section class="preview-card">
+      <div class="preview-heading"><div><small>PARAPAMJE LIVE · A4</small><h2>Dokumenti</h2></div><span>PDF</span></div>
+      <div class="mini-paper" id="miniPaper"><div class="mini-overline">DRX · DOKUMENT KLINIK</div><h3>UDHËZIM PËR KONSULTIM</h3><div id="miniText">Plotëso formularin për të parë dokumentin.</div></div>
+      <div class="preview-actions"><button type="button" id="printSide" class="btn primary">Printo / PDF</button><button type="button" id="copy" class="btn outline">Kopjo tekstin</button></div>
+    </section>
+  </aside>
+</div>
+<div id="status" class="toast no-print" role="status" aria-live="polite"></div>
+<section id="printPage" class="print-page" aria-label="Dokumenti për printim">
+  <div class="paper-top"><strong>UDHËZIM PËR KONSULTIM</strong><small>Dokument klinik – model i përgatitur në DRX (jo formular zyrtar)</small></div>
+  <div id="paperPending" class="paper-pending"></div><div class="paper-meta" id="paperMeta"></div><div class="paper-divider"></div><div id="paperDetails" class="paper-details"></div>
+  <div class="paper-footer"><span id="paperDate"></span><span><span id="paperPhysician"></span><br>Nënshkrimi / vula: ______________________</span></div>
+</section>
+</body>
+</html>

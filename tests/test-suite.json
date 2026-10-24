@@ -209,5 +209,6 @@
   "tests/icd-scoped-filter-test.js",
   "tests/pediatric-market-additions-test.js",
   "tests/pediatric-cough-reference-test.js",
-  "tests/recetat-source-filter-test.js"
+  "tests/recetat-source-filter-test.js",
+  "tests/udhezime-smart-test.js"
 ]
