@@ -8,11 +8,11 @@
   <title>DRx | ICD-10</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/icd-v2.css?v=workspace-20261014">
+  <link rel="stylesheet" href="/icd-v2.css?v=precision-memory-20261024">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/icd-v2.js?v=workspace-20261014" defer></script>
+<script src="/icd-v2.js?v=precision-memory-20261024" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -129,6 +129,23 @@
             <button type="button" id="icdFilterReset">Pastro filtrat</button>
           </div>
             <div class="icd-suggestions" id="icdSuggestions" role="listbox" aria-label="Sugjerimet ICD-10" hidden></div>
+          <details class="icd-memory-tools" id="icdMemoryTools">
+            <summary>Fjalori i kërkimit</summary>
+            <p>Mbaj mend shprehjet mjekësore që përdor. Mos përfshi emra ose të dhëna pacienti.</p>
+            <label class="icd-term-confirm"><input type="checkbox" id="icdTermOnly"> Kjo është vetëm një shprehje mjekësore, pa të dhëna pacienti.</label>
+            <div class="icd-memory-actions">
+              <button type="button" id="icdUnderstandTerm">Ndihmo me shprehjen</button>
+              <label>Kodi i zgjedhur<input id="icdMemoryCode" type="text" placeholder="p.sh. R07.4" maxlength="8" autocomplete="off" aria-label="Kodi për shprehjen"></label>
+              <button type="button" id="icdRememberTerm">Mbaje mend për mua</button>
+              <button type="button" id="icdProposeTerm">Propozo për verifikim</button>
+            </div>
+            <p id="icdMemoryStatus" role="status" aria-live="polite"></p>
+          </details>
+          <details class="icd-memory-tools" id="icdMemoryReview" hidden>
+            <summary>Terma për verifikim · administrim</summary>
+            <button type="button" id="icdLoadTermReview">Hap radhën e verifikimit</button>
+            <div id="icdTermReviewList"></div>
+          </details>
           <div class="icd-search-foot">
             <details class="icd-quick-disclosure"><summary>Shkurtore klinike · mjekësi familjare dhe urgjenca</summary><div class="icd-quick-diagnoses" aria-label="Shkurtore klinike QKMF">
               <section class="icd-quick-group" aria-labelledby="familyQuickTitle">
