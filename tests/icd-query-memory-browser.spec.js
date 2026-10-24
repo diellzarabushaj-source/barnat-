@@ -69,6 +69,34 @@ for(const width of [390,1440]){
  });
 }
 
+for(const width of [320,390,430]){
+ test('phone search, filters, selected diagnosis and return stay within reach at '+width,async({page},info)=>{
+  await page.setViewportSize({width,height:844});const api=await setup(page);
+  await expect(page.locator('#icdFilterPanel')).not.toHaveAttribute('open','');
+  await expect(page.locator('#icdFilterChapter')).toBeHidden();
+  await expect(page.locator('#icdChapterBrowser')).not.toHaveAttribute('open','');
+  await page.locator('#icdSearch').fill('I10');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');
+  const firstResult=await page.locator('.icd-suggestion-row').first().boundingBox();expect(firstResult.y).toBeLessThan(360);
+  fs.writeFileSync(info.outputPath('phone-metrics-'+width+'.json'),JSON.stringify({width,height:844,firstResultTop:firstResult.y,firstResultHeight:firstResult.height,search:await page.locator('#icdSearch').boundingBox()},null,2));
+  expect(await page.locator('#icdSuggestions').evaluate(node=>getComputedStyle(node).maxHeight)).toBe('none','Phone results use the page scroll, not a second scrolling box');
+  await page.screenshot({path:info.outputPath('phone-search-'+width+'.png')});
+  await page.setViewportSize({width,height:500});await expect(page.locator('#icdSearch')).toBeFocused();
+  expect((await page.locator('.icd-suggestion-row').first().boundingBox()).y).toBeLessThan(360);
+  await page.locator('.icd-suggestion-row').first().click();await expect(page.locator('#icdCopyDiagnosis')).toBeVisible();await expect(page.locator('#icdSearch')).not.toBeFocused();
+  await expect.poll(async()=>{const r=await page.locator('#nodeHero').boundingBox();return r.y>=0&&r.y<190;}).toBe(true);
+  expect((await page.locator('#icdCopyDiagnosis').boundingBox()).height).toBeGreaterThanOrEqual(44);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  await page.setViewportSize({width,height:844});await page.screenshot({path:info.outputPath('phone-diagnosis-'+width+'.png')});
+  await page.locator('#icdBackToSearch').click();await expect(page.locator('#icdSearch')).toBeFocused();
+  await page.locator('#icdFilterPanel>summary').click();await page.locator('#icdFilterChapter').selectOption('I');
+  await expect(page.locator('#icdFilterCount')).toHaveText('1');await page.locator('#icdFilterPanel>summary').click();
+  await page.locator('#icdFilterClearCompact').click();await expect(page.locator('#icdFilterCount')).toBeHidden();
+  await page.locator('#icdChapterBrowser>summary').click();await page.locator('#chapterList [data-chapter="IX"]').click();
+  await expect(page.locator('#icdChapterBrowser')).not.toHaveAttribute('open','');await expect(page.locator('#nodeHero')).toContainText('qarkullimit');
+  expect(api.mutations).toEqual([]);
+ });
+}
+
 test('active filters constrain remembered aliases and warm search survives offline',async({page,context})=>{
  const api=await setup(page);
  await expect(page.locator('#icdFilterChapter option')).not.toHaveCount(1);

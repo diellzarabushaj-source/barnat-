@@ -288,6 +288,7 @@
     const code = clean(node.code);
     const { title, range } = splitRange(node);
     el.nodeHero.innerHTML = `
+      ${['category','subcategory'].includes(node.level)?'<button type="button" class="icd-back-to-search" id="icdBackToSearch">Kërko diagnozë tjetër</button>':''}
       <span class="hero-code">${escapeHtml(code)}</span>
       <span class="hero-copy">
         <span class="hero-kicker">${escapeHtml(levelLabel(node.level))}${range ? ` · <b>${escapeHtml(range)}</b>` : ''}</span>
@@ -1317,6 +1318,7 @@
     if (!el.icdSuggestions || !el.icdSearchBox) return;
     const query = clean(el.icdSearch?.value);
     const shouldOpen = state.suggestionOpen && query.length >= 2 && (state.suggestionLoading || state.suggestions.length || state.searching);
+    document.documentElement.classList.toggle('icd-query-open',Boolean(shouldOpen));
     el.icdSearchBox.setAttribute('aria-expanded', String(Boolean(shouldOpen)));
     if (!shouldOpen) {
       el.icdSuggestions.hidden = true;
@@ -1381,7 +1383,7 @@
         id="icd-suggestion-${index}" aria-selected="${active}" data-suggestion-index="${index}" data-code="${escapeHtml(clean(node.code))}">
         <span class="icd-suggestion-code">${highlightSearchText(clean(node.code), query)}</span>
         <span class="icd-suggestion-copy">
-          <span class="icd-suggestion-titleline"><strong>${highlightSearchText(clean(node.latinTitle) || nodeTitle(node), query)}</strong>${node.memoryVerification==='pending'?'<em>Propozim · i paverifikuar</em>':best ? '<em>Përputhja më e mirë</em>' : isDifferential ? '<em class="is-differential">Kandidat diferencial</em>' : ''}</span>
+          <span class="icd-suggestion-titleline"><strong>${highlightSearchText(clean(node.latinTitle) || nodeTitle(node), query)}</strong>${node.memoryVerification==='pending'?'<em class="is-pending">Propozim · i paverifikuar</em>':best ? '<em>Përputhja më e mirë</em>' : isDifferential ? '<em class="is-differential">Kandidat diferencial</em>' : ''}</span>
           ${node.latinTitle?`<span class="icd-suggestion-sq">${highlightSearchText(nodeTitle(node),query)}</span>`:''}
           <span class="icd-concept-kind">${/^R\d/.test(node.code)||node.searchMatch?.type==='symptom-code'?'Simptomë / shenjë':'Koncept ICD · kërkon konfirmim klinik'}${['verified-resource','reviewed-memory'].includes(node.latinVerification)?' · Latinisht e verifikuar':''}</span>
           ${node.latinProposal?`<span class="icd-suggestion-sq">LA · propozim i paverifikuar: ${escapeHtml(node.latinProposal)}</span>`:''}
@@ -1401,13 +1403,13 @@
     el.icdSuggestions.innerHTML = head + symptomBanner + ambiguity + rows;
     if (state.activeSuggestion >= 0) {
       el.icdSearch?.setAttribute('aria-activedescendant', `icd-suggestion-${state.activeSuggestion}`);
-      el.icdSuggestions.querySelector('.icd-suggestion-row.is-active')?.scrollIntoView({ block:'nearest' });
     } else {
       el.icdSearch?.removeAttribute('aria-activedescendant');
     }
   }
 
   function render() {
+    updateScopeSummary();
     renderMetrics();
     renderChapters();
     renderClinicalQuickHub();
@@ -1730,6 +1732,10 @@
      rreshtave të listës. Zgjedhja e sjell atë vetë në pamje. */
   function revealNodePanel() {
     if (!window.matchMedia('(max-width:940px)').matches) return;
+    el.icdSearch?.blur();
+    for(const id of ['icdFilterPanel','icdChapterBrowser','icdMemoryTools','icdMemoryReview']){
+      const panel=document.getElementById(id);if(panel)panel.open=false;
+    }
     const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
     requestAnimationFrame(() => el.nodeHero?.scrollIntoView({ block:'start', behavior }));
   }
@@ -1743,6 +1749,7 @@
     writeHash(state.chapter);
     render();
     state.reveal = Boolean(options.reveal);
+    if(state.reveal){state.reveal=false;revealNodePanel();}
     if (state.chapter) void loadChildren(state.chapter);
     else state.reveal = false;
   }
@@ -1776,6 +1783,7 @@
     }
 
     render();
+    state.reveal=false;revealNodePanel();
     await loadChildren(clean(node.code));
     return true;
   }
@@ -1832,10 +1840,29 @@
   // --- lidhjet --------------------------------------------------------------
 
   let searchTimer = 0;
+  function updateScopeSummary() {
+    const count=[state.filterChapter,state.filterBlock,state.filterLevel].filter(Boolean).length;
+    const badge=document.getElementById('icdFilterCount');if(badge){badge.textContent=String(count);badge.hidden=!count;}
+    const clear=document.getElementById('icdFilterClearCompact');if(clear)clear.hidden=!count;
+  }
   function bindEvents() {
+    const compact=window.matchMedia('(max-width:940px)');
+    const setDisclosures=()=>{
+      for(const id of ['icdFilterPanel','icdChapterBrowser']){
+        const panel=document.getElementById(id);if(panel)panel.open=!compact.matches;
+      }
+    };
+    setDisclosures();compact.addEventListener('change',setDisclosures);
+    document.getElementById('icdFilterClearCompact')?.addEventListener('click',()=>el.icdFilterReset.click());
+    document.addEventListener('click',event=>{
+      if(!event.target.closest('#icdBackToSearch'))return;
+      const behavior=matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';
+      el.icdSearchBox.scrollIntoView({block:'start',behavior});el.icdSearch.focus({preventScroll:true});
+    });
     const changeFilters=()=> {
       clearTimeout(searchTimer); clearSearch({preserveInput:true});
       state.filterChapter=el.icdFilterChapter.value;state.filterBlock=el.icdFilterBlock.value;state.filterLevel=el.icdFilterLevel.value;
+      updateScopeSummary();
       const query=clean(el.icdSearch.value);
       if(query.length>=2){void runSearch(query);return;}
       if(state.filterBlock){const block=state.blocks.find(item=>clean(item.code)===state.filterBlock);if(block){state.chapter=clean(block.chapter);state.path=[block];render();void loadChildren(block.code);}return;}

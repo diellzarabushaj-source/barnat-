@@ -52,6 +52,9 @@ async function main(){
   const a=await Intelligence.resolve({dataset,query,actor:OWNER,request,generate});
   const b=await Intelligence.resolve({dataset,query,actor:OWNER,request,generate});
   assert.equal(generated,1);assert.equal(submitted,1);assert.deepEqual(a,b);assert.equal(a.rows[0].memoryVerification,'pending');
+  Intelligence.answers.clear();
+  await assert.rejects(()=>Intelligence.resolve({dataset,query,actor:OWNER,request,generate:async()=>{throw Object.assign(new Error('synthetic timeout'),{name:'AbortError'});}}),error=>error.name==='AbortError'&&error.memoryStage==='gemini');
+  assert.equal(Intelligence.answers.size,0,'A failed assistance request does not poison the retry cache');
  }finally{if(beforeKey===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=beforeKey;Memory.clearCache();Intelligence.answers.clear();}
  console.log('ICD semantic memory: canonical identity, privacy, owner isolation, cache, AI validation, review-only proposals and symptom-first retrieval passed.');
 }
