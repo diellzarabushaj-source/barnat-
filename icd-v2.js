@@ -1561,12 +1561,20 @@
     const status=document.getElementById('icdMemoryStatus');
     const termOnly=document.getElementById('icdTermOnly');
     const target=document.getElementById('icdMemoryCode');
+    const aiButton=document.getElementById('icdUnderstandTerm');
+    const consent=document.getElementById('icdAiConsent');
+    const showConsent=()=>{consent.hidden=false;aiButton.setAttribute('aria-expanded','true');};
+    const hideConsent=()=>{consent.hidden=true;aiButton.setAttribute('aria-expanded','false');};
+    document.getElementById('icdMemoryTools').addEventListener('toggle',event=>{if(event.target.open)showConsent();});
     const run=async(button,action)=>{
-      if(!termOnly.checked){status.textContent='Konfirmo që shprehja nuk përmban të dhëna pacienti.';return;}
+      if(!termOnly.checked){showConsent();termOnly.focus();status.textContent='Konfirmo që shprehja nuk përmban të dhëna pacienti.';return;}
       const expression=clean(el.icdSearch.value);
       if(expression.length<3){status.textContent='Shkruaj shprehjen në kërkim.';return;}
       if(state.filterChapter||state.filterBlock||state.filterLevel){status.textContent='Hiq filtrat për të kontrolluar shprehjen në katalogun e plotë.';return;}
-      button.disabled=true;status.textContent='Duke kontrolluar shprehjen…';
+      if(action==='resolve'){clearTimeout(searchTimer);searchAbortController?.abort();searchAbortController=null;state.searching=false;state.suggestionLoading=false;++state.requestId;}
+      button.disabled=true;button.setAttribute('aria-busy','true');status.textContent=action==='resolve'?'Duke kërkuar me Gemini…':'Duke ruajtur shprehjen…';
+      if(action==='resolve')hideConsent();
+      const startedAt=performance.now();
       const requestId=state.requestId;
       try {
         const payload=await postTerminology({action:action==='resolve'?'resolve':'remember',expression,code:clean(target.value).toUpperCase(),termOnly:true,globalProposal:action==='propose'});
@@ -1575,17 +1583,21 @@
           const data={rows:payload.rows||[],ambiguity:payload.ambiguous};
           applySuggestionData(expression,data);state.suggestionLoading=false;
           if(payload.ambiguous||data.rows.some(node=>node.memoryVerification==='pending'))state.activeSuggestion=-1;
-          renderSuggestions();status.textContent=payload.clarification||'Nuk u gjet përputhje e sigurt. Përshkruaj shprehjen më saktë.';
+          renderSuggestions();
+          const elapsed=((performance.now()-startedAt)/1000).toLocaleString('sq-AL',{minimumFractionDigits:1,maximumFractionDigits:1});
+          const source=payload.cached?'Memoria':payload.aiUsed?'Gemini':'Kërkimi ICD';
+          status.textContent=`${source} · ${elapsed} s · ${data.rows.length?(payload.clarification||'Kontrollo përputhjen përpara përdorimit.'):'Shkruaj më qartë simptomën ose diagnozën që kërkon.'}`;
         } else {
           suggestionCache.clear();await warmTerminologyMemory(true);
           status.textContent=action==='propose'?'Propozimi pret verifikim nga administratori.':'Shprehja u ruajt vetëm në fjalorin tënd.';
         }
-      }catch(error){status.textContent=error.message;}finally{button.disabled=false;}
+      }catch(error){if(expression===clean(el.icdSearch.value)&&requestId===state.requestId)status.textContent=error.message;}finally{button.removeAttribute('aria-busy');button.disabled=action==='resolve'&&clean(el.icdSearch.value).length<3;}
     };
     for(const [id,action] of [['icdUnderstandTerm','resolve'],['icdRememberTerm','remember'],['icdProposeTerm','propose']]){
       const button=document.getElementById(id);button?.addEventListener('click',()=>void run(button,action));
     }
-    el.icdSearch.addEventListener('input',()=>{termOnly.checked=false;status.textContent='';});
+    el.icdSearch.addEventListener('input',()=>{termOnly.checked=false;status.textContent='';hideConsent();if(aiButton.getAttribute('aria-busy')!=='true')aiButton.disabled=clean(el.icdSearch.value).length<3;});
+    consent.addEventListener('keydown',event=>{if(event.key==='Escape'){hideConsent();aiButton.focus();}});
     document.addEventListener('click',async event=>{
       if(event.target.closest('#icdUseInPrescription')){
         const node=currentNode();if(!node||!['category','subcategory'].includes(node.level))return;
@@ -1691,6 +1703,8 @@
 
   function updateSearchClear() {
     if (el.icdSearchClear) el.icdSearchClear.hidden = !clean(el.icdSearch?.value);
+    const aiButton=document.getElementById('icdUnderstandTerm');
+    if(aiButton&&aiButton.getAttribute('aria-busy')!=='true')aiButton.disabled=clean(el.icdSearch?.value).length<3;
   }
 
   function setActiveSuggestion(index) {
@@ -1951,6 +1965,9 @@
     });
 
     el.icdSearch.addEventListener('keydown', event => {
+      if(event.key==='Enter'&&(event.ctrlKey||event.metaKey)){
+        event.preventDefault();document.getElementById('icdUnderstandTerm')?.click();return;
+      }
       if (!state.suggestionOpen || !state.suggestions.length) {
         if (event.key === 'Enter' && clean(el.icdSearch.value).length >= 2) {
           event.preventDefault();

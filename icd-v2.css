@@ -1912,3 +1912,14 @@ html.drx-unified-sidebar .metric-card strong{margin:0;font-size:16px}
  .node-row{min-height:64px}.node-row-copy strong{font-size:14px;line-height:1.4}.icd-path-label{display:none}.icd-path-node{min-height:40px}.icd-path-reset{min-height:44px}
  #icdSearchBox{scroll-margin-top:76px}
 }
+
+/* Explicit Gemini search shares the existing search row; typing remains local/ICD. */
+html.drx-unified-sidebar[data-drx-app="icd-v2"] .icd-search-command{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:stretch;gap:10px}
+.icd-ai-search-button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:48px;min-width:126px;padding:8px 16px;border:1px solid #c7c2ff;border-radius:10px;background:linear-gradient(180deg,#f6f4ff,#eeebff);color:#42369a;font:inherit;font-size:14px;font-weight:650;cursor:pointer;transition:background .15s,border-color .15s}
+.icd-ai-search-button>.icd-ai-short-label{display:none}.icd-ai-search-button small{font-size:10px;font-weight:500;letter-spacing:.03em;color:#6156a2}.icd-ai-search-button:hover:not(:disabled){border-color:#8c7ae6;background:#e9e4ff}.icd-ai-search-button:focus-visible{outline:3px solid #7560d8;outline-offset:3px}.icd-ai-search-button:disabled{opacity:.55;cursor:default}.icd-ai-search-button[aria-busy="true"]{opacity:1;cursor:progress;background:#eeebff}
+.icd-ai-consent:not([hidden]){display:grid;gap:2px;margin:8px 0 12px;padding:10px 14px;border:1px solid #ddd7f6;border-radius:9px;background:#faf9ff;color:#34445f}.icd-ai-consent .icd-term-confirm{padding:0;font-size:13px;line-height:1.45;cursor:pointer}.icd-ai-consent>small{margin-left:26px;font-size:11px;line-height:1.5;color:#626c80}.icd-ai-consent input{accent-color:#6550bb}
+.icd-ai-status{margin:8px 0 12px;color:#435d7b;font-size:12px;line-height:1.5;overflow-wrap:anywhere}.icd-ai-status:empty{display:none}
+@media(max-width:940px){
+ html.drx-unified-sidebar[data-drx-app="icd-v2"] .icd-search-command{gap:8px}.icd-search-command .search-box-primary{min-width:0;min-height:48px}.icd-ai-search-button{min-width:64px;width:64px;padding:6px;border-radius:10px}.icd-ai-search-button>span:not(.icd-ai-short-label){display:none}.icd-ai-search-button>.icd-ai-short-label{display:block;font-size:14px}.icd-ai-search-button small{font-size:10px}.icd-ai-consent:not([hidden]){padding:12px;margin:8px 0}.icd-ai-consent .icd-term-confirm{font-size:13px;min-height:44px;align-items:center}.icd-ai-consent>small{margin-left:26px}.icd-ai-status{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){.icd-ai-search-button{transition:none}}
