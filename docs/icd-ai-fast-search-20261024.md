@@ -10,4 +10,6 @@ An explicit AI action cancels pending normal-search refinement before applying i
 
 Authentication, shared request-budget enforcement and authoritative catalog loading still run outside the resolver. Zero database/model assertions refer to the terminology resolver's warm response path, not those outer request guards.
 
+An explicit dictionary save invalidates the matching owner/expression answer in the handling instance, so a previous ambiguous answer cannot mask the newly saved mapping there. Other owners' entries remain intact. Function-local caches retain their existing bounded TTL; they are not a distributed invalidation system.
+
 Local validation: 26 Chromium/WebKit cases passed before the final compact phone-label polish; all ten phone/inline cases also passed after that polish. Tests cover direct access, consent before transmission, Ctrl+Enter, empty-result clarification, measured-duration labels, stale response suppression, existing phone/desktop flows and offline search. Server regressions verify zero database/model work on response-cache reuse and exact-code searches, owner isolation, concurrent request coalescing, parallel alias reads, selected model order and unchanged prescription defaults. The production build passed. Linux CI and the actual authorized live retry are release gates; this document makes no unmeasured speed guarantee.
