@@ -8,11 +8,11 @@
   <title>DRx | ICD-10</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/icd-v2.css?v=ai-fast-search-20261024">
+  <link rel="stylesheet" href="/icd-v2.css?v=ai-search-polish-20261024">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/icd-v2.js?v=ai-fast-search-20261024" defer></script>
+<script src="/icd-v2.js?v=ai-search-polish-20261024" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -126,8 +126,9 @@
           <div id="icdAiConsent" class="icd-ai-consent" hidden>
             <label class="icd-term-confirm"><input type="checkbox" id="icdTermOnly"> Vetëm shprehje mjekësore, pa të dhëna pacienti.</label>
             <small>Shprehja dërgohet te Gemini kur shtyp “Kërko me AI”.</small>
+            <button id="icdAiContinue" class="icd-ai-continue" type="button" disabled>Kërko me Gemini <span aria-hidden="true">→</span></button>
           </div>
-          <p id="icdMemoryStatus" class="icd-ai-status" role="status" aria-live="polite"></p>
+          <div class="icd-ai-feedback"><p id="icdMemoryStatus" class="icd-ai-status" role="status" aria-live="polite" aria-atomic="true"></p><button id="icdAiCancel" class="icd-ai-cancel" type="button" hidden>Ndalo</button></div>
           <div class="icd-filter-section">
           <details class="icd-filter-panel" id="icdFilterPanel" open>
             <summary>Filtra <span id="icdFilterCount" hidden></span></summary>

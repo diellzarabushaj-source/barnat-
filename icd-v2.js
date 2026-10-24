@@ -1517,6 +1517,7 @@
   }
 
   let searchAbortController = null;
+  let cancelTerminologyAi = () => {};
 
   async function warmTerminologyMemory(force=false) {
     if(terminologyLoading&&!force)return terminologyLoading;
@@ -1533,11 +1534,12 @@
     try{await work;}finally{if(terminologyLoading===work)terminologyLoading=null;}
   }
 
-  async function postTerminology(body) {
+  async function postTerminology(body, signal = null) {
     // A queried auth URL bypasses the worker's token-free offline snapshot.
     // Other tabs may rotate the HttpOnly CSRF cookie; refresh only on explicit actions.
     for(let attempt=0;attempt<2;attempt++){
-      const {payload:auth}=await fetchJson('/api/auth?csrf=icd-memory',5000);
+      const {payload:auth}=await fetchJson('/api/auth?csrf=icd-memory',5000,signal);
+      signal?.throwIfAborted();
       const owner=clean(auth.authUser?.id||auth.user?.id||auth.user?.email);
       if(!auth.authenticated||!auth.csrfToken||auth.offline)throw new Error('Për ruajtje kërkohet lidhje aktive dhe hyrje e verifikuar.');
       if(owner!==terminologyOwner){
@@ -1545,7 +1547,7 @@
         throw new Error('Llogaria ndryshoi. Rifresko faqen përpara se të ruash shprehjen.');
       }
       terminologyCsrf=clean(auth.csrfToken);
-      const response=await fetch('/api/clinical-editor?icdMemory=1',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','x-csrf-token':terminologyCsrf},body:JSON.stringify(body)});
+      const response=await fetch('/api/clinical-editor?icdMemory=1',{method:'POST',credentials:'same-origin',signal,headers:{'Content-Type':'application/json','x-csrf-token':terminologyCsrf},body:JSON.stringify(body)});
       const payload=await response.json();
       if(response.status===403&&payload.code==='ICD_CSRF_EXPIRED'&&attempt===0)continue;
       if(!response.ok||!payload.ok)throw new Error(payload.error||'Veprimi nuk u krye.');
@@ -1563,21 +1565,43 @@
     const target=document.getElementById('icdMemoryCode');
     const aiButton=document.getElementById('icdUnderstandTerm');
     const consent=document.getElementById('icdAiConsent');
+    const proceed=document.getElementById('icdAiContinue');
+    const cancel=document.getElementById('icdAiCancel');
+    let activeAi=null;
+    const releaseAi=request=>{
+      clearTimeout(request.timer);
+      if(activeAi!==request)return;
+      activeAi=null;cancel.hidden=true;delete status.dataset.busy;
+      aiButton.removeAttribute('aria-busy');aiButton.disabled=clean(el.icdSearch.value).length<3;
+    };
+    cancelTerminologyAi=()=>{
+      if(activeAi){const request=activeAi;request.controller.abort();releaseAi(request);}
+      termOnly.checked=false;proceed.disabled=true;status.textContent='';
+      consent.hidden=true;aiButton.setAttribute('aria-expanded','false');
+    };
     const showConsent=()=>{consent.hidden=false;aiButton.setAttribute('aria-expanded','true');};
     const hideConsent=()=>{consent.hidden=true;aiButton.setAttribute('aria-expanded','false');};
     document.getElementById('icdMemoryTools').addEventListener('toggle',event=>{if(event.target.open)showConsent();});
     const run=async(button,action)=>{
+      if(action==='resolve'&&activeAi)return;
       if(!termOnly.checked){showConsent();termOnly.focus();status.textContent='Konfirmo që shprehja nuk përmban të dhëna pacienti.';return;}
       const expression=clean(el.icdSearch.value);
       if(expression.length<3){status.textContent='Shkruaj shprehjen në kërkim.';return;}
       if(state.filterChapter||state.filterBlock||state.filterLevel){status.textContent='Hiq filtrat për të kontrolluar shprehjen në katalogun e plotë.';return;}
+      if(action==='resolve'&&navigator.onLine===false){status.textContent='Gemini kërkon internet. Kërkimi ICD mbetet në dispozicion.';return;}
       if(action==='resolve'){clearTimeout(searchTimer);searchAbortController?.abort();searchAbortController=null;state.searching=false;state.suggestionLoading=false;++state.requestId;}
       button.disabled=true;button.setAttribute('aria-busy','true');status.textContent=action==='resolve'?'Duke kërkuar me Gemini…':'Duke ruajtur shprehjen…';
       if(action==='resolve')hideConsent();
       const startedAt=performance.now();
       const requestId=state.requestId;
+      const request=action==='resolve'?{controller:new AbortController(),timer:null,timedOut:false}:null;
+      if(request){
+        activeAi=request;cancel.hidden=false;status.dataset.busy='true';
+        request.timer=setTimeout(()=>{request.timedOut=true;request.controller.abort();},55000);
+      }
       try {
-        const payload=await postTerminology({action:action==='resolve'?'resolve':'remember',expression,code:clean(target.value).toUpperCase(),termOnly:true,globalProposal:action==='propose'});
+        const payload=await postTerminology({action:action==='resolve'?'resolve':'remember',expression,code:clean(target.value).toUpperCase(),termOnly:true,globalProposal:action==='propose'},request?.controller.signal);
+        if(request&&activeAi!==request)return;
         if(expression!==clean(el.icdSearch.value)||requestId!==state.requestId)return;
         if(action==='resolve'){
           const data={rows:payload.rows||[],ambiguity:payload.ambiguous};
@@ -1591,12 +1615,25 @@
           suggestionCache.clear();await warmTerminologyMemory(true);
           status.textContent=action==='propose'?'Propozimi pret verifikim nga administratori.':'Shprehja u ruajt vetëm në fjalorin tënd.';
         }
-      }catch(error){if(expression===clean(el.icdSearch.value)&&requestId===state.requestId)status.textContent=error.message;}finally{button.removeAttribute('aria-busy');button.disabled=action==='resolve'&&clean(el.icdSearch.value).length<3;}
+      }catch(error){
+        if((!request||activeAi===request)&&expression===clean(el.icdSearch.value)&&requestId===state.requestId){
+          status.textContent=request?.timedOut?'Gemini po vonon. Provo përsëri ose përdor kërkimin ICD.':error.name==='AbortError'?'Lidhja nuk u përgjigj. Provo përsëri.':error.message;
+        }
+      }finally{
+        if(request)releaseAi(request);
+        else {button.removeAttribute('aria-busy');button.disabled=false;}
+      }
     };
     for(const [id,action] of [['icdUnderstandTerm','resolve'],['icdRememberTerm','remember'],['icdProposeTerm','propose']]){
       const button=document.getElementById(id);button?.addEventListener('click',()=>void run(button,action));
     }
-    el.icdSearch.addEventListener('input',()=>{termOnly.checked=false;status.textContent='';hideConsent();if(aiButton.getAttribute('aria-busy')!=='true')aiButton.disabled=clean(el.icdSearch.value).length<3;});
+    proceed.addEventListener('click',()=>void run(aiButton,'resolve'));
+    termOnly.addEventListener('change',()=>{
+      proceed.disabled=!termOnly.checked;
+      if(termOnly.checked&&status.textContent==='Konfirmo që shprehja nuk përmban të dhëna pacienti.')status.textContent='';
+    });
+    cancel.addEventListener('click',()=>{cancelTerminologyAi();status.textContent='Kërkimi me AI u ndërpre.';aiButton.focus();});
+    el.icdSearch.addEventListener('input',()=>{cancelTerminologyAi();aiButton.disabled=clean(el.icdSearch.value).length<3;});
     consent.addEventListener('keydown',event=>{if(event.key==='Escape'){hideConsent();aiButton.focus();}});
     document.addEventListener('click',async event=>{
       if(event.target.closest('#icdUseInPrescription')){
@@ -1724,6 +1761,7 @@
   }
 
   function clearSearch({ preserveInput = false } = {}) {
+    cancelTerminologyAi();
     ++state.requestId;
     searchAbortController?.abort();
     searchAbortController = null;

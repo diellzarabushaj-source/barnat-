@@ -146,6 +146,49 @@ test('a late Gemini response cannot replace a newer normal search',async({page})
  await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');await expect(page.locator('#icdMemoryStatus')).toBeEmpty();
 });
 
+test('phone consent, cancellation and a replacement AI search stay responsive',async({page},info)=>{
+ await page.setViewportSize({width:390,height:844});const pending=[];
+ const api=await setup(page,false,false,()=>new Promise(resolve=>pending.push(resolve)));
+ const ai=page.locator('#icdUnderstandTerm'),proceed=page.locator('#icdAiContinue');
+ await page.locator('#icdSearch').fill('pom ne majte');await ai.click();
+ await expect(proceed).toBeVisible();await expect(proceed).toBeDisabled();
+ await page.locator('#icdTermOnly').check();await expect(proceed).toBeEnabled();
+ await page.screenshot({path:info.outputPath('gemini-consent-phone.png')});
+ await proceed.click();await expect.poll(()=>api.mutations.length).toBe(1);
+ await expect(page.locator('#icdAiCancel')).toBeVisible();expect((await page.locator('#icdAiCancel').boundingBox()).height).toBeGreaterThanOrEqual(44);
+ await page.locator('#icdAiCancel').click();await expect(ai).toBeEnabled();await expect(ai).toBeFocused();
+ await expect(page.locator('#icdMemoryStatus')).toContainText('u ndërpre');await expect(page.locator('#icdAiCancel')).toBeHidden();
+ await ai.click();await expect(page.locator('#icdTermOnly')).not.toBeChecked();expect(api.mutations).toHaveLength(1);
+ await page.locator('#icdTermOnly').check();await proceed.click();await expect.poll(()=>pending.length).toBe(2);
+ pending[0]({ok:true,aiUsed:true,rows:[],ambiguous:true});await expect(ai).toHaveAttribute('aria-busy','true');
+ pending[1]({ok:true,aiUsed:true,rows:[],ambiguous:true});await expect(ai).not.toHaveAttribute('aria-busy','true');
+ await expect(page.locator('#icdMemoryStatus')).toContainText('Gemini');await expect(page.locator('#icdAiCancel')).toBeHidden();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+});
+
+test('editing and clearing cancel AI without locking the next query',async({page})=>{
+ const pending=[];const api=await setup(page,false,false,()=>new Promise(resolve=>pending.push(resolve)));
+ await page.locator('#icdSearch').fill('pom ne majte');await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
+ await expect.poll(()=>api.mutations.length).toBe(1);
+ await page.locator('#icdSearch').fill('pom ne djathte');await expect(page.locator('#icdUnderstandTerm')).toBeEnabled();
+ await expect(page.locator('#icdAiCancel')).toBeHidden();await expect(page.locator('#icdTermOnly')).not.toBeChecked();
+ await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
+ await expect.poll(()=>api.mutations.length).toBe(2);await page.locator('#icdSearchClear').click();
+ await expect(page.locator('#icdUnderstandTerm')).toBeDisabled();await expect(page.locator('#icdMemoryStatus')).toBeEmpty();await expect(page.locator('#icdAiCancel')).toBeHidden();
+ pending.forEach(resolve=>resolve({ok:true,aiUsed:true,rows:[],ambiguous:true}));
+ await expect(page.locator('#icdMemoryStatus')).toBeEmpty();
+});
+
+test('AI deadline and offline state explain the next action',async({page,context})=>{
+ let complete;const api=await setup(page,false,false,()=>new Promise(resolve=>{complete=resolve;}));
+ await page.clock.install();
+ await page.locator('#icdSearch').fill('pom ne majte');await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
+ await expect.poll(()=>api.mutations.length).toBe(1);await page.clock.fastForward(56000);
+ await expect(page.locator('#icdMemoryStatus')).toContainText('Gemini po vonon');await expect(page.locator('#icdUnderstandTerm')).toBeEnabled();await expect(page.locator('#icdAiCancel')).toBeHidden();
+ complete({ok:true,aiUsed:true,rows:[],ambiguous:true});
+ await context.setOffline(true);await page.locator('#icdUnderstandTerm').click();await expect(page.locator('#icdMemoryStatus')).toContainText('kërkon internet');expect(api.mutations).toHaveLength(1);
+});
+
 test('rotated CSRF renews automatically without duplicate writes',async({page})=>{
  const api=await setup(page,false,true);
  await page.locator('#icdSearch').fill('pom ne majte');await page.locator('#icdMemoryTools>summary').click();
