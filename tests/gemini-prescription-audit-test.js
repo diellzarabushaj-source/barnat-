@@ -23,6 +23,10 @@ assert.equal(Object.hasOwn(interactionBody.generation_config, 'thinking_budget')
 assert.equal(interactionBody.response_format.type, 'text');
 assert.equal(interactionBody.response_format.mime_type, 'application/json');
 assert.deepEqual(interactionBody.response_format.schema.required, ['suggestions', 'globalWarnings']);
+const terminologyBody = T.buildInteractionBody({ model:T.DEFAULT_MODEL, prompt:'test', thinkingLevel:'low' });
+assert.equal(terminologyBody.generation_config.thinking_level, 'low');
+assert.equal(terminologyBody.generation_config.max_output_tokens, interactionBody.generation_config.max_output_tokens, 'Lower thinking does not truncate the shared response budget');
+assert.equal(T.buildInteractionBody({model:T.DEFAULT_MODEL,prompt:'test'}).generation_config.thinking_level, T.THINKING_LEVEL, 'Terminology cannot change later prescription defaults');
 
 const manualInput = `Rp:
 Tab. Amoxicillin / Clavulanic acid 875 mg / 125 mg
