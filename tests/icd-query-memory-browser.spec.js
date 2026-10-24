@@ -76,7 +76,10 @@ for(const width of [320,390,430]){
   await expect(page.locator('#icdFilterChapter')).toBeHidden();
   await expect(page.locator('#icdChapterBrowser')).not.toHaveAttribute('open','');
   await page.locator('#icdSearch').fill('I10');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');
-  const firstResult=await page.locator('.icd-suggestion-row').first().boundingBox();expect(firstResult.y).toBeLessThan(360);
+  const firstRow=page.locator('.icd-suggestion-row').first();
+  await expect(firstRow).toBeVisible();
+  await expect.poll(async()=> (await firstRow.boundingBox())?.y??Infinity).toBeLessThan(360);
+  const firstResult=await firstRow.boundingBox();
   fs.writeFileSync(info.outputPath('phone-metrics-'+width+'.json'),JSON.stringify({width,height:844,firstResultTop:firstResult.y,firstResultHeight:firstResult.height,search:await page.locator('#icdSearch').boundingBox()},null,2));
   expect(await page.locator('#icdSuggestions').evaluate(node=>getComputedStyle(node).maxHeight)).toBe('none','Phone results use the page scroll, not a second scrolling box');
   await page.screenshot({path:info.outputPath('phone-search-'+width+'.png')});
