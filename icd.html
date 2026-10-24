@@ -8,11 +8,11 @@
   <title>DRx | ICD-10</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/icd-v2.css?v=phone-flow-20261024">
+  <link rel="stylesheet" href="/icd-v2.css?v=ai-fast-search-20261024">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/icd-v2.js?v=phone-flow-20261024" defer></script>
+<script src="/icd-v2.js?v=ai-fast-search-20261024" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -121,7 +121,13 @@
               <button class="icd-search-clear" id="icdSearchClear" type="button" aria-label="Pastro kërkimin" title="Pastro" hidden>×</button>
               <kbd>Ctrl K</kbd>
             </div>
+            <button type="button" id="icdUnderstandTerm" class="icd-ai-search-button" aria-label="Kërko me Gemini" aria-controls="icdAiConsent" aria-expanded="false" title="Kërko me Gemini · Ctrl+Enter" disabled><span>Kërko me AI</span><span class="icd-ai-short-label" aria-hidden="true">AI</span><small>Gemini</small></button>
           </div>
+          <div id="icdAiConsent" class="icd-ai-consent" hidden>
+            <label class="icd-term-confirm"><input type="checkbox" id="icdTermOnly"> Vetëm shprehje mjekësore, pa të dhëna pacienti.</label>
+            <small>Shprehja dërgohet te Gemini kur shtyp “Kërko me AI”.</small>
+          </div>
+          <p id="icdMemoryStatus" class="icd-ai-status" role="status" aria-live="polite"></p>
           <div class="icd-filter-section">
           <details class="icd-filter-panel" id="icdFilterPanel" open>
             <summary>Filtra <span id="icdFilterCount" hidden></span></summary>
@@ -138,14 +144,11 @@
           <details class="icd-memory-tools" id="icdMemoryTools">
             <summary>Fjalori i kërkimit</summary>
             <p>Mbaj mend shprehjet mjekësore që përdor. Mos përfshi emra ose të dhëna pacienti.</p>
-            <label class="icd-term-confirm"><input type="checkbox" id="icdTermOnly"> Kjo është vetëm një shprehje mjekësore, pa të dhëna pacienti.</label>
             <div class="icd-memory-actions">
-              <button type="button" id="icdUnderstandTerm">Ndihmo me shprehjen</button>
               <label>Kodi i zgjedhur<input id="icdMemoryCode" type="text" placeholder="p.sh. R07.4" maxlength="8" autocomplete="off" aria-label="Kodi për shprehjen"></label>
               <button type="button" id="icdRememberTerm">Mbaje mend për mua</button>
               <button type="button" id="icdProposeTerm">Propozo për verifikim</button>
             </div>
-            <p id="icdMemoryStatus" role="status" aria-live="polite"></p>
           </details>
           <details class="icd-memory-tools" id="icdMemoryReview" hidden>
             <summary>Terma për verifikim · administrim</summary>

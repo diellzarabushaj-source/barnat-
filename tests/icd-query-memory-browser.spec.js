@@ -16,7 +16,7 @@ test.beforeAll(async()=>{
 });
 test.afterAll(async()=>new Promise(resolve=>server.close(resolve)));
 
-async function setup(page,admin=false,rotateCsrf=false){
+async function setup(page,admin=false,rotateCsrf=false,resolveResult=null){
  const mutations=[],records=[{expression:'shtypja nalt',normalized:'shtypja nalt',code:'I10',kind:'alias',scope:'global',verification:'verified',node:Advanced.compactNode(Memory.codeNode(dataset,'I10'),dataset)}];let reads=0,authReads=0,csrfReads=0,csrfRejected=false;
  await page.addInitScript(owner=>{
   localStorage.setItem('medindex_prescription_starter_seed_v1','1');localStorage.setItem('regjistriBarnave_protokollet_v1','[]');localStorage.setItem('medindex_user_library_meta_v1',JSON.stringify({owner}));
@@ -30,7 +30,7 @@ async function setup(page,admin=false,rotateCsrf=false){
     if(rotateCsrf&&!csrfRejected){csrfRejected=true;return route.fulfill({status:403,json:{ok:false,code:'ICD_CSRF_EXPIRED'}});}
     const body=route.request().postDataJSON();mutations.push(body);
     if(body.action==='remember')records.push({expression:body.expression,normalized:Memory.normalize(body.expression),code:body.code,kind:'alias',scope:'personal',verification:'personal',node:Advanced.compactNode(Memory.codeNode(dataset,body.code),dataset)});
-    if(body.action==='resolve')return json({ok:true,rows:[{...Advanced.compactNode(Memory.codeNode(dataset,'R07.4'),dataset),memoryVerification:'pending'}],ambiguous:true,clarification:'Zgjidh kuptimin e saktë; propozimi pret verifikim.'});
+    if(body.action==='resolve')return json(resolveResult?await resolveResult(body):{ok:true,aiUsed:true,rows:[{...Advanced.compactNode(Memory.codeNode(dataset,'R07.4'),dataset),memoryVerification:'pending'}],ambiguous:true,clarification:'Zgjidh kuptimin e saktë; propozimi pret verifikim.'});
     return json({ok:true,data:{id:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',status:body.status||'personal'}});
    }
    reads++;
@@ -113,6 +113,37 @@ test('active filters constrain remembered aliases and warm search survives offli
  await page.locator('#icdSearch').fill('I10');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');
  await page.locator('#icdSearch').fill('pom dhemb gjoksi');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','R07.4');
  expect(api.mutations).toEqual([]);
+});
+
+for(const width of [390,1440]){
+ test('inline Gemini search requires consent and explains empty results at '+width,async({page},info)=>{
+  await page.setViewportSize({width,height:844});let complete;
+  const api=await setup(page,false,false,()=>new Promise(resolve=>{complete=resolve;}));
+  const button=page.locator('#icdUnderstandTerm');await expect(button).toBeVisible();await expect(button).toBeDisabled();
+  await page.locator('#icdSearch').fill('pom ne majte');await button.click();
+  await expect(page.locator('#icdAiConsent')).toBeVisible();expect(api.mutations).toHaveLength(0);
+  await page.locator('#icdTermOnly').check();await page.locator('#icdSearch').press('Control+Enter');
+  await expect(button).toHaveAttribute('aria-busy','true');await expect(page.locator('#icdMemoryStatus')).toContainText('Duke kërkuar me Gemini');
+  await expect.poll(()=>api.mutations.filter(row=>row.action==='resolve').length).toBe(1);
+  complete({ok:true,aiUsed:true,ambiguous:true,rows:[],clarification:'Zgjidh konceptin'});
+  await expect(page.locator('#icdMemoryStatus')).toContainText('Shkruaj më qartë');await expect(page.locator('#icdMemoryStatus')).toContainText('Gemini');
+  await expect(button).not.toHaveAttribute('aria-busy','true');await expect(page.locator('#icdMemoryTools')).not.toHaveAttribute('open','');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  await page.screenshot({path:info.outputPath('inline-gemini-'+width+'.png')});
+  await page.locator('#icdSearch').fill('I10');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');
+  await expect(page.locator('#icdMemoryStatus')).toBeEmpty();await expect(page.locator('#icdTermOnly')).not.toBeChecked();
+  await page.locator('#icdSearchClear').click();await expect(button).toBeDisabled();expect(api.mutations).toHaveLength(1);
+ });
+}
+
+test('a late Gemini response cannot replace a newer normal search',async({page})=>{
+ await page.setViewportSize({width:390,height:844});let complete;
+ const api=await setup(page,false,false,()=>new Promise(resolve=>{complete=resolve;}));
+ await page.locator('#icdSearch').fill('pom ne majte');await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdUnderstandTerm').click();
+ await expect.poll(()=>api.mutations.length).toBe(1);
+ await page.locator('#icdSearch').fill('I10');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');
+ complete({ok:true,aiUsed:true,ambiguous:true,rows:[]});await expect(page.locator('#icdUnderstandTerm')).not.toHaveAttribute('aria-busy','true');
+ await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');await expect(page.locator('#icdMemoryStatus')).toBeEmpty();
 });
 
 test('rotated CSRF renews automatically without duplicate writes',async({page})=>{

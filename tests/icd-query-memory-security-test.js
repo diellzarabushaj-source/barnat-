@@ -33,12 +33,15 @@ async function main(){
   assert.equal((await call({headers:{...headers,cookie:`medindex_session=${token('legacy-password')}; medindex_csrf=${csrf}`}})).statusCode,403);
   assert.equal((await call({body:{value:'x'.repeat(5000)}})).statusCode,413);
   assert.equal(loads,0,'Rejected mutations never load the catalog');
+  const ownCache=OWNER+'|'+Memory.VERSION+'|pom dhemb gjoksi',otherCache='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb|'+Memory.VERSION+'|pom dhemb gjoksi';
+  handler._test.answers.set(ownCache,{until:Date.now()+60000,promise:Promise.resolve({rows:[],ambiguous:true})});handler._test.answers.set(otherCache,{until:Date.now()+60000,promise:Promise.resolve({rows:[],ambiguous:true})});
   const saved=await call({body:{action:'remember',expression:'pom dhemb gjoksi',code:'R07.4',termOnly:true,actor:'forged',status:'verified'}});
   assert.equal(saved.statusCode,200);assert.equal(submission.actor,OWNER);assert.equal(submission.scope,'personal');assert.ok(!('status' in submission));
+  assert.equal(handler._test.answers.has(ownCache),false,'Saving a meaning invalidates the earlier answer for this owner/expression');assert.equal(handler._test.answers.has(otherCache),true,'Saving personal terminology leaves other owners caches untouched');
   assert.equal((await call({body:{action:'remember',termOnly:false}})).statusCode,400);
   assert.equal((await call({body:{action:'review',status:'verified'}})).statusCode,403);assert.equal(adminChecks,1,'Review rechecks live admin authority');
   assert.equal((await call({body:{action:'unknown',termOnly:true}})).statusCode,400);
   console.log('ICD memory endpoint: signed ownership, CSRF, origin, payload limits, legacy-write denial, explicit consent and fresh admin checks passed.');
- }finally{Source.load=originals.load;Memory.submit=originals.submit;Admin.requireAdminSession=originals.admin;Budget.enforce=originals.enforce;}
+ }finally{Source.load=originals.load;Memory.submit=originals.submit;Admin.requireAdminSession=originals.admin;Budget.enforce=originals.enforce;handler._test.answers.clear();}
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});
