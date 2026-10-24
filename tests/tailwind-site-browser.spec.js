@@ -249,6 +249,8 @@ for (const viewport of viewports) {
         if(viewport.width>940) await expect(page.locator('#chapterList')).toBeVisible();
         else {
           await expect(page.locator('#chapterList')).toBeHidden();
+          await expect(page.locator('#icdFilterChapter')).toBeHidden();
+          await page.locator('#icdFilterPanel > summary').click();
           await expect(page.locator('#icdFilterChapter')).toBeVisible();
           await expect.poll(()=>page.locator('#icdFilterChapter option').count()).toBeGreaterThan(1);
           await page.locator('#icdFilterChapter').selectOption({index:1});

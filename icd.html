@@ -8,11 +8,11 @@
   <title>DRx | ICD-10</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/icd-v2.css?v=precision-memory-20261024">
+  <link rel="stylesheet" href="/icd-v2.css?v=phone-flow-20261024">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/icd-v2.js?v=precision-memory-20261024-r2" defer></script>
+<script src="/icd-v2.js?v=phone-flow-20261024" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -122,11 +122,17 @@
               <kbd>Ctrl K</kbd>
             </div>
           </div>
+          <div class="icd-filter-section">
+          <details class="icd-filter-panel" id="icdFilterPanel" open>
+            <summary>Filtra <span id="icdFilterCount" hidden></span></summary>
           <div class="icd-filter-bar" aria-label="Filtrat ICD-10">
             <label>Kapitulli<select id="icdFilterChapter"><option value="">Të gjithë kapitujt</option></select></label>
             <label>Blloku<select id="icdFilterBlock"><option value="">Të gjithë blloqet</option></select></label>
             <label>Niveli në kërkim<select id="icdFilterLevel"><option value="">Të gjitha nivelet</option><option value="category">Kategori · kod 3 shenja</option><option value="subcategory">Nënkategori · kod specifik</option><option value="block">Blloqe</option><option value="chapter">Kapituj</option></select></label>
             <button type="button" id="icdFilterReset">Pastro filtrat</button>
+          </div>
+          </details>
+          <button class="icd-filter-clear-compact" id="icdFilterClearCompact" type="button" hidden>Pastro</button>
           </div>
             <div class="icd-suggestions" id="icdSuggestions" role="listbox" aria-label="Sugjerimet ICD-10" hidden></div>
           <details class="icd-memory-tools" id="icdMemoryTools">
@@ -304,6 +310,8 @@
           </nav>
 
           <div class="icd-workspace">
+            <details class="icd-chapter-browser" id="icdChapterBrowser" open>
+            <summary>Shfleto kapitujt <span>22</span></summary>
             <aside class="chapter-panel" aria-label="Kapitujt ICD-10">
               <div class="panel-heading">
                 <div><span class="panel-kicker">Niveli kryesor</span><h2>Kapitujt</h2></div>
@@ -311,6 +319,7 @@
               </div>
               <div class="chapter-list" id="chapterList" role="listbox" aria-label="Zgjidh kapitullin ICD-10"></div>
             </aside>
+            </details>
 
             <section class="node-panel" aria-labelledby="nodeSectionTitle">
               <details class="icd-clinical-disclosure"><summary>Udhëzime për diagnozat e shpeshta</summary><section class="clinical-quick-hub" id="clinicalQuickHub" aria-label="Diagnozat klinike të shpeshta"></section></details>
