@@ -199,6 +199,7 @@ async function publicBlog(req, res) {
 }
 
 module.exports = async function handler(req, res) {
+  if (queryFlag(req, 'icdMemory')) return require('../lib/icd-intelligence-handler.js')(req, res);
   if (queryFlag(req, 'phase11Review')) return Phase11Review.handle(req, res);
   if (queryFlag(req, 'icdApi')) return icdApi(req, res);
   if (queryFlag(req, 'rowActionsRelease')) return rowActionsRelease(req, res);

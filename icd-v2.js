@@ -65,6 +65,8 @@
   const levelLabel = level => LEVELS[clean(level)] || clean(level) || '—';
 
   const el = {};
+  let terminologyAliases = [], terminologyCsrf = '', terminologyOwner = '';
+  let terminologyLoadedAt = 0, terminologyEpoch = 0, terminologyLoading = null;
   const state = {
     chapters: [],
     blocks: [],
@@ -188,6 +190,13 @@
     const name = clean(payload.user?.fullName || payload.user?.name || payload.user?.email || 'DR');
     el.avatarInitials.textContent = name.split(/[\s@.]+/).filter(Boolean).slice(0, 2)
       .map(part => part[0]?.toUpperCase()).join('') || 'DR';
+    terminologyCsrf = clean(payload.csrfToken);
+    const owner=clean(payload.authUser?.id||payload.user?.id||payload.user?.email);
+    if(owner!==terminologyOwner){
+      terminologyOwner=owner;terminologyEpoch++;terminologyAliases=[];terminologyLoadedAt=0;terminologyLoading=null;
+      suggestionCache.clear();
+    }
+    return payload;
   }
 
   // --- paraqitja ------------------------------------------------------------
@@ -266,8 +275,14 @@
     return state.path.length ? state.path[state.path.length - 1] : (state.chapters.find(c => clean(c.code) === state.chapter) || null);
   }
 
+  function withRememberedLatin(node) {
+    if(!node||node.latinTitle)return node;
+    const term=terminologyAliases.find(row=>row.kind==='latin'&&row.code===node.code&&row.verification==='verified');
+    return term?{...node,latinTitle:term.expression,latinVerification:'reviewed-memory'}:node;
+  }
+
   function renderHero() {
-    const node = currentNode();
+    const node = withRememberedLatin(currentNode());
     if (!node) { el.nodeHero.hidden = true; return; }
     el.nodeHero.hidden = false;
     const code = clean(node.code);
@@ -276,12 +291,16 @@
       <span class="hero-code">${escapeHtml(code)}</span>
       <span class="hero-copy">
         <span class="hero-kicker">${escapeHtml(levelLabel(node.level))}${range ? ` · <b>${escapeHtml(range)}</b>` : ''}</span>
-        <h2>${escapeHtml(title)}</h2>
-        ${nodeSubtitle(node) ? `<p>${escapeHtml(nodeSubtitle(node))}</p>` : ''}
+        <h2>${escapeHtml(clean(node.latinTitle) || title)}</h2>
+        ${node.latinTitle ? `<p>${escapeHtml(title)}${node.englishTitle ? ` · ${escapeHtml(node.englishTitle)}` : ''}</p>` : nodeSubtitle(node) ? `<p>${escapeHtml(nodeSubtitle(node))}</p>` : ''}
       </span>
       <span class="hero-actions">
+        ${['category','subcategory'].includes(node.level) ? '<button class="button button-secondary" type="button" id="icdCopyDiagnosis">Kopjo diagnozën</button>' : ''}
+        ${['category','subcategory'].includes(node.level) ? '<button class="button button-secondary" type="button" id="icdUseInPrescription">Vendos në recetë</button>' : ''}
         <a class="button button-secondary" href="/index.html?q=${encodeURIComponent(code)}">Kërko në barna</a>
       </span>`;
+    const memoryCode=document.getElementById('icdMemoryCode');
+    if(memoryCode&&['category','subcategory'].includes(node.level))memoryCode.value=code;
   }
 
   function clinicalGroupForCode(code) {
@@ -718,7 +737,7 @@
   const SEARCH_SEED_STORAGE_KEY = 'medindex.icd.category-seed.v1';
   const SEARCH_SEED_STORAGE_VERSION = 1;
   const HOT_SEARCH_STORAGE_KEY = 'medindex.icd.qkmf-hot.v1';
-  const HOT_SEARCH_STORAGE_VERSION = 1;
+  const HOT_SEARCH_STORAGE_VERSION = 2;
   const HOT_SEARCH_TTL_MS = 24 * 60 * 60 * 1000;
   const SEARCH_NETWORK_DELAY_MS = 14;
 
@@ -1087,6 +1106,7 @@
         groupLabel:'Sugjerime',
       },
     }));
+    if(best.concept.symptomNode)rows.unshift({...best.concept.symptomNode,searchMatch:{type:'symptom-code',field:'symptom',label:'Kodi i simptomës',score:1400}});
     return { symptomIntent:symptom, rows };
   }
 
@@ -1159,6 +1179,10 @@
     if(state.filterChapter || state.filterBlock || state.filterLevel)return {rows:[],meta:null};
     const direct = cachedSuggestions(query);
     if (direct?.rows?.length) return { rows:direct.rows, meta:direct };
+
+    const remembered=terminologyAliases.filter(row=>row.kind==='alias'&&row.normalized===normalized&&row.node)
+      .map(row=>({...row.node,memoryVerification:row.verification,searchMatch:{type:row.verification==='verified'?'verified-query-alias':'personal-query-alias',label:row.verification==='verified'?'Shprehje e verifikuar':'Preferencë personale',field:'alias',score:1350}}));
+    if(remembered.length)return {rows:mergeInstantRows(remembered),meta:{semanticMemory:{ambiguous:new Set(remembered.map(node=>node.code)).size>1}}};
 
     const symptom = hotSymptomPreview(query);
     const hot = hotQuickPreview(query, 8);
@@ -1282,7 +1306,7 @@
   }
 
   function suggestionTranslationHtml(node, query) {
-    return suggestionTranslations(node).map(item => `
+    return suggestionTranslations(node).filter(item => !node.latinTitle || !['LA','SQ'].includes(item.lang)).map(item => `
       <small class="icd-suggestion-translation is-${escapeHtml(item.kind)}"
         ${item.kind === 'parent' ? 'title="Latin i kategorisë prind — jo titull specifik i nënkodit"' : ''}>
         <b>${escapeHtml(item.lang)}</b><span>${highlightSearchText(item.text, query)}</span>
@@ -1326,9 +1350,10 @@
     }
 
     let previousSection = '';
-    const rows = state.suggestions.map((node, index) => {
+    const rows = state.suggestions.map((original, index) => {
+      const node=withRememberedLatin(original);
       const active = index === state.activeSuggestion;
-      const isDifferential = clean(node?.searchMatch?.field) === 'symptom';
+      const isDifferential = clean(node?.searchMatch?.type) === 'symptom-differential';
       const best = index === 0 && !isDifferential;
       const match = clean(node?.searchMatch?.label) || 'Përputhje';
       const source = matchSourceLabel(node);
@@ -1356,7 +1381,10 @@
         id="icd-suggestion-${index}" aria-selected="${active}" data-suggestion-index="${index}" data-code="${escapeHtml(clean(node.code))}">
         <span class="icd-suggestion-code">${highlightSearchText(clean(node.code), query)}</span>
         <span class="icd-suggestion-copy">
-          <span class="icd-suggestion-titleline"><strong>${highlightSearchText(nodeTitle(node), query)}</strong>${best ? '<em>Përputhja më e mirë</em>' : isDifferential ? '<em class="is-differential">Kandidat diferencial</em>' : ''}</span>
+          <span class="icd-suggestion-titleline"><strong>${highlightSearchText(clean(node.latinTitle) || nodeTitle(node), query)}</strong>${node.memoryVerification==='pending'?'<em>Propozim · i paverifikuar</em>':best ? '<em>Përputhja më e mirë</em>' : isDifferential ? '<em class="is-differential">Kandidat diferencial</em>' : ''}</span>
+          ${node.latinTitle?`<span class="icd-suggestion-sq">${highlightSearchText(nodeTitle(node),query)}</span>`:''}
+          <span class="icd-concept-kind">${/^R\d/.test(node.code)||node.searchMatch?.type==='symptom-code'?'Simptomë / shenjë':'Koncept ICD · kërkon konfirmim klinik'}${['verified-resource','reviewed-memory'].includes(node.latinVerification)?' · Latinisht e verifikuar':''}</span>
+          ${node.latinProposal?`<span class="icd-suggestion-sq">LA · propozim i paverifikuar: ${escapeHtml(node.latinProposal)}</span>`:''}
           ${relationReason ? `<span class="icd-symptom-reason">${escapeHtml(relationReason)}</span>` : ''}
           ${hierarchyHint}
           ${translations}
@@ -1368,7 +1396,9 @@
         </span>
       </button>`;
     }).join('');
-    el.icdSuggestions.innerHTML = head + symptomBanner + rows;
+    const ambiguity=state.suggestionMeta?.semanticMemory?.ambiguous||state.suggestionMeta?.ambiguity
+      ? '<p class="icd-memory-ambiguity" role="note">Shprehja ka disa kuptime. Zgjidh konceptin e saktë; nuk vendoset diagnozë automatikisht.</p>' : '';
+    el.icdSuggestions.innerHTML = head + symptomBanner + ambiguity + rows;
     if (state.activeSuggestion >= 0) {
       el.icdSearch?.setAttribute('aria-activedescendant', `icd-suggestion-${state.activeSuggestion}`);
       el.icdSuggestions.querySelector('.icd-suggestion-row.is-active')?.scrollIntoView({ block:'nearest' });
@@ -1485,6 +1515,95 @@
   }
 
   let searchAbortController = null;
+
+  async function warmTerminologyMemory(force=false) {
+    if(terminologyLoading&&!force)return terminologyLoading;
+    if(!force&&Date.now()-terminologyLoadedAt<300000)return;
+    const epoch=terminologyEpoch;
+    const work=(async()=>{try {
+      const {payload}=await fetchJson('/api/clinical-editor?icdMemory=1',3500);
+      if(epoch!==terminologyEpoch||payload.classification!=='ICD-10-WHO 2019')return;
+      terminologyAliases=Array.isArray(payload.rows)?payload.rows:[];
+      terminologyLoadedAt=Date.now();
+      const review=document.getElementById('icdMemoryReview');if(review)review.hidden=!payload.isAdmin;
+    } catch { /* Existing local, offline and server searches remain available. */ }})();
+    terminologyLoading=work;
+    try{await work;}finally{if(terminologyLoading===work)terminologyLoading=null;}
+  }
+
+  async function postTerminology(body) {
+    const response=await fetch('/api/clinical-editor?icdMemory=1',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','x-csrf-token':terminologyCsrf},body:JSON.stringify(body)});
+    const payload=await response.json();
+    if(!response.ok||!payload.ok)throw new Error(payload.error||'Veprimi nuk u krye.');
+    return payload;
+  }
+
+  function installTerminologyTools() {
+    window.addEventListener('focus',()=>{
+      if(Date.now()-terminologyLoadedAt<300000)return;
+      void ensureAuth().then(()=>warmTerminologyMemory()).catch(()=>{});
+    });
+    const status=document.getElementById('icdMemoryStatus');
+    const termOnly=document.getElementById('icdTermOnly');
+    const target=document.getElementById('icdMemoryCode');
+    const run=async(button,action)=>{
+      if(!termOnly.checked){status.textContent='Konfirmo që shprehja nuk përmban të dhëna pacienti.';return;}
+      const expression=clean(el.icdSearch.value);
+      if(expression.length<3){status.textContent='Shkruaj shprehjen në kërkim.';return;}
+      if(state.filterChapter||state.filterBlock||state.filterLevel){status.textContent='Hiq filtrat për të kontrolluar shprehjen në katalogun e plotë.';return;}
+      button.disabled=true;status.textContent='Duke kontrolluar shprehjen…';
+      const requestId=state.requestId;
+      try {
+        const payload=await postTerminology({action:action==='resolve'?'resolve':'remember',expression,code:clean(target.value).toUpperCase(),termOnly:true,globalProposal:action==='propose'});
+        if(expression!==clean(el.icdSearch.value)||requestId!==state.requestId)return;
+        if(action==='resolve'){
+          const data={rows:payload.rows||[],ambiguity:payload.ambiguous};
+          applySuggestionData(expression,data);state.suggestionLoading=false;
+          if(payload.ambiguous||data.rows.some(node=>node.memoryVerification==='pending'))state.activeSuggestion=-1;
+          renderSuggestions();status.textContent=payload.clarification||'Nuk u gjet përputhje e sigurt. Përshkruaj shprehjen më saktë.';
+        } else {
+          suggestionCache.clear();await warmTerminologyMemory(true);
+          status.textContent=action==='propose'?'Propozimi pret verifikim nga administratori.':'Shprehja u ruajt vetëm në fjalorin tënd.';
+        }
+      }catch(error){status.textContent=error.message;}finally{button.disabled=false;}
+    };
+    for(const [id,action] of [['icdUnderstandTerm','resolve'],['icdRememberTerm','remember'],['icdProposeTerm','propose']]){
+      const button=document.getElementById(id);button?.addEventListener('click',()=>void run(button,action));
+    }
+    el.icdSearch.addEventListener('input',()=>{termOnly.checked=false;status.textContent='';});
+    document.addEventListener('click',async event=>{
+      if(event.target.closest('#icdUseInPrescription')){
+        const node=currentNode();if(!node||!['category','subcategory'].includes(node.level))return;
+        try{
+          sessionStorage.setItem('medindex_rx_diagnosis_context_v2',JSON.stringify({version:2,system:'ICD-10-WHO 2019',source:'medindex-icd-browser',code:node.code,level:node.level,titleSq:node.albanianDraft||nodeTitle(node),titleEn:node.englishTitle||'',translationStatus:node.translationStatus||'',sourceUrl:node.sourceUrl||'',childCount:node.childCount||0,selectedAt:Date.now()}));
+          location.assign('/recetat.html#ndertimi');
+        }catch{showToast('Kodi nuk u kalua në recetë. Provo përsëri.');}
+        return;
+      }
+      if(!event.target.closest('#icdCopyDiagnosis'))return;
+      const node=withRememberedLatin(currentNode());if(!node)return;
+      const lines=[clean(node.code)+' · '+(clean(node.latinTitle)||nodeTitle(node))];
+      if(node.latinTitle)lines.push(nodeTitle(node));
+      try{await navigator.clipboard.writeText(lines.join('\n'));showToast('Diagnoza u kopjua.');}catch{showToast('Kopjimi nuk u lejua nga shfletuesi.');}
+    });
+    const list=document.getElementById('icdTermReviewList');
+    const load=document.getElementById('icdLoadTermReview');
+    load?.addEventListener('click',async()=>{
+      load.disabled=true;
+      try{
+        const {payload}=await fetchJson('/api/clinical-editor?icdMemory=1&action=review',5000);
+        list.innerHTML=(payload.rows||[]).map(row=>`<div class="icd-term-review-row" data-term-review="${escapeHtml(row.id)}"><strong>${escapeHtml(row.expression)} · ${escapeHtml(row.code)} · ${row.kind==='latin'?'Latinisht':'Shprehje'}</strong><input type="url" placeholder="https://… referenca klinike" aria-label="Referenca për ${escapeHtml(row.expression)}"><button type="button" data-term-decision="verified">Mirato</button><button type="button" data-term-decision="rejected">Refuzo</button></div>`).join('')||'<p>Nuk ka terma që presin verifikim.</p>';
+      }catch(error){list.textContent=error.message;}finally{load.disabled=false;}
+    });
+    list?.addEventListener('click',async event=>{
+      const button=event.target.closest('[data-term-decision]');if(!button)return;
+      const row=button.closest('[data-term-review]');button.disabled=true;
+      try{
+        await postTerminology({action:'review',id:row.dataset.termReview,status:button.dataset.termDecision,evidenceUrl:row.querySelector('input').value});
+        row.remove();suggestionCache.clear();await warmTerminologyMemory(true);status.textContent='Vendimi u ruajt në historikun e verifikimit.';
+      }catch(error){status.textContent=error.message;}finally{button.disabled=false;}
+    });
+  }
 
   function applySuggestionData(query, data, { fromCache = false } = {}) {
     state.searching = true;
@@ -1885,7 +2004,7 @@
     });
 
     document.addEventListener('pointerdown', event => {
-      if (event.target.closest('#icdSearchBox') || event.target.closest('#icdSuggestions')) return;
+      if (event.target.closest('#icdSearchBox') || event.target.closest('#icdSuggestions') || event.target.closest('#icdMemoryTools') || event.target.closest('#icdMemoryReview')) return;
       state.suggestionOpen = false;
       renderSuggestions();
     });
@@ -1936,6 +2055,8 @@
     render();
     try {
       const authPayload = await ensureAuth();
+      installTerminologyTools();
+      void warmTerminologyMemory();
       void warmHotSearch();
       await syncProfileChrome(authPayload);
       await loadNav();

@@ -1862,3 +1862,14 @@ html.drx-unified-sidebar .icd-suggestions{position:relative;inset:auto;width:100
 html.drx-unified-sidebar .metrics-row{background:transparent;border:0;box-shadow:none}
 html.drx-unified-sidebar .metric-card{border:0;box-shadow:none;background:transparent}
 html.drx-unified-sidebar .metric-card strong{margin:0;font-size:16px}
+.icd-suggestion-sq{display:block;margin-top:3px;color:#3e526e;font-size:13px;line-height:1.45}
+.icd-concept-kind{display:block;margin-top:4px;color:#516783;font-size:11px;line-height:1.4}
+.icd-memory-tools{margin-top:12px;border-top:1px solid #dce4ef;padding-top:10px;font-size:13px;color:#304864}
+.icd-memory-tools>summary{cursor:pointer;font-weight:600;padding:6px 0}.icd-memory-tools p{line-height:1.5;margin:8px 0}
+.icd-term-confirm{display:flex;align-items:start;gap:8px;padding:8px 0}.icd-term-confirm input{margin-top:3px;min-width:18px;min-height:18px}
+.icd-memory-actions{display:flex;align-items:end;flex-wrap:wrap;gap:10px}.icd-memory-actions label{display:grid;gap:4px;font-size:12px}
+.icd-memory-tools button,.icd-memory-tools input[type=text],.icd-memory-tools input[type=url]{min-height:42px;border:1px solid #c4d1e3;border-radius:7px;padding:8px 12px;color:#203f66;background:#fff;font:inherit}
+.icd-memory-tools button{font-weight:600;cursor:pointer}.icd-memory-tools button:hover{background:#eef3fb}.icd-memory-tools button:disabled{opacity:.55;cursor:wait}
+.icd-memory-tools :focus-visible{outline:2px solid #4964d8;outline-offset:3px}.icd-memory-ambiguity{margin:8px 12px;padding:9px 12px;background:#f1f4fa;color:#304864;border-left:3px solid #667fa4;font-size:13px}
+.icd-term-review-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;border-top:1px solid #dce4ef;padding:12px 0}.icd-term-review-row strong{flex-basis:100%;overflow-wrap:anywhere}.icd-term-review-row input{min-width:0;flex:1}
+@media(max-width:600px){.icd-memory-actions{align-items:stretch}.icd-memory-actions>*{flex:1 1 100%}.icd-memory-tools input[type=text],.icd-memory-tools input[type=url]{font-size:16px;width:100%}.hero-actions{flex-wrap:wrap}}
