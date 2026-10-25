@@ -1590,9 +1590,9 @@
       const expression=clean(el.icdSearch.value);
       if(expression.length<3){status.textContent='Shkruaj shprehjen në kërkim.';return;}
       if(state.filterChapter||state.filterBlock||state.filterLevel){status.textContent='Hiq filtrat për të kontrolluar shprehjen në katalogun e plotë.';return;}
-      if(action==='resolve'&&navigator.onLine===false){status.textContent='Gemini kërkon internet. Kërkimi ICD mbetet në dispozicion.';return;}
+      if(action==='resolve'&&navigator.onLine===false){status.textContent='AI kërkon internet. Kërkimi ICD mbetet në dispozicion.';return;}
       if(action==='resolve'){clearTimeout(searchTimer);searchAbortController?.abort();searchAbortController=null;state.searching=false;state.suggestionLoading=false;++state.requestId;}
-      button.disabled=true;button.setAttribute('aria-busy','true');status.textContent=action==='resolve'?'Duke kërkuar me Gemini…':'Duke ruajtur shprehjen…';
+      button.disabled=true;button.setAttribute('aria-busy','true');status.textContent=action==='resolve'?'Duke kërkuar me AI…':'Duke ruajtur shprehjen…';
       if(action==='resolve')hideConsent();
       const startedAt=performance.now();
       const requestId=state.requestId;
@@ -1602,7 +1602,7 @@
         request.timer=setTimeout(()=>{request.timedOut=true;request.controller.abort();},55000);
       }
       try {
-        const payload=await postTerminology({action:action==='resolve'?'interpret':'remember',expression,code:clean(target.value).toUpperCase(),termOnly:true,globalProposal:action==='propose'},request?.controller.signal);
+        const payload=await postTerminology({action:action==='resolve'?'interpret':'remember',expression,code:clean(target.value).toUpperCase(),termOnly:true,groqFallback:action==='resolve',globalProposal:action==='propose'},request?.controller.signal);
         if(request&&activeAi!==request)return;
         if(expression!==clean(el.icdSearch.value)||requestId!==state.requestId)return;
         if(action==='resolve'){
@@ -1611,7 +1611,8 @@
           if(payload.ambiguous||data.rows.some(node=>node.memoryVerification==='pending'))state.activeSuggestion=-1;
           renderSuggestions();
           const elapsed=((performance.now()-startedAt)/1000).toLocaleString('sq-AL',{minimumFractionDigits:1,maximumFractionDigits:1});
-          const source=payload.cached?'Memoria':payload.aiUsed?'Gemini':'Kërkimi ICD';
+          const provider=payload.provider==='groq'?'Groq':'Gemini';
+          const source=payload.cached?`Memoria · ${provider}`:payload.aiUsed?provider:'Kërkimi ICD';
           status.textContent=`${source} · ${elapsed} s · ${data.rows.length?(payload.clarification||'Kontrollo përputhjen përpara përdorimit.'):'Shkruaj më qartë simptomën ose diagnozën që kërkon.'}`;
         } else {
           suggestionCache.clear();await warmTerminologyMemory(true);
@@ -1619,7 +1620,7 @@
         }
       }catch(error){
         if((!request||activeAi===request)&&expression===clean(el.icdSearch.value)&&requestId===state.requestId){
-          status.textContent=request?.timedOut?'Gemini po vonon. Provo përsëri ose përdor kërkimin ICD.':error.name==='AbortError'?'Lidhja nuk u përgjigj. Provo përsëri.':error.message;
+          status.textContent=request?.timedOut?'AI po vonon. Provo përsëri ose përdor kërkimin ICD.':error.name==='AbortError'?'Lidhja nuk u përgjigj. Provo përsëri.':error.message;
         }
       }finally{
         if(request)releaseAi(request);

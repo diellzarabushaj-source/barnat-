@@ -27,7 +27,7 @@ async function main(){
   await D.interpret({dataset,query:example,actor:OTHER,generate});assert.equal(calls,2,'Descriptions do not cross owners');
   const exact=await D.interpret({dataset,query:'I10',actor:OWNER,generate:()=>{throw Error('Exact code must not call AI');}});assert.equal(exact.rows[0].code,'I10');assert.equal(exact.aiUsed,false);
   await assert.rejects(()=>D.interpret({dataset:{...dataset,version:'ICD-10-CM'},query:example,actor:OWNER,generate}),error=>error.status===409);
-  D.cache.clear();await assert.rejects(()=>D.interpret({dataset,query:example,actor:OWNER,generate:async()=>{throw Object.assign(new Error('Timeout'),{name:'AbortError'});}}),error=>error.memoryStage==='description-gemini');assert.equal(D.cache.size,0);
+  D.cache.clear();await assert.rejects(()=>D.interpret({dataset,query:example,actor:OWNER,generate:async()=>{throw Object.assign(new Error('Timeout'),{name:'AbortError'});}}),error=>error.memoryStage==='description-ai');assert.equal(D.cache.size,0);
  }finally{M.submit=submit;D.cache.clear();if(before===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=before;}
  console.log('ICD description interpretation: anonymous input, canonical WHO codes, differential-only suggestions, no writes, owner cache and failure recovery passed.');
 }
