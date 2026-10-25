@@ -1317,7 +1317,7 @@
   function renderSuggestions() {
     if (!el.icdSuggestions || !el.icdSearchBox) return;
     const query = clean(el.icdSearch?.value);
-    const shouldOpen = state.suggestionOpen && query.length >= 2 && (state.suggestionLoading || state.suggestions.length || state.searching);
+    const shouldOpen = state.suggestionOpen && query.length >= 2 && (state.suggestionLoading || state.suggestions.length || state.searching || state.suggestionMeta?.descriptionAnalysis);
     document.documentElement.classList.toggle('icd-query-open',Boolean(shouldOpen));
     el.icdSearchBox.setAttribute('aria-expanded', String(Boolean(shouldOpen)));
     if (!shouldOpen) {
@@ -1358,19 +1358,20 @@
       const active = index === state.activeSuggestion;
       const isDifferential = clean(node?.searchMatch?.type) === 'symptom-differential';
       const isAiDescription=Boolean(node.aiDescription);
-      const best = index === 0 && !isDifferential && !isAiDescription;
+      const isReviewedContext=Boolean(node.descriptionContext);
+      const best = index === 0 && !isDifferential && !isAiDescription && !isReviewedContext;
       const match = clean(node?.searchMatch?.label) || 'Përputhje';
       const source = matchSourceLabel(node);
       const translations = suggestionTranslationHtml(node, query);
       const parent = node.level === 'subcategory' ? clean(node.parentCode) : '';
       const childCount = Number(node?.childCount || 0);
-      const relationReason = clean(node.aiDescription?.reason||node?.symptomRelation?.reason_sq);
+      const relationReason = clean(node.descriptionContext?.reason||node.aiDescription?.reason||node?.symptomRelation?.reason_sq);
       const hierarchyHint = parent
         ? `<span class="icd-family-hint"><b>${escapeHtml(parent)}</b><span aria-hidden="true">→</span><strong>${escapeHtml(clean(node.code))}</strong></span>`
         : childCount > 0
           ? `<span class="icd-family-hint"><strong>${formatNumber(childCount)}</strong> nënkode</span>`
           : '';
-      const section = isAiDescription ? (node.aiDescription.kind==='symptom'?'Kodi i simptomës · AI':'Diagnoza të mundshme · AI') : isDifferential
+      const section = isReviewedContext?'Simptoma · konfirmo kontekstin':isAiDescription ? (node.aiDescription.kind==='symptom'?'Kodi i simptomës · AI':'Diagnoza të mundshme · AI') : isDifferential
         ? 'Nga simptoma · diagnoza të mundshme'
         : node.level === 'category'
           ? 'Kategoritë kryesore'
@@ -1385,9 +1386,9 @@
         id="icd-suggestion-${index}" aria-selected="${active}" data-suggestion-index="${index}" data-code="${escapeHtml(clean(node.code))}">
         <span class="icd-suggestion-code">${highlightSearchText(clean(node.code), query)}</span>
         <span class="icd-suggestion-copy">
-          <span class="icd-suggestion-titleline"><strong>${highlightSearchText(clean(node.latinTitle) || nodeTitle(node), query)}</strong>${isAiDescription?'<em class="is-pending">Sugjerim AI</em>':node.memoryVerification==='pending'?'<em class="is-pending">Propozim · i paverifikuar</em>':best ? '<em>Përputhja më e mirë</em>' : isDifferential ? '<em class="is-differential">Kandidat diferencial</em>' : ''}</span>
+          <span class="icd-suggestion-titleline"><strong>${highlightSearchText(clean(node.latinTitle) || nodeTitle(node), query)}</strong>${isReviewedContext?`<em class="is-pending">${node.descriptionContext.conditional?'Konfirmo burimin':'Përputhje e simptomës'}</em>`:isAiDescription?'<em class="is-pending">Sugjerim AI</em>':node.memoryVerification==='pending'?'<em class="is-pending">Propozim · i paverifikuar</em>':best ? '<em>Përputhja më e mirë</em>' : isDifferential ? '<em class="is-differential">Kandidat diferencial</em>' : ''}</span>
           ${node.latinTitle?`<span class="icd-suggestion-sq">${highlightSearchText(nodeTitle(node),query)}</span>`:''}
-          <span class="icd-concept-kind">${/^R\d/.test(node.code)||node.searchMatch?.type==='symptom-code'||node.aiDescription?.kind==='symptom'?'Simptomë / shenjë':'Koncept ICD · kërkon konfirmim klinik'}${['verified-resource','reviewed-memory'].includes(node.latinVerification)?' · Latinisht e verifikuar':''}</span>
+          <span class="icd-concept-kind">${/^R\d/.test(node.code)||node.searchMatch?.type==='symptom-code'||node.aiDescription?.kind==='symptom'||isReviewedContext?'Simptomë / shenjë':'Koncept ICD · kërkon konfirmim klinik'}${['verified-resource','reviewed-memory'].includes(node.latinVerification)?' · Latinisht e verifikuar':''}</span>
           ${node.latinProposal?`<span class="icd-suggestion-sq">LA · propozim i paverifikuar: ${escapeHtml(node.latinProposal)}</span>`:''}
           ${relationReason ? `<span class="icd-symptom-reason">${escapeHtml(relationReason)}</span>` : ''}
           ${hierarchyHint}
@@ -1613,7 +1614,7 @@
           const elapsed=((performance.now()-startedAt)/1000).toLocaleString('sq-AL',{minimumFractionDigits:1,maximumFractionDigits:1});
           const provider=payload.provider==='groq'?'Groq':'Gemini';
           const source=payload.cached?`Memoria · ${provider}`:payload.aiUsed?provider:'Kërkimi ICD';
-          status.textContent=`${source} · ${elapsed} s · ${data.rows.length?(payload.clarification||'Kontrollo përputhjen përpara përdorimit.'):'Shkruaj më qartë simptomën ose diagnozën që kërkon.'}`;
+          status.textContent=`${source} · ${elapsed} s · ${data.rows.length?(payload.clarification||'Kontrollo përputhjen përpara përdorimit.'):(payload.descriptionAnalysis?.clarification||'Shkruaj më qartë simptomën ose diagnozën që kërkon.')}`;
         } else {
           suggestionCache.clear();await warmTerminologyMemory(true);
           status.textContent=action==='propose'?'Propozimi pret verifikim nga administratori.':'Shprehja u ruajt vetëm në fjalorin tënd.';

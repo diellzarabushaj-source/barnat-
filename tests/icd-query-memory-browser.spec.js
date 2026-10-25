@@ -155,6 +155,25 @@ for(const width of [390,1440]){
  });
 }
 
+for(const width of [390,1440]){
+ test('blood origin stays explicit for saliva, stool and vomiting at '+width,async({page},info)=>{
+  await page.setViewportSize({width,height:900});let generated=0;
+  const api=await setup(page,false,false,async body=>({ok:true,...(body.expression.includes('mishrat')?Description.validate({candidates:[{code:'K92.0',titleEn:'Haematemesis',kind:'symptom',reason:'Invented vomiting'}]},dataset,body.expression):await Description.interpret({dataset,query:body.expression,actor:OWNER,generate:async()=>{generated++;throw Error('Reviewed short phrases must not call a provider');}}))}));
+  async function search(query){await page.locator('#icdSearch').fill(query);await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();await expect(page.locator('#icdUnderstandTerm')).not.toHaveAttribute('aria-busy','true');}
+  await search('pershtyme me gjak');
+  await expect(page.locator('.icd-suggestion-row')).toHaveCount(1);await expect(page.locator('.icd-suggestion-row')).toHaveAttribute('data-code','R04.2');await expect(page.locator('.icd-description-analysis')).toContainText('mishrat');
+  await expect(page.locator('.icd-suggestion-row')).toContainText('Konfirmo burimin');await expect(page.locator('.icd-suggestion-row')).not.toContainText('Sugjerim AI');await expect(page.locator('.icd-suggestion-row.is-active')).toHaveCount(0);
+  await expect(page.locator('#icdMemoryStatus')).toContainText('Kërkimi ICD');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  await page.screenshot({path:info.outputPath('saliva-context-'+width+'.png')});
+  await search('gjakderdhje ne feces');
+  await expect(page.locator('.icd-suggestion-row')).toHaveCount(2);await expect(page.locator('.icd-suggestion-row[data-code="K62.5"]')).toContainText('freskët');await expect(page.locator('.icd-suggestion-row[data-code="K92.1"]')).toContainText('nëse');
+  await expect(page.locator('.icd-description-analysis')).toContainText('okult');await expect(page.locator('.icd-suggestion-row.is-active')).toHaveCount(0);
+  await page.screenshot({path:info.outputPath('stool-context-'+width+'.png')});
+  await search('vjellje me gjak');await expect(page.locator('.icd-suggestion-row')).toHaveCount(1);await expect(page.locator('.icd-suggestion-row')).toHaveAttribute('data-code','K92.0');expect(generated).toBe(0);
+  await search('gjak nga mishrat e dhembeve');await expect(page.locator('.icd-suggestion-row')).toHaveCount(0);await expect(page.locator('.icd-description-analysis')).toBeVisible();await expect(page.locator('.icd-description-analysis')).toContainText('mishrat');await expect(page.locator('#icdMemoryStatus')).toContainText('mishrat');expect(api.mutations).toHaveLength(4);
+ });
+}
+
 test('a late Gemini response cannot replace a newer normal search',async({page})=>{
  await page.setViewportSize({width:390,height:844});let complete;
  const api=await setup(page,false,false,()=>new Promise(resolve=>{complete=resolve;}));
