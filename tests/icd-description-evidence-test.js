@@ -27,6 +27,9 @@ const rejected=[
  ['temperaturë','R05','temperaturë'],
  ['nauze','R60','nauze'],
  ['skuqje','R50.9','skuqje'],
+ ['temperature normale, kolle','R50.9','temperature'],
+ ['normal temperature, cough','R50.9','temperature'],
+ ['temperature is normal; cough','R50.9','temperature is normal'],
  ['kollë prej dy ditësh','J18.9','kollë'],
  ['dhimbje gjoksi','I21.9','dhimbje gjoksi'],
  ['dhimbje fyti','J02.9','dhimbje fyti'],
@@ -55,6 +58,7 @@ const rejected=[
 ];
 const accepted=[
  ['kollë pa temperaturë','R05','kollë'],
+ ['temperature normale, kolle','R05','kolle'],
  ['pa kollë, temperaturë 39','R50.9','temperaturë'],
  ['nuk ka vjellje, por dhimbje barku','R10.4','dhimbje barku'],
  ['kishte kollë, tani dhimbje barku','R10.4','dhimbje barku'],
