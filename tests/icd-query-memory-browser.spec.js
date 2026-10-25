@@ -189,18 +189,46 @@ for(const width of [390,1440]){
   await page.setViewportSize({width,height:900});let generated=0;const before=process.env.GEMINI_API_KEY;process.env.GEMINI_API_KEY='synthetic';Description.cache.clear();
   const question='Dhimbja është në bark apo në mes? A ka shenja urinare?';
   try{
-   const api=await setup(page,false,false,async body=>({ok:true,...await Description.interpret({dataset,query:body.expression,actor:OWNER,generate:async options=>{generated++;expect(JSON.parse(options.prompt).anonymousDescription).toBe(body.expression);return {data:{clarification:question,candidates:[{code:'R10.4',titleEn:'Other and unspecified abdominal pain',kind:'symptom',reason:'Kodi i simptomës abdominale; shkaku nuk përcaktohet vetëm nga vendndodhja.'},{code:'N23',titleEn:'Unspecified renal colic',kind:'differential',reason:'Mundësi për vlerësim vetëm nëse ka tablo klinike të kolikës renale.'},{code:'R10.9',titleEn:'Invalid extension',kind:'symptom',reason:'Invalid WHO extension'}]}};}})}));
+   const api=await setup(page,false,false,async body=>({ok:true,...await Description.interpret({dataset,query:body.expression,actor:OWNER,generate:async options=>{generated++;expect(JSON.parse(options.prompt).anonymousDescription).toBe(body.expression);return {data:{clarification:question,candidates:[{code:'R10.4',titleEn:'Other and unspecified abdominal pain',evidence:body.expression,kind:'symptom',reason:'Kodi i simptomës abdominale; shkaku nuk përcaktohet vetëm nga vendndodhja.'},{code:'N23',titleEn:'Unspecified renal colic',evidence:body.expression,kind:'differential',reason:'Mundësi për vlerësim vetëm nëse ka tablo klinike të kolikës renale.'},{code:'R10.9',titleEn:'Invalid extension',kind:'symptom',reason:'Invalid WHO extension'}]}};}})}));
    await page.locator('#icdSearch').fill('dhimbje ne regjionin retroperitoneal');expect(api.mutations).toEqual([]);
    await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
-   await expect(page.locator('.icd-description-analysis')).toContainText(question);
-   await expect(page.locator('.icd-suggestion-row')).toHaveCount(2);await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','R10.4');
-   await expect(page.locator('.icd-suggestion-row[data-code="N23"]')).toContainText('Sugjerim AI');await expect(page.locator('.icd-suggestion-row[data-code="N23"]')).toContainText('vetëm nëse');
+   await expect(page.locator('.icd-description-analysis')).toContainText('pranishme tani');
+   await expect(page.locator('.icd-suggestion-row')).toHaveCount(1);await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','R10.4');
+   await expect(page.locator('.icd-suggestion-row[data-code="N23"]')).toHaveCount(0);await expect(page.locator('.icd-suggestion-row[data-code="R10.4"]')).toContainText('Nga përshkrimi');
    await expect(page.locator('.icd-suggestion-row.is-active')).toHaveCount(0);
    await expect(page.locator('#icdMemoryStatus')).toContainText('Gemini');expect(generated).toBe(1);expect(api.mutations).toHaveLength(1);expect(api.mutations[0].action).toBe('interpret');
    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
    await page.screenshot({path:info.outputPath('description-gemini-'+width+'.png')});
-   await page.locator('.icd-suggestion-row[data-code="N23"]').click();await expect(page.locator('#nodeHero')).toContainText('N23');
+   await page.locator('.icd-suggestion-row[data-code="R10.4"]').click();await expect(page.locator('#nodeHero')).toContainText('R10.4');
   }finally{Description.cache.clear();if(before===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=before;}
+ });
+}
+
+for(const width of [390,1440]){
+ test('general description evidence rejects changed meaning across clinical systems at '+width,async({page},info)=>{
+  await page.setViewportSize({width,height:900});
+  const cases=[
+   {query:'kollë pa temperaturë',bad:'R50.9',evidence:'temperaturë',codes:['R05']},
+   {query:'babai ka diabet tip 2, tani dhimbje koke',bad:'E11',evidence:'diabet tip 2',codes:['R51']},
+   {query:'dhimbje veshi prej dje',bad:'R07.0',evidence:'dhimbje veshi',codes:['H92.0']},
+   {query:'kollë dhe temperaturë prej dy ditësh',bad:'J18.9',evidence:'kollë dhe temperaturë',codes:['R05','R50','J18.9']},
+   {query:'pa kollë dhe pa temperaturë',bad:'R05',evidence:'kollë',codes:[]},
+  ];
+  const api=await setup(page,false,false,body=>{
+   const current=cases.find(c=>c.query===body.expression),node=Memory.codeNode(dataset,current.bad);
+   return {ok:true,provider:'groq',...Description.validate({candidates:[{code:current.bad,titleEn:node.englishTitle,evidence:current.evidence,kind:'differential',reason:'DIAGNOZË E KONFIRMUAR 100%'}]},dataset,body.expression)};
+  });
+  for(const current of cases){
+   await page.locator('#icdSearch').fill(current.query);await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
+   await expect(page.locator('.icd-description-analysis')).toBeVisible();
+   await expect(page.locator('.icd-suggestion-row')).toHaveCount(current.codes.length);
+   expect(await page.locator('.icd-suggestion-row').evaluateAll(nodes=>nodes.map(n=>n.dataset.code))).toEqual(current.codes);
+   await expect(page.locator('.icd-suggestion-row.is-active')).toHaveCount(0);
+   await expect(page.locator('#icdSuggestions')).not.toContainText('DIAGNOZË E KONFIRMUAR');
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+   if(current.bad==='J18.9')await page.screenshot({path:info.outputPath('general-evidence-'+width+'.png')});
+  }
+  expect(api.mutations).toHaveLength(cases.length);expect(api.mutations.every(body=>body.action==='interpret')).toBe(true);
  });
 }
 

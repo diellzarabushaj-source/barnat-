@@ -214,5 +214,6 @@
   "tests/icd-query-memory-db-test.js",
   "tests/icd-query-memory-security-test.js",
   "tests/icd-description-search-test.js",
+  "tests/icd-description-evidence-test.js",
   "tests/icd-ai-provider-test.js"
 ]
