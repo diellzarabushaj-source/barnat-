@@ -15,7 +15,8 @@ const handler = fs.readFileSync(path.join(root, 'lib/icd-advanced-handler.js'), 
 assert.match(html, /id="icdSearchBox"[^>]*role="combobox"/);
 assert.match(html, /id="icdSuggestions"[^>]*role="listbox"/);
 assert.match(html, /aria-autocomplete="list"/);
-assert.match(html, /Kërko ICD, diagnozë, simptomë, Latin, English/);
+assert.match(html, /Kërko ICD ose përshkruaj simptomat/);
+assert.match(html, /Kërkim në shqip, anglisht dhe latinisht/);
 assert.match(html, /id="icdSearchClear"/);
 assert.match(html, /id="clinicalActionPanel"/);
 assert.match(html, /id="clinicalQuickHub"/);
