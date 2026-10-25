@@ -22,14 +22,14 @@ async function main(){
    if(url.includes('googleapis.com'))return {ok:false,status:503,json:async()=>({error:{message:'Synthetic capacity error'}}),headers:{get:()=>null}};
    assert.equal(url,'https://api.groq.com/openai/v1/chat/completions');assert.equal(input.headers.Authorization,'Bearer synthetic-groq');
    const body=JSON.parse(input.body);assert.equal(body.model,P.GROQ_MODEL);assert.equal(body.response_format.json_schema.strict,true);assert.equal(body.max_completion_tokens,1800);assert.ok(!('tools' in body));
-   return {ok:true,status:200,json:async()=>({choices:[{finish_reason:'stop',message:{content:JSON.stringify({clarification:'Ku lokalizohet?',candidates:[{code:'R10.4',titleEn:'Other and unspecified abdominal pain',kind:'symptom',reason:'Kodi i simptomës'}]})}}]})};
+   return {ok:true,status:200,json:async()=>({choices:[{finish_reason:'stop',message:{content:JSON.stringify({clarification:'Ku lokalizohet?',candidates:[{code:'R10.4',titleEn:'Other and unspecified abdominal pain',evidence:'dhimbje ne regjionin retroperitoneal',kind:'symptom',reason:'Kodi i simptomës'}]})}}]})};
   };
   const response=await P.structuredJson(options,{allowGroq:true});assert.equal(response.provider,'groq');assert.equal(requests.length,2,'One capacity error goes directly to the reserve, not another endpoint');assert.equal(D.validate(response.data,dataset).rows[0].code,'R10.4');
   await assert.rejects(()=>P.groqJson(options,async()=>({ok:false,status:429,headers:{get:()=> '17'},json:async()=>({error:{message:'PRIVATE_SENTINEL'}})})),error=>error.status===429&&error.retryAfter===17&&!error.message.includes('PRIVATE_SENTINEL'));
   await assert.rejects(()=>P.groqJson(options,async()=>({ok:true,json:async()=>({choices:[{finish_reason:'length',message:{content:'{"partial":'}}]})})),error=>error.code==='AI_OUTPUT_INVALID');
   assert.equal(P._test.capacity(Object.assign(new Error(),{name:'TimeoutError',code:23})),true);
   process.env.GEMINI_API_KEY='synthetic-gemini';D.cache.clear();let generated=0;
-  const input={dataset,query:'dhimbje ne regjionin retroperitoneal',actor:'synthetic-owner',generate:async()=>{generated++;return {provider:'groq',data:{clarification:'Ku lokalizohet?',candidates:[{code:'R10.4',titleEn:'Other and unspecified abdominal pain',kind:'symptom',reason:'Kodi i simptomës'}]}};}};
+  const input={dataset,query:'dhimbje ne regjionin retroperitoneal',actor:'synthetic-owner',generate:async()=>{generated++;return {provider:'groq',data:{clarification:'Ku lokalizohet?',candidates:[{code:'R10.4',titleEn:'Other and unspecified abdominal pain',evidence:'dhimbje ne regjionin retroperitoneal',kind:'symptom',reason:'Kodi i simptomës'}]}};}};
   const fresh=await D.interpret({...input,allowGroq:true});assert.equal(fresh.provider,'groq');
   const cached=await D.interpret({...input,allowGroq:true});assert.equal(cached.cached,true);assert.equal(cached.provider,'groq');assert.equal(generated,1);
   await D.interpret({...input,allowGroq:false,generate:async()=>{generated++;return {provider:'gemini',data:{clarification:'Ku lokalizohet?',candidates:[]}};}});
