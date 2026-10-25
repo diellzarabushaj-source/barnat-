@@ -1334,7 +1334,7 @@
     const busy=document.getElementById('icdUnderstandTerm')?.getAttribute('aria-busy')==='true';
     const full=conversation.turns.length>=4,used=[conversation.query,...conversation.turns.map(turn=>turn.answer)].join('. ').length;
     answer.maxLength=Math.max(1,Math.min(220,598-used));answer.disabled=busy||full||used>=598;
-    if(document.activeElement!==answer)answer.value=conversation.draft||'';
+    if(answer.value!==(conversation.draft||''))answer.value=conversation.draft||'';
     submit.disabled=busy||full||used>=598||!clean(answer.value);submit.setAttribute('aria-busy',String(busy));
     document.getElementById('icdClarificationHint').textContent=full||used>=598?'Për një kërkim të ri, ndrysho përshkrimin më sipër.':'Përgjigju me pak fjalë, pa të dhëna identifikuese.';
   }
