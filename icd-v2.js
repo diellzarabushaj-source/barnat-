@@ -67,6 +67,7 @@
   const el = {};
   let terminologyAliases = [], terminologyCsrf = '', terminologyOwner = '';
   let terminologyLoadedAt = 0, terminologyEpoch = 0, terminologyLoading = null;
+  let descriptionConversation = null;
   const state = {
     chapters: [],
     blocks: [],
@@ -193,7 +194,7 @@
     terminologyCsrf = clean(payload.csrfToken);
     const owner=clean(payload.authUser?.id||payload.user?.id||payload.user?.email);
     if(owner!==terminologyOwner){
-      terminologyOwner=owner;terminologyEpoch++;terminologyAliases=[];terminologyLoadedAt=0;terminologyLoading=null;
+      terminologyOwner=owner;terminologyEpoch++;terminologyAliases=[];terminologyLoadedAt=0;terminologyLoading=null;resetDescriptionConversation();
       suggestionCache.clear();
     }
     return payload;
@@ -1314,10 +1315,35 @@
       </small>`).join('');
   }
 
+  function resetDescriptionConversation(){
+    descriptionConversation=null;
+    const panel=document.getElementById('icdClarificationPanel'),answer=document.getElementById('icdClarificationAnswer');
+    if(panel)panel.hidden=true;if(answer)answer.value='';
+  }
+
+  function renderClarification(analysis,visible){
+    const panel=document.getElementById('icdClarificationPanel');if(!panel)return;
+    const conversation=descriptionConversation;
+    panel.hidden=!(visible&&analysis&&conversation?.query===clean(el.icdSearch?.value));
+    if(panel.hidden)return;
+    const answer=document.getElementById('icdClarificationAnswer'),submit=document.getElementById('icdClarificationSubmit');
+    document.getElementById('icdClarificationQuestion').textContent=clean(analysis.clarification)||'Shto shenjat, vendndodhjen ose kohëzgjatjen.';
+    document.getElementById('icdClarificationCount').textContent=conversation.turns.length?`${conversation.turns.length} ${conversation.turns.length===1?'sqarim':'sqarime'}`:'';
+    const history=document.getElementById('icdClarificationHistory');history.hidden=!conversation.turns.length;
+    document.getElementById('icdClarificationTurns').innerHTML=conversation.turns.map(turn=>`<li><span>${escapeHtml(turn.question)}</span><p>${escapeHtml(turn.answer)}</p></li>`).join('');
+    const busy=document.getElementById('icdUnderstandTerm')?.getAttribute('aria-busy')==='true';
+    const full=conversation.turns.length>=4,used=[conversation.query,...conversation.turns.map(turn=>turn.answer)].join('. ').length;
+    answer.maxLength=Math.max(1,Math.min(220,598-used));answer.disabled=busy||full||used>=598;
+    if(document.activeElement!==answer)answer.value=conversation.draft||'';
+    submit.disabled=busy||full||used>=598||!clean(answer.value);submit.setAttribute('aria-busy',String(busy));
+    document.getElementById('icdClarificationHint').textContent=full||used>=598?'Për një kërkim të ri, ndrysho përshkrimin më sipër.':'Përgjigju me pak fjalë, pa të dhëna identifikuese.';
+  }
+
   function renderSuggestions() {
     if (!el.icdSuggestions || !el.icdSearchBox) return;
     const query = clean(el.icdSearch?.value);
     const shouldOpen = state.suggestionOpen && query.length >= 2 && (state.suggestionLoading || state.suggestions.length || state.searching || state.suggestionMeta?.descriptionAnalysis);
+    renderClarification(state.suggestionMeta?.descriptionAnalysis,shouldOpen);
     document.documentElement.classList.toggle('icd-query-open',Boolean(shouldOpen));
     el.icdSearchBox.setAttribute('aria-expanded', String(Boolean(shouldOpen)));
     if (!shouldOpen) {
@@ -1332,7 +1358,7 @@
       ? ` · kuptuar si <strong>${escapeHtml(interpreted)}</strong>`
       : '';
     const analysis=state.suggestionMeta?.descriptionAnalysis;
-    const head = `<div class="icd-suggestion-head"><span>${state.suggestionLoading ? 'Duke rafinuar…' : `${formatNumber(state.suggestions.length)} sugjerime`}${interpretation}</span><strong>↑ ↓ Enter</strong></div>`+(analysis?`<div class="icd-description-analysis" role="note"><strong>${state.suggestions.length?'Nga përshkrimi yt':'Duhet sqarim'}</strong><span>${escapeHtml(analysis.clarification||'Sugjerime për vlerësim klinik.')}</span></div>`:'');
+    const head = `<div class="icd-suggestion-head"><span>${state.suggestionLoading ? 'Duke rafinuar…' : `${formatNumber(state.suggestions.length)} sugjerime`}${interpretation}</span><strong>↑ ↓ Enter</strong></div>`;
     const symptom = state.suggestionMeta?.symptomIntent || null;
     const symptomTypo = symptom && ['fuzzy-phrase','fuzzy-tokens'].includes(clean(symptom.match_type));
     const symptomBanner = symptom
@@ -1546,7 +1572,7 @@
       const owner=clean(auth.authUser?.id||auth.user?.id||auth.user?.email);
       if(!auth.authenticated||!auth.csrfToken||auth.offline)throw new Error('Për ruajtje kërkohet lidhje aktive dhe hyrje e verifikuar.');
       if(owner!==terminologyOwner){
-        terminologyAliases=[];suggestionCache.clear();terminologyEpoch++;
+        terminologyAliases=[];suggestionCache.clear();terminologyEpoch++;resetDescriptionConversation();
         throw new Error('Llogaria ndryshoi. Rifresko faqen përpara se të ruash shprehjen.');
       }
       terminologyCsrf=clean(auth.csrfToken);
@@ -1570,14 +1596,16 @@
     const consent=document.getElementById('icdAiConsent');
     const proceed=document.getElementById('icdAiContinue');
     const cancel=document.getElementById('icdAiCancel');
-    let activeAi=null;
+    let activeAi=null,queuedClarification=false;
     const releaseAi=request=>{
       clearTimeout(request.timer);
       if(activeAi!==request)return;
       activeAi=null;cancel.hidden=true;delete status.dataset.busy;
       aiButton.removeAttribute('aria-busy');aiButton.disabled=clean(el.icdSearch.value).length<3;
+      renderClarification(state.suggestionMeta?.descriptionAnalysis,state.suggestionOpen);
     };
     cancelTerminologyAi=()=>{
+      queuedClarification=false;
       if(activeAi){const request=activeAi;request.controller.abort();releaseAi(request);}
       termOnly.checked=false;proceed.disabled=true;status.textContent='';
       consent.hidden=true;aiButton.setAttribute('aria-expanded','false');
@@ -1585,11 +1613,20 @@
     const showConsent=()=>{consent.hidden=false;aiButton.setAttribute('aria-expanded','true');};
     const hideConsent=()=>{consent.hidden=true;aiButton.setAttribute('aria-expanded','false');};
     document.getElementById('icdMemoryTools').addEventListener('toggle',event=>{if(event.target.open)showConsent();});
-    const run=async(button,action)=>{
+    const run=async(button,action,followUp=false)=>{
       if(action==='resolve'&&activeAi)return;
+      if(action==='resolve')queuedClarification=followUp;
       if(!termOnly.checked){showConsent();termOnly.focus();status.textContent='Konfirmo që shprehja nuk përmban të dhëna pacienti.';return;}
       const expression=clean(el.icdSearch.value);
       if(expression.length<3){status.textContent='Shkruaj shprehjen në kërkim.';return;}
+      const previous=descriptionConversation?.query===expression?descriptionConversation:null;
+      const turns=action==='resolve'&&previous?[...previous.turns]:[];
+      if(action==='resolve'&&followUp){
+        const answer=clean(document.getElementById('icdClarificationAnswer').value);
+        if(!previous||!answer){status.textContent='Shkruaj një sqarim përpara se të vazhdosh.';return;}
+        if(turns.length>=4||[expression,...turns.map(turn=>turn.answer),answer].join('. ').length>600){status.textContent='Për një kërkim të ri, ndrysho përshkrimin më sipër.';return;}
+        turns.push({question:previous.question,answer});
+      }
       if(state.filterChapter||state.filterBlock||state.filterLevel){status.textContent='Hiq filtrat për të kontrolluar shprehjen në katalogun e plotë.';return;}
       if(action==='resolve'&&navigator.onLine===false){status.textContent='AI kërkon internet. Kërkimi ICD mbetet në dispozicion.';return;}
       if(action==='resolve'){clearTimeout(searchTimer);searchAbortController?.abort();searchAbortController=null;state.searching=false;state.suggestionLoading=false;++state.requestId;}
@@ -1601,12 +1638,14 @@
       if(request){
         activeAi=request;cancel.hidden=false;status.dataset.busy='true';
         request.timer=setTimeout(()=>{request.timedOut=true;request.controller.abort();},55000);
+        queuedClarification=false;renderClarification(state.suggestionMeta?.descriptionAnalysis,state.suggestionOpen);
       }
       try {
-        const payload=await postTerminology({action:action==='resolve'?'interpret':'remember',expression,code:clean(target.value).toUpperCase(),termOnly:true,groqFallback:action==='resolve',globalProposal:action==='propose'},request?.controller.signal);
+        const payload=await postTerminology({action:action==='resolve'?'interpret':'remember',expression,code:clean(target.value).toUpperCase(),termOnly:true,groqFallback:action==='resolve',globalProposal:action==='propose',...(turns.length?{clarifications:turns}:{})},request?.controller.signal);
         if(request&&activeAi!==request)return;
         if(expression!==clean(el.icdSearch.value)||requestId!==state.requestId)return;
         if(action==='resolve'){
+          descriptionConversation={query:expression,turns,question:clean(payload.descriptionAnalysis?.clarification)||'Shto shenjat, vendndodhjen ose kohëzgjatjen.',draft:''};
           const data={rows:payload.rows||[],descriptionAnalysis:payload.descriptionAnalysis||null,ambiguity:payload.ambiguous};
           applySuggestionData(expression,data);state.suggestionLoading=false;
           if(payload.ambiguous||data.rows.some(node=>node.memoryVerification==='pending'))state.activeSuggestion=-1;
@@ -1631,13 +1670,17 @@
     for(const [id,action] of [['icdUnderstandTerm','resolve'],['icdRememberTerm','remember'],['icdProposeTerm','propose']]){
       const button=document.getElementById(id);button?.addEventListener('click',()=>void run(button,action));
     }
-    proceed.addEventListener('click',()=>void run(aiButton,'resolve'));
+    proceed.addEventListener('click',()=>void run(aiButton,'resolve',queuedClarification));
+    const replyForm=document.getElementById('icdClarificationForm'),replyInput=document.getElementById('icdClarificationAnswer');
+    replyForm.addEventListener('submit',event=>{event.preventDefault();void run(aiButton,'resolve',true);});
+    replyInput.addEventListener('input',()=>{if(descriptionConversation){descriptionConversation.draft=replyInput.value;renderClarification(state.suggestionMeta?.descriptionAnalysis,state.suggestionOpen);}});
+    replyInput.addEventListener('keydown',event=>{if(event.key==='Enter'&&(event.ctrlKey||event.metaKey)){event.preventDefault();replyForm.requestSubmit();}});
     termOnly.addEventListener('change',()=>{
       proceed.disabled=!termOnly.checked;
       if(termOnly.checked&&status.textContent==='Konfirmo që shprehja nuk përmban të dhëna pacienti.')status.textContent='';
     });
     cancel.addEventListener('click',()=>{cancelTerminologyAi();status.textContent='Kërkimi me AI u ndërpre.';aiButton.focus();});
-    el.icdSearch.addEventListener('input',()=>{cancelTerminologyAi();aiButton.disabled=clean(el.icdSearch.value).length<3;});
+    el.icdSearch.addEventListener('input',()=>{cancelTerminologyAi();resetDescriptionConversation();aiButton.disabled=clean(el.icdSearch.value).length<3;});
     consent.addEventListener('keydown',event=>{if(event.key==='Escape'){hideConsent();aiButton.focus();}});
     document.addEventListener('click',async event=>{
       if(event.target.closest('#icdUseInPrescription')){
@@ -1766,6 +1809,7 @@
 
   function clearSearch({ preserveInput = false } = {}) {
     cancelTerminologyAi();
+    resetDescriptionConversation();
     ++state.requestId;
     searchAbortController?.abort();
     searchAbortController = null;
@@ -2103,7 +2147,7 @@
     });
 
     document.addEventListener('pointerdown', event => {
-      if (event.target.closest('#icdSearchBox') || event.target.closest('#icdSuggestions') || event.target.closest('#icdMemoryTools') || event.target.closest('#icdMemoryReview')) return;
+      if (event.target.closest('#icdSearchBox') || event.target.closest('#icdSuggestions') || event.target.closest('#icdClarificationPanel') || event.target.closest('#icdAiConsent') || event.target.closest('#icdUnderstandTerm') || event.target.closest('#icdAiCancel') || event.target.closest('#icdMemoryTools') || event.target.closest('#icdMemoryReview')) return;
       state.suggestionOpen = false;
       renderSuggestions();
     });
