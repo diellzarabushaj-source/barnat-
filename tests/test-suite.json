@@ -212,5 +212,6 @@
   "tests/recetat-source-filter-test.js",
   "tests/icd-query-memory-test.js",
   "tests/icd-query-memory-db-test.js",
-  "tests/icd-query-memory-security-test.js"
+  "tests/icd-query-memory-security-test.js",
+  "tests/icd-description-search-test.js"
 ]

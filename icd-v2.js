@@ -1331,7 +1331,8 @@
     const interpretation = interpreted && searchNormalize(interpreted) !== searchNormalize(query)
       ? ` · kuptuar si <strong>${escapeHtml(interpreted)}</strong>`
       : '';
-    const head = `<div class="icd-suggestion-head"><span>${state.suggestionLoading ? 'Duke rafinuar…' : `${formatNumber(state.suggestions.length)} sugjerime`}${interpretation}</span><strong>↑ ↓ Enter</strong></div>`;
+    const analysis=state.suggestionMeta?.descriptionAnalysis;
+    const head = `<div class="icd-suggestion-head"><span>${state.suggestionLoading ? 'Duke rafinuar…' : `${formatNumber(state.suggestions.length)} sugjerime`}${interpretation}</span><strong>↑ ↓ Enter</strong></div>`+(analysis?`<div class="icd-description-analysis" role="note"><strong>${state.suggestions.length?'Nga përshkrimi yt':'Duhet sqarim'}</strong><span>${escapeHtml(analysis.clarification||'Sugjerime për vlerësim klinik.')}</span></div>`:'');
     const symptom = state.suggestionMeta?.symptomIntent || null;
     const symptomTypo = symptom && ['fuzzy-phrase','fuzzy-tokens'].includes(clean(symptom.match_type));
     const symptomBanner = symptom
@@ -1347,7 +1348,7 @@
       : '';
 
     if (!state.suggestions.length) {
-      el.icdSuggestions.innerHTML = head + symptomBanner + `<div class="icd-suggestion-empty"><strong>${state.suggestionLoading ? 'Po kërkoj…' : 'Nuk gjeta përputhje të sigurt'}</strong><span>Provo kod, Shqip, English ose Latin — edhe me një typo tjetër.</span></div>`;
+      el.icdSuggestions.innerHTML = head + symptomBanner + `<div class="icd-suggestion-empty"><strong>${state.suggestionLoading ? 'Po kërkoj…' : analysis ? 'Shto një sqarim' : 'Nuk gjeta përputhje të sigurt'}</strong><span>${analysis?'Plotëso përshkrimin në kërkim dhe provo përsëri.':'Provo kod, Shqip, English ose Latin — edhe me një typo tjetër.'}</span></div>`;
       return;
     }
 
@@ -1356,19 +1357,20 @@
       const node=withRememberedLatin(original);
       const active = index === state.activeSuggestion;
       const isDifferential = clean(node?.searchMatch?.type) === 'symptom-differential';
-      const best = index === 0 && !isDifferential;
+      const isAiDescription=Boolean(node.aiDescription);
+      const best = index === 0 && !isDifferential && !isAiDescription;
       const match = clean(node?.searchMatch?.label) || 'Përputhje';
       const source = matchSourceLabel(node);
       const translations = suggestionTranslationHtml(node, query);
       const parent = node.level === 'subcategory' ? clean(node.parentCode) : '';
       const childCount = Number(node?.childCount || 0);
-      const relationReason = clean(node?.symptomRelation?.reason_sq);
+      const relationReason = clean(node.aiDescription?.reason||node?.symptomRelation?.reason_sq);
       const hierarchyHint = parent
         ? `<span class="icd-family-hint"><b>${escapeHtml(parent)}</b><span aria-hidden="true">→</span><strong>${escapeHtml(clean(node.code))}</strong></span>`
         : childCount > 0
           ? `<span class="icd-family-hint"><strong>${formatNumber(childCount)}</strong> nënkode</span>`
           : '';
-      const section = isDifferential
+      const section = isAiDescription ? (node.aiDescription.kind==='symptom'?'Kodi i simptomës · AI':'Diagnoza të mundshme · AI') : isDifferential
         ? 'Nga simptoma · diagnoza të mundshme'
         : node.level === 'category'
           ? 'Kategoritë kryesore'
@@ -1383,7 +1385,7 @@
         id="icd-suggestion-${index}" aria-selected="${active}" data-suggestion-index="${index}" data-code="${escapeHtml(clean(node.code))}">
         <span class="icd-suggestion-code">${highlightSearchText(clean(node.code), query)}</span>
         <span class="icd-suggestion-copy">
-          <span class="icd-suggestion-titleline"><strong>${highlightSearchText(clean(node.latinTitle) || nodeTitle(node), query)}</strong>${node.memoryVerification==='pending'?'<em class="is-pending">Propozim · i paverifikuar</em>':best ? '<em>Përputhja më e mirë</em>' : isDifferential ? '<em class="is-differential">Kandidat diferencial</em>' : ''}</span>
+          <span class="icd-suggestion-titleline"><strong>${highlightSearchText(clean(node.latinTitle) || nodeTitle(node), query)}</strong>${isAiDescription?'<em class="is-pending">Sugjerim AI</em>':node.memoryVerification==='pending'?'<em class="is-pending">Propozim · i paverifikuar</em>':best ? '<em>Përputhja më e mirë</em>' : isDifferential ? '<em class="is-differential">Kandidat diferencial</em>' : ''}</span>
           ${node.latinTitle?`<span class="icd-suggestion-sq">${highlightSearchText(nodeTitle(node),query)}</span>`:''}
           <span class="icd-concept-kind">${/^R\d/.test(node.code)||node.searchMatch?.type==='symptom-code'?'Simptomë / shenjë':'Koncept ICD · kërkon konfirmim klinik'}${['verified-resource','reviewed-memory'].includes(node.latinVerification)?' · Latinisht e verifikuar':''}</span>
           ${node.latinProposal?`<span class="icd-suggestion-sq">LA · propozim i paverifikuar: ${escapeHtml(node.latinProposal)}</span>`:''}
@@ -1398,7 +1400,7 @@
         </span>
       </button>`;
     }).join('');
-    const ambiguity=state.suggestionMeta?.semanticMemory?.ambiguous||state.suggestionMeta?.ambiguity
+    const ambiguity=!analysis&&(state.suggestionMeta?.semanticMemory?.ambiguous||state.suggestionMeta?.ambiguity)
       ? '<p class="icd-memory-ambiguity" role="note">Shprehja ka disa kuptime. Zgjidh konceptin e saktë; nuk vendoset diagnozë automatikisht.</p>' : '';
     el.icdSuggestions.innerHTML = head + symptomBanner + ambiguity + rows;
     if (state.activeSuggestion >= 0) {
@@ -1600,11 +1602,11 @@
         request.timer=setTimeout(()=>{request.timedOut=true;request.controller.abort();},55000);
       }
       try {
-        const payload=await postTerminology({action:action==='resolve'?'resolve':'remember',expression,code:clean(target.value).toUpperCase(),termOnly:true,globalProposal:action==='propose'},request?.controller.signal);
+        const payload=await postTerminology({action:action==='resolve'?'interpret':'remember',expression,code:clean(target.value).toUpperCase(),termOnly:true,globalProposal:action==='propose'},request?.controller.signal);
         if(request&&activeAi!==request)return;
         if(expression!==clean(el.icdSearch.value)||requestId!==state.requestId)return;
         if(action==='resolve'){
-          const data={rows:payload.rows||[],ambiguity:payload.ambiguous};
+          const data={rows:payload.rows||[],descriptionAnalysis:payload.descriptionAnalysis||null,ambiguity:payload.ambiguous};
           applySuggestionData(expression,data);state.suggestionLoading=false;
           if(payload.ambiguous||data.rows.some(node=>node.memoryVerification==='pending'))state.activeSuggestion=-1;
           renderSuggestions();

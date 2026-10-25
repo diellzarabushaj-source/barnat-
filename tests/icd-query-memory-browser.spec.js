@@ -4,6 +4,7 @@ const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const ROOT=path.resolve(__dirname,'..'),OWNER='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 const loaded=require('../lib/icd-hierarchy-snapshot').load(),dataset=loaded.data;
 const Base=require('../lib/icd-api-base')._test,Advanced=require('../lib/icd-advanced-handler')._test,Memory=require('../lib/icd-query-memory');
+const Description=require('../lib/icd-description-search');
 let server,baseURL;
 test.use({serviceWorkers:'block'});
 test.beforeAll(async()=>{
@@ -30,7 +31,7 @@ async function setup(page,admin=false,rotateCsrf=false,resolveResult=null){
     if(rotateCsrf&&!csrfRejected){csrfRejected=true;return route.fulfill({status:403,json:{ok:false,code:'ICD_CSRF_EXPIRED'}});}
     const body=route.request().postDataJSON();mutations.push(body);
     if(body.action==='remember')records.push({expression:body.expression,normalized:Memory.normalize(body.expression),code:body.code,kind:'alias',scope:'personal',verification:'personal',node:Advanced.compactNode(Memory.codeNode(dataset,body.code),dataset)});
-    if(body.action==='resolve')return json(resolveResult?await resolveResult(body):{ok:true,aiUsed:true,rows:[{...Advanced.compactNode(Memory.codeNode(dataset,'R07.4'),dataset),memoryVerification:'pending'}],ambiguous:true,clarification:'Zgjidh kuptimin e saktë; propozimi pret verifikim.'});
+    if(body.action==='interpret')return json(resolveResult?await resolveResult(body):{ok:true,aiUsed:true,rows:[{...Advanced.compactNode(Memory.codeNode(dataset,'R07.4'),dataset),aiDescription:{kind:'symptom',reason:'Kodi i simptomës; vlerëso shkakun.'}}],ambiguous:true,descriptionAnalysis:{clarification:'Ku lokalizohet dhimbja?'},clarification:'Sugjerime nga përshkrimi · kërkon vlerësim klinik.'});
     return json({ok:true,data:{id:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',status:body.status||'personal'}});
    }
    reads++;
@@ -124,7 +125,7 @@ for(const width of [390,1440]){
   await expect(page.locator('#icdAiConsent')).toBeVisible();expect(api.mutations).toHaveLength(0);
   await page.locator('#icdTermOnly').check();await page.locator('#icdSearch').press('Control+Enter');
   await expect(button).toHaveAttribute('aria-busy','true');await expect(page.locator('#icdMemoryStatus')).toContainText('Duke kërkuar me Gemini');
-  await expect.poll(()=>api.mutations.filter(row=>row.action==='resolve').length).toBe(1);
+  await expect.poll(()=>api.mutations.filter(row=>row.action==='interpret').length).toBe(1);
   complete({ok:true,aiUsed:true,ambiguous:true,rows:[],clarification:'Zgjidh konceptin'});
   await expect(page.locator('#icdMemoryStatus')).toContainText('Shkruaj më qartë');await expect(page.locator('#icdMemoryStatus')).toContainText('Gemini');
   await expect(button).not.toHaveAttribute('aria-busy','true');await expect(page.locator('#icdMemoryTools')).not.toHaveAttribute('open','');
@@ -144,6 +145,33 @@ test('a late Gemini response cannot replace a newer normal search',async({page})
  await page.locator('#icdSearch').fill('I10');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');
  complete({ok:true,aiUsed:true,ambiguous:true,rows:[]});await expect(page.locator('#icdUnderstandTerm')).not.toHaveAttribute('aria-busy','true');
  await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');await expect(page.locator('#icdMemoryStatus')).toBeEmpty();
+});
+
+for(const width of [390,1440]){
+ test('Gemini interprets a regional description with canonical suggestions and a clarification at '+width,async({page},info)=>{
+  await page.setViewportSize({width,height:900});let generated=0;const before=process.env.GEMINI_API_KEY;process.env.GEMINI_API_KEY='synthetic';Description.cache.clear();
+  const question='Dhimbja është në bark apo në mes? A ka shenja urinare?';
+  try{
+   const api=await setup(page,false,false,async body=>({ok:true,...await Description.interpret({dataset,query:body.expression,actor:OWNER,generate:async options=>{generated++;expect(JSON.parse(options.prompt).anonymousDescription).toBe(body.expression);return {data:{clarification:question,candidates:[{code:'R10.4',kind:'symptom',reason:'Kodi i simptomës abdominale; shkaku nuk përcaktohet vetëm nga vendndodhja.'},{code:'N23',kind:'differential',reason:'Mundësi për vlerësim vetëm nëse ka tablo klinike të kolikës renale.'},{code:'R10.9',kind:'symptom',reason:'Invalid WHO extension'}]}};}})}));
+   await page.locator('#icdSearch').fill('dhimbje ne regjionin retroperitoneal');expect(api.mutations).toEqual([]);
+   await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
+   await expect(page.locator('.icd-description-analysis')).toContainText(question);
+   await expect(page.locator('.icd-suggestion-row')).toHaveCount(2);await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','R10.4');
+   await expect(page.locator('.icd-suggestion-row[data-code="N23"]')).toContainText('Sugjerim AI');await expect(page.locator('.icd-suggestion-row[data-code="N23"]')).toContainText('vetëm nëse');
+   await expect(page.locator('.icd-suggestion-row.is-active')).toHaveCount(0);
+   await expect(page.locator('#icdMemoryStatus')).toContainText('Gemini');expect(generated).toBe(1);expect(api.mutations).toHaveLength(1);expect(api.mutations[0].action).toBe('interpret');
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+   await page.screenshot({path:info.outputPath('description-gemini-'+width+'.png')});
+   await page.locator('.icd-suggestion-row[data-code="N23"]').click();await expect(page.locator('#nodeHero')).toContainText('N23');
+  }finally{Description.cache.clear();if(before===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=before;}
+ });
+}
+
+test('description clarification and model text stay inert and require an explicit choice',async({page})=>{
+ const api=await setup(page,false,false,()=>({ok:true,aiUsed:true,ambiguous:true,descriptionAnalysis:{clarification:'<img src=x onerror=alert(1)>'},rows:[{...Advanced.compactNode(Memory.codeNode(dataset,'N23'),dataset),aiDescription:{kind:'differential',reason:'<svg onload=alert(1)>'}}]}));
+ await page.locator('#icdSearch').fill('dhimbje ne regjionin retroperitoneal');await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
+ await expect(page.locator('.icd-description-analysis')).toContainText('<img');await expect(page.locator('.icd-description-analysis img')).toHaveCount(0);await expect(page.locator('.icd-symptom-reason svg')).toHaveCount(0);
+ await expect(page.locator('.icd-suggestion-row.is-active')).toHaveCount(0);expect(api.mutations).toHaveLength(1);expect(api.mutations[0].action).toBe('interpret');
 });
 
 test('phone consent, cancellation and a replacement AI search stay responsive',async({page},info)=>{
@@ -196,14 +224,14 @@ test('rotated CSRF renews automatically without duplicate writes',async({page})=
  await expect(page.locator('#icdMemoryStatus')).toContainText('vetëm në fjalorin tënd');expect(api.mutations).toHaveLength(1);expect(api.csrfReads()).toBe(2);
 });
 
-test('explicit personal mapping survives reload and AI proposals remain unverified',async({page})=>{
+test('explicit personal mapping survives reload and description suggestions remain unconfirmed',async({page})=>{
  const api=await setup(page);await page.locator('#icdSearch').fill('pom ne majte');await page.locator('#icdMemoryTools>summary').click();
  await page.locator('#icdMemoryCode').fill('R07.4');await page.locator('#icdRememberTerm').click();expect(api.mutations).toHaveLength(0);
  await page.locator('#icdTermOnly').check();await page.locator('#icdRememberTerm').click();await expect(page.locator('#icdMemoryStatus')).toContainText('vetëm në fjalorin tënd');
  expect(api.mutations[0]).toMatchObject({action:'remember',termOnly:true,globalProposal:false,code:'R07.4'});
  await page.reload();await expect(page.locator('#appShell')).toHaveAttribute('aria-busy','false');await page.locator('#icdSearch').fill('pom ne majte');await expect(page.locator('.icd-suggestion-row').first()).toContainText('Preferencë personale');
  await page.locator('#icdSearch').fill('pom ne majte djathte');await page.locator('#icdMemoryTools>summary').click();await page.locator('#icdTermOnly').check();await page.locator('#icdUnderstandTerm').click();
- await expect(page.locator('#icdMemoryStatus')).toContainText('pret verifikim');await expect(page.locator('.icd-suggestion-row').first()).toContainText('i paverifikuar');await expect(page.locator('.icd-suggestion-row.is-active')).toHaveCount(0);
+ await expect(page.locator('#icdMemoryStatus')).toContainText('vlerësim klinik');await expect(page.locator('.icd-suggestion-row').first()).toContainText('Sugjerim AI');await expect(page.locator('.icd-suggestion-row.is-active')).toHaveCount(0);
  expect(api.mutations.some(body=>body.action==='review')).toBe(false);
 });
 

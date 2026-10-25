@@ -4,13 +4,14 @@ process.env.SESSION_SECRET='icd-memory-test-session-secret-with-more-than-32-cha
 const handler=require('../lib/icd-intelligence-handler');
 const Source=require('../lib/icd-public-source');
 const Memory=require('../lib/icd-query-memory');
+const Description=require('../lib/icd-description-search');
 const Admin=require('../lib/admin-access');
 const Budget=require('../lib/shared-request-budget');
 const dataset=require('../lib/icd-hierarchy-snapshot').load().data;
 const OWNER='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 async function main(){
  const auth=await import('../lib/auth.mjs');
- const originals={load:Source.load,submit:Memory.submit,admin:Admin.requireAdminSession,enforce:Budget.enforce};
+ const originals={load:Source.load,submit:Memory.submit,admin:Admin.requireAdminSession,enforce:Budget.enforce,interpret:Description.interpret};
  let loads=0,submission,adminChecks=0;
  Source.load=async()=>{loads++;return {data:dataset};};
  Memory.submit=async input=>{submission=input;return {id:'synthetic',status:'personal'};};
@@ -39,9 +40,13 @@ async function main(){
   assert.equal(saved.statusCode,200);assert.equal(submission.actor,OWNER);assert.equal(submission.scope,'personal');assert.ok(!('status' in submission));
   assert.equal(handler._test.answers.has(ownCache),false,'Saving a meaning invalidates the earlier answer for this owner/expression');assert.equal(handler._test.answers.has(otherCache),true,'Saving personal terminology leaves other owners caches untouched');
   assert.equal((await call({body:{action:'remember',termOnly:false}})).statusCode,400);
+  let interpreted;Description.interpret=async input=>{interpreted=input;return {rows:[],aiUsed:true,ambiguous:true,descriptionAnalysis:{clarification:'Ku lokalizohet dhimbja?'}};};
+  const analysis=await call({body:{action:'interpret',expression:'dhimbje ne regjionin retroperitoneal',termOnly:true,actor:'forged',status:'verified'}});
+  assert.equal(analysis.statusCode,200);assert.equal(interpreted.actor,OWNER);assert.equal(analysis.body.aiUsed,true);assert.ok(!('status' in interpreted));
+  interpreted=null;assert.equal((await call({body:{action:'interpret',termOnly:false}})).statusCode,400);assert.equal(interpreted,null,'Description analysis also requires explicit consent');
   assert.equal((await call({body:{action:'review',status:'verified'}})).statusCode,403);assert.equal(adminChecks,1,'Review rechecks live admin authority');
   assert.equal((await call({body:{action:'unknown',termOnly:true}})).statusCode,400);
   console.log('ICD memory endpoint: signed ownership, CSRF, origin, payload limits, legacy-write denial, explicit consent and fresh admin checks passed.');
- }finally{Source.load=originals.load;Memory.submit=originals.submit;Admin.requireAdminSession=originals.admin;Budget.enforce=originals.enforce;handler._test.answers.clear();}
+ }finally{Source.load=originals.load;Memory.submit=originals.submit;Admin.requireAdminSession=originals.admin;Budget.enforce=originals.enforce;Description.interpret=originals.interpret;handler._test.answers.clear();}
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});
