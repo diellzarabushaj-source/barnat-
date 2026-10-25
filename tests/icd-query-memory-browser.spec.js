@@ -142,12 +142,13 @@ for(const width of [390,1440]){
   await page.setViewportSize({width,height:844});let calls=0;
   const api=await setup(page,false,false,body=>{
    expect(body.groqFallback).toBe(true);calls++;
-   return {ok:true,provider:'groq',aiUsed:true,cached:calls>1,ambiguous:true,descriptionAnalysis:{clarification:'A ka shenja të tjera?'},rows:[{...Advanced.compactNode(Memory.codeNode(dataset,'R10.4'),dataset),aiDescription:{kind:'symptom',reason:'Kodi i simptomës; kërkon vlerësim klinik.'}}]};
+   return {ok:true,provider:'groq',cached:calls>1,...Description.validate({clarification:'A ka shenja të tjera?',candidates:[{code:'R04.2',titleEn:'Haematemesis',kind:'symptom',reason:'Mismatched concept'},{code:'K31.6',titleEn:'Gastritis',kind:'differential',reason:'Mismatched concept'},{code:'K92.0',titleEn:'Haematemesis',kind:'symptom',reason:'Të vjella me gjak; shkaku kërkon vlerësim.'}]},dataset)};
   });
-  await page.locator('#icdSearch').fill('dhimbje ne regjionin retroperitoneal');await page.locator('#icdUnderstandTerm').click();
+  await page.locator('#icdSearch').fill('vjellje me gjak');await page.locator('#icdUnderstandTerm').click();
   await expect(page.locator('#icdAiConsent')).toContainText('Gemini');await expect(page.locator('#icdAiConsent')).toContainText('Groq');expect(api.mutations).toHaveLength(0);
   await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
   await expect(page.locator('#icdMemoryStatus')).toContainText('Groq');await expect(page.locator('.icd-suggestion-row')).toHaveCount(1);await expect(page.locator('.icd-suggestion-row.is-active')).toHaveCount(0);
+  await expect(page.locator('.icd-suggestion-row')).toHaveAttribute('data-code','K92.0');await expect(page.locator('.icd-suggestion-row')).toContainText('Simptomë / shenjë');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
   await page.screenshot({path:info.outputPath('groq-reserve-'+width+'.png')});
   await page.locator('#icdUnderstandTerm').click();await expect(page.locator('#icdMemoryStatus')).toContainText('Memoria · Groq');expect(calls).toBe(2);
@@ -169,7 +170,7 @@ for(const width of [390,1440]){
   await page.setViewportSize({width,height:900});let generated=0;const before=process.env.GEMINI_API_KEY;process.env.GEMINI_API_KEY='synthetic';Description.cache.clear();
   const question='Dhimbja është në bark apo në mes? A ka shenja urinare?';
   try{
-   const api=await setup(page,false,false,async body=>({ok:true,...await Description.interpret({dataset,query:body.expression,actor:OWNER,generate:async options=>{generated++;expect(JSON.parse(options.prompt).anonymousDescription).toBe(body.expression);return {data:{clarification:question,candidates:[{code:'R10.4',kind:'symptom',reason:'Kodi i simptomës abdominale; shkaku nuk përcaktohet vetëm nga vendndodhja.'},{code:'N23',kind:'differential',reason:'Mundësi për vlerësim vetëm nëse ka tablo klinike të kolikës renale.'},{code:'R10.9',kind:'symptom',reason:'Invalid WHO extension'}]}};}})}));
+   const api=await setup(page,false,false,async body=>({ok:true,...await Description.interpret({dataset,query:body.expression,actor:OWNER,generate:async options=>{generated++;expect(JSON.parse(options.prompt).anonymousDescription).toBe(body.expression);return {data:{clarification:question,candidates:[{code:'R10.4',titleEn:'Other and unspecified abdominal pain',kind:'symptom',reason:'Kodi i simptomës abdominale; shkaku nuk përcaktohet vetëm nga vendndodhja.'},{code:'N23',titleEn:'Unspecified renal colic',kind:'differential',reason:'Mundësi për vlerësim vetëm nëse ka tablo klinike të kolikës renale.'},{code:'R10.9',titleEn:'Invalid extension',kind:'symptom',reason:'Invalid WHO extension'}]}};}})}));
    await page.locator('#icdSearch').fill('dhimbje ne regjionin retroperitoneal');expect(api.mutations).toEqual([]);
    await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
    await expect(page.locator('.icd-description-analysis')).toContainText(question);
