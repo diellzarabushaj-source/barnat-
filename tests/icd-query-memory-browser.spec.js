@@ -124,7 +124,7 @@ for(const width of [390,1440]){
   await page.locator('#icdSearch').fill('pom ne majte');await button.click();
   await expect(page.locator('#icdAiConsent')).toBeVisible();expect(api.mutations).toHaveLength(0);
   await page.locator('#icdTermOnly').check();await page.locator('#icdSearch').press('Control+Enter');
-  await expect(button).toHaveAttribute('aria-busy','true');await expect(page.locator('#icdMemoryStatus')).toContainText('Duke kërkuar me Gemini');
+  await expect(button).toHaveAttribute('aria-busy','true');await expect(page.locator('#icdMemoryStatus')).toContainText('Duke kërkuar me AI');
   await expect.poll(()=>api.mutations.filter(row=>row.action==='interpret').length).toBe(1);
   complete({ok:true,aiUsed:true,ambiguous:true,rows:[],clarification:'Zgjidh konceptin'});
   await expect(page.locator('#icdMemoryStatus')).toContainText('Shkruaj më qartë');await expect(page.locator('#icdMemoryStatus')).toContainText('Gemini');
@@ -134,6 +134,23 @@ for(const width of [390,1440]){
   await page.locator('#icdSearch').fill('I10');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');
   await expect(page.locator('#icdMemoryStatus')).toBeEmpty();await expect(page.locator('#icdTermOnly')).not.toBeChecked();
   await page.locator('#icdSearchClear').click();await expect(button).toBeDisabled();expect(api.mutations).toHaveLength(1);
+ });
+}
+
+for(const width of [390,1440]){
+ test('Groq reserve is consented, accurately labeled and never auto-selects at '+width,async({page},info)=>{
+  await page.setViewportSize({width,height:844});let calls=0;
+  const api=await setup(page,false,false,body=>{
+   expect(body.groqFallback).toBe(true);calls++;
+   return {ok:true,provider:'groq',aiUsed:true,cached:calls>1,ambiguous:true,descriptionAnalysis:{clarification:'A ka shenja të tjera?'},rows:[{...Advanced.compactNode(Memory.codeNode(dataset,'R10.4'),dataset),aiDescription:{kind:'symptom',reason:'Kodi i simptomës; kërkon vlerësim klinik.'}}]};
+  });
+  await page.locator('#icdSearch').fill('dhimbje ne regjionin retroperitoneal');await page.locator('#icdUnderstandTerm').click();
+  await expect(page.locator('#icdAiConsent')).toContainText('Gemini');await expect(page.locator('#icdAiConsent')).toContainText('Groq');expect(api.mutations).toHaveLength(0);
+  await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
+  await expect(page.locator('#icdMemoryStatus')).toContainText('Groq');await expect(page.locator('.icd-suggestion-row')).toHaveCount(1);await expect(page.locator('.icd-suggestion-row.is-active')).toHaveCount(0);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  await page.screenshot({path:info.outputPath('groq-reserve-'+width+'.png')});
+  await page.locator('#icdUnderstandTerm').click();await expect(page.locator('#icdMemoryStatus')).toContainText('Memoria · Groq');expect(calls).toBe(2);
  });
 }
 
@@ -212,7 +229,7 @@ test('AI deadline and offline state explain the next action',async({page,context
  await page.clock.install();
  await page.locator('#icdSearch').fill('pom ne majte');await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
  await expect.poll(()=>api.mutations.length).toBe(1);await page.clock.fastForward(56000);
- await expect(page.locator('#icdMemoryStatus')).toContainText('Gemini po vonon');await expect(page.locator('#icdUnderstandTerm')).toBeEnabled();await expect(page.locator('#icdAiCancel')).toBeHidden();
+ await expect(page.locator('#icdMemoryStatus')).toContainText('AI po vonon');await expect(page.locator('#icdUnderstandTerm')).toBeEnabled();await expect(page.locator('#icdAiCancel')).toBeHidden();
  complete({ok:true,aiUsed:true,rows:[],ambiguous:true});
  await context.setOffline(true);await page.locator('#icdUnderstandTerm').click();await expect(page.locator('#icdMemoryStatus')).toContainText('kërkon internet');expect(api.mutations).toHaveLength(1);
 });
