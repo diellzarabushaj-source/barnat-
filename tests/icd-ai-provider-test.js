@@ -13,7 +13,7 @@ async function main(){
   P._test.reset();const a=await P.structuredJson(options,{allowGroq:true,gemini,groq});assert.equal(a.provider,'groq');
   await P.structuredJson(options,{allowGroq:true,gemini,groq});assert.equal(g,1,'Cooldown avoids repeated quota calls');assert.equal(r,2);
   P._test.reset();r=0;await assert.rejects(()=>P.structuredJson(options,{allowGroq:false,gemini:async()=>{throw quota();},groq}),error=>error.status===429);assert.equal(r,0,'Old clients cannot transmit to Groq without the new consent');
-  await assert.rejects(()=>P.structuredJson(options,{allowGroq:true,gemini:async()=>{throw Object.assign(new Error('auth'),{status:403});},groq}),error=>error.status===403);assert.equal(r,0,'Authentication failures do not trigger a different recipient');
+  await assert.rejects(()=>P.structuredJson(options,{allowGroq:false,gemini:async()=>{throw Object.assign(new Error('auth'),{status:403});},groq}),error=>error.status===403);assert.equal(r,0,'Without recipient consent, credential errors never transmit to Groq');
   const parent=new AbortController();parent.abort();await assert.rejects(()=>P.structuredJson({...options,signal:parent.signal},{allowGroq:true,gemini:async()=>{throw parent.signal.reason;},groq}));assert.equal(r,0);
   const strict=P.strictSchema(D.schema);assert.equal(strict.additionalProperties,false);assert.equal(strict.properties.candidates.items.additionalProperties,false);
   let requests=[];console.error=()=>{};P._test.reset();
@@ -38,6 +38,10 @@ async function main(){
   const available=async input=>{order.push(input.apiKey);if(input.apiKey==='synthetic-key2')return {data:{candidates:[]}};throw quota();};
   assert.equal((await P.structuredJson(options,{allowGroq:true,gemini:available,groq})).provider,'gemini');assert.deepEqual(order,['synthetic-gemini','synthetic-key1','synthetic-key2']);assert.equal(r,0,'A working Gemini credential is preferred to Groq');
   order=[];await P.structuredJson(options,{allowGroq:true,gemini:available,groq});assert.deepEqual(order,['synthetic-key2'],'Cooling-down credentials are skipped');
+  P._test.reset();order=[];
+  const denied=async input=>{order.push(input.apiKey);throw input.apiKey==='synthetic-gemini'?quota():Object.assign(new Error('upstream credential unavailable'),{status:input.apiKey==='synthetic-key1'?402:403});};
+  assert.equal((await P.structuredJson(options,{allowGroq:true,gemini:denied,groq})).provider,'groq');assert.deepEqual(order,['synthetic-gemini','synthetic-key1','synthetic-key2'],'Quota, payment-required and denied credentials are skipped without upgrading or changing access');
+  P._test.reset();r=0;
   P._test.reset();order=[];const exhausted=async input=>{order.push(input.apiKey);throw quota();};
   assert.equal((await P.structuredJson(options,{allowGroq:true,gemini:exhausted,groq})).provider,'groq');assert.deepEqual(order,['synthetic-gemini','synthetic-key1','synthetic-key2']);assert.equal(r,1);
   P._test.reset();process.env.GEMINI_API_KEY1=options.apiKey;process.env.GEMINI_API_KEY2=options.apiKey;order=[];
