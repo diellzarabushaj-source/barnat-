@@ -232,6 +232,52 @@ for(const width of [390,1440]){
  });
 }
 
+for(const width of [390,1440]){
+ test('answering a clarification refines the same search and clearing resets it at '+width,async({page},info)=>{
+  await page.setViewportSize({width,height:900});const old=process.env.GEMINI_API_KEY;process.env.GEMINI_API_KEY='synthetic';Description.cache.clear();
+  const query='dhimbje nyjesh prej dy ditësh',question='A ka enjtje ose skuqje në nyje?',answer='Vetëm dhimbje, pa enjtje dhe pa skuqje.';
+  try{
+   const api=await setup(page,false,false,async body=>({ok:true,...await Description.interpret({dataset,query:body.expression,actor:OWNER,clarifications:body.clarifications,generate:async()=>({data:{clarification:question,candidates:[{code:'M25.5',titleEn:Memory.codeNode(dataset,'M25.5').englishTitle,evidence:'dhimbje nyjesh',kind:'symptom',reason:'Synthetic'}]}})})}));
+   await page.locator('#icdSearch').fill(query);await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
+   await expect(page.locator('#icdClarificationQuestion')).toHaveText(question);await expect(page.locator('#icdClarificationSubmit')).toBeDisabled();
+   await expect(page.locator('#icdSuggestions #icdClarificationForm')).toHaveCount(0);
+   await page.locator('#icdClarificationAnswer').fill(answer);await expect(page.locator('#icdClarificationSubmit')).toBeEnabled();
+   if(width===390){expect(await page.locator('#icdClarificationAnswer').evaluate(n=>getComputedStyle(n).fontSize)).toBe('16px');expect((await page.locator('#icdClarificationSubmit').boundingBox()).height).toBeGreaterThanOrEqual(44);}
+   await page.locator('#icdClarificationAnswer').press('Control+Enter');
+   await expect(page.locator('#icdClarificationCount')).toHaveText('1 sqarim');await expect(page.locator('#icdClarificationAnswer')).toBeEmpty();
+   await expect(page.locator('#icdSearch')).toHaveValue(query);await expect(page.locator('.icd-suggestion-row.is-active')).toHaveCount(0);
+   expect(api.mutations[1]).toMatchObject({action:'interpret',expression:query,termOnly:true,clarifications:[{question,answer}]});
+   await page.locator('#icdClarificationHistory summary').click();await expect(page.locator('#icdClarificationTurns')).toContainText(answer);
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+   expect(await page.evaluate(text=>Object.values(localStorage).some(value=>value.includes(text)),answer)).toBe(false);
+   await page.screenshot({path:info.outputPath('clarification-reply-'+width+'.png')});
+   await page.locator('#icdSearchClear').click();await expect(page.locator('#icdClarificationPanel')).toBeHidden();
+   await page.locator('#icdSearch').fill('dhimbje koke prej dje');await page.locator('#icdUnderstandTerm').click();await expect(page.locator('#icdTermOnly')).not.toBeChecked();
+   expect(api.mutations).toHaveLength(2);
+  }finally{Description.cache.clear();if(old===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=old;}
+ });
+}
+
+test('clarification failure preserves the draft and retry never duplicates the answer',async({page})=>{
+ let count=0;const question='Ku ndodhet dhimbja?';
+ const api=await setup(page,false,false,()=>++count===2?{ok:false,error:'Provo përsëri.'}:{ok:true,aiUsed:true,rows:[],ambiguous:true,descriptionAnalysis:{clarification:question}});
+ await page.locator('#icdSearch').fill('dhimbje prej dje');await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
+ await expect(page.locator('#icdClarificationQuestion')).toHaveText(question);await page.locator('#icdClarificationAnswer').fill('Në bark.');await page.locator('#icdClarificationSubmit').click();
+ await expect(page.locator('#icdMemoryStatus')).toContainText('Provo përsëri');await expect(page.locator('#icdClarificationAnswer')).toHaveValue('Në bark.');
+ await page.locator('#icdClarificationSubmit').click();await expect(page.locator('#icdClarificationCount')).toHaveText('1 sqarim');
+ expect(api.mutations[1].clarifications).toEqual(api.mutations[2].clarifications);expect(api.mutations[2].clarifications).toHaveLength(1);
+});
+
+test('pending clarification can be cancelled and cannot overwrite a different query',async({page})=>{
+ let complete;const api=await setup(page,false,false,body=>body.clarifications?new Promise(resolve=>{complete=resolve;}):{ok:true,aiUsed:true,rows:[],ambiguous:true,descriptionAnalysis:{clarification:'Ku ndodhet dhimbja?'}});
+ await page.locator('#icdSearch').fill('dhimbje prej dje');await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
+ await expect(page.locator('#icdClarificationPanel')).toBeVisible();await page.locator('#icdClarificationAnswer').fill('Në bark.');await page.locator('#icdClarificationSubmit').click();
+ await expect.poll(()=>api.mutations.length).toBe(2);await expect(page.locator('#icdClarificationAnswer')).toBeDisabled();await expect(page.locator('#icdClarificationSubmit')).toBeDisabled();
+ await page.locator('#icdAiCancel').click();await expect(page.locator('#icdClarificationAnswer')).toBeEnabled();await expect(page.locator('#icdClarificationAnswer')).toHaveValue('Në bark.');
+ await page.locator('#icdSearch').fill('I10');await expect(page.locator('#icdClarificationPanel')).toBeHidden();await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');
+ complete({ok:true,aiUsed:true,rows:[],ambiguous:true,descriptionAnalysis:{clarification:'Old question'}});await expect(page.locator('#icdMemoryStatus')).toBeEmpty();await expect(page.locator('#icdClarificationPanel')).toBeHidden();
+});
+
 test('description clarification and model text stay inert and require an explicit choice',async({page})=>{
  const api=await setup(page,false,false,()=>({ok:true,aiUsed:true,ambiguous:true,descriptionAnalysis:{clarification:'<img src=x onerror=alert(1)>'},rows:[{...Advanced.compactNode(Memory.codeNode(dataset,'N23'),dataset),aiDescription:{kind:'differential',reason:'<svg onload=alert(1)>'}}]}));
  await page.locator('#icdSearch').fill('dhimbje ne regjionin retroperitoneal');await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();

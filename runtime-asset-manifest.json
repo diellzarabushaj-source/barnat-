@@ -22,8 +22,8 @@
   "icd.html": {
     "drx-runtime-telemetry.js": "20261009-rum-v1",
     "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012",
-    "icd-v2.css": "description-evidence-20261025",
-    "icd-v2.js": "description-evidence-20261025"
+    "icd-v2.css": "icd-clarification-20261025",
+    "icd-v2.js": "icd-clarification-20261025"
   },
   "dozologjia.html": {
     "drx-runtime-telemetry.js": "20261009-rum-v1",

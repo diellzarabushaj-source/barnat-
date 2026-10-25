@@ -41,8 +41,10 @@ async function main(){
   assert.equal(handler._test.answers.has(ownCache),false,'Saving a meaning invalidates the earlier answer for this owner/expression');assert.equal(handler._test.answers.has(otherCache),true,'Saving personal terminology leaves other owners caches untouched');
   assert.equal((await call({body:{action:'remember',termOnly:false}})).statusCode,400);
   let interpreted;Description.interpret=async input=>{interpreted=input;return {rows:[],aiUsed:true,ambiguous:true,descriptionAnalysis:{clarification:'Ku lokalizohet dhimbja?'}};};
-  const analysis=await call({body:{action:'interpret',expression:'dhimbje ne regjionin retroperitoneal',termOnly:true,groqFallback:true,actor:'forged',status:'verified'}});
+  const clarification=[{question:'Ku ndodhet dhimbja?',answer:'Në bark.'}];
+  const analysis=await call({body:{action:'interpret',expression:'dhimbje ne regjionin retroperitoneal',termOnly:true,groqFallback:true,clarifications:clarification,actor:'forged',status:'verified'}});
   assert.equal(analysis.statusCode,200);assert.equal(interpreted.actor,OWNER);assert.equal(interpreted.allowGroq,true);assert.equal(analysis.body.aiUsed,true);assert.ok(!('status' in interpreted));
+  assert.deepEqual(interpreted.clarifications,clarification,'Authenticated interpretation carries bounded Q/A context to its validator');
   interpreted=null;assert.equal((await call({body:{action:'interpret',termOnly:false}})).statusCode,400);assert.equal(interpreted,null,'Description analysis also requires explicit consent');
   assert.equal((await call({body:{action:'review',status:'verified'}})).statusCode,403);assert.equal(adminChecks,1,'Review rechecks live admin authority');
   assert.equal((await call({body:{action:'unknown',termOnly:true}})).statusCode,400);
