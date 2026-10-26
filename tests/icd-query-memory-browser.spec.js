@@ -74,17 +74,25 @@ for(const width of [390,1440]){
  test('named diagnosis ranking keeps the main term first locally, remotely and offline at '+width,async({page,context},info)=>{
   await page.setViewportSize({width,height:900});const api=await setup(page);
   await expect.poll(()=>page.evaluate(()=>Boolean(JSON.parse(localStorage.getItem('medindex.icd.category-seed.v1')||'null')?.rows?.some(n=>n.code==='J02')))).toBe(true);
-  let release,remotePending=false,offline=false;
+  let release,remotePending=false,offline=false,suggestRequests=0;
   await page.route('**/api/icd?**',async route=>{
    const url=new URL(route.request().url());if(url.searchParams.get('view')!=='suggest')return route.fallback();
    if(offline)return route.abort('internetdisconnected');
-   remotePending=true;await new Promise(resolve=>{release=resolve;});
+   suggestRequests++;remotePending=true;await new Promise(resolve=>{release=resolve;});
    return route.fulfill({json:{ok:true,data:Advanced.suggestionPayload(dataset,Object.fromEntries(url.searchParams),loaded)}});
   });
   await page.locator('#icdSearch').fill('faringitis acu');await expect.poll(()=>remotePending).toBe(true);
   await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','J02');
   release();await expect(page.locator('.icd-suggestion-row[data-code="J02.9"]')).toBeVisible();
   await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','J02');
+  await expect(page.locator('.icd-suggestion-head')).not.toContainText('Duke rafinuar');
+  remotePending=false;await page.locator('#icdSearch').fill('laringitis acu');await expect.poll(()=>remotePending).toBe(true);
+  await expect(page.locator('.icd-suggestion-head')).toContainText('Duke rafinuar');
+  const releaseOther=release;await page.locator('#icdSearch').fill('faringitis acu');
+  await expect(page.locator('#icdStatusText')).toContainText('për «faringitis acu»');
+  await expect(page.locator('.icd-suggestion-head')).not.toContainText('Duke rafinuar');
+  await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','J02');
+  expect(suggestRequests).toBe(2,'Returning to a completed lookup reuses it without another remote request');releaseOther();
   expect(api.mutations).toEqual([]);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
   await page.screenshot({path:info.outputPath('pharyngitis-ranking-'+width+'.png')});
   offline=true;await context.setOffline(true);
