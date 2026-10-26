@@ -39,6 +39,11 @@ The shared asset is versioned in the runtime manifest and discovered by the exis
 clinical-page precache builder. No new AI call, credential, database write or
 clinical verification status is introduced.
 
+Live repeated-query verification also found a stale loading indicator when returning
+to a completed cached lookup while another request was pending. Clear the loading
+flag before rendering that cached result. The browser regression reproduces this
+sequence, checks the settled header and verifies that no extra lookup is sent.
+
 ## Evidence and limits
 
 `tests/icd-lexical-relevance-test.js` covers 38 real-catalog ranking cases, including

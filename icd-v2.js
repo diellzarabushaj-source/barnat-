@@ -1709,8 +1709,8 @@
 
     const cached = cachedSuggestions(value);
     if (cached) {
-      applySuggestionData(value, cached, { fromCache:true });
       state.suggestionLoading = false;
+      applySuggestionData(value, cached, { fromCache:true });
       return;
     }
 
