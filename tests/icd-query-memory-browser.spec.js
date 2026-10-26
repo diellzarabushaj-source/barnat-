@@ -70,6 +70,36 @@ for(const width of [390,1440]){
  });
 }
 
+for(const width of [390,1440]){
+ test('named diagnosis ranking keeps the main term first locally, remotely and offline at '+width,async({page,context},info)=>{
+  await page.setViewportSize({width,height:900});const api=await setup(page);
+  await expect.poll(()=>page.evaluate(()=>Boolean(JSON.parse(localStorage.getItem('medindex.icd.category-seed.v1')||'null')?.rows?.some(n=>n.code==='J02')))).toBe(true);
+  let release,remotePending=false,offline=false;
+  await page.route('**/api/icd?**',async route=>{
+   const url=new URL(route.request().url());if(url.searchParams.get('view')!=='suggest')return route.fallback();
+   if(offline)return route.abort('internetdisconnected');
+   remotePending=true;await new Promise(resolve=>{release=resolve;});
+   return route.fulfill({json:{ok:true,data:Advanced.suggestionPayload(dataset,Object.fromEntries(url.searchParams),loaded)}});
+  });
+  await page.locator('#icdSearch').fill('faringitis acu');await expect.poll(()=>remotePending).toBe(true);
+  await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','J02');
+  release();await expect(page.locator('.icd-suggestion-row[data-code="J02.9"]')).toBeVisible();
+  await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','J02');
+  expect(api.mutations).toEqual([]);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  await page.screenshot({path:info.outputPath('pharyngitis-ranking-'+width+'.png')});
+  offline=true;await context.setOffline(true);
+  for(const [q,code] of [['faringitis acuta','J02'],['laringitis acu','J04'],['sinusitis acu','J01'],['hipertensoin','I10'],['pneumonia','J18']]){
+   await page.locator('#icdSearch').fill(q);await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code',code);
+  }
+  expect(api.mutations).toEqual([]);
+ });
+}
+
+test('cached older HTML still loads the shared search matcher before interaction',async({page})=>{
+ await page.route('**/icd.html',async route=>{await route.fulfill({contentType:'text/html',body:fs.readFileSync(path.join(ROOT,'icd.html'),'utf8').replace(/<script src="\/icd-search-lexical\.js[^>]*><\/script>/,'')});});
+ await setup(page);await page.locator('#icdSearch').fill('faringitis acu');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','J02');
+});
+
 for(const width of [320,390,430]){
  test('phone search, filters, selected diagnosis and return stay within reach at '+width,async({page},info)=>{
   await page.setViewportSize({width,height:844});const api=await setup(page);

@@ -74,7 +74,7 @@ assert.match(js, /lang:'LA'/);
 assert.match(js, /icd-suggestion-translation/);
 assert.match(js, /Kategoritë kryesore/);
 assert.match(js, /Nënkategoritë/);
-assert.match(js, /sv:'clinical-workspace-v23'/);
+assert.match(js, /sv:'clinical-workspace-v24-lexical'/);
 assert.match(js, /params\.set\('advanced', '1'\)/);
 assert.match(js, /function localCategoryPreview\(query, limit = 8\)/);
 assert.match(js, /function warmHotSearch\(\)/);
@@ -88,7 +88,7 @@ assert.match(js, /requestIdleCallback/);
 assert.match(js, /function setActiveSuggestion\(index\)/);
 assert.match(js, /event\.key === '\/'/);
 
-assert.match(handler, /clinical-ranking-v8/);
+assert.match(handler, /clinical-ranking-v9/);
 assert.match(handler, /trigram-candidate-index/);
 assert.match(handler, /category-first/);
 assert.match(handler, /latin-parent-fallback/);
