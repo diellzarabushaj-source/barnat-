@@ -103,7 +103,7 @@ const suggestion = Handler._test.suggestionPayload(dataset, { q:'A00 1' }, {
   sourceRevision:'test-revision', stale:false, loadedAt:Date.now(), csvBytes:100, fetchMs:1, buildMs:1,
 });
 assert.equal(suggestion.rows[0].code, 'A00.1');
-assert.equal(suggestion.meta.search.engine, 'clinical-ranking-v8');
+assert.equal(suggestion.meta.search.engine, 'clinical-ranking-v9');
 assert.ok(suggestion.meta.search.supports.includes('normalized-code'));
 assert.ok(suggestion.meta.search.supports.includes('breadcrumbs'));
 assert.ok(suggestion.meta.search.supports.includes('la-title'));

@@ -7,6 +7,20 @@
      të njëjtën guaskë si Barnat e Klasifikimi. */
 
   const API = '/api/icd';
+  let Lexical = window.DRxIcdLexical;
+  async function ensureLexical(){
+    if(Lexical)return;
+    await new Promise((resolve,reject)=>{
+      const script=document.createElement('script');
+      const timer=setTimeout(()=>reject(new Error('Kërkimi nuk u ngarkua. Rifresko faqen.')),8000);
+      script.src='/icd-search-lexical.js?v=icd-ranking-20261026';
+      script.onload=()=>{clearTimeout(timer);resolve();};
+      script.onerror=()=>{clearTimeout(timer);reject(new Error('Kërkimi nuk u ngarkua. Rifresko faqen.'));};
+      document.head.appendChild(script);
+    });
+    Lexical=window.DRxIcdLexical;
+    if(!Lexical)throw new Error('Kërkimi nuk u ngarkua. Rifresko faqen.');
+  }
   const LEVELS = Object.freeze({ chapter:'Kapitull', block:'Bllok', category:'Kategori', subcategory:'Nënkategori' });
   const ICON = body => `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
   const CHEVRON_RIGHT = ICON('<path d="M9.5 5.5 16 12l-6.5 6.5"/>');
@@ -172,7 +186,7 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view, sv:'clinical-workspace-v23' });
+    const params = new URLSearchParams({ view, sv:'clinical-workspace-v24-lexical' });
     if (view === 'suggest' || view === 'seed' || view === 'hot' || view === 'guidance' || view === 'guidance-list') params.set('advanced', '1');
     if (view==='suggest') Object.assign(values,{chapter:state.filterChapter,block:state.filterBlock,levels:state.filterLevel});
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
@@ -830,32 +844,12 @@
     return rows[left.length][right.length];
   }
 
-  function tokenSimilarity(left, right) {
-    if (left === right) return 1;
-    if (!left || !right) return 0;
-    if (left.length >= 3 && right.startsWith(left)) return .9;
-    if (right.length >= 3 && left.startsWith(right)) return .86;
-    if (Math.abs(left.length - right.length) <= 2 && Math.max(left.length, right.length) <= 18) {
-      const distance = boundedTokenDistance(left, right, 2);
-      if (distance === 1) return .82;
-      if (distance === 2 && Math.max(left.length, right.length) >= 6) return .62;
-    }
-    if (left.length < 3 || right.length < 3) return left[0] === right[0] ? 0.35 : 0;
-    const grams = value => {
-      const set = new Set();
-      for (let index = 0; index <= value.length - 3; index += 1) set.add(value.slice(index, index + 3));
-      return set;
-    };
-    const a = grams(left);
-    const b = grams(right);
-    let overlap = 0;
-    for (const gram of a) if (b.has(gram)) overlap += 1;
-    return (2 * overlap) / Math.max(1, a.size + b.size);
-  }
+  function tokenSimilarity(left,right){return Lexical.similarity(left,right);}
 
   function localCategoryPreview(query, limit = 8) {
     const q = searchNormalize(query);
     if (!q || !state.searchSeed.length) return [];
+    const lexicalQuery=Lexical.prepareQuery(q);
     const qTokens = q.split(' ').filter(Boolean);
     const codeQuery = clean(query).toUpperCase().replace(/\s+/g, '');
     const rows = [];
@@ -872,25 +866,7 @@
 
       if (code === codeQuery) score = 5000;
       else if (codeQuery.length >= 2 && code.startsWith(codeQuery)) score = 4700 - Math.min(100, code.length - codeQuery.length);
-      else if (fields.some(field => field === q)) score = 4500;
-      else if (fields.some(field => field.startsWith(q))) score = 4200;
-      else if (fields.some(field => field.includes(q))) score = 3650;
-      else if (qTokens.length && qTokens.every(token => node._search.includes(token))) score = 3300;
-      else if (q.length >= 4) {
-        let sum = 0;
-        let matched = true;
-        for (const token of qTokens) {
-          let best = 0;
-          for (const candidate of node._tokens) {
-            if (Math.abs(candidate.length - token.length) > 3) continue;
-            best = Math.max(best, tokenSimilarity(token, candidate));
-            if (best >= .92) break;
-          }
-          if (best < .46) { matched = false; break; }
-          sum += best;
-        }
-        if (matched && qTokens.length) score = 2400 + Math.round((sum / qTokens.length) * 500);
-      }
+      else score=Lexical.scoreNode(lexicalQuery,node,fields);
 
       if (!score) continue;
       rows.push({
@@ -1115,6 +1091,7 @@
   function hotQuickPreview(query, limit = 8) {
     const q = searchNormalize(query);
     if (!q || !state.hotQuick.length) return [];
+    const lexicalQuery=Lexical.prepareQuery(q);
     const qTokens = q.split(' ').filter(Boolean);
     const codeQuery = clean(query).toUpperCase().replace(/\s+/g, '');
     const ranked = [];
@@ -1128,18 +1105,7 @@
       else {
         const phrase = phraseHotScore(q, item._aliases);
         if (phrase) score = 5000 + Math.round(phrase * 500);
-        else if (qTokens.length && qTokens.every(token => item._search.includes(token))) score = 4300;
-        else if (q.length >= 4) {
-          let sum = 0;
-          let matched = true;
-          for (const token of qTokens) {
-            let best = 0;
-            for (const candidate of item._tokens) best = Math.max(best, tokenSimilarity(token, candidate));
-            if (best < .60) { matched = false; break; }
-            sum += best;
-          }
-          if (matched && qTokens.length) score = 3600 + Math.round((sum / qTokens.length) * 450);
-        }
+        else score=Lexical.scoreNode(lexicalQuery,node,item._aliases);
       }
       if (!score) continue;
       ranked.push({
@@ -1189,7 +1155,8 @@
     const symptom = hotSymptomPreview(query);
     const hot = hotQuickPreview(query, 8);
     const local = localCategoryPreview(query, 8);
-    const instantRows = mergeInstantRows(symptom?.rows || [], hot, local);
+    const lexicalRows=mergeInstantRows(hot,local).sort((a,b)=>Number(b.searchMatch?.score||0)-Number(a.searchMatch?.score||0));
+    const instantRows = mergeInstantRows(symptom?.rows || [], lexicalRows);
     if (instantRows.length) {
       return {
         rows:instantRows,
@@ -2192,11 +2159,12 @@
   async function boot() {
     loadSharedSidebarTaxonomy();
     bindElements();
-    bindEvents();
-    bootstrapDomHotQuick();
-    loadStoredHotSearch();
-    render();
     try {
+      await ensureLexical();
+      bindEvents();
+      bootstrapDomHotQuick();
+      loadStoredHotSearch();
+      render();
       const authPayload = await ensureAuth();
       installTerminologyTools();
       void warmTerminologyMemory();

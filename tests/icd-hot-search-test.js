@@ -37,7 +37,7 @@ const hot = Handler._test.hotPayload(dataset, {
 });
 
 assert.equal(hot.kind, 'qkmf-hot-search');
-assert.equal(hot.meta.search.engine, 'clinical-ranking-v8');
+assert.equal(hot.meta.search.engine, 'clinical-ranking-v9');
 assert.ok(hot.meta.search.supports.includes('qkmf-hot-cache'));
 assert.ok(hot.meta.search.supports.includes('zero-network-common-preview'));
 assert.ok(hot.quick.some(item => item.code === 'I10'));

@@ -216,5 +216,6 @@
   "tests/icd-description-search-test.js",
   "tests/icd-description-evidence-test.js",
   "tests/icd-description-clarification-test.js",
+  "tests/icd-lexical-relevance-test.js",
   "tests/icd-ai-provider-test.js"
 ]
