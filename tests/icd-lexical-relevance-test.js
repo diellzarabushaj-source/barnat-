@@ -26,6 +26,7 @@ assert.equal(H.suggestionPayload(data,{q:'zxqvplmnkjhgfdsawert'}).rows.length,0)
 assert.ok(H.suggestionPayload(data,{q:'faringitis acu',chapter:'X'}).rows.every(n=>n.chapter==='X'),'Filters still constrain lexical matches');
 assert.ok(H.suggestionPayload(data,{q:'faringitis acu',levels:'subcategory'}).rows.every(n=>n.level==='subcategory'));
 assert.equal(L.tokenMatch('infarkt','i'),null);assert.equal(L.scoreTokens(['faringitis','acu'],['acute']),null);
+assert.equal(L.scoreTokens(['non','infectious'],['infectious']),null,'A clinical negation is not a filler word');
 assert.ok(L.tokenMatch('farignitis','pharyngitis'));assert.ok(L.scoreTokens(['faringitis','acu'],['Pharyngitis','acuta']));
 assert.equal(L.scoreTokens(['bronkit','acu'],['chronic','bronchitis']),null);
 assert.ok(S.suggestDataset({nodes:[{code:'J02',level:'category',englishTitle:'Acute pharyngitis'}]},'pharyng*').rows.length);

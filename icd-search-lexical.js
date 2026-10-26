@@ -7,7 +7,7 @@
   'use strict';
   // Lexical retrieval only: spelling variants do not establish a diagnosis.
   const normalize=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/đ/g,'d').replace(/[^a-z0-9*]+/g,' ').trim().replace(/\s+/g,' ');
-  const stop=new Set('i e te ne me dhe nga per tek qe nje si se a o of the and or in on at to for with due et de ad non'.split(' '));
+  const stop=new Set('i e te ne me dhe nga per tek qe nje si se a o of the and or in on at to for with due et de ad'.split(' '));
   const tokens=value=>normalize(value).split(' ').filter(Boolean);
   const words=new Map(),fields=new Map(),pairs=new Map(),prepared=new WeakMap();
   function boundedSet(map,key,value){if(map.size>=12000)map.delete(map.keys().next().value);map.set(key,value);return value;}
