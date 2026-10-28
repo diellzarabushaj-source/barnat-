@@ -36,6 +36,9 @@ for(const width of [320,390,1440])test(`AKKPM product → exact prescription, ag
   await expect(updated.locator('.abx-market-dose')).toContainText('9,6–12 mL');
   await expect(updated.locator('.abx-market-dose')).toContainText('480–600 mg');
   await expect(updated.locator('.abx-market-dose')).toContainText('12 mL për marrje');
+  await expect(updated.locator('.abx-market-course')).toContainText('7 ditë');
+  await expect(updated.locator('.abx-market-course')).toContainText('Sëmundje e rëndë: 10 ditë');
+  await expect(updated.locator('.abx-market-maximum-mg')).toHaveText('600 mg / marrje');
   await updated.locator('.abx-rx summary').click();
   await updated.locator('.abx-rx').getByRole('button',{name:'600 mg',exact:true}).click();
   await expect(updated.locator('.abx-rx-copy')).toBeDisabled();
@@ -104,12 +107,21 @@ for(const width of [320,390,1440])test(`Dose, interval and exact 24-hour total s
   await expect(card.locator('.abx-market-schedule')).toHaveText('2 herë/ditëÇdo 12 orë');
   await expect(card.locator('.abx-market-daily')).toContainText('16,88 mL');
   await expect(card.locator('.abx-market-daily')).toContainText('675 mg · amoxicillin');
+  await expect(card.locator('.abx-market-course')).toHaveText('Kohëzgjatja5 ditë');
+  await expect(card.locator('.abx-market-maximum>strong')).toHaveText('8,44 mL / marrje');
+  await expect(card.locator('.abx-market-maximum-mg')).toHaveText('337,5 mg · amoxicillin / marrje');
+  await expect(card.locator('.abx-market-maximum-daily')).toHaveText('16,88 mL · 675 mg / 24 orë');
+  await card.locator('.abx-market-ceiling-source summary').click();
+  await expect(card.locator('.abx-market-ceiling-source')).toContainText('875 mg · amoxicillin / marrje');
+  await expect(card.locator('.abx-market-ceiling-source')).toContainText('1750 mg / 24 orë');
+  await card.locator('.abx-market-ceiling-source summary').click();
   await card.locator('.abx-market').screenshot({path:info.outputPath('dose-summary-'+width+'.png')});
   await page.locator('#weightInput').fill('20');
   const updated=page.locator('[data-regimen-id="amoxclav-cellulitis"]');
   await expect(updated.locator('.abx-market-single')).toContainText('11,25 mL');
   await expect(updated.locator('.abx-market-daily')).toContainText('22,5 mL');
   await expect(updated.locator('.abx-market-daily')).toContainText('900 mg · amoxicillin');
+  await expect(updated.locator('.abx-market-maximum>strong')).toHaveText('11,25 mL / marrje');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
 
@@ -130,4 +142,7 @@ test('Three and four daily administrations have their own interval and total',as
   await expect(card.locator('.abx-market-schedule')).toContainText('Çdo 6 orë');
   await expect(card.locator('.abx-market-daily')).toContainText('12 mL');
   await expect(card.locator('.abx-market-daily')).toContainText('600 mg');
+  await expect(card.locator('.abx-market-course')).toHaveText('Kohëzgjatja3–5 ditë');
+  await expect(card.locator('.abx-market-maximum')).toContainText('Burimi nuk përcakton maksimum absolut.');
+  await expect(card.locator('.abx-market-ceiling-source')).toHaveCount(0);
 });
