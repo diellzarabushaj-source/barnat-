@@ -86,7 +86,13 @@ assert.match(clinicalWave9Migration, /on conflict \(dataset_key\) do update/);
 
 const embeddedWave10 = clinicalWave10Migration.match(/\$clinical_audit_wave10\$([\s\S]*?)\$clinical_audit_wave10\$::jsonb/);
 assert.ok(embeddedWave10, 'Wave 10 migration must contain the exact current Kosovo-formulation hardened 50-drug audit JSON');
-assert.deepStrictEqual(JSON.parse(embeddedWave10[1]), clinicalAudit, 'Latest database seed must equal the committed current audit payload');
+const antibioticPatchSql=read('scripts/antibiotic-dose-review-20261027.sql');
+const antibioticPatch=JSON.parse(antibioticPatchSql.match(/\$antibiotic_drug_patch\$([\s\S]*?)\$antibiotic_drug_patch\$::jsonb/)[1]);
+assert.deepStrictEqual(Object.keys(antibioticPatch).sort(),['Amoxicillin + Clavulanic','Ampicillin','Azithromycin']);
+const currentAudit=JSON.parse(embeddedWave10[1]);Object.assign(currentAudit.drugs,antibioticPatch);
+assert.deepStrictEqual(currentAudit,clinicalAudit,'Historical seed plus the additive antibiotic patch must equal the committed current audit');
+assert.match(antibioticPatchSql,/for update/);
+assert.match(antibioticPatchSql,/md5\(current_payload::text\)/);
 assert.match(clinicalWave10Migration, /'v1-wave10'/);
 assert.match(clinicalWave10Migration, /on conflict \(dataset_key\) do update/);
 

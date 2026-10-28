@@ -360,6 +360,7 @@
   }
 
   function enhanceCard(card) {
+    if (window.DRX_ANTIBIOTIC_MARKET) return;
     if (card.dataset.formulationsEnhanced === '1') return;
     card.dataset.formulationsEnhanced = '1';
 

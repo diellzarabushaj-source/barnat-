@@ -135,6 +135,8 @@
   }
 
   function ageMonths() {
+    const confirmed=document.querySelector('#ageConfirmation input');
+    if(confirmed&&!confirmed.checked)return null;
     const id = document.getElementById('ageSelect')?.value || '';
     const band = (guide.ageBands || []).find(item => item.id === id);
     return band && Number.isFinite(band.months) ? band.months : null;

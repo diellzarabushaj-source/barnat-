@@ -29,6 +29,7 @@ const allowedHosts = new Set([
   'cdn.who.int',
   'cps.ca',
   'www.rch.org.au',
+  'idmp.ucsf.edu',
 ]);
 
 let sourceCount = 0;

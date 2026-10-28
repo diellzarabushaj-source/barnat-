@@ -22,6 +22,7 @@ const APPROVED_HOSTS = new Set([
   'cdn.who.int',
   'cps.ca',
   'www.rch.org.au',
+  'idmp.ucsf.edu',
 ]);
 
 const drugs = Object.entries(audit.drugs || {});
@@ -45,9 +46,10 @@ for (const [drugName, item] of drugs) {
   }
 }
 
-assert.equal(sourceCount, 65, 'Current 50-drug audit must retain all 65 authoritative source references');
+assert.equal(sourceCount, 66, 'Current audit retains 65 references plus the reviewed UCSF IV ampicillin maximum');
+assert.ok(audit.drugs.Ampicillin.sources.some(s=>s.url==='https://idmp.ucsf.edu/document/pedi-dosing-card-2025'));
 
 const blocked = drugs.filter(([,item]) => item.calculator?.disabled).map(([name]) => name).sort();
 assert.deepStrictEqual(blocked, ['Calcium','Cefoperazone','Ranitidine']);
 
-console.log('PASS: all 50 pediatric drugs are backed by 65 HTTPS references from approved authoritative domains');
+console.log('PASS: all 50 pediatric drugs are backed by 66 HTTPS references from approved authoritative domains');

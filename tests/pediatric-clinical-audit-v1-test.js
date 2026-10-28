@@ -412,7 +412,7 @@ assert.deepStrictEqual(
 );
 assert.deepStrictEqual(
   [ampicillin[1].rules[0].minMonths,ampicillin[1].rules[0].maxMonths,ampicillin[1].rules[0].min,ampicillin[1].rules[0].frequency],
-  [2,60,50,'çdo 6 orë · IM/IV']
+  [2,60,50,'çdo 6 orë · IV']
 );
 assert.deepStrictEqual(D.Ampicillin.practicalFormulations, ['Vial – 500mg','Vial – 1g']);
 

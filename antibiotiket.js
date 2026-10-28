@@ -40,6 +40,7 @@
     atypical:false,
     orbitalRedFlags:false,
     ageFromWeight:false,
+    ageConfirmed:false,
   };
 
   const tierLabels = Object.freeze({
@@ -215,6 +216,20 @@
     return null;
   }
 
+  function doseLimits(option,weight=null) {
+    const dose=option.dose||{};
+    if(dose.type==='combo')return dose.parts.flatMap(part=>doseLimits(part,weight).map(line=>`${part.drug}: ${line}`));
+    if(dose.type==='sequence')return dose.steps.filter(step=>Number.isFinite(step.maxDose)).map(step=>`${step.label}: ${fmt(weight?Math.min(step.value*weight,step.maxDose):step.maxDose)} mg/ditë`);
+    if(!Number.isFinite(dose.maxDose))return [];
+    const maximum=weight?calculateSimple(dose,weight)?.max:dose.maxDose;
+    if(!Number.isFinite(maximum))return [];
+    const component=componentLabel(dose),perDay=dosesPerDayFromFrequency(clean(option.frequency));
+    const administration=`${fmt(maximum)} mg${component}/dozë`;
+    if(typeof perDay==='number')return [`${administration} · deri ${fmt(maximum*perDay)} mg${component}/24 orë (${perDay} marrje)`];
+    if(perDay)return [`${administration} · ${fmt(maximum*perDay.min)}–${fmt(maximum*perDay.max)} mg${component}/24 orë (${perDay.min}–${perDay.max} marrje)`];
+    return [administration];
+  }
+
   function dailyDose(option, weight) {
     if (!weight) return null;
     const dose = option.dose || {};
@@ -331,11 +346,11 @@
     // row is withheld rather than silently under-dosing an adolescent.
     if (indication.id === 'gas') {
       const age = currentAgeBand();
-      filtered = filtered.filter(option => option.id !== 'penicillin-gas' || (age && age.months < 144));
+      filtered = filtered.filter(option => option.id !== 'penicillin-gas' || (age && ctx.ageConfirmed && age.months < 144));
     }
 
     if (indication.id === 'pneumonia') {
-      return filtered.filter(option => ctx.atypical ? option.atypical === true : option.atypical !== true);
+      return filtered.filter(option => ctx.atypical || option.atypical !== true);
     }
     return filtered;
   }
@@ -359,8 +374,8 @@
     if (!Number.isFinite(indication.minAgeMonths)) return null;
     const age = currentAgeBand();
     const threshold = indication.minAgeMonths < 12 ? `${indication.minAgeMonths} muaj` : `${Math.round(indication.minAgeMonths / 12)} vjeç`;
-    if (!age) {
-      return { blocks:false, tone:'info', text:`Kjo skemë vlen për moshën ≥${threshold}. Shkruaj peshën ose zgjidh moshën për ta konfirmuar.` };
+    if (!age || !ctx.ageConfirmed) {
+      return { blocks:false, tone:'info', text:`Kjo skemë vlen për moshën ≥${threshold}. Konfirmo moshën reale; mosha e sugjeruar nga pesha nuk e konfirmon pragun.` };
     }
     if (age.months >= indication.minAgeMonths) return null;
     return { blocks:true, tone:'warn', text:`Kjo skemë ambulatore kërkon moshën ≥${threshold}, ndërsa mosha e zgjedhur është ${age.label.toLocaleLowerCase('sq')}. Nevojitet vlerësim tjetër klinik / eskalim.` };
@@ -583,8 +598,25 @@
   }
 
   function recommendationCard(option, basis) {
+    const scope=currentIndication();
+    if(Number.isFinite(scope.doseReviewAboveKg)&&basis.weight>scope.doseReviewAboveKg){
+      const blocked=make('article','abx-option');
+      blocked.append(make('h3','',option.drug),make('p','','Kjo tabelë CPS nuk jep maksimum për dozën. Mbi 40 kg, verifiko skemën e të rriturit dhe produktin; kalkulatori nuk e zgjat automatikisht dozën sipas kg.'));
+      return blocked;
+    }
+    if (option.frequencyByAge) {
+      const age=currentAgeBand();
+      if (!age || !ctx.ageConfirmed || age.months < option.minAgeMonths) {
+        const blocked=make('article','abx-option');
+        blocked.append(make('h3','',option.drug),make('p','','Konfirmo moshën reale ≥6 muaj për frekuencën: nën 5 vjeç, 2 herë/ditë; nga 5 vjeç, 1 herë/ditë.'));
+        return blocked;
+      }
+      option={...option,frequency:age.months<60?'2 herë/ditë':'1 herë/ditë'};
+    }
     const card = make('article', `abx-option tier-${option.tier || 'option'}`);
     card.dataset.regimenId = option.id;
+    card.dataset.ageConfirmed = String(ctx.ageConfirmed);
+    card.dataset.ageRequired = String(Number.isFinite(currentIndication()?.minAgeMonths) || option.duration?.type==='age-bands' || option.frequencyByAge===true || currentIndication()?.id==='gas');
     card.dataset.requiresRealWeight = String(option.dose?.type === 'weight-bands' || Number.isFinite(currentIndication()?.minWeightKg));
     // Converters consume the unrounded value, never the presentation rounding.
     card.dataset.exactDoseText = calculatedValue(option, basis.weight, value => String(value));
@@ -642,6 +674,16 @@
     );
 
     card.append(head, dose, meta);
+    const limits=doseLimits(option);
+    if(limits.length){
+      const limitBox=make('div','abx-dose-limits');
+      limitBox.append(make('strong','','Maksimumi i kësaj skeme'));
+      if(basis.kind==='real')doseLimits(option,basis.weight).forEach(line=>limitBox.append(make('b','',`Për ${fmt(basis.weight)} kg: ${line}`)));
+      limitBox.append(make('small','','Tavani i skemës, para kufizimit sipas peshës:'));
+      limits.forEach(line=>limitBox.append(make('span','',line)));
+      limitBox.append(make('small','','Kufiri për 24 orë llogaritet nga maksimumi për dozë dhe frekuenca e kësaj skeme.'));
+      card.append(limitBox);
+    }
     const sourceLink = source?.url ? make('a', 'abx-verify-source', 'Kontrollo skemën në burim ↗') : null;
     if (sourceLink) {
       sourceLink.href = source.url;
@@ -722,6 +764,7 @@
       ctx.atypical = stored.atypical === true;
       ctx.orbitalRedFlags = stored.orbitalRedFlags === true;
       ctx.ageFromWeight = stored.ageFromWeight === true;
+      ctx.ageConfirmed = stored.ageConfirmed === true && Boolean(ctx.age);
     }
     const requested = new URLSearchParams(location.search).get('indication');
     if (requested && guide.indications.some(item => item.id === requested)) ctx.indication = requested;
@@ -736,6 +779,7 @@
     renderAgeHint(indication);
     renderContextHint(indication);
     renderAgeSuggestion();
+    renderAgeConfirmation();
     renderDoseBasis();
     renderSources(indication);
     syncIndicationInUrl(indication);
@@ -779,7 +823,11 @@
     if (basis.kind === 'reference') {
       el.list.append(make('p', 'abx-orientational-note', 'Dozat numerike më poshtë përdorin peshën referuese të moshës dhe janë vetëm orientuese. Pesha reale duhet përdorur për dozën përfundimtare.'));
     }
-    options.forEach(option => el.list.append(recommendationCard(option, basis)));
+    if(indication.id==='pneumonia'&&ctx.atypical)el.list.append(make('strong','abx-regimen-group','Trajtimi bazë · zgjidh një agjent kundër pneumokokut'));
+    options.forEach(option => {
+      if(indication.id==='pneumonia'&&ctx.atypical&&option.atypical)el.list.append(make('strong','abx-regimen-group','Shtesë për patogjen atipik · jepet bashkë me trajtimin bazë'));
+      el.list.append(recommendationCard(option, basis));
+    });
   }
 
   function applyAgeFromWeight() {
@@ -788,14 +836,17 @@
       if (ctx.ageFromWeight) {
         ctx.age = '';
         ctx.ageFromWeight = false;
+        ctx.ageConfirmed = false;
         el.age.value = '';
       }
       return;
     }
+    if (ctx.age && !ctx.ageFromWeight) return;
     const band = nearestAgeBand(state.value);
     if (!band) return;
     ctx.age = band.id;
     ctx.ageFromWeight = true;
+    ctx.ageConfirmed = false;
     el.age.value = band.id;
   }
 
@@ -803,6 +854,7 @@
     el.age.addEventListener('change', () => {
       ctx.age = el.age.value;
       ctx.ageFromWeight = false;
+      ctx.ageConfirmed = Boolean(ctx.age);
       render();
     });
     el.weight.addEventListener('input', () => {
@@ -825,6 +877,19 @@
     };
     if (compact.addEventListener) compact.addEventListener('change', onBreakpoint);
     else compact.addListener(onBreakpoint);
+  }
+
+  function renderAgeConfirmation() {
+    let label=$('ageConfirmation');
+    if(!label){
+      label=make('label','abx-age-confirmation');label.id='ageConfirmation';
+      const input=document.createElement('input');input.type='checkbox';
+      input.addEventListener('change',()=>{ctx.ageConfirmed=input.checked;render();});
+      label.append(input,make('span','','Konfirmoj moshën reale të fëmijës'));
+      el.age.parentElement.append(label);
+    }
+    label.hidden=(!ctx.ageFromWeight&&ctx.ageConfirmed)||!ctx.age;
+    label.querySelector('input').checked=ctx.ageConfirmed;
   }
 
   restoreContext();

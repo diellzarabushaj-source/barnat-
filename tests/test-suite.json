@@ -18,6 +18,8 @@
   "tests/personal-product-identity-hardening-test.js",
   "tests/registry-user-preferences-test.js",
   "tests/antibiotics-daily-dose-test.js",
+  "tests/antibiotic-market-test.js",
+  "tests/antibiotic-market-math-test.js",
   "tests/antibiotics-page-ui-contract-test.js",
   "tests/drx-brand-assets-test.js",
   "tests/public-asset-reachability-test.js",

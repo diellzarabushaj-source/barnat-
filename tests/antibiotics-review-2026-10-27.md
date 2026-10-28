@@ -1,0 +1,15 @@
+# Antibiotic dose and AKKPM integration review
+
+The versioned indication dataset replaces the shell's hidden 2022 shortage-table overlay. CPS UTI corrections retain the exact component calculation, 7:1 co-amoxiclav formulations, five-day nitrofurantoin and seven-to-ten-day uncomplicated pyelonephritis. Tables without absolute maxima require separate review above 40 kg rather than indefinite extrapolation.
+
+Bite-allergy combinations retain both drugs, include the oral clindamycin maximum and distinguish prophylaxis from treatment duration. Atypical CAP preserves the pneumococcal agent. Levofloxacin frequency uses confirmed age, including the fifth birthday. Manual age is retained; inferred age cannot finalize an age-dependent prescription or preparation.
+
+Dozologjia adds the azithromycin indication-specific maxima, an IV-specific ampicillin maximum and an exclusive pediatric co-amoxiclav weight boundary. The additive database patch is row-locked, idempotent and rejects an unexpectedly changed source. Historical migrations remain unchanged.
+
+AKKPM products retain active substance, form, strength, population and registry identity. Routes, component ratios, modified release, IU and ambiguous concentrations remain separate. Registry presence is not current stock or proof of a pediatric indication. Hospital product listings do not authorize another manufacturer's reconstitution instructions.
+
+The October 28 interface adds automatic per-administration mL/whole-unit conversion after form and strength selection. A compatible published product supplies the reference concentration; choosing another brand is optional. Dose ranges remain ranges until the clinician confirms one dose. Patient-weight ceilings and the regimen's absolute ceiling are shown separately; a displayed daily ceiling derived from frequency is explicitly labeled as arithmetic rather than an independent clinical maximum.
+
+Primary comparisons: [CPS UTI](https://cps.ca/en/documents/position/management-urinary-tract-infections), [CDC GAS](https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html), [Children's Mercy CAP](https://www.childrensmercy.org/siteassets/media-documents-for-depts-section/documents-for-health-care-providers/block-clinical-practice-guidelines/mobileview/cap-antibiotic-table.pdf), [Children's Mercy bites](https://www.childrensmercy.org/health-care-providers/evidence-based-practice/cpgs-cpms-and-eras-pathways/animal-bites/antibiotics/), [azithromycin label](https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=9e4fbd52-43e4-4d87-a136-f4d680a8d0c1), [UCSF IV ampicillin maximum](https://idmp.ucsf.edu/document/pedi-dosing-card-2025).
+
+Verification covers runtime boundary calculations, route/component/identity tests, database replay and Chrome/WebKit phone/desktop workflows. Software/source comparison is not independent clinical certification of all existing regimens, renal adjustments, local susceptibility or preparation records; the existing neonatal, TDM and specialist restrictions remain necessary.
