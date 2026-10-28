@@ -1,10 +1,23 @@
 const {test,expect}=require('@playwright/test');
 const {catalog}=require('./antibiotic-market-fixture');
+const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
+const {phase5AuthenticatedSession}=require('./phase5-browser-fixture');
+const ROOT=path.resolve(__dirname,'..');let server,baseURL;
 test.use({serviceWorkers:'block'});
+test.beforeAll(async()=>{
+  server=http.createServer((req,res)=>{
+    const file=path.resolve(ROOT,'.'+new URL(req.url,'http://localhost').pathname);
+    if(!file.startsWith(ROOT+path.sep)){res.writeHead(404);return res.end();}
+    try{const body=fs.readFileSync(file);res.writeHead(200,{'Content-Type':({'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.svg':'image/svg+xml'})[path.extname(file)]||'application/octet-stream'});res.end(body);}catch{res.writeHead(404);res.end();}
+  });
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));baseURL='http://127.0.0.1:'+server.address().port;
+});
+test.afterAll(()=>new Promise(resolve=>server.close(resolve)));
+test.beforeEach(async({page})=>{await page.route('**/api/auth*',route=>route.fulfill({json:phase5AuthenticatedSession()}));});
 for(const width of [320,390,1440])test(`AKKPM product → exact prescription, age and route gates at ${width}px`,async({page})=>{
   await page.setViewportSize({width,height:900});
   await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(catalog)}));
-  await page.goto('/antibiotiket.html?indication=aom');
+  await page.goto(baseURL+'/antibiotiket.html?indication=aom');
   await page.locator('#weightInput').fill('12');
   await expect(page.locator('#ageConfirmation')).toBeVisible();
   const card=page.locator('[data-regimen-id="amox-aom"]');
@@ -46,7 +59,7 @@ for(const width of [320,390,1440])test(`AKKPM product → exact prescription, ag
 test('Levofloxacin uses confirmed age and the exact fifth-birthday frequency boundary',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
-  await page.goto('/antibiotiket.html?indication=sinusitis');
+  await page.goto(baseURL+'/antibiotiket.html?indication=sinusitis');
   await page.locator('input[name="abx-allergy"][value="a3"]').check();
   await page.locator('#weightInput').fill('18');
   await expect(page.getByText('Konfirmo moshën reale ≥6 muaj',{exact:false})).toBeVisible();
@@ -59,7 +72,7 @@ test('Levofloxacin uses confirmed age and the exact fifth-birthday frequency bou
 test('AKKPM failure is retryable and cannot silently create a prescription from a template',async({page})=>{
   let fail=true;
   await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill(fail?{status:503,json:{error:'Unavailable'}}:{json:catalog}));
-  await page.goto('/antibiotiket.html?indication=aom');
+  await page.goto(baseURL+'/antibiotiket.html?indication=aom');
   const card=page.locator('[data-regimen-id="amox-aom"]');
   await expect(card.locator('.abx-market')).toContainText('nuk u ngarkuan');
   await expect(card.locator('.abx-rx-copy')).toBeDisabled();
@@ -68,7 +81,7 @@ test('AKKPM failure is retryable and cannot silently create a prescription from 
 });
 test('Atypical pneumonia preserves the pneumococcal agent',async({page})=>{
   await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
-  await page.goto('/antibiotiket.html?indication=pneumonia');
+  await page.goto(baseURL+'/antibiotiket.html?indication=pneumonia');
   await page.locator('#atypicalInput').check();
   await expect(page.locator('[data-regimen-id="amox-pna"]')).toBeVisible();
   await expect(page.locator('[data-regimen-id="azithro-pna-atypical"]')).toContainText('SHTOHET');
