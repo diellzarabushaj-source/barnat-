@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const {buildCatalog,scopes}=require('../lib/antibiotic-market-catalog');
 const {rows,row,catalog}=require('./antibiotic-market-fixture');
 const get=(c,n)=>c.drugs.find(d=>d.name===n);
-assert.equal(catalog.productCount,7);
+assert.equal(catalog.productCount,9);
 assert.equal(Object.keys(scopes).length,35);
 assert.equal(get(catalog,'Amoxicillin').forms.length,4,'Oral, powder injection and solid forms stay separate');
 const liquid=get(catalog,'Amoxicillin').forms.find(f=>f.measure==='liquid');
@@ -11,8 +11,8 @@ assert.equal(liquid.variants[0].concentration.value/liquid.variants[0].concentra
 const tmp=get(catalog,'Trimethoprim / sulfamethoxazole').forms[0].variants[0].concentration;
 assert.equal(tmp.basis,'trimethoprim');assert.equal(tmp.value/tmp.perML,8);
 const clav=get(catalog,'Amoxicillin / clavulanate').forms[0].variants;
-assert.equal(clav.length,2,'7:1 and 14:1 may not share a strength choice');
-assert.notEqual(clav[0].concentration.basis,clav[1].concentration.basis);
+assert.equal(clav.length,3,'Distinct strengths and 7:1 versus 14:1 remain separate choices');
+assert.equal(new Set(clav.map(variant=>variant.concentration.basis)).size,2,'The two 7:1 strengths share a component basis; 14:1 does not');
 const duplicate=buildCatalog([...rows,row('duplicate','Amoxicillin','J01CA04','250mg/5ml','Oral suspension')]);
 assert.equal(get(duplicate,'Amoxicillin').forms.find(f=>f.key==='oral-liquid').variants.length,1);
 const bad=buildCatalog([
