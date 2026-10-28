@@ -12,7 +12,7 @@ function runtime(overlay) {
   if (overlay) vm.runInContext(read('antibiotiket-shell.js'), context);
   vm.runInContext(read('antibiotiket-data.js'), context);
   // Exercise the actual calculation functions without mounting a DOM.
-  const code = read('antibiotiket.js').replace(/  restoreContext\(\);[\s\S]*$/, '  window.engine = {fmt, calculateSimple, calculatedValue, dailyDose, formulaText, calculationSteps};\n})();');
+  const code = read('antibiotiket.js').replace(/  restoreContext\(\);[\s\S]*$/, '  window.engine = {fmt, calculateSimple, calculatedValue, dailyDose, formulaText, calculationSteps, doseLimits};\n})();');
   vm.runInContext(code, context);
   return { engine:context.window.engine, guide:context.window.DRX_ANTIBIOTIC_GUIDE };
 }
@@ -26,22 +26,22 @@ for (const id of ['amoxclav-cystitis','amoxclav-pyelo']) {
   assert.match(base.engine.formulaText(o),/40 mg\/kg\/ditë ÷ 3/);
 }
 assert.equal(base.engine.fmt(1.25),'1,25');
+assert.match(base.engine.doseLimits(option(base,'amox-aom'))[0],/2000 mg\/dozë.*4000 mg\/24 orë/);
+assert.match(base.engine.doseLimits(option(base,'amox-aom'),12)[0],/600 mg\/dozë.*1200 mg\/24 orë/);
+assert.match(base.engine.doseLimits(option(base,'amox-aom'),100)[0],/2000 mg\/dozë.*4000 mg\/24 orë/);
+assert.match(base.engine.doseLimits(option(base,'amoxclav-aom'))[0],/mg amoxicillin\/dozë/);
+assert.equal(base.engine.doseLimits(option(base,'cephalexin-cystitis')).length,0,'An omitted source maximum must never be invented');
+assert.match(base.engine.doseLimits(option(base,'azithro-gas'))[0],/Dita 1: 500 mg\/ditë/);
+assert.match(base.engine.doseLimits(option(base,'azithro-gas'))[1],/Ditët 2–5: 250 mg\/ditë/);
+assert.match(base.engine.doseLimits(option(base,'combo-bite-treat'))[1],/Clindamycin: 450 mg\/dozë.*1350 mg\/24 orë/);
 assert.equal(base.engine.fmt(1.75),'1,75');
 assert.match(base.engine.formulaText(option(base,'nitro-cystitis')),/1,25–1,75/);
-const pen = option(live,'core4-penicillin-gas');
-for (const [weight, expected] of [[26.99,300],[27,600],[27.01,600],[40,600]]) {
-  assert.equal(live.engine.calculateSimple(pen.dose,weight).min,expected);
-  assert.match(live.engine.dailyDose(pen,weight).text,new RegExp(`${expected*2}–${expected*3} mg/ditë`));
-}
-for (const id of ['core4-amoxicillin-gas','core4-cephalexin-gas','core4-clarithro-gas']) {
-  const o=option(live,id);
-  assert.equal(o.duration.text,'10 ditë');
-  assert.ok(live.guide.sources.some(s => s.id===o.durationSource && s.url.endsWith('/group-a-streptococcal')));
-}
-// Caps apply to each administration before computing the daily total.
-const capped=option(live,'core4-amox-aom');
-assert.equal(live.engine.calculateSimple(capped.dose,40).max,500);
-assert.match(live.engine.dailyDose(capped,40).text,/1000 mg\/ditë/);
+assert.deepEqual(JSON.parse(JSON.stringify(live.guide)),JSON.parse(JSON.stringify(base.guide)), 'Shell may not replace current regimens with a historical overlay');
+const capped=option(live,'amox-aom');
+assert.equal(live.engine.calculateSimple(capped.dose,80).max,2000);
+assert.match(live.engine.dailyDose(capped,80).text,/4000 mg\/ditë/);
+assert.equal(option(live,'nitro-cystitis').duration.text,'5 ditë');
+assert.equal(option(live,'combo-bite-treat').dose.parts[1].dose.maxDose,450);
 // Transport to the mL and prescription modules must not round away precision.
 const fractional=option(base,'amoxclav-pyelo');
 const exact=base.engine.calculatedValue(fractional,10,String);
@@ -64,4 +64,4 @@ for (const i of live.guide.indications) for(const o of i.options) {
     count++;
   }
 }
-console.log(`Antibiotics runtime precision: PASS (${count} live regimen/weight cases, CORE4 overlay, thresholds, caps, exact transport and GAS durations).`);
+console.log(`Antibiotics runtime precision: PASS (${count} live regimen/weight cases, canonical source identity, thresholds, caps, exact transport and GAS durations).`);

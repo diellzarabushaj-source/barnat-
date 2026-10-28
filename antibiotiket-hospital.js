@@ -79,6 +79,8 @@
   }
 
   function ageMonths() {
+    const confirmed=document.querySelector('#ageConfirmation input');
+    if(confirmed&&!confirmed.checked)return null;
     const id = document.getElementById('ageSelect')?.value || '';
     const band = (guide.ageBands || []).find(item => item.id === id);
     return band && Number.isFinite(band.months) ? band.months : null;
@@ -186,6 +188,23 @@
     else if (regimen.dose?.type === 'tdm') dose.append(make('strong', '', 'TDM / specialist workflow'));
     else dose.append(make('strong', '', 'Formula e burimit'));
     dose.append(make('span', '', formulaText(regimen.dose)));
+    const cappedParts=regimen.dose?.type==='combo'?regimen.dose.parts:[{...regimen.dose,drug:regimen.drug,frequency:regimen.frequency}];
+    const maximums=cappedParts.filter(part=>Number.isFinite(part.maxDose));
+    if(maximums.length){
+      const box=make('div','abx-dose-limits');box.append(make('strong','','Maksimumi i kësaj skeme'));
+      maximums.forEach(part=>{
+        const component=part.component?` ${part.component}`:'';
+        const interval=/^q(\d+)h$/.exec(part.frequency||'');
+        if(Number.isFinite(weight)&&Number.isFinite(part.value)){
+          const patientMax=Math.min(part.value*weight,part.maxDose);
+          const patientDaily=interval&&24%Number(interval[1])===0?` · ${fmt(patientMax*24/Number(interval[1]))} mg${component}/24 orë`:'';
+          box.append(make('b','',`Për ${fmt(weight)} kg · ${part.drug}: ${fmt(patientMax)} mg${component}/dozë${patientDaily}`));
+        }
+        const daily=interval&&24%Number(interval[1])===0?` · deri ${fmt(part.maxDose*24/Number(interval[1]))} mg${component}/24 orë (${24/Number(interval[1])} marrje)`:'';
+        box.append(make('span','',`Tavani · ${part.drug}: ${fmt(part.maxDose)} mg${component}/dozë${daily}`));
+      });
+      box.append(make('small','','Kufiri ditor këtu rrjedh nga frekuenca e skemës; kufizimet renale dhe TDM kontrollohen veçmas.'));dose.append(box);
+    }
     if (!Number.isFinite(weight) && ['single','combo','weight-threshold'].includes(regimen.dose?.type)) {
       dose.append(make('small', 'abx-hosp-weight-note', 'Shkruaj peshën reale për dozën numerike. Pesha referuese nuk përdoret për finalizim spitalor.'));
     }

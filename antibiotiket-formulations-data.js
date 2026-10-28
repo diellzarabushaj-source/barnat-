@@ -137,8 +137,8 @@
       'preseptal|Amoxicillin / clavulanate':{ allow:['amoxclav-400-57-5'] },
       'bite|Amoxicillin / clavulanate':{ allow:['amoxclav-400-57-5'] },
       'lymphadenitis|Amoxicillin / clavulanate':{ allow:['amoxclav-400-57-5'] },
-      'uti-cystitis|Amoxicillin / clavulanate':{ manualOnly:true, note:'CPS 2026 jep dozën sipas komponentit amoxicillin, por nuk specifikon raportin e formulimit. Shkruaj fuqinë reale të produktit që ke në dorë; mos supozo raportin.' },
-      'uti-pyelo|Amoxicillin / clavulanate':{ manualOnly:true, note:'CPS 2026 jep dozën sipas komponentit amoxicillin, por nuk specifikon raportin e formulimit. Shkruaj fuqinë reale të produktit që ke në dorë; mos supozo raportin.' }
+      'uti-cystitis|Amoxicillin / clavulanate':{ allow:['amoxclav-400-57-5','amoxclav-200-28.5-5'], note:'CPS 2026 specifikon raportin 7:1. Llogaritja bazohet në komponentin amoxicillin; përdor vetëm produktin e konfirmuar 400/57 ose 200/28,5 mg/5 mL.' },
+      'uti-pyelo|Amoxicillin / clavulanate':{ allow:['amoxclav-400-57-5','amoxclav-200-28.5-5'], note:'CPS 2026 specifikon raportin 7:1. Llogaritja bazohet në komponentin amoxicillin; raportet 4:1 dhe 14:1 nuk ndërrohen automatikisht.' }
     },
     comboAliases:{
       'TMP-SMX + Clindamycin':[

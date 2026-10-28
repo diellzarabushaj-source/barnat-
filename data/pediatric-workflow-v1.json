@@ -20,7 +20,7 @@
       ]
     },
     "Amoxicillin + Clavulanic": {
-      "sourceOptionsSha256": "051bf4bc512560e174a39c76b1db535ace5d2fed07b2d9aca1a872b2cb17e3f8",
+      "sourceOptionsSha256": "22b53c97fc7b97c06afd2c2f5a94ac0f08e42a8c05a5a16b1814d41ff14d2844",
       "groups": [
         {
           "label": "Kafshim / otit / sinusit",
@@ -238,7 +238,7 @@
       ]
     },
     "Azithromycin": {
-      "sourceOptionsSha256": "9e7e088f0e5b1862a2eb77d80cebe9e05e869a23e94e4085d9074b38eb030d3b",
+      "sourceOptionsSha256": "e4e8a1517e28a41ce930f95d01d42593c4367ea9b8cce840866219e90a5db4be",
       "groups": [
         {
           "label": "Pneumoni · dita 1",
@@ -545,7 +545,7 @@
       ]
     },
     "Ampicillin": {
-      "sourceOptionsSha256": "e878b363199ac9015ae0a54aea8ffc982318ec0ae654e8cfaff72bd523dbdd3f",
+      "sourceOptionsSha256": "86be04f489f9a1adae0148a99b5c97153226b0335e2b5e5cd594f5f3f753348c",
       "groups": [
         {
           "label": "Infeksion i rëndë · IV / IM",

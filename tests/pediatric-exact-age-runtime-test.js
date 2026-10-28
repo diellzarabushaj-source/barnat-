@@ -88,7 +88,7 @@ assert.equal(selected('Ampicillin',0,6).frequency,'çdo 12 orë · IM/IV');
 assert.equal(selected('Ampicillin',0,7).frequency,'çdo 8 orë · IM/IV');
 assert.equal(selected('Ampicillin',0,59).frequency,'çdo 8 orë · IM/IV');
 assert.equal(selected('Ampicillin',0,60),null);
-assert.equal(selected('Ampicillin',1,2,'month').frequency,'çdo 6 orë · IM/IV');
+assert.equal(selected('Ampicillin',1,2,'month').frequency,'çdo 6 orë · IV');
 
 // WHO gentamicin young-infant SBI: 5 mg/kg daily first week, 7.5 mg/kg daily thereafter to day 59.
 assert.equal(selected('Gentamicin',0,6).min,5);

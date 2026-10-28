@@ -107,6 +107,8 @@
     }
 
     const exact = /(\d+)\s+ditë/i.exec(value);
+    const distinct=[...new Set([...value.matchAll(/(\d+)\s+ditë/gi)].map(m=>Number(m[1])))];
+    if(distinct.length>1)return {kind:'choice',values:distinct.sort((a,b)=>a-b)};
     if (exact) return { kind:'fixed', values:[Number(exact[1])] };
     return null;
   }
@@ -126,6 +128,12 @@
   }
 
   function selectedLiquid(card, drug) {
+    if(window.DRX_ANTIBIOTIC_MARKET){
+      const picked=window.DRX_ANTIBIOTIC_MARKET.selection(card,drug);
+      if(!picked||picked.reason||picked.form.measure!=='liquid')return null;
+      const c=picked.variant.concentration;
+      return {id:picked.product.id,label:picked.label,mgPer5mL:c.value*5/c.perML};
+    }
     const converter = liquidConverter(card, drug);
     if (!converter) return null;
     const select = converter.querySelector('.abx-formulation-select');
@@ -457,6 +465,7 @@
   }
 
   function buildModeResolver(card, state, refresh) {
+    if(window.DRX_ANTIBIOTIC_MARKET)return null;
     const hasLiquid = Boolean(liquidConverter(card, state.drug));
     // For an oral regimen solids are always offered: a drug with no listed unit
     // still takes one the clinician types in, so neither route is a dead end.
@@ -527,6 +536,8 @@
   function simplePreview(card, state, shared, preview, solidSelect) {
     preview.replaceChildren();
     refreshModeButtons(state);
+    const picked=window.DRX_ANTIBIOTIC_MARKET?.selection(card,state.drug);
+    if(!marketReady(card,state,preview,picked))return null;
 
     if (isWeightBased(card) && !hasRealWeight(card)) {
       preview.append(make('p', 'abx-rx-blocked', 'Shkruaj peshën reale para se të krijohet teksti final i recetës. Pesha referuese mbetet vetëm orientuese.'));
@@ -566,13 +577,13 @@
       quantity = `Sasia matematike e kursit: ${fmt(total)} mL`;
       sourceUrl = strength.sourceUrl || '';
     } else {
-      const { selected, options } = solidChoice(state, mg, solidSelect);
-      if (solidSelect) solidSelect.hidden = false;
+      const { selected, options } = picked ? marketSolidChoice(picked,mg) : solidChoice(state, mg, solidSelect);
+      if (solidSelect) solidSelect.hidden = Boolean(picked);
       if (!selected) {
         // Say what is actually wrong, and never point at a syrup this drug
         // does not have. A unit typed in above usually resolves it.
         const hasLiquid = Boolean(liquidConverter(card, state.drug));
-        const detail = state.solidId === NEW_SOLID_ID
+        const detail = picked ? `Produkti i zgjedhur nuk e jep dozën ${fmt(mg)} mg me njësi të plota. Zgjidh një produkt tjetër ose dozë tjetër brenda intervalit të lejuar.` : state.solidId === NEW_SOLID_ID
           ? 'Shkruaj sa mg ka njësia që ke në dorë.'
           : options.length
             ? `Asnjë nga njësitë e listuara nuk e jep ${fmt(mg)} mg me njësi të plota. Zgjidh një dozë tjetër brenda intervalit, ose shkruaj njësinë që ke në dorë te "Njësia ime".`
@@ -604,6 +615,8 @@
   function sequencePreview(card, state, shared, preview) {
     preview.replaceChildren();
     refreshModeButtons(state);
+    const picked=window.DRX_ANTIBIOTIC_MARKET?.selection(card,state.drug);
+    if(!marketReady(card,state,preview,picked))return null;
 
     if (isWeightBased(card) && !hasRealWeight(card)) {
       preview.append(make('p', 'abx-rx-blocked', 'Shkruaj peshën reale para se të krijohet teksti final i recetës.'));
@@ -642,7 +655,7 @@
     const solidLines = [];
     state.sequence.forEach(step => {
       const days = sequenceDays(step.label);
-      const matches = solidMatches(state.drug, step.mg);
+      const matches = picked ? marketSolidChoice(picked,step.mg).matches : solidMatches(state.drug, step.mg);
       const selected = matches[0];
       if (!selected || !Number.isFinite(days)) {
         allMatched = false;
@@ -745,6 +758,7 @@
     card.addEventListener('change', event => {
       if (event.target.closest('.abx-formulation')) refresh();
     });
+    card.addEventListener('abx:market-product',refresh);
     card.addEventListener('input', event => {
       if (event.target.closest('.abx-formulation')) refresh();
     });
@@ -811,6 +825,24 @@
 
   function scan() {
     list.querySelectorAll('.abx-option').forEach(enhanceCard);
+  }
+
+  function marketReady(card,state,preview,picked){
+    if(window.DRX_ANTIBIOTIC_MARKET){
+      if(!picked||picked.reason){preview.append(make('p','abx-rx-blocked',picked?.reason||'Zgjidh produktin AKKPM më sipër.'));return false;}
+      state.mode=picked.form.measure==='liquid'?'liquid':'solid';
+    }
+    if(card.dataset.ageRequired==='true'&&card.dataset.ageConfirmed!=='true'){
+      preview.append(make('p','abx-rx-blocked','Konfirmo moshën reale për pragun dhe kohëzgjatjen e kësaj skeme.'));return false;
+    }
+    return true;
+  }
+  function marketSolidChoice(picked,mg){
+    const exact=mg/picked.variant.concentration.value,units=Math.round(exact);
+    const form={id:picked.product.id,label:picked.label,componentMg:picked.variant.concentration.value,form:picked.form.unit};
+    if(units>4)form.caution='Numër i madh njësish për një marrje; konsidero një fortësi më të përshtatshme.';
+    const selected=Math.abs(exact-units)<1e-9&&units>=1&&units<=100?{form,units}:null;
+    return {selected,matches:selected?[selected]:[],options:selected?[selected]:[]};
   }
 
   const observer = new MutationObserver(scan);

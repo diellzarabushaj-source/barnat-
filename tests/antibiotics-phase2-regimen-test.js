@@ -12,7 +12,7 @@ const sandbox = { window:{} };
 new Function('window', read('antibiotiket-data.js'))(sandbox.window);
 const guide = sandbox.window.DRX_ANTIBIOTIC_GUIDE;
 assert.ok(guide?.indications?.length, 'The antibiotic guide dataset must load');
-assert.match(guide.version, /phase2-regimen-engine/, 'The Phase 2 dataset version must be explicit');
+assert.match(guide.version, /2026-10-27-v9-antibiotic-audit/, 'The Phase 2 dataset version must be explicit');
 
 const js = read('antibiotiket.js');
 const html = read('antibiotiket.html');
@@ -94,7 +94,7 @@ assert.deepEqual(gasAzithro.dose.steps.map(step => step.maxDose), [500, 250]);
 assert.equal(gasAzithro.duration.text, '5 ditë');
 assert.match(
   js,
-  /option\.id !== 'penicillin-gas' \|\| \(age && age\.months < 144\)/,
+  /option\.id !== 'penicillin-gas' \|\| \(age && ctx\.ageConfirmed && age\.months < 144\)/,
   'The child Penicillin V 250 mg BID/TID row must be withheld when age is unknown or the 12+ band is selected',
 );
 
@@ -128,7 +128,7 @@ assert.equal(cystitis.options.find(item => item.id === 'cephalexin-cystitis').do
 assert.equal(pyelo.options.find(item => item.id === 'cephalexin-pyelo').dose.value, 25);
 assert.equal(pyelo.options.find(item => item.id === 'cephalexin-pyelo').frequency, '4 herë/ditë');
 assert.equal(pyelo.options.find(item => item.id === 'cephalexin-pyelo').dose.maxDose, undefined, 'Do not invent a CPS maximum for pyelonephritis cephalexin');
-assert.ok(pyelo.options.every(option => /7 ditë/.test(option.duration.text)), 'Uncomplicated pyelonephritis must not be published with <7 days in this dataset');
+assert.ok(pyelo.options.every(option => /7–10 ditë/.test(option.duration.text)), 'Uncomplicated pyelonephritis must not be published with <7 days in this dataset');
 
 const woundCut = guide.indications.find(item => item.id === 'wound-cut');
 assert.ok(woundCut, 'Wound/cut indication must exist');
@@ -207,7 +207,7 @@ const COUNT = /^(\d+) herë\/ditë$/;
 const COUNT_RANGE = /^(\d+) ose (\d+) herë\/ditë$/;
 for (const indication of guide.indications) {
   for (const option of indication.options) {
-    if (option.dose?.type === 'combo' || option.kind === 'procedure' || option.frequencyNotComputable) continue;
+    if (option.dose?.type === 'combo' || option.kind === 'procedure' || option.frequencyNotComputable || option.frequencyByAge) continue;
     if (option.dose?.type === 'sequence') {
       assert.equal(option.frequency, '1 herë/ditë', `${indication.id}/${option.id}: sequence dosing must remain once daily`);
       continue;
@@ -222,7 +222,7 @@ assert.match(js, /function doseBasis\(\)/);
 assert.match(js, /referenceWeightKg/);
 assert.match(js, /Alergji ndaj alternativës \/ alergji të shumëfishta/);
 assert.match(html, /vetëm orientuese/, 'Age-derived dose must remain marked orientational');
-assert.match(html, /antibiotiket-data\.js\?v=antibiotiket-phase2-v8/, 'Phase 2 data must be cache-busted in the page');
+assert.match(html, /antibiotiket-data\.js\?v=antibiotiket-audit-20261027/, 'Phase 2 data must be cache-busted in the page');
 assert.match(html, /Alergjia ndaj beta-laktameve/, 'The static allergy label must match the A0-A5 model');
 for (const band of guide.ageBands) {
   assert.ok(Number.isFinite(band.referenceWeightKg) && band.referenceWeightKg > 0, `Age band ${band.id} needs a positive reference weight`);

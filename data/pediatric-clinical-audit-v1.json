@@ -100,14 +100,14 @@
             "rules": [
               {
                 "maxKg": 40,
-                "maxInclusive": false,
                 "doseType": "weight",
                 "min": 25,
                 "max": 25,
                 "unit": "mg",
                 "period": "dose",
                 "frequency": "2 herë/ditë",
-                "source": "MSF · dose expressed as amoxicillin"
+                "source": "MSF · dose expressed as amoxicillin",
+                "maxKgInclusive": false
               }
             ]
           },
@@ -119,14 +119,14 @@
             "rules": [
               {
                 "maxKg": 40,
-                "maxInclusive": false,
                 "doseType": "weight",
                 "min": 50,
                 "max": 50,
                 "unit": "mg",
                 "period": "dose",
                 "frequency": "2 herë/ditë",
-                "source": "MSF · dose expressed as amoxicillin"
+                "source": "MSF · dose expressed as amoxicillin",
+                "maxKgInclusive": false
               }
             ]
           },
@@ -221,7 +221,8 @@
       "practicalFormulations": [
         "Syp – 228.5/5, 457/5",
         "Vial – 1.2g (1000 Amox + 200 Clav)"
-      ]
+      ],
+      "doseReviewDate": "2026-10-27"
     },
     "Cephalexin": {
       "status": "verified-corrected",
@@ -1237,7 +1238,8 @@
                 "period": "dose",
                 "frequency": "1 herë/ditë · dita 1",
                 "source": "DailyMed · CAP day 1",
-                "noteSq": "Pastaj 5 mg/kg 1 herë/ditë në ditët 2–5."
+                "noteSq": "Pastaj 5 mg/kg 1 herë/ditë në ditët 2–5.",
+                "maxPerDose": 500
               }
             ]
           },
@@ -1254,7 +1256,8 @@
                 "unit": "mg",
                 "period": "dose",
                 "frequency": "1 herë/ditë · ditët 2–5",
-                "source": "DailyMed · CAP days 2–5"
+                "source": "DailyMed · CAP days 2–5",
+                "maxPerDose": 250
               }
             ]
           },
@@ -1271,7 +1274,8 @@
                 "unit": "mg",
                 "period": "dose",
                 "frequency": "1 herë/ditë · 3 ditë",
-                "source": "DailyMed · acute bacterial sinusitis"
+                "source": "DailyMed · acute bacterial sinusitis",
+                "maxPerDose": 500
               }
             ]
           },
@@ -1288,7 +1292,8 @@
                 "unit": "mg",
                 "period": "dose",
                 "frequency": "1 herë/ditë · 5 ditë",
-                "source": "DailyMed · pharyngitis/tonsillitis"
+                "source": "DailyMed · pharyngitis/tonsillitis",
+                "maxPerDose": 500
               }
             ]
           }
@@ -1301,7 +1306,8 @@
       "kosovoMarket": {
         "checkedAt": "2026-09-28",
         "summarySq": "Regjistri lokal ka 30 produkte azitromicinë, përfshirë suspensione 100 mg/5 mL dhe 200 mg/5 mL, tableta/kapsula 250/500 mg dhe formulim IV."
-      }
+      },
+      "doseReviewDate": "2026-10-27"
     },
     "Cefixime": {
       "status": "verified-corrected",
@@ -2699,6 +2705,11 @@
           "authority": "WHO",
           "title": "Paediatric hospital care drug dosages · ampicillin",
           "url": "https://iris.who.int/bitstream/handle/10665/42335/1/WHO_FCH_CAH_00.1.pdf"
+        },
+        {
+          "authority": "UCSF Benioff Children’s Hospitals",
+          "title": "Ampicillin IV · maximum 2000 mg per dose, children >1 month",
+          "url": "https://idmp.ucsf.edu/document/pedi-dosing-card-2025"
         }
       ],
       "calculator": {
@@ -2736,7 +2747,7 @@
             ]
           },
           {
-            "label": "Infeksion i rëndë · 2 muaj–<5 vjeç · 50 mg/kg q6h",
+            "label": "Infeksion i rëndë · 2 muaj–<5 vjeç · 50 mg/kg q6h · IV",
             "mode": "clinicalRules",
             "route": "injectable",
             "rules": [
@@ -2749,8 +2760,10 @@
                 "max": 50,
                 "unit": "mg",
                 "period": "dose",
-                "frequency": "çdo 6 orë · IM/IV",
-                "source": "WHO paediatric hospital care"
+                "frequency": "çdo 6 orë · IV",
+                "source": "WHO paediatric hospital care",
+                "maxPerDose": 2000,
+                "noteSq": "Skema IV ka maksimum 2 g/dozë (UCSF 2025). Intervalet neonatale mbeten sipas WHO."
               }
             ]
           }
@@ -2763,7 +2776,8 @@
       "kosovoMarket": {
         "checkedAt": "2026-09-28",
         "summarySq": "Regjistri lokal ka 12 produkte ampicillin, përfshirë flakonë 500 mg dhe 1 g si dhe suspension oral 250 mg/5 mL."
-      }
+      },
+      "doseReviewDate": "2026-10-27"
     },
     "Cloxacillin": {
       "status": "verified-corrected",

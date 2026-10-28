@@ -2,9 +2,10 @@
   'use strict';
 
   window.DRX_ANTIBIOTIC_GUIDE = Object.freeze({
-    version:'2026-09-21-v8-phase2-regimen-engine-wound-cut',
+    version:'2026-10-27-v9-antibiotic-audit',
     scope:'outpatient-antibiotic-guide',
     sources:[
+      {id:'cm-bites-current',short:'CM · kafshimet',title:'Animal bites · antibiotikët dhe kohëzgjatja',url:'https://www.childrensmercy.org/health-care-providers/evidence-based-practice/cpgs-cpms-and-eras-pathways/animal-bites/antibiotics/'},
       {
         id:'cm2026',
         short:'Children’s Mercy 2026',
@@ -101,6 +102,7 @@
       { id:'1y', label:'1 vjeç', months:12, referenceWeightKg:9, referenceWeightLabel:'9 kg' },
       { id:'2y', label:'2 vjeç', months:24, referenceWeightKg:12, referenceWeightLabel:'12 kg' },
       { id:'4y', label:'4 vjeç', months:48, referenceWeightKg:16, referenceWeightLabel:'16 kg' },
+      { id:'5y', label:'5 vjeç', months:60, referenceWeightKg:18, referenceWeightLabel:'18 kg' },
       { id:'6y', label:'6 vjeç', months:72, referenceWeightKg:20, referenceWeightLabel:'20 kg' },
       { id:'8y', label:'8 vjeç', months:96, referenceWeightKg:25, referenceWeightLabel:'25 kg' },
       { id:'10y', label:'10 vjeç', months:120, referenceWeightKg:32, referenceWeightLabel:'32 kg' },
@@ -137,7 +139,7 @@
           { id:'amox-pna', tier:'first', allergy:['none','a0','a4'], drug:'Amoxicillin', route:'PO', frequency:'2 herë/ditë', dose:{type:'range',min:40,max:50,unit:'mg/kg/dozë',maxDose:2000}, duration:{type:'fixed',text:'3–5 ditë'}, source:'cm2026' },
           { id:'cefpodoxime-pna', tier:'allergy-low', allergy:['a1','a2'], drug:'Cefpodoxime', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:5,unit:'mg/kg/dozë',maxDose:200}, duration:{type:'fixed',text:'3–5 ditë'}, source:'cm2026' },
           { id:'clinda-pna', tier:'allergy-severe', allergy:['a3'], drug:'Clindamycin', route:'PO', frequency:'3 herë/ditë', dose:{type:'single',value:10,unit:'mg/kg/dozë',maxDose:600}, duration:{type:'fixed',text:'3–5 ditë'}, source:'cm2026' },
-          { id:'azithro-pna-atypical', tier:'atypical', allergy:['none','a0','a1','a2','a3','a4'], atypical:true, drug:'Azithromycin', route:'PO', frequency:'1 herë/ditë', dose:{type:'sequence',steps:[{label:'Dita 1',value:10,maxDose:500},{label:'Ditët 2–5',value:5,maxDose:250}],unit:'mg/kg/ditë'}, duration:{type:'fixed',text:'5 ditë'}, source:'cm2026', note:'Vetëm kur dyshohet patogjen atipik; jo monoterapi rutinë për pneumoni tipike.' }
+          { id:'azithro-pna-atypical', tier:'atypical', allergy:['none','a0','a1','a2','a3','a4'], atypical:true, drug:'Azithromycin', route:'PO', frequency:'1 herë/ditë', dose:{type:'sequence',steps:[{label:'Dita 1',value:10,maxDose:500},{label:'Ditët 2–5',value:5,maxDose:250}],unit:'mg/kg/ditë'}, duration:{type:'fixed',text:'5 ditë'}, source:'cm2026', note:'Kur dyshohet patogjen atipik, SHTOHET mbi një agjent kundër pneumokokut. Nuk zëvendëson trajtimin bazë të CAP.' }
         ]
       },
       {
@@ -147,29 +149,29 @@
           { id:'amox-sinusitis', tier:'first', allergy:['none','a0','a4'], drug:'Amoxicillin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:45,unit:'mg/kg/dozë',maxDose:2000}, duration:{type:'fixed',text:'5–7 ditë'}, source:'cm2026' },
           { id:'amoxclav-sinusitis', tier:'second', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:45,unit:'mg/kg/dozë',maxDose:2000,component:'amoxicillin'}, duration:{type:'fixed',text:'5–7 ditë'}, source:'cm2026', conditional:'Prefero kur <2 vjeç, daycare, antibiotik në 30 ditët e fundit, hospitalizim të fundit ose simptoma të rënda.', note:'Doza bazohet në komponentin amoxicillin.' },
           { id:'cefpodoxime-sinusitis', tier:'allergy-low', allergy:['a1','a2'], drug:'Cefpodoxime', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:5,unit:'mg/kg/dozë',maxDose:200}, duration:{type:'fixed',text:'5–7 ditë'}, source:'cm2026' },
-          { id:'levo-sinusitis', tier:'reserve', allergy:['a3'], drug:'Levofloxacin', route:'PO', frequency:'<5 vjeç: 2 herë/ditë · ≥5 vjeç: 1 herë/ditë', dose:{type:'range',min:8,max:10,unit:'mg/kg/dozë',maxDose:750}, duration:{type:'fixed',text:'5–7 ditë'}, source:'cm2026', frequencyNotComputable:true, note:'Rezervë për alergji të rëndë të vonshme / situata ku alternativat e tjera nuk përdoren; konsidero konsultë me infektologun.' }
+          { id:'levo-sinusitis', tier:'reserve', allergy:['a3'], drug:'Levofloxacin', route:'PO', frequency:'<5 vjeç: 2 herë/ditë · ≥5 vjeç: 1 herë/ditë', dose:{type:'range',min:8,max:10,unit:'mg/kg/dozë',maxDose:750}, duration:{type:'fixed',text:'5–7 ditë'}, source:'cm2026', frequencyByAge:true, minAgeMonths:6, note:'Rezervë për alergji të rëndë të vonshme / situata ku alternativat e tjera nuk përdoren; konsidero konsultë me infektologun.' }
         ]
       },
       {
-        id:'uti-cystitis', label:'Cistit / UTI afebrile', short:'Cistit / UTI afebrile', source:'cps-uti-2026', usesAllergy:true, minAgeMonths:2,
+        id:'uti-cystitis', doseReviewAboveKg:40, label:'Cistit / UTI afebrile', short:'Cistit / UTI afebrile', source:'cps-uti-2026', usesAllergy:true, minAgeMonths:2,
         warning:'Merr urinokulturë para antibiotikut kur është e mundur. Terapia empirike duhet të përshtatet me kulturat paraprake, ndjeshmërinë dhe rezistencën lokale; DRx nuk supozon antibiogramë të Kosovës.',
         options:[
           { id:'cephalexin-cystitis', tier:'first', allergy:['none','a0','a1'], drug:'Cephalexin', route:'PO', frequency:'4 herë/ditë', dose:{type:'single',value:12.5,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'3–5 ditë'}, source:'cps-uti-2026', note:'CPS jep 50 mg/kg/ditë në 4 doza; DRx shfaq ekuivalentin 12,5 mg/kg/dozë. Burimi nuk jep maksimum.' },
           { id:'amoxclav-cystitis', tier:'option', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'3 herë/ditë', dose:{type:'single',value:40/3,dailyValue:40,dividedDoses:3,unit:'mg/kg/dozë',component:'amoxicillin'}, duration:{type:'fixed',text:'3–5 ditë'}, source:'cps-uti-2026', note:'CPS: 40 mg/kg/ditë amoxicillin, ndarë në 3 doza; formulimi amoxicillin:clavulanate 7:1. Pa maksimum të deklaruar.' },
           { id:'cefixime-cystitis', tier:'reserve', allergy:['a1','a2'], drug:'Cefixime', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:4,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'3–5 ditë'}, source:'cps-uti-2026', note:'Rezervë kur rezistenca ndaj barnave të linjës së parë është e lartë; pa maksimum të deklaruar nga CPS.' },
-          { id:'nitro-cystitis', tier:'option', allergy:['none','a0','a1','a2','a3','a4'], drug:'Nitrofurantoin', route:'PO', frequency:'4 herë/ditë', dose:{type:'range',min:1.25,max:1.75,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'3–5 ditë'}, source:'cps-uti-2026', note:'Vetëm për cistit; nuk ka penetrim adekuat në indin renal.' },
+          { id:'nitro-cystitis', tier:'option', allergy:['none','a0','a1','a2','a3','a4'], drug:'Nitrofurantoin', route:'PO', frequency:'4 herë/ditë', dose:{type:'range',min:1.25,max:1.75,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'5 ditë'}, source:'cps-uti-2026', note:'Vetëm për cistit; CPS kërkon kurs të plotë 5-ditor. Nuk përdoret për pielonefrit.' },
           { id:'tmpsmx-cystitis', tier:'option', allergy:['none','a0','a1','a2','a3','a4'], drug:'Trimethoprim / sulfamethoxazole', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:4,unit:'mg/kg/dozë',component:'trimethoprim'}, duration:{type:'fixed',text:'3–5 ditë'}, source:'cps-uti-2026', note:'Doza bazohet në komponentin trimethoprim; përdore sipas ndjeshmërisë/rezistencës lokale.' }
         ]
       },
       {
-        id:'uti-pyelo', label:'UTI febrile / pielonefrit', short:'UTI febrile / Pielonefrit', source:'cps-uti-2026', usesAllergy:true, minAgeMonths:2,
+        id:'uti-pyelo', doseReviewAboveKg:40, label:'UTI febrile / pielonefrit', short:'UTI febrile / Pielonefrit', source:'cps-uti-2026', usesAllergy:true, minAgeMonths:2,
         warning:'Foshnja <2 muaj, pacienti i sëmurë/toksik, vjelljet, marrja e dobët orale, imunosupresioni, obstruksioni ose UTI e komplikuar kërkojnë eskalim/hospitalizim. Merr kulturë para antibiotikut kur është e mundur.',
         options:[
-          { id:'cephalexin-pyelo', tier:'first', allergy:['none','a0','a1'], drug:'Cephalexin', route:'PO', frequency:'4 herë/ditë', dose:{type:'single',value:25,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'të paktën 7 ditë'}, source:'cps-uti-2026', note:'CPS jep 100 mg/kg/ditë në 4 doza; burimi nuk jep maksimum.' },
-          { id:'amoxclav-pyelo', tier:'option', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'3 herë/ditë', dose:{type:'single',value:40/3,dailyValue:40,dividedDoses:3,unit:'mg/kg/dozë',component:'amoxicillin'}, duration:{type:'fixed',text:'të paktën 7 ditë'}, source:'cps-uti-2026', note:'40 mg/kg/ditë amoxicillin në 3 doza, formulimi 7:1; vetëm kur është i përshtatshëm sipas kulturës/ndjeshmërisë.' },
-          { id:'cefixime-pyelo', tier:'reserve', allergy:['a1','a2'], drug:'Cefixime', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:4,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'të paktën 7 ditë'}, source:'cps-uti-2026', note:'Rezervë sipas rezistencës lokale; pa maksimum të deklaruar nga CPS.' },
-          { id:'tmpsmx-pyelo', tier:'option', allergy:['a2','a3','a4'], drug:'Trimethoprim / sulfamethoxazole', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:4,unit:'mg/kg/dozë',component:'trimethoprim'}, duration:{type:'fixed',text:'të paktën 7 ditë'}, source:'cps-uti-2026', note:'Vetëm kur izolati është i ndjeshëm / rezistenca lokale e lejon.' },
-          { id:'cipro-pyelo', tier:'reserve', allergy:['a3','a4'], drug:'Ciprofloxacin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:15,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'të paktën 7 ditë'}, source:'cps-uti-2026', note:'Rezervë për patogjenë rezistentë/MDR ose Pseudomonas; rekomandohet konsultë me infektologun.' }
+          { id:'cephalexin-pyelo', tier:'first', allergy:['none','a0','a1'], drug:'Cephalexin', route:'PO', frequency:'4 herë/ditë', dose:{type:'single',value:25,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'7–10 ditë'}, source:'cps-uti-2026', note:'CPS jep 100 mg/kg/ditë në 4 doza; burimi nuk jep maksimum.' },
+          { id:'amoxclav-pyelo', tier:'option', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'3 herë/ditë', dose:{type:'single',value:40/3,dailyValue:40,dividedDoses:3,unit:'mg/kg/dozë',component:'amoxicillin'}, duration:{type:'fixed',text:'7–10 ditë'}, source:'cps-uti-2026', note:'40 mg/kg/ditë amoxicillin në 3 doza, formulimi 7:1; vetëm kur është i përshtatshëm sipas kulturës/ndjeshmërisë.' },
+          { id:'cefixime-pyelo', tier:'reserve', allergy:['a1','a2'], drug:'Cefixime', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:4,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'7–10 ditë'}, source:'cps-uti-2026', note:'Rezervë sipas rezistencës lokale; pa maksimum të deklaruar nga CPS.' },
+          { id:'tmpsmx-pyelo', tier:'option', allergy:['a2','a3','a4'], drug:'Trimethoprim / sulfamethoxazole', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:4,unit:'mg/kg/dozë',component:'trimethoprim'}, duration:{type:'fixed',text:'7–10 ditë'}, source:'cps-uti-2026', note:'Vetëm kur izolati është i ndjeshëm / rezistenca lokale e lejon.' },
+          { id:'cipro-pyelo', tier:'reserve', allergy:['a3','a4'], drug:'Ciprofloxacin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:15,unit:'mg/kg/dozë'}, duration:{type:'fixed',text:'7–10 ditë'}, source:'cps-uti-2026', note:'Rezervë për patogjenë rezistentë/MDR ose Pseudomonas; rekomandohet konsultë me infektologun.' }
         ]
       },
       {
@@ -218,13 +220,13 @@
         ]
       },
       {
-        id:'bite', label:'Kafshim nga gjitarët', short:'Kafshim nga gjitarët', source:'cm2026', usesAllergy:true,
+        id:'bite', label:'Kafshim nga gjitarët', short:'Kafshim nga gjitarët', source:'cm-bites-current', usesAllergy:true,
         warning:'Vlerëso gjithmonë nevojën për profilaksi tetanusi dhe rabies. Plagët e thella, të dorës/fytyrës, pranë nyjes, me dëmtim neurovaskular ose infeksion të rëndë kërkojnë specialist/eskalim.',
         options:[
-          { id:'amoxclav-bite-proph', tier:'first', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:22.5,unit:'mg/kg/dozë',maxDose:875,component:'amoxicillin'}, duration:{type:'fixed',text:'3 ditë'}, source:'cm2026', conditional:'Profilaksi vetëm për plagë me rrezik të lartë (p.sh. puncture, crush, edemë, fytyrë, plagë mesatare/rëndë).' },
-          { id:'amoxclav-bite-treat', tier:'first', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:22.5,unit:'mg/kg/dozë',maxDose:875,component:'amoxicillin'}, duration:{type:'fixed',text:'5–7 ditë'}, source:'cm2026', conditional:'Plagë tashmë e infektuar.' },
-          { id:'combo-bite-proph', tier:'allergy-severe', allergy:['a1','a2','a3'], drug:'TMP-SMX + Clindamycin', route:'PO', frequency:'kombinim', dose:{type:'combo',parts:[{drug:'Trimethoprim / sulfamethoxazole',frequency:'2 herë/ditë',dose:{type:'single',value:5,unit:'mg/kg/dozë',maxDose:160,component:'trimethoprim'}},{drug:'Clindamycin',frequency:'3 herë/ditë',dose:{type:'single',value:10,unit:'mg/kg/dozë'}}]}, duration:{type:'fixed',text:'3 ditë'}, source:'cm2026', conditional:'Profilaksi me alergji ndaj penicilinës — jepen TË DYJA barnat.' },
-          { id:'combo-bite-treat', tier:'allergy-severe', allergy:['a1','a2','a3'], drug:'TMP-SMX + Clindamycin', route:'PO', frequency:'kombinim', dose:{type:'combo',parts:[{drug:'Trimethoprim / sulfamethoxazole',frequency:'2 herë/ditë',dose:{type:'single',value:5,unit:'mg/kg/dozë',maxDose:160,component:'trimethoprim'}},{drug:'Clindamycin',frequency:'3 herë/ditë',dose:{type:'single',value:10,unit:'mg/kg/dozë'}}]}, duration:{type:'fixed',text:'5–7 ditë'}, source:'cm2026', conditional:'Plagë e infektuar me alergji ndaj penicilinës — jepen TË DYJA barnat.' }
+          { id:'amoxclav-bite-proph', tier:'first', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:22.5,unit:'mg/kg/dozë',maxDose:875,component:'amoxicillin'}, duration:{type:'fixed',text:'3 ditë'}, source:'cm-bites-current', conditional:'Profilaksi vetëm për plagë me rrezik të lartë (p.sh. puncture, crush, edemë, fytyrë, plagë mesatare/rëndë).' },
+          { id:'amoxclav-bite-treat', tier:'first', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:22.5,unit:'mg/kg/dozë',maxDose:875,component:'amoxicillin'}, duration:{type:'fixed',text:'7 ditë'}, source:'cm-bites-current', conditional:'Plagë tashmë e infektuar.' },
+          { id:'combo-bite-proph', tier:'allergy-severe', allergy:['a1','a2','a3'], drug:'TMP-SMX + Clindamycin', route:'PO', frequency:'kombinim', dose:{type:'combo',parts:[{drug:'Trimethoprim / sulfamethoxazole',frequency:'2 herë/ditë',dose:{type:'single',value:5,unit:'mg/kg/dozë',maxDose:160,component:'trimethoprim'}},{drug:'Clindamycin',frequency:'3 herë/ditë',dose:{type:'single',value:10,unit:'mg/kg/dozë',maxDose:450}}]}, duration:{type:'fixed',text:'3 ditë'}, source:'cm-bites-current', conditional:'Profilaksi me alergji ndaj penicilinës — jepen TË DYJA barnat.' },
+          { id:'combo-bite-treat', tier:'allergy-severe', allergy:['a1','a2','a3'], drug:'TMP-SMX + Clindamycin', route:'PO', frequency:'kombinim', dose:{type:'combo',parts:[{drug:'Trimethoprim / sulfamethoxazole',frequency:'2 herë/ditë',dose:{type:'single',value:5,unit:'mg/kg/dozë',maxDose:160,component:'trimethoprim'}},{drug:'Clindamycin',frequency:'3 herë/ditë',dose:{type:'single',value:10,unit:'mg/kg/dozë',maxDose:450}}]}, duration:{type:'fixed',text:'7 ditë'}, source:'cm-bites-current', conditional:'Plagë e infektuar me alergji ndaj penicilinës — jepen TË DYJA barnat.' }
         ]
       },
       {
