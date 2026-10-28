@@ -68,6 +68,7 @@
         const frequencies=JSON.parse(card.dataset.doseFrequencies||'[]');
         const frequency=frequencies.find(item=>item.drug===part.drug)?.frequency||'';
         const schedules=window.DRX_ANTIBIOTIC_MARKET_MATH.dailyTotals(conversion,frequency);
+        const ceiling=JSON.parse(card.dataset.doseCeilings||'[]').find(item=>item.drug===part.drug);
         const range=(min,max)=>`${fmt(min)}${min!==max?'–'+fmt(max):''}`;
         const amount=row=>row.unit==='mL'?`${range(row.min,row.max)} mL`:row.units?`${row.units} ${row.unit}`:row.choices.map(c=>`${c.units} ${row.unit} (${fmt(c.mg)} mg)`).join(' ose ');
         const basis=picked.variant.concentration.basis?.split('|')[0];
@@ -95,7 +96,28 @@
           if(!schedules.length&&representable)phase.append(make('small','','Orari dhe totali ditor kërkojnë zgjedhjen e një skeme të përcaktuar.'));
           if(row.unit==='mL'&&row.mgMin!==row.mgMax)phase.append(make('small','',`Kufiri për ${fmt(weight)} kg në këtë skemë: ${fmt(row.max)} mL për marrje. Zgjidh një dozë brenda intervalit.`));
           if(row.unit!=='mL'&&!row.units&&row.choices.length)phase.append(make('small','','Njësi të plota brenda intervalit. Konfirmo një dozë te receta.'));
+          const limit=ceiling?.rows[index],maximum=make('div','abx-market-maximum');
+          maximum.append(make('span','abx-market-dose-label',ceiling?.fixed?'Doza e skemës fikse':`Maksimumi për ${fmt(weight)} kg · kjo skemë`));
+          if(Number.isFinite(limit?.mg)&&limit.mg>0){
+            const perDose=limit.mg;
+            const mg=`${fmt(perDose)} mg${basis?' · '+basis:''} / marrje`;
+            if(row.unit==='mL')maximum.append(make('strong','',`${fmt(perDose*picked.variant.concentration.perML/picked.variant.concentration.value)} mL / marrje`));
+            maximum.append(make('span','abx-market-maximum-mg',mg));
+            for(const schedule of schedules){
+              const dailyMg=perDose*schedule.times;
+              const volume=row.unit==='mL'?`${fmt(dailyMg*picked.variant.concentration.perML/picked.variant.concentration.value)} mL · `:'';
+              maximum.append(make('span','abx-market-maximum-daily',`${schedules.length>1?schedule.times+' herë/ditë: ':''}${volume}${fmt(dailyMg)} mg / 24 orë`));
+            }
+          }
+          if(Number.isFinite(limit?.absoluteMg)){
+            const source=make('details','abx-market-ceiling-source');source.append(make('summary','','Kufiri i burimit'));
+            source.append(make('span','',`${fmt(limit.absoluteMg)} mg${basis?' · '+basis:''} / marrje`));
+            for(const schedule of schedules)source.append(make('span','',`${schedules.length>1?schedule.times+' herë/ditë: ':''}${fmt(limit.absoluteMg*schedule.times)} mg / 24 orë · sipas frekuencës`));
+            source.append(make('small','','Për peshën e dhënë zbatohet kufiri më i ulët i shfaqur më sipër.'));maximum.append(source);
+          }else maximum.append(make('small','',limit?'Burimi nuk përcakton maksimum absolut.':'Kontrollo kufirin te skema më sipër.'));
+          phase.append(maximum);
         });
+        const course=make('div','abx-market-course');course.append(make('span','','Kohëzgjatja'),make('strong','',clean(card.querySelector('.abx-duration')?.textContent)||'Përcaktohet sipas skemës'));result.append(course);
       };
       const publish=()=>{
         const product=variant?.products.find(p=>String(p.id)===productSelect.value);

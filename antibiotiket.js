@@ -274,6 +274,17 @@
     };
   }
 
+  function marketCeilings(option, weight) {
+    const parts=option.dose?.type==='combo'?option.dose.parts:[option];
+    return parts.map(part=>{
+      const dose=part.dose||{},absoluteMg=value=>Number.isFinite(value)?value:null;
+      const rows=dose.type==='sequence'
+        ? dose.steps.map(step=>({label:step.label,mg:weight?cap(step.value*weight,step.maxDose).value:null,absoluteMg:absoluteMg(step.maxDose)}))
+        : [{label:'',mg:calculateSimple(dose,weight)?.max??null,absoluteMg:absoluteMg(dose.maxDose)}];
+      return {drug:part.drug,frequency:part.frequency,fixed:['fixed','weight-bands'].includes(dose.type),rows};
+    });
+  }
+
   function calculationSteps(option, weight) {
     if (!weight) return [];
     const dose = option.dose || {};
@@ -621,6 +632,7 @@
     // Converters consume the unrounded value, never the presentation rounding.
     card.dataset.exactDoseText = calculatedValue(option, basis.weight, value => String(value));
     card.dataset.doseFrequencies = JSON.stringify(option.dose?.type==='combo' ? option.dose.parts.map(part=>({drug:part.drug,frequency:part.frequency})) : [{drug:option.drug,frequency:option.frequency}]);
+    card.dataset.doseCeilings = JSON.stringify(marketCeilings(option,basis.weight));
     const head = make('div', 'abx-option-head');
     head.append(make('h3', '', option.drug), make('span', 'abx-tier', tierLabels[option.tier] || 'Opsion'));
 

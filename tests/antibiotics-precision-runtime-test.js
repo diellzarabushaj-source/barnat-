@@ -12,7 +12,7 @@ function runtime(overlay) {
   if (overlay) vm.runInContext(read('antibiotiket-shell.js'), context);
   vm.runInContext(read('antibiotiket-data.js'), context);
   // Exercise the actual calculation functions without mounting a DOM.
-  const code = read('antibiotiket.js').replace(/  restoreContext\(\);[\s\S]*$/, '  window.engine = {fmt, calculateSimple, calculatedValue, dailyDose, formulaText, calculationSteps, doseLimits};\n})();');
+  const code = read('antibiotiket.js').replace(/  restoreContext\(\);[\s\S]*$/, '  window.engine = {fmt, calculateSimple, calculatedValue, dailyDose, formulaText, calculationSteps, doseLimits, marketCeilings};\n})();');
   vm.runInContext(code, context);
   return { engine:context.window.engine, guide:context.window.DRX_ANTIBIOTIC_GUIDE };
 }
@@ -34,6 +34,13 @@ assert.equal(base.engine.doseLimits(option(base,'cephalexin-cystitis')).length,0
 assert.match(base.engine.doseLimits(option(base,'azithro-gas'))[0],/Dita 1: 500 mg\/ditë/);
 assert.match(base.engine.doseLimits(option(base,'azithro-gas'))[1],/Ditët 2–5: 250 mg\/ditë/);
 assert.match(base.engine.doseLimits(option(base,'combo-bite-treat'))[1],/Clindamycin: 450 mg\/dozë.*1350 mg\/24 orë/);
+const ceilings=(id,kg)=>JSON.parse(JSON.stringify(base.engine.marketCeilings(option(base,id),kg)));
+assert.deepEqual(ceilings('amox-aom',12)[0].rows,[{label:'',mg:600,absoluteMg:2000}]);
+assert.deepEqual(ceilings('amox-aom',80)[0].rows,[{label:'',mg:2000,absoluteMg:2000}]);
+assert.deepEqual(ceilings('azithro-gas',30)[0].rows.map(r=>[r.mg,r.absoluteMg]),[[360,500],[180,250]]);
+assert.deepEqual(ceilings('combo-bite-treat',15).map(r=>[r.drug,r.frequency,r.rows[0].mg,r.rows[0].absoluteMg]),[['Trimethoprim / sulfamethoxazole','2 herë/ditë',75,160],['Clindamycin','3 herë/ditë',150,450]]);
+assert.equal(ceilings('cephalexin-cystitis',12)[0].rows[0].absoluteMg,null,'A missing absolute maximum stays unspecified');
+assert.equal(ceilings('penicillin-gas',12)[0].fixed,true,'A fixed regimen is not relabeled as a drug maximum');
 assert.equal(base.engine.fmt(1.75),'1,75');
 assert.match(base.engine.formulaText(option(base,'nitro-cystitis')),/1,25–1,75/);
 assert.deepEqual(JSON.parse(JSON.stringify(live.guide)),JSON.parse(JSON.stringify(base.guide)), 'Shell may not replace current regimens with a historical overlay');
@@ -60,6 +67,10 @@ for (const i of live.guide.indications) for(const o of i.options) {
     if(dose) {
       assert.ok(dose.min>0 && dose.max>=dose.min);
       if(o.dose.maxDose) assert.ok(dose.max<=o.dose.maxDose);
+    }
+    for(const ceiling of live.engine.marketCeilings(o,weight))for(const row of ceiling.rows){
+      if(row.mg!==null)assert.ok(Number.isFinite(row.mg)&&row.mg>0,o.id);
+      if(row.absoluteMg!==null)assert.ok(row.mg<=row.absoluteMg,o.id+' exceeds its source ceiling');
     }
     count++;
   }
