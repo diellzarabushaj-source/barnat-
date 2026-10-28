@@ -65,16 +65,37 @@
         if(card.dataset.ageRequired==='true'&&card.dataset.ageConfirmed!=='true'){result.append(make('span','','Konfirmo moshën reale për këtë skemë.'));return;}
         const conversion=window.DRX_ANTIBIOTIC_MARKET_MATH?.convert({doseText:card.dataset.exactDoseText,drug:part.drug,combo:parts.length>1,form:picked.form,concentration:picked.variant.concentration});
         if(!conversion||conversion.error){result.append(make('span','',conversion?.error||'Konvertimi nuk u ngarkua. Rifresko faqen.'));return;}
-        result.append(make('span','abx-market-dose-label',`Për ${fmt(weight)} kg · doza për një marrje`));
-        for(const row of conversion.rows){
-          if(conversion.rows.length>1)result.append(make('b','',row.label));
-          if(row.unit==='mL')result.append(make('strong','',`${fmt(row.min)}${row.min!==row.max?'–'+fmt(row.max):''} mL`));
-          else if(row.units)result.append(make('strong','',`${row.units} ${row.unit}${row.units>1?' ×':''}`));
-          else if(row.choices.length){result.append(make('strong','',row.choices.map(c=>`${c.units} ${row.unit} (${fmt(c.mg)} mg)`).join(' ose ')));result.append(make('small','','Njësi të plota brenda intervalit. Konfirmo një dozë te receta.'));}
-          else result.append(make('span','','Doza nuk përputhet me njësi të plota. Zgjidh një fortësi ose formë tjetër; tableta nuk ndahet automatikisht.'));
-          result.append(make('span','',`${fmt(row.mgMin)}${row.mgMin!==row.mgMax?'–'+fmt(row.mgMax):''} mg${picked.variant.concentration.basis?' · '+picked.variant.concentration.basis.split('|')[0]:''}`));
-          if(row.unit==='mL'&&row.mgMin!==row.mgMax)result.append(make('small','',`Kufiri për ${fmt(weight)} kg në këtë skemë: ${fmt(row.max)} mL për marrje. Zgjidh një dozë brenda intervalit.`));
-        }
+        const frequencies=JSON.parse(card.dataset.doseFrequencies||'[]');
+        const frequency=frequencies.find(item=>item.drug===part.drug)?.frequency||'';
+        const schedules=window.DRX_ANTIBIOTIC_MARKET_MATH.dailyTotals(conversion,frequency);
+        const range=(min,max)=>`${fmt(min)}${min!==max?'–'+fmt(max):''}`;
+        const amount=row=>row.unit==='mL'?`${range(row.min,row.max)} mL`:row.units?`${row.units} ${row.unit}`:row.choices.map(c=>`${c.units} ${row.unit} (${fmt(c.mg)} mg)`).join(' ose ');
+        const basis=picked.variant.concentration.basis?.split('|')[0];
+        const milligrams=row=>{
+          const choices=row.unit!=='mL'&&!row.units&&row.choices.length?row.choices:null;
+          return `${range(choices?choices[0].mg:row.mgMin,choices?choices.at(-1).mg:row.mgMax)} mg${basis?' · '+basis:''}`;
+        };
+        conversion.rows.forEach((row,index)=>{
+          const phase=make('div','abx-market-dose-phase');result.append(phase);
+          if(conversion.rows.length>1)phase.append(make('b','abx-market-phase-label',row.label));
+          const single=make('div','abx-market-single');
+          single.append(make('span','abx-market-dose-label',`Për një marrje · ${fmt(weight)} kg`));
+          const representable=row.unit==='mL'||row.units||row.choices.length;
+          if(representable)single.append(make('strong','',amount(row)));
+          else single.append(make('span','','Doza nuk përputhet me njësi të plota. Zgjidh një fortësi ose formë tjetër; tableta nuk ndahet automatikisht.'));
+          single.append(make('span','abx-market-mg',milligrams(row)));phase.append(single);
+          if(representable)for(const schedule of schedules){
+            const timing=make('div','abx-market-schedule');
+            timing.append(make('strong','',`${schedule.times} herë/ditë`),make('span','',`Çdo ${schedule.hours} orë`));
+            if(schedules.length>1)timing.prepend(make('span','abx-market-dose-label','Opsion orari'));
+            const daily=make('div','abx-market-daily');
+            daily.append(make('span','abx-market-dose-label','Gjithsej në 24 orë'),make('strong','',amount(schedule.rows[index])),make('span','abx-market-mg',milligrams(schedule.rows[index])));
+            const plan=make('div','abx-market-plan');plan.append(timing,daily);phase.append(plan);
+          }
+          if(!schedules.length&&representable)phase.append(make('small','','Orari dhe totali ditor kërkojnë zgjedhjen e një skeme të përcaktuar.'));
+          if(row.unit==='mL'&&row.mgMin!==row.mgMax)phase.append(make('small','',`Kufiri për ${fmt(weight)} kg në këtë skemë: ${fmt(row.max)} mL për marrje. Zgjidh një dozë brenda intervalit.`));
+          if(row.unit!=='mL'&&!row.units&&row.choices.length)phase.append(make('small','','Njësi të plota brenda intervalit. Konfirmo një dozë te receta.'));
+        });
       };
       const publish=()=>{
         const product=variant?.products.find(p=>String(p.id)===productSelect.value);

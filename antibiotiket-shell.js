@@ -80,9 +80,9 @@
       loadRuntime('/antibiotiket-formulations-data.js?v=antibiotiket-formulations-20261027', 'data-drx-abx-formulations-data'),
     ]);
     window.DRX_ANTIBIOTIC_MARKET={selection:()=>null};
-    await loadStylesheet('/antibiotiket-market.css?v=20261028a','data-drx-abx-market-css');
-    await loadRuntime('/antibiotiket-market-math.js?v=20261028a','data-drx-abx-market-math');
-    await loadRuntime('/antibiotiket-market.js?v=20261028a','data-drx-abx-market');
+    await loadStylesheet('/antibiotiket-market.css?v=20261028b','data-drx-abx-market-css');
+    await loadRuntime('/antibiotiket-market-math.js?v=20261028b','data-drx-abx-market-math');
+    await loadRuntime('/antibiotiket-market.js?v=20261028b','data-drx-abx-market');
     await loadRuntime('/antibiotiket-formulations.js?v=antibiotiket-formulations-20261027', 'data-drx-abx-formulations-runtime');
   }
 

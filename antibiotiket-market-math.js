@@ -27,5 +27,22 @@
       return {...r,mgMin:r.min,mgMax:r.max,unit:form.unit,choices,units:integer?Math.round(exact):null};
     })};
   }
-  return {parseDose,convert};
+  function cadence(frequency){
+    const value=clean(frequency);
+    let match=/^(\d+) herë\/ditë$/.exec(value);
+    if(match){const times=Number(match[1]);return [1,2,3,4,6].includes(times)?[{times,hours:24/times}]:[];}
+    match=/^(\d+) ose (\d+) herë\/ditë$/.exec(value);
+    if(match){const times=[...new Set([Number(match[1]),Number(match[2])])];return times.every(n=>[1,2,3,4,6].includes(n))?times.map(n=>({times:n,hours:24/n})):[];}
+    return [];
+  }
+  function dailyTotals(conversion,frequency){
+    if(conversion?.error||!conversion?.rows?.length)return [];
+    return cadence(frequency).map(schedule=>({...schedule,rows:conversion.rows.map(row=>({
+      ...row,min:row.min*schedule.times,max:row.max*schedule.times,
+      mgMin:row.mgMin*schedule.times,mgMax:row.mgMax*schedule.times,
+      units:row.units?row.units*schedule.times:null,
+      choices:row.choices?.map(choice=>({units:choice.units*schedule.times,mg:choice.mg*schedule.times})),
+    }))}));
+  }
+  return {parseDose,convert,cadence,dailyTotals};
 });

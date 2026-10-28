@@ -44,6 +44,10 @@ for(const width of [320,390,1440])test(`AKKPM product → exact prescription, ag
   await updated.locator('.abx-rx-shared select').selectOption('7');
   await expect(updated.locator('.abx-rx-line')).toContainText('12 mL PO 2 herë/ditë × 7 ditë');
   await expect(updated.locator('.abx-rx-copy')).toBeEnabled();
+  await updated.locator('.abx-market select').nth(0).selectOption({label:'Kapsulë'});
+  await updated.locator('.abx-market select').nth(1).selectOption({label:'500 mg'});
+  await expect(updated.locator('.abx-market-single .abx-market-mg')).toHaveText('500 mg');
+  await expect(updated.locator('.abx-market-daily .abx-market-mg')).toHaveText('1000 mg');
   await updated.locator('.abx-market select').nth(0).selectOption('vial-powder');
   await updated.locator('.abx-market select').nth(1).selectOption({label:'1 g'});
   await expect(updated.locator('.abx-rx-copy')).toBeDisabled();
@@ -85,4 +89,45 @@ test('Atypical pneumonia preserves the pneumococcal agent',async({page})=>{
   await page.locator('#atypicalInput').check();
   await expect(page.locator('[data-regimen-id="amox-pna"]')).toBeVisible();
   await expect(page.locator('[data-regimen-id="azithro-pna-atypical"]')).toContainText('SHTOHET');
+});
+
+for(const width of [320,390,1440])test(`Dose, interval and exact 24-hour total stay together at ${width}px`,async({page},info)=>{
+  await page.setViewportSize({width,height:900});
+  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
+  await page.goto(baseURL+'/antibiotiket.html?indication=cellulitis');
+  await page.locator('#weightInput').fill('15');
+  const card=page.locator('[data-regimen-id="amoxclav-cellulitis"]');
+  await card.getByRole('combobox',{name:'Forma · Amoxicillin / clavulanate',exact:true}).selectOption('oral-liquid');
+  await card.getByRole('combobox',{name:'Fortësia / përqendrimi · Amoxicillin / clavulanate',exact:true}).selectOption({label:'(200 mg+28.5 mg)/5 ml'});
+  await expect(card.locator('.abx-market-single')).toContainText('8,44 mL');
+  await expect(card.locator('.abx-market-single')).toContainText('337,5 mg · amoxicillin');
+  await expect(card.locator('.abx-market-schedule')).toHaveText('2 herë/ditëÇdo 12 orë');
+  await expect(card.locator('.abx-market-daily')).toContainText('16,88 mL');
+  await expect(card.locator('.abx-market-daily')).toContainText('675 mg · amoxicillin');
+  await card.locator('.abx-market').screenshot({path:info.outputPath('dose-summary-'+width+'.png')});
+  await page.locator('#weightInput').fill('20');
+  const updated=page.locator('[data-regimen-id="amoxclav-cellulitis"]');
+  await expect(updated.locator('.abx-market-single')).toContainText('11,25 mL');
+  await expect(updated.locator('.abx-market-daily')).toContainText('22,5 mL');
+  await expect(updated.locator('.abx-market-daily')).toContainText('900 mg · amoxicillin');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+
+test('Three and four daily administrations have their own interval and total',async({page})=>{
+  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
+  await page.goto(baseURL+'/antibiotiket.html?indication=cellulitis');await page.locator('#weightInput').fill('44');
+  let card=page.locator('[data-regimen-id="cephalexin-cellulitis"]');
+  await card.locator('.abx-market select').nth(0).selectOption('oral-liquid');
+  await card.locator('.abx-market select').nth(1).selectOption({label:'250 mg/5 ml'});
+  await expect(card.locator('.abx-market-schedule')).toContainText('Çdo 8 orë');
+  await expect(card.locator('.abx-market-daily')).toContainText('30 mL');
+  await expect(card.locator('.abx-market-daily')).toContainText('1500 mg');
+  await page.goto(baseURL+'/antibiotiket.html?indication=uti-cystitis');await page.locator('#weightInput').fill('12');
+  await page.locator('#ageConfirmation input').check();
+  card=page.locator('[data-regimen-id="cephalexin-cystitis"]');
+  await card.locator('.abx-market select').nth(0).selectOption('oral-liquid');
+  await card.locator('.abx-market select').nth(1).selectOption({label:'250 mg/5 ml'});
+  await expect(card.locator('.abx-market-schedule')).toContainText('Çdo 6 orë');
+  await expect(card.locator('.abx-market-daily')).toContainText('12 mL');
+  await expect(card.locator('.abx-market-daily')).toContainText('600 mg');
 });

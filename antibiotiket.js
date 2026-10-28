@@ -620,6 +620,7 @@
     card.dataset.requiresRealWeight = String(option.dose?.type === 'weight-bands' || Number.isFinite(currentIndication()?.minWeightKg));
     // Converters consume the unrounded value, never the presentation rounding.
     card.dataset.exactDoseText = calculatedValue(option, basis.weight, value => String(value));
+    card.dataset.doseFrequencies = JSON.stringify(option.dose?.type==='combo' ? option.dose.parts.map(part=>({drug:part.drug,frequency:part.frequency})) : [{drug:option.drug,frequency:option.frequency}]);
     const head = make('div', 'abx-option-head');
     head.append(make('h3', '', option.drug), make('span', 'abx-tier', tierLabels[option.tier] || 'Opsion'));
 
