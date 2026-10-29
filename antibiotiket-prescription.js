@@ -759,11 +759,13 @@
           target.value=String(state.doseFinal??range.min);target.setAttribute('aria-label','Doza e synuar për përshtatje');
           const suggest=make('button','', 'Përshtat me produktin');suggest.type='button';
           const feedback=make('small','');
+          if(state.doseChoice==='product-auto')feedback.textContent='Përshtatur automatikisht me produktin, brenda intervalit të skemës. Mund ta ndryshosh.';
           suggest.onclick=()=>{
             const chosen=math.nearestChoice({target:Number(target.value),min:range.min,max:range.max,strength:picked.variant.concentration.value,step});
             if(!chosen){feedback.textContent='Nuk ka dozë të realizueshme brenda kufijve të kësaj skeme.';return;}
             state.doseFinal=chosen.mg;state.doseChoice='product';refresh();
           };
+          target.addEventListener('change',()=>suggest.click());
           practical.append(target,suggest,feedback);
           const buttons=make('div','abx-practical-choices');
           choices.forEach(choice=>{
@@ -797,7 +799,19 @@
     card.addEventListener('change', event => {
       if (event.target.closest('.abx-formulation')) refresh();
     });
-    card.addEventListener('abx:market-product',refresh);
+    card.addEventListener('abx:market-product',()=>{
+      const range=state.simple;
+      const picked=window.DRX_ANTIBIOTIC_MARKET?.selection(card,state.drug);
+      const math=window.DRX_ANTIBIOTIC_MARKET_MATH;
+      if(range&&range.min!==range.max&&picked&&!picked.reason&&picked.form.measure==='whole'&&math){
+        // The published lower bound is the initial target, not an invented
+        // midpoint. Keep an existing selected target when changing products.
+        const choice=math.nearestChoice({target:state.doseFinal??range.min,min:range.min,max:range.max,strength:picked.variant.concentration.value,step:math.unitStep(picked.form,picked.equalHalvesConfirmed)});
+        state.doseFinal=choice?.mg??null;
+        state.doseChoice='product-auto';
+      }
+      refresh();
+    });
     card.addEventListener('input', event => {
       if (event.target.closest('.abx-formulation')) refresh();
     });

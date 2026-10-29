@@ -6,6 +6,7 @@ const {phase5AuthenticatedSession}=require('./phase5-browser-fixture');
 const ROOT=path.resolve(__dirname,'..');let server,baseURL;
 const catalog=buildCatalog([...rows,
   row('cephalexin-tablet500','Cephalexin','J01DB01','500 mg','Tablet'),
+  row('cephalexin-cap500','Cephalexin','J01DB01','500 mg','Capsule'),
   row('amox-tablet500','Amoxicillin','J01CA04','500 mg','Tablet'),
   row('clav4-liquid','Amoxicillin; Clavulanic acid','J01CR02','(125 mg+31.25 mg)/5 ml','Powder for oral suspension'),
   row('clav4-tab','Amoxicillin; Clavulanic acid','J01CR02','500 mg+125 mg','Tablet'),
@@ -274,15 +275,28 @@ test('Equal-half confirmation enables 1½ tablets and resets for another product
   await expect(c.locator('.abx-rx-copy')).toBeDisabled();
 });
 
+test('A ranged dose adapts to a whole capsule immediately on product selection',async({page})=>{
+  await open(page,'lymphadenitis','8y','25');const c=card(page,'cephalexin-lymph');
+  await c.locator('.abx-rx summary').click();
+  await choose(c,'capsule','500 mg');
+  await expect(c.locator('.abx-dose-selected')).toHaveText('500 mg');
+  await expect(c.locator('.abx-practical-panel')).toContainText('Përshtatur automatikisht');
+  await c.locator('.abx-rx-shared select').selectOption('7');
+  await expect(c.locator('.abx-rx-line')).toContainText('1 kapsulë PO');
+  await expect(c.locator('.abx-rx-copy')).toBeEnabled();
+});
 test('Central range box rounds only to a representable in-range dose',async({page})=>{
   await open(page,'lymphadenitis','10y','30');const c=card(page,'cephalexin-lymph');
   await c.locator('.abx-rx summary').click();
   await choose(c,'tablet','500 mg');
   await expect(c.locator('.abx-dose-window')).toContainText('510 mg');
   await expect(c.locator('.abx-dose-window')).toContainText('750 mg');
+  await expect(c.locator('.abx-dose-selected')).toHaveText('Zgjidh dozën');
   await c.locator('.abx-split-confirm input').check();
+  await expect(c.locator('.abx-dose-selected')).toHaveText('750 mg');
+  await expect(c.locator('.abx-practical-panel')).toContainText('Përshtatur automatikisht');
   await c.getByRole('spinbutton',{name:'Doza e synuar për përshtatje'}).fill('600');
-  await c.getByRole('button',{name:'Përshtat me produktin'}).click();
+  await c.getByRole('spinbutton',{name:'Doza e synuar për përshtatje'}).press('Tab');
   await expect(c.locator('.abx-dose-selected')).toHaveText('750 mg');
   await c.locator('.abx-rx-shared select').selectOption('7');
   await expect(c.locator('.abx-rx-line')).toContainText('1½ tableta PO');

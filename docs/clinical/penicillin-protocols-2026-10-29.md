@@ -100,6 +100,7 @@ are recalculated together. The mathematical midpoint is not a clinical default.
 Validation adds source-bounded rounding/half-tablet arithmetic tests and real
 browser flows for 1½ tablets, reset of leaflet confirmation, and the central range
 control with final prescription generation.
+
 # Automatic age suggestion from weight (2026-10-29)
 
 The existing month/year select and explicit adult option are preserved. Weight
@@ -129,3 +130,11 @@ Validation: all 193 supported monthly intervals, exact boundaries, decimal comma
 lower/out-of-range inputs, and open-band behavior have unit coverage. Browser
 coverage checks every first-year month, confirmation, manual overrides, weight
 changes, reloads and the adult gate, alongside the existing prescription tests.
+
+Product selection also automatically adapts a genuinely ranged solid dose. The
+initial target is the published lower bound; later products use the selected
+dose as target. Only whole units or explicitly confirmed equal halves inside the
+source interval qualify. If none qualify, the prescription remains blocked.
+Fixed doses are never rounded. Editing the practical target applies on change
+without requiring the adaptation button. All changes remain visible in the
+central dose box and can be overridden within the published bounds.
