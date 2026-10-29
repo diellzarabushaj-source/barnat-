@@ -61,6 +61,9 @@ a new clinical approval status to existing records.
   picker bounds, removal/reset, optional tests and disabled copying of empty orders.
 - Live catalog reconciliation is a read-only check. The authenticated endpoint
   remains the data source; an unavailable source does not fabricate a workup.
+- The catalog request carries a versioned revision so the device worker's cached
+  six-profile dataset cannot mask the new twenty symptom profiles. This keeps
+  existing offline data and authentication intact rather than clearing storage.
 
 The versioned additions are maintained in code and returned with the existing
 catalog, rather than inserted as newly approved laboratory database records.

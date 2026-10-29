@@ -15,7 +15,10 @@ test.beforeAll(async()=>{
 test.afterAll(()=>new Promise(resolve=>server.close(resolve)));
 test.beforeEach(async({page})=>{
   await page.route('**/api/auth*',route=>route.fulfill({json:phase5AuthenticatedSession()}));
-  await page.route('**/api/icd?dataset=labs',route=>route.fulfill({json:{data}}));
+  await page.route('**/api/icd?dataset=labs**',route=>{
+    const revision=new URL(route.request().url()).searchParams.get('revision');
+    return route.fulfill({json:{data:revision==='lab-symptoms-20261029-v1'?data:{...data,indications:[],tests:[]}}});
+  });
 });
 
 for(const width of [320,390,1440])test(`Symptom search, grouped picker and deliberate orders at ${width}px`,async({page},info)=>{
@@ -88,7 +91,7 @@ test('Every supplied symptom renders with linked tests and no implicit condition
 });
 
 test('An unavailable source cannot produce a fabricated order',async({page})=>{
-  await page.route('**/api/icd?dataset=labs',route=>route.fulfill({status:503,json:{error:'Unavailable'}}));
+  await page.route('**/api/icd?dataset=labs**',route=>route.fulfill({status:503,json:{error:'Unavailable'}}));
   await page.goto(baseURL+'/analizat.html');
   await expect(page.getByText('Analizat nuk u ngarkuan.',{exact:true})).toBeVisible();
   await expect(page.locator('#labCopyPlan')).toBeDisabled();
