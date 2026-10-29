@@ -5,7 +5,7 @@
   const TIER_META = Object.freeze({
     core:{ label:'Bazë', description:'Analiza kryesore të panelit' },
     recommended:{ label:'Të rekomanduara', description:'Plotësojnë vlerësimin klinik' },
-    conditional:{ label:'Sipas situatës', description:'Varen nga konteksti i pacientit' },
+    conditional:{ label:'Sipas rastit', description:'Zgjidhi vetëm kur indikohen' },
     manual:{ label:'Shtuar manualisht', description:'Të shtuara nga katalogu' },
   });
 
@@ -17,6 +17,8 @@
     selectedIndicationIds:new Set(),
     manualTestIds:new Set(),
     excludedTestIds:new Set(),
+    optedInTestIds:new Set(),
+    profileGroup:'',
     diseaseTerm:'',
     manualTerm:'',
     searchTimer:0,
@@ -139,6 +141,7 @@
       if (event.key === 'Escape') {
         if (!$('#labDiseasePopover')?.hidden) {
           closeDiseasePicker();
+          $('#labDiseaseTrigger')?.focus();
           return;
         }
         if (!$('#labManualResults')?.hidden) {
@@ -190,6 +193,8 @@
     $('#labIndicationTotal').textContent = String(data.indications.length);
     $('#syncText').textContent = data.source || 'Supabase';
     $('#sourceStatus').textContent = `${data.source || 'Supabase'} · ${data.tests.length} analiza · ${data.indications.length} profile klinike`;
+    const groupSelect = $('#labProfileGroup');
+    if(groupSelect) groupSelect.innerHTML = '<option value="">Të gjitha grupet</option>' + (data.profileGroups || []).map(group=>`<option value="${esc(group.id)}">${esc(group.label)}</option>`).join('');
 
     restoreUrl();
     renderAll();
@@ -277,6 +282,17 @@
     });
   }
 
+  function isEntrySelected(entry) {
+    return !state.excludedTestIds.has(entry.test.id)
+      && (entry.tier !== 'conditional' || entry.manual || state.optedInTestIds.has(entry.test.id));
+  }
+
+  function visiblePlanEntries() {
+    const entries = buildPlanEntries();
+    const covered = new Set(entries.filter(isEntrySelected).flatMap(entry => entry.test.containsTestIds || []));
+    return entries.filter(entry => !covered.has(entry.test.id) || entry.manual);
+  }
+
   function syncUrl() {
     try {
       const url = new URL(window.location.href);
@@ -342,11 +358,14 @@
     const root = $('#labDiseaseList');
     if (!root || !state.data) return;
     const term = normalize(state.diseaseTerm);
-    const rows = state.data.indications.filter(indication => !term || diseaseSearchText(indication).includes(term));
-
-    root.innerHTML = rows.length
-      ? rows.map(diseaseOptionMarkup).join('')
-      : '<div class="lab-picker-empty">Nuk u gjet diagnozë.</div>';
+    const tokens = term.split(/\s+/).filter(t => t.length > 1 && !['dhe','me','ne','te','nga'].includes(t));
+    const rows = state.data.indications.filter(indication => (!state.profileGroup || (indication.group || 'diagnoses') === state.profileGroup)
+      && (!term || tokens.every(token => diseaseSearchText(indication).includes(token))));
+    const groups = state.data.profileGroups || [{id:'diagnoses',label:'Diagnozat'}];
+    root.innerHTML = rows.length ? groups.map(group => {
+      const members = rows.filter(row => (row.group || 'diagnoses') === group.id);
+      return members.length ? `<div class="lab-profile-group" role="presentation">${esc(group.label)} <span>${members.length}</span></div>${members.map(diseaseOptionMarkup).join('')}` : '';
+    }).join('') : '<div class="lab-picker-empty">Nuk u gjet simptomë ose diagnozë.</div>';
   }
 
   function renderSelectedDiseases() {
@@ -357,10 +376,10 @@
 
     if (triggerText) {
       triggerText.textContent = indications.length === 0
-        ? 'Zgjidh diagnoza…'
+        ? 'Zgjidh simptomë ose diagnozë…'
         : indications.length === 1
           ? indications[0].title
-          : `${indications.length} diagnoza të zgjedhura`;
+          : `${indications.length} profile të zgjedhura`;
     }
 
     if (root) {
@@ -373,7 +392,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 7l10 10M17 7 7 17"/></svg>
             </button>
           </span>`).join('')
-        : '<span class="lab-selected-empty">Nuk ke zgjedhur ende diagnozë.</span>';
+        : '<span class="lab-selected-empty">Nuk ke zgjedhur ende profil.</span>';
     }
 
     if (summary) {
@@ -387,6 +406,22 @@
     }
 
     $('#labDiagnosisCount').textContent = String(indications.length);
+    renderClinicalGuide();
+  }
+
+  function renderClinicalGuide() {
+    const root = $('#labClinicalGuide');if(!root)return;
+    const profiles = selectedIndications().filter(p=>p.interpretation || p.assessments?.length || p.urgentNote);
+    root.hidden = !profiles.length;
+    root.innerHTML = profiles.map(p=>`<article class="lab-clinical-profile">
+      <div class="lab-clinical-profile-head"><strong>${esc(p.title)}</strong><span>${p.kind==='symptom'?'Vlerësim sipas simptomës':'Udhëzim klinik'}</span></div>
+      ${p.summary?`<p>${esc(p.summary)}</p>`:''}
+      ${p.urgentNote?`<p class="lab-profile-urgent">${esc(p.urgentNote)}</p>`:''}
+      <details><summary>Interpretimi dhe ekzaminimet <span aria-hidden="true">?</span></summary>
+        ${p.interpretation?`<p>${esc(p.interpretation)}</p>`:''}
+        ${(p.assessments||[]).length?`<ul>${p.assessments.map(s=>`<li>${esc(s)}</li>`).join('')}</ul>`:''}
+        ${(p.sources||[]).filter(s=>/^https:\/\//.test(s.url||'')).map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)} ↗</a>`).join('')}
+      </details></article>`).join('');
   }
 
   function pruneExcludedTests() {
@@ -394,6 +429,7 @@
     for (const id of [...state.excludedTestIds]) {
       if (!activeIds.has(id)) state.excludedTestIds.delete(id);
     }
+    for (const id of [...state.optedInTestIds]) if (!activeIds.has(id)) state.optedInTestIds.delete(id);
   }
 
   function toggleIndication(id) {
@@ -500,16 +536,17 @@
 
   function testRowMarkup(entry) {
     const test = entry.test;
-    const selected = !state.excludedTestIds.has(test.id);
+    const selected = isEntrySelected(entry);
     const category = state.categoriesById.get(test.categoryId);
     const detailLines = [
       test.whatItShows ? `<p><strong>Çfarë tregon:</strong> ${esc(test.whatItShows)}</p>` : '',
+      test.referenceOnly ? '<p>Referencë klinike: konfirmo metodën dhe disponueshmërinë me laboratorin.</p>' : '',
       test.highPositiveAbnormal ? `<p><strong>Kur rritet / jonormale:</strong> ${esc(test.highPositiveAbnormal)}</p>` : '',
       test.lowNegativeNormal ? `<p><strong>Kur ulet / normale:</strong> ${esc(test.lowNegativeNormal)}</p>` : '',
     ].filter(Boolean).join('');
 
     return `
-      <article class="lab-test-row" data-test-id="${esc(test.id)}">
+      <article class="lab-test-row" data-test-id="${esc(test.id)}" data-selected="${selected}">
         <label class="lab-test-toggle" aria-label="${selected ? 'Hiq' : 'Shto'} ${esc(test.formName)}">
           <input type="checkbox" data-plan-toggle="${esc(test.id)}" ${selected ? 'checked' : ''}>
         </label>
@@ -536,7 +573,7 @@
           ${detailLines ? `
             <details class="lab-test-details">
               <summary>Detajet e analizës ↓</summary>
-              <div class="lab-test-detail-body">${detailLines}</div>
+              <div class="lab-test-detail-body">${detailLines}${/^https:\/\//.test(test.sourceUrl || '') ? `<a href="${esc(test.sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi klinik ↗</a>` : ''}</div>
             </details>
           ` : ''}
         </div>
@@ -547,8 +584,8 @@
   function renderPlan() {
     const root = $('#labPlanSections');
     if (!root) return;
-    const entries = buildPlanEntries();
-    const selectedEntries = entries.filter(entry => !state.excludedTestIds.has(entry.test.id));
+    const entries = visiblePlanEntries();
+    const selectedEntries = entries.filter(isEntrySelected);
     const dxCount = state.selectedIndicationIds.size;
 
     $('#labSelectedTestCount').textContent = String(selectedEntries.length);
@@ -558,10 +595,11 @@
     if (status) {
       if (!entries.length) {
         status.textContent = dxCount
-          ? 'Profilet e zgjedhura nuk kanë analiza të lidhura në katalog.'
+          ? 'Nuk ka analiza laboratorike rutinë për këtë përzgjedhje.'
           : 'Zgjidh një diagnozë ose shto analizë manualisht.';
       } else {
-        status.textContent = `${dxCount} diagnoza · ${entries.length} analiza në panel · ${selectedEntries.length} të zgjedhura`;
+        status.textContent = `${dxCount} profile · ${entries.length} analiza të mundshme · ${selectedEntries.length} të zgjedhura`;
+        if(!selectedEntries.length) status.textContent += ' · Zgjidh vetëm ato që indikohen.';
       }
     }
 
@@ -571,7 +609,7 @@
           <span class="lab-empty-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 16h9"/></svg>
           </span>
-          <strong>Zgjidh diagnozat sipër.</strong>
+          <strong>Zgjidh simptomën ose diagnozën sipër.</strong>
           <span>DRx do t’i bashkojë analizat e nevojshme dhe do ta shpjegojë pse sugjerohet secila.</span>
         </div>`;
       return;
@@ -631,8 +669,11 @@
     state.selectedIndicationIds.clear();
     state.manualTestIds.clear();
     state.excludedTestIds.clear();
+    state.optedInTestIds.clear();
     state.diseaseTerm = '';
     state.manualTerm = '';
+    state.profileGroup = '';
+    if($('#labProfileGroup')) $('#labProfileGroup').value = '';
 
     if ($('#labDiseaseSearch')) $('#labDiseaseSearch').value = '';
     if ($('#labManualSearch')) $('#labManualSearch').value = '';
@@ -644,18 +685,18 @@
   }
 
   function togglePlannedTest(id, checked) {
-    if (checked) state.excludedTestIds.delete(id);
-    else state.excludedTestIds.add(id);
+    if (checked) {state.excludedTestIds.delete(id);state.optedInTestIds.add(id);}
+    else {state.excludedTestIds.add(id);state.optedInTestIds.delete(id);}
     renderPlan();
   }
 
   function copyPlanText() {
     const indications = selectedIndications();
-    const entries = buildPlanEntries().filter(entry => !state.excludedTestIds.has(entry.test.id));
+    const entries = visiblePlanEntries().filter(isEntrySelected);
     const lines = [];
 
     if (indications.length) {
-      lines.push('Diagnozat:');
+      lines.push('Simptoma / diagnoza:');
       indications.forEach(item => {
         const codes = (item.icdCodes || []).join(', ');
         lines.push(`- ${item.title}${codes ? ` (${codes})` : ''}`);
@@ -711,6 +752,8 @@
   }
 
   function bindEvents() {
+    $('#labProfileGroup')?.addEventListener('change',event=>{state.profileGroup=event.target.value;renderDiseaseList();});
+    $('#labPickerDone')?.addEventListener('click',()=>{closeDiseasePicker();$('#labDiseaseTrigger')?.focus();});
     $('#labDiseaseTrigger')?.addEventListener('click', toggleDiseasePicker);
     $('#labDiseaseTrigger')?.addEventListener('keydown', event => {
       if (event.key !== 'ArrowDown') return;
@@ -734,7 +777,13 @@
 
     $('#labDiseaseList')?.addEventListener('click', event => {
       const button = event.target.closest('[data-disease-id]');
-      if (button) toggleIndication(button.dataset.diseaseId);
+      if (button) {
+        const id = button.dataset.diseaseId;
+        const restoreFocus = document.activeElement === button;
+        toggleIndication(id);
+        if (restoreFocus) [...$('#labDiseaseList').querySelectorAll('[data-disease-id]')]
+          .find(option => option.dataset.diseaseId === id)?.focus();
+      }
     });
     $('#labDiseaseList')?.addEventListener('keydown', event => {
       if (!['ArrowDown', 'ArrowUp'].includes(event.key)) return;
@@ -800,8 +849,11 @@
     $('#labCopyPlan')?.addEventListener('click', copyPlan);
 
     document.addEventListener('click', event => {
-      if (!event.target.closest('#labDiseasePicker')) closeDiseasePicker();
-      if (!event.target.closest('#labManualPicker')) hideManualResults();
+      // Rendering a choice replaces the clicked node. The original event path
+      // still identifies an inside click after that node has been detached.
+      const path = event.composedPath();
+      if (!path.includes($('#labDiseasePicker'))) closeDiseasePicker();
+      if (!path.includes($('#labManualPicker'))) hideManualResults();
     });
   }
 
