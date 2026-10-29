@@ -175,6 +175,7 @@ for(const width of [390,1440])test(`Cephalosporin allergy needs a qualified hist
 test('Newborn selection never exposes a routine outpatient or hospital regimen',async({page})=>{
   await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
   await page.goto(baseURL+'/antibiotiket.html?indication=cellulitis');
+  await expect(page.locator('#ageOptional')).toHaveText('— e nevojshme');
   await page.locator('#weightInput').fill('3.3');await page.locator('#ageSelect').selectOption('newborn');
   await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
   await expect(page.locator('.abx-hosp-card')).toHaveCount(0);

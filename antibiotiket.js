@@ -487,7 +487,7 @@
 
   function renderAgeHint(indication) {
     const age = currentAgeBand();
-    const required = Number.isFinite(indication.minAgeMonths) || indication.options.some(option => option.duration?.type === 'age-bands');
+    const required = Number.isFinite(indication.minAgeMonths) || indication.options.some(option => option.kind !== 'procedure' && option.route !== 'topike');
     const derived = Boolean(age) && ctx.ageFromWeight;
     el.ageOptional.textContent = derived ? '— nga pesha' : required ? '— e nevojshme' : '— opsionale';
     el.age.classList.toggle('is-required', required && !age);
@@ -518,7 +518,7 @@
     const state = weightState();
     const age = currentAgeBand();
     const needsAge = Number.isFinite(indication.minAgeMonths)
-      || indication.options.some(option => option.duration?.type === 'age-bands');
+      || indication.options.some(option => option.kind !== 'procedure' && option.route !== 'topike');
 
     if (state.kind === 'invalid') {
       el.weight.setAttribute('aria-invalid', 'true');
