@@ -54,6 +54,17 @@ for(const width of [320,390,1440])test(`Symptom search, grouped picker and delib
   await expect(page.locator('#labClinicalGuide')).toBeHidden();await expect(page.locator('#labCopyPlan')).toBeDisabled();
 });
 
+test('Keyboard selection keeps focus after rerender and Escape returns to the trigger',async({page})=>{
+  await page.goto(baseURL+'/analizat.html');
+  await page.locator('#labDiseaseTrigger').focus();await page.keyboard.press('ArrowDown');
+  await expect(page.locator('#labDiseaseSearch')).toBeFocused();
+  await page.locator('#labDiseaseSearch').fill('lodhje');await page.keyboard.press('ArrowDown');
+  const option=page.locator('[data-disease-id="symptom-lodhja"]');await expect(option).toBeFocused();
+  await page.keyboard.press('Enter');await expect(option).toHaveAttribute('aria-selected','true');await expect(option).toBeFocused();
+  await page.keyboard.press('Enter');await expect(option).toHaveAttribute('aria-selected','false');await expect(option).toBeFocused();
+  await page.keyboard.press('Escape');await expect(page.locator('#labDiseasePopover')).toBeHidden();await expect(page.locator('#labDiseaseTrigger')).toBeFocused();
+});
+
 test('Typical headache does not silently order blood tests',async({page})=>{
   await page.goto(baseURL+'/analizat.html?dx=simptoma-cefaleja');
   await expect(page.locator('#labClinicalGuide')).toContainText('papritur');

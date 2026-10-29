@@ -141,6 +141,7 @@
       if (event.key === 'Escape') {
         if (!$('#labDiseasePopover')?.hidden) {
           closeDiseasePicker();
+          $('#labDiseaseTrigger')?.focus();
           return;
         }
         if (!$('#labManualResults')?.hidden) {
@@ -776,7 +777,13 @@
 
     $('#labDiseaseList')?.addEventListener('click', event => {
       const button = event.target.closest('[data-disease-id]');
-      if (button) toggleIndication(button.dataset.diseaseId);
+      if (button) {
+        const id = button.dataset.diseaseId;
+        const restoreFocus = document.activeElement === button;
+        toggleIndication(id);
+        if (restoreFocus) [...$('#labDiseaseList').querySelectorAll('[data-disease-id]')]
+          .find(option => option.dataset.diseaseId === id)?.focus();
+      }
     });
     $('#labDiseaseList')?.addEventListener('keydown', event => {
       if (!['ArrowDown', 'ArrowUp'].includes(event.key)) return;
