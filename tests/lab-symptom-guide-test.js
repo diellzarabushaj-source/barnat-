@@ -14,6 +14,14 @@ for(const p of data.indications.filter(p=>p.kind==='symptom')){
   assert.equal(new Set(p.tests.map(t=>t.testId)).size,p.tests.length,p.slug+' duplicates a test');
 }
 const symptom=slug=>data.indications.find(p=>p.slug==='simptoma-'+slug);
+// Exercise the real worker key builder: deployment data must not hit the old
+// authenticated six-profile response, while the worker marker stays ignorable.
+const worker=fs.readFileSync(require('node:path').join(__dirname,'../sw.js'),'utf8');
+const keySource=worker.match(/function queryKey\(url\) \{[\s\S]*?\n\}/)[0];
+const key=vm.runInNewContext('('+keySource+')',{URL,requestFor:value=>value});
+const endpoint='https://example.test/api/icd?dataset=labs';
+assert.notEqual(key(new URL(endpoint)),key(new URL(endpoint+'&revision=lab-symptoms-20261029-v1')));
+assert.equal(key(new URL(endpoint+'&revision=lab-symptoms-20261029-v1')),key(new URL(endpoint+'&revision=lab-symptoms-20261029-v1&__drx_worker=1')));
 for(const [slug,term] of [['lodhja','lodhje'],['dhimbja-fytit','dhimbje fyti'],['humbja-peshes','humbje peshe'],['verdheza','verdheze'],['nyjet','dhimbje nyje']]){
   assert.ok(symptom(slug).aliases.includes(term),'Search must cover common Albanian inflections: '+term);
 }

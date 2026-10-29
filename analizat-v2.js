@@ -162,7 +162,8 @@
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 9000);
     try {
-      const response = await fetch('/api/icd?dataset=labs', {
+      // Keep this catalog revision separate from the device's older lab dataset.
+      const response = await fetch('/api/icd?dataset=labs&revision=lab-symptoms-20261029-v1', {
         credentials:'same-origin',
         cache:'no-store',
         headers:{ Accept:'application/json' },

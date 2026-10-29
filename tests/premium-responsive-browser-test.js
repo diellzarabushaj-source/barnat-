@@ -36,7 +36,7 @@ const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'
    const context = await browser.newContext({viewport:{width,height:900},serviceWorkers:'block',isMobile:width<761,hasTouch:width<1024});
    await context.route('**/api/dosage?view=master-catalog', route => route.fulfill({json:master.catalog()}));
    await context.route('**/api/dosage?view=pediatric-common-reference*', route => route.fulfill({json:pediatricReference}));
-   await context.route('**/api/icd?dataset=labs', route => route.fulfill({json:labFixture}));
+   await context.route('**/api/icd?dataset=labs**', route => route.fulfill({json:labFixture}));
    await context.addInitScript(data=>{
     // Exercise the explicit table preference, including its mobile row actions.
     localStorage.setItem('drx_registry_v2_row_view','table');

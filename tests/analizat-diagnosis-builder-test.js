@@ -54,7 +54,7 @@ assert.ok(pageRuntimes[0].includes('analizat-v2.js?v=3'));
 assert.doesNotMatch(html, /tailadmin-|analizat-polish|medical-hub\.css|lab-sheet-data|auth-client\.js|clean-medindex-ui|clinical-density|app-polish|performance\.css/);
 assert.doesNotMatch(html, /<\/div>\s*<\/div>\s*<\/main>/, 'Analizat V2 main wrapper must stay balanced');
 
-assert.match(js, /fetch\('\/api\/icd\?dataset=labs'/);
+assert.match(js, /fetch\('\/api\/icd\?dataset=labs&revision=lab-symptoms-20261029-v1'/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
 assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/);
 assert.match(js, /const TIER_ORDER = Object\.freeze\(\{ core:0, recommended:1, conditional:2, manual:3 \}\)/);
