@@ -22,8 +22,7 @@
 
   function doseForRegimen(regimen, weightKg, drugName, ageMonths=null) {
     if (!regimen?.dose) return null;
-    if (Number.isFinite(regimen.minAgeMonths) && !Number.isFinite(ageMonths)) return null;
-    if (Number.isFinite(regimen.minAgeMonths) && ageMonths < regimen.minAgeMonths) return null;
+    if (!Number.isFinite(ageMonths) || ageMonths < Math.max(1, regimen.minAgeMonths || 0)) return null;
 
     const dose = regimen.dose;
     if (dose.type === 'single') {
@@ -52,8 +51,11 @@
     if (prep.exactProduct && !exactProductConfirmed) return { gate:'VERIFY_EXACT_PRODUCT' };
 
     if (dose.kind === 'units') {
-      if (!Number.isFinite(prep.unitsPerMl) || !Number.isFinite(prep.doseUnits) || prep.doseUnits !== dose.value) return { gate:'BLOCK_PRODUCT_DOSE_MISMATCH' };
-      return { gate:'ALLOW', rawVolumeMl:dose.value / prep.unitsPerMl };
+      if (!Number.isFinite(prep.doseUnits) || prep.doseUnits !== dose.value) return { gate:'BLOCK_PRODUCT_DOSE_MISMATCH' };
+      // Bicillin L-A sizes are nominal presentations with product overfill.
+      // The complete matched prefilled syringe delivers its labelled units;
+      // treating the nominal 1/2 mL size as a withdrawal instruction is unsafe.
+      return { gate:'ALLOW', wholeSyringes:1, doseUnits:dose.value };
     }
 
     if (dose.kind !== 'mg') return { gate:'BLOCK_DOSE_TYPE' };
@@ -162,7 +164,8 @@
     const rows = [];
     if (prep.presentation) rows.push(['Produkti', `${prep.product} · ${prep.presentation}`]);
     if (prep.diluent) rows.push(['Tretësi / përgatitja', prep.amountAdded ? `${prep.diluent} · ${prep.amountAdded}` : prep.diluent]);
-    if (prep.stockText) rows.push(['Stock', prep.stockText]);
+    if (prep.calcMode === 'units-exact-syringe') rows.push(['Përmbajtja e shiringës', `${fmt(prep.doseUnits)} IU · shiringë e plotë`]);
+    else if (prep.stockText) rows.push(['Stock', prep.stockText]);
     if (prep.targetText) rows.push(['Hollimi final', prep.targetText]);
     else if (prep.target?.kind === 'volume-range') rows.push(['Hollimi final', `${prep.target.min}–${prep.target.max} ${prep.target.unit}`]);
     else if (prep.target?.kind === 'max-concentration') rows.push(['Koncentrimi final', `≤${prep.target.max} ${prep.target.unit}`]);
@@ -206,7 +209,10 @@
     }
 
     const grid = make('div', 'abx-prep-results');
-    if (Number.isFinite(result.rawVolumeMl)) grid.append(resultRow('Vëllimi', `${fmt(result.rawVolumeMl)} mL`));
+    if (result.wholeSyringes === 1) {
+      grid.append(resultRow('Doza', `${fmt(result.doseUnits)} IU · 1 shiringë e plotë e parapërgatitur`));
+      target.append(make('p', 'abx-prep-gate', 'Përdor shiringën e plotë me njësitë e përputhshme. Madhësia nominale e shiringës nuk përdoret për tërheqje të pjesshme në mL. Vetëm IM.'));
+    }
     if (Number.isFinite(result.rawStockMl)) grid.append(resultRow('Tërhiq nga stock-u', `${fmt(result.rawStockMl)} mL`));
     if (Number.isFinite(result.rawFinalVolumeMl)) grid.append(resultRow('Vëllimi final matematik', `${fmt(result.rawFinalVolumeMl)} mL`));
     if (Number.isFinite(result.rawMinimumFinalVolumeMl)) grid.append(resultRow('Vëllimi final minimal', `≥${fmt(result.rawMinimumFinalVolumeMl)} mL`));

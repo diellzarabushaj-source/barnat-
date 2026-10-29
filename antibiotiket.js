@@ -41,6 +41,7 @@
     orbitalRedFlags:false,
     ageFromWeight:false,
     ageConfirmed:false,
+    cephLowRiskConfirmed:false,
   };
 
   const tierLabels = Object.freeze({
@@ -322,7 +323,7 @@
 
   function durationText(option) {
     const duration = option.duration || {};
-    if (duration.type === 'fixed') return duration.text;
+    if (duration.type === 'fixed') return duration.severeText ? `${duration.text} · ${duration.severeText}` : duration.text;
     if (duration.type === 'age-bands') {
       const age = currentAgeBand();
       let text = '';
@@ -343,6 +344,10 @@
   }
 
   function allergyAllowed(option) {
+    // A generic cephalosporin allergy does not establish tolerance to penicillins.
+    // The 2022 practice parameter permits routine use only in the low-risk,
+    // non-anaphylactic history; anaphylaxis/SCAR requires a separate assessment.
+    if (ctx.allergy === 'a4' && /amoxicillin|ampicillin|penicillin/i.test(option.drug) && !ctx.cephLowRiskConfirmed) return false;
     const list = option.allergy || [];
     return list.includes('any') || list.includes(ctx.allergy);
   }
@@ -382,13 +387,15 @@
         return { blocks:true, tone:'warn', text:`Kjo skemë fikse 875/125 mg kërkon peshë ≥${fmt(indication.minWeightKg)} kg. Pesha e dhënë është ${fmt(state.value)} kg; përdor dozimin pediatrik sipas kg dhe formulimit.` };
       }
     }
-    if (!Number.isFinite(indication.minAgeMonths)) return null;
+    // This outpatient calculator deliberately excludes young infants. Its
+    // routine schedules are not neonatal doses or a febrile-infant pathway.
+    const minAgeMonths = Math.max(3, indication.minAgeMonths || 0);
     const age = currentAgeBand();
-    const threshold = indication.minAgeMonths < 12 ? `${indication.minAgeMonths} muaj` : `${Math.round(indication.minAgeMonths / 12)} vjeç`;
+    const threshold = minAgeMonths < 12 ? `${minAgeMonths} muaj` : `${Math.round(minAgeMonths / 12)} vjeç`;
     if (!age || !ctx.ageConfirmed) {
       return { blocks:false, tone:'info', text:`Kjo skemë vlen për moshën ≥${threshold}. Konfirmo moshën reale; mosha e sugjeruar nga pesha nuk e konfirmon pragun.` };
     }
-    if (age.months >= indication.minAgeMonths) return null;
+    if (age.months >= minAgeMonths) return null;
     return { blocks:true, tone:'warn', text:`Kjo skemë ambulatore kërkon moshën ≥${threshold}, ndërsa mosha e zgjedhur është ${age.label.toLocaleLowerCase('sq')}. Nevojitet vlerësim tjetër klinik / eskalim.` };
   }
 
@@ -461,6 +468,7 @@
   function buildAllergySegments() {
     buildChoice(el.allergyChoice, 'abx-allergy', allergyOptions, ctx.allergy, value => {
       ctx.allergy = value;
+      ctx.cephLowRiskConfirmed = false;
       collapsePicker(el.allergyPicker);
       render();
     }, 'abx-segment');
@@ -479,7 +487,7 @@
 
   function renderAgeHint(indication) {
     const age = currentAgeBand();
-    const required = Number.isFinite(indication.minAgeMonths) || indication.options.some(option => option.duration?.type === 'age-bands');
+    const required = Number.isFinite(indication.minAgeMonths) || indication.options.some(option => option.kind !== 'procedure' && option.route !== 'topike');
     const derived = Boolean(age) && ctx.ageFromWeight;
     el.ageOptional.textContent = derived ? '— nga pesha' : required ? '— e nevojshme' : '— opsionale';
     el.age.classList.toggle('is-required', required && !age);
@@ -510,7 +518,7 @@
     const state = weightState();
     const age = currentAgeBand();
     const needsAge = Number.isFinite(indication.minAgeMonths)
-      || indication.options.some(option => option.duration?.type === 'age-bands');
+      || indication.options.some(option => option.kind !== 'procedure' && option.route !== 'topike');
 
     if (state.kind === 'invalid') {
       el.weight.setAttribute('aria-invalid', 'true');
@@ -598,6 +606,17 @@
     const bucket = allergyById(ctx.allergy);
     hint.textContent = bucket?.note || '';
     hint.hidden = !usesAllergy;
+    let cephCheck = $('cephAllergyConfirmation');
+    if (!cephCheck) {
+      cephCheck = make('label', 'abx-age-confirmation');
+      cephCheck.id = 'cephAllergyConfirmation';
+      const input = make('input');input.type = 'checkbox';
+      input.addEventListener('change', () => {ctx.cephLowRiskConfirmed = input.checked;render();});
+      cephCheck.append(input, make('span', '', 'Histori e paverifikuar, e lehtë: pa anafilaksi, pa SCAR dhe pa alergji ndaj penicilinës.'));
+      el.allergyField.append(cephCheck);
+    }
+    cephCheck.hidden = !usesAllergy || ctx.allergy !== 'a4';
+    cephCheck.querySelector('input').checked = ctx.cephLowRiskConfirmed;
   }
 
   function doseRow(label, value, basisKind, role) {
@@ -627,7 +646,7 @@
     const card = make('article', `abx-option tier-${option.tier || 'option'}`);
     card.dataset.regimenId = option.id;
     card.dataset.ageConfirmed = String(ctx.ageConfirmed);
-    card.dataset.ageRequired = String(Number.isFinite(currentIndication()?.minAgeMonths) || option.duration?.type==='age-bands' || option.frequencyByAge===true || currentIndication()?.id==='gas');
+    card.dataset.ageRequired = String(option.kind !== 'procedure' && option.route !== 'topike');
     card.dataset.requiresRealWeight = String(option.dose?.type === 'weight-bands' || Number.isFinite(currentIndication()?.minWeightKg));
     // Converters consume the unrounded value, never the presentation rounding.
     card.dataset.exactDoseText = calculatedValue(option, basis.weight, value => String(value));
@@ -695,14 +714,14 @@
       limitBox.append(make('small','','Tavani i skemës, para kufizimit sipas peshës:'));
       limits.forEach(line=>limitBox.append(make('span','',line)));
       limitBox.append(make('small','','Kufiri për 24 orë llogaritet nga maksimumi për dozë dhe frekuenca e kësaj skeme.'));
-      card.append(limitBox);
+      workingBody.append(limitBox);
     }
     const sourceLink = source?.url ? make('a', 'abx-verify-source', 'Kontrollo skemën në burim ↗') : null;
     if (sourceLink) {
       sourceLink.href = source.url;
       sourceLink.target = '_blank';
       sourceLink.rel = 'noopener noreferrer';
-      card.append(sourceLink);
+      workingBody.append(sourceLink);
     }
     if (option.durationSource) {
       const durationSource = sourceById(option.durationSource);
@@ -710,7 +729,7 @@
       link.href = durationSource.url;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
-      card.append(link);
+      workingBody.append(link);
     }
     if (option.dose?.type === 'range') card.append(make('p', 'abx-option-note', 'Ky është interval doze. Zgjidh një dozë të vetme brenda tij para përshkrimit.'));
     if (['single','range'].includes(option.dose?.type) && !Number.isFinite(option.dose.maxDose)) card.append(make('p', 'abx-missing-limit', 'Maksimumi nuk jepet nga ky burim. Rezultati është llogaritje sipas kg, pa kufizim automatik të dozës.'));
@@ -723,7 +742,7 @@
 
   function renderSources(indication) {
     el.sourceList.replaceChildren();
-    const sourceIds = new Set([indication.source, 'chop-allergy-2025', 'carpa']);
+    const sourceIds = new Set([indication.source, 'chop-allergy-2025', 'jtfpp-allergy-2022', 'carpa']);
     indication.options.forEach(option => {
       if (option.source) sourceIds.add(option.source);
       if (option.durationSource) sourceIds.add(option.durationSource);

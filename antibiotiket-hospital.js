@@ -103,6 +103,8 @@
   }
 
   function allergyAllowed(regimen, allergy) {
+    if (allergy === 'a4' && /amoxicillin|ampicillin|penicillin/i.test(regimen.drug)
+      && document.querySelector('#cephAllergyConfirmation input')?.checked !== true) return false;
     if (Array.isArray(regimen.allowedAllergy) && !regimen.allowedAllergy.includes(allergy)) return false;
     if (Array.isArray(regimen.blockedAllergy) && regimen.blockedAllergy.includes(allergy)) return false;
     return true;
@@ -116,8 +118,8 @@
   }
 
   function ageAllowed(regimen, months) {
-    if (!Number.isFinite(regimen.minAgeMonths) || !Number.isFinite(months)) return true;
-    return months >= regimen.minAgeMonths;
+    if (!Number.isFinite(months)) return true; // Source formula only; no numeric dose or preparation.
+    return months >= Math.max(1, regimen.minAgeMonths || 0);
   }
 
   function formulaText(dose) {
@@ -208,8 +210,8 @@
     if (!Number.isFinite(weight) && ['single','combo','weight-threshold'].includes(regimen.dose?.type)) {
       dose.append(make('small', 'abx-hosp-weight-note', 'Shkruaj peshën reale për dozën numerike. Pesha referuese nuk përdoret për finalizim spitalor.'));
     }
-    if (Number.isFinite(regimen.minAgeMonths) && !Number.isFinite(months)) {
-      dose.append(make('small', 'abx-hosp-weight-note', `Verifiko moshën reale; kjo skemë ka prag ≥${regimen.minAgeMonths} muaj.`));
+    if (!Number.isFinite(months)) {
+      dose.append(make('small', 'abx-hosp-weight-note', `Konfirmo moshën reale para dozës numerike. Ky modul nuk mbulon të porsalindurit; pragu i kësaj skeme është ≥${Math.max(1, regimen.minAgeMonths || 0)} muaj.`));
     }
 
     const meta = make('div', 'abx-hosp-meta');
@@ -276,7 +278,7 @@
       );
       list.append(empty);
     } else {
-      allowed.forEach(regimen => list.append(cardFor(regimen, weight, months)));
+      allowed.forEach(regimen => list.append(cardFor(regimen, Number.isFinite(months) ? weight : null, months)));
     }
 
     const count = allowed.length;

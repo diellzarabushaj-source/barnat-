@@ -70,7 +70,7 @@ assert.match(runtime, /orbitalRedFlags/);
 
 const shell = read('antibiotiket-shell.js');
 assert.match(shell, /antibiotiket-hospital-data\.js\?v=antibiotiket-phase5-v1/);
-assert.match(shell, /antibiotiket-hospital\.js\?v=antibiotiket-phase5-20261028/);
+assert.match(shell, /antibiotiket-hospital\.js\?v=antibiotiket-phase5-review-20261028/);
 assert.match(shell, /antibiotiket-hospital\.css\?v=antibiotiket-phase5-v1/);
 const css = read('antibiotiket-hospital.css');
 assert.match(css, /\.abx-hospital\{/);

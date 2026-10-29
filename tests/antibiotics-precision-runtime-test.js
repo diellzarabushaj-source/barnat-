@@ -12,13 +12,50 @@ function runtime(overlay) {
   if (overlay) vm.runInContext(read('antibiotiket-shell.js'), context);
   vm.runInContext(read('antibiotiket-data.js'), context);
   // Exercise the actual calculation functions without mounting a DOM.
-  const code = read('antibiotiket.js').replace(/  restoreContext\(\);[\s\S]*$/, '  window.engine = {fmt, calculateSimple, calculatedValue, dailyDose, formulaText, calculationSteps, doseLimits, marketCeilings};\n})();');
+  const code = read('antibiotiket.js').replace(/  restoreContext\(\);[\s\S]*$/, '  window.engine = {fmt, calculateSimple, calculatedValue, dailyDose, formulaText, calculationSteps, doseLimits, marketCeilings, ctx, eligibility, allergyAllowed, durationText};\n})();');
   vm.runInContext(code, context);
   return { engine:context.window.engine, guide:context.window.DRX_ANTIBIOTIC_GUIDE };
 }
 const base = runtime(false);
 const live = runtime(true);
 const option = (r, id) => r.guide.indications.flatMap(i => i.options).find(o => o.id === id);
+// Independent review ledger: indication-specific source coefficients and caps,
+// including explicit absence of an absolute maximum in the CPS UTI table.
+const reviewedSimple = [
+  [['amox-aom','amox-pna'],40,50,2000], [['amoxclav-aom'],40,50,2000],
+  [['cefpodoxime-aom','cefpodoxime-pna','cefpodoxime-sinusitis'],5,5,200],
+  [['cefdinir-aom'],7,7,300], [['clinda-aom','clinda-pna'],10,10,600],
+  [['amoxicillin-gas'],50,50,1000], [['cephalexin-gas'],20,20,500],
+  [['clinda-gas'],7,7,300], [['clarithro-gas'],7.5,7.5,250],
+  [['amox-sinusitis','amoxclav-sinusitis'],45,45,2000], [['levo-sinusitis'],8,10,750],
+  [['cephalexin-cystitis'],12.5,12.5,null], [['amoxclav-cystitis','amoxclav-pyelo'],40/3,40/3,null],
+  [['cefixime-cystitis','cefixime-pyelo','tmpsmx-cystitis','tmpsmx-pyelo'],4,4,null],
+  [['nitro-cystitis'],1.25,1.75,null], [['cephalexin-pyelo'],25,25,null], [['cipro-pyelo'],15,15,null],
+  [['cephalexin-impetigo','cephalexin-cellulitis','cephalexin-preseptal'],17,17,500],
+  [['clinda-impetigo','clinda-cellulitis','clinda-abscess','clinda-preseptal','clinda-lymph'],10,10,450],
+  [['tmpsmx-impetigo','tmpsmx-abscess'],4,6,160], [['cefpodoxime-preseptal'],5,5,400],
+  [['amoxclav-cellulitis','amoxclav-preseptal','amoxclav-bite-proph','amoxclav-bite-treat','amoxclav-lymph'],22.5,22.5,875],
+  [['cephalexin-lymph'],17,25,1000],
+];
+const reviewed = new Set();
+for(const [ids,min,max,cap] of reviewedSimple)for(const id of ids){
+  const dose=option(base,id).dose;reviewed.add(id);
+  assert.deepEqual([dose.type==='range'?dose.min:dose.value,dose.type==='range'?dose.max:dose.value,dose.maxDose??null],[min,max,cap],id+' differs from its reviewed source');
+}
+for(const id of ['penicillin-gas','mupirocin-impetigo','amoxclav-wound-cut-ge40','id-abscess','azithro-gas','azithro-pna-atypical','combo-bite-proph','combo-bite-treat'])reviewed.add(id);
+assert.equal(reviewed.size,51,'Every current option must be represented in the review ledger');
+assert.deepEqual([...reviewed].sort(),Array.from(base.guide.indications.flatMap(i=>i.options.map(o=>o.id))).sort());
+for(const [id,values,caps] of [['azithro-gas',[12,6],[500,250]],['azithro-pna-atypical',[10,5],[500,250]]]){
+  const steps=option(base,id).dose.steps;
+  assert.deepEqual(Array.from(steps,s=>s.value),values,id);
+  assert.deepEqual(Array.from(steps,s=>s.maxDose),caps,id);
+}
+for(const id of ['combo-bite-proph','combo-bite-treat']){
+  const parts=option(base,id).dose.parts;
+  assert.deepEqual(Array.from(parts,p=>[p.dose.value,p.dose.maxDose,p.frequency]),[[5,160,'2 herë/ditë'],[10,450,'3 herë/ditë']],id);
+}
+assert.equal(option(base,'penicillin-gas').dose.value,250);
+assert.equal(option(base,'amoxclav-wound-cut-ge40').dose.text,'875/125 mg/dozë');
 for (const id of ['amoxclav-cystitis','amoxclav-pyelo']) {
   const o = option(base,id);
   assert.equal(base.engine.calculateSimple(o.dose,18).min,240);
@@ -75,4 +112,25 @@ for (const i of live.guide.indications) for(const o of i.options) {
     count++;
   }
 }
-console.log(`Antibiotics runtime precision: PASS (${count} live regimen/weight cases, canonical source identity, thresholds, caps, exact transport and GAS durations).`);
+// Review the actual eligibility path for every indication, including those
+// without a source-specific age field. None is a neonatal treatment pathway.
+for(const indication of base.guide.indications){
+  Object.assign(base.engine.ctx,{indication:indication.id,weight:'40',age:'newborn',ageConfirmed:true});
+  assert.equal(base.engine.eligibility(indication).blocks,true,indication.id+' must exclude newborns');
+}
+for(const indication of base.guide.indications)for(const o of indication.options){
+  if(!(o.allergy||[]).includes('a4')||!/amoxicillin|ampicillin|penicillin/i.test(o.drug))continue;
+  Object.assign(base.engine.ctx,{allergy:'a4',cephLowRiskConfirmed:false});
+  assert.equal(base.engine.allergyAllowed(o),false,o.id+' cannot assume low-risk cephalosporin allergy');
+  base.engine.ctx.cephLowRiskConfirmed=true;
+  assert.equal(base.engine.allergyAllowed(o),true,o.id+' retains the explicitly confirmed low-risk path');
+}
+for(const o of base.guide.indications.find(i=>i.id==='sinusitis').options){
+  assert.match(base.engine.durationText(o),/5–7 ditë.*>39°C.*5–10 ditë/);
+}
+// Exercise the production parser, rather than duplicating its range logic.
+const parser=read('antibiotiket-prescription.js').match(/  function durationSpec\(text\) \{[\s\S]*?(?=  function isWeightBased)/)[0];
+const parseDuration=new Function('clean',parser+'return durationSpec;')(x=>String(x).trim());
+assert.deepEqual(parseDuration('5–7 ditë · Simptoma të rënda: 5–10 ditë').values,[5,6,7,8,9,10]);
+assert.deepEqual(parseDuration('5–7 ditë · Sëmundje e rëndë: 10 ditë').values,[5,6,7,10]);
+console.log(`Antibiotics runtime precision: PASS (${count} live regimen/weight cases, all-indication neonatal exclusion, risk-qualified allergy, conditional durations and exact transport).`);
