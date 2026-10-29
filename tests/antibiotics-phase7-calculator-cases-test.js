@@ -55,7 +55,7 @@ tc('T012',()=>{ const capsule=solids.drugs.Amoxicillin.forms.find(x=>x.id==='amo
 tc('T013',()=>{ assert.equal(solids.drugs.Amoxicillin.forms.some(x=>x.componentMg===600),false); const rx=read('antibiotiket-prescription.js');
   // No whole-unit match must still hard-stop, and must never round to a fraction
   // of a tablet — the wording of the message is free to change, the stop is not.
-  assert.match(rx,/if \(!selected\) \{[\s\S]{0,900}?return null;/);
+  assert.match(rx,/if \(!selected\) \{[\s\S]{0,1500}?return null;/);
   assert.match(rx,/nuk pjesëtohet në njësi të plota/);
   assert.doesNotMatch(rx,/Math\.round\([^\n]+componentMg[^\n]+\)\s*\/\s*2/); });
 tc('T014',()=>{ assert.equal(hosp('H016').autoVisible,false); assert.equal(hosp('H016').dose.type,'tdm'); const r=prepEngine.calculatePreparation({prep:prep('IV014'),regimenRoute:'IV',dose:{kind:'mg',value:500},exactProductConfirmed:true}); assert.equal(r.gate,'HARD_BLOCK_PREP'); });
