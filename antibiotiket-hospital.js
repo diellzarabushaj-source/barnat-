@@ -95,6 +95,8 @@
   }
 
   function sourceFor(id) {
+    if(id==='ucsfAmpAdult')return {short:'UCSF · Ampicillin 18+',url:'https://idmp.ucsf.edu/content/ampicillin-0'};
+    if(id==='ucsfUnasynAdult')return {short:'UCSF · Ampicillin/sulbactam 18+',url:'https://idmp.ucsf.edu/content/ampicillin-sulbactam-unasyn'};
     return data.sources?.[id] || null;
   }
 
@@ -103,7 +105,7 @@
   }
 
   function allergyAllowed(regimen, allergy) {
-    if (allergy === 'a4' && /amoxicillin|ampicillin|penicillin/i.test(regimen.drug)
+    if (allergy === 'a4' && /amoxicillin|ampicillin|penicillin|cloxacillin/i.test(regimen.drug)
       && document.querySelector('#cephAllergyConfirmation input')?.checked !== true) return false;
     if (Array.isArray(regimen.allowedAllergy) && !regimen.allowedAllergy.includes(allergy)) return false;
     if (Array.isArray(regimen.blockedAllergy) && regimen.blockedAllergy.includes(allergy)) return false;
@@ -124,6 +126,7 @@
 
   function formulaText(dose) {
     if (!dose) return '—';
+    if (dose.type === 'fixed') return `${fmt(dose.value)}${dose.secondComponent?'/'+fmt(dose.secondComponent):''} mg${dose.component?' '+dose.component+(dose.secondComponent?'/sulbactam':''):''}/dozë · skemë fikse 18+`;
     if (dose.type === 'single') {
       const max = Number.isFinite(dose.maxDose) ? ` · maks. ${fmt(dose.maxDose)} mg${dose.component ? ` ${dose.component}` : ''}/dozë` : '';
       return `${fmt(dose.value)} ${dose.unit}${max}`;
@@ -142,6 +145,7 @@
   function calculatedDose(regimen, weight) {
     const dose = regimen.dose;
     if (!dose) return '';
+    if (dose.type === 'fixed') return `${fmt(dose.value)}${dose.secondComponent?'/'+fmt(dose.secondComponent):''} mg${dose.component?' '+dose.component+(dose.secondComponent?'/sulbactam':''):''}/dozë`;
     if (dose.type === 'single') {
       if (!Number.isFinite(weight)) return '';
       const raw = dose.value * weight;
@@ -177,6 +181,8 @@
     card.dataset.regimenId = regimen.id;
     card.dataset.prepIds = (regimen.prepIds || []).join(';');
     card.dataset.route = regimen.route;
+    card.dataset.ageMonths=String(months??'');
+    card.dataset.ageConfirmed=String(Number.isFinite(months));
 
     const head = make('div', 'abx-hosp-card-head');
     const title = make('div', 'abx-hosp-title');
@@ -255,7 +261,7 @@
     const weight = realWeight();
     const months = ageMonths();
     const allergy = allergyBucket();
-    const linked = linkedIds.map(regimenById).filter(Boolean);
+    const linked = linkedIds.map(regimenById).filter(Boolean).map(r=>window.DRX_PENICILLIN_PROTOCOLS?window.DRX_PENICILLIN_PROTOCOLS.resolveHospital(r,months):r).filter(Boolean);
     const allowed = linked.filter(regimen => regimen.autoVisible !== false)
       .filter(regimen => allergyAllowed(regimen, allergy))
       .filter(regimen => ageAllowed(regimen, months))

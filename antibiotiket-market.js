@@ -14,13 +14,16 @@
   function selection(card,drug){return selections.get(card)?.get(drug)||null;}
   function eligible(card,drug,form,variant,product){
     const c=variant?.concentration;
-    if(!product||product.population==='Adult only')return 'Ky produkt shënohet vetëm për të rritur në regjistër.';
+    if(window.DRX_PENICILLIN_PROTOCOLS){
+      const reason=window.DRX_PENICILLIN_PROTOCOLS.productReason({drug,rule:JSON.parse(card.dataset.productRule||'null'),months:Number(card.dataset.ageMonths),confirmed:card.dataset.ageConfirmed==='true',form,concentration:c,product});
+      if(reason)return reason;
+    }else if(!product||product.population==='Adult only')return 'Ky produkt shënohet vetëm për të rritur në regjistër.';
     if(form.route!=='oral')return 'Formë jo orale: mos përdor konvertimin e shurupit ose tabletës. Përgatitja IV/IM kontrollohet sipas produktit.';
     if(form.modified)return 'Çlirimi i modifikuar kërkon skemë specifike për këtë produkt.';
     if(c?.reason||c?.unit!=='mg'||!(c.value>0))return c?.reason||'Përmbajtja për njësi kërkon verifikim.';
     if(form.measure==='liquid'&&!(c.perML>0))return 'Nuk jepet përqendrim i verifikuar për mL.';
     if(!['liquid','whole'].includes(form.measure))return 'Kjo formë nuk ka konvertim automatik.';
-    if(drug==='Amoxicillin / clavulanate'){
+    if(drug==='Amoxicillin / clavulanate'&&!window.DRX_PENICILLIN_PROTOCOLS){
       const ratio=Number(clean(c.basis).split('|ratio:')[1]?.replace(',','.'));
       const indication=new URL(location.href).searchParams.get('indication');
       const allowed=['aom','sinusitis'].includes(indication)?[14]:indication==='bite'?[4,7]:[7];
@@ -66,7 +69,7 @@
         if(!picked||picked.reason){result.hidden=true;return;}
         result.hidden=false;
         const weight=Number(clean(document.getElementById('weightInput')?.value).replace(',','.'));
-        if(!(weight>=1&&weight<=200)){result.append(make('span','','Shkruaj peshën reale për dozën.'));return;}
+        if(card.dataset.weightRequired!=='false'&&!(weight>=1&&weight<=200)){result.append(make('span','','Shkruaj peshën reale për dozën.'));return;}
         if(card.dataset.ageRequired==='true'&&card.dataset.ageConfirmed!=='true'){result.append(make('span','','Konfirmo moshën reale për këtë skemë.'));return;}
         const conversion=window.DRX_ANTIBIOTIC_MARKET_MATH?.convert({doseText:card.dataset.exactDoseText,drug:part.drug,combo:parts.length>1,form:picked.form,concentration:picked.variant.concentration});
         if(!conversion||conversion.error){result.append(make('span','',conversion?.error||'Konvertimi nuk u ngarkua. Rifresko faqen.'));return;}
@@ -87,7 +90,7 @@
           const phase=make('div','abx-market-dose-phase');result.append(phase);
           if(conversion.rows.length>1)phase.append(make('b','abx-market-phase-label',row.label));
           const single=make('div','abx-market-single');
-          single.append(make('span','abx-market-dose-label',`Për një marrje · ${fmt(weight)} kg · nga goja`));
+          single.append(make('span','abx-market-dose-label',`Për një marrje${weight>=1?' · '+fmt(weight)+' kg':''} · nga goja`));
           const representable=row.unit==='mL'||row.units||row.choices.length;
           if(representable)single.append(make('strong','',amount(row)));
           else single.append(make('span','','Doza nuk përputhet me njësi të plota. Zgjidh një fortësi ose formë tjetër; tableta nuk ndahet automatikisht.'));
@@ -104,7 +107,7 @@
           if(row.unit==='mL'&&row.mgMin!==row.mgMax)phase.append(make('small','',`Kufiri për ${fmt(weight)} kg në këtë skemë: ${fmt(row.max)} mL për marrje. Zgjidh një dozë brenda intervalit.`));
           if(row.unit!=='mL'&&!row.units&&row.choices.length)phase.append(make('small','','Njësi të plota brenda intervalit. Konfirmo një dozë te receta.'));
           const limit=ceiling?.rows[index],maximum=make('div','abx-market-maximum');
-          maximum.append(make('span','abx-market-dose-label',ceiling?.fixed?'Doza e skemës fikse':`Maksimumi për ${fmt(weight)} kg · kjo skemë`));
+          maximum.append(make('span','abx-market-dose-label',ceiling?.fixed?'Doza e kësaj skeme':`Kufiri i llogaritur për ${fmt(weight)} kg · kjo skemë`));
           if(Number.isFinite(limit?.mg)&&limit.mg>0){
             const perDose=limit.mg;
             const mg=`${fmt(perDose)} mg${basis?' · '+basis:''} / marrje`;
@@ -121,7 +124,7 @@
             source.append(make('span','',`${fmt(limit.absoluteMg)} mg${basis?' · '+basis:''} / marrje`));
             for(const schedule of schedules)source.append(make('span','',`${schedules.length>1?schedule.times+' herë/ditë: ':''}${fmt(limit.absoluteMg*schedule.times)} mg / 24 orë · sipas frekuencës`));
             source.append(make('small','','Për peshën e dhënë zbatohet kufiri më i ulët i shfaqur më sipër.'));maximum.append(source);
-          }else maximum.append(make('small','',limit?'Burimi nuk përcakton maksimum absolut.':'Kontrollo kufirin te skema më sipër.'));
+          }else maximum.append(make('small','',ceiling?.fixed?'Kjo është doza e zgjedhur e protokollit; nuk është maksimumi universal i barit.':limit?'Burimi nuk përcakton maksimum absolut.':'Kontrollo kufirin te skema më sipër.'));
           phase.append(maximum);
         });
         const course=make('div','abx-market-course');course.append(make('span','','Kohëzgjatja'),make('strong','',clean(card.querySelector('.abx-duration')?.textContent)||'Përcaktohet sipas skemës'));result.append(course);

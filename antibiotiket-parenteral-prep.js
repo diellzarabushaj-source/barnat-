@@ -24,7 +24,9 @@
     if (!regimen?.dose) return null;
     if (!Number.isFinite(ageMonths) || ageMonths < Math.max(1, regimen.minAgeMonths || 0)) return null;
 
+    if(window.DRX_PENICILLIN_PROTOCOLS){regimen=window.DRX_PENICILLIN_PROTOCOLS.resolveHospital(regimen,ageMonths);if(!regimen)return null;}
     const dose = regimen.dose;
+    if(dose.type==='fixed')return {kind:'mg',drug:regimen.drug,value:dose.value,component:dose.component||regimen.drug};
     if (dose.type === 'single') {
       if (!Number.isFinite(weightKg)) return null;
       return { kind:'mg', drug:regimen.drug, value:capDose(weightKg * dose.value, dose.maxDose), component:dose.component || regimen.drug };

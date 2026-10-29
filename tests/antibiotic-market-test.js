@@ -4,7 +4,7 @@ const {buildCatalog,scopes}=require('../lib/antibiotic-market-catalog');
 const {rows,row,catalog}=require('./antibiotic-market-fixture');
 const get=(c,n)=>c.drugs.find(d=>d.name===n);
 assert.equal(catalog.productCount,9);
-assert.equal(Object.keys(scopes).length,35);
+assert.equal(Object.keys(scopes).length,37);
 assert.equal(get(catalog,'Amoxicillin').forms.length,4,'Oral, powder injection and solid forms stay separate');
 const liquid=get(catalog,'Amoxicillin').forms.find(f=>f.measure==='liquid');
 assert.equal(liquid.variants[0].concentration.value/liquid.variants[0].concentration.perML,50);
