@@ -12,7 +12,7 @@ const sandbox = { window:{} };
 new Function('window', read('antibiotiket-data.js'))(sandbox.window);
 const guide = sandbox.window.DRX_ANTIBIOTIC_GUIDE;
 assert.ok(guide?.indications?.length, 'The antibiotic guide dataset must load');
-assert.match(guide.version, /2026-10-27-v9-antibiotic-audit/, 'The Phase 2 dataset version must be explicit');
+assert.match(guide.version, /2026-10-28-v10-antibiotic-review/, 'The Phase 2 dataset version must be explicit');
 
 const js = read('antibiotiket.js');
 const html = read('antibiotiket.html');
@@ -222,7 +222,7 @@ assert.match(js, /function doseBasis\(\)/);
 assert.match(js, /referenceWeightKg/);
 assert.match(js, /Alergji ndaj alternativës \/ alergji të shumëfishta/);
 assert.match(html, /vetëm orientuese/, 'Age-derived dose must remain marked orientational');
-assert.match(html, /antibiotiket-data\.js\?v=antibiotiket-audit-20261027/, 'Phase 2 data must be cache-busted in the page');
+assert.match(html, /antibiotiket-data\.js\?v=antibiotiket-audit-20261028/, 'Phase 2 data must be cache-busted in the page');
 assert.match(html, /Alergjia ndaj beta-laktameve/, 'The static allergy label must match the A0-A5 model');
 for (const band of guide.ageBands) {
   assert.ok(Number.isFinite(band.referenceWeightKg) && band.referenceWeightKg > 0, `Age band ${band.id} needs a positive reference weight`);

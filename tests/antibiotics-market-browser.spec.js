@@ -99,6 +99,7 @@ for(const width of [320,390,1440])test(`Dose, interval and exact 24-hour total s
   await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
   await page.goto(baseURL+'/antibiotiket.html?indication=cellulitis');
   await page.locator('#weightInput').fill('15');
+  await page.locator('#ageConfirmation input').check();
   const card=page.locator('[data-regimen-id="amoxclav-cellulitis"]');
   await card.getByRole('combobox',{name:'Forma · Amoxicillin / clavulanate',exact:true}).selectOption('oral-liquid');
   await card.getByRole('combobox',{name:'Fortësia / përqendrimi · Amoxicillin / clavulanate',exact:true}).selectOption({label:'(200 mg+28.5 mg)/5 ml'});
@@ -108,6 +109,9 @@ for(const width of [320,390,1440])test(`Dose, interval and exact 24-hour total s
   await expect(card.locator('.abx-market-daily')).toContainText('16,88 mL');
   await expect(card.locator('.abx-market-daily')).toContainText('675 mg · amoxicillin');
   await expect(card.locator('.abx-market-course')).toHaveText('Kohëzgjatja5 ditë');
+  await expect(card.locator('.abx-option-dose')).toBeHidden();
+  await expect(card.locator('.abx-working')).not.toHaveAttribute('open');
+  await expect(card.locator('.abx-working .abx-dose-limits')).toHaveCount(1);
   await expect(card.locator('.abx-market-maximum>strong')).toHaveText('8,44 mL / marrje');
   await expect(card.locator('.abx-market-maximum-mg')).toHaveText('337,5 mg · amoxicillin / marrje');
   await expect(card.locator('.abx-market-maximum-daily')).toHaveText('16,88 mL · 675 mg / 24 orë');
@@ -117,6 +121,8 @@ for(const width of [320,390,1440])test(`Dose, interval and exact 24-hour total s
   await card.locator('.abx-market-ceiling-source summary').click();
   await card.locator('.abx-market').screenshot({path:info.outputPath('dose-summary-'+width+'.png')});
   await page.locator('#weightInput').fill('20');
+  await expect(page.locator('#ageConfirmation input')).not.toBeChecked();
+  await page.locator('#ageConfirmation input').check();
   const updated=page.locator('[data-regimen-id="amoxclav-cellulitis"]');
   await expect(updated.locator('.abx-market-single')).toContainText('11,25 mL');
   await expect(updated.locator('.abx-market-daily')).toContainText('22,5 mL');
@@ -128,6 +134,7 @@ for(const width of [320,390,1440])test(`Dose, interval and exact 24-hour total s
 test('Three and four daily administrations have their own interval and total',async({page})=>{
   await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
   await page.goto(baseURL+'/antibiotiket.html?indication=cellulitis');await page.locator('#weightInput').fill('44');
+  await page.locator('#ageConfirmation input').check();
   let card=page.locator('[data-regimen-id="cephalexin-cellulitis"]');
   await card.locator('.abx-market select').nth(0).selectOption('oral-liquid');
   await card.locator('.abx-market select').nth(1).selectOption({label:'250 mg/5 ml'});
@@ -145,4 +152,66 @@ test('Three and four daily administrations have their own interval and total',as
   await expect(card.locator('.abx-market-course')).toHaveText('Kohëzgjatja3–5 ditë');
   await expect(card.locator('.abx-market-maximum')).toContainText('Burimi nuk përcakton maksimum absolut.');
   await expect(card.locator('.abx-market-ceiling-source')).toHaveCount(0);
+});
+
+for(const width of [390,1440])test(`Cephalosporin allergy needs a qualified history at ${width}px`,async({page})=>{
+  await page.setViewportSize({width,height:900});
+  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
+  await page.goto(baseURL+'/antibiotiket.html?indication=gas');
+  await page.locator('#weightInput').fill('15');await page.locator('#ageSelect').selectOption('4y');
+  if(await page.locator('#allergyPicker').getAttribute('open')===null)await page.locator('#allergyPicker summary').click();
+  await page.locator('input[name="abx-allergy"][value="a4"]').check();
+  await expect(page.locator('[data-regimen-id="amoxicillin-gas"]')).toHaveCount(0);
+  await expect(page.locator('[data-regimen-id="H002"]')).toHaveCount(0);
+  await page.locator('#cephAllergyConfirmation input').check();
+  await expect(page.locator('[data-regimen-id="amoxicillin-gas"]')).toHaveCount(1);
+  await expect(page.locator('[data-regimen-id="H002"]')).toHaveCount(1);
+  await page.reload();
+  await expect(page.locator('#cephAllergyConfirmation input')).not.toBeChecked();
+  await expect(page.locator('[data-regimen-id="amoxicillin-gas"]')).toHaveCount(0);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+
+test('Newborn selection never exposes a routine outpatient or hospital regimen',async({page})=>{
+  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
+  await page.goto(baseURL+'/antibiotiket.html?indication=cellulitis');
+  await page.locator('#weightInput').fill('3.3');await page.locator('#ageSelect').selectOption('newborn');
+  await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
+  await expect(page.locator('.abx-hosp-card')).toHaveCount(0);
+  await expect(page.locator('#eligibilityMessage')).toContainText('≥3 muaj');
+  await page.locator('#weightInput').fill('');await page.locator('#ageSelect').selectOption('');
+  await page.locator('#weightInput').fill('20');
+  await expect(page.locator('[data-regimen-id="H010"] .abx-hosp-dose')).toContainText('Konfirmo moshën reale');
+  await expect(page.locator('[data-regimen-id="H010"] .abx-hosp-dose>strong')).toHaveText('Formula e burimit');
+});
+
+test('Sinusitis retains the conditional severe course through finalization',async({page})=>{
+  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
+  await page.goto(baseURL+'/antibiotiket.html?indication=sinusitis');
+  await page.locator('#weightInput').fill('20');await page.locator('#ageSelect').selectOption('6y');
+  const card=page.locator('[data-regimen-id="amox-sinusitis"]');
+  await card.locator('.abx-market select').nth(0).selectOption('oral-liquid');
+  await card.locator('.abx-market select').nth(1).selectOption({label:'250 mg/5 ml'});
+  await expect(card.locator('.abx-market-course')).toContainText('5–10 ditë');
+  await card.locator('.abx-rx summary').click();
+  await expect(card.locator('.abx-rx-copy')).toBeDisabled();
+  await card.locator('.abx-rx-shared select').selectOption('9');
+  await expect(card.locator('.abx-rx-line')).toContainText('× 9 ditë');
+  await expect(card.locator('.abx-rx-copy')).toBeEnabled();
+});
+
+test('Benzathine penicillin uses the complete matched prefilled syringe at the 27 kg boundary',async({page})=>{
+  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
+  await page.goto(baseURL+'/antibiotiket.html?indication=gas');
+  await page.locator('#weightInput').fill('20');await page.locator('#ageSelect').selectOption('6y');
+  await page.locator('#hospitalModule>summary').click();
+  let card=page.locator('[data-regimen-id="H002"]');
+  await card.locator('.abx-prep summary').click();await card.locator('.abx-prep-confirm input').check();
+  await expect(card.locator('.abx-prep-output')).toContainText('600000 IU · 1 shiringë e plotë');
+  await expect(card.locator('.abx-prep-output')).not.toContainText('Vëllimi1 mL');
+  await page.locator('#weightInput').fill('27');
+  await expect(page.locator('[data-regimen-id="H002"]')).toHaveCount(0);
+  card=page.locator('[data-regimen-id="H003"]');
+  await card.locator('.abx-prep summary').click();await card.locator('.abx-prep-confirm input').check();
+  await expect(card.locator('.abx-prep-output')).toContainText('1200000 IU · 1 shiringë e plotë');
 });

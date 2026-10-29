@@ -2,9 +2,10 @@
   'use strict';
 
   window.DRX_ANTIBIOTIC_GUIDE = Object.freeze({
-    version:'2026-10-27-v9-antibiotic-audit',
+    version:'2026-10-28-v10-antibiotic-review',
     scope:'outpatient-antibiotic-guide',
     sources:[
+      {id:'jtfpp-allergy-2022',short:'AAAAI/ACAAI · alergjia',title:'Drug allergy: A 2022 practice parameter update',url:'https://www.aaaai.org/Aaaai/media/Media-Library-PDFs/Allergist%20Resources/Statements%20and%20Practice%20Parameters/Drug-Allergy-PP-9-2022.pdf',note:'CBS 14–16: historia e paverifikuar jo-anafilaktike ndaj cefalosporinës dallohet nga anafilaksia. Penicilina nuk aktivizohet automatikisht për një alergji me ashpërsi të panjohur.'},
       {id:'cm-bites-current',short:'CM · kafshimet',title:'Animal bites · antibiotikët dhe kohëzgjatja',url:'https://www.childrensmercy.org/health-care-providers/evidence-based-practice/cpgs-cpms-and-eras-pathways/animal-bites/antibiotics/'},
       {
         id:'cm2026',
@@ -92,7 +93,7 @@
       { id:'a1', short:'Rash i vonshëm', label:'A1 · Reaksion i vonshëm me rrezik të ulët', note:'Rash beninj/urtikarie e vonshme pa shenja të SCAR. Cefalosporinat e përshtatshme mund të përdoren sipas diagnozës.' },
       { id:'a2', short:'IgE / anafilaksi', label:'A2 · Reaksion i menjëhershëm / IgE me rrezik të lartë', note:'Anafilaksi, angioedemë, urtikarie e shpejtë ose nevojë për epinefrinë. Zgjidh vetëm alternativën e verifikuar për diagnozën; te GAS mos përdor cephalexin/cefadroxil.' },
       { id:'a3', short:'SCAR / sistemik', label:'A3 · Reaksion i rëndë i vonshëm / SCAR', note:'SJS/TEN, DRESS, flluska, përfshirje mukozale ose dëmtim organi. Shmang beta-laktamet dhe përdor vetëm alternativë jo-beta-laktam të verifikuar / specialist.' },
-      { id:'a4', short:'Alergji cefalosporinë', label:'A4 · Alergji ndaj cefalosporinës', note:'Vlerëso veçmas nga alergjia ndaj penicilinës. Penicilina mund të jetë e përdorshme kur nuk ka alergji ndaj saj dhe nuk ka problem side-chain.' },
+      { id:'a4', short:'Alergji cefalosporinë', label:'A4 · Alergji ndaj cefalosporinës', note:'Specifiko barin dhe reaksionin. Penicilinat nuk aktivizohen vetëm nga kjo etiketë; historia e lehtë pa anafilaksi/SCAR kërkon konfirmim. Anafilaksia ose reaksioni i rëndë kërkon vlerësim alergologjik.' },
       { id:'a5', short:'Alergji të shumëfishta', label:'A5 · Alergji ndaj alternativës / alergji të shumëfishta', note:'Mos bëj zëvendësim automatik. Duhet ditur klasa konkrete (clindamycin, macrolide, TMP-SMX etj.) dhe të zgjidhet vetëm regjim i verifikuar për të njëjtën diagnozë.' }
     ],
     ageBands:[
@@ -146,10 +147,10 @@
         id:'sinusitis', label:'Sinusit bakterial akut', short:'Sinusit bakterial', source:'cm2026', usesAllergy:true,
         warning:'Konsidero bakterial vetëm kur simptomat persistojnë >10 ditë pa përmirësim, përkeqësohen pas përmirësimit fillestar, ose ka fillim të rëndë me temperaturë të lartë dhe sekret purulent.',
         options:[
-          { id:'amox-sinusitis', tier:'first', allergy:['none','a0','a4'], drug:'Amoxicillin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:45,unit:'mg/kg/dozë',maxDose:2000}, duration:{type:'fixed',text:'5–7 ditë'}, source:'cm2026' },
-          { id:'amoxclav-sinusitis', tier:'second', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:45,unit:'mg/kg/dozë',maxDose:2000,component:'amoxicillin'}, duration:{type:'fixed',text:'5–7 ditë'}, source:'cm2026', conditional:'Prefero kur <2 vjeç, daycare, antibiotik në 30 ditët e fundit, hospitalizim të fundit ose simptoma të rënda.', note:'Doza bazohet në komponentin amoxicillin.' },
-          { id:'cefpodoxime-sinusitis', tier:'allergy-low', allergy:['a1','a2'], drug:'Cefpodoxime', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:5,unit:'mg/kg/dozë',maxDose:200}, duration:{type:'fixed',text:'5–7 ditë'}, source:'cm2026' },
-          { id:'levo-sinusitis', tier:'reserve', allergy:['a3'], drug:'Levofloxacin', route:'PO', frequency:'<5 vjeç: 2 herë/ditë · ≥5 vjeç: 1 herë/ditë', dose:{type:'range',min:8,max:10,unit:'mg/kg/dozë',maxDose:750}, duration:{type:'fixed',text:'5–7 ditë'}, source:'cm2026', frequencyByAge:true, minAgeMonths:6, note:'Rezervë për alergji të rëndë të vonshme / situata ku alternativat e tjera nuk përdoren; konsidero konsultë me infektologun.' }
+          { id:'amox-sinusitis', tier:'first', allergy:['none','a0','a4'], drug:'Amoxicillin', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:45,unit:'mg/kg/dozë',maxDose:2000}, duration:{type:'fixed',text:'5–7 ditë',severeText:'Simptoma të rënda (dhimbje fytyre dhe temperaturë >39°C): 5–10 ditë, sipas rivlerësimit'}, source:'cm2026' },
+          { id:'amoxclav-sinusitis', tier:'second', allergy:['none','a0','a4'], drug:'Amoxicillin / clavulanate', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:45,unit:'mg/kg/dozë',maxDose:2000,component:'amoxicillin'}, duration:{type:'fixed',text:'5–7 ditë',severeText:'Simptoma të rënda (dhimbje fytyre dhe temperaturë >39°C): 5–10 ditë, sipas rivlerësimit'}, source:'cm2026', conditional:'Prefero kur <2 vjeç, daycare, antibiotik në 30 ditët e fundit, hospitalizim të fundit ose simptoma të rënda.', note:'Doza bazohet në komponentin amoxicillin.' },
+          { id:'cefpodoxime-sinusitis', tier:'allergy-low', allergy:['a1','a2'], drug:'Cefpodoxime', route:'PO', frequency:'2 herë/ditë', dose:{type:'single',value:5,unit:'mg/kg/dozë',maxDose:200}, duration:{type:'fixed',text:'5–7 ditë',severeText:'Simptoma të rënda (dhimbje fytyre dhe temperaturë >39°C): 5–10 ditë, sipas rivlerësimit'}, source:'cm2026' },
+          { id:'levo-sinusitis', tier:'reserve', allergy:['a3'], drug:'Levofloxacin', route:'PO', frequency:'<5 vjeç: 2 herë/ditë · ≥5 vjeç: 1 herë/ditë', dose:{type:'range',min:8,max:10,unit:'mg/kg/dozë',maxDose:750}, duration:{type:'fixed',text:'5–7 ditë',severeText:'Simptoma të rënda (dhimbje fytyre dhe temperaturë >39°C): 5–10 ditë, sipas rivlerësimit'}, source:'cm2026', frequencyByAge:true, minAgeMonths:6, note:'Rezervë për alergji të rëndë të vonshme / situata ku alternativat e tjera nuk përdoren; konsidero konsultë me infektologun.' }
         ]
       },
       {

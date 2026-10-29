@@ -22,6 +22,25 @@ const engine = sandbox.window.DRX_ANTIBIOTIC_PREP_ENGINE;
 const prep = id => data.preparations.find(x=>x.id===id);
 const regimen = id => hospital.regimens.find(x=>x.id===id);
 
+for(const item of hospital.regimens){
+  assert.equal(engine.doseForRegimen(item,20,item.drug,null),null,item.id+' requires confirmed age');
+  assert.equal(engine.doseForRegimen(item,3.3,item.drug,0),null,item.id+' is not a neonatal schedule');
+}
+for(const [id,drug,mg20,mg80] of [
+  ['H001','Ceftriaxone',1000,1000], ['H004','Ampicillin',1000,2000],
+  ['H005','Ceftriaxone',1000,2000], ['H006','Ampicillin/sulbactam',1000,2000],
+  ['H007','Ampicillin/sulbactam',1000,2000], ['H008','Ceftriaxone',1000,2000],
+  ['H009','Ciprofloxacin',200,400], ['H010','Cefazolin',500,2000],
+  ['H011','Clindamycin',200,600], ['H012','Clindamycin',200,600],
+  ['H013','Ampicillin/sulbactam',1000,2000], ['H014','Ceftriaxone',1000,2000],
+  ['H014','Clindamycin',200,600], ['H015','Ampicillin/sulbactam',1000,2000],
+]){
+  assert.equal(engine.doseForRegimen(regimen(id),20,drug,12).value,mg20,id+' at 20 kg');
+  assert.equal(engine.doseForRegimen(regimen(id),80,drug,144).value,mg80,id+' at 80 kg');
+}
+assert.equal(engine.doseForRegimen(regimen('H002'),27,'Benzathine penicillin G',144),null);
+assert.equal(engine.doseForRegimen(regimen('H003'),27,'Benzathine penicillin G',144).value,1200000);
+
 assert.equal(data.preparations.length,20);
 for(let i=1;i<=20;i+=1){
   const id=`IV${String(i).padStart(3,'0')}`;
@@ -54,9 +73,11 @@ assert.equal(r.gate,'SELECT_STOCK_PATH');
 r=engine.calculatePreparation({prep:prep('IV002'),regimenRoute:'IM',dose:imDose,exactProductConfirmed:true,stockChoiceMgPerMl:250});
 assert.equal(r.rawStockMl,4);
 
-const penDose=engine.doseForRegimen(regimen('H002'),20,'Benzathine penicillin G',null);
+const penDose=engine.doseForRegimen(regimen('H002'),20,'Benzathine penicillin G',12);
 r=engine.calculatePreparation({prep:prep('IV019'),regimenRoute:'IM',dose:penDose,exactProductConfirmed:true});
-assert.equal(r.rawVolumeMl,1);
+assert.equal(r.wholeSyringes,1);
+assert.equal(r.doseUnits,600000);
+assert.equal(r.rawVolumeMl,undefined,'Nominal Bicillin syringe size must not become a partial-volume withdrawal');
 r=engine.calculatePreparation({prep:prep('IV019'),regimenRoute:'IV',dose:penDose,exactProductConfirmed:true});
 assert.equal(r.gate,'HARD_BLOCK_ROUTE');
 
@@ -71,7 +92,7 @@ assert.equal(r.rawStockMl,4);
 assert.equal(r.totalDrugMg,1500);
 assert.equal(r.rawFinalVolumeMl,100);
 
-const clindaDose=engine.doseForRegimen(regimen('H011'),20,'Clindamycin',null);
+const clindaDose=engine.doseForRegimen(regimen('H011'),20,'Clindamycin',12);
 r=engine.calculatePreparation({prep:prep('IV011'),regimenRoute:'IV',dose:clindaDose,exactProductConfirmed:true});
 assert.ok(Math.abs(r.rawStockMl-(200/150))<1e-12);
 assert.ok(Math.abs(r.rawMinimumFinalVolumeMl-(200/18))<1e-12);
@@ -92,6 +113,6 @@ assert.match(runtime,/pa rounding klinik/);
 const shell=read('antibiotiket-shell.js');
 assert.match(shell,/antibiotiket-parenteral-prep-data\.js\?v=antibiotiket-phase6-v2/);
 assert.match(shell,/antibiotiket-parenteral-bridge\.js\?v=antibiotiket-phase6-v2/);
-assert.match(shell,/antibiotiket-parenteral-prep\.js\?v=antibiotiket-phase6-20261027/);
+assert.match(shell,/antibiotiket-parenteral-prep\.js\?v=antibiotiket-phase6-20261028/);
 
 console.log('Antibiotics Phase 6 gate passed: 20/20 preparation records + route/product safeguards + bridge.');

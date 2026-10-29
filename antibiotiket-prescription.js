@@ -95,13 +95,12 @@
     const minimum = /të paktën\s+(\d+)\s+ditë/i.exec(value);
     if (minimum) return { kind:'minimum', min:Number(minimum[1]), values:[Number(minimum[1])] };
 
-    const range = /(\d+)\s*[–-]\s*(\d+)\s+ditë/i.exec(value);
-    if (range) {
-      const start = Number(range[1]);
-      const end = Number(range[2]);
+    const ranges = [...value.matchAll(/(\d+)\s*[–-]\s*(\d+)\s+ditë/gi)];
+    if (ranges.length) {
       const values = [];
-      for (let day = start; day <= end; day += 1) values.push(day);
-      const extra = [...value.matchAll(/(?:^|[^–-])(\d+)\s+ditë/gi)].map(match => Number(match[1]));
+      for (const range of ranges) for (let day = Number(range[1]); day <= Number(range[2]); day += 1) if (!values.includes(day)) values.push(day);
+      const singles = value.replace(/\d+\s*[–-]\s*\d+\s+ditë/gi, '');
+      const extra = [...singles.matchAll(/(\d+)\s+ditë/gi)].map(match => Number(match[1]));
       extra.forEach(day => { if (!values.includes(day)) values.push(day); });
       return { kind:'choice', values:values.sort((a, b) => a - b) };
     }

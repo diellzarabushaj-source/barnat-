@@ -1,8 +1,56 @@
-.abx-market{margin-top:16px;padding:16px;border:1px solid #cfdaec;border-radius:14px;background:#f8faff;color:#163650}
-.abx-market>strong{font-size:14px}.abx-market-component{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.abx-market-component>strong,.abx-market-info{grid-column:1/-1}.abx-market label{display:grid;gap:6px;min-width:0;font-size:12px;font-weight:600}.abx-market select{width:100%;min-width:0;min-height:46px;border:1px solid #cbd7ea;border-radius:9px;padding:10px;background:white;color:#163650;font:inherit;font-size:14px}.abx-market select:focus-visible{outline:3px solid #aaa4ff;outline-offset:2px}.abx-market-info{margin:0;font-size:13px;line-height:1.5}.abx-market-info[data-tone=blocked]{color:#824900}.abx-market small{display:block;margin-top:10px;color:#52667d;font-size:11px}.abx-age-confirmation{display:flex;gap:8px;align-items:center;min-height:44px;font-size:12px;margin-top:8px}.abx-age-confirmation[hidden]{display:none}.abx-age-confirmation input{width:19px;height:19px;accent-color:#5044e8}
-@media(max-width:760px){.abx-market-component{grid-template-columns:1fr}.abx-market{padding:12px}.abx-market select{font-size:16px}}
-.abx-dose-limits{display:grid;gap:5px;margin-top:12px;padding:12px 14px;border-left:3px solid #6657cd;border-radius:8px;background:#f5f4fc;color:#243b58;font-size:13px;line-height:1.5;overflow-wrap:anywhere}.abx-dose-limits>strong{font-size:12px;color:#4b3e98}.abx-dose-limits>small{font-size:11px;color:#53657a}
-.abx-market-product,.abx-market-dose{grid-column:1/-1;min-width:0}.abx-market-product summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-size:12px;color:#415d7b}.abx-market-product[open] summary{margin-bottom:8px}.abx-market-dose{display:grid;gap:6px;padding:16px;border:1px solid #beded5;border-radius:12px;background:#f0faf6;color:#123e36;overflow-wrap:anywhere}.abx-market-dose[hidden]{display:none}.abx-market-dose>strong{font-size:30px;line-height:1.25;letter-spacing:-.5px}.abx-market-dose-label{font-size:12px;color:#365d55}.abx-market-dose small{margin:0;color:#365d55;line-height:1.5}
-.abx-market-dose{padding:0;gap:0;overflow:hidden}.abx-market-dose-phase{display:grid;gap:0;min-width:0}.abx-market-dose-phase+.abx-market-dose-phase{border-top:2px solid #b9d8d0}.abx-market-phase-label{padding:12px 16px 0;color:#21564b;font-size:13px}.abx-market-single{display:grid;gap:5px;padding:16px}.abx-market-single>strong{font-size:32px;font-weight:700;line-height:1.2;letter-spacing:-.6px}.abx-market-mg{font-size:13px;color:#31594f}.abx-market-plan{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #cce2db;background:#e8f5ef}.abx-market-schedule,.abx-market-daily{display:grid;align-content:start;gap:5px;padding:13px 16px;min-width:0}.abx-market-schedule>strong{font-size:17px;line-height:1.4}.abx-market-schedule>span:not(.abx-market-dose-label){font-size:14px;color:#31594f}.abx-market-daily{border-left:1px solid #cce2db}.abx-market-daily>strong{font-size:21px;line-height:1.3;letter-spacing:-.2px}.abx-market-dose-phase>small{padding:10px 16px;border-top:1px solid #cce2db}.abx-market-phase-label+.abx-market-single{padding-top:8px}
-@media(max-width:420px){.abx-market-single{padding:14px}.abx-market-schedule,.abx-market-daily{padding:12px;gap:4px}.abx-market-schedule>strong{font-size:16px}.abx-market-daily>strong{font-size:19px}.abx-market-dose-label{font-size:11px}}
-.abx-market-maximum{display:grid;gap:4px;padding:13px 16px;background:#f5f3fc;border-top:1px solid #dcd6ed;color:#39345c;font-size:13px;line-height:1.5}.abx-market-maximum>.abx-market-dose-label{color:#55487b}.abx-market-maximum>strong{font-size:17px;line-height:1.4}.abx-market-maximum small{color:#605875}.abx-market-ceiling-source{margin-top:2px}.abx-market-ceiling-source summary{display:flex;align-items:center;min-height:44px;cursor:pointer;font-size:12px;color:#55487b}.abx-market-ceiling-source summary::before{content:'+';margin-right:7px;font-weight:700}.abx-market-ceiling-source[open] summary::before{content:'−'}.abx-market-ceiling-source>span{display:block}.abx-market-course{display:flex;gap:12px;justify-content:space-between;align-items:baseline;padding:13px 16px;border-top:1px solid #cce2db;background:#fff;font-size:13px;line-height:1.5}.abx-market-course>span{color:#45645c}.abx-market-course>strong{text-align:right;max-width:75%;font-size:14px;color:#123e36;white-space:pre-line}
+/* One product answer; the underlying mg calculation stays available for review. */
+.abx-market{margin-top:12px;padding:14px;border:1px solid #dce3ee;border-radius:12px;background:#fafbfe;color:#163650}
+.abx-market>strong{font-size:13px;font-weight:650}
+.abx-market-component{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-top:10px}
+.abx-market-component>strong,.abx-market-info{grid-column:1/-1}
+.abx-market label{display:grid;gap:6px;min-width:0;font-size:12px;font-weight:600}
+.abx-market select{width:100%;min-width:0;min-height:46px;border:1px solid #cbd7ea;border-radius:8px;padding:10px;background:#fff;color:#163650;font:inherit;font-size:14px}
+.abx-market select:focus-visible{outline:3px solid #aaa4ff;outline-offset:2px}
+.abx-market-info{margin:0;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.abx-market-info[data-tone=blocked]{color:#824900}
+.abx-market small{display:block;margin-top:8px;color:#52667d;font-size:11px;line-height:1.5}
+.abx-age-confirmation{display:flex;gap:8px;align-items:center;min-height:44px;font-size:12px;margin-top:8px;max-width:640px;line-height:1.5}
+.abx-age-confirmation[hidden]{display:none}
+.abx-age-confirmation input{flex:none;width:19px;height:19px;accent-color:#5044e8}
+.abx-dose-limits{display:grid;gap:5px;margin-top:10px;padding:12px;border:1px solid #dfe3ec;border-radius:8px;background:#f9fafc;color:#344054;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.abx-dose-limits>small{font-size:11px;color:#53657a}
+.abx-market-product,.abx-market-dose{grid-column:1/-1;min-width:0}
+.abx-market-product summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-size:12px;color:#415d7b}
+.abx-market-product[open] summary{margin-bottom:8px}
+.abx-market-dose{display:grid;gap:0;padding:0;border:1px solid #c7ded7;border-radius:10px;background:#fff;color:#173f37;overflow:hidden;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.abx-market-dose[hidden]{display:none}
+.abx-market-dose-phase{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);min-width:0}
+.abx-market-dose-phase+.abx-market-dose-phase{border-top:2px solid #c7ded7}
+.abx-market-phase-label{grid-column:1/-1;padding:10px 14px;background:#f2f8f5;color:#21564b;font-size:12px}
+.abx-market-single{display:grid;align-content:start;gap:5px;padding:14px;background:#f2f8f5}
+.abx-market-single>strong{font-size:28px;font-weight:700;line-height:1.2;letter-spacing:-.4px}
+.abx-market-dose-label{font-size:11px;color:#45635c;line-height:1.5}
+.abx-market-mg{font-size:12px;color:#39594f;line-height:1.5}
+.abx-market-plan{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-left:1px solid #dce8e3}
+.abx-market-schedule,.abx-market-daily{display:grid;align-content:start;gap:5px;padding:14px;min-width:0}
+.abx-market-schedule>strong{font-size:16px;line-height:1.4}
+.abx-market-schedule>span:not(.abx-market-dose-label){font-size:13px;color:#39594f}
+.abx-market-daily{border-left:1px solid #e4ece8}
+.abx-market-daily>strong{font-size:20px;line-height:1.3}
+.abx-market-dose small{margin:0;color:#52665f;font-size:11px;line-height:1.5}
+.abx-market-dose-phase>small{grid-column:1/-1;padding:9px 14px;border-top:1px solid #e4ece8}
+.abx-market-maximum{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:3px;padding:11px 14px;border-top:1px solid #dce8e3;color:#344054;font-size:12px;line-height:1.5}
+.abx-market-maximum>.abx-market-dose-label{grid-column:1/-1;font-weight:650;color:#344054}
+.abx-market-maximum>strong{font-size:14px;line-height:1.5}
+.abx-market-maximum-mg{text-align:right}
+.abx-market-maximum-daily,.abx-market-maximum>small,.abx-market-ceiling-source{grid-column:1/-1}
+.abx-market-ceiling-source summary{display:flex;align-items:center;min-height:44px;cursor:pointer;font-size:12px;color:#4c5373}
+.abx-market-ceiling-source summary::before{content:'+';margin-right:7px;font-weight:700}
+.abx-market-ceiling-source[open] summary::before{content:'−'}
+.abx-market-ceiling-source>span{display:block}
+.abx-market-course{display:flex;gap:12px;justify-content:space-between;align-items:baseline;padding:11px 14px;border-top:1px solid #dce8e3;font-size:12px;line-height:1.5}
+.abx-market-course>span{color:#45635c}
+.abx-market-course>strong{text-align:right;max-width:75%;font-size:13px;color:#173f37;white-space:pre-line}
+.abx-market-dose>.abx-market-rounding{padding:8px 14px;border-top:1px solid #e4ece8;background:#fafcfb}
+.abx-option.abx-has-market-answer>.abx-option-dose,.abx-option.abx-has-market-answer>.abx-option-meta{display:none}
+@media(max-width:1000px){.abx-market-dose-phase{grid-template-columns:minmax(0,1fr)}.abx-market-plan{border-left:0;border-top:1px solid #dce8e3}}
+@media(max-width:760px){.abx-market-component{grid-template-columns:minmax(0,1fr)}.abx-market{padding:12px}.abx-market select{font-size:16px}}
+@media(max-width:420px){.abx-market-single{padding:12px}.abx-market-single>strong{font-size:27px}.abx-market-schedule,.abx-market-daily{padding:11px}.abx-market-schedule>strong{font-size:15px}.abx-market-daily>strong{font-size:19px}.abx-market-maximum{grid-template-columns:minmax(0,1fr)}.abx-market-maximum-mg{text-align:left}}
+.abx-market-alternate .abx-market-dose-phase{grid-template-columns:minmax(0,1fr)}
+.abx-scope{grid-column:1/-1;margin:0;color:#596579}
+.abx-market-dose{font-weight:450}.abx-market-dose-label{font-size:12px;color:#3e5a52}.abx-market-mg{font-size:13px}

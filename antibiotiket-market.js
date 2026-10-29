@@ -7,6 +7,10 @@
   const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
   const clean=x=>String(x??'').trim();
   const fmt=x=>String(Number(Number(x).toFixed(2))).replace('.',',');
+  function syncAnswer(card){
+    const answers=[...card.querySelectorAll('.abx-market-dose')];
+    card.classList.toggle('abx-has-market-answer',answers.length>0&&answers.every(answer=>answer.dataset.ready==='true'));
+  }
   function selection(card,drug){return selections.get(card)?.get(drug)||null;}
   function eligible(card,drug,form,variant,product){
     const c=variant?.concentration;
@@ -47,7 +51,7 @@
       const formSelect=field('Forma'),strengthSelect=field('Fortësia / përqendrimi'),productSelect=field('Produkti');
       const productDetails=make('details','abx-market-product'),productSummary=make('summary','','Produktet AKKPM · opsionale');
       productDetails.append(productSummary,productSelect.parentElement);body.append(productDetails);
-      const result=make('div','abx-market-dose');result.setAttribute('aria-live','polite');body.append(result);
+      const result=make('div','abx-market-dose');result.setAttribute('aria-live','polite');result.setAttribute('role','group');result.setAttribute('aria-label',`Dozimi · ${part.drug}`);body.append(result);
       const info=make('p','abx-market-info');info.setAttribute('aria-live','polite');body.append(info);
       body.insertBefore(result,productDetails);
       const options=(select,rows,placeholder)=>{select.replaceChildren();select.append(new Option(placeholder,''));rows.forEach(r=>select.append(new Option(r.label||r.name,r.id||r.key)));select.disabled=!rows.length;};
@@ -58,6 +62,7 @@
       let restoring=true;
       const showDose=picked=>{
         result.replaceChildren();
+        result.dataset.ready='false';
         if(!picked||picked.reason){result.hidden=true;return;}
         result.hidden=false;
         const weight=Number(clean(document.getElementById('weightInput')?.value).replace(',','.'));
@@ -68,6 +73,8 @@
         const frequencies=JSON.parse(card.dataset.doseFrequencies||'[]');
         const frequency=frequencies.find(item=>item.drug===part.drug)?.frequency||'';
         const schedules=window.DRX_ANTIBIOTIC_MARKET_MATH.dailyTotals(conversion,frequency);
+        result.classList.toggle('abx-market-alternate',schedules.length>1);
+        result.dataset.ready=String(schedules.length>0&&conversion.rows.every(row=>row.unit==='mL'||row.units||row.choices.length));
         const ceiling=JSON.parse(card.dataset.doseCeilings||'[]').find(item=>item.drug===part.drug);
         const range=(min,max)=>`${fmt(min)}${min!==max?'–'+fmt(max):''}`;
         const amount=row=>row.unit==='mL'?`${range(row.min,row.max)} mL`:row.units?`${row.units} ${row.unit}`:row.choices.map(c=>`${c.units} ${row.unit} (${fmt(c.mg)} mg)`).join(' ose ');
@@ -80,7 +87,7 @@
           const phase=make('div','abx-market-dose-phase');result.append(phase);
           if(conversion.rows.length>1)phase.append(make('b','abx-market-phase-label',row.label));
           const single=make('div','abx-market-single');
-          single.append(make('span','abx-market-dose-label',`Për një marrje · ${fmt(weight)} kg`));
+          single.append(make('span','abx-market-dose-label',`Për një marrje · ${fmt(weight)} kg · nga goja`));
           const representable=row.unit==='mL'||row.units||row.choices.length;
           if(representable)single.append(make('strong','',amount(row)));
           else single.append(make('span','','Doza nuk përputhet me njësi të plota. Zgjidh një fortësi ose formë tjetër; tableta nuk ndahet automatikisht.'));
@@ -118,16 +125,20 @@
           phase.append(maximum);
         });
         const course=make('div','abx-market-course');course.append(make('span','','Kohëzgjatja'),make('strong','',clean(card.querySelector('.abx-duration')?.textContent)||'Përcaktohet sipas skemës'));result.append(course);
+        if(conversion.rows.some(row=>row.unit==='mL'&&[row.min,row.max].some(value=>Math.abs(value-Number(value.toFixed(2)))>1e-9))){
+          result.append(make('small','abx-market-rounding','Vëllimet janë të rrumbullakosura. Totali ditor llogaritet nga mg, pa rrumbullakosje.'));
+        }
       };
       const publish=()=>{
         const product=variant?.products.find(p=>String(p.id)===productSelect.value);
         selections.get(card).delete(part.drug);
-        if(!product){if(!restoring)remembered.delete(memoryKey);info.textContent='Zgjidh formën dhe fortësinë.';showDose(null);productSummary.textContent='Produktet AKKPM · opsionale';update();return;}
+        if(!product){if(!restoring)remembered.delete(memoryKey);body.append(info);info.textContent='Zgjidh formën dhe fortësinë.';showDose(null);productSummary.textContent='Produktet AKKPM · opsionale';syncAnswer(card);update();return;}
         const reason=eligible(card,part.drug,form,variant,product);
         info.textContent=reason||`${product.packaging||product.form} · Nr. ${product.registryNumber}`;
         info.dataset.tone=reason?'blocked':'ready';
+        if(reason)body.append(info);else productDetails.append(info);
         const picked={form,variant,product,reason,label:`${product.name} · ${product.strength} · ${form.label}`};
-        selections.get(card).set(part.drug,picked);showDose(picked);productSummary.textContent=`${product.name} · ndrysho produktin`;update();
+        selections.get(card).set(part.drug,picked);showDose(picked);productSummary.textContent=`${product.name} · ndrysho produktin`;syncAnswer(card);update();
         remembered.set(memoryKey,{form:form.key,variant:variant.id,product:String(product.id)});
       };
       formSelect.onchange=()=>{form=entry.forms.find(f=>f.key===formSelect.value);variant=null;options(strengthSelect,form?.variants||[],'Zgjidh fortësinë…');options(productSelect,[],'Zgjidh fortësinë më parë');publish();};
@@ -141,6 +152,7 @@
     }
     section.append(make('small','','Regjistri tregon produktet e publikuara, jo stokun aktual në barnatore.'));
     card.append(section);
+    syncAnswer(card);
   }
   function scan(){document.querySelectorAll('.abx-option,.abx-hosp-card').forEach(enhance);}
   function redraw(){document.querySelectorAll('.abx-market').forEach(n=>n.remove());scan();list.querySelectorAll('.abx-option').forEach(card=>card.dispatchEvent(new CustomEvent('abx:market-product')));}
