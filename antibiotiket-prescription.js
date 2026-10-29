@@ -205,6 +205,7 @@
 
   function formUnit(form, count) {
     const base = form.form || 'njësi';
+    if(count===0.5&&base==='tabletë')return 'tablete';
     if (count === 1) return base;
     if (base === 'tabletë') return 'tableta';
     if (base === 'kapsulë') return 'kapsula';
@@ -605,6 +606,8 @@
       caution = form.caution || form.note || solidConfig.drugs?.[state.drug]?.caution || '';
     }
 
+    const advice=card.dataset.prescriptionAdvice||'';
+    if(advice)preview.append(make('p','abx-rx-caution',advice));
     preview.append(make('strong', 'abx-rx-line', line));
     preview.append(make('span', 'abx-rx-dose', `Doza e zgjedhur: ${doseLabel}/dozë. Totali ditor: ${dailyLabel}.`));
     preview.append(make('span', 'abx-rx-quantity', quantity));
@@ -612,7 +615,7 @@
     preview.append(make('span', 'abx-rx-note', 'Sasia është llogaritje matematike, jo zgjedhje automatike e paketimit. Verifiko produktin dhe matshmërinë para nënshkrimit.'));
 
     return {
-      text:`${state.drug}\nD.S.: ${line.replace(`${state.drug} `, '')}.\nDoza e zgjedhur: ${doseLabel}/dozë.\nTotali ditor: ${dailyLabel}.\n${quantity}.`,
+      text:`${advice?advice+'\n\n':''}${state.drug}\nD.S.: ${line.replace(`${state.drug} `, '')}.\nDoza e zgjedhur: ${doseLabel}/dozë.\nTotali ditor: ${dailyLabel}.\n${quantity}.`,
       sourceUrl,
     };
   }

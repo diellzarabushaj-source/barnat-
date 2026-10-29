@@ -46,6 +46,9 @@
     cephLowRiskConfirmed:false,
     pregnant:false,
     cultureSusceptible:false,
+    aomPlan:'',
+    aomRisk:'routine',
+    aomFailure:false,
   };
 
   const tierLabels = Object.freeze({
@@ -83,7 +86,7 @@
   }
 
   function protocolContext() {
-    return {ageMonths:currentAgeBand()?.months,ageConfirmed:ctx.ageConfirmed,weightKg:weightState().value,pregnant:ctx.pregnant,cultureSusceptible:ctx.cultureSusceptible,atypical:ctx.atypical};
+    return {ageMonths:currentAgeBand()?.months,ageConfirmed:ctx.ageConfirmed,weightKg:weightState().value,pregnant:ctx.pregnant,cultureSusceptible:ctx.cultureSusceptible,atypical:ctx.atypical,aomPlan:ctx.aomPlan,aomRisk:ctx.aomRisk,aomFailure:ctx.aomFailure};
   }
 
   function weightState() {
@@ -169,7 +172,7 @@
 
   function calculateSimple(dose, weight) {
     if (!dose) return null;
-    if (dose.type === 'fixed' && Number.isFinite(dose.value)) return {min:dose.value,max:dose.value,capped:false};
+    if (dose.type === 'fixed' && Number.isFinite(dose.value)) return {min:dose.value,max:Number.isFinite(dose.maxValue)?dose.maxValue:dose.value,capped:false};
     if (!weight) return null;
     if (dose.type === 'weight-bands') {
       const value = weight < dose.thresholdKg ? dose.belowMg : dose.atOrAboveMg;
@@ -485,7 +488,7 @@
       'abx-indication',
       guide.indications.map(item => ({ value:item.id, label:item.short || item.label, hint:item.label })),
       ctx.indication,
-      value => { ctx.cultureSusceptible=false;ctx.indication = value; collapsePicker(el.indicationPicker); render(); },
+      value => { ctx.cultureSusceptible=false;ctx.aomPlan='';ctx.aomRisk='routine';ctx.aomFailure=false;ctx.indication = value; collapsePicker(el.indicationPicker); render(); },
       'abx-chip',
     );
   }
@@ -633,7 +636,28 @@
     return wrap;
   }
 
+  function renderAomControls(indication) {
+    const panel=$('aomClinicalPanel');if(!panel)return;
+    panel.hidden=indication.id!=='aom';if(panel.hidden)return;
+    $('aomRiskSelect').value=ctx.aomRisk;
+    const adult=currentAgeBand()?.months>=216;
+    $('aomRiskSelect').options[1].textContent=adult?'Otorre — vlerësim individual':'Otorre / fëmijë nën 2 vjeç me AOM bilaterale';
+    const advice=ctx.aomRisk==='urgent'?'Komplikimet kanë përparësi ndaj skemës së antibiotikut: referim urgjent.'
+      :ctx.aomRisk==='high'?'Antibiotik i menjëhershëm pas vlerësimit; në dyshim për komplikim ose sepsë → spital.'
+      :adult?'Analgjezi dhe vendim individual për antibiotikun: NHS Borders. Dozat e të rriturit: NHS Fife.'
+      :ctx.aomRisk==='benefit'?'Mund të ketë më shumë përfitim nga antibiotiku; NICE lejon vendim individual: pa antibiotik, recetë rezervë ose trajtim tani.'
+      :'Në rastet pa rrezik të lartë, NICE sugjeron pa antibiotik ose recetë rezervë. Analgjezi dhe ndjekje për të gjithë.';
+    $('aomAdvice').textContent=advice;
+    buildChoice($('aomPlanChoice'),'abx-aom-plan',[
+      {value:'none',label:'Pa antibiotik'}, {value:'backup',label:'Recetë rezervë'}, {value:'immediate',label:'Antibiotik tani'},
+    ],ctx.aomPlan,value=>{ctx.aomPlan=value;if(value!=='immediate')ctx.aomFailure=false;render();},'abx-segment');
+    $('aomPlanChoice').querySelectorAll('input').forEach(input=>{input.disabled=ctx.aomRisk==='urgent'||(ctx.aomRisk==='high'&&input.value!=='immediate');});
+    $('aomFailureInput').checked=ctx.aomFailure;
+    $('aomFailureInput').disabled=ctx.aomRisk==='urgent';
+  }
+
   function renderConditionalControls(indication) {
+    renderAomControls(indication);
     const usesAllergy = indication.usesAllergy !== false;
     el.allergyField.hidden = !usesAllergy;
     el.atypicalWrap.hidden = indication.id !== 'pneumonia';
@@ -708,6 +732,7 @@
     card.dataset.productRule = JSON.stringify(option.productRule || null);
     card.dataset.protocolVersion = option.protocolVersion || '';
     card.dataset.defaultDays = String(option.duration?.defaultDays ?? '');
+    if(scope.id==='aom'&&ctx.aomPlan==='backup')card.dataset.prescriptionAdvice=protocols.aomBackupAdvice;
     card.dataset.weightRequired = String(option.requiresRealWeight === true || option.requiresProductWeight === true || ['single','range','weight-bands','sequence'].includes(option.dose?.type));
     card.dataset.ageRequired = String(option.kind !== 'procedure' && option.route !== 'topike');
     card.dataset.requiresRealWeight = String(option.requiresRealWeight === true || option.requiresProductWeight === true || option.dose?.type === 'weight-bands' || Number.isFinite(currentIndication()?.minWeightKg));
@@ -807,6 +832,7 @@
   function renderSources(indication) {
     el.sourceList.replaceChildren();
     const sourceIds = new Set([indication.source, 'chop-allergy-2025', 'jtfpp-allergy-2022', 'carpa']);
+    if(indication.id==='aom')['cdc-aom-diagnosis','nhs-borders-aom','nice-ng143','nhs-mastoiditis'].forEach(id=>sourceIds.add(id));
     indication.options.forEach(option => {
       if (option.source) sourceIds.add(option.source);
       if (option.durationSource) sourceIds.add(option.durationSource);
@@ -872,7 +898,10 @@
   function render() {
     if(!protocols && document.documentElement?.dataset.penicillinProtocols==='required'){el.list.replaceChildren(make('p','abx-empty','Protokollet nuk u ngarkuan. Rifresko faqen; dozat e vjetra nuk përdoren si zëvendësim.'));return;}
     const indication = currentIndication();
-    const limit = protocols && !ctx.ageConfirmed ? {blocks:true,tone:'info',text:indication.contextMessage} : eligibility(indication);
+    const aomLimit=indication.id==='aom'?protocols?.aomDecision(protocolContext()):null;
+    const limit = ctx.aomRisk==='urgent'&&indication.id==='aom' ? aomLimit : protocols && !ctx.ageConfirmed ? {blocks:true,tone:'info',text:indication.contextMessage} : eligibility(indication)||aomLimit;
+    el.list.dataset.aomBlocked=String(indication.id==='aom'&&Boolean(limit?.blocks));
+    el.list.dataset.aomPlan=indication.id==='aom'?ctx.aomPlan:'';
 
     renderConditionalControls(indication);
     syncPickers();
@@ -912,10 +941,11 @@
     if(indication.contextMessage)el.list.append(make('p','abx-eligibility',indication.contextMessage));
     const options = visibleOptions(indication);
     if (!options.length) {
+      if(indication.id==='aom')el.list.dataset.aomBlocked='true';
       const bucket = allergyById(ctx.allergy);
       const text = ctx.allergy === 'a5'
         ? 'Alergji ndaj alternativës / alergji të shumëfishta: DRx nuk bën zëvendësim automatik. Specifiko klasën konkrete dhe verifiko një regjim për këtë diagnozë.'
-        : `Nuk ka regjim të verifikuar për këtë kombinim${bucket ? ` (${bucket.short})` : ''}.`;
+        : indication.id==='aom'&&ctx.aomFailure ? 'Përkeqësim pas trajtimit fillestar dhe alergji: konsulto mikrobiologun / ORL për zgjedhjen e dytë. Nuk përsëritet automatikisht alternativa e parë.' : `Nuk ka regjim të verifikuar për këtë kombinim${bucket ? ` (${bucket.short})` : ''}.`;
       el.list.append(make('div', 'abx-empty', text));
       return;
     }
@@ -955,16 +985,20 @@
   }
 
   function bind() {
+    $('aomRiskSelect')?.addEventListener('change',event=>{ctx.aomRisk=event.target.value;ctx.aomPlan=ctx.aomRisk==='high'?'immediate':'';ctx.aomFailure=false;render();});
+    $('aomFailureInput')?.addEventListener('change',event=>{ctx.aomFailure=event.target.checked;if(ctx.aomFailure)ctx.aomPlan='immediate';render();});
     el.age.addEventListener('change', () => {
       ctx.age = el.age.value;
       ctx.ageFromWeight = false;
       ctx.ageConfirmed = Boolean(ctx.age);
       ctx.cultureSusceptible=false;
+      ctx.aomFailure=false;
       render();
     });
     el.weight.addEventListener('input', () => {
       ctx.weight = el.weight.value;
       ctx.cultureSusceptible=false;
+      ctx.aomFailure=false;
       applyAgeFromWeight();
       render();
     });
