@@ -323,3 +323,31 @@ a{color:inherit}
   .lab-test-row{grid-template-columns:22px minmax(0,1fr)}
   .lab-test-remove{width:100%;justify-content:flex-start}
 }
+
+/* Symptom-led selection shares the existing page and dashboard authorities. */
+.lab-disease-popover{display:grid;grid-template-rows:auto auto auto minmax(0,1fr);gap:8px;width:min(560px,calc(100vw - 44px));max-height:min(640px,76dvh)}
+.lab-picker-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 3px;color:var(--ink);font-size:13px}
+.lab-picker-heading button{min-height:44px;padding:0 12px;border:1px solid var(--accent-line);border-radius:8px;background:var(--accent-soft);color:#4338a0;font-size:13px;font-weight:600;cursor:pointer}
+.lab-picker-search{margin:0}
+#labProfileGroup{width:100%;min-height:44px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:8px;background:#fff;color:var(--ink-2);font-size:13px}
+.lab-disease-list{min-height:0;max-height:none;align-content:start}
+.lab-profile-group{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:36px;padding:8px 10px;background:#eef0fa;border:1px solid #dce1f1;border-radius:7px;color:#24375c;font-size:12px;font-weight:650}
+.lab-profile-group span{font-size:11px;color:#4e5d7b}
+.lab-disease-copy strong,.lab-disease-copy small{white-space:normal;overflow-wrap:anywhere}
+.lab-clinical-guides{display:grid;gap:10px;margin:14px 0}
+.lab-clinical-profile{min-width:0;padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink-2);font-size:13px;line-height:1.6}
+.lab-clinical-profile-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px 14px;color:var(--ink)}
+.lab-clinical-profile-head>strong{font-size:15px;font-weight:650}
+.lab-clinical-profile-head>span{font-size:11px;color:#52657c}
+.lab-clinical-profile p{margin:6px 0}
+.lab-clinical-profile .lab-profile-urgent{padding:8px 11px;border-left:3px solid #b42318;background:#fff5f4;color:#82251d;border-radius:0 6px 6px 0;font-weight:450}
+.lab-clinical-profile summary{display:flex;gap:10px;align-items:center;min-height:44px;cursor:pointer;color:#4338a0;font-weight:550}
+.lab-clinical-profile summary>span{display:inline-grid;place-items:center;width:21px;height:21px;border:1px solid #d9d6ff;border-radius:50%;font-size:12px}
+.lab-clinical-profile ul{padding-left:20px;margin:6px 0}
+.lab-clinical-profile a,.lab-test-detail-body>a{display:flex;align-items:center;min-height:44px;color:#4338a0;text-underline-offset:3px;font-size:12px;overflow-wrap:anywhere}
+.lab-test-row{grid-template-columns:44px minmax(0,1fr) auto;gap:10px}
+.lab-test-toggle{width:44px;min-height:44px;align-self:start;padding:0;cursor:pointer}
+.lab-test-toggle input{width:19px;height:19px}
+.lab-test-row[data-selected=false]{background:#fafbfc}
+.lab-test-row[data-selected=true]{background:#fff}
+@media(max-width:760px){.lab-disease-popover{height:calc(100dvh - 88px - env(safe-area-inset-bottom));max-height:calc(100dvh - 88px - env(safe-area-inset-bottom));width:auto}#labProfileGroup{font-size:16px}.lab-disease-option{min-height:58px}.lab-clinical-profile{padding:12px}.lab-test-row{grid-template-columns:44px minmax(0,1fr);gap:8px}.lab-test-row>span:last-child:empty{display:none}.lab-test-remove{grid-column:2}.lab-clinical-profile-head>strong{font-size:14px}}

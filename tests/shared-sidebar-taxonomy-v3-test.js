@@ -131,7 +131,7 @@ for (const [file, runtime] of [
 for (const [htmlFile, runtime, version] of [
   ['dozologjia.html','dozologjia-v2.js','dynamic-v4+'],
   ['urgjencat.html','urgjencat-v2.js','11'],
-  ['analizat.html','analizat-v2.js','2'],
+  ['analizat.html','analizat-v2.js','3'],
   ['protokollet.html','protokollet-v2.js','2'],
   ['recetat.html','recetat-v2.js','dynamic'],
   ['medical-hub.html','medical-hub-v2.js','dynamic'],

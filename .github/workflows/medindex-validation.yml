@@ -104,7 +104,7 @@ jobs:
 
       - name: Verify P1 and P2 mobile, desktop and clinical workflows
         run: |
-          pnpm exec playwright test tests/audit-p1-browser.spec.js tests/runtime-metrics-panel-browser.spec.js tests/pediatric-cough-browser.spec.js tests/icd-query-memory-browser.spec.js tests/antibiotics-market-browser.spec.js --config=playwright.registry-v2.config.js
+          pnpm exec playwright test tests/audit-p1-browser.spec.js tests/runtime-metrics-panel-browser.spec.js tests/pediatric-cough-browser.spec.js tests/icd-query-memory-browser.spec.js tests/antibiotics-market-browser.spec.js tests/analizat-symptoms-browser.spec.js --config=playwright.registry-v2.config.js
           node tests/runtime-telemetry-browser-test.js
 
       - name: Verify the Recetat V2 prescription workspace

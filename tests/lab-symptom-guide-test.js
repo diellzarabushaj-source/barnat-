@@ -1,0 +1,44 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const {enrichLabDataset,PROFILES,ADDITIONS}=require('../lib/lab-symptom-guide');
+const {base,data}=require('./lab-symptom-fixture');
+assert.equal(PROFILES.length,20);assert.equal(new Set(PROFILES.map(p=>p.slug)).size,20);
+assert.equal(ADDITIONS.length,27);assert.equal(data.indications.length,base.indications.length+20);
+assert.equal(new Set(data.tests.map(t=>t.id)).size,data.tests.length);
+assert.deepEqual(enrichLabDataset(data),data,'Overlay must be idempotent and preserve DB profiles');
+assert.equal(base.tests.some(t=>t.id==='lab-ref-cbc'),false,'Do not mutate the database dataset');
+for(const p of data.indications.filter(p=>p.kind==='symptom')){
+  assert.ok(p.summary&&p.interpretation&&p.sources.length,p.slug);
+  assert.ok(p.sources.every(s=>s.url.startsWith('https://')));
+  assert.deepEqual(p.catalogGaps,[],p.slug+' must resolve against the test catalog');
+  assert.equal(new Set(p.tests.map(t=>t.testId)).size,p.tests.length,p.slug+' duplicates a test');
+}
+const symptom=slug=>data.indications.find(p=>p.slug==='simptoma-'+slug);
+assert.ok(symptom('etje-urinim').tests.some(t=>t.testId==='existing-glucose'));
+assert.ok(!symptom('etje-urinim').tests.some(t=>t.testId==='urine-glucose'));
+assert.ok(symptom('verdheza').tests.some(t=>t.testId==='existing-bilirubin'));
+assert.ok(!symptom('verdheza').tests.some(t=>t.testId==='urine-bilirubin'));
+assert.ok(!data.tests.some(t=>t.id==='lab-ref-egfr'),'eGFR must not become a standalone order or creatinine clearance');
+assert.ok(data.indications.find(i=>i.slug==='semundja-kronike-veshkave').assessments.some(t=>t.includes('eGFR')));
+assert.ok(data.indications.filter(i=>i.group==='diagnoses').every(i=>!i.catalogGaps.length));
+for(const slug of ['cefaleja','kolla','kapslleku','dhimbja-fytit','diarreja'])assert.ok(symptom(slug).tests.every(t=>t.tier==='conditional'),slug+' must not create routine testing');
+assert.match(symptom('dhimbja-gjoksit').interpretation,/jo domosdoshmërisht infarkt/);
+assert.ok(symptom('dhimbja-gjoksit').tests.some(t=>t.testId==='lab-ref-hsctn'));
+assert.ok(!symptom('dhimbja-gjoksit').tests.some(t=>t.testId==='existing-ckmb'));
+assert.match(symptom('nyjet').urgentNote,/septik/);
+assert.match(symptom('menstruacionet').tests.find(t=>t.testId==='lab-ref-tsh').rationale,/Vetëm/);
+// Test the actual UI selection and merge functions without starting the DOM.
+const js=fs.readFileSync(require('node:path').join(__dirname,'../analizat-v2.js'),'utf8').replace(/  if \(document.readyState === 'loading'\)[\s\S]*$/, 'window.engine={state,buildPlanEntries,visiblePlanEntries,isEntrySelected,copyPlanText};})();');
+const box={window:{},document:{querySelector:()=>null}};vm.runInNewContext(js,box);
+const e=box.window.engine;e.state.data=data;e.state.testsById=new Map(data.tests.map(t=>[t.id,t]));e.state.indicationsById=new Map(data.indications.map(t=>[t.id,t]));
+e.state.selectedIndicationIds.add(symptom('cefaleja').id);
+assert.equal(e.visiblePlanEntries().filter(e.isEntrySelected).length,0,'Conditional tests start unchecked');
+assert.ok(!e.copyPlanText().includes('- CRP'));
+e.state.optedInTestIds.add('existing-crp');assert.equal(e.visiblePlanEntries().filter(e.isEntrySelected).length,1);
+assert.ok(e.copyPlanText().includes('- CRP'));
+e.state.selectedIndicationIds.clear();e.state.optedInTestIds.clear();
+e.state.selectedIndicationIds.add(symptom('lodhja').id);e.state.selectedIndicationIds.add('old-anemia');
+assert.ok(e.visiblePlanEntries().some(x=>x.test.id==='lab-ref-cbc'));
+assert.ok(!e.visiblePlanEntries().some(x=>x.test.id==='hemoglobin'),'CBC covers its component rather than duplicating it in the order');
+e.state.excludedTestIds.add('lab-ref-cbc');assert.ok(e.visiblePlanEntries().some(x=>x.test.id==='hemoglobin'),'Unchecking CBC restores independently requested components');
+console.log('PASS: 20 symptom profiles, 27 reference identities, exact specimens/methods, missing-panel reconciliation, opt-in conditions and CBC component coverage.');
