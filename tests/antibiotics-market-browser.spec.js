@@ -1,8 +1,17 @@
 const {test,expect}=require('@playwright/test');
-const {catalog}=require('./antibiotic-market-fixture');
+const {rows,row}=require('./antibiotic-market-fixture');
+const {buildCatalog}=require('../lib/antibiotic-market-catalog');
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const {phase5AuthenticatedSession}=require('./phase5-browser-fixture');
 const ROOT=path.resolve(__dirname,'..');let server,baseURL;
+const catalog=buildCatalog([...rows,
+  row('clav4-liquid','Amoxicillin; Clavulanic acid','J01CR02','(125 mg+31.25 mg)/5 ml','Powder for oral suspension'),
+  row('clav4-tab','Amoxicillin; Clavulanic acid','J01CR02','500 mg+125 mg','Tablet'),
+  row('clav7-tab','Amoxicillin; Clavulanic acid','J01CR02','875 mg+125 mg','Tablet'),
+  row('fluclox-cap','Flucloxacillin','J01CF05','500 mg','Capsule'),
+  row('penv-liquid','Phenoxymethylpenicillin','J01CE02','125 mg/5 ml','Oral suspension'),
+  row('penv-tab','Phenoxymethylpenicillin','J01CE02','500 mg','Tablet'),
+]);
 test.use({serviceWorkers:'block'});
 test.beforeAll(async()=>{
   server=http.createServer((req,res)=>{
@@ -13,206 +22,197 @@ test.beforeAll(async()=>{
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));baseURL='http://127.0.0.1:'+server.address().port;
 });
 test.afterAll(()=>new Promise(resolve=>server.close(resolve)));
-test.beforeEach(async({page})=>{await page.route('**/api/auth*',route=>route.fulfill({json:phase5AuthenticatedSession()}));});
-for(const width of [320,390,1440])test(`AKKPM product → exact prescription, age and route gates at ${width}px`,async({page})=>{
+test.beforeEach(async({page})=>{
+  await page.route('**/api/auth*',route=>route.fulfill({json:phase5AuthenticatedSession()}));
+  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
+});
+const card=(page,id)=>page.locator(`[data-regimen-id="${id}"]`);
+async function open(page,indication,age='5y',weight='18'){
+  await page.goto(baseURL+'/antibiotiket.html?indication='+indication);
+  if(weight)await page.locator('#weightInput').fill(weight);
+  if(age)await page.locator('#ageSelect').selectOption(age);
+}
+async function choose(c,form,strength){
+  await expect(c.locator('.abx-market select').first()).toBeEnabled();
+  await c.locator('.abx-market select').nth(0).selectOption(form);
+  await c.locator('.abx-market select').nth(1).selectOption({label:strength});
+}
+for(const width of [320,390,1440])test(`NICE AOM: real age → product → final prescription at ${width}px`,async({page})=>{
   await page.setViewportSize({width,height:900});
-  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(catalog)}));
-  await page.goto(baseURL+'/antibiotiket.html?indication=aom');
-  await page.locator('#weightInput').fill('12');
-  await expect(page.locator('#ageConfirmation')).toBeVisible();
-  const card=page.locator('[data-regimen-id="amox-aom"]');
-  await expect(card.locator('.abx-dose-limits')).toContainText('2000 mg/dozë');
-  await expect(card.locator('.abx-dose-limits')).toContainText('4000 mg/24 orë');
-  await expect(card.locator('.abx-dose-limits')).toContainText('Për 12 kg: 600 mg/dozë');
-  await expect(card.locator('.abx-market select').first()).toBeEnabled();
-  await card.locator('.abx-market select').nth(0).selectOption('oral-liquid');
-  await card.locator('.abx-market select').nth(1).selectOption({label:'250 mg/5 ml'});
-  await card.locator('.abx-rx summary').click();
-  await card.locator('.abx-rx').getByRole('button',{name:'600 mg',exact:true}).click();
-  await expect(card.locator('.abx-rx-copy')).toBeDisabled();
-  await page.locator('#ageConfirmation input').check();
-  const updated=page.locator('[data-regimen-id="amox-aom"]');
-  await expect(updated.locator('.abx-market select').nth(0)).toHaveValue('oral-liquid');
-  await expect(updated.locator('.abx-market-dose')).toContainText('9,6–12 mL');
-  await expect(updated.locator('.abx-market-dose')).toContainText('480–600 mg');
-  await expect(updated.locator('.abx-market-dose')).toContainText('12 mL për marrje');
-  await expect(updated.locator('.abx-market-course')).toContainText('7 ditë');
-  await expect(updated.locator('.abx-market-course')).toContainText('Sëmundje e rëndë: 10 ditë');
-  await expect(updated.locator('.abx-market-maximum-mg')).toHaveText('600 mg / marrje');
-  await updated.locator('.abx-rx summary').click();
-  await updated.locator('.abx-rx').getByRole('button',{name:'600 mg',exact:true}).click();
-  await expect(updated.locator('.abx-rx-copy')).toBeDisabled();
-  await updated.locator('.abx-rx-shared select').selectOption('10');
-  await expect(updated.locator('.abx-rx-line')).toContainText('× 10 ditë');
-  await updated.locator('.abx-rx-shared select').selectOption('7');
-  await expect(updated.locator('.abx-rx-line')).toContainText('12 mL PO 2 herë/ditë × 7 ditë');
-  await expect(updated.locator('.abx-rx-copy')).toBeEnabled();
-  await updated.locator('.abx-market select').nth(0).selectOption({label:'Kapsulë'});
-  await updated.locator('.abx-market select').nth(1).selectOption({label:'500 mg'});
-  await expect(updated.locator('.abx-market-single .abx-market-mg')).toHaveText('500 mg');
-  await expect(updated.locator('.abx-market-daily .abx-market-mg')).toHaveText('1000 mg');
-  await updated.locator('.abx-market select').nth(0).selectOption('vial-powder');
-  await updated.locator('.abx-market select').nth(1).selectOption({label:'1 g'});
-  await expect(updated.locator('.abx-rx-copy')).toBeDisabled();
-  await expect(updated.locator('.abx-market-info')).toContainText('Formë jo orale');
-  await page.locator('#ageSelect').selectOption('5y');
-  await page.locator('#weightInput').fill('14');
+  await open(page,'aom');
+  const c=card(page,'amox-aom');
+  await expect(c.locator('.abx-option-source')).toHaveText('NICE NG91 · <18');
+  await expect(c.locator('.abx-dose-row[data-role="single"]')).toContainText('500 mg/dozë');
+  await expect(c.locator('.abx-dose-row[data-role="daily"]')).toContainText('1500 mg/ditë');
+  await choose(c,'oral-liquid','250 mg/5 ml');
+  await expect(c.locator('.abx-market-single')).toContainText('10 mL');
+  await expect(c.locator('.abx-market-schedule')).toHaveText('3 herë/ditëÇdo 8 orë');
+  await expect(c.locator('.abx-market-daily')).toContainText('30 mL');
+  await expect(c.locator('.abx-rx')).toHaveAttribute('open','');
+  await expect(c.locator('.abx-rx-line')).toContainText('10 mL PO 3 herë/ditë × 5 ditë');
+  await expect(c.locator('.abx-rx-quantity')).toContainText('150 mL');
+  await expect(c.locator('.abx-rx-copy')).toBeEnabled();
+  await c.locator('.abx-rx-shared select').selectOption('7');
+  await expect(c.locator('.abx-rx-quantity')).toContainText('210 mL');
+  await page.locator('#weightInput').fill('60');
   await expect(page.locator('#ageSelect')).toHaveValue('5y');
-  await page.locator('#ageSelect').selectOption('');
-  await page.locator('#weightInput').fill('');await page.locator('#weightInput').fill('12');
-  await expect(page.locator('#ageConfirmation input')).not.toBeChecked();
+  await expect(card(page,'amox-aom').locator('.abx-dose-row[data-role="single"]')).toContainText('500 mg/dozë');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.screenshot({path:test.info().outputPath(`aom-${width}.png`),fullPage:true});
 });
-test('Levofloxacin uses confirmed age and the exact fifth-birthday frequency boundary',async({page})=>{
-  await page.setViewportSize({width:1440,height:900});
-  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
-  await page.goto(baseURL+'/antibiotiket.html?indication=sinusitis');
-  await page.locator('input[name="abx-allergy"][value="a3"]').check();
-  await page.locator('#weightInput').fill('18');
-  await expect(page.getByText('Konfirmo moshën reale ≥6 muaj',{exact:false})).toBeVisible();
-  await page.locator('#ageSelect').selectOption('4y');
-  await expect(page.locator('[data-regimen-id="levo-sinusitis"] .abx-option-meta')).toContainText('2 herë/ditë');
-  await page.locator('#ageSelect').selectOption('5y');
-  await expect(page.locator('[data-regimen-id="levo-sinusitis"] .abx-option-meta')).toContainText('1 herë/ditë');
-  await expect(page.locator('[data-regimen-id="levo-sinusitis"]')).toContainText('144–180 mg/ditë');
+test('Weight never guesses age; no numerical prescription until real age is selected',async({page})=>{
+  await open(page,'aom','','60');
+  await expect(page.locator('#ageSelect')).toHaveValue('');
+  await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
+  await expect(page.locator('#eligibilityMessage')).toContainText('moshën reale');
+  await page.locator('#ageSelect').selectOption('adult');
+  await expect(card(page,'amox-aom')).toContainText('NHS Fife · 18+');
+  await expect(card(page,'amox-aom')).toContainText('500 mg/dozë');
 });
-test('AKKPM failure is retryable and cannot silently create a prescription from a template',async({page})=>{
-  let fail=true;
-  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill(fail?{status:503,json:{error:'Unavailable'}}:{json:catalog}));
-  await page.goto(baseURL+'/antibiotiket.html?indication=aom');
-  const card=page.locator('[data-regimen-id="amox-aom"]');
-  await expect(card.locator('.abx-market')).toContainText('nuk u ngarkuan');
-  await expect(card.locator('.abx-rx-copy')).toBeDisabled();
-  fail=false;await card.getByRole('button',{name:'Provo përsëri'}).click();
-  await expect(card.locator('.abx-market select').first()).toBeEnabled();
+test('Adult-only product works at 18+ and is blocked at 17',async({page})=>{
+  await open(page,'gas','adult','70');
+  let c=card(page,'amoxicillin-gas');
+  await choose(c,'tablet','1000 mg');
+  await expect(c.locator('.abx-rx-copy')).toBeEnabled();
+  await expect(c.locator('.abx-rx-line')).toContainText('1 tabletë PO 1 herë/ditë × 10 ditë');
+  await page.locator('#ageSelect').selectOption('17y');c=card(page,'amoxicillin-gas');
+  await expect(c.locator('.abx-market-info')).toContainText('≥18 vjeç');
+  await expect(c.locator('.abx-rx-copy')).toBeDisabled();
 });
-test('Atypical pneumonia preserves the pneumococcal agent',async({page})=>{
-  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
-  await page.goto(baseURL+'/antibiotiket.html?indication=pneumonia');
+test('A fixed adult schedule can be prescribed without inventing a reference weight',async({page})=>{
+  await open(page,'aom','adult','');const c=card(page,'amox-aom');
+  await choose(c,'capsule','500 mg');
+  await expect(c.locator('.abx-rx-line')).toContainText('1 kapsulë PO 3 herë/ditë × 5 ditë');
+  await expect(c.locator('.abx-rx-quantity')).toContainText('15 kapsula');
+  await expect(c.locator('.abx-rx-copy')).toBeEnabled();
+});
+test('600 mg cannot turn into a fractional 500mg capsule or rounded 500mg prescription',async({page})=>{
+  await open(page,'gas','3y','12');const c=card(page,'amoxicillin-gas');
+  await choose(c,'capsule','500 mg');
+  await expect(c.locator('.abx-market-single')).toContainText('nuk përputhet');
+  await expect(c.locator('.abx-rx-copy')).toBeDisabled();
+  await choose(c,'oral-liquid','250 mg/5 ml');
+  await expect(c.locator('.abx-rx-line')).toContainText('12 mL PO 1 herë/ditë × 10 ditë');
+  await expect(c.locator('.abx-rx-copy')).toBeEnabled();
+});
+test('Co-amoxiclav binds the source ratio and prints both components',async({page})=>{
+  await open(page,'aom','adult','70');const c=card(page,'amoxclav-aom');
+  await choose(c,'oral-liquid','(400 mg+57 mg)/5 ml');
+  await expect(c.locator('.abx-market-info')).toContainText('raport 4:1');
+  await expect(c.locator('.abx-rx-copy')).toBeDisabled();
+  await choose(c,'tablet','875 mg+125 mg');
+  await expect(c.locator('.abx-rx-copy')).toBeDisabled();
+  await choose(c,'tablet','500 mg+125 mg');
+  await expect(c.locator('.abx-rx-copy')).toBeEnabled();
+  await expect(c.locator('.abx-rx-dose')).toContainText('500/125 mg');
+  await expect(c.locator('.abx-rx-dose')).toContainText('1500/375 mg');
+  await expect(c.locator('.abx-rx-quantity')).toContainText('15 tableta');
+});
+test('Infant co-amoxiclav uses actual kg and exact 4:1 concentration',async({page})=>{
+  await open(page,'aom','6m','8');const c=card(page,'amoxclav-aom');
+  await choose(c,'oral-liquid','(125 mg+31.25 mg)/5 ml');
+  await expect(c.locator('.abx-rx-line')).toContainText('2 mL PO 3 herë/ditë × 5 ditë');
+  await expect(c.locator('.abx-rx-dose')).toContainText('50/12,5 mg');
+  await page.locator('#weightInput').fill('');
+  await expect(card(page,'amoxclav-aom')).toContainText('peshën reale');
+  await expect(card(page,'amoxclav-aom').locator('.abx-rx-copy')).toHaveCount(0);
+});
+test('Product route and small body weight are enforced',async({page})=>{
+  await open(page,'aom','adult','24.9');
+  await expect(card(page,'amoxclav-aom')).toContainText('25 kg');
+  await page.locator('#weightInput').fill('25');
+  await expect(card(page,'amoxclav-aom').locator('.abx-option-head')).toBeVisible();
+  const c=card(page,'amox-aom');await choose(c,'vial-powder','1 g');
+  await expect(c.locator('.abx-market-info')).toContainText('Formë jo orale');
+  await expect(c.locator('.abx-rx-copy')).toBeDisabled();
+});
+test('Source duration switches at the twelfth birthday for nonsevere CAP',async({page})=>{
+  await open(page,'pneumonia','11y','35');
+  await expect(card(page,'amox-pna').locator('.abx-duration')).toHaveText('3 ditë');
+  await page.locator('#ageSelect').selectOption('12y');
+  await expect(card(page,'amox-pna').locator('.abx-duration')).toHaveText('5 ditë');
   await page.locator('#atypicalInput').check();
-  await expect(page.locator('[data-regimen-id="amox-pna"]')).toBeVisible();
-  await expect(page.locator('[data-regimen-id="azithro-pna-atypical"]')).toContainText('SHTOHET');
+  await expect(card(page,'amox-pna')).toBeVisible();
+  await expect(card(page,'clarithro-pna-atypical')).toContainText('bashkë me trajtimin bazë');
 });
-
-for(const width of [320,390,1440])test(`Dose, interval and exact 24-hour total stay together at ${width}px`,async({page},info)=>{
-  await page.setViewportSize({width,height:900});
-  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
-  await page.goto(baseURL+'/antibiotiket.html?indication=cellulitis');
-  await page.locator('#weightInput').fill('15');
-  await page.locator('#ageConfirmation input').check();
-  const card=page.locator('[data-regimen-id="amoxclav-cellulitis"]');
-  await card.getByRole('combobox',{name:'Forma · Amoxicillin / clavulanate',exact:true}).selectOption('oral-liquid');
-  await card.getByRole('combobox',{name:'Fortësia / përqendrimi · Amoxicillin / clavulanate',exact:true}).selectOption({label:'(200 mg+28.5 mg)/5 ml'});
-  await expect(card.locator('.abx-market-single')).toContainText('8,44 mL');
-  await expect(card.locator('.abx-market-single')).toContainText('337,5 mg · amoxicillin');
-  await expect(card.locator('.abx-market-schedule')).toHaveText('2 herë/ditëÇdo 12 orë');
-  await expect(card.locator('.abx-market-daily')).toContainText('16,88 mL');
-  await expect(card.locator('.abx-market-daily')).toContainText('675 mg · amoxicillin');
-  await expect(card.locator('.abx-market-course')).toHaveText('Kohëzgjatja5 ditë');
-  await expect(card.locator('.abx-option-dose')).toBeHidden();
-  await expect(card.locator('.abx-working')).not.toHaveAttribute('open');
-  await expect(card.locator('.abx-working .abx-dose-limits')).toHaveCount(1);
-  await expect(card.locator('.abx-market-maximum>strong')).toHaveText('8,44 mL / marrje');
-  await expect(card.locator('.abx-market-maximum-mg')).toHaveText('337,5 mg · amoxicillin / marrje');
-  await expect(card.locator('.abx-market-maximum-daily')).toHaveText('16,88 mL · 675 mg / 24 orë');
-  await card.locator('.abx-market-ceiling-source summary').click();
-  await expect(card.locator('.abx-market-ceiling-source')).toContainText('875 mg · amoxicillin / marrje');
-  await expect(card.locator('.abx-market-ceiling-source')).toContainText('1750 mg / 24 orë');
-  await card.locator('.abx-market-ceiling-source summary').click();
-  await card.locator('.abx-market').screenshot({path:info.outputPath('dose-summary-'+width+'.png')});
-  await page.locator('#weightInput').fill('20');
-  await expect(page.locator('#ageConfirmation input')).not.toBeChecked();
-  await page.locator('#ageConfirmation input').check();
-  const updated=page.locator('[data-regimen-id="amoxclav-cellulitis"]');
-  await expect(updated.locator('.abx-market-single')).toContainText('11,25 mL');
-  await expect(updated.locator('.abx-market-daily')).toContainText('22,5 mL');
-  await expect(updated.locator('.abx-market-daily')).toContainText('900 mg · amoxicillin');
-  await expect(updated.locator('.abx-market-maximum>strong')).toHaveText('11,25 mL / marrje');
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+test('Penicillin V is restored for adolescents and adults with its own schedule',async({page})=>{
+  await open(page,'gas','adult','70');const c=card(page,'penicillin-gas');
+  await choose(c,'tablet','500 mg');
+  await expect(c.locator('.abx-rx-line')).toContainText('1 tabletë PO 4 herë/ditë × 10 ditë');
+  await expect(c.locator('.abx-rx-quantity')).toContainText('40 tableta');
 });
-
-test('Three and four daily administrations have their own interval and total',async({page})=>{
-  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
-  await page.goto(baseURL+'/antibiotiket.html?indication=cellulitis');await page.locator('#weightInput').fill('44');
-  await page.locator('#ageConfirmation input').check();
-  let card=page.locator('[data-regimen-id="cephalexin-cellulitis"]');
-  await card.locator('.abx-market select').nth(0).selectOption('oral-liquid');
-  await card.locator('.abx-market select').nth(1).selectOption({label:'250 mg/5 ml'});
-  await expect(card.locator('.abx-market-schedule')).toContainText('Çdo 8 orë');
-  await expect(card.locator('.abx-market-daily')).toContainText('30 mL');
-  await expect(card.locator('.abx-market-daily')).toContainText('1500 mg');
-  await page.goto(baseURL+'/antibiotiket.html?indication=uti-cystitis');await page.locator('#weightInput').fill('12');
-  await page.locator('#ageConfirmation input').check();
-  card=page.locator('[data-regimen-id="cephalexin-cystitis"]');
-  await card.locator('.abx-market select').nth(0).selectOption('oral-liquid');
-  await card.locator('.abx-market select').nth(1).selectOption({label:'250 mg/5 ml'});
-  await expect(card.locator('.abx-market-schedule')).toContainText('Çdo 6 orë');
-  await expect(card.locator('.abx-market-daily')).toContainText('12 mL');
-  await expect(card.locator('.abx-market-daily')).toContainText('600 mg');
-  await expect(card.locator('.abx-market-course')).toHaveText('Kohëzgjatja3–5 ditë');
-  await expect(card.locator('.abx-market-maximum')).toContainText('Burimi nuk përcakton maksimum absolut.');
-  await expect(card.locator('.abx-market-ceiling-source')).toHaveCount(0);
+test('NICE sinusitis uses Penicillin V and removes old 45mg/kg amoxicillin',async({page})=>{
+  await open(page,'sinusitis','adult','70');
+  await expect(card(page,'penicillin-sinusitis')).toContainText('500 mg/dozë');
+  await expect(card(page,'amox-sinusitis')).toHaveCount(0);
+  await expect(card(page,'amoxclav-sinusitis').locator('.abx-duration')).toHaveText('5 ditë');
 });
-
-for(const width of [390,1440])test(`Cephalosporin allergy needs a qualified history at ${width}px`,async({page})=>{
-  await page.setViewportSize({width,height:900});
-  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
-  await page.goto(baseURL+'/antibiotiket.html?indication=gas');
-  await page.locator('#weightInput').fill('15');await page.locator('#ageSelect').selectOption('4y');
-  if(await page.locator('#allergyPicker').getAttribute('open')===null)await page.locator('#allergyPicker summary').click();
+test('Urinoculture confirmation belongs to the current context and cannot carry over',async({page})=>{
+  await open(page,'uti-pyelo','adult','70');
+  await expect(card(page,'amoxclav-pyelo')).toContainText('urinokulturën');
+  await page.locator('#cultureSusceptibleInput').check();
+  const c=card(page,'amoxclav-pyelo');await choose(c,'tablet','500 mg+125 mg');
+  await expect(c.locator('.abx-rx-copy')).toBeEnabled();
+  await page.locator('#weightInput').fill('71');
+  await expect(page.locator('#cultureSusceptibleInput')).not.toBeChecked();
+  await expect(card(page,'amoxclav-pyelo').locator('.abx-rx-copy')).toHaveCount(0);
+});
+test('Pregnancy does not retain a nonpregnant allergy alternative',async({page})=>{
+  await open(page,'aom','adult','70');
+  await page.locator('input[name="abx-allergy"][value="a2"]').check();
+  await expect(card(page,'doxy-aom-adult')).toBeVisible();
+  await page.locator('#pregnancyInput').check();
+  await expect(card(page,'doxy-aom-adult')).toHaveCount(0);
+  await expect(card(page,'erythro-aom-pregnancy')).toBeVisible();
+});
+test('Flucloxacillin is its own product; cephalosporin allergy requires qualified history',async({page})=>{
+  await open(page,'cellulitis','adult','70');
   await page.locator('input[name="abx-allergy"][value="a4"]').check();
-  await expect(page.locator('[data-regimen-id="amoxicillin-gas"]')).toHaveCount(0);
-  await expect(page.locator('[data-regimen-id="H002"]')).toHaveCount(0);
+  await expect(card(page,'fluclox-cellulitis')).toHaveCount(0);
   await page.locator('#cephAllergyConfirmation input').check();
-  await expect(page.locator('[data-regimen-id="amoxicillin-gas"]')).toHaveCount(1);
-  await expect(page.locator('[data-regimen-id="H002"]')).toHaveCount(1);
-  await page.reload();
-  await expect(page.locator('#cephAllergyConfirmation input')).not.toBeChecked();
-  await expect(page.locator('[data-regimen-id="amoxicillin-gas"]')).toHaveCount(0);
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  const c=card(page,'fluclox-cellulitis');await choose(c,'capsule','500 mg');
+  await expect(c.locator('.abx-rx-copy')).toBeEnabled();
+  await page.locator('#cephAllergyConfirmation input').uncheck();
+  await expect(card(page,'fluclox-cellulitis')).toHaveCount(0);
 });
-
-test('Newborn selection never exposes a routine outpatient or hospital regimen',async({page})=>{
-  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
-  await page.goto(baseURL+'/antibiotiket.html?indication=cellulitis');
-  await expect(page.locator('#ageOptional')).toHaveText('— e nevojshme');
-  await page.locator('#weightInput').fill('3.3');await page.locator('#ageSelect').selectOption('newborn');
+test('Newborn and orbital red flags suppress outpatient regimens',async({page})=>{
+  await open(page,'aom','newborn','3.3');
   await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
   await expect(page.locator('.abx-hosp-card')).toHaveCount(0);
-  await expect(page.locator('#eligibilityMessage')).toContainText('≥3 muaj');
-  await page.locator('#weightInput').fill('');await page.locator('#ageSelect').selectOption('');
-  await page.locator('#weightInput').fill('20');
-  await expect(page.locator('[data-regimen-id="H010"] .abx-hosp-dose')).toContainText('Konfirmo moshën reale');
-  await expect(page.locator('[data-regimen-id="H010"] .abx-hosp-dose>strong')).toHaveText('Formula e burimit');
+  await page.goto(baseURL+'/antibiotiket.html?indication=preseptal');
+  await page.locator('#ageSelect').selectOption('adult');await page.locator('#weightInput').fill('70');
+  await page.locator('#orbitalRedFlagsInput').check();
+  await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
+  await expect(page.locator('#recommendationList')).toContainText('STOP');
 });
-
-test('Sinusitis retains the conditional severe course through finalization',async({page})=>{
-  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
-  await page.goto(baseURL+'/antibiotiket.html?indication=sinusitis');
-  await page.locator('#weightInput').fill('20');await page.locator('#ageSelect').selectOption('6y');
-  const card=page.locator('[data-regimen-id="amox-sinusitis"]');
-  await card.locator('.abx-market select').nth(0).selectOption('oral-liquid');
-  await card.locator('.abx-market select').nth(1).selectOption({label:'250 mg/5 ml'});
-  await expect(card.locator('.abx-market-course')).toContainText('5–10 ditë');
-  await card.locator('.abx-rx summary').click();
-  await expect(card.locator('.abx-rx-copy')).toBeDisabled();
-  await card.locator('.abx-rx-shared select').selectOption('9');
-  await expect(card.locator('.abx-rx-line')).toContainText('× 9 ditë');
-  await expect(card.locator('.abx-rx-copy')).toBeEnabled();
+test('Benzathine penicillin retains the 27kg boundary and whole matched syringe',async({page})=>{
+  await open(page,'gas','6y','20');await page.locator('#hospitalModule>summary').click();
+  let c=card(page,'H002');await c.locator('.abx-prep summary').click();await c.locator('.abx-prep-confirm input').check();
+  await expect(c.locator('.abx-prep-output')).toContainText('600000 IU · 1 shiringë e plotë');
+  await page.locator('#weightInput').fill('27');await expect(card(page,'H002')).toHaveCount(0);
+  c=card(page,'H003');await c.locator('.abx-prep summary').click();await c.locator('.abx-prep-confirm input').check();
+  await expect(c.locator('.abx-prep-output')).toContainText('1200000 IU · 1 shiringë e plotë');
 });
-
-test('Benzathine penicillin uses the complete matched prefilled syringe at the 27 kg boundary',async({page})=>{
-  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
-  await page.goto(baseURL+'/antibiotiket.html?indication=gas');
-  await page.locator('#weightInput').fill('20');await page.locator('#ageSelect').selectOption('6y');
-  await page.locator('#hospitalModule>summary').click();
-  let card=page.locator('[data-regimen-id="H002"]');
-  await card.locator('.abx-prep summary').click();await card.locator('.abx-prep-confirm input').check();
-  await expect(card.locator('.abx-prep-output')).toContainText('600000 IU · 1 shiringë e plotë');
-  await expect(card.locator('.abx-prep-output')).not.toContainText('Vëllimi1 mL');
-  await page.locator('#weightInput').fill('27');
-  await expect(page.locator('[data-regimen-id="H002"]')).toHaveCount(0);
-  card=page.locator('[data-regimen-id="H003"]');
-  await card.locator('.abx-prep summary').click();await card.locator('.abx-prep-confirm input').check();
-  await expect(card.locator('.abx-prep-output')).toContainText('1200000 IU · 1 shiringë e plotë');
+test('Adult IV penicillins render fixed component doses and adult sources',async({page})=>{
+  await open(page,'pneumonia','adult','60');await page.locator('#hospitalModule>summary').click();
+  await expect(card(page,'H004')).toContainText('2000 mg ampicillin/dozë');
+  await expect(card(page,'H004')).toContainText('q4h');
+  await expect(card(page,'H006')).toContainText('2000/1000 mg ampicillin/sulbactam/dozë');
+  await expect(card(page,'H006')).toContainText('UCSF');
+  await expect(card(page,'H005')).toHaveCount(0);
+});
+test('Unavailable catalog remains retryable and cannot create a template prescription',async({page})=>{
+  let fail=true;
+  await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill(fail?{status:503,json:{error:'Unavailable'}}:{json:catalog}));
+  await open(page,'aom');const c=card(page,'amox-aom');
+  await expect(c.locator('.abx-market')).toContainText('nuk u ngarkuan');
+  await expect(c.locator('.abx-rx-copy')).toBeDisabled();
+  fail=false;await c.getByRole('button',{name:'Provo përsëri'}).click();
+  await expect(c.locator('.abx-market select').first()).toBeEnabled();
+});
+test('Missing new protocol script fails closed instead of running old high-dose defaults',async({page})=>{
+  await page.route('**/antibiotiket-penicillin-protocols.js*',route=>route.abort());
+  await page.goto(baseURL+'/antibiotiket.html?indication=aom');
+  await expect(page.locator('#recommendationList')).toContainText('Protokollet nuk u ngarkuan');
+  await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
 });

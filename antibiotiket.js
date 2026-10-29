@@ -4,7 +4,8 @@
   const guide = window.DRX_ANTIBIOTIC_GUIDE;
   if (!guide) return;
 
-  const STATE_KEY = 'drx.antibiotics.context.v2';
+  const STATE_KEY = 'drx.antibiotics.context.v3-real-age';
+  const protocols = window.DRX_PENICILLIN_PROTOCOLS;
   const $ = id => document.getElementById(id);
   const el = {
     indicationChoice:$('indicationChoice'),
@@ -42,6 +43,8 @@
     ageFromWeight:false,
     ageConfirmed:false,
     cephLowRiskConfirmed:false,
+    pregnant:false,
+    cultureSusceptible:false,
   };
 
   const tierLabels = Object.freeze({
@@ -70,11 +73,16 @@
   };
 
   function currentIndication() {
-    return guide.indications.find(item => item.id === ctx.indication) || guide.indications[0];
+    const base = guide.indications.find(item => item.id === ctx.indication) || guide.indications[0];
+    return protocols ? protocols.resolve(base, protocolContext()) : base;
   }
 
   function currentAgeBand() {
     return guide.ageBands.find(item => item.id === ctx.age) || null;
+  }
+
+  function protocolContext() {
+    return {ageMonths:currentAgeBand()?.months,ageConfirmed:ctx.ageConfirmed,weightKg:weightState().value,pregnant:ctx.pregnant,cultureSusceptible:ctx.cultureSusceptible,atypical:ctx.atypical};
   }
 
   function weightState() {
@@ -89,7 +97,7 @@
     const state = weightState();
     if (state.kind === 'valid') return { kind:'real', weight:state.value, label:`Për ${fmt(state.value)} kg` };
     const age = currentAgeBand();
-    if (age && Number.isFinite(age.referenceWeightKg)) {
+    if (!protocols && age && Number.isFinite(age.referenceWeightKg)) {
       return {
         kind:'reference',
         weight:age.referenceWeightKg,
@@ -152,7 +160,9 @@
   }
 
   function calculateSimple(dose, weight) {
-    if (!weight || !dose) return null;
+    if (!dose) return null;
+    if (dose.type === 'fixed' && Number.isFinite(dose.value)) return {min:dose.value,max:dose.value,capped:false};
+    if (!weight) return null;
     if (dose.type === 'weight-bands') {
       const value = weight < dose.thresholdKg ? dose.belowMg : dose.atOrAboveMg;
       return { min:value, max:value, capped:false };
@@ -187,6 +197,7 @@
     }
     if (!weight) return '';
     const simple = calculateSimple(dose, weight);
+    if (simple && dose.ratio) return `${format(simple.min)}/${format(simple.min/dose.ratio)} mg/dozë`;
     if (simple) return rangeText(simple, dose, 'dozë', format);
 
     if (dose.type === 'sequence') {
@@ -232,8 +243,8 @@
   }
 
   function dailyDose(option, weight) {
-    if (!weight) return null;
     const dose = option.dose || {};
+    if (!weight && dose.type !== 'fixed') return null;
 
     if (dose.type === 'sequence') {
       return {
@@ -260,6 +271,11 @@
     const perDay = dosesPerDayFromFrequency(option.frequency);
     if (!perDose || !perDay) return null;
 
+    if (typeof perDay === 'number' && (dose.ratio || dose.secondComponent)) {
+      const first = perDose.min * perDay;
+      const second = dose.secondComponent !== undefined ? dose.secondComponent * perDay : first / dose.ratio;
+      return {text:`${fmt(first)}/${fmt(second)} mg (amoxicillin/clavulanate)/ditë`,working:`${perDay} marrje/ditë; të dy komponentët ruhen.`};
+    }
     if (typeof perDay === 'number') {
       const daily = { min:perDose.min * perDay, max:perDose.max * perDay, capped:false };
       return {
@@ -347,7 +363,7 @@
     // A generic cephalosporin allergy does not establish tolerance to penicillins.
     // The 2022 practice parameter permits routine use only in the low-risk,
     // non-anaphylactic history; anaphylaxis/SCAR requires a separate assessment.
-    if (ctx.allergy === 'a4' && /amoxicillin|ampicillin|penicillin/i.test(option.drug) && !ctx.cephLowRiskConfirmed) return false;
+    if (ctx.allergy === 'a4' && (protocols?.isPenicillin(option.drug) || /amoxicillin|ampicillin|penicillin/i.test(option.drug)) && !ctx.cephLowRiskConfirmed) return false;
     const list = option.allergy || [];
     return list.includes('any') || list.includes(ctx.allergy);
   }
@@ -360,7 +376,7 @@
     // only expose it when a child age-band is actually known. At 12+ (or when
     // age is unknown) amoxicillin remains available, but the child Penicillin V
     // row is withheld rather than silently under-dosing an adolescent.
-    if (indication.id === 'gas') {
+    if (indication.id === 'gas' && !protocols) {
       const age = currentAgeBand();
       filtered = filtered.filter(option => option.id !== 'penicillin-gas' || (age && ctx.ageConfirmed && age.months < 144));
     }
@@ -375,6 +391,7 @@
   // as breaking the threshold: the first states the limit and still shows the
   // table, the second withholds a regimen the source does not cover.
   function eligibility(indication) {
+    if(protocols && weightState().kind==='invalid')return {blocks:true,tone:'warn',text:'Pesha e shkruar nuk është valide. Shkruaj 1–200 kg ose hiqe për skemën fikse që nuk kërkon peshë.'};
     if (Number.isFinite(indication.minWeightKg)) {
       const state = weightState();
       if (state.kind === 'invalid') {
@@ -460,7 +477,7 @@
       'abx-indication',
       guide.indications.map(item => ({ value:item.id, label:item.short || item.label, hint:item.label })),
       ctx.indication,
-      value => { ctx.indication = value; collapsePicker(el.indicationPicker); render(); },
+      value => { ctx.cultureSusceptible=false;ctx.indication = value; collapsePicker(el.indicationPicker); render(); },
       'abx-chip',
     );
   }
@@ -480,7 +497,7 @@
       option.value = age.id;
       // Short enough to survive a narrow select; the hint line explains that
       // the second figure is the band's reference weight.
-      option.textContent = `${age.label} · ${age.referenceWeightLabel}`;
+      option.textContent = protocols ? age.label : `${age.label} · ${age.referenceWeightLabel}`;
       el.age.append(option);
     });
   }
@@ -496,6 +513,7 @@
 
   function renderAgeSuggestion() {
     if (!el.ageSuggestion) return;
+    if (protocols) {el.ageSuggestion.hidden=true;el.ageSuggestion.replaceChildren();return;}
     const state = weightState();
     const suggestion = state.kind === 'valid' ? nearestAgeBand(state.value) : null;
     const chosen = currentAgeBand();
@@ -536,6 +554,11 @@
       return;
     }
 
+    if (protocols) {
+      el.contextHint.dataset.tone = 'idle';
+      el.contextHint.textContent = age ? 'Mosha reale u zgjodh. Pesha nevojitet vetëm për dozat sipas kg ose kufizimet e produktit.' : 'Zgjidh moshën reale, përfshirë opsionin ≥18 vjeç. Pesha nuk përcakton moshën.';
+      return;
+    }
     if (age) {
       el.contextHint.dataset.tone = 'reference';
       el.contextHint.textContent = `Pa peshë reale, doza llogaritet nga pesha referuese ${age.referenceWeightLabel} (CARPA/WBM) — vetëm orientuese.`;
@@ -589,6 +612,9 @@
     el.allergyField.hidden = !usesAllergy;
     el.atypicalWrap.hidden = indication.id !== 'pneumonia';
     if (el.utiTypeWrap) el.utiTypeWrap.hidden = true;
+    const pregnancy=$('pregnancyInput');if(pregnancy)pregnancy.checked=ctx.pregnant;
+    const culture=$('cultureSusceptibleInput');if(culture)culture.checked=ctx.cultureSusceptible;
+    const cultureWrap=$('cultureSusceptibleWrap');if(cultureWrap)cultureWrap.hidden=!indication.id.startsWith('uti-');
 
     const orbitalWrap = ensureOrbitalRedFlagsControl();
     const orbitalInput = $('orbitalRedFlagsInput');
@@ -629,7 +655,13 @@
 
   function recommendationCard(option, basis) {
     const scope=currentIndication();
-    if(Number.isFinite(scope.doseReviewAboveKg)&&basis.weight>scope.doseReviewAboveKg){
+    const block = protocols?.gate(option,protocolContext());
+    if(block){
+      const card=make('article','abx-option');card.dataset.regimenId=option.id;
+      card.append(make('h3','',option.drug),make('p','abx-rx-blocked',block));return card;
+    }
+    const reviewAbove=option.doseReviewAboveKg??scope.doseReviewAboveKg;
+    if(Number.isFinite(reviewAbove)&&basis.weight>reviewAbove){
       const blocked=make('article','abx-option');
       blocked.append(make('h3','',option.drug),make('p','','Kjo tabelë CPS nuk jep maksimum për dozën. Mbi 40 kg, verifiko skemën e të rriturit dhe produktin; kalkulatori nuk e zgjat automatikisht dozën sipas kg.'));
       return blocked;
@@ -646,8 +678,13 @@
     const card = make('article', `abx-option tier-${option.tier || 'option'}`);
     card.dataset.regimenId = option.id;
     card.dataset.ageConfirmed = String(ctx.ageConfirmed);
+    card.dataset.ageMonths = String(currentAgeBand()?.months ?? '');
+    card.dataset.productRule = JSON.stringify(option.productRule || null);
+    card.dataset.protocolVersion = option.protocolVersion || '';
+    card.dataset.defaultDays = String(option.duration?.defaultDays ?? '');
+    card.dataset.weightRequired = String(option.requiresRealWeight === true || option.requiresProductWeight === true || ['single','range','weight-bands','sequence'].includes(option.dose?.type));
     card.dataset.ageRequired = String(option.kind !== 'procedure' && option.route !== 'topike');
-    card.dataset.requiresRealWeight = String(option.dose?.type === 'weight-bands' || Number.isFinite(currentIndication()?.minWeightKg));
+    card.dataset.requiresRealWeight = String(option.requiresRealWeight === true || option.requiresProductWeight === true || option.dose?.type === 'weight-bands' || Number.isFinite(currentIndication()?.minWeightKg));
     // Converters consume the unrounded value, never the presentation rounding.
     card.dataset.exactDoseText = calculatedValue(option, basis.weight, value => String(value));
     card.dataset.doseFrequencies = JSON.stringify(option.dose?.type==='combo' ? option.dose.parts.map(part=>({drug:part.drug,frequency:part.frequency})) : [{drug:option.drug,frequency:option.frequency}]);
@@ -664,7 +701,7 @@
 
     const value = calculatedValue(option, basis.weight);
     if (value) {
-      if (basis.label) {
+      if (basis.label && (option.dose?.type !== 'fixed' || option.requiresProductWeight || option.requiresRealWeight)) {
         const basisLine = make('span', 'abx-dose-basis', basis.label);
         basisLine.dataset.basis = basis.kind;
         workingBody.append(basisLine);
@@ -731,6 +768,7 @@
       link.rel = 'noopener noreferrer';
       workingBody.append(link);
     }
+    if (option.productRule?.ratio) card.append(make('p','abx-option-note',`Raporti i këtij formulimi: ${option.productRule.ratio}:1 amoxicillin/clavulanate.`));
     if (option.dose?.type === 'range') card.append(make('p', 'abx-option-note', 'Ky është interval doze. Zgjidh një dozë të vetme brenda tij para përshkrimit.'));
     if (['single','range'].includes(option.dose?.type) && !Number.isFinite(option.dose.maxDose)) card.append(make('p', 'abx-missing-limit', 'Maksimumi nuk jepet nga ky burim. Rezultati është llogaritje sipas kg, pa kufizim automatik të dozës.'));
     if (option.conditional) card.append(make('p', 'abx-option-note', `Kur përdoret: ${option.conditional}`));
@@ -795,7 +833,10 @@
       if (allergyOptions.some(item => item.value === stored.allergy)) ctx.allergy = stored.allergy;
       ctx.atypical = stored.atypical === true;
       ctx.orbitalRedFlags = stored.orbitalRedFlags === true;
-      ctx.ageFromWeight = stored.ageFromWeight === true;
+      ctx.ageFromWeight = protocols ? false : stored.ageFromWeight === true;
+      ctx.pregnant = stored.pregnant === true;
+      // A culture confirmation belongs to this clinical encounter; never restore it.
+      ctx.cultureSusceptible = false;
       ctx.ageConfirmed = stored.ageConfirmed === true && Boolean(ctx.age);
     }
     const requested = new URLSearchParams(location.search).get('indication');
@@ -803,8 +844,9 @@
   }
 
   function render() {
+    if(!protocols && document.documentElement?.dataset.penicillinProtocols==='required'){el.list.replaceChildren(make('p','abx-empty','Protokollet nuk u ngarkuan. Rifresko faqen; dozat e vjetra nuk përdoren si zëvendësim.'));return;}
     const indication = currentIndication();
-    const limit = eligibility(indication);
+    const limit = protocols && !ctx.ageConfirmed ? {blocks:true,tone:'info',text:indication.contextMessage} : eligibility(indication);
 
     renderConditionalControls(indication);
     syncPickers();
@@ -841,6 +883,7 @@
       return;
     }
 
+    if(indication.contextMessage)el.list.append(make('p','abx-eligibility',indication.contextMessage));
     const options = visibleOptions(indication);
     if (!options.length) {
       const bucket = allergyById(ctx.allergy);
@@ -887,13 +930,17 @@
       ctx.age = el.age.value;
       ctx.ageFromWeight = false;
       ctx.ageConfirmed = Boolean(ctx.age);
+      ctx.cultureSusceptible=false;
       render();
     });
     el.weight.addEventListener('input', () => {
       ctx.weight = el.weight.value;
-      applyAgeFromWeight();
+      ctx.cultureSusceptible=false;
+      if (!protocols) applyAgeFromWeight();
       render();
     });
+    $('pregnancyInput')?.addEventListener('change',event=>{ctx.pregnant=event.target.checked;ctx.cultureSusceptible=false;render();});
+    $('cultureSusceptibleInput')?.addEventListener('change',event=>{ctx.cultureSusceptible=event.target.checked;render();});
     el.atypical.addEventListener('change', () => {
       ctx.atypical = el.atypical.checked;
       render();
@@ -917,7 +964,7 @@
       label=make('label','abx-age-confirmation');label.id='ageConfirmation';
       const input=document.createElement('input');input.type='checkbox';
       input.addEventListener('change',()=>{ctx.ageConfirmed=input.checked;render();});
-      label.append(input,make('span','','Konfirmoj moshën reale të fëmijës'));
+      label.append(input,make('span','','Konfirmoj moshën reale të pacientit'));
       el.age.parentElement.append(label);
     }
     label.hidden=(!ctx.ageFromWeight&&ctx.ageConfirmed)||!ctx.age;

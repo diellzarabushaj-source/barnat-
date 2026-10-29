@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="drx-unified-sidebar" data-drx-app="antibiotiket">
+<html lang="sq" class="drx-unified-sidebar" data-drx-app="antibiotiket" data-penicillin-protocols="required">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -8,13 +8,14 @@
   <title>DRx | Antibiotikët</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-v18-review-20261029">
+  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-penicillins-20261029">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script src="/phase9-personal-entities-client.js?v=drx-phase9-personal-v4" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-  <script src="/antibiotiket-shell.js?v=antibiotiket-shell-20261028d" defer></script>
+  <script src="/antibiotiket-shell.js?v=antibiotiket-shell-penicillins-20261029" defer></script>
   <script src="/antibiotiket-data.js?v=antibiotiket-audit-20261028" defer></script>
-  <script src="/antibiotiket.js?v=antibiotiket-v18-review-20261029" defer></script>
+  <script src="/antibiotiket-penicillin-protocols.js?v=20261029-penicillins-v1" defer></script>
+  <script src="/antibiotiket.js?v=antibiotiket-penicillins-20261029" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#antibioticsContent">Kalo te Antibiotikët</a>
@@ -91,9 +92,9 @@
         <header class="abx-head">
           <div>
             <h1>Antibiotikët</h1>
-            <p>Zgjidh infeksionin, shkruaj peshën — doza del menjëherë.</p>
+            <p>Zgjidh diagnozën, moshën reale dhe formulimin — receta del menjëherë.</p>
           </div>
-          <span class="scope-pill">PEDIATRI</span>
+          <span class="scope-pill">FËMIJË &amp; 18+</span>
         </header>
 
         <section class="abx-card abx-input" aria-label="Konteksti klinik">
@@ -135,6 +136,12 @@
                 <div class="abx-segments" id="allergyChoice" role="radiogroup" aria-labelledby="allergyLabel"></div>
               </details>
             </div>
+            <div class="abx-refine-item abx-refine-toggle">
+              <label class="abx-toggle"><input id="pregnancyInput" type="checkbox"><span>Shtatzëni</span></label>
+            </div>
+            <div class="abx-refine-item abx-refine-toggle" id="cultureSusceptibleWrap" hidden>
+              <label class="abx-toggle"><input id="cultureSusceptibleInput" type="checkbox"><span>Urinokultura konfirmon ndjeshmërinë ndaj penicilinës së zgjedhur</span></label>
+            </div>
             <div class="abx-refine-item" id="utiTypeWrap" hidden>
               <p class="abx-label" id="utiLabel">Tipi i UTI</p>
               <div class="abx-segments" id="utiTypeChoice" role="radiogroup" aria-labelledby="utiLabel"></div>
@@ -163,9 +170,9 @@
             <b id="activeSource">—</b>
           </summary>
           <div class="abx-provenance-body">
-            <p class="abx-safety">Kur nuk ka peshë reale, doza llogaritet nga pesha referuese e moshës sipas CARPA/WBM dhe është vetëm orientuese. <strong>Doza përfundimtare llogaritet nga pesha reale që shkruan ti.</strong></p>
+            <p class="abx-safety">Mosha reale përcakton grupin e pacientit. <strong>Pesha reale kërkohet për skemat sipas kg dhe kufizimet e produktit.</strong> Dozat fikse nuk rriten automatikisht me peshën.</p>
             <div id="sourceList" class="abx-sources"></div>
-            <p class="abx-warning">Konteksti klinik mbetet i domosdoshëm. Çdo regjim mban burimin e vet (Children’s Mercy 2026, CDC, CPS 2026 ose CHOP sipas rolit). Për UTI, MRSA dhe alternativa ku rezistenca ndryshon, përdor kulturën/ndjeshmërinë ose epidemiologjinë/antibiogramën lokale kur është relevante. Kur burimi nuk jep maksimum, DRx nuk e shpik.</p>
+            <p class="abx-warning">Konteksti klinik mbetet i domosdoshëm. Çdo regjim mban burimin e vet: NICE sipas indikacionit; NHS për otitin te të rriturit; CDC, CPS, SmPC dhe UCSF kur specifikohen. Për UTI, MRSA dhe alternativa ku rezistenca ndryshon, përdor kulturën/ndjeshmërinë ose epidemiologjinë/antibiogramën lokale kur është relevante. Kur burimi nuk jep maksimum, DRx nuk e shpik.</p>
           </div>
         </details>
         </div>

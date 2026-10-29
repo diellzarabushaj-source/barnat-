@@ -441,9 +441,10 @@
       });
       select.addEventListener('change', () => {
         const value = Number(select.value);
-        shared.days = Number.isFinite(value) ? value : null;
+        shared.days = duration.values.includes(value) ? value : null;
         refresh();
       });
+      if(duration.values.includes(shared.days))select.value=String(shared.days);
       label.append(select);
     } else {
       const input = document.createElement('input');
@@ -558,6 +559,10 @@
     const mg = state.doseFinal;
     const freq = state.frequencyFinal;
     const days = shared.days;
+    const rule=JSON.parse(card.dataset.productRule||'null');
+    const ratio=state.drug==='Amoxicillin / clavulanate'?Number(String(picked?.variant.concentration.basis||'').split('|ratio:')[1]?.replace(',','.'))||rule?.ratio:null;
+    const doseLabel=ratio?`${fmt(mg)}/${fmt(mg/ratio)} mg (amoxicillin/clavulanate)`: `${fmt(mg)} mg`;
+    const dailyLabel=ratio?`${fmt(mg*freq)}/${fmt(mg*freq/ratio)} mg (amoxicillin/clavulanate)`:`${fmt(mg*freq)} mg`;
     let line = '';
     let quantity = '';
     let sourceUrl = '';
@@ -600,13 +605,13 @@
     }
 
     preview.append(make('strong', 'abx-rx-line', line));
-    preview.append(make('span', 'abx-rx-dose', `Doza e zgjedhur: ${fmt(mg)} mg/dozë.`));
+    preview.append(make('span', 'abx-rx-dose', `Doza e zgjedhur: ${doseLabel}/dozë. Totali ditor: ${dailyLabel}.`));
     preview.append(make('span', 'abx-rx-quantity', quantity));
     if (caution) preview.append(make('span', 'abx-rx-caution', caution));
     preview.append(make('span', 'abx-rx-note', 'Sasia është llogaritje matematike, jo zgjedhje automatike e paketimit. Verifiko produktin dhe matshmërinë para nënshkrimit.'));
 
     return {
-      text:`${state.drug}\nD.S.: ${line.replace(`${state.drug} `, '')}.\nDoza e zgjedhur: ${fmt(mg)} mg/dozë.\n${quantity}.`,
+      text:`${state.drug}\nD.S.: ${line.replace(`${state.drug} `, '')}.\nDoza e zgjedhur: ${doseLabel}/dozë.\nTotali ditor: ${dailyLabel}.\n${quantity}.`,
       sourceUrl,
     };
   }
@@ -781,11 +786,13 @@
     const details = make('details', 'abx-rx');
     const summary = make('summary', '', 'Zgjedhja praktike / Receta');
     details.append(summary);
+    if (card.dataset.protocolVersion) details.open=true;
 
     const body = make('div', 'abx-rx-body');
     const durationText = clean(card.querySelector('.abx-duration')?.textContent || '');
     const duration = durationSpec(durationText);
-    const shared = { days:duration?.kind === 'fixed' ? duration.values[0] : null };
+    const preferredDays=Number(card.dataset.defaultDays);
+    const shared = { days:duration?.kind === 'fixed' ? duration.values[0] : duration?.values.includes(preferredDays) ? preferredDays : null };
     const results = new Map();
     const copyButton = make('button', 'abx-rx-copy', 'Kopjo recetën');
     copyButton.type = 'button';
