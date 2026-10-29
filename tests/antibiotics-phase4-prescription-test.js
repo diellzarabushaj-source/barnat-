@@ -61,7 +61,7 @@ assert.doesNotMatch(runtime, /Math\.round\([^\n]+componentMg[^\n]+\)\s*\/\s*2/, 
 
 const shell = read('antibiotiket-shell.js');
 assert.match(shell, /antibiotiket-solids-data\.js\?v=antibiotiket-phase4-v2/);
-assert.match(shell, /antibiotiket-prescription\.js\?v=automatic-dose-20261029/);
+assert.match(shell, /antibiotiket-prescription\.js\?v=aom-v2-20261029/);
 // v2: the fold-out summary was restyled to match the other two folds on a card.
 assert.match(shell, /antibiotiket-prescription\.css\?v=practical-dose-20261029/);
 

@@ -7,6 +7,7 @@ const ROOT=path.resolve(__dirname,'..');let server,baseURL;
 const catalog=buildCatalog([...rows,
   row('cephalexin-tablet500','Cephalexin','J01DB01','500 mg','Tablet'),
   row('cephalexin-cap500','Cephalexin','J01DB01','500 mg','Capsule'),
+  row('clarithro-tab500','Clarithromycin','J01FA09','500 mg','Tablet'),
   row('amox-tablet500','Amoxicillin','J01CA04','500 mg','Tablet'),
   row('clav4-liquid','Amoxicillin; Clavulanic acid','J01CR02','(125 mg+31.25 mg)/5 ml','Powder for oral suspension'),
   row('clav4-tab','Amoxicillin; Clavulanic acid','J01CR02','500 mg+125 mg','Tablet'),
@@ -34,6 +35,7 @@ async function open(page,indication,age='5y',weight='18'){
   await page.goto(baseURL+'/antibiotiket.html?indication='+indication);
   if(weight)await page.locator('#weightInput').fill(weight);
   if(age)await page.locator('#ageSelect').selectOption(age);
+  if(indication==='aom')await page.locator('input[name="abx-aom-plan"][value="immediate"]').check();
 }
 async function choose(c,form,strength){
   await expect(c.locator('.abx-market select').first()).toBeEnabled();
@@ -138,7 +140,7 @@ test('600 mg cannot turn into a fractional 500mg capsule or rounded 500mg prescr
   await expect(c.locator('.abx-rx-copy')).toBeEnabled();
 });
 test('Co-amoxiclav binds the source ratio and prints both components',async({page})=>{
-  await open(page,'aom','adult','70');const c=card(page,'amoxclav-aom');
+  await open(page,'aom','adult','70');await page.locator('#aomFailureInput').check();const c=card(page,'amoxclav-aom');
   await choose(c,'oral-liquid','(400 mg+57 mg)/5 ml');
   await expect(c.locator('.abx-market-info')).toContainText('raport 4:1');
   await expect(c.locator('.abx-rx-copy')).toBeDisabled();
@@ -151,19 +153,21 @@ test('Co-amoxiclav binds the source ratio and prints both components',async({pag
   await expect(c.locator('.abx-rx-quantity')).toContainText('15 tableta');
 });
 test('Infant co-amoxiclav uses actual kg and exact 4:1 concentration',async({page})=>{
-  await open(page,'aom','6m','8');const c=card(page,'amoxclav-aom');
+  await open(page,'aom','6m','8');await page.locator('#aomFailureInput').check();const c=card(page,'amoxclav-aom');
   await choose(c,'oral-liquid','(125 mg+31.25 mg)/5 ml');
   await expect(c.locator('.abx-rx-line')).toContainText('2 mL PO 3 herë/ditë × 5 ditë');
   await expect(c.locator('.abx-rx-dose')).toContainText('50/12,5 mg');
   await page.locator('#weightInput').fill('');
+  await page.locator('#aomFailureInput').check();
   await expect(card(page,'amoxclav-aom')).toContainText('peshën reale');
   await expect(card(page,'amoxclav-aom').locator('.abx-rx-copy')).toHaveCount(0);
 });
 test('Product route and small body weight are enforced',async({page})=>{
-  await open(page,'aom','adult','24.9');
+  await open(page,'aom','adult','24.9');await page.locator('#aomFailureInput').check();
   await expect(card(page,'amoxclav-aom')).toContainText('25 kg');
-  await page.locator('#weightInput').fill('25');
+  await page.locator('#weightInput').fill('25');await page.locator('#aomFailureInput').check();
   await expect(card(page,'amoxclav-aom').locator('.abx-option-head')).toBeVisible();
+  await page.locator('#aomFailureInput').uncheck();
   const c=card(page,'amox-aom');await choose(c,'vial-powder','1 g');
   await expect(c.locator('.abx-market-info')).toContainText('Formë jo orale');
   await expect(c.locator('.abx-rx-copy')).toBeDisabled();
@@ -284,6 +288,78 @@ test('A ranged dose adapts to a whole capsule immediately on product selection',
   await c.locator('.abx-rx-shared select').selectOption('7');
   await expect(c.locator('.abx-rx-line')).toContainText('1 kapsulë PO');
   await expect(c.locator('.abx-rx-copy')).toBeEnabled();
+});
+test('AOM plan is explicit, no antibiotic hides oral and hospital prescriptions',async({page})=>{
+  await page.goto(baseURL+'/antibiotiket.html?indication=aom');
+  await page.locator('#ageSelect').selectOption('5y');
+  await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
+  await page.locator('input[name="abx-aom-plan"][value="none"]').check();
+  await expect(page.locator('#eligibilityMessage')).toContainText('Pa antibiotik tani');
+  await expect(page.locator('#recommendationList .abx-rx-copy')).toHaveCount(0);
+  await expect(page.locator('#hospitalModule')).toBeHidden();
+});
+test('AOM second-line treatment requires reassessment and does not reuse an allergy first choice',async({page})=>{
+  await open(page,'aom','5y','20');
+  await expect(card(page,'amoxclav-aom')).toContainText('2–3 ditësh');
+  await expect(card(page,'amoxclav-aom').locator('.abx-market')).toHaveCount(0);
+  await page.locator('#aomFailureInput').check();
+  await expect(card(page,'amox-aom')).toHaveCount(0);
+  await expect(card(page,'amoxclav-aom').locator('.abx-market')).toHaveCount(1);
+  await page.locator('input[name="abx-allergy"][value="a2"]').check({force:true});
+  await expect(page.locator('#recommendationList')).toContainText('konsulto mikrobiologun');
+  await expect(page.locator('#recommendationList .abx-rx-copy')).toHaveCount(0);
+  await expect(page.locator('#hospitalModule')).toBeHidden();
+});
+test('AOM urgent complications remove an existing prescription and hospital dosing',async({page})=>{
+  await open(page,'aom','6y','20');
+  await choose(card(page,'amox-aom'),'oral-liquid','250 mg/5 ml');
+  await expect(card(page,'amox-aom').locator('.abx-rx-copy')).toBeEnabled();
+  await page.locator('#aomRiskSelect').selectOption('urgent');
+  await expect(page.locator('#eligibilityMessage')).toContainText('STOP');
+  await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
+  await expect(page.locator('#hospitalModule')).toBeHidden();
+});
+test('High risk selects immediate assessment and prevents a delayed prescription',async({page})=>{
+  await open(page,'aom','5y','20');
+  await page.locator('#aomRiskSelect').selectOption('high');
+  await expect(page.locator('input[name="abx-aom-plan"][value="immediate"]')).toBeChecked();
+  await expect(page.locator('input[name="abx-aom-plan"][value="backup"]')).toBeDisabled();
+  await expect(card(page,'amox-aom')).toBeVisible();
+});
+test('Back-up instructions are visible and included first in copied prescription',async({page})=>{
+  await page.addInitScript(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.copiedPrescription=text;}}}));
+  await open(page,'aom');
+  await page.locator('input[name="abx-aom-plan"][value="backup"]').check();
+  const c=card(page,'amox-aom');await choose(c,'oral-liquid','250 mg/5 ml');
+  await expect(c.locator('.abx-rx-preview')).toContainText('RECETË REZERVË');
+  await expect(c.locator('.abx-rx-preview')).toContainText('brenda 3 ditësh');
+  await c.locator('.abx-rx-copy').click();
+  await expect.poll(()=>page.evaluate(()=>window.copiedPrescription)).toMatch(/^RECETË REZERVË/);
+  await expect(page.locator('#hospitalModule')).toBeHidden();
+});
+test('Adult AOM 500mg with 1g tablet displays half in the dose and final recipe',async({page})=>{
+  await open(page,'aom','adult','70');const c=card(page,'amox-aom');
+  await choose(c,'tablet','1000 mg');await expect(c.locator('.abx-rx-copy')).toBeDisabled();
+  await c.locator('.abx-split-confirm input').check();
+  await expect(c.locator('.abx-market-single')).toContainText('½ tabletë');
+  await expect(c.locator('.abx-rx-line')).toContainText('½ tablete PO');
+  await expect(c.locator('.abx-rx-dose')).toContainText('1500 mg');
+  await expect(c.locator('.abx-rx-copy')).toBeEnabled();
+});
+test('AOM adolescent allergy uses published fixed-mg range without requiring weight',async({page})=>{
+  await open(page,'aom','12y','');
+  await page.locator('input[name="abx-allergy"][value="a2"]').check({force:true});
+  const c=card(page,'clarithro-aom-nice');await choose(c,'tablet','500 mg');
+  await expect(c.locator('.abx-dose-selected')).toHaveText('500 mg');
+  await expect(c.locator('.abx-dose-window')).toContainText('250 mg');
+  await expect(c.locator('.abx-rx-line')).toContainText('1 tabletë PO 2 herë/ditë');
+  await expect(c.locator('.abx-rx-dose')).toContainText('1000 mg');
+});
+test('AOM treatment decision and failure confirmation do not carry over on reload',async({page})=>{
+  await open(page,'aom','5y','20');await page.locator('#aomFailureInput').check();
+  await page.reload();
+  await expect(page.locator('#aomFailureInput')).not.toBeChecked();
+  await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
 });
 test('Central range box rounds only to a representable in-range dose',async({page})=>{
   await open(page,'lymphadenitis','10y','30');const c=card(page,'cephalexin-lymph');

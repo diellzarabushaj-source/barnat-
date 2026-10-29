@@ -91,7 +91,7 @@
       loadStylesheet('/antibiotiket-prescription.css?v=practical-dose-20261029', 'data-drx-abx-prescription-css'),
       loadRuntime('/antibiotiket-solids-data.js?v=antibiotiket-phase4-v2', 'data-drx-abx-solids-data'),
     ]);
-    await loadRuntime('/antibiotiket-prescription.js?v=automatic-dose-20261029', 'data-drx-abx-prescription-runtime');
+    await loadRuntime('/antibiotiket-prescription.js?v=aom-v2-20261029', 'data-drx-abx-prescription-runtime');
   }
 
   async function loadAntibioticHospital() {
@@ -99,7 +99,7 @@
       loadStylesheet('/antibiotiket-hospital.css?v=antibiotiket-phase5-v1', 'data-drx-abx-hospital-css'),
       loadRuntime('/antibiotiket-hospital-data.js?v=antibiotiket-phase5-v1', 'data-drx-abx-hospital-data'),
     ]);
-    await loadRuntime('/antibiotiket-hospital.js?v=penicillins-20261029', 'data-drx-abx-hospital-runtime');
+    await loadRuntime('/antibiotiket-hospital.js?v=aom-v2-20261029', 'data-drx-abx-hospital-runtime');
   }
 
   async function loadAntibioticParenteralPreparation() {

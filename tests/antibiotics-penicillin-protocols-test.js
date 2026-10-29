@@ -20,6 +20,20 @@ for(const [m,mg] of [[3,125],[11,125],[12,250],[59,250],[60,500],[215,500]]){
 }
 assert.deepEqual(shape(option('aom',216,'amox-aom',60)),[500,'3 herë/ditë','5 ditë','nhs-fife-aom']);
 assert.equal(option('aom',144,'amox-aom',60).dose.value,500,'A 60kg child stays under the pediatric source');
+assert.equal(P.aomDecision(context(60)).blocks,true,'No antibiotic plan is assumed');
+assert.equal(P.aomDecision(context(60,20,{aomPlan:'none'})).blocks,true);
+assert.equal(P.aomDecision(context(60,20,{aomPlan:'backup'})),null);
+assert.equal(P.aomDecision(context(60,20,{aomPlan:'immediate'})),null);
+assert.match(P.aomDecision(context(60,20,{aomRisk:'urgent',ageConfirmed:false})).text,/STOP/);
+assert.equal(P.aomDecision(context(60,20,{aomRisk:'high',aomPlan:'backup'})).blocks,true);
+assert.equal(P.aomDecision(context(60,20,{aomPlan:'backup',aomFailure:true})).blocks,true);
+assert.match(P.gate(option('aom',60,'amoxclav-aom'),context(60)),/2–3 ditësh/);
+const failedAom=resolve('aom',60,20,{aomFailure:true});
+assert.deepEqual(failedAom.options.map(o=>o.id),['amoxclav-aom']);
+const adolescentClari=option('aom',144,'clarithro-aom-nice');
+assert.deepEqual([adolescentClari.dose.value,adolescentClari.dose.maxValue,adolescentClari.frequency],[250,500,'2 herë/ditë']);
+assert.equal(option('aom',143,'clarithro-aom-nice').dose.maxValue,undefined);
+assert.equal(option('aom',96,'erythro-aom-pregnancy',30,{pregnant:true}).dose.maxValue,500);
 for(const [m,mg,days] of [[3,125,3],[11,125,3],[12,250,3],[60,500,3],[143,500,3],[144,500,5],[216,500,5]]){
   assert.deepEqual(shape(option('pneumonia',m,'amox-pna')),[mg,'3 herë/ditë',`${days} ditë`,'nice-ng250']);
 }
@@ -35,11 +49,11 @@ for(const [m,first,second] of [[12,125,31.25],[71,125,31.25],[72,250,62.5],[143,
 const infant=option('aom',6,'amoxclav-aom',8);
 assert.equal(infant.dose.value*8,50); // 0.25mL/kg of 125/31.25mg per 5mL.
 assert.equal(infant.requiresRealWeight,true);
-assert.match(P.gate(infant,context(6,null)),/peshën reale/);
-assert.match(P.gate(option('aom',216,'amoxclav-aom',24.9),context(216,24.9)),/25 kg/);
+assert.match(P.gate(infant,context(6,null,{aomFailure:true})),/peshën reale/);
+assert.match(P.gate(option('aom',216,'amoxclav-aom',24.9),context(216,24.9,{aomFailure:true})),/25 kg/);
 assert.equal(option('aom',60,'amoxclav-aom',40).dose.value,500);
 assert.equal(option('aom',60,'amoxclav-aom',40).source,'emc-coamox-500-125');
-assert.equal(P.gate(option('aom',216,'amoxclav-aom',40),context(216,40)),'');
+assert.equal(P.gate(option('aom',216,'amoxclav-aom',40),context(216,40,{aomFailure:true})),'');
 for(const indication of guide.indications){
   assert.equal(P.resolve(indication,{ageConfirmed:false,weightKg:80}).options.length,0,'Weight alone cannot select age: '+indication.id);
 }
@@ -92,6 +106,8 @@ vm.runInContext(read('antibiotiket.js').replace(/  restoreContext\(\);[\s\S]*$/,
 const e=runtime.window.engine;
 assert.equal(e.dailyDose(option('aom',216,'amox-aom',70),null).text,'1500 mg/ditë');
 assert.equal(e.dailyDose(pyelo,null).text,'1500/375 mg (amoxicillin/clavulanate)/ditë');
+assert.equal(e.dailyDose(adolescentClari,null).text,'500–1000 mg/ditë');
+assert.equal(e.calculatedValue(adolescentClari,null),'250–500 mg/dozë');
 assert.equal(e.calculatedValue(infant,8),'50/12,5 mg/dozë');
 Object.assign(e.ctx,{age:'adult',ageConfirmed:true,weight:'60',indication:'aom'});
 assert.equal(e.currentIndication().source,'nhs-fife-aom');

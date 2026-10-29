@@ -138,3 +138,55 @@ source interval qualify. If none qualify, the prescription remains blocked.
 Fixed doses are never rounded. Editing the practical target applies on change
 without requiring the adaptation button. All changes remain visible in the
 central dose box and can be overridden within the published bounds.
+
+## AOM clinical workflow refinement — 2026-10-29
+
+The age/weight fields keep their layout. A compact, indication-specific panel
+requires a clinician-selected plan after otoscopy: no antibiotic, a back-up
+prescription, or immediate treatment. There is no assumed antibiotic plan on
+opening/reloading the page. High-risk assessment selects immediate treatment;
+suspected serious systemic infection or complications blocks routine oral and
+linked parenteral prescriptions and directs urgent hospital assessment. No-antibiotic
+and back-up decisions also hide the linked parenteral module.
+
+Co-amoxiclav is a gated second choice. The clinician must confirm reassessment
+and worsening after at least 2–3 days of first-line treatment. In that pathway,
+first-choice agents are withheld. Penicillin-allergic treatment failure leads
+to microbiology/ENT advice, not an automatic repeat of the initial alternative.
+Failure confirmation clears on age/weight changes; all AOM decision state starts
+fresh on reload or switching indication.
+
+Back-up instructions appear before the prescription and at the beginning of its
+copied text, including the three-day trigger and urgent reassessment advice.
+Fixed amoxicillin schedules remain fixed. The published 250–500 mg per-dose
+interval is available for clarithromycin at 12–17 years and the selected QID
+erythromycin pregnancy schedule at 8–17 years. These are absolute mg intervals,
+not mg/kg and not universal therapeutic limits. The existing product-aware
+adaptation and both source bounds apply without requiring an irrelevant weight.
+A 500 mg dose can use half a 1000 mg immediate-release tablet only after explicit
+confirmation that the exact product permits two equal doses. Capsules and
+modified-release products cannot acquire half-tablet permission.
+
+Source responsibilities remain separate:
+
+- NICE NG91: pediatric prescribing decisions, oral schedules and course lengths.
+- NHS Fife: the selected adult doses and five-day courses.
+- NHS Borders: prescribing/observation, back-up and referral pathways for people
+  with AOM, including adults (not a replacement adult dose source).
+- CDC pediatric outpatient guidance: otoscopic diagnostic criteria only.
+- NICE NG143: fever risk under three months. The existing conservative outpatient
+  minimum age of three months is retained; it is not described as NICE NG91's
+  dosing-table lower bound (which is one month).
+- NHS mastoiditis page: postauricular signs and specialist hospital assessment.
+
+Additional source URLs:
+https://www.rightdecisions.scot.nhs.uk/nhs-borders-clinical-guidelines/ear-nose-and-throat/acute-otitis-media-aom/
+https://www.cdc.gov/antibiotic-use/hcp/clinical-care/pediatric-outpatient.html
+https://www.nice.org.uk/guidance/ng143/chapter/recommendations
+https://www.nhs.uk/conditions/mastoiditis/
+
+Tests cover no assumed plan, observation without prescriptions, urgent removal
+of existing prescriptions, high-risk restrictions, gated second choice/allergy
+failure, copied delayed-use advice, exact half-tablet conversion, absolute-mg
+adolescent range transport, and fresh decision state after reload. Existing
+age, formulation-ratio, duration, pregnancy and product eligibility tests remain.

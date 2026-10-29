@@ -11,9 +11,13 @@
 
   // Each indication owns its dose, interval, duration and product ratio. Never
   // extend a pediatric coefficient into adults or round it to a tablet strength.
-  const version = '2026-10-29-penicillins-v1';
+  const version = '2026-10-29-aom-v2';
   const sources = [
     ['nice-ng91','NICE NG91 · <18','Otitis media akute','https://www.nice.org.uk/guidance/ng91/chapter/Recommendations'],
+    ['cdc-aom-diagnosis','CDC · diagnoza AOM','Kriteret otoskopike të AOM te fëmijët','https://www.cdc.gov/antibiotic-use/hcp/clinical-care/pediatric-outpatient.html'],
+    ['nhs-borders-aom','NHS Borders · vendimi','AOM: vendimi për antibiotik, ndjekja dhe referimi','https://www.rightdecisions.scot.nhs.uk/nhs-borders-clinical-guidelines/ear-nose-and-throat/acute-otitis-media-aom/'],
+    ['nice-ng143','NICE NG143 · ethet','Vlerësimi i etheve nën 5 vjeç','https://www.nice.org.uk/guidance/ng143/chapter/recommendations'],
+    ['nhs-mastoiditis','NHS · mastoiditi','Shenjat e mastoiditit dhe referimi','https://www.nhs.uk/conditions/mastoiditis/'],
     ['nhs-fife-aom','NHS Fife · 18+','Otitis media te të rriturit','https://www.rightdecisions.scot.nhs.uk/nhs-fife/hospital-guidance/ear-nose-and-throat/'],
     ['nice-ng84','NICE NG84','Faringjit akut','https://www.nice.org.uk/guidance/ng84/chapter/Recommendations'],
     ['nice-ng79','NICE NG79','Sinusit akut','https://www.nice.org.uk/guidance/ng79/chapter/Recommendations'],
@@ -31,6 +35,18 @@
   const regimen = (id,drug,dose,times,days,source,extra={}) => ({id,drug,dose,route:'PO',frequency:`${times} herë/ditë`,duration:{type:'fixed',text:typeof days === 'number' ? `${days} ditë` : days,defaultDays:typeof days==='number'?days:days==='5–7 ditë'?5:days==='5–10 ditë'?10:days==='7–10 ditë'?7:null},source,tier:'first',allergy:permitted,protocolVersion:version,...extra});
   const amoxMg = months => months < 12 ? 125 : months < 60 ? 250 : 500;
   const penvMg = months => months < 12 ? 62.5 : months < 72 ? 125 : months < 144 ? 250 : 500;
+  const fixedRange = (min,max) => ({type:'fixed',value:min,maxValue:max,text:`${min}–${max} mg/dozë`});
+  const aomBackupAdvice = 'RECETË REZERVË — mos e fillo menjëherë. Filloje nëse simptomat nuk nisin të përmirësohen brenda 3 ditësh ose përkeqësohen dukshëm. Për përkeqësim të shpejtë ose gjendje të përgjithshme shumë të rënduar, kërko rivlerësim urgjent.';
+
+  function aomDecision(context) {
+    if(context.aomRisk==='urgent')return {blocks:true,tone:'warn',text:'STOP — dyshim për mastoidit, meningjit, paralizë faciale ose infeksion sistemik të rëndë: referim urgjent në spital. Mos përdor recetë rutinë ambulatore.'};
+    if(!context.ageConfirmed)return null; // The existing real-age gate applies.
+    if(context.aomRisk==='high'&&context.aomPlan!=='immediate')return {blocks:true,tone:'warn',text:'Gjendja shumë e rënduar ose rreziku i lartë kërkon antibiotik të menjëhershëm pas vlerësimit; komplikimet kërkojnë spital.'};
+    if(context.aomPlan==='none')return {blocks:true,tone:'info',text:'Pa antibiotik tani. Analgjezi dhe ndjekje; rivlerëso nëse nuk nis përmirësimi brenda 3 ditësh, ose më herët në përkeqësim.'};
+    if(!['backup','immediate'].includes(context.aomPlan))return {blocks:true,tone:'info',text:'Pas otoskopisë dhe vlerësimit klinik, zgjidh: pa antibiotik, recetë rezervë ose antibiotik tani.'};
+    if(context.aomFailure&&context.aomPlan!=='immediate')return {blocks:true,tone:'warn',text:'Përkeqësimi pas trajtimit fillestar kërkon rivlerësim tani; mos përdor recetë rezervë për dështimin e trajtimit.'};
+    return null;
+  }
 
   function coamox(id, months, days, source, extra={}) {
     // Choose the published fixed age-band option where NICE offers an OR.
@@ -86,12 +102,14 @@
       case 'aom':
         source = adult ? 'nhs-fife-aom' : 'nice-ng91';
         add(regimen('amox-aom','Amoxicillin',fixed(amoxMg(months)),3,adult ? 5 : '5–7 ditë',source));
-        add(coamox('amoxclav-aom',months,adult ? 5 : '5–7 ditë',source,{tier:'second',conditional:'Vetëm pas rivlerësimit: përkeqësim gjatë 2–3 ditëve të trajtimit fillestar.'}));
+        add(coamox('amoxclav-aom',months,adult ? 5 : '5–7 ditë',source,{tier:'second',requiresAomFailure:true,conditional:'Vetëm pas rivlerësimit: përkeqësim pas së paku 2–3 ditësh të trajtimit fillestar.'}));
         // NHS Fife uses doxycycline in adult penicillin allergy. Do not label
         // a different adult alternative as this source's recommendation.
         if (!adult) allergyAlternative('5–7 ditë',source);
+        if(!adult)options=options.map(o=>o.drug==='Clarithromycin'&&months>=144?{...o,dose:fixedRange(250,500),note:'Intervali i NICE për 12–17 vjeç: 250–500 mg çdo 12 orë. Zgjidh dozën brenda kësaj skeme sipas vlerësimit klinik dhe produktit.'}:o.drug==='Erythromycin'&&months>=96?{...o,dose:fixedRange(250,500)}:o);
         if (adult && !context.pregnant) add(regimen('doxy-aom-adult','Doxycycline',fixed(100),2,5,source,{allergy:['a1','a2','a3'],tier:'allergy-severe',note:'Alternativa për alergji sipas NHS Fife. Jo në shtatzëni.'}));
         if (adult && context.pregnant) add(regimen('erythro-aom-pregnancy','Erythromycin',fixed(adult ? 500 : 250),4,adult ? 5 : '5–7 ditë',source,{allergy:['a1','a2','a3'],tier:'allergy-severe',note:'Alternativë makrolide në shtatzëni kur përfitimi e justifikon trajtimin.'}));
+        if(context.aomFailure)options=options.filter(o=>o.tier==='second');
         message = 'Konfirmo AOM me otoskopi. Analgjezi për të gjithë; vëzhgim/recetë rezervë kur përshtatet. Shenjat e mastoiditit, meningjitit ose sëmundjes sistemike kërkojnë referim urgjent. Rivlerëso në 48–72 orë.';
         break;
       case 'gas':
@@ -168,6 +186,7 @@
     options = options.map(o => ({...o,requiresCulture:o.requiresCulture === true,productRule:o.productRule || (o.drug === 'Amoxicillin / clavulanate' ? {ratio:7} : null)}));
     if (context.pregnant) options = options.filter(o => !o.requiresNotPregnant && o.drug !== 'Clarithromycin');
     return {...indication,source,options,contextMessage:message,protocolVersion:version,
+      ...(id==='aom'?{warning:'Skemë ambulatore për ≥3 muaj, pas otoskopisë. Nën 3 muaj nevojitet vlerësim i veçantë; temperatura ≥38°C kërkon vlerësim urgjent. Dozat e NICE për grupmoshën nuk rriten automatikisht me kg.'}:{}),
       ...(id.startsWith('uti-') ? {doseReviewAboveKg:undefined} : {}),
       ...(id === 'aom' ? {minAgeMonths:3} : {}),
     };
@@ -175,6 +194,7 @@
 
   function gate(option, context) {
     if (!context.ageConfirmed) return 'Zgjidh moshën reale të pacientit.';
+    if(option.requiresAomFailure&&!context.aomFailure)return 'Zgjedhje e dytë: konfirmo rivlerësimin dhe përkeqësimin pas së paku 2–3 ditësh të trajtimit fillestar. Nuk është zëvendësim automatik për amoxicillin.';
     if (option.requiresCulture && !context.cultureSusceptible) return 'Konfirmo urinokulturën dhe ndjeshmërinë para përdorimit të kësaj peniciline.';
     if (option.requiresNotPregnant && context.pregnant) return 'Shtatzënia kërkon skemë tjetër sipas udhëzimit.';
     if(option.minRegimenWeightKg && context.weightKg>0 && context.weightKg<option.minRegimenWeightKg)return `Kjo dozë 500/125 mg kërkon të paktën ${option.minRegimenWeightKg} kg sipas kufirit të SmPC. Zgjidh skemë individuale sipas peshës dhe produktit.`;
@@ -205,5 +225,5 @@
     return null;
   }
 
-  return Object.freeze({version,sources,attach,resolve,gate,productReason,resolveHospital,isPenicillin:penicillin});
+  return Object.freeze({version,sources,attach,resolve,gate,productReason,resolveHospital,isPenicillin:penicillin,aomDecision,aomBackupAdvice});
 });

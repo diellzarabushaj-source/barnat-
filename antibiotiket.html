@@ -8,15 +8,15 @@
   <title>DRx | Antibiotikët</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-auto-age-20261029">
+  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-aom-v2-20261029">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script src="/phase9-personal-entities-client.js?v=drx-phase9-personal-v4" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-  <script src="/antibiotiket-shell.js?v=antibiotiket-shell-auto-dose-age-20261029" defer></script>
+  <script src="/antibiotiket-shell.js?v=antibiotiket-shell-aom-v2-20261029" defer></script>
   <script src="/antibiotiket-data.js?v=antibiotiket-audit-20261028" defer></script>
-  <script src="/antibiotiket-penicillin-protocols.js?v=20261029-penicillins-auto-age-v2" defer></script>
+  <script src="/antibiotiket-penicillin-protocols.js?v=20261029-aom-v2" defer></script>
   <script src="/pediatric-weight-age-core.js?v=monthly-suggestions-20261029" defer></script>
-  <script src="/antibiotiket.js?v=antibiotiket-auto-age-20261029" defer></script>
+  <script src="/antibiotiket.js?v=antibiotiket-aom-v2-20261029" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#antibioticsContent">Kalo te Antibiotikët</a>
@@ -154,6 +154,25 @@
               </label>
             </div>
           </div>
+        </section>
+
+        <section id="aomClinicalPanel" class="abx-card abx-aom" aria-labelledby="aomClinicalTitle" hidden>
+          <h2 id="aomClinicalTitle">Otitis media · vendimi klinik</h2>
+          <label class="abx-label" for="aomRiskSelect">Vlerësimi pas otoskopisë</label>
+          <select id="aomRiskSelect">
+            <option value="routine">Pa shenja alarmi</option>
+            <option value="benefit">Otorre / fëmijë nën 2 vjeç me AOM bilaterale</option>
+            <option value="high">Gjendje shumë e rënduar / rrezik i lartë komplikimesh</option>
+            <option value="urgent">Dyshim për komplikim / infeksion sistemik të rëndë</option>
+          </select>
+          <p id="aomAdvice" class="abx-aom-advice" role="status"></p>
+          <fieldset><legend>Plani pas vlerësimit klinik</legend><div id="aomPlanChoice" class="abx-segments"></div></fieldset>
+          <label class="abx-toggle"><input id="aomFailureInput" type="checkbox"><span>Rivlerësuar: përkeqësim pas së paku 2–3 ditësh të trajtimit fillestar</span></label>
+          <details><summary>Kriteret e diagnozës dhe ndjekja</summary>
+            <p>Te fëmijët: membranë timpanike e bombuar dukshëm ose otorre e re pa otit të jashtëm; bombim i lehtë me otalgji të re (&lt;48 orë) ose eritemë të theksuar. Konfirmo efuzionin e veshit të mesëm; vetëm skuqja nuk mjafton. Kriteret diagnostike: CDC. Dozimi: NICE NG91; për ≥18 vjeç: NHS Fife.</p>
+            <p>Analgjezi me paracetamol ose ibuprofen sipas peshës, moshës dhe kundërindikacioneve. Te fëmijët, dekongjestantët dhe antihistaminikët nuk ndihmojnë AOM. Pikat anestetike merren në konsideratë vetëm pa antibiotik të menjëhershëm dhe pa perforim/otorre, duke verifikuar produktin.</p>
+            <p>Dhimbja/ënjtja prapa veshit, veshi i shtyrë përpara, shenjat meningeale, paraliza faciale ose dyshimi për sepsë kërkojnë referim urgjent.</p>
+          </details>
         </section>
 
         <section id="recommendations" class="abx-results" aria-labelledby="resultsTitle">
