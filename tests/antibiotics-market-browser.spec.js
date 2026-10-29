@@ -6,6 +6,7 @@ const {phase5AuthenticatedSession}=require('./phase5-browser-fixture');
 const ROOT=path.resolve(__dirname,'..');let server,baseURL;
 const catalog=buildCatalog([...rows,
   row('cephalexin-tablet500','Cephalexin','J01DB01','500 mg','Tablet'),
+  row('cephalexin-cap500','Cephalexin','J01DB01','500 mg','Capsule'),
   row('amox-tablet500','Amoxicillin','J01CA04','500 mg','Tablet'),
   row('clav4-liquid','Amoxicillin; Clavulanic acid','J01CR02','(125 mg+31.25 mg)/5 ml','Powder for oral suspension'),
   row('clav4-tab','Amoxicillin; Clavulanic acid','J01CR02','500 mg+125 mg','Tablet'),
@@ -62,14 +63,53 @@ for(const width of [320,390,1440])test(`NICE AOM: real age → product → final
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.screenshot({path:test.info().outputPath(`aom-${width}.png`),fullPage:true});
 });
-test('Weight never guesses age; no numerical prescription until real age is selected',async({page})=>{
+test('Weight suggests age automatically; no numerical prescription until confirmed',async({page})=>{
   await open(page,'aom','','60');
-  await expect(page.locator('#ageSelect')).toHaveValue('');
+  await expect(page.locator('#ageSelect')).toHaveValue('16y');
+  await expect(page.locator('#ageOptional')).toContainText('nga pesha');
+  await expect(page.locator('#ageConfirmation')).toBeVisible();
   await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
   await expect(page.locator('#eligibilityMessage')).toContainText('moshën reale');
   await page.locator('#ageSelect').selectOption('adult');
   await expect(card(page,'amox-aom')).toContainText('NHS Fife · 18+');
   await expect(card(page,'amox-aom')).toContainText('500 mg/dozë');
+});
+test('Every infant month auto-fills without changing age options or confirming age',async({page})=>{
+  await open(page,'aom','','');
+  const {monthlySuggestionBands}=require('../pediatric-weight-age-core');
+  for(const b of monthlySuggestionBands().slice(0,12)){
+    await page.locator('#weightInput').fill(String((b.minKg+b.maxKg)/2));
+    await expect(page.locator('#ageSelect')).toHaveValue(b.months?`${b.months}m`:'newborn');
+    await expect(page.locator('#ageSuggestion')).toContainText('Peshë orientuese');
+    await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
+  }
+  await expect(page.locator('#ageSelect option')).toHaveCount(31);
+});
+test('Confirmed suggestion resets on new weight; manual real age takes priority',async({page})=>{
+  await open(page,'aom','','7.25');
+  await expect(page.locator('#ageSelect')).toHaveValue('6m');
+  await page.locator('#ageConfirmation input').check();
+  await expect(card(page,'amox-aom')).toContainText('125 mg/dozë');
+  await page.locator('#weightInput').fill('9.75');
+  await expect(page.locator('#ageSelect')).toHaveValue('1y');
+  await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
+  await page.locator('#ageSelect').selectOption('5y');
+  await page.locator('#weightInput').fill('60');
+  await expect(page.locator('#ageSelect')).toHaveValue('5y');
+  await expect(card(page,'amox-aom')).toContainText('NICE NG91');
+});
+test('Reloaded inferred age needs confirmation; invalid and low weights clear it',async({page})=>{
+  await open(page,'aom','','7.25');
+  await page.locator('#ageConfirmation input').check();
+  await page.reload();
+  await expect(page.locator('#ageSelect')).toHaveValue('6m');
+  await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
+  await page.locator('#weightInput').fill('3.1');
+  await expect(page.locator('#ageSelect')).toHaveValue('');
+  await page.locator('#weightInput').fill('8.5');
+  await expect(page.locator('#ageSelect')).toHaveValue('9m');
+  await page.locator('#weightInput').fill('201');
+  await expect(page.locator('#ageSelect')).toHaveValue('');
 });
 test('Adult-only product works at 18+ and is blocked at 17',async({page})=>{
   await open(page,'gas','adult','70');
@@ -235,15 +275,28 @@ test('Equal-half confirmation enables 1½ tablets and resets for another product
   await expect(c.locator('.abx-rx-copy')).toBeDisabled();
 });
 
+test('A ranged dose adapts to a whole capsule immediately on product selection',async({page})=>{
+  await open(page,'lymphadenitis','8y','25');const c=card(page,'cephalexin-lymph');
+  await c.locator('.abx-rx summary').click();
+  await choose(c,'capsule','500 mg');
+  await expect(c.locator('.abx-dose-selected')).toHaveText('500 mg');
+  await expect(c.locator('.abx-practical-panel')).toContainText('Përshtatur automatikisht');
+  await c.locator('.abx-rx-shared select').selectOption('7');
+  await expect(c.locator('.abx-rx-line')).toContainText('1 kapsulë PO');
+  await expect(c.locator('.abx-rx-copy')).toBeEnabled();
+});
 test('Central range box rounds only to a representable in-range dose',async({page})=>{
   await open(page,'lymphadenitis','10y','30');const c=card(page,'cephalexin-lymph');
   await c.locator('.abx-rx summary').click();
   await choose(c,'tablet','500 mg');
   await expect(c.locator('.abx-dose-window')).toContainText('510 mg');
   await expect(c.locator('.abx-dose-window')).toContainText('750 mg');
+  await expect(c.locator('.abx-dose-selected')).toHaveText('Zgjidh dozën');
   await c.locator('.abx-split-confirm input').check();
+  await expect(c.locator('.abx-dose-selected')).toHaveText('750 mg');
+  await expect(c.locator('.abx-practical-panel')).toContainText('Përshtatur automatikisht');
   await c.getByRole('spinbutton',{name:'Doza e synuar për përshtatje'}).fill('600');
-  await c.getByRole('button',{name:'Përshtat me produktin'}).click();
+  await c.getByRole('spinbutton',{name:'Doza e synuar për përshtatje'}).press('Tab');
   await expect(c.locator('.abx-dose-selected')).toHaveText('750 mg');
   await c.locator('.abx-rx-shared select').selectOption('7');
   await expect(c.locator('.abx-rx-line')).toContainText('1½ tableta PO');

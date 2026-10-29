@@ -70,7 +70,7 @@
 
   function resolve(indication, context) {
     const months = context.ageMonths;
-    if (!context.ageConfirmed || !Number.isFinite(months)) return {...indication,options:[],contextMessage:'Zgjidh moshën reale të pacientit. Mosha nuk nxirret nga pesha.'};
+    if (!context.ageConfirmed || !Number.isFinite(months)) return {...indication,options:[],contextMessage:'Konfirmo ose zgjidh moshën reale të pacientit. Mosha e sugjeruar nga pesha është vetëm orientuese.'};
     const adult = months >= 216;
     const kg = context.weightKg;
     const id = indication.id;

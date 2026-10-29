@@ -100,3 +100,41 @@ are recalculated together. The mathematical midpoint is not a clinical default.
 Validation adds source-bounded rounding/half-tablet arithmetic tests and real
 browser flows for 1½ tablets, reset of leaflet confirmation, and the central range
 control with final prescription generation.
+
+# Automatic age suggestion from weight (2026-10-29)
+
+The existing month/year select and explicit adult option are preserved. Weight
+entry now fills an **unconfirmed suggestion** automatically. Manual age selection
+always wins; changing weight recalculates only an inferred age and clears its
+confirmation. Reloading an inferred age also requires confirmation. Until real
+age is confirmed, no outpatient numerical regimen or prescription is shown.
+
+The suggestion uses the **existing user-supplied reference map dated 2026-09-28**
+in `pediatric-weight-age-core.js` / `data/pediatric-weight-age-defaults.json`.
+It does not add growth-chart or normal-weight claims. Monthly selection intervals
+are derived by linear interpolation between that map's anchors; neighboring
+midpoints define nonoverlapping, lower-inclusive / upper-exclusive bins. The UI
+keeps months for the first year and completed years thereafter. Displayed weight
+bounds round outwards to two decimals; matching uses the unrounded boundaries.
+
+There is no supported distinction between 16, 17 and adults from the map's
+open-ended 16+ weight band. This remains a shared orientational band; 18+ is
+always selected explicitly, never inferred. Below the map's 3.2 kg lower bound,
+no age is suggested. A manual age remains usable at any valid weight. These
+selection intervals are **not normal growth limits**, therapeutic thresholds,
+or a method of establishing chronological age. WHO likewise does not publish
+weight-for-age references above 10 years:
+https://www.who.int/tools/growth-reference-data-for-5to19-years/indicators/weight-for-age-5to10-years
+
+Validation: all 193 supported monthly intervals, exact boundaries, decimal comma,
+lower/out-of-range inputs, and open-band behavior have unit coverage. Browser
+coverage checks every first-year month, confirmation, manual overrides, weight
+changes, reloads and the adult gate, alongside the existing prescription tests.
+
+Product selection also automatically adapts a genuinely ranged solid dose. The
+initial target is the published lower bound; later products use the selected
+dose as target. Only whole units or explicitly confirmed equal halves inside the
+source interval qualify. If none qualify, the prescription remains blocked.
+Fixed doses are never rounded. Editing the practical target applies on change
+without requiring the adaptation button. All changes remain visible in the
+central dose box and can be overridden within the published bounds.

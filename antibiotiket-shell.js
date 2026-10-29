@@ -91,7 +91,7 @@
       loadStylesheet('/antibiotiket-prescription.css?v=practical-dose-20261029', 'data-drx-abx-prescription-css'),
       loadRuntime('/antibiotiket-solids-data.js?v=antibiotiket-phase4-v2', 'data-drx-abx-solids-data'),
     ]);
-    await loadRuntime('/antibiotiket-prescription.js?v=practical-dose-20261029', 'data-drx-abx-prescription-runtime');
+    await loadRuntime('/antibiotiket-prescription.js?v=automatic-dose-20261029', 'data-drx-abx-prescription-runtime');
   }
 
   async function loadAntibioticHospital() {
