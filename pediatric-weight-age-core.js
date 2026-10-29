@@ -186,6 +186,33 @@
     return upperOk;
   }
 
+  // UI selection intervals, not population growth limits or evidence of age.
+  // Interpolate only within the user's existing anchors; the final 16+ band
+  // cannot identify 17 years or adulthood. Upper bounds are exclusive.
+  function monthlySuggestionBands(payload = DEFAULT_MAP) {
+    const anchors = payload.interpolationAnchors || [];
+    if (anchors.length < 2) return [];
+    const last = anchors[anchors.length - 1];
+    const weightAt = months => {
+      const right = anchors.findIndex(a => a.months >= months);
+      if (right <= 0) return anchors[0].kg;
+      const a = anchors[right - 1], b = anchors[right];
+      return a.kg + (months - a.months) * (b.kg - a.kg) / (b.months - a.months);
+    };
+    return Array.from({length:last.months + 1}, (_, months) => ({
+      months,
+      minKg:months === 0 ? payload.bands[0].weightMinKg : weightAt(months - 0.5),
+      maxKg:months === last.months ? null : weightAt(months + 0.5),
+      openEnded:months === last.months,
+    }));
+  }
+
+  function suggestMonth(weightValue, payload = DEFAULT_MAP) {
+    const weight = num(weightValue);
+    if (!positive(weight) || weight > 200) return null;
+    return monthlySuggestionBands(payload).find(b => weight >= b.minKg && (b.maxKg == null || weight < b.maxKg)) || null;
+  }
+
   return Object.freeze({
     DEFAULT_MAP,
     infer,
@@ -193,6 +220,8 @@
     monthsLabel,
     defaultAgeLabel,
     ageRangeFitsBand,
+    monthlySuggestionBands,
+    suggestMonth,
     _test:Object.freeze({ inWeightBand, interpolate }),
   });
 });

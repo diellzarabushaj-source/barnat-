@@ -8,6 +8,25 @@ const WeightAge = require('../pediatric-weight-age-core.js');
 const ROOT = path.resolve(__dirname, '..');
 const map = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/pediatric-weight-age-defaults.json'), 'utf8'));
 
+// Monthly auto-fill is a UI heuristic built from the existing user anchors.
+// Every boundary has exactly one owner, and the open band never means adult.
+const monthly = WeightAge.monthlySuggestionBands();
+assert.equal(monthly.length,193);
+for (let m=0;m<monthly.length;m++) {
+  const b=monthly[m];
+  const middle=b.maxKg==null?60:(b.minKg+b.maxKg)/2;
+  assert.equal(WeightAge.suggestMonth(middle).months,m);
+  assert.equal(WeightAge.suggestMonth(b.minKg).months,m);
+  if(m)assert.equal(monthly[m-1].maxKg,b.minKg);
+}
+assert.equal(WeightAge.suggestMonth(3.1),null);
+assert.equal(WeightAge.suggestMonth(''),null);
+assert.equal(WeightAge.suggestMonth('8,5').months,9);
+assert.equal(WeightAge.suggestMonth(60).months,192);
+assert.equal(WeightAge.suggestMonth(200).months,192);
+assert.equal(WeightAge.suggestMonth(201),null);
+assert.equal(WeightAge.suggestMonth(NaN),null);
+
 assert.deepStrictEqual(WeightAge.DEFAULT_MAP, map, 'Browser default map must exactly match the committed/database source map');
 
 assert.equal(map.bands.length, 14);

@@ -6,6 +6,7 @@
 
   const STATE_KEY = 'drx.antibiotics.context.v3-real-age';
   const protocols = window.DRX_PENICILLIN_PROTOCOLS;
+  const weightAges = window.DRxPediatricWeightAge;
   const $ = id => document.getElementById(id);
   const el = {
     indicationChoice:$('indicationChoice'),
@@ -109,6 +110,13 @@
 
   function nearestAgeBand(weight) {
     if (!Number.isFinite(weight)) return null;
+    if (protocols) {
+      const suggested = weightAges?.suggestMonth(weight);
+      if (!suggested) return null;
+      const months = suggested.months;
+      const id = months === 0 ? 'newborn' : months < 12 ? `${months}m` : `${Math.floor(months / 12)}y`;
+      return guide.ageBands.find(b => b.id === id) || null;
+    }
     return guide.ageBands.reduce((best, band) => {
       if (!Number.isFinite(band.referenceWeightKg)) return best;
       if (!best) return band;
@@ -513,7 +521,25 @@
 
   function renderAgeSuggestion() {
     if (!el.ageSuggestion) return;
-    if (protocols) {el.ageSuggestion.hidden=true;el.ageSuggestion.replaceChildren();return;}
+    if (protocols) {
+      const age = currentAgeBand();
+      const bands = weightAges?.monthlySuggestionBands() || [];
+      const monthly = age && age.months < 216 ? bands.filter(b => age.months >= 192 ? b.openEnded : b.months >= age.months && b.months < age.months + (age.months < 12 ? 1 : 12)) : [];
+      el.ageSuggestion.replaceChildren();
+      el.ageSuggestion.hidden = !age;
+      if (!age) return;
+      let text = 'Pesha nuk dallon një të rritur nga një adoleshent. Përdor moshën reale.';
+      if (monthly.length) {
+        const min = monthly[0].minKg, max = monthly[monthly.length - 1].maxKg;
+        // Round outwards only for the explanatory label, never for matching.
+        const lo = fmt(Math.floor(min * 100) / 100), hi = max == null ? '' : fmt(Math.ceil(max * 100) / 100);
+        text = max == null
+          ? `Peshë orientuese ≥${lo} kg · grupi 16+. Pesha nuk dallon 16, 17 dhe ≥18 vjeç.`
+          : `Peshë orientuese ≈${lo}–${hi} kg për sugjerimin e moshës; nuk është interval normal i rritjes.`;
+      }
+      el.ageSuggestion.append(make('span','abx-age-suggestion-copy',text));
+      return;
+    }
     const state = weightState();
     const suggestion = state.kind === 'valid' ? nearestAgeBand(state.value) : null;
     const chosen = currentAgeBand();
@@ -549,7 +575,7 @@
     if (state.kind === 'valid') {
       el.contextHint.dataset.tone = 'live';
       el.contextHint.textContent = ctx.ageFromWeight && age
-        ? `Doza llogaritet nga ${fmt(state.value)} kg. Mosha u vendos nga pesha — ndryshoje nëse mosha reale është tjetër.`
+        ? `Peshë reale ${fmt(state.value)} kg. Mosha është sugjerim nga pesha — ${ctx.ageConfirmed ? 'e konfirmuar nga ti' : 'konfirmoje ose ndryshoje para llogaritjes'}.`
         : `Doza llogaritet nga ${fmt(state.value)} kg.`;
       return;
     }
@@ -833,11 +859,11 @@
       if (allergyOptions.some(item => item.value === stored.allergy)) ctx.allergy = stored.allergy;
       ctx.atypical = stored.atypical === true;
       ctx.orbitalRedFlags = stored.orbitalRedFlags === true;
-      ctx.ageFromWeight = protocols ? false : stored.ageFromWeight === true;
+      ctx.ageFromWeight = stored.ageFromWeight === true;
       ctx.pregnant = stored.pregnant === true;
       // A culture confirmation belongs to this clinical encounter; never restore it.
       ctx.cultureSusceptible = false;
-      ctx.ageConfirmed = stored.ageConfirmed === true && Boolean(ctx.age);
+      ctx.ageConfirmed = !ctx.ageFromWeight && stored.ageConfirmed === true && Boolean(ctx.age);
     }
     const requested = new URLSearchParams(location.search).get('indication');
     if (requested && guide.indications.some(item => item.id === requested)) ctx.indication = requested;
@@ -918,7 +944,10 @@
     }
     if (ctx.age && !ctx.ageFromWeight) return;
     const band = nearestAgeBand(state.value);
-    if (!band) return;
+    if (!band) {
+      if (ctx.ageFromWeight) {ctx.age='';ctx.ageFromWeight=false;ctx.ageConfirmed=false;el.age.value='';}
+      return;
+    }
     ctx.age = band.id;
     ctx.ageFromWeight = true;
     ctx.ageConfirmed = false;
@@ -936,7 +965,7 @@
     el.weight.addEventListener('input', () => {
       ctx.weight = el.weight.value;
       ctx.cultureSusceptible=false;
-      if (!protocols) applyAgeFromWeight();
+      applyAgeFromWeight();
       render();
     });
     $('pregnancyInput')?.addEventListener('change',event=>{ctx.pregnant=event.target.checked;ctx.cultureSusceptible=false;render();});
@@ -967,7 +996,7 @@
       label.append(input,make('span','','Konfirmoj moshën reale të pacientit'));
       el.age.parentElement.append(label);
     }
-    label.hidden=(!ctx.ageFromWeight&&ctx.ageConfirmed)||!ctx.age;
+    label.hidden=ctx.ageConfirmed||!ctx.age;
     label.querySelector('input').checked=ctx.ageConfirmed;
   }
 
@@ -975,6 +1004,7 @@
   populateAges();
   el.age.value = ctx.age;
   el.weight.value = ctx.weight;
+  applyAgeFromWeight();
   el.atypical.checked = ctx.atypical;
   buildIndicationChips();
   buildAllergySegments();
