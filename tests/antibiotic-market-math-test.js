@@ -29,3 +29,15 @@ assert.deepEqual(M.dailyTotals(convert('250 mg/dozë'),'2 ose 3 herë/ditë').ma
 assert.deepEqual(M.dailyTotals(tmp,'2 herë/ditë')[0].rows.map(r=>r.mgMax),[160],'Combination component frequency stays separate');
 for(const frequency of ['kombinim','sipas nevojës','2–3 herë/ditë','<5 vjeç: 2 herë/ditë · ≥5 vjeç: 1 herë/ditë','0 herë/ditë'])assert.deepEqual(M.dailyTotals(exactClav,frequency),[],frequency+' must not become an invented schedule');
 console.log('PASS: exact market dose conversion, components, phased regimens, whole units and route/unit guards');
+
+assert.equal(M.unitStep(capsule,true),1,'Capsules cannot borrow a tablet split confirmation');
+assert.equal(M.unitStep({...capsule,unit:'tabletë'},true),0.5);
+assert.equal(M.unitStep({...capsule,unit:'tabletë',modified:true},true),1);
+const half=convert('750 mg/dozë',{form:{...capsule,unit:'tabletë'},concentration:{unit:'mg',value:500},allowHalf:true});
+assert.equal(half.rows[0].units,1.5);assert.equal(M.formatUnits(1.5),'1½');assert.equal(M.formatUnits(0.5),'½');
+assert.equal(convert('750 mg/dozë',{form:{...capsule,unit:'tabletë'},concentration:{unit:'mg',value:500}}).rows[0].units,null);
+assert.deepEqual(M.nearestChoice({target:780,min:750,max:1000,strength:500,step:0.5}),{units:1.5,mg:750});
+assert.equal(M.nearestChoice({target:780,min:760,max:900,strength:500,step:0.5}),null,'No tolerance may cross the source minimum');
+assert.equal(M.nearestChoice({target:1200,min:1200,max:1200,strength:1000,step:0.5}),null);
+assert.equal(M.nearestChoice({target:740,min:750,max:1000,strength:500,step:0.5}),null);
+console.log('PASS: confirmed equal halves, source-bounded rounding, fraction display and capsule/modified-release guards');

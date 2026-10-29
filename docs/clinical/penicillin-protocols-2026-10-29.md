@@ -79,3 +79,24 @@ atypical size, infection severity or product-specific restrictions.
 
 Browser tests use authenticated API fixtures and the production catalog builder;
 no production patient, account or database records are changed by the tests.
+
+
+## Practical-dose clarification
+
+The product-aware prescription control supports equal halves of ordinary oral
+tablets only after the clinician confirms that the exact product leaflet permits
+two equal doses. This confirmation is cleared on product changes and is never
+inferred from a score line, another brand, capsules or modified-release products.
+
+A central selected-dose box is flanked by the current regimen's source minimum
+and maximum. Fixed protocols remain fixed and are labelled accordingly; these
+bounds are not advertised as universal therapeutic limits. For published ranges,
+the clinician can select a representable dose or ask for the nearest product dose
+to an entered target. Every candidate must remain within both source bounds;
+there is no arbitrary percentage tolerance and no rounding across either bound.
+The actual selected mg, half/whole tablet quantity, daily total and course quantity
+are recalculated together. The mathematical midpoint is not a clinical default.
+
+Validation adds source-bounded rounding/half-tablet arithmetic tests and real
+browser flows for 1½ tablets, reset of leaflet confirmation, and the central range
+control with final prescription generation.

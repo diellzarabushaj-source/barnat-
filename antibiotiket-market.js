@@ -55,6 +55,10 @@
       const productDetails=make('details','abx-market-product'),productSummary=make('summary','','Produktet AKKPM · opsionale');
       productDetails.append(productSummary,productSelect.parentElement);body.append(productDetails);
       const result=make('div','abx-market-dose');result.setAttribute('aria-live','polite');result.setAttribute('role','group');result.setAttribute('aria-label',`Dozimi · ${part.drug}`);body.append(result);
+      const splitLabel=make('label','abx-split-confirm');splitLabel.hidden=true;
+      const splitInput=make('input');splitInput.type='checkbox';
+      splitLabel.append(splitInput,make('span','','Konfirmoj nga fletudhëzimi i këtij produkti: tableta ndahet në dy doza të barabarta.'));body.append(splitLabel);
+      splitInput.onchange=()=>{const picked=selection(card,part.drug);if(picked){picked.equalHalvesConfirmed=splitInput.checked;showDose(picked);syncAnswer(card);update();}};
       const info=make('p','abx-market-info');info.setAttribute('aria-live','polite');body.append(info);
       body.insertBefore(result,productDetails);
       const options=(select,rows,placeholder)=>{select.replaceChildren();select.append(new Option(placeholder,''));rows.forEach(r=>select.append(new Option(r.label||r.name,r.id||r.key)));select.disabled=!rows.length;};
@@ -71,7 +75,7 @@
         const weight=Number(clean(document.getElementById('weightInput')?.value).replace(',','.'));
         if(card.dataset.weightRequired!=='false'&&!(weight>=1&&weight<=200)){result.append(make('span','','Shkruaj peshën reale për dozën.'));return;}
         if(card.dataset.ageRequired==='true'&&card.dataset.ageConfirmed!=='true'){result.append(make('span','','Konfirmo moshën reale për këtë skemë.'));return;}
-        const conversion=window.DRX_ANTIBIOTIC_MARKET_MATH?.convert({doseText:card.dataset.exactDoseText,drug:part.drug,combo:parts.length>1,form:picked.form,concentration:picked.variant.concentration});
+        const conversion=window.DRX_ANTIBIOTIC_MARKET_MATH?.convert({doseText:card.dataset.exactDoseText,drug:part.drug,combo:parts.length>1,form:picked.form,concentration:picked.variant.concentration,allowHalf:picked.equalHalvesConfirmed});
         if(!conversion||conversion.error){result.append(make('span','',conversion?.error||'Konvertimi nuk u ngarkua. Rifresko faqen.'));return;}
         const frequencies=JSON.parse(card.dataset.doseFrequencies||'[]');
         const frequency=frequencies.find(item=>item.drug===part.drug)?.frequency||'';
@@ -80,7 +84,7 @@
         result.dataset.ready=String(schedules.length>0&&conversion.rows.every(row=>row.unit==='mL'||row.units||row.choices.length));
         const ceiling=JSON.parse(card.dataset.doseCeilings||'[]').find(item=>item.drug===part.drug);
         const range=(min,max)=>`${fmt(min)}${min!==max?'–'+fmt(max):''}`;
-        const amount=row=>row.unit==='mL'?`${range(row.min,row.max)} mL`:row.units?`${row.units} ${row.unit}`:row.choices.map(c=>`${c.units} ${row.unit} (${fmt(c.mg)} mg)`).join(' ose ');
+        const amount=row=>row.unit==='mL'?`${range(row.min,row.max)} mL`:row.units?`${window.DRX_ANTIBIOTIC_MARKET_MATH.formatUnits(row.units)} ${row.unit}`:row.choices.map(c=>`${window.DRX_ANTIBIOTIC_MARKET_MATH.formatUnits(c.units)} ${row.unit} (${fmt(c.mg)} mg)`).join(' ose ');
         const basis=picked.variant.concentration.basis?.split('|')[0];
         const milligrams=row=>{
           const choices=row.unit!=='mL'&&!row.units&&row.choices.length?row.choices:null;
@@ -93,7 +97,7 @@
           single.append(make('span','abx-market-dose-label',`Për një marrje${weight>=1?' · '+fmt(weight)+' kg':''} · nga goja`));
           const representable=row.unit==='mL'||row.units||row.choices.length;
           if(representable)single.append(make('strong','',amount(row)));
-          else single.append(make('span','','Doza nuk përputhet me njësi të plota. Zgjidh një fortësi ose formë tjetër; tableta nuk ndahet automatikisht.'));
+          else single.append(make('span','','Doza nuk përputhet me produktin. Zgjidh fortësi tjetër ose konfirmo ndarjen e tabletës sipas fletudhëzimit. Kapsulat nuk ndahen.'));
           single.append(make('span','abx-market-mg',milligrams(row)));phase.append(single);
           if(representable)for(const schedule of schedules){
             const timing=make('div','abx-market-schedule');
@@ -105,7 +109,7 @@
           }
           if(!schedules.length&&representable)phase.append(make('small','','Orari dhe totali ditor kërkojnë zgjedhjen e një skeme të përcaktuar.'));
           if(row.unit==='mL'&&row.mgMin!==row.mgMax)phase.append(make('small','',`Kufiri për ${fmt(weight)} kg në këtë skemë: ${fmt(row.max)} mL për marrje. Zgjidh një dozë brenda intervalit.`));
-          if(row.unit!=='mL'&&!row.units&&row.choices.length)phase.append(make('small','','Njësi të plota brenda intervalit. Konfirmo një dozë te receta.'));
+          if(row.unit!=='mL'&&!row.units&&row.choices.length)phase.append(make('small','','Doza të realizueshme brenda intervalit. Konfirmo një dozë te receta.'));
           const limit=ceiling?.rows[index],maximum=make('div','abx-market-maximum');
           maximum.append(make('span','abx-market-dose-label',ceiling?.fixed?'Doza e kësaj skeme':`Kufiri i llogaritur për ${fmt(weight)} kg · kjo skemë`));
           if(Number.isFinite(limit?.mg)&&limit.mg>0){
@@ -134,6 +138,7 @@
       };
       const publish=()=>{
         const product=variant?.products.find(p=>String(p.id)===productSelect.value);
+        splitInput.checked=false;splitLabel.hidden=!(product&&form?.measure==='whole'&&form.unit==='tabletë'&&!form.modified);
         selections.get(card).delete(part.drug);
         if(!product){if(!restoring)remembered.delete(memoryKey);body.append(info);info.textContent='Zgjidh formën dhe fortësinë.';showDose(null);productSummary.textContent='Produktet AKKPM · opsionale';syncAnswer(card);update();return;}
         const reason=eligible(card,part.drug,form,variant,product);

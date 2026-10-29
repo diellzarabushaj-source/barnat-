@@ -5,6 +5,8 @@ const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const {phase5AuthenticatedSession}=require('./phase5-browser-fixture');
 const ROOT=path.resolve(__dirname,'..');let server,baseURL;
 const catalog=buildCatalog([...rows,
+  row('cephalexin-tablet500','Cephalexin','J01DB01','500 mg','Tablet'),
+  row('amox-tablet500','Amoxicillin','J01CA04','500 mg','Tablet'),
   row('clav4-liquid','Amoxicillin; Clavulanic acid','J01CR02','(125 mg+31.25 mg)/5 ml','Powder for oral suspension'),
   row('clav4-tab','Amoxicillin; Clavulanic acid','J01CR02','500 mg+125 mg','Tablet'),
   row('clav7-tab','Amoxicillin; Clavulanic acid','J01CR02','875 mg+125 mg','Tablet'),
@@ -215,4 +217,36 @@ test('Missing new protocol script fails closed instead of running old high-dose 
   await page.goto(baseURL+'/antibiotiket.html?indication=aom');
   await expect(page.locator('#recommendationList')).toContainText('Protokollet nuk u ngarkuan');
   await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
+});
+
+test('Equal-half confirmation enables 1½ tablets and resets for another product',async({page})=>{
+  await open(page,'gas','3y','15');const c=card(page,'amoxicillin-gas');
+  await choose(c,'tablet','500 mg');
+  await expect(c.locator('.abx-rx-copy')).toBeDisabled();
+  await expect(c.locator('.abx-dose-selected')).toHaveText('750 mg');
+  await c.locator('.abx-split-confirm input').check();
+  await expect(c.locator('.abx-market-single')).toContainText('1½ tabletë');
+  await expect(c.locator('.abx-rx-line')).toContainText('1½ tableta PO');
+  await expect(c.locator('.abx-rx-copy')).toBeEnabled();
+  await choose(c,'capsule','500 mg');
+  await expect(c.locator('.abx-rx-copy')).toBeDisabled();
+  await choose(c,'tablet','500 mg');
+  await expect(c.locator('.abx-split-confirm input')).not.toBeChecked();
+  await expect(c.locator('.abx-rx-copy')).toBeDisabled();
+});
+
+test('Central range box rounds only to a representable in-range dose',async({page})=>{
+  await open(page,'lymphadenitis','10y','30');const c=card(page,'cephalexin-lymph');
+  await c.locator('.abx-rx summary').click();
+  await choose(c,'tablet','500 mg');
+  await expect(c.locator('.abx-dose-window')).toContainText('510 mg');
+  await expect(c.locator('.abx-dose-window')).toContainText('750 mg');
+  await c.locator('.abx-split-confirm input').check();
+  await c.getByRole('spinbutton',{name:'Doza e synuar për përshtatje'}).fill('600');
+  await c.getByRole('button',{name:'Përshtat me produktin'}).click();
+  await expect(c.locator('.abx-dose-selected')).toHaveText('750 mg');
+  await c.locator('.abx-rx-shared select').selectOption('7');
+  await expect(c.locator('.abx-rx-line')).toContainText('1½ tableta PO');
+  await expect(c.locator('.abx-rx-dose')).toContainText('750 mg/dozë');
+  await expect(c.locator('.abx-rx-copy')).toBeEnabled();
 });

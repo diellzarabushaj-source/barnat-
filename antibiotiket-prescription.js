@@ -217,8 +217,8 @@
     if (!simple || sameDose(simple.min, simple.max)) return [];
     const values = new Map();
     const add = (mg, kind='source', match=null) => {
-      const n = Math.round(Number(mg) * 100) / 100;
-      if (!Number.isFinite(n) || n < simple.min - 0.05 || n > simple.max + 0.05) return;
+      const n = Number(mg);
+      if (!Number.isFinite(n) || n < simple.min || n > simple.max) return;
       const key = n.toFixed(2);
       const current = values.get(key);
       const candidate = { mg:n, kind, match };
@@ -232,7 +232,7 @@
       for (let units = 1; units <= 4; units += 1) {
         if (form.singleUnitOnly && units !== 1) continue;
         const mg = unitMg * units;
-        if (mg < simple.min - 0.05 || mg > simple.max + 0.05) continue;
+        if (mg < simple.min || mg > simple.max) continue;
         add(mg, 'exact-solid', { form, units });
       }
     });
@@ -547,6 +547,7 @@
       preview.append(make('p', 'abx-rx-blocked', state.simple ? 'Zgjidh dozën praktike një herë nga opsionet sipër.' : 'Kjo skemë nuk ka një dozë orale të finalizueshme automatikisht.'));
       return null;
     }
+    if(state.doseFinal<state.simple.min||state.doseFinal>state.simple.max){preview.append(make('p','abx-rx-blocked','Doza del jashtë kufijve të skemës. Zgjidh një dozë brenda intervalit.'));return null;}
     if (!Number.isFinite(state.frequencyFinal)) {
       preview.append(make('p', 'abx-rx-blocked', state.frequencyValues.length ? 'Zgjidh frekuencën finale.' : 'Frekuenca nuk mund të finalizohet automatikisht për këtë skemë.'));
       return null;
@@ -587,7 +588,7 @@
         // Say what is actually wrong, and never point at a syrup this drug
         // does not have. A unit typed in above usually resolves it.
         const hasLiquid = Boolean(liquidConverter(card, state.drug));
-        const detail = picked ? `Produkti i zgjedhur nuk e jep dozën ${fmt(mg)} mg me njësi të plota. Zgjidh një produkt tjetër ose dozë tjetër brenda intervalit të lejuar.` : state.solidId === NEW_SOLID_ID
+        const detail = picked ? `Produkti i zgjedhur nuk e jep dozën ${fmt(mg)} mg. Ndarja në gjysmë kërkon konfirmimin e fletudhëzimit të tabletës. Zgjidh një produkt tjetër ose dozë tjetër brenda intervalit të lejuar.` : state.solidId === NEW_SOLID_ID
           ? 'Shkruaj sa mg ka njësia që ke në dorë.'
           : options.length
             ? `Asnjë nga njësitë e listuara nuk e jep ${fmt(mg)} mg me njësi të plota. Zgjidh një dozë tjetër brenda intervalit, ose shkruaj njësinë që ke në dorë te "Njësia ime".`
@@ -598,7 +599,7 @@
       const units = selected.units;
       const form = selected.form;
       const total = units * freq * days;
-      line = `${state.drug} ${form.label} — ${units} ${formUnit(form, units)} PO ${freq} herë/ditë × ${days} ditë`;
+      line = `${state.drug} ${form.label} — ${window.DRX_ANTIBIOTIC_MARKET_MATH?.formatUnits(units) ?? units} ${formUnit(form, units)} PO ${freq} herë/ditë × ${days} ditë`;
       quantity = `Sasia matematike e kursit: ${total} ${formUnit(form, total)}`;
       sourceUrl = form.sourceUrl || '';
       caution = form.caution || form.note || solidConfig.drugs?.[state.drug]?.caution || '';
@@ -686,6 +687,7 @@
 
     const controls = make('div', 'abx-rx-controls');
     const preview = make('div', 'abx-rx-preview');
+    const practical=make('div','abx-practical-panel');
     const solidSelect = document.createElement('select');
     solidSelect.className = 'abx-rx-solid-select';
     solidSelect.hidden = true;
@@ -738,6 +740,39 @@
 
     const refresh = () => {
       refreshModeButtons(state);
+      practical.replaceChildren();
+      const range=state.simple;
+      if(range){
+        const varied=range.min!==range.max;
+        const limits=make('div','abx-dose-window');
+        const minimum=make('span','',`Min. i skemës\n${fmt(range.min)} mg`);
+        const selected=make('strong','abx-dose-selected',Number.isFinite(state.doseFinal)?`${fmt(state.doseFinal)} mg`:'Zgjidh dozën');
+        selected.setAttribute('aria-live','polite');
+        limits.append(minimum,selected,make('span','',`Maks. i skemës\n${fmt(range.max)} mg`));practical.append(limits);
+        if(!varied)practical.append(make('small','','Dozë fikse sipas protokollit; nuk është minimumi/maksimumi universal terapeutik.'));
+        const picked=window.DRX_ANTIBIOTIC_MARKET?.selection(card,state.drug);
+        const math=window.DRX_ANTIBIOTIC_MARKET_MATH;
+        if(varied&&picked&&!picked.reason&&picked.form.measure==='whole'&&math){
+          const step=math.unitStep(picked.form,picked.equalHalvesConfirmed);
+          const choices=math.practicalChoices({min:range.min,max:range.max,strength:picked.variant.concentration.value,step});
+          const target=make('input');target.type='number';target.min=String(range.min);target.max=String(range.max);target.step='any';
+          target.value=String(state.doseFinal??range.min);target.setAttribute('aria-label','Doza e synuar për përshtatje');
+          const suggest=make('button','', 'Përshtat me produktin');suggest.type='button';
+          const feedback=make('small','');
+          suggest.onclick=()=>{
+            const chosen=math.nearestChoice({target:Number(target.value),min:range.min,max:range.max,strength:picked.variant.concentration.value,step});
+            if(!chosen){feedback.textContent='Nuk ka dozë të realizueshme brenda kufijve të kësaj skeme.';return;}
+            state.doseFinal=chosen.mg;state.doseChoice='product';refresh();
+          };
+          practical.append(target,suggest,feedback);
+          const buttons=make('div','abx-practical-choices');
+          choices.forEach(choice=>{
+            const button=make('button','',`${math.formatUnits(choice.units)} ${picked.form.unit} · ${fmt(choice.mg)} mg`);button.type='button';
+            button.onclick=()=>{state.doseFinal=choice.mg;state.doseChoice='product';refresh();};buttons.append(button);
+          });practical.append(buttons);
+          if(!choices.length)feedback.textContent='Asnjë dozë e këtij produkti nuk bie brenda intervalit. Zgjidh produkt tjetër.';
+        }
+      }
       let result = null;
       if (state.sequence.length) {
         solidSelect.hidden = true;
@@ -757,7 +792,7 @@
     if (frequencyResolver) controls.append(frequencyResolver);
     if (modeResolver) controls.append(modeResolver);
     controls.append(solidSelect, solidCustom);
-    section.append(controls, preview);
+    section.append(controls, practical, preview);
 
     card.addEventListener('change', event => {
       if (event.target.closest('.abx-formulation')) refresh();
@@ -844,10 +879,11 @@
     return true;
   }
   function marketSolidChoice(picked,mg){
-    const exact=mg/picked.variant.concentration.value,units=Math.round(exact);
+    const step=window.DRX_ANTIBIOTIC_MARKET_MATH?.unitStep(picked.form,picked.equalHalvesConfirmed)||1;
+    const exact=mg/picked.variant.concentration.value,units=Math.round(exact/step)*step;
     const form={id:picked.product.id,label:picked.label,componentMg:picked.variant.concentration.value,form:picked.form.unit};
     if(units>4)form.caution='Numër i madh njësish për një marrje; konsidero një fortësi më të përshtatshme.';
-    const selected=Math.abs(exact-units)<1e-9&&units>=1&&units<=100?{form,units}:null;
+    const selected=Math.abs(exact-units)<1e-9&&units>=step&&units<=100?{form,units}:null;
     return {selected,matches:selected?[selected]:[],options:selected?[selected]:[]};
   }
 
