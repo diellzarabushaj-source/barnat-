@@ -60,7 +60,9 @@ for(const width of [320,390,1440])test(`NICE AOM: real age → product → final
   await c.locator('.abx-rx-shared select').selectOption('7');
   await expect(c.locator('.abx-rx-quantity')).toContainText('210 mL');
   await page.locator('#weightInput').fill('60');
-  await expect(page.locator('#ageSelect')).toHaveValue('5y');
+  await expect(page.locator('#ageSelect')).toHaveValue('16y');
+  await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
+  await page.locator('#ageSelect').selectOption('5y');
   await expect(card(page,'amox-aom').locator('.abx-dose-row[data-role="single"]')).toContainText('500 mg/dozë');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.screenshot({path:test.info().outputPath(`aom-${width}.png`),fullPage:true});
@@ -87,7 +89,7 @@ test('Every infant month auto-fills without changing age options or confirming a
   }
   await expect(page.locator('#ageSelect option')).toHaveCount(31);
 });
-test('Confirmed suggestion resets on new weight; manual real age takes priority',async({page})=>{
+test('Every new weight replaces even a manually selected age and resets confirmation',async({page})=>{
   await open(page,'aom','','7.25');
   await expect(page.locator('#ageSelect')).toHaveValue('6m');
   await page.locator('#ageConfirmation input').check();
@@ -97,7 +99,9 @@ test('Confirmed suggestion resets on new weight; manual real age takes priority'
   await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
   await page.locator('#ageSelect').selectOption('5y');
   await page.locator('#weightInput').fill('60');
-  await expect(page.locator('#ageSelect')).toHaveValue('5y');
+  await expect(page.locator('#ageSelect')).toHaveValue('16y');
+  await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
+  await page.locator('#ageConfirmation input').check();
   await expect(card(page,'amox-aom')).toContainText('NICE NG91');
 });
 test('Reloaded inferred age needs confirmation; invalid and low weights clear it',async({page})=>{
@@ -110,6 +114,34 @@ test('Reloaded inferred age needs confirmation; invalid and low weights clear it
   await expect(page.locator('#ageSelect')).toHaveValue('');
   await page.locator('#weightInput').fill('8.5');
   await expect(page.locator('#ageSelect')).toHaveValue('9m');
+  await page.locator('#weightInput').fill('201');
+  await expect(page.locator('#ageSelect')).toHaveValue('');
+});
+test('Reported 56kg case overrides 11 years immediately, including saved state',async({page})=>{
+  await open(page,'aom','11y','35');
+  await page.locator('#weightInput').fill('56');
+  await expect(page.locator('#ageSelect')).toHaveValue('15y');
+  await expect(page.locator('#ageOptional')).toContainText('nga pesha');
+  await expect(page.locator('#ageConfirmation input')).not.toBeChecked();
+  await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
+  await page.locator('#ageSelect').selectOption('11y');
+  await page.reload();
+  await expect(page.locator('#ageSelect')).toHaveValue('15y');
+  await expect(page.locator('#ageConfirmation')).toBeVisible();
+});
+test('Displayed reference range contains each automatically assigned weight',async({page})=>{
+  await open(page,'aom','','');
+  for(const weight of [3.3,7.25,9.75,12.5,18,25,33.5,42.5,47.5,52.5,56,58,60]){
+    await page.locator('#weightInput').fill(String(weight));
+    const hint=await page.locator('#ageSuggestion').innerText();
+    const match=/≈([\d,]+)–([\d,]+)/.exec(hint);
+    if(match){expect(weight).toBeGreaterThanOrEqual(Number(match[1].replace(',','.')));expect(weight).toBeLessThanOrEqual(Number(match[2].replace(',','.')));}
+    else expect(hint).toContain('grupi 16+');
+  }
+  await page.locator('#ageSelect').selectOption('adult');
+  await page.locator('#weightInput').fill('');
+  await expect(page.locator('#ageSelect')).toHaveValue('');
+  await page.locator('#ageSelect').selectOption('adult');
   await page.locator('#weightInput').fill('201');
   await expect(page.locator('#ageSelect')).toHaveValue('');
 });
@@ -158,6 +190,7 @@ test('Infant co-amoxiclav uses actual kg and exact 4:1 concentration',async({pag
   await expect(c.locator('.abx-rx-line')).toContainText('2 mL PO 3 herë/ditë × 5 ditë');
   await expect(c.locator('.abx-rx-dose')).toContainText('50/12,5 mg');
   await page.locator('#weightInput').fill('');
+  await page.locator('#ageSelect').selectOption('6m');
   await page.locator('#aomFailureInput').check();
   await expect(card(page,'amoxclav-aom')).toContainText('peshën reale');
   await expect(card(page,'amoxclav-aom').locator('.abx-rx-copy')).toHaveCount(0);
@@ -165,7 +198,7 @@ test('Infant co-amoxiclav uses actual kg and exact 4:1 concentration',async({pag
 test('Product route and small body weight are enforced',async({page})=>{
   await open(page,'aom','adult','24.9');await page.locator('#aomFailureInput').check();
   await expect(card(page,'amoxclav-aom')).toContainText('25 kg');
-  await page.locator('#weightInput').fill('25');await page.locator('#aomFailureInput').check();
+  await page.locator('#weightInput').fill('25');await page.locator('#ageSelect').selectOption('adult');await page.locator('#aomFailureInput').check();
   await expect(card(page,'amoxclav-aom').locator('.abx-option-head')).toBeVisible();
   await page.locator('#aomFailureInput').uncheck();
   const c=card(page,'amox-aom');await choose(c,'vial-powder','1 g');
@@ -226,7 +259,7 @@ test('Newborn and orbital red flags suppress outpatient regimens',async({page})=
   await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
   await expect(page.locator('.abx-hosp-card')).toHaveCount(0);
   await page.goto(baseURL+'/antibiotiket.html?indication=preseptal');
-  await page.locator('#ageSelect').selectOption('adult');await page.locator('#weightInput').fill('70');
+  await page.locator('#weightInput').fill('70');await page.locator('#ageSelect').selectOption('adult');
   await page.locator('#orbitalRedFlagsInput').check();
   await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
   await expect(page.locator('#recommendationList')).toContainText('STOP');
@@ -235,7 +268,7 @@ test('Benzathine penicillin retains the 27kg boundary and whole matched syringe'
   await open(page,'gas','6y','20');await page.locator('#hospitalModule>summary').click();
   let c=card(page,'H002');await c.locator('.abx-prep summary').click();await c.locator('.abx-prep-confirm input').check();
   await expect(c.locator('.abx-prep-output')).toContainText('600000 IU · 1 shiringë e plotë');
-  await page.locator('#weightInput').fill('27');await expect(card(page,'H002')).toHaveCount(0);
+  await page.locator('#weightInput').fill('27');await page.locator('#ageSelect').selectOption('6y');await expect(card(page,'H002')).toHaveCount(0);
   c=card(page,'H003');await c.locator('.abx-prep summary').click();await c.locator('.abx-prep-confirm input').check();
   await expect(c.locator('.abx-prep-output')).toContainText('1200000 IU · 1 shiringë e plotë');
 });

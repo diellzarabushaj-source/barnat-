@@ -104,9 +104,9 @@ control with final prescription generation.
 # Automatic age suggestion from weight (2026-10-29)
 
 The existing month/year select and explicit adult option are preserved. Weight
-entry now fills an **unconfirmed suggestion** automatically. Manual age selection
-always wins; changing weight recalculates only an inferred age and clears its
-confirmation. Reloading an inferred age also requires confirmation. Until real
+entry now fills an **unconfirmed suggestion** automatically. Each new weight entry replaces the age suggestion, including a previously
+manual age, and clears its confirmation. Manual age selection remains available
+for correcting the suggestion until the next weight edit. Reloading an inferred age also requires confirmation. Until real
 age is confirmed, no outpatient numerical regimen or prescription is shown.
 
 The suggestion uses the **existing user-supplied reference map dated 2026-09-28**
@@ -114,7 +114,8 @@ in `pediatric-weight-age-core.js` / `data/pediatric-weight-age-defaults.json`.
 It does not add growth-chart or normal-weight claims. Monthly selection intervals
 are derived by linear interpolation between that map's anchors; neighboring
 midpoints define nonoverlapping, lower-inclusive / upper-exclusive bins. The UI
-keeps months for the first year and completed years thereafter. Displayed weight
+keeps months for the first year and selects the closest displayed reference year
+thereafter, capped at the shared 16+ reference group. Displayed weight
 bounds round outwards to two decimals; matching uses the unrounded boundaries.
 
 There is no supported distinction between 16, 17 and adults from the map's
@@ -190,3 +191,19 @@ of existing prescriptions, high-risk restrictions, gated second choice/allergy
 failure, copied delayed-use advice, exact half-tablet conversion, absolute-mg
 adolescent range transport, and fresh decision state after reload. Existing
 age, formulation-ratio, duration, pregnancy and product eligibility tests remain.
+
+## Weight changes always refresh the suggestion — 2026-10-29
+
+Fixes the reported stale-age case: entering 56 kg after selecting 11 years now
+selects the nearest displayed reference year (15 years), marked as inferred and
+unconfirmed. Editing weight always overrides a previous manual age. Loading a
+saved valid weight also recalculates the suggestion so an old stored choice
+cannot leave the page mismatched. A manually chosen real age can still be used
+until the next weight edit, including the adult option and fixed-dose pathways
+without weight. Empty/invalid/below-map weight edits clear the previous age.
+
+The hint interval groups the same monthly bins used to select that year, so the
+entered weight and displayed reference interval agree. Labels and layout stay
+unchanged. These are UI bins derived from the existing user map, not evidence of
+a weight-specific chronological age. No weight change confirms age or enables
+a numerical prescription on its own. The open 16+ group never establishes 18+.

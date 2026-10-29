@@ -117,7 +117,7 @@
       const suggested = weightAges?.suggestMonth(weight);
       if (!suggested) return null;
       const months = suggested.months;
-      const id = months === 0 ? 'newborn' : months < 12 ? `${months}m` : `${Math.floor(months / 12)}y`;
+      const id = suggestedAgeId(months);
       return guide.ageBands.find(b => b.id === id) || null;
     }
     return guide.ageBands.reduce((best, band) => {
@@ -129,6 +129,12 @@
       if (gap === bestGap && band.months < best.months) return band;
       return best;
     }, null);
+  }
+
+  function suggestedAgeId(months) {
+    // Match the unchanged month/year select to the closest reference age.
+    // The map ends at 16+; weight alone never selects adulthood or 17 years.
+    return months === 0 ? 'newborn' : months < 12 ? `${months}m` : `${Math.min(16,Math.round(months / 12))}y`;
   }
 
   function cap(value, max) {
@@ -527,7 +533,7 @@
     if (protocols) {
       const age = currentAgeBand();
       const bands = weightAges?.monthlySuggestionBands() || [];
-      const monthly = age && age.months < 216 ? bands.filter(b => age.months >= 192 ? b.openEnded : b.months >= age.months && b.months < age.months + (age.months < 12 ? 1 : 12)) : [];
+      const monthly = age && age.months < 216 ? bands.filter(b => suggestedAgeId(b.months) === (age.months >= 192 ? '16y' : age.id)) : [];
       el.ageSuggestion.replaceChildren();
       el.ageSuggestion.hidden = !age;
       if (!age) return;
@@ -961,10 +967,10 @@
     });
   }
 
-  function applyAgeFromWeight() {
+  function applyAgeFromWeight(force=false) {
     const state = weightState();
     if (state.kind !== 'valid') {
-      if (ctx.ageFromWeight) {
+      if (force || ctx.ageFromWeight) {
         ctx.age = '';
         ctx.ageFromWeight = false;
         ctx.ageConfirmed = false;
@@ -972,10 +978,10 @@
       }
       return;
     }
-    if (ctx.age && !ctx.ageFromWeight) return;
+    if (!force && ctx.age && !ctx.ageFromWeight) return;
     const band = nearestAgeBand(state.value);
     if (!band) {
-      if (ctx.ageFromWeight) {ctx.age='';ctx.ageFromWeight=false;ctx.ageConfirmed=false;el.age.value='';}
+      if (force || ctx.ageFromWeight) {ctx.age='';ctx.ageFromWeight=false;ctx.ageConfirmed=false;el.age.value='';}
       return;
     }
     ctx.age = band.id;
@@ -999,7 +1005,7 @@
       ctx.weight = el.weight.value;
       ctx.cultureSusceptible=false;
       ctx.aomFailure=false;
-      applyAgeFromWeight();
+      applyAgeFromWeight(true);
       render();
     });
     $('pregnancyInput')?.addEventListener('change',event=>{ctx.pregnant=event.target.checked;ctx.cultureSusceptible=false;render();});
@@ -1038,7 +1044,7 @@
   populateAges();
   el.age.value = ctx.age;
   el.weight.value = ctx.weight;
-  applyAgeFromWeight();
+  applyAgeFromWeight(weightState().kind!=='empty');
   el.atypical.checked = ctx.atypical;
   buildIndicationChips();
   buildAllergySegments();
