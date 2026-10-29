@@ -207,3 +207,21 @@ entered weight and displayed reference interval agree. Labels and layout stay
 unchanged. These are UI bins derived from the existing user map, not evidence of
 a weight-specific chronological age. No weight change confirms age or enables
 a numerical prescription on its own. The open 16+ group never establishes 18+.
+
+## Simplified antibiotic-only AOM workspace — 2026-10-29
+
+At the clinician's request, the UI now focuses on antibiotic selection/dosing
+once treatment is indicated. The no-antibiotic, back-up and immediate-treatment
+choice buttons are removed. This does not assert that all AOM needs antibiotics;
+the visible scope explicitly says "Kur antibiotiku indikohet". NICE NG91 still
+supports observation/back-up strategies in appropriate pediatric cases. This
+workspace is not the complete antibiotic-indication decision pathway.
+
+The visible sequence is Patient → Antibiotic choice → Dose and prescription.
+Repeated context paragraphs are removed from the AOM results; diagnostic guidance,
+source calculations, regimen notes, duplicate limits and verification explanations
+remain accessible in closed details. Dose, interval, daily total, duration and
+prescription stay visible. Suspected-complication, real-age, infant exclusion,
+allergy, second-choice reassessment, product ratio and equal-half-tablet gates
+are retained. Doses and durations are unchanged. Adult schedules remain NHS Fife,
+with NICE NG91 explicitly identified for under-18 prescribing.

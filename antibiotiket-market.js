@@ -129,7 +129,7 @@
             for(const schedule of schedules)source.append(make('span','',`${schedules.length>1?schedule.times+' herë/ditë: ':''}${fmt(limit.absoluteMg*schedule.times)} mg / 24 orë · sipas frekuencës`));
             source.append(make('small','','Për peshën e dhënë zbatohet kufiri më i ulët i shfaqur më sipër.'));maximum.append(source);
           }else maximum.append(make('small','',ceiling?.fixed?'Kjo është doza e zgjedhur e protokollit; nuk është maksimumi universal i barit.':limit?'Burimi nuk përcakton maksimum absolut.':'Kontrollo kufirin te skema më sipër.'));
-          phase.append(maximum);
+          if(card.dataset.simpleAom==='true'){const details=make('details','abx-market-limits');details.append(make('summary','','Doza dhe kufijtë'),maximum);phase.append(details);}else phase.append(maximum);
         });
         const course=make('div','abx-market-course');course.append(make('span','','Kohëzgjatja'),make('strong','',clean(card.querySelector('.abx-duration')?.textContent)||'Përcaktohet sipas skemës'));result.append(course);
         if(conversion.rows.some(row=>row.unit==='mL'&&[row.min,row.max].some(value=>Math.abs(value-Number(value.toFixed(2)))>1e-9))){
