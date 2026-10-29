@@ -14,6 +14,9 @@ for(const p of data.indications.filter(p=>p.kind==='symptom')){
   assert.equal(new Set(p.tests.map(t=>t.testId)).size,p.tests.length,p.slug+' duplicates a test');
 }
 const symptom=slug=>data.indications.find(p=>p.slug==='simptoma-'+slug);
+for(const [slug,term] of [['lodhja','lodhje'],['dhimbja-fytit','dhimbje fyti'],['humbja-peshes','humbje peshe'],['verdheza','verdheze'],['nyjet','dhimbje nyje']]){
+  assert.ok(symptom(slug).aliases.includes(term),'Search must cover common Albanian inflections: '+term);
+}
 assert.ok(symptom('etje-urinim').tests.some(t=>t.testId==='existing-glucose'));
 assert.ok(!symptom('etje-urinim').tests.some(t=>t.testId==='urine-glucose'));
 assert.ok(symptom('verdheza').tests.some(t=>t.testId==='existing-bilirubin'));
