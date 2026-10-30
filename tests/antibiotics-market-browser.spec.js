@@ -492,8 +492,8 @@ test('Pharyngitis macrolide range is source-bound for adolescents, adults and pr
   await expect(c.locator('.abx-dose-window')).toContainText('1000 mg');
   await expect(c.locator('.abx-rx-line')).toContainText('2 herë/ditë × 5 ditë');
 });
-test('Penicillin V in IU is never treated as milligrams or a brand-name strength',async({page})=>{
-  await open(page,'gas','adult','');const c=card(page,'penicillin-gas');
+test('Penicillin V in IU is never treated as milligrams outside the verified Ospen pharyngitis scheme',async({page})=>{
+  await open(page,'sinusitis','adult','');const c=card(page,'penicillin-sinusitis');
   await choose(c,'tablet','1000000 IU');
   await c.locator('.abx-market-product summary').click();
   await c.locator('.abx-market select').nth(2).selectOption('penv-iu');
@@ -534,7 +534,6 @@ test('CDC amoxicillin requires actual adult weight and never assumes a maximal d
 async function openOspen(page,age='4y',weight='16'){
   await open(page,'gas',age,weight);await (await gasControl(page,'gasConfirmedInput')).check();
   let c=card(page,'penicillin-gas');await choose(c,'tablet','1000000 IU');
-  await c.getByRole('button',{name:'Përdor skemën Ospen në IU · SmPC'}).click();
   c=card(page,'penicillin-gas');await expect(c).toHaveAttribute('data-native-ospen','true');return c;
 }
 for(const width of [320,390,1440])test(`Verified Ospen uses its native IU scheme and equal halves for the reported 16kg case at ${width}px`,async({page})=>{
@@ -572,19 +571,19 @@ test('Ospen 1.5 recalculates product halves, while an unrelated IU product stays
   await expect(c.locator('.abx-market-info')).toContainText('nuk ka skemë Ospen');
   await expect(c.locator('.abx-rx-copy')).toHaveCount(0);
 });
-test('Ospen explicitly changes source and requires documented GAS, resets on reload, and preserves NICE',async({page})=>{
+test('Ospen automatically chooses its verified source, requires documented GAS, resets on reload, and preserves NICE',async({page})=>{
   await open(page,'gas','4y','16');let c=card(page,'penicillin-gas');await choose(c,'tablet','1000000 IU');
-  await expect(c.locator('.abx-rx')).toBeHidden();
-  await expect(c.locator('.abx-market-info')).toContainText('skemën Ospen në IU');
-  await c.getByRole('button',{name:'Përdor skemën Ospen në IU · SmPC'}).click();
   await expect(card(page,'penicillin-gas')).toContainText('Konfirmo GAS');
+  await expect(page.locator('#gasConfirmedInput')).toBeVisible();
+  await expect(page.locator('#gasConfirmedInput')).not.toBeChecked();
   await (await gasControl(page,'gasConfirmedInput')).check();c=card(page,'penicillin-gas');
   await expect(c.locator('.abx-rx-copy')).toBeEnabled();
   await page.locator('#gasSourceBack').click();c=card(page,'penicillin-gas');
   await expect(c.locator('.abx-option-source')).toHaveText('NICE NG84');
   await expect(c.locator('.abx-rx')).toBeHidden();
-  await expect(c.locator('.abx-market-info')).toContainText('skemën Ospen në IU');
-  await c.getByRole('button',{name:'Përdor skemën Ospen në IU · SmPC'}).click();
+  await expect(c.locator('.abx-market-info')).toContainText('Për skemën NICE zgjidh produkt në mg');
+  await choose(c,'tablet','1000000 IU');
+  await expect(card(page,'penicillin-gas')).toHaveAttribute('data-native-ospen','true');
   await page.reload();await page.locator('#ageSelect').selectOption('4y');
   await expect(card(page,'penicillin-gas')).not.toHaveAttribute('data-native-ospen','true');
   await expect((await gasControl(page,'gasConfirmedInput'))).not.toBeChecked();

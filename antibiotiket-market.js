@@ -140,23 +140,26 @@
         }
       };
       const publish=()=>{
-        body.querySelector('.abx-ospen-activate')?.remove();
+        delete card.dataset.ospenPending;
         const product=variant?.products.find(p=>String(p.id)===productSelect.value);
         splitInput.checked=false;splitLabel.hidden=!(product&&form?.measure==='whole'&&form.unit==='tabletë'&&!form.modified);
         selections.get(card).delete(part.drug);
         if(!product){if(!restoring)remembered.delete(memoryKey);body.append(info);info.textContent='Zgjidh formën dhe fortësinë.';showDose(null);productSummary.textContent='Produktet AKKPM · opsionale';syncAnswer(card);update();return;}
         let reason=eligible(card,part.drug,form,variant,product);
-        if(card.dataset.regimenId==='penicillin-gas'&&card.dataset.nativeOspen!=='true'&&window.DRX_OSPEN?.identify(product,form,variant?.concentration)){
-          reason='NICE përdor mg. Për këtë produkt mund të zgjedhësh skemën Ospen në IU.';
-          const button=make('button','abx-ospen-activate','Përdor skemën Ospen në IU · SmPC');button.type='button';
-          button.onclick=()=>window.dispatchEvent(new CustomEvent('drx:ospen-request'));body.append(button);
-        }
+        const nativeOspen=card.dataset.regimenId==='penicillin-gas'&&card.dataset.nativeOspen!=='true'&&window.DRX_OSPEN?.identify(product,form,variant?.concentration);
+        card.dataset.ospenPending=String(Boolean(nativeOspen));
+        if(nativeOspen)reason='Ospen përdor skemën e produktit në IU. Për skemën NICE zgjidh produkt në mg.';
         info.textContent=reason||`${product.packaging||product.form} · Nr. ${product.registryNumber}`;
         info.dataset.tone=reason?'blocked':'ready';
         if(reason)body.append(info);else productDetails.append(info);
         const picked={form,variant,product,reason,label:`${product.name} · ${product.strength} · ${form.label}`};
         selections.get(card).set(part.drug,picked);showDose(picked);productSummary.textContent=`${product.name} · ndrysho produktin`;syncAnswer(card);update();
         remembered.set(memoryKey,{form:form.key,variant:variant.id,product:String(product.id)});
+        // A deliberate product selection chooses its verified source. Restoring
+        // old selections must not undo an explicit return to NICE or loop renders.
+        if(nativeOspen&&!restoring)queueMicrotask(()=>{
+          if(card.isConnected&&selection(card,part.drug)?.product===product)window.dispatchEvent(new CustomEvent('drx:ospen-request'));
+        });
       };
       formSelect.onchange=()=>{form=entry.forms.find(f=>f.key===formSelect.value);variant=null;options(strengthSelect,form?.variants||[],'Zgjidh fortësinë…');options(productSelect,[],'Zgjidh fortësinë më parë');publish();};
       strengthSelect.onchange=()=>{variant=form?.variants.find(v=>v.id===strengthSelect.value);options(productSelect,variant?.products||[],'Zgjidh produktin…');const preferred=variant?.products.find(p=>!eligible(card,part.drug,form,variant,p))||variant?.products[0];if(preferred)productSelect.value=String(preferred.id);publish();};

@@ -346,7 +346,7 @@ button,input,select{font:inherit}button{color:inherit}a{color:inherit}[hidden]{d
 .abx-ospen .abx-practical-choices button{min-height:44px;padding:8px 10px;border:1px solid #d4cdfb;border-radius:8px;background:#fff;font:inherit;font-size:12px;cursor:pointer}
 .abx-ospen .abx-practical-choices button[aria-pressed=true]{border-color:#6b53f5;background:#eee9ff;color:#4034c4}
 
-.abx-option:has(.abx-ospen-activate)>.abx-rx{display:none}
+.abx-option[data-ospen-pending="true"]>.abx-rx{display:none}
 
 #utiEgfrInput{min-height:44px;border:1px solid var(--ab-line);border-radius:8px;padding:10px;font:inherit;max-width:100%;box-sizing:border-box}
 
