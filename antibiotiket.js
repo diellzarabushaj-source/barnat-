@@ -49,6 +49,10 @@
     aomPlan:'immediate',
     aomRisk:'routine',
     aomFailure:false,
+    gasConfirmed:false,
+    gasUrgent:false,
+    gasSchedule:'qds',
+    gasAmoxSchedule:'daily',
   };
 
   const tierLabels = Object.freeze({
@@ -86,7 +90,7 @@
   }
 
   function protocolContext() {
-    return {ageMonths:currentAgeBand()?.months,ageConfirmed:ctx.ageConfirmed,weightKg:weightState().value,pregnant:ctx.pregnant,cultureSusceptible:ctx.cultureSusceptible,atypical:ctx.atypical,aomPlan:ctx.aomPlan,aomRisk:ctx.aomRisk,aomFailure:ctx.aomFailure};
+    return {ageMonths:currentAgeBand()?.months,ageConfirmed:ctx.ageConfirmed,weightKg:weightState().value,pregnant:ctx.pregnant,cultureSusceptible:ctx.cultureSusceptible,atypical:ctx.atypical,aomPlan:ctx.aomPlan,aomRisk:ctx.aomRisk,aomFailure:ctx.aomFailure,gasConfirmed:ctx.gasConfirmed,gasSchedule:ctx.gasSchedule,gasAmoxSchedule:ctx.gasAmoxSchedule};
   }
 
   function weightState() {
@@ -494,7 +498,7 @@
       'abx-indication',
       guide.indications.map(item => ({ value:item.id, label:item.short || item.label, hint:item.label })),
       ctx.indication,
-      value => { ctx.cultureSusceptible=false;ctx.aomPlan='immediate';ctx.aomRisk='routine';ctx.aomFailure=false;ctx.indication = value; collapsePicker(el.indicationPicker); render(); },
+      value => { ctx.cultureSusceptible=false;ctx.aomPlan='immediate';ctx.aomRisk='routine';ctx.aomFailure=false;ctx.gasConfirmed=false;ctx.gasUrgent=false;ctx.gasSchedule='qds';ctx.gasAmoxSchedule='daily';ctx.indication = value; collapsePicker(el.indicationPicker); render(); },
       'abx-chip',
     );
   }
@@ -502,6 +506,7 @@
   function buildAllergySegments() {
     buildChoice(el.allergyChoice, 'abx-allergy', allergyOptions, ctx.allergy, value => {
       ctx.allergy = value;
+      ctx.gasSchedule='qds';
       ctx.cephLowRiskConfirmed = false;
       collapsePicker(el.allergyPicker);
       render();
@@ -658,8 +663,27 @@
     $('aomFailureInput').disabled=ctx.aomRisk==='urgent';
   }
 
+  function renderGasControls(indication) {
+    const panel=$('gasClinicalPanel');if(!panel)return;
+    panel.hidden=indication.id!=='gas';if(panel.hidden)return;
+    const penicillin=['none','a0','a4'].includes(ctx.allergy);
+    const erythro=ctx.pregnant&&['a1','a2','a3'].includes(ctx.allergy)&&currentAgeBand()?.months>=96;
+    $('gasScheduleWrap').hidden=!(penicillin||erythro);
+    $('gasScheduleLabel').textContent=erythro?'Skema e erythromycin · shtatzëni':'Skema e Penicillin V';
+    $('gasScheduleSelect').value=ctx.gasSchedule;
+    $('gasConfirmedInput').checked=ctx.gasConfirmed;
+    $('gasAmoxScheduleWrap').hidden=!(ctx.gasConfirmed&&penicillin);
+    $('gasAmoxScheduleSelect').value=ctx.gasAmoxSchedule;
+    $('gasUrgentInput').checked=ctx.gasUrgent;
+    $('gasAdvice').textContent=ctx.gasUrgent?'Dyshim për komplikim → referim urgjent.'
+      :penicillin?'Kur antibiotiku indikohet · zgjedhja e parë: Penicillin V · NICE NG84.'
+      :erythro?'Alergji në shtatzëni · erythromycin kur indikohet · NICE NG84.'
+      :'Alergji ndaj penicilinës · alternativat sipas NICE NG84.';
+  }
+
   function renderConditionalControls(indication) {
     renderAomControls(indication);
+    renderGasControls(indication);
     const usesAllergy = indication.usesAllergy !== false;
     el.allergyField.hidden = !usesAllergy;
     el.atypicalWrap.hidden = indication.id !== 'pneumonia';
@@ -729,7 +753,7 @@
     }
     const card = make('article', `abx-option tier-${option.tier || 'option'}`);
     card.dataset.regimenId = option.id;
-    card.dataset.simpleAom=String(scope.id==='aom');
+    card.dataset.simpleUi=String(['aom','gas'].includes(scope.id));
     card.dataset.ageConfirmed = String(ctx.ageConfirmed);
     card.dataset.ageMonths = String(currentAgeBand()?.months ?? '');
     card.dataset.productRule = JSON.stringify(option.productRule || null);
@@ -822,12 +846,12 @@
       link.rel = 'noopener noreferrer';
       workingBody.append(link);
     }
-    if (option.productRule?.ratio) (scope.id==='aom'?workingBody:card).append(make('p','abx-option-note',`Raporti i këtij formulimi: ${option.productRule.ratio}:1 amoxicillin/clavulanate.`));
-    if (option.dose?.type === 'range') (scope.id==='aom'?workingBody:card).append(make('p', 'abx-option-note', 'Ky është interval doze. Zgjidh një dozë të vetme brenda tij para përshkrimit.'));
+    if (option.productRule?.ratio) (['aom','gas'].includes(scope.id)?workingBody:card).append(make('p','abx-option-note',`Raporti i këtij formulimi: ${option.productRule.ratio}:1 amoxicillin/clavulanate.`));
+    if (option.dose?.type === 'range') (['aom','gas'].includes(scope.id)?workingBody:card).append(make('p', 'abx-option-note', 'Ky është interval doze. Zgjidh një dozë të vetme brenda tij para përshkrimit.'));
     if (['single','range'].includes(option.dose?.type) && !Number.isFinite(option.dose.maxDose)) card.append(make('p', 'abx-missing-limit', 'Maksimumi nuk jepet nga ky burim. Rezultati është llogaritje sipas kg, pa kufizim automatik të dozës.'));
-    if (option.conditional) (scope.id==='aom'?workingBody:card).append(make('p', 'abx-option-note', `Kur përdoret: ${option.conditional}`));
-    if (option.note) (scope.id==='aom'?workingBody:card).append(make('p', 'abx-option-note', option.note));
-    if (option.stewardship) (scope.id==='aom'?workingBody:card).append(make('p', 'abx-option-note', `Stewardship: ${option.stewardship}`));
+    if (option.conditional) (['aom','gas'].includes(scope.id)?workingBody:card).append(make('p', 'abx-option-note', `Kur përdoret: ${option.conditional}`));
+    if (option.note) (['aom','gas'].includes(scope.id)?workingBody:card).append(make('p', 'abx-option-note', option.note));
+    if (option.stewardship) (['aom','gas'].includes(scope.id)?workingBody:card).append(make('p', 'abx-option-note', `Stewardship: ${option.stewardship}`));
     card.append(working);
     return card;
   }
@@ -902,8 +926,12 @@
     if(!protocols && document.documentElement?.dataset.penicillinProtocols==='required'){el.list.replaceChildren(make('p','abx-empty','Protokollet nuk u ngarkuan. Rifresko faqen; dozat e vjetra nuk përdoren si zëvendësim.'));return;}
     const indication = currentIndication();
     document.body?.classList.toggle('abx-simple-aom',indication.id==='aom');
+    document.body?.classList.toggle('abx-simple-gas',indication.id==='gas');
     const aomLimit=indication.id==='aom'?protocols?.aomDecision(protocolContext()):null;
-    const limit = ctx.aomRisk==='urgent'&&indication.id==='aom' ? aomLimit : protocols && !ctx.ageConfirmed ? {blocks:true,tone:'info',text:indication.contextMessage} : eligibility(indication)||aomLimit;
+    const gasLimit=indication.id==='gas'&&ctx.gasUrgent?{blocks:true,tone:'warn',text:'STOP — dyshim për komplikim supurativ ose infeksion sistemik të rëndë: referim urgjent. Mos përdor recetë rutinë ambulatore.'}:null;
+    const limit = gasLimit || (ctx.aomRisk==='urgent'&&indication.id==='aom' ? aomLimit : protocols && !ctx.ageConfirmed ? {blocks:true,tone:'info',text:indication.contextMessage} : eligibility(indication)||aomLimit);
+    el.list.dataset.gasBlocked=String(indication.id==='gas'&&Boolean(limit?.blocks));
+    el.list.dataset.gasConfirmed=String(indication.id==='gas'&&ctx.gasConfirmed);
     el.list.dataset.aomBlocked=String(indication.id==='aom'&&Boolean(limit?.blocks));
     el.list.dataset.aomPlan=indication.id==='aom'?ctx.aomPlan:'';
 
@@ -921,14 +949,14 @@
     const source = sourceById(indication.source);
     el.activeSource.textContent = source ? source.short : 'Burim';
     // The chip carries the short name; the full one heads the regimens it opened.
-    el.resultsTitle.textContent = indication.id==='aom'?'3 · Doza dhe receta':indication.label;
+    el.resultsTitle.textContent = ['aom','gas'].includes(indication.id)?'3 · Doza dhe receta':indication.label;
     el.eligibility.hidden = !limit;
     el.eligibility.textContent = limit ? limit.text : '';
     el.eligibility.dataset.tone = limit ? limit.tone : 'info';
     el.list.replaceChildren();
     if (limit?.blocks) return;
 
-    if (indication.warning && indication.id!=='aom') {
+    if (indication.warning && !['aom','gas'].includes(indication.id)) {
       const warning = make('div', 'abx-eligibility', indication.warning);
       warning.dataset.kind = indication.warning.startsWith('HARD STOP') ? 'hard-stop' : 'clinical-warning';
       el.list.append(warning);
@@ -942,7 +970,7 @@
       return;
     }
 
-    if(indication.contextMessage && indication.id!=='aom')el.list.append(make('p','abx-eligibility',indication.contextMessage));
+    if(indication.contextMessage && !['aom','gas'].includes(indication.id))el.list.append(make('p','abx-eligibility',indication.contextMessage));
     const options = visibleOptions(indication);
     if (!options.length) {
       if(indication.id==='aom')el.list.dataset.aomBlocked='true';
@@ -989,6 +1017,10 @@
   }
 
   function bind() {
+    $('gasScheduleSelect')?.addEventListener('change',event=>{ctx.gasSchedule=event.target.value;render();});
+    $('gasAmoxScheduleSelect')?.addEventListener('change',event=>{ctx.gasAmoxSchedule=event.target.value;render();});
+    $('gasConfirmedInput')?.addEventListener('change',event=>{ctx.gasConfirmed=event.target.checked;render();});
+    $('gasUrgentInput')?.addEventListener('change',event=>{ctx.gasUrgent=event.target.checked;render();});
     $('aomRiskSelect')?.addEventListener('change',event=>{ctx.aomRisk=event.target.value;ctx.aomPlan='immediate';ctx.aomFailure=false;render();});
     $('aomFailureInput')?.addEventListener('change',event=>{ctx.aomFailure=event.target.checked;if(ctx.aomFailure)ctx.aomPlan='immediate';render();});
     el.age.addEventListener('change', () => {
@@ -996,12 +1028,14 @@
       ctx.ageFromWeight = false;
       ctx.ageConfirmed = Boolean(ctx.age);
       ctx.cultureSusceptible=false;
+      ctx.gasConfirmed=false;
       ctx.aomFailure=false;
       render();
     });
     el.weight.addEventListener('input', () => {
       ctx.weight = el.weight.value;
       ctx.cultureSusceptible=false;
+      ctx.gasConfirmed=false;
       ctx.aomFailure=false;
       applyAgeFromWeight(true);
       render();

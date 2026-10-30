@@ -62,7 +62,8 @@ assert.equal(option('bite',216,'amoxclav-bite-treat',70).duration.text,'5 ditë'
 assert.equal(option('preseptal',216,'amoxclav-preseptal',70).duration.text,'7 ditë');
 for(const id of ['cellulitis','impetigo'])assert.equal(option(id,216,`fluclox-${id}`,70).dose.value,500);
 assert.equal(option('gas',216,'amoxicillin-gas',70).dose.value,1000);
-assert.equal(option('gas',144,'amoxicillin-gas',40).dose.value,1000);
+assert.equal(option('gas',144,'amoxicillin-gas',40).dose.maxDose,1000);
+assert.equal(option('gas',144,'amoxicillin-gas',40).requiresRealWeight,true);
 const pyelo=option('uti-pyelo',216,'amoxclav-pyelo',70);
 assert.match(P.gate(pyelo,context(216,70)),/urinokulturën/);
 assert.equal(P.gate(pyelo,context(216,70,{cultureSusceptible:true})), '');
@@ -127,3 +128,29 @@ assert.ok(html.indexOf('antibiotiket-penicillin-protocols.js')<html.indexOf('/an
 assert.match(html,/data-penicillin-protocols="required"/);
 assert.match(read('sw.js'),/antibiotiket-penicillin-protocols.js/);
 console.log('PASS: penicillin source/age boundaries, adult schedules, exact components, culture/pregnancy gates, whole tablets, hospital separation and missing-protocol guard.');
+
+// NG84 schedules are alternatives, not a continuous therapeutic range.
+for(const [m,qds,bid] of [[3,62.5,125],[12,125,250],[72,250,500],[144,500,1000],[216,500,1000]]){
+  assert.deepEqual(shape(option('gas',m,'penicillin-gas',20,{gasSchedule:'bid'})),[bid,'2 herë/ditë','5–10 ditë','nice-ng84']);
+  assert.equal(qds*4,bid*2);
+}
+assert.match(P.gate(option('gas',216,'amoxicillin-gas',70),context(216,70)),/Konfirmo GAS/);
+assert.equal(P.gate(option('gas',216,'amoxicillin-gas',70),context(216,70,{gasConfirmed:true})),'');
+assert.deepEqual(shape(option('gas',216,'amoxicillin-gas',70,{gasAmoxSchedule:'bid'})),[500,'2 herë/ditë','10 ditë','cdc-gas']);
+const amoxChildBid=option('gas',36,'amoxicillin-gas',12,{gasAmoxSchedule:'bid'});
+assert.equal(e.calculatedValue(amoxChildBid,12),'300 mg/dozë');
+assert.equal(e.dailyDose(amoxChildBid,12).text,'600 mg/ditë');
+assert.match(e.calculatedValue(option('gas',144,'amoxicillin-gas',56),56),/^1000 mg\/dozë.*kufiri maksimal/);
+for(const m of [144,204,216]){
+  const o=option('gas',m,'clarithro-gas-nice',null);
+  assert.deepEqual([o.dose.value,o.dose.maxValue,o.frequency,o.duration.text],[250,500,'2 herë/ditë','5 ditë']);
+}
+for(const [kg,mg] of [[7,52.5],[8,62.5],[12,125],[20,187.5],[30,250],[40,250]]){
+  const o=option('gas',84,'clarithro-gas-nice',kg);
+  assert.equal(e.calculateSimple(o.dose,kg).min,mg);
+}
+assert.equal(option('gas',132,'clarithro-gas-nice',41),undefined,'No published under-12 weight band above 40 kg');
+const erythBid=option('gas',216,'erythro-gas-pregnancy',70,{pregnant:true,gasSchedule:'bid'});
+assert.deepEqual([erythBid.dose.value,erythBid.dose.maxValue,erythBid.frequency],[500,1000,'2 herë/ditë']);
+assert.match(P.productReason({...args,drug:'Penicillin V',product:{},concentration:{unit:'IU',value:1000000}}),/ekuivalenca e verifikuar/);
+console.log('PASS: NG84 pharyngitis age/schedule boundaries, CDC GAS confirmation and amoxicillin ceilings, macrolide ranges and IU isolation.');

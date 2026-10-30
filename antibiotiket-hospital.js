@@ -250,6 +250,7 @@
     if(indication==='aom'&&(recommendations?.dataset.aomBlocked==='true'||recommendations?.dataset.aomPlan!=='immediate')){
       module.hidden=true;list.replaceChildren();return;
     }
+    if(indication==='gas'&&(recommendations?.dataset.gasBlocked==='true'||recommendations?.dataset.gasConfirmed!=='true')){module.hidden=true;list.replaceChildren();return;}
     const linkedIds = data.linkedByIndication?.[indication] || [];
     const escalationText = data.escalationOnly?.[indication] || '';
     const escalationVisible = indication === 'preseptal' && orbitalRedFlags() && escalationText;

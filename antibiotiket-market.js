@@ -70,13 +70,14 @@
       const showDose=picked=>{
         result.replaceChildren();
         result.dataset.ready='false';
-        if(!picked||picked.reason){result.hidden=true;return;}
+        if(!picked||picked.reason){result.hidden=true;if(card.dataset.simpleUi==='true')splitLabel.hidden=true;return;}
         result.hidden=false;
         const weight=Number(clean(document.getElementById('weightInput')?.value).replace(',','.'));
         if(card.dataset.weightRequired!=='false'&&!(weight>=1&&weight<=200)){result.append(make('span','','Shkruaj peshën reale për dozën.'));return;}
         if(card.dataset.ageRequired==='true'&&card.dataset.ageConfirmed!=='true'){result.append(make('span','','Konfirmo moshën reale për këtë skemë.'));return;}
         const conversion=window.DRX_ANTIBIOTIC_MARKET_MATH?.convert({doseText:card.dataset.exactDoseText,drug:part.drug,combo:parts.length>1,form:picked.form,concentration:picked.variant.concentration,allowHalf:picked.equalHalvesConfirmed});
         if(!conversion||conversion.error){result.append(make('span','',conversion?.error||'Konvertimi nuk u ngarkua. Rifresko faqen.'));return;}
+        if(card.dataset.simpleUi==='true')splitLabel.hidden=!(picked.form.measure==='whole'&&picked.form.unit==='tabletë'&&!picked.form.modified&&conversion.rows.some(row=>row.mgMin!==row.mgMax||!Number.isInteger(row.mgMin/picked.variant.concentration.value)));
         const frequencies=JSON.parse(card.dataset.doseFrequencies||'[]');
         const frequency=frequencies.find(item=>item.drug===part.drug)?.frequency||'';
         const schedules=window.DRX_ANTIBIOTIC_MARKET_MATH.dailyTotals(conversion,frequency);
@@ -129,7 +130,7 @@
             for(const schedule of schedules)source.append(make('span','',`${schedules.length>1?schedule.times+' herë/ditë: ':''}${fmt(limit.absoluteMg*schedule.times)} mg / 24 orë · sipas frekuencës`));
             source.append(make('small','','Për peshën e dhënë zbatohet kufiri më i ulët i shfaqur më sipër.'));maximum.append(source);
           }else maximum.append(make('small','',ceiling?.fixed?'Kjo është doza e zgjedhur e protokollit; nuk është maksimumi universal i barit.':limit?'Burimi nuk përcakton maksimum absolut.':'Kontrollo kufirin te skema më sipër.'));
-          if(card.dataset.simpleAom==='true'){const details=make('details','abx-market-limits');details.append(make('summary','','Doza dhe kufijtë'),maximum);phase.append(details);}else phase.append(maximum);
+          if(card.dataset.simpleUi==='true'){const details=make('details','abx-market-limits');details.append(make('summary','','Doza dhe kufijtë'),maximum);phase.append(details);}else phase.append(maximum);
         });
         const course=make('div','abx-market-course');course.append(make('span','','Kohëzgjatja'),make('strong','',clean(card.querySelector('.abx-duration')?.textContent)||'Përcaktohet sipas skemës'));result.append(course);
         if(conversion.rows.some(row=>row.unit==='mL'&&[row.min,row.max].some(value=>Math.abs(value-Number(value.toFixed(2)))>1e-9))){

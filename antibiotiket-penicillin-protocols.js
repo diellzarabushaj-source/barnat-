@@ -11,7 +11,7 @@
 
   // Each indication owns its dose, interval, duration and product ratio. Never
   // extend a pediatric coefficient into adults or round it to a tablet strength.
-  const version = '2026-10-29-aom-v2';
+  const version = '2026-10-30-pharyngitis';
   const sources = [
     ['nice-ng91','NICE NG91 · <18','Otitis media akute','https://www.nice.org.uk/guidance/ng91/chapter/Recommendations'],
     ['cdc-aom-diagnosis','CDC · diagnoza AOM','Kriteret otoskopike të AOM te fëmijët','https://www.cdc.gov/antibiotic-use/hcp/clinical-care/pediatric-outpatient.html'],
@@ -28,7 +28,7 @@
     ['nice-ng153','NICE NG153','Impetigo','https://www.nice.org.uk/guidance/ng153/chapter/Recommendations'],
     ['emc-coamox-500-125','SmPC · Co-amoxiclav 500/125','Co-amoxiclav 4:1 · kufijtë sipas peshës','https://www.medicines.org.uk/emc/product/101680/smpc'],
     ['nice-ng184','NICE NG184','Kafshime nga njerëzit dhe kafshët','https://www.nice.org.uk/guidance/ng184/chapter/Recommendations'],
-  ].map(([id,short,title,url]) => ({id,short,title,url,date:'verified 2026-10-29',note:'Skemë sipas indikacionit dhe moshës. Grupmoshat pediatrike supozojnë madhësi mesatare; përmasat atipike, funksioni renal dhe shtatzënia kërkojnë vlerësim klinik.'}));
+  ].map(([id,short,title,url]) => ({id,short,title,url,date:id==='nice-ng84'?'verified 2026-10-30':'verified 2026-10-29',note:'Skemë sipas indikacionit dhe moshës. Grupmoshat pediatrike supozojnë madhësi mesatare; përmasat atipike, funksioni renal dhe shtatzënia kërkojnë vlerësim klinik.'}));
   const penicillin = drug => /^(?:Amoxicillin(?: \/ clavulanate)?|Penicillin [VG]|Benzathine penicillin G|Ampicillin(?:\s*\/\s*sulbactam)?|Flucloxacillin|Cloxacillin|Piperacillin \+ Tazobactam|Pivmecillinam)$/i.test(drug || '');
   const permitted = ['none','a0','a4'];
   const fixed = (value, second) => ({type:'fixed',value,text:`${value}${second === undefined ? '' : '/'+second} mg/dozë`,...(second === undefined ? {} : {component:'amoxicillin',secondComponent:second})});
@@ -114,10 +114,18 @@
         break;
       case 'gas':
         source = 'nice-ng84';
-        add(regimen('penicillin-gas','Penicillin V',fixed(penvMg(months)),4,'5–10 ditë',source,{note:'5 ditë mund të mjaftojnë për simptomat; 10 ditë rrisin mundësinë e eradikimit mikrobiologjik. Mos trajto faringjitin viral.'}));
+        add(regimen('penicillin-gas','Penicillin V',fixed(penvMg(months)*(context.gasSchedule==='bid'?2:1)),context.gasSchedule==='bid'?2:4,'5–10 ditë',source,{note:'5 ditë mund të mjaftojnë për simptomat; 10 ditë rrisin mundësinë e eradikimit mikrobiologjik. Mos trajto faringjitin viral.'}));
         // Retain the separately sourced CDC alternative for confirmed GAS.
-        add(regimen('amoxicillin-gas','Amoxicillin',adult || kg >= 40 ? fixed(1000) : {type:'single',value:50,unit:'mg/kg/dozë',maxDose:1000},1,10,'cdc-gas',{tier:'option',conditional:'Alternativë CDC për GAS të konfirmuar; skemë e veçantë nga NICE.',requiresRealWeight:!adult && !(kg >= 40)}));
+        { const bid=context.gasAmoxSchedule==='bid';
+          add(regimen('amoxicillin-gas','Amoxicillin',adult ? fixed(bid?500:1000) : {type:'single',value:bid?25:50,unit:'mg/kg/dozë',maxDose:bid?500:1000},bid?2:1,10,'cdc-gas',{tier:'option',requiresConfirmedGas:true,conditional:'Alternativë CDC për GAS të konfirmuar me RADT/kulturë; skemë e veçantë nga NICE.',requiresRealWeight:!adult}));
+        }
         allergyAlternative(5,source,250);
+        options=options.map(o=>o.drug==='Clarithromycin'&&months>=144
+          ? {...o,dose:fixedRange(250,500),note:'NICE NG84: 250–500 mg çdo 12 orë për 5 ditë. Kontrollo QT, ndërveprimet dhe rezistencën lokale.'}
+          :o.drug==='Erythromycin'
+          ? {...o,dose:context.gasSchedule==='bid'?fixedRange(500,1000):fixedRange(250,500),frequency:`${context.gasSchedule==='bid'?2:4} herë/ditë`}
+          :o);
+        message='Kur antibiotiku indikohet · Penicillin V: NICE NG84. Amoxicillin: alternativë CDC vetëm për GAS të konfirmuar.';
         break;
       case 'pneumonia': {
         source = 'nice-ng250';
@@ -194,6 +202,7 @@
 
   function gate(option, context) {
     if (!context.ageConfirmed) return 'Zgjidh moshën reale të pacientit.';
+    if(option.requiresConfirmedGas&&!context.gasConfirmed)return 'Konfirmo GAS me test të shpejtë pozitiv (RADT) ose kulturë pozitive për alternativën CDC.';
     if(option.requiresAomFailure&&!context.aomFailure)return 'Zgjedhje e dytë: konfirmo rivlerësimin dhe përkeqësimin pas së paku 2–3 ditësh të trajtimit fillestar. Nuk është zëvendësim automatik për amoxicillin.';
     if (option.requiresCulture && !context.cultureSusceptible) return 'Konfirmo urinokulturën dhe ndjeshmërinë para përdorimit të kësaj peniciline.';
     if (option.requiresNotPregnant && context.pregnant) return 'Shtatzënia kërkon skemë tjetër sipas udhëzimit.';
@@ -206,6 +215,7 @@
   function productReason({drug,rule,months,confirmed,form,concentration:c,product}) {
     if (!product) return 'Zgjidh produktin.';
     if (product.population === 'Adult only' && !(confirmed && months >= 216)) return 'Ky produkt lejohet vetëm pasi të konfirmohet mosha ≥18 vjeç.';
+    if (drug === 'Penicillin V' && c?.unit === 'IU') return 'Fortësia është në IU, ndërsa skema NICE është në mg. Nevojitet ekuivalenca e verifikuar për këtë produkt; numri në emrin Ospen nuk është dozë në mg.';
     if (drug !== 'Amoxicillin / clavulanate') return '';
     const ratio = Number(String(c?.basis || '').split('|ratio:')[1]?.replace(',','.'));
     // Fail closed when the rule or product components are unknown.
