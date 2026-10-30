@@ -49,6 +49,7 @@
     aomPlan:'immediate',
     aomRisk:'routine',
     aomFailure:false,
+    utiFluoro:false,utiSex:'',utiEgfr:'',utiAtTerm:false,utiAlternative:false,utiUpper:false,utiUrgent:false,utiCephTimes:2,
     gasPenicillinSource:'nice',
     gasConfirmed:false,
     gasUrgent:false,
@@ -91,7 +92,7 @@
   }
 
   function protocolContext() {
-    return {ageMonths:currentAgeBand()?.months,ageConfirmed:ctx.ageConfirmed,weightKg:weightState().value,pregnant:ctx.pregnant,cultureSusceptible:ctx.cultureSusceptible,atypical:ctx.atypical,aomPlan:ctx.aomPlan,aomRisk:ctx.aomRisk,aomFailure:ctx.aomFailure,gasPenicillinSource:ctx.gasPenicillinSource,gasConfirmed:ctx.gasConfirmed,gasSchedule:ctx.gasSchedule,gasAmoxSchedule:ctx.gasAmoxSchedule};
+    return {ageMonths:currentAgeBand()?.months,ageConfirmed:ctx.ageConfirmed,weightKg:weightState().value,pregnant:ctx.pregnant,cultureSusceptible:ctx.cultureSusceptible,atypical:ctx.atypical,aomPlan:ctx.aomPlan,aomRisk:ctx.aomRisk,aomFailure:ctx.aomFailure,utiFluoro:ctx.utiFluoro,utiSex:ctx.utiSex,utiEgfr:ctx.utiEgfr===''?null:Number(ctx.utiEgfr),utiAtTerm:ctx.utiAtTerm,utiAlternative:ctx.utiAlternative,utiCephTimes:ctx.utiCephTimes,gasPenicillinSource:ctx.gasPenicillinSource,gasConfirmed:ctx.gasConfirmed,gasSchedule:ctx.gasSchedule,gasAmoxSchedule:ctx.gasAmoxSchedule};
   }
 
   function weightState() {
@@ -499,7 +500,7 @@
       'abx-indication',
       guide.indications.map(item => ({ value:item.id, label:item.short || item.label, hint:item.label })),
       ctx.indication,
-      value => { ctx.cultureSusceptible=false;ctx.aomPlan='immediate';ctx.aomRisk='routine';ctx.aomFailure=false;ctx.gasPenicillinSource='nice';ctx.gasConfirmed=false;ctx.gasUrgent=false;ctx.gasSchedule='qds';ctx.gasAmoxSchedule='daily';ctx.indication = value; collapsePicker(el.indicationPicker); render(); },
+      value => { ctx.utiFluoro=false;ctx.utiUpper=false;ctx.utiUrgent=false;ctx.utiAlternative=false;ctx.utiSex='';ctx.utiEgfr='';ctx.utiAtTerm=false;ctx.cultureSusceptible=false;ctx.aomPlan='immediate';ctx.aomRisk='routine';ctx.aomFailure=false;ctx.gasPenicillinSource='nice';ctx.gasConfirmed=false;ctx.gasUrgent=false;ctx.gasSchedule='qds';ctx.gasAmoxSchedule='daily';ctx.indication = value; collapsePicker(el.indicationPicker); render(); },
       'abx-chip',
     );
   }
@@ -685,7 +686,21 @@
       :'Alergji ndaj penicilinës · alternativat sipas NICE NG84.';
   }
 
+  function renderUtiControls(indication){
+    const panel=$('utiClinicalPanel');if(!panel)return;
+    const on=indication.id.startsWith('uti-'),lower=indication.id==='uti-cystitis';panel.hidden=!on;if(!on)return;
+    $('utiFluoroWrap').hidden=lower||ctx.pregnant||!(currentAgeBand()?.months>=192);$('utiFluoroInput').checked=ctx.utiFluoro;
+    $('utiSexWrap').hidden=!lower||currentAgeBand()?.months<192||ctx.pregnant;
+    $('utiSexSelect').value=ctx.utiSex;$('utiEgfrWrap').hidden=!lower;$('utiEgfrInput').value=ctx.utiEgfr;
+    $('utiAtTermWrap').hidden=!lower||!ctx.pregnant;$('utiAtTermInput').checked=ctx.utiAtTerm;
+    $('utiUpperWrap').hidden=!lower;$('utiUpperInput').checked=ctx.utiUpper;
+    $('utiUrgentInput').checked=ctx.utiUrgent;$('utiAlternativeInput').checked=ctx.utiAlternative;
+    $('utiCephWrap').hidden=lower||!(currentAgeBand()?.months>=144);$('utiCephSelect').value=String(ctx.utiCephTimes);
+    $('utiAdvice').textContent=lower?'Cistit pa ethe · NICE NG109 · dozat sipas profilit të pacientit.':'UTI febrile / pielonefrit · NICE NG111 · vetëm kur trajtimi oral është i përshtatshëm.';
+  }
+
   function renderConditionalControls(indication) {
+    renderUtiControls(indication);
     renderAomControls(indication);
     renderGasControls(indication);
     const usesAllergy = indication.usesAllergy !== false;
@@ -764,7 +779,7 @@
     }
     const card = make('article', `abx-option tier-${option.tier || 'option'}`);
     card.dataset.regimenId = option.id;
-    card.dataset.simpleUi=String(['aom','gas'].includes(scope.id));
+    card.dataset.simpleUi=String(['aom','gas','uti-cystitis','uti-pyelo'].includes(scope.id));
     card.dataset.ageConfirmed = String(ctx.ageConfirmed);
     card.dataset.ageMonths = String(currentAgeBand()?.months ?? '');
     card.dataset.productRule = JSON.stringify(option.productRule || null);
@@ -857,12 +872,12 @@
       link.rel = 'noopener noreferrer';
       workingBody.append(link);
     }
-    if (option.productRule?.ratio) (['aom','gas'].includes(scope.id)?workingBody:card).append(make('p','abx-option-note',`Raporti i këtij formulimi: ${option.productRule.ratio}:1 amoxicillin/clavulanate.`));
-    if (option.dose?.type === 'range') (['aom','gas'].includes(scope.id)?workingBody:card).append(make('p', 'abx-option-note', 'Ky është interval doze. Zgjidh një dozë të vetme brenda tij para përshkrimit.'));
+    if (option.productRule?.ratio) (['aom','gas','uti-cystitis','uti-pyelo'].includes(scope.id)?workingBody:card).append(make('p','abx-option-note',`Raporti i këtij formulimi: ${option.productRule.ratio}:1 amoxicillin/clavulanate.`));
+    if (option.dose?.type === 'range') (['aom','gas','uti-cystitis','uti-pyelo'].includes(scope.id)?workingBody:card).append(make('p', 'abx-option-note', 'Ky është interval doze. Zgjidh një dozë të vetme brenda tij para përshkrimit.'));
     if (['single','range'].includes(option.dose?.type) && !Number.isFinite(option.dose.maxDose)) card.append(make('p', 'abx-missing-limit', 'Maksimumi nuk jepet nga ky burim. Rezultati është llogaritje sipas kg, pa kufizim automatik të dozës.'));
-    if (option.conditional) (['aom','gas'].includes(scope.id)?workingBody:card).append(make('p', 'abx-option-note', `Kur përdoret: ${option.conditional}`));
-    if (option.note) (['aom','gas'].includes(scope.id)?workingBody:card).append(make('p', 'abx-option-note', option.note));
-    if (option.stewardship) (['aom','gas'].includes(scope.id)?workingBody:card).append(make('p', 'abx-option-note', `Stewardship: ${option.stewardship}`));
+    if (option.conditional) (['aom','gas','uti-cystitis','uti-pyelo'].includes(scope.id)?workingBody:card).append(make('p', 'abx-option-note', `Kur përdoret: ${option.conditional}`));
+    if (option.note) (['aom','gas','uti-cystitis','uti-pyelo'].includes(scope.id)?workingBody:card).append(make('p', 'abx-option-note', option.note));
+    if (option.stewardship) (['aom','gas','uti-cystitis','uti-pyelo'].includes(scope.id)?workingBody:card).append(make('p', 'abx-option-note', `Stewardship: ${option.stewardship}`));
     card.append(working);
     return card;
   }
@@ -938,9 +953,11 @@
     const indication = currentIndication();
     document.body?.classList.toggle('abx-simple-aom',indication.id==='aom');
     document.body?.classList.toggle('abx-simple-gas',indication.id==='gas');
+    document.body?.classList.toggle('abx-simple-uti',indication.id.startsWith('uti-'));
+    const utiLimit=indication.id.startsWith('uti-')?(ctx.utiUrgent?{blocks:true,tone:'warn',text:'STOP — referim urgjent për sepsë/obstruksion ose nevojë për trajtim parenteral.'}:ctx.pregnant&&currentAgeBand()?.months<144?{blocks:true,tone:'warn',text:'Shtatzëni nën 12 vjeç: vlerësim specialistik, pa skemë automatike.'}:indication.id==='uti-cystitis'&&ctx.utiUpper?{blocks:true,tone:'warn',text:'Kjo nuk është skemë për UTI febrile/prostatit. Zgjidh UTI febrile / pielonefrit ose kërko vlerësim për prostatit.'}:indication.id==='uti-cystitis'&&currentAgeBand()?.months>=192&&!ctx.pregnant&&!ctx.utiSex?{blocks:true,tone:'info',text:'Zgjidh profilin femër/mashkull; kohëzgjatja ndryshon sipas profilit.'}:null):null;
     const aomLimit=indication.id==='aom'?protocols?.aomDecision(protocolContext()):null;
     const gasLimit=indication.id==='gas'&&ctx.gasUrgent?{blocks:true,tone:'warn',text:'STOP — dyshim për komplikim supurativ ose infeksion sistemik të rëndë: referim urgjent. Mos përdor recetë rutinë ambulatore.'}:null;
-    const limit = gasLimit || (ctx.aomRisk==='urgent'&&indication.id==='aom' ? aomLimit : protocols && !ctx.ageConfirmed ? {blocks:true,tone:'info',text:indication.contextMessage} : eligibility(indication)||aomLimit);
+    const limit = utiLimit || gasLimit || (ctx.aomRisk==='urgent'&&indication.id==='aom' ? aomLimit : protocols && !ctx.ageConfirmed ? {blocks:true,tone:'info',text:indication.contextMessage} : eligibility(indication)||aomLimit);
     el.list.dataset.gasBlocked=String(indication.id==='gas'&&Boolean(limit?.blocks));
     el.list.dataset.gasConfirmed=String(indication.id==='gas'&&ctx.gasConfirmed);
     el.list.dataset.aomBlocked=String(indication.id==='aom'&&Boolean(limit?.blocks));
@@ -960,14 +977,14 @@
     const source = sourceById(indication.source);
     el.activeSource.textContent = source ? source.short : 'Burim';
     // The chip carries the short name; the full one heads the regimens it opened.
-    el.resultsTitle.textContent = ['aom','gas'].includes(indication.id)?'3 · Doza dhe receta':indication.label;
+    el.resultsTitle.textContent = ['aom','gas','uti-cystitis','uti-pyelo'].includes(indication.id)?'3 · Doza dhe receta':indication.label;
     el.eligibility.hidden = !limit;
     el.eligibility.textContent = limit ? limit.text : '';
     el.eligibility.dataset.tone = limit ? limit.tone : 'info';
     el.list.replaceChildren();
     if (limit?.blocks) return;
 
-    if (indication.warning && !['aom','gas'].includes(indication.id)) {
+    if (indication.warning && !['aom','gas','uti-cystitis','uti-pyelo'].includes(indication.id)) {
       const warning = make('div', 'abx-eligibility', indication.warning);
       warning.dataset.kind = indication.warning.startsWith('HARD STOP') ? 'hard-stop' : 'clinical-warning';
       el.list.append(warning);
@@ -981,7 +998,7 @@
       return;
     }
 
-    if(indication.contextMessage && !['aom','gas'].includes(indication.id))el.list.append(make('p','abx-eligibility',indication.contextMessage));
+    if(indication.contextMessage && !['aom','gas','uti-cystitis','uti-pyelo'].includes(indication.id))el.list.append(make('p','abx-eligibility',indication.contextMessage));
     const options = visibleOptions(indication);
     if (!options.length) {
       if(indication.id==='aom')el.list.dataset.aomBlocked='true';
@@ -1028,6 +1045,10 @@
   }
 
   function bind() {
+    $('utiSexSelect')?.addEventListener('change',e=>{ctx.utiSex=e.target.value;ctx.utiAlternative=false;ctx.cultureSusceptible=false;render();});
+    $('utiEgfrInput')?.addEventListener('input',e=>{ctx.utiEgfr=e.target.value;render();});
+    $('utiCephSelect')?.addEventListener('change',e=>{ctx.utiCephTimes=Number(e.target.value);render();});
+    for(const [id,key] of [['utiFluoroInput','utiFluoro'],['utiAtTermInput','utiAtTerm'],['utiAlternativeInput','utiAlternative'],['utiUpperInput','utiUpper'],['utiUrgentInput','utiUrgent']])$(id)?.addEventListener('change',e=>{ctx[key]=e.target.checked;render();});
     window.addEventListener('drx:ospen-request',()=>{if(ctx.indication==='gas'){ctx.gasPenicillinSource='ospen';render();}});
     $('gasSourceBack')?.addEventListener('click',()=>{ctx.gasPenicillinSource='nice';render();});
     $('gasScheduleSelect')?.addEventListener('change',event=>{ctx.gasSchedule=event.target.value;render();});
@@ -1042,6 +1063,7 @@
       ctx.ageConfirmed = Boolean(ctx.age);
       ctx.cultureSusceptible=false;
       ctx.gasConfirmed=false;
+      ctx.utiFluoro=false;ctx.utiEgfr='';ctx.utiAlternative=false;ctx.utiAtTerm=false;
       ctx.aomFailure=false;
       render();
     });
@@ -1049,11 +1071,12 @@
       ctx.weight = el.weight.value;
       ctx.cultureSusceptible=false;
       ctx.gasConfirmed=false;
+      ctx.utiFluoro=false;ctx.utiEgfr='';ctx.utiAlternative=false;ctx.utiAtTerm=false;
       ctx.aomFailure=false;
       applyAgeFromWeight(true);
       render();
     });
-    $('pregnancyInput')?.addEventListener('change',event=>{ctx.pregnant=event.target.checked;ctx.cultureSusceptible=false;render();});
+    $('pregnancyInput')?.addEventListener('change',event=>{ctx.pregnant=event.target.checked;ctx.utiFluoro=false;ctx.utiAlternative=false;ctx.cultureSusceptible=false;render();});
     $('cultureSusceptibleInput')?.addEventListener('change',event=>{ctx.cultureSusceptible=event.target.checked;render();});
     el.atypical.addEventListener('change', () => {
       ctx.atypical = el.atypical.checked;

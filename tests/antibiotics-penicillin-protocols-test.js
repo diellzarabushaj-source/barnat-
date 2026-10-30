@@ -69,9 +69,9 @@ assert.match(P.gate(pyelo,context(216,70)),/urinokulturën/);
 assert.equal(P.gate(pyelo,context(216,70,{cultureSusceptible:true})), '');
 assert.equal(option('uti-pyelo',180,'amoxclav-pyelo',50).requiresCulture,true);
 assert.equal(option('uti-pyelo',192,'amoxclav-pyelo',50).source,'nice-ng111');
-assert.equal(resolve('uti-cystitis',216,70).options.length,0,'No adult empirical penicillin invented for cystitis');
+assert.equal(resolve('uti-cystitis',216,70).options.some(o=>P.isPenicillin(o.drug)),false);
 assert.equal(option('uti-cystitis',180,'amox-cystitis-nice',50,{pregnant:true}).duration.text,'7 ditë');
-assert.equal(resolve('uti-pyelo',216,70,{pregnant:true}).options.length,0,'Do not reuse nonpregnant pyelo table in pregnancy');
+assert.deepEqual(resolve('uti-pyelo',216,70,{pregnant:true}).options.map(o=>o.drug),['Cephalexin']);
 for(const id of ['aom','gas','pneumonia','sinusitis','cellulitis','impetigo']){
   const pregnancy=resolve(id,216,70,{pregnant:true});
   assert.equal(pregnancy.options.some(o=>/Clarithromycin|Doxycycline/.test(o.drug)),false);

@@ -8,16 +8,16 @@
   <title>DRx | Antibiotikët</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-ospen-20261030">
+  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-uti-20261030">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script src="/phase9-personal-entities-client.js?v=drx-phase9-personal-v4" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-  <script src="/antibiotiket-shell.js?v=antibiotiket-shell-ospen-20261030" defer></script>
+  <script src="/antibiotiket-shell.js?v=antibiotiket-shell-uti-20261030" defer></script>
   <script src="/antibiotiket-data.js?v=antibiotiket-audit-20261028" defer></script>
-  <script src="/antibiotiket-penicillin-protocols.js?v=20261030-ospen" defer></script>
+  <script src="/antibiotiket-penicillin-protocols.js?v=20261030-uti" defer></script>
   <script src="/antibiotiket-ospen.js?v=20261030-ospen" defer></script>
   <script src="/pediatric-weight-age-core.js?v=monthly-suggestions-20261029" defer></script>
-  <script src="/antibiotiket.js?v=antibiotiket-ospen-20261030" defer></script>
+  <script src="/antibiotiket.js?v=antibiotiket-uti-20261030" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#antibioticsContent">Kalo te Antibiotikët</a>
@@ -143,7 +143,7 @@
               <label class="abx-toggle"><input id="pregnancyInput" type="checkbox"><span>Shtatzëni</span></label>
             </div>
             <div class="abx-refine-item abx-refine-toggle" id="cultureSusceptibleWrap" hidden>
-              <label class="abx-toggle"><input id="cultureSusceptibleInput" type="checkbox"><span>Urinokultura konfirmon ndjeshmërinë ndaj penicilinës së zgjedhur</span></label>
+              <label class="abx-toggle"><input id="cultureSusceptibleInput" type="checkbox"><span>Urinokultura konfirmon ndjeshmërinë ndaj antibiotikut të zgjedhur</span></label>
             </div>
             <div class="abx-refine-item" id="utiTypeWrap" hidden>
               <p class="abx-label" id="utiLabel">Tipi i UTI</p>
@@ -194,6 +194,20 @@
             <p>Stridor, dispne, jargëzim, pamundësi për të gëlltitur lëngje, trizëm ose zë i mbytur kërkojnë vlerësim urgjent. Abscesi peritonsilar/retrofaringeal, dyshimi për Lemierre ose sepsë kërkon referim spitalor. Rivlerëso në përkeqësim ose mungesë përmirësimi.</p>
             <p>RADT negativ te fëmija simptomatik ≥3 vjeç: konfirmo me kulturë sipas CDC. Dyshim për mononukleozë: rivlerëso diagnozën dhe shmang përshkrimin rutinë të amoxicillin. Kontrollo funksionin renal, kundërindikacionet dhe ndërveprimet para recetës.</p>
           </details>
+        </section>
+
+        <section id="utiClinicalPanel" class="abx-card abx-aom" aria-labelledby="utiClinicalTitle" hidden>
+          <h2 id="utiClinicalTitle">2 · Zgjedhja e antibiotikut</h2>
+          <p class="abx-aom-advice" id="utiAdvice">Skema orale · NICE NG109 / NG111 · produktet AKKPM.</p>
+          <label id="utiSexWrap" class="abx-schedule-field"><span class="abx-label">Pacienti ≥16 vjeç</span><select id="utiSexSelect" aria-label="Profili për UTI"><option value="">Zgjidh profilin…</option><option value="female">Femër, jo shtatzënë</option><option value="male">Mashkull</option></select></label>
+          <label id="utiEgfrWrap" class="abx-schedule-field"><span class="abx-label">eGFR · për nitrofurantoin</span><input id="utiEgfrInput" type="number" min="0" max="250" step="any" inputmode="decimal" placeholder="mL/min/1.73 m²" aria-label="eGFR për nitrofurantoin"></label>
+          <label id="utiAtTermWrap" class="abx-toggle"><input id="utiAtTermInput" type="checkbox"><span>Shtatzëni në term / afër lindjes</span></label>
+          <label id="utiCephWrap" class="abx-schedule-field"><span class="abx-label">Cefalexin · skema standarde ≥12 vjeç</span><select id="utiCephSelect" aria-label="Marrjet e cefalexin"><option value="2">2 herë/ditë</option><option value="3">3 herë/ditë</option></select></label>
+          <label class="abx-toggle"><input id="utiAlternativeInput" type="checkbox"><span>Zgjedhjet e para të papërshtatshme / dështim i rivlerësuar ≥48 orë</span></label>
+          <label id="utiFluoroWrap" class="abx-toggle"><input id="utiFluoroInput" type="checkbox"><span>Për ciprofloxacin: alternativat e zakonshme të papërshtatshme; rreziqet e vlerësuara</span></label>
+          <label id="utiUpperWrap" class="abx-toggle"><input id="utiUpperInput" type="checkbox"><span>Ethe / dhimbje lumbare / dyshim për prostatit</span></label>
+          <label class="abx-toggle"><input id="utiUrgentInput" type="checkbox"><span>Dyshim për sepsë, obstruksion ose pamundësi për trajtim oral</span></label>
+          <details><summary>Më shumë · kultura dhe siguria</summary><p>Dozat janë standarde orale; vlerëso funksionin renal, alergjinë dhe ndërveprimet. Urinokulturë para antibiotikut te meshkujt, shtatzënia, fëmijët dhe pielonefriti kur është e mundur; mos vono trajtimin urgjent. Amoxicillin dhe co-amoxiclav përdoren këtu vetëm me ndjeshmëri të konfirmuar.</p><p>Nitrofurantoin nuk trajton pielonefritin ose prostatitin. eGFR nën 45 kërkon vendim individual; shmange në term dhe vlerëso G6PD, efektet pulmonare/hepatike. Fosfomycin 3 g është një dozë e vetme, zgjedhje e dytë te femrat jo shtatzëna ≥16 vjeç. Trimethoprim i vetëm nuk zëvendësohet me TMP/SMX.</p><p>Infeksioni i rëndë, të vjellat me pamundësi marrjeje orale ose dyshimi për obstruksion kërkojnë referim. Nën 3 muaj: pediatri urgjente. Rivlerëso nëse nuk ka përmirësim brenda 48 orësh. Shtatzënia me pielonefrit kërkon vlerësim specialistik.</p></details>
         </section>
 
         <section id="recommendations" class="abx-results" aria-labelledby="resultsTitle">

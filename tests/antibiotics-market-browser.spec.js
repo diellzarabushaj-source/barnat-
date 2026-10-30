@@ -15,6 +15,12 @@ const catalog=buildCatalog([...rows,ospen1,ospen15,
   row('clav4-tab','Amoxicillin; Clavulanic acid','J01CR02','500 mg+125 mg','Tablet'),
   row('clav7-tab','Amoxicillin; Clavulanic acid','J01CR02','875 mg+125 mg','Tablet'),
   row('fluclox-cap','Flucloxacillin','J01CF05','500 mg','Capsule'),
+  row('nitro-50','Nitrofurantoin','J01XE01','50 mg','Capsule'),
+  row('nitro-100','Nitrofurantoin','J01XE01','100 mg','Tablet'),
+  row('nitro-liquid','Nitrofurantoin Macrocrystal','J01XE01','25 mg/5 ml','Oral suspension'),
+  row('fosfo-3g','Fosfomycin trometamol','J01XX01','3 g','Granules for oral solution',{packaging:'1 sachet'}),
+  row('cefa-1g','Cefalexin','J01DB01','1 g','Film coated tablet'),
+  row('cefa-liquid','Cefalexin','J01DB01','250 mg/5 ml','Powder for oral suspension'),
   row('penv-liquid','Phenoxymethylpenicillin','J01CE02','125 mg/5 ml','Oral suspension'),
   row('penv-iu','Phenoxymethylpenicillin','J01CE02','1 MIU','Tablet'),
   row('erythro-tab','Erythromycin','J01FA01','500 mg','Tablet'),
@@ -602,4 +608,46 @@ test('Adult Ospen supports one and a half tablets within its own routine maximum
   await page.locator('#weightInput').fill('16');
   await expect(page.locator('#gasConfirmedInput')).not.toBeChecked();
   await expect(page.locator('[data-native-ospen=true] .abx-rx-copy')).toHaveCount(0);
+});
+
+for(const width of [320,390,1440])test(`UTI female standard IR nitrofurantoin prescription at ${width}px`,async({page})=>{
+ await page.setViewportSize({width,height:900});await open(page,'uti-cystitis','adult','70');
+ await expect(page.locator('#eligibilityMessage')).toContainText('profilin');
+ await page.locator('#utiSexSelect').selectOption('female');
+ await expect(card(page,'nitro-cystitis-nice')).toContainText('eGFR');
+ await page.locator('#utiEgfrInput').fill('80');const c=card(page,'nitro-cystitis-nice');await choose(c,'capsule','50 mg');
+ await expect(c.locator('.abx-rx-line')).toContainText('1 kapsulë PO 4 herë/ditë × 3 ditë');
+ await expect(c.locator('.abx-rx-quantity')).toContainText('12 kapsula');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.screenshot({path:test.info().outputPath(`uti-${width}.png`),fullPage:true});
+});
+test('UTI male duration, renal/upper infection gates and pregnancy at term',async({page})=>{
+ await open(page,'uti-cystitis','adult','70');await page.locator('#utiSexSelect').selectOption('male');await page.locator('#utiEgfrInput').fill('45');
+ await choose(card(page,'nitro-cystitis-nice'),'capsule','50 mg');await expect(card(page,'nitro-cystitis-nice').locator('.abx-rx-line')).toContainText('× 7 ditë');
+ await page.locator('#utiEgfrInput').fill('44');await expect(card(page,'nitro-cystitis-nice').locator('.abx-rx-copy')).toHaveCount(0);
+ await page.locator('#utiUpperInput').check();await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
+ await page.locator('#utiUpperInput').uncheck();await page.locator('#pregnancyInput').check();await page.locator('#utiEgfrInput').fill('80');await page.locator('#utiAtTermInput').check();
+ await expect(card(page,'nitro-cystitis-nice')).toContainText('Shmang');await page.locator('#utiAlternativeInput').check();await expect(card(page,'cephalexin-cystitis-nice')).toContainText('7 ditë');
+});
+test('UTI pediatric cefalexin age-band liquid and adult pyelo verified halves',async({page})=>{
+ await open(page,'uti-cystitis','4y','16');await page.locator('#utiAlternativeInput').check();let c=card(page,'cephalexin-cystitis-nice');await choose(c,'oral-liquid','250 mg/5 ml');
+ await expect(c.locator('.abx-rx-line')).toContainText('2,5 mL PO 3 herë/ditë × 3 ditë');
+ await page.goto(baseURL+'/antibiotiket.html?indication=uti-pyelo');await page.locator('#ageSelect').selectOption('adult');
+ c=card(page,'cephalexin-pyelo-nice');await choose(c,'tablet','1 g');await c.locator('.abx-split-confirm input').check();
+ await expect(c.locator('.abx-rx-line')).toContainText('½ tablete PO 2 herë/ditë × 7 ditë');
+ await page.locator('#utiCephSelect').selectOption('3');await card(page,'cephalexin-pyelo-nice').locator('.abx-split-confirm input').check();await expect(card(page,'cephalexin-pyelo-nice').locator('.abx-rx-line')).toContainText('3 herë/ditë');
+ await page.locator('#utiUrgentInput').check();await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);await expect(page.locator('#hospitalModule')).toBeHidden();
+});
+test('Fosfomycin single sachet requires second-choice confirmation and is not a male/pregnancy regimen',async({page})=>{
+ await open(page,'uti-cystitis','adult','70');await page.locator('#utiSexSelect').selectOption('female');
+ await expect(card(page,'fosfo-cystitis-nice')).toContainText('Konfirmo');await page.locator('#utiAlternativeInput').check();
+ const c=card(page,'fosfo-cystitis-nice');await choose(c,'oral-granules','3 g');await expect(c.locator('.abx-rx-line')).toContainText('1 qese PO 1 herë/ditë × 1 ditë');
+ await page.locator('#utiSexSelect').selectOption('male');await expect(card(page,'fosfo-cystitis-nice')).toHaveCount(0);
+});
+
+test('Pyelo ciprofloxacin requires its own suitability decision and is excluded in pregnancy',async({page})=>{
+ await open(page,'uti-pyelo','adult','70');await page.locator('#utiAlternativeInput').check();
+ await expect(card(page,'cipro-pyelo-nice')).toContainText('Ciprofloxacin: konfirmo');
+ await page.locator('#utiFluoroInput').check();await expect(card(page,'cipro-pyelo-nice').locator('.abx-market')).toHaveCount(1);
+ await page.locator('#pregnancyInput').check();await expect(card(page,'cipro-pyelo-nice')).toHaveCount(0);
 });
