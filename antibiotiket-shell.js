@@ -82,7 +82,7 @@
     window.DRX_ANTIBIOTIC_MARKET={selection:()=>null};
     await loadStylesheet('/antibiotiket-market.css?v=20261028d','data-drx-abx-market-css');
     await loadRuntime('/antibiotiket-market-math.js?v=practical-dose-20261029','data-drx-abx-market-math');
-    await loadRuntime('/antibiotiket-market.js?v=practical-dose-20261029','data-drx-abx-market');
+    await loadRuntime('/antibiotiket-market.js?v=simple-aom-20261029','data-drx-abx-market');
     await loadRuntime('/antibiotiket-formulations.js?v=antibiotiket-formulations-20261027', 'data-drx-abx-formulations-runtime');
   }
 
@@ -91,7 +91,7 @@
       loadStylesheet('/antibiotiket-prescription.css?v=practical-dose-20261029', 'data-drx-abx-prescription-css'),
       loadRuntime('/antibiotiket-solids-data.js?v=antibiotiket-phase4-v2', 'data-drx-abx-solids-data'),
     ]);
-    await loadRuntime('/antibiotiket-prescription.js?v=aom-v2-20261029', 'data-drx-abx-prescription-runtime');
+    await loadRuntime('/antibiotiket-prescription.js?v=simple-aom-20261029', 'data-drx-abx-prescription-runtime');
   }
 
   async function loadAntibioticHospital() {

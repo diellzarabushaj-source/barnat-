@@ -35,7 +35,6 @@ async function open(page,indication,age='5y',weight='18'){
   await page.goto(baseURL+'/antibiotiket.html?indication='+indication);
   if(weight)await page.locator('#weightInput').fill(weight);
   if(age)await page.locator('#ageSelect').selectOption(age);
-  if(indication==='aom')await page.locator('input[name="abx-aom-plan"][value="immediate"]').check();
 }
 async function choose(c,form,strength){
   await expect(c.locator('.abx-market select').first()).toBeEnabled();
@@ -322,14 +321,12 @@ test('A ranged dose adapts to a whole capsule immediately on product selection',
   await expect(c.locator('.abx-rx-line')).toContainText('1 kapsulë PO');
   await expect(c.locator('.abx-rx-copy')).toBeEnabled();
 });
-test('AOM plan is explicit, no antibiotic hides oral and hospital prescriptions',async({page})=>{
-  await page.goto(baseURL+'/antibiotiket.html?indication=aom');
-  await page.locator('#ageSelect').selectOption('5y');
-  await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
-  await page.locator('input[name="abx-aom-plan"][value="none"]').check();
-  await expect(page.locator('#eligibilityMessage')).toContainText('Pa antibiotik tani');
-  await expect(page.locator('#recommendationList .abx-rx-copy')).toHaveCount(0);
-  await expect(page.locator('#hospitalModule')).toBeHidden();
+test('AOM antibiotic-only workspace opens directly after real age selection',async({page})=>{
+  await open(page,'aom');
+  await expect(page.locator('#aomPlanChoice')).toHaveCount(0);
+  await expect(page.locator('input[name="abx-aom-plan"]')).toHaveCount(0);
+  await expect(card(page,'amox-aom')).toBeVisible();
+  await expect(page.locator('#aomAdvice')).toContainText('Kur antibiotiku indikohet');
 });
 test('AOM second-line treatment requires reassessment and does not reuse an allergy first choice',async({page})=>{
   await open(page,'aom','5y','20');
@@ -338,7 +335,7 @@ test('AOM second-line treatment requires reassessment and does not reuse an alle
   await page.locator('#aomFailureInput').check();
   await expect(card(page,'amox-aom')).toHaveCount(0);
   await expect(card(page,'amoxclav-aom').locator('.abx-market')).toHaveCount(1);
-  await page.locator('input[name="abx-allergy"][value="a2"]').check({force:true});
+  await page.locator('input[name="abx-allergy"][value="a2"]').check();
   await expect(page.locator('#recommendationList')).toContainText('konsulto mikrobiologun');
   await expect(page.locator('#recommendationList .abx-rx-copy')).toHaveCount(0);
   await expect(page.locator('#hospitalModule')).toBeHidden();
@@ -355,20 +352,18 @@ test('AOM urgent complications remove an existing prescription and hospital dosi
 test('High risk selects immediate assessment and prevents a delayed prescription',async({page})=>{
   await open(page,'aom','5y','20');
   await page.locator('#aomRiskSelect').selectOption('high');
-  await expect(page.locator('input[name="abx-aom-plan"][value="immediate"]')).toBeChecked();
-  await expect(page.locator('input[name="abx-aom-plan"][value="backup"]')).toBeDisabled();
+  await expect(page.locator('#aomAdvice')).toContainText('Rrezik i lartë');
   await expect(card(page,'amox-aom')).toBeVisible();
 });
-test('Back-up instructions are visible and included first in copied prescription',async({page})=>{
-  await page.addInitScript(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.copiedPrescription=text;}}}));
-  await open(page,'aom');
-  await page.locator('input[name="abx-aom-plan"][value="backup"]').check();
-  const c=card(page,'amox-aom');await choose(c,'oral-liquid','250 mg/5 ml');
-  await expect(c.locator('.abx-rx-preview')).toContainText('RECETË REZERVË');
-  await expect(c.locator('.abx-rx-preview')).toContainText('brenda 3 ditësh');
-  await c.locator('.abx-rx-copy').click();
-  await expect.poll(()=>page.evaluate(()=>window.copiedPrescription)).toMatch(/^RECETË REZERVË/);
-  await expect(page.locator('#hospitalModule')).toBeHidden();
+test('AOM secondary details stay folded while the dose and prescription stay visible',async({page})=>{
+  await open(page,'aom');const c=card(page,'amox-aom');
+  await choose(c,'oral-liquid','250 mg/5 ml');
+  await expect(c.locator('.abx-market-limits')).not.toHaveAttribute('open','');
+  await expect(c.locator('.abx-rx-more')).not.toHaveAttribute('open','');
+  await expect(c.locator('.abx-rx-line')).toBeVisible();
+  await expect(c.locator('.abx-rx-copy')).toBeEnabled();
+  await c.locator('.abx-market-limits>summary').click();
+  await expect(c.locator('.abx-market-maximum')).toBeVisible();
 });
 test('Adult AOM 500mg with 1g tablet displays half in the dose and final recipe',async({page})=>{
   await open(page,'aom','adult','70');const c=card(page,'amox-aom');
@@ -381,7 +376,7 @@ test('Adult AOM 500mg with 1g tablet displays half in the dose and final recipe'
 });
 test('AOM adolescent allergy uses published fixed-mg range without requiring weight',async({page})=>{
   await open(page,'aom','12y','');
-  await page.locator('input[name="abx-allergy"][value="a2"]').check({force:true});
+  await page.locator('input[name="abx-allergy"][value="a2"]').check();
   const c=card(page,'clarithro-aom-nice');await choose(c,'tablet','500 mg');
   await expect(c.locator('.abx-dose-selected')).toHaveText('500 mg');
   await expect(c.locator('.abx-dose-window')).toContainText('250 mg');

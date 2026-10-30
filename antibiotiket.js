@@ -46,7 +46,7 @@
     cephLowRiskConfirmed:false,
     pregnant:false,
     cultureSusceptible:false,
-    aomPlan:'',
+    aomPlan:'immediate',
     aomRisk:'routine',
     aomFailure:false,
   };
@@ -494,7 +494,7 @@
       'abx-indication',
       guide.indications.map(item => ({ value:item.id, label:item.short || item.label, hint:item.label })),
       ctx.indication,
-      value => { ctx.cultureSusceptible=false;ctx.aomPlan='';ctx.aomRisk='routine';ctx.aomFailure=false;ctx.indication = value; collapsePicker(el.indicationPicker); render(); },
+      value => { ctx.cultureSusceptible=false;ctx.aomPlan='immediate';ctx.aomRisk='routine';ctx.aomFailure=false;ctx.indication = value; collapsePicker(el.indicationPicker); render(); },
       'abx-chip',
     );
   }
@@ -648,16 +648,12 @@
     $('aomRiskSelect').value=ctx.aomRisk;
     const adult=currentAgeBand()?.months>=216;
     $('aomRiskSelect').options[1].textContent=adult?'Otorre — vlerësim individual':'Otorre / fëmijë nën 2 vjeç me AOM bilaterale';
-    const advice=ctx.aomRisk==='urgent'?'Komplikimet kanë përparësi ndaj skemës së antibiotikut: referim urgjent.'
-      :ctx.aomRisk==='high'?'Antibiotik i menjëhershëm pas vlerësimit; në dyshim për komplikim ose sepsë → spital.'
-      :adult?'Analgjezi dhe vendim individual për antibiotikun: NHS Borders. Dozat e të rriturit: NHS Fife.'
-      :ctx.aomRisk==='benefit'?'Mund të ketë më shumë përfitim nga antibiotiku; NICE lejon vendim individual: pa antibiotik, recetë rezervë ose trajtim tani.'
-      :'Në rastet pa rrezik të lartë, NICE sugjeron pa antibiotik ose recetë rezervë. Analgjezi dhe ndjekje për të gjithë.';
+    const advice=ctx.aomRisk==='urgent'?'Dyshim për komplikim → referim urgjent.'
+      :ctx.aomRisk==='high'?'Rrezik i lartë · vlerëso nevojën për spital.'
+      :adult?'Kur antibiotiku indikohet · dozat 18+: NHS Fife.'
+      :ctx.aomRisk==='benefit'?'Kur antibiotiku indikohet · zgjedhja e parë: amoxicillin.'
+      :'Kur antibiotiku indikohet · dozat <18 vjeç: NICE NG91.';
     $('aomAdvice').textContent=advice;
-    buildChoice($('aomPlanChoice'),'abx-aom-plan',[
-      {value:'none',label:'Pa antibiotik'}, {value:'backup',label:'Recetë rezervë'}, {value:'immediate',label:'Antibiotik tani'},
-    ],ctx.aomPlan,value=>{ctx.aomPlan=value;if(value!=='immediate')ctx.aomFailure=false;render();},'abx-segment');
-    $('aomPlanChoice').querySelectorAll('input').forEach(input=>{input.disabled=ctx.aomRisk==='urgent'||(ctx.aomRisk==='high'&&input.value!=='immediate');});
     $('aomFailureInput').checked=ctx.aomFailure;
     $('aomFailureInput').disabled=ctx.aomRisk==='urgent';
   }
@@ -733,6 +729,7 @@
     }
     const card = make('article', `abx-option tier-${option.tier || 'option'}`);
     card.dataset.regimenId = option.id;
+    card.dataset.simpleAom=String(scope.id==='aom');
     card.dataset.ageConfirmed = String(ctx.ageConfirmed);
     card.dataset.ageMonths = String(currentAgeBand()?.months ?? '');
     card.dataset.productRule = JSON.stringify(option.productRule || null);
@@ -825,12 +822,12 @@
       link.rel = 'noopener noreferrer';
       workingBody.append(link);
     }
-    if (option.productRule?.ratio) card.append(make('p','abx-option-note',`Raporti i këtij formulimi: ${option.productRule.ratio}:1 amoxicillin/clavulanate.`));
-    if (option.dose?.type === 'range') card.append(make('p', 'abx-option-note', 'Ky është interval doze. Zgjidh një dozë të vetme brenda tij para përshkrimit.'));
+    if (option.productRule?.ratio) (scope.id==='aom'?workingBody:card).append(make('p','abx-option-note',`Raporti i këtij formulimi: ${option.productRule.ratio}:1 amoxicillin/clavulanate.`));
+    if (option.dose?.type === 'range') (scope.id==='aom'?workingBody:card).append(make('p', 'abx-option-note', 'Ky është interval doze. Zgjidh një dozë të vetme brenda tij para përshkrimit.'));
     if (['single','range'].includes(option.dose?.type) && !Number.isFinite(option.dose.maxDose)) card.append(make('p', 'abx-missing-limit', 'Maksimumi nuk jepet nga ky burim. Rezultati është llogaritje sipas kg, pa kufizim automatik të dozës.'));
-    if (option.conditional) card.append(make('p', 'abx-option-note', `Kur përdoret: ${option.conditional}`));
-    if (option.note) card.append(make('p', 'abx-option-note', option.note));
-    if (option.stewardship) card.append(make('p', 'abx-option-note', `Stewardship: ${option.stewardship}`));
+    if (option.conditional) (scope.id==='aom'?workingBody:card).append(make('p', 'abx-option-note', `Kur përdoret: ${option.conditional}`));
+    if (option.note) (scope.id==='aom'?workingBody:card).append(make('p', 'abx-option-note', option.note));
+    if (option.stewardship) (scope.id==='aom'?workingBody:card).append(make('p', 'abx-option-note', `Stewardship: ${option.stewardship}`));
     card.append(working);
     return card;
   }
@@ -904,6 +901,7 @@
   function render() {
     if(!protocols && document.documentElement?.dataset.penicillinProtocols==='required'){el.list.replaceChildren(make('p','abx-empty','Protokollet nuk u ngarkuan. Rifresko faqen; dozat e vjetra nuk përdoren si zëvendësim.'));return;}
     const indication = currentIndication();
+    document.body?.classList.toggle('abx-simple-aom',indication.id==='aom');
     const aomLimit=indication.id==='aom'?protocols?.aomDecision(protocolContext()):null;
     const limit = ctx.aomRisk==='urgent'&&indication.id==='aom' ? aomLimit : protocols && !ctx.ageConfirmed ? {blocks:true,tone:'info',text:indication.contextMessage} : eligibility(indication)||aomLimit;
     el.list.dataset.aomBlocked=String(indication.id==='aom'&&Boolean(limit?.blocks));
@@ -923,14 +921,14 @@
     const source = sourceById(indication.source);
     el.activeSource.textContent = source ? source.short : 'Burim';
     // The chip carries the short name; the full one heads the regimens it opened.
-    el.resultsTitle.textContent = indication.label;
+    el.resultsTitle.textContent = indication.id==='aom'?'3 · Doza dhe receta':indication.label;
     el.eligibility.hidden = !limit;
     el.eligibility.textContent = limit ? limit.text : '';
     el.eligibility.dataset.tone = limit ? limit.tone : 'info';
     el.list.replaceChildren();
     if (limit?.blocks) return;
 
-    if (indication.warning) {
+    if (indication.warning && indication.id!=='aom') {
       const warning = make('div', 'abx-eligibility', indication.warning);
       warning.dataset.kind = indication.warning.startsWith('HARD STOP') ? 'hard-stop' : 'clinical-warning';
       el.list.append(warning);
@@ -944,7 +942,7 @@
       return;
     }
 
-    if(indication.contextMessage)el.list.append(make('p','abx-eligibility',indication.contextMessage));
+    if(indication.contextMessage && indication.id!=='aom')el.list.append(make('p','abx-eligibility',indication.contextMessage));
     const options = visibleOptions(indication);
     if (!options.length) {
       if(indication.id==='aom')el.list.dataset.aomBlocked='true';
@@ -991,7 +989,7 @@
   }
 
   function bind() {
-    $('aomRiskSelect')?.addEventListener('change',event=>{ctx.aomRisk=event.target.value;ctx.aomPlan=ctx.aomRisk==='high'?'immediate':'';ctx.aomFailure=false;render();});
+    $('aomRiskSelect')?.addEventListener('change',event=>{ctx.aomRisk=event.target.value;ctx.aomPlan='immediate';ctx.aomFailure=false;render();});
     $('aomFailureInput')?.addEventListener('change',event=>{ctx.aomFailure=event.target.checked;if(ctx.aomFailure)ctx.aomPlan='immediate';render();});
     el.age.addEventListener('change', () => {
       ctx.age = el.age.value;

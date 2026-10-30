@@ -612,7 +612,8 @@
     preview.append(make('span', 'abx-rx-dose', `Doza e zgjedhur: ${doseLabel}/dozë. Totali ditor: ${dailyLabel}.`));
     preview.append(make('span', 'abx-rx-quantity', quantity));
     if (caution) preview.append(make('span', 'abx-rx-caution', caution));
-    preview.append(make('span', 'abx-rx-note', 'Sasia është llogaritje matematike, jo zgjedhje automatike e paketimit. Verifiko produktin dhe matshmërinë para nënshkrimit.'));
+    const note=make('span', 'abx-rx-note', 'Sasia është llogaritje matematike, jo zgjedhje automatike e paketimit. Verifiko produktin dhe matshmërinë para nënshkrimit.');
+    if(card.dataset.simpleAom==='true'){const more=make('details','abx-rx-more');more.append(make('summary','','Më shumë · verifikimi'),note);preview.append(more);}else preview.append(note);
 
     return {
       text:`${advice?advice+'\n\n':''}${state.drug}\nD.S.: ${line.replace(`${state.drug} `, '')}.\nDoza e zgjedhur: ${doseLabel}/dozë.\nTotali ditor: ${dailyLabel}.\n${quantity}.`,
@@ -752,7 +753,7 @@
         const selected=make('strong','abx-dose-selected',Number.isFinite(state.doseFinal)?`${fmt(state.doseFinal)} mg`:'Zgjidh dozën');
         selected.setAttribute('aria-live','polite');
         limits.append(minimum,selected,make('span','',`Maks. i skemës\n${fmt(range.max)} mg`));practical.append(limits);
-        if(!varied)practical.append(make('small','','Dozë fikse sipas protokollit; nuk është minimumi/maksimumi universal terapeutik.'));
+        if(!varied)practical.append(make('small','',card.dataset.simpleAom==='true'?'Dozë fikse · sipas skemës.':'Dozë fikse sipas protokollit; nuk është minimumi/maksimumi universal terapeutik.'));
         const picked=window.DRX_ANTIBIOTIC_MARKET?.selection(card,state.drug);
         const math=window.DRX_ANTIBIOTIC_MARKET_MATH;
         if(varied&&picked&&!picked.reason&&picked.form.measure==='whole'&&math){
