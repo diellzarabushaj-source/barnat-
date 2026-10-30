@@ -330,3 +330,20 @@ button,input,select{font:inherit}button{color:inherit}a{color:inherit}[hidden]{d
 
 :is(.abx-simple-aom,.abx-simple-gas) .abx-market .abx-split-confirm{display:flex;grid-column:1/-1;align-items:flex-start;gap:9px;font-size:11px;font-weight:500;line-height:1.5}
 :is(.abx-simple-aom,.abx-simple-gas) .abx-split-confirm input{flex:none;width:18px;height:18px;margin:0;accent-color:var(--ab-accent)}
+
+.abx-ospen{display:grid;gap:14px;margin-top:16px;padding:16px;border:1px solid #deddf2;border-radius:12px;background:#faf9ff;min-width:0}
+.abx-ospen select{width:100%;min-width:0;min-height:44px;border:1px solid var(--ab-line);border-radius:8px;background:#fff;padding:10px;color:var(--ab-ink);font:inherit;font-size:13px}
+.abx-ospen-answer{display:grid;gap:12px;min-width:0}
+.abx-ospen .abx-dose-selected{font-size:14px;overflow-wrap:anywhere}
+.abx-ospen .abx-dose-window{gap:6px;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr)}
+.abx-ospen .abx-dose-window>span{font-size:10px;overflow-wrap:anywhere}
+.abx-ospen .abx-rx-line{overflow-wrap:anywhere}
+.abx-ospen-daily{margin:0;color:#344054;font-size:12px;line-height:1.6}
+.abx-ospen-source{font-size:12px;line-height:1.6;color:var(--ab-muted)}
+.abx-ospen-source summary{min-height:32px;cursor:pointer}
+.abx-ospen-activate{grid-column:1/-1;min-height:44px;padding:10px 14px;border:1px solid #b7afff;border-radius:9px;background:#f3f0ff;color:#4034c4;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.abx-ospen .abx-practical-choices{display:flex;flex-wrap:wrap;gap:7px}
+.abx-ospen .abx-practical-choices button{min-height:44px;padding:8px 10px;border:1px solid #d4cdfb;border-radius:8px;background:#fff;font:inherit;font-size:12px;cursor:pointer}
+.abx-ospen .abx-practical-choices button[aria-pressed=true]{border-color:#6b53f5;background:#eee9ff;color:#4034c4}
+
+.abx-option:has(.abx-ospen-activate)>.abx-rx{display:none}

@@ -159,3 +159,11 @@ const erythBid=option('gas',216,'erythro-gas-pregnancy',70,{pregnant:true,gasSch
 assert.deepEqual([erythBid.dose.value,erythBid.dose.maxValue,erythBid.frequency],[500,1000,'2 herë/ditë']);
 assert.match(P.productReason({...args,drug:'Penicillin V',product:{},concentration:{unit:'IU',value:1000000}}),/ekuivalenca e verifikuar/);
 console.log('PASS: NG84 pharyngitis age/schedule boundaries, CDC GAS confirmation and amoxicillin ceilings, macrolide ranges and IU isolation.');
+
+const nativeGas=option('gas',48,'penicillin-gas',16,{gasPenicillinSource:'ospen'});
+assert.equal(nativeGas.nativeOspen,true);
+assert.equal(nativeGas.source,'ospen-smcp-2025');
+assert.equal(nativeGas.duration.text,'10 ditë');
+assert.match(P.gate(nativeGas,context(48,16)),/Konfirmo GAS/);
+assert.match(P.gate(nativeGas,context(48,null,{gasConfirmed:true})),/peshën reale/);
+assert.equal(option('gas',48,'penicillin-gas',16).dose.value,125,'NICE remains the default; no silent IU conversion');

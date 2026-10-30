@@ -4,7 +4,9 @@ const {buildCatalog}=require('../lib/antibiotic-market-catalog');
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const {phase5AuthenticatedSession}=require('./phase5-browser-fixture');
 const ROOT=path.resolve(__dirname,'..');let server,baseURL;
-const catalog=buildCatalog([...rows,
+const ospen1=row('237f3733-de55-486a-9309-a357f87e2daa','Phenoxymethylpenicillin Potassium','J01CE02','1000000 IU','Film coated tablet',{registry_number:2947,trade_name:'OSPEN 1.0 - Filmtabletten',packaging:'Box containing 3 blisters x 10 film coated tablets (30 tablets)'});
+const ospen15=row('069016da-1fa5-432b-87c2-ab6a9b558241','Phenoxymethylpenicillin Potassium','J01CE02','1500000 IU','Film coated tablet',{registry_number:2946,trade_name:'OSPEN 1.5 - Filmtabletten',packaging:'Box containing 3 blisters x 10 film coated tablets (30 tablets)'});
+const catalog=buildCatalog([...rows,ospen1,ospen15,
   row('cephalexin-tablet500','Cephalexin','J01DB01','500 mg','Tablet'),
   row('cephalexin-cap500','Cephalexin','J01DB01','500 mg','Capsule'),
   row('clarithro-tab500','Clarithromycin','J01FA09','500 mg','Tablet'),
@@ -481,7 +483,9 @@ test('Pharyngitis macrolide range is source-bound for adolescents, adults and pr
 });
 test('Penicillin V in IU is never treated as milligrams or a brand-name strength',async({page})=>{
   await open(page,'gas','adult','');const c=card(page,'penicillin-gas');
-  await choose(c,'tablet','1 MIU');
+  await choose(c,'tablet','1000000 IU');
+  await c.locator('.abx-market-product summary').click();
+  await c.locator('.abx-market select').nth(2).selectOption('penv-iu');
   await expect(c.locator('.abx-market-info')).toContainText('IU');
   await expect(c.locator('.abx-market-info')).toContainText('ekuivalenca e verifikuar');
   await expect(c.locator('.abx-rx-copy')).toBeDisabled();
@@ -514,4 +518,88 @@ test('CDC amoxicillin requires actual adult weight and never assumes a maximal d
   await page.locator('#gasAmoxScheduleSelect').selectOption('bid');c=card(page,'amoxicillin-gas');
   await expect(c.locator('.abx-rx-line')).toContainText('9 mL PO 2 herë/ditë × 10 ditë');
   await expect(c.locator('.abx-rx-dose')).toContainText('450 mg/dozë');
+});
+
+async function openOspen(page,age='4y',weight='16'){
+  await open(page,'gas',age,weight);await page.locator('#gasConfirmedInput').check();
+  let c=card(page,'penicillin-gas');await choose(c,'tablet','1000000 IU');
+  await c.getByRole('button',{name:'Përdor skemën Ospen në IU · SmPC'}).click();
+  c=card(page,'penicillin-gas');await expect(c).toHaveAttribute('data-native-ospen','true');return c;
+}
+for(const width of [320,390,1440])test(`Verified Ospen uses its native IU scheme and equal halves for the reported 16kg case at ${width}px`,async({page})=>{
+  await page.setViewportSize({width,height:900});const c=await openOspen(page);
+  await expect(c.locator('.abx-option-source')).toHaveText('SmPC · Ospen');
+  await expect(page.locator('#gasScheduleWrap')).toBeHidden();
+  await expect(c.locator('.abx-dose-window')).toContainText('400 000 IU');
+  await expect(c.locator('.abx-dose-window')).toContainText('800 000 IU');
+  await expect(c.locator('.abx-dose-selected')).toHaveText('500 000 IU');
+  await expect(c.locator('.abx-rx-line')).toContainText('½ tablete PO 2 herë/ditë × 10 ditë');
+  await expect(c.locator('.abx-ospen-daily')).toContainText('1 000 000 IU/ditë');
+  await expect(c.locator('.abx-rx-quantity')).toContainText('10 tableta');
+  await expect(c.locator('.abx-rx-copy')).toBeEnabled();
+  await expect(c.locator('.abx-rx')).toHaveCount(0);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.screenshot({path:test.info().outputPath(`ospen-${width}.png`),fullPage:true});
+});
+test('Ospen never rounds an unavailable four-times-daily tablet dose outside the source range',async({page})=>{
+  const c=await openOspen(page);const frequency=c.getByRole('combobox',{name:'Marrjet në ditë · Ospen'});await frequency.focus();await frequency.selectOption('4');
+  await expect(frequency).toBeFocused();
+  await expect(c.locator('.abx-dose-selected')).toContainText('Pa dozë');
+  await expect(c.locator('.abx-rx-copy')).toHaveCount(0);
+  await c.getByRole('combobox',{name:'Marrjet në ditë · Ospen'}).selectOption('3');
+  await expect(c.locator('.abx-rx-line')).toContainText('½ tablete PO 3 herë/ditë × 10 ditë');
+  await expect(c.locator('.abx-ospen-daily')).toContainText('1 500 000 IU/ditë');
+});
+test('Ospen 1.5 recalculates product halves, while an unrelated IU product stays blocked',async({page})=>{
+  const c=await openOspen(page);await choose(c,'tablet','1500000 IU');
+  await expect(c.locator('.abx-dose-selected')).toHaveText('750 000 IU');
+  await expect(c.locator('.abx-rx-line')).toContainText('OSPEN 1.5');
+  await expect(c.locator('.abx-rx-line')).toContainText('½ tablete PO 2 herë/ditë');
+  await choose(c,'tablet','1000000 IU');
+  await c.locator('.abx-market-product summary').click();
+  await c.locator('.abx-market select').nth(2).selectOption('penv-iu');
+  await expect(c.locator('.abx-market-info')).toContainText('nuk ka skemë Ospen');
+  await expect(c.locator('.abx-rx-copy')).toHaveCount(0);
+});
+test('Ospen explicitly changes source and requires documented GAS, resets on reload, and preserves NICE',async({page})=>{
+  await open(page,'gas','4y','16');let c=card(page,'penicillin-gas');await choose(c,'tablet','1000000 IU');
+  await expect(c.locator('.abx-rx')).toBeHidden();
+  await expect(c.locator('.abx-market-info')).toContainText('skemën Ospen në IU');
+  await c.getByRole('button',{name:'Përdor skemën Ospen në IU · SmPC'}).click();
+  await expect(card(page,'penicillin-gas')).toContainText('Konfirmo GAS');
+  await page.locator('#gasConfirmedInput').check();c=card(page,'penicillin-gas');
+  await expect(c.locator('.abx-rx-copy')).toBeEnabled();
+  await page.locator('#gasSourceBack').click();c=card(page,'penicillin-gas');
+  await expect(c.locator('.abx-option-source')).toHaveText('NICE NG84');
+  await expect(c.locator('.abx-rx')).toBeHidden();
+  await expect(c.locator('.abx-market-info')).toContainText('skemën Ospen në IU');
+  await c.getByRole('button',{name:'Përdor skemën Ospen në IU · SmPC'}).click();
+  await page.reload();await page.locator('#ageSelect').selectOption('4y');
+  await expect(card(page,'penicillin-gas')).not.toHaveAttribute('data-native-ospen','true');
+  await expect(page.locator('#gasConfirmedInput')).not.toBeChecked();
+});
+test('Ospen copy revalidates the current product and patient, and allergy or urgent status clears the recipe',async({page})=>{
+  await page.addInitScript(()=>{window.ospenCopies=[];Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>window.ospenCopies.push(text)}});});
+  let c=await openOspen(page);await c.locator('.abx-rx-copy').click();
+  expect(await page.evaluate(()=>window.ospenCopies[0])).toContain('500 000 IU/dozë');
+  await page.evaluate(()=>{window.oldOspenCopy=document.querySelector('[data-native-ospen=true] .abx-rx-copy');});
+  await page.locator('#gasUrgentInput').check();await page.evaluate(()=>window.oldOspenCopy.click());
+  expect(await page.evaluate(()=>window.ospenCopies.length)).toBe(1);
+  await expect(page.locator('#recommendationList .abx-rx-copy')).toHaveCount(0);
+  await page.locator('#gasUrgentInput').uncheck();
+  await page.locator('input[name="abx-allergy"][value="a2"]').check();
+  await expect(card(page,'penicillin-gas')).toHaveCount(0);
+  await expect(page.locator('[data-native-ospen=true]')).toHaveCount(0);
+});
+
+test('Adult Ospen supports one and a half tablets within its own routine maximum and clears on new weight',async({page})=>{
+  const c=await openOspen(page,'adult','70');
+  await c.getByRole('combobox',{name:'Marrjet në ditë · Ospen'}).selectOption('3');
+  await c.getByRole('button',{name:'1½ tableta · 1 500 000 IU',exact:true}).click();
+  await expect(c.locator('.abx-rx-line')).toContainText('1½ tableta PO 3 herë/ditë × 10 ditë');
+  await expect(c.locator('.abx-ospen-daily')).toContainText('4 500 000 IU/ditë');
+  await expect(c.locator('.abx-rx-quantity')).toContainText('45 tableta');
+  await page.locator('#weightInput').fill('16');
+  await expect(page.locator('#gasConfirmedInput')).not.toBeChecked();
+  await expect(page.locator('[data-native-ospen=true] .abx-rx-copy')).toHaveCount(0);
 });

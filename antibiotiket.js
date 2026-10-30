@@ -49,6 +49,7 @@
     aomPlan:'immediate',
     aomRisk:'routine',
     aomFailure:false,
+    gasPenicillinSource:'nice',
     gasConfirmed:false,
     gasUrgent:false,
     gasSchedule:'qds',
@@ -90,7 +91,7 @@
   }
 
   function protocolContext() {
-    return {ageMonths:currentAgeBand()?.months,ageConfirmed:ctx.ageConfirmed,weightKg:weightState().value,pregnant:ctx.pregnant,cultureSusceptible:ctx.cultureSusceptible,atypical:ctx.atypical,aomPlan:ctx.aomPlan,aomRisk:ctx.aomRisk,aomFailure:ctx.aomFailure,gasConfirmed:ctx.gasConfirmed,gasSchedule:ctx.gasSchedule,gasAmoxSchedule:ctx.gasAmoxSchedule};
+    return {ageMonths:currentAgeBand()?.months,ageConfirmed:ctx.ageConfirmed,weightKg:weightState().value,pregnant:ctx.pregnant,cultureSusceptible:ctx.cultureSusceptible,atypical:ctx.atypical,aomPlan:ctx.aomPlan,aomRisk:ctx.aomRisk,aomFailure:ctx.aomFailure,gasPenicillinSource:ctx.gasPenicillinSource,gasConfirmed:ctx.gasConfirmed,gasSchedule:ctx.gasSchedule,gasAmoxSchedule:ctx.gasAmoxSchedule};
   }
 
   function weightState() {
@@ -498,7 +499,7 @@
       'abx-indication',
       guide.indications.map(item => ({ value:item.id, label:item.short || item.label, hint:item.label })),
       ctx.indication,
-      value => { ctx.cultureSusceptible=false;ctx.aomPlan='immediate';ctx.aomRisk='routine';ctx.aomFailure=false;ctx.gasConfirmed=false;ctx.gasUrgent=false;ctx.gasSchedule='qds';ctx.gasAmoxSchedule='daily';ctx.indication = value; collapsePicker(el.indicationPicker); render(); },
+      value => { ctx.cultureSusceptible=false;ctx.aomPlan='immediate';ctx.aomRisk='routine';ctx.aomFailure=false;ctx.gasPenicillinSource='nice';ctx.gasConfirmed=false;ctx.gasUrgent=false;ctx.gasSchedule='qds';ctx.gasAmoxSchedule='daily';ctx.indication = value; collapsePicker(el.indicationPicker); render(); },
       'abx-chip',
     );
   }
@@ -506,6 +507,7 @@
   function buildAllergySegments() {
     buildChoice(el.allergyChoice, 'abx-allergy', allergyOptions, ctx.allergy, value => {
       ctx.allergy = value;
+      ctx.gasPenicillinSource='nice';
       ctx.gasSchedule='qds';
       ctx.cephLowRiskConfirmed = false;
       collapsePicker(el.allergyPicker);
@@ -668,7 +670,9 @@
     panel.hidden=indication.id!=='gas';if(panel.hidden)return;
     const penicillin=['none','a0','a4'].includes(ctx.allergy);
     const erythro=ctx.pregnant&&['a1','a2','a3'].includes(ctx.allergy)&&currentAgeBand()?.months>=96;
-    $('gasScheduleWrap').hidden=!(penicillin||erythro);
+    const native=ctx.gasPenicillinSource==='ospen'&&penicillin;
+    $('gasSourceBack').hidden=!native;
+    $('gasScheduleWrap').hidden=native||!(penicillin||erythro);
     $('gasScheduleLabel').textContent=erythro?'Skema e erythromycin · shtatzëni':'Skema e Penicillin V';
     $('gasScheduleSelect').value=ctx.gasSchedule;
     $('gasConfirmedInput').checked=ctx.gasConfirmed;
@@ -676,7 +680,7 @@
     $('gasAmoxScheduleSelect').value=ctx.gasAmoxSchedule;
     $('gasUrgentInput').checked=ctx.gasUrgent;
     $('gasAdvice').textContent=ctx.gasUrgent?'Dyshim për komplikim → referim urgjent.'
-      :penicillin?'Kur antibiotiku indikohet · zgjedhja e parë: Penicillin V · NICE NG84.'
+      :native?'Penicillin V në IU · skema e produktit Ospen (SmPC).':penicillin?'Kur antibiotiku indikohet · zgjedhja e parë: Penicillin V · NICE NG84.'
       :erythro?'Alergji në shtatzëni · erythromycin kur indikohet · NICE NG84.'
       :'Alergji ndaj penicilinës · alternativat sipas NICE NG84.';
   }
@@ -735,6 +739,13 @@
     if(block){
       const card=make('article','abx-option');card.dataset.regimenId=option.id;
       card.append(make('h3','',option.drug),make('p','abx-rx-blocked',block));return card;
+    }
+    if(option.nativeOspen){
+      const card=make('article','abx-option tier-first');
+      Object.assign(card.dataset,{regimenId:option.id,nativeOspen:'true',simpleUi:'true',ageConfirmed:String(ctx.ageConfirmed),ageMonths:String(currentAgeBand()?.months??''),protocolVersion:option.protocolVersion});
+      const head=make('div','abx-option-head');head.append(make('h3','',option.drug),make('span','abx-tier','Skema Ospen · IU'));
+      const meta=make('div','abx-option-meta');meta.append(make('span','','PO · skemë në IU'),make('span','abx-duration','10 ditë'),make('span','abx-option-source','SmPC · Ospen'));
+      card.append(head,meta);return card;
     }
     const reviewAbove=option.doseReviewAboveKg??scope.doseReviewAboveKg;
     if(Number.isFinite(reviewAbove)&&basis.weight>reviewAbove){
@@ -1017,6 +1028,8 @@
   }
 
   function bind() {
+    window.addEventListener('drx:ospen-request',()=>{if(ctx.indication==='gas'){ctx.gasPenicillinSource='ospen';render();}});
+    $('gasSourceBack')?.addEventListener('click',()=>{ctx.gasPenicillinSource='nice';render();});
     $('gasScheduleSelect')?.addEventListener('change',event=>{ctx.gasSchedule=event.target.value;render();});
     $('gasAmoxScheduleSelect')?.addEventListener('change',event=>{ctx.gasAmoxSchedule=event.target.value;render();});
     $('gasConfirmedInput')?.addEventListener('change',event=>{ctx.gasConfirmed=event.target.checked;render();});
