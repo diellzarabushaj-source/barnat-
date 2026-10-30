@@ -349,3 +349,11 @@ button,input,select{font:inherit}button{color:inherit}a{color:inherit}[hidden]{d
 .abx-option:has(.abx-ospen-activate)>.abx-rx{display:none}
 
 #utiEgfrInput{min-height:44px;border:1px solid var(--ab-line);border-radius:8px;padding:10px;font:inherit;max-width:100%;box-sizing:border-box}
+
+/* Faringiti: skema kryesore menjëherë; cilësimet vetëm kur kërkohen. */
+#gasClinicalPanel .abx-gas-alarm{background:#fff;border-color:var(--ab-line);font-weight:400}
+#gasClinicalPanel .abx-gas-alarm strong{display:block;font-size:12px;font-weight:600}
+#gasClinicalPanel .abx-gas-alarm small{display:block;color:var(--ab-muted);font-size:11px;line-height:1.5;margin-top:2px}
+#gasClinicalPanel .abx-gas-alarm:has(input:checked){border-color:#e4a6a0;background:#fff5f4;color:#9f2b22}
+#gasClinicalPanel .abx-gas-options summary span{font-weight:400;color:var(--ab-muted);margin-left:6px}
+.abx-gas-options-body{display:grid;gap:12px;padding:10px 0 4px}

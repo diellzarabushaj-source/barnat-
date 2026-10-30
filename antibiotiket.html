@@ -8,7 +8,7 @@
   <title>DRx | Antibiotikët</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-uti-20261030">
+  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-gas-simple-20261030">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script src="/phase9-personal-entities-client.js?v=drx-phase9-personal-v4" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
@@ -17,7 +17,7 @@
   <script src="/antibiotiket-penicillin-protocols.js?v=20261030-uti" defer></script>
   <script src="/antibiotiket-ospen.js?v=20261030-ospen" defer></script>
   <script src="/pediatric-weight-age-core.js?v=monthly-suggestions-20261029" defer></script>
-  <script src="/antibiotiket.js?v=antibiotiket-uti-20261030" defer></script>
+  <script src="/antibiotiket.js?v=antibiotiket-gas-simple-20261030" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#antibioticsContent">Kalo te Antibiotikët</a>
@@ -180,14 +180,18 @@
           <h2 id="gasClinicalTitle">2 · Zgjedhja e antibiotikut</h2>
           <p id="gasAdvice" class="abx-aom-advice">Kur antibiotiku indikohet · zgjedhja e parë: Penicillin V · NICE NG84.</p>
           <button id="gasSourceBack" class="abx-ospen-activate" type="button" hidden>Kthehu te NICE · mg</button>
-          <label id="gasScheduleWrap" class="abx-schedule-field"><span class="abx-label" id="gasScheduleLabel">Skema e Penicillin V</span>
-            <select id="gasScheduleSelect" aria-labelledby="gasScheduleLabel"><option value="qds">4 herë/ditë · çdo 6 orë</option><option value="bid">2 herë/ditë · çdo 12 orë</option></select>
-          </label>
-          <label class="abx-toggle"><input id="gasConfirmedInput" type="checkbox"><span>GAS i konfirmuar · RADT ose kulturë pozitive</span></label>
-          <label id="gasAmoxScheduleWrap" class="abx-schedule-field" hidden><span class="abx-label" id="gasAmoxScheduleLabel">Alternativa me amoxicillin · CDC</span>
-            <select id="gasAmoxScheduleSelect" aria-labelledby="gasAmoxScheduleLabel"><option value="daily">1 herë/ditë · çdo 24 orë</option><option value="bid">2 herë/ditë · çdo 12 orë</option></select>
-          </label>
-          <label class="abx-toggle"><input id="gasUrgentInput" type="checkbox"><span>Dyshim për absces / infeksion sistemik të rëndë</span></label>
+          <label class="abx-toggle abx-gas-alarm"><input id="gasUrgentInput" type="checkbox"><span><strong>Ka shenja alarmi</strong><small>Dyshim për absces ose infeksion të rëndë → referim urgjent.</small></span></label>
+          <details id="gasOptions" class="abx-gas-options"><summary>Alternativa dhe orari <span>opsionale</span></summary>
+            <div class="abx-gas-options-body">
+              <label id="gasScheduleWrap" class="abx-schedule-field"><span class="abx-label" id="gasScheduleLabel">Penicillin V · sa herë në ditë?</span>
+                <select id="gasScheduleSelect" aria-labelledby="gasScheduleLabel"><option value="qds">4 herë/ditë · çdo 6 orë</option><option value="bid">2 herë/ditë · çdo 12 orë</option></select>
+              </label>
+              <label class="abx-toggle"><input id="gasConfirmedInput" type="checkbox"><span>Testi për streptokok pozitiv (RADT / kulturë)</span></label>
+              <label id="gasAmoxScheduleWrap" class="abx-schedule-field" hidden><span class="abx-label" id="gasAmoxScheduleLabel">Amoxicillin · sa herë në ditë?</span>
+                <select id="gasAmoxScheduleSelect" aria-labelledby="gasAmoxScheduleLabel"><option value="daily">1 herë/ditë · çdo 24 orë</option><option value="bid">2 herë/ditë · çdo 12 orë</option></select>
+              </label>
+            </div>
+          </details>
           <details><summary>Më shumë · diagnoza dhe ndjekja</summary>
             <p>Kjo pamje llogarit trajtimin pasi është vendosur indikacioni për antibiotik. NICE përdor FeverPAIN/Centor në vlerësimin klinik; pamja nuk është algoritëm i plotë për indikacionin. GAS është i rrallë nën 3 vjeç. Faringjiti viral nuk trajtohet me antibiotik.</p>
             <p>Penicillin V: 5–10 ditë sipas NICE; 10 ditë mund të rrisin eradikimin mikrobiologjik. Amoxicillin për GAS të konfirmuar: 10 ditë sipas CDC. Mos kombinoni antibiotikët e këtyre kartave.</p>

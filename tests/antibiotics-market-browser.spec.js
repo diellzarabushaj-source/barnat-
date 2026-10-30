@@ -46,6 +46,11 @@ async function open(page,indication,age='5y',weight='18'){
   if(weight)await page.locator('#weightInput').fill(weight);
   if(age)await page.locator('#ageSelect').selectOption(age);
 }
+async function gasControl(page,id){
+  const control=page.locator('#'+id);
+  if(!await control.isVisible())await page.locator('#gasOptions > summary').click();
+  return control;
+}
 async function choose(c,form,strength){
   await expect(c.locator('.abx-market select').first()).toBeEnabled();
   await c.locator('.abx-market select').nth(0).selectOption(form);
@@ -155,12 +160,12 @@ test('Displayed reference range contains each automatically assigned weight',asy
   await expect(page.locator('#ageSelect')).toHaveValue('');
 });
 test('Adult-only product works at 18+ and is blocked at 17',async({page})=>{
-  await open(page,'gas','adult','70');await page.locator('#gasConfirmedInput').check();
+  await open(page,'gas','adult','70');await (await gasControl(page,'gasConfirmedInput')).check();
   let c=card(page,'amoxicillin-gas');
   await choose(c,'tablet','1000 mg');
   await expect(c.locator('.abx-rx-copy')).toBeEnabled();
   await expect(c.locator('.abx-rx-line')).toContainText('1 tabletë PO 1 herë/ditë × 10 ditë');
-  await page.locator('#ageSelect').selectOption('17y');await page.locator('#gasConfirmedInput').check();c=card(page,'amoxicillin-gas');
+  await page.locator('#ageSelect').selectOption('17y');await (await gasControl(page,'gasConfirmedInput')).check();c=card(page,'amoxicillin-gas');
   await expect(c.locator('.abx-market-info')).toContainText('≥18 vjeç');
   await expect(c.locator('.abx-rx-copy')).toBeDisabled();
 });
@@ -172,7 +177,7 @@ test('A fixed adult schedule can be prescribed without inventing a reference wei
   await expect(c.locator('.abx-rx-copy')).toBeEnabled();
 });
 test('600 mg cannot turn into a fractional 500mg capsule or rounded 500mg prescription',async({page})=>{
-  await open(page,'gas','3y','12');await page.locator('#gasConfirmedInput').check();const c=card(page,'amoxicillin-gas');
+  await open(page,'gas','3y','12');await (await gasControl(page,'gasConfirmedInput')).check();const c=card(page,'amoxicillin-gas');
   await choose(c,'capsule','500 mg');
   await expect(c.locator('.abx-market-single')).toContainText('nuk përputhet');
   await expect(c.locator('.abx-rx-copy')).toBeDisabled();
@@ -274,10 +279,10 @@ test('Newborn and orbital red flags suppress outpatient regimens',async({page})=
   await expect(page.locator('#recommendationList')).toContainText('STOP');
 });
 test('Benzathine penicillin retains the 27kg boundary and whole matched syringe',async({page})=>{
-  await open(page,'gas','6y','20');await page.locator('#gasConfirmedInput').check();await page.locator('#hospitalModule>summary').click();
+  await open(page,'gas','6y','20');await (await gasControl(page,'gasConfirmedInput')).check();await page.locator('#hospitalModule>summary').click();
   let c=card(page,'H002');await c.locator('.abx-prep summary').click();await c.locator('.abx-prep-confirm input').check();
   await expect(c.locator('.abx-prep-output')).toContainText('600000 IU · 1 shiringë e plotë');
-  await page.locator('#weightInput').fill('27');await page.locator('#ageSelect').selectOption('6y');await page.locator('#gasConfirmedInput').check();await expect(card(page,'H002')).toHaveCount(0);
+  await page.locator('#weightInput').fill('27');await page.locator('#ageSelect').selectOption('6y');await (await gasControl(page,'gasConfirmedInput')).check();await expect(card(page,'H002')).toHaveCount(0);
   c=card(page,'H003');await c.locator('.abx-prep summary').click();await c.locator('.abx-prep-confirm input').check();
   await expect(c.locator('.abx-prep-output')).toContainText('1200000 IU · 1 shiringë e plotë');
 });
@@ -306,7 +311,7 @@ test('Missing new protocol script fails closed instead of running old high-dose 
 });
 
 test('Equal-half confirmation enables 1½ tablets and resets for another product',async({page})=>{
-  await open(page,'gas','3y','15');await page.locator('#gasConfirmedInput').check();const c=card(page,'amoxicillin-gas');
+  await open(page,'gas','3y','15');await (await gasControl(page,'gasConfirmedInput')).check();const c=card(page,'amoxicillin-gas');
   await choose(c,'tablet','500 mg');
   await expect(c.locator('.abx-rx-copy')).toBeDisabled();
   await expect(c.locator('.abx-dose-selected')).toHaveText('750 mg');
@@ -429,7 +434,7 @@ for(const width of [320,390,1440])test(`NICE pharyngitis: simple workspace and e
   await expect(c.locator('.abx-rx-line')).toContainText('1 tabletë PO 4 herë/ditë × 10 ditë');
   await expect(c.locator('.abx-rx-dose')).toContainText('2000 mg');
   await expect(c.locator('.abx-market-limits')).not.toHaveAttribute('open','');
-  await page.locator('#gasScheduleSelect').selectOption('bid');
+  await (await gasControl(page,'gasScheduleSelect')).selectOption('bid');
   c=card(page,'penicillin-gas');
   await expect(c.locator('.abx-rx-line')).toContainText('2 tableta PO 2 herë/ditë × 10 ditë');
   await expect(c.locator('.abx-rx-dose')).toContainText('2000 mg');
@@ -450,16 +455,16 @@ test('Pharyngitis Penicillin V 250mg with 500mg tablet requires verified equal h
 });
 test('Pharyngitis CDC alternative requires confirmed GAS and switches exact amoxicillin schedules',async({page})=>{
   await open(page,'gas','3y','12');
-  await expect(card(page,'amoxicillin-gas')).toContainText('Konfirmo GAS');
+  await expect(card(page,'amoxicillin-gas')).toHaveCount(0);
   await expect(card(page,'amoxicillin-gas').locator('.abx-market')).toHaveCount(0);
   await expect(page.locator('#hospitalModule')).toBeHidden();
-  await page.locator('#gasConfirmedInput').check();
+  await (await gasControl(page,'gasConfirmedInput')).check();
   let c=card(page,'amoxicillin-gas');await choose(c,'oral-liquid','250 mg/5 ml');
   await expect(c.locator('.abx-rx-line')).toContainText('12 mL PO 1 herë/ditë × 10 ditë');
-  await page.locator('#gasAmoxScheduleSelect').selectOption('bid');c=card(page,'amoxicillin-gas');
+  await (await gasControl(page,'gasAmoxScheduleSelect')).selectOption('bid');c=card(page,'amoxicillin-gas');
   await expect(c.locator('.abx-rx-line')).toContainText('6 mL PO 2 herë/ditë × 10 ditë');
   await expect(c.locator('.abx-rx-dose')).toContainText('600 mg');
-  await page.locator('#gasConfirmedInput').uncheck();
+  await (await gasControl(page,'gasConfirmedInput')).uncheck();
   await expect(card(page,'amoxicillin-gas').locator('.abx-rx-copy')).toHaveCount(0);
   await expect(page.locator('#hospitalModule')).toBeHidden();
 });
@@ -481,7 +486,7 @@ test('Pharyngitis macrolide range is source-bound for adolescents, adults and pr
   await page.locator('#ageSelect').selectOption('adult');
   await page.locator('#pregnancyInput').check();
   await expect(card(page,'clarithro-gas-nice')).toHaveCount(0);
-  await page.locator('#gasScheduleSelect').selectOption('bid');
+  await (await gasControl(page,'gasScheduleSelect')).selectOption('bid');
   c=card(page,'erythro-gas-pregnancy');await choose(c,'tablet','500 mg');
   await expect(c.locator('.abx-dose-window')).toContainText('500 mg');
   await expect(c.locator('.abx-dose-window')).toContainText('1000 mg');
@@ -498,7 +503,7 @@ test('Penicillin V in IU is never treated as milligrams or a brand-name strength
   await expect(c.locator('.abx-market-single')).toHaveCount(0);
 });
 test('Pharyngitis complications suppress existing outpatient and parenteral prescriptions',async({page})=>{
-  await open(page,'gas','adult','70');await page.locator('#gasConfirmedInput').check();
+  await open(page,'gas','adult','70');await (await gasControl(page,'gasConfirmedInput')).check();
   await choose(card(page,'penicillin-gas'),'tablet','500 mg');
   await expect(card(page,'penicillin-gas').locator('.abx-rx-copy')).toBeEnabled();
   await page.locator('#gasUrgentInput').check();
@@ -506,28 +511,28 @@ test('Pharyngitis complications suppress existing outpatient and parenteral pres
   await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
   await expect(page.locator('#hospitalModule')).toBeHidden();
   await page.reload();
-  await expect(page.locator('#gasConfirmedInput')).not.toBeChecked();
+  await expect((await gasControl(page,'gasConfirmedInput'))).not.toBeChecked();
   await expect(page.locator('#gasUrgentInput')).not.toBeChecked();
   await expect(page.locator('#recommendationList .abx-rx-copy')).toHaveCount(0);
 });
 
 test('CDC amoxicillin requires actual adult weight and never assumes a maximal dose at low weight',async({page})=>{
-  await open(page,'gas','adult','');await page.locator('#gasConfirmedInput').check();
+  await open(page,'gas','adult','');await (await gasControl(page,'gasConfirmedInput')).check();
   await expect(card(page,'amoxicillin-gas')).toContainText('peshën reale');
   await expect(card(page,'amoxicillin-gas').locator('.abx-market')).toHaveCount(0);
   await page.locator('#weightInput').fill('18');await page.locator('#ageSelect').selectOption('adult');
-  await expect(page.locator('#gasConfirmedInput')).not.toBeChecked();
-  await page.locator('#gasConfirmedInput').check();
+  await expect((await gasControl(page,'gasConfirmedInput'))).not.toBeChecked();
+  await (await gasControl(page,'gasConfirmedInput')).check();
   let c=card(page,'amoxicillin-gas');await choose(c,'oral-liquid','250 mg/5 ml');
   await expect(c.locator('.abx-rx-line')).toContainText('18 mL PO 1 herë/ditë × 10 ditë');
   await expect(c.locator('.abx-rx-dose')).toContainText('900 mg');
-  await page.locator('#gasAmoxScheduleSelect').selectOption('bid');c=card(page,'amoxicillin-gas');
+  await (await gasControl(page,'gasAmoxScheduleSelect')).selectOption('bid');c=card(page,'amoxicillin-gas');
   await expect(c.locator('.abx-rx-line')).toContainText('9 mL PO 2 herë/ditë × 10 ditë');
   await expect(c.locator('.abx-rx-dose')).toContainText('450 mg/dozë');
 });
 
 async function openOspen(page,age='4y',weight='16'){
-  await open(page,'gas',age,weight);await page.locator('#gasConfirmedInput').check();
+  await open(page,'gas',age,weight);await (await gasControl(page,'gasConfirmedInput')).check();
   let c=card(page,'penicillin-gas');await choose(c,'tablet','1000000 IU');
   await c.getByRole('button',{name:'Përdor skemën Ospen në IU · SmPC'}).click();
   c=card(page,'penicillin-gas');await expect(c).toHaveAttribute('data-native-ospen','true');return c;
@@ -573,7 +578,7 @@ test('Ospen explicitly changes source and requires documented GAS, resets on rel
   await expect(c.locator('.abx-market-info')).toContainText('skemën Ospen në IU');
   await c.getByRole('button',{name:'Përdor skemën Ospen në IU · SmPC'}).click();
   await expect(card(page,'penicillin-gas')).toContainText('Konfirmo GAS');
-  await page.locator('#gasConfirmedInput').check();c=card(page,'penicillin-gas');
+  await (await gasControl(page,'gasConfirmedInput')).check();c=card(page,'penicillin-gas');
   await expect(c.locator('.abx-rx-copy')).toBeEnabled();
   await page.locator('#gasSourceBack').click();c=card(page,'penicillin-gas');
   await expect(c.locator('.abx-option-source')).toHaveText('NICE NG84');
@@ -582,7 +587,7 @@ test('Ospen explicitly changes source and requires documented GAS, resets on rel
   await c.getByRole('button',{name:'Përdor skemën Ospen në IU · SmPC'}).click();
   await page.reload();await page.locator('#ageSelect').selectOption('4y');
   await expect(card(page,'penicillin-gas')).not.toHaveAttribute('data-native-ospen','true');
-  await expect(page.locator('#gasConfirmedInput')).not.toBeChecked();
+  await expect((await gasControl(page,'gasConfirmedInput'))).not.toBeChecked();
 });
 test('Ospen copy revalidates the current product and patient, and allergy or urgent status clears the recipe',async({page})=>{
   await page.addInitScript(()=>{window.ospenCopies=[];Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>window.ospenCopies.push(text)}});});
@@ -606,7 +611,7 @@ test('Adult Ospen supports one and a half tablets within its own routine maximum
   await expect(c.locator('.abx-ospen-daily')).toContainText('4 500 000 IU/ditë');
   await expect(c.locator('.abx-rx-quantity')).toContainText('45 tableta');
   await page.locator('#weightInput').fill('16');
-  await expect(page.locator('#gasConfirmedInput')).not.toBeChecked();
+  await expect((await gasControl(page,'gasConfirmedInput'))).not.toBeChecked();
   await expect(page.locator('[data-native-ospen=true] .abx-rx-copy')).toHaveCount(0);
 });
 
@@ -650,4 +655,26 @@ test('Pyelo ciprofloxacin requires its own suitability decision and is excluded 
  await expect(card(page,'cipro-pyelo-nice')).toContainText('Ciprofloxacin: konfirmo');
  await page.locator('#utiFluoroInput').check();await expect(card(page,'cipro-pyelo-nice').locator('.abx-market')).toHaveCount(1);
  await page.locator('#pregnancyInput').check();await expect(card(page,'cipro-pyelo-nice')).toHaveCount(0);
+});
+
+for(const width of [320,390,1440])test(`Faringiti i thjeshtë: settings closed, prescription ready, alarm still blocks at ${width}px`,async({page},testInfo)=>{
+  await page.setViewportSize({width,height:900});
+  await open(page,'gas','adult','70');
+  await expect(page.locator('#gasOptions')).not.toHaveAttribute('open','');
+  await expect(page.locator('#gasScheduleSelect')).toBeHidden();
+  await expect(page.locator('#gasConfirmedInput')).toBeHidden();
+  await expect(page.locator('#gasUrgentInput')).toBeVisible();
+  await expect(page.locator('#gasUrgentInput')).not.toBeChecked();
+  await expect(card(page,'penicillin-gas')).toBeVisible();
+  await expect(card(page,'amoxicillin-gas')).toHaveCount(0);
+  await page.locator('#gasOptions > summary').click();
+  await page.locator('#gasConfirmedInput').check();
+  await expect(card(page,'amoxicillin-gas')).toBeVisible();
+  await page.locator('#gasOptions > summary').click();
+  await page.locator('#gasUrgentInput').check();
+  await expect(card(page,'penicillin-gas')).toHaveCount(0);
+  await expect(page.locator('#eligibilityMessage')).toContainText('referim urgjent');
+  await page.locator('#gasUrgentInput').uncheck();
+  await expect(card(page,'penicillin-gas')).toBeVisible();
+  await page.screenshot({path:testInfo.outputPath(`gas-simple-${width}.png`),fullPage:true});
 });
