@@ -14,6 +14,7 @@
   function selection(card,drug){return selections.get(card)?.get(drug)||null;}
   function eligible(card,drug,form,variant,product){
     const c=variant?.concentration;
+    if(card.dataset.nativeOspen==='true')return window.DRX_OSPEN?.identify(product,form,c)?'':'Ky produkt nuk ka skemë Ospen në IU të verifikuar. Zgjidh produktin e saktë Ospen 1.0 ose 1.5.';
     if(window.DRX_PENICILLIN_PROTOCOLS){
       const reason=window.DRX_PENICILLIN_PROTOCOLS.productReason({drug,rule:JSON.parse(card.dataset.productRule||'null'),months:Number(card.dataset.ageMonths),confirmed:card.dataset.ageConfirmed==='true',form,concentration:c,product});
       if(reason)return reason;
@@ -69,6 +70,7 @@
       let restoring=true;
       const showDose=picked=>{
         result.replaceChildren();
+        if(card.dataset.nativeOspen==='true'){result.hidden=true;splitLabel.hidden=true;return;}
         result.dataset.ready='false';
         if(!picked||picked.reason){result.hidden=true;if(card.dataset.simpleUi==='true')splitLabel.hidden=true;return;}
         result.hidden=false;
@@ -138,11 +140,17 @@
         }
       };
       const publish=()=>{
+        body.querySelector('.abx-ospen-activate')?.remove();
         const product=variant?.products.find(p=>String(p.id)===productSelect.value);
         splitInput.checked=false;splitLabel.hidden=!(product&&form?.measure==='whole'&&form.unit==='tabletë'&&!form.modified);
         selections.get(card).delete(part.drug);
         if(!product){if(!restoring)remembered.delete(memoryKey);body.append(info);info.textContent='Zgjidh formën dhe fortësinë.';showDose(null);productSummary.textContent='Produktet AKKPM · opsionale';syncAnswer(card);update();return;}
-        const reason=eligible(card,part.drug,form,variant,product);
+        let reason=eligible(card,part.drug,form,variant,product);
+        if(card.dataset.regimenId==='penicillin-gas'&&card.dataset.nativeOspen!=='true'&&window.DRX_OSPEN?.identify(product,form,variant?.concentration)){
+          reason='NICE përdor mg. Për këtë produkt mund të zgjedhësh skemën Ospen në IU.';
+          const button=make('button','abx-ospen-activate','Përdor skemën Ospen në IU · SmPC');button.type='button';
+          button.onclick=()=>window.dispatchEvent(new CustomEvent('drx:ospen-request'));body.append(button);
+        }
         info.textContent=reason||`${product.packaging||product.form} · Nr. ${product.registryNumber}`;
         info.dataset.tone=reason?'blocked':'ready';
         if(reason)body.append(info);else productDetails.append(info);
@@ -161,6 +169,7 @@
     }
     section.append(make('small','','Regjistri tregon produktet e publikuara, jo stokun aktual në barnatore.'));
     card.append(section);
+    if(card.dataset.nativeOspen==='true')update();
     syncAnswer(card);
   }
   function scan(){document.querySelectorAll('.abx-option,.abx-hosp-card').forEach(enhance);}

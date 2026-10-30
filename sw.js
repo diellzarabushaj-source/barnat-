@@ -24,7 +24,7 @@ const MAX_QUERY_RESPONSES = 400;
 const APP_SHELL = [
   '/', '/index.html', '/klasifikimi.html', '/icd.html', '/analizat.html',
   '/dozologjia.html', '/urgjencat.html', '/protokollet.html', '/medical-hub.html', '/recetat.html', '/sistemi.html',
-  '/antibiotiket.html', '/antibiotiket.css', '/antibiotiket.js', '/antibiotiket-data.js', '/antibiotiket-penicillin-protocols.js', '/pediatric-weight-age-core.js', '/antibiotiket-shell.js',
+  '/antibiotiket.html', '/antibiotiket.css', '/antibiotiket.js', '/antibiotiket-data.js', '/antibiotiket-penicillin-protocols.js', '/antibiotiket-ospen.js', '/pediatric-weight-age-core.js', '/antibiotiket-shell.js',
   '/login-v2.html', '/login-v2.css', '/login-v2.js', '/login-v2-canvas.js', '/login.html',
   '/manifest.webmanifest', '/medindex-icon.svg',
   '/brand/drx-horizontal-on-dark.svg', '/brand/drx-mark-on-light.svg', '/fonts/inter-latin-variable-normal.woff2',

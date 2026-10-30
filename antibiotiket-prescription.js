@@ -824,6 +824,7 @@
   }
 
   function enhanceCard(card) {
+    if(card.dataset.nativeOspen==='true')return;
     if (card.dataset.prescriptionEnhanced === '1') return;
     const heading = clean(card.querySelector('.abx-option-head h3')?.textContent || '');
     if (!heading || /Incizion|drenazh/i.test(heading)) return;
