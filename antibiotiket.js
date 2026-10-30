@@ -393,6 +393,9 @@
 
   function visibleOptions(indication) {
     let filtered = indication.options.filter(allergyAllowed);
+    if (indication.id === 'gas' && protocols && !ctx.gasConfirmed) {
+      filtered = filtered.filter(option => option.id !== 'amoxicillin-gas');
+    }
 
     // CDC separates the pediatric Penicillin V regimen from adolescent/adult
     // dosing. The dataset stores the pediatric 250 mg BID/TID row, therefore we
@@ -674,7 +677,7 @@
     const native=ctx.gasPenicillinSource==='ospen'&&penicillin;
     $('gasSourceBack').hidden=!native;
     $('gasScheduleWrap').hidden=native||!(penicillin||erythro);
-    $('gasScheduleLabel').textContent=erythro?'Skema e erythromycin · shtatzëni':'Skema e Penicillin V';
+    $('gasScheduleLabel').textContent=erythro?'Erythromycin · sa herë në ditë?':'Penicillin V · sa herë në ditë?';
     $('gasScheduleSelect').value=ctx.gasSchedule;
     $('gasConfirmedInput').checked=ctx.gasConfirmed;
     $('gasAmoxScheduleWrap').hidden=!(ctx.gasConfirmed&&penicillin);
