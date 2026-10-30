@@ -20,6 +20,7 @@
   "tests/antibiotics-daily-dose-test.js",
   "tests/antibiotics-penicillin-protocols-test.js",
   "tests/antibiotics-ospen-test.js",
+  "tests/antibiotics-uti-test.js",
   "tests/antibiotic-market-test.js",
   "tests/antibiotic-market-math-test.js",
   "tests/antibiotics-page-ui-contract-test.js",

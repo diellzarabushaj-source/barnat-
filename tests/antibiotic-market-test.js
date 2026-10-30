@@ -4,7 +4,7 @@ const {buildCatalog,scopes}=require('../lib/antibiotic-market-catalog');
 const {rows,row,catalog}=require('./antibiotic-market-fixture');
 const get=(c,n)=>c.drugs.find(d=>d.name===n);
 assert.equal(catalog.productCount,9);
-assert.equal(Object.keys(scopes).length,37);
+assert.equal(Object.keys(scopes).length,38);
 assert.equal(get(catalog,'Amoxicillin').forms.length,4,'Oral, powder injection and solid forms stay separate');
 const liquid=get(catalog,'Amoxicillin').forms.find(f=>f.measure==='liquid');
 assert.equal(liquid.variants[0].concentration.value/liquid.variants[0].concentration.perML,50);
@@ -31,3 +31,7 @@ assert.deepEqual(source.drugs.Azithromycin.calculator.options.map(o=>o.rules[0].
 assert.equal(source.drugs.Ampicillin.calculator.options[1].rules[0].maxPerDose,2000);
 for(const o of source.drugs['Amoxicillin + Clavulanic'].calculator.options)for(const r of o.rules||[])if(r.maxKg===40)assert.equal(r.maxKgInclusive,false);
 console.log('PASS: AKKPM identity, component ratios, units, route separation, revision and dose audit fingerprints');
+
+const fosfo=buildCatalog([row("f-3g","Fosfomycin trometamol","J01XX01","3 g","Granules for oral solution",{packaging:"1 sachet"})]);
+assert.equal(get(fosfo,"Fosfomycin").forms[0].unit,"qese");
+assert.equal(get(fosfo,"Fosfomycin").forms[0].variants[0].concentration.value,3000);

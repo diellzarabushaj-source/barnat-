@@ -11,7 +11,7 @@
 
   // Each indication owns its dose, interval, duration and product ratio. Never
   // extend a pediatric coefficient into adults or round it to a tablet strength.
-  const version = '2026-10-30-ospen';
+  const version = '2026-10-30-uti';
   const sources = [
     ['nice-ng91','NICE NG91 · <18','Otitis media akute','https://www.nice.org.uk/guidance/ng91/chapter/Recommendations'],
     ['cdc-aom-diagnosis','CDC · diagnoza AOM','Kriteret otoskopike të AOM te fëmijët','https://www.cdc.gov/antibiotic-use/hcp/clinical-care/pediatric-outpatient.html'],
@@ -147,18 +147,26 @@
         allergyAlternative(5,source);
         break;
       case 'uti-cystitis':
-        // NICE switches UTI age tables at 16, independently of the UI's 18+.
-        source = 'nice-ng109';
-        if (months < 192 || context.pregnant) add(regimen('amox-cystitis-nice','Amoxicillin',fixed(amoxMg(months)),3,context.pregnant ? 7 : 3,source,{tier:'second',requiresCulture:true,conditional:'Vetëm urinokulturë me ndjeshmëri të konfirmuar. Në ≥16 vjeç kjo kartë mbulon vetëm shtatzëninë sipas tabelës përkatëse.'}));
-        else message = 'Për cistit në ≥16 vjeç, penicilina nuk jepet si zgjedhje empirike rutinë nga ky modul. Zgjedhja varet nga gjinia, shtatzënia, funksioni renal dhe urinokultura; përdor udhëzimin NICE NG109.';
-        // Keep other pediatric agents explicitly attributed to their own source.
-        if (months < 192) options.push(...indication.options.filter(o => !penicillin(o.drug)).map(o=>({...o,doseReviewAboveKg:40})));
+      case 'uti-pyelo': {
+        const lower=id==='uti-cystitis', mature=months>=192;
+        source=lower?'nice-ng109':'nice-ng111';
+        const pregnant=context.pregnant;
+        const days=lower?(pregnant||mature&&context.utiSex==='male'?7:3):'7–10 ditë';
+        const nonBeta=['none','a0','a1','a2','a3','a4'];
+        const ceph=regimen(lower?'cephalexin-cystitis-nice':'cephalexin-pyelo-nice','Cephalexin',fixed(months<60?125:months<144?250:500),months<12||months>=144?(context.utiCephTimes===3&&!lower?3:2):3,days,source,{allergy:['none','a0','a1'],tier:lower?'second':'first',requiresUtiAlternative:lower,note:'Skema standarde orale NICE. Infeksioni i rëndë kërkon rivlerësim; nuk rritet automatikisht në skemën e rëndë.'});
+        if(!lower||!mature||pregnant)add(ceph);
+        if(lower){
+          add(regimen('nitro-cystitis-nice','Nitrofurantoin',months<144?{type:'single',value:0.75,unit:'mg/kg/dozë'}:fixed(50),4,days,source,{allergy:nonBeta,requiresRealWeight:months<144,requiresNitroRenal:true,requiresNotAtTerm:true,requiresNoProstate:true,productRule:{release:'immediate'},doseReviewAboveKg:months<144?40:undefined,note:'Vetëm UTI e poshtme. Kjo është skema me çlirim të zakonshëm, jo 100 mg MR dy herë/ditë. Nën 12 vjeç: 750 mikrogramë/kg për marrje.'}));
+          if(months<192||pregnant)add(regimen('amox-cystitis-nice','Amoxicillin',fixed(amoxMg(months)),3,days,source,{tier:'second',requiresCulture:true,requiresUtiAlternative:true}));
+          if(mature&&!pregnant&&context.utiSex==='female')add(regimen('fosfo-cystitis-nice','Fosfomycin',fixed(3000),1,1,source,{tier:'second',allergy:nonBeta,requiresUtiAlternative:true,productRule:{singleSachet:true},note:'3 g një dozë e vetme. Vetëm paciente jo shtatzënë ≥16 vjeç; zgjedhje e dytë kur e para është e papërshtatshme ose pa përmirësim pas ≥48 orësh.'}));
+        }else{
+          if(!pregnant)add(coamox('amoxclav-pyelo',months,'7–10 ditë',source,{requiresCulture:true}));
+          if(mature&&!pregnant)add(regimen('cipro-pyelo-nice','Ciprofloxacin',fixed(500),2,7,source,{allergy:nonBeta,tier:'reserve',requiresUtiFluoro:true,note:'Vetëm kur antibiotikët e tjerë të rekomanduar janë të papërshtatshëm. Kontrollo kufizimet MHRA për fluoroquinolonet, ndërveprimet dhe funksionin renal.'}));
+        }
+        options=options.map(o=>({...o,productRule:{...o.productRule,uti:true}}));
+        message='Skema orale pas vlerësimit klinik. Merr urinokulturë kur indikohet dhe përshtat trajtimin me ndjeshmërinë. Rezistenca lokale nuk supozohet nga aplikacioni.';
         break;
-      case 'uti-pyelo':
-        source = 'nice-ng111';
-        add(coamox('amoxclav-pyelo',months,'7–10 ditë',source,{requiresCulture:true,conditional:'Vetëm nëse urinokultura konfirmon ndjeshmërinë; jo zgjedhje empirike automatike.',requiresNotPregnant:months >= 144}));
-        if (months < 192) options.push(...indication.options.filter(o => !penicillin(o.drug)).map(o=>({...o,doseReviewAboveKg:40})));
-        break;
+      }
       case 'cellulitis':
       case 'impetigo': {
         source = id === 'cellulitis' ? 'nice-ng141' : 'nice-ng153';
@@ -204,6 +212,10 @@
 
   function gate(option, context) {
     if (!context.ageConfirmed) return 'Zgjidh moshën reale të pacientit.';
+    if(option.requiresNitroRenal&&!(Number.isFinite(context.utiEgfr)&&context.utiEgfr>=45))return 'Nitrofurantoin: shkruaj eGFR ≥45 mL/min/1.73 m². Në 30–44 kërkohet vendim individual; nuk gjenerohet kjo skemë standarde.';
+    if(option.requiresNotAtTerm&&context.pregnant&&context.utiAtTerm)return 'Shmang nitrofurantoin në fund të shtatzënisë; zgjidh alternativë të përshtatshme.';
+    if(option.requiresUtiFluoro&&!context.utiFluoro)return 'Ciprofloxacin: konfirmo që antibiotikët e tjerë të rekomanduar janë të papërshtatshëm dhe u vlerësuan rreziqet e fluoroquinoloneve.';
+    if(option.requiresUtiAlternative&&!context.utiAlternative)return 'Konfirmo që zgjedhja e parë është e papërshtatshme ose është rivlerësuar dështimi pas ≥48 orësh.';
     if(option.requiresConfirmedGas&&!context.gasConfirmed)return 'Konfirmo GAS me test të shpejtë pozitiv (RADT) ose kulturë pozitive për alternativën CDC.';
     if(option.requiresAomFailure&&!context.aomFailure)return 'Zgjedhje e dytë: konfirmo rivlerësimin dhe përkeqësimin pas së paku 2–3 ditësh të trajtimit fillestar. Nuk është zëvendësim automatik për amoxicillin.';
     if (option.requiresCulture && !context.cultureSusceptible) return 'Konfirmo urinokulturën dhe ndjeshmërinë para përdorimit të kësaj peniciline.';
@@ -217,6 +229,8 @@
   function productReason({drug,rule,months,confirmed,form,concentration:c,product}) {
     if (!product) return 'Zgjidh produktin.';
     if (product.population === 'Adult only' && !(confirmed && months >= 216)) return 'Ky produkt lejohet vetëm pasi të konfirmohet mosha ≥18 vjeç.';
+    if(rule?.uti&&product.population==='Pediatric only'&&months>=216)return 'Ky produkt në regjistër është vetëm pediatrik. Zgjidh produkt të miratuar për të rritur.';
+    if(rule?.singleSachet&&(form?.measure!=='whole'||form?.unit!=='qese'||c?.unit!=='mg'||c?.value!==3000))return 'Kjo skemë kërkon një qese orale 3 g fosfomycin. Fortësia dhe forma duhet të jenë të qarta.';
     if (drug === 'Penicillin V' && c?.unit === 'IU') return 'Fortësia është në IU, ndërsa skema NICE është në mg. Nevojitet ekuivalenca e verifikuar për këtë produkt; numri në emrin Ospen nuk është dozë në mg.';
     if (drug !== 'Amoxicillin / clavulanate') return '';
     const ratio = Number(String(c?.basis || '').split('|ratio:')[1]?.replace(',','.'));
