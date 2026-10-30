@@ -1052,7 +1052,7 @@
     $('utiEgfrInput')?.addEventListener('input',e=>{ctx.utiEgfr=e.target.value;render();});
     $('utiCephSelect')?.addEventListener('change',e=>{ctx.utiCephTimes=Number(e.target.value);render();});
     for(const [id,key] of [['utiFluoroInput','utiFluoro'],['utiAtTermInput','utiAtTerm'],['utiAlternativeInput','utiAlternative'],['utiUpperInput','utiUpper'],['utiUrgentInput','utiUrgent']])$(id)?.addEventListener('change',e=>{ctx[key]=e.target.checked;render();});
-    window.addEventListener('drx:ospen-request',()=>{if(ctx.indication==='gas'){ctx.gasPenicillinSource='ospen';render();}});
+    window.addEventListener('drx:ospen-request',()=>{if(ctx.indication==='gas'){ctx.gasPenicillinSource='ospen';render();if(!ctx.gasConfirmed){$('gasOptions').open=true;$('gasConfirmedInput').focus();}}});
     $('gasSourceBack')?.addEventListener('click',()=>{ctx.gasPenicillinSource='nice';render();});
     $('gasScheduleSelect')?.addEventListener('change',event=>{ctx.gasSchedule=event.target.value;render();});
     $('gasAmoxScheduleSelect')?.addEventListener('change',event=>{ctx.gasAmoxSchedule=event.target.value;render();});
