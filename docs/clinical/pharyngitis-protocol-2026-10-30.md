@@ -14,7 +14,7 @@ Penicillin V ruan dozat fikse të grupmoshës NICE. Zgjedhja 2 herë/ditë jep d
 
 Clarithromycin ka intervalin NICE 250–500 mg çdo 12 orë nga 12 vjeç e lart, për 5 ditë. Nën 12 vjeç përdoren grupet e peshës së tabelës; mungesa e peshës ose mungesa e një grupi të publikuar mbi 40 kg nuk zëvendësohet me dozë të të rriturit. Në alergji dhe shtatzëni përdoret vetëm alternativa e atribuuar erythromycin, nga 8 vjeç sipas tabelës, 250–500 mg katër herë ose 500–1000 mg dy herë në ditë për 5 ditë.
 
-Amoxicillin mbetet alternativë e veçantë CDC për GAS të konfirmuar me RADT/kulturë pozitive, për 10 ditë. Skemat janë 50 mg/kg një herë (maksimumi 1000 mg/marrje) ose 25 mg/kg dy herë (maksimumi 500 mg/marrje). Në pediatri kërkohet pesha reale edhe kur pritet arritja e tavanit. Skema fikse ekzistuese e të rriturit përfaqëson dozat e kufizuara 1000 mg një herë ose 500 mg dy herë; përmasa atipike kërkojnë individualizim. Konfirmimi nuk rikthehet pas rifreskimit, ndërrimit të diagnozës, moshës ose peshës. Edhe benzathine penicillin IM e lidhur me GAS mbahet e fshehur pa konfirmim.
+Amoxicillin mbetet alternativë e veçantë CDC për GAS të konfirmuar me RADT/kulturë pozitive, për 10 ditë. Skemat janë 50 mg/kg një herë (maksimumi 1000 mg/marrje) ose 25 mg/kg dy herë (maksimumi 500 mg/marrje). Pesha reale kërkohet në çdo moshë, përfshirë të rriturit, edhe kur pritet arritja e tavanit. Kështu te 18 kg llogariten 900 mg një herë ose 450 mg dy herë në ditë, pa e supozuar maksimumin prej 1000/500 mg. Konfirmimi nuk rikthehet pas rifreskimit, ndërrimit të diagnozës, moshës ose peshës. Edhe benzathine penicillin IM e lidhur me GAS mbahet e fshehur pa konfirmim.
 
 ## Produkti dhe kufijtë
 

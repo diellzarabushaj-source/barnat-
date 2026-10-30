@@ -500,3 +500,18 @@ test('Pharyngitis complications suppress existing outpatient and parenteral pres
   await expect(page.locator('#gasUrgentInput')).not.toBeChecked();
   await expect(page.locator('#recommendationList .abx-rx-copy')).toHaveCount(0);
 });
+
+test('CDC amoxicillin requires actual adult weight and never assumes a maximal dose at low weight',async({page})=>{
+  await open(page,'gas','adult','');await page.locator('#gasConfirmedInput').check();
+  await expect(card(page,'amoxicillin-gas')).toContainText('peshën reale');
+  await expect(card(page,'amoxicillin-gas').locator('.abx-market')).toHaveCount(0);
+  await page.locator('#weightInput').fill('18');await page.locator('#ageSelect').selectOption('adult');
+  await expect(page.locator('#gasConfirmedInput')).not.toBeChecked();
+  await page.locator('#gasConfirmedInput').check();
+  let c=card(page,'amoxicillin-gas');await choose(c,'oral-liquid','250 mg/5 ml');
+  await expect(c.locator('.abx-rx-line')).toContainText('18 mL PO 1 herë/ditë × 10 ditë');
+  await expect(c.locator('.abx-rx-dose')).toContainText('900 mg');
+  await page.locator('#gasAmoxScheduleSelect').selectOption('bid');c=card(page,'amoxicillin-gas');
+  await expect(c.locator('.abx-rx-line')).toContainText('9 mL PO 2 herë/ditë × 10 ditë');
+  await expect(c.locator('.abx-rx-dose')).toContainText('450 mg/dozë');
+});

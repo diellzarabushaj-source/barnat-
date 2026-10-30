@@ -117,7 +117,7 @@
         add(regimen('penicillin-gas','Penicillin V',fixed(penvMg(months)*(context.gasSchedule==='bid'?2:1)),context.gasSchedule==='bid'?2:4,'5–10 ditë',source,{note:'5 ditë mund të mjaftojnë për simptomat; 10 ditë rrisin mundësinë e eradikimit mikrobiologjik. Mos trajto faringjitin viral.'}));
         // Retain the separately sourced CDC alternative for confirmed GAS.
         { const bid=context.gasAmoxSchedule==='bid';
-          add(regimen('amoxicillin-gas','Amoxicillin',adult ? fixed(bid?500:1000) : {type:'single',value:bid?25:50,unit:'mg/kg/dozë',maxDose:bid?500:1000},bid?2:1,10,'cdc-gas',{tier:'option',requiresConfirmedGas:true,conditional:'Alternativë CDC për GAS të konfirmuar me RADT/kulturë; skemë e veçantë nga NICE.',requiresRealWeight:!adult}));
+          add(regimen('amoxicillin-gas','Amoxicillin',{type:'single',value:bid?25:50,unit:'mg/kg/dozë',maxDose:bid?500:1000},bid?2:1,10,'cdc-gas',{tier:'option',requiresConfirmedGas:true,conditional:'Alternativë CDC për GAS të konfirmuar me RADT/kulturë; skemë e veçantë nga NICE.',requiresRealWeight:true}));
         }
         allergyAlternative(5,source,250);
         options=options.map(o=>o.drug==='Clarithromycin'&&months>=144

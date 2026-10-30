@@ -61,7 +61,7 @@ assert.equal(option('bite',216,'amoxclav-bite-proph',70).duration.text,'3 ditë'
 assert.equal(option('bite',216,'amoxclav-bite-treat',70).duration.text,'5 ditë');
 assert.equal(option('preseptal',216,'amoxclav-preseptal',70).duration.text,'7 ditë');
 for(const id of ['cellulitis','impetigo'])assert.equal(option(id,216,`fluclox-${id}`,70).dose.value,500);
-assert.equal(option('gas',216,'amoxicillin-gas',70).dose.value,1000);
+assert.equal(option('gas',216,'amoxicillin-gas',70).dose.maxDose,1000);
 assert.equal(option('gas',144,'amoxicillin-gas',40).dose.maxDose,1000);
 assert.equal(option('gas',144,'amoxicillin-gas',40).requiresRealWeight,true);
 const pyelo=option('uti-pyelo',216,'amoxclav-pyelo',70);
@@ -136,7 +136,12 @@ for(const [m,qds,bid] of [[3,62.5,125],[12,125,250],[72,250,500],[144,500,1000],
 }
 assert.match(P.gate(option('gas',216,'amoxicillin-gas',70),context(216,70)),/Konfirmo GAS/);
 assert.equal(P.gate(option('gas',216,'amoxicillin-gas',70),context(216,70,{gasConfirmed:true})),'');
-assert.deepEqual(shape(option('gas',216,'amoxicillin-gas',70,{gasAmoxSchedule:'bid'})),[500,'2 herë/ditë','10 ditë','cdc-gas']);
+const adultGasBid=option('gas',216,'amoxicillin-gas',70,{gasAmoxSchedule:'bid'});
+assert.equal(e.calculateSimple(adultGasBid.dose,70).min,500);
+assert.deepEqual([adultGasBid.frequency,adultGasBid.duration.text,adultGasBid.source],['2 herë/ditë','10 ditë','cdc-gas']);
+assert.equal(e.calculateSimple(adultGasBid.dose,18).min,450);
+assert.equal(e.calculateSimple(option('gas',216,'amoxicillin-gas',18).dose,18).min,900);
+assert.match(P.gate(adultGasBid,context(216,null,{gasConfirmed:true})),/peshën reale/);
 const amoxChildBid=option('gas',36,'amoxicillin-gas',12,{gasAmoxSchedule:'bid'});
 assert.equal(e.calculatedValue(amoxChildBid,12),'300 mg/dozë');
 assert.equal(e.dailyDose(amoxChildBid,12).text,'600 mg/ditë');
