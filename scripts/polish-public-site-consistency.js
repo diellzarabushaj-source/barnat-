@@ -32,13 +32,14 @@ landing = landing.replace(
 );
 landing = landing.replace(
   '<div class="lp-stat__value lp-num">841</div>\n          <div class="lp-stat__label">me dozë për të rritur dhe për fëmijë</div>\n          <div class="lp-stat__note">553 vetëm për të rritur · 55 vetëm pediatrike</div>',
-  '<div class="lp-stat__value lp-num">16</div>\n          <div class="lp-stat__label">kolona klinike në Registry</div>\n          <div class="lp-stat__note">identitet, substancë, dozë, recetë, status dhe më shumë</div>'
+  '<div class="lp-stat__value lp-num">16</div>\n          <div class="lp-stat__label">kolona në regjistrin e barnave</div>\n          <div class="lp-stat__note">identitet, substancë, dozë, recetë, status dhe më shumë</div>'
 );
 landing = landing.replace('gjendja e 12 gushtit 2026', 'gjendja e 17 shtatorit 2026');
 landing = landing.replace(
   'Numrat lexohen nga të dhënat e vetë projektit: fotografia e popullatës së miratuar dhe\n        regjistri i protokolleve. Kur burimi përditësohet, përditësohen edhe këtu.',
-  'Vlerat më sipër i përkasin versionit aktual të publikuar të DRx. Regjistri aktiv dhe\n        struktura e ndërfaqes verifikohen në çdo build para publikimit.'
+  'Shifrat i përkasin versioneve dhe datave të shënuara më sipër.\n        Informacionin e përditësuar e gjen brenda regjistrit.'
 );
+landing = landing.replaceAll('kolona klinike në Registry', 'kolona në regjistrin e barnave');
 
 for (const pathname of [
   'klasifikimi.html',
@@ -55,7 +56,7 @@ for (const pathname of [
 
 if (!landing.includes('4.017 barna')) throw new Error('Landing registry count polish failed.');
 if (!landing.includes('14</div>\n          <div class="lp-stat__label">grupe kryesore ATC')) throw new Error('Landing ATC statistic polish failed.');
-if (!landing.includes('16</div>\n          <div class="lp-stat__label">kolona klinike në Registry')) throw new Error('Landing Registry column statistic polish failed.');
+if (!landing.includes('16</div>\n          <div class="lp-stat__label">kolona në regjistrin e barnave')) throw new Error('Landing Registry column statistic polish failed.');
 if (landing.includes('href="dozologjia.html"') || landing.includes('href="icd.html"')) {
   throw new Error('Landing still contains protected workspace links that bounce back to itself.');
 }
