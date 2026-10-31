@@ -1,25 +1,44 @@
 (() => {
   'use strict';
 
+  function mountLogin(root = document, options = {}) {
+  let active = true;
+  const lifetime = new AbortController();
+  const timers = new Set();
+  const disposers = [];
+  const find = id => root.querySelector('#' + id);
+  const listen = (target, type, handler) => target?.addEventListener(type, handler, { signal:lifetime.signal });
+  const schedule = (handler, delay) => {
+    const timer = window.setTimeout(() => { timers.delete(timer); if (active) handler(); }, delay);
+    timers.add(timer); return timer;
+  };
+  const navigate = (url, method = 'replace') => {
+    if (!active) return;
+    if (options.navigate) options.navigate(url, method);
+    else location[method](url);
+  };
+  const reload = () => { if (active) { if (options.reload) options.reload(); else location.reload(); } };
+  const query = () => new URLSearchParams(options.search ?? location.search);
+
   const RETURN_KEY = 'medindex_return_after_login';
   const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v3';
   const LEGACY_OFFLINE_LEASE_KEYS = ['medindex_offline_lease_v2', 'medindex_offline_lease_v1'];
   const MAX_OFFLINE_LEASE_MS = 8 * 60 * 60 * 1000;
-  const form = document.getElementById('loginForm');
-  const password = document.getElementById('password');
-  const submit = document.getElementById('loginSubmit');
-  const message = document.getElementById('loginMessage');
-  const toggle = document.getElementById('togglePassword');
-  const capsHint = document.getElementById('capsLockHint');
-  const fallback = document.getElementById('passwordFallback');
-  const googleButton = document.getElementById('googleLoginButton');
-  const googleStatus = document.getElementById('googleLoginStatus');
-  const emailForm = document.getElementById('emailLoginForm');
-  const emailInput = document.getElementById('loginEmail');
-  const emailPassword = document.getElementById('loginPassword');
-  const emailSubmit = document.getElementById('emailLoginSubmit');
-  const emailToggle = document.getElementById('toggleLoginPassword');
-  const forgotPassword = document.getElementById('forgotPassword');
+  const form = find('loginForm');
+  const password = find('password');
+  const submit = find('loginSubmit');
+  const message = find('loginMessage');
+  const toggle = find('togglePassword');
+  const capsHint = find('capsLockHint');
+  const fallback = find('passwordFallback');
+  const googleButton = find('googleLoginButton');
+  const googleStatus = find('googleLoginStatus');
+  const emailForm = find('emailLoginForm');
+  const emailInput = find('loginEmail');
+  const emailPassword = find('loginPassword');
+  const emailSubmit = find('emailLoginSubmit');
+  const emailToggle = find('toggleLoginPassword');
+  const forgotPassword = find('forgotPassword');
   let busy = false;
   let redirecting = false;
   let configurationBlocked = false;
@@ -43,7 +62,7 @@
   }
 
   function destination() {
-    const queryReturn = new URLSearchParams(location.search).get('return');
+    const queryReturn = query().get('return');
     const stored = (() => { try { return sessionStorage.getItem(RETURN_KEY); } catch { return ''; } })();
     return safeReturnPath(queryReturn || stored || '/index.html');
   }
@@ -104,7 +123,7 @@
       setMessage('Llogaria u krijua. Po hapet formulari i regjistrimit profesional…', true);
       // The enrollment cookie the server just set is what makes that page
       // reachable, so this redirect carries the proof with it.
-      setTimeout(() => location.assign('/regjistrimi.html'), 900);
+      schedule(() => navigate('/regjistrimi.html', 'assign'), 900);
       return;
     }
     setGoogleStatus('Llogaria pret aprovimin e administratorit.');
@@ -163,9 +182,11 @@
   async function timedFetch(url, options = {}, normalTimeoutMs = 16000, slowTimeoutMs = 42000) {
     const profile = connectionProfile();
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), profile.slow || profile.saveData ? slowTimeoutMs : normalTimeoutMs);
+    const abort = () => controller.abort();
+    lifetime.signal.addEventListener('abort', abort, { once:true });
+    const timeout = schedule(() => controller.abort(), profile.slow || profile.saveData ? slowTimeoutMs : normalTimeoutMs);
     try { return await fetch(url, { ...options, signal:controller.signal }); }
-    finally { clearTimeout(timeout); }
+    finally { clearTimeout(timeout); timers.delete(timeout); lifetime.signal.removeEventListener('abort', abort); }
   }
 
   async function sha256Hex(value) {
@@ -176,6 +197,7 @@
   }
 
   async function completeLogin(payload) {
+    if (!active) return;
     if (!phase5Session(payload)) throw new Error('Serveri nuk krijoi sesionin e ri të sigurt.');
     saveBootstrapLease(payload);
     redirecting = true;
@@ -185,12 +207,12 @@
       : 'U aktivizua hyrja rezervë.');
     if (password) password.value = '';
     try { sessionStorage.removeItem(RETURN_KEY); } catch {}
-    await Promise.race([purgeOnlyStaleRuntimeEntries(), new Promise(resolve => setTimeout(resolve, 1200))]);
-    location.replace(destination());
+    await Promise.race([purgeOnlyStaleRuntimeEntries(), new Promise(resolve => schedule(resolve, 1200))]);
+    navigate(destination());
   }
 
   async function submitCredential(body, provider) {
-    if (busy || configurationBlocked || pendingApproval) return;
+    if (!active || busy || configurationBlocked || pendingApproval) return;
     setBusy(true, provider);
     setMessage(connectionProfile().slow ? 'Lidhja është e dobët; verifikimi mund të zgjasë pak…' : '');
     try {
@@ -202,6 +224,7 @@
         credentials:'same-origin',
       }, 20000, 45000);
       const payload = await response.json().catch(() => ({}));
+      if (!active) throw new DOMException('View closed', 'AbortError');
       if (!response.ok) {
         if (response.status === 503 && payload.code === 'AUTH_NOT_CONFIGURED') {
           blockForConfiguration();
@@ -211,7 +234,7 @@
           showPendingApproval(payload.error, payload);
           return;
         }
-        if (payload.code === 'CSRF_INVALID') location.reload();
+        if (payload.code === 'CSRF_INVALID') reload();
         const retryAfter = Number(response.headers.get('retry-after') || 0);
         const suffix = response.status === 429 && retryAfter ? ` Provo pas rreth ${Math.ceil(retryAfter / 60)} minutash.` : '';
         throw new Error((payload.error || 'Hyrja dështoi.') + suffix);
@@ -236,10 +259,10 @@
     capsHint.hidden = !Boolean(event?.getModifierState?.('CapsLock'));
   }
 
-  ['keydown', 'keyup'].forEach(type => password?.addEventListener(type, updateCapsLock));
-  password?.addEventListener('blur', () => { if (capsHint) capsHint.hidden = true; });
+  ['keydown', 'keyup'].forEach(type => listen(password, type, updateCapsLock));
+  listen(password, 'blur', () => { if (capsHint) capsHint.hidden = true; });
 
-  toggle?.addEventListener('click', () => {
+  listen(toggle, 'click', () => {
     const visible = password.type === 'text';
     password.type = visible ? 'password' : 'text';
     toggle.textContent = visible ? 'Shfaq' : 'Fshih';
@@ -248,7 +271,7 @@
     password.focus();
   });
 
-  form?.addEventListener('submit', event => {
+  listen(form, 'submit', event => {
     event.preventDefault();
     const value = password.value;
     if (value.length < 6) {
@@ -259,7 +282,7 @@
     void submitCredential({ password:value }, 'password');
   });
 
-  emailToggle?.addEventListener('click', () => {
+  listen(emailToggle, 'click', () => {
     const visible = emailPassword.type === 'text';
     emailPassword.type = visible ? 'password' : 'text';
     emailToggle.textContent = visible ? 'Shfaq' : 'Fshih';
@@ -268,7 +291,7 @@
     emailPassword.focus();
   });
 
-  emailForm?.addEventListener('submit', event => {
+  listen(emailForm, 'submit', event => {
     event.preventDefault();
     const email = emailInput.value.trim();
     const value = emailPassword.value;
@@ -287,7 +310,7 @@
 
   // The answer is the same whether or not the address has an account, so it is
   // stated here rather than confirmed by the server.
-  forgotPassword?.addEventListener('click', async () => {
+  listen(forgotPassword, 'click', async () => {
     const email = emailInput.value.trim();
     if (!email.includes('@')) {
       setMessage('Shkruaj emailin, pastaj kliko përsëri.');
@@ -313,7 +336,7 @@
 
   // Registration hands the address over after a signup so it is not retyped.
   {
-    const handoff = new URLSearchParams(location.search).get('email') || '';
+    const handoff = query().get('email') || '';
     if (handoff.includes('@') && emailInput) {
       emailInput.value = handoff;
       emailPassword?.focus();
@@ -326,7 +349,7 @@
       const check = () => {
         if (window.google?.accounts?.id) return resolve(window.google.accounts.id);
         if (Date.now() - started >= timeoutMs) return reject(new Error('Google Sign-In nuk u ngarkua.'));
-        setTimeout(check, 80);
+        schedule(check, 80);
       };
       check();
     });
@@ -336,9 +359,11 @@
     if (googleInitialized || !config.googleConfigured || !config.googleClientId) return;
     try {
       const [identity, nonce] = await Promise.all([waitForGoogle(), sha256Hex(csrfToken)]);
+      if (!active) return;
       identity.initialize({
         client_id:config.googleClientId,
         callback:response => {
+          if (!active) return;
           const credential = String(response?.credential || '');
           if (!credential) return setGoogleStatus('Google nuk ktheu credential-in e hyrjes.', true);
           void submitCredential({ credential }, 'google');
@@ -387,6 +412,7 @@
           });
         });
         observer.observe(googleButton);
+        disposers.push(() => { observer.disconnect(); cancelAnimationFrame(pending); });
       }
 
       googleInitialized = true;
@@ -415,7 +441,7 @@
       }
       return;
     }
-    if (config.passwordFallbackConfigured && new URLSearchParams(location.search).get('fallback') === '1') fallback.open = true;
+    if (config.passwordFallbackConfigured && query().get('fallback') === '1') fallback.open = true;
     void initializeGoogle(config);
   }
 
@@ -434,14 +460,15 @@
     try {
       const response = await timedFetch('/api/auth', { cache:'no-store', credentials:'same-origin', headers:{ Accept:'application/json' } }, 10000, 24000);
       const payload = await response.json().catch(() => ({}));
+      if (!active) throw new DOMException('View closed', 'AbortError');
       if (response.status === 503 && payload.code === 'AUTH_UPSTREAM_UNAVAILABLE') {
         setGoogleStatus('Hyrja e ruajtur po rinovohet. Po provohet përsëri…');
-        window.setTimeout(checkExistingSession, 5000);
+        schedule(checkExistingSession, 5000);
         return;
       }
       if (response.ok && payload.authenticated && phase5Session(payload)) {
         redirecting = true;
-        location.replace(destination());
+        navigate(destination());
         return;
       }
       if (response.ok && payload.authenticated && Number(payload.sessionVersion || 0) < 3) {
@@ -466,8 +493,19 @@
     checkExistingSession();
   }
 
-  window.addEventListener('pageshow', () => {
+  listen(window, 'pageshow', () => {
     if (!busy && !configurationBlocked && fallback.open) password?.focus();
   });
   init();
+  return { destroy() {
+    active = false;
+    lifetime.abort();
+    timers.forEach(timer => clearTimeout(timer));
+    disposers.forEach(dispose => dispose());
+    root.querySelectorAll('input[type="password"],input[autocomplete="current-password"],input[autocomplete="new-password"]').forEach(input => { input.value = ''; });
+  } };
+  }
+  window.DRxAuthViews = window.DRxAuthViews || {};
+  window.DRxAuthViews.login = mountLogin;
+  if (document.getElementById('loginForm') && !document.querySelector('[data-home-auth]')) mountLogin();
 })();

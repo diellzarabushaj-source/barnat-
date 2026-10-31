@@ -6,6 +6,8 @@ on:
     paths:
       - login.html
       - login-page.css
+      - homepage-auth.js
+      - homepage-auth.css
       - login-mobile-app.css
       - login.js
       - api/auth.js
@@ -22,6 +24,8 @@ on:
     paths:
       - login.html
       - login-page.css
+      - homepage-auth.js
+      - homepage-auth.css
       - login-mobile-app.css
       - login.js
       - api/auth.js

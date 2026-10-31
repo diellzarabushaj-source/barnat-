@@ -1,6 +1,25 @@
 (() => {
   'use strict';
 
+  function mountRegistration(root = document, options = {}) {
+  let active = true;
+  const lifetime = new AbortController();
+  const timers = new Set();
+  const disposers = [];
+  const find = id => root.querySelector('#' + id);
+  const listen = (target, type, handler) => target?.addEventListener(type, handler, { signal:lifetime.signal });
+  const schedule = (handler, delay) => {
+    const timer = window.setTimeout(() => { timers.delete(timer); if (active) handler(); }, delay);
+    timers.add(timer); return timer;
+  };
+  const navigate = (url, method = 'replace') => {
+    if (!active) return;
+    if (options.navigate) options.navigate(url, method);
+    else location[method](url);
+  };
+  const reload = () => { if (active) { if (options.reload) options.reload(); else location.reload(); } };
+  const query = () => new URLSearchParams(options.search ?? location.search);
+
   // Registration, in three states that the server decides — never the browser.
   //
   //   1. No account yet          → create one, with Google or with an email.
@@ -11,7 +30,7 @@
   // `GET /api/auth?scope=verification`, and a 401 there simply means "no
   // enrollment proof yet", which is state 1.
 
-  const $ = id => document.getElementById(id);
+  const $ = id => find(id);
   const steps = $('registerSteps');
   const panels = {
     account:$('stepAccount'),
@@ -59,9 +78,11 @@
       cache:'no-store',
       credentials:'same-origin',
       ...options,
+      signal:lifetime.signal,
       headers:{ Accept:'application/json', ...(options.headers || {}) },
     });
     const payload = await response.json().catch(() => ({}));
+      if (!active) throw new DOMException('View closed', 'AbortError');
     if (!response.ok || payload.ok === false) {
       const error = new Error(payload.error || `Kërkesa dështoi (${response.status}).`);
       error.status = response.status;
@@ -86,7 +107,7 @@
       const check = () => {
         if (window.google?.accounts?.id) return resolve(window.google.accounts.id);
         if (Date.now() - started >= timeoutMs) return reject(new Error('Google Sign-In nuk u ngarkua.'));
-        setTimeout(check, 80);
+        schedule(check, 80);
       };
       check();
     });
@@ -102,11 +123,13 @@
     }
     try {
       const [identity, nonce] = await Promise.all([waitForGoogle(), sha256Hex(csrfToken)]);
+      if (!active) return;
       identity.initialize({
         client_id:config.googleClientId,
         // Google identifies the person; MedIndex still creates the account as
         // pending and still asks for a professional document afterwards.
         callback:response => {
+          if (!active) return;
           const credential = String(response?.credential || '');
           if (!credential) return note(status, 'Google nuk ktheu credential-in.', 'error');
           void submitGoogle(credential);
@@ -123,7 +146,7 @@
         text:'continue_with',
         shape:'rectangular',
         logo_alignment:'left',
-        width:320,
+        width:Math.max(200, Math.min(400, Math.round($('googleSignupButton').getBoundingClientRect().width) || 320)),
       });
       googleInitialized = true;
       note(status, 'Zgjidh llogarinë tënde Google për të vazhduar.');
@@ -134,7 +157,7 @@
   }
 
   async function submitGoogle(credential) {
-    if (busy) return;
+    if (!active || busy) return;
     busy = true;
     note($('accountNote'), 'Po verifikohet llogaria…');
     try {
@@ -144,7 +167,7 @@
         body:JSON.stringify({ credential, csrfToken }),
       });
       // An approved account gets a session straight away and has no business here.
-      location.replace('/index.html');
+      navigate('/index.html');
     } catch (error) {
       // The expected outcome: a new Google account is pending, and the server
       // has just handed us the enrollment proof the next step needs.
@@ -160,7 +183,7 @@
 
   async function submitSignup(event) {
     event.preventDefault();
-    if (busy) return;
+    if (!active || busy) return;
     const email = $('signupEmail').value.trim();
     const password = $('signupPassword').value;
     if (!email || !password) return note($('accountNote'), 'Shkruaj emailin dhe fjalëkalimin.', 'error');
@@ -181,7 +204,7 @@
       if (!payload.confirmationRequired) {
         // Confirmation is off on this project, so the account exists and can
         // sign in immediately to continue with its document.
-        setTimeout(() => location.replace(`/login.html?email=${encodeURIComponent(email)}`), 1500);
+        schedule(() => navigate(`/login.html?email=${encodeURIComponent(email)}`), 1500);
       }
     } catch (error) {
       note($('accountNote'), error.message, 'error');
@@ -265,7 +288,7 @@
 
   async function submitProfile(event) {
     event.preventDefault();
-    if (busy) return;
+    if (!active || busy) return;
 
     const firstName = $('firstName').value.trim();
     const lastName = $('lastName').value.trim();
@@ -359,7 +382,7 @@
       }
       if (error.code === 'PENDING_PROFILE_REQUIRED') {
         // The account is no longer pending — it was approved, or refused.
-        location.replace('/login.html');
+        navigate('/login.html');
         return;
       }
       showStep('account');
@@ -374,9 +397,10 @@
     } catch (error) {
       config = error.payload || {};
     }
+    if (!active) return;
     csrfToken = String(config.csrfToken || '');
     if (config.authenticated) {
-      location.replace('/index.html');
+      navigate('/index.html');
       return;
     }
     await load();
@@ -385,7 +409,7 @@
 
   // --- wiring ---------------------------------------------------------------
 
-  document.addEventListener('click', event => {
+  listen(root, 'click', event => {
     const toggle = event.target.closest('[data-toggle-password]');
     if (!toggle) return;
     const input = $(toggle.dataset.togglePassword);
@@ -396,26 +420,26 @@
     toggle.setAttribute('aria-pressed', String(!shown));
   });
 
-  $('titleChoices').addEventListener('change', syncTitle);
-  $('signupForm').addEventListener('submit', submitSignup);
-  $('profileForm').addEventListener('submit', submitProfile);
+  listen($('titleChoices'), 'change', syncTitle);
+  listen($('signupForm'), 'submit', submitSignup);
+  listen($('profileForm'), 'submit', submitProfile);
 
-  $('documentInput').addEventListener('change', event => {
+  listen($('documentInput'), 'change', event => {
     selectedFile = event.target.files?.[0] || null;
     note($('profileNote'), '');
     syncFile();
   });
 
   const drop = $('documentDrop');
-  ['dragenter', 'dragover'].forEach(name => drop.addEventListener(name, event => {
+  ['dragenter', 'dragover'].forEach(name => listen(drop, name, event => {
     event.preventDefault();
     drop.dataset.dragging = '1';
   }));
-  ['dragleave', 'drop'].forEach(name => drop.addEventListener(name, event => {
+  ['dragleave', 'drop'].forEach(name => listen(drop, name, event => {
     event.preventDefault();
     delete drop.dataset.dragging;
   }));
-  drop.addEventListener('drop', event => {
+  listen(drop, 'drop', event => {
     const file = event.dataTransfer?.files?.[0];
     if (!file) return;
     selectedFile = file;
@@ -424,9 +448,25 @@
     syncFile();
   });
 
-  $('profileSignOut').addEventListener('click', () => {
-    void fetch('/api/auth', { method:'DELETE', credentials:'same-origin', cache:'no-store' });
+  listen($('profileSignOut'), 'click', async event => {
+    event.preventDefault();
+    event.stopPropagation();
+    try { await requestJson('/api/auth', { method:'DELETE' }); navigate('/login.html'); }
+    catch { if (active) note($('profileNote'), 'Dalja nuk u përfundua. Provo përsëri.', 'error'); }
   });
 
   void start();
+  return { destroy() {
+    active = false;
+    selectedFile = null;
+    root.querySelectorAll('input[type="file"]').forEach(input => { input.value = ''; });
+    lifetime.abort();
+    timers.forEach(timer => clearTimeout(timer));
+    disposers.forEach(dispose => dispose());
+    root.querySelectorAll('input[type="password"],input[autocomplete="current-password"],input[autocomplete="new-password"]').forEach(input => { input.value = ''; });
+  } };
+  }
+  window.DRxAuthViews = window.DRxAuthViews || {};
+  window.DRxAuthViews.registration = mountRegistration;
+  if (document.getElementById('registerSteps') && !document.querySelector('[data-home-auth]')) mountRegistration();
 })();
