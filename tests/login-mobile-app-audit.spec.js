@@ -26,7 +26,7 @@ function googleMock() {
           button.className = 'mock-google-sign-in';
           button.setAttribute('aria-label', 'Vazhdo me Google');
           button.textContent = 'Vazhdo me Google';
-          button.style.cssText = `display:block;width:${Number(options?.width || 320)}px;max-width:100%;height:52px;border:1px solid #cbd7dc;border-radius:14px;background:#fff;color:#13212a;font:700 14px/1 system-ui;`;
+          button.style.cssText = `display:block;width:${Number(options?.width || 320)}px;height:52px;border:1px solid #cbd7dc;border-radius:14px;background:#fff;color:#13212a;font:700 14px/1 system-ui;`;
           container.append(button);
         },
       },
@@ -139,6 +139,7 @@ test('Homepage account dialog stays on the page, switches forms and restores foc
   await page.locator('[data-auth-view="registration"]').click();
   await expect(page.locator('#signupEmail')).toBeFocused();
   await expect(page.locator('#signupPassword')).toBeVisible();
+  await expect.poll(()=>page.locator('.home-auth__panel').evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(1);
   await page.locator('[data-auth-view="login"]').click();
   await expect(page.locator('#loginPassword')).toHaveValue('');
   await page.screenshot({path:path.join(OUTPUT,'dialog-'+viewport.name+'.png'),fullPage:false});
@@ -246,4 +247,20 @@ test('Closing a dialog during an auth request cannot navigate or reinitialize Go
  await page.waitForTimeout(850);
  await expect(page).toHaveURL(/landing\.html$/);
  expect(await page.evaluate(()=>window.__medindexGoogleOptions)).toBeUndefined();
+});
+
+
+test('Signup Google button resizes inside the dialog after orientation changes',async({page})=>{
+ await prepare(page);
+ await page.route('**/api/auth?scope=verification',route=>route.fulfill({status:401,contentType:'application/json',body:'{"error":"No account"}'}));
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto(BASE+'/landing.html');
+ await page.locator('.lp-hero__cta a[href="login.html"]').click();
+ await expect(page.locator('#loginEmail')).toBeFocused();
+ await page.locator('[data-auth-view="registration"]').click();
+ await expect(page.locator('#googleSignupButton .mock-google-sign-in')).toBeVisible();
+ for(const width of [320,390,844,1440]){
+  await page.setViewportSize({width,height:844});
+  await expect.poll(()=>page.locator('.home-auth__panel').evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(1);
+ }
 });
