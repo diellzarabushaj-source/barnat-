@@ -59,7 +59,7 @@
     try {
       const [response] = await Promise.all([
         fetch(page, { credentials:'omit', signal:request.signal }),
-        script(next === 'login' ? '/login.js?v=home-dialog-20261031' : '/regjistrimi.js?v=home-dialog-20261031'),
+        script(next === 'login' ? '/login.js?v=home-dialog-20261031b' : '/regjistrimi.js?v=home-dialog-20261031b'),
       ]);
       if (!response.ok || new URL(response.url).pathname !== page) throw new Error('Ngarkimi dështoi.');
       const markup = await response.text();

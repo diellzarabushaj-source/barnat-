@@ -52,7 +52,8 @@
   function note(node, message, tone = '') {
     if (!node) return;
     node.textContent = message || '';
-    node.className = `mi-note${tone ? ` is-${tone}` : ''}`;
+    node.classList.add('mi-note');
+    ['success', 'warning', 'error'].forEach(value => node.classList.toggle('is-' + value, tone === value));
   }
 
   function showStep(name) {
@@ -139,15 +140,26 @@
         cancel_on_tap_outside:true,
         use_fedcm_for_prompt:true,
       });
-      identity.renderButton($('googleSignupButton'), {
-        type:'standard',
-        theme:document.documentElement.dataset.theme === 'dark' ? 'filled_black' : 'outline',
-        size:'large',
-        text:'continue_with',
-        shape:'rectangular',
-        logo_alignment:'left',
-        width:Math.max(200, Math.min(400, Math.round($('googleSignupButton').getBoundingClientRect().width) || 320)),
-      });
+      const container = $('googleSignupButton');
+      let renderedWidth = 0;
+      const render = () => {
+        if (!active) return;
+        const width = Math.max(200, Math.min(400, Math.floor(container.getBoundingClientRect().width) || 320));
+        if (width === renderedWidth) return;
+        renderedWidth = width;
+        container.replaceChildren();
+        identity.renderButton(container, {
+          type:'standard',
+          theme:document.documentElement.dataset.theme === 'dark' ? 'filled_black' : 'outline',
+          size:'large', text:'continue_with', shape:'rectangular', logo_alignment:'left', width,
+        });
+      };
+      render();
+      if (typeof ResizeObserver === 'function') {
+        const observer = new ResizeObserver(render);
+        observer.observe(container);
+        disposers.push(() => observer.disconnect());
+      }
       googleInitialized = true;
       note(status, 'Zgjidh llogarinë tënde Google për të vazhduar.');
     } catch (error) {
