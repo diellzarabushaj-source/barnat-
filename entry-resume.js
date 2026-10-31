@@ -5,7 +5,7 @@
   let pending = false;
   let retry = 0;
   async function resume() {
-    if (pending || !navigator.onLine) return;
+    if (pending || !navigator.onLine || document.querySelector('[data-home-auth][open]')) return;
     pending = true;
     clearTimeout(retry);
     try {
@@ -14,6 +14,7 @@
         signal:AbortSignal.timeout(12000),
       });
       const payload = await response.json();
+      if (document.querySelector('[data-home-auth][open]')) return;
       if (response.ok && payload.authenticated === true && payload.hardened === true
         && Number(payload.sessionVersion) === 3) {
         const destination = new URLSearchParams(location.search).get('return') || '/index.html';

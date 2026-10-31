@@ -95,7 +95,7 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 {
   const js = read('login.js');
-  assert.match(js, /if \(payload\.verificationRequired\) \{[\s\S]{0,400}location\.assign\('\/regjistrimi\.html'\)/,
+  assert.match(js, /if \(payload\.verificationRequired\) \{[\s\S]{0,400}navigate\('\/regjistrimi\.html', 'assign'\)/,
     'an account that still owes a document must be taken to the page that collects it');
   assert.match(js, /submitCredential\(\{ email, password:value \}, 'email'\)/,
     'the email form must post an email and a password');

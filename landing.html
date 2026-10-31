@@ -9,7 +9,10 @@
 <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
 <link rel="preload" href="fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="landing.css?v=premium-20260930">
-<script src="/entry-resume.js?v=safari-20261001" defer></script>
+<link rel="stylesheet" href="/drx-auth.css?v=home-dialog-20261031">
+<link rel="stylesheet" href="/homepage-auth.css?v=home-dialog-20261031">
+<script src="/homepage-auth.js?v=home-dialog-20261031" defer></script>
+<script src="/entry-resume.js?v=home-dialog-20261031" defer></script>
 </head>
 <body class="lp">
 <div class="lp-scrollbg" aria-hidden="true"></div>
@@ -677,5 +680,18 @@
     </div>
   </div>
 </footer>
+<dialog class="home-auth" id="homeAuthDialog" data-home-auth aria-label="Hyr në DRx">
+  <div class="home-auth__panel lp-auth">
+    <header class="home-auth__header">
+      <img class="home-auth__brand" src="/brand/drx-horizontal-on-light.svg" width="112" height="32" alt="DRx">
+      <button class="home-auth__close" type="button" data-auth-close aria-label="Mbyll dritaren" autofocus>×</button>
+    </header>
+    <div class="home-auth__tabs" role="group" aria-label="Llogaria">
+      <button type="button" data-auth-view="login" aria-pressed="true">Hyr</button>
+      <button type="button" data-auth-view="registration" aria-pressed="false">Krijo llogari</button>
+    </div>
+    <div data-auth-content></div>
+  </div>
+</dialog>
 </body>
 </html>
