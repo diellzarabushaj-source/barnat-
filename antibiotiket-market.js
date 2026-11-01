@@ -4,6 +4,7 @@
   let catalog=null,loading=null;
   const selections=new WeakMap();
   const remembered=new Map();
+  window.addEventListener('drx:antibiotics-case-reset',()=>remembered.clear());
   const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
   const clean=x=>String(x??'').trim();
   const fmt=x=>String(Number(Number(x).toFixed(2))).replace('.',',');
@@ -119,8 +120,9 @@
           if(row.unit==='mL'&&row.mgMin!==row.mgMax)phase.append(make('small','',`Kufiri për ${fmt(weight)} kg në këtë skemë: ${fmt(row.max)} mL për marrje. Zgjidh një dozë brenda intervalit.`));
           if(row.unit!=='mL'&&!row.units&&row.choices.length)phase.append(make('small','','Doza të realizueshme brenda intervalit. Konfirmo një dozë te receta.'));
           const limit=ceiling?.rows[index],maximum=make('div','abx-market-maximum');
-          if(Number.isFinite(limit?.mg))phase.append(make('p','abx-market-limit-line',`${ceiling.fixed?'Dozë fikse e skemës':'Kufiri për këtë peshë'}: ${fmt(limit.mg)} mg${basis?' · '+basis:''} / marrje.`));
-          maximum.append(make('span','abx-market-dose-label',ceiling?.fixed?'Doza e kësaj skeme':`Kufiri i llogaritur për ${fmt(weight)} kg · kjo skemë`));
+          const bounded=Number.isFinite(limit?.absoluteMg)||row.mgMin!==row.mgMax;
+          if(Number.isFinite(limit?.mg))phase.append(make('p','abx-market-limit-line',`${ceiling.fixed?'Dozë fikse e skemës':bounded?'Kufiri për këtë peshë':'Doza sipas peshës'}: ${fmt(limit.mg)} mg${basis?' · '+basis:''} / marrje.`));
+          maximum.append(make('span','abx-market-dose-label',ceiling?.fixed?'Doza e kësaj skeme':`${bounded?'Kufiri i llogaritur':'Doza e llogaritur'} për ${fmt(weight)} kg · kjo skemë`));
           if(Number.isFinite(limit?.mg)&&limit.mg>0){
             const perDose=limit.mg;
             const mg=`${fmt(perDose)} mg${basis?' · '+basis:''} / marrje`;
