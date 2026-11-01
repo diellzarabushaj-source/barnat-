@@ -223,5 +223,6 @@
   "tests/icd-description-clarification-test.js",
   "tests/icd-lexical-relevance-test.js",
   "tests/icd-ai-provider-test.js",
-  "tests/lab-symptom-guide-test.js"
+  "tests/lab-symptom-guide-test.js",
+  "tests/antibiotics-catalog-test.js"
 ]
