@@ -50,7 +50,7 @@ tc('T011',()=>{ assert.equal(dx('aom').minAgeMonths,6); const js=read('antibioti
   // the regimen entirely.
   assert.match(js,/blocks:false[\s\S]{0,120}Kjo skemë vlen për moshën ≥\$\{threshold\}/);
   assert.match(js,/blocks:true[\s\S]{0,200}kërkon moshën ≥\$\{threshold\}/);
-  assert.match(js,/if \(limit\?\.blocks\) return;/); });
+  assert.match(js,/if\s*\(limit\?\.blocks\)\s*\{[^}]*return;/); });
 tc('T012',()=>{ const capsule=solids.drugs.Amoxicillin.forms.find(x=>x.id==='amox-cap-500'); assert.ok(capsule); assert.equal(capsule.componentMg,500); assert.match(capsule.form,/kapsul/i); assert.equal(500/capsule.componentMg,1); });
 tc('T013',()=>{ assert.equal(solids.drugs.Amoxicillin.forms.some(x=>x.componentMg===600),false); const rx=read('antibiotiket-prescription.js');
   // No whole-unit match must still hard-stop, and must never round to a fraction

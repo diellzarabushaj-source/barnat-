@@ -420,49 +420,11 @@
     return label;
   }
 
-  function buildDurationResolver(duration, shared, refresh) {
-    if (!duration) return null;
-    if (duration.kind === 'fixed') {
-      shared.days = duration.values[0];
-      return null;
-    }
-    const label = make('label', 'abx-rx-field');
-    label.append(make('span', '', duration.kind === 'minimum' ? `Kohëzgjatja finale · ≥${duration.min} ditë` : 'Kohëzgjatja finale'));
-    if (duration.kind === 'choice') {
-      const select = document.createElement('select');
-      const placeholder = document.createElement('option');
-      placeholder.value = '';
-      placeholder.textContent = 'Zgjidh';
-      select.append(placeholder);
-      duration.values.forEach(day => {
-        const option = document.createElement('option');
-        option.value = String(day);
-        option.textContent = `${day} ditë`;
-        select.append(option);
-      });
-      select.addEventListener('change', () => {
-        const value = Number(select.value);
-        shared.days = duration.values.includes(value) ? value : null;
-        refresh();
-      });
-      if(duration.values.includes(shared.days))select.value=String(shared.days);
-      label.append(select);
-    } else {
-      const input = document.createElement('input');
-      input.type = 'number';
-      input.min = String(duration.min);
-      input.step = '1';
-      input.inputMode = 'numeric';
-      input.value = String(duration.min);
-      shared.days = duration.min;
-      input.addEventListener('input', () => {
-        const value = Number(input.value);
-        shared.days = Number.isInteger(value) && value >= duration.min ? value : null;
-        refresh();
-      });
-      label.append(input);
-    }
-    return label;
+  function buildDurationResolver(duration, shared) {
+    if(!duration)return null;
+    // The source-specific default belongs to the program, never a manual field.
+    if(!duration.values.includes(shared.days))shared.days=duration.values[0]??null;
+    return null;
   }
 
   function buildModeResolver(card, state, refresh) {
@@ -746,6 +708,7 @@
       refreshModeButtons(state);
       practical.replaceChildren();
       const range=state.simple;
+      adjust.hidden=Boolean(window.DRX_ANTIBIOTIC_MARKET)&&range?.min===range?.max&&state.frequencyValues.length<=1;
       if(range){
         const varied=range.min!==range.max;
         const limits=make('div','abx-dose-window');
@@ -798,7 +761,7 @@
     if (frequencyResolver) controls.append(frequencyResolver);
     if (modeResolver) controls.append(modeResolver);
     controls.append(solidSelect, solidCustom);
-    section.append(controls, practical, preview);
+    const adjust=make('details','abx-dose-adjust');adjust.append(make('summary','','Përshtatja e dozës'),controls,practical);section.append(adjust,preview);
 
     card.addEventListener('change', event => {
       if (event.target.closest('.abx-formulation')) refresh();
@@ -840,7 +803,7 @@
     const details = make('details', 'abx-rx');
     const summary = make('summary', '', 'Zgjedhja praktike / Receta');
     details.append(summary);
-    if (card.dataset.protocolVersion) details.open=true;
+    details.open=true;
 
     const body = make('div', 'abx-rx-body');
     const durationText = clean(card.querySelector('.abx-duration')?.textContent || '');
@@ -875,12 +838,14 @@
     const footer = make('div', 'abx-rx-footer');
     footer.append(copyButton, make('span', '', 'Një zgjedhje e dozës mjafton; forma, mL/njësitë dhe teksti final përditësohen automatikisht.'));
     copyButton.addEventListener('click', () => {
+      if(!card.isConnected||card.hidden||list.dataset.guideBlocked==='true')return;
       const text = parts.map(part => results.get(part.drug)?.text).filter(Boolean).join('\n\n');
       if (text) copyText(text, copyButton);
     });
     body.append(footer);
     details.append(body);
     card.append(details);
+    const working=card.querySelector(':scope > .abx-working');if(working)card.append(working);
   }
 
   function scan() {

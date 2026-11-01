@@ -34,6 +34,7 @@
     return '';
   }
   function enhance(card){
+    if(card.dataset.clinicalBlocked==='true')return;
     if(card.querySelector('.abx-market'))return;
     const title=clean(card.querySelector('.abx-option-head h3,.abx-hosp-title strong')?.textContent);
     const hospital=window.DRX_ANTIBIOTIC_HOSPITAL?.regimens.find(r=>r.id===card.dataset.regimenId);
@@ -54,7 +55,7 @@
       const field=(text)=>{const label=make('label','');label.append(make('span','',text));const select=make('select','');select.setAttribute('aria-label',`${text} · ${part.drug}`);label.append(select);body.append(label);return select;};
       const formSelect=field('Forma'),strengthSelect=field('Fortësia / përqendrimi'),productSelect=field('Produkti');
       const productDetails=make('details','abx-market-product'),productSummary=make('summary','','Produktet AKKPM · opsionale');
-      productDetails.append(productSummary,productSelect.parentElement);body.append(productDetails);
+      productDetails.append(productSummary,productSelect.parentElement,make('small','','Regjistri tregon produktet e publikuara, jo stokun aktual në barnatore.'));body.append(productDetails);
       const result=make('div','abx-market-dose');result.setAttribute('aria-live','polite');result.setAttribute('role','group');result.setAttribute('aria-label',`Dozimi · ${part.drug}`);body.append(result);
       const splitLabel=make('label','abx-split-confirm');splitLabel.hidden=true;
       const splitInput=make('input');splitInput.type='checkbox';
@@ -114,6 +115,7 @@
           if(row.unit==='mL'&&row.mgMin!==row.mgMax)phase.append(make('small','',`Kufiri për ${fmt(weight)} kg në këtë skemë: ${fmt(row.max)} mL për marrje. Zgjidh një dozë brenda intervalit.`));
           if(row.unit!=='mL'&&!row.units&&row.choices.length)phase.append(make('small','','Doza të realizueshme brenda intervalit. Konfirmo një dozë te receta.'));
           const limit=ceiling?.rows[index],maximum=make('div','abx-market-maximum');
+          if(Number.isFinite(limit?.mg))phase.append(make('p','abx-market-limit-line',`${ceiling.fixed?'Dozë fikse e skemës':'Kufiri për këtë peshë'}: ${fmt(limit.mg)} mg${basis?' · '+basis:''} / marrje.`));
           maximum.append(make('span','abx-market-dose-label',ceiling?.fixed?'Doza e kësaj skeme':`Kufiri i llogaritur për ${fmt(weight)} kg · kjo skemë`));
           if(Number.isFinite(limit?.mg)&&limit.mg>0){
             const perDose=limit.mg;
@@ -180,7 +182,6 @@
       if(!previous)showDose(null);
       section.append(body);
     }
-    section.append(make('small','','Regjistri tregon produktet e publikuara, jo stokun aktual në barnatore.'));
     card.append(section);
     if(card.dataset.nativeOspen==='true')update();
     syncAnswer(card);

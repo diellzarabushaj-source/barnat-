@@ -82,12 +82,12 @@
         frequency.hidden=true;
         label.firstElementChild.textContent='Orari dhe kohëzgjatja · automatike';
         const schedule=make('strong','abx-ospen-auto');label.append(schedule);
-        const back=make('button','abx-ospen-back','Kthehu te skema NICE në mg');back.type='button';back.onclick=()=>win.dispatchEvent(new win.CustomEvent('drx:ospen-nice'));section.append(back);
+        const back=make('button','abx-ospen-back','Kthehu te skema NICE në mg');back.type='button';back.onclick=()=>win.dispatchEvent(new win.CustomEvent('drx:ospen-nice'));const change=make('details','abx-ospen-switch');change.append(make('summary','','Ndrysho skemën'),back);section.append(change);
       }
       const answer=make('div','abx-ospen-answer');answer.setAttribute('aria-live','polite');section.append(answer);card.append(section);
       const context=()=>({months:Number(card.dataset.ageMonths),weight:Number(String(doc.getElementById('weightInput')?.value||'').replace(',','.')),times,indication});
       function current(){
-        if(!card.isConnected||card.dataset.ageConfirmed!=='true'||(indication==='gas'&&(list.dataset.gasBlocked==='true'||list.dataset.gasConfirmed!=='true')))return null;
+        if(!card.isConnected||card.hidden||list.dataset.guideBlocked==='true'||card.dataset.ageConfirmed!=='true'||(indication==='gas'&&(list.dataset.gasBlocked==='true'||list.dataset.gasConfirmed!=='true')))return null;
         const picked=win.DRX_ANTIBIOTIC_MARKET?.selection(card,'Penicillin V');
         const product=identify(picked?.product,picked?.form,picked?.variant?.concentration);
         const p=plan(context());if(!product||picked?.reason||p.error)return null;
@@ -95,7 +95,7 @@
         const rx=prescription(p,product,choice);return rx?{p,product,choice,rx}:null;
       }
       function render(){
-        generation++;answer.replaceChildren();
+        generation++;if(label.parentElement!==section)section.prepend(label);answer.replaceChildren();
         const market=card.querySelector('.abx-market');if(market&&market.nextElementSibling!==section)market.after(section);
         const picked=win.DRX_ANTIBIOTIC_MARKET?.selection(card,'Penicillin V');
         const product=identify(picked?.product,picked?.form,picked?.variant?.concentration);
@@ -118,16 +118,20 @@
         const buttons=make('div','abx-practical-choices');
         options.forEach(c=>{const b=make('button','',`${tablet(c.units)} · ${fmt(c.iu)} IU`);b.type='button';b.setAttribute('aria-pressed',String(c.units===selected));b.onclick=()=>{selected=c.units;render();};buttons.append(b);});answer.append(buttons);
         const active=current();if(!active){answer.append(make('p','abx-rx-blocked',indication==='sinusitis'?'Konfirmo pacientin dhe produktin për të hapur recetën.':'Konfirmo moshën, GAS dhe produktin përpara recetës.'));return;}
-        const single=make('div','abx-market-single');single.append(make('span','abx-market-dose-label','Për një marrje · nga goja'),make('strong','',tablet(choice.units)),make('span','',`${fmt(choice.iu)} IU · çdo ${24/times} orë`));answer.append(single);
+        const single=make('div','abx-market-single');single.append(make('span','abx-market-dose-label','Për një marrje · nga goja'),make('strong','',tablet(choice.units)),make('span','',`${fmt(choice.iu)} IU${indication==='sinusitis'?'':` · çdo ${24/times} orë`}`));
+        if(indication==='sinusitis')single.append(label);
+        answer.append(single,make('p','abx-market-limit-line',`${p.min===p.max?'Dozë fikse e skemës':'Maks. i kësaj skeme'}: ${fmt(Math.floor(p.max))} IU / marrje.`));
         const daily=make('p','abx-ospen-daily',`Gjithsej: ${fmt(choice.dailyIU)} IU/ditë · ≈${fmt(Math.round(choice.dailyIU/p.weight))} IU/kg/ditë`);answer.append(daily);
-        answer.append(make('strong','abx-rx-line',active.rx.line),make('span','abx-rx-quantity',`Sasia matematike e kursit: ${fmt(active.rx.quantity)} tableta.`));
+        answer.append(make('span','abx-rx-quantity',`Sasia e kursit: ${fmt(active.rx.quantity)} tableta.`));
         const copy=make('button','abx-rx-copy','Kopjo recetën');copy.type='button';
         copy.onclick=async()=>{const now=current();if(!now)return;const token=generation;copy.disabled=true;try{await win.navigator.clipboard.writeText(now.rx.text);if(token===generation)copy.textContent='U kopjua';}catch{if(token===generation)copy.textContent='Kopjimi dështoi · provo përsëri';}finally{if(token===generation)copy.disabled=false;}};answer.append(copy);
         const details=make('details','abx-ospen-source');details.append(make('summary','','Burimi dhe llogaritja'));
+        details.append(make('strong','abx-rx-line',active.rx.line));
         details.append(make('p','',`${fmt(p.dailyMin)}–${fmt(p.dailyMax)} IU/ditë ÷ ${times} marrje. ${indication==='gas'?'Për GAS: 10 ditë në këtë skemë.':'Sinusit i pakomplikuar: programi cakton 5 ditë nga intervali 5–7 ditë i udhëzimit DK; për mungesë përmirësimi në 3–5 ditë nevojitet rivlerësim.'} Gjysmëtabletat janë verifikuar në SmPC për këto dy produkte. Merret 1 orë para ushqimit. Për foshnjat/fëmijët e vegjël preferohen format e lëngshme; verifiko aftësinë për gëlltitje.`));
         if(indication==='sinusitis'){const clinical=make('a','','Udhëzimi DK · dozimi në IU ↗');clinical.href=sinusitisSource.url;clinical.target='_blank';clinical.rel='noopener noreferrer';details.append(clinical);}
         details.append(make('p','',`1 tabletë e këtij produkti: ${fmt(product.iu)} IU ≈ ${product.freeMg} mg phenoxymethylpenicillin. Nuk përdoret si konvertim për NICE.`));
         const link=make('a','','SmPC Ospen · dhjetor 2025 ↗');link.href=source.url;link.target='_blank';link.rel='noopener noreferrer';details.append(link);answer.append(details);
+        const sourceSwitch=section.querySelector('.abx-ospen-switch');if(sourceSwitch)section.append(sourceSwitch);
       }
       frequency.onchange=()=>{times=Number(frequency.value);selected=null;render();};
       card.addEventListener('abx:market-product',render);render();

@@ -41,17 +41,28 @@ test.beforeEach(async({page})=>{
   await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
 });
 const card=(page,id)=>page.locator(`[data-regimen-id="${id}"]`);
+async function pickInfection(page,id){
+ const picker=page.locator('#indicationPicker');if(await picker.getAttribute('open')===null)await picker.locator(':scope > summary').click();
+ await page.locator('[data-infection-group="all"]').click();await page.locator('#indicationChoice input[value="'+id+'"]').check();
+}
 async function open(page,indication,age='5y',weight='18'){
   await page.goto(baseURL+'/antibiotiket.html?indication='+indication);
   if(weight)await page.locator('#weightInput').fill(weight);
   if(age)await page.locator('#ageSelect').selectOption(age);
+  const answers={sinusitis:{course:'initial'},cellulitis:{purulence:'none'},impetigo:{extent:'wide'},'wound-cut':{wound:'infected'},abscess:{systemic:'yes'},bite:{purpose:'proph'},lymphadenitis:{origin:'skin'}};
+  for(const [key,value] of Object.entries(answers[indication]||{}))await page.locator('#guide-'+key).selectOption(value);
 }
 async function gasControl(page,id){
   const control=page.locator('#'+id);
   if(!await control.isVisible())await page.locator('#gasOptions > summary').click();
   return control;
 }
+async function reveal(c,selector){
+ const id=await c.getAttribute('data-regimen-id');if(await c.isHidden())await c.page().locator('#antibioticSelect').selectOption(id);
+ const details=c.locator(selector);if(await details.getAttribute('open')===null)await details.locator(':scope > summary').click();
+}
 async function choose(c,form,strength){
+ const id=await c.getAttribute('data-regimen-id');if(await c.isHidden())await c.page().locator('#antibioticSelect').selectOption(id);
   await expect(c.locator('.abx-market select').first()).toBeEnabled();
   await c.locator('.abx-market select').nth(0).selectOption(form);
   await c.locator('.abx-market select').nth(1).selectOption({label:strength});
@@ -71,8 +82,8 @@ for(const width of [320,390,1440])test(`NICE AOM: real age → product → final
   await expect(c.locator('.abx-rx-line')).toContainText('10 mL PO 3 herë/ditë × 5 ditë');
   await expect(c.locator('.abx-rx-quantity')).toContainText('150 mL');
   await expect(c.locator('.abx-rx-copy')).toBeEnabled();
-  await c.locator('.abx-rx-shared select').selectOption('7');
-  await expect(c.locator('.abx-rx-quantity')).toContainText('210 mL');
+  await expect(c.locator('.abx-rx-shared select')).toHaveCount(0);
+  await expect(c.locator('.abx-rx-quantity')).toContainText('150 mL');
   await page.locator('#weightInput').fill('60');
   await expect(page.locator('#ageSelect')).toHaveValue('16y');
   await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
@@ -145,6 +156,7 @@ test('Reported 56kg case overrides 11 years immediately, including saved state',
 });
 test('Displayed reference range contains each automatically assigned weight',async({page})=>{
   await open(page,'aom','','');
+  await page.locator('.abx-manual-more > summary').click();
   for(const weight of [3.3,7.25,9.75,12.5,18,25,33.5,42.5,47.5,52.5,56,58,60]){
     await page.locator('#weightInput').fill(String(weight));
     const hint=await page.locator('#ageSuggestion').innerText();
@@ -213,7 +225,8 @@ test('Product route and small body weight are enforced',async({page})=>{
   await open(page,'aom','adult','24.9');await page.locator('#aomFailureInput').check();
   await expect(card(page,'amoxclav-aom')).toContainText('25 kg');
   await page.locator('#weightInput').fill('25');await page.locator('#ageSelect').selectOption('adult');await page.locator('#aomFailureInput').check();
-  await expect(card(page,'amoxclav-aom').locator('.abx-option-head')).toBeVisible();
+  await expect(card(page,'amoxclav-aom')).toBeVisible();
+  await expect(page.locator('#antibioticSelect')).toHaveValue('amoxclav-aom');
   await page.locator('#aomFailureInput').uncheck();
   const c=card(page,'amox-aom');await choose(c,'vial-powder','1 g');
   await expect(c.locator('.abx-market-info')).toContainText('Formë jo orale');
@@ -238,11 +251,13 @@ test('NICE sinusitis uses Penicillin V and removes old 45mg/kg amoxicillin',asyn
   await open(page,'sinusitis','adult','70');
   await expect(card(page,'penicillin-sinusitis')).toContainText('500 mg/dozë');
   await expect(card(page,'amox-sinusitis')).toHaveCount(0);
+  await page.locator('#guide-course').selectOption('failure');
   await expect(card(page,'amoxclav-sinusitis').locator('.abx-duration')).toHaveText('5 ditë');
 });
 test('Urinoculture confirmation belongs to the current context and cannot carry over',async({page})=>{
   await open(page,'uti-pyelo','adult','70');
   await expect(card(page,'amoxclav-pyelo')).toContainText('urinokulturën');
+  await page.locator('#antibioticSelect').selectOption('amoxclav-pyelo');
   await page.locator('#cultureSusceptibleInput').check();
   const c=card(page,'amoxclav-pyelo');await choose(c,'tablet','500 mg+125 mg');
   await expect(c.locator('.abx-rx-copy')).toBeEnabled();
@@ -252,7 +267,7 @@ test('Urinoculture confirmation belongs to the current context and cannot carry 
 });
 test('Pregnancy does not retain a nonpregnant allergy alternative',async({page})=>{
   await open(page,'aom','adult','70');
-  await page.locator('input[name="abx-allergy"][value="a2"]').check();
+  await page.locator('#allergySelect').selectOption('a2');
   await expect(card(page,'doxy-aom-adult')).toBeVisible();
   await page.locator('#pregnancyInput').check();
   await expect(card(page,'doxy-aom-adult')).toHaveCount(0);
@@ -260,7 +275,7 @@ test('Pregnancy does not retain a nonpregnant allergy alternative',async({page})
 });
 test('Flucloxacillin is its own product; cephalosporin allergy requires qualified history',async({page})=>{
   await open(page,'cellulitis','adult','70');
-  await page.locator('input[name="abx-allergy"][value="a4"]').check();
+  await page.locator('#allergySelect').selectOption('a4');
   await expect(card(page,'fluclox-cellulitis')).toHaveCount(0);
   await page.locator('#cephAllergyConfirmation input').check();
   const c=card(page,'fluclox-cellulitis');await choose(c,'capsule','500 mg');
@@ -328,11 +343,11 @@ test('Equal-half confirmation enables 1½ tablets and resets for another product
 
 test('A ranged dose adapts to a whole capsule immediately on product selection',async({page})=>{
   await open(page,'lymphadenitis','8y','25');const c=card(page,'cephalexin-lymph');
-  await c.locator('.abx-rx summary').click();
+  await reveal(c,'.abx-rx');
   await choose(c,'capsule','500 mg');
   await expect(c.locator('.abx-dose-selected')).toHaveText('500 mg');
   await expect(c.locator('.abx-practical-panel')).toContainText('Përshtatur automatikisht');
-  await c.locator('.abx-rx-shared select').selectOption('7');
+  await expect(c.locator('.abx-rx-shared select')).toHaveCount(0);
   await expect(c.locator('.abx-rx-line')).toContainText('1 kapsulë PO');
   await expect(c.locator('.abx-rx-copy')).toBeEnabled();
 });
@@ -350,7 +365,7 @@ test('AOM second-line treatment requires reassessment and does not reuse an alle
   await page.locator('#aomFailureInput').check();
   await expect(card(page,'amox-aom')).toHaveCount(0);
   await expect(card(page,'amoxclav-aom').locator('.abx-market')).toHaveCount(1);
-  await page.locator('input[name="abx-allergy"][value="a2"]').check();
+  await page.locator('#allergySelect').selectOption('a2');
   await expect(page.locator('#recommendationList')).toContainText('konsulto mikrobiologun');
   await expect(page.locator('#recommendationList .abx-rx-copy')).toHaveCount(0);
   await expect(page.locator('#hospitalModule')).toBeHidden();
@@ -391,7 +406,7 @@ test('Adult AOM 500mg with 1g tablet displays half in the dose and final recipe'
 });
 test('AOM adolescent allergy uses published fixed-mg range without requiring weight',async({page})=>{
   await open(page,'aom','12y','');
-  await page.locator('input[name="abx-allergy"][value="a2"]').check();
+  await page.locator('#allergySelect').selectOption('a2');
   const c=card(page,'clarithro-aom-nice');await choose(c,'tablet','500 mg');
   await expect(c.locator('.abx-dose-selected')).toHaveText('500 mg');
   await expect(c.locator('.abx-dose-window')).toContainText('250 mg');
@@ -406,7 +421,7 @@ test('AOM treatment decision and failure confirmation do not carry over on reloa
 });
 test('Central range box rounds only to a representable in-range dose',async({page})=>{
   await open(page,'lymphadenitis','10y','30');const c=card(page,'cephalexin-lymph');
-  await c.locator('.abx-rx summary').click();
+  await reveal(c,'.abx-rx');
   await choose(c,'tablet','500 mg');
   await expect(c.locator('.abx-dose-window')).toContainText('510 mg');
   await expect(c.locator('.abx-dose-window')).toContainText('750 mg');
@@ -414,10 +429,10 @@ test('Central range box rounds only to a representable in-range dose',async({pag
   await c.locator('.abx-split-confirm input').check();
   await expect(c.locator('.abx-dose-selected')).toHaveText('750 mg');
   await expect(c.locator('.abx-practical-panel')).toContainText('Përshtatur automatikisht');
-  await c.getByRole('spinbutton',{name:'Doza e synuar për përshtatje'}).fill('600');
+  await reveal(c,'.abx-dose-adjust');await c.getByRole('spinbutton',{name:'Doza e synuar për përshtatje'}).fill('600');
   await c.getByRole('spinbutton',{name:'Doza e synuar për përshtatje'}).press('Tab');
   await expect(c.locator('.abx-dose-selected')).toHaveText('750 mg');
-  await c.locator('.abx-rx-shared select').selectOption('7');
+  await expect(c.locator('.abx-rx-shared select')).toHaveCount(0);
   await expect(c.locator('.abx-rx-line')).toContainText('1½ tableta PO');
   await expect(c.locator('.abx-rx-dose')).toContainText('750 mg/dozë');
   await expect(c.locator('.abx-rx-copy')).toBeEnabled();
@@ -439,8 +454,8 @@ for(const width of [320,390,1440])test(`NICE pharyngitis: simple workspace and e
   await expect(c.locator('.abx-rx-line')).toContainText('2 tableta PO 2 herë/ditë × 10 ditë');
   await expect(c.locator('.abx-rx-dose')).toContainText('2000 mg');
   await expect(c.locator('.abx-rx-quantity')).toContainText('40 tableta');
-  await c.locator('.abx-rx-shared select').selectOption('5');
-  await expect(c.locator('.abx-rx-quantity')).toContainText('20 tableta');
+  await expect(c.locator('.abx-rx-shared select')).toHaveCount(0);
+  await expect(c.locator('.abx-rx-quantity')).toContainText('40 tableta');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.screenshot({path:test.info().outputPath(`pharyngitis-${width}.png`),fullPage:true});
 });
@@ -470,12 +485,12 @@ test('Pharyngitis CDC alternative requires confirmed GAS and switches exact amox
 });
 test('Pharyngitis macrolide range is source-bound for adolescents, adults and pregnancy',async({page})=>{
   await open(page,'gas','12y','');
-  await page.locator('input[name="abx-allergy"][value="a2"]').check();
+  await page.locator('#allergySelect').selectOption('a2');
   let c=card(page,'clarithro-gas-nice');await choose(c,'tablet','500 mg');
   await expect(c.locator('.abx-dose-window')).toContainText('250 mg');
   await expect(c.locator('.abx-dose-window')).toContainText('500 mg');
   await expect(c.locator('.abx-rx-line')).toContainText('× 5 ditë');
-  await c.getByRole('spinbutton',{name:'Doza e synuar për përshtatje'}).fill('250');
+  await reveal(c,'.abx-dose-adjust');await c.getByRole('spinbutton',{name:'Doza e synuar për përshtatje'}).fill('250');
   await c.getByRole('spinbutton',{name:'Doza e synuar për përshtatje'}).press('Tab');
   await expect(c.locator('.abx-dose-selected')).toHaveText('500 mg');
   await expect(c.locator('.abx-rx-line')).toContainText('1 tabletë PO 2 herë/ditë');
@@ -496,7 +511,7 @@ test('An unverified IU product never replaces the fixed NICE milligram prescript
   await open(page,'sinusitis','adult','70');const c=card(page,'penicillin-sinusitis');
   await choose(c,'tablet','1000000 IU');
   await expect(c).toHaveAttribute('data-native-ospen','true');
-  await c.getByRole('button',{name:'Kthehu te skema NICE në mg'}).click();
+  await reveal(c,'.abx-ospen-switch');await c.getByRole('button',{name:'Kthehu te skema NICE në mg'}).click();
   await c.locator('.abx-market-product summary').click();
   await c.locator('.abx-market select').nth(2).selectOption('penv-iu');
   await expect(c.locator('.abx-market-info')).toContainText('IU');
@@ -599,7 +614,7 @@ test('Ospen copy revalidates the current product and patient, and allergy or urg
   expect(await page.evaluate(()=>window.ospenCopies.length)).toBe(1);
   await expect(page.locator('#recommendationList .abx-rx-copy')).toHaveCount(0);
   await page.locator('#gasUrgentInput').uncheck();
-  await page.locator('input[name="abx-allergy"][value="a2"]').check();
+  await page.locator('#allergySelect').selectOption('a2');
   await expect(card(page,'penicillin-gas')).toHaveCount(0);
   await expect(page.locator('[data-native-ospen=true]')).toHaveCount(0);
 });
@@ -654,6 +669,7 @@ test('Fosfomycin single sachet requires second-choice confirmation and is not a 
 test('Pyelo ciprofloxacin requires its own suitability decision and is excluded in pregnancy',async({page})=>{
  await open(page,'uti-pyelo','adult','70');await page.locator('#utiAlternativeInput').check();
  await expect(card(page,'cipro-pyelo-nice')).toContainText('Ciprofloxacin: konfirmo');
+ await page.locator('#antibioticSelect').selectOption('cipro-pyelo-nice');
  await page.locator('#utiFluoroInput').check();await expect(card(page,'cipro-pyelo-nice').locator('.abx-market')).toHaveCount(1);
  await page.locator('#pregnancyInput').check();await expect(card(page,'cipro-pyelo-nice')).toHaveCount(0);
 });
@@ -663,13 +679,14 @@ for(const width of [320,390,1440])test(`Faringiti i thjeshtë: settings closed, 
   await open(page,'gas','adult','70');
   await expect(page.locator('#gasOptions')).not.toHaveAttribute('open','');
   await expect(page.locator('#gasScheduleSelect')).toBeHidden();
-  await expect(page.locator('#gasConfirmedInput')).toBeHidden();
+  await expect(page.locator('#gasConfirmedInput')).toBeVisible();
   await expect(page.locator('#gasUrgentInput')).toBeVisible();
   await expect(page.locator('#gasUrgentInput')).not.toBeChecked();
   await expect(card(page,'penicillin-gas')).toBeVisible();
   await expect(card(page,'amoxicillin-gas')).toHaveCount(0);
   await page.locator('#gasOptions > summary').click();
   await page.locator('#gasConfirmedInput').check();
+  await page.locator('#antibioticSelect').selectOption('amoxicillin-gas');
   await expect(card(page,'amoxicillin-gas')).toBeVisible();
   await page.locator('#gasOptions > summary').click();
   await page.locator('#gasUrgentInput').check();
@@ -699,7 +716,7 @@ for(const width of [320,390,1440])test('Infection browser: grouped search and ex
  await expect(page.locator('#indicationCurrent')).toHaveText('UTI febrile / Pielonefrit');
  await expect(page.locator('#ageSelect')).toHaveValue('5y');
  await expect(page.locator('#weightInput')).toHaveValue('18');
- if(width<=760){await expect(picker).not.toHaveAttribute('open','');await expect(picker.locator('summary')).toBeFocused();await picker.locator('summary').click();}
+ await expect(picker).not.toHaveAttribute('open','');if(width<=760)await expect(picker.locator('summary')).toBeFocused();await picker.locator('summary').click();
  await page.locator('[data-infection-group="all"]').click();
  await expect(page.locator('#indicationChoice .abx-chip:visible')).toHaveCount(13);
  await page.locator('#infectionSearch').fill('no-such-infection');
@@ -721,17 +738,16 @@ test('Every infection remains reachable with unchanged outpatient safety gates',
  await page.setViewportSize({width:1440,height:900});
  await open(page,'preseptal');
  await expect(page.locator('[data-infection-group="skin"]')).toHaveAttribute('aria-pressed','true');
+ if(await page.locator('#indicationPicker').getAttribute('open')===null)await page.locator('#indicationPicker > summary').click();
  await page.locator('[data-infection-group="all"]').click();
  const values=await page.locator('#indicationChoice input').evaluateAll(nodes=>nodes.map(node=>node.value));
  expect(new Set(values).size).toBe(13);
  for(const value of values){
-  await page.locator('[data-infection-group="all"]').click();
-  await page.locator('#indicationChoice input[value="'+value+'"]').check();
+  await pickInfection(page,value);
   await expect(page).toHaveURL(new RegExp('indication='+value));
   await expect(page.locator('#indicationChoice input:checked')).toHaveValue(value);
  }
- await page.locator('[data-infection-group="all"]').click();
- await page.locator('#indicationChoice input[value="preseptal"]').check();
+ await pickInfection(page,'preseptal');
  await page.locator('#orbitalRedFlagsInput').check();
  await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
  await expect(page.locator('#recommendationList')).toContainText('STOP');
@@ -760,7 +776,7 @@ for(const width of [320,390,1440])test('AKKPM Ospen sinusitis: automatic IU sche
  await expect(c.locator('.abx-ospen-answer')).toContainText('zgjidh Ospen 1.0');
  await choose(c,'tablet','1000000 IU');
  await expect(c.locator('.abx-rx-line')).toContainText('1 tabletë PO 4 herë/ditë × 5 ditë');
- await c.getByRole('button',{name:'Kthehu te skema NICE në mg'}).click();
+ await reveal(c,'.abx-ospen-switch');await c.getByRole('button',{name:'Kthehu te skema NICE në mg'}).click();
  await expect(c).not.toHaveAttribute('data-native-ospen','true');
  await choose(c,'tablet','500 mg');
  await expect(c.locator('.abx-dose-row[data-role="single"]')).toContainText('500 mg');
@@ -773,13 +789,14 @@ test('ATC index preserves clinical order, routes and complete combination cards'
  await open(page,'pneumonia','adult','70');
  await page.locator('#atypicalInput').check();
  const before=await page.locator('#recommendationList .abx-option').evaluateAll(nodes=>nodes.map(n=>n.dataset.regimenId));
- await page.locator('#recommendationList > .abx-atc-browser > summary').click();
+ await page.locator('.abx-provenance > summary').click();
+ await page.locator('#antibioticClassBrowser > .abx-atc-browser > summary').click();
  await expect(page.locator('.abx-atc-group')).not.toHaveCount(0);
  const target=page.locator('.abx-atc-group a').first();
  await target.click();
  const after=await page.locator('#recommendationList .abx-option').evaluateAll(nodes=>nodes.map(n=>n.dataset.regimenId));
  expect(after).toEqual(before);
- await expect(page.locator('#recommendationList .abx-option:visible')).toHaveCount(before.length);
+ await expect(page.locator('#recommendationList .abx-option:visible')).toHaveCount(2);
  for(const item of await page.locator('.abx-option[data-atc-codes]').all())await expect(item.locator(':scope > .abx-atc-badges')).toHaveCount(1);
  expect(await page.evaluate(()=>document.activeElement.classList.contains('abx-option'))).toBe(true);
 });
@@ -798,8 +815,85 @@ test('Ospen automatic pediatric course resets with patient and rejects another I
  await page.locator('#weightInput').fill('40');
  await expect(c.locator('.abx-rx-copy')).toHaveCount(0);
  await page.locator('#ageSelect').selectOption('10y');
+ await page.locator('#guide-course').selectOption('initial');
  await expect(c.locator('.abx-ospen-auto')).toHaveText('4 herë/ditë · çdo 6 orë · 5 ditë');
  await expect(c.locator('.abx-rx-line')).toContainText('½ tablete PO 4 herë/ditë × 5 ditë');
  await page.locator('#weightInput').fill('');
  await expect(c.locator('.abx-rx-copy')).toHaveCount(0);
+});
+
+for(const width of [320,390,1440])test('Manual: contextual case, one treatment and automatic course at '+width+'px',async({page})=>{
+ await page.setViewportSize({width,height:1000});await open(page,'sinusitis','adult','70');
+ await expect(page.locator('#indicationPicker')).not.toHaveAttribute('open','');
+ await expect(page.locator('#allergySelect')).toBeVisible();
+ await expect(page.locator('#gasClinicalPanel')).toBeHidden();
+ await expect(page.locator('#guide-course')).toBeVisible();
+ await expect(page.locator('.abx-option:visible')).toHaveCount(1);
+ const c=card(page,'penicillin-sinusitis');await choose(c,'tablet','1000000 IU');
+ await expect(c.locator('.abx-ospen-auto')).toContainText('5 ditë');
+ await expect(c.locator('.abx-rx-line')).toContainText('1 tabletë PO 4 herë/ditë × 5 ditë');
+ await page.locator('#guide-course').focus();await page.locator('#guide-course').selectOption('failure');
+ await expect(page.locator('#guide-course')).toBeFocused();
+ await expect(page.locator('#antibioticSelect')).toHaveValue('amoxclav-sinusitis');
+ await expect(page.locator('.abx-option:visible')).toHaveCount(1);
+ await expect(page.locator('.abx-rx-shared select')).toHaveCount(0);
+ await pickInfection(page,'bite');
+ await expect(page.locator('#guide-purpose')).toHaveValue('');
+ await expect(page.locator('.abx-rx-copy:visible')).toHaveCount(0);
+ await page.locator('#guide-purpose').selectOption('proph');
+ await expect(page.locator('.abx-option:visible .abx-duration')).toHaveText('3 ditë');
+ await page.locator('#guide-purpose').selectOption('treat');
+ await expect(page.locator('.abx-option:visible .abx-duration')).toHaveText('5 ditë');
+ await pickInfection(page,'wound-cut');await page.locator('#guide-wound').selectOption('clean');
+ await expect(page.locator('#recommendationList')).toContainText('nuk kërkon antibiotik sistemik rutinë');
+ await expect(page.locator('.abx-rx-copy:visible')).toHaveCount(0);
+ await pickInfection(page,'sinusitis');await page.locator('#guide-course').selectOption('initial');
+ await choose(card(page,'penicillin-sinusitis'),'tablet','1000000 IU');
+ await expect(card(page,'penicillin-sinusitis').locator('.abx-rx-copy')).toBeVisible();
+ await page.locator('#caseNext').click();
+ await expect(page.locator('#caseSummary')).toContainText('70 kg');
+ await expect(page.locator('#weightInput')).toBeHidden();
+ await expect(card(page,'penicillin-sinusitis').locator('.abx-rx-copy')).toBeVisible();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.locator('h1').click();
+ await page.screenshot({path:test.info().outputPath('manual-'+width+'.png'),fullPage:true});
+ await page.locator('#caseEdit').click();await expect(page.locator('#weightInput')).toBeVisible();await expect(page.locator('#weightInput')).toHaveValue('70');
+});
+
+test('Manual: all 13 contexts are reachable and unknown answers never prescribe',async({page})=>{
+ await open(page,'aom','8y','25');
+ const Manual=require('../antibiotiket-guide');
+ for(const [id,config] of Object.entries(Manual.configurations)){
+  await pickInfection(page,id);
+  for(const q of config.questions){await expect(page.locator('#guide-'+q.key)).toBeVisible();await expect(page.locator('#guide-'+q.key)).toHaveValue('');}
+  if(config.questions.length)await expect(page.locator('#recommendationList .abx-rx-copy')).toHaveCount(0);
+  if(id==='gas')await expect(page.locator('.abx-input #gasConfirmedInput')).toBeVisible();
+ }
+ await pickInfection(page,'abscess');await page.locator('#guide-systemic').selectOption('no');
+ await expect(page.locator('.abx-option:visible')).toHaveCount(1);
+ await expect(page.locator('#recommendationList')).toContainText('Incizion / drenazh');
+ await expect(page.locator('.abx-rx-copy:visible')).toHaveCount(0);
+ await page.locator('#guide-systemic').selectOption('yes');
+ await expect(page.locator('.abx-option:visible')).toHaveCount(2);
+});
+
+test('Manual: alarm blocks old prescriptions and stays checked on weight correction',async({page})=>{
+ await page.addInitScript(()=>{window.copies=[];Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>window.copies.push(text)}});});
+ await open(page,'sinusitis','adult','70');await choose(card(page,'penicillin-sinusitis'),'tablet','1000000 IU');
+ await page.evaluate(()=>{window.oldCopy=document.querySelector('[data-native-ospen] .abx-rx-copy');});
+ await page.locator('#guideUrgentInput').check();
+ await expect(page.locator('#eligibilityMessage')).toContainText('vlerësim urgjent');
+ await expect(page.locator('#recommendationList .abx-rx-copy')).toHaveCount(0);
+ await page.evaluate(()=>window.oldCopy.click());expect(await page.evaluate(()=>window.copies.length)).toBe(0);
+ await page.locator('#weightInput').fill('75');
+ await expect(page.locator('#guideUrgentInput')).toBeChecked();
+ await expect(page.locator('#guide-course')).toHaveValue('');
+ await page.locator('.abx-manual-reset').click();
+ await expect(page.locator('#guideUrgentInput')).not.toBeChecked();await expect(page.locator('#weightInput')).toHaveValue('');
+});
+
+test('Manual missing script never falls back to an unqualified prescription',async({page})=>{
+ await page.route('**/antibiotiket-guide.js*',route=>route.abort());await open(page,'aom','adult','70');
+ await expect(page.locator('#recommendationList')).toContainText('Udhëzuesi nuk u ngarkua');
+ await expect(page.locator('#recommendationList .abx-rx-copy')).toHaveCount(0);
 });

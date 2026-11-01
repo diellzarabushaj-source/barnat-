@@ -8,22 +8,24 @@
   <title>DRx | Antibiotikët</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-atc-products-20261101">
+  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-manual-20261101">
   <link rel="stylesheet" href="/antibiotiket-infections.css?v=20261101">
+  <link rel="stylesheet" href="/antibiotiket-manual.css?v=20261101-manual">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script src="/phase9-personal-entities-client.js?v=drx-phase9-personal-v4" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-  <script src="/antibiotiket-shell.js?v=antibiotiket-shell-atc-products-20261101" defer></script>
+  <script src="/antibiotiket-shell.js?v=antibiotiket-shell-manual-20261101" defer></script>
   <script src="/antibiotiket-classification.js?v=20261101" defer></script>
   <script src="/antibiotiket-data.js?v=antibiotiket-audit-20261028" defer></script>
   <script src="/antibiotiket-penicillin-protocols.js?v=20261101-atc-ospen" defer></script>
-  <script src="/antibiotiket-ospen.js?v=20261101-ospen" defer></script>
+  <script src="/antibiotiket-ospen.js?v=20261101-ospen-manual" defer></script>
   <script src="/pediatric-weight-age-core.js?v=monthly-suggestions-20261029" defer></script>
-  <script src="/antibiotiket.js?v=antibiotiket-atc-products-20261101" defer></script>
+  <script src="/antibiotiket-guide.js?v=20261101-manual" defer></script>
+  <script src="/antibiotiket.js?v=antibiotiket-manual-20261101" defer></script>
   <script src="/antibiotiket-infections.js?v=20261101" defer></script>
-  <script src="/antibiotiket-atc.js?v=20261101" defer></script>
+  <script src="/antibiotiket-atc.js?v=20261101-manual" defer></script>
 </head>
-<body>
+<body class="abx-manual">
   <a class="sr-only" href="#antibioticsContent">Kalo te Antibiotikët</a>
 
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -98,13 +100,13 @@
         <header class="abx-head">
           <div>
             <h1>Antibiotikët</h1>
-            <p>Zgjidh infeksionin, plotëso të dhënat e pacientit dhe shiko dozën sipas produktit.</p>
+            <p>Zgjidh infeksionin. Plotëso rastin dhe shiko trajtimin sipas produktit.</p>
           </div>
           <span class="scope-pill">FËMIJË &amp; 18+</span>
         </header>
 
         <section class="abx-card abx-input" aria-label="Konteksti klinik">
-          <p class="abx-step-title">1 · Pacienti</p>
+          <p class="abx-step-title">1 · Rasti</p>
           <div class="abx-block">
             <details class="abx-picker" id="indicationPicker" open>
               <summary class="abx-picker-summary">
@@ -233,6 +235,7 @@
             <b id="activeSource">—</b>
           </summary>
           <div class="abx-provenance-body">
+            <div id="antibioticClassBrowser"></div>
             <p class="abx-safety">Mosha reale përcakton grupin e pacientit. <strong>Pesha reale kërkohet për skemat sipas kg dhe kufizimet e produktit.</strong> Dozat fikse nuk rriten automatikisht me peshën.</p>
             <div id="sourceList" class="abx-sources"></div>
             <p class="abx-warning">Konteksti klinik mbetet i domosdoshëm. Çdo regjim mban burimin e vet: NICE sipas indikacionit; NHS për otitin te të rriturit; CDC, CPS, SmPC dhe UCSF kur specifikohen. Për UTI, MRSA dhe alternativa ku rezistenca ndryshon, përdor kulturën/ndjeshmërinë ose epidemiologjinë/antibiogramën lokale kur është relevante. Kur burimi nuk jep maksimum, DRx nuk e shpik.</p>

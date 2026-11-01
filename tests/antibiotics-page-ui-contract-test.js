@@ -49,9 +49,7 @@ assert.equal((html.match(/class="abx-hint"/g) || []).length, 1, 'Exactly one hin
 // --- the script ------------------------------------------------------------
 assert.match(js, new RegExp(`matchMedia\\('\\(max-width:${BREAKPOINT}px\\)'\\)`), `The fold must key off the ${BREAKPOINT}px breakpoint`);
 assert.match(js, /function collapsePicker\(picker\)/, 'A picker must be foldable');
-assert.match(js, /if \(picker && compact\.matches\) picker\.open = false;/, 'A picker only folds on a phone');
 assert.match(js, /function syncPickers\(\)/, 'The summary must track the current choice');
-assert.match(js, /if \(compact\.matches\) return;[\s\S]{0,200}indicationPicker\.open = true;/, 'A wide screen must force both pickers open');
 assert.match(js, /compact\.addEventListener\('change', onBreakpoint\)/, 'Crossing the breakpoint must re-sync, so nothing is stranded shut');
 assert.match(js, /collapsePicker\(el\.indicationPicker\); render\(\);/, 'Choosing a diagnosis folds the list back up');
 assert.match(js, /collapsePicker\(el\.allergyPicker\);/, 'Choosing an allergy folds the strip back up');
@@ -60,9 +58,6 @@ assert.match(js, /syncPickers\(\);/, 'render() must refresh the summaries');
 // --- the stylesheet --------------------------------------------------------
 // On a wide screen the summary is the group's label and nothing more: no
 // current-value, no chevron, and not clickable.
-assert.match(css, /\.abx-picker>summary\{display:block;list-style:none;pointer-events:none\}/, 'The summary is an inert label on a wide screen');
-assert.match(css, /\.abx-picker-current\{display:none\}/, 'The current-choice value only shows on a phone');
-assert.match(js, /function pinPickerOpen\(picker\)/, 'A wide-screen picker must not be closable');
 const mobile = css.slice(css.indexOf(`@media(max-width:${BREAKPOINT}px)`));
 assert.ok(mobile.length > 0, `The stylesheet needs a ${BREAKPOINT}px block`);
 assert.match(mobile, /\.abx-picker>summary\{\s*display:flex/, 'The summary row appears on a phone');
@@ -215,3 +210,11 @@ assert.ok(cssVersion && jsVersion, 'Both page assets must carry a cache-busting 
 assert.equal(cssVersion, jsVersion, 'The page CSS and JS change together, so they share one version');
 
 console.log(`Antibiotics page UI gate passed: both pickers fold below ${BREAKPOINT}px, one hint line, 44px tap targets, ${Object.keys(strengths).length} drugs with syrup templates and ${Object.keys(solids).length} with tablet templates, a creatable unit remembered per drug, assets pinned at ${cssVersion}.`);
+
+const manualCss=read('antibiotiket-manual.css');
+assert.match(html,/antibiotiket-guide\.js\?v=/);
+assert.match(js,/allergySelect/);
+assert.match(js,/antibioticSelect/);
+assert.match(manualCss,/pointer-events:auto!important/);
+assert.match(manualCss,/min-height:46px/);
+assert.doesNotMatch(prescription.slice(prescription.indexOf('function buildDurationResolver'),prescription.indexOf('function buildModeResolver')),/createElement\('(?:select|input)'\)/);

@@ -2,6 +2,7 @@
   'use strict';
   const list = document.getElementById('recommendationList');
   const atc = window.DRX_ANTIBIOTIC_ATC;
+  const holder=document.getElementById('antibioticClassBrowser')||list;
   if (!list || !atc) return;
   let previous = [], pending = false;
   const make = (tag, cls, text) => { const e = document.createElement(tag); e.className = cls; if (text !== undefined) e.textContent = text; return e; };
@@ -10,7 +11,7 @@
     const cards = [...list.querySelectorAll('.abx-option,.abx-hosp-card')];
     if (cards.length === previous.length && cards.every((card,index) => card === previous[index])) return;
     previous = cards;
-    list.querySelector(':scope > .abx-atc-browser')?.remove();
+    holder.querySelector(':scope > .abx-atc-browser')?.remove();
     const groups = new Map();
     cards.forEach((card,index) => {
       const head = card.querySelector('.abx-option-head,.abx-hosp-card-head');
@@ -46,6 +47,7 @@
         link.href = '#' + card.id;
         link.addEventListener('click',event => {
           event.preventDefault(); card.tabIndex = -1;
+          window.dispatchEvent(new CustomEvent('drx:select-antibiotic',{detail:{id:card.dataset.regimenId}}));
           card.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches ? 'instant' : 'smooth'});
           card.focus({preventScroll:true});
         });
@@ -53,7 +55,7 @@
       });
       body.append(section);
     });
-    browser.append(body); list.prepend(browser);
+    browser.append(body);if(holder===list)list.prepend(browser);else holder.append(browser);
   }
   new MutationObserver(() => { if (!pending) { pending = true; requestAnimationFrame(refresh); } }).observe(list,{childList:true,subtree:true});
   refresh();
