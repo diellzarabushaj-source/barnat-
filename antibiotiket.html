@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="drx-unified-sidebar" data-drx-app="antibiotiket" data-penicillin-protocols="required">
+<html lang="sq" class="drx-unified-sidebar" data-drx-app="antibiotiket" data-penicillin-protocols="required" data-nice-standard="required">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -8,21 +8,22 @@
   <title>DRx | Antibiotikët</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-manual-20261101">
-  <link rel="stylesheet" href="/antibiotiket-infections.css?v=20261101">
+  <link rel="stylesheet" href="/antibiotiket.css?v=antibiotiket-nice-20261101">
+  <link rel="stylesheet" href="/antibiotiket-infections.css?v=nice-20261101">
   <link rel="stylesheet" href="/antibiotiket-manual.css?v=20261101-manual">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script src="/phase9-personal-entities-client.js?v=drx-phase9-personal-v4" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-  <script src="/antibiotiket-shell.js?v=antibiotiket-shell-manual-20261101" defer></script>
+  <script src="/antibiotiket-shell.js?v=antibiotiket-shell-nice-20261101" defer></script>
   <script src="/antibiotiket-classification.js?v=20261101" defer></script>
   <script src="/antibiotiket-data.js?v=antibiotiket-audit-20261028" defer></script>
   <script src="/antibiotiket-penicillin-protocols.js?v=20261101-atc-ospen" defer></script>
   <script src="/antibiotiket-ospen.js?v=20261101-ospen-manual" defer></script>
   <script src="/pediatric-weight-age-core.js?v=monthly-suggestions-20261029" defer></script>
   <script src="/antibiotiket-guide.js?v=20261101-manual" defer></script>
-  <script src="/antibiotiket.js?v=antibiotiket-manual-20261101" defer></script>
-  <script src="/antibiotiket-infections.js?v=20261101" defer></script>
+  <script src="/antibiotiket-nice.js?v=nice-only-20261101" defer></script>
+  <script src="/antibiotiket.js?v=antibiotiket-nice-20261101" defer></script>
+  <script src="/antibiotiket-infections.js?v=nice-20261101" defer></script>
   <script src="/antibiotiket-atc.js?v=20261101-manual" defer></script>
 </head>
 <body class="abx-manual">
@@ -100,9 +101,9 @@
         <header class="abx-head">
           <div>
             <h1>Antibiotikët</h1>
-            <p>Zgjidh infeksionin. Plotëso rastin dhe shiko trajtimin sipas produktit.</p>
+            <p>Zgjidh infeksionin dhe produktin. Skema NICE kur antibiotiku është i indikuar.</p>
           </div>
-          <span class="scope-pill">FËMIJË &amp; 18+</span>
+          <span class="scope-pill">NICE · FËMIJË &amp; 18+</span>
         </header>
 
         <section class="abx-card abx-input" aria-label="Konteksti klinik">
@@ -187,7 +188,7 @@
           <p id="gasAdvice" class="abx-aom-advice">Kur antibiotiku indikohet · zgjedhja e parë: Penicillin V · NICE NG84.</p>
           <button id="gasSourceBack" class="abx-ospen-activate" type="button" hidden>Kthehu te NICE · mg</button>
           <label class="abx-toggle abx-gas-alarm"><input id="gasUrgentInput" type="checkbox"><span><strong>Ka shenja alarmi</strong><small>Dyshim për absces ose infeksion të rëndë → referim urgjent.</small></span></label>
-          <details id="gasOptions" class="abx-gas-options"><summary>Alternativa dhe orari <span>opsionale</span></summary>
+          <details id="gasOptions" class="abx-gas-options"><summary>Orari <span>opsional</span></summary>
             <div class="abx-gas-options-body">
               <label id="gasScheduleWrap" class="abx-schedule-field"><span class="abx-label" id="gasScheduleLabel">Penicillin V · sa herë në ditë?</span>
                 <select id="gasScheduleSelect" aria-labelledby="gasScheduleLabel"><option value="qds">4 herë/ditë · çdo 6 orë</option><option value="bid">2 herë/ditë · çdo 12 orë</option></select>
@@ -200,9 +201,10 @@
           </details>
           <details><summary>Më shumë · diagnoza dhe ndjekja</summary>
             <p>Kjo pamje llogarit trajtimin pasi është vendosur indikacioni për antibiotik. NICE përdor FeverPAIN/Centor në vlerësimin klinik; pamja nuk është algoritëm i plotë për indikacionin. GAS është i rrallë nën 3 vjeç. Faringjiti viral nuk trajtohet me antibiotik.</p>
-            <p>Penicillin V: 5–10 ditë sipas NICE; 10 ditë mund të rrisin eradikimin mikrobiologjik. Amoxicillin për GAS të konfirmuar: 10 ditë sipas CDC. Mos kombinoni antibiotikët e këtyre kartave.</p>
+            <p>NICE NG84: FeverPAIN 0–1 ose Centor 0–2 zakonisht nuk përfitojnë nga antibiotiku. FeverPAIN 2–3: vlerëso ndjekjen ose recetën rezervë; FeverPAIN 4–5 / Centor 3–4: vlerëso recetën e menjëhershme ose rezervë. Këto vendime merren para përdorimit të kalkulatorit.</p>
+            <p>Penicillin V: 5–10 ditë sipas NICE; 10 ditë mund të rrisin eradikimin mikrobiologjik. Nuk kombinohen alternativat mes vete.</p>
             <p>Stridor, dispne, jargëzim, pamundësi për të gëlltitur lëngje, trizëm ose zë i mbytur kërkojnë vlerësim urgjent. Abscesi peritonsilar/retrofaringeal, dyshimi për Lemierre ose sepsë kërkon referim spitalor. Rivlerëso në përkeqësim ose mungesë përmirësimi.</p>
-            <p>RADT negativ te fëmija simptomatik ≥3 vjeç: konfirmo me kulturë sipas CDC. Dyshim për mononukleozë: rivlerëso diagnozën dhe shmang përshkrimin rutinë të amoxicillin. Kontrollo funksionin renal, kundërindikacionet dhe ndërveprimet para recetës.</p>
+            <p>Kontrollo diagnozën, funksionin renal, kundërindikacionet dhe ndërveprimet para recetës. Gjendja sistemike shumë e rënduar ose komplikimet kërkojnë vlerësim të veçantë.</p>
           </details>
         </section>
 

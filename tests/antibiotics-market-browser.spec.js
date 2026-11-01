@@ -37,6 +37,11 @@ test.beforeAll(async()=>{
 });
 test.afterAll(()=>new Promise(resolve=>server.close(resolve)));
 test.beforeEach(async({page})=>{
+  // Compatibility harness for the reusable, previously published source adapters.
+  // Production NICE-only behavior is exercised against unmodified HTML in
+  // antibiotics-nice-browser.spec.js; these historical adapter contracts are not
+  // the active clinical standard and must not be mistaken for release coverage.
+  await page.route('**/antibiotiket.html*',route=>route.fulfill({contentType:'text/html; charset=utf-8',body:fs.readFileSync(path.join(ROOT,'antibiotiket.html'),'utf8').replace(' data-nice-standard="required"','').replace(/\s*<script src="\/antibiotiket-nice\.js[^>]*><\/script>/,'')}));
   await page.route('**/api/auth*',route=>route.fulfill({json:phase5AuthenticatedSession()}));
   await page.route('**/api/dosage?view=antibiotic-market',route=>route.fulfill({json:catalog}));
 });
@@ -704,8 +709,8 @@ for(const width of [320,390,1440])test('Infection browser: grouped search and ex
  const picker=page.locator('#indicationPicker');
  if(!await page.locator('#infectionSearch').isVisible())await picker.locator('summary').click();
  await expect(page.locator('#indicationChoice input')).toHaveCount(13);
- await expect(page.locator('#indicationChoice .abx-chip:visible')).toHaveCount(4);
- await expect(page.locator('[data-infection-group="respiratory"]')).toHaveAttribute('aria-pressed','true');
+ await expect(page.locator('#indicationChoice .abx-chip:visible')).toHaveCount(13);
+ await expect(page.locator('[data-infection-group="all"]')).toHaveAttribute('aria-pressed','true');
  await page.locator('#infectionSearch').fill('urinar');
  await expect(page.locator('#indicationChoice .abx-chip:visible')).toHaveCount(2);
  // Browsing another category never silently changes the actual diagnosis.
@@ -737,7 +742,7 @@ for(const width of [320,390,1440])test('Infection browser: grouped search and ex
 test('Every infection remains reachable with unchanged outpatient safety gates',async({page})=>{
  await page.setViewportSize({width:1440,height:900});
  await open(page,'preseptal');
- await expect(page.locator('[data-infection-group="skin"]')).toHaveAttribute('aria-pressed','true');
+ await expect(page.locator('[data-infection-group="all"]')).toHaveAttribute('aria-pressed','true');
  if(await page.locator('#indicationPicker').getAttribute('open')===null)await page.locator('#indicationPicker > summary').click();
  await page.locator('[data-infection-group="all"]').click();
  const values=await page.locator('#indicationChoice input').evaluateAll(nodes=>nodes.map(node=>node.value));

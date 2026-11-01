@@ -98,7 +98,7 @@
   }
 
   function protocolContext() {
-    return {ageMonths:currentAgeBand()?.months,ageConfirmed:ctx.ageConfirmed,weightKg:weightState().value,pregnant:ctx.pregnant,cultureSusceptible:ctx.cultureSusceptible,atypical:ctx.atypical,aomPlan:ctx.aomPlan,aomRisk:ctx.aomRisk,aomFailure:ctx.aomFailure,utiFluoro:ctx.utiFluoro,utiSex:ctx.utiSex,utiEgfr:ctx.utiEgfr===''?null:Number(ctx.utiEgfr),utiAtTerm:ctx.utiAtTerm,utiAlternative:ctx.utiAlternative,utiCephTimes:ctx.utiCephTimes,gasPenicillinSource:ctx.gasPenicillinSource,sinusPenicillinSource:ctx.sinusPenicillinSource,gasConfirmed:ctx.gasConfirmed,gasSchedule:ctx.gasSchedule,gasAmoxSchedule:ctx.gasAmoxSchedule};
+    return {pneumoniaSeverity:ctx.guideAnswers?.severity,ageMonths:currentAgeBand()?.months,ageConfirmed:ctx.ageConfirmed,weightKg:weightState().value,pregnant:ctx.pregnant,cultureSusceptible:ctx.cultureSusceptible,atypical:ctx.atypical,aomPlan:ctx.aomPlan,aomRisk:ctx.aomRisk,aomFailure:ctx.aomFailure,utiFluoro:ctx.utiFluoro,utiSex:ctx.utiSex,utiEgfr:ctx.utiEgfr===''?null:Number(ctx.utiEgfr),utiAtTerm:ctx.utiAtTerm,utiAlternative:ctx.utiAlternative,utiCephTimes:ctx.utiCephTimes,gasPenicillinSource:ctx.gasPenicillinSource,sinusPenicillinSource:ctx.sinusPenicillinSource,gasConfirmed:ctx.gasConfirmed,gasSchedule:ctx.gasSchedule,gasAmoxSchedule:ctx.gasAmoxSchedule};
   }
 
   function weightState() {
@@ -423,6 +423,7 @@
   // as breaking the threshold: the first states the limit and still shows the
   // table, the second withholds a regimen the source does not cover.
   function eligibility(indication) {
+    if(indication.standardBlock)return {blocks:true,tone:'info',text:indication.standardBlock};
     if(protocols && weightState().kind==='invalid')return {blocks:true,tone:'warn',text:'Pesha e shkruar nuk është valide. Shkruaj 1–200 kg ose hiqe për skemën fikse që nuk kërkon peshë.'};
     if (Number.isFinite(indication.minWeightKg)) {
       const state = weightState();
@@ -740,7 +741,7 @@
     $('aomRiskSelect').options[1].textContent=adult?'Otorre — vlerësim individual':'Otorre / fëmijë nën 2 vjeç me AOM bilaterale';
     const advice=ctx.aomRisk==='urgent'?'Dyshim për komplikim → referim urgjent.'
       :ctx.aomRisk==='high'?'Rrezik i lartë · vlerëso nevojën për spital.'
-      :adult?'Kur antibiotiku indikohet · dozat 18+: NHS Fife.'
+      :adult?guide.authority==='NICE'?'NICE NG91: tabela nën 18 vjeç; për të rritur kërkohet vlerësim i veçantë.':'Kur antibiotiku indikohet · dozat 18+: NHS Fife.'
       :ctx.aomRisk==='benefit'?'Kur antibiotiku indikohet · zgjedhja e parë: amoxicillin.'
       :'Kur antibiotiku indikohet · dozat <18 vjeç: NICE NG91.';
     $('aomAdvice').textContent=advice;
@@ -761,6 +762,7 @@
     $('gasConfirmedInput').checked=ctx.gasConfirmed;
     $('gasAmoxScheduleWrap').hidden=!(ctx.gasConfirmed&&penicillin);
     $('gasAmoxScheduleSelect').value=ctx.gasAmoxSchedule;
+    if(guide.authority==='NICE'){$('gasConfirmedInput').closest('label').hidden=true;$('gasAmoxScheduleWrap').hidden=true;$('gasSourceBack').hidden=true;}
     $('gasUrgentInput').checked=ctx.gasUrgent;
     $('gasAdvice').textContent=ctx.gasUrgent?'Dyshim për komplikim → referim urgjent.'
       :native?'Penicillin V në IU · skema e produktit Ospen (SmPC).':penicillin?'Kur antibiotiku indikohet · zgjedhja e parë: Penicillin V · NICE NG84.'
@@ -818,7 +820,7 @@
       cephCheck.append(input, make('span', '', 'Histori e paverifikuar, e lehtë: pa anafilaksi, pa SCAR dhe pa alergji ndaj penicilinës.'));
       el.allergyField.append(cephCheck);
     }
-    cephCheck.hidden = !usesAllergy || ctx.allergy !== 'a4';
+    cephCheck.hidden = guide.authority==='NICE' || !usesAllergy || ctx.allergy !== 'a4';
     cephCheck.querySelector('input').checked = ctx.cephLowRiskConfirmed;
   }
 
@@ -970,8 +972,8 @@
   function renderSources(indication) {
     el.sourceList.replaceChildren();
     for(const text of [indication.warning,indication.contextMessage])if(text)el.sourceList.append(make('p','abx-case-source-note',text));
-    const sourceIds = new Set([indication.source, 'chop-allergy-2025', 'jtfpp-allergy-2022', 'carpa']);
-    if(indication.id==='aom')['cdc-aom-diagnosis','nhs-borders-aom','nice-ng143','nhs-mastoiditis'].forEach(id=>sourceIds.add(id));
+    const sourceIds = new Set(guide.authority==='NICE'?[indication.source]:[indication.source, 'chop-allergy-2025', 'jtfpp-allergy-2022', 'carpa']);
+    if(indication.id==='aom'&&guide.authority!=='NICE')['cdc-aom-diagnosis','nhs-borders-aom','nice-ng143','nhs-mastoiditis'].forEach(id=>sourceIds.add(id));
     indication.options.forEach(option => {
       if (option.source) sourceIds.add(option.source);
       if (option.durationSource) sourceIds.add(option.durationSource);
@@ -1035,8 +1037,10 @@
   }
 
   function render() {
+    if(document.documentElement?.dataset.niceStandard==='required'&&!window.DRX_NICE_STANDARD){el.list.dataset.guideBlocked='true';el.list.replaceChildren(make('p','abx-empty','Standardi NICE nuk u ngarkua. Rifresko faqen; skemat e tjera nuk përdoren si zëvendësim.'));return;}
     if(!protocols && document.documentElement?.dataset.penicillinProtocols==='required'){el.list.replaceChildren(make('p','abx-empty','Protokollet nuk u ngarkuan. Rifresko faqen; dozat e vjetra nuk përdoren si zëvendësim.'));return;}
     if(!manual){el.list.dataset.guideBlocked='true';el.list.replaceChildren(make('p','abx-empty','Udhëzuesi nuk u ngarkua. Rifresko faqen; trajtimi nuk zgjidhet pa pyetjet e rastit.'));return;}
+    if(guide.authority==='NICE'){ctx.aomPlan='immediate';ctx.gasPenicillinSource='nice';ctx.sinusPenicillinSource='nice';}
     const indication = currentIndication();
     document.body?.classList.toggle('abx-simple-aom',indication.id==='aom');
     document.body?.classList.toggle('abx-simple-gas',indication.id==='gas');
@@ -1082,7 +1086,7 @@
       return;
     }
 
-    const decision=manual.decide(indication.id,visibleOptions(indication),ctx);
+    const decision=manual.decide(indication.id,visibleOptions(indication),{...ctx,ageMonths:currentAgeBand()?.months});
     if(decision.block){el.list.dataset.guideBlocked='true';el.list.replaceChildren(make('p','abx-manual-decision',decision.block));updateCaseStatus(false);return;}
     const options = decision.options;
     if (!options.length) {
