@@ -677,3 +677,60 @@ for(const width of [320,390,1440])test(`Faringiti i thjeshtë: settings closed, 
   await expect(card(page,'penicillin-gas')).toBeVisible();
   await page.screenshot({path:testInfo.outputPath(`gas-simple-${width}.png`),fullPage:true});
 });
+
+
+for(const width of [320,390,1440])test('Infection browser: grouped search and explicit selection at '+width+'px',async({page})=>{
+ await page.setViewportSize({width,height:900});
+ await open(page,'aom');
+ const picker=page.locator('#indicationPicker');
+ if(!await page.locator('#infectionSearch').isVisible())await picker.locator('summary').click();
+ await expect(page.locator('#indicationChoice input')).toHaveCount(13);
+ await expect(page.locator('#indicationChoice .abx-chip:visible')).toHaveCount(4);
+ await expect(page.locator('[data-infection-group="respiratory"]')).toHaveAttribute('aria-pressed','true');
+ await page.locator('#infectionSearch').fill('urinar');
+ await expect(page.locator('#indicationChoice .abx-chip:visible')).toHaveCount(2);
+ // Browsing another category never silently changes the actual diagnosis.
+ await expect(page.locator('#indicationCurrent')).toHaveText('Otitis media');
+ await expect(page.locator('#indicationChoice input:checked')).toHaveValue('aom');
+ await page.locator('#indicationChoice input[value="uti-pyelo"]').check();
+ await expect(page).toHaveURL(/indication=uti-pyelo/);
+ await expect(page.locator('#indicationCurrent')).toHaveText('UTI febrile / Pielonefrit');
+ await expect(page.locator('#ageSelect')).toHaveValue('5y');
+ await expect(page.locator('#weightInput')).toHaveValue('18');
+ if(width<=760){await expect(picker).not.toHaveAttribute('open','');await expect(picker.locator('summary')).toBeFocused();await picker.locator('summary').click();}
+ await page.locator('[data-infection-group="all"]').click();
+ await expect(page.locator('#indicationChoice .abx-chip:visible')).toHaveCount(13);
+ await page.locator('#infectionSearch').fill('no-such-infection');
+ await expect(page.locator('.abx-infection-empty')).toBeVisible();
+ await expect(page.locator('#indicationChoice input:checked')).toHaveValue('uti-pyelo');
+ await page.getByRole('button',{name:'Shfaq të gjitha infeksionet'}).click();
+ await expect(page.locator('#infectionSearch')).toBeFocused();
+ await expect(page.locator('#indicationChoice .abx-chip:visible')).toHaveCount(13);
+ await page.locator('#infectionSearch').fill('lekura');
+ await expect(page.locator('#indicationChoice .abx-chip:visible')).toHaveCount(7);
+ await page.locator('#infectionSearch').press('Escape');
+ await expect(page.locator('#infectionSearch')).toHaveValue('');
+ await expect(page.locator('#indicationChoice .abx-chip:visible')).toHaveCount(13);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.screenshot({path:test.info().outputPath('infections-'+width+'.png'),fullPage:false});
+});
+
+test('Every infection remains reachable with unchanged outpatient safety gates',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});
+ await open(page,'preseptal');
+ await expect(page.locator('[data-infection-group="skin"]')).toHaveAttribute('aria-pressed','true');
+ await page.locator('[data-infection-group="all"]').click();
+ const values=await page.locator('#indicationChoice input').evaluateAll(nodes=>nodes.map(node=>node.value));
+ expect(new Set(values).size).toBe(13);
+ for(const value of values){
+  await page.locator('[data-infection-group="all"]').click();
+  await page.locator('#indicationChoice input[value="'+value+'"]').check();
+  await expect(page).toHaveURL(new RegExp('indication='+value));
+  await expect(page.locator('#indicationChoice input:checked')).toHaveValue(value);
+ }
+ await page.locator('[data-infection-group="all"]').click();
+ await page.locator('#indicationChoice input[value="preseptal"]').check();
+ await page.locator('#orbitalRedFlagsInput').check();
+ await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
+ await expect(page.locator('#recommendationList')).toContainText('STOP');
+});

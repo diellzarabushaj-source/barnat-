@@ -19,6 +19,10 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const html = read('antibiotiket.html');
 const js = read('antibiotiket.js');
 const css = read('antibiotiket.css');
+const infectionCss = read('antibiotiket-infections.css');
+assert.match(html, /antibiotiket-infections\.js\?v=/);
+assert.match(html, /antibiotiket-infections\.css\?v=/);
+assert.match(infectionCss, /#indicationPicker \.abx-picker-current\{display:block/, 'The selected infection stays visible while browsing other categories');
 
 const BREAKPOINT = 760;
 
