@@ -35,3 +35,13 @@ console.log('PASS: AKKPM identity, component ratios, units, route separation, re
 const fosfo=buildCatalog([row("f-3g","Fosfomycin trometamol","J01XX01","3 g","Granules for oral solution",{packaging:"1 sachet"})]);
 assert.equal(get(fosfo,"Fosfomycin").forms[0].unit,"qese");
 assert.equal(get(fosfo,"Fosfomycin").forms[0].variants[0].concentration.value,3000);
+
+const ATC=require('../antibiotiket-classification.js');
+assert.equal(ATC.forDrug('Penicillin V')[0].code,'J01CE02');
+assert.equal(ATC.forCode('J01DD04').subgroup,'Cefalosporina · gjenerata III');
+assert.equal(ATC.forDrug('Piperacillin / tazobactam')[0].code,'J01CR05');
+assert.equal(ATC.forDrug('Mupirocin')[0].groupCode,'D06A');
+assert.equal(ATC.forCode('QJ01CE02'),null,'Do not merge veterinary and human classes');
+assert.equal(ATC.forCode('J01CE'),null,'A subgroup is not a substance code');
+assert.deepEqual(ATC.forDrug('Unidentified'),[]);
+for(const [name,codes] of Object.entries(ATC.scopes))for(const code of codes)assert.ok(ATC.forCode(code),name);

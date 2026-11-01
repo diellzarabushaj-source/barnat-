@@ -492,9 +492,11 @@ test('Pharyngitis macrolide range is source-bound for adolescents, adults and pr
   await expect(c.locator('.abx-dose-window')).toContainText('1000 mg');
   await expect(c.locator('.abx-rx-line')).toContainText('2 herë/ditë × 5 ditë');
 });
-test('Penicillin V in IU is never treated as milligrams outside the verified Ospen pharyngitis scheme',async({page})=>{
-  await open(page,'sinusitis','adult','');const c=card(page,'penicillin-sinusitis');
+test('An unverified IU product never replaces the fixed NICE milligram prescription',async({page})=>{
+  await open(page,'sinusitis','adult','70');const c=card(page,'penicillin-sinusitis');
   await choose(c,'tablet','1000000 IU');
+  await expect(c).toHaveAttribute('data-native-ospen','true');
+  await c.getByRole('button',{name:'Kthehu te skema NICE në mg'}).click();
   await c.locator('.abx-market-product summary').click();
   await c.locator('.abx-market select').nth(2).selectOption('penv-iu');
   await expect(c.locator('.abx-market-info')).toContainText('IU');
@@ -733,4 +735,71 @@ test('Every infection remains reachable with unchanged outpatient safety gates',
  await page.locator('#orbitalRedFlagsInput').check();
  await expect(page.locator('#recommendationList .abx-option')).toHaveCount(0);
  await expect(page.locator('#recommendationList')).toContainText('STOP');
+});
+
+
+for(const width of [320,390,1440])test('AKKPM Ospen sinusitis: automatic IU schedule and duration at '+width+'px',async({page})=>{
+ await page.setViewportSize({width,height:1000});await open(page,'sinusitis','adult','70');
+ const c=card(page,'penicillin-sinusitis');
+ await expect(c.locator('.abx-atc-badge')).toContainText('J01CE02');
+ await choose(c,'tablet','1000000 IU');
+ await expect(c.locator('.abx-split-confirm')).toBeHidden();
+ await expect(c).toHaveAttribute('data-native-ospen','true');
+ await expect(c.locator('.abx-option-source')).toHaveText('DK · sinusit');
+ await expect(c.locator('.abx-ospen-auto')).toHaveText('4 herë/ditë · çdo 6 orë · 5 ditë');
+ await expect(c.locator('.abx-ospen input')).toHaveCount(0);
+ await expect(c.locator('.abx-duration')).toHaveText('5 ditë');
+ await expect(c.locator('.abx-rx-line')).toContainText('1 tabletë PO 4 herë/ditë × 5 ditë');
+ await expect(c.locator('.abx-ospen-daily')).toContainText('4 000 000 IU/ditë');
+ await expect(c.locator('.abx-rx-quantity')).toContainText('20 tableta');
+ await c.screenshot({path:test.info().outputPath('ospen-auto-'+width+'.png')});
+ await c.locator('.abx-ospen-source summary').click();
+ await expect(c.locator('.abx-ospen-source')).toContainText('590 mg');
+ await choose(c,'tablet','1500000 IU');
+ await expect(c.locator('.abx-rx-copy')).toHaveCount(0);
+ await expect(c.locator('.abx-ospen-answer')).toContainText('zgjidh Ospen 1.0');
+ await choose(c,'tablet','1000000 IU');
+ await expect(c.locator('.abx-rx-line')).toContainText('1 tabletë PO 4 herë/ditë × 5 ditë');
+ await c.getByRole('button',{name:'Kthehu te skema NICE në mg'}).click();
+ await expect(c).not.toHaveAttribute('data-native-ospen','true');
+ await choose(c,'tablet','500 mg');
+ await expect(c.locator('.abx-dose-row[data-role="single"]')).toContainText('500 mg');
+ await expect(c.locator('.abx-rx-line')).toContainText('1 tabletë PO 4 herë/ditë × 5 ditë');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.screenshot({path:test.info().outputPath('atc-products-'+width+'.png'),fullPage:true});
+});
+
+test('ATC index preserves clinical order, routes and complete combination cards',async({page})=>{
+ await open(page,'pneumonia','adult','70');
+ await page.locator('#atypicalInput').check();
+ const before=await page.locator('#recommendationList .abx-option').evaluateAll(nodes=>nodes.map(n=>n.dataset.regimenId));
+ await page.locator('#recommendationList > .abx-atc-browser > summary').click();
+ await expect(page.locator('.abx-atc-group')).not.toHaveCount(0);
+ const target=page.locator('.abx-atc-group a').first();
+ await target.click();
+ const after=await page.locator('#recommendationList .abx-option').evaluateAll(nodes=>nodes.map(n=>n.dataset.regimenId));
+ expect(after).toEqual(before);
+ await expect(page.locator('#recommendationList .abx-option:visible')).toHaveCount(before.length);
+ for(const item of await page.locator('.abx-option[data-atc-codes]').all())await expect(item.locator(':scope > .abx-atc-badges')).toHaveCount(1);
+ expect(await page.evaluate(()=>document.activeElement.classList.contains('abx-option'))).toBe(true);
+});
+
+test('Ospen automatic pediatric course resets with patient and rejects another IU product',async({page})=>{
+ await open(page,'sinusitis','4y','16');const c=card(page,'penicillin-sinusitis');
+ await choose(c,'tablet','1000000 IU');
+ await expect(c.locator('.abx-ospen-auto')).toHaveText('3 herë/ditë · çdo 8 orë · 5 ditë');
+ await expect(c.locator('.abx-rx-line')).toContainText('½ tablete PO 3 herë/ditë × 5 ditë');
+ await expect(c.locator('.abx-rx-quantity')).toContainText('7,5 tableta');
+ await c.locator('.abx-market-product summary').click();
+ await c.locator('.abx-market select').nth(2).selectOption('penv-iu');
+ await expect(c.locator('.abx-rx-copy')).toHaveCount(0);
+ await expect(c.locator('.abx-ospen-answer')).toContainText('Produktet tjera nuk trashëgojnë skemën');
+ await c.locator('.abx-market select').nth(2).selectOption(ospen1.id);
+ await page.locator('#weightInput').fill('40');
+ await expect(c.locator('.abx-rx-copy')).toHaveCount(0);
+ await page.locator('#ageSelect').selectOption('10y');
+ await expect(c.locator('.abx-ospen-auto')).toHaveText('4 herë/ditë · çdo 6 orë · 5 ditë');
+ await expect(c.locator('.abx-rx-line')).toContainText('½ tablete PO 4 herë/ditë × 5 ditë');
+ await page.locator('#weightInput').fill('');
+ await expect(c.locator('.abx-rx-copy')).toHaveCount(0);
 });
