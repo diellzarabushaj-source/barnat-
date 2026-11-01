@@ -1,0 +1,124 @@
+/* One clinical case, one selected treatment. Shared dashboard shell remains owner. */
+.abx-manual .abx-main{max-width:1100px}
+.abx-manual .abx-hero{margin-bottom:22px}
+.abx-manual .abx-hero h1{font-size:30px;letter-spacing:-.6px}
+.abx-manual .abx-card{border-radius:12px;box-shadow:none}
+.abx-manual .abx-input{overflow:hidden}
+.abx-manual .abx-input>.abx-step-title{display:flex!important;align-items:center;justify-content:space-between;margin:0;padding:10px 20px;border-bottom:1px solid var(--ab-line);font-size:15px;font-weight:600;color:var(--ab-ink)}
+.abx-manual-reset{border:0;background:none;color:var(--ab-muted);font:inherit;font-size:12px;font-weight:400;min-height:44px;cursor:pointer}
+.abx-manual-identity{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;padding:18px 20px 0}
+.abx-manual .abx-manual-identity>.abx-block{padding:0;border:0}
+.abx-manual .abx-picker>summary{display:flex!important;align-items:center;justify-content:space-between;gap:10px;min-height:46px;cursor:pointer!important;pointer-events:auto!important;font-size:13px}
+.abx-manual #indicationPicker{border:1px solid var(--ab-line-strong);border-radius:8px;padding:0 12px}
+.abx-manual #indicationPicker[open]{grid-column:1/-1}
+.abx-manual #indicationPicker>.abx-picker-summary .abx-label{font-size:12px;margin:0;font-weight:400;color:var(--ab-muted)}
+.abx-manual #indicationPicker .abx-picker-current{font-size:13px;font-weight:500;color:var(--ab-ink)}
+.abx-manual .abx-input .abx-label{font-size:12px;font-weight:500;margin:0 0 7px}
+.abx-manual .abx-manual-allergy{display:block;margin:0}
+.abx-manual .abx-manual-allergy select,.abx-manual .abx-schedule-field select,.abx-manual #utiEgfrInput{width:100%;min-width:0;min-height:46px;border:1px solid var(--ab-line-strong);border-radius:8px;background:#fff;padding:10px 30px 10px 12px;font-size:13px;color:var(--ab-ink)}
+.abx-manual #allergyPicker[hidden]{display:none!important}
+.abx-manual .abx-measure{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,.8fr);gap:12px;padding:18px 20px;border:0}
+.abx-manual .abx-weight input,.abx-manual .abx-age-field select{height:46px;border-radius:8px;font-size:16px}
+.abx-manual .abx-weight input{font-size:20px}
+.abx-manual .abx-measure>.abx-refine-item{align-self:start;padding-top:22px}
+.abx-manual .abx-measure .abx-toggle{min-height:46px}
+.abx-manual #contextHint{font-size:11px}
+.abx-manual .abx-age-confirmation{font-size:11px;padding:8px 10px;min-height:44px}
+.abx-manual .abx-refine{display:flex;flex-wrap:wrap;gap:12px;padding:0 20px 16px;border:0}
+.abx-manual .abx-refine[hidden]{display:none}
+.abx-manual .abx-refine-item{min-width:0}
+.abx-manual .abx-input>.abx-aom,.abx-manual-questions{margin:0;padding:18px 20px;border:0;border-top:1px solid var(--ab-line);border-radius:0;background:#fff;box-shadow:none}
+.abx-manual .abx-input>.abx-aom h2,.abx-manual-question-title{font-size:13px;font-weight:600;margin:0 0 12px}
+.abx-manual .abx-input>.abx-aom>.abx-toggle{margin:10px 0 0}
+.abx-manual .abx-aom-advice{display:none}
+.abx-manual .abx-gas-options,.abx-manual .abx-input>.abx-aom>details{margin:8px 0 0;font-size:12px;color:var(--ab-muted)}
+.abx-manual .abx-input>.abx-aom>details>summary,.abx-manual-more>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:12px;color:var(--ab-muted)}
+.abx-manual .abx-input>.abx-aom>details>summary:before,.abx-manual-more>summary:before{content:'+';margin-right:8px;font-size:16px}
+.abx-manual .abx-input>.abx-aom>details[open]>summary:before,.abx-manual-more[open]>summary:before{content:'−'}
+.abx-manual-question-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.abx-manual .abx-guide-alarm{align-items:flex-start;min-height:46px;padding:10px 12px;border:1px solid var(--ab-line);border-radius:8px;background:#fcfcfd;font-size:12px}
+.abx-guide-alarm strong,.abx-guide-alarm small{display:block;font-size:12px;font-weight:500}
+.abx-guide-alarm small{font-size:11px;color:var(--ab-muted);font-weight:400;margin-top:3px}
+.abx-guide-alarm:has(input:checked){border-color:#f0b8ae!important;background:#fef3f2!important;color:#912c22}
+.abx-manual-more{padding:0 20px;border-top:1px solid var(--ab-line)}
+.abx-manual-more .abx-age-suggestion{padding:0 0 12px;border:0;background:none;font-size:11px}
+.abx-manual .abx-results-head{margin:22px 0 12px}
+.abx-manual .abx-results-head h2{font-size:15px;font-weight:600}
+.abx-manual .abx-antibiotic-choice{border:1px solid var(--ab-line);background:#fcfbff;border-radius:12px;padding:16px 20px;margin-bottom:14px}
+.abx-manual .abx-antibiotic-choice select{font-size:15px;font-weight:500;background:#fff}
+.abx-manual .abx-list{gap:12px}
+.abx-manual .abx-option{padding:18px 20px;border-radius:12px;box-shadow:none}
+.abx-manual .abx-option-head h3{font-size:20px;letter-spacing:-.3px}
+.abx-manual .abx-option-head{margin-bottom:8px}
+.abx-manual .abx-tier{font-size:10px}
+.abx-manual .abx-atc-badge{padding:3px 7px;font-size:10px}
+.abx-manual .abx-option-source{display:none}
+.abx-manual .abx-option-meta{font-size:12px;margin:8px 0}
+.abx-manual .abx-option:has(.abx-rx-copy:not(:disabled)):not([data-native-ospen=true])>.abx-dose{display:none}
+.abx-manual .abx-dose-row{padding:9px 12px}
+.abx-manual .abx-dose-row-value{font-size:18px}
+.abx-manual .abx-dose-row-label{font-size:10px}
+.abx-manual .abx-dose-row p{font-size:11px}
+.abx-manual .abx-market{padding:16px;border-radius:10px;margin-top:14px}
+.abx-manual .abx-market>strong{display:none}
+.abx-manual .abx-market-component{column-gap:12px;row-gap:12px}
+.abx-manual .abx-market select{min-height:46px;font-size:14px;border-radius:8px}
+.abx-manual .abx-market-component>label>span{font-size:12px}
+.abx-manual .abx-market-single{padding:16px}
+.abx-manual .abx-market-single>strong{font-size:30px;letter-spacing:-.7px}
+.abx-manual .abx-market-dose-label,.abx-manual .abx-market-mg{font-size:12px}
+.abx-manual .abx-market-plan{font-size:13px}
+.abx-manual .abx-market-course{font-size:12px}
+.abx-market-limit-line{margin:10px 0 0;padding:0 14px;font-size:11px;color:var(--ab-muted)}
+.abx-manual .abx-market-limits{font-size:11px}
+.abx-manual .abx-market-product>summary{font-size:11px}
+.abx-manual .abx-market-info{font-size:11px;line-height:1.5}
+.abx-manual .abx-rx{margin-top:14px;border:0;border-top:1px solid var(--ab-line);border-radius:0;padding:0}
+.abx-manual .abx-rx>summary{min-height:44px;font-size:12px;color:var(--ab-muted)}
+.abx-manual .abx-rx-body{padding:0}
+.abx-manual .abx-rx-preview{background:#fff;border:0;padding:8px 0}
+.abx-manual .abx-rx-line{font-size:13px}
+.abx-manual .abx-rx-dose,.abx-manual .abx-rx-quantity{font-size:12px}
+.abx-manual .abx-rx-note{font-size:10px;line-height:1.5}
+.abx-manual .abx-rx-footer>span{display:none}
+.abx-manual .abx-rx-copy{border-radius:8px;min-height:44px;font-size:12px;background:var(--ab-accent);border-color:var(--ab-accent);color:white}
+.abx-manual .abx-rx-copy:disabled{opacity:.5}
+.abx-dose-adjust>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:7px;font-size:11px;color:var(--ab-muted)}
+.abx-dose-adjust>summary:before{content:'+'}
+.abx-dose-adjust[open]>summary:before{content:'−'}
+.abx-manual .abx-working{font-size:11px;margin-top:10px}
+.abx-manual .abx-ospen{padding:16px;border-radius:10px}
+.abx-manual .abx-ospen-auto{font-size:14px;font-weight:500}
+.abx-manual .abx-ospen-answer:has(.abx-practical-choices>button:only-child) .abx-dose-window,.abx-manual .abx-ospen-answer:has(.abx-practical-choices>button:only-child) .abx-practical-choices{display:none}
+.abx-manual .abx-ospen-daily{font-size:12px}
+.abx-manual .abx-ospen-source,.abx-manual .abx-ospen-switch{font-size:11px;color:var(--ab-muted)}
+.abx-ospen-switch>summary{display:flex;align-items:center;min-height:44px;cursor:pointer;font-size:11px;color:var(--ab-muted)}
+.abx-manual-decision{padding:18px 20px;border:1px solid var(--ab-line);background:#fafbfc;border-radius:12px;line-height:1.6;font-size:13px}
+.abx-manual #recommendationList[data-guide-blocked=true] .abx-option{display:none}
+.abx-manual .abx-provenance{margin-top:18px}
+.abx-case-next{display:block;margin:0 20px 16px auto;min-height:44px;border:1px solid #d8d0f0;border-radius:8px;background:#f5f2ff;color:#4f36ad;padding:10px 15px;font-size:12px;cursor:pointer}
+.abx-case-next:disabled{opacity:.45;cursor:default}
+.abx-case-edit{margin-left:auto;min-height:44px;border:0;background:none;color:var(--ab-accent);font-size:12px;cursor:pointer}
+.abx-case-summary{padding:16px 20px;margin:0;font-size:13px;color:var(--ab-text);line-height:1.6}
+.abx-manual .abx-input.is-collapsed>:not(.abx-step-title):not(.abx-case-summary){display:none!important}
+.abx-manual .abx-input.is-collapsed .abx-manual-reset{display:none}
+.abx-manual-identity{align-items:end}
+.abx-manual .abx-input>.abx-aom{row-gap:8px}
+.abx-manual .abx-input>.abx-aom>label.abx-label{margin:0}
+.abx-manual .abx-market-course{display:flex!important}
+.abx-manual .abx-rx-component{padding:0;border:0;border-radius:0;background:none;gap:0}
+.abx-manual .abx-rx-preview{padding:4px 0;gap:4px}
+.abx-manual .abx-rx-body{gap:8px}
+.abx-manual .abx-antibiotic-choice{border-radius:12px 12px 0 0;margin-bottom:0;border-bottom:0}
+.abx-manual .abx-option:not([data-guide-procedure=true]):not([data-guide-additional=true])>.abx-option-head{display:none}
+.abx-manual .abx-list:has(.abx-antibiotic-choice:not([hidden]))>.abx-option:not([hidden]){border-top-left-radius:0;border-top-right-radius:0;margin-top:0}
+.abx-manual .abx-market-product{margin:4px 0}
+.abx-manual .abx-market-product>summary{min-height:44px}
+.abx-manual .abx-ospen .abx-dose-window{margin-top:12px}
+@media(max-width:760px){.abx-manual .abx-hero h1{font-size:27px}.abx-manual-identity{grid-template-columns:1fr;padding:16px 16px 0;gap:16px}.abx-manual .abx-measure{grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding:16px;gap:12px}.abx-manual .abx-measure>.abx-refine-item{padding-top:0;grid-column:1/-1}.abx-manual .abx-input>.abx-aom,.abx-manual-questions{padding:16px}.abx-manual-question-fields{grid-template-columns:1fr}.abx-manual .abx-manual-allergy select,.abx-manual .abx-schedule-field select,.abx-manual #utiEgfrInput,.abx-manual .abx-market select{font-size:16px}.abx-manual .abx-input>.abx-step-title{padding:8px 16px}.abx-manual-more{padding:0 16px}.abx-manual .abx-refine{padding:0 16px 14px}.abx-manual .abx-option{padding:16px}.abx-manual .abx-market{padding:14px}.abx-manual .abx-rx-copy{width:100%;font-size:14px}.abx-manual .abx-antibiotic-choice{padding:14px 16px}.abx-manual .abx-antibiotic-choice select{font-size:16px}.abx-manual .abx-market-component{display:grid;grid-template-columns:minmax(0,1fr)}.abx-manual .abx-market-component>*{grid-column:1/-1}.abx-manual .abx-option-head h3{font-size:20px}}
+.abx-manual .abx-market{border:0;border-radius:0;padding:0;background:none}
+.abx-manual .abx-ospen{border:0;border-radius:0;padding:0;background:none}
+.abx-manual [data-native-ospen=true]>.abx-option-meta{display:none}
+.abx-manual .abx-ospen .abx-market-single>.abx-schedule-field{margin:6px 0 0;padding:0;gap:0}
+.abx-manual .abx-ospen .abx-market-single>.abx-schedule-field>.abx-label{display:none}
+.abx-manual .abx-ospen .abx-market-single .abx-ospen-auto{font-size:13px;color:inherit}

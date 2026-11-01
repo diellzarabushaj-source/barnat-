@@ -2,6 +2,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const P=require('../antibiotiket-penicillin-protocols');
+const Manual=require('../antibiotiket-guide');
 const M=require('../antibiotiket-market-math');
 const read=f=>fs.readFileSync(path.join(__dirname,'..',f),'utf8');
 const sandbox={window:{}};vm.runInNewContext(read('antibiotiket-data.js'),sandbox);
@@ -167,3 +168,26 @@ assert.equal(nativeGas.duration.text,'10 ditë');
 assert.match(P.gate(nativeGas,context(48,16)),/Konfirmo GAS/);
 assert.match(P.gate(nativeGas,context(48,null,{gasConfirmed:true})),/peshën reale/);
 assert.equal(option('gas',48,'penicillin-gas',16).dose.value,125,'NICE remains the default; no silent IU conversion');
+
+// The manual selects context; dose and source data remain owned by P.
+const guideCases={sinusitis:{course:'initial'},impetigo:{extent:'wide'},cellulitis:{purulence:'none'},'wound-cut':{wound:'infected'},abscess:{systemic:'yes'},bite:{purpose:'proph'},lymphadenitis:{origin:'skin'}};
+assert.equal(Object.keys(Manual.configurations).length,13);
+for(const i of guide.indications){
+ const resolved=P.resolve(i,context(120,32));
+ const answer=guideCases[i.id]||{};
+ const decision=Manual.decide(i.id,resolved.options,{guideAnswers:answer});
+ assert.ok(!decision.block,i.id);
+ for(const option of decision.options)assert.ok(resolved.options.includes(option),'Never fabricate a regimen');
+ assert.ok(Manual.decide(i.id,resolved.options,{guideUrgent:true,guideAnswers:answer}).block);
+ if(Manual.configurations[i.id].questions.length)assert.ok(Manual.decide(i.id,resolved.options,{guideAnswers:{}}).block,'Unknown context must not prescribe');
+}
+assert.ok(Manual.decide('wound-cut',[],{guideAnswers:{wound:'clean'}}).block);
+assert.ok(Manual.decide('cellulitis',[],{guideAnswers:{purulence:'pus'}}).block);
+assert.ok(Manual.decide('impetigo',[],{guideAnswers:{extent:'local'}}).block);
+const bite=resolve('bite',216,70).options;
+assert.ok(Manual.decide('bite',bite,{guideAnswers:{purpose:'proph'}}).options.every(o=>o.id.endsWith('-proph')));
+assert.ok(Manual.decide('bite',bite,{guideAnswers:{purpose:'treat'}}).options.every(o=>o.id.endsWith('-treat')));
+const abscess=resolve('abscess',120,32).options;
+assert.ok(Manual.decide('abscess',abscess,{guideAnswers:{systemic:'no'}}).options.every(o=>o.kind==='procedure'));
+assert.ok(Manual.decide('sinusitis',resolve('sinusitis',216,70).options,{guideAnswers:{course:'failure'}}).options.every(o=>o.tier==='second'));
+console.log('PASS: all 13 manual contexts, explicit unknowns, red flags, wound care, drainage and isolated treatment/prophylaxis.');
