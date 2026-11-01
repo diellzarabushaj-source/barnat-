@@ -22,7 +22,7 @@
     impetigo:'Lëkura', cellulitis:'Lëkura dhe indet nënlëkurore', 'wound-cut':'Plagë / prerje', abscess:'Absces i lëkurës',
     preseptal:'Zona rreth syrit · preseptal', bite:'Kafshime nga gjitarët', lymphadenitis:'Nyjet limfatike të qafës',
   };
-  const aliases={aom:'otit otitis veshi veshit',gas:'faringit faringjit tonsilit angina streptokok streptokoku',pneumonia:'pneumoni pneumonia mushkeri',sinusitis:'sinusit sinuzit sinuse','uti-cystitis':'cistit cystitis urinar fshikeza','uti-pyelo':'pielonefrit pyelonephritis urinar ethe',impetigo:'impetigo impetigoja',cellulitis:'celulit celulitis erizipele','wound-cut':'plage prerje laceracion',abscess:'absces abces qelb',preseptal:'preseptal periorbital syri qepalla',bite:'kafshim kafshimet qeni mace',lymphadenitis:'limfadenit limfadenopati cervikal gjendra qafe'};
+  const aliases={aom:'otit otitis veshi veshit',gas:'faringit faringiti faringjit faringjiti tonsilit tonsiliti angina angine streptokok streptokoku',pneumonia:'pneumoni pneumonia mushkeri',sinusitis:'sinusit sinusiti sinuzit sinuziti sinuse','uti-cystitis':'cistit cistiti cystitis urinar fshikeza','uti-pyelo':'pielonefrit pielonefriti pyelonephritis urinar ethe',impetigo:'impetigo impetigoja',cellulitis:'celulit celulitis erizipele','wound-cut':'plage prerje laceracion',abscess:'absces abces qelb',preseptal:'preseptal periorbital syri qepalla',bite:'kafshim kafshimet qeni mace',lymphadenitis:'limfadenit limfadenopati cervikal gjendra qafe'};
   const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
   const create = (tag, className, text) => {
     const element = document.createElement(tag);

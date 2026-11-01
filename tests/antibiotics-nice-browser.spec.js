@@ -30,7 +30,7 @@ for(const width of [320,390,1440])test(`Published NICE manual: nine infection ro
   await expect(c.locator('.abx-market-daily')).toBeVisible();await expect(c.locator('.abx-market-limit-line')).toBeVisible();
   await expect(page.locator('#hospitalModule')).toBeHidden();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  }
- await page.locator('h1').click();await page.keyboard.press('/');await expect(page.locator('#infectionSearch')).toBeFocused();await page.locator('#infectionSearch').fill('streptokok');await page.locator('#infectionSearch').press('Enter');
+ await page.locator('h1').click();await page.keyboard.press('/');await expect(page.locator('#infectionSearch')).toBeFocused();await page.locator('#infectionSearch').fill('anginë');await page.locator('#infectionSearch').press('Enter');
  await expect(page.locator('#indicationCurrent')).toContainText('Faringjit');await expect(page.locator('#guide-throat')).toHaveCount(0);
  await page.screenshot({path:test.info().outputPath('nice-manual-'+width+'.png'),fullPage:true});
 });
