@@ -28,6 +28,16 @@ test.beforeEach(async({page})=>{await page.route('**/api/auth*',r=>r.fulfill({js
 const answers={pneumonia:{severity:'nonsevere'},sinusitis:{course:'initial'},impetigo:{extent:'wide'},cellulitis:{purulence:'none'},bite:{purpose:'proph'}};
 async function open(page,id,age='5y',weight='20'){await page.goto(url+'/antibiotiket.html?indication='+id);await page.locator('#weightInput').fill(weight);await page.locator('#ageSelect').selectOption(age);for(const [key,val]of Object.entries(answers[id]||{}))await page.locator('#guide-'+key).selectOption(val);}
 async function choose(c,form,strength){await c.getByRole('combobox',{name:/^Forma ·/}).selectOption(form);await c.getByRole('combobox',{name:/^Fortësia/}).selectOption({label:strength});}
+for(const width of [390,1024,1440,1920])test(`Infection picker expands across its actual parent grid at ${width}px`,async({page})=>{
+ await page.setViewportSize({width,height:1000});await open(page,'bite');
+ const picker=page.locator('#indicationPicker');await picker.locator('summary').click();await expect(picker).toHaveAttribute('open','');
+ const geometry=await page.evaluate(()=>{const identity=document.querySelector('.abx-manual-identity'),picker=document.querySelector('#indicationPicker'),list=document.querySelector('#indicationChoice');return {available:identity.clientWidth-parseFloat(getComputedStyle(identity).paddingLeft)-parseFloat(getComputedStyle(identity).paddingRight),width:picker.getBoundingClientRect().width,listHeight:list.clientHeight,scrollable:list.scrollHeight>list.clientHeight,overflow:document.documentElement.scrollWidth>innerWidth};});
+ expect(geometry.width).toBeGreaterThan(geometry.available*.98);expect(geometry.overflow).toBe(false);
+ if(width>760){expect(geometry.listHeight).toBeLessThanOrEqual(420);expect(geometry.scrollable).toBe(true);}
+ await picker.getByRole('radio',{name:'Limfadenit cervikal',exact:true}).check();await expect(picker).not.toHaveAttribute('open','');await expect(page.locator('#indicationCurrent')).toContainText('Limfadenit');
+ await picker.locator('summary').click();await page.locator('#infectionSearch').fill('anginë');await page.locator('#infectionSearch').press('Enter');await expect(page.locator('#indicationCurrent')).toContainText('Faringjit');
+ await picker.locator('summary').click();await page.locator('#infectionSearch').fill('');await page.locator('[data-infection-group=all]').click();await expect(picker).toHaveAttribute('open','');await expect(picker.locator('label.abx-chip:visible')).toHaveCount(13);await page.screenshot({path:test.info().outputPath('infection-picker-'+width+'.png'),fullPage:false});
+});
 for(const width of [320,390,1440])test(`Published NICE manual: nine infection routes, product doses and keyboard search at ${width}px`,async({page})=>{
  await page.setViewportSize({width,height:900});
  for(const [id,form,strength,days] of [['aom','oral-liquid','250 mg/5 ml',5],['gas','oral-liquid','125 mg/5 ml',10],['pneumonia','oral-liquid','250 mg/5 ml',3],['sinusitis','oral-liquid','125 mg/5 ml',5],['uti-cystitis','oral-liquid','25 mg/5 ml',3],['uti-pyelo','oral-liquid','250 mg/5 ml',7],['impetigo','oral-liquid','125 mg/5 ml',5],['cellulitis','oral-liquid','125 mg/5 ml',5],['bite','oral-liquid','(125 mg+31.25 mg)/5 ml',3]]){
