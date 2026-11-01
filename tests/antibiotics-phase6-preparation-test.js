@@ -111,8 +111,7 @@ assert.match(runtime,/Si përgatitet/);
 assert.match(runtime,/produkti\/presentation dhe route përputhen saktë/);
 assert.match(runtime,/pa rounding klinik/);
 const shell=read('antibiotiket-shell.js');
-assert.match(shell,/antibiotiket-parenteral-prep-data\.js\?v=antibiotiket-phase6-v2/);
-assert.match(shell,/antibiotiket-parenteral-bridge\.js\?v=antibiotiket-phase6-v2/);
-assert.match(shell,/antibiotiket-parenteral-prep\.js\?v=penicillins-20261029/);
+assert.doesNotMatch(shell,/antibiotiket-parenteral-prep-data\.js|antibiotiket-parenteral-bridge\.js|antibiotiket-parenteral-prep\.js/,
+  'The archived IV preparation tool must not load on the catalog-only page');
 
 console.log('Antibiotics Phase 6 gate passed: 20/20 preparation records + route/product safeguards + bridge.');

@@ -124,9 +124,10 @@ for(const r of hospital.window.DRX_ANTIBIOTIC_HOSPITAL.regimens){
   else assert.equal(adult,null,'Pediatric hospital source may not be extrapolated to adults: '+r.id);
 }
 const html=read('antibiotiket.html');
-assert.ok(html.indexOf('antibiotiket-data.js')<html.indexOf('antibiotiket-penicillin-protocols.js'));
-assert.ok(html.indexOf('antibiotiket-penicillin-protocols.js')<html.indexOf('/antibiotiket.js?'));
-assert.match(html,/data-penicillin-protocols="required"/);
+// These protocol checks remain archival; penicillin dose calculations are no
+// longer loaded by the catalog-only Antibiotikët page.
+assert.doesNotMatch(html,/antibiotiket-penicillin-protocols\.js|data-penicillin-protocols="required"/);
+assert.match(html,/antibiotiket-catalog\.js\?v=/);
 assert.match(read('sw.js'),/antibiotiket-penicillin-protocols.js/);
 console.log('PASS: penicillin source/age boundaries, adult schedules, exact components, culture/pregnancy gates, whole tablets, hospital separation and missing-protocol guard.');
 

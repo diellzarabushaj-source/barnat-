@@ -13,14 +13,6 @@
   try { selected = core.readSelected(localStorage.getItem(key), [...allowed]); } catch { selected = []; }
   const expanded = new Set();
   const filters = {search:'',group:'',subgroup:'',indication:'',route:'',selectedOnly:false};
-  const legacy = [...column.children];
-
-  const nav = document.createElement('div');
-  nav.className = 'abx-catalog-modebar';
-  nav.setAttribute('role', 'group');
-  nav.setAttribute('aria-label', 'Pamjet e antibiotikëve');
-  nav.innerHTML = '<button type="button" data-mode="catalog" aria-pressed="true">Tabela e antibiotikëve</button><button type="button" data-mode="guide" aria-pressed="false">Udhëzuesi sipas infeksionit (NICE)</button>';
-
   const view = document.createElement('section');
   view.id = 'antibioticsCatalog';
   view.className = 'abx-catalog';
@@ -36,7 +28,7 @@
     '<label>Rruga<select id="abxCatalogRoute"><option value="">Të gjitha rrugët</option><option>PO</option><option>IV</option><option>IM</option><option>TOP</option><option>Inhalim</option></select></label>',
     '</div>',
     '<div class="abx-catalog-toolbar"><label class="abx-catalog-checklabel"><input type="checkbox" id="abxCatalogOnlySelected"> Vetëm të zgjedhurit</label><button type="button" id="abxCatalogReset" class="abx-catalog-reset">Pastro filtrat</button><span id="abxCatalogSelectedCount" class="abx-catalog-selected-count" role="status"></span></div>',
-    '<div class="abx-catalog-table-scroll" role="region" aria-label="Tabela e antibiotikëve" tabindex="0"><table class="abx-catalog-list"><thead><tr><th>✓</th><th>Grupi kryesor</th><th>Nën-grupi</th><th>Substanca aktive</th><th>Indikacionet</th><th>Format dhe forcat AKPPM</th><th>Statusi i dozimit</th><th>Detaje</th></tr></thead><tbody id="abxCatalogRows"></tbody></table></div>',
+    '<div class="abx-catalog-list" id="abxCatalogRows" role="list" aria-label="Lista e antibiotikëve"></div>',
     '<div class="abx-catalog-footer"><span>AKPPM: mostër e regjistrit, jo inventar farmacie. Tick-u ruhet në këtë shfletues.</span><span><a target="_blank" rel="noopener noreferrer" href="' + esc(safe(data.sourceSheet)) + '">Mayo / Audit QA</a> · <a target="_blank" rel="noopener noreferrer" href="' + esc(safe(data.akppmRegistry)) + '">AKPPM</a></span></div>'
   ].join('');
   const $ = id => view.querySelector('#' + id);
@@ -76,16 +68,17 @@
       const dur = r.daysMin == null && r.daysMax == null ? 'Nuk specifikohet' : String(r.daysMin ?? r.daysMax) + (r.daysMax != null && r.daysMin !== r.daysMax ? '–' + r.daysMax : '') + ' ditë';
       const status = r.qaStatus === 'RISHIKIM KLINIK' ? 'Në rishikim' : 'Bllokuar';
       const link = safe(r.mayoUrl) ? '<a href="' + esc(r.mayoUrl) + '" target="_blank" rel="noopener noreferrer">Mayo</a>' : 'Burimi numerik mungon';
-      return '<tr><td>' + esc(r.id) + '</td><td>' + esc(r.indication) + '<small class="abx-catalog-cell-note">' + esc(r.formulation) + ' · ' + esc(r.route) + '</small></td><td>' + esc(r.population) + '</td><td><b>' + esc(doseText(r)) + '</b><small class="abx-catalog-cell-note">' + esc(r.interval || '—') + '</small></td><td>' + esc(dur) + '</td><td><span class="abx-catalog-pill ' + (status === 'Bllokuar' ? 'is-missing' : '') + '">' + status + '</span><small class="abx-catalog-cell-note">' + esc(r.qaReason) + '</small></td><td>' + link + '</td></tr>';
+      const limit = r.maxDaily != null ? ' · Maksimumi nga burimi: ' + esc(r.maxDaily) + ' mg/ditë' : '';
+      return '<li class="abx-catalog-regimen"><div class="abx-catalog-regimen-heading"><strong>' + esc(r.id) + ' · ' + esc(r.indication) + '</strong><span class="abx-catalog-pill ' + (status === 'Bllokuar' ? 'is-missing' : '') + '">' + status + '</span></div><p><b>Forma / rruga:</b> ' + esc(r.formulation) + ' · ' + esc(r.route) + ' · <b>Popullata:</b> ' + esc(r.population) + '</p><p><b>Doza sipas Mayo:</b> ' + esc(doseText(r)) + ' · ' + esc(r.interval || '—') + ' · <b>Kohëzgjatja:</b> ' + esc(dur) + '</p><p><b>Shënime / kufizime:</b> ' + esc(r.note || 'Nuk janë dhënë shënime shtesë.') + limit + '</p><p class="abx-catalog-regimen-qa"><b>Kontrolli klinik:</b> ' + esc(r.qaReason) + '</p><p class="abx-catalog-regimen-source">Burimi: ' + link + '</p></li>';
     }).join('');
-    return '<div class="abx-catalog-detail"><section><h3>Indikacionet Mayo</h3><div class="abx-catalog-inline-items">' + ind + '</div></section><section><h3>Produktet e identifikuara në AKPPM (' + a.products.length + ')</h3><div class="abx-catalog-product-list">' + products + '</div></section><section><h3>Skemat Mayo (' + a.regimens.length + ') — referencë</h3><p class="abx-catalog-critical">Llogaritja mg/kg → mL është e bllokuar. Kontrollo AUDIT QA, SmPC lokale, indikacionin, moshën dhe peshën reale para çdo përshkrimi.</p><div class="abx-catalog-subtable-scroll"><table class="abx-catalog-subtable"><thead><tr><th>ID</th><th>Indikacioni / forma</th><th>Popullata</th><th>Doza Mayo</th><th>Ditë</th><th>QA</th><th>Burimi</th></tr></thead><tbody>' + doses + '</tbody></table></div></section></div>';
+    return '<div class="abx-catalog-detail"><section><h3>Indikacionet Mayo</h3><div class="abx-catalog-inline-items">' + ind + '</div></section><section><h3>Produktet e identifikuara në AKPPM (' + a.products.length + ')</h3><div class="abx-catalog-product-list">' + products + '</div></section><section><h3>Skemat Mayo (' + a.regimens.length + ') — referencë</h3><p class="abx-catalog-critical">Llogaritja mg/kg → mL është e bllokuar. Kontrollo AUDIT QA, SmPC lokale, indikacionin, moshën dhe peshën reale para çdo përshkrimi.</p><ul class="abx-catalog-regimens">' + doses + '</ul></section></div>';
   }
   function render() {
     const visible = core.filterAntibiotics(all, filters, selected);
     $('abxCatalogCount').textContent = visible.length + ' / ' + all.length + ' antibiotikë';
     $('abxCatalogSelectedCount').textContent = selected.length + ' në Listën time';
     if (!visible.length) {
-      body.innerHTML = '<tr><td colspan="8" class="abx-catalog-empty">Nuk ka rezultate. Ndrysho filtrat ose përdor “Pastro filtrat”.</td></tr>';
+      body.innerHTML = '<p class="abx-catalog-empty">Nuk ka rezultate. Ndrysho filtrat ose përdor “Pastro filtrat”.</p>';
       return;
     }
     body.innerHTML = visible.map(a => {
@@ -94,7 +87,7 @@
       const indications = a.indications.slice(0, 4).join(' · ');
       const forms = a.products.length ? [...new Set(a.products.map(p => p.form + ' ' + p.strength))].slice(0, 3).join(' · ') : 'Nuk u gjet në AKPPM';
       const status = a.regimens.some(r => r.qaStatus === 'RISHIKIM KLINIK') ? 'Në rishikim' : 'Të bllokuara';
-      return '<tr class="abx-catalog-item-row"><td><input type="checkbox" data-atc="' + esc(a.atc) + '" aria-label="Shto ' + esc(a.name) + ' në Listën time" ' + (isSelected ? 'checked' : '') + '></td><td>' + esc(a.group) + '</td><td>' + esc(a.subgroup) + '</td><td><strong class="abx-catalog-name">' + esc(a.name) + '</strong><small class="abx-catalog-atc">' + esc(a.atc) + '</small></td><td><span class="abx-catalog-clamp">' + esc(indications) + '</span>' + (a.indications.length > 4 ? '<small class="abx-catalog-cell-note">+' + (a.indications.length - 4) + ' indikacione të tjera</small>' : '') + '</td><td><span class="abx-catalog-clamp">' + esc(forms) + '</span><small class="abx-catalog-cell-note">' + a.products.length + ' regjistrime AKPPM</small></td><td><span class="abx-catalog-pill ' + (status === 'Të bllokuara' ? 'is-missing' : '') + '">' + status + '</span><small class="abx-catalog-cell-note">' + a.regimens.length + ' skema</small></td><td><button type="button" class="abx-catalog-details-button" data-detail="' + esc(a.atc) + '" aria-expanded="' + open + '">' + (open ? 'Mbyll' : 'Shiko') + '</button></td></tr>' + (open ? '<tr class="abx-catalog-detail-row"><td colspan="8">' + detail(a) + '</td></tr>' : '');
+      return '<article class="abx-catalog-item" role="listitem"><div class="abx-catalog-item-row"><label class="abx-catalog-item-check"><input type="checkbox" data-atc="' + esc(a.atc) + '" aria-label="Shto ' + esc(a.name) + ' në Listën time" ' + (isSelected ? 'checked' : '') + '></label><div class="abx-catalog-item-copy"><div class="abx-catalog-title-line"><strong class="abx-catalog-name">' + esc(a.name) + '</strong><span class="abx-catalog-atc">' + esc(a.atc) + '</span></div><p class="abx-catalog-taxonomy">' + esc(a.group) + ' <span aria-hidden="true">›</span> ' + esc(a.subgroup) + '</p><p class="abx-catalog-summary"><b>Indikacionet:</b> ' + esc(indications) + (a.indications.length > 4 ? ' · +' + (a.indications.length - 4) + ' të tjera' : '') + '</p><p class="abx-catalog-summary"><b>Forma / fortësia AKPPM:</b> ' + esc(forms) + ' <span class="abx-catalog-muted">(' + a.products.length + ' produkte)</span></p></div><div class="abx-catalog-item-actions"><span class="abx-catalog-pill ' + (status === 'Të bllokuara' ? 'is-missing' : '') + '">' + status + '</span><small class="abx-catalog-cell-note">' + a.regimens.length + ' skema</small><button type="button" class="abx-catalog-details-button" data-detail="' + esc(a.atc) + '" aria-expanded="' + open + '">' + (open ? 'Mbyll detajet' : 'Shiko detajet') + '</button></div></div>' + (open ? detail(a) : '') + '</article>';
     }).join('');
   }
   function save() { try { localStorage.setItem(key, JSON.stringify(selected)); } catch { /* In-memory fallback. */ } }
@@ -126,16 +119,5 @@
   options('abxCatalogGroup', sorted(all.map(a => a.group)), 'Të gjitha grupet', '');
   options('abxCatalogIndication', sorted(all.flatMap(a => a.indications)), 'Të gjitha indikacionet', '');
   refreshSubgroups(); render();
-  column.prepend(nav, view);
-  function setMode(mode) {
-    const show = mode === 'catalog';
-    view.hidden = !show;
-    legacy.forEach(el => { el.classList.toggle('abx-catalog-legacy-hidden', show); el.setAttribute('aria-hidden', String(show)); });
-    nav.querySelectorAll('button[data-mode]').forEach(btn => btn.setAttribute('aria-pressed', String(btn.dataset.mode === mode)));
-  }
-  nav.addEventListener('click', e => {
-    const button = e.target.closest('button[data-mode]');
-    if (button) setMode(button.dataset.mode);
-  });
-  setMode('catalog');
+  column.append(view);
 })();
