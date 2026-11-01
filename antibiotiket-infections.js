@@ -22,6 +22,7 @@
     impetigo:'Lëkura', cellulitis:'Lëkura dhe indet nënlëkurore', 'wound-cut':'Plagë / prerje', abscess:'Absces i lëkurës',
     preseptal:'Zona rreth syrit · preseptal', bite:'Kafshime nga gjitarët', lymphadenitis:'Nyjet limfatike të qafës',
   };
+  const aliases={aom:'otit otitis veshi veshit',gas:'faringit faringiti faringjit faringjiti tonsilit tonsiliti angina angine streptokok streptokoku',pneumonia:'pneumoni pneumonia mushkeri',sinusitis:'sinusit sinusiti sinuzit sinuziti sinuse','uti-cystitis':'cistit cistiti cystitis urinar fshikeza','uti-pyelo':'pielonefrit pielonefriti pyelonephritis urinar ethe',impetigo:'impetigo impetigoja',cellulitis:'celulit celulitis erizipele','wound-cut':'plage prerje laceracion',abscess:'absces abces qelb',preseptal:'preseptal periorbital syri qepalla',bite:'kafshim kafshimet qeni mace',lymphadenitis:'limfadenit limfadenopati cervikal gjendra qafe'};
   const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
   const create = (tag, className, text) => {
     const element = document.createElement(tag);
@@ -38,11 +39,13 @@
     const hint = create('small','abx-infection-hint',hints[input.value] || item?.label || title);
     hint.id = 'infection-hint-' + input.value;
     input.setAttribute('aria-describedby',hint.id);
+    const standard=window.DRX_NICE_STANDARD?.coverage[input.value];
+    if(window.DRX_NICE_STANDARD)hint.append(' · '+(standard?standard.replace('nice-','NICE ').toUpperCase():'Vlerësim i veçantë'));
     label.append(hint,create('span','abx-infection-check','✓'));
     label.lastElementChild.setAttribute('aria-hidden','true');
-    return { label, input, group, text:normalize([title,item?.label,hint.textContent,group.label].join(' ')) };
+    return { label, input, group, text:normalize([title,item?.label,hint.textContent,group.label,aliases[input.value]].join(' ')) };
   });
-  let category = items.find(item => item.input.checked)?.group.id || 'all';
+  let category = 'all';
   const toolbar = create('div','abx-infection-tools');
   const searchWrap = create('div','abx-infection-search');
   const searchLabel = create('label','sr-only','Kërko infeksionin');
@@ -103,10 +106,12 @@
   search.addEventListener('input',() => { category = 'all'; apply(); });
   clear.addEventListener('click',() => { search.value = ''; apply(); search.focus(); });
   search.addEventListener('keydown',event => {
+    if(event.key==='Enter'){const visible=items.filter(item=>!item.label.hidden);if(visible.length===1){event.preventDefault();visible[0].input.click();picker.open=false;picker.querySelector('summary').focus();}return;}
     if (event.key !== 'Escape') return;
     if (search.value) { search.value = ''; apply(); }
     else if (matchMedia('(max-width:760px)').matches) { picker.open = false; picker.querySelector('summary').focus(); }
   });
+  document.addEventListener('keydown',event=>{if(event.key==='/'&&!event.ctrlKey&&!event.metaKey&&!event.altKey&&!event.target.closest('input,textarea,select,[contenteditable=true]')){event.preventDefault();picker.open=true;category='all';apply();search.focus();}});
   choices.addEventListener('change',event => {
     const selected = items.find(item => item.input === event.target);
     if (!selected) return;

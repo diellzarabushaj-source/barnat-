@@ -52,6 +52,10 @@
       const body=make('div','abx-market-component');
       if(parts.length>1)body.append(make('strong','',part.drug));
       if(!entry?.forms.length){body.append(make('p','','Nuk u gjet produkt i publikuar në regjistrin AKKPM për këtë substancë.'));section.append(body);continue;}
+      // In the NICE flow, incompatible routes, ratios, units and populations
+      // never become selectable strengths. Keep the source catalog unchanged.
+      const forms=window.DRX_NICE_STANDARD?entry.forms.map(f=>({...f,variants:f.variants.map(v=>({...v,products:v.products.filter(p=>!eligible(card,part.drug,f,v,p))})).filter(v=>v.products.length)})).filter(f=>f.variants.length):entry.forms;
+      if(!forms.length){body.append(make('p','abx-market-info','Në regjistrin AKKPM nuk u gjet formë/fortësi e përshtatshme për këtë skemë NICE dhe këtë pacient. Kërko produkt të përputhshëm; mos ndërro raportin, njësinë ose rrugën e marrjes.'));section.append(body);continue;}
       const field=(text)=>{const label=make('label','');label.append(make('span','',text));const select=make('select','');select.setAttribute('aria-label',`${text} · ${part.drug}`);label.append(select);body.append(label);return select;};
       const formSelect=field('Forma'),strengthSelect=field('Fortësia / përqendrimi'),productSelect=field('Produkti');
       const productDetails=make('details','abx-market-product'),productSummary=make('summary','','Produktet AKKPM · opsionale');
@@ -64,7 +68,7 @@
       const info=make('div','abx-market-info');info.setAttribute('aria-live','polite');body.append(info);
       body.insertBefore(result,productDetails);
       const options=(select,rows,placeholder)=>{select.replaceChildren();select.append(new Option(placeholder,''));rows.forEach(r=>select.append(new Option(r.label||r.name,r.id||r.key)));select.disabled=!rows.length;};
-      options(formSelect,entry.forms,'Zgjidh formën…');
+      options(formSelect,forms,'Zgjidh formën…');
       let form=null,variant=null;
       const memoryKey=card.dataset.regimenId+'|'+part.drug;
       const previous=remembered.get(memoryKey);
@@ -148,7 +152,7 @@
         selections.get(card).delete(part.drug);
         if(!product){if(!restoring)remembered.delete(memoryKey);body.append(info);info.textContent='Zgjidh formën dhe fortësinë.';showDose(null);productSummary.textContent='Produktet AKKPM · opsionale';syncAnswer(card);update();return;}
         let reason=eligible(card,part.drug,form,variant,product);
-        const nativeOspen=['penicillin-gas','penicillin-sinusitis'].includes(card.dataset.regimenId)&&card.dataset.nativeOspen!=='true'&&window.DRX_OSPEN?.identify(product,form,variant?.concentration);
+        const nativeOspen=!window.DRX_NICE_STANDARD&&['penicillin-gas','penicillin-sinusitis'].includes(card.dataset.regimenId)&&card.dataset.nativeOspen!=='true'&&window.DRX_OSPEN?.identify(product,form,variant?.concentration);
         card.dataset.ospenPending=String(Boolean(nativeOspen));
         if(nativeOspen)reason='Ospen përdor skemën e produktit në IU. Për skemën NICE zgjidh produkt në mg.';
         if(reason)splitLabel.hidden=true;
@@ -173,7 +177,7 @@
           if(card.isConnected&&selection(card,part.drug)?.product===product)window.dispatchEvent(new CustomEvent('drx:ospen-request'));
         });
       };
-      formSelect.onchange=()=>{form=entry.forms.find(f=>f.key===formSelect.value);variant=null;options(strengthSelect,form?.variants||[],'Zgjidh fortësinë…');options(productSelect,[],'Zgjidh fortësinë më parë');publish();};
+      formSelect.onchange=()=>{form=forms.find(f=>f.key===formSelect.value);variant=null;options(strengthSelect,form?.variants||[],'Zgjidh fortësinë…');options(productSelect,[],'Zgjidh fortësinë më parë');publish();};
       strengthSelect.onchange=()=>{variant=form?.variants.find(v=>v.id===strengthSelect.value);options(productSelect,variant?.products||[],'Zgjidh produktin…');const preferred=variant?.products.find(p=>!eligible(card,part.drug,form,variant,p))||variant?.products[0];if(preferred)productSelect.value=String(preferred.id);publish();};
       productSelect.onchange=publish;
       options(strengthSelect,[],'Zgjidh formën më parë');options(productSelect,[],'Zgjidh fortësinë më parë');

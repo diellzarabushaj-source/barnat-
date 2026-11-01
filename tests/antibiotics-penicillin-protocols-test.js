@@ -191,3 +191,4 @@ const abscess=resolve('abscess',120,32).options;
 assert.ok(Manual.decide('abscess',abscess,{guideAnswers:{systemic:'no'}}).options.every(o=>o.kind==='procedure'));
 assert.ok(Manual.decide('sinusitis',resolve('sinusitis',216,70).options,{guideAnswers:{course:'failure'}}).options.every(o=>o.tier==='second'));
 console.log('PASS: all 13 manual contexts, explicit unknowns, red flags, wound care, drainage and isolated treatment/prophylaxis.');
+require('./antibiotics-nice-standard-test');
