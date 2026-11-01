@@ -69,9 +69,8 @@ assert.match(runtime, /thresholdMatches/);
 assert.match(runtime, /orbitalRedFlags/);
 
 const shell = read('antibiotiket-shell.js');
-assert.match(shell, /antibiotiket-hospital-data\.js\?v=antibiotiket-phase5-v1/);
-assert.match(shell, /antibiotiket-hospital\.js\?v=nice-20261101/);
-assert.match(shell, /antibiotiket-hospital\.css\?v=antibiotiket-phase5-v1/);
+assert.doesNotMatch(shell, /antibiotiket-hospital-data\.js|antibiotiket-hospital\.js|antibiotiket-hospital\.css/,
+  'The archived inpatient calculator must not load on the catalog-only page');
 const css = read('antibiotiket-hospital.css');
 assert.match(css, /\.abx-hospital\{/);
 assert.match(css, /\.abx-hosp-route\.is-im/);

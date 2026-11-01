@@ -221,9 +221,10 @@ for (const indication of guide.indications) {
 assert.match(js, /function doseBasis\(\)/);
 assert.match(js, /referenceWeightKg/);
 assert.match(js, /Alergji ndaj alternativës \/ alergji të shumëfishta/);
-assert.match(html, /Mosha reale përcakton grupin e pacientit/, 'The live page requires actual age rather than an inferred reference weight');
-assert.match(html, /antibiotiket-data\.js\?v=antibiotiket-audit-20261028/, 'Phase 2 data must be cache-busted in the page');
-assert.match(html, /Alergjia ndaj beta-laktameve/, 'The static allergy label must match the A0-A5 model');
+// Phase 2 remains a historical source-quality regression suite, not a live UI.
+// The new Mayo/AKPPM catalog must never load its former dose calculator.
+assert.doesNotMatch(html, /antibiotiket-data\.js|antibiotiket-nice\.js|\/antibiotiket\.js\?/, 'Retired clinical runtime must not be linked from the new page');
+assert.match(html, /antibiotiket-catalog-data\.js\?v=/, 'The new page must load its reviewed catalog snapshot');
 for (const band of guide.ageBands) {
   assert.ok(Number.isFinite(band.referenceWeightKg) && band.referenceWeightKg > 0, `Age band ${band.id} needs a positive reference weight`);
 }

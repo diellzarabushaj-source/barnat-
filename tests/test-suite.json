@@ -23,7 +23,6 @@
   "tests/antibiotics-uti-test.js",
   "tests/antibiotic-market-test.js",
   "tests/antibiotic-market-math-test.js",
-  "tests/antibiotics-page-ui-contract-test.js",
   "tests/drx-brand-assets-test.js",
   "tests/public-asset-reachability-test.js",
   "tests/registry-page-api-test.js",
@@ -223,5 +222,7 @@
   "tests/icd-description-clarification-test.js",
   "tests/icd-lexical-relevance-test.js",
   "tests/icd-ai-provider-test.js",
-  "tests/lab-symptom-guide-test.js"
+  "tests/lab-symptom-guide-test.js",
+  "tests/antibiotics-catalog-test.js",
+  "tests/antibiotics-catalog-presentation-test.js"
 ]

@@ -60,10 +60,8 @@ assert.match(runtime, /navigator\.clipboard/, 'Clipboard copy implementation mus
 assert.doesNotMatch(runtime, /Math\.round\([^\n]+componentMg[^\n]+\)\s*\/\s*2/, 'Runtime must not invent half-tablet rounding');
 
 const shell = read('antibiotiket-shell.js');
-assert.match(shell, /antibiotiket-solids-data\.js\?v=antibiotiket-phase4-v2/);
-assert.match(shell, /antibiotiket-prescription\.js\?v=nice-20261101/);
-// v2: the fold-out summary was restyled to match the other two folds on a card.
-assert.match(shell, /antibiotiket-prescription\.css\?v=practical-dose-20261029/);
+assert.doesNotMatch(shell, /antibiotiket-solids-data\.js|antibiotiket-prescription\.js|antibiotiket-prescription\.css/,
+  'The archived prescription workflow must not load on the catalog-only page');
 
 const css = read('antibiotiket-prescription.css');
 assert.match(css, /\.abx-rx\{/);
