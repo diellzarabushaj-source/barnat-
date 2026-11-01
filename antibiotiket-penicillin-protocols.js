@@ -11,7 +11,7 @@
 
   // Each indication owns its dose, interval, duration and product ratio. Never
   // extend a pediatric coefficient into adults or round it to a tablet strength.
-  const version = '2026-10-30-uti';
+  const version = '2026-11-01-atc-ospen';
   const sources = [
     ['nice-ng91','NICE NG91 · <18','Otitis media akute','https://www.nice.org.uk/guidance/ng91/chapter/Recommendations'],
     ['cdc-aom-diagnosis','CDC · diagnoza AOM','Kriteret otoskopike të AOM te fëmijët','https://www.cdc.gov/antibiotic-use/hcp/clinical-care/pediatric-outpatient.html'],
@@ -19,6 +19,7 @@
     ['nice-ng143','NICE NG143 · ethet','Vlerësimi i etheve nën 5 vjeç','https://www.nice.org.uk/guidance/ng143/chapter/recommendations'],
     ['nhs-mastoiditis','NHS · mastoiditi','Shenjat e mastoiditit dhe referimi','https://www.nhs.uk/conditions/mastoiditis/'],
     ['nhs-fife-aom','NHS Fife · 18+','Otitis media te të rriturit','https://www.rightdecisions.scot.nhs.uk/nhs-fife/hospital-guidance/ear-nose-and-throat/'],
+    ['dk-sinusitis-iu-2025','DK · sinusit','Sinusit akut · dozë në IU dhe kohëzgjatje','https://www.sundhed.dk/sundhedsfaglig/laegehaandbogen/oere-naese-hals/tilstande-og-sygdomme/naese-og-bihuler/bihulebetaendelse-akut/'],
     ['ospen-smcp-2025','SmPC · Ospen','Ospen 1.0 / 1.5 · skemë në IU','https://medikamente.basg.gv.at/documents/15535__DOTC_FACH_INFO.pdf'],
     ['nice-ng84','NICE NG84','Faringjit akut','https://www.nice.org.uk/guidance/ng84/chapter/Recommendations'],
     ['nice-ng79','NICE NG79','Sinusit akut','https://www.nice.org.uk/guidance/ng79/chapter/Recommendations'],
@@ -29,7 +30,7 @@
     ['nice-ng153','NICE NG153','Impetigo','https://www.nice.org.uk/guidance/ng153/chapter/Recommendations'],
     ['emc-coamox-500-125','SmPC · Co-amoxiclav 500/125','Co-amoxiclav 4:1 · kufijtë sipas peshës','https://www.medicines.org.uk/emc/product/101680/smpc'],
     ['nice-ng184','NICE NG184','Kafshime nga njerëzit dhe kafshët','https://www.nice.org.uk/guidance/ng184/chapter/Recommendations'],
-  ].map(([id,short,title,url]) => ({id,short,title,url,date:['nice-ng84','ospen-smcp-2025'].includes(id)?'verified 2026-10-30':'verified 2026-10-29',note:'Skemë sipas indikacionit dhe moshës. Grupmoshat pediatrike supozojnë madhësi mesatare; përmasat atipike, funksioni renal dhe shtatzënia kërkojnë vlerësim klinik.'}));
+  ].map(([id,short,title,url]) => ({id,short,title,url,date:id==='dk-sinusitis-iu-2025'?'verified 2026-11-01':['nice-ng84','ospen-smcp-2025'].includes(id)?'verified 2026-10-30':'verified 2026-10-29',note:'Skemë sipas indikacionit dhe moshës. Grupmoshat pediatrike supozojnë madhësi mesatare; përmasat atipike, funksioni renal dhe shtatzënia kërkojnë vlerësim klinik.'}));
   const penicillin = drug => /^(?:Amoxicillin(?: \/ clavulanate)?|Penicillin [VG]|Benzathine penicillin G|Ampicillin(?:\s*\/\s*sulbactam)?|Flucloxacillin|Cloxacillin|Piperacillin \+ Tazobactam|Pivmecillinam)$/i.test(drug || '');
   const permitted = ['none','a0','a4'];
   const fixed = (value, second) => ({type:'fixed',value,text:`${value}${second === undefined ? '' : '/'+second} mg/dozë`,...(second === undefined ? {} : {component:'amoxicillin',secondComponent:second})});
@@ -142,7 +143,7 @@
       }
       case 'sinusitis':
         source = 'nice-ng79';
-        add(regimen('penicillin-sinusitis','Penicillin V',fixed(penvMg(months)),4,5,source));
+        add(context.sinusPenicillinSource==='ospen' ? regimen('penicillin-sinusitis','Penicillin V',{type:'product-native-iu'},4,5,'dk-sinusitis-iu-2025',{nativeOspen:true,requiresRealWeight:true,productRule:{nativeIU:true}}) : regimen('penicillin-sinusitis','Penicillin V',fixed(penvMg(months)),4,5,source));
         add(coamox('amoxclav-sinusitis',months,5,source,{tier:'second',conditional:'Përkeqësim pas 2–3 ditësh të zgjedhjes së parë, ose rrezik i lartë sipas vlerësimit klinik. Në komplikime → referim.'}));
         allergyAlternative(5,source);
         break;

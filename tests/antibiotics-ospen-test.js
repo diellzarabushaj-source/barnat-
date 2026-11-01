@@ -39,3 +39,27 @@ for(const months of [3,12,48,143,144,204,216])for(const weight of [4,8,10,12,16,
   }
 }
 console.log('PASS: verified Ospen identities, native IU bounds, 16kg halves, source duration, adult limits and no out-of-range rounding.');
+
+// The registered product's activity and mass are informational equivalences,
+// never a generic IU-to-mg replacement for a fixed NICE prescription.
+assert.equal(p1.freeMg,590);assert.equal(p15.freeMg,885);
+const sinus=O.plan({months:216,weight:70,times:4,indication:'sinusitis'});
+assert.equal(sinus.days,5,'The complete IU sinusitis protocol sets the course automatically');
+assert.deepEqual(O.choices(sinus,p1),[{units:1,iu:1000000,dailyIU:4000000}]);
+assert.deepEqual(O.choices(sinus,p15),[],'Never round a fixed 1 MIU dose to an incompatible 1.5 MIU tablet');
+const rx=O.prescription(sinus,p1,O.choices(sinus,p1)[0]);
+assert.equal(rx.dailyIU,4000000);assert.equal(rx.quantity,20);assert.match(rx.line,/1 tabletë PO 4 herë\/ditë × 5 ditë/);
+assert.match(rx.text,/DK · sinusit/);
+for(const days of [0,1,2,-1,7,5.5,NaN,Infinity,366]){
+ const changed=O.plan({...sinus,days});
+ assert.equal(changed.days,5,'Caller input cannot override the automatic course');
+ assert.equal(O.prescription(changed,p1,O.choices(changed,p1)[0]).quantity,20);
+}
+assert.ok(O.plan({...sinus,times:3}).error,'The fixed adult IU protocol requires four doses');
+assert.ok(O.plan({...sinus,weight:161}).error,'Do not extend a fixed regimen beyond product weight boundaries');
+const childSinus=O.plan({months:48,weight:16,times:3,indication:'sinusitis'});
+assert.deepEqual(O.choices(childSinus,p1),[{units:0.5,iu:500000,dailyIU:1500000}]);
+assert.equal(O.prescription(childSinus,p1,O.choices(childSinus,p1)[0]).quantity,7.5);
+assert.equal(O.choices(O.plan({...childSinus,times:4}),p1).length,0,'Keep tablet increments inside pediatric bounds');
+assert.ok(O.plan({...childSinus,times:2}).error,'Sinusitis does not inherit the twice-daily GAS schedule');
+assert.ok(O.plan({months:216,weight:70,indication:'pneumonia'}).error,'Never inherit this source into another indication');

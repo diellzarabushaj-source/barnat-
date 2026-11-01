@@ -357,3 +357,22 @@ button,input,select{font:inherit}button{color:inherit}a{color:inherit}[hidden]{d
 #gasClinicalPanel .abx-gas-alarm:has(input:checked){border-color:#e4a6a0;background:#fff5f4;color:#9f2b22}
 #gasClinicalPanel .abx-gas-options summary span{font-weight:400;color:var(--ab-muted);margin-left:6px}
 .abx-gas-options-body{display:grid;gap:12px;padding:10px 0 4px}
+
+/* Class navigation preserves therapeutic order and complete combination cards. */
+.abx-atc-badges{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.abx-atc-badge{max-width:100%;padding:4px 8px;border:1px solid #dedbea;border-radius:6px;background:#f8f7fc;color:#5a487e;font-size:11px;line-height:1.5;overflow-wrap:anywhere}
+.abx-atc-browser{border:1px solid var(--ab-line);border-radius:12px;background:#fafbfe;margin-bottom:14px}
+.abx-atc-browser>summary{min-height:44px;padding:12px 14px;cursor:pointer;font-size:13px;font-weight:600;color:#344054}
+.abx-atc-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:0 14px 14px}
+.abx-atc-group h3{margin:0 0 6px;font-size:12px;color:#5b4b79}
+.abx-atc-group a{display:block;min-height:44px;padding:10px 0;font-size:12px;color:#344054;text-underline-offset:3px;overflow-wrap:anywhere}
+.abx-option:focus,.abx-hosp-card:focus{outline:2px solid #7456cb;outline-offset:3px}
+.abx-option,.abx-hosp-card{scroll-margin-top:90px}
+.abx-unit-info{margin:8px 0;color:#475467;font-size:12px;line-height:1.5}
+.abx-unit-info>summary{min-height:44px;cursor:pointer;display:flex;align-items:center}
+.abx-unit-info p{margin:6px 0}
+.abx-unit-info a{display:inline-flex;min-height:44px;align-items:center}
+.abx-ospen-auto{display:block;font-size:16px;line-height:1.5;color:var(--ab-ink)}
+.abx-ospen-back{min-height:44px;padding:8px 12px;border:1px solid #c9c1df;border-radius:8px;background:#fff;color:#4d3974;font:inherit;font-size:12px;cursor:pointer}
+.abx-option[data-ospen-pending="true"] .abx-dose-rows,.abx-option[data-ospen-pending="true"] .abx-working,.abx-option[data-ospen-pending="true"]>.abx-option-meta{display:none}
+@media(max-width:600px){.abx-atc-groups{grid-template-columns:minmax(0,1fr)}.abx-atc-badge{font-size:10px}}

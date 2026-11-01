@@ -51,6 +51,7 @@
     aomFailure:false,
     utiFluoro:false,utiSex:'',utiEgfr:'',utiAtTerm:false,utiAlternative:false,utiUpper:false,utiUrgent:false,utiCephTimes:2,
     gasPenicillinSource:'nice',
+    sinusPenicillinSource:'nice',
     gasConfirmed:false,
     gasUrgent:false,
     gasSchedule:'qds',
@@ -92,7 +93,7 @@
   }
 
   function protocolContext() {
-    return {ageMonths:currentAgeBand()?.months,ageConfirmed:ctx.ageConfirmed,weightKg:weightState().value,pregnant:ctx.pregnant,cultureSusceptible:ctx.cultureSusceptible,atypical:ctx.atypical,aomPlan:ctx.aomPlan,aomRisk:ctx.aomRisk,aomFailure:ctx.aomFailure,utiFluoro:ctx.utiFluoro,utiSex:ctx.utiSex,utiEgfr:ctx.utiEgfr===''?null:Number(ctx.utiEgfr),utiAtTerm:ctx.utiAtTerm,utiAlternative:ctx.utiAlternative,utiCephTimes:ctx.utiCephTimes,gasPenicillinSource:ctx.gasPenicillinSource,gasConfirmed:ctx.gasConfirmed,gasSchedule:ctx.gasSchedule,gasAmoxSchedule:ctx.gasAmoxSchedule};
+    return {ageMonths:currentAgeBand()?.months,ageConfirmed:ctx.ageConfirmed,weightKg:weightState().value,pregnant:ctx.pregnant,cultureSusceptible:ctx.cultureSusceptible,atypical:ctx.atypical,aomPlan:ctx.aomPlan,aomRisk:ctx.aomRisk,aomFailure:ctx.aomFailure,utiFluoro:ctx.utiFluoro,utiSex:ctx.utiSex,utiEgfr:ctx.utiEgfr===''?null:Number(ctx.utiEgfr),utiAtTerm:ctx.utiAtTerm,utiAlternative:ctx.utiAlternative,utiCephTimes:ctx.utiCephTimes,gasPenicillinSource:ctx.gasPenicillinSource,sinusPenicillinSource:ctx.sinusPenicillinSource,gasConfirmed:ctx.gasConfirmed,gasSchedule:ctx.gasSchedule,gasAmoxSchedule:ctx.gasAmoxSchedule};
   }
 
   function weightState() {
@@ -503,7 +504,7 @@
       'abx-indication',
       guide.indications.map(item => ({ value:item.id, label:item.short || item.label, hint:item.label })),
       ctx.indication,
-      value => { ctx.utiFluoro=false;ctx.utiUpper=false;ctx.utiUrgent=false;ctx.utiAlternative=false;ctx.utiSex='';ctx.utiEgfr='';ctx.utiAtTerm=false;ctx.cultureSusceptible=false;ctx.aomPlan='immediate';ctx.aomRisk='routine';ctx.aomFailure=false;ctx.gasPenicillinSource='nice';ctx.gasConfirmed=false;ctx.gasUrgent=false;ctx.gasSchedule='qds';ctx.gasAmoxSchedule='daily';ctx.indication = value; collapsePicker(el.indicationPicker); render(); },
+      value => { ctx.utiFluoro=false;ctx.utiUpper=false;ctx.utiUrgent=false;ctx.utiAlternative=false;ctx.utiSex='';ctx.utiEgfr='';ctx.utiAtTerm=false;ctx.cultureSusceptible=false;ctx.aomPlan='immediate';ctx.aomRisk='routine';ctx.aomFailure=false;ctx.gasPenicillinSource='nice';ctx.sinusPenicillinSource='nice';ctx.gasConfirmed=false;ctx.gasUrgent=false;ctx.gasSchedule='qds';ctx.gasAmoxSchedule='daily';ctx.indication = value; collapsePicker(el.indicationPicker); render(); },
       'abx-chip',
     );
   }
@@ -760,9 +761,9 @@
     }
     if(option.nativeOspen){
       const card=make('article','abx-option tier-first');
-      Object.assign(card.dataset,{regimenId:option.id,nativeOspen:'true',simpleUi:'true',ageConfirmed:String(ctx.ageConfirmed),ageMonths:String(currentAgeBand()?.months??''),protocolVersion:option.protocolVersion});
+      Object.assign(card.dataset,{regimenId:option.id,nativeOspen:'true',ospenIndication:ctx.indication,simpleUi:'true',ageConfirmed:String(ctx.ageConfirmed),ageMonths:String(currentAgeBand()?.months??''),protocolVersion:option.protocolVersion});
       const head=make('div','abx-option-head');head.append(make('h3','',option.drug),make('span','abx-tier','Skema Ospen · IU'));
-      const meta=make('div','abx-option-meta');meta.append(make('span','','PO · skemë në IU'),make('span','abx-duration','10 ditë'),make('span','abx-option-source','SmPC · Ospen'));
+      const meta=make('div','abx-option-meta');meta.append(make('span','','PO · skemë në IU'),make('span','abx-duration',ctx.indication==='gas'?'10 ditë':'5 ditë'),make('span','abx-option-source',ctx.indication==='gas'?'SmPC · Ospen':'DK · sinusit'));
       card.append(head,meta);return card;
     }
     const reviewAbove=option.doseReviewAboveKg??scope.doseReviewAboveKg;
@@ -1052,7 +1053,8 @@
     $('utiEgfrInput')?.addEventListener('input',e=>{ctx.utiEgfr=e.target.value;render();});
     $('utiCephSelect')?.addEventListener('change',e=>{ctx.utiCephTimes=Number(e.target.value);render();});
     for(const [id,key] of [['utiFluoroInput','utiFluoro'],['utiAtTermInput','utiAtTerm'],['utiAlternativeInput','utiAlternative'],['utiUpperInput','utiUpper'],['utiUrgentInput','utiUrgent']])$(id)?.addEventListener('change',e=>{ctx[key]=e.target.checked;render();});
-    window.addEventListener('drx:ospen-request',()=>{if(ctx.indication==='gas'){ctx.gasPenicillinSource='ospen';render();if(!ctx.gasConfirmed){$('gasOptions').open=true;$('gasConfirmedInput').focus();}}});
+    window.addEventListener('drx:ospen-request',()=>{if(ctx.indication==='gas'){ctx.gasPenicillinSource='ospen';render();if(!ctx.gasConfirmed){$('gasOptions').open=true;$('gasConfirmedInput').focus();}}else if(ctx.indication==='sinusitis'){ctx.sinusPenicillinSource='ospen';render();}});
+    window.addEventListener('drx:ospen-nice',()=>{if(ctx.indication==='sinusitis'){ctx.sinusPenicillinSource='nice';render();}});
     $('gasSourceBack')?.addEventListener('click',()=>{ctx.gasPenicillinSource='nice';render();});
     $('gasScheduleSelect')?.addEventListener('change',event=>{ctx.gasSchedule=event.target.value;render();});
     $('gasAmoxScheduleSelect')?.addEventListener('change',event=>{ctx.gasAmoxSchedule=event.target.value;render();});

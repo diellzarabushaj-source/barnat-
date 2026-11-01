@@ -60,7 +60,7 @@
       const splitInput=make('input');splitInput.type='checkbox';
       splitLabel.append(splitInput,make('span','','Konfirmoj nga fletudhëzimi i këtij produkti: tableta ndahet në dy doza të barabarta.'));body.append(splitLabel);
       splitInput.onchange=()=>{const picked=selection(card,part.drug);if(picked){picked.equalHalvesConfirmed=splitInput.checked;showDose(picked);syncAnswer(card);update();}};
-      const info=make('p','abx-market-info');info.setAttribute('aria-live','polite');body.append(info);
+      const info=make('div','abx-market-info');info.setAttribute('aria-live','polite');body.append(info);
       body.insertBefore(result,productDetails);
       const options=(select,rows,placeholder)=>{select.replaceChildren();select.append(new Option(placeholder,''));rows.forEach(r=>select.append(new Option(r.label||r.name,r.id||r.key)));select.disabled=!rows.length;};
       options(formSelect,entry.forms,'Zgjidh formën…');
@@ -146,12 +146,22 @@
         selections.get(card).delete(part.drug);
         if(!product){if(!restoring)remembered.delete(memoryKey);body.append(info);info.textContent='Zgjidh formën dhe fortësinë.';showDose(null);productSummary.textContent='Produktet AKKPM · opsionale';syncAnswer(card);update();return;}
         let reason=eligible(card,part.drug,form,variant,product);
-        const nativeOspen=card.dataset.regimenId==='penicillin-gas'&&card.dataset.nativeOspen!=='true'&&window.DRX_OSPEN?.identify(product,form,variant?.concentration);
+        const nativeOspen=['penicillin-gas','penicillin-sinusitis'].includes(card.dataset.regimenId)&&card.dataset.nativeOspen!=='true'&&window.DRX_OSPEN?.identify(product,form,variant?.concentration);
         card.dataset.ospenPending=String(Boolean(nativeOspen));
         if(nativeOspen)reason='Ospen përdor skemën e produktit në IU. Për skemën NICE zgjidh produkt në mg.';
-        info.textContent=reason||`${product.packaging||product.form} · Nr. ${product.registryNumber}`;
+        if(reason)splitLabel.hidden=true;
+        info.textContent=reason||`${product.packaging||product.form} · Nr. ${product.registryNumber}${product.atcCode?' · '+product.atcCode:''}`;
         info.dataset.tone=reason?'blocked':'ready';
         if(reason)body.append(info);else productDetails.append(info);
+        if(nativeOspen){
+          const details=make('details','abx-unit-info');details.append(make('summary','','Njësia dhe burimi i produktit'));
+          details.append(make('p','',`1 tabletë = ${nativeOspen.iu.toLocaleString('en-US').replace(/,/g,' ')} IU ≈ ${nativeOspen.freeMg} mg phenoxymethylpenicillin. Kjo nuk barazohet automatikisht me dozën fikse të NICE dhe nuk rrumbullakohet jashtë skemës.`));
+          const link=make('a','','SmPC zyrtar Ospen ↗');link.href=window.DRX_OSPEN.source.url;link.target='_blank';link.rel='noopener noreferrer';details.append(link);info.append(details);
+          if(card.dataset.regimenId==='penicillin-sinusitis'){
+            const activate=make('button','abx-ospen-activate','Përdor skemën Ospen në IU');activate.type='button';
+            activate.onclick=()=>{if(card.isConnected&&selection(card,part.drug)?.product===product)window.dispatchEvent(new CustomEvent('drx:ospen-request'));};info.append(activate);
+          }
+        }
         const picked={form,variant,product,reason,label:`${product.name} · ${product.strength} · ${form.label}`};
         selections.get(card).set(part.drug,picked);showDose(picked);productSummary.textContent=`${product.name} · ndrysho produktin`;syncAnswer(card);update();
         remembered.set(memoryKey,{form:form.key,variant:variant.id,product:String(product.id)});
