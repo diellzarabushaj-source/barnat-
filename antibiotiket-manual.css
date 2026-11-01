@@ -122,3 +122,39 @@
 .abx-manual .abx-ospen .abx-market-single>.abx-schedule-field{margin:6px 0 0;padding:0;gap:0}
 .abx-manual .abx-ospen .abx-market-single>.abx-schedule-field>.abx-label{display:none}
 .abx-manual .abx-ospen .abx-market-single .abx-ospen-auto{font-size:13px;color:inherit}
+/* Audit: a continuous treatment surface, readable helpers and explicit focus. */
+.abx-manual .abx-list{row-gap:0}
+.abx-manual .abx-list>.abx-option{margin-bottom:12px}
+.abx-manual .abx-manual-identity{gap:14px;padding-top:16px}
+.abx-manual .abx-measure{padding-top:14px;padding-bottom:14px;row-gap:8px}
+.abx-manual .abx-measure:not(:has(>.abx-refine-item:not([hidden]))){grid-template-columns:repeat(2,minmax(0,1fr))}
+.abx-manual .abx-measure>.abx-refine-item{grid-column:3;grid-row:1}
+.abx-manual #contextHint{font-size:12px;line-height:1.5}
+.abx-manual .abx-age-confirmation{padding:6px 0;margin-top:4px;font-size:12px;line-height:1.5}
+.abx-manual .abx-age-confirmation:has(input:focus-visible){outline:2px solid var(--ab-accent);outline-offset:3px;border-radius:4px}
+.abx-manual .abx-input>.abx-aom,.abx-manual-questions{padding-top:14px;padding-bottom:14px}
+.abx-manual .abx-option-meta{margin-bottom:12px}
+.abx-manual .abx-market-component{row-gap:10px}
+.abx-manual .abx-market-product>summary,.abx-manual .abx-market-info,.abx-manual .abx-market-limit-line{font-size:12px}
+.abx-manual .abx-market .abx-market-limits>summary{display:flex;align-items:center;min-height:44px;padding:0 14px;cursor:pointer;font-size:12px}
+.abx-manual .abx-market-limits>summary:before{content:'+';margin-right:7px}
+.abx-manual .abx-market-limits[open]>summary:before{content:'−'}
+.abx-manual .abx-market-single{border-radius:10px 10px 0 0}
+.abx-manual .abx-market-plan{border-radius:0 0 10px 10px}
+.abx-manual .abx-market-single>strong{font-variant-numeric:tabular-nums;line-height:1.2}
+.abx-manual .abx-market-course{justify-content:space-between;align-items:center;padding:10px 12px;background:#f8fafc;border-radius:8px;font-size:13px}
+.abx-manual .abx-rx>summary{font-size:13px;text-transform:none;letter-spacing:0;font-weight:600}
+.abx-manual .abx-rx:not(:has(.abx-rx-copy:not(:disabled))) .abx-rx-footer{display:none}
+.abx-manual :is(button,select,summary,input):focus-visible{outline:2px solid var(--ab-accent);outline-offset:3px}
+@media(max-width:760px){
+ .abx-manual .abx-measure>.abx-refine-item{grid-column:1/-1;grid-row:auto}
+ .abx-manual .abx-input .abx-label,.abx-manual .abx-market-component>label>span{font-size:13px}
+ .abx-manual .abx-option-meta>span{flex:0 1 auto}
+ .abx-manual .abx-option-meta{gap:4px 12px;font-size:12px}
+ .abx-manual .abx-case-next{width:calc(100% - 32px);margin:0 16px 16px;font-size:14px}
+ .abx-manual .abx-market-plan{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+ .abx-manual .abx-market-schedule,.abx-manual .abx-market-daily{padding:12px;overflow-wrap:anywhere}
+ .abx-manual .abx-market-daily>strong{font-size:20px}
+ .abx-manual .abx-market-single>strong{font-size:32px}
+}
+@media(prefers-reduced-motion:reduce){.abx-manual *{scroll-behavior:auto!important;transition:none!important}}

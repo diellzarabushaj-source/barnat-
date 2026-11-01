@@ -98,7 +98,7 @@
   }
 
   function protocolContext() {
-    return {pneumoniaSeverity:ctx.guideAnswers?.severity,ageMonths:currentAgeBand()?.months,ageConfirmed:ctx.ageConfirmed,weightKg:weightState().value,pregnant:ctx.pregnant,cultureSusceptible:ctx.cultureSusceptible,atypical:ctx.atypical,aomPlan:ctx.aomPlan,aomRisk:ctx.aomRisk,aomFailure:ctx.aomFailure,utiFluoro:ctx.utiFluoro,utiSex:ctx.utiSex,utiEgfr:ctx.utiEgfr===''?null:Number(ctx.utiEgfr),utiAtTerm:ctx.utiAtTerm,utiAlternative:ctx.utiAlternative,utiCephTimes:ctx.utiCephTimes,gasPenicillinSource:ctx.gasPenicillinSource,sinusPenicillinSource:ctx.sinusPenicillinSource,gasConfirmed:ctx.gasConfirmed,gasSchedule:ctx.gasSchedule,gasAmoxSchedule:ctx.gasAmoxSchedule};
+    return {allergy:ctx.allergy,pneumoniaSeverity:ctx.guideAnswers?.severity,ageMonths:currentAgeBand()?.months,ageConfirmed:ctx.ageConfirmed,weightKg:weightState().value,pregnant:ctx.pregnant,cultureSusceptible:ctx.cultureSusceptible,atypical:ctx.atypical,aomPlan:ctx.aomPlan,aomRisk:ctx.aomRisk,aomFailure:ctx.aomFailure,utiFluoro:ctx.utiFluoro,utiSex:ctx.utiSex,utiEgfr:ctx.utiEgfr===''?null:Number(ctx.utiEgfr),utiAtTerm:ctx.utiAtTerm,utiAlternative:ctx.utiAlternative,utiCephTimes:ctx.utiCephTimes,gasPenicillinSource:ctx.gasPenicillinSource,sinusPenicillinSource:ctx.sinusPenicillinSource,gasConfirmed:ctx.gasConfirmed,gasSchedule:ctx.gasSchedule,gasAmoxSchedule:ctx.gasAmoxSchedule};
   }
 
   function weightState() {
@@ -515,6 +515,7 @@
     buildChoice(el.allergyChoice, 'abx-allergy', allergyOptions, ctx.allergy, value => {
       ctx.allergy = value;
       ctx.guideDrug='';ctx.sinusPenicillinSource='nice';
+      ctx.cultureSusceptible=false;ctx.utiFluoro=false;
       ctx.gasPenicillinSource='nice';
       ctx.gasSchedule='qds';
       ctx.cephLowRiskConfirmed = false;
@@ -548,7 +549,12 @@
     box.hidden=!fields.childElementCount;
   }
 
-  function selectRecommendation(id){
+  function selectRecommendation(id,deliberate=false){
+    // Culture sensitivity and fluoroquinolone suitability belong to the
+    // selected agent. An explicit switch must obtain fresh confirmation.
+    if(deliberate&&ctx.guideDrug!==id&&(ctx.cultureSusceptible||ctx.utiFluoro)){
+      ctx.guideDrug=id;ctx.cultureSusceptible=false;ctx.utiFluoro=false;render();focusRegimenRequirement();return;
+    }
     const select=$('antibioticSelect');if(select&&[...select.options].some(o=>o.value===id)){select.value=id;ctx.guideDrug=id;}
     for(const card of el.list.querySelectorAll('.abx-option'))card.hidden=card.dataset.guideProcedure!=='true'&&card.dataset.guideAdditional!=='true'&&card.dataset.regimenId!==ctx.guideDrug;
     const chosen=currentIndication().options.find(o=>o.id===ctx.guideDrug);
@@ -558,7 +564,19 @@
     if($('utiFluoroWrap'))$('utiFluoroWrap').hidden=!chosen?.requiresUtiFluoro;
     if($('utiCephWrap'))$('utiCephWrap').hidden=ctx.indication!=='uti-pyelo'||chosen?.drug!=='Cephalexin'||currentAgeBand()?.months<144;
     if(culture)el.refineBlock.hidden=el.atypicalWrap.hidden&&$('orbitalRedFlagsWrap')?.hidden!==false&&culture.hidden;
-    updateCaseStatus(!chosen||!protocols?.gate(chosen,protocolContext()));
+    const card=[...el.list.querySelectorAll('.abx-option')].find(n=>n.dataset.regimenId===ctx.guideDrug);
+    updateCaseStatus(Boolean(chosen&&card&&card.dataset.clinicalBlocked!=='true'&&!protocols?.gate(chosen,protocolContext())));
+    if(deliberate&&card?.dataset.clinicalBlocked==='true')focusRegimenRequirement();
+  }
+
+  function focusRegimenRequirement(){
+    const option=currentIndication().options.find(o=>o.id===ctx.guideDrug);if(!option)return;
+    const target=option.requiresNitroRenal&&!(Number(ctx.utiEgfr)>=45)?'utiEgfrInput'
+      :option.requiresUtiFluoro&&!ctx.utiFluoro?'utiFluoroInput'
+      :option.requiresUtiAlternative&&!ctx.utiAlternative?'utiAlternativeInput'
+      :option.requiresAomFailure&&!ctx.aomFailure?'aomFailureInput'
+      :option.requiresCulture&&!ctx.cultureSusceptible?'cultureSusceptibleInput':null;
+    const input=target&&$(target);if(input&&!input.closest('[hidden]')){input.focus({preventScroll:true});input.scrollIntoView({block:'nearest',behavior:'instant'});}
   }
 
   function renderManualChoice(options,primaryId){
@@ -567,20 +585,20 @@
     const select=make('select');select.id='antibioticSelect';
     for(const option of drugs){const tier=tierLabels[option.tier]||'Alternativë';select.append(new Option(`${option.drug} · ${tier.toLocaleLowerCase('sq')}`,option.id));}
     const selected=drugs.some(o=>o.id===ctx.guideDrug)?ctx.guideDrug:drugs.some(o=>o.id===primaryId)?primaryId:drugs[0]?.id||'';
-    ctx.guideDrug=selected;select.value=selected;select.onchange=()=>selectRecommendation(select.value);label.append(select);chooser.append(label);chooser.hidden=!drugs.length;el.list.prepend(chooser);selectRecommendation(selected);
+    ctx.guideDrug=selected;select.value=selected;select.onchange=()=>selectRecommendation(select.value,true);label.append(select);chooser.append(label);chooser.hidden=!drugs.length;el.list.prepend(chooser);selectRecommendation(selected);
   }
 
   function setupManualLayout(){
     const input=document.querySelector('.abx-input');if(!input)return;
     const identity=make('div','abx-manual-identity');const infection=input.querySelector(':scope > .abx-block');const measure=input.querySelector('.abx-measure');
     input.insertBefore(identity,measure);identity.append(infection,el.allergyField);
-    const pregnancy=$('pregnancyInput')?.closest('.abx-refine-item');if(pregnancy)measure.append(pregnancy);
+    const pregnancy=$('pregnancyInput')?.closest('.abx-refine-item');if(pregnancy)measure.insertBefore(pregnancy,el.contextHint);
     for(const id of ['aomClinicalPanel','gasClinicalPanel','utiClinicalPanel'])input.append($(id));
     const gas=$('gasConfirmedInput')?.closest('label');if(gas)$('gasOptions').before(gas);
     for(const [id,text] of [['aomClinicalTitle','Për otitin'],['gasClinicalTitle','Për faringjitin'],['utiClinicalTitle','Për infeksionin urinar']])if($(id))$(id).textContent=text;
     const questions=make('section','abx-manual-questions');questions.id='guideQuestions';input.append(questions);
     const more=make('details','abx-manual-more');more.append(make('summary','','Mosha, llogaritja dhe kufizimet'));const scope=input.querySelector('.abx-scope');if(scope)more.append(scope);if(el.ageSuggestion)more.append(el.ageSuggestion);input.append(more);
-    const reset=make('button','abx-manual-reset','Pastro rastin');reset.type='button';reset.onclick=()=>{Object.assign(ctx,{atypical:false,cephLowRiskConfirmed:false,gasPenicillinSource:'nice',sinusPenicillinSource:'nice',gasSchedule:'qds',gasAmoxSchedule:'daily',utiAtTerm:false,utiCephTimes:2,weight:'',age:'',allergy:'none',ageConfirmed:false,ageFromWeight:false,guideAnswers:{},guideUrgent:false,guideDrug:'',gasConfirmed:false,gasUrgent:false,utiUrgent:false,utiUpper:false,utiSex:'',utiEgfr:'',utiAlternative:false,utiFluoro:false,cultureSusceptible:false,aomFailure:false,aomRisk:'routine',orbitalRedFlags:false,pregnant:false});el.weight.value='';el.age.value='';render();};input.querySelector('.abx-step-title')?.append(reset);
+    const reset=make('button','abx-manual-reset','Pastro rastin');reset.type='button';reset.onclick=()=>{Object.assign(ctx,{atypical:false,cephLowRiskConfirmed:false,gasPenicillinSource:'nice',sinusPenicillinSource:'nice',gasSchedule:'qds',gasAmoxSchedule:'daily',utiAtTerm:false,utiCephTimes:2,weight:'',age:'',allergy:'none',ageConfirmed:false,ageFromWeight:false,guideAnswers:{},guideUrgent:false,guideDrug:'',gasConfirmed:false,gasUrgent:false,utiUrgent:false,utiUpper:false,utiSex:'',utiEgfr:'',utiAlternative:false,utiFluoro:false,cultureSusceptible:false,aomFailure:false,aomRisk:'routine',orbitalRedFlags:false,pregnant:false});el.weight.value='';el.age.value='';window.dispatchEvent(new Event('drx:antibiotics-case-reset'));render();el.weight.focus();};input.querySelector('.abx-step-title')?.append(reset);
     const edit=make('button','abx-case-edit','Ndrysho rastin');edit.type='button';edit.id='caseEdit';edit.hidden=true;edit.onclick=()=>{setCaseCollapsed(false);el.weight.focus();};input.querySelector('.abx-step-title')?.append(edit);
     const summary=make('p','abx-case-summary');summary.id='caseSummary';summary.hidden=true;input.append(summary);
     const next=make('button','abx-case-next','Shiko trajtimin ↓');next.id='caseNext';next.type='button';next.onclick=()=>{setCaseCollapsed(true);el.resultsTitle.tabIndex=-1;el.resultsTitle.scrollIntoView({block:'start',behavior:'instant'});el.resultsTitle.focus({preventScroll:true});};input.append(next);
@@ -595,7 +613,9 @@
 
   function updateCaseStatus(ready){
     if(!$('caseNext'))return;$('caseNext').disabled=!ready;
-    $('caseSummary').textContent=[currentIndication().short,weightState().kind==='valid'?`${fmt(weightState().value)} kg`:'',currentAgeBand()?.label,allergyById(ctx.allergy)?.short,ctx.gasConfirmed?'Streptokok i konfirmuar':''].filter(Boolean).join(' · ');
+    const indication=currentIndication();
+    const answers=(manual?.configurations[indication.id]?.questions||[]).map(q=>q.choices.find(([value])=>value===ctx.guideAnswers[q.key])?.[1]);
+    $('caseSummary').textContent=[indication.short,weightState().kind==='valid'?`${fmt(weightState().value)} kg`:'',currentAgeBand()?.label,allergyById(ctx.allergy)?.short,ctx.pregnant?'Shtatzëni':'',...answers,ctx.atypical?'Dyshim për atipikë':'',ctx.aomFailure?'Dështim i trajtimit · i rivlerësuar':''].filter(Boolean).join(' · ');
     if(!ready)ctx.caseCollapsed=false;setCaseCollapsed(ctx.caseCollapsed);
   }
 
@@ -849,7 +869,8 @@
     const reviewAbove=option.doseReviewAboveKg??scope.doseReviewAboveKg;
     if(Number.isFinite(reviewAbove)&&basis.weight>reviewAbove){
       const blocked=make('article','abx-option');
-      blocked.append(make('h3','',option.drug),make('p','','Kjo tabelë CPS nuk jep maksimum për dozën. Mbi 40 kg, verifiko skemën e të rriturit dhe produktin; kalkulatori nuk e zgjat automatikisht dozën sipas kg.'));
+      blocked.dataset.regimenId=option.id;blocked.dataset.clinicalBlocked='true';
+      blocked.append(make('h3','',option.drug),make('p','abx-rx-blocked',`Pesha është mbi ${fmt(reviewAbove)} kg në këtë grup moshe. Nevojitet verifikim individual i dozës dhe produktit; skema sipas kg nuk zgjatet automatikisht.`));
       return blocked;
     }
     if (option.frequencyByAge) {
@@ -1104,7 +1125,7 @@
     if (basis.kind === 'reference') {
       el.list.append(make('p', 'abx-orientational-note', 'Dozat numerike më poshtë përdorin peshën referuese të moshës dhe janë vetëm orientuese. Pesha reale duhet përdorur për dozën përfundimtare.'));
     }
-    if(indication.id==='pneumonia'&&ctx.atypical)el.list.append(make('strong','abx-regimen-group','Trajtimi bazë · zgjidh një agjent kundër pneumokokut'));
+    if(indication.id==='pneumonia'&&options.some(option=>option.atypical))el.list.append(make('strong','abx-regimen-group','Trajtimi bazë · zgjidh një agjent kundër pneumokokut'));
     options.forEach(option => {
       if(indication.id==='pneumonia'&&ctx.atypical&&option.atypical)el.list.append(make('strong','abx-regimen-group','Shtesë për patogjen atipik · jepet bashkë me trajtimin bazë'));
       const card=recommendationCard(option,basis);card.dataset.guideProcedure=String(option.kind==='procedure');card.dataset.guideAdditional=String(option.atypical===true);el.list.append(card);
@@ -1136,7 +1157,7 @@
   }
 
   function bind() {
-    window.addEventListener('drx:select-antibiotic',event=>selectRecommendation(event.detail?.id));
+    window.addEventListener('drx:select-antibiotic',event=>selectRecommendation(event.detail?.id,true));
     $('utiSexSelect')?.addEventListener('change',e=>{ctx.utiSex=e.target.value;ctx.utiAlternative=false;ctx.cultureSusceptible=false;render();});
     $('utiEgfrInput')?.addEventListener('input',e=>{ctx.utiEgfr=e.target.value;render();});
     $('utiCephSelect')?.addEventListener('change',e=>{ctx.utiCephTimes=Number(e.target.value);render();});
