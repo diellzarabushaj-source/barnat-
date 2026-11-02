@@ -1,123 +1,64 @@
-(function () {
-  'use strict';
-  const data = window.DRX_ANTIBIOTIC_CATALOG;
-  const core = window.DRX_ANTIBIOTIC_CATALOG_CORE;
-  const column = document.querySelector('.abx-column');
-  if (!data || !core || !column || !Array.isArray(data.antibiotics)) return;
-  const all = data.antibiotics;
-  const key = 'drx.antibiotics.selected.v1';
-  const allowed = new Set(all.map(a => a.atc));
-  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const safe = url => /^https:\/\//i.test(String(url || '')) ? String(url) : '';
-  let selected = [];
-  try { selected = core.readSelected(localStorage.getItem(key), [...allowed]); } catch { selected = []; }
-  const expanded = new Set();
-  const filters = {search:'',group:'',subgroup:'',indication:'',route:'',selectedOnly:false};
-  const view = document.createElement('section');
-  view.id = 'antibioticsCatalog';
-  view.className = 'abx-catalog';
-  view.setAttribute('aria-label', 'Katalogu i antibiotikëve');
-  view.innerHTML = [
-    '<header class="abx-catalog-heading"><div><h1>Antibiotikët</h1><p>Substancat, grupet, indikacionet dhe format e regjistruara në Kosovë.</p></div><span id="abxCatalogCount" class="abx-catalog-count"></span></header>',
-    '<div class="abx-catalog-alert"><strong>Dozat dhe indikacionet nga Mayo janë referencë, jo rekomandim i miratuar për trajtim.</strong> Auditimi Mayo/AKPPM nuk ka miratuar ende asnjë skemë për llogaritje automatike. Tick-u krijon vetëm Listën time, jo miratim klinik.</div>',
-    '<div class="abx-catalog-controls">',
-    '<label class="abx-catalog-search">Kërko substancë, indikacion ose produkt<input type="search" id="abxCatalogSearch" placeholder="P.sh. otit, amoxicillin, OSPEN…" autocomplete="off"></label>',
-    '<label>Grupi kryesor<select id="abxCatalogGroup"></select></label>',
-    '<label>Nën-grupi<select id="abxCatalogSubgroup"></select></label>',
-    '<label>Indikacioni<select id="abxCatalogIndication"></select></label>',
-    '<label>Rruga<select id="abxCatalogRoute"><option value="">Të gjitha rrugët</option><option>PO</option><option>IV</option><option>IM</option><option>TOP</option><option>Inhalim</option></select></label>',
-    '</div>',
-    '<div class="abx-catalog-toolbar"><label class="abx-catalog-checklabel"><input type="checkbox" id="abxCatalogOnlySelected"> Vetëm të zgjedhurit</label><button type="button" id="abxCatalogReset" class="abx-catalog-reset">Pastro filtrat</button><span id="abxCatalogSelectedCount" class="abx-catalog-selected-count" role="status"></span></div>',
-    '<div class="abx-catalog-list" id="abxCatalogRows" role="list" aria-label="Lista e antibiotikëve"></div>',
-    '<div class="abx-catalog-footer"><span>AKPPM: mostër e regjistrit, jo inventar farmacie. Tick-u ruhet në këtë shfletues.</span><span><a target="_blank" rel="noopener noreferrer" href="' + esc(safe(data.sourceSheet)) + '">Mayo / Audit QA</a> · <a target="_blank" rel="noopener noreferrer" href="' + esc(safe(data.akppmRegistry)) + '">AKPPM</a></span></div>'
-  ].join('');
-  const $ = id => view.querySelector('#' + id);
-  const body = $('abxCatalogRows');
-
-  function options(id, values, placeholder, current) {
-    const select = $(id);
-    select.replaceChildren();
-    const first = document.createElement('option');
-    first.value = '';
-    first.textContent = placeholder;
-    select.append(first);
-    values.forEach(value => {
-      const option = document.createElement('option');
-      option.value = value;
-      option.textContent = value;
-      select.append(option);
-    });
-    select.value = values.includes(current) ? current : '';
-  }
-  const sorted = values => [...new Set(values)].sort((a,b) => a.localeCompare(b, 'sq'));
-  function refreshSubgroups() {
-    options('abxCatalogSubgroup', sorted(all.filter(a => !filters.group || a.group === filters.group).map(a => a.subgroup)), 'Të gjithë nëngrupet', filters.subgroup);
-    filters.subgroup = $('abxCatalogSubgroup').value;
-  }
-  function doseText(r) {
-    if (r.doseMin == null) return 'Nuk jepet dozë numerike e aktivizueshme';
-    const values = String(r.doseMin) + (r.doseMax != null && r.doseMax !== r.doseMin ? '–' + r.doseMax : '');
-    return values + ' ' + String(r.doseUnit || '');
-  }
-  function detail(a) {
-    const ind = a.indications.map(x => '<span>' + esc(x) + '</span>').join('');
-    const products = a.products.length
-      ? a.products.map(p => '<div class="abx-catalog-product"><b>' + esc(p.brand) + '</b>' + esc(p.strength) + ' · ' + esc(p.form) + '<small>MA/RMA: ' + esc(p.registration) + '</small></div>').join('')
-      : '<p>Nuk u gjet produkt aktiv AKPPM në mostrën e kontrolluar.</p>';
-    const doses = a.regimens.map(r => {
-      const dur = r.daysMin == null && r.daysMax == null ? 'Nuk specifikohet' : String(r.daysMin ?? r.daysMax) + (r.daysMax != null && r.daysMin !== r.daysMax ? '–' + r.daysMax : '') + ' ditë';
-      const status = r.qaStatus === 'RISHIKIM KLINIK' ? 'Në rishikim' : 'Bllokuar';
-      const link = safe(r.mayoUrl) ? '<a href="' + esc(r.mayoUrl) + '" target="_blank" rel="noopener noreferrer">Mayo</a>' : 'Burimi numerik mungon';
-      const limit = r.maxDaily != null ? ' · Maksimumi nga burimi: ' + esc(r.maxDaily) + ' mg/ditë' : '';
-      return '<li class="abx-catalog-regimen"><div class="abx-catalog-regimen-heading"><strong>' + esc(r.id) + ' · ' + esc(r.indication) + '</strong><span class="abx-catalog-pill ' + (status === 'Bllokuar' ? 'is-missing' : '') + '">' + status + '</span></div><p><b>Forma / rruga:</b> ' + esc(r.formulation) + ' · ' + esc(r.route) + ' · <b>Popullata:</b> ' + esc(r.population) + '</p><p><b>Doza sipas Mayo:</b> ' + esc(doseText(r)) + ' · ' + esc(r.interval || '—') + ' · <b>Kohëzgjatja:</b> ' + esc(dur) + '</p><p><b>Shënime / kufizime:</b> ' + esc(r.note || 'Nuk janë dhënë shënime shtesë.') + limit + '</p><p class="abx-catalog-regimen-qa"><b>Kontrolli klinik:</b> ' + esc(r.qaReason) + '</p><p class="abx-catalog-regimen-source">Burimi: ' + link + '</p></li>';
-    }).join('');
-    return '<div class="abx-catalog-detail"><section><h3>Indikacionet Mayo</h3><div class="abx-catalog-inline-items">' + ind + '</div></section><section><h3>Produktet e identifikuara në AKPPM (' + a.products.length + ')</h3><div class="abx-catalog-product-list">' + products + '</div></section><section><h3>Skemat Mayo (' + a.regimens.length + ') — referencë</h3><p class="abx-catalog-critical">Llogaritja mg/kg → mL është e bllokuar. Kontrollo AUDIT QA, SmPC lokale, indikacionin, moshën dhe peshën reale para çdo përshkrimi.</p><ul class="abx-catalog-regimens">' + doses + '</ul></section></div>';
-  }
-  function render() {
-    const visible = core.filterAntibiotics(all, filters, selected);
-    $('abxCatalogCount').textContent = visible.length + ' / ' + all.length + ' antibiotikë';
-    $('abxCatalogSelectedCount').textContent = selected.length + ' në Listën time';
-    if (!visible.length) {
-      body.innerHTML = '<p class="abx-catalog-empty">Nuk ka rezultate. Ndrysho filtrat ose përdor “Pastro filtrat”.</p>';
-      return;
-    }
-    body.innerHTML = visible.map(a => {
-      const isSelected = selected.includes(a.atc);
-      const open = expanded.has(a.atc);
-      const indications = a.indications.slice(0, 4).join(' · ');
-      const forms = a.products.length ? [...new Set(a.products.map(p => p.form + ' ' + p.strength))].slice(0, 3).join(' · ') : 'Nuk u gjet në AKPPM';
-      const status = a.regimens.some(r => r.qaStatus === 'RISHIKIM KLINIK') ? 'Në rishikim' : 'Të bllokuara';
-      return '<article class="abx-catalog-item" role="listitem"><div class="abx-catalog-item-row"><label class="abx-catalog-item-check"><input type="checkbox" data-atc="' + esc(a.atc) + '" aria-label="Shto ' + esc(a.name) + ' në Listën time" ' + (isSelected ? 'checked' : '') + '></label><div class="abx-catalog-item-copy"><div class="abx-catalog-title-line"><strong class="abx-catalog-name">' + esc(a.name) + '</strong><span class="abx-catalog-atc">' + esc(a.atc) + '</span></div><p class="abx-catalog-taxonomy">' + esc(a.group) + ' <span aria-hidden="true">›</span> ' + esc(a.subgroup) + '</p><p class="abx-catalog-summary"><b>Indikacionet:</b> ' + esc(indications) + (a.indications.length > 4 ? ' · +' + (a.indications.length - 4) + ' të tjera' : '') + '</p><p class="abx-catalog-summary"><b>Forma / fortësia AKPPM:</b> ' + esc(forms) + ' <span class="abx-catalog-muted">(' + a.products.length + ' produkte)</span></p></div><div class="abx-catalog-item-actions"><span class="abx-catalog-pill ' + (status === 'Të bllokuara' ? 'is-missing' : '') + '">' + status + '</span><small class="abx-catalog-cell-note">' + a.regimens.length + ' skema</small><button type="button" class="abx-catalog-details-button" data-detail="' + esc(a.atc) + '" aria-expanded="' + open + '">' + (open ? 'Mbyll detajet' : 'Shiko detajet') + '</button></div></div>' + (open ? detail(a) : '') + '</article>';
-    }).join('');
-  }
-  function save() { try { localStorage.setItem(key, JSON.stringify(selected)); } catch { /* In-memory fallback. */ } }
-  body.addEventListener('change', event => {
-    const atc = event.target?.dataset?.atc;
-    if (!allowed.has(atc)) return;
-    selected = event.target.checked ? [...new Set([...selected, atc])] : selected.filter(x => x !== atc);
-    save(); render();
-  });
-  body.addEventListener('click', event => {
-    const button = event.target.closest('button[data-detail]');
-    if (!button || !allowed.has(button.dataset.detail)) return;
-    if (expanded.has(button.dataset.detail)) expanded.delete(button.dataset.detail);
-    else expanded.add(button.dataset.detail);
-    render();
-  });
-  $('abxCatalogSearch').addEventListener('input', e => { filters.search = e.target.value; render(); });
-  $('abxCatalogGroup').addEventListener('change', e => { filters.group = e.target.value; refreshSubgroups(); render(); });
-  $('abxCatalogSubgroup').addEventListener('change', e => { filters.subgroup = e.target.value; render(); });
-  $('abxCatalogIndication').addEventListener('change', e => { filters.indication = e.target.value; render(); });
-  $('abxCatalogRoute').addEventListener('change', e => { filters.route = e.target.value; render(); });
-  $('abxCatalogOnlySelected').addEventListener('change', e => { filters.selectedOnly = e.target.checked; render(); });
-  $('abxCatalogReset').addEventListener('click', () => {
-    Object.assign(filters, {search:'',group:'',subgroup:'',indication:'',route:'',selectedOnly:false});
-    ['abxCatalogSearch','abxCatalogGroup','abxCatalogIndication','abxCatalogRoute'].forEach(id => { $(id).value = ''; });
-    $('abxCatalogOnlySelected').checked = false;
-    refreshSubgroups(); render();
-  });
-  options('abxCatalogGroup', sorted(all.map(a => a.group)), 'Të gjitha grupet', '');
-  options('abxCatalogIndication', sorted(all.flatMap(a => a.indications)), 'Të gjitha indikacionet', '');
-  refreshSubgroups(); render();
-  column.append(view);
+(function(){
+ 'use strict';
+ const data=window.DRX_ANTIBIOTIC_CATALOG,core=window.DRX_ANTIBIOTIC_CATALOG_CORE,column=document.querySelector('.abx-column');
+ if(!data||!core||!column)return;
+ const all=data.antibiotics,allowed=new Set(all.map(a=>a.id)),byId=new Map(all.map(a=>[a.id,a])),sources=new Map(data.sources.map(s=>[s.id,s])),conditions=new Map(data.conditions.map(c=>[c.id,c.name]));
+ const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const safe=url=>/^https:\/\//i.test(String(url||''))?String(url):'';
+ const link=(url,label)=>safe(url)?'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+esc(label)+' <span aria-hidden="true">↗</span></a>':'';
+ const sortConditions=values=>[...new Set(values)].sort((a,b)=>(conditions.get(a)||'').localeCompare(conditions.get(b)||'','sq'));
+ const sorted=values=>[...new Set(values.filter(Boolean))].sort((a,b)=>a.localeCompare(b,'sq'));
+ const defaults={search:'',group:'',subgroup:'',indication:'',route:'',form:'',population:'',selectedOnly:false};
+ const filters={...defaults};let selected=[],storageKey='',authReady=false;const expanded=new Set(),doseConditions=new Map();
+ const view=document.createElement('section');view.id='antibioticsCatalog';view.className='abx-catalog';view.setAttribute('aria-label','Katalogu i antibiotikëve');
+ view.innerHTML=`
+ <header class="abx-catalog-heading"><div><span class="abx-catalog-eyebrow">REFERENCA KLINIKE / AKPPM</span><h1>Antibiotikët<span class="abx-title-dot">.</span></h1><p>Gjej substancën. Shiko indikacionin, format dhe dozimin referencë.</p></div><div class="abx-heading-meta"><b>${all.length}</b><span>substanca dhe kombinime<br>me produkte aktive në eksport</span></div></header>
+ <div class="abx-catalog-workspace"><div class="abx-catalog-searchbar"><label class="abx-catalog-search"><span class="sr-only">Kërko substancë, indikacion, produkt ose ATC</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><input type="search" id="abxCatalogSearch" placeholder="Kërko substancë, infeksion, produkt ose ATC…" autocomplete="off"></label><button type="button" class="abx-filter-toggle" id="abxFilterToggle" aria-expanded="true" aria-controls="abxFilterPanel">Filtrat <span aria-hidden="true">⌄</span></button></div>
+ <div id="abxFilterPanel"><div class="abx-catalog-controls">
+ <label>Grupi kryesor<select id="abxCatalogGroup"></select></label><label>Nëngrupi<select id="abxCatalogSubgroup"></select></label><label class="abx-condition-field">Infeksioni / indikacioni<select id="abxCatalogIndication"></select></label><label>Rruga<select id="abxCatalogRoute"></select></label><label>Forma<select id="abxCatalogForm"></select></label><label>Popullata e burimit<select id="abxCatalogPopulation"></select></label>
+ </div><div class="abx-filter-foot"><span>Forma sipas eksportit · popullata sipas referencës</span><button type="button" id="abxCatalogReset" class="abx-catalog-reset">Pastro filtrat <span aria-hidden="true">↺</span></button></div></div></div>
+ <div class="abx-catalog-toolbar"><div class="abx-catalog-list-tabs"><span class="abx-list-label">Katalogu</span><label class="abx-catalog-checklabel"><input type="checkbox" id="abxCatalogOnlySelected">Lista ime <span id="abxCatalogSelectedCount">0</span></label></div><span id="abxCatalogCount" role="status" aria-live="polite"></span></div>
+ <div class="abx-catalog-reference-note"><span class="abx-info-symbol" aria-hidden="true">i</span><p>Dozat janë referencë. Verifikimi klinik dhe llogaritja automatike ende nuk janë miratuar.</p><details><summary>Çfarë do të thotë?</summary><p>Përzgjedhja krijon vetëm Listën time. Çdo skemë ruan statusin e vet; produkti, indikacioni, rruga, forma dhe përqendrimi kërkojnë miratim klinik. Regjistrimi AKPPM nuk tregon stokun në barnatore.</p></details></div>
+ <div class="abx-catalog-list" id="abxCatalogRows" role="list" aria-label="Lista e antibiotikëve"></div>
+ <footer class="abx-catalog-footer"><span>660 produkte Active sipas Products.xlsx · importuar më 02.11.2026</span><span>${link(data.sourceSheet,'Sheet & burimet')} · ${link(data.akppmRegistry,'AKPPM')}</span></footer><p id="abxStorageStatus" class="abx-catalog-storage" role="status">Lista ime ruhet për llogarinë tënde në këtë shfletues.</p>`;
+ const $=id=>view.querySelector('#'+id),body=$('abxCatalogRows');
+ function options(id,values,placeholder,current=''){
+  const node=$(id);node.replaceChildren();const first=document.createElement('option');first.value='';first.textContent=placeholder;node.append(first);
+  for(const value of values){const option=document.createElement('option');option.value=typeof value==='string'?value:value.id;option.textContent=typeof value==='string'?value:value.name;node.append(option);}node.value=current;
+ }
+ function refreshSubgroups(){const vals=sorted(all.filter(a=>!filters.group||a.group===filters.group).map(a=>a.subgroup));if(!vals.includes(filters.subgroup))filters.subgroup='';options('abxCatalogSubgroup',vals,'Të gjithë nëngrupet',filters.subgroup);}
+ function doseText(r){if(r.doseMin==null)return 'Nuk specifikohet';return String(r.doseMin)+(r.doseMax!=null&&r.doseMax!==r.doseMin?'–'+r.doseMax:'')+' '+String(r.doseUnit||'');}
+ function duration(r){if(r.daysMin==null&&r.daysMax==null)return 'Nuk specifikohet';return String(r.daysMin??r.daysMax)+(r.daysMax!=null&&r.daysMin!=null&&r.daysMin!==r.daysMax?'–'+r.daysMax:'')+' ditë';}
+ function clinicalBadge(status){const blocked=String(status).startsWith('Bllokuar')||String(status).startsWith('BLLOKUAR');return '<span class="abx-catalog-pill '+(blocked?'is-missing':'')+'">'+(blocked?'Bllokuar — kërkohet rishikim klinik':'Mungon verifikimi')+'</span>';}
+ function sourceDetails(ref){const s=sources.get(ref.sourceId);return '<div class="abx-reference-source">'+link(ref.url,s?.type||'Burimi')+'<span>'+(ref.readDate?'Lexuar: '+esc(ref.readDate):'Referencë e trashëguar · pa riverifikim')+'</span></div><p class="abx-source-limit">'+esc(s?.note||ref.note)+'</p>';}
+ function detail(a){
+  const refs=a.indicationReferences.filter(r=>(!filters.indication||r.conditionIds.includes(filters.indication))&&(!filters.population||r.populations.includes(filters.population))&&a.products.some(p=>core.referenceMatchesProduct(r,p)&&core.routeMatches(p,filters.route)&&(!filters.form||p.formLabel===filters.form)));
+  const conditionIds=sortConditions(refs.flatMap(r=>r.conditionIds));
+  const ind=conditionIds.length?conditionIds.map(id=>{const rr=refs.filter(r=>r.conditionIds.includes(id));return '<li class="abx-indication"><strong>'+esc(conditions.get(id))+'</strong><span>'+esc(sorted(rr.map(r=>r.route)).join(' · '))+'</span><details><summary>Burimi dhe kufizimet</summary>'+rr.map(r=>'<div class="abx-indication-ref"><p>'+esc(r.originalText)+'</p><p class="abx-source-context">'+esc([r.form,r.population].filter(Boolean).join(' · '))+'</p>'+sourceDetails(r)+'</div>').join('')+'</details></li>';}).join(''):'<li class="abx-subtle-empty">Mungon indikacioni specifik i verifikuar për këtë përzgjedhje.</li>';
+  const pp=a.products.filter(p=>core.routeMatches(p,filters.route)&&(!filters.form||p.formLabel===filters.form));
+  const products=pp.map(p=>'<article class="abx-catalog-product"><div><b>'+esc(p.brand)+'</b>'+clinicalBadge(p.clinicalStatus)+'</div><p class="abx-product-strength">'+esc(p.strength)+' <span>· '+esc(p.formLabel)+'</span></p><dl><div><dt>Substanca</dt><dd>'+esc(p.activeIngredient)+'</dd></div><div><dt>Forma origjinale</dt><dd>'+esc(p.form)+'</dd></div><div><dt>Rruga</dt><dd>'+esc(p.route)+' <small>e nxjerrë nga forma; për verifikim</small></dd></div><div><dt>MA / RMA</dt><dd>'+esc(p.registration)+'</dd></div><div><dt>Burimi</dt><dd>Products.xlsx · '+esc(p.sourceTab)+' · rreshti '+p.sourceRow+'</dd></div><div><dt>Verifikimi online</dt><dd>'+esc(p.registryVerifiedAt||'Mungon verifikimi')+'</dd></div></dl>'+(p.issues?'<p class="abx-product-issue">'+esc(p.issues)+'</p>':'')+'</article>').join('');
+  const eligible=core.matchingRegimens(a,filters),doseIds=sortConditions(eligible.flatMap(r=>r.conditionIds));const chosen=filters.indication||doseConditions.get(a.id)||(doseIds.length===1?doseIds[0]:'');const regimens=chosen?eligible.filter(r=>r.conditionIds.includes(chosen)):[];const chooser=doseIds.length>1?'<label class="abx-dose-selector">Indikacioni për dozimin referencë<select data-dose-condition="'+esc(a.id)+'"><option value="">Zgjidh infeksionin konkret</option>'+doseIds.map(id=>'<option value="'+esc(id)+'" '+(id===chosen?'selected':'')+'>'+esc(conditions.get(id))+'</option>').join('')+'</select></label>':'';
+  const doses=regimens.map(r=>'<li class="abx-catalog-regimen"><header><div><span class="abx-dose-id">'+esc(r.id)+' · '+esc(r.sourceType)+'</span><h4>'+esc(r.conditionIds.map(id=>conditions.get(id)).join(' / '))+'</h4></div>'+clinicalBadge(r.qaStatus)+'</header><p class="abx-dose-original">'+esc(r.originalIndication)+'</p><p class="abx-dose-context">'+esc(r.population||'Popullata nuk specifikohet')+' <span>·</span> '+esc(r.route)+' <span>·</span> '+esc(r.formulation)+'</p><dl class="abx-dose-facts"><div><dt>Doza referencë</dt><dd>'+esc(doseText(r))+'</dd></div><div><dt>Frekuenca</dt><dd>'+esc(r.interval||'Nuk specifikohet')+'</dd></div><div><dt>Kohëzgjatja</dt><dd>'+esc(duration(r))+'</dd></div></dl>'+(r.note?'<p class="abx-dose-note">'+esc(r.note)+'</p>':'')+(r.qaStatus.startsWith('BLLOKUAR')?'<p class="abx-dose-block-reason">'+esc(r.qaReason)+'</p>':'')+'<div class="abx-dose-source">'+link(r.mayoUrl,'Mayo Clinic')+'<details><summary>Kufizimet dhe kontrolli</summary><p><b>Teksti i indikacionit në skemë:</b> '+esc(r.originalIndication)+'</p><p><b>Maksimumi:</b> '+(r.maxDaily!=null?esc(r.maxDaily)+' mg/24 h':'Nuk specifikohet')+'</p><p><b>Statusi i auditit:</b> '+esc(r.qaStatus)+'</p><p>'+esc(r.qaReason)+'</p><p>Kalkulatori: JO. Burimet e skemave të trashëguara kërkojnë riverifikim.</p></details></div></li>').join('');
+  return '<div class="abx-catalog-detail"><section class="abx-detail-section"><h3><span>01</span> Indikacionet specifike <small>Referencë</small></h3><ul class="abx-indications">'+ind+'</ul></section><details class="abx-detail-section"><summary><h3><span>02</span> Produktet në AKPPM <small>'+pp.length+' produkte</small></h3></summary><p class="abx-section-note">Active sipas eksportit. Disponueshmëria në barnatore nuk dihet; verifikimi i regjistrit online mungon.</p><div class="abx-catalog-product-list">'+products+'</div></details><section class="abx-detail-section"><h3><span>03</span> Dozimi sipas Mayo Clinic <small>Vetëm referencë</small></h3><p class="abx-section-note">Çdo infeksion dhe skemë ruhet veçmas. Pa llogaritje automatike.</p>'+chooser+'<ul class="abx-catalog-regimens">'+(doses||'<li class="abx-subtle-empty">Mungon skemë Mayo me indikacion specifik për këtë përzgjedhje. Nuk caktohet dozë me supozim.</li>')+'</ul></section></div>';
+ }
+ function render(){
+  const activeFilters=['group','subgroup','indication','route','form','population'].filter(k=>filters[k]).length;$('abxFilterToggle').innerHTML='Filtrat'+(activeFilters?' <b>'+activeFilters+'</b>':'')+' <span aria-hidden="true">⌄</span>';const visible=core.filterAntibiotics(all,filters,selected);$('abxCatalogCount').textContent=visible.length+' nga '+all.length+' rezultate';$('abxCatalogSelectedCount').textContent=selected.length;
+  if(!visible.length){body.innerHTML='<div class="abx-catalog-empty"><strong>Nuk u gjetën rezultate</strong><p>Provo një kërkim tjetër ose pastro filtrat.</p><button type="button" data-reset>Pastro filtrat</button></div>';return;}
+  body.innerHTML=visible.map(a=>{const open=expanded.has(a.id),ids=filters.indication?[filters.indication]:sortConditions(a.indicationReferences.filter(r=>a.products.some(p=>core.referenceMatchesProduct(r,p)&&core.routeMatches(p,filters.route)&&(!filters.form||p.formLabel===filters.form))).flatMap(r=>r.conditionIds)),ind=ids.slice(0,3).map(id=>conditions.get(id)),formProducts=a.products.filter(p=>core.routeMatches(p,filters.route)&&(!filters.form||p.formLabel===filters.form)),forms=sorted(formProducts.map(p=>p.formLabel+' '+p.strength)).slice(0,2);
+   return '<article class="abx-catalog-item" role="listitem"><div class="abx-catalog-item-row"><label class="abx-catalog-item-check"><input type="checkbox" data-id="'+esc(a.id)+'" aria-label="Shto '+esc(a.name)+' në Listën time" '+(selected.includes(a.id)?'checked':'')+' '+(!authReady?'disabled':'')+'></label><div class="abx-catalog-item-copy"><div class="abx-catalog-title-line"><strong class="abx-catalog-name">'+esc(a.name)+'</strong><span class="abx-catalog-atc">'+esc(a.atc)+'</span></div><p class="abx-catalog-taxonomy">'+esc(a.group)+' <span>›</span> '+esc(a.subgroup)+(a.generation?' <span>·</span> '+esc(/^[IV]+$/.test(a.generation)?'Gjenerata '+a.generation:a.generation):'')+'</p><p class="abx-catalog-summary">'+(ind.length?esc(ind.join(' · '))+(ids.length>3?' <span class="abx-more-count">+'+(ids.length-3)+'</span>':''):'<span class="abx-missing-indication">Indikacioni specifik kërkon verifikim</span>')+'</p><p class="abx-catalog-forms">'+esc(forms.join(' · '))+' <span>'+formProducts.length+(formProducts.length===1?' produkt':' produkte')+'</span></p></div><div class="abx-catalog-item-actions">'+clinicalBadge(a.clinicalStatus)+'<button type="button" class="abx-catalog-details-button" data-detail="'+esc(a.id)+'" aria-controls="detail-'+esc(a.id)+'" aria-expanded="'+open+'">'+(open?'Mbyll detajet':'Shiko detajet')+' <span aria-hidden="true">'+(open?'−':'↗')+'</span></button></div></div><div id="detail-'+esc(a.id)+'" '+(!open?'hidden':'')+'>'+(open?detail(a):'')+'</div></article>';
+  }).join('');
+ }
+ function reset(){Object.assign(filters,defaults);for(const id of ['abxCatalogSearch','abxCatalogGroup','abxCatalogIndication','abxCatalogRoute','abxCatalogForm','abxCatalogPopulation'])$(id).value='';$('abxCatalogOnlySelected').checked=false;refreshSubgroups();render();}
+ function save(){if(!storageKey)return;try{localStorage.setItem(storageKey,JSON.stringify(selected));$('abxStorageStatus').textContent='Lista ime ruhet për llogarinë tënde në këtë shfletues.';}catch{$('abxStorageStatus').textContent='Ruajtja në shfletues nuk është e disponueshme; përzgjedhja vlen për këtë sesion.';}}
+ window.addEventListener('medindex:auth-ready',event=>{const p=event.detail;if(p?.authenticated!==true)return;const owner=p.authUser?.id||p.user?.email;if(!owner)return;storageKey='drx.antibiotics.selected.v2:'+encodeURIComponent(String(owner).toLowerCase());try{selected=core.readSelected(localStorage.getItem(storageKey),[...allowed]);}catch{selected=[];}authReady=true;render();});
+ body.addEventListener('change',event=>{const doseId=event.target?.dataset?.doseCondition;if(doseId){doseConditions.set(doseId,event.target.value);render();view.querySelector('[data-dose-condition="'+doseId+'"]')?.focus({preventScroll:true});return;}const id=event.target?.dataset?.id;if(!allowed.has(id)||!authReady)return;selected=event.target.checked?[...new Set([...selected,id])]:selected.filter(x=>x!==id);save();render();});
+ body.addEventListener('click',event=>{if(event.target.closest('[data-reset]')){reset();return;}const button=event.target.closest('button[data-detail]');if(!button||!byId.has(button.dataset.detail))return;const id=button.dataset.detail;if(expanded.has(id))expanded.delete(id);else expanded.add(id);render();view.querySelector('button[data-detail="'+id+'"]')?.focus({preventScroll:true});});
+ $('abxCatalogSearch').addEventListener('input',e=>{filters.search=e.target.value;render();});
+ for(const [name,id]of Object.entries({group:'abxCatalogGroup',subgroup:'abxCatalogSubgroup',indication:'abxCatalogIndication',route:'abxCatalogRoute',form:'abxCatalogForm',population:'abxCatalogPopulation'}))$(id).addEventListener('change',e=>{filters[name]=e.target.value;if(name==='group')refreshSubgroups();render();});
+ $('abxCatalogOnlySelected').addEventListener('change',e=>{filters.selectedOnly=e.target.checked;render();});$('abxCatalogReset').addEventListener('click',reset);
+ $('abxFilterToggle').addEventListener('click',()=>{const panel=$('abxFilterPanel');panel.hidden=!panel.hidden;$('abxFilterToggle').setAttribute('aria-expanded',String(!panel.hidden));});
+ options('abxCatalogGroup',['Beta-Laktamët','Jo-Beta-Laktamët'],'Të gjitha grupet');
+ options('abxCatalogIndication',data.conditions.filter(c=>all.some(a=>a.conditionIds.includes(c.id))),'Të gjitha indikacionet');
+ options('abxCatalogRoute',sorted(all.flatMap(a=>a.routes)),'Të gjitha rrugët');options('abxCatalogForm',sorted(all.flatMap(a=>a.forms)),'Të gjitha format');options('abxCatalogPopulation',sorted(all.flatMap(a=>a.populations)),'Të gjitha popullatat');
+ refreshSubgroups();render();if(window.matchMedia('(max-width:720px)').matches){$('abxFilterPanel').hidden=true;$('abxFilterToggle').setAttribute('aria-expanded','false');}column.append(view);
 })();
