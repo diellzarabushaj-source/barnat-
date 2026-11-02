@@ -17,6 +17,7 @@ function createApprovedCalculator(reviewedRegistry){
   if(reasons.length)return blocked(reasons);
   if(m.kind==='fixed'&&!numeric(m.doseMg,0.001,1e6))return blocked(['Doza fikse nuk është e vlefshme.']);
   if(m.kind!=='fixed'&&!numeric(m.coefficient,0.001,1e5))return blocked(['Koeficienti nuk është i vlefshëm.']);
+  if(m.kind==='fixed'&&((m.maxDoseMg!=null&&m.doseMg>m.maxDoseMg)||(m.maxDailyMg!=null&&m.doseMg*24/m.intervalHours>m.maxDailyMg)))return blocked(['Skema fikse tejkalon maksimumin e miratuar.']);
   return {b,m,times:24/m.intervalHours};
  }
  function prepare(bindingId,patient){

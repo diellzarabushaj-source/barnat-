@@ -102,7 +102,7 @@ function releasedFixture(overrides={}){
  return {t,item,event,select};
 }
 test('only a complete reviewed binding shows a patient form; stale or mismatched releases stay compact',()=>{
- for(const override of [{approval:null},{sourceVersion:'stale'},{form:'Other form'},{strength:'250 mg'},{sourceId:'Other source'},{model:null}]){const {t,item,select}=releasedFixture(override);select('TEST-A');assert.equal(t.calculatorAvailable(item,'TEST-A'),false);assert.doesNotMatch(t.renderCalculator(item,'TEST-A'),/<input|data-calculate/);}
+ for(const override of [{approval:null},{sourceVersion:'stale'},{form:'Other form'},{strength:'250 mg'},{sourceId:'Other source'},{model:null},{model:{kind:'fixed',doseMg:125,intervalHours:12,maxDoseMg:100}},{model:{kind:'fixed',doseMg:125,intervalHours:12,maxDailyMg:200}}]){const {t,item,select}=releasedFixture(override);select('TEST-A');assert.equal(t.calculatorAvailable(item,'TEST-A'),false);assert.doesNotMatch(t.renderCalculator(item,'TEST-A'),/<input|data-calculate/);}
  const {t,item,select}=releasedFixture();assert(t.calculatorAvailable(item,'TEST-A'));assert.doesNotMatch(t.renderCalculator(item,'TEST-A'),/<input/);select('TEST-A');assert.match(t.renderCalculator(item,'TEST-A'),/data-calc-field="age"/);
 });
 test('released synthetic forms retain separate drafts, clear changed age units and calculate through the same gate',()=>{
