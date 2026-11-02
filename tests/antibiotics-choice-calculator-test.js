@@ -38,13 +38,14 @@ test('every per-antibiotic calculator remains blocked, including forged approval
  const xr={...forged,products:[{...forged.products[0],form:'Modified-release tablet'}]};assert(core.calculatorState(xr,selection).reasons.some(r=>r.includes('nuk përputhet')));
  const blocked=all.find(a=>/^Bllokuar/.test(a.clinicalStatus));assert(core.calculatorState(blocked).reasons.some(r=>r.startsWith('Bllokuar')));
 });
-test('calculator drafts are independent per antibiotic and clear without browser or network persistence',()=>{
- const t=tools(),a=get('Amoxicillin'),b=get('Clarithromycin'),id=condition('Infeksion nga Helicobacter pylori');
+test('unapproved workspaces show a compact reference card and never collect patient inputs',()=>{
+ const t=tools(),a=get('Amoxicillin'),id=condition('Infeksion nga Helicobacter pylori');
  t.renderCalculator(a,id);const event={target:{dataset:{calcField:'weight'},value:'25',closest:()=>({dataset:{calculator:a.id}})}};
- assert.equal(t.handleInput(event),true);assert.match(t.renderCalculator(a,id),/data-calc-field="weight" value="25"/);assert.match(t.renderCalculator(b,id),/data-calc-field="weight" value=""/);
- t.clearDrafts();assert.match(t.renderCalculator(a,id),/data-calc-field="weight" value=""/);
+ assert.equal(t.handleInput(event),false);
+ for(const item of all)for(const conditionId of item.conditionIds){const html=t.renderCalculator(item,conditionId);assert.equal(t.calculatorAvailable(item,conditionId),false);assert.match(html,/abx-dose-pending/);assert.doesNotMatch(html,/<input|data-calculate|data-calc-field="(?:age|ageUnit|weight|crcl|dialysis)"/);assert(!html.includes('Llogaritja është e bllokuar'));}
+ t.clearDrafts();
  const code=fs.readFileSync(require.resolve('../antibiotiket-clinical-tools'),'utf8');assert.doesNotMatch(code,/localStorage|sessionStorage|fetch\(|XMLHttpRequest|postMessage|console\./);
- const html=t.renderCalculator(a,id);assert.match(html,/<button[^>]*disabled>Llogarit dozën/);assert.match(html,/Llogaritja është e bllokuar/);
+ const html=t.renderCalculator(a,id);assert.match(html,/Produktet dhe burimet/);assert.doesNotMatch(html,/abx-dose-reference" open/);
 });
 test('urinary choices preserve exact release/strength and unavailable monotherapies stay outside the catalog',()=>{
  const p=choices.profiles.find(p=>p.id==='cystitis-women-nonpregnant'),nitro=p.rows.find(r=>r.substanceId===get('Nitrofurantoin').id);
@@ -68,17 +69,13 @@ test('skin choices do not turn injectable, nasal, eye or steroid combination pro
  const html=tools().renderChoices({indication:condition('Celulit bakterial'),population:'Të rritur'});assert.match(html,/Flucloxacillin/);assert.match(html,/Pa produkt të përputhshëm/);assert(!html.includes('data-choice-open="'+fluclox.id+'"'));
  for(const a of all.filter(a=>a.atc==='R01AX06'||a.atc==='S01AA13'||a.name.includes('Hydrocortisone')))assert(!a.indicationReferences.some(r=>r.id.startsWith('impetigo-adult-local')));
 });
-test('age unit changes clear the entered age and local forms do not offer weight-based calculations',()=>{
- const t=tools(),a=get('Amoxicillin'),id=condition('Infeksion nga Helicobacter pylori');t.renderCalculator(a,id);
- const target=(field,value)=>({target:{dataset:{calcField:field},value,closest:()=>({dataset:{calculator:a.id}})}});
- t.handleInput(target('age','8'));assert.match(t.renderCalculator(a,id),/data-calc-field="age" value="8"/);
- assert(t.handleChange(target('ageUnit','months')));const html=t.renderCalculator(a,id);assert.match(html,/data-calc-field="age" value=""/);assert.match(html,/value="months" selected/);assert(!t.handleChange(target('ageUnit','invalid')));
- const mup=all.find(a=>a.name==='Mupirocin'&&a.atc==='D06AX09'),local=t.renderCalculator(mup,condition('Impetigo'));assert(!local.includes('data-calc-field="weight"'));assert.match(local,/Formë lokale/);assert.match(local,/disabled>Llogarit dozën/);
+test('local and systemic reference cards have no age, weight, renal or inactive calculation controls',()=>{
+ const t=tools();for(const a of [get('Amoxicillin'),all.find(a=>a.name==='Mupirocin'&&a.atc==='D06AX09')]){const html=t.renderCalculator(a,a.conditionIds[0]);assert.doesNotMatch(html,/<input|data-calculate/);assert.match(html,/Në përgatitje/);}
 });
 test('each antibiotic-indication pair owns a separate workspace and drafts do not cross indications',()=>{
  const t=tools(),a=get('Amoxicillin'),first=condition('Infeksion nga Helicobacter pylori'),second=condition('Otit media akut');
- t.renderCalculator(a,first);t.handleInput({target:{dataset:{calcField:'weight'},value:'65',closest:()=>({dataset:{calculator:a.id,calculatorCondition:first}})}});
- assert.match(t.renderCalculator(a,second),/data-calc-field="weight" value=""/);assert.match(t.renderCalculator(a,first),/data-calc-field="weight" value="65"/);
+ t.renderCalculator(a,first);t.handleChange({target:{dataset:{calcField:'productId'},value:a.products[0].id,closest:()=>({dataset:{calculator:a.id,calculatorCondition:first}})}});
+ assert(!t.renderCalculator(a,second).includes('value="'+a.products[0].id+'" selected'));assert(t.renderCalculator(a,first).includes('value="'+a.products[0].id+'" selected'));
  const coverage=globalThis.DRX_ANTIBIOTIC_PROTOCOLS.coverage(all);assert.equal(coverage.length,all.reduce((n,a)=>n+a.conditionIds.length,0));assert.equal(new Set(coverage.map(c=>c.id)).size,coverage.length);assert(coverage.every(c=>!c.clinicalApproved));
 });
 test('the Qilu SmPC is never applied to CEFIN, other indications, strengths or inactive records',()=>{
@@ -87,4 +84,32 @@ test('the Qilu SmPC is never applied to CEFIN, other indications, strengths or i
  assert.equal(catalog.candidates(a,id,cefin,core).length,0);assert.equal(catalog.candidates(a,condition('Meningjit bakterial'),qilu,core).length,0);
  assert.equal(catalog.candidates(a,id,{...qilu,strength:'2 g'},core).length,0);assert.equal(catalog.candidates(a,id,{...qilu,status:'Suspended'},core).length,0);
  const state=catalog.workspaceState(a,{conditionId:id,productId:qilu.id,regimenId:'',crcl:'40'},core);assert.equal(state.enabled,false);assert.equal(state.result,null);assert(state.reasons.some(r=>r.includes('insuficiencën renale')));assert.equal(Object.keys(catalog.approvedBindings).length,0);
+});
+
+// Isolated, synthetic release fixtures exercise the future approved UI without
+// adding a clinical approval to the production registry or modifying patient data.
+function releasedFixture(overrides={}){
+ const product={id:'TEST-PRODUCT',status:'Active',brand:'SYNTHETIC TEST',route:'PO',form:'Tablet',formLabel:'Tabletë',strength:'125 mg',registration:'TEST-MA',registryVerifiedAt:'2026-11-02'},item={id:'TEST-ABX',name:'SYNTHETIC TEST',products:[product],clinicalStatus:'Reviewed test fixture'};
+ const base={productId:product.id,route:'PO',form:product.form,strength:product.strength,sourceId:'TEST-SOURCE',sourceVersion:'fixture-v1',protocolId:'TEST-PROTOCOL',minAgeYears:2,maxAgeYears:80,minWeightKg:5,maxWeightKg:150,model:{kind:'fixed',doseMg:125,intervalHours:12},approval:{status:'approved',reviewer:'SYNTHETIC TEST FIXTURE',reviewedAt:'2026-11-02',sourceVersion:'fixture-v1',productVerified:true,routeVerified:true,formVerified:true,concentrationVerified:true}};
+ const registry=Object.fromEntries(['TEST-A','TEST-B'].map(id=>[id,{...base,conditionId:id,...overrides}]));
+ const candidates=(a,id,p)=>p&&['TEST-A','TEST-B'].includes(id)?[{id,modelBindingId:id,sourceId:'TEST-SOURCE',sourceVersion:'fixture-v1',sourceKind:'Synthetic test',sourceUrl:'https://example.invalid/test',sourceLabel:'Synthetic fixture',doseMin:125,doseMax:125,doseUnit:'mg/dozë',interval:'q12h',population:'Synthetic test only',route:'PO'}]:[];
+ const protocolData={approvedBindings:registry,candidates,workspaceState(a,d){const p=a.products.find(p=>p.id===d.productId),available=candidates(a,d.conditionId,p);return {enabled:false,product:p,available,selected:available[0],reasons:['Synthetic test']};}};
+ const sandbox={DRX_ANTIBIOTIC_PROTOCOLS:protocolData,DRX_ANTIBIOTIC_DOSE_ENGINE:require('../antibiotiket-dose-engine')};
+ require('node:vm').runInNewContext(fs.readFileSync(require.resolve('../antibiotiket-clinical-tools'),'utf8'),sandbox);
+ const t=sandbox.DRX_ANTIBIOTIC_CLINICAL_TOOLS.create({core,all:[item],choices:{sources:[]},conditions:new Map([['TEST-A','Synthetic A'],['TEST-B','Synthetic B']]),esc,link:(u,s)=>s});
+ const event=(conditionId,field,value)=>({target:{dataset:{calcField:field},value,closest:()=>({dataset:{calculator:item.id,calculatorCondition:conditionId}})}});
+ const select=id=>{t.renderCalculator(item,id);t.handleChange(event(id,'productId',product.id));};
+ return {t,item,event,select};
+}
+test('only a complete reviewed binding shows a patient form; stale or mismatched releases stay compact',()=>{
+ for(const override of [{approval:null},{sourceVersion:'stale'},{form:'Other form'},{strength:'250 mg'},{sourceId:'Other source'},{model:null},{model:{kind:'fixed',doseMg:125,intervalHours:12,maxDoseMg:100}},{model:{kind:'fixed',doseMg:125,intervalHours:12,maxDailyMg:200}}]){const {t,item,select}=releasedFixture(override);select('TEST-A');assert.equal(t.calculatorAvailable(item,'TEST-A'),false);assert.doesNotMatch(t.renderCalculator(item,'TEST-A'),/<input|data-calculate/);}
+ const {t,item,select}=releasedFixture();assert(t.calculatorAvailable(item,'TEST-A'));assert.doesNotMatch(t.renderCalculator(item,'TEST-A'),/<input/);select('TEST-A');assert.match(t.renderCalculator(item,'TEST-A'),/data-calc-field="age"/);
+});
+test('released synthetic forms retain separate drafts, clear changed age units and calculate through the same gate',()=>{
+ const {t,item,event,select}=releasedFixture();select('TEST-A');t.handleInput(event('TEST-A','age','8'));t.handleInput(event('TEST-A','weight','25'));
+ select('TEST-B');assert.match(t.renderCalculator(item,'TEST-B'),/data-calc-field="weight" value=""/);assert.match(t.renderCalculator(item,'TEST-A'),/data-calc-field="weight" value="25"/);
+ t.handleChange(event('TEST-A','ageUnit','months'));assert.match(t.renderCalculator(item,'TEST-A'),/data-calc-field="age" value=""/);assert.match(t.renderCalculator(item,'TEST-A'),/value="months" selected/);
+ t.handleChange(event('TEST-A','ageUnit','years'));t.handleInput(event('TEST-A','age','8'));
+ const container={dataset:{calculator:item.id,calculatorCondition:'TEST-A'}},button={closest:()=>container};t.handleCalculate({target:{closest:()=>button}});assert.match(t.renderCalculator(item,'TEST-A'),/125 mg për dozë/);
+ t.clearDrafts();assert.doesNotMatch(t.renderCalculator(item,'TEST-A'),/<input|125 mg për dozë/);
 });
