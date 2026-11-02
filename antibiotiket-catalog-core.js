@@ -40,5 +40,29 @@
   return ['OPH','OTIC','NASAL','VAG','INH','PR','OROMUC'].some(r=>s.includes(r)&&p.split(' / ').some(x=>x===r));
  }
  function matchingRegimens(item,filters={}){return (item.regimens||[]).filter(r=>r.conditionIds.length&&item.products.some(p=>referenceMatchesProduct(r,p)&&(!filters.form||p.formLabel===filters.form))&&(!filters.indication||r.conditionIds.includes(filters.indication))&&(!filters.population||r.populations.includes(filters.population))&&(!filters.route||r.route.split(' / ').includes(filters.route)));}
- return Object.freeze({filterAntibiotics,readSelected,isCalculatorApproved,normalize,routeMatches,matchingRegimens,sourceFormMatches,referenceMatchesProduct});
+ function withChoiceReferences(items,choiceData,conditions){
+  const names=new Map(conditions.map(c=>[c.id,c.name])),sources=new Map((choiceData.sources||[]).map(s=>[s.id,s]));
+  return items.map(item=>{
+   const extra=[];
+   for(const p of choiceData.profiles||[])for(const [index,row]of p.rows.entries()){
+    const s=sources.get(p.sourceId);if(row.substanceId!==item.id||!s||!item.products.some(product=>referenceMatchesProduct(row,product)))continue;
+    extra.push({id:p.id+'-'+index,sourceId:s.id,url:s.url,readDate:s.readDate,conditionIds:p.conditionIds.filter(id=>names.has(id)),route:row.route,form:row.form,population:p.label,populations:[p.population],originalText:p.label+' · '+row.note,note:p.note,calculatorApproved:false,origin:'Renditja e udhëzimit; pa dozë'});
+   }
+   const refs=[...item.indicationReferences,...extra],ids=[...new Set(refs.flatMap(r=>r.conditionIds))];
+   return {...item,indicationReferences:refs,conditionIds:ids,indications:ids.map(id=>names.get(id)),populations:[...new Set([...item.populations,...extra.flatMap(r=>r.populations)])]};
+  });
+ }
+ const choiceProfiles=(choices,conditionId,population='')=>(choices.profiles||[]).filter(p=>p.conditionIds.includes(conditionId)&&(!population||p.population===population));
+ function calculatorState(item,{conditionId='',productId='',regimenId=''}={}){
+  const product=item.products.find(p=>p.id===productId),regimen=item.regimens.find(r=>r.id===regimenId),reasons=[];
+  if(!conditionId)reasons.push('Zgjidh indikacionin konkret.');
+  if(!product)reasons.push('Zgjidh produktin dhe fortësinë konkrete.');
+  if(!regimen)reasons.push('Mungon skema Mayo e përzgjedhur për këtë indikacion dhe produkt.');
+  if(/^bllokuar/i.test(item.clinicalStatus)||/^bllokuar/i.test(product?.clinicalStatus||'')||/^bllokuar/i.test(regimen?.qaStatus||''))reasons.push('Bllokuar — kërkohet rishikim klinik.');
+  if(regimen&&(!regimen.conditionIds.includes(conditionId)||!product||regimen.route!==product.route||!referenceMatchesProduct(regimen,product)))reasons.push('Skema nuk përputhet saktësisht me indikacionin, rrugën dhe formën e produktit.');
+  if(product&&!product.registryVerifiedAt)reasons.push('Mungon verifikimi lokal i produktit dhe përqendrimit.');
+  if(!isCalculatorApproved(regimen))reasons.push('Llogaritja nuk është miratuar klinikisht.');
+  return {enabled:false,result:null,reasons,product,regimen};
+ }
+ return Object.freeze({filterAntibiotics,readSelected,isCalculatorApproved,normalize,routeMatches,matchingRegimens,sourceFormMatches,referenceMatchesProduct,withChoiceReferences,choiceProfiles,calculatorState});
 });
