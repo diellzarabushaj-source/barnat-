@@ -131,34 +131,21 @@ test('indication choices keep explicit first, second and conditional alternative
  await expect(panel.locator('.is-second')).toContainText('2–3 ditësh');
  await expect(panel.locator('a[href*="guidance/ng79/chapter/Recommendations"]')).toBeVisible();
  await panel.locator('.is-first [data-choice-open]').first().click();
- await expect(page.getByRole('region',{name:'Kalkulatori për Phenoxymethylpenicillin'})).toBeVisible();
+ await expect(page.getByRole('region',{name:'Dozimi për Phenoxymethylpenicillin'})).toBeVisible();
  await page.locator('#abxCatalogIndication').selectOption({label:'Infeksion nga Helicobacter pylori'});
  await expect(panel).toContainText('Mungon renditje burimore');
  await expect(panel.locator('.abx-choice-tier')).toHaveCount(0);
 });
 
-test('individual calculators preserve separate drafts and never enable unapproved dosing',async({page})=>{
- await page.goto(url+'/antibiotiket.html');
- await expect(page.locator('.abx-catalog-item input').first()).toBeEnabled();
- await page.locator('#abxCatalogSearch').fill('Amoxicillin');
- const amox=page.locator('[data-antibiotic-id="ABX-631701ffbd23"]');
- await amox.getByRole('button',{name:'Shiko detajet'}).click();
- await amox.locator('[data-dose-condition]').selectOption({label:'Infeksion nga Helicobacter pylori'});
- let calc=amox.locator('[data-calculator]');
- await calc.locator('[data-calc-field="age"]').fill('8');
- await calc.locator('[data-calc-field="weight"]').fill('25');
- await calc.locator('[data-calc-field="productId"]').selectOption({index:1});
- await expect(calc.getByRole('button',{name:'Llogarit dozën'})).toBeDisabled();
- await expect(calc).toContainText('Llogaritja nuk është miratuar klinikisht');
- await page.locator('#abxCatalogSearch').fill('Clarithromycin');
- const clari=page.locator('[data-antibiotic-id="ABX-a92902b63e9f"]');
- await clari.getByRole('button',{name:'Shiko detajet'}).click();
- await expect(clari.locator('[data-calc-field="weight"]')).toHaveValue('');
- await page.locator('#abxCatalogSearch').fill('Amoxicillin');
- await expect(amox.locator('[data-calc-field="weight"]')).toHaveValue('25');
- await page.reload();await page.locator('#abxCatalogSearch').fill('Amoxicillin');
- await amox.getByRole('button',{name:'Shiko detajet'}).click();
- await expect(amox.locator('[data-calc-field="weight"]')).toHaveValue('');
+test('reference product choices stay separate and unapproved workspaces never ask for patient data',async({page})=>{
+ await page.goto(url+'/antibiotiket.html');await page.locator('#abxCatalogSearch').fill('Amoxicillin');
+ const amox=page.locator('[data-antibiotic-id="ABX-631701ffbd23"]');await amox.getByRole('button',{name:'Shiko detajet'}).click();
+ await amox.locator('[data-dose-condition]').selectOption({label:'Infeksion nga Helicobacter pylori'});let calc=amox.locator('[data-calculator]');
+ await calc.locator('.abx-dose-reference > summary').click();await calc.locator('[data-calc-field="productId"]').selectOption({index:1});const chosen=await calc.locator('[data-calc-field="productId"]').inputValue();
+ await expect(calc.locator('input, [data-calculate]')).toHaveCount(0);await expect(calc.locator('.abx-dose-reference')).toHaveAttribute('open','');
+ await page.locator('#abxCatalogSearch').fill('Clarithromycin');const clari=page.locator('[data-antibiotic-id="ABX-a92902b63e9f"]');await clari.getByRole('button',{name:'Shiko detajet'}).click();await expect(clari.locator('[data-calculator] input')).toHaveCount(0);
+ await page.locator('#abxCatalogSearch').fill('Amoxicillin');await expect(amox.locator('[data-calc-field="productId"]')).toHaveValue(chosen);
+ await page.reload();await page.locator('#abxCatalogSearch').fill('Amoxicillin');await amox.getByRole('button',{name:'Shiko detajet'}).click();await amox.locator('[data-dose-condition]').selectOption({label:'Infeksion nga Helicobacter pylori'});await expect(amox.locator('[data-calc-field="productId"]')).toHaveValue('');
 });
 
 test('choice groups and individual calculator fit 320 px and keep pediatric context separate',async({page})=>{
@@ -168,9 +155,9 @@ test('choice groups and individual calculator fit 320 px and keep pediatric cont
  const panel=page.getByRole('region',{name:'Renditja sipas indikacionit'});
  await expect(panel).toContainText('1 muaj–17 vjeç');
  await panel.locator('.is-first [data-choice-open]').click();
- const calc=page.getByRole('region',{name:'Kalkulatori për Amoxicillin',exact:true});
- await calc.locator('[data-calc-field="productId"]').selectOption({index:1});
- await expect(calc.getByRole('button',{name:'Llogarit dozën'})).toBeDisabled();
+ const calc=page.getByRole('region',{name:'Dozimi për Amoxicillin',exact:true});
+ await calc.locator('.abx-dose-reference > summary').click();await calc.locator('[data-calc-field="productId"]').selectOption({index:1});
+ await expect(calc.locator('input, [data-calculate]')).toHaveCount(0);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.locator('#abxCatalogPopulation').selectOption({label:'Të rritur'});
  await expect(panel).toContainText('Mungon renditje burimore');
@@ -193,33 +180,34 @@ test('local skin choices stay separate from nasal products and the local panel o
  await page.locator('#abxCatalogIndication').selectOption({label:'Impetigo'});await page.locator('[data-choice-profile]').selectOption('impetigo-adult-local');
  const panel=page.getByRole('region',{name:'Renditja sipas indikacionit'});
  await panel.locator('.is-alternative [data-choice-open="ABX-d7685aa3e0f9"]').click();
- const calc=page.locator('[data-calculator="ABX-d7685aa3e0f9"]');await expect(calc).toContainText('Formë lokale');await expect(calc.locator('[data-calc-field="weight"]')).toHaveCount(0);
- await expect(calc.getByRole('button',{name:'Llogarit dozën'})).toBeDisabled();
+ const calc=page.locator('[data-calculator="ABX-d7685aa3e0f9"]');await expect(calc).toContainText('Në përgatitje');await expect(calc.locator('[data-calc-field="weight"]')).toHaveCount(0);
+ await expect(calc.locator('[data-calculate]')).toHaveCount(0);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.locator('[data-choice-profile]').selectOption('impetigo-adult-oral');await expect(panel.locator('.is-first')).toContainText('Flucloxacillin');await expect(panel.locator('.is-first')).toContainText('Pa produkt të përputhshëm');await expect(panel.locator('.is-first [data-choice-open]')).toHaveCount(0);
 });
 
-test('age units are explicit and switching units clears age without producing a dose',async({page})=>{
- await page.goto(url+'/antibiotiket.html');await page.locator('#abxCatalogSearch').fill('Amoxicillin');
- const item=page.locator('[data-antibiotic-id="ABX-631701ffbd23"]');await item.locator('[data-detail]').click();
- const calc=item.locator('[data-calculator]');await calc.locator('[data-calc-field="age"]').fill('8');await calc.locator('[data-calc-field="ageUnit"]').selectOption('months');
- await expect(calc.locator('[data-calc-field="age"]')).toHaveValue('');await expect(calc.locator('[data-calc-field="ageUnit"]')).toHaveValue('months');
- await calc.locator('[data-calc-field="age"]').fill('6');await calc.locator('[data-calc-field="ageUnit"]').selectOption('days');await expect(calc.locator('[data-calc-field="age"]')).toHaveValue('');
- await expect(calc.getByRole('button',{name:'Llogarit dozën'})).toBeDisabled();await calc.getByText('Detajet (',{exact:false}).click();await expect(calc).toContainText('Llogaritja nuk është miratuar klinikisht');
+for(const width of [320,1440])test(`Amikacin has a compact reference card without an empty blocked calculator at ${width}px`,async({page})=>{
+ await page.setViewportSize({width,height:880});await page.goto(url+'/antibiotiket.html');if(width===320)await page.locator('#abxFilterToggle').click();
+ await page.locator('#abxCatalogSearch').fill('Amikacin');await page.locator('#abxCatalogIndication').selectOption({label:'Infeksione urinare'});await page.getByRole('button',{name:'Shiko detajet'}).click();
+ const card=page.getByRole('region',{name:'Dozimi për Amikacin',exact:true});await expect(card).toBeVisible();await expect(card.locator('input, [data-calculate], .abx-calculator-status')).toHaveCount(0);
+ expect((await card.boundingBox()).height).toBeLessThan(240);expect(await card.locator('.abx-dose-reference').getAttribute('open')).toBeNull();
+ await card.locator('.abx-dose-reference > summary').click();await card.locator('[data-calc-field="productId"]').selectOption({index:1});await expect(card.locator('input, [data-calculate]')).toHaveCount(0);
+ await card.getByText('Verifikimi',{exact:true}).click();await expect(card).toContainText('Llogaritja nuk është miratuar klinikisht');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
 
-test('one antibiotic keeps independent calculators for its different indications',async({page})=>{
+test('one antibiotic keeps source/product selections separate for different indications',async({page})=>{
  await page.goto(url+'/antibiotiket.html');await page.locator('#abxCatalogSearch').fill('Amoxicillin');const item=page.locator('[data-antibiotic-id="ABX-631701ffbd23"]');await item.locator('[data-detail]').click();
- await item.locator('[data-dose-condition]').selectOption({label:'Infeksion nga Helicobacter pylori'});await item.locator('[data-calc-field="weight"]').fill('65');
- await item.locator('[data-dose-condition]').selectOption({label:'Otit media akut'});await expect(item.locator('[data-calc-field="weight"]')).toHaveValue('');
- await item.locator('[data-dose-condition]').selectOption({label:'Infeksion nga Helicobacter pylori'});await expect(item.locator('[data-calc-field="weight"]')).toHaveValue('65');await expect(item.locator('[data-calc-result]')).toBeEmpty();
+ await item.locator('[data-dose-condition]').selectOption({label:'Infeksion nga Helicobacter pylori'});await item.locator('.abx-dose-reference > summary').click();await item.locator('[data-calc-field="productId"]').selectOption({index:1});const chosen=await item.locator('[data-calc-field="productId"]').inputValue();
+ await item.locator('[data-dose-condition]').selectOption({label:'Otit media akut'});await expect(item.locator('[data-calc-field="productId"]')).toHaveValue('');
+ await item.locator('[data-dose-condition]').selectOption({label:'Infeksion nga Helicobacter pylori'});await expect(item.locator('[data-calc-field="productId"]')).toHaveValue(chosen);await expect(item.locator('[data-calc-result]')).toHaveCount(0);
 });
 
 test('Ceftazidime uses the selected product SmPC and requires renal review without leaking it to CEFIN',async({page})=>{
  await page.setViewportSize({width:390,height:880});await page.goto(url+'/antibiotiket.html');await page.locator('#abxFilterToggle').click();await page.locator('#abxCatalogSearch').fill('Ceftazidime');await page.locator('#abxCatalogIndication').selectOption({label:'Infeksione urinare të komplikuara'});await page.locator('[data-antibiotic-id="ABX-7f2058bb1770"]').getByRole('button',{name:'Shiko detajet'}).click();
- const calc=page.locator('[data-calculator="ABX-7f2058bb1770"]');await calc.locator('[data-calc-field="productId"]').selectOption('PRD-a6635e18e00533');await calc.locator('.abx-calculator-source summary').click();
- await expect(calc.locator('a[href*="cima.aemps.es/cima/dochtml/ft/83901/"]')).toBeVisible();await expect(calc.locator('.abx-calculator-source')).toContainText('1–2 g/dozë');
- await calc.locator('[data-calc-field="age"]').fill('55');await calc.locator('[data-calc-field="weight"]').fill('65');await calc.locator('[data-calc-field="crcl"]').fill('40');await calc.getByText('Detajet (',{exact:false}).click();await expect(calc).toContainText('insuficiencën renale');await expect(calc.getByRole('button',{name:'Llogarit dozën'})).toBeDisabled();
- await calc.locator('[data-calc-field="productId"]').selectOption('PRD-3f67ae13e70a80');await expect(calc.locator('.abx-calculator-source')).toHaveCount(0);await expect(calc).toContainText('ende nuk ka skemë numerike');await expect(calc.locator('[data-calc-result]')).toBeEmpty();
+ const calc=page.locator('[data-calculator="ABX-7f2058bb1770"]');await calc.locator('.abx-dose-reference > summary').click();await calc.locator('[data-calc-field="productId"]').selectOption('PRD-a6635e18e00533');await calc.locator('.abx-calculator-source summary').click();
+ await expect(calc.locator('a[href*="cima.aemps.es/cima/dochtml/ft/83901/"]')).toBeVisible();await expect(calc.locator('.abx-calculator-source')).toContainText('1–2 g/dozë');await expect(calc.locator('input, [data-calculate]')).toHaveCount(0);
+ await calc.getByText('Verifikimi',{exact:true}).click();await expect(calc).toContainText('funksionit renal');
+ await calc.locator('[data-calc-field="productId"]').selectOption('PRD-3f67ae13e70a80');await expect(calc.locator('.abx-calculator-source')).toHaveCount(0);await expect(calc).toContainText('ende nuk ka skemë numerike');await expect(calc.locator('input, [data-calc-result]')).toHaveCount(0);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });

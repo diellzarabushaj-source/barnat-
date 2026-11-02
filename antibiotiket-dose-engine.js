@@ -5,22 +5,28 @@ function createApprovedCalculator(reviewedRegistry){
  const registry=JSON.parse(JSON.stringify(reviewedRegistry||{}));
  const numeric=(value,min,max)=>typeof value==='number'&&Number.isFinite(value)&&value>=min&&value<=max;
  const blocked=reasons=>({status:'blocked',result:null,reasons});
- function prepare(bindingId,patient){
-  const b=registry[bindingId],a=b?.approval,m=b?.model,p=patient||{},reasons=[];
+ function reviewedBinding(bindingId){
+  const b=registry[bindingId],a=b?.approval,m=b?.model,reasons=[];
   if(!b||!a||a.status!=='approved'||!a.reviewer||!a.reviewedAt||!a.sourceVersion||!a.productVerified||!a.routeVerified||!a.formVerified||!a.concentrationVerified)return blocked(['Mungon miratimi i dokumentuar i skemës dhe produktit.']);
   if(['productId','conditionId','route','form','strength','sourceId','sourceVersion'].some(k=>typeof b[k]!=='string'||!b[k])||a.sourceVersion!==b.sourceVersion)return blocked(['Lidhja e produktit/burimit nuk është e plotë ose versioni ka ndryshuar.']);
   if(b.sourceConflict)return blocked(['Bllokuar — kërkohet rishikim klinik.']);
   if(!b.sourceId||!numeric(b.minAgeYears,0,120)||!numeric(b.maxAgeYears,b.minAgeYears,120)||!numeric(b.minWeightKg,0.1,350)||!numeric(b.maxWeightKg,b.minWeightKg,350))return blocked(['Profili nuk ka kufij të plotë të rishikuar.']);
-  if(p.productId!==b.productId||p.conditionId!==b.conditionId||p.route!==b.route)return blocked(['Produkti, indikacioni ose rruga nuk përputhet me miratimin.']);
-  if(!numeric(p.ageYears,0,120)||!numeric(p.weightKg,0.1,350))return blocked(['Mosha dhe pesha duhen dhënë si vlera të vlefshme.']);
-  if(p.ageYears<b.minAgeYears||p.ageYears>b.maxAgeYears||p.weightKg<b.minWeightKg||p.weightKg>b.maxWeightKg)reasons.push('Mosha/pesha është jashtë profilit të miratuar.');
-  if(b.requiresRenal&&(!numeric(b.minCrclExclusive,0,250)||!numeric(p.crclMlMin,0,250)||p.crclMlMin<=b.minCrclExclusive||p.dialysis!==false))reasons.push('Funksioni renal/dializa kërkon skemë tjetër të rishikuar.');
+  if(b.requiresRenal&&!numeric(b.minCrclExclusive,0,250))reasons.push('Profili nuk ka kufi renal të rishikuar.');
   if(!m||!['fixed','mg_per_kg_day','mg_per_kg_dose'].includes(m.kind)||!numeric(m.intervalHours,1,24)||24%m.intervalHours!==0)reasons.push('Modeli i skemës ose intervali nuk është i mbështetur.');
   if(m&&['maxDailyMg','maxDoseMg'].some(k=>m[k]!=null&&!numeric(m[k],0.001,1e6)))reasons.push('Maksimumi i skemës nuk është i vlefshëm.');
   if(reasons.length)return blocked(reasons);
   if(m.kind==='fixed'&&!numeric(m.doseMg,0.001,1e6))return blocked(['Doza fikse nuk është e vlefshme.']);
   if(m.kind!=='fixed'&&!numeric(m.coefficient,0.001,1e5))return blocked(['Koeficienti nuk është i vlefshëm.']);
-  return {b,m,p,times:24/m.intervalHours};
+  return {b,m,times:24/m.intervalHours};
+ }
+ function prepare(bindingId,patient){
+  const reviewed=reviewedBinding(bindingId);if(reviewed.result===null)return reviewed;
+  const {b,m,times}=reviewed,p=patient||{},reasons=[];
+  if(p.productId!==b.productId||p.conditionId!==b.conditionId||p.route!==b.route)return blocked(['Produkti, indikacioni ose rruga nuk përputhet me miratimin.']);
+  if(!numeric(p.ageYears,0,120)||!numeric(p.weightKg,0.1,350))return blocked(['Mosha dhe pesha duhen dhënë si vlera të vlefshme.']);
+  if(p.ageYears<b.minAgeYears||p.ageYears>b.maxAgeYears||p.weightKg<b.minWeightKg||p.weightKg>b.maxWeightKg)reasons.push('Mosha/pesha është jashtë profilit të miratuar.');
+  if(b.requiresRenal&&(!numeric(p.crclMlMin,0,250)||p.crclMlMin<=b.minCrclExclusive||p.dialysis!==false))reasons.push('Funksioni renal/dializa kërkon skemë tjetër të rishikuar.');
+  return reasons.length?blocked(reasons):{b,m,p,times};
  }
  function calculate(bindingId,patient){
   const prepared=prepare(bindingId,patient);if(prepared.result===null)return prepared;const {b,m,p,times}=prepared,a=b.approval;let perDose,daily;
@@ -32,6 +38,7 @@ function createApprovedCalculator(reviewedRegistry){
   return {status:'calculated',result:{perDoseMg:perDose,dailyMg:daily,intervalHours:m.intervalHours,dosesPerDay:times},sourceId:b.sourceId,reviewer:a.reviewer};
  }
  calculate.assess=(bindingId,patient)=>{const x=prepare(bindingId,patient);return x.result===null?{enabled:false,reasons:x.reasons}:{enabled:true,reasons:[]};};
+ calculate.isReleased=bindingId=>reviewedBinding(bindingId).result!==null;
  return calculate;
 }
 return {createApprovedCalculator};
