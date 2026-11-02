@@ -2,6 +2,8 @@
   'use strict';
 
   const $ = selector => document.querySelector(selector);
+  let resolveAuthReady;
+  window.DRX_ANTIBIOTIC_AUTH_READY = new Promise(resolve => { resolveAuthReady = resolve; });
 
   // Regimens and product strengths are owned by their versioned data files.
   // The application shell must never overwrite clinical source data.
@@ -101,9 +103,11 @@
     try {
       const auth = await ensureAuth();
       await syncProfile(auth);
+      resolveAuthReady(auth);
       document.documentElement.dataset.theme = 'light';
       if ($('#sourceStatus')) $('#sourceStatus').textContent = 'Antibiotikët · katalogu Mayo / AKPPM';
     } catch {
+      resolveAuthReady(null);
       return;
     } finally {
       $('#appShell')?.setAttribute('aria-busy', 'false');

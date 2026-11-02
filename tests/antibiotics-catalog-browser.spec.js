@@ -39,8 +39,9 @@ test('Catalog desktop: all substances in a vertical list, filters above, no NICE
   const first = await page.locator('.abx-catalog-item').first().boundingBox();
   expect(top.y + top.height).toBeLessThan(first.y);
   await page.locator('#abxCatalogSearch').fill('ALMACIN');
-  await expect(page.locator('.abx-catalog-item')).toHaveCount(1);
-  await expect(page.locator('.abx-catalog-name')).toHaveText('Amoxicillin');
+  // Substring search also correctly finds CO-ALMACIN combination products.
+  await expect(page.locator('.abx-catalog-item')).toHaveCount(2);
+  await expect(page.locator('.abx-catalog-name')).toHaveText(['Amoxicillin','Amoxicillin + Clavulanic acid']);
 });
 
 for (const width of [320,390,1440]) test(`Catalog mobile/desktop ${width}px: selection persists and list fits screen`, async ({page}) => {
@@ -53,9 +54,11 @@ for (const width of [320,390,1440]) test(`Catalog mobile/desktop ${width}px: sel
   await expect(page.locator('.abx-catalog-item')).toHaveCount(1);
   await expect(page.locator('.abx-catalog-name')).toHaveText(name);
   await page.reload();
+  await expect(page.locator('.abx-catalog-item input').first()).toBeEnabled();
   await page.locator('#abxCatalogOnlySelected').check();
   await expect(page.locator('.abx-catalog-item')).toHaveCount(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  if (width <= 720) await page.locator('#abxFilterToggle').click();
   await page.locator('#abxCatalogReset').click();
   await expect(page.locator('.abx-catalog-item')).toHaveCount(135);
 });
@@ -91,6 +94,22 @@ test('personal selections are isolated between authenticated accounts',async({pa
  await page.goto(url+'/antibiotiket.html');await page.locator('.abx-catalog-item input').first().check();
  await page.unroute('**/api/auth*');await page.route('**/api/auth*',route=>route.fulfill({json:phase5AuthenticatedSession({user:{email:'another@medindex.local'}})}));
  await page.reload();await page.locator('#abxCatalogOnlySelected').check();await expect(page.locator('.abx-catalog-item')).toHaveCount(0);
+});
+test('saved selections load when authentication finishes before the catalog script',async({page})=>{
+ // Use a real displayed ID rather than relying on source row order.
+ require('../antibiotiket-catalog-data');
+ const selectedId=globalThis.DRX_ANTIBIOTIC_CATALOG.antibiotics[0].id;
+ await page.addInitScript(id=>localStorage.setItem('drx.antibiotics.selected.v2:test%40medindex.local',JSON.stringify([id])),selectedId);
+ await page.route('**/antibiotiket-catalog.js*',async route=>{
+  await page.waitForFunction(()=>Boolean(window.DRX_ANTIBIOTIC_AUTH_READY));
+  await page.evaluate(()=>window.DRX_ANTIBIOTIC_AUTH_READY);
+  await route.continue();
+ });
+ await page.goto(url+'/antibiotiket.html');
+ await expect(page.locator('input[data-id="'+selectedId+'"]')).toBeChecked();
+ await expect(page.locator('input[data-id="'+selectedId+'"]')).toBeEnabled();
+ await page.locator('#abxCatalogOnlySelected').check();
+ await expect(page.locator('.abx-catalog-item')).toHaveCount(1);
 });
 test('mobile expanded detail and empty results fit at 320 px',async({page})=>{
  await page.setViewportSize({width:320,height:880});await page.goto(url+'/antibiotiket.html');
