@@ -43,6 +43,10 @@ test('all 290 original Mayo records retain dose, route, form, duration, source a
  for(const id of ['M065','M066']){const m=rr.find(r=>r.id===id);assert.equal(m.qaStatus,'BLLOKUAR / VERIFIKO');assert.match(m.qaReason,/FDA/);}
 });
 test('oral doses, nonspecific indications and extended release do not leak into other forms',()=>{
+ assert.equal(core.sourceFormMatches('tabletë','Modified-release tablet'),false);
+ assert.equal(core.sourceFormMatches('tabletë me çlirim të zgjatur','Film-coated tablet'),false);
+ assert.equal(core.sourceFormMatches('tabletë me çlirim të zgjatur','Modified-release tablet'),true);
+ const nitro=find('Nitrofurantoin'),extendedOnly={...nitro,products:nitro.products.filter(p=>/modified/i.test(p.form))};assert(extendedOnly.products.length);assert.deepEqual(core.matchingRegimens(extendedOnly).map(r=>r.id),['M193']);
  for(const drug of a){const rr=core.matchingRegimens(drug,{route:'IV'});assert(rr.every(r=>!r.route.includes('PO')));assert(core.matchingRegimens(drug).every(r=>r.conditionIds.length));}
  const fake={products:[{status:'Active',route:'PO',formLabel:'Tabletë'}],regimens:[{conditionIds:['c'],route:'PO',formulation:'tabletë me çlirim të zgjatur',populations:[]}]};assert.equal(core.matchingRegimens(fake,{form:'Tabletë'}).length,0);
  const mup=a.filter(x=>x.name==='Mupirocin');assert.equal(mup.length,2);assert(mup.some(x=>x.forms.includes('Pomadë nazale')));assert(mup.some(x=>x.forms.includes('Pomadë')));

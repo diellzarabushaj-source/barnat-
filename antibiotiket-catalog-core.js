@@ -27,7 +27,8 @@
   const source=normalize(sourceForm),product=normalize(productForm);if(!source)return true;
   const kinds=[/krem|cream/,/pomad|ointment/,/tablet/,/kapsul|capsul/,/suspens/,/ovul|pessary/,/pika|drops/,/xhel|gel/,/pulber|powder|pluhur/];
   const ss=kinds.filter(r=>r.test(source)),pp=kinds.filter(r=>r.test(product));if(ss.length&&pp.length&&!ss.some(r=>pp.includes(r)))return false;
-  if(/zgjatur|extended|modified|\bxr\b|\ber\b/.test(source)&&!/zgjatur|extended|modified|\bxr\b|\ber\b/.test(product))return false;
+  const extended=/zgjatur|extended|modified|prolonged|sustained|retard|\bxr\b|\ber\b/;
+  if(extended.test(source)!==extended.test(product))return false;
   return true;
  }
  function referenceMatchesProduct(ref,product){
