@@ -118,3 +118,60 @@ test('mobile expanded detail and empty results fit at 320 px',async({page})=>{
  await page.locator('#abxCatalogSearch').fill('no-such-antibiotic');await expect(page.getByText('Nuk u gjetën rezultate',{exact:true})).toBeVisible();
  await page.locator('[data-reset]').click();await expect(page.locator('.abx-catalog-item')).toHaveCount(135);
 });
+
+test('indication choices keep explicit first, second and conditional alternatives with the exact source',async({page})=>{
+ await page.goto(url+'/antibiotiket.html');
+ await page.locator('#abxCatalogIndication').selectOption({label:'Sinusit akut bakterial'});
+ await page.locator('[data-choice-profile]').selectOption('sinus-adult');
+ const panel=page.getByRole('region',{name:'Renditja sipas indikacionit'});
+ await expect(panel.getByRole('heading',{name:'Zgjedhja e parë'})).toBeVisible();
+ await expect(panel.getByRole('heading',{name:'Zgjedhja e dytë'})).toBeVisible();
+ await expect(panel.getByRole('heading',{name:'Alternativa'})).toBeVisible();
+ await expect(panel.locator('.is-first')).toContainText('Phenoxymethylpenicillin');
+ await expect(panel.locator('.is-second')).toContainText('2–3 ditësh');
+ await expect(panel.locator('a[href*="guidance/ng79/chapter/Recommendations"]')).toBeVisible();
+ await panel.locator('.is-first [data-choice-open]').first().click();
+ await expect(page.getByRole('region',{name:'Kalkulatori për Phenoxymethylpenicillin'})).toBeVisible();
+ await page.locator('#abxCatalogIndication').selectOption({label:'Infeksion nga Helicobacter pylori'});
+ await expect(panel).toContainText('Mungon renditje burimore');
+ await expect(panel.locator('.abx-choice-tier')).toHaveCount(0);
+});
+
+test('individual calculators preserve separate drafts and never enable unapproved dosing',async({page})=>{
+ await page.goto(url+'/antibiotiket.html');
+ await expect(page.locator('.abx-catalog-item input').first()).toBeEnabled();
+ await page.locator('#abxCatalogSearch').fill('Amoxicillin');
+ const amox=page.locator('[data-antibiotic-id="ABX-631701ffbd23"]');
+ await amox.getByRole('button',{name:'Shiko detajet'}).click();
+ await amox.locator('[data-dose-condition]').selectOption({label:'Infeksion nga Helicobacter pylori'});
+ let calc=amox.locator('[data-calculator]');
+ await calc.locator('[data-calc-field="age"]').fill('8');
+ await calc.locator('[data-calc-field="weight"]').fill('25');
+ await calc.locator('[data-calc-field="productId"]').selectOption({index:1});
+ await expect(calc.getByRole('button',{name:'Llogarit dozën'})).toBeDisabled();
+ await expect(calc).toContainText('Llogaritja nuk është miratuar klinikisht');
+ await page.locator('#abxCatalogSearch').fill('Clarithromycin');
+ const clari=page.locator('[data-antibiotic-id="ABX-a92902b63e9f"]');
+ await clari.getByRole('button',{name:'Shiko detajet'}).click();
+ await expect(clari.locator('[data-calc-field="weight"]')).toHaveValue('');
+ await page.locator('#abxCatalogSearch').fill('Amoxicillin');
+ await expect(amox.locator('[data-calc-field="weight"]')).toHaveValue('25');
+ await page.reload();await page.locator('#abxCatalogSearch').fill('Amoxicillin');
+ await amox.getByRole('button',{name:'Shiko detajet'}).click();
+ await expect(amox.locator('[data-calc-field="weight"]')).toHaveValue('');
+});
+
+test('choice groups and individual calculator fit 320 px and keep pediatric context separate',async({page})=>{
+ await page.setViewportSize({width:320,height:880});await page.goto(url+'/antibiotiket.html');
+ await page.locator('#abxFilterToggle').click();
+ await page.locator('#abxCatalogIndication').selectOption({label:'Otit media akut'});
+ const panel=page.getByRole('region',{name:'Renditja sipas indikacionit'});
+ await expect(panel).toContainText('1 muaj–17 vjeç');
+ await panel.locator('.is-first [data-choice-open]').click();
+ const calc=page.getByRole('region',{name:'Kalkulatori për Amoxicillin',exact:true});
+ await calc.locator('[data-calc-field="productId"]').selectOption({index:1});
+ await expect(calc.getByRole('button',{name:'Llogarit dozën'})).toBeDisabled();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.locator('#abxCatalogPopulation').selectOption({label:'Të rritur'});
+ await expect(panel).toContainText('Mungon renditje burimore');
+});
