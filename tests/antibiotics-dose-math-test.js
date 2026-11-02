@@ -26,12 +26,14 @@ test('renal/dialysis, age and weight boundaries fail before arithmetic',()=>{
  const b={...binding({kind:'fixed',doseMg:125,intervalHours:12}),requiresRenal:true,minCrclExclusive:50},calc=createApprovedCalculator({x:b});
  for(const changed of [{},{crclMlMin:50,dialysis:false},{crclMlMin:90,dialysis:true},{crclMlMin:90},{crclMlMin:90,dialysis:false,ageYears:1},{crclMlMin:90,dialysis:false,weightKg:151}])assert.equal(calc('x',{...patient,...changed}).result,null);
  assert.equal(calc('x',{...patient,crclMlMin:51,dialysis:false}).status,'calculated');
+ const missingThreshold={...b};delete missingThreshold.minCrclExclusive;const incomplete=createApprovedCalculator({x:missingThreshold});assert.equal(incomplete.assess('x',{...patient,crclMlMin:90,dialysis:false}).enabled,false);
 });
 test('unreviewed schema, ambiguous intervals, nonfinite/negative input and source conflict return no result',()=>{
  for(const intervalHours of [0,7,Infinity])assert.equal(createApprovedCalculator({x:binding({kind:'fixed',doseMg:125,intervalHours})})('x',patient).result,null);
  const b=binding({kind:'fixed',doseMg:125,intervalHours:12});const calc=createApprovedCalculator({x:b});for(const weightKg of [0,-1,NaN,Infinity,'20'])assert.equal(calc('x',{...patient,weightKg}).result,null);
  const noBounds={...b};delete noBounds.minAgeYears;assert.equal(createApprovedCalculator({x:noBounds})('x',patient).result,null);
  assert.equal(createApprovedCalculator({x:{...b,sourceConflict:true}})('x',patient).result,null);
+ for(const maxDailyMg of [-1,0,'600'])assert.equal(createApprovedCalculator({x:binding({kind:'fixed',doseMg:125,intervalHours:12,maxDailyMg})}).assess('x',patient).enabled,false);
 });
 test('registry is snapshotted; no volume, duration, rounding or renal dose is invented',()=>{
  const registry={x:binding({kind:'fixed',doseMg:125,intervalHours:12})},calc=createApprovedCalculator(registry);registry.x.model.doseMg=999;

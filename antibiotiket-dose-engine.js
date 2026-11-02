@@ -14,8 +14,9 @@ function createApprovedCalculator(reviewedRegistry){
   if(p.productId!==b.productId||p.conditionId!==b.conditionId||p.route!==b.route)return blocked(['Produkti, indikacioni ose rruga nuk përputhet me miratimin.']);
   if(!numeric(p.ageYears,0,120)||!numeric(p.weightKg,0.1,350))return blocked(['Mosha dhe pesha duhen dhënë si vlera të vlefshme.']);
   if(p.ageYears<b.minAgeYears||p.ageYears>b.maxAgeYears||p.weightKg<b.minWeightKg||p.weightKg>b.maxWeightKg)reasons.push('Mosha/pesha është jashtë profilit të miratuar.');
-  if(b.requiresRenal&&(!numeric(p.crclMlMin,0,250)||p.crclMlMin<=b.minCrclExclusive||p.dialysis!==false))reasons.push('Funksioni renal/dializa kërkon skemë tjetër të rishikuar.');
+  if(b.requiresRenal&&(!numeric(b.minCrclExclusive,0,250)||!numeric(p.crclMlMin,0,250)||p.crclMlMin<=b.minCrclExclusive||p.dialysis!==false))reasons.push('Funksioni renal/dializa kërkon skemë tjetër të rishikuar.');
   if(!m||!['fixed','mg_per_kg_day','mg_per_kg_dose'].includes(m.kind)||!numeric(m.intervalHours,1,24)||24%m.intervalHours!==0)reasons.push('Modeli i skemës ose intervali nuk është i mbështetur.');
+  if(m&&['maxDailyMg','maxDoseMg'].some(k=>m[k]!=null&&!numeric(m[k],0.001,1e6)))reasons.push('Maksimumi i skemës nuk është i vlefshëm.');
   if(reasons.length)return blocked(reasons);
   if(m.kind==='fixed'&&!numeric(m.doseMg,0.001,1e6))return blocked(['Doza fikse nuk është e vlefshme.']);
   if(m.kind!=='fixed'&&!numeric(m.coefficient,0.001,1e5))return blocked(['Koeficienti nuk është i vlefshëm.']);
