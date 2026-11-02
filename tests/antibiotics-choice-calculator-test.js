@@ -11,6 +11,7 @@ test('choice references have exact sources, bounded populations and no fabricate
  assert.equal(choices.profiles.length,7);
  for(const p of choices.profiles){assert(p.conditionIds.every(id=>data.conditions.some(c=>c.id===id)));assert(choices.sources.some(s=>s.id===p.sourceId&&/^https:\/\/www\.nice\.org\.uk\/guidance\/ng\d+\/chapter\/Recommendations$/.test(s.url)));assert.equal(p.calculatorApproved,false);assert.equal(p.localApproval,null);for(const r of p.rows){assert(all.some(a=>a.id===r.substanceId));assert(['first','second','alternative'].includes(r.tier));assert.equal(r.route,'PO');assert(!('dose' in r));}}
  assert.equal(core.choiceProfiles(choices,condition('Otit media akut'),'Të rritur').length,0);
+ const childDoxy=choices.profiles.find(p=>p.id==='cap-child-nonsevere').rows.find(r=>r.substanceId==='ABX-6ba3b90f3334');assert.match(childDoxy.note,/12–17/);assert.match(childDoxy.note,/alergji/);assert.match(childDoxy.note,/jo në shtatzëni/);
  const cap=core.choiceProfiles(choices,condition('Pneumoni e fituar në komunitet'));assert(cap.every(p=>!p.rows.some(r=>r.tier==='second')));assert(cap.every(p=>p.secondNote));
 });
 test('choice indications enrich only compatible catalog identities without changing products or Mayo regimens',()=>{
