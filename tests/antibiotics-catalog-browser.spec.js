@@ -216,7 +216,7 @@ test('one antibiotic keeps independent calculators for its different indications
 });
 
 test('Ceftazidime uses the selected product SmPC and requires renal review without leaking it to CEFIN',async({page})=>{
- await page.setViewportSize({width:390,height:880});await page.goto(url+'/antibiotiket.html');await page.locator('#abxFilterToggle').click();await page.locator('#abxCatalogSearch').fill('Ceftazidime');await page.locator('#abxCatalogIndication').selectOption({label:'Infeksione urinare të komplikuara'});await page.getByRole('button',{name:'Shiko detajet'}).click();
+ await page.setViewportSize({width:390,height:880});await page.goto(url+'/antibiotiket.html');await page.locator('#abxFilterToggle').click();await page.locator('#abxCatalogSearch').fill('Ceftazidime');await page.locator('#abxCatalogIndication').selectOption({label:'Infeksione urinare të komplikuara'});await page.locator('[data-antibiotic-id="ABX-7f2058bb1770"]').getByRole('button',{name:'Shiko detajet'}).click();
  const calc=page.locator('[data-calculator="ABX-7f2058bb1770"]');await calc.locator('[data-calc-field="productId"]').selectOption('PRD-a6635e18e00533');await calc.locator('.abx-calculator-source summary').click();
  await expect(calc.locator('a[href*="cima.aemps.es/cima/dochtml/ft/83901/"]')).toBeVisible();await expect(calc.locator('.abx-calculator-source')).toContainText('1–2 g/dozë');
  await calc.locator('[data-calc-field="age"]').fill('55');await calc.locator('[data-calc-field="weight"]').fill('65');await calc.locator('[data-calc-field="crcl"]').fill('40');await calc.getByText('Detajet (',{exact:false}).click();await expect(calc).toContainText('insuficiencën renale');await expect(calc.getByRole('button',{name:'Llogarit dozën'})).toBeDisabled();
