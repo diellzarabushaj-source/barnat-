@@ -15,7 +15,10 @@ Rebuild with `node scripts/build-antibiotics-catalog.js`. The browser reads the 
 - Source references are not local product approvals. Display requires compatible route/form context, with local verification still explicitly missing.
 - The displayed catalog contains 135 contexts with 660 Active products in the supplied export. The 47 Suspended/Withdrawn products remain in history.
 - All original Mayo values are preserved in the snapshot and bundle. Nonspecific or incompatible presentations are excluded from displayed regimens, not converted or silently relabeled.
-- Every calculator flag is false. This release contains no dose calculation or conversion code.
+- The clinical release registry is empty. Every imported calculator flag remains false. A tested arithmetic engine accepts only a versioned, clinician-approved product/indication binding; patient input and checkbox selections cannot supply approval. No production dose result is enabled by this release.
+- Dosing source policy: product-specific SmPC plus Mayo, explicitly selected by the user on 2026-11-02. A SmPC for a different product cannot fill a local product approval gap. The initial Qilu Ceftazidime reference is separate from CEFIN and awaits local/clinical approval.
+- Each named antibiotic/indication pair has a separate in-memory workspace; no patient fields are persisted or transmitted. Raw source references remain separate from typed calculation models.
+- Granules are recognized separately from tablets. Five tablet-only Midecamycin references no longer display against its granular local product; original references remain in the source snapshot for review.
 - Personal selections are scoped to authenticated identity and composition ID, never ATC alone. They confer no clinical approval.
 
 A future import must preserve IDs where identities are unchanged, reconcile authorization status, retain source history, and rerun the catalog tests. Clinical approval must name the exact regimen, product, route, form, concentration, clinician, date and source version; it cannot be inferred from a checkbox or from an Active registration.

@@ -225,5 +225,6 @@
   "tests/lab-symptom-guide-test.js",
   "tests/antibiotics-catalog-test.js",
   "tests/antibiotics-choice-calculator-test.js",
+  "tests/antibiotics-dose-math-test.js",
   "tests/antibiotics-catalog-presentation-test.js"
 ]

@@ -25,14 +25,18 @@
  const isCalculatorApproved=()=>false;
  function sourceFormMatches(sourceForm,productForm){
   const source=normalize(sourceForm),product=normalize(productForm);if(!source)return true;
-  const kinds=[/krem|cream/,/pomad|ointment/,/tablet/,/kapsul|capsul/,/suspens/,/ovul|pessary/,/pika|drops/,/xhel|gel/,/pulber|powder|pluhur/];
+  const kinds=[/krem|cream/,/pomad|ointment/,/tablet/,/kapsul|capsul/,/suspens/,/ovul|pessary/,/pika|drops/,/xhel|gel/,/pulber|powder|pluhur/,/granul/];
   const ss=kinds.filter(r=>r.test(source)),pp=kinds.filter(r=>r.test(product));if(ss.length&&pp.length&&!ss.some(r=>pp.includes(r)))return false;
   const extended=/zgjatur|extended|modified|prolonged|sustained|retard|\bxr\b|\ber\b/;
   if(extended.test(source)!==extended.test(product))return false;
   return true;
  }
  function referenceMatchesProduct(ref,product){
-  if(product.status!=='Active'||!sourceFormMatches(ref.form||ref.formulation,product.form))return false;
+  if(product.status!=='Active')return false;
+  if(Array.isArray(ref.presentations)){
+   const strength=normalize(product.strength).replace(/\s/g,'');
+   if(!ref.presentations.some(p=>sourceFormMatches(p.form,product.form)&&(!p.strengthExact||strength===normalize(p.strengthExact).replace(/\s/g,''))&&(!p.strengthPrefix||strength===p.strengthPrefix||strength.startsWith(p.strengthPrefix+'('))))return false;
+  }else if(!sourceFormMatches(ref.form||ref.formulation,product.form))return false;
   const s=ref.route||'',p=product.route||'';
   if(s==='PO')return p==='PO';
   if(/IV|IM|PARENTERAL/.test(s))return /IV|IM|PARENTERAL/.test(p);
@@ -46,13 +50,13 @@
    const extra=[];
    for(const p of choiceData.profiles||[])for(const [index,row]of p.rows.entries()){
     const s=sources.get(p.sourceId);if(row.substanceId!==item.id||!s||!item.products.some(product=>referenceMatchesProduct(row,product)))continue;
-    extra.push({id:p.id+'-'+index,sourceId:s.id,url:s.url,readDate:s.readDate,conditionIds:p.conditionIds.filter(id=>names.has(id)),route:row.route,form:row.form,population:p.label,populations:[p.population],originalText:p.label+' · '+row.note,note:p.note,calculatorApproved:false,origin:'Renditja e udhëzimit; pa dozë'});
+    extra.push({id:p.id+'-'+index,sourceId:s.id,url:s.url,readDate:s.readDate,conditionIds:p.conditionIds.filter(id=>names.has(id)),route:row.route,form:row.form,presentations:row.presentations,population:p.label,populations:p.populations||[p.population],originalText:p.label+' · '+row.note,note:p.note,calculatorApproved:false,origin:'Renditja e udhëzimit; pa dozë'});
    }
    const refs=[...item.indicationReferences,...extra],ids=[...new Set(refs.flatMap(r=>r.conditionIds))];
    return {...item,indicationReferences:refs,conditionIds:ids,indications:ids.map(id=>names.get(id)),populations:[...new Set([...item.populations,...extra.flatMap(r=>r.populations)])]};
   });
  }
- const choiceProfiles=(choices,conditionId,population='')=>(choices.profiles||[]).filter(p=>p.conditionIds.includes(conditionId)&&(!population||p.population===population));
+ const choiceProfiles=(choices,conditionId,population='')=>(choices.profiles||[]).filter(p=>p.conditionIds.includes(conditionId)&&(!population||(p.populations||[p.population]).includes(population)));
  function calculatorState(item,{conditionId='',productId='',regimenId=''}={}){
   const product=item.products.find(p=>p.id===productId),regimen=item.regimens.find(r=>r.id===regimenId),reasons=[];
   if(!conditionId)reasons.push('Zgjidh indikacionin konkret.');
