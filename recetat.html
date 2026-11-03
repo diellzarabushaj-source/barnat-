@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v40">
+<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v41">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -10,12 +10,12 @@
   <title>DRx | Recetat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/recetat-v2.css?v=40-compact-pdf-20261024">
+  <link rel="stylesheet" href="/recetat-v2.css?v=41-simple-builder-20261103">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
   <script src="/drx-modal-focus.js?v=p1-20261008" defer></script>
-<script src="/recetat-v2.js?v=40-compact-pdf-20261024" defer></script>
+<script src="/recetat-v2.js?v=41-simple-builder-20261103" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#rxWorkspace">Kalo te krijimi i recetës</a>
@@ -213,6 +213,8 @@
         </div>
 
         <div class="rx-tabpanel" id="rxTabCompose" role="tabpanel" aria-labelledby="rxTabBtnCompose" tabindex="0" hidden>
+        <header class="rx-builder-heading"><div><span class="rx-builder-eyebrow">Hapësira e punës</span><h2>Receta jote, hap pas hapi.</h2><p>Shto barnat, plotëso dozimin dhe kontrollo recetën.</p></div><span class="rx-builder-count" id="rxBuilderCount">Draft i ri</span></header>
+        <nav class="rx-builder-nav" aria-label="Hapat e recetës"><button type="button" data-builder-section="diagnosis"><span>1</span> Diagnoza</button><button type="button" data-builder-section="drugs"><span>2</span> Barnat</button><button type="button" data-builder-section="review"><span>3</span> Kontrollo</button></nav>
         <section class="rx-dashboard" id="rxComposerWorkspace" aria-label="Krijuesi i recetës">
           <article class="rx-compose-card">
             <header class="rx-card-head">
@@ -241,6 +243,7 @@
               </div>
             </details>
 
+            <div class="rx-composer-mode" id="rxComposerMode" hidden><p id="rxComposerModeCopy"></p><button type="button" class="rx-secondary" id="rxUseStructured">Përdor fushat e barnave</button><button type="button" class="rx-text-button" id="rxRestoreManual" hidden>Rikthe tekstin e mëparshëm</button></div>
             <section class="rx-order-builder" id="rxOrderBuilder" aria-labelledby="rxOrderBuilderTitle">
               <header class="rx-order-builder-head">
                 <div>
@@ -286,9 +289,13 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
               </div>
             </div>
 
-            <div class="rx-popover rx-drug-popover" id="rxDrugPopover" role="dialog" aria-label="Kërko dhe zgjidh barin" hidden>
-              <label><span>Kërko barin, substancën, ATC, PDID ose nr. e regjistrit</span><input id="rxDrugSearch" type="search" autocomplete="off" placeholder="p.sh. BISOLVON, bromhexine, nr:6, pdid:3674"></label>
+            <div class="rx-picker-overlay" id="rxDrugPickerBackdrop" hidden>
+            <div class="rx-popover rx-drug-popover" id="rxDrugPopover" role="dialog" aria-modal="true" aria-labelledby="rxDrugPickerTitle" hidden>
+              <header class="rx-picker-head"><div><span>Regjistri i barnave</span><h3 id="rxDrugPickerTitle">Shto një bar</h3></div><button type="button" id="rxDrugPickerClose" class="rx-picker-close" aria-label="Mbyll kërkimin">×</button></header>
+              <label><span>Kërko barin, substancën, ATC, PDID ose nr. e regjistrit</span><input id="rxDrugSearch" type="search" autocomplete="off" placeholder="Emri ose substanca, p.sh. paracetamol…"></label>
               <div class="rx-drug-results" id="rxDrugResults"><p>Shkruaj së paku 2 shkronja.</p></div>
+            </div>
+
             </div>
 
             <div class="rx-compose-actions">
@@ -299,9 +306,10 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
               <button class="rx-ghost" id="rxClear" type="button">Pastro</button>
             </div>
             <p class="rx-status" id="rxStatus" role="status" aria-live="polite"></p>
+            <button class="rx-primary rx-compose-continue" id="rxReviewPrescription" type="button" disabled>Kontrollo recetën →</button>
           </article>
 
-          <article class="rx-preview-card">
+          <article class="rx-preview-card" id="rxReviewPanel" tabindex="-1" aria-label="Kontrollo recetën përfundimtare">
             <header class="rx-card-head">
               <div><span class="rx-step">03</span><h2>Kontrollo dhe ruaj</h2></div>
               <span class="rx-state is-draft" id="rxState">Draft</span>
