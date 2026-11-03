@@ -258,3 +258,11 @@ test('route edits and removals update compact groups while rectal products remai
  await expect(page.locator('[data-order-group="PARENTERAL"]')).toContainText('QA flexible');await expect(page.locator('[data-order-group="ORAL"] .rx-order-card')).toHaveCount(1);await expect(page.locator('#rxPreview .rx-preview-administration')).toHaveText(['Barna nga goja (PO):','Barna parenterale:','Barna me rrugë të tjera enterale:']);
  await page.locator('[data-remove-drug="qa-flexible"]').click();await expect(page.locator('[data-order-group="PARENTERAL"]')).toHaveCount(0);await expect(page.locator('#rxPreview')).not.toContainText('Barna parenterale:');await expect(page.locator('#rxPreview')).toContainText('QA rectal');
 });
+
+test('equal substance, strength and form keep each product dose and route when grouped and saved',async({page})=>{
+ const base={...QA_COMPLETE,substance:'QA dual',strength:'1 mg/ml',form:'Solution'};
+ await compose(page,[{...base,key:'dual-oral-a',doseInstruction:'Oral dose A'},{...base,key:'dual-iv',route:'IV',allowedRoutes:['IV'],doseInstruction:'IV dose B'},{...base,key:'dual-oral-c',doseInstruction:'Oral dose C'}]);
+ await expect(page.locator('#rxPreview .rx-preview-administration')).toHaveText(['Barna nga goja (PO):','Barna parenterale:']);await expect(page.locator('#rxPreview')).toContainText('IV dose B');
+ await page.locator('#rxDosageReview input').check();await page.locator('#rxClinicalReview input').check();await page.locator('#rxSave').click();const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('regjistriBarnave_protokollet_v1'))[0]);
+ expect(saved.items.map(item=>[item.drugKey,item.route,item.doseInstruction])).toEqual([['dual-oral-a','PO','Oral dose A'],['dual-oral-c','PO','Oral dose C'],['dual-iv','IV','IV dose B']]);expect(saved.selectedDrugs.map(d=>d.key)).toEqual(['dual-oral-a','dual-iv','dual-oral-c']);
+});

@@ -5,7 +5,9 @@ route with small inline headings and counts. The canonical prescription uses
 the same headings in preview, clipboard, text export and A4 printing. The
 first occurrence of a group sets its position; products keep their relative
 order within a group. Stored product identities and clinician instructions
-are retained.
+are retained. Equal substance/strength/form entries are matched by their route
+group and consumed once when saving, keeping each registry key and dose with
+its own product.
 
 PO products are labelled “Barna nga goja (PO)”. Parenteral products are labelled
 “Barna parenterale”, including an injectable whose individual route still needs

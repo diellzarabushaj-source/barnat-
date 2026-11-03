@@ -349,6 +349,10 @@
         let candidates = drugs.filter(drug => token(drug.substance) === token(item.name)
           && (!drug.strength || !item.dose || token(drug.strength) === token(item.dose))
           && (!drug.form || !item.form || token(formLabel(drug.form)) === token(formLabel(item.form))));
+        if (candidates.length > 1 && Object.hasOwn(ADMINISTRATION_GROUPS,section.administrationGroup)) {
+          const matches = candidates.filter(drug => administrationGroupForDrug(drug).key === section.administrationGroup);
+          if (matches.length) candidates = matches;
+        }
         if (candidates.length > 1 && section.route) {
           const matches = candidates.filter(drug => Administration?.normalizeRoute?.(drug.route) === Administration?.normalizeRoute?.(section.route));
           if (matches.length) candidates = matches;

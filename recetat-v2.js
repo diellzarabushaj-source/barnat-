@@ -2672,6 +2672,10 @@
         let candidates = drugs.filter(drug => token(drug.substance) === token(item.name)
           && (!drug.strength || !item.dose || token(drug.strength) === token(item.dose))
           && (!drug.form || !item.form || token(formLabel(drug.form)) === token(formLabel(item.form))));
+        if (candidates.length > 1 && Object.hasOwn(ADMINISTRATION_GROUPS,section.administrationGroup)) {
+          const matches = candidates.filter(drug => administrationGroupForDrug(drug).key === section.administrationGroup);
+          if (matches.length) candidates = matches;
+        }
         if (candidates.length > 1 && section.route) {
           const matches = candidates.filter(drug => Administration?.normalizeRoute?.(drug.route) === Administration?.normalizeRoute?.(section.route));
           if (matches.length) candidates = matches;
@@ -6775,11 +6779,16 @@
     const now = new Date().toISOString();
     const existing = state.editingId ? (state.editingBase?.payload || getSaved().find(item => String(item.id) === String(state.editingId))) : null;
     const normalized = Core.normalizeResult(result);
+    const assignedDrugs = new Set();
     const items = normalized.sections.flatMap((section, sectionIndex) => section.medications.map((item, itemIndex) => {
       const selectedDrug = state.selectedDrugs.find(drug =>
         fold(drug.substance) === fold(item.name)
         && (!drug.strength || !item.dose || fold(drug.strength) === fold(item.dose))
+        && (state.composerOrigin !== 'structured' || (!assignedDrugs.has(drug.key)
+          && (!item.form || !drug.form || fold(Core.formLabel(drug.form)) === fold(Core.formLabel(item.form)))
+          && (!section.administrationGroup || Core.administrationGroupForDrug(drug).key === section.administrationGroup)))
       );
+      if (selectedDrug && state.composerOrigin === 'structured') assignedDrugs.add(selectedDrug.key);
       const structuredClinical = state.composerOrigin === 'structured' ? selectedDrug : null;
       return {
         drugKey:selectedDrug?.key || `manual_${sectionIndex}_${itemIndex}_${item.name}`,

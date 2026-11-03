@@ -148,3 +148,7 @@ assert.equal(Core.formatText(oral),oralInput,'Source/manual prescriptions withou
 assert.equal(Core.parse('BARNA PARENTERALE:\nQA product (Unknown)\nS: Exact instruction.').sections[0].administrationGroup,'PARENTERAL');
 const explicitUnknownGroup=Core.parse('Barna parenterale:\nQA product (Unknown)\nS: Exact instruction.');
 assert.equal(Core.withAdministrationGroups(explicitUnknownGroup,[]).sections[0].administrationGroup,'PARENTERAL','Keep an explicit parsed group when pharmaceutical metadata cannot be matched');
+
+const dualProducts=[{substance:'QA dual',strength:'1 mg/ml',form:'Solution',route:'PO'},{substance:'QA dual',strength:'1 mg/ml',form:'Solution',route:'IV'}];
+const dualResult=Core.parse('Barna nga goja (PO):\nSol. QA dual 1 mg/ml\nS: Oral exact.\n\nBarna parenterale:\nSol. QA dual 1 mg/ml\nS: Injectable exact.');
+assert.deepEqual(Core.withAdministrationGroups(dualResult,dualProducts).sections.map(s=>s.administrationGroup),['ORAL','PARENTERAL'],'Equal substance/strength/form must retain the explicit per-product route group');
