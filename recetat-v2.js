@@ -1678,19 +1678,29 @@
     }
     if (/subling/.test(form)) return { category:'ENTERAL', routes:['SL'], confidence:'form' };
     if (/bukal|buccal|oromuk/.test(form)) return { category:'ENTERAL', routes:['BUCCAL'], confidence:'form' };
-    if (/rektal|rectal|suppositor|supozitor|klizm|enema/.test(form)) return { category:'ENTERAL', routes:['PR'], confidence:'form' };
-    if (/ophthalm|oftalm|ocular|okular|eye\s*(drop|ointment|gel)/.test(form)) return { category:'TOPICAL_LOCAL', routes:['OPH'], confidence:'form' };
-    if (/otic|ear\s*drops?/.test(form)) return { category:'TOPICAL_LOCAL', routes:['OTIC'], confidence:'form' };
+    if (/rektal|rectal|suppositor|supozitor|klizm|enema|^supp?\.?$/.test(form)) return { category:'ENTERAL', routes:['PR'], confidence:'form' };
+    if (/ophthalm|oftalm|ocular|okular|eye\s*(drop|ointment|gel)|pika\s*(?:per\s*)?sy/.test(form)) return { category:'TOPICAL_LOCAL', routes:['OPH'], confidence:'form' };
+    if (/otic|ear\s*drops?|pika\s*(?:per\s*)?vesh/.test(form)) return { category:'TOPICAL_LOCAL', routes:['OTIC'], confidence:'form' };
     if (/nasal|intranas/.test(form)) return { category:'TOPICAL_LOCAL', routes:['NASAL'], confidence:'form' };
     if (/vaginal|intravag|ovul|pessar/.test(form)) return { category:'TOPICAL_LOCAL', routes:['VAG'], confidence:'form' };
     if (/transderm|patch|flaster/.test(form)) return { category:'TOPICAL_LOCAL', routes:['TD'], confidence:'form' };
-    if (/cream|krem|ointment|pomad|unguent|gel|lotion|locion|cutaneous|kutan|dermal|skin/.test(form)) return { category:'TOPICAL_LOCAL', routes:['TOP'], confidence:'form' };
-    if (/injection|injeks|infusion|infuz|parenter|vial|flakon|ampou|ampul|lyophilis/.test(form)) {
+    if (/cream|krem|ointment|pomad|unguent|gel|lotion|locion|cutaneous|kutan|dermal|skin|^ung\.?$/.test(form)) return { category:'TOPICAL_LOCAL', routes:['TOP'], confidence:'form' };
+    if (/injection|injeks|infusion|infuz|parenter|vial|flakon|ampou|ampul|lyophilis|^(?:amp|inj)\.?$/.test(form)) {
       const routes = routeTokens(form).filter(route => categoryForRoute(route) === 'PARENTERAL');
       return { category:'PARENTERAL', routes, confidence:'form' };
     }
-    if (/tablet|capsul|kapsul|syrup|sirup|oral|suspension|pezullim|granul|lozenge|pastil|solution\s*for\s*oral/.test(form)) return { category:'ENTERAL', routes:['PO'], confidence:'form' };
+    if (/tablet|capsul|kapsul|syrup|sirup|shurup|oral|suspension|pezullim|granul|lozenge|pastil|solution\s*for\s*oral|^(?:tab|tabl|caps?|kaps|sir|syr)\.?$/.test(form)) return { category:'ENTERAL', routes:['PO'], confidence:'form' };
     return { category:'', routes:[], confidence:'unknown' };
+  }
+
+  function reviewedProductAdministration(value = {}) {
+    const name=fold(value.tradeName || value.trade_name || value.name || value['Emri tregtar']);
+    const strength=fold(value.strength || value['Fortësia']).replace(/\s/g,'').replace(',','.');
+    const form=fold(value.form || value.pharmaceuticalForm || value.pharmaceutical_form || value['Forma farmaceutike']);
+    if (name !== 'bromhexine sopharma' || !/^2mg\/(?:1)?ml$/.test(strength) || !/injection|injeks|ampul|ampou|^amp\.?$/.test(form)) return null;
+    // EMA Article 31 product list: exact brand, strength and injectable form.
+    // It identifies IM and IV; it does not specify a preferred route.
+    return {category:'PARENTERAL',routes:['IM','IV'],confidence:'reviewed-product',sourceUrl:'https://www.ema.europa.eu/en/documents/referral/ambroxol-and-bromhexine-article-31-referral-annex-i_en.pdf'};
   }
 
   function inferAdministration(value = {}) {
@@ -1698,7 +1708,7 @@
     const explicitRoutes = routeTokens(explicitSource(value));
     const routeCategories = [...new Set(explicitRoutes.map(categoryForRoute).filter(Boolean))];
     const form = value.form || value.pharmaceuticalForm || value.pharmaceutical_form || value['Forma farmaceutike'] || value['Forma'];
-    const byForm = formInference(form);
+    const byForm = reviewedProductAdministration(value) || formInference(form);
 
     let category = explicitCategory;
     let confidence = explicitCategory ? 'explicit-category' : 'unknown';
@@ -3169,13 +3179,14 @@
     const context = normalizeContext(value);
     const validation = validateContext(context);
     if (!validation.valid) return { status:'needs-clinical-context', matches:[], missing:validation.missing, invalid:validation.invalid };
-    return engine.decideMatch(drug, filterRegimens(rows, context), {
+    return (engine.__rxContextOriginal || engine).decideMatch(drug, filterRegimens(rows, context), {
       population:context.pediatric ? 'pediatric' : 'adult',
       patient:context.pediatric ? patientFromContext(context) : {},
     });
   }
 
   function transferForContext(engine, drug, regimen, value) {
+    engine = engine.__rxContextOriginal || engine;
     const context = normalizeContext(value);
     const wantedPopulation = context.pediatric ? 'pediatric' : 'adult';
     const validation = validateContext(context);
@@ -3323,53 +3334,15 @@
 
   function createUi() {
     if (state.document.getElementById('rxClinicalContext')) return;
-    const anchor = state.document.getElementById('rxClinicalContextHost') || state.document.getElementById('rxOrderBuilder') || state.document.querySelector('.rx-command-bar');
-    if (!anchor) return;
-    anchor.insertAdjacentHTML(anchor.id === 'rxClinicalContextHost' ? 'beforeend' : anchor.id === 'rxOrderBuilder' ? 'beforebegin' : 'afterend', `
-      <section class="rx-clinical-context" id="rxClinicalContext" aria-labelledby="rxClinicalContextTitle">
-        <div class="rx-context-heading">
-          <div><span class="rx-context-kicker">Konteksti klinik</span><strong id="rxClinicalContextTitle">Rruga e administrimit</strong><small class="rx-context-source" id="rxContextSource">Zgjidhet automatikisht pasi zgjedh barin</small></div>
-          <span class="rx-context-readiness is-neutral" id="rxContextReadiness">Auto nga bari</span>
-        </div>
-        <div class="rx-category-grid" role="radiogroup" aria-label="Kategoria e administrimit">
-          ${CATEGORY_ORDER.map(category => `
-            <button type="button" class="rx-category-button" data-context-category="${category}" role="radio" aria-checked="false">
-              <span class="rx-context-icon">${CATEGORY_ICONS[category]}</span>
-              <span><strong>${CATEGORIES[category].label}</strong><small>${CATEGORIES[category].description}</small></span>
-              <span class="rx-context-state" aria-hidden="true"></span>
-            </button>
-          `).join('')}
-        </div>
-        <div class="rx-context-lower">
-          <div class="rx-context-panel" id="rxContextDetails">
-            <fieldset class="rx-context-field rx-route-field" id="rxRouteField">
-              <legend>Rruga specifike</legend>
-              <div class="rx-route-segments" id="rxRouteSegments" role="radiogroup" aria-label="Rruga specifike"></div>
-            </fieldset>
-            <div class="rx-context-guidance">
-              <span class="rx-context-guidance-icon">${SVG.info}</span>
-              <span>DRx lexon kategorinë dhe rrugët e lejuara nga kartela e produktit. Rrugën e zgjedh ti kur preparati ka më shumë se një të vlefshme.</span>
-            </div>
-          </div>
-          <button type="button" class="rx-pediatric-toggle" id="rxPediatricToggle" aria-pressed="false">
-            <span class="rx-context-icon">${SVG.child}</span>
-            <span><strong>Pediatrike</strong><small>Aktivizo moshën dhe peshën për dozimin pediatrik</small></span>
-            <span class="rx-context-state" aria-hidden="true"></span>
-          </button>
-        </div>
-        <div class="rx-pediatric-fields" id="rxPediatricFields" hidden>
-          <div class="rx-context-field rx-age-field" id="rxAgeField">
-            <label for="rxPatientAge">Mosha</label>
-            <div class="rx-input-combo"><input id="rxPatientAge" type="number" min="0" max="18" step="0.1" inputmode="decimal" placeholder="p.sh. 4"><select id="rxPatientAgeUnit" aria-label="Njësia e moshës"><option value="years">vjeç</option><option value="months">muaj</option></select></div>
-          </div>
-          <div class="rx-context-field rx-weight-field" id="rxWeightField">
-            <label for="rxPatientWeight">Pesha</label>
-            <div class="rx-input-combo"><input id="rxPatientWeight" type="number" min="0.5" max="200" step="0.1" inputmode="decimal" placeholder="p.sh. 18"><span class="rx-input-suffix">kg</span></div>
-          </div>
-          <div class="rx-context-summary" id="rxContextSummary" role="status" aria-live="polite"><span class="rx-context-summary-icon">${SVG.shield}</span><span><strong>Konteksti aktiv:</strong> <span data-context-summary></span></span></div>
-        </div>
-      </section>
-    `);
+    const host = state.document.getElementById('rxClinicalContextHost');
+    if (!host) return;
+    host.innerHTML = `<section class="rx-clinical-context rx-patient-context" id="rxClinicalContext" aria-label="Pacienti">
+      <div class="rx-patient-row"><span>Pacienti</span><button type="button" id="rxPediatricToggle" class="rx-pediatric-toggle" aria-pressed="false"><strong>Pediatrike</strong><small hidden></small><span class="rx-context-state" aria-hidden="true"></span></button><span class="rx-context-readiness" id="rxContextReadiness" hidden></span><small id="rxContextSource" hidden></small></div>
+      <div class="rx-pediatric-fields" id="rxPediatricFields" hidden>
+        <label class="rx-context-field" id="rxAgeField" for="rxPatientAge">Mosha<div class="rx-input-combo"><input id="rxPatientAge" type="number" min="0" max="18" step="0.1" inputmode="decimal" placeholder="Mosha"><select id="rxPatientAgeUnit" aria-label="Njësia e moshës"><option value="years">vjeç</option><option value="months">muaj</option></select></div></label>
+        <label class="rx-context-field" id="rxWeightField" for="rxPatientWeight">Pesha<div class="rx-input-combo"><input id="rxPatientWeight" type="number" min="0.5" max="200" step="0.1" inputmode="decimal" placeholder="Pesha"><span>kg</span></div></label>
+        <span id="rxContextSummary" class="sr-only" role="status"><span data-context-summary></span></span>
+      </div></section>`;
   }
 
   function renderRoutes(context, validation) {
@@ -3401,31 +3374,13 @@
   }
 
   function renderPreviewContext() {
-    const preview = state.document?.getElementById('rxPreview');
-    if (!preview) return;
-    const paper = preview.querySelector('.rx-paper');
-    const existing = preview.querySelector('.rx-preview-context');
+    const preview = state.document?.getElementById('rxPreview'), paper = preview?.querySelector('.rx-paper');
+    const existing = preview?.querySelector('.rx-preview-context');
+    if (!paper) { existing?.remove(); return; }
     const context = getContext();
-    const show = Boolean(paper);
-    if (!show) { existing?.remove(); return; }
-    const validation = validateContext(context);
-    const rows = [
-      ['Kategoria', Administration.categoryLabel(context.administrationCategory) || 'Zgjidhet nga bari'],
-      ['Rruga', context.route ? `${context.route} · ${Administration.routeLabel(context.route)}` : 'Zgjidhet nga bari'],
-      state.productConstraint?.label ? ['Produkti', state.productConstraint.label] : null,
-      ['Popullata', context.pediatric ? 'Fëmijë' : 'Të rritur'],
-      context.pediatric ? ['Mosha', ageLabel(context) || 'E paplotësuar'] : null,
-      context.pediatric ? ['Pesha', context.weightKg ? `${context.weightKg} kg` : 'E paplotësuar'] : null,
-    ].filter(Boolean);
-    const key = contextKey(context);
-    if (existing?.dataset.contextKey === key && existing.classList.contains(validation.valid ? 'is-verified' : 'is-incomplete')) return;
-    existing?.remove();
-    paper.insertAdjacentHTML('beforebegin', `
-      <aside class="rx-preview-context ${validation.valid ? 'is-verified' : 'is-incomplete'}" data-context-key="${key}">
-        <header><span>${SVG.shield}</span><div><strong>Konteksti i dozimit</strong><small>${validation.valid ? 'Skemat janë filtruar sipas kategorisë, rrugës dhe popullatës.' : validationMessage(validation)}</small></div></header>
-        <dl>${rows.map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join('')}</dl>
-      </aside>
-    `);
+    const label = context.pediatric ? ['Pediatrike',ageLabel(context),context.weightKg ? context.weightKg+' kg' : 'Pesha e paplotësuar'].filter(Boolean).join(' · ') : 'Të rritur';
+    if (existing?.textContent === label) return;
+    existing?.remove(); paper.insertAdjacentHTML('beforebegin','<aside class="rx-preview-context rx-patient-summary">'+label+'</aside>');
   }
 
   function render() {
@@ -3447,7 +3402,9 @@
     const pediatricButton = state.document.getElementById('rxPediatricToggle');
     if (pediatricButton) {
       pediatricButton.classList.toggle('is-active', context.pediatric);
+      pediatricButton.querySelector('strong').textContent = context.pediatric ? 'Fëmijë' : 'Të rritur';
       pediatricButton.setAttribute('aria-pressed', String(context.pediatric));
+      pediatricButton.setAttribute('aria-label', context.pediatric ? 'Pacienti: fëmijë. Ndrysho në të rritur.' : 'Pacienti: i rritur. Ndrysho në fëmijë.');
       pediatricButton.querySelector('small').textContent = context.pediatric
         ? (context.ageValue && context.weightKg ? `${ageLabel(context)} · ${context.weightKg} kg` : 'Plotëso moshën dhe peshën')
         : 'Aktivizo moshën dhe peshën për dozimin pediatrik';
@@ -3485,7 +3442,7 @@
     if (summary) summary.textContent = contextSummary(context);
     const brief = state.document.getElementById('rxContextBrief');
     if (brief) brief.textContent = [context.route, context.pediatric ? 'Pediatrike' : 'Të rritur'].filter(Boolean).join(' · ');
-    if (context.pediatric && !validation.valid) {
+    if (context.pediatric && [...validation.missing,...validation.invalid].some(key => ['age','weight'].includes(key))) {
       const disclosure = state.document.getElementById('rxContextPanel');
       if (disclosure) disclosure.open = true;
     }
@@ -3541,12 +3498,12 @@
     if (announce) setStatus('Skemat u përshtatën me kategorinë, rrugën dhe popullatën.', 'success');
     return state.payloadView;
   }
-  async function loadForDrug(drugId, { announce = false } = {}) {
+  async function loadForDrug(drugId, { announce = false, context:requestedContext = null } = {}) {
     const id = text(drugId);
     if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) {
       throw new Error('ID e barit është e pavlefshme.');
     }
-    const context = getContext();
+    const context = normalizeContext(requestedContext || getContext());
     const validation = validateContext(context);
     if (!validation.valid) throw new Error(validationMessage(validation) || 'Konteksti klinik nuk është i plotë.');
     const key = `${id}|${contextKey(context)}`;
@@ -3610,6 +3567,7 @@
 
   function drugAdministration(drug = {}) {
     return Administration.inferAdministration({
+      ...drug,
       administrationCategory:drug.administrationCategory || drug.__administrationCategory || drug['Kategoria e administrimit'],
       allowedRoutes:drug.allowedRoutes || drug.__allowedRoutes || drug['Rrugët e lejuara'],
       form:drug.form || drug['Forma farmaceutike'],
@@ -3658,6 +3616,7 @@
     return { valid:true, message:'' };
   }
   function focusFirstProblem(validation) {
+    if (validation.missing.includes('route') || validation.invalid.includes('route')) { state.document.querySelector('[data-order-field="route"]')?.focus();return; }
     const id = validation.missing.includes('route') || validation.invalid.includes('route')
       ? 'rxRouteSegments'
       : validation.missing.includes('age') || validation.invalid.includes('age') ? 'rxPatientAge' : 'rxPatientWeight';
@@ -3738,6 +3697,7 @@
     };
     engine.decideMatch = (drug, rows) => decideForContext(original, drug, rows, getContext());
     engine.prescriptionTransfer = (drug, regimen) => transferForContext(original, drug, regimen, getContext());
+    engine.__rxContextOriginal = original;
     engine.__rxContext = true;
   }
 
@@ -3780,22 +3740,6 @@
     state.document.getElementById('rxPatientWeight')?.addEventListener('input', event => {
       save({ ...getContext(), weightKg:event.target.value }, { refresh:false }); schedulePayloadRefresh();
     });
-
-    state.document.addEventListener('click', event => {
-      const button = event.target.closest?.('[data-drug-result]');
-      if (!button) return;
-      let drug = null;
-      try { drug = JSON.parse(decodeURIComponent(button.dataset.drugResult || '')); } catch {}
-      const inferred = drugAdministration(drug || {});
-      if (!inferred.category) return;
-      const active = getContext();
-      const nextRoute = inferred.routes.length === 1
-        ? inferred.routes[0]
-        : (active.administrationCategory === inferred.category && inferred.routes.includes(active.route) ? active.route : '');
-      if (active.administrationCategory !== inferred.category || active.route !== nextRoute) {
-        save({ ...active, administrationCategory:inferred.category, route:nextRoute }, { refresh:false });
-      }
-    }, true);
 
     ['rxNew', 'rxClear'].forEach(id => state.document.getElementById(id)?.addEventListener('click', () => setTimeout(() => resetContext(), 0)));
     state.document.getElementById('rxSave')?.addEventListener('click', persistContextOnSavedPrescription);
@@ -5626,7 +5570,8 @@
     searchSequence: 0,
     searchCache: new Map(),
     registryDetailCache: new Map(),
-    pendingRouteDrug: null,
+    regimenCandidates:new Map(),
+    patientContextKey:'',
     renderTimer: 0,
     generatedReviewConfirmed: false,
     dosageReviewConfirmed: false,
@@ -5877,8 +5822,11 @@
     if (state.registryDetailCache.has(id)) {
       return { ...source, ...state.registryDetailCache.get(id) };
     }
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 9000);
     try {
       const response = await fetch(`/api/drug-search?view=registry-detail&id=${encodeURIComponent(id)}`, {
+        signal:controller.signal,
         credentials:'same-origin',
         cache:'no-store',
         headers:{ Accept:'application/json' },
@@ -5889,10 +5837,11 @@
       const Administration = window.MedIndexAdministrationRoutes;
       const sourceCategory = registrySourceValue(detail, 'Kategoria e administrimit', 'Kategoria');
       const sourceRoutes = registrySourceValue(detail, 'Rrugët e lejuara', 'Rruget e lejuara', 'Rruga e lejuar');
-      const allowedRoutes = Administration?.routeTokens?.(sourceRoutes) || [];
+      const allowedRoutes = Administration?.routeTokens?.(sourceRoutes || detail.allowedRoutes || detail.route) || [];
       const inferred = Administration?.inferAdministration?.({
-        administrationCategory:sourceCategory,
-        allowedRoutes,
+        ...source, ...detail,
+        administrationCategory:sourceCategory || detail.administrationCategory || source.administrationCategory,
+        allowedRoutes:allowedRoutes.length ? allowedRoutes : source.allowedRoutes,
         form:detail.form || source.form,
       }) || {};
       const hydrated = {
@@ -5901,11 +5850,9 @@
         packaging:text(source.packaging || detail.packaging),
         approvedPopulation:text(source.approvedPopulation || detail.approvedPopulation),
         prescriptionNotation:text(source.prescriptionNotation || detail.prescriptionNotation),
-        administrationCategory:text(source.administrationCategory || sourceCategory || inferred.category),
-        allowedRoutes:Array.isArray(source.allowedRoutes) && source.allowedRoutes.length
-          ? source.allowedRoutes
-          : (allowedRoutes.length ? allowedRoutes : inferred.routes || []),
-        route:text(source.route || (allowedRoutes.length === 1 ? allowedRoutes[0] : inferred.route)).toUpperCase(),
+        administrationCategory:text(sourceCategory || detail.administrationCategory || inferred.category),
+        allowedRoutes:allowedRoutes.length ? allowedRoutes : inferred.routes || [],
+        route:text(allowedRoutes.length ? (allowedRoutes.length === 1 ? allowedRoutes[0] : '') : source.route || inferred.route).toUpperCase(),
         sourceFields:Array.isArray(detail.sourceFields) ? detail.sourceFields : [],
       };
       state.registryDetailCache.set(id, hydrated);
@@ -5913,7 +5860,7 @@
       return hydrated;
     } catch {
       return source;
-    }
+    } finally { clearTimeout(timeout); }
   }
 
   function approvedPopulationKind(drug) {
@@ -5936,26 +5883,46 @@
   }
 
   function syncClinicalContextForDrug(drug) {
-    const contextApi = window.MedIndexPrescriptionContext;
-    const Administration = window.MedIndexAdministrationRoutes;
-    const current = contextApi?.getContext?.();
-    const administration = contextApi?.drugAdministration?.(drug)
-      || Administration?.inferAdministration?.(drug)
-      || { category:'', routes:[], route:'' };
-    contextApi?.setProductConstraint?.(drug);
-    if (!current || !administration.category) {
-      return { administration, context:current || null, routeResolved:Boolean(administration.route) };
-    }
-    const allowed = Array.isArray(administration.routes) ? administration.routes : [];
-    const currentRouteAllowed = current.administrationCategory === administration.category
-      && current.route && (!allowed.length || allowed.includes(current.route));
-    const route = allowed.length === 1
-      ? allowed[0]
-      : (currentRouteAllowed ? current.route : text(administration.route).toUpperCase());
-    const next = { ...current, administrationCategory:administration.category, route };
-    const changed = next.administrationCategory !== current.administrationCategory || next.route !== current.route;
-    if (changed) contextApi?.setContext?.(next, { refresh:false });
-    return { administration, context:contextApi?.getContext?.() || next, routeResolved:Boolean(route), changed };
+    const api = window.MedIndexPrescriptionContext, Administration = window.MedIndexAdministrationRoutes;
+    const administration = api?.drugAdministration?.(drug) || Administration?.inferAdministration?.(drug) || {category:'',routes:[],route:''};
+    const explicit = Administration?.normalizeRoute?.(drug.route) || '';
+    const route = explicit && (!administration.routes.length || administration.routes.includes(explicit)) ? explicit : administration.route || '';
+    return {administration, context:{...api?.getContext?.(),administrationCategory:administration.category || Administration?.categoryForRoute?.(route) || '',route},routeResolved:Boolean(route)};
+  }
+
+  function patientContextKey() {
+    const c = window.MedIndexPrescriptionContext?.getContext?.() || {};
+    return JSON.stringify([Boolean(c.pediatric),c.ageValue,c.ageUnit,c.weightKg]);
+  }
+
+  function renderRegimenOffer(key) {
+    const card = document.querySelector('[data-order-key="'+CSS.escape(key)+'"]'), host = card?.querySelector('[data-regimen-offer]');
+    if (!host) return;
+    const item = state.regimenCandidates.get(key);
+    host.hidden = !item || item.status === 'none';
+    if (!item || item.status === 'none') { host.innerHTML=''; return; }
+    host.innerHTML = item.matches?.length ? '<button type="button" class="rx-text-button" data-review-regimen="'+esc(key)+'"'+(state.composerOrigin==='manual'?' disabled':'')+'>Përdor skemën e verifikuar <span aria-hidden="true">→</span></button>'
+      : '<span>'+esc(item.status === 'route' ? 'Zgjidh rrugën për këtë bar.' : item.status === 'patient' ? 'Plotëso moshën dhe peshën për skemën pediatrike.' : item.status === 'loading' ? 'Po kontrollohen skemat…' : 'Doza plotësohet manualisht.')+'</span>';
+  }
+
+  async function loadOrderRegimens(key) {
+    const drug = state.selectedDrugs.find(item=>item.key===key); if (!drug) return;
+    const epoch=state.workspaceEpoch, api=window.MedIndexPrescriptionContext;
+    const synced=syncClinicalContextForDrug(drug), context=synced.context;
+    const token=JSON.stringify([patientContextKey(),drug.route,drug.id,drug.drugId]);
+    const record={token,epoch,context,matches:[],status:!drug.route?'route':context.pediatric&&!api?.validateContext?.(context)?.valid?'patient':'loading'};
+    state.regimenCandidates.set(key,record); renderRegimenOffer(key);
+    const drugId=text(drug.id||drug.drugId);
+    if (record.status !== 'loading') return;
+    if (!drugId || !Dosage || !api?.loadForDrug) { record.status='none';renderRegimenOffer(key);return; }
+    try {
+      const payload=await api.loadForDrug(drugId,{context});
+      if (epoch!==state.workspaceEpoch || state.regimenCandidates.get(key)!==record || !state.selectedDrugs.some(d=>d.key===key)) return;
+      const decision=api.decideForContext(Dosage,drug,payload.adult||[],context);
+      record.matches=decision.status==='auto'?[decision.regimen]:decision.status==='choose-indication'?decision.matches:[];
+      record.status=record.matches.length?'ready':'none';
+    } catch { if(state.regimenCandidates.get(key)!==record)return;record.status='none'; }
+    renderRegimenOffer(key);
   }
 
   function structuredSignature(drug) {
@@ -5985,7 +5952,15 @@
 
   function orderIssues(drug) {
     const issues = [];
-    if (!text(drug.route)) issues.push('rruga');
+    const patientApi = window.MedIndexPrescriptionContext, patientContext = patientApi?.getContext?.() || {};
+    if (patientContext.pediatric) {
+      const validation = patientApi?.validateContext?.(patientContext);
+      const fields = [...(validation?.missing || []), ...(validation?.invalid || [])];
+      if (fields.includes('age')) issues.push('mosha');
+      if (fields.includes('weight')) issues.push('pesha');
+    }
+    if (!text(drug.route) || (drug.allowedRoutes?.length && !drug.allowedRoutes.includes(drug.route))) issues.push('rruga');
+    if (!populationCompatibilityForDrug(drug,window.MedIndexPrescriptionContext?.getContext?.()||{}).valid) issues.push('grupmosha');
     if (!text(drug.doseInstruction)) issues.push('doza');
     if (!text(drug.frequency)) issues.push('shpeshtësia');
     if (!text(drug.dispense)) issues.push('sasia');
@@ -6024,7 +5999,7 @@
     return true;
   }
 
-  function addSelectedDrug(raw, { insert = true } = {}) {
+  function addSelectedDrug(raw, { insert = true, replaceExisting = false } = {}) {
     const drug = normalizeDrug(raw);
     if (!drug.substance) {
       setStatus('Ky regjistrim nuk ka substancë aktive dhe nuk mund të futet në recetën përfundimtare.', 'error');
@@ -6037,13 +6012,14 @@
       signatura:structuredSignature(drug),
     };
     const existingIndex = state.selectedDrugs.findIndex(item => item.key === key);
-    if (existingIndex >= 0) {
+    if (existingIndex >= 0 && !replaceExisting) {
       expandOrder(key);
       setStatus('Ky bar është tashmë në recetë. Dozimi që ke plotësuar u ruajt.');
       return;
     }
-    if (state.selectedDrugs.length >= 50) { setStatus('Receta lejon deri në 50 barna.', 'error'); return; }
-    state.selectedDrugs.push(prepared);
+    if (existingIndex < 0 && state.selectedDrugs.length >= 50) { setStatus('Receta lejon deri në 50 barna.', 'error'); return; }
+    if (existingIndex >= 0) state.selectedDrugs[existingIndex] = {...state.selectedDrugs[existingIndex],...prepared};
+    else state.selectedDrugs.push(prepared);
     state.expandedOrderKey = key;
     state.clinicalReviewConfirmed = false;
     renderSelectedDrugs();
@@ -6059,84 +6035,27 @@
   }
 
   async function addDrugWithDosage(raw, options = {}) {
-    const epoch = state.workspaceEpoch;
-    const hydrated = options.skipRegistryHydration ? raw : await hydrateRegistryDrug(raw);
-    if (epoch !== state.workspaceEpoch) return {status:'cancelled'};
-    const drug = normalizeDrug(hydrated);
-    const existing = state.selectedDrugs.find(item => item.key === drug.key);
-    if (existing) { expandOrder(existing.key); setStatus('Ky bar është tashmë në recetë. Dozimi që ke plotësuar u ruajt.'); return {status:'already-selected'}; }
-    const contextApi = window.MedIndexPrescriptionContext;
-    const synced = syncClinicalContextForDrug(drug);
-    const activeContext = contextApi?.getContext?.() || synced.context || {};
-    const populationCheck = populationCompatibilityForDrug(drug, activeContext);
-    if (!populationCheck.valid) {
-      state.pendingRouteDrug = null;
-      setStatus(populationCheck.message, 'error');
-      return { status:'population-mismatch' };
-    }
-    if (!synced.administration?.category) {
-      contextApi?.clearProductConstraint?.();
-      state.pendingRouteDrug = { raw:hydrated, options:{ ...options, skipRegistryHydration:true }, manualAdministration:true };
-      setStatus('Rruga nuk u identifikua në mënyrë të sigurt nga kartela e produktit. Zgjidh kategorinë dhe rrugën; pastaj DRx vazhdon me dozologjinë.', 'error');
-      setTimeout(() => {
-        if (document.getElementById('rxContextPanel')) document.getElementById('rxContextPanel').open = true;
-        document.getElementById('rxClinicalContext')?.scrollIntoView?.({ block:'center', behavior:'smooth' });
-        document.querySelector('[data-context-category]')?.focus?.({ preventScroll:true });
-      }, 0);
-      return { status:'needs-administration' };
-    }
-    if (!synced.routeResolved) {
-      state.pendingRouteDrug = { raw:hydrated, options:{ ...options, skipRegistryHydration:true } };
-      const routes = Array.isArray(synced.administration.routes) ? synced.administration.routes : [];
-      setStatus(routes.length
-        ? `Ky preparat lejon ${routes.join(' / ')}. Zgjidh rrugën e saktë; vazhdimi bëhet automatikisht.`
-        : `${window.MedIndexAdministrationRoutes?.categoryLabel?.(synced.administration.category) || synced.administration.category} u identifikua. Zgjidh rrugën e saktë për këtë preparat.`, 'error');
-      setTimeout(() => {
-        if (document.getElementById('rxContextPanel')) document.getElementById('rxContextPanel').open = true;
-        const holder = document.getElementById('rxRouteSegments');
-        holder?.scrollIntoView?.({ block:'center', behavior:'smooth' });
-        holder?.querySelector?.('button')?.focus?.({ preventScroll:true });
-      }, 0);
-      return { status:'needs-route' };
-    }
-    state.pendingRouteDrug = null;
-    const route = synced.context?.route || contextApi?.getContext?.()?.route || synced.administration.route;
-    setStatus(`Rruga u zgjodh automatikisht nga produkti: ${window.MedIndexAdministrationRoutes?.categoryLabel?.(synced.administration.category) || synced.administration.category} · ${route}.`, 'success');
-    if (drug.regimenId || !Dosage) return addSelectedDrug(drug, options);
-    const drugId = text(drug.id || drug.drugId);
-    if (!drugId || !contextApi?.loadForDrug) {
-      addSelectedDrug({ ...drug, dosageStatus:'manual' }, options);
-      setStatus('Produkti u shtua me rrugën e saktë, por nuk ka identifikues për dozologji të targetuar. Doza mbetet manuale.', 'error');
-      return { status:'manual' };
-    }
-    let payload;
-    try {
-      payload = await contextApi.loadForDrug(drugId);
-      if (epoch !== state.workspaceEpoch) return {status:'cancelled'};
-    } catch (error) {
-      if (epoch !== state.workspaceEpoch) return {status:'cancelled'};
-      addSelectedDrug({ ...drug, dosageStatus:'manual' }, options);
-      setStatus(`${error?.message || 'Dozologjia nuk u ngarkua.'} Identiteti dhe rruga u ruajtën; doza mbetet manuale.`, 'error');
-      return { status:'manual-unavailable' };
-    }
-    const context = contextApi.getContext?.() || null;
-    const decision = contextApi?.decideForContext
-      ? contextApi.decideForContext(Dosage, drug, payload.adult || [], context)
-      : Dosage.decideMatch(drug, payload.adult || [], { population:context?.pediatric ? 'pediatric' : 'adult' });
-    if (decision.status === 'auto') {
-      openDosageChooser(drug, [decision.regimen], options);
-      setStatus('U gjet 1 skemë e verifikuar për këtë produkt dhe rrugë. Kontrolloje dhe konfirmoje.');
-      return { status:'confirm-regimen' };
-    }
-    if (decision.status === 'choose-indication') {
-      openDosageChooser(drug, decision.matches, options);
-      return { status:'choose-indication' };
-    }
-    addSelectedDrug({ ...drug, dosageStatus:'manual' }, options);
-    if (options.insert !== false) {
-      setStatus('Nuk u gjet skemë e verifikuar për kombinimin produkt + popullatë + rrugë. Identiteti dhe rruga u plotësuan; doza mbetet manuale.');
-    }
-    return { status:'manual' };
+    const epoch=state.workspaceEpoch, first=normalizeDrug(raw);
+    const existing=state.selectedDrugs.find(item=>item.key===first.key);
+    if(existing){expandOrder(existing.key);setStatus('Ky bar është tashmë në recetë. Dozimi që ke plotësuar u ruajt.');return{status:'already-selected'};}
+    const active=window.MedIndexPrescriptionContext?.getContext?.()||{};
+    const check=populationCompatibilityForDrug(first,active);
+    if(!check.valid){setStatus(check.message,'error');return{status:'population-mismatch'};}
+    const initial=syncClinicalContextForDrug(first);
+    addSelectedDrug({...first,route:initial.context.route,administrationCategory:initial.context.administrationCategory,allowedRoutes:initial.administration.routes.length?initial.administration.routes:window.MedIndexAdministrationRoutes?.routesForCategory?.(initial.administration.category)||[],dosageStatus:first.dosageStatus||'manual'},options);
+    const key=first.key;
+    if(!state.selectedDrugs.some(d=>d.key===key))return{status:'not-added'};
+    const hydrated=options.skipRegistryHydration?raw:await hydrateRegistryDrug(raw);
+    if(epoch!==state.workspaceEpoch)return{status:'cancelled'};
+    const index=state.selectedDrugs.findIndex(d=>d.key===key);if(index<0)return{status:'cancelled'};
+    const current=state.selectedDrugs[index], metadata=normalizeDrug(hydrated), synced=syncClinicalContextForDrug(metadata);
+    const allowed=synced.administration.routes.length?synced.administration.routes:window.MedIndexAdministrationRoutes?.routesForCategory?.(synced.administration.category)||[];
+    const route=current.route&&(!allowed.length||allowed.includes(current.route))?current.route:synced.context.route;
+    state.selectedDrugs[index]={...metadata,...current,approvedPopulation:metadata.approvedPopulation||current.approvedPopulation,allowedRoutes:allowed,administrationCategory:synced.context.administrationCategory,route};
+    renderSelectedDrugs();syncComposerFromOrders();void loadOrderRegimens(key);
+    if(!route)setStatus('Bari u shtua. Zgjidh vetëm rrugën brenda kartës së tij.');
+    else setStatus('Bari u shtua · '+route+'. Plotëso dozën, shpeshtësinë dhe sasinë.');
+    return{status:'added'};
   }
 
   function openDosageChooser(drug, matches, options) {
@@ -6175,10 +6094,10 @@
       const contextApi = window.MedIndexPrescriptionContext;
       const transferred = mode === 'apply' && selected
         ? (contextApi?.transferForContext
-          ? contextApi.transferForContext(Dosage, pending.drug, selected, contextApi.getContext?.())
+          ? contextApi.transferForContext(Dosage, pending.drug, selected, pending.options?.context || syncClinicalContextForDrug(pending.drug).context)
           : Dosage.prescriptionTransfer(pending.drug, selected, 'adult'))
         : { ...pending.drug, dosageStatus:'manual' };
-      addSelectedDrug(transferred, pending.options);
+      addSelectedDrug({ ...pending.drug, ...transferred }, pending.options);
       setStatus(mode === 'apply'
         ? 'Skema e zgjedhur u aplikua pas konfirmimit. Verifikoje klinikisht para ruajtjes.'
         : 'Bari u shtua pa skemë dozimi. Plotëso dozën, rrugën, shpeshtësinë dhe sasinë manualisht.',
@@ -6194,6 +6113,7 @@
   }
 
   function removeSelectedDrug(key) {
+    state.regimenCandidates.delete(key);
     state.selectedDrugs = state.selectedDrugs.filter(item => item.key !== key);
     if (state.expandedOrderKey === key) state.expandedOrderKey = null;
     state.clinicalReviewConfirmed = false;
@@ -6215,6 +6135,7 @@
     const current = { ...state.selectedDrugs[index] };
     current[field] = value;
     if (field === 'signatura') { current.signaturaManual = true; current.aiSignatureGenerated = false; }
+    if (field === 'route' && current.regimenId) {current.regimenId='';current.doseInstruction='';current.frequency='';current.duration='';current.signatura='';current.signaturaManual=false;current.dosageStatus='manual';}
     if (['doseInstruction','route','frequency','duration','dispense','additionalInstructions'].includes(field)) {
       current.aiSignatureGenerated = false;
       if (current.regimenId && ['auto-filled','requires-review'].includes(current.dosageStatus)) current.dosageStatus = 'edited';
@@ -6245,6 +6166,7 @@
     }
     syncComposerFromOrders();
     updateActionState();
+    if (field === 'route') {renderSelectedDrugs();void loadOrderRegimens(key);}
   }
 
   function orderSummary(drug) {
@@ -6270,7 +6192,7 @@
       : 'Receta përditësohet nga fushat. Tekstin e mëparshëm manual mund ta rikthesh.';
     if ($('#rxUseStructured')) $('#rxUseStructured').hidden = !manual;
     if ($('#rxRestoreManual')) $('#rxRestoreManual').hidden = manual || !state.manualComposerBackup;
-    document.querySelectorAll('#rxSelectedDrugs .rx-order-fields, #rxSelectedDrugs [data-remove-drug]').forEach(node => { node.disabled = manual; });
+    document.querySelectorAll('#rxSelectedDrugs .rx-order-fields, #rxSelectedDrugs [data-remove-drug], #rxSelectedDrugs [data-review-regimen]').forEach(node => { node.disabled = manual; });
   }
 
   function useStructuredOrders() {
@@ -6286,8 +6208,10 @@
     scheduleDraftSave();
     const holder = $('#rxSelectedDrugs');
     if (!holder) return;
+    const openDetails = new Set([...holder.querySelectorAll('[data-order-key] .rx-signature-editor[open]')].map(node=>node.closest('[data-order-key]').dataset.orderKey));
+    const active=document.activeElement, focused=holder.contains(active)&&active.dataset.orderField?{key:active.closest('[data-order-key]')?.dataset.orderKey,field:active.dataset.orderField,start:active.selectionStart,end:active.selectionEnd}:null;
     if (!state.selectedDrugs.length) {
-      holder.innerHTML = '<div class="rx-order-empty"><span class="rx-empty-plus" aria-hidden="true">+</span><strong>Fillo me barin e parë</strong><span>Zgjidh “Shto bar”, kërko emrin ose substancën dhe plotëso dozimin.</span></div>';
+      holder.innerHTML = '<div class="rx-order-empty"><span class="rx-empty-plus" aria-hidden="true">+</span><strong>Fillo me barin e parë</strong><span>Kërko barin sipër. Rruga plotësohet nga preparati; ti plotëson dozimin.</span></div>';
       syncComposerMode(); updateActionState(); return;
     }
     if (state.expandedOrderKey === null) state.expandedOrderKey = (structuredOrderIssues()[0]?.key || state.selectedDrugs[0].key);
@@ -6297,27 +6221,30 @@
       return `<article class="rx-order-card${open ? ' is-expanded' : ''}" data-order-key="${esc(drug.key)}">
         <header>
           <span class="rx-order-index">${index + 1}</span>
-          <div class="rx-order-identity"><strong>${esc([Core.prefixForForm(drug.form), drug.substance, drug.strength].filter(Boolean).join(' '))}</strong><span>${esc([drug.tradeName, drug.form ? Core.formLabel(drug.form) : '', drug.atc ? `ATC ${drug.atc}` : ''].filter(Boolean).join(' · '))}</span><small data-order-summary>${esc(orderSummary(drug))}</small></div>
+          <div class="rx-order-identity"><strong>${esc([Core.prefixForForm(drug.form), drug.substance, drug.strength].filter(Boolean).join(' '))}</strong><span>${esc([drug.tradeName, drug.form ? Core.formLabel(drug.form) : '', drug.route ? 'Rruga: '+drug.route : ''].filter(Boolean).join(' · '))}</span><small data-order-summary>${esc(orderSummary(drug))}</small></div>
           <button class="rx-order-toggle" type="button" data-toggle-order="${esc(drug.key)}" aria-expanded="${open}" aria-controls="rxOrderBody${index}" aria-label="Hap ose mbyll dozimin: ${esc(drug.substance)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
         </header>
         <div class="rx-order-body" id="rxOrderBody${index}"${open ? '' : ' hidden'}>
         <fieldset class="rx-order-fields"><legend class="sr-only">Dozimi për ${esc(drug.substance)}</legend>
         <div class="rx-order-grid">
-          <label><span>Doza për marrje <b aria-hidden="true">*</b></span><input data-order-field="doseInstruction" required aria-required="true" value="${esc(drug.doseInstruction)}" placeholder="p.sh. 1 tabletë"></label>
+          <label><span>Doza për marrje <b aria-hidden="true">*</b></span><input data-order-field="doseInstruction" required aria-required="true" value="${esc(drug.doseInstruction)}" placeholder="Shkruaj dozën"></label>
           <label><span>Shpeshtësia <b aria-hidden="true">*</b></span><input data-order-field="frequency" required aria-required="true" value="${esc(drug.frequency)}" placeholder="p.sh. çdo 12 orë"></label>
           <label><span>Kohëzgjatja</span><input data-order-field="duration" value="${esc(drug.duration)}" placeholder="p.sh. 7 ditë"></label>
           <label><span>Sasia për dispensim <b aria-hidden="true">*</b></span><input data-order-field="dispense" required aria-required="true" value="${esc(drug.dispense)}" placeholder="p.sh. 1 kuti"></label>
-          <label><span>Rruga <b aria-hidden="true">*</b></span><select data-order-field="route" required aria-required="true">${routeOptions}</select></label>
-          <label><span>Udhëzim shtesë</span><input data-order-field="additionalInstructions" value="${esc(drug.additionalInstructions)}" placeholder="p.sh. pas ushqimit"></label>
+          <label class="rx-order-route${drug.route && routeOptionsForDrug(drug).length === 1 ? ' is-resolved' : ''}"><span>Rruga <b aria-hidden="true">*</b></span><select data-order-field="route" required aria-required="true">${routeOptions}</select></label>
+
         </div>
-        <div class="rx-order-instructions"><span>Udhëzimi për pacientin</span><p data-order-signature-preview>${esc(drug.signatura || 'Udhëzimi krijohet nga doza dhe shpeshtësia që plotëson.')}</p>
-          <details class="rx-signature-editor"><summary>Redakto udhëzimin</summary><label class="rx-order-signature"><span>Signatura <b aria-hidden="true">*</b></span><textarea rows="3" data-order-field="signatura" placeholder="Udhëzimi për pacientin">${esc(drug.signatura)}</textarea></label><button class="rx-text-button" type="button" data-auto-signature="${esc(drug.key)}"${drug.signaturaManual ? '' : ' hidden'}>Rikthe udhëzimin nga fushat</button></details>
+        <div class="rx-regimen-offer" data-regimen-offer hidden></div><div class="rx-order-instructions"><span>Udhëzimi për pacientin</span><p data-order-signature-preview>${esc(drug.signatura || 'Udhëzimi krijohet nga doza dhe shpeshtësia që plotëson.')}</p>
+          <details class="rx-signature-editor"><summary>Udhëzime shtesë / redaktim</summary><label class="rx-order-extra"><span>Udhëzim shtesë</span><input data-order-field="additionalInstructions" value="${esc(drug.additionalInstructions)}" placeholder="p.sh. pas ushqimit"></label><label class="rx-order-signature"><span>Signatura <b aria-hidden="true">*</b></span><textarea rows="3" data-order-field="signatura" placeholder="Udhëzimi për pacientin">${esc(drug.signatura)}</textarea></label><button class="rx-text-button" type="button" data-auto-signature="${esc(drug.key)}"${drug.signaturaManual ? '' : ' hidden'}>Rikthe udhëzimin nga fushat</button></details>
         </div></fieldset>
         <footer><span class="rx-order-status ${issues.length ? 'is-incomplete' : 'is-ready'}" data-order-status>${issues.length ? `Plotëso: ${esc(issues.join(', '))}` : 'Gati për kontroll'}</span><span class="rx-order-source${drug.regimenId ? '' : ' is-manual'}">${drug.regimenId ? 'Skemë e verifikuar' : 'Dozë manuale'}</span>${drug.sourceUrl ? `<a href="${esc(drug.sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi</a>` : ''}<button type="button" class="rx-order-remove" data-remove-drug="${esc(drug.key)}" aria-label="Hiqe ${esc(drug.substance)}">Hiq barin</button></footer>
         </div>
       </article>`;
     }).join('');
     syncComposerMode(); updateActionState();
+    state.selectedDrugs.forEach(drug=>renderRegimenOffer(drug.key));
+    openDetails.forEach(key=>{const detail=holder.querySelector('[data-order-key="'+CSS.escape(key)+'"] .rx-signature-editor');if(detail)detail.open=true;});
+    if(focused){const node=holder.querySelector('[data-order-key="'+CSS.escape(focused.key)+'"] [data-order-field="'+focused.field+'"]');node?.focus({preventScroll:true});try{node?.setSelectionRange(focused.start,focused.end);}catch{}}
   }
 
   function loadSelection() {
@@ -6355,8 +6282,9 @@
     ['rxFormPopover', 'rxDrugPopover'].forEach(id => {
       const node = document.getElementById(id);
       if (node && id !== except) {
-        node.hidden = true;
+        if(id !== 'rxDrugPopover') node.hidden = true;
         if (id === 'rxDrugPopover') {
+          $('#rxDrugResults').hidden=true;
           cancelDrugSearch();
           if ($('#rxDrugPickerBackdrop')) $('#rxDrugPickerBackdrop').hidden = true;
           $('#rxAddDrugButton')?.setAttribute('aria-expanded','false');
@@ -6436,7 +6364,7 @@
     if (target === 'order' && first) {
       expandOrder(first.key);
       const card = document.querySelector('[data-order-key="'+CSS.escape(first.key)+'"]');
-      node = [...(card?.querySelectorAll('[data-order-field]') || [])].find(input => input.required && !text(input.value)) || card?.querySelector('[data-order-field]');
+      node = first.issues.includes('mosha') ? $('#rxPatientAge') : first.issues.includes('pesha') ? $('#rxPatientWeight') : [...(card?.querySelectorAll('[data-order-field]') || [])].find(input => input.required && !text(input.value)) || card?.querySelector('[data-order-field]');
     } else node = $(target === 'ai' ? '#rxGeneratedReview input' : target === 'dose' ? '#rxDosageReview input' : '#rxClinicalReview input');
     if (node) { node.closest('details')?.setAttribute('open',''); node.scrollIntoView({block:'center',behavior:window.matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth'}); node.focus({preventScroll:true}); }
   }
@@ -6482,6 +6410,8 @@
 
     syncNextStep();
     const count = state.selectedDrugs.length;
+    $('#rxComposerWorkspace')?.classList.toggle('has-content',Boolean(count||text($('#rxComposer')?.value)));
+    if($('#rxReviewPanel')) $('#rxReviewPanel').hidden=!count&&!text($('#rxComposer')?.value);
     if ($('#rxBuilderCount')) $('#rxBuilderCount').textContent = count ? `${count} ${count === 1 ? 'bar' : 'barna'} në recetë` : 'Draft i ri';
     const jump = $('#rxReviewPrescription');
     if (jump) { jump.disabled = !count && !text($('#rxComposer')?.value); jump.textContent = ordersReady ? 'Kontrollo recetën →' : 'Plotëso fushat e mbetura →'; }
@@ -6908,7 +6838,7 @@
   function invalidateWorkspaceRequests() {
     state.workspaceEpoch++;
     state.aiController?.abort();
-    state.pendingRouteDrug = null;
+    state.regimenCandidates.clear();
     closeDosageChooser(); closePopovers();
   }
 
@@ -7214,14 +7144,9 @@
   }
 
   function openDrugPicker() {
-    const node = $('#rxDrugPopover');
-    if (!node) return;
-    if (!node.hidden) { closePopovers(); return; }
-    closePopovers('rxDrugPopover');
-    node.hidden = false;
-    if ($('#rxDrugPickerBackdrop')) $('#rxDrugPickerBackdrop').hidden = false;
-    $('#rxAddDrugButton')?.setAttribute('aria-expanded','true');
-    state.pickerFocusRelease = window.DRxModalFocus.open(node, {initialFocus:$('#rxDrugSearch'),returnFocus:document.activeElement,fallbackFocus:$('#rxAddDrugButton'),onEscape:() => closePopovers()});
+    const node=$('#rxDrugPopover');if(!node)return;node.hidden=false;
+    $('#rxDrugSearch')?.scrollIntoView({block:'nearest'});$('#rxDrugSearch')?.focus({preventScroll:true});
+    $('#rxDrugResults').hidden=false;$('#rxAddDrugButton')?.setAttribute('aria-expanded','true');
     void searchDrugs($('#rxDrugSearch')?.value);
   }
 
@@ -7259,7 +7184,8 @@
   }
 
   function bindEvents() {
-    if ($('#rxDrugPickerBackdrop')) document.body.append($('#rxDrugPickerBackdrop'));
+    $('#rxDrugSearch')?.addEventListener('focus',()=>{if(text($('#rxDrugSearch').value)){$('#rxDrugResults').hidden=false;void searchDrugs($('#rxDrugSearch').value);}});
+    $('#rxDrugSearch')?.addEventListener('keydown',event=>{if(event.key==='Escape'){closePopovers();event.preventDefault();}});
     $('#rxPrescriptionConflicts')?.addEventListener('click',event => {
       const button=event.target.closest('[data-compare-prescription]');
       if(button) openPrescriptionConflict(button.dataset.comparePrescription,button);
@@ -7292,21 +7218,17 @@
         window.MedIndexPrescriptionContext?.resetContext?.({ refresh:false });
       }
     });
-    window.addEventListener('medindex:prescription-context-change', event => {
-      const pending = state.pendingRouteDrug;
-      if (!pending || !event.detail?.valid) return;
-      const context = event.detail.context || window.MedIndexPrescriptionContext?.getContext?.();
-      const administration = window.MedIndexPrescriptionContext?.drugAdministration?.(pending.raw)
-        || window.MedIndexAdministrationRoutes?.inferAdministration?.(pending.raw)
-        || {};
-      if (administration.category && context?.administrationCategory !== administration.category) return;
-      if (Array.isArray(administration.routes) && administration.routes.length && !administration.routes.includes(context?.route)) return;
-      const raw = !administration.category && pending.manualAdministration
-        ? { ...pending.raw, administrationCategory:context.administrationCategory, allowedRoutes:[context.route], route:context.route }
-        : pending.raw;
-      state.pendingRouteDrug = null;
-      void addDrugWithDosage(raw, { ...pending.options, skipRegistryHydration:true })
-        .catch(() => setStatus('Bari nuk u shtua. Provo përsëri.', 'error'));
+    state.patientContextKey=patientContextKey();
+    window.addEventListener('medindex:prescription-context-change', () => {
+      const next=patientContextKey();if(next===state.patientContextKey)return;state.patientContextKey=next;if(!state.draftReady)return;
+      state.dosageReviewConfirmed=false;state.clinicalReviewConfirmed=false;
+      let cleared=false;
+      state.selectedDrugs=state.selectedDrugs.map(drug=>{
+        if(!drug.regimenId)return drug;cleared=true;
+        return {...drug,regimenId:'',doseInstruction:'',frequency:'',duration:'',signatura:'',signaturaManual:false,aiSignatureGenerated:false,dosageStatus:'manual'};
+      });
+      renderSelectedDrugs();syncComposerFromOrders();state.selectedDrugs.forEach(d=>void loadOrderRegimens(d.key));
+      if(cleared)setStatus('Mosha ose pesha ndryshoi. Skemat e mëparshme u hoqën; zgjidh skemën për të dhënat e reja.');
     });
 
     document.querySelectorAll('[data-rx-command]').forEach(button => button.addEventListener('click', () => command(button.dataset.rxCommand)));
@@ -7343,10 +7265,12 @@
     $('#rxDrugSearch')?.addEventListener('input', event => {
       cancelDrugSearch();
       const query = event.target.value;
+      $('#rxDrugResults').hidden=false;
       $('#rxDrugResults').innerHTML = '<div class="rx-drug-search-loading"><p>Duke kërkuar…</p></div>';
       state.searchTimer = setTimeout(() => searchDrugs(query),170);
     });
     $('#rxDrugSearch')?.addEventListener('keydown', event => {
+      if ($('#rxDrugResults')?.hidden) return;
       const first = $('#rxDrugResults')?.querySelector('[data-drug-result]');
       if (event.key === 'Enter' && first) {
         event.preventDefault();
@@ -7386,10 +7310,13 @@
         setStatus('Të dhënat e barit nuk u lexuan.', 'error');
       }
       closePopovers();
+      $('#rxDrugSearch').value='';
       $('#rxAddDrugButton')?.setAttribute('aria-expanded', 'false');
     });
 
     $('#rxSelectedDrugs')?.addEventListener('click', event => {
+      const regimen=event.target.closest('[data-review-regimen]');
+      if(regimen && state.composerOrigin !== 'manual'){const drug=state.selectedDrugs.find(d=>d.key===regimen.dataset.reviewRegimen),offer=state.regimenCandidates.get(regimen.dataset.reviewRegimen);if(drug&&offer?.matches?.length)openDosageChooser(drug,offer.matches,{replaceExisting:true,context:offer.context,returnFocus:regimen});return;}
       const toggle = event.target.closest('[data-toggle-order]');
       if (toggle) { expandOrder(toggle.dataset.toggleOrder,true); return; }
       const automatic = event.target.closest('[data-auto-signature]');

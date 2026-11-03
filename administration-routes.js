@@ -94,19 +94,29 @@
     }
     if (/subling/.test(form)) return { category:'ENTERAL', routes:['SL'], confidence:'form' };
     if (/bukal|buccal|oromuk/.test(form)) return { category:'ENTERAL', routes:['BUCCAL'], confidence:'form' };
-    if (/rektal|rectal|suppositor|supozitor|klizm|enema/.test(form)) return { category:'ENTERAL', routes:['PR'], confidence:'form' };
-    if (/ophthalm|oftalm|ocular|okular|eye\s*(drop|ointment|gel)/.test(form)) return { category:'TOPICAL_LOCAL', routes:['OPH'], confidence:'form' };
-    if (/otic|ear\s*drops?/.test(form)) return { category:'TOPICAL_LOCAL', routes:['OTIC'], confidence:'form' };
+    if (/rektal|rectal|suppositor|supozitor|klizm|enema|^supp?\.?$/.test(form)) return { category:'ENTERAL', routes:['PR'], confidence:'form' };
+    if (/ophthalm|oftalm|ocular|okular|eye\s*(drop|ointment|gel)|pika\s*(?:per\s*)?sy/.test(form)) return { category:'TOPICAL_LOCAL', routes:['OPH'], confidence:'form' };
+    if (/otic|ear\s*drops?|pika\s*(?:per\s*)?vesh/.test(form)) return { category:'TOPICAL_LOCAL', routes:['OTIC'], confidence:'form' };
     if (/nasal|intranas/.test(form)) return { category:'TOPICAL_LOCAL', routes:['NASAL'], confidence:'form' };
     if (/vaginal|intravag|ovul|pessar/.test(form)) return { category:'TOPICAL_LOCAL', routes:['VAG'], confidence:'form' };
     if (/transderm|patch|flaster/.test(form)) return { category:'TOPICAL_LOCAL', routes:['TD'], confidence:'form' };
-    if (/cream|krem|ointment|pomad|unguent|gel|lotion|locion|cutaneous|kutan|dermal|skin/.test(form)) return { category:'TOPICAL_LOCAL', routes:['TOP'], confidence:'form' };
-    if (/injection|injeks|infusion|infuz|parenter|vial|flakon|ampou|ampul|lyophilis/.test(form)) {
+    if (/cream|krem|ointment|pomad|unguent|gel|lotion|locion|cutaneous|kutan|dermal|skin|^ung\.?$/.test(form)) return { category:'TOPICAL_LOCAL', routes:['TOP'], confidence:'form' };
+    if (/injection|injeks|infusion|infuz|parenter|vial|flakon|ampou|ampul|lyophilis|^(?:amp|inj)\.?$/.test(form)) {
       const routes = routeTokens(form).filter(route => categoryForRoute(route) === 'PARENTERAL');
       return { category:'PARENTERAL', routes, confidence:'form' };
     }
-    if (/tablet|capsul|kapsul|syrup|sirup|oral|suspension|pezullim|granul|lozenge|pastil|solution\s*for\s*oral/.test(form)) return { category:'ENTERAL', routes:['PO'], confidence:'form' };
+    if (/tablet|capsul|kapsul|syrup|sirup|shurup|oral|suspension|pezullim|granul|lozenge|pastil|solution\s*for\s*oral|^(?:tab|tabl|caps?|kaps|sir|syr)\.?$/.test(form)) return { category:'ENTERAL', routes:['PO'], confidence:'form' };
     return { category:'', routes:[], confidence:'unknown' };
+  }
+
+  function reviewedProductAdministration(value = {}) {
+    const name=fold(value.tradeName || value.trade_name || value.name || value['Emri tregtar']);
+    const strength=fold(value.strength || value['Fortësia']).replace(/\s/g,'').replace(',','.');
+    const form=fold(value.form || value.pharmaceuticalForm || value.pharmaceutical_form || value['Forma farmaceutike']);
+    if (name !== 'bromhexine sopharma' || !/^2mg\/(?:1)?ml$/.test(strength) || !/injection|injeks|ampul|ampou|^amp\.?$/.test(form)) return null;
+    // EMA Article 31 product list: exact brand, strength and injectable form.
+    // It identifies IM and IV; it does not specify a preferred route.
+    return {category:'PARENTERAL',routes:['IM','IV'],confidence:'reviewed-product',sourceUrl:'https://www.ema.europa.eu/en/documents/referral/ambroxol-and-bromhexine-article-31-referral-annex-i_en.pdf'};
   }
 
   function inferAdministration(value = {}) {
@@ -114,7 +124,7 @@
     const explicitRoutes = routeTokens(explicitSource(value));
     const routeCategories = [...new Set(explicitRoutes.map(categoryForRoute).filter(Boolean))];
     const form = value.form || value.pharmaceuticalForm || value.pharmaceutical_form || value['Forma farmaceutike'] || value['Forma'];
-    const byForm = formInference(form);
+    const byForm = reviewedProductAdministration(value) || formInference(form);
 
     let category = explicitCategory;
     let confidence = explicitCategory ? 'explicit-category' : 'unknown';

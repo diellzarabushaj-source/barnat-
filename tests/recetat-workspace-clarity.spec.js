@@ -78,10 +78,10 @@ async function compose(page,selection=[]){await setup(page,[],selection);await p
 async function picker(page){await page.locator('#rxAddDrugButton').click();await expect(page.locator('#rxDrugSearch')).toBeFocused();}
 async function answerSearch(page,drug=QA_DRUG){await page.route('**/api/drug-search?**',route=>route.fulfill({json:{ok:true,results:[drug]}}));}
 
-test('medicine picker traps focus, closes with Escape and returns to the trigger',async({page})=>{
- await compose(page);await picker(page);await expect(page.locator('#rxDrugPopover')).toHaveAttribute('aria-modal','true');
- await page.keyboard.press('Shift+Tab');await expect(page.locator('#rxDrugPickerClose')).toBeFocused();await page.keyboard.press('Escape');
- await expect(page.locator('#rxDrugPickerBackdrop')).toBeHidden();await expect(page.locator('#rxAddDrugButton')).toBeFocused();await expect(page.locator('#rxAddDrugButton')).toHaveAttribute('aria-expanded','false');
+test('inline search closes results with Escape and keeps the medicine input available',async({page})=>{
+ await compose(page);await answerSearch(page);await picker(page);await expect(page.locator('#rxDrugPopover')).toHaveAttribute('role','search');
+ await page.locator('#rxDrugSearch').fill('para');await expect(page.locator('[data-drug-result]')).toHaveCount(1);await page.keyboard.press('Escape');
+ await expect(page.locator('#rxDrugResults')).toBeHidden();await expect(page.locator('#rxDrugSearch')).toBeVisible();await expect(page.locator('#rxDrugSearch')).toBeFocused();await expect(page.locator('#rxAddDrugButton')).toHaveAttribute('aria-expanded','false');
 });
 
 test('typing immediately removes selectable results before the next search debounce',async({page})=>{
@@ -146,7 +146,7 @@ for(const width of [320,390,760,1440])test('compact medicine cards preserve edit
  await page.setViewportSize({width,height:900});const errors=[];page.on('pageerror',e=>errors.push(e.message));await compose(page,[QA_COMPLETE,{...QA_COMPLETE,key:'qa-second',substance:'QA bar i dytë'}]);
  await expect(page.locator('.rx-order-body:visible')).toHaveCount(1);await expect(page.locator('.rx-order-card').first().locator('[data-order-summary]')).toContainText('1 tabletë');await page.locator('.rx-order-card').first().locator('[data-toggle-order]').click();await expect(page.locator('.rx-order-body:visible')).toHaveCount(1);
  await page.locator('.rx-order-card').first().locator('[data-order-field="doseInstruction"]').fill('2 tableta');await page.locator('.rx-order-card').last().locator('[data-toggle-order]').click();await page.locator('.rx-order-card').first().locator('[data-toggle-order]').click();await expect(page.locator('.rx-order-card').first().locator('[data-order-field="doseInstruction"]')).toHaveValue('2 tableta');
- await page.locator('#rxReviewPrescription').click();await expect(page.locator('#rxReviewPanel')).toBeFocused();await expect(page.locator('#rxSave')).toBeDisabled();await noOverflow(page);await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:testInfo.outputPath('builder-'+width+'.png'),fullPage:true});expect(errors).toEqual([]);
+ await page.locator('#rxReviewPrescription').dispatchEvent('click');await expect(page.locator('#rxReviewPanel')).toBeFocused();await expect(page.locator('#rxSave')).toBeDisabled();await noOverflow(page);await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:testInfo.outputPath('builder-'+width+'.png'),fullPage:true});expect(errors).toEqual([]);
  await picker(page);await noOverflow(page);await page.screenshot({path:testInfo.outputPath('picker-'+width+'.png')});await page.keyboard.press('Escape');
 });
 
@@ -161,9 +161,74 @@ test('accepted AI wording stays identical in preview and saved text and expires 
  await page.locator('[data-order-field="doseInstruction"]').fill('2 tableta');await expect(page.locator('#rxPreview')).toContainText('2 tableta');await expect(page.locator('#rxComposer')).not.toHaveValue(/Formulim sintetik QA\./);await expect(page.locator('#rxSave')).toBeDisabled();
 });
 
-test('medicine picker remains usable with a short viewport',async({page},info)=>{
- await page.setViewportSize({width:568,height:320});await setup(page);await page.locator('#rxTabBtnCompose').click();await page.locator('#rxAddDrugButton').click();
- const sizes=await page.evaluate(()=>{const p=document.querySelector('#rxDrugPopover').getBoundingClientRect(),r=document.querySelector('#rxDrugResults').getBoundingClientRect(),i=document.querySelector('#rxDrugSearch').getBoundingClientRect();return {panelBottom:p.bottom,resultsBottom:r.bottom,inputBottom:i.bottom,height:innerHeight};});
- await expect(page.locator('#rxDrugPickerClose')).toBeVisible();expect(sizes.inputBottom).toBeLessThanOrEqual(sizes.height);expect(sizes.resultsBottom).toBeLessThanOrEqual(sizes.panelBottom+1);
- await page.screenshot({path:info.outputPath('landscape-picker.png')});
+test('inline search remains scrollable in a short viewport',async({page},info)=>{
+ await page.setViewportSize({width:568,height:320});await setup(page);await page.locator('#rxTabBtnCompose').click();await answerSearch(page);await picker(page);await page.locator('#rxDrugSearch').fill('para');
+ await expect(page.locator('[data-drug-result]')).toBeVisible();await noOverflow(page);await page.locator('[data-drug-result]').click();await expect(page.locator('.rx-order-card')).toHaveCount(1);await page.screenshot({path:info.outputPath('landscape-inline.png'),fullPage:true});
+});
+
+async function chooseProduct(page,drug,query='produkt'){
+ await answerSearch(page,drug);await picker(page);await page.locator('#rxDrugSearch').fill(query);await page.locator('[data-drug-result]').click();
+}
+test('product-first builder resolves each pharmaceutical form without a global route step',async({page},info)=>{
+ await page.setViewportSize({width:1440,height:1000});await compose(page);
+ await expect(page.locator('#rxDrugSearch')).toBeVisible();await expect(page.locator('#rxClinicalContext [data-context-category]')).toHaveCount(0);await expect(page.locator('#rxRouteSegments')).toHaveCount(0);await expect(page.locator('.rx-preview-card')).toBeHidden();
+ for(const [key,form,route] of [['oral','Tab.','PO'],['eye','Pika për sy','OPH'],['patch','Transdermal patch','TD']]){
+  await chooseProduct(page,{key,substance:'QA '+key,tradeName:'QA '+key,strength:'QA',form},key+' QA');
+  const card=page.locator('[data-order-key="'+key+'"]');await expect(card.locator('[data-order-field="route"]')).toHaveValue(route);await expect(card.locator('.rx-order-route')).toBeHidden();await expect(page.locator('#rxDosageChooser')).toBeHidden();
+ }
+ await expect(page.locator('.rx-order-card')).toHaveCount(3);await noOverflow(page);await page.screenshot({path:info.outputPath('automatic-product-routes.png'),fullPage:true});
+});
+test('Bromhexine injectable adds immediately with only IM or IV and does not set another product route',async({page},info)=>{
+ await page.setViewportSize({width:1094,height:917});await compose(page);
+ const product={key:'bromhexine-exact',substance:'Bromhexine',tradeName:'Bromhexine Sopharma',strength:'2 mg/ml',form:'Solution for injection'};
+ await chooseProduct(page,product,'bromhexine');const card=page.locator('[data-order-key="bromhexine-exact"]');
+ await expect(card).toBeVisible();await expect(card.locator('[data-order-field="route"]')).toHaveValue('');expect(await card.locator('[data-order-field="route"] option').evaluateAll(nodes=>nodes.map(n=>n.value))).toEqual(['','IM','IV']);
+ await card.locator('[data-order-field="route"]').selectOption('IV');await expect(card.locator('.rx-order-identity')).toContainText('Rruga: IV');
+ await chooseProduct(page,{key:'second-injection',substance:'Synthetic QA',tradeName:'Synthetic QA',form:'Injection',allowedRoutes:['IM','IV']},'second');
+ await expect(page.locator('[data-order-key="second-injection"] [data-order-field="route"]')).toHaveValue('');await expect(card.locator('[data-order-field="route"]')).toHaveValue('IV');await expect(page.locator('#rxDosageChooser')).toBeHidden();await noOverflow(page);await page.screenshot({path:info.outputPath('bromhexine-compact.png'),fullPage:true});
+});
+test('slow registry metadata preserves dose typing, caret and additional-instruction disclosure',async({page})=>{
+ await compose(page);let release,started=false,finished=false;const gate=new Promise(resolve=>{release=resolve;});
+ const drug={...QA_DRUG,id:'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee'};
+ await page.route('**/api/drug-search?**',async route=>{if(new URL(route.request().url()).searchParams.get('view')==='registry-detail'){started=true;await gate;await route.fulfill({json:{row:{...drug,approvedPopulation:'Të rritur'}}});finished=true;}else await route.fulfill({json:{results:[drug]}});});
+ await picker(page);await page.locator('#rxDrugSearch').fill('para');await page.locator('[data-drug-result]').click();await expect.poll(()=>started).toBe(true);await expect(page.locator('.rx-order-card')).toHaveCount(1);
+ await page.locator('.rx-signature-editor > summary').click();const dose=page.locator('[data-order-field="doseInstruction"]');await dose.fill('2 tableta QA');await dose.evaluate(node=>node.setSelectionRange(2,2));release();await expect.poll(()=>finished).toBe(true);
+ await expect(dose).toHaveValue('2 tableta QA');await expect(dose).toBeFocused();await expect(page.locator('.rx-signature-editor')).toHaveAttribute('open','');expect(await dose.evaluate(n=>n.selectionStart)).toBe(2);
+});
+test('verified regimens are optional and use separate product routes before explicit confirmation',async({page})=>{
+ await compose(page);const requests=[];
+ const oral={...QA_DRUG,id:'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee',atc:'N02BE01'};
+ const topical={key:'qa-topical',id:'bbbbbbbb-bbbb-4ccc-8ddd-eeeeeeeeeeee',substance:'QA topical',tradeName:'QA topical',strength:'1%',form:'Cream',atc:'D01AA01'};
+ await page.route('**/api/prescription-dosage-context**',route=>{const url=new URL(route.request().url());requests.push([url.searchParams.get('id'),url.searchParams.get('route')]);const drug=url.searchParams.get('id')===topical.id?topical:oral;return route.fulfill({json:{ok:true,adult:[{regimenId:'qa-'+drug.key,substance:drug.substance,atc:drug.atc,form:drug.form,referenceStrength:drug.strength,population:'Të rritur',route:url.searchParams.get('route'),status:'VERIFIKUAR',indication:'Synthetic QA',frequency:'QA frequency',duration:'QA duration',fixedDoseMg:100,sourceUrl:'https://example.test/source'}],pediatric:[]}});});
+ await chooseProduct(page,oral,'paracetamol');await expect(page.locator('[data-review-regimen]')).toHaveCount(1);await expect(page.locator('#rxDosageChooser')).toBeHidden();await expect(page.locator('[data-order-field="doseInstruction"]')).toHaveValue('');
+ await page.locator('[data-review-regimen]').click();await page.keyboard.press('Escape');await expect(page.locator('.rx-order-card')).toHaveCount(1);await expect(page.locator('[data-order-field="doseInstruction"]')).toHaveValue('');
+ await chooseProduct(page,topical,'topical');await expect(page.locator('[data-review-regimen]')).toHaveCount(2);expect(requests).toContainEqual([oral.id,'PO']);expect(requests).toContainEqual([topical.id,'TOP']);
+ await page.locator('[data-order-key="qa-topical"] [data-review-regimen]').click();await page.locator('#rxDosageApply').click();await expect(page.locator('.rx-order-card')).toHaveCount(2);await expect(page.locator('[data-order-key="qa-topical"] [data-order-field="doseInstruction"]')).toHaveValue('100 mg');await expect(page.locator('[data-order-key="qa-topical"] [data-order-field="route"]')).toHaveValue('TOP');await expect(page.locator('#rxSave')).toBeDisabled();
+});
+
+test('authoritative registry route replaces a broad search fallback without losing entered fields',async({page})=>{
+ await compose(page);const drug={...QA_DRUG,id:'cccccccc-bbbb-4ccc-8ddd-eeeeeeeeeeee',key:'qa-detail',form:'Injection',route:'',allowedRoutes:['IV','IM','SC','ID']};
+ await page.route('**/api/drug-search?**',route=>new URL(route.request().url()).searchParams.get('view')==='registry-detail'?route.fulfill({json:{row:{...drug,sourceFields:[{label:'Rrugët e lejuara',value:'IM'}]}}}):route.fulfill({json:{results:[drug]}}));
+ await picker(page);await page.locator('#rxDrugSearch').fill('detail');await page.locator('[data-drug-result]').click();const select=page.locator('[data-order-field="route"]');await expect(select).toHaveValue('IM');await expect(page.locator('.rx-order-route')).toBeHidden();expect(await select.locator('option').evaluateAll(nodes=>nodes.map(n=>n.value))).toEqual(['','IM']);
+});
+test('changing pediatric weight invalidates an applied calculation and reloads the exact product context',async({page})=>{
+ await compose(page);await page.locator('#rxPediatricToggle').click();await page.locator('#rxPatientAge').fill('4');await page.locator('#rxPatientWeight').fill('18');
+ const drug={...QA_DRUG,id:'dddddddd-bbbb-4ccc-8ddd-eeeeeeeeeeee',atc:'N02BE01'};const weights=[];
+ await page.route('**/api/prescription-dosage-context**',route=>{weights.push(new URL(route.request().url()).searchParams.get('weightKg'));return route.fulfill({json:{ok:true,adult:[],pediatric:[{regimenId:'qa-child',substance:drug.substance,atc:drug.atc,form:drug.form,referenceStrength:drug.strength,population:'Fëmijë',route:'PO',status:'VERIFIKUAR',indication:'Synthetic QA only',frequency:'Synthetic QA frequency',duration:'Synthetic QA duration',fixedDoseMg:100}]}});});
+ await chooseProduct(page,drug,'para');await page.locator('[data-review-regimen]').click();await page.locator('#rxDosageApply').click();await expect(page.locator('[data-order-field="doseInstruction"]')).toHaveValue('100 mg');
+ await page.locator('#rxPatientWeight').fill('20');await expect(page.locator('[data-order-field="doseInstruction"]')).toHaveValue('');await expect(page.locator('[data-order-field="frequency"]')).toHaveValue('');await expect(page.locator('#rxComposer')).not.toHaveValue(/100 mg/);await expect(page.locator('#rxSave')).toBeDisabled();await expect.poll(()=>weights.includes('20')).toBe(true);await expect(page.locator('[data-order-field="route"]')).toHaveValue('PO');
+});
+test('a late regimen response cannot override a changed route and a route edit clears the applied regimen',async({page})=>{
+ await compose(page);const drug={key:'qa-multi',id:'eeeeeeee-bbbb-4ccc-8ddd-eeeeeeeeeeee',substance:'Synthetic QA',tradeName:'Synthetic QA',atc:'J01AA01',strength:'100 mg',form:'Injection',allowedRoutes:['IV','IM']};let release,started=false,finished=false;const gate=new Promise(resolve=>{release=resolve;});
+ await page.route('**/api/prescription-dosage-context**',async request=>{const route=new URL(request.request().url()).searchParams.get('route');if(route==='IV'){started=true;await gate;}await request.fulfill({json:{ok:true,adult:[{regimenId:'qa-'+route,substance:drug.substance,atc:drug.atc,form:drug.form,referenceStrength:drug.strength,population:'Të rritur',route,status:'VERIFIKUAR',indication:'Synthetic QA '+route,frequency:'QA '+route,duration:'QA',fixedDoseMg:100}],pediatric:[]}});if(route==='IV')finished=true;});
+ await chooseProduct(page,drug,'multi');const select=page.locator('[data-order-field="route"]');await select.selectOption('IV');await expect.poll(()=>started).toBe(true);await select.selectOption('IM');await expect(page.locator('[data-review-regimen]')).toBeVisible();release();await expect.poll(()=>finished).toBe(true);
+ await page.locator('[data-review-regimen]').click();await expect(page.locator('#rxDosageChoice')).toHaveValue('qa-IM');await page.locator('#rxDosageApply').click();await expect(page.locator('[data-order-field="frequency"]')).toHaveValue('QA IM');await select.selectOption('IV');await expect(page.locator('[data-order-field="doseInstruction"]')).toHaveValue('');await expect(page.locator('[data-order-field="frequency"]')).toHaveValue('');await expect(page.locator('#rxComposer')).not.toHaveValue(/QA IM/);
+});
+
+test('a pediatric medicine adds immediately but finalization requires valid patient measurements',async({page})=>{
+ await compose(page);await page.locator('#rxPediatricToggle').click();await chooseProduct(page,QA_DRUG,'paracetamol');await expect(page.locator('.rx-order-card')).toHaveCount(1);await expect(page.locator('[data-order-field="route"]')).toHaveValue('PO');
+ for(const [field,value] of [['doseInstruction','Synthetic QA dose'],['frequency','Synthetic QA frequency'],['dispense','Synthetic QA quantity']])await page.locator('[data-order-field="'+field+'"]').fill(value);
+ await expect(page.locator('#rxNextHint')).toContainText('mosha');await expect(page.locator('#rxClinicalReview input')).toBeDisabled();await page.locator('#rxNextAction').click();await expect(page.locator('#rxPatientAge')).toBeFocused();
+ await page.locator('#rxPatientAge').fill('4');await page.locator('#rxPatientWeight').fill('0.1');await expect(page.locator('#rxNextHint')).toContainText('pesha');await expect(page.locator('#rxSave')).toBeDisabled();await page.locator('#rxNextAction').click();await expect(page.locator('#rxPatientWeight')).toBeFocused();
+ await page.locator('#rxPatientWeight').fill('18');await expect(page.locator('#rxClinicalReview input')).toBeEnabled();await page.locator('#rxClinicalReview input').check();await expect(page.locator('#rxSave')).toBeEnabled();
 });

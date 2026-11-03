@@ -17,6 +17,18 @@ assert.equal(Administration.inferAdministration({ form:'Vaginal capsule' }).rout
 assert.deepEqual(Administration.inferAdministration({ form:'Tablet', allowedRoutes:['PR'] }).routes, ['PR']);
 assert.equal(Administration.inferAdministration({ form:'Injection', administrationCategory:'PARENTERAL' }).ambiguous, true);
 
+// A route is inferred only for the exact pharmaceutical form; never from substance alone.
+for (const [form,route] of [['Tab.','PO'],['Caps.','PO'],['Sir.','PO'],['Supp.','PR'],['Ung.','TOP'],['Shurup','PO'],['Pika për sy','OPH'],['Pika për vesh','OTIC']]) {
+  assert.equal(Administration.inferAdministration({form}).route,route);
+}
+const bromhexine={tradeName:'Bromhexine Sopharma',strength:'2 mg/ml',form:'Solution for injection'};
+assert.deepEqual(Administration.inferAdministration(bromhexine).routes,['IM','IV']);
+assert.equal(Administration.inferAdministration(bromhexine).route,'');
+assert.equal(Administration.inferAdministration({...bromhexine,form:'Syrup'}).route,'PO');
+assert.deepEqual(Administration.inferAdministration({...bromhexine,allowedRoutes:['IM']}).routes,['IM']);
+assert.deepEqual(Administration.inferAdministration({...bromhexine,tradeName:'Other brand'}).routes,[]);
+assert.deepEqual(Administration.inferAdministration({...bromhexine,strength:'4 mg/ml'}).routes,[]);
+
 const defaultContext = Context.normalizeContext({});
 assert.equal(defaultContext.administrationCategory, '');
 assert.equal(defaultContext.route, '');
