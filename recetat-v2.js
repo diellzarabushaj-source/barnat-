@@ -5952,6 +5952,13 @@
 
   function orderIssues(drug) {
     const issues = [];
+    const patientApi = window.MedIndexPrescriptionContext, patientContext = patientApi?.getContext?.() || {};
+    if (patientContext.pediatric) {
+      const validation = patientApi?.validateContext?.(patientContext);
+      const fields = [...(validation?.missing || []), ...(validation?.invalid || [])];
+      if (fields.includes('age')) issues.push('mosha');
+      if (fields.includes('weight')) issues.push('pesha');
+    }
     if (!text(drug.route) || (drug.allowedRoutes?.length && !drug.allowedRoutes.includes(drug.route))) issues.push('rruga');
     if (!populationCompatibilityForDrug(drug,window.MedIndexPrescriptionContext?.getContext?.()||{}).valid) issues.push('grupmosha');
     if (!text(drug.doseInstruction)) issues.push('doza');
@@ -6357,7 +6364,7 @@
     if (target === 'order' && first) {
       expandOrder(first.key);
       const card = document.querySelector('[data-order-key="'+CSS.escape(first.key)+'"]');
-      node = [...(card?.querySelectorAll('[data-order-field]') || [])].find(input => input.required && !text(input.value)) || card?.querySelector('[data-order-field]');
+      node = first.issues.includes('mosha') ? $('#rxPatientAge') : first.issues.includes('pesha') ? $('#rxPatientWeight') : [...(card?.querySelectorAll('[data-order-field]') || [])].find(input => input.required && !text(input.value)) || card?.querySelector('[data-order-field]');
     } else node = $(target === 'ai' ? '#rxGeneratedReview input' : target === 'dose' ? '#rxDosageReview input' : '#rxClinicalReview input');
     if (node) { node.closest('details')?.setAttribute('open',''); node.scrollIntoView({block:'center',behavior:window.matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth'}); node.focus({preventScroll:true}); }
   }

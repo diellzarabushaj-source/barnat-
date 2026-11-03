@@ -224,3 +224,11 @@ test('a late regimen response cannot override a changed route and a route edit c
  await chooseProduct(page,drug,'multi');const select=page.locator('[data-order-field="route"]');await select.selectOption('IV');await expect.poll(()=>started).toBe(true);await select.selectOption('IM');await expect(page.locator('[data-review-regimen]')).toBeVisible();release();await expect.poll(()=>finished).toBe(true);
  await page.locator('[data-review-regimen]').click();await expect(page.locator('#rxDosageChoice')).toHaveValue('qa-IM');await page.locator('#rxDosageApply').click();await expect(page.locator('[data-order-field="frequency"]')).toHaveValue('QA IM');await select.selectOption('IV');await expect(page.locator('[data-order-field="doseInstruction"]')).toHaveValue('');await expect(page.locator('[data-order-field="frequency"]')).toHaveValue('');await expect(page.locator('#rxComposer')).not.toHaveValue(/QA IM/);
 });
+
+test('a pediatric medicine adds immediately but finalization requires valid patient measurements',async({page})=>{
+ await compose(page);await page.locator('#rxPediatricToggle').click();await chooseProduct(page,QA_DRUG,'paracetamol');await expect(page.locator('.rx-order-card')).toHaveCount(1);await expect(page.locator('[data-order-field="route"]')).toHaveValue('PO');
+ for(const [field,value] of [['doseInstruction','Synthetic QA dose'],['frequency','Synthetic QA frequency'],['dispense','Synthetic QA quantity']])await page.locator('[data-order-field="'+field+'"]').fill(value);
+ await expect(page.locator('#rxNextHint')).toContainText('mosha');await expect(page.locator('#rxClinicalReview input')).toBeDisabled();await page.locator('#rxNextAction').click();await expect(page.locator('#rxPatientAge')).toBeFocused();
+ await page.locator('#rxPatientAge').fill('4');await page.locator('#rxPatientWeight').fill('0.1');await expect(page.locator('#rxNextHint')).toContainText('pesha');await expect(page.locator('#rxSave')).toBeDisabled();await page.locator('#rxNextAction').click();await expect(page.locator('#rxPatientWeight')).toBeFocused();
+ await page.locator('#rxPatientWeight').fill('18');await expect(page.locator('#rxClinicalReview input')).toBeEnabled();await page.locator('#rxClinicalReview input').check();await expect(page.locator('#rxSave')).toBeEnabled();
+});

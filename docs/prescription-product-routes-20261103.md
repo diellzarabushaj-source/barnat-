@@ -1,7 +1,8 @@
 # Direct prescription flow — runtime v42
 
 The composer starts with one inline product search. Choosing a product inserts
-its medicine card immediately. Administration categories and the global route
+its medicine card immediately. Oral/rectal/dermal pharmacy abbreviations such
+as Tab., Caps., Sir., Supp. and Ung. also resolve to their specific route. Administration categories and the global route
 preflight no longer occupy the screen or block adding a medicine. Patient age
 and weight appear only for children. Each medicine keeps its own route, dose,
 frequency, duration and dispensing quantity; other medicine cards collapse.
@@ -22,7 +23,8 @@ and changes no source prescription or clinical publication status.
 
 Verified regimens are an optional action inside the medicine card. Adding a
 medicine does not open a dosage modal. A regimen still requires the clinician's
-explicit confirmation, and final review gates remain in force. Targeted queries
+explicit confirmation, and final review gates remain in force. Pediatric finalization requires valid
+age and weight even when the clinician enters the dose manually. Targeted queries
 include that medicine's route and the current patient's age/weight. A changed
 route or patient measurements invalidates an applied regimen and its previous
 calculated instructions. Late responses cannot revive a prior route's offer.
