@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v41">
+<html lang="sq" class="drx-unified-sidebar" data-drx-app="recetat-v2" data-ui-revision="recetat-v42">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -10,12 +10,12 @@
   <title>DRx | Recetat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/recetat-v2.css?v=41-simple-builder-20261103">
+  <link rel="stylesheet" href="/recetat-v2.css?v=42-direct-prescription-20261103">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
   <script src="/drx-modal-focus.js?v=p1-20261008" defer></script>
-<script src="/recetat-v2.js?v=41-simple-builder-20261103" defer></script>
+<script src="/recetat-v2.js?v=42-direct-prescription-20261103" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#rxWorkspace">Kalo te krijimi i recetës</a>
@@ -213,25 +213,24 @@
         </div>
 
         <div class="rx-tabpanel" id="rxTabCompose" role="tabpanel" aria-labelledby="rxTabBtnCompose" tabindex="0" hidden>
-        <header class="rx-builder-heading"><div><span class="rx-builder-eyebrow">Hapësira e punës</span><h2>Receta jote, hap pas hapi.</h2><p>Shto barnat, plotëso dozimin dhe kontrollo recetën.</p></div><span class="rx-builder-count" id="rxBuilderCount">Draft i ri</span></header>
-        <nav class="rx-builder-nav" aria-label="Hapat e recetës"><button type="button" data-builder-section="diagnosis"><span>1</span> Diagnoza</button><button type="button" data-builder-section="drugs"><span>2</span> Barnat</button><button type="button" data-builder-section="review"><span>3</span> Kontrollo</button></nav>
         <section class="rx-dashboard" id="rxComposerWorkspace" aria-label="Krijuesi i recetës">
           <article class="rx-compose-card">
             <header class="rx-card-head">
-              <div><span class="rx-step">01</span><h2>Diagnoza</h2></div>
+              <div><span class="rx-step">01</span><h2>Recetë e re</h2></div>
               <span class="rx-draft-label" id="rxDraftLabel">Draft i ri</span>
               <p id="rxDraftPersistence" role="status" aria-live="polite"></p>
             </header>
 
-            <p class="rx-section-guidance">Shkruaj diagnozën, pastaj shto barnat.</p>
+
             <div class="rx-context-row">
               <label class="rx-diagnosis">
-                <span>Diagnoza / indikacioni</span>
+                <span>Diagnoza / indikacioni <small>opsionale gjatë ndërtimit</small></span>
                 <input id="rxDiagnosis" type="text" autocomplete="off" placeholder="p.sh. J18.9 — Pneumoni">
               </label>
             </div>
+            <div id="rxClinicalContextHost"></div>
             <details class="rx-context-disclosure" id="rxContextPanel">
-              <summary><span>Dosja, rruga dhe pediatria</span><small id="rxContextBrief">Sipas nevojës</small></summary>
+              <summary><span>Dosja e recetës</span><small id="rxContextBrief">Sipas nevojës</small></summary>
               <div class="rx-context-disclosure-body">
               <label class="rx-chapter-field">
                 <span>Dosja klinike <small id="rxChapterSuggestion">sugjerohet automatikisht</small></span>
@@ -239,16 +238,21 @@
                   <option value="te-tjera">Të tjera</option>
                 </select>
               </label>
-                <div id="rxClinicalContextHost"></div>
+
               </div>
             </details>
 
             <div class="rx-composer-mode" id="rxComposerMode" hidden><p id="rxComposerModeCopy"></p><button type="button" class="rx-secondary" id="rxUseStructured">Përdor fushat e barnave</button><button type="button" class="rx-text-button" id="rxRestoreManual" hidden>Rikthe tekstin e mëparshëm</button></div>
+            <div class="rx-popover rx-drug-popover rx-inline-search" id="rxDrugPopover" role="search" aria-label="Kërko barin">
+              <label><span>Kërko dhe shto barna</span><input id="rxDrugSearch" type="search" autocomplete="off" placeholder="Shkruaj emrin ose substancën…" aria-controls="rxDrugResults" aria-label="Kërko barin"></label>
+              <div class="rx-drug-results" id="rxDrugResults" hidden></div>
+            </div>
+
             <section class="rx-order-builder" id="rxOrderBuilder" aria-labelledby="rxOrderBuilderTitle">
               <header class="rx-order-builder-head">
                 <div>
-                  <h3 id="rxOrderBuilderTitle"><span class="rx-step">02</span> Barnat dhe udhëzimet</h3>
-                  <p>Zgjidh barin dhe plotëso fushat e tij.</p>
+                  <h3 id="rxOrderBuilderTitle">Barnat dhe udhëzimet</h3>
+                  <p class="sr-only">Zgjidh barin dhe plotëso fushat e tij.</p>
                 </div>
                 <button class="rx-secondary rx-add-drug" id="rxAddDrugButton" type="button" aria-controls="rxDrugPopover" aria-expanded="false">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -256,7 +260,7 @@
                 </button>
               </header>
               <div class="rx-selected rx-order-list" id="rxSelectedDrugs" aria-live="polite" aria-label="Barnat e zgjedhura">
-                <div class="rx-order-empty"><strong>Shto barin e parë</strong><span>Kërko emrin ose substancën, pastaj plotëso dozën dhe udhëzimin.</span></div>
+                <div class="rx-order-empty"><span>Kërko barin më lart për të filluar.</span></div>
               </div>
             </section>
 
@@ -289,15 +293,6 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
               </div>
             </div>
 
-            <div class="rx-picker-overlay" id="rxDrugPickerBackdrop" hidden>
-            <div class="rx-popover rx-drug-popover" id="rxDrugPopover" role="dialog" aria-modal="true" aria-labelledby="rxDrugPickerTitle" hidden>
-              <header class="rx-picker-head"><div><span>Regjistri i barnave</span><h3 id="rxDrugPickerTitle">Shto një bar</h3></div><button type="button" id="rxDrugPickerClose" class="rx-picker-close" aria-label="Mbyll kërkimin">×</button></header>
-              <label><span>Kërko barin, substancën, ATC, PDID ose nr. e regjistrit</span><input id="rxDrugSearch" type="search" autocomplete="off" placeholder="Emri ose substanca, p.sh. paracetamol…"></label>
-              <div class="rx-drug-results" id="rxDrugResults"><p>Shkruaj së paku 2 shkronja.</p></div>
-            </div>
-
-            </div>
-
             <div class="rx-compose-actions">
               <button class="rx-secondary" id="rxFormatLocal" type="button">Përditëso parapamjen</button>
               <details class="rx-writing-tools"><summary>Ndihmë për shkrimin</summary>
@@ -311,11 +306,11 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
 
           <article class="rx-preview-card" id="rxReviewPanel" tabindex="-1" aria-label="Kontrollo recetën përfundimtare">
             <header class="rx-card-head">
-              <div><span class="rx-step">03</span><h2>Kontrollo dhe ruaj</h2></div>
+              <div><h2>Receta</h2></div><span class="rx-builder-count" id="rxBuilderCount">Draft</span>
               <span class="rx-state is-draft" id="rxState">Draft</span>
             </header>
 
-            <p class="rx-section-guidance">Kontrollo pamjen përfundimtare para ruajtjes, kopjimit ose printimit.</p>
+
             <div class="rx-next-step" id="rxNextStep" role="status" aria-live="polite"><div><strong id="rxNextTitle">Hapi i radhës</strong><p id="rxNextHint">Shto barin e parë ose shkruaj recetën.</p></div><button type="button" class="rx-text-button" id="rxNextAction">Shto bar</button></div>
             <div class="rx-preview" id="rxPreview" aria-live="polite">
               <div class="rx-preview-empty">

@@ -34,7 +34,7 @@ assert.match(js, /formatVersion:4/);
 assert.match(js, /clinicalReview:state\.clinicalReviewConfirmed/);
 assert.match(js, /reviewedAt:state\.clinicalReviewConfirmed \? now : ''/);
 assert.match(js, /state\.clinicalReviewConfirmed/);
-assert.match(js, /openDosageChooser\(drug, \[decision\.regimen\], options\)/, 'A single exact regimen must still require explicit clinician confirmation');
+assert.match(js, /data-review-regimen/, 'A verified regimen must be offered explicitly before clinician confirmation');
 assert.doesNotMatch(js, /Skema e vetme me përputhje të saktë u auto-plotësua/);
 assert.match(js, /asnjë dozë nuk aplikohet pa konfirmimin tënd/i);
 assert.match(js, /Nuk aplikohet automatikisht; kontrolloje dhe konfirmoje vetëm nëse i përshtatet pacientit dhe indikacionit/);
@@ -45,22 +45,23 @@ assert.match(js, /if \(!text\(drug\.signatura\)\) issues\.push\('Signatura'\)/);
 assert.match(js, /const structuredClinical = state\.composerOrigin === 'structured' \? selectedDrug : null/);
 assert.match(js, /getContext\?\.\(\)/);
 assert.match(js, /#rxSelectedDrugs \.rx-order-card/);
-assert.match(js, /getElementById\('rxOrderBuilder'\)/);
+assert.match(js, /class="rx-patient-row"/);
+assert.doesNotMatch(html, /id="rxRouteSegments"/);
 assert.match(js, /function hydrateRegistryDrug\(/);
 assert.match(js, /view=registry-detail&id=/);
 assert.match(js, /Rrugët e lejuara/);
 assert.match(js, /function syncClinicalContextForDrug\(/);
-assert.match(js, /Rruga u zgjodh automatikisht/);
-assert.match(js, /pendingRouteDrug/);
+
+
 assert.match(js, /refreshForContext:refreshPayloadForContext/);
 assert.match(js, /loadForDrug/);
 assert.match(js, /setProductConstraint/);
 assert.match(js, /Auto nga bari/);
-assert.match(js, /Rruga zgjidhet nga bari/);
+
 assert.match(js, /populationCompatibilityForDrug/);
 assert.match(js, /adult-only/);
 assert.match(js, /pediatric-only/);
-assert.match(js, /Rruga u zgjodh automatikisht nga produkti/);
+
 assert.doesNotMatch(js, /fetch\('\/api\/dosage'\s*,/, 'Recetat V2 must not fetch the full dosage dataset on the normal path');
 assert.doesNotThrow(() => new Function(js));
 

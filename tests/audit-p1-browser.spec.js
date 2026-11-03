@@ -51,7 +51,9 @@ for (const width of [390,1440]) {
     const errors=[];page.on('pageerror',error => errors.push(error.message));
     await compose(page);
     const icons = await page.locator('#rxClinicalContext svg').evaluateAll(nodes => nodes.map(node => ({width:node.getBoundingClientRect().width,height:node.getBoundingClientRect().height,fill:getComputedStyle(node).fill})));
-    expect(icons.length).toBeGreaterThan(3);
+    await expect(page.locator('#rxPediatricToggle')).toBeVisible();
+    await expect(page.locator('#rxClinicalContext [data-context-category]')).toHaveCount(0);
+    expect((await page.locator('#rxClinicalContext').boundingBox()).height).toBeLessThan(80);
     expect(icons.every(icon => icon.width <= 24 && icon.height <= 24 && icon.fill === 'none')).toBe(true);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.screenshot({path:`../../outputs/p1-recetat-${width}.png`,fullPage:false});
@@ -182,6 +184,7 @@ test('Prescription regimen chooser owns keyboard focus without applying a dose',
   await page.locator('#rxAddDrugButton').click();
   await page.locator('#rxDrugSearch').fill('amox');
   await page.locator('#rxDrugResults [data-drug-result]').filter({hasText:'AMOXICILLIN TEST'}).click();
+  await page.locator('[data-review-regimen]').click();
   await expect(page.locator('#rxDosageChooser')).toBeVisible();
   for (let i=0;i<12;i++) {
     await page.keyboard.press('Tab');
@@ -189,8 +192,9 @@ test('Prescription regimen chooser owns keyboard focus without applying a dose',
   }
   await page.keyboard.press('Escape');
   await expect(page.locator('#rxDosageChooser')).toBeHidden();
-  await expect(page.locator('.rx-order-card')).toHaveCount(0);
-  await expect(page.locator('#rxAddDrugButton')).toBeFocused();
+  await expect(page.locator('.rx-order-card')).toHaveCount(1);
+  await expect(page.locator('[data-order-field="doseInstruction"]')).toHaveValue('');
+  await expect(page.locator('[data-review-regimen]')).toBeFocused();
 });
 
 // P2 regressions: first-visit phone layout, reversible filters and note recovery.
