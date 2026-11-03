@@ -155,7 +155,8 @@ test('a new query clears old diagnoses before a failed network response',async({
  await setup(page);await page.locator('#icdSearch').fill('I10');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');
  await page.route('**/api/icd?**',async route=>new URL(route.request().url()).searchParams.get('view')==='suggest'?route.abort('failed'):route.fallback());
  await page.locator('#icdSearch').fill('zzzzzzzzzz');await expect(page.locator('.icd-suggestion-row')).toHaveCount(0);
- await expect(page.locator('#icdStatusText')).toContainText('fetch');
+ await expect(page.locator('#icdStatusText')).toHaveClass(/is-error/);
+ await expect(page.locator('#icdStatusText')).not.toBeEmpty();
  await expect(page.locator('.icd-suggestion-row[data-code="I10"]')).toHaveCount(0);
 });
 

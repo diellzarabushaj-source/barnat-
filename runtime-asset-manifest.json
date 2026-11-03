@@ -1,9 +1,9 @@
 {
   "index.html": {
-    "registry-v2.css": "20261014-registry-v2-quality-20261010",
-    "registry-v2.js": "20261014-registry-v2-quality-20261010",
-    "registry-column-filter.css": "registry-filter-quality-20261010",
-    "registry-column-filter.js": "registry-filter-quality-20261010",
+    "registry-v2.css": "registry-smooth-20261103",
+    "registry-v2.js": "registry-smooth-20261103",
+    "registry-column-filter.css": "registry-smooth-20261103",
+    "registry-column-filter.js": "registry-smooth-20261103",
     "drx-modal-focus.js": "p1-20261008",
     "drx-runtime-telemetry.js": "20261009-rum-v1",
     "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012"

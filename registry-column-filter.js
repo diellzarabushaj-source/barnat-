@@ -4,7 +4,7 @@
   const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const icon = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 5h16l-6 7v6l-4 2v-8z"/></svg>';
   window.DrxColumnFilter = Object.freeze({ create({columns, getFilters, getSort, getFacetUrl, fetchJson, onApply, onSort, onOpen}) {
-    let active = '', anchor = null, draft = {}, values = [], offset = 0, hasMore = false, requestId = 0, controller = null, timer = 0, search = '', releaseModal = null;
+    let active = '', anchor = null, draft = {}, values = [], offset = 0, hasMore = false, requestId = 0, controller = null, timer = 0, search = '', releaseModal = null, valuesBusy = false;
     const panel = document.createElement('section');
     panel.id = 'registryColumnFilterPanel'; panel.className = 'registry-column-filter'; panel.hidden = true; panel.inert = true;
     panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-modal','true'); panel.setAttribute('aria-labelledby','columnFilterTitle');
@@ -46,11 +46,19 @@
       all.checked = draft.mode !== 'include' && !explicit;
       all.indeterminate = explicit > 0;
       panel.querySelector('[data-only-shown]').hidden = !search;
+      panel.querySelector('[data-only-shown]').disabled = valuesBusy || !values.length;
+      all.disabled = valuesBusy;
       panel.querySelector('[data-apply]').disabled = draft.mode === 'include' && !explicit;
     }
     function renderValues() {
       list.innerHTML = values.map((item, i) => `<label class="column-filter-value"><input type="checkbox" data-value-index="${i}" ${chosen(item.value) ? 'checked' : ''}><span title="${escape(item.label)}">${escape(item.label)}</span><small>${item.count.toLocaleString('sq')}</small></label>`).join('') || '<p class="column-values-empty">Asnjë vlerë nuk u gjet.</p>';
       panel.querySelector('[data-more]').hidden = !hasMore;
+      syncAll();
+    }
+    function setValuesBusy(busy) {
+      valuesBusy = busy;
+      list.setAttribute('aria-busy', String(busy));
+      list.querySelectorAll('input').forEach(input => { input.disabled = busy; });
       syncAll();
     }
     function syncCondition() {
@@ -68,23 +76,26 @@
       panel.style.top = `${window.innerWidth <= 760 ? 12 : Math.max(12, Math.min(rect.bottom + 8, window.innerHeight - Math.min(panel.offsetHeight, height) - 12))}px`;
     }
     async function loadValues(more = false) {
-      controller?.abort(); controller = new AbortController(); const id = ++requestId;
+      controller?.abort(); const currentController = new AbortController(); controller = currentController; const id = ++requestId;
       const column = active;
       feedback.textContent = 'Duke ngarkuar vlerat e regjistrit…';
       panel.querySelector('[data-more]').disabled = true;
       if (!more) { values = []; offset = 0; hasMore = false; list.innerHTML = '<p class="column-values-empty">Duke ngarkuar…</p>'; }
+      list.querySelectorAll('[data-facet-retry]').forEach(button => button.remove());
+      setValuesBusy(true);
       try {
-        const {payload} = await fetchJson(getFacetUrl(column, search, more ? offset : 0), {signal:controller.signal}, 20000);
+        const {payload} = await fetchJson(getFacetUrl(column, search, more ? offset : 0), {signal:currentController.signal}, 20000);
         if (id !== requestId || panel.hidden || column !== active) return;
+        if (!Array.isArray(payload.values) || !Number.isInteger(payload.total) || payload.total < 0) throw new Error('Vlerat e filtrit nuk u ngarkuan plotësisht. Provo përsëri.');
         values = more ? [...values,...payload.values] : payload.values;
         offset = values.length; hasMore = payload.hasMore === true;
         renderValues(); feedback.textContent = `${payload.total.toLocaleString('sq')} vlera të ndryshme · në të gjithë regjistrin`;
       } catch (error) {
-        if (id !== requestId || panel.hidden || error.name === 'AbortError') return;
+        if (id !== requestId || panel.hidden || currentController.signal.aborted) return;
         if (!more) list.innerHTML = '<p class="column-values-empty">Vlerat nuk u ngarkuan.</p>';
         feedback.textContent = error.message || 'Provo përsëri.';
-        const retry = document.createElement('button'); retry.type = 'button'; retry.textContent = 'Provo përsëri'; retry.addEventListener('click', () => void loadValues(more)); list.append(retry);
-      } finally { if (id === requestId) { panel.querySelector('[data-more]').disabled = false; position(); } }
+        const retry = document.createElement('button'); retry.type = 'button'; retry.dataset.facetRetry = ''; retry.textContent = 'Provo përsëri'; retry.addEventListener('click', () => void loadValues(more)); list.append(retry);
+      } finally { if (id === requestId) { controller = null; setValuesBusy(false); panel.querySelector('[data-more]').disabled = false; position(); } }
     }
     function close(focus = true) {
       if (panel.hidden) return;
@@ -121,16 +132,20 @@
     toolbar.querySelector('button').addEventListener('click', event => open(toolbar.querySelector('select').value,event.currentTarget));
     chips.addEventListener('click', event => { const button = event.target.closest('[data-remove-column]'); if (button) onApply(button.dataset.removeColumn,null); });
     backdrop.addEventListener('click', () => close());
-    searchInput.addEventListener('input', () => { search = model.clean(searchInput.value); clearTimeout(timer); ++requestId; controller?.abort(); timer = setTimeout(() => void loadValues(),180); });
+    searchInput.addEventListener('input', () => { search = model.clean(searchInput.value); clearTimeout(timer); ++requestId; controller?.abort(); setValuesBusy(true); timer = setTimeout(() => void loadValues(),180); });
     select.addEventListener('change',syncCondition);
     all.addEventListener('change', () => { draft.mode = all.checked ? 'exclude' : 'include'; draft.values = []; renderValues(); });
-    list.addEventListener('change', event => { const index = event.target.dataset.valueIndex; if (index === undefined) return; choose(values[Number(index)].value,event.target.checked); feedback.textContent = ''; syncAll(); });
+    list.addEventListener('change', event => { const index = event.target.dataset.valueIndex; if (valuesBusy || index === undefined || !values[Number(index)]) return; choose(values[Number(index)].value,event.target.checked); feedback.textContent = ''; syncAll(); });
     panel.addEventListener('click', event => {
       const button = event.target.closest('button'); if (!button) return;
       if (button.hasAttribute('data-close') || button.hasAttribute('data-cancel')) return close();
       if (button.hasAttribute('data-clear')) { onApply(active,null); return close(); }
       if (button.hasAttribute('data-more')) return void loadValues(true);
-      if (button.hasAttribute('data-only-shown')) { draft.mode = 'include'; draft.values = values.map(item => item.value); renderValues(); feedback.textContent = hasMore ? 'U zgjodhën vlerat e ngarkuara. Shfaq më shumë për vlera të tjera.' : ''; return; }
+      if (button.hasAttribute('data-only-shown')) {
+        if (valuesBusy) return;
+        if (values.length > 100) { feedback.textContent = 'Për mbi 100 vlera, përdor kushtin e kolonës ose ngushto kërkimin.'; return; }
+        draft.mode = 'include'; draft.values = values.map(item => item.value); renderValues(); feedback.textContent = hasMore ? 'U zgjodhën vlerat e ngarkuara. Shfaq më shumë për vlera të tjera.' : ''; return;
+      }
       if (button.dataset.direction) { onSort(model.sortKey(active),button.dataset.direction); return close(); }
       if (button.hasAttribute('data-apply')) {
         const next = {...draft}; delete next.op; delete next.text; delete next.text2;
