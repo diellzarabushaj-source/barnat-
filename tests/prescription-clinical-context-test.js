@@ -18,7 +18,7 @@ assert.deepEqual(Administration.inferAdministration({ form:'Tablet', allowedRout
 assert.equal(Administration.inferAdministration({ form:'Injection', administrationCategory:'PARENTERAL' }).ambiguous, true);
 
 // A route is inferred only for the exact pharmaceutical form; never from substance alone.
-for (const [form,route] of [['Shurup','PO'],['Pika për sy','OPH'],['Pika për vesh','OTIC']]) {
+for (const [form,route] of [['Tab.','PO'],['Caps.','PO'],['Sir.','PO'],['Supp.','PR'],['Ung.','TOP'],['Shurup','PO'],['Pika për sy','OPH'],['Pika për vesh','OTIC']]) {
   assert.equal(Administration.inferAdministration({form}).route,route);
 }
 const bromhexine={tradeName:'Bromhexine Sopharma',strength:'2 mg/ml',form:'Solution for injection'};

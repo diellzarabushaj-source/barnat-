@@ -172,7 +172,7 @@ async function chooseProduct(page,drug,query='produkt'){
 test('product-first builder resolves each pharmaceutical form without a global route step',async({page},info)=>{
  await page.setViewportSize({width:1440,height:1000});await compose(page);
  await expect(page.locator('#rxDrugSearch')).toBeVisible();await expect(page.locator('#rxClinicalContext [data-context-category]')).toHaveCount(0);await expect(page.locator('#rxRouteSegments')).toHaveCount(0);await expect(page.locator('.rx-preview-card')).toBeHidden();
- for(const [key,form,route] of [['oral','Shurup','PO'],['eye','Pika për sy','OPH'],['patch','Transdermal patch','TD']]){
+ for(const [key,form,route] of [['oral','Tab.','PO'],['eye','Pika për sy','OPH'],['patch','Transdermal patch','TD']]){
   await chooseProduct(page,{key,substance:'QA '+key,tradeName:'QA '+key,strength:'QA',form},key+' QA');
   const card=page.locator('[data-order-key="'+key+'"]');await expect(card.locator('[data-order-field="route"]')).toHaveValue(route);await expect(card.locator('.rx-order-route')).toBeHidden();await expect(page.locator('#rxDosageChooser')).toBeHidden();
  }
