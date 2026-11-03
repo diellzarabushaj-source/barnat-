@@ -160,3 +160,10 @@ test('accepted AI wording stays identical in preview and saved text and expires 
  await page.locator('.rx-writing-tools > summary').click();await page.locator('#rxGenerate').click();await expect(page.locator('#rxGeneratedReview')).toBeVisible();await expect(page.locator('#rxPreview')).toContainText('Formulim sintetik QA.');await expect(page.locator('#rxComposer')).toHaveValue(/Formulim sintetik QA\./);await expect(page.locator('#rxSave')).toBeDisabled();
  await page.locator('[data-order-field="doseInstruction"]').fill('2 tableta');await expect(page.locator('#rxPreview')).toContainText('2 tableta');await expect(page.locator('#rxComposer')).not.toHaveValue(/Formulim sintetik QA\./);await expect(page.locator('#rxSave')).toBeDisabled();
 });
+
+test('medicine picker remains usable with a short viewport',async({page},info)=>{
+ await page.setViewportSize({width:568,height:320});await setup(page);await page.locator('#rxTabBtnCompose').click();await page.locator('#rxAddDrugButton').click();
+ const sizes=await page.evaluate(()=>{const p=document.querySelector('#rxDrugPopover').getBoundingClientRect(),r=document.querySelector('#rxDrugResults').getBoundingClientRect(),i=document.querySelector('#rxDrugSearch').getBoundingClientRect();return {panelBottom:p.bottom,resultsBottom:r.bottom,inputBottom:i.bottom,height:innerHeight};});
+ await expect(page.locator('#rxDrugPickerClose')).toBeVisible();expect(sizes.inputBottom).toBeLessThanOrEqual(sizes.height);expect(sizes.resultsBottom).toBeLessThanOrEqual(sizes.panelBottom+1);
+ await page.screenshot({path:info.outputPath('landscape-picker.png')});
+});

@@ -547,7 +547,7 @@ html[data-drx-app="recetat-v2"] .rx-source-guide .rx-source-item-body{line-heigh
 .rx-picker-overlay .rx-drug-popover>label>span{font-size:11px;font-weight:400;color:#777184}
 .rx-picker-overlay .rx-drug-popover input{min-height:48px;border:1px solid #c9bce9;border-radius:9px;background:#fdfcff;color:#332e48;font-size:15px}
 .rx-picker-overlay .rx-drug-popover input:focus{outline:3px solid #f1edfc;outline-offset:1px}
-.rx-picker-overlay .rx-drug-results{min-height:160px;max-height:none;overflow:auto;overscroll-behavior:contain;margin:0;padding:0 12px 12px;border-top:1px solid #eeebf4}
+.rx-picker-overlay .rx-drug-results{min-height:0;flex:1 1 auto;max-height:none;overflow:auto;overscroll-behavior:contain;margin:0;padding:0 12px 12px;border-top:1px solid #eeebf4}
 .rx-picker-overlay .rx-drug-result{width:100%;min-height:76px;margin:0;border:0;border-bottom:1px solid #efedf4;border-radius:0;background:#fff;padding:15px 12px;text-align:left}
 .rx-picker-overlay .rx-drug-result:hover,.rx-picker-overlay .rx-drug-result:focus-visible{background:#f7f4fe;outline:2px solid #d4c8ed;outline-offset:-2px}
 .rx-picker-overlay .rx-drug-result-main strong{font-size:13px;color:#383249}

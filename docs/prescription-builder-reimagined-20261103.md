@@ -2,7 +2,8 @@
 
 The builder now follows diagnosis → medicines → final review. A medicine picker
 provides one search surface with keyboard navigation, focus containment, Escape
-and an explicit close button. One medicine card stays expanded; the other cards
+and an explicit close button. Its result list also shrinks and scrolls within
+a short landscape viewport. One medicine card stays expanded; the other cards
 summarize their current dose, frequency, duration and dispensing quantity.
 Patient instructions are shown as readable text, with a separate explicit editor
 and an action to restore wording generated from the clinician-entered fields.
@@ -45,5 +46,5 @@ draft conflicts and Undo. Runtime-manifest and source-fidelity checks run with
 the complete active unit suite. Live authenticated production prescribing and
 live provider credentials are not claimed as locally verified.
 
-Local validation: all 229 active test files passed; 33 Chromium browser cases
+Local validation: all 229 active test files passed; 34 Chromium browser cases
 passed across the composer, A4 printing and prescription conflict suites.
