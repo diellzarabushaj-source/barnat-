@@ -71,3 +71,99 @@ for(const width of [320,390,760,1440]){
 test('empty library leads to the existing draft, preserving its text',async({page})=>{
  await setup(page);await page.locator('#rxTabBtnCompose').click();await page.locator('#rxFreeTextPanel > summary').click();await page.locator('#rxComposer').fill('QA physician draft');await page.locator('#rxTabBtnLibrary').click();await expect(page.locator('.rx-saved-empty')).toContainText('Recetat e tua ruhen këtu');await page.locator('[data-rx-show-compose]').click();await expect(page.locator('#rxTabCompose')).toBeVisible();await expect(page.locator('#rxComposer')).toHaveValue('QA physician draft');
 });
+
+const QA_DRUG={key:'qa-paracetamol',substance:'Paracetamol',tradeName:'QA product',strength:'500 mg',form:'Tablet',route:'PO',allowedRoutes:['PO']};
+const QA_COMPLETE={...QA_DRUG,doseInstruction:'1 tabletë',frequency:'çdo 12 orë',duration:'7 ditë',dispense:'1 kuti'};
+async function compose(page,selection=[]){await setup(page,[],selection);await page.locator('#rxTabBtnCompose').click();}
+async function picker(page){await page.locator('#rxAddDrugButton').click();await expect(page.locator('#rxDrugSearch')).toBeFocused();}
+async function answerSearch(page,drug=QA_DRUG){await page.route('**/api/drug-search?**',route=>route.fulfill({json:{ok:true,results:[drug]}}));}
+
+test('medicine picker traps focus, closes with Escape and returns to the trigger',async({page})=>{
+ await compose(page);await picker(page);await expect(page.locator('#rxDrugPopover')).toHaveAttribute('aria-modal','true');
+ await page.keyboard.press('Shift+Tab');await expect(page.locator('#rxDrugPickerClose')).toBeFocused();await page.keyboard.press('Escape');
+ await expect(page.locator('#rxDrugPickerBackdrop')).toBeHidden();await expect(page.locator('#rxAddDrugButton')).toBeFocused();await expect(page.locator('#rxAddDrugButton')).toHaveAttribute('aria-expanded','false');
+});
+
+test('typing immediately removes selectable results before the next search debounce',async({page})=>{
+ await compose(page);await answerSearch(page);await picker(page);await page.locator('#rxDrugSearch').fill('para');await expect(page.locator('[data-drug-result]')).toHaveCount(1);
+ await page.locator('#rxDrugSearch').fill('p');await page.locator('#rxDrugSearch').press('Enter');await expect(page.locator('[data-drug-result]')).toHaveCount(0);await expect(page.locator('.rx-order-card')).toHaveCount(0);
+ await expect(page.locator('#rxDrugResults')).toContainText('2 shkronja');
+});
+
+test('a slow previous response cannot overwrite a cached current search',async({page})=>{
+ await compose(page);let release,started=false,finished=false;const gate=new Promise(resolve=>{release=resolve;});
+ await page.route('**/api/drug-search?**',async route=>{const q=new URL(route.request().url()).searchParams.get('q');if(q==='slow'){started=true;await gate;await route.fulfill({json:{results:[{...QA_DRUG,substance:'Old QA'}]}}).catch(()=>{});finished=true;}else await route.fulfill({json:{results:[QA_DRUG]}});});
+ await picker(page);await page.locator('#rxDrugSearch').fill('para');await expect(page.locator('[data-drug-result]')).toHaveCount(1);
+ await page.locator('#rxDrugSearch').fill('slow');await expect.poll(()=>started).toBe(true);
+ await page.locator('#rxDrugSearch').fill('para');await expect(page.locator('[data-drug-result]')).toContainText('Paracetamol');release();await expect.poll(()=>finished).toBe(true);await expect(page.locator('#rxDrugResults')).not.toContainText('Old QA');
+});
+
+test('malformed search responses expose retry instead of pretending no medicine exists',async({page})=>{
+ await compose(page);let calls=0;await page.route('**/api/drug-search?**',route=>++calls===1?route.fulfill({status:200,contentType:'text/html',body:'<html>proxy error</html>'}):route.fulfill({json:{results:[QA_DRUG]}}));
+ await picker(page);await page.locator('#rxDrugSearch').fill('para');await expect(page.locator('[data-search-retry]')).toBeVisible();await page.locator('[data-search-retry]').click();await expect(page.locator('[data-drug-result]')).toHaveCount(1);
+});
+
+test('a repeated medicine choice preserves the existing clinician-entered dose',async({page})=>{
+ await compose(page,[QA_COMPLETE]);await answerSearch(page);await picker(page);await page.locator('#rxDrugSearch').fill('para');await page.locator('[data-drug-result]').click();
+ await expect(page.locator('.rx-order-card')).toHaveCount(1);await expect(page.locator('[data-order-field="doseInstruction"]')).toHaveValue('1 tabletë');await expect(page.locator('#rxStatus')).toContainText('tashmë');
+});
+
+test('starting a new prescription rejects a late medicine-detail response',async({page})=>{
+ await compose(page);let release,started=false,finished=false;const gate=new Promise(resolve=>{release=resolve;});
+ await page.route('**/api/drug-search?**',async route=>{if(new URL(route.request().url()).searchParams.get('view')==='registry-detail'){started=true;await gate;await route.fulfill({json:{row:{...QA_DRUG,id:'late'}}}).catch(()=>{});finished=true;}else await route.fulfill({json:{results:[{...QA_DRUG,id:'late'}]}});});
+ await picker(page);await page.locator('#rxDrugSearch').fill('para');await page.locator('[data-drug-result]').click();await expect.poll(()=>started).toBe(true);await page.locator('#rxNew').click();release();await expect.poll(()=>finished).toBe(true);await expect(page.locator('.rx-order-card')).toHaveCount(0);await expect(page.locator('#rxComposer')).toHaveValue('');
+});
+
+test('automatic patient instructions clear with the dose and manual overrides can be reset',async({page})=>{
+ await compose(page,[QA_COMPLETE]);const card=page.locator('.rx-order-card');await expect(card.locator('[data-order-signature-preview]')).toContainText('1 tabletë');
+ await card.locator('[data-order-field="doseInstruction"]').fill('');await expect(card.locator('[data-order-signature-preview]')).not.toContainText('1 tabletë');await expect(page.locator('#rxSave')).toBeDisabled();
+ await card.locator('[data-order-field="doseInstruction"]').fill('2 tableta');await card.locator('.rx-signature-editor > summary').click();await card.locator('[data-order-field="signatura"]').fill('Udhëzim manual QA.');
+ await expect(card.locator('[data-order-signature-preview]')).toHaveText('Udhëzim manual QA.');await card.locator('[data-auto-signature]').click();await expect(card.locator('[data-order-signature-preview]')).toContainText('2 tableta');await expect(card.locator('[data-auto-signature]')).toBeHidden();
+});
+
+test('a reopened structured prescription edits the same text that is previewed and saved',async({page})=>{
+ const saved={...prescription('structured','QA diagnosis','te-tjera','2026-10-23T10:00:00Z','Paracetamol'),composerOrigin:'structured',selectedDrugs:[{...QA_COMPLETE,dosageStatus:'requires-review',regimenId:'qa-regimen'}]};
+ await setup(page,[saved]);await page.locator('#rxTabBtnLibrary').click();await page.locator('[data-open-saved="structured"]').click();await page.locator('[data-order-field="doseInstruction"]').fill('2 tableta');await expect(page.locator('#rxPreview')).toContainText('2 tableta');await expect(page.locator('#rxComposer')).toHaveValue(/2 tableta/);await expect(page.locator('#rxSave')).toBeDisabled();
+ await page.locator('#rxDosageReview input').check();await page.locator('#rxClinicalReview input').check();await page.locator('#rxSave').click();
+ await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('regjistriBarnave_protokollet_v1')).find(p=>p.id==='structured')?.sourceText)).toContain('2 tableta');
+ const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('regjistriBarnave_protokollet_v1')).find(p=>p.id==='structured'));expect(stored.composerOrigin).toBe('structured');
+});
+
+test('manual source text is preserved until explicit conversion and remains recoverable',async({page})=>{
+ const saved={...prescription('manual','QA manual','te-tjera','2026-10-23T10:00:00Z','Paracetamol'),selectedDrugs:[QA_COMPLETE]};
+ await setup(page,[saved]);await page.locator('#rxTabBtnLibrary').click();await page.locator('[data-open-saved="manual"]').click();await expect(page.locator('#rxComposer')).toHaveValue(saved.sourceText);await expect(page.locator('[data-order-field="doseInstruction"]')).toBeDisabled();
+ await page.locator('#rxUseStructured').click();await page.locator('[data-order-field="doseInstruction"]').fill('2 tableta');await expect(page.locator('#rxPreview')).toContainText('2 tableta');await page.locator('#rxRestoreManual').click();await expect(page.locator('#rxComposer')).toHaveValue(saved.sourceText);await expect(page.locator('[data-order-field="doseInstruction"]')).toBeDisabled();await expect(page.locator('#rxSave')).toBeDisabled();
+});
+
+test('a late AI response cannot replace a newer manual edit',async({page})=>{
+ await compose(page);await page.locator('#rxFreeTextPanel > summary').click();await page.locator('#rxComposer').fill('Rp:\nTab. Bar QA 10 mg\nSasia: 1 kuti\nS: Udhëzim fillestar.');
+ let release,started=false,finished=false;const gate=new Promise(resolve=>{release=resolve;});
+ await page.route('**/api/gemini-prescription',async route=>{started=true;await gate;await route.fulfill({json:{aiUsed:true,generatedCount:0,data:{title:'Old AI QA',diagnosis:'',sections:[{type:'single',medications:[{name:'Old AI QA',form:'Tab.',dose:'10 mg',quantity:'1 kuti',individualSignature:'Udhëzim i vjetër.'}]}],notes:[],missing:[]}}}).catch(()=>{});finished=true;});
+ await page.locator('.rx-writing-tools > summary').click();await page.locator('#rxGenerate').click();await expect.poll(()=>started).toBe(true);await page.locator('#rxComposer').fill('Rp:\nTab. New QA 20 mg\nSasia: 2 kuti\nS: Udhëzim i ri.');await expect(page.locator('#rxPreview')).toContainText('New QA');release();await expect.poll(()=>finished).toBe(true);await expect(page.locator('#rxGenerate')).toBeEnabled();await expect(page.locator('#rxPreview')).not.toContainText('Old AI QA');await expect(page.locator('#rxComposer')).toHaveValue(/New QA/);
+});
+
+for(const width of [320,390,760,1440])test('compact medicine cards preserve edits and guide review at '+width+'px',async({page},testInfo)=>{
+ await page.setViewportSize({width,height:900});const errors=[];page.on('pageerror',e=>errors.push(e.message));await compose(page,[QA_COMPLETE,{...QA_COMPLETE,key:'qa-second',substance:'QA bar i dytë'}]);
+ await expect(page.locator('.rx-order-body:visible')).toHaveCount(1);await expect(page.locator('.rx-order-card').first().locator('[data-order-summary]')).toContainText('1 tabletë');await page.locator('.rx-order-card').first().locator('[data-toggle-order]').click();await expect(page.locator('.rx-order-body:visible')).toHaveCount(1);
+ await page.locator('.rx-order-card').first().locator('[data-order-field="doseInstruction"]').fill('2 tableta');await page.locator('.rx-order-card').last().locator('[data-toggle-order]').click();await page.locator('.rx-order-card').first().locator('[data-toggle-order]').click();await expect(page.locator('.rx-order-card').first().locator('[data-order-field="doseInstruction"]')).toHaveValue('2 tableta');
+ await page.locator('#rxReviewPrescription').click();await expect(page.locator('#rxReviewPanel')).toBeFocused();await expect(page.locator('#rxSave')).toBeDisabled();await noOverflow(page);await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:testInfo.outputPath('builder-'+width+'.png'),fullPage:true});expect(errors).toEqual([]);
+ await picker(page);await noOverflow(page);await page.screenshot({path:testInfo.outputPath('picker-'+width+'.png')});await page.keyboard.press('Escape');
+});
+
+test('manual toolbar edits switch the current source without losing authored text',async({page})=>{
+ await compose(page,[QA_COMPLETE]);await page.locator('#rxFreeTextPanel > summary').click();await page.locator('[data-rx-command="other"]').click();
+ await expect(page.locator('#rxComposer')).toHaveValue(/Tjetër:/);await expect(page.locator('[data-order-field="doseInstruction"]')).toBeDisabled();await expect(page.locator('#rxComposerMode')).toBeVisible();
+});
+
+test('accepted AI wording stays identical in preview and saved text and expires after a dose edit',async({page})=>{
+ await compose(page,[QA_COMPLETE]);await page.route('**/api/gemini-prescription',route=>route.fulfill({json:{aiUsed:true,generatedCount:1,data:{title:'QA',diagnosis:'',sections:[{type:'single',medications:[{name:'Paracetamol',form:'Tab.',dose:'500 mg',quantity:'1 kuti',individualSignature:'Formulim sintetik QA.',signatureGenerated:true}]}],notes:[],missing:[]}}}));
+ await page.locator('.rx-writing-tools > summary').click();await page.locator('#rxGenerate').click();await expect(page.locator('#rxGeneratedReview')).toBeVisible();await expect(page.locator('#rxPreview')).toContainText('Formulim sintetik QA.');await expect(page.locator('#rxComposer')).toHaveValue(/Formulim sintetik QA\./);await expect(page.locator('#rxSave')).toBeDisabled();
+ await page.locator('[data-order-field="doseInstruction"]').fill('2 tableta');await expect(page.locator('#rxPreview')).toContainText('2 tableta');await expect(page.locator('#rxComposer')).not.toHaveValue(/Formulim sintetik QA\./);await expect(page.locator('#rxSave')).toBeDisabled();
+});
+
+test('medicine picker remains usable with a short viewport',async({page},info)=>{
+ await page.setViewportSize({width:568,height:320});await setup(page);await page.locator('#rxTabBtnCompose').click();await page.locator('#rxAddDrugButton').click();
+ const sizes=await page.evaluate(()=>{const p=document.querySelector('#rxDrugPopover').getBoundingClientRect(),r=document.querySelector('#rxDrugResults').getBoundingClientRect(),i=document.querySelector('#rxDrugSearch').getBoundingClientRect();return {panelBottom:p.bottom,resultsBottom:r.bottom,inputBottom:i.bottom,height:innerHeight};});
+ await expect(page.locator('#rxDrugPickerClose')).toBeVisible();expect(sizes.inputBottom).toBeLessThanOrEqual(sizes.height);expect(sizes.resultsBottom).toBeLessThanOrEqual(sizes.panelBottom+1);
+ await page.screenshot({path:info.outputPath('landscape-picker.png')});
+});
