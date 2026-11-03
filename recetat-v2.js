@@ -2369,11 +2369,14 @@
 
 
 (function (root, factory) {
-  const api = factory();
+  const api = factory(root?.MedIndexAdministrationRoutes);
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (root) root.MedIndexPrescriptionFormat = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (Administration) {
   'use strict';
+  if (!Administration && typeof require === 'function') {
+    try { Administration = require('./administration-routes.js'); } catch {}
+  }
 
   const FORM_LABELS = {
     tab: 'Tableta', tablet: 'Tableta', tableta: 'Tableta',
@@ -2630,6 +2633,66 @@
     };
   }
 
+  const ADMINISTRATION_GROUPS = Object.freeze({
+    ORAL:'Barna nga goja (PO)',
+    ENTERAL_OTHER:'Barna me rrugë të tjera enterale',
+    PARENTERAL:'Barna parenterale',
+    TOPICAL_LOCAL:'Barna topike / lokale',
+    INHALATION:'Barna inhalatore',
+    UNRESOLVED:'Rruga për t’u përcaktuar',
+  });
+
+  function administrationGroupForDrug(drug = {}) {
+    const inferred = Administration?.inferAdministration?.(drug) || {};
+    const route = Administration?.normalizeRoute?.(drug.route) || inferred.route || '';
+    const category = Administration?.categoryForRoute?.(route) || inferred.category || drug.administrationCategory;
+    const key = route === 'PO' ? 'ORAL'
+      : category === 'ENTERAL' ? 'ENTERAL_OTHER'
+      : ['PARENTERAL','TOPICAL_LOCAL','INHALATION'].includes(category) ? category : 'UNRESOLVED';
+    return {key,title:ADMINISTRATION_GROUPS[key]};
+  }
+
+  function groupDrugsByAdministration(drugs = []) {
+    const groups = new Map();
+    drugs.forEach(drug => {
+      const group = administrationGroupForDrug(drug);
+      if (!groups.has(group.key)) groups.set(group.key,{...group,drugs:[]});
+      groups.get(group.key).drugs.push(drug);
+    });
+    return [...groups.values()];
+  }
+
+  function withAdministrationGroups(value, drugs = []) {
+    const result = normalizeResult(value);
+    if (!result) return null;
+    const token = value => text(value).normalize('NFD').replace(/[\u0300-\u036f\s]/g,'').toLowerCase();
+    const groups = new Map();
+    result.sections.forEach(section => {
+      const keys = section.medications.map(item => {
+        let candidates = drugs.filter(drug => token(drug.substance) === token(item.name)
+          && (!drug.strength || !item.dose || token(drug.strength) === token(item.dose))
+          && (!drug.form || !item.form || token(formLabel(drug.form)) === token(formLabel(item.form))));
+        if (candidates.length > 1 && section.route) {
+          const matches = candidates.filter(drug => Administration?.normalizeRoute?.(drug.route) === Administration?.normalizeRoute?.(section.route));
+          if (matches.length) candidates = matches;
+        }
+        if (candidates.length) {
+          const options = [...new Set(candidates.map(drug => administrationGroupForDrug(drug).key))];
+          return options.length === 1 ? options[0] : 'UNRESOLVED';
+        }
+        if (Object.hasOwn(ADMINISTRATION_GROUPS,section.administrationGroup)) return section.administrationGroup;
+        return administrationGroupForDrug({form:item.form,route:section.route,
+          administrationCategory:['injection','infusion'].includes(section.type) ? 'PARENTERAL' : ''}).key;
+      });
+      const unique = [...new Set(keys)];
+      // A shared administration block remains intact, including its shared instruction.
+      const key = unique.length === 1 ? unique[0] : 'UNRESOLVED';
+      if (!groups.has(key)) groups.set(key,[]);
+      groups.get(key).push({...section,administrationGroup:key});
+    });
+    return {...result,sections:[...groups.values()].flat()};
+  }
+
   function parse(input, diagnosis = '') {
     const raw = String(input || '').replace(/\r/g, '').trim();
     if (!raw) return null;
@@ -2639,7 +2702,14 @@
       .map(block => block.split('\n'))
       .filter(block => block.some(line => text(line).replace(/^Rp\s*:\s*/i, '')));
 
-    const sections = blocks.map((block, index) => parseBlock(block, index, missing)).filter(Boolean);
+    let administrationGroup = '';
+    const sections = blocks.map((block, index) => {
+      block = block.filter(line => !/^Rp\s*:\s*$/i.test(text(line)));
+      const heading = Object.entries(ADMINISTRATION_GROUPS).find(([,title]) => (title+':').toLocaleLowerCase('sq') === text(block[0]).toLocaleLowerCase('sq'));
+      if (heading) { administrationGroup=heading[0]; block=block.slice(1); }
+      const section = parseBlock(block,index,missing);
+      return section && administrationGroup ? {...section,administrationGroup} : section;
+    }).filter(Boolean);
     if (!sections.length) {
       const fallback = parseBlock(raw.split('\n'), 0, missing);
       if (fallback) sections.push(fallback);
@@ -2659,6 +2729,7 @@
     if (!value || typeof value !== 'object') return null;
     const sections = Array.isArray(value.sections) ? value.sections.map(section => ({
       title: text(section?.title) || 'Administrim',
+      ...(Object.hasOwn(ADMINISTRATION_GROUPS,section?.administrationGroup) ? {administrationGroup:section.administrationGroup} : {}),
       type: ['oral', 'injection', 'infusion', 'topical', 'inhalation', 'other'].includes(section?.type) ? section.type : 'other',
       route: text(section?.route),
       sharedSignature: text(section?.sharedSignature),
@@ -2696,8 +2767,11 @@
     const normalized = normalizeResult(result);
     if (!normalized) return '';
     const lines = ['Rp:'];
+    let previousGroup = '';
     normalized.sections.forEach((section, sectionIndex) => {
       if (sectionIndex) lines.push('');
+      if (section.administrationGroup && section.administrationGroup !== previousGroup) lines.push(ADMINISTRATION_GROUPS[section.administrationGroup]+':');
+      previousGroup = section.administrationGroup || '';
       section.medications.forEach((item, itemIndex) => {
         if (itemIndex && !section.sharedSignature) lines.push('');
         lines.push(medicationLine(item));
@@ -2731,6 +2805,7 @@
     medicationLine,
     formatText,
     hasGeneratedSignature,
+    ADMINISTRATION_GROUPS, administrationGroupForDrug, groupDrugsByAdministration, withAdministrationGroups,
   };
 });
 
@@ -5989,11 +6064,16 @@
     return lines.join('\n');
   }
 
+  function structuredOrdersText() {
+    return Core.groupDrugsByAdministration(state.selectedDrugs).map(group =>
+      group.title+':\n'+group.drugs.map(transferText).filter(Boolean).join('\n\n')).join('\n\n');
+  }
+
   function syncComposerFromOrders({ force = false } = {}) {
     const composer = $('#rxComposer');
     if (!composer || !state.selectedDrugs.length) return false;
     if (!force && state.composerOrigin === 'manual') return false;
-    composer.value = state.selectedDrugs.map(drug => transferText(drug)).filter(Boolean).join('\n\n');
+    composer.value = structuredOrdersText();
     state.composerOrigin = 'structured';
     scheduleLocalPreview();
     return true;
@@ -6121,7 +6201,7 @@
     syncChapterSuggestion();
     if (state.composerOrigin === 'structured') {
       const composer = $('#rxComposer');
-      if (composer) composer.value = state.selectedDrugs.map(drug => transferText(drug)).filter(Boolean).join('\n\n');
+      if (composer) composer.value = structuredOrdersText();
       scheduleLocalPreview();
     }
   }
@@ -6215,7 +6295,10 @@
       syncComposerMode(); updateActionState(); return;
     }
     if (state.expandedOrderKey === null) state.expandedOrderKey = (structuredOrderIssues()[0]?.key || state.selectedDrugs[0].key);
-    holder.innerHTML = state.selectedDrugs.map((drug, index) => {
+    let index = -1;
+    holder.innerHTML = Core.groupDrugsByAdministration(state.selectedDrugs).map(group => {
+      const cards = group.drugs.map(drug => {
+      index += 1;
       const issues = orderIssues(drug), open = drug.key === state.expandedOrderKey;
       const routeOptions = ['<option value="">Zgjidh rrugën</option>', ...routeOptionsForDrug(drug).map(item => `<option value="${esc(item.route)}"${item.route === drug.route ? ' selected' : ''}>${esc(item.route)} · ${esc(item.label)}</option>`)].join('');
       return `<article class="rx-order-card${open ? ' is-expanded' : ''}" data-order-key="${esc(drug.key)}">
@@ -6240,6 +6323,8 @@
         <footer><span class="rx-order-status ${issues.length ? 'is-incomplete' : 'is-ready'}" data-order-status>${issues.length ? `Plotëso: ${esc(issues.join(', '))}` : 'Gati për kontroll'}</span><span class="rx-order-source${drug.regimenId ? '' : ' is-manual'}">${drug.regimenId ? 'Skemë e verifikuar' : 'Dozë manuale'}</span>${drug.sourceUrl ? `<a href="${esc(drug.sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi</a>` : ''}<button type="button" class="rx-order-remove" data-remove-drug="${esc(drug.key)}" aria-label="Hiqe ${esc(drug.substance)}">Hiq barin</button></footer>
         </div>
       </article>`;
+      }).join('');
+      return `<section class="rx-administration-group" data-order-group="${group.key}" aria-label="${esc(group.title)}"><h4>${esc(group.title)}<span>${group.drugs.length}</span></h4>${cards}</section>`;
     }).join('');
     syncComposerMode(); updateActionState();
     state.selectedDrugs.forEach(drug=>renderRegimenOffer(drug.key));
@@ -6255,7 +6340,7 @@
       items.forEach(item => addSelectedDrug(item, { insert:false }));
       const composer = $('#rxComposer');
       if (composer && !text(composer.value)) {
-        composer.value = state.selectedDrugs.map(drug => transferText(drug)).filter(Boolean).join('\n\n');
+        composer.value = structuredOrdersText();
         scheduleLocalPreview();
       }
       setStatus(`${items.length} barna të zgjedhura u bartën nga regjistri.`, 'success');
@@ -6433,13 +6518,17 @@
             : 'Kontrollo përmbajtjen përfundimtare para ruajtjes, kopjimit ose printimit.'}</span>
         </div>`
       : '';
-    return `${reviewSummary}<article class="rx-paper"><pre class="rx-canonical-preview">${esc(resultToText(normalized))}</pre></article>`;
+    const headings = new Set(Object.values(Core.ADMINISTRATION_GROUPS).map(title=>title+':'));
+    const canonical = resultToText(normalized).split('\n').map(line => headings.has(line)
+      ? '<strong class="rx-preview-administration">'+esc(line)+'</strong>' : esc(line)).join('\n');
+    return `${reviewSummary}<article class="rx-paper"><pre class="rx-canonical-preview">${canonical}</pre></article>`;
   }
 
   function showResult(rawResult, source = 'local') {
     clearTimeout(state.renderTimer);
     state.previewPending = false;
-    const result = Core.normalizeResult(rawResult);
+    const normalized = Core.normalizeResult(rawResult);
+    const result = state.composerOrigin === 'structured' && state.selectedDrugs.length ? Core.withAdministrationGroups(normalized,state.selectedDrugs) : normalized;
     if (!result) {
       clearResult();
       return;
@@ -6503,7 +6592,7 @@
 
     const composer = $('#rxComposer');
     if (composer) {
-      composer.value = state.selectedDrugs.map(drug => transferText(drug)).filter(Boolean).join('\n\n');
+      composer.value = structuredOrdersText();
       state.composerOrigin = 'structured';
     }
     renderSelectedDrugs();
@@ -6877,7 +6966,7 @@
     invalidateWorkspaceRequests();
     state.expandedOrderKey = null;
     state.manualComposerBackup = '';
-    const expectedText = state.selectedDrugs.map(drug => transferText(drug)).filter(Boolean).join('\n\n');
+    const expectedText = structuredOrdersText();
     state.composerOrigin = state.selectedDrugs.length && (protocol.composerOrigin === 'structured' || protocol.sourceText === expectedText) ? 'structured' : 'manual';
     renderSelectedDrugs();
     const result = resultFromProtocol(protocol);
@@ -8927,9 +9016,10 @@
       const connector = /^(DHE|OSE|PLUS|AND|OR)$/i.test(line);
       const recipeMark = /^Rp\s*[:.]$/i.test(line);
       const numbered = /^\d+[A-Z]?[.)]\s+\S/i.test(line);
-      if (connector || recipeMark) {
+      const administrationHeading = /^(?:Barna nga goja \(PO\)|Barna me rrugë të tjera enterale|Barna parenterale|Barna topike \/ lokale|Barna inhalatore|Rruga për t’u përcaktuar):$/.test(line);
+      if (connector || recipeMark || administrationHeading) {
         const row = targetDocument.createElement('p');
-        row.className = connector ? 'rx-connector' : 'rx-recipe-mark';
+        row.className = connector ? 'rx-connector' : administrationHeading ? 'rx-print-administration' : 'rx-recipe-mark';
         row.textContent = raw;
         content.append(row, targetDocument.createTextNode('\n'));
         item = null;
@@ -8980,6 +9070,7 @@
       .diagnosis-group li{display:flex;gap:8px;font-size:9pt;overflow-wrap:anywhere}.diagnosis-group li>strong{min-width:36px;color:#314c6d}
       .prescription-content{overflow-wrap:anywhere}
       .rx-recipe-mark{margin:0 0 7px;font:600 15pt Georgia,serif;color:#24466e;break-after:avoid-page}
+      .rx-print-administration{margin:14px 0 3px;padding:5px 0;border-bottom:1px solid #b8c5d4;font-size:10pt;font-weight:700;color:#24466e;break-after:avoid-page}
       .rx-print-item{padding:10px 0 11px;border-bottom:1px solid #e0e5ec;break-inside:avoid-page}
       .rx-print-title{margin:0 0 5px;font-size:11pt;line-height:1.4;font-weight:700;color:#162c46;break-after:avoid-page}
       .rx-print-line{margin:2px 0;white-space:pre-wrap;orphans:3;widows:3}.rx-print-line strong{font-weight:600;color:#334a65}

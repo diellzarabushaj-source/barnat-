@@ -157,7 +157,7 @@ test('manual toolbar edits switch the current source without losing authored tex
 
 test('accepted AI wording stays identical in preview and saved text and expires after a dose edit',async({page})=>{
  await compose(page,[QA_COMPLETE]);await page.route('**/api/gemini-prescription',route=>route.fulfill({json:{aiUsed:true,generatedCount:1,data:{title:'QA',diagnosis:'',sections:[{type:'single',medications:[{name:'Paracetamol',form:'Tab.',dose:'500 mg',quantity:'1 kuti',individualSignature:'Formulim sintetik QA.',signatureGenerated:true}]}],notes:[],missing:[]}}}));
- await page.locator('.rx-writing-tools > summary').click();await page.locator('#rxGenerate').click();await expect(page.locator('#rxGeneratedReview')).toBeVisible();await expect(page.locator('#rxPreview')).toContainText('Formulim sintetik QA.');await expect(page.locator('#rxComposer')).toHaveValue(/Formulim sintetik QA\./);await expect(page.locator('#rxSave')).toBeDisabled();
+ await page.locator('.rx-writing-tools > summary').click();await page.locator('#rxGenerate').click();await expect(page.locator('#rxGeneratedReview')).toBeVisible();await expect(page.locator('#rxPreview .rx-preview-administration')).toHaveText('Barna nga goja (PO):');await expect(page.locator('#rxPreview')).toContainText('Formulim sintetik QA.');await expect(page.locator('#rxComposer')).toHaveValue(/Formulim sintetik QA\./);await expect(page.locator('#rxSave')).toBeDisabled();
  await page.locator('[data-order-field="doseInstruction"]').fill('2 tableta');await expect(page.locator('#rxPreview')).toContainText('2 tableta');await expect(page.locator('#rxComposer')).not.toHaveValue(/Formulim sintetik QA\./);await expect(page.locator('#rxSave')).toBeDisabled();
 });
 
@@ -231,4 +231,30 @@ test('a pediatric medicine adds immediately but finalization requires valid pati
  await expect(page.locator('#rxNextHint')).toContainText('mosha');await expect(page.locator('#rxClinicalReview input')).toBeDisabled();await page.locator('#rxNextAction').click();await expect(page.locator('#rxPatientAge')).toBeFocused();
  await page.locator('#rxPatientAge').fill('4');await page.locator('#rxPatientWeight').fill('0.1');await expect(page.locator('#rxNextHint')).toContainText('pesha');await expect(page.locator('#rxSave')).toBeDisabled();await page.locator('#rxNextAction').click();await expect(page.locator('#rxPatientWeight')).toBeFocused();
  await page.locator('#rxPatientWeight').fill('18');await expect(page.locator('#rxClinicalReview input')).toBeEnabled();await page.locator('#rxClinicalReview input').check();await expect(page.locator('#rxSave')).toBeEnabled();
+});
+
+const QA_INJECTION={...QA_COMPLETE,key:'qa-injection',substance:'QA injection',tradeName:'QA injectable',strength:'2 mg/ml',form:'Injection',route:'IM',allowedRoutes:['IM','IV'],doseInstruction:'QA injection dose',frequency:'QA injection interval'};
+for(const width of [320,390,1440])test('automatic route groups preserve each instruction through save, copy and print at '+width+'px',async({page},info)=>{
+ await page.setViewportSize({width,height:1000});await compose(page,[QA_COMPLETE,QA_INJECTION,{...QA_COMPLETE,key:'qa-oral-2',substance:'QA oral second'},{...QA_INJECTION,key:'qa-injection-2',substance:'QA injection second'}]);
+ const oral=page.locator('[data-order-group="ORAL"]'),parenteral=page.locator('[data-order-group="PARENTERAL"]');
+ await expect(oral.locator('h4')).toContainText('Barna nga goja (PO)');await expect(oral.locator('.rx-order-card')).toHaveCount(2);await expect(parenteral.locator('.rx-order-card')).toHaveCount(2);
+ expect(await page.locator('.rx-order-card').evaluateAll(cards=>cards.map(c=>c.dataset.orderKey))).toEqual(['qa-paracetamol','qa-oral-2','qa-injection','qa-injection-2']);
+ await expect(page.locator('#rxPreview .rx-preview-administration')).toHaveText(['Barna nga goja (PO):','Barna parenterale:']);
+ expect(await page.locator('#rxComposer').evaluate(node=>window.MedIndexPrescriptionFormat.parse(node.value).sections.flatMap(s=>s.medications).length)).toBe(4);
+ await oral.locator('[data-order-key="qa-paracetamol"] [data-toggle-order]').click();await oral.locator('[data-order-key="qa-paracetamol"] [data-order-field="doseInstruction"]').fill('2 tableta');
+ await expect(page.locator('#rxPreview')).toContainText('Merret 2 tableta');await expect(page.locator('#rxPreview')).toContainText('Administrohet QA injection dose');if(await page.locator('#rxDosageReview').isVisible())await page.locator('#rxDosageReview input').check();await page.locator('#rxClinicalReview input').check();await expect(page.locator('#rxSave')).toBeEnabled();
+ const canonical=await page.locator('#rxPreview .rx-canonical-preview').textContent();
+ await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async value=>{window.__qaCopied=value;}}}));await page.locator('#rxCopy').click();await expect.poll(()=>page.evaluate(()=>window.__qaCopied)).toBe(canonical);
+ await page.locator('#rxSave').click();const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('regjistriBarnave_protokollet_v1'))[0]);expect(saved.sourceText).toContain('Barna parenterale:');expect(saved.sections.map(s=>s.administrationGroup)).toEqual(['ORAL','ORAL','PARENTERAL','PARENTERAL']);expect(saved.items).toHaveLength(4);
+ await page.locator('#rxTabBtnLibrary').click();await page.locator('[data-open-saved="'+saved.id+'"]').click();await expect(page.locator('#rxPreview .rx-canonical-preview')).toHaveText(canonical);await expect(page.locator('.rx-order-card')).toHaveCount(4);if(await page.locator('#rxDosageReview').isVisible())await page.locator('#rxDosageReview input').check();await page.locator('#rxClinicalReview input').check();
+ await page.evaluate(()=>{const original=window.open.bind(window);window.open=(...args)=>{const popup=original(...args);if(popup){popup.print=()=>{};popup.focus=()=>{};}return popup;};});const pending=page.waitForEvent('popup');await page.locator('#rxPrint').click();const popup=await pending;
+ await expect(popup.locator('.rx-print-administration')).toHaveText(['Barna nga goja (PO):','Barna parenterale:']);expect((await popup.locator('.prescription-content').textContent()).split('\n').filter(x=>x.trim()).map(x=>x.trim())).toEqual(canonical.split('\n').filter(x=>x.trim()).map(x=>x.trim()));await popup.close();
+ await noOverflow(page);await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:info.outputPath('grouped-prescription-'+width+'.png'),fullPage:true});
+});
+test('route edits and removals update compact groups while rectal products remain distinct from oral products',async({page})=>{
+ await compose(page,[QA_COMPLETE,{...QA_COMPLETE,key:'qa-flexible',substance:'QA flexible',form:'Unknown',route:'PO',allowedRoutes:['PO','IV']},{...QA_COMPLETE,key:'qa-rectal',substance:'QA rectal',form:'Suppository',route:'PR',allowedRoutes:['PR']}]);
+ await expect(page.locator('[data-order-group="ORAL"] .rx-order-card')).toHaveCount(2);await expect(page.locator('[data-order-group="ENTERAL_OTHER"]')).toContainText('QA rectal');
+ await page.locator('[data-order-key="qa-flexible"] [data-toggle-order]').click();await page.locator('[data-order-key="qa-flexible"] [data-order-field="route"]').selectOption('IV');
+ await expect(page.locator('[data-order-group="PARENTERAL"]')).toContainText('QA flexible');await expect(page.locator('[data-order-group="ORAL"] .rx-order-card')).toHaveCount(1);await expect(page.locator('#rxPreview .rx-preview-administration')).toHaveText(['Barna nga goja (PO):','Barna parenterale:','Barna me rrugë të tjera enterale:']);
+ await page.locator('[data-remove-drug="qa-flexible"]').click();await expect(page.locator('[data-order-group="PARENTERAL"]')).toHaveCount(0);await expect(page.locator('#rxPreview')).not.toContainText('Barna parenterale:');await expect(page.locator('#rxPreview')).toContainText('QA rectal');
 });

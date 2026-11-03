@@ -117,3 +117,34 @@ const generated = Core.normalizeResult({
 assert.equal(Core.hasGeneratedSignature(generated), true);
 
 console.log('Prescription formatting tests passed.');
+
+// Route headings are presentation metadata, never extra medicines or changed instructions.
+const groupedDrugs=[
+ {key:'oral-a',substance:'QA oral A',strength:'1 mg',form:'Tablet',route:'PO'},
+ {key:'inject',substance:'QA injection',strength:'2 mg/ml',form:'Injection',route:'IM'},
+ {key:'oral-b',substance:'QA oral B',strength:'3 mg',form:'Tablet',route:'PO'},
+ {key:'rectal',substance:'QA rectal',strength:'4 mg',form:'Suppository',route:'PR'},
+];
+const routeGroups=Core.groupDrugsByAdministration(groupedDrugs);
+assert.deepEqual(routeGroups.map(g=>g.key),['ORAL','PARENTERAL','ENTERAL_OTHER']);
+assert.deepEqual(routeGroups[0].drugs.map(d=>d.key),['oral-a','oral-b']);
+assert.equal(Core.administrationGroupForDrug({form:'Injection',allowedRoutes:['IV','IM']}).key,'PARENTERAL');
+assert.equal(Core.administrationGroupForDrug({form:'Unknown'}).key,'UNRESOLVED');
+const groupedInput=routeGroups.map(g=>g.title+':\n'+g.drugs.map(d=>Core.selectedDrugLine(d)+'\nSasia: QA quantity\nS (Signatura): Exact instruction '+d.key+'.').join('\n\n')).join('\n\n');
+const groupedResult=Core.parse(groupedInput);
+const groupedText=Core.formatText(groupedResult);
+assert.deepEqual(groupedResult.sections.map(s=>s.administrationGroup),['ORAL','ORAL','PARENTERAL','ENTERAL_OTHER']);
+assert.equal(groupedResult.sections.flatMap(s=>s.medications).length,4);
+assert.equal(Core.formatText(Core.parse(groupedText)),groupedText,'Grouped canonical text must round-trip without a heading becoming a medicine');
+assert.equal((groupedText.match(/Barna nga goja \(PO\):/g)||[]).length,1);
+assert.equal((groupedText.match(/Barna parenterale:/g)||[]).length,1);
+assert.deepEqual(groupedDrugs.map(d=>d.key),['oral-a','inject','oral-b','rectal'],'Grouping must not mutate stored product identities or order');
+const sharedGrouped=Core.withAdministrationGroups(infusion,[]);
+assert.equal(sharedGrouped.sections[0].medications.length,4);
+assert.equal(sharedGrouped.sections[0].sharedSignature,infusion.sections[0].sharedSignature);
+assert.equal((Core.formatText(sharedGrouped).match(/S \(Signatura\):/g)||[]).length,1,'Grouping must keep a shared infusion instruction intact');
+assert.equal(Core.formatText(oral),oralInput,'Source/manual prescriptions without group headings must retain exact canonical text');
+
+assert.equal(Core.parse('BARNA PARENTERALE:\nQA product (Unknown)\nS: Exact instruction.').sections[0].administrationGroup,'PARENTERAL');
+const explicitUnknownGroup=Core.parse('Barna parenterale:\nQA product (Unknown)\nS: Exact instruction.');
+assert.equal(Core.withAdministrationGroups(explicitUnknownGroup,[]).sections[0].administrationGroup,'PARENTERAL','Keep an explicit parsed group when pharmaceutical metadata cannot be matched');

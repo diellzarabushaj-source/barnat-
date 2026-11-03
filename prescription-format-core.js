@@ -1,9 +1,12 @@
 (function (root, factory) {
-  const api = factory();
+  const api = factory(root?.MedIndexAdministrationRoutes);
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (root) root.MedIndexPrescriptionFormat = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (Administration) {
   'use strict';
+  if (!Administration && typeof require === 'function') {
+    try { Administration = require('./administration-routes.js'); } catch {}
+  }
 
   const FORM_LABELS = {
     tab:'Tableta', tablet:'Tableta', tableta:'Tableta', 'tabletë':'Tableta',
@@ -307,6 +310,66 @@
     };
   }
 
+  const ADMINISTRATION_GROUPS = Object.freeze({
+    ORAL:'Barna nga goja (PO)',
+    ENTERAL_OTHER:'Barna me rrugë të tjera enterale',
+    PARENTERAL:'Barna parenterale',
+    TOPICAL_LOCAL:'Barna topike / lokale',
+    INHALATION:'Barna inhalatore',
+    UNRESOLVED:'Rruga për t’u përcaktuar',
+  });
+
+  function administrationGroupForDrug(drug = {}) {
+    const inferred = Administration?.inferAdministration?.(drug) || {};
+    const route = Administration?.normalizeRoute?.(drug.route) || inferred.route || '';
+    const category = Administration?.categoryForRoute?.(route) || inferred.category || drug.administrationCategory;
+    const key = route === 'PO' ? 'ORAL'
+      : category === 'ENTERAL' ? 'ENTERAL_OTHER'
+      : ['PARENTERAL','TOPICAL_LOCAL','INHALATION'].includes(category) ? category : 'UNRESOLVED';
+    return {key,title:ADMINISTRATION_GROUPS[key]};
+  }
+
+  function groupDrugsByAdministration(drugs = []) {
+    const groups = new Map();
+    drugs.forEach(drug => {
+      const group = administrationGroupForDrug(drug);
+      if (!groups.has(group.key)) groups.set(group.key,{...group,drugs:[]});
+      groups.get(group.key).drugs.push(drug);
+    });
+    return [...groups.values()];
+  }
+
+  function withAdministrationGroups(value, drugs = []) {
+    const result = normalizeResult(value);
+    if (!result) return null;
+    const token = value => text(value).normalize('NFD').replace(/[\u0300-\u036f\s]/g,'').toLowerCase();
+    const groups = new Map();
+    result.sections.forEach(section => {
+      const keys = section.medications.map(item => {
+        let candidates = drugs.filter(drug => token(drug.substance) === token(item.name)
+          && (!drug.strength || !item.dose || token(drug.strength) === token(item.dose))
+          && (!drug.form || !item.form || token(formLabel(drug.form)) === token(formLabel(item.form))));
+        if (candidates.length > 1 && section.route) {
+          const matches = candidates.filter(drug => Administration?.normalizeRoute?.(drug.route) === Administration?.normalizeRoute?.(section.route));
+          if (matches.length) candidates = matches;
+        }
+        if (candidates.length) {
+          const options = [...new Set(candidates.map(drug => administrationGroupForDrug(drug).key))];
+          return options.length === 1 ? options[0] : 'UNRESOLVED';
+        }
+        if (Object.hasOwn(ADMINISTRATION_GROUPS,section.administrationGroup)) return section.administrationGroup;
+        return administrationGroupForDrug({form:item.form,route:section.route,
+          administrationCategory:['injection','infusion'].includes(section.type) ? 'PARENTERAL' : ''}).key;
+      });
+      const unique = [...new Set(keys)];
+      // A shared administration block remains intact, including its shared instruction.
+      const key = unique.length === 1 ? unique[0] : 'UNRESOLVED';
+      if (!groups.has(key)) groups.set(key,[]);
+      groups.get(key).push({...section,administrationGroup:key});
+    });
+    return {...result,sections:[...groups.values()].flat()};
+  }
+
   function parse(input, diagnosis = '') {
     const raw = String(input || '').replace(/\r/g, '').trim();
     if (!raw) return null;
@@ -316,7 +379,14 @@
       .map(block => block.split('\n'))
       .filter(block => block.some(line => text(line).replace(/^Rp\s*:\s*/i, '')));
 
-    const sections = blocks.map((block, index) => parseBlock(block, index, missing)).filter(Boolean);
+    let administrationGroup = '';
+    const sections = blocks.map((block, index) => {
+      block = block.filter(line => !/^Rp\s*:\s*$/i.test(text(line)));
+      const heading = Object.entries(ADMINISTRATION_GROUPS).find(([,title]) => (title+':').toLocaleLowerCase('sq') === text(block[0]).toLocaleLowerCase('sq'));
+      if (heading) { administrationGroup=heading[0]; block=block.slice(1); }
+      const section = parseBlock(block,index,missing);
+      return section && administrationGroup ? {...section,administrationGroup} : section;
+    }).filter(Boolean);
     if (!sections.length) {
       const fallback = parseBlock(raw.split('\n'), 0, missing);
       if (fallback) sections.push(fallback);
@@ -336,6 +406,7 @@
     if (!value || typeof value !== 'object') return null;
     const sections = Array.isArray(value.sections) ? value.sections.map(section => ({
       title: text(section?.title) || 'Administrim',
+      ...(Object.hasOwn(ADMINISTRATION_GROUPS,section?.administrationGroup) ? {administrationGroup:section.administrationGroup} : {}),
       type: ['oral', 'injection', 'infusion', 'topical', 'inhalation', 'other'].includes(section?.type) ? section.type : 'other',
       route: text(section?.route),
       sharedSignature: text(section?.sharedSignature),
@@ -373,8 +444,11 @@
     const normalized = normalizeResult(result);
     if (!normalized) return '';
     const lines = ['Rp:'];
+    let previousGroup = '';
     normalized.sections.forEach((section, sectionIndex) => {
       if (sectionIndex) lines.push('');
+      if (section.administrationGroup && section.administrationGroup !== previousGroup) lines.push(ADMINISTRATION_GROUPS[section.administrationGroup]+':');
+      previousGroup = section.administrationGroup || '';
       section.medications.forEach((item, itemIndex) => {
         if (itemIndex && !section.sharedSignature) lines.push('');
         lines.push(medicationLine(item));
@@ -408,5 +482,6 @@
     medicationLine,
     formatText,
     hasGeneratedSignature,
+    ADMINISTRATION_GROUPS, administrationGroupForDrug, groupDrugsByAdministration, withAdministrationGroups,
   };
 });
