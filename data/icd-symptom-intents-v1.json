@@ -106,7 +106,12 @@
         "headache",
         "cephalalgia",
         "cefalgji",
-        "cephalgia"
+        "cephalgia",
+        "pom dhem kryt",
+        "po me dhemb koka",
+        "pom dhemb kryt",
+        "dhimbje ne koke",
+        "dhimbje ne kry"
       ],
       "candidates": [
         {
@@ -144,7 +149,12 @@
         "trullosje",
         "vertigo",
         "dizziness",
-        "lightheadedness"
+        "lightheadedness",
+        "me merret koka",
+        "po me merret koka",
+        "pom sillet kryt",
+        "po me sillet koka",
+        "marramendje ne koke"
       ],
       "candidates": [
         {
@@ -419,7 +429,12 @@
         "shtrëngim gjoksi",
         "chest pain",
         "chest tightness",
-        "dolor thoracis"
+        "dolor thoracis",
+        "dhimbje ne kraharor",
+        "dhimbje ne gjoks",
+        "dhembje ne kraharor",
+        "pom dhem gjoksi",
+        "pom dhem kraharori"
       ],
       "candidates": [
         {

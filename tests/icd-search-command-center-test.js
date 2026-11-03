@@ -74,7 +74,7 @@ assert.match(js, /lang:'LA'/);
 assert.match(js, /icd-suggestion-translation/);
 assert.match(js, /Kategoritë kryesore/);
 assert.match(js, /Nënkategoritë/);
-assert.match(js, /sv:'clinical-workspace-v24-lexical'/);
+assert.match(js, /sv:'clinical-workspace-v25-resilient'/);
 assert.match(js, /params\.set\('advanced', '1'\)/);
 assert.match(js, /function localCategoryPreview\(query, limit = 8\)/);
 assert.match(js, /function warmHotSearch\(\)/);

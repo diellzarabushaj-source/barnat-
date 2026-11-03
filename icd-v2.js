@@ -13,7 +13,7 @@
     await new Promise((resolve,reject)=>{
       const script=document.createElement('script');
       const timer=setTimeout(()=>reject(new Error('Kërkimi nuk u ngarkua. Rifresko faqen.')),8000);
-      script.src='/icd-search-lexical.js?v=icd-ranking-20261026';
+      script.src='/icd-search-lexical.js?v=icd-resilience-20261103';
       script.onload=()=>{clearTimeout(timer);resolve();};
       script.onerror=()=>{clearTimeout(timer);reject(new Error('Kërkimi nuk u ngarkua. Rifresko faqen.'));};
       document.head.appendChild(script);
@@ -186,7 +186,7 @@
   }
 
   function endpoint(view, values = {}) {
-    const params = new URLSearchParams({ view, sv:'clinical-workspace-v24-lexical' });
+    const params = new URLSearchParams({ view, sv:'clinical-workspace-v25-resilient' });
     if (view === 'suggest' || view === 'seed' || view === 'hot' || view === 'guidance' || view === 'guidance-list') params.set('advanced', '1');
     if (view==='suggest') Object.assign(values,{chapter:state.filterChapter,block:state.filterBlock,levels:state.filterLevel});
     Object.entries(values).forEach(([key, value]) => { if (clean(value)) params.set(key, clean(value)); });
@@ -1544,9 +1544,13 @@
       }
       terminologyCsrf=clean(auth.csrfToken);
       const response=await fetch('/api/clinical-editor?icdMemory=1',{method:'POST',credentials:'same-origin',signal,headers:{'Content-Type':'application/json','x-csrf-token':terminologyCsrf},body:JSON.stringify(body)});
-      const payload=await response.json();
+      let payload;
+      try{payload=await response.json();}catch(error){
+        if(signal?.aborted)throw signal.reason||error;
+        throw Object.assign(new Error('Shërbimi nuk ktheu përgjigje të vlefshme. Kërkimi ICD mbetet në dispozicion.'),{status:response.ok?502:response.status||502});
+      }
       if(response.status===403&&payload.code==='ICD_CSRF_EXPIRED'&&attempt===0)continue;
-      if(!response.ok||!payload.ok)throw new Error(payload.error||'Veprimi nuk u krye.');
+      if(!response.ok||!payload?.ok)throw Object.assign(new Error(payload?.error||'Veprimi nuk u krye.'),{status:response.status});
       return payload;
     }
   }
@@ -1612,22 +1616,33 @@
         if(request&&activeAi!==request)return;
         if(expression!==clean(el.icdSearch.value)||requestId!==state.requestId)return;
         if(action==='resolve'){
-          descriptionConversation={query:expression,turns,question:clean(payload.descriptionAnalysis?.clarification)||'Shto shenjat, vendndodhjen ose kohëzgjatjen.',draft:''};
-          const data={rows:payload.rows||[],descriptionAnalysis:payload.descriptionAnalysis||null,ambiguity:payload.ambiguous};
+          // A degraded follow-up can show grounded catalog matches while keeping
+          // the unanswered draft available for retry, without duplicating a turn.
+          const keepDraft=payload.degraded&&followUp&&previous;
+          descriptionConversation=keepDraft?previous:{query:expression,turns,question:clean(payload.descriptionAnalysis?.clarification)||'Shto shenjat, vendndodhjen ose kohëzgjatjen.',draft:''};
+          const analysis=keepDraft?{clarification:previous.question}:payload.descriptionAnalysis||null;
+          const data={rows:payload.rows||[],descriptionAnalysis:analysis,ambiguity:payload.ambiguous};
           applySuggestionData(expression,data);state.suggestionLoading=false;
           if(payload.ambiguous||data.rows.some(node=>node.memoryVerification==='pending'))state.activeSuggestion=-1;
           renderSuggestions();
           const elapsed=((performance.now()-startedAt)/1000).toLocaleString('sq-AL',{minimumFractionDigits:1,maximumFractionDigits:1});
           const provider=payload.provider==='groq'?'Groq':'Gemini';
-          const source=payload.cached?`Memoria · ${provider}`:payload.aiUsed?provider:'Kërkimi ICD';
-          status.textContent=`${source} · ${elapsed} s · ${data.rows.length?(payload.clarification||'Kontrollo përputhjen përpara përdorimit.'):(payload.descriptionAnalysis?.clarification||'Shkruaj më qartë simptomën ose diagnozën që kërkon.')}`;
+          const source=payload.aiUsed?(payload.cached?`Memoria · ${provider}`:provider):'Kërkimi ICD';
+          const detail=payload.degraded?payload.clarification:data.rows.length?(payload.clarification||'Kontrollo përputhjen përpara përdorimit.'):(payload.descriptionAnalysis?.clarification||'Shkruaj më qartë simptomën ose diagnozën që kërkon.');
+          status.textContent=`${source} · ${elapsed} s · ${detail}`;
         } else {
           suggestionCache.clear();await warmTerminologyMemory(true);
           status.textContent=action==='propose'?'Propozimi pret verifikim nga administratori.':'Shprehja u ruajt vetëm në fjalorin tënd.';
         }
       }catch(error){
         if((!request||activeAi===request)&&expression===clean(el.icdSearch.value)&&requestId===state.requestId){
-          status.textContent=request?.timedOut?'AI po vonon. Provo përsëri ose përdor kërkimin ICD.':error.name==='AbortError'?'Lidhja nuk u përgjigj. Provo përsëri.':error.message;
+          const message=request?.timedOut?'AI po vonon. Kërkimi ICD mbetet në dispozicion.':error.name==='AbortError'?'Lidhja nuk u përgjigj. Provo përsëri.':error.message;
+          if(action==='resolve'&&!followUp&&(request?.timedOut||!error.status||error.status===429||error.status>=500)){
+            await runSearch(expression);
+            if(activeAi!==request||expression!==clean(el.icdSearch.value))return;
+            state.activeSuggestion=-1;renderSuggestions();
+          }
+          status.textContent=message;
         }
       }finally{
         if(request)releaseAi(request);
@@ -1723,6 +1738,10 @@
     state.suggestionMeta = null;
 
     const preview = immediatePreview(value);
+    // A failed request for a new expression must not retain a different query's
+    // diagnoses while the network or AI is unavailable.
+    state.suggestions = preview.rows;
+    state.activeSuggestion = preview.rows.length ? 0 : -1;
     if (preview.rows.length) {
       state.suggestions = preview.rows;
       state.suggestionMeta = preview.meta;
@@ -1986,6 +2005,8 @@
 
     el.icdSearch.addEventListener('input', () => {
       clearTimeout(searchTimer);
+      searchAbortController?.abort();searchAbortController=null;
+      ++state.requestId;state.suggestionLoading=false;
       const value = clean(el.icdSearch.value);
       if (value.length < 2) {
         clearSearch({ preserveInput:true });
@@ -1998,12 +2019,12 @@
       state.suggestionOpen = true;
       const preview = immediatePreview(value);
       state.suggestionMeta = preview.meta;
+      state.suggestions = preview.rows;
+      state.activeSuggestion = preview.rows.length ? 0 : -1;
       if (preview.rows.length) {
-        state.suggestions = preview.rows;
-        state.activeSuggestion = 0;
-        renderSuggestions();
         prefetchChildren(preview.rows[0]);
       }
+      renderSuggestions();
       updateSearchClear();
       searchTimer = setTimeout(() => void runSearch(value), SEARCH_NETWORK_DELAY_MS);
     });

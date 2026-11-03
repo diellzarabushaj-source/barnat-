@@ -108,6 +108,68 @@ test('cached older HTML still loads the shared search matcher before interaction
  await setup(page);await page.locator('#icdSearch').fill('faringitis acu');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','J02');
 });
 
+for(const width of [390,1440]){
+ test('catalog recovery stays useful during an AI outage at '+width,async({page},info)=>{
+  await page.setViewportSize({width,height:844});const errors=[];page.on('pageerror',error=>errors.push(error.message));
+  const api=await setup(page,false,false,body=>({ok:true,...Description.catalogFallback(dataset,body.expression)}));
+  await page.locator('#icdSearch').fill('dhimbje kraharori pa temperaturë prej dje');
+  await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
+  await expect(page.locator('.icd-suggestion-row')).toHaveCount(1);
+  await expect(page.locator('.icd-suggestion-row')).toHaveAttribute('data-code','R07.4');
+  await expect(page.locator('.icd-suggestion-row')).not.toContainText('Sugjerim AI');
+  await expect(page.locator('.icd-suggestion-row.is-active')).toHaveCount(0);
+  await expect(page.locator('#icdMemoryStatus')).toContainText('Kërkimi ICD');
+  await expect(page.locator('#icdMemoryStatus')).toContainText('AI nuk u përgjigj');
+  await expect(page.locator('#icdUnderstandTerm')).toBeEnabled();expect(api.mutations).toHaveLength(1);
+  expect(errors).toEqual([]);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  await page.screenshot({path:info.outputPath('icd-catalog-recovery-'+width+'.png')});
+ });
+}
+
+test('common dialect and eponyms work before AI and without a network',async({page,context})=>{
+ const api=await setup(page);
+ await expect.poll(()=>page.evaluate(()=>Boolean(JSON.parse(localStorage.getItem('medindex.icd.qkmf-hot.v1')||'null')?.data?.quick?.some(item=>item.code==='E06.3')))).toBe(true);
+ for(const offline of [false,true]){
+  await context.setOffline(offline);
+  for(const [query,code] of [['pom dhem kryt','R51'],['me merret koka','R42'],['pom sillet kryt','R42'],['dhimbje ne kraharor','R07.4'],['Hashimoto','E06.3'],['spondiloartroza','M47']]){
+   await page.locator('#icdSearch').fill(query);
+   await expect(page.locator(`.icd-suggestion-row[data-code="${code}"]`)).toBeVisible();
+  }
+ }
+ expect(api.mutations).toEqual([]);
+});
+
+test('a proxy HTML error restores catalog search and permits an AI retry',async({page})=>{
+ const api=await setup(page);
+ await page.route('**/api/clinical-editor?icdMemory=1',async route=>route.request().method()==='POST'?route.fulfill({status:502,contentType:'text/html',body:'<html>upstream unavailable</html>'}):route.fallback());
+ await page.locator('#icdSearch').fill('dhimbje ne kraharor');await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
+ await expect(page.locator('#icdMemoryStatus')).toContainText('përgjigje të vlefshme');
+ await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','R07.4');
+ await expect(page.locator('.icd-suggestion-row.is-active')).toHaveCount(0);await expect(page.locator('#icdUnderstandTerm')).toBeEnabled();
+ await page.unroute('**/api/clinical-editor?icdMemory=1');
+ await page.locator('#icdUnderstandTerm').click();await expect.poll(()=>api.mutations.length).toBe(1);
+ await expect(page.locator('#icdMemoryStatus')).toContainText('Gemini');
+});
+
+test('a new query clears old diagnoses before a failed network response',async({page})=>{
+ await setup(page);await page.locator('#icdSearch').fill('I10');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');
+ await page.route('**/api/icd?**',async route=>new URL(route.request().url()).searchParams.get('view')==='suggest'?route.abort('failed'):route.fallback());
+ await page.locator('#icdSearch').fill('zzzzzzzzzz');await expect(page.locator('.icd-suggestion-row')).toHaveCount(0);
+ await expect(page.locator('#icdStatusText')).toHaveClass(/is-error/);
+ await expect(page.locator('#icdStatusText')).not.toBeEmpty();
+ await expect(page.locator('.icd-suggestion-row[data-code="I10"]')).toHaveCount(0);
+});
+
+test('a degraded clarification keeps the draft and retries the same answer once',async({page})=>{
+ let count=0;const question='Ku ndodhet dhimbja?';
+ const api=await setup(page,false,false,body=>++count===2?{ok:true,...Description.catalogFallback(dataset,body.expression+'. '+body.clarifications[0].answer)}:{ok:true,aiUsed:true,rows:[],ambiguous:true,descriptionAnalysis:{clarification:question}});
+ await page.locator('#icdSearch').fill('dhimbje prej dje');await page.locator('#icdUnderstandTerm').click();await page.locator('#icdTermOnly').check();await page.locator('#icdAiContinue').click();
+ await page.locator('#icdClarificationAnswer').fill('Në bark.');await page.locator('#icdClarificationSubmit').click();
+ await expect(page.locator('#icdMemoryStatus')).toContainText('AI nuk u përgjigj');await expect(page.locator('#icdClarificationAnswer')).toHaveValue('Në bark.');
+ await page.locator('#icdClarificationSubmit').click();await expect(page.locator('#icdClarificationCount')).toHaveText('1 sqarim');
+ expect(api.mutations[1].clarifications).toEqual(api.mutations[2].clarifications);expect(api.mutations[2].clarifications).toHaveLength(1);
+});
+
 for(const width of [320,390,430]){
  test('phone search, filters, selected diagnosis and return stay within reach at '+width,async({page},info)=>{
   await page.setViewportSize({width,height:844});const api=await setup(page);

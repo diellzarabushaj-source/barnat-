@@ -103,6 +103,9 @@
     pageSize: DEFAULT_PAGE_SIZE,
     total: null,
     totalPages: null,
+    hasPrevious: null,
+    hasNext: null,
+    loading: false,
     q: '',
     atc: '',
     columnFilters: {},
@@ -112,6 +115,7 @@
     columnSort: false,
     direction: 'asc',
     rows: [],
+    rowsQueryKey: '',
     rowView: storedRowView(),
     dosageByRegistry: new Map(),
     dosageIdentityRequired: false,
@@ -164,6 +168,7 @@
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const escapeHtml = value => clean(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
   const euros = value => {
+    if (value === null || value === undefined || clean(value) === '') return '—';
     const number = Number(value);
     if (!Number.isFinite(number)) return '—';
     return new Intl.NumberFormat('sq-XK', { style:'currency', currency:'EUR', maximumFractionDigits:2 }).format(number);
@@ -1096,9 +1101,8 @@
     if (state.view === 'favorites' || state.view === 'notes') renderPersonalWorkspace();
   }
   function cancelActivePageRequest() {
-    if (!state.pageController) return;
     state.requestId += 1;
-    state.pageController.abort();
+    state.pageController?.abort();
     state.pageController = null;
     setBusy(false);
   }
@@ -1116,6 +1120,11 @@
     updateFilterUi();
 
     if (nextQuery && nextQuery.length < 2 && !/^\d+$/.test(nextQuery)) {
+      state.rows = []; state.total = null; state.totalPages = null;
+      state.hasPrevious = false; state.hasNext = false;
+      state.dosageByRegistry.clear(); renderRows(); updateSummary(0);
+      el.emptyState.querySelector('h2').textContent = 'Vazhdo kërkimin';
+      el.emptyState.querySelector('p').textContent = 'Shkruaj të paktën 2 shkronja ose numrin e regjistrit.';
       el.resultSummary.textContent = 'Shkruaj të paktën 2 shkronja për kërkim.';
       el.requestTiming.textContent = '';
       return;
@@ -1131,16 +1140,25 @@
     const abort = () => controller.abort();
     if (options.signal?.aborted) abort();
     else options.signal?.addEventListener('abort', abort, { once:true });
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    let timedOut = false;
+    const timer = setTimeout(() => { timedOut = true; controller.abort(); }, timeoutMs);
     try {
       const response = await fetch(url, { credentials:'same-origin', cache:'no-store', ...options, signal:controller.signal, headers:{ Accept:'application/json', ...(options.headers || {}) } });
-      const payload = await response.json().catch(() => ({}));
       if (response.status === 401 || response.status === 403) {
         redirectToLogin();
         throw new Error('Sesioni nuk është aktiv.');
       }
-      if (!response.ok) throw new Error(payload.error || `Gabim ${response.status}`);
+      let payload;
+      try { payload = await response.json(); } catch (error) {
+        if (controller.signal.aborted) throw controller.signal.reason || error;
+        throw new Error('Shërbimi nuk ktheu një përgjigje të vlefshme. Provo përsëri.');
+      }
+      if (!response.ok || payload?.ok === false) throw new Error(payload?.error || `Gabim ${response.status}`);
+      if (!payload || typeof payload !== 'object' || Array.isArray(payload)) throw new Error('Përgjigjja e shërbimit është e paplotë. Provo përsëri.');
       return { payload, response };
+    } catch (error) {
+      if (timedOut && !options.signal?.aborted) throw Object.assign(new Error('Kërkesa zgjati tepër. Provo përsëri.'), {name:'TimeoutError'});
+      throw error;
     } finally { clearTimeout(timer); options.signal?.removeEventListener('abort', abort); }
   }
 
@@ -1166,7 +1184,7 @@
   }
 
   function queryUrl() {
-    const searchableQuery = Boolean(state.q && (state.q.length >= 2 || /^\\d+$/.test(state.q)));
+    const searchableQuery = Boolean(state.q && (state.q.length >= 2 || /^[0-9]+$/.test(state.q)));
     const rankedSearch = Boolean(searchableQuery && !state.atc && !state.formValue && !Object.keys(state.columnFilters).length && !state.columnSort && !Substances.isKnownQuery(state.q) && !['substance','prescription','adultDose','pediatricDose','updateStatus'].includes(state.sort));
     const params = new URLSearchParams(rankedSearch ? {
       view:'registry-search',
@@ -1193,8 +1211,12 @@
 
   function renderSkeleton() {
     el.emptyState.hidden = true;
-    el.tableScroll.hidden = false;
-    el.registryRows.innerHTML = Array.from({ length: Math.min(10, state.pageSize) }, () => `
+    const list = state.rowView === 'list';
+    document.documentElement.dataset.registryRowView = state.rowView;
+    el.tableScroll.hidden = list;
+    el.registryList.hidden = !list;
+    el.registryList.innerHTML = list ? Array.from({length:Math.min(6,state.pageSize)}, () => '<div class="registry-list-card registry-list-skeleton" aria-hidden="true"><span class="skeleton lg"></span><span class="skeleton md"></span><span class="skeleton sm"></span></div>').join('') : '';
+    el.registryRows.innerHTML = list ? '' : Array.from({ length: Math.min(10, state.pageSize) }, () => `
       <tr aria-hidden="true">
         <td><span class="skeleton sm"></span></td>
         <td data-col="registry"><span class="skeleton sm"></span></td>
@@ -1219,12 +1241,17 @@
     applyColumnVisibility();
   }
 
+  const optionalCount = value => value === null || value === undefined || value === '' || !Number.isFinite(Number(value)) || Number(value) < 0 ? null : Number(value);
+
   function applyPageResult(payload, source, durationMs, requestId, preserveScroll) {
     state.rows = Array.isArray(payload.rows) ? payload.rows.map(Substances.normalizeRow) : [];
     state.page = Number(payload.pagination?.page || state.page);
     state.pageSize = Number(payload.pagination?.pageSize || state.pageSize);
-    state.total = Number.isFinite(Number(payload.pagination?.total)) ? Number(payload.pagination.total) : null;
-    state.totalPages = Number.isFinite(Number(payload.pagination?.totalPages)) ? Number(payload.pagination.totalPages) : null;
+    state.total = optionalCount(payload.pagination?.total);
+    state.totalPages = optionalCount(payload.pagination?.totalPages);
+    state.hasPrevious = typeof payload.pagination?.hasPrevious === 'boolean' ? payload.pagination.hasPrevious : null;
+    state.hasNext = typeof payload.pagination?.hasNext === 'boolean' ? payload.pagination.hasNext : null;
+    state.rowsQueryKey = queryUrl();
     el.sourceStatus.textContent = `${source || 'Supabase'} · aktiv`;
     el.syncText.textContent = source || 'Supabase';
     state.dosageByRegistry.clear();
@@ -1239,20 +1266,24 @@
   }
 
   async function loadPage({ preserveScroll = false, preserveRows = false, forceRefresh = false } = {}) {
+    clearTimeout(state.searchTimer); state.searchTimer = 0;
+    updateFilterUi();
     syncRegistryUrl();
     const requestId = ++state.requestId;
     state.pageController?.abort();
 
-    const url = queryUrl() + (forceRefresh ? '&refresh=true' : '');
+    const cacheKey = queryUrl();
+    const url = cacheKey + (forceRefresh ? '&refresh=true' : '');
     const rankedSearch = url.includes('view=registry-search');
-    const cacheHit = rankedSearch ? state.searchCache.get(url) : null;
+    if (forceRefresh) state.searchCache.clear();
+    const cacheHit = rankedSearch ? state.searchCache.get(cacheKey) : null;
     if (!forceRefresh && cacheHit && Date.now() - cacheHit.savedAt < SEARCH_CACHE_TTL_MS) {
       state.pageController = null;
       applyPageResult(cacheHit.payload, cacheHit.source, 0, requestId, preserveScroll);
       setBusy(false);
       return;
     }
-    if (cacheHit) state.searchCache.delete(url);
+    if (cacheHit) state.searchCache.delete(cacheKey);
 
     const controller = new AbortController();
     state.pageController = controller;
@@ -1270,17 +1301,18 @@
       const columnQuery = Object.keys(state.columnFilters).length || ['prescription','adultDose','pediatricDose','updateStatus'].includes(state.sort);
       const { payload, response } = await fetchJson(url, { signal:controller.signal, headers:forceRefresh ? {'Cache-Control':'no-cache'} : {} }, columnQuery ? 20000 : 9000);
       if (requestId !== state.requestId) return;
+      if (!Array.isArray(payload.rows)) throw new Error('Lista e barnave nuk u ngarkua plotësisht. Provo përsëri.');
       const local = response.headers.get('X-MedIndex-Cache')?.includes('hit');
       const saved = Number(response.headers.get('X-DRx-Saved-At') || 0);
       const source = local ? `Kopje lokale${saved ? ' · ' + new Date(saved).toLocaleDateString('sq-AL') : ''}` : response.headers.get('X-MedIndex-Data-Source') || 'Supabase';
       if (rankedSearch) {
-        state.searchCache.set(url, { payload, source, savedAt:Date.now() });
+        state.searchCache.set(cacheKey, { payload, source, savedAt:Date.now() });
         while (state.searchCache.size > 24) state.searchCache.delete(state.searchCache.keys().next().value);
       }
       applyPageResult(payload, source, Math.round(performance.now() - startedAt), requestId, preserveScroll);
     } catch (error) {
       if (requestId !== state.requestId) return;
-      if (forceRefresh && preserveRows && state.rows.length) {
+      if (forceRefresh && preserveRows && state.rows.length && state.rowsQueryKey === queryUrl()) {
         el.resultSummary.textContent = 'Rifreskimi dështoi · po shfaqen të dhënat e ngarkuara më parë.';
         showToast('Kopja e hapur u ruajt. Provo rifreskimin kur të rikthehet lidhja.');
         return;
@@ -1492,6 +1524,7 @@
     if (!ROW_VIEWS.includes(view) || state.rowView === view) return;
     state.rowView = view;
     try { localStorage.setItem(ROW_VIEW_STORAGE_KEY, view); } catch {}
+    if (state.loading) { applyRowView(); renderSkeleton(); return; }
     renderRows();
     // The doses were fetched for the rows on screen; the new shape needs them
     // written into its own cells.
@@ -1583,6 +1616,8 @@
 
   function renderRows() {
     if (!state.rows.length) {
+      el.emptyState.querySelector('h2').textContent = 'Nuk u gjet asnjë bar';
+      el.emptyState.querySelector('p').textContent = 'Provo një emër, substancë ose kod ATC tjetër.';
       el.registryRows.innerHTML = '';
       el.registryList.innerHTML = '';
       el.tableScroll.hidden = true;
@@ -1644,9 +1679,15 @@
     el.metricPage.textContent = String(state.page);
     el.metricPageSize.textContent = `${state.pageSize} për faqe`;
     el.paginationSummary.textContent = state.rows.length ? `Duke shfaqur ${first}–${last}${Number.isFinite(state.total) ? ` nga ${state.total.toLocaleString('sq-XK')}` : ''}` : 'Asnjë rezultat';
+    updatePagination();
+  }
+
+  function updatePagination() {
     el.pageIndicator.textContent = `${state.page} / ${Number.isFinite(state.totalPages) ? state.totalPages : '—'}`;
-    el.prevPageButton.disabled = state.page <= 1;
-    el.nextPageButton.disabled = Number.isFinite(state.totalPages) ? state.page >= state.totalPages : state.rows.length < state.pageSize;
+    const hasPrevious = state.hasPrevious ?? state.page > 1;
+    const hasNext = state.hasNext ?? (Number.isFinite(state.totalPages) ? state.page < state.totalPages : state.rows.length >= state.pageSize);
+    el.prevPageButton.disabled = state.loading || !hasPrevious;
+    el.nextPageButton.disabled = state.loading || !hasNext;
   }
 
   const normalizeFormText = value => clean(value)
@@ -1746,8 +1787,10 @@
   }
 
   function selectFormFilter(type, value) {
-    state.formType = type || '';
-    state.formValue = type ? clean(value) : '';
+    const nextType = type || '', nextValue = type ? clean(value) : '';
+    if (state.formType === nextType && state.formValue === nextValue) { closeFormPicker(); return; }
+    state.formType = nextType;
+    state.formValue = nextValue;
     state.page = 1;
     syncFormPickerTrigger();
     closeFormPicker();
@@ -1782,8 +1825,10 @@
   // Fail closed visually as well as at the API layer: never mix an error
   // for the new query with rows left over from the previous query.
   state.rows = [];
-  state.total = 0;
-  state.totalPages = 1;
+  state.total = null;
+  state.totalPages = null;
+  state.hasPrevious = false;
+  state.hasNext = false;
   state.dosageByRegistry.clear();
   el.registryRows.innerHTML = '';
   el.registryList.innerHTML = '';
@@ -1795,12 +1840,16 @@
   el.resultSummary.textContent = 'Gabim gjatë ngarkimit';
   el.requestTiming.textContent = '';
   el.paginationSummary.textContent = 'Asnjë rezultat';
-  el.pageIndicator.textContent = '1 / 1';
+  el.metricTotal.textContent = '—';
+  el.pageIndicator.textContent = `${state.page} / —`;
+  syncPageSelection();
   el.prevPageButton.disabled = true;
   el.nextPageButton.disabled = true;
 }
 
   function setBusy(busy) {
+    state.loading = busy;
+    updatePagination();
     el.appShell.setAttribute('aria-busy', busy ? 'true' : 'false');
     el.refreshButton.disabled = busy;
   }
@@ -2259,8 +2308,8 @@
     el.clearFiltersButton.addEventListener('click', clearFilters);
     el.emptyClearButton.addEventListener('click', clearFilters);
     el.refreshButton.addEventListener('click', () => loadPage({ preserveScroll:true, preserveRows:true, forceRefresh:true }));
-    el.prevPageButton.addEventListener('click', () => { if (state.page > 1) { state.page -= 1; loadPage(); } });
-    el.nextPageButton.addEventListener('click', () => { if (!el.nextPageButton.disabled) { state.page += 1; loadPage(); } });
+    el.prevPageButton.addEventListener('click', () => { if (!state.loading && !el.prevPageButton.disabled && state.page > 1) { state.page -= 1; loadPage(); } });
+    el.nextPageButton.addEventListener('click', () => { if (!state.loading && !el.nextPageButton.disabled) { state.page += 1; loadPage(); } });
     document.querySelectorAll('.sort-head[data-sort]').forEach(button => button.addEventListener('click', () => { const next = button.dataset.sort; if (state.sort === next) state.direction = state.direction === 'asc' ? 'desc' : 'asc'; else { state.sort = next; state.direction = 'asc'; } state.columnSort = true; state.page = 1; loadPage(); }));
     el.registryList.addEventListener('click', event => rowContainerClick(event));
     el.registryList.addEventListener('keydown', event => {

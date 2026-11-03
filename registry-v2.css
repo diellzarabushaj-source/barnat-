@@ -1001,6 +1001,7 @@ body[data-registry-view="notes"] .personal-toolbar{
 .view-toggle button:focus-visible{outline:2px solid rgba(83,58,253,.4);outline-offset:1px}
 
 .registry-list{display:grid;gap:8px;padding:10px 0}
+.registry-list-skeleton{display:grid;gap:12px;min-height:96px;pointer-events:none}
 .registry-list-card{
   display:grid;gap:9px;padding:13px 14px;border:1px solid var(--line,#e4e7ec);border-radius:12px;
   background:#fff;cursor:pointer;transition:border-color .13s ease,box-shadow .13s ease;

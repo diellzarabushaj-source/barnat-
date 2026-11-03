@@ -129,3 +129,146 @@ for(const width of [390,1440]){
   await expect(page.locator('#atcPickerButton')).toBeFocused();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
  });
 }
+
+test('unknown totals preserve pagination and never display a false zero',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});
+ await page.route('**/api/drug-search**',route=>{
+  const url=new URL(route.request().url());if(!['registry-page','registry-search'].includes(url.searchParams.get('view')))return route.fallback();
+  const number=Number(url.searchParams.get('page')||1),size=Number(url.searchParams.get('pageSize')||50);
+  const found=Array.from({length:number===1?size:3},(_,i)=>({...rows[0],id:`00000000-0000-4000-8000-${String((number-1)*size+i+1).padStart(12,'0')}`,registryNumber:(number-1)*size+i+1}));
+  return route.fulfill({json:{ok:true,rows:found,pagination:{page:number,pageSize:size,total:null,totalPages:null,hasPrevious:number>1,hasNext:number===1}}});
+ });
+ await page.goto(baseURL+'/index.html');await expect(page.locator('#registryRows tr')).toHaveCount(50);
+ await expect(page.locator('#pageIndicator')).toHaveText('1 / —');await expect(page.locator('#nextPageButton')).toBeEnabled();
+ await expect(page.locator('#resultSummary')).not.toContainText('nga 0');
+ await page.locator('#nextPageButton').click();await expect(page.locator('#registryRows tr')).toHaveCount(3);
+ await expect(page.locator('#pageIndicator')).toHaveText('2 / —');await expect(page.locator('#nextPageButton')).toBeDisabled();await expect(page.locator('#prevPageButton')).toBeEnabled();
+});
+
+test('page navigation is guarded while a page is loading',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});let pending;
+ await page.route('**/api/drug-search**',route=>{
+  const url=new URL(route.request().url());if(!['registry-page','registry-search'].includes(url.searchParams.get('view')))return route.fallback();
+  if(Number(url.searchParams.get('page'))===2){pending=route;return;}
+  return route.fulfill({json:{ok:true,rows,pagination:{page:1,pageSize:50,total:103,totalPages:3,hasNext:true}}});
+ });
+ await page.goto(baseURL+'/index.html');await expect(page.locator('#registryRows tr')).toHaveCount(3);await page.locator('#nextPageButton').click();
+ await expect.poll(()=>Boolean(pending)).toBe(true);await expect(page.locator('#nextPageButton')).toBeDisabled();await expect(page.locator('#prevPageButton')).toBeDisabled();
+ await pending.fulfill({json:{ok:true,rows,pagination:{page:2,pageSize:50,total:103,totalPages:3,hasPrevious:true,hasNext:true}}});
+ await expect(page.locator('#pageIndicator')).toHaveText('2 / 3');await expect(page.locator('#prevPageButton')).toBeEnabled();await expect(page.locator('#nextPageButton')).toBeEnabled();
+});
+
+test('refresh replaces the cached search before revisiting the same term',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});let refreshed=false;
+ await page.route('**/api/drug-search**',route=>{
+  const url=new URL(route.request().url());if(!['registry-page','registry-search'].includes(url.searchParams.get('view')))return route.fallback();
+  if(url.searchParams.get('refresh')==='true')refreshed=true;
+  const q=url.searchParams.get('q'),found=q==='test'?[{...rows[0],tradeName:refreshed?'REFRESHED PRODUCT':'PREVIOUS PRODUCT'}]:q?[rows[1]]:rows;
+  return route.fulfill({json:{ok:true,rows:found,pagination:{page:1,pageSize:50,total:found.length,totalPages:1}}});
+ });
+ await page.goto(baseURL+'/index.html');await expect(page.locator('#registryRows tr')).toHaveCount(3);
+ await page.locator('#searchInput').fill('test');await expect(page.locator('#registryRows')).toContainText('PREVIOUS PRODUCT');
+ await page.locator('#refreshButton').click();await expect(page.locator('#registryRows')).toContainText('REFRESHED PRODUCT');
+ await page.locator('#searchInput').fill('other');await expect(page.locator('#registryRows')).toContainText('AMOXICILLIN TEST');
+ await page.locator('#searchInput').fill('test');await expect(page.locator('#registryRows')).toContainText('REFRESHED PRODUCT');
+});
+
+test('clearing during search debounce makes one settled registry request',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});const queries=[];
+ await page.route('**/api/drug-search**',route=>{const url=new URL(route.request().url());if(['registry-page','registry-search'].includes(url.searchParams.get('view')))queries.push(url.searchParams.get('q')||'');return route.fallback();});
+ await page.goto(baseURL+'/index.html');await expect(page.locator('#registryRows tr')).toHaveCount(3);queries.length=0;
+ await page.clock.install();
+ await page.evaluate(()=>{const input=document.getElementById('searchInput');input.value='amoxi';input.dispatchEvent(new Event('input',{bubbles:true}));document.getElementById('clearFiltersButton').click();});
+ await page.clock.runFor(300);await expect(page.locator('#appShell')).toHaveAttribute('aria-busy','false');
+ expect(queries).toEqual(['']);await expect(page.locator('#registryRows tr')).toHaveCount(3);
+});
+
+test('invalid successful HTML is an error and can be retried',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});let recover=false;
+ await page.route('**/api/drug-search**',route=>{
+  const url=new URL(route.request().url());if(!['registry-page','registry-search'].includes(url.searchParams.get('view'))||!url.searchParams.get('q'))return route.fallback();
+  return recover?route.fulfill({json:{ok:true,rows:[rows[0]],pagination:{page:1,pageSize:50,total:1,totalPages:1}}}):route.fulfill({status:200,contentType:'text/html',body:'<html>proxy error</html>'});
+ });
+ await page.goto(baseURL+'/index.html');await expect(page.locator('#registryRows tr')).toHaveCount(3);await page.locator('#searchInput').fill('invalid');
+ await expect(page.locator('#emptyState h2')).toHaveText('Regjistri nuk u ngarkua');await expect(page.locator('#registryRows tr[data-row-id]')).toHaveCount(0);
+ recover=true;await page.locator('#refreshButton').click();await expect(page.locator('#registryRows tr')).toHaveCount(1);await expect(page.locator('#emptyState')).toBeHidden();
+});
+
+test('a successful empty result clears an earlier network error',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});let recover=false;
+ await page.route('**/api/drug-search**',route=>{
+  const url=new URL(route.request().url());if(!['registry-page','registry-search'].includes(url.searchParams.get('view'))||!url.searchParams.get('q'))return route.fallback();
+  return recover?route.fulfill({json:{ok:true,rows:[],pagination:{page:1,pageSize:50,total:0,totalPages:1}}}):route.fulfill({status:503,json:{ok:false,error:'Temporary unavailable'}});
+ });
+ await page.goto(baseURL+'/index.html');await expect(page.locator('#registryRows tr')).toHaveCount(3);await page.locator('#searchInput').fill('nothing');
+ await expect(page.locator('#emptyState h2')).toHaveText('Regjistri nuk u ngarkua');recover=true;await page.locator('#refreshButton').click();
+ await expect(page.locator('#emptyState h2')).toHaveText('Nuk u gjet asnjë bar');await expect(page.locator('#emptyState p')).not.toContainText('Temporary');
+});
+
+for(const width of [390,1440])test(`facet timeouts expose a working retry at ${width}px`,async({page})=>{
+ await page.setViewportSize({width,height:900});let attempts=0;
+ await page.route('**/api/drug-search**',route=>{const url=new URL(route.request().url());if(url.searchParams.get('view')!=='registry-facets')return route.fallback();if(++attempts===1)return;return route.fallback();});
+ await page.goto(baseURL+'/index.html');await expect(page.locator(width<761?'.registry-list-card':'#registryRows tr')).toHaveCount(3);await page.clock.install();
+ await page.locator('#filterToggle').click();await page.locator('#columnFilterColumn').selectOption('name');await page.locator('#columnFilterOpen').click();
+ await expect.poll(()=>attempts).toBe(1);await page.clock.runFor(20050);
+ const retry=page.locator('#columnFilterValues button').filter({hasText:'Provo përsëri'});await expect(retry).toBeVisible();
+ await retry.click();await expect(page.locator('.column-filter-value')).toHaveCount(3);await expect(page.locator('#columnFilterFeedback')).toContainText('3 vlera');
+});
+
+test('new facet text disables obsolete checkbox choices until it settles',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});let pending;
+ await page.goto(baseURL+'/index.html');await expect(page.locator('#registryRows tr')).toHaveCount(3);await openFilter(page,'name');
+ await page.route('**/api/drug-search**',route=>new URL(route.request().url()).searchParams.get('valueSearch')==='par'?(pending=route,undefined):route.fallback());
+ await page.locator('#columnFilterSearch').fill('par');await expect(page.locator('.column-filter-value input').first()).toBeDisabled();
+ await expect.poll(()=>Boolean(pending)).toBe(true);await pending.fulfill({json:{ok:true,values:[{value:rows[0].tradeName,label:rows[0].tradeName,count:1}],total:1,hasMore:false}});
+ await expect(page.locator('.column-filter-value')).toHaveCount(1);await expect(page.locator('.column-filter-value input')).toBeEnabled();
+});
+
+test('missing retail price is distinct from a real zero price',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});
+ await page.route('**/api/drug-search**',route=>new URL(route.request().url()).searchParams.get('view')==='registry-page'?route.fulfill({json:{ok:true,rows:[rows[0],{...rows[1],retailPrice:null}],pagination:{page:1,pageSize:50,total:2,totalPages:1}}}):route.fallback());
+ await page.goto(baseURL+'/index.html');await expect(page.locator('#registryRows tr')).toHaveCount(2);
+ await expect(page.locator('#registryRows tr').nth(0).locator('[data-col="price"]')).toContainText(/0[,.]00/);
+ await expect(page.locator('#registryRows tr').nth(1).locator('[data-col="price"]')).toHaveText('—');
+});
+
+test('a short new term cannot leave old products available for selection',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});await page.goto(baseURL+'/index.html');await expect(page.locator('#registryRows tr')).toHaveCount(3);
+ await page.locator('#searchInput').fill('p');await expect(page.locator('#registryRows tr[data-row-id]')).toHaveCount(0);
+ await expect(page.locator('#emptyState h2')).toHaveText('Vazhdo kërkimin');await expect(page.locator('#nextPageButton')).toBeDisabled();
+ await page.locator('#searchInput').fill('7');await expect(page.locator('#appShell')).toHaveAttribute('aria-busy','false');
+ await expect(page.locator('#emptyState h2')).not.toHaveText('Vazhdo kërkimin');
+});
+
+test('phone filter loading has one read-only list instead of old product actions',async({page})=>{
+ await page.setViewportSize({width:390,height:844});let pending;
+ await page.goto(baseURL+'/index.html');await expect(page.locator('.registry-list-card[data-row-id]')).toHaveCount(3);
+ await page.route('**/api/drug-search**',route=>new URL(route.request().url()).searchParams.get('formCategory')?(pending=route,undefined):route.fallback());
+ await page.locator('#filterToggle').click();await page.locator('#formPickerButton').click();await page.locator('[data-form-category="Kapsula"]').click();
+ await expect.poll(()=>Boolean(pending)).toBe(true);await expect(page.locator('.registry-list-card[data-row-id]:visible')).toHaveCount(0);
+ await expect(page.locator('#tableScroll')).toBeHidden();await expect(page.locator('#registryList')).toBeVisible();await expect(page.locator('.registry-list-skeleton')).not.toHaveCount(0);
+ await pending.fulfill({json:{ok:true,rows:[rows[1]],pagination:{page:1,pageSize:25,total:1,totalPages:1}}});
+ await expect(page.locator('.registry-list-card[data-row-id]')).toHaveCount(1);await expect(page.locator('#registryList')).toContainText('AMOXICILLIN TEST');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+});
+
+test('too many searched values are explained before applying a broken filter',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});await page.goto(baseURL+'/index.html');await expect(page.locator('#registryRows tr')).toHaveCount(3);
+ await page.route('**/api/drug-search**',route=>new URL(route.request().url()).searchParams.get('view')==='registry-facets'?route.fulfill({json:{ok:true,values:Array.from({length:150},(_,i)=>({value:'TEST '+i,label:'TEST '+i,count:1})),total:150,hasMore:false}}):route.fallback());
+ await openFilter(page,'name');await page.locator('#columnFilterSearch').fill('test');await expect(page.locator('[data-only-shown]')).toBeEnabled();
+ await page.locator('[data-only-shown]').click();await expect(page.locator('#columnFilterFeedback')).toContainText('100 vlera');
+ await expect(page.locator('#registryColumnFilterPanel')).toBeVisible();
+});
+
+test('refresh failure cannot preserve products from a different search',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});
+ await page.route('**/api/drug-search**',route=>{
+  const url=new URL(route.request().url());
+  if(['registry-page','registry-search'].includes(url.searchParams.get('view'))&&url.searchParams.get('q')==='different')return route.fulfill({status:503,json:{ok:false,error:'Temporary unavailable'}});
+  return route.fallback();
+ });
+ await page.goto(baseURL+'/index.html');await expect(page.locator('#registryRows tr')).toHaveCount(3);
+ await page.evaluate(()=>{const input=document.getElementById('searchInput');input.value='different';input.dispatchEvent(new Event('input',{bubbles:true}));document.getElementById('refreshButton').click();});
+ await expect(page.locator('#emptyState h2')).toHaveText('Regjistri nuk u ngarkua');
+ await expect(page.locator('#registryRows tr[data-row-id]')).toHaveCount(0);
+});
