@@ -413,8 +413,12 @@
         "probleme me unaza",
         "spondiloze",
         "spondilozë",
-        "spondylosis"
-      ]
+        "spondylosis",
+        "spondiloartroza",
+        "spondiloartroze",
+        "spondyloarthrosis"
+      ],
+      "alias_source": "https://classbrowser.nhs.uk/ICD-10-5TH-Edition/vol1/block-m45-m49.htm"
     },
     {
       "code": "M51",
@@ -830,6 +834,19 @@
         "flu",
         "influenza virus not identified"
       ]
+    },
+    {
+      "code": "E06.3",
+      "label_sq": "Tiroidit autoimun (Hashimoto)",
+      "urgent": false,
+      "aliases": [
+        "Hashimoto",
+        "Morbus Hashimoto",
+        "Hashimoto thyroiditis",
+        "tiroiditi Hashimoto",
+        "tiroidit autoimun"
+      ],
+      "alias_source": "https://classbrowser.nhs.uk/ICD-10-5TH-Edition/vol1/block-e00-e07.htm"
     }
   ]
 }

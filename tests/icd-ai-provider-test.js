@@ -13,7 +13,7 @@ async function main(){
   P._test.reset();const a=await P.structuredJson(options,{allowGroq:true,gemini,groq});assert.equal(a.provider,'groq');
   await P.structuredJson(options,{allowGroq:true,gemini,groq});assert.equal(g,1,'Cooldown avoids repeated quota calls');assert.equal(r,2);
   P._test.reset();r=0;await assert.rejects(()=>P.structuredJson(options,{allowGroq:false,gemini:async()=>{throw quota();},groq}),error=>error.status===429);assert.equal(r,0,'Old clients cannot transmit to Groq without the new consent');
-  await assert.rejects(()=>P.structuredJson(options,{allowGroq:false,gemini:async()=>{throw Object.assign(new Error('auth'),{status:403});},groq}),error=>error.status===403);assert.equal(r,0,'Without recipient consent, credential errors never transmit to Groq');
+  P._test.reset();await assert.rejects(()=>P.structuredJson(options,{allowGroq:false,gemini:async()=>{throw Object.assign(new Error('auth'),{status:403});},groq}),error=>error.status===403);assert.equal(r,0,'Without recipient consent, credential errors never transmit to Groq');
   const parent=new AbortController();parent.abort();await assert.rejects(()=>P.structuredJson({...options,signal:parent.signal},{allowGroq:true,gemini:async()=>{throw parent.signal.reason;},groq}));assert.equal(r,0);
   const strict=P.strictSchema(D.schema);assert.equal(strict.additionalProperties,false);assert.equal(strict.properties.candidates.items.additionalProperties,false);
   let requests=[];console.error=()=>{};P._test.reset();

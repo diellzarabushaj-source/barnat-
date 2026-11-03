@@ -6,9 +6,9 @@ const Handler = require('../lib/icd-advanced-handler.js');
 const FullIcd = require('../lib/icd-full-hierarchy.js');
 
 assert.equal(Hot.version, 1);
-assert.equal(Hot.rows.length, 72);
+assert.equal(Hot.rows.length, 73);
 assert.equal(Hot.rows.filter(row => row.urgent).length, 25);
-assert.equal(new Set(Hot.rows.map(row => row.code)).size, 72);
+assert.equal(new Set(Hot.rows.map(row => row.code)).size, 73);
 for (const code of ['I10','E11','J10','J11','R19.7','R11','R51','R42','M47','M51','I21','R06.0']) {
   const row = Hot.rows.find(item => item.code === code);
   assert.ok(row, `Missing hot-search code ${code}`);
