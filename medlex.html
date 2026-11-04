@@ -11,10 +11,10 @@
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/protokollet-v2.css?v=2-audit-20261009">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
-  <link rel="stylesheet" href="/medlex.css?v=1">
+  <link rel="stylesheet" href="/medlex.css?v=2">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/medlex.js?v=1" defer></script>
+<script src="/medlex.js?v=2" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#medlexContent">Kalo te terminologjia mjekësore</a>
@@ -108,21 +108,26 @@
           </div>
           <div class="medlex-hero-feature" aria-hidden="true">
             <div class="medlex-feature-emblem">Rx<span>+</span></div>
-            <strong>20</strong><span>terma në koleksion</span>
-            <small>Kategoria 01 / 18</small>
+            <strong id="medlexHeroCount">177</strong><span>terma në koleksion</span>
+            <small>Kategoritë 01–02 / 18</small>
           </div>
         </header>
 
         <section class="medlex-collection" aria-labelledby="medlexCollectionTitle">
+          <nav class="medlex-categories" id="medlexCategories" aria-label="Kategoritë e MedLex">
+            <button type="button" class="medlex-category" data-category="01" aria-pressed="true"><span class="medlex-category-number">01</span><span>Terminologji klinike <small>20 terma</small></span></button>
+            <button type="button" class="medlex-category" data-category="02" aria-pressed="false"><span class="medlex-category-number">02</span><span>Anatomi dhe orientim <small>157 terma</small></span></button>
+            <button type="button" class="medlex-category medlex-category-all" data-category="all" aria-pressed="false"><span class="medlex-category-number">⌕</span><span>Të gjitha kategoritë <small>Kërkim i përbashkët</small></span></button>
+          </nav>
           <div class="medlex-collection-heading">
-            <div><span class="medlex-section-index">01 / TERMINOLOGJI KLINIKE</span><h2 id="medlexCollectionTitle">Konceptet themelore</h2><p>Fillimi, origjina, natyra, përgjigjja ndaj trajtimit dhe përhapja e sëmundjes.</p></div>
+            <div><span class="medlex-section-index" id="medlexCollectionEyebrow">01 / TERMINOLOGJI KLINIKE</span><h2 id="medlexCollectionTitle">Konceptet themelore</h2><p id="medlexCollectionDescription">Fillimi, origjina, natyra, përgjigjja ndaj trajtimit dhe përhapja e sëmundjes.</p></div>
             <span class="medlex-collection-count"><span id="medlexTotal">20</span> kartela</span>
           </div>
 
           <div class="medlex-toolbox" role="search" aria-label="Kërko në terminologjinë mjekësore">
             <div class="medlex-search-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>
-              <input id="medlexSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko: akut, kronik, idiopatik, acquired…" aria-label="Kërko termin, sinonimin ose shembullin">
+              <input id="medlexSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko: epigastrum, hemitoraks, manus, distal…" aria-label="Kërko në të dy kategoritë sipas termit, latinishtes, anglishtes ose shembullit">
               <button type="button" id="medlexClear" class="medlex-search-clear" aria-label="Pastro kërkimin" hidden>×</button>
               <span class="medlex-shortcut" aria-hidden="true">Ctrl K</span>
             </div>
@@ -145,8 +150,8 @@
           <div class="medlex-dialog-art"><img id="medlexDialogImage" alt="" width="1254" height="1254"></div>
           <div class="medlex-dialog-details">
             <button type="button" class="medlex-dialog-close" id="medlexClose" aria-label="Mbyll kartelën">×</button>
-            <span class="medlex-section-index">DRX MEDLEX · KATEGORIA 01</span>
-            <h2 id="medlexDialogTitle"></h2><span class="medlex-dialog-english" id="medlexDialogEnglish"></span>
+            <span class="medlex-section-index" id="medlexDialogCategory">DRX MEDLEX · KATEGORIA 01</span>
+            <h2 id="medlexDialogTitle"></h2><span class="medlex-dialog-english" id="medlexDialogLatin"></span><span class="medlex-dialog-english" id="medlexDialogEnglish"></span>
             <span class="medlex-dialog-label">PËRKUFIZIMI</span><p id="medlexDialogDefinition"></p>
             <span class="medlex-dialog-label">SHEMBULL KLINIK</span><blockquote id="medlexDialogExample"></blockquote>
             <div class="medlex-dialog-actions"><a id="medlexDownload" download class="medlex-primary-action">Shkarko kartelën ↓</a><button type="button" id="medlexCopy">Kopjo termin</button></div>
