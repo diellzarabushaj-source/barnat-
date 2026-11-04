@@ -95,7 +95,8 @@
     const find = href => nav.querySelector(`a.nav-item[href="${href}"]`) || nav.querySelector(`a[href="${href}"]`);
     const atc = nav.querySelector('#atcNavGroup');
     const icd = nav.querySelector('#icdNavGroup') || find('/icd.html');
-    const clinical = [find('/index.html'), atc, icd, find('/dozologjia.html'), find('/protokollet.html'), find('/urgjencat.html')].filter(Boolean);
+    const medlex = ensureMedLexLink(nav);
+    const clinical = [find('/index.html'), atc, icd, medlex, find('/dozologjia.html'), find('/protokollet.html'), find('/urgjencat.html')].filter(Boolean);
     const work = [find('/index.html#favorites'), find('/index.html#notes'), find('/recetat.html'), find('/analizat.html'), find('/medical-hub.html')].filter(Boolean);
 
     if (labelClinical) {
@@ -106,6 +107,21 @@
       let cursor = labelWork;
       for (const node of work) { cursor.after(node); cursor = node; }
     }
+  }
+
+  function ensureMedLexLink(nav) {
+    let link = nav.querySelector('a.nav-item[href="/medlex.html"]');
+    if (!link) {
+      link = document.createElement('a');
+      link.className = 'nav-item';
+      link.href = '/medlex.html';
+      link.innerHTML = '<span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 5.5A2.5 2.5 0 0 1 7 3h5v17H7a2.5 2.5 0 0 0-2.5 2.5v-17Z"/><path d="M19.5 5.5A2.5 2.5 0 0 0 17 3h-5v17h5a2.5 2.5 0 0 1 2.5 2.5v-17Z"/><path d="M7.5 8h2M14.5 8h2M7.5 12h2M14.5 12h2"/></svg></span><span>MedLex · Termat</span>';
+    }
+    const active = currentPath() === '/medlex.html';
+    link.classList.toggle('is-active', active);
+    if (active) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+    return link;
   }
 
   function readPersonalCountCache() {
