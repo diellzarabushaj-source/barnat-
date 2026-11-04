@@ -1,0 +1,28 @@
+{
+  "collection": "DRX MedLex",
+  "category": "01 - Terminologji e përgjithshme klinike",
+  "language": "sq",
+  "status": "draft_for_clinical_review",
+  "terms": [
+    {"id": 1, "term": "Akut", "definition": "Fillim i shpejtë, zakonisht me ecuri të shkurtër.", "example": "Apendicit akut", "image": "01-akut.webp"},
+    {"id": 2, "term": "Subakut", "definition": "Ecuri ndërmjet formës akute dhe kronike.", "example": "Endokardit subakut", "image": "02-subakut.webp"},
+    {"id": 3, "term": "Kronik", "definition": "Zgjat në kohë ose përsëritet për periudha të gjata.", "example": "Sëmundje kronike e veshkave", "image": "03-kronik.webp"},
+    {"id": 4, "term": "Idiopatik", "definition": "Shkaku mbetet i panjohur pas vlerësimit.", "example": "Skoliozë idiopatike", "image": "04-idiopatik.webp"},
+    {"id": 5, "term": "Iatrogjen", "definition": "I shkaktuar nga trajtimi ose ndërhyrja mjekësore.", "example": "Hipoglikemi iatrogjene", "image": "05-iatrogjen.webp"},
+    {"id": 6, "term": "Kongjenital", "definition": "I pranishëm që në lindje.", "example": "Defekt kongjenital i zemrës", "image": "06-kongjenital.webp"},
+    {"id": 7, "term": "I fituar", "definition": "Shfaqet pas lindjes gjatë jetës.", "example": "Imunodeficiencë e fituar", "image": "07-i-fituar.webp"},
+    {"id": 8, "term": "Benign", "definition": "Jo malinj; nuk jep metastaza.", "example": "Lipomë beninje", "image": "08-benign.webp"},
+    {"id": 9, "term": "Malign", "definition": "Kanceroz; mund të invadojë dhe të metastazojë.", "example": "Neoplazi malinje", "image": "09-malign.webp"},
+    {"id": 10, "term": "Primar", "definition": "Lind si gjendje kryesore, jo si pasojë e një tjetër.", "example": "Hipertension primar", "image": "10-primar.webp"},
+    {"id": 11, "term": "Sekondar", "definition": "Pasojë e një sëmundjeje ose shkaku tjetër.", "example": "Hipertension sekondar", "image": "11-sekondar.webp"},
+    {"id": 12, "term": "Refraktar", "definition": "Nuk përgjigjet mjaftueshëm ndaj trajtimit të përshtatshëm.", "example": "Epilepsi refraktare", "image": "12-refraktar.webp"},
+    {"id": 13, "term": "Rezistent", "definition": "Nuk i përgjigjet një trajtimi të caktuar.", "example": "Infeksion me baktere rezistente", "image": "13-rezistent.webp"},
+    {"id": 14, "term": "Recidiv", "definition": "Rikthim i sëmundjes pas zhdukjes ose trajtimit.", "example": "Recidiv i hernies", "image": "14-recidiv.webp"},
+    {"id": 15, "term": "Relaps", "definition": "Rikthim i aktivitetit të sëmundjes pas përmirësimit.", "example": "Relaps i sklerozës multiple", "image": "15-relaps.webp"},
+    {"id": 16, "term": "Remision", "definition": "Pakësim ose zhdukje e shenjave të sëmundjes.", "example": "Remision i artritit reumatoid", "image": "16-remision.webp"},
+    {"id": 17, "term": "Progresiv", "definition": "Përparon ose përkeqësohet me kalimin e kohës.", "example": "Sëmundje neurologjike progresive", "image": "17-progresiv.webp"},
+    {"id": 18, "term": "Lokalizuar", "definition": "I kufizuar në një zonë të caktuar.", "example": "Infeksion i lokalizuar", "image": "18-lokalizuar.webp"},
+    {"id": 19, "term": "Difuz", "definition": "I përhapur në një zonë të gjerë, pa kufi të qartë.", "example": "Dhimbje abdominale difuze", "image": "19-difuz.webp"},
+    {"id": 20, "term": "Multifokal", "definition": "I pranishëm në disa vatra të veçanta.", "example": "Lezione cerebrale multifokale", "image": "20-multifokal.webp"}
+  ]
+}
