@@ -7,7 +7,7 @@ const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const dictionary = JSON.parse(read('data/medlex-terms.json'));
 const anatomy = JSON.parse(read('data/medlex-anatomy.json'));
-const { normalize, editDistance, rank, TOPICS, ALIASES } = require('../medlex.js');
+const { normalize, editDistance, rank, imagePath, TOPICS, ALIASES } = require('../medlex.js');
 
 assert.equal(dictionary.category, '01 - Terminologji e përgjithshme klinike');
 assert.equal(dictionary.status, 'draft_for_clinical_review');
@@ -59,6 +59,11 @@ for (const term of anatomyTerms) {
   assert.ok(fs.statSync(asset).size > 10000,`${term.id}: incomplete WebP`);
 }
 const abdomenRegions = anatomyTerms.filter(term => term.visual.startsWith('abdomen:') && /^ab0[1-9]$/.test(term.id));
+assert.match(imagePath({category:'02',image:'ab01.webp'}), /^\/assets\/medlex-anatomy\/ab01\.webp\?v=.+/, 'replacement anatomy art must bypass immutable cached images');
+assert.equal(imagePath({category:'01',image:dictionary.terms[0].image}), '/assets/medlex/' + dictionary.terms[0].image, 'chapter 01 asset URLs stay unchanged');
+assert.equal(imagePath({category:'02',image:'../medlex/01-akut.webp'}), '', 'asset validation rejects traversal');
+assert.ok(rank({...anatomyTerms.find(term => term.id === 'ab01'),category:'02'}, 'kolecistit') > 0, 'disease examples are searchable');
+assert.ok(rank({...anatomyTerms.find(term => term.id === 'ab05'),category:'02'}, 'apendicit') > 0, 'early periumbilical appendicitis example is searchable');
 assert.deepEqual(abdomenRegions.map(term => term.visual),Array.from({length:9},(_,index) => `abdomen:${index}`));
 assert.deepEqual(anatomyTerms.filter(term => term.visual.startsWith('quadrant:')).map(term => term.visual),['quadrant:0','quadrant:1','quadrant:2','quadrant:3']);
 assert.ok(anatomyTerms.some(term => normalize(term.latin).includes('epigastrica')));
@@ -89,4 +94,5 @@ assert.match(read('medlex.js'), /response\.status === 401/);
 assert.match(read('medlex.css'), /@media\(max-width:660px\)/);
 assert.match(read('medlex.css'), /prefers-reduced-motion:reduce/);
 
+require('../scripts/generate-medlex-anatomy-cards.js').verifyArtwork();
 console.log('MedLex: 177 cards across categories 01 + 02; 9 anatomy groups, 9 abdominal regions + 4 quadrants, searchable Latin/English aliases and media assets verified.');
