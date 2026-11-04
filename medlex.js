@@ -3,7 +3,8 @@
   'use strict';
 
   const DATA_URL = '/data/medlex-terms.json';
-  const ANATOMY_DATA_URL = '/data/medlex-anatomy.json';
+  const ANATOMY_ARTWORK_VERSION = '20261104-clinical-v2';
+  const ANATOMY_DATA_URL = '/data/medlex-anatomy.json?v=' + ANATOMY_ARTWORK_VERSION;
   const IMAGE_BASE = '/assets/medlex/';
   const ANATOMY_IMAGE_BASE = '/assets/medlex-anatomy/';
   const TOPICS = [
@@ -85,7 +86,7 @@
 
   function imagePath(term) {
     const name = String(term.image || '').replace(/\.png$/i,'.webp');
-    if (term.category === '02') return /^(?:or|ab|th|up|lo|he|ne|ba|pe)\d{2}\.webp$/.test(name) ? ANATOMY_IMAGE_BASE + name : '';
+    if (term.category === '02') return /^(?:or|ab|th|up|lo|he|ne|ba|pe)\d{2}\.webp$/.test(name) ? ANATOMY_IMAGE_BASE + name + '?v=' + ANATOMY_ARTWORK_VERSION : '';
     return /^\d{2}-[a-z-]+\.webp$/.test(name) ? IMAGE_BASE + name : '';
   }
 
@@ -385,5 +386,5 @@
     else void init();
   }
 
-  if (typeof module !== 'undefined' && module.exports) module.exports = { normalize, editDistance, rank, TOPICS, ALIASES };
+  if (typeof module !== 'undefined' && module.exports) module.exports = { normalize, editDistance, rank, imagePath, TOPICS, ALIASES };
 })();

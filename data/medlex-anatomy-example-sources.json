@@ -1,0 +1,308 @@
+{
+  "updated": "2026-11-04",
+  "status": "draft_for_clinical_review",
+  "note": "Shembuj ilustrues të lidhjes klinike me vendndodhjen; lokalizimi i simptomës nuk përcakton diagnozën.",
+  "references": [
+    {
+      "title": "FIPAT — Terminologia Anatomica 2",
+      "url": "https://cdn.dal.ca/content/dam/dalhousie/pdf/library/FIPAT/TA2/FIPAT-TA2-Part-1.pdf",
+      "purpose": "Nomenklatura anatomike"
+    },
+    {
+      "title": "OpenStax — Anatomical Terminology",
+      "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/1-6-anatomical-terminology",
+      "purpose": "Orientimi, planet dhe regjionet"
+    },
+    {
+      "title": "NHS — Acute cholecystitis",
+      "url": "https://www.nhs.uk/conditions/acute-cholecystitis/",
+      "terms": [
+        "ab01",
+        "ab10"
+      ]
+    },
+    {
+      "title": "NICE — Pancreatitis",
+      "url": "https://www.nice.org.uk/guidance/ng104/chapter/recommendations",
+      "terms": [
+        "ab02",
+        "ab11"
+      ]
+    },
+    {
+      "title": "NHS — Spleen problems",
+      "url": "https://www.nhs.uk/tests-and-treatments/spleen-problems-and-spleen-removal/",
+      "terms": [
+        "ab03"
+      ]
+    },
+    {
+      "title": "NIDDK — Kidney stones",
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-stones",
+      "terms": [
+        "ab04",
+        "ab06"
+      ]
+    },
+    {
+      "title": "NIDDK — Appendicitis symptoms",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/appendicitis/symptoms-causes",
+      "terms": [
+        "ab05",
+        "ab07",
+        "ab12",
+        "ab16"
+      ]
+    },
+    {
+      "title": "NIDDK — Diverticular disease symptoms",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/diverticulosis-diverticulitis/symptoms-causes",
+      "terms": [
+        "ab09",
+        "ab13",
+        "ab17"
+      ]
+    },
+    {
+      "title": "NHS — Costochondritis",
+      "url": "https://www.nhs.uk/conditions/costochondritis/",
+      "terms": [
+        "th01"
+      ]
+    },
+    {
+      "title": "NHS — Mastitis",
+      "url": "https://www.nhs.uk/conditions/mastitis/",
+      "terms": [
+        "th05"
+      ]
+    },
+    {
+      "title": "NHS — Hidradenitis suppurativa",
+      "url": "https://www.nhs.uk/conditions/hidradenitis-suppurativa/",
+      "terms": [
+        "up01",
+        "pe06"
+      ]
+    },
+    {
+      "title": "NHS — Tennis elbow",
+      "url": "https://www.nhs.uk/conditions/tennis-elbow/",
+      "terms": [
+        "or12",
+        "up12"
+      ]
+    },
+    {
+      "title": "NHS — Wrist pain",
+      "url": "https://www.nhs.uk/symptoms/hand-pain/wrist-pain/",
+      "terms": [
+        "up15",
+        "up17",
+        "or29",
+        "up13"
+      ]
+    },
+    {
+      "title": "NHS — Carpal tunnel syndrome",
+      "url": "https://www.nhs.uk/conditions/carpal-tunnel-syndrome/",
+      "terms": [
+        "up16",
+        "up22"
+      ]
+    },
+    {
+      "title": "NHS — Ganglion cyst",
+      "url": "https://www.nhs.uk/conditions/ganglion-cyst/",
+      "terms": [
+        "up17"
+      ]
+    },
+    {
+      "title": "NHS — Sciatica",
+      "url": "https://www.nhs.uk/conditions/Sciatica/",
+      "terms": [
+        "or16",
+        "lo01",
+        "lo13"
+      ]
+    },
+    {
+      "title": "NHS inform — Greater trochanteric pain syndrome",
+      "url": "https://www.nhsinform.scot/illnesses-and-conditions/muscle-bone-and-joints/leg-and-foot-problems-and-conditions/greater-trochanteric-pain-syndrome/",
+      "terms": [
+        "lo02"
+      ]
+    },
+    {
+      "title": "NHS — Hamstring injury",
+      "url": "https://www.nhs.uk/conditions/hamstring-injury/",
+      "terms": [
+        "lo05"
+      ]
+    },
+    {
+      "title": "Cambridge University Hospitals — Popliteal cyst",
+      "url": "https://www.cuh.nhs.uk/patient-information/popliteal-cyst-information/",
+      "terms": [
+        "or08",
+        "lo09",
+        "lo10"
+      ]
+    },
+    {
+      "title": "NHS — Compartment syndrome",
+      "url": "https://www.nhs.uk/conditions/compartment-syndrome/",
+      "terms": [
+        "lo12"
+      ]
+    },
+    {
+      "title": "NHS — Knee pain and running injuries",
+      "url": "https://www.nhs.uk/live-well/exercise/knee-pain-and-other-running-injuries/",
+      "terms": [
+        "lo08",
+        "lo17",
+        "lo20"
+      ]
+    },
+    {
+      "title": "NHS Bexley — Anterior ankle impingement",
+      "url": "https://msk-bexley.nhs.uk/conditions/foot-and-ankle-pain/anterior-front-ankle-impingement",
+      "terms": [
+        "lo16"
+      ]
+    },
+    {
+      "title": "NHS Borders — Peroneal tendinopathy",
+      "url": "https://www.rightdecisions.scot.nhs.uk/borders-ref-help-toolkit-in-development/podiatry/msk-peroneal-tendinopathy-lateral-ankle-pain/",
+      "terms": [
+        "lo18"
+      ]
+    },
+    {
+      "title": "Royal Devon — Tibialis posterior tendinopathy",
+      "url": "https://www.royaldevon.nhs.uk/media/xwidxqeh/tibialis-posterior-tendinopathy.pdf",
+      "terms": [
+        "lo19"
+      ]
+    },
+    {
+      "title": "NHS — Morton's neuroma",
+      "url": "https://www.nhs.uk/conditions/mortons-neuroma/",
+      "terms": [
+        "lo23"
+      ]
+    },
+    {
+      "title": "NHS — Bunions",
+      "url": "https://www.nhs.uk/conditions/bunions/",
+      "terms": [
+        "lo27"
+      ]
+    },
+    {
+      "title": "NHS — Sinusitis",
+      "url": "https://www.nhs.uk/conditions/sinusitis-sinus-infection/",
+      "terms": [
+        "he01",
+        "he08"
+      ]
+    },
+    {
+      "title": "NHS — Temporal arteritis",
+      "url": "https://www.nhs.uk/conditions/temporal-arteritis/",
+      "terms": [
+        "he03"
+      ]
+    },
+    {
+      "title": "NHS — Mastoiditis",
+      "url": "https://www.nhs.uk/conditions/mastoiditis/",
+      "terms": [
+        "he06"
+      ]
+    },
+    {
+      "title": "NHS — Dental abscess",
+      "url": "https://www.nhs.uk/conditions/dental-abscess/",
+      "terms": [
+        "he10",
+        "ne08"
+      ]
+    },
+    {
+      "title": "NHS — Swollen glands",
+      "url": "https://www.nhs.uk/symptoms/swollen-glands/",
+      "terms": [
+        "ne02",
+        "ne09"
+      ]
+    },
+    {
+      "title": "NHS — Salivary gland stones",
+      "url": "https://www.nhs.uk/conditions/salivary-gland-stones/",
+      "terms": [
+        "ne07"
+      ]
+    },
+    {
+      "title": "MedlinePlus — Subacute thyroiditis",
+      "url": "https://medlineplus.gov/ency/article/000375.htm",
+      "terms": [
+        "ne01",
+        "ne06",
+        "ne10"
+      ]
+    },
+    {
+      "title": "NHS — Prostatitis",
+      "url": "https://www.nhs.uk/conditions/prostatitis/",
+      "terms": [
+        "pe01"
+      ]
+    },
+    {
+      "title": "NHS — Anal fissure",
+      "url": "https://www.nhs.uk/conditions/anal-fissure/",
+      "terms": [
+        "pe02"
+      ]
+    },
+    {
+      "title": "NHS — Anal fistula",
+      "url": "https://www.nhs.uk/conditions/anal-fistula/",
+      "terms": [
+        "pe03",
+        "pe07"
+      ]
+    },
+    {
+      "title": "NHS — Pilonidal sinus",
+      "url": "https://www.nhs.uk/conditions/pilonidal-sinus/",
+      "terms": [
+        "pe05"
+      ]
+    },
+    {
+      "title": "University of Arkansas for Medical Sciences — Head and neck topography",
+      "url": "https://medicine.uams.edu/neuroscience/education/medical-school-courses/human-structure-module/anatomy-tables/topographical-anatomy-tables/topographical-anatomy-of-the-head-and-neck/",
+      "terms": ["ne09", "ne10"]
+    },
+    {
+      "title": "NCBI Bookshelf — Triangle of Auscultation",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK539834/",
+      "terms": ["ba07"]
+    },
+    {
+      "title": "University of Arkansas for Medical Sciences — Pelvis and perineum",
+      "url": "https://medicine.uams.edu/neuroscience/education/medical-school-courses/human-structure-module/anatomy-tables/topographical-anatomy-tables/topographical-anatomy-of-the-pelvis-and-perineum/",
+      "terms": [
+        "pe01",
+        "pe03",
+        "pe04",
+        "pe07"
+      ]
+    }
+  ]
+}
