@@ -21,6 +21,7 @@ const clinicalPages = [
   '/index.html',
   '/klasifikimi.html',
   '/icd.html',
+  '/medlex.html',
   '/dozologjia.html',
   '/protokollet.html',
   '/urgjencat.html',
@@ -35,7 +36,7 @@ const pediatricOfflineData = [
   '/data/pediatric-weight-age-defaults.json',
 ];
 // Keep offline discovery aligned with the canonical authenticated surface:
-// all ten authenticated standalone workspaces must be discoverable together.
+// all authenticated standalone workspaces must be discoverable together.
 const generatedStaticSources = new Map([
   ['/offline-runtime-performance.js', 'offline-runtime.js'],
   ['/app-runtime-performance.js', 'app-runtime-performance.js'],

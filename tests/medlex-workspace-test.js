@@ -17,7 +17,8 @@ for (const term of dictionary.terms) {
   assert.ok(term.definition.length > 20, `${term.term}: definition too short`);
   assert.ok(term.example.length > 5, `${term.term}: clinical example missing`);
   assert.ok(ALIASES[term.id]?.length, `${term.term}: synonym missing`);
-  const asset = path.join(ROOT, 'assets/medlex', term.image.replace(/\.png$/, '.webp'));
+  assert.match(term.image, /^\d{2}-[a-z-]+\.webp$/, `${term.term}: image reference must use optimized WebP`);
+  const asset = path.join(ROOT, 'assets/medlex', term.image);
   assert.ok(fs.existsSync(asset), `${term.term}: image missing`);
   assert.ok(fs.statSync(asset).size > 15000, `${term.term}: image probably corrupt`);
 }
@@ -47,6 +48,11 @@ assert.match(html, /id="medlexDownload" download/);
 assert.match(html, /sidebar-taxonomy-v3\.js/);
 assert.match(read('sidebar-taxonomy-core-v3.js'), /function ensureMedLexLink\(nav\)/);
 assert.match(read('sidebar-taxonomy-core-v3.js'), /href = '\/medlex\.html'/);
+for (const workspace of ['index.html','klasifikimi.html','icd.html','dozologjia.html','protokollet.html','urgjencat.html','recetat.html','analizat.html','medical-hub.html','sistemi.html']) {
+  assert.match(read(workspace), /href="\/medlex\.html"/, `${workspace}: MedLex is missing from navigation`);
+}
+assert.match(read('sw.js'), /'\/data\/medlex-terms\.json'/);
+assert.match(read('scripts/build-static-runtime.js'), /'\/medlex\.html'/);
 assert.match(read('medlex.js'), /credentials:'same-origin'/);
 assert.match(read('medlex.js'), /response\.status === 401/);
 assert.match(read('medlex.css'), /@media\(max-width:660px\)/);
