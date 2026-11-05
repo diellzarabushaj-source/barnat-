@@ -104,3 +104,43 @@ html[data-theme="dark"] .medlex-category[aria-pressed="true"]{background:#16423e
 @media(prefers-reduced-motion:reduce){html[data-drx-app="medlex-v1"]{scroll-behavior:auto}.medlex-card{transition:none}.medlex-card:hover{transform:none}}
 @media(max-width:660px){.medlex-card-title{font-size:14px}.medlex-card-description{min-height:44px;font-size:10px}.medlex-grid[data-view="list"] .medlex-card-title{font-size:15px}}
 @media(max-width:400px){.medlex-card-title{font-size:13px}}
+
+/* The chapter map keeps all 18 chapters accessible without hiding them in a long tab strip. */
+.medlex-chapter-picker{margin-bottom:26px;border:1px solid #dce8e6;border-radius:15px;background:#fff;overflow:hidden}
+.medlex-chapter-picker>summary{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:19px 20px;cursor:pointer;list-style:none}
+.medlex-chapter-picker>summary::-webkit-details-marker{display:none}
+.medlex-chapter-picker>summary strong{display:block;margin-top:7px;color:#193f42;font-size:15px;line-height:1.4}
+.medlex-picker-action{flex:none;color:#117c73;font-size:12px;font-weight:750}
+.medlex-picker-action>span{display:inline-block;margin-left:8px;font-size:20px;transition:transform .15s}
+.medlex-chapter-picker[open] .medlex-picker-action>span{transform:rotate(180deg)}
+.medlex-chapter-picker .medlex-categories{grid-template-columns:repeat(3,minmax(0,1fr));margin:0;padding:0 14px 14px;max-height:65dvh;overflow-y:auto;scroll-snap-type:none}
+.medlex-chapter-picker .medlex-category{min-height:88px;padding:13px 12px}
+.medlex-chapter-picker .medlex-category>span:last-child{font-size:12px;line-height:1.4}
+.medlex-chapter-picker .medlex-category small{font-size:10px}
+.medlex-chapter-picker .medlex-category-all{grid-column:1/-1;min-height:62px}
+.medlex-planned-preview{display:flex;flex-direction:column;min-height:250px;padding:20px;background:linear-gradient(145deg,#f3faf7,#e8f5ef);color:#174e49}
+.medlex-planned-topline{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;font-size:9px;font-weight:800;letter-spacing:.05em}
+.medlex-planned-badge{padding:5px 7px;border:1px solid #bed8cd;border-radius:5px;color:#5b7e6f;font-weight:650;letter-spacing:0}
+.medlex-planned-term{display:block;margin:27px 0 24px;font-size:clamp(23px,2.3vw,33px);line-height:1.15;font-weight:800;letter-spacing:-.035em;overflow-wrap:anywhere}
+.medlex-planned-slots{display:grid;gap:8px;margin-top:auto;color:#6d8a7d;font-size:10px;font-weight:600}
+.medlex-planned-slots>span{display:flex;gap:9px;align-items:center}
+.medlex-planned-slots>span::before{content:'';width:15px;height:2px;background:#a7c4b6}
+.medlex-planned-card .medlex-card-description{min-height:0}
+.medlex-planned-card .medlex-card-index{line-height:1.6;letter-spacing:0;color:#497c6d}
+.medlex-dialog-placeholder{display:flex;flex-direction:column;width:100%;align-self:stretch;justify-content:center;gap:25px;padding:25px;color:#194e48}
+.medlex-dialog-placeholder strong{font-size:clamp(30px,4vw,48px);line-height:1.12;letter-spacing:-.04em;overflow-wrap:anywhere}
+.medlex-dialog-placeholder>p{margin:0;color:#698679;font-size:13px;line-height:1.6}
+.medlex-illustration-slot{display:flex;min-height:190px;flex-direction:column;align-items:center;justify-content:center;gap:12px;border:1px dashed #a7c4b6;border-radius:12px;background:#edf6f0;color:#6c8f7e;font-size:13px}
+.medlex-illustration-slot>span:first-child{font-size:35px;font-weight:300}
+.medlex-dialog-placeholder[hidden],.medlex-dialog-art img[hidden],.medlex-dialog-actions [hidden]{display:none}
+.medlex-grid[data-view="list"] .medlex-planned-card{display:block}
+.medlex-grid[data-view="list"] .medlex-planned-preview{width:170px;flex:none;min-height:130px;padding:15px}
+.medlex-grid[data-view="list"] .medlex-planned-term{font-size:22px;margin:15px 0 0}
+.medlex-grid[data-view="list"] .medlex-planned-slots{display:none}
+.medlex-grid[data-view="list"] .medlex-planned-card .medlex-card-body{padding:15px}
+html[data-theme="dark"] .medlex-chapter-picker{background:#193034;border-color:#2c4648}
+html[data-theme="dark"] .medlex-chapter-picker>summary strong{color:#e8f3ef}
+html[data-theme="dark"] .medlex-planned-preview{background:linear-gradient(145deg,#173e38,#1d4b42);color:#d6eee4}
+html[data-theme="dark"] .medlex-planned-badge,html[data-theme="dark"] .medlex-planned-slots{color:#b4d5c5;border-color:#4f7867}
+@media(max-width:950px){.medlex-chapter-picker .medlex-categories{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:660px){.medlex-chapter-picker>summary{padding:15px;gap:12px}.medlex-chapter-picker>summary strong{font-size:13px}.medlex-picker-action{font-size:0}.medlex-picker-action>span{font-size:24px}.medlex-chapter-picker .medlex-categories{grid-template-columns:1fr;padding:0 10px 10px;overflow-x:hidden;gap:8px}.medlex-chapter-picker .medlex-category{min-height:70px}.medlex-planned-preview{min-height:250px;padding:13px}.medlex-planned-term{font-size:23px;margin:23px 0}.medlex-planned-topline{font-size:8px}.medlex-planned-badge{font-size:8px}.medlex-dialog-placeholder{padding:15px;gap:16px}.medlex-illustration-slot{min-height:120px}.medlex-grid[data-view="list"] .medlex-planned-preview{width:145px}.medlex-grid[data-view="list"] .medlex-planned-term{font-size:21px}}

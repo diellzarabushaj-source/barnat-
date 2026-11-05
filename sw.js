@@ -24,7 +24,7 @@ const MAX_QUERY_RESPONSES = 400;
 const APP_SHELL = [
   '/', '/index.html', '/klasifikimi.html', '/icd.html', '/analizat.html',
   '/dozologjia.html', '/urgjencat.html', '/protokollet.html', '/medical-hub.html', '/recetat.html', '/sistemi.html',
-  '/medlex.html', '/medlex.css', '/medlex.js', '/data/medlex-terms.json', '/data/medlex-anatomy.json',
+  '/medlex.html', '/medlex.css', '/medlex.js', '/data/medlex-terms.json', '/data/medlex-anatomy.json', '/data/medlex-chapters.json',
   '/antibiotiket.html', '/antibiotiket.css', '/antibiotiket.js', '/antibiotiket-data.js', '/antibiotiket-penicillin-protocols.js', '/antibiotiket-ospen.js', '/pediatric-weight-age-core.js', '/antibiotiket-shell.js', '/antibiotiket-guide.js', '/antibiotiket-nice.js', '/antibiotiket-manual.css',
   '/login-v2.html', '/login-v2.css', '/login-v2.js', '/login-v2-canvas.js', '/login.html',
   '/manifest.webmanifest', '/medindex-icon.svg',
@@ -356,6 +356,15 @@ async function navigationResponse(event) {
       await putIfCacheable(PAGE_CACHE, key, response, {key});
     return response;
   };
+  if (new URL(request.url).pathname === '/medlex.html' && deviceOnline) {
+    try {
+      const response = await timeoutFetch(new Request(request, {cache:'no-cache'}), NETWORK_TIMEOUT_MS);
+      if (response.ok && !response.redirected) {
+        if (await authSnapshot()) await putIfCacheable(PAGE_CACHE, key, response, {key});
+        return response;
+      }
+    } catch { /* Keep the saved chapter available offline. */ }
+  }
   if (cached) {
     event.waitUntil(refresh().catch(() => null));
     return cloneWithHeader(cached, 'X-MedIndex-Cache', 'page-hit');
