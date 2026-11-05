@@ -81,9 +81,10 @@
       const connector = /^(DHE|OSE|PLUS|AND|OR)$/i.test(line);
       const recipeMark = /^Rp\s*[:.]$/i.test(line);
       const numbered = /^\d+[A-Z]?[.)]\s+\S/i.test(line);
-      if (connector || recipeMark) {
+      const administrationHeading = /^(?:Barna nga goja \(PO\)|Barna me rrugë të tjera enterale|Barna parenterale|Barna topike \/ lokale|Barna inhalatore|Rruga për t’u përcaktuar):$/.test(line);
+      if (connector || recipeMark || administrationHeading) {
         const row = targetDocument.createElement('p');
-        row.className = connector ? 'rx-connector' : 'rx-recipe-mark';
+        row.className = connector ? 'rx-connector' : administrationHeading ? 'rx-print-administration' : 'rx-recipe-mark';
         row.textContent = raw;
         content.append(row, targetDocument.createTextNode('\n'));
         item = null;
@@ -134,6 +135,7 @@
       .diagnosis-group li{display:flex;gap:8px;font-size:9pt;overflow-wrap:anywhere}.diagnosis-group li>strong{min-width:36px;color:#314c6d}
       .prescription-content{overflow-wrap:anywhere}
       .rx-recipe-mark{margin:0 0 7px;font:600 15pt Georgia,serif;color:#24466e;break-after:avoid-page}
+      .rx-print-administration{margin:14px 0 3px;padding:5px 0;border-bottom:1px solid #b8c5d4;font-size:10pt;font-weight:700;color:#24466e;break-after:avoid-page}
       .rx-print-item{padding:10px 0 11px;border-bottom:1px solid #e0e5ec;break-inside:avoid-page}
       .rx-print-title{margin:0 0 5px;font-size:11pt;line-height:1.4;font-weight:700;color:#162c46;break-after:avoid-page}
       .rx-print-line{margin:2px 0;white-space:pre-wrap;orphans:3;widows:3}.rx-print-line strong{font-weight:600;color:#334a65}
