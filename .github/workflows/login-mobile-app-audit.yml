@@ -10,6 +10,8 @@ on:
       - homepage-auth.css
       - login-mobile-app.css
       - login.js
+      - auth-client.js
+      - tests/auth-recovery-browser-test.js
       - api/auth.js
       - lib/device-session.mjs
       - lib/supabase-auth.js
@@ -28,6 +30,8 @@ on:
       - homepage-auth.css
       - login-mobile-app.css
       - login.js
+      - auth-client.js
+      - tests/auth-recovery-browser-test.js
       - api/auth.js
       - lib/device-session.mjs
       - lib/supabase-auth.js
@@ -92,6 +96,9 @@ jobs:
 
       - name: Verify remembered-device persistence and logout in Chromium
         run: node tests/device-session-browser-test.js
+
+      - name: Verify phone session recovery after temporary failures in Chromium
+        run: node tests/auth-recovery-browser-test.js
 
       - name: Upload mobile login screenshots
         if: always()
