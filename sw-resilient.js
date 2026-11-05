@@ -198,9 +198,9 @@ async function navigationResponse(event, url) {
   const cache = await caches.open(PAGE_CACHE);
   const cached = await cache.match(key) || await caches.match(key, { ignoreSearch:true });
 
-  // The registry shell is build-sensitive. When online, always prefer a fresh index.html
-  // so an older cached document cannot keep loading an older cohort of registry assets.
-  if (expectedPath === '/index.html' && networkProfile.online) {
+  // These documents select versioned assets. Prefer their fresh online HTML so
+  // a saved document cannot keep loading old registry code or MedLex artwork.
+  if (['/index.html', '/medlex.html'].includes(expectedPath) && networkProfile.online) {
     const fresh = await refreshNavigation(request, key, expectedPath);
     if (fresh && validHtmlResponse(fresh, expectedPath)) return cloneWithHeader(fresh, 'registry-shell-network');
   }

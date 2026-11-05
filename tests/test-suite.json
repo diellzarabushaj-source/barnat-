@@ -227,5 +227,8 @@
   "tests/antibiotics-catalog-test.js",
   "tests/antibiotics-choice-calculator-test.js",
   "tests/antibiotics-dose-math-test.js",
-  "tests/antibiotics-catalog-presentation-test.js"
+  "tests/antibiotics-catalog-presentation-test.js",
+  "tests/medlex-workspace-test.js",
+  "tests/medlex-chapters-test.js",
+  "tests/medlex-cache-refresh-test.js"
 ]
