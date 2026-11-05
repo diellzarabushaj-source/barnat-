@@ -5,7 +5,8 @@
   const DATA_URL = '/data/medlex-terms.json';
   const ANATOMY_ARTWORK_VERSION = '20261104-clinical-v2';
   const ANATOMY_DATA_URL = '/data/medlex-anatomy.json?v=' + ANATOMY_ARTWORK_VERSION;
-  const CHAPTERS_URL = '/data/medlex-chapters.json?v=20261105-chapters-v1';
+  const CHAPTER_ARTWORK_VERSION = '20261105-content-03-10-v1';
+  const CHAPTERS_URL = '/data/medlex-chapters.json?v=' + CHAPTER_ARTWORK_VERSION;
   const IMAGE_BASE = '/assets/medlex/';
   const ANATOMY_IMAGE_BASE = '/assets/medlex-anatomy/';
   const TOPICS = [
@@ -89,7 +90,7 @@
     if (term.status === 'planned') return '';
     const name = String(term.image || '').replace(/\.png$/i,'.webp');
     if (term.category === '02') return /^(?:or|ab|th|up|lo|he|ne|ba|pe)\d{2}\.webp$/.test(name) ? ANATOMY_IMAGE_BASE + name + '?v=' + ANATOMY_ARTWORK_VERSION : '';
-    if (/^(?:0[3-9]|1[0-8])$/.test(term.category)) return new RegExp('^c' + term.category + '-\\d{3}\\.webp$').test(name) ? '/assets/medlex-chapters/' + name : '';
+    if (/^(?:0[3-9]|1[0-8])$/.test(term.category)) return new RegExp('^c' + term.category + '-\\d{3}\\.webp$').test(name) ? '/assets/medlex-chapters/' + name + '?v=' + CHAPTER_ARTWORK_VERSION : '';
     return /^\d{2}-[a-z-]+\.webp$/.test(name) ? IMAGE_BASE + name : '';
   }
 
@@ -215,7 +216,29 @@
     const grid = $('medlexGridItems');
     grid.dataset.view = state.view;
     const fragment = document.createDocumentFragment();
-    matches.forEach(({term}, index) => fragment.append(term.status === 'planned' ? plannedCard(term) : card(term, index)));
+    const grouped = !query && /^(?:0[3-9]|1[0-8])$/.test(state.category);
+    grid.dataset.grouped = String(grouped);
+    if (grouped) {
+      const groups = topicsForCategory().filter(item => item.id !== 'all' && (state.topic === 'all' || item.id === state.topic));
+      let cardIndex = 0;
+      for (const group of groups) {
+        const terms = matches.filter(item => item.term.group === group.id);
+        if (!terms.length) continue;
+        const section = create('section','medlex-subchapter');
+        section.dataset.subchapter = group.id;
+        const heading = create('h3','medlex-subchapter-heading',group.label);
+        heading.id = 'medlex-subchapter-' + group.id;
+        section.setAttribute('aria-labelledby',heading.id);
+        heading.append(create('span','',terms.length + ' kartela'));
+        const cards = create('div','medlex-grid medlex-subchapter-cards');
+        cards.dataset.view = state.view;
+        for (const {term} of terms) cards.append(term.status === 'planned' ? plannedCard(term) : card(term,cardIndex++));
+        section.append(heading,cards);
+        fragment.append(section);
+      }
+    } else {
+      matches.forEach(({term}, index) => fragment.append(term.status === 'planned' ? plannedCard(term) : card(term, index)));
+    }
     grid.replaceChildren(fragment);
     $('medlexEmpty').hidden = matches.length !== 0 || !state.terms.length;
     const available = state.terms.filter(term => state.category === 'all' || term.category === state.category).length;

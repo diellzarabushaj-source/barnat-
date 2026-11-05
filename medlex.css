@@ -49,6 +49,10 @@ html[data-drx-app="medlex-v1"] .medlex-page{max-width:1490px;margin:0 auto;paddi
 .medlex-results-head{display:flex;align-items:center;justify-content:space-between;min-height:28px;margin:0 1px 14px;gap:12px}
 .medlex-results-head p{margin:0;color:#78908d;font-size:11.5px;font-weight:590}.medlex-reset{padding:4px 0;border:0;background:transparent;color:#117d73;font-size:11.5px;font-weight:740;cursor:pointer}
 .medlex-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;gap:20px}
+.medlex-grid[data-grouped="true"]{display:block}
+.medlex-subchapter{margin:0 0 32px;min-width:0}
+.medlex-subchapter-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;padding:15px 18px;border:1px solid #d9e9e6;border-radius:13px;background:#f0f8f6;color:#164f53;font-size:19px;font-weight:800}
+.medlex-subchapter-heading span{flex:none;color:#5b787b;font-size:12px;font-weight:600}
 .medlex-card{min-width:0;overflow:hidden;border:1px solid #e1e9e7;border-radius:17px;background:#fff;box-shadow:0 5px 21px rgba(14,50,51,.043);transition:transform .18s,border-color .18s,box-shadow .18s}
 .medlex-card:hover{transform:translateY(-3px);border-color:#9ed4c9;box-shadow:0 14px 30px rgba(20,71,71,.1)}
 .medlex-card-open{display:block;width:100%;padding:0;border:0;background:transparent;text-align:left;cursor:pointer}

@@ -1,6 +1,6 @@
 {
-  "version": "20261105-chapters-v1",
-  "status": "structured_content_pending",
+  "version": "20261105-content-03-10-v1",
+  "status": "partially_illustrated",
   "artworkPolicy": {
     "chapters": [
       "03",
@@ -42,12 +42,62 @@
       "status": "available",
       "source": "/data/medlex-terms.json",
       "groups": [
-        {"id":"time","label":"Kohëzgjatja","ids":[1,2,3]},
-        {"id":"origin","label":"Origjina","ids":[4,5,6,7,10,11]},
-        {"id":"nature","label":"Natyra","ids":[8,9]},
-        {"id":"treatment","label":"Përgjigjja ndaj trajtimit","ids":[12,13]},
-        {"id":"course","label":"Ecuria","ids":[14,15,16,17]},
-        {"id":"distribution","label":"Shpërndarja","ids":[18,19,20]}
+        {
+          "id": "time",
+          "label": "Kohëzgjatja",
+          "ids": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "origin",
+          "label": "Origjina",
+          "ids": [
+            4,
+            5,
+            6,
+            7,
+            10,
+            11
+          ]
+        },
+        {
+          "id": "nature",
+          "label": "Natyra",
+          "ids": [
+            8,
+            9
+          ]
+        },
+        {
+          "id": "treatment",
+          "label": "Përgjigjja ndaj trajtimit",
+          "ids": [
+            12,
+            13
+          ]
+        },
+        {
+          "id": "course",
+          "label": "Ecuria",
+          "ids": [
+            14,
+            15,
+            16,
+            17
+          ]
+        },
+        {
+          "id": "distribution",
+          "label": "Shpërndarja",
+          "ids": [
+            18,
+            19,
+            20
+          ]
+        }
       ]
     },
     {
@@ -100,8 +150,8 @@
       "id": "03",
       "title": "Simptoma dhe shenja klinike",
       "heading": "Simptoma dhe shenja klinike",
-      "description": "Nënndarjet dhe termat janë të organizuar. Ilustrimet, përkufizimet dhe shembujt klinikë do të plotësohen.",
-      "status": "planned",
+      "description": "Frymëmarrja, Vetëdija dhe gjendja e përgjithshme, Gjakderdhja dhe eliminimi, Gëlltitja.",
+      "status": "available",
       "groups": [
         {
           "id": "respirator",
@@ -127,13 +177,18 @@
           "group": "respirator",
           "term": "Dispne",
           "latin": "",
-          "english": "",
+          "english": "Dyspnea",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ndjesi e vështirësisë në frymëmarrje.",
+          "example": "Insuficienca kardiake mund të shkaktojë dispne.",
+          "image": "c03-001.webp",
+          "status": "available",
+          "illustrationBrief": "Adult seated leaning forward with forearms supported, breathing effort; inset accurate lungs and trachea. No cyanosis or invented lesion.",
+          "references": [
+            "https://www.nhs.uk/conditions/heart-failure/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-002",
@@ -141,13 +196,18 @@
           "group": "respirator",
           "term": "Ortopne",
           "latin": "",
-          "english": "",
+          "english": "Orthopnea",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Vështirësi në frymëmarrje gjatë shtrirjes, që lehtësohet ulur.",
+          "example": "Insuficienca kardiake mund të japë ortopne.",
+          "image": "c03-002.webp",
+          "status": "available",
+          "illustrationBrief": "Two clear matched side-view scenes of same clothed adult: lying flat has breathing discomfort, sitting propped upright has easier breathing. Labels only: 'Shtrirë' and 'Ulur'. No sleeping confusion.",
+          "references": [
+            "https://www.nhs.uk/conditions/heart-failure/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-003",
@@ -155,13 +215,18 @@
           "group": "respirator",
           "term": "Takipne",
           "latin": "",
-          "english": "",
+          "english": "Tachypnea",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Frymëmarrje me frekuencë më të lartë se normalja.",
+          "example": "Pneumonia mund të shoqërohet me takipne.",
+          "image": "c03-003.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed adult chest with rapid breathing movement arrows; two respiratory waveforms over exactly the SAME time interval, normal fewer cycles and tachypnea more cycles. Not an ECG. Labels only 'Normal' and 'Më shpejt'. No numerical thresholds.",
+          "references": [
+            "https://www.nice.org.uk/guidance/ng250/chapter/recommendations"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-004",
@@ -169,13 +234,18 @@
           "group": "respirator",
           "term": "Bradipne",
           "latin": "",
-          "english": "",
+          "english": "Bradypnea",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Frymëmarrje me frekuencë më të ulët se normalja.",
+          "example": "Intoksikimi me opioide mund të shkaktojë bradipne.",
+          "image": "c03-004.webp",
+          "status": "available",
+          "illustrationBrief": "Respiratory system inset and matched breathing waveforms over same time interval: normal more cycles, bradypnea fewer cycles. No ECG or drug doses. Labels only 'Normal' and 'Më ngadalë'. Fully clothed resting adult if helpful.",
+          "references": [
+            "https://medlineplus.gov/opioidoverdose.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-005",
@@ -183,13 +253,18 @@
           "group": "respirator",
           "term": "Apne",
           "latin": "",
-          "english": "",
+          "english": "Apnea",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ndërprerje e përkohshme e frymëmarrjes.",
+          "example": "Apneja obstruktive e gjumit jep pauza në frymëmarrje.",
+          "image": "c03-005.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed sleeping adult with sagittal upper-airway inset showing relaxed soft tissue narrowing pharynx, and respiratory airflow waveform with a clearly marked pause then return of breaths. Label 'Pauzë në frymëmarrje'. Do not show flat ECG or stopped heart.",
+          "references": [
+            "https://www.nhs.uk/conditions/sleep-apnoea/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-006",
@@ -197,13 +272,19 @@
           "group": "respirator",
           "term": "Cianozë",
           "latin": "",
-          "english": "",
+          "english": "Cyanosis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ngjyrim i kaltër ose gri i lëkurës dhe i mukozave.",
+          "example": "Sëmundjet cianogjene të zemrës mund të japin cianozë.",
+          "image": "c03-006.webp",
+          "status": "available",
+          "illustrationBrief": "Neutral medical close-up comparison of lips and fingertips, normal on left and blue-gray on right, anatomically normal hands five digits. Restrained realistic discoloration. Labels 'Normal' and 'Cianozë'. No entire blue person, no invented oxygen saturation.",
+          "references": [
+            "https://www.cdc.gov/heart-defects/about/tetralogy-of-fallot.html",
+            "https://www.nidirect.gov.uk/conditions/blue-skin-and-lips-cyanosis"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-007",
@@ -211,13 +292,18 @@
           "group": "respirator",
           "term": "Hemoptizë",
           "latin": "",
-          "english": "",
+          "english": "Hemoptysis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Nxjerrje e gjakut me kollë nga rrugët e frymëmarrjes.",
+          "example": "Bronkiektazitë mund të shkaktojnë hemoptizë.",
+          "image": "c03-007.webp",
+          "status": "available",
+          "illustrationBrief": "Fully clothed adult coughing into tissue with only tiny blood streaks; accurate airway/lungs inset with small coral bronchial focus. Clinically restrained, no gore. Emphasize origin in airways, not stomach. Label 'Gjak me kollë'.",
+          "references": [
+            "https://www.nhs.uk/conditions/bronchiectasis/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-008",
@@ -225,13 +311,18 @@
           "group": "vetedija",
           "term": "Sinkopë",
           "latin": "",
-          "english": "",
+          "english": "Syncope",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Humbje e shkurtër e vetëdijes nga ulja kalimtare e perfuzionit cerebral.",
+          "example": "Sinkopa vazovagale mund të ndodhë pas qëndrimit të gjatë në këmbë.",
+          "image": "c03-008.webp",
+          "status": "available",
+          "illustrationBrief": "Educational sequence: clothed adult standing with faintness then safely supported supine, eyes closed in brief faint; small brain perfusion inset with reduced upward blood flow. Not seizure or stroke, no injury. Label 'Humbje e shkurtër e vetëdijes'.",
+          "references": [
+            "https://medlineplus.gov/fainting.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-009",
@@ -239,13 +330,18 @@
           "group": "vetedija",
           "term": "Presinkopë",
           "latin": "",
-          "english": "",
+          "english": "Presyncope",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ndjesi e afërt me të fikët, pa humbje të vetëdijes.",
+          "example": "Hipotensioni ortostatik mund të japë presinkopë.",
+          "image": "c03-009.webp",
+          "status": "available",
+          "illustrationBrief": "Alert clothed adult standing up from a chair, briefly dizzy, eyes open and reaching safely for chair support. Inset shows standing posture and blood pressure down arrow, no actual numbers. Label 'Vetëdija ruhet'. No collapsed unconscious person.",
+          "references": [
+            "https://cpr.heart.org/en/resuscitation-science/first-aid-guidelines/first-aid"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-010",
@@ -253,13 +349,18 @@
           "group": "vetedija",
           "term": "Asteni",
           "latin": "",
-          "english": "",
+          "english": "Asthenia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ndjenjë dobësie dhe mungese energjie.",
+          "example": "Anemia nga mungesa e hekurit mund të japë asteni.",
+          "image": "c03-010.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed adult sitting fatigued at a desk, shoulders low; small scientific red-blood-cell inset, no invented lab values. Calm clinical scene, not depression stereotype. Label 'Dobësi dhe mungesë energjie'.",
+          "references": [
+            "https://www.nhs.uk/conditions/iron-deficiency-anaemia/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-011",
@@ -267,13 +368,18 @@
           "group": "vetedija",
           "term": "Anoreksi",
           "latin": "",
-          "english": "",
+          "english": "Loss of appetite",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ulje ose humbje e oreksit.",
+          "example": "Infeksionet, si pneumonia, mund të ulin oreksin.",
+          "image": "c03-011.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed adult at table with balanced untouched meal and mild lack of interest, plate gently pushed away; no severe thinness or weight-loss imagery. Label 'Humbje e oreksit'. Do not confuse symptom with anorexia nervosa.",
+          "references": [
+            "https://www.nhs.uk/conditions/pneumonia/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-012",
@@ -281,13 +387,18 @@
           "group": "vetedija",
           "term": "Letargji",
           "latin": "",
-          "english": "",
+          "english": "Lethargy",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Përgjumje me ulje të vigjilencës dhe të reagimit.",
+          "example": "Encefaliti mund të shoqërohet me letargji.",
+          "image": "c03-012.webp",
+          "status": "available",
+          "illustrationBrief": "Drowsy fully clothed adult in a clinical bed with reduced alertness, half-closed eyes; subtle neutral brain inset. No physician mascot, no dramatic unconscious corpse. Label 'Vigjilencë e ulur'.",
+          "references": [
+            "https://www.nyc.gov/site/doh/health/health-topics/encephalitis-viral.page"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-013",
@@ -295,13 +406,18 @@
           "group": "vetedija",
           "term": "Diaforezë",
           "latin": "",
-          "english": "",
+          "english": "Diaphoresis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Djersitje e tepruar, shpesh pa sforcim fizik.",
+          "example": "Infarkti i miokardit mund të shoqërohet me diaforezë.",
+          "image": "c03-013.webp",
+          "status": "available",
+          "illustrationBrief": "Neutral adult face and forehead with visible sweat droplets, clothed upper torso resting; a small skin sweat-gland inset. Emphasize sweating at rest, not athlete. Label 'Djersitje e tepruar'. No invented ECG.",
+          "references": [
+            "https://www.nhs.uk/conditions/heart-attack/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-014",
@@ -309,13 +425,18 @@
           "group": "gjakderdhje",
           "term": "Hematemezë",
           "latin": "",
-          "english": "",
+          "english": "Hematemesis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Vjellje me gjak të freskët ose me pamje si llum kafeje.",
+          "example": "Ulçera peptike me gjakderdhje mund të japë hematemezë.",
+          "image": "c03-014.webp",
+          "status": "available",
+          "illustrationBrief": "Clinical diagram of esophagus and stomach, small bleeding gastric mucosal ulcer and upward path toward mouth; discreet basin with minimal dark coffee-ground specks. No graphic vomiting or gore. Make gastric origin clear, distinct from coughing blood. Label 'Gjak në të vjella'.",
+          "references": [
+            "https://www.plymouthhospitals.nhs.uk/display-pil/pil-upper-gastrointestinal-bleeding-advice-for-adults-6023"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-015",
@@ -323,13 +444,18 @@
           "group": "gjakderdhje",
           "term": "Melena",
           "latin": "",
-          "english": "",
+          "english": "Melena",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Feçe të zeza, ngjitëse, nga prania e gjakut të tretur.",
+          "example": "Ulçera me gjakderdhje në traktin e sipërm mund të japë melena.",
+          "image": "c03-015.webp",
+          "status": "available",
+          "illustrationBrief": "Refined clinical digestive-tract diagram showing small upper gastric bleed and a downward pathway; small clean specimen container inset with a schematic near-black stool sample. Minimal clinical depiction, not gross or graphic. Label 'Gjak i tretur'. Not bright-red blood.",
+          "references": [
+            "https://www.plymouthhospitals.nhs.uk/display-pil/pil-upper-gastrointestinal-bleeding-advice-for-adults-6023"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-016",
@@ -337,13 +463,18 @@
           "group": "gjakderdhje",
           "term": "Hematoqezi",
           "latin": "",
-          "english": "",
+          "english": "Hematochezia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Dalje e gjakut të kuq ose ngjyrë gështenje me feçet.",
+          "example": "Koliti ulceroz mund të japë gjak të kuq në feçe.",
+          "image": "c03-016.webp",
+          "status": "available",
+          "illustrationBrief": "Clinical colon diagram with localized inflamed mucosa and tiny red blood traces; discreet schematic specimen inset with brown stool and red streaks, no gore or exposed anus. Label 'Gjak i kuq në feçe'. Distinguish from black melena.",
+          "references": [
+            "https://www.nhs.uk/conditions/ulcerative-colitis/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-017",
@@ -351,13 +482,18 @@
           "group": "gjakderdhje",
           "term": "Hematuri",
           "latin": "",
-          "english": "",
+          "english": "Hematuria",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Prani e gjakut në urinë, e dukshme ose mikroskopike.",
+          "example": "Cistiti mund të shoqërohet me hematuri.",
+          "image": "c03-017.webp",
+          "status": "available",
+          "illustrationBrief": "Accurate kidneys ureters bladder diagram with specimen cup of lightly pink urine and microscope inset containing red blood cells. No external genitalia. Label 'Gjak në urinë'. No clots or dramatic bleeding.",
+          "references": [
+            "https://www.nhs.uk/conditions/urinary-tract-infections-utis/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-018",
@@ -365,13 +501,18 @@
           "group": "gjakderdhje",
           "term": "Disuri",
           "latin": "",
-          "english": "",
+          "english": "Dysuria",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Dhimbje ose djegie gjatë urinimit.",
+          "example": "Cistiti shpesh shkakton disuri.",
+          "image": "c03-018.webp",
+          "status": "available",
+          "illustrationBrief": "Isolated medical urinary bladder and urethra cutaway, mild coral inflammation at bladder outlet; small neutral clothed adult holding lower abdomen if needed. No external genitalia or exposed person. Label 'Djegie gjatë urinimit'.",
+          "references": [
+            "https://www.nhs.uk/conditions/urinary-tract-infections-utis/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-019",
@@ -379,13 +520,18 @@
           "group": "gelltitja",
           "term": "Disfagi",
           "latin": "",
-          "english": "",
+          "english": "Dysphagia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Vështirësi në gëlltitjen e ushqimeve ose të lëngjeve.",
+          "example": "Insulti cerebral mund të shkaktojë disfagi.",
+          "image": "c03-019.webp",
+          "status": "available",
+          "illustrationBrief": "Accurate sagittal head-neck swallowing diagram: food bolus passing from mouth into pharynx/esophagus with a delayed or obstructed route, trachea clearly distinct. Fully modest clinical anatomy. Label 'Gëlltitje e vështirë'. Do not imply pain is required.",
+          "references": [
+            "https://www.nhs.uk/symptoms/swallowing-problems-dysphagia/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c03-020",
@@ -393,13 +539,18 @@
           "group": "gelltitja",
           "term": "Odinofagi",
           "latin": "",
-          "english": "",
+          "english": "Odynophagia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Dhimbje gjatë gëlltitjes.",
+          "example": "Faringiti mund të shkaktojë odinofagi.",
+          "image": "c03-020.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed adult touching throat while swallowing water, accurate pharynx inset with mild coral inflammation and pain marker; distinguish painful swallowing from obstructed passage. Label 'Gëlltitje e dhimbshme'. No foreign-body obstruction.",
+          "references": [
+            "https://www.cdc.gov/sore-throat/about/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         }
       ]
     },
@@ -407,8 +558,8 @@
       "id": "04",
       "title": "Neurologji",
       "heading": "Neurologji",
-      "description": "Nënndarjet dhe termat janë të organizuar. Ilustrimet, përkufizimet dhe shembujt klinikë do të plotësohen.",
-      "status": "planned",
+      "description": "Njohja dhe gjuha, Forca dhe lëvizja, Ndjeshmëria, Shikimi dhe ekuilibri, Lëvizjet e pavullnetshme.",
+      "status": "available",
       "groups": [
         {
           "id": "njohja",
@@ -438,13 +589,18 @@
           "group": "njohja",
           "term": "Agnozi",
           "latin": "",
-          "english": "",
+          "english": "Agnosia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Pamundësi për të njohur objekte ose stimuj, megjithëse shqisa përkatëse ruhet.",
+          "example": "Dëmtimi kortikal pas një insulti mund të shkaktojë agnozi.",
+          "image": "c04-001.webp",
+          "status": "available",
+          "illustrationBrief": "Alert clothed adult can clearly SEE an apple and key but cannot recognize their meaning; enlarged visual-recognition pathway from eye to cerebral cortex with a subtle interrupted association step. Labels only 'Shikon' and 'Nuk e njeh'. Do not imply blindness or merely inability to name an object.",
+          "references": [
+            "https://www.ninds.nih.gov/health-information/disorders/agnosia"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-002",
@@ -452,13 +608,18 @@
           "group": "njohja",
           "term": "Afazi",
           "latin": "",
-          "english": "",
+          "english": "Aphasia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Çrregullim i të shprehurit ose i të kuptuarit të gjuhës nga dëmtimi cerebral.",
+          "example": "Insulti në hemisferën dominante mund të shkaktojë afazi.",
+          "image": "c04-002.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed alert adult trying to communicate with a speech bubble containing a few disconnected letter groups, plus accurate left cerebral hemisphere language-network inset. Emphasize language processing, not mouth weakness or low intelligence. Label 'Vështirësi në gjuhë'.",
+          "references": [
+            "https://www.ninds.nih.gov/health-information/disorders/aphasia"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-003",
@@ -466,13 +627,18 @@
           "group": "njohja",
           "term": "Disartri",
           "latin": "",
-          "english": "",
+          "english": "Dysarthria",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Të folur i paqartë nga çrregullimi i kontrollit motor të muskujve të të folurit.",
+          "example": "Sëmundja e Parkinsonit mund të japë disartri.",
+          "image": "c04-003.webp",
+          "status": "available",
+          "illustrationBrief": "Accurate mouth, tongue, palate and larynx motor-control inset next to adult speaking with indistinct articulation. Small waveform of speech, not ECG. Label 'Artikulim i paqartë'. Preserve distinction from aphasia: intended words/language are formed.",
+          "references": [
+            "https://www.nhs.uk/conditions/dysarthria/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-004",
@@ -480,13 +646,18 @@
           "group": "njohja",
           "term": "Apraksi",
           "latin": "",
-          "english": "",
+          "english": "Apraxia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Vështirësi në kryerjen e një veprimi të mësuar, pa dobësi që e shpjegon atë.",
+          "example": "Insulti cerebral mund të shkaktojë apraksi.",
+          "image": "c04-004.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed adult holds a toothbrush with an anatomically correct hand but is uncertain how to perform the learned brushing gesture; inset brain planning-to-hand pathway interrupted. No arm paralysis. Label 'Veprim i mësuar i vështirë'.",
+          "references": [
+            "https://www.ninds.nih.gov/health-information/disorders/apraxia"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-005",
@@ -494,13 +665,18 @@
           "group": "njohja",
           "term": "Anosognozi",
           "latin": "",
-          "english": "",
+          "english": "Anosognosia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Mungesë e vetëdijes për një deficit ose sëmundje të vetën.",
+          "example": "Pas insultit, personi mund të mos e njohë hemiparezën e vet.",
+          "image": "c04-005.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed stroke-recovery patient with one visibly weak supported arm and a calm self-assessment bubble reading 'Nuk kam dobësi'; small brain self-awareness inset. Respectful neurological explanation, not deception or stubbornness. No extra dialogue or physician mascot.",
+          "references": [
+            "https://www.ninds.nih.gov/sites/default/files/2025-05/post-stroke-rehabilitation.pdf"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-006",
@@ -508,13 +684,18 @@
           "group": "motorika",
           "term": "Ataksi",
           "latin": "",
-          "english": "",
+          "english": "Ataxia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Mungesë koordinimi të lëvizjeve, ecjes ose ekuilibrit.",
+          "example": "Ataksitë spinocerebelare mund të japin ecje të paqëndrueshme.",
+          "image": "c04-006.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed adult walking with a wide-based unsteady gait and a subtle irregular footstep path; accurate cerebellum inset highlighted coral. No paralysis or exaggerated drunken stereotype. Label 'Koordinim i dëmtuar'.",
+          "references": [
+            "https://www.ninds.nih.gov/health-information/disorders/spinocerebellar-ataxias"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-007",
@@ -522,13 +703,18 @@
           "group": "motorika",
           "term": "Parezë",
           "latin": "",
-          "english": "",
+          "english": "Paresis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Dobësim i pjesshëm i forcës muskulore.",
+          "example": "Insulti cerebral mund të shkaktojë parezë të një gjymtyre.",
+          "image": "c04-007.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed adult attempting to raise one arm with reduced strength but some preserved movement. Compare same arm neutral and partially raised with a small weak movement arrow. Label 'Forcë e ulur'. Do not show complete immobility.",
+          "references": [
+            "https://www.ninds.nih.gov/health-information/disorders/stroke"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-008",
@@ -536,13 +722,18 @@
           "group": "motorika",
           "term": "Plegji",
           "latin": "",
-          "english": "",
+          "english": "Paralysis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Humbje e plotë e lëvizjes vullnetare në muskujt e prekur.",
+          "example": "Dëmtimi i rëndë i rrugëve motorike mund të shkaktojë plegji.",
+          "image": "c04-008.webp",
+          "status": "available",
+          "illustrationBrief": "Accurate motor pathway from spinal cord to one limb, with interrupted signal and that limb resting supported without movement. A separate normal pathway may be neutral. Label 'Pa lëvizje vullnetare'. No loss of consciousness implied.",
+          "references": [
+            "https://www.ninds.nih.gov/health-information/disorders/spinal-cord-injury"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-009",
@@ -550,13 +741,18 @@
           "group": "motorika",
           "term": "Hemiparezë",
           "latin": "",
-          "english": "",
+          "english": "Hemiparesis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Dobësi muskulore në njërën gjysmë të trupit.",
+          "example": "Insulti cerebral mund të japë hemiparezë kontralaterale.",
+          "image": "c04-009.webp",
+          "status": "available",
+          "illustrationBrief": "Front-view clothed adult with ONLY one side's arm and leg highlighted coral, other side neutral. Some movement remains. Accurate brain inset with crossing motor-pathway concept if clear, but no invented lesion map. Label 'Dobësi në njërën anë'.",
+          "references": [
+            "https://www.ninds.nih.gov/sites/default/files/2025-05/post-stroke-rehabilitation.pdf"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-010",
@@ -564,13 +760,18 @@
           "group": "motorika",
           "term": "Paraparezë",
           "latin": "",
-          "english": "",
+          "english": "Paraparesis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Dobësi muskulore në të dyja gjymtyrët e poshtme.",
+          "example": "Dëmtimi jo i plotë i palcës mund të japë paraparezë.",
+          "image": "c04-010.webp",
+          "status": "available",
+          "illustrationBrief": "Modestly clothed adult with BOTH legs softly highlighted and small weak movement arrows; arms neutral with normal function. Spine inset suggests incomplete signal transmission. Label 'Dobësi në të dyja këmbët'. Not complete paralysis.",
+          "references": [
+            "https://www.ninds.nih.gov/health-information/disorders/spinal-cord-injury"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-011",
@@ -578,13 +779,18 @@
           "group": "motorika",
           "term": "Paraplegji",
           "latin": "",
-          "english": "",
+          "english": "Paraplegia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Paralizë e të dyja gjymtyrëve të poshtme.",
+          "example": "Dëmtimi torakal i palcës kurrizore mund të japë paraplegji.",
+          "image": "c04-011.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed seated adult with both legs highlighted coral and arms neutral, supported safely; accurate thoracic spinal cord inset shows level of interruption. Label 'Paralizë e këmbëve'. No cervical injury diagram or arm paralysis.",
+          "references": [
+            "https://www.ninds.nih.gov/health-information/disorders/spinal-cord-injury"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-012",
@@ -592,13 +798,18 @@
           "group": "motorika",
           "term": "Tetraplegji",
           "latin": "",
-          "english": "",
+          "english": "Tetraplegia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Paralizë që prek të katër gjymtyrët.",
+          "example": "Dëmtimi cervikal i palcës kurrizore mund të japë tetraplegji.",
+          "image": "c04-012.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed adult supported in clinical bed or supportive wheelchair; BOTH arms and BOTH legs highlighted coral, face neutral. Accurate cervical cord inset with interrupted descending pathways. Label 'Të katër gjymtyrët'. No claim that every function is always absent.",
+          "references": [
+            "https://www.ninds.nih.gov/health-information/disorders/spinal-cord-injury"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-013",
@@ -606,13 +817,19 @@
           "group": "ndjeshmeria",
           "term": "Parestezi",
           "latin": "",
-          "english": "",
+          "english": "Paresthesia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ndjesi shpimi, pickimi ose mizërimi në lëkurë.",
+          "example": "Sindroma e tunelit karpal mund të japë parestezi në dorë.",
+          "image": "c04-013.webp",
+          "status": "available",
+          "illustrationBrief": "Accurate palmar hand with subtle pins-and-needles sparkle marks over thumb index middle and radial half of ring finger, little finger neutral; small median nerve/carpal tunnel inset. Exactly five digits. Label 'Shpime dhe mizërim'. No literal needles penetrating skin.",
+          "references": [
+            "https://www.ninds.nih.gov/health-information/disorders/paresthesia",
+            "https://www.nhs.uk/conditions/carpal-tunnel-syndrome/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-014",
@@ -620,13 +837,18 @@
           "group": "ndjeshmeria",
           "term": "Disestezi",
           "latin": "",
-          "english": "",
+          "english": "Dysesthesia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ndjesi jonormale e pakëndshme, spontane ose e nxitur nga prekja.",
+          "example": "Neuropatia diabetike mund të japë djegie dhe disestezi në shputa.",
+          "image": "c04-014.webp",
+          "status": "available",
+          "illustrationBrief": "Neutral foot and peripheral nerve inset; a soft touch represented by cotton and unpleasant burning sensation visualized as restrained coral glow, not real fire. Label 'Ndjesi e pakëndshme'. No skin burn lesion.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/diabetes/overview/preventing-problems/nerve-damage-diabetic-neuropathies/peripheral-neuropathy"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-015",
@@ -634,13 +856,18 @@
           "group": "ndjeshmeria",
           "term": "Anestezi",
           "latin": "",
-          "english": "",
+          "english": "Anesthesia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Humbje e ndjeshmërisë në një zonë të trupit.",
+          "example": "Bllokada e një nervi periferik jep anestezi në zonën që ai inervon.",
+          "image": "c04-015.webp",
+          "status": "available",
+          "illustrationBrief": "Close-up intact normal hand and a sensory nerve pathway with blocked signal; small cotton touch on a softly highlighted numb patch, no reaction. Label 'Ndjeshmëri e munguar'. Do not depict general anesthesia or unconsciousness, no needles needed.",
+          "references": [
+            "https://www.nhs.uk/conditions/local-anaesthesia/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-016",
@@ -648,13 +875,19 @@
           "group": "syte-ekuilibri",
           "term": "Diplopi",
           "latin": "",
-          "english": "",
+          "english": "Diplopia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Shikim i dy imazheve të të njëjtit objekt.",
+          "example": "Paraliza e nervit VI mund të shkaktojë diplopi horizontale.",
+          "image": "c04-016.webp",
+          "status": "available",
+          "illustrationBrief": "Adult eyes with a single target object in real space, and patient-view inset where that SAME target is seen twice side by side. Clearly separate real object from perceived double images. Label 'Një objekt, dy imazhe'. Not blurred vision.",
+          "references": [
+            "https://www.nhs.uk/symptoms/double-vision/",
+            "https://www.aapos.org/glossary/sixth-nerve-palsy"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-017",
@@ -662,13 +895,18 @@
           "group": "syte-ekuilibri",
           "term": "Nistagmus",
           "latin": "",
-          "english": "",
+          "english": "Nystagmus",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Lëvizje të pavullnetshme dhe ritmike të syve.",
+          "example": "Çrregullimet vestibulare mund të shoqërohen me nistagmus.",
+          "image": "c04-017.webp",
+          "status": "available",
+          "illustrationBrief": "Medical close-up of two eyes showing small horizontal oscillation arrows and three faint sequential positions of one iris within the eye. No extra eyeballs. Small inner-ear vestibular inset. Label 'Lëvizje ritmike të syve'.",
+          "references": [
+            "https://www.nei.nih.gov/learn-about-eye-health/eye-conditions-and-diseases/nystagmus"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-018",
@@ -676,13 +914,18 @@
           "group": "syte-ekuilibri",
           "term": "Vertigo",
           "latin": "",
-          "english": "",
+          "english": "Vertigo",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ndjesi e rreme sikur personi ose ambienti po rrotullohet.",
+          "example": "Vertigoja pozicionale beninje shfaqet pas ndryshimit të pozicionit të kokës.",
+          "image": "c04-018.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed adult with rotating surroundings subtly visualized by a curved circular arrow; accurate inner-ear semicircular canal inset and tiny otoconia as illustrative BPPV association. Label 'Ndjesi rrotullimi'. Not presyncope, no fainting.",
+          "references": [
+            "https://www.nhs.uk/conditions/vertigo/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-019",
@@ -690,13 +933,18 @@
           "group": "levizje",
           "term": "Tremor",
           "latin": "",
-          "english": "",
+          "english": "Tremor",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Dridhje e pavullnetshme dhe ritmike e një pjese të trupit.",
+          "example": "Sëmundja e Parkinsonit mund të japë tremor në pushim.",
+          "image": "c04-019.webp",
+          "status": "available",
+          "illustrationBrief": "Anatomically accurate hand resting on a lap with subtle regular oscillation motion lines, plus a simple regular movement waveform. Five digits, no duplication or gross movement. Label 'Dridhje ritmike'.",
+          "references": [
+            "https://www.ninds.nih.gov/health-information/disorders/tremor"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-020",
@@ -704,13 +952,18 @@
           "group": "levizje",
           "term": "Mioklonus",
           "latin": "",
-          "english": "",
+          "english": "Myoclonus",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Lëvizje e papritur, e shkurtër dhe e pavullnetshme e muskujve.",
+          "example": "Epilepsia mioklonike mund të japë kërcime të shkurtra muskulore.",
+          "image": "c04-020.webp",
+          "status": "available",
+          "illustrationBrief": "One sudden brief arm jerk shown with a small displacement arrow and a sparse brief burst waveform; contrast visual timing from rhythmic tremor, no continuous sine wave. Clothed adult, no dramatic full-body seizure. Label 'Kërcim i shkurtër muskulor'.",
+          "references": [
+            "https://www.ninds.nih.gov/health-information/disorders/myoclonus"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c04-021",
@@ -718,13 +971,18 @@
           "group": "levizje",
           "term": "Fascikulacion",
           "latin": "",
-          "english": "",
+          "english": "Fasciculation",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Tkurrje e vogël e pavullnetshme, e dukshme nën lëkurë.",
+          "example": "Fascikulacionet mund të shfaqen në sindromën beninje të fascikulacioneve.",
+          "image": "c04-021.webp",
+          "status": "available",
+          "illustrationBrief": "Close-up calf surface with one tiny localized ripple, inset a motor neuron and small motor-unit fibers contracting. Whole limb remains still; not tremor or large jerk. Label 'Tkurrje e vogël lokale'. No invented electrical trace.",
+          "references": [
+            "https://www.nhs.uk/symptoms/twitching-eyes-and-muscles/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         }
       ]
     },
@@ -732,8 +990,8 @@
       "id": "05",
       "title": "Kardiologji dhe hemodinamikë",
       "heading": "Kardiologji dhe hemodinamikë",
-      "description": "Nënndarjet dhe termat janë të organizuar. Ilustrimet, përkufizimet dhe shembujt klinikë do të plotësohen.",
-      "status": "planned",
+      "description": "Ritmi dhe frekuenca, Presioni dhe perfuzioni, Qarkullimi arterial dhe venoz, Valvulat dhe funksioni kardiak.",
+      "status": "available",
       "groups": [
         {
           "id": "ritmi",
@@ -759,13 +1017,18 @@
           "group": "ritmi",
           "term": "Takikardi",
           "latin": "",
-          "english": "",
+          "english": "Tachycardia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Frekuencë e zemrës më e lartë se normalja për moshën dhe gjendjen.",
+          "example": "Takikardia supraventrikulare shkakton rrahje të shpejta të zemrës.",
+          "image": "c05-001.webp",
+          "status": "available",
+          "illustrationBrief": "Accurate heart inset with evenly spaced pulse peaks: normal fewer, tachycardia more over identical time windows. Clothed adult feeling rapid pulse. Labels 'Normal' and 'Më shpejt'. No fabricated patient ECG or numerical cutoff.",
+          "references": [
+            "https://www.nhs.uk/conditions/arrhythmia/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-002",
@@ -773,13 +1036,18 @@
           "group": "ritmi",
           "term": "Bradikardi",
           "latin": "",
-          "english": "",
+          "english": "Bradycardia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Frekuencë e zemrës më e ulët se normalja për moshën dhe gjendjen.",
+          "example": "Blloku atrioventrikular mund të shkaktojë bradikardi.",
+          "image": "c05-002.webp",
+          "status": "available",
+          "illustrationBrief": "Heart electrical-conduction inset with delayed AV transmission, and normal versus slower pulse peaks over identical intervals. Labels 'Normal' and 'Më ngadalë'. No invented ECG diagnosis or dose.",
+          "references": [
+            "https://www.nhs.uk/conditions/heart-block/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-003",
@@ -787,13 +1055,18 @@
           "group": "ritmi",
           "term": "Aritmi",
           "latin": "",
-          "english": "",
+          "english": "Arrhythmia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Çrregullim i ritmit ose i frekuencës normale të zemrës.",
+          "example": "Fibrilacioni atrial është një aritmi me ritëm shpesh të parregullt.",
+          "image": "c05-003.webp",
+          "status": "available",
+          "illustrationBrief": "Large realistic heart electrical-network inset and a schematic pulse-timing strip with irregular spacing compared with a regular strip. Labels 'Ritëm i rregullt' and 'Ritëm i parregullt'. Do not generate a misleading diagnostic ECG.",
+          "references": [
+            "https://www.nhs.uk/conditions/arrhythmia/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-004",
@@ -801,13 +1074,18 @@
           "group": "ritmi",
           "term": "Palpitacione",
           "latin": "",
-          "english": "",
+          "english": "Palpitations",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ndjesi e rrahjeve të zemrës si të forta, të shpejta ose të çrregullta.",
+          "example": "Fibrilacioni atrial mund të ndihet si palpitacione.",
+          "image": "c05-004.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed alert adult noticing heartbeat with hand over chest and enlarged heart inset with a few restrained vibration marks. Emphasize SUBJECTIVE awareness. Label 'Rrahje që ndihen'. Do not imply every palpitation proves arrhythmia.",
+          "references": [
+            "https://www.nhs.uk/conditions/arrhythmia/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-005",
@@ -815,13 +1093,18 @@
           "group": "presioni",
           "term": "Hipotension",
           "latin": "",
-          "english": "",
+          "english": "Hypotension",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Presion arterial më i ulët se zakonisht.",
+          "example": "Dehidratimi mund të shkaktojë hipotension.",
+          "image": "c05-005.webp",
+          "status": "available",
+          "illustrationBrief": "Accurate arm blood-pressure cuff and simple manometer with low-direction arrow, plus clothed seated mildly lightheaded adult. No numerical reading. Label 'Presion i ulët'. Not blood sugar.",
+          "references": [
+            "https://www.nhs.uk/conditions/low-blood-pressure-hypotension/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-006",
@@ -829,13 +1112,19 @@
           "group": "presioni",
           "term": "Hipertension",
           "latin": "",
-          "english": "",
+          "english": "Hypertension",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Rritje e qëndrueshme e presionit arterial.",
+          "example": "Sëmundja renale kronike mund të shkaktojë hipertension.",
+          "image": "c05-006.webp",
+          "status": "available",
+          "illustrationBrief": "Arm blood-pressure cuff and simple pressure gauge with up arrow, accurate artery cross-section under increased wall pressure. No symptoms stereotyped and no numeric diagnosis threshold. Label 'Presion i lartë'.",
+          "references": [
+            "https://www.nhs.uk/conditions/high-blood-pressure-hypertension/",
+            "https://www.nhs.uk/conditions/kidney-disease/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-007",
@@ -843,13 +1132,18 @@
           "group": "presioni",
           "term": "Hipoperfuzion",
           "latin": "",
-          "english": "",
+          "english": "Hypoperfusion",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Furnizim i pamjaftueshëm i indeve me gjak.",
+          "example": "Shoku kardiogjen mund të shkaktojë hipoperfuzion të organeve.",
+          "image": "c05-007.webp",
+          "status": "available",
+          "illustrationBrief": "Accurate heart-to-tissue circulation diagram with thin reduced flow arrows reaching kidney and peripheral tissue, contrasted with a neutral normal-flow small inset. Label 'Më pak gjak në inde'. Avoid conflating with low oxygen saturation alone.",
+          "references": [
+            "https://www.nhlbi.nih.gov/health/cardiogenic-shock"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-008",
@@ -857,13 +1151,18 @@
           "group": "presioni",
           "term": "Ortostazë",
           "latin": "",
-          "english": "",
+          "english": "Orthostasis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Pozicioni i trupit në këmbë.",
+          "example": "Hipotensioni ortostatik mund të japë marramendje kur ngrihesh në këmbë.",
+          "image": "c05-008.webp",
+          "status": "available",
+          "illustrationBrief": "Same clothed adult transitioning from seated to upright standing, main figure fully standing. Vertical posture guide and a small downward pressure arrow only as example inset. Label 'Në këmbë'. Define posture, do NOT portray orthostasis itself as a disease.",
+          "references": [
+            "https://medlineplus.gov/genetics/condition/orthostatic-hypotension/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-009",
@@ -871,13 +1170,18 @@
           "group": "presioni",
           "term": "Shok kardiogjen",
           "latin": "",
-          "english": "",
+          "english": "Cardiogenic shock",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Dështim i pompës së zemrës që ul rëndë perfuzionin e organeve.",
+          "example": "Infarkti i miokardit mund të shkaktojë shok kardiogjen.",
+          "image": "c05-009.webp",
+          "status": "available",
+          "illustrationBrief": "Accurate heart cutaway with a small infarcted ventricular region, visibly reduced output arrow to body organs and reduced peripheral perfusion. Clothed clinical patient optional, no invented vital values. Label 'Pompim i pamjaftueshëm'.",
+          "references": [
+            "https://www.nhlbi.nih.gov/health/cardiogenic-shock"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-010",
@@ -885,13 +1189,18 @@
           "group": "qarkullimi",
           "term": "Ishemi",
           "latin": "",
-          "english": "",
+          "english": "Ischemia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Furnizim i pamjaftueshëm i një indi me gjak dhe oksigjen.",
+          "example": "Ngushtimi i arterieve koronare mund të shkaktojë ishemi të miokardit.",
+          "image": "c05-010.webp",
+          "status": "available",
+          "illustrationBrief": "Coronary artery narrowed by plaque with reduced downstream flow toward a softly highlighted myocardial area. Tissue remains viable-looking, not necrotic black infarct. Label 'Furnizim i ulur me gjak'.",
+          "references": [
+            "https://www.nhs.uk/conditions/coronary-heart-disease/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-011",
@@ -899,13 +1208,18 @@
           "group": "qarkullimi",
           "term": "Infarkt",
           "latin": "",
-          "english": "",
+          "english": "Infarction",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Vdekje e indit, zakonisht nga ndërprerja e furnizimit me gjak.",
+          "example": "Bllokimi i një arterie koronare mund të shkaktojë infarkt të miokardit.",
+          "image": "c05-011.webp",
+          "status": "available",
+          "illustrationBrief": "Accurate coronary artery with occlusive thrombus and downstream small damaged myocardial region in muted dark coral. Clearly depict tissue injury beyond obstruction, no gore. Label 'Dëmtim i pakthyeshëm i indit'.",
+          "references": [
+            "https://www.nhs.uk/conditions/heart-attack/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-012",
@@ -913,13 +1227,18 @@
           "group": "qarkullimi",
           "term": "Trombozë",
           "latin": "",
-          "english": "",
+          "english": "Thrombosis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Formim i një mpiksjeje gjaku brenda një ene gjaku.",
+          "example": "Tromboza venoze e thellë mund të japë dhimbje dhe ënjtje të këmbës.",
+          "image": "c05-012.webp",
+          "status": "available",
+          "illustrationBrief": "Leg deep-vein anatomy and magnified vein cross-section with a clot FORMED IN PLACE and attached to wall. Flow around it reduced. Distinguish from traveling embolus. Label 'Mpiksje brenda enës'.",
+          "references": [
+            "https://www.nhs.uk/conditions/deep-vein-thrombosis-dvt/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-013",
@@ -927,13 +1246,18 @@
           "group": "qarkullimi",
           "term": "Emboli",
           "latin": "",
-          "english": "",
+          "english": "Embolism",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Bllokim i një ene nga material i transportuar përmes qarkullimit.",
+          "example": "Një tromb nga venat e këmbës mund të shkaktojë emboli pulmonare.",
+          "image": "c05-013.webp",
+          "status": "available",
+          "illustrationBrief": "Clear educational pathway from deep leg vein via right heart to pulmonary artery; small detached clot travels then lodges in pulmonary branch. Accurate direction through right heart, not directly leg-to-lung through left heart. Label 'Material i transportuar'. No extra chamber labels unless needed.",
+          "references": [
+            "https://www.nhs.uk/conditions/pulmonary-embolism/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-014",
@@ -941,13 +1265,18 @@
           "group": "qarkullimi",
           "term": "Klaudikacion",
           "latin": "",
-          "english": "",
+          "english": "Claudication",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Dhimbje muskulore gjatë ecjes, që qetësohet me pushim.",
+          "example": "Sëmundja arteriale periferike mund të japë klaudikacion të pulpës.",
+          "image": "c05-014.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed adult walking with calf discomfort then resting with relief in two small scenes; accurate narrowed leg artery inset. Label 'Dhimbje gjatë ecjes'. Do not show swollen deep vein, which suggests DVT.",
+          "references": [
+            "https://www.nhs.uk/conditions/peripheral-arterial-disease-pad/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-015",
@@ -955,13 +1284,18 @@
           "group": "pompa-valvulat",
           "term": "Stenozë",
           "latin": "",
-          "english": "",
+          "english": "Stenosis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ngushtim i një kanali, ene gjaku ose hapjeje valvulare.",
+          "example": "Stenoza aortale pengon daljen e gjakut nga ventrikuli i majtë.",
+          "image": "c05-015.webp",
+          "status": "available",
+          "illustrationBrief": "Matched valve cross-sections normal open aortic valve versus narrowed calcific opening; limited forward flow arrow through narrowed valve. Labels 'Normal' and 'E ngushtuar'. No backward regurgitant arrow.",
+          "references": [
+            "https://www.nhlbi.nih.gov/health/heart-valve-diseases"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-016",
@@ -969,13 +1303,18 @@
           "group": "pompa-valvulat",
           "term": "Regurgitim",
           "latin": "",
-          "english": "",
+          "english": "Regurgitation",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Rrjedhje e gjakut prapa përmes një valvule që nuk mbyllet mirë.",
+          "example": "Regurgitimi mitral lejon kthimin e gjakut nga ventrikuli në atriumin e majtë.",
+          "image": "c05-016.webp",
+          "status": "available",
+          "illustrationBrief": "Accurate LEFT heart cutaway showing mitral valve failing to close and a prominent BACKWARD arrow from left ventricle UP into left atrium during ventricular contraction. Small forward aortic flow optional. Label 'Rikthim i gjakut'. Do not reverse chambers or show stenosis instead.",
+          "references": [
+            "https://www.nhlbi.nih.gov/health/heart-valve-diseases"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-017",
@@ -983,13 +1322,18 @@
           "group": "pompa-valvulat",
           "term": "Insuficiencë kardiake",
           "latin": "",
-          "english": "",
+          "english": "Heart failure",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Zemra nuk pompon ose nuk mbushet mjaftueshëm për nevojat e trupit.",
+          "example": "Kardiomiopatia mund të çojë në insuficiencë kardiake.",
+          "image": "c05-017.webp",
+          "status": "available",
+          "illustrationBrief": "Large accurate heart cutaway with reduced effective output to body and subtle pulmonary congestion inset; small clothed breathless patient and ankle edema only if composition remains clear. Label 'Funksion kardiak i pamjaftueshëm'. Heart is beating, NOT cardiac arrest.",
+          "references": [
+            "https://www.nhs.uk/conditions/heart-failure/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c05-018",
@@ -997,13 +1341,18 @@
           "group": "pompa-valvulat",
           "term": "Edemë",
           "latin": "",
-          "english": "",
+          "english": "Edema",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Grumbullim i tepërt i lëngut në hapësirën ndërqelizore.",
+          "example": "Insuficienca kardiake mund të japë edemë të kyçeve të këmbëve.",
+          "image": "c05-018.webp",
+          "status": "available",
+          "illustrationBrief": "Neutral ankles with symmetric swelling and an enlarged tissue-capillary inset showing fluid moving into interstitial space. Gentle finger pressure depression if anatomically correct. Label 'Lëng në inde'. No invented skin infection.",
+          "references": [
+            "https://www.nhs.uk/conditions/heart-failure/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         }
       ]
     },
@@ -1011,8 +1360,8 @@
       "id": "06",
       "title": "Pneumologji",
       "heading": "Pneumologji",
-      "description": "Nënndarjet dhe termat janë të organizuar. Ilustrimet, përkufizimet dhe shembujt klinikë do të plotësohen.",
-      "status": "planned",
+      "description": "Auskultimi, Ventilimi dhe oksigjenimi, Rrugët ajrore dhe parenkima, Pleura.",
+      "status": "available",
       "groups": [
         {
           "id": "auskultimi",
@@ -1038,13 +1387,18 @@
           "group": "auskultimi",
           "term": "Stridor",
           "latin": "",
-          "english": "",
+          "english": "Stridor",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Zhurmë e mprehtë nga ngushtimi i rrugëve të sipërme të frymëmarrjes.",
+          "example": "Krupi te fëmijët mund të shkaktojë stridor gjatë frymëthithjes.",
+          "image": "c06-001.webp",
+          "status": "available",
+          "illustrationBrief": "Large sagittal upper-airway illustration with swollen subglottic airway and restrained sound waves during inward airflow. Small clothed child inset. Label 'Ngushtim i sipërm'. Distinguish from lower-bronchial wheeze.",
+          "references": [
+            "https://www.merckmanuals.com/professional/pulmonary-disorders/approach-to-the-pulmonary-patient/evaluation-of-the-patient-with-pulmonary-issues"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-002",
@@ -1052,13 +1406,18 @@
           "group": "auskultimi",
           "term": "Wheezing",
           "latin": "",
-          "english": "",
+          "english": "Wheezing",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Fishkëllimë në frymëmarrje nga ngushtimi i rrugëve të vogla ajrore.",
+          "example": "Astma shpesh jep fishkëllima, sidomos gjatë frymënxjerrjes.",
+          "image": "c06-002.webp",
+          "status": "available",
+          "illustrationBrief": "Realistic lung and enlarged small bronchus cross-section with narrowed lumen, mucus and thickened smooth muscle; outward air arrow with subtle sound arcs. Label 'Fishkëllimë'. Not laryngeal obstruction.",
+          "references": [
+            "https://www.merckmanuals.com/professional/pulmonary-disorders/symptoms-of-pulmonary-disorders/wheezing"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-003",
@@ -1066,13 +1425,18 @@
           "group": "auskultimi",
           "term": "Ronke",
           "latin": "",
-          "english": "",
+          "english": "Rhonchi",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Zhurma respiratore të ulëta e të vazhdueshme, si gërhitje.",
+          "example": "Bronkiti kronik mund të shoqërohet me ronke.",
+          "image": "c06-003.webp",
+          "status": "available",
+          "illustrationBrief": "Bronchial tree with large bronchus containing modest secretions and low broad sound-wave schematic. Label 'Zhurmë e ulët'. No audio timing claims and no doctor presenter.",
+          "references": [
+            "https://www.merckmanuals.com/professional/pulmonary-disorders/approach-to-the-pulmonary-patient/evaluation-of-the-patient-with-pulmonary-issues"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-004",
@@ -1080,13 +1444,18 @@
           "group": "auskultimi",
           "term": "Krepitacione",
           "latin": "",
-          "english": "",
+          "english": "Crackles",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Zhurma të shkurtra e të ndërprera, si kërcitje, gjatë auskultimit.",
+          "example": "Edema pulmonare mund të japë krepitacione në bazat e mushkërive.",
+          "image": "c06-004.webp",
+          "status": "available",
+          "illustrationBrief": "Lung bases and alveolar inset showing some fluid and reopening small airways; a few separated short sound ticks, not continuous wave. Label 'Kërcitje të ndërprera'.",
+          "references": [
+            "https://www.merckmanuals.com/professional/pulmonary-disorders/approach-to-the-pulmonary-patient/evaluation-of-the-patient-with-pulmonary-issues"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-005",
@@ -1094,13 +1463,18 @@
           "group": "ventilimi",
           "term": "Hipoksemi",
           "latin": "",
-          "english": "",
+          "english": "Hypoxemia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Nivel i ulët i oksigjenit në gjakun arterial.",
+          "example": "Pneumonia e rëndë mund të shkaktojë hipoksemi.",
+          "image": "c06-005.webp",
+          "status": "available",
+          "illustrationBrief": "Accurate alveolus-capillary gas exchange with fewer O₂ molecules entering arterial blood, and small finger pulse-oximeter inset without numerical reading. Label 'O₂ i ulët në gjak'.",
+          "references": [
+            "https://www.nhlbi.nih.gov/health/respiratory-failure"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-006",
@@ -1108,13 +1482,18 @@
           "group": "ventilimi",
           "term": "Hiperkapni",
           "latin": "",
-          "english": "",
+          "english": "Hypercapnia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Nivel i rritur i dioksidit të karbonit në gjakun arterial.",
+          "example": "Përkeqësimi i SPOK-ut mund të shkaktojë hiperkapni.",
+          "image": "c06-006.webp",
+          "status": "available",
+          "illustrationBrief": "Alveolus-capillary gas exchange with CO₂ retained in blood and weak outgoing exhalation arrow. Label 'CO₂ i rritur në gjak'. Do not substitute low oxygen as the definition.",
+          "references": [
+            "https://www.nhlbi.nih.gov/health/respiratory-failure"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-007",
@@ -1122,13 +1501,18 @@
           "group": "ventilimi",
           "term": "Hipoventilim",
           "latin": "",
-          "english": "",
+          "english": "Hypoventilation",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ventilim alveolar i pamjaftueshëm për të larguar CO₂ e prodhuar.",
+          "example": "Mbidozimi me opioide mund të shkaktojë hipoventilim.",
+          "image": "c06-007.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed drowsy adult breathing shallowly, large lung inset with small ventilation arrows and CO₂ retention. Label 'Ventilim i pamjaftueshëm'. No syringe or dosing instructions.",
+          "references": [
+            "https://www.nhlbi.nih.gov/health/respiratory-failure"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-008",
@@ -1136,13 +1520,18 @@
           "group": "ventilimi",
           "term": "Hiperventilim",
           "latin": "",
-          "english": "",
+          "english": "Hyperventilation",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ventilim alveolar i shtuar që ul CO₂ në gjak.",
+          "example": "Një krizë paniku mund të shoqërohet me hiperventilim.",
+          "image": "c06-008.webp",
+          "status": "available",
+          "illustrationBrief": "Alert anxious clothed adult, lung inset with strong outward arrows carrying CO₂ away and subtle downward CO₂ indicator. Label 'CO₂ ulet'. Do not show paper-bag breathing or imply all rapid breathing is hyperventilation.",
+          "references": [
+            "https://medlineplus.gov/ency/article/003071.htm"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-009",
@@ -1150,13 +1539,18 @@
           "group": "ventilimi",
           "term": "Takipne",
           "latin": "",
-          "english": "",
+          "english": "Tachypnea",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Frymëmarrje më e shpejtë se normalja për moshën dhe gjendjen.",
+          "example": "Pneumonia mund të shkaktojë takipne.",
+          "image": "c06-009.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed adult and two identical-duration schematic respiratory rhythm strips, top few cycles bottom more cycles; same amplitude. Labels 'Normal' and 'Më shpejt'. No numerical cutoff and no ECG spikes.",
+          "references": [
+            "https://www.nhlbi.nih.gov/health/respiratory-failure"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-010",
@@ -1164,13 +1558,18 @@
           "group": "ventilimi",
           "term": "Distres respirator",
           "latin": "",
-          "english": "",
+          "english": "Respiratory distress",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Vështirësi e dukshme në frymëmarrje, me punë të shtuar respiratore.",
+          "example": "Një krizë e rëndë astme mund të japë distres respirator.",
+          "image": "c06-010.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed adult leaning forward with visible effort, restrained neck accessory-muscle inset and accurate narrowed bronchus. Label 'Punë e shtuar'. No emergency treatment instructions or invented vital values.",
+          "references": [
+            "https://www.merckmanuals.com/professional/pulmonary-disorders/approach-to-the-pulmonary-patient/evaluation-of-the-patient-with-pulmonary-issues"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-011",
@@ -1178,13 +1577,18 @@
           "group": "parenkima",
           "term": "Atelektazë",
           "latin": "",
-          "english": "",
+          "english": "Atelectasis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Zgjerim i paplotë ose kolaps i një pjese të mushkërisë.",
+          "example": "Pas operacionit mund të shfaqet atelektazë nga frymëmarrja e cekët.",
+          "image": "c06-011.webp",
+          "status": "available",
+          "illustrationBrief": "Realistic paired lungs with localized collapsed lower-lobe segment of reduced volume; magnified normal air-filled versus collapsed alveoli. Labels 'Alveola të hapura' and 'Alveola të kolabuara'. Do not show pleural air.",
+          "references": [
+            "https://medlineplus.gov/ency/article/000065.htm"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-012",
@@ -1192,13 +1596,18 @@
           "group": "parenkima",
           "term": "Konsolidim",
           "latin": "",
-          "english": "",
+          "english": "Consolidation",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Mbushje e alveolave me material që zëvendëson ajrin.",
+          "example": "Pneumonia lobare mund të shkaktojë konsolidim pulmonar.",
+          "image": "c06-012.webp",
+          "status": "available",
+          "illustrationBrief": "Lung with one lower-lobe region of consolidated tissue, magnified alveoli filled with inflammatory exudate versus adjacent air-filled alveoli. Label 'Alveola të mbushura'. Distinguish from collapse or pleural fluid.",
+          "references": [
+            "https://www.nhs.uk/conditions/pneumonia/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-013",
@@ -1206,13 +1615,18 @@
           "group": "parenkima",
           "term": "Infiltrat",
           "latin": "",
-          "english": "",
+          "english": "Pulmonary infiltrate",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Term për një hijezim pulmonar që kërkon interpretim klinik.",
+          "example": "Pneumonia mund të shfaqet si infiltrat në radiografi.",
+          "image": "c06-013.webp",
+          "status": "available",
+          "illustrationBrief": "Educational schematic chest radiograph with patchy increased opacity in lower lung, beside anatomical lung localization. Label 'Hijezim pulmonar'. Visibly instructional schematic, not real scan. No cancer inference.",
+          "references": [
+            "https://www.merckmanuals.com/professional/pulmonary-disorders/symptoms-of-pulmonary-disorders/wheezing"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-014",
@@ -1220,13 +1634,18 @@
           "group": "parenkima",
           "term": "Bronkospazëm",
           "latin": "",
-          "english": "",
+          "english": "Bronchospasm",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Tkurrje e muskulaturës bronkiale që ngushton rrugët ajrore.",
+          "example": "Astma mund të shkaktojë bronkospazëm.",
+          "image": "c06-014.webp",
+          "status": "available",
+          "illustrationBrief": "Two large accurate bronchial cross-sections: relaxed smooth muscle and contracted smooth muscle narrowing lumen, modest normal mucosa. Labels 'I hapur' and 'I ngushtuar'. Show muscle mechanism not foreign body.",
+          "references": [
+            "https://www.merckmanuals.com/professional/pulmonary-disorders/symptoms-of-pulmonary-disorders/wheezing"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-015",
@@ -1234,13 +1653,18 @@
           "group": "parenkima",
           "term": "Bronkiektazi",
           "latin": "",
-          "english": "",
+          "english": "Bronchiectasis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Zgjerim i përhershëm i bronkeve nga dëmtimi i mureve të tyre.",
+          "example": "Fibroza cistike mund të shkaktojë bronkiektazi.",
+          "image": "c06-015.webp",
+          "status": "available",
+          "illustrationBrief": "Accurate bronchial tree with localized permanently widened irregular bronchi and retained secretions, comparison healthy bronchus. Labels 'Normal' and 'I zgjeruar'. Do not depict generalized airway constriction.",
+          "references": [
+            "https://www.nhs.uk/conditions/bronchiectasis/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-016",
@@ -1248,13 +1672,18 @@
           "group": "pleura",
           "term": "Pneumotoraks",
           "latin": "",
-          "english": "",
+          "english": "Pneumothorax",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ajër në hapësirën pleurale që mund të kolabojë mushkërinë.",
+          "example": "Ruptura e një flluske subpleurale mund të shkaktojë pneumotoraks spontan.",
+          "image": "c06-016.webp",
+          "status": "available",
+          "illustrationBrief": "Frontal thoracic section, one lung partially collapsed inward with air between visceral pleura and chest wall, normal opposite lung. Label 'Ajër në pleurë'. No tension signs or emergency procedure.",
+          "references": [
+            "https://www.nhlbi.nih.gov/health/pleural-disorders"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c06-017",
@@ -1262,13 +1691,18 @@
           "group": "pleura",
           "term": "Efuzion pleural",
           "latin": "",
-          "english": "",
+          "english": "Pleural effusion",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Grumbullim i lëngut të tepërt në hapësirën pleurale.",
+          "example": "Insuficienca kardiake mund të shkaktojë efuzion pleural.",
+          "image": "c06-017.webp",
+          "status": "available",
+          "illustrationBrief": "Thoracic cutaway with a dependent crescent of fluid OUTSIDE lung between pleural layers compressing lower lobe, large close-up of layers. Label 'Lëng në pleurë'. Do not place fluid inside alveoli.",
+          "references": [
+            "https://www.nhlbi.nih.gov/health/pleural-disorders"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         }
       ]
     },
@@ -1276,8 +1710,8 @@
       "id": "07",
       "title": "Gastroenterologji dhe hepatologji",
       "heading": "Gastroenterologji dhe hepatologji",
-      "description": "Nënndarjet dhe termat janë të organizuar. Ilustrimet, përkufizimet dhe shembujt klinikë do të plotësohen.",
-      "status": "planned",
+      "description": "Simptomat e traktit të sipërm, Gjakderdhja gastrointestinale, Zorra dhe tranziti, Mëlçia, tëmthi dhe zmadhimi i organeve, Inflamacioni abdominal.",
+      "status": "available",
       "groups": [
         {
           "id": "siperme",
@@ -1307,13 +1741,18 @@
           "group": "siperme",
           "term": "Dispepsi",
           "latin": "",
-          "english": "",
+          "english": "Dyspepsia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Dhimbje ose parehati në pjesën e sipërme të barkut, shpesh pas ushqimit.",
+          "example": "Ulçera peptike mund të japë simptoma dispeptike.",
+          "image": "c07-001.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed seated adult with discomfort localized to epigastrium after modest meal, enlarged stomach and small peptic-ulcer mucosal inset. Label 'Parehati epigastrike'. Do not place pain in lower pelvis.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/digestive-diseases/indigestion-dyspepsia"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-002",
@@ -1321,13 +1760,18 @@
           "group": "siperme",
           "term": "Disfagi",
           "latin": "",
-          "english": "",
+          "english": "Dysphagia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Vështirësi në gëlltitjen e ushqimeve ose të lëngjeve.",
+          "example": "Ngushtimi i ezofagut mund të shkaktojë disfagi, sidomos për ushqime të ngurta.",
+          "image": "c07-002.webp",
+          "status": "available",
+          "illustrationBrief": "Sagittal swallowing anatomy plus enlarged esophageal narrowing with food bolus held above it. Food arrow runs into ESOPHAGUS posterior to trachea, never into airway. Label 'Kalimi vështirësohet'. Distinguish difficulty from pain.",
+          "references": [
+            "https://www.nhs.uk/conditions/swallowing-problems-dysphagia/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-003",
@@ -1335,13 +1779,18 @@
           "group": "siperme",
           "term": "Odinofagi",
           "latin": "",
-          "english": "",
+          "english": "Odynophagia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Dhimbje gjatë gëlltitjes.",
+          "example": "Ezofagiti nga refluksi mund të shkaktojë odinofagi.",
+          "image": "c07-003.webp",
+          "status": "available",
+          "illustrationBrief": "Sagittal throat-esophagus and magnified inflamed distal esophageal mucosa, restrained red pain halo along esophagus. Label 'Gëlltitje me dhimbje'. Distinguish food pipe posterior to airway.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-004",
@@ -1349,13 +1798,18 @@
           "group": "siperme",
           "term": "Nauze",
           "latin": "",
-          "english": "",
+          "english": "Nausea",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ndjesi për të vjellë, edhe pa pasur të vjella.",
+          "example": "Gastroenteriti viral shpesh shkakton nauze.",
+          "image": "c07-004.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed adult seated feeling queasy with hand at upper abdomen, mouth closed, basin nearby but NO vomiting; accurate stomach inset. Label 'Ndjesi për të vjellë'.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/digestive-diseases/viral-gastroenteritis/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-005",
@@ -1363,13 +1817,18 @@
           "group": "siperme",
           "term": "Emezë",
           "latin": "",
-          "english": "",
+          "english": "Vomiting",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Nxjerrje e përmbajtjes së stomakut përmes gojës.",
+          "example": "Gastroenteriti viral mund të shkaktojë të vjella.",
+          "image": "c07-005.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed adult leaning forward over basin, very discreet small non-bloody stream, anatomical stomach-esophagus path showing upward flow through esophagus not airway. Label 'Të vjella'. No graphic distress.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/digestive-diseases/viral-gastroenteritis/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-006",
@@ -1377,13 +1836,18 @@
           "group": "gjakderdhje",
           "term": "Hematemezë",
           "latin": "",
-          "english": "",
+          "english": "Hematemesis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Të vjella me gjak të freskët ose me pamje si llum kafeje.",
+          "example": "Një ulçerë gastrike që gjakos mund të japë hematemezë.",
+          "image": "c07-006.webp",
+          "status": "available",
+          "illustrationBrief": "Large stomach cutaway with small bleeding mucosal ulcer, restrained upward arrow through esophagus to a small basin containing dark coffee-ground flecks. Label 'Gjak në të vjella'. No gory scene.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/digestive-diseases/gastrointestinal-bleeding/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-007",
@@ -1391,13 +1855,18 @@
           "group": "gjakderdhje",
           "term": "Melena",
           "latin": "",
-          "english": "",
+          "english": "Melena",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Feçe të zeza si katran, zakonisht nga gjakderdhja e sipërme tretëse.",
+          "example": "Një ulçerë duodenale që gjakos mund të japë melena.",
+          "image": "c07-007.webp",
+          "status": "available",
+          "illustrationBrief": "Anatomical stomach-duodenum with tiny bleeding ulcer, arrow through bowel and discreet clinical specimen icon of black tarry stool. Label 'Gjak i tretur'. No lower-rectal bleeding image.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/digestive-diseases/gastrointestinal-bleeding/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-008",
@@ -1405,13 +1874,18 @@
           "group": "gjakderdhje",
           "term": "Hematoqezi",
           "latin": "",
-          "english": "",
+          "english": "Hematochezia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Dalje e gjakut të kuq ose ngjyrë gështenje nga rektumi.",
+          "example": "Divertikuloza e kolonit mund të shkaktojë hematoqezi.",
+          "image": "c07-008.webp",
+          "status": "available",
+          "illustrationBrief": "Colon and enlarged diverticulum with small bleeding vessel, discreet red blood in stool specimen; label 'Gjak i dukshëm'. No exposed genitalia or actual toileting patient.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/digestive-diseases/diverticulosis-diverticulitis/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-009",
@@ -1419,13 +1893,18 @@
           "group": "zorra",
           "term": "Steatorre",
           "latin": "",
-          "english": "",
+          "english": "Steatorrhea",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Tepricë yndyre në feçe, që shpesh bëhen të yndyrshme e voluminoze.",
+          "example": "Insuficienca ekzokrine e pankreasit mund të japë steatorre.",
+          "image": "c07-009.webp",
+          "status": "available",
+          "illustrationBrief": "Pancreas connected to duodenum with reduced enzyme delivery, fat droplets remain in intestinal lumen; discreet pale oily stool specimen inset. Label 'Yndyrë e patretur'. No diagnostic numeric cutoff.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/digestive-diseases/exocrine-pancreatic-insufficiency"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-010",
@@ -1433,13 +1912,18 @@
           "group": "zorra",
           "term": "Tenesmus",
           "latin": "",
-          "english": "",
+          "english": "Tenesmus",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ndjesi e vazhdueshme për të defekuar, edhe kur rektumi është bosh.",
+          "example": "Proktiti mund të shkaktojë tenesmus.",
+          "image": "c07-010.webp",
+          "status": "available",
+          "illustrationBrief": "Large isolated rectum cutaway with inflamed wall, nearly empty lumen, sensory arrows toward a small neutral brain icon. Label 'Nevojë pa zbrazje'. No toileting scene or external genitals.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/digestive-diseases/proctitis/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-011",
@@ -1447,13 +1931,18 @@
           "group": "zorra",
           "term": "Ileus",
           "latin": "",
-          "english": "",
+          "english": "Ileus",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ndalim funksional i lëvizjes së zorrëve, pa pengesë mekanike.",
+          "example": "Pas një operacioni abdominal mund të shfaqet ileus paralitik.",
+          "image": "c07-011.webp",
+          "status": "available",
+          "illustrationBrief": "Realistic distended small-bowel loops with stagnant contents; compare tiny normal peristalsis inset. No plug, mass or twisted loop. Label 'Peristaltikë e ndalur'. Clearly functional ileus.",
+          "references": [
+            "https://medlineplus.gov/ency/article/000260.htm"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-012",
@@ -1461,13 +1950,18 @@
           "group": "hepatobiliare",
           "term": "Ikter",
           "latin": "",
-          "english": "",
+          "english": "Jaundice",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Zverdhje e lëkurës dhe sklerave nga rritja e bilirubinës.",
+          "example": "Hepatiti akut mund të shkaktojë ikter.",
+          "image": "c07-012.webp",
+          "status": "available",
+          "illustrationBrief": "Natural close-up adult face and eyes showing moderate scleral yellowing, accurate liver and bile-system inset. Label 'Bilirubinë e rritur'. Preserve normal pupils and skin texture.",
+          "references": [
+            "https://www.nhs.uk/conditions/jaundice/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-013",
@@ -1475,13 +1969,18 @@
           "group": "hepatobiliare",
           "term": "Kolestazë",
           "latin": "",
-          "english": "",
+          "english": "Cholestasis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Pakësim ose ndërprerje e rrjedhjes së bilës.",
+          "example": "Një gur në kanalin biliar kryesor mund të shkaktojë kolestazë.",
+          "image": "c07-013.webp",
+          "status": "available",
+          "illustrationBrief": "Anatomically correct liver-gallbladder-common bile duct-duodenum with stone obstructing distal common bile duct and bile backing up; flow arrow stops at stone. Label 'Rrjedhje e penguar'. Not ureter/kidney stone.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/digestive-diseases/gallstones/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-014",
@@ -1489,13 +1988,18 @@
           "group": "hepatobiliare",
           "term": "Ascit",
           "latin": "",
-          "english": "",
+          "english": "Ascites",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Grumbullim i lëngut të tepërt në zgavrën peritoneale.",
+          "example": "Cirroza e mëlçisë mund të shkaktojë ascit.",
+          "image": "c07-014.webp",
+          "status": "available",
+          "illustrationBrief": "Neutral anatomical abdominal cross-section with excess fluid surrounding bowel loops in peritoneal cavity, smaller nodular cirrhotic liver. Small clothed distended-abdomen inset optional. Label 'Lëng në peritoneum'. Not fluid inside bowel.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/liver-disease/cirrhosis/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-015",
@@ -1503,13 +2007,18 @@
           "group": "hepatobiliare",
           "term": "Hepatomegali",
           "latin": "",
-          "english": "",
+          "english": "Hepatomegaly",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Zmadhim i mëlçisë.",
+          "example": "Sëmundja yndyrore e mëlçisë mund të shoqërohet me hepatomegali.",
+          "image": "c07-015.webp",
+          "status": "available",
+          "illustrationBrief": "Frontal neutral torso cutaway locating enlarged liver in patient's RIGHT upper abdomen, viewer LEFT; normal outline dashed for comparison. Label 'Mëlçi e zmadhuar'. Do not switch liver to left.",
+          "references": [
+            "https://medlineplus.gov/ency/article/003275.htm"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-016",
@@ -1517,13 +2026,18 @@
           "group": "hepatobiliare",
           "term": "Splenomegali",
           "latin": "",
-          "english": "",
+          "english": "Splenomegaly",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Zmadhim i shpretkës.",
+          "example": "Mononukleoza infektive mund të shkaktojë splenomegali.",
+          "image": "c07-016.webp",
+          "status": "available",
+          "illustrationBrief": "Frontal neutral torso cutaway with spleen enlarged in patient's LEFT upper quadrant, viewer RIGHT, beside stomach; normal outline dashed for comparison. Label 'Shpretkë e zmadhuar'. Not liver.",
+          "references": [
+            "https://www.nhs.uk/conditions/glandular-fever/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-017",
@@ -1531,13 +2045,18 @@
           "group": "hepatobiliare",
           "term": "Hepatit",
           "latin": "",
-          "english": "",
+          "english": "Hepatitis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Inflamacion i mëlçisë.",
+          "example": "Virusi i hepatitit A mund të shkaktojë hepatit akut.",
+          "image": "c07-017.webp",
+          "status": "available",
+          "illustrationBrief": "Large anatomically accurate liver with inflamed reddish tissue and magnified lobule with inflammatory cells; small stylized virus inset without invented species morphology. Label 'Mëlçi e inflamuar'. No cirrhosis required.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/liver-disease/viral-hepatitis/hepatitis-a"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-018",
@@ -1545,13 +2064,18 @@
           "group": "inflamacioni",
           "term": "Peritonit",
           "latin": "",
-          "english": "",
+          "english": "Peritonitis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Inflamacion i peritoneumit, cipës që vesh zgavrën abdominale.",
+          "example": "Perforimi i apendiksit mund të shkaktojë peritonit.",
+          "image": "c07-018.webp",
+          "status": "available",
+          "illustrationBrief": "Clean anatomical abdominal cutaway with inflamed peritoneal lining surrounding bowel, small perforated appendix inset at patient's right lower abdomen. Label 'Peritoneum i inflamuar'. No graphic contamination or exposed patient.",
+          "references": [
+            "https://www.nhs.uk/conditions/Peritonitis/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c07-019",
@@ -1559,13 +2083,18 @@
           "group": "inflamacioni",
           "term": "Pankreatit",
           "latin": "",
-          "english": "",
+          "english": "Pancreatitis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Inflamacion i pankreasit.",
+          "example": "Pankreatiti akut shpesh jep dhimbje epigastrike që përhapet në shpinë.",
+          "image": "c07-019.webp",
+          "status": "available",
+          "illustrationBrief": "Accurate inflamed pancreas posterior to stomach and within duodenal curve; small clothed torso with epigastric red halo and restrained arrow toward back. Label 'Pankreas i inflamuar'. Do not substitute liver or low pelvic pain.",
+          "references": [
+            "https://www.nhs.uk/conditions/acute-pancreatitis/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         }
       ]
     },
@@ -1573,8 +2102,8 @@
       "id": "08",
       "title": "Nefrologji dhe urologji",
       "heading": "Nefrologji dhe urologji",
-      "description": "Nënndarjet dhe termat janë të organizuar. Ilustrimet, përkufizimet dhe shembujt klinikë do të plotësohen.",
-      "status": "planned",
+      "description": "Gjetjet në urinë, Urinimi dhe diureza, Funksioni renal, Obstruksioni dhe inflamacioni.",
+      "status": "available",
       "groups": [
         {
           "id": "urina",
@@ -1600,13 +2129,18 @@
           "group": "urina",
           "term": "Hematuri",
           "latin": "",
-          "english": "",
+          "english": "Hematuria",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Prani e gjakut në urinë, e dukshme ose vetëm në analizë.",
+          "example": "Gurët urinarë mund të shkaktojnë hematuri.",
+          "image": "c08-001.webp",
+          "status": "available",
+          "illustrationBrief": "Kidney-ureter-bladder anatomy with small ureteral calculus, discreet pink urine sample plus microscopy inset red blood cells. Label 'Eritrocite në urinë'. No assertion all hematuria is visibly red.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/urologic-diseases/hematuria-blood-urine"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-002",
@@ -1614,13 +2148,18 @@
           "group": "urina",
           "term": "Proteinuri",
           "latin": "",
-          "english": "",
+          "english": "Proteinuria",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Sasi e tepërt proteinash në urinë.",
+          "example": "Nefropatia diabetike mund të shkaktojë proteinuri.",
+          "image": "c08-002.webp",
+          "status": "available",
+          "illustrationBrief": "Accurate glomerulus filtration barrier leaking a few large albumin molecules into filtrate, urine specimen and molecular inset. Label 'Proteina në urinë'. Do not depict protein as red blood cells.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd/tests-diagnosis"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-003",
@@ -1628,13 +2167,18 @@
           "group": "urina",
           "term": "Piuri",
           "latin": "",
-          "english": "",
+          "english": "Pyuria",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Prani e shtuar e leukociteve në urinë, e quajtur edhe leukocituri.",
+          "example": "Infeksioni urinar mund të japë piuri.",
+          "image": "c08-003.webp",
+          "status": "available",
+          "illustrationBrief": "Urine specimen with magnified field containing many neutrophils, small inflamed bladder inset. Label 'Leukocite në urinë'. No obligatory bacteria and no claim urine must look cloudy.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-004",
@@ -1642,13 +2186,19 @@
           "group": "urina",
           "term": "Leukocituri",
           "latin": "",
-          "english": "",
+          "english": "Leukocyturia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Numër i shtuar leukocitesh në urinë; përdoret edhe termi piuri.",
+          "example": "Gurët urinarë mund të japin leukocituri edhe pa infeksion bakterial.",
+          "image": "c08-004.webp",
+          "status": "available",
+          "illustrationBrief": "Urine microscopy schematic with white cells, small stone irritating urinary tract inset. Label 'Qeliza të bardha në urinë'. No bacteria shown; illustrate leukocytes not erythrocytes.",
+          "references": [
+            "https://www.nice.org.uk/guidance/ng203",
+            "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-stones/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-005",
@@ -1656,13 +2206,18 @@
           "group": "urinimi",
           "term": "Disuri",
           "latin": "",
-          "english": "",
+          "english": "Dysuria",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Dhimbje ose djegie gjatë urinimit.",
+          "example": "Cistiti shpesh shkakton disuri.",
+          "image": "c08-005.webp",
+          "status": "available",
+          "illustrationBrief": "Isolated bladder-urethral diagram with inflamed bladder mucosa and restrained red halo along urine exit path, clothed adult lower abdomen inset. Label 'Djegie gjatë urinimit'. No exposed external genitalia.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-006",
@@ -1670,13 +2225,18 @@
           "group": "urinimi",
           "term": "Oliguri",
           "latin": "",
-          "english": "",
+          "english": "Oliguria",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Prodhim i pakësuar i urinës.",
+          "example": "Dehidratimi i rëndë mund të shkaktojë oliguri.",
+          "image": "c08-006.webp",
+          "status": "available",
+          "illustrationBrief": "Kidneys with reduced filtration flow and two same-sized measuring containers showing normal versus small urine volume. Labels 'Normal' and 'Më pak'. No numerical diagnostic thresholds or actual catheter procedure.",
+          "references": [
+            "https://www.nhs.uk/conditions/acute-kidney-injury/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-007",
@@ -1684,13 +2244,18 @@
           "group": "urinimi",
           "term": "Anuri",
           "latin": "",
-          "english": "",
+          "english": "Anuria",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Prodhim pothuajse i munguar i urinës.",
+          "example": "Bllokimi i të dy ureterëve mund të shkaktojë anuri.",
+          "image": "c08-007.webp",
+          "status": "available",
+          "illustrationBrief": "Paired kidneys, both ureters obstructed, nearly empty downstream bladder and almost empty urine collection container. Label 'Pothuajse pa urinë'. Distinguish from urinary retention with full bladder.",
+          "references": [
+            "https://www.nhs.uk/conditions/acute-kidney-injury/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-008",
@@ -1698,13 +2263,18 @@
           "group": "urinimi",
           "term": "Poliuri",
           "latin": "",
-          "english": "",
+          "english": "Polyuria",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Rritje e vëllimit të përgjithshëm të urinës.",
+          "example": "Diabeti i pakontrolluar mund të shkaktojë poliuri.",
+          "image": "c08-008.webp",
+          "status": "available",
+          "illustrationBrief": "Kidney tubule inset with glucose particles and water staying in tubular fluid, same-sized urine containers normal versus increased volume. Label 'Vëllim i shtuar'. Distinguish total volume from frequent small voids.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/diabetes/overview/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-009",
@@ -1712,13 +2282,18 @@
           "group": "urinimi",
           "term": "Polakiuri",
           "latin": "",
-          "english": "",
+          "english": "Urinary frequency",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Urinim i shpeshtë, shpesh me sasi të vogla çdo herë.",
+          "example": "Cistiti mund të shkaktojë polakiuri.",
+          "image": "c08-009.webp",
+          "status": "available",
+          "illustrationBrief": "Inflamed bladder and timeline with several small-volume urine drops versus fewer normal voiding markers. Label 'Shpesh, pak çdo herë'. No large total urine container or exposed patient.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-010",
@@ -1726,13 +2301,18 @@
           "group": "urinimi",
           "term": "Nokturi",
           "latin": "",
-          "english": "",
+          "english": "Nocturia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Zgjim nga gjumi për të urinuar.",
+          "example": "Hiperplazia beninje e prostatës mund të shoqërohet me nokturi.",
+          "image": "c08-010.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed older adult awakening in bed at night, moon window and small bladder-prostate cutaway inset. Label 'Zgjim natën'. No external genitalia or toileting scene.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/urologic-diseases/prostate-problems/enlarged-prostate-benign-prostatic-hyperplasia"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-011",
@@ -1740,13 +2320,18 @@
           "group": "urinimi",
           "term": "Retencion urinar",
           "latin": "",
-          "english": "",
+          "english": "Urinary retention",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Pamundësi për ta zbrazur plotësisht fshikëzën urinare.",
+          "example": "Hiperplazia beninje e prostatës mund të shkaktojë retencion urinar.",
+          "image": "c08-011.webp",
+          "status": "available",
+          "illustrationBrief": "Large full distended bladder above enlarged prostate squeezing proximal urethra; urine outflow arrow stops at narrowing. Label 'Urina mbetet në fshikëz'. No exposed genitalia; unlike anuria urine is produced.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/urologic-diseases/urinary-retention/definition-facts"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-012",
@@ -1754,13 +2339,18 @@
           "group": "urinimi",
           "term": "Inkontinencë",
           "latin": "",
-          "english": "",
+          "english": "Urinary incontinence",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Rrjedhje e pavullnetshme e urinës.",
+          "example": "Dobësimi i dyshemesë pelvike mund të japë inkontinencë gjatë kollitjes.",
+          "image": "c08-012.webp",
+          "status": "available",
+          "illustrationBrief": "Neutral isolated anatomical bladder with pelvic-floor support weakened, downward abdominal-pressure arrow and a few urine drops beyond urethral outlet. Label 'Rrjedhje e pavullnetshme'. No exposed external genitals or embarrassing patient.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-control-problems-women/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-013",
@@ -1768,13 +2358,18 @@
           "group": "funksioni",
           "term": "Azotemi",
           "latin": "",
-          "english": "",
+          "english": "Azotemia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Rritje e mbetjeve azotike, si ureja dhe kreatinina, në gjak.",
+          "example": "Dehidratimi i rëndë mund të shkaktojë azotemi prerenale.",
+          "image": "c08-013.webp",
+          "status": "available",
+          "illustrationBrief": "Kidney receiving reduced blood flow, vessel inset with retained small waste particles; simplified laboratory arrows next to labels 'Ure' and 'Kreatininë'. No invented numerical lab results. Do not require symptomatic illness.",
+          "references": [
+            "https://medlineplus.gov/ency/article/000508.htm"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-014",
@@ -1782,13 +2377,18 @@
           "group": "funksioni",
           "term": "Uremi",
           "latin": "",
-          "english": "",
+          "english": "Uremia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Sindromë nga grumbullimi i toksinave gjatë dështimit të rëndë renal.",
+          "example": "Dështimi renal i avancuar mund të japë nauze dhe lodhje uremike.",
+          "image": "c08-014.webp",
+          "status": "available",
+          "illustrationBrief": "Damaged kidney and circulation retaining waste particles, small clothed fatigued queasy adult inset; label 'Toksina të grumbulluara'. Distinguish symptomatic syndrome from elevated urea alone.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/kidney-disease/kidney-failure/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-015",
@@ -1796,13 +2396,18 @@
           "group": "semundjet",
           "term": "Hidronefrozë",
           "latin": "",
-          "english": "",
+          "english": "Hydronephrosis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Zgjerim i sistemit mbledhës të veshkës nga grumbullimi i urinës.",
+          "example": "Një gur që bllokon ureterin mund të shkaktojë hidronefrozë.",
+          "image": "c08-015.webp",
+          "status": "available",
+          "illustrationBrief": "Kidney cross-section with clearly dilated renal pelvis and calyces, distal ureter obstructed by a stone, urine backs up upstream. Label 'Urina grumbullohet'. Keep cortex and collecting system anatomically coherent.",
+          "references": [
+            "https://www.nhs.uk/conditions/hydronephrosis/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-016",
@@ -1810,13 +2415,18 @@
           "group": "semundjet",
           "term": "Nefrolitiazë",
           "latin": "",
-          "english": "",
+          "english": "Nephrolithiasis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Prani e gurëve në veshka.",
+          "example": "Një gur që kalon në ureter mund të japë dhimbje nga ijët drejt rrëzës së kofshës.",
+          "image": "c08-016.webp",
+          "status": "available",
+          "illustrationBrief": "Large realistic kidney containing calculus and ureter with small migrating stone; small clothed flank-to-groin pain path inset, discreet. Label 'Gur në veshkë'. No gallbladder or external genitalia.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-stones/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-017",
@@ -1824,13 +2434,18 @@
           "group": "semundjet",
           "term": "Pielonefrit",
           "latin": "",
-          "english": "",
+          "english": "Pyelonephritis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Infeksion i veshkës, zakonisht bakterial.",
+          "example": "Pielonefriti shpesh jep ethe dhe dhimbje në regjionin lumbal anësor.",
+          "image": "c08-017.webp",
+          "status": "available",
+          "illustrationBrief": "Urinary tract showing ascending bacteria from bladder up ureter to inflamed renal pelvis and kidney tissue, clothed adult flank pain inset. Label 'Infeksion i veshkës'. No urinary obstruction required.",
+          "references": [
+            "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-infection-pyelonephritis/symptoms-causes"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c08-018",
@@ -1838,13 +2453,18 @@
           "group": "semundjet",
           "term": "Glomerulonefrit",
           "latin": "",
-          "english": "",
+          "english": "Glomerulonephritis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Inflamacion i glomeruleve, filtrave të vegjël të veshkave.",
+          "example": "Pas një infeksioni streptokoksik mund të shfaqet glomerulonefrit.",
+          "image": "c08-018.webp",
+          "status": "available",
+          "illustrationBrief": "Large kidney cross-section with enlarged inflamed glomerular capillary tuft, damaged filtration barrier allowing red cells and protein into urinary space. Label 'Glomerul i inflamuar'. No bacterial abscess or ureter stone.",
+          "references": [
+            "https://www.nhs.uk/conditions/glomerulonephritis/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         }
       ]
     },
@@ -1852,8 +2472,8 @@
       "id": "09",
       "title": "Infektologji dhe imunologji",
       "heading": "Infektologji dhe imunologji",
-      "description": "Nënndarjet dhe termat janë të organizuar. Ilustrimet, përkufizimet dhe shembujt klinikë do të plotësohen.",
-      "status": "planned",
+      "description": "Infeksioni dhe përhapja, Ekspozimi dhe ecuria, Imuniteti dhe hipersensitiviteti, Infeksioni i indeve.",
+      "status": "available",
       "groups": [
         {
           "id": "infeksioni",
@@ -1879,13 +2499,18 @@
           "group": "infeksioni",
           "term": "Bakteremi",
           "latin": "",
-          "english": "",
+          "english": "Bacteremia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Prani e baktereve në qarkullimin e gjakut.",
+          "example": "Një infeksion i rëndë urinar mund të shkaktojë bakteremi.",
+          "image": "c09-001.webp",
+          "status": "available",
+          "illustrationBrief": "Large blood-vessel cutaway with a few recognizable rod-shaped bacteria among red blood cells, small urinary-infection source inset. Label 'Baktere në gjak'. Do not equate bacteremia automatically with sepsis.",
+          "references": [
+            "https://www.cancer.gov/publications/dictionaries/cancer-terms/def/bacteremia"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-002",
@@ -1893,13 +2518,19 @@
           "group": "infeksioni",
           "term": "Viremi",
           "latin": "",
-          "english": "",
+          "english": "Viremia",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Prani e viruseve në qarkullimin e gjakut.",
+          "example": "Në infeksionin me HIV, virusi mund të zbulohet në gjak.",
+          "image": "c09-002.webp",
+          "status": "available",
+          "illustrationBrief": "Large vessel cross-section with stylized virus particles among red blood cells, clear distinction from bacteria and no claims about exact virus structure. Label 'Viruse në gjak'. No human presenter.",
+          "references": [
+            "https://www.cancer.gov/publications/dictionaries/cancer-terms/def/viremia",
+            "https://hivinfo.nih.gov/understanding-hiv/fact-sheets/stages-hiv-infection"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-003",
@@ -1907,13 +2538,18 @@
           "group": "infeksioni",
           "term": "Sepsë",
           "latin": "",
-          "english": "",
+          "english": "Sepsis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Disfunksion kërcënues i organeve nga përgjigjja e çrregulluar ndaj infeksionit.",
+          "example": "Pneumonia bakteriale mund të ndërlikohet me sepsë.",
+          "image": "c09-003.webp",
+          "status": "available",
+          "illustrationBrief": "Infected lung connects through schematic inflammatory-response arrows to kidney, brain and heart showing impaired function; label 'Organe të prekura'. Distinguish dysregulated organ response from bacteria merely in blood. No invented vitals.",
+          "references": [
+            "https://www.cdc.gov/sepsis/about/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-004",
@@ -1921,13 +2557,18 @@
           "group": "infeksioni",
           "term": "Shok septik",
           "latin": "",
-          "english": "",
+          "english": "Septic shock",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Formë e rëndë e sepsës me dështim të qarkullimit dhe hipoperfuzion.",
+          "example": "Pielonefriti i rëndë mund të përparojë në shok septik.",
+          "image": "c09-004.webp",
+          "status": "available",
+          "illustrationBrief": "Infected kidney source, widened peripheral vessels and leaky capillary inset with reduced organ-perfusion arrows; small blood-pressure gauge down arrow without numbers. Label 'Perfuzion i pamjaftueshëm'. No dosing instructions.",
+          "references": [
+            "https://www.nhs.uk/conditions/sepsis/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-005",
@@ -1935,13 +2576,18 @@
           "group": "infeksioni",
           "term": "Infeksion oportunist",
           "latin": "",
-          "english": "",
+          "english": "Opportunistic infection",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Infeksion që shfaqet më lehtë kur mbrojtja imunitare është e dobësuar.",
+          "example": "Pneumonia nga Pneumocystis mund të shfaqet te persona me HIV të avancuar.",
+          "image": "c09-005.webp",
+          "status": "available",
+          "illustrationBrief": "Lung with subtle infection and small immune-cell shield schematic weakened; magnified pathogen particles clearly illustrative. Label 'Mbrojtje e dobësuar'. No stigmatizing patient depiction.",
+          "references": [
+            "https://hivinfo.nih.gov/understanding-hiv/fact-sheets/what-opportunistic-infection"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-006",
@@ -1949,13 +2595,18 @@
           "group": "infeksioni",
           "term": "Infeksion nozokomial",
           "latin": "",
-          "english": "",
+          "english": "Hospital-acquired infection",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Infeksion i marrë gjatë qëndrimit në spital, që nuk ishte i pranishëm në hyrje.",
+          "example": "Kateteri urinar mund të lidhet me një infeksion të marrë në spital.",
+          "image": "c09-006.webp",
+          "status": "available",
+          "illustrationBrief": "Isolated bladder and catheter tubing leading to closed urine collection bag, bacteria ascending along catheter; small neutral hospital-building inset. Label 'I marrë në spital'. No genitalia or procedural steps.",
+          "references": [
+            "https://www.cdc.gov/healthcare-associated-infections/about/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-007",
@@ -1963,13 +2614,18 @@
           "group": "ekspozimi",
           "term": "Kolonizim",
           "latin": "",
-          "english": "",
+          "english": "Colonization",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Prani e mikroorganizmave pa shkaktuar sëmundje klinike.",
+          "example": "Staphylococcus aureus mund të kolonizojë hundën pa simptoma.",
+          "image": "c09-007.webp",
+          "status": "available",
+          "illustrationBrief": "Nasal passage close-up with few bacterial clusters on intact mucosal surface, no redness or tissue invasion. Label 'Prani pa sëmundje'. No wound or fever.",
+          "references": [
+            "https://www.cdc.gov/mrsa/about/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-008",
@@ -1977,13 +2633,18 @@
           "group": "ekspozimi",
           "term": "Kontaminim",
           "latin": "",
-          "english": "",
+          "english": "Contamination",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Ndotje e një sipërfaqeje ose mostre me material të padëshiruar.",
+          "example": "Bakteret e lëkurës mund të kontaminojnë një mostër gjaku gjatë marrjes.",
+          "image": "c09-008.webp",
+          "status": "available",
+          "illustrationBrief": "Laboratory sample tube near intact skin with a few surface bacteria accidentally entering sample; separate inset of bacteria remaining on skin. Label 'Mostër e ndotur'. Do not show infection spreading through patient's bloodstream.",
+          "references": [
+            "https://www.cdc.gov/lab-quality/php/prevent-adult-blood-culture-contamination/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-009",
@@ -1991,27 +2652,37 @@
           "group": "ekspozimi",
           "term": "Inkubacion",
           "latin": "",
-          "english": "",
+          "english": "Incubation period",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Koha nga infektimi deri në shfaqjen e simptomave.",
+          "example": "Lia e dhenve zakonisht ka inkubacion prej 10–21 ditësh.",
+          "image": "c09-009.webp",
+          "status": "available",
+          "illustrationBrief": "Clean horizontal clinical timeline from pathogen exposure marker to symptom-onset marker, middle interval bracket highlighted. Labels 'Infektimi' and 'Simptomat'. Small stylized chickenpox rash inset. Numbers only 10–21 ditë if used, no infectiousness equivalence.",
+          "references": [
+            "https://www.cdc.gov/chickenpox/hcp/clinical-overview/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-010",
           "category": "09",
           "group": "ekspozimi",
-          "term": "Inkubacion latent",
+          "term": "Infeksion latent",
           "latin": "",
-          "english": "",
-          "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "english": "Latent infection",
+          "aliases": "Inkubacion latent; latencë",
+          "definition": "Infeksion i pranishëm, por jo aktiv klinikisht, që mund të riaktivizohet.",
+          "example": "Tuberkulozi latent mund të riaktivizohet kur imuniteti dobësohet.",
+          "image": "c09-010.webp",
+          "status": "available",
+          "illustrationBrief": "Lung with well-contained small granuloma encapsulating bacteria, small second schematic showing possible reactivation after weakened immunity. Labels 'I kontrolluar' and 'Mund të riaktivizohet'. No person coughing in latent panel and no claim infectious latent TB.",
+          "references": [
+            "https://www.cdc.gov/tb/about/inactive-tuberculosis.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-011",
@@ -2019,13 +2690,18 @@
           "group": "imuniteti",
           "term": "Imunosupresion",
           "latin": "",
-          "english": "",
+          "english": "Immunosuppression",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Dobësim i përgjigjes së sistemit imunitar.",
+          "example": "Barnat pas transplantit shkaktojnë imunosupresion për të kufizuar refuzimin.",
+          "image": "c09-011.webp",
+          "status": "available",
+          "illustrationBrief": "Immune-cell response comparison: normal active cells versus fewer effective defensive cells, small transplant-kidney inset and generic unbranded medicine. Label 'Përgjigje e ulur'. No dose or treatment recommendation.",
+          "references": [
+            "https://www.cancer.gov/publications/dictionaries/cancer-terms/def/immunosuppression"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-012",
@@ -2033,13 +2709,18 @@
           "group": "imuniteti",
           "term": "Hipersensitivitet",
           "latin": "",
-          "english": "",
+          "english": "Hypersensitivity",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Përgjigje imunitare e tepruar ose e papërshtatshme që dëmton indet.",
+          "example": "Alergjia ndaj polenit është një formë hipersensitiviteti.",
+          "image": "c09-012.webp",
+          "status": "available",
+          "illustrationBrief": "Pollen contacting nasal mucosa, immune-cell and histamine schematic causing local swelling, subtle sneezing clothed adult inset. Label 'Përgjigje e tepruar'. No implying every hypersensitivity is IgE type.",
+          "references": [
+            "https://www.nhs.uk/conditions/hay-fever/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-013",
@@ -2047,13 +2728,18 @@
           "group": "imuniteti",
           "term": "Anafilaksi",
           "latin": "",
-          "english": "",
+          "english": "Anaphylaxis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Reaksion alergjik i rëndë, i shpejtë dhe kërcënues për jetën.",
+          "example": "Alergjia ndaj kikirikëve mund të shkaktojë anafilaksi.",
+          "image": "c09-013.webp",
+          "status": "available",
+          "illustrationBrief": "Clothed adult with modest lip swelling, airway cross-section showing edema, small vascular dilation inset and peanut trigger icon. Label 'Reaksion sistemik'. No injection instructions, no dosing, no dramatic suffocation.",
+          "references": [
+            "https://www.nhs.uk/conditions/anaphylaxis/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-014",
@@ -2061,13 +2747,18 @@
           "group": "imuniteti",
           "term": "Angioedemë",
           "latin": "",
-          "english": "",
+          "english": "Angioedema",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Enjtje e shtresave të thella të lëkurës ose e mukozave.",
+          "example": "Frenuesit ACE mund të shkaktojnë angioedemë të buzëve ose gjuhës.",
+          "image": "c09-014.webp",
+          "status": "available",
+          "illustrationBrief": "Natural close-up lower face with visibly swollen lips, adjacent skin cross-section showing deep dermal/subcutaneous edema; label 'Enjtje e thellë'. Not superficial wheals. No brand/dose.",
+          "references": [
+            "https://www.nhs.uk/conditions/angioedema/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-015",
@@ -2075,13 +2766,18 @@
           "group": "imuniteti",
           "term": "Urtikarie",
           "latin": "",
-          "english": "",
+          "english": "Urticaria",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Skuqje me urtika të ngritura e kruajtëse, zakonisht kalimtare.",
+          "example": "Një alergji ushqimore mund të shkaktojë urtikarie.",
+          "image": "c09-015.webp",
+          "status": "available",
+          "illustrationBrief": "Close-up forearm with several raised pale-centered erythematous wheals, magnified superficial dermal edema. Label 'Urtika kruajtëse'. Not blisters or purpura, no deep lip swelling required.",
+          "references": [
+            "https://www.nhs.uk/conditions/hives/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-016",
@@ -2089,13 +2785,18 @@
           "group": "indet",
           "term": "Absces",
           "latin": "",
-          "english": "",
+          "english": "Abscess",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Grumbullim i kufizuar qelbi brenda një kaviteti në inde.",
+          "example": "Një infeksion bakterial i lëkurës mund të formojë absces.",
+          "image": "c09-016.webp",
+          "status": "available",
+          "illustrationBrief": "Clean skin cutaway with a contained yellow pus pocket beneath red swollen skin, clear cavity boundary. Label 'Kavitet me qelb'. No drainage procedure or graphic rupture.",
+          "references": [
+            "https://www.nhs.uk/conditions/skin-abscess/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-017",
@@ -2103,13 +2804,18 @@
           "group": "indet",
           "term": "Celulit",
           "latin": "",
-          "english": "",
+          "english": "Cellulitis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Infeksion bakterial i lëkurës dhe i indit nënlëkuror.",
+          "example": "Një çarje e lëkurës në këmbë mund të bëhet hyrje për celulit.",
+          "image": "c09-017.webp",
+          "status": "available",
+          "illustrationBrief": "Lower leg with diffuse ill-defined warm red swollen patch, skin cutaway with bacteria spreading through dermis/subcutaneous tissue without localized pus cavity. Label 'Infeksion i përhapur në lëkurë'. Not cosmetic cellulite.",
+          "references": [
+            "https://www.nhs.uk/conditions/cellulitis/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c09-018",
@@ -2117,13 +2823,19 @@
           "group": "indet",
           "term": "Nekrozë",
           "latin": "",
-          "english": "",
+          "english": "Necrosis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Vdekje e qelizave ose e indeve në një organizëm të gjallë.",
+          "example": "Ishemia e rëndë e gjymtyrës mund të çojë në nekrozë.",
+          "image": "c09-018.webp",
+          "status": "available",
+          "illustrationBrief": "Clean histologic-style tissue section with viable pink cells transitioning to a small muted gray zone of dead damaged cells; reduced vessel flow inset. Label 'Ind i vdekur'. No black rotting limb or gore.",
+          "references": [
+            "https://www.cancer.gov/publications/dictionaries/cancer-terms/def/necrosis",
+            "https://www.nhs.uk/conditions/gangrene/"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         }
       ]
     },
@@ -2131,8 +2843,8 @@
       "id": "10",
       "title": "Dermatologji",
       "heading": "Dermatologji",
-      "description": "Nënndarjet dhe termat janë të organizuar. Ilustrimet, përkufizimet dhe shembujt klinikë do të plotësohen.",
-      "status": "planned",
+      "description": "Lezionet primare, Ngjyra dhe lezionet hemorragjike, Lezionet sekondare.",
+      "status": "available",
       "groups": [
         {
           "id": "primare",
@@ -2154,13 +2866,19 @@
           "group": "primare",
           "term": "Makulë",
           "latin": "",
-          "english": "",
+          "english": "Macule",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Njollë e sheshtë në lëkurë, me ngjyrë të ndryshuar.",
+          "example": "Njollat nga dielli mund të jenë makula të pigmentuara.",
+          "image": "c10-001.webp",
+          "status": "available",
+          "illustrationBrief": "Close-up skin with small flat brown freckle, matching skin cross-section completely level surface, increased pigment only. Label 'E sheshtë'. No bump, crater or fluid.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-002",
@@ -2168,13 +2886,19 @@
           "group": "primare",
           "term": "Papulë",
           "latin": "",
-          "english": "",
+          "english": "Papule",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Lezion i vogël, solid dhe i ngritur mbi lëkurë.",
+          "example": "Lichen planus mund të shfaqet me papula të sheshta vjollcë.",
+          "image": "c10-002.webp",
+          "status": "available",
+          "illustrationBrief": "Skin close-up with small solid violaceous flat-topped papules; cross-section shows solid epidermal/dermal elevation, no fluid. Label 'E ngritur, solide'.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-003",
@@ -2182,13 +2906,19 @@
           "group": "primare",
           "term": "Vezikulë",
           "latin": "",
-          "english": "",
+          "english": "Vesicle",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Flluskë e vogël e lëkurës, e mbushur me lëng.",
+          "example": "Herpes simplex mund të japë vezikula të grupuara.",
+          "image": "c10-003.webp",
+          "status": "available",
+          "illustrationBrief": "Close-up forearm patch with grouped tiny clear vesicles, cutaway revealing small superficial clear fluid chamber. Label 'Flluskë e vogël'. No pus or large blister.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-004",
@@ -2196,13 +2926,19 @@
           "group": "primare",
           "term": "Bulë",
           "latin": "",
-          "english": "",
+          "english": "Bulla",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Flluskë e madhe e lëkurës, e mbushur me lëng.",
+          "example": "Pemfigoidi buloz mund të japë bula të tendosura.",
+          "image": "c10-004.webp",
+          "status": "available",
+          "illustrationBrief": "Large tense intact clear-yellow skin blister with matching cross-section fluid cavity and small vesicle comparison. Label 'Flluskë e madhe'. Clean clinical illustration, no wound drainage.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-005",
@@ -2210,13 +2946,19 @@
           "group": "primare",
           "term": "Pustulë",
           "latin": "",
-          "english": "",
+          "english": "Pustule",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Lezion i vogël i ngritur që përmban qelb.",
+          "example": "Folikuliti mund të japë pustula rreth qimeve.",
+          "image": "c10-005.webp",
+          "status": "available",
+          "illustrationBrief": "Close-up forearm with tiny yellow-white pustule centered on hair follicle; cross-section shows localized superficial pus. Label 'Përmban qelb'. Distinguish from clear vesicle or deep abscess.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-006",
@@ -2224,13 +2966,19 @@
           "group": "primare",
           "term": "Pllakë",
           "latin": "",
-          "english": "",
+          "english": "Plaque",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Lezion i gjerë, i prekshëm, shpesh i ngritur dhe me sipërfaqe të sheshtë.",
+          "example": "Psoriaza shpesh formon pllaka të kuqe me luspa të argjendta.",
+          "image": "c10-006.webp",
+          "status": "available",
+          "illustrationBrief": "Elbow with sharply demarcated raised red plaque covered in silver scale; skin cutaway shows broad flat-topped thickening. Label 'Lezion i gjerë'. No plaque inside artery.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-007",
@@ -2238,13 +2986,19 @@
           "group": "primare",
           "term": "Nodul",
           "latin": "",
-          "english": "",
+          "english": "Nodule",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Lezion solid që shtrihet më thellë në dermë ose nën lëkurë.",
+          "example": "Artriti reumatoid mund të shoqërohet me nodula nënlëkurorë.",
+          "image": "c10-007.webp",
+          "status": "available",
+          "illustrationBrief": "Elbow with firm smooth subcutaneous nodule and large skin cutaway showing deeper solid mass in dermis/subcutis. Label 'Solid, më i thellë'. No fluid chamber.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-008",
@@ -2252,13 +3006,19 @@
           "group": "primare",
           "term": "Urtikë",
           "latin": "",
-          "english": "",
+          "english": "Wheal",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Lezion i ngritur, kalimtar dhe kruajtës nga edema sipërfaqësore.",
+          "example": "Pickimi i mushkonjës mund të formojë një urtikë.",
+          "image": "c10-008.webp",
+          "status": "available",
+          "illustrationBrief": "Forearm close-up with single smooth raised pale-centered pink wheal, cross-section superficial dermal edema. Label 'Edemë sipërfaqësore'. No clear blister cavity or open wound.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-009",
@@ -2266,13 +3026,19 @@
           "group": "vaskulare",
           "term": "Petekie",
           "latin": "",
-          "english": "",
+          "english": "Petechiae",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Pika të vogla hemorragjike që nuk zbardhen me shtypje.",
+          "example": "Trombocitopenia mund të japë petekie.",
+          "image": "c10-009.webp",
+          "status": "available",
+          "illustrationBrief": "Lower-leg skin with multiple pinpoint red-purple flat dots; cross-section tiny extravasated red cells beneath intact skin. Small transparent-glass pressure comparison preserves dots. Label 'Nuk zbardhen'. No broad bruises.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-010",
@@ -2280,13 +3046,19 @@
           "group": "vaskulare",
           "term": "Purpurë",
           "latin": "",
-          "english": "",
+          "english": "Purpura",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Njolla hemorragjike të lëkurës që nuk zbardhen me shtypje.",
+          "example": "Vaskuliti mund të shkaktojë purpurë të palpueshme në këmbë.",
+          "image": "c10-010.webp",
+          "status": "available",
+          "illustrationBrief": "Lower-leg close-up irregular small purple nonblanching patches, magnified small inflamed dermal vessel leaking red cells. Label 'Gjak jashtë enëve'. Distinguish erythema from hemorrhage.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-011",
@@ -2294,13 +3066,19 @@
           "group": "vaskulare",
           "term": "Ekimozë",
           "latin": "",
-          "english": "",
+          "english": "Ecchymosis",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Njollë e gjerë nga gjakderdhja nën lëkurë; mavijosje.",
+          "example": "Një goditje në krah mund të shkaktojë ekimozë.",
+          "image": "c10-011.webp",
+          "status": "available",
+          "illustrationBrief": "Forearm with broad non-raised blue-purple bruise, skin cross-section pooled extravasated blood under intact surface. Label 'Mavijosje'. No active bleeding or broken skin.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-012",
@@ -2308,13 +3086,19 @@
           "group": "vaskulare",
           "term": "Eritemë",
           "latin": "",
-          "english": "",
+          "english": "Erythema",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Skuqje e lëkurës nga shtimi i gjakut në enët sipërfaqësore.",
+          "example": "Djegia nga dielli shkakton eritemë.",
+          "image": "c10-012.webp",
+          "status": "available",
+          "illustrationBrief": "Shoulder/forearm skin with diffuse sunburn redness and cross-section dilated superficial capillaries containing blood, no leakage. Label 'Enë të zgjeruara'. No blisters or purpura.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-013",
@@ -2322,13 +3106,19 @@
           "group": "sekondare",
           "term": "Ekskoriacion",
           "latin": "",
-          "english": "",
+          "english": "Excoriation",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Dëmtim sipërfaqësor i lëkurës, zakonisht nga kruarja.",
+          "example": "Ekzema kruajtëse mund të shoqërohet me ekskoriacione.",
+          "image": "c10-013.webp",
+          "status": "available",
+          "illustrationBrief": "Forearm eczema with a few fine superficial linear scratch marks and skin cutaway showing epidermal abrasions only. Label 'Nga kruarja'. Clean, no active bleeding or deep wound.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-014",
@@ -2336,13 +3126,19 @@
           "group": "sekondare",
           "term": "Likenifikim",
           "latin": "",
-          "english": "",
+          "english": "Lichenification",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Trashje e lëkurës me theksim të vijave të saj nga fërkimi kronik.",
+          "example": "Dermatiti atopik kronik mund të japë likenifikim.",
+          "image": "c10-014.webp",
+          "status": "available",
+          "illustrationBrief": "Wrist patch with thickened leathery skin and exaggerated crisscross skin markings, matching thicker epidermis cutaway. Label 'Vija të theksuara'. No rock-like scales or infection.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-015",
@@ -2350,13 +3146,19 @@
           "group": "sekondare",
           "term": "Ulceracion",
           "latin": "",
-          "english": "",
+          "english": "Ulceration",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Humbje e epidermës dhe e një pjese të dermës ose më thellë.",
+          "example": "Insuficienca venoze mund të shkaktojë ulçerë pranë kyçit të këmbës.",
+          "image": "c10-015.webp",
+          "status": "available",
+          "illustrationBrief": "Clean schematic skin cutaway of an ulcer extending through epidermis into dermis, small medial-ankle location inset. Label 'Defekt i thellë'. Non-graphic, no necrosis or pus.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-016",
@@ -2364,13 +3166,19 @@
           "group": "sekondare",
           "term": "Fisurë",
           "latin": "",
-          "english": "",
+          "english": "Fissure",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Çarje lineare e lëkurës që mund të shtrihet në dermë.",
+          "example": "Lëkura shumë e thatë në thembër mund të formojë fisura.",
+          "image": "c10-016.webp",
+          "status": "available",
+          "illustrationBrief": "Heel close-up with a clean narrow linear crack in dry thickened skin, cross-section demonstrates linear split. Label 'Çarje lineare'. No gaping wound or blood.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-017",
@@ -2378,13 +3186,19 @@
           "group": "sekondare",
           "term": "Krustë",
           "latin": "",
-          "english": "",
+          "english": "Crust",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Shtresë nga tharja e serumit, gjakut ose qelbit mbi lëkurë.",
+          "example": "Impetigo mund të formojë krusta me ngjyrë mjalti.",
+          "image": "c10-017.webp",
+          "status": "available",
+          "illustrationBrief": "Small localized honey-colored crust on skin with clean cross-section showing dried exudate sitting on surface above superficial erosion. Label 'Eksudat i tharë'. Distinguish flaky scale from crust.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         },
         {
           "id": "c10-018",
@@ -2392,13 +3206,19 @@
           "group": "sekondare",
           "term": "Deskvamacion",
           "latin": "",
-          "english": "",
+          "english": "Desquamation",
           "aliases": "",
-          "definition": "",
-          "example": "",
-          "image": null,
-          "status": "planned",
-          "illustrationBrief": ""
+          "definition": "Shkëputje e qelizave të shtresës sipërfaqësore të lëkurës.",
+          "example": "Pas një djegieje nga dielli mund të ndodhë deskvamacion.",
+          "image": "c10-018.webp",
+          "status": "available",
+          "illustrationBrief": "Forearm with delicate dry sheets of superficial skin peeling; magnified stratum corneum flakes lifting away while deeper layers remain intact. Label 'Luspa që shkëputen'. Not dried pus or an ulcer.",
+          "references": [
+            "https://dermnetnz.org/topics/terminology",
+            "https://dermnetnz.org/glossary.html"
+          ],
+          "clinicalStatus": "draft_for_clinical_review",
+          "artworkVersion": "20261105-content-03-10-v1"
         }
       ]
     },
@@ -4726,5 +5546,6 @@
         }
       ]
     }
-  ]
+  ],
+  "clinicalStatus": "draft_for_clinical_review"
 }

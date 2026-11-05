@@ -1,0 +1,2119 @@
+{
+  "version": "20261105-content-03-10-v1",
+  "status": "draft_for_clinical_review",
+  "generator": "imagegen built-in",
+  "mascot": false,
+  "cards": [
+    {
+      "id": "c03-001",
+      "category": "03",
+      "file": "c03-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "71761476b30d82dd9c4efeccacaef7ccc1419d3b5753e1ad888bd982c7f40865",
+      "sourceSha256": "b9fc91d38fb818ad88d186bcf77af53766cc2a319641a7ecaf76c2b0c54e373f",
+      "definitionSha256": "902b9e03af29aeb31aa777e55a1824e7e98370a8defe88a07589b0597b236d9a",
+      "exampleSha256": "cb458c13313c688d7a88a2e0232367c814cd0e56eb05ce01e58657d275d7f94f",
+      "references": [
+        "https://www.nhs.uk/conditions/heart-failure/"
+      ]
+    },
+    {
+      "id": "c03-002",
+      "category": "03",
+      "file": "c03-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "8420b6726cb9ab899de1c6325502cc98cccf25f5d89222368a193198b8c7ab41",
+      "sourceSha256": "123c6a22bdc09fe6213ad9f52f429df0726d194737ff9bf651ca094ba3907375",
+      "definitionSha256": "0071b977d199792907a1b04d0927616229820060848c710309fa1edb6c869906",
+      "exampleSha256": "73b0a9f2d6f9efe8ac1703ec1fa862181b8006dbd30a1410b10652da87b55a9f",
+      "references": [
+        "https://www.nhs.uk/conditions/heart-failure/"
+      ]
+    },
+    {
+      "id": "c03-003",
+      "category": "03",
+      "file": "c03-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "3a5af8ce8591c5bc89445a271d53fe62a8cd794500e34034060149eb979e4b7d",
+      "sourceSha256": "9c6733cda150d70e54aee18efc02c1f2b0d78c962cc6df4e8d4cba9152a7baec",
+      "definitionSha256": "51ca69b6cb786acfe548176585846ab4c307e34a85e7bc1a7797ed1d79b4c652",
+      "exampleSha256": "10f4bdf1e6172456ebcb170c81e519a5f6b18649a94b6485270cdb6ae2a61891",
+      "references": [
+        "https://www.nice.org.uk/guidance/ng250/chapter/recommendations"
+      ]
+    },
+    {
+      "id": "c03-004",
+      "category": "03",
+      "file": "c03-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "5b53a7171dce9a030dde72db1e874cb3fddf1fe42f61924e20f41c13a16a5672",
+      "sourceSha256": "ace54f49df62b54c8739185a119c679ebcd0f4d1cac4578b738086dd432b34ee",
+      "definitionSha256": "2a5574e4b96f221b907692e679b3e0dc3f97ab55afedc622c861522a037a8b77",
+      "exampleSha256": "9a41a572d30dcf194678bbb968f0e6f86b7c7ed21b87b40c85df4f5fda139a49",
+      "references": [
+        "https://medlineplus.gov/opioidoverdose.html"
+      ]
+    },
+    {
+      "id": "c03-005",
+      "category": "03",
+      "file": "c03-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7c3501f6ca2e519d0fe87f3187df2e1e6471734a50506067607a1a079a88948e",
+      "sourceSha256": "50ea27f2fad99028b3bd0a659b39a330692762909d9b90450b1cfb488c6092fe",
+      "definitionSha256": "2fdb513de4c6760b64a9781a6d09437e7480b79170ade24cd714470955a4bea2",
+      "exampleSha256": "c2ed6ed0cfb27a8f904f0de641b5257e0e66b9a7a0203e67ef1c6c6adb1c7656",
+      "references": [
+        "https://www.nhs.uk/conditions/sleep-apnoea/"
+      ]
+    },
+    {
+      "id": "c03-006",
+      "category": "03",
+      "file": "c03-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "5834249882b56bd405aea644b3e5a77ba6b91a5355a56860ee58b1c1ff24cea3",
+      "sourceSha256": "1f6cc3f68162cb1d2050dd6f8484cabb816c16e10722088b1ffb5a482eb22696",
+      "definitionSha256": "a560c959f6413d0a05cb4f1080e1e65dd1d0e3c43c0a20fbfe1e7c9bb0ef025b",
+      "exampleSha256": "86a9458d168aeb01eb4a689c08616c262de70cd8fbe0bd3cbe3f1649c8a5e92a",
+      "references": [
+        "https://www.cdc.gov/heart-defects/about/tetralogy-of-fallot.html",
+        "https://www.nidirect.gov.uk/conditions/blue-skin-and-lips-cyanosis"
+      ]
+    },
+    {
+      "id": "c03-007",
+      "category": "03",
+      "file": "c03-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "80d7d486b7211af8260e9f6cc5a6eff8b05cb176c35815080cd21099e3ad5f43",
+      "sourceSha256": "7c6d48e2c913b53e341254a8784201339d7e4ce904e204fa2776f1d50930cc7f",
+      "definitionSha256": "2282d4b875f7d9b02605cf9a33c1fe1a753c5b023cc44cb0563da049a57446e7",
+      "exampleSha256": "bedba182bbd0c43506a11e3380b11926cf3cfd8521a0ea45bb43158683704d94",
+      "references": [
+        "https://www.nhs.uk/conditions/bronchiectasis/"
+      ]
+    },
+    {
+      "id": "c03-008",
+      "category": "03",
+      "file": "c03-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "042701758f6a00ead19f11a3396651fa79c9c84105d178ca69ab03c7e87fcecd",
+      "sourceSha256": "80f752fddb937cfd824071ff4f4bab37b933e09dcdcb134093e893b921a79d7f",
+      "definitionSha256": "ca604d21082fb7783d5f69992bbc651ea9846e88fa41c722578c9612333a8bee",
+      "exampleSha256": "413057488dc13e17351a1ed77ad6a8f233421c7e63b0adbe1c63aa4fa9067ed3",
+      "references": [
+        "https://medlineplus.gov/fainting.html"
+      ]
+    },
+    {
+      "id": "c03-009",
+      "category": "03",
+      "file": "c03-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "84ec01633f7a28365428dbb83a4fe9a27ff797698c87a4a0b39af9ffe056cdec",
+      "sourceSha256": "288722b8f382076c71b2b69635015559d5f5b5d8fb32f6de42a7cd7ad46802c4",
+      "definitionSha256": "c22613bd9a100b77277a0e899ce9df2f09392ea2c377b5fb271f8ef3f2ff8696",
+      "exampleSha256": "94908f089ded11c19589faaa60741c6311b4f9362cb4ab3093f14e721c856e16",
+      "references": [
+        "https://cpr.heart.org/en/resuscitation-science/first-aid-guidelines/first-aid"
+      ]
+    },
+    {
+      "id": "c03-010",
+      "category": "03",
+      "file": "c03-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "5243435b9e98a0698a61a63774b2772dc6a751f78cde9e9677f644029fda512f",
+      "sourceSha256": "f825933ecca6aaa9078bc45fa9c26f1ac0fa2ab180e693fb8198f49a8256277f",
+      "definitionSha256": "664f2c7ca571dd997811ac95f6b10a3f903fc428a31ed1b9731487325dea35ea",
+      "exampleSha256": "e96344bdabbe7a5be2e1edf76212302c70a71cf633e8daedf98f9d21406a1a3b",
+      "references": [
+        "https://www.nhs.uk/conditions/iron-deficiency-anaemia/"
+      ]
+    },
+    {
+      "id": "c03-011",
+      "category": "03",
+      "file": "c03-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "ac641d849a471240f082bd45377327c69b6ae6481d5f611522bffb68c30a43e1",
+      "sourceSha256": "8d8bc395a2e6e030e325787ab2e0768bcffc0adf73df20e8c6b438bfc68fa8e7",
+      "definitionSha256": "17323f0f89b5c90cc754ea84c803e2c1e50470ad9663b72a8c459ed35b4f5a33",
+      "exampleSha256": "74f6ef5ecbae6ddba4008693460ee03faccb98dee07606b5ba8554ff09308303",
+      "references": [
+        "https://www.nhs.uk/conditions/pneumonia/"
+      ]
+    },
+    {
+      "id": "c03-012",
+      "category": "03",
+      "file": "c03-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "75e2d165a5cef2d038085f5c80de30f33591fae6a30e9990dd961ea3651849d5",
+      "sourceSha256": "95848dcb3df4b6bab8e8f6b9b9237d92b6f5ef4405a3847a48097a8b01bec346",
+      "definitionSha256": "40cae307e62c14731aec54ecb4572f978bc9d431d1f97270c40ab7da5e184403",
+      "exampleSha256": "b4bdaacf4e10152ef48b6d089b1a104cb6101c939c53801d8a2465c57d83a2d1",
+      "references": [
+        "https://www.nyc.gov/site/doh/health/health-topics/encephalitis-viral.page"
+      ]
+    },
+    {
+      "id": "c03-013",
+      "category": "03",
+      "file": "c03-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c80d8aaeffb6566b1b679d2f3bbf326ae6e8495651cfaf302c6c6f4060afcfe7",
+      "sourceSha256": "550a1414dcce09f40311449021a5e6cb7a3186093a2652fe12b7fca28bf1e4a5",
+      "definitionSha256": "52c8cbf7b26ba06af53f5141ede0150a90e5830e156b6f57a851531c34016a54",
+      "exampleSha256": "a3a870c39b3452a884fb972178be164691a645966c89b944cb1cb1d69478361e",
+      "references": [
+        "https://www.nhs.uk/conditions/heart-attack/"
+      ]
+    },
+    {
+      "id": "c03-014",
+      "category": "03",
+      "file": "c03-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a98b44023053aa7b12251608ef6f018328c9621f608a269a33cc42c20a86ad90",
+      "sourceSha256": "656ea76bf810da25132a42cbb34e6e5677373639c9bff6d8388d6ea8ccd9ab04",
+      "definitionSha256": "f02c126139d9f4af9f928bc0fe13f1da14fa2768a316c6d90c12f3aaf8979080",
+      "exampleSha256": "d1997ea2064f603b8b9d890f87b90b9baaaea1a98df6f57e8e6d37703a84e4fa",
+      "references": [
+        "https://www.plymouthhospitals.nhs.uk/display-pil/pil-upper-gastrointestinal-bleeding-advice-for-adults-6023"
+      ]
+    },
+    {
+      "id": "c03-015",
+      "category": "03",
+      "file": "c03-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "37c002230a4a177967327a16a9084ae89d87dda1c9334c994d15c8567fce181a",
+      "sourceSha256": "8f5cea581b04d232328debe07123f4e24ba69f438b161f1ad7859edbfb332c71",
+      "definitionSha256": "f5676245a7a690c356693327255358aab82ef884724e5d3c3af52f8226765fc5",
+      "exampleSha256": "13167e0774dcbb30fd350dd80c438a5b668afad4f5463ac9858f3aa5aec72ff5",
+      "references": [
+        "https://www.plymouthhospitals.nhs.uk/display-pil/pil-upper-gastrointestinal-bleeding-advice-for-adults-6023"
+      ]
+    },
+    {
+      "id": "c03-016",
+      "category": "03",
+      "file": "c03-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "907361d40a3bdc232c7e98eca4a3452fa48a75654bbcdf3ebdcacd73153a808f",
+      "sourceSha256": "323048942d2255590d7d00877445ff591f4da3643c1a256ab33bfa8846f9ec99",
+      "definitionSha256": "f614c7904cbcbe5a4278df21a8cd74f66a5de2f4d61daa60ff1681c9103868cd",
+      "exampleSha256": "044802dae46a62ef4bf6b8d2b7424b04614ac7355f3b52178eff75b159dffbf0",
+      "references": [
+        "https://www.nhs.uk/conditions/ulcerative-colitis/"
+      ]
+    },
+    {
+      "id": "c03-017",
+      "category": "03",
+      "file": "c03-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a78dd9faf4a9a7229682cd7ad1091b24f26e8d50efc1de8a532b47d792941eae",
+      "sourceSha256": "034e9a86f806fa63bb5d0531304c9d683507d825ed76338a2ce01946f3569e3b",
+      "definitionSha256": "abe7c01e83b14e0b0c0335b2b42e9b5c3a5e4d10b3aa7a5e11b029f589280e5c",
+      "exampleSha256": "3099d5aaca792cb6788acde25cc12ce30ad5c160627b0ac5923aa5f544e043f3",
+      "references": [
+        "https://www.nhs.uk/conditions/urinary-tract-infections-utis/"
+      ]
+    },
+    {
+      "id": "c03-018",
+      "category": "03",
+      "file": "c03-018.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "1cac373ac338a81c214e0ff3d1d933bfcfe638b63e9181879c2b13b797190708",
+      "sourceSha256": "015c63c7559b3a67574707efa6e835438a95cf275a42e5b202bb3f28b72a46c2",
+      "definitionSha256": "fa7b0c09ba26d2ccf638d8d8543cf984de4da80615055fa76f9bafde96885652",
+      "exampleSha256": "ef42c1c63a8978055858e2bfa44076b49c3d39f46ec6c4825bc79ae03f83d6fb",
+      "references": [
+        "https://www.nhs.uk/conditions/urinary-tract-infections-utis/"
+      ]
+    },
+    {
+      "id": "c03-019",
+      "category": "03",
+      "file": "c03-019.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "773b35a125ca30665954cd7b759febee55d6e4bc0999fc895e9906a1b28ada5e",
+      "sourceSha256": "c958812785a52d7cc4a7b01a605ed71ee89e0e0cc33ce9c0e7aae7a6794656cc",
+      "definitionSha256": "14a8fbdce8e580a5478df3bb4e76f539003f4209f64120b3bcea6452378465cf",
+      "exampleSha256": "ada8046ea1d52937e08d0bd64114f9dc52d9582a22744f60788fb0b1390c697b",
+      "references": [
+        "https://www.nhs.uk/symptoms/swallowing-problems-dysphagia/"
+      ]
+    },
+    {
+      "id": "c03-020",
+      "category": "03",
+      "file": "c03-020.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "35bc7a4839de9c4654ef619328de07a0590a2c68ea1a6168a6a3daacea0abace",
+      "sourceSha256": "66f4c7df4010e4978141b290e123a32ed2ffd813d4a43cc355fc15158f15ab1e",
+      "definitionSha256": "7c963b27ef58880f3c062fc34a54c7cf7c17551d2cfadfe63b976ee38d68f239",
+      "exampleSha256": "f9d492a2d694b9e02a1eeb7104f01aa431f98763c37c520b83b3627bc9d8e1e8",
+      "references": [
+        "https://www.cdc.gov/sore-throat/about/"
+      ]
+    },
+    {
+      "id": "c04-001",
+      "category": "04",
+      "file": "c04-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "1fb4f03a5b266c4500cdd8633e47eeee33de8a9fabd916bc66b5a89eb57c3630",
+      "sourceSha256": "8d2b84e122e29ef00a53565b1fdec8b19bf2418997c9e759d78fd50790df908c",
+      "definitionSha256": "e0d2498da32208a3426d30f612579d789c895d209c932a4a1a864dd8f526d0f5",
+      "exampleSha256": "90267235f857493d1cc7ce8b6217de247f5e9ac6b08670e802172c513ad4946e",
+      "references": [
+        "https://www.ninds.nih.gov/health-information/disorders/agnosia"
+      ]
+    },
+    {
+      "id": "c04-002",
+      "category": "04",
+      "file": "c04-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "e596703c90c3dda8813a47d425f0d23917eb41c48819563f1ebff4e387f16eef",
+      "sourceSha256": "a3e26ae7741023df32f070ecccf10fb54e7b54e2d531a201a02ca2640f3ae1c7",
+      "definitionSha256": "4fa93a0a439e6c42e4f3ecd9fbb7dfbc2dd07c36b386dc23cef41050dffa042c",
+      "exampleSha256": "f6d6f4a0d69947a498620753a029b623d9942a22331b3f00cf29ed72483dd2b7",
+      "references": [
+        "https://www.ninds.nih.gov/health-information/disorders/aphasia"
+      ]
+    },
+    {
+      "id": "c04-003",
+      "category": "04",
+      "file": "c04-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "d40bb5bf044817c24b42ab0ab7763d4cb03d658329fe7cf7523d72002768a9cc",
+      "sourceSha256": "8b61516daa0811ed45f9206a8c763050c5a631b389baed3893969b174d46b5dd",
+      "definitionSha256": "3d3a08dcfc473d853cb22834ff2f626bd2a8a279858433539562b545e8f24258",
+      "exampleSha256": "48218d1e13598a392a56230c93b03c1114963bf4d0f999dbaad863215b62c17a",
+      "references": [
+        "https://www.nhs.uk/conditions/dysarthria/"
+      ]
+    },
+    {
+      "id": "c04-004",
+      "category": "04",
+      "file": "c04-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7b573a71dc347105ba1c796770f98d0819563da70846274b6d1a839d7e648351",
+      "sourceSha256": "498a88af73ece86e09de4af0e009bfc560c304e4ac2e5d129152f19dee0f9751",
+      "definitionSha256": "f75b313888743482848071f92f1927a90124d731d4d37e9c7303f4d9be967a07",
+      "exampleSha256": "88a4fd0516072ab33beb03da01c8e51332d4e97add7de73d2217ea913d090c47",
+      "references": [
+        "https://www.ninds.nih.gov/health-information/disorders/apraxia"
+      ]
+    },
+    {
+      "id": "c04-005",
+      "category": "04",
+      "file": "c04-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "870f6fb35126ae1434ba4a3e22b31bd65f4e07b27e74bba016a3e47031fccc09",
+      "sourceSha256": "50ca4371c619ccafa99452d5dbdc5460b297a0dc9cb24d8f245791b0685e3aaa",
+      "definitionSha256": "ae17f782e20c71f4584d9eb18ff8bb10d6ef5d5aa96960e6b3f4c452be13fca9",
+      "exampleSha256": "67487a42fee08e7aedd652010d940ece7858edeaa50e5a7279bda8c91427afb4",
+      "references": [
+        "https://www.ninds.nih.gov/sites/default/files/2025-05/post-stroke-rehabilitation.pdf"
+      ]
+    },
+    {
+      "id": "c04-006",
+      "category": "04",
+      "file": "c04-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "b60f7ba0f1b433e3f9ec221c1f8dbf84db3376a46b5b198792be84d7200f557d",
+      "sourceSha256": "02c7b222e445430e94e6adc47ca1d2862c015d8446df766f44b23588921e7334",
+      "definitionSha256": "c307cbd733386f55f01acacaa339a9f9ac01b06a2105a3776db02f33766b0142",
+      "exampleSha256": "0c85d858fe0105d4a1eaff987752fedffe965c2d7a3875632bbd6b881b1be368",
+      "references": [
+        "https://www.ninds.nih.gov/health-information/disorders/spinocerebellar-ataxias"
+      ]
+    },
+    {
+      "id": "c04-007",
+      "category": "04",
+      "file": "c04-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a4687917d8d3e1d1d9e49638a9e45f90cae3b95d3972365e6604fb93b7aa6cca",
+      "sourceSha256": "dce76ec9621a1756210d15b94027cc408ecea9984ade47995af25bfa4d51a619",
+      "definitionSha256": "20ac9e03327a222abd8633ca434595d397aced963574ab8e716144bcf8befe40",
+      "exampleSha256": "5dd3c6cfc9234748ad25e4d3c509545b9815fbf95a13f96d7d06ea06d84d55ca",
+      "references": [
+        "https://www.ninds.nih.gov/health-information/disorders/stroke"
+      ]
+    },
+    {
+      "id": "c04-008",
+      "category": "04",
+      "file": "c04-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "4833a4cf495c45c71ad9c6bc911b88cbf4d2d9dd63c40b22eee9c95801a9cc48",
+      "sourceSha256": "00e3f05b2f881f1ba075dfaf04e3a376b37dd4e00736eeb9ec593f9157119431",
+      "definitionSha256": "8e6a74fbeabb4c446b25a5dc7d0089a781e2f33804f3f80ad28d76ee70b5bbc2",
+      "exampleSha256": "c3596418a207fdb5c27072934943b4b0d0c7291986e88e344cc5e47106ba2631",
+      "references": [
+        "https://www.ninds.nih.gov/health-information/disorders/spinal-cord-injury"
+      ]
+    },
+    {
+      "id": "c04-009",
+      "category": "04",
+      "file": "c04-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "3cec0b983b7c28e8a3e4e49cdb536d60fb5aac39f53897c2da4d002f80047ae0",
+      "sourceSha256": "63e8808ad62a03b14d65b3aa36e76f31b4b6bc2aec1cd68c92e9f67c1c49dda8",
+      "definitionSha256": "73e92ea59b033b4d0be1ee7f29361c284f160060a3e08b66c2b0e9328cdb9fe5",
+      "exampleSha256": "e62275d89753b512fef20240c2dbf5b5e0dd075051a7af01cc1b3e59e3692fcb",
+      "references": [
+        "https://www.ninds.nih.gov/sites/default/files/2025-05/post-stroke-rehabilitation.pdf"
+      ]
+    },
+    {
+      "id": "c04-010",
+      "category": "04",
+      "file": "c04-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "2e64489450a1f0cf17aa3adf3d5e48cd07bbceb8949b4bbe59a1cf82b314f5b0",
+      "sourceSha256": "22fa4978b83241c5a32e2dccec09520108b91b4f43875a6a241126647eed6dc9",
+      "definitionSha256": "4f70e3b72f12d1f0ab71c0c0206bcb0df4ccc92db384d12f805eacbdbe17a197",
+      "exampleSha256": "9085cc3dba052eb7f70dcc9b32fbb30a15dd4dd07d212eefe285e30dc7e6a10a",
+      "references": [
+        "https://www.ninds.nih.gov/health-information/disorders/spinal-cord-injury"
+      ]
+    },
+    {
+      "id": "c04-011",
+      "category": "04",
+      "file": "c04-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "f62ad058421d995a6ee251ad1986c90de2a2603ceeadb18739e08caca9d40b0a",
+      "sourceSha256": "5cd8be7f140bc37212e766506126f0cb928611c7009c8d43bd955a3e951070a9",
+      "definitionSha256": "0d0039eedbd78d8ec50d0f49d3d9fe73db19fa881737a39ccc0331f44971a4b5",
+      "exampleSha256": "7095af185c784313c5e6dbefc601bbd450d65ab282d3bcc55bcdcddf8bacd8bc",
+      "references": [
+        "https://www.ninds.nih.gov/health-information/disorders/spinal-cord-injury"
+      ]
+    },
+    {
+      "id": "c04-012",
+      "category": "04",
+      "file": "c04-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "376c1c0e5ada3c37fa9018ea7be68df8f5b0c79d358a3879f72073375f448022",
+      "sourceSha256": "c6106d62293685d430fba53e3d429a96d2841e563c4da0ea982111f70e0e70fc",
+      "definitionSha256": "71cc4d79b0a490a734b0bb3e5abacc1c6b87085aab4af7c21b09ad84215caf75",
+      "exampleSha256": "f829e0d737a324f0d31ff5a5596cfcf0a211ead56cb18f595839c2bcb8562c9b",
+      "references": [
+        "https://www.ninds.nih.gov/health-information/disorders/spinal-cord-injury"
+      ]
+    },
+    {
+      "id": "c04-013",
+      "category": "04",
+      "file": "c04-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "ec5fcb9c4f10bf20ecd217609dc7394edc2dac1e76c619974a99d809956f8081",
+      "sourceSha256": "f3aad6e833582fbae0c3fc796093a34239ce398d6a479601ff7bfc072c62420b",
+      "definitionSha256": "f18f913d217d366bbec58af4fda28558bc84ebc02c80dabf5c9456beff1e32d7",
+      "exampleSha256": "060e150164e04fe773d126046a0e86c67d1d0a82c68d570777f50554c5f1cd5c",
+      "references": [
+        "https://www.ninds.nih.gov/health-information/disorders/paresthesia",
+        "https://www.nhs.uk/conditions/carpal-tunnel-syndrome/"
+      ]
+    },
+    {
+      "id": "c04-014",
+      "category": "04",
+      "file": "c04-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "66e83a295858179394c1074fbc246da4da0ae53b77fb6145c5abcee9927a69a5",
+      "sourceSha256": "a03763a26c3295a8dc2ee235d62a9a64ae4b73b9b45222d02f7531e01c081e84",
+      "definitionSha256": "aa1da1cf9f97c8693cf328dc94ea64999aa6487f0786fd3920b7b28a4d6b6abc",
+      "exampleSha256": "63a3e17b9158dddd190da5a30a5f7f847cc8b79e44207dc6b9d93a7df82f9ed8",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/diabetes/overview/preventing-problems/nerve-damage-diabetic-neuropathies/peripheral-neuropathy"
+      ]
+    },
+    {
+      "id": "c04-015",
+      "category": "04",
+      "file": "c04-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "595759dd46406414cc558f3e7f02e476703c3cdaf19417f57285e821dce67034",
+      "sourceSha256": "b0212668283dbe83fcf8b14e63e28692a3fa7de7da48630e132bf1c83c17ed35",
+      "definitionSha256": "c775924931eed5953a861b66fc4c66087128555770da0b5ca8fe03482bb9c205",
+      "exampleSha256": "0590d4d4d2e389cb4e9fb40a3347e5c47cdf942ffe6eebb0e9b555c80053efe0",
+      "references": [
+        "https://www.nhs.uk/conditions/local-anaesthesia/"
+      ]
+    },
+    {
+      "id": "c04-016",
+      "category": "04",
+      "file": "c04-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "873ef7a17a76c91852c0473e1786577263e4217bc59dfdc7eb970bb518746b19",
+      "sourceSha256": "b0bcded4edecb01146e81ba168f082d1f602005056f18d851de70a1b226126c8",
+      "definitionSha256": "db0e61a35b006e2b3e599a9746082d614d46df5ef95edba31f2546ad322029ae",
+      "exampleSha256": "9ec0df0386e5cdcac9ded1c58046c26b4674829266a98c4b2cfbe150c30af11a",
+      "references": [
+        "https://www.nhs.uk/symptoms/double-vision/",
+        "https://www.aapos.org/glossary/sixth-nerve-palsy"
+      ]
+    },
+    {
+      "id": "c04-017",
+      "category": "04",
+      "file": "c04-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "cbd5dfc6930c7ebacc5cb81493a89b5685dc76dd216532e3e76c4a1ac681365e",
+      "sourceSha256": "d4cfe1b4fef48e7ce339d078a6969dd196ba72f8fc6679de33cd266e8b9a4afe",
+      "definitionSha256": "3bd6bb7ae25529d208e471aa3634f0746ff66b99eec5ee35871a0656b2aa9e09",
+      "exampleSha256": "75bf10a636069a97ab6342cab8060d085e3c1f90291b47baf48f70e193f4e069",
+      "references": [
+        "https://www.nei.nih.gov/learn-about-eye-health/eye-conditions-and-diseases/nystagmus"
+      ]
+    },
+    {
+      "id": "c04-018",
+      "category": "04",
+      "file": "c04-018.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "4e5f3654a65cc9ace78fbdbe45ac07e13b4c6172234ae9786a551feb187678c2",
+      "sourceSha256": "e5573528752862bfdd73646dd37ff1d87da4d033e6c2af5f9bd09f8900dc4e0d",
+      "definitionSha256": "dc85192179e42eb29961d0edb1137200a6600fa163cf5d78cc3fa044d01447b9",
+      "exampleSha256": "acc626ff00b2328d9ffd93d07832baee0259857202ba023899f6d8b45ec0eddc",
+      "references": [
+        "https://www.nhs.uk/conditions/vertigo/"
+      ]
+    },
+    {
+      "id": "c04-019",
+      "category": "04",
+      "file": "c04-019.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "d833cfad29ab1ed782ee798ae3308586f17d7ca477f46bd0b36755ac11942243",
+      "sourceSha256": "4eac3208e0d3441078fba3dfa3672dab7073013f83b6609f724378a070ce2616",
+      "definitionSha256": "f6d6808e2ce5445d1063fe3d37b0befe0842b19b464d4c5be56cc3c476edc3b5",
+      "exampleSha256": "24108dc78ab1e3164967c14728c8edb7a6cc7daa0b1faac30bcc6d0d61538ba4",
+      "references": [
+        "https://www.ninds.nih.gov/health-information/disorders/tremor"
+      ]
+    },
+    {
+      "id": "c04-020",
+      "category": "04",
+      "file": "c04-020.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "b4e918978a7994339a87a18bc1d9a0e62146b5bf64b96505ef24996beafbf91c",
+      "sourceSha256": "e7074d0927a83ac34ed74fc10df6970842acf93e98b6118d51b32706bca26092",
+      "definitionSha256": "bca1a7d924b6ca6d6a9a5d6ca32c89d98f8bf692850a63c7b037e5fa2f4c9069",
+      "exampleSha256": "5b8ed74427c6f657c08f333aeda0e87af753ef9584efa0f63e26d6d3dc1c79ab",
+      "references": [
+        "https://www.ninds.nih.gov/health-information/disorders/myoclonus"
+      ]
+    },
+    {
+      "id": "c04-021",
+      "category": "04",
+      "file": "c04-021.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "63a0bfaeeb7589ba8ca2e6e56bb576a5f00475bd3430179e333629897c7a348c",
+      "sourceSha256": "52f9867badb3222dc5d8ef20bce348a541f6e5ca9876feb1738644be47c3f946",
+      "definitionSha256": "0d51fd041efc073d9653b0f5434bcc8916449866f4260a159f6547ffcc846a67",
+      "exampleSha256": "8410b6a8ac89a03a65c32734d358d1e7c6ad7bfc73f883859475f3b4294c798c",
+      "references": [
+        "https://www.nhs.uk/symptoms/twitching-eyes-and-muscles/"
+      ]
+    },
+    {
+      "id": "c05-001",
+      "category": "05",
+      "file": "c05-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "49543b5e3c29b5ac4b25ba12ec893007141de5a173224aa0bec7e3525f2c397e",
+      "sourceSha256": "2cf68274205a4b42b026df4d4973363e0960c0516ae84951fcecc1bc77bcc56e",
+      "definitionSha256": "d4a62b896562bbe493f59f5e17094a8546d362ddef803fa71cb5db4456247f3b",
+      "exampleSha256": "1221e954f4cb147b7919085f49ce0e60a39b34da2a1e775658965fc5926543be",
+      "references": [
+        "https://www.nhs.uk/conditions/arrhythmia/"
+      ]
+    },
+    {
+      "id": "c05-002",
+      "category": "05",
+      "file": "c05-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a426733af59f3ab5460461580408b1b399df65ee1a6f1a0a328ba2bfd0e626a8",
+      "sourceSha256": "3efae1b0aac5daead252164b61b07f8780164aca4198f998f786d503b6aee644",
+      "definitionSha256": "7d334c2266fbe462161b778c29d453159815218abe4418bef24d0ad5587c9b05",
+      "exampleSha256": "4d48957f182f02d53132c1af4bb654938ddfbdff16424bbe58a9cd95e93398e9",
+      "references": [
+        "https://www.nhs.uk/conditions/heart-block/"
+      ]
+    },
+    {
+      "id": "c05-003",
+      "category": "05",
+      "file": "c05-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "fbe9e6efcd80397aba92468e80a427d284405d42503bf574f8e33c3f30bbf971",
+      "sourceSha256": "3714b0d9b42c005f606c3333b296b2d9de07f7bc4ad3fce59c194cb0d9966f06",
+      "definitionSha256": "9ffd5db84defaeeb5010f5bcfb33be3c6871319aca67bdbe292112271af76cfb",
+      "exampleSha256": "8b7768507053dc78032c806944f3451153854f7a24583ebf07c5069515371ca0",
+      "references": [
+        "https://www.nhs.uk/conditions/arrhythmia/"
+      ]
+    },
+    {
+      "id": "c05-004",
+      "category": "05",
+      "file": "c05-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "2487bd0a0f4c4742f85e47b4a5c0f6d4d84ce2bbe409755f0706db6cbe4ef368",
+      "sourceSha256": "8b2478556960dcb7813511b5d2188f5e1de53084c4a724639e38c41adb04b15b",
+      "definitionSha256": "630ac6494dc9172465eb3ff1ea7e0db6d8f75e5f140582e165bdc6a8aa794a83",
+      "exampleSha256": "833142dea522d846f720bb718901a7335604bfa10b1e1229e7d903d6dce2c2bb",
+      "references": [
+        "https://www.nhs.uk/conditions/arrhythmia/"
+      ]
+    },
+    {
+      "id": "c05-005",
+      "category": "05",
+      "file": "c05-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "8a6aac8ed56531362a670b168f4e2a1bdd7cedc3d9a2944b4b09fd4b74c46125",
+      "sourceSha256": "dcf2b79a16df509687a74ca20239a2749172865ebd5ec8e8d25520af8fa0034a",
+      "definitionSha256": "ce984023bc8faedbd495dfb6e21a9efc95bc38b40a556aa9ed46a109b1c12e82",
+      "exampleSha256": "4dc9de8cbf0ebd4b3f3e6fea38272d8e42df5aa936cbf3f42fb89dd365a06bdc",
+      "references": [
+        "https://www.nhs.uk/conditions/low-blood-pressure-hypotension/"
+      ]
+    },
+    {
+      "id": "c05-006",
+      "category": "05",
+      "file": "c05-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "1f248df5c451a5b53ee19af74cd88a56650a4ce9316d3e7937608fc7c42f16fe",
+      "sourceSha256": "cb9525875b7fd73e8adc08024c5d7f378514e8f683b1262759a3cb1107832b67",
+      "definitionSha256": "bf7fe2f94318f9be70d66c26c4523855fb5d5247c8c02dc98cd9dfa3a7b72697",
+      "exampleSha256": "731a6b60a462230ab2a19bedc6da5ff9377a8a23a60c13530c874b10cb079958",
+      "references": [
+        "https://www.nhs.uk/conditions/high-blood-pressure-hypertension/",
+        "https://www.nhs.uk/conditions/kidney-disease/"
+      ]
+    },
+    {
+      "id": "c05-007",
+      "category": "05",
+      "file": "c05-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "9f935de567548a4c1057ccf4cec398b67b15079f6b21426ba874b9f3c86241e3",
+      "sourceSha256": "cf81642ed5fffd96ce33ba7c75ef8c7dfef741ef6569aca8f56e3e3fa75b5055",
+      "definitionSha256": "8c2cc8f737c57707935b9a4b1315fe0718529db25fa1b2e434bc6a0801c8bd86",
+      "exampleSha256": "710e15af541c49d6ca76538bfada7e0e92c20db8ca8ed1a01f44731bcb5f7a68",
+      "references": [
+        "https://www.nhlbi.nih.gov/health/cardiogenic-shock"
+      ]
+    },
+    {
+      "id": "c05-008",
+      "category": "05",
+      "file": "c05-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "b4700fce2ef8cfa97bb25383ccbd20aa11b243184d84d848d7918628ce3a56bf",
+      "sourceSha256": "f7f2b5346683343c906f0c2b6681468b2488ebc5c39b2541a4b14497c87c0817",
+      "definitionSha256": "2835144dad5519b353664fb25d665e3fe957735457ac2324c9f61ee3a6f05245",
+      "exampleSha256": "75e18388a72bd1afc0ea0a27c410d3050d08368a0151c2316fe559684caf829e",
+      "references": [
+        "https://medlineplus.gov/genetics/condition/orthostatic-hypotension/"
+      ]
+    },
+    {
+      "id": "c05-009",
+      "category": "05",
+      "file": "c05-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "deb498e606e198a6d5e7707d4190975e41299906e0ab5a275f83bbf5b4589505",
+      "sourceSha256": "d0d68b1f22baa00bd99458152b77e080abb98b0819a08b04004fae98aa0acf56",
+      "definitionSha256": "540288eab9f06fb7474f94f5ab7a96e4ff6c7bdafec3f6e3e1e3fda0cea8260c",
+      "exampleSha256": "67702ca50ce10113ecb7488eb953690d6f585a243090860ba15edde4bd6ca495",
+      "references": [
+        "https://www.nhlbi.nih.gov/health/cardiogenic-shock"
+      ]
+    },
+    {
+      "id": "c05-010",
+      "category": "05",
+      "file": "c05-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "daa5ac75c946330f38d114ac5ff514c87beec50cd6c64787c8daed8a696ab7af",
+      "sourceSha256": "f7d75b5bd311f6cb53227bcfcbe74a5c5b34ea5506d634fce98dc6d0b1130b01",
+      "definitionSha256": "b4108b51079353dcc3d2172baa4466475853bfa8fb9e61c87151b8a8e4461fef",
+      "exampleSha256": "3a5c9c3dd5c2332d1fb5e944dd8dfdf61a0dd141066361a074e11b4e9186afbb",
+      "references": [
+        "https://www.nhs.uk/conditions/coronary-heart-disease/"
+      ]
+    },
+    {
+      "id": "c05-011",
+      "category": "05",
+      "file": "c05-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "99a66de629f7a7d65f2fe2a281ef37a000b14dc039655b0c8db6e2fe6fb72d8d",
+      "sourceSha256": "16177fb6591bc69fba0cf8a702acf6e47bba780ffea5bbe8542c80a71e04ada2",
+      "definitionSha256": "a80ed0281e3176b5e9a9db924a5cb50bb5cb51691d8dc48923fda2e7af5de919",
+      "exampleSha256": "8c57e4a94aab7e29daf94c1f16cd47e8796a2ec3323ecb191d7982cd8d9ae379",
+      "references": [
+        "https://www.nhs.uk/conditions/heart-attack/"
+      ]
+    },
+    {
+      "id": "c05-012",
+      "category": "05",
+      "file": "c05-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "990281f5a682f32602a2e585aaff6b78e08edf3d96b8c417ec56acecfe6295a0",
+      "sourceSha256": "dccd7e32bb76f79d48c05870a60e19537e806a281669b0e7ff93ad2a1f349da9",
+      "definitionSha256": "618c43ffc95f9eda23e2470ead9a3ddce1529667d9a0398c4223cf64fa604f36",
+      "exampleSha256": "832f6c80c02806a40ced0d185c98796419413b85b3014ca9e234ec7cc6f3f2b9",
+      "references": [
+        "https://www.nhs.uk/conditions/deep-vein-thrombosis-dvt/"
+      ]
+    },
+    {
+      "id": "c05-013",
+      "category": "05",
+      "file": "c05-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "be649f89468f4bb306ecf58400c8d43a707e5e938c74efb1c01a3be7b2b370c9",
+      "sourceSha256": "32ccc4003f33824385e8728d2acfeeee503d343fdd31cedef56b0d7d1b3032f7",
+      "definitionSha256": "0b07bdd0d5bfb21120466ae132133fa9d3990a0afd067ba0c6920a8b19ef4788",
+      "exampleSha256": "3156ad0111a7bf83570446a1cd9b02a4a8513b69e1a7e3bde818758f7cfc3553",
+      "references": [
+        "https://www.nhs.uk/conditions/pulmonary-embolism/"
+      ]
+    },
+    {
+      "id": "c05-014",
+      "category": "05",
+      "file": "c05-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a67ed5f6029413aacf8b1d5cb88a2bf6b4e527d07e80d4ed756ad6146035e6a0",
+      "sourceSha256": "61c16a8406440e1f4e879f235a64ac2747adb56e9b9b0281608a1827658b8b2f",
+      "definitionSha256": "857d859ef6ffa28fb62d417a9af02dfd6fc40d54bf3136e1d02354bad0ebfc84",
+      "exampleSha256": "bd0d3d182bc6bd91e685f95cece5d8e021410154997a57d1a27f0b78b38711dd",
+      "references": [
+        "https://www.nhs.uk/conditions/peripheral-arterial-disease-pad/"
+      ]
+    },
+    {
+      "id": "c05-015",
+      "category": "05",
+      "file": "c05-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "8db2f424e10ee99029a4014aa26c9f56bf3cff8b64f2a3e761fc23e80875769b",
+      "sourceSha256": "2a9dcef71371e5c5e771872dab7e6977b7a6e6ee5ff8d6b0c2c232b7d424a108",
+      "definitionSha256": "15dbb3167dc9a1d771a24c7867fe9d92f4e586171ee77eec05faf99fadcfa0e1",
+      "exampleSha256": "15378af433726f27ccf2dde415fdb14878c5ce61632cc5e8bc8758b7836dd944",
+      "references": [
+        "https://www.nhlbi.nih.gov/health/heart-valve-diseases"
+      ]
+    },
+    {
+      "id": "c05-016",
+      "category": "05",
+      "file": "c05-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7863792270954c3a37e9e0cb72ce7c3f3a021fcd883f6e730934c8e8289dd677",
+      "sourceSha256": "3583e80c20fae7cdcbd24f75f62e140036cf89e143442e3ab65f39cff2ac484a",
+      "definitionSha256": "92b422e010b30110ba24a5c35b03a6b3211163e0a529d34565e7fd490df6fda2",
+      "exampleSha256": "1c8f879a9849af0f557b204acec3f934a0dd893066c264b07fc66cfdaf3467a5",
+      "references": [
+        "https://www.nhlbi.nih.gov/health/heart-valve-diseases"
+      ]
+    },
+    {
+      "id": "c05-017",
+      "category": "05",
+      "file": "c05-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "af32fef54c417669ce891f79923c2bb9e6e692d3bdfa98072d78360435ed332e",
+      "sourceSha256": "273af1a4284fde025f65d47b1569a0917928057ba660d5c1c4e02ec3cf1cb3c4",
+      "definitionSha256": "bffd30073daa043df139eea67648834f6804ddc374c7e904d9d85e72bb9bfa06",
+      "exampleSha256": "3d0ecfb72b812dad2a402581c10aeb6a5711ce862f287c8a20e2ae16cbb39ba9",
+      "references": [
+        "https://www.nhs.uk/conditions/heart-failure/"
+      ]
+    },
+    {
+      "id": "c05-018",
+      "category": "05",
+      "file": "c05-018.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "cf69617282b5f7cf0c9ef08e72dc3481fe70ff317d3e6906fe2927159dab9d0d",
+      "sourceSha256": "36dfc2ce0c4cfc8a0cbd37d012b300bb08ddc533fa8c5286034316c858bd83fb",
+      "definitionSha256": "a4211fe7237b97c3fd1f9895ac3e4aadf837fed3c0ab746a3eb811b0e8101e1f",
+      "exampleSha256": "698d7656226642a53da98b644b7b58514cfcc8f870a8f1f0a0109fbcd07323df",
+      "references": [
+        "https://www.nhs.uk/conditions/heart-failure/"
+      ]
+    },
+    {
+      "id": "c06-001",
+      "category": "06",
+      "file": "c06-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7c4f05e602f44d021c2423e5e5ee78888d049e43be58ac84e2862b7447e39be7",
+      "sourceSha256": "ef12b3d482e5df1ae33443430bde6fcd89505c3afa38ba3b003bf55c18637fc5",
+      "definitionSha256": "f8382f27c87c6d25c75b5eae319cdf755726b9fcf15dd3165f8e99c6dbb6be2e",
+      "exampleSha256": "cb321ddad2d285874d80ab8c4d4cb5d6b5551565d91b1143abf05858751fcce9",
+      "references": [
+        "https://www.merckmanuals.com/professional/pulmonary-disorders/approach-to-the-pulmonary-patient/evaluation-of-the-patient-with-pulmonary-issues"
+      ]
+    },
+    {
+      "id": "c06-002",
+      "category": "06",
+      "file": "c06-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c94560228a790f9a00950f5ad3782cd6cd196ea51ee213a068ce72a64060cb0b",
+      "sourceSha256": "871c397820fd6c316f27d03d58b028d164e019dde1abd7c9cb45378e538bb84b",
+      "definitionSha256": "60c0a02be5e908dad473feeb642d26f1b0832744339cda5ba020187a9b47e3fe",
+      "exampleSha256": "57e896f9023091e19d0f172b71a75d419ca5badde298cbb58a6909f111e418a7",
+      "references": [
+        "https://www.merckmanuals.com/professional/pulmonary-disorders/symptoms-of-pulmonary-disorders/wheezing"
+      ]
+    },
+    {
+      "id": "c06-003",
+      "category": "06",
+      "file": "c06-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "3fa0b6ef86afca95acfc246140d1b43cea8a5fa57ac506afa1cf430378bdb52b",
+      "sourceSha256": "074919c2c9856d931061c17ace74708577436f1cbac8ed35d02bb48ab0b66433",
+      "definitionSha256": "05b18ae9db0d3d1f7773d9d9d1abeee4d02d8c88b895ba56c61011a677b4e24f",
+      "exampleSha256": "c570f9f1cabafc7d34247fd2d097b0ef2f5be51ad72356b90597a8434691e7b5",
+      "references": [
+        "https://www.merckmanuals.com/professional/pulmonary-disorders/approach-to-the-pulmonary-patient/evaluation-of-the-patient-with-pulmonary-issues"
+      ]
+    },
+    {
+      "id": "c06-004",
+      "category": "06",
+      "file": "c06-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "b5e5eb86af111c1de2909ca08c4fe7b85f8d5a55bef029d181e1041fd4bdc4be",
+      "sourceSha256": "78e6c3a3bec9544f7d03d9f89631f94bd53544cd323201a8990de54a77318b5d",
+      "definitionSha256": "ae8c1c9c4fcce36141505ad3769b495dfee86da1d7f84381b96df6f58031695c",
+      "exampleSha256": "6a82e5e7a68df30b417855e5e36ff6d0143cf010dc8cd4770eb166ef01820459",
+      "references": [
+        "https://www.merckmanuals.com/professional/pulmonary-disorders/approach-to-the-pulmonary-patient/evaluation-of-the-patient-with-pulmonary-issues"
+      ]
+    },
+    {
+      "id": "c06-005",
+      "category": "06",
+      "file": "c06-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "99cb775bece9c8358b776d024be2c144983b62d799ffe614989aaf413fe7f6c5",
+      "sourceSha256": "d0b3e911b05c0e69c50fb9dd8daee7514cd1832def121af08f97aebd11c0ee21",
+      "definitionSha256": "8ea4fefc12fa32efb896bbfffdca573e1d2de02f99df94ace6667bd67275ef49",
+      "exampleSha256": "f377da3712eb26e641d1d99ccd115d3368f182db4d80ae7c5ecbb8108ab73f41",
+      "references": [
+        "https://www.nhlbi.nih.gov/health/respiratory-failure"
+      ]
+    },
+    {
+      "id": "c06-006",
+      "category": "06",
+      "file": "c06-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "f9c10d4f49d5c9e6fdc1b506d6fdcb8fdf015fe136fc9d7b1d30cf9ffb2fb75c",
+      "sourceSha256": "ca247d49da4902050844beb05c056636d3ff8e088a0afe18c608e3ccf5a484ed",
+      "definitionSha256": "c57089fa1bad11deb9b2c9d8d10999c778a85106cfd64906c7f5061319ca2def",
+      "exampleSha256": "a1b8204ef8a7cc2a0e22a42374e8a39779a345b77e7e61ce964059bfbceec389",
+      "references": [
+        "https://www.nhlbi.nih.gov/health/respiratory-failure"
+      ]
+    },
+    {
+      "id": "c06-007",
+      "category": "06",
+      "file": "c06-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "496c4d96af0c5b10ac1c913c340e912582583412ea0957bf89ca0ccf880d158c",
+      "sourceSha256": "6ea53402087a1375857fda72501e0063b5f22f2dff904db4f18aabde8f20ec4d",
+      "definitionSha256": "f7f0cacf6f34c2e4222a09c1f0343f9f833309175060ab74a52ab8113b09a2f1",
+      "exampleSha256": "69588850f91cc861f6d396d7f04f989509467f1690cbb60816ac7f7e3e1ed93e",
+      "references": [
+        "https://www.nhlbi.nih.gov/health/respiratory-failure"
+      ]
+    },
+    {
+      "id": "c06-008",
+      "category": "06",
+      "file": "c06-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "72ae04486d9b839189e9dc8810f7d928f043971c3d5451ff4bb712d18a344ff1",
+      "sourceSha256": "873dd46bfcf0602a587fc28b77dbb8a314f2ab8cee1a380ae6013f0937fc2b7e",
+      "definitionSha256": "5dd7a6489c760cd2a9f55c243324cd8daa55ecb9ba77d60be170e297951b05af",
+      "exampleSha256": "dba29469a379955315dda93caa9c6d34e6552fb04f5f0d14f0d0fe06360f4330",
+      "references": [
+        "https://medlineplus.gov/ency/article/003071.htm"
+      ]
+    },
+    {
+      "id": "c06-009",
+      "category": "06",
+      "file": "c06-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "1c236fe5f03f2f3b221f5ef9e59416b15e98a225550bc0d5763ff4261f8a3335",
+      "sourceSha256": "edf178f1c14d9e4a60883f54f7521b5ee75e77efc23dc1947baddcd6819d655d",
+      "definitionSha256": "f120b23549f6478ac99445892bcd69203c29f793a2a2971b88e4d397747600e5",
+      "exampleSha256": "7c9a24bb16c85faef5ef09d3fa9a4ef337ab3951c806c17973c1f19fcb1edabf",
+      "references": [
+        "https://www.nhlbi.nih.gov/health/respiratory-failure"
+      ]
+    },
+    {
+      "id": "c06-010",
+      "category": "06",
+      "file": "c06-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "cfd6b5b85b880811e194cb0a6641f29ac60585f0eccba703856423f5ff839880",
+      "sourceSha256": "168edbe5e857c5953788f42adbd222d03818b9bbda8e8058c3bf8e3eca3e038f",
+      "definitionSha256": "968e225fa539103abcc8ddd8ae49db40ce5fd8ec2fd88c27fd5905af8164d501",
+      "exampleSha256": "b1870d3d321f3da6808dc85375ad1c691580a947d965b0144046d39f04005e2e",
+      "references": [
+        "https://www.merckmanuals.com/professional/pulmonary-disorders/approach-to-the-pulmonary-patient/evaluation-of-the-patient-with-pulmonary-issues"
+      ]
+    },
+    {
+      "id": "c06-011",
+      "category": "06",
+      "file": "c06-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "ff2544fc3cf5e79ed50288a14dfbea91e654c27f38b9f71c1da0ba0514514e91",
+      "sourceSha256": "dd52567d402e71ee91b4e6350c551ff2a27f8eb515cd29f8c897d6c5a108dcad",
+      "definitionSha256": "23dc06f85efc5f52263b4ba1d5cb48f5236c470415aeb6d41ef15f8bd451a8f4",
+      "exampleSha256": "5fc155d7c33c16321367c83565855a9008f289ddfd53b349fc0a652c7d7ea997",
+      "references": [
+        "https://medlineplus.gov/ency/article/000065.htm"
+      ]
+    },
+    {
+      "id": "c06-012",
+      "category": "06",
+      "file": "c06-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7478a6f979f7fece1ae52b3956aadcb9217c399f4a3da6b3d0cabf08c36359b5",
+      "sourceSha256": "3c0f45c4769dc42c725510f6c60036303a69c38005604b8b4b013e4a3f8729f5",
+      "definitionSha256": "a3d409ecc60e0e695dbc40beb3a91843f51daa94541e4de6dd36553ca0e3ced6",
+      "exampleSha256": "ce04f7a6cf0c1e74f6c543318ba75fbd822e201ad42bc56b22d961c3df49664e",
+      "references": [
+        "https://www.nhs.uk/conditions/pneumonia/"
+      ]
+    },
+    {
+      "id": "c06-013",
+      "category": "06",
+      "file": "c06-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "3b9bd4de52794488c9bea9e948d63d68ffc44fb8164de12a7be3bccb2f58154a",
+      "sourceSha256": "231eafbe25a92754dca860ae8fbdf097761951df45624c8db1e5be14c05fdbf3",
+      "definitionSha256": "0592855b7754d1a51f7d15cd8d630ebdb667107e347e945ee1507577277a6913",
+      "exampleSha256": "930aa97dfddda5a17df43c94acee2a6b3666744e62a947de268dba6bfeffe558",
+      "references": [
+        "https://www.merckmanuals.com/professional/pulmonary-disorders/symptoms-of-pulmonary-disorders/wheezing"
+      ]
+    },
+    {
+      "id": "c06-014",
+      "category": "06",
+      "file": "c06-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "f44d4429cccc935272c3ea4832c21476432986cb992c454b03e4cb24d48e4101",
+      "sourceSha256": "dabcb9cff90f728424c7c9ff7b7d7f78b29a425f96a5d250507ec1fe56e57c64",
+      "definitionSha256": "c54b8be3d7e0e26a47ff0f6458425aa7465ae09624ac2cc2c60a00595fb8567c",
+      "exampleSha256": "655939a11b71de1d0293d78f0ef4203045045f4a8c1ae084435b1b0a4f2f4992",
+      "references": [
+        "https://www.merckmanuals.com/professional/pulmonary-disorders/symptoms-of-pulmonary-disorders/wheezing"
+      ]
+    },
+    {
+      "id": "c06-015",
+      "category": "06",
+      "file": "c06-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "510a011e3f5a7da5eb4672474c8256e9579cb800216b7ff5a7fc4454f2f708ef",
+      "sourceSha256": "b2783befab375d0b3a21c13c55d30e7255e7660875a646da20ebe6689b60b58f",
+      "definitionSha256": "7ee244e2eff1541b15feda1946a3e9ae570c625e5a7c96dd782160ce7a7b2a55",
+      "exampleSha256": "a953fb12a0f963a6570cb0a37d9364b5b2c234bfbd0db313ee63d265c6e87abe",
+      "references": [
+        "https://www.nhs.uk/conditions/bronchiectasis/"
+      ]
+    },
+    {
+      "id": "c06-016",
+      "category": "06",
+      "file": "c06-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "1eeab1012f6024bc86203cde33c1047e2129232f5ae879e6bbb0cd2832685c95",
+      "sourceSha256": "373a0b996995943295c078fe1d2a791f574a7e56d8ea0442854aa9f5d8891c9e",
+      "definitionSha256": "1d9b4a7e5e03fe80160dd70541f1af3f13c7ea6ba1b339fcc1c403647b270817",
+      "exampleSha256": "031e1c5066ad5d398e826011d6b764302fee8fbbd6795e8dfdd5cfaabd6bd2f7",
+      "references": [
+        "https://www.nhlbi.nih.gov/health/pleural-disorders"
+      ]
+    },
+    {
+      "id": "c06-017",
+      "category": "06",
+      "file": "c06-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "71773135675f2e93686d3389947b9652afe4e1f5c30d281dbbf2faae4068d274",
+      "sourceSha256": "ea75cb36f13e6e595d7d125b94d231fc9157d93f01adb0d7610995b3935a1ed9",
+      "definitionSha256": "dc9f826609c103d067d42a894863fe29acc6fefc2f4950fb3b0c8da3747a056a",
+      "exampleSha256": "8d6b91836ff2db1116574612593d5fe7b956d008d770a495d73c345c07fc838f",
+      "references": [
+        "https://www.nhlbi.nih.gov/health/pleural-disorders"
+      ]
+    },
+    {
+      "id": "c07-001",
+      "category": "07",
+      "file": "c07-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "bbe84c4e03355cdf33ff1b008590b7f4e2f298f2a90b3b6e177381086b4c6cab",
+      "sourceSha256": "4ec743ed045d0c261beda4e8634b6a61dea7ab26de4217285ab4b6736fd21eae",
+      "definitionSha256": "17fcca25be50444c49b024f1aa81fb729bfd1a4791a73c81691495c28d066657",
+      "exampleSha256": "693b0bfab55822236b27f0197afa355e9c48a5148d9fe4871a22fa2cef6455dc",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/digestive-diseases/indigestion-dyspepsia"
+      ]
+    },
+    {
+      "id": "c07-002",
+      "category": "07",
+      "file": "c07-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a9baa9b7dc6fdbc1e304a28e6dcc99fd8f5189d53336dccf352a368249680768",
+      "sourceSha256": "d9e6f14803e23d19d93f775256d017a4ee3ce46afecf9d60017eddc9d4dee650",
+      "definitionSha256": "14a8fbdce8e580a5478df3bb4e76f539003f4209f64120b3bcea6452378465cf",
+      "exampleSha256": "4acd958272038633519d776e7777a79394aad0ca7f74f53a5937fa8fac73e64c",
+      "references": [
+        "https://www.nhs.uk/conditions/swallowing-problems-dysphagia/"
+      ]
+    },
+    {
+      "id": "c07-003",
+      "category": "07",
+      "file": "c07-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "425c707f98a152085964d32c27ec6132c541af899a67038b58b16ad90fbffb2a",
+      "sourceSha256": "1d592e447b5bf90306f56d1e3a6a87743330c9117ac51ca0c672eff345bf4208",
+      "definitionSha256": "7c963b27ef58880f3c062fc34a54c7cf7c17551d2cfadfe63b976ee38d68f239",
+      "exampleSha256": "ee3f862c592fa144581770a7b53dc8ff2463be60f01701e936b55a1672e342ba",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c07-004",
+      "category": "07",
+      "file": "c07-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "b56dc5810d7a8f60fb6409606f5721b96d8f59f1a9a6eef576ef1d16a5164941",
+      "sourceSha256": "81b47a8195d753c904d2f083617fe5d1533dc77e78ed3cb83566d93ec14ef63d",
+      "definitionSha256": "ed3c760dd2e6f82df1152faa0defc3a4cec9720c484c3d668635c0e100079409",
+      "exampleSha256": "8ddbac63543d9d6b575021ad0eafaeb828c8119f78a8a052eb56061b8b590a27",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/digestive-diseases/viral-gastroenteritis/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c07-005",
+      "category": "07",
+      "file": "c07-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "445c54ea4c23b4783396b098156a18fe6fe17cc1e113de591d56b623d516c6c1",
+      "sourceSha256": "142f392a9095c6ca00ecca6c70e0c3efe66b92b021492a9f6d5e8b58ad329334",
+      "definitionSha256": "2a88df0cbf600a2cf7b61b8ce409583cb654865d4ff651a0abf2587b13b95bd3",
+      "exampleSha256": "919aeb460d5afb05c8f195e68f735de2f846675dca1b71e6682317194fdb62e1",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/digestive-diseases/viral-gastroenteritis/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c07-006",
+      "category": "07",
+      "file": "c07-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "d3d28e0c7dd942af9aa9df670b8366be632750bba6767582388efc0ea3ea8510",
+      "sourceSha256": "157258975e345d7fd296f9e0b4d0e72b4eea792529eac64c662f34b7067cd8b2",
+      "definitionSha256": "2c32306e94e7e5b5f678cbf02f51ab61ea3d06459c338b7ad71bf8f13ac2f77e",
+      "exampleSha256": "5c1c81da42fa213cde1476529fda60e10809df2b024a61c1a6ee35d414a54385",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/digestive-diseases/gastrointestinal-bleeding/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c07-007",
+      "category": "07",
+      "file": "c07-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "8b418d7f7e57d89eba7ab8861f9aaa93c6beb4308ef0a758bef6c932b8c80cfc",
+      "sourceSha256": "1493cfdd5d70be043f86a06bf364006a5fd58b8be7685d5c07609463c3c8e4fd",
+      "definitionSha256": "0a01c636dbb1d9dea786590ca1ecd83874e7f9caa0ed90c9889436ce47819bcb",
+      "exampleSha256": "5f08d494f154b7a8d6499ca9b1d94ea85e0ba1899818cbcfac48903d20c03654",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/digestive-diseases/gastrointestinal-bleeding/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c07-008",
+      "category": "07",
+      "file": "c07-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c922bf620feaaf197225830775f406bba2a4961ffbca96f670272d3959f991fb",
+      "sourceSha256": "8bef86e16c50dc247a87203b316b8abdd1c583bc70117eab11b711be33d52fa1",
+      "definitionSha256": "f9a63a249602b63b670c003359b2d96da0a83ba4d26bb4219ebac225a9d9de19",
+      "exampleSha256": "23d65baf20cf32d77a345d415c166259d1a867e01ac3ed5c2b183179e81c6f26",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/digestive-diseases/diverticulosis-diverticulitis/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c07-009",
+      "category": "07",
+      "file": "c07-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "dbd00414d6e9969ddf16772df3fb0e8a3c19dd282d9ed034949f0b051ba7544a",
+      "sourceSha256": "7272ec2cc53b8b625079530c7821e6817d3a8d31077dfaa1340ca70f164175af",
+      "definitionSha256": "b7d626686b452bce45bffbb3fb72dc73b55c66eccd834c3db61dc651191e0c19",
+      "exampleSha256": "a2e99baad1bf76f102d9fe7301879865655443ae0591e59cb9614bcca482860f",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/digestive-diseases/exocrine-pancreatic-insufficiency"
+      ]
+    },
+    {
+      "id": "c07-010",
+      "category": "07",
+      "file": "c07-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "91be22752ce9f088d5dd966cded27554c5f8369792fdbb2ac744e64ba6e67a46",
+      "sourceSha256": "96ab83bc23fd3fdf3e2bf75c8fc7380baae2dc7734c29f9a7437732349da458f",
+      "definitionSha256": "5f7e68c82796f88b7b3237ac4e587592800eab9c533ee81db0ee2e12105234bf",
+      "exampleSha256": "7b722afe85eae98447ae6203341a30f4700df4956470db045827b432e4d986d0",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/digestive-diseases/proctitis/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c07-011",
+      "category": "07",
+      "file": "c07-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "894763f5bb35b0e5ee6943dfaecdbd357853eb0ece5ce3d3843856287fab0ac0",
+      "sourceSha256": "3450d1716759de42122c7c7e2f06a2eb9ec32af9902be721483d904b64745c6d",
+      "definitionSha256": "d6ef0daf2178e04943d5d03d2a36307f19845f01db0c8aa90b296d3a4ab33480",
+      "exampleSha256": "deebec6af88818fbbe10fd8f07947a71385dc7c6e5651c8f4bc742cb2c78882b",
+      "references": [
+        "https://medlineplus.gov/ency/article/000260.htm"
+      ]
+    },
+    {
+      "id": "c07-012",
+      "category": "07",
+      "file": "c07-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7ec4cc2a50a19219ad883f63a24df7fd1c4bc71a38baa826f2aa54e4775e84a4",
+      "sourceSha256": "f12c44216bb3c92300d14106835a2b2f05b7998922257ada2ed86ec3fbfe1b2c",
+      "definitionSha256": "fb148880fb38d493d34d622a5a0f00a358e6382f0ebd9e16a83159ede6af1ab8",
+      "exampleSha256": "6cea15481c152f5d3cc71e844a1f8634b035f0f90024642a84f519fbdccc1d4d",
+      "references": [
+        "https://www.nhs.uk/conditions/jaundice/"
+      ]
+    },
+    {
+      "id": "c07-013",
+      "category": "07",
+      "file": "c07-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "fcb468abdd4d58e74b1787c46cbb256d99d75697c24ebdf70daa3c0603d9ad42",
+      "sourceSha256": "fea49e38d35dd1f501210fbd06261a58556b9ce6f2a22639eaf50b86aaaee519",
+      "definitionSha256": "a8d6ac8ffe4ef3fd76703ae1199089c084914fff5dfc084f3f9505f2ff03ee8c",
+      "exampleSha256": "547ec4181bcf530ebb643b9f7638ca87b24d85762ac3e50894c58787c17193db",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/digestive-diseases/gallstones/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c07-014",
+      "category": "07",
+      "file": "c07-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "cf1dfad2bd1356f553f5d1f31c397b85903e2a28c3e056de7b418d67c8c24f09",
+      "sourceSha256": "63363729f0f3bc3f844873fc9c4fcd6a440ce3aa4d4f0f10b5ce8cce382f9a60",
+      "definitionSha256": "435e86e174496eaebd7596f918d80720de6fd192bd47cfd927c61a3aef91cc4b",
+      "exampleSha256": "f14c821db27db68010fb196cb9ecd1baff3957a8fbe1464c9b5606d8fe5d5199",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/liver-disease/cirrhosis/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c07-015",
+      "category": "07",
+      "file": "c07-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "710a460aa6515c7b3d973f33c64ee5a9dd1c0296edd16ddff7e7e99a4184f862",
+      "sourceSha256": "3afae589a4da8ce50359c646f620d7c994862999c82e61b9b6e9941b392ab64b",
+      "definitionSha256": "c4e0c44e15ea30dfd9d9990f0ece0b26b436cfebbe52ccadbe7006761189ec40",
+      "exampleSha256": "47e57bd51e23ebc2675e0f6626d176edf911c92927bab4bc71b6bde5a2795233",
+      "references": [
+        "https://medlineplus.gov/ency/article/003275.htm"
+      ]
+    },
+    {
+      "id": "c07-016",
+      "category": "07",
+      "file": "c07-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "dc7800ddda42ecdb3f059ab6549f2d1fa5dcd609f37886a4598a3df8e24f5d59",
+      "sourceSha256": "d63c27421eb62bc335dba654a158e861662b529ec386b161dd19549bfacc7ba2",
+      "definitionSha256": "0180e8f237729304203fe93ecfb5d7f2db2ce245798dec55d0e592ff73769bec",
+      "exampleSha256": "20c3a06f575a1e428201c65f7907c1c7cd1aa3897caa54c24f9e54055bc5793a",
+      "references": [
+        "https://www.nhs.uk/conditions/glandular-fever/"
+      ]
+    },
+    {
+      "id": "c07-017",
+      "category": "07",
+      "file": "c07-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "5ac2c9529175fdf6c1aafd0258c30f04605735d34805fef1a0a38d7afcb46a52",
+      "sourceSha256": "c411b97ebdf44bd67a10934d150f08d8b65c94cebea9b9af40956d33694e1988",
+      "definitionSha256": "d7fd37a45bf30e7ab18505bb101b7fcb8f453c8fa763f72b155693dda50eaad7",
+      "exampleSha256": "6daf16fbbb85aed054a331d194db32969a8b0e83e2ff4bce2dd3094100b2da4b",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/liver-disease/viral-hepatitis/hepatitis-a"
+      ]
+    },
+    {
+      "id": "c07-018",
+      "category": "07",
+      "file": "c07-018.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "959ce84219cf77a2b4888c7e60c76d6ed5f5636848971d95c926898838043078",
+      "sourceSha256": "ca669c9f7b7563247d9dd68a7239f3c72c52411866abe409f33289c70132f5a5",
+      "definitionSha256": "0b7deb6e5f6ef4f12f2d6e1ce604738264d50756680718754587efade22b6288",
+      "exampleSha256": "1338e97519b5e7cebf59cda7c441c65992239ba7c56908c11f2a7c9263386801",
+      "references": [
+        "https://www.nhs.uk/conditions/Peritonitis/"
+      ]
+    },
+    {
+      "id": "c07-019",
+      "category": "07",
+      "file": "c07-019.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "d454ff12bfe623344b34f8e0ac173197c1a31e936395df435462b45674a47359",
+      "sourceSha256": "e12e0d8af1883850f5b10dd358f008e76d225ae4b1c3421f2ebed4c710d03266",
+      "definitionSha256": "c7d8422e7aaa002207759eab7414b4bb73a63c6fab75288cf5dc76fbd0bf459c",
+      "exampleSha256": "7b9b0450a64a5834e76e62ba27ba0d99aeaf0f1da5ea4003e893e469cabea648",
+      "references": [
+        "https://www.nhs.uk/conditions/acute-pancreatitis/"
+      ]
+    },
+    {
+      "id": "c08-001",
+      "category": "08",
+      "file": "c08-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "558a4245cf96fda00e30a2ec7e630b636a51974e71c2d3e1cde8d93849487226",
+      "sourceSha256": "b06ecd787b8eaab355b5fae473a7055f3d465c20ba7afa7242df35d856185d72",
+      "definitionSha256": "f2175d864dbd720f2f43e24b4331608b52ccb9b96354761b8f0a354654b1f5c0",
+      "exampleSha256": "b968ffcb11ebdf005bd39d415c66f25fe7671126197b986da4293728f3475cdb",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/urologic-diseases/hematuria-blood-urine"
+      ]
+    },
+    {
+      "id": "c08-002",
+      "category": "08",
+      "file": "c08-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "b4f49516581af58fc8349e8734f1e28431b3262fdb5ce47f13839a0b5c6065fe",
+      "sourceSha256": "4cdbb10e8af16bca1bc1870a97f0fba89666fb65c57ce904c5be469f7a31d2fb",
+      "definitionSha256": "69a22ea6780e6204b94259dea0234cff701e6aeddf00bb46cc7824b00ea60927",
+      "exampleSha256": "c1bd95468e16b3d264c4dac5807c34e7dca2da8cd4f057e8e6d2064be6ac4095",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd/tests-diagnosis"
+      ]
+    },
+    {
+      "id": "c08-003",
+      "category": "08",
+      "file": "c08-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "e5f17cdb23b37896a8676543c9850addfff909dea18e9cf6de5c914bc1e0a3fc",
+      "sourceSha256": "c0c411bfd1eba6cd9830b13fcdbbfce684969e16a64360a0a8902a02396f1af6",
+      "definitionSha256": "52e9e529263e882636b64443a1568de9cb4bb00448847fd73a2d98c384cb33b0",
+      "exampleSha256": "e4ec575f9706661f7f3fe3155e914ed4418ee5362b80b3e41dfe9e0e030fbafa",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c08-004",
+      "category": "08",
+      "file": "c08-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "0850d0ab885e330cd7ea9a5ebc53c702961e1ca6e7088f24c1e7c13567bdccfa",
+      "sourceSha256": "d93f5dacbe5b97a1529c5ba33a68472fdf3b02e47fbb4fe8e51e07c116ddb323",
+      "definitionSha256": "3821910367f469ecb99f7f7deac7c19ba054759b6b4cb61cb05286b6a7ae97c9",
+      "exampleSha256": "d4fddbb18d0ac177c236cc811644bff1a692e6125bc1f2c25632a15e0766a862",
+      "references": [
+        "https://www.nice.org.uk/guidance/ng203",
+        "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-stones/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c08-005",
+      "category": "08",
+      "file": "c08-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "1d490e04b45b332dcb182a2da0894c533fe1cee765893864f7c374e76b908cfc",
+      "sourceSha256": "b811dbd5a85ffb84dbe4c6f72be48f497891da478aff08f5e3f227a13448f17a",
+      "definitionSha256": "fa7b0c09ba26d2ccf638d8d8543cf984de4da80615055fa76f9bafde96885652",
+      "exampleSha256": "ef42c1c63a8978055858e2bfa44076b49c3d39f46ec6c4825bc79ae03f83d6fb",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c08-006",
+      "category": "08",
+      "file": "c08-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "9eec45150044ffdece6747fca053fcf9d17a083b4dc6d3afae571d887c015197",
+      "sourceSha256": "67e30cfcbac460c3b12db2dea4d2662b0054ee8056c690e80ef6a7d3a938c85d",
+      "definitionSha256": "9c11470b63a482b447783facce3a142406212ef330cdbd76d3660c6e971f9133",
+      "exampleSha256": "badcfd8420b547c19e468db1fb174e1e870941a16f20521a7ddc51d009ee3789",
+      "references": [
+        "https://www.nhs.uk/conditions/acute-kidney-injury/"
+      ]
+    },
+    {
+      "id": "c08-007",
+      "category": "08",
+      "file": "c08-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "3b4ec07fcd920284ab048eb927d4ecfb054f8e870c58ba660a4b229959c300c2",
+      "sourceSha256": "87db4b491c187c91d1c15d5da3c4b77d134604520fee9405d0c214c83b2e2bac",
+      "definitionSha256": "3f79339334e96fe418652219fa50d10982610deeb55b45134a85bfa9fe43e5d3",
+      "exampleSha256": "00b08b9fa1a00c251935e972cae8a06a988edf59de8455de6dac2e76c169091c",
+      "references": [
+        "https://www.nhs.uk/conditions/acute-kidney-injury/"
+      ]
+    },
+    {
+      "id": "c08-008",
+      "category": "08",
+      "file": "c08-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "dc4c4ad9d85db7ba1cc915e32d72f16fae538558219e926824f8482387cbbfb6",
+      "sourceSha256": "4a0f422e19e573a64c6824760dca977e4379fc01fe3ff82d7beb997f2ce57b7c",
+      "definitionSha256": "a1079177a940deab07981e0e012316df0f4f4d7034803deb531fa39ed70716b1",
+      "exampleSha256": "d26211feb7c261aaf6e5d7ce525fb74f75e40a49752bacdf72590302dbe2e361",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/diabetes/overview/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c08-009",
+      "category": "08",
+      "file": "c08-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "d66c4a9f20e9a57717e242f2b6592753b91bcecd105c06715890341ef5c578c2",
+      "sourceSha256": "5f1ba358d102b7386a0682d8a110bd6a532b051f93d7a9ab72a2489cd9be72c0",
+      "definitionSha256": "6cf38bfac8b97787678482af9f75bc6ac58d099271c42b922c46782815ec1c60",
+      "exampleSha256": "661b761ba70b353c558c1fded82ff5b5c495274f7022b817aad4a6de5bb80cdd",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c08-010",
+      "category": "08",
+      "file": "c08-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "2a1e69e655254fb34452f683101999b04bac415413283b8005537a9f08e7d97d",
+      "sourceSha256": "e4a26890bf5d818bc77711f824954ab4d2f2306addde1fc998e1999d4729e4e9",
+      "definitionSha256": "e8f13e23e4aa2caca6d1989b112327db08d2eb11b0cf18a8d3817a64f97a9755",
+      "exampleSha256": "37e6cf21f21a84c111fdc6ba193eba4ffb0db98cacc585ec4eea0c92c842dec6",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/urologic-diseases/prostate-problems/enlarged-prostate-benign-prostatic-hyperplasia"
+      ]
+    },
+    {
+      "id": "c08-011",
+      "category": "08",
+      "file": "c08-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "772fa84edde519f6565cd4e839571bd70412f969de8979f4ab053a2ad9552d99",
+      "sourceSha256": "4af0e962bd551de3dee624db9694fc110f12c9c9a6dc4c20b5bd607135938225",
+      "definitionSha256": "395da3a7762ff2dea4de29482be1b1021116b1a898ffaa1cc5803cd87567228a",
+      "exampleSha256": "9fa5cdf52eb9e636aa4ce3f9674b4637a17409c81b748ef7d08527f73e5dc738",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/urologic-diseases/urinary-retention/definition-facts"
+      ]
+    },
+    {
+      "id": "c08-012",
+      "category": "08",
+      "file": "c08-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a7ba0ec49c3a92a1bfe0723e8a35ba80d61b2ced1dd454758fdbacf40d1aa74b",
+      "sourceSha256": "8310d309deaff61061766b511e6504404ee3d4dc7d934edc61c20e6837d6c71e",
+      "definitionSha256": "1930dd0d571fbab688fac0702f54dac3b9f1e17f79aa9d32dd592a6e3013e71a",
+      "exampleSha256": "a287eeac9d32313a3b7b0ebcc07e0c69e1437f81c69233a8de68d0284f2a083e",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-control-problems-women/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c08-013",
+      "category": "08",
+      "file": "c08-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "2981e5a0ac1a6d50d9ed609a5db4dbb888ed3c7ae34543a5db63daa18e625407",
+      "sourceSha256": "c5c3a1e81cd04afef851f6e6c5ab0c9f1727e6d3d8d200330bd50ec975152d23",
+      "definitionSha256": "ea9c40360e8acdad5e6fa998db16287e3959fa0a8c62eee3953ce23af89c02c4",
+      "exampleSha256": "790f82584aea28e68f8e31118ab477a8dae83118bd997f9d95c5702ae5efc64b",
+      "references": [
+        "https://medlineplus.gov/ency/article/000508.htm"
+      ]
+    },
+    {
+      "id": "c08-014",
+      "category": "08",
+      "file": "c08-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "f044c72247caced2e015fbdee2a762720dc2e5d8e1b46d533f3793cf59b85701",
+      "sourceSha256": "3f2a5ab908022f059f7d97fc852e350ffed35b2ebb37447d1f2be837ca913e1d",
+      "definitionSha256": "6b5918684db7fc5d361185c7b21dd8b221a165f2e8fc0164096ef0eb66580d92",
+      "exampleSha256": "9a1d193be8c3a0437f9ae0eac40c0b195812ba7c8a0cae357c7bcb69d3b2c4a0",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/kidney-disease/kidney-failure/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c08-015",
+      "category": "08",
+      "file": "c08-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "85908a5cc094c319d2fa1fcdcfa8a561f3e6fa38c1e5b1918987b67a0d0845b3",
+      "sourceSha256": "ff3bfd8c4be198953186e1425993a0e467538bb74690e8d08223bd86109ba8ce",
+      "definitionSha256": "27e0e6e74548279fb9351048349b0f110cc32ffeb5efc980cb7ebdd0cf158d34",
+      "exampleSha256": "173303b76cfb1c99ce810900e69dcc3844cf706b2ebae759157b8580eec2ea20",
+      "references": [
+        "https://www.nhs.uk/conditions/hydronephrosis/"
+      ]
+    },
+    {
+      "id": "c08-016",
+      "category": "08",
+      "file": "c08-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "3448c034189551f09ca71d667d7fe16d0429d30c586b7af34b10648b6b76e8be",
+      "sourceSha256": "badbb88e98a07cd9775966327a85e73a59809ad1db80b61b220360c5c2fd20ae",
+      "definitionSha256": "4dc49d932b0b8e589b8b90e00ceebff3bb89dc079bf59a7f1dc4fc97fcc22b22",
+      "exampleSha256": "d94d7b35392f1af0bce69d8b6842a057720f8919dcafcd30f2a3f4afe2174922",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-stones/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c08-017",
+      "category": "08",
+      "file": "c08-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "75a0d52b57b05071ea85ee8530bfc6e098e2a3c3ae11d5aebae1a98c6b9be996",
+      "sourceSha256": "41ea0f4c7b505e2a219c26583c6f105c2518c52295ebb316b476aec8c3e6f180",
+      "definitionSha256": "dde849598c5194c1cedcd656360ea9d85ad72cc24bb87316022f679514bc8d62",
+      "exampleSha256": "954783e4498e495e2fc113ff3d505b47567b1edf0792b0b74f34cfc0196528ba",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-infection-pyelonephritis/symptoms-causes"
+      ]
+    },
+    {
+      "id": "c08-018",
+      "category": "08",
+      "file": "c08-018.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "1be1d53f34ada6e85538f20a47b889e2181c7d0ee47e7eb3926ab14388569255",
+      "sourceSha256": "12504fe992ae6db7313f0cf60258b07e76afd1637668c1e3fd4942bb54da3635",
+      "definitionSha256": "bb7b2a06d9921dfba3e8f4fa4e35f14babfbf95cecea126ce3eaa500259c1ff7",
+      "exampleSha256": "1de18bc94b14a1b1919134e282aa4f6c3980b0a3786aad251784bdcf2977e0fd",
+      "references": [
+        "https://www.nhs.uk/conditions/glomerulonephritis/"
+      ]
+    },
+    {
+      "id": "c09-001",
+      "category": "09",
+      "file": "c09-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7499604ad8723cd78927a03dbe23f3c93f9902ebb57b3575d7d40dfb09294bf2",
+      "sourceSha256": "6c3f1613f5b47372bcedde9dd1bfbea702573119a514fb040801f8825f685d2e",
+      "definitionSha256": "59a2c5db595935ab46994532fa40c80d30a3c31fa217b999fdf348166d3a9f0e",
+      "exampleSha256": "ed0de9a3afea3bb603d88dde0fb6a1c5a18ae40b81d8dce43f596348db8e0f38",
+      "references": [
+        "https://www.cancer.gov/publications/dictionaries/cancer-terms/def/bacteremia"
+      ]
+    },
+    {
+      "id": "c09-002",
+      "category": "09",
+      "file": "c09-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "9c3a9e6740157b6e54cc0850079ac6338b786a169f8c22b79c1659bf1aad00bf",
+      "sourceSha256": "738cf5d4675ad058b28060c424f8670eef6698737f44af18d83fe1335597d517",
+      "definitionSha256": "2440558de0c2d9dc3842f5654c8b645043612f87f3cc5f75781d8e49563fd285",
+      "exampleSha256": "e1c14f5682356d97e31383ecceb526470e2d06c63e4915201ca697c4572216bb",
+      "references": [
+        "https://www.cancer.gov/publications/dictionaries/cancer-terms/def/viremia",
+        "https://hivinfo.nih.gov/understanding-hiv/fact-sheets/stages-hiv-infection"
+      ]
+    },
+    {
+      "id": "c09-003",
+      "category": "09",
+      "file": "c09-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "17c724d1347692f839dc947647b2ad511b48b4b2cb3695e997359877b5d557c2",
+      "sourceSha256": "9aaf1be45429cea966c6804614b201183e11b1d18fd6b3489c4da9321dfe023d",
+      "definitionSha256": "117790734e7d83a4b3103979d3239d2fb30c0338253523a46ae59cb83d185d4f",
+      "exampleSha256": "34e0d4e364d12a689e3d6f83aa4bb576327cdac1f73a70ab459be14acf47ad31",
+      "references": [
+        "https://www.cdc.gov/sepsis/about/"
+      ]
+    },
+    {
+      "id": "c09-004",
+      "category": "09",
+      "file": "c09-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "e2e2f8f6bb6fb486d1192c74c2761123ef58f68b6cf43ddff0e4412fc53d5a71",
+      "sourceSha256": "f7e56e35c8b53ba032dde1aa6cdc3732935b035da6ff610ec1098f2daa1ce283",
+      "definitionSha256": "9573f4408d3a157a4eaee2e54a460fde78ab50f596812f79b6cf77f97c17a15c",
+      "exampleSha256": "1147911a35baf7181d05d5c8cba0ffe903547eba6b05fd76d2c51afb11dd31a1",
+      "references": [
+        "https://www.nhs.uk/conditions/sepsis/"
+      ]
+    },
+    {
+      "id": "c09-005",
+      "category": "09",
+      "file": "c09-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "b9033e93d4f73b5dfde430e6cc3e204b10c3d7b49012404da60180f8deeaa917",
+      "sourceSha256": "e24bf0de1bfd4707a182218f06d38defcb4713a57fe716a5f39671796685c649",
+      "definitionSha256": "010c006ebfa3bb90bd9b772183f823ca77e6653ae6aad5e080eea1a2bdfcbb75",
+      "exampleSha256": "571149fe97431cf4ef0ae5570442274b59fb732614ba8057c49a04ae336f8044",
+      "references": [
+        "https://hivinfo.nih.gov/understanding-hiv/fact-sheets/what-opportunistic-infection"
+      ]
+    },
+    {
+      "id": "c09-006",
+      "category": "09",
+      "file": "c09-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "d0373e9447b16614d71938a0881061596f8380b7903027eeace539d50568d86a",
+      "sourceSha256": "ad46faba89c57f2ed85691257936b9d5e595a83cd37db06783814f6e2aff4964",
+      "definitionSha256": "a85b8e60edd278c03bdc8cb49a23e50010a391643817a73deec74624c6ce514b",
+      "exampleSha256": "e12f71cc47fd37c6ce1df50db5780153e1ede1689be49a3812e463f2528698aa",
+      "references": [
+        "https://www.cdc.gov/healthcare-associated-infections/about/"
+      ]
+    },
+    {
+      "id": "c09-007",
+      "category": "09",
+      "file": "c09-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "11e7a93b94a18f298834ed8c2fff7e18fefd0419fb263067f872933fac1d7ef7",
+      "sourceSha256": "9ca6bbce10693378b6f12510271ca6ab40077eb5fdba295bf39d8a721a5fc40c",
+      "definitionSha256": "6433c1492f5b5327ef3527a243a1b3910018dc19f4cced2eb79eb2d644bc0ef5",
+      "exampleSha256": "1d307b0f908210af9ad373b62bed39e71270a6ba9f3255cc2b7670fdfa52f9e0",
+      "references": [
+        "https://www.cdc.gov/mrsa/about/"
+      ]
+    },
+    {
+      "id": "c09-008",
+      "category": "09",
+      "file": "c09-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c9c4561b10b5c25888910ae96fdcd621f90dd3c34c9ce7eef3dfa73ee7e8c8d3",
+      "sourceSha256": "c4d99f39545a320179284945f5c8d2579ba6819d999296c4cfdee94237a9df1c",
+      "definitionSha256": "3a4af5a8a008fd78c8f293541bc07cd33b103ec76bbeea27cb6e8c7d20c873a0",
+      "exampleSha256": "7f51c2faec52643610d1de1b4b4eb224d6b64dcaa0b1f80b1b9870b3807f7d7f",
+      "references": [
+        "https://www.cdc.gov/lab-quality/php/prevent-adult-blood-culture-contamination/"
+      ]
+    },
+    {
+      "id": "c09-009",
+      "category": "09",
+      "file": "c09-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "582d2ad0162d797e957403ea1e53e795c212844de0fa2e3d084f2ce88be962de",
+      "sourceSha256": "5316e4fa2a5841bfe95cf20fb0dcdf86a55acb6192ec3b03626468840a4475c8",
+      "definitionSha256": "e46e43b889e674bbc5ce8e8f71880a0df4b06c342e09802e9190f464d0b89e98",
+      "exampleSha256": "73f239ef7cbdfb09dbccccfef7be807d5fac43548f0e58f0a2989dfc557d259c",
+      "references": [
+        "https://www.cdc.gov/chickenpox/hcp/clinical-overview/"
+      ]
+    },
+    {
+      "id": "c09-010",
+      "category": "09",
+      "file": "c09-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c4e074ca03b13be00a2feed0f3b5fda00dc39a7878b9d27639f090f3a7027607",
+      "sourceSha256": "21b5cbb3e5bab73335595833dd04e7eead71cfab86a0a9093c5ea0efddabcc57",
+      "definitionSha256": "97ad4c9b08bd9676a3cdaf5c538854b764ae1a9087fe3b69998a0338f6c466f7",
+      "exampleSha256": "a9a63a96f8fc0e5f338befd534da5765b71eda2c4a72a0941fe8018581681b95",
+      "references": [
+        "https://www.cdc.gov/tb/about/inactive-tuberculosis.html"
+      ]
+    },
+    {
+      "id": "c09-011",
+      "category": "09",
+      "file": "c09-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "31c2309c58049053c97e08126695f0da10c42c5a311875564a23a016edde92a1",
+      "sourceSha256": "c7102006d140b6b417dd5f7c85f96bbe9a4f5e0c75b2bb600da00bdf0c7a66a2",
+      "definitionSha256": "978869aec147ef9a4df8b8c75a7ce1ecece6969b0762526f110555be0706f237",
+      "exampleSha256": "df9d8de22b916015ff382c3a89b14e06d3846029e797d096f02c016b55fd8dee",
+      "references": [
+        "https://www.cancer.gov/publications/dictionaries/cancer-terms/def/immunosuppression"
+      ]
+    },
+    {
+      "id": "c09-012",
+      "category": "09",
+      "file": "c09-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "d3fd4acdb79811826b4b14ef34b984387a9f13f07920477e158ef6698872fa03",
+      "sourceSha256": "1ee2e51ea3a3aceac25bd124c3d9bd3e5bbea7a9f54fa0ebce4ecb04afea6640",
+      "definitionSha256": "527a3c0f39f11dabdf5dfd14a59b0ecf186e3aead1282fdd6dc0ac55671ca62f",
+      "exampleSha256": "ebaa5aed91070dee2d4c25da230188f5832a14f89d2c7627b0f74e6b6041fb3f",
+      "references": [
+        "https://www.nhs.uk/conditions/hay-fever/"
+      ]
+    },
+    {
+      "id": "c09-013",
+      "category": "09",
+      "file": "c09-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "1de8e827baffa4cbe3ae22850d96309c500edd5a50fa2d17b2ba9a45e110ce3a",
+      "sourceSha256": "037a4baf732f679e3a1dd64f76d0e8a52b3b855e4253a26a0d17fbf68774a907",
+      "definitionSha256": "087d98b7d5b7b194038cd887c4265d44ed62598814cad2dc32002a775f40d4cb",
+      "exampleSha256": "cf4702f63aba786f84bde82ba8767b0295f31cfb18c5b3d378fc89a0355e1d0f",
+      "references": [
+        "https://www.nhs.uk/conditions/anaphylaxis/"
+      ]
+    },
+    {
+      "id": "c09-014",
+      "category": "09",
+      "file": "c09-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "3549df2bafc600143645327d43baac203eab5e8e2dfa23506dafbffd309aeec5",
+      "sourceSha256": "a12a20529c59f9d2966a0cb94cccb580e039c46268b5393be3666285186033a3",
+      "definitionSha256": "be8bc00e3b65cac75bf4e728fdd204d271b52e96880de2e766447fa0e678b2f6",
+      "exampleSha256": "637202d41c15f91fe0978be4eff81fad913d8eef170d3530258c5931db81caaa",
+      "references": [
+        "https://www.nhs.uk/conditions/angioedema/"
+      ]
+    },
+    {
+      "id": "c09-015",
+      "category": "09",
+      "file": "c09-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a4f438bfa0b717f9ee375ec268be553b215b5b2ef971106bd5e4dfa6f85a8fe8",
+      "sourceSha256": "a4aef6fb410b08405412d9421bed1de68c3b3e9781c1eae4c23646e646586473",
+      "definitionSha256": "3d5e36afb50889941b9e11578cd4e19df8571f59b3129666275632f19ef30338",
+      "exampleSha256": "e8a07c09627918abc810ed99720a345b56ba7e4fce722ed55853845b8742dfb7",
+      "references": [
+        "https://www.nhs.uk/conditions/hives/"
+      ]
+    },
+    {
+      "id": "c09-016",
+      "category": "09",
+      "file": "c09-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7c81fd247af73f0a21a8e7a67f899b1aa656b425c31657de657325aad0b75e59",
+      "sourceSha256": "42c3dfc6361cbb4aa47df3f03e338738f7ea776135b99444f2acf15de9009ead",
+      "definitionSha256": "3c0982d657bbcea35aed2f925592f0551e46648943fee6c492e9ba8712f87634",
+      "exampleSha256": "a94e34bc7d4ee703801225b0c5e7a2ea663ae8ee204cc4cd32dbdf0c1654914a",
+      "references": [
+        "https://www.nhs.uk/conditions/skin-abscess/"
+      ]
+    },
+    {
+      "id": "c09-017",
+      "category": "09",
+      "file": "c09-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "bad188ee8cab08b9ae214ee0e05bd3823cd449cab42d2c6570dd320ee16db7f7",
+      "sourceSha256": "90917b42c32541d5aa08a2355a7ccb2bd5e26158bbc49f1424b42db07ea49a3c",
+      "definitionSha256": "0fd933e1d0f6e1d4b2c89b6a01baf0fbe7416fff92152999a73c5eceae97a738",
+      "exampleSha256": "e60ff625b977a87c5f4d76a93eb51f61246be13816f3825b1aa24e1e37d379db",
+      "references": [
+        "https://www.nhs.uk/conditions/cellulitis/"
+      ]
+    },
+    {
+      "id": "c09-018",
+      "category": "09",
+      "file": "c09-018.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "eecfc427fbd12f86b50e8b177736b826e1b13d865db61c3f901173bd3f525532",
+      "sourceSha256": "c641aed7301e11403fa8bf22ffa993d9515dc393a9719aee1cd4d80f5f259368",
+      "definitionSha256": "a0d56ecc073d83e6d230a55c40532cd8c904619b258f7734eb1d5cbb9972026e",
+      "exampleSha256": "c200a631ac7a8bb0703e96c1d5a66757cc534e375d9124bc64b441cd7d24ad17",
+      "references": [
+        "https://www.cancer.gov/publications/dictionaries/cancer-terms/def/necrosis",
+        "https://www.nhs.uk/conditions/gangrene/"
+      ]
+    },
+    {
+      "id": "c10-001",
+      "category": "10",
+      "file": "c10-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "2c36ca7c41568bd41fd30a0321b006b58916c80996a32984c708438074438cfd",
+      "sourceSha256": "4c21e8c44d326885945b838bb90f1a3ac71400be7479f14ca02ff3ba25e4b8bd",
+      "definitionSha256": "70c904dccedcdbd63c75f1cb28ff8d35a3f655ec1a8f3152f20c662809654a9b",
+      "exampleSha256": "6f1be995aa28861c81afa71982bc7e084caa20f57fa6d5ce2db2fcc5b82dea35",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-002",
+      "category": "10",
+      "file": "c10-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "1db2cfbac95e8c1e32c30cad76d22ba1bc2a0f4ca596782f743c075ead7edf53",
+      "sourceSha256": "aca3229488b4158e89ef5b4e2874846724ca25baf200c672e5e8e2b4421319a9",
+      "definitionSha256": "cacdecedc3ccd09299b9bb88ccbe24885165381cd4fa7fdeb55e0b6bca2c929f",
+      "exampleSha256": "b92bc7841f9ee169a9c5377a21daab2780f0003423660db92f5391f523f0fe09",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-003",
+      "category": "10",
+      "file": "c10-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "0439c39afc09cbcee791e76ad7bbf2940f6004b4f49f0a8e0a87c7084582a6bc",
+      "sourceSha256": "3ad20f7cf458ca3540887ebe145f68d2f9cb5d0d9a78ef58a6eea21f691d39d7",
+      "definitionSha256": "04113195a8830e4428d292af5d39c01d5f1ae9301ad54899e016b0853d4f00c9",
+      "exampleSha256": "caaacfe2cb930ba319b02f4194ae04de2ef042f61973023eea30af56a6213f68",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-004",
+      "category": "10",
+      "file": "c10-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7fa25121cf9d5c2a74c185c9f1977a1ae7fe747b56b268ede8279d4490591304",
+      "sourceSha256": "90e61df4b02d4f2b66e0749f89b179cc5fc4d4b7a00462a38f815b2a6a11cb3e",
+      "definitionSha256": "60d226a74ff3f214d8bba230ca5c82bc4edea8347372ad0916e50271a0c21c3f",
+      "exampleSha256": "25e67d96b33b7873094d2ec97e3246ae33cff7494b60cac5ba4ed654a619b79a",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-005",
+      "category": "10",
+      "file": "c10-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "edf157b481b44ca035102a753b710565a8f217c4bbe51e4402a98651867e8a26",
+      "sourceSha256": "e16bb592f2d8d7bef80efc8a5ca6ed55e085c2b6256766e3174b3e223b95f678",
+      "definitionSha256": "75dc1a5c24be866d4442d865605ac0a62e716f9c5478735e6e49a2ccb535d122",
+      "exampleSha256": "32d62ec8cd5e150b6dfd1dcf9bfa6a68b547e594ad5e33411449ebdf985bbfca",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-006",
+      "category": "10",
+      "file": "c10-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a16124832199902e389d73fc837b7732a11e54e7a712ebc66b59b26f37e53e48",
+      "sourceSha256": "fc0bff0f1376e3063b2ba7a3a14f250f569f6e7617863c07feb18b5cab6ad35c",
+      "definitionSha256": "a0a88aaa6fd289b106015c4e3b921f9957469b5de03ed16ba9275051f7230ef1",
+      "exampleSha256": "ad8592442a247a4b066c315cc72d7074292289d49dee20878529db47839caece",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-007",
+      "category": "10",
+      "file": "c10-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "71a1a03fa88ff639e934176951e94b5c58868fc5c1db15be1c073e33d27c624d",
+      "sourceSha256": "4f13618a2fa52a83e2294eb9d48fa48eb25928c3096999f4507b7f2da00401e9",
+      "definitionSha256": "44146f1ce57d25423d52f6c71dd35f953eb04607c207d4588e8a7950fac1a35f",
+      "exampleSha256": "d5370146aca15bc8e2857d0003b1fb19977558d0342ac640369eb2f5e652bc23",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-008",
+      "category": "10",
+      "file": "c10-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "ac5e2bd423ff0c3c5b1ef477ca0f2184bfde802a0913e1af6599743ad1d7d37e",
+      "sourceSha256": "f30f53e365b34ac00d7c29538de19b0c30a7babdcf5982ad0ce205ee5c8ba377",
+      "definitionSha256": "ca1736742c46d9d142861a1de752bfe1a1028a07fc7dbbe0e3f703471f493412",
+      "exampleSha256": "58b421fcc9c79cd5297c9caa87805a00617f1ec146be84cff09a40bdc2501ae6",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-009",
+      "category": "10",
+      "file": "c10-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "829c2ae99ab1351db74ac84a0d111432b6866af8377a923f7c4f529d907a9b01",
+      "sourceSha256": "6aa9ff18ee042c4c187a0cf181a191a80afb8f10ff6344a6e1fe6310b5ac20dd",
+      "definitionSha256": "5f4438e383e04587447a80b0bc6230ad5821a5c6c15bfa76b3df2c1db78f7172",
+      "exampleSha256": "a08116909eee91248fac1ce0a169342b297383a65f8d70ab1bec83cecbcfd40e",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-010",
+      "category": "10",
+      "file": "c10-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "689ad1b388848b927ddf6a2eefc33bfa06afc0a5fcc5153245fe4cec8c77b278",
+      "sourceSha256": "5976966ad960cff7613839511b92d7990acb6530770c91f6d166da1e8fd3abd3",
+      "definitionSha256": "5eb2fe85b6aa1a27516cd4c24312b18c1913827a72ef96c84054f3bd601e3c7c",
+      "exampleSha256": "400bb3cc937974d4621d8a72a43cf8b634cb013e2e82f093d01ace0821fa8800",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-011",
+      "category": "10",
+      "file": "c10-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "b2efaba0c228dc1a7a9538cb8cc23d634bd09b0728cfa200003f7375830f2286",
+      "sourceSha256": "e40a7e17cb9ab307eaae18e105f600bcd0c01dcd033db9b412be915128f81ffa",
+      "definitionSha256": "c10029fe5d7db568c33c646311a9d05de12335e51042a66ced8dc85cedf35ec9",
+      "exampleSha256": "689e72e7560bbefad30da0f846a56aac43e451b4feccc1c2377934998ddeee8d",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-012",
+      "category": "10",
+      "file": "c10-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a944f939b74c0e77e2a7774dd7932a77ba2b0d8bae30f8e88113bfffbff7f141",
+      "sourceSha256": "b28600029adf81b7b37ae61d97563f27f4ba66a1ee33abd9f858b55a8f8dcba0",
+      "definitionSha256": "aec40cb416314c5636d447b659f55948322a7bf3e55af366d8f534d2ffadf96d",
+      "exampleSha256": "53cd5fb351368ab381e81a7678593f1ecbeafe23f2a430ec0ccf977e92942f51",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-013",
+      "category": "10",
+      "file": "c10-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "be0b4fce31aad8682fd1d2e0df9d7cf234695a98defa0b4b2540535cafd355c0",
+      "sourceSha256": "60b1f51ddd00ea9421a8178b52e2742b7b35f7fcdc62e05498aabe9c9ae6f241",
+      "definitionSha256": "8ee4cd5abbb12dc9e44540a0182e8f18c01a3dae10412a6a561d830093001a86",
+      "exampleSha256": "917bc8bd90e63cf74f41b895c237bd6e2ee21f88f1c861fdc0ef6e2f6ed22f0c",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-014",
+      "category": "10",
+      "file": "c10-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c1bb19bf68dd5535d6951699cf14926d37fab65f25e7c4e540d88f499a4af7bc",
+      "sourceSha256": "4e56dd787a4a66b145df55262ac56dad91477d28b4539319cd0ed529d60c818d",
+      "definitionSha256": "d1f3677226a4b7a732c8f0ce710bf40bf2f3a41ab5b3eeee56cbf4b312cfb18e",
+      "exampleSha256": "1ef3d66a996661f5e170999bb796024982cea49f72ef9bbff93c9b2dce5a6801",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-015",
+      "category": "10",
+      "file": "c10-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "ab1f6dea0ac91e8debfc3ca6c765858b1552931d61eb9f9285bc9ee0264bf0e9",
+      "sourceSha256": "e595af98879c4d6dae6f2af4a3f1e711b32a0bd157963dc745450043768e23c4",
+      "definitionSha256": "02cc47d6a894995d6586e1baee91db08d096cf1d2a82becb818695a7e815046e",
+      "exampleSha256": "bed2867d0300a85832a1d4d1092cb6aa7ab4ae4e9fa072aad8a1469307b74a8d",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-016",
+      "category": "10",
+      "file": "c10-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c8c6697cd74b18bb5dfb6fb7e60a262e058e7f2c5af46b7ddd0e7d4bdb61deeb",
+      "sourceSha256": "0d2248bd0babab027df05c753e1f528cb0a52180b619967edacd42b002a8736a",
+      "definitionSha256": "7512e1e0c01a6df505ac41bc736fa5ea6521a8d88595bb5902e0c0dbc12c908f",
+      "exampleSha256": "e4e68cf8679e6ce30b05c795a30faa87cec0bcf975f53b1fcf2d3401012d4f75",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-017",
+      "category": "10",
+      "file": "c10-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "6c3b6fbca34365b0d2e700115841d4a900027aa1c22799c3b1dc54fd556fbe01",
+      "sourceSha256": "0a9c272f302b3558624c6c0b2ad5b2c099987bd8611b1be31d047506e0aada80",
+      "definitionSha256": "afdac288495c1816894cda306f165b326f3e004dddd45260d312c0c988133e7b",
+      "exampleSha256": "18779d4f3410e75d662a2e752c3fbaa0e5dc291230dcb0dedd3fe9f006f0dcdc",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-018",
+      "category": "10",
+      "file": "c10-018.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "fb315795f6b1a6610a3a3cb8d866bdf1f1c35f2a091c8f3d70424f4a295c2704",
+      "sourceSha256": "dd1603982b624fac8698b054d63585f1fd55839810e33985135d299d1f0b28c8",
+      "definitionSha256": "9f1fc70de43696a80c53932b849f5023d2eb8a0c2d92bedd0034ee13521325b8",
+      "exampleSha256": "d07aa52db10e4dc98e9a4cf6e3bdc6a64e0af9d6f0de5f149a4ec0b527c0069f",
+      "references": [
+        "https://dermnetnz.org/topics/terminology",
+        "https://dermnetnz.org/glossary.html"
+      ]
+    }
+  ]
+}
