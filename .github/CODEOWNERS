@@ -5,6 +5,14 @@
 /entry-resume.js                   @diellzarabushaj-source
 /session-resume.js                 @diellzarabushaj-source
 /sw-resilient.js                   @diellzarabushaj-source
+/sw.js                             @diellzarabushaj-source
+/sidebar-taxonomy-core-v3.js        @diellzarabushaj-source
+/sidebar-taxonomy-v3.js             @diellzarabushaj-source
+/login.js                          @diellzarabushaj-source
+/lib/device-session.mjs             @diellzarabushaj-source
+/lib/auth.mjs                       @diellzarabushaj-source
+/lib/auth-edge.mjs                  @diellzarabushaj-source
+/tests/session-worker-recovery-test.js @diellzarabushaj-source
 /landing.html                      @diellzarabushaj-source
 /login.html                        @diellzarabushaj-source
 /api/auth.js                       @diellzarabushaj-source

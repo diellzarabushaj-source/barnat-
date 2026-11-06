@@ -44,7 +44,7 @@ jobs:
         run: pnpm run build:runtime
 
       - name: Verify remembered-session recovery before browser tests
-        run: node tests/device-session-test.js && node tests/entry-resume-test.js
+        run: node tests/device-session-test.js && node tests/entry-resume-test.js && node tests/session-worker-recovery-test.js
 
       - name: Verify Registry V2 WebKit audit syntax
         run: |

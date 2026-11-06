@@ -3,13 +3,22 @@
 'use strict';
 
 const VERSION = 'workspace-coherence-v9-app-cache';
-const CACHE_EPOCH = '20260914-registry-search-v1';
+const CACHE_EPOCH = '20261106-persistent-session-v2';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = 'medindex-static-device-v1';
 const PAGE_CACHE = 'medindex-pages-device-v1';
 const PRIVATE_CACHE = 'medindex-private-device-v1';
 const AUTH_CACHE = 'medindex-auth-device-v1';
 const QUERY_INFLIGHT = new Map();
+// One cookie jar is shared by all tabs. Finish rotation (or explicit logout)
+// before starting another auth request, so an older response cannot overwrite it.
+let authQueue = Promise.resolve();
+function queuedAuthResponse(request) {
+  if (new URL(request.url).searchParams.has('scope')) return authResponse(request);
+  const pending = authQueue.then(() => authResponse(request));
+  authQueue = pending.catch(() => {});
+  return pending;
+}
 const WORKSPACE_INFLIGHT = new Map();
 const REVALIDATE_MS = 6 * 60 * 60 * 1000;
 let dataGeneration = 0;
@@ -186,7 +195,9 @@ async function authResponse(request) {
   const localSession = await authSnapshot();
   if (localSession && !deviceOnline) return offlineAuthResponse(localSession);
   try {
-    const response = await timeoutFetch(request, localSession ? 1200 : 4200);
+    // Refreshing a remembered device also verifies its live profile. Cancelling
+    // that request after 1.2s can discard the rotated refresh cookie on a phone.
+    const response = await timeoutFetch(request, 45000);
     if (generation !== dataGeneration) return response;
     if ([401,403].includes(response.status)) await clearPrivateData();
     if (response.ok) {
@@ -356,6 +367,13 @@ async function navigationResponse(event) {
       await putIfCacheable(PAGE_CACHE, key, response, {key});
     return response;
   };
+  if (['/landing.html', '/login.html', '/admin-login.html', '/session-resume.html'].includes(new URL(request.url).pathname) && deviceOnline) {
+    try {
+      // These pages decide whether to resume a remembered browser. Never paint
+      // a cached sign-in page while the server has a valid session cookie.
+      return await fetch(new Request(request, { cache:'no-store' }));
+    } catch { /* Keep the entry page usable during a real network outage. */ }
+  }
   if (new URL(request.url).pathname === '/medlex.html' && deviceOnline) {
     try {
       const response = await timeoutFetch(new Request(request, {cache:'no-cache'}), NETWORK_TIMEOUT_MS);
@@ -377,6 +395,15 @@ async function staticResponse(event) {
   const request = event.request;
   const cache = await caches.open(STATIC_CACHE);
   const cached = await cache.match(request);
+  if (deviceOnline && ['/entry-resume.js', '/session-resume.js', '/login.js', '/auth-client.js', '/sidebar-taxonomy-v3.js', '/sidebar-taxonomy-core-v3.js'].includes(new URL(request.url).pathname)) {
+    try {
+      const response = await timeoutFetch(new Request(request, { cache:'no-store' }), STATIC_NETWORK_TIMEOUT_MS);
+      if (response.ok && !response.redirected) {
+        await putIfCacheable(STATIC_CACHE, request, response);
+        return response;
+      }
+    } catch { /* A previously saved runtime remains available offline. */ }
+  }
   if (cached) return cloneWithHeader(cached, 'X-MedIndex-Cache', 'static-hit');
   try {
     const response = await timeoutFetch(new Request(request, {cache:'no-cache'}), STATIC_NETWORK_TIMEOUT_MS);
@@ -548,7 +575,7 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (!sameOrigin(url)) return;
 
-  if (url.pathname === '/api/auth') return event.respondWith(authResponse(request));
+  if (url.pathname === '/api/auth') return event.respondWith(queuedAuthResponse(request));
   if (url.pathname === '/api/gemini-prescription') return event.respondWith(geminiResponse(request));
   if (request.method !== 'GET') return;
 

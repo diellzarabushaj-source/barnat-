@@ -18,6 +18,7 @@ const SharedBudget = require('../lib/shared-request-budget.js');
 const RuntimeTelemetry = require('../lib/runtime-telemetry.js');
 
 const attempts = new Map();
+const deviceRenewals = new Map();
 const WINDOW_MS = 15 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
 const MAX_TRACKED_CLIENTS = 2000;
@@ -259,6 +260,17 @@ async function renewDeviceSession(auth, device) {
   return { token, refreshToken, session:auth.sessionData(token) };
 }
 
+function sharedDeviceRenewal(auth, device, rawDevice) {
+  // New tabs can arrive together before a service worker controls the page.
+  // Share in-flight rotation within this instance; never cache account grants.
+  const key = sha256Hex(rawDevice);
+  if (!deviceRenewals.has(key)) {
+    const pending = renewDeviceSession(auth, device).finally(() => deviceRenewals.delete(key));
+    deviceRenewals.set(key, pending);
+  }
+  return deviceRenewals.get(key);
+}
+
 module.exports = async function handler(req, res) {
   securityHeaders(res);
 
@@ -308,7 +320,7 @@ module.exports = async function handler(req, res) {
     if (rawDevice && !device) cookies.push(Device.expiredDeviceCookie());
     if (device && (!session || session.exp * 1000 - Date.now() <= 30 * 60 * 1000)) {
       try {
-        const renewed = await renewDeviceSession(auth, device);
+        const renewed = await sharedDeviceRenewal(auth, device, rawDevice);
         session = renewed.session;
         cookies.push(auth.sessionCookie(renewed.token),
           Device.deviceCookie(Device.createDeviceToken(session, renewed.refreshToken)));
@@ -333,7 +345,8 @@ module.exports = async function handler(req, res) {
     // Migrate already signed-in browsers from Strict cookies without requiring
     // another password or rotating a healthy upstream refresh token.
     if (session && device && !cookies.length) {
-      cookies.push(auth.sessionCookie(auth.sessionFromRequest(req)), Device.deviceCookie(rawDevice));
+      cookies.push(auth.sessionCookie(auth.sessionFromRequest(req)),
+        Device.deviceCookie(Device.createDeviceToken(device, device.refreshToken)));
     }
     if (resume) {
       if (cookies.length) res.setHeader('Set-Cookie', cookies);
