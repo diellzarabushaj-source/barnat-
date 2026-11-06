@@ -80,7 +80,11 @@ async function expectVisibleResume(page) {
     }, F.email);
     assert.equal(login.deviceRemembered, true);
     const saved = (await context.cookies()).find(cookie => cookie.name === 'medindex_device');
-    assert.ok(saved?.httpOnly && saved.secure && saved.expires > realNow() / 1000 + 399 * 86400);
+    // The server's 400-day window is asserted by device-session-test.js.
+    // WebKit may cap persistent cookies earlier; test the shared browser
+    // contract here, then verify actual profile restart and silent renewal.
+    assert.ok(saved?.httpOnly && saved.secure && saved.expires > realNow() / 1000 + 89 * 86400);
+    console.log(`Remembered-device cookie: ${Math.floor((saved.expires - realNow() / 1000) / 86400)} days retained by ${browserType.name()}.`);
     assert.equal(await page.evaluate(() => document.cookie.includes('medindex_device')), false);
     await page.goto(base + '/recetat.html');
     // A fresh entry from another site must carry the persistent login cookie.
