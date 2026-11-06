@@ -162,7 +162,7 @@ async function expectVisibleResume(page) {
     offset += 9 * 3600000;
     F.state.transient = true;
     await page.goto(`https://127.0.0.1:${server.address().port}/external`);
-    const unavailable = page.waitForResponse(response => response.url() === base + '/api/auth' && response.status() === 503);
+    const unavailable = page.waitForResponse(response => response.url() === base + '/api/auth?entry=1' && response.status() === 503);
     await page.getByRole('link', { name:'Kthehu' }).click();
     await unavailable;
     assert.ok((await context.cookies()).some(c => c.name === 'medindex_device'), 'An outage must preserve the remembered browser.');

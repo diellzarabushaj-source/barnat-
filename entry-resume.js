@@ -5,22 +5,24 @@
   let pending = false;
   let retry = 0;
   async function resume() {
-    if (pending || !navigator.onLine || document.querySelector('[data-home-auth][open]')) return;
+    // An open login dialog does not mean the remembered session is invalid.
+    if (pending || !navigator.onLine) return;
     pending = true;
     clearTimeout(retry);
     try {
-      const response = await fetch('/api/auth', {
+      // Bypass old service workers that can return an offline auth snapshot or
+      // cancel server-side token renewal after 1.2 seconds on a slow link.
+      const response = await fetch('/api/auth?entry=1', {
         credentials:'same-origin', cache:'no-store', headers:{ Accept:'application/json' },
-        signal:AbortSignal.timeout(12000),
+        signal:AbortSignal.timeout(45000),
       });
       const payload = await response.json();
-      if (document.querySelector('[data-home-auth][open]')) return;
       if (response.ok && payload.authenticated === true && payload.hardened === true
-        && Number(payload.sessionVersion) === 3) {
+        && Number(payload.sessionVersion) === 3 && payload.offline !== true) {
         const destination = new URLSearchParams(location.search).get('return') || '/index.html';
         // The server validates the destination, including encoded open redirects.
         location.replace(`/api/auth?resume=1&return=${encodeURIComponent(destination)}`);
-      } else if (response.status >= 500) {
+      } else if (response.status >= 500 || response.status === 429 || payload.offline === true) {
         retry = setTimeout(resume, 5000);
       }
     } catch {

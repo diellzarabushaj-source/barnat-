@@ -41,7 +41,10 @@ async function prepare(page) {
     contentType:'application/javascript',
     body:'',
   }));
-  await page.route('**/api/auth', async route => {
+  // Covers both the public sign-in probe and the network-only remembered-device
+  // probe (`?entry=1`). Otherwise the generic smoke server impersonates a
+  // signed-in account while this suite is intentionally testing signed-out UI.
+  await page.route('**/api/auth**', async route => {
     if (route.request().method() === 'GET') {
       await route.fulfill({
         status:200,

@@ -43,6 +43,9 @@ jobs:
       - name: Build audited runtime once
         run: pnpm run build:runtime
 
+      - name: Verify remembered-session recovery before browser tests
+        run: node tests/device-session-test.js && node tests/entry-resume-test.js
+
       - name: Verify Registry V2 WebKit audit syntax
         run: |
           node --check tests/clinical-smoke-server.js

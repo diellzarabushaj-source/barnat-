@@ -24,6 +24,7 @@ const PRIVATE_PAGES = new Set([
   '/index.html', '/klasifikimi.html', '/icd.html', '/analizat.html',
   '/dozologjia.html', '/protokollet.html', '/recetat.html',
 ]);
+const AUTH_ENTRY_PAGES = new Set(['/landing.html', '/login.html', '/session-resume.html']);
 const PRIVATE_DATA_PATHS = new Set([
   '/api/registry', '/data/registry-data.js', '/api/dosage',
 ]);
@@ -197,6 +198,13 @@ async function navigationResponse(event, url) {
   const key = requestFor(expectedPath);
   const cache = await caches.open(PAGE_CACHE);
   const cached = await cache.match(key) || await caches.match(key, { ignoreSearch:true });
+
+  // Public entry pages are authentication-sensitive. A cached login document
+  // must never mask a valid remembered browser after a deployment or reopen.
+  if (AUTH_ENTRY_PAGES.has(expectedPath) && networkProfile.online) {
+    const fresh = await refreshNavigation(request, key, expectedPath);
+    if (fresh) return fresh;
+  }
 
   // These documents select versioned assets. Prefer their fresh online HTML so
   // a saved document cannot keep loading old registry code or MedLex artwork.
