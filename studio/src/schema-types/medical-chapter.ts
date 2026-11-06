@@ -1,5 +1,6 @@
 import {DocumentTextIcon} from '@sanity/icons/DocumentText'
 import {defineField, defineType} from 'sanity'
+import {legacyMigrationField} from './legacy-migration'
 
 export const medicalChapter = defineType({
   name: 'medicalChapter',
@@ -20,6 +21,7 @@ export const medicalChapter = defineType({
     defineField({name: 'order', title: 'Renditja', type: 'number', group: 'structure', validation: (rule) => rule.required().integer().positive()}),
     defineField({name: 'summary', title: 'Përmbledhje', type: 'text', rows: 4, group: 'structure'}),
     defineField({name: 'sourceLocator', title: 'Vendndodhja në libër', type: 'sourceLocator', group: 'source'}),
+    legacyMigrationField,
     defineField({
       name: 'reviewStatus',
       title: 'Statusi',

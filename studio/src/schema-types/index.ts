@@ -15,8 +15,13 @@ import {medicalChapter} from './medical-chapter'
 import {medicalSection} from './medical-section'
 import {medicalTopic} from './medical-topic'
 import {sourceCitation, sourceExtract, sourceFile, sourceLocator} from './source-types'
+import {medlexCard, medlexChapter, medlexSubchapter} from './medlex'
+import {legacyMigrationProvenance} from './legacy-migration'
+import {medicalPrescription} from './medical-prescription'
 
 export const schemaTypes = [
+  medlexChapter, medlexSubchapter, medlexCard,
+  legacyMigrationProvenance, medicalPrescription,
   medicalSubsection,
   medicalChecklist,
   medicalQuestionSet,

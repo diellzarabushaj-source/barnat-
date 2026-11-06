@@ -88,6 +88,7 @@
 
   function imagePath(term) {
     if (term.status === 'planned') return '';
+    if (/^https:\/\/cdn\.sanity\.io\/images\/4wdtp8cz\/production\/[a-z0-9]+-\d+x\d+\.(?:webp|png|jpg|jpeg)$/.test(term.imageUrl || '')) return term.imageUrl + '?auto=format&w=1254&q=95';
     const name = String(term.image || '').replace(/\.png$/i,'.webp');
     if (term.category === '02') return /^(?:or|ab|th|up|lo|he|ne|ba|pe)\d{2}\.webp$/.test(name) ? ANATOMY_IMAGE_BASE + name + '?v=' + ANATOMY_ARTWORK_VERSION : '';
     if (/^(?:0[3-9]|1[0-8])$/.test(term.category)) return new RegExp('^c' + term.category + '-\\d{3}\\.webp$').test(name) ? '/assets/medlex-chapters/' + name + '?v=' + CHAPTER_ARTWORK_VERSION : '';
@@ -294,6 +295,9 @@
     $('medlexDownload').href = imagePath(term);
     $('medlexDownload').hidden = planned;
     $('medlexDownload').download = `DRX-MedLex-${term.category}-${String(term.id).padStart(2,'0')}-${normalize(term.term).replace(/ /g,'-')}.webp`;
+    if (imagePath(term).startsWith('https://cdn.sanity.io/')) {
+      $('medlexDownload').href = term.imageUrl + '?fm=webp&q=95&dl=' + encodeURIComponent($('medlexDownload').download);
+    }
     $('medlexCopy').textContent = 'Kopjo termin';
     if (!dialog.open) dialog.showModal();
   }
@@ -408,9 +412,12 @@
   }
 
   async function loadTerms() {
+    const cms = fetch('/api/medical-hub?_route=medlex', {credentials:'same-origin', cache:'no-store', signal:AbortSignal.timeout(3500)})
+      .then(response => response.ok ? response.json() : null).catch(() => null);
     const [response, anatomyResponse, chaptersResponse] = await Promise.all([DATA_URL,ANATOMY_DATA_URL,CHAPTERS_URL].map(url => fetch(url, {credentials:'same-origin',cache:'force-cache'})));
     if (!response.ok || !anatomyResponse.ok || !chaptersResponse.ok) throw new Error('Fjalori nuk u ngarkua. Provo përsëri.');
-    const [data,anatomy,chapters] = await Promise.all([response.json(),anatomyResponse.json(),chaptersResponse.json()]);
+    const [data,anatomy,localChapters,remote] = await Promise.all([response.json(),anatomyResponse.json(),chaptersResponse.json(),cms]);
+    const chapters = remote?.ok && remote.catalog?.categories?.length === 18 ? remote.catalog : localChapters;
     if (!Array.isArray(data.terms)) throw new Error('Struktura e fjalorit nuk është e vlefshme.');
     const terms = data.terms.map(term => ({...term,category:'01'})).filter(term => Number.isInteger(term.id) && term.id >= 1 &&
       typeof term.term === 'string' && typeof term.definition === 'string' &&

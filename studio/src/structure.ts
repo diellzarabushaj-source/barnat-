@@ -1,6 +1,7 @@
 import {DocumentTextIcon} from '@sanity/icons/DocumentText'
 import {chapterTemplate, lessonTemplates} from './lesson-templates'
 import type {StructureResolver} from 'sanity/structure'
+import {medlexStructure} from './medlex-structure'
 
 const topicList = (S: Parameters<StructureResolver>[0], title: string, filter: string) =>
   S.listItem()
@@ -18,6 +19,8 @@ export const structure: StructureResolver = (S) =>
   S.list()
     .title('Medical Hub')
     .items([
+      medlexStructure(S),
+      S.divider(),
       S.listItem().title('Libër → kapitull → mësim').icon(DocumentTextIcon).child(
         S.documentTypeList('medicalBook').title('Zgjidh librin').child(bookId =>
           S.documentList().title('Kapitujt e librit').schemaType('medicalChapter')
@@ -33,6 +36,7 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem('medicalBook').title('Librat').icon(DocumentTextIcon),
       S.documentTypeListItem('medicalChapter').title('Kapitujt').icon(DocumentTextIcon),
       S.documentTypeListItem('medicalTopic').title('Të gjitha temat').icon(DocumentTextIcon),
+      S.documentTypeListItem('medicalPrescription').title('Recetat e librit').icon(DocumentTextIcon),
       S.divider(),
       topicList(S, 'Draftet', '_type == "medicalTopic" && reviewStatus == "draft"'),
       topicList(S, 'Në rishikim', '_type == "medicalTopic" && reviewStatus == "review"'),
