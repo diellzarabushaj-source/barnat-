@@ -29,7 +29,7 @@ const caches = {
 const sandbox = {
   Request, Response, Headers, URL, AbortController, setTimeout, clearTimeout, caches, console,
   self:{ location:{ origin }, addEventListener() {}, clients:{ async matchAll() { return []; } } },
-  async fetch(request) {
+  async fetch(request, options = {}) {
     const url = new URL(request.url);
     calls.push(`${request.method} ${url.pathname}`);
     if (url.pathname !== '/api/auth') return new Response('fresh ' + url.pathname, {
@@ -40,7 +40,7 @@ const sandbox = {
       if (authGate) await authGate;
       if (delayAuth) await new Promise((resolve, reject) => {
         const timer = setTimeout(resolve, 1500);
-        request.signal?.addEventListener('abort', () => { clearTimeout(timer); reject(new DOMException('Aborted', 'AbortError')); }, { once:true });
+        (options.signal || request.signal)?.addEventListener('abort', () => { clearTimeout(timer); reject(new DOMException('Aborted', 'AbortError')); }, { once:true });
       });
       return new Response(JSON.stringify({ authenticated:request.method !== 'DELETE', hardened:true,
         sessionVersion:3, supabaseAuthenticated:true, sessionHours:8,
