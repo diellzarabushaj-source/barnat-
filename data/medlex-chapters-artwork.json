@@ -1,5 +1,5 @@
 {
-  "version": "20261105-content-03-10-v1",
+  "version": "20261106-content-03-18-v1",
   "status": "draft_for_clinical_review",
   "generator": "imagegen built-in",
   "mascot": false,
@@ -2113,6 +2113,2131 @@
       "references": [
         "https://dermnetnz.org/topics/terminology",
         "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c11-001",
+      "category": "11",
+      "file": "c11-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "5f4b44523b50b609e4e8c0de6f48aed68553324134c216dda91c85346a24a66e",
+      "sourceSha256": "1224a1ead28a93c8e14437e15d0a6f21e10705446ac650777defc55c0fad6a5b",
+      "definitionSha256": "b58ba4ca46cb801d051f17f1cc2d07694e0ca46de531297567093cc4d6d79224",
+      "exampleSha256": "526ce40d7564c7d85e245f973ffba894a0d48b9519ccc67bfc5ba37700ace076",
+      "references": [
+        "https://www.niams.nih.gov/health-topics/arthritis",
+        "https://www.orthoinfo.org/bodypart/kneelower-leg/arthritis-of-the-knee/"
+      ]
+    },
+    {
+      "id": "c11-002",
+      "category": "11",
+      "file": "c11-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7d71851fe83798c4d74eceff67f9d06bef2347e4459e088570a435ec58e0aabb",
+      "sourceSha256": "ce9e73a3bcdefff5f0102729ca427eab3e96ac40e05e7d6b3a5b3f3f3740e786",
+      "definitionSha256": "802a20c086da37d9874bcb7b032c22b832a8fbd24aabd3f2089aabc1b1756238",
+      "exampleSha256": "09e1f3995c13ad0dc283239fd8f502d503ce53b1fb4ccabe49aa5f2365ca02b0",
+      "references": [
+        "https://www.cdc.gov/flu/signs-symptoms/index.html"
+      ]
+    },
+    {
+      "id": "c11-003",
+      "category": "11",
+      "file": "c11-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "5548a58f7d2c4ea6758c9660476fe5907d731386c7c1c0c4c72a7513eaf4a323",
+      "sourceSha256": "27ce5f370bb06d438b9623df33028f75693e0530111452c0b2ff175564a4163b",
+      "definitionSha256": "e4d9572552762918b24e82be196a3170b7835cd6425b4435dfe2371011342a37",
+      "exampleSha256": "55709ed8b3468dfa345e4674e7382f95fe95bb2a02cb6807c397e493029e365a",
+      "references": [
+        "https://www.orthoinfo.org/bodypart/kneelower-leg/arthritis-of-the-knee/"
+      ]
+    },
+    {
+      "id": "c11-004",
+      "category": "11",
+      "file": "c11-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "10ebbadd5e3ab6b2f899f97a9d35572688d83be0f7354dff766a3fdfa217ac1d",
+      "sourceSha256": "6d1acce928d9321ee1e6219784ddb2ba098a08820aa916a91c3f5ab9bbc2762a",
+      "definitionSha256": "5af57daa8e0ec9f8950323291a0831a51b4dc8d83e9c05804cfaafff52aaa85c",
+      "exampleSha256": "e5c110e93f3f90b09aa58e0d5d5c1d6e30a6b75cb9c2d3475504572495f33c74",
+      "references": [
+        "https://www.niams.nih.gov/health-topics/arthritis",
+        "https://health.nih.gov/health-topics-a-z/arthritis/rheumatoid-arthritis"
+      ]
+    },
+    {
+      "id": "c11-005",
+      "category": "11",
+      "file": "c11-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "4ad2bfc750385337eb592174942680f5ed778ebcd307008acf23c50c1035d33c",
+      "sourceSha256": "e349439859934c5dfb0a5b072d9ed2c8956e5ef44a3ec274446238d35e3fa0d2",
+      "definitionSha256": "5238128db44f5afa1db64528b6a34e72fd99c6d5ab3038d6b7a8fd0742ca267b",
+      "exampleSha256": "bdc91764b259b0b40a69b9b4d46b2d15cdb5c3d5658e1788aa8143e11ad77709",
+      "references": [
+        "https://health.nih.gov/health-topics-a-z/arthritis/rheumatoid-arthritis"
+      ]
+    },
+    {
+      "id": "c11-006",
+      "category": "11",
+      "file": "c11-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "9bb9acfea0f5f308f4950a90d5f4250d2424148ec96f141b6ed898b4c3d162a2",
+      "sourceSha256": "57c56129edf3eac020873081f0b7594a3a7d2d4a05127f0d437b3666bba3df40",
+      "definitionSha256": "30bd96c1d01039b64f6085e820393df3f1c75ff36c033e2a57f003021ef4f63b",
+      "exampleSha256": "e47ba5a625c232b45350ef616be808d2e64904e3e093210766cdf945be264738",
+      "references": [
+        "https://www.nhs.uk/symptoms/shoulder-pain/",
+        "https://www.orthoinfo.org/diseases--conditions/sprains-strains-and-other-soft-tissue-injuries"
+      ]
+    },
+    {
+      "id": "c11-007",
+      "category": "11",
+      "file": "c11-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a849ee1c89ead5ebfa0cdb7c22ad8e781c19695b763c3df3ba01b7cd52f3e2a6",
+      "sourceSha256": "4c1fc203ee785101994e435c80c14ae5edc15cc194ebacb458e1757604e92dc0",
+      "definitionSha256": "479b2eb54a63c8e5d713d4571147a50b96d7ab99a1cde2702503b859d73bc1d2",
+      "exampleSha256": "09724c30a0e0d89e6844759b9d8713ee30dd44ac1384af15d24a2db10e185a88",
+      "references": [
+        "https://www.nhs.uk/conditions/tendonitis/",
+        "https://www.orthoinfo.org/diseases--conditions/achilles-tendinitis/"
+      ]
+    },
+    {
+      "id": "c11-008",
+      "category": "11",
+      "file": "c11-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "cbba871fbe6c78dc94f95be578f7bbea59ffeb31d1f94871d931ffc0086f9faa",
+      "sourceSha256": "35994540a9c5035fcbc04100a51e69813d4aad30d9f92a55bc52474bfe8b8dae",
+      "definitionSha256": "9d1f8391e10696d5cd2af662bf21c7fb64e95bacfc302ae8c3409160c84f7cbf",
+      "exampleSha256": "aedeec0b408bde79d669752fc6d8726bba799a1a0bb8005e0b36a4622027f5b5",
+      "references": [
+        "https://www.nhs.uk/conditions/bursitis/",
+        "https://www.orthoinfo.org/diseases--conditions/elbow-olecranon-bursitis/"
+      ]
+    },
+    {
+      "id": "c11-009",
+      "category": "11",
+      "file": "c11-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "e81a2a96f2983fcf0c06f73d4ec77bd076fcddaf5dbfb8a4545365ee081da808",
+      "sourceSha256": "8166f61af6537db1cf1e4392fe1112e9d51280bdb8a2a4d58b01a09269135c57",
+      "definitionSha256": "908c23d1cab87e0b6b8220f36fd8e2b173dfbb008f9e5f3cf2c66f34c30c4117",
+      "exampleSha256": "650df30928070510c0fe7a7451249258dae96405ab1e90c67cae83d51cf86a1c",
+      "references": [
+        "https://www.orthoinfo.org/bodypart/kneelower-leg/arthritis-of-the-knee/"
+      ]
+    },
+    {
+      "id": "c11-010",
+      "category": "11",
+      "file": "c11-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "8437fefda2728a668df89390de7b4b755d05aec12142aa8b151df57cc2ac30f7",
+      "sourceSha256": "076c0fb2c4a6b475028471f73bc5798193bc2d7b758249f6448fc9a59573f5ae",
+      "definitionSha256": "ffbcc5af7ecf1e2428cbfa4be59aa494e096e1e4dc0846c07d172ee4fc5d43bd",
+      "exampleSha256": "0142e9b8899017eede2404909e71e6c1602e41c978576a78d7c21afe062a5f21",
+      "references": [
+        "https://www.orthoinfo.org/diseases--conditions/chronic-shoulder-instability/"
+      ]
+    },
+    {
+      "id": "c11-011",
+      "category": "11",
+      "file": "c11-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "eac9eb2e61eb87ff34fa2522ce07eb45e67f4a0330fde8b91d90b230542fc829",
+      "sourceSha256": "2624d6e77e39bdb614a56588ca4821b96c2751ba41c1e1d2291cf9aaa72fa891",
+      "definitionSha256": "4f55c6fe4b37cf7cd134cf0d7aa3328c1c7f15d0275f12da897a1a72cc3d1cd2",
+      "exampleSha256": "66afaf83adb415d17922715ed205fbacb1201d7c95d49e946d95676aac423415",
+      "references": [
+        "https://www.nhs.uk/conditions/dislocated-shoulder/"
+      ]
+    },
+    {
+      "id": "c11-012",
+      "category": "11",
+      "file": "c11-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a5ba9cd1d5ddab87a600d41e48fffea3842de038deed0eddfbe329649acd4715",
+      "sourceSha256": "5e8cca18a732a07af5fdc2f46f7287a8bf0e74176ff308b606cf579f0b785eb8",
+      "definitionSha256": "481135a15c781098cd1c00d0dcf5118a8e517183523e827c93dcaad9c6871d6e",
+      "exampleSha256": "37225586d2e44c2a61e0df5c2b9ea3a73d48d5ad15a5b861a7247b19a3b38095",
+      "references": [
+        "https://www.nhs.uk/conditions/broken-hip/",
+        "https://www.niams.nih.gov/health-topics/osteoporosis"
+      ]
+    },
+    {
+      "id": "c11-013",
+      "category": "11",
+      "file": "c11-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "df9a267ef0df39b825cd626a4d9b1e22f20dc7d466749f17ce17607d911db7cf",
+      "sourceSha256": "5573bc3b09ce815e6f5b77c93885aa1cc8c247a9a31d1afb357cc961fff0f8f9",
+      "definitionSha256": "ae2e246277480af992240dc34117449468f1d6b457d63bf4d79c0a3fab28e43b",
+      "exampleSha256": "25032ac67aee7200e88a96ccfaaa5dee095da128c043a1eb9e13e7b0069573cc",
+      "references": [
+        "https://www.orthoinfo.org/diseases--conditions/muscle-contusion-bruise"
+      ]
+    },
+    {
+      "id": "c11-014",
+      "category": "11",
+      "file": "c11-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c58bd148fa0371a5e40809f2df0b9d30a77143aad1d13a9b27a807f00199c15f",
+      "sourceSha256": "b23bb800089fe2b7f657fab0cf7bc1d803d0e33544ad7122a8d03a3a443e1d2f",
+      "definitionSha256": "283de478d18d23b66be64ce9312730e0ba72e8dbfd0dd4582d4445908ddb1743",
+      "exampleSha256": "382ba17d12be439bad35177c8dfafa5b68520654e71a6d3c033043bea48f25b6",
+      "references": [
+        "https://www.orthoinfo.org/diseases--conditions/sprains-strains-and-other-soft-tissue-injuries"
+      ]
+    },
+    {
+      "id": "c11-015",
+      "category": "11",
+      "file": "c11-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "71110e1188ea1d3ed4443c0bde357269060063be946999c266c6fef629d18f2e",
+      "sourceSha256": "513e0467df5249388a9bc2094219fc17d2082087f86ad4918ac8450bc4737b5e",
+      "definitionSha256": "6f4302fda7e3956d07bdf888e6d09067d48060cf175b6c95db773c5cd98fae9b",
+      "exampleSha256": "c622862c61ac1ccc50d6377bf774b16fab645b6a54753509e022078ecc47b028",
+      "references": [
+        "https://www.nhs.uk/conditions/dupuytrens-contracture/"
+      ]
+    },
+    {
+      "id": "c11-016",
+      "category": "11",
+      "file": "c11-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "e8ec3d143acb0cfef1259c8b7081a90539a09305a4527c00b2e2c389d344f639",
+      "sourceSha256": "019c8837719811594b5b20e8453d45e8dd32b88da08c47e53303a33a0d7b7a26",
+      "definitionSha256": "d2d4e4797ff52bda7100811ee15e53ae9b43ab092c63aa814928a3f646bf4d9f",
+      "exampleSha256": "b3be61891300a4a9f4300ad9252e0fe81d1573b1ec602050005f899e40ef3916",
+      "references": [
+        "https://www.nhs.uk/conditions/sciatica/",
+        "https://www.orthoinfo.org/diseases--conditions/cervical-radiculopathy-pinched-nerve/"
+      ]
+    },
+    {
+      "id": "c11-017",
+      "category": "11",
+      "file": "c11-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "4f04749489ae7f11f8611259a6cc828bde140faeab4a09261b1ea20e0551685d",
+      "sourceSha256": "584b1f7ccf51934c651c75e438bd87e9f9e7ba949b3102cdec2f95bc11f159e3",
+      "definitionSha256": "6ba3d14575842a9abde867cb6ad25955190a1706cdc1957012c395ca8bf2b3be",
+      "exampleSha256": "6f042b0a37e8eba9cb8c0f55748b46c296ac48e4e7a6aef438d1e8dbc0f934ff",
+      "references": [
+        "https://www.nhs.uk/conditions/peripheral-neuropathy/"
+      ]
+    },
+    {
+      "id": "c11-018",
+      "category": "11",
+      "file": "c11-018.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "26f48bb8bf12c81342f484eea36ca494670ec46a1df1d835ff2530c579d9106e",
+      "sourceSha256": "ffa97712ea933cada08bc70ea43ab8b6e0740d1f553b1a8ee32875fd11484d34",
+      "definitionSha256": "0268019232880b9d80e31f560ec492bb818c2dd2002f639e81d2e08601ddf4ab",
+      "exampleSha256": "c8d11590b180066ef17b756052b4e04e1f02524411f4da71ae294d9b0b7d5bc9",
+      "references": [
+        "https://www.niams.nih.gov/health-topics/ankylosing-spondylitis"
+      ]
+    },
+    {
+      "id": "c12-001",
+      "category": "12",
+      "file": "c12-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "1d2985f3969faf6423bc1e6bf5e6b33185d254f0e63aa4c7fedb0da46bd89d0a",
+      "sourceSha256": "67c692096bca9c918cb61e28ea634c69455f84691640f4b116bf1583d7337a04",
+      "definitionSha256": "a0d70fe88b11ab9fd75835012b4afe6d8c33035082835f27f60cf70aa898142d",
+      "exampleSha256": "8fc9edb484d8988dd1ccd2539580e793fefd293eb87cdb4c2693ffaad191c9ae",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/diabetes/overview/preventing-problems/low-blood-glucose-hypoglycemia"
+      ]
+    },
+    {
+      "id": "c12-002",
+      "category": "12",
+      "file": "c12-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "622444178f60d6312015e09fafb9f6483ad5f69c1bf3fdb440bef4df817c3586",
+      "sourceSha256": "2adc1f523ce046124b44ff55e1eeef9357d516de43889397548f48b4a7168c4b",
+      "definitionSha256": "1e255a5a9639febad255c60b8d685471f710776f80ebe8d368523b48dc21a4c9",
+      "exampleSha256": "318a0389a563edd804d50955fef56e32d4500d3de408f77cb477f26636efbabb",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes"
+      ]
+    },
+    {
+      "id": "c12-003",
+      "category": "12",
+      "file": "c12-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "406116f8319bc776f3f65d77016c3ff022f403cd4cb3056975de207ed8c659b4",
+      "sourceSha256": "70789e421d23c9891f55d0a4f0bc2e45562615b424e9accd12d67e821d66cbdf",
+      "definitionSha256": "7051e3837de26ec84a0fe23490be8254dade25bc92136d2f2a79122d09120356",
+      "exampleSha256": "d5e01880a0c57ee7f81a01b161824cd4ec20e0bf6c387a090c861d5d3318c906",
+      "references": [
+        "https://www.cdc.gov/diabetes/about/diabetic-ketoacidosis.html"
+      ]
+    },
+    {
+      "id": "c12-004",
+      "category": "12",
+      "file": "c12-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "225dcee5cf0b486a7d0129f3b661114e2b9b5a58c7ea980b66df8e700b9314cd",
+      "sourceSha256": "d624f1aeab0ccd4257c3553d97868d70c3f676a2d8b81b5a23282ac3f8464cb9",
+      "definitionSha256": "68d801e0bef6fae06a2e12fdb04da61c9e4fe507ac588a691d5462138efef12b",
+      "exampleSha256": "aa45d17834c7e2cdc62ddd7e6773fe0085b9ea1b1bfc0b170f0a79f30222ac83",
+      "references": [
+        "https://medlineplus.gov/lab-tests/ketones-in-blood/"
+      ]
+    },
+    {
+      "id": "c12-005",
+      "category": "12",
+      "file": "c12-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "d5b3ed0e7e3ddd2fcfc901e8df475637d2bed11a6ac6d810458f8e299f7be701",
+      "sourceSha256": "89f41450e7c7e4528e5ee07419e99a82a41b64a752b886dea0299d63377bb5d1",
+      "definitionSha256": "90f701e5b1a21dcc82cd4c4a99a42d0c2822ad5e94300f5d192427f2846a23e2",
+      "exampleSha256": "f5d7ba41c13f8a5f348276dcb430e4aea9b0bfd870c27777a1f6dc875693143c",
+      "references": [
+        "https://medlineplus.gov/ency/article/001181.htm"
+      ]
+    },
+    {
+      "id": "c12-006",
+      "category": "12",
+      "file": "c12-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "622205d5b10d456a5cfd4c72808b433d2738c4cf894dff7b1489d9fd8095245f",
+      "sourceSha256": "a4c062d615ba21793af13cf94d0b8134b71291dceda6aa088c2bc95d5ade5e12",
+      "definitionSha256": "41ffbd9817ef62e3ea33f75e1b6128ab3ef0824b0260b6697120f989af2c36a9",
+      "exampleSha256": "35bd5a20e735c98e24ecd92c34c32c76ce5dc3996f0115e828d737b19884b2d8",
+      "references": [
+        "https://medlineplus.gov/ency/article/000111.htm"
+      ]
+    },
+    {
+      "id": "c12-007",
+      "category": "12",
+      "file": "c12-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "ee9001a8a33f9b149b2231ab3d7490670af823470610f3092bf8dd78868fed90",
+      "sourceSha256": "5882bf5eba847ea308223009102ae32d54b60757477a46ddf64c0c6ffb94c006",
+      "definitionSha256": "7d0e66e057cee3e276b3067ff6d978422d0edd7388442565b703c780a89450b8",
+      "exampleSha256": "dc32ee12206e268fb7792226854bed18b4627730f354601997b7e0ec0491ea14",
+      "references": [
+        "https://medlineplus.gov/ency/article/000394.htm"
+      ]
+    },
+    {
+      "id": "c12-008",
+      "category": "12",
+      "file": "c12-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "48820175f54533a4b42162c9c22f65de3aa3abe4256079f1387e057b11205093",
+      "sourceSha256": "9888e1f79941a9dd412314022e35385c380e38323a358ed97ce7d5ce65176785",
+      "definitionSha256": "083bde1c47f404573c788b88fad75f4909cd931209fbfae87f754654b57a8d56",
+      "exampleSha256": "54b33981d7734f7e615c0006e3aedbd5cae62c6eafa65f4d24c466b345d7e8c7",
+      "references": [
+        "https://medlineplus.gov/lab-tests/sodium-blood-test/"
+      ]
+    },
+    {
+      "id": "c12-009",
+      "category": "12",
+      "file": "c12-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "b9a8f83b9b5c8a17bc9ad14340e8fc64f1a9e63673d46d0bdc7272f1625ee8b3",
+      "sourceSha256": "520f9c679eefc27bb10b76377a007470492b286261b75f2e52ada47b01c2d72f",
+      "definitionSha256": "de91436ba1de09c5f2bc9ccc78e6870cb882b525548f956bf412e7ef0abc2ace",
+      "exampleSha256": "0967dfceef7ded221e9c1aba99db78754b094769e9a62dfa5c66d6693d68838d",
+      "references": [
+        "https://medlineplus.gov/ency/article/000479.htm"
+      ]
+    },
+    {
+      "id": "c12-010",
+      "category": "12",
+      "file": "c12-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "f26adc570a77f6607abc4ae2202e62a0feb9150b3720245f3281b395ff0d41de",
+      "sourceSha256": "d5689b69c85c0119fb81d595d92fc189789f46b591695092d89b06e50ac0e47f",
+      "definitionSha256": "587c0ed634f74afd3b6b1a92bea3840b9d3b029608d548a441bae932a7cb8965",
+      "exampleSha256": "186bec6fc3f759390752fc4cd7d98b9839346f0659e295018c2404d4ee96b54a",
+      "references": [
+        "https://medlineplus.gov/ency/article/001179.htm"
+      ]
+    },
+    {
+      "id": "c12-011",
+      "category": "12",
+      "file": "c12-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "02a783363aca38a6fc3d53065e8bc673a05e7a28098dd955d3c16d827055aaea",
+      "sourceSha256": "f6d29dcebc0afeda01ab36a35d5dca78126bbec467792a99047bae28a410a9b6",
+      "definitionSha256": "fdfc6e9c830d31ae660978fd46435cd4bd8303a79e5809c7c684b994731d9593",
+      "exampleSha256": "c71f126390fbef2c7812487d1ddf09f6907e651e68574684d55e432d268f8fc0",
+      "references": [
+        "https://medlineplus.gov/ency/article/000385.htm"
+      ]
+    },
+    {
+      "id": "c12-012",
+      "category": "12",
+      "file": "c12-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a63648fa85c47d7f7b3fb4f0be34424400e6df2b6a6115775f5b7bc80a714da9",
+      "sourceSha256": "60f85a0be3ffa94026558dda9ecd28b8d07dcc046417fb77e7cee112f413edb9",
+      "definitionSha256": "6f5e7bc7b87710b55650523a4851e09c3b2758b3a8ca8366671a5a8faa8b9e35",
+      "exampleSha256": "434f880b5d81e46a120627a430339b4d57b7b4f6b3a4380504149521a7a876f4",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/endocrine-diseases/primary-hyperparathyroidism"
+      ]
+    },
+    {
+      "id": "c12-013",
+      "category": "12",
+      "file": "c12-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a035ede2d95ee6902d3f2e32a2c7ab9337be2a34bb8547ed736dd460d8896af1",
+      "sourceSha256": "94adc9226df9d38f2f0f287f4f585fc79c926727f7707a11251f2d69a3a8db9b",
+      "definitionSha256": "1506a8f34f645beb09c01a8e9784b228a28119c833fff347d2ceef8aeb969471",
+      "exampleSha256": "08e0a29ddecc6e791913bfd15984a2934444ec998650c30b0b604f36e4b395cc",
+      "references": [
+        "https://medlineplus.gov/ency/article/000167.htm"
+      ]
+    },
+    {
+      "id": "c12-014",
+      "category": "12",
+      "file": "c12-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "99fb30554aa1bf29c3a96f6d0b6d55cb23154f8f68e37e5548c8a3aacff1c167",
+      "sourceSha256": "0839564ea246a027e69a0e9f526c6b55de36e191aaf4347a25cdd689aaf4aa0a",
+      "definitionSha256": "832d33c0807adc9e394954403ddc27e0aee4e52619480774d15985fd1bbf8d75",
+      "exampleSha256": "0783cb5c39981270d4af9af75e2f2d4259e16bfca4848ff14b42920256e70265",
+      "references": [
+        "https://medlineplus.gov/ency/article/001187.htm"
+      ]
+    },
+    {
+      "id": "c12-015",
+      "category": "12",
+      "file": "c12-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "14fc2ec4d66cc7e825b80f9b950841e9d073c5ad89e6523e438e4f9958580da2",
+      "sourceSha256": "50319905a603772cd55e2fc472687187ad69fceb322a4e6c36996c39548b1a11",
+      "definitionSha256": "6b58416ab8f051baef786f2777b60684b1a56e0d4cde880529d97685080f2f71",
+      "exampleSha256": "d0547dfe8101ea0a785e9ff8ee58621b8a3d83513b59382eb06ab83110a6eab8",
+      "references": [
+        "https://medlineplus.gov/dehydration.html"
+      ]
+    },
+    {
+      "id": "c12-016",
+      "category": "12",
+      "file": "c12-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "91d44159acd5746e5f5996ef15f1e2bb0535432e74dd7bf882d208c2942943c6",
+      "sourceSha256": "49010c56d88a1c799362915d148de8bc14248811647e1bb291f25d3a6211a470",
+      "definitionSha256": "f59275bedda80b5fc36d2e7261f25fad7946047c1d2b7322f464ff992cc460c9",
+      "exampleSha256": "a996c51073917469eaf9e89f39a37d634f5bdb94903ce13e741fd863f9087e7d",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/endocrine-diseases/hypothyroidism"
+      ]
+    },
+    {
+      "id": "c12-017",
+      "category": "12",
+      "file": "c12-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c2b5c55ec4c2b9f259974b43838b01394524756d5ddb791b768839d2e1cc1721",
+      "sourceSha256": "645ed44184627bc7b88113abafb876c2ce8784bcf96b5a26dda16973d57840ed",
+      "definitionSha256": "53d023f29e67136d79d67b8acc23cd6442cf3f42eddc981721a3fd60db6d9fc8",
+      "exampleSha256": "38da9654d7dd4ec88fa788547968ff884bb8e914dc166def81e8ec872c0f4d5d",
+      "references": [
+        "https://www.niddk.nih.gov/health-information/endocrine-diseases/hyperthyroidism"
+      ]
+    },
+    {
+      "id": "c13-001",
+      "category": "13",
+      "file": "c13-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "2ee754db2472ceb7d985cb453c7d442af04761da046b1339c99cc7acf855a441",
+      "sourceSha256": "3098a04490801b9e87dd01aecb35a2257ec6eacfd7538a2f8a41216743b0c779",
+      "definitionSha256": "682c7b69b339ef8a9a192f8f485d8c53845375598b3bc1e948ce31ba7cc5bcb7",
+      "exampleSha256": "041cfd2d1336006704c1157724bd77b4fb243625fd6925e0c8e67625c8a442f6",
+      "references": [
+        "https://www.nhlbi.nih.gov/health/anemia"
+      ]
+    },
+    {
+      "id": "c13-002",
+      "category": "13",
+      "file": "c13-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "825879cac797518687ca1995cf8540e17bc06cedae5fca50970ef65f32cc93a0",
+      "sourceSha256": "5779380094d21861a186a1b401e1ce326f93b9fcb0a5d7aae73fa23431a219d6",
+      "definitionSha256": "188c20ccbac34b1d54121404ea8cb934ae69edcb0e1f0058f451d5036bef21de",
+      "exampleSha256": "13d696ed8212ecfda77871e17f933fb15103de2b0a10635f6f29af2149660b3d",
+      "references": [
+        "https://medlineplus.gov/ency/article/000589.htm"
+      ]
+    },
+    {
+      "id": "c13-003",
+      "category": "13",
+      "file": "c13-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "afe17feb5b86772a6a3f83ea8d053b936dd3792db328cf6c5593461b03f5b43b",
+      "sourceSha256": "3349e91952894cc94ec79b35a23637118253a1744dc539ccce505f3f4c822769",
+      "definitionSha256": "eefcc7b00ce8fe7cdc10c64403fa366a4eb86a44df824f9c16833d805519e0ff",
+      "exampleSha256": "21ab5ab6d5ec8291745e7e0a81d0d5738ee3084e01ea98b5ed0c1096f28619ca",
+      "references": [
+        "https://www.nhlbi.nih.gov/health/anemia/hemolytic-anemia"
+      ]
+    },
+    {
+      "id": "c13-004",
+      "category": "13",
+      "file": "c13-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "3cb43892535e00fd460b9adae62b4c5b0b6ac007c9dfdc38ab5fa87fd62e4f0e",
+      "sourceSha256": "12a79c829e17ecba8df9c58cff1d31af1b53a5e593cf37124dc90da5dff46da6",
+      "definitionSha256": "3d981f520cc99207e35ee3d81c208f7c03df626c28eec6a223253693469e6893",
+      "exampleSha256": "3f364dd2b6ff28a207b07bb4cd0ecd1c2ecd2eb0f70b11b837b7163266774e7f",
+      "references": [
+        "https://medlineplus.gov/lab-tests/mcv-mean-corpuscular-volume/"
+      ]
+    },
+    {
+      "id": "c13-005",
+      "category": "13",
+      "file": "c13-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "d07de6c1c771c2d0782f828d77958d28c94276f767dea3d5862e03c7d0a86d97",
+      "sourceSha256": "fa125b653a72d4352f9e1abc10d7fcc5cb41ce14f85b388f3d91317b328af166",
+      "definitionSha256": "1fa3b8f13f9384f06d62204b63df4e89673d36161693ee423e350684ac735bcc",
+      "exampleSha256": "d1748204c92ff0d171d001cbdd048b9711eef48b1ce1c139c104e97f5c6776a1",
+      "references": [
+        "https://medlineplus.gov/lab-tests/mcv-mean-corpuscular-volume/"
+      ]
+    },
+    {
+      "id": "c13-006",
+      "category": "13",
+      "file": "c13-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "9b0733979b7ee3276874d8e5a49d2b8f135838bd5000706f890e43967c748d85",
+      "sourceSha256": "ae8b314125b2d4ef194de47708ffaa5a245ad8a40881150ddeb722d05362e516",
+      "definitionSha256": "fae580f23bf7269f8bb7b3fba637d7b532306955c9ee9a29723ae2870aaf3b94",
+      "exampleSha256": "42bc20594eeb08857784630a3c8fa79907b8e37c3203477dab5606da2577becf",
+      "references": [
+        "https://medlineplus.gov/lab-tests/reticulocyte-count/"
+      ]
+    },
+    {
+      "id": "c13-007",
+      "category": "13",
+      "file": "c13-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "015edd3b22dd5281379ab33c0303ec17a0c41fcfbac2f353d74ce43dc6513d94",
+      "sourceSha256": "f1ab70919654bbd6e89e07bdbfa22f8fd9eef05184c641b167c018590e801986",
+      "definitionSha256": "150e0357796e1cb5cacf665a2380deb88aad2a615eff12f60adf5b9936b5fc5c",
+      "exampleSha256": "90c792723910345943042484c9da41215255649fd20d78c0381158d5288bbceb",
+      "references": [
+        "https://medlineplus.gov/lab-tests/hematocrit-test/"
+      ]
+    },
+    {
+      "id": "c13-008",
+      "category": "13",
+      "file": "c13-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "060a7f02ee2b24e85a9f2f29c32672a9ed5032a9723bd6a115c7b641d3d865cd",
+      "sourceSha256": "eed4ea06d0bff5a0b8ed414a4583e221299fa5b23b442375a6bd8a555e5a034b",
+      "definitionSha256": "5d7aa0aedc9418ae21892b359b5354ccfb4301154ebd7edde05af630a57495ff",
+      "exampleSha256": "8403483728364003b81d51b2cb0884c5382f8171a29bc58bfa548feb2634d664",
+      "references": [
+        "https://medlineplus.gov/lab-tests/white-blood-count-wbc/"
+      ]
+    },
+    {
+      "id": "c13-009",
+      "category": "13",
+      "file": "c13-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "219af2550c7cdc360eb95fe64f31d6a74304a6f2dd3c9ea306b149cc2dca852d",
+      "sourceSha256": "dedadda3e3c359b6e25de5924df6bd608b1169a2aec3643024c7dd3f8efb0010",
+      "definitionSha256": "065b4c3311f8a1947ee724d0bc9743a39e6d926282b1473ab2b726c750ed0880",
+      "exampleSha256": "9710a0b1984164bbe36aefc83318a149383fd5253398be541288564b11345800",
+      "references": [
+        "https://medlineplus.gov/lab-tests/white-blood-count-wbc/"
+      ]
+    },
+    {
+      "id": "c13-010",
+      "category": "13",
+      "file": "c13-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "9cf4805c367a8c725b7712783c639af6ab88443a6cdb27421f88adf66e3a69c6",
+      "sourceSha256": "5dc286bd8c038becd1287ee39a65c1897abeb1089f765e8c91a7894ede82ac81",
+      "definitionSha256": "4f807dba2904dff6026e5f276ce614b0828e0c5de7c97389ae013d8727de3282",
+      "exampleSha256": "9e3e224302c1180213255ddc75aa610d77b19ad22a2b9874926009a2081b6a98",
+      "references": [
+        "https://medlineplus.gov/lab-tests/blood-differential/"
+      ]
+    },
+    {
+      "id": "c13-011",
+      "category": "13",
+      "file": "c13-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c912820668c4a6940ea0710dcce1701ff19d5f24b2536855f1b4f8f26bd084d0",
+      "sourceSha256": "751cecd7be35f02d6404fc4b8d7f973f1c3e6aa4523c84656e419dd9eb8ac1b5",
+      "definitionSha256": "f27a5a446a7b85151b8347dd1a622de44764996ee12aa6e38c441e3cfb7ab48d",
+      "exampleSha256": "6cd9635e134f270084f59f7fd6910238844653162dc50a4a12a00253caa42f79",
+      "references": [
+        "https://medlineplus.gov/lab-tests/blood-differential/"
+      ]
+    },
+    {
+      "id": "c13-012",
+      "category": "13",
+      "file": "c13-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "e5912f8aac7a9b97b7e837e2b4977ea9f8ec7e171f3cef78d5be56bab8876af0",
+      "sourceSha256": "7633d1e635770ff5746904f1bd22ab0c17c1ac2eaef2eedd0a55092a8cdb5fc0",
+      "definitionSha256": "b0dc8db03132a02ffb77e9e321d3e06376e08c56223dcce3508704784063c74f",
+      "exampleSha256": "ed2bcdfd65f68a743ebc7f8d51af12f4120c793f0c1d48d68a3ab771a6c81947",
+      "references": [
+        "https://medlineplus.gov/lab-tests/blood-differential/",
+        "https://www.cdc.gov/epstein-barr/about/mononucleosis.html"
+      ]
+    },
+    {
+      "id": "c13-013",
+      "category": "13",
+      "file": "c13-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "175df97ad98b828014331d6a19df77b1552a33725f218c51668d7f80e2007a62",
+      "sourceSha256": "4e19e0d60957bc97a441a9b3b251ce97e549e3f94fdf624614f19a354ecd0976",
+      "definitionSha256": "98190dd37e3358ebd0a661ec9fab6fbf9a8089ffec53ece2e8111d14a3ac8db9",
+      "exampleSha256": "ddf2d0d3cd7ec542729167b4063394639fd55e785fbaf2d79337427acd341dc1",
+      "references": [
+        "https://medlineplus.gov/lab-tests/blood-differential/"
+      ]
+    },
+    {
+      "id": "c13-014",
+      "category": "13",
+      "file": "c13-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "6bfa2bab1af4b5e7a8bb3b3c8fe0f90af5f0cc193d6c327ce5184f0c232c651b",
+      "sourceSha256": "1ceefa4dc0700f1e18c800861c27d6f8ba624c9d46614d26737b19f80db9803a",
+      "definitionSha256": "3b5d4e100cc01b5d0457bf826eb72cf2084298e3e548615e627db7f03de0eec3",
+      "exampleSha256": "07a7ec5fac1a5a982601305d229afb91a8b337cfca2f1bbc6ebeb69c1599460b",
+      "references": [
+        "https://www.nhlbi.nih.gov/health/platelet-disorders/thrombocythemia-thrombocytosis"
+      ]
+    },
+    {
+      "id": "c13-015",
+      "category": "13",
+      "file": "c13-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "d74a8ed238406323ac2c2e5291fea9d61e239a9ac862083ef6ab36640b15b186",
+      "sourceSha256": "5ed2d990a7200583c2b50c9cfcd9868672644c314a2422e334c3975272c79d63",
+      "definitionSha256": "bdab65af0bebe06051c834253f75d9c7d693380db10294235d8db1df98e8c149",
+      "exampleSha256": "2c1d881588fa0f18273e4cde213b6ac6e66c882f01f6d915751220c19059cf99",
+      "references": [
+        "https://www.nhlbi.nih.gov/health/platelet-disorders/thrombocytopenia"
+      ]
+    },
+    {
+      "id": "c13-016",
+      "category": "13",
+      "file": "c13-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "fbe4a0032ce717a4e74772c54937ad1f548dcfa8aa8103c9c8bfa0f83f9b445c",
+      "sourceSha256": "084555d0c9b9dcc01be0fd4b01f2b1afd5db6628886c63a4f84b9ca2aa5209e6",
+      "definitionSha256": "8a24af18bb4ba76a2977882cb4b73ccd9d7c2c8148b97f79cf90b223863b4a8b",
+      "exampleSha256": "fe23f475e00806974e3bdc122ce53f1bd807e469c81e7a53ba7a19f62edaeef3",
+      "references": [
+        "https://medlineplus.gov/bleedingdisorders.html"
+      ]
+    },
+    {
+      "id": "c13-017",
+      "category": "13",
+      "file": "c13-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "9ed26cff7b9ce16ef86512dc9aae90e9f8768b94b3f9adb228bfc483922afdcc",
+      "sourceSha256": "5f4121255df0249642ba5ed92c4923904401c5d42895f8f2e084f910e2aa9208",
+      "definitionSha256": "91d0672e6deba3c1776f35a68b0c84c7ecf9e3fa9a6e9c654561896c6e471158",
+      "exampleSha256": "21f46ca796bf513069bc27261ab0227e606acb1b3373adf59ff4e40c496b8d59",
+      "references": [
+        "https://www.nhlbi.nih.gov/health/anemia/aplastic-anemia"
+      ]
+    },
+    {
+      "id": "c14-001",
+      "category": "14",
+      "file": "c14-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "21c663394f8d93d3372e4cd99e7c724a668c698c4a428ae64167092c8c7f4f15",
+      "sourceSha256": "002900ccf714f5bc09b40e684973b448f0b0a38137b7fd853e853869fc7d04ac",
+      "definitionSha256": "6ad942903dc1a207779b267b345ab255f840dbc77bf46fa5ce7cb55b8ba39c61",
+      "exampleSha256": "807a50037c4fb7a222aeabb703b4a70f36ce2e9aaa047bf4fbfb9bc6b6125a5c",
+      "references": [
+        "https://emultrasound.ucsd.edu/bedside-ultrasound-manual/",
+        "https://www.ncbi.nlm.nih.gov/books/NBK570593/"
+      ]
+    },
+    {
+      "id": "c14-002",
+      "category": "14",
+      "file": "c14-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "10fca61564c3a7813c15fa0569c492a0d53bcff09b2eec59feb9ca84a3e7c4a3",
+      "sourceSha256": "90e0d2a5d7c17700177d8b6e9e32c2da20a17357b4b190d4caa8ef70500090e1",
+      "definitionSha256": "84dc2f0b823bb3955c07037054568de9f3f5d99d8e3bea579ebe5d1d5de571fb",
+      "exampleSha256": "5d7d50116df8b3f6901e7a0c4f66c130164c9a207fdfa1bda6c45e895daf77c7",
+      "references": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC3955795/"
+      ]
+    },
+    {
+      "id": "c14-003",
+      "category": "14",
+      "file": "c14-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "16072c8f39b9b9ca5ae1387e44edf251bcc4b6412a00ed2421058dea50be065e",
+      "sourceSha256": "8f96062e99cabb0845b015094ad6b6341dbb965d2f4565baf1a34a70c00e4d96",
+      "definitionSha256": "39ac5a72e08bcb15753532d2fa3ed006b5b4042035c35436c2b014db49a1874e",
+      "exampleSha256": "8c73e2752259793d7e71e25de7164c0ad97dcd1c19c90f09020284c45a422670",
+      "references": [
+        "https://www.radiologyinfo.org/info/renal-cyst",
+        "https://www.ncbi.nlm.nih.gov/books/NBK570593/"
+      ]
+    },
+    {
+      "id": "c14-004",
+      "category": "14",
+      "file": "c14-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "aeeb9f70b303f83c4960e994ad29dc4ee480b08d079999cff259bad421648a0d",
+      "sourceSha256": "55fd3d3646acdccb780723ac73dd0e44f155d5cb186bb31e0df77f62a4ee7670",
+      "definitionSha256": "b45f0f4cfe469fcc07430a3e223af734be9aeea8084d7c9ed3b7619ad662830e",
+      "exampleSha256": "5b4fb59e6c25ab1e44508ee027c48ca4c03bb6892fa87543f9926116d7eb007a",
+      "references": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC3955795/"
+      ]
+    },
+    {
+      "id": "c14-005",
+      "category": "14",
+      "file": "c14-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c1237f5b2a73e3610855ae028caba1afd42d0297b9611a33c79335ec34e3511b",
+      "sourceSha256": "a3f760b95b8893808df0e3e76297f3b86c15c4c121fdd77e5600dbf6beb1ff7b",
+      "definitionSha256": "92ba6325c21719934bb9ba3eec29b3f227a07dcbcd0e2ad502bc892ae29fc74f",
+      "exampleSha256": "5c70178e343998e5f3b00902397b74595c65639f6a12a9b8ee961d12c4389724",
+      "references": [
+        "https://www.nyp.org/professionals/emergency-medicine/how-to-read-emergency-images/how-to-read-a-head-ct"
+      ]
+    },
+    {
+      "id": "c14-006",
+      "category": "14",
+      "file": "c14-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "1d3c77e569e40e2ffaa4bc6e4f35934db0c23e9dc5c025ff9a73e829be6e7900",
+      "sourceSha256": "0009ca4d6686568f6d611c97a5a22cbb34219455944857a194df57356c84b7eb",
+      "definitionSha256": "2f28240963bd5cfa58da9aecadf59d403ab184412bc6c7fe0b9cca11fc45c46d",
+      "exampleSha256": "9970e09bc6c017562c084ea8dda3d8fcefe498d3e80dd64ca412b87664252fb0",
+      "references": [
+        "https://aci.health.nsw.gov.au/__data/assets/pdf_file/0003/273702/ACI-ECI-How-read-head-CT.pdf"
+      ]
+    },
+    {
+      "id": "c14-007",
+      "category": "14",
+      "file": "c14-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "cd86d0b3baa62939dddc51403bda318ea5528c6cb1c1a6b148a28f8232fa0774",
+      "sourceSha256": "6569281bbafdc704562921a47c738182149eb56ac6a5dda8b17240d6e1975e47",
+      "definitionSha256": "e62f1d4ae8b5000248f930277ba0e3b6355e012d1fb5872ab42b9b0fb0f5a5e4",
+      "exampleSha256": "d5525deb1f4d8d7f25fe3d4481e03819709471cca72c5213e4174916307826ab",
+      "references": [
+        "https://www.radiologyinfo.org/en/info/pneumonia"
+      ]
+    },
+    {
+      "id": "c14-008",
+      "category": "14",
+      "file": "c14-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "d0e1a249a1e5bcc04ff515d09c8f26b8400f50a00f7ae50213443a3be165a20d",
+      "sourceSha256": "b3e74f9c967d4e09783003c14812325df8ebc82625c0ae3709b927329f1d61ec",
+      "definitionSha256": "1ad5f92244bc846cd86ea09013c473569f77f305a877570ab0d3fc8ff4b663da",
+      "exampleSha256": "5c31768e44ad6735c4f84b41649c64723378c84bfd87324216916048e5ee7746",
+      "references": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC9013533/"
+      ]
+    },
+    {
+      "id": "c14-009",
+      "category": "14",
+      "file": "c14-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "aae9b3a34881a0e4728c1bf1ab7f30b0a07daec467af98d22ac026567b8acc4e",
+      "sourceSha256": "0be35632f5c012601fc27b8c1c7af60915cccb17e36ee9bc15cdbcedd02052a1",
+      "definitionSha256": "716f972f315705abc5373cada56f21948a1025780a24c95ca2c562d4fcdd5242",
+      "exampleSha256": "307952e49e5bbd24f936527b27da6a1f3d49538d656f2a57d6e3f10b70e34213",
+      "references": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC9013533/",
+        "https://www.radiologyinfo.org/en/info/pneumonia"
+      ]
+    },
+    {
+      "id": "c14-010",
+      "category": "14",
+      "file": "c14-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "5e7e3081b688b2fa291e933838c67418a7ab757095174257a361dcae9575b08b",
+      "sourceSha256": "e9732452289a4ab0cbdb38706b4c42df2a4f71d8d12e885a98911cdd64d14d6f",
+      "definitionSha256": "c30e3fc9966b777c356fb283070d27076306e44b6cef7e9ab20848b2dfecc927",
+      "exampleSha256": "20e11d94ca4bc9bc3edd589e0e3715d9e1dfda43ca5f36078d320d7687e2917f",
+      "references": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC9013533/"
+      ]
+    },
+    {
+      "id": "c14-011",
+      "category": "14",
+      "file": "c14-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "d6feabd2d1e2747ec0e30ca3627c1a7f598cdefce77c7f1e5fdfe6abee02d971",
+      "sourceSha256": "62c48ec071d20a0b4512c6cbb879aefc43712cdb8bf6a52a91d1521f11dcea68",
+      "definitionSha256": "f2c78af6093fd2443e7e4f60299646a285689a921942fe9d745c1e5daa1ada5c",
+      "exampleSha256": "1e9a6b191598c4073d75cdf21ec55f999bf6e734737ff8e4e835c155dc52fd77",
+      "references": [
+        "https://www.radiologyinfo.org/en/info/lung-nodules"
+      ]
+    },
+    {
+      "id": "c14-012",
+      "category": "14",
+      "file": "c14-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "f31f886383a77578094b037ef5d56f871933223be9f53195be2e3bd5fe017e7b",
+      "sourceSha256": "288cece969d3af78a48d605f8be58f1cb48b3c1fd1bef39b26b0fa7ba0391b9d",
+      "definitionSha256": "db88c3b96ee94d8e0f14431c9979d772cf5bc53f52452b78610a2475f1ef1063",
+      "exampleSha256": "b833e8cc5beb48d042e37c8a21298d39114d3ac5833c50d6234703b7e06c10fc",
+      "references": [
+        "https://www.radiologyinfo.org/en/info/renal-cyst",
+        "https://vimbook.vumc.org/radiology/basic-abdomen-and-pelvis-ct-interpretation"
+      ]
+    },
+    {
+      "id": "c14-013",
+      "category": "14",
+      "file": "c14-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "63133a2aeba7dbea8047447f1ce2f08b94d6c99df6e8b171e32efbe92582bfed",
+      "sourceSha256": "c7b32b614a4bcae71b3d1cb1d59c0f869cf38669cde82182ff73c0e97456d562",
+      "definitionSha256": "da57c6e293141fade328f54c21782070faf5c01d3627dd3d7a1d78767c0a42d7",
+      "exampleSha256": "dd33c62690cfbcd4a3d4188645255e6cb91c2bfa81c3a977ad0dc809e68871c2",
+      "references": [
+        "https://vimbook.vumc.org/radiology/basic-abdomen-and-pelvis-ct-interpretation"
+      ]
+    },
+    {
+      "id": "c14-014",
+      "category": "14",
+      "file": "c14-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "6ee5f9c92c898fd128f09845aa08624a33e717b5ed4d45f303b0cf482c8cf0ae",
+      "sourceSha256": "59a72970e7c6946c6a48879f399811305a28229788aae6fe52f3d1a0184e1536",
+      "definitionSha256": "b1d61ea51ad9dbab76d97ed386b878b484ae94d41fadbde0f40d1bbc9e0fa2a7",
+      "exampleSha256": "542536be2a1841f7b24c0e94a56a6395a0c2840f06d2c064f4b07699c6efa6b1",
+      "references": [
+        "https://www.ncbi.nlm.nih.gov/sites/books/NBK614172/"
+      ]
+    },
+    {
+      "id": "c14-015",
+      "category": "14",
+      "file": "c14-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "2fd16195a6aad556ff26467a8b784114208c2778593ce080d6906cc6c20e6379",
+      "sourceSha256": "023dee84427dc0118a7fcf1c523a0a9d9c0467d5f9a138ac8542ad8b43c31873",
+      "definitionSha256": "eab0e9773ef11f49f0d2891927abbd3573e5b64c82999baaf1b65c00f855bdf5",
+      "exampleSha256": "86b6c87db3382e019793c0b24788b1f100b0d9f69724b79a3dd4f7d12dc4efd5",
+      "references": [
+        "https://vimbook.vumc.org/radiology/basic-abdomen-and-pelvis-ct-interpretation"
+      ]
+    },
+    {
+      "id": "c14-016",
+      "category": "14",
+      "file": "c14-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "93acd6528eb2fad87ee4768bc893586f83b6dbec0d5a6167f05c87f588e94038",
+      "sourceSha256": "b37b65d467e1d313f6cb4487299dd55479db9f8a38dc31c89cf525b535859380",
+      "definitionSha256": "4d52934c89681509915dba71e53ccab5ef5ea8807d5bf2b3a86600e8525b1022",
+      "exampleSha256": "8d6b91836ff2db1116574612593d5fe7b956d008d770a495d73c345c07fc838f",
+      "references": [
+        "https://www.radiologyinfo.org/en/info/thoracentesis"
+      ]
+    },
+    {
+      "id": "c14-017",
+      "category": "14",
+      "file": "c14-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "9865d849019b2a61e7ad931cff9280bc2ba6e501900447e1ba903392a4377a96",
+      "sourceSha256": "e2ef9ff6c6009c99163fd7e348719397633ace41c4e6b723fdac001bd3e68a40",
+      "definitionSha256": "dedfbfdba1e86250017a5950b5b054721e54fda6cdf54855ff32144dc363970f",
+      "exampleSha256": "d2c72a55df261f2fb667da32fb1b2d06d818d05c7c164be3239ccf4c1d3258a9",
+      "references": [
+        "https://www.radiologyinfo.org/en/info/carotidStenosis"
+      ]
+    },
+    {
+      "id": "c14-018",
+      "category": "14",
+      "file": "c14-018.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "19f4e729bdc3801384d2c466c9408a370c24f21713a9f8e38173c7a4a6873103",
+      "sourceSha256": "08f1fa74dc7cd924d81dc82f38f20bfbc7434962e275c65635254ba467bfd0f1",
+      "definitionSha256": "87684ec9e39ce91ef5926104cdc021fa5d40f494debaac31a0191855e6cc613a",
+      "exampleSha256": "c7c992cc13e8cf6091051a8dce1f2b1e2050add2b3a0c3c4b55b76e3b07a72b6",
+      "references": [
+        "https://www.radiologyinfo.org/en/info/thrombo"
+      ]
+    },
+    {
+      "id": "c14-019",
+      "category": "14",
+      "file": "c14-019.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7bb3a968351c9146f188667b0f4ccd83224869a548588357f312cb91c2d6712f",
+      "sourceSha256": "95ff682f036e46703b2aa9ca4a81c3484260b26a70ff165bffb67d8aff323948",
+      "definitionSha256": "ebb286fa171d4a68b737e9085825f6ed467a0871f6552125ed7b10e197773493",
+      "exampleSha256": "fa216a18445bb910490d21597b48d1aecfd3b32af0dea818af2e4b5b8dceb083",
+      "references": [
+        "https://www.osumcradiology.org/resources/Supplimental-Books/Fundamentals-of-Body-CT.pdf"
+      ]
+    },
+    {
+      "id": "c15-001",
+      "category": "15",
+      "file": "c15-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "e0803e26302b1bca78d39278d45ea00edf8b6a761a628e69a7e5f02d525d90c6",
+      "sourceSha256": "a2662b987b4cf5048522ae9b5374633546425c1a7f8784096ecb54a1c43a5fc3",
+      "definitionSha256": "bcbedacb518ab7c5e07667c82acd8250443b86796f4d8539ee9eaf9fa9d7dc63",
+      "exampleSha256": "4813a38f4776e83841bf6fd4ffbfa053b98723057ecf64bdbeaa0aea5607997f",
+      "references": [
+        "https://www.ncbi.nlm.nih.gov/books/NBK557744/",
+        "https://www.ncbi.nlm.nih.gov/books/NBK545280/"
+      ]
+    },
+    {
+      "id": "c15-002",
+      "category": "15",
+      "file": "c15-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "97e06932be14aa3b0a200ce6c5745499e00b8d29cc00ec7506a5ac8586eb97cb",
+      "sourceSha256": "52d82f16fe1b86fd467ddec949bb9eb0b8db01283114e8a4038698febfbddccf",
+      "definitionSha256": "cae2bf9486fb56314fe13c34e56566180a56054f863a9ae12e7b8bc60edf1b2f",
+      "exampleSha256": "f70a8225147095123fafceb8fe655a88bb2555816165ba47ea6922c8d641d736",
+      "references": [
+        "https://pharmacologyeducation.org/clinical-pharmacodynamics-2/"
+      ]
+    },
+    {
+      "id": "c15-003",
+      "category": "15",
+      "file": "c15-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "530edf2927475a5ed7e27b3b22e0fe3ad798801ded20ace73e92b214887cd4de",
+      "sourceSha256": "c34ce544f428075faf1ae9efd6f15eafdda67878f770a629999916238cbda42f",
+      "definitionSha256": "e7bf4b71cd1552ddb34ae35e722761489b166aa3b26eae9e8b69fab0147eb3db",
+      "exampleSha256": "19412d398cc8ca1552d189bbb1cb9a47b4f463bea3fdb689a8711594934101b7",
+      "references": [
+        "https://www.merckmanuals.com/professional/clinical-pharmacology/pharmacokinetics/drug-bioavailability"
+      ]
+    },
+    {
+      "id": "c15-004",
+      "category": "15",
+      "file": "c15-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "4276ff0d6db2c36b53f982f37e1377df9b6cd205b134c180927d9f329c891509",
+      "sourceSha256": "452eecf20e6946ddedac1955a37af04a230bae9b572ea9aebd06e0755d464937",
+      "definitionSha256": "f73eeadbd02a9b4e999531eb19a63226c6071b72a6f8395733e556e6e5da2d58",
+      "exampleSha256": "d358ab1aa6d5be093bc96c0ab9ee2fa4fe71253e810a804f3be5bded4d120d3b",
+      "references": [
+        "https://accesspharmacy.mhmedical.com/content.aspx?bookid=2577&sectionid=234135883"
+      ]
+    },
+    {
+      "id": "c15-005",
+      "category": "15",
+      "file": "c15-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "894628f0f728cbc093048fa9ee93aea72bea2e05ff03f67448589a61a6c1316f",
+      "sourceSha256": "7ea35674688f8f46f656af4a80fb743ab11617b2a42e047f8c8069f1c3cc8889",
+      "definitionSha256": "cb94b2a8c0a6556b88d6fdd6307f0b5fb5f47d63f042d43c1686240528caba1d",
+      "exampleSha256": "fe58ae9fd21918e83082fa6e17d857b2a005d22966ac6b6eef9ba507b9b21e2c",
+      "references": [
+        "https://www.ncbi.nlm.nih.gov/books/NBK545280/"
+      ]
+    },
+    {
+      "id": "c15-006",
+      "category": "15",
+      "file": "c15-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "ea3c782c202106e8d09ad4d71569436311e1fccd37fb72969abf294ea9ded0d8",
+      "sourceSha256": "72a3236ffc99fbee38b4a455947532079474adf39c813a240c97588312a993c6",
+      "definitionSha256": "e46855ad92f9cdf8057f5dbd3b261ac0f518d0be5c82e795c88295155a0a8877",
+      "exampleSha256": "6db5aed9a9d062929648f383806c38267b2f7a7ad6faa3e115f72a2bc703af4f",
+      "references": [
+        "https://www.ncbi.nlm.nih.gov/books/NBK545280/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC6989251/"
+      ]
+    },
+    {
+      "id": "c15-007",
+      "category": "15",
+      "file": "c15-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "4c3b61083872a6ee43e7a2a2acb936b93faeba22448011630e5b268b0232cd5e",
+      "sourceSha256": "22981a836f5b12f788d180fbea9492366ccbb7d3e940b7aef5a032dded33d885",
+      "definitionSha256": "48420ee12e2fe3de18948194fa923219b1d3deabf408772013a0bed2a34b9392",
+      "exampleSha256": "6ef0ae8f191f56d431f202508c33e562e8b7f4a4001a3232c70068a5cb1d7209",
+      "references": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC6989251/",
+        "https://pharmacologyeducation.org/clinical-pharmacodynamics-2/"
+      ]
+    },
+    {
+      "id": "c15-008",
+      "category": "15",
+      "file": "c15-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "4aeb3753f9743109bca3174e127dbb1663d54cfec6d8f4393d02613ce25ddc4b",
+      "sourceSha256": "4c3a72975db836960b6b1a2ba0249770ce5de288460aff7a55fa4f3ed3906870",
+      "definitionSha256": "b91312e8c191d141b1e71ae2fe4b81c4c92f54b219659c8c570e2ef1f0ecb8fa",
+      "exampleSha256": "31820ff3df16da5164af7187e9980745b1218673027f51a36bede878d137344a",
+      "references": [
+        "https://pharmacologyeducation.org/clinical-pharmacodynamics-2/",
+        "https://www.merckmanuals.com/professional/clinical-pharmacology/pharmacokinetics/drug-bioavailability"
+      ]
+    },
+    {
+      "id": "c15-009",
+      "category": "15",
+      "file": "c15-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "2d58a0fd78f68d8c3bd83df8402a81536bfa09a346e05538a108f03ec13797a5",
+      "sourceSha256": "4034b648665802691c32460c5f7ecae52de0c41c1e219102240122e5e972054c",
+      "definitionSha256": "4542ce37a13fb40457a459172c43679572ca8224aed3603ddc70284a65cbfe7a",
+      "exampleSha256": "a73476735cb986143ae6a30c10b632b50bb095924d850b8d4ade7fe9d893dad8",
+      "references": [
+        "https://www.nhs.uk/medicines/amoxicillin/who-can-and-cannot-take-amoxicillin/"
+      ]
+    },
+    {
+      "id": "c15-010",
+      "category": "15",
+      "file": "c15-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "13dd69e0bec14cccb7073a9147b83865951ff8e006a81b660852acc8a2ac1f17",
+      "sourceSha256": "f4b81aafc025b3010973b97bd6203f098d6522c57e2dd21ba1cd7adc24e5f186",
+      "definitionSha256": "e3d374e86bf72302f9bede3f997545eb8e2b7c3de4f36c8f9b92e44fe83cc54b",
+      "exampleSha256": "518e0d88fd8f9601204cbcb6cbb608e4a31be8cb6309d12cd7ec8d45820561a8",
+      "references": [
+        "https://www.fda.gov/drugs/resources-drugs/drug-interactions-what-you-should-know"
+      ]
+    },
+    {
+      "id": "c15-011",
+      "category": "15",
+      "file": "c15-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "88cb08334f9ea5c95bb740c2d299cc0abcce84ec1f51881160aba665f97ce7ea",
+      "sourceSha256": "debb4980fd5182c2c670ce2e5edaf8571ed48213969df3d52f187c2c63421ac8",
+      "definitionSha256": "15c3a85d5e055e63f12afc4fc054a5ccf345ec69916ae1beccf8b9a6b4c3ef71",
+      "exampleSha256": "1c42c15459be280973c4af2611662c9ef3f943f652259ed1b87478d36baae860",
+      "references": [
+        "https://www.fda.gov/drugs/resources-drugs/drug-interactions-what-you-should-know",
+        "https://www.nhs.uk/medicines/cetirizine/side-effects-of-cetirizine/"
+      ]
+    },
+    {
+      "id": "c15-012",
+      "category": "15",
+      "file": "c15-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c03b3f42d0145fe17b1dc5d4d425bd05f6f9c39aad0b21c7e4ac75f8c4eb4c32",
+      "sourceSha256": "4e7e97667d3c3d988ca2cab22bec878c7cfe520233a69cb0988e9c536a08e8ac",
+      "definitionSha256": "1429918e8a8b91f2f83b2dde9f0bea0eed8fd1b9f7eb1955ff82b061fc1a9773",
+      "exampleSha256": "88f969476acfa10452d2e1ad53453987f5ead261c3c702e3cc7018b0bbec1b71",
+      "references": [
+        "https://pharmacologyeducation.org/clinical-pharmacodynamics-2/"
+      ]
+    },
+    {
+      "id": "c15-013",
+      "category": "15",
+      "file": "c15-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "2da326db922d0519d7c56ee3611be36ee3f8dd0045228b71c0711c4d0758bccd",
+      "sourceSha256": "963dacdfb923b22e1d28798ceeb2406bcd4b74693951021c60dad0690c104e7d",
+      "definitionSha256": "c4bcb1e754a902eeaa5df55c6e2bf955120ad36cccbcda7548220c664a304a28",
+      "exampleSha256": "2716468b8a427d604e9cc16bbd0c305993acdbf3b7e0616efa7e063729174d47",
+      "references": [
+        "https://pharmacologyeducation.org/clinical-pharmacodynamics-2/"
+      ]
+    },
+    {
+      "id": "c15-014",
+      "category": "15",
+      "file": "c15-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "05d1db6a413b0a3fe312e10046c0d026086cd956f9f70542290d480a7f988714",
+      "sourceSha256": "b69c4b21089fb1c501ddd78906ca41deac54b102d4afc835c96cde724edc8f94",
+      "definitionSha256": "f15314d53247b0815df1e3ed506896739441d8e45aa29c0f9399b5a06ed8be9f",
+      "exampleSha256": "d3a8ef3f111c2125821f39f51c3ca6e86ebcc9956bc8138d4a76da2679abfd57",
+      "references": [
+        "https://www.who.int/news-room/fact-sheets/detail/antimicrobial-resistance",
+        "https://www.ecdc.europa.eu/en/antimicrobial-resistance/facts/factsheets/general-public"
+      ]
+    },
+    {
+      "id": "c15-015",
+      "category": "15",
+      "file": "c15-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "bd57b763a12d291f3dc19e8782fceab95282f6d3423b2948e5c8c1d3adba51a1",
+      "sourceSha256": "93a7518a9ca07f022951bfca5c36ea7d434fe8c6a190b5ef850455f3581f057a",
+      "definitionSha256": "fec04ad7add71ec32508846ad8a9f1a94dc1b8c406db9be25ea599b11dccd1f8",
+      "exampleSha256": "04087a816125cab73d4ee0ba4296c570c55a14afa2c5c20e0060ee8e91d410c6",
+      "references": [
+        "https://cdc.gov/antibiotic-use/media/pdfs/core-elements-small-critical-508.pdf"
+      ]
+    },
+    {
+      "id": "c15-016",
+      "category": "15",
+      "file": "c15-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "f0a995418c2edcc4729bf2ca5b659d969892f9413c63e580b4a4a9bca30d9e81",
+      "sourceSha256": "fcb51602e942b08101b50fac11708d7a6b15e0116a4d94efedddd0ff909adac7",
+      "definitionSha256": "a71a21378ee8ceb966597d8683b959a81398beea8f1dd1eb23c40d9d9166a5c3",
+      "exampleSha256": "ae4f24a029c851f06f5ed759dc6da0d94ccc56b435e1a376a99dd097ff26b6a8",
+      "references": [
+        "https://www.health.gov.za/wp-content/uploads/2024/11/Guidelines-for-the-Prevention-and-Containment-of-Antimicrobial-Resistance-in-South-African-Hospitals-2019.pdf",
+        "https://cdc.gov/antibiotic-use/media/pdfs/core-elements-small-critical-508.pdf"
+      ]
+    },
+    {
+      "id": "c15-017",
+      "category": "15",
+      "file": "c15-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "187781ee93c1154f6eff8010d5b4688096d68f43b912d97109865474206e6349",
+      "sourceSha256": "e2e86a087bf658998d0d0598ba8add91fa7af98fc8a5a8bbb6a63ad771aa998c",
+      "definitionSha256": "a2a25078d35c31567a4b02601a3aa2c3f11324aa64aeee519ce6fb916864b8be",
+      "exampleSha256": "e1c10632790ada8f1e6c230abea78c6e3d5f1ed582f9bbd9e3abef4a074eaef2",
+      "references": [
+        "https://www.who.int/en/news-room/detail/03-11-2016-who-recommends-29-ways-to-stop-surgical-infections-and-avoid-superbugs"
+      ]
+    },
+    {
+      "id": "c16-001",
+      "category": "16",
+      "file": "c16-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "71b003b27ead5ed9c7382efc3a0fc5da98a252a4da331537a7363ef491e322e7",
+      "sourceSha256": "2a69cc32a9d90c8a02aad1ad2d3f3d9c6947a616ad92c219870b502902c83ef7",
+      "definitionSha256": "62feb14def894ba9678209de0831aad141ed638f9dc2b6d03d178f86c6f51d5f",
+      "exampleSha256": "3a39dc1ae4afae385ed57aabb24df5469451fcbf01ba8496a023039f34e3490a",
+      "references": [
+        "https://iris.who.int/bitstream/handle/10665/44298/9789241599252_eng.pdf?sequence=1"
+      ]
+    },
+    {
+      "id": "c16-002",
+      "category": "16",
+      "file": "c16-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "017a9fd0d6cf5954990aaeda0e301ea85b49177642f1136b49ee05e54c33ee6e",
+      "sourceSha256": "276ff596ea56e0cca1fa40f9a57bf557765ea47a288e404031565367d17319cb",
+      "definitionSha256": "6ad7c5b3680a52760324a81458a1fd18d6fbec4e6026bf0d8d4808f9d56c9a9d",
+      "exampleSha256": "f33c0104a139ebcd6818481b9d3ddaa5b8ba8c367d2a49ef70cd035b29c62cae",
+      "references": [
+        "https://www.cdc.gov/infection-control/hcp/disinfection-sterilization/introduction-methods-definition-of-terms.html"
+      ]
+    },
+    {
+      "id": "c16-003",
+      "category": "16",
+      "file": "c16-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "76e63a62f3e3f2d004c6191a88a828e578183951ef2d42a0f3d8badb05734600",
+      "sourceSha256": "0698a227d3c79c63713b99330267e7e82404c1de9880938a4b3fbbd8b752a114",
+      "definitionSha256": "e604b72bd75795fa6c944df9900ff0dde9f85d17e8cf6cc07fa7cc023f1d88c7",
+      "exampleSha256": "3bfe3a4fe3c72281550e9d5623cab0f7aff325bc33f090c479d6251cdca603b4",
+      "references": [
+        "https://www.elft.nhs.uk/sites/default/files/2023-08/Wound%20Management%20Guidelines%20Vs%207.1%20March%202023.pdf"
+      ]
+    },
+    {
+      "id": "c16-004",
+      "category": "16",
+      "file": "c16-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "bc0d3c1e8f3ec5249497685828c3642499c7a01e0e13f4e3ff147e3b5062238e",
+      "sourceSha256": "641785fffc4518d1c8e9541e6c55c8e6239ca8496f3dbaa25c2deed3a16b9770",
+      "definitionSha256": "7e99aa4d0bc24b1fee32762a8d6f0fc85992dbae8305ce491e63d632e8287d9d",
+      "exampleSha256": "70bbc1dfdd6b7e6438b85167eb4a46ceb1e61b1522c72fb3a1227d29740f6929",
+      "references": [
+        "https://www.nhs.uk/conditions/skin-abscess/"
+      ]
+    },
+    {
+      "id": "c16-005",
+      "category": "16",
+      "file": "c16-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "861b560618e9d91595e3f665b87de1aa545803e82fa5f328c0f9f8acb054d9bc",
+      "sourceSha256": "8e3a818e0bf02433d565ead88b590f05c80fc0d49b06f2d216f6b155796c78e9",
+      "definitionSha256": "c863179c0ad121006e8bc124bf2d78caa415256e91c6f958d8ed7c864e524504",
+      "exampleSha256": "a9e504333462cd870d96bc30352f38cde6a1632bb383d352546b624815ca4095",
+      "references": [
+        "https://www.gloshospitals.nhs.uk/your-visit/patient-information-leaflets/having-bronchoscopy/"
+      ]
+    },
+    {
+      "id": "c16-006",
+      "category": "16",
+      "file": "c16-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "34e20a0f1a041262b0add2de3b859e417fabc908c7e12f821872392ddeacaac1",
+      "sourceSha256": "6e28b8a566677dff601fd1071799c616aa23d6fa2585129583da48441d027bc9",
+      "definitionSha256": "31904b3f86205ef41d911ed850be6eb835332300df23d0bf193654d744d7a591",
+      "exampleSha256": "3e1cccdf09cfd90c87adce28c586563fbc78be36e2ceeecb7a7b5dfea4b3dd46",
+      "references": [
+        "https://www.radiologyinfo.org/en/info/thyroidbiopsy"
+      ]
+    },
+    {
+      "id": "c16-007",
+      "category": "16",
+      "file": "c16-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "9d456ed3b5f4a2ff92861948ef99b97ce01705502ed33984c5544f7524877ff0",
+      "sourceSha256": "b505972ff075d5ad5fbdfc4952cc8894623221d83a4888d688544827a404f747",
+      "definitionSha256": "c2d5eae22f0fa2368bddda7e5193cb379bec077bd8e6d131592dbcaf22e9c945",
+      "exampleSha256": "4cab9a5621baf419ac0e8b2ea615d63307d72bc762a05c89f55709613696e0f9",
+      "references": [
+        "https://www.radiologyinfo.org/en/info/biopgen"
+      ]
+    },
+    {
+      "id": "c16-008",
+      "category": "16",
+      "file": "c16-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "fa6f1d66c8e94b3350eefb16bc0f6d153c9299cdf27c5a1e02a7590b4e27b3a8",
+      "sourceSha256": "6bf288788d24512ed78cabc6687514df30a1a82d8a945bf550f18755be2cc8d9",
+      "definitionSha256": "f5a258dc519b1770ef4bac9078701c166f1df36c74fe82d65b8d2b37b0c1bebb",
+      "exampleSha256": "1893f340880ccf1e0dc14729f5ee0019ae7a6af25cf06b1088802d6161a05f7e",
+      "references": [
+        "https://www.radiologyinfo.org/en/info/thoracentesis"
+      ]
+    },
+    {
+      "id": "c16-009",
+      "category": "16",
+      "file": "c16-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "065a92e97e40cdc9c312314dd1f042e2bdce0095ab08a6f845c03db842eb2e44",
+      "sourceSha256": "a85b93f67c377971b9325a366d8859b2287b3fb8750924fcf41f1e4377e92dbd",
+      "definitionSha256": "3663f71af7051535f101bf6ed363dd2a2aca62c34592133e5d9edbd06d1c9eda",
+      "exampleSha256": "2b309e52afcffef3a61d44232c1a9e3436909a6b93125456ae3eac6c7750d25f",
+      "references": [
+        "https://www.ncbi.nlm.nih.gov/books/NBK435998/",
+        "https://www.cuh.nhs.uk/patient-information/paracentesis/"
+      ]
+    },
+    {
+      "id": "c16-010",
+      "category": "16",
+      "file": "c16-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "9007cc7c36aa8043a78d6d1b75ae79c1788176ed5bed1ded6532d10195d617a5",
+      "sourceSha256": "84b31324490aae9276f0b8833c87d595d599897722b23ab2151ac3d41408d61e",
+      "definitionSha256": "99a20ec2ce3f3122e46356c20f76cc44b2f81fb33be080dde008345e215b6d6c",
+      "exampleSha256": "807a5a2d26b02d390ea15b45397c5a33f760d790411c5e636723442a07e7635c",
+      "references": [
+        "https://www.radiologyinfo.org/en/info/spinaltap"
+      ]
+    },
+    {
+      "id": "c16-011",
+      "category": "16",
+      "file": "c16-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "e708edde41d3f18812f9186def6beb97dc3f569b8f293f1d84be07f1c30f365a",
+      "sourceSha256": "fcd42f0fd7e17cee972c4b0d482b96157dd297f22329f8362e3d440588711a1b",
+      "definitionSha256": "79b74682860adffeab4de85c3b408c29c7f51d1ac0f39742d6211d22ccf39762",
+      "exampleSha256": "3622f87751b49bc779a4a3314cad12377ebdc1a77aefe9abaa51f856ec93edba",
+      "references": [
+        "https://www.gloshospitals.nhs.uk/media/documents/Peripheral_intravenous_IV_cannula_GHPI0935_07_25.pdf"
+      ]
+    },
+    {
+      "id": "c16-012",
+      "category": "16",
+      "file": "c16-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "efc7db3bcb20b4d8e9e47798b8627cee87d855f2c1a17f248d5ca365b001ae87",
+      "sourceSha256": "f5303a2513c8079cdea5f9d7d0f0979f13b20466074671a673136316be9ae5fc",
+      "definitionSha256": "c52d188a6d9d2376ef2008749ed2879c5ac51d95664a968339a034a16d841c0d",
+      "exampleSha256": "8cb17fbe7a4aff051bceee79882c4bb7b2f971669a280df8d9447fdab46eda48",
+      "references": [
+        "https://www.nhs.uk/tests-and-treatments/urinary-catheters/"
+      ]
+    },
+    {
+      "id": "c16-013",
+      "category": "16",
+      "file": "c16-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "26c93bbb7695f73df43ea223e5f7dbb10e146ef38f7cf24f79c509a836e884ea",
+      "sourceSha256": "edfd11272e9ef65ee0129bf62fcf2590b0a7210a36b7be336624dfb588892bb2",
+      "definitionSha256": "a5521d7619141737ee291f1e76052b3c585792dc0c5741a55d0f1f45c418c1d6",
+      "exampleSha256": "6858e83200f26c3df9df7e2ed75bab0e325b325d06b482bc4b90067018b2723c",
+      "references": [
+        "https://www.nhs.uk/conditions/intensive-care/"
+      ]
+    },
+    {
+      "id": "c16-014",
+      "category": "16",
+      "file": "c16-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "6708597abb4d777c9a48400238c4272810527c5b0c4c2c0d8a18386e8839ea23",
+      "sourceSha256": "4acc3f0c059f93f3dab379d08a6d05cbd33953b2d2671769ea16e16bc0069382",
+      "definitionSha256": "42de87ac8dfa54b4cfbad14620ce14af14f380c9f43e35f8e1537f623c1ce204",
+      "exampleSha256": "5a415cc229b6e251b1cb2ea086a5bd6f3d67b5270ad18f1ae19d4d66023fa0fd",
+      "references": [
+        "https://www.sort.nhs.uk/Media/Guidelines/Extubation-checklist.pdf"
+      ]
+    },
+    {
+      "id": "c16-015",
+      "category": "16",
+      "file": "c16-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "659490e35eec8cfcfe6742b8b5a2042368707cd33b95f716c9dec36340f2d407",
+      "sourceSha256": "25b2d9738af4b194c6a811b286b1bf60f056b7c46b1b3bd688bb475490ade2da",
+      "definitionSha256": "fee661f546811b0feeb742d855d118411bda0edb8df4fef1859c309532882098",
+      "exampleSha256": "aec5d2641e04c4b86085418dbf2b8b384593cbbde711274d7a654502a58094f5",
+      "references": [
+        "https://www.resus.org.uk/public-resource/defibrillation",
+        "https://www.resus.org.uk/cy/node/36438"
+      ]
+    },
+    {
+      "id": "c16-016",
+      "category": "16",
+      "file": "c16-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "78128001cb41a3af1b07780d247674854bd05ca9998d3d3e5d0548856227c4a7",
+      "sourceSha256": "f58d4b66679937b50019dc21568e48a3fc85fabbdfc0d81fa041203006075201",
+      "definitionSha256": "6da1880f039672210f3c376a351c9286035926477f7db60ef348a2521ad20bb6",
+      "exampleSha256": "8c8cc33794cf92b04c70fcc4be43ce43fdee59d12b13e1ed0a0786d3670058b8",
+      "references": [
+        "https://www.resus.org.uk/cy/node/36438",
+        "https://lms.resus.org.uk/modules/m50-v2-tachycardia/10346/m50/t30/content/m50_t30_015sr.htm"
+      ]
+    },
+    {
+      "id": "c16-017",
+      "category": "16",
+      "file": "c16-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "9b75950a21dc9afb5b225fda95ec43eccff0d6b805b3a0ff021045dffd3a607b",
+      "sourceSha256": "c9d5ea524ce3d49d12b8d93cddb73ca7f9718c63f7e8a31f1d2691033f4ca5a2",
+      "definitionSha256": "11f696a61340d2092c7637253ef2235e7bf8076652b3313d008ce779298a56d0",
+      "exampleSha256": "8fed71bc90c238253679f574a9acfaa34282fc74607b246909e9cedc26f5b6f0",
+      "references": [
+        "https://www.resus.org.uk/cpr"
+      ]
+    },
+    {
+      "id": "c16-018",
+      "category": "16",
+      "file": "c16-018.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "33fc00370e6098808953347823a2100701fa89842af7df379a7e96f92a266c4e",
+      "sourceSha256": "05281232345f9d8c5c1ace89a1e1219d75a257cbfbcd150389e5815f04f4a638",
+      "definitionSha256": "f84b5fc48c7f035e4c3df0d9f920e0fb46704fc257ce888d92a44bbc1a6e7570",
+      "exampleSha256": "28fd194a1791c51ba5d3919f17344c7aff4c2ac77667c8974a25c4f483e4c39f",
+      "references": [
+        "https://www.nhs.uk/conditions/broken-arm-or-wrist/"
+      ]
+    },
+    {
+      "id": "c17-001",
+      "category": "17",
+      "file": "c17-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "18eee4d8de2ade71c894052971dce8054fc4f2dce9a7a5ae8c1526d78d951912",
+      "sourceSha256": "bcc5dd92e695a2b1ce28f3e631143feac7e7f94e41b5b92fc35e0f8478801d2e",
+      "definitionSha256": "524c9d3cc019936a18d3156e0085c50185b7125fd891d6eb0ba5bc1bb5807f4f",
+      "exampleSha256": "fde318ca2600b642f28d0d54d361d8f209059151f559431d7a0a01c12ad2ccac",
+      "references": [
+        "https://www.merckmanuals.com/professional/gynecology-and-obstetrics/approach-to-the-pregnant-woman-and-prenatal-care/evaluation-of-the-obstetric-patient"
+      ]
+    },
+    {
+      "id": "c17-002",
+      "category": "17",
+      "file": "c17-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "fac4b3ebbb02738e4b9f4812f6aa2c34335a995761bf34dca55cd70531886d3c",
+      "sourceSha256": "b22a0b79e1dbc11101a140a19b432c4f7ad3d7f13593b390c4c301b9e6508b1e",
+      "definitionSha256": "5367d9f77750294be8798178525e31275c6a7ae709d2f2351d0a0819df4e6e0a",
+      "exampleSha256": "dd201ad3ffac8d1b7d39ca3ced43c9b69720b9c70621d3f205e02f5b20eed736",
+      "references": [
+        "https://www.merckmanuals.com/professional/gynecology-and-obstetrics/approach-to-the-pregnant-woman-and-prenatal-care/evaluation-of-the-obstetric-patient"
+      ]
+    },
+    {
+      "id": "c17-003",
+      "category": "17",
+      "file": "c17-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "4f6f01819520c9243946a545622db6a79ac0b115a40e714644e411e4e20ca709",
+      "sourceSha256": "0e8f1e7f13b237592c2a3989af7f6852a3159dce4248a332dbda113735d2f717",
+      "definitionSha256": "60fc38a156f655ec8a9491937bcb7f6aa59d2c56b1756d7d22dfa88da26eb799",
+      "exampleSha256": "d966b37a377776d20d60c5515fbb796b71fff2a035a3e3c16790107d65fd1e89",
+      "references": [
+        "https://www.merckmanuals.com/professional/gynecology-and-obstetrics/approach-to-the-pregnant-woman-and-prenatal-care/evaluation-of-the-obstetric-patient"
+      ]
+    },
+    {
+      "id": "c17-004",
+      "category": "17",
+      "file": "c17-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "37b46f3c075a26e14d64f5df71fd734c01d6ed6e72c342ba6b0598e5d75714a4",
+      "sourceSha256": "c4f236cf6f426a62c71d6354df42826ca8a63fd752748f57db5b035dec1c1072",
+      "definitionSha256": "ab1159d6a9c2f8ff2e441f3879fed4c5db32f14b961cd87c2b5b0d94565cc6b7",
+      "exampleSha256": "3d0891f26c1007690327cf929806c6ad4c8edaed1ebdc16ee915163b6122859d",
+      "references": [
+        "https://www.merckmanuals.com/professional/gynecology-and-obstetrics/approach-to-the-pregnant-woman-and-prenatal-care/evaluation-of-the-obstetric-patient"
+      ]
+    },
+    {
+      "id": "c17-005",
+      "category": "17",
+      "file": "c17-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "aa8b4e499d622936bb6878cfe955d1ed329aeb6448761bb7d2a9de67835cb7c6",
+      "sourceSha256": "3ae99009811114386ea422654aa76401cc960c9522f14c805d8e6913d52faa6a",
+      "definitionSha256": "6383ca6ebfd3313faf08e260482bea965bae9c80cefb9cb7b3f3817d0b8671a4",
+      "exampleSha256": "d1757542fa1312ba3a1321911cf1fd8f6af60cc19d219e230ee59c32552b6408",
+      "references": [
+        "https://www.nhs.uk/symptoms/missed-or-late-periods/"
+      ]
+    },
+    {
+      "id": "c17-006",
+      "category": "17",
+      "file": "c17-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7fa137a0b80a7d6eb98384837337574e253d1dd57131a495446458d367c84691",
+      "sourceSha256": "2735a5cdaeb2e53f69bcef1da3e09890c48071417732077faa3815c6079a0741",
+      "definitionSha256": "0f9bd48cd2e9c611076e05846d7aa3d418043d7fba54b386b432d2568065d4a6",
+      "exampleSha256": "9db98bb4352a6c705c2529b9af0e2c7c90be722fe377397de020edb332af7910",
+      "references": [
+        "https://www.nhs.uk/conditions/periods/period-problems/"
+      ]
+    },
+    {
+      "id": "c17-007",
+      "category": "17",
+      "file": "c17-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "6ea746cb36119d41d7e2cbff618397a89bde7798cf15b91e5dcef411c9c49cc3",
+      "sourceSha256": "db063797ac5e28c3c19edf449c76b82d00580650b1b50b7a5d4750f36c826bcc",
+      "definitionSha256": "5577aad6216a198eb7f766ed8a020ce418593046eda2b1bb4faf0bcc3eda4a01",
+      "exampleSha256": "7ed6a8870e984b4e2ee2a618b2690d4af0e9c275ea107d33f8a1ca1ea1221946",
+      "references": [
+        "https://www.uhnm.nhs.uk/media/jnldtayb/gynae.pdf",
+        "https://www.nhs.uk/conditions/polycystic-ovary-syndrome-pcos/"
+      ]
+    },
+    {
+      "id": "c17-008",
+      "category": "17",
+      "file": "c17-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "86d5459f920e6568bec7a09f0228e99409668b96922c2da07a73e3a44a50ba1f",
+      "sourceSha256": "3c922b0c47bdc7d225223fc25e51c0ecc8595ea64625de7ac5848fa66d17aecb",
+      "definitionSha256": "a16dfd1b331154e23603a1141effba3e2811f43056b0f2b8600b3467edf52187",
+      "exampleSha256": "35f6393a8f6412e2b807dc002633c9f1b873b3a0949edc57e91ebb5fffb0fa90",
+      "references": [
+        "https://www.nhs.uk/conditions/heavy-periods/",
+        "https://www.nhs.uk/conditions/fibroids/"
+      ]
+    },
+    {
+      "id": "c17-009",
+      "category": "17",
+      "file": "c17-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "99516f2a8378261a2e19375dd9b30e6daf45f0898d2e764381406c94394cea27",
+      "sourceSha256": "83b723910c287a2c5764f048c517c44b04bf7ad8fddfd89dfcd90c85bee9d7b8",
+      "definitionSha256": "d787fdcf6a0701e4c7daa7ee0bb8787d6d65448a09dab6147b77282352370927",
+      "exampleSha256": "ea6dcbee1d8765a97dea77863def2bbf69379f663baf7815b664562a69f19293",
+      "references": [
+        "https://www.nhs.uk/conditions/ectopic-pregnancy/"
+      ]
+    },
+    {
+      "id": "c17-010",
+      "category": "17",
+      "file": "c17-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a53cf4e13801d2d927f0c9c6df5382b9c2dbac292a4b18b4cf8460e77710ce30",
+      "sourceSha256": "4ff61228be07da17329f31e7e731b9bf901d9a64e715f5f8d19724f84963170f",
+      "definitionSha256": "46c5d98e0a9b8463e015f3dbaea61b4f8a4baa98a01de11c6246c8643ec806f9",
+      "exampleSha256": "69162cb4c748de84a46dc19995ea25f9f9c273ad69667581b99164daa6c544c2",
+      "references": [
+        "https://www.fhs.gov.hk/english/health_info/woman/30015.pdf"
+      ]
+    },
+    {
+      "id": "c17-011",
+      "category": "17",
+      "file": "c17-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "cd03135f1140b9009ba5473ed39a22d2cc71028bf4a5d70c4439e6e3dbe8fbc8",
+      "sourceSha256": "bfedce7b4ba36a3eb754ed3cb35164fb9681ad3a72199b4eef089e7859991b3d",
+      "definitionSha256": "ac7cac6d252baef5b20d54fdb0220f56dc8a0e9948957e941316da66386251ed",
+      "exampleSha256": "3ddce0b8c7ba0175b3fefe5ab8b658388644022d4bcfe899e9e606b32aa55997",
+      "references": [
+        "https://www.acog.org/womens-health/faqs/your-postpartum-checkups"
+      ]
+    },
+    {
+      "id": "c17-012",
+      "category": "17",
+      "file": "c17-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "45394dba507fbeb8e09c961246d3053fc10290238b98c97ac256b7a1db1b39e5",
+      "sourceSha256": "78c506849518032daabeaac35c9634946f2e6513dd0944db06eda2d540279958",
+      "definitionSha256": "b4ebdc897de234ae68b7ea0744f3d48bed87dbc1719cf169fe6dbd7e226c6911",
+      "exampleSha256": "f1e396f158fb0784b4d5acfd10b2d7a4aabff25b2eefa0027d8602fda9fc1bf0",
+      "references": [
+        "https://www.who.int/news-room/fact-sheets/detail/preterm-birth"
+      ]
+    },
+    {
+      "id": "c17-013",
+      "category": "17",
+      "file": "c17-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a04566f09c8e38c4c54ac90aa066bb2ad8d6d90bc5bb8f70fdccb877afe6f6e5",
+      "sourceSha256": "30bfd302bef205e27b9b9fb9f72ab5b50b5e7d5e226f650e656a10a19c025c7a",
+      "definitionSha256": "77238d55d4e4712f9ce73720c177be1eda5022eb81b81295e62a221f97a9d1bd",
+      "exampleSha256": "5655a474a0a7ad3ff2cd5d863f28d33b929d8a1a64f7311cf737ab7d4ee71f4e",
+      "references": [
+        "https://www.who.int/docs/default-source/mca-documents/maternal-nb/making-every-baby-count.pdf"
+      ]
+    },
+    {
+      "id": "c17-014",
+      "category": "17",
+      "file": "c17-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "8c0183c70538dcb8ff04e517e20f648814201cbe3cd0027b4bda30cc6bd1035f",
+      "sourceSha256": "8ff98bd11e6148831b9b72aeebc70b1e56b5a556b1647a7f2371e6088ae9c455",
+      "definitionSha256": "b05580bc79b750e7f1d7465c66e2745990377551a7cb13b814354f68c7a58334",
+      "exampleSha256": "359582f8e13fadb17fa9dd6f0a96fffb9f11cbc1d57438b58d03a3e87762f5f7",
+      "references": [
+        "https://www.healthychildren.org/English/ages-stages/baby/pages/Common-Conditions-in-Newborns.aspx"
+      ]
+    },
+    {
+      "id": "c17-015",
+      "category": "17",
+      "file": "c17-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c4e08606a5fd70239745c5397ed9ea88ef51ee80ad2ffe5543509ea607ca618e",
+      "sourceSha256": "8f51a4ac00396da5d5956eeacc2085a86f7ebfc526d45fa132e2af4cfd6c98ac",
+      "definitionSha256": "330d3821020e213d901371ec234974b635de1cab1707506479478caf694c3f3c",
+      "exampleSha256": "f16b79415b7fabe7bfcb4747cb3c52bcad6d0e02b3781f72fe71b1d6e5be0989",
+      "references": [
+        "https://www.nhs.uk/conditions/jaundice-in-babies/"
+      ]
+    },
+    {
+      "id": "c17-016",
+      "category": "17",
+      "file": "c17-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "41bf2b9da5d180f91ed08a6a5348abdb1f8afb7af246e27625ddfbe83b71ef03",
+      "sourceSha256": "2cd0428220569d5d26cb5eb85aa7b9e1416d41daad3a834359d1cf8f1f6be8f0",
+      "definitionSha256": "e14bff3135d8be7b33cd43bbd2de0f67dc5180dbada126393a5616764d0958eb",
+      "exampleSha256": "5207be5df7215b7782727398f62daba648edc9150d7be80e8d1a8d4b164a0f86",
+      "references": [
+        "https://www.rcog.org.uk/gtg31"
+      ]
+    },
+    {
+      "id": "c17-017",
+      "category": "17",
+      "file": "c17-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "fcc5b4a6859538fab7aeae1462d246b08c25f55a1c5e3af0667fd1cb84e8b833",
+      "sourceSha256": "c521f731b0bfc21ab41594530b9506ed760224b1b719fd0c11a1ebb0b15de479",
+      "definitionSha256": "29412d0432a53d5b59eebe7da153f20f09eff265baa88e970ac802deadf0806a",
+      "exampleSha256": "75f8cc8efdbec7d6ea65fdadca7e50397c4bc83450e4f39601c36679e7a91ed6",
+      "references": [
+        "https://doi.org/10.1097/AOG.0000000000003606",
+        "https://www.nice.org.uk/guidance/ng3/chapter/Recommendations"
+      ]
+    },
+    {
+      "id": "c17-018",
+      "category": "17",
+      "file": "c17-018.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "f579c049038a0b91b895db45694342b05d6591cc12e02aeb73f84c90069c56a5",
+      "sourceSha256": "2a4b1c747e41b9a6e1a9dc41f88e1b493a78dcb77e4772438ef1f2bb7b89f080",
+      "definitionSha256": "f440c38ca2071cba01f346fba8b7991fa34a549f01aeba9645270327000d090d",
+      "exampleSha256": "d8ddb088e8d140a32d6751b4d91a019d6aad565d8d29a58af30d528ed22d1b0c",
+      "references": [
+        "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2015/10/the-apgar-score"
+      ]
+    },
+    {
+      "id": "c18-001",
+      "category": "18",
+      "file": "c18-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "47b6ae992e705af6e6996481a34a41e02cd8d7eb6fc3ca1098d247d1b03e0f1a",
+      "sourceSha256": "f9b712d2938912026d3736a37af482a1af5b9791b69250b965d901794e441631",
+      "definitionSha256": "c13ff5a39b2bc1f21c21e341c1124bacf0426c3d6f51af82a158ee596dc04aab",
+      "exampleSha256": "6045a865b755862caf19598baacd8fba97d8569041275bb7eb6cc0c6c7c7c833",
+      "references": [
+        "https://medlineplus.gov/medwords/wordroots1.html"
+      ]
+    },
+    {
+      "id": "c18-002",
+      "category": "18",
+      "file": "c18-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a95770016ca475d53302bbee4c665a9702386bb15c9616d270589fa03205260b",
+      "sourceSha256": "41381c8f9f2e190a1dc94b2fa16eb08f100a8bf275aed8682bfd2cc988556cce",
+      "definitionSha256": "959305058b02e199e44b334a73d5bc124bb66f6f5f7863b2544991c62c3858fa",
+      "exampleSha256": "63b6dcea33ac2b333b9188e502fb6bc8407e3f468e5bd49f79ae5753d35a07ec",
+      "references": [
+        "https://medlineplus.gov/medwords/wordroots1.html"
+      ]
+    },
+    {
+      "id": "c18-003",
+      "category": "18",
+      "file": "c18-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c732c55e4455d282c08b8874433fab57572509d50e07d9bdebcb95a1bb2eac2b",
+      "sourceSha256": "dee5d14b6232f72fb086af8ededaec51e7c5ccd3268ead2fd25200e20c357cb4",
+      "definitionSha256": "195cebdabc18979f3608de06e49e064f69a386a1b9e5e53393fd328f6ab5a384",
+      "exampleSha256": "3de8d4c188cb49c95461bee0d3f6387dd123e51876426e030966d126ff3c661b",
+      "references": [
+        "https://medlineplus.gov/medwords/wordroots1.html"
+      ]
+    },
+    {
+      "id": "c18-004",
+      "category": "18",
+      "file": "c18-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a170a33a1f076b94a870ebb10d393b54ca214128d5c2255052cba6afe14e1825",
+      "sourceSha256": "547afa0344a4bcd8834413754168cf3220c4b68c55adcfce8923076f8f9f471e",
+      "definitionSha256": "8bc40cea26ce6fc2b7fbcb4ee15e8b655fafb0a1e3bb28341a57a036d44eefde",
+      "exampleSha256": "205a7361e7bdd0060f407901126487a6a983383e634cf80ff7f6da8b81742593",
+      "references": [
+        "https://medlineplus.gov/appendixa.html"
+      ]
+    },
+    {
+      "id": "c18-005",
+      "category": "18",
+      "file": "c18-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "657cbb7a41bbf4a01ca1dd1c07cffaf5983505d5f7a31aa22303ae292ecd1091",
+      "sourceSha256": "5cd9807423ef18a0a6359b9798accb320c03557daa8af47d33068dbdb29d0938",
+      "definitionSha256": "97ba062cfc5ed6d44cb58da4ef60c7e1d5b32d3e7195aceb919a14bf96ea56ef",
+      "exampleSha256": "6f4e1b15bc9d4c95ee0dbe001b6ec913e5b20fa84e5e73006b52432055a71232",
+      "references": [
+        "https://medlineplus.gov/appendixa.html"
+      ]
+    },
+    {
+      "id": "c18-006",
+      "category": "18",
+      "file": "c18-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7da3a3a770474ef273641718f85ca5bf80648ab3719d2b67543b0e7042098ebf",
+      "sourceSha256": "15dffeadde03e74485e5ca0f4cc51deb8bd26dc2c081cbaf536fe44f3080fd0d",
+      "definitionSha256": "cf55bb05e5b9cfe160f73b0a023e79079b6b7df6e02d3c68ec01b29ba2f1923c",
+      "exampleSha256": "32cdd6f8b57a1d98f212d7e77cee0f9685730d703407d309d9cd2de1e59b06db",
+      "references": [
+        "https://medlineplus.gov/appendixa.html"
+      ]
+    },
+    {
+      "id": "c18-007",
+      "category": "18",
+      "file": "c18-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "e031f73f7864cf6ff1f8f88ae227826e47c108d31f2022c462998ff3dffd2ec3",
+      "sourceSha256": "1414f4140863ebccd32275a45e38224a668d45c6fe44021745d164f158a322a6",
+      "definitionSha256": "67fd405f49e7ecc3448428ff48ac63600ba4e9ed50a30a140224d8a654a3dad6",
+      "exampleSha256": "1943dd544e59714ad52c2932ede7bf80e980a7d3818231c49607eb2290c2002d",
+      "references": [
+        "https://medlineplus.gov/medwords/wordroots1.html"
+      ]
+    },
+    {
+      "id": "c18-008",
+      "category": "18",
+      "file": "c18-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "b2cc16a95349ce6421a6f39feea778e0b827dd3f10819b4881038ce95fa3c8d1",
+      "sourceSha256": "629df8ada20fd75eb888d9ca3268c66d26bc792027a2bab37c16ee712f587fa5",
+      "definitionSha256": "43b6aa46e2f9de3b0399280ddd746b3cfab22969bca44c504ca0e20119821725",
+      "exampleSha256": "719bdd7118ed9eeb986647c2b5fd9a574da773b5cdd702bf352c3beacb6a8854",
+      "references": [
+        "https://medlineplus.gov/medwords/wordroots1.html"
+      ]
+    },
+    {
+      "id": "c18-009",
+      "category": "18",
+      "file": "c18-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "726640c57fd5ac47096ba3ad4d5c0b66b617d18c75793ac470c54226ce872d15",
+      "sourceSha256": "4dbe6484cbd6bf36e33e08a5664024edfa3f5bcb96590729b22bfc2ad2de00d8",
+      "definitionSha256": "ce0fd5fc6fa5fe47bc0f5f9112cd640a2c1eecab854df224eb84ad6c930e24b6",
+      "exampleSha256": "068f3420f40e57c39aa28b92508e8c4de7d1781bc8f64260350b1ba1c42e1286",
+      "references": [
+        "https://medlineplus.gov/appendixa.html"
+      ]
+    },
+    {
+      "id": "c18-010",
+      "category": "18",
+      "file": "c18-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "ab7ce2be9db64490a94735e300adc5b31944994c6dde3bbbe313431beca24c2e",
+      "sourceSha256": "f74b1df609b89280b8ff823e572c449849f5994533c042d11209681c2abfebbb",
+      "definitionSha256": "49445e2afc68ad2b165b7a3d251aa9e86b942e0c903dcd598ec82e72284ed88b",
+      "exampleSha256": "e9bed5e337887c2154e4dee41e688eaec806c5a5573eaeb747ce0b99a8c8b571",
+      "references": [
+        "https://medlineplus.gov/appendixa.html"
+      ]
+    },
+    {
+      "id": "c18-011",
+      "category": "18",
+      "file": "c18-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "4f6804f9be006cec438522d109850d4a76895fd4effc1f57f2b9998b06b47bc8",
+      "sourceSha256": "605cc257fd8b760523ee7076381567d80b79553096331735903ec47413bc4c77",
+      "definitionSha256": "1b61aaa3e6adfa008707d72107ca4b9b13a990327d1e0fbea4f360ea85855693",
+      "exampleSha256": "a6c8dd11c518555db7eef98b85983db9cd17a395d553c59f12490e2dc639787c",
+      "references": [
+        "https://medlineplus.gov/appendixa.html"
+      ]
+    },
+    {
+      "id": "c18-012",
+      "category": "18",
+      "file": "c18-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "20ecfe404bd02628c27241fd00a15f61001270c16b8dfe7d546c14cf58d8de3d",
+      "sourceSha256": "7ecc53613672e362bcebbf4834ed81b89465b79fa2af0731a312d0fb4ff9bbf6",
+      "definitionSha256": "46964f978c6ad1806bda0b61f350e186fb4d3ee6aa0083c62781f1c40f598e15",
+      "exampleSha256": "99dabf56d5c453610dd47e0d523b5477c118afbd63f21d5e9edfbf486b2445cd",
+      "references": [
+        "https://medlineplus.gov/appendixa.html"
+      ]
+    },
+    {
+      "id": "c18-013",
+      "category": "18",
+      "file": "c18-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "052c8674b92bed450d296df81c9023d9341c707aeeed61ff06b09f8764b322cd",
+      "sourceSha256": "efba96dd32162d1fc64808c44d53e769a7df19208dd06747ff533ebd3bcad156",
+      "definitionSha256": "1ca4e8dd903dccc3a0cb97d1d40ffb95614d1914b087bfc950ec90c45f07e41c",
+      "exampleSha256": "1800076cf7ee28c4b19c1e4fc462179368d32eaa39c546f1cb354d4fd7dfd0a3",
+      "references": [
+        "https://medlineplus.gov/appendixa.html"
+      ]
+    },
+    {
+      "id": "c18-014",
+      "category": "18",
+      "file": "c18-014.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "ebc46f2fa259dae78976eb41b5831b5ead4345080cd7512bb0d09e52797b897e",
+      "sourceSha256": "af0699669bdff42ae01d365e069bd15e06f2e331c931aef632af09d4a1e66413",
+      "definitionSha256": "4d29dfd5677198f62246128c35b1cb674ab7f96d49d7e339086c533add862ee7",
+      "exampleSha256": "19cd62a0f064dab52a8224cf8a4536cf302c35b0da59badc56d77c3eeb172cd0",
+      "references": [
+        "https://medlineplus.gov/appendixa.html"
+      ]
+    },
+    {
+      "id": "c18-015",
+      "category": "18",
+      "file": "c18-015.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7d651d9d85a691111985ed3dcb7805b7d75f51563eeca36c68192d815bd3b1dc",
+      "sourceSha256": "3c2dbf07bd2c3b2fb4be15dc12f162474de3d5ef9cf79aee813875500313f61d",
+      "definitionSha256": "f24bae111b62b69694217ffbc8d9c86674fcb865f1cf31dc6a672fbfb9585a06",
+      "exampleSha256": "4727607494a6b7fb169aeda496dd3ef17e5dd2de08642ca317f8e7bb6a08901c",
+      "references": [
+        "https://medlineplus.gov/appendixa.html"
+      ]
+    },
+    {
+      "id": "c18-016",
+      "category": "18",
+      "file": "c18-016.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "6180098c276cd937fcb484af27fc94974b7ca97e36deefce8e628e2c9112eabe",
+      "sourceSha256": "a702f147de6b5b508d9533533c6fd9c1d76888aa4e7bfc61a4ed5c0411b0853f",
+      "definitionSha256": "64bc0414931e44492c6f9038053de07b510bfc815412fb2891e3b87ee28e1ff2",
+      "exampleSha256": "7dcdd0ff2e464dcec7a11842b7732e8896869b8e0ffe2a0576023a683e74ce61",
+      "references": [
+        "https://medlineplus.gov/appendixa.html"
+      ]
+    },
+    {
+      "id": "c18-017",
+      "category": "18",
+      "file": "c18-017.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "18b01b800ab06d457447577f1ff73ca9e66d559e309f6d310f454e6a4571a8c4",
+      "sourceSha256": "d812b74005033473b1644bb0e13d8c5766f41b80357299e2ecd2f3d9c61d7c8f",
+      "definitionSha256": "99ba0fb069b207bd777d3297bdf65e9365f7923ff1dc1f13f92eea4bd3779e0b",
+      "exampleSha256": "1c7ac59375077039a7f1c238efdd3c4b0b1df6fb7fe458fe5b87efeb7a19d5ec",
+      "references": [
+        "https://www.ncbi.nlm.nih.gov/books/NBK607453/?report=reader"
+      ]
+    },
+    {
+      "id": "c18-018",
+      "category": "18",
+      "file": "c18-018.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "e47bf3b65e353e4dfa7223e03d6668b92c6879235f8458cd06114b6ece547d5d",
+      "sourceSha256": "ec235d1ea67c1507cf3b5572d0244e8ea9fa001ac57bfed05ce385d669209085",
+      "definitionSha256": "d5e1899c08d9d3ca041a7fb1dcc95a499cc73ec4c107483c92b65cecd5d2cfe7",
+      "exampleSha256": "e2feb95c65c9c06be5173c67f75e962895b1e981c4de87d82c2e6aaa01c18d44",
+      "references": [
+        "https://www.ncbi.nlm.nih.gov/books/NBK607453/?report=reader"
+      ]
+    },
+    {
+      "id": "c18-019",
+      "category": "18",
+      "file": "c18-019.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "073ac2d90d6eda8e6eaab3794cb98203c10f2e41152f7b17b3bb7f8addec8475",
+      "sourceSha256": "699485c7c1673755bfcfab901f7b4854443caca45bc37b63479517cb9cd522e5",
+      "definitionSha256": "219c7556b1c1b9694cd4c55237a6abf19793b24a473afd2b81bee86e0e679d79",
+      "exampleSha256": "d00478655d821056e629129623cb687c7430aeef49d8b0b636824145360165a5",
+      "references": [
+        "https://www.ncbi.nlm.nih.gov/books/NBK607453/?report=reader"
+      ]
+    },
+    {
+      "id": "c18-020",
+      "category": "18",
+      "file": "c18-020.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "b9010d7ca9d07e50906e53b846103c3e84617c6e5b5ca074ecbd43cf60d6f521",
+      "sourceSha256": "ddb3a46787bf20dc31b52f06f3df24e5db1bd0abe99cb5e2e484791b9b627bfb",
+      "definitionSha256": "d9fb8ddc90fbdbde433f953e0e6a21a44fde06efd7a48dc5ed9f63269b1010bd",
+      "exampleSha256": "6bc6892f9df80163128eeee20926a2f3b769d98c63ad5fb2c0cf9e59d5ab69c0",
+      "references": [
+        "https://www.ncbi.nlm.nih.gov/books/NBK607453/?report=reader"
+      ]
+    },
+    {
+      "id": "c18-021",
+      "category": "18",
+      "file": "c18-021.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "28e647374db02060b3777999c16a2819631504205aa1d185e0d7e8a89e9517d8",
+      "sourceSha256": "cef52cebfca2ad3492b5f19e046228cc0e08212e932ec2d89771e08081101c61",
+      "definitionSha256": "8a240e6279a166de0a7720f0ef4d6434b83a4ce47d25bc035b81dd2c37e9c89d",
+      "exampleSha256": "49eb42d905a0904af132f738e0f1606be2402a4123e233116beb2f0418948909",
+      "references": [
+        "https://medlineplus.gov/appendixa.html"
+      ]
+    },
+    {
+      "id": "c18-022",
+      "category": "18",
+      "file": "c18-022.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "ef2ae328003ff92e5669d59b834472527c08cc624506e3af41699a1bef704316",
+      "sourceSha256": "a4f545ebfe574db91d34d30a85d007543b2ccd8003f9b86efb82920dd9874d23",
+      "definitionSha256": "36527d39744238b61f863ca2d05dce9b4e9cc25b8241786b9dbe51363401098b",
+      "exampleSha256": "88734576aaea42d394fbca6b37e7b15199367553565e11b4628e15660baee5ae",
+      "references": [
+        "https://training.seer.cancer.gov/terminology/parts.html"
+      ]
+    },
+    {
+      "id": "c18-023",
+      "category": "18",
+      "file": "c18-023.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "5efef2e339e480ceb791f2ec6687b6273cf9182b66f94facf7ff90e46c8caff2",
+      "sourceSha256": "8f9a6757b08726732ccea0dca9e7bc5b8a1c8b8d48a52f5e3726047611f3d667",
+      "definitionSha256": "ed22c5402882af5730e5e148f825935bed017f269470dce4d4765eca09812125",
+      "exampleSha256": "49423139ee8520eb019e796578b6a8394f6cbd1ed50f23886b5a6c14296bd690",
+      "references": [
+        "https://training.seer.cancer.gov/terminology/parts.html"
+      ]
+    },
+    {
+      "id": "c18-024",
+      "category": "18",
+      "file": "c18-024.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "562c160673f82594de47e6906b3e2852ed4282ebd262f952ca923c7c35f3a27f",
+      "sourceSha256": "36e4a9573689ff8da02cd1b305998a186808981c1abc9ec26b84eb3d2247eaf4",
+      "definitionSha256": "ca864eb492bacc920b0717d3ccc636766104dc2948e2fcf6f36eec5256327ef7",
+      "exampleSha256": "bd9cda7463994dfe8b16ef8f58aef256c22812102d8ebee4291ba9b42af27265",
+      "references": [
+        "https://training.seer.cancer.gov/terminology/parts.html"
+      ]
+    },
+    {
+      "id": "c18-025",
+      "category": "18",
+      "file": "c18-025.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "5983a0264547e610dc4749f8c3b5451df8318b1de7d36d1cf95a4f2a580af02a",
+      "sourceSha256": "5807e3b17684fdeea2e8e9a683ba014a94adecd21437a97e3409590a67fe442d",
+      "definitionSha256": "58dc86a877c6506e68c8e154d29938934320744dedab6c455636a4c53a046322",
+      "exampleSha256": "68c3e7329b0b7ec569e8f1966eb7d7430b6e707ef10e55cb452d80042bcbc3b1",
+      "references": [
+        "https://training.seer.cancer.gov/terminology/parts.html"
+      ]
+    },
+    {
+      "id": "c18-026",
+      "category": "18",
+      "file": "c18-026.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a83d088e9a50e05e8a674e5c28b900572bac9bbd4c5e2c978129e227d64b87c2",
+      "sourceSha256": "2b6a6049bbc5f208638e34e51b2276228c940ba6edc4150c78156bf5a428ccf0",
+      "definitionSha256": "b5d4a93de001b745d343f9d5b886af6054248d83c2d39f9d3c1b74b5764219a5",
+      "exampleSha256": "c79460339fc6a8b012ef09c57445aa427826ff62450ca8030db5bacf957fcc49",
+      "references": [
+        "https://training.seer.cancer.gov/terminology/parts.html"
       ]
     }
   ]
