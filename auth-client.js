@@ -12,6 +12,7 @@
   const PROFESSIONAL_VERSION = 'production-audit-v2';
   const MAX_OFFLINE_LEASE_MS = 8 * 60 * 60 * 1000;
   const AUTH_TIMEOUT_MS = 3200;
+  const AUTH_RENEWAL_TIMEOUT_MS = 45000;
   const LOGOUT_SYNC_TIMEOUT_MS = 5000;
   const originalFetch = window.fetch.bind(window);
   let logoutObserver = null;
@@ -20,6 +21,10 @@
   let resolveAuthReady;
   let onlineRevalidationInstalled = false;
   let authBootstrap = null;
+  let authRetryTimer = 0;
+  let authRetryButton = null;
+  let authPending = false;
+  let revalidationPending = false;
 
   document.documentElement.classList.add('auth-checking');
   window.MEDINDEX_AUTH_READY = new Promise(resolve => { resolveAuthReady = resolve; });
@@ -44,7 +49,7 @@
     const dark = document.documentElement.dataset.theme === 'dark'
       || document.documentElement.classList.contains('dark');
     authBootstrap.className = 'mi-boot-screen';
-    authBootstrap.innerHTML = `<img class="mi-boot-logo" src="/brand/${dark ? 'drx-horizontal-white.svg' : 'drx-horizontal-dark.svg'}" alt="DRx" width="188" height="55" decoding="async">`;
+    authBootstrap.innerHTML = `<img class="mi-boot-logo" src="/brand/${dark ? 'drx-horizontal-white.svg' : 'drx-horizontal-dark.svg'}" alt="DRx" width="188" height="55" decoding="async">`
       + '<svg class="mi-boot-rings" viewBox="0 0 240 240" aria-hidden="true" focusable="false">'
       + '<circle class="mi-boot-ring mi-boot-ring--a" cx="120" cy="120" r="105"></circle>'
       + '<circle class="mi-boot-ring mi-boot-ring--b" cx="120" cy="120" r="35"></circle>'
@@ -92,6 +97,8 @@
       #miAuthBootstrap strong{color:#155f63;font-size:20px;letter-spacing:-.02em}
       html[data-theme="dark"] #miAuthBootstrap{background:#101d20;color:#aebfbc}
       html[data-theme="dark"] #miAuthBootstrap strong{color:#d9ece8}
+      .auth-retry{justify-self:center;min-height:44px;padding:10px 20px;border:1px solid #155f63;border-radius:10px;background:#155f63;color:#fff;font:inherit;cursor:pointer}
+      .auth-retry:focus-visible{outline:3px solid #efb660;outline-offset:3px}
     `;
     document.head.appendChild(style);
   }
@@ -185,9 +192,12 @@
 
   async function authRequest(options = {}) {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), AUTH_TIMEOUT_MS);
+    const readingSession = !options.method || options.method === 'GET';
+    // Remembered-device renewal can need several upstream checks. An old
+    // worker's cached-auth deadline must not cancel token rotation midway.
+    const timer = setTimeout(() => controller.abort(), readingSession ? AUTH_RENEWAL_TIMEOUT_MS : AUTH_TIMEOUT_MS);
     try {
-      return await originalFetch('/api/auth', {
+      return await originalFetch(readingSession ? '/api/auth?client=1' : '/api/auth', {
         cache:'no-store',
         credentials:'same-origin',
         headers:{ Accept:'application/json', ...(options.headers || {}) },
@@ -200,6 +210,7 @@
   }
 
   function goToLogin(reason = 'unauthenticated') {
+    clearTimeout(authRetryTimer);
     clearOfflineLease();
     setAuthBootstrapMessage(reason === 'phase5-session-upgrade' ? 'Po përditësohet hyrja në Supabase Auth…' : 'Po hapet faqja e hyrjes…');
     settleAuth(false, { reason });
@@ -416,12 +427,41 @@
       || payload.sessionConfigured === false);
   }
 
+  function temporaryAuthFailure(response) {
+    return response.status >= 500 || response.status === 429 || response.status === 408;
+  }
+
+  function retryAuth(callback) {
+    clearTimeout(authRetryTimer);
+    authRetryTimer = window.setTimeout(callback, 5000);
+  }
+
+  function waitForSession(reason) {
+    // No offline lease means content stays hidden. A network failure says
+    // nothing about whether the HttpOnly remembered credential is valid.
+    setAuthBootstrapMessage(reason === 'offline-no-lease'
+      ? 'Lidhja me internet mungon. Hyrja do të rikthehet sapo të lidhemi.'
+      : 'Lidhja po vonon. Po provojmë përsëri hyrjen tënde të ruajtur…');
+    if (!authRetryButton) {
+      authRetryButton = document.createElement('button');
+      authRetryButton.type = 'button';
+      authRetryButton.className = 'auth-retry';
+      authRetryButton.textContent = 'Provo përsëri';
+      authRetryButton.addEventListener('click', () => void init());
+      ensureAuthBootstrap().appendChild(authRetryButton);
+    }
+    authRetryButton.hidden = false;
+    retryAuth(init);
+  }
+
   async function revalidateOnlineSession() {
-    if (!document.documentElement.classList.contains('auth-offline') || !navigator.onLine) return;
+    if (revalidationPending || !document.documentElement.classList.contains('auth-offline') || !navigator.onLine) return;
+    revalidationPending = true;
     try {
       const response = await authRequest();
       const payload = await response.json().catch(() => ({}));
       if (configurationUnavailable(response, payload)) return goToLogin('auth-not-configured');
+      if (temporaryAuthFailure(response)) { retryAuth(revalidateOnlineSession); return; }
       if (response.status === 401 || response.status === 403 || !response.ok || !payload.authenticated || payload.hardened !== true || !phase5Session(payload)) return showExpired();
       const lease = saveOfflineLease(payload);
       if (!lease) return showExpired();
@@ -436,7 +476,8 @@
         },
       }));
       window.MedIndexOffline?.warm?.();
-    } catch {}
+    } catch { retryAuth(revalidateOnlineSession); }
+    finally { revalidationPending = false; }
   }
 
   function installOnlineRevalidation() {
@@ -453,6 +494,7 @@
       try {
         const response = await authRequest();
         const payload = await response.json().catch(() => ({}));
+        if (temporaryAuthFailure(response)) return false;
         const valid = response.ok
           && payload.authenticated === true
           && payload.hardened === true
@@ -490,20 +532,28 @@
   window.addEventListener('medindex:offline-auth-invalid', showExpired);
 
   async function init() {
+    if (authPending || authSettled) return;
+    clearTimeout(authRetryTimer);
     if (!navigator.onLine) {
       if (activateOfflineLease('offline')) return;
-      return goToLogin('offline-no-lease');
+      return waitForSession('offline-no-lease');
     }
+    authPending = true;
+    if (authRetryButton) authRetryButton.hidden = true;
+    setAuthBootstrapMessage('Po verifikohet hyrja jote e ruajtur…');
     try {
       const response = await authRequest();
       const payload = await response.json().catch(() => ({}));
       if (configurationUnavailable(response, payload)) return goToLogin('auth-not-configured');
+      if (temporaryAuthFailure(response)) {
+        if (activateOfflineLease('server-unavailable')) { retryAuth(revalidateOnlineSession); return; }
+        return waitForSession('server-unavailable');
+      }
       if (response.status === 401 || response.status === 403) return goToLogin('unauthenticated');
       if (response.ok && payload.authenticated && Number(payload.sessionVersion || 0) < 3) {
         return goToLogin('phase5-session-upgrade');
       }
       if (!response.ok || !payload.authenticated || payload.hardened !== true || !phase5Session(payload)) {
-        if (response.status >= 500 && activateOfflineLease('server-unavailable')) return;
         return goToLogin('unauthenticated');
       }
       const lease = saveOfflineLease(payload);
@@ -515,11 +565,17 @@
       ensureProfessionalRuntime();
       startOfflineRuntime();
     } catch (error) {
-      if (activateOfflineLease(error?.name === 'AbortError' ? 'timeout' : 'network')) return;
-      goToLogin(error?.name === 'AbortError' ? 'timeout' : 'network');
+      if (activateOfflineLease(error?.name === 'AbortError' ? 'timeout' : 'network')) {
+        retryAuth(revalidateOnlineSession);
+        return;
+      }
+      waitForSession(error?.name === 'AbortError' ? 'timeout' : 'network');
+    } finally {
+      authPending = false;
     }
   }
 
+  window.addEventListener('online', () => { if (!authSettled) void init(); });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
   else init();
 })();

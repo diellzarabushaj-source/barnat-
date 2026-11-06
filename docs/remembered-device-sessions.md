@@ -31,6 +31,15 @@ The recovery page shows connection status, retries failures, preserves the local
 return path and offers an explicit sign-in link that bypasses automatic resume.
 Legacy `/api/auth?resume=1` links remain supported.
 
+The private-page auth client also allows up to 45 seconds for a server renewal,
+using `/api/auth?client=1` so older workers cannot cancel it at their cached-auth
+deadline. Temporary HTTP 408/429/5xx or network failures preserve the remembered
+credential and retry. Without a current offline lease the page stays covered
+until the server confirms the account; a retry button is available. A failed
+online revalidation preserves the existing lease, while an explicit rejected or
+revoked session still clears it and returns to sign-in. The phone regression
+test covers both startup and revalidation with mocked delayed/error responses.
+
 The shared sidebar runtime checks on return to an active tab and every 15 minutes.
 An expired same-origin API GET is renewed and retried once; writes and forbidden
 responses are never replayed. Renewal is serialized with logout in that tab.
