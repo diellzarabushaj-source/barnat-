@@ -11,7 +11,7 @@ for (const scenario of cases) {
   test(`Clinical+ card keeps bounded icons on ${scenario.name}`, async ({ page }) => {
     await page.setViewportSize(scenario.viewport);
 
-    await page.route('**/api/auth', async route => {
+    await page.route(/\/api\/auth(?:\?(?:session_probe|entry)=1)?$/,  async route => {
       if (route.request().method() !== 'GET') return route.continue();
       await route.fulfill({
         status:200,

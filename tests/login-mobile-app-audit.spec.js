@@ -157,7 +157,7 @@ test('Homepage account dialog stays on the page, switches forms and restores foc
 test('Dialog keeps auth errors, CSRF, back navigation and request cleanup intact', async ({page}) => {
  await prepare(page);
  let posts=0;
- await page.route('**/api/auth', async route=>{
+ await page.route(/\/api\/auth(?:\?(?:session_probe|entry)=1)?$/,  async route=>{
   if(route.request().method()==='GET') return route.fallback();
   posts++;
   expect(route.request().headers()['x-csrf-token']).toBe('mobile-app-audit-csrf');
@@ -201,7 +201,7 @@ test('Unavailable modal assets preserve a working standalone login link',async({
 
 test('Homepage email login preserves the requested destination and server session', async({page})=>{
  await prepare(page);
- await page.route('**/api/auth',async route=>{
+ await page.route(/\/api\/auth(?:\?(?:session_probe|entry)=1)?$/, async route=>{
   if(route.request().method()==='GET')return route.fallback();
   await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({authenticated:true,supabaseAuthenticated:true,sessionVersion:3,user:{id:'fixture-user',email:'modal-test@example.com'}})});
  });
@@ -217,7 +217,7 @@ test('Homepage email login preserves the requested destination and server sessio
 test('Homepage signup keeps email confirmation and profile enrollment inside the dialog',async({page})=>{
  await prepare(page);
  await page.route('**/api/auth?scope=verification',route=>route.fulfill({status:401,contentType:'application/json',body:'{"error":"No account"}'}));
- await page.route('**/api/auth',async route=>{
+ await page.route(/\/api\/auth(?:\?(?:session_probe|entry)=1)?$/, async route=>{
   if(route.request().method()==='GET')return route.fallback();
   const body=route.request().postDataJSON();
   expect(body.action).toBe('signup');
@@ -239,7 +239,7 @@ test('Homepage signup keeps email confirmation and profile enrollment inside the
 test('Closing a dialog during an auth request cannot navigate or reinitialize Google later', async({page})=>{
  await prepare(page);
  await page.goto(BASE+'/landing.html');
- await page.route('**/api/auth',async route=>{
+ await page.route(/\/api\/auth(?:\?(?:session_probe|entry)=1)?$/, async route=>{
   await new Promise(resolve=>setTimeout(resolve,600));
   await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({authenticated:true,supabaseAuthenticated:true,sessionVersion:3})}).catch(()=>{});
  });
