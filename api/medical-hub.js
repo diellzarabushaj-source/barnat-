@@ -630,6 +630,10 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    if (requestedRoute === 'medlex') {
+      const {readCatalog} = require('../lib/medlex-sanity.js');
+      return res.status(200).json({ok:true, catalog:await readCatalog(querySanity), source:'sanity-medlex-published'});
+    }
     if (requestedRoute === 'prescription-search') {
       const q = clean(queryValue(req, 'q')).slice(0, MAX_QUERY);
       if (q.length < 2) {

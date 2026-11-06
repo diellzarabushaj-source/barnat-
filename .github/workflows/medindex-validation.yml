@@ -102,7 +102,15 @@ jobs:
       - name: Install browser engines
         run: pnpm exec playwright install --with-deps chromium webkit
 
-      - name: Verify P1 and P2 mobile, desktop and clinical workflows
+      - name: Verify MedLex published CMS, authentication and image integrity
+        # MedLex uses the same authenticated function budget and published CMS.
+        # Keep the actual API and image-integrity checks in the required gate.
+        run: |
+          node tests/medlex-chapters-test.js
+          node tests/medlex-sanity-test.js
+          node tests/medlex-sanity-api-test.js
+
+      - name: Verify P1 and P2 mobile, desktop and clinical browser workflows
         run: |
           pnpm exec playwright test tests/audit-p1-browser.spec.js tests/runtime-metrics-panel-browser.spec.js tests/pediatric-cough-browser.spec.js tests/icd-query-memory-browser.spec.js tests/antibiotics-catalog-browser.spec.js tests/analizat-symptoms-browser.spec.js --config=playwright.registry-v2.config.js
           node tests/runtime-telemetry-browser-test.js

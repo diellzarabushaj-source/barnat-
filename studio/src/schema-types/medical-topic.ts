@@ -1,5 +1,6 @@
 import {DocumentTextIcon} from '@sanity/icons/DocumentText'
 import {defineArrayMember, defineField, defineType} from 'sanity'
+import {legacyMigrationField} from './legacy-migration'
 
 export const medicalTopic = defineType({
   name: 'medicalTopic',
@@ -56,6 +57,7 @@ export const medicalTopic = defineType({
     defineField({name: 'procedureCodes', title: 'Kodet e procedurave', type: 'array', group: 'indexing', of: [{type: 'string'}], options: {layout: 'tags'}, validation: (rule) => rule.unique()}),
     defineField({name: 'relatedTopics', title: 'Tema të lidhura', type: 'array', group: 'indexing', of: [defineArrayMember({type: 'reference', to: [{type: 'medicalTopic'}]})], validation: (rule) => rule.unique()}),
     defineField({name: 'sourceLocator', title: 'Vendndodhja e temës në libër', type: 'sourceLocator', group: 'source'}),
+    legacyMigrationField,
     defineField({name: 'sources', title: 'Referenca shtesë', type: 'array', group: 'source', of: [defineArrayMember({type: 'sourceCitation'})]}),
     defineField({
       name: 'reviewStatus',

@@ -5,6 +5,7 @@ import {structureTool} from 'sanity/structure'
 import {chapterTemplate, lessonTemplates} from './src/lesson-templates'
 import {schemaTypes} from './src/schema-types'
 import {structure} from './src/structure'
+import {medlexTemplates} from './src/schema-types/medlex'
 
 export default defineConfig({
   name: 'medical-hub-authoring',
@@ -17,6 +18,6 @@ export default defineConfig({
   ],
   schema: {
     types: schemaTypes,
-    templates: previous => [...previous, chapterTemplate, ...lessonTemplates],
+    templates: previous => [...previous, chapterTemplate, ...lessonTemplates, ...medlexTemplates],
   },
 })

@@ -1,5 +1,23 @@
 # DRx Medical Hub Studio
 
+## MedLex: Kapitull → Nënkapitull → Kartelat
+
+Hap ndarjen **MedLex** në krye të menusë. Zgjidh kapitullin, nënkapitullin dhe
+kartelën. Secila ka fotografinë, përkufizimin, shembullin klinik dhe burimet.
+Kartelat e reja marrin automatikisht nënkapitullin nga vendi ku krijohen.
+Fushat e plotësimit dhe rishikimit klinik janë të ndara: publikimi i një kartelë
+edukative nuk e shënon atë si të verifikuar klinikisht.
+
+Faqja lexon dokumentet e publikuara MedLex nga Sanity dhe ruan koleksionin lokal
+si rezervë kur shërbimi nuk përgjigjet. Kapitujt 01–02 mbajnë koleksionet ekzistuese.
+Kur ndryshon tekstin që gjendet brenda një fotografie, përditëso edhe fotografinë.
+
+Importi nga repository kryhet me `sanity exec scripts/import-medlex.mjs --with-user-token`.
+Pa `-- --apply` bën vetëm kontroll. Importi përdor ID të gjeneruara dhe kërkon
+dokumentet sipas `externalId`; ruan kartelat ekzistuese dhe plotëson vetëm
+vendmbajtësit e paprekur. `scripts/verify-medlex.mjs` kontrollon lidhjet, tekstet,
+statuset dhe përputhjen e çdo fotografie me origjinalin.
+
 Ky Studio është ambienti i ri i autorimit për librat e Medical Hub. Ai përdor të njëjtin projekt Sanity dhe dataset si aplikacioni publik, por ka një workspace të veçantë me vetëm tre dokumente kryesore:
 
 1. `medicalBook` — libri dhe PDF-ja kryesore në Google Drive.
