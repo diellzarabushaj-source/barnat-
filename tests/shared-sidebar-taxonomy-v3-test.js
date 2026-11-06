@@ -18,7 +18,7 @@ for (const [page, assets] of Object.entries(runtimeAssetManifest)) {
   assert.equal(assets['sidebar-taxonomy-v3.js'], sidebarRelease, `${page}: the manifest must preserve the new shared sidebar release during build`);
   assert.ok(read(page).includes(`/sidebar-taxonomy-v3.js?v=${sidebarRelease}`), `${page}: the versioned sidebar loader is missing`);
 }
-assert.ok(sharedLoader.includes(`/sidebar-taxonomy-core-v3.js?v=${sidebarRelease}`), 'The loader must use the corresponding exact-url core release');
+assert.ok(sharedLoader.includes('/sidebar-taxonomy-core-v3.js?v=persistent-session-20261106'), 'The loader must use the current session-recovery core release');
 const icdSidebar = read('icd-sidebar-v3.js');
 const shell = read('tailadmin-shell.js');
 const shellCore = read('tailadmin-shell-core.js');
@@ -254,7 +254,7 @@ async function verifyDeviceReachability() {
   assert.equal(latestOnline(), true, 'Recovered UI and worker must share their effective online state');
   emit('pageshow');
   await settle();
-  assert.equal(requests.at(-1).url, '/api/auth', 'Normal renewal must resume after a confirmed reconnect');
+  assert.equal(requests.at(-1).url, '/api/auth?session_probe=1', 'Normal renewal must remain network-only after a confirmed reconnect');
 
   scope.navigator.onLine = false;
   emit('offline');

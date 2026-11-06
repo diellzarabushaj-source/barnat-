@@ -7,7 +7,7 @@ const BASE = 'http://127.0.0.1:4173';
 const fixture = require('./urgjencat-browser-fixture.js');
 
 async function installFixture(page) {
-  await page.route('**/api/auth', async route => {
+  await page.route(/\/api\/auth(?:\?(?:session_probe|entry)=1)?$/, async route => {
     if (route.request().method() !== 'GET') return route.continue();
     return route.fulfill({
       status:200,

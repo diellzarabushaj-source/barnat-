@@ -76,7 +76,7 @@ const server=http.createServer(async(req,res)=>{
   await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
   await expect(page.locator('html')).toHaveAttribute('data-drx-worker','canonical');
   await expect.poll(()=>page.evaluate(async()=>{const c=await caches.open('medindex-private-device-v1');return(await c.keys()).some(k=>k.url.includes('view=registry-page'));}),{timeout:10000}).toBe(true);
-  await expect.poll(()=>page.evaluate(async()=>{const cache=await caches.open('medindex-static-device-v1');return !!await cache.match(location.origin+'/sidebar-taxonomy-core-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012');}),{timeout:10000}).toBe(true).catch(async error=>{console.log(JSON.stringify(await page.evaluate(async()=>await Promise.all((await caches.keys()).map(async name=>({name,keys:(await(await caches.open(name)).keys()).map(k=>k.url)})))),null,2));throw error;});
+  await expect.poll(()=>page.evaluate(async()=>{const cache=await caches.open('medindex-static-device-v1');return !!await cache.match(location.origin+'/sidebar-taxonomy-core-v3.js?v=persistent-session-20261106');}),{timeout:10000}).toBe(true).catch(async error=>{console.log(JSON.stringify(await page.evaluate(async()=>await Promise.all((await caches.keys()).map(async name=>({name,keys:(await(await caches.open(name)).keys()).map(k=>k.url)})))),null,2));throw error;});
   const query=await page.evaluate(async()=>{const c=await caches.open('medindex-private-device-v1');return(await c.keys()).find(k=>k.url.includes('view=registry-page')).url;});
   const registryReads=()=>[...reads].filter(([key])=>key.startsWith('/api/drug-search?')&&key.includes('view=registry-page')).reduce((sum,[,value])=>sum+value,0);
   const before=registryReads();
@@ -139,7 +139,7 @@ const server=http.createServer(async(req,res)=>{
   // asset errors strict; allow only these known errors during disconnection.
   const unexpected=errors.filter(error=>!(engine===webkit && error.offline && (
     /^(?:TypeError: Load failed|Response served by service worker is an error|Cannot load \.)$/.test(error.message) ||
-    /(?:https?:\/\/|\/)?127\.0\.0\.1:\d+\/api\/auth(?:\?(?:scope=ui-preferences|offline_probe=1))?\.?$/.test(error.message)
+    /(?:https?:\/\/|\/)?127\.0\.0\.1:\d+\/api\/auth(?:\?(?:scope=ui-preferences|offline_probe=1|session_probe=1))?\.?$/.test(error.message)
   )));
   assert.deepEqual(unexpected,[]);
   console.log(`PASS ${process.env.OFFLINE_BROWSER||'chromium'}: first-download persistence, <500ms slow-link cache, no duplicate downloads, explicit refresh, offline reload/detail, same-Wi-Fi recovery, unknown-data state, revocation and logout.`);

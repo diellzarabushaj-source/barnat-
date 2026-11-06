@@ -867,8 +867,8 @@
         // query-scoped auth read reaches the network even when the worker is
         // preserving the offline lease; no cached response can prove recovery.
         const probing = window.DRxDeviceReachable === false;
-        renewal = originalFetch(probing ? '/api/auth?offline_probe=1' : '/api/auth', { credentials:'same-origin', cache:'no-store',
-          headers:{ Accept:'application/json' }, signal:AbortSignal.timeout(12000) })
+        renewal = originalFetch(probing ? '/api/auth?offline_probe=1' : '/api/auth?session_probe=1', { credentials:'same-origin', cache:'no-store',
+          headers:{ Accept:'application/json' }, signal:AbortSignal.timeout(45000) })
           .then(async response => {
             const payload = await response.json().catch(() => ({}));
             if (probing) {

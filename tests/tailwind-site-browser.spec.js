@@ -30,7 +30,7 @@ async function mockPhase5AuthenticatedSession(page) {
   await page.route('**/api/auth*', async route => {
     const request = route.request();
     const url = new URL(request.url());
-    if (request.method() !== 'GET' || url.pathname !== '/api/auth' || url.search) return route.continue();
+    if (request.method() !== 'GET' || url.pathname !== '/api/auth' || url.searchParams.has('scope')) return route.continue();
     await route.fulfill({
       status:200,
       contentType:'application/json',
@@ -284,7 +284,7 @@ for (const viewport of viewports) {
 
   test(`login and recovery load the Tailwind system on ${viewport.name}`, async ({ page }) => {
     await page.setViewportSize(viewport);
-    await page.route('**/api/auth', async route => {
+    await page.route(/\/api\/auth(?:\?(?:session_probe|entry)=1)?$/, async route => {
       if (route.request().method() !== 'GET') return route.continue();
       await route.fulfill({
         status:200,
@@ -308,7 +308,7 @@ for (const viewport of viewports) {
     expect(ctaBox).not.toBeNull();
     expect(ctaBox.height, `login CTA on ${viewport.name}`).toBeGreaterThanOrEqual(44);
 
-    await page.unroute('**/api/auth');
+    await page.unroute(/\/api\/auth(?:\?(?:session_probe|entry)=1)?$/);
     await page.goto('http://127.0.0.1:4173/recovery.html', { waitUntil:'domcontentloaded' });
     await expect(page.locator('html')).toHaveAttribute('data-mi-tailwind-ui', '20260805-1', { timeout:20000 });
     await expect(page.locator('.recovery-card')).toBeVisible();

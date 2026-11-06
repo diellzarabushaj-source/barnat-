@@ -458,7 +458,7 @@
 
   async function checkExistingSession() {
     try {
-      const response = await timedFetch('/api/auth', { cache:'no-store', credentials:'same-origin', headers:{ Accept:'application/json' } }, 10000, 24000);
+      const response = await timedFetch('/api/auth?session_probe=1', { cache:'no-store', credentials:'same-origin', headers:{ Accept:'application/json' } }, 45000, 45000);
       const payload = await response.json().catch(() => ({}));
       if (!active) throw new DOMException('View closed', 'AbortError');
       if (response.status === 503 && payload.code === 'AUTH_UPSTREAM_UNAVAILABLE') {

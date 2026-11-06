@@ -22,7 +22,7 @@ const F = require('./device-session-fixture.js');
   assert.equal(auth.verifySessionToken(auth.sessionFromRequest({ headers:{ cookie } }), realNow() + 9 * 3600000), false,
     'The short access session must still expire; persistence must use refresh validation.');
   const deviceHeader = login.headers['set-cookie'].find(x => x.startsWith('medindex_device='));
-  assert.match(deviceHeader, /Max-Age=7776000; HttpOnly; Secure; SameSite=Lax/);
+  assert.match(deviceHeader, /Max-Age=34560000; HttpOnly; Secure; SameSite=Lax/);
   assert.match(login.headers['set-cookie'].find(x => x.startsWith('medindex_session=')), /SameSite=Lax/);
   assert.match(login.headers['set-cookie'].find(x => x.startsWith('medindex_csrf=')), /SameSite=Strict/);
   assert.doesNotMatch(JSON.stringify(login.body), /refresh-test|access-test/, 'No upstream credentials in the response body.');
@@ -38,6 +38,11 @@ const F = require('./device-session-fixture.js');
   assert.equal(F.state.refreshes, count, 'Fresh sessions must not rotate on every page read.');
   const healthy = await F.call('GET', undefined, cookie);
   assert.match(healthy.headers['set-cookie'].find(x => x.startsWith('medindex_device=')), /SameSite=Lax/);
+  // Healthy visits roll the encrypted lifetime as well as the browser cookie.
+  offset += 3600000;
+  const rolling = await F.call('GET', undefined, cookie);
+  const rolledDevice = Device.deviceData(Device.deviceFromRequest({ headers:{ cookie:F.applyCookies(cookie, rolling) } }));
+  assert.ok(rolledDevice.expiresAt > Device.deviceData(Device.deviceFromRequest({ headers:{ cookie } })).expiresAt);
   assert.equal((await F.call('GET', undefined, cookie, '?resume=1&return=%2Frecetat.html%3Fid%3Ddemo')).headers.location,
     '/recetat.html?id=demo');
   for (const unsafe of ['//evil.test', '/\\evil.test', '/api/auth?resume=1', '/login.html', '/%2e%2e/api/auth', '/\n/evil.test']) {
@@ -53,6 +58,20 @@ const F = require('./device-session-fixture.js');
   const recovered = await F.call('GET', undefined, cookie);
   assert.equal(recovered.body.authenticated, true);
   cookie = F.applyCookies(cookie, recovered);
+
+  offset += 91 * 24 * 3600000;
+  F.state.refreshGate = new Promise(resolve => { F.state.releaseRefresh = resolve; });
+  const beforeParallel = F.state.refreshes;
+  const firstTab = F.call('GET', undefined, cookie);
+  const secondTab = F.call('GET', undefined, cookie);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(F.state.refreshes, beforeParallel + 1, 'Tabs reopening together must share upstream rotation.');
+  F.state.releaseRefresh(); F.state.refreshGate = null;
+  const parallel = await Promise.all([firstTab, secondTab]);
+  assert.ok(parallel.every(response => response.body.authenticated), 'Remembered login must survive more than 90 days.');
+  assert.equal(auth.sessionFromRequest({ headers:{ cookie:F.applyCookies(cookie, parallel[0]) } }),
+    auth.sessionFromRequest({ headers:{ cookie:F.applyCookies(cookie, parallel[1]) } }), 'Both tabs receive the same renewed session.');
+  cookie = F.applyCookies(cookie, parallel[0]);
 
   offset += 9 * 3600000;
   F.state.status = 'suspended';
