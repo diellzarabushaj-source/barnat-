@@ -1,0 +1,15 @@
+# DRx authentication and remembered-device behavior are protected features.
+# The owner must review intentional changes to these files when the repository
+# has the GitHub "Require review from Code Owners" rule enabled.
+# Automated regression tests are also enforced in the required `validate` job.
+/entry-resume.js                   @diellzarabushaj-source
+/session-resume.js                 @diellzarabushaj-source
+/sw-resilient.js                   @diellzarabushaj-source
+/landing.html                      @diellzarabushaj-source
+/login.html                        @diellzarabushaj-source
+/api/auth.js                       @diellzarabushaj-source
+/lib/auth/                         @diellzarabushaj-source
+/tests/device-session-test.js      @diellzarabushaj-source
+/tests/entry-resume-test.js        @diellzarabushaj-source
+/.github/workflows/medindex-validation.yml @diellzarabushaj-source
+/.github/CODEOWNERS                @diellzarabushaj-source
