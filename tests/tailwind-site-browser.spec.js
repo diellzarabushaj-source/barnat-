@@ -365,7 +365,7 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     await chapterFilter.fill('01 terminologji');
     await expect(chapterPicker.getByRole('button')).toHaveCount(1);
     await chapterPicker.locator('[data-category="01"]').click();
-    await expect(chapterFilter).toHaveValue('');
+    await expect(chapterPicker.locator('#medlexChapterFilter')).toHaveValue('');
     await expect(grid.locator('.medlex-card')).toHaveCount(20);
     await expect(chapterPicker.locator('[data-category="01"]')).toHaveAttribute('aria-pressed','true');
     if (width < 1120) await expect(chapterPicker.locator('summary')).toBeFocused();
