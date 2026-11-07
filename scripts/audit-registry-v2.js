@@ -65,7 +65,7 @@ assert(stylesheetLinks.length === registryStyles.length, `Registry v2 stylesheet
 assert(scriptSources.length === registryScripts.length, `Registry v2 script inventory differs; found ${scriptSources.length}.`);
 registryStyles.forEach((asset,index) => assert(stylesheetLinks[index].split('?')[0] === asset, `Registry stylesheet order differs at ${asset}.`));
 registryScripts.forEach((asset,index) => assert(scriptSources[index].split('?')[0] === asset, `Registry script order differs at ${asset}.`));
-assert(stylesheetLinks.at(-1) === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009', 'Shared Stripe shell v8 must load last.');
+assert(stylesheetLinks.at(-1) === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107', 'Shared Stripe shell v8 must load last.');
 assert(scriptSources[4] === '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012', 'Shared sidebar taxonomy must load before registry filters.');
 assert(/<script type="module" src="\/drx-runtime-telemetry\.js\?v=20261009-rum-v1"><\/script>/.test(html), 'The bounded telemetry observer must use its own module entry.');
 
@@ -173,7 +173,7 @@ console.log(JSON.stringify({
   architecture:'registry-v2',
   stylesheets:stylesheetLinks,
   scripts:scriptSources,
-  shellVersion:'drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009',
+  shellVersion:'drx-dashboard-stripe-v8-sidebar-polish-20261107',
   tableHeaderCount,
   columnPickerStability:'registry-column-picker-stability-v2',
   dosageAutoload:'registry-dose-autoload-retry-v2',

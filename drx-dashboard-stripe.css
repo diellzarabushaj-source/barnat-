@@ -2910,12 +2910,67 @@ html.drx-unified-sidebar .page-wrap{min-width:0}
 html.drx-unified-sidebar .eyebrow{color:#59677d;font-weight:600;letter-spacing:.065em;font-size:11px}
 html.drx-unified-sidebar .page-heading h1{letter-spacing:-.04em}
 html.drx-unified-sidebar .page-subtitle{max-width:70ch}
-html.drx-unified-sidebar .sidebar{border-right:1px solid #ffffff0d!important}
-html.drx-unified-sidebar .nav-item{border-radius:8px!important;color:#d0d2e5!important;font-weight:450!important}
-html.drx-unified-sidebar .nav-item:is(.is-active,[aria-current="page"]){background:#ffffff12!important;color:#fff!important;font-weight:600!important;box-shadow:inset 3px 0 #aaa3ff!important}
-html.drx-unified-sidebar .nav-label{color:#b8bbd2!important;font-size:10px!important;letter-spacing:.09em!important;font-weight:550!important}
-html.drx-unified-sidebar .sidebar-head{margin-bottom:6px}
+/* Shared sidebar finish: the same navigation hierarchy on every workspace. */
+html:is(.drx-unified-sidebar,.medindex-tailadmin) :is(.sidebar,.mi-sidebar){
+  border-right:1px solid #ffffff1a!important;
+  background-image:linear-gradient(158deg,#7762ff1c,transparent 45%)!important;
+}
+html:is(.drx-unified-sidebar,.medindex-tailadmin) :is(.sidebar-head,.mi-sidebar-header){
+  margin-bottom:6px;
+  border-bottom:1px solid #ffffff1f!important;
+}
+html.drx-unified-sidebar .nav-item,
+html.medindex-tailadmin #appMenu :is(.app-menu-link,.auth-logout){
+  border-radius:9px!important;
+  color:#e0e2f3!important;
+  font-weight:500!important;
+}
+html.medindex-tailadmin #appMenu .app-menu-link .app-menu-title{font-weight:inherit!important}
+html.drx-unified-sidebar .sidebar .nav-item:is(.is-active,[aria-current="page"]),
+html.medindex-tailadmin #appMenu .app-menu-link:is(.active,[aria-current="page"]){
+  background:#433689!important;
+  color:#fff!important;
+  font-weight:650!important;
+  box-shadow:inset 3px 0 #c4b8ff,inset 0 0 0 1px #a797ff48!important;
+}
+html.drx-unified-sidebar .nav-label,
+html.medindex-tailadmin #appMenu .mi-menu-label:not(.app-menu-title){
+  color:#bec3e2!important;
+  font-size:10px!important;
+  font-weight:650!important;
+  letter-spacing:.1em!important;
+}
+html.drx-unified-sidebar .nav-label-spaced{
+  padding-top:11px!important;
+  border-top:1px solid #ffffff1c;
+}
 html.drx-unified-sidebar .sidebar .nav-icon{opacity:1}
+html.drx-unified-sidebar .sidebar .nav-item:not(.is-active):not([aria-current="page"]) .nav-icon,
+html.medindex-tailadmin #appMenu .app-menu-link:not(.active):not([aria-current="page"]) .app-menu-icon{
+  color:#c1bbec!important;
+}
+html:is(.drx-unified-sidebar,.medindex-tailadmin) :is(.sidebar,.mi-sidebar) :is(a,button,summary):focus-visible{
+  outline:2px solid #c7baff!important;
+  outline-offset:-2px!important;
+}
+html.drx-unified-sidebar .sidebar-foot .drx-user-card,
+html.medindex-tailadmin .mi-sidebar .mi-user-card{
+  border:1px solid #ffffff24!important;
+  border-radius:10px!important;
+  background:#ffffff0c!important;
+}
+html.drx-unified-sidebar .sidebar-foot .drx-user-card:hover,
+html.medindex-tailadmin .mi-sidebar .mi-user-card:hover{background:#ffffff17!important}
+html.drx-unified-sidebar .sidebar-foot .drx-user-copy small{color:#d0d2e5!important;font-weight:400!important}
+@media(max-width:1023px){
+  html.drx-unified-sidebar .sidebar{border-radius:0 17px 17px 0!important}
+  html.drx-unified-sidebar .sidebar-backdrop{background:#12143180!important;backdrop-filter:none}
+  html.drx-unified-sidebar .sidebar .sidebar-close{
+    border:1px solid #ffffff30!important;
+    background:#ffffff10!important;
+    color:#fff!important;
+  }
+}
 html.drx-unified-sidebar .topbar{box-shadow:0 1px 3px #13254003}
 html.drx-unified-sidebar .breadcrumbs{font-size:12px}
 html.drx-unified-sidebar .breadcrumbs strong{font-weight:550}
