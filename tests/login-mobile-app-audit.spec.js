@@ -267,3 +267,57 @@ test('Signup Google button resizes inside the dialog after orientation changes',
   await expect.poll(()=>page.locator('.home-auth__panel').evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(1);
  }
 });
+
+for (const width of [390, 1440]) {
+ test(`Remembered accounts keep each user's identity and require verification at ${width}px`,async({page})=>{
+  await prepare(page);
+  await page.setViewportSize({width,height:844});
+  await page.goto(BASE+'/landing.html');
+  await page.evaluate(()=>localStorage.setItem('drx_remembered_accounts_v1',JSON.stringify([
+   {name:'First Doctor',email:'first@example.test'}, {name:'Second Doctor',email:'second@example.test'}
+  ])));
+  await page.reload();
+  await expect(page.getByRole('link',{name:'Vazhdo si First Doctor'})).toBeVisible();
+  await page.getByRole('link',{name:'Vazhdo si Second Doctor'}).click();
+  await expect(page.locator('#loginEmail')).toHaveValue('second@example.test');
+  await expect(page.locator('#loginPassword')).toBeFocused();
+  await expect(page).toHaveURL(/landing.html/);
+  await expect(page.locator('#loginPassword')).toHaveValue('');
+  await expect(page.getByRole('heading',{name:'Vazhdo si Second Doctor'})).toBeVisible();
+  await page.getByRole('button',{name:'Ndërro llogari',exact:true}).click();
+  await page.getByRole('button',{name:'Hiq First Doctor nga lista'}).last().click();
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('drx_remembered_accounts_v1')).some(a=>a.email==='first@example.test'))).toBe(false);
+  await page.getByRole('link',{name:'Vazhdo si Second Doctor'}).last().click();
+  if(width===390)await page.screenshot({path:path.join(OUTPUT,'remembered-accounts-phone.png')});
+  await page.locator('[data-auth-close]').click();
+  await page.reload();
+  await expect(page.getByRole('link',{name:'Vazhdo si First Doctor'})).toHaveCount(0);
+  await expect(page.getByRole('link',{name:'Vazhdo si Second Doctor'})).toBeVisible();
+ });
+}
+
+
+test.describe('Remembered account migration',()=>{
+ // Keep mocked account responses in the page's network route. Worker
+ // persistence is covered separately by the device-session browser suite.
+ test.use({serviceWorkers:'block'});
+
+ test('Existing signed-in workspace remembers its own account without a fresh login',async({page})=>{
+  await prepare(page);
+  let signedIn = true;
+  await page.route('**/api/auth**',route=>{
+   if (new URL(route.request().url()).searchParams.has('scope')) return route.fallback();
+   return route.fulfill({json:signedIn
+    ? {authenticated:true,hardened:true,sessionVersion:3,supabaseAuthenticated:true,authUser:{id:'existing-user-fixture',role:'doctor',status:'active'},user:{name:'Existing Doctor',email:'existing@example.test'},csrfToken:'fixture-only'}
+    : {authenticated:false,hardened:true,sessionConfigured:true,googleConfigured:false,passwordFallbackConfigured:true,csrfToken:'fixture-only'}});
+  });
+  await page.goto(BASE+'/index.html');
+  await page.waitForFunction(()=>location.pathname==='/index.html' &&
+   JSON.parse(localStorage.getItem('drx_remembered_accounts_v1')||'[]')
+    .some(account=>account.email==='existing@example.test' && account.name==='Existing Doctor'));
+  signedIn = false;
+  await page.goto(BASE+'/landing.html');
+  await expect(page).toHaveURL(/landing.html/);
+  await expect(page.getByRole('link',{name:'Vazhdo si Existing Doctor'})).toBeVisible();
+ });
+});

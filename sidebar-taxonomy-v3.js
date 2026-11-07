@@ -5,6 +5,24 @@
   // Observe the initial reads before the asynchronously loaded core is ready.
   // Store only clinical GET responses; account/patient APIs and writes stay online.
   let firstReadOwner = '';
+  let accountHintsReady = null;
+  function rememberExistingAccount(auth) {
+    if (!auth.authenticated || auth.hardened !== true || auth.sessionVersion !== 3
+      || !(auth.supabaseAuthenticated || auth.rollbackSession) || !auth.user?.email) return;
+    const hint = { authenticated:true, hardened:true, sessionVersion:3,
+      supabaseAuthenticated:auth.supabaseAuthenticated === true, rollbackSession:auth.rollbackSession === true,
+      signInMethod:auth.rollbackSession ? 'fallback' : undefined,
+      user:{ email:auth.user.email, name:auth.user.name } };
+    if (window.DRxRememberedAccounts) { window.DRxRememberedAccounts.remember(hint); return; }
+    // Migrate already signed-in browsers without another login or auth request.
+    // This optional display-hint module never blocks the clinical response.
+    if (!accountHintsReady) accountHintsReady = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = '/remembered-accounts.js?v=20261107'; script.async = true;
+      script.onload = resolve; script.onerror = reject; document.head.appendChild(script);
+    });
+    void accountHintsReady.then(() => window.DRxRememberedAccounts?.remember(hint)).catch(() => { accountHintsReady = null; });
+  }
   if ('serviceWorker' in navigator) {
     const firstFetch = window.fetch.bind(window);
     window.fetch = async function drxFirstDownload(input, options) {
@@ -12,11 +30,14 @@
       const method = String(options?.method || input?.method || 'GET').toUpperCase();
       const response = await firstFetch(input, options);
       if (target.origin !== location.origin || method !== 'GET' || !response.ok) return response;
-      if (target.pathname === '/api/auth' && !target.search) {
+      if (target.pathname === '/api/auth' && !target.searchParams.has('scope')) {
         const auth = await response.clone().json().catch(() => ({}));
-        window.DRxDeviceReachable = auth.offline !== true;
-        window.dispatchEvent(new CustomEvent('drx:device-network', {detail:{online:window.DRxDeviceReachable}}));
-        firstReadOwner = auth.authenticated ? String(auth.authUser?.id || auth.user?.email || '') : '';
+        rememberExistingAccount(auth);
+        if (!target.search) {
+          window.DRxDeviceReachable = auth.offline !== true;
+          window.dispatchEvent(new CustomEvent('drx:device-network', {detail:{online:window.DRxDeviceReachable}}));
+          firstReadOwner = auth.authenticated ? String(auth.authUser?.id || auth.user?.email || '') : '';
+        }
       }
       if (!navigator.serviceWorker.controller && firstReadOwner && ['/api/drug-search','/api/icd','/api/dosage','/api/medical-hub','/data/protocols.json'].includes(target.pathname)) {
         const owner = firstReadOwner;

@@ -40,6 +40,8 @@ const PUBLIC_PATHS = new Set([
   '/landing.html',
   '/landing.css',
   '/entry-resume.js',
+  '/remembered-accounts.js',
+  '/remembered-accounts.css',
   '/homepage-auth.js',
   '/homepage-auth.css',
   '/session-resume.html',
@@ -188,6 +190,8 @@ export default async function middleware(request) {
     }
 
     if ((pathname === ENTRY_PAGE || LOGIN_PAGES.has(pathname)) && authenticated) {
+      // Explicit account selection must be able to show another sign-in form.
+      if (LOGIN_PAGES.has(pathname) && url.searchParams.get('reauth') === '1') return next();
       const target = new URL(url.searchParams.get('return') || '/index.html', request.url);
       if (target.origin !== url.origin
         || target.pathname.startsWith('/api/')
