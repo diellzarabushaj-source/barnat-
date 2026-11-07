@@ -10,6 +10,7 @@ const UserIdentity = require('../lib/user-identity.js');
 const UserLibrary = require('../lib/user-library.js');
 const ProfileAvatar = require('../lib/profile-avatar.js');
 const UserUiPreferences = require('../lib/user-ui-preferences.js');
+const MedLexProgress = require('../lib/medlex-study-progress.js');
 const AdminUsers = require('../lib/admin-users.js');
 const AdminAccess = require('../lib/admin-access.js');
 const ProfessionalVerification = require('../lib/professional-verification.js');
@@ -303,6 +304,10 @@ module.exports = async function handler(req, res) {
   if (libraryRequested(req)) return UserLibrary.handle(req, res);
   if (profilePhotoRequested(req)) return ProfileAvatar.handle(req, res);
   if (uiPreferencesRequested(req)) return UserUiPreferences.handle(req, res);
+  if (queryValue(req, 'scope') === 'medlex-progress') {
+    if (!sameOrigin(req)) return res.status(403).json({ok:false, code:'ORIGIN_FORBIDDEN'});
+    return MedLexProgress.handle(req, res);
+  }
 
   // Admin user management shares this function instead of claiming another Vercel
   // Hobby function slot; it enforces its own live admin check.

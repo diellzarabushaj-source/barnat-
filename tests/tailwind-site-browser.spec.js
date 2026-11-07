@@ -421,7 +421,7 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     await expect(start).toBeDisabled();
     await chapter.selectOption('05');
     await topic.selectOption('ritmi');
-    await expect(study.getByRole('status')).toHaveText('4 kartela të gatshme për studim.');
+    await expect(study.locator('#medlexStudyAvailability')).toHaveText('4 kartela të gatshme për studim.');
     await expect(page).toHaveURL(/category=05&mode=flashcards$/);
     await start.click();
     const question = study.getByRole('heading',{name:'Si quhet kur zemra rreh më shpejt se normalisht?'});
@@ -429,11 +429,12 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     await expect(question).toBeFocused();
     await expect(answer).toBeHidden();
     expect(await image.getAttribute('src')).toBeNull();
-    await expect(page.locator('#medlexStudyPosition')).toHaveText('Kartela 1 nga 4');
+    await expect(page.locator('#medlexStudyPosition')).toHaveText('Kartela 1 nga 4 · 0%');
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     await page.screenshot({path:path.join(OUTPUT, `tailwind-clinical-medlex-study-front-${name}.png`)});
 
-    await reveal.press('Enter');
+    if (width < 600) await page.locator('#medlexStudyFront').click({position:{x:22,y:25}});
+    else await reveal.press('Enter');
     await expect(answer.getByRole('heading',{name:'Takikardi',exact:true})).toBeFocused();
     await expect(question).toBeHidden();
     await expect(image).toHaveAttribute('src',/\/assets\/medlex-chapters\/c05-001\.webp/);
@@ -448,13 +449,16 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     await expect(answer.getByRole('heading',{name:'Takikardi',exact:true})).toBeVisible();
     await study.getByRole('button',{name:'Për përsëritje',exact:true}).click();
     for (const position of [2,3,4]) {
-      await expect(page.locator('#medlexStudyPosition')).toHaveText(`Kartela ${position} nga 4`);
+      await expect(page.locator('#medlexStudyPosition')).toHaveText(`Kartela ${position} nga 4 · ${(position - 1) * 25}%`);
+      if (position === 3) {
+        await expect(study.getByRole('heading',{name:'Çrregullim i ritmit ose i frekuencës normale të zemrës.',exact:true})).toBeVisible();
+      }
       await reveal.click();
       await study.getByRole('button',{name:'E dija',exact:true}).click();
     }
     await expect(page.locator('#medlexStudyResult')).toHaveText('I dije 3 nga 4 kartela. Për përsëritje: 1.');
     await study.getByRole('button',{name:'Përsërit të vështirat'}).click();
-    await expect(page.locator('#medlexStudyPosition')).toHaveText('Kartela 1 nga 1');
+    await expect(page.locator('#medlexStudyPosition')).toHaveText('Kartela 1 nga 1 · 0%');
     await expect(question).toBeFocused();
     await reveal.click();
     await study.getByRole('button',{name:'E dija',exact:true}).click();
@@ -466,3 +470,72 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     await expect(start).toBeEnabled();
   });
 }
+
+test('MedLex chapter flashcards sync progress and restore the right account', async ({page, browser}) => {
+  const first = '11111111-1111-4111-8111-111111111111';
+  const second = '22222222-2222-4222-8222-222222222222';
+  const rows = new Map();
+  const empty = {revision:0, mutation:null, snapshot:{ratings:{}, session:null}};
+  const url = 'http://127.0.0.1:4173/medlex.html?category=05&mode=flashcards';
+  async function mockAccount(tab, account) {
+    await tab.route('**/api/auth*', async route => {
+      const request = route.request();
+      const scope = new URL(request.url()).searchParams.get('scope');
+      if (!scope && request.method() === 'GET') {
+        return route.fulfill({json:{
+          authenticated:true, supabaseAuthenticated:true, sessionVersion:3, hardened:true,
+          authUser:{id:account, role:'doctor', status:'active'}, user:{name:'Study test',email:'study@example.test'},
+        }});
+      }
+      if (scope !== 'medlex-progress') return route.continue();
+      expect(request.headers()['x-medlex-account']).toBe(account);
+      const row = rows.get(account) || empty;
+      if (request.method() === 'GET') return route.fulfill({json:{ok:true,...row}});
+      const {revision, mutation, snapshot} = request.postDataJSON();
+      if (row.revision !== revision) return route.fulfill({status:409,json:{ok:false,code:'PROGRESS_CONFLICT',...row}});
+      const saved = {revision:revision + 1, mutation, snapshot};
+      rows.set(account, saved);
+      return route.fulfill({json:{ok:true,...saved}});
+    });
+  }
+
+  await mockAccount(page, first);
+  await page.goto(url);
+  await expect(page.locator('#medlexStudySync')).toHaveText('I sinkronizuar me llogarinë');
+  await page.getByLabel('Nënkapitulli',{exact:true}).selectOption('ritmi');
+  await page.getByRole('button',{name:'Fillo seancën'}).click();
+  await page.getByRole('button',{name:'Zbulo kartelën'}).click();
+  await page.getByRole('button',{name:'Për përsëritje',exact:true}).click();
+  await expect(page.locator('#medlexStudySync')).toHaveText('I sinkronizuar me llogarinë');
+  expect(rows.get(first).snapshot.ratings).toEqual({'c05-001':'review'});
+
+  const otherDevice = await browser.newContext({serviceWorkers:'block',viewport:{width:390,height:844}});
+  try {
+    const resumed = await otherDevice.newPage();
+    await mockAccount(resumed, first);
+    await resumed.goto(url);
+    await expect(resumed.locator('#medlexStudyPosition')).toHaveText('Kartela 2 nga 4 · 25%');
+    await expect(resumed.locator('#medlexStudyRemaining')).toHaveText('1');
+    await expect(resumed.getByRole('heading',{name:'Si quhet kur zemra rreh më ngadalë se normalisht?'})).toBeVisible();
+    await resumed.getByRole('button',{name:'Zbulo kartelën'}).click();
+    await resumed.getByRole('button',{name:'E dija',exact:true}).click();
+    await expect(resumed.locator('#medlexStudySync')).toHaveText('I sinkronizuar me llogarinë');
+
+    await page.getByRole('button',{name:'Zbulo kartelën'}).click();
+    await page.getByRole('button',{name:'Për përsëritje',exact:true}).click();
+    await expect(page.locator('#medlexStudySync')).toContainText('pajisje ose tab tjetër');
+    await page.getByRole('button',{name:'Hap progresin e ruajtur'}).click();
+    await expect(page.locator('#medlexStudyMastered')).toHaveText('1');
+    await expect(page.locator('#medlexStudyPosition')).toHaveText('Kartela 3 nga 4 · 50%');
+
+    const other = await otherDevice.newPage();
+    await mockAccount(other, second);
+    await other.goto(url);
+    await expect(other.locator('#medlexStudySync')).toHaveText('I sinkronizuar me llogarinë');
+    await expect(other.locator('#medlexStudyStudied')).toHaveText('0');
+    await expect(other.getByRole('button',{name:'Fillo seancën'})).toBeEnabled();
+    await expect(other.locator('#medlexStudySession')).toBeHidden();
+  } finally {
+    await otherDevice.close();
+  }
+});

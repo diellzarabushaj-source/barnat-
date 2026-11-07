@@ -230,5 +230,6 @@
   "tests/antibiotics-catalog-presentation-test.js",
   "tests/medlex-workspace-test.js",
   "tests/medlex-chapters-test.js",
+  "tests/medlex-study-progress-test.js",
   "tests/medlex-cache-refresh-test.js"
 ]

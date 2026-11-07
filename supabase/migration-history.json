@@ -1269,6 +1269,10 @@
     {
       "name": "icd_verified_latin_uniqueness",
       "version": "20261024130338"
+    },
+    {
+      "name": "medlex_study_progress",
+      "version": "20261107223712"
     }
   ]
 }

@@ -11,10 +11,10 @@
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/protokollet-v2.css?v=2-audit-20261009">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
-  <link rel="stylesheet" href="/medlex.css?v=20261107-flashcards-v1">
+  <link rel="stylesheet" href="/medlex.css?v=20261107-flashcards-progress-v2">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-  <script src="/medlex.js?v=20261107-flashcards-v1" defer></script>
+  <script src="/medlex.js?v=20261107-flashcards-progress-v2" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#medlexContent">Kalo te terminologjia mjekësore</a>
@@ -187,6 +187,20 @@
                 <p>Përgjigju nga kujtesa, kthe kartelën dhe shëno çfarë do të përsëritësh.</p>
               </header>
 
+              <div class="medlex-study-personal" aria-label="Progresi im">
+                <dl class="medlex-study-stats">
+                  <div><dt>Të studiuara</dt><dd id="medlexStudyStudied">0</dd></div>
+                  <div><dt>Të dija</dt><dd id="medlexStudyMastered">0</dd></div>
+                  <div><dt>Për përsëritje</dt><dd id="medlexStudyRemaining">0</dd></div>
+                </dl>
+                <div class="medlex-study-sync">
+                  <span id="medlexStudySync" role="status">Progresi i kësaj seance</span>
+                  <button type="button" id="medlexStudyRetrySync" class="medlex-study-secondary" hidden>Provo sërish</button>
+                  <button type="button" id="medlexStudyUseSaved" class="medlex-study-secondary" hidden>Hap progresin e ruajtur</button>
+                  <button type="button" id="medlexStudyKeepLocal" class="medlex-study-secondary" hidden>Ruaj këtë progres</button>
+                </div>
+              </div>
+
               <form id="medlexStudySetup" class="medlex-study-panel" aria-label="Përgatit seancën">
                 <div class="medlex-study-fields">
                   <div class="medlex-study-field">
@@ -232,8 +246,11 @@
                   <div id="medlexStudyFront" class="medlex-study-front">
                     <span class="medlex-section-index">Pyetja</span>
                     <h3 id="medlexStudyQuestion" tabindex="-1"></h3>
-                    <p id="medlexStudyClue" hidden></p>
-                    <button type="button" id="medlexStudyReveal" class="medlex-primary-action" aria-controls="medlexStudyAnswer">Zbulo kartelën</button>
+                    <span class="medlex-study-flip-hint" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M6 8a7 7 0 0 1 12-2l2 6M4 12l2 6a7 7 0 0 0 12-2"/></svg>
+                      Prek kartelën për ta kthyer
+                    </span>
+                    <button type="button" id="medlexStudyReveal" class="medlex-study-hit" aria-label="Zbulo kartelën" aria-describedby="medlexStudyQuestion" aria-controls="medlexStudyAnswer"></button>
                   </div>
                   <div id="medlexStudyAnswer" hidden>
                     <div class="medlex-study-back">
@@ -255,6 +272,7 @@
                         <h4>Shembull klinik</h4>
                         <blockquote id="medlexStudyExample"></blockquote>
                       </div>
+                      <button type="button" id="medlexStudyFlipBack" class="medlex-study-hit" aria-label="Kthe te pyetja" aria-controls="medlexStudyFront"></button>
                     </div>
                     <div class="medlex-study-rating" role="group" aria-label="Si të shkoi kjo kartelë?">
                       <button type="button" id="medlexStudyReview" class="medlex-study-secondary">Për përsëritje</button>

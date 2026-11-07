@@ -701,14 +701,55 @@ html.drx-unified-sidebar .medlex-page :is(.medlex-categories button,.medlex-card
 .medlex-study-progress progress::-webkit-progress-value { background: var(--ml-indigo); }
 .medlex-study-progress progress::-moz-progress-bar { background: var(--ml-indigo); }
 
+.medlex-study-personal {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 10px 14px;
+  border: 1px solid var(--ml-border);
+  border-radius: 14px;
+  background: var(--ml-surface);
+}
+.medlex-study-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; }
+.medlex-study-stats div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 3px;
+  padding-inline: 8px;
+  border-inline-start: 1px solid var(--ml-border);
+}
+.medlex-study-stats div:first-child { padding-inline-start: 0; border: 0; }
+.medlex-study-stats dt { color: var(--ml-muted); font-size: 11px; line-height: 1.2; }
+.medlex-study-stats dd { margin: 0; color: var(--ml-ink); font-size: 22px; font-weight: 740; line-height: 1; }
+.medlex-study-stats div:nth-child(2) dd { color: var(--ml-clinical); }
+.medlex-study-stats div:nth-child(3) dd { color: var(--ml-accent); }
+.medlex-study-sync {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  max-width: 300px;
+  color: var(--ml-muted);
+  font-size: 11px;
+}
+.medlex-study-sync span { flex: 1 0 100%; }
+.medlex-study-sync button { padding-inline: 7px; font-size: 11px; }
+
 .medlex-study-front {
+  position: relative;
   display: grid;
   align-content: center;
   justify-items: center;
-  gap: 12px;
-  min-height: 270px;
+  gap: 17px;
+  min-height: 310px;
+  padding: 20px;
+  border: 1px solid var(--ml-border);
+  border-radius: 15px;
+  background: radial-gradient(ellipse at 100% 100%, var(--ml-selected), transparent 74%), var(--ml-surface);
   text-align: center;
 }
+.medlex-study-card:has(.medlex-study-front:not([hidden])) { padding: 0; }
 .medlex-study-front h3,
 .medlex-study-answer-title h3,
 .medlex-study-summary h3 {
@@ -719,16 +760,44 @@ html.drx-unified-sidebar .medlex-page :is(.medlex-categories button,.medlex-card
   letter-spacing: -.035em;
   overflow-wrap: anywhere;
 }
-.medlex-study-front h3 { max-width: 32ch; }
-.medlex-study-front p {
-  max-width: 58ch;
-  margin: 0;
-  color: var(--ml-muted);
-  font-size: 16px;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
+.medlex-study-front h3 { max-width: 31ch; font-size: clamp(26px, 3.8vw, 44px); }
+.medlex-study-flip-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border: 1px solid var(--ml-border);
+  border-radius: 999px;
+  background: var(--ml-surface);
+  color: var(--ml-accent);
+  font-size: 12px;
+  font-weight: 680;
 }
-.medlex-study-front button { margin-top: 8px; }
+.medlex-study-flip-hint svg { width: 17px; height: 17px; }
+.medlex-study-hit {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.medlex-study-front:has(.medlex-study-hit:hover) .medlex-study-flip-hint { border-color: var(--ml-accent); }
+.medlex-study-front:has(.medlex-study-hit:focus-visible),
+.medlex-study-back:has(.medlex-study-hit:focus-visible) { outline: 2px solid var(--ml-accent); outline-offset: 2px; }
+
+@media(prefers-reduced-motion:no-preference) {
+  .medlex-study-front:not([hidden]), #medlexStudyAnswer:not([hidden]) { animation: medlex-study-turn .24s ease-out; }
+  @keyframes medlex-study-turn {
+    from { opacity: .74; transform: perspective(850px) rotateY(-11deg); }
+    to { opacity: 1; transform: perspective(850px) rotateY(0); }
+  }
+}
 .medlex-study :is(h2,h3)[tabindex] { scroll-margin-top: 84px; }
 .medlex-study :is(h2,h3)[tabindex]:focus-visible {
   outline: 2px solid var(--ml-accent);
@@ -738,6 +807,7 @@ html.drx-unified-sidebar .medlex-page :is(.medlex-categories button,.medlex-card
 .medlex-study-header h2:focus-visible { outline-color: #d9d3ff; }
 
 .medlex-study-back {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, .95fr);
   grid-template-rows: auto 1fr;
@@ -797,7 +867,9 @@ html.drx-unified-sidebar .medlex-page :is(.medlex-categories button,.medlex-card
   .medlex-study-shortcut { justify-self: start; }
   .medlex-study-fields, .medlex-study-back { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .medlex-study-back { grid-template-rows: auto; grid-template-areas: "title" "artwork" "explanation"; }
-  .medlex-study-front { min-height: 218px; }
+  .medlex-study-personal { grid-template-columns: minmax(0, 1fr); }
+  .medlex-study-sync { max-width: none; }
+  .medlex-study-front { min-height: 228px; padding: 15px; }
   .medlex-study-rating button { min-width: 0; flex: 1 1 100px; }
   .medlex-study-actions button { flex-grow: 1; }
 }
