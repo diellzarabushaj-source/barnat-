@@ -2921,7 +2921,7 @@ html:is(.drx-unified-sidebar,.medindex-tailadmin) :is(.sidebar-head,.mi-sidebar-
 }
 html.drx-unified-sidebar .nav-item,
 html.medindex-tailadmin #appMenu :is(.app-menu-link,.auth-logout){
-  border-radius:9px!important;
+  border-radius:var(--drx-shell-nav-radius,8px)!important;
   color:#e0e2f3!important;
   font-weight:500!important;
 }
@@ -2956,14 +2956,14 @@ html:is(.drx-unified-sidebar,.medindex-tailadmin) :is(.sidebar,.mi-sidebar) :is(
 html.drx-unified-sidebar .sidebar-foot .drx-user-card,
 html.medindex-tailadmin .mi-sidebar .mi-user-card{
   border:1px solid #ffffff24!important;
-  border-radius:10px!important;
+  border-radius:var(--drx-shell-nav-radius,8px)!important;
   background:#ffffff0c!important;
 }
 html.drx-unified-sidebar .sidebar-foot .drx-user-card:hover,
 html.medindex-tailadmin .mi-sidebar .mi-user-card:hover{background:#ffffff17!important}
 html.drx-unified-sidebar .sidebar-foot .drx-user-copy small{color:#d0d2e5!important;font-weight:400!important}
 @media(max-width:1023px){
-  html.drx-unified-sidebar .sidebar{border-radius:0 17px 17px 0!important}
+  html.drx-unified-sidebar .sidebar{border-radius:0 12px 12px 0!important}
   html.drx-unified-sidebar .sidebar-backdrop{background:#12143180!important;backdrop-filter:none}
   html.drx-unified-sidebar .sidebar .sidebar-close{
     border:1px solid #ffffff30!important;
