@@ -424,7 +424,7 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     await expect(study.getByRole('status')).toHaveText('4 kartela të gatshme për studim.');
     await expect(page).toHaveURL(/category=05&mode=flashcards$/);
     await start.click();
-    const question = study.getByRole('heading',{name:'Si quhen rrahjet më të shpejta se normalisht të zemrës?'});
+    const question = study.getByRole('heading',{name:'Si quhet kur zemra rreh më shpejt se normalisht?'});
     const reveal = study.getByRole('button',{name:'Zbulo kartelën'});
     await expect(question).toBeFocused();
     await expect(answer).toBeHidden();
@@ -437,7 +437,8 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     await expect(answer.getByRole('heading',{name:'Takikardi',exact:true})).toBeFocused();
     await expect(question).toBeHidden();
     await expect(image).toHaveAttribute('src',/\/assets\/medlex-chapters\/c05-001\.webp/);
-    await expect.poll(() => image.evaluate(node => node.complete && node.naturalWidth > 0)).toBe(true);
+    await image.evaluate(node => node.decode());
+    await expect(image).toBeVisible();
     await page.screenshot({path:path.join(OUTPUT, `tailwind-clinical-medlex-study-back-${name}.png`)});
 
     await page.getByRole('button',{name:'Listë',exact:true}).click();

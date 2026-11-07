@@ -616,6 +616,9 @@ html.drx-unified-sidebar .medlex-page :is(.medlex-categories button,.medlex-card
 .medlex-study-kicker { color: #d9d3ff; font-size: 11px; font-weight: 750; letter-spacing: .09em; text-transform: uppercase; }
 .medlex-study-header h2 { margin: 5px 0; font-size: clamp(30px, 4vw, 45px); line-height: 1.1; letter-spacing: -.045em; }
 .medlex-study-header p { margin: 0; color: #e4e3fb; font-size: 14px; line-height: 1.5; }
+.medlex-study:has(#medlexStudySession:not([hidden])) .medlex-study-header { padding-block: 12px; }
+.medlex-study:has(#medlexStudySession:not([hidden])) .medlex-study-header h2 { margin-bottom: 0; font-size: clamp(23px, 3vw, 30px); }
+.medlex-study:has(#medlexStudySession:not([hidden])) .medlex-study-header p { display: none; }
 
 .medlex-study-panel,
 .medlex-study-card {
@@ -688,8 +691,15 @@ html.drx-unified-sidebar .medlex-page :is(.medlex-categories button,.medlex-card
   display: block;
   width: 100%;
   height: 7px;
-  accent-color: var(--ml-indigo);
+  appearance: none;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ml-border);
 }
+.medlex-study-progress progress::-webkit-progress-bar { background: var(--ml-border); }
+.medlex-study-progress progress::-webkit-progress-value { background: var(--ml-indigo); }
+.medlex-study-progress progress::-moz-progress-bar { background: var(--ml-indigo); }
 
 .medlex-study-front {
   display: grid;
@@ -720,6 +730,12 @@ html.drx-unified-sidebar .medlex-page :is(.medlex-categories button,.medlex-card
 }
 .medlex-study-front button { margin-top: 8px; }
 .medlex-study :is(h2,h3)[tabindex] { scroll-margin-top: 84px; }
+.medlex-study :is(h2,h3)[tabindex]:focus-visible {
+  outline: 2px solid var(--ml-accent);
+  outline-offset: 2px;
+  border-radius: 5px;
+}
+.medlex-study-header h2:focus-visible { outline-color: #d9d3ff; }
 
 .medlex-study-back {
   display: grid;
